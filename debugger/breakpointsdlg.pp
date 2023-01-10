@@ -39,9 +39,11 @@ interface
 
 uses
   Classes, SysUtils, LazFileUtils, Forms, Controls, Dialogs,
-  IDEWindowIntf, DebuggerStrConst, Menus, ComCtrls, Debugger, DebuggerDlg, ActnList, MainBase,
-  IDEImagesIntf, DbgIntfDebuggerBase, DbgIntfMiscClasses, SourceEditor, MainIntf,
-  LazarusCommonStrConst;
+  IDEWindowIntf, Menus, ComCtrls, Debugger, DebuggerDlg, ActnList,
+  IDEImagesIntf, DbgIntfDebuggerBase, DbgIntfMiscClasses,
+  BaseDebugManager, IdeDebuggerStringConstants, LazarusCommonStrConst,
+  // IDE
+  LazarusIDEStrConsts, SourceEditor, MainBase, MainIntf;
 
 type
   TBreakPointsDlgState = (
@@ -169,8 +171,6 @@ function GetBreakPointActionsDescription(ABreakpoint: TBaseBreakpoint): string;
 implementation
 
 {$R *.lfm}
-uses
-  LazarusIDEStrConsts, BaseDebugManager;
 
 var
   BreakPointDlgWindowCreator: TIDEWindowCreator;

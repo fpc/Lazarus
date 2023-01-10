@@ -18,8 +18,10 @@ uses
   // DebuggerIntf
   DbgIntfDebuggerBase,
   LazDebuggerIntfBaseTypes,
+  // IDEDebugger
+  DebuggerDlg, Debugger, BaseDebugManager,
   // IDE
-  DebuggerDlg, Debugger, BaseDebugManager, EditorOptions, SourceEditor;
+  LazarusIDEStrConsts, EditorOptions, SourceEditor;
 
 type
 
@@ -176,9 +178,6 @@ type
 implementation
 
 {$R *.lfm}
-
-uses
-  LazarusIDEStrConsts;
 
 var
   AsmWindowCreator: TIDEWindowCreator;

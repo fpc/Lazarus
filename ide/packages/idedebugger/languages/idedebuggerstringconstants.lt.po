@@ -5,10 +5,29 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
+#: idedebuggerstringconstants.dbgbreakgroupdlgcaption
+msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
+msgid "Select Groups"
+msgstr "Pažymėti grupes"
+
+#: idedebuggerstringconstants.dbgbreakgroupdlgheaderdisable
+msgid "Select groups to disable when breakpoint is hit"
+msgstr "Pažymėti grupes, kurios pasyvinamos pasiekus stabdos tašką"
+
+#: idedebuggerstringconstants.dbgbreakgroupdlgheaderenable
+msgid "Select groups to enable when breakpoint is hit"
+msgstr "Pažymėti grupes, kurios aktyvinamos pasiekus stabdos tašką"
+
+#: idedebuggerstringconstants.dbgbreakpropertygroupnotfound
+#, object-pascal-format
+msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
+msgstr "Aktyvinimo/pasyvinimo sąraše yra neegzistuojančių grupių.%0:sJas sukurti?%0:s%0:s%1:s"
+
 #: idedebuggerstringconstants.dbgdispformatbinary
+#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatbinary"
 msgid "Binary"
-msgstr ""
+msgstr "Dvejetainis"
 
 #: idedebuggerstringconstants.dbgdispformatcharacter
 #, fuzzy
@@ -87,8 +106,10 @@ msgid "Match types by name"
 msgstr ""
 
 #: idedebuggerstringconstants.dlgbackconvoptname
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dlgbackconvoptname"
 msgid "Name"
-msgstr ""
+msgstr "Pavadinimas"
 
 #: idedebuggerstringconstants.dlgbackconvoptremove
 msgid "Remove"
@@ -105,6 +126,21 @@ msgstr ""
 #: idedebuggerstringconstants.dlgbackendconvoptdisabled
 msgid "- Disabled -"
 msgstr ""
+
+#: idedebuggerstringconstants.dlgenvtype
+msgctxt "lazarusidestrconsts.dlgenvtype"
+msgid "Type"
+msgstr "Tipas"
+
+#: idedebuggerstringconstants.dlgfilterall
+msgctxt "lazarusidestrconsts.dlgfilterall"
+msgid "All files"
+msgstr "Visi failai"
+
+#: idedebuggerstringconstants.dlgfilterxml
+msgctxt "lazarusidestrconsts.dlgfilterxml"
+msgid "XML files"
+msgstr "„XML“ failai"
 
 #: idedebuggerstringconstants.dlgidedbgdebugger
 msgid "Debugger"
@@ -131,7 +167,22 @@ msgstr ""
 msgid "Index of first item to show"
 msgstr ""
 
+#: idedebuggerstringconstants.dlgunitdeprefresh
+msgctxt "lazarusidestrconsts.dlgunitdeprefresh"
+msgid "Refresh"
+msgstr "Atnaujinti"
+
+#: idedebuggerstringconstants.dlgvaluecolor
+msgctxt "lazarusidestrconsts.dlgvaluecolor"
+msgid "Value"
+msgstr "Vertė"
+
+#: idedebuggerstringconstants.dlgvaluedataaddr
+msgid "Data-Address"
+msgstr ""
+
 #: idedebuggerstringconstants.drsaddwatch
+msgctxt "idedebuggerstringconstants.drsaddwatch"
 msgid "Add watch"
 msgstr ""
 
@@ -139,13 +190,77 @@ msgstr ""
 msgid "Append result at bottom of history"
 msgstr ""
 
+#: idedebuggerstringconstants.drsbreakpointcolwidthaction
+msgid "Action column"
+msgstr "Veiksmo stulpelis"
+
+#: idedebuggerstringconstants.drsbreakpointcolwidthcondition
+msgid "Condition column"
+msgstr "Sąlygos stulpelis"
+
+#: idedebuggerstringconstants.drsbreakpointcolwidthfile
+msgid "File/address column"
+msgstr "Failo/adreso stulpelis"
+
+#: idedebuggerstringconstants.drsbreakpointcolwidthgroup
+msgid "Group column"
+msgstr "Grupės stulpelis"
+
+#: idedebuggerstringconstants.drsbreakpointcolwidthline
+msgctxt "debuggerstrconst.drsbreakpointcolwidthline"
+msgid "Line column"
+msgstr "Eilutės stulpelis"
+
+#: idedebuggerstringconstants.drsbreakpointcolwidthpasscount
+msgid "Pass-count column"
+msgstr "Praėjimų skaičiaus stulpelis"
+
+#: idedebuggerstringconstants.drscolwidthbrkpointimg
+msgid "Break indication column"
+msgstr "Stabdos indikatoriaus stulpelis"
+
+#: idedebuggerstringconstants.drscolwidthexpression
+msgid "Expression column"
+msgstr "Išraiškos stulpelis"
+
+#: idedebuggerstringconstants.drscolwidthfunc
+msgid "Function name column"
+msgstr "Funkcijos pavadinimo stulpelis"
+
+#: idedebuggerstringconstants.drscolwidthindex
+msgid "Index column"
+msgstr "Indekso stulpelis"
+
+#: idedebuggerstringconstants.drscolwidthline
+msgctxt "debuggerstrconst.drscolwidthline"
+msgid "Line column"
+msgstr "Eilutės stulpelis"
+
+#: idedebuggerstringconstants.drscolwidthname
+msgid "Name column"
+msgstr "Pavadinimo stulpelis"
+
+#: idedebuggerstringconstants.drscolwidthsource
+msgid "Source column"
+msgstr "Šaltinio stulpelis"
+
+#: idedebuggerstringconstants.drscolwidthstate
+msgid "State column"
+msgstr "Būsenos stulpelis"
+
+#: idedebuggerstringconstants.drscolwidthvalue
+msgid "Value column"
+msgstr "Vertės stulpelis"
+
 #: idedebuggerstringconstants.drsdebugconverter
 msgid "Converter"
 msgstr ""
 
 #: idedebuggerstringconstants.drsdisableenableupdatesforth
+#, fuzzy
+msgctxt "idedebuggerstringconstants.drsdisableenableupdatesforth"
 msgid "Disable/Enable updates for the entire window"
-msgstr ""
+msgstr "Įgalinti arba drausti viso lango naujinimus"
 
 #: idedebuggerstringconstants.drsenterexpression
 msgid "Enter Expression"
@@ -156,8 +271,22 @@ msgid "Evaluate"
 msgstr ""
 
 #: idedebuggerstringconstants.drshistory
+#, fuzzy
+msgctxt "idedebuggerstringconstants.drshistory"
 msgid "History"
-msgstr ""
+msgstr "Praeitis"
+
+#: idedebuggerstringconstants.drshistorycolwidthcurrent
+msgid "Current column"
+msgstr "Veikiamasis stulpelis"
+
+#: idedebuggerstringconstants.drshistorycolwidthlocation
+msgid "Location column"
+msgstr "Vietos stulpelis"
+
+#: idedebuggerstringconstants.drshistorycolwidthtime
+msgid "Time column"
+msgstr "Laiko stulpelis"
 
 #: idedebuggerstringconstants.drsinsertresultattopofhistor
 msgid "Insert result at top of history"
@@ -166,6 +295,47 @@ msgstr ""
 #: idedebuggerstringconstants.drsinspect
 msgid "Inspect"
 msgstr ""
+
+#: idedebuggerstringconstants.drsinspectcolwidthdataclass
+msgid "Data class column"
+msgstr "Duomenų klasės stulpelis"
+
+#: idedebuggerstringconstants.drsinspectcolwidthdataname
+msgid "Data name column"
+msgstr "Duomenų pavadinimo stulpelis"
+
+#: idedebuggerstringconstants.drsinspectcolwidthdatatype
+msgid "Data type column"
+msgstr "Duomenų tipo stulpelis"
+
+#: idedebuggerstringconstants.drsinspectcolwidthdatavalue
+msgid "Data value column"
+msgstr "Duomenų vertės stulpelis"
+
+#: idedebuggerstringconstants.drsinspectcolwidthdatavisibility
+msgid "Data visibility column"
+msgstr "Duomenų matomumo stulpelis"
+
+#: idedebuggerstringconstants.drsinspectcolwidthmethaddress
+msgid "Method address column"
+msgstr "Metodo adreso stulpelis"
+
+#: idedebuggerstringconstants.drsinspectcolwidthmethname
+msgid "Method name column"
+msgstr "Metodo pavadinimo stulpelis"
+
+#: idedebuggerstringconstants.drsinspectcolwidthmethreturns
+msgid "Method returns column"
+msgstr "Metodo grąžos stulpelis"
+
+#: idedebuggerstringconstants.drsinspectcolwidthmethtype
+msgid "Method type column"
+msgstr "Metodo tipo stulpelis"
+
+#: idedebuggerstringconstants.drslen
+#, object-pascal-format
+msgid "Len=%d: "
+msgstr "Ilgis = %d: "
 
 #: idedebuggerstringconstants.drsnewvalue
 msgid "New Value"
@@ -187,17 +357,25 @@ msgstr ""
 msgid "Run all threads while evaluating"
 msgstr ""
 
-#: idedebuggerstringconstants.drsusefunctioncalls
-msgid "Function"
+#: idedebuggerstringconstants.drssuspend
+msgid "Suspend"
 msgstr ""
+
+#: idedebuggerstringconstants.drsusefunctioncalls
+#, fuzzy
+msgctxt "idedebuggerstringconstants.drsusefunctioncalls"
+msgid "Function"
+msgstr "Funkcija"
 
 #: idedebuggerstringconstants.drsusefunctioncallshint
 msgid "Allow function calls"
 msgstr ""
 
 #: idedebuggerstringconstants.drsuseinstanceclass
+#, fuzzy
+msgctxt "idedebuggerstringconstants.drsuseinstanceclass"
 msgid "Instance"
-msgstr ""
+msgstr "Egzempliorius"
 
 #: idedebuggerstringconstants.drsuseinstanceclasshint
 #, fuzzy
@@ -210,17 +388,497 @@ msgctxt "idedebuggerstringconstants.drsuseinstanceclasstype"
 msgid "Use Instance class type"
 msgstr "Naudoti egzemplioriaus klasės tipą"
 
+#: idedebuggerstringconstants.drswatchsplitterinspect
+msgctxt "idedebuggerstringconstants.drswatchsplitterinspect"
+msgid "Inspect pane"
+msgstr "Inspektavimo polangis"
+
+#: idedebuggerstringconstants.dsrevalusedebugconverter
+msgid "Use Backend Converter"
+msgstr ""
+
+#: idedebuggerstringconstants.histdlgbtnclearhint
+msgid "Clear all snapshots"
+msgstr "Išvalyti visas momentines kopijas"
+
+#: idedebuggerstringconstants.histdlgbtnenablehint
+msgid "Toggle view snapshot or current"
+msgstr "Rodyti momentinę kopiją arba veikiamąjį"
+
+#: idedebuggerstringconstants.histdlgbtnmakesnaphint
+msgid "Take Snapshot"
+msgstr "Daryti momentinę kopiją"
+
+#: idedebuggerstringconstants.histdlgbtnpowerhint
+msgid "Switch on/off automatic snapshots"
+msgstr "Ar automatiškai daryti momentines kopijas"
+
+#: idedebuggerstringconstants.histdlgbtnremovehint
+msgid "Remove selected entry"
+msgstr "Pašalinti pažymėtą elementą"
+
+#: idedebuggerstringconstants.histdlgbtnshowhisthint
+msgid "View history"
+msgstr "Rodyti praeitį"
+
+#: idedebuggerstringconstants.histdlgbtnshowsnaphint
+msgid "View Snapshots"
+msgstr "Rodyti momentines kopijas"
+
+#: idedebuggerstringconstants.histdlgcolumnloc
+msgctxt "lazarusidestrconsts.histdlgcolumnloc"
+msgid "Location"
+msgstr "Vieta"
+
+#: idedebuggerstringconstants.histdlgcolumntime
+msgid "Time"
+msgstr "Laikas"
+
+#: idedebuggerstringconstants.histdlgformname
+msgctxt "lazarusidestrconsts.histdlgformname"
+msgid "History"
+msgstr "Praeitis"
+
+#: idedebuggerstringconstants.lisactions
+msgid "Actions:"
+msgstr "Veiksmai:"
+
+#: idedebuggerstringconstants.lisaddress
+msgid "Address:"
+msgstr "Adresas:"
+
+#: idedebuggerstringconstants.lisaddressbreakpoint
+msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
+msgid "&Address Breakpoint ..."
+msgstr "&Adreso stabdos taškas…"
+
 #: idedebuggerstringconstants.lisallowfunctio
 msgid "Allow Function Calls"
 msgstr "Leisti kreiptis į funkciją"
+
+#: idedebuggerstringconstants.lisautocontinueafter
+msgid "Auto continue after:"
+msgstr "Automatiškai tęsti po:"
+
+#: idedebuggerstringconstants.lisbpsdisabled
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbpsdisabled"
+msgid "Disabled"
+msgstr "Pasyvus"
+
+#: idedebuggerstringconstants.lisbpsenabled
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbpsenabled"
+msgid "Enabled"
+msgstr "Veiksnus"
+
+#: idedebuggerstringconstants.lisbreak
+msgctxt "lazarusidestrconsts.lisbreak"
+msgid "Break"
+msgstr "Stabdyti"
+
+#: idedebuggerstringconstants.lisbreakpointproperties
+msgid "Breakpoint Properties"
+msgstr "Stabdos tašo savybės"
+
+#: idedebuggerstringconstants.liscallstacknotevaluated
+msgid "Stack not evaluated"
+msgstr "Dėklas neįvertintas"
+
+#: idedebuggerstringconstants.lisccoerrorcaption
+msgctxt "lazarusidestrconsts.lisccoerrorcaption"
+msgid "Error"
+msgstr "Klaida"
+
+#: idedebuggerstringconstants.lisclear
+msgid "Clear"
+msgstr ""
+
+#: idedebuggerstringconstants.liscoladdress
+msgid "Address"
+msgstr "Adresas"
+
+#: idedebuggerstringconstants.liscolclass
+msgid "Class"
+msgstr "Klasė"
+
+#: idedebuggerstringconstants.liscolreturns
+msgid "Returns"
+msgstr "Grąžina"
+
+#: idedebuggerstringconstants.liscolvisibility
+msgid "Visibility"
+msgstr "Matomumas"
+
+#: idedebuggerstringconstants.liscondition
+msgid "Condition"
+msgstr "Sąlyga"
+
+#: idedebuggerstringconstants.liscopyall
+msgid "Copy All"
+msgstr "Kopijuoti viską"
+
+#: idedebuggerstringconstants.liscopyalloutputclipboard
+msgid "Copy all output to clipboard"
+msgstr "Visą išvestį kopijuoti į išvestinę"
+
+#: idedebuggerstringconstants.liscsbottom
+msgctxt "lazarusidestrconsts.liscsbottom"
+msgid "Bottom"
+msgstr "Apačion"
+
+#: idedebuggerstringconstants.liscstop
+msgctxt "lazarusidestrconsts.liscstop"
+msgid "Top"
+msgstr "Viršun"
+
+#: idedebuggerstringconstants.liscurrent
+msgctxt "lazarusidestrconsts.liscurrent"
+msgid "Current"
+msgstr "Veikiamasis"
+
+#: idedebuggerstringconstants.lisdadattach
+msgid "Attach"
+msgstr "Prisegti"
+
+#: idedebuggerstringconstants.lisdadimagename
+msgid "Image Name"
+msgstr "Paveikslo pavadinimas"
+
+#: idedebuggerstringconstants.lisdadpid
+msgid "PID"
+msgstr "Proceso ID"
+
+#: idedebuggerstringconstants.lisdadrunningprocesses
+msgid "Running Processes"
+msgstr "Vykdomi procesai"
+
+#: idedebuggerstringconstants.lisdbgallitemdelete
+msgctxt "lazarusidestrconsts.lisdbgallitemdelete"
+msgid "Delete all"
+msgstr "Pašalinti visus"
+
+#: idedebuggerstringconstants.lisdbgallitemdeletehint
+msgctxt "lazarusidestrconsts.lisdbgallitemdeletehint"
+msgid "Delete all"
+msgstr "Pašalinti visus"
+
+#: idedebuggerstringconstants.lisdbgallitemdisable
+msgctxt "lazarusidestrconsts.lisdbgallitemdisable"
+msgid "Disable all"
+msgstr "Pasyvinti visus"
+
+#: idedebuggerstringconstants.lisdbgallitemdisablehint
+msgctxt "lazarusidestrconsts.lisdbgallitemdisablehint"
+msgid "Disable all"
+msgstr "Pasyvinti visus"
+
+#: idedebuggerstringconstants.lisdbgallitemenable
+msgctxt "lazarusidestrconsts.lisdbgallitemenable"
+msgid "Enable all"
+msgstr "Įgalinti visus"
+
+#: idedebuggerstringconstants.lisdbgallitemenablehint
+msgctxt "lazarusidestrconsts.lisdbgallitemenablehint"
+msgid "Enable all"
+msgstr "Įgalinti visus"
+
+#: idedebuggerstringconstants.lisdbgbreakpointpropertieshint
+msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
+msgid "Breakpoint Properties ..."
+msgstr "Stabdos tašo savybės…"
+
+#: idedebuggerstringconstants.lisdbgitemdeletehint
+msgctxt "lazarusidestrconsts.lisdbgitemdeletehint"
+msgid "Delete"
+msgstr "Pašalinti"
+
+#: idedebuggerstringconstants.lisdbgitemdisable
+msgctxt "lazarusidestrconsts.lisdbgitemdisable"
+msgid "Disable"
+msgstr "Pasyvinti"
+
+#: idedebuggerstringconstants.lisdbgitemdisablehint
+msgctxt "lazarusidestrconsts.lisdbgitemdisablehint"
+msgid "Disable"
+msgstr "Pasyvinti"
+
+#: idedebuggerstringconstants.lisdbgitemenable
+msgctxt "lazarusidestrconsts.lisdbgitemenable"
+msgid "Enable"
+msgstr "Įgalinti"
+
+#: idedebuggerstringconstants.lisdbgitemenablehint
+msgctxt "lazarusidestrconsts.lisdbgitemenablehint"
+msgid "Enable"
+msgstr "Įgalinti"
+
+#: idedebuggerstringconstants.lisdbgterminal
+msgid "Console In/Output"
+msgstr ""
+
+#: idedebuggerstringconstants.lisdbgwinpower
+msgid "On/Off"
+msgstr "Įj./išj."
+
+#: idedebuggerstringconstants.lisdbgwinpowerhint
+msgctxt "idedebuggerstringconstants.lisdbgwinpowerhint"
+msgid "Disable/Enable updates for the entire window"
+msgstr "Įgalinti arba drausti viso lango naujinimus"
+
+#: idedebuggerstringconstants.lisdebuggerfeedbackerror
+msgid "Debugger Error"
+msgstr "Derintuvės klaida"
+
+#: idedebuggerstringconstants.lisdebuggerfeedbackinformation
+msgid "Debugger Information"
+msgstr "Derintuvės informacija"
+
+#: idedebuggerstringconstants.lisdebuggerfeedbackwarning
+msgid "Debugger Warning"
+msgstr "Derintuvės perspėjimas"
+
+#: idedebuggerstringconstants.lisdebugoptionsfrmresume
+msgid "Resume"
+msgstr "Tęsti"
+
+#: idedebuggerstringconstants.lisdebugoptionsfrmresumehandled
+msgid "Resume Handled"
+msgstr "Tęsti apdorojant"
+
+#: idedebuggerstringconstants.lisdebugoptionsfrmresumeunhandled
+msgid "Resume Unhandled"
+msgstr "Tęsti praleidžiant"
+
+#: idedebuggerstringconstants.lisdeleteall
+msgid "&Delete All"
+msgstr "&Pašalinti visus"
+
+#: idedebuggerstringconstants.lisdeleteallbreakpoints
+msgid "Delete all breakpoints?"
+msgstr "Pašalinti visus stabdos taškus?"
+
+#: idedebuggerstringconstants.lisdeleteallbreakpoints2
+#, object-pascal-format
+msgid "Delete all breakpoints in file \"%s\"?"
+msgstr "Pašalinti visus faile „%s“ esančius stabdos taškus?"
+
+#: idedebuggerstringconstants.lisdeleteallinsamesource
+msgid "Delete All in same source"
+msgstr "Pašalinti visus šiame pirminiame kode"
+
+#: idedebuggerstringconstants.lisdeleteallselectedbreakpoints
+msgid "Delete all selected breakpoints?"
+msgstr "Pašalinti visus pažymėtus stabdos taškus?"
+
+#: idedebuggerstringconstants.lisdeletebreakpoint
+msgid "Delete Breakpoint"
+msgstr "Pašalinti stabdos tašką"
+
+#: idedebuggerstringconstants.lisdeletebreakpointatline
+#, object-pascal-format
+msgid "Delete breakpoint at%s\"%s\" line %d?"
+msgstr "Pašalinti stabdos tašką, esantį%s„%s“ failo %d eilutėje?"
+
+#: idedebuggerstringconstants.lisdeletebreakpointforaddress
+#, object-pascal-format
+msgid "Delete breakpoint for address %s?"
+msgstr "Pašalinti stabdos tašką adrese „%s“?"
+
+#: idedebuggerstringconstants.lisdeletebreakpointforwatch
+#, object-pascal-format
+msgid "Delete watchpoint for \"%s\"?"
+msgstr "Pašalinti „%s“ stebėjimo tašką?"
 
 #: idedebuggerstringconstants.lisdigits
 msgid "Digits:"
 msgstr "Skaitmenų:"
 
+#: idedebuggerstringconstants.lisdisableallinsamesource
+msgid "Disable All in same source"
+msgstr "Pasyvinti visus tame pačiame pirminiame kode"
+
+#: idedebuggerstringconstants.lisdisablebreakpoint
+msgid "Disable Breakpoint"
+msgstr "Išjungti stabdos tašką"
+
+#: idedebuggerstringconstants.lisdisablegroups
+msgid "Disable Groups"
+msgstr "Pasyvinti grupę"
+
+#: idedebuggerstringconstants.lisenableall
+msgid "&Enable All"
+msgstr "Įgalinti &visus"
+
+#: idedebuggerstringconstants.lisenableallinsamesource
+msgid "Enable All in same source"
+msgstr "Aktyvinti visus šiame pirminiame kode"
+
+#: idedebuggerstringconstants.lisenablebreakpoint
+msgid "Enable Breakpoint"
+msgstr "Įjungti stabdos tašką"
+
+#: idedebuggerstringconstants.lisenablegroups
+msgid "Enable Groups"
+msgstr "Įgalinti grupes"
+
+#: idedebuggerstringconstants.lisevalexpression
+msgctxt "lazarusidestrconsts.lisevalexpression"
+msgid "Eval expression"
+msgstr "Apskaičiuoti reiškinį"
+
+#: idedebuggerstringconstants.lisevaluateall
+msgid "Evaluate all"
+msgstr ""
+
+#: idedebuggerstringconstants.lisevaluatemodify
+msgid "&Evaluate/Modify"
+msgstr "Į&vertinti/keisti"
+
+#: idedebuggerstringconstants.liseventlogclear
+msgid "Clear Events"
+msgstr "Išvalyti įvykius"
+
+#: idedebuggerstringconstants.liseventlogoptions
+msgid "Event Log Options ..."
+msgstr "Įvykių žurnalo parinktys…"
+
+#: idedebuggerstringconstants.liseventlogsavetofile
+msgid "Save Events to File"
+msgstr "Įvykius įrašyti į failą"
+
+#: idedebuggerstringconstants.liseventslogaddcomment
+msgid "Add Comment ..."
+msgstr "Įdėti komentarą…"
+
+#: idedebuggerstringconstants.liseventslogaddcomment2
+msgid "Add Comment"
+msgstr "Įdėti komentarą"
+
+#: idedebuggerstringconstants.lisexceptiondialog
+msgid "Debugger Exception Notification"
+msgstr "Derintuvės pranešimas apie išimtinę situaciją"
+
+#: idedebuggerstringconstants.lisexport
+msgctxt "lazarusidestrconsts.lisexport"
+msgid "Export"
+msgstr "Eksportas"
+
 #: idedebuggerstringconstants.lisexpression
 msgid "Expression:"
 msgstr "Išraiška:"
+
+#: idedebuggerstringconstants.lisfilenameaddress
+msgid "Filename/Address"
+msgstr "Failo pavadinimas/Adresas"
+
+#: idedebuggerstringconstants.lisfunction
+msgctxt "lazarusidestrconsts.lisfunction"
+msgid "Function"
+msgstr "Funkcija"
+
+#: idedebuggerstringconstants.lisgotoselected
+msgid "Goto selected"
+msgstr "Šokti link pažymėto"
+
+#: idedebuggerstringconstants.lisgroup
+msgid "Group"
+msgstr "Grupė"
+
+#: idedebuggerstringconstants.lisgroupassignexisting
+#, object-pascal-format
+msgid "Assign to existing \"%s\" group?"
+msgstr "Ar priskirti egzistuojančiai grupei „%s“?"
+
+#: idedebuggerstringconstants.lisgroupemptydelete
+#, object-pascal-format
+msgid "No more breakpoints are assigned to group \"%s\", delete it?"
+msgstr "Grupė „%s“ nebeturi jai priskirtų stabdos taškų. Ar ją pašalinti?"
+
+#: idedebuggerstringconstants.lisgroupemptydeletemore
+#, object-pascal-format
+msgid "%sThere are %d more empty groups, delete all?"
+msgstr "%sČia yra ir daugiau (%d) tuščių grupių. Jas visas pašalinti?"
+
+#: idedebuggerstringconstants.lisgroupnameemptyclearinstead
+msgid "The group name cannot be empty. Clear breakpoints' group(s)?"
+msgstr "Grupės pavadinimas neturi būti tuščias. Ar išvalyti stabdos taškų grupę(-es)?"
+
+#: idedebuggerstringconstants.lisgroupnameinput
+msgid "Group name:"
+msgstr "Grupės pavadinimas:"
+
+#: idedebuggerstringconstants.lisgroupnameinvalid
+msgid "BreakpointGroup name must be a valid Pascal identifier name."
+msgstr "„BreakpointGroup“ pavadinimas turi būti tinkamas paskalio identifikatoriaus pavadinimas."
+
+#: idedebuggerstringconstants.lisgroupsetnew
+msgid "Set new group ..."
+msgstr "Nustatyti naują grupę…"
+
+#: idedebuggerstringconstants.lisgroupsetnone
+msgid "Clear group(s)"
+msgstr "Išvalyti grupę(-es)"
+
+#: idedebuggerstringconstants.lishitcount
+msgid "Hitcount"
+msgstr "Spustelėjimų skaičius"
+
+#: idedebuggerstringconstants.lisid
+msgctxt "lazarusidestrconsts.lisid"
+msgid "ID"
+msgstr "ID"
+
+#: idedebuggerstringconstants.lisignoreexceptiontype
+msgid "Ignore this exception type"
+msgstr "Ignoruoti šio tipo išimtines situacijas"
+
+#: idedebuggerstringconstants.lisimport
+msgctxt "lazarusidestrconsts.lisimport"
+msgid "Import"
+msgstr "Importuoti"
+
+#: idedebuggerstringconstants.lisindex
+msgid "Index"
+msgstr "Indeksas"
+
+#: idedebuggerstringconstants.lisinspect
+msgid "&Inspect"
+msgstr "&Inspektuoti"
+
+#: idedebuggerstringconstants.lisinspectaddwatch
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisinspectaddwatch"
+msgid "Add watch"
+msgstr "Pridėti stebimąjį"
+
+#: idedebuggerstringconstants.lisinspectclassinherit
+#, object-pascal-format, fuzzy
+#| msgid "%s : Class %s inherits from %s"
+msgid "%s: class %s inherits from %s"
+msgstr "%s : klasė „%s“ paveldima iš „%s“"
+
+#: idedebuggerstringconstants.lisinspectdata
+msgid "Data"
+msgstr "Duomenys"
+
+#: idedebuggerstringconstants.lisinspectdialog
+msgid "Debug Inspector"
+msgstr "Derinimo inspektorius"
+
+#: idedebuggerstringconstants.lisinspectmethods
+msgid "Methods"
+msgstr "Metodai"
+
+#: idedebuggerstringconstants.lisinspectpointerto
+#, object-pascal-format
+msgid "Pointer to %s"
+msgstr "Rodyklė į %s"
+
+#: idedebuggerstringconstants.lisinspectproperties
+msgctxt "lazarusidestrconsts.lisinspectproperties"
+msgid "Properties"
+msgstr "Savybės"
 
 #: idedebuggerstringconstants.lisinspectshowcolclass
 msgid "Show class column"
@@ -234,20 +892,385 @@ msgstr ""
 msgid "Show visibility column"
 msgstr ""
 
+#: idedebuggerstringconstants.lisinspectunavailableerror
+#, object-pascal-format
+msgid "%s: unavailable (error: %s)"
+msgstr ""
+
+#: idedebuggerstringconstants.lisinspectuseinstance
+msgctxt "idedebuggerstringconstants.lisinspectuseinstance"
+msgid "Instance"
+msgstr "Egzempliorius"
+
+#: idedebuggerstringconstants.lisinspectuseinstancehint
+msgid "Use instance class"
+msgstr "Naudoti objektą"
+
+#: idedebuggerstringconstants.lisinvalidoff
+msgid "Invalid (Off)"
+msgstr "Klaidingas (Pasyvus)"
+
+#: idedebuggerstringconstants.lisinvalidon
+msgid "Invalid (On)"
+msgstr "Klaidingas (Aktyvus)"
+
+#: idedebuggerstringconstants.liskmevaluatemodify
+msgid "Evaluate/Modify"
+msgstr "Įvertinti/keisti"
+
+#: idedebuggerstringconstants.lisless
+msgctxt "lazarusidestrconsts.lisless"
+msgid "Less"
+msgstr "Mažiau"
+
+#: idedebuggerstringconstants.lisline
+msgid "Line:"
+msgstr "Eilutė:"
+
+#: idedebuggerstringconstants.lislinelength
+msgid "Line/Length"
+msgstr "Eilutė/Ilgis"
+
+#: idedebuggerstringconstants.lislocals
+#, fuzzy
+#| msgid "Locals"
+msgctxt "lazarusidestrconsts.lislocals"
+msgid "Local Variables"
+msgstr "Vietiniai kintamieji"
+
+#: idedebuggerstringconstants.lislocalsdlgcopyall
+msgid "Copy &all"
+msgstr ""
+
+#: idedebuggerstringconstants.lislocalsdlgcopyname
+msgid "&Copy Name"
+msgstr "Kopijuoti &pavadinimą"
+
+#: idedebuggerstringconstants.lislocalsdlgcopynamevalue
+msgid "Co&py Name and Value"
+msgstr ""
+
+#: idedebuggerstringconstants.lislocalsdlgcopyrawvalue
+msgid "Copy &RAW Value"
+msgstr "Kopijuoti „&RAW“ vertę"
+
+#: idedebuggerstringconstants.lislocalsdlgcopyvalue
+msgid "C&opy Value"
+msgstr "Kopijuoti &vertę"
+
+#: idedebuggerstringconstants.lislocalsnotevaluated
+msgid "Locals not evaluated"
+msgstr "Vietiniai neįvertinti"
+
+#: idedebuggerstringconstants.lislogcallstack
+msgid "Log Call Stack"
+msgstr "Vesti kreipčių dėklo žurnalą"
+
+#: idedebuggerstringconstants.lislogcallstacklimit
+msgid "(frames limit. 0 - no limits)"
+msgstr "(kadrų riba. „0“ - jokių ribų)"
+
+#: idedebuggerstringconstants.lislogevalexpression
+msgctxt "lazarusidestrconsts.lislogevalexpression"
+msgid "Eval expression"
+msgstr "Apskaičiuoti reiškinį"
+
+#: idedebuggerstringconstants.lislogmessage
+msgid "Log Message"
+msgstr "Registruoti pranešimą"
+
+#: idedebuggerstringconstants.lismaxs
+#, object-pascal-format
+msgid "Max %d"
+msgstr "Maksimaliai %d"
+
+#: idedebuggerstringconstants.lismenubreak
+msgid "&Break"
+msgstr "&Pertraukti"
+
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "Žin&ynas"
 
+#: idedebuggerstringconstants.lismenuviewcallstack
+msgid "Call Stack"
+msgstr "Kreipčių dėklas"
+
+#: idedebuggerstringconstants.lismenuviewdebugevents
+msgctxt "lazarusidestrconsts.lismenuviewdebugevents"
+msgid "Event Log"
+msgstr "Įvykių žurnalas"
+
+#: idedebuggerstringconstants.lismenuviewdebugoutput
+msgid "Debug Output"
+msgstr "Derinimo išvestis"
+
+#: idedebuggerstringconstants.lismore
+msgctxt "lazarusidestrconsts.lismore"
+msgid "More"
+msgstr "Daugiau"
+
+#: idedebuggerstringconstants.lisms
+msgid "(ms)"
+msgstr "(ms)"
+
+#: idedebuggerstringconstants.lismvsavemessagestofiletxt
+msgid "Save messages to file (*.txt)"
+msgstr "Įrašyti pranešimus faile (*.txt)"
+
+#: idedebuggerstringconstants.lisname
+msgctxt "lazarusidestrconsts.lisname"
+msgid "Name"
+msgstr "Pavadinimas"
+
+#: idedebuggerstringconstants.lisoff
+msgid "? (Off)"
+msgstr "? (Pasyvus)"
+
+#: idedebuggerstringconstants.lison
+msgid "? (On)"
+msgstr "? (Aktyvus)"
+
+#: idedebuggerstringconstants.lispasscount
+msgid "Pass Count"
+msgstr "Kirsta kartų"
+
+#: idedebuggerstringconstants.lispefilename
+msgid "Filename:"
+msgstr "Failo pavadinimas:"
+
+#: idedebuggerstringconstants.lispendingon
+msgid "Pending (On)"
+msgstr ""
+
+#: idedebuggerstringconstants.lisregisters
+msgctxt "lazarusidestrconsts.lisregisters"
+msgid "Registers"
+msgstr "Registrai"
+
 #: idedebuggerstringconstants.lisrepeatcount
 msgid "Repeat Count:"
 msgstr "Kartojimų kiekis:"
+
+#: idedebuggerstringconstants.lissourcebreakpoint
+msgid "&Source Breakpoint ..."
+msgstr "&Stabdos taškas pirminiame kode…"
+
+#: idedebuggerstringconstants.lissrcline
+#, fuzzy
+msgctxt "idedebuggerstringconstants.lissrcline"
+msgid "Line"
+msgstr "Eilutė"
+
+#: idedebuggerstringconstants.lisstop
+msgctxt "lazarusidestrconsts.lisstop"
+msgid "Stop"
+msgstr "Stabdyti"
 
 #: idedebuggerstringconstants.lisstyle
 msgctxt "lazarusidestrconsts.lisstyle"
 msgid "Style"
 msgstr "Stilius"
 
+#: idedebuggerstringconstants.listakesnapshot
+msgid "Take a Snapshot"
+msgstr "Daryti momentinę kopiją"
+
+#: idedebuggerstringconstants.listhreads
+msgctxt "lazarusidestrconsts.listhreads"
+msgid "Threads"
+msgstr "Gijos"
+
+#: idedebuggerstringconstants.listhreadscurrent
+msgctxt "lazarusidestrconsts.listhreadscurrent"
+msgid "Current"
+msgstr "Veikiamasis"
+
+#: idedebuggerstringconstants.listhreadsfunc
+msgctxt "lazarusidestrconsts.listhreadsfunc"
+msgid "Function"
+msgstr "Funkcija"
+
+#: idedebuggerstringconstants.listhreadsgoto
+msgid "Goto"
+msgstr "Rodyk kur"
+
+#: idedebuggerstringconstants.listhreadsline
+msgctxt "lazarusidestrconsts.listhreadsline"
+msgid "Line"
+msgstr "Eilutė"
+
+#: idedebuggerstringconstants.listhreadsnotevaluated
+msgid "Threads not evaluated"
+msgstr "Gijos neįvertintos"
+
+#: idedebuggerstringconstants.listhreadssrc
+msgctxt "lazarusidestrconsts.listhreadssrc"
+msgid "Source"
+msgstr "Pirminis kodas"
+
+#: idedebuggerstringconstants.listhreadsstate
+msgctxt "lazarusidestrconsts.listhreadsstate"
+msgid "State"
+msgstr "Būsena"
+
+#: idedebuggerstringconstants.lisvalue
+#, fuzzy
+msgctxt "idedebuggerstringconstants.lisvalue"
+msgid "Value"
+msgstr "Vertė"
+
+#: idedebuggerstringconstants.lisviewbreakpointproperties
+msgctxt "lazarusidestrconsts.lisviewbreakpointproperties"
+msgid "Breakpoint Properties ..."
+msgstr "Stabdos taško savybės…"
+
+#: idedebuggerstringconstants.lisviewsource
+msgid "View Source"
+msgstr "Rodyti pirminį kodą"
+
+#: idedebuggerstringconstants.lisviewsourcedisass
+msgctxt "lazarusidestrconsts.lisviewsourcedisass"
+msgid "View Assembler"
+msgstr "Keisti „Asembleris“ matomumą"
+
+#: idedebuggerstringconstants.liswatch
+msgid "&Watch"
+msgstr "&Stebėti"
+
+#: idedebuggerstringconstants.liswatchdata
+msgid "Watch:"
+msgstr "Stebima:"
+
+#: idedebuggerstringconstants.liswatchkind
+msgid "Watch action"
+msgstr "Stebėjimo veiksmas"
+
+#: idedebuggerstringconstants.liswatchkindread
+msgid "Read"
+msgstr "Skaityti"
+
+#: idedebuggerstringconstants.liswatchkindreadwrite
+msgid "Read/Write"
+msgstr "Skaityti/rašyti"
+
+#: idedebuggerstringconstants.liswatchkindwrite
+msgid "Write"
+msgstr "Rašyti"
+
+#: idedebuggerstringconstants.liswatchpoint
+msgid "&Data/Watch Breakpoint ..."
+msgstr "&Stebėjimo stabdos taškas…"
+
+#: idedebuggerstringconstants.liswatchpointbreakpoint
+msgid "&Data/watch Breakpoint ..."
+msgstr "&Stebėjimo stabdos taškas…"
+
 #: idedebuggerstringconstants.liswatchpropert
 msgid "Watch Properties"
 msgstr "Stebimųjų savybės"
+
+#: idedebuggerstringconstants.liswatchscope
+msgid "Watch scope"
+msgstr "Stebėjimo sritis"
+
+#: idedebuggerstringconstants.liswatchscopeglobal
+msgctxt "lazarusidestrconsts.liswatchscopeglobal"
+msgid "Global"
+msgstr "Globalus"
+
+#: idedebuggerstringconstants.liswatchscopelocal
+msgid "Declaration"
+msgstr "Aprašas"
+
+#: idedebuggerstringconstants.liswatchtowatchpoint
+msgid "Create &Data/Watch Breakpoint ..."
+msgstr "Kurti &stebėjimo stabdos tašką…"
+
+#: idedebuggerstringconstants.liswldeleteall
+msgid "De&lete All"
+msgstr "Paša&linti visus"
+
+#: idedebuggerstringconstants.liswldisableall
+msgid "D&isable All"
+msgstr "Pasyv&inti visus"
+
+#: idedebuggerstringconstants.liswlenableall
+msgid "E&nable All"
+msgstr "Įgali&nti visus"
+
+#: idedebuggerstringconstants.liswlexpression
+msgid "Expression"
+msgstr "Išraiška"
+
+#: idedebuggerstringconstants.liswlinspectpane
+msgctxt "idedebuggerstringconstants.liswlinspectpane"
+msgid "Inspect pane"
+msgstr "Inspektavimo polangis"
+
+#: idedebuggerstringconstants.liswlproperties
+msgid "&Properties"
+msgstr "&Savybės"
+
+#: idedebuggerstringconstants.liswlwatchlist
+#, fuzzy
+#| msgid "Watch List"
+msgctxt "lazarusidestrconsts.liswlwatchlist"
+msgid "Watches"
+msgstr "Stebimų sąrašas"
+
+#: idedebuggerstringconstants.regdlgbinary
+msgctxt "lazarusidestrconsts.regdlgbinary"
+msgid "Binary"
+msgstr "Dvejetainis"
+
+#: idedebuggerstringconstants.regdlgdecimal
+msgctxt "lazarusidestrconsts.regdlgdecimal"
+msgid "Decimal"
+msgstr "Dešimtainis"
+
+#: idedebuggerstringconstants.regdlgdefault
+msgctxt "idedebuggerstringconstants.regdlgdefault"
+msgid "Default"
+msgstr ""
+
+#: idedebuggerstringconstants.regdlgdisplaytypeforselectedregisters
+msgid "Display type for selected Registers"
+msgstr "Rodyti pažymėtų registrų tipą"
+
+#: idedebuggerstringconstants.regdlgformat
+msgid "Format"
+msgstr "Formatas"
+
+#: idedebuggerstringconstants.regdlghex
+msgid "Hex"
+msgstr "Šešioliktainis"
+
+#: idedebuggerstringconstants.regdlgoctal
+msgid "Octal"
+msgstr "Aštuntainis"
+
+#: idedebuggerstringconstants.regdlgraw
+msgid "Raw"
+msgstr "Neapdorotas"
+
+#: idedebuggerstringconstants.rsattachto
+msgid "Attach to"
+msgstr "Prisegti prie"
+
+#: idedebuggerstringconstants.rsenterpid
+msgid "Enter PID"
+msgstr "Įveskite proceso ID"
+
+#: idedebuggerstringconstants.synfnewvalueisempty
+msgid "\"New value\" is empty."
+msgstr "„Nauja vertė“ yra tuščia."
+
+#: idedebuggerstringconstants.synfthedebuggerwasnotabletomodifythevalue
+msgid "The debugger was not able to modify the value."
+msgstr "Derintuvė negali keisti vertės."
+
+#: idedebuggerstringconstants.uemtogglebreakpoint
+msgid "Toggle &Breakpoint"
+msgstr "Įjungti ar išjungti stabd&os tašką"
 

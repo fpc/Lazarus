@@ -101,7 +101,7 @@ uses
   Translations,
   // debugger
   LazDebuggerGdbmi, GDBMIDebugger, RunParamsOpts, BaseDebugManager,
-  DebugManager, debugger, DebuggerDlg, DebugAttachDialog, DebuggerStrConst,
+  DebugManager, debugger, DebuggerDlg, DebugAttachDialog,
   DbgIntfDebuggerBase, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
   idedebuggerpackage, FpDebugValueConvertors, IdeDebuggerBackendValueConv,
   // packager
@@ -146,7 +146,7 @@ uses
   package_usage_options, package_description_options, package_integration_options,
   package_provides_options, package_i18n_options,
   // rest of the ide
-  TransferMacrosIntf,
+  TransferMacrosIntf, IdeDebuggerStringConstants,
   Splash, IDEDefs, LazarusIDEStrConsts, LazConf, SearchResultView,
   CodeTemplatesDlg, CodeBrowser, FindUnitDlg, InspectChksumChangedDlg,
   IdeOptionsDlg, EditDefineTree, EnvironmentOpts, TransferMacros, KeyMapping,

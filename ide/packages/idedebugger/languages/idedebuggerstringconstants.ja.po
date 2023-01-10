@@ -5,10 +5,29 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
+#: idedebuggerstringconstants.dbgbreakgroupdlgcaption
+msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
+msgid "Select Groups"
+msgstr "グループの選択"
+
+#: idedebuggerstringconstants.dbgbreakgroupdlgheaderdisable
+msgid "Select groups to disable when breakpoint is hit"
+msgstr "ブレークポイントのヒットを無効にするグループを選択してください"
+
+#: idedebuggerstringconstants.dbgbreakgroupdlgheaderenable
+msgid "Select groups to enable when breakpoint is hit"
+msgstr "ブレークポイントのヒットを有効にするグループを選択してください"
+
+#: idedebuggerstringconstants.dbgbreakpropertygroupnotfound
+#, object-pascal-format
+msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
+msgstr "有効/無効リストのグループのいくつかが存在しません。%0:s作成しますか？%0:s%0:s%1:s"
+
 #: idedebuggerstringconstants.dbgdispformatbinary
+#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatbinary"
 msgid "Binary"
-msgstr ""
+msgstr "バイナリ"
 
 #: idedebuggerstringconstants.dbgdispformatcharacter
 #, fuzzy
@@ -87,8 +106,10 @@ msgid "Match types by name"
 msgstr ""
 
 #: idedebuggerstringconstants.dlgbackconvoptname
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dlgbackconvoptname"
 msgid "Name"
-msgstr ""
+msgstr "名前"
 
 #: idedebuggerstringconstants.dlgbackconvoptremove
 msgid "Remove"
@@ -105,6 +126,21 @@ msgstr ""
 #: idedebuggerstringconstants.dlgbackendconvoptdisabled
 msgid "- Disabled -"
 msgstr ""
+
+#: idedebuggerstringconstants.dlgenvtype
+msgctxt "lazarusidestrconsts.dlgenvtype"
+msgid "Type"
+msgstr "タイプ"
+
+#: idedebuggerstringconstants.dlgfilterall
+msgctxt "lazarusidestrconsts.dlgfilterall"
+msgid "All files"
+msgstr "すべてのファイル"
+
+#: idedebuggerstringconstants.dlgfilterxml
+msgctxt "lazarusidestrconsts.dlgfilterxml"
+msgid "XML files"
+msgstr "XML ファイル"
 
 #: idedebuggerstringconstants.dlgidedbgdebugger
 msgid "Debugger"
@@ -131,7 +167,22 @@ msgstr ""
 msgid "Index of first item to show"
 msgstr ""
 
+#: idedebuggerstringconstants.dlgunitdeprefresh
+msgctxt "lazarusidestrconsts.dlgunitdeprefresh"
+msgid "Refresh"
+msgstr "更新"
+
+#: idedebuggerstringconstants.dlgvaluecolor
+msgctxt "lazarusidestrconsts.dlgvaluecolor"
+msgid "Value"
+msgstr "値"
+
+#: idedebuggerstringconstants.dlgvaluedataaddr
+msgid "Data-Address"
+msgstr ""
+
 #: idedebuggerstringconstants.drsaddwatch
+msgctxt "idedebuggerstringconstants.drsaddwatch"
 msgid "Add watch"
 msgstr ""
 
@@ -139,13 +190,77 @@ msgstr ""
 msgid "Append result at bottom of history"
 msgstr ""
 
+#: idedebuggerstringconstants.drsbreakpointcolwidthaction
+msgid "Action column"
+msgstr "アクション列"
+
+#: idedebuggerstringconstants.drsbreakpointcolwidthcondition
+msgid "Condition column"
+msgstr "条件列"
+
+#: idedebuggerstringconstants.drsbreakpointcolwidthfile
+msgid "File/address column"
+msgstr "ファイル/アドレス列"
+
+#: idedebuggerstringconstants.drsbreakpointcolwidthgroup
+msgid "Group column"
+msgstr "グループ列"
+
+#: idedebuggerstringconstants.drsbreakpointcolwidthline
+msgctxt "debuggerstrconst.drsbreakpointcolwidthline"
+msgid "Line column"
+msgstr "行列"
+
+#: idedebuggerstringconstants.drsbreakpointcolwidthpasscount
+msgid "Pass-count column"
+msgstr "通過回数列"
+
+#: idedebuggerstringconstants.drscolwidthbrkpointimg
+msgid "Break indication column"
+msgstr "ブレーク表示列"
+
+#: idedebuggerstringconstants.drscolwidthexpression
+msgid "Expression column"
+msgstr "式列"
+
+#: idedebuggerstringconstants.drscolwidthfunc
+msgid "Function name column"
+msgstr "関数名列"
+
+#: idedebuggerstringconstants.drscolwidthindex
+msgid "Index column"
+msgstr "索引列"
+
+#: idedebuggerstringconstants.drscolwidthline
+msgctxt "debuggerstrconst.drscolwidthline"
+msgid "Line column"
+msgstr "行列"
+
+#: idedebuggerstringconstants.drscolwidthname
+msgid "Name column"
+msgstr "名前列"
+
+#: idedebuggerstringconstants.drscolwidthsource
+msgid "Source column"
+msgstr "ソース列"
+
+#: idedebuggerstringconstants.drscolwidthstate
+msgid "State column"
+msgstr "状態列"
+
+#: idedebuggerstringconstants.drscolwidthvalue
+msgid "Value column"
+msgstr "値列"
+
 #: idedebuggerstringconstants.drsdebugconverter
 msgid "Converter"
 msgstr ""
 
 #: idedebuggerstringconstants.drsdisableenableupdatesforth
+#, fuzzy
+msgctxt "idedebuggerstringconstants.drsdisableenableupdatesforth"
 msgid "Disable/Enable updates for the entire window"
-msgstr ""
+msgstr "ウィンドウ全体への更新を無効／有効"
 
 #: idedebuggerstringconstants.drsenterexpression
 msgid "Enter Expression"
@@ -156,8 +271,22 @@ msgid "Evaluate"
 msgstr ""
 
 #: idedebuggerstringconstants.drshistory
+#, fuzzy
+msgctxt "idedebuggerstringconstants.drshistory"
 msgid "History"
-msgstr ""
+msgstr "履歴"
+
+#: idedebuggerstringconstants.drshistorycolwidthcurrent
+msgid "Current column"
+msgstr "現在の列"
+
+#: idedebuggerstringconstants.drshistorycolwidthlocation
+msgid "Location column"
+msgstr "位置列"
+
+#: idedebuggerstringconstants.drshistorycolwidthtime
+msgid "Time column"
+msgstr "時間列"
 
 #: idedebuggerstringconstants.drsinsertresultattopofhistor
 msgid "Insert result at top of history"
@@ -166,6 +295,47 @@ msgstr ""
 #: idedebuggerstringconstants.drsinspect
 msgid "Inspect"
 msgstr ""
+
+#: idedebuggerstringconstants.drsinspectcolwidthdataclass
+msgid "Data class column"
+msgstr "データクラス列"
+
+#: idedebuggerstringconstants.drsinspectcolwidthdataname
+msgid "Data name column"
+msgstr "データ名列"
+
+#: idedebuggerstringconstants.drsinspectcolwidthdatatype
+msgid "Data type column"
+msgstr "データ型列"
+
+#: idedebuggerstringconstants.drsinspectcolwidthdatavalue
+msgid "Data value column"
+msgstr "データ値列"
+
+#: idedebuggerstringconstants.drsinspectcolwidthdatavisibility
+msgid "Data visibility column"
+msgstr "データ可視列"
+
+#: idedebuggerstringconstants.drsinspectcolwidthmethaddress
+msgid "Method address column"
+msgstr "メソッドアドレス列"
+
+#: idedebuggerstringconstants.drsinspectcolwidthmethname
+msgid "Method name column"
+msgstr "メソッド名列"
+
+#: idedebuggerstringconstants.drsinspectcolwidthmethreturns
+msgid "Method returns column"
+msgstr "メソッド返り値列"
+
+#: idedebuggerstringconstants.drsinspectcolwidthmethtype
+msgid "Method type column"
+msgstr "メソッド型列"
+
+#: idedebuggerstringconstants.drslen
+#, object-pascal-format
+msgid "Len=%d: "
+msgstr "Len=%d"
 
 #: idedebuggerstringconstants.drsnewvalue
 msgid "New Value"
@@ -187,17 +357,25 @@ msgstr ""
 msgid "Run all threads while evaluating"
 msgstr ""
 
-#: idedebuggerstringconstants.drsusefunctioncalls
-msgid "Function"
+#: idedebuggerstringconstants.drssuspend
+msgid "Suspend"
 msgstr ""
+
+#: idedebuggerstringconstants.drsusefunctioncalls
+#, fuzzy
+msgctxt "idedebuggerstringconstants.drsusefunctioncalls"
+msgid "Function"
+msgstr "関数"
 
 #: idedebuggerstringconstants.drsusefunctioncallshint
 msgid "Allow function calls"
 msgstr ""
 
 #: idedebuggerstringconstants.drsuseinstanceclass
+#, fuzzy
+msgctxt "idedebuggerstringconstants.drsuseinstanceclass"
 msgid "Instance"
-msgstr ""
+msgstr "インスタンス"
 
 #: idedebuggerstringconstants.drsuseinstanceclasshint
 #, fuzzy
@@ -210,17 +388,497 @@ msgctxt "idedebuggerstringconstants.drsuseinstanceclasstype"
 msgid "Use Instance class type"
 msgstr "インスタンスクラス型を使って下さい"
 
+#: idedebuggerstringconstants.drswatchsplitterinspect
+msgctxt "idedebuggerstringconstants.drswatchsplitterinspect"
+msgid "Inspect pane"
+msgstr "検査ペイン"
+
+#: idedebuggerstringconstants.dsrevalusedebugconverter
+msgid "Use Backend Converter"
+msgstr ""
+
+#: idedebuggerstringconstants.histdlgbtnclearhint
+msgid "Clear all snapshots"
+msgstr "すべてのスナップショットをクリア"
+
+#: idedebuggerstringconstants.histdlgbtnenablehint
+msgid "Toggle view snapshot or current"
+msgstr "スナップショットもしくはカレントビューの切り替え"
+
+#: idedebuggerstringconstants.histdlgbtnmakesnaphint
+msgid "Take Snapshot"
+msgstr "スナップショットを取る"
+
+#: idedebuggerstringconstants.histdlgbtnpowerhint
+msgid "Switch on/off automatic snapshots"
+msgstr "自動スナップショットを作動/停止"
+
+#: idedebuggerstringconstants.histdlgbtnremovehint
+msgid "Remove selected entry"
+msgstr "選択されたエントリを削除"
+
+#: idedebuggerstringconstants.histdlgbtnshowhisthint
+msgid "View history"
+msgstr "履歴を見る"
+
+#: idedebuggerstringconstants.histdlgbtnshowsnaphint
+msgid "View Snapshots"
+msgstr "スナップショットを見る"
+
+#: idedebuggerstringconstants.histdlgcolumnloc
+msgctxt "lazarusidestrconsts.histdlgcolumnloc"
+msgid "Location"
+msgstr "位置"
+
+#: idedebuggerstringconstants.histdlgcolumntime
+msgid "Time"
+msgstr "時刻"
+
+#: idedebuggerstringconstants.histdlgformname
+msgctxt "lazarusidestrconsts.histdlgformname"
+msgid "History"
+msgstr "履歴"
+
+#: idedebuggerstringconstants.lisactions
+msgid "Actions:"
+msgstr "動作："
+
+#: idedebuggerstringconstants.lisaddress
+msgid "Address:"
+msgstr "アドレス："
+
+#: idedebuggerstringconstants.lisaddressbreakpoint
+msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
+msgid "&Address Breakpoint ..."
+msgstr "アドレスブレークポイント(&A) ..."
+
 #: idedebuggerstringconstants.lisallowfunctio
 msgid "Allow Function Calls"
 msgstr "関数呼び出しを許可する"
+
+#: idedebuggerstringconstants.lisautocontinueafter
+msgid "Auto continue after:"
+msgstr "次の後に自動継続："
+
+#: idedebuggerstringconstants.lisbpsdisabled
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbpsdisabled"
+msgid "Disabled"
+msgstr "無効化"
+
+#: idedebuggerstringconstants.lisbpsenabled
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisbpsenabled"
+msgid "Enabled"
+msgstr "有効"
+
+#: idedebuggerstringconstants.lisbreak
+msgctxt "lazarusidestrconsts.lisbreak"
+msgid "Break"
+msgstr "ブレーク"
+
+#: idedebuggerstringconstants.lisbreakpointproperties
+msgid "Breakpoint Properties"
+msgstr "ブレークポイントプロパティ"
+
+#: idedebuggerstringconstants.liscallstacknotevaluated
+msgid "Stack not evaluated"
+msgstr "評価されていないスタック"
+
+#: idedebuggerstringconstants.lisccoerrorcaption
+msgctxt "lazarusidestrconsts.lisccoerrorcaption"
+msgid "Error"
+msgstr "エラー"
+
+#: idedebuggerstringconstants.lisclear
+msgid "Clear"
+msgstr ""
+
+#: idedebuggerstringconstants.liscoladdress
+msgid "Address"
+msgstr "アドレス"
+
+#: idedebuggerstringconstants.liscolclass
+msgid "Class"
+msgstr "クラス"
+
+#: idedebuggerstringconstants.liscolreturns
+msgid "Returns"
+msgstr "リターン"
+
+#: idedebuggerstringconstants.liscolvisibility
+msgid "Visibility"
+msgstr "可視性"
+
+#: idedebuggerstringconstants.liscondition
+msgid "Condition"
+msgstr "条件"
+
+#: idedebuggerstringconstants.liscopyall
+msgid "Copy All"
+msgstr "すべてコピー"
+
+#: idedebuggerstringconstants.liscopyalloutputclipboard
+msgid "Copy all output to clipboard"
+msgstr "すべての出力をクリップボードにコピー"
+
+#: idedebuggerstringconstants.liscsbottom
+msgctxt "lazarusidestrconsts.liscsbottom"
+msgid "Bottom"
+msgstr "底"
+
+#: idedebuggerstringconstants.liscstop
+msgctxt "lazarusidestrconsts.liscstop"
+msgid "Top"
+msgstr "上端"
+
+#: idedebuggerstringconstants.liscurrent
+msgctxt "lazarusidestrconsts.liscurrent"
+msgid "Current"
+msgstr "現在"
+
+#: idedebuggerstringconstants.lisdadattach
+msgid "Attach"
+msgstr "添付"
+
+#: idedebuggerstringconstants.lisdadimagename
+msgid "Image Name"
+msgstr "画像名"
+
+#: idedebuggerstringconstants.lisdadpid
+msgid "PID"
+msgstr "PID"
+
+#: idedebuggerstringconstants.lisdadrunningprocesses
+msgid "Running Processes"
+msgstr "プロセスを実行中"
+
+#: idedebuggerstringconstants.lisdbgallitemdelete
+msgctxt "lazarusidestrconsts.lisdbgallitemdelete"
+msgid "Delete all"
+msgstr "すべて削除"
+
+#: idedebuggerstringconstants.lisdbgallitemdeletehint
+msgctxt "lazarusidestrconsts.lisdbgallitemdeletehint"
+msgid "Delete all"
+msgstr "すべて削除"
+
+#: idedebuggerstringconstants.lisdbgallitemdisable
+msgctxt "lazarusidestrconsts.lisdbgallitemdisable"
+msgid "Disable all"
+msgstr "すべて無効に"
+
+#: idedebuggerstringconstants.lisdbgallitemdisablehint
+msgctxt "lazarusidestrconsts.lisdbgallitemdisablehint"
+msgid "Disable all"
+msgstr "すべて無効にする"
+
+#: idedebuggerstringconstants.lisdbgallitemenable
+msgctxt "lazarusidestrconsts.lisdbgallitemenable"
+msgid "Enable all"
+msgstr "すべて有効に"
+
+#: idedebuggerstringconstants.lisdbgallitemenablehint
+msgctxt "lazarusidestrconsts.lisdbgallitemenablehint"
+msgid "Enable all"
+msgstr "すべて有効にする"
+
+#: idedebuggerstringconstants.lisdbgbreakpointpropertieshint
+msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
+msgid "Breakpoint Properties ..."
+msgstr "ブレークポイントプロパティ ..."
+
+#: idedebuggerstringconstants.lisdbgitemdeletehint
+msgctxt "lazarusidestrconsts.lisdbgitemdeletehint"
+msgid "Delete"
+msgstr "削除"
+
+#: idedebuggerstringconstants.lisdbgitemdisable
+msgctxt "lazarusidestrconsts.lisdbgitemdisable"
+msgid "Disable"
+msgstr "無効に"
+
+#: idedebuggerstringconstants.lisdbgitemdisablehint
+msgctxt "lazarusidestrconsts.lisdbgitemdisablehint"
+msgid "Disable"
+msgstr "無効にする"
+
+#: idedebuggerstringconstants.lisdbgitemenable
+msgctxt "lazarusidestrconsts.lisdbgitemenable"
+msgid "Enable"
+msgstr "有効に"
+
+#: idedebuggerstringconstants.lisdbgitemenablehint
+msgctxt "lazarusidestrconsts.lisdbgitemenablehint"
+msgid "Enable"
+msgstr "有効にする"
+
+#: idedebuggerstringconstants.lisdbgterminal
+msgid "Console In/Output"
+msgstr ""
+
+#: idedebuggerstringconstants.lisdbgwinpower
+msgid "On/Off"
+msgstr "On/Off"
+
+#: idedebuggerstringconstants.lisdbgwinpowerhint
+msgctxt "idedebuggerstringconstants.lisdbgwinpowerhint"
+msgid "Disable/Enable updates for the entire window"
+msgstr "ウィンドウ全体への更新を無効／有効"
+
+#: idedebuggerstringconstants.lisdebuggerfeedbackerror
+msgid "Debugger Error"
+msgstr "デバッガエラー"
+
+#: idedebuggerstringconstants.lisdebuggerfeedbackinformation
+msgid "Debugger Information"
+msgstr "デバッガ情報"
+
+#: idedebuggerstringconstants.lisdebuggerfeedbackwarning
+msgid "Debugger Warning"
+msgstr "デバッガ警告"
+
+#: idedebuggerstringconstants.lisdebugoptionsfrmresume
+msgid "Resume"
+msgstr "再開"
+
+#: idedebuggerstringconstants.lisdebugoptionsfrmresumehandled
+msgid "Resume Handled"
+msgstr "扱われたものを再開"
+
+#: idedebuggerstringconstants.lisdebugoptionsfrmresumeunhandled
+msgid "Resume Unhandled"
+msgstr "扱われていないものを再開"
+
+#: idedebuggerstringconstants.lisdeleteall
+msgid "&Delete All"
+msgstr "すべて削除(&D)"
+
+#: idedebuggerstringconstants.lisdeleteallbreakpoints
+msgid "Delete all breakpoints?"
+msgstr "すべてのブレークポイントを削除しますか？"
+
+#: idedebuggerstringconstants.lisdeleteallbreakpoints2
+#, object-pascal-format
+msgid "Delete all breakpoints in file \"%s\"?"
+msgstr "ファイル\"%s\"のすべてのブレークポイントを削除しますか？"
+
+#: idedebuggerstringconstants.lisdeleteallinsamesource
+msgid "Delete All in same source"
+msgstr "同じソース内のすべてを削除する"
+
+#: idedebuggerstringconstants.lisdeleteallselectedbreakpoints
+msgid "Delete all selected breakpoints?"
+msgstr "選択されたすべてのブレークポイントを削除しますか？"
+
+#: idedebuggerstringconstants.lisdeletebreakpoint
+msgid "Delete Breakpoint"
+msgstr "ブレークポイントを削除"
+
+#: idedebuggerstringconstants.lisdeletebreakpointatline
+#, object-pascal-format
+msgid "Delete breakpoint at%s\"%s\" line %d?"
+msgstr "ブレークポイントを削除しますか？%s\"%s\" 行 %d"
+
+#: idedebuggerstringconstants.lisdeletebreakpointforaddress
+#, object-pascal-format
+msgid "Delete breakpoint for address %s?"
+msgstr "アドレス%sのブレークポイントを削除しますか？"
+
+#: idedebuggerstringconstants.lisdeletebreakpointforwatch
+#, object-pascal-format
+msgid "Delete watchpoint for \"%s\"?"
+msgstr "監視ポイント\"%s\"を削除しますか？"
 
 #: idedebuggerstringconstants.lisdigits
 msgid "Digits:"
 msgstr "桁"
 
+#: idedebuggerstringconstants.lisdisableallinsamesource
+msgid "Disable All in same source"
+msgstr "同じソース内のすべてを無効にする"
+
+#: idedebuggerstringconstants.lisdisablebreakpoint
+msgid "Disable Breakpoint"
+msgstr "ブレークポイントを無効化"
+
+#: idedebuggerstringconstants.lisdisablegroups
+msgid "Disable Groups"
+msgstr "グループを無効に"
+
+#: idedebuggerstringconstants.lisenableall
+msgid "&Enable All"
+msgstr "すべて有効にする(&E)"
+
+#: idedebuggerstringconstants.lisenableallinsamesource
+msgid "Enable All in same source"
+msgstr "同じソース内のすべてを有効にする"
+
+#: idedebuggerstringconstants.lisenablebreakpoint
+msgid "Enable Breakpoint"
+msgstr "ブレークポイントを有効に"
+
+#: idedebuggerstringconstants.lisenablegroups
+msgid "Enable Groups"
+msgstr "グループを有効に"
+
+#: idedebuggerstringconstants.lisevalexpression
+msgctxt "lazarusidestrconsts.lisevalexpression"
+msgid "Eval expression"
+msgstr "式を評価"
+
+#: idedebuggerstringconstants.lisevaluateall
+msgid "Evaluate all"
+msgstr ""
+
+#: idedebuggerstringconstants.lisevaluatemodify
+msgid "&Evaluate/Modify"
+msgstr "評価/修正(&E)"
+
+#: idedebuggerstringconstants.liseventlogclear
+msgid "Clear Events"
+msgstr "イベントをクリア"
+
+#: idedebuggerstringconstants.liseventlogoptions
+msgid "Event Log Options ..."
+msgstr "イベントログオプション ..."
+
+#: idedebuggerstringconstants.liseventlogsavetofile
+msgid "Save Events to File"
+msgstr "イベントをファイルに保存"
+
+#: idedebuggerstringconstants.liseventslogaddcomment
+msgid "Add Comment ..."
+msgstr "コメントを追加 ..."
+
+#: idedebuggerstringconstants.liseventslogaddcomment2
+msgid "Add Comment"
+msgstr "コメントを追加"
+
+#: idedebuggerstringconstants.lisexceptiondialog
+msgid "Debugger Exception Notification"
+msgstr "デバッガ例外通知"
+
+#: idedebuggerstringconstants.lisexport
+msgctxt "lazarusidestrconsts.lisexport"
+msgid "Export"
+msgstr "エクスポート"
+
 #: idedebuggerstringconstants.lisexpression
 msgid "Expression:"
 msgstr "評価"
+
+#: idedebuggerstringconstants.lisfilenameaddress
+msgid "Filename/Address"
+msgstr "ファイル名/アドレス"
+
+#: idedebuggerstringconstants.lisfunction
+msgctxt "lazarusidestrconsts.lisfunction"
+msgid "Function"
+msgstr "関数"
+
+#: idedebuggerstringconstants.lisgotoselected
+msgid "Goto selected"
+msgstr "選択行に移動"
+
+#: idedebuggerstringconstants.lisgroup
+msgid "Group"
+msgstr "グループ"
+
+#: idedebuggerstringconstants.lisgroupassignexisting
+#, object-pascal-format
+msgid "Assign to existing \"%s\" group?"
+msgstr "既存の\"%s\"グループに割り当てますか？"
+
+#: idedebuggerstringconstants.lisgroupemptydelete
+#, object-pascal-format
+msgid "No more breakpoints are assigned to group \"%s\", delete it?"
+msgstr "これ以上のブレークポイントをグループ\"%s\"に割り当てできません。削除しますか？"
+
+#: idedebuggerstringconstants.lisgroupemptydeletemore
+#, object-pascal-format
+msgid "%sThere are %d more empty groups, delete all?"
+msgstr "%s　%d の空のグループがあります。全て削除しますか？"
+
+#: idedebuggerstringconstants.lisgroupnameemptyclearinstead
+msgid "The group name cannot be empty. Clear breakpoints' group(s)?"
+msgstr "グループ名は空であってはなりません。ブレークポイントのグループを消去しますか？"
+
+#: idedebuggerstringconstants.lisgroupnameinput
+msgid "Group name:"
+msgstr "グループ名"
+
+#: idedebuggerstringconstants.lisgroupnameinvalid
+msgid "BreakpointGroup name must be a valid Pascal identifier name."
+msgstr "ブレークポイントグループはpascalの有効な識別子名でなければなりません。"
+
+#: idedebuggerstringconstants.lisgroupsetnew
+msgid "Set new group ..."
+msgstr "新しいグループを設定 ..."
+
+#: idedebuggerstringconstants.lisgroupsetnone
+msgid "Clear group(s)"
+msgstr "グループを消去"
+
+#: idedebuggerstringconstants.lishitcount
+msgid "Hitcount"
+msgstr "ヒット数"
+
+#: idedebuggerstringconstants.lisid
+msgctxt "lazarusidestrconsts.lisid"
+msgid "ID"
+msgstr "ID"
+
+#: idedebuggerstringconstants.lisignoreexceptiontype
+msgid "Ignore this exception type"
+msgstr "この例外型を無視"
+
+#: idedebuggerstringconstants.lisimport
+msgctxt "lazarusidestrconsts.lisimport"
+msgid "Import"
+msgstr "インポート"
+
+#: idedebuggerstringconstants.lisindex
+msgid "Index"
+msgstr "索引"
+
+#: idedebuggerstringconstants.lisinspect
+msgid "&Inspect"
+msgstr "検査(&I)"
+
+#: idedebuggerstringconstants.lisinspectaddwatch
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisinspectaddwatch"
+msgid "Add watch"
+msgstr "監視追加"
+
+#: idedebuggerstringconstants.lisinspectclassinherit
+#, object-pascal-format, fuzzy
+#| msgid "%s : Class %s inherits from %s"
+msgid "%s: class %s inherits from %s"
+msgstr "%s :クラス%sは%sから継承"
+
+#: idedebuggerstringconstants.lisinspectdata
+msgid "Data"
+msgstr "データ"
+
+#: idedebuggerstringconstants.lisinspectdialog
+msgid "Debug Inspector"
+msgstr "デバッグインスペクタ"
+
+#: idedebuggerstringconstants.lisinspectmethods
+msgid "Methods"
+msgstr "メソッド"
+
+#: idedebuggerstringconstants.lisinspectpointerto
+#, object-pascal-format
+msgid "Pointer to %s"
+msgstr "%sへのポインタ"
+
+#: idedebuggerstringconstants.lisinspectproperties
+msgctxt "lazarusidestrconsts.lisinspectproperties"
+msgid "Properties"
+msgstr "プロパティ"
 
 #: idedebuggerstringconstants.lisinspectshowcolclass
 msgid "Show class column"
@@ -234,20 +892,385 @@ msgstr ""
 msgid "Show visibility column"
 msgstr ""
 
+#: idedebuggerstringconstants.lisinspectunavailableerror
+#, object-pascal-format
+msgid "%s: unavailable (error: %s)"
+msgstr ""
+
+#: idedebuggerstringconstants.lisinspectuseinstance
+msgctxt "idedebuggerstringconstants.lisinspectuseinstance"
+msgid "Instance"
+msgstr "インスタンス"
+
+#: idedebuggerstringconstants.lisinspectuseinstancehint
+msgid "Use instance class"
+msgstr "インスタンスクラスを使用"
+
+#: idedebuggerstringconstants.lisinvalidoff
+msgid "Invalid (Off)"
+msgstr "無効 (Off)"
+
+#: idedebuggerstringconstants.lisinvalidon
+msgid "Invalid (On)"
+msgstr "無効 (On)"
+
+#: idedebuggerstringconstants.liskmevaluatemodify
+msgid "Evaluate/Modify"
+msgstr "評価/変更"
+
+#: idedebuggerstringconstants.lisless
+msgctxt "lazarusidestrconsts.lisless"
+msgid "Less"
+msgstr "より小さい"
+
+#: idedebuggerstringconstants.lisline
+msgid "Line:"
+msgstr "行："
+
+#: idedebuggerstringconstants.lislinelength
+msgid "Line/Length"
+msgstr "行/長さ"
+
+#: idedebuggerstringconstants.lislocals
+#, fuzzy
+#| msgid "Locals"
+msgctxt "lazarusidestrconsts.lislocals"
+msgid "Local Variables"
+msgstr "ローカル"
+
+#: idedebuggerstringconstants.lislocalsdlgcopyall
+msgid "Copy &all"
+msgstr ""
+
+#: idedebuggerstringconstants.lislocalsdlgcopyname
+msgid "&Copy Name"
+msgstr "名前をコピー(&C)"
+
+#: idedebuggerstringconstants.lislocalsdlgcopynamevalue
+msgid "Co&py Name and Value"
+msgstr ""
+
+#: idedebuggerstringconstants.lislocalsdlgcopyrawvalue
+msgid "Copy &RAW Value"
+msgstr "生の値をコピー(&R)"
+
+#: idedebuggerstringconstants.lislocalsdlgcopyvalue
+msgid "C&opy Value"
+msgstr "値をコピー(&o)"
+
+#: idedebuggerstringconstants.lislocalsnotevaluated
+msgid "Locals not evaluated"
+msgstr "ローカル変数が評価されていません"
+
+#: idedebuggerstringconstants.lislogcallstack
+msgid "Log Call Stack"
+msgstr "コールスタックを記録"
+
+#: idedebuggerstringconstants.lislogcallstacklimit
+msgid "(frames limit. 0 - no limits)"
+msgstr "フレーム制限. 0 - 制限なし"
+
+#: idedebuggerstringconstants.lislogevalexpression
+msgctxt "lazarusidestrconsts.lislogevalexpression"
+msgid "Eval expression"
+msgstr "式を評価"
+
+#: idedebuggerstringconstants.lislogmessage
+msgid "Log Message"
+msgstr "ログメッセージ"
+
+#: idedebuggerstringconstants.lismaxs
+#, object-pascal-format
+msgid "Max %d"
+msgstr "最大 %d"
+
+#: idedebuggerstringconstants.lismenubreak
+msgid "&Break"
+msgstr "ブレーク(&B)"
+
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "ヘルプ(&H)"
 
+#: idedebuggerstringconstants.lismenuviewcallstack
+msgid "Call Stack"
+msgstr "呼び出しスタック"
+
+#: idedebuggerstringconstants.lismenuviewdebugevents
+msgctxt "lazarusidestrconsts.lismenuviewdebugevents"
+msgid "Event Log"
+msgstr "イベントログ"
+
+#: idedebuggerstringconstants.lismenuviewdebugoutput
+msgid "Debug Output"
+msgstr "デバッグ出力"
+
+#: idedebuggerstringconstants.lismore
+msgctxt "lazarusidestrconsts.lismore"
+msgid "More"
+msgstr "その他"
+
+#: idedebuggerstringconstants.lisms
+msgid "(ms)"
+msgstr "(ms)"
+
+#: idedebuggerstringconstants.lismvsavemessagestofiletxt
+msgid "Save messages to file (*.txt)"
+msgstr "メッセージをファイル(*.txt)に保存"
+
+#: idedebuggerstringconstants.lisname
+msgctxt "lazarusidestrconsts.lisname"
+msgid "Name"
+msgstr "名前"
+
+#: idedebuggerstringconstants.lisoff
+msgid "? (Off)"
+msgstr "? (Off)"
+
+#: idedebuggerstringconstants.lison
+msgid "? (On)"
+msgstr "? (On)"
+
+#: idedebuggerstringconstants.lispasscount
+msgid "Pass Count"
+msgstr "通過カウント"
+
+#: idedebuggerstringconstants.lispefilename
+msgid "Filename:"
+msgstr "ファイル名"
+
+#: idedebuggerstringconstants.lispendingon
+msgid "Pending (On)"
+msgstr ""
+
+#: idedebuggerstringconstants.lisregisters
+msgctxt "lazarusidestrconsts.lisregisters"
+msgid "Registers"
+msgstr "レジスタ"
+
 #: idedebuggerstringconstants.lisrepeatcount
 msgid "Repeat Count:"
 msgstr "反復回数："
+
+#: idedebuggerstringconstants.lissourcebreakpoint
+msgid "&Source Breakpoint ..."
+msgstr "ソースのブレークポイント(&S) ..."
+
+#: idedebuggerstringconstants.lissrcline
+#, fuzzy
+msgctxt "idedebuggerstringconstants.lissrcline"
+msgid "Line"
+msgstr "行"
+
+#: idedebuggerstringconstants.lisstop
+msgctxt "lazarusidestrconsts.lisstop"
+msgid "Stop"
+msgstr "停止"
 
 #: idedebuggerstringconstants.lisstyle
 msgctxt "lazarusidestrconsts.lisstyle"
 msgid "Style"
 msgstr "スタイル"
 
+#: idedebuggerstringconstants.listakesnapshot
+msgid "Take a Snapshot"
+msgstr "スナップショットを撮る"
+
+#: idedebuggerstringconstants.listhreads
+msgctxt "lazarusidestrconsts.listhreads"
+msgid "Threads"
+msgstr "スレッド"
+
+#: idedebuggerstringconstants.listhreadscurrent
+msgctxt "lazarusidestrconsts.listhreadscurrent"
+msgid "Current"
+msgstr "現在"
+
+#: idedebuggerstringconstants.listhreadsfunc
+msgctxt "lazarusidestrconsts.listhreadsfunc"
+msgid "Function"
+msgstr "関数"
+
+#: idedebuggerstringconstants.listhreadsgoto
+msgid "Goto"
+msgstr "Goto"
+
+#: idedebuggerstringconstants.listhreadsline
+msgctxt "lazarusidestrconsts.listhreadsline"
+msgid "Line"
+msgstr "行"
+
+#: idedebuggerstringconstants.listhreadsnotevaluated
+msgid "Threads not evaluated"
+msgstr "スレッドは評価されていません"
+
+#: idedebuggerstringconstants.listhreadssrc
+msgctxt "lazarusidestrconsts.listhreadssrc"
+msgid "Source"
+msgstr "ソース"
+
+#: idedebuggerstringconstants.listhreadsstate
+msgctxt "lazarusidestrconsts.listhreadsstate"
+msgid "State"
+msgstr "状態"
+
+#: idedebuggerstringconstants.lisvalue
+#, fuzzy
+msgctxt "idedebuggerstringconstants.lisvalue"
+msgid "Value"
+msgstr "値"
+
+#: idedebuggerstringconstants.lisviewbreakpointproperties
+msgctxt "lazarusidestrconsts.lisviewbreakpointproperties"
+msgid "Breakpoint Properties ..."
+msgstr "ブレークポイントプロパティ ..."
+
+#: idedebuggerstringconstants.lisviewsource
+msgid "View Source"
+msgstr "ソースを見る"
+
+#: idedebuggerstringconstants.lisviewsourcedisass
+msgctxt "lazarusidestrconsts.lisviewsourcedisass"
+msgid "View Assembler"
+msgstr "アセンブラを見る"
+
+#: idedebuggerstringconstants.liswatch
+msgid "&Watch"
+msgstr "監視(&W)"
+
+#: idedebuggerstringconstants.liswatchdata
+msgid "Watch:"
+msgstr "監視："
+
+#: idedebuggerstringconstants.liswatchkind
+msgid "Watch action"
+msgstr "アクションを監視："
+
+#: idedebuggerstringconstants.liswatchkindread
+msgid "Read"
+msgstr "読む"
+
+#: idedebuggerstringconstants.liswatchkindreadwrite
+msgid "Read/Write"
+msgstr "読み/書き"
+
+#: idedebuggerstringconstants.liswatchkindwrite
+msgid "Write"
+msgstr "書き込み"
+
+#: idedebuggerstringconstants.liswatchpoint
+msgid "&Data/Watch Breakpoint ..."
+msgstr "データ/監視ブレークポイント (&D) ..."
+
+#: idedebuggerstringconstants.liswatchpointbreakpoint
+msgid "&Data/watch Breakpoint ..."
+msgstr "データ/監視ブレークポイント (&D) ..."
+
 #: idedebuggerstringconstants.liswatchpropert
 msgid "Watch Properties"
 msgstr "プロパティの監視"
+
+#: idedebuggerstringconstants.liswatchscope
+msgid "Watch scope"
+msgstr "監視のスコープ"
+
+#: idedebuggerstringconstants.liswatchscopeglobal
+msgctxt "lazarusidestrconsts.liswatchscopeglobal"
+msgid "Global"
+msgstr "グローバル"
+
+#: idedebuggerstringconstants.liswatchscopelocal
+msgid "Declaration"
+msgstr "宣言"
+
+#: idedebuggerstringconstants.liswatchtowatchpoint
+msgid "Create &Data/Watch Breakpoint ..."
+msgstr "データ/監視ブレークポイントを作成 (&D)"
+
+#: idedebuggerstringconstants.liswldeleteall
+msgid "De&lete All"
+msgstr "すべて削除(&l)"
+
+#: idedebuggerstringconstants.liswldisableall
+msgid "D&isable All"
+msgstr "すべて無効にする(&i)"
+
+#: idedebuggerstringconstants.liswlenableall
+msgid "E&nable All"
+msgstr "すべてを有効にする(&n)"
+
+#: idedebuggerstringconstants.liswlexpression
+msgid "Expression"
+msgstr "式"
+
+#: idedebuggerstringconstants.liswlinspectpane
+msgctxt "idedebuggerstringconstants.liswlinspectpane"
+msgid "Inspect pane"
+msgstr "インスペクトペイン"
+
+#: idedebuggerstringconstants.liswlproperties
+msgid "&Properties"
+msgstr "プロパティ(&P)"
+
+#: idedebuggerstringconstants.liswlwatchlist
+#, fuzzy
+#| msgid "Watch List"
+msgctxt "lazarusidestrconsts.liswlwatchlist"
+msgid "Watches"
+msgstr "監視リスト"
+
+#: idedebuggerstringconstants.regdlgbinary
+msgctxt "lazarusidestrconsts.regdlgbinary"
+msgid "Binary"
+msgstr "バイナリ"
+
+#: idedebuggerstringconstants.regdlgdecimal
+msgctxt "lazarusidestrconsts.regdlgdecimal"
+msgid "Decimal"
+msgstr "小数"
+
+#: idedebuggerstringconstants.regdlgdefault
+msgctxt "idedebuggerstringconstants.regdlgdefault"
+msgid "Default"
+msgstr ""
+
+#: idedebuggerstringconstants.regdlgdisplaytypeforselectedregisters
+msgid "Display type for selected Registers"
+msgstr "選択されたレジスタについての型を表示"
+
+#: idedebuggerstringconstants.regdlgformat
+msgid "Format"
+msgstr "フォーマット"
+
+#: idedebuggerstringconstants.regdlghex
+msgid "Hex"
+msgstr "16進法"
+
+#: idedebuggerstringconstants.regdlgoctal
+msgid "Octal"
+msgstr "8進法"
+
+#: idedebuggerstringconstants.regdlgraw
+msgid "Raw"
+msgstr "生"
+
+#: idedebuggerstringconstants.rsattachto
+msgid "Attach to"
+msgstr "次に添付"
+
+#: idedebuggerstringconstants.rsenterpid
+msgid "Enter PID"
+msgstr "PIDに入る"
+
+#: idedebuggerstringconstants.synfnewvalueisempty
+msgid "\"New value\" is empty."
+msgstr "\"新しい値\"は空です"
+
+#: idedebuggerstringconstants.synfthedebuggerwasnotabletomodifythevalue
+msgid "The debugger was not able to modify the value."
+msgstr "デバッガは値を修正できませんでした。"
+
+#: idedebuggerstringconstants.uemtogglebreakpoint
+msgid "Toggle &Breakpoint"
+msgstr "ブレークポイントの切り替え(&B)"
 

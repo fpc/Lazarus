@@ -42,7 +42,7 @@ uses
   // IdeIntf
   IDEWindowIntf,
   // IDE
-  DebuggerDlg, BaseDebugManager, LazarusIDEStrConsts;
+  DebuggerDlg, BaseDebugManager, IdeDebuggerStringConstants;
 
 type
 

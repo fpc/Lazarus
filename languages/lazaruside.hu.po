@@ -11,24 +11,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.0.6\n"
 
-#: lazarusidestrconsts.dbgbreakgroupdlgcaption
-msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
-msgid "Select Groups"
-msgstr "Csoportok kijelölése"
-
-#: lazarusidestrconsts.dbgbreakgroupdlgheaderdisable
-msgid "Select groups to disable when breakpoint is hit"
-msgstr "Csoportok kijelölése, amelyek le lesznek tiltva a töréspont elérésekor"
-
-#: lazarusidestrconsts.dbgbreakgroupdlgheaderenable
-msgid "Select groups to enable when breakpoint is hit"
-msgstr "Csoportok kijelölése, amelyek engedélyezve lesznek a töréspont elérésekor"
-
-#: lazarusidestrconsts.dbgbreakpropertygroupnotfound
-#, object-pascal-format
-msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
-msgstr "Néhány csoport az Engedélyezés/Letiltás listában nem létezik.%0:sLétre legyenek hozva?%0:s%0:s%1:s"
-
 #: lazarusidestrconsts.dbgeventbreakaddressbreakpoint
 #, object-pascal-format
 msgid "Address Breakpoint %s"
@@ -4131,10 +4113,6 @@ msgctxt "lazarusidestrconsts.dlgvaluecolor"
 msgid "Value"
 msgstr "Érték"
 
-#: lazarusidestrconsts.dlgvaluedataaddr
-msgid "Data-Address"
-msgstr ""
-
 #: lazarusidestrconsts.dlgverbosity
 msgid "Verbosity during compilation:"
 msgstr "Bőbeszédűség fordítás alatt:"
@@ -4298,48 +4276,6 @@ msgstr "Z-sorrend"
 #: lazarusidestrconsts.gldhighlightbothsidesofcursor
 msgid "On Both Sides"
 msgstr "Mindkét oldalon"
-
-#: lazarusidestrconsts.histdlgbtnclearhint
-msgid "Clear all snapshots"
-msgstr "Minden pillanatkép törlése"
-
-#: lazarusidestrconsts.histdlgbtnenablehint
-msgid "Toggle view snapshot or current"
-msgstr "Váltás a pillanatkép és a jelenlegi között"
-
-#: lazarusidestrconsts.histdlgbtnmakesnaphint
-msgid "Take Snapshot"
-msgstr "Pillanatkép készítése"
-
-#: lazarusidestrconsts.histdlgbtnpowerhint
-msgid "Switch on/off automatic snapshots"
-msgstr "Automatikus pillanatképek ki-/bekapcsolása"
-
-#: lazarusidestrconsts.histdlgbtnremovehint
-msgid "Remove selected entry"
-msgstr "Kijelölt elem eltávolítása"
-
-#: lazarusidestrconsts.histdlgbtnshowhisthint
-msgid "View history"
-msgstr "Előzmények megjelenítése"
-
-#: lazarusidestrconsts.histdlgbtnshowsnaphint
-msgid "View Snapshots"
-msgstr "Pillanatkép megjelenítése"
-
-#: lazarusidestrconsts.histdlgcolumnloc
-msgctxt "lazarusidestrconsts.histdlgcolumnloc"
-msgid "Location"
-msgstr "Hely"
-
-#: lazarusidestrconsts.histdlgcolumntime
-msgid "Time"
-msgstr "Idő"
-
-#: lazarusidestrconsts.histdlgformname
-msgctxt "lazarusidestrconsts.histdlgformname"
-msgid "History"
-msgstr "Előzmények"
 
 #: lazarusidestrconsts.initdlgdebugchangepath
 msgid "Change path"
@@ -4777,10 +4713,6 @@ msgstr "Köszönetnyilvánítások"
 msgid "Action:"
 msgstr "Művelet:"
 
-#: lazarusidestrconsts.lisactions
-msgid "Actions:"
-msgstr "Műveletek:"
-
 #: lazarusidestrconsts.lisactivate
 msgid "Activate"
 msgstr "Aktiválás"
@@ -4895,15 +4827,6 @@ msgstr "Csomag hozzáadása a projekthez"
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
 msgstr "Paraméter zárójelek hozzáadása"
-
-#: lazarusidestrconsts.lisaddress
-msgid "Address:"
-msgstr "Cím:"
-
-#: lazarusidestrconsts.lisaddressbreakpoint
-msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
-msgid "&Address Breakpoint ..."
-msgstr "Töréspont adott címen ..."
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
@@ -5199,10 +5122,6 @@ msgstr "Automatikus kiegészítés: ki"
 msgid "Auto completion: on"
 msgstr "Automatikus kiegészítés: be"
 
-#: lazarusidestrconsts.lisautocontinueafter
-msgid "Auto continue after:"
-msgstr "Automatikus folytatás ezután:"
-
 #: lazarusidestrconsts.lisautomarkup
 msgid "Markup and Matches"
 msgstr "Kiemelés és párok"
@@ -5382,24 +5301,10 @@ msgstr "Ez az a társvezérlő, amelyikhez az alsó oldal horgonyzása történi
 msgid "Bottom space equally"
 msgstr "Alsó oldali távolságok egyenlően"
 
-#: lazarusidestrconsts.lisbpsdisabled
-msgctxt "lazarusidestrconsts.lisbpsdisabled"
-msgid "Disabled"
-msgstr "Letiltva"
-
-#: lazarusidestrconsts.lisbpsenabled
-msgctxt "lazarusidestrconsts.lisbpsenabled"
-msgid "Enabled"
-msgstr "Engedélyezve"
-
 #: lazarusidestrconsts.lisbreak
 msgctxt "lazarusidestrconsts.lisbreak"
 msgid "Break"
 msgstr "Megszakítás"
-
-#: lazarusidestrconsts.lisbreakpointproperties
-msgid "Breakpoint Properties"
-msgstr "Töréspont tulajdonságai"
 
 #: lazarusidestrconsts.lisbrowseandselectacompiler
 msgid "Browse and select a compiler (e.g. ppcx64"
@@ -5518,10 +5423,6 @@ msgstr "%s byte"
 #, object-pascal-format
 msgid "Calling %s to create Makefile from %s failed."
 msgstr "%s meghívása Makefile készítéséhez nem sikerült innen: %s"
-
-#: lazarusidestrconsts.liscallstacknotevaluated
-msgid "Stack not evaluated"
-msgstr "Verem nincs kiértékelve"
 
 #: lazarusidestrconsts.liscancelloadingthiscomponent
 msgid "Cancel loading this component"
@@ -7138,14 +7039,6 @@ msgstr "Utólag végrehajtandó"
 msgid "Execute before"
 msgstr "Előzőleg végrehajtandó"
 
-#: lazarusidestrconsts.liscoladdress
-msgid "Address"
-msgstr "Cím"
-
-#: lazarusidestrconsts.liscolclass
-msgid "Class"
-msgstr "Osztály"
-
 #: lazarusidestrconsts.liscollapseall
 msgid "Collapse All (/)"
 msgstr "Mindet összecsukja (/)"
@@ -7161,14 +7054,6 @@ msgstr "Minden csomag összecsukása"
 #: lazarusidestrconsts.liscollapseallunits
 msgid "Collapse all units"
 msgstr "Minden unit összecsukása"
-
-#: lazarusidestrconsts.liscolreturns
-msgid "Returns"
-msgstr "Eredmény típusa"
-
-#: lazarusidestrconsts.liscolvisibility
-msgid "Visibility"
-msgstr "Láthatóság"
 
 #: lazarusidestrconsts.liscomboboxes
 msgid "Combo Boxes"
@@ -7974,10 +7859,6 @@ msgctxt "lazarusidestrconsts.liscopy"
 msgid "Copy"
 msgstr "Másolás"
 
-#: lazarusidestrconsts.liscopyall
-msgid "Copy All"
-msgstr "Minden másolása"
-
 #: lazarusidestrconsts.liscopyallitemstoclipboard
 msgid "Copy All Items to Clipboard"
 msgstr "Minden elem másolása a vágólapra"
@@ -7985,10 +7866,6 @@ msgstr "Minden elem másolása a vágólapra"
 #: lazarusidestrconsts.liscopyalloriginalmessagestoclipboard
 msgid "Copy All/Original Messages to Clipboard"
 msgstr "Minden/Eredeti üzenetek másolása a vágólapra"
-
-#: lazarusidestrconsts.liscopyalloutputclipboard
-msgid "Copy all output to clipboard"
-msgstr "Minden kimenet másolása a vágólapra"
 
 #: lazarusidestrconsts.liscopyallshownmessagestoclipboard
 msgid "Copy All Shown Messages to Clipboard"
@@ -8175,16 +8052,6 @@ msgstr "Hozza létre / frissítse a .po fájlt az lfm mentésekor"
 msgid "Creating file index of FPC sources %s ..."
 msgstr "Az FPC források fájlindexének elkészítése %s ..."
 
-#: lazarusidestrconsts.liscsbottom
-msgctxt "lazarusidestrconsts.liscsbottom"
-msgid "Bottom"
-msgstr "Le"
-
-#: lazarusidestrconsts.liscstop
-msgctxt "lazarusidestrconsts.liscstop"
-msgid "Top"
-msgstr "Fel"
-
 #: lazarusidestrconsts.lisctdefchoosedirectory
 msgid "Choose Directory"
 msgstr "Válasszon könyvtárat!"
@@ -8238,11 +8105,6 @@ msgstr "válasszon makrót"
 msgid "Select Code Macro"
 msgstr "Kód makró kiválasztása"
 
-#: lazarusidestrconsts.liscurrent
-msgctxt "lazarusidestrconsts.liscurrent"
-msgid "Current"
-msgstr "Aktuális"
-
 #: lazarusidestrconsts.liscurrentlclwidgetset
 #, object-pascal-format
 msgid "Current LCL widgetset: \"%s\""
@@ -8289,22 +8151,6 @@ msgctxt "lazarusidestrconsts.liscut"
 msgid "Cut"
 msgstr "Kivágás"
 
-#: lazarusidestrconsts.lisdadattach
-msgid "Attach"
-msgstr "Csatolás"
-
-#: lazarusidestrconsts.lisdadimagename
-msgid "Image Name"
-msgstr "Képnév"
-
-#: lazarusidestrconsts.lisdadpid
-msgid "PID"
-msgstr "PID"
-
-#: lazarusidestrconsts.lisdadrunningprocesses
-msgid "Running Processes"
-msgstr "Futó folyamatok"
-
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
 msgstr "Adat modul"
@@ -8313,36 +8159,6 @@ msgstr "Adat modul"
 msgid "Date"
 msgstr "Dátum"
 
-#: lazarusidestrconsts.lisdbgallitemdelete
-msgctxt "lazarusidestrconsts.lisdbgallitemdelete"
-msgid "Delete all"
-msgstr "Összes törlése"
-
-#: lazarusidestrconsts.lisdbgallitemdeletehint
-msgctxt "lazarusidestrconsts.lisdbgallitemdeletehint"
-msgid "Delete all"
-msgstr "Összes törlése"
-
-#: lazarusidestrconsts.lisdbgallitemdisable
-msgctxt "lazarusidestrconsts.lisdbgallitemdisable"
-msgid "Disable all"
-msgstr "Összes tiltása"
-
-#: lazarusidestrconsts.lisdbgallitemdisablehint
-msgctxt "lazarusidestrconsts.lisdbgallitemdisablehint"
-msgid "Disable all"
-msgstr "Összes tiltása"
-
-#: lazarusidestrconsts.lisdbgallitemenable
-msgctxt "lazarusidestrconsts.lisdbgallitemenable"
-msgid "Enable all"
-msgstr "Összes engedélyezése"
-
-#: lazarusidestrconsts.lisdbgallitemenablehint
-msgctxt "lazarusidestrconsts.lisdbgallitemenablehint"
-msgid "Enable all"
-msgstr "Összes engedélyezése"
-
 #: lazarusidestrconsts.lisdbgasmcopyaddresstoclipboard
 msgid "Copy address to Clipboard"
 msgstr ""
@@ -8350,11 +8166,6 @@ msgstr ""
 #: lazarusidestrconsts.lisdbgasmcopytoclipboard
 msgid "Copy to Clipboard"
 msgstr "Másolás a vágólapra"
-
-#: lazarusidestrconsts.lisdbgbreakpointpropertieshint
-msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
-msgid "Breakpoint Properties ..."
-msgstr "Töréspont tulajdonságai ..."
 
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
@@ -8416,31 +8227,6 @@ msgstr "Küldött Windows üzenet"
 msgid "Windows Message Sent"
 msgstr "Windows üzenet elküldve"
 
-#: lazarusidestrconsts.lisdbgitemdeletehint
-msgctxt "lazarusidestrconsts.lisdbgitemdeletehint"
-msgid "Delete"
-msgstr "Törlés"
-
-#: lazarusidestrconsts.lisdbgitemdisable
-msgctxt "lazarusidestrconsts.lisdbgitemdisable"
-msgid "Disable"
-msgstr "Letiltás"
-
-#: lazarusidestrconsts.lisdbgitemdisablehint
-msgctxt "lazarusidestrconsts.lisdbgitemdisablehint"
-msgid "Disable"
-msgstr "Letiltás"
-
-#: lazarusidestrconsts.lisdbgitemenable
-msgctxt "lazarusidestrconsts.lisdbgitemenable"
-msgid "Enable"
-msgstr "Engedélyezés"
-
-#: lazarusidestrconsts.lisdbgitemenablehint
-msgctxt "lazarusidestrconsts.lisdbgitemenablehint"
-msgid "Enable"
-msgstr "Engedélyezés"
-
 #: lazarusidestrconsts.lisdbgmangnodebuggerspecified
 msgid "No debugger specified"
 msgstr "Nincs megadva hibakereső"
@@ -8453,19 +8239,6 @@ msgstr "Mindenképp állítsa be a töréspontot"
 #, object-pascal-format
 msgid "There is no debugger specified.%sSetting breakpoints have no effect until you set up a Debugger in the debugger options dialog in the menu."
 msgstr "Nincs megadva hibakereső.%sA töréspontok elhelyezése hatástalan amíg nincs megadva a hibakereső a hibakereső beállításai párbeszédben a menüben."
-
-#: lazarusidestrconsts.lisdbgterminal
-msgctxt "lazarusidestrconsts.lisdbgterminal"
-msgid "Console In/Output"
-msgstr "Konzol be- és kimenete"
-
-#: lazarusidestrconsts.lisdbgwinpower
-msgid "On/Off"
-msgstr "Be/Ki"
-
-#: lazarusidestrconsts.lisdbgwinpowerhint
-msgid "Disable/Enable updates for the entire window"
-msgstr "Frissítés ki-/bekapcsolása a teljes ablak számára"
 
 #: lazarusidestrconsts.lisdebug
 msgctxt "lazarusidestrconsts.lisdebug"
@@ -8482,18 +8255,6 @@ msgstr "Hibakereső"
 #| msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
 msgid "The debugger encountered an internal error.%0:s%0:sSave your work.%0:sYou may then hit \"Stop\", or \"Reset debugger\" to terminate the debug session."
 msgstr "Hibakereső hiba%sHoppá, a hibakereső hibaállapotba került.%sMentse a munkáját most!%sNyomja meg az Leállítás-t, és reménykedjen a legjobbakban, most kihúzzuk a dugót."
-
-#: lazarusidestrconsts.lisdebuggerfeedbackerror
-msgid "Debugger Error"
-msgstr "Hibakereső Hiba"
-
-#: lazarusidestrconsts.lisdebuggerfeedbackinformation
-msgid "Debugger Information"
-msgstr "Hibakereső Információ"
-
-#: lazarusidestrconsts.lisdebuggerfeedbackwarning
-msgid "Debugger Warning"
-msgstr "Hibakereső Figyelmeztetés"
 
 #: lazarusidestrconsts.lisdebuggerinvalid
 msgid "Debugger invalid"
@@ -8632,18 +8393,6 @@ msgstr "Folyamat"
 msgid "Reset Debugger after each run"
 msgstr "Hibakereső alapra állítása minden futtatás után"
 
-#: lazarusidestrconsts.lisdebugoptionsfrmresume
-msgid "Resume"
-msgstr "Folytatás"
-
-#: lazarusidestrconsts.lisdebugoptionsfrmresumehandled
-msgid "Resume Handled"
-msgstr "Folytatás kezelve"
-
-#: lazarusidestrconsts.lisdebugoptionsfrmresumeunhandled
-msgid "Resume Unhandled"
-msgstr "Folytatás kezeletlenül"
-
 #: lazarusidestrconsts.lisdebugoptionsfrmshowexitcodeonstop
 msgid "Show message on stop with Error (Exit-code <> 0)"
 msgstr ""
@@ -8732,27 +8481,6 @@ msgstr "Törlés?"
 msgid "Delete addition \"%s\"?"
 msgstr "A(z) \"%s\" kiegészítés törlése?"
 
-#: lazarusidestrconsts.lisdeleteall
-msgid "&Delete All"
-msgstr "Min&den törlése"
-
-#: lazarusidestrconsts.lisdeleteallbreakpoints
-msgid "Delete all breakpoints?"
-msgstr "Minden töréspontot töröl?"
-
-#: lazarusidestrconsts.lisdeleteallbreakpoints2
-#, object-pascal-format
-msgid "Delete all breakpoints in file \"%s\"?"
-msgstr "Minden töréspont törlése a(z) \"%s\" fájlból?"
-
-#: lazarusidestrconsts.lisdeleteallinsamesource
-msgid "Delete All in same source"
-msgstr "Összes törlése ugyanabban a forrásban"
-
-#: lazarusidestrconsts.lisdeleteallselectedbreakpoints
-msgid "Delete all selected breakpoints?"
-msgstr "Minden kijelölt töréspontot töröl?"
-
 #: lazarusidestrconsts.lisdeleteallthesefiles
 msgid "Delete all these files?"
 msgstr "Az összes fájlt töröli?"
@@ -8760,25 +8488,6 @@ msgstr "Az összes fájlt töröli?"
 #: lazarusidestrconsts.lisdeleteambiguousfile
 msgid "Delete ambiguous file?"
 msgstr "Törli a megtévesztő fájlt?"
-
-#: lazarusidestrconsts.lisdeletebreakpoint
-msgid "Delete Breakpoint"
-msgstr "Töréspont törlése"
-
-#: lazarusidestrconsts.lisdeletebreakpointatline
-#, object-pascal-format
-msgid "Delete breakpoint at%s\"%s\" line %d?"
-msgstr "Törli a töréspontot %s\"%s\" %d. sorában?"
-
-#: lazarusidestrconsts.lisdeletebreakpointforaddress
-#, object-pascal-format
-msgid "Delete breakpoint for address %s?"
-msgstr "Törli a következő címhez beállított töréspontot: %s?"
-
-#: lazarusidestrconsts.lisdeletebreakpointforwatch
-#, object-pascal-format
-msgid "Delete watchpoint for \"%s\"?"
-msgstr "Törli a következőhöz beállított figyelési pontot: \"%s\"?"
 
 #: lazarusidestrconsts.lisdeletefilefailed
 msgid "Delete file failed"
@@ -8932,18 +8641,6 @@ msgstr "A könyvtár nem írható"
 #: lazarusidestrconsts.lisdirectorywheretheideputsthepofiles
 msgid "Directory where the IDE puts the .po files"
 msgstr "A könyvtár, ahová az IDE a .po fájlokat írja"
-
-#: lazarusidestrconsts.lisdisableallinsamesource
-msgid "Disable All in same source"
-msgstr "Összes kikapcsolása ugyanabban a forrásban"
-
-#: lazarusidestrconsts.lisdisablebreakpoint
-msgid "Disable Breakpoint"
-msgstr "Töréspont letiltása"
-
-#: lazarusidestrconsts.lisdisablegroups
-msgid "Disable Groups"
-msgstr "Csoport Letiltása"
 
 #: lazarusidestrconsts.lisdisablei18nforlfm
 msgid "Disable I18N for LFM"
@@ -9485,18 +9182,6 @@ msgstr "Üres"
 msgid "Destination directory for publishing is either a relative path or empty."
 msgstr "A közzététel célkönyvtára vagy relatív útvonal vagy üres."
 
-#: lazarusidestrconsts.lisenableall
-msgid "&Enable All"
-msgstr "Mind&en engedélyezése"
-
-#: lazarusidestrconsts.lisenableallinsamesource
-msgid "Enable All in same source"
-msgstr "Minden engedélyezése ugyanabban a forráskódban"
-
-#: lazarusidestrconsts.lisenablebreakpoint
-msgid "Enable Breakpoint"
-msgstr "Töréspont engedélyezése"
-
 #: lazarusidestrconsts.lisenabledonlyforpackages
 msgid "Enabled only for packages."
 msgstr "Csak csomagok esetén engedélyezett."
@@ -9505,10 +9190,6 @@ msgstr "Csak csomagok esetén engedélyezett."
 #, object-pascal-format
 msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
 msgstr ". Engedélyezze a(z) %s \"Unit használatát\" a(z) %s csomagban!"
-
-#: lazarusidestrconsts.lisenablegroups
-msgid "Enable Groups"
-msgstr "Csoportok Engedélyezése"
 
 #: lazarusidestrconsts.lisenablei18nforlfm
 msgid "Enable I18N for LFM"
@@ -9764,39 +9445,6 @@ msgstr "Hiba a fájl írása közben: \"%s\""
 msgid "Error writing package list to file%s%s%s%s"
 msgstr "Hiba a csomaglista %s%s%s%s fájlba írása közben"
 
-#: lazarusidestrconsts.lisevalexpression
-msgctxt "lazarusidestrconsts.lisevalexpression"
-msgid "Eval expression"
-msgstr "Kifejezés kiértékelése"
-
-#: lazarusidestrconsts.lisevaluateall
-msgid "Evaluate all"
-msgstr ""
-
-#: lazarusidestrconsts.lisevaluatemodify
-msgid "&Evaluate/Modify"
-msgstr "Kiértékelés/Módosítás"
-
-#: lazarusidestrconsts.liseventlogclear
-msgid "Clear Events"
-msgstr "Események törlése"
-
-#: lazarusidestrconsts.liseventlogoptions
-msgid "Event Log Options ..."
-msgstr "Eseménynapló beállításai ..."
-
-#: lazarusidestrconsts.liseventlogsavetofile
-msgid "Save Events to File"
-msgstr "Események mentése fájlba"
-
-#: lazarusidestrconsts.liseventslogaddcomment
-msgid "Add Comment ..."
-msgstr "Megjegyzés hozzáadása ..."
-
-#: lazarusidestrconsts.liseventslogaddcomment2
-msgid "Add Comment"
-msgstr "Megjegyzés hozzáadása"
-
 #: lazarusidestrconsts.liseverynthlinenumber
 msgid "Every n-th line number"
 msgstr "Minden n-dik sorszám"
@@ -9817,10 +9465,6 @@ msgstr "Példák:%sAzonosító%sTMyEnum.Enum%sUnitnév.Azonosító%s#Csomagnév.
 #: lazarusidestrconsts.lisexamplesopenfirstselected
 msgid "Open first selected"
 msgstr "Első kijelölt megnyitása"
-
-#: lazarusidestrconsts.lisexceptiondialog
-msgid "Debugger Exception Notification"
-msgstr "Hibakereső kivétel figyelmeztetés"
 
 #: lazarusidestrconsts.lisexclude
 msgid "Exclude"
@@ -10099,10 +9743,6 @@ msgstr "A(z) \"%s\" fájl virtuális."
 #: lazarusidestrconsts.lisfilelinkerror
 msgid "File link error"
 msgstr "Fájl csatolási hiba"
-
-#: lazarusidestrconsts.lisfilenameaddress
-msgid "Filename/Address"
-msgstr "Fájlnév/Cím"
 
 #: lazarusidestrconsts.lisfilenamestyle
 msgid "Filename Style"
@@ -10601,11 +10241,6 @@ msgstr "Keresés a megjegyzésekben is"
 msgid "Full"
 msgstr "Teljes"
 
-#: lazarusidestrconsts.lisfunction
-msgctxt "lazarusidestrconsts.lisfunction"
-msgid "Function"
-msgstr "Függvény"
-
 #: lazarusidestrconsts.lisgeneral
 msgctxt "lazarusidestrconsts.lisgeneral"
 msgid "General"
@@ -10645,10 +10280,6 @@ msgstr "Általános beállítások"
 msgid "Goto Line"
 msgstr "Ugrás adott sorra"
 
-#: lazarusidestrconsts.lisgotoselected
-msgid "Goto selected"
-msgstr "Ugrás a kijelöltre"
-
 #: lazarusidestrconsts.lisgplnotice
 msgid ""
 "<description>\n"
@@ -10675,44 +10306,9 @@ msgstr ""
 msgid "Group"
 msgstr "Csoport"
 
-#: lazarusidestrconsts.lisgroupassignexisting
-#, object-pascal-format
-msgid "Assign to existing \"%s\" group?"
-msgstr "Hozzárendelés a létező \"%s\" csoporthoz?"
-
-#: lazarusidestrconsts.lisgroupemptydelete
-#, object-pascal-format
-msgid "No more breakpoints are assigned to group \"%s\", delete it?"
-msgstr "Nincs több töréspont társítva a(z) \"%s\" csoporthoz. Törölhető?"
-
-#: lazarusidestrconsts.lisgroupemptydeletemore
-#, object-pascal-format
-msgid "%sThere are %d more empty groups, delete all?"
-msgstr "%sVan még %d üres csoport. Összes törlése?"
-
 #: lazarusidestrconsts.lisgrouplocalvariables
 msgid "Group automatically defined local variables"
 msgstr "Az automatikusan létrehozott helyi változók csoportosítása"
-
-#: lazarusidestrconsts.lisgroupnameemptyclearinstead
-msgid "The group name cannot be empty. Clear breakpoints' group(s)?"
-msgstr "A csoport neve nem lehet üres. Törlendő a töréspontok csoportja?"
-
-#: lazarusidestrconsts.lisgroupnameinput
-msgid "Group name:"
-msgstr "Csoport neve:"
-
-#: lazarusidestrconsts.lisgroupnameinvalid
-msgid "BreakpointGroup name must be a valid Pascal identifier name."
-msgstr "A BreakpointGroup névnek érvényes Pascal azonosítónak kell lennie."
-
-#: lazarusidestrconsts.lisgroupsetnew
-msgid "Set new group ..."
-msgstr "Új csoport beállítása ..."
-
-#: lazarusidestrconsts.lisgroupsetnone
-msgid "Clear group(s)"
-msgstr "Csoport(ok) törlése"
 
 #: lazarusidestrconsts.lisgroupsfordebugoutput
 msgid "Enable or Disable groups of debug output. Valid Options are:"
@@ -10840,10 +10436,6 @@ msgstr "Form-ok megjelenítése"
 #: lazarusidestrconsts.lishintviewunits
 msgid "View Units"
 msgstr "Unit-ok megjelenítése"
-
-#: lazarusidestrconsts.lishitcount
-msgid "Hitcount"
-msgstr "Áthaladás szám"
 
 #: lazarusidestrconsts.lishlpoptsdatabases
 msgid "Databases"
@@ -11038,10 +10630,6 @@ msgstr "Összes kihagyása"
 msgid "Ignore and continue"
 msgstr "Kihagyás és folytatás"
 
-#: lazarusidestrconsts.lisignoreexceptiontype
-msgid "Ignore this exception type"
-msgstr "Az ilyen típusú kivételek figyelmen kívül hagyása"
-
 #: lazarusidestrconsts.lisignoreuseasancestor
 #, object-pascal-format
 msgid "Ignore, use %s as ancestor"
@@ -11145,10 +10733,6 @@ msgstr "probléma van az Fppkg beállításaival. (%s)"
 #: lazarusidestrconsts.lisindentationforpascalsources
 msgid "Indentation for Pascal sources"
 msgstr "Behúzás pascal forráskódokhoz"
-
-#: lazarusidestrconsts.lisindex
-msgid "Index"
-msgstr "Index"
 
 #: lazarusidestrconsts.lisinformation
 msgid "Information"
@@ -11325,56 +10909,6 @@ msgstr "URL címke beszúrása"
 msgid "In session"
 msgstr "Munkamenetben"
 
-#: lazarusidestrconsts.lisinspect
-msgid "&Inspect"
-msgstr "V&izsgálat"
-
-#: lazarusidestrconsts.lisinspectaddwatch
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisinspectaddwatch"
-msgid "Add watch"
-msgstr "Figyelő hozzáadása"
-
-#: lazarusidestrconsts.lisinspectclassinherit
-#, object-pascal-format
-msgid "%s: class %s inherits from %s"
-msgstr "%s : a(z) %s osztály ettől örököl: %s"
-
-#: lazarusidestrconsts.lisinspectdata
-msgid "Data"
-msgstr "Adat"
-
-#: lazarusidestrconsts.lisinspectdialog
-msgid "Debug Inspector"
-msgstr "Hiba felügyelő"
-
-#: lazarusidestrconsts.lisinspectmethods
-msgid "Methods"
-msgstr "Metódusok"
-
-#: lazarusidestrconsts.lisinspectpointerto
-#, object-pascal-format
-msgid "Pointer to %s"
-msgstr "Mutató erre: %s"
-
-#: lazarusidestrconsts.lisinspectproperties
-msgctxt "lazarusidestrconsts.lisinspectproperties"
-msgid "Properties"
-msgstr "Tulajdonságok"
-
-#: lazarusidestrconsts.lisinspectunavailableerror
-#, object-pascal-format
-msgid "%s: unavailable (error: %s)"
-msgstr "%s: nem érhető el (hiba: %s)"
-
-#: lazarusidestrconsts.lisinspectuseinstance
-msgid "Instance"
-msgstr "Példány"
-
-#: lazarusidestrconsts.lisinspectuseinstancehint
-msgid "Use instance class"
-msgstr "Osztálypéldány használata"
-
 #: lazarusidestrconsts.lisinstallationfailed
 msgid "Installation failed"
 msgstr "Telepítés sikertelen"
@@ -11485,14 +11019,6 @@ msgstr "Érvénytelen mód: %s"
 #: lazarusidestrconsts.lisinvalidmultiselection
 msgid "Invalid multiselection"
 msgstr "Érvénytelen többszörös kijelölés"
-
-#: lazarusidestrconsts.lisinvalidoff
-msgid "Invalid (Off)"
-msgstr "Érvénytelen (Ki)"
-
-#: lazarusidestrconsts.lisinvalidon
-msgid "Invalid (On)"
-msgstr "Érvénytelen (Be)"
 
 #: lazarusidestrconsts.lisinvalidpascalidentifiercap
 msgid "Invalid Pascal Identifier"
@@ -12495,14 +12021,6 @@ msgstr "függvénytár elérési út"
 msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under macOS)."
 msgstr "Egy Free Pascal megosztott függvénytár (.dll Windows alatt, .so Linux alatt, .dylib MacOS X alatt)."
 
-#: lazarusidestrconsts.lisline
-msgid "Line:"
-msgstr "Sor:"
-
-#: lazarusidestrconsts.lislinelength
-msgid "Line/Length"
-msgstr "Sor/Hossz"
-
 #: lazarusidestrconsts.lislink
 msgid "Link:"
 msgstr "Hivatkozás:"
@@ -12531,52 +12049,6 @@ msgstr "Makró betöltése innen:"
 #: lazarusidestrconsts.lislocal
 msgid "&Local"
 msgstr "&Helyi"
-
-#: lazarusidestrconsts.lislocals
-msgctxt "lazarusidestrconsts.lislocals"
-msgid "Local Variables"
-msgstr "Helyi változók"
-
-#: lazarusidestrconsts.lislocalsdlgcopyall
-msgid "Copy &all"
-msgstr "Összes másolása"
-
-#: lazarusidestrconsts.lislocalsdlgcopyname
-msgid "&Copy Name"
-msgstr "Név másolása"
-
-#: lazarusidestrconsts.lislocalsdlgcopynamevalue
-msgid "Co&py Name and Value"
-msgstr "Név és érték másolása"
-
-#: lazarusidestrconsts.lislocalsdlgcopyrawvalue
-msgid "Copy &RAW Value"
-msgstr "Nyers érték másolása"
-
-#: lazarusidestrconsts.lislocalsdlgcopyvalue
-msgid "C&opy Value"
-msgstr "Érték másolása"
-
-#: lazarusidestrconsts.lislocalsnotevaluated
-msgid "Locals not evaluated"
-msgstr "Helyiek nincsenek kiértékelve"
-
-#: lazarusidestrconsts.lislogcallstack
-msgid "Log Call Stack"
-msgstr "Hívási verem naplózása"
-
-#: lazarusidestrconsts.lislogcallstacklimit
-msgid "(frames limit. 0 - no limits)"
-msgstr "(keretek max. 0 = korlátlan)"
-
-#: lazarusidestrconsts.lislogevalexpression
-msgctxt "lazarusidestrconsts.lislogevalexpression"
-msgid "Eval expression"
-msgstr "Kifejezés kiértékelése"
-
-#: lazarusidestrconsts.lislogmessage
-msgid "Log Message"
-msgstr "Naplóüzenet"
 
 #: lazarusidestrconsts.lislowercasestring
 msgid "lowercase string"
@@ -14117,10 +13589,6 @@ msgstr "Assembler"
 msgid "BreakPoints"
 msgstr "Töréspontok"
 
-#: lazarusidestrconsts.lismenuviewcallstack
-msgid "Call Stack"
-msgstr "Hívási verem"
-
 #: lazarusidestrconsts.lismenuviewcodebrowser
 msgctxt "lazarusidestrconsts.lismenuviewcodebrowser"
 msgid "Code Browser"
@@ -14664,10 +14132,6 @@ msgstr "Szöveg minden sor előtt"
 msgid "&Trim clipboard contents"
 msgstr "Vágólap tartalmának rövidítése"
 
-#: lazarusidestrconsts.lisms
-msgid "(ms)"
-msgstr "(ms)"
-
 #: lazarusidestrconsts.lismsgcolors
 msgid "Message colors"
 msgstr "Üzenetek színei"
@@ -14997,10 +14461,6 @@ msgstr "objektum elérési út"
 msgid "Switch to Object Inspector Favorites tab"
 msgstr "Váltás az Objektum felügyelő Kedvencek lapjára"
 
-#: lazarusidestrconsts.lisoff
-msgid "? (Off)"
-msgstr "? (Ki)"
-
 #: lazarusidestrconsts.lisofpackage
 #, object-pascal-format
 msgid " of package %s"
@@ -15100,10 +14560,6 @@ msgstr "%sEz a csomag telepítve van, de a .lpk fájl nem található"
 #: lazarusidestrconsts.lisoldclass
 msgid "Old Class"
 msgstr "Régi osztály"
-
-#: lazarusidestrconsts.lison
-msgid "? (On)"
-msgstr "? (Be)"
 
 #: lazarusidestrconsts.lisonbreaklineiereturnorenterkey
 msgid "On break line (i.e. return or enter key)"
@@ -15433,10 +14889,6 @@ msgstr "\"%s\" elemző: %s"
 #: lazarusidestrconsts.lisparsers
 msgid "Parsers:"
 msgstr "Elemzők:"
-
-#: lazarusidestrconsts.lispasscount
-msgid "Pass Count"
-msgstr "Megszakítások száma"
 
 #: lazarusidestrconsts.lispassingcompilerdefinetwicewithdifferentvalues
 #, object-pascal-format
@@ -15995,10 +15447,6 @@ msgstr "Érvénytelen unit-név"
 #, object-pascal-format
 msgid "Missing files of package %s"
 msgstr "A(z) %s csomag hiányzó fájljai"
-
-#: lazarusidestrconsts.lispendingon
-msgid "Pending (On)"
-msgstr "Függőben (bekapcsolva)"
 
 #: lazarusidestrconsts.lispenewfilenotinincludepath
 msgid "New file not in include path"
@@ -17441,11 +16889,6 @@ msgctxt "lazarusidestrconsts.lisredo"
 msgid "Redo"
 msgstr "Újra"
 
-#: lazarusidestrconsts.lisregisters
-msgctxt "lazarusidestrconsts.lisregisters"
-msgid "Registers"
-msgstr "Regiszterek"
-
 #: lazarusidestrconsts.lisregularexpression
 msgid "Regular expression"
 msgstr "Reguláris kifejezés"
@@ -18445,10 +17888,6 @@ msgstr "A forrás \"%s\"%sés a cél \"%s\"%s ugyanaz a könyvtár. Másik köny
 msgid "Source and Destination are the same:%s%s"
 msgstr "Forrás és cél megegyezik:%s%s"
 
-#: lazarusidestrconsts.lissourcebreakpoint
-msgid "&Source Breakpoint ..."
-msgstr "Töréspont a forráskódban ..."
-
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
 #, object-pascal-format
 msgid "Source directory \"%s\" does not exist."
@@ -18666,10 +18105,6 @@ msgstr "A kijelölt vezérlő mozgatása felfelé a Tab sorrendben"
 #, object-pascal-format
 msgid "Tabs for %s"
 msgstr "%s lapjai"
-
-#: lazarusidestrconsts.listakesnapshot
-msgid "Take a Snapshot"
-msgstr "Pillanatkép készítése"
 
 #: lazarusidestrconsts.listarget
 msgid "Target:"
@@ -19392,44 +18827,6 @@ msgstr "Ez körkörös függést hoz létre."
 #, object-pascal-format
 msgid "This will put a lot of text (%s) on the clipboard.%sProceed?"
 msgstr "Ez sok szöveget (%s) tesz a vágólapra.%sFolytatás?"
-
-#: lazarusidestrconsts.listhreads
-msgctxt "lazarusidestrconsts.listhreads"
-msgid "Threads"
-msgstr "Szálak"
-
-#: lazarusidestrconsts.listhreadscurrent
-msgctxt "lazarusidestrconsts.listhreadscurrent"
-msgid "Current"
-msgstr "Aktuális"
-
-#: lazarusidestrconsts.listhreadsfunc
-msgctxt "lazarusidestrconsts.listhreadsfunc"
-msgid "Function"
-msgstr "Függvény"
-
-#: lazarusidestrconsts.listhreadsgoto
-msgid "Goto"
-msgstr "Ugrás"
-
-#: lazarusidestrconsts.listhreadsline
-msgctxt "lazarusidestrconsts.listhreadsline"
-msgid "Line"
-msgstr "Sor"
-
-#: lazarusidestrconsts.listhreadsnotevaluated
-msgid "Threads not evaluated"
-msgstr "Szálak nincsenek kiértékelve"
-
-#: lazarusidestrconsts.listhreadssrc
-msgctxt "lazarusidestrconsts.listhreadssrc"
-msgid "Source"
-msgstr "Forrás"
-
-#: lazarusidestrconsts.listhreadsstate
-msgctxt "lazarusidestrconsts.listhreadsstate"
-msgid "State"
-msgstr "Állapot"
 
 #: lazarusidestrconsts.listitle
 msgid "&Title"
@@ -20507,20 +19904,6 @@ msgstr "Változat információ másolása a vágólapra"
 msgid "Very Verbose"
 msgstr "Nagyon részletes"
 
-#: lazarusidestrconsts.lisviewbreakpointproperties
-msgctxt "lazarusidestrconsts.lisviewbreakpointproperties"
-msgid "Breakpoint Properties ..."
-msgstr "Töréspont tulajdonságai ..."
-
-#: lazarusidestrconsts.lisviewsource
-msgid "View Source"
-msgstr "Forrás megjelenítése"
-
-#: lazarusidestrconsts.lisviewsourcedisass
-msgctxt "lazarusidestrconsts.lisviewsourcedisass"
-msgid "View Assembler"
-msgstr "Assembler megjelenítése"
-
 #: lazarusidestrconsts.lisviewsourcelfm
 msgid "View Source (.lfm)"
 msgstr "Forrás megjelenítése (.lfm)"
@@ -20543,55 +19926,6 @@ msgstr ", Figyelmeztetések: %s"
 #, object-pascal-format
 msgid "%sWarning: This is the main unit. The new main unit will be %s.pas."
 msgstr "%sFigyelem! Ez a fő unit. A új fő unit  ez lesz: %s.pas."
-
-#: lazarusidestrconsts.liswatch
-msgid "&Watch"
-msgstr "Figyelő"
-
-#: lazarusidestrconsts.liswatchdata
-msgid "Watch:"
-msgstr "Figyelés:"
-
-#: lazarusidestrconsts.liswatchkind
-msgid "Watch action"
-msgstr "Művelet figyelése"
-
-#: lazarusidestrconsts.liswatchkindread
-msgid "Read"
-msgstr "Olvasás"
-
-#: lazarusidestrconsts.liswatchkindreadwrite
-msgid "Read/Write"
-msgstr "Olvasás/Írás"
-
-#: lazarusidestrconsts.liswatchkindwrite
-msgid "Write"
-msgstr "Írás"
-
-#: lazarusidestrconsts.liswatchpoint
-msgid "&Data/Watch Breakpoint ..."
-msgstr "Figyelési töréspont ..."
-
-#: lazarusidestrconsts.liswatchpointbreakpoint
-msgid "&Data/watch Breakpoint ..."
-msgstr "Figyelési töréspont ..."
-
-#: lazarusidestrconsts.liswatchscope
-msgid "Watch scope"
-msgstr "Figyelő tulajdonságai"
-
-#: lazarusidestrconsts.liswatchscopeglobal
-msgctxt "lazarusidestrconsts.liswatchscopeglobal"
-msgid "Global"
-msgstr "Globális"
-
-#: lazarusidestrconsts.liswatchscopelocal
-msgid "Declaration"
-msgstr "Deklaráció"
-
-#: lazarusidestrconsts.liswatchtowatchpoint
-msgid "Create &Data/Watch Breakpoint ..."
-msgstr "Figyelési töréspont létrehozása ..."
 
 #: lazarusidestrconsts.liswelcometolazaruside
 #, object-pascal-format
@@ -20662,35 +19996,6 @@ msgstr "A megfelelő FPC forráskódok nélkül a kód böngészése és kiegés
 #: lazarusidestrconsts.liswithrequiredpackages
 msgid "With required packages"
 msgstr "Szükséges csomagokkal"
-
-#: lazarusidestrconsts.liswldeleteall
-msgid "De&lete All"
-msgstr "Minden törlése"
-
-#: lazarusidestrconsts.liswldisableall
-msgid "D&isable All"
-msgstr "Minden tiltása"
-
-#: lazarusidestrconsts.liswlenableall
-msgid "E&nable All"
-msgstr "Minden engedélyezése"
-
-#: lazarusidestrconsts.liswlexpression
-msgid "Expression"
-msgstr "Kifejezés"
-
-#: lazarusidestrconsts.liswlinspectpane
-msgid "Inspect pane"
-msgstr "Ellenőrző tábla"
-
-#: lazarusidestrconsts.liswlproperties
-msgid "&Properties"
-msgstr "Tulajdonságok"
-
-#: lazarusidestrconsts.liswlwatchlist
-msgctxt "lazarusidestrconsts.liswlwatchlist"
-msgid "Watches"
-msgstr "Figyelt elemek"
 
 #: lazarusidestrconsts.liswordatcursorincurrenteditor
 msgid "Word at cursor in current editor"
@@ -20915,36 +20220,6 @@ msgstr "Síkba rajzolható gráf"
 msgid "Add package unit to uses section"
 msgstr "Csomag unit hozzáadása a uses szakaszhoz"
 
-#: lazarusidestrconsts.regdlgbinary
-msgctxt "lazarusidestrconsts.regdlgbinary"
-msgid "Binary"
-msgstr "Bináris"
-
-#: lazarusidestrconsts.regdlgdecimal
-msgctxt "lazarusidestrconsts.regdlgdecimal"
-msgid "Decimal"
-msgstr "Decimális"
-
-#: lazarusidestrconsts.regdlgdisplaytypeforselectedregisters
-msgid "Display type for selected Registers"
-msgstr "A kiválasztott regiszterek megjelenítési módja"
-
-#: lazarusidestrconsts.regdlgformat
-msgid "Format"
-msgstr "Formátum"
-
-#: lazarusidestrconsts.regdlghex
-msgid "Hex"
-msgstr "Hex"
-
-#: lazarusidestrconsts.regdlgoctal
-msgid "Octal"
-msgstr "Oktális"
-
-#: lazarusidestrconsts.regdlgraw
-msgid "Raw"
-msgstr "Nyers"
-
 #: lazarusidestrconsts.rsaddinverse
 msgid "Add Inverse"
 msgstr "Hozzáadás negáltan"
@@ -20952,10 +20227,6 @@ msgstr "Hozzáadás negáltan"
 #: lazarusidestrconsts.rsaddnewterm
 msgid "Add new term"
 msgstr "Új kifejezés hozzáadása"
-
-#: lazarusidestrconsts.rsattachto
-msgid "Attach to"
-msgstr "Csatolás ehhez:"
 
 #: lazarusidestrconsts.rsattributes
 msgid "Attributes"
@@ -21008,10 +20279,6 @@ msgstr "Új definíció létrehozása"
 #: lazarusidestrconsts.rsenablei18n
 msgid "Enable i18n"
 msgstr "i18n engedélyezése"
-
-#: lazarusidestrconsts.rsenterpid
-msgid "Enter PID"
-msgstr "PID bevitele"
 
 #: lazarusidestrconsts.rsfilterthelistwithstring
 msgid "Filter the lines in list with a string"
@@ -23010,4 +22277,13 @@ msgstr "Unit-fa beállítása"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Változatinformációk"
+
+#: lazarusidestrconsts.lisdeleteall
+msgid "&Delete All"
+msgstr "Min&den törlése"
+
+#: lazarusidestrconsts.lisfunction
+msgctxt "lazarusidestrconsts.lisfunction"
+msgid "Function"
+msgstr "Függvény"
 

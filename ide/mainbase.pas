@@ -69,6 +69,8 @@ uses
   IDEImagesIntf, SrcEditorIntf, LazIDEIntf, MenuIntf, NewItemIntf, PackageIntf,
   IDECommands, IDEWindowIntf, ProjectIntf, ToolBarIntf, ObjectInspector,
   PropEdits, IDEDialogs, IDEUtils, EditorSyntaxHighlighterDef,
+  // IDEDebugger
+  IdeDebuggerStringConstants,
   // IDE
   LazConf, LazarusIDEStrConsts, Project, EnvironmentOpts,
   EditorOptions, CompilerOptions, SourceEditor, SourceSynEditor, FindInFilesDlg,

@@ -5,6 +5,24 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
+#: idedebuggerstringconstants.dbgbreakgroupdlgcaption
+msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
+msgid "Select Groups"
+msgstr "Vybrat skupiny"
+
+#: idedebuggerstringconstants.dbgbreakgroupdlgheaderdisable
+msgid "Select groups to disable when breakpoint is hit"
+msgstr "Vybrat skupiny, které se mají zakázat při dosáhnutí bodu přerušení"
+
+#: idedebuggerstringconstants.dbgbreakgroupdlgheaderenable
+msgid "Select groups to enable when breakpoint is hit"
+msgstr "Vybrat skupiny, které se mají povolit při dosáhnutí bodu přerušení"
+
+#: idedebuggerstringconstants.dbgbreakpropertygroupnotfound
+#, object-pascal-format
+msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
+msgstr "Některé skupiny v seznamu Povolené/Zakázané neexistují.%0:sMají se vytvořit?%0:s%0:s%1:s"
+
 #: idedebuggerstringconstants.dbgdispformatbinary
 #, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatbinary"
@@ -88,8 +106,10 @@ msgid "Match types by name"
 msgstr ""
 
 #: idedebuggerstringconstants.dlgbackconvoptname
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dlgbackconvoptname"
 msgid "Name"
-msgstr ""
+msgstr "Jméno"
 
 #: idedebuggerstringconstants.dlgbackconvoptremove
 msgid "Remove"
@@ -106,6 +126,21 @@ msgstr ""
 #: idedebuggerstringconstants.dlgbackendconvoptdisabled
 msgid "- Disabled -"
 msgstr ""
+
+#: idedebuggerstringconstants.dlgenvtype
+msgctxt "lazarusidestrconsts.dlgenvtype"
+msgid "Type"
+msgstr "Typ"
+
+#: idedebuggerstringconstants.dlgfilterall
+msgctxt "lazarusidestrconsts.dlgfilterall"
+msgid "All files"
+msgstr "Všechny soubory"
+
+#: idedebuggerstringconstants.dlgfilterxml
+msgctxt "lazarusidestrconsts.dlgfilterxml"
+msgid "XML files"
+msgstr "XML soubory"
 
 #: idedebuggerstringconstants.dlgidedbgdebugger
 msgid "Debugger"
@@ -132,7 +167,22 @@ msgstr ""
 msgid "Index of first item to show"
 msgstr ""
 
+#: idedebuggerstringconstants.dlgunitdeprefresh
+msgctxt "lazarusidestrconsts.dlgunitdeprefresh"
+msgid "Refresh"
+msgstr "Obnovit"
+
+#: idedebuggerstringconstants.dlgvaluecolor
+msgctxt "lazarusidestrconsts.dlgvaluecolor"
+msgid "Value"
+msgstr "Hodnota"
+
+#: idedebuggerstringconstants.dlgvaluedataaddr
+msgid "Data-Address"
+msgstr ""
+
 #: idedebuggerstringconstants.drsaddwatch
+msgctxt "idedebuggerstringconstants.drsaddwatch"
 msgid "Add watch"
 msgstr ""
 
@@ -140,13 +190,77 @@ msgstr ""
 msgid "Append result at bottom of history"
 msgstr ""
 
+#: idedebuggerstringconstants.drsbreakpointcolwidthaction
+msgid "Action column"
+msgstr ""
+
+#: idedebuggerstringconstants.drsbreakpointcolwidthcondition
+msgid "Condition column"
+msgstr ""
+
+#: idedebuggerstringconstants.drsbreakpointcolwidthfile
+msgid "File/address column"
+msgstr ""
+
+#: idedebuggerstringconstants.drsbreakpointcolwidthgroup
+msgid "Group column"
+msgstr ""
+
+#: idedebuggerstringconstants.drsbreakpointcolwidthline
+msgctxt "idedebuggerstringconstants.drsbreakpointcolwidthline"
+msgid "Line column"
+msgstr ""
+
+#: idedebuggerstringconstants.drsbreakpointcolwidthpasscount
+msgid "Pass-count column"
+msgstr ""
+
+#: idedebuggerstringconstants.drscolwidthbrkpointimg
+msgid "Break indication column"
+msgstr ""
+
+#: idedebuggerstringconstants.drscolwidthexpression
+msgid "Expression column"
+msgstr ""
+
+#: idedebuggerstringconstants.drscolwidthfunc
+msgid "Function name column"
+msgstr ""
+
+#: idedebuggerstringconstants.drscolwidthindex
+msgid "Index column"
+msgstr ""
+
+#: idedebuggerstringconstants.drscolwidthline
+msgctxt "idedebuggerstringconstants.drscolwidthline"
+msgid "Line column"
+msgstr ""
+
+#: idedebuggerstringconstants.drscolwidthname
+msgid "Name column"
+msgstr ""
+
+#: idedebuggerstringconstants.drscolwidthsource
+msgid "Source column"
+msgstr ""
+
+#: idedebuggerstringconstants.drscolwidthstate
+msgid "State column"
+msgstr ""
+
+#: idedebuggerstringconstants.drscolwidthvalue
+msgid "Value column"
+msgstr ""
+
 #: idedebuggerstringconstants.drsdebugconverter
 msgid "Converter"
 msgstr ""
 
 #: idedebuggerstringconstants.drsdisableenableupdatesforth
+#, fuzzy
+msgctxt "idedebuggerstringconstants.drsdisableenableupdatesforth"
 msgid "Disable/Enable updates for the entire window"
-msgstr ""
+msgstr "Zakázat/Povolit změny pro celé okno"
 
 #: idedebuggerstringconstants.drsenterexpression
 msgid "Enter Expression"
@@ -157,7 +271,21 @@ msgid "Evaluate"
 msgstr ""
 
 #: idedebuggerstringconstants.drshistory
+#, fuzzy
+msgctxt "idedebuggerstringconstants.drshistory"
 msgid "History"
+msgstr "Historie"
+
+#: idedebuggerstringconstants.drshistorycolwidthcurrent
+msgid "Current column"
+msgstr ""
+
+#: idedebuggerstringconstants.drshistorycolwidthlocation
+msgid "Location column"
+msgstr ""
+
+#: idedebuggerstringconstants.drshistorycolwidthtime
+msgid "Time column"
 msgstr ""
 
 #: idedebuggerstringconstants.drsinsertresultattopofhistor
@@ -166,6 +294,47 @@ msgstr ""
 
 #: idedebuggerstringconstants.drsinspect
 msgid "Inspect"
+msgstr ""
+
+#: idedebuggerstringconstants.drsinspectcolwidthdataclass
+msgid "Data class column"
+msgstr ""
+
+#: idedebuggerstringconstants.drsinspectcolwidthdataname
+msgid "Data name column"
+msgstr ""
+
+#: idedebuggerstringconstants.drsinspectcolwidthdatatype
+msgid "Data type column"
+msgstr ""
+
+#: idedebuggerstringconstants.drsinspectcolwidthdatavalue
+msgid "Data value column"
+msgstr ""
+
+#: idedebuggerstringconstants.drsinspectcolwidthdatavisibility
+msgid "Data visibility column"
+msgstr ""
+
+#: idedebuggerstringconstants.drsinspectcolwidthmethaddress
+msgid "Method address column"
+msgstr ""
+
+#: idedebuggerstringconstants.drsinspectcolwidthmethname
+msgid "Method name column"
+msgstr ""
+
+#: idedebuggerstringconstants.drsinspectcolwidthmethreturns
+msgid "Method returns column"
+msgstr ""
+
+#: idedebuggerstringconstants.drsinspectcolwidthmethtype
+msgid "Method type column"
+msgstr ""
+
+#: idedebuggerstringconstants.drslen
+#, object-pascal-format
+msgid "Len=%d: "
 msgstr ""
 
 #: idedebuggerstringconstants.drsnewvalue
@@ -188,17 +357,25 @@ msgstr ""
 msgid "Run all threads while evaluating"
 msgstr ""
 
-#: idedebuggerstringconstants.drsusefunctioncalls
-msgid "Function"
+#: idedebuggerstringconstants.drssuspend
+msgid "Suspend"
 msgstr ""
+
+#: idedebuggerstringconstants.drsusefunctioncalls
+#, fuzzy
+msgctxt "idedebuggerstringconstants.drsusefunctioncalls"
+msgid "Function"
+msgstr "Funkce"
 
 #: idedebuggerstringconstants.drsusefunctioncallshint
 msgid "Allow function calls"
 msgstr ""
 
 #: idedebuggerstringconstants.drsuseinstanceclass
+#, fuzzy
+msgctxt "idedebuggerstringconstants.drsuseinstanceclass"
 msgid "Instance"
-msgstr ""
+msgstr "Instance"
 
 #: idedebuggerstringconstants.drsuseinstanceclasshint
 msgctxt "idedebuggerstringconstants.drsuseinstanceclasshint"
@@ -210,17 +387,496 @@ msgctxt "idedebuggerstringconstants.drsuseinstanceclasstype"
 msgid "Use Instance class type"
 msgstr ""
 
+#: idedebuggerstringconstants.drswatchsplitterinspect
+#, fuzzy
+msgctxt "idedebuggerstringconstants.drswatchsplitterinspect"
+msgid "Inspect pane"
+msgstr "Okno průzkumníka"
+
+#: idedebuggerstringconstants.dsrevalusedebugconverter
+msgid "Use Backend Converter"
+msgstr ""
+
+#: idedebuggerstringconstants.histdlgbtnclearhint
+msgid "Clear all snapshots"
+msgstr "Smazat všechny snímky"
+
+#: idedebuggerstringconstants.histdlgbtnenablehint
+msgid "Toggle view snapshot or current"
+msgstr "Přepnout zobrazení snímku nebo aktuálního"
+
+#: idedebuggerstringconstants.histdlgbtnmakesnaphint
+msgid "Take Snapshot"
+msgstr "Vytvořit snímek"
+
+#: idedebuggerstringconstants.histdlgbtnpowerhint
+msgid "Switch on/off automatic snapshots"
+msgstr "Zapnout/Vypnout automatické snímky"
+
+#: idedebuggerstringconstants.histdlgbtnremovehint
+msgid "Remove selected entry"
+msgstr "Odstranit vybraný záznam"
+
+#: idedebuggerstringconstants.histdlgbtnshowhisthint
+msgid "View history"
+msgstr "Zobrazit historii"
+
+#: idedebuggerstringconstants.histdlgbtnshowsnaphint
+msgid "View Snapshots"
+msgstr "Zobrazit snímky"
+
+#: idedebuggerstringconstants.histdlgcolumnloc
+msgctxt "lazarusidestrconsts.histdlgcolumnloc"
+msgid "Location"
+msgstr "Umístění"
+
+#: idedebuggerstringconstants.histdlgcolumntime
+msgid "Time"
+msgstr "Čas"
+
+#: idedebuggerstringconstants.histdlgformname
+msgctxt "lazarusidestrconsts.histdlgformname"
+msgid "History"
+msgstr "Historie"
+
+#: idedebuggerstringconstants.lisactions
+msgid "Actions:"
+msgstr "Akce:"
+
+#: idedebuggerstringconstants.lisaddress
+msgid "Address:"
+msgstr "Adresa:"
+
+#: idedebuggerstringconstants.lisaddressbreakpoint
+msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
+msgid "&Address Breakpoint ..."
+msgstr "Adresa bodu přerušení ..."
+
 #: idedebuggerstringconstants.lisallowfunctio
 msgid "Allow Function Calls"
 msgstr "Povolit volání funkcí"
+
+#: idedebuggerstringconstants.lisautocontinueafter
+msgid "Auto continue after:"
+msgstr "Automaticky pokračovat po:"
+
+#: idedebuggerstringconstants.lisbpsdisabled
+msgctxt "lazarusidestrconsts.lisbpsdisabled"
+msgid "Disabled"
+msgstr "Zakázáno"
+
+#: idedebuggerstringconstants.lisbpsenabled
+msgctxt "lazarusidestrconsts.lisbpsenabled"
+msgid "Enabled"
+msgstr "Povoleno"
+
+#: idedebuggerstringconstants.lisbreak
+msgctxt "lazarusidestrconsts.lisbreak"
+msgid "Break"
+msgstr "Přerušit"
+
+#: idedebuggerstringconstants.lisbreakpointproperties
+msgid "Breakpoint Properties"
+msgstr "Vlastnosti bodů zastavení"
+
+#: idedebuggerstringconstants.liscallstacknotevaluated
+msgid "Stack not evaluated"
+msgstr "Zásobník není vyhodnocen"
+
+#: idedebuggerstringconstants.lisccoerrorcaption
+msgctxt "lazarusidestrconsts.lisccoerrorcaption"
+msgid "Error"
+msgstr "Chyba"
+
+#: idedebuggerstringconstants.lisclear
+msgid "Clear"
+msgstr ""
+
+#: idedebuggerstringconstants.liscoladdress
+msgid "Address"
+msgstr "Adresa"
+
+#: idedebuggerstringconstants.liscolclass
+msgid "Class"
+msgstr "Třída"
+
+#: idedebuggerstringconstants.liscolreturns
+msgid "Returns"
+msgstr "Odřádkování"
+
+#: idedebuggerstringconstants.liscolvisibility
+msgid "Visibility"
+msgstr "Viditelnost"
+
+#: idedebuggerstringconstants.liscondition
+msgid "Condition"
+msgstr "Podmínka"
+
+#: idedebuggerstringconstants.liscopyall
+msgid "Copy All"
+msgstr "Kopírovat vše"
+
+#: idedebuggerstringconstants.liscopyalloutputclipboard
+msgid "Copy all output to clipboard"
+msgstr "Zkopírovat celý výstup do schránky"
+
+#: idedebuggerstringconstants.liscsbottom
+msgctxt "lazarusidestrconsts.liscsbottom"
+msgid "Bottom"
+msgstr "Dolní"
+
+#: idedebuggerstringconstants.liscstop
+msgctxt "lazarusidestrconsts.liscstop"
+msgid "Top"
+msgstr "Nahoře"
+
+#: idedebuggerstringconstants.liscurrent
+msgctxt "lazarusidestrconsts.liscurrent"
+msgid "Current"
+msgstr "Aktuální"
+
+#: idedebuggerstringconstants.lisdadattach
+msgid "Attach"
+msgstr "Přiložit"
+
+#: idedebuggerstringconstants.lisdadimagename
+msgid "Image Name"
+msgstr "Jméno obrázku"
+
+#: idedebuggerstringconstants.lisdadpid
+msgid "PID"
+msgstr "PID"
+
+#: idedebuggerstringconstants.lisdadrunningprocesses
+msgid "Running Processes"
+msgstr "Běžící procesy"
+
+#: idedebuggerstringconstants.lisdbgallitemdelete
+msgctxt "lazarusidestrconsts.lisdbgallitemdelete"
+msgid "Delete all"
+msgstr "Smazat vše"
+
+#: idedebuggerstringconstants.lisdbgallitemdeletehint
+msgctxt "lazarusidestrconsts.lisdbgallitemdeletehint"
+msgid "Delete all"
+msgstr "Smazat vše"
+
+#: idedebuggerstringconstants.lisdbgallitemdisable
+msgctxt "lazarusidestrconsts.lisdbgallitemdisable"
+msgid "Disable all"
+msgstr "Zakázat vše"
+
+#: idedebuggerstringconstants.lisdbgallitemdisablehint
+msgctxt "lazarusidestrconsts.lisdbgallitemdisablehint"
+msgid "Disable all"
+msgstr "Zakázat vše"
+
+#: idedebuggerstringconstants.lisdbgallitemenable
+msgctxt "lazarusidestrconsts.lisdbgallitemenable"
+msgid "Enable all"
+msgstr "Povolit vše"
+
+#: idedebuggerstringconstants.lisdbgallitemenablehint
+msgctxt "lazarusidestrconsts.lisdbgallitemenablehint"
+msgid "Enable all"
+msgstr "Povolit vše"
+
+#: idedebuggerstringconstants.lisdbgbreakpointpropertieshint
+msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
+msgid "Breakpoint Properties ..."
+msgstr "Nastavení bodu přerušení ..."
+
+#: idedebuggerstringconstants.lisdbgitemdeletehint
+msgctxt "lazarusidestrconsts.lisdbgitemdeletehint"
+msgid "Delete"
+msgstr "Odstranit"
+
+#: idedebuggerstringconstants.lisdbgitemdisable
+msgctxt "lazarusidestrconsts.lisdbgitemdisable"
+msgid "Disable"
+msgstr "Zakázat"
+
+#: idedebuggerstringconstants.lisdbgitemdisablehint
+msgctxt "lazarusidestrconsts.lisdbgitemdisablehint"
+msgid "Disable"
+msgstr "Zakázat"
+
+#: idedebuggerstringconstants.lisdbgitemenable
+msgctxt "lazarusidestrconsts.lisdbgitemenable"
+msgid "Enable"
+msgstr "Povolit"
+
+#: idedebuggerstringconstants.lisdbgitemenablehint
+msgctxt "lazarusidestrconsts.lisdbgitemenablehint"
+msgid "Enable"
+msgstr "Povolit"
+
+#: idedebuggerstringconstants.lisdbgterminal
+msgctxt "lazarusidestrconsts.lisdbgterminal"
+msgid "Console In/Output"
+msgstr "Konzola Vstup/Výstup"
+
+#: idedebuggerstringconstants.lisdbgwinpower
+msgid "On/Off"
+msgstr "Zapnout/Vypnout"
+
+#: idedebuggerstringconstants.lisdbgwinpowerhint
+msgctxt "idedebuggerstringconstants.lisdbgwinpowerhint"
+msgid "Disable/Enable updates for the entire window"
+msgstr "Zakázat/Povolit změny pro celé okno"
+
+#: idedebuggerstringconstants.lisdebuggerfeedbackerror
+msgid "Debugger Error"
+msgstr "Chyba ladění"
+
+#: idedebuggerstringconstants.lisdebuggerfeedbackinformation
+msgid "Debugger Information"
+msgstr "Informace ladění"
+
+#: idedebuggerstringconstants.lisdebuggerfeedbackwarning
+msgid "Debugger Warning"
+msgstr "Varování ladění"
+
+#: idedebuggerstringconstants.lisdebugoptionsfrmresume
+msgid "Resume"
+msgstr "Obnovit"
+
+#: idedebuggerstringconstants.lisdebugoptionsfrmresumehandled
+msgid "Resume Handled"
+msgstr "Obnovit jako obsloužené"
+
+#: idedebuggerstringconstants.lisdebugoptionsfrmresumeunhandled
+msgid "Resume Unhandled"
+msgstr "Obnovit jako neobsloužené"
+
+#: idedebuggerstringconstants.lisdeleteall
+msgid "&Delete All"
+msgstr "Smazat vše"
+
+#: idedebuggerstringconstants.lisdeleteallbreakpoints
+msgid "Delete all breakpoints?"
+msgstr "Smazat všechny body přerušení?"
+
+#: idedebuggerstringconstants.lisdeleteallbreakpoints2
+#, object-pascal-format
+msgid "Delete all breakpoints in file \"%s\"?"
+msgstr "Smazat všechny body přerušení v souboru \"%s\"?"
+
+#: idedebuggerstringconstants.lisdeleteallinsamesource
+msgid "Delete All in same source"
+msgstr "Smazat vše ve stejném zdroji"
+
+#: idedebuggerstringconstants.lisdeleteallselectedbreakpoints
+msgid "Delete all selected breakpoints?"
+msgstr "Odebrat všechny vybrané body přerušení?"
+
+#: idedebuggerstringconstants.lisdeletebreakpoint
+msgid "Delete Breakpoint"
+msgstr "Odstranit Bod přerušení"
+
+#: idedebuggerstringconstants.lisdeletebreakpointatline
+#, object-pascal-format
+msgid "Delete breakpoint at%s\"%s\" line %d?"
+msgstr "Smazat bod přerušení na%s\"%s\"řádku %d?"
+
+#: idedebuggerstringconstants.lisdeletebreakpointforaddress
+#, object-pascal-format
+msgid "Delete breakpoint for address %s?"
+msgstr "Smazat bod přerušení na adrese %s?"
+
+#: idedebuggerstringconstants.lisdeletebreakpointforwatch
+#, object-pascal-format
+msgid "Delete watchpoint for \"%s\"?"
+msgstr "Smazat kukátko \"%s\"?"
 
 #: idedebuggerstringconstants.lisdigits
 msgid "Digits:"
 msgstr "Cifry:"
 
+#: idedebuggerstringconstants.lisdisableallinsamesource
+msgid "Disable All in same source"
+msgstr "Zakázat vše ve stejném zdroji"
+
+#: idedebuggerstringconstants.lisdisablebreakpoint
+msgid "Disable Breakpoint"
+msgstr "Zakázat Bod přerušení"
+
+#: idedebuggerstringconstants.lisdisablegroups
+msgid "Disable Groups"
+msgstr "Zakázat skupiny"
+
+#: idedebuggerstringconstants.lisenableall
+msgid "&Enable All"
+msgstr "&Editovat vše"
+
+#: idedebuggerstringconstants.lisenableallinsamesource
+msgid "Enable All in same source"
+msgstr "Povolit vše ve stejném zdroji"
+
+#: idedebuggerstringconstants.lisenablebreakpoint
+msgid "Enable Breakpoint"
+msgstr "Povolit Bod přerušení"
+
+#: idedebuggerstringconstants.lisenablegroups
+msgid "Enable Groups"
+msgstr "Povolit skupiny"
+
+#: idedebuggerstringconstants.lisevalexpression
+msgctxt "lazarusidestrconsts.lisevalexpression"
+msgid "Eval expression"
+msgstr "Vyhodnotit výraz"
+
+#: idedebuggerstringconstants.lisevaluateall
+msgid "Evaluate all"
+msgstr ""
+
+#: idedebuggerstringconstants.lisevaluatemodify
+msgid "&Evaluate/Modify"
+msgstr "Vyhodnotit/Změnit"
+
+#: idedebuggerstringconstants.liseventlogclear
+msgid "Clear Events"
+msgstr "Vyčistit události"
+
+#: idedebuggerstringconstants.liseventlogoptions
+msgid "Event Log Options ..."
+msgstr "Volby záznamu událostí ..."
+
+#: idedebuggerstringconstants.liseventlogsavetofile
+msgid "Save Events to File"
+msgstr "Uložit události do souboru"
+
+#: idedebuggerstringconstants.liseventslogaddcomment
+msgid "Add Comment ..."
+msgstr "Přidat komentář ..."
+
+#: idedebuggerstringconstants.liseventslogaddcomment2
+msgid "Add Comment"
+msgstr "Přidat komentář"
+
+#: idedebuggerstringconstants.lisexceptiondialog
+msgid "Debugger Exception Notification"
+msgstr "Upozornění výjimky Ladiče"
+
+#: idedebuggerstringconstants.lisexport
+msgctxt "lazarusidestrconsts.lisexport"
+msgid "Export"
+msgstr "Exportovat"
+
 #: idedebuggerstringconstants.lisexpression
 msgid "Expression:"
 msgstr "Výraz:"
+
+#: idedebuggerstringconstants.lisfilenameaddress
+msgid "Filename/Address"
+msgstr "Jméno souboru/Adresa"
+
+#: idedebuggerstringconstants.lisfunction
+msgctxt "lazarusidestrconsts.lisfunction"
+msgid "Function"
+msgstr "Funkce"
+
+#: idedebuggerstringconstants.lisgotoselected
+msgid "Goto selected"
+msgstr "Vybráno Goto"
+
+#: idedebuggerstringconstants.lisgroup
+msgid "Group"
+msgstr "Skupina"
+
+#: idedebuggerstringconstants.lisgroupassignexisting
+#, object-pascal-format
+msgid "Assign to existing \"%s\" group?"
+msgstr "Přiřadit k existující skupině \"%s\"?"
+
+#: idedebuggerstringconstants.lisgroupemptydelete
+#, object-pascal-format
+msgid "No more breakpoints are assigned to group \"%s\", delete it?"
+msgstr "Žádné další body přerušení nejsou přiřazeny ke skupině \"%s\", má se smazat?"
+
+#: idedebuggerstringconstants.lisgroupemptydeletemore
+#, object-pascal-format
+msgid "%sThere are %d more empty groups, delete all?"
+msgstr "%sExistuje %d dalších prázdných skupin, smazat všechny?"
+
+#: idedebuggerstringconstants.lisgroupnameemptyclearinstead
+msgid "The group name cannot be empty. Clear breakpoints' group(s)?"
+msgstr "Jméno skupiny nemůže být prázdné. Vyčistit skupiny bodu přerušení?"
+
+#: idedebuggerstringconstants.lisgroupnameinput
+msgid "Group name:"
+msgstr "Jméno skupiny:"
+
+#: idedebuggerstringconstants.lisgroupnameinvalid
+msgid "BreakpointGroup name must be a valid Pascal identifier name."
+msgstr "Jméno skupiny bodu přerušení musí být platný identifikátor Pascalu."
+
+#: idedebuggerstringconstants.lisgroupsetnew
+msgid "Set new group ..."
+msgstr "Nastavit novou skupinu ..."
+
+#: idedebuggerstringconstants.lisgroupsetnone
+msgid "Clear group(s)"
+msgstr "Vyčistit skupiny"
+
+#: idedebuggerstringconstants.lishitcount
+msgid "Hitcount"
+msgstr "Čítač"
+
+#: idedebuggerstringconstants.lisid
+msgctxt "lazarusidestrconsts.lisid"
+msgid "ID"
+msgstr "ID"
+
+#: idedebuggerstringconstants.lisignoreexceptiontype
+msgid "Ignore this exception type"
+msgstr "Ignorovat tento typ výjimky"
+
+#: idedebuggerstringconstants.lisimport
+msgctxt "lazarusidestrconsts.lisimport"
+msgid "Import"
+msgstr "Importovat"
+
+#: idedebuggerstringconstants.lisindex
+msgid "Index"
+msgstr "Index"
+
+#: idedebuggerstringconstants.lisinspect
+msgid "&Inspect"
+msgstr "&Zkoumat"
+
+#: idedebuggerstringconstants.lisinspectaddwatch
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisinspectaddwatch"
+msgid "Add watch"
+msgstr "Přidat sledování"
+
+#: idedebuggerstringconstants.lisinspectclassinherit
+#, object-pascal-format
+msgid "%s: class %s inherits from %s"
+msgstr "%s: třída %s dědí z %s"
+
+#: idedebuggerstringconstants.lisinspectdata
+msgid "Data"
+msgstr "Data"
+
+#: idedebuggerstringconstants.lisinspectdialog
+msgid "Debug Inspector"
+msgstr "Prohlížeč ladění"
+
+#: idedebuggerstringconstants.lisinspectmethods
+msgid "Methods"
+msgstr "Metody"
+
+#: idedebuggerstringconstants.lisinspectpointerto
+#, object-pascal-format
+msgid "Pointer to %s"
+msgstr "Ukazatel na %s"
+
+#: idedebuggerstringconstants.lisinspectproperties
+msgctxt "lazarusidestrconsts.lisinspectproperties"
+msgid "Properties"
+msgstr "Vlastnosti"
 
 #: idedebuggerstringconstants.lisinspectshowcolclass
 msgid "Show class column"
@@ -234,20 +890,381 @@ msgstr ""
 msgid "Show visibility column"
 msgstr ""
 
+#: idedebuggerstringconstants.lisinspectunavailableerror
+#, object-pascal-format
+msgid "%s: unavailable (error: %s)"
+msgstr "%s: nedostupné (chyba: %s)"
+
+#: idedebuggerstringconstants.lisinspectuseinstance
+msgctxt "idedebuggerstringconstants.lisinspectuseinstance"
+msgid "Instance"
+msgstr "Instance"
+
+#: idedebuggerstringconstants.lisinspectuseinstancehint
+msgid "Use instance class"
+msgstr "Použít třídu instance"
+
+#: idedebuggerstringconstants.lisinvalidoff
+msgid "Invalid (Off)"
+msgstr "Neplatný (Vypnuto)"
+
+#: idedebuggerstringconstants.lisinvalidon
+msgid "Invalid (On)"
+msgstr "Neplatný (Zapnuto)"
+
+#: idedebuggerstringconstants.liskmevaluatemodify
+msgid "Evaluate/Modify"
+msgstr "Vyhodnocení/Upravení"
+
+#: idedebuggerstringconstants.lisless
+msgctxt "lazarusidestrconsts.lisless"
+msgid "Less"
+msgstr "Méně"
+
+#: idedebuggerstringconstants.lisline
+msgid "Line:"
+msgstr "Řádek:"
+
+#: idedebuggerstringconstants.lislinelength
+msgid "Line/Length"
+msgstr "Řádek/Délka"
+
+#: idedebuggerstringconstants.lislocals
+msgctxt "lazarusidestrconsts.lislocals"
+msgid "Local Variables"
+msgstr "Místní proměnné"
+
+#: idedebuggerstringconstants.lislocalsdlgcopyall
+msgid "Copy &all"
+msgstr "Kopírovat &vše"
+
+#: idedebuggerstringconstants.lislocalsdlgcopyname
+msgid "&Copy Name"
+msgstr "Kopírovat jméno"
+
+#: idedebuggerstringconstants.lislocalsdlgcopynamevalue
+msgid "Co&py Name and Value"
+msgstr "Ko&pírovat jméno a hodnotu"
+
+#: idedebuggerstringconstants.lislocalsdlgcopyrawvalue
+msgid "Copy &RAW Value"
+msgstr "Kopírovat &RAW hodnotu"
+
+#: idedebuggerstringconstants.lislocalsdlgcopyvalue
+msgid "C&opy Value"
+msgstr "Kopírovat hodnotu"
+
+#: idedebuggerstringconstants.lislocalsnotevaluated
+msgid "Locals not evaluated"
+msgstr "Místní nejsou vyhodnoceny"
+
+#: idedebuggerstringconstants.lislogcallstack
+msgid "Log Call Stack"
+msgstr "Zaznamenat volání zásobníku"
+
+#: idedebuggerstringconstants.lislogcallstacklimit
+msgid "(frames limit. 0 - no limits)"
+msgstr "(limit rámců, 0 - bez limitu)"
+
+#: idedebuggerstringconstants.lislogevalexpression
+msgctxt "lazarusidestrconsts.lislogevalexpression"
+msgid "Eval expression"
+msgstr "Vyhodnotit výraz"
+
+#: idedebuggerstringconstants.lislogmessage
+msgid "Log Message"
+msgstr "Zpráva záznamu"
+
+#: idedebuggerstringconstants.lismaxs
+#, object-pascal-format
+msgid "Max %d"
+msgstr "Max %d"
+
+#: idedebuggerstringconstants.lismenubreak
+msgid "&Break"
+msgstr "&Přerušit"
+
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "&Nápověda"
 
+#: idedebuggerstringconstants.lismenuviewcallstack
+msgid "Call Stack"
+msgstr "Zásobník volání"
+
+#: idedebuggerstringconstants.lismenuviewdebugevents
+msgctxt "lazarusidestrconsts.lismenuviewdebugevents"
+msgid "Event Log"
+msgstr "Záznam událostí"
+
+#: idedebuggerstringconstants.lismenuviewdebugoutput
+msgid "Debug Output"
+msgstr "Ladící výstup"
+
+#: idedebuggerstringconstants.lismore
+msgctxt "lazarusidestrconsts.lismore"
+msgid "More"
+msgstr "Více"
+
+#: idedebuggerstringconstants.lisms
+msgid "(ms)"
+msgstr "(ms)"
+
+#: idedebuggerstringconstants.lismvsavemessagestofiletxt
+msgid "Save messages to file (*.txt)"
+msgstr "Uložit zprávy do souboru (*.txt)"
+
+#: idedebuggerstringconstants.lisname
+msgctxt "lazarusidestrconsts.lisname"
+msgid "Name"
+msgstr "Jméno"
+
+#: idedebuggerstringconstants.lisoff
+msgid "? (Off)"
+msgstr "? (Vypnuto)"
+
+#: idedebuggerstringconstants.lison
+msgid "? (On)"
+msgstr "? (Zapnuto)"
+
+#: idedebuggerstringconstants.lispasscount
+msgid "Pass Count"
+msgstr "Počet průchodů"
+
+#: idedebuggerstringconstants.lispefilename
+msgid "Filename:"
+msgstr "Jméno souboru:"
+
+#: idedebuggerstringconstants.lispendingon
+msgid "Pending (On)"
+msgstr "Čekající (On)"
+
+#: idedebuggerstringconstants.lisregisters
+msgctxt "lazarusidestrconsts.lisregisters"
+msgid "Registers"
+msgstr "Registry"
+
 #: idedebuggerstringconstants.lisrepeatcount
 msgid "Repeat Count:"
 msgstr "Počet opakování:"
+
+#: idedebuggerstringconstants.lissourcebreakpoint
+msgid "&Source Breakpoint ..."
+msgstr "&Zdrojový bod přerušení ..."
+
+#: idedebuggerstringconstants.lissrcline
+#, fuzzy
+msgctxt "idedebuggerstringconstants.lissrcline"
+msgid "Line"
+msgstr "Řádek"
+
+#: idedebuggerstringconstants.lisstop
+msgctxt "lazarusidestrconsts.lisstop"
+msgid "Stop"
+msgstr "Zastavit"
 
 #: idedebuggerstringconstants.lisstyle
 msgctxt "lazarusidestrconsts.lisstyle"
 msgid "Style"
 msgstr "Styl"
 
+#: idedebuggerstringconstants.listakesnapshot
+msgid "Take a Snapshot"
+msgstr "Vytvoř snímek"
+
+#: idedebuggerstringconstants.listhreads
+msgctxt "lazarusidestrconsts.listhreads"
+msgid "Threads"
+msgstr "Vlákna"
+
+#: idedebuggerstringconstants.listhreadscurrent
+msgctxt "lazarusidestrconsts.listhreadscurrent"
+msgid "Current"
+msgstr "Aktuální"
+
+#: idedebuggerstringconstants.listhreadsfunc
+msgctxt "lazarusidestrconsts.listhreadsfunc"
+msgid "Function"
+msgstr "Funkce"
+
+#: idedebuggerstringconstants.listhreadsgoto
+msgid "Goto"
+msgstr "Jít na"
+
+#: idedebuggerstringconstants.listhreadsline
+msgctxt "lazarusidestrconsts.listhreadsline"
+msgid "Line"
+msgstr "Řádek"
+
+#: idedebuggerstringconstants.listhreadsnotevaluated
+msgid "Threads not evaluated"
+msgstr "Vlákna nejsou vyhodnocena"
+
+#: idedebuggerstringconstants.listhreadssrc
+msgctxt "lazarusidestrconsts.listhreadssrc"
+msgid "Source"
+msgstr "Zdroj"
+
+#: idedebuggerstringconstants.listhreadsstate
+msgctxt "lazarusidestrconsts.listhreadsstate"
+msgid "State"
+msgstr "Stav"
+
+#: idedebuggerstringconstants.lisvalue
+#, fuzzy
+msgctxt "idedebuggerstringconstants.lisvalue"
+msgid "Value"
+msgstr "Hodnota"
+
+#: idedebuggerstringconstants.lisviewbreakpointproperties
+msgctxt "lazarusidestrconsts.lisviewbreakpointproperties"
+msgid "Breakpoint Properties ..."
+msgstr "Vlastnosti Bodu přerušení ..."
+
+#: idedebuggerstringconstants.lisviewsource
+msgid "View Source"
+msgstr "Zobrazit zdroje"
+
+#: idedebuggerstringconstants.lisviewsourcedisass
+msgctxt "lazarusidestrconsts.lisviewsourcedisass"
+msgid "View Assembler"
+msgstr "Zobrazit assembler"
+
+#: idedebuggerstringconstants.liswatch
+msgid "&Watch"
+msgstr "&Sledování"
+
+#: idedebuggerstringconstants.liswatchdata
+msgid "Watch:"
+msgstr "Kukátko:"
+
+#: idedebuggerstringconstants.liswatchkind
+msgid "Watch action"
+msgstr "Akce kukátka"
+
+#: idedebuggerstringconstants.liswatchkindread
+msgid "Read"
+msgstr "Čtení"
+
+#: idedebuggerstringconstants.liswatchkindreadwrite
+msgid "Read/Write"
+msgstr "Čtení/Zápis"
+
+#: idedebuggerstringconstants.liswatchkindwrite
+msgid "Write"
+msgstr "Zápis"
+
+#: idedebuggerstringconstants.liswatchpoint
+msgid "&Data/Watch Breakpoint ..."
+msgstr "Data/Sledovat bod přerušení ..."
+
+#: idedebuggerstringconstants.liswatchpointbreakpoint
+msgid "&Data/watch Breakpoint ..."
+msgstr "Data/Sledovat bod přerušení ..."
+
 #: idedebuggerstringconstants.liswatchpropert
 msgid "Watch Properties"
 msgstr "Vlastnosti sledování"
+
+#: idedebuggerstringconstants.liswatchscope
+msgid "Watch scope"
+msgstr "Rozsah sledování"
+
+#: idedebuggerstringconstants.liswatchscopeglobal
+msgctxt "lazarusidestrconsts.liswatchscopeglobal"
+msgid "Global"
+msgstr "Celkový"
+
+#: idedebuggerstringconstants.liswatchscopelocal
+msgid "Declaration"
+msgstr "Deklarace"
+
+#: idedebuggerstringconstants.liswatchtowatchpoint
+msgid "Create &Data/Watch Breakpoint ..."
+msgstr "Vytvořit data/Sledovat bod přerušení ..."
+
+#: idedebuggerstringconstants.liswldeleteall
+msgid "De&lete All"
+msgstr "Sma&zat vše"
+
+#: idedebuggerstringconstants.liswldisableall
+msgid "D&isable All"
+msgstr "Z&akázat vše"
+
+#: idedebuggerstringconstants.liswlenableall
+msgid "E&nable All"
+msgstr "&Povolit vše"
+
+#: idedebuggerstringconstants.liswlexpression
+msgid "Expression"
+msgstr "Výraz"
+
+#: idedebuggerstringconstants.liswlinspectpane
+msgctxt "idedebuggerstringconstants.liswlinspectpane"
+msgid "Inspect pane"
+msgstr "Okno průzkumníka"
+
+#: idedebuggerstringconstants.liswlproperties
+msgid "&Properties"
+msgstr "&Vlastnosti"
+
+#: idedebuggerstringconstants.liswlwatchlist
+msgctxt "lazarusidestrconsts.liswlwatchlist"
+msgid "Watches"
+msgstr "Sledování"
+
+#: idedebuggerstringconstants.regdlgbinary
+msgctxt "lazarusidestrconsts.regdlgbinary"
+msgid "Binary"
+msgstr "Binární"
+
+#: idedebuggerstringconstants.regdlgdecimal
+msgctxt "lazarusidestrconsts.regdlgdecimal"
+msgid "Decimal"
+msgstr "Číselný"
+
+#: idedebuggerstringconstants.regdlgdefault
+msgctxt "idedebuggerstringconstants.regdlgdefault"
+msgid "Default"
+msgstr ""
+
+#: idedebuggerstringconstants.regdlgdisplaytypeforselectedregisters
+msgid "Display type for selected Registers"
+msgstr "Zobraz typ vybraných registrů"
+
+#: idedebuggerstringconstants.regdlgformat
+msgid "Format"
+msgstr "Formát"
+
+#: idedebuggerstringconstants.regdlghex
+msgid "Hex"
+msgstr "Šestnáctkově"
+
+#: idedebuggerstringconstants.regdlgoctal
+msgid "Octal"
+msgstr "Osmičkově"
+
+#: idedebuggerstringconstants.regdlgraw
+msgid "Raw"
+msgstr "Beze změny"
+
+#: idedebuggerstringconstants.rsattachto
+msgid "Attach to"
+msgstr "Připojit k"
+
+#: idedebuggerstringconstants.rsenterpid
+msgid "Enter PID"
+msgstr "Zadejte PID"
+
+#: idedebuggerstringconstants.synfnewvalueisempty
+msgid "\"New value\" is empty."
+msgstr ""
+
+#: idedebuggerstringconstants.synfthedebuggerwasnotabletomodifythevalue
+msgid "The debugger was not able to modify the value."
+msgstr ""
+
+#: idedebuggerstringconstants.uemtogglebreakpoint
+msgid "Toggle &Breakpoint"
+msgstr "Přepnout záložku"
 

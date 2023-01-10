@@ -110,12 +110,66 @@
         <Filename Value="debuggerdlg.pp"/>
         <UnitName Value="DebuggerDlg"/>
       </Item>
+      <Item>
+        <Filename Value="watchesdlg.pp"/>
+        <UnitName Value="WatchesDlg"/>
+      </Item>
+      <Item>
+        <Filename Value="callstackdlg.pp"/>
+        <UnitName Value="CallStackDlg"/>
+      </Item>
+      <Item>
+        <Filename Value="localsdlg.pp"/>
+        <UnitName Value="LocalsDlg"/>
+      </Item>
+      <Item>
+        <Filename Value="threaddlg.pp"/>
+        <UnitName Value="ThreadDlg"/>
+      </Item>
+      <Item>
+        <Filename Value="breakpropertydlggroups.pas"/>
+        <UnitName Value="BreakPropertyDlgGroups"/>
+      </Item>
+      <Item>
+        <Filename Value="historydlg.pp"/>
+        <UnitName Value="HistoryDlg"/>
+      </Item>
+      <Item>
+        <Filename Value="pseudoterminaldlg.pp"/>
+        <UnitName Value="PseudoTerminalDlg"/>
+      </Item>
+      <Item>
+        <Filename Value="registersdlg.pp"/>
+        <UnitName Value="RegistersDlg"/>
+      </Item>
+      <Item>
+        <Filename Value="debugoutputform.pp"/>
+        <UnitName Value="DebugOutputForm"/>
+      </Item>
+      <Item>
+        <Filename Value="exceptiondlg.pas"/>
+        <UnitName Value="ExceptionDlg"/>
+      </Item>
+      <Item>
+        <Filename Value="feedbackdlg.pp"/>
+        <UnitName Value="FeedbackDlg"/>
+      </Item>
+      <Item>
+        <Filename Value="debugattachdialog.pas"/>
+        <UnitName Value="DebugAttachDialog"/>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
     <RequiredPkgs>
+      <Item>
+        <PackageName Value="LazDebuggerGdbmi"/>
+      </Item>
+      <Item>
+        <PackageName Value="SynEdit"/>
+      </Item>
       <Item>
         <PackageName Value="IdeConfig"/>
       </Item>

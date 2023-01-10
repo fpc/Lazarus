@@ -46,7 +46,7 @@ uses
   // DebuggerIntf
   DbgIntfDebuggerBase, LazDebuggerIntf,
   // IDE
-  DebuggerStrConst, BaseDebugManager, EnvironmentOpts, Debugger, DebuggerDlg;
+  IdeDebuggerStringConstants, BaseDebugManager, EnvironmentOpts, Debugger, DebuggerDlg;
 
 type
 
@@ -117,9 +117,6 @@ function ExtractValue(const AValue: string; AType: string = ''): string;
 implementation
 
 {$R *.lfm}
-
-uses
-  LazarusIDEStrConsts;
 
 var
   DBG_DATA_MONITORS: PLazLoggerLogGroup;

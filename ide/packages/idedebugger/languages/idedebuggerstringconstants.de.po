@@ -5,10 +5,29 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
+#: idedebuggerstringconstants.dbgbreakgroupdlgcaption
+msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
+msgid "Select Groups"
+msgstr "Gruppen auswählen"
+
+#: idedebuggerstringconstants.dbgbreakgroupdlgheaderdisable
+msgid "Select groups to disable when breakpoint is hit"
+msgstr "Gruppen auswählen zum Deaktivieren bei Haltepunkt"
+
+#: idedebuggerstringconstants.dbgbreakgroupdlgheaderenable
+msgid "Select groups to enable when breakpoint is hit"
+msgstr "Gruppen auswählen zum Aktivieren bei Haltepunkt"
+
+#: idedebuggerstringconstants.dbgbreakpropertygroupnotfound
+#, object-pascal-format
+msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
+msgstr "Einige Gruppen in der Aktivierungsliste existieren nicht.%0:sErzeugen?%0:s%0:s%1:s"
+
 #: idedebuggerstringconstants.dbgdispformatbinary
+#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatbinary"
 msgid "Binary"
-msgstr ""
+msgstr "Binär"
 
 #: idedebuggerstringconstants.dbgdispformatcharacter
 #, fuzzy
@@ -86,8 +105,10 @@ msgid "Match types by name"
 msgstr ""
 
 #: idedebuggerstringconstants.dlgbackconvoptname
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dlgbackconvoptname"
 msgid "Name"
-msgstr ""
+msgstr "Name"
 
 #: idedebuggerstringconstants.dlgbackconvoptremove
 msgid "Remove"
@@ -104,6 +125,21 @@ msgstr ""
 #: idedebuggerstringconstants.dlgbackendconvoptdisabled
 msgid "- Disabled -"
 msgstr ""
+
+#: idedebuggerstringconstants.dlgenvtype
+msgctxt "lazarusidestrconsts.dlgenvtype"
+msgid "Type"
+msgstr "Typ"
+
+#: idedebuggerstringconstants.dlgfilterall
+msgctxt "lazarusidestrconsts.dlgfilterall"
+msgid "All files"
+msgstr "Alle Dateien"
+
+#: idedebuggerstringconstants.dlgfilterxml
+msgctxt "lazarusidestrconsts.dlgfilterxml"
+msgid "XML files"
+msgstr "XML-Dateien"
 
 #: idedebuggerstringconstants.dlgidedbgdebugger
 msgid "Debugger"
@@ -130,7 +166,22 @@ msgstr ""
 msgid "Index of first item to show"
 msgstr ""
 
+#: idedebuggerstringconstants.dlgunitdeprefresh
+msgctxt "lazarusidestrconsts.dlgunitdeprefresh"
+msgid "Refresh"
+msgstr "Erneuern"
+
+#: idedebuggerstringconstants.dlgvaluecolor
+msgctxt "lazarusidestrconsts.dlgvaluecolor"
+msgid "Value"
+msgstr "Wert"
+
+#: idedebuggerstringconstants.dlgvaluedataaddr
+msgid "Data-Address"
+msgstr ""
+
 #: idedebuggerstringconstants.drsaddwatch
+msgctxt "idedebuggerstringconstants.drsaddwatch"
 msgid "Add watch"
 msgstr ""
 
@@ -138,13 +189,77 @@ msgstr ""
 msgid "Append result at bottom of history"
 msgstr ""
 
+#: idedebuggerstringconstants.drsbreakpointcolwidthaction
+msgid "Action column"
+msgstr ""
+
+#: idedebuggerstringconstants.drsbreakpointcolwidthcondition
+msgid "Condition column"
+msgstr ""
+
+#: idedebuggerstringconstants.drsbreakpointcolwidthfile
+msgid "File/address column"
+msgstr ""
+
+#: idedebuggerstringconstants.drsbreakpointcolwidthgroup
+msgid "Group column"
+msgstr ""
+
+#: idedebuggerstringconstants.drsbreakpointcolwidthline
+msgctxt "idedebuggerstringconstants.drsbreakpointcolwidthline"
+msgid "Line column"
+msgstr ""
+
+#: idedebuggerstringconstants.drsbreakpointcolwidthpasscount
+msgid "Pass-count column"
+msgstr ""
+
+#: idedebuggerstringconstants.drscolwidthbrkpointimg
+msgid "Break indication column"
+msgstr ""
+
+#: idedebuggerstringconstants.drscolwidthexpression
+msgid "Expression column"
+msgstr ""
+
+#: idedebuggerstringconstants.drscolwidthfunc
+msgid "Function name column"
+msgstr ""
+
+#: idedebuggerstringconstants.drscolwidthindex
+msgid "Index column"
+msgstr ""
+
+#: idedebuggerstringconstants.drscolwidthline
+msgctxt "idedebuggerstringconstants.drscolwidthline"
+msgid "Line column"
+msgstr ""
+
+#: idedebuggerstringconstants.drscolwidthname
+msgid "Name column"
+msgstr ""
+
+#: idedebuggerstringconstants.drscolwidthsource
+msgid "Source column"
+msgstr ""
+
+#: idedebuggerstringconstants.drscolwidthstate
+msgid "State column"
+msgstr ""
+
+#: idedebuggerstringconstants.drscolwidthvalue
+msgid "Value column"
+msgstr ""
+
 #: idedebuggerstringconstants.drsdebugconverter
 msgid "Converter"
 msgstr ""
 
 #: idedebuggerstringconstants.drsdisableenableupdatesforth
+#, fuzzy
+msgctxt "idedebuggerstringconstants.drsdisableenableupdatesforth"
 msgid "Disable/Enable updates for the entire window"
-msgstr ""
+msgstr "Aktualisierungen für das ganze Fenster de-/aktivieren"
 
 #: idedebuggerstringconstants.drsenterexpression
 msgid "Enter Expression"
@@ -155,7 +270,21 @@ msgid "Evaluate"
 msgstr ""
 
 #: idedebuggerstringconstants.drshistory
+#, fuzzy
+msgctxt "idedebuggerstringconstants.drshistory"
 msgid "History"
+msgstr "Historie"
+
+#: idedebuggerstringconstants.drshistorycolwidthcurrent
+msgid "Current column"
+msgstr ""
+
+#: idedebuggerstringconstants.drshistorycolwidthlocation
+msgid "Location column"
+msgstr ""
+
+#: idedebuggerstringconstants.drshistorycolwidthtime
+msgid "Time column"
 msgstr ""
 
 #: idedebuggerstringconstants.drsinsertresultattopofhistor
@@ -164,6 +293,47 @@ msgstr ""
 
 #: idedebuggerstringconstants.drsinspect
 msgid "Inspect"
+msgstr ""
+
+#: idedebuggerstringconstants.drsinspectcolwidthdataclass
+msgid "Data class column"
+msgstr ""
+
+#: idedebuggerstringconstants.drsinspectcolwidthdataname
+msgid "Data name column"
+msgstr ""
+
+#: idedebuggerstringconstants.drsinspectcolwidthdatatype
+msgid "Data type column"
+msgstr ""
+
+#: idedebuggerstringconstants.drsinspectcolwidthdatavalue
+msgid "Data value column"
+msgstr ""
+
+#: idedebuggerstringconstants.drsinspectcolwidthdatavisibility
+msgid "Data visibility column"
+msgstr ""
+
+#: idedebuggerstringconstants.drsinspectcolwidthmethaddress
+msgid "Method address column"
+msgstr ""
+
+#: idedebuggerstringconstants.drsinspectcolwidthmethname
+msgid "Method name column"
+msgstr ""
+
+#: idedebuggerstringconstants.drsinspectcolwidthmethreturns
+msgid "Method returns column"
+msgstr ""
+
+#: idedebuggerstringconstants.drsinspectcolwidthmethtype
+msgid "Method type column"
+msgstr ""
+
+#: idedebuggerstringconstants.drslen
+#, object-pascal-format
+msgid "Len=%d: "
 msgstr ""
 
 #: idedebuggerstringconstants.drsnewvalue
@@ -186,17 +356,25 @@ msgstr ""
 msgid "Run all threads while evaluating"
 msgstr ""
 
-#: idedebuggerstringconstants.drsusefunctioncalls
-msgid "Function"
+#: idedebuggerstringconstants.drssuspend
+msgid "Suspend"
 msgstr ""
+
+#: idedebuggerstringconstants.drsusefunctioncalls
+#, fuzzy
+msgctxt "idedebuggerstringconstants.drsusefunctioncalls"
+msgid "Function"
+msgstr "Funktion"
 
 #: idedebuggerstringconstants.drsusefunctioncallshint
 msgid "Allow function calls"
 msgstr ""
 
 #: idedebuggerstringconstants.drsuseinstanceclass
+#, fuzzy
+msgctxt "idedebuggerstringconstants.drsuseinstanceclass"
 msgid "Instance"
-msgstr ""
+msgstr "Instanz"
 
 #: idedebuggerstringconstants.drsuseinstanceclasshint
 msgctxt "idedebuggerstringconstants.drsuseinstanceclasshint"
@@ -208,17 +386,494 @@ msgctxt "idedebuggerstringconstants.drsuseinstanceclasstype"
 msgid "Use Instance class type"
 msgstr ""
 
+#: idedebuggerstringconstants.drswatchsplitterinspect
+msgctxt "idedebuggerstringconstants.drswatchsplitterinspect"
+msgid "Inspect pane"
+msgstr ""
+
+#: idedebuggerstringconstants.dsrevalusedebugconverter
+msgid "Use Backend Converter"
+msgstr ""
+
+#: idedebuggerstringconstants.histdlgbtnclearhint
+msgid "Clear all snapshots"
+msgstr "Alle Snapshots löschen"
+
+#: idedebuggerstringconstants.histdlgbtnenablehint
+msgid "Toggle view snapshot or current"
+msgstr ""
+
+#: idedebuggerstringconstants.histdlgbtnmakesnaphint
+msgid "Take Snapshot"
+msgstr "Snapshot nehmen"
+
+#: idedebuggerstringconstants.histdlgbtnpowerhint
+msgid "Switch on/off automatic snapshots"
+msgstr "Automatische Snapshots ein-/ausschalten"
+
+#: idedebuggerstringconstants.histdlgbtnremovehint
+msgid "Remove selected entry"
+msgstr "Gewählten Eintrag entfernen"
+
+#: idedebuggerstringconstants.histdlgbtnshowhisthint
+msgid "View history"
+msgstr "Historie anzeigen"
+
+#: idedebuggerstringconstants.histdlgbtnshowsnaphint
+msgid "View Snapshots"
+msgstr "Snapshots anzeigen"
+
+#: idedebuggerstringconstants.histdlgcolumnloc
+msgctxt "lazarusidestrconsts.histdlgcolumnloc"
+msgid "Location"
+msgstr "Position"
+
+#: idedebuggerstringconstants.histdlgcolumntime
+msgid "Time"
+msgstr "Zeit"
+
+#: idedebuggerstringconstants.histdlgformname
+msgctxt "lazarusidestrconsts.histdlgformname"
+msgid "History"
+msgstr "Historie"
+
+#: idedebuggerstringconstants.lisactions
+msgid "Actions:"
+msgstr "Aktionen:"
+
+#: idedebuggerstringconstants.lisaddress
+msgid "Address:"
+msgstr "Adresse:"
+
+#: idedebuggerstringconstants.lisaddressbreakpoint
+msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
+msgid "&Address Breakpoint ..."
+msgstr "&Adresshaltepunkt ..."
+
 #: idedebuggerstringconstants.lisallowfunctio
 msgid "Allow Function Calls"
 msgstr "Funktionsaufrufe zulassen"
+
+#: idedebuggerstringconstants.lisautocontinueafter
+msgid "Auto continue after:"
+msgstr "Automatisch fortsetzen nach:"
+
+#: idedebuggerstringconstants.lisbpsdisabled
+msgctxt "lazarusidestrconsts.lisbpsdisabled"
+msgid "Disabled"
+msgstr "Ausgeschaltet"
+
+#: idedebuggerstringconstants.lisbpsenabled
+msgctxt "lazarusidestrconsts.lisbpsenabled"
+msgid "Enabled"
+msgstr "Eingeschaltet"
+
+#: idedebuggerstringconstants.lisbreak
+msgctxt "lazarusidestrconsts.lisbreak"
+msgid "Break"
+msgstr "Halt"
+
+#: idedebuggerstringconstants.lisbreakpointproperties
+msgid "Breakpoint Properties"
+msgstr "Haltepunkt-Eigenschaften"
+
+#: idedebuggerstringconstants.liscallstacknotevaluated
+msgid "Stack not evaluated"
+msgstr "Stack nicht ausgewertet"
+
+#: idedebuggerstringconstants.lisccoerrorcaption
+msgctxt "lazarusidestrconsts.lisccoerrorcaption"
+msgid "Error"
+msgstr "Fehler"
+
+#: idedebuggerstringconstants.lisclear
+msgid "Clear"
+msgstr ""
+
+#: idedebuggerstringconstants.liscoladdress
+msgid "Address"
+msgstr "Adresse"
+
+#: idedebuggerstringconstants.liscolclass
+msgid "Class"
+msgstr "Klasse"
+
+#: idedebuggerstringconstants.liscolreturns
+msgid "Returns"
+msgstr ""
+
+#: idedebuggerstringconstants.liscolvisibility
+msgid "Visibility"
+msgstr "Sichtbarkeit"
+
+#: idedebuggerstringconstants.liscondition
+msgid "Condition"
+msgstr "Bedingung"
+
+#: idedebuggerstringconstants.liscopyall
+msgid "Copy All"
+msgstr "Alle &kopieren"
+
+#: idedebuggerstringconstants.liscopyalloutputclipboard
+msgid "Copy all output to clipboard"
+msgstr "Alle Ausgaben in die Zwischenablage kopieren"
+
+#: idedebuggerstringconstants.liscsbottom
+msgctxt "lazarusidestrconsts.liscsbottom"
+msgid "Bottom"
+msgstr "Unten"
+
+#: idedebuggerstringconstants.liscstop
+msgctxt "lazarusidestrconsts.liscstop"
+msgid "Top"
+msgstr "Oben"
+
+#: idedebuggerstringconstants.liscurrent
+msgctxt "lazarusidestrconsts.liscurrent"
+msgid "Current"
+msgstr "Aktuell"
+
+#: idedebuggerstringconstants.lisdadattach
+msgid "Attach"
+msgstr "Anhängen"
+
+#: idedebuggerstringconstants.lisdadimagename
+msgid "Image Name"
+msgstr ""
+
+#: idedebuggerstringconstants.lisdadpid
+msgid "PID"
+msgstr "Prozesskennung (PID)"
+
+#: idedebuggerstringconstants.lisdadrunningprocesses
+msgid "Running Processes"
+msgstr "Laufende Prozesse"
+
+#: idedebuggerstringconstants.lisdbgallitemdelete
+msgctxt "lazarusidestrconsts.lisdbgallitemdelete"
+msgid "Delete all"
+msgstr "Alle löschen"
+
+#: idedebuggerstringconstants.lisdbgallitemdeletehint
+msgctxt "lazarusidestrconsts.lisdbgallitemdeletehint"
+msgid "Delete all"
+msgstr "Alle löschen"
+
+#: idedebuggerstringconstants.lisdbgallitemdisable
+msgctxt "lazarusidestrconsts.lisdbgallitemdisable"
+msgid "Disable all"
+msgstr "Alle deaktivieren"
+
+#: idedebuggerstringconstants.lisdbgallitemdisablehint
+msgctxt "lazarusidestrconsts.lisdbgallitemdisablehint"
+msgid "Disable all"
+msgstr "Alle deaktivieren"
+
+#: idedebuggerstringconstants.lisdbgallitemenable
+msgctxt "lazarusidestrconsts.lisdbgallitemenable"
+msgid "Enable all"
+msgstr "Alle aktivieren"
+
+#: idedebuggerstringconstants.lisdbgallitemenablehint
+msgctxt "lazarusidestrconsts.lisdbgallitemenablehint"
+msgid "Enable all"
+msgstr "Alle aktivieren"
+
+#: idedebuggerstringconstants.lisdbgbreakpointpropertieshint
+msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
+msgid "Breakpoint Properties ..."
+msgstr "Haltepunkt-Eigenschaften ..."
+
+#: idedebuggerstringconstants.lisdbgitemdeletehint
+msgctxt "lazarusidestrconsts.lisdbgitemdeletehint"
+msgid "Delete"
+msgstr "Löschen"
+
+#: idedebuggerstringconstants.lisdbgitemdisable
+msgctxt "lazarusidestrconsts.lisdbgitemdisable"
+msgid "Disable"
+msgstr "Deaktivieren"
+
+#: idedebuggerstringconstants.lisdbgitemdisablehint
+msgctxt "lazarusidestrconsts.lisdbgitemdisablehint"
+msgid "Disable"
+msgstr "Deaktivieren"
+
+#: idedebuggerstringconstants.lisdbgitemenable
+msgctxt "lazarusidestrconsts.lisdbgitemenable"
+msgid "Enable"
+msgstr "Aktivieren"
+
+#: idedebuggerstringconstants.lisdbgitemenablehint
+msgctxt "lazarusidestrconsts.lisdbgitemenablehint"
+msgid "Enable"
+msgstr "Aktivieren"
+
+#: idedebuggerstringconstants.lisdbgterminal
+msgid "Console In/Output"
+msgstr ""
+
+#: idedebuggerstringconstants.lisdbgwinpower
+msgid "On/Off"
+msgstr "An/Aus"
+
+#: idedebuggerstringconstants.lisdbgwinpowerhint
+msgctxt "idedebuggerstringconstants.lisdbgwinpowerhint"
+msgid "Disable/Enable updates for the entire window"
+msgstr "Aktualisierungen für das ganze Fenster de-/aktivieren"
+
+#: idedebuggerstringconstants.lisdebuggerfeedbackerror
+msgid "Debugger Error"
+msgstr "Debugger-Fehler"
+
+#: idedebuggerstringconstants.lisdebuggerfeedbackinformation
+msgid "Debugger Information"
+msgstr "Debuggerinformation"
+
+#: idedebuggerstringconstants.lisdebuggerfeedbackwarning
+msgid "Debugger Warning"
+msgstr "Debugger-Warnung"
+
+#: idedebuggerstringconstants.lisdebugoptionsfrmresume
+msgid "Resume"
+msgstr "Fortsetzen"
+
+#: idedebuggerstringconstants.lisdebugoptionsfrmresumehandled
+msgid "Resume Handled"
+msgstr "Behandelt fortsetzen"
+
+#: idedebuggerstringconstants.lisdebugoptionsfrmresumeunhandled
+msgid "Resume Unhandled"
+msgstr "Unbehandelt fortsetzen"
+
+#: idedebuggerstringconstants.lisdeleteall
+msgid "&Delete All"
+msgstr "Alle &löschen"
+
+#: idedebuggerstringconstants.lisdeleteallbreakpoints
+msgid "Delete all breakpoints?"
+msgstr "Alle Haltepunkte löschen?"
+
+#: idedebuggerstringconstants.lisdeleteallbreakpoints2
+#, object-pascal-format
+msgid "Delete all breakpoints in file \"%s\"?"
+msgstr "Alle Haltepunkte in der Datei \"%s\" löschen?"
+
+#: idedebuggerstringconstants.lisdeleteallinsamesource
+msgid "Delete All in same source"
+msgstr "Alle in der gleichen Quelle löschen"
+
+#: idedebuggerstringconstants.lisdeleteallselectedbreakpoints
+msgid "Delete all selected breakpoints?"
+msgstr "Alle gewählten Haltepunkte löschen?"
+
+#: idedebuggerstringconstants.lisdeletebreakpoint
+msgid "Delete Breakpoint"
+msgstr "Haltepunkt löschen"
+
+#: idedebuggerstringconstants.lisdeletebreakpointatline
+#, object-pascal-format
+msgid "Delete breakpoint at%s\"%s\" line %d?"
+msgstr "Haltepunkt bei %s»%s«, Zeile %d löschen?"
+
+#: idedebuggerstringconstants.lisdeletebreakpointforaddress
+#, object-pascal-format
+msgid "Delete breakpoint for address %s?"
+msgstr "Haltepunkt für Adresse %s löschen?"
+
+#: idedebuggerstringconstants.lisdeletebreakpointforwatch
+#, object-pascal-format
+msgid "Delete watchpoint for \"%s\"?"
+msgstr "Löschen der Überwachung für \"%s\"?"
 
 #: idedebuggerstringconstants.lisdigits
 msgid "Digits:"
 msgstr "Ziffern:"
 
+#: idedebuggerstringconstants.lisdisableallinsamesource
+msgid "Disable All in same source"
+msgstr "Alle Haltepunkte in der gleichen Datei abschalten"
+
+#: idedebuggerstringconstants.lisdisablebreakpoint
+msgid "Disable Breakpoint"
+msgstr "Haltepunkt deaktivieren"
+
+#: idedebuggerstringconstants.lisdisablegroups
+msgid "Disable Groups"
+msgstr "Gruppen deaktivieren"
+
+#: idedebuggerstringconstants.lisenableall
+msgid "&Enable All"
+msgstr "Alle &zulassen"
+
+#: idedebuggerstringconstants.lisenableallinsamesource
+msgid "Enable All in same source"
+msgstr "Alle in der gleichen Quelle zulassen"
+
+#: idedebuggerstringconstants.lisenablebreakpoint
+msgid "Enable Breakpoint"
+msgstr "Haltepunkt aktivieren"
+
+#: idedebuggerstringconstants.lisenablegroups
+msgid "Enable Groups"
+msgstr "Gruppen aktivieren"
+
+#: idedebuggerstringconstants.lisevalexpression
+msgctxt "lazarusidestrconsts.lisevalexpression"
+msgid "Eval expression"
+msgstr "Ausdruck berechnen"
+
+#: idedebuggerstringconstants.lisevaluateall
+msgid "Evaluate all"
+msgstr ""
+
+#: idedebuggerstringconstants.lisevaluatemodify
+msgid "&Evaluate/Modify"
+msgstr "Ausw&erten/Ändern"
+
+#: idedebuggerstringconstants.liseventlogclear
+msgid "Clear Events"
+msgstr "Ereignisse löschen"
+
+#: idedebuggerstringconstants.liseventlogoptions
+msgid "Event Log Options ..."
+msgstr "Ereignisprotokoll-Einstellungen ..."
+
+#: idedebuggerstringconstants.liseventlogsavetofile
+msgid "Save Events to File"
+msgstr "Ereignisse in Datei speichern"
+
+#: idedebuggerstringconstants.liseventslogaddcomment
+msgid "Add Comment ..."
+msgstr "Kommentar hinzufügen ..."
+
+#: idedebuggerstringconstants.liseventslogaddcomment2
+msgid "Add Comment"
+msgstr "Kommentar hinzufügen"
+
+#: idedebuggerstringconstants.lisexceptiondialog
+msgid "Debugger Exception Notification"
+msgstr "Debuggerausnahmen-Nachricht"
+
+#: idedebuggerstringconstants.lisexport
+msgctxt "lazarusidestrconsts.lisexport"
+msgid "Export"
+msgstr "Export ..."
+
 #: idedebuggerstringconstants.lisexpression
 msgid "Expression:"
 msgstr "Ausdruck:"
+
+#: idedebuggerstringconstants.lisfilenameaddress
+msgid "Filename/Address"
+msgstr "Dateiname/Adresse"
+
+#: idedebuggerstringconstants.lisfunction
+msgctxt "lazarusidestrconsts.lisfunction"
+msgid "Function"
+msgstr "Funktion"
+
+#: idedebuggerstringconstants.lisgotoselected
+msgid "Goto selected"
+msgstr ""
+
+#: idedebuggerstringconstants.lisgroup
+msgid "Group"
+msgstr "Gruppe"
+
+#: idedebuggerstringconstants.lisgroupassignexisting
+#, object-pascal-format
+msgid "Assign to existing \"%s\" group?"
+msgstr ""
+
+#: idedebuggerstringconstants.lisgroupemptydelete
+#, object-pascal-format
+msgid "No more breakpoints are assigned to group \"%s\", delete it?"
+msgstr "Keine weiteren Haltepunkte sind zur Gruppe \"%s\" zugewiesen, löschen?"
+
+#: idedebuggerstringconstants.lisgroupemptydeletemore
+#, object-pascal-format
+msgid "%sThere are %d more empty groups, delete all?"
+msgstr "%sEs gibt %d weitere leere Gruppen. Alle löschen?"
+
+#: idedebuggerstringconstants.lisgroupnameemptyclearinstead
+msgid "The group name cannot be empty. Clear breakpoints' group(s)?"
+msgstr "Der Gruppenname darf nicht leer sein. Haltepunkt-Gruppe(n) löschen?"
+
+#: idedebuggerstringconstants.lisgroupnameinput
+msgid "Group name:"
+msgstr "Gruppenname:"
+
+#: idedebuggerstringconstants.lisgroupnameinvalid
+msgid "BreakpointGroup name must be a valid Pascal identifier name."
+msgstr "Der Haltepunkt-Gruppenname muß ein gültiger Pascal-Bezeichner sein."
+
+#: idedebuggerstringconstants.lisgroupsetnew
+msgid "Set new group ..."
+msgstr ""
+
+#: idedebuggerstringconstants.lisgroupsetnone
+msgid "Clear group(s)"
+msgstr "Lösche Gruppe(n)"
+
+#: idedebuggerstringconstants.lishitcount
+msgid "Hitcount"
+msgstr "Zahl der Treffer"
+
+#: idedebuggerstringconstants.lisid
+msgctxt "lazarusidestrconsts.lisid"
+msgid "ID"
+msgstr "ID"
+
+#: idedebuggerstringconstants.lisignoreexceptiontype
+msgid "Ignore this exception type"
+msgstr "Diesen Ausnahmetyp übergehen"
+
+#: idedebuggerstringconstants.lisimport
+msgctxt "lazarusidestrconsts.lisimport"
+msgid "Import"
+msgstr "Import ..."
+
+#: idedebuggerstringconstants.lisindex
+msgid "Index"
+msgstr "Index"
+
+#: idedebuggerstringconstants.lisinspect
+msgid "&Inspect"
+msgstr "Überprüfung"
+
+#: idedebuggerstringconstants.lisinspectaddwatch
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisinspectaddwatch"
+msgid "Add watch"
+msgstr "Überwachung hinzufügen"
+
+#: idedebuggerstringconstants.lisinspectclassinherit
+#, object-pascal-format
+msgid "%s: class %s inherits from %s"
+msgstr "%s: Klasse %s erbt von %s"
+
+#: idedebuggerstringconstants.lisinspectdata
+msgid "Data"
+msgstr "Daten"
+
+#: idedebuggerstringconstants.lisinspectdialog
+msgid "Debug Inspector"
+msgstr "Debug-Inspektor"
+
+#: idedebuggerstringconstants.lisinspectmethods
+msgid "Methods"
+msgstr "Methoden"
+
+#: idedebuggerstringconstants.lisinspectpointerto
+#, object-pascal-format
+msgid "Pointer to %s"
+msgstr "Zeiger auf %s"
+
+#: idedebuggerstringconstants.lisinspectproperties
+msgctxt "lazarusidestrconsts.lisinspectproperties"
+msgid "Properties"
+msgstr "Properties"
 
 #: idedebuggerstringconstants.lisinspectshowcolclass
 msgid "Show class column"
@@ -232,20 +887,381 @@ msgstr ""
 msgid "Show visibility column"
 msgstr ""
 
+#: idedebuggerstringconstants.lisinspectunavailableerror
+#, object-pascal-format
+msgid "%s: unavailable (error: %s)"
+msgstr "%s: nicht verfügbar (Fehler: %s)"
+
+#: idedebuggerstringconstants.lisinspectuseinstance
+msgctxt "idedebuggerstringconstants.lisinspectuseinstance"
+msgid "Instance"
+msgstr "Instanz"
+
+#: idedebuggerstringconstants.lisinspectuseinstancehint
+msgid "Use instance class"
+msgstr ""
+
+#: idedebuggerstringconstants.lisinvalidoff
+msgid "Invalid (Off)"
+msgstr "Ungültig (Aus)"
+
+#: idedebuggerstringconstants.lisinvalidon
+msgid "Invalid (On)"
+msgstr "Ungültig (An)"
+
+#: idedebuggerstringconstants.liskmevaluatemodify
+msgid "Evaluate/Modify"
+msgstr "Überprüfen/Ändern"
+
+#: idedebuggerstringconstants.lisless
+msgctxt "lazarusidestrconsts.lisless"
+msgid "Less"
+msgstr "Weniger"
+
+#: idedebuggerstringconstants.lisline
+msgid "Line:"
+msgstr "Zeile:"
+
+#: idedebuggerstringconstants.lislinelength
+msgid "Line/Length"
+msgstr "Zeile/Länge"
+
+#: idedebuggerstringconstants.lislocals
+msgctxt "lazarusidestrconsts.lislocals"
+msgid "Local Variables"
+msgstr "Lokale Variablen"
+
+#: idedebuggerstringconstants.lislocalsdlgcopyall
+msgid "Copy &all"
+msgstr ""
+
+#: idedebuggerstringconstants.lislocalsdlgcopyname
+msgid "&Copy Name"
+msgstr "Namen kopieren"
+
+#: idedebuggerstringconstants.lislocalsdlgcopynamevalue
+msgid "Co&py Name and Value"
+msgstr ""
+
+#: idedebuggerstringconstants.lislocalsdlgcopyrawvalue
+msgid "Copy &RAW Value"
+msgstr "&RAW-Wert kopieren"
+
+#: idedebuggerstringconstants.lislocalsdlgcopyvalue
+msgid "C&opy Value"
+msgstr "Wert k&opieren"
+
+#: idedebuggerstringconstants.lislocalsnotevaluated
+msgid "Locals not evaluated"
+msgstr "Lokale Variablen nicht ausgewertet"
+
+#: idedebuggerstringconstants.lislogcallstack
+msgid "Log Call Stack"
+msgstr "Aufrufstack protokollieren"
+
+#: idedebuggerstringconstants.lislogcallstacklimit
+msgid "(frames limit. 0 - no limits)"
+msgstr "(Limit für Frames. 0 - keine Limits)"
+
+#: idedebuggerstringconstants.lislogevalexpression
+msgctxt "lazarusidestrconsts.lislogevalexpression"
+msgid "Eval expression"
+msgstr "Ausdruck berechnen"
+
+#: idedebuggerstringconstants.lislogmessage
+msgid "Log Message"
+msgstr "Protokoll"
+
+#: idedebuggerstringconstants.lismaxs
+#, object-pascal-format
+msgid "Max %d"
+msgstr "Max %d"
+
+#: idedebuggerstringconstants.lismenubreak
+msgid "&Break"
+msgstr ""
+
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "&Hilfe"
 
+#: idedebuggerstringconstants.lismenuviewcallstack
+msgid "Call Stack"
+msgstr "Aufrufstack"
+
+#: idedebuggerstringconstants.lismenuviewdebugevents
+msgctxt "lazarusidestrconsts.lismenuviewdebugevents"
+msgid "Event Log"
+msgstr "Ereignis-Protokoll"
+
+#: idedebuggerstringconstants.lismenuviewdebugoutput
+msgid "Debug Output"
+msgstr "Debuggerausgaben"
+
+#: idedebuggerstringconstants.lismore
+msgctxt "lazarusidestrconsts.lismore"
+msgid "More"
+msgstr "Weiter"
+
+#: idedebuggerstringconstants.lisms
+msgid "(ms)"
+msgstr "(ms)"
+
+#: idedebuggerstringconstants.lismvsavemessagestofiletxt
+msgid "Save messages to file (*.txt)"
+msgstr "Meldungen in eine Datei (*.txt) schreiben"
+
+#: idedebuggerstringconstants.lisname
+msgctxt "lazarusidestrconsts.lisname"
+msgid "Name"
+msgstr "Name"
+
+#: idedebuggerstringconstants.lisoff
+msgid "? (Off)"
+msgstr "? (Aus)"
+
+#: idedebuggerstringconstants.lison
+msgid "? (On)"
+msgstr "? (An)"
+
+#: idedebuggerstringconstants.lispasscount
+msgid "Pass Count"
+msgstr "Laufzähler"
+
+#: idedebuggerstringconstants.lispefilename
+msgid "Filename:"
+msgstr "Dateiname:"
+
+#: idedebuggerstringconstants.lispendingon
+msgid "Pending (On)"
+msgstr ""
+
+#: idedebuggerstringconstants.lisregisters
+msgctxt "lazarusidestrconsts.lisregisters"
+msgid "Registers"
+msgstr "Register"
+
 #: idedebuggerstringconstants.lisrepeatcount
 msgid "Repeat Count:"
 msgstr "Wiederholungen:"
+
+#: idedebuggerstringconstants.lissourcebreakpoint
+msgid "&Source Breakpoint ..."
+msgstr "&Quelltexthaltepunkt ..."
+
+#: idedebuggerstringconstants.lissrcline
+#, fuzzy
+msgctxt "idedebuggerstringconstants.lissrcline"
+msgid "Line"
+msgstr "Zeile"
+
+#: idedebuggerstringconstants.lisstop
+msgctxt "lazarusidestrconsts.lisstop"
+msgid "Stop"
+msgstr "Halt"
 
 #: idedebuggerstringconstants.lisstyle
 msgctxt "lazarusidestrconsts.lisstyle"
 msgid "Style"
 msgstr "Stil"
 
+#: idedebuggerstringconstants.listakesnapshot
+msgid "Take a Snapshot"
+msgstr "Einen Snapshot verwenden"
+
+#: idedebuggerstringconstants.listhreads
+msgctxt "lazarusidestrconsts.listhreads"
+msgid "Threads"
+msgstr "Threads"
+
+#: idedebuggerstringconstants.listhreadscurrent
+msgctxt "lazarusidestrconsts.listhreadscurrent"
+msgid "Current"
+msgstr "Aktuell"
+
+#: idedebuggerstringconstants.listhreadsfunc
+msgctxt "lazarusidestrconsts.listhreadsfunc"
+msgid "Function"
+msgstr "Funktion"
+
+#: idedebuggerstringconstants.listhreadsgoto
+msgid "Goto"
+msgstr "Gehe zu"
+
+#: idedebuggerstringconstants.listhreadsline
+msgctxt "lazarusidestrconsts.listhreadsline"
+msgid "Line"
+msgstr "Zeile"
+
+#: idedebuggerstringconstants.listhreadsnotevaluated
+msgid "Threads not evaluated"
+msgstr "Threads nicht ausgewertet"
+
+#: idedebuggerstringconstants.listhreadssrc
+msgctxt "lazarusidestrconsts.listhreadssrc"
+msgid "Source"
+msgstr "Quelle"
+
+#: idedebuggerstringconstants.listhreadsstate
+msgctxt "lazarusidestrconsts.listhreadsstate"
+msgid "State"
+msgstr "Status"
+
+#: idedebuggerstringconstants.lisvalue
+#, fuzzy
+msgctxt "idedebuggerstringconstants.lisvalue"
+msgid "Value"
+msgstr "Wert"
+
+#: idedebuggerstringconstants.lisviewbreakpointproperties
+msgctxt "lazarusidestrconsts.lisviewbreakpointproperties"
+msgid "Breakpoint Properties ..."
+msgstr "Haltepunkt-Eigenschaften ..."
+
+#: idedebuggerstringconstants.lisviewsource
+msgid "View Source"
+msgstr "Quelle anzeigen"
+
+#: idedebuggerstringconstants.lisviewsourcedisass
+msgctxt "lazarusidestrconsts.lisviewsourcedisass"
+msgid "View Assembler"
+msgstr "Assembler anzeigen"
+
+#: idedebuggerstringconstants.liswatch
+msgid "&Watch"
+msgstr "Über&wachen"
+
+#: idedebuggerstringconstants.liswatchdata
+msgid "Watch:"
+msgstr "Überwachen:"
+
+#: idedebuggerstringconstants.liswatchkind
+msgid "Watch action"
+msgstr "Überwache Aktion"
+
+#: idedebuggerstringconstants.liswatchkindread
+msgid "Read"
+msgstr ""
+
+#: idedebuggerstringconstants.liswatchkindreadwrite
+msgid "Read/Write"
+msgstr ""
+
+#: idedebuggerstringconstants.liswatchkindwrite
+msgid "Write"
+msgstr ""
+
+#: idedebuggerstringconstants.liswatchpoint
+msgid "&Data/Watch Breakpoint ..."
+msgstr "&Datenhaltepunkt ..."
+
+#: idedebuggerstringconstants.liswatchpointbreakpoint
+msgid "&Data/watch Breakpoint ..."
+msgstr "&Datenhaltepunkt ..."
+
 #: idedebuggerstringconstants.liswatchpropert
 msgid "Watch Properties"
 msgstr "Eigenschaften überwachen"
+
+#: idedebuggerstringconstants.liswatchscope
+msgid "Watch scope"
+msgstr "Überwache Bereich"
+
+#: idedebuggerstringconstants.liswatchscopeglobal
+msgctxt "lazarusidestrconsts.liswatchscopeglobal"
+msgid "Global"
+msgstr "Allgemein"
+
+#: idedebuggerstringconstants.liswatchscopelocal
+msgid "Declaration"
+msgstr "Deklaration"
+
+#: idedebuggerstringconstants.liswatchtowatchpoint
+msgid "Create &Data/Watch Breakpoint ..."
+msgstr "&Datenhaltepunkt erstellen ..."
+
+#: idedebuggerstringconstants.liswldeleteall
+msgid "De&lete All"
+msgstr "Alle &Löschen"
+
+#: idedebuggerstringconstants.liswldisableall
+msgid "D&isable All"
+msgstr "Alle A&bschalten"
+
+#: idedebuggerstringconstants.liswlenableall
+msgid "E&nable All"
+msgstr "Alle &einschalten"
+
+#: idedebuggerstringconstants.liswlexpression
+msgid "Expression"
+msgstr "Ausdruck"
+
+#: idedebuggerstringconstants.liswlinspectpane
+msgctxt "idedebuggerstringconstants.liswlinspectpane"
+msgid "Inspect pane"
+msgstr ""
+
+#: idedebuggerstringconstants.liswlproperties
+msgid "&Properties"
+msgstr "&Eigenschaften"
+
+#: idedebuggerstringconstants.liswlwatchlist
+msgctxt "lazarusidestrconsts.liswlwatchlist"
+msgid "Watches"
+msgstr "Liste der überwachten Ausdrücke"
+
+#: idedebuggerstringconstants.regdlgbinary
+msgctxt "lazarusidestrconsts.regdlgbinary"
+msgid "Binary"
+msgstr "Binär"
+
+#: idedebuggerstringconstants.regdlgdecimal
+msgctxt "lazarusidestrconsts.regdlgdecimal"
+msgid "Decimal"
+msgstr "Dezimal"
+
+#: idedebuggerstringconstants.regdlgdefault
+msgctxt "idedebuggerstringconstants.regdlgdefault"
+msgid "Default"
+msgstr ""
+
+#: idedebuggerstringconstants.regdlgdisplaytypeforselectedregisters
+msgid "Display type for selected Registers"
+msgstr "Anzeigetyp für gewählte Register"
+
+#: idedebuggerstringconstants.regdlgformat
+msgid "Format"
+msgstr "Format"
+
+#: idedebuggerstringconstants.regdlghex
+msgid "Hex"
+msgstr ""
+
+#: idedebuggerstringconstants.regdlgoctal
+msgid "Octal"
+msgstr ""
+
+#: idedebuggerstringconstants.regdlgraw
+msgid "Raw"
+msgstr ""
+
+#: idedebuggerstringconstants.rsattachto
+msgid "Attach to"
+msgstr "Anhängen an"
+
+#: idedebuggerstringconstants.rsenterpid
+msgid "Enter PID"
+msgstr "Geben Sie die PID ein:"
+
+#: idedebuggerstringconstants.synfnewvalueisempty
+msgid "\"New value\" is empty."
+msgstr ""
+
+#: idedebuggerstringconstants.synfthedebuggerwasnotabletomodifythevalue
+msgid "The debugger was not able to modify the value."
+msgstr ""
+
+#: idedebuggerstringconstants.uemtogglebreakpoint
+msgid "Toggle &Breakpoint"
+msgstr "Haltepunkt umschal&ten"
 

@@ -14,7 +14,9 @@ uses
   IdeDebuggerBackendValueConv, IdeDbgValueConverterSettingsFrame, 
   IdeDebugger_ValConv_Options, IdeDebuggerOpts, IdeDebuggerWatchResultJSon, 
   WatchInspectToolbar, BaseDebugManager, WatchPropertyDlg, DebuggerDlg, 
-  LazarusPackageIntf;
+  WatchesDlg, CallStackDlg, LocalsDlg, ThreadDlg, BreakPropertyDlgGroups, 
+  HistoryDlg, PseudoTerminalDlg, RegistersDlg, DebugOutputForm, ExceptionDlg, 
+  FeedbackDlg, DebugAttachDialog, LazarusPackageIntf;
 
 implementation
 

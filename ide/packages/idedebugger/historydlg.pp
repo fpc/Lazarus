@@ -5,9 +5,9 @@ unit HistoryDlg;
 interface
 
 uses
-  Classes, SysUtils, ComCtrls, Debugger, DebuggerDlg, LazarusIDEStrConsts, Forms,
-  IDEWindowIntf, DebuggerStrConst,
-  BaseDebugManager, IDEImagesIntf, Dialogs;
+  Classes, SysUtils, ComCtrls, Debugger, DebuggerDlg, Forms,
+  IDEWindowIntf,
+  BaseDebugManager, IDEImagesIntf, Dialogs, IdeDebuggerStringConstants;
 
 type
 

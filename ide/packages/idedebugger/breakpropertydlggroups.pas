@@ -11,7 +11,7 @@ uses
   // LazUtils
   LazUTF8,
   // IDE
-  Debugger, LazarusIDEStrConsts;
+  Debugger, IdeDebuggerStringConstants;
 
 type
 

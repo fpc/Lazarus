@@ -51,6 +51,8 @@ uses
   // IDEIntf
   IDEWindowIntf, SrcEditorIntf, MenuIntf, IDECommands, LazIDEIntf, ProjectIntf,
   LazarusCommonStrConst, CompOptsIntf, IDEDialogs, ToolBarIntf,
+  // IDEDebugger
+  IdeDebuggerStringConstants,
   // IDE
   CompilerOptions, EnvironmentOpts, SourceEditor, ProjectDefs, Project,
   InputHistory, Debugger, LazarusIDEStrConsts, TransferMacros, MainBar,

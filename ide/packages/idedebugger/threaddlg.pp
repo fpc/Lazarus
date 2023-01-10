@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, SysUtils, ComCtrls, LCLProc, LazLoggerBase, Debugger, DebuggerDlg,
-  Forms, LazarusIDEStrConsts, IDEWindowIntf, DebuggerStrConst, BaseDebugManager,
-  IDEImagesIntf, DbgIntfDebuggerBase, LazDebuggerIntfBaseTypes;
+  Forms, IDEWindowIntf, BaseDebugManager,
+  IDEImagesIntf, DbgIntfDebuggerBase, LazDebuggerIntfBaseTypes, IdeDebuggerStringConstants;
 
 type
 

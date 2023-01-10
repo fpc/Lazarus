@@ -37,10 +37,10 @@ interface
 
 uses
   SysUtils, Classes, Math, Controls, Forms, LCLProc, LazLoggerBase,
-  IDEWindowIntf, DebuggerStrConst, ComCtrls, Debugger, DebuggerDlg, Menus,
+  IDEWindowIntf, ComCtrls, Debugger, DebuggerDlg, Menus,
   ClipBrd, ExtCtrls, StdCtrls, ActnList, IDEImagesIntf, IDECommands,
   DbgIntfDebuggerBase, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
-  EnvironmentOpts;
+  EnvironmentOpts, IdeDebuggerStringConstants;
 
 type
 
@@ -152,7 +152,7 @@ implementation
 {$R *.lfm}
 
 uses
-  BaseDebugManager, LazarusIDEStrConsts;
+  BaseDebugManager;
 
 var
   DBG_DATA_MONITORS: PLazLoggerLogGroup;
@@ -819,7 +819,7 @@ begin
 
   lvCallStack.Columns[1].Caption:= lisIndex;
   lvCallStack.Columns[2].Caption:= histdlgColumnLoc;
-  lvCallStack.Columns[3].Caption:= dlgAddHiAttrGroupLine;
+  lvCallStack.Columns[3].Caption:= lisSrcLine;
   lvCallStack.Columns[4].Caption:= lisFunction;
 
   ToolBar1.Images := IDEImages.Images_16;

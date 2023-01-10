@@ -13,24 +13,6 @@ msgstr ""
 "X-Generator: Poedit 3.0\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: lazarusidestrconsts.dbgbreakgroupdlgcaption
-msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
-msgid "Select Groups"
-msgstr "Sélectionner les groupes"
-
-#: lazarusidestrconsts.dbgbreakgroupdlgheaderdisable
-msgid "Select groups to disable when breakpoint is hit"
-msgstr "Sélectionner les groupes à désactiver dès le point d'arrêt atteint"
-
-#: lazarusidestrconsts.dbgbreakgroupdlgheaderenable
-msgid "Select groups to enable when breakpoint is hit"
-msgstr "Sélectionner les groupes à activer dès le point d'arrêt atteint"
-
-#: lazarusidestrconsts.dbgbreakpropertygroupnotfound
-#, object-pascal-format
-msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
-msgstr "Certains groupes de la liste Activer/désactiver n'existent pas.%0:sFaut-il les créer ?%0:s%0:s%1:s"
-
 #: lazarusidestrconsts.dbgeventbreakaddressbreakpoint
 #, object-pascal-format
 msgid "Address Breakpoint %s"
@@ -4131,10 +4113,6 @@ msgctxt "lazarusidestrconsts.dlgvaluecolor"
 msgid "Value"
 msgstr "Valeur"
 
-#: lazarusidestrconsts.dlgvaluedataaddr
-msgid "Data-Address"
-msgstr ""
-
 #: lazarusidestrconsts.dlgverbosity
 msgid "Verbosity during compilation:"
 msgstr "Messages détaillés pendant la compilation :"
@@ -4298,48 +4276,6 @@ msgstr "Ordre Z"
 #: lazarusidestrconsts.gldhighlightbothsidesofcursor
 msgid "On Both Sides"
 msgstr "Des deux côtés"
-
-#: lazarusidestrconsts.histdlgbtnclearhint
-msgid "Clear all snapshots"
-msgstr "Nettoyer les instantanés"
-
-#: lazarusidestrconsts.histdlgbtnenablehint
-msgid "Toggle view snapshot or current"
-msgstr "Inverser l'affichage (instantané ou en cours)"
-
-#: lazarusidestrconsts.histdlgbtnmakesnaphint
-msgid "Take Snapshot"
-msgstr "Prendre un instantané"
-
-#: lazarusidestrconsts.histdlgbtnpowerhint
-msgid "Switch on/off automatic snapshots"
-msgstr "Lancer/stopper les instantanés automatiques"
-
-#: lazarusidestrconsts.histdlgbtnremovehint
-msgid "Remove selected entry"
-msgstr "Supprimer l'entrée sélectionnée"
-
-#: lazarusidestrconsts.histdlgbtnshowhisthint
-msgid "View history"
-msgstr "Voir l'historique"
-
-#: lazarusidestrconsts.histdlgbtnshowsnaphint
-msgid "View Snapshots"
-msgstr "Voir les instantanés"
-
-#: lazarusidestrconsts.histdlgcolumnloc
-msgctxt "lazarusidestrconsts.histdlgcolumnloc"
-msgid "Location"
-msgstr "Emplacement"
-
-#: lazarusidestrconsts.histdlgcolumntime
-msgid "Time"
-msgstr "Heure"
-
-#: lazarusidestrconsts.histdlgformname
-msgctxt "lazarusidestrconsts.histdlgformname"
-msgid "History"
-msgstr "Historique"
 
 #: lazarusidestrconsts.initdlgdebugchangepath
 msgid "Change path"
@@ -4776,10 +4712,6 @@ msgstr "Remerciements"
 msgid "Action:"
 msgstr "Action :"
 
-#: lazarusidestrconsts.lisactions
-msgid "Actions:"
-msgstr "Actions :"
-
 #: lazarusidestrconsts.lisactivate
 msgid "Activate"
 msgstr "Activer"
@@ -4894,15 +4826,6 @@ msgstr "Ajouter un paquet au projet"
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
 msgstr "Ajouter un paramètre entre parenthèses"
-
-#: lazarusidestrconsts.lisaddress
-msgid "Address:"
-msgstr "Adresse :"
-
-#: lazarusidestrconsts.lisaddressbreakpoint
-msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
-msgid "&Address Breakpoint ..."
-msgstr "&Adresse du point d'arrêt..."
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
@@ -5198,10 +5121,6 @@ msgstr "Complétion automatique inactive"
 msgid "Auto completion: on"
 msgstr "Complétion automatique active"
 
-#: lazarusidestrconsts.lisautocontinueafter
-msgid "Auto continue after:"
-msgstr "Continuer automatiquement après :"
-
 #: lazarusidestrconsts.lisautomarkup
 msgid "Markup and Matches"
 msgstr "Balisage et correspondances"
@@ -5381,24 +5300,10 @@ msgstr "Il s'agit du contrôle frère auquel le côté inférieur est ancré. Le
 msgid "Bottom space equally"
 msgstr "Espacement égal en bas"
 
-#: lazarusidestrconsts.lisbpsdisabled
-msgctxt "lazarusidestrconsts.lisbpsdisabled"
-msgid "Disabled"
-msgstr "Désactivé"
-
-#: lazarusidestrconsts.lisbpsenabled
-msgctxt "lazarusidestrconsts.lisbpsenabled"
-msgid "Enabled"
-msgstr "Activé"
-
 #: lazarusidestrconsts.lisbreak
 msgctxt "lazarusidestrconsts.lisbreak"
 msgid "Break"
 msgstr "Pause"
-
-#: lazarusidestrconsts.lisbreakpointproperties
-msgid "Breakpoint Properties"
-msgstr "Propriétés du point d'arrêt"
 
 #: lazarusidestrconsts.lisbrowseandselectacompiler
 msgid "Browse and select a compiler (e.g. ppcx64"
@@ -5517,10 +5422,6 @@ msgstr "%s octet"
 #, object-pascal-format
 msgid "Calling %s to create Makefile from %s failed."
 msgstr "L'appel de %s pour créer le Makefile depuis %s a échoué."
-
-#: lazarusidestrconsts.liscallstacknotevaluated
-msgid "Stack not evaluated"
-msgstr "Pile non évaluée"
 
 #: lazarusidestrconsts.liscancelloadingthiscomponent
 msgid "Cancel loading this component"
@@ -7125,14 +7026,6 @@ msgstr "Exécuter après"
 msgid "Execute before"
 msgstr "Exécuter avant"
 
-#: lazarusidestrconsts.liscoladdress
-msgid "Address"
-msgstr "Adresse"
-
-#: lazarusidestrconsts.liscolclass
-msgid "Class"
-msgstr "Classe"
-
 #: lazarusidestrconsts.liscollapseall
 msgid "Collapse All (/)"
 msgstr "Tout replier (/)"
@@ -7148,14 +7041,6 @@ msgstr "Replier tous les paquets"
 #: lazarusidestrconsts.liscollapseallunits
 msgid "Collapse all units"
 msgstr "Replier toutes les unités"
-
-#: lazarusidestrconsts.liscolreturns
-msgid "Returns"
-msgstr "Retourne"
-
-#: lazarusidestrconsts.liscolvisibility
-msgid "Visibility"
-msgstr "Visibilité"
 
 #: lazarusidestrconsts.liscomboboxes
 msgid "Combo Boxes"
@@ -7961,10 +7846,6 @@ msgctxt "lazarusidestrconsts.liscopy"
 msgid "Copy"
 msgstr "Copier"
 
-#: lazarusidestrconsts.liscopyall
-msgid "Copy All"
-msgstr "Tout copier"
-
 #: lazarusidestrconsts.liscopyallitemstoclipboard
 msgid "Copy All Items to Clipboard"
 msgstr "Copier tous les éléments dans le presse-papiers"
@@ -7972,10 +7853,6 @@ msgstr "Copier tous les éléments dans le presse-papiers"
 #: lazarusidestrconsts.liscopyalloriginalmessagestoclipboard
 msgid "Copy All/Original Messages to Clipboard"
 msgstr "Copier les messages (Tous/originaux) dans le presse-papiers"
-
-#: lazarusidestrconsts.liscopyalloutputclipboard
-msgid "Copy all output to clipboard"
-msgstr "Copier toutes les sorties dans le presse-papiers"
 
 #: lazarusidestrconsts.liscopyallshownmessagestoclipboard
 msgid "Copy All Shown Messages to Clipboard"
@@ -8162,16 +8039,6 @@ msgstr "Créer/mettre à jour le fichier .po en enregistrant le fichier lfm"
 msgid "Creating file index of FPC sources %s ..."
 msgstr "Création du fichier d'index des codes sources de FPC %s..."
 
-#: lazarusidestrconsts.liscsbottom
-msgctxt "lazarusidestrconsts.liscsbottom"
-msgid "Bottom"
-msgstr "Bas"
-
-#: lazarusidestrconsts.liscstop
-msgctxt "lazarusidestrconsts.liscstop"
-msgid "Top"
-msgstr "Haut"
-
 #: lazarusidestrconsts.lisctdefchoosedirectory
 msgid "Choose Directory"
 msgstr "Choisir le répertoire"
@@ -8225,11 +8092,6 @@ msgstr "veuillez choisir une macro"
 msgid "Select Code Macro"
 msgstr "Veuillez choisir une macro"
 
-#: lazarusidestrconsts.liscurrent
-msgctxt "lazarusidestrconsts.liscurrent"
-msgid "Current"
-msgstr "En cours"
-
 #: lazarusidestrconsts.liscurrentlclwidgetset
 #, object-pascal-format
 msgid "Current LCL widgetset: \"%s\""
@@ -8276,22 +8138,6 @@ msgctxt "lazarusidestrconsts.liscut"
 msgid "Cut"
 msgstr "Couper"
 
-#: lazarusidestrconsts.lisdadattach
-msgid "Attach"
-msgstr "Attacher"
-
-#: lazarusidestrconsts.lisdadimagename
-msgid "Image Name"
-msgstr "Nom de l'image"
-
-#: lazarusidestrconsts.lisdadpid
-msgid "PID"
-msgstr "PID"
-
-#: lazarusidestrconsts.lisdadrunningprocesses
-msgid "Running Processes"
-msgstr "Processus en cours"
-
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
 msgstr "Module de données"
@@ -8300,36 +8146,6 @@ msgstr "Module de données"
 msgid "Date"
 msgstr "Date"
 
-#: lazarusidestrconsts.lisdbgallitemdelete
-msgctxt "lazarusidestrconsts.lisdbgallitemdelete"
-msgid "Delete all"
-msgstr "Tout effacer"
-
-#: lazarusidestrconsts.lisdbgallitemdeletehint
-msgctxt "lazarusidestrconsts.lisdbgallitemdeletehint"
-msgid "Delete all"
-msgstr "Tout effacer"
-
-#: lazarusidestrconsts.lisdbgallitemdisable
-msgctxt "lazarusidestrconsts.lisdbgallitemdisable"
-msgid "Disable all"
-msgstr "Tout désactiver"
-
-#: lazarusidestrconsts.lisdbgallitemdisablehint
-msgctxt "lazarusidestrconsts.lisdbgallitemdisablehint"
-msgid "Disable all"
-msgstr "Tout désactiver"
-
-#: lazarusidestrconsts.lisdbgallitemenable
-msgctxt "lazarusidestrconsts.lisdbgallitemenable"
-msgid "Enable all"
-msgstr "Tout activer"
-
-#: lazarusidestrconsts.lisdbgallitemenablehint
-msgctxt "lazarusidestrconsts.lisdbgallitemenablehint"
-msgid "Enable all"
-msgstr "Tout activer"
-
 #: lazarusidestrconsts.lisdbgasmcopyaddresstoclipboard
 msgid "Copy address to Clipboard"
 msgstr ""
@@ -8337,11 +8153,6 @@ msgstr ""
 #: lazarusidestrconsts.lisdbgasmcopytoclipboard
 msgid "Copy to Clipboard"
 msgstr "Copier vers le presse-papiers"
-
-#: lazarusidestrconsts.lisdbgbreakpointpropertieshint
-msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
-msgid "Breakpoint Properties ..."
-msgstr "Propriétés du point d'arrêt..."
 
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
@@ -8403,31 +8214,6 @@ msgstr "Message Windows posté"
 msgid "Windows Message Sent"
 msgstr "Message Windows envoyé"
 
-#: lazarusidestrconsts.lisdbgitemdeletehint
-msgctxt "lazarusidestrconsts.lisdbgitemdeletehint"
-msgid "Delete"
-msgstr "Supprimer"
-
-#: lazarusidestrconsts.lisdbgitemdisable
-msgctxt "lazarusidestrconsts.lisdbgitemdisable"
-msgid "Disable"
-msgstr "Désactiver"
-
-#: lazarusidestrconsts.lisdbgitemdisablehint
-msgctxt "lazarusidestrconsts.lisdbgitemdisablehint"
-msgid "Disable"
-msgstr "Désactiver"
-
-#: lazarusidestrconsts.lisdbgitemenable
-msgctxt "lazarusidestrconsts.lisdbgitemenable"
-msgid "Enable"
-msgstr "Activer"
-
-#: lazarusidestrconsts.lisdbgitemenablehint
-msgctxt "lazarusidestrconsts.lisdbgitemenablehint"
-msgid "Enable"
-msgstr "Activer"
-
 #: lazarusidestrconsts.lisdbgmangnodebuggerspecified
 msgid "No debugger specified"
 msgstr "Pas de débogueur spécifié"
@@ -8440,19 +8226,6 @@ msgstr "Placer le point d'arrêt de toute façon"
 #, object-pascal-format
 msgid "There is no debugger specified.%sSetting breakpoints have no effect until you set up a Debugger in the debugger options dialog in the menu."
 msgstr "Aucun débogueur n'a été spécifié.%sPlacer des points d'arrêt n'aura aucun effet jusqu'à ce qu'un débogueur soit configuré dans la boîte de dialogue des options du débogueur dans le menu."
-
-#: lazarusidestrconsts.lisdbgterminal
-msgctxt "lazarusidestrconsts.lisdbgterminal"
-msgid "Console In/Output"
-msgstr "Entrée et sortie de la console"
-
-#: lazarusidestrconsts.lisdbgwinpower
-msgid "On/Off"
-msgstr "Activé/désactivé"
-
-#: lazarusidestrconsts.lisdbgwinpowerhint
-msgid "Disable/Enable updates for the entire window"
-msgstr "Désactiver/activer les mises à jour pour la fenêtre entière"
 
 #: lazarusidestrconsts.lisdebug
 msgctxt "lazarusidestrconsts.lisdebug"
@@ -8469,18 +8242,6 @@ msgstr "Débogueur"
 #| msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
 msgid "The debugger encountered an internal error.%0:s%0:sSave your work.%0:sYou may then hit \"Stop\", or \"Reset debugger\" to terminate the debug session."
 msgstr "Erreur du débogueur.%sLe débogueur est en état d'erreur.%sEnregistrez votre travail immédiatement !%sCliquez sur Arrêter et croisez les doigts : nous ne répondons plus de rien."
-
-#: lazarusidestrconsts.lisdebuggerfeedbackerror
-msgid "Debugger Error"
-msgstr "Erreur du débogueur"
-
-#: lazarusidestrconsts.lisdebuggerfeedbackinformation
-msgid "Debugger Information"
-msgstr "Information du débogueur"
-
-#: lazarusidestrconsts.lisdebuggerfeedbackwarning
-msgid "Debugger Warning"
-msgstr "Avertissement du débogueur"
 
 #: lazarusidestrconsts.lisdebuggerinvalid
 msgid "Debugger invalid"
@@ -8619,18 +8380,6 @@ msgstr "Processus"
 msgid "Reset Debugger after each run"
 msgstr "Réinitialiser le débogueur après chaque exécution"
 
-#: lazarusidestrconsts.lisdebugoptionsfrmresume
-msgid "Resume"
-msgstr "Reprendre"
-
-#: lazarusidestrconsts.lisdebugoptionsfrmresumehandled
-msgid "Resume Handled"
-msgstr "Reprendre le Handled"
-
-#: lazarusidestrconsts.lisdebugoptionsfrmresumeunhandled
-msgid "Resume Unhandled"
-msgstr "Reprendre le Unhandled"
-
 #: lazarusidestrconsts.lisdebugoptionsfrmshowexitcodeonstop
 msgid "Show message on stop with Error (Exit-code <> 0)"
 msgstr "Afficher le message à l'arrêt avec erreur (code de sortie <> 0)"
@@ -8719,27 +8468,6 @@ msgstr "Supprimer ?"
 msgid "Delete addition \"%s\"?"
 msgstr "Voulez-vous supprimer l'ajout \"%s\" ?"
 
-#: lazarusidestrconsts.lisdeleteall
-msgid "&Delete All"
-msgstr "Tout &Supprimer"
-
-#: lazarusidestrconsts.lisdeleteallbreakpoints
-msgid "Delete all breakpoints?"
-msgstr "Voulez-vous supprimer tous les points d'arrêt ?"
-
-#: lazarusidestrconsts.lisdeleteallbreakpoints2
-#, object-pascal-format
-msgid "Delete all breakpoints in file \"%s\"?"
-msgstr "Voulez-vous supprimer tous les points d'arrêt dans le fichier \"%s\" ?"
-
-#: lazarusidestrconsts.lisdeleteallinsamesource
-msgid "Delete All in same source"
-msgstr "Tout supprimer tous dans le même code source"
-
-#: lazarusidestrconsts.lisdeleteallselectedbreakpoints
-msgid "Delete all selected breakpoints?"
-msgstr "Voulez-vous supprimer tous les points d'arrêt sélectionnés ?"
-
 #: lazarusidestrconsts.lisdeleteallthesefiles
 msgid "Delete all these files?"
 msgstr "Voulez-vous supprimer ces fichiers ?"
@@ -8747,25 +8475,6 @@ msgstr "Voulez-vous supprimer ces fichiers ?"
 #: lazarusidestrconsts.lisdeleteambiguousfile
 msgid "Delete ambiguous file?"
 msgstr "Voulez-vous supprimer les fichiers équivoques ?"
-
-#: lazarusidestrconsts.lisdeletebreakpoint
-msgid "Delete Breakpoint"
-msgstr "Supprimer un point d'arrêt"
-
-#: lazarusidestrconsts.lisdeletebreakpointatline
-#, object-pascal-format
-msgid "Delete breakpoint at%s\"%s\" line %d?"
-msgstr "Voulez-vous supprimer le point d'arrêt en%s\"%s\" ligne %d ?"
-
-#: lazarusidestrconsts.lisdeletebreakpointforaddress
-#, object-pascal-format
-msgid "Delete breakpoint for address %s?"
-msgstr "Voulez-vous supprimer le point d'arrêt pour l'adresse %s ?"
-
-#: lazarusidestrconsts.lisdeletebreakpointforwatch
-#, object-pascal-format
-msgid "Delete watchpoint for \"%s\"?"
-msgstr "Voulez-vous supprimer le point de suivi pour \"%s\" ?"
 
 #: lazarusidestrconsts.lisdeletefilefailed
 msgid "Delete file failed"
@@ -8919,18 +8628,6 @@ msgstr "Répertoire protégé en écriture"
 #: lazarusidestrconsts.lisdirectorywheretheideputsthepofiles
 msgid "Directory where the IDE puts the .po files"
 msgstr "Répertoire où l'EDI place les fichiers .po"
-
-#: lazarusidestrconsts.lisdisableallinsamesource
-msgid "Disable All in same source"
-msgstr "Tout désactiver dans le  même code source"
-
-#: lazarusidestrconsts.lisdisablebreakpoint
-msgid "Disable Breakpoint"
-msgstr "Désactiver le point d'arrêt"
-
-#: lazarusidestrconsts.lisdisablegroups
-msgid "Disable Groups"
-msgstr "Désactiver les groupes"
 
 #: lazarusidestrconsts.lisdisablei18nforlfm
 msgid "Disable I18N for LFM"
@@ -9472,18 +9169,6 @@ msgstr "Vide"
 msgid "Destination directory for publishing is either a relative path or empty."
 msgstr "Le répertoire de destination pour la publication est soit un chemin relatif soit vide."
 
-#: lazarusidestrconsts.lisenableall
-msgid "&Enable All"
-msgstr "Tout &Activer"
-
-#: lazarusidestrconsts.lisenableallinsamesource
-msgid "Enable All in same source"
-msgstr "Tout activer dans le même code source"
-
-#: lazarusidestrconsts.lisenablebreakpoint
-msgid "Enable Breakpoint"
-msgstr "Activer le point d'arrêt"
-
 #: lazarusidestrconsts.lisenabledonlyforpackages
 msgid "Enabled only for packages."
 msgstr "Permis seulement pour les paquets."
@@ -9492,10 +9177,6 @@ msgstr "Permis seulement pour les paquets."
 #, object-pascal-format
 msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
 msgstr ". Activer le drapeau \"Utiliser l'unité\" de l'unité %s dans le paquet %s"
-
-#: lazarusidestrconsts.lisenablegroups
-msgid "Enable Groups"
-msgstr "Activer les groupes"
 
 #: lazarusidestrconsts.lisenablei18nforlfm
 msgid "Enable I18N for LFM"
@@ -9751,39 +9432,6 @@ msgstr "Erreur d'écriture du fichier \"%s\""
 msgid "Error writing package list to file%s%s%s%s"
 msgstr "Erreur lors de l'écriture de la liste des paquets dans le fichier%s%s%s%s"
 
-#: lazarusidestrconsts.lisevalexpression
-msgctxt "lazarusidestrconsts.lisevalexpression"
-msgid "Eval expression"
-msgstr "Évaluer l'expression"
-
-#: lazarusidestrconsts.lisevaluateall
-msgid "Evaluate all"
-msgstr "Toute évaluer"
-
-#: lazarusidestrconsts.lisevaluatemodify
-msgid "&Evaluate/Modify"
-msgstr "&Évaluer/Modifier"
-
-#: lazarusidestrconsts.liseventlogclear
-msgid "Clear Events"
-msgstr "Nettoyer les événements"
-
-#: lazarusidestrconsts.liseventlogoptions
-msgid "Event Log Options ..."
-msgstr "Options du journal d'événements..."
-
-#: lazarusidestrconsts.liseventlogsavetofile
-msgid "Save Events to File"
-msgstr "Sauvegarder les événements dans un fichier"
-
-#: lazarusidestrconsts.liseventslogaddcomment
-msgid "Add Comment ..."
-msgstr "Ajouter un commentaire..."
-
-#: lazarusidestrconsts.liseventslogaddcomment2
-msgid "Add Comment"
-msgstr "Ajouter un commentaire"
-
 #: lazarusidestrconsts.liseverynthlinenumber
 msgid "Every n-th line number"
 msgstr "Chaque nième numéro de ligne"
@@ -9804,10 +9452,6 @@ msgstr "Exemples :%sIdentificateur%sTMyEnum.Enum%sUnitname.Identifier%s#PackageN
 #: lazarusidestrconsts.lisexamplesopenfirstselected
 msgid "Open first selected"
 msgstr "Ouvrir le premier sélectionné"
-
-#: lazarusidestrconsts.lisexceptiondialog
-msgid "Debugger Exception Notification"
-msgstr "Notification d'exception du débogueur"
 
 #: lazarusidestrconsts.lisexclude
 msgid "Exclude"
@@ -10086,10 +9730,6 @@ msgstr "Le fichier \"%s\" est virtuel."
 #: lazarusidestrconsts.lisfilelinkerror
 msgid "File link error"
 msgstr "Erreur de lien de fichier"
-
-#: lazarusidestrconsts.lisfilenameaddress
-msgid "Filename/Address"
-msgstr "Nom de fichier/Adresse"
 
 #: lazarusidestrconsts.lisfilenamestyle
 msgid "Filename Style"
@@ -10588,11 +10228,6 @@ msgstr "Chercher aussi dans les commentaires"
 msgid "Full"
 msgstr "Complet"
 
-#: lazarusidestrconsts.lisfunction
-msgctxt "lazarusidestrconsts.lisfunction"
-msgid "Function"
-msgstr "Fonction"
-
 #: lazarusidestrconsts.lisgeneral
 msgctxt "lazarusidestrconsts.lisgeneral"
 msgid "General"
@@ -10632,10 +10267,6 @@ msgstr "Paramètres globaux"
 msgid "Goto Line"
 msgstr "Aller à la ligne"
 
-#: lazarusidestrconsts.lisgotoselected
-msgid "Goto selected"
-msgstr "Aller au sélectionné"
-
 #: lazarusidestrconsts.lisgplnotice
 msgid ""
 "<description>\n"
@@ -10663,44 +10294,9 @@ msgstr ""
 msgid "Group"
 msgstr "Groupe"
 
-#: lazarusidestrconsts.lisgroupassignexisting
-#, object-pascal-format
-msgid "Assign to existing \"%s\" group?"
-msgstr "Attribuer au groupe \"%s\" existant ?"
-
-#: lazarusidestrconsts.lisgroupemptydelete
-#, object-pascal-format
-msgid "No more breakpoints are assigned to group \"%s\", delete it?"
-msgstr "Il n'y a plus de points d'arrêt affectés au groupe \"%s\". Voulez-vous le supprimer?"
-
-#: lazarusidestrconsts.lisgroupemptydeletemore
-#, object-pascal-format
-msgid "%sThere are %d more empty groups, delete all?"
-msgstr "%sIl y a  %d groupes vides en plus. Voulez-vous tout supprimer ?"
-
 #: lazarusidestrconsts.lisgrouplocalvariables
 msgid "Group automatically defined local variables"
 msgstr "Regrouper automatiquement les variables locales définies"
-
-#: lazarusidestrconsts.lisgroupnameemptyclearinstead
-msgid "The group name cannot be empty. Clear breakpoints' group(s)?"
-msgstr "Le nom du groupe ne peut pas être vide. Voulez-vous effacer le(s) groupe(s) de points d'arrêt?"
-
-#: lazarusidestrconsts.lisgroupnameinput
-msgid "Group name:"
-msgstr "Nom du groupe :"
-
-#: lazarusidestrconsts.lisgroupnameinvalid
-msgid "BreakpointGroup name must be a valid Pascal identifier name."
-msgstr "Le nom du groupe de points d'arrêt doit être un identificateur Pascal correct."
-
-#: lazarusidestrconsts.lisgroupsetnew
-msgid "Set new group ..."
-msgstr "Définir un nouveau groupe..."
-
-#: lazarusidestrconsts.lisgroupsetnone
-msgid "Clear group(s)"
-msgstr "Nettoyer le(s) groupe(s)"
 
 #: lazarusidestrconsts.lisgroupsfordebugoutput
 msgid "Enable or Disable groups of debug output. Valid Options are:"
@@ -10828,10 +10424,6 @@ msgstr "Afficher les fiches"
 #: lazarusidestrconsts.lishintviewunits
 msgid "View Units"
 msgstr "Afficher les unités"
-
-#: lazarusidestrconsts.lishitcount
-msgid "Hitcount"
-msgstr "Nombre d'accès"
 
 #: lazarusidestrconsts.lishlpoptsdatabases
 msgid "Databases"
@@ -11026,10 +10618,6 @@ msgstr "Tout ignorer"
 msgid "Ignore and continue"
 msgstr "Ignorer et continuer"
 
-#: lazarusidestrconsts.lisignoreexceptiontype
-msgid "Ignore this exception type"
-msgstr "Ignorer ce type d'exception"
-
 #: lazarusidestrconsts.lisignoreuseasancestor
 #, object-pascal-format
 msgid "Ignore, use %s as ancestor"
@@ -11133,10 +10721,6 @@ msgstr "la configuration de Fppkg est corrompue. (%s)"
 #: lazarusidestrconsts.lisindentationforpascalsources
 msgid "Indentation for Pascal sources"
 msgstr "Indentation des codes sources en Pascal"
-
-#: lazarusidestrconsts.lisindex
-msgid "Index"
-msgstr "Index"
 
 #: lazarusidestrconsts.lisinformation
 msgid "Information"
@@ -11313,55 +10897,6 @@ msgstr "Insérer une balise URL"
 msgid "In session"
 msgstr "Dans la session"
 
-#: lazarusidestrconsts.lisinspect
-msgid "&Inspect"
-msgstr "&Inspecter"
-
-#: lazarusidestrconsts.lisinspectaddwatch
-msgctxt "lazarusidestrconsts.lisinspectaddwatch"
-msgid "Add watch"
-msgstr "Ajouter un suivi"
-
-#: lazarusidestrconsts.lisinspectclassinherit
-#, object-pascal-format
-msgid "%s: class %s inherits from %s"
-msgstr "%s : la classe %s hérite de %s"
-
-#: lazarusidestrconsts.lisinspectdata
-msgid "Data"
-msgstr "Données"
-
-#: lazarusidestrconsts.lisinspectdialog
-msgid "Debug Inspector"
-msgstr "Inspecteur de débogage"
-
-#: lazarusidestrconsts.lisinspectmethods
-msgid "Methods"
-msgstr "Méthodes"
-
-#: lazarusidestrconsts.lisinspectpointerto
-#, object-pascal-format
-msgid "Pointer to %s"
-msgstr "Pointeur sur %s"
-
-#: lazarusidestrconsts.lisinspectproperties
-msgctxt "lazarusidestrconsts.lisinspectproperties"
-msgid "Properties"
-msgstr "Propriétés"
-
-#: lazarusidestrconsts.lisinspectunavailableerror
-#, object-pascal-format
-msgid "%s: unavailable (error: %s)"
-msgstr "%s : non disponible (erreur : %s)"
-
-#: lazarusidestrconsts.lisinspectuseinstance
-msgid "Instance"
-msgstr "Instance"
-
-#: lazarusidestrconsts.lisinspectuseinstancehint
-msgid "Use instance class"
-msgstr "Utiliser l'instance de classe"
-
 #: lazarusidestrconsts.lisinstallationfailed
 msgid "Installation failed"
 msgstr "L'installation a échoué"
@@ -11472,14 +11007,6 @@ msgstr "Mode %s incorrect"
 #: lazarusidestrconsts.lisinvalidmultiselection
 msgid "Invalid multiselection"
 msgstr "Sélection multiple incorrecte"
-
-#: lazarusidestrconsts.lisinvalidoff
-msgid "Invalid (Off)"
-msgstr "Incorrect (Off)"
-
-#: lazarusidestrconsts.lisinvalidon
-msgid "Invalid (On)"
-msgstr "Incorrect (On)"
 
 #: lazarusidestrconsts.lisinvalidpascalidentifiercap
 msgid "Invalid Pascal Identifier"
@@ -12483,14 +12010,6 @@ msgstr "chemin des bibliothèques"
 msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under macOS)."
 msgstr "Une bibliothèque partagée Free Pascal (.dll sous Windows, .so sous Linux, .dylib sous MacOS X)."
 
-#: lazarusidestrconsts.lisline
-msgid "Line:"
-msgstr "Ligne :"
-
-#: lazarusidestrconsts.lislinelength
-msgid "Line/Length"
-msgstr "Ligne/Longueur"
-
 #: lazarusidestrconsts.lislink
 msgid "Link:"
 msgstr "Lien :"
@@ -12519,52 +12038,6 @@ msgstr "Charger la macro depuis"
 #: lazarusidestrconsts.lislocal
 msgid "&Local"
 msgstr "&Local"
-
-#: lazarusidestrconsts.lislocals
-msgctxt "lazarusidestrconsts.lislocals"
-msgid "Local Variables"
-msgstr "Variables locales"
-
-#: lazarusidestrconsts.lislocalsdlgcopyall
-msgid "Copy &all"
-msgstr "Tout &copier"
-
-#: lazarusidestrconsts.lislocalsdlgcopyname
-msgid "&Copy Name"
-msgstr "&Copier le nom"
-
-#: lazarusidestrconsts.lislocalsdlgcopynamevalue
-msgid "Co&py Name and Value"
-msgstr "Co&pier le nom et la valeur"
-
-#: lazarusidestrconsts.lislocalsdlgcopyrawvalue
-msgid "Copy &RAW Value"
-msgstr "Copie la valeur &RAW"
-
-#: lazarusidestrconsts.lislocalsdlgcopyvalue
-msgid "C&opy Value"
-msgstr "C&opier la valeur"
-
-#: lazarusidestrconsts.lislocalsnotevaluated
-msgid "Locals not evaluated"
-msgstr "Locales non évaluées"
-
-#: lazarusidestrconsts.lislogcallstack
-msgid "Log Call Stack"
-msgstr "Enregistrer la pile d'appel"
-
-#: lazarusidestrconsts.lislogcallstacklimit
-msgid "(frames limit. 0 - no limits)"
-msgstr "(limite cadres.  0 - pas de limite)"
-
-#: lazarusidestrconsts.lislogevalexpression
-msgctxt "lazarusidestrconsts.lislogevalexpression"
-msgid "Eval expression"
-msgstr "Évaluer l'expression"
-
-#: lazarusidestrconsts.lislogmessage
-msgid "Log Message"
-msgstr "Message du journal"
 
 #: lazarusidestrconsts.lislowercasestring
 msgid "lowercase string"
@@ -14103,10 +13576,6 @@ msgstr "Assembleur"
 msgid "BreakPoints"
 msgstr "Points d'arrêt"
 
-#: lazarusidestrconsts.lismenuviewcallstack
-msgid "Call Stack"
-msgstr "Pile d'appels"
-
 #: lazarusidestrconsts.lismenuviewcodebrowser
 msgctxt "lazarusidestrconsts.lismenuviewcodebrowser"
 msgid "Code Browser"
@@ -14654,10 +14123,6 @@ msgstr "Texte a&vant chaque ligne"
 msgid "&Trim clipboard contents"
 msgstr "&Réduire le contenu du presse-papiers"
 
-#: lazarusidestrconsts.lisms
-msgid "(ms)"
-msgstr "(ms)"
-
 #: lazarusidestrconsts.lismsgcolors
 msgid "Message colors"
 msgstr "Couleurs des messages"
@@ -14987,10 +14452,6 @@ msgstr "chemin du code objet"
 msgid "Switch to Object Inspector Favorites tab"
 msgstr "Basculer vers l'onglet des favoris de l'inspecteur d'objets"
 
-#: lazarusidestrconsts.lisoff
-msgid "? (Off)"
-msgstr "? (Off)"
-
 #: lazarusidestrconsts.lisofpackage
 #, object-pascal-format
 msgid " of package %s"
@@ -15090,10 +14551,6 @@ msgstr "%s Ce paquet est installé, mais le fichier lpk associé est introuvable
 #: lazarusidestrconsts.lisoldclass
 msgid "Old Class"
 msgstr "Ancienne classe"
-
-#: lazarusidestrconsts.lison
-msgid "? (On)"
-msgstr "? (On)"
 
 #: lazarusidestrconsts.lisonbreaklineiereturnorenterkey
 msgid "On break line (i.e. return or enter key)"
@@ -15423,10 +14880,6 @@ msgstr "analyseur \"%s\" : %s"
 #: lazarusidestrconsts.lisparsers
 msgid "Parsers:"
 msgstr "Analyseurs :"
-
-#: lazarusidestrconsts.lispasscount
-msgid "Pass Count"
-msgstr "Nombre de passes"
 
 #: lazarusidestrconsts.lispassingcompilerdefinetwicewithdifferentvalues
 #, object-pascal-format
@@ -15985,10 +15438,6 @@ msgstr "Nom d'unité incorrect"
 #, object-pascal-format
 msgid "Missing files of package %s"
 msgstr "Fichiers manquants du paquet %s"
-
-#: lazarusidestrconsts.lispendingon
-msgid "Pending (On)"
-msgstr "En attente (activé)"
 
 #: lazarusidestrconsts.lispenewfilenotinincludepath
 msgid "New file not in include path"
@@ -17431,11 +16880,6 @@ msgctxt "lazarusidestrconsts.lisredo"
 msgid "Redo"
 msgstr "Refaire"
 
-#: lazarusidestrconsts.lisregisters
-msgctxt "lazarusidestrconsts.lisregisters"
-msgid "Registers"
-msgstr "Registres"
-
 #: lazarusidestrconsts.lisregularexpression
 msgid "Regular expression"
 msgstr "Expression régulière"
@@ -18435,10 +17879,6 @@ msgstr "Les répertoires source \"%s\"%set destination \"%s\"%ssont identiques. 
 msgid "Source and Destination are the same:%s%s"
 msgstr "La source et la destination sont identiques : %s%s"
 
-#: lazarusidestrconsts.lissourcebreakpoint
-msgid "&Source Breakpoint ..."
-msgstr "Point d'arrêt &source..."
-
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
 #, object-pascal-format
 msgid "Source directory \"%s\" does not exist."
@@ -18656,10 +18096,6 @@ msgstr "Tabulation : déplacer le contrôle sélectionné vers le haut"
 #, object-pascal-format
 msgid "Tabs for %s"
 msgstr "Tabulations pour %s"
-
-#: lazarusidestrconsts.listakesnapshot
-msgid "Take a Snapshot"
-msgstr "Prendre un instantané"
 
 #: lazarusidestrconsts.listarget
 msgid "Target:"
@@ -19382,44 +18818,6 @@ msgstr "Cela va créer une dépendance circulaire."
 #, object-pascal-format
 msgid "This will put a lot of text (%s) on the clipboard.%sProceed?"
 msgstr "Ceci remplira le presse-papiers avec beaucoup de texte (%s).%sVoulez-vous poursuivre ?"
-
-#: lazarusidestrconsts.listhreads
-msgctxt "lazarusidestrconsts.listhreads"
-msgid "Threads"
-msgstr "Tâches (Threads)"
-
-#: lazarusidestrconsts.listhreadscurrent
-msgctxt "lazarusidestrconsts.listhreadscurrent"
-msgid "Current"
-msgstr "Courant"
-
-#: lazarusidestrconsts.listhreadsfunc
-msgctxt "lazarusidestrconsts.listhreadsfunc"
-msgid "Function"
-msgstr "Fonction"
-
-#: lazarusidestrconsts.listhreadsgoto
-msgid "Goto"
-msgstr "Aller à"
-
-#: lazarusidestrconsts.listhreadsline
-msgctxt "lazarusidestrconsts.listhreadsline"
-msgid "Line"
-msgstr "Ligne"
-
-#: lazarusidestrconsts.listhreadsnotevaluated
-msgid "Threads not evaluated"
-msgstr "Tâches (threads) non évaluées"
-
-#: lazarusidestrconsts.listhreadssrc
-msgctxt "lazarusidestrconsts.listhreadssrc"
-msgid "Source"
-msgstr "Source"
-
-#: lazarusidestrconsts.listhreadsstate
-msgctxt "lazarusidestrconsts.listhreadsstate"
-msgid "State"
-msgstr "État"
 
 #: lazarusidestrconsts.listitle
 msgid "&Title"
@@ -20497,20 +19895,6 @@ msgstr "Copier les informations de version dans le presse-papiers"
 msgid "Very Verbose"
 msgstr "Très verbeux"
 
-#: lazarusidestrconsts.lisviewbreakpointproperties
-msgctxt "lazarusidestrconsts.lisviewbreakpointproperties"
-msgid "Breakpoint Properties ..."
-msgstr "Propriétés du point d'arrêt..."
-
-#: lazarusidestrconsts.lisviewsource
-msgid "View Source"
-msgstr "Afficher le code source"
-
-#: lazarusidestrconsts.lisviewsourcedisass
-msgctxt "lazarusidestrconsts.lisviewsourcedisass"
-msgid "View Assembler"
-msgstr "Afficher l'assembleur"
-
 #: lazarusidestrconsts.lisviewsourcelfm
 msgid "View Source (.lfm)"
 msgstr "Afficher le code source (.lfm)"
@@ -20533,55 +19917,6 @@ msgstr ", Avertissements : %s"
 #, object-pascal-format
 msgid "%sWarning: This is the main unit. The new main unit will be %s.pas."
 msgstr "%sAvertissement : ceci est l'unité principale. La nouvelle unité principale sera %s.pas."
-
-#: lazarusidestrconsts.liswatch
-msgid "&Watch"
-msgstr "Ajouter un &suivi"
-
-#: lazarusidestrconsts.liswatchdata
-msgid "Watch:"
-msgstr "Suivi :"
-
-#: lazarusidestrconsts.liswatchkind
-msgid "Watch action"
-msgstr "Action de suivi"
-
-#: lazarusidestrconsts.liswatchkindread
-msgid "Read"
-msgstr "Lire"
-
-#: lazarusidestrconsts.liswatchkindreadwrite
-msgid "Read/Write"
-msgstr "Lire/écrire"
-
-#: lazarusidestrconsts.liswatchkindwrite
-msgid "Write"
-msgstr "Écrire"
-
-#: lazarusidestrconsts.liswatchpoint
-msgid "&Data/Watch Breakpoint ..."
-msgstr "Point d'arrêt de &Donnée/suivi..."
-
-#: lazarusidestrconsts.liswatchpointbreakpoint
-msgid "&Data/watch Breakpoint ..."
-msgstr "Point d'arrêt de &Donnée/suivi..."
-
-#: lazarusidestrconsts.liswatchscope
-msgid "Watch scope"
-msgstr "Portée du suivi"
-
-#: lazarusidestrconsts.liswatchscopeglobal
-msgctxt "lazarusidestrconsts.liswatchscopeglobal"
-msgid "Global"
-msgstr "Global"
-
-#: lazarusidestrconsts.liswatchscopelocal
-msgid "Declaration"
-msgstr "Déclaration"
-
-#: lazarusidestrconsts.liswatchtowatchpoint
-msgid "Create &Data/Watch Breakpoint ..."
-msgstr "Créer un point d'arrêt de &Donnée/suivi..."
 
 #: lazarusidestrconsts.liswelcometolazaruside
 #, object-pascal-format
@@ -20652,35 +19987,6 @@ msgstr "Sans le code source de FPC, la navigation et la complétion seront très
 #: lazarusidestrconsts.liswithrequiredpackages
 msgid "With required packages"
 msgstr "Avec les paquets requis"
-
-#: lazarusidestrconsts.liswldeleteall
-msgid "De&lete All"
-msgstr "Tout &supprimer"
-
-#: lazarusidestrconsts.liswldisableall
-msgid "D&isable All"
-msgstr "Tout &désactiver"
-
-#: lazarusidestrconsts.liswlenableall
-msgid "E&nable All"
-msgstr "Tout &activer"
-
-#: lazarusidestrconsts.liswlexpression
-msgid "Expression"
-msgstr "Expression"
-
-#: lazarusidestrconsts.liswlinspectpane
-msgid "Inspect pane"
-msgstr "Inspecter le panneau"
-
-#: lazarusidestrconsts.liswlproperties
-msgid "&Properties"
-msgstr "&Propriétés"
-
-#: lazarusidestrconsts.liswlwatchlist
-msgctxt "lazarusidestrconsts.liswlwatchlist"
-msgid "Watches"
-msgstr "Suivis"
 
 #: lazarusidestrconsts.liswordatcursorincurrenteditor
 msgid "Word at cursor in current editor"
@@ -20905,36 +20211,6 @@ msgstr "Redresser le graphique"
 msgid "Add package unit to uses section"
 msgstr "Ajouter l'unité du paquet à la clause uses"
 
-#: lazarusidestrconsts.regdlgbinary
-msgctxt "lazarusidestrconsts.regdlgbinary"
-msgid "Binary"
-msgstr "Binaire"
-
-#: lazarusidestrconsts.regdlgdecimal
-msgctxt "lazarusidestrconsts.regdlgdecimal"
-msgid "Decimal"
-msgstr "Décimal"
-
-#: lazarusidestrconsts.regdlgdisplaytypeforselectedregisters
-msgid "Display type for selected Registers"
-msgstr "Type d'affichage pour les registres sélectionnés"
-
-#: lazarusidestrconsts.regdlgformat
-msgid "Format"
-msgstr "Format"
-
-#: lazarusidestrconsts.regdlghex
-msgid "Hex"
-msgstr "Hexadécimal"
-
-#: lazarusidestrconsts.regdlgoctal
-msgid "Octal"
-msgstr "Octal"
-
-#: lazarusidestrconsts.regdlgraw
-msgid "Raw"
-msgstr "Brut"
-
 #: lazarusidestrconsts.rsaddinverse
 msgid "Add Inverse"
 msgstr "Ajouter l'inverse"
@@ -20942,10 +20218,6 @@ msgstr "Ajouter l'inverse"
 #: lazarusidestrconsts.rsaddnewterm
 msgid "Add new term"
 msgstr "Ajouter un terme"
-
-#: lazarusidestrconsts.rsattachto
-msgid "Attach to"
-msgstr "Attacher à"
 
 #: lazarusidestrconsts.rsattributes
 msgid "Attributes"
@@ -20998,10 +20270,6 @@ msgstr "Créer une nouvelle définition"
 #: lazarusidestrconsts.rsenablei18n
 msgid "Enable i18n"
 msgstr "Activer i18n"
-
-#: lazarusidestrconsts.rsenterpid
-msgid "Enter PID"
-msgstr "Entrer PID"
 
 #: lazarusidestrconsts.rsfilterthelistwithstring
 msgid "Filter the lines in list with a string"
@@ -23000,4 +22268,13 @@ msgstr "Options du graphe des unités"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Informations sur la version"
+
+#: lazarusidestrconsts.lisdeleteall
+msgid "&Delete All"
+msgstr "Tout &Supprimer"
+
+#: lazarusidestrconsts.lisfunction
+msgctxt "lazarusidestrconsts.lisfunction"
+msgid "Function"
+msgstr "Fonction"
 

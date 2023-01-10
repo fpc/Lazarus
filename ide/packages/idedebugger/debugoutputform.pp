@@ -45,7 +45,7 @@ interface
 uses
   Classes, Controls, Forms, Clipbrd,
   IDEWindowIntf,
-  BaseDebugManager, StdCtrls, Menus, ExtCtrls, DebuggerDlg
+  BaseDebugManager, StdCtrls, Menus, ExtCtrls, DebuggerDlg, IdeDebuggerStringConstants
   {$IFDEF DBG_WITH_DEBUGGER_DEBUG}
   , CmdLineDebugger
   {$ENDIF}
@@ -84,9 +84,6 @@ type
 implementation
 
 {$R *.lfm}
-
-uses 
-  LazarusIDEStrConsts;
 
 var
   DbgOutputDlgWindowCreator: TIDEWindowCreator;

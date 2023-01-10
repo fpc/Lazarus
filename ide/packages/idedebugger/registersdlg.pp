@@ -46,7 +46,7 @@ uses
   // DebuggerIntf
   DbgIntfDebuggerBase, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
   // IDE
-  BaseDebugManager, LazarusIDEStrConsts, DebuggerStrConst, Debugger, DebuggerDlg;
+  BaseDebugManager, IdeDebuggerStringConstants, Debugger, DebuggerDlg;
 
 type
 
@@ -206,7 +206,7 @@ begin
 
   ToolButtonDispType.Hint := regdlgDisplayTypeForSelectedRegisters;
 
-  DispDefault.Caption := dlgPasStringKeywordsOptDefault;
+  DispDefault.Caption := regdlgDefault;
   DispHex.Caption := regdlgHex;
   DispBin.Caption := regdlgBinary;
   DispOct.Caption := regdlgOctal;
@@ -219,7 +219,7 @@ begin
   DispDec.Tag := ord(rdDecimal);
   DispRaw.Tag := ord(rdRaw);
 
-  PopDispDefault.Caption := dlgPasStringKeywordsOptDefault;
+  PopDispDefault.Caption := regdlgDefault;
   PopDispHex.Caption := regdlgHex;
   PopDispBin.Caption := regdlgBinary;
   PopDispOct.Caption := regdlgOctal;

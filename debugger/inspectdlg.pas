@@ -38,11 +38,11 @@ uses
   DbgIntfDebuggerBase, DbgIntfBaseTypes, LazClasses, SpinEx, LazDebuggerIntf,
   LazDebuggerIntfBaseTypes,
   // IDE
-  LazarusIDEStrConsts, BaseDebugManager, InputHistory, IDEProcs, Debugger,
+  BaseDebugManager, InputHistory, IDEProcs, Debugger,
   IdeDebuggerWatchResPrinter, IdeDebuggerWatchResult, IdeDebuggerWatchResUtils,
   IdeDebuggerBase, ArrayNavigationFrame, IdeDebuggerOpts,
   IdeDebuggerBackendValueConv, WatchInspectToolbar, DebuggerDlg,
-  DebuggerStrConst, EnvironmentOpts, RecentListProcs;
+  EnvironmentOpts, RecentListProcs, IdeDebuggerStringConstants;
 
 type
 

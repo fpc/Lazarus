@@ -9,24 +9,6 @@ msgstr ""
 "Last-Translator: x <y>\n"
 "Language-Team: \n"
 
-#: lazarusidestrconsts.dbgbreakgroupdlgcaption
-msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
-msgid "Select Groups"
-msgstr "Valitse ryhmät"
-
-#: lazarusidestrconsts.dbgbreakgroupdlgheaderdisable
-msgid "Select groups to disable when breakpoint is hit"
-msgstr "Valitse estettävät ryhmät, kun keskeytyskohta aktivoituu"
-
-#: lazarusidestrconsts.dbgbreakgroupdlgheaderenable
-msgid "Select groups to enable when breakpoint is hit"
-msgstr "Valitse sallittavat ryhmät, kun keskeytyskohta aktivoituu"
-
-#: lazarusidestrconsts.dbgbreakpropertygroupnotfound
-#, object-pascal-format
-msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
-msgstr "Joitain Salli/Estä listan ryhmiä ei ole.%0:sLuodaanko ne?%0:s%0:s%1:s"
-
 #: lazarusidestrconsts.dbgeventbreakaddressbreakpoint
 #, object-pascal-format
 msgid "Address Breakpoint %s"
@@ -4128,10 +4110,6 @@ msgctxt "lazarusidestrconsts.dlgvaluecolor"
 msgid "Value"
 msgstr "Arvo"
 
-#: lazarusidestrconsts.dlgvaluedataaddr
-msgid "Data-Address"
-msgstr ""
-
 #: lazarusidestrconsts.dlgverbosity
 msgid "Verbosity during compilation:"
 msgstr "Kääntäjän viestien määrä:"
@@ -4294,48 +4272,6 @@ msgstr "Z-järjestys"
 #: lazarusidestrconsts.gldhighlightbothsidesofcursor
 msgid "On Both Sides"
 msgstr "Molemmin puolin"
-
-#: lazarusidestrconsts.histdlgbtnclearhint
-msgid "Clear all snapshots"
-msgstr "Tyhjennä kaikki pikakuvat"
-
-#: lazarusidestrconsts.histdlgbtnenablehint
-msgid "Toggle view snapshot or current"
-msgstr "Vaihda pikakuvan ja nykyisen välillä"
-
-#: lazarusidestrconsts.histdlgbtnmakesnaphint
-msgid "Take Snapshot"
-msgstr "Ota pikakuva"
-
-#: lazarusidestrconsts.histdlgbtnpowerhint
-msgid "Switch on/off automatic snapshots"
-msgstr "Kytke päälle/pois automaattiset pikakuvat"
-
-#: lazarusidestrconsts.histdlgbtnremovehint
-msgid "Remove selected entry"
-msgstr "Poista valittu kohta"
-
-#: lazarusidestrconsts.histdlgbtnshowhisthint
-msgid "View history"
-msgstr "Näytä historia"
-
-#: lazarusidestrconsts.histdlgbtnshowsnaphint
-msgid "View Snapshots"
-msgstr "Näytä pikakuvat"
-
-#: lazarusidestrconsts.histdlgcolumnloc
-msgctxt "lazarusidestrconsts.histdlgcolumnloc"
-msgid "Location"
-msgstr "Sijainti"
-
-#: lazarusidestrconsts.histdlgcolumntime
-msgid "Time"
-msgstr "Aika"
-
-#: lazarusidestrconsts.histdlgformname
-msgctxt "lazarusidestrconsts.histdlgformname"
-msgid "History"
-msgstr "Historia"
 
 #: lazarusidestrconsts.initdlgdebugchangepath
 msgid "Change path"
@@ -4773,10 +4709,6 @@ msgstr "Kiitokset"
 msgid "Action:"
 msgstr "Toiminta:"
 
-#: lazarusidestrconsts.lisactions
-msgid "Actions:"
-msgstr "Toiminnat:"
-
 #: lazarusidestrconsts.lisactivate
 msgid "Activate"
 msgstr "Aktivoi"
@@ -4891,14 +4823,6 @@ msgstr "Lisää paketti projektiin"
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
 msgstr "Lisää parametrin sulkeet"
-
-#: lazarusidestrconsts.lisaddress
-msgid "Address:"
-msgstr "Osoite:"
-
-#: lazarusidestrconsts.lisaddressbreakpoint
-msgid "&Address Breakpoint ..."
-msgstr "&Osoite-keskeytyskohta ..."
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
@@ -5194,10 +5118,6 @@ msgstr "Automaattinen täydennys: pois"
 msgid "Auto completion: on"
 msgstr "Automaattinen täydennys: päällä"
 
-#: lazarusidestrconsts.lisautocontinueafter
-msgid "Auto continue after:"
-msgstr "Jatka sen jälkeen kun:"
-
 #: lazarusidestrconsts.lisautomarkup
 msgid "Markup and Matches"
 msgstr "Merkintä ja osumat"
@@ -5377,24 +5297,10 @@ msgstr "Tämä on naapurikontrolli, mihin alareuna on ankkuroitu. Tyhjä tarkoit
 msgid "Bottom space equally"
 msgstr "Tasaa välit alhaalla"
 
-#: lazarusidestrconsts.lisbpsdisabled
-msgctxt "lazarusidestrconsts.lisbpsdisabled"
-msgid "Disabled"
-msgstr "Estetty"
-
-#: lazarusidestrconsts.lisbpsenabled
-msgctxt "lazarusidestrconsts.lisbpsenabled"
-msgid "Enabled"
-msgstr "Sallittu"
-
 #: lazarusidestrconsts.lisbreak
 msgctxt "lazarusidestrconsts.lisbreak"
 msgid "Break"
 msgstr "Keskeytä"
-
-#: lazarusidestrconsts.lisbreakpointproperties
-msgid "Breakpoint Properties"
-msgstr "Keskeytyskohdan ominaisuudet"
 
 #: lazarusidestrconsts.lisbrowseandselectacompiler
 msgid "Browse and select a compiler (e.g. ppcx64"
@@ -5513,10 +5419,6 @@ msgstr "%s tavu"
 #, object-pascal-format
 msgid "Calling %s to create Makefile from %s failed."
 msgstr "%s:n kutsuminen Makefile luomiseksi %s:sta epäonnistui."
-
-#: lazarusidestrconsts.liscallstacknotevaluated
-msgid "Stack not evaluated"
-msgstr "Pinoa ei arvioitu"
 
 #: lazarusidestrconsts.liscancelloadingthiscomponent
 msgid "Cancel loading this component"
@@ -7122,14 +7024,6 @@ msgstr "Suorita jälkeen"
 msgid "Execute before"
 msgstr "Suorita ennen"
 
-#: lazarusidestrconsts.liscoladdress
-msgid "Address"
-msgstr "Osoite"
-
-#: lazarusidestrconsts.liscolclass
-msgid "Class"
-msgstr "Luokka"
-
 #: lazarusidestrconsts.liscollapseall
 msgid "Collapse All (/)"
 msgstr "Supista kaikki (/)"
@@ -7145,14 +7039,6 @@ msgstr "Supista kaikki paketit"
 #: lazarusidestrconsts.liscollapseallunits
 msgid "Collapse all units"
 msgstr "Supista kaikki käännösyksiköt"
-
-#: lazarusidestrconsts.liscolreturns
-msgid "Returns"
-msgstr "Palauttaa"
-
-#: lazarusidestrconsts.liscolvisibility
-msgid "Visibility"
-msgstr "Näkyvyys"
 
 #: lazarusidestrconsts.liscomboboxes
 msgid "Combo Boxes"
@@ -7954,10 +7840,6 @@ msgctxt "lazarusidestrconsts.liscopy"
 msgid "Copy"
 msgstr "Kopioi"
 
-#: lazarusidestrconsts.liscopyall
-msgid "Copy All"
-msgstr "Kopioi kaikki"
-
 #: lazarusidestrconsts.liscopyallitemstoclipboard
 msgid "Copy All Items to Clipboard"
 msgstr "Kopioi kaikki leikepöydälle"
@@ -7965,10 +7847,6 @@ msgstr "Kopioi kaikki leikepöydälle"
 #: lazarusidestrconsts.liscopyalloriginalmessagestoclipboard
 msgid "Copy All/Original Messages to Clipboard"
 msgstr "Kopioi kaikki/alkuperäiset viestit leikepöydälle"
-
-#: lazarusidestrconsts.liscopyalloutputclipboard
-msgid "Copy all output to clipboard"
-msgstr "Kopioi kaikki tulostus leikepöydälle"
 
 #: lazarusidestrconsts.liscopyallshownmessagestoclipboard
 msgid "Copy All Shown Messages to Clipboard"
@@ -8155,16 +8033,6 @@ msgstr "Luo tai päivitä .po-tiedosto, kun lfm-tiedosto talletetaan"
 msgid "Creating file index of FPC sources %s ..."
 msgstr "Luodaan tiedostoluetteloa FPC:n lähdekoodista %s ..."
 
-#: lazarusidestrconsts.liscsbottom
-msgctxt "lazarusidestrconsts.liscsbottom"
-msgid "Bottom"
-msgstr "Alhaalla"
-
-#: lazarusidestrconsts.liscstop
-msgctxt "lazarusidestrconsts.liscstop"
-msgid "Top"
-msgstr "Ylhäällä"
-
 #: lazarusidestrconsts.lisctdefchoosedirectory
 msgid "Choose Directory"
 msgstr "Valitse hakemisto"
@@ -8218,11 +8086,6 @@ msgstr "valitse makro"
 msgid "Select Code Macro"
 msgstr "Valitse koodimakro"
 
-#: lazarusidestrconsts.liscurrent
-msgctxt "lazarusidestrconsts.liscurrent"
-msgid "Current"
-msgstr "Nykyinen"
-
 #: lazarusidestrconsts.liscurrentlclwidgetset
 #, object-pascal-format
 msgid "Current LCL widgetset: \"%s\""
@@ -8269,22 +8132,6 @@ msgctxt "lazarusidestrconsts.liscut"
 msgid "Cut"
 msgstr "Leikkaa"
 
-#: lazarusidestrconsts.lisdadattach
-msgid "Attach"
-msgstr "Liitä"
-
-#: lazarusidestrconsts.lisdadimagename
-msgid "Image Name"
-msgstr "Kuvan nimi"
-
-#: lazarusidestrconsts.lisdadpid
-msgid "PID"
-msgstr ""
-
-#: lazarusidestrconsts.lisdadrunningprocesses
-msgid "Running Processes"
-msgstr "Käynnissä olevat prosessit"
-
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
 msgstr ""
@@ -8293,36 +8140,6 @@ msgstr ""
 msgid "Date"
 msgstr "Päiväys"
 
-#: lazarusidestrconsts.lisdbgallitemdelete
-msgctxt "lazarusidestrconsts.lisdbgallitemdelete"
-msgid "Delete all"
-msgstr "Poista kaikki"
-
-#: lazarusidestrconsts.lisdbgallitemdeletehint
-msgctxt "lazarusidestrconsts.lisdbgallitemdeletehint"
-msgid "Delete all"
-msgstr "Poista kaikki"
-
-#: lazarusidestrconsts.lisdbgallitemdisable
-msgctxt "lazarusidestrconsts.lisdbgallitemdisable"
-msgid "Disable all"
-msgstr "Estä kaikki"
-
-#: lazarusidestrconsts.lisdbgallitemdisablehint
-msgctxt "lazarusidestrconsts.lisdbgallitemdisablehint"
-msgid "Disable all"
-msgstr "Estä kaikki"
-
-#: lazarusidestrconsts.lisdbgallitemenable
-msgctxt "lazarusidestrconsts.lisdbgallitemenable"
-msgid "Enable all"
-msgstr "Salli kaikki"
-
-#: lazarusidestrconsts.lisdbgallitemenablehint
-msgctxt "lazarusidestrconsts.lisdbgallitemenablehint"
-msgid "Enable all"
-msgstr "Salli kaikki"
-
 #: lazarusidestrconsts.lisdbgasmcopyaddresstoclipboard
 msgid "Copy address to Clipboard"
 msgstr ""
@@ -8330,11 +8147,6 @@ msgstr ""
 #: lazarusidestrconsts.lisdbgasmcopytoclipboard
 msgid "Copy to Clipboard"
 msgstr "Kopioi leikepöydälle"
-
-#: lazarusidestrconsts.lisdbgbreakpointpropertieshint
-msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
-msgid "Breakpoint Properties ..."
-msgstr "Keskeytyskohdan ominaisuudet ..."
 
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
@@ -8396,31 +8208,6 @@ msgstr "Windows-viesti on viety"
 msgid "Windows Message Sent"
 msgstr "Windows-viesti on lähetetty"
 
-#: lazarusidestrconsts.lisdbgitemdeletehint
-msgctxt "lazarusidestrconsts.lisdbgitemdeletehint"
-msgid "Delete"
-msgstr "Poista"
-
-#: lazarusidestrconsts.lisdbgitemdisable
-msgctxt "lazarusidestrconsts.lisdbgitemdisable"
-msgid "Disable"
-msgstr "Estä"
-
-#: lazarusidestrconsts.lisdbgitemdisablehint
-msgctxt "lazarusidestrconsts.lisdbgitemdisablehint"
-msgid "Disable"
-msgstr "Estä"
-
-#: lazarusidestrconsts.lisdbgitemenable
-msgctxt "lazarusidestrconsts.lisdbgitemenable"
-msgid "Enable"
-msgstr "Salli"
-
-#: lazarusidestrconsts.lisdbgitemenablehint
-msgctxt "lazarusidestrconsts.lisdbgitemenablehint"
-msgid "Enable"
-msgstr "Salli"
-
 #: lazarusidestrconsts.lisdbgmangnodebuggerspecified
 msgid "No debugger specified"
 msgstr "Virheenjäljitintä ei ole valittu"
@@ -8433,20 +8220,6 @@ msgstr "Merkitse tämä kuitenkin keskeyskohdaksi"
 #, object-pascal-format
 msgid "There is no debugger specified.%sSetting breakpoints have no effect until you set up a Debugger in the debugger options dialog in the menu."
 msgstr "Virheenjäljitintä ei ole valittu.%sKeskeytyskohdalla ei ole vaikutusta ennenkuin 'Käyttöliittymä'-valikon 'Virheenjäljittimen asetus' on asetettu."
-
-#: lazarusidestrconsts.lisdbgterminal
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisdbgterminal"
-msgid "Console In/Output"
-msgstr "Komentorivin syöttö/tuloste"
-
-#: lazarusidestrconsts.lisdbgwinpower
-msgid "On/Off"
-msgstr "Päällä/Pois"
-
-#: lazarusidestrconsts.lisdbgwinpowerhint
-msgid "Disable/Enable updates for the entire window"
-msgstr "Estä/salli päivitykset koko ikkunalle"
 
 #: lazarusidestrconsts.lisdebug
 msgctxt "lazarusidestrconsts.lisdebug"
@@ -8463,18 +8236,6 @@ msgstr "Virheenjäljitin"
 #| msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
 msgid "The debugger encountered an internal error.%0:s%0:sSave your work.%0:sYou may then hit \"Stop\", or \"Reset debugger\" to terminate the debug session."
 msgstr "Virheenjäljittimen virhe%sHups, virhetila%sTalleta muutokset nyt!%sPaina Seis ja toivo parasta, vedämme piuhan irti."
-
-#: lazarusidestrconsts.lisdebuggerfeedbackerror
-msgid "Debugger Error"
-msgstr "Virheenjäljittimen virhe"
-
-#: lazarusidestrconsts.lisdebuggerfeedbackinformation
-msgid "Debugger Information"
-msgstr "Virheenjäljittimen tietoja"
-
-#: lazarusidestrconsts.lisdebuggerfeedbackwarning
-msgid "Debugger Warning"
-msgstr "Virheenjäljittimen varoitus"
 
 #: lazarusidestrconsts.lisdebuggerinvalid
 msgid "Debugger invalid"
@@ -8613,18 +8374,6 @@ msgstr "Prosessi"
 msgid "Reset Debugger after each run"
 msgstr "Nollaa virheenjäljitin jokaisen ajon jälkeen"
 
-#: lazarusidestrconsts.lisdebugoptionsfrmresume
-msgid "Resume"
-msgstr "Jatka"
-
-#: lazarusidestrconsts.lisdebugoptionsfrmresumehandled
-msgid "Resume Handled"
-msgstr "Jatka käsiteltyä"
-
-#: lazarusidestrconsts.lisdebugoptionsfrmresumeunhandled
-msgid "Resume Unhandled"
-msgstr "Jatka käsittelemätöntä"
-
 #: lazarusidestrconsts.lisdebugoptionsfrmshowexitcodeonstop
 msgid "Show message on stop with Error (Exit-code <> 0)"
 msgstr ""
@@ -8713,27 +8462,6 @@ msgstr "Poista?"
 msgid "Delete addition \"%s\"?"
 msgstr "Poista lisäys \"%s\"?"
 
-#: lazarusidestrconsts.lisdeleteall
-msgid "&Delete All"
-msgstr "&Poista kaikki"
-
-#: lazarusidestrconsts.lisdeleteallbreakpoints
-msgid "Delete all breakpoints?"
-msgstr "Poista kaikki keskeytyskohdat?"
-
-#: lazarusidestrconsts.lisdeleteallbreakpoints2
-#, object-pascal-format
-msgid "Delete all breakpoints in file \"%s\"?"
-msgstr "Poista kaikki keskeytyskohdat tiedostossa \"%s\"?"
-
-#: lazarusidestrconsts.lisdeleteallinsamesource
-msgid "Delete All in same source"
-msgstr "Poista kaikki samassa lähdekoodissa"
-
-#: lazarusidestrconsts.lisdeleteallselectedbreakpoints
-msgid "Delete all selected breakpoints?"
-msgstr "Poista kaikki valitut keskeytyskohdat?"
-
 #: lazarusidestrconsts.lisdeleteallthesefiles
 msgid "Delete all these files?"
 msgstr "Poistetaanko kaikki nämä tiedostot?"
@@ -8741,25 +8469,6 @@ msgstr "Poistetaanko kaikki nämä tiedostot?"
 #: lazarusidestrconsts.lisdeleteambiguousfile
 msgid "Delete ambiguous file?"
 msgstr "Poista ristiriitainen tiedosto"
-
-#: lazarusidestrconsts.lisdeletebreakpoint
-msgid "Delete Breakpoint"
-msgstr "Poista keskeytyskohta"
-
-#: lazarusidestrconsts.lisdeletebreakpointatline
-#, object-pascal-format
-msgid "Delete breakpoint at%s\"%s\" line %d?"
-msgstr "Poista keskeytyskohta kohdassa%s\"%s\" rivi %d?"
-
-#: lazarusidestrconsts.lisdeletebreakpointforaddress
-#, object-pascal-format
-msgid "Delete breakpoint for address %s?"
-msgstr "Poista osoitteen %s keskeytyskohta?"
-
-#: lazarusidestrconsts.lisdeletebreakpointforwatch
-#, object-pascal-format
-msgid "Delete watchpoint for \"%s\"?"
-msgstr "Poista \"%s\" vahtipiste?"
 
 #: lazarusidestrconsts.lisdeletefilefailed
 msgid "Delete file failed"
@@ -8913,18 +8622,6 @@ msgstr "Hakemistoon ei voi kirjoittaa"
 #: lazarusidestrconsts.lisdirectorywheretheideputsthepofiles
 msgid "Directory where the IDE puts the .po files"
 msgstr "Hakemisto mihin IDE laittaa .po-tiedostot"
-
-#: lazarusidestrconsts.lisdisableallinsamesource
-msgid "Disable All in same source"
-msgstr "Estä kaikki samassa tiedostossa"
-
-#: lazarusidestrconsts.lisdisablebreakpoint
-msgid "Disable Breakpoint"
-msgstr "Estä keskeytyskohta"
-
-#: lazarusidestrconsts.lisdisablegroups
-msgid "Disable Groups"
-msgstr "Estä ryhmät"
 
 #: lazarusidestrconsts.lisdisablei18nforlfm
 msgid "Disable I18N for LFM"
@@ -9457,18 +9154,6 @@ msgstr "Tyhjä"
 msgid "Destination directory for publishing is either a relative path or empty."
 msgstr ""
 
-#: lazarusidestrconsts.lisenableall
-msgid "&Enable All"
-msgstr "&Salli kaikki"
-
-#: lazarusidestrconsts.lisenableallinsamesource
-msgid "Enable All in same source"
-msgstr "Salli kaikki samassa lähdekoodissa"
-
-#: lazarusidestrconsts.lisenablebreakpoint
-msgid "Enable Breakpoint"
-msgstr "Salli keskeytyskohta"
-
 #: lazarusidestrconsts.lisenabledonlyforpackages
 msgid "Enabled only for packages."
 msgstr "Sallittu vain paketeille."
@@ -9477,10 +9162,6 @@ msgstr "Sallittu vain paketeille."
 #, object-pascal-format
 msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
 msgstr ". Salli lippu \"Käytä käännösyksikköä\" %s paketissa %s"
-
-#: lazarusidestrconsts.lisenablegroups
-msgid "Enable Groups"
-msgstr "Salli ryhmät"
 
 #: lazarusidestrconsts.lisenablei18nforlfm
 msgid "Enable I18N for LFM"
@@ -9736,39 +9417,6 @@ msgstr "Virhe tallennettaessa tiedosto \"%s\""
 msgid "Error writing package list to file%s%s%s%s"
 msgstr "Virhe kirjoitettaessa pakettiluettelo tiedostoon%s%s%s%s"
 
-#: lazarusidestrconsts.lisevalexpression
-msgctxt "lazarusidestrconsts.lisevalexpression"
-msgid "Eval expression"
-msgstr "Eval lauseke"
-
-#: lazarusidestrconsts.lisevaluateall
-msgid "Evaluate all"
-msgstr ""
-
-#: lazarusidestrconsts.lisevaluatemodify
-msgid "&Evaluate/Modify"
-msgstr "&Arvioi/Muuta"
-
-#: lazarusidestrconsts.liseventlogclear
-msgid "Clear Events"
-msgstr "Tyhjennä tapahtumat"
-
-#: lazarusidestrconsts.liseventlogoptions
-msgid "Event Log Options ..."
-msgstr "Tapahtumalokin asetukset ..."
-
-#: lazarusidestrconsts.liseventlogsavetofile
-msgid "Save Events to File"
-msgstr "Talleta tapahtumat tieostoon"
-
-#: lazarusidestrconsts.liseventslogaddcomment
-msgid "Add Comment ..."
-msgstr "Lisää kommentti ..."
-
-#: lazarusidestrconsts.liseventslogaddcomment2
-msgid "Add Comment"
-msgstr "Lisää kommentti"
-
 #: lazarusidestrconsts.liseverynthlinenumber
 msgid "Every n-th line number"
 msgstr "Rivinumeroiden näyttöväli"
@@ -9789,10 +9437,6 @@ msgstr ""
 #: lazarusidestrconsts.lisexamplesopenfirstselected
 msgid "Open first selected"
 msgstr "Avaa ensimmäinen valittu"
-
-#: lazarusidestrconsts.lisexceptiondialog
-msgid "Debugger Exception Notification"
-msgstr "Virheejäljettimen kiinniottaman poikkeuksen havainto"
 
 #: lazarusidestrconsts.lisexclude
 msgid "Exclude"
@@ -10069,10 +9713,6 @@ msgstr "Tiedosto \"%s\" on virtuaalinen."
 #: lazarusidestrconsts.lisfilelinkerror
 msgid "File link error"
 msgstr "Tiedoston linkkivirhe"
-
-#: lazarusidestrconsts.lisfilenameaddress
-msgid "Filename/Address"
-msgstr "Tiedoston nimi / osoite"
 
 #: lazarusidestrconsts.lisfilenamestyle
 msgid "Filename Style"
@@ -10572,11 +10212,6 @@ msgstr "Käy myös kommentit läpi"
 msgid "Full"
 msgstr "Täysi"
 
-#: lazarusidestrconsts.lisfunction
-msgctxt "lazarusidestrconsts.lisfunction"
-msgid "Function"
-msgstr "Funktio"
-
 #: lazarusidestrconsts.lisgeneral
 msgctxt "lazarusidestrconsts.lisgeneral"
 msgid "General"
@@ -10616,10 +10251,6 @@ msgstr "Julkiset asetukset"
 msgid "Goto Line"
 msgstr "Mene riville"
 
-#: lazarusidestrconsts.lisgotoselected
-msgid "Goto selected"
-msgstr "Mene valintaan"
-
 #: lazarusidestrconsts.lisgplnotice
 msgid ""
 "<description>\n"
@@ -10637,44 +10268,9 @@ msgstr ""
 msgid "Group"
 msgstr "Ryhmä"
 
-#: lazarusidestrconsts.lisgroupassignexisting
-#, object-pascal-format
-msgid "Assign to existing \"%s\" group?"
-msgstr "Siirrä olemassa olevaan \"%s\" ryhmään?"
-
-#: lazarusidestrconsts.lisgroupemptydelete
-#, object-pascal-format
-msgid "No more breakpoints are assigned to group \"%s\", delete it?"
-msgstr "Ryhmässä \"%s\" ei ole enää keskeytyskohtia, poista se?"
-
-#: lazarusidestrconsts.lisgroupemptydeletemore
-#, object-pascal-format
-msgid "%sThere are %d more empty groups, delete all?"
-msgstr "%sJäljellä on %d tyhjää ryhmää, poista kaikki?"
-
 #: lazarusidestrconsts.lisgrouplocalvariables
 msgid "Group automatically defined local variables"
 msgstr "Ryhmittele automaattisesti luodut paikalliset muuttujat"
-
-#: lazarusidestrconsts.lisgroupnameemptyclearinstead
-msgid "The group name cannot be empty. Clear breakpoints' group(s)?"
-msgstr "Ryhmän nimi ei saa olla tyhjä. Tyhjennä keskeytyskohtien ryhmä(t)?"
-
-#: lazarusidestrconsts.lisgroupnameinput
-msgid "Group name:"
-msgstr "Ryhmän nimi:"
-
-#: lazarusidestrconsts.lisgroupnameinvalid
-msgid "BreakpointGroup name must be a valid Pascal identifier name."
-msgstr "BreakpointGroup nimen pitää olla kelvollinen Pascal-tunniste."
-
-#: lazarusidestrconsts.lisgroupsetnew
-msgid "Set new group ..."
-msgstr "Aseta uusi ryhmä ..."
-
-#: lazarusidestrconsts.lisgroupsetnone
-msgid "Clear group(s)"
-msgstr "Tyhjennä ryhmä(t)"
 
 #: lazarusidestrconsts.lisgroupsfordebugoutput
 msgid "Enable or Disable groups of debug output. Valid Options are:"
@@ -10802,10 +10398,6 @@ msgstr "Näytä lomakkeet"
 #: lazarusidestrconsts.lishintviewunits
 msgid "View Units"
 msgstr "Näytä käännösyksiköt"
-
-#: lazarusidestrconsts.lishitcount
-msgid "Hitcount"
-msgstr "Osumien määrä"
 
 #: lazarusidestrconsts.lishlpoptsdatabases
 msgid "Databases"
@@ -11000,10 +10592,6 @@ msgstr "Ohita kaikki"
 msgid "Ignore and continue"
 msgstr "Jätä huomiotta ja jatka"
 
-#: lazarusidestrconsts.lisignoreexceptiontype
-msgid "Ignore this exception type"
-msgstr "Ohita tämän tyyppiset poikkeukset"
-
 #: lazarusidestrconsts.lisignoreuseasancestor
 #, object-pascal-format
 msgid "Ignore, use %s as ancestor"
@@ -11107,10 +10695,6 @@ msgstr ""
 #: lazarusidestrconsts.lisindentationforpascalsources
 msgid "Indentation for Pascal sources"
 msgstr "Pascal-lähdekoodin sisennys"
-
-#: lazarusidestrconsts.lisindex
-msgid "Index"
-msgstr ""
 
 #: lazarusidestrconsts.lisinformation
 msgid "Information"
@@ -11261,56 +10845,6 @@ msgstr "Lisää URL tagi"
 msgid "In session"
 msgstr "Istunnossa"
 
-#: lazarusidestrconsts.lisinspect
-msgid "&Inspect"
-msgstr "&Tutki"
-
-#: lazarusidestrconsts.lisinspectaddwatch
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisinspectaddwatch"
-msgid "Add watch"
-msgstr "Lisää vahti"
-
-#: lazarusidestrconsts.lisinspectclassinherit
-#, object-pascal-format
-msgid "%s: class %s inherits from %s"
-msgstr "%s : luokka %s periytyy %s:sta"
-
-#: lazarusidestrconsts.lisinspectdata
-msgid "Data"
-msgstr "Tieto"
-
-#: lazarusidestrconsts.lisinspectdialog
-msgid "Debug Inspector"
-msgstr "Virheenjäljittimen hallinta"
-
-#: lazarusidestrconsts.lisinspectmethods
-msgid "Methods"
-msgstr "Metodit"
-
-#: lazarusidestrconsts.lisinspectpointerto
-#, object-pascal-format
-msgid "Pointer to %s"
-msgstr "Osoitin %s:hen"
-
-#: lazarusidestrconsts.lisinspectproperties
-msgctxt "lazarusidestrconsts.lisinspectproperties"
-msgid "Properties"
-msgstr "Ominaisuudet"
-
-#: lazarusidestrconsts.lisinspectunavailableerror
-#, object-pascal-format
-msgid "%s: unavailable (error: %s)"
-msgstr "%s: ei saatavilla (virhe: %s)"
-
-#: lazarusidestrconsts.lisinspectuseinstance
-msgid "Instance"
-msgstr "Ilmentymä"
-
-#: lazarusidestrconsts.lisinspectuseinstancehint
-msgid "Use instance class"
-msgstr "Käytä ilmentymäluokkaa"
-
 #: lazarusidestrconsts.lisinstallationfailed
 msgid "Installation failed"
 msgstr "Asennus epäonnistui"
@@ -11423,14 +10957,6 @@ msgstr "Kelvoton moodi %s"
 #: lazarusidestrconsts.lisinvalidmultiselection
 msgid "Invalid multiselection"
 msgstr "Kelvoton monivalinta"
-
-#: lazarusidestrconsts.lisinvalidoff
-msgid "Invalid (Off)"
-msgstr "Kelvoton (Pois)"
-
-#: lazarusidestrconsts.lisinvalidon
-msgid "Invalid (On)"
-msgstr "Kelvoton (Päällä)"
 
 #: lazarusidestrconsts.lisinvalidpascalidentifiercap
 msgid "Invalid Pascal Identifier"
@@ -12420,14 +11946,6 @@ msgstr "kirjastopolku"
 msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under macOS)."
 msgstr "Free Pascal jaettu kirjasto (.dll Windowsissa, .so Linuxissa, .dylib MacOS X:ssä)."
 
-#: lazarusidestrconsts.lisline
-msgid "Line:"
-msgstr "Rivi:"
-
-#: lazarusidestrconsts.lislinelength
-msgid "Line/Length"
-msgstr "Rivi/Pituus"
-
 #: lazarusidestrconsts.lislink
 msgid "Link:"
 msgstr "Linkki:"
@@ -12456,52 +11974,6 @@ msgstr "Lataa makro:"
 #: lazarusidestrconsts.lislocal
 msgid "&Local"
 msgstr "&Paikallinen"
-
-#: lazarusidestrconsts.lislocals
-msgctxt "lazarusidestrconsts.lislocals"
-msgid "Local Variables"
-msgstr "Paikalliset muuttujat"
-
-#: lazarusidestrconsts.lislocalsdlgcopyall
-msgid "Copy &all"
-msgstr ""
-
-#: lazarusidestrconsts.lislocalsdlgcopyname
-msgid "&Copy Name"
-msgstr "&Kopioi nimi"
-
-#: lazarusidestrconsts.lislocalsdlgcopynamevalue
-msgid "Co&py Name and Value"
-msgstr ""
-
-#: lazarusidestrconsts.lislocalsdlgcopyrawvalue
-msgid "Copy &RAW Value"
-msgstr "Kopioi &RAW arvo"
-
-#: lazarusidestrconsts.lislocalsdlgcopyvalue
-msgid "C&opy Value"
-msgstr "K&opioi arvo"
-
-#: lazarusidestrconsts.lislocalsnotevaluated
-msgid "Locals not evaluated"
-msgstr "Paikallisia ei arvioitu"
-
-#: lazarusidestrconsts.lislogcallstack
-msgid "Log Call Stack"
-msgstr "Kirjaa kutsupino"
-
-#: lazarusidestrconsts.lislogcallstacklimit
-msgid "(frames limit. 0 - no limits)"
-msgstr "(kehyksen raja. 0 - ei rajoja)"
-
-#: lazarusidestrconsts.lislogevalexpression
-msgctxt "lazarusidestrconsts.lislogevalexpression"
-msgid "Eval expression"
-msgstr "Eval lauseke"
-
-#: lazarusidestrconsts.lislogmessage
-msgid "Log Message"
-msgstr "Kirjaa viesti"
 
 #: lazarusidestrconsts.lislowercasestring
 msgid "lowercase string"
@@ -14035,10 +13507,6 @@ msgstr ""
 msgid "BreakPoints"
 msgstr "Keskeytyskohdat"
 
-#: lazarusidestrconsts.lismenuviewcallstack
-msgid "Call Stack"
-msgstr "Kutsupino"
-
 #: lazarusidestrconsts.lismenuviewcodebrowser
 msgctxt "lazarusidestrconsts.lismenuviewcodebrowser"
 msgid "Code Browser"
@@ -14563,10 +14031,6 @@ msgstr "Teksti &ennen jokaista riviä"
 msgid "&Trim clipboard contents"
 msgstr "&Siisti leikepöydän sisältö"
 
-#: lazarusidestrconsts.lisms
-msgid "(ms)"
-msgstr ""
-
 #: lazarusidestrconsts.lismsgcolors
 msgid "Message colors"
 msgstr "Viestin värit"
@@ -14895,10 +14359,6 @@ msgstr "objektipolut"
 msgid "Switch to Object Inspector Favorites tab"
 msgstr "Siirry muokkaimen suosikit-lehdelle"
 
-#: lazarusidestrconsts.lisoff
-msgid "? (Off)"
-msgstr "? (Pois)"
-
 #: lazarusidestrconsts.lisofpackage
 #, object-pascal-format
 msgid " of package %s"
@@ -14998,10 +14458,6 @@ msgstr "%sPaketti on asennettu, mutta lpk-tiedosto puuttuu"
 #: lazarusidestrconsts.lisoldclass
 msgid "Old Class"
 msgstr "Vanha luokka"
-
-#: lazarusidestrconsts.lison
-msgid "? (On)"
-msgstr "? (Päällä)"
 
 #: lazarusidestrconsts.lisonbreaklineiereturnorenterkey
 msgid "On break line (i.e. return or enter key)"
@@ -15329,10 +14785,6 @@ msgstr "jäsentäjä \"%s\": %s"
 #: lazarusidestrconsts.lisparsers
 msgid "Parsers:"
 msgstr ""
-
-#: lazarusidestrconsts.lispasscount
-msgid "Pass Count"
-msgstr "Suoritusmäärä"
 
 #: lazarusidestrconsts.lispassingcompilerdefinetwicewithdifferentvalues
 #, object-pascal-format
@@ -15890,10 +15342,6 @@ msgstr "Kelvoton käännösyksikön nimi"
 #, object-pascal-format
 msgid "Missing files of package %s"
 msgstr "Paketin %s puuttuvat tiedostot"
-
-#: lazarusidestrconsts.lispendingon
-msgid "Pending (On)"
-msgstr ""
 
 #: lazarusidestrconsts.lispenewfilenotinincludepath
 msgid "New file not in include path"
@@ -17331,11 +16779,6 @@ msgstr "Nauhoitettu"
 msgid "Redo"
 msgstr "Tee uudelleen"
 
-#: lazarusidestrconsts.lisregisters
-msgctxt "lazarusidestrconsts.lisregisters"
-msgid "Registers"
-msgstr "Rekisterit"
-
 #: lazarusidestrconsts.lisregularexpression
 msgid "Regular expression"
 msgstr "Säännöllinen lauseke"
@@ -18326,10 +17769,6 @@ msgstr "Lähde \"%s\"%sja kohde \"%s\"%shakemistot ovat samoja. Valitse toinen h
 msgid "Source and Destination are the same:%s%s"
 msgstr "Lähde ja kohde ovat samat:%s%s"
 
-#: lazarusidestrconsts.lissourcebreakpoint
-msgid "&Source Breakpoint ..."
-msgstr "&Lähdekoodin keskeytyskohta ..."
-
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
 #, object-pascal-format
 msgid "Source directory \"%s\" does not exist."
@@ -18546,10 +17985,6 @@ msgstr "Siirrä valittu kontrolli ylös tabulointijärjestyksessä"
 #, object-pascal-format
 msgid "Tabs for %s"
 msgstr "%s:n tabit"
-
-#: lazarusidestrconsts.listakesnapshot
-msgid "Take a Snapshot"
-msgstr "Ota pikakuva"
 
 #: lazarusidestrconsts.listarget
 msgid "Target:"
@@ -19272,44 +18707,6 @@ msgstr "Tämä synnyttää kehäriippuvuuden."
 #, object-pascal-format
 msgid "This will put a lot of text (%s) on the clipboard.%sProceed?"
 msgstr "Tämä kopioi paljon tekstiä (%s) leikepöydälle.%sJatketaanko?"
-
-#: lazarusidestrconsts.listhreads
-msgctxt "lazarusidestrconsts.listhreads"
-msgid "Threads"
-msgstr "Säikeet"
-
-#: lazarusidestrconsts.listhreadscurrent
-msgctxt "lazarusidestrconsts.listhreadscurrent"
-msgid "Current"
-msgstr "Nykyinen"
-
-#: lazarusidestrconsts.listhreadsfunc
-msgctxt "lazarusidestrconsts.listhreadsfunc"
-msgid "Function"
-msgstr "Funktio"
-
-#: lazarusidestrconsts.listhreadsgoto
-msgid "Goto"
-msgstr "Mene"
-
-#: lazarusidestrconsts.listhreadsline
-msgctxt "lazarusidestrconsts.listhreadsline"
-msgid "Line"
-msgstr "Rivi"
-
-#: lazarusidestrconsts.listhreadsnotevaluated
-msgid "Threads not evaluated"
-msgstr "Säikeitä ei arvioida"
-
-#: lazarusidestrconsts.listhreadssrc
-msgctxt "lazarusidestrconsts.listhreadssrc"
-msgid "Source"
-msgstr "Lähdekoodi"
-
-#: lazarusidestrconsts.listhreadsstate
-msgctxt "lazarusidestrconsts.listhreadsstate"
-msgid "State"
-msgstr "Tila"
 
 #: lazarusidestrconsts.listitle
 msgid "&Title"
@@ -20385,20 +19782,6 @@ msgstr "Kopioi versiotieto leikepöydälle"
 msgid "Very Verbose"
 msgstr "Hyvin monisanainen"
 
-#: lazarusidestrconsts.lisviewbreakpointproperties
-msgctxt "lazarusidestrconsts.lisviewbreakpointproperties"
-msgid "Breakpoint Properties ..."
-msgstr "Keskeytyskohdan ominaisuudet ..."
-
-#: lazarusidestrconsts.lisviewsource
-msgid "View Source"
-msgstr "Näytä lähdekoodi"
-
-#: lazarusidestrconsts.lisviewsourcedisass
-msgctxt "lazarusidestrconsts.lisviewsourcedisass"
-msgid "View Assembler"
-msgstr "Näytä assembler"
-
 #: lazarusidestrconsts.lisviewsourcelfm
 msgid "View Source (.lfm)"
 msgstr "Näytä lomakkeen koodi (.lfm)"
@@ -20421,55 +19804,6 @@ msgstr ", Varoituksia: %s"
 #, object-pascal-format
 msgid "%sWarning: This is the main unit. The new main unit will be %s.pas."
 msgstr "%sVaroitus: Tämä on pääkäännösyksikkö. Uusi pää-käännösyksikkö tulee olemaan %s.pas."
-
-#: lazarusidestrconsts.liswatch
-msgid "&Watch"
-msgstr "&Vahti"
-
-#: lazarusidestrconsts.liswatchdata
-msgid "Watch:"
-msgstr "Vahti:"
-
-#: lazarusidestrconsts.liswatchkind
-msgid "Watch action"
-msgstr "Vahtitoiminto"
-
-#: lazarusidestrconsts.liswatchkindread
-msgid "Read"
-msgstr "Lue"
-
-#: lazarusidestrconsts.liswatchkindreadwrite
-msgid "Read/Write"
-msgstr "Lue/kirjoita"
-
-#: lazarusidestrconsts.liswatchkindwrite
-msgid "Write"
-msgstr "Kirjoita"
-
-#: lazarusidestrconsts.liswatchpoint
-msgid "&Data/Watch Breakpoint ..."
-msgstr "&Tieto/Vahti keskeytyskohta ..."
-
-#: lazarusidestrconsts.liswatchpointbreakpoint
-msgid "&Data/watch Breakpoint ..."
-msgstr "&Tieto/Vahti keskeytyskohta ..."
-
-#: lazarusidestrconsts.liswatchscope
-msgid "Watch scope"
-msgstr "Vahdin ulottuvuus"
-
-#: lazarusidestrconsts.liswatchscopeglobal
-msgctxt "lazarusidestrconsts.liswatchscopeglobal"
-msgid "Global"
-msgstr "Kaiken kattava"
-
-#: lazarusidestrconsts.liswatchscopelocal
-msgid "Declaration"
-msgstr "Julistus"
-
-#: lazarusidestrconsts.liswatchtowatchpoint
-msgid "Create &Data/Watch Breakpoint ..."
-msgstr "Luo &Tieto/Vahti keskeytyskohta ..."
 
 #: lazarusidestrconsts.liswelcometolazaruside
 #, object-pascal-format
@@ -20540,35 +19874,6 @@ msgstr "Ilman oikeita FPC lähdekoodeja koodin selailu ja täydennys toimivat va
 #: lazarusidestrconsts.liswithrequiredpackages
 msgid "With required packages"
 msgstr "Tarvittavien pakettien kanssa"
-
-#: lazarusidestrconsts.liswldeleteall
-msgid "De&lete All"
-msgstr "&Poista kaikki"
-
-#: lazarusidestrconsts.liswldisableall
-msgid "D&isable All"
-msgstr "&Estä kaikki"
-
-#: lazarusidestrconsts.liswlenableall
-msgid "E&nable All"
-msgstr "&Salli kaikki"
-
-#: lazarusidestrconsts.liswlexpression
-msgid "Expression"
-msgstr "Lauseke"
-
-#: lazarusidestrconsts.liswlinspectpane
-msgid "Inspect pane"
-msgstr "Tarkastusosa"
-
-#: lazarusidestrconsts.liswlproperties
-msgid "&Properties"
-msgstr "&Ominaisuudet"
-
-#: lazarusidestrconsts.liswlwatchlist
-msgctxt "lazarusidestrconsts.liswlwatchlist"
-msgid "Watches"
-msgstr "Vahdit"
 
 #: lazarusidestrconsts.liswordatcursorincurrenteditor
 msgid "Word at cursor in current editor"
@@ -20795,36 +20100,6 @@ msgstr ""
 msgid "Add package unit to uses section"
 msgstr "Lisää paketin käännösyksikkö uses-lauseeseen"
 
-#: lazarusidestrconsts.regdlgbinary
-msgctxt "lazarusidestrconsts.regdlgbinary"
-msgid "Binary"
-msgstr "Binaari"
-
-#: lazarusidestrconsts.regdlgdecimal
-msgctxt "lazarusidestrconsts.regdlgdecimal"
-msgid "Decimal"
-msgstr "Decimaali"
-
-#: lazarusidestrconsts.regdlgdisplaytypeforselectedregisters
-msgid "Display type for selected Registers"
-msgstr "Näyttö valituille rekistereille"
-
-#: lazarusidestrconsts.regdlgformat
-msgid "Format"
-msgstr "Muoto"
-
-#: lazarusidestrconsts.regdlghex
-msgid "Hex"
-msgstr "Hexa"
-
-#: lazarusidestrconsts.regdlgoctal
-msgid "Octal"
-msgstr "Oktaali"
-
-#: lazarusidestrconsts.regdlgraw
-msgid "Raw"
-msgstr "Raaka"
-
 #: lazarusidestrconsts.rsaddinverse
 msgid "Add Inverse"
 msgstr "Lisää käänteinen"
@@ -20832,10 +20107,6 @@ msgstr "Lisää käänteinen"
 #: lazarusidestrconsts.rsaddnewterm
 msgid "Add new term"
 msgstr ""
-
-#: lazarusidestrconsts.rsattachto
-msgid "Attach to"
-msgstr "Kiinnitä"
 
 #: lazarusidestrconsts.rsattributes
 msgid "Attributes"
@@ -20888,10 +20159,6 @@ msgstr "Luo uusi määrite"
 #: lazarusidestrconsts.rsenablei18n
 msgid "Enable i18n"
 msgstr "Salli kansainvälistäminen"
-
-#: lazarusidestrconsts.rsenterpid
-msgid "Enter PID"
-msgstr "Anna PID"
 
 #: lazarusidestrconsts.rsfilterthelistwithstring
 msgid "Filter the lines in list with a string"
@@ -22887,4 +22154,13 @@ msgstr ""
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versiotiedot"
+
+#: lazarusidestrconsts.lisdeleteall
+msgid "&Delete All"
+msgstr "&Poista kaikki"
+
+#: lazarusidestrconsts.lisfunction
+msgctxt "lazarusidestrconsts.lisfunction"
+msgid "Function"
+msgstr "Funktio"
 

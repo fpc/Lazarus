@@ -13,24 +13,6 @@ msgstr ""
 "POT-Creation-Date: \n"
 "Language: lt\n"
 
-#: lazarusidestrconsts.dbgbreakgroupdlgcaption
-msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
-msgid "Select Groups"
-msgstr "Pažymėti grupes"
-
-#: lazarusidestrconsts.dbgbreakgroupdlgheaderdisable
-msgid "Select groups to disable when breakpoint is hit"
-msgstr "Pažymėti grupes, kurios pasyvinamos pasiekus stabdos tašką"
-
-#: lazarusidestrconsts.dbgbreakgroupdlgheaderenable
-msgid "Select groups to enable when breakpoint is hit"
-msgstr "Pažymėti grupes, kurios aktyvinamos pasiekus stabdos tašką"
-
-#: lazarusidestrconsts.dbgbreakpropertygroupnotfound
-#, object-pascal-format
-msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
-msgstr "Aktyvinimo/pasyvinimo sąraše yra neegzistuojančių grupių.%0:sJas sukurti?%0:s%0:s%1:s"
-
 #: lazarusidestrconsts.dbgeventbreakaddressbreakpoint
 #, object-pascal-format
 msgid "Address Breakpoint %s"
@@ -4235,10 +4217,6 @@ msgctxt "lazarusidestrconsts.dlgvaluecolor"
 msgid "Value"
 msgstr "Vertė"
 
-#: lazarusidestrconsts.dlgvaluedataaddr
-msgid "Data-Address"
-msgstr ""
-
 #: lazarusidestrconsts.dlgverbosity
 msgid "Verbosity during compilation:"
 msgstr "Pranešimų gausa kompiliuojant:"
@@ -4402,48 +4380,6 @@ msgstr "Z eilė"
 #: lazarusidestrconsts.gldhighlightbothsidesofcursor
 msgid "On Both Sides"
 msgstr "Abiejose pusėse"
-
-#: lazarusidestrconsts.histdlgbtnclearhint
-msgid "Clear all snapshots"
-msgstr "Išvalyti visas momentines kopijas"
-
-#: lazarusidestrconsts.histdlgbtnenablehint
-msgid "Toggle view snapshot or current"
-msgstr "Rodyti momentinę kopiją arba veikiamąjį"
-
-#: lazarusidestrconsts.histdlgbtnmakesnaphint
-msgid "Take Snapshot"
-msgstr "Daryti momentinę kopiją"
-
-#: lazarusidestrconsts.histdlgbtnpowerhint
-msgid "Switch on/off automatic snapshots"
-msgstr "Ar automatiškai daryti momentines kopijas"
-
-#: lazarusidestrconsts.histdlgbtnremovehint
-msgid "Remove selected entry"
-msgstr "Pašalinti pažymėtą elementą"
-
-#: lazarusidestrconsts.histdlgbtnshowhisthint
-msgid "View history"
-msgstr "Rodyti praeitį"
-
-#: lazarusidestrconsts.histdlgbtnshowsnaphint
-msgid "View Snapshots"
-msgstr "Rodyti momentines kopijas"
-
-#: lazarusidestrconsts.histdlgcolumnloc
-msgctxt "lazarusidestrconsts.histdlgcolumnloc"
-msgid "Location"
-msgstr "Vieta"
-
-#: lazarusidestrconsts.histdlgcolumntime
-msgid "Time"
-msgstr "Laikas"
-
-#: lazarusidestrconsts.histdlgformname
-msgctxt "lazarusidestrconsts.histdlgformname"
-msgid "History"
-msgstr "Praeitis"
 
 #: lazarusidestrconsts.initdlgdebugchangepath
 msgid "Change path"
@@ -4891,10 +4827,6 @@ msgstr "Padėkos"
 msgid "Action:"
 msgstr "Veiksmas:"
 
-#: lazarusidestrconsts.lisactions
-msgid "Actions:"
-msgstr "Veiksmai:"
-
 #: lazarusidestrconsts.lisactivate
 msgid "Activate"
 msgstr "Aktyvinti"
@@ -5009,15 +4941,6 @@ msgstr "Paketą įdėti į projektą"
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
 msgstr "Pridėti parametro skliaustelius"
-
-#: lazarusidestrconsts.lisaddress
-msgid "Address:"
-msgstr "Adresas:"
-
-#: lazarusidestrconsts.lisaddressbreakpoint
-msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
-msgid "&Address Breakpoint ..."
-msgstr "&Adreso stabdos taškas…"
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
@@ -5315,10 +5238,6 @@ msgstr "Automatinis baigimas: išjungtas"
 msgid "Auto completion: on"
 msgstr "Automatinis baigimas: įjungtas"
 
-#: lazarusidestrconsts.lisautocontinueafter
-msgid "Auto continue after:"
-msgstr "Automatiškai tęsti po:"
-
 #: lazarusidestrconsts.lisautomarkup
 msgid "Markup and Matches"
 msgstr "Paryškinimai ir sutapimai"
@@ -5500,26 +5419,10 @@ msgstr "Tai kaimyninė komponentė, prie kurios bus pririštas apatinis kraštas
 msgid "Bottom space equally"
 msgstr "Tolygiai rikiuoti pagal apatinius kraštus"
 
-#: lazarusidestrconsts.lisbpsdisabled
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisbpsdisabled"
-msgid "Disabled"
-msgstr "Pasyvus"
-
-#: lazarusidestrconsts.lisbpsenabled
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisbpsenabled"
-msgid "Enabled"
-msgstr "Veiksnus"
-
 #: lazarusidestrconsts.lisbreak
 msgctxt "lazarusidestrconsts.lisbreak"
 msgid "Break"
 msgstr "Stabdyti"
-
-#: lazarusidestrconsts.lisbreakpointproperties
-msgid "Breakpoint Properties"
-msgstr "Stabdos tašo savybės"
 
 #: lazarusidestrconsts.lisbrowseandselectacompiler
 msgid "Browse and select a compiler (e.g. ppcx64"
@@ -5638,10 +5541,6 @@ msgstr "%s baitas"
 #, object-pascal-format
 msgid "Calling %s to create Makefile from %s failed."
 msgstr "Besikreipiant į %s, kad pagal %s būtų sukurtas Makefile, įvyko klaida."
-
-#: lazarusidestrconsts.liscallstacknotevaluated
-msgid "Stack not evaluated"
-msgstr "Dėklas neįvertintas"
 
 #: lazarusidestrconsts.liscancelloadingthiscomponent
 msgid "Cancel loading this component"
@@ -7258,14 +7157,6 @@ msgstr "Startuoti po"
 msgid "Execute before"
 msgstr "Startuoti prieš"
 
-#: lazarusidestrconsts.liscoladdress
-msgid "Address"
-msgstr "Adresas"
-
-#: lazarusidestrconsts.liscolclass
-msgid "Class"
-msgstr "Klasė"
-
 #: lazarusidestrconsts.liscollapseall
 msgid "Collapse All (/)"
 msgstr "Suskleisti visus (/)"
@@ -7281,14 +7172,6 @@ msgstr "Suskleisti visus paketus"
 #: lazarusidestrconsts.liscollapseallunits
 msgid "Collapse all units"
 msgstr "Suskleisti visus modulius"
-
-#: lazarusidestrconsts.liscolreturns
-msgid "Returns"
-msgstr "Grąžina"
-
-#: lazarusidestrconsts.liscolvisibility
-msgid "Visibility"
-msgstr "Matomumas"
 
 #: lazarusidestrconsts.liscomboboxes
 msgid "Combo Boxes"
@@ -8095,10 +7978,6 @@ msgctxt "lazarusidestrconsts.liscopy"
 msgid "Copy"
 msgstr "Kopijuoti"
 
-#: lazarusidestrconsts.liscopyall
-msgid "Copy All"
-msgstr "Kopijuoti viską"
-
 #: lazarusidestrconsts.liscopyallitemstoclipboard
 msgid "Copy All Items to Clipboard"
 msgstr "Visus elementus kopijuoti į iškarpinę"
@@ -8106,10 +7985,6 @@ msgstr "Visus elementus kopijuoti į iškarpinę"
 #: lazarusidestrconsts.liscopyalloriginalmessagestoclipboard
 msgid "Copy All/Original Messages to Clipboard"
 msgstr "Visus/originalius pranešimus kopijuoti iškarpinėn"
-
-#: lazarusidestrconsts.liscopyalloutputclipboard
-msgid "Copy all output to clipboard"
-msgstr "Visą išvestį kopijuoti į išvestinę"
 
 #: lazarusidestrconsts.liscopyallshownmessagestoclipboard
 msgid "Copy All Shown Messages to Clipboard"
@@ -8296,16 +8171,6 @@ msgstr "Įrašant „.lfm“ failą, taip pat kurti/naujinti ir „.po“ failą
 msgid "Creating file index of FPC sources %s ..."
 msgstr "Kuriama FPC pirminio kodo „%s“ failų rodyklė…"
 
-#: lazarusidestrconsts.liscsbottom
-msgctxt "lazarusidestrconsts.liscsbottom"
-msgid "Bottom"
-msgstr "Apačion"
-
-#: lazarusidestrconsts.liscstop
-msgctxt "lazarusidestrconsts.liscstop"
-msgid "Top"
-msgstr "Viršun"
-
 #: lazarusidestrconsts.lisctdefchoosedirectory
 msgid "Choose Directory"
 msgstr "Parinkite aplanką"
@@ -8359,11 +8224,6 @@ msgstr "pažymėkite makrokomandą"
 msgid "Select Code Macro"
 msgstr "Išrink kodo makrokomandą"
 
-#: lazarusidestrconsts.liscurrent
-msgctxt "lazarusidestrconsts.liscurrent"
-msgid "Current"
-msgstr "Veikiamasis"
-
 #: lazarusidestrconsts.liscurrentlclwidgetset
 #, object-pascal-format
 msgid "Current LCL widgetset: \"%s\""
@@ -8410,22 +8270,6 @@ msgctxt "lazarusidestrconsts.liscut"
 msgid "Cut"
 msgstr "Iškirpti"
 
-#: lazarusidestrconsts.lisdadattach
-msgid "Attach"
-msgstr "Prisegti"
-
-#: lazarusidestrconsts.lisdadimagename
-msgid "Image Name"
-msgstr "Paveikslo pavadinimas"
-
-#: lazarusidestrconsts.lisdadpid
-msgid "PID"
-msgstr "Proceso ID"
-
-#: lazarusidestrconsts.lisdadrunningprocesses
-msgid "Running Processes"
-msgstr "Vykdomi procesai"
-
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
 msgstr "Duomenų modulis"
@@ -8434,36 +8278,6 @@ msgstr "Duomenų modulis"
 msgid "Date"
 msgstr "Data"
 
-#: lazarusidestrconsts.lisdbgallitemdelete
-msgctxt "lazarusidestrconsts.lisdbgallitemdelete"
-msgid "Delete all"
-msgstr "Pašalinti visus"
-
-#: lazarusidestrconsts.lisdbgallitemdeletehint
-msgctxt "lazarusidestrconsts.lisdbgallitemdeletehint"
-msgid "Delete all"
-msgstr "Pašalinti visus"
-
-#: lazarusidestrconsts.lisdbgallitemdisable
-msgctxt "lazarusidestrconsts.lisdbgallitemdisable"
-msgid "Disable all"
-msgstr "Pasyvinti visus"
-
-#: lazarusidestrconsts.lisdbgallitemdisablehint
-msgctxt "lazarusidestrconsts.lisdbgallitemdisablehint"
-msgid "Disable all"
-msgstr "Pasyvinti visus"
-
-#: lazarusidestrconsts.lisdbgallitemenable
-msgctxt "lazarusidestrconsts.lisdbgallitemenable"
-msgid "Enable all"
-msgstr "Įgalinti visus"
-
-#: lazarusidestrconsts.lisdbgallitemenablehint
-msgctxt "lazarusidestrconsts.lisdbgallitemenablehint"
-msgid "Enable all"
-msgstr "Įgalinti visus"
-
 #: lazarusidestrconsts.lisdbgasmcopyaddresstoclipboard
 msgid "Copy address to Clipboard"
 msgstr ""
@@ -8471,11 +8285,6 @@ msgstr ""
 #: lazarusidestrconsts.lisdbgasmcopytoclipboard
 msgid "Copy to Clipboard"
 msgstr "Kopijuoti į iškarpinę"
-
-#: lazarusidestrconsts.lisdbgbreakpointpropertieshint
-msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
-msgid "Breakpoint Properties ..."
-msgstr "Stabdos tašo savybės…"
 
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
@@ -8537,31 +8346,6 @@ msgstr "Išsiųstas (Post) Windows pranešimas"
 msgid "Windows Message Sent"
 msgstr "Išsiųstas (Send) Windows pranešimas"
 
-#: lazarusidestrconsts.lisdbgitemdeletehint
-msgctxt "lazarusidestrconsts.lisdbgitemdeletehint"
-msgid "Delete"
-msgstr "Pašalinti"
-
-#: lazarusidestrconsts.lisdbgitemdisable
-msgctxt "lazarusidestrconsts.lisdbgitemdisable"
-msgid "Disable"
-msgstr "Pasyvinti"
-
-#: lazarusidestrconsts.lisdbgitemdisablehint
-msgctxt "lazarusidestrconsts.lisdbgitemdisablehint"
-msgid "Disable"
-msgstr "Pasyvinti"
-
-#: lazarusidestrconsts.lisdbgitemenable
-msgctxt "lazarusidestrconsts.lisdbgitemenable"
-msgid "Enable"
-msgstr "Įgalinti"
-
-#: lazarusidestrconsts.lisdbgitemenablehint
-msgctxt "lazarusidestrconsts.lisdbgitemenablehint"
-msgid "Enable"
-msgstr "Įgalinti"
-
 #: lazarusidestrconsts.lisdbgmangnodebuggerspecified
 msgid "No debugger specified"
 msgstr "Nenurodyta derintuvė"
@@ -8574,19 +8358,6 @@ msgstr "Vistiek padėti stabdos tašką"
 #, object-pascal-format
 msgid "There is no debugger specified.%sSetting breakpoints have no effect until you set up a Debugger in the debugger options dialog in the menu."
 msgstr "Nenurodyta derintuvė.%sStabdos taškai neveiks iki kol nebus nurodyta derintuvė. Ji nurodoma menių esančiame derintuvės parinkčių dialoge."
-
-#: lazarusidestrconsts.lisdbgterminal
-msgctxt "lazarusidestrconsts.lisdbgterminal"
-msgid "Console In/Output"
-msgstr ""
-
-#: lazarusidestrconsts.lisdbgwinpower
-msgid "On/Off"
-msgstr "Įj./išj."
-
-#: lazarusidestrconsts.lisdbgwinpowerhint
-msgid "Disable/Enable updates for the entire window"
-msgstr "Įgalinti arba drausti viso lango naujinimus"
 
 #: lazarusidestrconsts.lisdebug
 msgctxt "lazarusidestrconsts.lisdebug"
@@ -8603,18 +8374,6 @@ msgstr "Derintuvė"
 #| msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
 msgid "The debugger encountered an internal error.%0:s%0:sSave your work.%0:sYou may then hit \"Stop\", or \"Reset debugger\" to terminate the debug session."
 msgstr "Derintuvės klaida%sŠakės! Derintuvė praranda stabilumą!%sNedelsdami įrašykite darbo rezultatus!%sSpauskite „Stabdyti“, ir tikėkitės kad viskas baigsis laimingai…"
-
-#: lazarusidestrconsts.lisdebuggerfeedbackerror
-msgid "Debugger Error"
-msgstr "Derintuvės klaida"
-
-#: lazarusidestrconsts.lisdebuggerfeedbackinformation
-msgid "Debugger Information"
-msgstr "Derintuvės informacija"
-
-#: lazarusidestrconsts.lisdebuggerfeedbackwarning
-msgid "Debugger Warning"
-msgstr "Derintuvės perspėjimas"
 
 #: lazarusidestrconsts.lisdebuggerinvalid
 msgid "Debugger invalid"
@@ -8756,18 +8515,6 @@ msgstr "Procesas"
 msgid "Reset Debugger after each run"
 msgstr "Po starto derintuvę derintuvę pradžion"
 
-#: lazarusidestrconsts.lisdebugoptionsfrmresume
-msgid "Resume"
-msgstr "Tęsti"
-
-#: lazarusidestrconsts.lisdebugoptionsfrmresumehandled
-msgid "Resume Handled"
-msgstr "Tęsti apdorojant"
-
-#: lazarusidestrconsts.lisdebugoptionsfrmresumeunhandled
-msgid "Resume Unhandled"
-msgstr "Tęsti praleidžiant"
-
 #: lazarusidestrconsts.lisdebugoptionsfrmshowexitcodeonstop
 msgid "Show message on stop with Error (Exit-code <> 0)"
 msgstr ""
@@ -8856,27 +8603,6 @@ msgstr "Naikinti?"
 msgid "Delete addition \"%s\"?"
 msgstr "Šalinti priedėlį „%s“?"
 
-#: lazarusidestrconsts.lisdeleteall
-msgid "&Delete All"
-msgstr "&Pašalinti visus"
-
-#: lazarusidestrconsts.lisdeleteallbreakpoints
-msgid "Delete all breakpoints?"
-msgstr "Pašalinti visus stabdos taškus?"
-
-#: lazarusidestrconsts.lisdeleteallbreakpoints2
-#, object-pascal-format
-msgid "Delete all breakpoints in file \"%s\"?"
-msgstr "Pašalinti visus faile „%s“ esančius stabdos taškus?"
-
-#: lazarusidestrconsts.lisdeleteallinsamesource
-msgid "Delete All in same source"
-msgstr "Pašalinti visus šiame pirminiame kode"
-
-#: lazarusidestrconsts.lisdeleteallselectedbreakpoints
-msgid "Delete all selected breakpoints?"
-msgstr "Pašalinti visus pažymėtus stabdos taškus?"
-
 #: lazarusidestrconsts.lisdeleteallthesefiles
 msgid "Delete all these files?"
 msgstr "Pašalinti visus šiuos failus?"
@@ -8884,25 +8610,6 @@ msgstr "Pašalinti visus šiuos failus?"
 #: lazarusidestrconsts.lisdeleteambiguousfile
 msgid "Delete ambiguous file?"
 msgstr "Ištrinti neaiškųjį failą?"
-
-#: lazarusidestrconsts.lisdeletebreakpoint
-msgid "Delete Breakpoint"
-msgstr "Pašalinti stabdos tašką"
-
-#: lazarusidestrconsts.lisdeletebreakpointatline
-#, object-pascal-format
-msgid "Delete breakpoint at%s\"%s\" line %d?"
-msgstr "Pašalinti stabdos tašką, esantį%s„%s“ failo %d eilutėje?"
-
-#: lazarusidestrconsts.lisdeletebreakpointforaddress
-#, object-pascal-format
-msgid "Delete breakpoint for address %s?"
-msgstr "Pašalinti stabdos tašką adrese „%s“?"
-
-#: lazarusidestrconsts.lisdeletebreakpointforwatch
-#, object-pascal-format
-msgid "Delete watchpoint for \"%s\"?"
-msgstr "Pašalinti „%s“ stebėjimo tašką?"
 
 #: lazarusidestrconsts.lisdeletefilefailed
 msgid "Delete file failed"
@@ -9058,18 +8765,6 @@ msgstr "Aplanke draudžiama rašyti"
 #: lazarusidestrconsts.lisdirectorywheretheideputsthepofiles
 msgid "Directory where the IDE puts the .po files"
 msgstr "Aplankas, kuriame IKA talpins „.po“ failus"
-
-#: lazarusidestrconsts.lisdisableallinsamesource
-msgid "Disable All in same source"
-msgstr "Pasyvinti visus tame pačiame pirminiame kode"
-
-#: lazarusidestrconsts.lisdisablebreakpoint
-msgid "Disable Breakpoint"
-msgstr "Išjungti stabdos tašką"
-
-#: lazarusidestrconsts.lisdisablegroups
-msgid "Disable Groups"
-msgstr "Pasyvinti grupę"
 
 #: lazarusidestrconsts.lisdisablei18nforlfm
 msgid "Disable I18N for LFM"
@@ -9613,18 +9308,6 @@ msgstr "Tuščia"
 msgid "Destination directory for publishing is either a relative path or empty."
 msgstr ""
 
-#: lazarusidestrconsts.lisenableall
-msgid "&Enable All"
-msgstr "Įgalinti &visus"
-
-#: lazarusidestrconsts.lisenableallinsamesource
-msgid "Enable All in same source"
-msgstr "Aktyvinti visus šiame pirminiame kode"
-
-#: lazarusidestrconsts.lisenablebreakpoint
-msgid "Enable Breakpoint"
-msgstr "Įjungti stabdos tašką"
-
 #: lazarusidestrconsts.lisenabledonlyforpackages
 msgid "Enabled only for packages."
 msgstr "Įgalinti tik paketams."
@@ -9633,10 +9316,6 @@ msgstr "Įgalinti tik paketams."
 #, object-pascal-format, fuzzy, badformat
 msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
 msgstr ". Įgalinkit paketo „%1:s“ modulio „%0:s“ žymę „Naudoti modulį“"
-
-#: lazarusidestrconsts.lisenablegroups
-msgid "Enable Groups"
-msgstr "Įgalinti grupes"
 
 #: lazarusidestrconsts.lisenablei18nforlfm
 msgid "Enable I18N for LFM"
@@ -9892,39 +9571,6 @@ msgstr "Rašant į failą „%s“ įvyko klaida"
 msgid "Error writing package list to file%s%s%s%s"
 msgstr "Įvyko klaida rašant paketo sąrašą į failą%s%s%s%s"
 
-#: lazarusidestrconsts.lisevalexpression
-msgctxt "lazarusidestrconsts.lisevalexpression"
-msgid "Eval expression"
-msgstr "Apskaičiuoti reiškinį"
-
-#: lazarusidestrconsts.lisevaluateall
-msgid "Evaluate all"
-msgstr ""
-
-#: lazarusidestrconsts.lisevaluatemodify
-msgid "&Evaluate/Modify"
-msgstr "Į&vertinti/keisti"
-
-#: lazarusidestrconsts.liseventlogclear
-msgid "Clear Events"
-msgstr "Išvalyti įvykius"
-
-#: lazarusidestrconsts.liseventlogoptions
-msgid "Event Log Options ..."
-msgstr "Įvykių žurnalo parinktys…"
-
-#: lazarusidestrconsts.liseventlogsavetofile
-msgid "Save Events to File"
-msgstr "Įvykius įrašyti į failą"
-
-#: lazarusidestrconsts.liseventslogaddcomment
-msgid "Add Comment ..."
-msgstr "Įdėti komentarą…"
-
-#: lazarusidestrconsts.liseventslogaddcomment2
-msgid "Add Comment"
-msgstr "Įdėti komentarą"
-
 #: lazarusidestrconsts.liseverynthlinenumber
 msgid "Every n-th line number"
 msgstr "Numeris kas kelintoje eilutėje"
@@ -9945,10 +9591,6 @@ msgstr "Pavyzdžiai:%sIdentifikatorius%sTManoEnum.Enum%sModulioPavadinimas.Ident
 #: lazarusidestrconsts.lisexamplesopenfirstselected
 msgid "Open first selected"
 msgstr "Atverti pirmą pažymėtą"
-
-#: lazarusidestrconsts.lisexceptiondialog
-msgid "Debugger Exception Notification"
-msgstr "Derintuvės pranešimas apie išimtinę situaciją"
 
 #: lazarusidestrconsts.lisexclude
 msgid "Exclude"
@@ -10227,10 +9869,6 @@ msgstr "Failas „%s“ yra virtualus."
 #: lazarusidestrconsts.lisfilelinkerror
 msgid "File link error"
 msgstr "Klaidinga failo nuoroda"
-
-#: lazarusidestrconsts.lisfilenameaddress
-msgid "Filename/Address"
-msgstr "Failo pavadinimas/Adresas"
 
 #: lazarusidestrconsts.lisfilenamestyle
 msgid "Filename Style"
@@ -10732,11 +10370,6 @@ msgstr "Taip pat ir komentaruose"
 msgid "Full"
 msgstr "Visas"
 
-#: lazarusidestrconsts.lisfunction
-msgctxt "lazarusidestrconsts.lisfunction"
-msgid "Function"
-msgstr "Funkcija"
-
 #: lazarusidestrconsts.lisgeneral
 msgctxt "lazarusidestrconsts.lisgeneral"
 msgid "General"
@@ -10776,10 +10409,6 @@ msgstr "Globalios nuostatos"
 msgid "Goto Line"
 msgstr "„Goto“ eilutė"
 
-#: lazarusidestrconsts.lisgotoselected
-msgid "Goto selected"
-msgstr "Šokti link pažymėto"
-
 #: lazarusidestrconsts.lisgplnotice
 #, fuzzy
 #| msgid ""
@@ -10817,44 +10446,9 @@ msgstr ""
 msgid "Group"
 msgstr "Grupė"
 
-#: lazarusidestrconsts.lisgroupassignexisting
-#, object-pascal-format
-msgid "Assign to existing \"%s\" group?"
-msgstr "Ar priskirti egzistuojančiai grupei „%s“?"
-
-#: lazarusidestrconsts.lisgroupemptydelete
-#, object-pascal-format
-msgid "No more breakpoints are assigned to group \"%s\", delete it?"
-msgstr "Grupė „%s“ nebeturi jai priskirtų stabdos taškų. Ar ją pašalinti?"
-
-#: lazarusidestrconsts.lisgroupemptydeletemore
-#, object-pascal-format
-msgid "%sThere are %d more empty groups, delete all?"
-msgstr "%sČia yra ir daugiau (%d) tuščių grupių. Jas visas pašalinti?"
-
 #: lazarusidestrconsts.lisgrouplocalvariables
 msgid "Group automatically defined local variables"
 msgstr "Grupuoti automatiškai apibrėžtus vietinius kintamuosius"
-
-#: lazarusidestrconsts.lisgroupnameemptyclearinstead
-msgid "The group name cannot be empty. Clear breakpoints' group(s)?"
-msgstr "Grupės pavadinimas neturi būti tuščias. Ar išvalyti stabdos taškų grupę(-es)?"
-
-#: lazarusidestrconsts.lisgroupnameinput
-msgid "Group name:"
-msgstr "Grupės pavadinimas:"
-
-#: lazarusidestrconsts.lisgroupnameinvalid
-msgid "BreakpointGroup name must be a valid Pascal identifier name."
-msgstr "„BreakpointGroup“ pavadinimas turi būti tinkamas paskalio identifikatoriaus pavadinimas."
-
-#: lazarusidestrconsts.lisgroupsetnew
-msgid "Set new group ..."
-msgstr "Nustatyti naują grupę…"
-
-#: lazarusidestrconsts.lisgroupsetnone
-msgid "Clear group(s)"
-msgstr "Išvalyti grupę(-es)"
 
 #: lazarusidestrconsts.lisgroupsfordebugoutput
 msgid "Enable or Disable groups of debug output. Valid Options are:"
@@ -10982,10 +10576,6 @@ msgstr "Rodyti formas"
 #: lazarusidestrconsts.lishintviewunits
 msgid "View Units"
 msgstr "Rodyti modulius"
-
-#: lazarusidestrconsts.lishitcount
-msgid "Hitcount"
-msgstr "Spustelėjimų skaičius"
 
 #: lazarusidestrconsts.lishlpoptsdatabases
 msgid "Databases"
@@ -11181,10 +10771,6 @@ msgstr "Visada ignoruoti"
 msgid "Ignore and continue"
 msgstr "Nepaisyti ir tęsti"
 
-#: lazarusidestrconsts.lisignoreexceptiontype
-msgid "Ignore this exception type"
-msgstr "Ignoruoti šio tipo išimtines situacijas"
-
 #: lazarusidestrconsts.lisignoreuseasancestor
 #, object-pascal-format
 msgid "Ignore, use %s as ancestor"
@@ -11288,10 +10874,6 @@ msgstr ""
 #: lazarusidestrconsts.lisindentationforpascalsources
 msgid "Indentation for Pascal sources"
 msgstr "Lygiavimas Paskalio pirminiame kode"
-
-#: lazarusidestrconsts.lisindex
-msgid "Index"
-msgstr "Indeksas"
 
 #: lazarusidestrconsts.lisinformation
 msgid "Information"
@@ -11468,57 +11050,6 @@ msgstr "Įterpti URL žymą"
 msgid "In session"
 msgstr "Sesijoje"
 
-#: lazarusidestrconsts.lisinspect
-msgid "&Inspect"
-msgstr "&Inspektuoti"
-
-#: lazarusidestrconsts.lisinspectaddwatch
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisinspectaddwatch"
-msgid "Add watch"
-msgstr "Pridėti stebimąjį"
-
-#: lazarusidestrconsts.lisinspectclassinherit
-#, object-pascal-format, fuzzy
-#| msgid "%s : Class %s inherits from %s"
-msgid "%s: class %s inherits from %s"
-msgstr "%s : klasė „%s“ paveldima iš „%s“"
-
-#: lazarusidestrconsts.lisinspectdata
-msgid "Data"
-msgstr "Duomenys"
-
-#: lazarusidestrconsts.lisinspectdialog
-msgid "Debug Inspector"
-msgstr "Derinimo inspektorius"
-
-#: lazarusidestrconsts.lisinspectmethods
-msgid "Methods"
-msgstr "Metodai"
-
-#: lazarusidestrconsts.lisinspectpointerto
-#, object-pascal-format
-msgid "Pointer to %s"
-msgstr "Rodyklė į %s"
-
-#: lazarusidestrconsts.lisinspectproperties
-msgctxt "lazarusidestrconsts.lisinspectproperties"
-msgid "Properties"
-msgstr "Savybės"
-
-#: lazarusidestrconsts.lisinspectunavailableerror
-#, object-pascal-format
-msgid "%s: unavailable (error: %s)"
-msgstr ""
-
-#: lazarusidestrconsts.lisinspectuseinstance
-msgid "Instance"
-msgstr "Egzempliorius"
-
-#: lazarusidestrconsts.lisinspectuseinstancehint
-msgid "Use instance class"
-msgstr "Naudoti objektą"
-
 #: lazarusidestrconsts.lisinstallationfailed
 msgid "Installation failed"
 msgstr "Diegimas nepavyko"
@@ -11627,14 +11158,6 @@ msgstr "„%s“ veiksena yra klaidinga"
 #: lazarusidestrconsts.lisinvalidmultiselection
 msgid "Invalid multiselection"
 msgstr "Klaidingas daugybinis pažymėjimas"
-
-#: lazarusidestrconsts.lisinvalidoff
-msgid "Invalid (Off)"
-msgstr "Klaidingas (Pasyvus)"
-
-#: lazarusidestrconsts.lisinvalidon
-msgid "Invalid (On)"
-msgstr "Klaidingas (Aktyvus)"
 
 #: lazarusidestrconsts.lisinvalidpascalidentifiercap
 msgid "Invalid Pascal Identifier"
@@ -12662,14 +12185,6 @@ msgstr "kelias iki bibliotekos"
 msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under macOS)."
 msgstr "„Free Pascal“ bendroji biblioteka („Linux“ sistemoje - „.so“, „Windows“ - „.dll“, „MacOS X“ - „.dylib“)"
 
-#: lazarusidestrconsts.lisline
-msgid "Line:"
-msgstr "Eilutė:"
-
-#: lazarusidestrconsts.lislinelength
-msgid "Line/Length"
-msgstr "Eilutė/Ilgis"
-
 #: lazarusidestrconsts.lislink
 msgid "Link:"
 msgstr "Saitas:"
@@ -12698,54 +12213,6 @@ msgstr "Makrokomandą įkelti iš"
 #: lazarusidestrconsts.lislocal
 msgid "&Local"
 msgstr "&Vietinis"
-
-#: lazarusidestrconsts.lislocals
-#, fuzzy
-#| msgid "Locals"
-msgctxt "lazarusidestrconsts.lislocals"
-msgid "Local Variables"
-msgstr "Vietiniai kintamieji"
-
-#: lazarusidestrconsts.lislocalsdlgcopyall
-msgid "Copy &all"
-msgstr ""
-
-#: lazarusidestrconsts.lislocalsdlgcopyname
-msgid "&Copy Name"
-msgstr "Kopijuoti &pavadinimą"
-
-#: lazarusidestrconsts.lislocalsdlgcopynamevalue
-msgid "Co&py Name and Value"
-msgstr ""
-
-#: lazarusidestrconsts.lislocalsdlgcopyrawvalue
-msgid "Copy &RAW Value"
-msgstr "Kopijuoti „&RAW“ vertę"
-
-#: lazarusidestrconsts.lislocalsdlgcopyvalue
-msgid "C&opy Value"
-msgstr "Kopijuoti &vertę"
-
-#: lazarusidestrconsts.lislocalsnotevaluated
-msgid "Locals not evaluated"
-msgstr "Vietiniai neįvertinti"
-
-#: lazarusidestrconsts.lislogcallstack
-msgid "Log Call Stack"
-msgstr "Vesti kreipčių dėklo žurnalą"
-
-#: lazarusidestrconsts.lislogcallstacklimit
-msgid "(frames limit. 0 - no limits)"
-msgstr "(kadrų riba. „0“ - jokių ribų)"
-
-#: lazarusidestrconsts.lislogevalexpression
-msgctxt "lazarusidestrconsts.lislogevalexpression"
-msgid "Eval expression"
-msgstr "Apskaičiuoti reiškinį"
-
-#: lazarusidestrconsts.lislogmessage
-msgid "Log Message"
-msgstr "Registruoti pranešimą"
 
 #: lazarusidestrconsts.lislowercasestring
 msgid "lowercase string"
@@ -14300,10 +13767,6 @@ msgstr "Asembleris"
 msgid "BreakPoints"
 msgstr "Stabdos taškai"
 
-#: lazarusidestrconsts.lismenuviewcallstack
-msgid "Call Stack"
-msgstr "Kreipčių dėklas"
-
 #: lazarusidestrconsts.lismenuviewcodebrowser
 msgctxt "lazarusidestrconsts.lismenuviewcodebrowser"
 msgid "Code Browser"
@@ -14876,10 +14339,6 @@ msgstr "Tekstas prieš &kiekvieną eilutę"
 msgid "&Trim clipboard contents"
 msgstr "Š&alinti pradžios ir galo tarpus iškarpinės turinyje"
 
-#: lazarusidestrconsts.lisms
-msgid "(ms)"
-msgstr "(ms)"
-
 #: lazarusidestrconsts.lismsgcolors
 msgid "Message colors"
 msgstr "Spalvos pranešimuose"
@@ -15209,10 +14668,6 @@ msgstr "kelias iki objekto"
 msgid "Switch to Object Inspector Favorites tab"
 msgstr "Pereiti į objektų inspektoriaus kortelę „Mėgiamiausi“"
 
-#: lazarusidestrconsts.lisoff
-msgid "? (Off)"
-msgstr "? (Pasyvus)"
-
 #: lazarusidestrconsts.lisofpackage
 #, object-pascal-format
 msgid " of package %s"
@@ -15313,10 +14768,6 @@ msgstr "%sŠis paketas įdiegtas, tačiau nerastas lpk failas"
 #: lazarusidestrconsts.lisoldclass
 msgid "Old Class"
 msgstr "Buvusi klasė"
-
-#: lazarusidestrconsts.lison
-msgid "? (On)"
-msgstr "? (Aktyvus)"
 
 #: lazarusidestrconsts.lisonbreaklineiereturnorenterkey
 msgid "On break line (i.e. return or enter key)"
@@ -15647,10 +15098,6 @@ msgstr "analizatorius „%s“: %s"
 #: lazarusidestrconsts.lisparsers
 msgid "Parsers:"
 msgstr ""
-
-#: lazarusidestrconsts.lispasscount
-msgid "Pass Count"
-msgstr "Kirsta kartų"
 
 #: lazarusidestrconsts.lispassingcompilerdefinetwicewithdifferentvalues
 #, object-pascal-format
@@ -16209,10 +15656,6 @@ msgstr "Klaidingas modulio pavadinimas"
 #, object-pascal-format
 msgid "Missing files of package %s"
 msgstr "Paketui „%s“ trūkstami failai"
-
-#: lazarusidestrconsts.lispendingon
-msgid "Pending (On)"
-msgstr ""
 
 #: lazarusidestrconsts.lispenewfilenotinincludepath
 msgid "New file not in include path"
@@ -17673,11 +17116,6 @@ msgctxt "lazarusidestrconsts.lisredo"
 msgid "Redo"
 msgstr "Pakartoti"
 
-#: lazarusidestrconsts.lisregisters
-msgctxt "lazarusidestrconsts.lisregisters"
-msgid "Registers"
-msgstr "Registrai"
-
 #: lazarusidestrconsts.lisregularexpression
 msgid "Regular expression"
 msgstr "Reguliarusis reiškinys"
@@ -18706,10 +18144,6 @@ msgstr ""
 msgid "Source and Destination are the same:%s%s"
 msgstr "Šaltinis ir tikslas sutampa:%s%s"
 
-#: lazarusidestrconsts.lissourcebreakpoint
-msgid "&Source Breakpoint ..."
-msgstr "&Stabdos taškas pirminiame kode…"
-
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
 #, object-pascal-format
 msgid "Source directory \"%s\" does not exist."
@@ -18927,10 +18361,6 @@ msgstr "Pažymėtąjį valdiklį tabuliavimo eilėje perkelti viršun"
 #, object-pascal-format
 msgid "Tabs for %s"
 msgstr "%s kortelės"
-
-#: lazarusidestrconsts.listakesnapshot
-msgid "Take a Snapshot"
-msgstr "Daryti momentinę kopiją"
 
 #: lazarusidestrconsts.listarget
 msgid "Target:"
@@ -19661,44 +19091,6 @@ msgstr "Tai sukurs priklausomybių ratą."
 #, object-pascal-format
 msgid "This will put a lot of text (%s) on the clipboard.%sProceed?"
 msgstr "Šitai į iškarpinę patalpins daug teksto (%s).%sTęsti?"
-
-#: lazarusidestrconsts.listhreads
-msgctxt "lazarusidestrconsts.listhreads"
-msgid "Threads"
-msgstr "Gijos"
-
-#: lazarusidestrconsts.listhreadscurrent
-msgctxt "lazarusidestrconsts.listhreadscurrent"
-msgid "Current"
-msgstr "Veikiamasis"
-
-#: lazarusidestrconsts.listhreadsfunc
-msgctxt "lazarusidestrconsts.listhreadsfunc"
-msgid "Function"
-msgstr "Funkcija"
-
-#: lazarusidestrconsts.listhreadsgoto
-msgid "Goto"
-msgstr "Rodyk kur"
-
-#: lazarusidestrconsts.listhreadsline
-msgctxt "lazarusidestrconsts.listhreadsline"
-msgid "Line"
-msgstr "Eilutė"
-
-#: lazarusidestrconsts.listhreadsnotevaluated
-msgid "Threads not evaluated"
-msgstr "Gijos neįvertintos"
-
-#: lazarusidestrconsts.listhreadssrc
-msgctxt "lazarusidestrconsts.listhreadssrc"
-msgid "Source"
-msgstr "Pirminis kodas"
-
-#: lazarusidestrconsts.listhreadsstate
-msgctxt "lazarusidestrconsts.listhreadsstate"
-msgid "State"
-msgstr "Būsena"
 
 #: lazarusidestrconsts.listitle
 msgid "&Title"
@@ -20787,20 +20179,6 @@ msgstr "Kopijuoti versijos informaciją iškarpinėn"
 msgid "Very Verbose"
 msgstr "Labai išsamiai"
 
-#: lazarusidestrconsts.lisviewbreakpointproperties
-msgctxt "lazarusidestrconsts.lisviewbreakpointproperties"
-msgid "Breakpoint Properties ..."
-msgstr "Stabdos taško savybės…"
-
-#: lazarusidestrconsts.lisviewsource
-msgid "View Source"
-msgstr "Rodyti pirminį kodą"
-
-#: lazarusidestrconsts.lisviewsourcedisass
-msgctxt "lazarusidestrconsts.lisviewsourcedisass"
-msgid "View Assembler"
-msgstr "Keisti „Asembleris“ matomumą"
-
 #: lazarusidestrconsts.lisviewsourcelfm
 msgid "View Source (.lfm)"
 msgstr "Rodyti pirminį kodą (.lfm)"
@@ -20823,55 +20201,6 @@ msgstr ", Įspėjimas: %s"
 #, object-pascal-format
 msgid "%sWarning: This is the main unit. The new main unit will be %s.pas."
 msgstr "%sPerspėjimas: tai pagrindinis modulis, naujo pagrindinio modulio failas vadinsis „%s.pas“."
-
-#: lazarusidestrconsts.liswatch
-msgid "&Watch"
-msgstr "&Stebėti"
-
-#: lazarusidestrconsts.liswatchdata
-msgid "Watch:"
-msgstr "Stebima:"
-
-#: lazarusidestrconsts.liswatchkind
-msgid "Watch action"
-msgstr "Stebėjimo veiksmas"
-
-#: lazarusidestrconsts.liswatchkindread
-msgid "Read"
-msgstr "Skaityti"
-
-#: lazarusidestrconsts.liswatchkindreadwrite
-msgid "Read/Write"
-msgstr "Skaityti/rašyti"
-
-#: lazarusidestrconsts.liswatchkindwrite
-msgid "Write"
-msgstr "Rašyti"
-
-#: lazarusidestrconsts.liswatchpoint
-msgid "&Data/Watch Breakpoint ..."
-msgstr "&Stebėjimo stabdos taškas…"
-
-#: lazarusidestrconsts.liswatchpointbreakpoint
-msgid "&Data/watch Breakpoint ..."
-msgstr "&Stebėjimo stabdos taškas…"
-
-#: lazarusidestrconsts.liswatchscope
-msgid "Watch scope"
-msgstr "Stebėjimo sritis"
-
-#: lazarusidestrconsts.liswatchscopeglobal
-msgctxt "lazarusidestrconsts.liswatchscopeglobal"
-msgid "Global"
-msgstr "Globalus"
-
-#: lazarusidestrconsts.liswatchscopelocal
-msgid "Declaration"
-msgstr "Aprašas"
-
-#: lazarusidestrconsts.liswatchtowatchpoint
-msgid "Create &Data/Watch Breakpoint ..."
-msgstr "Kurti &stebėjimo stabdos tašką…"
 
 #: lazarusidestrconsts.liswelcometolazaruside
 #, object-pascal-format
@@ -20944,37 +20273,6 @@ msgstr "Be tinkamo FPC pirminio kodo bus labai apribotas naršymas ir užbaigima
 #: lazarusidestrconsts.liswithrequiredpackages
 msgid "With required packages"
 msgstr "Su reikiamais paketais"
-
-#: lazarusidestrconsts.liswldeleteall
-msgid "De&lete All"
-msgstr "Paša&linti visus"
-
-#: lazarusidestrconsts.liswldisableall
-msgid "D&isable All"
-msgstr "Pasyv&inti visus"
-
-#: lazarusidestrconsts.liswlenableall
-msgid "E&nable All"
-msgstr "Įgali&nti visus"
-
-#: lazarusidestrconsts.liswlexpression
-msgid "Expression"
-msgstr "Išraiška"
-
-#: lazarusidestrconsts.liswlinspectpane
-msgid "Inspect pane"
-msgstr "Inspektavimo polangis"
-
-#: lazarusidestrconsts.liswlproperties
-msgid "&Properties"
-msgstr "&Savybės"
-
-#: lazarusidestrconsts.liswlwatchlist
-#, fuzzy
-#| msgid "Watch List"
-msgctxt "lazarusidestrconsts.liswlwatchlist"
-msgid "Watches"
-msgstr "Stebimų sąrašas"
 
 #: lazarusidestrconsts.liswordatcursorincurrenteditor
 msgid "Word at cursor in current editor"
@@ -21201,36 +20499,6 @@ msgstr ""
 msgid "Add package unit to uses section"
 msgstr "Paketo modulį įtraukti į naudojamų modulių sąrašą"
 
-#: lazarusidestrconsts.regdlgbinary
-msgctxt "lazarusidestrconsts.regdlgbinary"
-msgid "Binary"
-msgstr "Dvejetainis"
-
-#: lazarusidestrconsts.regdlgdecimal
-msgctxt "lazarusidestrconsts.regdlgdecimal"
-msgid "Decimal"
-msgstr "Dešimtainis"
-
-#: lazarusidestrconsts.regdlgdisplaytypeforselectedregisters
-msgid "Display type for selected Registers"
-msgstr "Rodyti pažymėtų registrų tipą"
-
-#: lazarusidestrconsts.regdlgformat
-msgid "Format"
-msgstr "Formatas"
-
-#: lazarusidestrconsts.regdlghex
-msgid "Hex"
-msgstr "Šešioliktainis"
-
-#: lazarusidestrconsts.regdlgoctal
-msgid "Octal"
-msgstr "Aštuntainis"
-
-#: lazarusidestrconsts.regdlgraw
-msgid "Raw"
-msgstr "Neapdorotas"
-
 #: lazarusidestrconsts.rsaddinverse
 msgid "Add Inverse"
 msgstr "Pridėti atvirkščiai"
@@ -21238,10 +20506,6 @@ msgstr "Pridėti atvirkščiai"
 #: lazarusidestrconsts.rsaddnewterm
 msgid "Add new term"
 msgstr ""
-
-#: lazarusidestrconsts.rsattachto
-msgid "Attach to"
-msgstr "Prisegti prie"
 
 #: lazarusidestrconsts.rsattributes
 msgid "Attributes"
@@ -21294,10 +20558,6 @@ msgstr "Sukurti naują apibrėžtį"
 #: lazarusidestrconsts.rsenablei18n
 msgid "Enable i18n"
 msgstr "Įgalinti internacionalizaciją"
-
-#: lazarusidestrconsts.rsenterpid
-msgid "Enter PID"
-msgstr "Įveskite proceso ID"
 
 #: lazarusidestrconsts.rsfilterthelistwithstring
 msgid "Filter the lines in list with a string"
@@ -23300,4 +22560,13 @@ msgstr ""
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Versijos informacija"
+
+#: lazarusidestrconsts.lisdeleteall
+msgid "&Delete All"
+msgstr "&Pašalinti visus"
+
+#: lazarusidestrconsts.lisfunction
+msgctxt "lazarusidestrconsts.lisfunction"
+msgid "Function"
+msgstr "Funkcija"
 

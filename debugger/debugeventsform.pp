@@ -36,7 +36,7 @@ uses
   Classes, SysUtils, Controls, ComCtrls, ActnList,
   BaseDebugManager, IDEWindowIntf,
   StdActns, ClipBrd, Menus, Dialogs, LazFileUtils, Debugger, DebuggerDlg,
-  LazarusIDEStrConsts, EnvironmentOpts, InputHistory,
+  EnvironmentOpts, InputHistory, IdeDebuggerStringConstants,
   IDEImagesIntf, LazIDEIntf, DbgIntfDebuggerBase, debugger_eventlog_options;
 
 type

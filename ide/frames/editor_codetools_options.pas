@@ -32,8 +32,9 @@ uses
   SynCompletion,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf,
+  IdeDebuggerStringConstants,
   // IDE
-  EditorOptions, LazarusIDEStrConsts, DebuggerStrConst;
+  EditorOptions, LazarusIDEStrConsts;
 
 type
   { TEditorCodetoolsOptionsFrame }

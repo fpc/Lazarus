@@ -46,9 +46,9 @@ uses
   // DebuggerIntf
   DbgIntfDebuggerBase, LazClasses, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
   // IDE
-  LazarusIDEStrConsts, BaseDebugManager, InputHistory, IDEProcs, Debugger,
+  BaseDebugManager, InputHistory, IDEProcs, Debugger,
   IdeDebuggerWatchResPrinter, IdeDebuggerWatchResult, IdeDebuggerOpts,
-  IdeDebuggerBackendValueConv, WatchInspectToolbar, DebuggerDlg, DebuggerStrConst,
+  IdeDebuggerBackendValueConv, WatchInspectToolbar, DebuggerDlg,
   IdeDebuggerStringConstants, IdeDebuggerBase, EnvironmentOpts, RecentListProcs;
 
 type

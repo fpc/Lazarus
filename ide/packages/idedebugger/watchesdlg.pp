@@ -41,7 +41,7 @@ uses
   Classes, Forms, Controls, math, sysutils, LazLoggerBase, LazUTF8, Clipbrd,
   {$ifdef Windows} ActiveX, {$else} laz.FakeActiveX, {$endif}
   IDEWindowIntf, Menus, ComCtrls, ActnList, ExtCtrls, StdCtrls, LCLType,
-  LMessages, IDEImagesIntf, LazarusIDEStrConsts, DebuggerStrConst, Debugger,
+  LMessages, IDEImagesIntf, Debugger,
   DebuggerTreeView, IdeDebuggerBase, DebuggerDlg, DbgIntfBaseTypes,
   DbgIntfDebuggerBase, DbgIntfMiscClasses, SynEdit, laz.VirtualTrees, SpinEx,
   LazDebuggerIntf, LazDebuggerIntfBaseTypes, BaseDebugManager, EnvironmentOpts,

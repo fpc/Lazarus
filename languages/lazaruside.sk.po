@@ -13,24 +13,6 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "Language: sk\n"
 
-#: lazarusidestrconsts.dbgbreakgroupdlgcaption
-msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
-msgid "Select Groups"
-msgstr ""
-
-#: lazarusidestrconsts.dbgbreakgroupdlgheaderdisable
-msgid "Select groups to disable when breakpoint is hit"
-msgstr ""
-
-#: lazarusidestrconsts.dbgbreakgroupdlgheaderenable
-msgid "Select groups to enable when breakpoint is hit"
-msgstr ""
-
-#: lazarusidestrconsts.dbgbreakpropertygroupnotfound
-#, object-pascal-format
-msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
-msgstr ""
-
 #: lazarusidestrconsts.dbgeventbreakaddressbreakpoint
 #, object-pascal-format
 msgid "Address Breakpoint %s"
@@ -4171,10 +4153,6 @@ msgctxt "lazarusidestrconsts.dlgvaluecolor"
 msgid "Value"
 msgstr "Hodnota"
 
-#: lazarusidestrconsts.dlgvaluedataaddr
-msgid "Data-Address"
-msgstr ""
-
 #: lazarusidestrconsts.dlgverbosity
 msgid "Verbosity during compilation:"
 msgstr "Výrečnosť počas prekladu:"
@@ -4338,48 +4316,6 @@ msgstr ""
 #: lazarusidestrconsts.gldhighlightbothsidesofcursor
 msgid "On Both Sides"
 msgstr "Na oboch stranách"
-
-#: lazarusidestrconsts.histdlgbtnclearhint
-msgid "Clear all snapshots"
-msgstr ""
-
-#: lazarusidestrconsts.histdlgbtnenablehint
-msgid "Toggle view snapshot or current"
-msgstr ""
-
-#: lazarusidestrconsts.histdlgbtnmakesnaphint
-msgid "Take Snapshot"
-msgstr ""
-
-#: lazarusidestrconsts.histdlgbtnpowerhint
-msgid "Switch on/off automatic snapshots"
-msgstr ""
-
-#: lazarusidestrconsts.histdlgbtnremovehint
-msgid "Remove selected entry"
-msgstr "Odstrániť vybratý záznam"
-
-#: lazarusidestrconsts.histdlgbtnshowhisthint
-msgid "View history"
-msgstr "Zobraziť históriu"
-
-#: lazarusidestrconsts.histdlgbtnshowsnaphint
-msgid "View Snapshots"
-msgstr ""
-
-#: lazarusidestrconsts.histdlgcolumnloc
-msgctxt "lazarusidestrconsts.histdlgcolumnloc"
-msgid "Location"
-msgstr "Umiestnenie"
-
-#: lazarusidestrconsts.histdlgcolumntime
-msgid "Time"
-msgstr "Čas"
-
-#: lazarusidestrconsts.histdlgformname
-msgctxt "lazarusidestrconsts.histdlgformname"
-msgid "History"
-msgstr "História"
 
 #: lazarusidestrconsts.initdlgdebugchangepath
 msgid "Change path"
@@ -4841,10 +4777,6 @@ msgstr "Poďakovanie"
 msgid "Action:"
 msgstr ""
 
-#: lazarusidestrconsts.lisactions
-msgid "Actions:"
-msgstr ""
-
 #: lazarusidestrconsts.lisactivate
 msgid "Activate"
 msgstr ""
@@ -4958,15 +4890,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
-msgstr ""
-
-#: lazarusidestrconsts.lisaddress
-msgid "Address:"
-msgstr ""
-
-#: lazarusidestrconsts.lisaddressbreakpoint
-msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
-msgid "&Address Breakpoint ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
@@ -5270,10 +5193,6 @@ msgstr "Automatické dokončovanie: vypnuté"
 msgid "Auto completion: on"
 msgstr "Automatické dokončovanie: zapnuté"
 
-#: lazarusidestrconsts.lisautocontinueafter
-msgid "Auto continue after:"
-msgstr ""
-
 #: lazarusidestrconsts.lisautomarkup
 msgid "Markup and Matches"
 msgstr ""
@@ -5460,26 +5379,10 @@ msgstr "Toto je súrodenec prvku, ku ktorého spodnej strane je ukotvený. Ponec
 msgid "Bottom space equally"
 msgstr "Rovnaká spodná medzera"
 
-#: lazarusidestrconsts.lisbpsdisabled
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisbpsdisabled"
-msgid "Disabled"
-msgstr "Zakázané"
-
-#: lazarusidestrconsts.lisbpsenabled
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisbpsenabled"
-msgid "Enabled"
-msgstr "Povolené"
-
 #: lazarusidestrconsts.lisbreak
 msgctxt "lazarusidestrconsts.lisbreak"
 msgid "Break"
 msgstr "Zalomiť"
-
-#: lazarusidestrconsts.lisbreakpointproperties
-msgid "Breakpoint Properties"
-msgstr ""
 
 #: lazarusidestrconsts.lisbrowseandselectacompiler
 msgid "Browse and select a compiler (e.g. ppcx64"
@@ -5600,10 +5503,6 @@ msgstr ""
 #, object-pascal-format
 msgid "Calling %s to create Makefile from %s failed."
 msgstr "Volanie %s na vytvorenie Makefile z %s zlyhalo."
-
-#: lazarusidestrconsts.liscallstacknotevaluated
-msgid "Stack not evaluated"
-msgstr ""
 
 #: lazarusidestrconsts.liscancelloadingthiscomponent
 msgid "Cancel loading this component"
@@ -7241,14 +7140,6 @@ msgstr "Spustiť po"
 msgid "Execute before"
 msgstr "Spustiť pred"
 
-#: lazarusidestrconsts.liscoladdress
-msgid "Address"
-msgstr "Adresa"
-
-#: lazarusidestrconsts.liscolclass
-msgid "Class"
-msgstr ""
-
 #: lazarusidestrconsts.liscollapseall
 msgid "Collapse All (/)"
 msgstr ""
@@ -7264,14 +7155,6 @@ msgstr "Zbaliť všetky balíčky"
 #: lazarusidestrconsts.liscollapseallunits
 msgid "Collapse all units"
 msgstr "Zbaliť všetky jednotky"
-
-#: lazarusidestrconsts.liscolreturns
-msgid "Returns"
-msgstr ""
-
-#: lazarusidestrconsts.liscolvisibility
-msgid "Visibility"
-msgstr ""
 
 #: lazarusidestrconsts.liscomboboxes
 msgid "Combo Boxes"
@@ -8087,20 +7970,12 @@ msgctxt "lazarusidestrconsts.liscopy"
 msgid "Copy"
 msgstr "Kopírovať"
 
-#: lazarusidestrconsts.liscopyall
-msgid "Copy All"
-msgstr "Kopírovať všetko"
-
 #: lazarusidestrconsts.liscopyallitemstoclipboard
 msgid "Copy All Items to Clipboard"
 msgstr ""
 
 #: lazarusidestrconsts.liscopyalloriginalmessagestoclipboard
 msgid "Copy All/Original Messages to Clipboard"
-msgstr ""
-
-#: lazarusidestrconsts.liscopyalloutputclipboard
-msgid "Copy all output to clipboard"
 msgstr ""
 
 #: lazarusidestrconsts.liscopyallshownmessagestoclipboard
@@ -8294,16 +8169,6 @@ msgstr "Vytvoriť/aktualizovať súbor .po pri ukladaní súboru lfm"
 msgid "Creating file index of FPC sources %s ..."
 msgstr ""
 
-#: lazarusidestrconsts.liscsbottom
-msgctxt "lazarusidestrconsts.liscsbottom"
-msgid "Bottom"
-msgstr "Dole"
-
-#: lazarusidestrconsts.liscstop
-msgctxt "lazarusidestrconsts.liscstop"
-msgid "Top"
-msgstr "Hore"
-
 #: lazarusidestrconsts.lisctdefchoosedirectory
 msgid "Choose Directory"
 msgstr "Zvoliť adresár"
@@ -8357,11 +8222,6 @@ msgstr "prosím vyberte makro"
 msgid "Select Code Macro"
 msgstr "Vybrať makro kódu"
 
-#: lazarusidestrconsts.liscurrent
-msgctxt "lazarusidestrconsts.liscurrent"
-msgid "Current"
-msgstr "Aktuálny"
-
 #: lazarusidestrconsts.liscurrentlclwidgetset
 #, object-pascal-format
 msgid "Current LCL widgetset: \"%s\""
@@ -8408,22 +8268,6 @@ msgctxt "lazarusidestrconsts.liscut"
 msgid "Cut"
 msgstr "Vystrihnúť"
 
-#: lazarusidestrconsts.lisdadattach
-msgid "Attach"
-msgstr ""
-
-#: lazarusidestrconsts.lisdadimagename
-msgid "Image Name"
-msgstr "Názov obrázka"
-
-#: lazarusidestrconsts.lisdadpid
-msgid "PID"
-msgstr ""
-
-#: lazarusidestrconsts.lisdadrunningprocesses
-msgid "Running Processes"
-msgstr ""
-
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
 msgstr ""
@@ -8432,47 +8276,12 @@ msgstr ""
 msgid "Date"
 msgstr "Dátum"
 
-#: lazarusidestrconsts.lisdbgallitemdelete
-msgctxt "lazarusidestrconsts.lisdbgallitemdelete"
-msgid "Delete all"
-msgstr ""
-
-#: lazarusidestrconsts.lisdbgallitemdeletehint
-msgctxt "lazarusidestrconsts.lisdbgallitemdeletehint"
-msgid "Delete all"
-msgstr ""
-
-#: lazarusidestrconsts.lisdbgallitemdisable
-msgctxt "lazarusidestrconsts.lisdbgallitemdisable"
-msgid "Disable all"
-msgstr ""
-
-#: lazarusidestrconsts.lisdbgallitemdisablehint
-msgctxt "lazarusidestrconsts.lisdbgallitemdisablehint"
-msgid "Disable all"
-msgstr ""
-
-#: lazarusidestrconsts.lisdbgallitemenable
-msgctxt "lazarusidestrconsts.lisdbgallitemenable"
-msgid "Enable all"
-msgstr ""
-
-#: lazarusidestrconsts.lisdbgallitemenablehint
-msgctxt "lazarusidestrconsts.lisdbgallitemenablehint"
-msgid "Enable all"
-msgstr ""
-
 #: lazarusidestrconsts.lisdbgasmcopyaddresstoclipboard
 msgid "Copy address to Clipboard"
 msgstr ""
 
 #: lazarusidestrconsts.lisdbgasmcopytoclipboard
 msgid "Copy to Clipboard"
-msgstr ""
-
-#: lazarusidestrconsts.lisdbgbreakpointpropertieshint
-msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
-msgid "Breakpoint Properties ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
@@ -8535,31 +8344,6 @@ msgstr ""
 msgid "Windows Message Sent"
 msgstr ""
 
-#: lazarusidestrconsts.lisdbgitemdeletehint
-msgctxt "lazarusidestrconsts.lisdbgitemdeletehint"
-msgid "Delete"
-msgstr "Delete"
-
-#: lazarusidestrconsts.lisdbgitemdisable
-msgctxt "lazarusidestrconsts.lisdbgitemdisable"
-msgid "Disable"
-msgstr ""
-
-#: lazarusidestrconsts.lisdbgitemdisablehint
-msgctxt "lazarusidestrconsts.lisdbgitemdisablehint"
-msgid "Disable"
-msgstr ""
-
-#: lazarusidestrconsts.lisdbgitemenable
-msgctxt "lazarusidestrconsts.lisdbgitemenable"
-msgid "Enable"
-msgstr ""
-
-#: lazarusidestrconsts.lisdbgitemenablehint
-msgctxt "lazarusidestrconsts.lisdbgitemenablehint"
-msgid "Enable"
-msgstr ""
-
 #: lazarusidestrconsts.lisdbgmangnodebuggerspecified
 msgid "No debugger specified"
 msgstr "Nie je zadaný debuger"
@@ -8573,19 +8357,6 @@ msgstr "Nastaviť bod prerušenie hocikde"
 #| msgid "There is no debugger specified.%sSetting breakpoints have no effect until you setup a Debugger in the debugger options dialog in the menu."
 msgid "There is no debugger specified.%sSetting breakpoints have no effect until you set up a Debugger in the debugger options dialog in the menu."
 msgstr "Nie je definovaný debuger.%sNastavenie bodu prerušenia nemá význam, dokiaľ nenastavíte debuger v dialógu Voľby debugera v menu."
-
-#: lazarusidestrconsts.lisdbgterminal
-msgctxt "lazarusidestrconsts.lisdbgterminal"
-msgid "Console In/Output"
-msgstr ""
-
-#: lazarusidestrconsts.lisdbgwinpower
-msgid "On/Off"
-msgstr ""
-
-#: lazarusidestrconsts.lisdbgwinpowerhint
-msgid "Disable/Enable updates for the entire window"
-msgstr ""
 
 #: lazarusidestrconsts.lisdebug
 msgctxt "lazarusidestrconsts.lisdebug"
@@ -8602,18 +8373,6 @@ msgstr "Debuger"
 #| msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
 msgid "The debugger encountered an internal error.%0:s%0:sSave your work.%0:sYou may then hit \"Stop\", or \"Reset debugger\" to terminate the debug session."
 msgstr "Chyba debugera %sDebuger vstúpil do chybového stavu%sUložte svoju prácu!%sPoužite Stop, a dúfajte v najlepšie, we're pulling the plug."
-
-#: lazarusidestrconsts.lisdebuggerfeedbackerror
-msgid "Debugger Error"
-msgstr ""
-
-#: lazarusidestrconsts.lisdebuggerfeedbackinformation
-msgid "Debugger Information"
-msgstr ""
-
-#: lazarusidestrconsts.lisdebuggerfeedbackwarning
-msgid "Debugger Warning"
-msgstr ""
 
 #: lazarusidestrconsts.lisdebuggerinvalid
 msgid "Debugger invalid"
@@ -8754,18 +8513,6 @@ msgstr "Proces"
 msgid "Reset Debugger after each run"
 msgstr "Resetovať debuger po každom spustení"
 
-#: lazarusidestrconsts.lisdebugoptionsfrmresume
-msgid "Resume"
-msgstr "Pokračovať"
-
-#: lazarusidestrconsts.lisdebugoptionsfrmresumehandled
-msgid "Resume Handled"
-msgstr "Pokračovať obslúžené"
-
-#: lazarusidestrconsts.lisdebugoptionsfrmresumeunhandled
-msgid "Resume Unhandled"
-msgstr "Pokračovať neobslúžené"
-
 #: lazarusidestrconsts.lisdebugoptionsfrmshowexitcodeonstop
 msgid "Show message on stop with Error (Exit-code <> 0)"
 msgstr ""
@@ -8854,27 +8601,6 @@ msgstr "Zmazať?"
 msgid "Delete addition \"%s\"?"
 msgstr ""
 
-#: lazarusidestrconsts.lisdeleteall
-msgid "&Delete All"
-msgstr "Z&mazať všetky"
-
-#: lazarusidestrconsts.lisdeleteallbreakpoints
-msgid "Delete all breakpoints?"
-msgstr "Zmazať všetky body prerušenia?"
-
-#: lazarusidestrconsts.lisdeleteallbreakpoints2
-#, object-pascal-format
-msgid "Delete all breakpoints in file \"%s\"?"
-msgstr "Zmazať všetky body prerušenia v súbore \"%s\"?"
-
-#: lazarusidestrconsts.lisdeleteallinsamesource
-msgid "Delete All in same source"
-msgstr "Zmazať všetky v rovnakom zdroji"
-
-#: lazarusidestrconsts.lisdeleteallselectedbreakpoints
-msgid "Delete all selected breakpoints?"
-msgstr "Zmazať všetky vybraté body prerušenia?"
-
 #: lazarusidestrconsts.lisdeleteallthesefiles
 msgid "Delete all these files?"
 msgstr "Zmazať všetky tieto súbory?"
@@ -8882,25 +8608,6 @@ msgstr "Zmazať všetky tieto súbory?"
 #: lazarusidestrconsts.lisdeleteambiguousfile
 msgid "Delete ambiguous file?"
 msgstr "Zmazať nejednoznačný súbor?"
-
-#: lazarusidestrconsts.lisdeletebreakpoint
-msgid "Delete Breakpoint"
-msgstr "Zmazať bod prerušenia"
-
-#: lazarusidestrconsts.lisdeletebreakpointatline
-#, object-pascal-format
-msgid "Delete breakpoint at%s\"%s\" line %d?"
-msgstr "Zmazať bod prerušenia na%s\"%s\" riadok %d?"
-
-#: lazarusidestrconsts.lisdeletebreakpointforaddress
-#, object-pascal-format
-msgid "Delete breakpoint for address %s?"
-msgstr ""
-
-#: lazarusidestrconsts.lisdeletebreakpointforwatch
-#, object-pascal-format
-msgid "Delete watchpoint for \"%s\"?"
-msgstr ""
 
 #: lazarusidestrconsts.lisdeletefilefailed
 msgid "Delete file failed"
@@ -9056,18 +8763,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdirectorywheretheideputsthepofiles
 msgid "Directory where the IDE puts the .po files"
-msgstr ""
-
-#: lazarusidestrconsts.lisdisableallinsamesource
-msgid "Disable All in same source"
-msgstr ""
-
-#: lazarusidestrconsts.lisdisablebreakpoint
-msgid "Disable Breakpoint"
-msgstr ""
-
-#: lazarusidestrconsts.lisdisablegroups
-msgid "Disable Groups"
 msgstr ""
 
 #: lazarusidestrconsts.lisdisablei18nforlfm
@@ -9615,18 +9310,6 @@ msgstr ""
 msgid "Destination directory for publishing is either a relative path or empty."
 msgstr ""
 
-#: lazarusidestrconsts.lisenableall
-msgid "&Enable All"
-msgstr "Nastaviť vš&etky"
-
-#: lazarusidestrconsts.lisenableallinsamesource
-msgid "Enable All in same source"
-msgstr "Povoliť všetko v rovnakom zdroji"
-
-#: lazarusidestrconsts.lisenablebreakpoint
-msgid "Enable Breakpoint"
-msgstr ""
-
 #: lazarusidestrconsts.lisenabledonlyforpackages
 msgid "Enabled only for packages."
 msgstr ""
@@ -9634,10 +9317,6 @@ msgstr ""
 #: lazarusidestrconsts.lisenableflaguseunitofunitinpackage
 #, object-pascal-format
 msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
-msgstr ""
-
-#: lazarusidestrconsts.lisenablegroups
-msgid "Enable Groups"
 msgstr ""
 
 #: lazarusidestrconsts.lisenablei18nforlfm
@@ -9895,39 +9574,6 @@ msgstr ""
 msgid "Error writing package list to file%s%s%s%s"
 msgstr "Chyba zápisu zoznamu balíčkov do súboru%s%s%s%s"
 
-#: lazarusidestrconsts.lisevalexpression
-msgctxt "lazarusidestrconsts.lisevalexpression"
-msgid "Eval expression"
-msgstr ""
-
-#: lazarusidestrconsts.lisevaluateall
-msgid "Evaluate all"
-msgstr ""
-
-#: lazarusidestrconsts.lisevaluatemodify
-msgid "&Evaluate/Modify"
-msgstr "Vyhodnotiť/Upraviť"
-
-#: lazarusidestrconsts.liseventlogclear
-msgid "Clear Events"
-msgstr ""
-
-#: lazarusidestrconsts.liseventlogoptions
-msgid "Event Log Options ..."
-msgstr ""
-
-#: lazarusidestrconsts.liseventlogsavetofile
-msgid "Save Events to File"
-msgstr ""
-
-#: lazarusidestrconsts.liseventslogaddcomment
-msgid "Add Comment ..."
-msgstr ""
-
-#: lazarusidestrconsts.liseventslogaddcomment2
-msgid "Add Comment"
-msgstr ""
-
 #: lazarusidestrconsts.liseverynthlinenumber
 msgid "Every n-th line number"
 msgstr "Každé n-té číslo riadku"
@@ -9948,10 +9594,6 @@ msgstr "Príklady:%sIdentifier%sTMyEnum.Enum%sUnitname.Identifier%s#PackageName.
 #: lazarusidestrconsts.lisexamplesopenfirstselected
 msgid "Open first selected"
 msgstr "Otvoriť prvý vybratý"
-
-#: lazarusidestrconsts.lisexceptiondialog
-msgid "Debugger Exception Notification"
-msgstr ""
 
 #: lazarusidestrconsts.lisexclude
 msgid "Exclude"
@@ -10231,10 +9873,6 @@ msgstr "Súbor \"%s\" je virtuálny."
 #: lazarusidestrconsts.lisfilelinkerror
 msgid "File link error"
 msgstr "Chyba linkovania súboru"
-
-#: lazarusidestrconsts.lisfilenameaddress
-msgid "Filename/Address"
-msgstr "Meno súboru/adresa"
 
 #: lazarusidestrconsts.lisfilenamestyle
 msgid "Filename Style"
@@ -10738,11 +10376,6 @@ msgstr "Hľadať aj v komentároch"
 msgid "Full"
 msgstr ""
 
-#: lazarusidestrconsts.lisfunction
-msgctxt "lazarusidestrconsts.lisfunction"
-msgid "Function"
-msgstr "Funkcia"
-
 #: lazarusidestrconsts.lisgeneral
 msgctxt "lazarusidestrconsts.lisgeneral"
 msgid "General"
@@ -10782,10 +10415,6 @@ msgstr ""
 msgid "Goto Line"
 msgstr "Choď na riadok"
 
-#: lazarusidestrconsts.lisgotoselected
-msgid "Goto selected"
-msgstr "Choď na vybraté"
-
 #: lazarusidestrconsts.lisgplnotice
 #, fuzzy
 #| msgid ""
@@ -10814,43 +10443,8 @@ msgstr "<description>%sCopyright (C) <rok> <meno autora> <kontakt>%sTento zdrojo
 msgid "Group"
 msgstr "Skupina"
 
-#: lazarusidestrconsts.lisgroupassignexisting
-#, object-pascal-format
-msgid "Assign to existing \"%s\" group?"
-msgstr ""
-
-#: lazarusidestrconsts.lisgroupemptydelete
-#, object-pascal-format
-msgid "No more breakpoints are assigned to group \"%s\", delete it?"
-msgstr ""
-
-#: lazarusidestrconsts.lisgroupemptydeletemore
-#, object-pascal-format
-msgid "%sThere are %d more empty groups, delete all?"
-msgstr ""
-
 #: lazarusidestrconsts.lisgrouplocalvariables
 msgid "Group automatically defined local variables"
-msgstr ""
-
-#: lazarusidestrconsts.lisgroupnameemptyclearinstead
-msgid "The group name cannot be empty. Clear breakpoints' group(s)?"
-msgstr ""
-
-#: lazarusidestrconsts.lisgroupnameinput
-msgid "Group name:"
-msgstr ""
-
-#: lazarusidestrconsts.lisgroupnameinvalid
-msgid "BreakpointGroup name must be a valid Pascal identifier name."
-msgstr ""
-
-#: lazarusidestrconsts.lisgroupsetnew
-msgid "Set new group ..."
-msgstr ""
-
-#: lazarusidestrconsts.lisgroupsetnone
-msgid "Clear group(s)"
 msgstr ""
 
 #: lazarusidestrconsts.lisgroupsfordebugoutput
@@ -10979,10 +10573,6 @@ msgstr "Zobraziť formuláre"
 #: lazarusidestrconsts.lishintviewunits
 msgid "View Units"
 msgstr "Zobraziť jednotky"
-
-#: lazarusidestrconsts.lishitcount
-msgid "Hitcount"
-msgstr ""
 
 #: lazarusidestrconsts.lishlpoptsdatabases
 msgid "Databases"
@@ -11178,10 +10768,6 @@ msgstr "Ignorovať všetko"
 msgid "Ignore and continue"
 msgstr "Ignorovať a pokračovať"
 
-#: lazarusidestrconsts.lisignoreexceptiontype
-msgid "Ignore this exception type"
-msgstr "Ignorovať tento typ výnimky"
-
 #: lazarusidestrconsts.lisignoreuseasancestor
 #, object-pascal-format
 msgid "Ignore, use %s as ancestor"
@@ -11287,10 +10873,6 @@ msgstr ""
 #: lazarusidestrconsts.lisindentationforpascalsources
 msgid "Indentation for Pascal sources"
 msgstr "Odsadzovanie pre zdrojové súbory Pascalu"
-
-#: lazarusidestrconsts.lisindex
-msgid "Index"
-msgstr "Index"
 
 #: lazarusidestrconsts.lisinformation
 msgid "Information"
@@ -11443,56 +11025,6 @@ msgstr ""
 msgid "In session"
 msgstr "V relácii"
 
-#: lazarusidestrconsts.lisinspect
-msgid "&Inspect"
-msgstr ""
-
-#: lazarusidestrconsts.lisinspectaddwatch
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisinspectaddwatch"
-msgid "Add watch"
-msgstr "Pridať pozorovanie"
-
-#: lazarusidestrconsts.lisinspectclassinherit
-#, object-pascal-format
-msgid "%s: class %s inherits from %s"
-msgstr ""
-
-#: lazarusidestrconsts.lisinspectdata
-msgid "Data"
-msgstr ""
-
-#: lazarusidestrconsts.lisinspectdialog
-msgid "Debug Inspector"
-msgstr ""
-
-#: lazarusidestrconsts.lisinspectmethods
-msgid "Methods"
-msgstr ""
-
-#: lazarusidestrconsts.lisinspectpointerto
-#, object-pascal-format
-msgid "Pointer to %s"
-msgstr ""
-
-#: lazarusidestrconsts.lisinspectproperties
-msgctxt "lazarusidestrconsts.lisinspectproperties"
-msgid "Properties"
-msgstr "Vlastnosti"
-
-#: lazarusidestrconsts.lisinspectunavailableerror
-#, object-pascal-format
-msgid "%s: unavailable (error: %s)"
-msgstr ""
-
-#: lazarusidestrconsts.lisinspectuseinstance
-msgid "Instance"
-msgstr ""
-
-#: lazarusidestrconsts.lisinspectuseinstancehint
-msgid "Use instance class"
-msgstr ""
-
 #: lazarusidestrconsts.lisinstallationfailed
 msgid "Installation failed"
 msgstr "Inštalácia zlyhala"
@@ -11601,14 +11133,6 @@ msgstr ""
 #: lazarusidestrconsts.lisinvalidmultiselection
 msgid "Invalid multiselection"
 msgstr "Neplatný viacnásobný výber"
-
-#: lazarusidestrconsts.lisinvalidoff
-msgid "Invalid (Off)"
-msgstr "Neplatné (vypnuté)"
-
-#: lazarusidestrconsts.lisinvalidon
-msgid "Invalid (On)"
-msgstr "Neplatné (zapnuté)"
 
 #: lazarusidestrconsts.lisinvalidpascalidentifiercap
 msgid "Invalid Pascal Identifier"
@@ -12670,14 +12194,6 @@ msgstr "cesta knižnice"
 msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under macOS)."
 msgstr ""
 
-#: lazarusidestrconsts.lisline
-msgid "Line:"
-msgstr "Riadok:"
-
-#: lazarusidestrconsts.lislinelength
-msgid "Line/Length"
-msgstr "Dĺžka riadka"
-
 #: lazarusidestrconsts.lislink
 msgid "Link:"
 msgstr "Odkaz:"
@@ -12705,52 +12221,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lislocal
 msgid "&Local"
-msgstr ""
-
-#: lazarusidestrconsts.lislocals
-msgctxt "lazarusidestrconsts.lislocals"
-msgid "Local Variables"
-msgstr "Lokálne premenné"
-
-#: lazarusidestrconsts.lislocalsdlgcopyall
-msgid "Copy &all"
-msgstr ""
-
-#: lazarusidestrconsts.lislocalsdlgcopyname
-msgid "&Copy Name"
-msgstr ""
-
-#: lazarusidestrconsts.lislocalsdlgcopynamevalue
-msgid "Co&py Name and Value"
-msgstr ""
-
-#: lazarusidestrconsts.lislocalsdlgcopyrawvalue
-msgid "Copy &RAW Value"
-msgstr ""
-
-#: lazarusidestrconsts.lislocalsdlgcopyvalue
-msgid "C&opy Value"
-msgstr ""
-
-#: lazarusidestrconsts.lislocalsnotevaluated
-msgid "Locals not evaluated"
-msgstr ""
-
-#: lazarusidestrconsts.lislogcallstack
-msgid "Log Call Stack"
-msgstr ""
-
-#: lazarusidestrconsts.lislogcallstacklimit
-msgid "(frames limit. 0 - no limits)"
-msgstr ""
-
-#: lazarusidestrconsts.lislogevalexpression
-msgctxt "lazarusidestrconsts.lislogevalexpression"
-msgid "Eval expression"
-msgstr ""
-
-#: lazarusidestrconsts.lislogmessage
-msgid "Log Message"
 msgstr ""
 
 #: lazarusidestrconsts.lislowercasestring
@@ -14300,10 +13770,6 @@ msgstr ""
 msgid "BreakPoints"
 msgstr "Body prerušenia"
 
-#: lazarusidestrconsts.lismenuviewcallstack
-msgid "Call Stack"
-msgstr "Zásobník volaní"
-
 #: lazarusidestrconsts.lismenuviewcodebrowser
 msgctxt "lazarusidestrconsts.lismenuviewcodebrowser"
 msgid "Code Browser"
@@ -14841,10 +14307,6 @@ msgstr "Text pred každým riadkom"
 msgid "&Trim clipboard contents"
 msgstr "Orezať obsah schránky"
 
-#: lazarusidestrconsts.lisms
-msgid "(ms)"
-msgstr ""
-
 #: lazarusidestrconsts.lismsgcolors
 msgid "Message colors"
 msgstr ""
@@ -15176,10 +14638,6 @@ msgstr "cesta objektov"
 msgid "Switch to Object Inspector Favorites tab"
 msgstr ""
 
-#: lazarusidestrconsts.lisoff
-msgid "? (Off)"
-msgstr "? (Vypnúť)"
-
 #: lazarusidestrconsts.lisofpackage
 #, object-pascal-format
 msgid " of package %s"
@@ -15281,10 +14739,6 @@ msgstr "%sTento balíček je nainštalovaný, ale nebol nájdený súbor lpk"
 #: lazarusidestrconsts.lisoldclass
 msgid "Old Class"
 msgstr "Stará trieda"
-
-#: lazarusidestrconsts.lison
-msgid "? (On)"
-msgstr "? (Zapnúť)"
 
 #: lazarusidestrconsts.lisonbreaklineiereturnorenterkey
 msgid "On break line (i.e. return or enter key)"
@@ -15613,10 +15067,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisparsers
 msgid "Parsers:"
-msgstr ""
-
-#: lazarusidestrconsts.lispasscount
-msgid "Pass Count"
 msgstr ""
 
 #: lazarusidestrconsts.lispassingcompilerdefinetwicewithdifferentvalues
@@ -16191,10 +15641,6 @@ msgstr "Neplatné meno jednotky"
 #: lazarusidestrconsts.lispemissingfilesofpackage
 #, object-pascal-format
 msgid "Missing files of package %s"
-msgstr ""
-
-#: lazarusidestrconsts.lispendingon
-msgid "Pending (On)"
 msgstr ""
 
 #: lazarusidestrconsts.lispenewfilenotinincludepath
@@ -17687,11 +17133,6 @@ msgctxt "lazarusidestrconsts.lisredo"
 msgid "Redo"
 msgstr "Znova"
 
-#: lazarusidestrconsts.lisregisters
-msgctxt "lazarusidestrconsts.lisregisters"
-msgid "Registers"
-msgstr ""
-
 #: lazarusidestrconsts.lisregularexpression
 msgid "Regular expression"
 msgstr "Regulárny výraz"
@@ -18685,10 +18126,6 @@ msgstr ""
 msgid "Source and Destination are the same:%s%s"
 msgstr "Zdroj a cieľ sú rovnaké: %s%s"
 
-#: lazarusidestrconsts.lissourcebreakpoint
-msgid "&Source Breakpoint ..."
-msgstr "&Zdrojový bod prerušenia ..."
-
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
 #, object-pascal-format, fuzzy, badformat
 #| msgid "Source directory %s%s%s does not exist."
@@ -18908,10 +18345,6 @@ msgstr "Presunúť vybraný ovládací prvok nahor v poradí tabulátora"
 #, object-pascal-format
 msgid "Tabs for %s"
 msgstr "Karty pre %s"
-
-#: lazarusidestrconsts.listakesnapshot
-msgid "Take a Snapshot"
-msgstr ""
 
 #: lazarusidestrconsts.listarget
 msgid "Target:"
@@ -19667,44 +19100,6 @@ msgstr ""
 #, object-pascal-format
 msgid "This will put a lot of text (%s) on the clipboard.%sProceed?"
 msgstr ""
-
-#: lazarusidestrconsts.listhreads
-msgctxt "lazarusidestrconsts.listhreads"
-msgid "Threads"
-msgstr "Vlákna"
-
-#: lazarusidestrconsts.listhreadscurrent
-msgctxt "lazarusidestrconsts.listhreadscurrent"
-msgid "Current"
-msgstr "Aktuálny"
-
-#: lazarusidestrconsts.listhreadsfunc
-msgctxt "lazarusidestrconsts.listhreadsfunc"
-msgid "Function"
-msgstr "Funkcia"
-
-#: lazarusidestrconsts.listhreadsgoto
-msgid "Goto"
-msgstr "Choď na"
-
-#: lazarusidestrconsts.listhreadsline
-msgctxt "lazarusidestrconsts.listhreadsline"
-msgid "Line"
-msgstr "Riadok"
-
-#: lazarusidestrconsts.listhreadsnotevaluated
-msgid "Threads not evaluated"
-msgstr ""
-
-#: lazarusidestrconsts.listhreadssrc
-msgctxt "lazarusidestrconsts.listhreadssrc"
-msgid "Source"
-msgstr "Zdrojový kód"
-
-#: lazarusidestrconsts.listhreadsstate
-msgctxt "lazarusidestrconsts.listhreadsstate"
-msgid "State"
-msgstr "Stav"
 
 #: lazarusidestrconsts.listitle
 msgid "&Title"
@@ -20808,20 +20203,6 @@ msgstr "Kopírovať informácie o verzii do schránky"
 msgid "Very Verbose"
 msgstr ""
 
-#: lazarusidestrconsts.lisviewbreakpointproperties
-msgctxt "lazarusidestrconsts.lisviewbreakpointproperties"
-msgid "Breakpoint Properties ..."
-msgstr ""
-
-#: lazarusidestrconsts.lisviewsource
-msgid "View Source"
-msgstr "Zobraziť zdrojový kód"
-
-#: lazarusidestrconsts.lisviewsourcedisass
-msgctxt "lazarusidestrconsts.lisviewsourcedisass"
-msgid "View Assembler"
-msgstr ""
-
 #: lazarusidestrconsts.lisviewsourcelfm
 msgid "View Source (.lfm)"
 msgstr "Zobraziť zdrojový kód (.lfm)"
@@ -20844,55 +20225,6 @@ msgstr ""
 #: lazarusidestrconsts.liswarningthisisthemainunitthenewmainunitwillbepas
 #, object-pascal-format
 msgid "%sWarning: This is the main unit. The new main unit will be %s.pas."
-msgstr ""
-
-#: lazarusidestrconsts.liswatch
-msgid "&Watch"
-msgstr ""
-
-#: lazarusidestrconsts.liswatchdata
-msgid "Watch:"
-msgstr ""
-
-#: lazarusidestrconsts.liswatchkind
-msgid "Watch action"
-msgstr ""
-
-#: lazarusidestrconsts.liswatchkindread
-msgid "Read"
-msgstr ""
-
-#: lazarusidestrconsts.liswatchkindreadwrite
-msgid "Read/Write"
-msgstr ""
-
-#: lazarusidestrconsts.liswatchkindwrite
-msgid "Write"
-msgstr ""
-
-#: lazarusidestrconsts.liswatchpoint
-msgid "&Data/Watch Breakpoint ..."
-msgstr ""
-
-#: lazarusidestrconsts.liswatchpointbreakpoint
-msgid "&Data/watch Breakpoint ..."
-msgstr ""
-
-#: lazarusidestrconsts.liswatchscope
-msgid "Watch scope"
-msgstr ""
-
-#: lazarusidestrconsts.liswatchscopeglobal
-msgctxt "lazarusidestrconsts.liswatchscopeglobal"
-msgid "Global"
-msgstr "Globálne"
-
-#: lazarusidestrconsts.liswatchscopelocal
-msgid "Declaration"
-msgstr ""
-
-#: lazarusidestrconsts.liswatchtowatchpoint
-msgid "Create &Data/Watch Breakpoint ..."
 msgstr ""
 
 #: lazarusidestrconsts.liswelcometolazaruside
@@ -20964,35 +20296,6 @@ msgstr ""
 #: lazarusidestrconsts.liswithrequiredpackages
 msgid "With required packages"
 msgstr "S vyžadovanými balíčkami"
-
-#: lazarusidestrconsts.liswldeleteall
-msgid "De&lete All"
-msgstr "Zma&zať všetko"
-
-#: lazarusidestrconsts.liswldisableall
-msgid "D&isable All"
-msgstr "Z&akázať všetko"
-
-#: lazarusidestrconsts.liswlenableall
-msgid "E&nable All"
-msgstr "Zap&núť všetky"
-
-#: lazarusidestrconsts.liswlexpression
-msgid "Expression"
-msgstr "Výraz"
-
-#: lazarusidestrconsts.liswlinspectpane
-msgid "Inspect pane"
-msgstr ""
-
-#: lazarusidestrconsts.liswlproperties
-msgid "&Properties"
-msgstr "&Vlastnosti"
-
-#: lazarusidestrconsts.liswlwatchlist
-msgctxt "lazarusidestrconsts.liswlwatchlist"
-msgid "Watches"
-msgstr "Pozorovania"
 
 #: lazarusidestrconsts.liswordatcursorincurrenteditor
 msgid "Word at cursor in current editor"
@@ -21218,36 +20521,6 @@ msgstr ""
 msgid "Add package unit to uses section"
 msgstr "Pridať jednotku balíčka do sekcie uses"
 
-#: lazarusidestrconsts.regdlgbinary
-msgctxt "lazarusidestrconsts.regdlgbinary"
-msgid "Binary"
-msgstr "Binárny"
-
-#: lazarusidestrconsts.regdlgdecimal
-msgctxt "lazarusidestrconsts.regdlgdecimal"
-msgid "Decimal"
-msgstr "Desiatkovo"
-
-#: lazarusidestrconsts.regdlgdisplaytypeforselectedregisters
-msgid "Display type for selected Registers"
-msgstr ""
-
-#: lazarusidestrconsts.regdlgformat
-msgid "Format"
-msgstr ""
-
-#: lazarusidestrconsts.regdlghex
-msgid "Hex"
-msgstr ""
-
-#: lazarusidestrconsts.regdlgoctal
-msgid "Octal"
-msgstr ""
-
-#: lazarusidestrconsts.regdlgraw
-msgid "Raw"
-msgstr ""
-
 #: lazarusidestrconsts.rsaddinverse
 msgid "Add Inverse"
 msgstr "Pridať obrátene"
@@ -21255,10 +20528,6 @@ msgstr "Pridať obrátene"
 #: lazarusidestrconsts.rsaddnewterm
 msgid "Add new term"
 msgstr ""
-
-#: lazarusidestrconsts.rsattachto
-msgid "Attach to"
-msgstr "Pripojiť k"
 
 #: lazarusidestrconsts.rsattributes
 msgid "Attributes"
@@ -21311,10 +20580,6 @@ msgstr "Vytvoriť novú definíciu"
 #: lazarusidestrconsts.rsenablei18n
 msgid "Enable i18n"
 msgstr "Zapnúť i18n"
-
-#: lazarusidestrconsts.rsenterpid
-msgid "Enter PID"
-msgstr ""
 
 #: lazarusidestrconsts.rsfilterthelistwithstring
 msgid "Filter the lines in list with a string"
@@ -23336,4 +22601,13 @@ msgstr ""
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Informácie o verzii"
+
+#: lazarusidestrconsts.lisdeleteall
+msgid "&Delete All"
+msgstr "Z&mazať všetky"
+
+#: lazarusidestrconsts.lisfunction
+msgctxt "lazarusidestrconsts.lisfunction"
+msgid "Function"
+msgstr "Funkcia"
 
