@@ -25,6 +25,5 @@ RSEXT="rsj"
 set -x
 
 ./tools/updatepofiles --searchdir=./units lazarusidestrconsts.$RSEXT ./languages/lazaruside.pot
-./tools/updatepofiles --searchdir=./units debuggerstrconst.$RSEXT ./languages/debuggerstrconst.pot
 
 exit 0

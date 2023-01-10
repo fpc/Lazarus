@@ -24,17 +24,10 @@ if not exist tools\updatepofiles.exe goto Exit_Error
 
 :SkipTools
 
-echo Updating language files ...
-echo.
-
 echo on
 
-@echo Updating IDE
+@echo Updating IDE language file
 @tools\updatepofiles --searchdir=units lazarusidestrconsts.rsj languages\lazaruside.pot
-@echo.
-
-@echo Updating Debugger dialogs
-@tools\updatepofiles --searchdir=units debuggerstrconst.rsj languages\debuggerstrconst.pot
 @echo.
 
 @goto Exit
@@ -43,4 +36,3 @@ echo on
 echo Unable to compile updatepofiles tool
 
 :Exit
-
