@@ -228,7 +228,7 @@ msgstr "Разряды:"
 
 #: idedebuggerstringconstants.lisenabled
 msgid "Enabled"
-msgstr ""
+msgstr "Включить"
 
 #: idedebuggerstringconstants.lisexpression
 msgid "Expression:"
@@ -248,7 +248,7 @@ msgstr "Показывать столбец видимости"
 
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
-msgstr ""
+msgstr "&Справка"
 
 #: idedebuggerstringconstants.lismenuok
 msgctxt "lazarusidestrconsts.lismenuok"
