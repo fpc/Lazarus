@@ -201,7 +201,7 @@ end;
 
 function TFPVectorialDrawer.GetFontSize: Integer;
 begin
-  Result := IfThen(FFont.Size = 0, DEFAULT_FONT_SIZE, FFont.Size);
+  Result := IfThen(FFont.Size = 0, DEFAULT_FONT_SIZE, round(FFont.Size));
 end;
 
 function TFPVectorialDrawer.GetFontStyle: TChartFontStyles;
@@ -410,7 +410,7 @@ begin
     FFTFont.Quality := grqHighQuality;
     FFontHeight := round(FFTFont.TextHeight('Tg'));
   end else
-    FFontHeight := FFont.Size;
+    FFontHeight := round(FFont.Size);
 end;
 
 procedure TFPVectorialDrawer.SetPen(APen: TFPCustomPen);
@@ -449,8 +449,8 @@ begin
     Result.Y := FFontHeight;
   end else
   begin
-    Result.X := FFont.Size * Length(AText) * 2 div 3;
-    Result.Y := FFont.Size;
+    Result.X := round(FFont.Size * Length(AText) * 2/3);
+    Result.Y := round(FFont.Size);
   end;
 end;
 
@@ -468,7 +468,7 @@ begin
   if FFTFont <> nil then
     dy := round(TFreeTypeFontOpener(FFTFont).GetAscent)
   else
-    dy := FFont.Size;
+    dy := round(FFont.Size);
   p := RotatePoint(Point(0, -dy), DegToRad(FFont.Orientation)) + Point(AX, InvertY(AY));
   txt := FCanvas.AddText(p.X, p.Y, 0, AText);
   txt.Font := FFont;
