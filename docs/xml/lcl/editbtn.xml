@@ -1711,17 +1711,77 @@ Abstract virtual method that must be implemented in a descendent class.
 <seealso></seealso>
 </element>
 
-<!-- TODO: Modified in 4c822bb36e. -->
 <element name="TCustomControlFilterEdit.Filter">
 <short>
-The textual representation for the filter.
+The textual representation for the filter value in the control.
 </short>
 <descr>
 <p>
-Typically a user types it in the edit control but it can also be set in code. 
-Filtering is done during idle time after the value of Filter text has changed.
+<var>Filter</var> is a <var>String</var> property which contains the value 
+used to filter the items in an associated control. It is a convenience 
+property; its value is read from and written to the Text property for the 
+control. Setting the value for the property in code, causes the Text property 
+to be updated.
+</p>
+<p>
+Filter is used when the SortAndFilter and ApplyFilterCore methods (in 
+descendent classes) are called to apply the filter value to the items in an 
+associated control.
+</p>
+<p>
+Use FilterLowercase to access the Filter value converted to lowercase UTF-8 
+characters.
+</p>
+<p>
+Use FilterOptions to indicate whether case sensitivity is enabled for the 
+filter value; FilterLowercase is used when fsoCaseSensitive has <b>not</b> 
+been included in the set of options.
+</p>
+<p>
+Use ResetFilter to clear the filter value (and the Text property) for the 
+control.
 </p>
 </descr>
+<seealso>
+<link id="TCustomControlFilterEdit.Text"/>
+<link id="TCustomControlFilterEdit.FilterLowercase"/>
+<link id="TCustomControlFilterEdit.DoDefaultFilterItem"/>
+<link id="TCustomControlFilterEdit.FilterOptions"/>
+<link id="TCustomControlFilterEdit.OnFilterItem"/>
+<link id="TCustomControlFilterEdit.OnFilterItemEx"/>
+<link id="TCustomControlFilterEdit.ActivateFilter"/>
+<link id="TCustomControlFilterEdit.EditChange"/>
+</seealso>
+</element>
+
+<element name="TCustomControlFilterEdit.FilterLowercase">
+<short>
+The textual representation for the Filter using lowercase characters.
+</short>
+<descr>
+<p>
+<var>FilterLowercase</var> is a read-only <var>String</var> property which
+contains the value in <var>Filter</var> converted to lowercase characters. It
+is used in the implementation of the <var>DoDefaultFilterItem</var> method
+when case sensitivity has not been enabled in the <var>FilterOptions</var> 
+property (<var>fsoCaseSensitive</var> is not included). The property can be 
+used in a similar manner in routines assigned to the <var>OnFilterItem</var> 
+and <var>OnFilterItemEx</var> event handlers.
+</p>
+<p>
+The value for FilterLowercase is derived and assigned in ActivateFilter, and 
+is called when the value for the edit control has been changed.
+</p>
+</descr>
+<seealso>
+<link id="TCustomControlFilterEdit.Filter"/>
+<link id="TCustomControlFilterEdit.DoDefaultFilterItem"/>
+<link id="TCustomControlFilterEdit.FilterOptions"/>
+<link id="TCustomControlFilterEdit.OnFilterItem"/>
+<link id="TCustomControlFilterEdit.OnFilterItemEx"/>
+<link id="TCustomControlFilterEdit.ActivateFilter"/>
+<link id="TCustomControlFilterEdit.EditChange"/>
+</seealso>
 </element>
 
 <element name="TCustomControlFilterEdit.IdleConnected">
