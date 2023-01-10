@@ -832,7 +832,7 @@ expression is handled in Compile.
 </p>
 </descr>
 <seealso>
-<link id="TMaskBase.Compile"/>
+<link id="TMaskUTF8.Compile"/>
 </seealso>
 </element>
 
@@ -1208,7 +1208,7 @@ already been compiled.
 <seealso>
 <link id="TMaskUTF8.Matches"/>
 <link id="TMaskUTF8.Mask"/>
-<link id="TMaskBase.Compile"/>
+<link id="TMaskUTF8.Compile"/>
 <link id="TMaskBase.CaseSensitive"/>
 <link id="TMaskBase.AutoReverseRange"/>
 <link id="TMaskBase.EscapeChar"/>
