@@ -709,21 +709,17 @@ forces the next mask character to be treated as a literal and not a wildcard.
 </short>
 </element>
 
-<element name="TMaskBase.Compile">
+<element name="TMaskBase.PrepareCompile">
 <short>
-Examines and converts mask expression characters into a list of op codes.
+Resets values in internal members used in the implementation.
 </short>
 <descr>
 <p>
-In TMaskBase, Compile simply sets values for members in the class instance. 
-Descendent classes implement additional functionality needed for a specific 
-platform.
+Used to implement the Compile method in descendent classes.
 </p>
 </descr>
 <seealso>
-<link id="TMaskBase.MaskOpCodes"/>
 <link id="TMaskUTF8.Compile"/>
-<link id="TWindowsMaskUTF8.Compile"/>
 </seealso>
 </element>
 
@@ -1187,7 +1183,7 @@ includes a TMaskOpCodes parameter.
 <short>Examines the mask expression and creates a list of op codes.</short>
 <descr>
 <p>
-Compile is an overridden method used to examine and convert values from the 
+Compile is a virtual method used to examine and convert values from the 
 Mask property into TMaskParsedCode values for the positions in the mask 
 expression.
 </p>
