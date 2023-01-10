@@ -124,10 +124,12 @@ begin
     xIcon := TIcon.Create;
     try
       xIcon.LoadFromFile(xIconFile);
-      Result := Images.AddIcon(xIcon);
-    finally
-      xIcon.Free;
+    except
+      FreeAndNil(xIcon); // ignore exceptions for invalid icons
     end;
+    if Assigned(xIcon) then
+      Result := Images.AddIcon(xIcon);
+    xIcon.Free;
   end;
 
   xObj := TLoadProjectIconIntoImagesObject.Create;
