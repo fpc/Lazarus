@@ -275,6 +275,7 @@ type
     procedure RestoreSelection; virtual; abstract;
   public
     property Filter: string read GetFilter write SetFilter;
+    property FilterLowercase: string read fFilterLowercase;
     property IdleConnected: Boolean read fIdleConnected write SetIdleConnected;
     property SortData: Boolean read fSortData write SetSortData;
     property SelectedPart: TObject read fSelectedPart write fSelectedPart;
