@@ -486,7 +486,7 @@ msgstr "Ошибка"
 
 #: idedebuggerstringconstants.lisclear
 msgid "Clear"
-msgstr ""
+msgstr "Очистить"
 
 #: idedebuggerstringconstants.liscoladdress
 msgid "Address"
@@ -1048,7 +1048,6 @@ msgid "&Source Breakpoint ..."
 msgstr "Точка останова в &исходном коде ..."
 
 #: idedebuggerstringconstants.lissrcline
-#, fuzzy
 msgctxt "idedebuggerstringconstants.lissrcline"
 msgid "Line"
 msgstr "Строка"
@@ -1106,7 +1105,6 @@ msgid "State"
 msgstr "Состояние"
 
 #: idedebuggerstringconstants.lisvalue
-#, fuzzy
 msgctxt "idedebuggerstringconstants.lisvalue"
 msgid "Value"
 msgstr "Значение"
@@ -1219,7 +1217,6 @@ msgid "Decimal"
 msgstr "Десятичное"
 
 #: idedebuggerstringconstants.regdlgdefault
-#, fuzzy
 msgctxt "idedebuggerstringconstants.regdlgdefault"
 msgid "Default"
 msgstr "По умолчанию"
