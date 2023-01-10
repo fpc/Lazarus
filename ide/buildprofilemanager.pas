@@ -42,7 +42,7 @@ uses
   // IdeIntf
   IDEImagesIntf, IDEHelpIntf, IDEDialogs,
   // IDE
-  LazarusIDEStrConsts, IDEProcs, TransferMacros, EnvironmentOpts,
+  LazarusIDEStrConsts, LazarusCommonStrConst, IDEProcs, TransferMacros, EnvironmentOpts,
   IdeXmlConfigProcs;
 
 type

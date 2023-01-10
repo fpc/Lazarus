@@ -4708,11 +4708,6 @@ msgstr "Nom d'unité déjà existant"
 msgid "Abandon changes?"
 msgstr "Voulez-vous annuler les changements ?"
 
-#: lazarusidestrconsts.lisabort
-msgctxt "lazarusidestrconsts.lisabort"
-msgid "Abort"
-msgstr "Abandon"
-
 #: lazarusidestrconsts.lisabortall
 msgid "Abort all"
 msgstr "Tout arrêter"
@@ -4804,11 +4799,6 @@ msgstr "Actif"
 #: lazarusidestrconsts.lisactivefilter
 msgid "Active Filter"
 msgstr "Filtre actif"
-
-#: lazarusidestrconsts.lisadd
-msgctxt "lazarusidestrconsts.lisadd"
-msgid "Add"
-msgstr "Ajouter"
 
 #: lazarusidestrconsts.lisaddanewseparatoraboveselecteditem
 msgid "Add a new separator above selected item"
@@ -5042,10 +5032,6 @@ msgstr "Touche alternative"
 #: lazarusidestrconsts.lisalternativekeyor2keysequence
 msgid "Alternative key (or 2 key sequence)"
 msgstr "Touche alternative (ou une séquence de deux touches)"
-
-#: lazarusidestrconsts.lisalways
-msgid "Always"
-msgstr "Toujours"
 
 #: lazarusidestrconsts.lisalwaysconvertsuggesteddefaultfilenametolowercase
 msgid "Always convert suggested default file name to lowercase"
@@ -5418,34 +5404,15 @@ msgstr "Propriétés du point d'arrêt"
 msgid "Browse and select a compiler (e.g. ppcx64"
 msgstr "Chercher et choisir un compilateur (ex. ppcx64"
 
-#: lazarusidestrconsts.lisbtnadd
-msgctxt "lazarusidestrconsts.lisbtnadd"
-msgid "&Add"
-msgstr "&Ajouter"
-
 #: lazarusidestrconsts.lisbtnclose
 msgctxt "lazarusidestrconsts.lisbtnclose"
 msgid "&Close"
 msgstr "&Fermer"
 
-#: lazarusidestrconsts.lisbtndelete
-msgctxt "lazarusidestrconsts.lisbtndelete"
-msgid "&Delete"
-msgstr "&Supprimer"
-
-#: lazarusidestrconsts.lisbtndlgadd
-msgid "&Add ..."
-msgstr "&Ajouter..."
-
 #: lazarusidestrconsts.lisbtndlgreplace
 msgctxt "lazarusidestrconsts.lisbtndlgreplace"
 msgid "&Replace ..."
 msgstr "&Remplacer..."
-
-#: lazarusidestrconsts.lisbtnenabled
-msgctxt "lazarusidestrconsts.lisbtnenabled"
-msgid "&Enabled"
-msgstr "&Activé"
 
 #: lazarusidestrconsts.lisbtnfind
 msgid "&Find"
@@ -5554,11 +5521,6 @@ msgstr "L'appel de %s pour créer le Makefile depuis %s a échoué."
 #: lazarusidestrconsts.liscallstacknotevaluated
 msgid "Stack not evaluated"
 msgstr "Pile non évaluée"
-
-#: lazarusidestrconsts.liscancel
-msgctxt "lazarusidestrconsts.liscancel"
-msgid "Cancel"
-msgstr "Annuler"
 
 #: lazarusidestrconsts.liscancelloadingthiscomponent
 msgid "Cancel loading this component"
@@ -7454,11 +7416,6 @@ msgstr "Contenu"
 msgid "Context sensitive"
 msgstr "Sensible au contexte"
 
-#: lazarusidestrconsts.liscontinue
-msgctxt "lazarusidestrconsts.liscontinue"
-msgid "Continue"
-msgstr "Continuer"
-
 #: lazarusidestrconsts.liscontinueanddonotaskagain
 msgid "Continue and do not ask again"
 msgstr "Continuer et ne plus demander"
@@ -8753,11 +8710,6 @@ msgstr "Durée pour les conseils sur une longue ligne dans la boîte de complét
 msgid "Delay for hints"
 msgstr "Délai pour les conseils"
 
-#: lazarusidestrconsts.lisdelete
-msgctxt "lazarusidestrconsts.lisdelete"
-msgid "Delete"
-msgstr "Supprimer"
-
 #: lazarusidestrconsts.lisdelete2
 msgid "Delete?"
 msgstr "Supprimer ?"
@@ -8976,11 +8928,6 @@ msgstr "Tout désactiver dans le  même code source"
 msgid "Disable Breakpoint"
 msgstr "Désactiver le point d'arrêt"
 
-#: lazarusidestrconsts.lisdisabled
-msgctxt "lazarusidestrconsts.lisdisabled"
-msgid "Disabled"
-msgstr "Désactivé"
-
 #: lazarusidestrconsts.lisdisablegroups
 msgid "Disable Groups"
 msgstr "Désactiver les groupes"
@@ -9074,11 +9021,6 @@ msgstr "Certains fichiers ont des modifications locales. Les modifications local
 #: lazarusidestrconsts.lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Différencier majuscules et minuscules (par exemple A et a)"
-
-#: lazarusidestrconsts.lisdlgadd
-msgctxt "lazarusidestrconsts.lisdlgadd"
-msgid "Add ..."
-msgstr "Ajouter..."
 
 #: lazarusidestrconsts.lisdlgalloptions
 msgid "All options ..."
@@ -9541,11 +9483,6 @@ msgstr "Tout activer dans le même code source"
 #: lazarusidestrconsts.lisenablebreakpoint
 msgid "Enable Breakpoint"
 msgstr "Activer le point d'arrêt"
-
-#: lazarusidestrconsts.lisenabled
-msgctxt "lazarusidestrconsts.lisenabled"
-msgid "Enabled"
-msgstr "Activé"
 
 #: lazarusidestrconsts.lisenabledonlyforpackages
 msgid "Enabled only for packages."
@@ -10785,11 +10722,6 @@ msgstr "Couleurs des en-têtes"
 msgid "Header comment for class"
 msgstr "Commentaire d'en-tête pour la classe"
 
-#: lazarusidestrconsts.lishelp
-msgctxt "lazarusidestrconsts.lishelp"
-msgid "Help"
-msgstr "Aide"
-
 #: lazarusidestrconsts.lishelpentries
 msgid "Help entries"
 msgstr "Entrée de l'aide"
@@ -11085,11 +11017,6 @@ msgstr "Demander une sauvegarde si seules les informations de la session ont cha
 #, object-pascal-format
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "Si vous souhaitez utiliser deux versions différentes de Lazarus, vous devez démarrer le second Lazarus avec le paramètre de ligne de commande primary-config-path ou pcp.%sPar exemple :"
-
-#: lazarusidestrconsts.lisignore
-msgctxt "lazarusidestrconsts.lisignore"
-msgid "Ignore"
-msgstr "Ignorer"
 
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
@@ -12239,11 +12166,6 @@ msgstr "Lancement de l'application incorrecte"
 msgid "Launching target command line"
 msgstr "Lancement de la ligne de commande de la cible"
 
-#: lazarusidestrconsts.lislazarus
-msgctxt "lazarusidestrconsts.lislazarus"
-msgid "Lazarus"
-msgstr "Lazarus"
-
 #: lazarusidestrconsts.lislazarusdefault
 msgid "Lazarus Default"
 msgstr "Lazarus par défaut"
@@ -12947,10 +12869,6 @@ msgstr "Configurer la construction de Lazarus..."
 #: lazarusidestrconsts.lismenucontexthelp
 msgid "Context sensitive Help"
 msgstr "Aide contextuelle"
-
-#: lazarusidestrconsts.lismenucontinue
-msgid "&Continue"
-msgstr "&Continuer"
 
 #: lazarusidestrconsts.lismenuconvertdelphipackage
 msgid "Convert Delphi Package to Lazarus Package ..."
@@ -13854,11 +13772,6 @@ msgstr "Nouveau projet depuis le fichier..."
 msgctxt "lazarusidestrconsts.lismenunewunit"
 msgid "New Unit"
 msgstr "Nouvelle unité"
-
-#: lazarusidestrconsts.lismenuok
-msgctxt "lazarusidestrconsts.lismenuok"
-msgid "&OK"
-msgstr "&OK"
 
 #: lazarusidestrconsts.lismenuonlinehelp
 msgid "Online Help"
@@ -14778,11 +14691,6 @@ msgstr "Nom du mode de construction actif"
 msgid "Name of new procedure"
 msgstr "Nom de la nouvelle procédure"
 
-#: lazarusidestrconsts.lisnever
-msgctxt "lazarusidestrconsts.lisnever"
-msgid "Never"
-msgstr "Jamais"
-
 #: lazarusidestrconsts.lisnew
 msgctxt "lazarusidestrconsts.lisnew"
 msgid "New"
@@ -14875,10 +14783,6 @@ msgstr "Nouvelles macros enregistrées. A ne pas sauvegarder"
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 msgid "New units are added to uses sections"
 msgstr "De nouvelles unités sont ajoutées aux clauses uses"
-
-#: lazarusidestrconsts.lisno
-msgid "No"
-msgstr "Non"
 
 #: lazarusidestrconsts.lisnoautosaveactivedesktop
 msgid "'Auto save active desktop' option is turned off, you will need to save current desktop manually."
@@ -15182,11 +15086,6 @@ msgstr "État"
 #, object-pascal-format
 msgid "%sThis package is installed but the lpk file was not found"
 msgstr "%s Ce paquet est installé, mais le fichier lpk associé est introuvable"
-
-#: lazarusidestrconsts.lisok
-msgctxt "lazarusidestrconsts.lisok"
-msgid "OK"
-msgstr "OK"
 
 #: lazarusidestrconsts.lisoldclass
 msgid "Old Class"
@@ -20825,10 +20724,6 @@ msgstr "Erreur XML"
 #, object-pascal-format
 msgid "XML parser error in file %s%sError: %s"
 msgstr "Erreur de l'analyseur XML dans le fichier %s%sErreur : %s"
-
-#: lazarusidestrconsts.lisyes
-msgid "Yes"
-msgstr "Oui"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"

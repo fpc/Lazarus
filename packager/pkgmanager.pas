@@ -61,7 +61,7 @@ uses
   NewItemIntf, CompOptsIntf, IDEExternToolIntf, MacroIntf,
   // IdeIntf
   IDECommands, MenuIntf, IDEWindowIntf, LazIDEIntf, IDEMsgIntf, SrcEditorIntf,
-  ComponentReg, ComponentEditors, PropEdits, IDEDialogs, UnitResources,
+  LazarusCommonStrConst, ComponentReg, ComponentEditors, PropEdits, IDEDialogs, UnitResources,
   // IDE
   IDECmdLine, LazarusIDEStrConsts, IDEProcs, DialogProcs, IDEOptionDefs,
   EnvironmentOpts, MiscOptions, InputHistory, Project, ProjPackEditing, PackageEditor,

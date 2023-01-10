@@ -54,7 +54,7 @@ interface
 uses
   Classes, SysUtils, Controls, Forms, StdCtrls, Buttons, ButtonPanel,
   LCLProc, LCLType, LazConf, LazFileUtils, Laz2_XMLCfg, LazFileCache,
-  IDEHelpIntf, IDEImagesIntf, LazarusIDEStrConsts, EnvironmentOpts;
+  IDEHelpIntf, IDEImagesIntf, LazarusCommonStrConst, LazarusIDEStrConsts, EnvironmentOpts;
 
 type
 

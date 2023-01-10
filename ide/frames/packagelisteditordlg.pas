@@ -28,7 +28,7 @@ uses
   // LazUtils
   FileUtil, LazFileUtils, LazStringUtils, LazFileCache, LazUTF8,
   // IdeIntf
-  IDEImagesIntf,
+  LazarusCommonStrConst, IDEImagesIntf,
   // IDE
   TransferMacros, GenericListSelect, LazarusIDEStrConsts;
 

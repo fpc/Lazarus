@@ -11,7 +11,7 @@ uses
   // LazUtils
   LazUTF8,
   // IdeIntf
-  IDEHelpIntf,
+  LazarusCommonStrConst, IDEHelpIntf,
   // DebuggerIntf
   DbgIntfDebuggerBase,
   // IDE

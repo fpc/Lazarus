@@ -27,7 +27,7 @@ uses
   // LazUtils
   LazFileUtils, LazFileCache,
   // IdeIntf
-  IDEDialogs,
+  LazarusCommonStrConst, IDEDialogs,
   // IDE
   LazarusIDEStrConsts, TransferMacros, InputHistory;
 

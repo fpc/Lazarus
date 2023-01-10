@@ -4694,11 +4694,6 @@ msgstr "Модуль с таким именем уже существует"
 msgid "Abandon changes?"
 msgstr "Отбросить изменения?"
 
-#: lazarusidestrconsts.lisabort
-msgctxt "lazarusidestrconsts.lisabort"
-msgid "Abort"
-msgstr "Прервать"
-
 #: lazarusidestrconsts.lisabortall
 msgid "Abort all"
 msgstr "Прервать все"
@@ -4790,11 +4785,6 @@ msgstr "Активен"
 #: lazarusidestrconsts.lisactivefilter
 msgid "Active Filter"
 msgstr "Текущий фильтр"
-
-#: lazarusidestrconsts.lisadd
-msgctxt "lazarusidestrconsts.lisadd"
-msgid "Add"
-msgstr "Добавить"
 
 #: lazarusidestrconsts.lisaddanewseparatoraboveselecteditem
 msgid "Add a new separator above selected item"
@@ -5028,10 +5018,6 @@ msgstr "Альтернативная клавиша"
 #: lazarusidestrconsts.lisalternativekeyor2keysequence
 msgid "Alternative key (or 2 key sequence)"
 msgstr "Альтернативная клавиша (или двухклавишная комбинация)"
-
-#: lazarusidestrconsts.lisalways
-msgid "Always"
-msgstr "Всегда"
 
 #: lazarusidestrconsts.lisalwaysconvertsuggesteddefaultfilenametolowercase
 msgid "Always convert suggested default file name to lowercase"
@@ -5404,34 +5390,15 @@ msgstr "Параметры точки останова"
 msgid "Browse and select a compiler (e.g. ppcx64"
 msgstr "Просмотреть и выбрать компилятор (например, ppcx64"
 
-#: lazarusidestrconsts.lisbtnadd
-msgctxt "lazarusidestrconsts.lisbtnadd"
-msgid "&Add"
-msgstr "&Добавить"
-
 #: lazarusidestrconsts.lisbtnclose
 msgctxt "lazarusidestrconsts.lisbtnclose"
 msgid "&Close"
 msgstr "&Закрыть"
 
-#: lazarusidestrconsts.lisbtndelete
-msgctxt "lazarusidestrconsts.lisbtndelete"
-msgid "&Delete"
-msgstr "&Удалить"
-
-#: lazarusidestrconsts.lisbtndlgadd
-msgid "&Add ..."
-msgstr "&Добавить ..."
-
 #: lazarusidestrconsts.lisbtndlgreplace
 msgctxt "lazarusidestrconsts.lisbtndlgreplace"
 msgid "&Replace ..."
 msgstr "&Заменить ..."
-
-#: lazarusidestrconsts.lisbtnenabled
-msgctxt "lazarusidestrconsts.lisbtnenabled"
-msgid "&Enabled"
-msgstr "&Включить"
 
 #: lazarusidestrconsts.lisbtnfind
 msgid "&Find"
@@ -5540,11 +5507,6 @@ msgstr "Вызов %s для создания Makefile из %s не удался
 #: lazarusidestrconsts.liscallstacknotevaluated
 msgid "Stack not evaluated"
 msgstr "Стек не определён"
-
-#: lazarusidestrconsts.liscancel
-msgctxt "lazarusidestrconsts.liscancel"
-msgid "Cancel"
-msgstr "Отмена"
 
 #: lazarusidestrconsts.liscancelloadingthiscomponent
 msgid "Cancel loading this component"
@@ -7437,11 +7399,6 @@ msgstr "Содержимое"
 msgid "Context sensitive"
 msgstr "С учётом контекста"
 
-#: lazarusidestrconsts.liscontinue
-msgctxt "lazarusidestrconsts.liscontinue"
-msgid "Continue"
-msgstr "Продолжить"
-
 #: lazarusidestrconsts.liscontinueanddonotaskagain
 msgid "Continue and do not ask again"
 msgstr "Продолжить и больше не спрашивать"
@@ -8735,11 +8692,6 @@ msgstr "Задержка вывода длинных подсказок в ок�
 msgid "Delay for hints"
 msgstr "Задержка вывода подсказок"
 
-#: lazarusidestrconsts.lisdelete
-msgctxt "lazarusidestrconsts.lisdelete"
-msgid "Delete"
-msgstr "Удалить"
-
 #: lazarusidestrconsts.lisdelete2
 msgid "Delete?"
 msgstr "Удалить?"
@@ -8958,11 +8910,6 @@ msgstr "Отключить все в том же файле исходного �
 msgid "Disable Breakpoint"
 msgstr "Отключить точку останова"
 
-#: lazarusidestrconsts.lisdisabled
-msgctxt "lazarusidestrconsts.lisdisabled"
-msgid "Disabled"
-msgstr "Отключить"
-
 #: lazarusidestrconsts.lisdisablegroups
 msgid "Disable Groups"
 msgstr "Отключить группы"
@@ -9056,11 +9003,6 @@ msgstr "Некоторые файлы были изменены локально
 #: lazarusidestrconsts.lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Различать регистр букв, например, А и а"
-
-#: lazarusidestrconsts.lisdlgadd
-msgctxt "lazarusidestrconsts.lisdlgadd"
-msgid "Add ..."
-msgstr "Добавить ..."
 
 #: lazarusidestrconsts.lisdlgalloptions
 msgid "All options ..."
@@ -9523,11 +9465,6 @@ msgstr "Включить все в том же файле исходного к�
 #: lazarusidestrconsts.lisenablebreakpoint
 msgid "Enable Breakpoint"
 msgstr "Включить точку останова"
-
-#: lazarusidestrconsts.lisenabled
-msgctxt "lazarusidestrconsts.lisenabled"
-msgid "Enabled"
-msgstr "Включить"
 
 #: lazarusidestrconsts.lisenabledonlyforpackages
 msgid "Enabled only for packages."
@@ -10766,11 +10703,6 @@ msgstr "Цвета заголовков"
 msgid "Header comment for class"
 msgstr "Комментарий перед заголовком класса"
 
-#: lazarusidestrconsts.lishelp
-msgctxt "lazarusidestrconsts.lishelp"
-msgid "Help"
-msgstr "Справка"
-
 #: lazarusidestrconsts.lishelpentries
 msgid "Help entries"
 msgstr "Элементы справки"
@@ -11066,11 +10998,6 @@ msgstr "Если изменились только сведения о сеан�
 #, object-pascal-format
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "Если вы хотите использовать два экземпляра Lazarus разных версий, второй экземпляр Lazarus следует запускать с параметром командной строки primary-config-path или pcp.%sНапример:"
-
-#: lazarusidestrconsts.lisignore
-msgctxt "lazarusidestrconsts.lisignore"
-msgid "Ignore"
-msgstr "Пропустить"
 
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
@@ -12221,11 +12148,6 @@ msgstr "Запускающее приложение недопустимо"
 msgid "Launching target command line"
 msgstr "Командная строка для запуска"
 
-#: lazarusidestrconsts.lislazarus
-msgctxt "lazarusidestrconsts.lislazarus"
-msgid "Lazarus"
-msgstr "Lazarus"
-
 #: lazarusidestrconsts.lislazarusdefault
 msgid "Lazarus Default"
 msgstr "Lazarus по умолчанию"
@@ -12926,10 +12848,6 @@ msgstr "Параметры сборки Lazarus ..."
 #: lazarusidestrconsts.lismenucontexthelp
 msgid "Context sensitive Help"
 msgstr "Контекстно-зависимая справка"
-
-#: lazarusidestrconsts.lismenucontinue
-msgid "&Continue"
-msgstr "&Продолжить"
 
 #: lazarusidestrconsts.lismenuconvertdelphipackage
 msgid "Convert Delphi Package to Lazarus Package ..."
@@ -13829,11 +13747,6 @@ msgstr "Создать проект из файла ..."
 msgctxt "lazarusidestrconsts.lismenunewunit"
 msgid "New Unit"
 msgstr "Создать модуль"
-
-#: lazarusidestrconsts.lismenuok
-msgctxt "lazarusidestrconsts.lismenuok"
-msgid "&OK"
-msgstr "&ОК"
 
 #: lazarusidestrconsts.lismenuonlinehelp
 msgid "Online Help"
@@ -14750,11 +14663,6 @@ msgstr "Имя активного режима сборки"
 msgid "Name of new procedure"
 msgstr "Имя новой процедуры"
 
-#: lazarusidestrconsts.lisnever
-msgctxt "lazarusidestrconsts.lisnever"
-msgid "Never"
-msgstr "Никогда"
-
 #: lazarusidestrconsts.lisnew
 msgctxt "lazarusidestrconsts.lisnew"
 msgid "New"
@@ -14847,10 +14755,6 @@ msgstr "Вновь записанные макросы. Сохранены не 
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 msgid "New units are added to uses sections"
 msgstr "Новые модули добавляются в выражения uses"
-
-#: lazarusidestrconsts.lisno
-msgid "No"
-msgstr "Нет"
 
 #: lazarusidestrconsts.lisnoautosaveactivedesktop
 msgid "'Auto save active desktop' option is turned off, you will need to save current desktop manually."
@@ -15154,11 +15058,6 @@ msgstr "Состояние"
 #, object-pascal-format
 msgid "%sThis package is installed but the lpk file was not found"
 msgstr "%sЭтот пакет установлен, но файл lpk не найден"
-
-#: lazarusidestrconsts.lisok
-msgctxt "lazarusidestrconsts.lisok"
-msgid "OK"
-msgstr "ОК"
 
 #: lazarusidestrconsts.lisoldclass
 msgid "Old Class"
@@ -20797,10 +20696,6 @@ msgstr "Ошибка XML"
 #, object-pascal-format
 msgid "XML parser error in file %s%sError: %s"
 msgstr "Ошибка анализа XML в файле %s%sОшибка: %s"
-
-#: lazarusidestrconsts.lisyes
-msgid "Yes"
-msgstr "Да"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"

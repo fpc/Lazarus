@@ -42,16 +42,9 @@ uses
 resourcestring
   // *** Common single word resources that can be safely shared around Lazarus ***
 
-  lisLazarus = 'Lazarus';
-  lisAdd  = 'Add';
-  lisBtnAdd = '&Add';
-  lisDlgAdd = 'Add ...';
-  lisBtnDlgAdd = '&Add ...';
   lisApply = 'Apply';
   lisInsert = 'Insert';
   lisChange  = 'Change';
-  lisDelete  = 'Delete';
-  lisBtnDelete = '&Delete';
   lisRemove = 'Remove';
   lisBtnRemove = '&Remove';
   lisRename = 'Rename';
@@ -73,26 +66,12 @@ resourcestring
   lisNew = 'New';
   lisClose = 'Close';
   lisBtnClose = '&Close';
-  lisOk = 'OK';
-  lisMenuOk = '&OK';
-  lisCancel = 'Cancel';
-  lisNo = 'No';
-  lisYes = 'Yes';
-  lisAbort = 'Abort';
-  lisIgnore = 'Ignore';
-  lisNever = 'Never';
-  lisAlways = 'Always';
-  lisContinue = 'Continue';
-  lisMenuContinue = '&Continue';
   lisBreak = 'Break';
   lisMenuBreak = '&Break';
   lisExit = 'Exit';
   lisQuit = 'Quit';
   lisBtnQuit = '&Quit';
   lisRestart = 'Restart';
-  lisHelp = 'Help';
-  lisEnabled = 'Enabled';
-  lisBtnEnabled = '&Enabled';
   lisUndo = 'Undo';
   lisRedo = 'Redo';
   lisCut = 'Cut';
@@ -5611,7 +5590,6 @@ resourcestring
   lisLogEvalExpression = 'Eval expression';
   lisLogCallStack = 'Log Call Stack';
   lisLogCallStackLimit = '(frames limit. 0 - no limits)';
-  lisDisabled = 'Disabled';
   lisBPSEnabled = 'Enabled';
   lisBPSDisabled = 'Disabled';
   lisInvalidOff = 'Invalid (Off)';

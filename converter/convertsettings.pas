@@ -38,7 +38,7 @@ uses
   // CodeTools
   CodeToolManager, CodeCache,
   // IdeIntf
-  BaseIDEIntf, IDEMsgIntf, IDEExternToolIntf, IDEImagesIntf,
+  LazarusCommonStrConst, BaseIDEIntf, IDEMsgIntf, IDEExternToolIntf, IDEImagesIntf,
   // IDE
   IDEProcs, DialogProcs, LazarusIDEStrConsts,
   // Converter

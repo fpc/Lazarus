@@ -25,7 +25,7 @@ unit ConfirmPkgListDlg;
 interface
 
 uses
-  Buttons, Classes, ExtCtrls, Grids, Forms, Controls, ButtonPanel;
+  Buttons, Classes, ExtCtrls, Grids, Forms, Controls, ButtonPanel, LazarusCommonStrConst;
 
 type
 

@@ -20,7 +20,8 @@ uses
   ObjectInspector, ObjInspStrConsts, OIFavoriteProperties, ProjectGroupIntf, 
   PropEdits, PropEditUtils, SrcEditorIntf, StatusBarPropEdit, 
   StringsPropEditDlg, TextTools, ToolBarIntf, TreeViewPropEdit, UnitResources, 
-  bufdatasetdsgn, selectdatasetdlg, SelEdits, LazarusPackageIntf;
+  bufdatasetdsgn, selectdatasetdlg, SelEdits, LazarusCommonStrConst,
+  LazarusPackageIntf;
 
 implementation
 

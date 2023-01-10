@@ -213,19 +213,9 @@ msgstr ""
 msgid "Allow Function Calls"
 msgstr "אפשר קריאות של פונקציות"
 
-#: idedebuggerstringconstants.liscancel
-msgctxt "lazarusidestrconsts.liscancel"
-msgid "Cancel"
-msgstr "בטל"
-
 #: idedebuggerstringconstants.lisdigits
 msgid "Digits:"
 msgstr "ספרות:"
-
-#: idedebuggerstringconstants.lisenabled
-msgctxt "lazarusidestrconsts.lisenabled"
-msgid "Enabled"
-msgstr "מאופשר"
 
 #: idedebuggerstringconstants.lisexpression
 msgid "Expression:"
@@ -246,11 +236,6 @@ msgstr ""
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "עזרה&"
-
-#: idedebuggerstringconstants.lismenuok
-msgctxt "lazarusidestrconsts.lismenuok"
-msgid "&OK"
-msgstr "א&שר"
 
 #: idedebuggerstringconstants.lisrepeatcount
 msgid "Repeat Count:"

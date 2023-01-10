@@ -4821,11 +4821,6 @@ msgstr "Modulio pavadinimas egzistuoja"
 msgid "Abandon changes?"
 msgstr "Pamiršti pakeitimus?"
 
-#: lazarusidestrconsts.lisabort
-msgctxt "lazarusidestrconsts.lisabort"
-msgid "Abort"
-msgstr "Nutraukti"
-
 #: lazarusidestrconsts.lisabortall
 msgid "Abort all"
 msgstr "Nutraukti viską"
@@ -4919,11 +4914,6 @@ msgstr "Aktyvus"
 #: lazarusidestrconsts.lisactivefilter
 msgid "Active Filter"
 msgstr "Aktyvus filtras"
-
-#: lazarusidestrconsts.lisadd
-msgctxt "lazarusidestrconsts.lisadd"
-msgid "Add"
-msgstr "Pridėti"
 
 #: lazarusidestrconsts.lisaddanewseparatoraboveselecteditem
 msgid "Add a new separator above selected item"
@@ -5157,10 +5147,6 @@ msgstr "Alternatyvus klavišas"
 #: lazarusidestrconsts.lisalternativekeyor2keysequence
 msgid "Alternative key (or 2 key sequence)"
 msgstr "Alternatyvus klavišas (arba dviejų klavišų seka)"
-
-#: lazarusidestrconsts.lisalways
-msgid "Always"
-msgstr "Visada"
 
 #: lazarusidestrconsts.lisalwaysconvertsuggesteddefaultfilenametolowercase
 msgid "Always convert suggested default file name to lowercase"
@@ -5539,34 +5525,15 @@ msgstr "Stabdos tašo savybės"
 msgid "Browse and select a compiler (e.g. ppcx64"
 msgstr ""
 
-#: lazarusidestrconsts.lisbtnadd
-msgctxt "lazarusidestrconsts.lisbtnadd"
-msgid "&Add"
-msgstr "Pri&dėti"
-
 #: lazarusidestrconsts.lisbtnclose
 msgctxt "lazarusidestrconsts.lisbtnclose"
 msgid "&Close"
 msgstr "&Užverti"
 
-#: lazarusidestrconsts.lisbtndelete
-msgctxt "lazarusidestrconsts.lisbtndelete"
-msgid "&Delete"
-msgstr "&Pašalinti"
-
-#: lazarusidestrconsts.lisbtndlgadd
-msgid "&Add ..."
-msgstr "&Pridėti…"
-
 #: lazarusidestrconsts.lisbtndlgreplace
 msgctxt "lazarusidestrconsts.lisbtndlgreplace"
 msgid "&Replace ..."
 msgstr "&Pakeisti…"
-
-#: lazarusidestrconsts.lisbtnenabled
-msgctxt "lazarusidestrconsts.lisbtnenabled"
-msgid "&Enabled"
-msgstr "Į&galintas"
 
 #: lazarusidestrconsts.lisbtnfind
 msgid "&Find"
@@ -5675,11 +5642,6 @@ msgstr "Besikreipiant į %s, kad pagal %s būtų sukurtas Makefile, įvyko klaid
 #: lazarusidestrconsts.liscallstacknotevaluated
 msgid "Stack not evaluated"
 msgstr "Dėklas neįvertintas"
-
-#: lazarusidestrconsts.liscancel
-msgctxt "lazarusidestrconsts.liscancel"
-msgid "Cancel"
-msgstr "Atsisakyti"
 
 #: lazarusidestrconsts.liscancelloadingthiscomponent
 msgid "Cancel loading this component"
@@ -7588,11 +7550,6 @@ msgstr "Turinys"
 msgid "Context sensitive"
 msgstr "Kontekstinis"
 
-#: lazarusidestrconsts.liscontinue
-msgctxt "lazarusidestrconsts.liscontinue"
-msgid "Continue"
-msgstr "Tęsti"
-
 #: lazarusidestrconsts.liscontinueanddonotaskagain
 msgid "Continue and do not ask again"
 msgstr "Tęsti daugiau nebeklausiant"
@@ -8890,11 +8847,6 @@ msgstr "Delsa iki ilgų eilučių užuominų užbaigimo laukelyje"
 msgid "Delay for hints"
 msgstr ""
 
-#: lazarusidestrconsts.lisdelete
-msgctxt "lazarusidestrconsts.lisdelete"
-msgid "Delete"
-msgstr "Pašalinti"
-
 #: lazarusidestrconsts.lisdelete2
 msgid "Delete?"
 msgstr "Naikinti?"
@@ -9115,11 +9067,6 @@ msgstr "Pasyvinti visus tame pačiame pirminiame kode"
 msgid "Disable Breakpoint"
 msgstr "Išjungti stabdos tašką"
 
-#: lazarusidestrconsts.lisdisabled
-msgctxt "lazarusidestrconsts.lisdisabled"
-msgid "Disabled"
-msgstr "Pasyvus"
-
 #: lazarusidestrconsts.lisdisablegroups
 msgid "Disable Groups"
 msgstr "Pasyvinti grupę"
@@ -9213,11 +9160,6 @@ msgstr ""
 #: lazarusidestrconsts.lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Ieškant skirti didžiąsias ir mažąsias raides"
-
-#: lazarusidestrconsts.lisdlgadd
-msgctxt "lazarusidestrconsts.lisdlgadd"
-msgid "Add ..."
-msgstr "Pridėti…"
 
 #: lazarusidestrconsts.lisdlgalloptions
 msgid "All options ..."
@@ -9682,11 +9624,6 @@ msgstr "Aktyvinti visus šiame pirminiame kode"
 #: lazarusidestrconsts.lisenablebreakpoint
 msgid "Enable Breakpoint"
 msgstr "Įjungti stabdos tašką"
-
-#: lazarusidestrconsts.lisenabled
-msgctxt "lazarusidestrconsts.lisenabled"
-msgid "Enabled"
-msgstr "Veiksnus"
 
 #: lazarusidestrconsts.lisenabledonlyforpackages
 msgid "Enabled only for packages."
@@ -10939,11 +10876,6 @@ msgstr "Antraštės spalvos"
 msgid "Header comment for class"
 msgstr "Antraštinis komentaras klasei"
 
-#: lazarusidestrconsts.lishelp
-msgctxt "lazarusidestrconsts.lishelp"
-msgid "Help"
-msgstr "Žinynas"
-
 #: lazarusidestrconsts.lishelpentries
 msgid "Help entries"
 msgstr "Žinyno įrašai"
@@ -11240,11 +11172,6 @@ msgstr "Atsiklausti ar įrašyti sesijos informaciją tik jei ji pakito."
 #, object-pascal-format
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "Naudojant dvi „Lazarus“ laidas, antrasis „Lazarus“ turi būti startuojamas naudojant komandinės eilutės parametrą „primary-config-path“ (arba „pcp“).%sPavyzdžiui:"
-
-#: lazarusidestrconsts.lisignore
-msgctxt "lazarusidestrconsts.lisignore"
-msgid "Ignore"
-msgstr "Ignoruoti"
 
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
@@ -12404,11 +12331,6 @@ msgstr "Netinkama paleidžiančioji programa"
 msgid "Launching target command line"
 msgstr "Startuojamos paskirties komandinė eilutė"
 
-#: lazarusidestrconsts.lislazarus
-msgctxt "lazarusidestrconsts.lislazarus"
-msgid "Lazarus"
-msgstr "Lazarus"
-
 #: lazarusidestrconsts.lislazarusdefault
 msgid "Lazarus Default"
 msgstr "„Lazarus“ numatytieji"
@@ -13131,10 +13053,6 @@ msgstr "Derinti „Daryti Lazarus“…"
 #: lazarusidestrconsts.lismenucontexthelp
 msgid "Context sensitive Help"
 msgstr "Kontekstinis žinynas"
-
-#: lazarusidestrconsts.lismenucontinue
-msgid "&Continue"
-msgstr "&Tęsti"
 
 #: lazarusidestrconsts.lismenuconvertdelphipackage
 msgid "Convert Delphi Package to Lazarus Package ..."
@@ -14049,11 +13967,6 @@ msgstr "Naujas projektas iš failo…"
 msgctxt "lazarusidestrconsts.lismenunewunit"
 msgid "New Unit"
 msgstr "Naujas modulis"
-
-#: lazarusidestrconsts.lismenuok
-msgctxt "lazarusidestrconsts.lismenuok"
-msgid "&OK"
-msgstr "&Tinka"
 
 #: lazarusidestrconsts.lismenuonlinehelp
 msgid "Online Help"
@@ -15000,11 +14913,6 @@ msgstr "Dabartinio darymo režimo pavadinimas"
 msgid "Name of new procedure"
 msgstr "Naujos procedūros pavadinimas"
 
-#: lazarusidestrconsts.lisnever
-msgctxt "lazarusidestrconsts.lisnever"
-msgid "Never"
-msgstr "Niekada"
-
 #: lazarusidestrconsts.lisnew
 msgctxt "lazarusidestrconsts.lisnew"
 msgid "New"
@@ -15097,10 +15005,6 @@ msgstr "Įrašytos naujos makrokomandos. Neišsaugojamos"
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 msgid "New units are added to uses sections"
 msgstr "Į sekcijas „uses“ nauji moduliai pridedami"
-
-#: lazarusidestrconsts.lisno
-msgid "No"
-msgstr "Ne"
 
 #: lazarusidestrconsts.lisnoautosaveactivedesktop
 msgid "'Auto save active desktop' option is turned off, you will need to save current desktop manually."
@@ -15405,11 +15309,6 @@ msgstr "Būsena"
 #| msgid "%sThis package is installed, but the lpk file was not found"
 msgid "%sThis package is installed but the lpk file was not found"
 msgstr "%sŠis paketas įdiegtas, tačiau nerastas lpk failas"
-
-#: lazarusidestrconsts.lisok
-msgctxt "lazarusidestrconsts.lisok"
-msgid "OK"
-msgstr "gerai"
 
 #: lazarusidestrconsts.lisoldclass
 msgid "Old Class"
@@ -21119,10 +21018,6 @@ msgstr "XML klaida"
 #, object-pascal-format
 msgid "XML parser error in file %s%sError: %s"
 msgstr "XML analizatorius klaida, failas: %s%sKlaida: %s"
-
-#: lazarusidestrconsts.lisyes
-msgid "Yes"
-msgstr "Taip"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"

@@ -205,16 +205,8 @@ msgstr ""
 msgid "Allow Function Calls"
 msgstr ""
 
-#: idedebuggerstringconstants.liscancel
-msgid "Cancel"
-msgstr ""
-
 #: idedebuggerstringconstants.lisdigits
 msgid "Digits:"
-msgstr ""
-
-#: idedebuggerstringconstants.lisenabled
-msgid "Enabled"
 msgstr ""
 
 #: idedebuggerstringconstants.lisexpression
@@ -235,10 +227,6 @@ msgstr ""
 
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
-msgstr ""
-
-#: idedebuggerstringconstants.lismenuok
-msgid "&OK"
 msgstr ""
 
 #: idedebuggerstringconstants.lisrepeatcount

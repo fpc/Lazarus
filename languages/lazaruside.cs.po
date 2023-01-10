@@ -4750,11 +4750,6 @@ msgstr "Jméno jednotky už existuje"
 msgid "Abandon changes?"
 msgstr "Zrušit změny?"
 
-#: lazarusidestrconsts.lisabort
-msgctxt "lazarusidestrconsts.lisabort"
-msgid "Abort"
-msgstr "Přerušit"
-
 #: lazarusidestrconsts.lisabortall
 msgid "Abort all"
 msgstr "Přerušit vše"
@@ -4847,11 +4842,6 @@ msgstr "Aktivní"
 #: lazarusidestrconsts.lisactivefilter
 msgid "Active Filter"
 msgstr "Aktivní filtr"
-
-#: lazarusidestrconsts.lisadd
-msgctxt "lazarusidestrconsts.lisadd"
-msgid "Add"
-msgstr "Přidat"
 
 #: lazarusidestrconsts.lisaddanewseparatoraboveselecteditem
 msgid "Add a new separator above selected item"
@@ -5085,10 +5075,6 @@ msgstr "Alternativní klávesa"
 #: lazarusidestrconsts.lisalternativekeyor2keysequence
 msgid "Alternative key (or 2 key sequence)"
 msgstr "Alternativní klávesa (nebo sekvence dvou kláves)"
-
-#: lazarusidestrconsts.lisalways
-msgid "Always"
-msgstr "Vždy"
 
 #: lazarusidestrconsts.lisalwaysconvertsuggesteddefaultfilenametolowercase
 msgid "Always convert suggested default file name to lowercase"
@@ -5461,34 +5447,15 @@ msgstr "Vlastnosti bodů zastavení"
 msgid "Browse and select a compiler (e.g. ppcx64"
 msgstr "Procházet a vybrat překladač (např. ppcx64)"
 
-#: lazarusidestrconsts.lisbtnadd
-msgctxt "lazarusidestrconsts.lisbtnadd"
-msgid "&Add"
-msgstr "&Přidat"
-
 #: lazarusidestrconsts.lisbtnclose
 msgctxt "lazarusidestrconsts.lisbtnclose"
 msgid "&Close"
 msgstr "&Zavřít"
 
-#: lazarusidestrconsts.lisbtndelete
-msgctxt "lazarusidestrconsts.lisbtndelete"
-msgid "&Delete"
-msgstr "&Smazat"
-
-#: lazarusidestrconsts.lisbtndlgadd
-msgid "&Add ..."
-msgstr "Přid&at ..."
-
 #: lazarusidestrconsts.lisbtndlgreplace
 msgctxt "lazarusidestrconsts.lisbtndlgreplace"
 msgid "&Replace ..."
 msgstr "&Nahradit..."
-
-#: lazarusidestrconsts.lisbtnenabled
-msgctxt "lazarusidestrconsts.lisbtnenabled"
-msgid "&Enabled"
-msgstr "&Povolený"
 
 #: lazarusidestrconsts.lisbtnfind
 msgid "&Find"
@@ -5597,11 +5564,6 @@ msgstr "Volání %s k vytvoření Makefile z %s selhalo."
 #: lazarusidestrconsts.liscallstacknotevaluated
 msgid "Stack not evaluated"
 msgstr "Zásobník není vyhodnocen"
-
-#: lazarusidestrconsts.liscancel
-msgctxt "lazarusidestrconsts.liscancel"
-msgid "Cancel"
-msgstr "Zrušit"
 
 #: lazarusidestrconsts.liscancelloadingthiscomponent
 msgid "Cancel loading this component"
@@ -7509,11 +7471,6 @@ msgstr "Obsah"
 msgid "Context sensitive"
 msgstr "Kontextová"
 
-#: lazarusidestrconsts.liscontinue
-msgctxt "lazarusidestrconsts.liscontinue"
-msgid "Continue"
-msgstr "Pokračovat"
-
 #: lazarusidestrconsts.liscontinueanddonotaskagain
 msgid "Continue and do not ask again"
 msgstr "Pokračovat a již se znovu neptat"
@@ -8809,11 +8766,6 @@ msgstr "Zpoždění pro dlouho řádkové tipy v rámci dokončování"
 msgid "Delay for hints"
 msgstr ""
 
-#: lazarusidestrconsts.lisdelete
-msgctxt "lazarusidestrconsts.lisdelete"
-msgid "Delete"
-msgstr "Odstranit"
-
 #: lazarusidestrconsts.lisdelete2
 msgid "Delete?"
 msgstr "Odstranit?"
@@ -9032,11 +8984,6 @@ msgstr "Zakázat vše ve stejném zdroji"
 msgid "Disable Breakpoint"
 msgstr "Zakázat Bod přerušení"
 
-#: lazarusidestrconsts.lisdisabled
-msgctxt "lazarusidestrconsts.lisdisabled"
-msgid "Disabled"
-msgstr "Zakázáno"
-
 #: lazarusidestrconsts.lisdisablegroups
 msgid "Disable Groups"
 msgstr "Zakázat skupiny"
@@ -9130,11 +9077,6 @@ msgstr ""
 #: lazarusidestrconsts.lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Rozlišovat velká a malá písmena např. A a a"
-
-#: lazarusidestrconsts.lisdlgadd
-msgctxt "lazarusidestrconsts.lisdlgadd"
-msgid "Add ..."
-msgstr "Přidat ..."
 
 #: lazarusidestrconsts.lisdlgalloptions
 msgid "All options ..."
@@ -9600,11 +9542,6 @@ msgstr "Povolit vše ve stejném zdroji"
 #: lazarusidestrconsts.lisenablebreakpoint
 msgid "Enable Breakpoint"
 msgstr "Povolit Bod přerušení"
-
-#: lazarusidestrconsts.lisenabled
-msgctxt "lazarusidestrconsts.lisenabled"
-msgid "Enabled"
-msgstr "Povoleno"
 
 #: lazarusidestrconsts.lisenabledonlyforpackages
 msgid "Enabled only for packages."
@@ -10855,11 +10792,6 @@ msgstr "Barva hlavičky"
 msgid "Header comment for class"
 msgstr "Hlavičkový komentář pro třídu"
 
-#: lazarusidestrconsts.lishelp
-msgctxt "lazarusidestrconsts.lishelp"
-msgid "Help"
-msgstr "Nápověda"
-
 #: lazarusidestrconsts.lishelpentries
 msgid "Help entries"
 msgstr "Položky nápovědy"
@@ -11155,11 +11087,6 @@ msgstr "Pokud jsou změněny pouze informace sezení, zeptej se na uložení."
 #, object-pascal-format
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "Pokud chcete používat dvě rozdílné verze Lazarusu, musíte spustit druhou verzi s parametrem příkazové řádky primary-config-path nebo pcp.%sNapříklad:"
-
-#: lazarusidestrconsts.lisignore
-msgctxt "lazarusidestrconsts.lisignore"
-msgid "Ignore"
-msgstr "Ignorovat"
 
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
@@ -12288,11 +12215,6 @@ msgstr "Neplatné spouštění aplikace"
 msgid "Launching target command line"
 msgstr "Spouštění cílové příkazové řádky"
 
-#: lazarusidestrconsts.lislazarus
-msgctxt "lazarusidestrconsts.lislazarus"
-msgid "Lazarus"
-msgstr "Lazarus"
-
 #: lazarusidestrconsts.lislazarusdefault
 msgid "Lazarus Default"
 msgstr "Lazarus Výchoí"
@@ -13005,10 +12927,6 @@ msgstr "Nastavení \"Sestavení Lazarusu\" ..."
 #: lazarusidestrconsts.lismenucontexthelp
 msgid "Context sensitive Help"
 msgstr "Kontextová nápověda"
-
-#: lazarusidestrconsts.lismenucontinue
-msgid "&Continue"
-msgstr "&Pokračovat"
 
 #: lazarusidestrconsts.lismenuconvertdelphipackage
 msgid "Convert Delphi Package to Lazarus Package ..."
@@ -13923,11 +13841,6 @@ msgstr "Nový projekt ze souboru ..."
 msgctxt "lazarusidestrconsts.lismenunewunit"
 msgid "New Unit"
 msgstr "Nová jednotka"
-
-#: lazarusidestrconsts.lismenuok
-msgctxt "lazarusidestrconsts.lismenuok"
-msgid "&OK"
-msgstr "&OK"
 
 #: lazarusidestrconsts.lismenuonlinehelp
 msgid "Online Help"
@@ -14867,11 +14780,6 @@ msgstr "Jméno aktivního režimu sestavení"
 msgid "Name of new procedure"
 msgstr "Jméno nové procedury"
 
-#: lazarusidestrconsts.lisnever
-msgctxt "lazarusidestrconsts.lisnever"
-msgid "Never"
-msgstr "Nikdy"
-
 #: lazarusidestrconsts.lisnew
 msgctxt "lazarusidestrconsts.lisnew"
 msgid "New"
@@ -14964,10 +14872,6 @@ msgstr "Nově nahrané makro. Nebude uloženo"
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 msgid "New units are added to uses sections"
 msgstr "Nové jednotky jsou přidány do sekcí uses"
-
-#: lazarusidestrconsts.lisno
-msgid "No"
-msgstr "Ne"
 
 #: lazarusidestrconsts.lisnoautosaveactivedesktop
 msgid "'Auto save active desktop' option is turned off, you will need to save current desktop manually."
@@ -15271,11 +15175,6 @@ msgstr "Stav"
 #, object-pascal-format
 msgid "%sThis package is installed but the lpk file was not found"
 msgstr "%sTento balíček je nainstalován, ale lpk soubor nebyl nalezen"
-
-#: lazarusidestrconsts.lisok
-msgctxt "lazarusidestrconsts.lisok"
-msgid "OK"
-msgstr "OK"
 
 #: lazarusidestrconsts.lisoldclass
 msgid "Old Class"
@@ -20912,10 +20811,6 @@ msgstr "Chyba XML"
 #, object-pascal-format
 msgid "XML parser error in file %s%sError: %s"
 msgstr "Chyba XML analyzátoru v souboru %s%sChyba: %s"
-
-#: lazarusidestrconsts.lisyes
-msgid "Yes"
-msgstr "Ano"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"

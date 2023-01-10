@@ -215,19 +215,9 @@ msgstr "Instance sınıf türünü kullan"
 msgid "Allow Function Calls"
 msgstr "Fonksiyon Çağrısına İzin Ver"
 
-#: idedebuggerstringconstants.liscancel
-msgctxt "lazarusidestrconsts.liscancel"
-msgid "Cancel"
-msgstr "İptal"
-
 #: idedebuggerstringconstants.lisdigits
 msgid "Digits:"
 msgstr "Rakamlar:"
-
-#: idedebuggerstringconstants.lisenabled
-msgctxt "lazarusidestrconsts.lisenabled"
-msgid "Enabled"
-msgstr "Etkin"
 
 #: idedebuggerstringconstants.lisexpression
 msgid "Expression:"
@@ -248,10 +238,6 @@ msgstr ""
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "&Yardım"
-
-#: idedebuggerstringconstants.lismenuok
-msgid "&OK"
-msgstr "&TAMAM"
 
 #: idedebuggerstringconstants.lisrepeatcount
 msgid "Repeat Count:"

@@ -42,7 +42,7 @@ uses
   Classes, SysUtils, Forms, StdCtrls, Extctrls, ButtonPanel,
   IDEHelpIntf, DbgIntfDebuggerBase, LazDebuggerIntf,
   Debugger, IdeDebuggerOpts, BaseDebugManager, EnvironmentOpts,
-  IdeDebuggerStringConstants;
+  LazarusCommonStrConst, IdeDebuggerStringConstants;
 
 type
 

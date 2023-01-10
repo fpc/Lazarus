@@ -43,7 +43,7 @@ uses
   SynHighlighterLFM, SynEdit, SynEditMiscClasses,
   // IDEIntf
   IDEExternToolIntf, PackageIntf, IDEWindowIntf, PropEdits, PropEditUtils,
-  IDEMsgIntf, IDEImagesIntf, IDEDialogs, ComponentReg,
+  LazarusCommonStrConst, IDEMsgIntf, IDEImagesIntf, IDEDialogs, ComponentReg,
   // IDE
   CustomFormEditor, LazarusIDEStrConsts, EditorOptions, SourceMarks, JITForms;
 

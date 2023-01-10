@@ -215,19 +215,9 @@ msgstr "Osztálypéldány-típus használata"
 msgid "Allow Function Calls"
 msgstr "Függvényhívások engedélyezése"
 
-#: idedebuggerstringconstants.liscancel
-msgctxt "lazarusidestrconsts.liscancel"
-msgid "Cancel"
-msgstr "Mégsem"
-
 #: idedebuggerstringconstants.lisdigits
 msgid "Digits:"
 msgstr "Számjegyek:"
-
-#: idedebuggerstringconstants.lisenabled
-msgctxt "lazarusidestrconsts.lisenabled"
-msgid "Enabled"
-msgstr "Engedélyezve"
 
 #: idedebuggerstringconstants.lisexpression
 msgid "Expression:"
@@ -248,11 +238,6 @@ msgstr ""
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "&Súgó"
-
-#: idedebuggerstringconstants.lismenuok
-msgctxt "lazarusidestrconsts.lismenuok"
-msgid "&OK"
-msgstr "&OK"
 
 #: idedebuggerstringconstants.lisrepeatcount
 msgid "Repeat Count:"

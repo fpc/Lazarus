@@ -1,0 +1,108 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: lazaruscommonstrconst.lisabort
+msgctxt "lazarusidestrconsts.lisabort"
+msgid "Abort"
+msgstr ""
+
+#: lazaruscommonstrconst.lisadd
+msgctxt "lazarusidestrconsts.lisadd"
+msgid "Add"
+msgstr ""
+
+#: lazaruscommonstrconst.lisalways
+msgid "Always"
+msgstr ""
+
+#: lazaruscommonstrconst.lisbtnadd
+msgctxt "lazarusidestrconsts.lisbtnadd"
+msgid "&Add"
+msgstr ""
+
+#: lazaruscommonstrconst.lisbtndelete
+msgctxt "lazarusidestrconsts.lisbtndelete"
+msgid "&Delete"
+msgstr ""
+
+#: lazaruscommonstrconst.lisbtndlgadd
+msgid "&Add ..."
+msgstr ""
+
+#: lazaruscommonstrconst.lisbtnenabled
+msgctxt "lazarusidestrconsts.lisbtnenabled"
+msgid "&Enabled"
+msgstr ""
+
+#: lazaruscommonstrconst.liscancel
+msgctxt "lazarusidestrconsts.liscancel"
+msgid "Cancel"
+msgstr ""
+
+#: lazaruscommonstrconst.liscontinue
+msgctxt "lazarusidestrconsts.liscontinue"
+msgid "Continue"
+msgstr ""
+
+#: lazaruscommonstrconst.lisdelete
+msgctxt "lazarusidestrconsts.lisdelete"
+msgid "Delete"
+msgstr ""
+
+#: lazaruscommonstrconst.lisdisabled
+msgctxt "lazarusidestrconsts.lisdisabled"
+msgid "Disabled"
+msgstr ""
+
+#: lazaruscommonstrconst.lisdlgadd
+msgctxt "lazarusidestrconsts.lisdlgadd"
+msgid "Add ..."
+msgstr ""
+
+#: lazaruscommonstrconst.lisenabled
+msgctxt "lazarusidestrconsts.lisenabled"
+msgid "Enabled"
+msgstr ""
+
+#: lazaruscommonstrconst.lishelp
+msgctxt "lazarusidestrconsts.lishelp"
+msgid "Help"
+msgstr ""
+
+#: lazaruscommonstrconst.lisignore
+msgctxt "lazarusidestrconsts.lisignore"
+msgid "Ignore"
+msgstr ""
+
+#: lazaruscommonstrconst.lislazarus
+msgctxt "lazarusidestrconsts.lislazarus"
+msgid "Lazarus"
+msgstr ""
+
+#: lazaruscommonstrconst.lismenucontinue
+msgid "&Continue"
+msgstr ""
+
+#: lazaruscommonstrconst.lismenuok
+msgctxt "lazarusidestrconsts.lismenuok"
+msgid "&OK"
+msgstr ""
+
+#: lazaruscommonstrconst.lisnever
+msgctxt "lazarusidestrconsts.lisnever"
+msgid "Never"
+msgstr ""
+
+#: lazaruscommonstrconst.lisno
+msgid "No"
+msgstr ""
+
+#: lazaruscommonstrconst.lisok
+msgctxt "lazarusidestrconsts.lisok"
+msgid "OK"
+msgstr ""
+
+#: lazaruscommonstrconst.lisyes
+msgid "Yes"
+msgstr ""
+

@@ -49,7 +49,7 @@ uses
   // LazUtils
   FileUtil, LazUTF8, LazFileUtils, LazFileCache, LazLoggerBase,
   // IdeIntf
-  MacroDefIntf, IDEDialogs, IDEImagesIntf, IDEUtils,
+  LazarusCommonStrConst, MacroDefIntf, IDEDialogs, IDEImagesIntf, IDEUtils,
   // DebuggerIntf
   DbgIntfDebuggerBase,
   // LazDebuggerGdbmi

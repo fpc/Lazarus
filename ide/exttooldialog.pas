@@ -46,7 +46,7 @@ uses
   EnvironmentOpts,
   ExtToolEditDlg, KeyMapping, TransferMacros, IDEProcs, LazFileUtils,
   CompilerOptions,
-  LazarusIDEStrConsts, IDEOptionDefs, EditorOptions;
+  LazarusCommonStrConst, LazarusIDEStrConsts, IDEOptionDefs, EditorOptions;
 
 const
   MaxExtTools = ecExtToolLast-ecExtToolFirst+1;

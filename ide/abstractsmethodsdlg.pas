@@ -37,7 +37,7 @@ uses
   CheckLst, StdCtrls, ExtCtrls, Buttons,
   CodeTree, PascalParserTool, CodeCache, CodeToolManager,
   LazIDEIntf, SrcEditorIntf, IDEDialogs,
-  LazarusIDEStrConsts;
+  LazarusCommonStrConst, LazarusIDEStrConsts;
 
 type
 

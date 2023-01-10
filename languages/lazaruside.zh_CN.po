@@ -4728,11 +4728,6 @@ msgstr "单元名已经存在"
 msgid "Abandon changes?"
 msgstr "丢弃更改？"
 
-#: lazarusidestrconsts.lisabort
-msgctxt "lazarusidestrconsts.lisabort"
-msgid "Abort"
-msgstr "取消"
-
 #: lazarusidestrconsts.lisabortall
 msgid "Abort all"
 msgstr "放弃所有"
@@ -4824,11 +4819,6 @@ msgstr "激活"
 #: lazarusidestrconsts.lisactivefilter
 msgid "Active Filter"
 msgstr "激活过滤器"
-
-#: lazarusidestrconsts.lisadd
-msgctxt "lazarusidestrconsts.lisadd"
-msgid "Add"
-msgstr "添加"
 
 #: lazarusidestrconsts.lisaddanewseparatoraboveselecteditem
 msgid "Add a new separator above selected item"
@@ -5062,10 +5052,6 @@ msgstr "替代键(Alternative key)"
 #: lazarusidestrconsts.lisalternativekeyor2keysequence
 msgid "Alternative key (or 2 key sequence)"
 msgstr "可替换按键(或第2按键顺序)"
-
-#: lazarusidestrconsts.lisalways
-msgid "Always"
-msgstr "总是"
 
 #: lazarusidestrconsts.lisalwaysconvertsuggesteddefaultfilenametolowercase
 msgid "Always convert suggested default file name to lowercase"
@@ -5438,34 +5424,15 @@ msgstr "断点属性"
 msgid "Browse and select a compiler (e.g. ppcx64"
 msgstr "浏览和选择一个编译器(例如.ppcx64"
 
-#: lazarusidestrconsts.lisbtnadd
-msgctxt "lazarusidestrconsts.lisbtnadd"
-msgid "&Add"
-msgstr "添加(&A)"
-
 #: lazarusidestrconsts.lisbtnclose
 msgctxt "lazarusidestrconsts.lisbtnclose"
 msgid "&Close"
 msgstr "关闭(&C)"
 
-#: lazarusidestrconsts.lisbtndelete
-msgctxt "lazarusidestrconsts.lisbtndelete"
-msgid "&Delete"
-msgstr "删除(&D)"
-
-#: lazarusidestrconsts.lisbtndlgadd
-msgid "&Add ..."
-msgstr "添加...(&A)"
-
 #: lazarusidestrconsts.lisbtndlgreplace
 msgctxt "lazarusidestrconsts.lisbtndlgreplace"
 msgid "&Replace ..."
 msgstr "替换(&R) ..."
-
-#: lazarusidestrconsts.lisbtnenabled
-msgctxt "lazarusidestrconsts.lisbtnenabled"
-msgid "&Enabled"
-msgstr "激活(&E)"
 
 #: lazarusidestrconsts.lisbtnfind
 msgid "&Find"
@@ -5574,11 +5541,6 @@ msgstr "调用%s来从%s创建Makefile失败."
 #: lazarusidestrconsts.liscallstacknotevaluated
 msgid "Stack not evaluated"
 msgstr "栈(Stack)未评估(evaluated)"
-
-#: lazarusidestrconsts.liscancel
-msgctxt "lazarusidestrconsts.liscancel"
-msgid "Cancel"
-msgstr "取消"
 
 #: lazarusidestrconsts.liscancelloadingthiscomponent
 msgid "Cancel loading this component"
@@ -7474,11 +7436,6 @@ msgstr "目录"
 msgid "Context sensitive"
 msgstr "上下文有关"
 
-#: lazarusidestrconsts.liscontinue
-msgctxt "lazarusidestrconsts.liscontinue"
-msgid "Continue"
-msgstr "继续"
-
 #: lazarusidestrconsts.liscontinueanddonotaskagain
 msgid "Continue and do not ask again"
 msgstr "继续并不再询问"
@@ -8774,11 +8731,6 @@ msgstr "在补全框中延迟长行提示"
 msgid "Delay for hints"
 msgstr "延迟提示"
 
-#: lazarusidestrconsts.lisdelete
-msgctxt "lazarusidestrconsts.lisdelete"
-msgid "Delete"
-msgstr "删除"
-
 #: lazarusidestrconsts.lisdelete2
 msgid "Delete?"
 msgstr "删除?"
@@ -8997,11 +8949,6 @@ msgstr "在相同的源文件中禁用所有"
 msgid "Disable Breakpoint"
 msgstr "禁用断点"
 
-#: lazarusidestrconsts.lisdisabled
-msgctxt "lazarusidestrconsts.lisdisabled"
-msgid "Disabled"
-msgstr "禁用"
-
 #: lazarusidestrconsts.lisdisablegroups
 msgid "Disable Groups"
 msgstr "禁用组"
@@ -9096,11 +9043,6 @@ msgstr ""
 #: lazarusidestrconsts.lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "区分大小写字母,例如:A和a"
-
-#: lazarusidestrconsts.lisdlgadd
-msgctxt "lazarusidestrconsts.lisdlgadd"
-msgid "Add ..."
-msgstr "添加..."
 
 #: lazarusidestrconsts.lisdlgalloptions
 msgid "All options ..."
@@ -9567,11 +9509,6 @@ msgstr "在相同的代码中启用所有"
 #: lazarusidestrconsts.lisenablebreakpoint
 msgid "Enable Breakpoint"
 msgstr "激活断点"
-
-#: lazarusidestrconsts.lisenabled
-msgctxt "lazarusidestrconsts.lisenabled"
-msgid "Enabled"
-msgstr "允许"
 
 #: lazarusidestrconsts.lisenabledonlyforpackages
 msgid "Enabled only for packages."
@@ -10831,11 +10768,6 @@ msgstr "标头颜色"
 msgid "Header comment for class"
 msgstr "Header注释对于类"
 
-#: lazarusidestrconsts.lishelp
-msgctxt "lazarusidestrconsts.lishelp"
-msgid "Help"
-msgstr "帮助"
-
 #: lazarusidestrconsts.lishelpentries
 msgid "Help entries"
 msgstr "帮助条目(entries)"
@@ -11131,11 +11063,6 @@ msgstr "如果仅仅会话信息更改,询问是否保存它."
 #, object-pascal-format
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "如果你想使用两个不同版本的Lazarus版本,你必需使用命令行参数primary-config-path 或 pcp.%s来启动第二个Lazarus,例如:(翻译可能有问题）"
-
-#: lazarusidestrconsts.lisignore
-msgctxt "lazarusidestrconsts.lisignore"
-msgid "Ignore"
-msgstr "忽略"
 
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
@@ -12262,11 +12189,6 @@ msgstr "开始(launching)应用程序失败"
 msgid "Launching target command line"
 msgstr "启动目标(target)命令行"
 
-#: lazarusidestrconsts.lislazarus
-msgctxt "lazarusidestrconsts.lislazarus"
-msgid "Lazarus"
-msgstr "Lazarus"
-
 #: lazarusidestrconsts.lislazarusdefault
 msgid "Lazarus Default"
 msgstr "Lazarus默认"
@@ -12972,10 +12894,6 @@ msgstr "配置\"构建Lazarus\"..."
 #: lazarusidestrconsts.lismenucontexthelp
 msgid "Context sensitive Help"
 msgstr "上下文有关帮助"
-
-#: lazarusidestrconsts.lismenucontinue
-msgid "&Continue"
-msgstr "继续(&C)"
 
 #: lazarusidestrconsts.lismenuconvertdelphipackage
 msgid "Convert Delphi Package to Lazarus Package ..."
@@ -13879,11 +13797,6 @@ msgstr "从文件新建工程..."
 msgctxt "lazarusidestrconsts.lismenunewunit"
 msgid "New Unit"
 msgstr "新建单元"
-
-#: lazarusidestrconsts.lismenuok
-msgctxt "lazarusidestrconsts.lismenuok"
-msgid "&OK"
-msgstr "确定(&O)"
 
 #: lazarusidestrconsts.lismenuonlinehelp
 msgid "Online Help"
@@ -14794,11 +14707,6 @@ msgstr "活动构建模式的名称"
 msgid "Name of new procedure"
 msgstr "新过程名称"
 
-#: lazarusidestrconsts.lisnever
-msgctxt "lazarusidestrconsts.lisnever"
-msgid "Never"
-msgstr "从不"
-
 #: lazarusidestrconsts.lisnew
 msgctxt "lazarusidestrconsts.lisnew"
 msgid "New"
@@ -14891,10 +14799,6 @@ msgstr "新记录的宏.无法保存"
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 msgid "New units are added to uses sections"
 msgstr "新的单元被添加到uses分句"
-
-#: lazarusidestrconsts.lisno
-msgid "No"
-msgstr ""
 
 #: lazarusidestrconsts.lisnoautosaveactivedesktop
 msgid "'Auto save active desktop' option is turned off, you will need to save current desktop manually."
@@ -15199,11 +15103,6 @@ msgstr "状态"
 #, object-pascal-format, fuzzy
 msgid "%sThis package is installed but the lpk file was not found"
 msgstr "%s这个软件包已经安装, 但是lpk文件未找到"
-
-#: lazarusidestrconsts.lisok
-msgctxt "lazarusidestrconsts.lisok"
-msgid "OK"
-msgstr "确定"
 
 #: lazarusidestrconsts.lisoldclass
 msgid "Old Class"
@@ -20852,10 +20751,6 @@ msgstr "XML错误"
 #, object-pascal-format
 msgid "XML parser error in file %s%sError: %s"
 msgstr "XML语法f分析器错误在文件%s%s错误: %s"
-
-#: lazarusidestrconsts.lisyes
-msgid "Yes"
-msgstr "是"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"

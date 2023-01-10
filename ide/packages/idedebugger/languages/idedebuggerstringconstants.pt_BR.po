@@ -225,19 +225,9 @@ msgstr "Usar tipo classe instância"
 msgid "Allow Function Calls"
 msgstr "Permitir Chamadas de Funções"
 
-#: idedebuggerstringconstants.liscancel
-msgctxt "lazarusidestrconsts.liscancel"
-msgid "Cancel"
-msgstr "Cancelar"
-
 #: idedebuggerstringconstants.lisdigits
 msgid "Digits:"
 msgstr "Dígitos:"
-
-#: idedebuggerstringconstants.lisenabled
-msgctxt "lazarusidestrconsts.lisenabled"
-msgid "Enabled"
-msgstr "Ativo"
 
 #: idedebuggerstringconstants.lisexpression
 msgid "Expression:"
@@ -258,11 +248,6 @@ msgstr "Exibir coluna visibilidade"
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "Aj&uda"
-
-#: idedebuggerstringconstants.lismenuok
-msgctxt "lazarusidestrconsts.lismenuok"
-msgid "&OK"
-msgstr "&OK"
 
 #: idedebuggerstringconstants.lisrepeatcount
 msgid "Repeat Count:"

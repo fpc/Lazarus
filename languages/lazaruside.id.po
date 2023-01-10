@@ -4885,12 +4885,6 @@ msgstr "Nama unit sudah ada"
 msgid "Abandon changes?"
 msgstr ""
 
-#: lazarusidestrconsts.lisabort
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisabort"
-msgid "Abort"
-msgstr "Batalkan"
-
 #: lazarusidestrconsts.lisabortall
 msgid "Abort all"
 msgstr "Gugurkan semua"
@@ -4985,11 +4979,6 @@ msgstr ""
 #: lazarusidestrconsts.lisactivefilter
 msgid "Active Filter"
 msgstr ""
-
-#: lazarusidestrconsts.lisadd
-msgctxt "lazarusidestrconsts.lisadd"
-msgid "Add"
-msgstr "Tambah"
 
 #: lazarusidestrconsts.lisaddanewseparatoraboveselecteditem
 msgid "Add a new separator above selected item"
@@ -5235,10 +5224,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisalternativekeyor2keysequence
 msgid "Alternative key (or 2 key sequence)"
-msgstr ""
-
-#: lazarusidestrconsts.lisalways
-msgid "Always"
 msgstr ""
 
 #: lazarusidestrconsts.lisalwaysconvertsuggesteddefaultfilenametolowercase
@@ -5629,34 +5614,15 @@ msgstr ""
 msgid "Browse and select a compiler (e.g. ppcx64"
 msgstr ""
 
-#: lazarusidestrconsts.lisbtnadd
-msgctxt "lazarusidestrconsts.lisbtnadd"
-msgid "&Add"
-msgstr "T&ambah"
-
 #: lazarusidestrconsts.lisbtnclose
 msgctxt "lazarusidestrconsts.lisbtnclose"
 msgid "&Close"
 msgstr "&Tutup"
 
-#: lazarusidestrconsts.lisbtndelete
-msgctxt "lazarusidestrconsts.lisbtndelete"
-msgid "&Delete"
-msgstr "&Hapus"
-
-#: lazarusidestrconsts.lisbtndlgadd
-msgid "&Add ..."
-msgstr ""
-
 #: lazarusidestrconsts.lisbtndlgreplace
 msgctxt "lazarusidestrconsts.lisbtndlgreplace"
 msgid "&Replace ..."
 msgstr ""
-
-#: lazarusidestrconsts.lisbtnenabled
-msgctxt "lazarusidestrconsts.lisbtnenabled"
-msgid "&Enabled"
-msgstr "&Dihidupkan"
 
 #: lazarusidestrconsts.lisbtnfind
 msgid "&Find"
@@ -5769,11 +5735,6 @@ msgstr ""
 #: lazarusidestrconsts.liscallstacknotevaluated
 msgid "Stack not evaluated"
 msgstr ""
-
-#: lazarusidestrconsts.liscancel
-msgctxt "lazarusidestrconsts.liscancel"
-msgid "Cancel"
-msgstr "Batal"
 
 #: lazarusidestrconsts.liscancelloadingthiscomponent
 msgid "Cancel loading this component"
@@ -7721,11 +7682,6 @@ msgstr "Isi"
 msgid "Context sensitive"
 msgstr ""
 
-#: lazarusidestrconsts.liscontinue
-msgctxt "lazarusidestrconsts.liscontinue"
-msgid "Continue"
-msgstr "Lanjutkan"
-
 #: lazarusidestrconsts.liscontinueanddonotaskagain
 msgid "Continue and do not ask again"
 msgstr ""
@@ -9038,11 +8994,6 @@ msgstr ""
 msgid "Delay for hints"
 msgstr ""
 
-#: lazarusidestrconsts.lisdelete
-msgctxt "lazarusidestrconsts.lisdelete"
-msgid "Delete"
-msgstr "Hapus"
-
 #: lazarusidestrconsts.lisdelete2
 msgid "Delete?"
 msgstr ""
@@ -9265,11 +9216,6 @@ msgstr ""
 msgid "Disable Breakpoint"
 msgstr ""
 
-#: lazarusidestrconsts.lisdisabled
-msgctxt "lazarusidestrconsts.lisdisabled"
-msgid "Disabled"
-msgstr ""
-
 #: lazarusidestrconsts.lisdisablegroups
 msgid "Disable Groups"
 msgstr ""
@@ -9363,13 +9309,6 @@ msgstr ""
 #: lazarusidestrconsts.lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Bedakan huruf besar dan kecil contoh A dan a"
-
-#: lazarusidestrconsts.lisdlgadd
-#, fuzzy
-#| msgid "Add..."
-msgctxt "lazarusidestrconsts.lisdlgadd"
-msgid "Add ..."
-msgstr "Tambah..."
 
 #: lazarusidestrconsts.lisdlgalloptions
 msgid "All options ..."
@@ -9837,11 +9776,6 @@ msgstr ""
 #: lazarusidestrconsts.lisenablebreakpoint
 msgid "Enable Breakpoint"
 msgstr ""
-
-#: lazarusidestrconsts.lisenabled
-msgctxt "lazarusidestrconsts.lisenabled"
-msgid "Enabled"
-msgstr "Hidupkan"
 
 #: lazarusidestrconsts.lisenabledonlyforpackages
 msgid "Enabled only for packages."
@@ -11098,11 +11032,6 @@ msgstr ""
 msgid "Header comment for class"
 msgstr "Komentar header untuk class"
 
-#: lazarusidestrconsts.lishelp
-msgctxt "lazarusidestrconsts.lishelp"
-msgid "Help"
-msgstr "Panduan"
-
 #: lazarusidestrconsts.lishelpentries
 msgid "Help entries"
 msgstr ""
@@ -11401,12 +11330,6 @@ msgstr ""
 #, object-pascal-format
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr ""
-
-#: lazarusidestrconsts.lisignore
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisignore"
-msgid "Ignore"
-msgstr "Abaikan"
 
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
@@ -12626,11 +12549,6 @@ msgstr "Menjalankan aplikasi tidak benar"
 msgid "Launching target command line"
 msgstr "Menjalankan baris perintah target"
 
-#: lazarusidestrconsts.lislazarus
-msgctxt "lazarusidestrconsts.lislazarus"
-msgid "Lazarus"
-msgstr "Lazarus"
-
 #: lazarusidestrconsts.lislazarusdefault
 msgid "Lazarus Default"
 msgstr ""
@@ -13363,10 +13281,6 @@ msgstr "Konfigurasi \"Bangun Lazarus\" ..."
 #: lazarusidestrconsts.lismenucontexthelp
 msgid "Context sensitive Help"
 msgstr "Panduan sensitif isi"
-
-#: lazarusidestrconsts.lismenucontinue
-msgid "&Continue"
-msgstr ""
 
 #: lazarusidestrconsts.lismenuconvertdelphipackage
 #, fuzzy
@@ -14331,13 +14245,6 @@ msgstr "Proyek Baru dari file ..."
 msgctxt "lazarusidestrconsts.lismenunewunit"
 msgid "New Unit"
 msgstr "Unit Baru"
-
-#: lazarusidestrconsts.lismenuok
-#, fuzzy
-#| msgid "&Ok"
-msgctxt "lazarusidestrconsts.lismenuok"
-msgid "&OK"
-msgstr "&Ok"
 
 #: lazarusidestrconsts.lismenuonlinehelp
 msgid "Online Help"
@@ -15335,11 +15242,6 @@ msgstr ""
 msgid "Name of new procedure"
 msgstr "Nama dari procedure baru"
 
-#: lazarusidestrconsts.lisnever
-msgctxt "lazarusidestrconsts.lisnever"
-msgid "Never"
-msgstr ""
-
 #: lazarusidestrconsts.lisnew
 msgctxt "lazarusidestrconsts.lisnew"
 msgid "New"
@@ -15433,10 +15335,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 msgid "New units are added to uses sections"
-msgstr ""
-
-#: lazarusidestrconsts.lisno
-msgid "No"
 msgstr ""
 
 #: lazarusidestrconsts.lisnoautosaveactivedesktop
@@ -15747,11 +15645,6 @@ msgstr "Kondisi"
 #| msgid "%sThis package is installed, but the lpk file was not found"
 msgid "%sThis package is installed but the lpk file was not found"
 msgstr "%sPaket ini diinstalasi, tetapi file lpk tidak ditemukan"
-
-#: lazarusidestrconsts.lisok
-msgctxt "lazarusidestrconsts.lisok"
-msgid "OK"
-msgstr "OK"
 
 #: lazarusidestrconsts.lisoldclass
 msgid "Old Class"
@@ -21577,10 +21470,6 @@ msgstr ""
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
 #, object-pascal-format
 msgid "XML parser error in file %s%sError: %s"
-msgstr ""
-
-#: lazarusidestrconsts.lisyes
-msgid "Yes"
 msgstr ""
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed

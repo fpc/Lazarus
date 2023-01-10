@@ -217,18 +217,9 @@ msgstr "Использовать тип экземпляра класса"
 msgid "Allow Function Calls"
 msgstr "Разрешить вызовы функций"
 
-#: idedebuggerstringconstants.liscancel
-msgctxt "lazarusidestrconsts.liscancel"
-msgid "Cancel"
-msgstr "Отмена"
-
 #: idedebuggerstringconstants.lisdigits
 msgid "Digits:"
 msgstr "Разряды:"
-
-#: idedebuggerstringconstants.lisenabled
-msgid "Enabled"
-msgstr "Включить"
 
 #: idedebuggerstringconstants.lisexpression
 msgid "Expression:"
@@ -249,11 +240,6 @@ msgstr "Показывать столбец видимости"
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "&Справка"
-
-#: idedebuggerstringconstants.lismenuok
-msgctxt "lazarusidestrconsts.lismenuok"
-msgid "&OK"
-msgstr "&ОК"
 
 #: idedebuggerstringconstants.lisrepeatcount
 msgid "Repeat Count:"

@@ -40,7 +40,8 @@ interface
 uses
   Classes, SysUtils, LazFileUtils, Forms, Controls, Dialogs,
   IDEWindowIntf, DebuggerStrConst, Menus, ComCtrls, Debugger, DebuggerDlg, ActnList, MainBase,
-  IDEImagesIntf, DbgIntfDebuggerBase, DbgIntfMiscClasses, SourceEditor, MainIntf;
+  IDEImagesIntf, DbgIntfDebuggerBase, DbgIntfMiscClasses, SourceEditor, MainIntf,
+  LazarusCommonStrConst;
 
 type
   TBreakPointsDlgState = (

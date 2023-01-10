@@ -39,7 +39,7 @@ uses
   LazControlDsgn, // move this to lazarus.lpr
   // IdeIntf
   IDEWindowIntf, IDEOptionsIntf, IDEOptEditorIntf, IDECommands, IDEHelpIntf,
-  ProjectIntf, IDEImagesIntf,
+  LazarusCommonStrConst, ProjectIntf, IDEImagesIntf,
   // IDE
   EnvironmentOpts, EditorOptions, BuildModesManager, Compiler_ModeMatrix,
   Project, LazarusIDEStrConsts,

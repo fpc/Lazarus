@@ -215,19 +215,9 @@ msgstr "Викор. тип екземпляра класу"
 msgid "Allow Function Calls"
 msgstr "Дозволити виклики функцій"
 
-#: idedebuggerstringconstants.liscancel
-msgctxt "lazarusidestrconsts.liscancel"
-msgid "Cancel"
-msgstr "Скасувати"
-
 #: idedebuggerstringconstants.lisdigits
 msgid "Digits:"
 msgstr "Розряди:"
-
-#: idedebuggerstringconstants.lisenabled
-msgctxt "lazarusidestrconsts.lisenabled"
-msgid "Enabled"
-msgstr "Доступний"
 
 #: idedebuggerstringconstants.lisexpression
 msgid "Expression:"
@@ -248,11 +238,6 @@ msgstr ""
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "&Довідка"
-
-#: idedebuggerstringconstants.lismenuok
-msgctxt "lazarusidestrconsts.lismenuok"
-msgid "&OK"
-msgstr "&Гаразд"
 
 #: idedebuggerstringconstants.lisrepeatcount
 msgid "Repeat Count:"

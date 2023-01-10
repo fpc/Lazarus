@@ -4819,11 +4819,6 @@ msgstr "ユニット名がすでに存在します"
 msgid "Abandon changes?"
 msgstr "変更を破棄しますか？"
 
-#: lazarusidestrconsts.lisabort
-msgctxt "lazarusidestrconsts.lisabort"
-msgid "Abort"
-msgstr "中止"
-
 #: lazarusidestrconsts.lisabortall
 msgid "Abort all"
 msgstr "全て中止"
@@ -4917,11 +4912,6 @@ msgstr "アクティブ"
 #: lazarusidestrconsts.lisactivefilter
 msgid "Active Filter"
 msgstr "アクティブフィルタ"
-
-#: lazarusidestrconsts.lisadd
-msgctxt "lazarusidestrconsts.lisadd"
-msgid "Add"
-msgstr "追加"
 
 #: lazarusidestrconsts.lisaddanewseparatoraboveselecteditem
 msgid "Add a new separator above selected item"
@@ -5155,10 +5145,6 @@ msgstr "代替キー "
 #: lazarusidestrconsts.lisalternativekeyor2keysequence
 msgid "Alternative key (or 2 key sequence)"
 msgstr "代替キー （あるいは２つのキー配列）"
-
-#: lazarusidestrconsts.lisalways
-msgid "Always"
-msgstr "常に"
 
 #: lazarusidestrconsts.lisalwaysconvertsuggesteddefaultfilenametolowercase
 msgid "Always convert suggested default file name to lowercase"
@@ -5534,34 +5520,15 @@ msgstr "ブレークポイントプロパティ"
 msgid "Browse and select a compiler (e.g. ppcx64"
 msgstr ""
 
-#: lazarusidestrconsts.lisbtnadd
-msgctxt "lazarusidestrconsts.lisbtnadd"
-msgid "&Add"
-msgstr "追加(&A)"
-
 #: lazarusidestrconsts.lisbtnclose
 msgctxt "lazarusidestrconsts.lisbtnclose"
 msgid "&Close"
 msgstr "閉じる(&C)"
 
-#: lazarusidestrconsts.lisbtndelete
-msgctxt "lazarusidestrconsts.lisbtndelete"
-msgid "&Delete"
-msgstr "削除(&D)"
-
-#: lazarusidestrconsts.lisbtndlgadd
-msgid "&Add ..."
-msgstr "追加(&A) ..."
-
 #: lazarusidestrconsts.lisbtndlgreplace
 msgctxt "lazarusidestrconsts.lisbtndlgreplace"
 msgid "&Replace ..."
 msgstr "置換(&R) ..."
-
-#: lazarusidestrconsts.lisbtnenabled
-msgctxt "lazarusidestrconsts.lisbtnenabled"
-msgid "&Enabled"
-msgstr "有効にする(&E)"
 
 #: lazarusidestrconsts.lisbtnfind
 msgid "&Find"
@@ -5670,11 +5637,6 @@ msgstr "%sの呼び出し(%sからMakefileを作成するための)に失敗し�
 #: lazarusidestrconsts.liscallstacknotevaluated
 msgid "Stack not evaluated"
 msgstr "評価されていないスタック"
-
-#: lazarusidestrconsts.liscancel
-msgctxt "lazarusidestrconsts.liscancel"
-msgid "Cancel"
-msgstr "キャンセル"
 
 #: lazarusidestrconsts.liscancelloadingthiscomponent
 msgid "Cancel loading this component"
@@ -7584,11 +7546,6 @@ msgstr "目次"
 msgid "Context sensitive"
 msgstr "状況感知"
 
-#: lazarusidestrconsts.liscontinue
-msgctxt "lazarusidestrconsts.liscontinue"
-msgid "Continue"
-msgstr "継続"
-
 #: lazarusidestrconsts.liscontinueanddonotaskagain
 msgid "Continue and do not ask again"
 msgstr "続行し、もう尋ねない"
@@ -8886,11 +8843,6 @@ msgstr "補完ボックスの長いヒントを遅らせる"
 msgid "Delay for hints"
 msgstr ""
 
-#: lazarusidestrconsts.lisdelete
-msgctxt "lazarusidestrconsts.lisdelete"
-msgid "Delete"
-msgstr "削除"
-
 #: lazarusidestrconsts.lisdelete2
 msgid "Delete?"
 msgstr "削除？"
@@ -9111,11 +9063,6 @@ msgstr "同じソース内のすべてを無効にする"
 msgid "Disable Breakpoint"
 msgstr "ブレークポイントを無効化"
 
-#: lazarusidestrconsts.lisdisabled
-msgctxt "lazarusidestrconsts.lisdisabled"
-msgid "Disabled"
-msgstr "無効化"
-
 #: lazarusidestrconsts.lisdisablegroups
 msgid "Disable Groups"
 msgstr "グループを無効に"
@@ -9209,11 +9156,6 @@ msgstr ""
 #: lazarusidestrconsts.lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "大文字と小文字（例:Aとa）を区別する"
-
-#: lazarusidestrconsts.lisdlgadd
-msgctxt "lazarusidestrconsts.lisdlgadd"
-msgid "Add ..."
-msgstr "追加 ..."
 
 #: lazarusidestrconsts.lisdlgalloptions
 msgid "All options ..."
@@ -9678,11 +9620,6 @@ msgstr "同じソース内のすべてを有効にする"
 #: lazarusidestrconsts.lisenablebreakpoint
 msgid "Enable Breakpoint"
 msgstr "ブレークポイントを有効に"
-
-#: lazarusidestrconsts.lisenabled
-msgctxt "lazarusidestrconsts.lisenabled"
-msgid "Enabled"
-msgstr "有効"
 
 #: lazarusidestrconsts.lisenabledonlyforpackages
 msgid "Enabled only for packages."
@@ -10935,11 +10872,6 @@ msgstr "ヘッダ色"
 msgid "Header comment for class"
 msgstr "クラスのためのヘッダコメント"
 
-#: lazarusidestrconsts.lishelp
-msgctxt "lazarusidestrconsts.lishelp"
-msgid "Help"
-msgstr "ヘルプ"
-
 #: lazarusidestrconsts.lishelpentries
 msgid "Help entries"
 msgstr "ヘルプエントリ"
@@ -11237,11 +11169,6 @@ msgstr "セッション情報が変更された場合にのみそれを保存す
 #, object-pascal-format
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "Lazarus の異なる 2 つのバージョンを共に使用されたいのであれば、2 つ目の Lazarus を primary-config-path あるいは pcp のコマンドライン引数で開始しなければなりません。%s例："
-
-#: lazarusidestrconsts.lisignore
-msgctxt "lazarusidestrconsts.lisignore"
-msgid "Ignore"
-msgstr "無視"
 
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
@@ -12376,11 +12303,6 @@ msgstr "アプリケーションの実行が無効です"
 msgid "Launching target command line"
 msgstr "対象となるコマンドラインを実行"
 
-#: lazarusidestrconsts.lislazarus
-msgctxt "lazarusidestrconsts.lislazarus"
-msgid "Lazarus"
-msgstr "Lazarus"
-
 #: lazarusidestrconsts.lislazarusdefault
 msgid "Lazarus Default"
 msgstr "Lazarus既定値"
@@ -13101,10 +13023,6 @@ msgstr "\"Lazarus 構築\" を設定 ..."
 #: lazarusidestrconsts.lismenucontexthelp
 msgid "Context sensitive Help"
 msgstr "状況感知ヘルプ"
-
-#: lazarusidestrconsts.lismenucontinue
-msgid "&Continue"
-msgstr "続ける(&C)"
 
 #: lazarusidestrconsts.lismenuconvertdelphipackage
 msgid "Convert Delphi Package to Lazarus Package ..."
@@ -14019,11 +13937,6 @@ msgstr "ファイルから新規プロジェクト ..."
 msgctxt "lazarusidestrconsts.lismenunewunit"
 msgid "New Unit"
 msgstr "新規ユニット"
-
-#: lazarusidestrconsts.lismenuok
-msgctxt "lazarusidestrconsts.lismenuok"
-msgid "&OK"
-msgstr "OK(&O)"
 
 #: lazarusidestrconsts.lismenuonlinehelp
 msgid "Online Help"
@@ -14963,11 +14876,6 @@ msgstr "アクティブ構築モードの名前"
 msgid "Name of new procedure"
 msgstr "新しい手続きの名前"
 
-#: lazarusidestrconsts.lisnever
-msgctxt "lazarusidestrconsts.lisnever"
-msgid "Never"
-msgstr "しない(ない)"
-
 #: lazarusidestrconsts.lisnew
 msgctxt "lazarusidestrconsts.lisnew"
 msgid "New"
@@ -15060,10 +14968,6 @@ msgstr "新しく記録されたマクロ。保存されていません"
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 msgid "New units are added to uses sections"
 msgstr "新しいユニットが uses 節に加えられます"
-
-#: lazarusidestrconsts.lisno
-msgid "No"
-msgstr "いいえ"
 
 #: lazarusidestrconsts.lisnoautosaveactivedesktop
 msgid "'Auto save active desktop' option is turned off, you will need to save current desktop manually."
@@ -15368,11 +15272,6 @@ msgstr "状態"
 #| msgid "%sThis package is installed, but the lpk file was not found"
 msgid "%sThis package is installed but the lpk file was not found"
 msgstr "%sこのパッケージはインストールされましたが、lpkファイルが見つかりませんでした"
-
-#: lazarusidestrconsts.lisok
-msgctxt "lazarusidestrconsts.lisok"
-msgid "OK"
-msgstr "OK"
 
 #: lazarusidestrconsts.lisoldclass
 msgid "Old Class"
@@ -21081,10 +20980,6 @@ msgstr "XMLエラー"
 #, object-pascal-format
 msgid "XML parser error in file %s%sError: %s"
 msgstr "ファイル%s%sでXMLパーサエラー: %s"
-
-#: lazarusidestrconsts.lisyes
-msgid "Yes"
-msgstr "はい"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"

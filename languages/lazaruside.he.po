@@ -4985,12 +4985,6 @@ msgstr "שם היחידה כבר קיים"
 msgid "Abandon changes?"
 msgstr "לזנוח שינויים ?"
 
-#: lazarusidestrconsts.lisabort
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisabort"
-msgid "Abort"
-msgstr "בטל"
-
 #: lazarusidestrconsts.lisabortall
 msgid "Abort all"
 msgstr "בטל הכל"
@@ -5085,11 +5079,6 @@ msgstr "פעיל"
 #: lazarusidestrconsts.lisactivefilter
 msgid "Active Filter"
 msgstr "מסנן פעיל"
-
-#: lazarusidestrconsts.lisadd
-msgctxt "lazarusidestrconsts.lisadd"
-msgid "Add"
-msgstr "הוסף"
 
 #: lazarusidestrconsts.lisaddanewseparatoraboveselecteditem
 msgid "Add a new separator above selected item"
@@ -5337,10 +5326,6 @@ msgstr "מקש חלופי"
 #: lazarusidestrconsts.lisalternativekeyor2keysequence
 msgid "Alternative key (or 2 key sequence)"
 msgstr "מקש חלופי (או רצף של 2 מקשים)"
-
-#: lazarusidestrconsts.lisalways
-msgid "Always"
-msgstr "תמיד"
 
 #: lazarusidestrconsts.lisalwaysconvertsuggesteddefaultfilenametolowercase
 msgid "Always convert suggested default file name to lowercase"
@@ -5734,34 +5719,15 @@ msgstr "תכונות נקודת עצירה"
 msgid "Browse and select a compiler (e.g. ppcx64"
 msgstr ""
 
-#: lazarusidestrconsts.lisbtnadd
-msgctxt "lazarusidestrconsts.lisbtnadd"
-msgid "&Add"
-msgstr "הו&סף"
-
 #: lazarusidestrconsts.lisbtnclose
 msgctxt "lazarusidestrconsts.lisbtnclose"
 msgid "&Close"
 msgstr "ס&גור"
 
-#: lazarusidestrconsts.lisbtndelete
-msgctxt "lazarusidestrconsts.lisbtndelete"
-msgid "&Delete"
-msgstr "מ&חק"
-
-#: lazarusidestrconsts.lisbtndlgadd
-msgid "&Add ..."
-msgstr ""
-
 #: lazarusidestrconsts.lisbtndlgreplace
 msgctxt "lazarusidestrconsts.lisbtndlgreplace"
 msgid "&Replace ..."
 msgstr "החלף&"
-
-#: lazarusidestrconsts.lisbtnenabled
-msgctxt "lazarusidestrconsts.lisbtnenabled"
-msgid "&Enabled"
-msgstr "מאופשר"
 
 #: lazarusidestrconsts.lisbtnfind
 msgid "&Find"
@@ -5874,11 +5840,6 @@ msgstr "קריאת s% ליצירת makefile מ s% נכשלה."
 #: lazarusidestrconsts.liscallstacknotevaluated
 msgid "Stack not evaluated"
 msgstr ""
-
-#: lazarusidestrconsts.liscancel
-msgctxt "lazarusidestrconsts.liscancel"
-msgid "Cancel"
-msgstr "בטל"
 
 #: lazarusidestrconsts.liscancelloadingthiscomponent
 msgid "Cancel loading this component"
@@ -7849,11 +7810,6 @@ msgstr "מכיל"
 msgid "Context sensitive"
 msgstr "תלוי בהקשר"
 
-#: lazarusidestrconsts.liscontinue
-msgctxt "lazarusidestrconsts.liscontinue"
-msgid "Continue"
-msgstr "המשך"
-
 #: lazarusidestrconsts.liscontinueanddonotaskagain
 msgid "Continue and do not ask again"
 msgstr "המשך ואל תשאל שוב"
@@ -9195,11 +9151,6 @@ msgstr "השהייה עבור טיפים ארוכים בתיבת ההשלמה"
 msgid "Delay for hints"
 msgstr ""
 
-#: lazarusidestrconsts.lisdelete
-msgctxt "lazarusidestrconsts.lisdelete"
-msgid "Delete"
-msgstr "מחק"
-
 #: lazarusidestrconsts.lisdelete2
 msgid "Delete?"
 msgstr ""
@@ -9426,11 +9377,6 @@ msgstr "נטרל הכל באותו קובץ מקור"
 msgid "Disable Breakpoint"
 msgstr "נטרל נקודת עצירה"
 
-#: lazarusidestrconsts.lisdisabled
-msgctxt "lazarusidestrconsts.lisdisabled"
-msgid "Disabled"
-msgstr "מבוטל"
-
 #: lazarusidestrconsts.lisdisablegroups
 msgid "Disable Groups"
 msgstr ""
@@ -9532,13 +9478,6 @@ msgstr ""
 #: lazarusidestrconsts.lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "הבחן בין אותיות גדולות וקטנות למשל A ו a"
-
-#: lazarusidestrconsts.lisdlgadd
-#, fuzzy
-#| msgid "Add..."
-msgctxt "lazarusidestrconsts.lisdlgadd"
-msgid "Add ..."
-msgstr "הוסף ..."
 
 #: lazarusidestrconsts.lisdlgalloptions
 msgid "All options ..."
@@ -10010,11 +9949,6 @@ msgstr "אפשר הכל באותו הקובץ"
 #: lazarusidestrconsts.lisenablebreakpoint
 msgid "Enable Breakpoint"
 msgstr "אפשר נקודת עצירה"
-
-#: lazarusidestrconsts.lisenabled
-msgctxt "lazarusidestrconsts.lisenabled"
-msgid "Enabled"
-msgstr "מאופשר"
 
 #: lazarusidestrconsts.lisenabledonlyforpackages
 msgid "Enabled only for packages."
@@ -11284,11 +11218,6 @@ msgstr ""
 msgid "Header comment for class"
 msgstr "הערת כותרת למחלקה"
 
-#: lazarusidestrconsts.lishelp
-msgctxt "lazarusidestrconsts.lishelp"
-msgid "Help"
-msgstr "עזרה"
-
 #: lazarusidestrconsts.lishelpentries
 msgid "Help entries"
 msgstr "כניסות עזרה"
@@ -11588,12 +11517,6 @@ msgstr ""
 #, object-pascal-format
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr ""
-
-#: lazarusidestrconsts.lisignore
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisignore"
-msgid "Ignore"
-msgstr "התעלם"
 
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
@@ -12857,11 +12780,6 @@ msgstr "טעינת היישום לא חוקית"
 msgid "Launching target command line"
 msgstr "טעינת שורת הפקודה המיועדת"
 
-#: lazarusidestrconsts.lislazarus
-msgctxt "lazarusidestrconsts.lislazarus"
-msgid "Lazarus"
-msgstr "לזארוס"
-
 #: lazarusidestrconsts.lislazarusdefault
 msgid "Lazarus Default"
 msgstr ""
@@ -13617,10 +13535,6 @@ msgstr "מגדיר \"בנה לזרוס\""
 #: lazarusidestrconsts.lismenucontexthelp
 msgid "Context sensitive Help"
 msgstr "עזרה רגישת הקשר"
-
-#: lazarusidestrconsts.lismenucontinue
-msgid "&Continue"
-msgstr ""
 
 #: lazarusidestrconsts.lismenuconvertdelphipackage
 #, fuzzy
@@ -14597,11 +14511,6 @@ msgstr "פרויקט חדש מקובץ ..."
 msgctxt "lazarusidestrconsts.lismenunewunit"
 msgid "New Unit"
 msgstr "יחידה חדשה"
-
-#: lazarusidestrconsts.lismenuok
-msgctxt "lazarusidestrconsts.lismenuok"
-msgid "&OK"
-msgstr "א&שר"
 
 #: lazarusidestrconsts.lismenuonlinehelp
 msgid "Online Help"
@@ -15618,11 +15527,6 @@ msgstr ""
 msgid "Name of new procedure"
 msgstr "שם הפרוצדורה החדשה"
 
-#: lazarusidestrconsts.lisnever
-msgctxt "lazarusidestrconsts.lisnever"
-msgid "Never"
-msgstr "אף פעם"
-
 #: lazarusidestrconsts.lisnew
 msgctxt "lazarusidestrconsts.lisnew"
 msgid "New"
@@ -15719,10 +15623,6 @@ msgstr ""
 #| msgid "New units are added to uses sections:"
 msgid "New units are added to uses sections"
 msgstr "יחידות חדשות נוספו לאזור \"משתמש ב\":"
-
-#: lazarusidestrconsts.lisno
-msgid "No"
-msgstr "לא"
 
 #: lazarusidestrconsts.lisnoautosaveactivedesktop
 msgid "'Auto save active desktop' option is turned off, you will need to save current desktop manually."
@@ -16035,13 +15935,6 @@ msgstr "מצב"
 #| msgid "%sThis package is installed, but the lpk file was not found"
 msgid "%sThis package is installed but the lpk file was not found"
 msgstr "חבילה זאת מותקנת, אבל קובץ ה lpk לא נמצא"
-
-#: lazarusidestrconsts.lisok
-#, fuzzy
-#| msgid "ok"
-msgctxt "lazarusidestrconsts.lisok"
-msgid "OK"
-msgstr "אשר"
 
 #: lazarusidestrconsts.lisoldclass
 msgid "Old Class"
@@ -21959,10 +21852,6 @@ msgstr "שגיאת XML"
 #, object-pascal-format
 msgid "XML parser error in file %s%sError: %s"
 msgstr "שגיאה בקובץ %s בעת קריאת XML%sשגיאה: %s"
-
-#: lazarusidestrconsts.lisyes
-msgid "Yes"
-msgstr ""
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"

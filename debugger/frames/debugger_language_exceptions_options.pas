@@ -29,7 +29,7 @@ uses
   // LCL
   Forms, Controls, StdCtrls, CheckLst, Buttons, Dialogs,
   // IdeIntf
-  IDEImagesIntf, IDEOptionsIntf, IDEOptEditorIntf,
+  LazarusCommonStrConst, IDEImagesIntf, IDEOptionsIntf, IDEOptEditorIntf,
   // IDE
   LazarusIDEStrConsts, Debugger, BaseDebugManager, Project;
 

@@ -4704,11 +4704,6 @@ msgstr "Käännösyksikkö on jo olemassa"
 msgid "Abandon changes?"
 msgstr "Hylkää muutokset?"
 
-#: lazarusidestrconsts.lisabort
-msgctxt "lazarusidestrconsts.lisabort"
-msgid "Abort"
-msgstr "Keskeytä"
-
 #: lazarusidestrconsts.lisabortall
 msgid "Abort all"
 msgstr "Keskeytä kaikki"
@@ -4801,11 +4796,6 @@ msgstr "Aktiivinen"
 #: lazarusidestrconsts.lisactivefilter
 msgid "Active Filter"
 msgstr "Aktiivinen suodatin"
-
-#: lazarusidestrconsts.lisadd
-msgctxt "lazarusidestrconsts.lisadd"
-msgid "Add"
-msgstr "Lisää"
 
 #: lazarusidestrconsts.lisaddanewseparatoraboveselecteditem
 msgid "Add a new separator above selected item"
@@ -5038,10 +5028,6 @@ msgstr "Vaihtoehtoinen näppäin"
 #: lazarusidestrconsts.lisalternativekeyor2keysequence
 msgid "Alternative key (or 2 key sequence)"
 msgstr "Vaihtoehtoinen näppäin (tai 2 peräkkäistä yhdistelmää)"
-
-#: lazarusidestrconsts.lisalways
-msgid "Always"
-msgstr "Aina"
 
 #: lazarusidestrconsts.lisalwaysconvertsuggesteddefaultfilenametolowercase
 msgid "Always convert suggested default file name to lowercase"
@@ -5414,34 +5400,15 @@ msgstr "Keskeytyskohdan ominaisuudet"
 msgid "Browse and select a compiler (e.g. ppcx64"
 msgstr "Valitse kääntäjä (esim. ppcx64)"
 
-#: lazarusidestrconsts.lisbtnadd
-msgctxt "lazarusidestrconsts.lisbtnadd"
-msgid "&Add"
-msgstr "&Lisää"
-
 #: lazarusidestrconsts.lisbtnclose
 msgctxt "lazarusidestrconsts.lisbtnclose"
 msgid "&Close"
 msgstr "&Sulje"
 
-#: lazarusidestrconsts.lisbtndelete
-msgctxt "lazarusidestrconsts.lisbtndelete"
-msgid "&Delete"
-msgstr "&Poista"
-
-#: lazarusidestrconsts.lisbtndlgadd
-msgid "&Add ..."
-msgstr "&Lisää ..."
-
 #: lazarusidestrconsts.lisbtndlgreplace
 msgctxt "lazarusidestrconsts.lisbtndlgreplace"
 msgid "&Replace ..."
 msgstr "&Etsi ja korvaa ..."
-
-#: lazarusidestrconsts.lisbtnenabled
-msgctxt "lazarusidestrconsts.lisbtnenabled"
-msgid "&Enabled"
-msgstr "&Sallittu"
 
 #: lazarusidestrconsts.lisbtnfind
 msgid "&Find"
@@ -5550,11 +5517,6 @@ msgstr "%s:n kutsuminen Makefile luomiseksi %s:sta epäonnistui."
 #: lazarusidestrconsts.liscallstacknotevaluated
 msgid "Stack not evaluated"
 msgstr "Pinoa ei arvioitu"
-
-#: lazarusidestrconsts.liscancel
-msgctxt "lazarusidestrconsts.liscancel"
-msgid "Cancel"
-msgstr "Peru"
 
 #: lazarusidestrconsts.liscancelloadingthiscomponent
 msgid "Cancel loading this component"
@@ -7450,11 +7412,6 @@ msgstr "Sisältö"
 msgid "Context sensitive"
 msgstr "Tilanteesta riippuva"
 
-#: lazarusidestrconsts.liscontinue
-msgctxt "lazarusidestrconsts.liscontinue"
-msgid "Continue"
-msgstr "Jatka"
-
 #: lazarusidestrconsts.liscontinueanddonotaskagain
 msgid "Continue and do not ask again"
 msgstr "Jatka äläkä kysy enää"
@@ -8747,11 +8704,6 @@ msgstr "Pitkien rivien viive täydennyslaatikossa"
 msgid "Delay for hints"
 msgstr ""
 
-#: lazarusidestrconsts.lisdelete
-msgctxt "lazarusidestrconsts.lisdelete"
-msgid "Delete"
-msgstr "Poista"
-
 #: lazarusidestrconsts.lisdelete2
 msgid "Delete?"
 msgstr "Poista?"
@@ -8970,11 +8922,6 @@ msgstr "Estä kaikki samassa tiedostossa"
 msgid "Disable Breakpoint"
 msgstr "Estä keskeytyskohta"
 
-#: lazarusidestrconsts.lisdisabled
-msgctxt "lazarusidestrconsts.lisdisabled"
-msgid "Disabled"
-msgstr "Estetty"
-
 #: lazarusidestrconsts.lisdisablegroups
 msgid "Disable Groups"
 msgstr "Estä ryhmät"
@@ -9068,10 +9015,6 @@ msgstr ""
 #: lazarusidestrconsts.lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Erottelee pienet ja isot kirjaimet (esim. A ja a )"
-
-#: lazarusidestrconsts.lisdlgadd
-msgid "Add ..."
-msgstr "Lisää ..."
 
 #: lazarusidestrconsts.lisdlgalloptions
 msgid "All options ..."
@@ -9525,11 +9468,6 @@ msgstr "Salli kaikki samassa lähdekoodissa"
 #: lazarusidestrconsts.lisenablebreakpoint
 msgid "Enable Breakpoint"
 msgstr "Salli keskeytyskohta"
-
-#: lazarusidestrconsts.lisenabled
-msgctxt "lazarusidestrconsts.lisenabled"
-msgid "Enabled"
-msgstr "Sallittu"
 
 #: lazarusidestrconsts.lisenabledonlyforpackages
 msgid "Enabled only for packages."
@@ -10758,11 +10696,6 @@ msgstr "Otsikon värit"
 msgid "Header comment for class"
 msgstr "Luokan pääkommentti"
 
-#: lazarusidestrconsts.lishelp
-msgctxt "lazarusidestrconsts.lishelp"
-msgid "Help"
-msgstr "Ohje"
-
 #: lazarusidestrconsts.lishelpentries
 msgid "Help entries"
 msgstr "Ohjemerkinnät"
@@ -11058,11 +10991,6 @@ msgstr "Jos vain istunnon tiedot muuttuivat, kysy niiden tallentamisesta."
 #, object-pascal-format
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "Haluttaessa kaksi eri Lazarus versiota, pitää toinen käynnistää parametrin primary-config-path tai pcp kanssa.%sEsimerkiksi:"
-
-#: lazarusidestrconsts.lisignore
-msgctxt "lazarusidestrconsts.lisignore"
-msgid "Ignore"
-msgstr "Ohita"
 
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
@@ -12189,11 +12117,6 @@ msgstr "Käynnistävä ohjelma on kelvoton"
 msgid "Launching target command line"
 msgstr "Käynnistävä kohteen komentorivi"
 
-#: lazarusidestrconsts.lislazarus
-msgctxt "lazarusidestrconsts.lislazarus"
-msgid "Lazarus"
-msgstr ""
-
 #: lazarusidestrconsts.lislazarusdefault
 msgid "Lazarus Default"
 msgstr "Lazarus oletukset"
@@ -12883,10 +12806,6 @@ msgstr "Konfiguroi \"Lazaruksen kokoaminen\" ..."
 #: lazarusidestrconsts.lismenucontexthelp
 msgid "Context sensitive Help"
 msgstr "Tilannekohtainen ohje"
-
-#: lazarusidestrconsts.lismenucontinue
-msgid "&Continue"
-msgstr "&Jatka"
 
 #: lazarusidestrconsts.lismenuconvertdelphipackage
 msgid "Convert Delphi Package to Lazarus Package ..."
@@ -13788,11 +13707,6 @@ msgctxt "lazarusidestrconsts.lismenunewunit"
 msgid "New Unit"
 msgstr "Uusi käännösyksikkö"
 
-#: lazarusidestrconsts.lismenuok
-msgctxt "lazarusidestrconsts.lismenuok"
-msgid "&OK"
-msgstr ""
-
 #: lazarusidestrconsts.lismenuonlinehelp
 msgid "Online Help"
 msgstr "Verkko-avustus"
@@ -14686,11 +14600,6 @@ msgstr "Aktiivisen koontamoodin nimi"
 msgid "Name of new procedure"
 msgstr "Uuden aliohjelman nimi"
 
-#: lazarusidestrconsts.lisnever
-msgctxt "lazarusidestrconsts.lisnever"
-msgid "Never"
-msgstr "Ei koskaan"
-
 #: lazarusidestrconsts.lisnew
 msgctxt "lazarusidestrconsts.lisnew"
 msgid "New"
@@ -14783,10 +14692,6 @@ msgstr "Uudet nauhoitetut makrot. Ei talleteta."
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 msgid "New units are added to uses sections"
 msgstr "Uudet käännösyksiköt lisätään uses-lauseeseen"
-
-#: lazarusidestrconsts.lisno
-msgid "No"
-msgstr "Ei"
 
 #: lazarusidestrconsts.lisnoautosaveactivedesktop
 msgid "'Auto save active desktop' option is turned off, you will need to save current desktop manually."
@@ -15089,10 +14994,6 @@ msgstr "Tila"
 #, object-pascal-format
 msgid "%sThis package is installed but the lpk file was not found"
 msgstr "%sPaketti on asennettu, mutta lpk-tiedosto puuttuu"
-
-#: lazarusidestrconsts.lisok
-msgid "OK"
-msgstr ""
 
 #: lazarusidestrconsts.lisoldclass
 msgid "Old Class"
@@ -20711,10 +20612,6 @@ msgstr "XML-virhe"
 #, object-pascal-format
 msgid "XML parser error in file %s%sError: %s"
 msgstr "XML jäsentäjän virhe tiedostossa %s%sVirhe: %s"
-
-#: lazarusidestrconsts.lisyes
-msgid "Yes"
-msgstr "Kyllä"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"

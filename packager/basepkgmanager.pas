@@ -45,7 +45,7 @@ uses
 {$ENDIF}
   TypInfo, Classes, SysUtils, Forms, LazFileUtils, LCLProc, ComCtrls,
   LazIDEIntf, PackageIntf, MenuIntf,
-  LazarusIDEStrConsts, EnvironmentOpts,
+  LazarusCommonStrConst, LazarusIDEStrConsts, EnvironmentOpts,
   CompilerOptions, PackageDefs, PackageSystem, Project;
 
 type

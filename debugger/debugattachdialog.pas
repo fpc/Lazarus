@@ -10,7 +10,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Dialogs, StdCtrls, ComCtrls,
   LCLType, LazFileUtils, DbgIntfDebuggerBase,
-  LazarusIDEStrConsts, BaseDebugManager, Debugger;
+  LazarusCommonStrConst, LazarusIDEStrConsts, BaseDebugManager, Debugger;
 
 type
   {$IFDEF darwin}

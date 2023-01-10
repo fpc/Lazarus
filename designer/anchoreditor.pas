@@ -41,7 +41,7 @@ uses
   // LazUtils
   LazUtilities, LazUTF8,
   // IdeIntf
-  IDECommands, PropEdits, IDEDialogs, IDEImagesIntf,
+  LazarusCommonStrConst, IDECommands, PropEdits, IDEDialogs, IDEImagesIntf,
   // IDE
   LazarusIDEStrConsts, IDEOptionDefs, EnvironmentOpts;
 

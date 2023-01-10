@@ -1,0 +1,88 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: lazaruscommonstrconst.lisabort
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisabort"
+msgid "Abort"
+msgstr "Batalkan"
+
+#: lazaruscommonstrconst.lisadd
+msgctxt "lazarusidestrconsts.lisadd"
+msgid "Add"
+msgstr "Tambah"
+
+#: lazaruscommonstrconst.lisbtnadd
+msgctxt "lazarusidestrconsts.lisbtnadd"
+msgid "&Add"
+msgstr "T&ambah"
+
+#: lazaruscommonstrconst.lisbtndelete
+msgctxt "lazarusidestrconsts.lisbtndelete"
+msgid "&Delete"
+msgstr "&Hapus"
+
+#: lazaruscommonstrconst.lisbtnenabled
+msgctxt "lazarusidestrconsts.lisbtnenabled"
+msgid "&Enabled"
+msgstr "&Dihidupkan"
+
+#: lazaruscommonstrconst.liscancel
+msgctxt "lazarusidestrconsts.liscancel"
+msgid "Cancel"
+msgstr "Batal"
+
+#: lazaruscommonstrconst.liscontinue
+msgctxt "lazarusidestrconsts.liscontinue"
+msgid "Continue"
+msgstr "Lanjutkan"
+
+#: lazaruscommonstrconst.lisdelete
+msgctxt "lazarusidestrconsts.lisdelete"
+msgid "Delete"
+msgstr "Hapus"
+
+#: lazaruscommonstrconst.lisdlgadd
+#, fuzzy
+#| msgid "Add..."
+msgctxt "lazarusidestrconsts.lisdlgadd"
+msgid "Add ..."
+msgstr "Tambah..."
+
+#: lazaruscommonstrconst.lisenabled
+msgctxt "lazarusidestrconsts.lisenabled"
+msgid "Enabled"
+msgstr "Hidupkan"
+
+#: lazaruscommonstrconst.lishelp
+msgctxt "lazarusidestrconsts.lishelp"
+msgid "Help"
+msgstr "Panduan"
+
+#: lazaruscommonstrconst.lisignore
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisignore"
+msgid "Ignore"
+msgstr "Abaikan"
+
+#: lazaruscommonstrconst.lislazarus
+msgctxt "lazarusidestrconsts.lislazarus"
+msgid "Lazarus"
+msgstr "Lazarus"
+
+#: lazaruscommonstrconst.lismenuok
+#, fuzzy
+#| msgid "&Ok"
+msgctxt "lazarusidestrconsts.lismenuok"
+msgid "&OK"
+msgstr "&Ok"
+
+#: lazaruscommonstrconst.lisok
+msgctxt "lazarusidestrconsts.lisok"
+msgid "OK"
+msgstr "OK"
+

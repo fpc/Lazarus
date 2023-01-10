@@ -4775,11 +4775,6 @@ msgstr "Unit-Name ist bereits vorhanden"
 msgid "Abandon changes?"
 msgstr "Änderungen verwerfen?"
 
-#: lazarusidestrconsts.lisabort
-msgctxt "lazarusidestrconsts.lisabort"
-msgid "Abort"
-msgstr "Alles abbrechen"
-
 #: lazarusidestrconsts.lisabortall
 msgid "Abort all"
 msgstr "Alles abbrechen"
@@ -4873,11 +4868,6 @@ msgstr "Aktiv"
 #: lazarusidestrconsts.lisactivefilter
 msgid "Active Filter"
 msgstr "Aktiver Filter"
-
-#: lazarusidestrconsts.lisadd
-msgctxt "lazarusidestrconsts.lisadd"
-msgid "Add"
-msgstr "Hinzufügen"
 
 #: lazarusidestrconsts.lisaddanewseparatoraboveselecteditem
 msgid "Add a new separator above selected item"
@@ -5111,10 +5101,6 @@ msgstr "Alternativtaste"
 #: lazarusidestrconsts.lisalternativekeyor2keysequence
 msgid "Alternative key (or 2 key sequence)"
 msgstr "Alternative Taste (oder 2-Tasten-Kombination)"
-
-#: lazarusidestrconsts.lisalways
-msgid "Always"
-msgstr "Immer"
 
 #: lazarusidestrconsts.lisalwaysconvertsuggesteddefaultfilenametolowercase
 msgid "Always convert suggested default file name to lowercase"
@@ -5489,34 +5475,15 @@ msgstr "Haltepunkt-Eigenschaften"
 msgid "Browse and select a compiler (e.g. ppcx64"
 msgstr ""
 
-#: lazarusidestrconsts.lisbtnadd
-msgctxt "lazarusidestrconsts.lisbtnadd"
-msgid "&Add"
-msgstr "&Hinzufügen"
-
 #: lazarusidestrconsts.lisbtnclose
 msgctxt "lazarusidestrconsts.lisbtnclose"
 msgid "&Close"
 msgstr "S&chließen"
 
-#: lazarusidestrconsts.lisbtndelete
-msgctxt "lazarusidestrconsts.lisbtndelete"
-msgid "&Delete"
-msgstr "&Löschen"
-
-#: lazarusidestrconsts.lisbtndlgadd
-msgid "&Add ..."
-msgstr "Hinzufügen ..."
-
 #: lazarusidestrconsts.lisbtndlgreplace
 msgctxt "lazarusidestrconsts.lisbtndlgreplace"
 msgid "&Replace ..."
 msgstr "E&rsetzen ..."
-
-#: lazarusidestrconsts.lisbtnenabled
-msgctxt "lazarusidestrconsts.lisbtnenabled"
-msgid "&Enabled"
-msgstr "&Einschalten"
 
 #: lazarusidestrconsts.lisbtnfind
 msgid "&Find"
@@ -5625,11 +5592,6 @@ msgstr "Der Aufruf von %s um die Makedatei von %s anzulegen schlug fehl."
 #: lazarusidestrconsts.liscallstacknotevaluated
 msgid "Stack not evaluated"
 msgstr "Stack nicht ausgewertet"
-
-#: lazarusidestrconsts.liscancel
-msgctxt "lazarusidestrconsts.liscancel"
-msgid "Cancel"
-msgstr "Abbrechen"
 
 #: lazarusidestrconsts.liscancelloadingthiscomponent
 msgid "Cancel loading this component"
@@ -7537,11 +7499,6 @@ msgstr "Inhalte"
 msgid "Context sensitive"
 msgstr "Kontextabhängig"
 
-#: lazarusidestrconsts.liscontinue
-msgctxt "lazarusidestrconsts.liscontinue"
-msgid "Continue"
-msgstr "Fortsetzen"
-
 #: lazarusidestrconsts.liscontinueanddonotaskagain
 msgid "Continue and do not ask again"
 msgstr "Fortsetzen und nicht mehr nachfragen"
@@ -8839,11 +8796,6 @@ msgstr "Verzögerung für lange Zeilenhinweise in Vervollständigungsbox"
 msgid "Delay for hints"
 msgstr ""
 
-#: lazarusidestrconsts.lisdelete
-msgctxt "lazarusidestrconsts.lisdelete"
-msgid "Delete"
-msgstr "Löschen"
-
 #: lazarusidestrconsts.lisdelete2
 msgid "Delete?"
 msgstr "Löschen?"
@@ -9062,11 +9014,6 @@ msgstr "Alle Haltepunkte in der gleichen Datei abschalten"
 msgid "Disable Breakpoint"
 msgstr "Haltepunkt deaktivieren"
 
-#: lazarusidestrconsts.lisdisabled
-msgctxt "lazarusidestrconsts.lisdisabled"
-msgid "Disabled"
-msgstr "Ausgeschaltet"
-
 #: lazarusidestrconsts.lisdisablegroups
 msgid "Disable Groups"
 msgstr "Gruppen deaktivieren"
@@ -9160,11 +9107,6 @@ msgstr ""
 #: lazarusidestrconsts.lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Groß- und Kleinschreibung unterscheiden"
-
-#: lazarusidestrconsts.lisdlgadd
-msgctxt "lazarusidestrconsts.lisdlgadd"
-msgid "Add ..."
-msgstr "Hinzufügen ..."
 
 #: lazarusidestrconsts.lisdlgalloptions
 msgid "All options ..."
@@ -9625,11 +9567,6 @@ msgstr "Alle in der gleichen Quelle zulassen"
 #: lazarusidestrconsts.lisenablebreakpoint
 msgid "Enable Breakpoint"
 msgstr "Haltepunkt aktivieren"
-
-#: lazarusidestrconsts.lisenabled
-msgctxt "lazarusidestrconsts.lisenabled"
-msgid "Enabled"
-msgstr "Eingeschaltet"
 
 #: lazarusidestrconsts.lisenabledonlyforpackages
 msgid "Enabled only for packages."
@@ -10882,11 +10819,6 @@ msgstr "Header-Farben"
 msgid "Header comment for class"
 msgstr "Header-Kommentar für die Klasse"
 
-#: lazarusidestrconsts.lishelp
-msgctxt "lazarusidestrconsts.lishelp"
-msgid "Help"
-msgstr "Hilfe"
-
 #: lazarusidestrconsts.lishelpentries
 msgid "Help entries"
 msgstr "Hilfeeinträge"
@@ -11183,11 +11115,6 @@ msgstr ""
 #, object-pascal-format
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "Wenn Sie zwei verschiedene Lazarus-Versionen verwenden wollen, müssen Sie das zweite Lazarus mit dem Kommandozeilenparameter primary-config-path oder pcp starten.%sZum Beispiel:"
-
-#: lazarusidestrconsts.lisignore
-msgctxt "lazarusidestrconsts.lisignore"
-msgid "Ignore"
-msgstr "Übergehen"
 
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
@@ -12313,11 +12240,6 @@ msgstr "Startprogramm ungültig"
 msgid "Launching target command line"
 msgstr "Startbefehl des Projekts"
 
-#: lazarusidestrconsts.lislazarus
-msgctxt "lazarusidestrconsts.lislazarus"
-msgid "Lazarus"
-msgstr "Lazarus"
-
 #: lazarusidestrconsts.lislazarusdefault
 msgid "Lazarus Default"
 msgstr "Lazarus-Vorgabe"
@@ -13035,10 +12957,6 @@ msgstr "»Lazarus kompilieren« einrichten ..."
 #: lazarusidestrconsts.lismenucontexthelp
 msgid "Context sensitive Help"
 msgstr "Kontextsensitive Hilfe"
-
-#: lazarusidestrconsts.lismenucontinue
-msgid "&Continue"
-msgstr ""
 
 #: lazarusidestrconsts.lismenuconvertdelphipackage
 msgid "Convert Delphi Package to Lazarus Package ..."
@@ -13943,11 +13861,6 @@ msgstr "Neues Projekt aus Datei ..."
 msgctxt "lazarusidestrconsts.lismenunewunit"
 msgid "New Unit"
 msgstr "Neue Unit"
-
-#: lazarusidestrconsts.lismenuok
-msgctxt "lazarusidestrconsts.lismenuok"
-msgid "&OK"
-msgstr "&OK"
 
 #: lazarusidestrconsts.lismenuonlinehelp
 msgid "Online Help"
@@ -14874,11 +14787,6 @@ msgstr "Name des aktiven Erstellmodus"
 msgid "Name of new procedure"
 msgstr "Name der neuen Prozedur"
 
-#: lazarusidestrconsts.lisnever
-msgctxt "lazarusidestrconsts.lisnever"
-msgid "Never"
-msgstr "Nie"
-
 #: lazarusidestrconsts.lisnew
 msgctxt "lazarusidestrconsts.lisnew"
 msgid "New"
@@ -14971,10 +14879,6 @@ msgstr "Neu aufgezeichnete Makros, noch nicht gespeichert"
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 msgid "New units are added to uses sections"
 msgstr "Neue Units werden zum Uses-Abschnitt hinzugefügt:"
-
-#: lazarusidestrconsts.lisno
-msgid "No"
-msgstr "Nein"
 
 #: lazarusidestrconsts.lisnoautosaveactivedesktop
 msgid "'Auto save active desktop' option is turned off, you will need to save current desktop manually."
@@ -15278,11 +15182,6 @@ msgstr "Status"
 #, object-pascal-format
 msgid "%sThis package is installed but the lpk file was not found"
 msgstr "%sDas Package ist installiert, aber die .lpk-Datei wurde nicht gefunden"
-
-#: lazarusidestrconsts.lisok
-msgctxt "lazarusidestrconsts.lisok"
-msgid "OK"
-msgstr "OK"
 
 #: lazarusidestrconsts.lisoldclass
 msgid "Old Class"
@@ -20963,10 +20862,6 @@ msgstr "XML-Fehler"
 #, object-pascal-format
 msgid "XML parser error in file %s%sError: %s"
 msgstr "XML-Parserfehler in der Datei %s%sFehler: %s"
-
-#: lazarusidestrconsts.lisyes
-msgid "Yes"
-msgstr "Ja"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"

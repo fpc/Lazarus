@@ -215,19 +215,9 @@ msgstr "使用实例类类型"
 msgid "Allow Function Calls"
 msgstr "允许函数调用"
 
-#: idedebuggerstringconstants.liscancel
-msgctxt "lazarusidestrconsts.liscancel"
-msgid "Cancel"
-msgstr "取消"
-
 #: idedebuggerstringconstants.lisdigits
 msgid "Digits:"
 msgstr "数字:"
-
-#: idedebuggerstringconstants.lisenabled
-msgctxt "lazarusidestrconsts.lisenabled"
-msgid "Enabled"
-msgstr "允许"
 
 #: idedebuggerstringconstants.lisexpression
 msgid "Expression:"
@@ -248,11 +238,6 @@ msgstr ""
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "帮助(&H)"
-
-#: idedebuggerstringconstants.lismenuok
-msgctxt "lazarusidestrconsts.lismenuok"
-msgid "&OK"
-msgstr "确定(&O)"
 
 #: idedebuggerstringconstants.lisrepeatcount
 msgid "Repeat Count:"

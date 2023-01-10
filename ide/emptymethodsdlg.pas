@@ -40,7 +40,7 @@ uses
   // CodeTools
   CodeToolsStructs, CodeCache, CodeToolManager, PascalParserTool, CodeTree,
   // IdeIntf
-  SrcEditorIntf, LazIDEIntf, PropEdits, IDEDialogs,
+  LazarusCommonStrConst, SrcEditorIntf, LazIDEIntf, PropEdits, IDEDialogs,
   // IDE
   CustomFormEditor, JitForms, Project, LazarusIDEStrConsts, EditorOptions;
 

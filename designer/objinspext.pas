@@ -28,7 +28,7 @@ uses
   // BuildIntf
   BaseIDEIntf, ProjectIntf,
   // IdeIntf
-  LazIDEIntf, ObjectInspector, OIFavoriteProperties, PropEdits, IDEDialogs,
+  LazarusCommonStrConst, LazIDEIntf, ObjectInspector, OIFavoriteProperties, PropEdits, IDEDialogs,
   // IDE
   DialogProcs, LazConf, LazarusIDEStrConsts;
 

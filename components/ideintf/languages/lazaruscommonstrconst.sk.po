@@ -1,0 +1,112 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: lazaruscommonstrconst.lisabort
+msgctxt "lazarusidestrconsts.lisabort"
+msgid "Abort"
+msgstr "Zrušiť"
+
+#: lazaruscommonstrconst.lisadd
+msgctxt "lazarusidestrconsts.lisadd"
+msgid "Add"
+msgstr "Pridať"
+
+#: lazaruscommonstrconst.lisalways
+msgid "Always"
+msgstr "Vždy"
+
+#: lazaruscommonstrconst.lisbtnadd
+msgctxt "lazarusidestrconsts.lisbtnadd"
+msgid "&Add"
+msgstr "&Pridať"
+
+#: lazaruscommonstrconst.lisbtndelete
+msgctxt "lazarusidestrconsts.lisbtndelete"
+msgid "&Delete"
+msgstr "&Zmazať"
+
+#: lazaruscommonstrconst.lisbtndlgadd
+msgid "&Add ..."
+msgstr "Prid&ať ..."
+
+#: lazaruscommonstrconst.lisbtnenabled
+msgctxt "lazarusidestrconsts.lisbtnenabled"
+msgid "&Enabled"
+msgstr "&Povolené"
+
+#: lazaruscommonstrconst.liscancel
+msgctxt "lazarusidestrconsts.liscancel"
+msgid "Cancel"
+msgstr "Zrušiť"
+
+#: lazaruscommonstrconst.liscontinue
+msgctxt "lazarusidestrconsts.liscontinue"
+msgid "Continue"
+msgstr "Pokračovať"
+
+#: lazaruscommonstrconst.lisdelete
+msgctxt "lazarusidestrconsts.lisdelete"
+msgid "Delete"
+msgstr "Zmazať"
+
+#: lazaruscommonstrconst.lisdisabled
+msgctxt "lazarusidestrconsts.lisdisabled"
+msgid "Disabled"
+msgstr "Zakázané"
+
+#: lazaruscommonstrconst.lisdlgadd
+msgctxt "lazarusidestrconsts.lisdlgadd"
+msgid "Add ..."
+msgstr "Pridať..."
+
+#: lazaruscommonstrconst.lisenabled
+msgctxt "lazarusidestrconsts.lisenabled"
+msgid "Enabled"
+msgstr "Povolené"
+
+#: lazaruscommonstrconst.lishelp
+msgctxt "lazarusidestrconsts.lishelp"
+msgid "Help"
+msgstr "Pomoc"
+
+#: lazaruscommonstrconst.lisignore
+msgctxt "lazarusidestrconsts.lisignore"
+msgid "Ignore"
+msgstr "Ignorovať"
+
+#: lazaruscommonstrconst.lislazarus
+msgctxt "lazarusidestrconsts.lislazarus"
+msgid "Lazarus"
+msgstr "Lazarus"
+
+#: lazaruscommonstrconst.lismenucontinue
+msgid "&Continue"
+msgstr "Pokračovať"
+
+#: lazaruscommonstrconst.lismenuok
+msgctxt "lazarusidestrconsts.lismenuok"
+msgid "&OK"
+msgstr "&OK"
+
+#: lazaruscommonstrconst.lisnever
+msgctxt "lazarusidestrconsts.lisnever"
+msgid "Never"
+msgstr "Nikdy"
+
+#: lazaruscommonstrconst.lisno
+msgid "No"
+msgstr "Nie"
+
+#: lazaruscommonstrconst.lisok
+msgctxt "lazarusidestrconsts.lisok"
+msgid "OK"
+msgstr "OK"
+
+#: lazaruscommonstrconst.lisyes
+msgid "Yes"
+msgstr "Áno"
+

@@ -39,7 +39,7 @@ uses
   // codetools
   CodeToolsStrConsts, CodeCache, CodeToolManager,
   // IDEIntf
-  LazIDEIntf, IDEMsgIntf, PackageLinkIntf, PackageIntf, IDEExternToolIntf,
+  LazarusCommonStrConst, LazIDEIntf, IDEMsgIntf, PackageLinkIntf, PackageIntf, IDEExternToolIntf,
   // IDE
   DialogProcs, PackageDefs, Project, IDEProcs, LazarusIDEStrConsts,
   etFPCMsgParser, SearchPathProcs, PackageLinks, PackageSystem, BasePkgManager;

@@ -49,7 +49,7 @@ uses
   NewItemIntf, ProjectIntf, PackageIntf, PackageDependencyIntf, IDEExternToolIntf,
   // IdeIntf
   IDEDialogs, PropEdits, IDEMsgIntf, LazIDEIntf, MenuIntf, IDEWindowIntf, FormEditingIntf,
-  ObjectInspector, SrcEditorIntf, EditorSyntaxHighlighterDef, UnitResources, ComponentReg,
+  LazarusCommonStrConst, ObjectInspector, SrcEditorIntf, EditorSyntaxHighlighterDef, UnitResources, ComponentReg,
   // IDE
   IDEProcs, DialogProcs, IDEProtocol, LazarusIDEStrConsts, NewDialog,
   NewProjectDlg, MainBase, MainBar, MainIntf, Project, ProjectDefs,

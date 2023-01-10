@@ -36,7 +36,7 @@ uses
   // codetools
   FileProcs, CodeToolManager, DirectoryCacher,
   // IDEIntf
-  IDEDialogs, IDEImagesIntf, PackageIntf,
+  LazarusCommonStrConst, IDEDialogs, IDEImagesIntf, PackageIntf,
   // IDE
   PackageDefs, PackageSystem, InputHistory, LazarusIDEStrConsts, Project,
   EnvironmentOpts, IDEProcs, RecentListProcs;

@@ -1,0 +1,44 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: lazaruscommonstrconst.lisabort
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisabort"
+msgid "Abort"
+msgstr "أجهض"
+
+#: lazaruscommonstrconst.lisbtnadd
+msgctxt "lazarusidestrconsts.lisbtnadd"
+msgid "&Add"
+msgstr "أضف"
+
+#: lazaruscommonstrconst.lisbtndelete
+msgctxt "lazarusidestrconsts.lisbtndelete"
+msgid "&Delete"
+msgstr "إمسح"
+
+#: lazaruscommonstrconst.lisdelete
+msgctxt "lazarusidestrconsts.lisdelete"
+msgid "Delete"
+msgstr "إمح"
+
+#: lazaruscommonstrconst.lishelp
+msgctxt "lazarusidestrconsts.lishelp"
+msgid "Help"
+msgstr "معونة"
+
+#: lazaruscommonstrconst.lisignore
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisignore"
+msgid "Ignore"
+msgstr "تجاهل"
+
+#: lazaruscommonstrconst.lisnever
+msgctxt "lazarusidestrconsts.lisnever"
+msgid "Never"
+msgstr "أبدا"
+

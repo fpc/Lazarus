@@ -47,7 +47,7 @@ uses
   LazUTF8, FileUtil,
   // IdeIntf
   IDEWindowIntf, IDEImagesIntf, NewItemIntf, ProjectIntf,
-  LazIDEIntf, IDEHelpIntf, IDEDialogs,
+  LazarusCommonStrConst, LazIDEIntf, IDEHelpIntf, IDEDialogs,
   // IDE
   InputHistory, LazarusIDEStrConsts, Project, MainIntf;
 

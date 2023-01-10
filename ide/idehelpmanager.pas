@@ -45,7 +45,7 @@ uses
   // IDEIntf
   PropEdits, ObjectInspector, TextTools, IDEDialogs, LazHelpIntf, MacroIntf,
   IDEWindowIntf, IDEMsgIntf, PackageIntf, LazIDEIntf, HelpFPDoc, IDEHelpIntf,
-  IDEExternToolIntf, IDEImagesIntf,
+  LazarusCommonStrConst, IDEExternToolIntf, IDEImagesIntf,
   // IDE
   LazarusIDEStrConsts, DialogProcs, ObjInspExt, EnvironmentOpts, AboutFrm,
   Project, MainBar, IDEFPDocFileSearch, PackageDefs, PackageSystem, HelpOptions,

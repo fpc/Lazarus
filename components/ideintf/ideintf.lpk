@@ -319,6 +319,10 @@
         <Filename Value="seledits.pas"/>
         <UnitName Value="SelEdits"/>
       </Item>
+      <Item>
+        <Filename Value="lazaruscommonstrconst.pas"/>
+        <UnitName Value="LazarusCommonStrConst"/>
+      </Item>
     </Files>
     <LazDoc Paths="docs"/>
     <i18n>

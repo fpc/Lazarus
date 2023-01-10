@@ -204,19 +204,9 @@ msgstr ""
 msgid "Allow Function Calls"
 msgstr ""
 
-#: idedebuggerstringconstants.liscancel
-msgctxt "lazarusidestrconsts.liscancel"
-msgid "Cancel"
-msgstr "Annuleren"
-
 #: idedebuggerstringconstants.lisdigits
 msgid "Digits:"
 msgstr ""
-
-#: idedebuggerstringconstants.lisenabled
-msgctxt "lazarusidestrconsts.lisenabled"
-msgid "Enabled"
-msgstr "Ingeschakeld"
 
 #: idedebuggerstringconstants.lisexpression
 msgid "Expression:"
@@ -237,13 +227,6 @@ msgstr ""
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "&Help"
-
-#: idedebuggerstringconstants.lismenuok
-#, fuzzy
-#| msgid "&Ok"
-msgctxt "lazarusidestrconsts.lismenuok"
-msgid "&OK"
-msgstr "&Ok"
 
 #: idedebuggerstringconstants.lisrepeatcount
 msgid "Repeat Count:"

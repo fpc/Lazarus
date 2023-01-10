@@ -213,19 +213,9 @@ msgstr ""
 msgid "Allow Function Calls"
 msgstr "Salli funktiokutsut"
 
-#: idedebuggerstringconstants.liscancel
-msgctxt "lazarusidestrconsts.liscancel"
-msgid "Cancel"
-msgstr "Peru"
-
 #: idedebuggerstringconstants.lisdigits
 msgid "Digits:"
 msgstr "Numerot"
-
-#: idedebuggerstringconstants.lisenabled
-msgctxt "lazarusidestrconsts.lisenabled"
-msgid "Enabled"
-msgstr "Sallittu"
 
 #: idedebuggerstringconstants.lisexpression
 msgid "Expression:"
@@ -246,10 +236,6 @@ msgstr ""
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "&Ohje"
-
-#: idedebuggerstringconstants.lismenuok
-msgid "&OK"
-msgstr ""
 
 #: idedebuggerstringconstants.lisrepeatcount
 msgid "Repeat Count:"

@@ -12,7 +12,7 @@ uses
   // LazUtils
   FileUtil,
   // IDE, converter
-  LazarusIDEStrConsts, ConverterTypes;
+  LazarusCommonStrConst, LazarusIDEStrConsts, ConverterTypes;
 
 type
 

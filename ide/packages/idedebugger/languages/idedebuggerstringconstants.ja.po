@@ -214,19 +214,9 @@ msgstr "インスタンスクラス型を使って下さい"
 msgid "Allow Function Calls"
 msgstr "関数呼び出しを許可する"
 
-#: idedebuggerstringconstants.liscancel
-msgctxt "lazarusidestrconsts.liscancel"
-msgid "Cancel"
-msgstr "キャンセル"
-
 #: idedebuggerstringconstants.lisdigits
 msgid "Digits:"
 msgstr "桁"
-
-#: idedebuggerstringconstants.lisenabled
-msgctxt "lazarusidestrconsts.lisenabled"
-msgid "Enabled"
-msgstr "有効"
 
 #: idedebuggerstringconstants.lisexpression
 msgid "Expression:"
@@ -247,11 +237,6 @@ msgstr ""
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "ヘルプ(&H)"
-
-#: idedebuggerstringconstants.lismenuok
-msgctxt "lazarusidestrconsts.lismenuok"
-msgid "&OK"
-msgstr "OK(&O)"
 
 #: idedebuggerstringconstants.lisrepeatcount
 msgid "Repeat Count:"

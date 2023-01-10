@@ -13,7 +13,7 @@ uses
   // LazUtils
   FileUtil, LazFileUtils, LazUTF8,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, IDEDialogs,
+  LazarusCommonStrConst, IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, IDEDialogs,
   // IDE
   Project, ProjectUserResources, LazarusIDEStrConsts;
 

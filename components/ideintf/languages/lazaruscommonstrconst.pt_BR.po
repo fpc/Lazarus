@@ -1,0 +1,112 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: lazaruscommonstrconst.lisabort
+msgctxt "lazarusidestrconsts.lisabort"
+msgid "Abort"
+msgstr "Abortar"
+
+#: lazaruscommonstrconst.lisadd
+msgctxt "lazarusidestrconsts.lisadd"
+msgid "Add"
+msgstr "Adicionar"
+
+#: lazaruscommonstrconst.lisalways
+msgid "Always"
+msgstr "Sempre"
+
+#: lazaruscommonstrconst.lisbtnadd
+msgctxt "lazarusidestrconsts.lisbtnadd"
+msgid "&Add"
+msgstr "&Adicionar"
+
+#: lazaruscommonstrconst.lisbtndelete
+msgctxt "lazarusidestrconsts.lisbtndelete"
+msgid "&Delete"
+msgstr "&Excluir"
+
+#: lazaruscommonstrconst.lisbtndlgadd
+msgid "&Add ..."
+msgstr "&Adicionar ..."
+
+#: lazaruscommonstrconst.lisbtnenabled
+msgctxt "lazarusidestrconsts.lisbtnenabled"
+msgid "&Enabled"
+msgstr "&Ativo"
+
+#: lazaruscommonstrconst.liscancel
+msgctxt "lazarusidestrconsts.liscancel"
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: lazaruscommonstrconst.liscontinue
+msgctxt "lazarusidestrconsts.liscontinue"
+msgid "Continue"
+msgstr "Continuar"
+
+#: lazaruscommonstrconst.lisdelete
+msgctxt "lazarusidestrconsts.lisdelete"
+msgid "Delete"
+msgstr "Excluir"
+
+#: lazaruscommonstrconst.lisdisabled
+msgctxt "lazarusidestrconsts.lisdisabled"
+msgid "Disabled"
+msgstr "Desativado"
+
+#: lazaruscommonstrconst.lisdlgadd
+msgctxt "lazarusidestrconsts.lisdlgadd"
+msgid "Add ..."
+msgstr "Adicionar ..."
+
+#: lazaruscommonstrconst.lisenabled
+msgctxt "lazarusidestrconsts.lisenabled"
+msgid "Enabled"
+msgstr "Ativo"
+
+#: lazaruscommonstrconst.lishelp
+msgctxt "lazarusidestrconsts.lishelp"
+msgid "Help"
+msgstr "Ajuda"
+
+#: lazaruscommonstrconst.lisignore
+msgctxt "lazarusidestrconsts.lisignore"
+msgid "Ignore"
+msgstr "Ignorar"
+
+#: lazaruscommonstrconst.lislazarus
+msgctxt "lazarusidestrconsts.lislazarus"
+msgid "Lazarus"
+msgstr "Lazarus"
+
+#: lazaruscommonstrconst.lismenucontinue
+msgid "&Continue"
+msgstr "&Continuar"
+
+#: lazaruscommonstrconst.lismenuok
+msgctxt "lazarusidestrconsts.lismenuok"
+msgid "&OK"
+msgstr "&OK"
+
+#: lazaruscommonstrconst.lisnever
+msgctxt "lazarusidestrconsts.lisnever"
+msgid "Never"
+msgstr "Nunca"
+
+#: lazaruscommonstrconst.lisno
+msgid "No"
+msgstr "Não"
+
+#: lazaruscommonstrconst.lisok
+msgctxt "lazarusidestrconsts.lisok"
+msgid "OK"
+msgstr "OK"
+
+#: lazaruscommonstrconst.lisyes
+msgid "Yes"
+msgstr "Sim"
+

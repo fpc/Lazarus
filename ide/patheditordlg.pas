@@ -30,7 +30,7 @@ uses
   // LazControls
   ShortPathEdit,
   // IdeIntf
-  MacroIntf, IDEImagesIntf, IDEUtils,
+  LazarusCommonStrConst, MacroIntf, IDEImagesIntf, IDEUtils,
   // IDE
   TransferMacros, GenericListSelect, LazarusIDEStrConsts;
 

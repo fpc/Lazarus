@@ -37,7 +37,7 @@ uses
   // SynEdit
   SynMacroRecorder, SynEdit, SynEditKeyCmds,
   // IdeIntf
-  IDEWindowIntf, IDEImagesIntf, SrcEditorIntf, IDEHelpIntf, IDECommands,
+  LazarusCommonStrConst, IDEWindowIntf, IDEImagesIntf, SrcEditorIntf, IDEHelpIntf, IDECommands,
   LazIDEIntf, IDEDialogs,
   // IDE
   LazarusIDEStrConsts, ProjectDefs, LazConf, Project, KeyMapping,

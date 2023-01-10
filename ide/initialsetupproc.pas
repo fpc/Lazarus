@@ -38,6 +38,8 @@ uses
   DefineTemplates, CodeToolManager, FileProcs,
   // LazUtils
   LazFileCache, LazUTF8, LazFileUtils, FileUtil, LazLoggerBase, Laz2_XMLCfg,
+  // IDEIntf
+  LazarusCommonStrConst,
   // IDE
   LazarusIDEStrConsts, LazConf, EnvironmentOpts, FppkgHelper;
 

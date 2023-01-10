@@ -48,7 +48,7 @@ uses
   IDEOptionsIntf, NewItemIntf,
   // IDEIntf
   IDEImagesIntf, MenuIntf, LazIDEIntf, FormEditingIntf, IDEHelpIntf,
-  IDEWindowIntf, IDEDialogs, ComponentReg, IDEOptEditorIntf,
+  LazarusCommonStrConst, IDEWindowIntf, IDEDialogs, ComponentReg, IDEOptEditorIntf,
   // IDE
   MainBase, IDEProcs, DialogProcs, LazarusIDEStrConsts, IDEDefs,
   CompilerOptions, EnvironmentOpts, InputHistory, SearchPathProcs,

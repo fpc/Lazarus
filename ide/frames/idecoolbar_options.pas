@@ -34,7 +34,7 @@ uses
   // LazControls
   DividerBevel,
   // IDEIntf
-  IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf,
+  LazarusCommonStrConst, IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf,
   // IDE
   LazarusIDEStrConsts, MainBar, EnvironmentOpts, IdeCoolbarData, CoolBarOptions;
 

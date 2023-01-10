@@ -213,19 +213,9 @@ msgstr ""
 msgid "Allow Function Calls"
 msgstr "Povoliť Function Calls"
 
-#: idedebuggerstringconstants.liscancel
-msgctxt "lazarusidestrconsts.liscancel"
-msgid "Cancel"
-msgstr "Zrušiť"
-
 #: idedebuggerstringconstants.lisdigits
 msgid "Digits:"
 msgstr "Číslice:"
-
-#: idedebuggerstringconstants.lisenabled
-msgctxt "lazarusidestrconsts.lisenabled"
-msgid "Enabled"
-msgstr "Povolené"
 
 #: idedebuggerstringconstants.lisexpression
 msgid "Expression:"
@@ -246,11 +236,6 @@ msgstr ""
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "&Pomoc"
-
-#: idedebuggerstringconstants.lismenuok
-msgctxt "lazarusidestrconsts.lismenuok"
-msgid "&OK"
-msgstr "&OK"
 
 #: idedebuggerstringconstants.lisrepeatcount
 msgid "Repeat Count:"

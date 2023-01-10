@@ -15,7 +15,7 @@ uses
   // CodeTools
   BasicCodeTools,
   // IdeIntf
-  IDEHelpIntf, MacroDefIntf, LazIDEIntf, IDEUtils,
+  LazarusCommonStrConst, IDEHelpIntf, MacroDefIntf, LazIDEIntf, IDEUtils,
   // IDE
   InputHistory, LazarusIDEStrConsts, EnvironmentOpts, TransferMacros;
 

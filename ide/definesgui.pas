@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, Forms, StdCtrls, Buttons, ButtonPanel, CheckLst, LCLType, Controls,
-  IDEHelpIntf, IDEImagesIntf, LazarusIDEStrConsts, Compiler;
+  IDEHelpIntf, IDEImagesIntf, LazarusCommonStrConst, LazarusIDEStrConsts, Compiler;
 
 type
 

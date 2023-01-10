@@ -9,11 +9,7 @@ interface
 
 resourcestring
   // Overlap with the IDE
-  lisMenuOk = '&OK';
-  lisCancel = 'Cancel';
   lisMenuHelp = '&Help';
-  lisEnabled = 'Enabled';
-  //lisDefault = 'Default';
 
   //
 

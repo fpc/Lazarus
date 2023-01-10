@@ -6,7 +6,7 @@ interface
 
 uses
   Forms, Controls, ButtonPanel, StdCtrls, ExtCtrls, Debugger, LazarusIDEStrConsts,
-  DbgIntfDebuggerBase;
+  LazarusCommonStrConst, DbgIntfDebuggerBase;
 
 type
 

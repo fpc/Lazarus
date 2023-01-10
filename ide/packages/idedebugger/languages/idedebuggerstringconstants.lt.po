@@ -214,19 +214,9 @@ msgstr "Naudoti egzemplioriaus klasės tipą"
 msgid "Allow Function Calls"
 msgstr "Leisti kreiptis į funkciją"
 
-#: idedebuggerstringconstants.liscancel
-msgctxt "lazarusidestrconsts.liscancel"
-msgid "Cancel"
-msgstr "Atsisakyti"
-
 #: idedebuggerstringconstants.lisdigits
 msgid "Digits:"
 msgstr "Skaitmenų:"
-
-#: idedebuggerstringconstants.lisenabled
-msgctxt "lazarusidestrconsts.lisenabled"
-msgid "Enabled"
-msgstr "Veiksnus"
 
 #: idedebuggerstringconstants.lisexpression
 msgid "Expression:"
@@ -247,11 +237,6 @@ msgstr ""
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "Žin&ynas"
-
-#: idedebuggerstringconstants.lismenuok
-msgctxt "lazarusidestrconsts.lismenuok"
-msgid "&OK"
-msgstr "&Tinka"
 
 #: idedebuggerstringconstants.lisrepeatcount
 msgid "Repeat Count:"

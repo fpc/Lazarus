@@ -4657,11 +4657,6 @@ msgstr "Birim adı zaten var"
 msgid "Abandon changes?"
 msgstr "Değişikliklerden vazgeçilsin mi?"
 
-#: lazarusidestrconsts.lisabort
-msgctxt "lazarusidestrconsts.lisabort"
-msgid "Abort"
-msgstr "İptal"
-
 #: lazarusidestrconsts.lisabortall
 msgid "Abort all"
 msgstr "Hepsini iptal et"
@@ -4753,11 +4748,6 @@ msgstr "Aktif"
 #: lazarusidestrconsts.lisactivefilter
 msgid "Active Filter"
 msgstr "Aktif Filtre"
-
-#: lazarusidestrconsts.lisadd
-msgctxt "lazarusidestrconsts.lisadd"
-msgid "Add"
-msgstr "Ekle"
 
 #: lazarusidestrconsts.lisaddanewseparatoraboveselecteditem
 msgid "Add a new separator above selected item"
@@ -4991,10 +4981,6 @@ msgstr "Alternatif tuş"
 #: lazarusidestrconsts.lisalternativekeyor2keysequence
 msgid "Alternative key (or 2 key sequence)"
 msgstr "Alternatif tuş (veya 2 tuş sıralı)"
-
-#: lazarusidestrconsts.lisalways
-msgid "Always"
-msgstr "Her zaman"
 
 #: lazarusidestrconsts.lisalwaysconvertsuggesteddefaultfilenametolowercase
 msgid "Always convert suggested default file name to lowercase"
@@ -5367,34 +5353,15 @@ msgstr "Kesme Noktası Özellikleri"
 msgid "Browse and select a compiler (e.g. ppcx64"
 msgstr "Bir derleyiciye göz atın ve seçin (örneğin, ppcx64)"
 
-#: lazarusidestrconsts.lisbtnadd
-msgctxt "lazarusidestrconsts.lisbtnadd"
-msgid "&Add"
-msgstr "&Ekle"
-
 #: lazarusidestrconsts.lisbtnclose
 msgctxt "lazarusidestrconsts.lisbtnclose"
 msgid "&Close"
 msgstr "&Kapat"
 
-#: lazarusidestrconsts.lisbtndelete
-msgctxt "lazarusidestrconsts.lisbtndelete"
-msgid "&Delete"
-msgstr "&Sil"
-
-#: lazarusidestrconsts.lisbtndlgadd
-msgid "&Add ..."
-msgstr "&Ekle ..."
-
 #: lazarusidestrconsts.lisbtndlgreplace
 msgctxt "lazarusidestrconsts.lisbtndlgreplace"
 msgid "&Replace ..."
 msgstr "&Değiştir ..."
-
-#: lazarusidestrconsts.lisbtnenabled
-msgctxt "lazarusidestrconsts.lisbtnenabled"
-msgid "&Enabled"
-msgstr "&Etkin"
 
 #: lazarusidestrconsts.lisbtnfind
 msgid "&Find"
@@ -5503,11 +5470,6 @@ msgstr "%s öğesinden Makefile oluşturmak için %s çağrısı başarısız ol
 #: lazarusidestrconsts.liscallstacknotevaluated
 msgid "Stack not evaluated"
 msgstr "Yığın değerlendirilmedi"
-
-#: lazarusidestrconsts.liscancel
-msgctxt "lazarusidestrconsts.liscancel"
-msgid "Cancel"
-msgstr "İptal"
 
 #: lazarusidestrconsts.liscancelloadingthiscomponent
 msgid "Cancel loading this component"
@@ -7403,11 +7365,6 @@ msgstr "İçerik"
 msgid "Context sensitive"
 msgstr "İçeriğe duyarlı"
 
-#: lazarusidestrconsts.liscontinue
-msgctxt "lazarusidestrconsts.liscontinue"
-msgid "Continue"
-msgstr "Devam et"
-
 #: lazarusidestrconsts.liscontinueanddonotaskagain
 msgid "Continue and do not ask again"
 msgstr "Devam et ve tekrar sorma"
@@ -8702,11 +8659,6 @@ msgstr "Tamamlama kutusundaki uzun satır ipuçları için gecikme"
 msgid "Delay for hints"
 msgstr "İpucu geçikmesi"
 
-#: lazarusidestrconsts.lisdelete
-msgctxt "lazarusidestrconsts.lisdelete"
-msgid "Delete"
-msgstr "Sil"
-
 #: lazarusidestrconsts.lisdelete2
 msgid "Delete?"
 msgstr "Sil?"
@@ -8925,11 +8877,6 @@ msgstr "Tümünü aynı kaynakta devre dışı bırak"
 msgid "Disable Breakpoint"
 msgstr "Kesme Noktasını Devre Dışı Bırak"
 
-#: lazarusidestrconsts.lisdisabled
-msgctxt "lazarusidestrconsts.lisdisabled"
-msgid "Disabled"
-msgstr "Devre dışı"
-
 #: lazarusidestrconsts.lisdisablegroups
 msgid "Disable Groups"
 msgstr "Grupları Devre Dışı Bırak"
@@ -9023,11 +8970,6 @@ msgstr "Bazı dosyalar yerel değişikliklere sahiptir. Yerel veya harici deği�
 #: lazarusidestrconsts.lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Büyük ve küçük harfleri ayırt et, örn. A ve a"
-
-#: lazarusidestrconsts.lisdlgadd
-msgctxt "lazarusidestrconsts.lisdlgadd"
-msgid "Add ..."
-msgstr "Ekle ..."
 
 #: lazarusidestrconsts.lisdlgalloptions
 msgid "All options ..."
@@ -9490,11 +9432,6 @@ msgstr "Tümünü aynı kaynakta etkinleştir"
 #: lazarusidestrconsts.lisenablebreakpoint
 msgid "Enable Breakpoint"
 msgstr "Kesme noktasını etkinleştir"
-
-#: lazarusidestrconsts.lisenabled
-msgctxt "lazarusidestrconsts.lisenabled"
-msgid "Enabled"
-msgstr "Etkin"
 
 #: lazarusidestrconsts.lisenabledonlyforpackages
 msgid "Enabled only for packages."
@@ -10732,11 +10669,6 @@ msgstr "Başlık renkleri"
 msgid "Header comment for class"
 msgstr "Sınıf için üstbilgi açıklaması"
 
-#: lazarusidestrconsts.lishelp
-msgctxt "lazarusidestrconsts.lishelp"
-msgid "Help"
-msgstr "Yardım"
-
 #: lazarusidestrconsts.lishelpentries
 msgid "Help entries"
 msgstr "Yardım girdileri"
@@ -11032,11 +10964,6 @@ msgstr "Yalnızca oturum bilgileri değiştiyse, kaydetme hakkında bilgi isteyi
 #, object-pascal-format
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "İki farklı Lazarus sürümü kullanmak istiyorsanız, ikinci Lazarus'a birincil-config-path veya pcp.%s komut satırı parametresi ile başlatmalısınız. Örneğin:"
-
-#: lazarusidestrconsts.lisignore
-msgctxt "lazarusidestrconsts.lisignore"
-msgid "Ignore"
-msgstr "Yoksay"
 
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
@@ -12185,10 +12112,6 @@ msgstr "Başlatma uygulaması geçersiz"
 msgid "Launching target command line"
 msgstr "Hedef komut satırı başlatılıyor"
 
-#: lazarusidestrconsts.lislazarus
-msgid "Lazarus"
-msgstr "Lazarus"
-
 #: lazarusidestrconsts.lislazarusdefault
 msgid "Lazarus Default"
 msgstr "Lazarus Varsayılan"
@@ -12882,10 +12805,6 @@ msgstr "\"Lazarus oluşturmayı\" Yapılandır..."
 #: lazarusidestrconsts.lismenucontexthelp
 msgid "Context sensitive Help"
 msgstr "Bağlama duyarlı Yardım"
-
-#: lazarusidestrconsts.lismenucontinue
-msgid "&Continue"
-msgstr "&Devam"
 
 #: lazarusidestrconsts.lismenuconvertdelphipackage
 msgid "Convert Delphi Package to Lazarus Package ..."
@@ -13781,10 +13700,6 @@ msgstr "Dosyadan Yeni Proje ..."
 msgctxt "lazarusidestrconsts.lismenunewunit"
 msgid "New Unit"
 msgstr "Yeni Birim"
-
-#: lazarusidestrconsts.lismenuok
-msgid "&OK"
-msgstr "&TAMAM"
 
 #: lazarusidestrconsts.lismenuonlinehelp
 msgid "Online Help"
@@ -14694,11 +14609,6 @@ msgstr "Etkin yapı modunun adı"
 msgid "Name of new procedure"
 msgstr "Yeni prosedürün adı"
 
-#: lazarusidestrconsts.lisnever
-msgctxt "lazarusidestrconsts.lisnever"
-msgid "Never"
-msgstr "Asla"
-
 #: lazarusidestrconsts.lisnew
 msgid "New"
 msgstr "Yeni"
@@ -14790,10 +14700,6 @@ msgstr "Yeni kaydedilen makrolar, kaydedilmeyecek"
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 msgid "New units are added to uses sections"
 msgstr "Uses bölümüne yeni birimler eklenirken"
-
-#: lazarusidestrconsts.lisno
-msgid "No"
-msgstr "Hayır"
 
 #: lazarusidestrconsts.lisnoautosaveactivedesktop
 msgid "'Auto save active desktop' option is turned off, you will need to save current desktop manually."
@@ -15096,10 +15002,6 @@ msgstr "Durum"
 #, object-pascal-format
 msgid "%sThis package is installed but the lpk file was not found"
 msgstr "%s Bu paket kuruldu, ancak lpk dosyası bulunamadı"
-
-#: lazarusidestrconsts.lisok
-msgid "OK"
-msgstr "TAMAM"
 
 #: lazarusidestrconsts.lisoldclass
 msgid "Old Class"
@@ -20698,10 +20600,6 @@ msgstr "XML Hatası"
 #, object-pascal-format
 msgid "XML parser error in file %s%sError: %s"
 msgstr "%s  dosyasındaki XML ayrıştırıcı hatası %sHata:%s"
-
-#: lazarusidestrconsts.lisyes
-msgid "Yes"
-msgstr "Evet"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"

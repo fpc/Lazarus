@@ -33,7 +33,7 @@ uses
   // SynEdit
   SynEditMouseCmds,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, IDEDialogs,
+  LazarusCommonStrConst, IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, IDEDialogs,
   // IDE
   EditorOptions, LazarusIDEStrConsts, MouseActionDialog, KeyMapping;
 

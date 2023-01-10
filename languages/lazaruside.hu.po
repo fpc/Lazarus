@@ -4708,11 +4708,6 @@ msgstr "A unit-név már létezik"
 msgid "Abandon changes?"
 msgstr "Változások elvetése?"
 
-#: lazarusidestrconsts.lisabort
-msgctxt "lazarusidestrconsts.lisabort"
-msgid "Abort"
-msgstr "Megszakítás"
-
 #: lazarusidestrconsts.lisabortall
 msgid "Abort all"
 msgstr "Összes megszakítása"
@@ -4805,11 +4800,6 @@ msgstr "Aktív"
 #: lazarusidestrconsts.lisactivefilter
 msgid "Active Filter"
 msgstr "Aktív szűrő"
-
-#: lazarusidestrconsts.lisadd
-msgctxt "lazarusidestrconsts.lisadd"
-msgid "Add"
-msgstr "Hozzáadás"
 
 #: lazarusidestrconsts.lisaddanewseparatoraboveselecteditem
 msgid "Add a new separator above selected item"
@@ -5043,10 +5033,6 @@ msgstr "Helyettesítő billentyű"
 #: lazarusidestrconsts.lisalternativekeyor2keysequence
 msgid "Alternative key (or 2 key sequence)"
 msgstr "Helyettesítő billentyű (vagy 2 billentyű egymás után)"
-
-#: lazarusidestrconsts.lisalways
-msgid "Always"
-msgstr "Mindig"
 
 #: lazarusidestrconsts.lisalwaysconvertsuggesteddefaultfilenametolowercase
 msgid "Always convert suggested default file name to lowercase"
@@ -5419,34 +5405,15 @@ msgstr "Töréspont tulajdonságai"
 msgid "Browse and select a compiler (e.g. ppcx64"
 msgstr "Böngészés és fordító kiválasztása (pl. ppcx64"
 
-#: lazarusidestrconsts.lisbtnadd
-msgctxt "lazarusidestrconsts.lisbtnadd"
-msgid "&Add"
-msgstr "Hozzáadás"
-
 #: lazarusidestrconsts.lisbtnclose
 msgctxt "lazarusidestrconsts.lisbtnclose"
 msgid "&Close"
 msgstr "Bezárás"
 
-#: lazarusidestrconsts.lisbtndelete
-msgctxt "lazarusidestrconsts.lisbtndelete"
-msgid "&Delete"
-msgstr "Törlés"
-
-#: lazarusidestrconsts.lisbtndlgadd
-msgid "&Add ..."
-msgstr "Hozzá&adás ..."
-
 #: lazarusidestrconsts.lisbtndlgreplace
 msgctxt "lazarusidestrconsts.lisbtndlgreplace"
 msgid "&Replace ..."
 msgstr "Cse&re ..."
-
-#: lazarusidestrconsts.lisbtnenabled
-msgctxt "lazarusidestrconsts.lisbtnenabled"
-msgid "&Enabled"
-msgstr "Engedélyezve"
 
 #: lazarusidestrconsts.lisbtnfind
 msgid "&Find"
@@ -5555,11 +5522,6 @@ msgstr "%s meghívása Makefile készítéséhez nem sikerült innen: %s"
 #: lazarusidestrconsts.liscallstacknotevaluated
 msgid "Stack not evaluated"
 msgstr "Verem nincs kiértékelve"
-
-#: lazarusidestrconsts.liscancel
-msgctxt "lazarusidestrconsts.liscancel"
-msgid "Cancel"
-msgstr "Mégsem"
 
 #: lazarusidestrconsts.liscancelloadingthiscomponent
 msgid "Cancel loading this component"
@@ -7467,11 +7429,6 @@ msgstr "Tartalom"
 msgid "Context sensitive"
 msgstr "Helyérzékeny"
 
-#: lazarusidestrconsts.liscontinue
-msgctxt "lazarusidestrconsts.liscontinue"
-msgid "Continue"
-msgstr "Folytatás"
-
 #: lazarusidestrconsts.liscontinueanddonotaskagain
 msgid "Continue and do not ask again"
 msgstr "Folytatás és ne kérdezze újra"
@@ -8766,11 +8723,6 @@ msgstr "Hosszú sor tippek késleltetése a kiegészítés dobozban"
 msgid "Delay for hints"
 msgstr "Tipp késleltetése"
 
-#: lazarusidestrconsts.lisdelete
-msgctxt "lazarusidestrconsts.lisdelete"
-msgid "Delete"
-msgstr "Törlés"
-
 #: lazarusidestrconsts.lisdelete2
 msgid "Delete?"
 msgstr "Törlés?"
@@ -8989,11 +8941,6 @@ msgstr "Összes kikapcsolása ugyanabban a forrásban"
 msgid "Disable Breakpoint"
 msgstr "Töréspont letiltása"
 
-#: lazarusidestrconsts.lisdisabled
-msgctxt "lazarusidestrconsts.lisdisabled"
-msgid "Disabled"
-msgstr "Letiltva"
-
 #: lazarusidestrconsts.lisdisablegroups
 msgid "Disable Groups"
 msgstr "Csoport Letiltása"
@@ -9087,11 +9034,6 @@ msgstr ""
 #: lazarusidestrconsts.lisdistinguishbigandsmalllettersegaanda
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Nagy- és kisbetűk megkülönböztetése pl. A és a"
-
-#: lazarusidestrconsts.lisdlgadd
-msgctxt "lazarusidestrconsts.lisdlgadd"
-msgid "Add ..."
-msgstr "Hozzáadás ..."
 
 #: lazarusidestrconsts.lisdlgalloptions
 msgid "All options ..."
@@ -9554,11 +9496,6 @@ msgstr "Minden engedélyezése ugyanabban a forráskódban"
 #: lazarusidestrconsts.lisenablebreakpoint
 msgid "Enable Breakpoint"
 msgstr "Töréspont engedélyezése"
-
-#: lazarusidestrconsts.lisenabled
-msgctxt "lazarusidestrconsts.lisenabled"
-msgid "Enabled"
-msgstr "Engedélyezve"
 
 #: lazarusidestrconsts.lisenabledonlyforpackages
 msgid "Enabled only for packages."
@@ -10797,11 +10734,6 @@ msgstr "Fejlécek színei"
 msgid "Header comment for class"
 msgstr "Fejléc megjegyzés az osztályhoz"
 
-#: lazarusidestrconsts.lishelp
-msgctxt "lazarusidestrconsts.lishelp"
-msgid "Help"
-msgstr "Súgó"
-
 #: lazarusidestrconsts.lishelpentries
 msgid "Help entries"
 msgstr "Súgó bejegyzések"
@@ -11097,11 +11029,6 @@ msgstr "Kérdés a mentésről ha csak a munkamenet információ változtak meg.
 #, object-pascal-format
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "Ha különböző Lazarus változatokat akar használni, a második Lazarus-t a primary-config-path vagy a pcp parancssori paraméterrel kell indítani.%sPéldául:"
-
-#: lazarusidestrconsts.lisignore
-msgctxt "lazarusidestrconsts.lisignore"
-msgid "Ignore"
-msgstr "Kihagyás"
 
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
@@ -12252,11 +12179,6 @@ msgstr "Alkalmazás futtatása érvénytelen"
 msgid "Launching target command line"
 msgstr "Cél parancssor futtatása"
 
-#: lazarusidestrconsts.lislazarus
-msgctxt "lazarusidestrconsts.lislazarus"
-msgid "Lazarus"
-msgstr "Lazarus"
-
 #: lazarusidestrconsts.lislazarusdefault
 msgid "Lazarus Default"
 msgstr "Lazarus alapértelmezés"
@@ -12959,10 +12881,6 @@ msgstr "\"Lazarus építés\" beállítása ..."
 #: lazarusidestrconsts.lismenucontexthelp
 msgid "Context sensitive Help"
 msgstr "Tartalomérzékeny súgó"
-
-#: lazarusidestrconsts.lismenucontinue
-msgid "&Continue"
-msgstr "Folytatás"
 
 #: lazarusidestrconsts.lismenuconvertdelphipackage
 msgid "Convert Delphi Package to Lazarus Package ..."
@@ -13866,11 +13784,6 @@ msgstr "Új projekt fájlból ..."
 msgctxt "lazarusidestrconsts.lismenunewunit"
 msgid "New Unit"
 msgstr "Új unit"
-
-#: lazarusidestrconsts.lismenuok
-msgctxt "lazarusidestrconsts.lismenuok"
-msgid "&OK"
-msgstr "&OK"
 
 #: lazarusidestrconsts.lismenuonlinehelp
 msgid "Online Help"
@@ -14788,11 +14701,6 @@ msgstr "Jelenlegi építési mód neve"
 msgid "Name of new procedure"
 msgstr "Új eljárás neve"
 
-#: lazarusidestrconsts.lisnever
-msgctxt "lazarusidestrconsts.lisnever"
-msgid "Never"
-msgstr "Soha"
-
 #: lazarusidestrconsts.lisnew
 msgctxt "lazarusidestrconsts.lisnew"
 msgid "New"
@@ -14885,10 +14793,6 @@ msgstr "Újonnan rögzített makró. Nem kell menteni"
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
 msgid "New units are added to uses sections"
 msgstr "Új unit-ok hozzáadása a uses szakaszhoz"
-
-#: lazarusidestrconsts.lisno
-msgid "No"
-msgstr "Nem"
 
 #: lazarusidestrconsts.lisnoautosaveactivedesktop
 msgid "'Auto save active desktop' option is turned off, you will need to save current desktop manually."
@@ -15192,11 +15096,6 @@ msgstr "Állapot"
 #, object-pascal-format
 msgid "%sThis package is installed but the lpk file was not found"
 msgstr "%sEz a csomag telepítve van, de a .lpk fájl nem található"
-
-#: lazarusidestrconsts.lisok
-msgctxt "lazarusidestrconsts.lisok"
-msgid "OK"
-msgstr "OK"
 
 #: lazarusidestrconsts.lisoldclass
 msgid "Old Class"
@@ -20835,10 +20734,6 @@ msgstr "XML Hiba"
 #, object-pascal-format
 msgid "XML parser error in file %s%sError: %s"
 msgstr "XML elemző hiba a(z) %s%s fájlban. Hiba: %s"
-
-#: lazarusidestrconsts.lisyes
-msgid "Yes"
-msgstr "Igen"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"
