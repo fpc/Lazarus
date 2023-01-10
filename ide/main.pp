@@ -1027,7 +1027,7 @@ end;
 function DoTranslateKey(Key: word; Shift: TShiftState;
   IDEWindowClass: TCustomFormClass; UseLastKey: boolean = true): word;
 begin
-  EditorOpts.KeyMap.TranslateKey(Key, Shift, IDEWindowClass, UseLastKey);
+  Result := EditorOpts.KeyMap.TranslateKey(Key, Shift, IDEWindowClass, UseLastKey);
 end;
 
 {-------------------------------------------------------------------------------
