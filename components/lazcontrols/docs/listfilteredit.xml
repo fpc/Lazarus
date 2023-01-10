@@ -397,7 +397,6 @@ values in the control.
 <link id="#lcl.editbtn.TCustomControlFilterEdit.Text">TCustomControlFilterEdit.Text</link>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.OnCheckItem">TCustomControlFilterEdit.OnCheckItem</link>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
-<link id="#lcl.editbtn.TCustomControlFilterEdit.ApplyFilter">TCustomControlFilterEdit.ApplyFilter</link>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.ApplyFilterCore">TCustomControlFilterEdit.ApplyFilterCore</link>
 </seealso>
 </element>
@@ -554,7 +553,6 @@ data and Items properties for the control.
 <seealso>
 <link id="TListFilterEdit.FilteredListbox"/>
 <link id="TListFilterEdit.SelectionList"/>
-<link id="#lcl.editbtn.TCustomControlFilterEdit.ApplyFilter">TCustomControlFilterEdit.ApplyFilter</link>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
 <link id="#lcl.stdctrls.TCustomListBox.Selected">TCustomListBox.Selected</link>
 </seealso>
@@ -614,7 +612,6 @@ applied to the control.
 <link id="TListFilterEdit.RestoreSelection"/>
 <link id="TListFilterEdit.FilteredListbox"/>
 <link id="TListFilterEdit.SortAndFilter"/>
-<link id="#lcl.editbtn.TCustomControlFilterEdit.ApplyFilter">TCustomControlFilterEdit.ApplyFilter</link>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
 <link id="#lcl.stdctrls.TCustomListBox.Selected">TCustomListBox.Selected</link>
 </seealso>
@@ -644,7 +641,6 @@ associated list box control.
 <link id="TListFilterEdit.SelectionList"/>
 <link id="TListFilterEdit.FilteredListbox"/>
 <link id="TListFilterEdit.SelectionList"/>
-<link id="#lcl.editbtn.TCustomControlFilterEdit.ApplyFilter">TCustomControlFilterEdit.ApplyFilter</link>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
 <link id="#lcl.stdctrls.TCustomListBox.Items">TCustomListBox.Items</link>
 </seealso>

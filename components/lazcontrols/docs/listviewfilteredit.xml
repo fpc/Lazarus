@@ -484,7 +484,6 @@ SelectionList in the Items for the associated TListView control.
 <link id="TListViewFilterEdit.SelectionList"/>
 <link id="TListViewFilterEdit.RestoreSelection"/>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.StoreSelection">TCustomControlFilterEdit.StoreSelection</link>
-<link id="#lcl.editbtn.TCustomControlFilterEdit.ApplyFilter">TCustomControlFilterEdit.ApplyFilter</link>
 <link id="#lcl.comctrls.TCustomListView.Items">TCustomListView.Items</link>
 <link id="#lcl.comctrls.TListItems">TListItems</link>
 <link id="#lcl.comctrls.TListItem.Selected">TListItem.Selected</link>
@@ -526,7 +525,6 @@ FilteredListview to the SelectionList property.
 <link id="TListViewFilterEdit.SelectionList"/>
 <link id="TListViewFilterEdit.StoreSelection"/>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.RestoreSelection">TCustomControlFilterEdit.RestoreSelection</link>
-<link id="#lcl.editbtn.TCustomControlFilterEdit.ApplyFilter">TCustomControlFilterEdit.ApplyFilter</link>
 <link id="#lcl.comctrls.TCustomListView.Items">TCustomListView.Items</link>
 <link id="#lcl.comctrls.TListItems">TListItems</link>
 <link id="#lcl.comctrls.TListItem.Selected">TListItem.Selected</link>
@@ -557,7 +555,6 @@ FilteredListview when the Filter is cleared for the control.
 <seealso>
 <link id="TListViewFilterEdit.FilteredListview"/>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
-<link id="#lcl.editbtn.TCustomControlFilterEdit.ApplyFilter">TCustomControlFilterEdit.ApplyFilter</link>
 <link id="#lcl.comctrls.TCustomListView.Items">TCustomListView.Items</link>
 <link id="#lcl.comctrls.TCustomListView.SelCount">TCustomListView.SelCount</link>
 <link id="#lcl.comctrls.TListItems">TListItems</link>
@@ -604,7 +601,6 @@ are included in the filtered values for the control.
 <link id="TListViewFilterEdit.Items"/>
 <link id="TListViewFilterEdit.ApplyFilterCore"/>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
-<link id="#lcl.editbtn.TCustomControlFilterEdit.ApplyFilter">TCustomControlFilterEdit.ApplyFilter</link>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.Text">TCustomControlFilterEdit.Text</link>
 <link id="#lcl.comctrls.TCustomListView">TCustomListView</link>
 </seealso>

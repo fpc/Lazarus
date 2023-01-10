@@ -420,7 +420,6 @@ mode of operation for the control.
 <seealso>
 <link id="TTreeFilterEdit.SortAndFilter"/>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
-<link id="#lcl.editbtn.TCustomControlFilterEdit.ApplyFilter">TCustomControlFilterEdit.ApplyFilter</link>
 </seealso>
 </element>
 
