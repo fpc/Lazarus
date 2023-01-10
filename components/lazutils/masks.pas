@@ -194,7 +194,7 @@ type
     fMaskOpcodesAllowed: TMaskOpCodes;
     // EscapeChar forces next char to be a literal one, not a wildcard.
     fMaskEscapeChar: Char;
-    procedure Compile; virtual;
+    procedure PrepareCompile;
     class procedure Exception_InvalidCharMask(const aMaskChar: string; aOffset: integer=-1); static;
     class procedure Exception_MissingCloseChar(const aMaskChar: string; aOffset: integer=-1); static;
     class procedure Exception_IncompleteMask(); static;
@@ -250,7 +250,7 @@ type
     constructor Create(const aMask: String; aOptions: TMaskOptions); overload;
         deprecated 'Use Create with TMaskOpCodes params.'; // in Lazarus 2.3, remove in 2.5.
 
-    procedure Compile; override;
+    procedure Compile; virtual;
     function Matches(const aStringToMatch: String): Boolean; virtual;
     function MatchesWindowsMask(const AFileName: String): Boolean;
         deprecated 'Create with TMaskWindows.Create, then call Matches.'; // in Lazarus 2.3, remove in 2.5.
@@ -669,12 +669,12 @@ begin
   Add(P^+aValue);
 end;
 
-procedure TMaskBase.Compile;
+procedure TMaskBase.PrepareCompile;
 begin
   fMaskCompiled := nil;
   fMaskCompiledAllocated := 0;
   fMaskCompiledIndex := 0;
-  fMaskIsCompiled:=true;
+  fMaskIsCompiled:=False;
 end;
 
 class procedure TMaskBase.Exception_InvalidCharMask(const aMaskChar: string;
@@ -1037,10 +1037,7 @@ end;
 
 procedure TMaskUTF8.Compile;
 begin
-  inherited Compile;
-  //if Compile fails and a new call to Matches is made and Mask is unchanged
-  //then Matches simply returns False, when raising the exception again would be more appropriate IMO (BB)
-  fMaskIsCompiled:=False;
+  PrepareCompile;
   if fCaseSensitive then
     fMask:=fOriginalMask
   else
@@ -1072,6 +1069,11 @@ begin
 
   SetLength(fMaskCompiled,fMaskCompiledIndex);
   fMaskCompiledLimit:=fMaskCompiledIndex-1;
+  {
+   fMaskIsCompiled Indicates that Compile was succesfull
+   If you override this method make sure that it is only set to True if
+   the overridden method also succeeds!
+  }
   fMaskIsCompiled:=True;
 
   //writeln('Compile end.');
