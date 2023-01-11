@@ -7,12 +7,10 @@ msgstr ""
 
 #: lazaruscommonstrconst.lisabort
 #, fuzzy
-msgctxt "lazarusidestrconsts.lisabort"
 msgid "Abort"
 msgstr "Afbreken"
 
 #: lazaruscommonstrconst.lisadd
-msgctxt "lazarusidestrconsts.lisadd"
 msgid "Add"
 msgstr "Toevoegen"
 
@@ -21,7 +19,6 @@ msgid "Always"
 msgstr ""
 
 #: lazaruscommonstrconst.lisbtnadd
-msgctxt "lazarusidestrconsts.lisbtnadd"
 msgid "&Add"
 msgstr "&Toevoegen"
 
@@ -30,7 +27,6 @@ msgid "&Continue"
 msgstr ""
 
 #: lazaruscommonstrconst.lisbtndelete
-msgctxt "lazarusidestrconsts.lisbtndelete"
 msgid "&Delete"
 msgstr "&Verwijderen"
 
@@ -39,29 +35,24 @@ msgid "&Add ..."
 msgstr ""
 
 #: lazaruscommonstrconst.lisbtnenabled
-msgctxt "lazarusidestrconsts.lisbtnenabled"
 msgid "&Enabled"
 msgstr "&Ingeschakeld"
 
 #: lazaruscommonstrconst.lisbtnok
 #, fuzzy
 #| msgid "&Ok"
-msgctxt "lazarusidestrconsts.lisBtnOk"
 msgid "&OK"
 msgstr "&Ok"
 
 #: lazaruscommonstrconst.liscancel
-msgctxt "lazarusidestrconsts.liscancel"
 msgid "Cancel"
 msgstr "Annuleren"
 
 #: lazaruscommonstrconst.liscontinue
-msgctxt "lazarusidestrconsts.liscontinue"
 msgid "Continue"
 msgstr "Doorgaan"
 
 #: lazaruscommonstrconst.lisdelete
-msgctxt "lazarusidestrconsts.lisdelete"
 msgid "Delete"
 msgstr "Verwijder"
 
@@ -72,28 +63,23 @@ msgstr ""
 #: lazaruscommonstrconst.lisdlgadd
 #, fuzzy
 #| msgid "Add..."
-msgctxt "lazarusidestrconsts.lisdlgadd"
 msgid "Add ..."
 msgstr "Toevoegen ..."
 
 #: lazaruscommonstrconst.lisenabled
-msgctxt "lazarusidestrconsts.lisenabled"
 msgid "Enabled"
 msgstr "Ingeschakeld"
 
 #: lazaruscommonstrconst.lishelp
-msgctxt "lazarusidestrconsts.lishelp"
 msgid "Help"
 msgstr "Help"
 
 #: lazaruscommonstrconst.lisignore
 #, fuzzy
-msgctxt "lazarusidestrconsts.lisignore"
 msgid "Ignore"
 msgstr "Negeren"
 
 #: lazaruscommonstrconst.lislazarus
-msgctxt "lazarusidestrconsts.lislazarus"
 msgid "Lazarus"
 msgstr "Lazarus"
 
@@ -106,7 +92,6 @@ msgid "No"
 msgstr ""
 
 #: lazaruscommonstrconst.lisok
-msgctxt "lazarusidestrconsts.lisok"
 msgid "OK"
 msgstr "Ok"
 

@@ -6,12 +6,10 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 
 #: lazaruscommonstrconst.lisabort
-msgctxt "lazarusidestrconsts.lisabort"
 msgid "Abort"
 msgstr "Keskeytä"
 
 #: lazaruscommonstrconst.lisadd
-msgctxt "lazarusidestrconsts.lisadd"
 msgid "Add"
 msgstr "Lisää"
 
@@ -20,7 +18,6 @@ msgid "Always"
 msgstr "Aina"
 
 #: lazaruscommonstrconst.lisbtnadd
-msgctxt "lazarusidestrconsts.lisbtnadd"
 msgid "&Add"
 msgstr "&Lisää"
 
@@ -29,7 +26,6 @@ msgid "&Continue"
 msgstr "&Jatka"
 
 #: lazaruscommonstrconst.lisbtndelete
-msgctxt "lazarusidestrconsts.lisbtndelete"
 msgid "&Delete"
 msgstr "&Poista"
 
@@ -38,7 +34,6 @@ msgid "&Add ..."
 msgstr "&Lisää ..."
 
 #: lazaruscommonstrconst.lisbtnenabled
-msgctxt "lazarusidestrconsts.lisbtnenabled"
 msgid "&Enabled"
 msgstr "&Sallittu"
 
@@ -47,22 +42,18 @@ msgid "&OK"
 msgstr ""
 
 #: lazaruscommonstrconst.liscancel
-msgctxt "lazarusidestrconsts.liscancel"
 msgid "Cancel"
 msgstr "Peru"
 
 #: lazaruscommonstrconst.liscontinue
-msgctxt "lazarusidestrconsts.liscontinue"
 msgid "Continue"
 msgstr "Jatka"
 
 #: lazaruscommonstrconst.lisdelete
-msgctxt "lazarusidestrconsts.lisdelete"
 msgid "Delete"
 msgstr "Poista"
 
 #: lazaruscommonstrconst.lisdisabled
-msgctxt "lazarusidestrconsts.lisdisabled"
 msgid "Disabled"
 msgstr "Estetty"
 
@@ -71,17 +62,14 @@ msgid "Add ..."
 msgstr "Lisää ..."
 
 #: lazaruscommonstrconst.lisenabled
-msgctxt "lazarusidestrconsts.lisenabled"
 msgid "Enabled"
 msgstr "Sallittu"
 
 #: lazaruscommonstrconst.lishelp
-msgctxt "lazarusidestrconsts.lishelp"
 msgid "Help"
 msgstr "Ohje"
 
 #: lazaruscommonstrconst.lisignore
-msgctxt "lazarusidestrconsts.lisignore"
 msgid "Ignore"
 msgstr "Ohita"
 
@@ -90,7 +78,6 @@ msgid "Lazarus"
 msgstr ""
 
 #: lazaruscommonstrconst.lisnever
-msgctxt "lazarusidestrconsts.lisnever"
 msgid "Never"
 msgstr "Ei koskaan"
 

@@ -7,12 +7,10 @@ msgstr ""
 
 #: lazaruscommonstrconst.lisabort
 #, fuzzy
-msgctxt "lazarusidestrconsts.lisabort"
 msgid "Abort"
 msgstr "Batalkan"
 
 #: lazaruscommonstrconst.lisadd
-msgctxt "lazarusidestrconsts.lisadd"
 msgid "Add"
 msgstr "Tambah"
 
@@ -21,7 +19,6 @@ msgid "Always"
 msgstr ""
 
 #: lazaruscommonstrconst.lisbtnadd
-msgctxt "lazarusidestrconsts.lisbtnadd"
 msgid "&Add"
 msgstr "T&ambah"
 
@@ -30,7 +27,6 @@ msgid "&Continue"
 msgstr ""
 
 #: lazaruscommonstrconst.lisbtndelete
-msgctxt "lazarusidestrconsts.lisbtndelete"
 msgid "&Delete"
 msgstr "&Hapus"
 
@@ -39,29 +35,24 @@ msgid "&Add ..."
 msgstr ""
 
 #: lazaruscommonstrconst.lisbtnenabled
-msgctxt "lazarusidestrconsts.lisbtnenabled"
 msgid "&Enabled"
 msgstr "&Dihidupkan"
 
 #: lazaruscommonstrconst.lisbtnok
 #, fuzzy
 #| msgid "&Ok"
-msgctxt "lazarusidestrconsts.lisBtnOk"
 msgid "&OK"
 msgstr "&Ok"
 
 #: lazaruscommonstrconst.liscancel
-msgctxt "lazarusidestrconsts.liscancel"
 msgid "Cancel"
 msgstr "Batal"
 
 #: lazaruscommonstrconst.liscontinue
-msgctxt "lazarusidestrconsts.liscontinue"
 msgid "Continue"
 msgstr "Lanjutkan"
 
 #: lazaruscommonstrconst.lisdelete
-msgctxt "lazarusidestrconsts.lisdelete"
 msgid "Delete"
 msgstr "Hapus"
 
@@ -72,28 +63,23 @@ msgstr ""
 #: lazaruscommonstrconst.lisdlgadd
 #, fuzzy
 #| msgid "Add..."
-msgctxt "lazarusidestrconsts.lisdlgadd"
 msgid "Add ..."
 msgstr "Tambah..."
 
 #: lazaruscommonstrconst.lisenabled
-msgctxt "lazarusidestrconsts.lisenabled"
 msgid "Enabled"
 msgstr "Hidupkan"
 
 #: lazaruscommonstrconst.lishelp
-msgctxt "lazarusidestrconsts.lishelp"
 msgid "Help"
 msgstr "Panduan"
 
 #: lazaruscommonstrconst.lisignore
 #, fuzzy
-msgctxt "lazarusidestrconsts.lisignore"
 msgid "Ignore"
 msgstr "Abaikan"
 
 #: lazaruscommonstrconst.lislazarus
-msgctxt "lazarusidestrconsts.lislazarus"
 msgid "Lazarus"
 msgstr "Lazarus"
 
@@ -106,7 +92,6 @@ msgid "No"
 msgstr ""
 
 #: lazaruscommonstrconst.lisok
-msgctxt "lazarusidestrconsts.lisok"
 msgid "OK"
 msgstr "OK"
 

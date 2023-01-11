@@ -6,12 +6,10 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 
 #: lazaruscommonstrconst.lisabort
-msgctxt "lazarusidestrconsts.lisabort"
 msgid "Abort"
 msgstr "Przerwij"
 
 #: lazaruscommonstrconst.lisadd
-msgctxt "lazarusidestrconsts.lisadd"
 msgid "Add"
 msgstr "Dodaj"
 
@@ -20,7 +18,6 @@ msgid "Always"
 msgstr "Zawsze"
 
 #: lazaruscommonstrconst.lisbtnadd
-msgctxt "lazarusidestrconsts.lisbtnadd"
 msgid "&Add"
 msgstr "&Dodaj"
 
@@ -29,7 +26,6 @@ msgid "&Continue"
 msgstr "Kontynuuj"
 
 #: lazaruscommonstrconst.lisbtndelete
-msgctxt "lazarusidestrconsts.lisbtndelete"
 msgid "&Delete"
 msgstr "&Usuń"
 
@@ -38,62 +34,50 @@ msgid "&Add ..."
 msgstr "Dodaj ..."
 
 #: lazaruscommonstrconst.lisbtnenabled
-msgctxt "lazarusidestrconsts.lisbtnenabled"
 msgid "&Enabled"
 msgstr "Włączony"
 
 #: lazaruscommonstrconst.lisbtnok
-msgctxt "lazarusidestrconsts.lisBtnOk"
 msgid "&OK"
 msgstr "&OK"
 
 #: lazaruscommonstrconst.liscancel
-msgctxt "lazarusidestrconsts.liscancel"
 msgid "Cancel"
 msgstr "Anuluj"
 
 #: lazaruscommonstrconst.liscontinue
-msgctxt "lazarusidestrconsts.liscontinue"
 msgid "Continue"
 msgstr "Kontynuuj"
 
 #: lazaruscommonstrconst.lisdelete
-msgctxt "lazarusidestrconsts.lisdelete"
 msgid "Delete"
 msgstr "Usuń"
 
 #: lazaruscommonstrconst.lisdisabled
-msgctxt "lazarusidestrconsts.lisdisabled"
 msgid "Disabled"
 msgstr "Wyłączone"
 
 #: lazaruscommonstrconst.lisdlgadd
-msgctxt "lazarusidestrconsts.lisdlgadd"
 msgid "Add ..."
 msgstr "Dodaj..."
 
 #: lazaruscommonstrconst.lisenabled
-msgctxt "lazarusidestrconsts.lisenabled"
 msgid "Enabled"
 msgstr "Włącz"
 
 #: lazaruscommonstrconst.lishelp
-msgctxt "lazarusidestrconsts.lishelp"
 msgid "Help"
 msgstr "Pomoc"
 
 #: lazaruscommonstrconst.lisignore
-msgctxt "lazarusidestrconsts.lisignore"
 msgid "Ignore"
 msgstr "Ignoruj"
 
 #: lazaruscommonstrconst.lislazarus
-msgctxt "lazarusidestrconsts.lislazarus"
 msgid "Lazarus"
 msgstr "Lazarus"
 
 #: lazaruscommonstrconst.lisnever
-msgctxt "lazarusidestrconsts.lisnever"
 msgid "Never"
 msgstr "Nigdy"
 
@@ -102,7 +86,6 @@ msgid "No"
 msgstr "Nie"
 
 #: lazaruscommonstrconst.lisok
-msgctxt "lazarusidestrconsts.lisok"
 msgid "OK"
 msgstr "OK"
 

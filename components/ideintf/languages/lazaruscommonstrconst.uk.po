@@ -6,12 +6,10 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 
 #: lazaruscommonstrconst.lisabort
-msgctxt "lazarusidestrconsts.lisabort"
 msgid "Abort"
 msgstr "Перервати"
 
 #: lazaruscommonstrconst.lisadd
-msgctxt "lazarusidestrconsts.lisadd"
 msgid "Add"
 msgstr "Додати"
 
@@ -20,7 +18,6 @@ msgid "Always"
 msgstr "Завжди"
 
 #: lazaruscommonstrconst.lisbtnadd
-msgctxt "lazarusidestrconsts.lisbtnadd"
 msgid "&Add"
 msgstr "&Додати"
 
@@ -29,7 +26,6 @@ msgid "&Continue"
 msgstr "&Продовжити"
 
 #: lazaruscommonstrconst.lisbtndelete
-msgctxt "lazarusidestrconsts.lisbtndelete"
 msgid "&Delete"
 msgstr "&Видалити"
 
@@ -38,62 +34,50 @@ msgid "&Add ..."
 msgstr "&Додати ..."
 
 #: lazaruscommonstrconst.lisbtnenabled
-msgctxt "lazarusidestrconsts.lisbtnenabled"
 msgid "&Enabled"
 msgstr "&Доступний"
 
 #: lazaruscommonstrconst.lisbtnok
-msgctxt "lazarusidestrconsts.lisBtnOk"
 msgid "&OK"
 msgstr "&Гаразд"
 
 #: lazaruscommonstrconst.liscancel
-msgctxt "lazarusidestrconsts.liscancel"
 msgid "Cancel"
 msgstr "Скасувати"
 
 #: lazaruscommonstrconst.liscontinue
-msgctxt "lazarusidestrconsts.liscontinue"
 msgid "Continue"
 msgstr "Продовжити"
 
 #: lazaruscommonstrconst.lisdelete
-msgctxt "lazarusidestrconsts.lisdelete"
 msgid "Delete"
 msgstr "Вилучити"
 
 #: lazaruscommonstrconst.lisdisabled
-msgctxt "lazarusidestrconsts.lisdisabled"
 msgid "Disabled"
 msgstr "Вимкнено"
 
 #: lazaruscommonstrconst.lisdlgadd
-msgctxt "lazarusidestrconsts.lisdlgadd"
 msgid "Add ..."
 msgstr "Додати..."
 
 #: lazaruscommonstrconst.lisenabled
-msgctxt "lazarusidestrconsts.lisenabled"
 msgid "Enabled"
 msgstr "Доступний"
 
 #: lazaruscommonstrconst.lishelp
-msgctxt "lazarusidestrconsts.lishelp"
 msgid "Help"
 msgstr "Довідка"
 
 #: lazaruscommonstrconst.lisignore
-msgctxt "lazarusidestrconsts.lisignore"
 msgid "Ignore"
 msgstr "Знехтувати"
 
 #: lazaruscommonstrconst.lislazarus
-msgctxt "lazarusidestrconsts.lislazarus"
 msgid "Lazarus"
 msgstr "Lazarus"
 
 #: lazaruscommonstrconst.lisnever
-msgctxt "lazarusidestrconsts.lisnever"
 msgid "Never"
 msgstr "Ніколи"
 
@@ -102,7 +86,6 @@ msgid "No"
 msgstr "Ні"
 
 #: lazaruscommonstrconst.lisok
-msgctxt "lazarusidestrconsts.lisok"
 msgid "OK"
 msgstr "Гаразд"
 

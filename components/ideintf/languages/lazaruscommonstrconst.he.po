@@ -7,12 +7,10 @@ msgstr ""
 
 #: lazaruscommonstrconst.lisabort
 #, fuzzy
-msgctxt "lazarusidestrconsts.lisabort"
 msgid "Abort"
 msgstr "בטל"
 
 #: lazaruscommonstrconst.lisadd
-msgctxt "lazarusidestrconsts.lisadd"
 msgid "Add"
 msgstr "הוסף"
 
@@ -21,7 +19,6 @@ msgid "Always"
 msgstr "תמיד"
 
 #: lazaruscommonstrconst.lisbtnadd
-msgctxt "lazarusidestrconsts.lisbtnadd"
 msgid "&Add"
 msgstr "הו&סף"
 
@@ -30,7 +27,6 @@ msgid "&Continue"
 msgstr ""
 
 #: lazaruscommonstrconst.lisbtndelete
-msgctxt "lazarusidestrconsts.lisbtndelete"
 msgid "&Delete"
 msgstr "מ&חק"
 
@@ -39,65 +35,53 @@ msgid "&Add ..."
 msgstr ""
 
 #: lazaruscommonstrconst.lisbtnenabled
-msgctxt "lazarusidestrconsts.lisbtnenabled"
 msgid "&Enabled"
 msgstr "מאופשר"
 
 #: lazaruscommonstrconst.lisbtnok
-msgctxt "lazarusidestrconsts.lisBtnOk"
 msgid "&OK"
 msgstr "א&שר"
 
 #: lazaruscommonstrconst.liscancel
-msgctxt "lazarusidestrconsts.liscancel"
 msgid "Cancel"
 msgstr "בטל"
 
 #: lazaruscommonstrconst.liscontinue
-msgctxt "lazarusidestrconsts.liscontinue"
 msgid "Continue"
 msgstr "המשך"
 
 #: lazaruscommonstrconst.lisdelete
-msgctxt "lazarusidestrconsts.lisdelete"
 msgid "Delete"
 msgstr "מחק"
 
 #: lazaruscommonstrconst.lisdisabled
-msgctxt "lazarusidestrconsts.lisdisabled"
 msgid "Disabled"
 msgstr "מבוטל"
 
 #: lazaruscommonstrconst.lisdlgadd
 #, fuzzy
 #| msgid "Add..."
-msgctxt "lazarusidestrconsts.lisdlgadd"
 msgid "Add ..."
 msgstr "הוסף ..."
 
 #: lazaruscommonstrconst.lisenabled
-msgctxt "lazarusidestrconsts.lisenabled"
 msgid "Enabled"
 msgstr "מאופשר"
 
 #: lazaruscommonstrconst.lishelp
-msgctxt "lazarusidestrconsts.lishelp"
 msgid "Help"
 msgstr "עזרה"
 
 #: lazaruscommonstrconst.lisignore
 #, fuzzy
-msgctxt "lazarusidestrconsts.lisignore"
 msgid "Ignore"
 msgstr "התעלם"
 
 #: lazaruscommonstrconst.lislazarus
-msgctxt "lazarusidestrconsts.lislazarus"
 msgid "Lazarus"
 msgstr "לזארוס"
 
 #: lazaruscommonstrconst.lisnever
-msgctxt "lazarusidestrconsts.lisnever"
 msgid "Never"
 msgstr "אף פעם"
 
@@ -108,7 +92,6 @@ msgstr "לא"
 #: lazaruscommonstrconst.lisok
 #, fuzzy
 #| msgid "ok"
-msgctxt "lazarusidestrconsts.lisok"
 msgid "OK"
 msgstr "אשר"
 

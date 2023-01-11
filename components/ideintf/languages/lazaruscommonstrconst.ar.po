@@ -7,7 +7,6 @@ msgstr ""
 
 #: lazaruscommonstrconst.lisabort
 #, fuzzy
-msgctxt "lazarusidestrconsts.lisabort"
 msgid "Abort"
 msgstr "أجهض"
 
@@ -20,7 +19,6 @@ msgid "Always"
 msgstr ""
 
 #: lazaruscommonstrconst.lisbtnadd
-msgctxt "lazarusidestrconsts.lisbtnadd"
 msgid "&Add"
 msgstr "أضف"
 
@@ -29,7 +27,6 @@ msgid "&Continue"
 msgstr ""
 
 #: lazaruscommonstrconst.lisbtndelete
-msgctxt "lazarusidestrconsts.lisbtndelete"
 msgid "&Delete"
 msgstr "إمسح"
 
@@ -54,7 +51,6 @@ msgid "Continue"
 msgstr ""
 
 #: lazaruscommonstrconst.lisdelete
-msgctxt "lazarusidestrconsts.lisdelete"
 msgid "Delete"
 msgstr "إمح"
 
@@ -71,13 +67,11 @@ msgid "Enabled"
 msgstr ""
 
 #: lazaruscommonstrconst.lishelp
-msgctxt "lazarusidestrconsts.lishelp"
 msgid "Help"
 msgstr "معونة"
 
 #: lazaruscommonstrconst.lisignore
 #, fuzzy
-msgctxt "lazarusidestrconsts.lisignore"
 msgid "Ignore"
 msgstr "تجاهل"
 
@@ -86,7 +80,6 @@ msgid "Lazarus"
 msgstr ""
 
 #: lazaruscommonstrconst.lisnever
-msgctxt "lazarusidestrconsts.lisnever"
 msgid "Never"
 msgstr "أبدا"
 
