@@ -833,7 +833,15 @@ begin
   ResStream := TMemoryStream.Create;
   Writer := TResResourceWriter.Create;
   try
-    FSystemResources.WriteToStream(ResStream, Writer);
+    try
+      FSystemResources.WriteToStream(ResStream, Writer);
+    except
+      on E: Exception do
+      begin
+        debugln('TProjectResources.UpdateResCodeBuffer exception %s: %s', [E.ClassName, E.Message]);
+        ResStream.Size := 0;
+      end;
+    end;
     ResStream.Position := 0;
     CodeBuf.LoadFromStream(ResStream);
     Result := CodeBuf.Source <> LastSavedRes;
