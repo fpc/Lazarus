@@ -1080,8 +1080,8 @@ Experimental. Platform dependent.
 </element>
 
 <!-- published -->
-<element name="TExtendedTabControl.ShowToolBar" link="#lcl.extendedtabcontrols.TCustomExtendedTabControl.ShowToolBar"/>
-<element name="TExtendedTabControl.ToolBar" link="#lcl.extendedtabcontrols.TCustomExtendedTabControl.ToolBar"/>
+<element name="TExtendedTabControl.ShowToolBar" link="#lazcontrols.extendedtabcontrols.TCustomExtendedTabControl.ShowToolBar"/>
+<element name="TExtendedTabControl.ToolBar" link="#lazcontrols.extendedtabcontrols.TCustomExtendedTabControl.ToolBar"/>
 
 </module>
 <!-- ExtendedTabControls -->
