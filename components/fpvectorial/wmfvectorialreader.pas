@@ -9,7 +9,9 @@
   - see the empty case items in "TWMFVectorialReader.ReadRecords"
 
   Issues:
-  - Text often truncated, last character missing
+  - Text often truncated ( -- fixed)
+  - last character missing (-- fixed)
+  - Background color not applied
 
   Author: Werner Pamler
 }
@@ -50,6 +52,7 @@ type
     FCurrBrush: TvBrush;
     FCurrFont: TvFont;
     FCurrPalette: TFPPalette;
+    FCurrBkColor: TFPColor;
     FCurrTextColor: TFPColor;
     FCurrTextAlign: Word;
     FCurrBkMode: Word;
@@ -78,6 +81,7 @@ type
     procedure ReadArc(APage: TvVectorialpage; const AParams: TParamArray);
     procedure ReadBkColor(APage: TvVectorialPage; const AParams: TParamArray);
     procedure ReadBkMode(APage: TvVectorialPage; const AValue: Word);
+    procedure ReadBkMode(APage: TvVectorialPage; const AParams: TParamArray);
     procedure ReadChord(APage: TvVectorialpage; const AParams: TParamArray);
     function ReadColor(const AParams: TParamArray; AIndex: Integer): TFPColor;
     procedure ReadExtTextOut(APage: TvVectorialPage; const AParams: TParamArray);
@@ -206,6 +210,7 @@ begin
     Underline := false;
     StrikeThrough := false;
   end;
+  FCurrBkColor := colWhite;
   FCurrTextColor := colBlack;
   FCurrTextAlign := 0;  // Left + Top
   FCurrPolyFillMode := ALTERNATE;
@@ -433,6 +438,7 @@ begin
     TObject(obj).Free;
     FObjList[idx] := nil;
     // Do not delete from list because this will confuse the obj indexes.
+    // Only mark the deleted obj item as nil so that the index can be re-used.
   end;
 end;
 
@@ -467,13 +473,19 @@ end;
 procedure TvWMFVectorialReader.ReadBkColor(APage: TvVectorialPage;
   const AParams: TParamArray);
 begin
-  APage.BackgroundColor := ReadColor(AParams, 0);
+  FCurrBkColor := ReadColor(AParams, 0);
 end;
 
 procedure TvWMFVectorialReader.ReadBkMode(APage: TvVectorialPage;
   const AValue: Word);
 begin
   FCurrBkMode := AValue;
+end;
+
+procedure TvWMFVectorialReader.ReadBkMode(APage: TvVectorialPage;
+  const AParams: TParamArray);
+begin
+  ReadBkMode(APage, AParams[0]);
 end;
 
 procedure TvWMFVectorialReader.ReadChord(APage: TvVectorialPage;
@@ -548,10 +560,9 @@ begin
   angle := DegToRad(FCurrFont.Orientation);
   case FCurrTextAlign and $0018 of
     0:
-      offs := Point(0, 0); //Rotate2DPoint(Point(0, +FCurrRawFontHeight), Point(0, 0), angle);
+      offs := Point(0, 0); //Rotate2DPoint(Point(0, +FCurrRawFontHeight), Point(0, 0), angle);        // wp --- the TA_BASELINE case seems to be correct, this one must be wrong...
     TA_BASELINE:
-//      offs := Rotate2DPoint(Point(0, -FCurrRawFontHeight*6 div 5), Point(0, 0), angle);
-      offs := Rotate2DPoint(Point(0, +FCurrRawFontHeight), Point(0, 0), angle);
+      offs := Point(0, 0);  // wp: was Rotate2DPoint(Point(0, +FCurrRawFontHeight), Point(0, 0), angle);
     TA_BOTTOM:
       offs := Rotate2DPoint(Point(0, -FCurrRawFontHeight*7 div 5), Point(0, 0), angle);
   end;
@@ -560,6 +571,7 @@ begin
   txt := APage.AddText(ScaleX(x + offs.X), ScaleY(y + offs.Y), s);
   // Select the font
   txt.Font := FCurrFont;
+  txt.Font.Color := FCurrTextColor;
   // Set horizontal text alignment.
   case FCurrTextAlign and (TA_RIGHT or TA_CENTER) of
     TA_RIGHT  : txt.TextAnchor := vtaEnd;
@@ -567,12 +579,15 @@ begin
     else        txt.TextAnchor := vtaStart;
   end;
 
-  case FCurrBkMode of
-    BM_TRANSPARENT : txt.Brush.Style := bsClear;
-    BM_OPAQUE      : txt.Brush.Style := bsSolid;
-  end;
+  // Opaque flag
+  if opts and ETO_OPAQUE <> 0 then
+  begin
+    txt.Brush.Style := bsSolid;
+    txt.Brush.Color := FCurrBkColor;
+  end
+  else
+    txt.Brush.Style := bsClear;
 
-  // to do: draw text background (if opts and ETO_OPAQUE <> 0 )
   // to do: take care of clipping (if opts and ETO_CLIPPED <> 0)
 end;
 
@@ -947,7 +962,7 @@ begin
       META_SETBKCOLOR:
         ReadBkColor(page, params);
       META_SETBKMODE:
-        ;
+        ReadBkMode(page, params);
       META_SETLAYOUT:
         ;
       META_SETMAPMODE:
@@ -1094,7 +1109,6 @@ var
   rasterImg: TvRasterImage = nil;
   memImg: TFPMemoryImage = nil;
   dibRec: PWMFStretchDIBRecord;
-  hasCoreHdr: Boolean;
 begin
   dibRec := PWMFStretchDIBRecord(@AParams[0]);
   memImg := TFPMemoryImage.Create(0, 0); //w, h);
@@ -1178,18 +1192,11 @@ end;
 function TvWMFVectorialReader.ReadString(const AParams: TParamArray;
   AStartIndex, ALength: Integer): String;
 var
-  s: ansistring;
-  i, j: Integer;
+  s: ansistring = '';
 begin
   SetLength(s, ALength);
-  i := AStartIndex;
-  j := 1;
-  while j < ALength do begin
-    Move(AParams[i], s[j], SIZE_OF_WORD);
-    inc(i);
-    inc(j, 2);
-  end;
-  if odd(ALength) then SetLength(s, ALength-1);
+  Move(AParams[AStartIndex], s[1], ALength);
+  // Note: ALength is the true string length. No need to remove the padding byte added to odd-length strings.
   Result := ISO_8859_1ToUTF8(s);
 end;
 
@@ -1210,11 +1217,10 @@ var
   s: String;
   txt: TvText;
   offs: TPoint;
-  txtHeight: Integer;
 begin
   { Record layout:
     word - String length
-    even number of bytes - String, no trailing zero
+    even number of bytes - String, no trailing zero, but padded to even length
     smallInt - yStart
     smallInt - xStart }
 
@@ -1232,15 +1238,15 @@ begin
   // TO DO: More testing of text positioning.
   case FCurrTextAlign and $0018 of
     0:
-      offs := Point(0, 0);
+      offs := Point(0, 0);  // TA_BASELINE seems to be correct (2023-01-11) --> case 0 must be wrong...
     TA_BASELINE:
-      offs := Rotate2DPoint(Point(0, FCurrRawFontHeight), Point(0, 0), DegToRad(FCurrFont.Orientation));
+      offs := Point(0, 0); //wp: was Rotate2DPoint(Point(0, FCurrRawFontHeight), Point(0, 0), DegToRad(FCurrFont.Orientation));
     TA_BOTTOM:
       offs := Rotate2DPoint(Point(0, -FCurrRawFontHeight*7 div 5), Point(0, 0), DegToRad(FCurrFont.Orientation));
   end;
 
   // Pass the text to fpvectorial
-  txt := APage.AddText(ScaleX(x + offs.x), ScaleY(y + offs.y), s);
+  txt := APage.AddText(ScaleX(x + offs.x), ScaleY(y - offs.y), s);
   // Select the font
   txt.Font := FCurrFont;
   // Font color
@@ -1252,10 +1258,12 @@ begin
     else        txt.TextAnchor := vtaStart;
   end;
   // Set background style
-  case FCurrBkMode of
-    BM_TRANSPARENT : txt.Brush.Style := bsClear;
-    BM_OPAQUE      : txt.Brush.Style := bsSolid;
-  end;
+  if FCurrBkMode = BM_OPAQUE then
+  begin
+    txt.Brush.Style := bsSolid;
+    txt.Brush.Color := FCurrBkColor;
+  end else
+    txt.Brush.Style := bsClear;
 end;
 
 procedure TvWMFVectorialReader.ReadWindowExt(const AParams: TParamArray);

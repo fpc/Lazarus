@@ -7,8 +7,8 @@
 
   Coordinates:
   - wmf has y=0 at top, y grows downward (like with standard canvas).
-  - fpv has y=0 at bottom and y grows upwards if page.UseTopLeftCoordinates is
-    false or like wmf otherwise.
+  - fpv has y=0 at bottom and y grows upward if page.UseTopLeftCoordinates is
+    false, or like wmf otherwise.
 
   Issues:
   - Text background is opaque although it should be transparent.
@@ -78,7 +78,7 @@ type
     function ScaleSizeY(y: Double): Integer;
     procedure UpdateBounds(x, y: Integer);
 
-    procedure WriteBkColor(AStream: TStream; APage: TvVectorialPage);
+    procedure WriteBkColor(AStream: TStream; AColor: TFPColor);
     procedure WriteBkMode(AStream: TStream; AMode: Word);
     procedure WriteBrush(AStream: TStream; ABrush: TvBrush);
     procedure WriteCircle(AStream: TStream; ACircle: TvCircle);
@@ -288,6 +288,7 @@ begin
     Underline := false;
     StrikeThrough := false;
   end;
+  FCurrBkMode := BM_TRANSPARENT;
 end;
 
 destructor TvWMFVectorialWriter.Destroy;
@@ -388,11 +389,11 @@ begin
   FLogicalBounds.Bottom := Max(Y, FLogicalBounds.Bottom);
 end;
 
-procedure TvWMFVectorialWriter.WriteBkColor(AStream: TStream; APage: TvVectorialPage);
+procedure TvWMFVectorialWriter.WriteBkColor(AStream: TStream; AColor: TFPColor);
 var
   rec: TWMFColorRecord;
 begin
-  rec := MakeWMFColorRecord(APage.BackgroundColor);
+  rec := MakeWMFColorRecord(AColor);
   WriteWMFRecord(AStream, META_SETBKCOLOR, rec, SizeOf(rec));
 end;
 
@@ -515,7 +516,7 @@ begin
   else if AEntity is TvEllipse then
     WriteEllipse(AStream, TvEllipse(AEntity))
   else if AEntity is TvText then
-    WriteText(AStream, TvText(AEntity))
+    WriteExtText(AStream, TvText(AEntity))
   else if AEntity is TPath then
     WritePath(AStream, TPath(AEntity));
 end;
@@ -529,19 +530,27 @@ procedure TvWMFVectorialWriter.WriteExtText(AStream: TStream; AText: TvText);
 var
   s: String;
   rec: TWMFExtTextRecord;
-  i, n: Integer;
+  i, n, strLen, corrLen: Integer;
   P: TPoint;
   offs: TPoint;
   brush: TvBrush;
+  opts: Word;
 begin
   brush := AText.Brush;
+  opts := 0;
+  if brush.Style <> bsClear then
+  begin
+    opts := opts or ETO_OPAQUE;
+    WriteBkColor(AStream, brush.Color);
+  end;
+                    (*
   if (brush.Style = bsClear) and (FCurrBkMode = BM_OPAQUE) then
     WriteBkMode(AStream, BM_TRANSPARENT)
   else begin
     if FCurrBkMode = BM_TRANSPARENT then
       WriteBkMode(AStream, BM_OPAQUE);
     WriteBrush(AStream, AText.Brush);
-  end;
+  end;                *)
 
   WriteFont(AStream, AText.Font);
 
@@ -549,21 +558,23 @@ begin
     WriteTextAnchor(AStream, AText.TextAnchor);
 
   s := UTF8ToISO_8859_1(AText.Value.Text);
-  n := SizeOf(TWMFExtTextRecord) + Length(s);
-  if odd(n) then begin
-    inc(n);
+  strLen := Length(s);
+  corrLen := strLen;
+  if odd(corrLen) then begin
     s := s + #0;
+    inc(corrLen);
   end;
+  n := SizeOf(TWMFExtTextRecord) + corrLen;
 
   rec.X := ScaleX(AText.X);
   rec.Y := ScaleY(AText.Y);
   // No vertical offset required because text alignment is TA_BASELINE.
-  rec.Options := 0;  // no clipping, no background
-  rec.Len := UTF8Length(s);
+  rec.Options := opts;  // no clipping so far
+  rec.Len := strLen;    // true string length
 
   WriteWMFRecord(AStream, META_EXTTEXTOUT, rec, n);
-  AStream.Position := AStream.Position - Length(s);
-  WriteWMFParams(AStream, s[1], Length(s));
+  AStream.Position := AStream.Position - corrLen;
+  WriteWMFParams(AStream, s[1], corrLen);
 end;
 
 procedure TvWMFVectorialWriter.WriteFont(AStream: TStream; AFont: TvFont);
@@ -649,7 +660,7 @@ begin
   WriteWindowExt(AStream);
   WriteWindowOrg(AStream);
   WriteMapMode(AStream);
-  WriteBkColor(AStream, APage);
+  WriteBkColor(AStream, APage.BackgroundColor);
   WriteBkMode(AStream, BM_TRANSPARENT);
   WriteTextAlign(AStream, TA_BASELINE or TA_LEFT);
 
@@ -864,11 +875,9 @@ end;
 procedure TvWMFVectorialWriter.WriteText(AStream: TStream; AText: TvText);
 var
   s: String;
-  n: Integer;
-  len: SmallInt;
-  rec: TWMFPointRecord;
-  offs: TPoint;
-  P: TPoint;
+  strLen, corrLen: SmallInt;
+  recSize: DWord;
+  ptRec: TWMFPointRecord;
   brush: TvBrush;
 begin
   brush := AText.Brush;
@@ -885,16 +894,20 @@ begin
   if (AText.TextAnchor <> FCurrTextAnchor) then
     WriteTextAnchor(AStream, AText.TextAnchor);
 
+  recSize := SizeOf(TWMFPointRecord);
   s := UTF8ToISO_8859_1(AText.Value.Text);
-  len := Length(s);
-  if odd(len) then begin
+  strLen := Length(s);
+  corrLen := strLen;
+  if odd(corrLen) then
+  begin
     s := s + #0;
-    inc(len);
+    inc(corrLen);
   end;
+  inc(recSize, SizeOf(corrLen) + corrLen);
 
-  rec.X := ScaleX(AText.X);
-  rec.Y := ScaleY(AText.Y);
-  // No vertical font height offset required because text alignment is TA_BASELINE
+  ptRec.X := ScaleX(AText.X);
+  ptRec.Y := ScaleY(AText.Y);
+  // No vertical font height offset required because fpv uses text alignment TA_BASELINE
 
   { The record structure is
     - TWMFRecord
@@ -902,10 +915,10 @@ begin
     - String, no trailing zero
     - y
     - x }
-  WriteWMFRecord(AStream, META_TEXTOUT, SizeOf(len) + len + SizeOf(TWMFPointRecord));
-  WriteWMFParams(AStream, len, SizeOf(len));
-  WriteWMFParams(AStream, s[1], Length(s));
-  WriteWMFParams(AStream, rec, SizeOf(rec));
+  WriteWMFRecord(AStream, META_TEXTOUT, recSize);
+  WriteWMFParams(AStream, strLen, SizeOf(strLen));
+  WriteWMFParams(AStream, s[1], corrLen);
+  WriteWMFParams(AStream, ptRec, SizeOf(TWMFPointRecord));
 end;
 
 procedure TvWMFVectorialWriter.WriteTextAlign(AStream: TStream; AAlign: word);

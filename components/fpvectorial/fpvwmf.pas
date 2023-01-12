@@ -148,7 +148,7 @@ type
   TWMFExtTextRecord = packed record
     Y: SmallInt;
     X: SmallInt;
-    Len: SmallInt;
+    Len: SmallInt;    // String length
     Options: Word;
     // Optional bounding rect and text follow
   end;
