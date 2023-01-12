@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
 <package name="LazControls">
-
+<!-- 
+======================================================================
+ShortPathEdit
+======================================================================
+-->
 <module name="ShortPathEdit">
 <short>Implements the TShortPathEdit control.</short>
 <descr>
@@ -61,7 +65,7 @@ Lazarus IDE.
 <descr>
 <p>
 <var>CreateDialog</var> is an overridden method in <var>TShortPathEdit</var> 
-used to create and configure the directory selection dialog for the control.  
+used to create and configure the directory selection dialog for the control. 
 The return value contains the <var>TCommonDialog</var> descendant created and 
 configured in the method. It is actually a <var>TSelectDirectoryDialog</var> 
 instance.
@@ -81,7 +85,12 @@ CreateDialog is called when the <var>RunDialog</var> method is called after
 clicking on the speed button for the control.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TShortPathEdit.RunDialog"/>
+<link id="#lcl.dialogs.TSelectDirectoryDialog">TSelectDirectoryDialog</link>
+<link id="#lcl.editbtn.TDirectoryEdit.DialogTitle">TDirectoryEdit.DialogTitle</link>
+<link id="#lcl.editbtn.TDirectoryEdit.RootDir">TDirectoryEdit.RootDir</link>
+</seealso>
 </element>
 <element name="TShortPathEdit.CreateDialog.Result">
 <short>
@@ -106,7 +115,11 @@ using the dialog result as an argument. If the dialog return value is not an
 empty string (''), it is assigned to the <var>Directory</var> property.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TShortPathEdit.OnAcceptDirectory"/>
+<link id="#lcl.editbtn.TDirectoryEdit.Directory">TDirectoryEdit.Directory</link>
+<link id="#lcl.dialogs.TSelectDirectoryDialog">TSelectDirectoryDialog</link>
+</seealso>
 </element>
 
 <element name="TShortPathEdit.Directory">
@@ -116,16 +129,20 @@ empty string (''), it is assigned to the <var>Directory</var> property.
 <var>Directory</var> is a <var>String</var> property used to specify the 
 initial directory on the local file system used to select a directory in the 
 control. It is used as the initial directory for the directory selection 
-dialog executed in the RunDialog method. It is also used to store a valid 
-path name returned from the directory selection dialog.
+dialog (TSelectDirectoryDialog) executed in the RunDialog method. It is also 
+used to store a valid path name returned from the directory selection dialog.
 </p>
 <p>
-A value assigned to Directory is not automatically reflected in the text for 
+A value assigned to Directory is not automatically reflected in the Text for 
 the control. Use the OnAcceptDirectory event handler to update the value in 
 Text if desired.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TShortPathEdit.OnAcceptDirectory"/>
+<link id="#lcl.dialogs.TSelectDirectoryDialog">TSelectDirectoryDialog</link>
+<link id="#lcl.editbtn.TDirectoryEdit.Text">TDirectoryEdit.Text</link>
+</seealso>
 </element>
 
 <element name="TShortPathEdit.OnAcceptDirectory">
@@ -154,10 +171,15 @@ Applications must implement and assign an object procedure to allow
 responding to the event notification.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TShortPathEdit.RunDialog"/>
+<link id="#lcl.editbtn.TAcceptFileNameEvent">TAcceptFileNameEvent</link>
+<link id="#lcl.editbtn.TDirectoryEdit.Directory">TDirectoryEdit.Directory</link>
+<link id="#lcl.dialogs.TSelectDirectoryDialog">TSelectDirectoryDialog</link>
+</seealso>
 </element>
 
 </module>
-
+<!-- ShortPathEdit -->
 </package>
 </fpdoc-descriptions>
