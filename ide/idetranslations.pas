@@ -511,6 +511,10 @@ begin
   // IDE
   TranslateUnitResourceStrings('LazarusIDEStrConsts',
     Dir+'languages/lazaruside'+Ext,Lang,FallbackLang);
+  // Debugger GUI (temporary needed to load translation earlier, when menu capions are initialized).
+  // Affected captions are in `View`->`Debug`, `Run`->`Add breakpoint`, `SE popup`->`Debug`.
+  TranslateUnitResourceStrings('IdeDebuggerStringConstants',
+    Dir+'ide/packages/idedebugger/languages/idedebuggerstringconstants'+Ext,Lang,FallbackLang);
   // LCL (needed to translate button captions in a dialog about config directory belonging to another Lazarus instance)
   TranslateUnitResourceStrings('LCLStrConsts',
     Dir+'lcl/languages/lclstrconsts'+Ext,Lang,FallbackLang);
