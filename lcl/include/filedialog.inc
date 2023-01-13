@@ -334,7 +334,7 @@ begin
   if Index > High(FilterArr) then
     Exit;
   CurrFilter := FilterArr[Index];
-  CurrFilterArr := CurrFilter.Split(';',TStringSplitOptions.ExcludeLastEmpty);
+  CurrFilterArr := CurrFilter.Split(';'{$if fpc_fullversion >= 30202}, TStringSplitOptions.ExcludeLastEmpty{$endif});
   for i := Low(CurrFilterArr) to High(CurrFilterArr) do
   begin
     S := ExtractFileExt(CurrFilterArr[i]);
