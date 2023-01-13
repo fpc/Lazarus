@@ -302,7 +302,7 @@ var
   i: Integer;
 begin
   Result := nil;
-  Arr := Filter.Split('|',TstringSplitOptions.ExcludeLastEmpty);
+  Arr := Filter.Split('|'{$if fpc_fullversion >= 30202}, TStringSplitOptions.ExcludeLastEmpty{$endif});
   SetLength(Result, Length(Arr) div 2);
   for i := Low(Arr) to High(Arr) do
   begin
