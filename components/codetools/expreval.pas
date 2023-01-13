@@ -1235,10 +1235,13 @@ var
   end;
 
   function GetAtom: string;
+  var
+    l: PtrInt;
   begin
-    Setlength(Result,p-AtomStart);
-    if Result<>'' then
-      System.Move(AtomStart^,Result[1],length(Result));
+    l:=p-AtomStart;
+    if l=0 then exit('');
+    SetLength(Result,l);
+    System.Move(AtomStart^,Result[1],l);
   end;
 
   procedure ReadNextAtom;
@@ -1376,7 +1379,7 @@ var
   begin
     s:=ExpectedStr;
     if ExprEnd>NewErrorPos then begin
-      SetLength(f,ExprEnd-NewErrorPos);
+      SetLength(f{%H-},ExprEnd-NewErrorPos);
       System.Move(NewErrorPos^,f[1],ExprEnd-NewErrorPos);
       Error(NewErrorPos,'expected '+s+', but found '+f);
     end else begin
@@ -1495,6 +1498,105 @@ var
     Result:=true;
   end;
 
+  function ParseSizeOfParams(var Operand: TEvalOperand): boolean;
+  // p is behind option keyword
+  var
+    Identifier: String;
+    Value: int64;
+  begin
+    Result:=false;
+    ReadNextAtom;
+    if AtomStart>=ExprEnd then begin
+      CharMissing(ExprEnd,'(');
+      exit;
+    end;
+    if AtomStart^<>'(' then begin
+      StrExpectedAtPos(AtomStart,'(');
+      exit;
+    end;
+    ReadNextAtom;
+    if not IsIdentifierChar[AtomStart^] then begin
+      StrExpectedAtPos(AtomStart,'identifier');
+      exit;
+    end;
+    Identifier:=GetAtom;
+    ReadNextAtom;
+    while AtomStart^='.' do begin
+      Identifier:=Identifier+'.';
+      ReadNextAtom;
+      if not IsIdentifierChar[AtomStart^] then begin
+        StrExpectedAtPos(AtomStart,'identifier');
+        exit;
+      end;
+      Identifier:=Identifier+GetAtom;
+      ReadNextAtom;
+    end;
+    if AtomStart>=ExprEnd then begin
+      CharMissing(ExprEnd,')');
+      exit;
+    end;
+    if AtomStart^<>')' then begin
+      StrExpectedAtPos(AtomStart,')');
+      exit;
+    end;
+
+    case lowercase(Identifier) of
+    'boolean',
+    'bytebool',
+    'byte',
+    'shortint': Value:=1;
+    'wordbool',
+    'word',
+    'smallint': Value:=2;
+    'cardinal',
+    'longword',
+    'longbool': Value:=4;
+    'int64',
+    'qword',
+    'qwordbool',
+    'comp': Value:=8;
+    'pointer',
+    'ptrint',
+    'ptruint',
+    'string',
+    'ansistring',
+    'unicodestring',
+    'rawbytestring',
+    'widestring':
+       if IsDefined('CPU16') then
+         Value:=2
+       else if IsDefined('CPU32') then
+         Value:=4
+       else
+         Value:=8;
+    'ansichar': Value:=1;
+    'widechar': Value:=2;
+    'char':
+      if IsDefined('FPC_UNICODESTRINGS') then
+        Value:=2
+      else
+        Value:=1;
+    'single': Value:=4;
+    'double': Value:=8;
+    'extended':
+      if IsDefined('CPU32') then
+        Value:=10
+      else
+        Value:=8;
+    else
+      // default: return default pointer size
+      if IsDefined('CPU16') then
+        Value:=2
+      else if IsDefined('CPU32') then
+        Value:=4
+      else
+        Value:=8;
+    end;
+    SetOperandValueInt64(Operand,Value);
+
+    Result:=true;
+  end;
+
   function ReadOperand: boolean;
   { Examples:
      Variable
@@ -1567,10 +1669,7 @@ var
       end;
     'S':
       if CompareIdentifiers(AtomStart,'SIZEOF')=0 then begin
-        ReadNextAtom;
-        if AtomStart^<>'(' then StrExpectedAtPos(AtomStart,'(');
-        if not ReadTilEndBracket then exit;
-        SetOperandValueChar(Operand,'1');
+        if not ParseSizeOfParams(Operand) then exit;
         exit(true);
       end;
     'U':
@@ -1956,7 +2055,7 @@ begin
     if s<>'' then
       inc(TxtLen,length(s)+1);
   end;
-  Setlength(Result,TxtLen);
+  Setlength(Result{%H-},TxtLen);
   p:=1;
   for i:=0 to FCount-1 do begin
     Move(FNames[i][1],Result[p],length(FNames[i]));
