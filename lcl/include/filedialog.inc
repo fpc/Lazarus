@@ -287,8 +287,30 @@ begin
 end;
 
 
-//Helper function
-function GetExtensionFromFilterAtIndex(Filter: String; Index: Integer): String;
+//Helper functions
+{
+Extracts the actual filters from a TOpenDialog.Filter:
+- it removes the filter "names"
+- the resulting array will be zero-indexed
+Example:
+  Input : 'All files|*.*|foo|*.foo|bar|*.barfoo;*.bar;|Pascal|*.p?;*.pas'
+  Output: ['*.*','*.foo','*.barfoo;*.bar;','*.p?;*.pas']
+}
+function ExtractFilterValues(const Filter: String): TStringArray;
+var
+  Arr: TStringArray;
+  i: Integer;
+begin
+  Result := nil;
+  Arr := Filter.Split('|',TstringSplitOptions.ExcludeLastEmpty);
+  SetLength(Result, Length(Arr) div 2);
+  for i := Low(Arr) to High(Arr) do
+  begin
+    if Odd(i) then Result[i div 2] := Arr[i];
+  end;
+end;
+
+function GetExtensionFromFilterAtIndex(const Filter: String; Index: Integer): String;
 {
   Returns a file extension from a filter as used in TOpen/TSaveDialog
   - it will return the extension (including the leading period) that matches the index (index starts at 1)
@@ -300,44 +322,26 @@ function GetExtensionFromFilterAtIndex(Filter: String; Index: Integer): String;
   - if a given extension is a composite (like '*.pp;*.pas') it will return the first one from the list
 }
 var
-  p, pipe: Integer;
+  i: Integer;
+  FilterArr, CurrFilterArr: TStringArray;
+  CurrFilter, S: String;
 begin
   Result := '';
-  if Index < 1 then Exit;
-  p := 0;
-  pipe := 0;
-  //Find where the filter for the given index starts
-  while (p < Length(Filter)) do
+  if Index < 1 then
+    Exit;
+  FilterArr := ExtractFilterValues(Filter);
+  Dec(Index); //adjust for zero-base FilterArr;
+  if Index > High(FilterArr) then
+    Exit;
+  CurrFilter := FilterArr[Index];
+  CurrFilterArr := CurrFilter.Split(';',TStringSplitOptions.ExcludeLastEmpty);
+  for i := Low(CurrFilterArr) to High(CurrFilterArr) do
   begin
-    Inc(p);
-    //Debugln('p = ',dbgs(p),' Filter[',dbgs(p),'] = ',Filter[p]);
-    if Filter[p] = '|' then Inc(pipe);
-    if (pipe = 2 * (Index - 1)) then break;
+    S := ExtractFileExt(CurrFilterArr[i]);
+    //if S is something like '*.p?;*.pas;' return the first one without a wildcard in the extension: e.g. '.pas'
+    if (Pos('?',S) = 0) and (Pos('*',S) = 0) then
+      Exit(S);
   end;
-  //debugln('p = ',dbgs(p),' pipe = ',dbgs(pipe));
-  if (p = length(Filter)) then exit;
-  System.Delete(Filter,1,p);
-  //Find the | that splits the filter name and the filter extension
-  p := Pos('|',Filter);
-  if (p = 0) then exit;
-  System.Delete(Filter,1,p);
-  Filter := Copy(Filter,1,MaxInt);
-  //debugln('Filter now = ',filter);
-
-  //The associated extension ends at the first ; or |, or at the end of the string
-  p := Pos(';',Filter);
-  pipe := Pos('|',Filter);
-  //Debugln('Pos(;/|,Filter) = ',dbgs(p),' ',dbgs(pipe));
-  if (pipe < p) or (p = 0) then p := pipe;
-  if (p > 0) then System.Delete(Filter,p,Length(Filter) - p + 1);
-  //debugln('Filter now = ',filter);
-
-  //Get the associated extension
-  Filter := ExtractFileExt(Filter);
-  //debugln('Filter now = ',filter);
-  //if an extension at this point contains a wildcard, reject it
-  if (Pos('?',Filter) > 0) or (Pos('*',Filter) > 0) then exit;
-  Result := Filter;
 end;
 
 function TOpenDialog.CheckFile(var AFilename: string): boolean;
