@@ -12640,6 +12640,7 @@ function TQtListWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
   cdecl;
 var
   ALCLEvent: QLCLMessageEventH;
+  AFocusEvent: QFocusEventH;
 begin
   Result := False;
   QEvent_accept(Event);
@@ -12660,6 +12661,17 @@ begin
     end;
   end else
   begin
+    // issue #40089
+    if {(ViewStyle < 0) and} (QEvent_type(Event) = QEventFocusIn) and
+      (QFocusEvent_reason(QFocusEventH(Event)) = QtTabFocusReason) and
+      (TCustomListBox(LCLObject).ItemIndex = -1) then
+    begin
+      Result := True;
+      // stop this event after exit, let QAbstractItemView process our new focusevent
+      AFocusEvent := QFocusEvent_Create(QEventFocusIn, QtMouseFocusReason);
+      QObject_event(Sender, AFocusEvent);
+      QFocusEvent_destroy(AFocusEvent);
+    end else
     if (QEvent_type(Event) = QEventResize) then
       // let the viewport send resize
     else
@@ -12988,7 +13000,13 @@ begin
               //issue #39852, uncommented works fine with Qt4
               //HandleCheckChangedEvent(MousePos, Item, Event);
               if not QListWidgetItem_isSelected(Item) then
+              begin
                 QListWidget_setCurrentItem(QListWidgetH(Widget), Item, QItemSelectionModelClearAndSelect);
+                QListWidgetItem_setSelected(Item, True);
+                //issue #40091
+                if (ViewStyle >= 0) and (TCustomListView(LCLObject).ItemIndex = -1) then
+                  signalCurrentItemChanged(Item, nil);
+              end;
               QEvent_ignore(Event);
               //issue #39852, uncommented works fine with Qt4
               //Result := True;
