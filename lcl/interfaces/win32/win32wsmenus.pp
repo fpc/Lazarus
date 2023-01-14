@@ -1166,13 +1166,10 @@ begin
     AImageIndex := AMenuItem.ImageIndex;
   end;
 
-  if not AMenuItem.Enabled then
-    AEffect := gdeDisabled
+  if AMenuItem.Enabled then
+    AEffect := gdeNormal
   else
-  if ASelected then
-    AEffect := gdeHighlighted
-  else
-    AEffect := gdeNormal;
+    AEffect := gdeDisabled;
 
   if AImageIndex < AImageList.Count then
   begin
