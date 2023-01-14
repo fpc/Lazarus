@@ -129,7 +129,6 @@ type
         itmEditTabsToSpacesBlock: TIDEMenuCommand;
         itmEditSelectionBreakLines: TIDEMenuCommand;
       //itmEditInsertions: TIDEMenuSection;
-        itmEditInsertCharacter: TIDEMenuCommand;
 
     // search menu
     //mnuSearch: TIDEMenuSection;

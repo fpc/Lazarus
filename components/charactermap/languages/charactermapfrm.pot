@@ -1,0 +1,27 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: charactermapfrm.lischaractermap
+msgid "Character Map"
+msgstr ""
+
+#: charactermapfrm.lischarsize
+msgid "Character Size"
+msgstr ""
+
+#: charactermapfrm.liscodepage
+msgid "Code Page"
+msgstr ""
+
+#: charactermapfrm.lisinsertcharacter
+msgid "Insert from Character Map..."
+msgstr ""
+
+#: charactermapfrm.lisrange
+msgid "Range"
+msgstr ""
+
+#: charactermapfrm.lissortunicoderangelistalphabetically
+msgid "Sort Unicode range list alphabetically"
+msgstr ""
+

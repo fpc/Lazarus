@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <PathDelim Value="\"/>
+    <Name Value="charactermap_ide_pkg"/>
+    <Type Value="DesignTime"/>
+    <Author Value="Lazarus team"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <OtherUnitFiles Value="source\designtime"/>
+        <UnitOutputDirectory Value="lib\designtime\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Description Value="Displays a character map for ANSI and UTF8 encodings (designtime package for IDE integration). A character can be copied into the source editor by clicking on the character cell."/>
+    <License Value=" See the file COPYING.modifiedLGPL, included in this distribution,
+ for details about the copyright."/>
+    <Version Minor="1"/>
+    <Files>
+      <Item>
+        <Filename Value="source\designtime\charactermap_reg.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="charactermap_reg"/>
+      </Item>
+    </Files>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="SynEdit"/>
+      </Item>
+      <Item>
+        <PackageName Value="IdeConfig"/>
+      </Item>
+      <Item>
+        <PackageName Value="charactermappkg"/>
+      </Item>
+      <Item>
+        <PackageName Value="IDEIntf"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

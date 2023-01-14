@@ -215,7 +215,7 @@ begin
     P.Sources.AddSrc('buildmanager.pas');
     P.Sources.AddSrc('buildmodediffdlg.pas');
     P.Sources.AddSrc('buildprofilemanager.pas');
-    P.Sources.AddSrc('charactermapdlg.pas');
+//    P.Sources.AddSrc('charactermapdlg.pas');
     P.Sources.AddSrc('checkcompileropts.pas');
     P.Sources.AddSrc('checklfmdlg.pas');
     P.Sources.AddSrc('cleandirdlg.pas');

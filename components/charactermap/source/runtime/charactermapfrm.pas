@@ -30,7 +30,7 @@
     Dialog for character map.
 }
 
-unit CharacterMapDlg;
+unit CharacterMapFrm;
 
 {$mode objfpc}{$H+}
 
@@ -41,20 +41,21 @@ uses
   Classes, SysUtils, Math,
   // LCL
   Controls, Graphics, Dialogs, Buttons, StdCtrls, Forms,
-  LCLType, LCLUnicodeData, Grids, ButtonPanel, ComCtrls, Spin,
+  LCLType, LCLUnicodeData, Grids, ButtonPanel, ComCtrls, Spin, ImgList,
   // LazUtils
-  GraphType, LazUTF8, LConvEncoding,
+  GraphType, LazUTF8, LConvEncoding;
+{,
   // IdeIntf
   IDEHelpIntf, IDEImagesIntf,
   // IDE
   LazarusIDEStrConsts, EditorOptions, EnvironmentOpts;
-
+ }
 type
   TOnInsertCharacterEvent = procedure (const C: TUTF8Char) of object;
 
-  { TCharacterMapDialog }
+  { TCharacterMapForm }
 
-  TCharacterMapDialog = class(TForm)
+  TCharacterMapForm = class(TForm)
     ButtonPanel: TButtonPanel;
     cbCodePage: TComboBox;
     AnsiCharInfoLabel: TLabel;
@@ -95,6 +96,7 @@ type
     procedure UnicodeGridMouseMove(Sender: TObject; {%H-}Shift: TShiftState; X,
       Y: Integer);
   private
+    FOnShowHelp: TNotifyEvent;
     FOnInsertCharacter: TOnInsertCharacterEvent;
     FUnicodeBlockIndex: Integer;
     procedure DoStatusAnsiGrid(ACol, ARow: integer);
@@ -105,43 +107,63 @@ type
     function UnicodeBlockIndexByName(AName: String): Integer;
     function UnicodeBlockSelected: Boolean;
     procedure SelectSystemCP;
+    procedure SetOnShowHelp(AValue: TNotifyEvent);
   public
-    property OnInsertCharacter: TOnInsertCharacterEvent read FOnInsertCharacter
-                                                        write FOnInsertCharacter;
+    property OnInsertCharacter: TOnInsertCharacterEvent
+      read FOnInsertCharacter write FOnInsertCharacter;
+    property OnShowHelp: TNotifyEvent
+      read FOnShowHelp write SetOnShowHelp;
   end;
 
 procedure ShowCharacterMap(AOnInsertChar: TOnInsertCharacterEvent);
 
 var
-  CharacterMapDialog: TCharacterMapDialog;
+  CharacterMapForm: TCharacterMapForm;
+
+resourcestring
+  lisCharacterMap = 'Character Map';
+  lisRange = 'Range';
+  lisSortUnicodeRangeListAlphabetically = 'Sort Unicode range list alphabetically';
+  lisInsertCharacter = 'Insert from Character Map...';
+  lisCharSize = 'Character Size';
+  lisCodePage = 'Code Page';
 
 implementation
 
 {$R *.lfm}
+{$R ../../charactermap_images.res}
+
+uses
+  LCLStrConsts;
 
 const
   NOT_SELECTED=Low(UnicodeBlocks)-1;
 
 procedure ShowCharacterMap(AOnInsertChar: TOnInsertCharacterEvent);
 begin
-  if CharacterMapDialog = nil then
-    Application.CreateForm(TCharacterMapDialog, CharacterMapDialog);
+  if CharacterMapForm = nil then
+    Application.CreateForm(TCharacterMapForm, CharacterMapForm);
     
-  CharacterMapDialog.OnInsertCharacter := AOnInsertChar;
-  CharacterMapDialog.Show;
+  CharacterMapForm.OnInsertCharacter := AOnInsertChar;
+  CharacterMapForm.Show;
 end;
 
-{ TCharacterMapDialog }
+{ TCharacterMapForm }
 
-procedure TCharacterMapDialog.FormCreate(Sender: TObject);
+procedure TCharacterMapForm.FormCreate(Sender: TObject);
 begin
   Caption := lisCharacterMap;
   RangeLabel.Caption := lisRange;
-  SortUniRangeListButton.Flat:=True;
-  SortUniRangeListButton.Hint:=lisSortUnicodeRangeListAlphabetically;
-  IDEImages.AssignImage(SortUniRangeListButton, 'pkg_sortalphabetically');
-  ButtonPanel.HelpButton.Caption:=lisMenuHelp;
-  ButtonPanel.CloseButton.Caption:=lisBtnClose;
+  UniSizeLabel.Caption := lisCharSize;
+  CodePageLabel.Caption := lisCodePage;
+  AnsiSizeLabel.Caption := lisCharSize;
+  SortUniRangeListButton.Flat := True;
+  SortUniRangeListButton.Hint := lisSortUnicodeRangeListAlphabetically;
+  SortUniRangeListButton.Images := LCLGlyphs;
+  SortUniRangeListButton.ImageIndex := LCLGlyphs.GetImageIndex('charmap_sortalphabetically');
+  ButtonPanel.HelpButton.Caption := rsMbHelp;
+  ButtonPanel.CloseButton.Caption := rsMbClose;
+  ButtonPanel.ShowButtons := [pbClose];
 
   //EnvironmentOptions.IDEWindowLayoutList.Apply(Self, Name);
   PageControl1.ActivePageIndex := 0;
@@ -151,7 +173,7 @@ begin
   FillAnsiGrid;
 end;
 
-procedure TCharacterMapDialog.SelectSystemCP;
+procedure TCharacterMapForm.SelectSystemCP;
 {$ifdef Windows}
 var
   i: Integer;
@@ -183,9 +205,9 @@ begin
   cbCodePage.ItemIndex := 0;
 end;
 
-procedure TCharacterMapDialog.HelpButtonClick(Sender: TObject);
+procedure TCharacterMapForm.HelpButtonClick(Sender: TObject);
 begin
-  LazarusHelp.ShowHelpForIDEControl(Self);
+  //LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
 function RoundUp(Value, Divi:integer):integer;
@@ -196,18 +218,18 @@ begin
     Result:=(Value div Divi)+1;
 end;
 
-procedure TCharacterMapDialog.cbCodePageSelect(Sender: TObject);
+procedure TCharacterMapForm.cbCodePageSelect(Sender: TObject);
 begin
   FillAnsiGrid;
 end;
 
-procedure TCharacterMapDialog.cbUniRangeSelect(Sender: TObject);
+procedure TCharacterMapForm.cbUniRangeSelect(Sender: TObject);
 begin
   FUnicodeBlockIndex:=UnicodeBlockIndexByName(cbUniRange.Text);
   FillUnicodeGrid;
 end;
 
-procedure TCharacterMapDialog.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+procedure TCharacterMapForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   if Key=VK_ESCAPE then
   begin
@@ -216,14 +238,16 @@ begin
   end;
 end;
 
-procedure TCharacterMapDialog.FormShow(Sender: TObject);
+procedure TCharacterMapForm.FormShow(Sender: TObject);
 var
   savedFontSize: Integer;
 begin
+  (*          wp
   AnsiGrid.Font.Name := EditorOpts.EditorFont;
   UnicodeGrid.Font.Name := EditorOpts.EditorFont;
   AnsiGrid.Font.Size := seAnsiSize.Value;
   UnicodeGrid.Font.Size := seUniSize.Value;
+    *)
 
   // Auto-adjust the width of the AnsiGrid's fixed column. Note that
   // the font defined in PrepareCanvas is ignored by AutoSizeColumn.
@@ -237,40 +261,41 @@ begin
   FUnicodeBlockIndex:=NOT_SELECTED;
   FillUniRangeList(SortUniRangeListButton.Down);
   FillUnicodeGrid;
-  cbCodePage.DropDownCount := Math.max(EnvironmentOptions.DropDownCount, 25);
-  cbUniRange.DropDownCount := Math.max(EnvironmentOptions.DropDownCount, 25);
+  // wp
+  //cbCodePage.DropDownCount := Math.max(EnvironmentOptions.DropDownCount, 25);
+  //cbUniRange.DropDownCount := Math.max(EnvironmentOptions.DropDownCount, 25);
 end;
 
-procedure TCharacterMapDialog.seAnsiSizeChange(Sender: TObject);
+procedure TCharacterMapForm.seAnsiSizeChange(Sender: TObject);
 begin
   AnsiGrid.Font.Size := seAnsiSize.Value;
   seUniSize.Value := seAnsiSize.Value;
 end;
 
-procedure TCharacterMapDialog.seUniSizeChange(Sender: TObject);
+procedure TCharacterMapForm.seUniSizeChange(Sender: TObject);
 begin
   UnicodeGrid.Font.Size := seUniSize.Value;
   seAnsiSize.Value := seUniSize.Value;
 end;
 
-procedure TCharacterMapDialog.SortUniRangeListButtonClick(Sender: TObject);
+procedure TCharacterMapForm.SortUniRangeListButtonClick(Sender: TObject);
 begin
   FillUniRangeList(SortUniRangeListButton.Down);
 end;
 
-procedure TCharacterMapDialog.AnsiGridSelectCell(Sender: TObject; aCol,
+procedure TCharacterMapForm.AnsiGridSelectCell(Sender: TObject; aCol,
   aRow: Integer; var CanSelect: Boolean);
 begin
   DoStatusAnsiGrid(aCol, aRow);
 end;
 
-procedure TCharacterMapDialog.UnicodeGridSelectCell(Sender: TObject; aCol,
+procedure TCharacterMapForm.UnicodeGridSelectCell(Sender: TObject; aCol,
   aRow: Integer; var CanSelect: Boolean);
 begin
   DoStatusUnicodeGrid(aCol, aRow);
 end;
 
-procedure TCharacterMapDialog.StringGridKeyPress(Sender: TObject; var Key: char);
+procedure TCharacterMapForm.StringGridKeyPress(Sender: TObject; var Key: char);
 var
   sg: TStringGrid;
   s: string;
@@ -284,7 +309,7 @@ begin
   end;
 end;
 
-procedure TCharacterMapDialog.StringGridMouseDown(Sender: TObject;
+procedure TCharacterMapForm.StringGridMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   Row, Col: Integer;
@@ -300,7 +325,7 @@ begin
   end;
 end;
 
-procedure TCharacterMapDialog.DoStatusAnsiGrid(ACol, ARow: integer);
+procedure TCharacterMapForm.DoStatusAnsiGrid(ACol, ARow: integer);
 var
   N: integer;
 begin
@@ -308,7 +333,7 @@ begin
   AnsiCharInfoLabel.Caption := Format('Decimal: %s, Hex: $%s', [IntToStr(N), IntToHex(N, 2)]);
 end;
 
-procedure TCharacterMapDialog.AnsiGridMouseMove(Sender: TObject;
+procedure TCharacterMapForm.AnsiGridMouseMove(Sender: TObject;
   Shift: TShiftState; X, Y: Integer);
 var
   Row, Col: Integer;
@@ -323,7 +348,7 @@ begin
     AnsiCharInfoLabel.Caption := '-';
 end;
 
-procedure TCharacterMapDialog.GridPrepareCanvas(sender: TObject; aCol,
+procedure TCharacterMapForm.GridPrepareCanvas(sender: TObject; aCol,
   aRow: Integer; aState: TGridDrawState);
 var
   ts: TTextStyle;
@@ -337,7 +362,7 @@ begin
   end;
 end;
 
-procedure TCharacterMapDialog.DoStatusUnicodeGrid(ACol, ARow: integer);
+procedure TCharacterMapForm.DoStatusUnicodeGrid(ACol, ARow: integer);
 var
   S: Cardinal;
   tmp, tmp2: String;
@@ -352,7 +377,7 @@ begin
   UnicodeCharInfoLabel.Caption:='U+'+inttohex(S,4)+', UTF-8: '+tmp2;
 end;
 
-procedure TCharacterMapDialog.UnicodeGridMouseMove(Sender: TObject;
+procedure TCharacterMapForm.UnicodeGridMouseMove(Sender: TObject;
   Shift: TShiftState; X, Y: Integer);
 var
   Row, Col: Integer;
@@ -367,7 +392,7 @@ begin
     AnsiCharInfoLabel.Caption := '-';
 end;
 
-procedure TCharacterMapDialog.FillAnsiGrid;
+procedure TCharacterMapForm.FillAnsiGrid;
 var
   R, C, p: Integer;
   cp: String;
@@ -387,7 +412,7 @@ begin
   end;
 end;
 
-procedure TCharacterMapDialog.FillUnicodeGrid;
+procedure TCharacterMapForm.FillUnicodeGrid;
 var
   cnt, x, y: integer;
   S, E: integer;
@@ -410,7 +435,7 @@ begin
   UnicodeGrid.AutoSizeColumns;
 end;
 
-procedure TCharacterMapDialog.FillUniRangeList(ASorted: Boolean);
+procedure TCharacterMapForm.FillUniRangeList(ASorted: Boolean);
 var
   BlockIdx: Integer;
 begin
@@ -425,7 +450,7 @@ begin
   cbUniRange.Text:=UnicodeBlocks[FUnicodeBlockIndex].PG;
 end;
 
-function TCharacterMapDialog.UnicodeBlockIndexByName(AName: String): Integer;
+function TCharacterMapForm.UnicodeBlockIndexByName(AName: String): Integer;
 var
   BlockIdx: Integer;
 begin
@@ -435,9 +460,19 @@ begin
   Result:=NOT_SELECTED;
 end;
 
-function TCharacterMapDialog.UnicodeBlockSelected: Boolean;
+function TCharacterMapForm.UnicodeBlockSelected: Boolean;
 begin
   Result:=(FUnicodeBlockIndex>=Low(UnicodeBlocks)) and (FUnicodeBlockIndex<=High(UnicodeBlocks));
+end;
+
+procedure TCharacterMapForm.SetOnShowHelp(AValue: TNotifyEvent);
+begin
+  FOnShowHelp := AValue;
+  ButtonPanel.HelpButton.OnClick := FOnShowHelp;
+  if FOnShowHelp <> nil then
+    ButtonPanel.ShowButtons := ButtonPanel.ShowButtons + [pbHelp]
+  else
+    ButtonPanel.ShowButtons := ButtonPanel.ShowButtons - [pbHelp];
 end;
 
 end.

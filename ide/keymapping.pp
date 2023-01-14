@@ -662,7 +662,7 @@ begin
     ecSelectWord              : Result:= lisMenuSelectWord;
     ecSelectLine              : Result:= lisMenuSelectLine;
     ecSelectParagraph         : Result:= lisMenuSelectParagraph;
-    ecInsertCharacter         : Result:= srkmecInsertCharacter;
+//    ecInsertCharacter         : Result:= srkmecInsertCharacter;
     ecInsertGPLNotice         : Result:= srkmecInsertGPLNotice;
     ecInsertGPLNoticeTranslated: Result:= srkmecInsertGPLNoticeTranslated;
     ecInsertLGPLNotice        : Result:= srkmecInsertLGPLNotice;

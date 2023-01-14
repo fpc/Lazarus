@@ -109,7 +109,7 @@ const
   ecToggleComment           = ecFirstLazarus + 65;
 
   // insert text
-  ecInsertCharacter         = ecFirstLazarus + 70;
+  ecInsertCharacter         = ecFirstLazarus + 70;  // not used, moved to external package
   ecInsertGUID              = ecFirstLazarus + 71;
   ecInsertFilename          = ecFirstLazarus + 72;
   ecInsertUserName          = ecFirstLazarus + 73;

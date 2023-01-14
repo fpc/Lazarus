@@ -77,7 +77,7 @@ uses
   SrcEditHintFrm, etMessagesWnd, etSrcEditMarks, CodeMacroPrompt,
   CodeTemplatesDlg, CodeToolsOptions, editor_general_options, SortSelectionDlg,
   EncloseSelectionDlg, EncloseIfDef, InvertAssignTool, SourceEditProcs,
-  SourceMarks, CharacterMapDlg, SearchFrm, MultiPasteDlg, EditorMacroListViewer,
+  SourceMarks, SearchFrm, MultiPasteDlg, EditorMacroListViewer,
   EditorToolbarStatic, editortoolbar_options, InputhistoryWithSearchOpt,
   FPDocHints, MainIntf, GotoFrm, BaseDebugManager, Debugger, TransferMacrosIntf;
 
@@ -4683,7 +4683,7 @@ end;
 
 procedure TSourceEditor.InsertCharacterFromMap;
 begin
-  ShowCharacterMap(@SourceNotebook.InsertCharacter);
+//  ShowCharacterMap(@SourceNotebook.InsertCharacter);
 end;
 
 procedure TSourceEditor.InsertLicenseNotice(const Notice: string;

@@ -5107,11 +5107,6 @@ resourcestring
   lisAboutOfficial = 'Official:';
   lisAboutDocumentation = 'Documentation:';
 
-  // character map
-  lisCharacterMap = 'Character Map';
-  lisRange = 'Range';
-  lisSortUnicodeRangeListAlphabetically = 'Sort Unicode range list alphabetically';
-
   // codetools defines value dialog
   lisCTDefChooseDirectory = 'Choose Directory';
   lisCTDefCodeToolsDirectoryValues = 'CodeTools Directory Values';

@@ -1,0 +1,29 @@
+object MainForm: TMainForm
+  Left = 256
+  Height = 237
+  Top = 130
+  Width = 320
+  Caption = 'MainForm'
+  ClientHeight = 237
+  ClientWidth = 320
+  LCLVersion = '2.3.0.0'
+  object Memo1: TMemo
+    Left = 8
+    Height = 191
+    Top = 9
+    Width = 302
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    TabOrder = 0
+  end
+  object Button1: TButton
+    Left = 8
+    Height = 25
+    Top = 205
+    Width = 113
+    Anchors = [akLeft, akBottom]
+    AutoSize = True
+    Caption = 'Character map...'
+    OnClick = Button1Click
+    TabOrder = 1
+  end
+end

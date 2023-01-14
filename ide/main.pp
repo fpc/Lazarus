@@ -2704,7 +2704,6 @@ begin
     itmEditSortBlock.OnClick:=@mnuEditSortBlockClicked;
     itmEditTabsToSpacesBlock.OnClick:=@mnuEditTabsToSpacesBlockClicked;
     itmEditSelectionBreakLines.OnClick:=@mnuEditSelectionBreakLinesClicked;
-    itmEditInsertCharacter.OnClick:=@mnuEditInsertCharacterClicked;
   end;
 end;
 
@@ -2941,8 +2940,6 @@ begin
     itmEditSortBlock.Command:=GetIdeCmdRegToolBtn(ecSelectionSort);
     itmEditTabsToSpacesBlock.Command:=GetIdeCmdRegToolBtn(ecSelectionTabs2Spaces);
     itmEditSelectionBreakLines.Command:=GetIdeCmdRegToolBtn(ecSelectionBreakLines);
-
-    itmEditInsertCharacter.Command:=GetIdeCmdRegToolBtn(ecInsertCharacter);
 
     // search menu
     itmSearchFind.Command:=GetIdeCmdRegToolBtn(ecFind);

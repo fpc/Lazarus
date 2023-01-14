@@ -1,0 +1,8 @@
+charactermap_icon_128.png
+charactermap_icon_256.png
+charmap_sortalphabetically.png
+charmap_sortalphabetically_150.png
+charmap_sortalphabetically_200.png
+menu_charmap.png
+menu_charmap_150.png
+menu_charmap_200.png
