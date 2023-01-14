@@ -319,7 +319,7 @@ type
       aOpcodesAllowed: TMaskOpCodes); virtual;
   public
     constructor Create(const aValue: String; aSeparator: Char=';'; CaseSensitive: Boolean=False;
-      aOpcodesAllowed: TMaskOpCodes=DefaultMaskOpCodes);
+      aOpcodesAllowed: TMaskOpCodes=DefaultMaskOpCodes); virtual;
 
     //Remove in 2.5
     constructor Create(const aValue: String; aSeparator: Char; aOptions: TMaskOptions); virtual;
@@ -353,9 +353,12 @@ type
     procedure AddMasksToList(const aValue: String; aSeparator: Char; aCaseSensitive: Boolean;
       aOpcodesAllowed: TMaskOpCodes); override;
   public
-    constructor Create(const aValue: String; aSeparator: Char=';'; aCaseSensitive: Boolean=False;
-      aOpcodesAllowed: TMaskOpCodes=DefaultMaskOpCodes;
-      aWindowsQuirksAllowed: TWindowsQuirks=DefaultWindowsQuirks); reintroduce;
+      constructor Create(const aValue: String; aSeparator: Char=';'; aCaseSensitive: Boolean=False;
+        aOpcodesAllowed: TMaskOpCodes=DefaultMaskOpCodes); override;
+
+      constructor Create(const aValue: String; aSeparator: Char{=';'}; aCaseSensitive: Boolean{=False};
+      aOpcodesAllowed: TMaskOpCodes{=DefaultMaskOpCodes};
+      aWindowsQuirksAllowed: TWindowsQuirks{=DefaultWindowsQuirks}); overload; //reintroduce;
 
     //Remove in 2.5
     constructor Create(const aValue: String; aSeparator: Char; aOptions: TMaskOptions); override;
@@ -368,6 +371,9 @@ type
 
     property Quirks: TWindowsQuirks read fWindowsQuirks write SetQuirks;
   end;
+
+  TMaskListClass = class of TMaskList;
+
 
 function MatchesMask(const FileName, Mask: String; CaseSensitive: Boolean=False;
   aOpcodesAllowed: TMaskOpCodes=DefaultMaskOpCodes): Boolean;
@@ -560,6 +566,12 @@ begin
       //TWindowsMask(fMasks.Items[i]).Compile; //to apply Quirks
     end;
   end;
+end;
+
+constructor TWindowsMaskList.Create(const aValue: String; aSeparator: Char;
+  aCaseSensitive: Boolean; aOpcodesAllowed: TMaskOpCodes);
+begin
+  Create(aValue, aSeparator, aCaseSensitive, aOpcodesAllowed, DefaultWindowsQuirks);
 end;
 
 constructor TWindowsMaskList.Create(const aValue: String; aSeparator: Char;
