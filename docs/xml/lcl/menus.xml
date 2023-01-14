@@ -4167,19 +4167,19 @@ be used to activate (click) menu items.
 
 <element name="TPopupMenu">
 <short>
-<var>TPopupMenu</var> - a menu panel that pops up on the desktop when the 
-right mouse button is clicked.
+Implements a menu panel that pops up on the screen when the right mouse button 
+is clicked.
 </short>
 <descr>
 <p>
-<var>TPopupMenu</var> is a menu panel that pops up on the desktop when the 
+<var>TPopupMenu</var> is a menu panel that pops up on the screen when the 
 right mouse button is clicked.
 </p>
 <p>
-Inherits all the properties of <var>TMenu</var> (including the properties of 
-<var>TMenuItem</var>), but has some new properties (procedure 
+TPopupMenu inherits all the properties of <var>TMenu</var> (including the 
+properties of <var>TMenuItem</var>), but has some new methods (procedure 
 <var>PopUp</var> and procedure <var>Close</var>) that define its behavior 
-when actually invoked.
+when invoked.
 </p>
 <p>
 PopupPoint defines the position of the pop-up menu, usually at the current 
@@ -4192,12 +4192,17 @@ property named PopupMenu, and a list box will appear with the names of the
 available Menus - choose the Pop-up name you want.
 </p>
 </descr>
+<version>
+TPopupMenu for the Windows platform was modified in LCL version 2.2.6. It no 
+longer uses the highlighted drawing effect when drawing the glyph icon for an 
+enabled menu item. The normal drawing effect is used instead.
+</version>
 <seealso>
-<link id="HowToUseMenus">How To Use Menus</link>
 <link id="TMainMenu"/>
 <link id="TMenuItem"/>
 <link id="TMenu"/>
 <link id="TMenuActionLink"/>
+<link id="HowToUseMenus">How To Use Menus</link>
 </seealso>
 </element>
 
