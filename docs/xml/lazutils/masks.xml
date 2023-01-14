@@ -1826,8 +1826,8 @@ Set of Mask op codes allowed for the class instances added to the list.
 
 <element name="TMaskList.Create">
 <short>
-Creates a new list for mask instances using the specified delimiters and 
-options.
+Creates a new list with mask instances for the specified mask values, 
+delimiter and options.
 </short>
 <descr>
 <p>
@@ -2154,10 +2154,11 @@ Set of Mask op codes allowed for the class instances added to the list.
 <short>Constructor for the class instance.</short>
 <descr>
 <p>
-Create is the overloaded constructor for the class instance. Create ensures 
-that arguments passed to the constructor are stored in internal members for 
-use in the class instance. An alternate constructor allows configuration 
-settings to be derived from a set of TMaskOption values.
+<var>Create</var> is the overloaded constructor for the class instance. Create 
+ensures that arguments passed to the constructor are stored in internal 
+members for use in the class instance. The overloaded variants allow 
+configuration settings to include a set of TMaskOption values or a set of 
+Windows "quirks" supported for the masks in the list.
 </p>
 <remark>
 The variant with a TMaskOptions parameter has been deprecated in version 2.3, 
@@ -2172,7 +2173,7 @@ and will be removed in version 2.5.
 <element name="TWindowsMaskList.Create.ASeparator">
 <short>Delimiter used between mask expressions in AValue.</short>
 </element>
-<element name="TWindowsMaskList.Create.CaseSensitive">
+<element name="TWindowsMaskList.Create.ACaseSensitive">
 <short><b>True</b> if the mask expression(s) are case sensitive.</short>
 </element>
 <element name="TWindowsMaskList.Create.AOpcodesAllowed">
@@ -2222,6 +2223,19 @@ TWindowsMask instances in the Items property.
 </p>
 </descr>
 <seealso/>
+</element>
+
+<element name="TMaskListClass">
+<short>
+Not used in the current LazUtils implementation.
+</short>
+<descr/>
+<version>
+Added (but not currently used) in LazUtils 2.4.0.
+</version>
+<seealso>
+<link id="TMaskList"/>
+</seealso>
 </element>
 
 <element name="MatchesMask">
