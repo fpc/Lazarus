@@ -2186,25 +2186,6 @@ and will be removed in version 2.5.
 <short>Set of TMaskOption values enabled for the class instance.</short>
 </element>
 
-<element name="TWindowsMaskList.MatchesWindowsMask">
-<short>Same as calling the Matches method.</short>
-<descr>
-<p>
-MatchesWindowsMask is deprecated in version 2.3, and will be removed in 
-version 2.5. Use the Matches method instead.
-</p>
-</descr>
-<seealso/>
-</element>
-<element name="TWindowsMaskList.MatchesWindowsMask.Result">
-<short>
-<b>True</b> if the specified file name matches one of the mask in the list.
-</short>
-</element>
-<element name="TWindowsMaskList.MatchesWindowsMask.AFileName">
-<short>File name compared to the mask instances in the list.</short>
-</element>
-
 <element name="TWindowsMaskList.Quirks">
 <short>
 Contains the TWindowsQuirk values enabled for the class instance.
