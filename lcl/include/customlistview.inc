@@ -1090,7 +1090,7 @@ begin
             if Items[i].Selected and (Items[i] <> Selected) then
               FSavedSelection.Add(Items[i]);
       end;
-      if (TWSCustomListViewClass(WidgetSetClass).RestoreItemCheckedAfterSort(Self))
+      if Checkboxes and (TWSCustomListViewClass(WidgetSetClass).RestoreItemCheckedAfterSort(Self))
         and Items.WSUpdateAllowed
         and not OwnerData then
       begin
