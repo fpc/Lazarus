@@ -364,11 +364,6 @@ type
     constructor Create(const aValue: String; aSeparator: Char; aOptions: TMaskOptions); override;
       deprecated 'Use Create with TMaskOpcodes paramater';
 
-    //Remove in 2.5
-    function MatchesWindowsMask(const AFileName: String): Boolean; reintroduce;
-      deprecated 'Use a Matches instead.';
-
-
     property Quirks: TWindowsQuirks read fWindowsQuirks write SetQuirks;
   end;
 
@@ -590,10 +585,6 @@ begin
   Create(aValue, aSeparator, (moCaseSensitive in aOptions), DefaultMaskOpCodes, DefaultWindowsQuirks);
 end;
 
-function TWindowsMaskList.MatchesWindowsMask(const AFileName: String): Boolean;
-begin
-  Result := Matches(AFilename);
-end;
 
 { EMaskError }
 
