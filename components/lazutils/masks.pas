@@ -73,11 +73,11 @@ type
     function GetCount: Integer;
     function GetItem(Index: Integer): TMask;
   public
-    constructor Create(const AValue: String; ASeparator: Char; const CaseSensitive: Boolean);
-    constructor Create(const AValue: String; ASeparator: Char = ';'; const AOptions: TMaskOptions = []);
+    constructor Create(const AValue: String; ASeparator: Char; const CaseSensitive: Boolean); virtual;
+    constructor Create(const AValue: String; ASeparator: Char = ';'; const AOptions: TMaskOptions = []); virtual;
     destructor Destroy; override;
 
-    function Matches(const AFileName: String): Boolean;
+    function Matches(const AFileName: String): Boolean; virtual;
     function MatchesWindowsMask(const AFileName: String): Boolean;
 
     property Count: Integer read GetCount;
