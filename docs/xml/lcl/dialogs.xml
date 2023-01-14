@@ -1476,8 +1476,9 @@ Ensures the specified file name meets the requirements for the dialog.
 <p>
 <var>CheckFile</var> is a Boolean function used to examine and update the 
 specified file name. AFilename is a variable argument which contains the path 
-to the file and a file extension. The return value is <b>True</b> if the file 
-name meets the requirements for the open dialog.
+to the file and can include its extension. The return value is <b>True</b> if 
+the file name satisfies the filter, extension, and options used for the open 
+dialog.
 </p>
 <p>
 Values in DefaultExt, Filter, and FilterIndex are used to get a file 
@@ -1506,15 +1507,24 @@ is displayed if the file or directory is read-only, and the method is exited.
 </dd>
 </dl>
 <p>
-CheckFile is used to implement the CheckAllFiles method used to validate the 
-entries in the Files property.
+CheckFile is used in the CheckAllFiles method to validate the entries in the 
+Files property.
 </p>
 </descr>
+<version>
+Modified in LCL version 2.2.6 to include an additional helper function 
+(ExtractFilterValues) in the implementation.
+</version>
 <seealso>
+<link id="TOpenDialog.Options"/>
 <link id="TOpenDialog.CheckAllFiles"/>
 <link id="TOpenDialog.CheckFileMustExist"/>
 <link id="TFileDialog.Files"/>
 <link id="TFileDialog.FileName"/>
+<link id="TFileDialog.DefaultExt"/>
+<link id="TFileDialog.Filter"/>
+<link id="TFileDialog.FilterIndex"/>
+<link id="TOpenOption"/>
 </seealso>
 </element>
 <element name="TOpenDialog.CheckFile.Result">
@@ -1593,9 +1603,10 @@ the Options property and the local file system.
 </descr>
 <seealso>
 <link id="TOpenDialog.CheckFile"/>
+<link id="TOpenDialog.Options"/>
 <link id="TFileDialog.FileName"/>
 <link id="TFileDialog.Files"/>
-<link id="TOpenDialog.Options"/>
+<link id="TOpenOption"/>
 </seealso>
 </element>
 <element name="TOpenDialog.CheckAllFiles.Result">
