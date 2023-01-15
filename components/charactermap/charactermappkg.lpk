@@ -18,7 +18,7 @@
     <Version Minor="1"/>
     <Files>
       <Item>
-        <Filename Value="source\runtime\charactermapfrm.pas"/>
+        <Filename Value="charactermapfrm.pas"/>
         <UnitName Value="CharacterMapFrm"/>
       </Item>
     </Files>

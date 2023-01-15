@@ -19,7 +19,7 @@
     <Version Minor="1"/>
     <Files>
       <Item>
-        <Filename Value="source\designtime\charactermap_reg.pas"/>
+        <Filename Value="charactermap_reg.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="charactermap_reg"/>
       </Item>
