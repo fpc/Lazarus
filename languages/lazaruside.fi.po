@@ -6042,10 +6042,6 @@ msgstr "Vaihda Unixin /"
 msgid "Change to Windows \\"
 msgstr "Vaihda Windowsin \\"
 
-#: lazarusidestrconsts.lischaractermap
-msgid "Character Map"
-msgstr "Merkkitaulukko"
-
 #: lazarusidestrconsts.lischeckall
 msgid "Check All"
 msgstr "Ruksaa kaikki"
@@ -16753,11 +16749,6 @@ msgstr "Poistu"
 msgid "&Quit Lazarus"
 msgstr "&Poistu Lazaruksesta"
 
-#: lazarusidestrconsts.lisrange
-msgctxt "lazarusidestrconsts.lisrange"
-msgid "Range"
-msgstr "Alue"
-
 #: lazarusidestrconsts.lisreaderror
 msgid "Read Error"
 msgstr "Lukuvirhe"
@@ -17758,10 +17749,6 @@ msgstr "Järjestä valinta"
 msgctxt "lazarusidestrconsts.lissortselwords"
 msgid "Words"
 msgstr "Sanat"
-
-#: lazarusidestrconsts.lissortunicoderangelistalphabetically
-msgid "Sort Unicode range list alphabetically"
-msgstr "Järjestä unicode lohkot aakkosjärjestykseen"
 
 #: lazarusidestrconsts.lissourceanddestinationaresame
 #, object-pascal-format

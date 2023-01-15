@@ -6090,10 +6090,6 @@ msgstr "Změnit na Unix /"
 msgid "Change to Windows \\"
 msgstr "Změnit na Windows \\"
 
-#: lazarusidestrconsts.lischaractermap
-msgid "Character Map"
-msgstr "Mapa znaků"
-
 #: lazarusidestrconsts.lischeckall
 msgid "Check All"
 msgstr "Vybrat vše"
@@ -16944,11 +16940,6 @@ msgstr "Ukončit"
 msgid "&Quit Lazarus"
 msgstr "Ukončit Lazarus"
 
-#: lazarusidestrconsts.lisrange
-msgctxt "lazarusidestrconsts.lisrange"
-msgid "Range"
-msgstr "Rozsah"
-
 #: lazarusidestrconsts.lisreaderror
 msgid "Read Error"
 msgstr "Chyba čtení"
@@ -17954,10 +17945,6 @@ msgstr "Seřadit výběr"
 msgctxt "lazarusidestrconsts.lissortselwords"
 msgid "Words"
 msgstr "Slova"
-
-#: lazarusidestrconsts.lissortunicoderangelistalphabetically
-msgid "Sort Unicode range list alphabetically"
-msgstr "Řadit Unicode seznam rozsahu abecedně"
 
 #: lazarusidestrconsts.lissourceanddestinationaresame
 #, object-pascal-format

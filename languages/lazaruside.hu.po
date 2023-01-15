@@ -6048,10 +6048,6 @@ msgstr "Váltás Unix-ra: /"
 msgid "Change to Windows \\"
 msgstr "Váltás Windows-ra: \\"
 
-#: lazarusidestrconsts.lischaractermap
-msgid "Character Map"
-msgstr "Karaktertábla"
-
 #: lazarusidestrconsts.lischeckall
 msgid "Check All"
 msgstr "Mindet kijelöli"
@@ -16862,11 +16858,6 @@ msgstr "Kilépés"
 msgid "&Quit Lazarus"
 msgstr "Kilépés a Lazarus-ból"
 
-#: lazarusidestrconsts.lisrange
-msgctxt "lazarusidestrconsts.lisrange"
-msgid "Range"
-msgstr "Tartomány"
-
 #: lazarusidestrconsts.lisreaderror
 msgid "Read Error"
 msgstr "Olvasási hiba"
@@ -17877,10 +17868,6 @@ msgstr "Kijelölés rendezése"
 msgctxt "lazarusidestrconsts.lissortselwords"
 msgid "Words"
 msgstr "Kifejezések"
-
-#: lazarusidestrconsts.lissortunicoderangelistalphabetically
-msgid "Sort Unicode range list alphabetically"
-msgstr "Unicode tartománylista rendezése ábécé szerint"
 
 #: lazarusidestrconsts.lissourceanddestinationaresame
 #, object-pascal-format

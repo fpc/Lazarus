@@ -5997,10 +5997,6 @@ msgstr "Unix e göre değiştir /"
 msgid "Change to Windows \\"
 msgstr "Windows a göre değiştir \\"
 
-#: lazarusidestrconsts.lischaractermap
-msgid "Character Map"
-msgstr "Karakter haritası"
-
 #: lazarusidestrconsts.lischeckall
 msgid "Check All"
 msgstr "Hepsini Kontrol Edin"
@@ -16750,11 +16746,6 @@ msgstr "Çıkış"
 msgid "&Quit Lazarus"
 msgstr "&Lazarus'tan Çık"
 
-#: lazarusidestrconsts.lisrange
-msgctxt "lazarusidestrconsts.lisrange"
-msgid "Range"
-msgstr "Aralık"
-
 #: lazarusidestrconsts.lisreaderror
 msgid "Read Error"
 msgstr "Okuma hatası"
@@ -17753,10 +17744,6 @@ msgstr "Sıralama seçimi"
 msgctxt "lazarusidestrconsts.lissortselwords"
 msgid "Words"
 msgstr "Kelimeler"
-
-#: lazarusidestrconsts.lissortunicoderangelistalphabetically
-msgid "Sort Unicode range list alphabetically"
-msgstr "Unicode aralık listesini alfabetik olarak sırala"
 
 #: lazarusidestrconsts.lissourceanddestinationaresame
 #, object-pascal-format

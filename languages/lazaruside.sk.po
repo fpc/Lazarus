@@ -6143,10 +6143,6 @@ msgstr ""
 msgid "Change to Windows \\"
 msgstr ""
 
-#: lazarusidestrconsts.lischaractermap
-msgid "Character Map"
-msgstr "Mapa znakov"
-
 #: lazarusidestrconsts.lischeckall
 msgid "Check All"
 msgstr ""
@@ -17106,11 +17102,6 @@ msgstr "Ukončiť"
 msgid "&Quit Lazarus"
 msgstr "U&končiť Lazarus"
 
-#: lazarusidestrconsts.lisrange
-msgctxt "lazarusidestrconsts.lisrange"
-msgid "Range"
-msgstr "Rozsah"
-
 #: lazarusidestrconsts.lisreaderror
 msgid "Read Error"
 msgstr "Chyba čítania"
@@ -18115,10 +18106,6 @@ msgstr "Zoradiť výber"
 msgctxt "lazarusidestrconsts.lissortselwords"
 msgid "Words"
 msgstr "Slová"
-
-#: lazarusidestrconsts.lissortunicoderangelistalphabetically
-msgid "Sort Unicode range list alphabetically"
-msgstr ""
 
 #: lazarusidestrconsts.lissourceanddestinationaresame
 #, object-pascal-format

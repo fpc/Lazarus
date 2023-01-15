@@ -6176,10 +6176,6 @@ msgstr "Cambia in / di Unix"
 msgid "Change to Windows \\"
 msgstr "Cambia in \\ di Windows"
 
-#: lazarusidestrconsts.lischaractermap
-msgid "Character Map"
-msgstr "Mappa caratteri"
-
 #: lazarusidestrconsts.lischeckall
 msgid "Check All"
 msgstr "Controlla Tutto"
@@ -17164,12 +17160,6 @@ msgstr "Esci"
 msgid "&Quit Lazarus"
 msgstr "&Esci da Lazarus"
 
-#: lazarusidestrconsts.lisrange
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisrange"
-msgid "Range"
-msgstr "Intervallo"
-
 #: lazarusidestrconsts.lisreaderror
 msgid "Read Error"
 msgstr "Errore di lettura"
@@ -18181,10 +18171,6 @@ msgstr "Ordina selezione"
 msgctxt "lazarusidestrconsts.lissortselwords"
 msgid "Words"
 msgstr "Parole"
-
-#: lazarusidestrconsts.lissortunicoderangelistalphabetically
-msgid "Sort Unicode range list alphabetically"
-msgstr ""
 
 #: lazarusidestrconsts.lissourceanddestinationaresame
 #, object-pascal-format

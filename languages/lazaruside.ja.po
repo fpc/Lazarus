@@ -6161,10 +6161,6 @@ msgstr "Unix / に変換"
 msgid "Change to Windows \\"
 msgstr "Windows \\ に変換"
 
-#: lazarusidestrconsts.lischaractermap
-msgid "Character Map"
-msgstr "文字マップ"
-
 #: lazarusidestrconsts.lischeckall
 msgid "Check All"
 msgstr "すべてチェック"
@@ -17053,12 +17049,6 @@ msgstr "終了"
 msgid "&Quit Lazarus"
 msgstr "Lazarus を終了(&Q)"
 
-#: lazarusidestrconsts.lisrange
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisrange"
-msgid "Range"
-msgstr "範囲"
-
 #: lazarusidestrconsts.lisreaderror
 msgid "Read Error"
 msgstr "読み取りエラー"
@@ -18094,10 +18084,6 @@ msgstr "選択部分をソートする"
 msgctxt "lazarusidestrconsts.lissortselwords"
 msgid "Words"
 msgstr "単語"
-
-#: lazarusidestrconsts.lissortunicoderangelistalphabetically
-msgid "Sort Unicode range list alphabetically"
-msgstr "ユニコード範囲リストをアルファベット順に並べ替え"
 
 #: lazarusidestrconsts.lissourceanddestinationaresame
 #, object-pascal-format

@@ -6272,10 +6272,6 @@ msgstr ""
 msgid "Change to Windows \\"
 msgstr ""
 
-#: lazarusidestrconsts.lischaractermap
-msgid "Character Map"
-msgstr "Peta Karakter"
-
 #: lazarusidestrconsts.lischeckall
 msgid "Check All"
 msgstr ""
@@ -17527,12 +17523,6 @@ msgstr ""
 msgid "&Quit Lazarus"
 msgstr "Keluar Lazarus"
 
-#: lazarusidestrconsts.lisrange
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisrange"
-msgid "Range"
-msgstr "Jangkauan"
-
 #: lazarusidestrconsts.lisreaderror
 msgid "Read Error"
 msgstr "Pembacaan Salah"
@@ -18545,10 +18535,6 @@ msgstr "Urut pilihan"
 msgctxt "lazarusidestrconsts.lissortselwords"
 msgid "Words"
 msgstr "Kata"
-
-#: lazarusidestrconsts.lissortunicoderangelistalphabetically
-msgid "Sort Unicode range list alphabetically"
-msgstr ""
 
 #: lazarusidestrconsts.lissourceanddestinationaresame
 #, object-pascal-format

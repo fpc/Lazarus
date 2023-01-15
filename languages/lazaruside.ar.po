@@ -6046,10 +6046,6 @@ msgstr ""
 msgid "Change to Windows \\"
 msgstr ""
 
-#: lazarusidestrconsts.lischaractermap
-msgid "Character Map"
-msgstr ""
-
 #: lazarusidestrconsts.lischeckall
 msgid "Check All"
 msgstr ""
@@ -16809,11 +16805,6 @@ msgstr ""
 msgid "&Quit Lazarus"
 msgstr "خروج من لازاروس"
 
-#: lazarusidestrconsts.lisrange
-msgctxt "lazarusidestrconsts.lisrange"
-msgid "Range"
-msgstr ""
-
 #: lazarusidestrconsts.lisreaderror
 msgid "Read Error"
 msgstr ""
@@ -17808,10 +17799,6 @@ msgstr ""
 #: lazarusidestrconsts.lissortselwords
 msgctxt "lazarusidestrconsts.lissortselwords"
 msgid "Words"
-msgstr ""
-
-#: lazarusidestrconsts.lissortunicoderangelistalphabetically
-msgid "Sort Unicode range list alphabetically"
 msgstr ""
 
 #: lazarusidestrconsts.lissourceanddestinationaresame

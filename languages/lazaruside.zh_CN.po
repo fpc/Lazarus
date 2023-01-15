@@ -6067,10 +6067,6 @@ msgstr "更改为Unix /"
 msgid "Change to Windows \\"
 msgstr "更改为Windows \\"
 
-#: lazarusidestrconsts.lischaractermap
-msgid "Character Map"
-msgstr "字符表"
-
 #: lazarusidestrconsts.lischeckall
 msgid "Check All"
 msgstr "检查所有"
@@ -16876,11 +16872,6 @@ msgstr "退出"
 msgid "&Quit Lazarus"
 msgstr "退出Lazarus(&Q)"
 
-#: lazarusidestrconsts.lisrange
-msgctxt "lazarusidestrconsts.lisrange"
-msgid "Range"
-msgstr "范围"
-
 #: lazarusidestrconsts.lisreaderror
 msgid "Read Error"
 msgstr "读取错误"
@@ -17881,10 +17872,6 @@ msgstr "排序选择"
 msgctxt "lazarusidestrconsts.lissortselwords"
 msgid "Words"
 msgstr "单词"
-
-#: lazarusidestrconsts.lissortunicoderangelistalphabetically
-msgid "Sort Unicode range list alphabetically"
-msgstr "按字母顺序排序Unicode范围列表"
 
 #: lazarusidestrconsts.lissourceanddestinationaresame
 #, object-pascal-format
