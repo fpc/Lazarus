@@ -44,12 +44,7 @@ uses
   LCLType, LCLUnicodeData, Grids, ButtonPanel, ComCtrls, Spin, ImgList,
   // LazUtils
   GraphType, LazUTF8, LConvEncoding;
-{,
-  // IdeIntf
-  IDEHelpIntf, IDEImagesIntf,
-  // IDE
-  LazarusIDEStrConsts, EditorOptions, EnvironmentOpts;
- }
+
 type
   TOnInsertCharacterEvent = procedure (const C: TUTF8Char) of object;
 
