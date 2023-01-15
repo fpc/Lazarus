@@ -13247,13 +13247,46 @@ method.
 </element>
 
 <element name="TCustomListView.SortWithParams">
-<short/>
-<descr/>
+<short>
+Sorts the Items in the list view control using the specified sort compare 
+function.
+</short>
+<descr>
+<p>
+<var>SortWithParams</var> is a method used to sort entries in the Items 
+property using the sort compare function in <var>ACompareFunc</var> to 
+determine the order for the values.
+</p>
+<p>
+No actions are performed in the method if Items has fewer than 2 TListItem 
+instances in the property, or when lffPreparingSorting has already been 
+included in the internal flags for the control.
+</p>
+<p>
+SortWithParams ensures that state information for the class instance is stored 
+in internal lists when the handle for the widget has been allocated. This 
+includes the selected, focused, and checked list items for the control.
+</p>
+<p>
+SortWithParams calls the Sort method for the list in Items using ACompareFunc 
+as the sort compare routine.
+</p>
+<p>
+If the widget Handle has been assigned, the widget is updated with the values 
+in SortType, SortColumns, and SortDirection. The lists are used to restore the 
+values in the widget when the sort operation is completed. These actions are 
+not performed (or needed) if the handle for the widget has not been assigned.
+</p>
+<p>
+SortWithParams is called from the Sort and CustomSort methods.
+</p>
+</descr>
 <seealso>
 <link id="TCustomListView.Sort"/>
 <link id="TCustomListView.SortType"/>
-<link id="TCustomListView.CustomSort"/>
 <link id="TCustomListView.SortColumn"/>
+<link id="TCustomListView.SortDirection"/>
+<link id="TCustomListView.CustomSort"/>
 <link id="TCustomListView.Items"/>
 <link id="TCustomListView.ItemIndex"/>
 <link id="TCustomListView.MultiSelect"/>
@@ -13262,7 +13295,9 @@ method.
 </seealso>
 </element>
 <element name="TCustomListView.SortWithParams.ACompareFunc">
-<short/>
+<short>
+Sort compare routine used to determine the sorted order for the values in Items.
+</short>
 </element>
 
 <element name="TCustomListView.UpdateScrollbars">
