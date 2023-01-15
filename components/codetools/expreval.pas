@@ -1570,7 +1570,7 @@ var
        else
          Value:=8;
     'ansichar': Value:=1;
-    'widechar': Value:=2;
+    'widechar','unicodechar': Value:=2;
     'char':
       if IsDefined('FPC_UNICODESTRINGS') then
         Value:=2
