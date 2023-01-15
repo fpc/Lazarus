@@ -1942,9 +1942,9 @@ file masks in the comparison.
 </p>
 <p>
 MatchesWindowsMask is available, but should not be called, in the 
-TWindowsMaskList descendant (Are you insane?). This would result in an 
-unnecessary allocation of a TWindowsMaskList instance. Use TWindowsMaskList 
-and call its Matches method instead.
+TWindowsMaskList descendant. This would result in an unnecessary allocation of 
+a TWindowsMaskList instance. Use TWindowsMaskList and call its Matches method 
+instead.
 </p>
 <p>
 Use the Matches method to compare a file name using the mask semantics for the 
