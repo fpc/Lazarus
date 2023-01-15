@@ -353,12 +353,12 @@ type
     procedure AddMasksToList(const aValue: String; aSeparator: Char; aCaseSensitive: Boolean;
       aOpcodesAllowed: TMaskOpCodes); override;
   public
-      constructor Create(const aValue: String; aSeparator: Char=';'; aCaseSensitive: Boolean=False;
-        aOpcodesAllowed: TMaskOpCodes=DefaultMaskOpCodes); override;
+    constructor Create(const aValue: String; aSeparator: Char=';'; aCaseSensitive: Boolean=False;
+      aOpcodesAllowed: TMaskOpCodes=DefaultMaskOpCodes); override;
 
-      constructor Create(const aValue: String; aSeparator: Char{=';'}; aCaseSensitive: Boolean{=False};
-      aOpcodesAllowed: TMaskOpCodes{=DefaultMaskOpCodes};
-      aWindowsQuirksAllowed: TWindowsQuirks{=DefaultWindowsQuirks}); overload; //reintroduce;
+    constructor Create(const aValue: String; aSeparator: Char{=';'}; aCaseSensitive: Boolean{=False};
+    aOpcodesAllowed: TMaskOpCodes{=DefaultMaskOpCodes};
+    aWindowsQuirksAllowed: TWindowsQuirks{=DefaultWindowsQuirks}); overload; //reintroduce;
 
     //Remove in 2.5
     constructor Create(const aValue: String; aSeparator: Char; aOptions: TMaskOptions); override;
