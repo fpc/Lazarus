@@ -77,7 +77,7 @@ uses
     TodoListLaz, DateTimeCtrls, SQLDBLaz, DBFLaz, pascalscript,
     EditorMacroScript, ExampleProjects,
     OnlinePackageManager,
-    SimpleWebServerGUI, LazProjectGroups, Pas2jsDsgn,
+    SimpleWebServerGUI, LazProjectGroups, Pas2jsDsgn, charactermap_ide_pkg,
   {$ENDIF}
   MainBase;
 

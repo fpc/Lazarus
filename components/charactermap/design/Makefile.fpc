@@ -9,8 +9,8 @@ name=charactermap_ide_pkg
 version=0.1
 
 [compiler]
-unittargetdir=lib/designtime/$(CPU_TARGET)-$(OS_TARGET)
-unitdir=source/designtime ../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../buildintf/units/$(CPU_TARGET)-$(OS_TARGET) ../../codetools/units/$(CPU_TARGET)-$(OS_TARGET) ../../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../lib/runtime/$(CPU_TARGET)-$(OS_TARGET) ../../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../synedit/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../../ide/packages/ideconfig/lib/$(CPU_TARGET)-$(OS_TARGET) .
+unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+unitdir=../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../buildintf/units/$(CPU_TARGET)-$(OS_TARGET) ../../codetools/units/$(CPU_TARGET)-$(OS_TARGET) ../../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../synedit/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../../ide/packages/ideconfig/lib/$(CPU_TARGET)-$(OS_TARGET) .
 options= -MObjFPC -Scghi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 
 [target]
@@ -61,4 +61,4 @@ compiled:
 all: cleartarget $(COMPILER_UNITTARGETDIR) charactermap_ide_pkg$(PPUEXT) compiled
 
 distclean: clean
-        ${DELTREE} lib/designtime/*
+        ${DELTREE} lib/*

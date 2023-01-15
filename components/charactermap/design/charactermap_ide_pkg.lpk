@@ -9,8 +9,7 @@
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <OtherUnitFiles Value="source\designtime"/>
-        <UnitOutputDirectory Value="lib\designtime\$(TargetCPU)-$(TargetOS)"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
       </SearchPaths>
     </CompilerOptions>
     <Description Value="Displays a character map for ANSI and UTF8 encodings (designtime package for IDE integration). A character can be copied into the source editor by clicking on the character cell."/>

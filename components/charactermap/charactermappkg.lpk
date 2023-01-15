@@ -8,8 +8,7 @@
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <OtherUnitFiles Value="source\runtime"/>
-        <UnitOutputDirectory Value="lib\runtime\$(TargetCPU)-$(TargetOS)"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
       </SearchPaths>
     </CompilerOptions>
     <Description Value="Displays a character map for ANSI and UTF8 encodings (runtime package). "/>
