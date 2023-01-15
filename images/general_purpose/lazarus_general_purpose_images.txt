@@ -6,8 +6,8 @@ The different sizes as required by LCL scaling for high-dpi screens can be used 
 - 24x24, 36x36 and 48x48 pixels for "medium" sized images, and
 - 32x32, 48x48 and 64x64 pixels for "large" images.
 
-The images were kindly provided by Roland Hahn (https://www.rhsoft.de/).
+The images were kindly provided by Roland Hahn.
 
-License:
-Creative Commons CC0 1.0 Universal
+License: Creative Commons CC0 1.0 Universal
+https://creativecommons.org/publicdomain/zero/1.0/
 (freely available, no restrictions in usage)
