@@ -183,10 +183,20 @@ begin
   case cp of  // add spaces to be sure of unique names found in the combobox
     437..1258: cpStr := 'cp' + IntToStr(cp) + ' ';
     10000    : cpStr := 'macintosh ';
-    20866    : cpStr := 'koi8 ';
+    20866    : cpStr := 'koi8r ';
+    21866    : cpStr := 'koi8u ';
     28591    : cpStr := 'iso88591 ';
     28592    : cpStr := 'iso88592 ';
+    28593    : cpStr := 'iso88593 ';
+    28594    : cpStr := 'iso88594 ';
+    28595    : cpStr := 'iso88595 ';
+    28597    : cpStr := 'iso88597 ';
+    28599    : cpStr := 'iso88599 ';
+    28600    : cpStr := 'iso885910 ';
+    28603    : cpStr := 'iso885913 ';
+    28604    : cpStr := 'iso885914 ';
     28605    : cpStr := 'iso885915 ';
+    28606    : cpStr := 'iso885916 ';
     else       cpStr := '';
   end;
   for i := 0 to cbCodePage.Items.Count-1 do

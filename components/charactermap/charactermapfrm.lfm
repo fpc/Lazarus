@@ -2668,10 +2668,10 @@ object CharacterMapForm: TCharacterMapForm
     Height = 433
     Top = 6
     Width = 578
-    ActivePage = pgUnicode
+    ActivePage = pgAnsi
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 0
     object pgUnicode: TTabSheet
       Caption = 'Unicode'
@@ -2899,6 +2899,7 @@ object CharacterMapForm: TCharacterMapForm
           'cp437 - Original IBM PC hardware'
           'cp850 - Latin-1'
           'cp852 - Latin-2'
+          'cp865 - Danish, Norwegian'
           'cp866 - Belarusian, Russian, Ukrainian'
           'cp874 - Thai'
           'cp932 - Japanese'
@@ -2906,10 +2907,18 @@ object CharacterMapForm: TCharacterMapForm
           'cp949 - Korean'
           'cp950 - Traditional Chinese'
           'macintosh - MAC Roman (Western Europe)'
-          'koi8 - Ukrainian, Cyrillic'
+          'koi8r - Russian, Cyrillic'
+          'koi8u - Ukrainian, Cyrillic'
           'iso88591 - ISO Latin-1 (Western Europe)'
           'iso88592 - ISO Latin-2 (Central and Eastern Europe)'
+          'iso88593 - ISO Latin-3'
+          'iso88594 - ISO Baltic'
+          'iso88595 - ISO Cyrillic'
+          'iso88597 - ISO Greek'
+          'iso88599 - ISO Turkish'
+          'iso885913 - ISO Estonian'
           'iso885915 - ISO Latin-9 (Western Europe)'
+          'iso885916 - ISO Latin-10 (South Eastern Europe)'
         )
         OnSelect = cbCodePageSelect
         Style = csDropDownList
