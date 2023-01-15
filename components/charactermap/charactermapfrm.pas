@@ -126,7 +126,7 @@ resourcestring
 implementation
 
 {$R *.lfm}
-{$R ../../charactermap_images.res}
+{$R charactermap_images.res}
 
 uses
   LCLStrConsts;

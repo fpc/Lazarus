@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Makefile Value="2"/>
+  <Params Value=" -Fusource/designtime;../../../packager/units/$(CPU_TARGET)-$(OS_TARGET);../../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET);../../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET);../../buildintf/units/$(CPU_TARGET)-$(OS_TARGET);../../codetools/units/$(CPU_TARGET)-$(OS_TARGET);../../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET);../../freetype/lib/$(CPU_TARGET)-$(OS_TARGET);../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET);../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM);../lib/runtime/$(CPU_TARGET)-$(OS_TARGET);../../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM);../../synedit/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM);../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM);../../../ide/packages/ideconfig/lib/$(CPU_TARGET)-$(OS_TARGET);.  -MObjFPC -Scghi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) charactermap_ide_pkg.pas"/>
+</CONFIG>
