@@ -1893,10 +1893,10 @@ specified file name matches one of the file masks in the list.
 <var>AFileName</var> contains the file name examined in the method.
 </p>
 <p>
-Matches uses the <var>TMask</var> instances in <var>Items</var> to perform 
-the file name comparison. Each TMask instance in Items is used to call its 
-<var>Matches</var> method until a match is found, or until all of the masks 
-have been visited.
+Matches uses the <var>TMask</var> or <var>TWindowsMask</var> instances in 
+<var>Items</var> to perform the file name comparison. Each mask in Items is 
+used to call its <var>Matches</var> method until a match is found, or until 
+all of the masks have been visited.
 </p>
 <p>
 The return value is <b>True</b> when a mask is found that matches the file 
@@ -1906,6 +1906,9 @@ name.
 <seealso>
 <link id="TMaskList.Items"/>
 <link id="TMaskList.Count"/>
+<link id="TMaskList.GetMaskClass"/>
+<link id="TMask"/>
+<link id="TWindowsMask"/>
 </seealso>
 </element>
 <element name="TMaskList.Matches.Result">
@@ -1922,12 +1925,49 @@ system masks.
 </short>
 <descr>
 <p>
-Tests whether the file name matches at least one of the mask items in the 
-list. Implements some special rules for a Windows© file system comparison.
+<var>MatchesWindowsMask</var> is a Boolean function used to determined whether 
+the specified file name matches a Windows-specific file mask found in the 
+list. 
 </p>
+<p>
+MatchesWindowsMask creates a temporary TWindowsMaskList instance using the 
+values in Mask, CaseSensitive, and MaskOpCodes. The value in 
+DefaultWindowsQuirks is used to specify which Windows-specific file masks are 
+enabled in the class instance. Its Matches method is called to compare the 
+value in AFileName to the Windows-specific file masks.
+</p>
+<p>
+The return value is <b>True</b> if the file name matches one of the Windows© 
+file masks in the comparison.
+</p>
+<p>
+MatchesWindowsMask is available, but should not be called, in the 
+TWindowsMaskList descendant (Are you insane?). This would result in an 
+unnecessary allocation of a TWindowsMaskList instance. Use TWindowsMaskList 
+and call its Matches method instead.
+</p>
+<p>
+Use the Matches method to compare a file name using the mask semantics for the 
+file system represented by the TMask or TWindowsMask used in the 
+implementation.
+</p>
+<remark>
+MatchesWindowsMask is deprecated in LazUtils version 2.3, and will be removed 
+in LazUtils version 2.5. Use the TWindowsMaskList class and call its Matches 
+method instead.
+</remark>
 </descr>
 <errors/>
-<seealso/>
+<seealso>
+<link id="TMaskList.CaseSensitive"/>
+<link id="TMaskList.Mask"/>
+<link id="TMaskList.MaskOpCodes"/>
+<link id="TMaskList.Matches"/>
+<link id="TMaskList.GetMaskClass"/>
+<link id="TWindowsMaskList.Matches"/>
+<link id="TMask"/>
+<link id="TWindowsMask"/>
+</seealso>
 </element>
 <element name="TMaskList.MatchesWindowsMask.Result">
 <short><b>True</b> if the file name matches one the masks in the list.</short>
@@ -1991,7 +2031,7 @@ separator character passed as an argument to the Create constructor. The
 default separator character is ';' (Semicolon).
 </p>
 <p>
-Setting a new value for the Mask property causes the internal list of TMask 
+Setting a new value for the Mask property causes the internal list of mask 
 instances to be cleared and recreated using the values in the CaseSensitive 
 and MaskOpCodes properties.
 </p>
