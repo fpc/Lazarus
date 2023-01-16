@@ -335,7 +335,7 @@ var
   N: integer;
 begin
   N := ACol-1 + (ARow-1)*16 + 32;
-  AnsiCharInfoLabel.Caption := Format('Decimal: %s, Hex: $%s', [IntToStr(N), IntToHex(N, 2)]);
+  AnsiCharInfoLabel.Caption := Format('%s / $%s', [IntToStr(N), IntToHex(N, 2)]);
 end;
 
 procedure TCharacterMapForm.AnsiGridMouseMove(Sender: TObject;
