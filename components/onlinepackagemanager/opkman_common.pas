@@ -111,13 +111,13 @@ const
     'Other',
     'Games and Game Engines');
 
-  MaxLazVersions = 13;
+  MaxLazVersions = 14;
   LazVersions: array [0..MaxLazVersions - 1] of String = (
     '1.8.0', '1.8.2', '1.8.4', '1.8.5',
     '2.0.0', '2.0.2', '2.0.4', '2.0.6', '2.0.8', '2.0.10', '2.0.12',
-    '2.2.0',
+    '2.2.0', '2.2.4',
     'Trunk');
-  LazDefVersions = '2.0.0, 2.0.2, 2.0.4, 2.0.6, 2.0.8, 2.0.10, 2.0.12, 2.2.0';
+  LazDefVersions = '2.0.0, 2.0.2, 2.0.4, 2.0.6, 2.0.8, 2.0.10, 2.0.12, 2.2.0, 2.2.4';
   LazTrunk = '2.3.0';
 
   MaxFPCVersions = 7;
