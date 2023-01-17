@@ -81,6 +81,8 @@ type
     ChildPos: Integer;
     Name: string;
     NamePosition: integer;
+    TypeUnitName: string;
+    TypeUnitNamePosition: integer;
     TypeName: string;
     TypeNamePosition: integer;
     AncestorTool: TObject; // TFindDeclarationTool
@@ -95,7 +97,7 @@ type
   private
     FCount: integer;
     FNames: ^String;
-    FNamePositions: ^integer;
+    FNamePositions: PInteger;
     function GetNamePositions(Index: integer): integer;
     function GetNames(Index: integer): string;
   public
@@ -745,12 +747,28 @@ begin
   Parser.CheckToken(toSymbol);
   if not Parser.TokenSymbolIs('END') then begin
     ObjectStartLine:=Parser.SourceLine;
+
+    // read TypeName
+    //   or ClassName.TypeName
+    //   or Namespace.UnitName/ClassName.TypeName
+    //   or Name:TypeName
+    //   or Name:TypeName[decimal]
+    //   or Name:UnitName/TypeName
+    //   or Name:Namespace.UnitName/ClassName.TypeName
     ObjectNode.Name := '';
     ObjectNode.TypeName := Parser.TokenString;
     ObjectNode.TypeNamePosition:=TokenStart;
     ObjectNode.ChildPos := -1;
     NextToken;
+    while Parser.Token = '.' do begin
+      NextToken;
+      Parser.CheckToken(toSymbol);
+      ObjectNode.TypeName := ObjectNode.TypeName+'.'+Parser.TokenString;
+      NextToken;
+    end;
+
     if Parser.Token = ':' then begin
+      // Name:TypeName
       NextToken;
       Parser.CheckToken(toSymbol);
       ObjectNode.Name := ObjectNode.TypeName;
@@ -758,13 +776,37 @@ begin
       ObjectNode.TypeName := Parser.TokenString;
       ObjectNode.TypeNamePosition:=TokenStart;
       NextToken;
-      if parser.Token = '[' then begin
+      while Parser.Token = '.' do begin
         NextToken;
-        ObjectNode.ChildPos := parser.TokenInt;
-        NextToken;
-        parser.CheckToken(']');
+        Parser.CheckToken(toSymbol);
+        ObjectNode.TypeName := ObjectNode.TypeName+'.'+Parser.TokenString;
         NextToken;
       end;
+    end;
+
+    if Parser.Token = '/' then begin
+      // TypeUnitName/TypeName
+      NextToken;
+      Parser.CheckToken(toSymbol);
+      ObjectNode.TypeUnitName := ObjectNode.TypeName;
+      ObjectNode.TypeUnitNamePosition:=ObjectNode.TypeNamePosition;
+      ObjectNode.TypeName := Parser.TokenString;
+      ObjectNode.TypeNamePosition:=TokenStart;
+      NextToken;
+      while Parser.Token = '.' do begin
+        NextToken;
+        Parser.CheckToken(toSymbol);
+        ObjectNode.TypeName := ObjectNode.TypeName+'.'+Parser.TokenString;
+        NextToken;
+      end;
+    end;
+
+    if Parser.Token = '[' then begin
+      NextToken;
+      ObjectNode.ChildPos := Parser.TokenInt;
+      NextToken;
+      Parser.CheckToken(']');
+      NextToken;
     end;
 
     // read property list
