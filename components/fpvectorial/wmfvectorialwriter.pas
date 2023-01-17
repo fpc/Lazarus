@@ -64,7 +64,7 @@ type
     FCurrTextColor: TFPColor;
     FCurrTextAnchor: TvTextAnchor;
     FCurrBkMode: Word;
-    FCurrPolyFillMode: Word;
+    {%H-}FCurrPolyFillMode: Word;
     FUseTopLeftCoordinates: Boolean;
     FErrMsg: TStrings;
 
@@ -102,12 +102,12 @@ type
     procedure WriteWindowOrg(AStream: TStream);
 
     procedure WriteEntity(AStream: TStream; AEntity: TvEntity);
-    procedure WriteWMFRecord(AStream: TStream; AFunc: word; ASize: Int64); overload;
-    procedure WriteWMFRecord(AStream: TStream; AFunc: Word; const AParams; ASize: Int64);
-    procedure WriteWMFParams(AStream: TStream; const AParams; ASize: Int64);
+    procedure WriteWMFRecord(AStream: TStream; AFunc: word; ASize: Integer); overload;
+    procedure WriteWMFRecord(AStream: TStream; AFunc: Word; const AParams; ASize: Integer);
+    procedure WriteWMFParams(AStream: TStream; const AParams; ASize: Integer);
 
   protected
-    procedure WritePage(AStream: TStream; AData: TvVectorialDocument;
+    procedure WritePage(AStream: TStream; {%H-}AData: TvVectorialDocument;
       APage: TvVectorialPage);
 
     procedure LogError(AMsg: String);
@@ -131,7 +131,6 @@ uses
 
 const
   ONE_INCH = 25.4;     // 1 inch = 25.4 mm
-  DEFAULT_SIZE = 100;  // size of image if scaling info is not available
   SIZE_OF_WORD = 2;
 
 type
@@ -147,11 +146,11 @@ type
     Pen: TvPen;
   end;
 
-  TWMFPalette = class
+  TWMFPalette = {%H-}class
     // not used, just needed as a filler in the ObjList
   end;
 
-  TWMFRegion = class
+  TWMFRegion = {%H-}class
     // not used, just needed as a filler in the ObjList
   end;
 
@@ -270,12 +269,12 @@ begin
   FCurrTextColor := colBlack;
   FCurrTextAnchor := vtaStart;
   with FCurrPen do begin
-    Style := TFPPenStyle(-1);
+    Style := psClear;
     Color := colBlack;
     Width := -1;
   end;
   with FCurrBrush do begin
-    Style := TFPBrushStyle(-1);
+    Style := bsClear;
     Color := colBlack;
   end;
   with FCurrFont do begin
@@ -530,9 +529,7 @@ procedure TvWMFVectorialWriter.WriteExtText(AStream: TStream; AText: TvText);
 var
   s: String;
   rec: TWMFExtTextRecord;
-  i, n, strLen, corrLen: Integer;
-  P: TPoint;
-  offs: TPoint;
+  n, strLen, corrLen: Integer;
   brush: TvBrush;
   opts: Word;
 begin
@@ -583,7 +580,7 @@ var
   idx: Word;
   wmfFont: TWMFFont;
   fntName: String;
-  i, n: Integer;
+  n: Integer;
 begin
   if (AFont.Color.Red <> FCurrTextColor.Red) or
      (AFont.Color.Green <> FCurrTextColor.Green) or
@@ -684,12 +681,12 @@ end;
 
 procedure TvWMFVectorialWriter.WritePath(AStream: TStream; APath: TPath);
 var
-  points: TPointsArray;     // array of TPoint
-  pts: array of TWMFPointXYRecord;
-  polystarts: TIntegerDynArray;
+  points: TPointsArray = nil;     // array of TPoint
+  pts: array of TWMFPointXYRecord = nil;
+  polystarts: TIntegerDynArray = nil;
   allclosed: boolean;
   isClosed: Boolean;
-  i, len: Word;
+  i, len: word;
   first, last: Integer;
   p, npoly, npts: Integer;
 begin
@@ -811,7 +808,7 @@ end;
 procedure TvWMFVectorialWriter.WritePolygon(AStream: TStream;
   APolygon: TvPolygon);
 var
-  pts: array of TWMFPointXYRecord;
+  pts: array of TWMFPointXYRecord = nil;
   i: Integer;
   w: Word;
 begin
@@ -1030,7 +1027,7 @@ end;
 
 { ASize is in bytes }
 procedure TvWMFVectorialWriter.WriteWMFRecord(AStream: TStream;
-  AFunc: Word; ASize: Int64);
+  AFunc: Word; ASize: Integer);
 var
   rec: TWMFRecord;
 begin
@@ -1042,7 +1039,7 @@ end;
 
 { ASize is the size of the parameter part, in bytes }
 procedure TvWMFVectorialWriter.WriteWMFRecord(AStream: TStream;
-  AFunc: Word; const AParams; ASize: Int64);
+  AFunc: Word; const AParams; ASize: Integer);
 var
   rec: TWMFRecord;
 begin
@@ -1054,7 +1051,7 @@ end;
 
 { ASize is in bytes }
 procedure TvWMFVectorialWriter.WriteWMFParams(AStream: TStream;
-  const AParams; ASize: Int64);
+  const AParams; ASize: Integer);
 begin
   AStream.WriteBuffer(AParams, ASize);
 end;

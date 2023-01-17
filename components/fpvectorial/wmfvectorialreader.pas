@@ -73,14 +73,14 @@ type
     function CreateBrush(const AParams: TParamArray): Integer;
     function CreateFont(const AParams: TParamArray): Integer;
     function CreatePalette(const AParams: TParamArray): Integer;
-    function CreatePatternBrush(const AParams: TParamArray): Integer;
+    function CreatePatternBrush(const {%H-}AParams: TParamArray): Integer;
     function CreatePen(const AParams: TParamArray): Integer;
-    function CreateRegion(const AParams: TParamArray): Integer;
+    function CreateRegion(const {%H-}AParams: TParamArray): Integer;
     procedure DeleteObj(const AParams: TParamArray);
     function DIBCreatePatternBrush(const AParams: TParamArray): Integer;
     procedure ReadArc(APage: TvVectorialpage; const AParams: TParamArray);
-    procedure ReadBkColor(APage: TvVectorialPage; const AParams: TParamArray);
-    procedure ReadBkMode(APage: TvVectorialPage; const AValue: Word);
+    procedure ReadBkColor({%H-}APage: TvVectorialPage; const AParams: TParamArray);
+    procedure ReadBkMode({%H-}APage: TvVectorialPage; const AValue: Word);
     procedure ReadBkMode(APage: TvVectorialPage; const AParams: TParamArray);
     procedure ReadChord(APage: TvVectorialpage; const AParams: TParamArray);
     function ReadColor(const AParams: TParamArray; AIndex: Integer): TFPColor;
@@ -98,7 +98,7 @@ type
     procedure ReadPolyPolygon(APage: TvVectorialPage; const AParams: TParamArray);
     procedure ReadRectangle(APage: TvVectorialPage; const AParams: TParamArray;
       IsRounded: Boolean);
-    procedure ReadStretchDIB(AStream: TStream; APage: TvVectorialPage;
+    procedure ReadStretchDIB({%H-}AStream: TStream; APage: TvVectorialPage;
       const AParams: TParamArray);
     function ReadString(const AParams: TParamArray;
       AStartIndex, ALength: Integer): String;
@@ -158,7 +158,7 @@ type
     RawPenWidth: Integer;
   end;
 
-  TWMFPalette = class
+  TWMFPalette = {%H-}class
     // not used, just needed as a filler in the ObjList
   end;
 
@@ -282,10 +282,9 @@ end;
 function TvWMFVectorialReader.DIBCreatePatternBrush(const AParams: TParamArray): Integer;
 var
   wmfBrush: TWMFBrush;
-  rasterImg: TvRasterImage = nil;
   memImg: TFPMemoryImage = nil;
-  style: Word;
-  colorUsage: Word;
+  {%H-}style: Word;
+  {%H-}colorUsage: Word;
 begin
   wmfBrush := TWMFBrush.Create;
 
@@ -313,7 +312,7 @@ function TvWMFVectorialReader.CreateFont(const AParams: TParamArray): Integer;
 var
   wmfFont: TWMFFont;
   fontRec: PWMFFontRecord;
-  fntName: String;
+  fntName: String = '';
   idx: Integer;
 begin
   idx := Length(Aparams);
@@ -534,7 +533,7 @@ procedure TvWMFVectorialReader.ReadExtTextOut(APage: TvVectorialPage;
 var
   x, y, len, opts: Integer;
   offs: TPoint;
-  R: TRect;
+  {%H-}R: TRect;
   s: String;
   txt: TvText;
   angle: Double;
@@ -634,7 +633,7 @@ begin
 
   // Test if file begins with a placeable meta file header
   FHasPlaceableMetaHeader := false;
-  AStream.ReadBuffer(buf, SizeOf(TPlaceableMetaHeader));
+  AStream.ReadBuffer(buf{%H-}, SizeOf(TPlaceableMetaHeader));
   if placeableMetaHdr.Key = WMF_MAGIC_NUMBER then begin  // yes!
     FHasPlaceableMetaHeader := true;
     FBBox.Left := placeableMetaHdr.Left;
@@ -728,7 +727,7 @@ const
 var
   n: Integer;
   i, j: Integer;
-  pts: Array of T3DPoint;
+  pts: Array of T3DPoint = nil;
   path: TPath;
 begin
   n := AParams[0];
@@ -767,8 +766,7 @@ const
   EPS = 1E-6;
 var
   nPoly: Integer;
-  nPts: array of Integer;
-  pts: array of T3DPoint;
+  nPts: array of Integer = nil;
   i, j, k: Integer;
   path: TPath;
   P: T3DPoint;
@@ -811,7 +809,7 @@ end;
 procedure TvWMFVectorialReader.ReadRecords(AStream: TStream; AData: TvVectorialDocument);
 var
   wmfRec: TWMFRecord;
-  params: TParamArray;
+  params: TParamArray = nil;
   page: TvVectorialPage;
   prevX, prevY: Word;
 begin
@@ -822,7 +820,7 @@ begin
     FRecordStartPos := AStream.Position;
 
     // Read record size and function code
-    AStream.ReadBuffer(wmfRec, SizeOf(TWMFRecord));
+    AStream.ReadBuffer(wmfRec{%H-}, SizeOf(TWMFRecord));
 
    {$IFDEF WMF_DEBUG}
     writeLn(Format('Record position: %0:d / Record size: %1:d words / Record type: %2:d ($%2:x): %3:s',
@@ -840,7 +838,7 @@ begin
     end;
 
     // Read parameters
-    SetLength(params, wmfRec.Size - 3);
+    SetLength(params{%H-}, wmfRec.Size - 3);
     AStream.ReadBuffer(params[0], (wmfRec.Size - 3)*SIZE_OF_WORD);
 
     // Process record, depending on function code
@@ -998,7 +996,7 @@ begin
       // None of them implemented
     end;
 
-    AStream.Position := FRecordStartPos + wmfRec.Size * SIZE_OF_WORD;
+    AStream.Position := FRecordStartPos + Int64(wmfRec.Size) * SIZE_OF_WORD;
   end;
 
   if FHasPlaceableMetaHeader then begin
@@ -1047,14 +1045,14 @@ end;
 function TvWMFVectorialReader.ReadImage(const AParams: TParamArray;
   AIndex: Integer; AImage: TFPCustomImage): Boolean;
 var
-  bmpCoreHdr: PWMFBitmapCoreHeader;
+  {%H-}bmpCoreHdr: PWMFBitmapCoreHeader;
   bmpInfoHdr: PWMFBitmapInfoHeader;
   hasCoreHdr: Boolean;
   bmpFileHdr: TBitmapFileHeader;
   w, h: Integer;
   memstream: TMemoryStream;
   imgSize: Int64;
-  dataSize: Int64;
+  dataSize: Integer;
   reader: TFPCustomImageReader;
 begin
   Result := false;
@@ -1078,7 +1076,7 @@ begin
     bmpFileHdr.bfType := BMmagic;
     bmpFileHdr.bfSize := SizeOf(bmpFileHdr) + datasize;
     if bmpInfoHdr^.Compression in [BI_RGB, BI_BITFIELDS, BI_CMYK] then
-      imgSize := (w + bmpInfoHdr^.Planes * bmpInfoHdr^.BitCount + 31) div 32 * abs(h)
+      imgSize := (w + Int64(bmpInfoHdr^.Planes) * bmpInfoHdr^.BitCount + 31) div 32 * abs(h)
     else
       imgSize := bmpInfoHdr^.ImageSize;
     bmpFileHdr.bfOffset := bmpFileHdr.bfSize - imgSize;
