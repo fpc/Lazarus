@@ -214,8 +214,8 @@ begin
     J:=IndexOf(AFileName);
     If (J<>-1) then
       begin
-      if (J>0) then
-        Exchange(0,J)
+      Delete(J);
+      Insert(0, AFileName);
       end
     else
       begin
