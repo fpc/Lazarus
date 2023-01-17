@@ -3206,7 +3206,7 @@ begin
   // text spans
 
   lParagraph := TvParagraph.Create(AData);
-  lParagraph.YPos_NeedsAdjustment_DelFirstLineBodyHeight := True;
+  lParagraph.YPos_NeedsAdjustment_DelFirstLineBodyHeight := false;  // wp: was True
   lTextSpanStack := TSVGObjectStack.Create;
   lCurStyle := TSVGTextSpanStyle.Create;
   lTextSpanStack.Push(lCurStyle);

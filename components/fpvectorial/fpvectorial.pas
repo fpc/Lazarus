@@ -5758,6 +5758,10 @@ begin
   ABottom := Y;
 end;
 
+{ (X, Y) are the fpvectorial coordinatex of the left edge of the BASELINE (!)
+  of the first character box.
+  The character is painted, however, relative to the TOP/left corner of the
+  character box, in pixels. }
 procedure TvText.Render(var ARenderInfo: TvRenderInfo; ADoDraw: Boolean);
 const
   LINE_SPACING = 0.2;  // fraction of font height for line spacing
@@ -5831,6 +5835,8 @@ begin
   // ...
   // We need to keep the order of lines drawing correct regardless of
   // the drawing direction
+  // Since we have pixels now we need not take care about whether
+  // Page.TopLeftCoordinates is active or not!
   curDimY := refPt.Y - (lTextSize.CY - lDescender);
 
   // TvText supports multiple lines
