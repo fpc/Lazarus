@@ -119,10 +119,14 @@ type
     // Bezier
     procedure Render_Bezier(Apage: TvVectorialPage; AIntParam: Integer);
 
-    // Text
+    // Text - single line
     procedure Render_Text(APage: TvVectorialpage; AIntParam: Integer);
     procedure Render_Text_Fonts(APage: TvVectorialPage; AIntParam: Integer);
     procedure Render_Text_Colors(APage: TvVectorialPage; AIntParam: Integer);
+
+    // Text as paragraph: 2 lines
+    procedure Render_2Lines(APage: TvVectorialPage; AIntParam: Integer);
+
   public
     { public declarations }
   end;
@@ -141,6 +145,7 @@ uses
 
 const
   IMG_FOLDER = 'images' + PathDelim;
+  REFIMG_FOLDER = IMG_FOLDER + 'ref' + PathDelim;
   NOT_SAVED = '(not saved)';
 
 
@@ -184,8 +189,8 @@ begin
     try
       png.Assign(bmp);
      // renderParams := TRenderParams(Tree.Selected.Data);
-      ForceDirectory(IMG_FOLDER);
-      fn := IncludeTrailingPathDelimiter(IMG_FOLDER) + renderParams.RefFile;
+      ForceDirectory(REFIMG_FOLDER);
+      fn := REFIMG_FOLDER + renderParams.RefFile;
       png.SaveToFile(fn);
     finally
       png.Free;
@@ -706,7 +711,9 @@ begin
   { -----------------------------------------------}
   node0 := Tree.Items.AddChild(nil, 'Text');
   { -----------------------------------------------}
-  node := Tree.Items.AddChild(node0, 'horizontal');
+  node1 := Tree.Items.AddChild(node0, 'single line');
+
+  node := Tree.Items.AddChild(node1, 'horizontal');
   Tree.Items.AddChildObject(node, 'left aligned',
     TRenderParams.Create(@Render_Text, 'text_left.png', $0000));
   Tree.Items.AddChildObject(node, 'centered',
@@ -714,7 +721,7 @@ begin
   Tree.Items.AddChildObject(node, 'right aligned',
     TRenderParams.Create(@Render_Text, 'text_right.png', $0002));
 
-  node := Tree.Items.AddChild(node0, 'rotated by 30 deg');
+  node := Tree.Items.AddChild(node1, 'rotated by 30 deg');
   Tree.Items.AddChildObject(node, 'left aligned',
     TRenderParams.Create(@Render_Text, 'text_left_30.png', $1000));
   Tree.Items.AddChildObject(node, 'centered',
@@ -722,7 +729,7 @@ begin
   Tree.Items.AddChildObject(node, 'right aligned',
     TRenderParams.Create(@Render_Text, 'text_right_30.png', $1002));
 
-  node := Tree.Items.AddChild(node0, 'vertical (90 deg, upward)');
+  node := Tree.Items.AddChild(node1, 'vertical (90 deg, upward)');
   Tree.Items.AddChildObject(node, 'left aligned',
     TRenderParams.Create(@Render_Text, 'text_left_90.png', $2000));
   Tree.Items.AddChildObject(node, 'centered',
@@ -730,7 +737,7 @@ begin
   Tree.Items.AddChildObject(node, 'right aligned',
     TRenderParams.Create(@Render_Text, 'text_right_90.png', $2002));
 
-  node := Tree.Items.AddChild(node0, 'vertical (-90 deg, downward)');
+  node := Tree.Items.AddChild(node1, 'vertical (-90 deg, downward)');
   Tree.Items.AddChildObject(node, 'left aligned',
     TRenderParams.Create(@Render_Text, 'text_left_m90.png', $3000));
   Tree.Items.AddChildObject(node, 'centered',
@@ -738,6 +745,42 @@ begin
   Tree.Items.AddChildObject(node, 'right aligned',
     TRenderParams.Create(@Render_Text, 'text_right_m90.png', $3002));
 
+  // ----
+  node1 := Tree.Items.AddChild(node0, 'two lines');
+
+  node := Tree.Items.AddChild(node1, 'horizontal');
+  Tree.Items.AddChildObject(node, 'left aligned',
+    TRenderParams.Create(@Render_2Lines, 'text2_left.png', $0000));
+  Tree.Items.AddChildObject(node, 'centered',
+    TRenderParams.Create(@Render_2Lines, 'text2_center.png', $0001));
+  Tree.Items.AddChildObject(node, 'right aligned',
+    TRenderParams.Create(@Render_2Lines, 'text2_right.png', $0002));
+
+  node := Tree.Items.AddChild(node1, 'rotated by 30 deg');
+  Tree.Items.AddChildObject(node, 'left aligned',
+    TRenderParams.Create(@Render_2Lines, 'text2_left_30.png', $1000));
+  Tree.Items.AddChildObject(node, 'centered',
+    TRenderParams.Create(@Render_2Lines, 'text2_center_30.png', $1001));
+  Tree.Items.AddChildObject(node, 'right aligned',
+    TRenderParams.Create(@Render_2Lines, 'text2_right_30.png', $1002));
+
+  node := Tree.Items.AddChild(node1, 'vertical (90 deg, upward)');
+  Tree.Items.AddChildObject(node, 'left aligned',
+    TRenderParams.Create(@Render_2Lines, 'text2_left_90.png', $2000));
+  Tree.Items.AddChildObject(node, 'centered',
+    TRenderParams.Create(@Render_2Lines, 'text2_center_90.png', $2001));
+  Tree.Items.AddChildObject(node, 'right aligned',
+    TRenderParams.Create(@Render_2Lines, 'text2_right_90.png', $2002));
+
+  node := Tree.Items.AddChild(node1, 'vertical (-90 deg, downward)');
+  Tree.Items.AddChildObject(node, 'left aligned',
+    TRenderParams.Create(@Render_2Lines, 'text2_left_m90.png', $3000));
+  Tree.Items.AddChildObject(node, 'centered',
+    TRenderParams.Create(@Render_2Lines, 'text2_center_m90.png', $3001));
+  Tree.Items.AddChildObject(node, 'right aligned',
+    TRenderParams.Create(@Render_2Lines, 'text2_right_m90.png', $3002));
+
+  // ----
   node := Tree.Items.AddChild(node0, 'Fonts');
   Tree.Items.AddChildObject(node, 'Times New Roman + Courier New',
     TRenderParams.Create(@Render_Text_Fonts, 'text_fonts.png'));
@@ -980,14 +1023,87 @@ begin
   APage.AddEntity(txt);
 end;
 
+procedure TMainForm.Render_2Lines(APage: TvVectorialPage; AIntParam: Integer);
+{ AIntParam and $000F = $0000  --> anchor at left
+                        $0001  --> anchor at center
+                        $0002  --> anchor at right
+  AIntParam and $F000 = $0000  --> horizontal
+                        $1000  --> rotated 30deg
+                        $2000  --> rotated 90deg
+                        $3000  --> rotated -90deg }
+const
+  XTEXT = 50;
+  YTEXT = 40;  // we assume that y points up
+  L = 10;
+var
+  para: TvParagraph;
+  txt: TvText;
+  p: TPath;
+  angle: double;
+  anchor: TvTextAnchor;
+begin
+  case AIntParam and $000F of
+    $0000 : anchor := vtaStart;
+    $0001 : anchor := vtaMiddle;
+    $0002 : anchor := vtaEnd;
+    else raise Exception.Create('Text anchor not supported');
+  end;
+  case AIntParam and $F000 of
+    $0000 : angle := 0;
+    $1000 : angle := 30;
+    $2000 : angle := 90;
+    $3000 : angle := -90;
+    else raise Exception.Create('Text angle not supported.');
+  end;
+
+  // Draw "+" at the origin of the first line of the text
+  if APage.UseTopLeftCoordinates then begin
+    APage.StartPath    (XTEXT - L, PAGE_SIZE - YTEXT);
+    APage.AddLineToPath(XTEXT + L, PAGE_SIZE - YTEXT);
+    APage.AddMoveToPath(XTEXT,     PAGE_SIZE - YTEXT - L);
+    APage.AddLineToPath(XTEXT,     PAGE_SIZE - YTEXT + L);
+  end else begin
+    APage.StartPath    (XTEXT - L, YTEXT);
+    APage.AddLineToPath(XTEXT + L, YTEXT);
+    APage.AddMoveToPath(XTEXT,     YTEXT - L);
+    APage.AddLineToPath(XTEXT,     YTEXT + L);
+  end;
+  p := APage.EndPath;
+  p.Pen.Width := 1;
+  p.Pen.Color := colRed;
+
+  // Create paragraph
+  para := TvParagraph.Create(APage);
+  para.X := XTEXT;
+  if APage.UseTopLeftCoordinates then
+    para.Y := PAGE_SIZE - YTEXT
+  else
+    para.Y := YTEXT;
+  para.Font.Size := 16;
+  para.TextAnchor := anchor;
+  para.Font.Orientation := angle;
+
+  // Add text to the paragraph
+  txt := para.AddText('ABCDE');
+  txt := para.AddText('Fghij');
+  txt.Y := txt.Y + 1.5 * txt.Font.Size * APage.GetTopLeftCoords_Adjustment();
+
+  APage.AddEntity(para);
+end;
+
 procedure TMainForm.Render_Text_Fonts(APage: TvVectorialPage;
   AIntParam: Integer);
 var
   txt: TvText;
+  yText: Integer;
 begin
   txt := TvText.Create(APage);
   txt.X := 10;
-  txt.Y := 80;
+  yText := 80;
+  if APage.UseTopLeftCoordinates then
+    txt.Y := PAGE_SIZE - yText
+  else
+    txt.Y := yText;
   txt.Font.Name := 'Times New Roman';
   txt.Font.Size := 10;
   txt.Value.Add('Times');
@@ -995,7 +1111,11 @@ begin
 
   txt := TvText.Create(APage);
   txt.X := 10;
-  txt.Y := 60;
+  yText := 60;
+  if APage.UseTopLeftCoordinates then
+    txt.Y := PAGE_SIZE - yText
+  else
+    txt.Y := yText;
   txt.Font.Name := 'Courier New';
   txt.Font.Size := 12;
   txt.Value.Add('Courier');
@@ -1004,12 +1124,17 @@ end;
 
 procedure TMainForm.Render_Text_Colors(APage: TvVectorialPage;
   AIntParam: Integer);
+const
+  YTEXT = 80;
 var
   txt: TvText;
 begin
   txt := TvText.Create(APage);
   txt.X := 10;
-  txt.Y := 80;
+  if APage.UseTopLeftCoordinates then
+    txt.Y := PAGE_SIZE - YTEXT
+  else
+    txt.Y := YTEXT;
   txt.Font.Name := 'Times New Roman';
   txt.Font.Size := 14;
   txt.Font.Color := colRed;
@@ -1113,7 +1238,7 @@ begin
     exit;
   end;
 
-  fn := IncludeTrailingPathDelimiter(IMG_FOLDER) + renderParams.RefFile;
+  fn := IncludeTrailingPathDelimiter(REFIMG_FOLDER) + renderParams.RefFile;
   if FileExists(fn) then begin
     RefImage.Picture.LoadFromFile(fn);
     RefImage.Hint := fn;

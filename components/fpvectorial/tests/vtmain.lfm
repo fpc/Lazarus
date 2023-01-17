@@ -9,7 +9,7 @@ object MainForm: TMainForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   ShowHint = True
-  LCLVersion = '1.7'
+  LCLVersion = '2.3.0.0'
   object GbTree: TGroupBox
     Left = 4
     Height = 686
@@ -31,7 +31,6 @@ object MainForm: TMainForm
       Align = alClient
       BorderSpacing.Bottom = 4
       BorderSpacing.Around = 4
-      DefaultItemHeight = 18
       HideSelection = False
       ParentFont = False
       ReadOnly = True
@@ -153,7 +152,7 @@ object MainForm: TMainForm
           Left = 4
           Height = 128
           Top = 130
-          Width = 118
+          Width = 116
           AutoSize = True
           BorderSpacing.Left = 4
           BorderSpacing.Top = 6
@@ -161,7 +160,7 @@ object MainForm: TMainForm
           BorderSpacing.Bottom = 4
           Caption = 'Origin at BOTTOM'
           ClientHeight = 108
-          ClientWidth = 114
+          ClientWidth = 112
           ParentFont = False
           TabOrder = 0
           object BottomLeftPaintbox: TPaintBox
@@ -184,7 +183,7 @@ object MainForm: TMainForm
           AnchorSideTop.Control = gbBottomLeft
           AnchorSideBottom.Control = gbRenderTest
           AnchorSideBottom.Side = asrBottom
-          Left = 130
+          Left = 128
           Height = 128
           Top = 130
           Width = 114
@@ -377,7 +376,7 @@ object MainForm: TMainForm
           Left = 4
           Height = 129
           Top = 156
-          Width = 209
+          Width = 210
           AutoSize = True
           BorderSpacing.Left = 4
           BorderSpacing.Top = 8
@@ -385,7 +384,7 @@ object MainForm: TMainForm
           BorderSpacing.Bottom = 8
           Caption = 'Written with origin at BOTTOM'
           ClientHeight = 109
-          ClientWidth = 205
+          ClientWidth = 206
           ParentFont = False
           TabOrder = 0
           object BtnViewBottomLeft: TButton
@@ -396,7 +395,7 @@ object MainForm: TMainForm
             Left = 114
             Height = 25
             Top = 42
-            Width = 87
+            Width = 88
             AutoSize = True
             BorderSpacing.Left = 8
             BorderSpacing.Right = 4
@@ -508,17 +507,17 @@ object MainForm: TMainForm
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = CbFileFormat
           AnchorSideTop.Side = asrBottom
-          Left = 221
+          Left = 222
           Height = 129
           Top = 156
-          Width = 212
+          Width = 213
           AutoSize = True
           BorderSpacing.Left = 8
           BorderSpacing.Top = 8
           BorderSpacing.Bottom = 8
           Caption = 'Written with origin at TOP'
           ClientHeight = 109
-          ClientWidth = 208
+          ClientWidth = 209
           ParentFont = False
           TabOrder = 3
           object BtnViewTopLeft: TButton
@@ -529,7 +528,7 @@ object MainForm: TMainForm
             Left = 114
             Height = 25
             Top = 41
-            Width = 90
+            Width = 91
             AutoSize = True
             BorderSpacing.Left = 8
             BorderSpacing.Right = 4
