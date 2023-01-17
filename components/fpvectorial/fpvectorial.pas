@@ -10432,6 +10432,7 @@ begin
     begin
       lEntity := CurPage.GetEntity(I);
       TvEntity.InitializeRenderInfo(lRenderInfo, nil);
+      lRenderInfo.Page := CurPage;
       lEntity.ExpandBoundingBox(lRenderInfo, lLeft, lTop, lRight, lBottom);
     end;
   end;
