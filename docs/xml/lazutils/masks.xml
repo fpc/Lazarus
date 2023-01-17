@@ -1964,7 +1964,6 @@ method instead.
 <link id="TMaskList.MaskOpCodes"/>
 <link id="TMaskList.Matches"/>
 <link id="TMaskList.GetMaskClass"/>
-<link id="TWindowsMaskList.Matches"/>
 <link id="TMask"/>
 <link id="TWindowsMask"/>
 </seealso>
