@@ -732,6 +732,7 @@ procedure TLFMTree.ProcessObject;
 var
   ObjectNode: TLFMObjectNode;
   ObjectStartLine: LongInt;
+  HasDot: Boolean;
 begin
   CreateChildNode(TLFMObjectNode);
   ObjectNode:=TLFMObjectNode(CurNode);
@@ -760,14 +761,16 @@ begin
     ObjectNode.TypeNamePosition:=TokenStart;
     ObjectNode.ChildPos := -1;
     NextToken;
+    HasDot:=false;
     while Parser.Token = '.' do begin
+      HasDot:=true;
       NextToken;
       Parser.CheckToken(toSymbol);
       ObjectNode.TypeName := ObjectNode.TypeName+'.'+Parser.TokenString;
       NextToken;
     end;
 
-    if Parser.Token = ':' then begin
+    if (not HasDot) and (Parser.Token = ':') then begin
       // Name:TypeName
       NextToken;
       Parser.CheckToken(toSymbol);

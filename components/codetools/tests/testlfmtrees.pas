@@ -46,7 +46,8 @@ type
   TTestLFMTrees = class(TCustomTestLFMTrees)
   published
     procedure LFMEmptyForm;
-    procedure LFMButton1;
+    procedure LFMChildComponent;
+    procedure LFMUnitname;
   end;
 
 implementation
@@ -272,7 +273,7 @@ begin
   CheckLFM;
 end;
 
-procedure TTestLFMTrees.LFMButton1;
+procedure TTestLFMTrees.LFMChildComponent;
 begin
   AddControls;
   AddFormUnit(['Button1: TButton']);
@@ -282,6 +283,19 @@ begin
     '  object Button1: TButton',
     '    Caption = ''ClickMe''',
     '    Default = True',
+    '  end',
+    'end'
+    ]));
+  CheckLFM;
+end;
+
+procedure TTestLFMTrees.LFMUnitname;
+begin
+  AddControls;
+  AddFormUnit(['Button1: TButton']);
+  FLFMCode:=AddSource('unit1.lfm',LinesToStr([
+    'object Form1: Controls/TForm1',
+    '  object Button1: Controls/TButton',
     '  end',
     'end'
     ]));
