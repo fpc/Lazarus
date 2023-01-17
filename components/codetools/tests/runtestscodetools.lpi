@@ -37,7 +37,7 @@
         <PackageName Value="fpcunitconsolerunner"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="16">
+    <Units Count="17">
       <Unit0>
         <Filename Value="runtestscodetools.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -114,6 +114,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestChangeDeclaration"/>
       </Unit15>
+      <Unit16>
+        <Filename Value="testlfmtrees.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestLFMTrees"/>
+      </Unit16>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
