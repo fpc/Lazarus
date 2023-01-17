@@ -6,14 +6,15 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ShellCtrls,
-  ExtCtrls, ComCtrls, StdCtrls, fpvectorial;
+  ExtCtrls, ComCtrls, StdCtrls, fpvectorial, Types;
 
 type
 
-  { TForm1 }
+  { TMainForm }
 
-  TForm1 = class(TForm)
+  TMainForm = class(TForm)
     BtnSaveAsWMF: TButton;
+    CbHistory: TComboBox;
     Image1: TImage;
     ImageList: TImageList;
     ImageInfo: TLabel;
@@ -28,6 +29,11 @@ type
     Splitter1: TSplitter;
     Splitter2: TSplitter;
     procedure BtnSaveAsWMFClick(Sender: TObject);
+    procedure CbHistoryCloseUp(Sender: TObject);
+    procedure CbHistoryDrawItem(Control: TWinControl; Index: Integer;
+      ARect: TRect; State: TOwnerDrawState);
+    procedure CbHistoryEditingDone(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure RbMaxSizeChange(Sender: TObject);
@@ -42,32 +48,35 @@ type
     { private declarations }
     FVec: TvVectorialDocument;
     FFileName: String;
+    FFormActivated: Boolean;
     procedure LoadImage(const AFileName: String);
     procedure PaintImage(APage: TvPage);
-    procedure ReadFromIni;
-    procedure WriteToIni;
+    procedure ReadIni;
+    procedure UpdateHistory(const AFileName: String);
+    procedure WriteIni;
   public
     { public declarations }
   end;
 
 var
-  Form1: TForm1;
+  MainForm: TMainForm;
 
 implementation
 
 {$R *.lfm}
 
 uses
-  IniFiles, LazFileUtils, fpvUtils;
+  LCLType, LCLIntf,
+  IniFiles, LazFileUtils, FileCtrl, fpvUtils;
 
 const
   PROGRAM_NAME = 'wmfViewer';
   INCH = 25.4;
 
 
-{ TForm1 }
+{ TMainForm }
 
-procedure TForm1.BtnSaveAsWMFClick(Sender: TObject);
+procedure TMainForm.BtnSaveAsWMFClick(Sender: TObject);
 var
   fn: String;
 begin
@@ -84,16 +93,70 @@ begin
   ShowMessage(Format('Saved as "%s"', [fn]));
 end;
 
-procedure TForm1.FormCreate(Sender: TObject);
+procedure TMainForm.CbHistoryCloseUp(Sender: TObject);
+var
+  dir: String;
+begin
+  if CbHistory.ItemIndex = -1 then
+    exit;
+  dir := CbHistory.Items[CbHistory.ItemIndex];
+  ShellTreeView.Path := dir;
+end;
+
+procedure TMainForm.CbHistoryDrawItem(Control: TWinControl; Index: Integer;
+  ARect: TRect; State: TOwnerDrawState);
+var
+  s: String;
+  combobox: TComboBox;
+begin
+  combobox := Control as TComboBox;
+  s := MinimizeName(combobox.Items[Index], combobox.Canvas, combobox.ClientWidth);
+  combobox.Canvas.TextOut(ARect.Left, ARect.Top, s);
+end;
+
+procedure TMainForm.CbHistoryEditingDone(Sender: TObject);
+begin
+  UpdateHistory(AppendPathDelim(CbHistory.Text)+'.');
+  ShellTreeView.Path := CbHistory.Text;
+  ShellTreeView.MakeSelectionVisible;
+end;
+
+procedure TMainForm.FormActivate(Sender: TObject);
+var
+  fn: string;
+begin
+  if FFormActivated then
+    exit;
+  FFormActivated := true;
+
+  if (ParamCount > 0) then
+    fn := ExpandfileName(ParamStr(1))
+  else
+    fn := FFileName;
+
+  if (fn <> '') and FileExists(fn) then
+  begin
+    ShellTreeView.Path := ExtractFilePath(fn);
+    ShellListView.Selected := ShellListView.Items.FindCaption(0, ExtractFileName(fn), false, true, false);
+    LoadImage(fn);
+  end;
+end;
+
+procedure TMainForm.FormCreate(Sender: TObject);
 begin
   // Set correct dpi for scaling by wmf reader
   ScreenDPIX := ScreenInfo.PixelsPerInchX;
   ScreenDPIY := ScreenInfo.PixelsPerInchY;
 
   Caption := PROGRAM_NAME;
-  ShellListview.Mask := '*.svg;*.wmf';
+  {$IFNDEF MSWINDOWS}
+  ShellTreeView.Images := ImageList1;
+  ShellTreeView.OnGetImageIndex := @ShellTreeViewGetImageIndex;
+  ShellTreeView.OnGetSelectedIndex := @ShellTreeViewGetSelectedIndex;
+  {$ENDIF}
+  ShellListview.Mask := '*.wmf';
 
-  ReadFromIni;
+  ReadIni;
 
   if ParamCount > 0 then begin
     ShellTreeview.Path := ExtractFilepath(ParamStr(1));
@@ -102,13 +165,13 @@ begin
   end;
 end;
 
-procedure TForm1.FormDestroy(Sender: TObject);
+procedure TMainForm.FormDestroy(Sender: TObject);
 begin
-  WriteToIni;
+  WriteIni;
   FreeAndNil(FVec);
 end;
 
-procedure TForm1.LoadImage(const AFileName: String);
+procedure TMainForm.LoadImage(const AFileName: String);
 var
   page: TvPage;
 begin
@@ -119,7 +182,7 @@ begin
     FVec.ReadFromFile(AFilename);
     // Draw the image
     FVec.GuessDocumentSize;
-    page := FVec.GetPage(0);
+    page := FVec.GetPageAsVectorial(0);
     if (page.Width = 0) or (page.Height = 0) then
       page.CalculateDocumentSize;
     PaintImage(page);
@@ -133,7 +196,7 @@ begin
   end;
 end;
 
-procedure TForm1.PaintImage(APage: TvPage);
+procedure TMainForm.PaintImage(APage: TvPage);
 var
   bmp: TBitmap;
   multiplierX, multiplierY: Double;
@@ -207,19 +270,19 @@ begin
   end;
 end;
 
-procedure TForm1.RbMaxSizeChange(Sender: TObject);
+procedure TMainForm.RbMaxSizeChange(Sender: TObject);
 begin
   if FVec <> nil then
-    PaintImage(FVec.GetPage(0));
+    PaintImage(FVec.GetPageAsVectorial(0));
 end;
 
-procedure TForm1.RbOrigSizeChange(Sender: TObject);
+procedure TMainForm.RbOrigSizeChange(Sender: TObject);
 begin
   if FVec <> nil then
-    PaintImage(FVec.GetPage(0));
+    PaintImage(FVec.GetPageAsVectorial(0));
 end;
 
-procedure TForm1.ShellListViewSelectItem(Sender: TObject; Item: TListItem;
+procedure TMainForm.ShellListViewSelectItem(Sender: TObject; Item: TListItem;
   Selected: Boolean);
 var
   fn: String;
@@ -229,27 +292,87 @@ begin
     fn := ShellListview.GetPathFromItem(ShellListview.Selected);
     ShellTreeview.MakeSelectionVisible;
     LoadImage(fn);
+    UpdateHistory(fn);
   end;
 end;
 
-procedure TForm1.ShellTreeViewExpanded(Sender: TObject; Node: TTreeNode);
+procedure TMainForm.ShellTreeViewExpanded(Sender: TObject; Node: TTreeNode);
 begin
   ShellTreeView.AlphaSort;
 end;
 
-procedure TForm1.ShellTreeViewGetImageIndex(Sender: TObject; Node: TTreeNode);
+procedure TMainForm.ShellTreeViewGetImageIndex(Sender: TObject; Node: TTreeNode);
 begin
   if Node.Level = 0 then
     Node.ImageIndex := 2 else
     Node.ImageIndex := 0;
 end;
 
-procedure TForm1.ShellTreeViewGetSelectedIndex(Sender: TObject; Node: TTreeNode);
+procedure TMainForm.ShellTreeViewGetSelectedIndex(Sender: TObject; Node: TTreeNode);
 begin
   Node.SelectedIndex := 1;
 end;
 
-procedure TForm1.ReadFromIni;
+procedure TMainForm.ReadIni;
+var
+  ini: TIniFile;
+  L, T, W, H, p: Integer;
+  R: TRect;
+  List: TStrings;
+  i: Integer;
+  s: String;
+begin
+  ini := TIniFile.Create(ChangeFileExt(Application.ExeName, '.ini'));
+  try
+    T := Ini.ReadInteger('Position', 'Top', Top);
+    L := Ini.ReadInteger('Position', 'Left', Left);
+    W := Ini.ReadInteger('Position', 'Width', Width);
+    H := Ini.ReadInteger('Position', 'Height', Height);
+    R := Screen.WorkAreaRect;
+    if W > R.Width then W := R.Width;
+    if H > R.Height then H := R.Height;
+    if L < R.Left then L := R.Left;
+    if T < R.Top then T := R.Top;
+    if L + W > R.Right then L := R.Right - W - GetSystemMetrics(SM_CXSIZEFRAME);
+    if T + H > R.Bottom then T := R.Bottom - H - GetSystemMetrics(SM_CYCAPTION) - GetSystemMetrics(SM_CYSIZEFRAME);
+    SetBounds(L, T, W, H);
+    WindowState := wsNormal;
+    Application.ProcessMessages;
+    WindowState := TWindowState(ini.ReadInteger('Position', 'WindowState', 0));
+
+    p := ini.ReadInteger('Settings', 'LeftSplitter', LeftPanel.Width);
+    if p > ClientWidth then p := ClientWidth div 4;
+    LeftPanel.Width := p;
+    p := ini.ReadInteger('Settings', 'ShellSplitter', ShellTreeView.Height);
+    if p > ClientHeight then p := ClientHeight div 2;
+    ShellTreeView.Height := p;
+
+    FFileName := ini.ReadString('Settings', 'Filename', '');
+
+    CbHistory.Items.BeginUpdate;
+    List := TStringList.Create;
+    try
+      ini.ReadSection('History', List);
+      CbHistory.Items.Clear;
+      for i := 0 to List.Count-1 do
+      begin
+        s := ini.ReadString('History', Format('Item%d', [i+1]), '');
+        if (s <> '') and DirectoryExists(s) then
+          CbHistory.Items.Add(s);
+      end;
+      if CbHistory.Items.Count > 0 then
+        CbHistory.ItemIndex := 0;
+    finally
+      List.Free;
+      CbHistory.Items.EndUpdate;
+    end;
+  finally
+    ini.Free;
+  end;
+end;
+
+(*
+procedure TMainForm.ReadFromIni;
 var
   ini: TCustomIniFile;
   L, T, W, H: Integer;
@@ -274,14 +397,56 @@ begin
     ini.Free;
   end;
 end;
-
-procedure TForm1.ScrollBox1Resize(Sender: TObject);
+*)
+procedure TMainForm.ScrollBox1Resize(Sender: TObject);
 begin
   if FVec <> nil then
-    PaintImage(FVec.GetPage(0));
+    PaintImage(FVec.GetPageAsVectorial(0));
 end;
 
-procedure TForm1.WriteToIni;
+procedure TMainForm.UpdateHistory(const AFileName: String);
+var
+  dir: String;
+  idx: Integer;
+begin
+  if AFileName = '' then
+    exit;
+  dir := ExtractFilePath(AFileName);
+  idx := CbHistory.Items.IndexOf(dir);
+  if idx = -1 then
+    CbHistory.Items.Insert(0, dir)
+  else
+    CbHistory.Items.Move(idx, 0);
+  while CbHistory.Items.Count > 10 do
+    CbHistory.Items.Delete(CbHistory.Items.Count-1);
+  CbHistory.ItemIndex := 0;
+end;
+
+
+procedure TMainForm.WriteIni;
+var
+  ini: TIniFile;
+  i: Integer;
+begin
+  ini := TIniFile.Create(ChangeFileExt(Application.ExeName, '.ini'));
+  try
+    ini.WriteInteger('Position', 'Top', RestoredTop);
+    ini.WriteInteger('Position', 'Left', RestoredLeft);
+    ini.WriteInteger('Position', 'Width', RestoredWidth);
+    ini.WriteInteger('Position', 'Height', RestoredHeight);
+    ini.WriteInteger('Position', 'WindowState', Integer(WindowState));
+    ini.WriteInteger('Settings', 'LeftSplitter', LeftPanel.Width);
+    ini.WriteInteger('Settings', 'ShellSplitter', ShellTreeView.Height);
+    ini.WriteString('Settings', 'FileName', FFileName);
+    ini.EraseSection('History');
+    for i := 0 to CbHistory.Items.Count-1 do
+      ini.WriteString('History', Format('Item%d', [i+1]), CbHistory.Items[i]);
+  finally
+    ini.Free;
+  end;
+end;
+           {
+procedure TMainForm.WriteToIni;
 var
   ini: TCustomIniFile;
 begin
@@ -300,7 +465,7 @@ begin
     ini.Free;
   end;
 end;
-
+            }
 
 end.
 
