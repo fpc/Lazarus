@@ -5179,9 +5179,60 @@ value is calculated.
 <element name="TTabSheet.ClientWidth" link="#lcl.controls.TControl.ClientWidth"/>
 <element name="TTabSheet.Enabled" link="#lcl.controls.TControl.Enabled"/>
 <element name="TTabSheet.Font" link="#lcl.controls.TControl.Font"/>
-<element name="TTabSheet.Height" link="#lcl.controls.TControl.Height"/>
+
+<element name="TTabSheet.Height">
+<short>
+Height of the visible area for the tab sheet on the parent page control.
+</short>
+<descr>
+<p>
+<var>Height</var> is a published <var>Integer</var> property in 
+<var>TTabSheet</var>, and contains the height in pixels for the visible area 
+on the tab sheet. It reflects the height for the parent page control minus the 
+space needed to display the captioned tab for the tab sheet and its borders.
+</p>
+<p>
+The value in Height is not stored in the LCL component streaming mechanism, 
+and changing the value in Height has no effect. The origin (Left, Top) and 
+dimensions (Width, Height) for the tab sheet are determined when the parent 
+control (TPageControl) is resized. Height always contains the number of 
+vertical pixels in the visibile area on the parent control.
+</p>
+<p>
+Place a TScrollBox control (aligned to alClient) on the tab sheet to provide a 
+container for scrollable content.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.comctrls.TCustomPage.Height"/>
+</seealso>
+</element>
+
 <element name="TTabSheet.ImageIndex" link="#lcl.comctrls.TCustomPage.ImageIndex"/>
-<element name="TTabSheet.Left" link="#lcl.controls.TControl.Left"/>
+
+<element name="TTabSheet.Left">
+<short>
+Left coordinate for the tab sheet in the visible area of the parent page 
+control.
+</short>
+<descr>
+<p>
+<var>Left</var> is a published <var>Integer</var> property in 
+<var>TTabSheet</var>. It contains the horizontal coordinate for the tab sheet 
+within the visible area for the parent page control. 
+</p>
+<p>
+The value in Left is not stored in the LCL component streaming mechanism, 
+and changing the value in Left has no effect. The origin (Left, Top) and 
+dimensions (Width, Height) for the tab sheet are determined when the parent 
+control (TPageControl) is resized. Left is always set to 0 (zero).
+</p>
+</descr>
+<seealso>
+<link id="#lcl.comctrls.TCustomPage.Left"/>
+</seealso>
+</element>
+
 <element name="TTabSheet.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
 <element name="TTabSheet.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
 <element name="TTabSheet.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
@@ -5237,8 +5288,56 @@ displayed in the Parent tab control.
 </seealso>
 </element>
 
-<element name="TTabSheet.Top" link="#lcl.controls.TControl.Top"/>
-<element name="TTabSheet.Width" link="#lcl.controls.TControl.Width"/>
+<element name="TTabSheet.Top">
+<short>
+Top coordinate for the tab sheet in the visible area of the parent page 
+control.
+</short>
+<descr>
+<p>
+<var>Top</var> is a published <var>Integer</var> property in 
+<var>TTabSheet</var>. It contains the vertical coordinate for the tab sheet 
+within the visible area for the parent page control.
+</p>
+<p>
+The value in Top is not stored in the LCL component streaming mechanism, 
+and changing the value in Top has no effect. The origin (Left, Top) and 
+dimensions (Width, Height) for the tab sheet are determined when the parent 
+control (TPageControl) is resized. Top is always set to 0 (zero).
+</p>
+</descr>
+<seealso>
+<link id="#lcl.comctrls.TCustomPage.Top"/>
+</seealso>
+</element>
+
+<element name="TTabSheet.Width">
+<short>
+Width of the visible area for the tab sheet on the parent page control.
+</short>
+<descr>
+<p>
+<var>Width</var> is a published <var>Integer</var> property in 
+<var>TTabSheet</var>, and contains the width in pixels for the visible area 
+on the tab sheet. It reflects the width for the parent page control minus the 
+space needed to display its borders.
+</p>
+<p>
+The value in Width is not stored in the LCL component streaming mechanism, 
+and changing the value in Width has no effect. The origin (Left, Top) and 
+dimensions (Width, Height) for the tab sheet are determined when the parent 
+control (TPageControl) is resized. Width always contains the number of 
+horizontal pixels in the visibile area on the parent control.
+</p>
+<p>
+Place a TScrollBox control (aligned to alClient) on the tab sheet to provide a 
+container for scrollable content.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.comctrls.TCustomPage.Width"/>
+</seealso>
+</element>
 
 <element name="TPageControl">
 <short>
@@ -14819,7 +14918,7 @@ Use the indexed Column property to access a column definition by its ordinal
 position in the Columns collection.
 </p>
 <remark>
-The Columns property is not supported for the GTK2 widgetset.  
+The Columns property is not supported for the GTK2 widgetset.
 </remark>
 </descr>
 <seealso>
