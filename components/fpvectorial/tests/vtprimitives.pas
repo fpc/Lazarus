@@ -12,9 +12,10 @@ function CreateEllipse(APage: TvVectorialPage; X1, Y1, X2, Y2: Double): TvEllips
 function CreateRectangle(APage: TvVectorialPage; X1, Y1, X2, Y2: Double): TvRectangle;
 function CreateRoundedRect(APage: TvVectorialPage; X1, Y1, X2, Y2, RX, RY: Double): TvRectangle;
 function CreatePolygon(APage: TvVectorialPage; const APoints: array of T3DPoint): TvPolygon;
-function CreateArc(APage: TvVectorialPage; X1,Y1, X2,Y2, CX,CY, RX, RY, Angle: Double;
-  Clockwise: Boolean): TPath;
-function CreateBezier(APage: TvVectorialPage; X1,Y1, X2,Y2, X3,Y3, X4,Y4: Double): TPath;
+procedure CreateArc(APage: TvVectorialPage; X1,Y1, X2,Y2, CX,CY, RX, RY, Angle: Double;
+  Clockwise: Boolean; out Arc: TPath; out Txt1, Txt2: TvText);
+procedure CreateBezier(APage: TvVectorialPage; X1,Y1, X2,Y2, X3,Y3, X4,Y4: Double;
+  out Bezier, Line1, Line2: TPath; out Txt1, Txt2, Txt3, Txt4: TvText);
 
 function CreateSimpleBrush(AStyle: TFPBrushStyle; AColor: TFPColor): TvBrush; overload;
 function CreateSimpleBrush(AStyle: TFPBrushStyle): TvBrush; overload;
@@ -32,12 +33,14 @@ function CreateStdPolygon(APage: TvVectorialPage): TvPolygon;
 function CreateStdSelfIntersectingPolygon(APage: TvVectorialPage): TvPolygon;
 function CreatePathWithHole(APage: TvVectorialPage): TPath;
 
-function StdSolidBrush: TvBrush;
-function StdHorizGradientBrush: TvBrush;
-function StdVertGradientBrush: TvBrush;
-function StdLinearGradientBrush: TvBrush;
-function StdRadialGradientBrush: TvBrush;
-function StdPen: TvPen;
+function StdSolidBrush(AColor: TFPColor): TvBrush;
+function StdHorizGradientBrush(AColor1, AColor2: TFPColor): TvBrush;
+function StdVertGradientBrush(AColor1, AColor2: TFPColor): TvBrush;
+function StdLinearGradientBrush(AColor1, AColor2: TFPColor): TvBrush;
+function StdRadialGradientBrush(AColor1, AColor2: TFPColor): TvBrush;
+function StdPen(AColor: TFPColor; AWidth: Integer): TvPen;
+
+procedure Rotate(APage: TvVectorialPage; AShape: TvEntity; Angle: Double);
 
 const
   PAGE_SIZE = 100;
@@ -127,10 +130,8 @@ begin
   Result.Pen := CreatePen(psSolid, 1, colBlack);
 end;
 
-function CreateArc(APage: TvVectorialPage; X1,Y1, X2,Y2, CX,CY, RX, RY, Angle: Double;
-  Clockwise: Boolean): TPath;
-var
-  txt: TvText;
+procedure CreateArc(APage: TvVectorialPage; X1,Y1, X2,Y2, CX,CY, RX, RY, Angle: Double;
+  Clockwise: Boolean; out Arc: TPath; out Txt1, Txt2: TvText);
 begin
   if APage.UseTopLeftCoordinates then begin
     Y1 := PAGE_SIZE - Y1;
@@ -142,26 +143,27 @@ begin
 
   APage.StartPath(X1, Y1);
   APage.AddEllipticalArcWithCenterToPath(RX, RY, Angle, X2, Y2, CX, CY, Clockwise);
-  Result := APage.EndPath;
-  Result.Pen := StdPen;
+  Arc := APage.EndPath;
+  Arc.Pen := StdPen(colBlack, 4);
 
-  txt := TvText.Create(APage);
-  txt.Value.Add('1');
-  txt.X := X1;
-  txt.Y := Y1;
-  txt.Font.Color := colRed;
-  APage.AddEntity(txt);
+  Txt1 := TvText.Create(APage);
+  Txt1.Value.Add('1');
+  Txt1.X := X1;
+  Txt1.Y := Y1;
+  Txt1.Font.Color := colRed;
+  APage.AddEntity(Txt1);
 
-  txt := TvText.Create(APage);
-  txt.Value.Add('2');
-  txt.X := X2;
-  txt.Y := Y2;
-  txt.Font.Color := colRed;
-  APage.AddEntity(txt);
+  Txt2 := TvText.Create(APage);
+  Txt2.Value.Add('2');
+  Txt2.X := X2;
+  Txt2.Y := Y2;
+  Txt2.Font.Color := colRed;
+  APage.AddEntity(Txt2);
 end;
 
-function CreateBezier(APage: TvVectorialPage;
-  X1,Y1, X2,Y2, X3,Y3, X4,Y4: Double): TPath;
+procedure CreateBezier(APage: TvVectorialPage;
+  X1,Y1, X2,Y2, X3,Y3, X4,Y4: Double;
+  out Bezier, Line1, Line2: TPath; out Txt1, Txt2, Txt3, Txt4: TvText);
 var
   txt: TvText;
 begin
@@ -173,44 +175,48 @@ begin
   end;
   APage.StartPath(X1, Y1);
   APage.AddBezierToPath(X2,Y2, X3,Y3, X4,Y4);
-  Result := APage.EndPath;
-  Result.Pen := StdPen;
+  Bezier := APage.EndPath;
+  Bezier.Pen := StdPen(colBlack, 4);
 
   APage.StartPath(X1, Y1);
   APage.AddLineToPath(X2, Y2);
-  APage.Endpath.Pen.Color := colRed;
+  Line1 := APage.EndPath;
+  Line1.Pen.Color := colRed;
+  Line1.Name := 'Line1';
 
-  APage.StartPath(X4,Y4);
+  APage.StartPath(X4, Y4);
   APage.AddLineToPath(X3, Y3);
-  APage.EndPath.Pen.Color := colRed;
+  Line2 := APage.EndPath;
+  Line2.Pen.Color := colRed;
+  Line2.Name := 'Line2';
 
-  txt := TvText.Create(APage);
-  txt.Value.Add('1');
-  txt.X := X1;
-  txt.Y := Y1;
-  txt.Font.Color := colRed;
-  APage.AddEntity(txt);
+  Txt1 := TvText.Create(APage);
+  Txt1.Value.Add('1');
+  Txt1.X := X1;
+  Txt1.Y := Y1;
+  Txt1.Font.Color := colRed;
+  APage.AddEntity(Txt1);
 
-  txt := TvText.Create(APage);
-  txt.Value.Add('2');
-  txt.X := X2;
-  txt.Y := Y2;
-  txt.Font.Color := colRed;
-  APage.AddEntity(txt);
+  Txt2 := TvText.Create(APage);
+  Txt2.Value.Add('2');
+  Txt2.X := X2;
+  Txt2.Y := Y2;
+  Txt2.Font.Color := colRed;
+  APage.AddEntity(Txt2);
 
-  txt := TvText.Create(APage);
-  txt.Value.Add('3');
-  txt.X := X3;
-  txt.Y := Y3;
-  txt.Font.Color := colRed;
-  APage.AddEntity(txt);
+  Txt3 := TvText.Create(APage);
+  Txt3.Value.Add('3');
+  Txt3.X := X3;
+  Txt3.Y := Y3;
+  Txt3.Font.Color := colRed;
+  APage.AddEntity(Txt3);
 
-  txt := TvText.Create(APage);
-  txt.Value.Add('4');
-  txt.X := X4;
-  txt.Y := Y4;
-  txt.Font.Color := colRed;
-  APage.AddEntity(txt);
+  Txt4 := TvText.Create(APage);
+  Txt4.Value.Add('4');
+  Txt4.X := X4;
+  Txt4.Y := Y4;
+  Txt4.Font.Color := colRed;
+  APage.AddEntity(Txt4);
 end;
 
 
@@ -289,7 +295,7 @@ begin
   if APage.UseTopLeftCoordinates then
     Result := CreateCircle(APage, CENTER_X, PAGE_SIZE - CENTER_Y, RADIUS) else
     Result := CreateCircle(APage, CENTER_X, CENTER_Y, RADIUS);
-  Result.Pen := StdPen;
+  Result.Pen := StdPen(colBlack, 4);
 end;
 
 { An ellipse shifted up }
@@ -297,7 +303,7 @@ function CreateStdEllipse(APage: TvVectorialPage): TvEllipse;
 begin
   Result := CreateEllipse(APage, 10, 30, 90, 80);
     // CreateEllipse will invert the axis if needed
-  Result.Pen := StdPen;
+  Result.Pen := StdPen(colBlack, 4);
 end;
 
 { A rectangle shifted up }
@@ -310,7 +316,7 @@ const
 begin
   Result := CreateRectangle(APage, LEFT, TOP, RIGHT, BOTTOM);
     // CreateRect will invert the y axis if needed
-  Result.Pen := StdPen;
+  Result.Pen := StdPen(colBlack, 4);
 end;
 
 { A rounded rectangle shifted up }
@@ -325,7 +331,7 @@ const
 begin
   Result := CreateRoundedRect(APage,LEFT, TOP, RIGHT, BOTTOM, RX, RY);
     // CreateRect will invert the y axis if needed
-  Result.Pen := StdPen;
+  Result.Pen := StdPen(colBlack, 4);
 end;
 
 { A triangle as polygon, base line at bottom }
@@ -342,7 +348,7 @@ begin
     for i:=0 to High(pts) do
       pts[i].Y := PAGE_SIZE - pts[i].Y;
   Result := CreatePolygon(APage, pts);
-  Result.Pen := StdPen;
+  Result.Pen := StdPen(colBlack, 4);
 end;
 
 { A star-like self-intersecting polygon, tip at bottom }
@@ -361,7 +367,7 @@ begin
     for i:=0 to High(pts) do
       pts[i].Y := PAGE_SIZE - pts[i].Y;
   Result := CreatePolygon(APage, pts);
-  Result.Pen := StdPen;
+  Result.Pen := StdPen(colBlack, 4);
 end;
 
 function CreatePathWithHole(APage: TvVectorialPage): TPath;
@@ -391,374 +397,83 @@ begin
       APage.AddLineToPath(INNER_POINTS[i].X, INNER_POINTS[i].Y);
   end;
   Result := APage.EndPath;
-  Result.Pen := StdPen;
+  Result.Pen := StdPen(colBlack, 4);
 end;
-  (*
-{ Quarter circle in quadrant I }
-function CreateStdCircArcQ1(APage: TvVectorialPage;
-  Clockwise, Reverse: Boolean): TPath;
-const
-  CX = 50.0;
-  CY = 55.0;
-  RX = 30.0;
-  RY = 30.0;
-  X1 = CX + RX;
-  Y1 = CY;
-  X2 = CX;
-  Y2 = CY + RY;
-begin
-  if Reverse then
-    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, 0, Clockwise)
-  else
-    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, 0, Clockwise);
-end;
-
-{ Quarter circle reaching from quadrant I into quadrant II}
-function CreateStdCircArcQ12(APage: TvVectorialPage;
-  Clockwise, Reverse: Boolean): TPath;
-const
-  SQRT2 = 1.4142135623731;
-  CX = 50.0;
-  CY = 55.0;
-  RX = 30.0;
-  RY = 30.0;
-  X1 = CX + RX/SQRT2;
-  Y1 = CY + RY/SQRT2;
-  X2 = CX - RX/SQRT2;
-  Y2 = CY + RY/SQRT2;
-begin
-  if Reverse then
-    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, 0, Clockwise)
-  else
-    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, 0, Clockwise);
-end;
-
-{ Quarter circle in quadrant II }
-function CreateStdCircArcQ2(APage: TvVectorialPage; Clockwise: Boolean): TPath;
-const
-  CX = 50.0;
-  CY = 55.0;
-  RX = 30.0;
-  RY = 30.0;
-  X1 = CX;
-  Y1 = CY + RY;
-  X2 = CX - RX;
-  Y2 = CY;
-begin
-  if Reverse then
-    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, 0, Clockwise)
-  else
-    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, 0, Clockwise);
-end;
-
-{ Quarter circle reaching from quadrant II into quadrant III}
-function CreateStdCircArcQ23(APage: TvVectorialPage; Clockwise: Boolean): TPath;
-const
-  SQRT2 = 1.4142135623731;
-  CX = 50.0;
-  CY = 55.0;
-  RX = 30.0;
-  RY = 30.0;
-  X1 = CX - RX/SQRT2;
-  Y1 = CY + RY/SQRT2;
-  X2 = CX - RX/SQRT2;
-  Y2 = CY - RY/SQRT2;
-begin
-  if Reverse then
-    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, 0, Clockwise)
-  else
-    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, 0, Clockwise);
-end;
-
-{ Quarter circle in quadrant III }
-function CreateStdCircArcQ3(APage: TvVectorialPage; Clockwise: Boolean): TPath;
-const
-  CX = 50.0;
-  CY = 55.0;
-  RX = 30.0;
-  RY = 30.0;
-  X1 = CX - RX;
-  Y1 = CY;
-  X2 = CX;
-  Y2 = CY - RY;
-begin
-  if Reverse then
-    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, 0, Clockwise)
-  else
-    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, 0, Clockwise);
-end;
-
-{ Quarter circle reaching from quadrant III into quadrant IV}
-function CreateStdCircArcQ34(APage: TvVectorialPage; Clockwise: Boolean): TPath;
-const
-  SQRT2 = 1.4142135623731;
-  CX = 50.0;
-  CY = 55.0;
-  RX = 30.0;
-  RY = 30.0;
-  X1 = CX - RX/SQRT2;
-  Y1 = CY - RY/SQRT2;
-  X2 = CX + RX/SQRT2;
-  Y2 = CY - RY/SQRT2;
-begin
-  if Reverse then
-    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, 0, Clockwise)
-  else
-    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, 0, Clockwise);
-end;
-
-{ Quarter circle in quadrant IV }
-function CreateStdCircArcQ4(APage: TvVectorialPage; Clockwise: Boolean): TPath;
-const
-  CX = 50.0;
-  CY = 55.0;
-  RX = 30.0;
-  RY = 30.0;
-  X1 = CX;
-  Y1 = CY - RY;
-  X2 = CX + RX;
-  Y2 = CY;
-begin
-  if Reverse then
-    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, 0, Clockwise)
-  else
-    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, 0, Clockwise);
-end;
-
-{ Quarter circle reaching from quadrant IV into quadrant I}
-function CreateStdCircArcQ41(APage: TvVectorialPage; Clockwise: Boolean): TPath;
-const
-  SQRT2 = 1.4142135623731;
-  CX = 50.0;
-  CY = 55.0;
-  RX = 30.0;
-  RY = 30.0;
-  X1 = CX + RX/SQRT2;
-  Y1 = CY - RY/SQRT2;
-  X2 = CX + RX/SQRT2;
-  Y2 = CY + RY/SQRT2;
-begin
-  if Reverse then
-    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, 0, Clockwise)
-  else
-    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, 0, Clockwise);
-end;
-
-function CreateStdEllArcQ1(APage: TvVectorialPage;
-  Clockwise, Reverse: Boolean; Angle: Double): TPath;
-const
-  SQRT2 = 1.4142135623731;
-  CX = 50.0;
-  CY = 55.0;
-  RX = 30.0;
-  RY = 20.0;
-  X1 = CX + RX;
-  Y1 = CY;
-  X2 = CX;
-  Y2 = CY + RY;
-begin
-  if Reverse then
-    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, Angle, Clockwise)
-  else
-    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Angle, Clockwise);
-end;
-
-function CreateStdEllArcQ12(APage: TvVectorialPage;
-  Clockwise, Reverse: Boolean; Angle: Double): TPath;
-const
-  SQRT2 = 1.4142135623731;
-  CX = 50.0;
-  CY = 55.0;
-  RX = 30.0;
-  RY = 20.0;
-  X1 = CX + RX/SQRT2;
-  Y1 = CY + RY/SQRT2;
-  X2 = CX - RX/SQRT2;
-  Y2 = CY + RY/SQRT2;
-begin
-  if Reverse then
-    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, Angle, Clockwise)
-  else
-    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Angle, Clockwise);
-end;
-
-function CreateStdEllArcQ2(APage: TvVectorialPage;
-  Clockwise, Reverse: Boolean; Angle: Double): TPath;
-const
-  SQRT2 = 1.4142135623731;
-  CX = 50.0;
-  CY = 55.0;
-  RX = 30.0;
-  RY = 20.0;
-  X1 = CX;
-  Y1 = CY + RY;
-  X2 = CX - RX;
-  Y2 = CY;
-begin
-  if Reverse then
-    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, Angle, Clockwise)
-  else
-    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Angle, Clockwise);
-end;
-
-function CreateStdEllArcQ23(APage: TvVectorialPage;
-  Clockwise, Reverse: Boolean; Angle: Double): TPath;
-const
-  SQRT2 = 1.4142135623731;
-  CX = 50.0;
-  CY = 55.0;
-  RX = 30.0;
-  RY = 20.0;
-  X1 = CX - RX/SQRT2;
-  Y1 = CY + RY/SQRT2;
-  X2 = CX - RX/SQRT2;
-  Y2 = CY - RY/SQRT2;
-begin
-  if Reverse then
-    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, Angle, Clockwise)
-  else
-    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Angle, Clockwise);
-end;
-
-function CreateStdEllArcQ3(APage: TvVectorialPage;
-  Clockwise, Reverse: Boolean; Angle: Double): TPath;
-const
-  SQRT2 = 1.4142135623731;
-  CX = 50.0;
-  CY = 55.0;
-  RX = 30.0;
-  RY = 20.0;
-  X1 = CX - RX;
-  Y1 = CY;
-  X2 = CX;
-  Y2 = CY - RY;
-begin
-  if Reverse then
-    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, Angle, Clockwise)
-  else
-    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Angle, Clockwise);
-end;
-
-function CreateStdEllArcQ34(APage: TvVectorialPage;
-  Clockwise, Reverse: Boolean; Angle: Double): TPath;
-const
-  SQRT2 = 1.4142135623731;
-  CX = 50.0;
-  CY = 55.0;
-  RX = 30.0;
-  RY = 20.0;
-  X1 = CX - RX/SQRT2;
-  Y1 = CY - RY/SQRT2;
-  X2 = CX + RX/SQRT2;
-  Y2 = CY - RY/SQRT2;
-begin
-  if Reverse then
-    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, Angle, Clockwise)
-  else
-    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Angle, Clockwise);
-end;
-
-function CreateStdEllArcQ4(APage: TvVectorialPage;
-  Clockwise, Reverse: Boolean; Angle: Double): TPath;
-const
-  SQRT2 = 1.4142135623731;
-  CX = 50.0;
-  CY = 55.0;
-  RX = 30.0;
-  RY = 20.0;
-  X1 = CX;
-  Y1 = CY - RY;
-  X2 = CX + RX;
-  Y2 = CY;
-begin
-  if Reverse then
-    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, Angle, Clockwise)
-  else
-    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Angle, Clockwise);
-end;
-
-function CreateStdEllArcQ41(APage: TvVectorialPage;
-  Clockwise, Reverse: Boolean; Angle: Double): TPath;
-const
-  SQRT2 = 1.4142135623731;
-  CX = 50.0;
-  CY = 55.0;
-  RX = 30.0;
-  RY = 20.0;
-  X1 = CX + RX/SQRT2;
-  Y1 = CY - RY/SQRT2;
-  X2 = CX + RX/SQRT2;
-  Y2 = CY + RY/SQRT2;
-begin
-  if Reverse then
-    Result := CreateArc(APage, X2, Y2, X1, Y1, CX, CY, RX, RY, Angle, Clockwise)
-  else
-    Result := CreateArc(APage, X1, Y1, X2, Y2, CX, CY, RX, RY, Angle, Clockwise);
-end;
-    *)
 
 { ---- }
 
-function StdSolidBrush: TvBrush;
+function StdSolidBrush(AColor: TFPColor): TvBrush;
 begin
-  Result := CreateSimpleBrush(bsSolid, colRed);
+  Result := CreateSimpleBrush(bsSolid, AColor);
 end;
 
-function StdHorizGradientBrush: TvBrush;
+function StdHorizGradientBrush(AColor1, AColor2: TFPColor): TvBrush;
 begin
   Result := CreateLinearGradientBrush(Point2D(0, 0), Point2D(1, 0),
     [gfRelStartX, gfRelEndX, gfRelStartY, gfRelEndY],
-    colBlue, colWhite);
+    AColor1, AColor2);
 end;
 
-{ A vertical gradient, yellow at top, red at bottom }
-function StdVertGradientBrush: TvBrush;
+{ A vertical gradient, AColor1 at top, AColor2 at bottom }
+function StdVertGradientBrush(AColor1, AColor2: TFPColor): TvBrush;
 var
   P1, P2: T2DPoint;
 begin
-  {if APage.UseTopLeftCoordinates then begin
-    P1 := Point2D(0, 1);
-    P2 := Point2D(0, 0);
-  end else
-  }
-  begin
-    P1 := Point2D(0, 0);
-    P2 := Point2D(0, 1);
-  end;
+  P1 := Point2D(0, 0);
+  P2 := Point2D(0, 1);
   Result := CreateLinearGradientBrush(P1, P2,
     [gfRelStartX, gfRelEndX, gfRelStartY, gfRelEndY],
-    colYellow, colRed);
+    AColor1, AColor2);
 end;
 
-{ A diagonal gradient running from bottom/left (yellow) to top/right (red) }
-function StdLinearGradientBrush: TvBrush;
+{ A diagonal gradient running from bottom/left (AColor1) to top/right (AColor) }
+function StdLinearGradientBrush(AColor1, AColor2: TFPColor): TvBrush;
 var
   P1, P2: T2DPoint;
 begin
-  {
-  if APage.UseTopLeftCoordinates then begin
-    P1 := Point2D(0, 1);
-    P2 := Point2D(1, 0);
-  end else
-  }
-  begin
-    P1 := Point2D(0, 0);
-    P2 := Point2D(1, 1);
-  end;
+  P1 := Point2D(0, 0);
+  P2 := Point2D(1, 1);
   Result := CreateLinearGradientBrush(Point2D(0, 0), Point2D(1, 1),
     [gfRelStartX, gfRelEndX, gfRelStartY, gfRelEndY],
-    colYellow, colRed);
+    AColor1, AColor2);
 end;
 
-function StdRadialGradientBrush: TvBrush;
+function StdRadialGradientBrush(AColor1, AColor2: TFPColor): TvBrush;
 begin
   Result := CreateRadialGradientBrush(0.5, 0.5, 0.5, 0.5, 0.5,
-    colRed, colYellow);
+    AColor1, AColor2);
 end;
 
-function StdPen: TvPen;
+function StdPen(AColor: TFPColor; AWidth: Integer): TvPen;
 begin
-  Result := CreatePen(psSolid, 4, colBlack);
+  Result := CreatePen(psSolid, AWidth, AColor);
+end;
+
+procedure Rotate(APage: TvVectorialPage; AShape: TvEntity; Angle: Double);
+var
+  p: T3dPoint;
+  ctr: T3dPoint;  // Center of rotation
+  phi: Double;    // Rotation angle in radians
+begin;
+  ctr.X := 10;
+  phi := DegToRad(Angle);
+  if APage.UseTopLeftCoordinates then
+  begin
+    ctr.Y := PAGE_SIZE - 10;
+    phi := -phi;
+  end else
+    ctr.Y := 10;
+
+  if AShape is TvText then
+  begin
+    // TvText has no Rotate method since it has no Angle element.
+    // --> The reference point cannot be rotated in space by TvText itself,
+    // we must do it separately.
+    p := Rotate3DPointInXY(Make3dPoint(AShape.X, AShape.Y), ctr, -phi);
+    AShape.X := p.X;
+    AShape.Y := p.Y;
+  end else
+    AShape.Rotate(phi, ctr);
 end;
 
 end.

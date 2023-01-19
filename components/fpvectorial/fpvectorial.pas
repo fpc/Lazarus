@@ -333,7 +333,7 @@ type
     function GetStartPoint(out APoint: T3DPoint): Boolean;
     // edition methods
     procedure Move(ADeltaX, ADeltaY: Double); virtual;
-    procedure Rotate(AAngle: Double; ABase: T3DPoint); virtual; // Angle in radians
+    procedure Rotate(AAngle: Double; ABase: T3DPoint); virtual; // Angle in radians, >0 counter-clockwise
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; virtual;
     // rendering
     procedure AddToPoints(ADestX, ADestY: Integer; AMulX, AMulY: Double; var Points: TPointsArray); virtual;
@@ -524,7 +524,7 @@ type
     function  GetSubpartCount: Integer; virtual;
     procedure PositionSubparts(constref ARenderInfo: TvRenderInfo; ABaseX, ABaseY: Double); virtual;
     procedure Scale(ADeltaScaleX, ADeltaScaleY: Double); virtual;
-    procedure Rotate(AAngle: Double; ABase: T3DPoint); virtual; // Angle in radians
+    procedure Rotate(AAngle: Double; ABase: T3DPoint); virtual; // Angle in radians, >0 counter-clockwise
     // ADoDraw = False means that no drawing will actually be done, only the size info will be filled in ARenderInfo
     procedure Render(var ARenderInfo: TvRenderInfo; ADoDraw: Boolean = True); virtual;
     function AdjustColorToBackground(AColor: TFPColor; ARenderInfo: TvRenderInfo): TFPColor;
@@ -610,7 +610,7 @@ type
     procedure ApplyFontToCanvas(ARenderInfo: TvRenderInfo); overload;
     procedure ApplyFontToCanvas(ARenderInfo: TvRenderInfo; AFont: TvFont); overload;
     procedure AssignFont(AFont: TvFont);
-    procedure Rotate(AAngle: Double; ABase: T3DPoint); override; // Angle in radians
+    procedure Rotate(AAngle: Double; ABase: T3DPoint); override; // Angle in radians, >0 counter-clockwise
     procedure Scale(ADeltaScaleX, ADeltaScaleY: Double); override;
     procedure Render(var ARenderInfo: TvRenderInfo; ADoDraw: Boolean = True); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
@@ -663,7 +663,7 @@ type
     procedure MoveSubpart(ADeltaX, ADeltaY: Double; ASubpart: Cardinal); override;
     function  MoveToSubpart(ASubpart: Cardinal): TPathSegment;
     function  GetSubpartCount: Integer; override;
-    procedure Rotate(AAngle: Double; ABase: T3DPoint); override; // Angle in radians
+    procedure Rotate(AAngle: Double; ABase: T3DPoint); override; // Angle in radians, >0 counter-clockwise
     procedure Render(var ARenderInfo: TvRenderInfo; ADoDraw: Boolean = True); override;
     procedure RenderInternalPolygon(constref ARenderInfo: TvRenderInfo);
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
@@ -738,7 +738,7 @@ type
     Radius: Double;
     procedure CalculateBoundingBox(constref ARenderInfo: TvRenderInfo; out ALeft, ATop, ARight, ABottom: Double); override;
     procedure Render(var ARenderInfo: TvRenderInfo; ADoDraw: Boolean = True); override;
-    procedure Rotate(AAngle: Double; ABase: T3DPoint); override; // Angle in radians
+    procedure Rotate(AAngle: Double; ABase: T3DPoint); override; // Angle in radians, >0 counter-clockwise
   end;
 
   {@@
@@ -749,7 +749,7 @@ type
   TvCircularArc = class(TvEntityWithPenAndBrush)
   public
     Radius: Double;
-    {@@ The Angle is measured in degrees in relation to the positive X axis }
+    {@@ The Angle is measured in degrees in relation to the positive X axis, > 0 counter-clockwise }
     StartAngle, EndAngle: Double;
     procedure Render(var ARenderInfo: TvRenderInfo; ADoDraw: Boolean = True); override;
   end;
@@ -766,13 +766,14 @@ type
     // Mandatory fields
     HorzHalfAxis: Double; // This half-axis is the horizontal one when Angle=0
     VertHalfAxis: Double; // This half-axis is the vertical one when Angle=0
-    {@@ The Angle is measured in radians in relation to the positive X axis }
+    {@@ The Angle is measured in radians in relation to the positive X axis and
+        counter-clockwise direction. }
     Angle: Double;
     function GetLineIntersectionPoints(ACoord: Double; ACoordIsX: Boolean): TDoubleDynArray; override;
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal; ASnapFlexibility: Integer = 5): TvFindEntityResult; override;
     procedure CalculateBoundingBox(constref ARenderInfo: TvRenderInfo; out ALeft, ATop, ARight, ABottom: Double); override;
     procedure Render(var ARenderInfo: TvRenderInfo; ADoDraw: Boolean = True); override;
-    procedure Rotate(AAngle: Double; ABase: T3DPoint); override; // Angle in radians
+    procedure Rotate(AAngle: Double; ABase: T3DPoint); override;
   end;
 
   { TvRectangle }
@@ -788,12 +789,12 @@ type
     CX, CY, CZ: Double;  // CX = width, CY = height, CZ = depth
     // Corner rounding, zero indicates no rounding
     RX, RY: Double;
-    // The Angle is measured in radians relative to the positive X axis.
+    // The Angle is measured in radians relative to the positive X axis, >0 if counter-clockwise
     // Center of rotation is (X,Y).
     Angle: Double;
     procedure CalculateBoundingBox(constref ARenderInfo: TvRenderInfo; out ALeft, ATop, ARight, ABottom: Double); override;
     procedure Render(var ARenderInfo: TvRenderInfo; ADoDraw: Boolean = True); override;
-    procedure Rotate(AAngle: Double; ABase: T3DPoint); override; // Angle in radians
+    procedure Rotate(AAngle: Double; ABase: T3DPoint); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
@@ -807,6 +808,7 @@ type
     Points: array of T3DPoint;
     procedure CalculateBoundingBox(constref ARenderInfo: TvRenderInfo; out ALeft, ATop, ARight, ABottom: Double); override;
     procedure Render(var ARenderInfo: TvRenderInfo; ADoDraw: Boolean = True); override;
+    procedure Rotate(AAngle: Double; ABase: T3DPoint); override;
   end;
 
   {@@
@@ -2997,15 +2999,17 @@ var
 begin
   inherited Rotate(AAngle, ABase);
 
-  p := fpvutils.Rotate3DPointInXY(E1, ABase, AAngle);
+  XRotation := XRotation + AAngle;
+
+  p := fpvutils.Rotate3DPointInXY(E1, ABase, -AAngle);
   E1.X := p.X;
   E1.Y := p.Y;
 
-  p := fpvutils.Rotate3DPointInXY(E2, ABase, AAngle);
+  p := fpvutils.Rotate3DPointInXY(E2, ABase, -AAngle);
   E2.X := p.X;
   E2.Y := p.Y;
 
-  p := fpvutils.Rotate3DPointInXY(Make2dPoint(CX, CY), ABase, AAngle);
+  p := fpvutils.Rotate3DPointInXY(Make2dPoint(CX, CY), ABase, -AAngle);
   CX := p.X;
   CY := p.Y;
 end;
@@ -3390,7 +3394,7 @@ var
   lRes: T3DPoint;
 begin
   inherited Rotate(AAngle, ABase);
-  lRes := fpvutils.Rotate3DPointInXY(Make3DPoint(X, Y), ABase, AAngle);
+  lRes := fpvutils.Rotate3DPointInXY(Make3DPoint(X, Y), ABase, -AAngle);
   X := lRes.X;
   Y := lRes.Y;
 end;
@@ -3455,11 +3459,11 @@ var
 begin
   inherited Rotate(AAngle, ABase);
 
-  p := fpvutils.Rotate3DPointInXY(Make3DPoint(X2, Y2), ABase, AAngle);
+  p := fpvutils.Rotate3DPointInXY(Make3DPoint(X2, Y2), ABase, -AAngle);
   X2 := p.X;
   Y2 := p.Y;
 
-  p := fpvutils.Rotate3DPointInXY(Make3DPoint(X3, Y3), ABase, AAngle);
+  p := fpvutils.Rotate3DPointInXY(Make3DPoint(X3, Y3), ABase, -AAngle);
   X3 := p.X;
   Y3 := p.Y;
 end;
@@ -4479,7 +4483,7 @@ begin
       bkVerticalGradient,
       bkOtherLinearGradient:
         begin
-          // calculate gradient vector
+          // Calculate gradient vector
           CalcGradientVector(gv1, gv2, lRect, ADestX, ADestY, AMulX, AMulY);
           // Draw the gradient
           DrawPolygonBrushLinearGradient(ARenderInfo, polyPoints, polystarts, lRect, gv1, gv2);
@@ -4500,84 +4504,6 @@ begin
     tmpPath.Free;
   end;
 end;
-(*
-{ Fills the entity's shape with a gradient.
-  Assumes that the boundary is in fpv units and provides parameters (ADestX,
-  ADestY, AMulX, AMulY) for conversion to canvas pixels. }
-procedure TvEntityWithPenAndBrush.DrawBrushGradient(ADest: TFPCustomCanvas;
-  var ARenderInfo: TvRenderInfo; x1, y1, x2, y2: Integer;
-  ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double);
-
-  function CoordToCanvasX(ACoord: Double): Integer;
-  begin
-    Result := Round(ADestX + AmulX * ACoord);
-  end;
-
-  function CoordToCanvasY(ACoord: Double): Integer;
-  begin
-    Result := Round(ADestY + AmulY * ACoord);
-  end;
-
-  function CanvasToCoordY(ACanvas: Integer): Double;
-  begin
-    Result := (ACanvas - ADestY) / AmulY;
-  end;
-
-  function CanvasToCoordX(ACanvas: Integer): Double;
-  begin
-    Result := (ACanvas - ADestX) / AmulX;
-  end;
-
-var
-  i, j: Integer;
-  lPoints: TDoubleDynArray;
-  lCanvasPts: array[0..1] of Integer;
-  lColor, lColor1, lColor2: TFPColor;
-begin
-  if not (Brush.Kind in [bkVerticalGradient, bkHorizontalGradient]) then
-    Exit;
-
-  lColor1 := Brush.Gradient_colors[1].Color;
-  lColor2 := Brush.Gradient_colors[0].Color;
-  if Brush.Kind = bkVerticalGradient then
-  begin
-    for i := y1 to y2 do
-    begin
-      lPoints := GetLineIntersectionPoints(CanvasToCoordY(i), False);
-      if Length(lPoints) < 2 then Continue;
-      lColor := MixColors(lColor1, lColor2, i-y1, y2-y1);
-      ADest.Pen.FPColor := lColor;
-      ADest.Pen.Style := psSolid;
-      j := 0;
-      while j < Length(lPoints) do
-      begin
-        lCanvasPts[0] := CoordToCanvasX(lPoints[j]);
-        lCanvasPts[1] := CoordToCanvasX(lPoints[j+1]);
-        ADest.Line(lCanvasPts[0], i, lCanvasPts[1], i);
-        inc(j, 2);
-      end;
-    end;
-  end
-  else if Brush.Kind = bkHorizontalGradient then
-  begin
-    for i := x1 to x2 do
-    begin
-      lPoints := GetLineIntersectionPoints(CanvasToCoordX(i), True);
-      if Length(lPoints) < 2 then Continue;
-      lColor := MixColors(lColor1, lColor2, i-x1, x2-x1);
-      ADest.Pen.FPColor := lColor;
-      ADest.Pen.Style := psSolid;
-      j := 0;
-      while (j+1 < Length(lPoints)) do
-      begin
-        lCanvasPts[0] := CoordToCanvasY(lPoints[j]);
-        lCanvasPts[1] := CoordToCanvasY(lPoints[j+1]);
-        ADest.Line(i, lCanvasPts[0], i, lCanvasPts[1]);
-        inc(j , 2);
-      end;
-    end;
-  end;
-end;      *)
 
 procedure TvEntityWithPenAndBrush.DrawBrush(var ARenderInfo: TvRenderInfo);
 var
@@ -4588,8 +4514,8 @@ var
   AMulY: Double absolute ARenderInfo.MulY;
   //
   tmpPath: TPath;
-  polypoints: TPointsArray;
-  polystarts: TIntegerDynArray;
+  polypoints: TPointsArray = nil;
+  polystarts: TIntegerDynArray = nil;
 begin
   tmpPath := CreatePath;
   if tmpPath = nil then
@@ -4689,7 +4615,7 @@ end;
 procedure TvEntityWithPenBrushAndFont.Rotate(AAngle: Double; ABase: T3DPoint);
 begin
   inherited Rotate(AAngle, ABase);
-  Font.Orientation := RadToDeg(AAngle);
+  Font.Orientation := -RadToDeg(AAngle);
 end;
 
 procedure TvEntityWithPenBrushAndFont.Scale(ADeltaScaleX, ADeltaScaleY: Double);
@@ -6421,7 +6347,7 @@ end;
 
 function TvRectangle.CreatePath: TPath;
 var
-  pts: T3dPointsArray;
+  pts: T3dPointsArray = nil;
   ctr: T3dPoint;
   j: Integer;
   phi, lYAdj: Double;
@@ -6443,12 +6369,12 @@ begin
   end
   else
   begin
-    SetLength(pts, 5);
-    pts[0] := Make3dPoint(X, Y);
-    pts[1] := Make3dPoint(X+CX, Y);
-    pts[2] := Make3dPoint(X+CX, Y+lYAdj*CY);
-    pts[3] := Make3dPoint(X, Y+lYAdj*CY);
-    pts[4] := Make3dPoint(X, Y);
+    SetLength(pts, 5);                              {    0,4            1   }
+    pts[0] := Make3dPoint(X, Y);                    {                       }
+    pts[1] := Make3dPoint(X+CX, Y);                 {                       }
+    pts[2] := Make3dPoint(X+CX, Y+lYAdj*CY);        {                       }
+    pts[3] := Make3dPoint(X, Y+lYAdj*CY);           {                       }
+    pts[4] := Make3dPoint(X, Y);                    {   3               2   }
   end;
   ctr := Make3DPoint(X, Y);  // Rotation center
   phi := -Angle;             // Angle must be inverted due to sign convention in Rotate3DPointInXY
@@ -6672,6 +6598,17 @@ begin
     end;
 end;
 
+procedure TvPolygon.Rotate(AAngle: Double; ABase: T3DPoint);
+var
+  ref: T3dPoint;
+  i: Integer;
+begin
+  ref := Rotate3dPointInXY(Make3dPoint(X, Y), ABase, -AAngle);
+  X := ref.X;
+  Y := ref.Y;
+  for i := 0 to High(Points) do
+    Points[i] := Rotate3dPointInXY(Points[i], ABase, -AAngle);
+end;
 
 { TvAlignedDimension }
 

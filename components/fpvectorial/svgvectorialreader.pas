@@ -1250,8 +1250,7 @@ begin
         end
         else if lFunctionName = 'rotate' then
         begin
-          lMRotate := -DegToRad(lMatrixElements[0]);
-            // "-" because of orientation of svg coordinate system
+          lMRotate := DegToRad(lMatrixElements[0]) * AData.GetTopLeftCoords_Adjustment;
           lMTranslateX := 0;
           lMTranslateY := 0;
           if Length(lMatrixElements) > 1 then
@@ -2986,6 +2985,7 @@ begin
   for i := 0 to ANode.Attributes.Length - 1 do
   begin
     lNodeName := ANode.Attributes.Item[i].NodeName;
+    lNodeValue := ANode.Attributes.Item[i].NodeValue;
     if lNodeName = 'style' then
       ReadSVGStyle(AData, lNodeValue, lRect)
     else if IsAttributeFromStyle(lNodeName) then

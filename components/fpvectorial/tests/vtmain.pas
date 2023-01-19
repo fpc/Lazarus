@@ -100,18 +100,8 @@ type
     procedure Render_Shape(APage: TvVectorialPage; AIntParam: Integer);
 
     // Complex shapes
-    procedure Render_Path_Hole_SolidFill(APage: TvVectorialPage;
-      AIntParam: Integer);
-    procedure Render_Path_Hole_GradientFill(APage: TvVectorialPage;
-      AIntParam: Integer);
-    procedure Render_SelfIntersectingPoly_SolidFill_EvenOdd(APage: TvVectorialPage;
-      AIntParam: Integer);
-    procedure Render_SelfIntersectingPoly_GradientFill_EvenOdd(APage: TvVectorialPage;
-      AIntParam: Integer);
-    procedure Render_SelfIntersectingPoly_SolidFill_NonZeroWinding(APage: TvVectorialPage;
-      AIntParam: Integer);
-    procedure Render_SelfIntersectingPoly_GradientFill_NonZeroWinding(APage: TvVectorialPage;
-      AIntParam: Integer);
+    procedure Render_Path_Hole(APage: TvVectorialPage; AIntParam: Integer);
+    procedure Render_SelfIntersectingPoly(APage: TvVectorialPage; AIntParam: Integer);
 
     // Arcs
     procedure Render_Arc(APage: TvVectorialPage; AIntParam: Integer);
@@ -401,423 +391,86 @@ end;
 
 procedure TMainForm.Populate;
 var
-  node, node0, node1: TTreeNode;
+  mainNode: TTreeNode;
+  node, node0, node1, node2: TTreeNode;  // needed by include files
 begin
   Tree.Items.Clear;
 
   { --------------------------------------------------}
-  node := Tree.Items.AddChild(nil, 'Simple shapes');
+  mainnode := Tree.Items.AddChild(nil, 'Simple shapes');
   { --------------------------------------------------}
-  Tree.Items.AddChildObject(node, 'Circle (solid) - move up',
-    TRenderParams.Create(@Render_Shape, 'circle_solid.png', $0100));
-  Tree.Items.AddChildObject(node, 'Ellipse (solid) - moved up',
-    TRenderParams.Create(@Render_Shape, 'ellipse_solid.png', $0200));
-  Tree.Items.AddChildObject(node, 'Rectangle(solid) - moved up',
-    TRenderParams.Create(@Render_Shape, 'rect_solid.png', $0300));
-  Tree.Items.AddChildObject(node, 'Rounded rectangle (solid) - moved up',
-    TRenderParams.Create(@Render_Shape, 'rounded_rect_solid.png', $0400));
-  Tree.Items.AddChildObject(node, 'Polygon (solid) - moved up',
-    TRenderParams.Create(@Render_Shape, 'polygon_solid.png', $0500));
+  {$I vt_simpleshapes.inc}
 
   { --------------------------------------------------}
-  node := Tree.Items.AddChild(nil, 'Complex shapes');
+  mainnode := Tree.Items.AddChild(nil, 'Complex shapes');
   { --------------------------------------------------}
-  Tree.Items.AddChildObject(node, 'Path with hole (solid fill)',
-    TRenderParams.Create(@Render_Path_Hole_SolidFill, 'path_hole_solid.png'));
-  Tree.Items.AddChildObject(node, 'Path with hole (gradient fill)',
-    TRenderParams.Create(@Render_Path_Hole_GradientFill, 'path_hole_gradient.png'));
-  Tree.Items.AddChildObject(node, 'Self-intersecting polygon (solid fill, even-odd rule) - tip at bottom',
-    TRenderParams.Create(@Render_SelfIntersectingPoly_SolidFill_EvenOdd, 'selfintersecting_poly_solid_eo.png'));
-  Tree.Items.AddChildObject(node, 'Self-intersecting polygon (gradient fill, even-odd rule) - tip at bottom',
-    TRenderParams.Create(@Render_SelfIntersectingPoly_GradientFill_EvenOdd, 'selfintersecting_poly_gradient_eo.png'));
-  Tree.Items.AddChildObject(node, 'Self-intersecting polygon (solid fill, nonzero winding rule) - tip at bottom',
-    TRenderParams.Create(@Render_SelfIntersectingPoly_SolidFill_NonZeroWinding, 'selfintersecting_poly_solid_nzw.png'));
-  Tree.Items.AddChildObject(node, 'Self-intersecting polygon (gradient fill, nonzero winding rule) - tip at bottom',
-    TRenderParams.Create(@Render_SelfIntersectingPoly_GradientFill_NonZeroWinding, 'selfintersecting_poly_gradient_nzw.png'));
+  {$I vt_complexshapes.inc}
 
   { -----------------------------------------}
-  node0 := Tree.Items.AddChild(nil, 'Arcs');
+  mainnode := Tree.Items.AddChild(nil, 'Arcs');
   { -----------------------------------------}
-  node1 := Tree.Items.AddChild(node0, 'circular');
-  node := Tree.Items.AddChild(node1, 'clockwise from point 1 to point 2');
-  Tree.Items.AddChildObject(node, 'Quadrant I',
-    TRenderParams.Create(@Render_Arc, 'arc_cw_q1.png', $0200));
-  Tree.Items.AddChildObject(node, 'Quadrant I+II',
-    TRenderParams.Create(@Render_Arc, 'arc_cw_q12.png', $0201));
-  Tree.Items.AddChildObject(node, 'Quadrant II',
-    TRenderParams.Create(@Render_Arc, 'arc_cw_q2.png', $0202));
-  Tree.Items.AddChildObject(node, 'Quadrant II+III',
-    TRenderParams.Create(@Render_Arc, 'arc_cw_q23.png', $0203));
-  Tree.Items.AddChildObject(node, 'Quadrant III',
-    TRenderParams.Create(@Render_Arc, 'arc_cw_q3.png', $0204));
-  Tree.Items.AddChildObject(node, 'Quadrant III+IV',
-    TRenderParams.Create(@Render_Arc, 'arc_cw_q34.png', $0205));
-  Tree.Items.AddChildObject(node, 'Quadrant IV',
-    TRenderParams.Create(@Render_Arc, 'arc_cw_q4.png', $0206));
-  Tree.Items.AddChildObject(node, 'Quadrant IV+I',
-    TRenderParams.Create(@Render_Arc, 'arc_cw_q41.png', $0207));
-
-  Tree.Items.AddChildObject(node, 'Quadrant I, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_cw_q1r.png', $0300));
-  Tree.Items.AddChildObject(node, 'Quadrant I+II, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_cw_q12r.png', $0301));
-  Tree.Items.AddChildObject(node, 'Quadrant II, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_cw_q2r.png', $0302));
-  Tree.Items.AddChildObject(node, 'Quadrant II+III, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_cw_q23r.png', $0303));
-  Tree.Items.AddChildObject(node, 'Quadrant III, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_cw_q3r.png', $0304));
-  Tree.Items.AddChildObject(node, 'Quadrant III+IV, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_cw_q34r.png', $0305));
-  Tree.Items.AddChildObject(node, 'Quadrant IV, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_cw_q4r.png', $0306));
-  Tree.Items.AddChildObject(node, 'Quadrant IV+I, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_cw_q41r.png', $0307));
-
-  node := Tree.Items.AddChild(node1, 'counter-clockwise from point 1 to point 2');
-  Tree.Items.AddChildObject(node, 'Quadrant I',
-    TRenderParams.Create(@Render_Arc, 'arc_ccw_q1.png', $0000));
-  Tree.Items.AddChildObject(node, 'Quadrant I+II',
-    TRenderParams.Create(@Render_Arc, 'arc_ccw_q12.png', $0001));
-  Tree.Items.AddChildObject(node, 'Quadrant II',
-    TRenderParams.Create(@Render_Arc, 'arc_ccw_q2.png', $0002));
-  Tree.Items.AddChildObject(node, 'Quadrant II+III',
-    TRenderParams.Create(@Render_Arc, 'arc_ccw_q23.png', $0003));
-  Tree.Items.AddChildObject(node, 'Quadrant III',
-    TRenderParams.Create(@Render_Arc, 'arc_ccw_q3.png', $0004));
-  Tree.Items.AddChildObject(node, 'Quadrant III+IV',
-    TRenderParams.Create(@Render_Arc, 'arc_ccw_q34.png', $0005));
-  Tree.Items.AddChildObject(node, 'Quadrant IV',
-    TRenderParams.Create(@Render_Arc, 'arc_ccw_q4.png', $0006));
-  Tree.Items.AddChildObject(node, 'Quadrant IV+I',
-    TRenderParams.Create(@Render_Arc, 'arc_ccw_q41.png', $0007));
-
-  Tree.Items.AddChildObject(node, 'Quadrant I, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ccw_q1r.png', $0100));
-  Tree.Items.AddChildObject(node, 'Quadrant I+II, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ccw_q12r.png', $0101));
-  Tree.Items.AddChildObject(node, 'Quadrant II, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ccw_q2r.png', $0102));
-  Tree.Items.AddChildObject(node, 'Quadrant II+III, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ccw_q23r.png', $0103));
-  Tree.Items.AddChildObject(node, 'Quadrant III, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ccw_q3r.png', $0104));
-  Tree.Items.AddChildObject(node, 'Quadrant III+IV, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ccw_q34r.png', $0105));
-  Tree.Items.AddChildObject(node, 'Quadrant IV, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ccw_q4r.png', $0106));
-  Tree.Items.AddChildObject(node, 'Quadrant IV+I, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ccw_q41r.png', $0107));
-
-  node1 := Tree.Items.AddChild(node0, 'elliptical');
-  node := Tree.Items.AddChild(node1, 'clockwise from point 1 to point 2');
-  Tree.Items.AddChildObject(node, 'Quadrant I',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_cw_q1.png', $1200));
-  Tree.Items.AddChildObject(node, 'Quadrant I+II',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_cw_q12.png', $1201));
-  Tree.Items.AddChildObject(node, 'Quadrant II',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_cw_q2.png', $1202));
-  Tree.Items.AddChildObject(node, 'Quadrant II+III',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_cw_q23.png', $1203));
-  Tree.Items.AddChildObject(node, 'Quadrant III',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_cw_q3.png', $1204));
-  Tree.Items.AddChildObject(node, 'Quadrant III+IV',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_cw_q34.png', $1205));
-  Tree.Items.AddChildObject(node, 'Quadrant IV',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_cw_q4.png', $1206));
-  Tree.Items.AddChildObject(node, 'Quadrant IV+I',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_cw_q41.png', $1207));
-
-  Tree.Items.AddChildObject(node, 'Quadrant I, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_cw_q1r.png', $1300));
-  Tree.Items.AddChildObject(node, 'Quadrant I+II, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_cw_q12r.png', $1301));
-  Tree.Items.AddChildObject(node, 'Quadrant II, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_cw_q2r.png', $1302));
-  Tree.Items.AddChildObject(node, 'Quadrant II+III, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_cw_q23r.png', $1303));
-  Tree.Items.AddChildObject(node, 'Quadrant III, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_cw_q3r.png', $1304));
-  Tree.Items.AddChildObject(node, 'Quadrant III+IV, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_cw_q34r.png', $1305));
-  Tree.Items.AddChildObject(node, 'Quadrant IV, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_cw_q4r.png', $1306));
-  Tree.Items.AddChildObject(node, 'Quadrant IV+I, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_cw_q41r.png', $1307));
-
-  node := Tree.Items.AddChild(node1, 'counter-clockwise from point 1 to point 2');
-  Tree.Items.AddChildObject(node, 'Quadrant I',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_ccw_q1.png', $1000));
-  Tree.Items.AddChildObject(node, 'Quadrant I+II',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_ccw_q12.png', $1001));
-  Tree.Items.AddChildObject(node, 'Quadrant II',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_ccw_q2.png', $1002));
-  Tree.Items.AddChildObject(node, 'Quadrant II+III',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_ccw_q23.png', $1003));
-  Tree.Items.AddChildObject(node, 'Quadrant III',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_ccw_q3.png', $1004));
-  Tree.Items.AddChildObject(node, 'Quadrant III+IV',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_ccw_q34.png', $1005));
-  Tree.Items.AddChildObject(node, 'Quadrant IV',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_ccw_q4.png', $1006));
-  Tree.Items.AddChildObject(node, 'Quadrant IV+I',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_ccw_q41.png', $1007));
-
-  Tree.Items.AddChildObject(node, 'Quadrant I, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_ccw_q1r.png', $1100));
-  Tree.Items.AddChildObject(node, 'Quadrant I+II, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_ccw_q12r.png', $1101));
-  Tree.Items.AddChildObject(node, 'Quadrant II, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_ccw_q2r.png', $1102));
-  Tree.Items.AddChildObject(node, 'Quadrant II+III, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_ccw_q23r.png', $1103));
-  Tree.Items.AddChildObject(node, 'Quadrant III, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_ccw_q3r.png', $1104));
-  Tree.Items.AddChildObject(node, 'Quadrant III+IV, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_ccw_q34r.png', $1105));
-  Tree.Items.AddChildObject(node, 'Quadrant IV, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_ccw_q4r.png', $1106));
-  Tree.Items.AddChildObject(node, 'Quadrant IV+I, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ell_ccw_q41r.png', $1107));
-
-  node1 := Tree.Items.AddChild(node0, 'elliptical, rotated 30deg');
-  node := Tree.Items.AddChild(node1, 'clockwise from point 1 to point 2');
-  Tree.Items.AddChildObject(node, 'Quadrant I',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_cw_q1.png', $2200));
-  Tree.Items.AddChildObject(node, 'Quadrant I+II',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_cw_q12.png', $2201));
-  Tree.Items.AddChildObject(node, 'Quadrant II',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_cw_q2.png', $2202));
-  Tree.Items.AddChildObject(node, 'Quadrant II+III',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_cw_q23.png', $2203));
-  Tree.Items.AddChildObject(node, 'Quadrant III',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_cw_q3.png', $2204));
-  Tree.Items.AddChildObject(node, 'Quadrant III+IV',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_cw_q34.png', $2205));
-  Tree.Items.AddChildObject(node, 'Quadrant IV',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_cw_q4.png', $2206));
-  Tree.Items.AddChildObject(node, 'Quadrant IV+I',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_cw_q41.png', $2207));
-
-  Tree.Items.AddChildObject(node, 'Quadrant I, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_cw_q1r.png', $2300));
-  Tree.Items.AddChildObject(node, 'Quadrant I+II, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_cw_q12r.png', $2301));
-  Tree.Items.AddChildObject(node, 'Quadrant II, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_cw_q2r.png', $2302));
-  Tree.Items.AddChildObject(node, 'Quadrant II+III, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_cw_q23r.png', $2303));
-  Tree.Items.AddChildObject(node, 'Quadrant III, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_cw_q3r.png', $2304));
-  Tree.Items.AddChildObject(node, 'Quadrant III+IV, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_cw_q34r.png', $2305));
-  Tree.Items.AddChildObject(node, 'Quadrant IV, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_cw_q4r.png', $2306));
-  Tree.Items.AddChildObject(node, 'Quadrant IV+I, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_cw_q41r.png', $2307));
-
-  node := Tree.Items.AddChild(node1, 'counter-clockwise from point 1 to point 2');
-  Tree.Items.AddChildObject(node, 'Quadrant I',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_ccw_q1.png', $2000));
-  Tree.Items.AddChildObject(node, 'Quadrant I+II',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_ccw_q12.png', $2001));
-  Tree.Items.AddChildObject(node, 'Quadrant II',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_ccw_q2.png', $2002));
-  Tree.Items.AddChildObject(node, 'Quadrant II+III',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_ccw_q23.png', $2003));
-  Tree.Items.AddChildObject(node, 'Quadrant III',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_ccw_q3.png', $2004));
-  Tree.Items.AddChildObject(node, 'Quadrant III+IV',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_ccw_q34.png', $2005));
-  Tree.Items.AddChildObject(node, 'Quadrant IV',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_ccw_q4.png', $2006));
-  Tree.Items.AddChildObject(node, 'Quadrant IV+I',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_ccw_q41.png', $2007));
-
-  Tree.Items.AddChildObject(node, 'Quadrant I, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_ccw_q1r.png', $2100));
-  Tree.Items.AddChildObject(node, 'Quadrant I+II, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_ccw_q12r.png', $2101));
-  Tree.Items.AddChildObject(node, 'Quadrant II, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_ccw_q2r.png', $2102));
-  Tree.Items.AddChildObject(node, 'Quadrant II+III, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_ccw_q23r.png', $2103));
-  Tree.Items.AddChildObject(node, 'Quadrant III, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_ccw_q3r.png', $2104));
-  Tree.Items.AddChildObject(node, 'Quadrant III+IV, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_ccw_q34r.png', $2105));
-  Tree.Items.AddChildObject(node, 'Quadrant IV, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_ccw_q4r.png', $2106));
-  Tree.Items.AddChildObject(node, 'Quadrant IV+I, reverse',
-    TRenderParams.Create(@Render_Arc, 'arc_ellrot_ccw_q41r.png', $2107));
+  {$I vt_arcs_circular.inc}
+  {$I vt_arcs_elliptical.inc}
+  {$I vt_arcs_elliptical_rotated.inc}
 
   { -----------------------------------------------}
   node := Tree.Items.AddChild(nil, 'Bezier');
   { -----------------------------------------------}
-  Tree.Items.AddChildObject(node, 'Single segment',
+  Tree.Items.AddChildObject(node, 'Single segment (rotated around (10,10) by 30° CCW)',
+    TRenderParams.Create(@Render_Bezier, 'bezier_rot30ccw.png', $00010000));
+  Tree.Items.AddChildObject(node, 'Single segment (normal)',
     TRenderParams.Create(@Render_Bezier, 'bezier.png'));
+  Tree.Items.AddChildObject(node, 'Single segment (rotated around (10,10) by 30° CW)',
+    TRenderParams.Create(@Render_Bezier, 'bezier_rot30cw.png', $00020000));
 
   { -----------------------------------------------}
-  node0 := Tree.Items.AddChild(nil, 'Gradients');
+  mainnode := Tree.Items.AddChild(nil, 'Gradients');
   { -----------------------------------------------}
-  node := Tree.Items.AddChild(node0, 'horizontal');
-  Tree.Items.AddChildObject(node, 'Circle',
-    TRenderParams.Create(@Render_Shape, 'circle_gradienthor.png', $0101));
-  Tree.Items.AddChildObject(node, 'Ellipse',
-    TRenderParams.Create(@Render_Shape, 'ellipse_gradienthor.png', $0201));
-  Tree.Items.AddChildObject(node, 'Rectangle',
-    TRenderParams.Create(@Render_Shape, 'rect_gradienthor.png', $0301));
-  Tree.Items.AddChildObject(node, 'Rounded rectangle',
-    TRenderParams.Create(@Render_Shape, 'rounded_rect_gradienthor.png', $0401));
-  Tree.Items.AddChildObject(node, 'Polygon',
-    TRenderParams.Create(@Render_Shape, 'polygon_gradienthor.png', $0501));
-
-  node := Tree.Items.AddChild(node0, 'vertical');
-  Tree.Items.AddChildObject(node, 'Circle',
-    TRenderParams.Create(@Render_Shape, 'circle_gradientvert.png', $0102));
-  Tree.Items.AddChildObject(node, 'Ellipse',
-    TRenderParams.Create(@Render_Shape, 'ellipse_gradientvert.png', $0202));
-  Tree.Items.AddChildObject(node, 'Rectangle',
-    TRenderParams.Create(@Render_Shape, 'rect_gradientvert.png', $0302));
-  Tree.Items.AddChildObject(node, 'Rounded rectangle',
-    TRenderParams.Create(@Render_Shape, 'rounded_rect_gradientvert.png', $0402));
-  Tree.Items.AddChildObject(node, 'Polygon',
-    TRenderParams.Create(@Render_Shape, 'polygon_gradientvert.png', $0502));
-
-  node := Tree.Items.AddChild(node0, 'linear');
-  Tree.Items.AddChildObject(node, 'Circle',
-    TRenderParams.Create(@Render_Shape, 'circle_gradientlinear.png', $0103));
-  Tree.Items.AddChildObject(node, 'Ellipse',
-    TRenderParams.Create(@Render_Shape, 'ellipse_gradientlinear.png', $0203));
-  Tree.Items.AddChildObject(node, 'Rectangle',
-    TRenderParams.Create(@Render_Shape, 'rect_gradientlinear.png', $0303));
-  Tree.Items.AddChildObject(node, 'Rounded rectangle',
-    TRenderParams.Create(@Render_Shape, 'rounded_rect_gradientlinear.png', $0403));
-  Tree.Items.AddChildObject(node, 'Polygon',
-    TRenderParams.Create(@Render_Shape, 'polygon_gradientlinear.png', $0503));
-
-  node := Tree.Items.AddChild(node0, 'radial');
-  Tree.Items.AddChildObject(node, 'Circle',
-    TRenderParams.Create(@Render_Shape, 'circle_gradientradial.png', $0104));
-  Tree.Items.AddChildObject(node, 'Ellipse',
-    TRenderParams.Create(@Render_Shape, 'ellipse_gradientradial.png', $0204));
-  Tree.Items.AddChildObject(node, 'Rectangle',
-    TRenderParams.Create(@Render_Shape, 'rect_gradientradial.png', $0304));
-  Tree.Items.AddChildObject(node, 'Rounded rectangle',
-    TRenderParams.Create(@Render_Shape, 'rounded_rect_gradientradial.png', $0404));
-  Tree.Items.AddChildObject(node, 'Polygon',
-    TRenderParams.Create(@Render_Shape, 'polygon_gradientradial.png', $0504));
+  {$I vt_gradients.inc}
 
   { -----------------------------------------------}
-  node0 := Tree.Items.AddChild(nil, 'Text');
+  mainnode := Tree.Items.AddChild(nil, 'Text');
   { -----------------------------------------------}
-  node1 := Tree.Items.AddChild(node0, 'single line');
-
-  node := Tree.Items.AddChild(node1, 'horizontal');
-  Tree.Items.AddChildObject(node, 'left aligned',
-    TRenderParams.Create(@Render_Text, 'text_left.png', $0000));
-  Tree.Items.AddChildObject(node, 'centered',
-    TRenderParams.Create(@Render_Text, 'text_center.png', $0001));
-  Tree.Items.AddChildObject(node, 'right aligned',
-    TRenderParams.Create(@Render_Text, 'text_right.png', $0002));
-
-  node := Tree.Items.AddChild(node1, 'rotated by 30 deg');
-  Tree.Items.AddChildObject(node, 'left aligned',
-    TRenderParams.Create(@Render_Text, 'text_left_30.png', $1000));
-  Tree.Items.AddChildObject(node, 'centered',
-    TRenderParams.Create(@Render_Text, 'text_center_30.png', $1001));
-  Tree.Items.AddChildObject(node, 'right aligned',
-    TRenderParams.Create(@Render_Text, 'text_right_30.png', $1002));
-
-  node := Tree.Items.AddChild(node1, 'vertical (90 deg, upward)');
-  Tree.Items.AddChildObject(node, 'left aligned',
-    TRenderParams.Create(@Render_Text, 'text_left_90.png', $2000));
-  Tree.Items.AddChildObject(node, 'centered',
-    TRenderParams.Create(@Render_Text, 'text_center_90.png', $2001));
-  Tree.Items.AddChildObject(node, 'right aligned',
-    TRenderParams.Create(@Render_Text, 'text_right_90.png', $2002));
-
-  node := Tree.Items.AddChild(node1, 'vertical (-90 deg, downward)');
-  Tree.Items.AddChildObject(node, 'left aligned',
-    TRenderParams.Create(@Render_Text, 'text_left_m90.png', $3000));
-  Tree.Items.AddChildObject(node, 'centered',
-    TRenderParams.Create(@Render_Text, 'text_center_m90.png', $3001));
-  Tree.Items.AddChildObject(node, 'right aligned',
-    TRenderParams.Create(@Render_Text, 'text_right_m90.png', $3002));
-
-  // ----
-  node1 := Tree.Items.AddChild(node0, 'two lines');
-
-  node := Tree.Items.AddChild(node1, 'horizontal');
-  Tree.Items.AddChildObject(node, 'left aligned',
-    TRenderParams.Create(@Render_2Lines, 'text2_left.png', $0000));
-  Tree.Items.AddChildObject(node, 'centered',
-    TRenderParams.Create(@Render_2Lines, 'text2_center.png', $0001));
-  Tree.Items.AddChildObject(node, 'right aligned',
-    TRenderParams.Create(@Render_2Lines, 'text2_right.png', $0002));
-
-  node := Tree.Items.AddChild(node1, 'rotated by 30 deg');
-  Tree.Items.AddChildObject(node, 'left aligned',
-    TRenderParams.Create(@Render_2Lines, 'text2_left_30.png', $1000));
-  Tree.Items.AddChildObject(node, 'centered',
-    TRenderParams.Create(@Render_2Lines, 'text2_center_30.png', $1001));
-  Tree.Items.AddChildObject(node, 'right aligned',
-    TRenderParams.Create(@Render_2Lines, 'text2_right_30.png', $1002));
-
-  node := Tree.Items.AddChild(node1, 'vertical (90 deg, upward)');
-  Tree.Items.AddChildObject(node, 'left aligned',
-    TRenderParams.Create(@Render_2Lines, 'text2_left_90.png', $2000));
-  Tree.Items.AddChildObject(node, 'centered',
-    TRenderParams.Create(@Render_2Lines, 'text2_center_90.png', $2001));
-  Tree.Items.AddChildObject(node, 'right aligned',
-    TRenderParams.Create(@Render_2Lines, 'text2_right_90.png', $2002));
-
-  node := Tree.Items.AddChild(node1, 'vertical (-90 deg, downward)');
-  Tree.Items.AddChildObject(node, 'left aligned',
-    TRenderParams.Create(@Render_2Lines, 'text2_left_m90.png', $3000));
-  Tree.Items.AddChildObject(node, 'centered',
-    TRenderParams.Create(@Render_2Lines, 'text2_center_m90.png', $3001));
-  Tree.Items.AddChildObject(node, 'right aligned',
-    TRenderParams.Create(@Render_2Lines, 'text2_right_m90.png', $3002));
-
-  // ----
-  node := Tree.Items.AddChild(node0, 'Fonts');
-  Tree.Items.AddChildObject(node, 'Times New Roman + Courier New',
-    TRenderParams.Create(@Render_Text_Fonts, 'text_fonts.png'));
-  Tree.Items.AddChildObject(node0, 'Text colors',
-    TRenderParams.Create(@Render_Text_Colors, 'text_colors.png'));
+  {$I vt_text.inc}
 end;
 
 procedure TMainForm.Render_Shape(APage: TvVectorialPage;
   AIntParam: Integer);
-{ AIntParam and $00FF = 0 --> solid fill
-                        1 --> horizontal gradient
-                        2 --> vertical gradient
-                        3 --> linear gradient
-                        4 --> radial gradient
-  AIntParam and $FF00 = $0100 --> circle
-                        $0200 --> ellipse
-                        $0300 --> rectangle
-                        $0400 --> rounded rect
-                        $0500 --> polygon (triangle) }
+{ AIntParam and $000000FF = $00000000 --> solid fill
+                            $00000001 --> horizontal gradient
+                            $00000002 --> vertical gradient
+                            $00000003 --> linear gradient
+                            $00000004 --> radial gradient
+  AIntParam and $0000FF00 = $00000100 --> circle
+                            $00000200 --> ellipse
+                            $00000300 --> rectangle
+                            $00000400 --> rounded rect
+                            $00000500 --> polygon (triangle)
+  AIntParam and $000F0000 = $00010000 --> rotation of entire shape by 30°C
+                            $00020000 --> rotation of entire shape by -30°C
+}
 var
   ent: TvEntityWithPenAndBrush;
 begin
-  case AIntParam and $FF00 of
-    $0100: ent := CreateStdCircle(APage);
-    $0200: ent := CreateStdEllipse(APage);
-    $0300: ent := CreateStdRect(APage);
-    $0400: ent := CreateStdRoundedRect(APage);
-    $0500: ent := CreateStdPolygon(APage);
+  case AIntParam and $0000FF00 of
+    $00000100: ent := CreateStdCircle(APage);
+    $00000200: ent := CreateStdEllipse(APage);
+    $00000300: ent := CreateStdRect(APage);
+    $00000400: ent := CreateStdRoundedRect(APage);
+    $00000500: ent := CreateStdPolygon(APage);
     else   raise Exception.Create('Shape not supported.');
   end;
-  case AIntParam and $00FF of
-    $0000: ent.Brush := StdSolidBrush;
-    $0001: ent.Brush := StdHorizGradientBrush;
-    $0002: ent.Brush := StdVertGradientBrush;
-    $0003: ent.Brush := StdLinearGradientBrush;
-    $0004: ent.Brush := StdRadialGradientBrush;
+  case AIntParam and $000000FF of
+    $00000000: ent.Brush := StdSolidBrush(colRed);
+    $00000001: ent.Brush := StdHorizGradientBrush(colYellow, colRed);
+    $00000002: ent.Brush := StdVertGradientBrush(colYellow, colRed);
+    $00000003: ent.Brush := StdLinearGradientBrush(colYellow, colRed);
+    $00000004: ent.Brush := StdRadialGradientBrush(colYellow, colRed);
     else raise Exception.Create('Brush not supported');
+  end;
+  case AIntParam and $000F0000 of
+    $00010000: Rotate(APage, ent, 30);
+    $00020000: Rotate(APage, ent, -30);
   end;
   APage.AddEntity(ent);
 end;
@@ -836,7 +489,10 @@ procedure TMainForm.Render_Arc(APage: TvVectorialPage; AIntParam: Integer);
 //                       $0006  --> quarter 4
 //                       $0007  --> quarter 4+1
 // AIntParam and $0100 = $0100  --> start and end points exchanged
-// AIntParan and $0200 = $0200  --> clockwise
+// AIntParam and $0200 = $0200  --> clockwise
+//
+// AIntParam and $000F0000 = $00010000 --> rotation by 30°C
+//                           $00020000 --> rotation by -30°C
 const
   ROT_ANGLE = 30;
   RY_MULT = 0.6;
@@ -848,6 +504,8 @@ var
   p: T3dPoint;
   x1, y1, x2, y2, rx, ry: Double;
   startAngle, endAngle, phi: Double;
+  arc: TPath;
+  txt1, txt2: TvText;
 begin
   isReversed := AIntParam and $0100 <> 0;
   isClockwise := AIntParam and $0200 <> 0;
@@ -875,9 +533,25 @@ begin
   end;
 
   if isReversed then
-    CreateArc(APage, x2, y2, x1, y1, CX, CY, rx, ry, phi, isClockwise)
+    CreateArc(APage, x2, y2, x1, y1, CX, CY, rx, ry, phi, isClockwise, arc, txt1, txt2)
   else
-    CreateArc(APage, x1, y1, x2, y2, CX, CY, rx, ry, phi, isClockwise);
+    CreateArc(APage, x1, y1, x2, y2, CX, CY, rx, ry, phi, isClockwise, arc, txt1, txt2);
+
+  case AIntParam and $000F0000 of
+    $00010000:
+      begin
+        Rotate(APage, arc, 30);
+        Rotate(APage, txt1, 30);
+        Rotate(APage, txt2, 30);
+      end;
+    $00020000:
+      begin
+        Rotate(APage, arc, -30);
+        Rotate(APage, txt1, -30);
+        Rotate(APage, txt2, -30);
+      end;
+  end;
+
 end;
 
 procedure TMainForm.Render_Bezier(APage: TvVectorialpage; AIntParam: Integer);
@@ -890,74 +564,99 @@ const
   Y3 = 70;
   X4 = 90;
   Y4 = 25;
+var
+  bezier, line1, line2: TPath;
+  txt1, txt2, txt3, txt4: TvText;
 begin
-  CreateBezier(APage, X1,Y1, X2,Y2, X3,Y3, X4,Y4);
+  CreateBezier(APage, X1,Y1, X2,Y2, X3,Y3, X4,Y4, bezier, line1, line2, txt1, txt2, txt3, txt4);
+
+  case AIntParam and $000F0000 of
+    $00010000:
+      begin
+        Rotate(APage, bezier, 30);
+        Rotate(APage, line1, 30);
+        Rotate(APage, line2, 30);
+        Rotate(APage, txt1, 30);
+        Rotate(APage, txt2, 30);
+        Rotate(APage, txt3, 30);
+        Rotate(APage, txt4, 30);
+      end;
+    $00020000:
+      begin
+        Rotate(APage, bezier, -30);
+        Rotate(APage, line1, -30);
+        Rotate(APage, line2, -30);
+        Rotate(APage, txt1, -30);
+        Rotate(APage, txt2, -30);
+        Rotate(APage, txt3, -30);
+        Rotate(APage, txt4, -30);
+      end;
+  end;
+
 end;
 
-procedure TMainForm.Render_Path_Hole_SolidFill(APage: TvVectorialPage;
+procedure TMainForm.Render_Path_Hole(APage: TvVectorialPage;
   AIntParam: Integer);
+{ AIntParam and $000000FF = $00000000 --> solid fill
+                            $00000001 --> horizontal gradient
+                            $00000002 --> vertical gradient
+                            $00000003 --> linear gradient
+                            $00000004 --> radial gradient
+  AIntParam and $000F0000 = $00010000 --> rotation of entire shape by 30°C
+                            $00020000 --> rotation of entire shape by -30°C
+}
 var
   obj: TPath;
 begin
   obj := CreatePathWithHole(APage);  // no need to AddEntity!
-  obj.Brush.Color := colYellow;
-  obj.Brush.Style := bsSolid;
   obj.Pen.Width := 3;
   obj.Pen.Color := colBlue;
+  case AIntParam and $000000FF of
+    $00000000: obj.Brush := StdSolidBrush(colYellow);
+    $00000001: obj.Brush := StdHorizGradientBrush(colYellow, colRed);
+    $00000002: obj.Brush := StdVertGradientBrush(colYellow, colRed);
+    $00000003: obj.Brush := StdLinearGradientBrush(colYellow, colRed);
+    $00000004: obj.Brush := StdRadialGradientBrush(colYellow, colRed);
+    else raise Exception.Create('Brush not supported');
+  end;
+  case AIntParam and $000F0000 of
+    $00010000: Rotate(APage, obj, 30);
+    $00020000: Rotate(APage, obj, -30);
+  end;
 end;
 
-procedure TMainForm.Render_Path_Hole_GradientFill(APage: TvVectorialPage;
+procedure TMainForm.Render_SelfIntersectingPoly(APage: TvVectorialPage;
   AIntParam: Integer);
-var
-  obj: TPath;
-begin
-  obj := CreatePathWithHole(APage);  // No need to AddEntity!
-  obj.Brush := StdLinearGradientBrush;
-  obj.Pen.Width := 3;
-  obj.Pen.Color := colBlue;
-end;
-
-procedure TMainForm.Render_SelfIntersectingPoly_SolidFill_EvenOdd(
-  APage: TvVectorialPage; AIntParam: Integer);
-var
-  obj: TvPolygon;
-begin
-  obj := CreateStdSelfIntersectingPolygon(APage);
-  obj.WindingRule := vcmEvenOddRule;
-  obj.Brush := StdSolidBrush;
-  APage.AddEntity(obj);
-end;
-
-procedure TMainForm.Render_SelfIntersectingPoly_GradientFill_EvenOdd(
-  APage: TvVectorialPage; AIntParam: Integer);
+{ AIntParam and $0000000F = $00000000 --> solid fill
+                            $00000001 --> horizontal gradient
+                            $00000002 --> vertical gradient
+                            $00000003 --> linear gradient
+                            $00000004 --> radial gradient
+  AIntParam and $00000F00 = $00000000 --> even-odd rule
+                            $00000100 --> non-zero winding rule
+  AIntParam and $000F0000 = $00010000 --> rotation of entire shape by 30°C
+                            $00020000 --> rotation of entire shape by -30°C
+}
 var
   obj: TvPolygon;
 begin
   obj := CreateStdSelfIntersectingPolygon(APage);
-  obj.Brush := StdHorizGradientBrush;
-  obj.WindingRule := vcmEvenOddRule;
-  APage.AddEntity(obj);
-end;
-
-procedure TMainForm.Render_SelfIntersectingPoly_SolidFill_NonZeroWinding(
-  APage: TvVectorialPage; AIntParam: Integer);
-var
-  obj: TvPolygon;
-begin
-  obj := CreateStdSelfIntersectingPolygon(APage);
-  obj.WindingRule := vcmNonZeroWindingRule;
-  obj.Brush := StdSolidBrush;
-  APage.AddEntity(obj);
-end;
-
-procedure TMainForm.Render_SelfIntersectingPoly_GradientFill_NonZeroWinding(
-  APage: TvVectorialPage; AIntParam: Integer);
-var
-  obj: TvPolygon;
-begin
-  obj := CreateStdSelfIntersectingPolygon(APage);
-  obj.Brush := StdHorizGradientBrush;
-  obj.WindingRule := vcmNonzeroWindingRule;
+  case AIntParam and $0000000F of
+    $00000000: obj.Brush := StdSolidBrush(colRed);
+    $00000001: obj.Brush := StdHorizGradientBrush(colBlue, colWhite);
+    $00000002: obj.Brush := StdVertGradientBrush(colBlue, colWhite);
+    $00000003: obj.Brush := StdLinearGradientBrush(colBlue, colWhite);
+    $00000004: obj.Brush := StdRadialGradientBrush(colBlue, colWhite);
+    else raise Exception.Create('Brush not supported');
+  end;
+  case AIntParam and $00000F00 of
+    $00000000: obj.WindingRule := vcmEvenOddRule;
+    $00000100: obj.WindingRule := vcmNonZeroWindingRule;
+  end;
+  case AIntParam and $000F0000 of
+    $00010000: Rotate(APage, obj, 30);
+    $00020000: Rotate(APage, obj, -30);
+  end;
   APage.AddEntity(obj);
 end;
 

@@ -336,14 +336,24 @@ var
   cy: Double = 0.0;
   rx: Double = 0.0;
   ry: double = 0.0;
-  ellipseStr: string;
+  transformStr: string = '';
+  ellipseStr: String;
 begin
   ConvertFPVCoordinatesToSVGCoordinates(APage, AEllipse.X, AEllipse.Y, cx, cy);
   ConvertFPVSizeToSVGSize(AEllipse.HorzHalfAxis, AEllipse.VertHalfAxis, rx, ry);
-  ellipseStr := Format('  <ellipse cx="%g" cy="%g" rx="%g" ry="%g" style="%s %s" />', [
+  if AEllipse.Angle <> 0 then
+  begin
+    transformStr := Format('transform="rotate(%.2f %g %g)"', [
+      RadToDeg(AEllipse.Angle) * APage.GetTopLeftCoords_Adjustment,
+      cx,
+      cy
+    ], FPointSeparator);
+  end;
+  ellipseStr := Format('  <ellipse cx="%g" cy="%g" rx="%g" ry="%g" style="%s %s" %s/>', [
     cx, cy, rx, ry,
     GetPenAsXMLStyle(AEllipse.Pen),
-    GetBrushAsXMLStyle(AEllipse.Brush)
+    GetBrushAsXMLStyle(AEllipse.Brush),
+    transformStr
     ], FPointSeparator);
   AStrings.Add(ellipseStr);
 end;
@@ -609,6 +619,7 @@ var
   ry: Double = 0.0;
   rectStr: string;
   styleStr: String;
+  transformStr: String = '';
 begin
   ConvertFPVCoordinatesToSVGCoordinates(APage, ARectangle.X, ARectangle.Y, cx, cy);
   ConvertFPVSizeToSVGSize(ARectangle.CX, ARectangle.CY, w, h);
@@ -619,11 +630,19 @@ begin
     rectStr := rectStr + Format(' rx="%g"', [rx], FPointSeparator);
   if ry <> 0 then
     rectStr := rectStr + Format(' ry="%g"', [ry], FPointSeparator);
+  if ARectangle.Angle <> 0 then
+  begin
+    transformStr := Format(' transform="rotate(%.2f %g %g)"', [
+      RadToDeg(ARectangle.Angle) * APage.GetTopLeftCoords_Adjustment,
+      cx,
+      cy
+    ], FPointSeparator);
+  end;
   styleStr := Format(' style="%s %s"', [
     GetPenAsXMLStyle(ARectangle.Pen),
     GetBrushAsXMLStyle(ARectangle.Brush)
   ]);
-  rectStr := rectStr + styleStr + '/>';
+  rectStr := rectStr + styleStr + transformStr + '/>';
   AStrings.Add(rectStr);
 end;
 
