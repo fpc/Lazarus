@@ -440,7 +440,8 @@ procedure TMainForm.Render_Shape(APage: TvVectorialPage;
                             $00000001 --> horizontal gradient
                             $00000002 --> vertical gradient
                             $00000003 --> linear gradient
-                            $00000004 --> radial gradient
+                            $00000004 --> radial gradient (centered)
+                            $00000005 --> radial gradient (off-center)
   AIntParam and $0000FF00 = $00000100 --> circle
                             $00000200 --> ellipse
                             $00000300 --> rectangle
@@ -465,7 +466,8 @@ begin
     $00000001: ent.Brush := StdHorizGradientBrush(colYellow, colRed);
     $00000002: ent.Brush := StdVertGradientBrush(colYellow, colRed);
     $00000003: ent.Brush := StdLinearGradientBrush(colYellow, colRed);
-    $00000004: ent.Brush := StdRadialGradientBrush(colYellow, colRed);
+    $00000004: ent.Brush := StdRadialGradientBrush(colYellow, colRed, 0.5, 0.5, 0.5);
+    $00000005: ent.Brush := StdRadialGradientBrush(colYellow, colRed, 0.25, 0.25, 0.75);
     else raise Exception.Create('Brush not supported');
   end;
   case AIntParam and $000F0000 of
@@ -616,7 +618,8 @@ begin
     $00000001: obj.Brush := StdHorizGradientBrush(colYellow, colRed);
     $00000002: obj.Brush := StdVertGradientBrush(colYellow, colRed);
     $00000003: obj.Brush := StdLinearGradientBrush(colYellow, colRed);
-    $00000004: obj.Brush := StdRadialGradientBrush(colYellow, colRed);
+    $00000004: obj.Brush := StdRadialGradientBrush(colYellow, colRed, 0.5, 0.5, 0.5);
+    $00000005: obj.Brush := StdRadialGradientBrush(colYellow, colRed, 0.25, 0.25, 0.75);
     else raise Exception.Create('Brush not supported');
   end;
   case AIntParam and $000F0000 of
@@ -646,7 +649,8 @@ begin
     $00000001: obj.Brush := StdHorizGradientBrush(colBlue, colWhite);
     $00000002: obj.Brush := StdVertGradientBrush(colBlue, colWhite);
     $00000003: obj.Brush := StdLinearGradientBrush(colBlue, colWhite);
-    $00000004: obj.Brush := StdRadialGradientBrush(colBlue, colWhite);
+    $00000004: obj.Brush := StdRadialGradientBrush(colBlue, colWhite, 0.5, 0.5, 0.5);
+    $00000005: obj.Brush := StdRadialGradientBrush(colBlue, colWhite, 0.25, 0.25, 0.75);
     else raise Exception.Create('Brush not supported');
   end;
   case AIntParam and $00000F00 of

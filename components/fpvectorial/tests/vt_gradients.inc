@@ -48,4 +48,15 @@ Tree.Items.AddChildObject(node, 'Rounded rectangle',
 Tree.Items.AddChildObject(node, 'Polygon',
   TRenderParams.Create(@Render_Shape, 'polygon_gradientradial.png', $0504));
 
+node := Tree.Items.AddChild(mainnode, 'radial off-center');
+Tree.Items.AddChildObject(node, 'Circle',
+  TRenderParams.Create(@Render_Shape, 'circle_gradientradial_offc.png', $0105));
+Tree.Items.AddChildObject(node, 'Ellipse',
+  TRenderParams.Create(@Render_Shape, 'ellipse_gradientradial_offc.png', $0205));
+Tree.Items.AddChildObject(node, 'Rectangle',
+  TRenderParams.Create(@Render_Shape, 'rect_gradientradial_offc.png', $0305));
+Tree.Items.AddChildObject(node, 'Rounded rectangle',
+  TRenderParams.Create(@Render_Shape, 'rounded_rect_gradientradial_offc.png', $0405));
+Tree.Items.AddChildObject(node, 'Polygon',
+  TRenderParams.Create(@Render_Shape, 'polygon_gradientradial_offc.png', $0505));
 

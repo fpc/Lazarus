@@ -37,7 +37,7 @@ function StdSolidBrush(AColor: TFPColor): TvBrush;
 function StdHorizGradientBrush(AColor1, AColor2: TFPColor): TvBrush;
 function StdVertGradientBrush(AColor1, AColor2: TFPColor): TvBrush;
 function StdLinearGradientBrush(AColor1, AColor2: TFPColor): TvBrush;
-function StdRadialGradientBrush(AColor1, AColor2: TFPColor): TvBrush;
+function StdRadialGradientBrush(AColor1, AColor2: TFPColor; CX, CY, R: Double): TvBrush;
 function StdPen(AColor: TFPColor; AWidth: Integer): TvPen;
 
 procedure Rotate(APage: TvVectorialPage; AShape: TvEntity; Angle: Double);
@@ -263,6 +263,30 @@ begin
   Result.Gradient_cx := CX;
   Result.Gradient_cy := CY;
   Result.Gradient_r := R;
+  // Our renderer does not support a moving center --> put both centers at the same spot
+  Result.Gradient_fx := CX;
+  Result.Gradient_fy := CY;
+
+  Result.Gradient_cx_Unit := vcuPercentage;
+  Result.Gradient_cy_Unit := vcuPercentage;
+  Result.Gradient_r_Unit := vcuPercentage;
+  Result.Gradient_fx_Unit := vcuPercentage;
+  Result.Gradient_fy_Unit := vcuPercentage;
+
+  SetLength(Result.Gradient_colors, 2);
+  Result.Gradient_colors[0].Color := AStartColor;
+  Result.Gradient_colors[0].Position := 0;
+  Result.Gradient_colors[1].Color := AEndColor;
+  Result.Gradient_colors[1].Position := 1;
+end;
+                                          (*
+function CreateRadialGradientBrush(CX, CY, R, FX, FY: Double;
+  AStartColor, AEndColor: TFPColor): TvBrush;
+begin
+  Result.Kind := bkRadialGradient;
+  Result.Gradient_cx := CX;
+  Result.Gradient_cy := CY;
+  Result.Gradient_r := R;
   Result.Gradient_fx := FX;
   Result.Gradient_fy := FY;
   SetLength(Result.Gradient_colors, 2);
@@ -270,7 +294,7 @@ begin
   Result.Gradient_colors[0].Position := 0;
   Result.Gradient_colors[1].Color := AEndColor;
   Result.Gradient_colors[1].Position := 1;
-end;
+end;                                        *)
 
 
 { Pen }
@@ -438,9 +462,10 @@ begin
     AColor1, AColor2);
 end;
 
-function StdRadialGradientBrush(AColor1, AColor2: TFPColor): TvBrush;
+function StdRadialGradientBrush(AColor1, AColor2: TFPColor;
+  CX, CY, R: Double): TvBrush;
 begin
-  Result := CreateRadialGradientBrush(0.5, 0.5, 0.5, 0.5, 0.5,
+  Result := CreateRadialGradientBrush(CX, CY, R, 0.5, 0.5,
     AColor1, AColor2);
 end;
 

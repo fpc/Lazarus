@@ -4307,17 +4307,9 @@ var
   lDist: Double;
   lColor: TFPColor;
 
-  function GradientValue_to_px(AValue: Double; AUnit: TvCoordinateUnit; AIsY: Boolean): Integer;
-  var
-    lSideLen: Integer;
+  function GradientValue_to_px(AValue: Double; AUnit: TvCoordinateUnit; ASideLen: Integer; AIsY: Boolean): Integer;
   begin
     Result := 0;
-
-    if AIsY then
-      lSideLen := (ARect.Bottom-ARect.Top)
-    else
-      lSideLen := (ARect.Right-ARect.Left);
-
     case AUnit of
       vcuDocumentUnit:
         if AIsY then
@@ -4325,7 +4317,7 @@ var
         else
           Result := CoordToCanvasX(AValue, ARenderInfo.DestX, ARenderInfo.MulX);
       vcuPercentage:
-        Result := Round(lSideLen * AValue);
+        Result := Round(ASideLen * AValue);
     end;
   end;
 
@@ -4363,10 +4355,10 @@ begin
   lAspectRatio := lHeight/lWidth;
 
   // Calculate center of outer-most gradient circle
-  lGradient_cx_px := GradientValue_to_px(Brush.Gradient_cx, Brush.Gradient_cx_Unit, False);
-  lGradient_cy_px := GradientValue_to_px(Brush.Gradient_cy, Brush.Gradient_cy_Unit, True);
+  lGradient_cx_px := GradientValue_to_px(Brush.Gradient_cx, Brush.Gradient_cx_Unit, lWidth, False);
+  lGradient_cy_px := GradientValue_to_px(Brush.Gradient_cy, Brush.Gradient_cy_Unit, lHeight, True);
   // Calculate radius of outer-most gradient circle, relative the width
-  lGradient_r_px := GradientValue_to_px(Brush.Gradient_r, Brush.Gradient_r_Unit, False);
+  lGradient_r_px := GradientValue_to_px(Brush.Gradient_r, Brush.Gradient_r_Unit, lWidth, false);
   { -- not implemented, yet
   lGradient_fx_px := GradientValue_to_px(Brush.Gradient_fx, Brush.Gradient_fx_Unit, False);
   lGradient_fy_px := GradientValue_to_px(Brush.Gradient_fy, Brush.Gradient_fy_Unit, True);
@@ -4375,19 +4367,19 @@ begin
   // pixel-by-pixel version
   for i := 0 to lWidth-1 do
   begin
-    for J := 0 to lHeight-1 do
+    for j := 0 to lHeight-1 do
     begin
       lx := ARect.Left + i;
       ly := ARect.Top + j;
       if not IsPointInPolygon(lx, ly, APoints) then Continue;
 
-      // distance of current point (i, j) to gradient center, corrected for aspect ratio
+      // distance of current point (i, j) to gradient center, correct for aspect ratio
       lDist := sqrt(sqr(i - lGradient_cx_px) + sqr((j - lGradient_cy_px)/lAspectRatio));
+//      lDist := sqrt(sqr(i-lGradient_cx_px)+sqr(j-lGradient_cy_px));
       lDist := lDist / lGradient_r_px;
       lDist := Min(Max(0, lDist), 1);
-
-      // Color for point (lx, ly)
       lColor := Distance_To_RadialGradientColor(lDist);
+
       ADest.Colors[lx, ly] := AlphaBlendColor(ADest.Colors[lx, ly], lColor);
     end;
   end;
