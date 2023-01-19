@@ -145,7 +145,7 @@ type
 
   TvBrushKind = (bkSimpleBrush, bkHorizontalGradient, bkVerticalGradient,
     bkOtherLinearGradient, bkRadialGradient);
-  TvCoordinateUnit = (vcuDocumentUnit, vcuPercentage);
+  TvCoordinateUnit = (vcuDocumentUnit, vcuPercentage); // Note: vcuPercentage is fraction 0..1, rather than 0..100
 
   TvGradientFlag = (gfRelStartX, gfRelStartY, gfRelEndX, gfRelEndY, gfRelToUserSpace);
   TvGradientFlags = set of TvGradientFlag;
@@ -1377,7 +1377,9 @@ type
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
-  TvVectorialReaderFlag = (vrf_UseBottomLeftCoords);
+  TvVectorialReaderFlag = (
+    vrf_UseBottomLeftCoords    // Instructs the reader to return bottom-left coordinates
+  );
   TvVectorialReaderFlags = set of TvVectorialReaderFlag;
 
   TvVectorialReaderSettings = record
