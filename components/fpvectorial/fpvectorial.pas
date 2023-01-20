@@ -4612,7 +4612,7 @@ end;
 procedure TvEntityWithPenBrushAndFont.Rotate(AAngle: Double; ABase: T3DPoint);
 begin
   inherited Rotate(AAngle, ABase);
-  Font.Orientation := -RadToDeg(AAngle);
+  Font.Orientation := -RadToDeg(AAngle);   // wp: - added for svg text rotation which has CW orientation. Maybe wrong for others???
 end;
 
 procedure TvEntityWithPenBrushAndFont.Scale(ADeltaScaleX, ADeltaScaleY: Double);

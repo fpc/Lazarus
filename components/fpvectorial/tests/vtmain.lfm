@@ -1,66 +1,70 @@
 object MainForm: TMainForm
-  Left = 307
-  Height = 694
-  Top = 164
-  Width = 852
+  Left = 324
+  Height = 690
+  Top = 125
+  Width = 900
   Caption = 'Visual fpvectorial test'
-  ClientHeight = 694
-  ClientWidth = 852
+  ClientHeight = 690
+  ClientWidth = 900
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   ShowHint = True
   LCLVersion = '2.3.0.0'
   object GbTree: TGroupBox
     Left = 4
-    Height = 686
+    Height = 682
     Top = 4
-    Width = 296
+    Width = 344
     Align = alClient
     BorderSpacing.Around = 4
     Caption = 'Test shapes and objects'
-    ClientHeight = 666
-    ClientWidth = 292
+    ClientHeight = 662
+    ClientWidth = 340
     Font.Style = [fsBold]
     ParentFont = False
     TabOrder = 0
     object Tree: TTreeView
       Left = 4
-      Height = 654
+      Height = 650
       Top = 4
-      Width = 284
+      Width = 332
       Align = alClient
       BorderSpacing.Bottom = 4
       BorderSpacing.Around = 4
       HideSelection = False
+      Images = ImageList
       ParentFont = False
       ReadOnly = True
+      StateImages = ImageList
       TabOrder = 0
       OnCustomDrawItem = TreeCustomDrawItem
+      OnGetImageIndex = TreeGetImageIndex
+      OnGetSelectedIndex = TreeGetSelectedIndex
       OnSelectionChanged = TreeSelectionChanged
       Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
     end
   end
   object ScrollBox1: TScrollBox
-    Left = 304
-    Height = 694
+    Left = 352
+    Height = 690
     Top = 0
     Width = 548
     HorzScrollBar.Increment = 54
     HorzScrollBar.Page = 543
     HorzScrollBar.Smooth = True
     HorzScrollBar.Tracking = True
-    VertScrollBar.Increment = 62
-    VertScrollBar.Page = 627
+    VertScrollBar.Increment = 69
+    VertScrollBar.Page = 690
     VertScrollBar.Smooth = True
     VertScrollBar.Tracking = True
     Align = alRight
     BorderStyle = bsNone
-    ClientHeight = 694
+    ClientHeight = 690
     ClientWidth = 548
     TabOrder = 1
     object AllTestsPanel: TPanel
       Left = 4
-      Height = 619
+      Height = 682
       Top = 4
       Width = 536
       Align = alTop
@@ -68,7 +72,7 @@ object MainForm: TMainForm
       BorderSpacing.Right = 4
       BorderSpacing.Around = 4
       BevelOuter = bvNone
-      ClientHeight = 619
+      ClientHeight = 682
       ClientWidth = 536
       TabOrder = 0
       object gbRenderTest: TGroupBox
@@ -330,11 +334,11 @@ object MainForm: TMainForm
         AnchorSideRight.Side = asrBottom
         Left = 0
         Height = 313
-        Top = 306
+        Top = 298
         Width = 536
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
-        BorderSpacing.Top = 24
+        BorderSpacing.Top = 16
         Caption = 'Read/write test'
         ClientHeight = 293
         ClientWidth = 532
@@ -551,6 +555,175 @@ object MainForm: TMainForm
           end
         end
       end
+      object gbResults: TGroupBox
+        AnchorSideLeft.Control = gbReadWriteTest
+        AnchorSideTop.Control = gbReadWriteTest
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = gbReadWriteTest
+        AnchorSideRight.Side = asrBottom
+        Left = 0
+        Height = 55
+        Top = 627
+        Width = 536
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
+        BorderSpacing.Top = 16
+        Caption = 'Test results'
+        ClientHeight = 35
+        ClientWidth = 532
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 3
+        object rbUnknown: TRadioButton
+          AnchorSideLeft.Control = gbResults
+          AnchorSideTop.Control = gbResults
+          Left = 16
+          Height = 19
+          Top = 8
+          Width = 68
+          BorderSpacing.Left = 16
+          BorderSpacing.Top = 8
+          BorderSpacing.Bottom = 8
+          Caption = 'unknown'
+          Checked = True
+          OnChange = ResultStateChange
+          ParentFont = False
+          TabOrder = 2
+          TabStop = True
+        end
+        object imgUnknown: TImage
+          AnchorSideLeft.Control = rbUnknown
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = rbUnknown
+          AnchorSideTop.Side = asrCenter
+          Left = 92
+          Height = 16
+          Top = 9
+          Width = 16
+          BorderSpacing.Left = 8
+          Constraints.MaxHeight = 16
+          Constraints.MaxWidth = 16
+          Images = ImageList
+        end
+        object rbPassed: TRadioButton
+          Tag = 1
+          AnchorSideLeft.Control = imgUnknown
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = rbUnknown
+          AnchorSideTop.Side = asrCenter
+          Left = 140
+          Height = 19
+          Top = 8
+          Width = 54
+          BorderSpacing.Left = 32
+          Caption = 'passed'
+          OnChange = ResultStateChange
+          ParentFont = False
+          TabOrder = 0
+        end
+        object ImgPassed: TImage
+          AnchorSideLeft.Control = rbPassed
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = rbPassed
+          AnchorSideTop.Side = asrCenter
+          Left = 202
+          Height = 16
+          Top = 9
+          Width = 16
+          BorderSpacing.Left = 8
+          Constraints.MaxHeight = 16
+          Constraints.MaxWidth = 16
+          ImageIndex = 1
+          Images = ImageList
+        end
+        object rbFailed: TRadioButton
+          Tag = 2
+          AnchorSideLeft.Control = ImgPassed
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = rbUnknown
+          AnchorSideTop.Side = asrCenter
+          Left = 250
+          Height = 19
+          Top = 8
+          Width = 47
+          BorderSpacing.Left = 32
+          Caption = 'failed'
+          OnChange = ResultStateChange
+          ParentFont = False
+          TabOrder = 1
+        end
+        object ImgFailed: TImage
+          AnchorSideLeft.Control = rbFailed
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = imgUnknown
+          AnchorSideTop.Side = asrCenter
+          Left = 305
+          Height = 16
+          Top = 9
+          Width = 16
+          BorderSpacing.Left = 8
+          Constraints.MaxHeight = 16
+          Constraints.MaxWidth = 16
+          ImageIndex = 2
+          Images = ImageList
+        end
+      end
     end
+  end
+  object ImageList: TImageList
+    Scaled = True
+    Left = 174
+    Top = 242
+    Bitmap = {
+      4C7A0300000010000000100000004A0100000000000078DAED94B14EC3301086
+      2F091203232A22AF81C41B30B2F12C8C3C0213132B5362A48E6C4C5107A20C6D
+      1D124147261606604A07F35F02520037F205A1AA85E1931CFB3EDB97B36D8C21
+      B3864C86B493C774C4DC2ADA95B8454C07B9A267F0081EC0ABBEA443575F2BD2
+      706E6657B4A91405685F833B57BF1CD236EFBFCEE382B6E04E4021FE078D3B02
+      4F45447B521FDE2978C923DAEF5303B8E7E06C5967006B2760DCD7471D8F717E
+      4ECC9ADE91BF06E14E79B19781A4A7AB8101A9C855348033ADDDC82B49F01EB9
+      BA9C13E746EFEF8665CFBA3D66F1D3769CC4B5AD257117CC21722D35CEA4EE3F
+      AB4D105409C888CCB7BA731F8F714C879FFA41657CBFD2ED39B8CD7D3CC6310B
+      CF1E9901E2A6F51C1B5589EFD0D2D779F73FC7CFEFD12E5CDD2F73345EC3CCD5
+      EDF04381FB912FF63F6FEF3F14B875BEB67FFA5BF5FBE9F95945DE0015281489
+    }
+    BitmapAdv = {
+      4C69020000004C7A030000001800000018000000E10100000000000078DAED96
+      4D2B446114C7FF776E91A484A2585092A521165616F6D68AC857B0F00DF8086C
+      50163373EF0C52B2B1B791306F97344AB1F1D29492CCE63A4777A669DEC73D0F
+      3177F1EF3E3DF739BF73EE39E73933B66DC3F6D4D03ADF477BDCC042DCC45ACC
+      C06AC2C4A2B5874E0936B126488FC4B60B948E8531E5867D75803662DF3BBCD3
+      4418334903D3B477E8EC3DC502E8FE76ECC473386FD7017465F76F8ED04C7BAF
+      FC8EF2B5E422374DA4C14404FEFC7D8E99D8EF5FBE0DCC4AD6DA0AA29FB896F3
+      5DA9CB1DB44AB1A3110C13F3C161DF59210C49C61E3371968B7B177D926CAA43
+      4FB637A326C6A4EF18C74BF11FB34E4CB4FCB51941F9E9A05E5C615D98E895E6
+      73AF64F34F7361523CFF2606B86F58C91046BDB9EFC9D3FF11E877140696F929
+      CEA679A119DA0BC9D6425A4A195B985FC4A63584661FE5798478CF79EC34B1C7
+      7F935D4B0FB8C909D7A6928DDB7CE7F18B6C256A598E21D927A558D23D58C287
+      7C7F2BBC3B391F41F8897BCBE2B537C73D796AF0FF31B0355DFF9863F15AFABC
+      AE67E67D7AC676B44936BE0A6C1F9FC99E67DB3AF9657D14B26BE597B22BF451
+      CB996A39A5F3EB05F65B6C5FE95DBD752EC5216DB86557F121C2AEC1C7B65BB6
+      6ABECAFCA8ACAFCAFE547DBF54CF07D5F34DF57CF6F4B3FA0419C450694C7A03
+      00000020000000200000006C0200000000000078DAED97B16FD34014875F6B81
+      2AC1C4C04207A4AE6C956082B5035D421B65A8072A75E0AF6040428C8CA813A2
+      038D1DE8C2D4B9A8430552D324CD805025482406040C4828D895FBBB28754FA9
+      5DDB89EFB955DFF00D39E7DEF7FCEEDDD90E82800241102E0407AF69AAE5D2E3
+      668DDE365DFA08B69A0EADE3F74A7D8DAE9974EF57E90E7C5F4010C3B7D63BBA
+      67C25DDFA09B88FF4373FD051F800BBAC7E3A8CD9F469566F2F6A3C62F35F7D7
+      FA7B9A0E7343DD31B6A9E5B096BBDFA5F671FC864B0F87AFB76A745FCBEFC044
+      FD715F77E1297F5AA52BC3D7915349F3B739F7C4A02FBF87F5AFD17336B7430F
+      E0FCADADCD67D3FB50EBC93938FF6975DF51EBC4E1462FDC80EFA7E6DEC4D875
+      AEBA638D97B5FDB60DAE72F61CCEDB67E19A3BF484FB39D0A8D123B857156A5F
+      CAB39117D4FC296AFF4B815E7CC5ED87F745B8F71C7A73D9FCBB2EDDDA736956
+      D15EA7DBD293822008C27982F05D34E14C741554A5796677055E0F04033A05BA
+      D9FC316E4FAD85717795CA116E1FE34BE23EFF6EB547C3FDEAD0C218BD5619E5
+      5ED41E491B276F77843F369E09773F2E6A9E14D7945B8BBF18D94F0ED95C7D1E
+      778F26EF3B650E2CEE143918779FD10F2CE75AEC7B448A73491004411084EC58
+      963F3F69795D8565F516B2CFEF954EE6FB99BFFB31AF3369FD0F06788857C9E0
+      AEA83927F3BDCE98FED4399C768FE657353F1DE7EC1CA2DDFD39A5D17AA0B718
+      11CFC7B81DF1DF72CC7F97C6EBC3E41C4CB9D3E460DA9D90C3A172997627E4C0
+      E21ECAC18F701F9A766BBD16E7B719DC49F5B719DD71FD6733B8FBBD96E58CCA
+      DB3DCA3999B7DB540E453F7F8A7EFE16FDFE51F4FB97205C068E001D7C88C2
+    }
   end
 end

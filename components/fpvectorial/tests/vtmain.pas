@@ -10,19 +10,21 @@ unit vtmain;
 
 interface
 
-uses
+uses              lazlogger,
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, ComCtrls, EditBtn, fpimage, fpvectorial, Types;
+  ExtCtrls, ComCtrls, EditBtn, Buttons, fpimage, fpvectorial, Types;
 
 type
 
-  TRenderEvent = procedure(APage: TvVectorialPage;
-    AIntParam: Integer = MaxInt) of object;
+  TRenderEvent = procedure(APage: TvVectorialPage; AIntParam: Integer = MaxInt) of object;
+
+  TRenderState = (rsUnknown, rsPassed, rsFailed);
 
   TRenderParams = class
     RefFile: String;
     IntParam: Integer;
     OnRender: TRenderEvent;
+    RenderState: array[0..1] of TRenderState;  // 0 = svg, 1 = wmf
     constructor Create(ARenderEvent: TRenderEvent; ARefFilename: String;
       AIntParam: Integer = MaxInt);
   end;
@@ -46,9 +48,17 @@ type
     GroupBox1: TGroupBox;
     gbReadWriteTest: TGroupBox;
     GbTree: TGroupBox;
+    gbResults: TGroupBox;
+    imgUnknown: TImage;
+    ImgPassed: TImage;
+    ImgFailed: TImage;
+    ImageList: TImageList;
     Label1: TLabel;
     Label14: TLabel;
     LblBothImagesMustMatch1: TLabel;
+    rbUnknown: TRadioButton;
+    rbPassed: TRadioButton;
+    rbFailed: TRadioButton;
     RefImage: TImage;
     Label10: TLabel;
     Label11: TLabel;
@@ -73,8 +83,12 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure PaintBoxPaint(Sender: TObject);
+    procedure ResultStateChange(Sender: TObject);
+    procedure rgTestResultsSelectionChanged(Sender: TObject);
     procedure TreeCustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode;
       State: TCustomDrawState; var DefaultDraw: Boolean);
+    procedure TreeGetImageIndex(Sender: TObject; Node: TTreeNode);
+    procedure TreeGetSelectedIndex(Sender: TObject; Node: TTreeNode);
     procedure TreeSelectionChanged(Sender: TObject);
 
   private
@@ -82,6 +96,7 @@ type
     FDoc: array[TRenderCoords] of TvVectorialDocument;
     FDocFromWMF: array[TRenderCoords] of TvVectorialDocument;
     FDocFromSVG: array[TRenderCoords] of TvVectorialDocument;
+    FLockResults: Integer;
     function GetFileFormat: TvVectorialFormat;
     function GetFileFormatExt: String;
     procedure Populate;
@@ -94,6 +109,8 @@ type
     procedure ShowRenderTestImages;
     procedure ShowWriteReadTestImages;
     procedure UpdateCmdStates;
+    procedure UpdateResultStates;
+    procedure UpdateTestResults;
     procedure WriteIni;
 
     // Simple shapes, solid fills and gradients
@@ -130,13 +147,31 @@ implementation
 {$R *.lfm}
 
 uses
-  Math, FPCanvas, IniFiles, LazFileUtils, LCLIntf,
+  Math, TypInfo, FPCanvas, IniFiles, LazFileUtils, LCLIntf,
   fpvutils, vtprimitives;
 
 const
   IMG_FOLDER = 'images' + PathDelim;
   REFIMG_FOLDER = IMG_FOLDER + 'ref' + PathDelim;
   NOT_SAVED = '(not saved)';
+
+function RenderStateToStr(AState: TRenderState): String;
+begin
+  Result := GetEnumName(TypeInfo(TRenderState), ord(AState));
+  Delete(Result, 1, 2);
+end;
+
+function StrToRenderState(s: String): TRenderState;
+var
+  n: Integer;
+  p: Integer;
+begin
+  p := pos(':', s);
+  if p > 0 then
+    s := Copy(s, p+1);
+  n := GetEnumValue(TypeInfo(TRenderState), 'rs' + s);
+  Result := TRenderState(n);
+end;
 
 
 { TRenderParams }
@@ -255,6 +290,7 @@ procedure TMainForm.CbFileFormatChange(Sender: TObject);
 begin
   ShowWriteReadTestImages;
   UpdateCmdStates;
+  UpdateResultStates;
 end;
 
 procedure TMainForm.PrepareDoc(var ADoc: TvVectorialDocument;
@@ -292,8 +328,8 @@ begin
   WRBottomLeftPaintbox.Hint := NOT_SAVED;
   WRTopLeftPaintbox.Hint := NOT_SAVED;
 
-  ReadIni;
   Populate;
+  ReadIni;
   TreeSelectionChanged(nil);
 end;
 
@@ -389,10 +425,46 @@ begin
     page.Render(TPaintbox(Sender).Canvas, 0, h, 1.0, -1.0);
 end;
 
+procedure TMainForm.ResultStateChange(Sender: TObject);
+var
+  renderParams: TRenderParams;
+begin
+  if FLockResults > 0 then
+    exit;
+  if (Tree.Selected <> nil) and (Tree.Selected.Data <> nil) then
+  begin
+    renderParams := TRenderParams(Tree.Selected.Data);
+    if rbUnknown.Checked then
+      renderParams.RenderState[cbFileFormat.ItemIndex] := rsUnknown
+    else if rbPassed.Checked then
+      renderParams.RenderState[cbFileFormat.ItemIndex] := rsPassed
+    else if rbFailed.Checked then
+      renderParams.RenderState[cbFileFormat.ItemIndex] := rsFailed;
+    TreeGetImageIndex(nil, Tree.Selected);
+    Tree.Invalidate;
+  end;
+end;
+
+procedure TMainForm.rgTestResultsSelectionChanged(Sender: TObject);
+var
+  renderParams: TRenderParams;
+begin
+  if FLockResults > 0 then
+    exit;
+  if (Tree.Selected <> nil) and (Tree.Selected.Data <> nil) then
+  begin
+    renderParams := TRenderParams(Tree.Selected.Data);
+
+    //renderParams.RenderState[CbFileFormat.ItemIndex] := TRenderState(rgTestResults.ItemIndex);
+    TreeGetImageIndex(nil, Tree.Selected);
+    Tree.Invalidate;
+  end;
+end;
+
 procedure TMainForm.Populate;
 var
   mainNode: TTreeNode;
-  node, node0, node1, node2: TTreeNode;  // needed by include files
+  node, node1, node2: TTreeNode;  // needed by include files
 begin
   Tree.Items.Clear;
 
@@ -853,6 +925,11 @@ var
   ini: TCustomIniFile;
   L, T, W, H: Integer;
   rct: TRect;
+  i: Integer;
+  List: TStrings;
+  node: TTreeNode;
+  s: String;
+  sa: TStringArray;
 begin
   ini := TMemIniFile.Create(ChangeFileExt(Application.ExeName, '.ini'));
   try
@@ -866,6 +943,23 @@ begin
     if T + H > rct.Bottom - rct.Top then T := rct.Bottom - H;
     if T < 0 then T := rct.Top;
     SetBounds(L, T, W, H);
+
+    List := TStringList.Create;
+    try
+      ini.ReadSection('Results', List);
+      for i := 0 to List.Count-1 do begin
+        s := List[i];
+        s := ini.ReadString('Results', List[i], '');
+        node := Tree.Items.FindNodeWithTextPath(List[i]);
+        if (s = '') or (node = nil) or (node.Data = nil) then
+          Continue;
+        sa := s.Split(';');
+        TRenderParams(node.Data).RenderState[0] := StrToRenderState(sa[0]);
+        //TRenderParams(node.Data).RenderState[1] := StrToRenderState(sa[1]);
+      end;
+    finally
+      List.Free;
+    end;
   finally
     ini.Free;
   end;
@@ -874,6 +968,29 @@ end;
 procedure TMainForm.WriteIni;
 var
   ini: TCustomIniFile;
+
+  procedure WriteTestState(ANode: TTreeNode);
+  var
+    renderParams: TRenderParams;
+    s: String;
+  begin
+    if ANode = nil then
+      exit;
+    renderParams := TRenderParams(ANode.Data);
+    if Assigned(renderParams) then
+    begin
+      if (renderParams.RenderState[0] <> rsUnknown) or (renderParams.RenderState[1] <> rsUnknown) then
+      begin
+        s := 'svg:' + RenderStateToStr(renderParams.RenderState[0]) + ';' +
+             'wmf:' + RenderStateToStr(renderParams.RenderState[1]);
+        ini.WriteString('Results', ANode.GetTextPath, s);
+      end;
+    end;
+    if ANode.HasChildren then
+      WriteTestState(ANode.GetFirstChild);
+    WriteTestState(ANode.GetNextSibling);
+  end;
+
 begin
   ini := TMemIniFile.Create(ChangeFileExt(Application.ExeName, '.ini'));
   try
@@ -884,6 +1001,10 @@ begin
       ini.WriteInteger('MainForm', 'Width', Width);
       ini.WriteInteger('MainForm', 'Height', Height);
     end;
+
+    ini.EraseSection('Results');
+    WriteTestState(Tree.Items.GetFirstNode);
+
   finally
     ini.Free;
   end;
@@ -1012,20 +1133,43 @@ begin
   ShowFileImage(fn, true, WRTopLeftPaintbox);
 end;
 
+procedure TMainForm.TreeCustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode;
+  State: TCustomDrawState; var DefaultDraw: Boolean);
+begin
+  if Node.HasChildren then
+    Sender.Canvas.Font.Style := [fsBold]
+  else
+    Sender.Canvas.Font.Style := [];
+  DefaultDraw := true;
+end;
+
+procedure TMainForm.TreeGetImageIndex(Sender: TObject; Node: TTreeNode);
+var
+  renderParams: TRenderParams;
+begin
+  if Node.HasChildren then
+    Node.ImageIndex := -1
+  else begin
+    renderParams := TRenderParams(Node.Data);
+    if renderParams = nil then
+      Node.ImageIndex := 0
+    else
+      Node.ImageIndex := ord(renderParams.RenderState[CbFileFormat.ItemIndex]);
+  end;
+end;
+
+procedure TMainForm.TreeGetSelectedIndex(Sender: TObject; Node: TTreeNode);
+begin
+  Node.SelectedIndex := Node.ImageIndex;
+end;
+
 procedure TMainForm.TreeSelectionChanged(Sender: TObject);
 begin
   ShowRenderTestImages;
   ShowRefImageTest;
   ShowWriteReadTestImages;
+  UpdateTestResults;
   UpdateCmdStates;
-end;
-
-procedure TMainForm.TreeCustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode;
-  State: TCustomDrawState; var DefaultDraw: Boolean);
-begin
-  if Node.HasChildren then
-    Sender.Canvas.Font.Style := [fsBold] else
-    Sender.Canvas.Font.Style := [];
 end;
 
 procedure TMainForm.UpdateCmdStates;
@@ -1055,6 +1199,39 @@ begin
   end;
   BtnViewBottomLeft.Enabled := rcOK[rcBottomLeftcoords];
   BtnViewTopLeft.Enabled := rcOK[rcTopLeftCoords];
+end;
+
+procedure TMainForm.UpdateResultStates;
+
+  procedure UpdateImageIndex(ANode: TTreeNode);
+  begin
+    if ANode = nil then
+      exit;
+    TreeGetImageIndex(nil, ANode);
+    ANode.SelectedIndex := ANode.ImageIndex;
+    if ANode.HasChildren then
+      UpdateImageIndex(ANode.GetFirstChild);
+    UpdateImageIndex(ANode.GetNextSibling);
+  end;
+
+begin
+  UpdateImageIndex(Tree.Items.GetFirstNode);
+end;
+
+procedure TMainForm.UpdateTestResults;
+var
+  renderParams: TRenderParams;
+begin
+  if not Assigned(Tree.Selected) or not Assigned(Tree.Selected.Data) then
+    exit;
+  inc(FLockResults);
+  renderParams := TRenderParams(Tree.Selected.Data);
+  case renderParams.RenderState[cbFileFormat.ItemIndex] of
+    rsUnknown: rbUnknown.Checked := true;
+    rsPassed: rbPassed.Checked := true;
+    rsFailed: rbFailed.Checked := true;
+  end;
+  dec(FLockResults);
 end;
 
 end.

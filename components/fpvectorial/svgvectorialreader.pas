@@ -3230,6 +3230,7 @@ begin
     else if IsAttributeFromStyle(lNodeName) then
     begin
       ReadSVGFontStyleWithKeyAndValue(lNodeName, lNodeValue, nil, lCurStyle);
+
 //      ReadSVGGeneralStyleWithKeyAndValue(AData, lNodeName, lNodeValue, lParagraph);
     end;
   end;
