@@ -4516,7 +4516,10 @@ begin
     exit;
   try
     ConvertPathToPolygons(tmpPath, ADestX, ADestY, AMulX, AMulY, polypoints, polystarts);
-    ADest.Polygon(polypoints);
+    if (ADest is TCanvas) then
+      TCanvas(ADest).Polygon(polypoints, WindingRule = vcmNonZeroWindingRule)
+    else
+      ADest.Polygon(polypoints);
   finally
     tmpPath.Free;
   end;
@@ -6558,7 +6561,12 @@ begin
     begin
       case Brush.Kind of
         bkSimpleBrush:
-          ADest.Polygon(lPoints);  // fills the polygon and paints the border
+          // Fills the polygon and paints the border
+          if (ADest is TCanvas) then   // Respects winding rule
+            TCanvas(ADest).Polygon(lPoints, WindingRule = vcmNonZeroWindingRule)
+          else
+            ADest.Polygon(lPoints);    // Winding rule not supported
+
         bkHorizontalGradient,
         bkVerticalGradient,
         bkOtherLinearGradient:
@@ -6569,7 +6577,7 @@ begin
             lRect := Rect(x1, y1, x2, y2);
             // Calculate gradient vector
             CalcGradientVector(gv1, gv2, lRect, ADestX, ADestY, AMulX, AMulY);
-            // Indexes where polygon starts: no multiple polygones here
+            // Indexes where polygon starts: no multiple polygons here
             SetLength(polyStarts, 1);
             polyStarts[0] := 0;
             // Draw the gradient
@@ -6577,6 +6585,7 @@ begin
             // Draw border
             DrawPolygonBorderOnly(ARenderInfo, lPoints);
           end;
+
         bkRadialGradient:
           begin
             // Boundary rect of shape to be filled by a gradient
