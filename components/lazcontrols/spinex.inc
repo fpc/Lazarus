@@ -323,6 +323,11 @@ begin
   Result := FNullValue;
 end;
 
+function TSpinEditExBase.GetOrientation: TUDOrientation;
+begin
+  Result := UpDown.Orientation;
+end;
+
 function TSpinEditExBase.GetUpDown: TUpDown;
 begin
   Result := TUpDown(Buddy);
@@ -333,6 +338,20 @@ begin
   if (FNullValue = AValue) then Exit;
   FNullValue := AValue;
   UpdateControl;
+end;
+
+procedure TSpinEditExBase.SetOrientation(AValue: TUDOrientation);
+var
+  w: Integer;
+begin
+  if GetOrientation = AValue then
+    exit;
+  w := UpDown.Width;
+  UpDown.Orientation := AValue;
+  case GetOrientation of
+    udVertical: UpDown.Width := w div 2;
+    udHorizontal: UpDown.Width := w * 2;
+  end;
 end;
 
 constructor TSpinEditExBase.Create(TheOwner: TComponent);

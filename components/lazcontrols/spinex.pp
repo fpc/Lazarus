@@ -112,6 +112,7 @@ type
     FMustSetModifiedToTrueInOnChange: Boolean;
     FNullValue: T;
     FNullValueBehaviour: TNullValueBehaviour;
+    FOrientation: TUDOrientation;
     FValue: T;
     FUpdatePending: Boolean;
     FSettingValue: Boolean;
@@ -119,6 +120,7 @@ type
     procedure SetMinRepeatValue(AValue: Byte);
     procedure SpinUpDown(Up: Boolean);
     function GetNullValue: T;
+    function GetOrientation: TUDOrientation;
     function GetUpDown: TUpDown;
     function GetValue: T;
     function IncrementStored: Boolean;
@@ -126,6 +128,7 @@ type
     function IsOutOfLimits(AValue: T): Boolean;
     function MaxValueStored: Boolean;
     function MinValueStored: Boolean;
+    procedure SetOrientation(AValue: TUDOrientation);
     procedure UpdateControl;
     procedure UpDownChangingEx(Sender: TObject; var {%H-}AllowChange: Boolean;
                                {%H-}NewValue: SmallInt; Direction: TUpDownDirection);
@@ -161,6 +164,7 @@ type
     property UpDown: TUpDown read GetUpDown;
     property UpDownVisible: Boolean read GetBuddyVisible write SetBuddyVisible default True;
     property MinRepeatValue: Byte read FMinRepeatValue write SetMinRepeatValue default DefMinRepeatValue;
+    property Orientation: TUDOrientation read GetOrientation write SetOrientation default udVertical;
   public
     constructor Create(TheOwner: TComponent); override;
     function GetLimitedValue(const AValue: T): T; virtual;
@@ -301,6 +305,7 @@ type
     property MinRepeatValue;
     property NullValue;
     property NullValueBehaviour;
+    property Orientation;
     property Spacing;
     property UpDownVisible;
     property Value;
@@ -406,6 +411,7 @@ type
     property MinRepeatValue;
     property NullValue;
     property NullValueBehaviour;
+    property Orientation;
     property Spacing;
     property ThousandSeparator;
     property UpDownVisible;
