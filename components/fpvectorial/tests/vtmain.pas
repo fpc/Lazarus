@@ -12,7 +12,7 @@ interface
 
 uses              lazlogger,
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, ComCtrls, EditBtn, Buttons, fpimage, fpvectorial, Types;
+  ExtCtrls, ComCtrls, Buttons, fpimage, fpvectorial, Types;
 
 type
 
@@ -102,7 +102,6 @@ type
     procedure Populate;
     procedure PrepareDoc(var ADoc: TvVectorialDocument; var APage: TvVectorialPage;
       AUseTopLeftCoords: boolean);
-    procedure ReadIni;
     procedure ShowFileImage(AFilename: String; AUseTopLeftCoords: Boolean;
       APaintbox: TPaintbox);
     procedure ShowRefImageTest;
@@ -111,8 +110,11 @@ type
     procedure UpdateCmdStates;
     procedure UpdateResultStates;
     procedure UpdateTestResults;
+
+    procedure ReadIni;
     procedure WriteIni;
 
+  private
     // Simple shapes, solid fills and gradients
     procedure Render_Shape(APage: TvVectorialPage; AIntParam: Integer);
 
@@ -154,6 +156,7 @@ const
   IMG_FOLDER = 'images' + PathDelim;
   REFIMG_FOLDER = IMG_FOLDER + 'ref' + PathDelim;
   NOT_SAVED = '(not saved)';
+  FORMAT_SEPARATOR = ';';
 
 function RenderStateToStr(AState: TRenderState): String;
 begin
@@ -166,11 +169,17 @@ var
   n: Integer;
   p: Integer;
 begin
+  Result := rsUnknown;
+
   p := pos(':', s);
   if p > 0 then
     s := Copy(s, p+1);
+  if s = '' then
+    exit;
+
   n := GetEnumValue(TypeInfo(TRenderState), 'rs' + s);
-  Result := TRenderState(n);
+  if n in [0..2] then
+    Result := TRenderState(n);
 end;
 
 
@@ -952,18 +961,26 @@ begin
     try
       ini.ReadSection('Results', List);
       for i := 0 to List.Count-1 do begin
-        s := List[i];
         s := ini.ReadString('Results', List[i], '');
         node := Tree.Items.FindNodeWithTextPath(List[i]);
         if (s = '') or (node = nil) or (node.Data = nil) then
           Continue;
-        sa := s.Split(';');
+        sa := s.Split(FORMAT_SEPARATOR);
         TRenderParams(node.Data).RenderState[0] := StrToRenderState(sa[0]);
-        //TRenderParams(node.Data).RenderState[1] := StrToRenderState(sa[1]);
+        TRenderParams(node.Data).RenderState[1] := StrToRenderState(sa[1]);
       end;
     finally
       List.Free;
     end;
+
+    s := ini.ReadString('MainForm', 'FileFormat', '');
+    if s <> '' then
+    begin
+      i := CbFileFormat.Items.IndexOf(s);
+      if i <> -1 then
+        CbFileFormat.ItemIndex := i;
+    end;
+
   finally
     ini.Free;
   end;
@@ -980,12 +997,12 @@ var
   begin
     if ANode = nil then
       exit;
-    renderParams := TRenderParams(ANode.Data);
-    if Assigned(renderParams) then
+    if (ANode.Data <> nil) then
     begin
+      renderParams := TRenderParams(ANode.Data);
       if (renderParams.RenderState[0] <> rsUnknown) or (renderParams.RenderState[1] <> rsUnknown) then
       begin
-        s := 'svg:' + RenderStateToStr(renderParams.RenderState[0]) + ';' +
+        s := 'svg:' + RenderStateToStr(renderParams.RenderState[0]) + FORMAT_SEPARATOR +
              'wmf:' + RenderStateToStr(renderParams.RenderState[1]);
         ini.WriteString('Results', ANode.GetTextPath, s);
       end;
@@ -1005,6 +1022,8 @@ begin
       ini.WriteInteger('MainForm', 'Width', Width);
       ini.WriteInteger('MainForm', 'Height', Height);
     end;
+
+    ini.WriteString('MainForm', 'FileFormat', cbFileFormat.Items[cbFileFormat.ItemIndex]);
 
     ini.EraseSection('Results');
     WriteTestState(Tree.Items.GetFirstNode);

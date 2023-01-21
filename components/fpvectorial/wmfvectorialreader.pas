@@ -628,12 +628,16 @@ var
   buf: array[0..80] of byte;
   placeableMetaHdr: TPlaceableMetaHeader absolute buf;
   wmfHdr: TWMFHeader absolute buf;
+  n: Integer;
 begin
   AStream.Position := 0;
 
   // Test if file begins with a placeable meta file header
   FHasPlaceableMetaHeader := false;
-  AStream.ReadBuffer(buf{%H-}, SizeOf(TPlaceableMetaHeader));
+  n := AStream.Read(buf{%H-}, SizeOf(TPlaceableMetaHeader));
+  if n <> SizeOf(TPlaceableMetaHeader) then
+    raise Exception.Create('Error reading the wmf file header.');
+
   if placeableMetaHdr.Key = WMF_MAGIC_NUMBER then begin  // yes!
     FHasPlaceableMetaHeader := true;
     FBBox.Left := placeableMetaHdr.Left;
@@ -812,6 +816,7 @@ var
   params: TParamArray = nil;
   page: TvVectorialPage;
   prevX, prevY: Word;
+  n: Integer;
 begin
   page := AData.AddPage(not (vrf_UseBottomLeftCoords in Settings.VecReaderFlags));
   page.BackgroundColor := colWhite;
@@ -821,7 +826,9 @@ begin
     FRecordStartPos := AStream.Position;
 
     // Read record size and function code
-    AStream.ReadBuffer(wmfRec{%H-}, SizeOf(TWMFRecord));
+    n := AStream.Read(wmfRec{%H-}, SizeOf(TWMFRecord));
+    if n <> SizeOf(TWMFRecord) then
+      raise Exception.Create('Record size error.');
 
    {$IFDEF WMF_DEBUG}
     writeLn(Format('Record position: %0:d / Record size: %1:d words / Record type: %2:d ($%2:x): %3:s',
@@ -839,7 +846,7 @@ begin
     end;
 
     // Read parameters
-    SetLength(params{%H-}, wmfRec.Size - 3);
+    SetLength(params, wmfRec.Size - 3);
     AStream.ReadBuffer(params[0], (wmfRec.Size - 3)*SIZE_OF_WORD);
 
     // Process record, depending on function code
@@ -1046,8 +1053,8 @@ end;
 function TvWMFVectorialReader.ReadImage(const AParams: TParamArray;
   AIndex: Integer; AImage: TFPCustomImage): Boolean;
 var
-  {%H-}bmpCoreHdr: PWMFBitmapCoreHeader;
-  bmpInfoHdr: PWMFBitmapInfoHeader;
+  bmpCoreHdr: PWMFBitmapCoreHeader = nil;
+  bmpInfoHdr: PWMFBitmapInfoHeader = nil;
   hasCoreHdr: Boolean;
   bmpFileHdr: TBitmapFileHeader;
   w, h: Integer;

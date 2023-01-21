@@ -53,8 +53,8 @@ type
     FObjList: TWMFObjList;
     //
     FBBox: TRect;  // in metafile units as specified by UnitsPerInch. NOTE: "logical" units can be different!
-    FLogicalMaxX: Word;        // Max x coordinate used for scaling
-    FLogicalMaxY: Word;        // Max y coordinate used for scaling
+    FLogicalMaxX: Word;        // Max x coordinate used for scaling, in logical units
+    FLogicalMaxY: Word;        // Max y coordinate used for scaling, in logical units
     FLogicalBounds: TRect;     // Enclosing boundary rectangle in logical units
     FScalingFactor: Double;    // Conversion fpvectorial units to logical units
     FMaxRecordSize: Int64;
@@ -65,7 +65,7 @@ type
     FCurrTextAnchor: TvTextAnchor;
     FCurrBkMode: Word;
     {%H-}FCurrPolyFillMode: Word;
-    FUseTopLeftCoordinates: Boolean;
+    FUseTopLeftCoordinates: Boolean;  // If true, input coordinates are given in top/left coordinate system.
     FErrMsg: TStrings;
 
     function CalcChecksum: Word;

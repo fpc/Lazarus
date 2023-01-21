@@ -317,7 +317,8 @@ const
   RADIUS = 40;
 begin
   if APage.UseTopLeftCoordinates then
-    Result := CreateCircle(APage, CENTER_X, PAGE_SIZE - CENTER_Y, RADIUS) else
+    Result := CreateCircle(APage, CENTER_X, PAGE_SIZE - CENTER_Y, RADIUS)
+  else
     Result := CreateCircle(APage, CENTER_X, CENTER_Y, RADIUS);
   Result.Pen := StdPen(colBlack, 4);
 end;
