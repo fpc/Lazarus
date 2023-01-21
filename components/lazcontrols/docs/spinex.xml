@@ -120,6 +120,7 @@ Value.
 <element name="TSpinEditExBase.FMinRepeatValue"/>
 <element name="TSpinEditExBase.FNullValue"/>
 <element name="TSpinEditExBase.FNullValueBehaviour"/>
+<element name="TSpinEditExBase.FOrientation"/>
 <element name="TSpinEditExBase.FValue"/>
 <element name="TSpinEditExBase.FUpdatePending"/>
 <element name="TSpinEditExBase.FSettingValue"/>
@@ -195,6 +196,21 @@ assigned as the handler routine for the <var>OnChangingEx</var> event in the
 <element name="TSpinEditExBase.GetNullValue.Result">
 <short>
 Returns the generic type with the value for the NullValue property.
+</short>
+</element>
+
+<element name="TSpinEditExBase.GetOrientation">
+<short>
+Gets the value for the Orientation property.
+</short>
+<descr/>
+<seealso>
+<link id="TSpinEditExBase.Orientation"/>
+</seealso>
+</element>
+<element name="TSpinEditExBase.GetOrientation.Result">
+<short>
+Value for the Orientation property.
 </short>
 </element>
 
@@ -301,6 +317,19 @@ MaxValue property.
 <short>
 <b>True</b> when a value other than DefMaxValue has been assigned to the 
 MinValue property.
+</short>
+</element>
+
+<element name="TSpinEditExBase.SetOrientation">
+<short>
+Sets the value for the Orientation property.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TSpinEditExBase.SetOrientation.AValue">
+<short>
+New value for the Orientation property.
 </short>
 </element>
 
@@ -952,6 +981,49 @@ property in <var>UpDown</var> to be updated with the new value.
 </descr>
 <seealso>
 <link id="#lcl.comctrls.TUpDown.MinRepeatInterval"/>
+</seealso>
+</element>
+
+<element name="TSpinEditExBase.Orientation">
+<short>
+Controls the orientation for the increment and decrement buttons used to 
+change the value for the control.
+</short>
+<descr>
+<p>
+<var>Orientation</var> is a <var>TUDOrientation</var> property which 
+determines the orientation for the buttons on the associated control used to 
+change the Value property. The property value is read from and written to the 
+UpDown property which is the Buddy (associate) in the grouped edit control.
+</p>
+<p>
+The default value for the Orientation property is udVertical, and causes the 
+buttons to be stacked vertically on the edge of the control where the buttons 
+are aligned. The increment button in placed above the decrement button. Each 
+button uses one half of the Height for the control excluding the spacing 
+between the buttons.
+</p>
+<p>
+udHorizontal causes the buttons to be display side-by-side on the edge of the 
+control where the buttons are aligned. The decrement button in placed to the 
+left of the increment button. Each button has the same width and mirrors the 
+height for the control. This results in a larger visual appearance than when 
+the vertical orientation is used.
+</p>
+<p>
+Changing the value for the property causes the UpDown control to be updated 
+with the new property value, and the Width for the UpDown control is adjusted 
+to the new orientation.
+</p>
+<p>
+In TSpinEditExBase and descendent classes, the buttons are always displayed on 
+the right-hand side of the grouped edit control.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.groupededit.TCustomAbstractGroupedEdit.Buddy">TCustomAbstractGroupedEdit.Buddy</link>
+<link id="#lcl.comctrols.TUpDown.Orientation">TUpDown.Orientation</link>
+<link id="#lcl.comctrols.TUDOrientation">TUDOrientation</link>
 </seealso>
 </element>
 
@@ -2122,6 +2194,7 @@ properties including: <var>Increment</var>, <var>MinValue</var>,
 <element name="TFloatSpinEditEx.MinRepeatValue" link="#lazcontrols.spinex.TSpinEditExBase.MinRepeatValue"/>
 <element name="TFloatSpinEditEx.NullValue" link="#lazcontrols.spinex.TSpinEditExBase.NullValue"/>
 <element name="TFloatSpinEditEx.NullValueBehaviour" link="#lazcontrols.spinex.TSpinEditExBase.NullValueBehaviour"/>
+<element name="TFloatSpinEditEx.Orientation" link="#lazcontrols.spinex.TSpinEditExBase.Orientation"/>
 <element name="TFloatSpinEditEx.Spacing" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Spacing"/>
 <element name="TFloatSpinEditEx.UpDownVisible" link="#lazcontrols.spinex.TSpinEditExBase.UpDownVisible"/>
 <element name="TFloatSpinEditEx.Value" link="#lazcontrols.spinex.TSpinEditExBase.Value"/>
@@ -2548,6 +2621,7 @@ value.
 <element name="TSpinEditEx.MinRepeatValue" link="#lazcontrols.spinex.TSpinEditExBase.MinRepeatValue"/>
 <element name="TSpinEditEx.NullValue" link="#lazcontrols.spinex.TSpinEditExBase.NullValue"/>
 <element name="TSpinEditEx.NullValueBehaviour" link="#lazcontrols.spinex.TSpinEditExBase.NullValueBehaviour"/>
+<element name="TSpinEditEx.Orientation" link="#lazcontrols.spinex.TSpinEditExBase.Orientation"/>
 <element name="TSpinEditEx.Spacing" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Spacing"/>
 <element name="TSpinEditEx.ThousandSeparator" link="#lazcontrols.spinex.TCustomSpinEditEx.ThousandSeparator"/>
 <element name="TSpinEditEx.UpDownVisible" link="#lazcontrols.spinex.TSpinEditExBase.UpDownVisible"/>
