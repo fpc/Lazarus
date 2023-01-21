@@ -4517,7 +4517,7 @@ begin
   try
     ConvertPathToPolygons(tmpPath, ADestX, ADestY, AMulX, AMulY, polypoints, polystarts);
     if (ADest is TCanvas) then
-      TCanvas(ADest).Polygon(polypoints, WindingRule = vcmNonZeroWindingRule)
+      TCanvas(ADest).Polygon(polypoints) //, WindingRule = vcmNonZeroWindingRule)
     else
       ADest.Polygon(polypoints);
   finally

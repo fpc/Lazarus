@@ -291,6 +291,7 @@ begin
   ShowWriteReadTestImages;
   UpdateCmdStates;
   UpdateResultStates;
+  UpdateTestResults;
 end;
 
 procedure TMainForm.PrepareDoc(var ADoc: TvVectorialDocument;
@@ -382,6 +383,7 @@ var
   w, h: Integer;
   fmt: TvVectorialFormat;
   rc: TRenderCoords;
+  factorX, factorY: Double;
 begin
   fmt := GetFileFormat;
 
@@ -418,11 +420,13 @@ begin
   end;
 
   page := doc.GetPageAsVectorial(0);
+  factorX := w / page.Width;
+  factorY := h / page.Height;
   page.DrawBackground(TPaintbox(Sender).Canvas);
   if page.UseTopLeftCoordinates then
-    page.Render(TPaintbox(Sender).Canvas, 0, 0, 1.0, 1.0)
+    page.Render(TPaintbox(Sender).Canvas, 0, 0, factorX, factorY)
   else
-    page.Render(TPaintbox(Sender).Canvas, 0, h, 1.0, -1.0);
+    page.Render(TPaintbox(Sender).Canvas, 0, h, factorX, -factorY);
 end;
 
 procedure TMainForm.ResultStateChange(Sender: TObject);

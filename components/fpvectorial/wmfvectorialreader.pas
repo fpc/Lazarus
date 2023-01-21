@@ -197,7 +197,7 @@ begin
     Width := 1;
   end;
   with FCurrBrush do begin
-    Style := bsSolid;
+    Style := bsClear; //Solid;
     Color := colBlack;
   end;
   with FCurrFont do begin
@@ -814,6 +814,7 @@ var
   prevX, prevY: Word;
 begin
   page := AData.AddPage(not (vrf_UseBottomLeftCoords in Settings.VecReaderFlags));
+  page.BackgroundColor := colWhite;
 
   while AStream.Position < AStream.Size do begin
     // Store the stream position where the current record begins
