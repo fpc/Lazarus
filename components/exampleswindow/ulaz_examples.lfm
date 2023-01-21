@@ -21,7 +21,7 @@ object FormLazExam: TFormLazExam
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = CheckGroupCategory
     Left = 6
-    Height = 158
+    Height = 148
     Top = 157
     Width = 769
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -45,9 +45,9 @@ object FormLazExam: TFormLazExam
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Splitter2
     Left = 6
-    Height = 117
+    Height = 111
     Hint = 'Click for Info, Double Click to download'
-    Top = 29
+    Top = 35
     Width = 775
     Anchors = [akTop, akLeft, akRight, akBottom]
     AutoSort = False
@@ -62,7 +62,7 @@ object FormLazExam: TFormLazExam
         Width = 10
       end    
       item
-        Width = 10
+        Width = 740
       end>
     ParentShowHint = False
     ReadOnly = True
@@ -73,6 +73,7 @@ object FormLazExam: TFormLazExam
     OnEnter = ListView1Enter
     OnExit = ListView1Exit
     OnKeyDown = ListView1KeyDown
+    OnKeyPress = ListView1KeyPress
     OnSelectItem = ListView1SelectItem
   end
   object CheckGroupCategory: TCheckGroup
@@ -81,8 +82,8 @@ object FormLazExam: TFormLazExam
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonOpen
     Left = 6
-    Height = 19
-    Top = 321
+    Height = 23
+    Top = 311
     Width = 769
     Anchors = [akLeft, akRight, akBottom]
     AutoFill = True
@@ -134,9 +135,9 @@ object FormLazExam: TFormLazExam
     AnchorSideBottom.Control = ButtonOpen
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 25
-    Top = 346
-    Width = 80
+    Height = 31
+    Top = 340
+    Width = 89
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Left = 6
@@ -150,10 +151,10 @@ object FormLazExam: TFormLazExam
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonOpen
     AnchorSideBottom.Side = asrBottom
-    Left = 246
-    Height = 25
-    Top = 346
-    Width = 55
+    Left = 270
+    Height = 31
+    Top = 340
+    Width = 54
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Left = 6
@@ -167,10 +168,10 @@ object FormLazExam: TFormLazExam
     AnchorSideLeft.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = StatusBar1
-    Left = 92
-    Height = 25
-    Top = 346
-    Width = 55
+    Left = 101
+    Height = 31
+    Top = 340
+    Width = 54
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Left = 6
@@ -185,10 +186,10 @@ object FormLazExam: TFormLazExam
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonOpen
     AnchorSideBottom.Side = asrBottom
-    Left = 153
-    Height = 25
-    Top = 346
-    Width = 87
+    Left = 161
+    Height = 31
+    Top = 340
+    Width = 103
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Left = 6
@@ -201,7 +202,7 @@ object FormLazExam: TFormLazExam
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = ClearSearchButton
     Left = 6
-    Height = 23
+    Height = 29
     Hint = 'Searches for Keywords'
     Top = 3
     Width = 743
@@ -210,6 +211,7 @@ object FormLazExam: TFormLazExam
     BorderSpacing.Top = 3
     BorderSpacing.Right = 3
     OnChange = EditSearchChange
+    OnEnter = EditSearchEnter
     OnKeyDown = EditSearchKeyDown
     ParentShowHint = False
     ShowHint = True
@@ -222,7 +224,7 @@ object FormLazExam: TFormLazExam
     AnchorSideRight.Side = asrBottom
     Left = 752
     Height = 22
-    Top = 3
+    Top = 6
     Width = 23
     Anchors = [akTop, akRight]
     BorderSpacing.Left = 3

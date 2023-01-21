@@ -21,7 +21,7 @@ extension of ex-meta.
     David Bannon, Dec 2022
 }
 {$mode objfpc}{$H+}
-{$define EXTESTMODE}
+{X$define EXTESTMODE}
 
 {X$define ONLINE_EXAMPLES}
 
@@ -29,12 +29,11 @@ interface
 
 uses
     Classes, SysUtils,
-    // LazUtils
     LazFileUtils, fileutil, LazLoggerBase,
-    // LCL
     LCLType, LCLIntf, Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls,
-    ExtCtrls, Buttons, IDEImagesIntf,
+    ExtCtrls, Buttons,
     {$ifndef EXTESTMODE}
+    IDEImagesIntf,
     IDEWindowIntf,
     {$endif}
     uexampledata, uConst;
@@ -63,6 +62,7 @@ type
         procedure CheckGroupCategoryItemClick(Sender: TObject; {%H-}Index: integer);
         procedure ClearSearchButtonClick(Sender: TObject);
         procedure EditSearchChange(Sender: TObject);
+        procedure EditSearchEnter(Sender: TObject);
         procedure EditSearchKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
         procedure FormCreate(Sender: TObject);
         procedure FormDestroy(Sender: TObject);
@@ -73,8 +73,10 @@ type
         procedure ListView1Enter(Sender: TObject);
         procedure ListView1Exit(Sender: TObject);
         procedure ListView1KeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
+        procedure ListView1KeyPress(Sender: TObject; var Key: char);
         procedure ListView1SelectItem(Sender: TObject; {%H-}Item: TListItem; {%H-}Selected: Boolean);
     private
+        MoveFocusKey : char;
         LastListViewIndex : integer;    // If 0 or greater, its an index to ListView
         procedure BuildSearchList(SL: TStringList; const Term: AnsiString);
                         // Copies the passed ex dir to a dir named for the Proj.
@@ -212,10 +214,14 @@ begin
             else
                 Exit;
         ListView1DblClick(Sender);
-    end
-    else if not (Key in [VK_TAB, VK_ESCAPE, VK_PRIOR, VK_NEXT, VK_END, VK_HOME,
-                         VK_LEFT, VK_UP, VK_RIGHT, VK_DOWN]) then
-        EditSearch.SetFocus;
+    end;
+end;
+
+procedure TFormLazExam.ListView1KeyPress(Sender: TObject; var Key: char);
+begin
+    MoveFocusKey := Key;
+    Key := char(0);
+    EditSearch.SetFocus;
 end;
 
 // --------------------- B U T T O N S -----------------------------------------
@@ -422,6 +428,16 @@ begin
         KeyWordSearch();
 end;
 
+procedure TFormLazExam.EditSearchEnter(Sender: TObject);    // check to see if a char has been forwarded on from ListView
+begin
+    if MoveFocusKey <> char(0) then begin    // not all of this is needed for each widgetset, but does no harm
+        EditSearch.Caption := EditSearch.Caption + MoveFocusKey;
+        EditSearch.SelStart := length(EditSearch.Caption);
+        EditSearch.SelLength := 0;
+        MoveFocusKey := char(0);
+    end;
+end;
+
 procedure TFormLazExam.EditSearchKeyDown(Sender: TObject; var Key: Word;
     Shift: TShiftState);
 begin
@@ -461,6 +477,7 @@ end;
 
 procedure TFormLazExam.FormCreate(Sender: TObject);
 begin
+    MoveFocusKey := char(0);
     Caption := rsExampleProjects;
     ListView1.Column[0].Caption := rsExampleName;
     ListView1.Column[1].Caption := rsExampleKeyWords;
@@ -478,8 +495,10 @@ begin
     LastListViewIndex := -1;        // Used to record ListView1.ItemIndex before Tabbing away
 
     EditSearch.TextHint := rsExSearchPrompt;
+    {$ifndef EXTESTMODE}
     ClearSearchButton.Images := IDEImages.Images_16;
     ClearSearchButton.ImageIndex := IDEImages.GetImageIndex('btnfiltercancel');
+    {$endif}
     ClearSearchButton.Enabled := False;
     CheckGroupCategory.Hint := rsGroupHint;
     Ex := nil;
