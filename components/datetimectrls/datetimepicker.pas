@@ -112,10 +112,11 @@ type
   TTextPart = 1..8;
   TDateTimePart = (dtpDay, dtpMonth, dtpYear, dtpHour, dtpMinute,
                                 dtpSecond, dtpMiliSec, dtpAMPM);
-  TDateTimeParts = set of dtpDay..dtpMiliSec; // without AMPM,
+  TDateTimeHidePart = dtpDay..dtpMiliSec; // without AMPM,
            // because this set type is used for HideDateTimeParts property,
            // where hiding of AMPM part is tied to hiding of hour (and, of
            // course, it makes a difference only when TimeFormat is set to tf12)
+  TDateTimeParts = set of TDateTimeHidePart;
   TEffectiveDateTimeParts = set of TDateTimePart;
 
   TArrowShape = (asClassicSmaller, asClassicLarger, asModernSmaller,
@@ -563,6 +564,8 @@ type
 function EqualDateTime(const A, B: TDateTime): Boolean;
 function IsNullDate(DT: TDateTime): Boolean;
 
+function dbgs(const Parts: TDateTimeParts): string;
+
 implementation
 
 uses
@@ -594,6 +597,22 @@ function IsNullDate(DT: TDateTime): Boolean;
 begin
   Result := IsNan(DT) or IsInfinite(DT) or
             (DT > SysUtils.MaxDateTime) or (DT < SysUtils.MinDateTime);
+end;
+
+function dbgs(const Parts: TDateTimeParts): string;
+var
+  s: string;
+  Part: TDateTimePart;
+begin
+  Result:='';
+  for Part:=low(TDateTimeParts) to high(TDateTimeParts) do
+    if Part in Parts then
+    begin
+      if Result<>'' then Result:=Result+',';
+      str(Part,s);
+      Result:=Result+s;
+    end;
+  Result:='['+Result+']';
 end;
 
 type
