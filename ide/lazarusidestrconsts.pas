@@ -43,6 +43,7 @@ resourcestring
   // *** Common single word resources that can be safely shared around Lazarus ***
 
   lisApply = 'Apply';
+  lisBtnApply = '&Apply';
   lisInsert = 'Insert';
   lisChange  = 'Change';
   lisRemove = 'Remove';

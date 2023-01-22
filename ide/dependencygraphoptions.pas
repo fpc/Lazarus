@@ -202,6 +202,8 @@ begin
   spinHorizSpacing.Hint     := Format(LvlGraphAddHorizontalSpacing, [LineEnding]);
   spinVertSpacing.Hint      := Format(LvlGraphAddVerticalSpacingAr, [LineEnding]);
 
+  ButtonPanel1.CloseButton.Caption := lisBtnApply;
+
   {$IFDEF WITH_RANDOM_SEED}
   spinTestRandomSeed := TSpinEdit.Create(Self);
   spinTestRandomSeed.Parent := OptionsGroup;
