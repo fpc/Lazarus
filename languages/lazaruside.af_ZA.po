@@ -5298,6 +5298,10 @@ msgstr ""
 msgid "Browse and select a compiler (e.g. ppcx64"
 msgstr ""
 
+#: lazarusidestrconsts.lisbtnapply
+msgid "&Apply"
+msgstr ""
+
 #: lazarusidestrconsts.lisbtnclose
 msgctxt "lazarusidestrconsts.lisbtnclose"
 msgid "&Close"

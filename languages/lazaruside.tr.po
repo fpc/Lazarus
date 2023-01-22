@@ -5259,6 +5259,10 @@ msgstr "Kırılma"
 msgid "Browse and select a compiler (e.g. ppcx64"
 msgstr "Bir derleyiciye göz atın ve seçin (örneğin, ppcx64)"
 
+#: lazarusidestrconsts.lisbtnapply
+msgid "&Apply"
+msgstr ""
+
 #: lazarusidestrconsts.lisbtnclose
 msgctxt "lazarusidestrconsts.lisbtnclose"
 msgid "&Close"

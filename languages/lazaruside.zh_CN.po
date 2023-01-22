@@ -5329,6 +5329,10 @@ msgstr "中断"
 msgid "Browse and select a compiler (e.g. ppcx64"
 msgstr "浏览和选择一个编译器(例如.ppcx64"
 
+#: lazarusidestrconsts.lisbtnapply
+msgid "&Apply"
+msgstr ""
+
 #: lazarusidestrconsts.lisbtnclose
 msgctxt "lazarusidestrconsts.lisbtnclose"
 msgid "&Close"

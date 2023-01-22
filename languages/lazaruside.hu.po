@@ -5310,6 +5310,10 @@ msgstr "Megszakítás"
 msgid "Browse and select a compiler (e.g. ppcx64"
 msgstr "Böngészés és fordító kiválasztása (pl. ppcx64"
 
+#: lazarusidestrconsts.lisbtnapply
+msgid "&Apply"
+msgstr ""
+
 #: lazarusidestrconsts.lisbtnclose
 msgctxt "lazarusidestrconsts.lisbtnclose"
 msgid "&Close"

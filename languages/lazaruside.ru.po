@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-01-09 04:48+0300\n"
+"PO-Revision-Date: 2023-01-22 03:15+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -5294,6 +5294,10 @@ msgstr "Останов"
 #: lazarusidestrconsts.lisbrowseandselectacompiler
 msgid "Browse and select a compiler (e.g. ppcx64"
 msgstr "Просмотреть и выбрать компилятор (например, ppcx64"
+
+#: lazarusidestrconsts.lisbtnapply
+msgid "&Apply"
+msgstr "&Применить"
 
 #: lazarusidestrconsts.lisbtnclose
 msgctxt "lazarusidestrconsts.lisbtnclose"

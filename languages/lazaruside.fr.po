@@ -5309,6 +5309,10 @@ msgstr "Pause"
 msgid "Browse and select a compiler (e.g. ppcx64"
 msgstr "Chercher et choisir un compilateur (ex. ppcx64"
 
+#: lazarusidestrconsts.lisbtnapply
+msgid "&Apply"
+msgstr ""
+
 #: lazarusidestrconsts.lisbtnclose
 msgctxt "lazarusidestrconsts.lisbtnclose"
 msgid "&Close"
