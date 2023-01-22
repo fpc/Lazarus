@@ -1486,11 +1486,14 @@ type
     BackgroundColor: TFPColor;
     AdjustPenColorToBackground: Boolean;
     RenderInfo: TvRenderInfo; // Prepared by the reader with info on how to draw the page
+  public
     { Base methods }
     constructor Create(AOwner: TvVectorialDocument); virtual;
     destructor Destroy; override;
     procedure Assign(ASource: TvPage); virtual;
     procedure SetPageFormat(AFormat: TvPageFormat);
+    function RealWidth: Double;
+    function RealHeight: Double;
     { Data reading methods }
     procedure CalculateDocumentSize; virtual;
     function  GetEntity(ANum: Cardinal): TvEntity; virtual; abstract;
@@ -1520,6 +1523,7 @@ type
     { Debug methods }
     procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer); virtual; abstract;
 
+    property Owner: TvVectorialDocument read FOwner;
     property UseTopLeftCoordinates: Boolean read FUseTopLeftCoordinates write FUseTopLeftCoordinates;
   end;
 
@@ -1536,7 +1540,6 @@ type
     procedure AppendSegmentToTmpPath(ASegment: TPathSegment);
     procedure CallbackDeleteEntity(data,arg:pointer);
   public
-    Owner: TvVectorialDocument;
     { Base methods }
     constructor Create(AOwner: TvVectorialDocument); override;
     destructor Destroy; override;
@@ -5937,8 +5940,8 @@ procedure TvCircle.CalculateBoundingBox(constref ARenderInfo: TvRenderInfo;
 begin
   ALeft := X - Radius;
   ARight := X + Radius;
-  ATop := Y + Radius;
-  ABottom := Y - Radius;
+  ATop := Y - Radius * ARenderInfo.Page.GetTopLeftCoords_Adjustment;
+  ABottom := Y + Radius * ARenderInfo.Page.GetTopLeftCoords_Adjustment;
 end;
 
 function TvCircle.CreatePath: TPath;
@@ -6322,7 +6325,7 @@ begin
       ALeft := Min(ALeft, pts[j].x);
       ARight := Max(ARight, pts[j].x);
       mx := Max(mx, pts[j].y);
-      mn := Min(mx, pts[j].y);
+      mn := Min(mn, pts[j].y);
     end;
     if ARenderInfo.Page.UseTopLeftCoordinates then
     begin
@@ -6336,8 +6339,8 @@ begin
   end else
   begin
     ALeft := X;
-    ATop := Y;
     ARight := X + CX;
+    ATop := Y;
     ABottom := Y + CY * ARenderInfo.Page.GetTopLeftCoords_Adjustment;
   end;
 end;
@@ -8949,6 +8952,7 @@ begin
   begin
     lCurEntity := GetEntity(i);
     lRenderInfo.Canvas := lBmp.Canvas;
+    lRenderInfo.Page := self;
     lCurEntity.CalculateBoundingBox(lRenderInfo, lLeft, lTop, lRight, lBottom);
     MinX := Min(MinX, lLeft);
     MaxX := Max(MaxX, lRight);
@@ -8963,8 +8967,18 @@ begin
     end;
   end;
   lBmp.Free;
-  Width := abs(MaxX - MinX);
-  Height := abs(MaxY - MinY);
+  //Width := abs(MaxX - MinX);
+  //Height := abs(MaxY - MinY);
+end;
+
+function TvPage.RealWidth: Double;
+begin
+  Result := abs(MaxX - MinX);
+end;
+
+function TvPage.RealHeight: Double;
+begin
+  Result := abs(MaxY - MinY);
 end;
 
 procedure TvPage.AutoFit(ADest: TFPCustomCanvas; AWidth, AHeight, ARenderHeight: Integer;
@@ -9137,7 +9151,7 @@ begin
 
   FEntities := TFPList.Create;
   FTmpPath := TPath.Create(Self);
-  Owner := AOwner;
+  FOwner := AOwner;
   Clear();
   BackgroundColor := colWhite;
   RenderInfo.BackgroundColor := colWhite;

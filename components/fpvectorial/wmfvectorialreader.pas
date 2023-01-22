@@ -636,7 +636,10 @@ begin
   FHasPlaceableMetaHeader := false;
   n := AStream.Read(buf{%H-}, SizeOf(TPlaceableMetaHeader));
   if n <> SizeOf(TPlaceableMetaHeader) then
-    raise Exception.Create('Error reading the wmf file header.');
+  begin
+    LogError('Error reading the wmf file header.');
+    exit;
+  end;
 
   if placeableMetaHdr.Key = WMF_MAGIC_NUMBER then begin  // yes!
     FHasPlaceableMetaHeader := true;

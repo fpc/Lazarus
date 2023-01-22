@@ -26,7 +26,7 @@ unit wmfvectorialwriter;
 
 interface
 
-uses
+uses         lazlogger,
   Classes, SysUtils,
   FPImage, FPCanvas,
   fpvectorial, fpvWMF;
@@ -55,6 +55,8 @@ type
     FBBox: TRect;  // in metafile units as specified by UnitsPerInch. NOTE: "logical" units can be different!
     FLogicalMaxX: Word;        // Max x coordinate used for scaling, in logical units
     FLogicalMaxY: Word;        // Max y coordinate used for scaling, in logical units
+//    FLogicalOffsetX: Word;     // Position of zero in the range [0..LogicalMaxX]
+//    FLogicalOffsetY: Word;
     FLogicalBounds: TRect;     // Enclosing boundary rectangle in logical units
     FScalingFactor: Double;    // Conversion fpvectorial units to logical units
     FMaxRecordSize: Int64;
@@ -338,24 +340,37 @@ end;
 
 procedure TvWMFVectorialWriter.PrepareScaling(APage: TvVectorialPage);
 const
-  MAXINT16 = 32767;
+  MAXINT16 = 30000;   // should be 32767, but avoid overflows...
 var
   maxx, maxy: Double;
+  w, h: Double;
 begin
+  APage.CalculateDocumentSize;
+  w := Max(APage.Width, APage.RealWidth);
+  h := Max(APage.Height, APage.RealHeight);
+
   FScalingFactor := round(ONE_INCH * 100);   // 1 logical unit is 1/100 mm = 10 µm
-  maxx := APage.Width * FScalingFactor;
-  maxy := APage.Height * FScalingFactor;
+  maxx := w * FScalingFactor;
+  maxy := h * FScalingFactor;
   // wmf is 16 bit only! --> reduce magnification if numbers get too big
   if Max(maxx, maxy) > MAXINT16 then
   begin
-    FScalingFactor := trunc(MAXINT16 / Max(APage.Width, APage.Height));
-    FLogicalMaxX := word(trunc(APage.Width * FScalingFactor));
-    FLogicalMaxY := word(trunc(APage.Height * FScalingFactor));
-  end else
-  begin
-    FLogicalMaxX := trunc(maxx);
-    FLogicalMaxY := trunc(maxy);
+    FScalingFactor := trunc(MAXINT16 / Max(w, h));
+    maxx := APage.Width * FScalingFactor;
+    maxy := APage.Height * FScalingFactor;
   end;
+  FLogicalMaxX := trunc(maxx);
+  FLogicalMaxY := trunc(maxy);
+  (*
+  FLogicalOffsetX := 0;
+  FLogicalOffsetY := 0;
+  // Since the wmf coordinates are stored as word we must offset them in case
+  // of negative values.
+  if APage.MinX < 0 then
+    FLogicalOffsetX := word((trunc(-APage.MinX * FScalingFactor)));
+  if (APage.MinY < 0) then
+    FlogicalOffsetY := word((trunc(-APage.MinY * FScalingFactor)));
+    *)
 end;
 
 function TvWMFVectorialWriter.ScaleSizeX(x: Double): Integer;
@@ -376,7 +391,8 @@ end;
 function TvWMFVectorialWriter.ScaleY(y: Double): Integer;
 begin
   if FUseTopLeftCoordinates then
-    Result := ScaleSizeY(y) else
+    Result := ScaleSizeY(y)
+  else
     Result := FLogicalMaxY - ScaleSizeY(y);
 end;
 
@@ -476,10 +492,12 @@ begin
   end else
   begin
     rec.Top := c.y + r.y;
-    reC.Bottom := c.y - r.y;
+    rec.Bottom := c.y - r.y;
   end;
   UpdateBounds(rec.Left, rec.Top);
   UpdateBounds(rec.Right, rec.Bottom);
+
+  DebugLn(['c.x=', c.x, ' cy=', c.y, ' r.x=', r.x, ' r.y=', r.y, ' rec.Left=', rec.Left, 'rec.Top=', rec.Top, ' c.x-r.x=', c.x-r.x, ' cy-r.y=', c.y - r.y]);
 
   // WMF record header + parameters
   WriteWMFRecord(AStream, META_ELLIPSE, rec, SizeOf(TWMFRectRecord));

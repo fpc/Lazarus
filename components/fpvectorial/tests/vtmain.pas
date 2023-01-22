@@ -1190,7 +1190,12 @@ procedure TMainForm.TreeSelectionChanged(Sender: TObject);
 begin
   ShowRenderTestImages;
   ShowRefImageTest;
-  ShowWriteReadTestImages;
+  try
+    ShowWriteReadTestImages;
+  except
+    on E:Exception do
+      MessageDlg(E.Message, mtError, [mbOK], 0);
+  end;
   UpdateTestResults;
   UpdateCmdStates;
 end;
