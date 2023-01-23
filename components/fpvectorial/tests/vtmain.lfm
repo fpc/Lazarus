@@ -114,7 +114,7 @@ object MainForm: TMainForm
           BorderSpacing.Left = 16
           BorderSpacing.Top = 4
           BorderSpacing.Right = 4
-          Caption = 'origin at bottom/left corner (fpv default)'
+          Caption = '- origin at bottom/left corner (fpv default)'
           ParentColor = False
           ParentFont = False
           WordWrap = True
@@ -128,7 +128,7 @@ object MainForm: TMainForm
           BorderSpacing.Left = 16
           BorderSpacing.Top = 4
           BorderSpacing.Right = 4
-          Caption = 'origin at top/left corner'
+          Caption = '- origin at top/left corner'
           ParentColor = False
           ParentFont = False
           WordWrap = True

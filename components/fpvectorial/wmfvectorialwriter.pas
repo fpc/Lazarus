@@ -26,7 +26,7 @@ unit wmfvectorialwriter;
 
 interface
 
-uses         lazlogger,
+uses
   Classes, SysUtils,
   FPImage, FPCanvas,
   fpvectorial, fpvWMF;
@@ -55,9 +55,6 @@ type
     FBBox: TRect;  // in metafile units as specified by UnitsPerInch. NOTE: "logical" units can be different!
     FLogicalMaxX: Word;        // Max x coordinate used for scaling, in logical units
     FLogicalMaxY: Word;        // Max y coordinate used for scaling, in logical units
-//    FLogicalOffsetX: Word;     // Position of zero in the range [0..LogicalMaxX]
-//    FLogicalOffsetY: Word;
-    FLogicalBounds: TRect;     // Enclosing boundary rectangle in logical units
     FScalingFactor: Double;    // Conversion fpvectorial units to logical units
     FMaxRecordSize: Int64;
     FCurrFont: TvFont;
@@ -78,7 +75,6 @@ type
     function ScaleY(y: Double): Integer;
     function ScaleSizeX(x: Double): Integer;
     function ScaleSizeY(y: Double): Integer;
-    procedure UpdateBounds(x, y: Integer);
 
     procedure WriteBkColor(AStream: TStream; AColor: TFPColor);
     procedure WriteBkMode(AStream: TStream; AMode: Word);
@@ -340,7 +336,7 @@ end;
 
 procedure TvWMFVectorialWriter.PrepareScaling(APage: TvVectorialPage);
 const
-  MAXINT16 = 30000;   // should be 32767, but avoid overflows...
+  MAXINT16 = 30000;   // should be 32767, but reduce to avoid overflows...
 var
   maxx, maxy: Double;
   w, h: Double;
@@ -349,7 +345,9 @@ begin
   w := Max(APage.Width, APage.RealWidth);
   h := Max(APage.Height, APage.RealHeight);
 
-  FScalingFactor := round(ONE_INCH * 100);   // 1 logical unit is 1/100 mm = 10 µm
+  // fpv stores coordinates in millimeters, wmf in "logical units" where
+  // 1 logical unit is 1/100 mm = 10 microns (in MM_HIMETRIC mode)
+  FScalingFactor := round(ONE_INCH * 100);
   maxx := w * FScalingFactor;
   maxy := h * FScalingFactor;
   // wmf is 16 bit only! --> reduce magnification if numbers get too big
@@ -361,18 +359,10 @@ begin
   end;
   FLogicalMaxX := trunc(maxx);
   FLogicalMaxY := trunc(maxy);
-  (*
-  FLogicalOffsetX := 0;
-  FLogicalOffsetY := 0;
-  // Since the wmf coordinates are stored as word we must offset them in case
-  // of negative values.
-  if APage.MinX < 0 then
-    FLogicalOffsetX := word((trunc(-APage.MinX * FScalingFactor)));
-  if (APage.MinY < 0) then
-    FlogicalOffsetY := word((trunc(-APage.MinY * FScalingFactor)));
-    *)
 end;
 
+{ Scaling routines which convert between fpv units (millimeters) and wmf units
+  ("logical units"). We silently assume there there is no offset in origin. }
 function TvWMFVectorialWriter.ScaleSizeX(x: Double): Integer;
 begin
   Result := Round(x * FScalingFactor);
@@ -394,14 +384,6 @@ begin
     Result := ScaleSizeY(y)
   else
     Result := FLogicalMaxY - ScaleSizeY(y);
-end;
-
-procedure TvWMFVectorialWriter.UpdateBounds(x, y: Integer);
-begin
-  FLogicalBounds.Left := Min(X, FLogicalBounds.Left);
-  FLogicalBounds.Top := Min(Y, FLogicalBounds.Top);
-  FLogicalBounds.Right := Max(X, FLogicalBounds.Right);
-  FLogicalBounds.Bottom := Max(Y, FLogicalBounds.Bottom);
 end;
 
 procedure TvWMFVectorialWriter.WriteBkColor(AStream: TStream; AColor: TFPColor);
@@ -494,10 +476,6 @@ begin
     rec.Top := c.y + r.y;
     rec.Bottom := c.y - r.y;
   end;
-  UpdateBounds(rec.Left, rec.Top);
-  UpdateBounds(rec.Right, rec.Bottom);
-
-  DebugLn(['c.x=', c.x, ' cy=', c.y, ' r.x=', r.x, ' r.y=', r.y, ' rec.Left=', rec.Left, 'rec.Top=', rec.Top, ' c.x-r.x=', c.x-r.x, ' cy-r.y=', c.y - r.y]);
 
   // WMF record header + parameters
   WriteWMFRecord(AStream, META_ELLIPSE, rec, SizeOf(TWMFRectRecord));
@@ -514,8 +492,6 @@ begin
   r.Top := ScaleY(AEllipse.Y + AEllipse.VertHalfAxis);
   r.Right := ScaleX(AEllipse.X + AEllipse.HorzHalfAxis);
   r.Bottom := ScaleY(AEllipse.Y - AEllipse.VertHalfAxis);
-  UpdateBounds(r.Left, r.Top);
-  UpdateBounds(r.Right, r.Bottom);
 
   // WMF record header + parameters
   WriteWMFRecord(AStream, META_ELLIPSE, r, SizeOf(TWMFRectRecord));
@@ -841,7 +817,6 @@ begin
   for i:=0 to High(APolygon.Points) do begin
     pts[i].X := ScaleX(APolygon.Points[i].X);
     pts[i].Y := ScaleY(APolygon.Points[i].Y);
-    UpdateBounds(pts[i].X, pts[i].Y);
   end;
 
   // WMF Record header
@@ -870,8 +845,6 @@ begin
   r.Top := ScaleY(ARectangle.Y);
   r.Right := ScaleX(ARectangle.X + ARectangle.CX);
   r.Bottom := ScaleY(ARectangle.Y - ARectangle.CY);
-  UpdateBounds(r.Left, r.Top);
-  UpdateBounds(r.Right, r.Bottom);
 
   // WMF record header + parameters
   if (ARectangle.RX = 0) or (ARectangle.RY = 0) then
@@ -983,8 +956,6 @@ begin
 
   // Prepare scaling
   PrepareScaling(page);
-
-  FLogicalBounds := Rect(LongInt($7FFFFFFF), LongInt($7FFFFFFF), LongInt($80000000), LongInt($80000000));
 
   // Write placeholder for WMF header and placeable header,
   // will be rewritten with correct values later

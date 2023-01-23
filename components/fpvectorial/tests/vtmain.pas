@@ -1100,16 +1100,16 @@ var
   renderParams: TRenderParams;
   page: TvVectorialPage = nil;
 begin
-  if Tree.Selected = nil then
-    exit;
-
-  renderParams := TRenderParams(Tree.Selected.Data);
-  if renderParams = nil then
+  if (Tree.Selected = nil) or (Tree.Selected.Data = nil) then
   begin
+    FreeAndNil(FDoc[rcBottomLeftCoords]);
+    FreeAndNil(FDoc[rcTopLeftCoords]);
     BottomLeftPaintbox.Invalidate;
     TopLeftPaintbox.Invalidate;
     exit;
   end;
+
+  renderParams := TRenderParams(Tree.Selected.Data);
 
   // Render document with bottom/left origin
   PrepareDoc(FDoc[rcBottomLeftCoords], page, false);
@@ -1208,13 +1208,17 @@ var
   ext: String;
   rc: TRenderCoords;
   rcOK: array[TRenderCoords] of boolean = (false, false);
+  OK: Boolean;
 begin
-  BtnSaveAsRef.Enabled := Tree.Selected <> nil;
-  BtnSaveToFiles.Enabled := Tree.Selected <> nil;
-  BtnViewBottomLeft.Enabled := Tree.Selected <> nil;
-  BtnViewTopLeft.Enabled := Tree.Selected <> nil;
+  OK := (Tree.Selected <> nil) and (Tree.Selected.Data <> nil);
 
-  if Tree.Selected <> nil then begin
+  BtnSaveAsRef.Enabled := OK;
+  BtnSaveToFiles.Enabled := OK;
+  BtnViewBottomLeft.Enabled := OK;
+  BtnViewTopLeft.Enabled := OK;
+  gbResults.Enabled := OK;
+
+  if OK then begin
     renderParams := TRenderParams(Tree.Selected.Data);
     if renderParams <> nil then begin
       ext := GetFileFormatExt;
