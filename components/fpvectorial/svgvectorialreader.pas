@@ -2977,8 +2977,6 @@ begin
   ConvertSVGCoordinatesToFPVCoordinates(AData, lx, ly, lRect.X, lRect.Y);
   ConvertSVGSizeToFPVSize(AData, cx, cy, lRect.CX, lRect.CY);
   ConvertSVGSizeToFPVSize(AData, lrx, lry, lRect.RX, lRect.RY);
-  lRect.RX := Abs(lRect.RX) * 2;
-  lRect.RY := Abs(lRect.RY) * 2;
 
   // Make sure that transformations are read after geometry and position
   // of rectangle is known.
