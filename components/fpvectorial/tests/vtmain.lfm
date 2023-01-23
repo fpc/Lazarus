@@ -1,33 +1,34 @@
 object MainForm: TMainForm
   Left = 324
-  Height = 717
+  Height = 700
   Top = 125
-  Width = 905
+  Width = 900
   Caption = 'Visual fpvectorial test'
-  ClientHeight = 717
-  ClientWidth = 905
+  ClientHeight = 700
+  ClientWidth = 900
+  OnActivate = FormActivate
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   ShowHint = True
   LCLVersion = '2.3.0.0'
   object GbTree: TGroupBox
     Left = 8
-    Height = 701
+    Height = 684
     Top = 8
-    Width = 336
+    Width = 299
     Align = alClient
     BorderSpacing.Around = 8
     Caption = 'Test shapes and objects'
-    ClientHeight = 681
-    ClientWidth = 332
+    ClientHeight = 664
+    ClientWidth = 295
     Font.Style = [fsBold]
     ParentFont = False
     TabOrder = 0
     object Tree: TTreeView
       Left = 6
-      Height = 669
+      Height = 652
       Top = 6
-      Width = 320
+      Width = 283
       Align = alClient
       BorderSpacing.Around = 6
       HideSelection = False
@@ -44,12 +45,12 @@ object MainForm: TMainForm
     end
   end
   object ScrollBox1: TScrollBox
-    Left = 352
-    Height = 717
+    Left = 315
+    Height = 700
     Top = 0
-    Width = 553
-    HorzScrollBar.Increment = 55
-    HorzScrollBar.Page = 553
+    Width = 577
+    HorzScrollBar.Increment = 56
+    HorzScrollBar.Page = 564
     HorzScrollBar.Smooth = True
     HorzScrollBar.Tracking = True
     VertScrollBar.Increment = 69
@@ -57,23 +58,23 @@ object MainForm: TMainForm
     VertScrollBar.Smooth = True
     VertScrollBar.Tracking = True
     Align = alRight
+    BorderSpacing.Right = 8
     BorderStyle = bsNone
-    ClientHeight = 717
-    ClientWidth = 553
+    ClientHeight = 700
+    ClientWidth = 577
     TabOrder = 1
     object AllTestsPanel: TPanel
       Left = 4
       Height = 683
       Top = 8
-      Width = 537
+      Width = 569
       Align = alTop
       AutoSize = True
       BorderSpacing.Top = 4
-      BorderSpacing.Right = 8
       BorderSpacing.Around = 4
       BevelOuter = bvNone
       ClientHeight = 683
-      ClientWidth = 537
+      ClientWidth = 569
       TabOrder = 0
       object gbRenderTest: TGroupBox
         AnchorSideLeft.Control = AllTestsPanel
@@ -81,13 +82,13 @@ object MainForm: TMainForm
         Left = 0
         Height = 284
         Top = 0
-        Width = 256
+        Width = 288
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         BorderSpacing.Right = 31
         Caption = 'Render test'
         ClientHeight = 264
-        ClientWidth = 252
+        ClientWidth = 284
         Font.Style = [fsBold]
         ParentFont = False
         TabOrder = 0
@@ -95,7 +96,7 @@ object MainForm: TMainForm
           Left = 8
           Height = 30
           Top = 2
-          Width = 240
+          Width = 272
           Align = alTop
           BorderSpacing.Left = 8
           BorderSpacing.Top = 2
@@ -109,7 +110,7 @@ object MainForm: TMainForm
           Left = 16
           Height = 15
           Top = 36
-          Width = 232
+          Width = 264
           Align = alTop
           BorderSpacing.Left = 16
           BorderSpacing.Top = 4
@@ -123,7 +124,7 @@ object MainForm: TMainForm
           Left = 16
           Height = 15
           Top = 55
-          Width = 232
+          Width = 264
           Align = alTop
           BorderSpacing.Left = 16
           BorderSpacing.Top = 4
@@ -137,7 +138,7 @@ object MainForm: TMainForm
           Left = 8
           Height = 15
           Top = 74
-          Width = 240
+          Width = 272
           Align = alTop
           BorderSpacing.Left = 8
           BorderSpacing.Top = 4
@@ -223,7 +224,8 @@ object MainForm: TMainForm
           Left = 16
           Height = 25
           Top = 97
-          Width = 75
+          Width = 81
+          AutoSize = True
           BorderSpacing.Left = 16
           BorderSpacing.Top = 8
           BorderSpacing.Bottom = 8
@@ -240,7 +242,7 @@ object MainForm: TMainForm
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = gbRenderTest
         AnchorSideBottom.Side = asrBottom
-        Left = 287
+        Left = 319
         Height = 284
         Top = 0
         Width = 250
@@ -335,13 +337,13 @@ object MainForm: TMainForm
         Left = 0
         Height = 312
         Top = 300
-        Width = 537
+        Width = 569
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         BorderSpacing.Top = 16
         Caption = 'Read/write test'
         ClientHeight = 292
-        ClientWidth = 533
+        ClientWidth = 565
         Font.Style = [fsBold]
         ParentFont = False
         TabOrder = 2
@@ -349,7 +351,7 @@ object MainForm: TMainForm
           Left = 8
           Height = 15
           Top = 2
-          Width = 517
+          Width = 549
           Align = alTop
           BorderSpacing.Left = 8
           BorderSpacing.Top = 2
@@ -363,7 +365,7 @@ object MainForm: TMainForm
           Left = 8
           Height = 45
           Top = 72
-          Width = 517
+          Width = 549
           Align = alTop
           BorderSpacing.Left = 8
           BorderSpacing.Top = 4
@@ -425,7 +427,7 @@ object MainForm: TMainForm
           Left = 8
           Height = 30
           Top = 19
-          Width = 517
+          Width = 549
           Align = alTop
           BorderSpacing.Left = 8
           BorderSpacing.Top = 2
@@ -439,7 +441,7 @@ object MainForm: TMainForm
           Left = 8
           Height = 15
           Top = 53
-          Width = 521
+          Width = 553
           Align = alTop
           BorderSpacing.Left = 8
           BorderSpacing.Top = 4
@@ -492,7 +494,7 @@ object MainForm: TMainForm
           AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = gbReadWriteTest
           AnchorSideRight.Side = asrBottom
-          Left = 436
+          Left = 468
           Height = 25
           Top = 124
           Width = 89
@@ -564,13 +566,13 @@ object MainForm: TMainForm
         Left = 0
         Height = 55
         Top = 628
-        Width = 537
+        Width = 569
         Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         BorderSpacing.Top = 16
         Caption = 'Test results'
         ClientHeight = 35
-        ClientWidth = 533
+        ClientWidth = 565
         Font.Style = [fsBold]
         ParentFont = False
         TabOrder = 3

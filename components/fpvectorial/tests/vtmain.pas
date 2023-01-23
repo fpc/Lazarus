@@ -80,6 +80,7 @@ type
     procedure BtnSaveAsRefClick(Sender: TObject);
     procedure BtnViewImageClick(Sender: TObject);
     procedure CbFileFormatChange(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure PaintBoxPaint(Sender: TObject);
@@ -97,8 +98,10 @@ type
     FDocFromWMF: array[TRenderCoords] of TvVectorialDocument;
     FDocFromSVG: array[TRenderCoords] of TvVectorialDocument;
     FLockResults: Integer;
+
     function GetFileFormat: TvVectorialFormat;
     function GetFileFormatExt: String;
+    function GetImagesFolder(AFileType: String = ''): String;
     procedure Populate;
     procedure PrepareDoc(var ADoc: TvVectorialDocument; var APage: TvVectorialPage;
       AUseTopLeftCoords: boolean);
@@ -153,8 +156,8 @@ uses
   fpvutils, vtprimitives;
 
 const
-  IMG_FOLDER = 'images' + PathDelim;
-  REFIMG_FOLDER = IMG_FOLDER + 'ref' + PathDelim;
+  IMG_FOLDER = 'images';
+  REF_FOLDER = 'ref';
   NOT_SAVED = '(not saved)';
   FORMAT_SEPARATOR = ';';
 
@@ -222,9 +225,9 @@ begin
     png := TPortableNetworkGraphic.Create;
     try
       png.Assign(bmp);
-     // renderParams := TRenderParams(Tree.Selected.Data);
-      ForceDirectory(REFIMG_FOLDER);
-      fn := REFIMG_FOLDER + renderParams.RefFile;
+      fn := GetImagesFolder(REF_FOLDER);
+      ForceDirectory(fn);
+      fn := fn + renderParams.RefFile;
       png.SaveToFile(fn);
     finally
       png.Free;
@@ -250,7 +253,7 @@ begin
 
   fmt := GetFileFormat;
   ext := GetFileFormatExt;
-  folder := IMG_FOLDER + ext + PathDelim;
+  folder := GetImagesFolder(ext);
   ForceDirectory(folder);
 
   if FDoc[rcBottomLeftCoords] <> nil then begin
@@ -282,7 +285,7 @@ begin
     exit;
 
   ext := GetFileFormatExt;
-  folder := IMG_FOLDER + ext + PathDelim;
+  folder := GetImagesFolder(ext);
 
   if Sender = BtnViewBottomLeft then
     fn := folder + 'bl_' + ChangeFileExt(renderParams.RefFile, '.' + ext)
@@ -301,6 +304,11 @@ begin
   UpdateCmdStates;
   UpdateResultStates;
   UpdateTestResults;
+end;
+
+procedure TMainForm.FormActivate(Sender: TObject);
+begin
+  Scrollbox1.ClientWidth := AllTestsPanel.Width + 2*AllTestsPanel.BorderSpacing.Around;
 end;
 
 procedure TMainForm.PrepareDoc(var ADoc: TvVectorialDocument;
@@ -383,6 +391,13 @@ begin
     1: Result := 'wmf';
     else raise Exception.Create('Format not supported');
   end;
+end;
+
+function TMainForm.GetImagesFolder(AFileType: String = ''): String;
+begin
+  Result := IncludeTrailingPathDelimiter(Application.Location + IMG_FOLDER);
+  if AFileType <> '' then
+    Result := IncludeTrailingPathDelimiter(Result + AFileType);
 end;
 
 procedure TMainForm.PaintBoxPaint(Sender: TObject);
@@ -1085,7 +1100,7 @@ begin
     exit;
   end;
 
-  fn := IncludeTrailingPathDelimiter(REFIMG_FOLDER) + renderParams.RefFile;
+  fn := GetImagesFolder(REF_FOLDER) + renderParams.RefFile;
   if FileExists(fn) then begin
     RefImage.Picture.LoadFromFile(fn);
     RefImage.Hint := fn;
@@ -1147,7 +1162,7 @@ begin
   end;
 
   ext := GetFileFormatExt;
-  folder := IMG_FOLDER + ext + PathDelim;
+  folder := GetImagesFolder(ext);
 
   fn := folder + 'bl_' + ChangeFileExt(renderParams.RefFile, '.' + ext);
   ShowFileImage(fn, false, WRBottomLeftPaintbox);
@@ -1222,7 +1237,7 @@ begin
     renderParams := TRenderParams(Tree.Selected.Data);
     if renderParams <> nil then begin
       ext := GetFileFormatExt;
-      folder := IMG_FOLDER + ext + PathDelim;
+      folder := GetImagesFolder(ext);
       fn := folder + 'bl_' + ChangeFileExt(renderParams.RefFile, '.' + ext);
       rcOK[rcBottomLeftCoords] := FileExists(fn);
       fn := folder + 'tl_' + ChangeFileExt(renderParams.RefFile, '.' + ext);
