@@ -65,6 +65,7 @@ type
     FCurrBkMode: Word;
     {%H-}FCurrPolyFillMode: Word;
     FUseTopLeftCoordinates: Boolean;  // If true, input coordinates are given in top/left coordinate system.
+    FPage: TvVectorialPage;
     FErrMsg: TStrings;
 
     function CalcChecksum: Word;
@@ -485,16 +486,29 @@ procedure TvWMFVectorialWriter.WriteEllipse(AStream: TStream;
   AEllipse: TvEllipse);
 var
   r: TWMFRectRecord;
+  path: TPath;
 begin
-  WritePen(AStream, AEllipse.Pen);
-  WriteBrush(AStream, AEllipse.Brush);
-  r.Left := ScaleX(AEllipse.X - AEllipse.HorzHalfAxis);
-  r.Top := ScaleY(AEllipse.Y + AEllipse.VertHalfAxis);
-  r.Right := ScaleX(AEllipse.X + AEllipse.HorzHalfAxis);
-  r.Bottom := ScaleY(AEllipse.Y - AEllipse.VertHalfAxis);
+  if AEllipse.Angle = 0 then
+  begin
+    WritePen(AStream, AEllipse.Pen);
+    WriteBrush(AStream, AEllipse.Brush);
 
-  // WMF record header + parameters
-  WriteWMFRecord(AStream, META_ELLIPSE, r, SizeOf(TWMFRectRecord));
+    r.Left := ScaleX(AEllipse.X - AEllipse.HorzHalfAxis);
+    r.Top := ScaleY(AEllipse.Y + AEllipse.VertHalfAxis);
+    r.Right := ScaleX(AEllipse.X + AEllipse.HorzHalfAxis);
+    r.Bottom := ScaleY(AEllipse.Y - AEllipse.VertHalfAxis);
+
+    // WMF record header + parameters
+    WriteWMFRecord(AStream, META_ELLIPSE, r, SizeOf(TWMFRectRecord));
+  end else
+  begin
+    // Write rotated ellipse as a path
+    path := AEllipse.CreatePath;
+    path.Pen := AEllipse.Pen;
+    path.Brush := AEllipse.Brush;
+    WritePath(AStream, path);
+    path.Free;
+  end;
 end;
 
 
@@ -648,6 +662,7 @@ end;
 procedure TvWMFVectorialWriter.WritePage(AStream: TStream;
   AData: TvVectorialDocument; APage: TvVectorialPage);
 begin
+  FPage := APage;
   WriteWindowExt(AStream);
   WriteWindowOrg(AStream);
   WriteMapMode(AStream);
@@ -838,6 +853,7 @@ procedure TvWMFVectorialWriter.WriteRectangle(AStream: TStream;
 var
   r: TWMFRectRecord;
   p: TWMFPointRecord;
+  path: TPath;
 begin
   WritePen(AStream, ARectangle.Pen);
   WriteBrush(AStream, ARectangle.Brush);
@@ -846,17 +862,28 @@ begin
   r.Right := ScaleX(ARectangle.X + ARectangle.CX);
   r.Bottom := ScaleY(ARectangle.Y - ARectangle.CY);
 
-  // WMF record header + parameters
-  if (ARectangle.RX = 0) or (ARectangle.RY = 0) then
-    // "normal" rectangle
-    WriteWMFRecord(AStream, META_RECTANGLE, r, SizeOf(TWMFRectRecord))
-  else begin
-    // rounded rectangle
-    p.X := ScaleSizeX(ARectangle.RX);
-    p.Y := ScaleSizeY(ARectangle.RY);
-    WriteWMFRecord(AStream, META_ROUNDRECT, SizeOf(p) + SizeOf(r));
-    WriteWMFParams(AStream, p, SizeOf(p));
-    WriteWMFParams(AStream, r, SizeOf(r));
+  if ARectangle.Angle = 0 then
+  begin
+    // WMF record header + parameters
+    if (ARectangle.RX = 0) or (ARectangle.RY = 0) then
+      // "normal" rectangle
+      WriteWMFRecord(AStream, META_RECTANGLE, r, SizeOf(TWMFRectRecord))
+    else begin
+      // rounded rectangle
+      p.X := ScaleSizeX(ARectangle.RX);
+      p.Y := ScaleSizeY(ARectangle.RY);
+      WriteWMFRecord(AStream, META_ROUNDRECT, SizeOf(p) + SizeOf(r));
+      WriteWMFParams(AStream, p, SizeOf(p));
+      WriteWMFParams(AStream, r, SizeOf(r));
+    end;
+  end else
+  begin
+    // Write rotated rectangle as a path
+    path := ARectangle.CreatePath;
+    path.Pen := ARectangle.Pen;
+    path.Brush := ARectangle.Brush;
+    WritePath(AStream, path);
+    path.Free;
   end;
 end;
 

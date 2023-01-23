@@ -80,6 +80,7 @@ function GetLinePolygonIntersectionPoints(ACoord: Double;
   ACoordIsX: Boolean): T2DPointsArray; overload;
 function GetLinePolygonIntersectionPoints(ACoord: Double;
   const APoints: T2DPointsArray; ACoordIsX: Boolean): T2DPointsArray; overload;
+function Offset3DPoint(P, Delta: T3DPoint): T3DPoint;
 function Rotate2DPoint(P, RotCenter: TPoint; alpha:double): TPoint;
 function Rotate3DPointInXY(P, RotCenter: T3DPoint; alpha:double): T3DPoint;
 function SamePoint(P1, P2: T3DPoint; Epsilon: Double = 0.0): Boolean; overload;
@@ -847,6 +848,14 @@ begin
     Dispose(val);
   end;
   list.Free;
+end;
+
+// Offset the point P by the vector Delta
+function Offset3DPoint(P, Delta: T3DPoint): T3DPoint;
+begin
+  Result.x := P.x + Delta.x;
+  Result.y := P.y + Delta.y;
+  Result.z := P.z;
 end;
 
 // Rotates a point P around RotCenter
