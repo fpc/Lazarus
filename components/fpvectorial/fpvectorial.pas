@@ -6347,6 +6347,7 @@ var
   cc: T3dPointsArray = nil;
   ctr: T3dPoint;
   refPt: T3dPoint;
+  refPtRot: T3dPoint;
   shift: T3dPoint;
   j: Integer;
   phi, lYAdj: Double;
@@ -6394,9 +6395,10 @@ begin
     pts[j] := Rotate3DPointInXY(pts[j], ctr, phi);
   for j := 0 to High(cc) do
     cc[j] := Rotate3DPointInXY(cc[j], ctr, phi);
+  refPtRot := Rotate3DPointInXY(refPt, ctr, phi);  // refPt after rotation
 
-  // Perform the translation so that top/left corner is back at its original position.
-  shift := Make3dPoint(refPt.x - pts[0].x, refPt.y - pts[0].y);
+  // Perform the translation so that the refPt is back at its original position.
+  shift := Make3dPoint(refPt.x - refPtRot.x, refPt.y - refPtRot.y);
   for j := 0 to High(pts) do
     pts[j] := Offset3dPoint(pts[j], shift);
   for j := 0 to High(cc) do
