@@ -15,10 +15,12 @@ unit fpvectorial;
 {$endif}
 
 {$define USE_LCL_CANVAS}
+
 {$ifdef USE_LCL_CANVAS}
   {$define USE_CANVAS_CLIP_REGION}
   {.$define DEBUG_CANVAS_CLIP_REGION}
 {$endif}
+
 {.$define FPVECTORIAL_DEBUG_DIMENSIONS}
 {.$define FPVECTORIAL_TOCANVAS_DEBUG}
 {.$define FPVECTORIAL_DEBUG_BLOCKS}
@@ -4515,10 +4517,11 @@ begin
     exit;
   try
     ConvertPathToPolygons(tmpPath, ADestX, ADestY, AMulX, AMulY, polypoints, polystarts);
-    if (ADest is TCanvas) then
-      TCanvas(ADest).Polygon(polypoints) //, WindingRule = vcmNonZeroWindingRule)
-    else
-      ADest.Polygon(polypoints);
+    {$IFDEF USE_LCL_CANVAS}
+    TCanvas(ADest).Polygon(polypoints, WindingRule = vcmNonZeroWindingRule);
+    {$ELSE}
+    ADest.Polygon(polypoints);
+    {$ENDIF}
   finally
     tmpPath.Free;
   end;
@@ -5606,7 +5609,7 @@ begin
   {$ELSE}
   lFontSizePx := Font.Size;        // is without multiplier!
   if lFontSizePx = 0 then lFontSizePx := 10;
-  lTextSize := ADest.TextExtent(Str_Line_Height_Tester);
+  lTextSize := ARenderInfo.Canvas.TextExtent(Str_Line_Height_Tester);
   Result := Round((lTextSize.CY*1.0 - lFontSizePx) * 0.5);  // rough estimate only
   {$ENDIF}
 end;
@@ -5644,11 +5647,9 @@ var
   lWidth, lHeight: Integer;
   lRenderInfo: TvRenderInfo;
   lText: String;
-  {$ifdef USE_LCL_CANVAS}
-  ACanvas: TCanvas absolute ARenderInfo.Canvas;
-  {$endif}
 begin
   //lText := Value.Text; // For debugging
+  lRenderInfo := Default(TvRenderInfo);
   InitializeRenderInfo(lRenderInfo, Self);
   lRenderInfo.Canvas := ARenderInfo.Canvas;
   lRenderInfo.DestX := ARenderInfo.DestX;
@@ -5663,14 +5664,15 @@ begin
   lHeight := 0;
   ARight := ALeft;
   ABottom := ATop;
-  if (ARenderInfo.Canvas = nil) or (not (ARenderInfo.Canvas is TCanvas)) then Exit;
+  if (ARenderInfo.Canvas = nil) then
+    Exit;
 
   for i := 0 to Value.Count-1 do
   begin
     lText := Value.Strings[i];
-    lSize := ACanvas.TextExtent(lText);
+    lSize := lRenderInfo.Canvas.TextExtent(lText);
     lWidth := Max(lWidth, lSize.cx);
-    lSize := ACanvas.TextExtent(Str_Line_Height_Tester);
+    lSize := lRenderInfo.Canvas.TextExtent(Str_Line_Height_Tester);
     lHeight := lHeight + lSize.cy + 2;
   end;
 
@@ -5704,13 +5706,9 @@ var
   lText: string;
   lDescender: Integer;
   phi: Double;
-  {$ifdef USE_LCL_CANVAS}
-  ACanvas: TCanvas absolute ARenderInfo.Canvas;
   lTextSize: TSize;
   lTextWidth: Integer;
-  {$endif}
 begin
-  lText := Value.Text + Format(' F=%d', [ACanvas.Font.Size]); // for debugging
   inherited Render(ARenderInfo, ADoDraw);
 
   InitializeRenderInfo(ARenderInfo, Self);
@@ -5743,7 +5741,7 @@ begin
     lLongestLine := 0;
     for i := 0 to Value.Count - 1 do
     begin
-      lLineWidth := ACanvas.TextWidth(Value.Strings[i]);   // contains multiplier
+      lLineWidth := ARenderInfo.Canvas.TextWidth(Value.Strings[i]);   // contains multiplier
       if lLineWidth > lLongestLine then
         lLongestLine := lLineWidth;
     end;
@@ -5780,11 +5778,11 @@ begin
 
     // Calc text boundaries respecting text rotation.
     CalcEntityCanvasMinMaxXY(ARenderInfo, pt.x, pt.y);
-    lTextSize := ACanvas.TextExtent(lText);
+    lTextSize := ARenderInfo.Canvas.TextExtent(lText);
     lTextWidth := lTextSize.cx;
     // Reserve vertical space for </br> and similar line ending constructs
     if (lText = '') then
-      lTextSize.cy := ACanvas.TextHeight(STR_FPVECTORIAL_TEXT_HEIGHT_SAMPLE);
+      lTextSize.cy := ARenderInfo.Canvas.TextHeight(STR_FPVECTORIAL_TEXT_HEIGHT_SAMPLE);
     // other end of the text
     pt := Point(round(Render_NextText_X) + lTextWidth, round(curDimY) + lTextSize.cy );
     pt := Rotate2dPoint(pt, refPt, -Phi);
@@ -6593,10 +6591,11 @@ begin
       case Brush.Kind of
         bkSimpleBrush:
           // Fills the polygon and paints the border
-          if (ADest is TCanvas) then   // Respects winding rule
-            TCanvas(ADest).Polygon(lPoints, WindingRule = vcmNonZeroWindingRule)
-          else
-            ADest.Polygon(lPoints);    // Winding rule not supported
+          {$IFDEF USE_LCL_CANVAS} // Respects winding rule
+          TCanvas(ADest).Polygon(lPoints, WindingRule = vcmNonZeroWindingRule);
+          {$ELSE}
+          ADest.Polygon(lPoints);    // Winding rule not supported
+          {$ENDIF}
 
         bkHorizontalGradient,
         bkVerticalGradient,
@@ -6935,7 +6934,7 @@ var
   end;
 
 var
-  Points: array of TPoint;
+  Points: array of TPoint = nil;
   lTriangleCenter, lTriangleCorner: T3DPoint;
   {$ifdef USE_LCL_CANVAS}
   ALCLDest: TCanvas absolute ADest;
@@ -6952,7 +6951,7 @@ begin
 
   // Now the arc
   if ADoDraw then
-    ALCLDest.Arc(
+    ARenderInfo.Canvas.Arc(
       CoordToCanvasX(BaseLeft.X - ArcRadius), CoordToCanvasY(BaseLeft.Y - ArcRadius),
       CoordToCanvasX(BaseLeft.X + ArcRadius), CoordToCanvasY(BaseLeft.Y + ArcRadius),
       CoordToCanvasX(DimensionRight.X), CoordToCanvasY(DimensionRight.Y),
@@ -7352,7 +7351,7 @@ var
   lLineHeight: Integer;
 begin
   if ADest <> nil then
-    lLineHeight := TCanvas(ADest).TextHeight(STR_FPVECTORIAL_TEXT_HEIGHT_SAMPLE) + 2
+    lLineHeight := ADest.TextHeight(STR_FPVECTORIAL_TEXT_HEIGHT_SAMPLE) + 2
   else
     lLineHeight := 15;
 
@@ -7391,7 +7390,7 @@ begin
   if lText <> '' then
   begin
     if ADest = nil then Result := 10 * UTF8Length(lText)
-    else Result := TCanvas(ADest).TextWidth(lText);
+    else Result := ADest.TextWidth(lText);
   end;
 
   case Kind of
@@ -7951,7 +7950,7 @@ var
   lElement: TvFormulaElement;
 begin
   if ADest <> nil then
-    Result := TCanvas(ADest).TextHeight(STR_FPVECTORIAL_TEXT_HEIGHT_SAMPLE) + 2
+    Result := ADest.TextHeight(STR_FPVECTORIAL_TEXT_HEIGHT_SAMPLE) + 2
   else
     Result := 15;
 
@@ -8037,8 +8036,10 @@ begin
   ALeft := X;
   ATop := Y;
   ARight := CalculateWidth(ADest);
-  if ADest = nil then ABottom := CalculateHeight(ADest) * 15
-  else ABottom := CalculateHeight(ADest) * TCanvas(ADest).TextHeight('Źç');
+  if ADest = nil then
+    ABottom := CalculateHeight(ADest) * 15
+  else
+    ABottom := CalculateHeight(ADest) * ADest.TextHeight('Źç');
   ARight := X + ARight;
   ABottom := Y + ABottom;
 end;
@@ -8962,6 +8963,7 @@ begin
 end;
 
 procedure TvPage.CalculateDocumentSize;
+{$IFDEF USE_LCL_CANVAS}
 var
   i: Integer;
   lCurEntity: TvEntity;
@@ -8998,6 +9000,10 @@ begin
   //Width := abs(MaxX - MinX);
   //Height := abs(MaxY - MinY);
 end;
+{$ELSE}
+begin
+end;
+{$ENDIF}
 
 function TvPage.RealWidth: Double;
 begin
