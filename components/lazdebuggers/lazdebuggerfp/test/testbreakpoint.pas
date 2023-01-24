@@ -959,7 +959,7 @@ begin
     for j := 1 to 70 do begin
       for i := 0 to 9 do begin
 
-        Debugger.RunToNextPause(dcRun);
+        Debugger.RunToNextPause(dcRun, 15000);
         AssertDebuggerState(dsPause, 'in loop');
         TestEquals('ThreadId', ThreadIdMain, dbg.Threads.CurrentThreads.CurrentThreadId);
         TestLocation('loop '+IntToStr(j)+', '+IntToStr(i), 'BrkMain'+IntToStr(i), j);
