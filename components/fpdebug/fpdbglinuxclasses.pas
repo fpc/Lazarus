@@ -315,6 +315,7 @@ type
     FIsTerminating: boolean;
     FMasterPtyFd: cint;
     FCurrentThreadId: THandle;
+    FSingleSteppingThreadID: THandle;
     // This breakpoint is triggered after dynamic libraries have been (un)loaded
     FSOLibEventBreakpoint: TFpDbgBreakpoint;
     {$ifndef VER2_6}
@@ -1140,6 +1141,7 @@ constructor TDbgLinuxProcess.Create(const AFileName: string;
   AProcessConfig: TDbgProcessConfig);
 begin
   FMasterPtyFd:=-1;
+  FSingleSteppingThreadID := -1;
   FPostponedSignals := TFpDbgLinuxSignalQueue.Create;
   inherited Create(AFileName, AnOsClasses, AMemManager, AProcessConfig);
 end;
@@ -1525,6 +1527,7 @@ begin
   {$IFDEF DebuglnLinuxDebugEvents}
   debuglnEnter(['>>>>> TDbgLinuxProcess.Continue TID:', AThread.ID, ' SingleStep:', SingleStep ]); try
   {$ENDIF}
+  FSingleSteppingThreadID := -1;
 
   // Terminating process and all threads
   if FIsTerminating then begin
@@ -1558,10 +1561,10 @@ begin
         ThreadToContinue.BeforeContinue;
 
         while (ThreadToContinue.GetInstructionPointerRegisterValue = IP) do begin
-          fpseterrno(0);
           {$IFDEF DebuglnLinuxDebugEvents}
           Debugln(FPDBG_LINUX, ['Single-stepping other TID: ', ThreadToContinue.ID]);
           {$ENDIF}
+          fpseterrno(0);
           fpPTrace(PTRACE_SINGLESTEP, ThreadToContinue.ID, pointer(1), pointer(TDbgLinuxThread(ThreadToContinue).FExceptionSignal));
 
           TDbgLinuxThread(ThreadToContinue).ResetPauseStates;
@@ -1569,7 +1572,7 @@ begin
           if CheckNoError then begin
             PID := fpWaitPid(ThreadToContinue.ID, WaitStatus, __WALL);
             if PID <> ThreadToContinue.ID then begin
-              DebugLn(DBG_WARNINGS, ['Error single stepping other thread ', ThreadToContinue.ID, ' waitpid got ', PID, ', ',WaitStatus, ' err ', Errno]);
+              DebugLn(DBG_WARNINGS, ['XXXXX Error single stepping other thread ', ThreadToContinue.ID, ' waitpid got ', PID, ', ',WaitStatus, ' err ', Errno]);
               break;
             end;
             if ThreadToContinue.NextIsSingleStep then begin
@@ -1604,6 +1607,7 @@ begin
     {$IFDEF DebuglnLinuxDebugEvents}
     Debugln(FPDBG_LINUX, ['Single-stepping current']);
     {$ENDIF}
+    FSingleSteppingThreadID := AThread.ID;
     fpPTrace(PTRACE_SINGLESTEP, AThread.ID, pointer(1), pointer(TDbgLinuxThread(AThread).FExceptionSignal));
     TDbgLinuxThread(AThread).ResetPauseStates;
     Result := CheckNoError;
@@ -1656,10 +1660,16 @@ begin
   ThreadIdentifier:=-1;
   ProcessIdentifier:=-1;
 
+  if FSingleSteppingThreadID <> -1 then begin
+    PID:=FpWaitPid(FSingleSteppingThreadID, FStatus, __WALL);
+    if PID <> FSingleSteppingThreadID then
+      DebugLn(DBG_WARNINGS, ['XXXXX Error: single stepping current thread ', FSingleSteppingThreadID, ' waitpid got ', PID, ', ',FStatus, ' err ', Errno]);
+  end
+  else
   If not FPostponedSignals.GetNextSignal(PID, FStatus) then
     PID:=FpWaitPid(-1, FStatus, __WALL);
 
-  RestoreTempBreakInstructionCodes;
+  RestoreTempBreakInstructionCodes; // should only happen after single step, so all threads should be paused
 
   result := PID<>-1;
   if not result then
