@@ -131,7 +131,7 @@ type
     // Insert/Delete break points on target
     // TODO: if target doesn't support break points or have limited break points
     // then debugger needs to manage insertion/deletion of break points in target memory
-    function InsertBreakInstructionCode(const ALocation: TDBGPtr; out OrigValue: Byte): Boolean; override;
+    function InsertBreakInstructionCode(const ALocation: TDBGPtr; out OrigValue: Byte; AMakeTempRemoved: Boolean): Boolean; override;
     function RemoveBreakInstructionCode(const ALocation: TDBGPtr; const OrigValue: Byte): Boolean; override;
 
     property RspConfig: TRemoteConfig read FRemoteConfig;
@@ -954,7 +954,7 @@ begin
 end;
 
 function TDbgAvrProcess.InsertBreakInstructionCode(const ALocation: TDBGPtr;
-  out OrigValue: Byte): Boolean;
+  out OrigValue: Byte; AMakeTempRemoved: Boolean): Boolean;
 begin
   if FIsTerminating or (FStatus = SIGHUP) then
     DebugLn(DBG_WARNINGS, 'TDbgRspProcess.InsertBreakInstruction called while FIsTerminating is set.');
