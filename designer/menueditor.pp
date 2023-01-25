@@ -14,7 +14,7 @@ uses
   LazLogger, LazTracer,
   // IdeIntf
   FormEditingIntf, IDEWindowIntf, IDEImagesIntf, ComponentEditors, IDEDialogs,
-  LazarusCommonStrConst, PropEdits,
+  IdeIntfStrConsts, PropEdits,
   // IDE
   LazarusIDEStrConsts, LazIDEIntf, MenuDesignerBase, MenuEditorForm, MenuShortcutDisplay,
   MenuTemplates, MenuResolveConflicts;

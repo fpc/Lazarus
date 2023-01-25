@@ -36,7 +36,7 @@ uses
   // LazUtils
   FileUtil, LazFileUtils, Laz2_XMLCfg, LazStringUtils,
   // IdeIntf
-  LazarusCommonStrConst, IDEWindowIntf, IDEHelpIntf, IDEDialogs,
+  IdeIntfStrConsts, IDEWindowIntf, IDEHelpIntf, IDEDialogs,
   // IDE
   IDEProcs, LazarusIDEStrConsts, LazConf, TransferMacros, InputHistory,
   ShowDeletingFilesDlg, EnvironmentOpts, RecentListProcs;

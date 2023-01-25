@@ -69,7 +69,7 @@ uses
   ProjectIntf, PackageIntf, PackageLinkIntf, PackageDependencyIntf,
   // IDEIntf
   IDEHelpIntf, IDECommands, IDEDialogs, IDEImagesIntf, LazIDEIntf, ToolBarIntf,
-  LazarusCommonStrConst, MenuIntf,
+  IdeIntfStrConsts, MenuIntf,
   // IDE
   LazarusIDEStrConsts, MainBase, MainBar, IDEProcs, DialogProcs, IDEOptionDefs, Project,
   InputHistory, TransferMacros, EnvironmentOpts, BuildManager, BasePkgManager,

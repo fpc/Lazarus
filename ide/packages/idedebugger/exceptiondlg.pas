@@ -29,7 +29,7 @@ interface
 
 uses
   Classes, math, Forms, Dialogs, StdCtrls, Buttons, IDEImagesIntf,
-  LazarusCommonStrConst, IdeDebuggerStringConstants;
+  IdeIntfStrConsts, IdeDebuggerStringConstants;
 
 type
   

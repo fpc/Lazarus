@@ -11,7 +11,7 @@ uses
   // LazUtils
   AvgLvlTree,
   // IDE, converter
-  LazarusCommonStrConst, LazarusIDEStrConsts, ConverterTypes;
+  IdeIntfStrConsts, LazarusIDEStrConsts, ConverterTypes;
 
 type
 

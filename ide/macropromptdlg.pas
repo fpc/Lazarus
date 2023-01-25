@@ -39,7 +39,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, LCLType, Controls, Forms, Buttons, StdCtrls,
-  Dialogs, LResources, LazarusCommonStrConst, LazarusIDEStrConsts;
+  Dialogs, LResources, IdeIntfStrConsts, LazarusIDEStrConsts;
 
 
 type

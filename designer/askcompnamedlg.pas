@@ -32,7 +32,7 @@ uses
   // LazUtils
   LazStringUtils,
   // IdeIntf
-  LazarusCommonStrConst, PropEdits,
+  IdeIntfStrConsts, PropEdits,
   // IDE
   IDEProcs, LazarusIDEStrConsts;
 

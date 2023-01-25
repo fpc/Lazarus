@@ -5,91 +5,91 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: lazaruscommonstrconst.lisabort
+#: ideintfstrconsts.lisabort
 msgid "Abort"
 msgstr "Přerušit"
 
-#: lazaruscommonstrconst.lisadd
+#: ideintfstrconsts.lisadd
 msgid "Add"
 msgstr "Přidat"
 
-#: lazaruscommonstrconst.lisalways
+#: ideintfstrconsts.lisalways
 msgid "Always"
 msgstr "Vždy"
 
-#: lazaruscommonstrconst.lisbtnadd
+#: ideintfstrconsts.lisbtnadd
 msgid "&Add"
 msgstr "&Přidat"
 
-#: lazaruscommonstrconst.lisbtncontinue
+#: ideintfstrconsts.lisbtncontinue
 msgid "&Continue"
 msgstr "&Pokračovat"
 
-#: lazaruscommonstrconst.lisbtndelete
+#: ideintfstrconsts.lisbtndelete
 msgid "&Delete"
 msgstr "&Smazat"
 
-#: lazaruscommonstrconst.lisbtndlgadd
+#: ideintfstrconsts.lisbtndlgadd
 msgid "&Add ..."
 msgstr "Přid&at ..."
 
-#: lazaruscommonstrconst.lisbtnenabled
+#: ideintfstrconsts.lisbtnenabled
 msgid "&Enabled"
 msgstr "&Povolený"
 
-#: lazaruscommonstrconst.lisbtnok
+#: ideintfstrconsts.lisbtnok
 msgid "&OK"
 msgstr "&OK"
 
-#: lazaruscommonstrconst.liscancel
+#: ideintfstrconsts.liscancel
 msgid "Cancel"
 msgstr "Zrušit"
 
-#: lazaruscommonstrconst.liscontinue
+#: ideintfstrconsts.liscontinue
 msgid "Continue"
 msgstr "Pokračovat"
 
-#: lazaruscommonstrconst.lisdelete
+#: ideintfstrconsts.lisdelete
 msgid "Delete"
 msgstr "Odstranit"
 
-#: lazaruscommonstrconst.lisdisabled
+#: ideintfstrconsts.lisdisabled
 msgid "Disabled"
 msgstr "Zakázáno"
 
-#: lazaruscommonstrconst.lisdlgadd
+#: ideintfstrconsts.lisdlgadd
 msgid "Add ..."
 msgstr "Přidat ..."
 
-#: lazaruscommonstrconst.lisenabled
+#: ideintfstrconsts.lisenabled
 msgid "Enabled"
 msgstr "Povoleno"
 
-#: lazaruscommonstrconst.lishelp
+#: ideintfstrconsts.lishelp
 msgid "Help"
 msgstr "Nápověda"
 
-#: lazaruscommonstrconst.lisignore
+#: ideintfstrconsts.lisignore
 msgid "Ignore"
 msgstr "Ignorovat"
 
-#: lazaruscommonstrconst.lislazarus
+#: ideintfstrconsts.lislazarus
 msgid "Lazarus"
 msgstr "Lazarus"
 
-#: lazaruscommonstrconst.lisnever
+#: ideintfstrconsts.lisnever
 msgid "Never"
 msgstr "Nikdy"
 
-#: lazaruscommonstrconst.lisno
+#: ideintfstrconsts.lisno
 msgid "No"
 msgstr "Ne"
 
-#: lazaruscommonstrconst.lisok
+#: ideintfstrconsts.lisok
 msgid "OK"
 msgstr "OK"
 
-#: lazaruscommonstrconst.lisyes
+#: ideintfstrconsts.lisyes
 msgid "Yes"
 msgstr "Ano"
 

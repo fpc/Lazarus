@@ -44,7 +44,7 @@ uses
   // IDEIntf
   SrcEditorIntf, MenuIntf, IDEWindowIntf, LazIDEIntf, IDEHelpIntf, IDEDialogs,
   // IDE
-  LazarusCommonStrConst, LazarusIDEStrConsts, EditorOptions, CodeMacroSelect, CodeMacroPrompt;
+  IdeIntfStrConsts, LazarusIDEStrConsts, EditorOptions, CodeMacroSelect, CodeMacroPrompt;
 
 type
   TAutoCompleteOption = (

@@ -1,4 +1,4 @@
-unit LazarusCommonStrConst;
+unit IdeIntfStrConsts;
 
 {$mode objfpc}{$H+}
 

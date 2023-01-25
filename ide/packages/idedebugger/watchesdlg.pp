@@ -46,7 +46,7 @@ uses
   DbgIntfDebuggerBase, DbgIntfMiscClasses, SynEdit, laz.VirtualTrees, SpinEx,
   LazDebuggerIntf, LazDebuggerIntfBaseTypes, BaseDebugManager, EnvironmentOpts,
   IdeDebuggerWatchResult, IdeDebuggerWatchResPrinter,
-  ArrayNavigationFrame, IdeDebuggerUtils, LazarusCommonStrConst, IdeDebuggerStringConstants;
+  ArrayNavigationFrame, IdeDebuggerUtils, IdeIntfStrConsts, IdeDebuggerStringConstants;
 
 type
 

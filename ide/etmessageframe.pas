@@ -45,7 +45,7 @@ uses
   // IDEIntf
   IDEImagesIntf, MenuIntf, IDECommands, IDEDialogs, LazIDEIntf,
   // IDE
-  LazarusCommonStrConst, LazarusIDEStrConsts, EnvironmentOpts, HelpFPCMessages, etSrcEditMarks,
+  IdeIntfStrConsts, LazarusIDEStrConsts, EnvironmentOpts, HelpFPCMessages, etSrcEditMarks,
   MsgWnd_Options, etQuickFixes, ExtTools, IDEOptionDefs, CompilerOptions;
 
 const

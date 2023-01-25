@@ -51,7 +51,7 @@ uses
   // LazControls
   ListFilterEdit,
   // IdeIntf
-  LazarusCommonStrConst, IDEWindowIntf, IDEHelpIntf, IDEImagesIntf,
+  IdeIntfStrConsts, IDEWindowIntf, IDEHelpIntf, IDEImagesIntf,
   // IDE
   LazarusIdeStrConsts, IDEProcs, CustomFormEditor, SearchPathProcs, PackageDefs;
 

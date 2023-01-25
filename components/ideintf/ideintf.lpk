@@ -320,8 +320,8 @@
         <UnitName Value="SelEdits"/>
       </Item>
       <Item>
-        <Filename Value="lazaruscommonstrconst.pas"/>
-        <UnitName Value="LazarusCommonStrConst"/>
+        <Filename Value="ideintfstrconsts.pas"/>
+        <UnitName Value="ideintfstrconsts"/>
       </Item>
     </Files>
     <LazDoc Paths="docs"/>

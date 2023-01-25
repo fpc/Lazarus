@@ -40,7 +40,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, StdCtrls, ComCtrls, ButtonPanel,
-  LazarusCommonStrConst, LazarusIDEStrConsts, PackageDefs;
+  IdeIntfStrConsts, LazarusIDEStrConsts, PackageDefs;
 
 
 type

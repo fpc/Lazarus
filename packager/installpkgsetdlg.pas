@@ -48,7 +48,7 @@ uses
   // LazUtils
   LazFileUtils, Laz2_XMLCfg, LazUTF8,
   // IdeIntf
-  LazarusCommonStrConst, PackageDependencyIntf, PackageIntf, IDEImagesIntf,
+  IdeIntfStrConsts, PackageDependencyIntf, PackageIntf, IDEImagesIntf,
   IDEHelpIntf, IDEDialogs, IDEWindowIntf, PackageLinkIntf,
   // IDE
   LazarusIDEStrConsts, InputHistory, LazConf, PackageDefs, PackageSystem, LPKCache, PackageLinks;

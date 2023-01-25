@@ -40,7 +40,7 @@ uses
   // LazUtils
   FileUtil, LazFileUtils, LazFileCache, LazTracer,
   // IDEIntf
-  LazarusCommonStrConst, IDEWindowIntf, LazIDEIntf, SrcEditorIntf, IDEDialogs, ProjectGroupIntf,
+  IdeIntfStrConsts, IDEWindowIntf, LazIDEIntf, SrcEditorIntf, IDEDialogs, ProjectGroupIntf,
   // ide
   LazarusIDEStrConsts, InputHistory, IDEProcs, SearchResultView, Project,
   SearchPathProcs;

@@ -55,7 +55,7 @@ uses
   // Codetools
   CodeToolManager, DefineTemplates,
   // IdeIntf
-  LazarusCommonStrConst, IDEWindowIntf, IDEImagesIntf, IDEDialogs,
+  IdeIntfStrConsts, IDEWindowIntf, IDEImagesIntf, IDEDialogs,
   // IDE
   LazarusIDEStrConsts, CodeToolsOptions, CodeToolsDefPreview, TransferMacros,
   EditorOptions, InputFileDialog, LazConf, IDEProcs, EditDefineTree, CompilerOptions;

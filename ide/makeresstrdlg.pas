@@ -47,7 +47,7 @@ uses
   // CodeTools
   CodeToolManager, CodeToolsStructs, CodeCache,
   // IdeIntf
-  LazarusCommonStrConst, IDEWindowIntf, IDEHelpIntf, IDEDialogs,
+  IdeIntfStrConsts, IDEWindowIntf, IDEHelpIntf, IDEDialogs,
   // IDE
   LazarusIDEStrConsts, EditorOptions, InputHistory, MiscOptions, IDEProcs,
   RecentListProcs;

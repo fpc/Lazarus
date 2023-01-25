@@ -35,7 +35,7 @@ uses
   StdCtrls, ExtCtrls, ButtonPanel,
   CodeToolManager, BasicCodeTools, DefineTemplates,
   CompOptsIntf, ProjectIntf, IDEDialogs,
-  InputHistory, TransferMacros, Project, LazarusCommonStrConst, LazarusIDEStrConsts;
+  InputHistory, TransferMacros, Project, IdeIntfStrConsts, LazarusIDEStrConsts;
 
 type
 

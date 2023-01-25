@@ -40,7 +40,7 @@ uses
   // BuildIntf
   ProjPackIntf, CompOptsIntf, PublishModuleIntf,
   // IdeIntf
-  LazarusCommonStrConst, IDEWindowIntf, IDEHelpIntf, IDEDialogs, IDEImagesIntf, LazIDEIntf,
+  IdeIntfStrConsts, IDEWindowIntf, IDEHelpIntf, IDEDialogs, IDEImagesIntf, LazIDEIntf,
   // IDE
   ProjectDefs, Project, PackageDefs, IDEOptionDefs, InputHistory,
   LazarusIDEStrConsts, IDEProcs, EnvironmentOpts, CompilerOptions,

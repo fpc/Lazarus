@@ -45,7 +45,7 @@ uses
   // LazUtils
   LazUTF8, LazFileUtils, LazFileCache,
   // IdeIntf
-  LazarusCommonStrConst, PackageLinkIntf, PackageIntf, IDEDialogs,
+  IdeIntfStrConsts, PackageLinkIntf, PackageIntf, IDEDialogs,
   // IDE
   LazarusIDEStrConsts, PackageLinks, LPKCache;
 

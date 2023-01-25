@@ -41,7 +41,7 @@ uses
   Classes, SysUtils, LazFileUtils, Forms, Controls, Dialogs,
   IDEWindowIntf, Menus, ComCtrls, Debugger, DebuggerDlg, ActnList,
   IDEImagesIntf, DbgIntfDebuggerBase, DbgIntfMiscClasses,
-  BaseDebugManager, IdeDebuggerStringConstants, LazarusCommonStrConst,
+  BaseDebugManager, IdeDebuggerStringConstants, IdeIntfStrConsts,
   // IDE
   LazarusIDEStrConsts, SourceEditor, MainBase, MainIntf;
 

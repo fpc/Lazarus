@@ -34,7 +34,7 @@ uses
   // LazUtils
   FileUtil, Laz2_XMLCfg, ImgList,
   // IdeIntf
-  LazarusCommonStrConst, IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, FormEditingIntf, ComponentReg,
+  IdeIntfStrConsts, IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, FormEditingIntf, ComponentReg,
   // IDE
   EnvironmentOpts, LazarusIDEStrConsts, IDEOptionDefs, PackageDefs;
 

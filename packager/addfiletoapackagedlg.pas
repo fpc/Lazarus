@@ -45,7 +45,7 @@ uses
   // LazUtils
   FileUtil, LazFileUtils,
   // IdeIntf
-  LazarusCommonStrConst, IDEWindowIntf, PackageIntf, IDEHelpIntf,
+  IdeIntfStrConsts, IDEWindowIntf, PackageIntf, IDEHelpIntf,
   // IDE
   LazarusIDEStrConsts, PackageDefs, PackageSystem, EnvironmentOpts;
 

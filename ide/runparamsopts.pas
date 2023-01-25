@@ -51,7 +51,7 @@ uses
   // LCL
   Controls, Forms, Buttons, StdCtrls, ComCtrls, Dialogs, ButtonPanel, ExtCtrls,
   // IdeIntf
-  LazarusCommonStrConst, BaseIDEIntf, IDEHelpIntf, ProjectIntf, IDEDialogs, IDEImagesIntf, MacroIntf,
+  IdeIntfStrConsts, BaseIDEIntf, IDEHelpIntf, ProjectIntf, IDEDialogs, IDEImagesIntf, MacroIntf,
   // LazUtils
   LazFileUtils, LazFileCache, LazUTF8, Laz2_XMLCfg,
   // IDE

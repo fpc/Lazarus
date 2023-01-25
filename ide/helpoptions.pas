@@ -41,7 +41,7 @@ uses
   // LazUtils
   LazFileUtils, Laz2_XMLCfg, LazFileCache,
   // IdeIntf
-  LazarusCommonStrConst, LazHelpIntf, IDEOptionsIntf, IDEOptEditorIntf, MacroIntf,
+  IdeIntfStrConsts, LazHelpIntf, IDEOptionsIntf, IDEOptEditorIntf, MacroIntf,
   // IDE
   LazarusIDEStrConsts, IDEOptionDefs, LazConf;
 

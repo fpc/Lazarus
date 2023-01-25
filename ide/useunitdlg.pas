@@ -42,7 +42,7 @@ uses
   // BuildIntf
   ProjectIntf,
   // IdeIntf
-  LazarusCommonStrConst, LazIDEIntf, IDEImagesIntf, IDEWindowIntf,
+  IdeIntfStrConsts, LazIDEIntf, IDEImagesIntf, IDEWindowIntf,
   // IDE
   LazarusIDEStrConsts, SourceEditor, Project, EnvironmentOpts, MainIntf;
 

@@ -33,7 +33,7 @@ uses
   // LazControls
   DividerBevel,
   // IdeIntf
-  LazarusCommonStrConst, IDEOptionsIntf, IDEOptEditorIntf, IDEWindowIntf, IDEUtils, IDEDialogs,
+  IdeIntfStrConsts, IDEOptionsIntf, IDEOptEditorIntf, IDEWindowIntf, IDEUtils, IDEDialogs,
   // IDE
   EnvironmentOpts, LazarusIDEStrConsts, IDETranslations, InputHistory;
 

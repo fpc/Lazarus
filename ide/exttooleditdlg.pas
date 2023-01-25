@@ -49,7 +49,7 @@ uses
   // Codetools
   FileProcs,
   // IdeIntf
-  LazarusCommonStrConst, IDEExternToolIntf, IDEHelpIntf, PropEdits, IDEDialogs, IDECommands, IDEUtils,
+  IdeIntfStrConsts, IDEExternToolIntf, IDEHelpIntf, PropEdits, IDEDialogs, IDECommands, IDEUtils,
   // IDE
   TransferMacros, LazarusIDEStrConsts, EnvironmentOpts, KeyMapping;
 

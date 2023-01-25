@@ -82,7 +82,7 @@ uses
   IDEIntf, ObjectInspector, PropEdits, PropEditUtils, EditorSyntaxHighlighterDef,
   IDECommands, IDEWindowIntf, ComponentReg, IDEDialogs, SrcEditorIntf, IDEMsgIntf,
   MenuIntf, LazIDEIntf, IDEOptEditorIntf, IDEImagesIntf, ComponentEditors,
-  LazarusCommonStrConst, ToolBarIntf, SelEdits,
+  IdeIntfStrConsts, ToolBarIntf, SelEdits,
   // protocol
   IDEProtocol,
   // compile

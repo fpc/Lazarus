@@ -40,7 +40,7 @@ uses
   // Codetools
   CodeCache, CodeToolManager,
   // IdeIntf
-  LazarusCommonStrConst, SrcEditorIntf, LazIDEIntf, IDEImagesIntf, IDEDialogs,
+  IdeIntfStrConsts, SrcEditorIntf, LazIDEIntf, IDEImagesIntf, IDEDialogs,
   // IDE
   LazarusIDEStrConsts;
 

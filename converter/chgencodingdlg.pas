@@ -39,7 +39,7 @@ uses
   // LazUtils
   LConvEncoding, LazFileUtils, LazFileCache, LazStringUtils, LazUTF8, AvgLvlTree,
   // IDEIntf
-  LazarusCommonStrConst, IDEWindowIntf, SrcEditorIntf, IDEHelpIntf, IDEImagesIntf,
+  IdeIntfStrConsts, IDEWindowIntf, SrcEditorIntf, IDEHelpIntf, IDEImagesIntf,
   // IDE
   IDEProcs, PackageDefs, PackageSystem, Project, LazarusIDEStrConsts,
   EnvironmentOpts, SearchPathProcs;

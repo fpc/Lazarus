@@ -39,7 +39,7 @@ uses
   // LazUtils
   LazFileCache, LazUTF8, LazFileUtils, FileUtil, LazLoggerBase, Laz2_XMLCfg,
   // IDEIntf
-  LazarusCommonStrConst,
+  IdeIntfStrConsts,
   // IDE
   LazarusIDEStrConsts, LazConf, EnvironmentOpts, FppkgHelper;
 

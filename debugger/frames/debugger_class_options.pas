@@ -34,7 +34,7 @@ uses
   DbgIntfDebuggerBase,
   // IdeIntf
   PropEdits, ObjectInspector, IDEOptionsIntf, IDEOptEditorIntf, IDEUtils,
-  LazarusCommonStrConst, GDBMIDebugger,
+  IdeIntfStrConsts, GDBMIDebugger,
   // IDE
   TransferMacros, LazarusIDEStrConsts, PathEditorDlg, IDEProcs, DialogProcs,
   InputHistory, EnvironmentOpts, BaseDebugManager, Project, Debugger,

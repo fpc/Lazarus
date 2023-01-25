@@ -50,7 +50,7 @@ uses
   CodeCache, CodeToolManager, PascalParserTool, CodeTree,
   // IDEIntf
   IDEWindowIntf, SrcEditorIntf, MenuIntf, IDECommands, LazIDEIntf, ProjectIntf,
-  LazarusCommonStrConst, CompOptsIntf, IDEDialogs, ToolBarIntf,
+  IdeIntfStrConsts, CompOptsIntf, IDEDialogs, ToolBarIntf,
   // IDEDebugger
   IdeDebuggerStringConstants,
   // IDE

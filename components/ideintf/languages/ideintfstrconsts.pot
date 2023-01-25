@@ -1,0 +1,91 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: ideintfstrconsts.lisabort
+msgid "Abort"
+msgstr ""
+
+#: ideintfstrconsts.lisadd
+msgid "Add"
+msgstr ""
+
+#: ideintfstrconsts.lisalways
+msgid "Always"
+msgstr ""
+
+#: ideintfstrconsts.lisbtnadd
+msgid "&Add"
+msgstr ""
+
+#: ideintfstrconsts.lisbtncontinue
+msgid "&Continue"
+msgstr ""
+
+#: ideintfstrconsts.lisbtndelete
+msgid "&Delete"
+msgstr ""
+
+#: ideintfstrconsts.lisbtndlgadd
+msgid "&Add ..."
+msgstr ""
+
+#: ideintfstrconsts.lisbtnenabled
+msgid "&Enabled"
+msgstr ""
+
+#: ideintfstrconsts.lisbtnok
+msgid "&OK"
+msgstr ""
+
+#: ideintfstrconsts.liscancel
+msgid "Cancel"
+msgstr ""
+
+#: ideintfstrconsts.liscontinue
+msgid "Continue"
+msgstr ""
+
+#: ideintfstrconsts.lisdelete
+msgid "Delete"
+msgstr ""
+
+#: ideintfstrconsts.lisdisabled
+msgid "Disabled"
+msgstr ""
+
+#: ideintfstrconsts.lisdlgadd
+msgid "Add ..."
+msgstr ""
+
+#: ideintfstrconsts.lisenabled
+msgid "Enabled"
+msgstr ""
+
+#: ideintfstrconsts.lishelp
+msgid "Help"
+msgstr ""
+
+#: ideintfstrconsts.lisignore
+msgid "Ignore"
+msgstr ""
+
+#: ideintfstrconsts.lislazarus
+msgid "Lazarus"
+msgstr ""
+
+#: ideintfstrconsts.lisnever
+msgid "Never"
+msgstr ""
+
+#: ideintfstrconsts.lisno
+msgid "No"
+msgstr ""
+
+#: ideintfstrconsts.lisok
+msgid "OK"
+msgstr ""
+
+#: ideintfstrconsts.lisyes
+msgid "Yes"
+msgstr ""
+

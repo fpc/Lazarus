@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ExtCtrls, Buttons, LazarusCommonStrConst, LazarusIDEStrConsts, LCLType, ButtonPanel;
+  StdCtrls, ExtCtrls, Buttons, IdeIntfStrConsts, LazarusIDEStrConsts, LCLType, ButtonPanel;
 
 type
 
