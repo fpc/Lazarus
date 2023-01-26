@@ -16,7 +16,8 @@ uses
   WatchInspectToolbar, BaseDebugManager, WatchPropertyDlg, DebuggerDlg, 
   WatchesDlg, CallStackDlg, LocalsDlg, ThreadDlg, BreakPropertyDlgGroups, 
   HistoryDlg, PseudoTerminalDlg, RegistersDlg, DebugOutputForm, ExceptionDlg, 
-  FeedbackDlg, DebugAttachDialog, LazarusPackageIntf;
+  FeedbackDlg, DebugAttachDialog, BreakPropertyDlg, EvaluateDlg, InspectDlg, 
+  BreakPointsDlg, LazarusPackageIntf;
 
 implementation
 

@@ -46,7 +46,7 @@ uses
   // DebuggerIntf
   DbgIntfDebuggerBase, LazClasses, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
   // IDE
-  BaseDebugManager, InputHistory, IDEProcs, Debugger,
+  BaseDebugManager, InputHistory, Debugger,
   IdeDebuggerWatchResPrinter, IdeDebuggerWatchResult, IdeDebuggerOpts,
   IdeDebuggerBackendValueConv, WatchInspectToolbar, DebuggerDlg,
   IdeDebuggerStringConstants, IdeDebuggerBase, EnvironmentOpts, RecentListProcs;

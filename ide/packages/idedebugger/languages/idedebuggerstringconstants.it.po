@@ -90,8 +90,10 @@ msgid "Unsigned"
 msgstr "Senza segno"
 
 #: idedebuggerstringconstants.dlgbackconvoptaction
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dlgbackconvoptaction"
 msgid "Action"
-msgstr ""
+msgstr "Azione"
 
 #: idedebuggerstringconstants.dlgbackconvoptaddnew
 msgid "Add"
@@ -482,6 +484,16 @@ msgstr "Divisione"
 #: idedebuggerstringconstants.lisbreakpointproperties
 msgid "Breakpoint Properties"
 msgstr "Proprietà del breakpoint"
+
+#: idedebuggerstringconstants.lisbrkpointaction
+msgctxt "idedebuggerstringconstants.lisbrkpointaction"
+msgid "Action"
+msgstr "Azione"
+
+#: idedebuggerstringconstants.lisbrkpointstate
+msgctxt "idedebuggerstringconstants.lisbrkpointstate"
+msgid "State"
+msgstr "Stato"
 
 #: idedebuggerstringconstants.liscallstacknotevaluated
 msgid "Stack not evaluated"
@@ -993,6 +1005,10 @@ msgstr ""
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "&Aiuto"
+
+#: idedebuggerstringconstants.lismenuviewbreakpoints
+msgid "BreakPoints"
+msgstr "Breakpoint"
 
 #: idedebuggerstringconstants.lismenuviewcallstack
 msgid "Call Stack"

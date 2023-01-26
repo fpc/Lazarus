@@ -89,8 +89,10 @@ msgid "Unsigned"
 msgstr ""
 
 #: idedebuggerstringconstants.dlgbackconvoptaction
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dlgbackconvoptaction"
 msgid "Action"
-msgstr ""
+msgstr "Działanie"
 
 #: idedebuggerstringconstants.dlgbackconvoptaddnew
 msgid "Add"
@@ -477,6 +479,16 @@ msgstr "Przerwij"
 #: idedebuggerstringconstants.lisbreakpointproperties
 msgid "Breakpoint Properties"
 msgstr "Właściwości pułapki"
+
+#: idedebuggerstringconstants.lisbrkpointaction
+msgctxt "idedebuggerstringconstants.lisbrkpointaction"
+msgid "Action"
+msgstr "Działanie"
+
+#: idedebuggerstringconstants.lisbrkpointstate
+msgctxt "idedebuggerstringconstants.lisbrkpointstate"
+msgid "State"
+msgstr "Stan"
 
 #: idedebuggerstringconstants.liscallstacknotevaluated
 #, fuzzy
@@ -999,6 +1011,10 @@ msgstr "Przerwij"
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "Pomo&c"
+
+#: idedebuggerstringconstants.lismenuviewbreakpoints
+msgid "BreakPoints"
+msgstr "Pułapki"
 
 #: idedebuggerstringconstants.lismenuviewcallstack
 msgid "Call Stack"

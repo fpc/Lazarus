@@ -38,12 +38,11 @@ unit BreakPointsDlg;
 interface
 
 uses
+
   Classes, SysUtils, LazFileUtils, Forms, Controls, Dialogs,
   IDEWindowIntf, Menus, ComCtrls, Debugger, DebuggerDlg, ActnList,
   IDEImagesIntf, DbgIntfDebuggerBase, DbgIntfMiscClasses,
-  BaseDebugManager, IdeDebuggerStringConstants, IdeIntfStrConsts,
-  // IDE
-  LazarusIDEStrConsts, SourceEditor, MainBase, MainIntf;
+  BaseDebugManager, IdeDebuggerStringConstants, IdeIntfStrConsts, SrcEditorIntf;
 
 type
   TBreakPointsDlgState = (
@@ -389,11 +388,11 @@ procedure TBreakPointsDlg.BreakpointsDlgCREATE(Sender: TObject);
 begin
   Caption:= lisMenuViewBreakPoints;
   lvBreakPoints.Align:=alClient;
-  lvBreakPoints.Columns[0].Caption:= lisOIPState;
+  lvBreakPoints.Columns[0].Caption:= lisBrkPointState;
   lvBreakPoints.Columns[1].Caption:= lisFilenameAddress;
   lvBreakPoints.Columns[2].Caption:= lisLineLength;
   lvBreakPoints.Columns[3].Caption:= lisCondition;
-  lvBreakPoints.Columns[4].Caption:= lisLazBuildABOAction;
+  lvBreakPoints.Columns[4].Caption:= lisBrkPointAction;
   lvBreakPoints.Columns[5].Caption:= lisPassCount;
   lvBreakPoints.Columns[6].Caption:= lisGroup;
   actShow.Caption := lisViewSource;
@@ -504,11 +503,11 @@ end;
 procedure TBreakPointsDlg.actAddSourceBPExecute(Sender: TObject);
 var
   NewBreakpoint: TIDEBreakPoint;
-  SrcEdit: TSourceEditor;
+  SrcEdit: TSourceEditorInterface;
 begin
-  SrcEdit := SourceEditorManager.GetActiveSE;
+  SrcEdit := SourceEditorManagerIntf.ActiveEditor;
   if SrcEdit <> nil then
-    NewBreakpoint := BreakPoints.Add(SrcEdit.FileName, SrcEdit.CurrentCursorYLine, True)
+    NewBreakpoint := BreakPoints.Add(SrcEdit.FileName, SrcEdit.CursorTextXY.Y, True)
   else
     NewBreakpoint := BreakPoints.Add('', 0, True);
   if DebugBoss.ShowBreakPointProperties(NewBreakpoint) = mrOk then begin
@@ -1006,8 +1005,7 @@ begin
   if CurItem=nil then exit;
   CurBreakPoint:=TIDEBreakPoint(CurItem.Data);
   if CurBreakPoint.Kind = bpkSource then
-    MainIDE.DoJumpToSourcePosition(CurBreakPoint.Source, 0, CurBreakPoint.Line, 0,
-      [jfAddJumpPoint, jfFocusEditor, jfMarkLine, jfSearchVirtualFullPath]);
+    DebugBoss.JumpToUnitSource(CurBreakPoint.Source, CurBreakPoint.Line, False);
 end;
 
 procedure TBreakPointsDlg.ShowProperties;

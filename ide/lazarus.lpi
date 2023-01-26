@@ -1432,12 +1432,6 @@
         <HasResources Value="True"/>
         <UnitName Value="AssemblerDlg"/>
       </Unit>
-      <Unit>
-        <Filename Value="../debugger/breakpointsdlg.pp"/>
-        <IsPartOfProject Value="True"/>
-        <HasResources Value="True"/>
-        <UnitName Value="BreakPointsDlg"/>
-      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

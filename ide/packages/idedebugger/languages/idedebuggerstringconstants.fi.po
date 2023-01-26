@@ -89,8 +89,10 @@ msgid "Unsigned"
 msgstr "Etumerkitön"
 
 #: idedebuggerstringconstants.dlgbackconvoptaction
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dlgbackconvoptaction"
 msgid "Action"
-msgstr ""
+msgstr "Toiminta"
 
 #: idedebuggerstringconstants.dlgbackconvoptaddnew
 msgid "Add"
@@ -474,6 +476,16 @@ msgstr "Keskeytä"
 #: idedebuggerstringconstants.lisbreakpointproperties
 msgid "Breakpoint Properties"
 msgstr "Keskeytyskohdan ominaisuudet"
+
+#: idedebuggerstringconstants.lisbrkpointaction
+msgctxt "idedebuggerstringconstants.lisbrkpointaction"
+msgid "Action"
+msgstr "Toiminta"
+
+#: idedebuggerstringconstants.lisbrkpointstate
+msgctxt "idedebuggerstringconstants.lisbrkpointstate"
+msgid "State"
+msgstr "Tila"
 
 #: idedebuggerstringconstants.liscallstacknotevaluated
 msgid "Stack not evaluated"
@@ -983,6 +995,10 @@ msgstr "&Keskeytä"
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "&Ohje"
+
+#: idedebuggerstringconstants.lismenuviewbreakpoints
+msgid "BreakPoints"
+msgstr "Keskeytyskohdat"
 
 #: idedebuggerstringconstants.lismenuviewcallstack
 msgid "Call Stack"

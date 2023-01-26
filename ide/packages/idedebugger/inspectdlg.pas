@@ -38,7 +38,7 @@ uses
   DbgIntfDebuggerBase, DbgIntfBaseTypes, LazClasses, SpinEx, LazDebuggerIntf,
   LazDebuggerIntfBaseTypes,
   // IDE
-  BaseDebugManager, InputHistory, IDEProcs, Debugger,
+  BaseDebugManager, InputHistory, Debugger,
   IdeDebuggerWatchResPrinter, IdeDebuggerWatchResult, IdeDebuggerWatchResUtils,
   IdeDebuggerBase, ArrayNavigationFrame, IdeDebuggerOpts,
   IdeDebuggerBackendValueConv, WatchInspectToolbar, DebuggerDlg,

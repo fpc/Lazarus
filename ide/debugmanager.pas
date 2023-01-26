@@ -263,7 +263,8 @@ type
     function GetFullFilename(const AUnitinfo: TDebuggerUnitInfo; out Filename: string;
                              AskUserIfNotFound: Boolean): Boolean; override;
     function GetFullFilename(var Filename: string; AskUserIfNotFound: Boolean): Boolean; override;
-    procedure JumpToUnitSource(AnUnitInfo: TDebuggerUnitInfo; ALine: Integer); override;
+    procedure JumpToUnitSource(AFileName: String; ALine: Integer; AMapLineFromDebug: Boolean = True); override;
+    procedure JumpToUnitSource(AnUnitInfo: TDebuggerUnitInfo; ALine: Integer; AMapLineFromDebug: Boolean = True); override;
 
     function DoCreateBreakPoint(const AFilename: string; ALine: integer;
                                 WarnIfNoDebugger: boolean): TModalResult; override;
@@ -974,14 +975,35 @@ begin
   end;
 end;
 
+procedure TDebugManager.JumpToUnitSource(AFileName: String; ALine: Integer;
+  AMapLineFromDebug: Boolean);
+var
+  ok: Boolean;
+  JmpFlags: TJumpToCodePosFlags;
+begin
+  debugln(DBG_LOCATION_INFO, ['JumpToUnitSource Filename =', AFileName ]);
+  // avoid any process-messages, so this proc can not be re-entered (avoid opening one files many times)
+  LockCommandProcessing;
+  try
+    ok := false;
+    JmpFlags := [jfAddJumpPoint, jfFocusEditor, jfMarkLine, jfSearchVirtualFullPath];
+    if AMapLineFromDebug then
+      JmpFlags := JmpFlags + [jfMapLineFromDebug];
+    if FilenameIsAbsolute(AFilename) then
+      ok := MainIDEInterface.DoJumpToSourcePosition(AFilename, 0, ALine, 0, JmpFlags) = mrOK;
+    if not ok then
+      MainIDEInterface.DoJumpToSourcePosition(AFilename, 0, ALine, 0, JmpFlags+[jfDoNotExpandFilename]);
+  finally
+    UnLockCommandProcessing;
+  end;
+end;
+
 procedure TDebugManager.JumpToUnitSource(AnUnitInfo: TDebuggerUnitInfo;
-  ALine: Integer);
-const
-  JmpFlags: TJumpToCodePosFlags =
-    [jfAddJumpPoint, jfFocusEditor, jfMarkLine, jfMapLineFromDebug, jfSearchVirtualFullPath];
+  ALine: Integer; AMapLineFromDebug: Boolean);
 var
   Filename: String;
   ok: Boolean;
+  JmpFlags: TJumpToCodePosFlags;
 begin
   if AnUnitInfo = nil then exit;
   debugln(DBG_LOCATION_INFO, ['JumpToUnitSource AnUnitInfo=', AnUnitInfo.DebugText ]);
@@ -997,6 +1019,9 @@ begin
       ok := false;
       if ALine <= 0 then
         ALine := AnUnitInfo.SrcLine;
+      JmpFlags := [jfAddJumpPoint, jfFocusEditor, jfMarkLine, jfSearchVirtualFullPath];
+      if AMapLineFromDebug then
+        JmpFlags := JmpFlags + [jfMapLineFromDebug];
       if FilenameIsAbsolute(Filename) then
         ok := MainIDEInterface.DoJumpToSourcePosition(Filename, 0, ALine, 0, JmpFlags) = mrOK;
       if not ok then

@@ -158,6 +158,22 @@
         <Filename Value="debugattachdialog.pas"/>
         <UnitName Value="DebugAttachDialog"/>
       </Item>
+      <Item>
+        <Filename Value="breakpropertydlg.pas"/>
+        <UnitName Value="BreakPropertyDlg"/>
+      </Item>
+      <Item>
+        <Filename Value="evaluatedlg.pp"/>
+        <UnitName Value="EvaluateDlg"/>
+      </Item>
+      <Item>
+        <Filename Value="inspectdlg.pas"/>
+        <UnitName Value="InspectDlg"/>
+      </Item>
+      <Item>
+        <Filename Value="breakpointsdlg.pp"/>
+        <UnitName Value="BreakPointsDlg"/>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

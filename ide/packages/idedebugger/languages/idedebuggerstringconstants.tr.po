@@ -89,8 +89,10 @@ msgid "Unsigned"
 msgstr "İmzasız"
 
 #: idedebuggerstringconstants.dlgbackconvoptaction
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dlgbackconvoptaction"
 msgid "Action"
-msgstr ""
+msgstr "Aksiyon"
 
 #: idedebuggerstringconstants.dlgbackconvoptaddnew
 msgid "Add"
@@ -475,6 +477,16 @@ msgstr "Kırılma"
 #: idedebuggerstringconstants.lisbreakpointproperties
 msgid "Breakpoint Properties"
 msgstr "Kesme Noktası Özellikleri"
+
+#: idedebuggerstringconstants.lisbrkpointaction
+msgctxt "idedebuggerstringconstants.lisbrkpointaction"
+msgid "Action"
+msgstr "Aksiyon"
+
+#: idedebuggerstringconstants.lisbrkpointstate
+msgctxt "idedebuggerstringconstants.lisbrkpointstate"
+msgid "State"
+msgstr "Durum"
 
 #: idedebuggerstringconstants.liscallstacknotevaluated
 msgid "Stack not evaluated"
@@ -982,6 +994,10 @@ msgstr "Kırılmalar"
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "&Yardım"
+
+#: idedebuggerstringconstants.lismenuviewbreakpoints
+msgid "BreakPoints"
+msgstr "Kırılma noktaları"
 
 #: idedebuggerstringconstants.lismenuviewcallstack
 msgid "Call Stack"

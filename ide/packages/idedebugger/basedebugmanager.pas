@@ -176,7 +176,8 @@ type
     function GetFullFilename(var Filename: string; AskUserIfNotFound: Boolean): Boolean; virtual; abstract;
 
     procedure EvaluateModify(const AExpression: String; AWatch: TWatch = nil); virtual; abstract;
-    procedure JumpToUnitSource(AnUnitInfo: TDebuggerUnitInfo; ALine: Integer); virtual; abstract;
+    procedure JumpToUnitSource(AFileName: String; ALine: Integer; AMapLineFromDebug: Boolean = True); virtual; abstract;
+    procedure JumpToUnitSource(AnUnitInfo: TDebuggerUnitInfo; ALine: Integer; AMapLineFromDebug: Boolean = True); virtual; abstract;
 
     procedure Inspect(const AExpression: String; AWatch: TWatch = nil); virtual; abstract;
 

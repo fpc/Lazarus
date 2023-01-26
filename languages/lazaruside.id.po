@@ -14114,10 +14114,6 @@ msgctxt "lazarusidestrconsts.lismenuviewassembler"
 msgid "Assembler"
 msgstr ""
 
-#: lazarusidestrconsts.lismenuviewbreakpoints
-msgid "BreakPoints"
-msgstr "BreakPoints"
-
 #: lazarusidestrconsts.lismenuviewcodebrowser
 #, fuzzy
 msgctxt "lazarusidestrconsts.lismenuviewcodebrowser"

@@ -463,6 +463,16 @@ msgstr ""
 msgid "Breakpoint Properties"
 msgstr ""
 
+#: idedebuggerstringconstants.lisbrkpointaction
+msgctxt "idedebuggerstringconstants.lisbrkpointaction"
+msgid "Action"
+msgstr ""
+
+#: idedebuggerstringconstants.lisbrkpointstate
+msgctxt "idedebuggerstringconstants.lisbrkpointstate"
+msgid "State"
+msgstr ""
+
 #: idedebuggerstringconstants.liscallstacknotevaluated
 msgid "Stack not evaluated"
 msgstr ""
@@ -969,6 +979,10 @@ msgstr ""
 
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
+msgstr ""
+
+#: idedebuggerstringconstants.lismenuviewbreakpoints
+msgid "BreakPoints"
 msgstr ""
 
 #: idedebuggerstringconstants.lismenuviewcallstack

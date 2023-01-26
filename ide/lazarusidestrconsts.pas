@@ -67,8 +67,6 @@ resourcestring
   lisNew = 'New';
   lisClose = 'Close';
   lisBtnClose = '&Close';
-  lisBreak = 'Break';
-  lisMenuBreak = '&Break';
   lisExit = 'Exit';
   lisQuit = 'Quit';
   lisBtnQuit = '&Quit';
@@ -441,7 +439,6 @@ resourcestring
   lisMenuViewComponentPalette = 'Component Palette';
   lisMenuDebugWindows = 'Debug Windows';
   lisMenuViewWatches = 'Watches';
-  lisMenuViewBreakPoints = 'BreakPoints';
   lisMenuViewLocalVariables = 'Local Variables';
   lisMenuViewPseudoTerminal = 'Console In/Output';
   lisMenuViewRegisters = 'Registers';

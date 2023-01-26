@@ -90,8 +90,10 @@ msgid "Unsigned"
 msgstr "未署名"
 
 #: idedebuggerstringconstants.dlgbackconvoptaction
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dlgbackconvoptaction"
 msgid "Action"
-msgstr ""
+msgstr "アクション"
 
 #: idedebuggerstringconstants.dlgbackconvoptaddnew
 msgid "Add"
@@ -480,6 +482,16 @@ msgstr "ブレーク"
 #: idedebuggerstringconstants.lisbreakpointproperties
 msgid "Breakpoint Properties"
 msgstr "ブレークポイントプロパティ"
+
+#: idedebuggerstringconstants.lisbrkpointaction
+msgctxt "idedebuggerstringconstants.lisbrkpointaction"
+msgid "Action"
+msgstr "アクション"
+
+#: idedebuggerstringconstants.lisbrkpointstate
+msgctxt "idedebuggerstringconstants.lisbrkpointstate"
+msgid "State"
+msgstr "状態"
 
 #: idedebuggerstringconstants.liscallstacknotevaluated
 msgid "Stack not evaluated"
@@ -991,6 +1003,10 @@ msgstr "ブレーク(&B)"
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "ヘルプ(&H)"
+
+#: idedebuggerstringconstants.lismenuviewbreakpoints
+msgid "BreakPoints"
+msgstr "ブレークポイント"
 
 #: idedebuggerstringconstants.lismenuviewcallstack
 msgid "Call Stack"

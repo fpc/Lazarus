@@ -483,6 +483,16 @@ msgstr "Interromper"
 msgid "Breakpoint Properties"
 msgstr "Propriedades Pontos de Paradas"
 
+#: idedebuggerstringconstants.lisbrkpointaction
+msgctxt "idedebuggerstringconstants.lisbrkpointaction"
+msgid "Action"
+msgstr "Ação"
+
+#: idedebuggerstringconstants.lisbrkpointstate
+msgctxt "idedebuggerstringconstants.lisbrkpointstate"
+msgid "State"
+msgstr "Estado"
+
 #: idedebuggerstringconstants.liscallstacknotevaluated
 msgid "Stack not evaluated"
 msgstr "Pilha não avaliada"
@@ -990,6 +1000,10 @@ msgstr "&Interromper"
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "Aj&uda"
+
+#: idedebuggerstringconstants.lismenuviewbreakpoints
+msgid "BreakPoints"
+msgstr "Pontos de parada"
 
 #: idedebuggerstringconstants.lismenuviewcallstack
 msgid "Call Stack"

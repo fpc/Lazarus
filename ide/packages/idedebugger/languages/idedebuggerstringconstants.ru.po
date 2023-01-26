@@ -475,6 +475,16 @@ msgstr "Останов"
 msgid "Breakpoint Properties"
 msgstr "Параметры точки останова"
 
+#: idedebuggerstringconstants.lisbrkpointaction
+msgctxt "idedebuggerstringconstants.lisbrkpointaction"
+msgid "Action"
+msgstr "Действие"
+
+#: idedebuggerstringconstants.lisbrkpointstate
+msgctxt "idedebuggerstringconstants.lisbrkpointstate"
+msgid "State"
+msgstr "Состояние"
+
 #: idedebuggerstringconstants.liscallstacknotevaluated
 msgid "Stack not evaluated"
 msgstr "Стек не определён"
@@ -982,6 +992,10 @@ msgstr "&Остановить"
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "&Справка"
+
+#: idedebuggerstringconstants.lismenuviewbreakpoints
+msgid "BreakPoints"
+msgstr "Точки останова"
 
 #: idedebuggerstringconstants.lismenuviewcallstack
 msgid "Call Stack"

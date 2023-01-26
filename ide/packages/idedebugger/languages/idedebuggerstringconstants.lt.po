@@ -90,8 +90,10 @@ msgid "Unsigned"
 msgstr "Be ženklo"
 
 #: idedebuggerstringconstants.dlgbackconvoptaction
+#, fuzzy
+msgctxt "idedebuggerstringconstants.dlgbackconvoptaction"
 msgid "Action"
-msgstr ""
+msgstr "Veiksmas"
 
 #: idedebuggerstringconstants.dlgbackconvoptaddnew
 msgid "Add"
@@ -480,6 +482,16 @@ msgstr "Stabdyti"
 #: idedebuggerstringconstants.lisbreakpointproperties
 msgid "Breakpoint Properties"
 msgstr "Stabdos tašo savybės"
+
+#: idedebuggerstringconstants.lisbrkpointaction
+msgctxt "idedebuggerstringconstants.lisbrkpointaction"
+msgid "Action"
+msgstr "Veiksmas"
+
+#: idedebuggerstringconstants.lisbrkpointstate
+msgctxt "idedebuggerstringconstants.lisbrkpointstate"
+msgid "State"
+msgstr "Būsena"
 
 #: idedebuggerstringconstants.liscallstacknotevaluated
 msgid "Stack not evaluated"
@@ -991,6 +1003,10 @@ msgstr "&Pertraukti"
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "Žin&ynas"
+
+#: idedebuggerstringconstants.lismenuviewbreakpoints
+msgid "BreakPoints"
+msgstr "Stabdos taškai"
 
 #: idedebuggerstringconstants.lismenuviewcallstack
 msgid "Call Stack"
