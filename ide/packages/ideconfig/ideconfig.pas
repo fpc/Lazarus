@@ -10,7 +10,8 @@ interface
 uses
   SearchPathProcs, RecentListProcs, IdeXmlConfigProcs, LazConf, 
   TransferMacrosIntf, IDEOptionDefs, ModeMatrixOpts, EditorToolBarOptions, 
-  ToolBarOptionsBase, CoolBarOptions, EnvironmentOpts, LazarusPackageIntf;
+  ToolBarOptionsBase, CoolBarOptions, EnvironmentOpts, DiffPatch, 
+  InputHistory, LazarusPackageIntf;
 
 implementation
 
