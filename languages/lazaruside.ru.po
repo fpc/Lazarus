@@ -5286,11 +5286,6 @@ msgstr "Это сосед, к которому привязывается ниж
 msgid "Bottom space equally"
 msgstr "Равномерно по нижним краям"
 
-#: lazarusidestrconsts.lisbreak
-msgctxt "lazarusidestrconsts.lisbreak"
-msgid "Break"
-msgstr "Останов"
-
 #: lazarusidestrconsts.lisbrowseandselectacompiler
 msgid "Browse and select a compiler (e.g. ppcx64"
 msgstr "Просмотреть и выбрать компилятор (например, ppcx64"
@@ -12239,10 +12234,6 @@ msgstr "Добавить &наблюдение ..."
 #: lazarusidestrconsts.lismenubeaklinesinselection
 msgid "Break Lines in Selection"
 msgstr "Разбить строки в выделенном"
-
-#: lazarusidestrconsts.lismenubreak
-msgid "&Break"
-msgstr "&Остановить"
 
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"

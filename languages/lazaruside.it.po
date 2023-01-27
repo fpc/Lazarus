@@ -5429,11 +5429,6 @@ msgstr "Questo è il controllo compagno a cui il bordo inferiore è ancorato. La
 msgid "Bottom space equally"
 msgstr "Stessa spaziature al fondo"
 
-#: lazarusidestrconsts.lisbreak
-msgctxt "lazarusidestrconsts.lisbreak"
-msgid "Break"
-msgstr "Divisione"
-
 #: lazarusidestrconsts.lisbrowseandselectacompiler
 msgid "Browse and select a compiler (e.g. ppcx64"
 msgstr ""
@@ -12517,10 +12512,6 @@ msgstr "Aggiungi &watch ..."
 #: lazarusidestrconsts.lismenubeaklinesinselection
 msgid "Break Lines in Selection"
 msgstr "Spezza le righe nella selezione"
-
-#: lazarusidestrconsts.lismenubreak
-msgid "&Break"
-msgstr ""
 
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"

@@ -5419,11 +5419,6 @@ msgstr "Tai kaimyninė komponentė, prie kurios bus pririštas apatinis kraštas
 msgid "Bottom space equally"
 msgstr "Tolygiai rikiuoti pagal apatinius kraštus"
 
-#: lazarusidestrconsts.lisbreak
-msgctxt "lazarusidestrconsts.lisbreak"
-msgid "Break"
-msgstr "Stabdyti"
-
 #: lazarusidestrconsts.lisbrowseandselectacompiler
 msgid "Browse and select a compiler (e.g. ppcx64"
 msgstr ""
@@ -12438,10 +12433,6 @@ msgstr "Pridėti &stebimąjį…"
 #: lazarusidestrconsts.lismenubeaklinesinselection
 msgid "Break Lines in Selection"
 msgstr "Laužyti eilutes pažymėtoje srityje"
-
-#: lazarusidestrconsts.lismenubreak
-msgid "&Break"
-msgstr "&Pertraukti"
 
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"

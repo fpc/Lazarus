@@ -5459,11 +5459,6 @@ msgstr "Este es el control hermano al cual el lado inferior está anclado. Déje
 msgid "Bottom space equally"
 msgstr "Igualar espaciado inferior"
 
-#: lazarusidestrconsts.lisbreak
-msgctxt "lazarusidestrconsts.lisbreak"
-msgid "Break"
-msgstr "Interrumpir"
-
 #: lazarusidestrconsts.lisbrowseandselectacompiler
 msgid "Browse and select a compiler (e.g. ppcx64"
 msgstr "Explore y seleccione un compilador (ejemplo ppcx64"
@@ -12590,10 +12585,6 @@ msgstr "Añadir Punto de Observación ..."
 #: lazarusidestrconsts.lismenubeaklinesinselection
 msgid "Break Lines in Selection"
 msgstr "Dividir Líneas en la Selección"
-
-#: lazarusidestrconsts.lismenubreak
-msgid "&Break"
-msgstr "&Break"
 
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"

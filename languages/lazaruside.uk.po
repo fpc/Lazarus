@@ -5301,11 +5301,6 @@ msgstr "Це елемент керування одного рівня, за я�
 msgid "Bottom space equally"
 msgstr "Рівномірно нижні краї"
 
-#: lazarusidestrconsts.lisbreak
-msgctxt "lazarusidestrconsts.lisbreak"
-msgid "Break"
-msgstr "Перервати"
-
 #: lazarusidestrconsts.lisbrowseandselectacompiler
 msgid "Browse and select a compiler (e.g. ppcx64"
 msgstr "Відшукайте і виберітиь компілятор (наприклад, ppcx64)"
@@ -12271,10 +12266,6 @@ msgstr "Додати &спостереження..."
 #: lazarusidestrconsts.lismenubeaklinesinselection
 msgid "Break Lines in Selection"
 msgstr "Розбивати рядки у вибраному"
-
-#: lazarusidestrconsts.lismenubreak
-msgid "&Break"
-msgstr "&Перервати"
 
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"

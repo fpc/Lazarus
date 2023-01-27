@@ -5424,11 +5424,6 @@ msgstr ""
 msgid "Bottom space equally"
 msgstr "Rozmieść dolne krawędzie równomiernie"
 
-#: lazarusidestrconsts.lisbreak
-msgctxt "lazarusidestrconsts.lisbreak"
-msgid "Break"
-msgstr "Przerwij"
-
 #: lazarusidestrconsts.lisbrowseandselectacompiler
 msgid "Browse and select a compiler (e.g. ppcx64"
 msgstr ""
@@ -12420,10 +12415,6 @@ msgstr "Dodaj zmienną ..."
 #: lazarusidestrconsts.lismenubeaklinesinselection
 msgid "Break Lines in Selection"
 msgstr "Łam linie w zaznaczeniu"
-
-#: lazarusidestrconsts.lismenubreak
-msgid "&Break"
-msgstr "Przerwij"
 
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"

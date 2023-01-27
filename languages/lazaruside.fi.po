@@ -5297,11 +5297,6 @@ msgstr "Tämä on naapurikontrolli, mihin alareuna on ankkuroitu. Tyhjä tarkoit
 msgid "Bottom space equally"
 msgstr "Tasaa välit alhaalla"
 
-#: lazarusidestrconsts.lisbreak
-msgctxt "lazarusidestrconsts.lisbreak"
-msgid "Break"
-msgstr "Keskeytä"
-
 #: lazarusidestrconsts.lisbrowseandselectacompiler
 msgid "Browse and select a compiler (e.g. ppcx64"
 msgstr "Valitse kääntäjä (esim. ppcx64)"
@@ -12196,10 +12191,6 @@ msgstr "Lisää &vahti ..."
 #: lazarusidestrconsts.lismenubeaklinesinselection
 msgid "Break Lines in Selection"
 msgstr "Rivitä valinta uudelleen"
-
-#: lazarusidestrconsts.lismenubreak
-msgid "&Break"
-msgstr "&Keskeytä"
 
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"

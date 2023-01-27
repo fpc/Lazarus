@@ -5343,11 +5343,6 @@ msgstr "Toto je sourozenec prvku, k jehož dolní straně je ukotvený. Ponechte
 msgid "Bottom space equally"
 msgstr "Dolní prostor stejnoměrně"
 
-#: lazarusidestrconsts.lisbreak
-msgctxt "lazarusidestrconsts.lisbreak"
-msgid "Break"
-msgstr "Přerušit"
-
 #: lazarusidestrconsts.lisbrowseandselectacompiler
 msgid "Browse and select a compiler (e.g. ppcx64"
 msgstr "Procházet a vybrat překladač (např. ppcx64)"
@@ -12317,10 +12312,6 @@ msgstr "Přidat sledování ..."
 #: lazarusidestrconsts.lismenubeaklinesinselection
 msgid "Break Lines in Selection"
 msgstr "Zalomit řádky ve výběru"
-
-#: lazarusidestrconsts.lismenubreak
-msgid "&Break"
-msgstr "&Přerušit"
 
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"

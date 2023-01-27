@@ -5414,11 +5414,6 @@ msgstr "これは下側がアンカーされる兄弟のコントロールです
 msgid "Bottom space equally"
 msgstr "下部間隔を均等に"
 
-#: lazarusidestrconsts.lisbreak
-msgctxt "lazarusidestrconsts.lisbreak"
-msgid "Break"
-msgstr "ブレーク"
-
 #: lazarusidestrconsts.lisbrowseandselectacompiler
 msgid "Browse and select a compiler (e.g. ppcx64"
 msgstr ""
@@ -12408,10 +12403,6 @@ msgstr "監視追加(&W) ..."
 #: lazarusidestrconsts.lismenubeaklinesinselection
 msgid "Break Lines in Selection"
 msgstr "選択範囲内のブレーク行"
-
-#: lazarusidestrconsts.lismenubreak
-msgid "&Break"
-msgstr "ブレーク(&B)"
 
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"

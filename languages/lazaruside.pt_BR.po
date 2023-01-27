@@ -5319,11 +5319,6 @@ msgstr ""
 msgid "Bottom space equally"
 msgstr "Justificar espaço inferior"
 
-#: lazarusidestrconsts.lisbreak
-msgctxt "lazarusidestrconsts.lisbreak"
-msgid "Break"
-msgstr "Interromper"
-
 #: lazarusidestrconsts.lisbrowseandselectacompiler
 msgid "Browse and select a compiler (e.g. ppcx64"
 msgstr "Navegar e selecionar um compilador (ex. ppcx64)"
@@ -12284,10 +12279,6 @@ msgstr "Adicionar &observador ..."
 #: lazarusidestrconsts.lismenubeaklinesinselection
 msgid "Break Lines in Selection"
 msgstr "Interromper linhas na seleção"
-
-#: lazarusidestrconsts.lismenubreak
-msgid "&Break"
-msgstr "&Interromper"
 
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"

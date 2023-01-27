@@ -5320,11 +5320,6 @@ msgstr "这是锚底部的同级控件.在Delphi样式中保空以锚定到父�
 msgid "Bottom space equally"
 msgstr "底部空间相等"
 
-#: lazarusidestrconsts.lisbreak
-msgctxt "lazarusidestrconsts.lisbreak"
-msgid "Break"
-msgstr "中断"
-
 #: lazarusidestrconsts.lisbrowseandselectacompiler
 msgid "Browse and select a compiler (e.g. ppcx64"
 msgstr "浏览和选择一个编译器(例如.ppcx64"
@@ -12282,10 +12277,6 @@ msgstr "增加观察点...(&W)"
 #: lazarusidestrconsts.lismenubeaklinesinselection
 msgid "Break Lines in Selection"
 msgstr "断行在选择处"
-
-#: lazarusidestrconsts.lismenubreak
-msgid "&Break"
-msgstr "中断(Break)(&B)"
 
 #: lazarusidestrconsts.lismenubuildfile
 msgid "Build File"

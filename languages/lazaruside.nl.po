@@ -5494,11 +5494,6 @@ msgstr "Dit is het verwante control waaraan de bodemzijde is verankerd. Laat het
 msgid "Bottom space equally"
 msgstr "Bodem gelijk gespaceerd"
 
-#: lazarusidestrconsts.lisbreak
-msgctxt "lazarusidestrconsts.lisbreak"
-msgid "Break"
-msgstr ""
-
 #: lazarusidestrconsts.lisbrowseandselectacompiler
 msgid "Browse and select a compiler (e.g. ppcx64"
 msgstr ""
@@ -12571,10 +12566,6 @@ msgstr "Watch toevoegen ..."
 
 #: lazarusidestrconsts.lismenubeaklinesinselection
 msgid "Break Lines in Selection"
-msgstr ""
-
-#: lazarusidestrconsts.lismenubreak
-msgid "&Break"
 msgstr ""
 
 #: lazarusidestrconsts.lismenubuildfile
