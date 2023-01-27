@@ -406,7 +406,7 @@ begin
         if (nodeX[i  ] < lBoundingBox.Left) then nodeX[i] := lBoundingBox.Left;
         if (nodeX[i+1] > lBoundingBox.Right) then nodeX[i+1] := lBoundingBox.Right;
         for X := nodeX[i] to nodeX[i+1]-1 do
-          SetColor(X, Y, Brush.FPColor);
+          DrawPixel(X, Y, Brush.FPColor);
       end;
 
       i := i + 2;
