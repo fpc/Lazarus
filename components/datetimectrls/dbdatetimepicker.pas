@@ -95,6 +95,7 @@ type
     property ShowHint;
     property ParentShowHint;
     property Align;
+    property Alignment;
     property Anchors;
     property Constraints;
     property Cursor;
@@ -103,6 +104,7 @@ type
     property NullInputAllowed;
     property Kind;
     property TimeSeparator;
+    property DecimalSeparator;
     property TimeFormat;
     property TimeDisplay;
     property DateMode;

@@ -178,6 +178,7 @@ type
     FShowMonthNames: Boolean;
     FTextForNullDate: TCaption;
     FTimeSeparator: String;
+    FDecimalSeparator: String;
     FTimeDisplay: TTimeDisplay;
     FTimeFormat: TTimeFormat;
     FTrailingSeparator: Boolean;
@@ -194,6 +195,7 @@ type
     FShowCheckBox: Boolean;
     FMouseInCheckBox: Boolean;
     FTimeSeparatorWidth: Integer;
+    FDecimalSeparatorWidth: Integer;
     FMonthWidth: Integer;
     FNullMonthText: String;
     FSelectedTextPart: TTextPart;
@@ -244,6 +246,7 @@ type
     procedure SetCustomMonthNames(AValue: TStrings);
     procedure SetDateDisplayOrder(const AValue: TDateDisplayOrder);
     procedure SetDateMode(const AValue: TDTDateMode);
+    procedure SetDecimalSeparator(AValue: String);
     procedure SetHideDateTimeParts(AValue: TDateTimeParts);
     procedure SetKind(const AValue: TDateTimeKind);
     procedure SetLeadingZeros(const AValue: Boolean);
@@ -274,7 +277,7 @@ type
     procedure SetMiliSec(const AValue: Word);
     procedure SetMinute(const AValue: Word);
     procedure SetSecond(const AValue: Word);
-    procedure SetSeparators(const DateSep, TimeSep: String);
+    procedure SetSeparators(const DateSep, TimeSep, DecSep: String);
     procedure SetDay(const AValue: Word);
     procedure SetMonth(const AValue: Word);
     procedure SetYear(const AValue: Word);
@@ -424,6 +427,8 @@ type
              read FDateSeparator write SetDateSeparator stored AreSeparatorsStored;
     property TimeSeparator: String
              read FTimeSeparator write SetTimeSeparator stored AreSeparatorsStored;
+    property DecimalSeparator: String
+             read FDecimalSeparator write SetDecimalSeparator stored AreSeparatorsStored;
     property UseDefaultSeparators: Boolean
              read FUseDefaultSeparators write SetUseDefaultSeparators;
     property TimeFormat: TTimeFormat read FTimeFormat write SetTimeFormat;
@@ -514,6 +519,7 @@ type
     property NullInputAllowed;
     property Kind;
     property TimeSeparator;
+    property DecimalSeparator;
     property TimeFormat;
     property TimeDisplay;
     property DateMode;
@@ -1052,6 +1058,11 @@ begin
   UpdateShowArrowButton;
 end;
 
+procedure TCustomDateTimePicker.SetDecimalSeparator(AValue: String);
+begin
+  SetSeparators(FDateSeparator, FTimeSeparator, AValue);
+end;
+
 procedure TCustomDateTimePicker.SetHideDateTimeParts(AValue: TDateTimeParts);
 begin
   if FHideDateTimeParts <> AValue then begin
@@ -1204,7 +1215,7 @@ end;
 
 procedure TCustomDateTimePicker.SetDateSeparator(const AValue: String);
 begin
-  SetSeparators(AValue, FTimeSeparator);
+  SetSeparators(AValue, FTimeSeparator, FDecimalSeparator);
 end;
 
 procedure TCustomDateTimePicker.SetMaxDate(const AValue: TDate);
@@ -1297,7 +1308,7 @@ end;
 
 procedure TCustomDateTimePicker.SetTimeSeparator(const AValue: String);
 begin
-  SetSeparators(FDateSeparator, AValue);
+  SetSeparators(FDateSeparator, AValue, FDecimalSeparator);
 end;
 
 procedure TCustomDateTimePicker.SetTimeDisplay(const AValue: TTimeDisplay);
@@ -1331,7 +1342,8 @@ begin
   if FUseDefaultSeparators <> AValue then begin
     if AValue then begin
       SetSeparators(DefaultFormatSettings.DateSeparator,
-                      DefaultFormatSettings.TimeSeparator);
+        DefaultFormatSettings.TimeSeparator,
+        DefaultFormatSettings.DecimalSeparator);
         // Note that here, in SetSeparators procedure,
         // the field FUseDefaultSeparators is set to False.
     end;
@@ -1344,8 +1356,8 @@ end;
  --------------------------------
   In this procedure we measure text and store the values in the following
   fields: FDateWidth, FTimeWidth, FTextWidth, FTextHeigth, FDigitWidth,
-  FSeparatorWidth, FTimeSeparatorWidth, FSepNoSpaceWidth. These fields are used
-  in calculating our preffered size and when painting.
+  FSeparatorWidth, FTimeSeparatorWidth, FDecimalSeparatorWidth, FSepNoSpaceWidth.
+  These fields are used in calculating our preffered size and when painting.
   The procedure is called internally when needed (when properties which
   influence the appearence change). }
 procedure TCustomDateTimePicker.RecalculateTextSizesIfNeeded;
@@ -1429,6 +1441,8 @@ begin
     FTimeWidth := 0;
     FAMPMWidth := 0;
     FTimeSeparatorWidth := 0;
+    FDecimalSeparatorWidth := 0;
+
     if FKind in [dtkTime, dtkDateTime] then begin
 
       for I := dtpHour to dtpMiliSec do
@@ -1444,6 +1458,8 @@ begin
 
       if TimeParts > 1 then begin
         FTimeSeparatorWidth := Canvas.GetTextWidth(FTimeSeparator);
+        FDecimalSeparatorWidth := Canvas.GetTextWidth(FDecimalSeparator);
+
         S := S + FTimeSeparator;
         FTimeWidth := FTimeWidth + (TimeParts - 1) * FTimeSeparatorWidth;
       end;
@@ -1548,7 +1564,7 @@ begin
   SetHMSMs(HMSMs);
 end;
 
-procedure TCustomDateTimePicker.SetSeparators(const DateSep, TimeSep: String);
+procedure TCustomDateTimePicker.SetSeparators(const DateSep, TimeSep, DecSep: String);
 var
   SeparatorsChanged: Boolean;
 begin
@@ -1562,6 +1578,11 @@ begin
 
   if FTimeSeparator <> TimeSep then begin
     FTimeSeparator := TimeSep;
+    SeparatorsChanged := True;
+  end;
+
+  if FDecimalSeparator <> DecSep then begin
+    FDecimalSeparator := DecSep;;
     SeparatorsChanged := True;
   end;
 
@@ -3122,7 +3143,7 @@ begin
   TextStyle.RightToLeft := IsRightToLeft;
 
   if DateIsNull and (FTextForNullDate <> '')
-                       and (not (FTextEnabled and Focused)) then begin
+    and (not (FTextEnabled and Focused)) then begin
 
     if IsRightToLeft then begin
       TextStyle.Alignment := taRightJustify;
@@ -3251,14 +3272,20 @@ begin
           if I = K then begin
             R.Right := R.Left + FDigitWidth;
           end else if I < K then begin
-            R.Right := R.Left + FTimeSeparatorWidth;
-            Canvas.TextRect(R, R.Left, R.Top, FTimeSeparator, TextStyle);
+            if I = Ord(dtpMiliSec) then begin
+              R.Right := R.Left + FDecimalSeparatorWidth;
+              Canvas.TextRect(R, R.Left, R.Top, FDecimalSeparator, TextStyle);
+            end else begin
+              R.Right := R.Left + FTimeSeparatorWidth;
+              Canvas.TextRect(R, R.Left, R.Top, FTimeSeparator, TextStyle);
+            end;
           end;
-        end else begin
+        end else
+        begin
           if FTrailingSeparator then begin
             R.Right := R.Left + FSepNoSpaceWidth;
             Canvas.TextRect(R, R.Left, R.Top,
-                                      TrimRight(FDateSeparator), TextStyle);
+              TrimRight(FDateSeparator), TextStyle);
           end;
           if FTimeWidth > 0 then
             R.Right := R.Right + 2 * FDigitWidth;
@@ -4096,6 +4123,7 @@ begin
   FUseDefaultSeparators := True;
   FDateSeparator := DefaultFormatSettings.DateSeparator;
   FTimeSeparator := DefaultFormatSettings.TimeSeparator;
+  FDecimalSeparator := DefaultFormatSettings.DecimalSeparator;
   FEffectiveCenturyFrom := FCenturyFrom;
   FJumpMinMax := False;
 
