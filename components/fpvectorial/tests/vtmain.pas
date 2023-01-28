@@ -27,6 +27,7 @@ type
     RenderState: array[0..1] of TRenderState;  // 0 = svg, 1 = wmf
     constructor Create(ARenderEvent: TRenderEvent; ARefFilename: String;
       AIntParam: Integer = MaxInt);
+    destructor Destroy; override;
   end;
 
   TRenderCoords  = (rcBottomLeftCoords, rcTopLeftCoords);
@@ -88,6 +89,7 @@ type
     procedure rgTestResultsSelectionChanged(Sender: TObject);
     procedure TreeCustomDrawItem(Sender: TCustomTreeView; Node: TTreeNode;
       State: TCustomDrawState; var DefaultDraw: Boolean);
+    procedure TreeDeletion(Sender: TObject; Node: TTreeNode);
     procedure TreeGetImageIndex(Sender: TObject; Node: TTreeNode);
     procedure TreeGetSelectedIndex(Sender: TObject; Node: TTreeNode);
     procedure TreeSelectionChanged(Sender: TObject);
@@ -196,6 +198,11 @@ begin
   IntParam := AIntParam;
 end;
 
+destructor TRenderParams.Destroy;
+begin
+  RefFile := '';
+  inherited;
+end;
 
 { TMainForm }
 
@@ -207,12 +214,12 @@ var
   renderParams: TRenderParams;
   page: TvVectorialPage;
 begin
-  renderParams := TRenderParams(Tree.Selected.Data);
-  if RenderParams = nil then
+  if (Tree.Selected = nil) or (Tree.Selected.Data = nil) then
     exit;
   if FDoc[rcBottomLeftCoords] = nil then
     exit;
 
+  renderParams := TRenderParams(Tree.Selected.Data);
   page := FDoc[rcBottomLeftCoords].GetPageAsVectorial(0);
 
   bmp := TBitmap.Create;
@@ -247,9 +254,10 @@ var
   fmt: TvVectorialFormat;
   ext: String;
 begin
-  renderParams := TRenderParams(Tree.Selected.Data);
-  if RenderParams = nil then
+  if (Tree.Selected = nil) or (Tree.Selected.Data = nil) then
     exit;
+
+  renderParams := TRenderParams(Tree.Selected.Data);
 
   fmt := GetFileFormat;
   ext := GetFileFormatExt;
@@ -280,10 +288,10 @@ var
 begin
   BtnSaveToFilesClick(nil);
 
-  renderParams := TRenderParams(Tree.Selected.Data);
-  if renderParams = nil then
+  if (Tree.Selected = nil) or (Tree.Selected.Data = nil) then
     exit;
 
+  renderParams := TRenderParams(Tree.Selected.Data);
   ext := GetFileFormatExt;
   folder := GetImagesFolder(ext);
 
@@ -353,25 +361,13 @@ end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 var
-  parentnode, node: TTreeNode;
   rc: TRenderCoords;
 begin
-  parentnode := Tree.Items.GetFirstNode;
-  while parentnode <> nil do begin
-    node := parentnode.GetFirstChild;
-    while node <> nil do begin
-      TObject(node.Data).Free;
-      node := node.GetNextSibling;
-    end;
-    parentnode := parentnode.GetNextSibling;
-  end;
-
   for rc in TRenderCoords do begin
     FreeAndNil(FDoc[rc]);
     FreeAndNil(FDocFromSVG[rc]);
     FreeAndNil(FDocFromWMF[rc]);
   end;
-
   WriteIni;
 end;
 
@@ -474,16 +470,11 @@ begin
 end;
 
 procedure TMainForm.rgTestResultsSelectionChanged(Sender: TObject);
-var
-  renderParams: TRenderParams;
 begin
   if FLockResults > 0 then
     exit;
   if (Tree.Selected <> nil) and (Tree.Selected.Data <> nil) then
   begin
-    renderParams := TRenderParams(Tree.Selected.Data);
-
-    //renderParams.RenderState[CbFileFormat.ItemIndex] := TRenderState(rgTestResults.ItemIndex);
     TreeGetImageIndex(nil, Tree.Selected);
     Tree.Invalidate;
   end;
@@ -1179,6 +1170,15 @@ begin
   else
     Sender.Canvas.Font.Style := [];
   DefaultDraw := true;
+end;
+
+procedure TMainForm.TreeDeletion(Sender: TObject; Node: TTreeNode);
+begin
+  if (TObject(Node.Data) is TRenderParams) then
+  begin
+    TRenderParams(Node.Data).Free;
+    Node.Data := nil;
+  end;
 end;
 
 procedure TMainForm.TreeGetImageIndex(Sender: TObject; Node: TTreeNode);

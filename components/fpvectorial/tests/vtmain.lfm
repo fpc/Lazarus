@@ -38,6 +38,7 @@ object MainForm: TMainForm
       StateImages = ImageList
       TabOrder = 0
       OnCustomDrawItem = TreeCustomDrawItem
+      OnDeletion = TreeDeletion
       OnGetImageIndex = TreeGetImageIndex
       OnGetSelectedIndex = TreeGetSelectedIndex
       OnSelectionChanged = TreeSelectionChanged
