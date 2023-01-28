@@ -6666,9 +6666,6 @@ var
 var
   Points: array of TPoint;
   UpperDim, LowerDim: T3DPoint;
-  {$ifdef USE_LCL_CANVAS}
-  ALCLDest: TCanvas absolute ADest;
-  {$endif}
   txt: String;
 begin
   ADest.Pen.FPColor := AdjustColorToBackground(colBlack, ARenderInfo);
@@ -6818,9 +6815,6 @@ var
 var
   Points: array of TPoint;
   lAngle, lRadius: Double;
-  {$ifdef USE_LCL_CANVAS}
-  ALCLDest: TCanvas absolute ADest;
-  {$endif}
 begin
   ADest.Pen.FPColor := AdjustColorToBackground(colBlack, ARenderInfo);
   ADest.Pen.Width := 1;
@@ -6936,9 +6930,6 @@ var
 var
   Points: array of TPoint = nil;
   lTriangleCenter, lTriangleCorner: T3DPoint;
-  {$ifdef USE_LCL_CANVAS}
-  ALCLDest: TCanvas absolute ADest;
-  {$endif}
   txt: String;
 begin
   ADest.Pen.FPColor := colYellow;//AdjustColorToBackground(colBlack, ARenderInfo);
