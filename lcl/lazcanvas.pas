@@ -86,6 +86,7 @@ type
     FAssignedFont: TFPCustomFont;
     FAssignedPen: TFPCustomPen;
     FBaseWindowOrg: TPoint;
+    FPolygonWindingMode: Boolean;
     {$if defined(ver2_6)}
     FLazClipRegion: TFPCustomRegion;
     {$endif}
@@ -136,6 +137,8 @@ type
     // AIgnoreClippingAndWindowOrg speeds up the drawing a lot, but it is dangerous,
     // don't use it unless you know what you are doing!
     procedure FillColor(AColor: TFPColor; AIgnoreClippingAndWindowOrg: Boolean = False);
+    // Additional Polygon fill routine supporting non-zero winding rule
+    procedure Polygon(const Points: array of TPoint; Winding: Boolean); overload;
     // Utilized by LCLIntf.SelectObject and by RestoreState
     // This needed to be added because Pen/Brush.Assign raises exceptions
     procedure AssignPenData(APen: TFPCustomPen);
@@ -333,12 +336,38 @@ end;
 // unimplemented in FPC
 // algorithm explained here: http://alienryderflex.com/polygon_fill/
 procedure TLazCanvas.DoPolygonFill(const points: array of TPoint);
+
+  function CrossProduct(P, P1, P2: TPoint): Integer;
+  var
+    a, b: TPoint;
+  begin
+    a := P - P1;
+    b := P2 - P1;
+    Result := a.X * b.Y - b.X * a.Y;
+  end;
+
+  procedure CalcWindingNumber(const P, P1, P2: TPoint; var WindingNumber: Integer);
+  begin
+    if CrossProduct(P, P1, P2) > 0 then
+      inc(windingNumber)
+    else
+      dec(windingNumber);
+  end;
+
+type
+  TNode = record
+    X: Integer;
+    Index1, Index2: Integer;
+  end;
 var
   lBoundingBox: TRect;
   x, y, i: integer;
+  x0: Integer;
   // faster version
-  nodes, j, swap, polyCorners: Integer;
-  nodeX: array of Integer;
+  nodeCount, j, polyCorners: Integer;
+  windingNumber, oldWindingNumber: Integer;
+  nodes: array of TNode;
+  swap: TNode;
 begin
   if Brush.Style = bsClear then Exit;
 
@@ -367,49 +396,71 @@ begin
   for y := lBoundingBox.Top to lBoundingBox.Bottom do
   begin
     //  Build a list of nodes.
-    nodes := 0;
+    nodeCount := 0;
     j := polyCorners-1;
+    x0 := lBoundingBox.Left - 10;
     for i := 0 to polyCorners-1 do
     begin
       if (points[i].Y < y) and (points[j].Y >= y) or
       (points[j].Y < y) and (points[i].Y >= Y) then
       begin
-        SetLength(nodeX, nodes+1);
-        nodeX[nodes] := Round(points[i].X + (y-points[i].Y) / (points[j].Y-points[i].Y) * (points[j].X-points[i].X));
-        Inc(nodes);
+        SetLength(nodes, nodeCount+1);
+        nodes[nodeCount].X := Round(points[i].X + (y-points[i].Y) / (points[j].Y-points[i].Y) * (points[j].X-points[i].X));
+        nodes[nodeCount].Index1 := j;
+        nodes[nodeCount].Index2 := i;
+        x0 := nodes[nodeCount].X;
+        Inc(nodeCount);
       end;
       j := i;
     end;
 
     //  Sort the nodes, via a simple “Bubble” sort.
     i := 0;
-    while (i<nodes-1) do
+    while (i<nodeCount-1) do
     begin
-      if (nodeX[i]>nodeX[i+1]) then
+      if (nodes[i].X > nodes[i+1].X) then
       begin
-        swap := nodeX[i];
-        nodeX[i] := nodeX[i+1];
-        nodeX[i+1] := swap;
+        swap := nodes[i];
+        nodes[i] := nodes[i+1];
+        nodes[i+1] := swap;
         if (i <> 0) then Dec(i);
       end
       else
         Inc(i);
     end;
 
-    //  Fill the pixels between node pairs.
     i := 0;
-    while i<nodes do
+    if FPolygonWindingMode and (Length(nodes) > 2) then
     begin
-      if   (nodeX[i  ] >= lBoundingBox.Right) then break;
-      if   (nodeX[i+1] > lBoundingBox.Left) then
+      // Non-zero winding rule
+      windingNumber := 0;
+      oldWindingNumber := 0;
+      while i < nodeCount do
       begin
-        if (nodeX[i  ] < lBoundingBox.Left) then nodeX[i] := lBoundingBox.Left;
-        if (nodeX[i+1] > lBoundingBox.Right) then nodeX[i+1] := lBoundingBox.Right;
-        for X := nodeX[i] to nodeX[i+1]-1 do
-          DrawPixel(X, Y, Brush.FPColor);
+        CalcWindingNumber(Point(lBoundingBox.Left-10, y), points[nodes[i].Index1], points[nodes[i].Index2], windingNumber);
+        if (oldWindingNumber = 0) and (windingNumber <> 0) then
+          x0 := nodes[i].X
+        else if (oldWindingNumber <> 0) and (windingNumber = 0) then
+          for X := x0 to nodes[i].X-1 do
+            DrawPixel(X, Y, Brush.FPColor);
+        oldWindingNumber := windingNumber;
+        inc(i);
       end;
-
-      i := i + 2;
+    end else
+    begin
+      // Even-odd rule: fill the pixels between node pairs.
+      while i<nodeCount do
+      begin
+        if   (nodes[i  ].X >= lBoundingBox.Right) then break;
+        if   (nodes[i+1].X > lBoundingBox.Left) then
+        begin
+          if (nodes[i  ].X < lBoundingBox.Left) then nodes[i].X := lBoundingBox.Left;
+          if (nodes[i+1].X > lBoundingBox.Right) then nodes[i+1].X := lBoundingBox.Right;
+          for X := nodes[i].X to nodes[i+1].X-1 do
+            DrawPixel(X, Y, Brush.FPColor);
+        end;
+        i := i + 2;
+      end;
     end;
   end;
 end;
@@ -793,6 +844,12 @@ begin
       for x := 0 to Width-1 do
         SetColor(x, y, AColor);
   end;
+end;
+
+procedure TLazCanvas.Polygon(const Points: array of TPoint; Winding: Boolean);
+begin
+  FPolygonWindingMode := Winding;
+  inherited Polygon(Points);
 end;
 
 procedure TLazCanvas.AssignPenData(APen: TFPCustomPen);
