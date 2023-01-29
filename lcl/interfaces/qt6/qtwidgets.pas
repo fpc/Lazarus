@@ -7037,7 +7037,7 @@ begin
 
     Result := QMainWindow_create(nil, QtWindow);
 
-    MenuBar := TQtMenuBar.Create(Result);
+    MenuBar := TQtMenuBar.Create({$IFNDEF DARWIN}nil{$ELSE}Result{$ENDIF});
 
     if not (csDesigning in LCLObject.ComponentState) then
       MenuBar.FIsApplicationMainMenu := True
@@ -7115,13 +7115,9 @@ begin
     end;
 
     // Main menu bar
-    {$IFDEF DARWIN}
-    MenuBar := TQtMenuBar.Create(nil);
-    {$ELSE}
     MenuBar := TQtMenuBar.Create(Result);
     if (csDesigning in LCLObject.ComponentState) then
       MenuBar.setProperty(MenuBar.Widget,'lcldesignmenubar',1);
-    {$ENDIF}
 
     {$IFDEF QTSCROLLABLEFORMS}
     if QWidget_windowType(Result) = QtSplashScreen then
