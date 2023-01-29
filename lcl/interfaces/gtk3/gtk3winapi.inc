@@ -1532,17 +1532,32 @@ end;
 
 function TGtk3WidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
+var
+  GtkDC: TGtk3DeviceContext absolute DC;
+  AHWND: HWND;
+  AOffset: TPoint;
+  AScrollinfo: TScrollInfo;
 begin
   Result := False;
-  // {$IFDEF VerboseGtk3DeviceContext}
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('TGtk3WidgetSet.ExtTextOut x=',dbgs(x),' y=',dbgs(y),' Text ',dbgs(Str),' count ',dbgs(Count));
+  {$IFDEF VerboseGtk3DeviceContext}
+  DebugLn(Format('TGtk3WidgetSet.ExtTextOut x=%d y=%d Text=%s count=%d ',[X, Y, String(Str), Count]));
   {$ENDIF}
-  // inherited ExtTextOut(DC, X, Y, Options, Rect, Str, Count, Dx);
-  if IsValidDC(DC) then
+
+  if IsValidDC(DC)then
   begin
-    Result := True;
+    cairo_save(GtkDc.pcr);
+    if Options and ETO_CLIPPED = ETO_CLIPPED then
+    begin
+      cairo_rectangle(GtkDc.pcr, Rect^.Left, Rect^.Top, Rect^.Right - Rect^.Left, Rect^.Bottom - Rect^.Top);
+      cairo_clip(GtkDc.pcr);
+    end;
+    if Options and ETO_OPAQUE = ETO_OPAQUE then
+      TGtk3DeviceContext(DC).fillRect(Rect, HBRUSH(GtkDC.CurrentBrush));
+
+
     TGtk3DeviceContext(DC).drawText(X, Y, Str, Count);
+    cairo_restore(GtkDc.pcr);
+    Result := True;
   end;
 end;
 
