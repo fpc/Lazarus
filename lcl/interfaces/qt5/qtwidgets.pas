@@ -7019,7 +7019,7 @@ begin
 
     Result := QMainWindow_create(nil, QtWindow);
 
-    MenuBar := TQtMenuBar.Create({$IFNDEF DARWIN}nil{$ELSE}Result{$ENDIF});
+    MenuBar := TQtMenuBar.Create({$IFDEF DARWIN}nil{$ELSE}Result{$ENDIF});
 
     if not (csDesigning in LCLObject.ComponentState) then
       MenuBar.FIsApplicationMainMenu := True
