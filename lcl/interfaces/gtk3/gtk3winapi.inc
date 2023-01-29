@@ -192,11 +192,12 @@ function TGtk3WidgetSet.CombineRgn(Dest, Src1, Src2: HRGN;
   fnCombineMode: Longint): Longint;
 var
   RDest,RSrc1,RSrc2: Pcairo_region_t;
+  ARegion: Pcairo_region_t;
   AStatus: cairo_status_t;
   ACairoRect: Tcairo_rectangle_int_t;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  // DebugLn('WARNING: TGtk3WidgetSet.CombineRgn not implemented ...');
+  {$IFDEF VerboseGtk3DeviceContext}
+  DebugLn('TGtk3WidgetSet.CombineRgn combineMode=',dbgs(fnCombineMode));
   {$ENDIF}
   Result := ERROR;
   if not IsValidGDIObject(Dest) or not IsValidGDIObject(Src1) then
@@ -208,59 +209,55 @@ begin
   else
     RSrc2 := TGtk3Region(Src2).Handle;
   AStatus := CAIRO_STATUS_READ_ERROR;
+  ARegion := nil;
   case fnCombineMode of
-    RGN_AND:
-    begin
-      AStatus := cairo_region_intersect(RSrc1, RSrc2);
-      // cairo cannot intersect empty region
-      if cairo_region_is_empty(RDest) then
-      begin
-        cairo_region_destroy(TGtk3Region(Dest).Handle);
-        cairo_region_get_extents(RSrc1, @ACairoRect);
-        TGtk3Region(Dest).Handle := cairo_region_create_rectangle(@ACairoRect);
-        RDest := TGtk3Region(Dest).Handle;
-        //cairo_region_translate(RDest, -ACairoRect.x, -ACairoRect.y);
-      end else
-        AStatus := cairo_region_intersect(RDest, RSrc1);
-    end;
-    RGN_COPY:
-    begin
-      AStatus := cairo_region_intersect(RDest, RSrc1);
-      //DebugLn(['CombineRgn RGN_COPY ',AStatus]);
-    end;
-    RGN_DIFF:
-    begin
-      AStatus := cairo_region_subtract(RSrc1, RSrc2);
-      if cairo_region_is_empty(RDest) then
-      begin
-        cairo_region_destroy(TGtk3Region(Dest).Handle);
-        cairo_region_get_extents(RSrc1, @ACairoRect);
-        TGtk3Region(Dest).Handle := cairo_region_create_rectangle(@ACairoRect);
-        RDest := TGtk3Region(Dest).Handle;
-        cairo_region_translate(RDest, -ACairoRect.x, -ACairoRect.y);
-      end else
-        AStatus := cairo_region_subtract(RDest, RSrc1);
-    end;
-    RGN_OR:
-    begin
-      AStatus := cairo_region_union(RSrc1, RSrc2);
-      AStatus := cairo_region_union(RDest, RSrc1);
-    end;
-    RGN_XOR:
-    begin
-      AStatus := cairo_region_xor(RSrc1, RSrc2);
-      AStatus := cairo_region_xor(RDest, RSrc1);
-    end;
+     RGN_AND:
+     begin
+       ARegion := cairo_region_copy(RSrc1);
+       AStatus := cairo_region_intersect(ARegion, RSrc2);
+     end;
+     RGN_COPY:
+     begin
+       ARegion := cairo_region_copy(RSrc2);
+       AStatus := CAIRO_STATUS_SUCCESS;
+     end;
+     RGN_DIFF:
+     begin
+      ARegion := cairo_region_copy(RSrc1);
+      AStatus := cairo_region_subtract(ARegion, RSrc2);
+     end;
+     RGN_OR:
+     begin
+       ARegion := cairo_region_copy(RSrc1);
+       AStatus := cairo_region_union(ARegion, RSrc2);
+     end;
+     RGN_XOR:
+     begin
+       ARegion := cairo_region_copy(RSrc1);
+       AStatus := cairo_region_xor(ARegion, RSrc2);
+     end;
   end;
-  if (AStatus <> CAIRO_STATUS_SUCCESS) or cairo_region_is_empty(RDest) then
+  if (AStatus <> CAIRO_STATUS_SUCCESS) or (ARegion = nil) or cairo_region_is_empty(ARegion) then
     Result := NullRegion
   else
   begin
-    if cairo_region_num_rectangles(RDest) > 1 then
+
+    cairo_region_destroy(RDest);
+    RDest := cairo_region_copy(ARegion);
+    TGtk3Region(Dest).Handle := RDest;
+    if cairo_region_num_rectangles(ARegion) > 1 then
       Result := ComplexRegion
     else
       Result := SimpleRegion;
   end;
+  {$IFDEF VerboseGtk3DeviceContext}
+  if Result <> NullRegion then
+  begin
+    cairo_region_get_extents(ARegion, @ACairoRect);
+    DebugLn('TGtk3WidgetSet.CombineRgn combineMode=',dbgs(fnCombineMode),' Result=',dbgs(Result),' X=',dbgs(ACairoRect.x),' Y=',dbgs(ACairoRect.y),' W=',dbgs(ACairoRect.width),' h=',dbgs(ACairoRect.height));
+  end;
+  {$ENDIF}
+  cairo_region_destroy(ARegion);
 end;
 
 function TGtk3WidgetSet.CreateBitmap(Width, Height: Integer; Planes,
