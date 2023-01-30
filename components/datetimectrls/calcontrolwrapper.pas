@@ -21,7 +21,7 @@ calendar is clicked on date, but not when the user clicks in title area changing
 months or years, then we let the user keep browsing the calendar).
 
    When creating new wrapper, there are four abstract methods which need to be
-overriden. Please see the comments in code below.
+overridden. Please see the comments in code below.
 
 -----------------------------------------------------------
 LICENCE
@@ -60,10 +60,10 @@ type
   { Should be overriden to just return the class of the calendar control. }
     class function GetCalendarControlClass: TControlClass; virtual abstract;
 
-  { Should be overriden to set the date in the calendar control. }
+  { Should be overridden to set the date in the calendar control. }
     procedure SetDate(Date: TDate); virtual abstract;
 
-  { Should be overriden to get the date from the calendar control. }
+  { Should be overridden to get the date from the calendar control. }
     function GetDate: TDate; virtual abstract;
 
   { This function should return True if coordinates (X, Y) are on the date in

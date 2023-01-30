@@ -56,7 +56,7 @@ uses
 
 const
   { We will deal with the NullDate value the special way. It will be especially
-    useful for dealing with null values from database. }
+    useful for dealing with null values from a database. }
   NullDate = TDateTime(1.7e+308);
 
   { The biggest date a user can enter. }
@@ -70,10 +70,10 @@ const
       older than 24. sep. 1752. Actually, TCalendar control has problems to show
       dates before 1. okt. 1752. (try putting one calendar on the form, run the
       application and see what september 1752. looks like).
-      Let's behave uniformely as much as
+      Let's behave uniformly as much as
       possible -- we won't allow dates before 1. okt. 1752. on any OS (who cares
       about those).
-      So, this will be the down limit:  }
+      So, this will be the lower limit:  }
   TheSmallestDate = TDateTime(-53780.0); // 1. okt. 1752.
 
 var
@@ -99,7 +99,7 @@ type
 
   TTimeDisplay = (tdHM,   // hour and minute
                   tdHMS,  // hour, minute and second
-                  tdHMSMs // hour, minute, second and milisecond
+                  tdHMSMs // hour, minute, second and millisecond
                   );
 
   TTimeFormat = (tf12, // 12 hours format, with am/pm string
@@ -1357,9 +1357,9 @@ end;
   In this procedure we measure text and store the values in the following
   fields: FDateWidth, FTimeWidth, FTextWidth, FTextHeigth, FDigitWidth,
   FSeparatorWidth, FTimeSeparatorWidth, FDecimalSeparatorWidth, FSepNoSpaceWidth.
-  These fields are used in calculating our preffered size and when painting.
+  These fields are used in calculating our preferred size and when painting.
   The procedure is called internally when needed (when properties which
-  influence the appearence change). }
+  influence the appearance change). }
 procedure TCustomDateTimePicker.RecalculateTextSizesIfNeeded;
 const
   NullMonthChar = 'x';
@@ -2062,7 +2062,7 @@ end;
 { GetTextOrigin
  ---------------
   Returns upper left corner of the rectangle where the text is written.
-  Also used in calculating our preffered size. }
+  Also used in calculating our preferred size. }
 function TCustomDateTimePicker.GetTextOrigin(IgnoreRightToLeft: Boolean
   ): TPoint;
 
@@ -3798,10 +3798,10 @@ begin
   SetEnabledForAllChildren(Self);
 end;
 
-{ Our UpDown control is always alligned, but setting its PreferredHeight
-  uncoditionally to 1 prevents the UpDown to mess with our PreferredHeight.
+{ Our UpDown control is always aligned, but setting its PreferredHeight
+  unconditionally to 1 prevents the UpDown to mess with our PreferredHeight.
   The problem is that if we didn't do this, when our Height is greater than
-  really preffered, UpDown prevents it to be set correctly when we set AutoSize
+  really preferred, UpDown prevents it to be set correctly when we set AutoSize
   to True. }
 procedure TDTUpDown.CalculatePreferredSize(var PreferredWidth, PreferredHeight:
   integer; WithThemeSpace: Boolean);
@@ -3813,7 +3813,7 @@ begin
 end;
 
 { We don't want to let EditingDone event to fire each time up-down buttons get
-  clicked. That is why WndProc is overriden. }
+  clicked. That is why WndProc is overridden. }
 procedure TDTUpDown.WndProc(var Message: TLMessage);
 begin
   if ((Message.msg >= LM_MOUSEFIRST) and (Message.msg <= LM_MOUSELAST))
@@ -3887,7 +3887,7 @@ begin
   if DTPicker.FArrowShape = asTheme then
     DrawThemedDropDownArrow
   else begin
-  // First I ment to put arrow images in a lrs file. In my opinion, however, that
+  // First I meant to put arrow images in a lrs file. In my opinion, however, that
   // wouldn't be an elegant option for so simple shapes.
 
     Canvas.Brush.Style := bsSolid;
