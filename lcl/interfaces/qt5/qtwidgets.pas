@@ -7097,6 +7097,11 @@ begin
     end;
 
     MenuBar := TQtMenuBar.Create(Result);
+    {$IFDEF DARWIN}
+    if (csDesigning in LCLObject.ComponentState) or
+      (TCustomForm(LCLObject).Menu = nil) then
+      QMenuBar_setNativeMenuBar(QMenuBarH(MenuBar.Widget), False);
+    {$ENDIF}
     if (csDesigning in LCLObject.ComponentState) then
       MenuBar.setProperty(MenuBar.Widget,'lcldesignmenubar',1);
 
