@@ -26,9 +26,12 @@ uses
   WinKeyInput,
   {$ENDIF}
   {$IFDEF UNIX}
-    {$IFDEF LCLcarbon}
+    {$IF DEFINED(LCLcarbon)}
     CarbonMouseInput,
     CarbonKeyInput,
+    {$ELSEIF DEFINED(LCLcocoa)}
+    CocoaMouseInput,
+    CocoaKeyInput,
     {$ELSE}
     XMouseInput,
     XKeyInput,
