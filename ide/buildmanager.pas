@@ -2382,9 +2382,9 @@ begin
     if (Project1.RunParameterOptions.GetActiveMode<>nil) then
       Result:=Project1.RunParameterOptions.GetActiveMode.CmdLineParams;
     if Result='' then
-      Result:=GetProjectTargetFilename(Project1)
+      Result:='"'+GetProjectTargetFilename(Project1)+'"'
     else
-      Result:=GetProjectTargetFilename(Project1)+' '+Result;
+      Result:='"'+GetProjectTargetFilename(Project1)+'" '+Result;
   end;
 end;
 
