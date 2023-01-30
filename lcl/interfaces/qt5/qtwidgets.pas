@@ -16105,6 +16105,11 @@ begin
 end;
 
 function TQtMenu.actionHandle: QActionH;
+{$IFDEF DARWIN}
+var
+  WStr: WideString;
+  ASequence, APrefs, AQuit: QKeySequenceH;
+{$ENDIF}
 begin
   if FActionHandle = nil then
   begin
@@ -16114,6 +16119,26 @@ begin
       FActionEventFilter := nil;
     end;
     FActionHandle := QMenu_menuAction(QMenuH(Widget));
+    {$IFDEF DARWIN}
+    if ShortCutToText(FMenuItem.ShortCut) <> EmptyStr then
+    begin
+      WStr := UTF8ToUTF16(ShortCutToText(FMenuItem.ShortCut));
+      APrefs := QKeySequence_Create(QKeySequencePreferences);
+      AQuit := QKeySequence_Create(QKeySequenceQuit);
+      ASequence := QKeySequence_Create(PWideString(@WStr));
+      QKeySequence_toString(ASequence, @WStr);
+      if QKeySequence_matches(ASequence, APrefs) = QKeySequenceExactMatch then
+        QAction_setMenuRole(FActionHandle, QActionPreferencesRole)
+      else
+      if QKeySequence_matches(ASequence, AQuit) = QKeySequenceExactMatch then
+        QAction_setMenuRole(FActionHandle, QActionQuitRole)
+      else
+        QAction_setMenuRole(FActionHandle, QActionNoRole);
+      QKeySequence_Destroy(ASequence);
+      QKeySequence_Destroy(APrefs);
+      QKeySequence_Destroy(AQuit);
+    end;
+    {$ENDIF}
     FActionEventFilter := QObject_hook_create(FActionHandle);
     QObject_hook_hook_events(FActionEventFilter, @ActionEventFilter);
   end;
