@@ -7260,7 +7260,7 @@ begin
 
     {$IFDEF DARWIN}
     if (csDesigning in LCLObject.ComponentState) or not IsMainForm then
-      QMenuBar_setNativeMenuBar(QMenuBarH(MenuBar.Widget), False);
+      QMenuBar_setNativeMenuBar(QMenuBarH(FMenuBar.Widget), False);
     {$ENDIF}
     FMenuBar.AttachEvents;
   end;
