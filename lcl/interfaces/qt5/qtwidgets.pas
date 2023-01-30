@@ -7096,14 +7096,18 @@ begin
       QWidget_setMouseTracking(Result, True);
     end;
 
-    MenuBar := TQtMenuBar.Create(Result);
     {$IFDEF DARWIN}
-    if (csDesigning in LCLObject.ComponentState) or
-      (TCustomForm(LCLObject).Menu = nil) then
+    if TCustomForm(LCLObject).Menu <> nil then
+      MenuBar := TQtMenuBar.Create(Result);
+    if Assigned(MenuBar) then
+    begin
       QMenuBar_setNativeMenuBar(QMenuBarH(MenuBar.Widget), False);
-    {$ENDIF}
+    end;
+    {$ELSE}
+    MenuBar := TQtMenuBar.Create(Result);
     if (csDesigning in LCLObject.ComponentState) then
       MenuBar.setProperty(MenuBar.Widget,'lcldesignmenubar',1);
+    {$ENDIF}
 
     {$IFDEF QTSCROLLABLEFORMS}
     if QWidget_windowType(Result) = QtSplashScreen then
@@ -16105,11 +16109,6 @@ begin
 end;
 
 function TQtMenu.actionHandle: QActionH;
-{$IFDEF DARWIN}
-var
-  WStr: WideString;
-  ASequence, APrefs, AQuit: QKeySequenceH;
-{$ENDIF}
 begin
   if FActionHandle = nil then
   begin
@@ -16119,26 +16118,6 @@ begin
       FActionEventFilter := nil;
     end;
     FActionHandle := QMenu_menuAction(QMenuH(Widget));
-    {$IFDEF DARWIN}
-    if ShortCutToText(FMenuItem.ShortCut) <> EmptyStr then
-    begin
-      WStr := UTF8ToUTF16(ShortCutToText(FMenuItem.ShortCut));
-      APrefs := QKeySequence_Create(QKeySequencePreferences);
-      AQuit := QKeySequence_Create(QKeySequenceQuit);
-      ASequence := QKeySequence_Create(PWideString(@WStr));
-      QKeySequence_toString(ASequence, @WStr);
-      if QKeySequence_matches(ASequence, APrefs) = QKeySequenceExactMatch then
-        QAction_setMenuRole(FActionHandle, QActionPreferencesRole)
-      else
-      if QKeySequence_matches(ASequence, AQuit) = QKeySequenceExactMatch then
-        QAction_setMenuRole(FActionHandle, QActionQuitRole)
-      else
-        QAction_setMenuRole(FActionHandle, QActionNoRole);
-      QKeySequence_Destroy(ASequence);
-      QKeySequence_Destroy(APrefs);
-      QKeySequence_Destroy(AQuit);
-    end;
-    {$ENDIF}
     FActionEventFilter := QObject_hook_create(FActionHandle);
     QObject_hook_hook_events(FActionEventFilter, @ActionEventFilter);
   end;
@@ -16294,6 +16273,11 @@ var
   Shift: TShiftState;
   QtK1, QtK2: integer;
   KeySequence: QKeySequenceH;
+  {$IFDEF DARWIN}
+  // WStr: WideString;
+  APrefs, AQuit: QKeySequenceH;
+  S: String;
+  {$ENDIF}
 begin
   QtK1 := 0;
   QtK2 := 0;
@@ -16310,6 +16294,27 @@ begin
   // there is no need in destroying QKeySequnce
   KeySequence := QKeySequence_create(QtK1, QtK2);
   QAction_setShortcut(ActionHandle, KeySequence);
+
+  {$IFDEF DARWIN}
+  APrefs := QKeySequence_Create(QKeySequencePreferences);
+  AQuit := QKeySequence_Create(QKeySequenceQuit);
+  // AAbout := QKeySequence_Create(QKeySequence);
+  S := FMenuItem.Caption;
+  {$warning must find better way to map about role}
+  if S.StartsWith('about',True) then
+    QAction_setMenuRole(FActionHandle, QActionAboutRole)
+  else
+  if QKeySequence_matches(KeySequence, APrefs) = QKeySequenceExactMatch then
+    QAction_setMenuRole(FActionHandle, QActionPreferencesRole)
+  else
+  if QKeySequence_matches(KeySequence, AQuit) = QKeySequenceExactMatch then
+    QAction_setMenuRole(FActionHandle, QActionQuitRole)
+  else
+    QAction_setMenuRole(FActionHandle, QActionNoRole);
+  QKeySequence_Destroy(APrefs);
+  QKeySequence_Destroy(AQuit);
+  {$ENDIF}
+
   QKeySequence_destroy(KeySequence);
 end;
 
