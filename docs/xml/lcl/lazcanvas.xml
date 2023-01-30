@@ -249,6 +249,7 @@ Developing with Graphics
 <element name="TLazCanvas.FAssignedFont"/>
 <element name="TLazCanvas.FAssignedPen"/>
 <element name="TLazCanvas.FBaseWindowOrg"/>
+<element name="TLazCanvas.FPolygonWindingMode"/>
 <element name="TLazCanvas.FLazClipRegion"/>
 <element name="TLazCanvas.FWindowOrg"/>
 
@@ -405,7 +406,16 @@ Implements a polygon fill algorithm not present in fcl-image. The algorithm
 is explained <url href="http://alienryderflex.com/polygon_fill/">here</url>.
 </p>
 </descr>
-<seealso/>
+<version>
+Modified in LCL versions after 2.2.4 to call DrawPixel instead of SetColor 
+when drawing pixels between points on the polygon. This allows the DrawingMode 
+(opacity, alphablending, custom) to be applied to the pixels. Adds support for 
+the non-zero winding rule in the fill operation.
+</version>
+<seealso>
+<link id="TLazCanvas.AlphaBlend"/>
+<link id="TLazCanvas.SetColor"/>
+</seealso>
 </element>
 <element name="TLazCanvas.DoPolygonFill.points">
 <short>Array with the TPoint instances for the polygon corners.</short>
@@ -949,6 +959,44 @@ but it is dangerous; don't use it unless you know what you are doing.
 all pixels for an underlying Image with the specified color. <b>False</b> (the 
 default) limits the scope to the Width and Height for the canvas - not the 
 range of pixels in the Image.
+</short>
+</element>
+
+<element name="TLazCanvas.Polygon">
+<short>
+Overloaded method which adds support for the non-zero winding rule.
+</short>
+<descr>
+<p>
+Polygon is an overloaded method in TLazCanvas. It provides support for the 
+non-zero winding rule in the polygon fill operation.
+</p>
+<p>
+The overloaded variant extends the method from TFPCustomCanvas to include the 
+Winding argument used in the DoPolygonFill method. When Winding is set to 
+<b>True</b>, DoPolygonFill calculates the winding number for the sorted 
+vertices on the polygon and calls DrawPixel to apply the brush color needed 
+for the pixels inside the winding path.
+</p>
+<p>
+Polygon updates the internal member used to store the value in Winding, and 
+calls the inherited method in TFPCustomCanvas where the brush and pen colors 
+are used to draw the polygon represented in Points.
+</p>
+</descr>
+<version>
+Added in LCL version 2.4.
+</version>
+<seealso/>
+</element>
+<element name="TLazCanvas.Polygon.Points">
+<short>
+Array with the TPoint instances for the vertices on the polygon.
+</short>
+</element>
+<element name="TLazCanvas.Polygon.Winding">
+<short>
+<b>True</b> if the non-zero winding rule is enabled for the canvas instance.
 </short>
 </element>
 
