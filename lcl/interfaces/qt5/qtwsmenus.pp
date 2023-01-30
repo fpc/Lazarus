@@ -173,7 +173,7 @@ var
 begin
   {$ifdef VerboseQt}
     WriteLn('trace:> [TQtWSMenuItem.CreateHandle] Caption: ', AMenuItem.Caption,
-     ' Subitems: ' + IntToStr(AMenuItem.Count));
+     ' Subitems: ' + IntToStr(AMenuItem.Count) +' HandleAllocated ? ', AMenuItem.HandleAllocated);
 
     Write('trace:< [TQtWSMenuItem.CreateHandle]');
   {$endif}
@@ -442,9 +442,9 @@ begin
       ((AParent is TCustomForm) or (AParent is TCustomFrame)) then
     begin
       if (AParent is TCustomForm) then
-        MenuBar := TQtMainWindow(TCustomForm(AParent).Handle).MenuBar
+        MenuBar := TQtMainWindow(TCustomForm(AParent).Handle).GetMenuBar
       else
-        MenuBar := TQtMainWindow(TCustomFrame(AParent).Handle).MenuBar;
+        MenuBar := TQtMainWindow(TCustomFrame(AParent).Handle).GetMenuBar;
       Result := HMENU(MenuBar);
     end else
     begin
