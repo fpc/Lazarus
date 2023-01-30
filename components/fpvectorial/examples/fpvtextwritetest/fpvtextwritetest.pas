@@ -10,7 +10,7 @@ program fpvtextwritetest;
 {$mode objfpc}{$H+}
 
 uses
-  fpvectorial, odtvectorialwriter, fpvutils, fpvectorialpkg;
+  fpvectorial, odtvectorialwriter, docxvectorialwriter, fpvutils;
 
 {$R *.res}
 
@@ -76,6 +76,7 @@ begin
     CurList.AddParagraph('The ability to create custom components');
 
     Vec.WriteToFile('text_output.odt', vfODT);
+    Vec.WriteToFile('text_output.docx', vfDOCX);
   finally
     Vec.Free;
   end;

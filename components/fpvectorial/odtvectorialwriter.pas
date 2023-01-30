@@ -1125,12 +1125,6 @@ begin
   // Note that here we write only text spans!
   sText :=  EscapeHTML(AEntity.Value.Text);
 
-  // Trim extra CRLF appended by TStringList.Text
-  If DefaultTextLineBreakStyle = tlbsCRLF Then
-    sText := Copy(sText, 1, Length(sText) - 2)
-  Else
-    sText := Copy(sText, 1, Length(sText) - 1);
-
   sText := StringReplace(sText, '  ', ' <text:s/>', [rfReplaceAll]);
   sText := StringReplace(sText, #09, '<text:tab/>', [rfReplaceAll]);
   sText := StringReplace(sText, #13, '<text:line-break/>', [rfReplaceAll]);

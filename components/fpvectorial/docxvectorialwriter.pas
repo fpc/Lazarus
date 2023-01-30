@@ -700,13 +700,6 @@ Var
       Begin
         sTemp := TvText(oEntity).Value.Text;
 
-        // Strip out the trailing line break
-        // added by TStringList.Text
-        If DefaultTextLineBreakStyle = tlbsCRLF Then
-          sTemp := Copy(sTemp, 1, Length(sTemp) - 2)
-        Else
-          sTemp := Copy(sTemp, 1, Length(sTemp) - 1);
-
         AddTextRun(sTemp, TvText(oEntity).Style);
       End
       Else If oEntity is TvField Then

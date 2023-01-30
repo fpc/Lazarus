@@ -493,13 +493,13 @@ Begin
 
     dtTime := Now;
     Vec.WriteToFile('text_output_docx', vfDOCX);
-
     WriteLn('Native docx writer: '+Format('%.1f msec', [24*60*60*1000*(Now-dtTime)]));
+
     dtTime := Now;
-
     Vec.WriteToFile('text_output_odt', vfODT);
-
     WriteLn('Native odt writer: '+Format('%.1f msec', [24*60*60*1000*(Now-dtTime)]));
+
+
   Finally
     Vec.Free;
   End;
