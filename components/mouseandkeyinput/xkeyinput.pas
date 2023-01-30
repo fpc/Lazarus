@@ -38,7 +38,7 @@ type
   
 function InitializeKeyInput: TKeyInput;
 
-function XTestFakeKeyEvent(dpy: PDisplay; keycode: dword; is_press: Boolean;
+function XTestFakeKeyEvent(dpy: PDisplay; keycode: dword; is_press: Boolean32;
   delay: dword): longint; cdecl; external;
 
 implementation
