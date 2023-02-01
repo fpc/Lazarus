@@ -401,7 +401,6 @@ type
     procedure UpdateMainIDECommands(Sender: TObject);
     procedure UpdateFileCommands(Sender: TObject);
     procedure UpdateEditorCommands(Sender: TObject);
-    procedure UpdateBookmarkCommands(Sender: TObject);
     procedure UpdateEditorTabCommands(Sender: TObject);
     procedure UpdateProjectCommands(Sender: TObject);
     procedure UpdatePackageCommands(Sender: TObject);
@@ -428,6 +427,7 @@ type
     procedure LayoutChangeHandler(Sender: TObject);
     procedure ToolBarOptionsClick(Sender: TObject);
   public
+    procedure UpdateBookmarkCommands(Sender: TObject); override;
     // Environment options dialog event handlers
     function DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
       ACaption: String; AOptionsFilter: array of TAbstractIDEOptionsClass;

@@ -1882,6 +1882,7 @@ end;
 
 procedure TToolButton_GotoBookmarks.RefreshMenu;
 begin
+  MainIDEInterface.UpdateBookmarkCommands(nil);
   AddMenuItems(SrcEditMenuGotoBookmark);
   DropdownMenu.Items.AddSeparator;
   AddMenuItems([
@@ -1904,6 +1905,7 @@ end;
 
 procedure TToolButton_ToggleBookmarks.RefreshMenu;
 begin
+  MainIDEInterface.UpdateBookmarkCommands(nil);
   AddMenuItems(SrcEditMenuToggleBookmark);
   DropdownMenu.Items.AddSeparator;
   AddMenuItem(SrcEditMenuSetFreeBookmark);

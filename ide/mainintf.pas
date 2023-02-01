@@ -124,6 +124,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
 
+    procedure UpdateBookmarkCommands(Sender: TObject); virtual; abstract;
     procedure SetMainBarSubTitle(const AValue: string); override;
     procedure UpdateCaption; virtual; abstract;
     procedure HideIDE; virtual; abstract;
