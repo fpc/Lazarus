@@ -1033,7 +1033,7 @@ begin
       if Assigned(TCustomForm(AWinControl).Menu) then
       begin
         AWin := TQtMainWindow(AWinControl.Handle);
-        AWin.GetMenuBar.sizeHint(@ASize);
+        AWin.MenuBar.sizeHint(@ASize);
         // geometry isn't updated yet
         if ASize.cy < 10 then
           ASize.cy := 0;

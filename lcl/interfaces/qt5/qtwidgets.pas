@@ -668,7 +668,7 @@ type
 
     procedure Activate; override;
     function CanAdjustClientRectOnResize: Boolean; override;
-    function GetMenuBar: TQtMenuBar;
+    function MenuBarNeeded: TQtMenuBar;
     function getAcceptDropFiles: Boolean; override;
     function GetContainerWidget: QWidgetH; override;
     procedure grabMouse; override;
@@ -705,6 +705,7 @@ type
     property IsFrameWindow: Boolean read FIsFrameWindow write FIsFrameWindow; {check if our LCLObject is TCustomFrame}
     property FirstPaintEvent: boolean read FFirstPaintEvent write FFirstPaintEvent; {only for x11 - if firstpaintevent arrived we are 100% sure that frame is 100% accurate}
     property ShowOnTaskBar: Boolean read FShowOnTaskBar;
+    property MenuBar: TQtMenuBar read FMenuBar;
   public
     function WinIDNeeded: boolean; override;
     procedure AttachEvents; override;
@@ -7249,7 +7250,7 @@ begin
   {$ENDIF}
 end;
 
-function TQtMainWindow.GetMenuBar: TQtMenuBar;
+function TQtMainWindow.MenuBarNeeded: TQtMenuBar;
 var
   AParent: QWidgetH;
 begin
