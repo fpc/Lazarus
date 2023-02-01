@@ -326,6 +326,8 @@ type
     property Widget: QWidgetH read GetWidget write SetWidget;
     property WidgetColorRole: QPaletteColorRole read FWidgetColorRole write FWidgetColorRole;
     property WidgetState: TQtWidgetStates read FWidgetState write FWidgetState;
+  public
+    class procedure ConstraintsChange(const AWinControl: TWinControl);
   end;
 
   { TQtAbstractSlider , inherited by TQtScrollBar, TQtTrackBar }
@@ -682,6 +684,7 @@ type
     procedure UpdateRegion(ARgn: QRegionH); override;
     procedure Repaint(ARect: PRect = nil); override;
 
+    function GetClientRectFix(): TSize;
     procedure Resize(ANewWidth, ANewHeight: Integer); override;
     procedure setText(const W: WideString); override;
     procedure setMenuBar(AMenuBar: QMenuBarH);
@@ -4318,6 +4321,7 @@ var
   {$ENDIF}
   B: Boolean;
   AQtClientRect: TRect;
+  mainWin: TQtMainWindow;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtWidget.SlotResize');
@@ -4380,6 +4384,16 @@ begin
           exit;
         end;
       end;
+    end;
+
+    // when resizing a form, need to adjust the height that will be sent to LCL
+    if (ClassType = TQtMainWindow) {$IFDEF QTSCROLLABLEFORMS} or (ClassType = TQtWindowArea){$ENDIF} then
+    begin
+      if ClassType = TQtMainWindow then
+        mainWin:= TQtMainWindow(self)
+      else
+        mainWin:= TQtMainWindow(LCLObject.Handle);
+      dec(NewSize.cy, mainWin.GetClientRectFix.cy);
     end;
 
     {keep LCL value while designing pageControl}
@@ -7413,8 +7427,21 @@ begin
     inherited Repaint(ARect);
 end;
 
+// currently only handles the adjustments that MainMenu needs to make
+function TQtMainWindow.GetClientRectFix(): TSize;
+begin
+  if Assigned(FMenuBar) and (not IsMdiChild) then
+  begin
+    FMenuBar.sizeHint(@Result);
+    if Result.Height<10 then Result.Height:=0;
+  end else
+    Result:= TSize.Create(0,0);
+end;
+
 procedure TQtMainWindow.Resize(ANewWidth, ANewHeight: Integer);
 begin
+  inc( ANewHeight, GetClientRectFix.cy );
+
   if not IsMDIChild and not IsFrameWindow and
     (TCustomForm(LCLObject).BorderStyle in [bsDialog, bsNone, bsSingle]) and
      not (csDesigning in LCLObject.ComponentState) then
@@ -7428,12 +7455,55 @@ begin
   setWindowTitle(@W);
 end;
 
+// move from qtwscontrls.pp
+// to avoid unit circular references
+class procedure TQtWidget.ConstraintsChange(const AWinControl: TWinControl);
+const
+  QtMaxContraint = $FFFFFF;
+var
+  AWidget: TQtWidget;
+  MW, MH: Integer;
+  cy: Integer;
+begin
+  if (AWinControl is TCustomForm) then
+    cy:= TQtMainWindow(AWinControl.Handle).GetClientRectFix.cy
+  else
+    cy:= 0;
+
+  AWidget := TQtWidget(AWinControl.Handle);
+  with AWinControl do
+  begin
+    MW := Constraints.MinWidth;
+    MH := Constraints.MinHeight;
+
+    if MW <= QtMinimumWidgetSize then
+      MW := 0;
+    if MH <= QtMinimumWidgetSize then
+      MH := 0
+    else
+      inc(MH, cy);
+    AWidget.setMinimumSize(MW, MH);
+
+    MW := Constraints.MaxWidth;
+    MH := Constraints.MaxHeight;
+
+    if MW = 0 then
+      MW := QtMaxContraint;
+    if MH = 0 then
+      MH := QtMaxContraint
+    else
+      inc(MH, cy);
+    AWidget.setMaximumSize(MW, MH);
+  end;
+end;
+
 procedure TQtMainWindow.setMenuBar(AMenuBar: QMenuBarH);
 begin
   if IsMainForm then
     QMainWindow_setMenuBar(QMainWindowH(Widget), AMenuBar)
   else
     QLayout_setMenuBar(LayoutWidget, AMenuBar);
+  TQtWidget.ConstraintsChange(LCLObject);
 end;
 
 {------------------------------------------------------------------------------
@@ -7934,6 +8004,7 @@ begin
     Msg.Width := Word(getWidth);
     Msg.Height := Word(getHeight);
   end;
+  dec( Msg.Height, GetClientRectFix.cy );
   DeliverMessage(Msg);
 end;
 
@@ -19763,7 +19834,7 @@ begin
           WidgetToNotify := QApplication_widgetAt(@p);
           if (WidgetToNotify <> nil) then
           begin
-            if TQtMainWindow(Self).FMenuBar.Widget <> nil then
+            if Assigned(TQtMainWindow(Self).FMenuBar) and (TQtMainWindow(Self).FMenuBar.Widget <> nil) then
             begin
               QMouseEvent_Pos(QMouseEventH(Event), @p);
               QWidget_geometry(TQtMainWindow(Self).FMenuBar.Widget, @R);
