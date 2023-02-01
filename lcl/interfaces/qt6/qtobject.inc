@@ -1642,7 +1642,8 @@ begin
   begin
     MainWin := TQtMainWindow(Application.MainForm.Handle);
     MainWin.Activate;
-    QMenuBar_setActiveAction(QMenuBarH(MainWin.MenuBar.Widget), Action);
+    if Assigned(MainWin.MenuBar) then
+      QMenuBar_setActiveAction(QMenuBarH(MainWin.MenuBar.Widget), Action);
   end;
 end;
 

@@ -6173,13 +6173,15 @@ begin
     if AMenuWidget is TQtMenuBar then
     begin
       R := AWidget.LCLObject.ClientRect;
+      if not Assigned(QtMainWindow.MenuBar) then
+        QtMainWindow.MenuBarNeeded;
       R1 := QtMainWindow.MenuBar.getGeometry;
       R1.Right := R.Right;
       QtMenuBar.setGeometry(R1);
       QtMainWindow.setMenuBar(QMenuBarH(QtMenuBar.Widget));
-    end
-    else
-      QtMainWindow.setMenuBar(QMenuBarH(QtMainWindow.MenuBar.Widget));
+    end else
+      if Assigned(QtMainWindow.MenuBar) then
+        QtMainWindow.setMenuBar(QMenuBarH(QtMainWindow.MenuBar.Widget));
   end;
 end;
 

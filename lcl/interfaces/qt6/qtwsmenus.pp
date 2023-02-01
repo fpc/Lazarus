@@ -442,9 +442,9 @@ begin
       ((AParent is TCustomForm) or (AParent is TCustomFrame)) then
     begin
       if (AParent is TCustomForm) then
-        MenuBar := TQtMainWindow(TCustomForm(AParent).Handle).MenuBar
+        MenuBar := TQtMainWindow(TCustomForm(AParent).Handle).MenuBarNeeded
       else
-        MenuBar := TQtMainWindow(TCustomFrame(AParent).Handle).MenuBar;
+        MenuBar := TQtMainWindow(TCustomFrame(AParent).Handle).MenuBarNeeded;
       Result := HMENU(MenuBar);
     end else
     begin

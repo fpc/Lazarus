@@ -152,7 +152,6 @@ begin
   if Assigned(QtFrame.ScrollArea) then
     QtFrame.ScrollArea.AttachEvents;
   {$ENDIF}
-  QtFrame.MenuBar.AttachEvents;
   Result := TLCLIntfHandle(QtFrame);
 end;
 
@@ -254,8 +253,7 @@ begin
   if Assigned(QtMainWindow.ScrollArea) then
     QtMainWindow.ScrollArea.AttachEvents;
   {$ENDIF}
-  QtMainWindow.MenuBar.AttachEvents;
-  
+
   if not IsFormDesign(AForm) and
     (AForm.FormStyle in [fsMDIChild]) and
     (Application.MainForm.FormStyle = fsMdiForm) then

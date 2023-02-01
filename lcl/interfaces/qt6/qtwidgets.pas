@@ -638,6 +638,7 @@ type
 
   TQtMainWindow = class(TQtWidget)
   private
+    FMenuBar: TQtMenuBar;
     FBlocked: Boolean;
     FFirstPaintEvent: boolean;
     FIsFrameWindow: Boolean;
@@ -656,7 +657,6 @@ type
     IsMainForm: Boolean;
     MDIAreaHandle: TQtMDIArea; // valid only if we are fsMDIForm
     MDIChildArea: TQtMDIArea; // valid only if we are fsMDIChild
-    MenuBar: TQtMenuBar;
     ToolBar: TQtToolBar;
     {$IFDEF QTSCROLLABLEFORMS}
     ScrollArea: TQtWindowArea;
@@ -673,6 +673,8 @@ type
     procedure grabMouse; override;
     function getClientBounds: TRect; override;
     function getClientOffset: TPoint; override;
+
+    function MenuBarNeeded: TQtMenuBar;
 
     function getText: WideString; override;
     function getTextStatic: Boolean; override;
@@ -702,6 +704,7 @@ type
     property Blocked: Boolean read FBlocked write FBlocked;
     property IsFrameWindow: Boolean read FIsFrameWindow write FIsFrameWindow; {check if our LCLObject is TCustomFrame}
     property FirstPaintEvent: boolean read FFirstPaintEvent write FFirstPaintEvent; {only for x11 - if firstpaintevent arrived we are 100% sure that frame is 100% accurate}
+    property MenuBar: TQtMenuBar read FMenuBar;
     property ShowOnTaskBar: Boolean read FShowOnTaskBar;
   public
     function WinIDNeeded: boolean; override;
@@ -6809,10 +6812,10 @@ begin
       ARet.Y := 0;
       AParam.X := APt.X;
       AParam.Y := APt.Y;
-      if Assigned(TQtMainWindow(FOwner).MenuBar) and TQtMainWindow(FOwner).MenuBar.getVisible then
+      if Assigned(TQtMainWindow(FOwner).FMenuBar) and TQtMainWindow(FOwner).FMenuBar.getVisible then
       begin
-        QWidget_mapToGlobal(TQtMainWindow(FOwner).MenuBar.Widget, @ARet, @AParam);
-        inc(ARet.Y, QWidget_height(TQtMainWindow(FOwner).MenuBar.Widget));
+        QWidget_mapToGlobal(TQtMainWindow(FOwner).FMenuBar.Widget, @ARet, @AParam);
+        inc(ARet.Y, QWidget_height(TQtMainWindow(FOwner).FMenuBar.Widget));
         Result.X := ARet.X;
         Result.Y := ARet.Y;
       end else
@@ -7037,16 +7040,6 @@ begin
 
     Result := QMainWindow_create(nil, QtWindow);
 
-    MenuBar := TQtMenuBar.Create({$IFDEF DARWIN}nil{$ELSE}Result{$ENDIF});
-
-    if not (csDesigning in LCLObject.ComponentState) then
-      MenuBar.FIsApplicationMainMenu := True
-    else
-      {$IFNDEF DARWIN}
-      MenuBar.setProperty(MenuBar.Widget,'lcldesignmenubar',1)
-      {$ENDIF}
-      ;
-
     if (Application.MainForm <> nil) and
        (Application.MainForm.FormStyle = fsMDIForm) and
        not (csDesigning in LCLObject.ComponentState) then
@@ -7114,11 +7107,6 @@ begin
       QWidget_setMouseTracking(Result, True);
     end;
 
-    // Main menu bar
-    MenuBar := TQtMenuBar.Create(Result);
-    if (csDesigning in LCLObject.ComponentState) then
-      MenuBar.setProperty(MenuBar.Widget,'lcldesignmenubar',1);
-
     {$IFDEF QTSCROLLABLEFORMS}
     if QWidget_windowType(Result) = QtSplashScreen then
       FCentralWidget := QWidget_create(Result)
@@ -7182,16 +7170,16 @@ begin
    Sometimes in various combinations we can
    crash here because MenuBar <> nil but not valid handle.
    Now it's totally safe.}
-  if QtWidgetSet.IsValidHandle(HWND(MenuBar)) then
+  if QtWidgetSet.IsValidHandle(HWND(FMenuBar)) then
   begin
-    MenuBar.DetachEvents;
-    if FOwnWidget and (MenuBar.Widget <> nil) then
+    FMenuBar.DetachEvents;
+    if FOwnWidget and (FMenuBar.Widget <> nil) then
     begin
-      QObject_deleteLater(MenuBar.Widget);
-      MenuBar.Widget := nil;
+      QObject_deleteLater(FMenuBar.Widget);
+      FMenuBar.Widget := nil;
     end;
-    MenuBar.Widget := nil;
-    FreeThenNil(MenuBar);
+    FMenuBar.Widget := nil;
+    FreeThenNil(FMenuBar);
   end;
 
   if MDIAreaHandle <> nil then
@@ -7324,12 +7312,44 @@ begin
     Result := ScrollArea.getClientOffset
   else
     Result := inherited getClientOffset;
-  if Assigned(ScrollArea) and Assigned(MenuBar) and
-    (MenuBar.getVisible) then
-      inc(Result.Y, MenuBar.getHeight);
+  if Assigned(ScrollArea) and Assigned(FMenuBar) and
+    (FMenuBar.getVisible) then
+      inc(Result.Y, FMenuBar.getHeight);
   {$ELSE}
   Result:=inherited getClientOffset;
   {$ENDIF}
+end;
+
+function TQtMainWindow.MenuBarNeeded: TQtMenuBar;
+var
+  AParent: QWidgetH;
+begin
+  if not Assigned(FMenuBar) then
+  begin
+    {$IFDEF DARWIN}
+    if IsMainForm then
+      AParent := nil
+    else
+      AParent := Widget;
+    {$ELSE}
+    AParent := Widget;
+    {$ENDIF}
+    FMenuBar := TQtMenuBar.Create(AParent);
+    if not (csDesigning in LCLObject.ComponentState) then
+      FMenuBar.FIsApplicationMainMenu := {$IFDEF DARWIN}False{$ELSE}IsMainForm{$ENDIF}
+    else
+      {$IFNDEF DARWIN}
+      FMenuBar.setProperty(FMenuBar.Widget,'lcldesignmenubar',1)
+      {$ENDIF}
+      ;
+
+    {$IFDEF DARWIN}
+    if (csDesigning in LCLObject.ComponentState) or not IsMainForm then
+      QMenuBar_setNativeMenuBar(QMenuBarH(MenuBar.Widget), False);
+    {$ENDIF}
+    FMenuBar.AttachEvents;
+  end;
+  Result := FMenuBar;
 end;
 
 function TQtMainWindow.getText: WideString;
@@ -18285,7 +18305,7 @@ begin
     Parent := nil;
   Result := QWidget_create(Parent, QtToolTip);
   FDeleteLater := True;
-  MenuBar := nil;
+  FMenuBar := nil;
   {$IFDEF QTSCROLLABLEFORMS}
   ScrollArea := nil;
   {$ENDIF}
@@ -19762,17 +19782,17 @@ begin
           WidgetToNotify := QApplication_widgetAt(@p);
           if (WidgetToNotify <> nil) then
           begin
-            if TQtMainWindow(Self).MenuBar.Widget <> nil then
+            if Assigned(TQtMainWindow(Self).FMenuBar) and (TQtMainWindow(Self).FMenuBar.Widget <> nil) then
             begin
               QMouseEvent_Pos(QMouseEventH(Event), @p);
-              QWidget_geometry(TQtMainWindow(Self).MenuBar.Widget, @R);
+              QWidget_geometry(TQtMainWindow(Self).FMenuBar.Widget, @R);
               pt := Point(P.X, P.Y);
               if LCLIntf.PtInRect(R, pt) then
               begin
-                Action := QMenuBar_actionAt(QMenuBarH(TQtMainWindow(Self).MenuBar.Widget), @p);
+                Action := QMenuBar_actionAt(QMenuBarH(TQtMainWindow(Self).FMenuBar.Widget), @p);
                 if Action <> nil then
                 begin
-                  QCoreApplication_notify(QCoreApplication_instance(), TQtMainWindow(Self).MenuBar.Widget, Event);
+                  QCoreApplication_notify(QCoreApplication_instance(), TQtMainWindow(Self).FMenuBar.Widget, Event);
                   QEvent_accept(Event);
                   Result := True;
                 end;
