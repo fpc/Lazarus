@@ -71,6 +71,7 @@ type
     class procedure SetKind(const AScrollBar: TCustomScrollBar; const {%H-}AIsHorizontal: Boolean); override;
     class procedure SetParams(const AScrollBar: TCustomScrollBar); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
+    class procedure ScrollBy(const AWinControl: TWinControl; DeltaX, DeltaY: integer); override;
   end;
 
   { TGtk2WSCustomGroupBox }
@@ -2775,6 +2776,37 @@ begin
     SetParams(TCustomScrollBar(AWinControl));
   Gtk2WidgetSet.SetVisible(AWinControl,
     AWinControl.HandleObjectShouldBeVisible);
+end;
+
+class procedure TGtk2WSScrollBar.ScrollBy(const AWinControl: TWinControl;
+  DeltaX, DeltaY: integer);
+var
+  Scrolled: PGtkRange;
+  Adjustment: PGtkAdjustment;
+  NewPos, v: gdouble;
+  Delta: Integer;
+begin
+  if not AWinControl.HandleAllocated then exit;
+  Scrolled := GTK_RANGE({%H-}Pointer(AWinControl.Handle));
+  if not GTK_IS_SCROLLBAR(Scrolled) then
+    exit;
+
+  if GTK_IS_HSCROLLBAR(Scrolled) then
+    Delta := DeltaX
+  else
+    Delta := DeltaY;
+
+  Adjustment := gtk_range_get_adjustment(Scrolled);
+  if (Adjustment <> nil) then
+  begin
+    v := gtk_adjustment_get_value(Adjustment);
+    NewPos := Adjustment^.upper - Adjustment^.page_size;
+    if v - Delta <= NewPos then
+      NewPos := v - Delta;
+    gtk_adjustment_set_value(Adjustment, NewPos);
+  end;
+  // gtk doesn't emit a signal when we change the value manually
+  Gtk2RangeScrollCB(Scrolled, GTK_SCROLL_JUMP, NewPos, GetWidgetInfo(Scrolled));
 end;
 
 { TGtk2WSRadioButton }
