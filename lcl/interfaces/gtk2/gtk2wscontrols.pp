@@ -555,44 +555,8 @@ begin
 end;
 
 class procedure TGtk2WSWinControl.ConstraintsChange(const AWinControl: TWinControl);
-var
-  Widget: PGtkWidget;
-  Geometry: TGdkGeometry;
 begin
-  Widget := {%H-}PGtkWidget(AWinControl.Handle);
-  if (Widget <> nil) and (GtkWidgetIsA(Widget, gtk_window_get_type)) then
-  begin
-    with Geometry do
-    begin
-      if AWinControl.Constraints.MinWidth > 0 then
-        min_width := AWinControl.Constraints.MinWidth
-      else
-        min_width := 1;
-      if AWinControl.Constraints.MaxWidth > 0 then
-        max_width := AWinControl.Constraints.MaxWidth
-      else
-        max_width := 32767;
-      if AWinControl.Constraints.MinHeight > 0 then
-        min_height := AWinControl.Constraints.MinHeight
-      else
-        min_height := 1;
-      if AWinControl.Constraints.MaxHeight > 0 then
-        max_height := AWinControl.Constraints.MaxHeight
-      else
-        max_height := 32767;
-
-      base_width := AWinControl.Width;
-      base_height := AWinControl.Height;
-      width_inc := 1;
-      height_inc := 1;
-      min_aspect := 0;
-      max_aspect := 1;
-      win_gravity := gtk_window_get_gravity(PGtkWindow(Widget));
-    end;
-    //debugln('TGtk2WSWinControl.ConstraintsChange A ',GetWidgetDebugReport(Widget),' max=',dbgs(Geometry.max_width),'x',dbgs(Geometry.max_height));
-    gtk_window_set_geometry_hints(PGtkWindow(Widget), nil, @Geometry,
-      GDK_HINT_POS or GDK_HINT_MIN_SIZE or GDK_HINT_MAX_SIZE);
-  end;
+  SetWidgetConstraints(AWinControl);
 end;
 
 class procedure TGtk2WSWinControl.DestroyHandle(const AWinControl: TWinControl);
@@ -657,6 +621,7 @@ var
   Geometry: TGdkGeometry;
   AHints: TGdkWindowHints;
   AFixedWidthHeight: Boolean;
+  clientRectFix: TRect;
 begin
   if not WSCheckHandleAllocated(AWinControl, 'SetBounds')
   then Exit;
@@ -667,10 +632,12 @@ begin
   if (not (AWinControl is TCustomForm)) or (AWinControl.Parent<>nil)
   or (AWinControl.ParentWindow<>0) then
     exit;
+
   AForm := TCustomForm(AWinControl);
   if not (csDesigning in AForm.ComponentState) and
     AForm.HandleObjectShouldBeVisible then
   begin
+    clientRectFix:= GetWidgetInfo(PGtkWidget(AForm.Handle))^.FormClientRectFix;
     // we must set fixed size, gtk_window_set_resizable does not work
     // as expected for some reason.issue #20741.
     // Constraints fix issue #29563
@@ -704,8 +671,13 @@ begin
       if not AFixedWidthHeight and (AForm.Constraints.MaxWidth = 0) then
         max_width := 32767;
 
-      base_width := AForm.Width;
-      base_height := AForm.Height;
+      if min_width>0 then inc(min_width, clientRectFix.Width);
+      if max_width>0 then inc(max_width, clientRectFix.Width);
+      if min_height>0 then inc(min_height, clientRectFix.Height);
+      if max_height>0 then inc(max_height, clientRectFix.Height);
+
+      base_width := AForm.Width + clientRectFix.Width;
+      base_height := AForm.Height + clientRectFix.Height;
       width_inc := 1;
       height_inc := 1;
       min_aspect := 0;
@@ -740,7 +712,9 @@ begin
           gtk_window_set_geometry_hints({%H-}PGtkWindow(AForm.Handle), nil, @Geometry,
             AHints);
       end;
-      gtk_window_resize({%H-}PGtkWindow(AForm.Handle), AForm.Width, AForm.Height);
+      gtk_window_resize( {%H-}PGtkWindow(AForm.Handle),
+        AForm.Width+clientRectFix.Width,
+        AForm.Height+clientRectFix.Height);
     end;
   end;
 end;

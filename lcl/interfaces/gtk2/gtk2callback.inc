@@ -1105,6 +1105,7 @@ var
   SizeMsg: TLMSize;
   GtkWidth: LongInt;
   GtkHeight: LongInt;
+  clientRectFix: TRect;
   {$IFDEF HasX}
   NetAtom: TGdkAtom;
   AtomType: TGdkAtom;
@@ -1138,6 +1139,11 @@ begin
         if GtkWidth<0 then GtkWidth:=0;
         GtkHeight:=Widget^.Allocation.Height;
         if GtkHeight<0 then GtkHeight:=0;
+
+        clientRectFix:= GetWidgetInfo(Widget)^.FormClientRectFix;
+        inc( GtkWidth, clientRectFix.Width );
+        inc( GtkHeight, clientRectFix.Height );
+
         //debugln('GTKWindowStateEventCB ',DbgSName(TObject(Data)),' ',dbgs(state^.new_window_state),' ',WidgetFlagsToString(Widget));
         if ((GDK_WINDOW_STATE_ICONIFIED and state^.new_window_state)>0) then
         begin

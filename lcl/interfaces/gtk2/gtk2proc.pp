@@ -657,6 +657,7 @@ function gtkListGetSelectionMode(list: PGtkList): TGtkSelectionMode;cdecl;
 procedure SaveSizeNotification(Widget: PGtkWidget);
 procedure SaveClientSizeNotification(FixWidget: PGtkWidget);
 procedure SendSizeNotificationToLCL(aWidget: PGtkWidget);
+procedure SetWidgetConstraints(const AWinControl: TWinControl);
 function CreateTopologicalSortedWidgets(HashArray: TDynHashArray): TFPList;
 procedure GetGTKDefaultWidgetSize(AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; {%H-}WithThemeSpace: Boolean);

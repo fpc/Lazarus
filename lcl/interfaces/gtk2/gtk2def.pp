@@ -484,6 +484,8 @@ type
     PaintDepth: integer;              // increased/decreased by Begin/EndPaint
     DataOwner: Boolean;               // Set if the UserData should be freed when the info is freed
     UserData: Pointer;
+
+    FormClientRectFix: TRect;         // used only by forms, eg. MainMenu occupy client rect
     FormBorderStyle: Integer;         // used only by forms
     FormWindowState: TGdkEventWindowState; // used only by forms to stop infinite loops eg. issue #16505
     FirstPaint: boolean; // for accurate frame - forms only

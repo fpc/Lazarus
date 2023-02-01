@@ -6571,11 +6571,62 @@ begin
   {$ENDIF}
 end;
 
+// move from gtk2wscontrls.pp
+// to avoid unit circular references
+procedure SetWidgetConstraints(const AWinControl: TWinControl);
+var
+  Widget: PGtkWidget;
+  Geometry: TGdkGeometry;
+  clientRectFix: TRect;
+begin
+  Widget := {%H-}PGtkWidget(AWinControl.Handle);
+  if (Widget <> nil) and (GtkWidgetIsA(Widget, gtk_window_get_type)) then
+  begin
+    clientRectFix:= GetWidgetInfo(Widget)^.FormClientRectFix;
+    with Geometry do
+    begin
+      if AWinControl.Constraints.MinWidth > 0 then
+        min_width := AWinControl.Constraints.MinWidth
+      else
+        min_width := 1;
+      if AWinControl.Constraints.MaxWidth > 0 then
+        max_width := AWinControl.Constraints.MaxWidth
+      else
+        max_width := 32767;
+      if AWinControl.Constraints.MinHeight > 0 then
+        min_height := AWinControl.Constraints.MinHeight
+      else
+        min_height := 1;
+      if AWinControl.Constraints.MaxHeight > 0 then
+        max_height := AWinControl.Constraints.MaxHeight
+      else
+        max_height := 32767;
+
+      if min_width>0 then inc(min_width, clientRectFix.Width);
+      if max_width>0 then inc(max_width, clientRectFix.Width);
+      if min_height>0 then inc(min_height, clientRectFix.Height);
+      if max_height>0 then inc(max_height, clientRectFix.Height);
+
+      base_width := AWinControl.Width + clientRectFix.Width;
+      base_height := AWinControl.Height + clientRectFix.Height;
+      width_inc := 1;
+      height_inc := 1;
+      min_aspect := 0;
+      max_aspect := 1;
+      win_gravity := gtk_window_get_gravity(PGtkWindow(Widget));
+    end;
+    //debugln('TGtk2WSWinControl.ConstraintsChange A ',GetWidgetDebugReport(Widget),' max=',dbgs(Geometry.max_width),'x',dbgs(Geometry.max_height));
+    gtk_window_set_geometry_hints(PGtkWindow(Widget), nil, @Geometry,
+      GDK_HINT_POS or GDK_HINT_MIN_SIZE or GDK_HINT_MAX_SIZE);
+  end;
+end;
+
 procedure SendSizeNotificationToLCL(aWidget: PGtkWidget);
 var
   LCLControl: TWinControl;
   LCLLeft, LCLTop, LCLWidth, LCLHeight: integer;
   GtkLeft, GtkTop, GtkWidth, GtkHeight: integer;
+  clientRectFix: PRect;
   TopLeftChanged, WidthHeightChanged, IsTopLevelWidget: boolean;
   MessageDelivered: boolean;
   SizeMsg: TLMSize;
@@ -6617,17 +6668,43 @@ begin
 
   GetWidgetRelativePosition(MainWidget,GtkLeft,GtkTop);
 
-  gtk_widget_get_size_request(MainWidget, @GtkWidth, @GtkHeight);
+  if LCLControl is TCustomForm then begin
+    gtk_widget_get_size_request(FixedWidget, @GtkWidth, @GtkHeight);
+    if GtkWidth < 0 then
+      GtkWidth:=FixedWidget^.Allocation.Width;
+    if GtkHeight <0 then
+      GtkHeight:=FixedWidget^.Allocation.Height;
 
-  if GtkWidth < 0 then
-    GtkWidth:=MainWidget^.Allocation.Width
-  else
-    MainWidget^.Allocation.Width:=GtkWidth;
-  if GtkHeight < 0 then
-    GtkHeight:=MainWidget^.Allocation.Height
-  else
-    MainWidget^.Allocation.Height:=GtkHeight;
-  //DebugLn(['SendSizeNotificationToLCL ',DbgSName(LCLControl),' gtk=',GtkLeft,',',GtkTop,',',GtkWidth,'x',GtkHeight,' Allocation=',MainWidget^.Allocation.Width,'x',MainWidget^.Allocation.Height]);
+    // if ClientRect of the Form is occupied,
+    // record the occupied size into FormClientRectFix,
+    // it will be used when setting the Real Gtk Window elsewhere
+    WidthHeightChanged:= false;
+    clientRectFix:= @(GetWidgetInfo(aWidget)^.FormClientRectFix);
+    if (GtkWidth+clientRectFix^.Width) <> MainWidget^.Allocation.Width then begin
+      clientRectFix^.Width:= MainWidget^.Allocation.Width - GtkWidth;
+      WidthHeightChanged:= true;
+    end;
+    if (GtkHeight+clientRectFix^.Height) <> MainWidget^.Allocation.Height then begin
+      clientRectFix^.Height:= MainWidget^.Allocation.Height - GtkHeight;
+      WidthHeightChanged:= true;
+    end;
+    if WidthHeightChanged then begin
+      SetResizeRequest(MainWidget);
+      SetWidgetConstraints(LCLControl);
+    end;
+  end else begin
+    gtk_widget_get_size_request(MainWidget, @GtkWidth, @GtkHeight);
+
+    if GtkWidth < 0 then
+      GtkWidth:=MainWidget^.Allocation.Width
+    else
+      MainWidget^.Allocation.Width:=GtkWidth;
+    if GtkHeight < 0 then
+      GtkHeight:=MainWidget^.Allocation.Height
+    else
+      MainWidget^.Allocation.Height:=GtkHeight;
+    //DebugLn(['SendSizeNotificationToLCL ',DbgSName(LCLControl),' gtk=',GtkLeft,',',GtkTop,',',GtkWidth,'x',GtkHeight,' Allocation=',MainWidget^.Allocation.Width,'x',MainWidget^.Allocation.Height]);
+  end;
 
   if GtkWidth<0 then GtkWidth:=0;
   if GtkHeight<0 then GtkHeight:=0;
@@ -7008,12 +7085,14 @@ procedure SetWindowSizeAndPosition(Window: PGtkWindow;
 var
   Width, Height: integer;
   allocation: TGtkAllocation;
+  clientRectFix: TRect;
   //Info: PGtkWindowGeometryInfo;
 begin
-  Width:=AWinControl.Width;
+  clientRectFix:= GetWidgetInfo(Window)^.FormClientRectFix;
+  Width:=AWinControl.Width+clientRectFix.Width;
   // 0 and negative values have a special meaning, so don't use them
   if Width<=0 then Width:=1;
-  Height:=AWinControl.Height;
+  Height:=AWinControl.Height+clientRectFix.Height;
   if Height<=0 then Height:=1;
 
   {$IFDEF VerboseSizeMsg}

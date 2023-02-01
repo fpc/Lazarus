@@ -705,6 +705,7 @@ var
   AForm, APopupParent: TCustomForm;
   GtkWindow: PGtkWindow;
   Geometry: TGdkGeometry;
+  clientRectFix: TRect;
 
   function ShowNonModalOverModal: Boolean;
   var
@@ -820,17 +821,18 @@ begin
     AForm.HandleObjectShouldBeVisible and
     (AForm.BorderStyle in [bsDialog, bsSingle]) then
   begin
+    clientRectFix:= GetWidgetInfo(PGtkWidget(AForm.Handle))^.FormClientRectFix;
     // we must set fixed size, gtk_window_set_resizable does not work
     // as expected for some reason.issue #20741
     with Geometry do
     begin
-      min_width := AForm.Width;
-      max_width := AForm.Width;
-      min_height := AForm.Height;
-      max_height := AForm.Height;
+      min_width := AForm.Width + clientRectFix.Width;
+      max_width := AForm.Width + clientRectFix.Width;
+      min_height := AForm.Height + clientRectFix.Height;
+      max_height := AForm.Height + clientRectFix.Height;
 
-      base_width := AForm.Width;
-      base_height := AForm.Height;
+      base_width := AForm.Width + clientRectFix.Width;
+      base_height := AForm.Height + clientRectFix.Height;
       width_inc := 1;
       height_inc := 1;
       min_aspect := 0;
