@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
 "Language-Team: \n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Language: tr\n"
-"X-Generator: Poedit 2.2.3\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.2.2\n"
 
 #: gdbmistringconstants.dlggroupdebugger
 msgid "Debugger"
@@ -23,7 +23,7 @@ msgstr "Hata ayıklayıcı, uygulamayı çalıştırmaya / adımlandırmaya çal
 #: gdbmistringconstants.gdbmicommandstartapplicationerror
 #, object-pascal-format
 msgid "The application could not be started:%0:s%1s"
-msgstr ""
+msgstr "Uygulama başlatılamadı:%0:s%1s"
 
 #: gdbmistringconstants.gdbmicommandstartmainbreakerror
 #, object-pascal-format
@@ -149,16 +149,16 @@ msgstr "Hata ayıklamaya devam etmek için \"Yoksay\" tuşuna basın. Bu güvenl
 
 #: gdbmistringconstants.gdbmisfailedinitproc
 msgid "Failed to execute the initialization process"
-msgstr ""
+msgstr "Başlatma işlemi yürütülemedi"
 
 #: gdbmistringconstants.gdbmisfailedinitprocwaitonexit
 #, object-pascal-format
 msgid "Failed on wait on exit. Status: %d Code: %d"
-msgstr ""
+msgstr "Çıkışta bekleme başarısız oldu. Durum: %d Kod: %d"
 
 #: gdbmistringconstants.gdbmisnoasyncmode
 msgid "GDB does not support async mode"
-msgstr ""
+msgstr "GDB zaman uyumsuz modunu desteklemiyor"
 
 #: gdbmistringconstants.gdbmithedebuggerexperiencedanunknowncondition
 msgid "The debugger experienced an unknown condition"

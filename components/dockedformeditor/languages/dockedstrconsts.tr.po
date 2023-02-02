@@ -1,191 +1,188 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
 "Language-Team: \n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Language: tr\n"
-"X-Generator: Poedit 2.2.3\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.2\n"
 
 #: dockedstrconsts.sallowsizingcaption
 msgid "Allow size changing"
-msgstr ""
+msgstr "Boyut değiştirmeye izin ver"
 
 #: dockedstrconsts.sallowsizinghint
 msgid "Grips can change size in Anchor Editor"
-msgstr ""
+msgstr "Tutamaklar Çapa Düzenleyicide boyut değiştirebilir"
 
 #: dockedstrconsts.sanchorbottomcolorcaption
 msgid "Bottom Anchor"
-msgstr ""
+msgstr "Alt Çapa"
 
 #: dockedstrconsts.sanchorcontrolbordercaption
 msgid "Border Around Control"
-msgstr ""
+msgstr "Sınır Çevresi Kontrolü"
 
 #: dockedstrconsts.sanchorcontrolcolorcaption
 msgid "Control Background"
-msgstr ""
+msgstr "Kontrol arkaplanı"
 
 #: dockedstrconsts.sanchorleftcolorcaption
 msgid "Left Anchor"
-msgstr ""
+msgstr "Sol Tutucu"
 
 #: dockedstrconsts.sanchorrightcolorcaption
 msgid "Right Anchor"
-msgstr ""
+msgstr "Sağ tutucu"
 
 #: dockedstrconsts.sanchors
 msgid "Anchors"
-msgstr ""
+msgstr "Tutucular"
 
 #: dockedstrconsts.sanchortabvisiblecaption
 msgid "Show Anchors Tab"
-msgstr ""
+msgstr "Çapaları Göster Sekmesi"
 
 #: dockedstrconsts.sanchortabvisiblehint
 msgid "Show Anchor Editor"
-msgstr ""
+msgstr "Çapa Editörünü Göster"
 
 #: dockedstrconsts.sanchortargetcolorcaption
 msgid "Anchor Target"
-msgstr ""
+msgstr "Tutucu hedefi"
 
 #: dockedstrconsts.sanchortopcolorcaption
 msgid "Top Anchor"
-msgstr ""
+msgstr "Üst tutucu"
 
 #: dockedstrconsts.sargumentoutofrange
 msgctxt "dockedstrconsts.sargumentoutofrange"
 msgid "Argument out of range."
-msgstr ""
+msgstr "Argüman menzil dışında."
 
 #: dockedstrconsts.sattachcontrol
 msgid "Attach Control"
-msgstr ""
+msgstr "Kontrolü Tuttur"
 
 #: dockedstrconsts.sattachpoint
 msgid "Attach Control Sides"
-msgstr ""
+msgstr "Kontrolü Taraflara Tuttur"
 
 #: dockedstrconsts.sattachside
 msgid "Attach Control Side"
-msgstr ""
+msgstr "Kontrolü Tarafa Tuttur"
 
 #: dockedstrconsts.scaptiondockedformeditor
 msgid "Docked Form Editor"
-msgstr ""
+msgstr "Yerleştirilmiş Form Düzenleyici"
 
 #: dockedstrconsts.scapturedistancecaption
 msgid "Capture Distance"
-msgstr ""
+msgstr "Yakalama Mesafesi"
 
 #: dockedstrconsts.scapturedistancehint
 msgid "Minimal distance to capture a control with mouse"
-msgstr ""
+msgstr "Fare ile bir kontrolü yakalamak için minimum mesafe"
 
 #: dockedstrconsts.scirculardependency
 msgid "This will create a circular dependency."
-msgstr ""
+msgstr "Bu dairesel bağımlılık yaratacaktır."
 
 #: dockedstrconsts.scode
-#, fuzzy
 msgctxt "dockedstrconsts.scode"
 msgid "Code"
 msgstr "Kod"
 
 #: dockedstrconsts.scolorscaption
 msgid "Colors"
-msgstr ""
+msgstr "Renkler"
 
 #: dockedstrconsts.sdesigner
-#, fuzzy
-#| msgid "Designer"
 msgctxt "dockedstrconsts.sdesigner"
 msgid "Form"
 msgstr "Tasarım"
 
 #: dockedstrconsts.sdetachcontrol
 msgid "Detach Control"
-msgstr ""
+msgstr "Ayırma Kontrolü"
 
 #: dockedstrconsts.sdetachpoint
 msgid "Detach Control Sides"
-msgstr ""
+msgstr "Kontrol Taraflarını Ayırın"
 
 #: dockedstrconsts.sdetachside
 msgid "Detach Control Side"
-msgstr ""
+msgstr "Kontrol Tarafını Ayırın"
 
 #: dockedstrconsts.sforcerefreshingcaption
 msgid "Force Refreshing At Sizing"
-msgstr ""
+msgstr "İndirme ve çıkartma için her zaman zorla"
 
 #: dockedstrconsts.sforcerefreshinghint
 msgid "Force refreshing form when user is sizing it"
-msgstr ""
+msgstr "Kullanıcı boyutlandırırken formu yenilemeye zorla"
 
 #: dockedstrconsts.smouseborderfactorcaption
 msgid "Mouse cursor factor for BorderSpacing property"
-msgstr ""
+msgstr "BorderSpacing özelliği için fare imleci faktörü"
 
 #: dockedstrconsts.smouseborderfactorhint
 msgid "Mouse cursor factor is used to set small values of BorderSpacing property more precisely"
-msgstr ""
+msgstr "Fare imleci faktörü, BorderSpacing özelliğinin küçük değerlerini daha hassas ayarlamak için kullanılır"
 
 #: dockedstrconsts.sresizercolorcaption
 msgid "Resizer Color"
-msgstr ""
+msgstr "Yeniden Boyutlandırıcı Renk"
 
 #: dockedstrconsts.sresizercolorhint
 msgid "Color of resizer bars"
-msgstr ""
+msgstr "Yeniden boyutlandırma çubuklarının rengi"
 
 #: dockedstrconsts.stabpositionbottom
 msgid "Bottom"
-msgstr ""
+msgstr "Alt"
 
 #: dockedstrconsts.stabpositioncaption
 msgid "Tab Position"
-msgstr ""
+msgstr "Sekme Pozisyonu"
 
 #: dockedstrconsts.stabpositionhint
 msgid "Position of Code, Form, Anchors tabs"
-msgstr ""
+msgstr "Kod, Form, Ankraj sekmelerinin konumu"
 
 #: dockedstrconsts.stabpositionleft
 msgid "Left"
-msgstr ""
+msgstr "Sol"
 
 #: dockedstrconsts.stabpositionright
 msgid "Right"
-msgstr ""
+msgstr "Sağ"
 
 #: dockedstrconsts.stabpositiontop
 msgid "Top"
-msgstr ""
+msgstr "Üst"
 
 #: dockedstrconsts.streataligncaption
 msgid "Automatically treat Align properties"
-msgstr ""
+msgstr "Hizala özelliklerini otomatik olarak işleme"
 
 #: dockedstrconsts.streatalignhint
 msgid "Automatically replace Align properties with appropriate Anchors"
-msgstr ""
+msgstr "Hizala özelliklerini uygun Çapalarla otomatik olarak değiştir"
 
 #: dockedstrconsts.streatbordercaption
 msgid "Automatically treat BorderSpacing properties"
-msgstr ""
+msgstr "BorderSpacing özelliklerini otomatik olarak işleme"
 
 #: dockedstrconsts.streatborderhint
 msgid "Automatically replace BorderSpacing.Around properties of controls and adapt BorderSpacing.Left/Right/Top/Bottom if needed"
-msgstr ""
+msgstr "Kontrollerin BorderSpacing.Around özelliklerini otomatik olarak değiştirin ve gerekirse BorderSpacing.Left/Right/Top/Bottom'ı uyarlayın"
 
 #: dockedstrconsts.swarningcaption
 msgid "Warning"
-msgstr ""
+msgstr "Dikkat"
 

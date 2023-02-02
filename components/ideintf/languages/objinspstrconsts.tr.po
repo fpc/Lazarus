@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
 "Language-Team: \n"
 "Language: tr\n"
-"X-Generator: Poedit 2.2.3\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.2.2\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -171,10 +171,8 @@ msgid "Cancel"
 msgstr "İptal"
 
 #: objinspstrconsts.fescheckdset
-#, fuzzy
-#| msgid "Check dataset settings"
 msgid "Check dataset settings."
-msgstr "Veri kümesi ayarlarını kontrol et"
+msgstr "Veri kümesi ayarlarını kontrol et."
 
 #: objinspstrconsts.fesdata
 msgid "&Data"
@@ -190,6 +188,8 @@ msgid ""
 "Error message:\n"
 "%s"
 msgstr ""
+"Hata mesajı:\n"
+"%s"
 
 #: objinspstrconsts.fesfetitle
 msgid "Edit Fields ..."
@@ -238,16 +238,12 @@ msgid "&Name:"
 msgstr "&Ad:"
 
 #: objinspstrconsts.fesnofields
-#, fuzzy
-#| msgid "It was not possible to get the dataset field's list"
 msgid "It was not possible to get the dataset fields list."
-msgstr "Veri kümesi alanının listesini almak mümkün değil"
+msgstr "Veri kümesi alanının listesini almak mümkün değil."
 
 #: objinspstrconsts.fesnofieldsnote
-#, fuzzy
-#| msgid "Field's list is not available, can't check for duplicates"
 msgid "Fields list is not available, can't check for duplicates."
-msgstr "Alanın listesi mevcut değil, aynıları kontrol edilemiyor"
+msgstr "Alanın listesi mevcut değil, aynıları kontrol edilemiyor."
 
 #: objinspstrconsts.fesokbtn
 msgctxt "objinspstrconsts.fesokbtn"
@@ -272,7 +268,7 @@ msgstr "&Tür:"
 
 #: objinspstrconsts.fpflowpaneleditor
 msgid "FlowPanel Editor"
-msgstr ""
+msgstr "Akış Paneli Düzenleyicisi"
 
 #: objinspstrconsts.ilesadd
 msgctxt "objinspstrconsts.ilesadd"
@@ -313,39 +309,39 @@ msgstr "Değer ayarla"
 
 #: objinspstrconsts.lrsbufdsfilters
 msgid "XML data files|*.xml;Binary data files|*.dat"
-msgstr ""
+msgstr "XML veri dosyaları|*.xml;İkili veri dosyaları|*.dat"
 
 #: objinspstrconsts.lrscopyfromdataset
 msgid "Copy data from other dataset"
-msgstr ""
+msgstr "Diğer veri kümesinden veri kopyalama"
 
 #: objinspstrconsts.lrscreatedataset
 msgid "Create dataset"
-msgstr ""
+msgstr "Veri kümesi oluştur"
 
 #: objinspstrconsts.lrsdatasetactive
 msgid "Dataset is already active, close it first."
-msgstr ""
+msgstr "Veri kümesi zaten aktif, önce kapatın."
 
 #: objinspstrconsts.lrsloadfromfile
 msgid "Load data from file"
-msgstr ""
+msgstr "Dosyadan veri yükle"
 
 #: objinspstrconsts.lrsnodatasetsavailableforcopy
 msgid "No dataset available to copy data from."
-msgstr ""
+msgstr "Veri kopyalamak için veri kümesi yok."
 
 #: objinspstrconsts.lrsprovidedatafilename
 msgid "Select a data file to save data to"
-msgstr ""
+msgstr "Verileri kaydetmek için bir veri dosyası seçin"
 
 #: objinspstrconsts.lrssavetofile
 msgid "Save data to file"
-msgstr ""
+msgstr "Verileri dosyaya kaydet"
 
 #: objinspstrconsts.lrsselectdatafilename
 msgid "Select a file with data to load into dataset"
-msgstr ""
+msgstr "Veri kümesine yüklenecek veri içeren bir dosya seçin"
 
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"
@@ -632,7 +628,7 @@ msgstr "Uyumsuz Yöntem"
 #: objinspstrconsts.oisinfinitynotsupported
 msgctxt "objinspstrconsts.oisinfinitynotsupported"
 msgid "Setting a floating point property to positive or negative Infinity at design time is not supported"
-msgstr ""
+msgstr "Tasarım zamanında kayan nokta özelliğinin pozitif veya negatif Infinity olarak ayarlanması desteklenmez"
 
 #: objinspstrconsts.oisinputmask
 msgid "Input Mask:"
@@ -720,7 +716,7 @@ msgstr "Alanı yukarı taşı"
 
 #: objinspstrconsts.oisnannotsupported
 msgid "Setting a floating point property to NaN at design time is not supported"
-msgstr ""
+msgstr "Tasarım zamanında kayan nokta özelliğinin NaN olarak ayarlanması desteklenmez"
 
 #: objinspstrconsts.oisnew
 msgid "&New"
@@ -929,7 +925,7 @@ msgstr "Bilgi kutusunu göster"
 
 #: objinspstrconsts.oisshowpropertyfilter
 msgid "Show Property Filter"
-msgstr ""
+msgstr "Özellik Filtresini Göster"
 
 #: objinspstrconsts.oisshowstatusbar
 msgid "Show Status Bar"
@@ -1290,7 +1286,7 @@ msgstr "Değer:"
 
 #: objinspstrconsts.oisvalueoutofrange
 msgid "Property value out of range."
-msgstr ""
+msgstr "Özellik değeri aralık dışında."
 
 #: objinspstrconsts.oisvariant
 msgid "Variant"
@@ -1599,37 +1595,37 @@ msgstr "Temizle"
 #: objinspstrconsts.sccssgedtcolrowinfo
 #, object-pascal-format
 msgid "(%d columns, %d rows)"
-msgstr ""
+msgstr "(%d sütunlar, %d satırlar)"
 
 #: objinspstrconsts.sccssgedtdelcol
 msgid "Delete column"
-msgstr ""
+msgstr "Sütun sil"
 
 #: objinspstrconsts.sccssgedtdelcolno
 #, object-pascal-format
 msgid "Delete column #%d?"
-msgstr ""
+msgstr "Sütun silinsin mi #%d?"
 
 #: objinspstrconsts.sccssgedtdelrow
 msgid "Delete row"
-msgstr ""
+msgstr "Satır sil"
 
 #: objinspstrconsts.sccssgedtdelrowno
 #, object-pascal-format
 msgid "Delete row #%d?"
-msgstr ""
+msgstr "Satır slinsin mi #%d?"
 
 #: objinspstrconsts.sccssgedteditcoltitle
 msgid "Edit column title"
-msgstr ""
+msgstr "Sütun başlığını düzenle"
 
 #: objinspstrconsts.sccssgedteditfixedcoltitle
 msgid "Edit fixed column title"
-msgstr ""
+msgstr "Sabit sütun başlığını düzenle"
 
 #: objinspstrconsts.sccssgedteditrowheader
 msgid "Edit row header"
-msgstr ""
+msgstr "Satır başlığını düzenle"
 
 #: objinspstrconsts.sccssgedtgrp
 msgid "String Grid"
@@ -1637,19 +1633,17 @@ msgstr "String Grid"
 
 #: objinspstrconsts.sccssgedtinscol
 msgid "Insert column"
-msgstr ""
+msgstr "Sütun ekle"
 
 #: objinspstrconsts.sccssgedtinsrow
 msgid "Insert row"
-msgstr ""
+msgstr "Satır Ekle"
 
 #: objinspstrconsts.sccssgedtload
 msgid "Load ..."
 msgstr "Yükle..."
 
 #: objinspstrconsts.sccssgedtmoverowscols
-#, fuzzy
-#| msgid "Move Rows/Cols"
 msgid "Move rows/columns"
 msgstr "Taşı Satır/Sütun"
 
@@ -1670,7 +1664,7 @@ msgstr "Kaydet"
 
 #: objinspstrconsts.sccssgedttitle
 msgid "Title"
-msgstr ""
+msgstr "Başlık"
 
 #: objinspstrconsts.sccstredt
 msgctxt "objinspstrconsts.sccstredt"

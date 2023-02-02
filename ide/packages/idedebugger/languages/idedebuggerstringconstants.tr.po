@@ -1,9 +1,16 @@
 msgid ""
 msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
+"X-Generator: Poedit 3.2\n"
 
 #: idedebuggerstringconstants.dbgbreakgroupdlgcaption
 msgid "Select Groups"
@@ -23,110 +30,97 @@ msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%
 msgstr "Etkin/Devre dışı listesindeki bazı gruplar mevcut değil.%0:sOluşturulsun mu?%0:s%0:s%1:s"
 
 #: idedebuggerstringconstants.dbgdispformatbinary
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatbinary"
 msgid "Binary"
 msgstr "İkili"
 
 #: idedebuggerstringconstants.dbgdispformatcharacter
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatcharacter"
 msgid "Character"
-msgstr "Karakter"
+msgstr "Character"
 
 #: idedebuggerstringconstants.dbgdispformatdecimal
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatdecimal"
 msgid "Decimal"
 msgstr "Ondalık"
 
 #: idedebuggerstringconstants.dbgdispformatdefault
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatdefault"
 msgid "Default"
 msgstr "Varsayılan"
 
 #: idedebuggerstringconstants.dbgdispformatfloatingpoin
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatfloatingpoin"
 msgid "Floating Point"
 msgstr "Kayan nokta"
 
 #: idedebuggerstringconstants.dbgdispformathexadecimal
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformathexadecimal"
 msgid "Hexadecimal"
-msgstr "Onaltılık"
+msgstr "Hexadecimal"
 
 #: idedebuggerstringconstants.dbgdispformatmemorydump
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatmemorydump"
 msgid "Memory Dump"
 msgstr "Bellek Dökümü"
 
 #: idedebuggerstringconstants.dbgdispformatpointer
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatpointer"
 msgid "Pointer"
 msgstr "Işaretçi"
 
 #: idedebuggerstringconstants.dbgdispformatrecordstruct
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatrecordstruct"
 msgid "Record/Structure"
 msgstr "Kayıt/Yapı"
 
 #: idedebuggerstringconstants.dbgdispformatstring
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatstring"
 msgid "String"
 msgstr "String"
 
 #: idedebuggerstringconstants.dbgdispformatunsigned
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatunsigned"
 msgid "Unsigned"
 msgstr "İmzasız"
 
 #: idedebuggerstringconstants.dlgbackconvoptaction
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dlgbackconvoptaction"
 msgid "Action"
 msgstr "Aksiyon"
 
 #: idedebuggerstringconstants.dlgbackconvoptaddnew
 msgid "Add"
-msgstr ""
+msgstr "Ekle"
 
 #: idedebuggerstringconstants.dlgbackconvoptdebugoptions
 msgid "Backend Converter"
-msgstr ""
+msgstr "Arka Uç Dönüştürücü"
 
 #: idedebuggerstringconstants.dlgbackconvoptmatchtypesbyname
 msgid "Match types by name"
-msgstr ""
+msgstr "Ada göre eşleme türleri"
 
 #: idedebuggerstringconstants.dlgbackconvoptname
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dlgbackconvoptname"
 msgid "Name"
 msgstr "Ad"
 
 #: idedebuggerstringconstants.dlgbackconvoptremove
 msgid "Remove"
-msgstr ""
+msgstr "Kaldır"
 
 #: idedebuggerstringconstants.dlgbackendconvoptdebugconverter
 msgid "Backend Converter:"
-msgstr ""
+msgstr "Arka Uç Dönüştürücü:"
 
 #: idedebuggerstringconstants.dlgbackendconvoptdefault
 msgid "- Default -"
-msgstr ""
+msgstr "- Varsayılan -"
 
 #: idedebuggerstringconstants.dlgbackendconvoptdisabled
 msgid "- Disabled -"
-msgstr ""
+msgstr "- Devre dışı -"
 
 #: idedebuggerstringconstants.dlgenvtype
 msgctxt "lazarusidestrconsts.dlgenvtype"
@@ -143,28 +137,28 @@ msgstr "XML dosyaları"
 
 #: idedebuggerstringconstants.dlgidedbgdebugger
 msgid "Debugger"
-msgstr ""
+msgstr "Hata ayıklayıcı"
 
 #: idedebuggerstringconstants.dlgidedbgentername
 msgid "Enter name"
-msgstr ""
+msgstr "Adı girin"
 
 #: idedebuggerstringconstants.dlgidedbgnewitem
 msgid "New Item"
-msgstr ""
+msgstr "Yeni öğe"
 
 #: idedebuggerstringconstants.dlginspectamountofitemstoshow
 msgid "Amount of items to show"
-msgstr ""
+msgstr "Gösterilecek öğe miktarı"
 
 #: idedebuggerstringconstants.dlginspectboundsdd
 #, object-pascal-format
 msgid "Bounds: %d .. %d"
-msgstr ""
+msgstr "Sınırlar: %d .. %d"
 
 #: idedebuggerstringconstants.dlginspectindexoffirstitemtoshow
 msgid "Index of first item to show"
-msgstr ""
+msgstr "Gösterilecek ilk öğenin dizini"
 
 #: idedebuggerstringconstants.dlgunitdeprefresh
 msgid "Refresh"
@@ -180,14 +174,13 @@ msgid "Data-Address"
 msgstr "Veri-Adres"
 
 #: idedebuggerstringconstants.drsaddwatch
-#, fuzzy
 msgctxt "idedebuggerstringconstants.drsaddwatch"
 msgid "Add watch"
 msgstr "İzleme ekle"
 
 #: idedebuggerstringconstants.drsappendresultatbottomofhis
 msgid "Append result at bottom of history"
-msgstr ""
+msgstr "Sonucu tarihin altına ekle"
 
 #: idedebuggerstringconstants.drsbreakpointcolwidthaction
 msgid "Action column"
@@ -253,24 +246,22 @@ msgstr "Değer sütunu"
 
 #: idedebuggerstringconstants.drsdebugconverter
 msgid "Converter"
-msgstr ""
+msgstr "Dönüştürücü"
 
 #: idedebuggerstringconstants.drsdisableenableupdatesforth
-#, fuzzy
 msgctxt "idedebuggerstringconstants.drsdisableenableupdatesforth"
 msgid "Disable/Enable updates for the entire window"
 msgstr "Tüm pencerenin güncellemelerini devre dışı bırak/etkinleştir"
 
 #: idedebuggerstringconstants.drsenterexpression
 msgid "Enter Expression"
-msgstr ""
+msgstr "İfade Girin"
 
 #: idedebuggerstringconstants.drsevaluate
 msgid "Evaluate"
-msgstr ""
+msgstr "Değerlendir"
 
 #: idedebuggerstringconstants.drshistory
-#, fuzzy
 msgctxt "idedebuggerstringconstants.drshistory"
 msgid "History"
 msgstr "Geçmiş"
@@ -289,11 +280,11 @@ msgstr "Zaman sütunu"
 
 #: idedebuggerstringconstants.drsinsertresultattopofhistor
 msgid "Insert result at top of history"
-msgstr ""
+msgstr "Sonucu tarihin en üstüne ekle"
 
 #: idedebuggerstringconstants.drsinspect
 msgid "Inspect"
-msgstr ""
+msgstr "Denetle"
 
 #: idedebuggerstringconstants.drsinspectcolwidthdataclass
 msgid "Data class column"
@@ -338,46 +329,43 @@ msgstr "Len=%d: "
 
 #: idedebuggerstringconstants.drsnewvalue
 msgid "New Value"
-msgstr ""
+msgstr "Yeni değer"
 
 #: idedebuggerstringconstants.drsnewvaluetoassigntothevari
 msgid "New value to assign to the variable in the debugged process (use Shift-Enter to confirm)"
-msgstr ""
+msgstr "Hata ayıklanan süreçte değişkene atanacak yeni değer (onaylamak için Shift-Enter tuşlarını kullanın)"
 
 #: idedebuggerstringconstants.drsnodebugconverter
 msgid "No Converter"
-msgstr ""
+msgstr "Dönüştürülemedi"
 
 #: idedebuggerstringconstants.drsnohistorykept
 msgid "No history kept"
-msgstr ""
+msgstr "Geçmiş tutulmadı"
 
 #: idedebuggerstringconstants.drsrunallthreadswhileevaluat
 msgid "Run all threads while evaluating"
-msgstr ""
+msgstr "Değerlendirirken tüm threadları çalıştır"
 
 #: idedebuggerstringconstants.drssuspend
 msgid "Suspend"
-msgstr ""
+msgstr "Durduruldu"
 
 #: idedebuggerstringconstants.drsusefunctioncalls
-#, fuzzy
 msgctxt "idedebuggerstringconstants.drsusefunctioncalls"
 msgid "Function"
 msgstr "Fonksiyon"
 
 #: idedebuggerstringconstants.drsusefunctioncallshint
 msgid "Allow function calls"
-msgstr ""
+msgstr "Fonksiyon Çağrısına İzin Ver"
 
 #: idedebuggerstringconstants.drsuseinstanceclass
-#, fuzzy
 msgctxt "idedebuggerstringconstants.drsuseinstanceclass"
 msgid "Instance"
 msgstr "Örnek"
 
 #: idedebuggerstringconstants.drsuseinstanceclasshint
-#, fuzzy
 msgctxt "idedebuggerstringconstants.drsuseinstanceclasshint"
 msgid "Use Instance class type"
 msgstr "Instance sınıf türünü kullan"
@@ -394,7 +382,7 @@ msgstr "İnceleme penceresi"
 
 #: idedebuggerstringconstants.dsrevalusedebugconverter
 msgid "Use Backend Converter"
-msgstr ""
+msgstr "Arka Uç Dönüştürücüyü Kullan"
 
 #: idedebuggerstringconstants.histdlgbtnclearhint
 msgid "Clear all snapshots"
@@ -479,11 +467,13 @@ msgid "Breakpoint Properties"
 msgstr "Kesme Noktası Özellikleri"
 
 #: idedebuggerstringconstants.lisbrkpointaction
+#, fuzzy
 msgctxt "idedebuggerstringconstants.lisbrkpointaction"
 msgid "Action"
 msgstr "Aksiyon"
 
 #: idedebuggerstringconstants.lisbrkpointstate
+#, fuzzy
 msgctxt "idedebuggerstringconstants.lisbrkpointstate"
 msgid "State"
 msgstr "Durum"
@@ -499,7 +489,7 @@ msgstr "Hata"
 
 #: idedebuggerstringconstants.lisclear
 msgid "Clear"
-msgstr ""
+msgstr "Temizle"
 
 #: idedebuggerstringconstants.liscoladdress
 msgid "Address"
@@ -888,15 +878,15 @@ msgstr "Özellikler"
 
 #: idedebuggerstringconstants.lisinspectshowcolclass
 msgid "Show class column"
-msgstr ""
+msgstr "Sınıf sütununu göster"
 
 #: idedebuggerstringconstants.lisinspectshowcoltype
 msgid "Show type column"
-msgstr ""
+msgstr "Tip sütununu göster"
 
 #: idedebuggerstringconstants.lisinspectshowcolvisibility
 msgid "Show visibility column"
-msgstr ""
+msgstr "Görünürlük sütununu göster"
 
 #: idedebuggerstringconstants.lisinspectunavailableerror
 #, object-pascal-format
@@ -997,7 +987,7 @@ msgstr "&Yardım"
 
 #: idedebuggerstringconstants.lismenuviewbreakpoints
 msgid "BreakPoints"
-msgstr "Kırılma noktaları"
+msgstr ""
 
 #: idedebuggerstringconstants.lismenuviewcallstack
 msgid "Call Stack"
@@ -1064,7 +1054,6 @@ msgid "&Source Breakpoint ..."
 msgstr "&Kaynak Kesme Noktası ..."
 
 #: idedebuggerstringconstants.lissrcline
-#, fuzzy
 msgctxt "idedebuggerstringconstants.lissrcline"
 msgid "Line"
 msgstr "Satır"
@@ -1121,7 +1110,6 @@ msgid "State"
 msgstr "Durum"
 
 #: idedebuggerstringconstants.lisvalue
-#, fuzzy
 msgctxt "idedebuggerstringconstants.lisvalue"
 msgid "Value"
 msgstr "Değer"
@@ -1236,7 +1224,7 @@ msgstr "Ondalık"
 #: idedebuggerstringconstants.regdlgdefault
 msgctxt "idedebuggerstringconstants.regdlgdefault"
 msgid "Default"
-msgstr ""
+msgstr "Varsayılan"
 
 #: idedebuggerstringconstants.regdlgdisplaytypeforselectedregisters
 msgid "Display type for selected Registers"

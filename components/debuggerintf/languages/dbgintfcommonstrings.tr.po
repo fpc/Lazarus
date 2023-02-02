@@ -1,0 +1,237 @@
+# karam <onur2x@gmail.com>, 2022.
+msgid ""
+msgstr ""
+"Project-Id-Version: debuggerintf\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2022-10-21 23:10+0300\n"
+"Last-Translator: karam <onur2x@gmail.com>\n"
+"Language-Team: Onur2x\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.1.1\n"
+"X-Poedit-Flags-xgettext: --add-comments=\"TRANSLATORS:ONUR ERÇELEN\"\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: dbgintfcommonstrings.rsrunerrorarithmeticoverflowerror
+msgid "Arithmetic overflow error"
+msgstr "Aritmetik taşma hatası"
+
+#: dbgintfcommonstrings.rsrunerrorassertionfailederror
+msgid "Assertion failed error"
+msgstr "Onaylama başarısız hatası"
+
+#: dbgintfcommonstrings.rsrunerrorbaddriverequeststructleng
+msgid "Bad drive request struct length"
+msgstr "Hatalı sürücü isteği yapı uzunluğu"
+
+#: dbgintfcommonstrings.rsrunerrorcalltoabstractmethod
+msgid "Call to abstract method"
+msgstr "Soyut yönteme çağrı"
+
+#: dbgintfcommonstrings.rsrunerrorcannotremovecurrentdirect
+msgid "Cannot remove current directory"
+msgstr "Geçerli dizin kaldırılamıyor"
+
+#: dbgintfcommonstrings.rsrunerrorcannotrenameacrossdrives
+msgid "Cannot rename across drives"
+msgstr "Sürücüler arasında yeniden adlandırma yapılamıyor"
+
+#: dbgintfcommonstrings.rsrunerrorcollectionindexoutofrange
+msgid "Collection index out of range"
+msgstr "Koleksiyon dizini aralık dışında"
+
+#: dbgintfcommonstrings.rsrunerrorcollectionoverflowerror
+msgid "Collection overflow error"
+msgstr "Koleksiyon taşma hatası"
+
+#: dbgintfcommonstrings.rsrunerrorcrcerrorindata
+msgid "CRC error in data"
+msgstr "Verilerde CRC hatası"
+
+#: dbgintfcommonstrings.rsrunerrordevicereadfault
+msgid "Device read fault"
+msgstr "Cihaz okuma hatası"
+
+#: dbgintfcommonstrings.rsrunerrordevicewritefault
+msgid "Device write fault"
+msgstr "Cihaz yazma hatası"
+
+#: dbgintfcommonstrings.rsrunerrordiskiswriteprotected
+msgid "Disk is write-protected"
+msgstr "Disk yazma korumalı"
+
+#: dbgintfcommonstrings.rsrunerrordiskreaderror
+msgid "Disk read error"
+msgstr "Disk okuma hatası"
+
+#: dbgintfcommonstrings.rsrunerrordiskseekerror
+msgid "Disk seek error"
+msgstr "Disk arama hatası"
+
+#: dbgintfcommonstrings.rsrunerrordiskwriteerror
+msgid "Disk write error"
+msgstr "Yazma hatası"
+
+#: dbgintfcommonstrings.rsrunerrordivisionbyzero
+msgid "Division by zero"
+msgstr "Sıfıra bölüm"
+
+#: dbgintfcommonstrings.rsrunerrordrivenotready
+msgid "Drive not ready"
+msgstr "Sürücü hazır değil"
+
+#: dbgintfcommonstrings.rsrunerrorexceptionstackcorrupted
+msgid "Exception stack corrupted"
+msgstr "Yığın boyutu"
+
+#: dbgintfcommonstrings.rsrunerrorfileaccessdenied
+msgid "File access denied"
+msgstr "Dosya erişimi rededildi"
+
+#: dbgintfcommonstrings.rsrunerrorfilenotassigned
+msgid "File not assigned"
+msgstr "Dosya atanmadı"
+
+#: dbgintfcommonstrings.rsrunerrorfilenotfound
+msgid "File not found"
+msgstr "Dosya bulunamadı"
+
+#: dbgintfcommonstrings.rsrunerrorfilenotopen
+msgid "File not open"
+msgstr "Dosya açılamadı"
+
+#: dbgintfcommonstrings.rsrunerrorfilenotopenforinput
+msgid "File not open for input"
+msgstr "Dosya giriş için açık değil"
+
+#: dbgintfcommonstrings.rsrunerrorfilenotopenforoutput
+msgid "File not open for output"
+msgstr "Dosya çıktı için açık değil"
+
+#: dbgintfcommonstrings.rsrunerrorfloatingpointoverflow
+msgid "Floating point overflow"
+msgstr "Kayan nokta taşması"
+
+#: dbgintfcommonstrings.rsrunerrorfloatingpointunderflow
+msgid "Floating point underflow"
+msgstr "Kayan nokta debisi"
+
+#: dbgintfcommonstrings.rsrunerrorgeneralprotectionfault
+msgid "General Protection fault"
+msgstr "Genel Koruma hatası"
+
+#: dbgintfcommonstrings.rsrunerrorhardwarefailure
+msgid "Hardware failure"
+msgstr "Donanım hatası"
+
+#: dbgintfcommonstrings.rsrunerrorheapoverflowerror
+msgid "Heap overflow error"
+msgstr "Yığın taşması hatası"
+
+#: dbgintfcommonstrings.rsrunerrorinvaliddrivenumber
+msgid "Invalid drive number"
+msgstr "Geçersiz sürücü numarası"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidenumeration
+msgid "Invalid enumeration"
+msgstr "Geçersiz numaralandırma"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidfileaccesscode
+msgid "Invalid file access code"
+msgstr "Geçersiz dosya erişim kodu"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidfilehandle
+msgid "Invalid file handle"
+msgstr "Geçersiz dosya tanıtıcısı"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidfloatingpointopera
+msgid "Invalid floating point operation"
+msgstr "Geçersiz kayan nokta işlemi"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidfunctionnumber
+msgid "Invalid function number"
+msgstr "Geçersiz işlev numarası"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidnumericformat
+msgid "Invalid numeric format"
+msgstr "Geçersiz sayısal biçim"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidpointeroperation
+msgid "Invalid pointer operation"
+msgstr "Geçersiz işaretçi işlemi"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidtypecast
+msgid "Invalid typecast"
+msgstr "Geçersiz typecast"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidvaluespecified
+msgid "Invalid value specified"
+msgstr "Geçersiz değer belirtildi"
+
+#: dbgintfcommonstrings.rsrunerrorobjectnotinitialized
+msgid "Object not initialized"
+msgstr "Nesne başlatılmadı"
+
+#: dbgintfcommonstrings.rsrunerrorpathnotfound
+msgid "Path not found"
+msgstr "Yol bulunamadı"
+
+#: dbgintfcommonstrings.rsrunerrorprinteroutofpaper
+msgid "Printer out of paper"
+msgstr "Yazıcı kağıdı bitti"
+
+#: dbgintfcommonstrings.rsrunerrorrangecheckerror
+msgid "Range check error"
+msgstr "Aralık kontrolü hatası"
+
+#: dbgintfcommonstrings.rsrunerrorsafecallerrorcheck
+msgid "Safecall error check"
+msgstr "Safecall hata kontrolü"
+
+#: dbgintfcommonstrings.rsrunerrorsectornotfound
+msgid "Sector Not Found"
+msgstr "Sektör Bulunamadı"
+
+#: dbgintfcommonstrings.rsrunerrorstackoverflowerror
+msgid "Stack overflow error"
+msgstr "Yığın taşması hatası"
+
+#: dbgintfcommonstrings.rsrunerrorstreamregistrationerror
+msgid "Stream registration error"
+msgstr "Akış kaydı hatası"
+
+#: dbgintfcommonstrings.rsrunerrorthreadsnotsupported
+msgid "Threads not supported"
+msgstr "Konular desteklenmiyor"
+
+#: dbgintfcommonstrings.rsrunerrortoomanyopenfiles
+msgid "Too many open files"
+msgstr "Çok fazla dosya açma"
+
+#: dbgintfcommonstrings.rsrunerrorunhandledexceptionoccurre
+msgid "Unhandled exception occurred"
+msgstr "İşlenmeyen özel durum oluştu"
+
+#: dbgintfcommonstrings.rsrunerrorunknownmediatype
+msgid "Unknown media type"
+msgstr "Bilinmeyen ortam türü"
+
+#: dbgintfcommonstrings.rsrunerrorvararrayboundscheckerror
+msgid "Var Array Bounds check error"
+msgstr "Var Array Bounds denetim hatası"
+
+#: dbgintfcommonstrings.rsrunerrorvariantarraycreate
+msgid "Variant array create"
+msgstr "Varyant dizisi oluşturma"
+
+#: dbgintfcommonstrings.rsrunerrorvariantdispatcherror
+msgid "Variant dispatch error"
+msgstr "Varyant gönderme hatası"
+
+#: dbgintfcommonstrings.rsrunerrorvariantisnotanarray
+msgid "Variant is not an array"
+msgstr "Variant bir dizi değildir"
+

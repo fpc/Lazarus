@@ -1,0 +1,46 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: tr_TR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.2.2\n"
+
+#: packagetabsstr.saddtoproject
+msgid "Add To Project"
+msgstr "Projeye Ekle"
+
+#: packagetabsstr.scloneto
+msgid "Clone To"
+msgstr "Klonla"
+
+#: packagetabsstr.scopyfilepathtoclipboard
+msgid "Copy File Path To Clipboard"
+msgstr "Dosya Adını Panoya Kopyala"
+
+#: packagetabsstr.sfindinotherwindow
+msgid "Find In Other Window"
+msgstr "Diğer Pencerede Bul"
+
+#: packagetabsstr.smoveto
+msgid "Move To"
+msgstr "Taşı"
+
+#: packagetabsstr.snewwindow
+msgid "New Window"
+msgstr "Yeni Pencere"
+
+#: packagetabsstr.sopenpackage
+msgid "Open package"
+msgstr "Paketi aç"
+
+#: packagetabsstr.sother
+msgid "Other"
+msgstr "Diğer"
+

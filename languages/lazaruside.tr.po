@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lazarus ide\n"
 "POT-Creation-Date: 18.06.2019\n"
-"PO-Revision-Date: 2022-10-21 22:47+0300\n"
+"PO-Revision-Date: 2023-02-01 21:54+0300\n"
 "Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
 "Language-Team: onur2x@gmail.com\n"
 "Language: tr_TR\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.1.1\n"
+"X-Generator: Poedit 3.2.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-Flags-xgettext: --add-comments=\"TRANSLATORS: Onur ERÇELEN \"\n"
 
@@ -4229,109 +4229,108 @@ msgstr "İki tarafta da"
 
 #: lazarusidestrconsts.initdlgdebugchangepath
 msgid "Change path"
-msgstr ""
+msgstr "Yolu değiştir"
 
 #: lazarusidestrconsts.initdlgdebugclassnoteerrornotconfigured
 msgid "Error: The backend is not configured."
-msgstr ""
+msgstr "Hata: Arka uç yapılandırılmamış."
 
 #: lazarusidestrconsts.initdlgdebugclassnoteerrornotconfiguredmissingpackage
 msgid "(The configured backend's package is not installed.)"
-msgstr ""
+msgstr "(Yapılandırılan arka uç paketi kurulu değil.)"
 
 #: lazarusidestrconsts.initdlgdebugclassnoteerrornotsupported
 msgid "Error: Your current config uses a backend that is not supported on your OS/Arch."
-msgstr ""
+msgstr "Hata: Geçerli yapılandırmanız, İşletim Sisteminizde/Arch'ınızda desteklenmeyen bir arka uç kullanıyor."
 
 #: lazarusidestrconsts.initdlgdebugclassnotehintnotrecommended
 msgid "Hint: The backend type is OK, but not the recommended type."
-msgstr ""
+msgstr "İpucu: Arka uç türü uygundur, ancak önerilen tür değildir."
 
 #: lazarusidestrconsts.initdlgdebugcreateanewrecommendedback
 msgid "Create a new recommended backend"
-msgstr ""
+msgstr "Önerilen yeni bir arka uç oluştur"
 
 #: lazarusidestrconsts.initdlgdebugexternalexepathdisplay
 msgid "The selected backend uses the external executable:"
-msgstr ""
+msgstr "Seçilen arka uç harici yürütülebilir dosyayı kullanır:"
 
 #: lazarusidestrconsts.initdlgdebugexternalexepathprompt
 #, object-pascal-format
 msgid "The selected backend requires an external executable: \"%s\""
-msgstr ""
+msgstr "Seçilen arka uç harici bir yürütülebilir dosya gerektiriyor: \"%s\""
 
 #: lazarusidestrconsts.initdlgdebugheaderdefaultforyourosarchiss
 #, object-pascal-format
 msgid "Default for your OS/Arch is: \"%s\"."
-msgstr ""
+msgstr "İşletim Sisteminiz/Arch'ınız için varsayılan: \"%s\"."
 
 #: lazarusidestrconsts.initdlgdebugignore
-#, fuzzy
 msgctxt "lazarusidestrconsts.initdlgdebugignore"
 msgid "Ignore"
 msgstr "Yoksay"
 
 #: lazarusidestrconsts.initdlgdebugkeepbackend
 msgid "Keep backend"
-msgstr ""
+msgstr "Arka ucu sakla"
 
 #: lazarusidestrconsts.initdlgdebugpathnoteerrorexeisdirectory
 msgid "Error: External executable is a directory, not a file."
-msgstr ""
+msgstr "Hata: Harici yürütülebilir dosya bir dosya değil, bir dizindir."
 
 #: lazarusidestrconsts.initdlgdebugpathnoteerrorexenotfound
 msgid "Error: External executable not found."
-msgstr ""
+msgstr "Hata: Harici yürütülebilir dosya bulunamadı."
 
 #: lazarusidestrconsts.initdlgdebugpathnoteerrorexenotrunnable
 msgid "Error: External file is not executable."
-msgstr ""
+msgstr "Hata: Harici dosya yürütülebilir değil."
 
 #: lazarusidestrconsts.initdlgdebugpathnoteerrornodefaultfound
 msgid "Error: No default for external executable found."
-msgstr ""
+msgstr "Hata: Harici yürütülebilir dosya için varsayılan bulunamadı."
 
 #: lazarusidestrconsts.initdlgdebugpathnoteerrornoexespecified
 msgid "Error: No external executable specified."
-msgstr ""
+msgstr "Hata: Harici yürütülebilir dosya belirtilmedi."
 
 #: lazarusidestrconsts.initdlgdebugpopupinformation
 #, object-pascal-format
 msgid "A backend provides OS and architecture specific implementations for the debugger.%0:sDefault for your OS/Arch is: \"%1:s\".%0:s%0:sOther backends are provided for special tasks (e.g. cross debugging on some platforms) or as generic alternatives.%0:sThe debugger can have different features, depending on the backend.%0:s%0:sSome backends require an external exe (such as gdb or lldb). This exe may be part of your OS (Linux/Mac), or be provided by the Lazarus installer (Windows).%0:s%0:sIf you have just upgraded your installation, you may have to rebuild the IDE before your previously configured backend can be used (if you used a 3rd-party or optional backend). In that case you may choose \"Ignore\"."
-msgstr ""
+msgstr "Bir arka uç, hata ayıklayıcı için işletim sistemine ve mimariye özel uygulamalar sağlar. İşletim Sisteminiz/Arch'ınız için %0:sVarsayılan: \"%1:s\".%0:s%0:sDiğer arka uçlar, özel görevler için sağlanır (örn. platformlar) veya genel alternatifler olarak.%0:sHata ayıklayıcı, arka uca bağlı olarak farklı özelliklere sahip olabilir.%0:s%0:sBazı arka uçlar harici bir exe gerektirir (gdb veya lldb gibi). Bu exe, işletim sisteminizin (Linux/Mac) bir parçası olabilir veya Lazarus yükleyicisi (Windows) tarafından sağlanabilir.%0:s%0:sKurulumunuzu yeni yükselttiyseniz, önceki sürümden önce IDE'yi yeniden oluşturmanız gerekebilir. yapılandırılmış arka uç kullanılabilir (3. taraf veya isteğe bağlı bir arka uç kullandıysanız). Bu durumda \"Yoksay\"ı seçebilirsiniz."
 
 #: lazarusidestrconsts.initdlgdebugselectanexistingbackend
 msgid "Select an existing backend"
-msgstr ""
+msgstr "Mevcut bir arka uç seçin"
 
 #: lazarusidestrconsts.initdlgdebugstatemissingpackagefooter
 msgid "Note: There are more backend configurations available, but their packages (LPK) are not installed. You may want to rebuild the IDE with the packages installed. After the rebuild, the debugger backend can be changed in the menu: Tools -> Options."
-msgstr ""
+msgstr "Not: Daha fazla arka uç yapılandırması vardır, ancak bunların paketleri (LPK) yüklenmemiştir. IDE'yi kurulu paketlerle yeniden oluşturmak isteyebilirsiniz. Yeniden oluşturma işleminden sonra, hata ayıklayıcı arka ucu şu menüden değiştirilebilir: Araçlar -> Seçenekler."
 
 #: lazarusidestrconsts.initdlgdebugstatemissingpackagerebuild
 #, object-pascal-format
 msgid "If you decide to rebuild the IDE first and install missing packages, then select \"Ignore\" for now.%0:sAfter the rebuild, the debugger backend can be changed in the menu: Tools -> Options."
-msgstr ""
+msgstr "Önce IDE'yi yeniden oluşturmaya ve eksik paketleri kurmaya karar verirseniz, şimdilik \"Yoksay\"ı seçin.%0:sYeniden oluşturmadan sonra, hata ayıklayıcı arka ucu şu menüden değiştirilebilir: Araçlar -> Seçenekler."
 
 #: lazarusidestrconsts.initdlgdebugstatemissingpackages
 msgid "There may be packages (LPK) missing from your IDE installation. You may need to rebuild the IDE and install them, before making changes to the setup."
-msgstr ""
+msgstr "IDE kurulumunuzda eksik paketler (LPK) olabilir. Kurulumda değişiklik yapmadan önce IDE'yi yeniden oluşturmanız ve kurmanız gerekebilir."
 
 #: lazarusidestrconsts.initdlgdebugstaterecommendedfoundinlist
 msgid "There is a backend of recommended type in the list of existing debuggers. You may pick this instead of creating a new backend."
-msgstr ""
+msgstr "Mevcut hata ayıklayıcılar listesinde önerilen türde bir arka uç vardır. Yeni bir arka uç oluşturmak yerine bunu seçebilirsiniz."
 
 #: lazarusidestrconsts.initdlgdebugstaterecommendednotinlist
 msgid "There is no backend of recommended type in the list of existing debuggers. Consider creating a new backend."
-msgstr ""
+msgstr "Mevcut hata ayıklayıcılar listesinde önerilen türde bir arka uç yok. Yeni bir arka uç oluşturmayı düşünün."
 
 #: lazarusidestrconsts.initdlgdebugstatesetupok
 msgid "Setup is OK."
-msgstr ""
+msgstr "Kurulum TAMAM."
 
 #: lazarusidestrconsts.initdlgdebugstateupdatebackend
 msgid "You are using an older backend. This may give you not the best debugging experience. Consider upgrading to the recommended backend."
-msgstr ""
+msgstr "Daha eski bir arka uç kullanıyorsunuz. Bu size en iyi hata ayıklama deneyimini vermeyebilir. Önerilen arka uca yükseltmeyi düşünün."
 
 #: lazarusidestrconsts.lis0no1drawdividerlinesonlyfortoplevel2drawlinesforfi
 msgid "0 = no, 1 = draw divider lines only for top level, 2 = draw lines for first two levels, ..."
@@ -5256,7 +5255,7 @@ msgstr "Bir derleyiciye göz atın ve seçin (örneğin, ppcx64)"
 
 #: lazarusidestrconsts.lisbtnapply
 msgid "&Apply"
-msgstr ""
+msgstr "&Uygula"
 
 #: lazarusidestrconsts.lisbtnclose
 msgctxt "lazarusidestrconsts.lisbtnclose"
@@ -8183,10 +8182,9 @@ msgid "Debugger"
 msgstr "Hata ayıklayıcı"
 
 #: lazarusidestrconsts.lisdebuggererrorooopsthedebuggerenteredtheerrorstate
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
+#, object-pascal-format
 msgid "The debugger encountered an internal error.%0:s%0:sSave your work.%0:sYou may then hit \"Stop\", or \"Reset debugger\" to terminate the debug session."
-msgstr "Hata ayıklayıcı hatası%sHata, hata ayıklayıcı hata durumuna girdi%sÇalışmanızı şimdi kaydedin !%s Durdur'a basın ve en iyisini umarız, fişi çekiyoruz."
+msgstr "Hata ayıklayıcı hatası%0:sHata, hata ayıklayıcı hata durumuna girdi%0:sÇalışmanızı şimdi kaydedin !%0:s Daha sonra hata ayıklama oturumunu sonlandırmak için \"Durdur\" veya \"Hata ayıklayıcıyı sıfırla\" düğmesine basabilirsiniz."
 
 #: lazarusidestrconsts.lisdebuggerinvalid
 msgid "Debugger invalid"
@@ -9404,7 +9402,7 @@ msgstr "İlk seçileni aç"
 
 #: lazarusidestrconsts.lisexclude
 msgid "Exclude"
-msgstr ""
+msgstr "Hariç"
 
 #: lazarusidestrconsts.lisexcludedatruntime
 #, object-pascal-format
@@ -10650,7 +10648,7 @@ msgstr "Yolları ekle"
 
 #: lazarusidestrconsts.lisincluderecursive
 msgid "Include, recursive"
-msgstr ""
+msgstr "Dahil et, tekrarlı"
 
 #: lazarusidestrconsts.lisincludesubdirectories
 msgid "Include subdirectories"
@@ -11655,7 +11653,7 @@ msgstr "Lazarus dizini"
 #: lazarusidestrconsts.lislazarusdirhint
 #, object-pascal-format
 msgid "Lazarus sources. This path is relative to primary config directory (%s)."
-msgstr ""
+msgstr "Lazarus kaynakları. Bu yol, birincil yapılandırma dizinine (%s) bağlıdır."
 
 #: lazarusidestrconsts.lislazarusdiroverride
 msgid "directory to be used as a basedirectory"

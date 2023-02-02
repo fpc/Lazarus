@@ -1,0 +1,152 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: tr_TR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.2\n"
+
+#: fperrormessages.fpgdbmidisplaygdbinsteadoffpdebugwatches
+msgid "Display GDB instead of FpDebug Watches"
+msgstr "FpDebug izlemeleri yerine GDB'yi göster"
+
+#: fperrormessages.msgfperraddressisnil
+msgid "Cannot access data, Address is NIL"
+msgstr "Verilere erişilemiyor, Adres NIL"
+
+#: fperrormessages.msgfperranyerror
+#, object-pascal-format
+msgid "%1:s"
+msgstr "%1:s"
+
+#: fperrormessages.msgfperrattachprocess
+#, object-pascal-format
+msgid "Failed to attach to process \"%1:s\".%0:sError message: %2:d \"%3:s\".%0:s%4:s"
+msgstr "\"%1:s\" işlemine eklenemedi.%0:sHata mesajı: %2:d \"%3:s\".%0:s%4:s"
+
+#: fperrormessages.msgfperrcannotdereferencetype
+#, object-pascal-format
+msgid "Cannot dereference Expression \"%1:s\""
+msgstr "\"%1:s\" İfadesinin başvurusu kaldırılamıyor"
+
+#: fperrormessages.msgfperrcannotreadmemataddr
+#, object-pascal-format
+msgctxt "fperrormessages.msgfperrcannotreadmemataddr"
+msgid "Failed to read Mem at Address $%1:x"
+msgstr "$%1:x Adresindeki Mem okunamadı"
+
+#: fperrormessages.msgfperrcannotwritememataddr
+#, object-pascal-format
+msgctxt "fperrormessages.msgfperrcannotwritememataddr"
+msgid "Failed to write Mem at Address $%1:x"
+msgstr "$%1:x Adresindeki Mem yazılamadı"
+
+#: fperrormessages.msgfperrchangevariablenotsupported
+msgid "Changing the value of this variable is not supported"
+msgstr "Bu değişkenin değerinin değiştirilmesi desteklenmiyor"
+
+#: fperrormessages.msgfperrcreateprocess
+#, object-pascal-format
+msgid "Failed to start process \"%1:s\".%0:sError message: %2:d \"%3:s\".%0:s%4:s"
+msgstr "\"%1:s\" işlemi başlatılamadı.%0:sHata mesajı: %2:d \"%3:s\".%0:s%4:s"
+
+#: fperrormessages.msgfperrfailedreadregiseter
+msgid "Failed to read data from register"
+msgstr "Kayıttan veri okunamadı"
+
+#: fperrormessages.msgfperrfailedwritemem
+msgctxt "fperrormessages.msgfperrfailedwritemem"
+msgid "Failed to write data"
+msgstr "Veri yazılamadı"
+
+#: fperrormessages.msgfperrinvalidnumber
+#, object-pascal-format
+msgid "Cannot parse number: %1:s"
+msgstr "Sayı ayrıştırılamıyor: %1:s"
+
+#: fperrormessages.msgfperrlocationparser
+msgid "Internal Error: Cannot calculate location."
+msgstr "Dahili Hata: Konum hesaplanamıyor."
+
+#: fperrormessages.msgfperrlocationparserinit
+msgid "Internal Error: Cannot calculate location (Init)."
+msgstr "Dahili Hata: Konum hesaplanamıyor (Başlangıç)."
+
+#: fperrormessages.msgfperrlocationparsermemread
+#, object-pascal-format
+msgid "%1:s (while calculating location)"
+msgstr "%1:s (konum hesaplanırken)"
+
+#: fperrormessages.msgfperrlocationparserminstack
+msgid "Not enough elements on stack."
+msgstr "Yığında yeterli öğe yok."
+
+#: fperrormessages.msgfperrlocationparsernoaddressonstack
+msgid "Not an address on stack"
+msgstr "Yığındaki bir adres değil"
+
+#: fperrormessages.msgfperrnomemberwithname
+#, object-pascal-format
+msgid "Member not found: %1:s"
+msgstr "Üye bulunamadı: %1:s"
+
+#: fperrormessages.msgfperrorbadfloatsize
+msgid "Unsupported float value: Unknown precision"
+msgstr "Desteklenmeyen kayan nokta değeri: Bilinmeyen hassasiyet"
+
+#: fperrormessages.msgfperrornotastructure
+#, object-pascal-format
+msgid "Cannot get member \"%1:s\" from non-structured type: %2:s"
+msgstr "Yapılandırılmamış türden \"%1:s\" üyesi alınamıyor: %2:s"
+
+#: fperrormessages.msgfperrpasparserinvalidexpression
+msgid "Invalid Expression"
+msgstr "Geçersiz İfade"
+
+#: fperrormessages.msgfperrpasparsermissingexpraftercomma
+#, object-pascal-format
+msgid "Expected Expression after Comma, but found closing bracket %1:s"
+msgstr "Virgülden Sonra Beklenen İfade, ancak %1:s kapanış parantezi bulundu"
+
+#: fperrormessages.msgfperrpasparsermissingindexexpression
+#, object-pascal-format
+msgid "Expected Expression but found closing bracket: %1:s"
+msgstr "Beklenen İfade ancak kapanış ayracı bulundu: %1:s"
+
+#: fperrormessages.msgfperrpasparserunexpectedtoken
+#, object-pascal-format, fuzzy, badformat
+msgid "Unexpected token '%1:s' at pos %2:d"
+msgstr "%2:d konumunda beklenmeyen simge '%1:s'"
+
+#: fperrormessages.msgfperrreadmemsizelimit
+msgid "Memory read size exceeds limit"
+msgstr "Bellek okuma boyutu sınırı aşıyor"
+
+#: fperrormessages.msgfperrsymbolnotfound
+#, object-pascal-format
+msgid "Identifier not found: \"%1:s\""
+msgstr "Tanımlayıcı bulunamadı: \"%1:s\""
+
+#: fperrormessages.msgfperrtypehasnoindex
+#, object-pascal-format
+msgid "Cannot access indexed element in expression %1:s"
+msgstr "%1:s ifadesindeki dizine eklenen öğeye erişilemiyor"
+
+#: fperrormessages.msgfpinternalerrcannotreadinvalidmem
+msgid "Internal error: Missing data location"
+msgstr "Dahili hata: Eksik veri konumu"
+
+#: fperrormessages.msgfpinternalerrcannotwriteinvalidmem
+msgid "Internal error writing data: Missing data location"
+msgstr "Veri yazarken dahili hata: Eksik veri konumu"
+
+#: fperrormessages.msgfpinternalerrfperrfailedreadmem
+msgid "Internal error: Failed to read data from memory"
+msgstr "Dahili hata: Bellekten veri okunamadı"
+

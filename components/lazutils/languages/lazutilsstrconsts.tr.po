@@ -1,16 +1,16 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Language-Team: \n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.3\n"
 "Last-Translator: Onur ERÇELEN <onur2x@gmail.com>\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: \n"
 "Language: tr_TR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.2.2\n"
 
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml
 #, object-pascal-format
@@ -199,34 +199,34 @@ msgstr "%s den %s ye dönüşüm mümkün değil"
 
 #: lazutilsstrconsts.rsincompletemask
 msgid "Reached end of mask, but missing close/escape sequence."
-msgstr ""
+msgstr "Maskenin sonuna ulaşıldı, ancak kapatma/kaçış sırası eksik."
 
 #: lazutilsstrconsts.rsinternalerror
 #, object-pascal-format
 msgid "Internal error in %s."
-msgstr ""
+msgstr "Dahili hata: %s."
 
 #: lazutilsstrconsts.rsinvalidcharmask
 #, object-pascal-format
 msgid "Invalid character \"%s\" in mask."
-msgstr ""
+msgstr "Maskede geçersiz karakter \"%s\"."
 
 #: lazutilsstrconsts.rsinvalidcharmaskat
 #, object-pascal-format
 msgid "Invalid character \"%s\" in mask (offset %d)."
-msgstr ""
+msgstr "Maskede geçersiz karakter \"%s\" (offset %d)."
 
 #: lazutilsstrconsts.rsinvalidescapechar
 msgid "Escape character must be ASCII <= 127."
-msgstr ""
+msgstr "Kaçış karakteri ASCII <= 127 olmalıdır."
 
 #: lazutilsstrconsts.rsmissingclosecharmask
 #, object-pascal-format
 msgid "Missing closing character \"%s\" in mask."
-msgstr ""
+msgstr "Maskede \"%s\" kapanış karakteri eksik."
 
 #: lazutilsstrconsts.rsmissingclosecharmaskat
 #, object-pascal-format
 msgid "Missing closing character \"%s\" in mask (offset %d)."
-msgstr ""
+msgstr "Maskede \"%s\" kapanış karakteri eksik (offset %d)."
 
