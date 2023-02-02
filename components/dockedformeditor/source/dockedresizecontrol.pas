@@ -105,6 +105,7 @@ begin
              + Abs(FDesignForm.Form.Left)
              + FDesignForm.ClientOffset.X;
   LHeight :=   FDesignForm.Form.Height
+             + FakeMenu.Height
              + Abs(FDesignForm.Form.Top)
              + FDesignForm.ClientOffset.Y;
   FormContainer.SetBounds(LLeft, LTop, LWidth, LHeight);
@@ -422,7 +423,7 @@ var
 begin
   if FDesignForm = nil then Exit;
   LWidth := FDesignForm.Width + 2 * SizerGripSize;
-  LHeight := FDesignForm.Height + 2 * SizerGripSize;
+  LHeight := FDesignForm.Height + 2 * SizerGripSize + FakeMenu.Height;
   {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TResizeControl.AdjustBounds: New ResizeControl Width:', DbgS(Width), ' Height: ', DbgS(Height)); {$ENDIF}
   FResizeContainer.SetBounds(-ScrollOffset.x, -ScrollOffset.y, LWidth, LHeight);
   AdjustFormContainer;
@@ -436,11 +437,11 @@ begin
   if FormClient.Visible then
   begin
     FNewFormSize.X := FormClient.Width;
-    FNewFormSize.Y := FormClient.Height + FakeMenu.Height;
+    FNewFormSize.Y := FormClient.Height;
   end else if AnchorContainer.Visible then
   begin
     FNewFormSize.X := AnchorContainer.Width;
-    FNewFormSize.Y := AnchorContainer.Height + FakeMenu.Height;
+    FNewFormSize.Y := AnchorContainer.Height;
   end;
 end;
 
