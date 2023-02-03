@@ -40,7 +40,7 @@ type
   
 function InitializeMouseInput: TMouseInput;
 
-function XTestFakeButtonEvent(dpy: PDisplay; button: dword; is_press: Boolean;
+function XTestFakeButtonEvent(dpy: PDisplay; button: dword; is_press: Boolean32;
   delay: dword): longint; cdecl; external;
 
 function XTestFakeMotionEvent(dpy: PDisplay; screen: longint; x: longint; y: longint;
