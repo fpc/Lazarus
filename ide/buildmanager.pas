@@ -208,6 +208,7 @@ type
     function GetTargetCPU: string; override;
     function GetLCLWidgetType: string; override;
     function GetRunCommandLine: string; override;
+    function GetRunWorkingDir: string; override;
     procedure WriteDebug_RunCommandLine; override;
 
     function GetCompilerFilename: string; override;
@@ -682,6 +683,31 @@ begin
       Result:='';
   end else begin
     if not GlobalMacroList.SubstituteStr(Result) then Result:='';
+  end;
+end;
+
+function TBuildManager.GetRunWorkingDir: string;
+var
+  AMode: TRunParamsOptionsMode;
+begin
+  Result := '';
+  if Project1=nil then exit;
+
+  AMode := Project1.RunParameterOptions.GetActiveMode;
+  if AMode<>nil then
+    Result := AMode.WorkingDirectory;
+  if not GlobalMacroList.SubstituteStr(Result) then
+    Result := '';
+  if (Result <> '') and not FilenameIsAbsolute(Result) then
+    Result := CreateAbsolutePath(Result, Project1.Directory);
+
+  if (Result='') and (not Project1.IsVirtual) then
+    Result := ChompPathDelim(Project1.Directory);
+
+  if Result='' then begin
+    Result := ExtractFilePath(BuildBoss.GetProjectTargetFilename(Project1));
+    if (Result <> '') and not FilenameIsAbsolute(Result) then
+      Result := CreateAbsolutePath(Result, Project1.Directory);
   end;
 end;
 

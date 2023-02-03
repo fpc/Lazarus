@@ -4193,9 +4193,6 @@ resourcestring
     +'%sdoes not exist or is not executable.'
     +'%sSee Tools -> Options -> Debugger options';
   lisUnableToRun = 'Unable to run';
-  lisTheDestinationDirectoryDoesNotExistPleaseCheckTheP = 'The destination '
-    +'directory "%s" does not exist.%sPlease check the project target file '
-    +'name Menu > Project > Project Options.';
   lisTheWorkingDirectoryDoesNotExistPleaseCheckTheWorki = 'The working '
     +'directory "%s" does not exist.%sPlease check the working directory in '
     +'Menu > Run > Run parameters.';

@@ -2681,11 +2681,7 @@ begin
 
     if not(difInitForAttach in AFlags) then begin
       Project1.RunParameterOptions.AssignEnvironmentTo(FDebugger.Environment);
-      if Project1.RunParameterOptions.GetActiveMode<>nil then
-        NewWorkingDir:=Project1.RunParameterOptions.GetActiveMode.WorkingDirectory
-      else
-        NewWorkingDir:='';
-      GlobalMacroList.SubstituteStr(NewWorkingDir);
+      NewWorkingDir := BuildBoss.GetRunWorkingDir;
       if NewDebuggerClass.RequiresLocalExecutable  and     (* TODO: workaround for http://bugs.freepascal.org/view.php?id=21834   *)
          (NewWorkingDir<>'') and (not DirectoryExistsUTF8(NewWorkingDir))
       then begin
@@ -2695,25 +2691,16 @@ begin
           mtError,[mbCancel]);
         exit;
       end;
-      if NewWorkingDir='' then begin
-        NewWorkingDir:=ExtractFilePath(BuildBoss.GetProjectTargetFilename(Project1));
-        if NewDebuggerClass.RequiresLocalExecutable  and     (* TODO: workaround for http://bugs.freepascal.org/view.php?id=21834   *)
-           (NewWorkingDir<>'') and (not DirectoryExistsUTF8(NewWorkingDir))
-        then begin
-          IDEMessageDialog(lisUnableToRun,
-            Format(lisTheDestinationDirectoryDoesNotExistPleaseCheckTheP,
-                   [NewWorkingDir, LineEnding]),
-            mtError,[mbCancel]);
-          exit;
-        end;
-      end;
 
       // The following commands may call ProcessMessages, and FDebugger can be nil after each
 
-      if (FDebugger <> nil) and not NewDebuggerClass.RequiresLocalExecutable
-      then FDebugger.WorkingDir:=NewWorkingDir;
-      if (FDebugger <> nil) and NewDebuggerClass.RequiresLocalExecutable
-      then FDebugger.WorkingDir:=CleanAndExpandDirectory(NewWorkingDir);
+      if (FDebugger <> nil) then begin
+        if NewDebuggerClass.RequiresLocalExecutable then
+          FDebugger.WorkingDir:=AppendPathDelim(NewWorkingDir)
+        else
+        if Project1.RunParameterOptions.GetActiveMode <> nil then
+          FDebugger.WorkingDir:=Project1.RunParameterOptions.GetActiveMode.WorkingDirectory;
+      end;
       // set filename after workingdir
       if FDebugger <> nil
       then FDebugger.FileName := LaunchingApplication;
