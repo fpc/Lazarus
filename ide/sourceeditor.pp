@@ -7748,11 +7748,16 @@ begin
           FPageIndex := APageIndex + 1
         else
           FPageIndex := APageIndex - 1;
-      if FUpdateLock = 0 then
-        ApplyPageIndex
-      else
+      if FUpdateLock = 0 then begin
+        ApplyPageIndex;
+      end
+      else begin
+        FNotebook.PageIndex := FPageIndex; // Avoid the WS doing this, when the page is deleted.
         Include(FUpdateFlags,ufPageIndexChanged);
+      end;
     end;
+    if FPageIndex > APageIndex then
+      dec(FPageIndex);
     NotebookPages.Delete(APageIndex);
   end else begin
     FPageIndex := -1;
