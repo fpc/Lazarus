@@ -7402,7 +7402,7 @@ begin
   if ConsoleVerbosity>0 then
     DebugLn(['Hint: (lazarus) [TMainIDE.DoInitProjectRun] ProgramFilename=',ProgramFilename]);
   if ((DebugClass = nil) or DebugClass.RequiresLocalExecutable)
-     and not FileExistsUTF8(ProgramFilename)
+     and not FileExistsUTF8(ResolveLocationForLaunchApplication(ProgramFilename))
   then begin
     debugln(['Info: (lazarus) [TMainIDE.DoInitProjectRun] File TargetFile found: "',ProgramFilename,'"']);
     IDEMessageDialog(lisFileNotFound,
@@ -7520,13 +7520,7 @@ begin
     ExeFile := Params[0];
     Params.Delete(0);
     //debugln('TMainIDE.DoRunProjectWithoutDebug ExeFile=',ExeFile);
-    if not FilenameIsAbsolute(ExeFile) then
-    begin
-      aFilename:=FindDefaultExecutablePath(ExeFile);
-      if aFilename<>'' then
-        ExeFile:=aFilename;
-    end;
-
+    ExeFile := ResolveLocationForLaunchApplication(ExeFile);
 
     Process.Executable := ExeFile;
     Process.Parameters.Assign(Params);

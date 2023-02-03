@@ -55,7 +55,7 @@ uses
   IdeDebuggerStringConstants,
   // IDE
   CompilerOptions, EnvironmentOpts, SourceEditor, ProjectDefs, Project,
-  InputHistory, Debugger, LazarusIDEStrConsts, TransferMacros, MainBar,
+  InputHistory, LazConf, Debugger, LazarusIDEStrConsts, TransferMacros, MainBar,
   MainIntf, MainBase, BaseBuildManager, SourceMarks, DebuggerDlg, Watchesdlg,
   BreakPointsdlg, BreakPropertyDlg, LocalsDlg, WatchPropertyDlg, CallStackDlg,
   EvaluateDlg, RegistersDlg, AssemblerDlg, DebugOutputForm, ExceptionDlg,
@@ -308,6 +308,7 @@ function GetDebugManager: TDebugManager;
 property DebugBossMgr: TDebugManager read GetDebugManager;
 
 function DBGDateTimeFormatter(const aValue: string): string;
+function ResolveLocationForLaunchApplication(ALaunchApp: String): String;
 
 implementation
 
@@ -338,6 +339,25 @@ begin
       Result := DateTimeToStr(MyDate);
   end else
     Result := aValue;
+end;
+
+function ResolveLocationForLaunchApplication(ALaunchApp: String): String;
+var
+  tmp: String;
+begin
+  Result := ALaunchApp;
+  if not FilenameIsAbsolute(ALaunchApp) then begin
+    tmp := CreateAbsolutePath(ALaunchApp, Project1.Directory);
+    if FileIsExecutable(tmp) then begin
+      Result := tmp;
+    end
+    else
+    if ExtractFilePath(ALaunchApp) = '' then begin
+      tmp := FindDefaultExecutablePath(ALaunchApp);
+      if tmp <> '' then
+        Result := tmp;
+    end;
+  end;
 end;
 
 type
@@ -2513,6 +2533,9 @@ begin
   NewDebuggerClass := GetDebuggerClass;
   LaunchingCmdLine := BuildBoss.GetRunCommandLine;
   SplitCmdLine(LaunchingCmdLine, LaunchingApplication, LaunchingParams);
+
+  if NewDebuggerClass.RequiresLocalExecutable then
+    LaunchingApplication := ResolveLocationForLaunchApplication(LaunchingApplication);
 
   (* TODO: workaround for http://bugs.freepascal.org/view.php?id=21834
      Se Debugger.RequiresLocalExecutable
