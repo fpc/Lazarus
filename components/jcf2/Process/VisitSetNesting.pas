@@ -128,8 +128,9 @@ begin
       //  writeln();
       //finally
       //end;
-      // only indent try block if it is in begin end block.
-      if lcNode.HasParentNode(nCompoundStatement,4) then
+      // only indent try block if it is in begin end or try,finally,except block.
+      if lcNode.HasParentNode(nCompoundStatement,4) or
+        ((lcNode.Parent<>nil) and lcNode.Parent.HasParentNode([nTryBlock, nFinallyBlock, nExceptBlock],4)) then
       begin
         leNestType   := nlBlock;
         lbHasNesting := True;
