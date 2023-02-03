@@ -18227,11 +18227,6 @@ msgstr "Типовий режим має зберігатись у проєкт�
 msgid "The destination directory%s\"%s\" does not exist."
 msgstr "Теки призначення%s\"%s\" не існує."
 
-#: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
-#, object-pascal-format
-msgid "The destination directory \"%s\" does not exist.%sPlease check the project target file name Menu > Project > Project Options."
-msgstr "Теки призначення \"%s\" не існує.%sПеревірте назву виконуваного файлу в Меню > Проєкт > Параметри проєкту."
-
 #: lazarusidestrconsts.listhedirectorycontainsnoprojectincludefilesanymorere
 #, object-pascal-format
 msgid "The directory \"%s\" contains no project include files any more. Remove this directory from the project's include search path?"

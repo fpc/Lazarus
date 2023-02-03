@@ -18191,11 +18191,6 @@ msgstr "Режим по умолчанию должен храниться в ф
 msgid "The destination directory%s\"%s\" does not exist."
 msgstr "Каталог назначения%s\"%s\" не существует."
 
-#: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
-#, object-pascal-format
-msgid "The destination directory \"%s\" does not exist.%sPlease check the project target file name Menu > Project > Project Options."
-msgstr "Каталог назначения \"%s\" не существует.%sПроверьте имя исполнимого файла в меню Проект -> Параметры проекта."
-
 #: lazarusidestrconsts.listhedirectorycontainsnoprojectincludefilesanymorere
 #, object-pascal-format
 msgid "The directory \"%s\" contains no project include files any more. Remove this directory from the project's include search path?"

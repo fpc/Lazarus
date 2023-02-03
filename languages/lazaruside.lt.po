@@ -18485,11 +18485,6 @@ msgstr "Numatytasis režimas turi būti patalpintas projekte, o ne sesijoje."
 msgid "The destination directory%s\"%s\" does not exist."
 msgstr "Paskirties aplankas%s„%s“ neegzistuoja."
 
-#: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
-#, object-pascal-format
-msgid "The destination directory \"%s\" does not exist.%sPlease check the project target file name Menu > Project > Project Options."
-msgstr "„%s“ paskirties aplankas neegzistuoja.%sPatikrinkite projekto būsimo failo pavadinimą menių punkte „Projektas“ -> „Projekto parinktys…“."
-
 #: lazarusidestrconsts.listhedirectorycontainsnoprojectincludefilesanymorere
 #, object-pascal-format
 msgid "The directory \"%s\" contains no project include files any more. Remove this directory from the project's include search path?"

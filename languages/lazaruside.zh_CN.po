@@ -18232,11 +18232,6 @@ msgstr "默认模式必须存储在工程中,而不是会话中."
 msgid "The destination directory%s\"%s\" does not exist."
 msgstr "该目标目录%s\"%s\"不存在."
 
-#: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
-#, object-pascal-format
-msgid "The destination directory \"%s\" does not exist.%sPlease check the project target file name Menu > Project > Project Options."
-msgstr "该目标目录\"%s\"不存在.%s请检查工程目标文件名称 菜单>工程>工程选项."
-
 #: lazarusidestrconsts.listhedirectorycontainsnoprojectincludefilesanymorere
 #, object-pascal-format
 msgid "The directory \"%s\" contains no project include files any more. Remove this directory from the project's include search path?"

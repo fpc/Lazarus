@@ -18305,11 +18305,6 @@ msgstr "Výchozí režim musí být uložen v projektu, ne v sezení."
 msgid "The destination directory%s\"%s\" does not exist."
 msgstr "Cílový adresář%s\"%s\" neexistuje."
 
-#: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
-#, object-pascal-format
-msgid "The destination directory \"%s\" does not exist.%sPlease check the project target file name Menu > Project > Project Options."
-msgstr "Cílový adresář \"%s\" neexistuje.%sProsím zkontrolujte cílové jméno souboru projektu v Nabídka > Projekt > Volby projektu."
-
 #: lazarusidestrconsts.listhedirectorycontainsnoprojectincludefilesanymorere
 #, object-pascal-format
 msgid "The directory \"%s\" contains no project include files any more. Remove this directory from the project's include search path?"

@@ -18219,11 +18219,6 @@ msgstr "Le mode par défaut doit être enregistré dans le projet, pas dans la s
 msgid "The destination directory%s\"%s\" does not exist."
 msgstr "Le répertoire de destination%s\"%s\" n'existe pas."
 
-#: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
-#, object-pascal-format
-msgid "The destination directory \"%s\" does not exist.%sPlease check the project target file name Menu > Project > Project Options."
-msgstr "Le répertoire de destination \"%s\" n'existe pas.%sVeuillez vérifier le nom de fichier du projet dans Menu -> Projet -> Options du projet."
-
 #: lazarusidestrconsts.listhedirectorycontainsnoprojectincludefilesanymorere
 #, object-pascal-format
 msgid "The directory \"%s\" contains no project include files any more. Remove this directory from the project's include search path?"

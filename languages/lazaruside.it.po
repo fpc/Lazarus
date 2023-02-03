@@ -18533,11 +18533,6 @@ msgstr "Il modo predefinito deve essere memorizzato nel progetto, non nella sess
 msgid "The destination directory%s\"%s\" does not exist."
 msgstr "La cartella di destinazione%s\"%s\" non esiste."
 
-#: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
-#, object-pascal-format
-msgid "The destination directory \"%s\" does not exist.%sPlease check the project target file name Menu > Project > Project Options."
-msgstr "La cartella di destinazione \"%s\" non esiste.%sControllate il nome file di destinazione in Menu -> Progetto -> Opzioni progetto."
-
 #: lazarusidestrconsts.listhedirectorycontainsnoprojectincludefilesanymorere
 #, object-pascal-format
 msgid "The directory \"%s\" contains no project include files any more. Remove this directory from the project's include search path?"

@@ -18101,11 +18101,6 @@ msgstr "Varsayılan mod, oturumda değil, projede saklanmalıdır."
 msgid "The destination directory%s\"%s\" does not exist."
 msgstr "%s hedef klasörü \"%s\"mevcut değil."
 
-#: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
-#, object-pascal-format
-msgid "The destination directory \"%s\" does not exist.%sPlease check the project target file name Menu > Project > Project Options."
-msgstr "\"%s\" hedef dizini mevcut değil.%sLütfen proje hedef dosya adını kontrol ediniz Menü> Proje> Proje Seçenekleri."
-
 #: lazarusidestrconsts.listhedirectorycontainsnoprojectincludefilesanymorere
 #, object-pascal-format
 msgid "The directory \"%s\" contains no project include files any more. Remove this directory from the project's include search path?"

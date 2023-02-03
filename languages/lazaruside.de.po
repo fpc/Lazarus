@@ -18336,11 +18336,6 @@ msgstr "Der Vorgabemodus muß im Projekt gespeichert werden, nicht in der Sitzun
 msgid "The destination directory%s\"%s\" does not exist."
 msgstr "Das Zielverzeichnis%s\"%s\" ist nicht vorhanden."
 
-#: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
-#, object-pascal-format
-msgid "The destination directory \"%s\" does not exist.%sPlease check the project target file name Menu > Project > Project Options."
-msgstr "Es gibt das Zielverzeichnis \"%s\" nicht.%sBitte prüfen Sie den Namen des Projektziels im Menü Projekt > Projekteinstellungen."
-
 #: lazarusidestrconsts.listhedirectorycontainsnoprojectincludefilesanymorere
 #, object-pascal-format
 msgid "The directory \"%s\" contains no project include files any more. Remove this directory from the project's include search path?"

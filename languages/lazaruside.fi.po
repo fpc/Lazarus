@@ -18108,11 +18108,6 @@ msgstr "Oletusmoodi pitää tallentaa projektiin, ei istuntoon."
 msgid "The destination directory%s\"%s\" does not exist."
 msgstr "Kohdehakemistoa%s\"%s\" ei ole."
 
-#: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
-#, object-pascal-format
-msgid "The destination directory \"%s\" does not exist.%sPlease check the project target file name Menu > Project > Project Options."
-msgstr "Kohdehakemistoa \"%s\" ei ole.%sTarkista kohdehakemisto projektin asetuksista."
-
 #: lazarusidestrconsts.listhedirectorycontainsnoprojectincludefilesanymorere
 #, object-pascal-format
 msgid "The directory \"%s\" contains no project include files any more. Remove this directory from the project's include search path?"

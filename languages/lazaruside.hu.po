@@ -18228,11 +18228,6 @@ msgstr "Az alapértelmezett módot a projektben kell tárolni és nem a munkamen
 msgid "The destination directory%s\"%s\" does not exist."
 msgstr "A célkönyvtár nem létezik:%s\"%s\""
 
-#: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
-#, object-pascal-format
-msgid "The destination directory \"%s\" does not exist.%sPlease check the project target file name Menu > Project > Project Options."
-msgstr "A(z) \"%s\" célkönyvtár nem létezik.%sEllenőrizze a projekt célfájljának nevét a menüben itt: Projekt -> Projekt beállításai"
-
 #: lazarusidestrconsts.listhedirectorycontainsnoprojectincludefilesanymorere
 #, object-pascal-format
 msgid "The directory \"%s\" contains no project include files any more. Remove this directory from the project's include search path?"

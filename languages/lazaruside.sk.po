@@ -18475,12 +18475,6 @@ msgstr ""
 msgid "The destination directory%s\"%s\" does not exist."
 msgstr "Cieľový adresár  %s%s%s%s neexistuje."
 
-#: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
-#, object-pascal-format, fuzzy, badformat
-#| msgid "The destination directory %s%s%s does not exist.%sPlease check the project target file name Menu > Project > Project Options."
-msgid "The destination directory \"%s\" does not exist.%sPlease check the project target file name Menu > Project > Project Options."
-msgstr "Cieľový adresár %s%s%s neexistuje.%sProsím skontrolujte cieľové meno súboru projektu v Projekt > Voľby projektu."
-
 #: lazarusidestrconsts.listhedirectorycontainsnoprojectincludefilesanymorere
 #, object-pascal-format
 msgid "The directory \"%s\" contains no project include files any more. Remove this directory from the project's include search path?"

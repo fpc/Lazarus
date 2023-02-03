@@ -18245,11 +18245,6 @@ msgstr "O modo padrão deve ser armazenado no projeto, não na sessão."
 msgid "The destination directory%s\"%s\" does not exist."
 msgstr "O diretório de destinos%s\"%s\" não existe."
 
-#: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
-#, object-pascal-format
-msgid "The destination directory \"%s\" does not exist.%sPlease check the project target file name Menu > Project > Project Options."
-msgstr "O diretório destino \"%s\" não existe.%sFavor verificar o nome do arquivo alvo do projeto. Menu -> Projeto -> Opções Projeto."
-
 #: lazarusidestrconsts.listhedirectorycontainsnoprojectincludefilesanymorere
 #, object-pascal-format
 msgid "The directory \"%s\" contains no project include files any more. Remove this directory from the project's include search path?"

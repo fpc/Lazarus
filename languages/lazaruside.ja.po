@@ -18445,11 +18445,6 @@ msgstr "既定のモードはセッションではなくプロジェクトに保
 msgid "The destination directory%s\"%s\" does not exist."
 msgstr "行き先のディレクトリ%s\"%s\"は存在しません。"
 
-#: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
-#, object-pascal-format
-msgid "The destination directory \"%s\" does not exist.%sPlease check the project target file name Menu > Project > Project Options."
-msgstr "行き先のディレクトリ\"%s\"は存在しません。%sメニュー > プロジェクト > プロジェクトオプションでプロジェクトの対象ファイルをチェックしてください。"
-
 #: lazarusidestrconsts.listhedirectorycontainsnoprojectincludefilesanymorere
 #, object-pascal-format
 msgid "The directory \"%s\" contains no project include files any more. Remove this directory from the project's include search path?"
