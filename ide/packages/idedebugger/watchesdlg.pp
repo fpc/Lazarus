@@ -1448,6 +1448,7 @@ var
   ExistingNode, nd: PVirtualNode;
   ChildInfo: TWatchResultDataFieldInfo;
   AnchClass: String;
+  IsGdbmiArray: Boolean;
 begin
   ChildCount := 0;
 
@@ -1500,12 +1501,16 @@ begin
     AWatch := AWatchValue.Watch;
 
     if (TypInfo <> nil) and (TypInfo.Fields <> nil) then begin
+      IsGdbmiArray := TypInfo.Attributes * [saDynArray, saArray] <> [];
       ChildCount := TypInfo.Fields.Count;
       ExistingNode := tvWatches.GetFirstChildNoInit(VNode);
 
       AnchClass := TypInfo.TypeName;
       for i := 0 to TypInfo.Fields.Count-1 do begin
-        NewWatch := AWatchValue.ChildrenByNameAsField[TypInfo.Fields[i].Name, AnchClass];
+        if IsGdbmiArray then
+          NewWatch := AWatchValue.ChildrenByNameAsArrayEntry[StrToInt64Def(TypInfo.Fields[i].Name, 0)]
+        else
+          NewWatch := AWatchValue.ChildrenByNameAsField[TypInfo.Fields[i].Name, AnchClass];
         if NewWatch = nil then begin
           dec(ChildCount);
           continue;
