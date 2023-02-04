@@ -543,6 +543,7 @@ type
     FMouseActions, FMouseSelActions, FMouseTextActions: TSynEditMouseInternalActions;
     FMouseActionSearchHandlerList: TSynEditMouseActionSearchList;
     FMouseActionExecHandlerList: TSynEditMouseActionExecList;
+    FMouseActionShiftMask: TShiftState;
     FMarkList: TSynEditMarkList;
     FUseUTF8: boolean;
     fWantTabs: boolean;
@@ -3121,6 +3122,8 @@ begin
 end;
 
 procedure TCustomSynEdit.KeyUp(var Key: Word; Shift: TShiftState);
+var
+  CurMouseActionShiftMask: TShiftState;
 begin
   {$IFDEF VerboseKeys}
   DebugLn(['[TCustomSynEdit.KeyUp] ',Key
@@ -3130,6 +3133,19 @@ begin
   // Run even before OnKeyUp
   if FKeyUpEventList <> nil then
     FKeyUpEventList.CallKeyDownHandlers(Self, Key, Shift);
+
+  CurMouseActionShiftMask := FMouseActionShiftMask;
+  case Key of
+    VK_SHIFT, VK_LSHIFT, VK_RSHIFT: Exclude(FMouseActionShiftMask, ssShift);
+    VK_CONTROL, VK_LCONTROL, VK_RCONTROL: Exclude(FMouseActionShiftMask, ssCtrl);
+    VK_MENU, VK_LMENU, VK_RMENU: FMouseActionShiftMask := FMouseActionShiftMask - [ssAlt, ssAltGr];
+  end;
+  if (Key in [VK_MENU, VK_LMENU]) and (ssAlt in CurMouseActionShiftMask) then begin
+    {$IfDef WINDOWS}
+    Key := 0;
+    {$EndIf}
+  end;
+
   if Key=0 then exit;
 
   inherited KeyUp(Key, Shift);
@@ -3366,6 +3382,7 @@ begin
         MoveCaret;
       if (AnAction.IgnoreUpClick) then
         AnInfo.IgnoreUpClick := True;
+      FMouseActionShiftMask := AnInfo.Shift;
       exit;
     end;
 
@@ -3614,6 +3631,8 @@ begin
       MouseCapture := False;
     if FBlockSelection.AutoExtend and (FPaintLock = 0) then
       FBlockSelection.AutoExtend := False;
+    if Result then
+      FMouseActionShiftMask := AnInfo.Shift;
   end;
 end;
 
@@ -5160,6 +5179,7 @@ begin
     Invalidate;
   if FImeHandler <> nil then
     FImeHandler.FocusKilled;
+  FMouseActionShiftMask := [];
   inherited;
   StatusChanged([scFocus]);
 end;
@@ -5180,6 +5200,7 @@ begin
   FScreenCaret.Visible := not(eoNoCaret in FOptions) and IsVisible;
   //if HideSelection and SelAvail then
   //  Invalidate;
+  FMouseActionShiftMask := [];
   inherited;
   //DebugLn('[TCustomSynEdit.WMSetFocus] END');
   StatusChanged([scFocus]);
