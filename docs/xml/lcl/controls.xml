@@ -22249,7 +22249,7 @@ in the routine.
 </p>
 <p>
 See KeyPress for the actions performed for a character value that does not use 
-UTF-9 encoding.
+UTF-8 encoding.
 </p>
 </descr>
 <seealso>
