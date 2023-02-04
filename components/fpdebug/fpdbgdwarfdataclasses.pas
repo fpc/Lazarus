@@ -368,7 +368,7 @@ type
 
     function GoNamedChild(const AName: String): Boolean;
     // find in enum too // TODO: control search with a flags param, if needed
-    function GoNamedChildEx(const ANameInfo: TNameSearchInfo): Boolean;
+    function GoNamedChildEx(const ANameInfo: TNameSearchInfo; ASkipArtificial: Boolean = False): Boolean;
     // GoNamedChildMatchCaseEx will use
     // - UpperName for Hash
     // - LowerName for compare
@@ -2872,8 +2872,10 @@ begin
   end;
 end;
 
-function TDwarfInformationEntry.GoNamedChildEx(const ANameInfo: TNameSearchInfo): Boolean;
+function TDwarfInformationEntry.GoNamedChildEx(
+  const ANameInfo: TNameSearchInfo; ASkipArtificial: Boolean): Boolean;
 var
+  Val: Integer;
   EntryName: PChar;
   InEnum: Boolean;
   ParentScopIdx: Integer;
@@ -2900,6 +2902,14 @@ begin
         GoNext;
         Continue;
       end;
+
+      if ASkipArtificial then begin
+        if ReadValue(DW_AT_artificial, Val) and (Val <> 0) then begin
+          GoNext;
+          Continue;
+        end;
+      end;
+
 
       if (sc^.NameHash = ANameInfo.NameHash) then begin
         if not ReadValue(DW_AT_name, EntryName) then begin

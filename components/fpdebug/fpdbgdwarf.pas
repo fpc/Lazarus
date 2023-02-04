@@ -1640,7 +1640,7 @@ begin
   ADbgValue := nil;
   if not(Symbol is TFpSymbolDwarfDataProc) then
     exit;
-  if not InfoEntry.GoNamedChildEx(ANameInfo) then
+  if not InfoEntry.GoNamedChildEx(ANameInfo, True) then
     exit;
   if InfoEntry.IsAddressInStartScope(FAddress) and not InfoEntry.IsArtificial then begin
     ADbgValue := SymbolToValue(TFpSymbolDwarf.CreateSubClass(AName, InfoEntry));
@@ -1747,7 +1747,7 @@ begin
           // If this is a type with a pointer or ref, need to find the pointer or ref.
           InfoEntry.GoParent;
           if InfoEntry.HasValidScope and
-             InfoEntry.GoNamedChildEx(NameInfo)
+             InfoEntry.GoNamedChildEx(NameInfo, True)
           then begin
             if InfoEntry.IsAddressInStartScope(FAddress) and not InfoEntry.IsArtificial then begin
               Result := SymbolToValue(TFpSymbolDwarf.CreateSubClass(AName, InfoEntry));
@@ -1779,7 +1779,7 @@ begin
           // TODO: nested subroutine
 
       else
-      if InfoEntry.GoNamedChildEx(NameInfo) then begin
+      if InfoEntry.GoNamedChildEx(NameInfo, True) then begin
         if InfoEntry.IsAddressInStartScope(FAddress) and not InfoEntry.IsArtificial then begin
           Result := SymbolToValue(TFpSymbolDwarf.CreateSubClass(AName, InfoEntry));
           exit;
@@ -6442,6 +6442,8 @@ begin
   if (tg = DW_TAG_class_type) or (tg = DW_TAG_structure_type) then begin
     InfoEntry.ScopeIndex := InformationEntry.ScopeIndex;
     found := InfoEntry.GoNamedChildEx(ThisNameInfo);
+    if found then
+      found := InfoEntry.IsArtificial;
     if not found then begin
       InfoEntry.ScopeIndex := InformationEntry.ScopeIndex;
       found := InfoEntry.GoNamedChildEx(SelfNameInfo);
