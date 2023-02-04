@@ -984,8 +984,8 @@ and sorted from left to right.
 <p>
 In the even-odd rule, lines are drawn between adjacent intersection points in 
 an alternating way. 
-<p>
 </p>
+<p>
 In the non-zero winding rule the "winding number"
 (starting at zero for each line) is incremented/decremented depending on whether
 the hit polygon segment is oriented upward or downward.
