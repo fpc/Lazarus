@@ -279,6 +279,12 @@ type
   end;
   {%EndRegion }
 
+  { TFpSymbolDwarfFreePascalDataParameter }
+
+  TFpSymbolDwarfFreePascalDataParameter = class(TFpSymbolDwarfDataParameter)
+    procedure NameNeeded; override;
+  end;
+
 implementation
 
 uses
@@ -406,6 +412,7 @@ begin
     DW_TAG_class_type:       Result := TFpSymbolDwarfFreePascalTypeStructure;
     DW_TAG_array_type:       Result := TFpSymbolDwarfFreePascalSymbolTypeArray;
     DW_TAG_subprogram:       Result := TFpSymbolDwarfFreePascalDataProc;
+    DW_TAG_formal_parameter: Result := TFpSymbolDwarfFreePascalDataParameter;
     else                     Result := inherited GetDwarfSymbolClass(ATag);
   end;
 end;
@@ -1909,6 +1916,15 @@ begin
     HelpSymbol.ReleaseReference;
   end;
   {$EndIf}
+end;
+
+{ TFpSymbolDwarfFreePascalDataParameter }
+
+procedure TFpSymbolDwarfFreePascalDataParameter.NameNeeded;
+begin
+  inherited NameNeeded;
+  if InformationEntry.IsArtificial and (Name = 'this') then
+    SetName('self');
 end;
 
 initialization
