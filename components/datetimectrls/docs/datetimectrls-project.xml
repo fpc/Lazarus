@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<docproject>
+  <options>
+    <option name="ostarget" value="Win64"/>
+    <option name="cputarget" value="x86_64"/>
+    <option name="hide-protected" value="false"/>
+    <option name="show-private" value="false"/>
+    <option name="warn-no-node" value="false"/>
+    <option name="stop-on-parser-error" value="false"/>
+    <option name="parse-impl" value="false"/>
+    <option name="dont-trim" value="true"/>
+    <option name="emit-notes" value="false"/>
+    <option name="css-file" value="datetimectrls.css"/>
+    <option name="auto-toc" value="true"/>
+    <option name="auto-index" value="true"/>
+    <!-- 
+    pass format, footer, chm-title command line args
+    -->
+  </options>
+  <packages>
+    <package name="datetimectrls" output="datetimectrls" content="datetimectrls.xct">
+      <units>
+        <unit file="../datetimepicker.pas"/>
+        <unit file="../dbdatetimepicker.pas"/>
+        <unit file="../calcontrolwrapper.pas"/>
+        <unit file="../lclcalwrapper.pas"/>
+      </units>
+      <descriptions>
+        <description file="datetimepicker.xml"/>
+        <description file="dbdatetimepicker.xml"/>
+        <description file="calcontrolwrapper.xml"/>
+        <description file="lclcalwrapper.xml"/>
+      </descriptions>
+      <imports>
+        <!-- 
+        Import prefixes differ between output formats. Pass them as command line arguments.
+        -->
+        <!-- 
+         for CHM
+         file="../../../docs/chm/rtl.xct" prefix="ms-its:rtl.chm::/"
+         file="../../../docs/chm/fcl.xct" prefix="ms-its:fcl.chm::/"
+         file="../../../docs/chm/lcl.xct" prefix="ms-its:lcl.chm::/"
+         file="../../../docs/chm/lazutils.xct" prefix="ms-its:lazutils.chm::/"/>
+        -->
+        <!--  
+         for HTML
+         file="../../../docs/chm/rtl.xct" prefix="../rtl/"
+         file="../../../docs/chm/fcl.xct" prefix="../fcl/"
+         file="../../../docs/chm/lcl.xct" prefix="../lcl/"
+         file="../../../docs/chm/lazutils.xct" prefix="../lazutils/"
+        -->
+      </imports>
+    </package>
+  </packages>
+</docproject>

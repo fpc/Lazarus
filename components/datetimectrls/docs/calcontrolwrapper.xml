@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fpdoc-descriptions>
+<package name="datetimecontrols">
+<!--
+====================================================================
+calcontrolwrapper
+====================================================================
+-->
+<module name="calcontrolwrapper">
+<short>
+Defines a base class which provides a wrapper for the calendar control 
+displayed in TDateTimePicker and descendent classes.
+</short>
+<descr>
+<p>
+By default, TDateTimePicker uses the LCL TCalendar control to represent its 
+drop-down calendar. But you can use some other calendar control instead. In 
+order to use another calendar control, you should "wrap" that control with
+a CalendarControlWrapper.
+</p>
+<p>
+For use in TDateTimePicker, the calendar control must at least provide a way 
+to determine whether the coordinates are on a date. When the control is 
+clicked, we must decide if the date has just been chosen and respond by 
+closing the drop-down form and setting the date from the calendar to the 
+DateTimePicker control. For example, in the LCL TCalendar will respond when 
+the calendar is clicked on a date, but not when the user clicks in the title 
+area changing month or year. Then we let the user keep browsing the calendar.
+</p>
+<p>
+When creating a new wrapper, there are four abstract methods which need to be
+overridden. Please see the comments in the code below.
+</p>
+<p>
+<file>calcontrolwrapper.pas </file> is part of <file>DateTimeCtrls</file> 
+package for Lazarus.
+</p>
+<p>
+<b>Author:</b>
+</p>
+<p>
+Zoran Vučenović<br/>
+Зоран Вученовић
+</p>
+<p>
+<b>LICENSE</b>
+</p>
+<p>
+Modified LGPL -- see the file COPYING.modifiedLGPL.
+</p>
+<p>
+<b>NO WARRANTY</b>
+</p>
+<p>
+There is no warranty whatsoever.
+</p>
+<p>
+Original documentation is located on the Lazarus Wiki at:
+</p>
+<p>
+<url href="https://wiki.freepascal.org/DateTimeCtrls_Package">
+DateTimeCtrls Package
+(https://wiki.freepascal.org/DateTimeCtrls_Package)
+</url>
+</p>
+</descr>
+
+<!-- used units -->
+<element name="Controls"/>
+
+<element name="TCalendarControlWrapper">
+<short>
+Specifies an abstract class used as wrapper for the calendar control used in 
+TDateTimePicker.
+</short>
+<descr>
+<!-- TODO: Merge content from the wiki page. -->
+</descr>
+<seealso>
+<link id="#datetimectrls.lazcalwrapper.TLCLCalendarWrapper">TLCLCalendarWrapper</link>
+</seealso>
+</element>
+
+<!-- private -->
+<element name="TCalendarControlWrapper.FCalendarControl"/>
+
+<!-- public -->
+<element name="TCalendarControlWrapper.GetCalendarControlClass">
+<short>
+Gets the class reference used to new instances of the calendar control.
+</short>
+<descr>
+<p>
+Should be overridden to return the class type for the calendar control.  
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TCalendarControlWrapper.GetCalendarControlClass.Result">
+<short>
+Returns TControlClass in TCalendarControlWrapper.
+</short>
+</element>
+
+<element name="TCalendarControlWrapper.SetDate">
+<short>
+Abstract virtual method used to set the date for the calendar control.
+</short>
+<descr>
+<p>
+Should be overridden to set the date in the calendar control.
+</p>  
+</descr>
+<seealso/>
+</element>
+<element name="TCalendarControlWrapper.SetDate.Date">
+<short>
+TDate value stored in the date for the calendar control.
+</short>  
+</element>
+
+<element name="TCalendarControlWrapper.GetDate">
+<short>
+Abstract virtual method used to get the date for the calendar control.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TCalendarControlWrapper.GetDate.Result">
+<short>
+TDate value read from the date in the calendar control.
+</short>  
+</element>
+
+<element name="TCalendarControlWrapper.AreCoordinatesOnDate">
+<short>
+Abstract virtual method which indicates if the coordinates (X, Y) are on a 
+date in the calendar control. TDateTimePicker calls this function when the 
+calendar is clicked, to determine whether the drop-down calendar should return 
+the date or not.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TCalendarControlWrapper.AreCoordinatesOnDate.Result">
+<short>
+Returns <b>True</b> if the specified coordinates are on a date or an unused 
+area in the day grid for the calendar control.
+</short>
+</element>
+<element name="TCalendarControlWrapper.AreCoordinatesOnDate.X">
+<short>
+Horizontal coordinate checked for a date value.
+</short>
+</element>
+<element name="TCalendarControlWrapper.AreCoordinatesOnDate.Y">
+<short>
+Vertical coordinate checked for a date value.
+</short>
+</element>
+
+<element name="TCalendarControlWrapper.InMonthView">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCalendarControlWrapper.InMonthView.Result">
+<short/>
+</element>
+
+<element name="TCalendarControlWrapper.GetCalendarControl">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCalendarControlWrapper.GetCalendarControl.Result">
+<short/>
+</element>
+
+<element name="TCalendarControlWrapper.Create">
+<short>
+Constructor for the class instance. It creates and uses a new instance of the 
+GetCalendarControl class type as the calendar control in the wrapper.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCalendarControlWrapper.Destroy">
+<short>
+Destructor for the class instance.  
+</short>
+<descr>
+<p>
+Frees the calendar control allocated in the constructor, and calls the 
+inherited method to free the class instance.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TCalendarControlWrapperClass">
+<short>
+Base class type used to create mew instances of a calendar control wrapper.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+</module>
+<!-- calcontrolwrapper -->
+</package>
+</fpdoc-descriptions>
