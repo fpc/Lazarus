@@ -328,6 +328,7 @@ var
   _Wow64SuspendThread: function (hThread:HANDLE):DWORD; stdcall = nil;
   _DebugBreakProcess: function(Process:HANDLE): WINBOOL; stdcall = nil;
   _GetThreadDescription: function(hThread: THandle; ppszThreadDescription: PPWSTR): HResult; stdcall = nil;
+  _WaitForDebugEventEx: function(var lpDebugEvent: TDebugEvent; dwMilliseconds: DWORD): BOOL; stdcall = nil;
 
 procedure LoadKernelEntryPoints;
 var
@@ -352,6 +353,7 @@ begin
   Pointer(_Wow64SetThreadContext) := GetProcAddress(hMod, 'Wow64SetThreadContext');
   Pointer(_Wow64SuspendThread) := GetProcAddress(hMod, 'Wow64SuspendThread');
   {$endif}
+  Pointer(_WaitForDebugEventEx) := GetProcAddress(hMod, 'WaitForDebugEventEx');
 
   DebugLn(DBG_WARNINGS and (DebugBreakAddr = nil), ['WARNING: Failed to get DebugBreakAddr']);
   DebugLn(DBG_WARNINGS and (_CreateRemoteThread = nil), ['WARNING: Failed to get CreateRemoteThread']);
@@ -954,7 +956,10 @@ var
 begin
   repeat
     Done := True;
-    result := Windows.WaitForDebugEvent(MDebugEvent, INFINITE);
+    if _WaitForDebugEventEx <> nil then
+      result := _WaitForDebugEventEx(MDebugEvent, INFINITE)
+    else
+      result := Windows.WaitForDebugEvent(MDebugEvent, INFINITE);
     DebugLn(FPDBG_WINDOWS and (not Result), 'WaitForDebugEvent failed: %d', [Windows.GetLastError]);
 
     if Result and FTerminated and (MDebugEvent.dwDebugEventCode <> EXIT_PROCESS_DEBUG_EVENT)
