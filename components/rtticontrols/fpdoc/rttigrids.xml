@@ -654,7 +654,6 @@ control.
 <descr/>
 <seealso>
 <link id="TTICustomGrid.OnCreateCellEditor"/>
-<link id="TTICustomGrid.GetEditorControl"/>
 </seealso>
 </element>
 <element name="TTIGridCreateCellEditor.GridProp">
@@ -676,7 +675,6 @@ property.
 <descr/>
 <seealso>
 <link id="TTICustomGrid.OnInitCellEditor"/>
-<link id="TTICustomGrid.GetEditorControl"/>
 </seealso>
 </element>
 <element name="TTIGridInitCellEditor.GridProp">
@@ -1259,7 +1257,6 @@ Sets the property link for the specified editor control to <b>Nil</b>.
 <descr/>
 <seealso>
 <link id="TTICustomGrid.BeforeMoveSelection"/>
-<link id="#runtimetypeinfocontrols.rtticontrols.GetPropertyLinkOfComponent">GetPropertyLinkOfComponent</link>
 </seealso>
 </element>
 <element name="TTICustomGrid.UnlinkPropertyEditor.aEditor">

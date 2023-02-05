@@ -337,7 +337,6 @@ TPropertyLinkOptions is the type used to implement the Options property in
 <seealso>
 <link id="TPropertyLinkOption"/>
 <link id="TCustomPropertyLink.Options"/>
-<link id="TPropertyLink.Options"/>
 </seealso>
 </element>
 
@@ -353,16 +352,13 @@ Options property in TCustomPropertyLink / TPropertyLink.
 </descr>
 <seealso>
 <link id="TCustomPropertyLink.Options"/>
-<link id="TPropertyLink.Options"/>
 </seealso>
 </element>
 
 <element name="TTestEditing">
 <short>
-<p>
 Specifies an event handler signalled to check whether a linked control is 
 focused and actively editing its value(s).
-</p>
 </short>
 <descr>
 <p>
@@ -379,7 +375,7 @@ OnTestEditing event handler.
 </descr>
 <seealso>
 <link id="TTICustomComboBox.LinkTestEditing"/>
-<link id="TTICustomComboBox.OnTestEditing"/>
+<link id="TCustomPropertyLink.OnTestEditing"/>
 </seealso>
 </element>
 <element name="TTestEditing.Result">
@@ -557,7 +553,6 @@ TIPropertyName.
 <link id="TCustomPropertyLink.Editor"/>
 <link id="TCustomPropertyLink.TIObject"/>
 <link id="TCustomPropertyLink.TIPropertyName"/>
-<link id="TPropertyEditorHook"/>
 </seealso>
 </element>
 
@@ -676,7 +671,6 @@ provided by the Editor for the property link.
 <seealso>
 <link id="TCustomPropertyLink.FetchValues"/>
 <link id="TCustomPropertyLink.Editor"/>
-<link id="TPropertyEditor.GetValues"/>
 </seealso>
 </element>
 <element name="TCustomPropertyLink.GetEditorValues.NewValue">
@@ -934,7 +928,6 @@ assigned component in Owner is being freed.
 </p>
 </descr>
 <seealso>
-<link id="TCustomPropertyLink.Loaded"/>
 </seealso>
 </element>
 
@@ -990,8 +983,6 @@ value.
 <seealso>
 <link id="TCustomPropertyLink.Editor"/>
 <link id="TCustomPropertyLink.TIElementName"/>
-<link id="TCustomPropertyLink.SetElementValue"/>
-<link id="TPropertyEditor.SetValue"/>
 </seealso>
 </element>
 <element name="TCustomPropertyLink.SetAsText.NewText">
@@ -1547,7 +1538,6 @@ compatible with the property being edited (e. g. the DataSource property).
 </p>
 <seealso>
 <link id="TCustomPropertyLink.TIObject"/>
-<link id="TPropertyLink.TIObject"/>
 <link id="TMultiPropertyLink.TIObject"/>
 </seealso>
 </element>
@@ -1924,7 +1914,7 @@ The Loaded and EditingDone methods are overridden in TTICustomEdit to read and w
 <link id="TTICustomEdit.Loaded"/>
 <link id="TTICustomEdit.EditingDone"/>
 <link id="TTIEdit.OnEditingDone"/>
-<link id="#lcl.controls.TCustomEdit">TCustomEdit</link>
+<link id="#lcl.stdctrls.TCustomEdit">TCustomEdit</link>
 </seealso>
 </element>
 
@@ -1953,7 +1943,6 @@ property in Link in the constructor for the class instance.
 </p>
 </descr>
 <seealso>
-<link id="TPropertyLink.OnLoadFromProperty"/>
 </seealso>
 </element>
 <element name="TTICustomEdit.LinkLoadFromProperty.Sender">
@@ -2101,7 +2090,6 @@ property in Link in the constructor for the class instance.
 </p>
 </descr>
 <seealso>
-<link id="TPropertyLink.OnLoadFromProperty"/>
 </seealso>
 </element>
 <element name="TTICustomMaskEdit.LinkLoadFromProperty.Sender">
@@ -2257,7 +2245,6 @@ property in Link in the constructor for the class instance.
 </p>
 </descr>
 <seealso>
-<link id="TPropertyLink.OnLoadFromProperty"/>
 </seealso>
 </element>
 <element name="TTICustomComboBox.LinkLoadFromProperty.Sender">
@@ -2473,7 +2460,6 @@ property in Link in the constructor for the class instance.
 </p>
 </descr>
 <seealso>
-<link id="TPropertyLink.OnLoadFromProperty"/>
 </seealso>
 </element>
 <element name="TTICustomRadioGroup.LinkLoadFromProperty.Sender">
@@ -2629,7 +2615,6 @@ property in Link in the constructor for the class instance.
 </p>
 </descr>
 <seealso>
-<link id="TPropertyLink.OnLoadFromProperty"/>
 </seealso>
 </element>
 <element name="TTICustomCheckGroup.LinkLoadFromProperty.Sender">
@@ -2785,7 +2770,6 @@ property in Link in the constructor for the class instance.
 </p>
 </descr>
 <seealso>
-<link id="TPropertyLink.OnLoadFromProperty"/>
 </seealso>
 </element>
 <element name="TTICustomCheckListBox.LinkLoadFromProperty.Sender">
@@ -2941,7 +2925,6 @@ property in Link in the constructor for the class instance.
 </p>
 </descr>
 <seealso>
-<link id="TPropertyLink.OnLoadFromProperty"/>
 </seealso>
 </element>
 <element name="TTICustomListBox.LinkLoadFromProperty.Sender">
@@ -3124,7 +3107,6 @@ property in Link in the constructor for the class instance.
 </p>
 </descr>
 <seealso>
-<link id="TPropertyLink.OnLoadFromProperty"/>
 </seealso>
 </element>
 <element name="TTICustomCheckBox.LinkLoadFromProperty.Sender">
@@ -3407,7 +3389,6 @@ property in Link in the constructor for the class instance.
 </p>
 </descr>
 <seealso>
-<link id="TPropertyLink.OnLoadFromProperty"/>
 </seealso>
 </element>
 <element name="TTICustomLabel.LinkLoadFromProperty.Sender">
@@ -3523,7 +3504,6 @@ property in Link in the constructor for the class instance.
 </p>
 </descr>
 <seealso>
-<link id="TPropertyLink.OnLoadFromProperty"/>
 </seealso>
 </element>
 <element name="TTICustomGroupbox.LinkLoadFromProperty.Sender">
@@ -3635,7 +3615,6 @@ loaded from its property Link.
 </short>
 <descr/>
 <seealso>
-<link id="TPropertyLink.OnLoadFromProperty"/>
 </seealso>
 </element>
 <element name="TTICustomMemo.LinkLoadFromProperty.Sender">
@@ -3769,7 +3748,6 @@ loaded from its property Link.
 </short>
 <descr/>
 <seealso>
-<link id="TPropertyLink.OnLoadFromProperty"/>
 </seealso>
 </element>
 <element name="TTICustomCalendar.LinkLoadFromProperty.Sender">
@@ -3902,7 +3880,6 @@ loaded from its property Link.
 </short>
 <descr/>
 <seealso>
-<link id="TPropertyLink.OnLoadFromProperty"/>
 </seealso>
 </element>
 <element name="TTICustomImage.LinkLoadFromProperty.Sender">
@@ -4014,7 +3991,6 @@ loaded from its property Link.
 </short>
 <descr/>
 <seealso>
-<link id="TPropertyLink.OnLoadFromProperty"/>
 </seealso>
 </element>
 <element name="TTICustomFloatSpinEdit.LinkLoadFromProperty.Sender">
@@ -4177,7 +4153,6 @@ loaded from its property Link.
 </short>
 <descr/>
 <seealso>
-<link id="TPropertyLink.OnLoadFromProperty"/>
 </seealso>
 </element>
 <element name="TTICustomSpinEdit.LinkLoadFromProperty.Sender">
@@ -4326,7 +4301,6 @@ loaded from its property Link.
 </short>
 <descr/>
 <seealso>
-<link id="TPropertyLink.OnLoadFromProperty"/>
 </seealso>
 </element>
 <element name="TTICustomTrackBar.LinkLoadFromProperty.Sender">
@@ -4490,7 +4464,6 @@ loaded from its property Link.
 </short>
 <descr/>
 <seealso>
-<link id="TPropertyLink.OnLoadFromProperty"/>
 </seealso>
 </element>
 <element name="TTICustomProgressBar.LinkLoadFromProperty.Sender">
