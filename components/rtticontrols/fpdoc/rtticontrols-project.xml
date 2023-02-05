@@ -13,7 +13,7 @@
     <option name="auto-index" value="true"/>
     <option name="auto-toc" value="true"/>
     <option name="css-file" value="rtticontrols.css"/>
-    <option name="chm-title" value="(RttiControls) RTTI Controls Package"/>
+    <option name="chm-title" value="(RuntimeTypeInfoControls) RTTI Controls Package"/>
     <!-- <option name="footer" value="rtticontrols-footer.xml"/> -->
     <!-- <option name="format" value="CHM"/> -->
   </options>
