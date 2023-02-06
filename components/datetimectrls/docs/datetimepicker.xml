@@ -13,7 +13,7 @@ Implements a date/time picker control.
 <descr>
 <p>
 <file>datetimepicker.pas</file> contains an implementation of a date/time 
-picker control patterned after the Delphi VCL control with the same name.    
+picker control patterned after the Delphi VCL control with the same name. 
 It contains a cross-platform LCL control which would resemble the VCL 
 TDateTimePicker control as much as possible.
 </p>
@@ -116,7 +116,7 @@ In the LCL, dates behave uniformly as much as possible -- we do not allow dates 
 
 <element name="DefaultCalendarWrapperClass">
 <short>
-Contains the class reference used to create calendar controls for the platform.  
+Contains the class reference used to create calendar controls for the platform.
 </short>
 <descr>
 <p>
@@ -387,7 +387,7 @@ date/time control.
 <element name="TDateTimeParts">
 <short>
 Set type used to stored values from the TDateTimePart enumeration.
-</short>  
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -396,7 +396,7 @@ Set type used to stored values from the TDateTimePart enumeration.
 <short>
 Set type used to stored values from the TDateTimePart enumeration which are 
 effectively visible on a date/time control.
-</short>  
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -417,7 +417,7 @@ Uses a small variant of the classic drop-down arrow (filled triangular shape).
 <element name="TArrowShape.asClassicLarger">
 <short>
 Uses a larger variant of the classic drop-down arrow (filled triangular 
-shape).  
+shape).
 </short>
 </element>
 <element name="TArrowShape.asModernSmaller">
@@ -518,7 +518,7 @@ TDateTimePicker control.
 <element name="TDateTimePickerOption.dtpoDoChangeOnSetDateTime">
 <short>
 The OnChange handler for the control is signalled when the date/time is 
-programmatically changed.  
+programmatically changed.
 </short>
 </element>
 <element name="TDateTimePickerOption.dtpoEnabledIfUnchecked">
@@ -571,13 +571,14 @@ Base class for date/time picker controls.
 </short>
 <descr>
 <p>
-TCustomDateTimePicker is a TCustomControl descendant. It is the base class for 
-date/time picker controls like TDateTimePicker and TDBDateTimePicker. The 
-control allows the user to enter Date, Time, or DateTime values. It 
-incorporates a button on the control to display a drop-down calendar for date 
-values, or up and down buttons to increment and decrement the numeric values 
-in a time. Individual parts in the date/time values can be changed using the 
-Up and Down cursor keys, or by entering the value directly into the control.
+<var>TCustomDateTimePicker</var> is a TCustomControl descendant. It is the 
+base class for date/time picker controls like TDateTimePicker and 
+TDBDateTimePicker. The control allows the user to enter Date, Time, or 
+DateTime values. It incorporates a button on the control to display a 
+drop-down calendar for date values, or up and down buttons to increment and 
+decrement the numeric values in a time. Individual parts in the date/time 
+values can be changed using the Up and Down cursor keys, or by entering the 
+value directly into the control.
 </p>
 <p>
 TCustomDateTimePicker uses locale-specific settings to format and display 
@@ -868,7 +869,7 @@ AutoResizeButton is set to <b>True</b>.
 <element name="TCustomDateTimePicker.WMSize.Message">
 <short>
 Window message with the new width and height for the control.
-</short>  
+</short>
 </element>
 
 <element name="TCustomDateTimePicker.GetControlClassDefaultSize">
@@ -980,7 +981,7 @@ the control.
 <short>
 <b>True</b> causes the value in IsRightToLeft to be ignored, and the check box 
 is drawn on the left-hand side of the control.
-</short>  
+</short>
 </element>
 
 <element name="TCustomDateTimePicker.GetDateTimePartFromTextPart">
@@ -1105,7 +1106,7 @@ GetTextOrigin is also used in calculating the preferred size for the control.
 <short>
 TPoint instance with the upper-left corner where the text for the control is 
 drawn.
-</short>  
+</short>
 </element>
 <element name="TCustomDateTimePicker.GetTextOrigin.IgnoreRightToLeft">
 <short>
@@ -1292,7 +1293,7 @@ ShowCheckBox is enabled. The Invalidate method is called to redraw the control.
 <element name="TCustomDateTimePicker.MouseMove.Shift">
 <short>
 Shift, Ctrl, or Alt modifier for the mouse event.
-</short>  
+</short>
 </element>
 <element name="TCustomDateTimePicker.MouseMove.X">
 <short>
@@ -1334,7 +1335,7 @@ Mouse button for the event.
 <element name="TCustomDateTimePicker.MouseDown.Shift">
 <short>
 Shift, Ctrl, or Alt modifier for the mouse event.
-</short>  
+</short>
 </element>
 <element name="TCustomDateTimePicker.MouseDown.X">
 <short>
@@ -1489,7 +1490,7 @@ another control.
 
 <element name="TCustomDateTimePicker.Click">
 <short>
-Performs actions needed when the control is clicked.  
+Performs actions needed when the control is clicked.
 </short>
 <descr>
 <p>
@@ -1548,7 +1549,7 @@ Mouse button for the event.
 </element>
 <element name="TCustomDateTimePicker.MouseUp.Shift">
 <short>
-Shift, Ctrl, or Alt modifier for the mouse event.  
+Shift, Ctrl, or Alt modifier for the mouse event.
 </short>
 </element>
 <element name="TCustomDateTimePicker.MouseUp.X">
@@ -1564,7 +1565,7 @@ Vertical coordinate for the mouse pointer.
 
 <element name="TCustomDateTimePicker.KeyUp">
 <short>
-Handles a key up notification for the control.  
+Handles a key up notification for the control.
 </short>
 <descr>
 <p>
@@ -1594,7 +1595,7 @@ Virtual key code for the key up notification.
 </element>
 <element name="TCustomDateTimePicker.KeyUp.Shift">
 <short>
-Shift, Ctrl, or Alt modifiers for the key up notification.  
+Shift, Ctrl, or Alt modifiers for the key up notification.
 </short>
 </element>
 
@@ -2112,19 +2113,21 @@ MinDate or MaxDate values.
 <seealso/>
 </element>
 <element name="TCustomDateTimePicker.SetDateTimeJumpMinMax.AValue">
-<short/>
+<short>
+Value assigned to DateTime.
+</short>
 </element>
 
 <element name="TCustomDateTimePicker.ArrangeCtrls">
 <short>
 Anchors, aligns and resizes the control and its button(s).
-</short>  
+</short>
 <descr>
 <p>
 Called when the value in BiDiMode or ShowCheckBox is changed, and when the 
 window handle is created for the control in CreateWnd method.
 </p>
-</descr>  
+</descr>
 <seealso/>
 </element>
 
@@ -2138,6 +2141,7 @@ value has been changed.
 <link id="TCustomDateTimePicker.UpdateDate"/>
 <link id="TCustomDateTimePicker.OnChange"/>
 <link id="TCustomDateTimePicker.AddHandlerOnChange"/>
+<link id="TCustomDateTimePicker.RemoveHandlerOnChange"/>
 </seealso>
 </element>
 
@@ -2202,73 +2206,189 @@ keys applied to the control result in a new Date or Time value.
 </element>
 
 <element name="TCustomDateTimePicker.DoAutoAdjustLayout">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Applies an automatic layout policy and scaling proportions to the control.
+</short>
+<descr>
+<p>
+<var>DoAutoAdjustLayout</var> is an overridden method in 
+TCustomDateTimePicker. It calls the inherited method on entry to resize the 
+control using the specified layout policy and scaling factors. It ensures that 
+the width for drop-down or up/down button on the control is scaled from its 
+default value to the PPI setting used in the Font.
+</p>
+<p>
+Font scaling is performed in AutoAdjustLayout (when needed) and occurs prior 
+to calling DoAutoAdjustLayout.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.controls.TControl.DoAutoAdjustLayout">TControl.DoAutoAdjustLayout</link>
+</seealso>
 </element>
 <element name="TCustomDateTimePicker.DoAutoAdjustLayout.AMode">
-<short/>
+<short>
+Automatic layout policy applied in the method. It is a value from the 
+TLayoutAdjustmentPolicy enumeration, and determines whether horizontal / 
+vertical / or both sizes are adjusted in the method. It generally reflects the 
+constraints for the device type where the application is running.
+</short>
 </element>
 <element name="TCustomDateTimePicker.DoAutoAdjustLayout.AXProportion">
-<short/>
+<short>
+Scaling factor applied to the horizontal size in the control.
+</short>
 </element>
 <element name="TCustomDateTimePicker.DoAutoAdjustLayout.AYProportion">
-<short/>
+<short>
+Scaling factor applied to the vertical size in the control.
+</short>
 </element>
 
 <element name="TCustomDateTimePicker.AddHandlerOnChange">
-<short/>
-<descr/>
+<short>
+Adds the specified handler routine to the internal list of OnChange event 
+handlers for the control.
+</short>
+<descr>
+<p>
+<var>AddHandlerOnChange</var> ensures that the internal TMethodList for the 
+class instance has been allocated, and calls its Add method using the 
+specified argument values.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TCustomDateTimePicker.AddHandlerOnChange.AOnChange">
-<short/>
+<short>
+Handler routine added to the handler list in the method.
+</short>
 </element>
 <element name="TCustomDateTimePicker.AddHandlerOnChange.AsFirst">
-<short/>
+<short>
+<b>True</b> if the handler routine is stored as the first handler in the list. 
+<b>False</b> if it is appended to end of the list.
+</short>
 </element>
 
 <element name="TCustomDateTimePicker.AddHandlerOnCheckBoxChange">
-<short/>
-<descr/>
+<short>
+Adds the specified handler routine to the internal list of OnCheckBoxChange 
+events handlers for the control.
+</short>
+<descr>
+<p>
+<var>AddHandlerOnCheckBoxChange</var> ensures that the internal TMethodList 
+for the class instance has been allocated, and calls its Add method using the 
+specified argument values.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TCustomDateTimePicker.AddHandlerOnCheckBoxChange.AOnCheckBoxChange">
-<short/>
+<short>
+Handler routine added to the handler list in the method.
+</short>
 </element>
-
 <element name="TCustomDateTimePicker.AddHandlerOnCheckBoxChange.AsFirst">
-<short/>
+<short>
+<b>True</b> if the handler routine is stored as the first handler in the list. 
+<b>False</b> if it is appended to end of the list.
+</short>
 </element>
 
 <element name="TCustomDateTimePicker.RemoveHandlerOnChange">
-<short/>
+<short>
+Removes the specified OnChange handler routine from the internal list for the 
+handler type.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCustomDateTimePicker.AddHandlerOnChange"/>
+</seealso>
 </element>
 <element name="TCustomDateTimePicker.RemoveHandlerOnChange.AOnChange">
-<short/>
+<short>
+Handler routine removed in the method.
+</short>
 </element>
 
 <element name="TCustomDateTimePicker.RemoveHandlerOnCheckBoxChange">
-<short/>
+<short>
+Removes the specified OnCheckBoxChange handler routine from the internal list 
+for the handler type.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TCustomDateTimePicker.RemoveHandlerOnCheckBoxChange.AOnCheckBoxChange">
-<short/>
+<short>
+Handler routine removed in the method.
+</short>
 </element>
 
 <element name="TCustomDateTimePicker.EffectiveHideDateTimeParts">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Set with the date/time parts which are effectively hidden on the control.
+</short>
+<descr>
+<p>
+<var>EffectiveHideDateTimeParts</var> is a read-only TEffectiveDateTimeParts 
+property which contains the date/time parts which are effectively hidden for 
+the control. Values are included in the set to indicate that specific date/
+time parts are not visible for the configuration settings in the control, or 
+explicitly hidden using the HideDateTimeParts property.
+</p>
+<p>
+Properties which affect date/time part visibility include:
+</p>
+<ul>
+<li>Kind</li>
+<li>TimeDisplay</li>
+<li>TimeFormat</li>
+<li>HideDateTimeParts</li>
+</ul>
+<p>
+The TDateTimePart values in EffectiveHideDateTimeParts are determined when a 
+new value is assigned to one of these properties.
+</p>
+</descr>
+<seealso>
+<link id="TCustomDateTimePicker.Kind"/>
+<link id="TCustomDateTimePicker.TimeDisplay"/>
+<link id="TCustomDateTimePicker.TimeFormat"/>
+<link id="TCustomDateTimePicker.HideDateTimeParts"/>
+<link id="TEffectiveDateTimeParts"/>
+<link id="TDateTimePart"/>
+</seealso>
 </element>
 
 <element name="TCustomDateTimePicker.EffectiveDateDisplayOrder">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Indicates the effective display order for the date parts on the control.
+</short>
+<descr>
+<p>
+<var>EffectiveDateDisplayOrder</var> is a read-only TDateDisplayOrder property 
+which contains the effective order for the date parts displayed on the 
+control. It reflects the order for the date found parts found when 
+DateDisplayOrder contains ddoTryDefault.
+</p>
+<p>
+The value for the property is assigned when the value in the DateDisplayOrder 
+property is changed. It indicates the order for the date parts found in the  
+date formats from DefaultFormatSettings. The tokens in the short date format 
+are examined to determine the order for the date parts. If an order cannot be 
+determined using the short date format, the long date format in 
+DefaultFormatSettings is checked. If an order cannot be determined using 
+either format value, the order indicated by ddoYMD is used.
+</p>
+</descr>
+<seealso>
+<link id="TCustomDateTimePicker.DateDisplayOrder"/>
+<link id="TDateDisplayOrder"/>
+<link id="#rtl.sysutils.DefaultFormatSettings">SysUtils.DefaultFormatSettings</link>
+</seealso>
 </element>
 
 <element name="TCustomDateTimePicker.BorderStyle">
@@ -2633,26 +2753,33 @@ additional OnChange handler routines for the control.
 </element>
 
 <element name="TCustomDateTimePicker.OnCheckBoxChange">
-<short/>
+<short>
+Event handler signalled when the Checked state for a check box on the control has been changed.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TCustomDateTimePicker.OnDropDown">
-<short/>
+<short>
+Event handler signalled when the drop-down calendar dialog for the control has 
+been displayed.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TCustomDateTimePicker.OnCloseUp">
-<short/>
+<short>
+Event handler signalled when the drop-down calendar dialog has been closed.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TCustomDateTimePicker.ShowCheckBox">
 <short>
-Displays a check box on the control when enabled.  
+Displays a check box on the control when enabled.
 </short>
 <descr>
 <p>
@@ -2879,7 +3006,7 @@ Use HideDateTimeParts to hide any date/time part which would otherwise be
 visible for the settings in Kind, DateDisplayOrder, TimeDisplay and TimeFormat 
 properties.
 </p>
-</descr>  
+</descr>
 <seealso/>
 </element>
 
@@ -2935,7 +3062,7 @@ normally visible for the property settings in the control.
 
 <element name="TCustomDateTimePicker.Time">
 <short>
-The Time value displayed and edited using the control.  
+The Time value displayed and edited using the control.
 </short>
 <descr>
 <p>
@@ -2978,7 +3105,7 @@ settings in the properties.
 
 <element name="TCustomDateTimePicker.Date">
 <short>
-The Date value displayed and edited using the control.  
+The Date value displayed and edited using the control.
 </short>
 <descr>
 <p>
@@ -3059,7 +3186,7 @@ Enables updates to affected date/time parts when the value for a date/time
 part is cycled beyond its upper or lower limits.
 </short>
 <descr>
-<p>    
+<p>
 <var>Cascade</var> is a <var>Boolean</var> property which indicates if a 
 change to the value for a date/time part (like Day number) can increase or 
 decrease the value in another date/time part (like Month or Year number).
@@ -3120,7 +3247,7 @@ when the current selection is filled with a valid value for the part.
 <element name="TCustomDateTimePicker.HideDateTimeParts">
 <short>
 Contains the user-specified set of date/time parts which are hidden on the 
-control.  
+control.
 </short>
 <descr>
 <p>
@@ -3516,28 +3643,50 @@ control, which includes:
 <li>MinDate (TheSmallestDate)</li>
 <li>MaxDate (TheSmallestDate)</li>
 <li>CenturyFrom (1941)</li>
+<li>
+CustomMonthNames (Resources allocated and configured to redraw the control 
+when changed).
+</li>
 </ul>
 <p>
 Create sets the value for each of the text segments used during editing of the 
 date or time parts to an empty string ('').
 </p>
 <p>
-The effect display order and visibility for the date/time parts is initially 
-determined in the method.
+The effective display order and visibility for the date/time parts is 
+initially determined in the method.
 </p>
 </descr>
 <seealso/>
 </element>
 <element name="TCustomDateTimePicker.Create.AOwner">
-<short/>
+<short>
+Owner of the class instance which receives notification events.
+</short>
 </element>
 
 <element name="TCustomDateTimePicker.Destroy">
 <short>
 Destructor for the class instance.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>Destroy</var> is the overridden destructor for the class instance. It 
+frees resources allocated in the class instance, including:
+</p>
+<ul>
+<li>The drop-down or up/down button.</li>
+<li>OnChange handler(s).</li>
+<li>OnCheckBoxChange handler(s).</li>
+<li>The TStringList instance for CustomMonthNames.</li>
+</ul>
+<p>
+Destroy calls the inherited method prior to exit to free the class instance.
+</p>
+</descr>
+<seealso>
+<link id="TCustomDateTimePicker.Create"/>
+</seealso>
 </element>
 
 <element name="TCustomDateTimePicker.DateIsNull">
@@ -3568,7 +3717,9 @@ Adjusts the selected text part to ensure it is on one of the values used for a
 Date.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCustomDateTimePicker.SelectTime"/>
+</seealso>
 </element>
 
 <element name="TCustomDateTimePicker.SelectTime">
@@ -3577,7 +3728,9 @@ Adjusts the selected text part to ensure it is on one of the values used for a
 Time.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCustomDateTimePicker.SelectDate"/>
+</seealso>
 </element>
 
 <element name="TCustomDateTimePicker.SendExternalKey">
@@ -3586,41 +3739,100 @@ Validates and applies the specified character to the control.
 </short>
 <descr>
 <p>
-Handles the following character values:
+<var>SendExternalKey</var> handles the following character values in 
+<var>AKey</var>:
 </p>
 <dl>
-<dt>'N'</dt>
-<dd>Sets DateTime to the NullDate value.</dd>
+<dt>'N', 'n'</dt>
+<dd>
+Applies the value in NullDate to the DateTime value for the control.
+</dd>
 <dt>'0'..'9'</dt>
 <dd>Applied to the value for the selected text part.</dd>
-<dt>'A', 'P'</dt>
-<dd>Applied to the AM/PM indicator in a 12-hour time value.</dd>
+<dt>'A', P'</dt>
+<dd>Applied to the AM/PM indicator in a 12-hour time value when selected.</dd>
 </dl>
+<p>
+Values in the LeadingZeros, AutoAdvance, and Options properties are enforced 
+after the character value is applied to the control.
+</p>
+<p>
+No actions are performed in the method if the control or its text parts are  
+not Enabled, or ReadOnly is set to <b>True</b>.
+</p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomDateTimePicker.SendExternalKeyCode"/>
+</seealso>
 </element>
 <element name="TCustomDateTimePicker.SendExternalKey.aKey">
 <short>
-Character value examined and optionally applied to the control.  
+Character value examined and optionally applied to the control.
 </short>
 </element>
 
 <element name="TCustomDateTimePicker.SendExternalKeyCode">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Validates and applies the specified virtual key code to the control.
+</short>
+<descr>
+<p>
+<var>SendExternalKeyCode</var> handles the following virtual key values in 
+<var>Key</var>:
+</p>
+<dl>
+<dt>VK_N ('N')</dt>
+<dd>Sets DateTime to the NullDate value.</dd>
+<dt>VK_0..VK_9 ('0'..'9')</dt>
+<dd>Applied to the value for the selected text part.</dd>
+<dt>VK_A ('A'), VK_P ('P')</dt>
+<dd>Applied to the AM/PM indicator in a 12-hour time value when selected.</dd>
+</dl>
+<p>
+If the text parts are enabled for the control, the value in Key is converted 
+to its character equivalent and SendExternalKey is used to apply the character 
+value.
+</p>
+<p>
+If text parts are not enabled, the following value is handled for the control:
+</p>
+<dl>
+<dt>VK_SPACE (#32)</dt>
+<dd>Toggles the check box state when ShowCheckBox is set to <b>True</b>.</dd>
+</dl>
+</descr>
+<seealso>
+<link id="TCustomDateTimePicker.SendExternalKey"/>
+</seealso>
 </element>
 <element name="TCustomDateTimePicker.SendExternalKeyCode.Key">
-<short/>
+<short>
+Virtual key code examined and optionally applied to the control.
+</short>
 </element>
 
 <element name="TCustomDateTimePicker.RemoveAllHandlersOfObject">
-<short/>
+<short>
+Removes all event handler routines for the specified object.
+</short>
 <descr/>
-<seealso/>
+<p>
+<var>RemoveAllHandlersOfObject</var> is an overridden method in 
+TCustomDateTimePicker. It calls the inherited method on entry to remove all 
+event handlers attached to the TObject instance in AnObject. It calls the 
+RemoveAllMethodsOfObject method in the internal TMethodList instances in the 
+control to free the handler types maintained in TCustomDateTimePicker.
+</p>
+<seealso>
+<link id="#lcl.controls.TControl.RemoveAllHandlersOfObject">TControl.RemoveAllHandlersOfObject</link>
+<link id="#lcl.controls.TControlHandlerType">TControlHandlerType</link>
+<link id="#lazutils.lazmethodlist.TMethodList.RemoveAllMethodsOfObject">TMethodList.RemoveAllMethodsOfObject</link>
+</seealso>
 </element>
 <element name="TCustomDateTimePicker.RemoveAllHandlersOfObject.AnObject">
-<short/>
+<short>
+Object instance with the event handler routines removed in the method.
+</short>
 </element>
 
 <element name="TCustomDateTimePicker.Paint">
@@ -3672,7 +3884,7 @@ Performs actions needed when editing has been completed in the control.
 
 <element name="TDateTimePicker">
 <short>
-implements a date/time picker control.
+Implements a date/time picker control.
 </short>
 <descr>
 <p>
@@ -3846,11 +4058,11 @@ for the TDateTime type.
 <short>
 Returns <b>True</b> if the specified value is Not A Number (NAN), contains the 
 Infinite value, or is outside the minimum and maximum values for the type.
-</short>  
+</short>
 </element>
 <element name="IsNullDate.DT">
 <short>
-TDateTime value examined in the routine.  
+TDateTime value examined in the routine.
 </short>
 </element>
 
