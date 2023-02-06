@@ -22,13 +22,14 @@ fpcdir="../../../fpc/3.2.2/bin/x86_64-win64"
 #fpcdir="../../../../fpc331/fpc/bin/x86_64-win64"
 
 # lazarus repository directory
-#gitpath="../../../usr/work/git-lazarus"
+#gitpath="../../../../usr/work/git-lazarus"
+gitpath=""
 
 # version number is hard-coded because main-2_3 tag is not the format needed
 verno="2.3.0"
 dt=`date +"%Y-%m-%d"`
 # get only the commit hash
-#commit=`git -C $gitpath describe --all --long | cut -d "-" -f 3 | cut -b "2-"`
+#commit=`git -C "$gitpath" describe --all --long | cut -d "-" -f 3 | cut -b "2-"`
 
 # chm and html footer files are the same... for now
 # chm footer should have a link to the online HTML
@@ -60,7 +61,7 @@ echo -e "\n\e[7m DateTimeCtrls package \e[0m";
 # imports done manually to set the correct prefixs for the chm format
 # output to current directory
 echo "Generating CHM help..."
-chmTitle="Date/Time Controls (DateTimeCtrls)"
+chmTitle="(DateTimeCtrls) Date/Time Controls"
 $fpcdir/fpdoc --project=datetimectrls-project.xml --format=chm --chm-title="$chmTitle" --footer="datetimectrls-chm-footer.xml" --import="$docdir/chm/rtl.xct,ms-its:rtl.chm::/" --import="$docdir/chm/fcl.xct,ms-its:fcl.chm::/" --import="$docdir/chm/lcl.xct,ms-its:lcl.chm::/" --import="$docdir/chm/lazutils.xct,ms-its:lazutils.chm::/" 2>&1 | tee ./build_chm.log
 
 # generate html format with footers

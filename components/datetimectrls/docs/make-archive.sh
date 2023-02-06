@@ -7,7 +7,7 @@ echo ""
 # convert to unix line endings expected by git
 cd datetimectrls
 dos2unix *.{html,css}
-dos2unix **/*.{html}
+dos2unix **/*.html
 cd ..
 
 # create an archive for the generated html content
