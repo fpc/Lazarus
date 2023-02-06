@@ -58,6 +58,7 @@ type
     FLogFileCreated, FReportFileCreated: Boolean;
     FLogFileName, FReportFileName: String;
     FLogBufferText: TStringList;
+    FTestStartTime: QWord;
     procedure InitLog;
     procedure FinishLog;
 
@@ -82,6 +83,7 @@ type
     function GetFinalLogFileName: String; virtual;
     procedure CreateLog;
     procedure CreateReport;
+    procedure LogTime(AName: String; ATimeDiff: QWord);
     // Debugln
     procedure DoDbgOut(Sender: TObject; S: string; var Handled: Boolean); virtual;
     procedure DoDebugln(Sender: TObject; S: string; var Handled: Boolean); virtual;
@@ -766,6 +768,31 @@ begin
   end;
 end;
 
+procedure TDBGTestCase.LogTime(AName: String; ATimeDiff: QWord);
+var
+  dir: String;
+  f: Text;
+begin
+  {$ifndef TEST_LOG_TIME}
+  exit;
+  {$Endif}
+  AName := GetLogFileName + '  ' + AName;
+  if DirectoryExistsUTF8(TestControlGetLogPath) then
+    dir := TestControlGetLogPath
+  else
+    dir := GetCurrentDirUTF8;
+
+  dir := AppendPathDelim(dir)+'RunTimes.log';
+
+  Assign(f, dir);
+  if FileExistsUTF8(dir) then
+    Append(f)
+  else
+    rewrite(f);
+  writeln(f, Format('%-50s :  %3.3f', [AName, ATimeDiff/1000]));
+  Close(f);
+end;
+
 procedure TDBGTestCase.FinishLog;
 var
   NewName: String;
@@ -883,9 +910,11 @@ begin
   TestLogger.DebugLn(['Running ', Parent.TestSuiteName, ' ', Parent.TestName, ' ', TestSuiteName, ' ', TestName]);
   try
     ClearTestErrors;
+    FTestStartTime := GetTickCount64;
     inherited RunTest;
   finally
     Debugger.CleanAfterTestDone;
+    LogTime('', GetTickCount64 - FTestStartTime);
   end;
 end;
 
@@ -919,7 +948,10 @@ end;
 
 procedure TDBGTestCase.TestCompile(const PrgName: string; out ExeName: string;
   const UsesDirs: array of TUsesDir; NamePostFix: String; ExtraArgs: String);
+var
+  t: QWord;
 begin
+  t := GetTickCount64;
   try
     LogText(LineEnding+LineEnding + '******************* compile '+PrgName + ' ' + ExtraArgs +LineEnding );
     Compiler.TestCompile(PrgName, ExeName, UsesDirs, NamePostFix, ExtraArgs);
@@ -930,6 +962,7 @@ begin
       AssertTestErrors;
     end;
   end;
+  FTestStartTime := FTestStartTime + (GetTickCount64 - t);
 end;
 
 procedure TDBGTestCase.TestCompile(const Prg: TCommonSource; out

@@ -12,7 +12,7 @@
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
     </General>
-    <BuildModes Count="17">
+    <BuildModes Count="20">
       <Item1 Name="O- CRriot gh gt Sa" Default="True"/>
       <Item2 Name="O- CRriot gh gtt Sa">
         <CompilerOptions>
@@ -50,7 +50,7 @@
           </Linking>
         </CompilerOptions>
       </Item3>
-      <Item4 Name="O- CRriot  Sa">
+      <Item4 Name="O- CRriot gh gtttt &lt;nil> Sa">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
@@ -68,7 +68,7 @@
           </Linking>
         </CompilerOptions>
       </Item4>
-      <Item5 Name="O1 Criot gh gt Sa">
+      <Item5 Name="O- CRriot  Sa">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
@@ -86,7 +86,7 @@
           </Linking>
         </CompilerOptions>
       </Item5>
-      <Item6 Name="O1 Criot gh gtt Sa Si">
+      <Item6 Name="O1 Criot gh gt Sa">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
@@ -104,7 +104,7 @@
           </Linking>
         </CompilerOptions>
       </Item6>
-      <Item7 Name="O1 Criot Si">
+      <Item7 Name="O1 Criot gh gtt Sa Si">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
@@ -122,7 +122,7 @@
           </Linking>
         </CompilerOptions>
       </Item7>
-      <Item8 Name="O2 CRriot Sa Si">
+      <Item8 Name="O1 Criot Si">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
@@ -140,7 +140,7 @@
           </Linking>
         </CompilerOptions>
       </Item8>
-      <Item9 Name="O2 Sa Si">
+      <Item9 Name="O2 CRriot Sa Si">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
@@ -158,7 +158,7 @@
           </Linking>
         </CompilerOptions>
       </Item9>
-      <Item10 Name="O3 Sa Si">
+      <Item10 Name="O2 Sa Si">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
@@ -176,7 +176,7 @@
           </Linking>
         </CompilerOptions>
       </Item10>
-      <Item11 Name="O- opt">
+      <Item11 Name="O3 Sa Si">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
@@ -194,7 +194,7 @@
           </Linking>
         </CompilerOptions>
       </Item11>
-      <Item12 Name="O1 opt">
+      <Item12 Name="O- opt">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
@@ -212,7 +212,7 @@
           </Linking>
         </CompilerOptions>
       </Item12>
-      <Item13 Name="O2 opt">
+      <Item13 Name="O1 opt">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
@@ -230,7 +230,7 @@
           </Linking>
         </CompilerOptions>
       </Item13>
-      <Item14 Name="O3 opt">
+      <Item14 Name="O2 opt">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
@@ -248,7 +248,7 @@
           </Linking>
         </CompilerOptions>
       </Item14>
-      <Item15 Name="O4 opt">
+      <Item15 Name="O3 opt">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
@@ -266,7 +266,25 @@
           </Linking>
         </CompilerOptions>
       </Item15>
-      <Item16 Name="32 bit O- CRriot gh gt">
+      <Item16 Name="O4 opt">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="LazDebFpTest"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf2Set"/>
+            </Debugging>
+          </Linking>
+        </CompilerOptions>
+      </Item16>
+      <Item17 Name="32 bit O- CRriot gh gt">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
@@ -286,8 +304,8 @@
             </Debugging>
           </Linking>
         </CompilerOptions>
-      </Item16>
-      <Item17 Name="O4 opt TEST_FPDEBUG_SINGLE_THREAD">
+      </Item17>
+      <Item18 Name="O4 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG">
         <CompilerOptions>
           <Version Value="11"/>
           <PathDelim Value="\"/>
@@ -304,31 +322,70 @@
             </Debugging>
           </Linking>
         </CompilerOptions>
-      </Item17>
-      <SharedMatrixOptions Count="23">
-        <Item1 ID="892138315231" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger" Modes="O- CRriot gh gt Sa,O- CRriot gh gtt Sa,O- CRriot gh gttt Sa,O- CRriot  Sa,O- opt,32 bit O- CRriot gh gt" Value="-O-"/>
-        <Item2 ID="942436582238" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger" Modes="O1 Criot gh gt Sa,O1 Criot gh gtt Sa Si,O1 Criot Si,O1 opt" Value="-O-1"/>
-        <Item3 ID="862987172568" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger" Modes="O2 CRriot Sa Si,O2 Sa Si,O2 opt" Value="-O-2"/>
-        <Item4 ID="065298354086" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger" Modes="O3 Sa Si,O3 opt" Value="-O-3"/>
-        <Item5 ID="450520149060" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger" Modes="O4 opt,O4 opt TEST_FPDEBUG_SINGLE_THREAD" Value="-O-4"/>
-        <Item6 ID="707355750253" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger" Modes="O- CRriot gh gt Sa,O- CRriot gh gtt Sa,O- CRriot gh gttt Sa,O- CRriot  Sa,O1 Criot gh gt Sa,32 bit O- CRriot gh gt" Value="-Si-"/>
-        <Item7 ID="015770976638" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger" Modes="O1 Criot gh gtt Sa Si,O1 Criot Si,O2 CRriot Sa Si,O2 Sa Si,O3 Sa Si,O- opt,O1 opt,O2 opt,O3 opt,O4 opt,O4 opt TEST_FPDEBUG_SINGLE_THREAD" Value="-Si"/>
-        <Item8 ID="829928402724" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger" Modes="O1 Criot Si,O- opt,O1 opt,O2 opt,O3 opt,O4 opt,O4 opt TEST_FPDEBUG_SINGLE_THREAD" Value="-Sa-"/>
-        <Item9 ID="741586091227" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger" Modes="O- CRriot gh gt Sa,O- CRriot gh gtt Sa,O- CRriot gh gttt Sa,O- CRriot  Sa,O1 Criot gh gt Sa,O1 Criot gh gtt Sa Si,O2 CRriot Sa Si,O2 Sa Si,O3 Sa Si,32 bit O- CRriot gh gt" Value="-Sa"/>
-        <Item10 ID="384346637257" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger" Modes="O- CRriot gh gt Sa,O- CRriot gh gtt Sa,O- CRriot gh gttt Sa,O1 Criot gh gt Sa,O1 Criot gh gtt Sa Si,32 bit O- CRriot gh gt" Value="-gh"/>
-        <Item11 ID="938629446379" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger" Modes="O- CRriot gh gt Sa,O1 Criot gh gt Sa,32 bit O- CRriot gh gt" Value="-gt"/>
-        <Item12 ID="083874750360" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger" Modes="O- CRriot gh gtt Sa,O1 Criot gh gtt Sa Si" Value="-gtt"/>
-        <Item13 ID="624937376596" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger" Modes="O- CRriot gh gttt Sa" Value="-gttt"/>
-        <Item14 ID="960178335680" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger" Modes="O1 Criot gh gt Sa,O1 Criot gh gtt Sa Si,O1 Criot Si,O2 Sa Si,O3 Sa Si,O- opt,O1 opt,O2 opt,O3 opt,O4 opt,O4 opt TEST_FPDEBUG_SINGLE_THREAD" Value="-CR-"/>
-        <Item15 ID="580833933537" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger" Modes="O- CRriot gh gt Sa,O- CRriot gh gtt Sa,O- CRriot gh gttt Sa,O- CRriot  Sa,O2 CRriot Sa Si,32 bit O- CRriot gh gt" Value="-CR"/>
-        <Item16 ID="896975201702" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger" Modes="O2 Sa Si,O3 Sa Si,O- opt,O1 opt,O2 opt,O3 opt,O4 opt,O4 opt TEST_FPDEBUG_SINGLE_THREAD" Value="-Cr- -Ci- -Co- -Ct-"/>
-        <Item17 ID="596749297552" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger" Modes="O- CRriot gh gt Sa,O- CRriot gh gtt Sa,O- CRriot gh gttt Sa,O- CRriot  Sa,O1 Criot gh gt Sa,O1 Criot Si,O1 Criot gh gtt Sa Si,O2 CRriot Sa Si,32 bit O- CRriot gh gt" Value="-Criot"/>
-        <Item18 ID="313431544377" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger" Modes="O- CRriot gh gt Sa,O- CRriot gh gtt Sa,O- CRriot gh gttt Sa,O- CRriot  Sa,O1 Criot gh gt Sa,O1 Criot gh gtt Sa Si,O1 Criot Si,O2 CRriot Sa Si,O3 Sa Si,O2 Sa Si,O- opt,O1 opt,O2 opt,O4 opt,O3 opt,32 bit O- CRriot gh gt,O4 opt TEST_FPDEBUG_SINGLE_THREAD" Value="-gw2 -godwarfsets -gl"/>
-        <Item19 ID="509503769266" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger" Modes="O- opt,O1 opt,O2 opt,O3 opt,O4 opt,O4 opt TEST_FPDEBUG_SINGLE_THREAD" Value="-dLINUX_NO_PTRACE_ALIGN"/>
-        <Item20 ID="678633917513" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger" Modes="O- opt,O1 opt,O2 opt,O3 opt,O4 opt,O4 opt TEST_FPDEBUG_SINGLE_THREAD" Value="-dFORCE_LAZLOGGER_DUMMY"/>
-        <Item21 ID="212328245069" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger" Modes="32 bit O- CRriot gh gt,O2 opt,O1 opt,O- opt,O3 Sa Si,O2 Sa Si,O2 CRriot Sa Si,O1 Criot Si,O1 Criot gh gtt Sa Si,O1 Criot gh gt Sa,O- CRriot  Sa,O- CRriot gh gttt Sa,O- CRriot gh gtt Sa,O- CRriot gh gt Sa" Value="-dFPDEBUG_THREAD_CHECK"/>
-        <Item22 ID="282360485400" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger" Modes="O4 opt TEST_FPDEBUG_SINGLE_THREAD" Value="-dTEST_FPDEBUG_SINGLE_THREAD"/>
-        <Item23 ID="285688265515" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger" Modes="O4 opt TEST_FPDEBUG_SINGLE_THREAD,O4 opt,O3 opt" Value="-uFPDEBUG_THREAD_CHECK"/>
+      </Item18>
+      <Item19 Name="O3 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="LazDebFpTest"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf2Set"/>
+            </Debugging>
+          </Linking>
+        </CompilerOptions>
+      </Item19>
+      <Item20 Name="O2 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="LazDebFpTest"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir)"/>
+            <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf2Set"/>
+            </Debugging>
+          </Linking>
+        </CompilerOptions>
+      </Item20>
+      <SharedMatrixOptions Count="26">
+        <Item1 ID="892138315231" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O- CRriot gh gt Sa,O- CRriot gh gtt Sa,O- CRriot gh gttt Sa,O- CRriot  Sa,O- opt,32 bit O- CRriot gh gt,O- CRriot gh gtttt &lt;nil> Sa" Value="-O-"/>
+        <Item2 ID="942436582238" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O1 Criot gh gt Sa,O1 Criot gh gtt Sa Si,O1 Criot Si,O1 opt" Value="-O-1"/>
+        <Item3 ID="862987172568" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O2 CRriot Sa Si,O2 Sa Si,O2 opt,O2 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG" Value="-O-2"/>
+        <Item4 ID="065298354086" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O3 Sa Si,O3 opt,O3 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG" Value="-O-3"/>
+        <Item5 ID="450520149060" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O4 opt,O4 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG" Value="-O-4"/>
+        <Item6 ID="707355750253" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O- CRriot gh gt Sa,O- CRriot gh gtt Sa,O- CRriot gh gttt Sa,O- CRriot  Sa,O1 Criot gh gt Sa,32 bit O- CRriot gh gt,O- CRriot gh gtttt &lt;nil> Sa,O4 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG,O2 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG,O3 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG" Value="-Si-"/>
+        <Item7 ID="015770976638" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O1 Criot gh gtt Sa Si,O1 Criot Si,O2 CRriot Sa Si,O2 Sa Si,O3 Sa Si,O- opt,O1 opt,O2 opt,O3 opt,O4 opt" Value="-Si"/>
+        <Item8 ID="829928402724" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O1 Criot Si,O- opt,O1 opt,O2 opt,O3 opt,O4 opt,O4 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG,O2 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG,O3 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG" Value="-Sa-"/>
+        <Item9 ID="741586091227" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O- CRriot gh gt Sa,O- CRriot gh gtt Sa,O- CRriot gh gttt Sa,O- CRriot  Sa,O1 Criot gh gt Sa,O1 Criot gh gtt Sa Si,O2 CRriot Sa Si,O2 Sa Si,O3 Sa Si,32 bit O- CRriot gh gt,O- CRriot gh gtttt &lt;nil> Sa" Value="-Sa"/>
+        <Item10 ID="384346637257" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O- CRriot gh gt Sa,O- CRriot gh gtt Sa,O- CRriot gh gttt Sa,O1 Criot gh gt Sa,O1 Criot gh gtt Sa Si,32 bit O- CRriot gh gt,O- CRriot gh gtttt &lt;nil> Sa" Value="-gh"/>
+        <Item11 ID="740166490443" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O4 opt,O3 opt,O2 opt,O- CRriot  Sa,O4 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG,O2 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG,O3 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG" Value="-gt-"/>
+        <Item12 ID="938629446379" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O- CRriot gh gt Sa,O1 Criot gh gt Sa,32 bit O- CRriot gh gt,O3 Sa Si" Value="-gt- -gt"/>
+        <Item13 ID="083874750360" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O- CRriot gh gtt Sa,O1 Criot gh gtt Sa Si,O2 CRriot Sa Si,O1 Criot Si" Value="-gt- -gtt"/>
+        <Item14 ID="624937376596" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O- CRriot gh gttt Sa" Value="-gt- -gttt"/>
+        <Item15 ID="830237434745" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O- CRriot gh gtttt &lt;nil> Sa,O- opt,O1 opt" Value="-gt- -gtttt"/>
+        <Item16 ID="960178335680" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O1 Criot gh gt Sa,O1 Criot gh gtt Sa Si,O1 Criot Si,O2 Sa Si,O3 Sa Si,O- opt,O1 opt,O2 opt,O3 opt,O4 opt,O4 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG,O2 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG,O3 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG" Value="-CR-"/>
+        <Item17 ID="580833933537" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O- CRriot gh gt Sa,O- CRriot gh gtt Sa,O- CRriot gh gttt Sa,O- CRriot  Sa,O2 CRriot Sa Si,32 bit O- CRriot gh gt" Value="-CR"/>
+        <Item18 ID="896975201702" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O2 Sa Si,O3 Sa Si,O- opt,O1 opt,O2 opt,O3 opt,O4 opt,O4 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG,O2 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG,O3 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG" Value="-Cr- -Ci- -Co- -Ct-"/>
+        <Item19 ID="596749297552" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O- CRriot gh gt Sa,O- CRriot gh gtt Sa,O- CRriot gh gttt Sa,O- CRriot  Sa,O1 Criot gh gt Sa,O1 Criot Si,O1 Criot gh gtt Sa Si,O2 CRriot Sa Si,32 bit O- CRriot gh gt" Value="-Criot"/>
+        <Item20 ID="313431544377" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O- CRriot gh gt Sa,O- CRriot gh gtt Sa,O- CRriot gh gttt Sa,O- CRriot  Sa,O1 Criot gh gt Sa,O1 Criot gh gtt Sa Si,O1 Criot Si,O2 CRriot Sa Si,O3 Sa Si,O2 Sa Si,O- opt,O1 opt,O2 opt,O4 opt,O3 opt,32 bit O- CRriot gh gt,O4 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG,O2 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG,O3 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG" Value="-gw2 -godwarfsets -gl"/>
+        <Item21 ID="509503769266" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O- opt,O1 opt,O2 opt,O3 opt,O4 opt" Value="-dLINUX_NO_PTRACE_ALIGN"/>
+        <Item22 ID="678633917513" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O- opt,O1 opt,O2 opt,O3 opt,O4 opt,O3 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG,O2 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG,O4 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG" Value="-dFORCE_LAZLOGGER_DUMMY"/>
+        <Item23 ID="212328245069" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="32 bit O- CRriot gh gt,O2 opt,O1 opt,O- opt,O3 Sa Si,O2 Sa Si,O2 CRriot Sa Si,O1 Criot Si,O1 Criot gh gtt Sa Si,O1 Criot gh gt Sa,O- CRriot  Sa,O- CRriot gh gttt Sa,O- CRriot gh gtt Sa,O- CRriot gh gt Sa" Value="-dFPDEBUG_THREAD_CHECK"/>
+        <Item24 ID="282360485400" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O4 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG,O2 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG,O3 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG" Value="-dTEST_FPDEBUG_SINGLE_THREAD"/>
+        <Item25 ID="285688265515" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O4 opt,O3 opt,O4 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG,O2 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG,O3 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG" Value="-uFPDEBUG_THREAD_CHECK"/>
+        <Item26 ID="552902072333" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O4 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG,O2 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG,O3 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG" Value="-dTEST_LOG_TIME"/>
       </SharedMatrixOptions>
     </BuildModes>
     <PublishOptions>
@@ -414,7 +471,7 @@
     </Linking>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="5">
+    <Exceptions Count="7">
       <Item1>
         <Name Value="EAbort"/>
       </Item1>
@@ -423,13 +480,23 @@
       </Item2>
       <Item3>
         <Name Value="EFOpenError"/>
+        <Enabled Value="False"/>
       </Item3>
       <Item4>
         <Name Value="EAssertionFailedError"/>
       </Item4>
       <Item5>
         <Name Value="EResNotFound"/>
+        <Enabled Value="False"/>
       </Item5>
+      <Item6>
+        <Name Value="EObjectCheck"/>
+        <Enabled Value="False"/>
+      </Item6>
+      <Item7>
+        <Name Value="RunError(210)"/>
+        <Enabled Value="False"/>
+      </Item7>
     </Exceptions>
   </Debugging>
 </CONFIG>

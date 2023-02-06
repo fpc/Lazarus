@@ -20,7 +20,7 @@ begin
   if TheLogger = nil then begin
     TheLogger := TLazLoggerFile.Create;
     TheLogger.AddReference;
-    TLazLoggerFile(TheLogger).Assign(DebugLogger);
+//    TLazLoggerFile(TheLogger).Assign(DebugLogger);
     TheLogger.OnDbgOut := nil;
     TheLogger.OnDebugLn := nil;
     TheLogger.Init;

@@ -1335,7 +1335,7 @@ begin
     for i := c to t.Count-1 do
       t.Tests[i].Skip;  // class var do not work => but ensure they do not crash
 
-    if (Compiler.Version >= 030200) or (Compiler.SymbolType in stDwarf2) then begin
+    if (Compiler.Version >= 030202) or (Compiler.SymbolType in stDwarf2) then begin
       AddWatches(t, 'glob MyOldObjectBase',      'MyOldObjectBase.obc', 003, 'D', tlAny, '', [tlReduced]);
       AddWatches(t, 'glob MyOldObject inherhit', 'MyOldObject.obc', 004, 'E', tlAny, '', [tlReduced]);
       AddWatches(t, 'glob MyOldObject',          'MyOldObject.oc',  002, 'C', tlAny, '', [tlReduced]);
