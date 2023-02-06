@@ -1427,24 +1427,32 @@ begin
           Context:=ContextList.List[i].Context;
           case ContextList.List[i].Descriptor of
 
+          // fully qualified identifier name for members in classes
           pihcProperty,pihcVariable,pihcType,pihcConst:
             begin
-              Identifier:=Context;
-              break;
+              if (i > 0) and (Identifier <> '')  then
+                 Identifier := Identifier + '.';
+              Identifier := Identifier + Context;
             end;
 
+          // fully qualified identifier name for members in classes
           pihcProcedure:
             begin
+              if (i > 0) and (Identifier <> '')  then
+                Identifier := Identifier + '.';
               // chomp parameters  ToDo: overloaded procs
               p:=System.Pos('(',Context);
               if p>0 then
                 Context:=copy(Context,1,p-1);
-              Identifier:=Context;
-              break;
+              Identifier := Identifier + Context;
             end;
 
           end;
         end;
+
+        // avoids the help database not found message for the unit declaration
+        if (AUnitName <> '') and (Identifier = '') then
+          Identifier := 'index';
 
         if Identifier<>'' then begin
           DebugLn(['TExternalHelpDatabase.ShowHelp Identifier=',Identifier]);
@@ -1453,8 +1461,9 @@ begin
           repeat
             p:=PosI('$(identifier)',URL);
             if p<1 then break;
-            URL:=copy(URL,1,p-1)+Identifier
-                               +copy(URL,p+length('$(identifier)'),length(URL));
+            // a $LCase() macro would avoid converting to lowercase
+            URL:=copy(URL,1,p-1)+Lowercase(Identifier)+
+              copy(URL,p+length('$(identifier)'),length(URL));
           until false;
 
           // replace global macros
