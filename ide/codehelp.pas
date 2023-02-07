@@ -2944,16 +2944,38 @@ function TCodeHelpManager.GetFPDocNodeAsHTML(FPDocFile: TLazFPDocFile;
     end else
     if (Node.NodeName='p')
     or (Node.NodeName='b')
+    or (Node.NodeName='i')
     or (Node.NodeName='pre')
     or (Node.NodeName='table')
     or (Node.NodeName='th')
     or (Node.NodeName='tr')
     or (Node.NodeName='td')
     or (Node.NodeName='ul')
+    or (Node.NodeName='ol')
     or (Node.NodeName='li')
+    or (Node.NodeName='dl')
+    or (Node.NodeName='dt')
+    or (Node.NodeName='dd')
     or (Node.NodeName='hr')
     then begin
       Result:=Result+'<'+Node.NodeName+'>'+AddChilds(Node)+'</'+Node.NodeName+'>';
+    end else
+    // fpdoc file tag as html span.file
+    if (Node.NodeName='file') then begin
+      Result:=Result+'<span class="file">'+AddChilds(Node)+'</span>';
+    end else
+    // fpdoc code tag as html pre tag
+    if (Node.NodeName='code') then begin
+      Result:=Result+'<pre>'+AddChilds(Node)+'</pre>';
+    end else
+    // fpdoc url tag as html anchor
+    if (Node.NodeName='url') and (Node.Attributes<>nil) then begin
+      Attr:= Node.Attributes.GetNamedItem('href');
+      if (Attr=nil) or (Attr.NodeValue='') then exit;
+      s:=AddChilds(Node);
+      // append href as comment - it is not clickable or selectable in the help hint
+      Result:=Result+'<a href="'+Attr.NodeValue+'">'+s+'</a> '+
+        '<span class="comment">['+Attr.NodeValue+']</span>';
     end else if (Node.NodeName='var') then begin
       Result:=Result+'<span class="keyword">'+AddChilds(Node)+'</span>';
     end else if (Node.NodeName='link') and (Node.Attributes<>nil) then begin
