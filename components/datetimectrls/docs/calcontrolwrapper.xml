@@ -29,7 +29,7 @@ area changing month or year. Then we let the user keep browsing the calendar.
 </p>
 <p>
 When creating a new wrapper, there are four abstract methods which need to be
-overridden. Please see the comments in the code below.
+overridden.
 </p>
 <p>
 <file>calcontrolwrapper.pas </file> is part of <file>DateTimeCtrls</file> 
@@ -74,7 +74,30 @@ Specifies an abstract class used as wrapper for the calendar control used in
 TDateTimePicker.
 </short>
 <descr>
-<!-- TODO: Merge content from the wiki page. -->
+<p>
+By default, TDateTimePicker uses the LCL TCalendar control to represent its 
+drop-down calendar. But you can use some other calendar control instead. In 
+order to use another calendar control, you should "wrap" that control with
+a CalendarControlWrapper.
+</p>
+<p>
+For use in TDateTimePicker, the calendar control must at least provide a way 
+to determine whether the coordinates are on a date. When the control is 
+clicked, we must decide if the date has just been chosen and respond by 
+closing the drop-down form and setting the date from the calendar to the 
+DateTimePicker control. For example, in the LCL TCalendar will respond when 
+the calendar is clicked on a date, but not when the user clicks in the title 
+area changing month or year. Then we let the user keep browsing the calendar.
+</p>
+<p>
+When creating a new wrapper, there are four abstract methods which need to be
+overridden: GetCalendarControlClass, GetDate, SetDate, and 
+AreCoordinatesOnDate.
+</p>
+<p>
+See TLCLCalendarWrapper in <file>lazcalwrapper.pas</file> for the default 
+implementation used in the LCL.
+</p>
 </descr>
 <seealso>
 <link id="#datetimectrls.lazcalwrapper.TLCLCalendarWrapper">TLCLCalendarWrapper</link>
@@ -87,11 +110,12 @@ TDateTimePicker.
 <!-- public -->
 <element name="TCalendarControlWrapper.GetCalendarControlClass">
 <short>
-Gets the class reference used to new instances of the calendar control.
+Gets the class reference used to create new instances of the calendar control.
 </short>
 <descr>
 <p>
-Should be overridden to return the class type for the calendar control.  
+Should be overridden to return the class type needed for the calendar control 
+in an implementation
 </p>
 </descr>
 <seealso/>
@@ -109,86 +133,145 @@ Abstract virtual method used to set the date for the calendar control.
 <descr>
 <p>
 Should be overridden to set the date in the calendar control.
-</p>  
+</p>
 </descr>
 <seealso/>
 </element>
 <element name="TCalendarControlWrapper.SetDate.Date">
 <short>
 TDate value stored in the date for the calendar control.
-</short>  
+</short>
 </element>
 
 <element name="TCalendarControlWrapper.GetDate">
 <short>
 Abstract virtual method used to get the date for the calendar control.
 </short>
-<descr/>
+<descr>
+</descr>
+<p>
+Should be overridden to get the date from the calendar control.
+</p>
 <seealso/>
 </element>
 <element name="TCalendarControlWrapper.GetDate.Result">
 <short>
 TDate value read from the date in the calendar control.
-</short>  
+</short>
 </element>
 
 <element name="TCalendarControlWrapper.AreCoordinatesOnDate">
 <short>
-Abstract virtual method which indicates if the coordinates (X, Y) are on a 
-date in the calendar control. TDateTimePicker calls this function when the 
-calendar is clicked, to determine whether the drop-down calendar should return 
-the date or not.
+Indicates if the specified coordinates on a date in the calendar control.
 </short>
-<descr/>
+<descr>
+<p>
+<var>AreCoordinatesOnDate</var> is an abstract virtual Boolean function which 
+indicates if the coordinates (X, Y) are on a date in the calendar control. 
+TDateTimePicker calls this function when the calendar is clicked, to determine 
+whether the drop-down calendar should return the selected date - or not.
+</p>
+<p>
+The calendar control must at least provide a way to determine whether the 
+coordinates are on a date value when the control is clicked. When a date is 
+chosen, the drop-down form is closed and the date is returned to the 
+TDateTimePicker control. The method must differentiate between coordinates for 
+a date value and those for other user interface elements on the dialog, like: 
+the title area, buttons which change the current month or year, and unused 
+spaces on the calendar control. 
+</p>
+<p>
+For example, the LCL TCalendar control responds when the calendar is clicked 
+on a date, but not when the user clicks in title area changing months or 
+years. In that situation, the user can continue to use the calendar to 
+navigate between months and years.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TCalendarControlWrapper.AreCoordinatesOnDate.Result">
 <short>
-Returns <b>True</b> if the specified coordinates are on a date or an unused 
-area in the day grid for the calendar control.
+Returns <b>True</b> if the specified coordinates are on a date in the day grid 
+for the calendar control. <b>False</b> indicates a date value was not selected.
 </short>
 </element>
 <element name="TCalendarControlWrapper.AreCoordinatesOnDate.X">
 <short>
-Horizontal coordinate checked for a date value.
+Horizontal coordinate examined for a date value.
 </short>
 </element>
 <element name="TCalendarControlWrapper.AreCoordinatesOnDate.Y">
 <short>
-Vertical coordinate checked for a date value.
+Vertical coordinate examined for a date value.
 </short>
 </element>
 
 <element name="TCalendarControlWrapper.InMonthView">
-<short/>
-<descr/>
+<short>
+Indicates if the month view is active on the calendar control.
+</short>
+<descr>
+<p>
+<var>InMonthView</var> is a virtual Boolean function used to indicates if the 
+month view is active on the calendar control. InMonthView can be overridden 
+in descendent classes which use a calendar control that can display view(s) 
+other than a grid with day values, like the TCalendar control on the Windows 
+widgetset.
+</p>
+<p>
+Used in TDateTimePicker when the drop-down dialog for the control is closed.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TCalendarControlWrapper.InMonthView.Result">
-<short/>
+<short>
+<b>False</b> if the calendar control is displaying a view other than the month 
+view. <b>True</b> if the calendar control does not support any other view.
+</short>
 </element>
 
 <element name="TCalendarControlWrapper.GetCalendarControl">
-<short/>
-<descr/>
+<short>
+Gets the TControl instance with the calendar control for the wrapper.
+</short>
+<descr>
+<p>
+<var>GetCalendarControl</var> is a TControl function used to get the calendar 
+control for the wrapper. It returns the class instance, created in the 
+constructor, by instantiating the class type returned from the 
+GetCalendarControlClass method.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TCalendarControlWrapper.GetCalendarControl.Result">
-<short/>
+<short>
+Gets the calendar control in the class instance.
+</short>
 </element>
 
 <element name="TCalendarControlWrapper.Create">
 <short>
-Constructor for the class instance. It creates and uses a new instance of the 
-GetCalendarControl class type as the calendar control in the wrapper.
+Constructor for the class instance.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>Create</var> is the constructor for the class instance. It creates and 
+stores a new instance of the class type returned by the 
+GetCalendarControlClass method. Use GetCalendarControl to access the calendar 
+control instance.
+</p>
+</descr>
+<seealso>
+<link id="TCalendarControlWrapper.GetCalendarControlClass"/>
+<link id="TCalendarControlWrapper.GetCalendarControl"/>
+</seealso>
 </element>
 
 <element name="TCalendarControlWrapper.Destroy">
 <short>
-Destructor for the class instance.  
+Destructor for the class instance.
 </short>
 <descr>
 <p>
