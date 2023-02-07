@@ -242,7 +242,7 @@ Used mainly when a row or a column position is invalid for a grid control.
 </element>
 
 <element name="TGridOption">
-<short>Represents grip option values available for grid controls.</short>
+<short>Represents grid option values available for grid controls.</short>
 <descr>
 <p>
 <var>TGridOption</var> is an enumerated type with values that represent grid 
@@ -282,7 +282,7 @@ constant which defines the default set of options for LCL grid controls.
 <element name="TGridOption.goDrawFocusSelected">
 <short>
 Enables drawing using the SelectedColor for selected cell(s) and FocusColor 
-for the focus rectangle (or rubberband).
+for the focus rectangle (or rubber band).
 </short>
 </element>
 <element name="TGridOption.goRowSizing">
@@ -1632,7 +1632,7 @@ editor.
 </short>
 <descr>
 <p>
-Adjusts the rectangle for the "rubberband" displayed around the cell, and 
+Adjusts the rectangle for the "rubber band" displayed around the cell, and 
 ensures that space is reserved for the button displayed for the editor 
 control.
 </p>
@@ -17421,7 +17421,7 @@ The color used to draw the focus rectangle when a cell has focus.
 <descr>
 <p>
 <var>FocusColor</var> is a <var>TColor</var> property with the color used to 
-draw the focus rectangle (or rubberband) for the focused cell in the grid 
+draw the focus rectangle (or rubber band) for the focused cell in the grid 
 control. The default value for the property is clRed. Changing the value for 
 the property causes the current in Col and Row to be redrawn.
 </p>
@@ -17439,7 +17439,7 @@ clWhite is used as the pixel color instead.
 <descr>
 <p>
 <var>FocusRectVisible</var> is a <var>Boolean</var> property which indicates 
-if the focus rectangle (or rubberband) is drawn for the focused cell, extent, 
+if the focus rectangle (or rubber band) is drawn for the focused cell, extent, 
 or row in the grid control. Changing the value for the property causes the 
 grid control to be redrawn. The default value for the property is <b>True</b> 
 as assigned in the Create constructor.
