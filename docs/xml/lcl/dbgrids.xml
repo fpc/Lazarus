@@ -49,12 +49,15 @@ Magazine Issue #30 February 1998.
 <element name="Laz2_XMLCfg"/>
 
 <element name="DEFINDICATORCOLWIDTH">
-<short>Default width for the indicator column in a grid control.</short>
+<short>
+Default width for the row indicator column in a grid control.
+</short>
 <descr>
 <p>
-Used to set the width for indicator column (when enabled in the grid options) 
-when the grid control is emptied. The value may be scaled for the display 
-density (PPI) used for the Font in the grid control.
+Used to set the width for the row indicator column (when enabled in the grid 
+options). The value may be scaled for the display density (PPI) used for the 
+Font in the grid control. Used when a TCustomDBGrid control updates it layout 
+and appearance after a change to its Options property.
 </p>
 </descr>
 <seealso>
@@ -104,13 +107,13 @@ Indicates cells in the grid can be edited.
 </element>
 <element name="TDBGridOption.dgTitles">
 <short>
-Indicates titles are displayed for columns in the grid.
+Indicates titles are displayed in fixed row headers for columns on the grid.
 </short>
 </element>
 <element name="TDBGridOption.dgIndicator">
 <short>
-Enables drawing of the row indicator for the currently selected row in the 
-grid.
+Enables drawing a row indicator in the fixed header for the currently selected 
+row on the grid.
 </short>
 </element>
 <element name="TDBGridOption.dgColumnResize">
@@ -141,12 +144,13 @@ Indicates the Tab key can be used to navigate between cells in the grid.
 <element name="TDBGridOption.dgAlwaysShowEditor">
 <short>
 Indicates an edit control is always displayed for the current cell in the 
-grid.
+grid. When omitted, editing must be initiated by mouse click, or by pressing 
+the <b>Enter</b> or <b>F2</b> keys.
 </short>
 </element>
 <element name="TDBGridOption.dgRowSelect">
 <short>
-Indicates the entire row is highlighted when selected.
+Indicates the entire row is highlighted when column(s) are selected.
 </short>
 </element>
 <element name="TDBGridOption.dgAlwaysShowSelection">
@@ -157,7 +161,7 @@ focus.
 </element>
 <element name="TDBGridOption.dgConfirmDelete">
 <short>
-Indicates a confirmation dialog is required when deleting a record in the 
+Indicates a confirmation dialog is displayed when deleting a record in the 
 grid.
 </short>
 </element>
@@ -169,22 +173,27 @@ focus.
 </element>
 <element name="TDBGridOption.dgMultiselect">
 <short>
-Indicates more than one cell or row can be selected in the grid.
+Allows more than one cell in a row, or more than one row to be selected on 
+the grid.
 </short>
 </element>
 <element name="TDBGridOption.dgHeaderHotTracking">
 <short>
-Indicates column headers are highlighted when the column has mouse focus.
+Indicates column headers are highlighted when the column has mouse focus 
+(hovered).
 </short>
 </element>
 <element name="TDBGridOption.dgHeaderPushedLook">
 <short>
-Indicates column headers are drawn with a button down appearance.
+Indicates a column header can be drawn with a "button down" or pushed 
+appearance when clicked.
 </short>
 </element>
 <element name="TDBGridOption.dgPersistentMultiSelect">
 <short>
-Indicates multiple selections are retained even when the control loses focus.
+Indicates multiple selections are retained (when enabled) when the control 
+loses focus. When omitted, multi-selections are discarded when the exiting the 
+control.
 </short>
 </element>
 <element name="TDBGridOption.dgAutoSizeColumns">
@@ -199,12 +208,12 @@ Indicates that any mouse button can change the selection in the grid.
 </element>
 <element name="TDBGridOption.dgDisableDelete">
 <short>
-Indicates if deleting records with <b>Ctrl+Delete</b> is disabled.
+Indicates that deleting records with <b>Ctrl+Delete</b> is disabled.
 </short>
 </element>
 <element name="TDBGridOption.dgDisableInsert">
 <short>
-Indicates if inserting (or appending) records is disabled.
+Indicates whether inserting (and appending) records is disabled.
 </short>
 </element>
 <element name="TDBGridOption.dgCellHints">
@@ -243,8 +252,8 @@ be automatically resized to its contents.
 </element>
 <element name="TDBGridOption.dgDisplayMemoText">
 <short>
-Indicates if memo content is displayed instead of the '(Memo)' string literal 
-for ftMemo Fields.
+Causes the content in a memo field to be displayed instead of the '(Memo)' 
+string literal. Applies to fields using the ftMemo data type.
 </short>
 </element>
 
@@ -4000,7 +4009,7 @@ Adjust properties in the specified column to display the longest value.
 <descr>
 <p>
 <var>AutoAdjustColumn</var> is an overridden method in 
-<var>TCustomDBGrid</var> used to adjust column properties to accommodate the 
+<var>TCustomDBGrid</var> used to adjust column properties to accommodate the
 largest value in the specified column. It re-implements the method from the 
 ancestor class.
 </p>
@@ -4021,12 +4030,14 @@ AutoAdjustColumn is called from the DblClick method when the values
 goColSizing and goDblClickAutoSize have been included in the Options property.
 </p>
 <p>
-Use AutoAdjustColumns to re-size all automatically-sized columns in the 
+Use AutoAdjustColumns to resize all automatically-sized columns in the 
 control.
 </p>
 </descr>
 <seealso>
 <link id="TCustomDBGrid.AutoAdjustColumns"/>
+<link id="TCustomDBGrid.Columns"/>
+<link id="TCustomDBGrid.Options"/>
 <link id="#lcl.grids.TCustomGrid.AutoAdjustColumn">TCustomGrid.AutoAdjustColumn</link>
 <link id="#lcl.grids.TCustomGrid.ColWidths">TCustomGrid.ColWidths</link>
 </seealso>
@@ -6458,7 +6469,7 @@ Calculates the width for auto-sized columns and refreshes the grid control.
 <descr>
 <p>
 <var>UpdateAutoSizeColumns</var> is a method used to auto-size columns in the 
-grid and redisplay the control. No actions are performed in the method if 
+grid and redraw the control. No actions are performed in the method if 
 gsAutoSized is already present in the GridStatus property. This occurs when 
 UpdateAutoSizeColumns has already been called, and the columns have already 
 been resized.
@@ -6600,7 +6611,7 @@ Other scroll code values in Message are ignored.
 WMVScroll calls ScrollBarPosition to update the position for the vertical 
 scroll bar on the control. If EditorMode is enabled, the private 
 RestoreEditor method is called to toggle the value in EditorMode and 
-redisplay the editor control.
+redraw the editor control.
 </p>
 </descr>
 <seealso>
@@ -6651,7 +6662,7 @@ Columns provides access to columns defined for the database grid control.
 <p>
 <var>Columns</var> is a <var>TDBGridColumns</var> property that provides 
 access to columns defined for the database grid control. Columns reimplements 
-the property defined in the ancestor class. The items the collection are 
+the property defined in the ancestor class. The items in the collection are 
 represented as TColumn instances which are derived from TGridColumn. The 
 TColumn instances include additional properties and methods which identify 
 the field name, TField instance, and display format for the column. The 
@@ -6665,7 +6676,7 @@ the value dgeAutoColumns.
 <p>
 Use of the Columns property is not required. When left empty, the fields 
 displayed on the grid and their attributes are retrieved directly from the 
-linked dataset in DataLink. When columns are omitted properties like 
+linked dataset in DataLink. When columns are not used, properties like 
 FirstColumn, LastColumn, and SelectColumn always contain <b>Nil</b>.
 </p>
 </descr>
@@ -6758,7 +6769,8 @@ DataLink.
 
 <element name="TCustomDBGrid.Options">
 <short>
-Enables or disables optional features or behaviors in the grid control.
+Contains the optional features or behaviors that are enabled for the grid 
+control.
 </short>
 <descr>
 <p>
@@ -6785,18 +6797,25 @@ Options contains the following default values when the control is created:
 <li>dgAlwaysShowSelection</li>
 </ul>
 <p>
+One value commonly included in Options is dgDisplayMemoText. This allows memo 
+fields (those using the ftMemo data type) to display their actual content 
+instead of the '(Memo)' string literal.
+</p>
+<p>
 See TDBGridOption for more information about values in the enumeration and 
 their meanings.
 </p>
 <p>
-Changing value(s) in Options causes other aspects of the grid control to be 
-updated to reflect change(s) to the property. ChangedOptions is updated to 
-reflect the enumeration values added or removed in the request. Some 
-enumeration values force other features or behaviors to be disabled. For 
-instance: row selection. Enabling row selection forces the options for 
-editing, always displaying the editor, and row highlighting to be removed 
-from the Options property. Finally, removing multi-selection from the Options 
-property forces the SelectedRows property to be cleared.
+Changing value(s) in Options may cause other values in the set to be removed. 
+For instance: row selection. Enabling row selection forces the options for 
+editing, always displaying the editor, and row highlighting to be removed from 
+the Options property.
+</p>
+<p>
+New values assigned to the property may cause other aspects of the grid 
+control to be updated to reflect the change(s). For example, removing 
+multi-selection from the Options property forces the SelectedRows property to 
+be cleared.
 </p>
 <p>
 The TDBGridOption values stored in Options are different than the TGridOption 
@@ -7307,7 +7326,7 @@ Updates the widths for automatically-sized columns in the grid control.
 <descr>
 <p>
 Removes <var>gsAutoSized</var> from the <var>GridStatus</var> flags. Calls 
-<var>UpdateAutoSizeColumns</var> to calculate the widths for automatically 
+<var>UpdateAutoSizeColumns</var> to calculate the widths for automatically-
 sized columns. AutoAdjustColumns does <b>NOT</b> call the inherited method.
 </p>
 </descr>
