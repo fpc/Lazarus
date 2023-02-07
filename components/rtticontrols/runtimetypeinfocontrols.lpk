@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <Name Value="RunTimeTypeInfoControls"/>
+    <Type Value="RunAndDesignTime"/>
     <AddToProjectUsesSection Value="True"/>
     <Author Value="Mattias Gaertner"/>
     <CompilerOptions>
@@ -32,8 +33,8 @@
         <UnitName Value="RTTIGrids"/>
       </Item2>
     </Files>
-    <LazDoc Paths="/home/mattias/pascal/wichtig/lazarus/components/rtticontrols/fpdoc"/>
-    <Type Value="RunAndDesignTime"/>
+    <CompatibilityMode Value="True"/>
+    <LazDoc Paths="$(LazarusDir)/components/rtticontrols/fpdoc" PackageName="RunTimeTypeInfoControls"/>
     <RequiredPkgs Count="3">
       <Item1>
         <PackageName Value="LCL"/>
@@ -52,7 +53,6 @@
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
-      <IgnoreBinaries Value="False"/>
     </PublishOptions>
   </Package>
 </CONFIG>
