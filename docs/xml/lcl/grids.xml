@@ -5152,11 +5152,11 @@ property member is re-allocated for the new value.
 <short>Gets the default value for the MaxSize property.</short>
 <descr>
 <p>
-The return value is always <b>200</b> in <var>TGridColumn</var>.
+The return value is always <b>200</b> (pixels) in <var>TGridColumn</var>.
 </p>
 <p>
-<var>GetDefaultMaxSize</var> is called when read or writing the value for the 
-<var>MaxSize</var> property, and an explicit value has not already been 
+<var>GetDefaultMaxSize</var> is called when reading or writing the value for 
+the <var>MaxSize</var> property if an explicit value has not already been 
 assigned for the member.
 </p>
 </descr>
@@ -5499,11 +5499,31 @@ private WriteColumns method is called.
 </element>
 
 <element name="TGridColumn.Grid">
-<short>The <var>Grid</var> to which this column belongs.</short>
-<descr/>
+<short>
+The grid control to which this column belongs.
+</short>
+<descr>
+<p>
+<var>Grid</var> is a read-only <var>TCustomGrid</var> property with the grid 
+control where the column instance is stored. Grid allows the column definition 
+to access properties, methods, and events found in the TCustomGrid control 
+where the column is used.
+</p>
+<p>
+The property value contains the Collection (TGridColumns) for the item, and is 
+passed as an argument to constructor for the class instance. The property 
+value is <b>Nil</b> if the collection is not descended from TGridColumns.
+</p>
+<p>
+Example uses can be found in methods like SetIndex, GetWidth, GetDefaultWidth, 
+GetDefaultColor, FillDefaultFont and ScaleFontsPPI.
+</p>
+</descr>
 <seealso>
 <link id="TCustomGrid"/>
 <link id="TCustomGrid.Columns"/>
+<link id="TGridColumns"/>
+<link id="#rtl.classes.TCollectionItem.Collection">TCollectionItem.Collection</link>
 </seealso>
 </element>
 
@@ -5519,7 +5539,9 @@ default width used for the column. The property value is read from the
 it is not assigned, the property value is -1.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TGridColumn.Width"/>
+</seealso>
 </element>
 
 <element name="TGridColumn.StoredWidth">
@@ -5544,12 +5566,19 @@ an explicit value has not been assigned in Width, the property value is -1.
 </short>
 <descr>
 <p>
-Set to <b>True</b> when an explicit value is assigned to the Width property.
+Set to <b>True</b> when an explicit value is assigned to the Width property. 
+Its value is set to <b>False</b> when the modified column is stored in the 
+Columns collection in the Grid control.
 </p>
 </descr>
 <seealso>
+<link id="TGridColumn.ColumnChanged"/>
+<link id="TGridColumn.Width"/>
 <link id="TGridColumn.DefaultWidth"/>
 <link id="TGridColumn.StoredWidth"/>
+<link id="TGridColumn.Grid"/>
+<link id="TGridColumns"/>
+<link id="TCustomGrid.Columns"/>
 </seealso>
 </element>
 
@@ -5691,7 +5720,8 @@ expanded state.
 <p>
 <var>Expanded</var> is a <var>Boolean</var> property which indicates if the 
 drop-down list for the column cell editor is displayed in an expanded state. 
-The default value for the property is <b>True</b>.
+The default value for the property is <b>True</b>. A value assigned to the 
+property is ignored; write access is not enabled for the property value.
 </p>
 </descr>
 <seealso>
@@ -5744,12 +5774,17 @@ The layout (vertical alignment) for text displayed in the column.
 </short>
 <descr>
 <p>
+If Layout has not been assigned, the default value for the property is 
+tlCenter. This causes text for the column to be vertically aligned to the 
+center of the non-fixed cells for the column.
+</p>
+<p>
 Use the Alignment property to set the horizontal alignment for text displayed 
 in the non-fixed cells for the column.
 </p>
 <p>
 Use the Layout and Alignment properties in Title to control text displayed in 
-the fixed cells for the column.
+the fixed header for the column.
 </p>
 </descr>
 <seealso>
@@ -5765,12 +5800,41 @@ the fixed cells for the column.
 <short>
 The minimum size for the column in pixels.
 </short>
-<descr/>
+<descr>
+<p>
+<var>MinSize</var> and <var>MaxSize</var> are used to determine the smallest 
+and largest sizes for the column when it is resized horizontally. This can 
+occur when the border on the column header is dragged on the Grid control 
+(requires column resizing to be enabled in the Options for the Grid). It can 
+also occur when the AutoFillColumns property in the Grid is enabled and 
+SizePriority is set to a non-zero value.
+</p>
+<p>
+If MinSize has not been assigned, GetDefaultMinSize is called to get the value 
+for the property. Assigning a new value for the property causes ColumnChanged 
+to be called to notify the column collection when the collection item is 
+updated. WidthChanged is set to <b>False</b> when the collection has been 
+notified of the updated value.
+</p>
+<remark>
+Please note that MinSize and MaxSize are not enforced during manual column 
+resizing (when enabled) if all of its columns have SizePriority set to 0. The 
+last column will still be automatically sized to fill the available space, but 
+the minimum and maximum widths for the column are not applied.
+</remark>
+<p>
+Use Width to set the default size of the column in pixels.
+</p>
+</descr>
 <seealso>
 <link id="TGridColumn.MaxSize"/>
 <link id="TGridColumn.Width"/>
+<link id="TGridColumn.SizePriority"/>
+<link id="TGridColumn.WidthChanged"/>
+<link id="TGridColumn.ColumnChanged"/>
 <link id="TCustomGrid.Columns"/>
 <link id="TCustomGrid.AutoFillColumns"/>
+<link id="TCustomGrid.Options"/>
 </seealso>
 </element>
 
@@ -5778,36 +5842,87 @@ The minimum size for the column in pixels.
 <short>
 The maximum size for the column in pixels.
 </short>
-<descr/>
+<descr>
+<p>
+<var>MinSize</var> and <var>MaxSize</var> are used to determine the smallest 
+and largest sizes for the column when it is resized horizontally. This can 
+occur when the border on the column header is dragged on the Grid control 
+(requires column resizing to be enabled in the Options for the Grid). It can 
+also occur when the AutoFillColumns property in the Grid is enabled and 
+SizePriority is set to a non-zero value.
+</p>
+<p>
+If MaxSize has not been assigned, GetDefaultMaxSize is called to get the value 
+for the property. Assigning a new value for the property causes ColumnChanged 
+to be called to notify the column collection when the collection item is 
+updated. WidthChanged is set to <b>False</b> when the collection has been 
+notified of the updated value.
+</p>
+<remark>
+Please note that MinSize and MaxSize are not enforced during manual column 
+resizing (when enabled) if all of its columns have SizePriority set to 0. The 
+last column will still be automatically sized to fill the available space, but 
+the minimum and maximum widths for the column are not applied.
+</remark>
+<p>
+Use Width to set the default size of the column in pixels.
+</p>
+</descr>
 <seealso>
 <link id="TGridColumn.MinSize"/>
 <link id="TGridColumn.Width"/>
+<link id="TGridColumn.SizePriority"/>
+<link id="TGridColumn.WidthChanged"/>
+<link id="TGridColumn.ColumnChanged"/>
 <link id="TCustomGrid.Columns"/>
 <link id="TCustomGrid.AutoFillColumns"/>
+<link id="TCustomGrid.Options"/>
 </seealso>
 </element>
 
 <element name="TGridColumn.PickList">
 <short>
-The list of available items in the drop-down list for the column.
+The list with the values that can be selected for a cell in the column using a 
+drop-down list. 
 </short>
-<descr/>
+<descr>
+<p>
+<var>PickList</var> is a <var>TStrings</var> property which contains the list 
+of values that can be selected for a cell in the grid column. It is used when 
+the ButtonStyle property is set to cbsPicklist to enable a combo-box-style 
+cell editor for the column. The values in PickList are assigned as the items 
+in the drop-down list for the editor.
+</p>
+<p>
+Use DropDownRows to control the number of lines displayed in the drop-down 
+list when the cell editor is activated.
+</p>
+<remark>
+Note that the Expanded property always contains True; write access is not 
+enabled for the property.
+</remark>
+</descr>
 <seealso>
 <link id="TGridColumn.ButtonStyle"/>
 <link id="TGridColumn.DropDownRows"/>
 <link id="TGridColumn.Expanded"/>
 <link id="TCustomGrid.EditorByStyle"/>
-<link id="TCompositeCellEditor"/>
+<link id="TPickListCellEditor"/>
 </seealso>
 </element>
 
 <element name="TGridColumn.ReadOnly">
 <short>
 <b>True</b> if the values in the column cannot be changed at run-time using 
-a cell editor.
+the cell editor.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TGridColumn.ColumnChanged"/>
+<link id="TCustomGrid.Columns"/>
+<link id="TCustomGrid.EditingAllowed"/>
+<link id="TGridColumns.Enabled"/>
+</seealso>
 </element>
 
 <element name="TGridColumn.SizePriority">
@@ -5817,8 +5932,18 @@ The auto-sizing priority for the column.
 <descr>
 <p>
 <b>0</b> indicates that the column is not one of the auto-sized columns in 
-the Grid control. Any non-zero value causes the column width to be adjusted 
-when AutoFillColumns is enabled in the Grid control.
+the Grid control. A non-zero value causes the column width to be adjusted 
+when AutoFillColumns is enabled in the Grid control. If all of the columns 
+in a grid control have SizePriority set 0, the last column <b>is</b> resized 
+when AutoFillColumns is enabled.
+</p>
+<p>
+Use MinWidth and MaxWidth to set the smallest and largest sizes for the column 
+when the column is resized - either manually (by dragging the header border) 
+or when AutoFillColumns is enabled in the Grid control.
+</p>
+<p>
+Use Width to set the default size for the column in pixels.
 </p>
 </descr>
 <seealso>
@@ -5844,28 +5969,72 @@ numeric integer value. It does not have any predefined usage in TGridColumn.
 
 <element name="TGridColumn.Title">
 <short>
-Text displayed as the title in the fixed header for the column.
+Contains the attributes for the title in the fixed header for the column.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>Title</var> is a <var>TGridColumnTitle</var> property which contains 
+attributes for the fixed header on the column. It includes settings that 
+control the appearance and functionality for the fixed header.
+</p>
+<p>
+Values in Title can be assigned at design-time using the object inspector, or 
+at run-time in program code.
+</p>
+<p>
+See <link id="TGridColumnTitle">TGridColumnTitle</link> for more information 
+about the properties and methods in the class.
+</p>
+</descr>
+<seealso>
+<link id="TGridColumnTitle"/>
+</seealso>
 </element>
 
 <element name="TGridColumn.Width">
 <short>
-The display Width in pixels for the column on its Grid control.
+The display width in pixels for the column on its Grid control.
 </short>
-<descr/>
+<descr>
+<p>
+<var>Width</var> is an <var>Integer</var> property with the display width for 
+the column in pixels. Its value is used when the column has its Visible 
+property set to True. Otherwise, the property value is 0.
+</p>
+<p>
+Width can be assigned at design-time using the object inspector in the IDE, or 
+at run-time in program code.
+</p>
+<p>
+If a value has not been assigned for the property, the DefaultColWidth 
+property from the Grid control is used as the property value.
+</p>
+<p>
+Width is updated at run-time when the column is resized on the Grid control. 
+This can occur when the border on the fixed header is dragged (when column 
+resizing is enabled in the Options for Grid control). It may also occur when 
+AutoFillColumns is enabled for Grid control. 
+</p>
+<p>
+Use MinSize and MaxSize to specify the smallest and largest widths for the 
+column when SizePriority has a non-zero value.
+</p>
+</descr>
 <seealso>
-<link id="TGridColumn.MinSize"/>
 <link id="TGridColumn.MaxSize"/>
-<link id="TCustomGrid.Columns"/>
+<link id="TGridColumn.MinSize"/>
+<link id="TGridColumn.SizePriority"/>
+<link id="TGridColumn.Visible"/>
 <link id="TCustomGrid.AutoFillColumns"/>
+<link id="TCustomGrid.Columns"/>
+<link id="TCustomGrid.DefaultColWidth"/>
+<link id="TCustomGrid.Options"/>
 </seealso>
 </element>
 
 <element name="TGridColumn.Visible">
 <short>
-<b>True</b> if the column is visible (not hidden).
+<b>True</b> if the column is visible (not hidden) on the Grid control.
 </short>
 <descr/>
 <seealso/>
@@ -5873,29 +6042,53 @@ The display Width in pixels for the column on its Grid control.
 
 <element name="TGridColumn.GetValueChecked">
 <short>
-Gets the checked value for a check box cell in the column.
+Gets the value for the ValueChecked property.
 </short>
+<descr>
+<p>
+Returns the value from the GetDefaultValueChecked method if an explicit value 
+has not been assigned for the property.
+</p>
+</descr>
 <seealso>
 <link id="TGridColumn.ValueChecked"/>
+<link id="TGridColumn.GetDefaultValueChecked"/>
 <link id="TGridColumn.ButtonStyle"/>
 <link id="TColumnButtonStyle"/>
 </seealso>
 </element>
+<element name="TGridColumn.GetValueChecked.Result">
+<short>
+Value for the ValueChecked property.
+</short>
+</element>
+
 
 <element name="TGridColumn.GetValueUnchecked">
 <short>
-Gets the unchecked value for a check box cell in the column.
+Gets the value for the ValueUnChecked property.
 </short>
+<descr>
+<p>
+Returns the value from the GetDefaultValueUnchecked method if an explicit 
+value has not been assigned for the property.
+</p>
+</descr>
 <seealso>
 <link id="TGridColumn.ValueUnchecked"/>
 <link id="TGridColumn.ButtonStyle"/>
 <link id="TColumnButtonStyle"/>
 </seealso>
 </element>
+<element name="TGridColumn.GetValueUnchecked.Result">
+<short>
+Value for the ValueUnchecked property.
+</short>
+</element>
 
 <element name="TGridColumn.ValueChecked">
 <short>
-Value used for a checked check box cell in the column.
+Contains the checked value for a check box in the column.
 </short>
 <seealso>
 <link id="TGridColumn.ButtonStyle"/>
@@ -5905,7 +6098,7 @@ Value used for a checked check box cell in the column.
 
 <element name="TGridColumn.ValueUnchecked">
 <short>
-Value used for an unchecked check box cell in the column.
+Contains the unchecked value for a check box in the column.
 </short>
 <seealso>
 <link id="TGridColumn.ButtonStyle"/>
