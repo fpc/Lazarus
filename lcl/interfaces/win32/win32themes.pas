@@ -153,7 +153,7 @@ const
 { TWin32ThemeServices }
 
 procedure TWin32ThemeServices.UnloadThemeData;
-  procedure _Unload(_Theme: TThemeData);
+  procedure _Unload(var _Theme: TThemeData);
   var
     Entry: TThemedElement;
   begin
@@ -165,11 +165,11 @@ procedure TWin32ThemeServices.UnloadThemeData;
       end;
   end;
 var
-  E: TThemePPIDataEntry;
+  i:integer;
 begin
   _Unload(FThemeData);
-  for E in FThemePPIData do
-    _Unload(E.Data);
+  for i:=low(FThemePPIData) to high(FThemePPIData) do
+    _Unload(FThemePPIData[I].Data);
   FThemePPIData := nil;
 end;
 
@@ -429,10 +429,17 @@ begin
 end;
 
 function TWin32ThemeServices.ContentRect(DC: HDC; Details: TThemedElementDetails; BoundingRect: TRect): TRect;
+var
+  tmpr:TRect;
 begin
   if ThemesEnabled then
+  begin
     with Details do
-      GetThemeBackgroundContentRect(Theme[Element], DC, Part, State, BoundingRect, @Result)
+      if GetThemeBackgroundContentRect(Theme[Element], DC, Part, State, BoundingRect, @tmpr)=S_OK then
+        Result:=tmpr
+      else
+        Result := inherited;
+  end
   else
     Result := inherited;
 end;
