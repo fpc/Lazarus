@@ -86,6 +86,7 @@ type
 
   TChartValueTextArray = array of TChartValueText;
 
+  PChartDataItem = ^TChartDataItem;
   TChartDataItem = packed record
   public
     X, Y: Double;
@@ -93,6 +94,7 @@ type
     Text: String;
     XList: TDoubleDynArray;
     YList: TDoubleDynArray;
+    procedure CopyFrom(AItem: PChartDataItem);
     function GetX(AIndex: Integer): Double;
     function GetY(AIndex: Integer): Double;
     procedure SetX(AIndex: Integer; const AValue: Double);
@@ -103,7 +105,6 @@ type
     function Point: TDoublePoint; inline;
     procedure MakeUnique;
   end;
-  PChartDataItem = ^TChartDataItem;
 
   TGraphToImageFunc = function (AX: Double): Integer of object;
   TIntegerTransformFunc = function (AX: Integer): Integer of object;
@@ -535,6 +536,18 @@ begin
 end;
 
 { TChartDataItem }
+
+procedure TChartDataItem.CopyFrom(AItem: PChartDataItem);
+var
+  i: Integer;
+begin
+  X := AItem^.X;
+  Y := AItem^.Y;
+  SetLength(XList, Length(AItem^.XList));
+  for i := 0 to High(AItem^.XList) do XList[i] := AItem^.XList[i];
+  SetLength(YList, Length(AItem^.YList));
+  for i := 0 to High(AItem^.YList) do YList[i] := AItem^.YList[i];
+end;
 
 function TChartDataItem.GetX(AIndex: Integer): Double;
 begin

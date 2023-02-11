@@ -717,7 +717,7 @@ begin
     try // optimization: don't execute try..except..end in a loop
       for i := 0 to ASource.Count - 1 do begin
         pcd := NewItem;
-        pcd^ := ASource[i]^;
+        pcd^.CopyFrom(ASource[i]);
         FData.Add(pcd); // don't use ItemAdd() here
         pcd := nil;
       end;
