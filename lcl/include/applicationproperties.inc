@@ -315,6 +315,28 @@ begin
     Application.AddOnUserInputHandler(FOnUserInput);
 end;
 
+procedure TApplicationProperties.SetOnActionExecute(const AValue: TActionEvent);
+begin
+  if (TMethod(FOnActionExecute).Data = TMethod(AValue).Data) and
+     (TMethod(FOnActionExecute).Code = TMethod(AValue).Code) then exit;
+  if not (csDesigning in ComponentState) and Assigned(FOnActionExecute) then
+    Application.RemoveOnActionExecuteHandler(FOnActionExecute);
+  FOnActionExecute := AValue;
+  if not (csDesigning in ComponentState) and Assigned(FOnActionExecute) then
+    Application.AddOnActionExecuteHandler(FOnActionExecute);
+end;
+
+procedure TApplicationProperties.SetOnActionUpdate(const AValue: TActionEvent);
+begin
+  if (TMethod(FOnActionUpdate).Data = TMethod(AValue).Data) and
+     (TMethod(FOnActionUpdate).Code = TMethod(AValue).Code) then exit;
+  if not (csDesigning in ComponentState) and Assigned(FOnActionUpdate) then
+    Application.RemoveOnActionUpdateHandler(FOnActionUpdate);
+  FOnActionUpdate := AValue;
+  if not (csDesigning in ComponentState) and Assigned(FOnActionUpdate) then
+    Application.AddOnActionUpdateHandler(FOnActionUpdate);
+end;
+
 constructor TApplicationProperties.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);

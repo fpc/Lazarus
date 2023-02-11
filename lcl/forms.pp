@@ -1332,7 +1332,9 @@ type
     ahtHelp,
     ahtHint,
     ahtShowHint,
-    ahtGetMainFormHandle
+    ahtGetMainFormHandle,
+    ahtActionExecute,
+    ahtActionUpdate
     );
 
   PAsyncCallQueueItem = ^TAsyncCallQueueItem;
@@ -1615,6 +1617,11 @@ type
     procedure RemoveOnShowHintHandler(Handler: TShowHintEvent);
     procedure AddOnGetMainFormHandleHandler(Handler: TGetHandleEvent; AsFirst: Boolean = True);
     procedure RemoveOnGetMainFormHandleHandler(Handler: TGetHandleEvent);
+    procedure AddOnActionExecuteHandler(Handler: TActionEvent; AsFirst: Boolean = True);
+    procedure RemoveOnActionExecuteHandler(Handler: TActionEvent);
+    procedure AddOnActionUpdateHandler(Handler: TActionEvent; AsFirst: Boolean = True);
+    procedure RemoveOnActionUpdateHandler(Handler: TActionEvent);
+
     procedure RemoveAllHandlersOfObject(AnObject: TObject); virtual;
     procedure DoBeforeMouseMessage(CurMouseControl: TControl);
     function  IsShortcut(var Message: TLMKey): Boolean;
@@ -1746,6 +1753,8 @@ type
     FOnQueryEndSession : TQueryEndSessionEvent;
     FOnMinimize : TNotifyEvent;
     FOnRestore : TNotifyEvent;
+    FOnActionExecute: TActionEvent;
+    FOnActionUpdate: TActionEvent;
     procedure SetExceptionDialog(AValue: TApplicationExceptionDlg);
   protected
     procedure SetCaptureExceptions(const AValue : Boolean);
@@ -1779,6 +1788,8 @@ type
     procedure SetOnHint(const AValue : TNotifyEvent);
     procedure SetOnShowHint(const AValue : TShowHintEvent);
     procedure SetOnUserInput(const AValue : TOnUserInputEvent);
+    procedure SetOnActionExecute(const AValue : TActionEvent);
+    procedure SetOnActionUpdate(const AValue : TActionEvent);
   public
     constructor Create(AOwner: TComponent); Override;
     destructor Destroy; override;
@@ -1817,6 +1828,8 @@ type
     property OnHint: TNotifyEvent read FOnHint write SetOnHint;
     property OnShowHint: TShowHintEvent read FOnShowHint write SetOnShowHint;
     property OnUserInput: TOnUserInputEvent read FOnUserInput write SetOnUserInput;
+    property OnActionExecute: TActionEvent read FOnActionExecute write SetOnActionExecute;
+    property OnActionUpdate: TActionEvent read FOnActionUpdate write SetOnActionUpdate;
   end;
 
 

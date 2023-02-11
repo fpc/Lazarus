@@ -1931,6 +1931,28 @@ begin
   RemoveHandler(ahtGetMainFormHandle,TMethod(Handler));
 end;
 
+procedure TApplication.AddOnActionExecuteHandler(Handler: TActionEvent;
+  AsFirst: Boolean);
+begin
+  AddHandler(ahtActionExecute, TMethod(Handler), AsFirst);
+end;
+
+procedure TApplication.RemoveOnActionExecuteHandler(Handler: TActionEvent);
+begin
+  RemoveHandler(ahtActionExecute, TMethod(Handler));
+end;
+
+procedure TApplication.AddOnActionUpdateHandler(Handler: TActionEvent;
+  AsFirst: Boolean);
+begin
+  AddHandler(ahtActionUpdate, TMethod(Handler), AsFirst);
+end;
+
+procedure TApplication.RemoveOnActionUpdateHandler(Handler: TActionEvent);
+begin
+  RemoveHandler(ahtActionUpdate, TMethod(Handler));
+end;
+
 procedure TApplication.RemoveAllHandlersOfObject(AnObject: TObject);
 var
   HandlerType: TApplicationHandlerType;
@@ -2385,15 +2407,31 @@ begin
 end;
 
 function TApplication.ExecuteAction(ExeAction: TBasicAction): Boolean;
+var
+  i: Integer;
 begin
   Result := False;
   if Assigned(FOnActionExecute) then FOnActionExecute(ExeAction, Result);
+  if Result then Exit;
+  i:=FApplicationHandlers[ahtActionExecute].Count;
+  while FApplicationHandlers[ahtActionExecute].NextDownIndex(i) do begin
+    TActionEvent(FApplicationHandlers[ahtActionExecute][i])(ExeAction,Result);
+    if Result then exit;
+  end;
 end;
 
 function TApplication.UpdateAction(TheAction: TBasicAction): Boolean;
+var
+  i: Integer;
 begin
   Result := False;
   if Assigned(FOnActionUpdate) then FOnActionUpdate(TheAction, Result);
+  if Result then Exit;
+  i:=FApplicationHandlers[ahtActionUpdate].Count;
+  while FApplicationHandlers[ahtActionUpdate].NextDownIndex(i) do begin
+    TActionEvent(FApplicationHandlers[ahtActionUpdate][i])(TheAction,Result);
+    if Result then exit;
+  end;
 end;
 
 function TApplication.IsRTLLang(const ALang: String): Boolean;
