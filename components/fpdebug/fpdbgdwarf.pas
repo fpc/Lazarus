@@ -496,6 +496,7 @@ type
   TFpValueDwarfSubroutine = class(TFpValueDwarf)
   protected
     function IsValidTypeCast: Boolean; override;
+    function GetEntryPCAddress: TFpDbgMemLocation; override;
   end;
 {%endregion Value objects }
 
@@ -1045,6 +1046,8 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetValueObject: TFpValue; override;
     function GetValueAddress(AValueObj: TFpValueDwarf; out
       AnAddress: TFpDbgMemLocation): Boolean; override;
+    function GetEntryPCAddress(AValueObj: TFpValueDwarf; out
+      AnAddress: TFpDbgMemLocation): Boolean;
 
     property DbgInfo: TFpDwarfInfo read FDwarf;
     property ProcAddress: TDBGPtr read FAddress;
@@ -1188,6 +1191,16 @@ begin
     exit;
 
   Result := False;
+end;
+
+function TFpValueDwarfSubroutine.GetEntryPCAddress: TFpDbgMemLocation;
+begin
+  Result := InvalidLoc;
+  if (FDataSymbol = nil) then
+    exit;
+  assert(FDataSymbol is TFpSymbolDwarfDataProc, 'TFpValueDwarfSubroutine.GetEntryPCAddress: FDataSymbol is TFpSymbolDwarfDataProc');
+  if not TFpSymbolDwarfDataProc(FDataSymbol).GetEntryPCAddress(Self, Result) then
+    Result := InvalidLoc;
 end;
 
 { TFpDwarfDefaultSymbolClassMap }
@@ -6274,6 +6287,45 @@ begin
   if InformationEntry.GetAttribData(DW_AT_low_pc, AttrData) then
     if InformationEntry.ReadAddressValue(AttrData, Addr) then
       AnAddress := TargetLoc(Addr);
+  //DW_AT_ranges
+  Result := IsValidLoc(AnAddress);
+end;
+
+function TFpSymbolDwarfDataProc.GetEntryPCAddress(AValueObj: TFpValueDwarf; out
+  AnAddress: TFpDbgMemLocation): Boolean;
+var
+  AttrData: TDwarfAttribData;
+  Addr: TDBGPtr;
+  Offs: QWord;
+  f: Cardinal;
+begin
+  AnAddress := InvalidLoc;
+  Offs := 0;
+
+  if InformationEntry.GetAttribData(DW_AT_entry_pc, AttrData) then begin
+    f := AttrData.InformationEntry.AttribForm[AttrData.Idx];
+    if f = DW_FORM_addr then begin
+      Result := InformationEntry.ReadAddressValue(AttrData, Addr);
+      if Result then
+        AnAddress := TargetLoc(Addr);
+      exit;
+    end
+    else
+    // DWARF 5: DW_AT_entry_pc can be an unsigned offset to DW_AT_low_pc
+    if f in [DW_FORM_data1, DW_FORM_data2, DW_FORM_data4, DW_FORM_data8, DW_FORM_sdata, DW_FORM_udata] then begin
+      Result := InformationEntry.ReadValue(AttrData, Offs);
+      if not Result then
+        exit;
+    end
+    else
+      exit(False); // error
+  end;
+
+  if InformationEntry.GetAttribData(DW_AT_low_pc, AttrData) then
+    if InformationEntry.ReadAddressValue(AttrData, Addr) then
+      {$PUSH}{$R-}{$Q-}
+      AnAddress := TargetLoc(Addr + Offs);
+      {$POP}
   //DW_AT_ranges
   Result := IsValidLoc(AnAddress);
 end;

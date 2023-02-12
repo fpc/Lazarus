@@ -134,6 +134,7 @@ type
     function DoGetSize(out ASize: TFpDbgValueSize): Boolean; virtual;
     function GetDataAddress: TFpDbgMemLocation;  virtual;
     function GetDerefAddress: TFpDbgMemLocation;  virtual;
+    function GetEntryPCAddress: TFpDbgMemLocation; virtual;
     function GetDataSize: TFpDbgValueSize;  virtual;
 
     function GetHasBounds: Boolean; virtual;
@@ -180,6 +181,7 @@ type
     property Address: TFpDbgMemLocation read GetAddress;
     property DataAddress: TFpDbgMemLocation read GetDataAddress; //
     property DerefAddress: TFpDbgMemLocation read GetDerefAddress; //
+    property EntryPCAddress: TFpDbgMemLocation read GetEntryPCAddress;
     property DataSize: TFpDbgValueSize read GetDataSize;
 
     property HasBounds: Boolean  read GetHasBounds;
@@ -1033,6 +1035,11 @@ end;
 function TFpValue.GetOrdLowBound: Int64;
 begin
   Result := 0;
+end;
+
+function TFpValue.GetEntryPCAddress: TFpDbgMemLocation;
+begin
+  Result := InvalidLoc;
 end;
 
 procedure TFpValue.Reset;

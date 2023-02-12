@@ -898,7 +898,7 @@ begin
 
     // check params
 
-    ProcAddress := AFunctionValue.DataAddress;
+    ProcAddress := AFunctionValue.EntryPCAddress;
     if not IsReadableLoc(ProcAddress) then begin
       DebugLn(['Error proc addr']);
       AnError := CreateError(fpErrAnyError, ['Unable to calculate function address']);
