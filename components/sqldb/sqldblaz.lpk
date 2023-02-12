@@ -49,11 +49,16 @@ With the exception of the unit registersqldb, which is GPL-2. This unit contains
       </Item>
       <Item>
         <Filename Value="sqldbstrconst.pas"/>
-        <UnitName Value="sqldbstrconst"/>
+        <UnitName Value="SqlDbStrConst"/>
       </Item>
       <Item>
         <Filename Value="pqteventmonitor.pas"/>
         <UnitName Value="PQTEventMonitor"/>
+      </Item>
+      <Item>
+        <Filename Value="sqldb.pas"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="sqldb"/>
       </Item>
     </Files>
     <i18n>

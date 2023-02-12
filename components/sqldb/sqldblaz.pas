@@ -9,7 +9,7 @@ interface
 
 uses
   registersqldb, SQLStringsPropertyEditorDlg, generatesqldlg, SqlDbStrConst, 
-  PQTEventMonitor, LazarusPackageIntf;
+  PQTEventMonitor, sqldb, LazarusPackageIntf;
 
 implementation
 
