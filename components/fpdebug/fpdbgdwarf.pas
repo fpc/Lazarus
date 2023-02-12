@@ -205,8 +205,7 @@ type
     function OrdOrDataAddr: TFpDbgMemLocation;
     function GetDataAddress: TFpDbgMemLocation; override;
     function GetDwarfDataAddress(out AnAddress: TFpDbgMemLocation; ATargetType: TFpSymbolDwarfType = nil): Boolean; virtual;
-    function GetStructureDwarfDataAddress(out AnAddress: TFpDbgMemLocation;
-                                          ATargetType: TFpSymbolDwarfType = nil): Boolean;
+    function GetStructureDwarfDataAddress(out AnAddress: TFpDbgMemLocation): Boolean;
 
     procedure Reset; override; // keeps lastmember and structureninfo
     function GetFieldFlags: TFpValueFieldFlags; override;
@@ -1989,13 +1988,26 @@ begin
   FCachedDataAddress := AnAddress;
 end;
 
-function TFpValueDwarf.GetStructureDwarfDataAddress(out AnAddress: TFpDbgMemLocation;
-  ATargetType: TFpSymbolDwarfType): Boolean;
+function TFpValueDwarf.GetStructureDwarfDataAddress(out
+  AnAddress: TFpDbgMemLocation): Boolean;
 begin
   AnAddress := InvalidLoc;
-  Result := StructureValue <> nil;
-  if Result then
-    Result := StructureValue.GetDwarfDataAddress(AnAddress, ATargetType); // ATargetType could be parent class;
+
+  if (StructureValue = nil) or (FParentTypeSymbol = nil) then begin
+    debugln(FPDBG_DWARF_ERRORS, ['DWARF ERROR in TFpSymbolDwarfDataMember.InitLocationParser ']);
+    Result := False;
+    if not IsError(LastError) then
+      SetLastError(CreateError(fpErrLocationParserInit)); // TODO: error message?
+    exit;
+  end;
+
+  Result := StructureValue.GetDwarfDataAddress(AnAddress, FParentTypeSymbol); // ATargetType could be parent class;
+  if not Result then begin
+    debugln(FPDBG_DWARF_ERRORS, ['DWARF ERROR in TFpSymbolDwarfDataMember.InitLocationParser ']);
+    if not IsError(LastError) then
+      SetLastError(CreateError(fpErrLocationParserInit)); // TODO: error message?
+  end;
+  //TODO: AValueObj.StructureValue.LastError
 end;
 
 procedure TFpValueDwarf.Reset;
@@ -5517,22 +5529,13 @@ begin
   end;
 
   AnAddress := InvalidLoc;
-  if (AValueObj = nil) or (AValueObj.StructureValue = nil) or (AValueObj.FParentTypeSymbol = nil)
-  then begin
+  Result := False;
+  if (AValueObj = nil) then begin
     debugln(FPDBG_DWARF_ERRORS, ['DWARF ERROR in TFpSymbolDwarfDataMember.InitLocationParser ']);
-    Result := False;
-    if not HasError(AValueObj) then
-      SetLastError(AValueObj, CreateError(fpErrLocationParserInit)); // TODO: error message?
     exit;
   end;
-  if not AValueObj.GetStructureDwarfDataAddress(AnAddress, AValueObj.FParentTypeSymbol) then begin
-    debugln(FPDBG_DWARF_ERRORS, ['DWARF ERROR in TFpSymbolDwarfDataMember.InitLocationParser Error: ',ErrorCode(AValueObj.LastError)]);
-    Result := False;
-    if not HasError(AValueObj) then
-      SetLastError(AValueObj, CreateError(fpErrLocationParserInit)); // TODO: error message?
+  if not AValueObj.GetStructureDwarfDataAddress(AnAddress) then
     exit;
-  end;
-  //TODO: AValueObj.StructureValue.LastError
 
   Result := ComputeDataMemberAddress(InformationEntry, AValueObj, AnAddress);
   if not Result then
@@ -6298,9 +6301,35 @@ var
   Addr: TDBGPtr;
   Offs: QWord;
   f: Cardinal;
+  InitLocParserData: TInitLocParserData;
 begin
   AnAddress := InvalidLoc;
   Offs := 0;
+
+  if InformationEntry.GetAttribData(DW_AT_vtable_elem_location, AttrData) then begin
+    f := AttrData.InformationEntry.AttribForm[AttrData.Idx];
+    if f in [DW_FORM_block, DW_FORM_block1, DW_FORM_block2, DW_FORM_block4] then begin
+      if (AValueObj = nil) then begin
+        debugln(FPDBG_DWARF_ERRORS, ['DWARF ERROR in TFpSymbolDwarfDataMember.InitLocationParser ']);
+        Result := False;
+        exit;
+      end;
+      if not AValueObj.GetStructureDwarfDataAddress(AnAddress) then
+        exit;
+
+      InitLocParserData.ObjectDataAddress := AnAddress;
+      InitLocParserData.ObjectDataAddrPush := True;
+      Result := LocationFromAttrData(AttrData, AValueObj, AnAddress, @InitLocParserData);
+      if not Result then
+        exit;
+      AnAddress := AValueObj.Context.ReadAddress(AnAddress, SizeVal(CompilationUnit.AddressSize));
+      Result := IsTargetNotNil(AnAddress);
+      exit;
+    end
+    // TODO: loclist
+    else
+      exit(False); // error
+  end;
 
   if InformationEntry.GetAttribData(DW_AT_entry_pc, AttrData) then begin
     f := AttrData.InformationEntry.AttribForm[AttrData.Idx];
