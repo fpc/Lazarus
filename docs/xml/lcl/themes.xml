@@ -2389,6 +2389,11 @@ Adjusts the bounding rectangle for a theme element to contain the content
 area only.
 </short>
 <descr/>
+<version>
+Modified in version 2.2.6 (2.4?) for the Win32 widgetset to clear all cached 
+theme data when the theme has been changed. Returns the modified content 
+rectangle on success.
+</version>
 <seealso/>
 </element>
 <element name="TThemeServices.ContentRect.Result">
@@ -2437,8 +2442,7 @@ Draws a theme element using the specified theme element details.
 <descr/>
 <version>
 Modified in version 2.3.0 to use clBtnFace as the fill color for Tab pane or 
-Tab body parts.
-clBackground was used in previous versions.
+Tab body parts. clBackground was used in previous versions.
 </version>
 <seealso/>
 </element>
