@@ -1654,7 +1654,7 @@ begin
   if (tmp = nil) or (not Expression.Valid) then
     exit;
 
-  if (tmp.DbgSymbol <> nil) and (tmp.DbgSymbol.Kind = skFunction) then begin
+  if (tmp.DbgSymbol <> nil) and (tmp.DbgSymbol.Kind in [skFunction, skFunctionRef]) then begin
     if not Assigned(Expression.OnFunctionCall) then begin
       SetError('calling functions not allowed');
       exit;

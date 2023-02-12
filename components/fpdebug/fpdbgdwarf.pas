@@ -1197,9 +1197,12 @@ begin
   Result := InvalidLoc;
   if (FDataSymbol = nil) then
     exit;
-  assert(FDataSymbol is TFpSymbolDwarfDataProc, 'TFpValueDwarfSubroutine.GetEntryPCAddress: FDataSymbol is TFpSymbolDwarfDataProc');
-  if not TFpSymbolDwarfDataProc(FDataSymbol).GetEntryPCAddress(Self, Result) then
-    Result := InvalidLoc;
+  if FDataSymbol is TFpSymbolDwarfDataProc then begin
+    if not TFpSymbolDwarfDataProc(FDataSymbol).GetEntryPCAddress(Self, Result) then
+      Result := InvalidLoc;
+  end
+  else
+    Result := DataAddress;
 end;
 
 { TFpDwarfDefaultSymbolClassMap }
