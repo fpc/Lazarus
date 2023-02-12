@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <Name Value="FCL"/>
     <Type Value="RunAndDesignTime"/>
     <BuildMethod Value="Both"/>
@@ -17,7 +17,7 @@
     <Description Value="The FCL - FreePascal Component Library provides the base classes for object pascal."/>
     <License Value="modified LGPL-2"/>
     <Version Major="1" Release="1"/>
-    <Files Count="9">
+    <Files Count="8">
       <Item1>
         <Filename Value="lazaruspackageintf.pas"/>
         <AddToUsesPkgSection Value="False"/>
@@ -59,12 +59,8 @@
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="ServiceManager"/>
       </Item8>
-      <Item9>
-        <Filename Value="sqldb.pp"/>
-        <Type Value="Virtual Unit"/>
-        <UnitName Value="sqldb"/>
-      </Item9>
     </Files>
+    <CompatibilityMode Value="True"/>
     <LazDoc Paths="docs"/>
     <RequiredPkgs Count="2">
       <Item1>

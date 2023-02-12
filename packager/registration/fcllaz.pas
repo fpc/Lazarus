@@ -8,7 +8,7 @@ unit fcllaz;
 interface
 
 uses
-  db, process, simpleipc, eventlog, XMLConf, {$ifndef HASAMIGA}sqldb,{$endif} LazarusPackageIntf;
+  db, process, simpleipc, eventlog, XMLConf, LazarusPackageIntf;
 
 implementation
 
