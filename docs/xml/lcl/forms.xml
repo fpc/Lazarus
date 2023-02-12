@@ -12877,6 +12877,16 @@ application.</note></notes>
 <element name="TApplicationHandlerType.ahtGetMainFormHandle">
 <short>Handler provides the Handle for the main form.</short>
 </element>
+<element name="TApplicationHandlerType.ahtActionExecute">
+<short>
+Handler signalled to execute an action.
+</short>
+</element>
+<element name="TApplicationHandlerType.ahtActionUpdate">
+<short>
+Handler signalled to update an action.
+</short>
+</element>
 
 <element name="PAsyncCallQueueItem">
 <short>A queued asynchronous callback request node.</short>
@@ -14553,57 +14563,111 @@ to ensure that its resources are freed as needed.
 </element>
 
 <element name="TApplication.ExecuteAction">
-<short>Signals the OnActionExecute handler (when assigned).</short>
+<short>Signals an OnActionExecute handler (when assigned).</short>
 <descr>
 <p>
 <var>ExecuteAction</var> is an overridden <var>Boolean</var> function used to 
-signal the <var>OnActionExecute</var> (when assigned) using 
-<var>ExeAction</var> as the action executed in the event handler. It sets the 
-default value for the <var>Handled</var> argument to the event handler to 
-<b>False</b>. The argument can be updated in the event handler, and is used 
-as the return value for the method.
+signal an <var>OnActionExecute</var> event handler assigned to the control. 
+ExecuteAction reimplements the method defined in the ancestor (TComponent) 
+and does <b>not</b> call the inherited method.
 </p>
 <p>
-ExecuteAction re-implements the method defined in the ancestor, and does 
-<b>not</b> call the inherited method.
+ExecuteAction signals a TActionEvent event handler using the action instance 
+in <var>ExeAction</var> as an argument. The Handled argument in the event is 
+used as the return value for the method, and is set to <b>True</b> if the 
+action was successfully executed in an event handler.
+</p>
+<p>
+In LCL version 2.4 or higher, multiple handler routines can be assigned which 
+use the ahtActionExecute event type. This situation can occur when 
+TApplicationProperties tries to assign an OnActionExecute handler to the 
+TApplication instance and it already has a user-specified handler. It can also 
+happen when the AddOnActionExecuteHandler method is called directly to add a 
+handler routine for the application event type.
+</p>
+<p>
+If OnActionExecute handler is not assigned, or returns <b>False</b>, the other 
+handlers in the internal list are signalled to determine whether they can 
+execute the action. Each handler routine is signalled until one of them 
+changes the Handled argument in the event type to <b>True</b>. If none of the 
+routines can execute the action, the return value is <b>False</b>.
 </p>
 </descr>
+<version>
+Modified in in LCL version 2.4 to provide support for multiple OnActionExecute 
+event handlers in the application.
+</version>
 <seealso>
+<link id="TApplication.AddOnActionExecuteHandler"/>
+<link id="TApplication.RemoveOnActionExecuteHandler"/>
+<link id="TApplicationHandlerType"/>
+<link id="#lcl.actnlist.TActionEvent">TActionEvent</link>
 <link id="#rtl.classes.TComponent.ExecuteAction">TComponent.ExecuteAction</link>
 </seealso>
 </element>
 <element name="TApplication.ExecuteAction.Result">
-<short><b>True</b> when the Action was handled in the event handler.</short>
+<short>
+<b>True</b> when the Action was handled in one of the event handlers for the 
+type.
+</short>
 </element>
 <element name="TApplication.ExecuteAction.ExeAction">
-<short>The Action to execute in the event handler.</short>
+<short>
+The Action to execute in the event handler.
+</short>
 </element>
 
 <element name="TApplication.UpdateAction">
-<short>Signals the OnActionUpdate handler (when assigned).</short>
+<short>
+Signals an OnActionUpdate handler (when assigned).
+</short>
 <descr>
 <p>
 <var>UpdateAction</var> is an overridden <var>Boolean</var> function used to 
-signal the <var>OnActionUpdate</var> event handler (when assigned) to update 
-the settings for the action in <var>TheAction</var>. It sets the default 
-value for the <var>Handled</var> argument to the event handler to 
-<b>False</b>. The argument can be updated in the event handler, and is used 
-as the return value for the method.
-</p>
-<p>
-UpdateAction re-implements the method defined in the ancestor, and does 
+signal an <var>OnActionUpdate</var> event handler (when assigned) to update 
+the settings in the action instance in <var>TheAction</var>. UpdateAction 
+reimplements the method defined in the ancestor (TComponent), and does 
 <b>not</b> call the inherited method.
 </p>
+<p>
+UpdateAction signals a TActionEvent event handler using the action instance 
+in <var>TheAction</var> as an argument. The Handled argument in the event is 
+used as the return value for the method, and is set to <b>True</b> if the 
+action was successfully updated in an event handler.
+</p>
+<p>
+In LCL version 2.4 or higher, multiple handler routines can be assigned which 
+use the ahtActionUpdate event type. This situation can occur when 
+TApplicationProperties tries to assign an OnActionUpdate handler to the 
+TApplication instance and it already has a user-specified handler. It can also 
+happen when the AddOnActionUpdateHandler method is called directly to add a 
+handler routine for the application event type.
+</p>
+<p>
+If OnActionUpdate handler is not assigned, or returns <b>False</b>, the other 
+handlers in the internal list are signalled to determine whether they can 
+update the action. Each handler routine is signalled until one of them 
+changes the Handled argument in the event type to <b>True</b>. If none of the 
+routines can update the action, the return value is <b>False</b>.
+</p>
 </descr>
+<version>
+Modified in in LCL version 2.4 to provide support for multiple OnActionUpdate 
+event handlers in the application.
+</version>
 <seealso>
-<link id="#rtl.Classes.TComponent.UpdateAction">TComponent.UpdateAction</link>
+<link id="TApplication.AddOnActionUpdateHandler"/>
+<link id="TApplication.RemoveOnActionUpdateHandler"/>
+<link id="TApplicationHandlerType"/>
+<link id="#lcl.actnlist.TActionEvent">TActionEvent</link>
+<link id="#rtl.classes.TComponent.UpdateAction">TComponent.UpdateAction</link>
 </seealso>
 </element>
 <element name="TApplication.UpdateAction.Result">
 <short><b>True</b> if the action was updated in the event handler.</short>
 </element>
 <element name="TApplication.UpdateAction.TheAction">
-<short>The action updated in the event handler.</short>
+<short>The action updated in an event handler.</short>
 </element>
 
 <element name="TApplication.HandleException">
@@ -16028,6 +16092,86 @@ Removes a handler used to get the handle for the main form in the application.
 <element name="TApplication.RemoveOnGetMainFormHandleHandler.Handler">
 <short>
 Handler routine removed in the method.
+</short>
+</element>
+
+<element name="TApplication.AddOnActionExecuteHandler">
+<short>
+Adds the specified routine to the list of ahtActionExecute handlers for the 
+application.
+</short>
+<descr/>
+<version>
+Added in LCL version 2.4.
+</version>
+<seealso/>
+</element>
+<element name="TApplication.AddOnActionExecuteHandler.Handler">
+<short>
+Handler routine added or inserted in the list of handlers for the type.
+</short>
+</element>
+<element name="TApplication.AddOnActionExecuteHandler.AsFirst">
+<short>
+<b>True</b> if the handler routine is inserted as the first entry in the 
+handler list. <b>False</b> if the routine is appended to the end of the list.
+</short>
+</element>
+
+<element name="TApplication.RemoveOnActionExecuteHandler">
+<short>
+Removes the specified routine from the list of ahtActionExecute handlers for 
+the application.
+</short>
+<descr/>
+<version>
+Added in LCL version 2.4.
+</version>
+<seealso/>
+</element>
+<element name="TApplication.RemoveOnActionExecuteHandler.Handler">
+<short>
+Handler routine located and removed in the method.
+</short>
+</element>
+
+<element name="TApplication.AddOnActionUpdateHandler">
+<short>
+Adds the specified routine to the list of ahtActionUpdate handlers for the 
+application.
+</short>
+<descr/>
+<version>
+Added in LCL version 2.4.
+</version>
+<seealso/>
+</element>
+<element name="TApplication.AddOnActionUpdateHandler.Handler">
+<short>
+Handler routine added or inserted in the list of handlers for the type.
+</short>
+</element>
+<element name="TApplication.AddOnActionUpdateHandler.AsFirst">
+<short>
+<b>True</b> if the handler routine is inserted as the first entry in the 
+handler list. <b>False</b> if the routine is appended to the end of the list.
+</short>
+</element>
+
+<element name="TApplication.RemoveOnActionUpdateHandler">
+<short>
+Removes the specified routine from the list of ahtActionUpdate handlers for 
+the application.
+</short>
+<descr/>
+<version>
+Added in LCL version 2.4.
+</version>
+<seealso/>
+</element>
+<element name="TApplication.RemoveOnActionUpdateHandler.Handler">
+<short>
+Handler routine located and removed in the method.
 </short>
 </element>
 
@@ -17756,6 +17900,9 @@ similar to the TApplicationEvents class in Delphi.
 <element name="TApplicationProperties.FOnQueryEndSession" link="#lcl.forms.TApplicationProperties.OnQueryEndSession"/>
 <element name="TApplicationProperties.FOnMinimize" link="#lcl.forms.TApplicationProperties.OnMinimize"/>
 <element name="TApplicationProperties.FOnRestore" link="#lcl.forms.TApplicationProperties.OnRestore"/>
+<element name="TApplicationProperties.FOnActionExecute"/>
+<element name="TApplicationProperties.FOnActionUpdate"/>
+
 <element name="TApplicationProperties.SetExceptionDialog">
 <short>Sets the value for the ExceptionDialog property.</short>
 <descr/>
@@ -18095,6 +18242,40 @@ similar to the TApplicationEvents class in Delphi.
 <short>New value for the property.</short>
 </element>
 
+<element name="TApplicationProperties.SetOnActionExecute">
+<short>
+Sets the value for the OnActionExecute property.
+</short>
+<descr/>
+<seealso>
+<link id="#lcl.forms.TApplicationProperties.OnActionExecute"/>
+<link id="#lcl.forms.TApplication.RemoveOnActionExecuteHandler"/>
+<link id="#lcl.forms.TApplication.AddOnActionExecuteHandler"/>
+</seealso>
+</element>
+<element name="TApplicationProperties.SetOnActionExecute.AValue">
+<short>
+New value for the OnActionExecute property.
+</short>
+</element>
+
+<element name="TApplicationProperties.SetOnActionUpdate">
+<short>
+Sets the value for the OnActionUpdate property.
+</short>
+<descr/>
+<seealso>
+<link id="#lcl.forms.TApplicationProperties.OnActionUpdate"/>
+<link id="#lcl.forms.TApplication.RemoveOnActionUpdateHandler"/>
+<link id="#lcl.forms.TApplication.AddOnActionUpdateHandler"/>
+</seealso>
+</element>
+<element name="TApplicationProperties.SetOnActionUpdate.AValue">
+<short>
+New value for the OnActionUpdate property.
+</short>
+</element>
+
 <element name="TApplicationProperties.Create">
 <short>Constructor for the class instance.</short>
 <descr>
@@ -18224,6 +18405,8 @@ singleton to be updated.
 <element name="TApplicationProperties.OnHint" link="#lcl.forms.TApplication.OnHint"/>
 <element name="TApplicationProperties.OnShowHint" link="#lcl.forms.TApplication.OnShowHint"/>
 <element name="TApplicationProperties.OnUserInput" link="#lcl.forms.TApplication.OnUserInput"/>
+<element name="TApplicationProperties.OnActionExecute" link="#lcl.forms.TApplication.OnActionExecute"/>
+<element name="TApplicationProperties.OnActionUpdate" link="#lcl.forms.TApplication.OnActionUpdate"/>
 
 <element name="TIDesigner">
 <short>The abstract base class for visual Form designers.</short>
