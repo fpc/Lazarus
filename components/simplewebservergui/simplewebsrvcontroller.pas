@@ -1872,16 +1872,24 @@ end;
 function TSimpleWebServerController.GetURLWithServer(aServer: TSWSInstance;
   HTMLFilename: string): string;
 begin
-  Result:=CreateRelativePath(HTMLFilename,aServer.Path);
-  Result:=FilenameToURLPath(Result);
+  if HTMLFilename<>'' then
+  begin
+    Result:=CreateRelativePath(HTMLFilename,aServer.Path);
+    Result:=FilenameToURLPath(Result);
+  end else
+    Result:='';
   Result:='http://'+MainSrvAddr+':'+IntToStr(aServer.Port)+'/'+Result;
 end;
 
 function TSimpleWebServerController.GetURLWithLocation(aLocation: TSWSLocation;
   HTMLFilename: string): string;
 begin
-  Result:=CreateRelativePath(HTMLFilename,aLocation.Path);
-  Result:=FilenameToURLPath(Result);
+  if HTMLFilename<>'' then
+  begin
+    Result:=CreateRelativePath(HTMLFilename,aLocation.Path);
+    Result:=FilenameToURLPath(Result);
+  end else
+    Result:='';
   Result:='http://'+MainSrvAddr+':'+IntToStr(MainSrvPort)+'/'+aLocation.Location+'/'+Result;
 end;
 

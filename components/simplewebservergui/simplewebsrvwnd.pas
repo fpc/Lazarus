@@ -42,6 +42,7 @@ type
     CopyLocationMenuItem: TMenuItem;
     CopyDirectoryPathMenuItem: TMenuItem;
     CopyOriginMenuItem: TMenuItem;
+    CopyURLMenuItem: TMenuItem;
     MsgSplitter: TSplitter;
     OptionsPanel: TPanel;
     ServerLogGroupBox: TGroupBox;
@@ -53,6 +54,7 @@ type
     procedure CopyDirectoryPathMenuItemClick(Sender: TObject);
     procedure CopyLocationMenuItemClick(Sender: TObject);
     procedure CopyOriginMenuItemClick(Sender: TObject);
+    procedure CopyURLMenuItemClick(Sender: TObject);
     procedure DeleteButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -344,6 +346,7 @@ begin
   LocationsListView.Columns[2].Caption:=rsSWOrigin;
   LocationsListView.Columns[3].Caption:=rsSWNote;
 
+  CopyURLMenuItem.Caption:=rsSWCopyURL;
   CopyLocationMenuItem.Caption:=rsSWCopyLocation;
   CopyDirectoryPathMenuItem.Caption:=rsSWCopyWorkingDirectoryPath;
   CopyOriginMenuItem.Caption:=rsSWCopyOrigin;
@@ -362,29 +365,50 @@ end;
 procedure TSimpleWebServerWindow.CopyDirectoryPathMenuItemClick(Sender: TObject
   );
 var
-  Item: TListItem;
+  LI: TListItem;
 begin
-  Item:=LocationsListView.Selected;
-  if Item=nil then exit;
-  Clipboard.AsText:=Item.SubItems[0];
+  LI:=LocationsListView.Selected;
+  if LI=nil then exit;
+  Clipboard.AsText:=LI.SubItems[0];
 end;
 
 procedure TSimpleWebServerWindow.CopyLocationMenuItemClick(Sender: TObject);
 var
-  Item: TListItem;
+  LI: TListItem;
 begin
-  Item:=LocationsListView.Selected;
-  if Item=nil then exit;
-  Clipboard.AsText:=Item.Caption;
+  LI:=LocationsListView.Selected;
+  if LI=nil then exit;
+  Clipboard.AsText:=LI.Caption;
 end;
 
 procedure TSimpleWebServerWindow.CopyOriginMenuItemClick(Sender: TObject);
 var
-  Item: TListItem;
+  LI: TListItem;
 begin
-  Item:=LocationsListView.Selected;
-  if Item=nil then exit;
-  Clipboard.AsText:=Item.SubItems[1];
+  LI:=LocationsListView.Selected;
+  if LI=nil then exit;
+  Clipboard.AsText:=LI.SubItems[1];
+end;
+
+procedure TSimpleWebServerWindow.CopyURLMenuItemClick(Sender: TObject);
+var
+  LI: TListItem;
+  Obj: TObject;
+  Server: TSWSInstance;
+  URL: String;
+begin
+  LI:=LocationsListView.Selected;
+  if LI=nil then exit;
+  Obj:=CaptionToControllerObj(LI.Caption);
+  if Obj is TSWSLocation then
+  begin
+    URL:=Controller.GetURLWithLocation(TSWSLocation(Obj),'');
+  end else if Obj is TSWSInstance then
+  begin
+    Server:=TSWSInstance(Obj);
+    URL:=Controller.GetURLWithServer(Server,'');
+  end;
+  Clipboard.AsText:=URL;
 end;
 
 procedure TSimpleWebServerWindow.DeleteButtonClick(Sender: TObject);
@@ -429,11 +453,14 @@ end;
 procedure TSimpleWebServerWindow.LocationsPopupMenuPopup(Sender: TObject);
 var
   LI: TListItem;
+  Enable: Boolean;
 begin
   LI:=LocationsListView.Selected;
-  CopyLocationMenuItem.Enabled:=LI<>nil;
-  CopyDirectoryPathMenuItem.Enabled:=LI<>nil;
-  CopyOriginMenuItem.Enabled:=LI<>nil;
+  Enable:=LI<>nil;
+  CopyURLMenuItem.Enabled:=Enable;
+  CopyLocationMenuItem.Enabled:=Enable;
+  CopyDirectoryPathMenuItem.Enabled:=Enable;
+  CopyOriginMenuItem.Enabled:=Enable;
 end;
 
 end.

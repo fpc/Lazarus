@@ -1,34 +1,32 @@
 object SimpleWebSrvAddDialog: TSimpleWebSrvAddDialog
   Left = 598
-  Height = 460
+  Height = 368
   Top = 313
-  Width = 532
+  Width = 626
   Caption = 'Add Simple Web Server Location'
-  ClientHeight = 460
-  ClientWidth = 532
-  DesignTimePPI = 120
+  ClientHeight = 368
+  ClientWidth = 626
   OnCreate = FormCreate
   Position = poScreenCenter
   LCLVersion = '2.3.0.0'
   object OptionsPageControl: TPageControl
     Left = 0
-    Height = 460
+    Height = 368
     Top = 0
-    Width = 532
+    Width = 626
     ActivePage = LocationTabSheet
     Align = alClient
     TabIndex = 0
     TabOrder = 0
     object LocationTabSheet: TTabSheet
       Caption = 'Location'
-      ClientHeight = 427
-      ClientWidth = 524
+      ClientHeight = 339
+      ClientWidth = 616
       object LocButtonPanel: TButtonPanel
-        Left = 8
-        Height = 38
-        Top = 381
-        Width = 508
-        BorderSpacing.Around = 8
+        Left = 6
+        Height = 40
+        Top = 293
+        Width = 604
         OKButton.Name = 'OKButton'
         OKButton.DefaultCaption = True
         HelpButton.Name = 'HelpButton'
@@ -44,34 +42,34 @@ object SimpleWebSrvAddDialog: TSimpleWebSrvAddDialog
         AnchorSideLeft.Control = LocationTabSheet
         AnchorSideTop.Control = LocationComboBox
         AnchorSideTop.Side = asrCenter
-        Left = 8
-        Height = 20
-        Top = 12
-        Width = 57
-        BorderSpacing.Left = 8
+        Left = 6
+        Height = 15
+        Top = 14
+        Width = 47
+        BorderSpacing.Left = 6
         Caption = 'Location'
       end
       object LocationURLLabel: TLabel
         AnchorSideLeft.Control = LocationTabSheet
         AnchorSideTop.Control = LocationDirComboBox
         AnchorSideTop.Side = asrBottom
-        Left = 8
-        Height = 20
-        Top = 91
-        Width = 119
-        BorderSpacing.Left = 8
-        BorderSpacing.Top = 19
+        Left = 6
+        Height = 15
+        Top = 87
+        Width = 98
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 15
         Caption = 'LocationURLLabel'
       end
       object LocationDirLabel: TLabel
         AnchorSideLeft.Control = LocationTabSheet
         AnchorSideTop.Control = LocationDirComboBox
         AnchorSideTop.Side = asrCenter
-        Left = 8
-        Height = 20
-        Top = 48
-        Width = 100
-        BorderSpacing.Left = 8
+        Left = 6
+        Height = 15
+        Top = 50
+        Width = 84
+        BorderSpacing.Left = 6
         Caption = 'Local Directory'
       end
       object LocationBrowserButton: TButton
@@ -81,13 +79,13 @@ object SimpleWebSrvAddDialog: TSimpleWebSrvAddDialog
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = LocationDirComboBox
         AnchorSideBottom.Side = asrBottom
-        Left = 481
-        Height = 28
-        Top = 44
-        Width = 35
+        Left = 585
+        Height = 30
+        Top = 42
+        Width = 25
         Anchors = [akTop, akRight, akBottom]
         AutoSize = True
-        BorderSpacing.Right = 8
+        BorderSpacing.Right = 6
         Caption = '...'
         OnClick = LocationBrowserButtonClick
         TabOrder = 1
@@ -98,14 +96,14 @@ object SimpleWebSrvAddDialog: TSimpleWebSrvAddDialog
         AnchorSideTop.Control = LocationComboBox
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = LocationBrowserButton
-        Left = 116
-        Height = 28
-        Top = 44
-        Width = 365
+        Left = 96
+        Height = 30
+        Top = 42
+        Width = 489
         Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.Left = 8
-        BorderSpacing.Top = 8
-        ItemHeight = 20
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        ItemHeight = 0
         ParentShowHint = False
         ShowHint = True
         TabOrder = 2
@@ -115,13 +113,13 @@ object SimpleWebSrvAddDialog: TSimpleWebSrvAddDialog
         AnchorSideLeft.Control = LocationLabel
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = LocationTabSheet
-        Left = 73
-        Height = 28
-        Top = 8
-        Width = 236
-        BorderSpacing.Left = 8
-        BorderSpacing.Top = 8
-        ItemHeight = 20
+        Left = 59
+        Height = 30
+        Top = 6
+        Width = 189
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        ItemHeight = 0
         OnEditingDone = LocationComboBoxEditingDone
         ParentShowHint = False
         ShowHint = True
@@ -131,14 +129,13 @@ object SimpleWebSrvAddDialog: TSimpleWebSrvAddDialog
     end
     object ServerTabSheet: TTabSheet
       Caption = 'Custom Server'
-      ClientHeight = 427
-      ClientWidth = 524
+      ClientHeight = 339
+      ClientWidth = 616
       object SrvButtonPanel: TButtonPanel
-        Left = 8
-        Height = 38
-        Top = 381
-        Width = 508
-        BorderSpacing.Around = 8
+        Left = 6
+        Height = 40
+        Top = 293
+        Width = 604
         OKButton.Name = 'OKButton'
         OKButton.DefaultCaption = True
         HelpButton.Name = 'HelpButton'
@@ -153,22 +150,22 @@ object SimpleWebSrvAddDialog: TSimpleWebSrvAddDialog
       object SrvPortLabel: TLabel
         AnchorSideLeft.Control = ServerTabSheet
         AnchorSideTop.Side = asrCenter
-        Left = 8
-        Height = 20
-        Top = 18
-        Width = 26
-        BorderSpacing.Left = 8
+        Left = 6
+        Height = 15
+        Top = 14
+        Width = 24
+        BorderSpacing.Left = 6
         Caption = 'Port'
       end
       object SrvWorkDirLabel: TLabel
         AnchorSideLeft.Control = ServerTabSheet
         AnchorSideTop.Control = SrvWorkDirComboBox
         AnchorSideTop.Side = asrCenter
-        Left = 8
-        Height = 20
-        Top = 84
-        Width = 99
-        BorderSpacing.Left = 8
+        Left = 6
+        Height = 15
+        Top = 86
+        Width = 85
+        BorderSpacing.Left = 6
         Caption = 'Work Directory'
       end
       object SrvBrowserButton: TButton
@@ -178,13 +175,13 @@ object SimpleWebSrvAddDialog: TSimpleWebSrvAddDialog
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = SrvWorkDirComboBox
         AnchorSideBottom.Side = asrBottom
-        Left = 481
-        Height = 28
-        Top = 80
-        Width = 35
+        Left = 585
+        Height = 30
+        Top = 78
+        Width = 25
         Anchors = [akTop, akRight, akBottom]
         AutoSize = True
-        BorderSpacing.Right = 8
+        BorderSpacing.Right = 6
         Caption = '...'
         TabOrder = 1
       end
@@ -192,11 +189,11 @@ object SimpleWebSrvAddDialog: TSimpleWebSrvAddDialog
         AnchorSideLeft.Control = ServerTabSheet
         AnchorSideTop.Control = SrvExeComboBox
         AnchorSideTop.Side = asrCenter
-        Left = 8
-        Height = 20
-        Top = 48
-        Width = 72
-        BorderSpacing.Left = 8
+        Left = 6
+        Height = 15
+        Top = 50
+        Width = 61
+        BorderSpacing.Left = 6
         Caption = 'Executable'
       end
       object SrvExeBrowseButton: TButton
@@ -206,13 +203,13 @@ object SimpleWebSrvAddDialog: TSimpleWebSrvAddDialog
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = SrvExeComboBox
         AnchorSideBottom.Side = asrBottom
-        Left = 481
-        Height = 28
-        Top = 44
-        Width = 35
+        Left = 585
+        Height = 30
+        Top = 42
+        Width = 25
         Anchors = [akTop, akRight, akBottom]
         AutoSize = True
-        BorderSpacing.Right = 8
+        BorderSpacing.Right = 6
         Caption = '...'
         TabOrder = 2
       end
@@ -220,12 +217,12 @@ object SimpleWebSrvAddDialog: TSimpleWebSrvAddDialog
         AnchorSideLeft.Control = ServerTabSheet
         AnchorSideTop.Control = SrvWorkDirComboBox
         AnchorSideTop.Side = asrBottom
-        Left = 8
-        Height = 20
-        Top = 116
-        Width = 73
-        BorderSpacing.Left = 8
-        BorderSpacing.Top = 8
+        Left = 6
+        Height = 15
+        Top = 114
+        Width = 63
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
         Caption = 'Parameters'
       end
       object SrvParamsComboBox: TComboBox
@@ -234,15 +231,15 @@ object SimpleWebSrvAddDialog: TSimpleWebSrvAddDialog
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = ServerTabSheet
         AnchorSideRight.Side = asrBottom
-        Left = 8
-        Height = 28
-        Top = 144
-        Width = 508
+        Left = 6
+        Height = 30
+        Top = 135
+        Width = 604
         Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.Left = 8
-        BorderSpacing.Top = 8
-        BorderSpacing.Right = 8
-        ItemHeight = 20
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 6
+        ItemHeight = 0
         ParentShowHint = False
         ShowHint = True
         TabOrder = 3
@@ -253,14 +250,14 @@ object SimpleWebSrvAddDialog: TSimpleWebSrvAddDialog
         AnchorSideTop.Control = SrvPortComboBox
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = SrvExeBrowseButton
-        Left = 88
-        Height = 28
-        Top = 44
-        Width = 393
+        Left = 73
+        Height = 30
+        Top = 42
+        Width = 512
         Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.Left = 8
-        BorderSpacing.Top = 8
-        ItemHeight = 20
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        ItemHeight = 0
         ParentShowHint = False
         ShowHint = True
         TabOrder = 4
@@ -271,14 +268,14 @@ object SimpleWebSrvAddDialog: TSimpleWebSrvAddDialog
         AnchorSideTop.Control = SrvExeComboBox
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = SrvBrowserButton
-        Left = 115
-        Height = 28
-        Top = 80
-        Width = 366
+        Left = 97
+        Height = 30
+        Top = 78
+        Width = 488
         Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.Left = 8
-        BorderSpacing.Top = 8
-        ItemHeight = 20
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        ItemHeight = 0
         ParentShowHint = False
         ShowHint = True
         TabOrder = 5
@@ -288,13 +285,13 @@ object SimpleWebSrvAddDialog: TSimpleWebSrvAddDialog
         AnchorSideLeft.Control = SrvPortLabel
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = ServerTabSheet
-        Left = 42
-        Height = 28
-        Top = 8
-        Width = 176
-        BorderSpacing.Left = 8
-        BorderSpacing.Top = 8
-        ItemHeight = 20
+        Left = 36
+        Height = 30
+        Top = 6
+        Width = 141
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        ItemHeight = 0
         ParentShowHint = False
         ShowHint = True
         TabOrder = 6

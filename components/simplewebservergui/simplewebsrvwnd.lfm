@@ -642,7 +642,7 @@ object SimpleWebServerWindow: TSimpleWebServerWindow
       end    
       item
         Caption = 'Note'
-        Width = 288
+        Width = 293
       end>
     HideSelection = False
     PopupMenu = LocationsPopupMenu
@@ -687,6 +687,10 @@ object SimpleWebServerWindow: TSimpleWebServerWindow
     OnPopup = LocationsPopupMenuPopup
     Left = 261
     Top = 98
+    object CopyURLMenuItem: TMenuItem
+      Caption = 'Copy URL'
+      OnClick = CopyURLMenuItemClick
+    end
     object CopyLocationMenuItem: TMenuItem
       Caption = 'Copy Location'
       OnClick = CopyLocationMenuItemClick

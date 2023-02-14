@@ -18,6 +18,7 @@ resourcestring
   rsSWOrigin = 'Origin';
   rsSWNote = 'Note';
   rsSWCopyLocation = 'Copy Location';
+  rsSWCopyURL = 'Copy URL';
   rsSWCopyWorkingDirectoryPath = 'Copy Working Directory Path';
   rsSWCopyOrigin = 'Copy Origin';
   rsSWParametersPleaseUseMacroPort = 'Parameters (please use macro $(port))';

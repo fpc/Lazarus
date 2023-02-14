@@ -64,6 +64,10 @@ msgstr "Copiar local"
 msgid "Copy Origin"
 msgstr "Copiar origem"
 
+#: simplewebsrvstrconsts.rsswcopyurl
+msgid "Copy URL"
+msgstr ""
+
 #: simplewebsrvstrconsts.rsswcopyworkingdirectorypath
 msgid "Copy Working Directory Path"
 msgstr "Copiar caminho do diretório de trabalho"
