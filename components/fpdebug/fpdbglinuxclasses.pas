@@ -1127,13 +1127,8 @@ begin
 end;
 
 procedure TDbgLinuxProcess.AddLib(const ALibrary: tDbgLinuxLibrary);
-var
-  ID: TDbgPtr;
 begin
-  ID := ALibrary.FLoadedTargetImageAddr;
-  FLibMap.Add(ID, ALibrary);
-  if (ALibrary.DbgInfo.HasInfo) or (ALibrary.SymbolTableInfo.HasInfo) then
-    FSymInstances.Add(ALibrary);
+  AddLibrary(ALibrary, ALibrary.FLoadedTargetImageAddr);
 end;
 
 constructor TDbgLinuxProcess.Create(const AFileName: string;

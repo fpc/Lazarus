@@ -315,6 +315,12 @@ type
 //    procedure ClearState;
   end;
 
+  TBreakPointUpdateInfo = record
+    InternalBreak: TFpDbgBreakpoint;
+    NewState: TFpDbgBreakpointState;
+  end;
+  TBreakPointUpdateList = specialize TLazThreadedQueue<TBreakPointUpdateInfo>;
+
   TThreadIdList = specialize TFPGList<Integer>;
 
   { TFpDebugDebugger }
@@ -346,6 +352,7 @@ type
     FCachePointer: pointer;
     FCacheThreadId, FCacheStackFrame: Integer;
     FCacheContext: TFpDbgSymbolScope;
+    FBreakUpdateList: TBreakPointUpdateList;
     FFpDebugOutputQueue: TFpDebugStringQueue;
     FFpDebugOutputAsync: integer;
     //
@@ -360,6 +367,9 @@ type
     // HandleRunError: Software called RuntimeError
     procedure HandleRunError(var continue: boolean);
     procedure FreeDebugThread;
+    procedure Do_Thread_BreakStateChanged(Sender: TFpDbgBreakpoint; ANewState: TFpDbgBreakpointState);
+    procedure DoBreakStateChanged(Data: PtrInt);
+
     procedure FDbgControllerHitBreakpointEvent(var continue: boolean;
       const Breakpoint: TFpDbgBreakpoint; AnEventType: TFPDEvent; AMoreHitEventsPending: Boolean);
     procedure EnterPause(ALocationAddr: TDBGLocationRec; AnInternalPause: Boolean = False);
@@ -1131,8 +1141,15 @@ begin
     FDbgBreakPoint.FInternalBreakpoint := InternalBreakpoint;
     if not assigned(InternalBreakpoint) then
       FDbgBreakPoint.Validity := vsInvalid // pending?
-    else
-      FDbgBreakPoint.Validity := vsValid;
+    else begin
+      case InternalBreakpoint.State of
+        bksUnknown: FDbgBreakPoint.Validity := vsUnknown;
+        bksOk:      FDbgBreakPoint.Validity := vsValid;
+        bksFailed:  FDbgBreakPoint.Validity := vsInvalid;
+        bksPending: FDbgBreakPoint.Validity := vsPending;
+      end;
+      InternalBreakpoint.On_Thread_StateChange := @TFpDebugDebugger(FDebugger).Do_Thread_BreakStateChanged;
+    end;
   end;
 
   UnQueue_DecRef;
@@ -1920,6 +1937,7 @@ begin
   // freed. And so are the corresponding InternalBreakpoint's.
   if assigned(Debugger) and assigned(FInternalBreakpoint) then
     begin
+    FInternalBreakpoint.On_Thread_StateChange := nil;
     debuglnEnter(DBG_BREAKPOINTS, ['>> TFPBreakpoint.ResetBreak  REMOVE ',FSource,':',FLine,'/',dbghex(Address),' ' ]);
     WorkItem := TFpThreadWorkerBreakPointRemoveUpdate.Create(TFpDebugDebugger(Debugger), Self);
     TFpDebugDebugger(Debugger).FWorkQueue.PushItem(WorkItem);
@@ -2018,6 +2036,8 @@ end;
 
 destructor TFPBreakpoint.Destroy;
 begin
+  if FInternalBreakpoint <> nil then
+    FInternalBreakpoint.On_Thread_StateChange := nil;
   (* No need to request a pause. This will run, as soon as the debugger gets to the next pause.
      If the next pause is a hit on this breakpoint, then it will be ignored
   *)
@@ -3680,6 +3700,33 @@ begin
   DoProcessMessages // run the AsyncMethods
 end;
 
+procedure TFpDebugDebugger.Do_Thread_BreakStateChanged(
+  Sender: TFpDbgBreakpoint; ANewState: TFpDbgBreakpointState);
+var
+  Info: TBreakPointUpdateInfo;
+begin
+  Info.InternalBreak := Sender;
+  Info.NewState := ANewState;
+  FBreakUpdateList.PushItem(Info);
+  Application.QueueAsyncCall(@DoBreakStateChanged, 0);
+end;
+
+procedure TFpDebugDebugger.DoBreakStateChanged(Data: PtrInt);
+var
+  Info: TBreakPointUpdateInfo;
+  ABreakPoint: TDBGBreakPoint;
+begin
+  while FBreakUpdateList.PopItemTimeout(Info, 0) = wrSignaled do begin
+    ABreakPoint := TFPBreakpoints(BreakPoints).Find(Info.InternalBreak);
+    case Info.NewState of
+      bksUnknown: TFPBreakpoint(ABreakPoint).Validity := vsUnknown;
+      bksOk:      TFPBreakpoint(ABreakPoint).Validity := vsValid;
+      bksFailed:  TFPBreakpoint(ABreakPoint).Validity := vsInvalid;
+      bksPending: TFPBreakpoint(ABreakPoint).Validity := vsPending;
+    end;
+  end;
+end;
+
 procedure TFpDebugDebugger.FDbgControllerHitBreakpointEvent(
   var continue: boolean; const Breakpoint: TFpDbgBreakpoint;
   AnEventType: TFPDEvent; AMoreHitEventsPending: Boolean);
@@ -4453,6 +4500,7 @@ begin
   FWorkQueue := TFpThreadPriorityWorkerQueue.Create(100);
   FWorkQueue.OnQueueIdle := @CheckAndRunIdle;
   FFpDebugOutputQueue := TFpDebugStringQueue.create(100);
+  FBreakUpdateList := TBreakPointUpdateList.create();
   FExceptionStepper := TFpDebugExceptionStepping.Create(Self);
   FPrettyPrinter := TFpPascalPrettyPrinter.Create(sizeof(pointer));
   FMemReader := TFpDbgMemReader.Create(self);
@@ -4495,6 +4543,7 @@ begin
 
   Application.RemoveAsyncCalls(Self);
   FreeAndNil(FFpDebugOutputQueue);
+  FreeAndNil(FBreakUpdateList);
   FreeAndNil(FDbgController);
   FreeAndNil(FPrettyPrinter);
   FreeAndNil(FMemManager);

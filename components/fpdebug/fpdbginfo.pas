@@ -495,6 +495,8 @@ type
     function CreateSymbolScope(ALocationContext: TFpDbgLocationContext): TFpDbgSymbolScope; virtual;
   end;
 
+  TFpSymbolArray = array of TFpSymbol;
+
   { TFpSymbolForwarder }
 
   TFpSymbolForwarder = class(TFpSymbol)
@@ -648,7 +650,7 @@ type
 
     property HasInfo: Boolean read FHasInfo;
     function GetLineAddresses(const AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray;
-      AFindSibling: TGetLineAddrFindSibling = fsNone; AFoundLine: PInteger = nil): Boolean; virtual;
+      AFindSibling: TGetLineAddrFindSibling = fsNone; AFoundLine: PInteger = nil; AFoundFilename: PBoolean = nil): Boolean; virtual;
     //property MemManager: TFpDbgMemReaderBase read GetMemManager write SetMemManager;
     property TargetInfo: TTargetDescriptor read FTargetInfo write FTargetInfo;
     property MemManager: TFpDbgMemManager read FMemManager;
@@ -1969,7 +1971,7 @@ end;
 
 function TDbgInfo.GetLineAddresses(const AFileName: String; ALine: Cardinal;
   var AResultList: TDBGPtrArray; AFindSibling: TGetLineAddrFindSibling;
-  AFoundLine: PInteger): Boolean;
+  AFoundLine: PInteger; AFoundFilename: PBoolean): Boolean;
 begin
   Result := False;
 end;

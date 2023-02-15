@@ -1474,14 +1474,9 @@ begin
 end;
 
 function TDbgWinProcess.AddLib(const AInfo: TLoadDLLDebugInfo): TDbgLibrary;
-var
-  ID: TDbgPtr;
 begin
   Result := TDbgWinLibrary.Create(Self, HexValue(AInfo.lpBaseOfDll, SizeOf(Pointer), [hvfIncludeHexchar]), AInfo.hFile, AInfo);
-  ID := TDbgPtr(AInfo.lpBaseOfDll);
-  FLibMap.Add(ID, Result);
-  if (Result.DbgInfo.HasInfo) or (Result.SymbolTableInfo.HasInfo)
-  then FSymInstances.Add(Result);
+  AddLibrary(Result, TDbgPtr(AInfo.lpBaseOfDll));
 end;
 
 procedure TDbgWinProcess.RemoveLib(const AInfo: TUnloadDLLDebugInfo);

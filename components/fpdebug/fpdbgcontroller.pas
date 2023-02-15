@@ -1750,7 +1750,7 @@ var
   EventProcess: TDbgProcess;
   DummyThread: TDbgThread;
   CurCmd: TDbgControllerCmd;
-
+  ALib: TDbgLibrary;
 begin
   AExit:=false;
   if FCurrentProcess = nil then begin
@@ -1885,6 +1885,15 @@ begin
 
     if MaybeDetach then
       break;
+
+    case FPDEvent of
+      deLoadLibrary:
+        for ALib in EventProcess.LastLibrariesLoaded do
+          EventProcess.UpdateBreakpointsForLibraryLoaded(ALib);
+      deUnloadLibrary:
+        for ALib in EventProcess.LastLibrariesUnloaded do
+          EventProcess.UpdateBreakpointsForLibraryUnloaded(ALib);
+    end;
 
     IsFinished:=false;
     if FPDEvent=deExitProcess then begin
@@ -2061,10 +2070,6 @@ begin
         continue:=true;
         if assigned(OnLibraryUnloadedEvent) and (Length(FCurrentProcess.LastLibrariesUnloaded)>0) then
           OnLibraryUnloadedEvent(continue, FCurrentProcess.LastLibrariesUnloaded);
-        // The library is unloaded by the OS, so all breakpoints are already gone.
-        // This is more to update our administration and free some memory.
-        for i := 0 to High(FCurrentProcess.LastLibrariesUnloaded) do
-          FCurrentProcess.RemoveAllBreakPoints(FCurrentProcess.LastLibrariesUnloaded[i]);
       end;
     deInternalContinue:
       begin
