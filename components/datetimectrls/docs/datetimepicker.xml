@@ -2589,7 +2589,7 @@ value.
 </p>
 <p>
 Use MinDate and MaxDate to define the range of dates allowed in the control. 
-If they ar not assigned, the values in TheSmallestDate and TheBiggestDate are 
+If they are not assigned, the values in TheSmallestDate and TheBiggestDate are 
 used.
 </p>
 <remark>
@@ -3431,7 +3431,7 @@ Use HideDateTimeParts to hide a date/time part which is normally visible for
 the property settings in the control.
 </p>
 <remark>
-Use of MonthNames is now largely redundant. THe same functionality is 
+Use of MonthNames is now largely redundant. The same functionality is 
 available using MonthDisplay and CustomMonthNames. In prior LCL versions, 
 MonthNames needed access to the ShortMonthNames and LongMonthNames variables 
 in the FPC RTL. These values have been deprecated in the RTL, and MonthNames 
