@@ -471,7 +471,25 @@ type
     procedure SetBreak; override;
     procedure ResetBreak; override;
   end;
-  TFpInternalBreakpointClass = class of TFpInternalBreakpoint;
+
+  { TFpInternalBreakpointAtSymbol }
+
+  TFpInternalBreakpointAtSymbol = class(TFpInternalBreakpoint)
+  private
+    FFuncName: String;
+  public
+    constructor Create(const AProcess: TDbgProcess; const AFuncName: String; AnEnabled: Boolean; ASymInstance: TDbgInstance = nil); virtual;
+  end;
+
+  { TFpInternalBreakpointAtFileLine }
+
+  TFpInternalBreakpointAtFileLine = class(TFpInternalBreakpoint)
+  private
+    FFileName: String;
+    FLine: Cardinal;
+  public
+    constructor Create(const AProcess: TDbgProcess; const AFileName: String; ALine: Cardinal; AnEnabled: Boolean; ASymInstance: TDbgInstance = nil); virtual;
+  end;
 
   { TFpInternalWatchpoint }
 
@@ -501,7 +519,6 @@ type
     procedure SetBreak; override;
     procedure ResetBreak; override;
   end;
-  TFpInternalWatchpointClass = class of TFpInternalWatchpoint;
 
   // Container to hold target specific process info
   TDbgProcessConfig = class(TPersistent)
@@ -537,8 +554,6 @@ type
     // as the application and libraries can share sourcecode but have their own
     // binary code.
 
-    function AddBreak(const AFileName: String; ALine: Cardinal; AnEnabled: Boolean = True): TFpInternalBreakpoint; overload;
-    function AddBreak(const AFuncName: String; AnEnabled: Boolean = True): TFpDbgBreakpoint; overload;
     function  FindProcStartEndPC(AAdress: TDbgPtr; out AStartPC, AEndPC: TDBGPtr): boolean;
 
     // Check if a certain (range of) address(es) belongs to a specific Instance
@@ -665,6 +680,7 @@ type
     function RemoveBreakInstructionCode(const ALocation: TDBGPtr; const OrigValue: Byte): Boolean; virtual;
     procedure BeforeChangingInstructionCode(const ALocation: TDBGPtr; ACount: Integer); virtual;
     procedure AfterChangingInstructionCode(const ALocation: TDBGPtr; ACount: Integer); virtual;
+    procedure AfterBreakpointAdded(ABreak: TFpDbgBreakpoint);
 
     procedure MaskBreakpointsInReadData(const AAdress: TDbgPtr; const ASize: Cardinal; var AData);
     // Should create a TDbgThread-instance for the given ThreadIdentifier.
@@ -687,18 +703,20 @@ type
 
     function  AddInternalBreak(const ALocation: TDBGPtr): TFpInternalBreakpoint; overload;
     function  AddInternalBreak(const ALocation: TDBGPtrArray): TFpInternalBreakpoint; overload;
-    function  AddBreak(const ALocation: TDBGPtr; AnEnabled: Boolean = True): TFpInternalBreakpoint; overload;
-    function  AddBreak(const ALocation: TDBGPtrArray; AnEnabled: Boolean = True): TFpInternalBreakpoint; overload;
+    (* ASymInstance: nil = anywhere / TDbgProcess or TDbgLibrary to limit *)
+    function  AddBreak(const ALocation: TDBGPtr; AnEnabled: Boolean = True): TFpDbgBreakpoint; overload;
+    function  AddBreak(const ALocation: TDBGPtrArray; AnEnabled: Boolean = True): TFpDbgBreakpoint; overload;
+    function  AddBreak(const AFileName: String; ALine: Cardinal; AnEnabled: Boolean = True; ASymInstance: TDbgInstance = nil): TFpDbgBreakpoint; overload;
+    function  AddBreak(const AFuncName: String; AnEnabled: Boolean = True; ASymInstance: TDbgInstance = nil): TFpDbgBreakpoint; overload;
     function  AddWatch(const ALocation: TDBGPtr; ASize: Cardinal; AReadWrite: TDBGWatchPointKind;
                       AScope: TDBGWatchPointScope): TFpInternalWatchpoint;
     property WatchPointData: TFpWatchPointData read FWatchPointData;
-    (* ASymInstance: nil = anywhere / TDbgProcess or TDbgLibrary to limit *)
     (* FindProcSymbol(Address)
          Search the program and all libraries.
        FindProcSymbol(Name)
          Search ONLY the program.
        FindProcSymbol(Name, ASymInstance)
-         Search AnQbjFile (process or lib) / if nil, search all
+         Search ASymInstance (process or lib) / if nil, search all
          Names can be ambigious, as dll can have the same names.
     *)
     function  FindProcSymbol(const AName: String): TFpSymbol; overload; // deprecated 'backward compatible / use FindProcSymbol(AName, TheDbgProcess)';
@@ -824,14 +842,10 @@ type
     DbgProcessClass : TDbgProcessClass;
     DbgThreadClass : TDbgThreadClass;
     DbgDisassemblerClass : TDbgDisassemblerClass;
-    DbgBreakpointClass : TFpInternalBreakpointClass;
-    DbgWatchpointClass : TFpInternalWatchpointClass;
     constructor Create(
       ADbgProcessClass: TDbgProcessClass;
       ADbgThreadClass: TDbgThreadClass;
-      ADbgDisassemblerClass: TDbgDisassemblerClass;
-      ADbgBreakpointClass: TFpInternalBreakpointClass = nil;
-      ADbgWatchpointClass: TFpInternalWatchpointClass = nil
+      ADbgDisassemblerClass: TDbgDisassemblerClass
     );
     function Equals(AnOther: TOSDbgClasses): Boolean;
   end;
@@ -911,26 +925,16 @@ end;
 
 constructor TOSDbgClasses.Create(ADbgProcessClass: TDbgProcessClass;
   ADbgThreadClass: TDbgThreadClass;
-  ADbgDisassemblerClass: TDbgDisassemblerClass;
-  ADbgBreakpointClass: TFpInternalBreakpointClass;
-  ADbgWatchpointClass: TFpInternalWatchpointClass);
+  ADbgDisassemblerClass: TDbgDisassemblerClass);
 begin
   DbgProcessClass      := ADbgProcessClass;
   DbgThreadClass       := ADbgThreadClass;
   DbgDisassemblerClass := ADbgDisassemblerClass;
-  DbgBreakpointClass   := ADbgBreakpointClass;
-  DbgWatchpointClass   := ADbgWatchpointClass;
-  if DbgBreakpointClass = nil then
-    DbgBreakpointClass := TFpInternalBreakpoint;
-  if DbgWatchpointClass = nil then
-    DbgWatchpointClass := TFpInternalWatchpoint;
 end;
 
 function TOSDbgClasses.Equals(AnOther: TOSDbgClasses): Boolean;
 begin
   Result := (DbgThreadClass       = AnOther.DbgThreadClass) and
-            (DbgBreakpointClass   = AnOther.DbgBreakpointClass) and
-            (DbgWatchpointClass   = AnOther.DbgWatchpointClass) and
             (DbgProcessClass      = AnOther.DbgProcessClass) and
             (DbgDisassemblerClass = AnOther.DbgDisassemblerClass);
 end;
@@ -1807,28 +1811,6 @@ end;
 
 { TDbgInstance }
 
-function TDbgInstance.AddBreak(const AFileName: String; ALine: Cardinal;
-  AnEnabled: Boolean): TFpInternalBreakpoint;
-var
-  addr: TDBGPtrArray;
-begin
-  Result := nil;
-  if GetLineAddresses(AFileName, ALine, addr) then
-    Result := FProcess.AddBreak(addr, AnEnabled);
-end;
-
-function TDbgInstance.AddBreak(const AFuncName: String; AnEnabled: Boolean
-  ): TFpDbgBreakpoint;
-var
-  AProc: TFpSymbol;
-begin
-  Result := nil;
-  AProc := FindProcSymbol(AFuncName);
-  if AProc <> nil then begin
-    Result := FProcess.AddBreak(AProc.Address.Address, AnEnabled);
-    AProc.ReleaseReference;
-  end;
-end;
 
 function TDbgInstance.FindProcSymbol(const AName: String): TFpSymbol;
 begin
@@ -1959,7 +1941,7 @@ end;
 { TDbgProcess }
 
 function TDbgProcess.AddBreak(const ALocation: TDBGPtr; AnEnabled: Boolean
-  ): TFpInternalBreakpoint;
+  ): TFpDbgBreakpoint;
 var
   a: TDBGPtrArray;
 begin
@@ -1970,26 +1952,31 @@ begin
 end;
 
 function TDbgProcess.AddBreak(const ALocation: TDBGPtrArray; AnEnabled: Boolean
-  ): TFpInternalBreakpoint;
-var
-  a, ip: TDBGPtr;
+  ): TFpDbgBreakpoint;
 begin
-  Result := OSDbgClasses.DbgBreakpointClass.Create(Self, ALocation, AnEnabled);
-  // TODO: empty breakpoint (all address failed to set) = nil
-  ip := FMainThread.GetInstructionPointerRegisterValue;
-  if not assigned(FCurrentBreakpoint) then
-    for a in ALocation do
-      if ip=a then begin
-        FCurrentBreakpoint := Result;
-        break;
-      end;
+  Result := TFpInternalBreakpoint.Create(Self, ALocation, AnEnabled);
+  AfterBreakpointAdded(Result);
+end;
+
+function TDbgProcess.AddBreak(const AFileName: String; ALine: Cardinal;
+  AnEnabled: Boolean; ASymInstance: TDbgInstance): TFpDbgBreakpoint;
+begin
+  Result := TFpInternalBreakpointAtFileLine.Create(Self, AFileName, ALine, AnEnabled, ASymInstance);
+  AfterBreakpointAdded(Result);
+end;
+
+function TDbgProcess.AddBreak(const AFuncName: String; AnEnabled: Boolean;
+  ASymInstance: TDbgInstance): TFpDbgBreakpoint;
+begin
+  Result := TFpInternalBreakpointAtSymbol.Create(Self, AFuncName, AnEnabled, ASymInstance);
+  AfterBreakpointAdded(Result);
 end;
 
 function TDbgProcess.AddWatch(const ALocation: TDBGPtr; ASize: Cardinal;
   AReadWrite: TDBGWatchPointKind; AScope: TDBGWatchPointScope
   ): TFpInternalWatchpoint;
 begin
-  Result := OSDbgClasses.DbgWatchpointClass.Create(Self, ALocation, ASize, AReadWrite, AScope);
+  Result := TFpInternalWatchpoint.Create(Self, ALocation, ASize, AReadWrite, AScope);
 end;
 
 function TDbgProcess.FindProcSymbol(const AName: String; ASymInstance: TDbgInstance
@@ -2129,13 +2116,13 @@ end;
 
 function TDbgProcess.AddInternalBreak(const ALocation: TDBGPtr): TFpInternalBreakpoint;
 begin
-  Result := AddBreak(ALocation);
+  Result := TFpInternalBreakpoint(AddBreak(ALocation));
   Result.FInternal := True;
 end;
 
 function TDbgProcess.AddInternalBreak(const ALocation: TDBGPtrArray): TFpInternalBreakpoint;
 begin
-  Result := AddBreak(ALocation);
+  Result := TFpInternalBreakpoint(AddBreak(ALocation));
   Result.FInternal := True;
 end;
 
@@ -2710,6 +2697,14 @@ end;
 procedure TDbgProcess.AfterChangingInstructionCode(const ALocation: TDBGPtr; ACount: Integer);
 begin
   //
+end;
+
+procedure TDbgProcess.AfterBreakpointAdded(ABreak: TFpDbgBreakpoint);
+begin
+  if not assigned(FCurrentBreakpoint) then begin
+    if ABreak.HasLocation(FMainThread.GetInstructionPointerRegisterValue) then
+      FCurrentBreakpoint := TFpInternalBreakpoint(ABreak);
+  end;
 end;
 
 //function TDbgProcess.LocationIsBreakInstructionCode(const ALocation: TDBGPtr
@@ -3634,6 +3629,43 @@ begin
     exit;
   for i := 0 to High(FLocation) do
     FProcess.FBreakMap.AddLocation(FLocation[i], Self, True);
+end;
+
+{ TFpInternalBreakpointAtSymbol }
+
+constructor TFpInternalBreakpointAtSymbol.Create(const AProcess: TDbgProcess;
+  const AFuncName: String; AnEnabled: Boolean; ASymInstance: TDbgInstance);
+var
+  a: TDBGPtrArray;
+  AProc: TFpSymbol;
+begin
+  FFuncName := AFuncName;
+
+  a := nil;
+  AProc := AProcess.FindProcSymbol(AFuncName, ASymInstance);
+  if AProc <> nil then begin
+    SetLength(a, 1);
+    a[0] := AProc.Address.Address;
+    AProc.ReleaseReference;
+  end;
+
+  inherited Create(AProcess, a, AnEnabled);
+end;
+
+{ TFpInternalBreakpointAtFileLine }
+
+constructor TFpInternalBreakpointAtFileLine.Create(const AProcess: TDbgProcess;
+  const AFileName: String; ALine: Cardinal; AnEnabled: Boolean;
+  ASymInstance: TDbgInstance);
+var
+  addr: TDBGPtrArray;
+begin
+  FFileName := AFileName;
+  FLine := ALine;
+
+  addr := nil;
+  AProcess.GetLineAddresses(AFileName, ALine, addr, ASymInstance);
+  inherited Create(AProcess, addr, AnEnabled);
 end;
 
 { TFpInternalWatchpoint }

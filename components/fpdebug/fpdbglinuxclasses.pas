@@ -1500,7 +1500,7 @@ begin
           // Set a breakpoint at _dl_debug_state. This procedure is called after
           // one or more libraries have been loaded. This breakpoint is used to
           // detect the (un)loading of libraries.
-          FSOLibEventBreakpoint := ALib.AddBreak('_dl_debug_state');
+          FSOLibEventBreakpoint := AddBreak('_dl_debug_state', True, ALib);
           end
         end;
       end;

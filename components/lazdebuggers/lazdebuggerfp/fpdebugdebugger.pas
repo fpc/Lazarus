@@ -4230,10 +4230,7 @@ end;
 
 procedure TFpDebugDebugger.DoAddBreakFuncLib;
 begin
-  if FCacheLib <> nil then
-    FCacheBreakpoint := FCacheLib.AddBreak(FCacheFileName, FCacheBoolean)
-  else
-    FCacheBreakpoint := TDbgInstance(FDbgController.CurrentProcess).AddBreak(FCacheFileName, FCacheBoolean);
+  FCacheBreakpoint := FDbgController.CurrentProcess.AddBreak(FCacheFileName, FCacheBoolean, FCacheLib);
 end;
 
 procedure TFpDebugDebugger.DoAddBreakLocation;
@@ -4288,8 +4285,7 @@ function TFpDebugDebugger.AddBreak(const AFuncName: String; ALib: TDbgLibrary;
 begin
   // Shortcut, if in debug-thread / do not use Self.F*
   if ThreadID = FWorkerThreadId then
-    if ALib <> nil then exit(ALib.AddBreak(AFuncName, AnEnabled))
-                   else exit(TDbgInstance(FDbgController.CurrentProcess).AddBreak(AFuncName, AnEnabled));
+    exit(FDbgController.CurrentProcess.AddBreak(AFuncName, AnEnabled, ALib));
 
   FCacheFileName:=AFuncName;
   FCacheLib:=ALib;
