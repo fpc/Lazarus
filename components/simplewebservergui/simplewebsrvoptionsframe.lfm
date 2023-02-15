@@ -71,10 +71,10 @@ object SimpleWebSrvOptsFrame: TSimpleWebSrvOptsFrame
     Left = 6
     Height = 15
     Top = 6
-    Width = 120
+    Width = 113
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
-    Caption = 'Path of compileserver'
+    Caption = 'Path of simpleserver'
     ParentColor = False
   end
   object ServerExeComboBox: TComboBox
@@ -91,7 +91,7 @@ object SimpleWebSrvOptsFrame: TSimpleWebSrvOptsFrame
     BorderSpacing.Bottom = 6
     ItemHeight = 0
     TabOrder = 2
-    Text = 'compileserver'
+    Text = 'simpleserver'
   end
   object ServerExeBrowseButton: TButton
     AnchorSideTop.Control = ServerExeComboBox

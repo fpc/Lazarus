@@ -399,7 +399,7 @@ end;
 
 function TSimpleWebServerOptions.GetDefaultServerExe: string;
 begin
-  Result:='compileserver'+GetExeExt;
+  Result:='simpleserver'+GetExeExt;
 end;
 
 procedure TSimpleWebServerOptions.IncreaseChangeStep;

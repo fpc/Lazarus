@@ -1159,7 +1159,7 @@ end;
 
 function TSimpleWebServerController.GetMainServerExeHint: string;
 begin
-  Result:='see Tools / Options / Environment / Simple Web Server / Compileserver';
+  Result:='see Tools / Options / Environment / Simple Web Server / Simpleserver';
 end;
 
 constructor TSimpleWebServerController.Create(AOwner: TComponent);
@@ -1181,7 +1181,7 @@ begin
   FInstances.Add(FMainSrvInstance);
   FMainSrvInstance.Controller:=Self;
   FMainSrvInstance.Port:=SWSDefaultServerPort;
-  FMainSrvInstance.Exe:='compileserver'+GetExeExt;
+  FMainSrvInstance.Exe:='simpleserver'+GetExeExt;
 
   for h in TSWSCHandler do
     fHandlers[h]:=TMethodList.Create;
