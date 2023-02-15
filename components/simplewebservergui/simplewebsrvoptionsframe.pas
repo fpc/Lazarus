@@ -19,6 +19,7 @@ type
 
   TSimpleWebSrvOptsFrame = class(TAbstractIDEOptionsEditor)
     BindAnyCheckBox: TCheckBox;
+    BrowseBrowserButton: TButton;
     BrowserKindComboBox: TComboBox;
     BrowserCmdComboBox: TComboBox;
     BrowserLabel: TLabel;
@@ -31,6 +32,7 @@ type
     ServerExeBrowseButton: TButton;
     ServerExeComboBox: TComboBox;
     ServerExeLabel: TLabel;
+    procedure BrowseBrowserButtonClick(Sender: TObject);
     procedure BrowserKindComboBoxSelect(Sender: TObject);
     procedure ServerExeBrowseButtonClick(Sender: TObject);
   private
@@ -99,14 +101,14 @@ var
 begin
   Dlg:=TOpenDialog.Create(nil);
   try
-    Dlg.Title:='Select compileserver'+GetExeExt;
+    Dlg.Title:='Select simpleserver'+GetExeExt;
     Dlg.Options:=Dlg.Options+[ofFileMustExist];
     if not Dlg.Execute then exit;
     ExpExe:=ExpandFileNameUTF8(Dlg.FileName);
     ServerExeComboBox.Text:=ExpExe;
-    ErrMsg:=CheckCompileServerExeQuality(ExpExe,'',true);
+    ErrMsg:=CheckWebServerExeQuality(ExpExe,'',true);
     if ErrMsg<>'' then
-      IDEMessageDialog('Invalid compileserver'+GetExeExt,
+      IDEMessageDialog('Invalid simpleserver'+GetExeExt,
         ErrMsg,mtError,[mbOk]);
   finally
     Dlg.Free;
@@ -116,6 +118,51 @@ end;
 procedure TSimpleWebSrvOptsFrame.BrowserKindComboBoxSelect(Sender: TObject);
 begin
   BrowserKindComboBoxChanged;
+end;
+
+procedure TSimpleWebSrvOptsFrame.BrowseBrowserButtonClick(Sender: TObject);
+var
+  Dlg: TOpenDialog;
+  ExpExe, Cmd: String;
+  p: Integer;
+  c: Char;
+begin
+  Dlg:=TOpenDialog.Create(nil);
+  try
+    Dlg.Title:='Select browser executable';
+    Dlg.Options:=Dlg.Options+[ofFileMustExist];
+    if not Dlg.Execute then exit;
+    ExpExe:=ExpandFileNameUTF8(Dlg.FileName);
+    if Pos(' ',ExpExe)>0 then
+      ExpExe:=StrToCmdLineParam(ExpExe);
+
+    // replace first, keep params
+    Cmd:=BrowserCmdComboBox.Text;
+    if Cmd='' then
+      Cmd:=ExpExe
+    else if Cmd[1] in [' ',#9,#10,#13] then
+      Cmd:=ExpExe+Cmd
+    else begin
+      p:=1;
+      while p<=length(Cmd) do
+      begin
+        c:=Cmd[p];
+        case c of
+        ' ',#9,#10,#13: break;
+        '"','''':
+          begin
+            inc(p);
+            while (p<=length(Cmd)) and (Cmd[p]<>c) do inc(p);
+          end;
+        end;
+        inc(p);
+      end;
+      Cmd:=ExpExe+copy(Cmd,p,length(Cmd));
+    end;
+    BrowserCmdComboBox.Text:=Cmd;
+  finally
+    Dlg.Free;
+  end;
 end;
 
 procedure TSimpleWebSrvOptsFrame.SetCombobox(aComboBox: TComboBox;

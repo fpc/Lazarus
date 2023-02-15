@@ -185,18 +185,33 @@ object SimpleWebSrvOptsFrame: TSimpleWebSrvOptsFrame
     AnchorSideLeft.Control = BrowserKindComboBox
     AnchorSideTop.Control = BrowserKindComboBox
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
+    AnchorSideRight.Control = BrowseBrowserButton
     Left = 21
     Height = 30
     Top = 319
-    Width = 538
+    Width = 513
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 15
     BorderSpacing.Top = 2
-    BorderSpacing.Right = 6
     ItemHeight = 0
     TabOrder = 7
     Text = 'BrowserCmdComboBox'
+  end
+  object BrowseBrowserButton: TButton
+    AnchorSideTop.Control = BrowserCmdComboBox
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = BrowserCmdComboBox
+    AnchorSideBottom.Side = asrBottom
+    Left = 534
+    Height = 30
+    Top = 319
+    Width = 25
+    Anchors = [akTop, akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Right = 6
+    Caption = '...'
+    OnClick = BrowseBrowserButtonClick
+    TabOrder = 8
   end
 end

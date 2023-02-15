@@ -292,12 +292,12 @@ type
 var
   SimpleWebServerController: TSimpleWebServerController; // created by Register
 
-function CheckCompileServerExeQuality(var ServerExe: string; const BaseDir: string;
+function CheckWebServerExeQuality(var ServerExe: string; const BaseDir: string;
   aSubtituteMacros: boolean): string; // on fail returns errormessage
 
 implementation
 
-function CheckCompileServerExeQuality(var ServerExe: string;
+function CheckWebServerExeQuality(var ServerExe: string;
   const BaseDir: string; aSubtituteMacros: boolean): string;
 var
   OutStr, ExpBaseDir: string;
@@ -332,7 +332,7 @@ begin
     exit('file is not executable');
 
   if not RunCommand(ServerExe,['--version'],OutStr) then
-    exit('compileserver does not support --version, maybe this is an old version?');
+    exit('simpleserver does not support --version, maybe this is an old version?');
 
   Result:='';
 end;
@@ -1270,7 +1270,7 @@ begin
   FMainSrvInstance.Path:=PathUsed;
 
   ExeUsed:=Options.ServerExe;
-  ErrMsg:=CheckCompileServerExeQuality(ExeUsed,'',false);
+  ErrMsg:=CheckWebServerExeQuality(ExeUsed,'',false);
   FMainSrvInstance.Exe:=ExeUsed;
   if ErrMsg<>'' then
   begin
