@@ -268,6 +268,10 @@ function RawImageQueryFlagsToString(AFlags: TRawImageQueryFlags): string;
 
 var
   MissingBits: array[0..15] of array[0..7] of word;
+  // Control whether gdeDisabled is a grayscale image (classic), or uses
+  // alpha-transparent black or alpha-transparent white, improving appearance
+  // on non-grey light and dark backgrounds
+  DisabledDrawEffectStyle: (ddesGrayscale, ddesDarken, ddesLighten) = ddesGrayscale;
 
 implementation
 
@@ -1651,6 +1655,7 @@ var
   AData: PRGBAQuad;
   P: Pointer;
   i, j: integer;
+  Gray: Byte;
 begin
   // check here for Description. Only RGBA data can be processed here.
   if not CheckDescription then
@@ -1676,9 +1681,25 @@ begin
           begin
             with AData^ do
             begin
-              Red := (Red + Green + Blue) div 3;
-              Green := Red;
-              Blue := Red;
+              Gray := (Red + Green + Blue) div 3;
+              if DisabledDrawEffectStyle = ddesLighten then
+              begin
+                // Apply existing alpha and reduce visibility by a further 66%
+                Alpha := Byte((Integer(Gray) * Alpha) div 768);
+                Gray := $FF;
+              end
+              else begin
+                Gray := Byte(Integer(Gray) + Integer((DimPercent * (DimColor - Gray)) div 100));
+                if DisabledDrawEffectStyle = ddesDarken then
+                begin
+                  // Apply existing alpha and Reduce visibility by a further 25%
+                  Alpha := Byte((Integer($FF - Gray) * Alpha) div 384);
+                  Gray := $00;
+                end;
+              end;
+              Red := Gray;
+              Green := Gray;
+              Blue := Gray;
             end;
             inc(AData);
           end;
