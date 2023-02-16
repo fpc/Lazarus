@@ -2492,8 +2492,20 @@ begin
 end;
 
 function TFpLineInfo.IndexOf(const ASource: String): integer;
+var
+  Src: String;
 begin
   Result := FRequestedSources.IndexOf(ASource);
+  (* For dsInit, dsPause:
+     - DebugManager.DebuggerChangeState calls SourceEditorManager.FillExecutionMarks;
+     - This happens, even if the data is not available.
+     - TSourceEditor.FillExecutionMarks will call this function ("IndexOf") and create an
+       empty non-functional map.
+       (Happens for libraries, loaded with LoadLibrary during dsInit, if the source is open)
+     - To avoid this => return -1
+  *)
+  if (Result >= 0) and (FRequestedSources.Objects[Result] = nil) then
+    Result := -1;
 end;
 
 procedure TFpLineInfo.Request(const ASource: String);
