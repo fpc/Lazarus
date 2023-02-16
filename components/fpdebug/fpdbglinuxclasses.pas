@@ -1495,7 +1495,7 @@ begin
           // Set a breakpoint at _dl_debug_state. This procedure is called after
           // one or more libraries have been loaded. This breakpoint is used to
           // detect the (un)loading of libraries.
-          FSOLibEventBreakpoint := AddBreak('_dl_debug_state', True, ALib);
+          FSOLibEventBreakpoint := AddBreak('_dl_debug_state', False, ALib);
           end
         end;
       end;
@@ -1519,6 +1519,8 @@ var
   PID: THandle;
   IP: TDBGPtr;
 begin
+  if (FSOLibEventBreakpoint <> nil) and not FSOLibEventBreakpoint.Enabled then
+    FSOLibEventBreakpoint.Enabled:=True;
   {$IFDEF DebuglnLinuxDebugEvents}
   debuglnEnter(['>>>>> TDbgLinuxProcess.Continue TID:', AThread.ID, ' SingleStep:', SingleStep ]); try
   {$ENDIF}
