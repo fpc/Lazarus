@@ -26118,7 +26118,7 @@ layout manager.
 <remark>
 The TLazDockTree implementation never was finished, due to problems with the 
 anchor "docking" mechanism. Use the EasyDockManager (examples/dockmanager) 
-instead.
+instead. (Now Removed).
 </remark>
 <p>
 This is an abstract class. A real implementation is e.g. in ldocktree.pas.
@@ -27146,43 +27146,125 @@ Calls the specified procedure for each of the cursor identifiers.
 
 <element name="CursorToIdent">
 <short>
-Uses look-up table to find cursor identifier corresponding to integer cursor 
-constant.
+Uses a look-up table to find the cursor identifier corresponding to an Integer 
+cursor constant.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>CursorToIdent</var> gets the identifier name for a cursor shape specified 
+as an Integer value. Cursor contains one of the Integer constants which 
+represent a value in the TCursor type. Ident is the String with the identifier 
+name for the cursor shape.
+</p>
+<p>
+For example:
+</p>
+<code>
+// var CursorName: String; IsOk: Boolean;
+CursorName := '';
+IsOk := CursorToIdent(crHourGlass, CursorName); 
+// CursorName returns 'crHourGlass'
+</code>
+<p>
+CursorToIdent calls the IntToIdent routine in the RTL <file>Classes</file> 
+unit to get both the return value and the value for the Ident argument. 
+CursorIdents is used as the mapping table for the integer and string values.
+</p>
+<p>
+If Cursor is not found in the CursorIdents constant, the return value is <b>
+False</b>. If the numeric constant is not found in the look-up 
+table, the value in Ident is not specified (or changed).
+</p>
+<p>
+Use IdentToCursor or StringToCursor to convert the identifier name value back 
+to an Integer value.
+</p>
+<p>
+CursorToIdent is used in the implementation of the CursorToString routine.
+</p>
+</descr>
+<seealso>
+<link id="CursorIdents"/>
+<link id="IdentToCursor"/>
+<link id="StringToCursor"/>
+<link id="CursorToString"/>
+<link id="TCursor"/>
+<link id="#rtl.classes.IntToIdent">IntToIdent</link>
+</seealso>
 </element>
 <element name="CursorToIdent.Result">
 <short>
-Returns <b>True</b> if a valid entry is found in the look-up table.
+Returns <b>True</b> if a valid identifier is found in the look-up table.
 </short>
 </element>
 <element name="CursorToIdent.Cursor">
-<short/>
+<short>
+Integer constant for the cursor shape (like crHourGlass).
+</short>
 </element>
 <element name="CursorToIdent.Ident">
-<short/>
+<short>
+Returns the string with the identifier name for the specified cursor shape 
+(like 'crHourGlass').
+</short>
 </element>
 
 <element name="IdentToCursor">
 <short>
-Searches the Cursor name table for the given cursor name; returns <b>True</b> 
-if found.
+Converts an identifier name for a cursor shape to its value as an Integer.
 </short>
 <descr>
-If found, the cursor value (handle) is returned in <var>Cursor</var>.
+<p>
+<var>IdentToCursor</var> converts the identifier name for a cursor shape to 
+its Integer equivalent.
+</p>
+<p>
+Ident contains the name for the cursor shape. The Cursor argument contains the 
+TCursor value for the specified identifier name.
+</p>
+<p>
+The return value is <b>True</b> if Ident is found in the CursorIdents look-up 
+table. The value in Cursor is unspecified (and unchanged) when the return 
+value is <b>False</b>.
+</p>
+<p>
+For example:
+</p>
+<code>
+// var CursorVal: Integer; IsOk: Boolean;
+CursorVal := crDefault;
+IsOk := IdentToCursor('crHourGlass', CursorVal);
+// CursorVal contains the crHourGlass constant
+</code>
+<p>
+IdenttoCursor calls the IdentToInt routine in the RTL <file>Classes</file> 
+unit to get both the return value and the value for the Cursor argument.
+</p>
+<p>
+Use CursorToString or InttoIdent routines to return the Integer value to its 
+string representation.
+</p>
 </descr>
+<seealso>
+<link id="CursorToString"/>
+<link id="StringToCursor"/>
+<link id="CursorIdents"/>
+<link id="TCursor"/>
+<link id="#rtl.classes.IntToIdent">IntToIdent</link>
+<link id="#rtl.classes.IdentToInt">IdentToInt</link>
+</seealso>
 </element>
 <element name="IdentToCursor.Result">
 <short>
-Returns <b>True</b> if a valid entry was found in the look-up table.
+Returns <b>True</b> if a valid entry was found for the identifier name in the 
+look-up table.
 </short>
 </element>
 <element name="IdentToCursor.Ident">
-<short>The name of the cursor for which the numeric value is sought.</short>
+<short>The identifier name for the cursor shape, like 'crHourGlass'.</short>
 </element>
 <element name="IdentToCursor.Cursor">
-<short>The numeric value of the named cursor.</short>
+<short>The numeric value of the named cursor, like crHourGlass.</short>
 </element>
 
 <element name="CheckTransparentWindow">
@@ -27218,31 +27300,86 @@ located, the value in Handle is set to 0, and AWinControl is set to
 
 <element name="CheckMouseButtonDownUp">
 <short>
-Checks for multiple mouse click events for the specified control.
+Checks for mouse click events for the specified control.
 </short>
-<descr/>
+<descr>
+<p>
+<var>CheckMouseButtonDownUp</var> is a <var>Cardinal</var> function used to 
+check for mouse down or up events for the control represented by the handle in 
+AWinHandle. The return value contains the Word value used in the Msg member in 
+a TLMMouse mouse message.
+</p>
+<p>
+LastMouse contains the most recent mouse event information examined and 
+potentially updated in the method.
+</p>
+<p>
+CheckMouseButtonDownUp consolidates mouse down events (single, double, triple, 
+and quadruple) into a single value used in a mouse message, and updates 
+LastMouse when needed.
+</p>
+<p>
+AWinControl contains the control with the handle where the event mouse events 
+occurred.
+</p>
+<p>
+At run-time, multi-click events are adjusted to the ControlStyle specified in 
+the control (or one of its children) including:
+</p>
+<ul>
+<li>csDoubleClicks</li>
+<li>csTripleClicks</li>
+<li>csQuadClicks</li>
+</ul>
+<p>
+If the target control does not allow one of the multi-click events, the click 
+count in LastMouse is updated accordingly.
+</p>
+<p>
+At design-time, only Single and Double click mouse events are handled.
+</p>
+<p>
+CheckMouseButtonDownUp is used in the callback routine for a widgetset class 
+when a mouse event message is created and passed to the class instance.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="CheckMouseButtonDownUp.Result">
-<short/>
+<short>
+Value used as the Msg member in a mouse message.
+</short>
 </element>
 <element name="CheckMouseButtonDownUp.AWinHandle">
-<short/>
+<short>
+Handle for the control where the mouse events were detected.
+</short>
 </element>
 <element name="CheckMouseButtonDownUp.AWinControl">
-<short/>
+<short>
+Control with the specified handle.
+</short>
 </element>
 <element name="CheckMouseButtonDownUp.LastMouse">
-<short/>
+<short>
+Mouse information for the mouse event examined in the routine.
+</short>
 </element>
 <element name="CheckMouseButtonDownUp.AMousePos">
-<short/>
+<short>
+Position where the last mouse event occurred.
+</short>
 </element>
 <element name="CheckMouseButtonDownUp.AButton">
-<short/>
+<short>
+Mouse button for the last mouse event.
+</short>
 </element>
 <element name="CheckMouseButtonDownUp.AMouseDown">
-<short/>
+<short>
+<b>True</b> if the mouse event is a mouse down event. <b>False</b> for a mouse 
+up event.
+</short>  
 </element>
 
 <element name="GetKeyShiftState">
