@@ -158,7 +158,7 @@ begin
 
   //store result
   DockRect := r;
-  debugln(['TDockTree.PositionDockRect ',dbgs(DockRect)]);
+  //debugln(['TDockTree.PositionDockRect ',dbgs(DockRect)]);
 end;
 
 procedure TDockTree.RemoveControl(AControl: TControl);

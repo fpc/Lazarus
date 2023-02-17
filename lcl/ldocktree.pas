@@ -14,8 +14,81 @@
 
   Author: Mattias Gaertner
 
-  Abstract:
-    This unit contains TLazDockTree, the default TDockTree for the LCL.
+Abstract:
+  This unit contains TLazDockTree, a more dockmanager supporting simple layouts.
+
+  Example1: Docking "A" (source window) left to "B" (target window)
+
+     +---+    +----+
+     | A | -> | B  |
+     +---+    |    |
+              +----+
+    Result: A new docktree will be created. Height of "A" will be resized to
+            the height of "B".
+            A splitter will be inserted between "A" and "B".
+            And all three are children of the newly created TLazDockForm of the
+            newly created TDockTree.
+
+     +------------+
+     |+---+|+----+|
+     || A ||| B  ||
+     ||   |||    ||
+     |+---+|+----+|
+     +------------+
+
+    If "A" or "B" were floating controls, the floating dock sites are freed.
+    If "A" or "B" were forms, their decorations (title bars and borders) are
+    replaced by docked decorations.
+    If "A" had a TDockTree, it is freed and its child dockzones are merged to
+    the docktree of "B". Analog for docking "C" left to "A":
+
+     +------------------+
+     |+---+|+---+|+----+|
+     || C ||| A ||| B  ||
+     ||   |||   |||    ||
+     |+---+|+---+|+----+|
+     +------------------+
+
+
+
+  Example2: Docking A into B
+              +-----+
+     +---+    |     |
+     | A | ---+-> B |
+     +---+    |     |
+              +-----+
+
+    Result: A new docktree will be created. "A" will be resized to the size
+            of "B". Both will be put into a TLazDockPages control which is the
+            child of the newly created TDockTree.
+
+     +-------+
+     |[B][A] |
+     |+-----+|
+     ||     ||
+     || A   ||
+     ||     ||
+     |+-----+|
+     +-------+
+
+  Every DockZone has siblings and children. Siblings can either be
+  - horizontally (left to right, splitter),
+  - vertically (top to bottom, splitter)
+  - or upon each other (as pages, left to right).
+
+
+  InsertControl - undock control and dock it into the manager. For example
+                  dock Form1 left to a Form2:
+                  InsertControl(Form1,alLeft,Form2);
+                  To dock "into", into a TDockPage, use Align=alNone.
+  PositionDockRect - calculates where a control would be placed, if it would
+                     be docked via InsertControl.
+  RemoveControl - removes a control from the dock manager.
+
+  GetControlBounds - TODO for Delphi compatibility
+  ResetBounds - TODO for Delphi compatibility
+  SetReplacingControl - TODO for Delphi compatibility
+  PaintSite - TODO for Delphi compatibility
 }
 unit LDockTree;
 
