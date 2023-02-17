@@ -26100,144 +26100,35 @@ Set type used to store values from the TDockTreeFlag enumeration.
 </element>
 
 <element name="TDockTree">
-<short>A docking manager for tree-style layouts.</short>
+<short>
+A tree of TDockZone instances where each docked window has one tree.
+</short>
 <descr>
 <p>
-A tree-style layout is organized in layers of a specific (horizontal or 
-vertical) orientation. Every node in the tree is either a container for other 
-nodes, or represents a zone with a single docked control. All child zones of 
-an node have the same DockOrientation.
+<var>TDockTree</var> is a <var>TDockManager</var> descendant with a simple 
+docking manager that allows docking a control into another using 
+Align=alClient to fill the whole client area.
 </p>
 <p>
-The following documentation is copied from the Controls unit. It is of 
-historical interest only, since it effectively describes the AnchorDocking, 
-implemented in TCustomAnchoredDockManager. AnchorDocking is not related to 
-visual drag-dock procedures, it merely is an attempt to implement just an 
-layout manager.
-</p>
-<remark>
-The TLazDockTree implementation never was finished, due to problems with the 
-anchor "docking" mechanism. Use the EasyDockManager (examples/dockmanager) 
-instead. (Now Removed).
-</remark>
-<p>
-This is an abstract class. A real implementation is e.g. in ldocktree.pas.
+In this class, Docking means: Combining several windows into one. And, a 
+window can be a TCustomForm instance, a floating (undocked) control, or a 
+TDockForm instance. A window can be docked to another to the left, right, top, 
+bottom, or "into". The source docking window will be resized to fit to the 
+target docking window.
 </p>
 <p>
-Docking means here: Combining several windows to one. A window can here be a 
-TCustomForm or a floating control (undocked) or a TDockForm. A window can be 
-docked to another to the left, right, top, bottom or "into". The docking 
-source window will be resized, to fit to the docking target window.
+A docking manager supporting multiple controls per docksite (aka a layout) 
+can be found in the <file>ldocktree.pas</file> unit.
 </p>
 <p>
-Example1: Docking "A" (source window) left to "B" (target window)
-</p>
-<code>
-+---+    +-----+
-| A | -&gt; |  B  |
-|   |    |     |
-+---+    +-----+
-</code>
-<p>
-Result: A new docktree will be created. Height of "A" will be resized to the 
-height of "B". A splitter will be inserted between "A" and "B". And all three 
-are children of the newly created TLazDockForm of the newly created TDockTree.
-</p>
-<code>
-+------------+
-|+---+|+----+|
-|| A ||| B  ||
-||   |||    ||
-|+---+|+----+|
-+------------+
-</code>
-<ul>
-<li>If "A" or "B" were floating controls, the floating dock sites are 
-freed.</li>
-<li>
-If "A" or "B" were forms, their decorations (title bars and borders) are 
-replaced by docked decorations.
-</li>
-<li>
-If "A" had a TDockTree, it is freed and its child dockzones are merged to the 
-docktree of "B".
-</li>
-</ul>
-<p>
-Analog for docking "C" left to "A":
-</p>
-<code>
-+------------------+
-|+---+|+---+|+----+|
-|| C ||| A ||| B  ||
-||   |||   |||    ||
-|+---+|+---+|+----+|
-+------------------+
-</code>
-<p>
-Example2: Docking A into B
-</p>
-<code>
-+-----+
-|     |  +---+
-|  B &lt;+--| A |
-|     |  +---+
-+-----+
-</code>
-<p>
-Result: A new docktree will be created. "A" will be resized to the size of 
-"B". Both will be put into a TLazDockPages control which is the child of the 
-newly created TDockTree.
-</p>
-<code>
-+-------+
-|[B][A] |
-|+-----+|
-||     ||
-||  A  ||
-||     ||
-|+-----+|
-+-------+
-</code>
-<p>
-Every DockZone has siblings and children. Siblings can either be:
-</p>
-<ul>
-<li>horizontally (left to right, splitter),</li>
-<li>vertically (top to bottom, splitter), </li>
-<li>or upon each other (as notebook pages).</li>
-</ul>
-<p>
-<b>InsertControl</b> - undock a control and dock it into the dock site.
-For example, to dock Form1 left to a Form2:
-</p>
-<code>InsertControl(Form1,alLeft,Form2);</code>
-<p>
-To dock into a TDockPage, use:
-</p>
-<code>Align := alCustom;</code>
-<p>
-<b>PositionDockRect</b> - calculates where a control would be placed, if it 
-would be docked via InsertControl.
-</p>
-<p>
-<b>RemoveControl</b> - removes a control from the dock site.
-</p>
-<p>
-<b>GetControlBounds</b> - TODO: for Delphi compatibility.
-</p>
-<p>
-<b>ResetBounds</b> - TODO: for Delphi compatibility.
-</p>
-<p>
-<b>SetReplacingControl</b> - TODO: for Delphi compatibility.
-</p>
-<p>
-<b>PaintSite</b> - TODO: for Delphi compatibility.
+TAnchorDockManager which supports multiple controls with a more flexible 
+layout, store and restore, and more options can be found in the 
+<file>anchordocking</file> package.
 </p>
 </descr>
 <seealso>
 <link id="TDockManager"/>
+<link id="#lcl.ldocktree.TLazDockTree">TLazDockTree</link>
 </seealso>
 </element>
 
@@ -26253,7 +26144,7 @@ would be docked via InsertControl.
 <element name="TDockTree.FUpdateCount" link="#lcl.controls.TDockTree.BeginUpdate"/>
 
 <element name="TDockTree.DeleteZone">
-<short>Destroys the zone and its child zones.</short>
+<short>Destroys the dock zone and its child zones.</short>
 <descr/>
 <seealso/>
 </element>
@@ -26495,18 +26386,10 @@ the host docksite is not involved.
 </element>
 
 <element name="TDockTree.PositionDockRect" link="#lcl.controls.TDockManager.PositionDockRect"/>
-<element name="TDockTree.PositionDockRect.AClient">
-<short/>
-</element>
-<element name="TDockTree.PositionDockRect.DropCtl">
-<short/>
-</element>
-<element name="TDockTree.PositionDockRect.DropAlign">
-<short/>
-</element>
-<element name="TDockTree.PositionDockRect.DockRect">
-<short/>
-</element>
+<element name="TDockTree.PositionDockRect.AClient"/>
+<element name="TDockTree.PositionDockRect.DropCtl"/>
+<element name="TDockTree.PositionDockRect.DropAlign"/>
+<element name="TDockTree.PositionDockRect.DockRect"/>
 
 <element name="TDockTree.RemoveControl" link="#lcl.controls.TDockManager.RemoveControl"/>
 <element name="TDockTree.RemoveControl.AControl"/>
@@ -26524,21 +26407,21 @@ the host docksite is not involved.
 <element name="TDockTree.PaintSite.DC"/>
 
 <element name="TDockTree.DumpLayout">
-<short>Stores the layout in an file.</short>
+<short>Stores the layout in a file.</short>
 </element>
 <element name="TDockTree.DumpLayout.FileName">
 <short/>
 </element>
 
 <element name="TDockTree.DockZoneClass">
-<short>The class of all dock zones in this tree.</short>
+<short>The class type for the dock zones in this tree.</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TDockTree.DockSite">
 <short>
-The parent control whose docked clients are managed
+The parent control whose docked clients are managed.
 </short>
 <descr/>
 <seealso/>
@@ -26551,7 +26434,9 @@ The parent control whose docked clients are managed
 </element>
 
 <element name="DockSplitterClass">
-<short>Class type used to create new splitter class instances.</short>
+<short>
+Class type used to create new splitter class instances.
+</short>
 <descr>
 <p>
 Normally contains a reference to the <var>TSplitter</var> class, as assigned 

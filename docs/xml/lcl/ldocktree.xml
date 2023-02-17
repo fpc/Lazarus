@@ -185,12 +185,155 @@ TLazDockForm.
 <!-- object Visibility: default -->
 <element name="TLazDockTree">
 <short>
-<var>TLazDockTree</var> - a tree of <var>TLazDockZones</var> found in a 
-docked window.
+Implements a docking manager using a simple layout.
 </short>
-<descr/>
-<errors/>
-<seealso/>
+<descr>
+<p>
+<var>TLazDockTree</var> is a TDockTree descendant which contains a 
+a tree of <var>TLazDockZones</var> found in a docked window.
+</p>
+<p>
+<b>
+Example 1: Docking "A" (source window) to the left of "B" (target window)
+</b>
+</p>
+<pre>
++---+    +----+
+| A | -&gt; | B  |
++---+    |    |
+         +----+
+</pre>
+<p>
+<b>Result:</b>
+</p>
+<p>
+A new docktree will be created. Height of "A" will be resized to the height of 
+"B". A splitter will be inserted between "A" and "B". And all three are 
+children of the newly created TLazDockForm of the newly created TDockTree.
+</p>
+<pre>
++------------+
+|+---+|+----+|
+|| A ||| B  ||
+||   |||    ||
+|+---+|+----+|
++------------+
+</pre>
+<ul>
+<li>
+If "A" or "B" were floating controls, the floating dock sites are freed.
+</li>
+<li>
+If "A" or "B" were forms, their decorations (title bars and borders) are
+replaced by docked decorations.
+</li>
+<li>
+If "A" had a TDockTree, it is freed and its child dockzones are merged to
+the docktree of "B". Analog for docking "C" left to "A":
+</li>
+</ul>
+<pre>
++------------------+
+|+---+|+---+|+----+|
+|| C ||| A ||| B  ||
+||   |||   |||    ||
+|+---+|+---+|+----+|
++------------------+
+</pre>
+<p>
+<b>Example 2: Docking A into B</b>
+</p>
+<pre>
+         +-----+
++---+    |     |
+| A | ---+-&gt; B |
++---+    |     |
+         +-----+
+</pre>
+<p>
+<b>Result:</b>
+</p>
+<p>
+A new docktree will be created. "A" will be resized to the size of "B". Both 
+will be put into a TLazDockPages control which is the child of the newly 
+created TDockTree.
+</p>
+<pre>
++-------+
+|[B][A] |
+|+-----+|
+||     ||
+|| A   ||
+||     ||
+|+-----+|
++-------+
+</pre>
+<p>
+Every DockZone has siblings and children. Siblings can either be:
+</p>
+<ul>
+<li>horizontally (left to right, splitter),</li>
+<li>vertically (top to bottom, splitter), </li>
+<li>or upon each other (as pages, left to right).</li>
+</ul>
+<p>
+<b>InsertControl</b>
+</p>
+<p>
+Undocks the control and docks it into the manager. For example, to dock Form1 
+to the left of Form2:
+</p>
+<code>
+InsertControl(Form1,alLeft,Form2);
+</code>
+<p>
+To dock Form1 "into" Form2, into a TDockPage, use Align=alNone.
+</p>
+<code>
+InsertControl(Form1,alNone,Form2);
+</code>
+<p>
+<b>PositionDockRect</b>
+</p>
+<p>
+Calculates where a control would be placed, if it were to be docked using 
+InsertControl.
+</p>
+<p>
+<b>RemoveControl</b>
+</p>
+<p>
+Removes a control from the dock manager.
+</p>
+<p>
+<b>GetControlBounds</b>
+</p>
+<p>
+TODO for Delphi compatibility.
+</p>
+<p>
+<b>ResetBounds</b>
+</p>
+<p>
+TODO for Delphi compatibility.
+</p>
+<p>
+<b>SetReplacingControl</b>
+</p>
+<p>
+TODO for Delphi compatibility.
+</p>
+<p>
+<b>PaintSite</b>
+</p>
+<p>
+TODO for Delphi compatibility.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.controls.TDockTree">TDockTree</link>
+<link id="#lcl.controls.TDockZone">TDockZone</link>
+</seealso>
 </element>
 
 <!-- variable Visibility: private -->
