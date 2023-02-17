@@ -27168,11 +27168,12 @@ IsOk := CursorToIdent(crHourGlass, CursorName);
 <p>
 CursorToIdent calls the IntToIdent routine in the RTL <file>Classes</file> 
 unit to get both the return value and the value for the Ident argument. 
-CursorIdents is used as the mapping table for the integer and string values.
+The CursorIdents implementation constant is used as the mapping table for the 
+integer and string values.
 </p>
 <p>
-If Cursor is not found in the CursorIdents constant, the return value is <b>
-False</b>. If the numeric constant is not found in the look-up 
+If Cursor is not found in the CursorIdents constant, the return value is 
+<b>False</b>. If the numeric constant is not found in the look-up 
 table, the value in Ident is not specified (or changed).
 </p>
 <p>
@@ -27184,7 +27185,6 @@ CursorToIdent is used in the implementation of the CursorToString routine.
 </p>
 </descr>
 <seealso>
-<link id="CursorIdents"/>
 <link id="IdentToCursor"/>
 <link id="StringToCursor"/>
 <link id="CursorToString"/>
@@ -27248,7 +27248,6 @@ string representation.
 <seealso>
 <link id="CursorToString"/>
 <link id="StringToCursor"/>
-<link id="CursorIdents"/>
 <link id="TCursor"/>
 <link id="#rtl.classes.IntToIdent">IntToIdent</link>
 <link id="#rtl.classes.IdentToInt">IdentToInt</link>
