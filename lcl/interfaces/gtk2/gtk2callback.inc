@@ -253,7 +253,8 @@ begin
   // define extra events we're interrested in
   //if TheWinControl<>nil then DbgOut(' ',TheWinControl.Name,':',TheWinControl.ClassName,' ',DbgS(TheWinControl.Handle));
   //DebugLn(' Widget=',DbgS(Widget),' Fixed=',DbgS(GetFixedWidget(Widget)),' Main=',DbgS(GetMainWidget(Widget)));
-  if (TheWinControl<>nil) then begin
+  if TheWinControl<>nil then
+  begin
     //DebugLn(['gtkRealizeAfterCB ',GetWidgetDebugReport(Widget)]);
     {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
 
@@ -273,17 +274,12 @@ begin
     end;
     //DebugLn('BBB1 ',DbgS(NewEventMask),8),' ',DbgS(Cardinal(gdk_window_get_events(Widget^.Window)));
     {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
-  end;
 
-  if TheWinControl<>nil then
-  begin
     TheWinControl.CNPreferredSizeChanged;
     TGtkPrivateWidgetClass(TheWinControl.WidgetSetClass.WSPrivate).UpdateCursor(WinWidgetInfo);
     ConnectInternalWidgetsSignals(MainWidget,TheWinControl);
 
-    if (TheWinControl is TCustomPage)
-      and not ((TheWinControl.Parent <> nil) and (TheWinControl.Parent is TTabControl))
-    then
+    if (TheWinControl is TCustomPage) and not (TheWinControl.Parent is TTabControl) then
       UpdateNotebookPageTab(nil,TheWinControl);
 
     if TheWinControl is TCustomForm then
