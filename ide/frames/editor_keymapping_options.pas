@@ -348,6 +348,7 @@ begin
       KeyMapKeyFilter := ShortCutDialog.PrimaryShortCut;
       UpdateKeyFilterButton;
       FilterEdit.ResetFilter;      // Allow only one of the filters to be active.
+      FilterEdit.InvalidateFilter; // The edit may have been empty. Must invalidate.
     end;
   finally
     ShortCutDialog.Free;
