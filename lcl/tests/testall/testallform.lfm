@@ -1,0 +1,104 @@
+object Form1: TForm1
+  Left = 484
+  Height = 405
+  Top = 128
+  Width = 621
+  Caption = 'Test Many (but not all) Components'
+  ClientHeight = 385
+  ClientWidth = 621
+  Menu = MainMenu1
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '1.7'
+  object BottomPnl: TPanel
+    Left = 0
+    Height = 41
+    Top = 344
+    Width = 621
+    Align = alBottom
+    BevelInner = bvLowered
+    ClientHeight = 41
+    ClientWidth = 621
+    TabOrder = 0
+    object BtnClear: TBitBtn
+      Left = 8
+      Height = 30
+      Top = 5
+      Width = 75
+      Caption = 'Clear'
+      Kind = bkRetry
+      ModalResult = 1
+      OnClick = BtnClearClick
+      TabOrder = 0
+    end
+  end
+  object TestPnl: TPanel
+    Left = 0
+    Height = 344
+    Top = 0
+    Width = 384
+    Align = alClient
+    BevelInner = bvLowered
+    TabOrder = 1
+  end
+  object EventsPnl: TPanel
+    Left = 384
+    Height = 344
+    Top = 0
+    Width = 237
+    Align = alRight
+    BevelInner = bvLowered
+    ClientHeight = 344
+    ClientWidth = 237
+    TabOrder = 2
+    object EventsLB: TListBox
+      Left = 2
+      Height = 340
+      Top = 2
+      Width = 233
+      Align = alClient
+      ItemHeight = 0
+      TabOrder = 0
+    end
+  end
+  object MainMenu1: TMainMenu
+    left = 344
+    top = 352
+    object mnuFile: TMenuItem
+      Caption = '&File'
+      object mnuFileExit: TMenuItem
+        Caption = 'E&xit'
+        ShortCut = 32883
+        OnClick = mnuFileExitClick
+      end
+    end
+    object mnuDialogs: TMenuItem
+      Caption = '&Dialogs'
+    end
+    object mnuComponents: TMenuItem
+      Caption = '&Components'
+      object mnuCompAC: TMenuItem
+        Caption = 'A-C'
+      end
+      object mnuCompDF: TMenuItem
+        Caption = 'D-F'
+      end
+      object mnuCompGM: TMenuItem
+        Caption = 'G-M'
+      end
+      object mnuCompNP: TMenuItem
+        Caption = 'N-P'
+      end
+      object mnuCompQS: TMenuItem
+        Caption = 'Q-S'
+      end
+      object mnuCompTZ: TMenuItem
+        Caption = 'T-Z'
+      end
+    end
+    object mnuAbout: TMenuItem
+      Caption = '&About'
+      OnClick = mnuAboutClick
+    end
+  end
+end
