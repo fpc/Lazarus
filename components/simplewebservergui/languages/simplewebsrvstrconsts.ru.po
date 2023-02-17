@@ -65,7 +65,7 @@ msgstr "Копировать происхождение"
 
 #: simplewebsrvstrconsts.rsswcopyurl
 msgid "Copy URL"
-msgstr ""
+msgstr "Копировать адрес URL"
 
 #: simplewebsrvstrconsts.rsswcopyworkingdirectorypath
 msgid "Copy Working Directory Path"
