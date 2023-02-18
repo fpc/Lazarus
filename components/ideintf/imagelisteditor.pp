@@ -373,6 +373,7 @@ begin
       ImageListBox.Items.EndUpdate;
       ImageList.EndUpdate;
     end;
+    UpdatePreviewImage;
     ImageListBox.SetFocus;
   end;
 end;
@@ -390,6 +391,7 @@ begin
       ImageListBox.Items.EndUpdate;
       ImageList.EndUpdate;
     end;
+    UpdatePreviewImage;
     ImageListBox.SetFocus;
   end;
 end;
@@ -465,19 +467,58 @@ end;
 
 procedure TImageListEditorDlg.BtnReplaceClick(Sender: TObject);
 var
-  AT: TAddType;
+  i: Integer;
+  w: Integer = 0;
+  bigIdx: Integer = 0;
+  pic: TPicture;
 begin
-  if ImageListBox.ItemIndex>=0 then
+  if ImageListBox.ItemIndex >= 0 then
   begin
     OpenDialog.Title := sccsILEdtOpenDialogN;
-    OpenDialog.Options:=OpenDialog.Options-[ofAllowMultiSelect];
+    if Sender = BtnReplaceAll then
+      OpenDialog.Options := OpenDialog.Options + [ofAllowMultiSelect]
+    else
+      OpenDialog.Options := OpenDialog.Options - [ofAllowMultiSelect];
+
     if OpenDialog.Execute then
     begin
-      if Sender=BtnReplaceAll then
-        AT := atReplaceAllResolutions
-      else
-        AT := atReplace;
-      AddImageToList(TrimRight(OpenDialog.FileName), AT);
+      try
+        ImageList.BeginUpdate;
+        ImageListBox.Items.BeginUpdate;
+        // Replace all icons
+        if Sender = BtnReplaceAll then
+        begin
+          // Find the largest icon
+          pic := TPicture.Create;
+          try
+            for i := 0 to OpenDialog.Files.Count - 1 do
+            begin
+              pic.LoadFromFile(TrimRight(OpenDialog.Files[i]));
+              if pic.Width > W then
+              begin
+                w := pic.Width;
+                bigIdx := i;
+              end;
+            end;
+          finally
+            pic.Free;
+          end;
+          // Create all icons from the largest icon. This makes sure that
+          // also non-selected icons will be replaced.
+          AddImageToList(TrimRight(OpenDialog.Files[bigIdx]), atReplaceAllResolutions);
+          // Replace other  icons by their file versions when selected.
+          for i := 0 to OpenDialog.Files.Count - 1 do
+            if i <> bigIdx then
+              AddImageToList(TrimRight(OpenDialog.Files[i]), atReplace);
+        end
+        // Replace only a single icon
+        else
+          AddImageToList(TrimRight(OpenDialog.FileName), atReplace);
+      finally
+        ImageListBox.Items.EndUpdate;
+        ImageList.EndUpdate;
+      end;
+      UpdatePreviewImage;
       ImageListBox.SetFocus;
     end;
   end;
