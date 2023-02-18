@@ -6689,6 +6689,7 @@ begin
       WidthHeightChanged:= true;
     end;
     if WidthHeightChanged then begin
+      SetWindowSizeAndPosition(PGtkWindow(MainWidget), LCLControl);
       SetResizeRequest(MainWidget);
       SetWidgetConstraints(LCLControl);
     end;

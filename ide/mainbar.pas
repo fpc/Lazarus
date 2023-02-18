@@ -511,7 +511,7 @@ begin
 end;
 
 function TMainIDEBar.CalcNonClientHeight: Integer;
-{$IF DEFINED(LCLGtk) OR DEFINED(LCLGtk2) OR DEFINED(LCLQt) OR DEFINED(LCLQt6)}
+{$IF DEFINED(LCLGtk) OR DEFINED(LCLQt) OR DEFINED(LCLQt6)}
 var
   WindowRect, WindowClientRect: TRect;
 {$ENDIF}
@@ -532,10 +532,10 @@ begin
   if not Showing then
     Exit(0);
 
-  {$IF DEFINED(LCLGtk) OR DEFINED(LCLGtk2) OR DEFINED(LCLQt) OR DEFINED(LCLQt6)}
-  //Gtk2 + Qt
+  {$IF DEFINED(LCLGtk) OR DEFINED(LCLQt) OR DEFINED(LCLQt6)}
+  //Gtk + Qt
   //retrieve real main menu height because
-  // - Gtk2, Qt:  SM_CYMENU does not work
+  // - Gtk, Qt:  SM_CYMENU does not work
   LclIntf.GetWindowRect(Handle, WindowRect{%H-});
   LclIntf.GetClientRect(Handle, WindowClientRect{%H-});
   LclIntf.ClientToScreen(Handle, WindowClientRect.TopLeft);
@@ -547,7 +547,10 @@ begin
   {$ELSE}
   //other widgetsets
   //Carbon tested - behaves correctly
+  //Cocoa tested - behaves correctly
   //Win32 tested - behaves correctly
+  //Gtk2 tested - behaves correctly
+  //Qt5 tested - behaves correctly
   Result := 0;
   {$ENDIF}
 end;
