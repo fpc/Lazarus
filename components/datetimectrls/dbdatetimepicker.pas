@@ -118,6 +118,7 @@ type
     property MonthNames;
     property ShowMonthNames;
     property CalAlignment;
+    property Options;
   //events:
     property OnChange;
     property OnCheckBoxChange;
