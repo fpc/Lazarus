@@ -123,7 +123,7 @@ Performs actions needed when the value for the control has been changed.
 <var>Change</var> is an overridden method in TDBDateTimePicker. It ensures 
 that the field data link is assigned and changes have occurred in the date/
 time value before it is stored to the linked dataset. No actions are performed 
-in the method if  either conditions is not met.
+in the method if either conditions is not met.
 </p>
 <p>
 Change calls the Edit method in the field link to ensure that the field can be 
@@ -287,6 +287,66 @@ Indicates whether the data/time value can be modified using the control.
 <element name="TDBDateTimePicker.MonthNames" link="#datetimectrls.datetimepicker.TCustomDateTimePicker.MonthNames"/>
 <element name="TDBDateTimePicker.ShowMonthNames" link="#datetimectrls.datetimepicker.TCustomDateTimePicker.ShowMonthNames"/>
 <element name="TDBDateTimePicker.CalAlignment" link="#datetimectrls.datetimepicker.TCustomDateTimePicker.CalAlignment"/>
+
+<element name="TDBDateTimePicker.Options">
+<short>
+Set type with the optional features or behaviors enabled for the control.
+</short>
+<descr>
+<p>
+<var>Options</var> is a published <var>TDateTimePickerOptions</var> in 
+<var>TDBDateTimePicker</var>. It is a set type with the optional features or 
+behaviors enabled for the control.
+</p>
+<dl>
+<dt>dtpoDoChangeOnSetDateTime</dt>
+<dd>
+Allows the OnChange handler to be called also when DateTime is 
+changed in program code. This option cannot be used for its intended purpose 
+in TDBDateTimePicker. The DateTime, Date, and Time properties are not visible 
+for the database-aware control, and cannot be changed in program code. The 
+linked dataset is used to update the value for the control, and the change 
+event occurs for the dataset and not the control. OnChange is still signalled 
+in the control, but only when the user interacts with the date/time parts on 
+the control.
+</dd>
+<dt>dtpoEnabledIfUnchecked</dt>
+<dd>
+Enables the date time picker if the checkbox is unchecked.
+</dd>
+<dt>dtpoAutoCheck</dt>
+<dd>
+Auto-checks an unchecked checkbox when DateTime is changed (makes sense only 
+if dtpoEnabledIfUnchecked is set).
+</dd>
+<dt>dtpoFlatButton</dt>
+<dd>
+Use a flat appearance for the button on the control.
+</dd>
+<dt>dtpoResetSelection</dt>
+<dd>
+When the control receives focus, the selection is always in the first date/
+time part (the control does not remember which part was previously selected).
+</dd>
+</dl>
+<p>
+Use properties like ShowCheckBox, AutoButtonSize, ArrowShape, and DateMode to 
+control the appearance for the button(s) on the control.
+</p>
+</descr>
+<version>
+Added in LCL version 2.4.0.
+</version>
+<seealso>
+<link id="TDBDateTimePicker.ArrowShape"/>
+<link id="TDBDateTimePicker.AutoButtonSize"/>
+<link id="TDBDateTimePicker.DateMode"/>
+<link id="TDBDateTimePicker.ShowCheckBox"/>
+<link id="#datetimectrls.datetimepicker.TCustomDateTimePicker.Options"/>
+<link id="#datetimectrls.datetimepicker.TDateTimePickerOptions"/>
+<link id="#datetimectrls.datetimepicker.TDateTimePickerOption"/>
+</seealso>
+</element>
 
 <!-- events -->
 <element name="TDBDateTimePicker.OnChange" link="#datetimectrls.datetimepicker.TCustomDateTimePicker.OnChange"/>
