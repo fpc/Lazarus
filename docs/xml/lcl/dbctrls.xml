@@ -4458,10 +4458,10 @@ IsVisible method to consider this and get real visibility.
 </seealso>
 </element>
 <element name="TDBCheckBox">
-<short>Implements a data-aware checkbox control.</short>
+<short>Implements a data-aware check box control.</short>
 <descr>
 <p>
-<var>TDBCheckBox</var> implements a data-aware checkbox control for use with 
+<var>TDBCheckBox</var> implements a data-aware check box control for use with 
 a logical field in a database. The dataset field can be represented using 
 either a <var>Boolean</var> or a <var>String</var> data type.
 </p>
@@ -4476,7 +4476,7 @@ Support for <var>TBasicAction</var> is also implemented in the control using
 its <var>Action</var> property.
 </p>
 <p>
-Use the following properties to configure and control the data-aware checkbox 
+Use the following properties to configure and control the data-aware check box 
 control:
 </p>
 <ul>
@@ -4592,7 +4592,7 @@ control.
 
 <element name="TDBCheckBox.GetFieldCheckState">
 <short>
-<var>GetFieldCheckState</var> - returns the checkbox state for the current 
+<var>GetFieldCheckState</var> - returns the check box state for the current 
 field.
 </short>
 <descr>
@@ -4992,7 +4992,7 @@ RealGet/SetText. Get/SetTextBuf is only kept for compatibility.
 <element link="#lcl.controls.TControl.Constraints" name="TDBCheckBox.Constraints"/>
 <element name="TDBCheckBox.DataField">
 <short>
-The name (as a string) of the field with which the checkbox is to be 
+The name (as a string) of the field with which the check box is to be 
 associated.
 </short>
 <descr>

@@ -1399,7 +1399,7 @@ component.
 
 <element name="TCustomAction.Checked">
 <short>
-Whether the CheckBox associated with the action is <var>Checked</var> 
+Whether the check box control associated with the action is <var>Checked</var> 
 (default <b>False</b>).
 </short>
 </element>

@@ -349,7 +349,7 @@ Causes the expanded information to be fully visible (expanded) when a task dialo
 </element>
 <element name="TTaskDialogFlag.tdfVerificationFlagChecked">
 <short>
-Indicates that the verification checkbox is in a checked state when a task 
+Indicates that the verification check box is in a checked state when a task 
 dialog is displayed. Ignored when the verification text for the dialog is 
 empty.
 </short>
@@ -1025,7 +1025,7 @@ The text content displayed in the footer area for the dialog.
 
 <element name="TTaskDialog.Verify">
 <short>
-The verification text for the optional checkbox at the bottom of the dialog.
+The verification text for the optional check box at the bottom of the dialog.
 </short>
 <descr/>
 <seealso/>
@@ -1090,9 +1090,9 @@ Checked state for the verification check box.
 </short>
 <descr>
 <p>
-Indicates whether state for the optional checkbox state at the bottom of the 
+Indicates whether state for the optional check box state at the bottom of the 
 dialog. If Verify is not '', should be set before execution. After execution, 
-will contain the final checkbox state.
+will contain the final check box state.
 </p>
 </descr>
 <seealso/>
@@ -1236,7 +1236,7 @@ Sets the value for the specified visual element on the dialog.
 <p>
 Allows a OnButtonClicked callback to change the value for a Task Dialog main 
 element. Note that tdeVerif could be modified only in emulation mode, since 
-the API does not give any run-time access to the checkbox caption. Other 
+the API does not give any run-time access to the check box caption. Other 
 elements will work in both emulated and native modes.
 </p>
 </descr>

@@ -5019,7 +5019,7 @@ click in a check group.
 <short>Object generating the event notification.</short>
 </element>
 <element name="TCheckGroupClicked.Index">
-<short>Ordinal position for the checkbox Item clicked in the control.</short>
+<short>Ordinal position for the check box Item clicked in the control.</short>
 </element>
 
 <element name="TCustomCheckGroup">
@@ -5217,7 +5217,7 @@ Items in the control.
 </seealso>
 </element>
 <element name="TCustomCheckGroup.SetChecked.Index">
-<short>Ordinal position for the checkbox updated in the method.</short>
+<short>Ordinal position for the check box updated in the method.</short>
 </element>
 <element name="TCustomCheckGroup.SetChecked.AValue">
 <short>New value for the checkbox.</short>
@@ -5231,7 +5231,7 @@ Items in the control.
 </seealso>
 </element>
 <element name="TCustomCheckGroup.SetCheckEnabled.Index">
-<short>Ordinal position for the checkbox updated in the method.</short>
+<short>Ordinal position for the check box updated in the method.</short>
 </element>
 <element name="TCustomCheckGroup.SetCheckEnabled.AValue">
 <short>New value for the enable state in the checkbox.</short>

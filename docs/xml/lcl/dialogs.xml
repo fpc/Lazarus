@@ -3360,12 +3360,12 @@ stored in the <var>TFindOptions</var> set type, and used to implement the
 </element>
 <element name="TFindOption.frHideMatchCase">
 <short>
-If set the "Match case" checkbox is hidden from the Find dialog.
+If set the "Match case" check box is hidden on the Find dialog.
 </short>
 </element>
 <element name="TFindOption.frHideWholeWord">
 <short>
-If set the "Whole word" checkbox is hidden from the Find dialog.
+If set the "Whole word" check box is hidden on the Find dialog.
 </short>
 </element>
 <element name="TFindOption.frHideUpDown">
@@ -3380,7 +3380,7 @@ This flag is set when the user checks the "Match case" checkbox.
 </element>
 <element name="TFindOption.frDisableMatchCase">
 <short>
-If set the "Match case" checkbox is disabled in the Find dialog.
+If set the "Match case" check box is disabled on the Find dialog.
 </short>
 </element>
 <element name="TFindOption.frDisableUpDown">
@@ -3390,7 +3390,7 @@ If set the "Up" and "Down" radio buttons are disabled in the Find dialog.
 </element>
 <element name="TFindOption.frDisableWholeWord">
 <short>
-If set the "Whole word" checkbox is disabled in the Find dialog.
+If set the "Whole word" check box is disabled on the Find dialog.
 </short>
 </element>
 <element name="TFindOption.frReplace">
@@ -3420,7 +3420,7 @@ This flag is set when the user checks the "Prompt on replace" checkbox.
 </element>
 <element name="TFindOption.frHidePromptOnReplace">
 <short>
-If set the "Prompt on replace" checkbox is hidden from the Find dialog.
+If set the "Prompt on replace" check box is hidden on the Find dialog.
 </short>
 </element>
 
