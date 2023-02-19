@@ -1145,6 +1145,7 @@ destructor TDbgLinuxProcess.Destroy;
 begin
   FProcProcess.Free;
   FPostponedSignals.Free;
+  FreeAndNil(FSOLibEventBreakpoint);
   inherited Destroy;
 end;
 
