@@ -312,11 +312,11 @@ the control.
 </dd>
 <dt>dtpoEnabledIfUnchecked</dt>
 <dd>
-Enables the date time picker if the checkbox is unchecked.
+Enables the date time picker if the check box is unchecked.
 </dd>
 <dt>dtpoAutoCheck</dt>
 <dd>
-Auto-checks an unchecked checkbox when DateTime is changed (makes sense only 
+Auto-checks an unchecked check box when DateTime is changed (makes sense only 
 if dtpoEnabledIfUnchecked is set).
 </dd>
 <dt>dtpoFlatButton</dt>
