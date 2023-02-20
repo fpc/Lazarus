@@ -25,7 +25,9 @@ type
     function GetVarNameContent: String;
     function GetVarNameIdent: String;
     function GetVarNameUnit: String;
+    procedure SetMsgStrContent(AValue: String);
 
+    function FindLineIdx(AName: String): Integer;
     function FindLine(AName: String): String;
     function CleanLineContent(AText: String): String;
   protected
@@ -45,7 +47,7 @@ type
     property MsgIdContent: String read GetMsgIdContent;
     property MsgIdCleanContent: String read GetMsgIdCleanContent;
     property MsgStr: String read GetMsgStr;
-    property MsgStrContent: String read GetMsgStrContent;
+    property MsgStrContent: String read GetMsgStrContent write SetMsgStrContent;
     property MsgStrCleanContent: String read GetMsgStrCleanContent;
   end;
   TTranslationSectionClass = class of TTranslationSection;
@@ -234,7 +236,7 @@ end;
 
 function TTranslationSection.GetMsgStrContent: String;
 begin
-  Result := MsgStrCleanContent;
+  Result := MsgStr;
   system.Delete(Result, 1, 7);
 end;
 
@@ -262,12 +264,12 @@ end;
 
 function TTranslationSection.GetMsgIdCleanContent: String;
 begin
-  Result := CleanLineContent(MsgId);
+  Result := CleanLineContent(MsgIdContent);
 end;
 
 function TTranslationSection.GetMsgStrCleanContent: String;
 begin
-  Result := CleanLineContent(MsgStr);
+  Result := CleanLineContent(MsgStrContent);
 end;
 
 function TTranslationSection.GetVarNameContent: String;
@@ -302,19 +304,29 @@ begin
     system.Delete(Result, i, Length(Result));
 end;
 
-function TTranslationSection.FindLine(AName: String): String;
+function TTranslationSection.FindLineIdx(AName: String): Integer;
 var
   i: Integer;
 begin
-  Result := '';
+  Result := -1;
   i := Count - 1;
   while i >= 0 do begin
     if strlcomp(PChar(AName), PChar(Strings[i]), Length(AName)) = 0 then begin
-      Result := Strings[i];
+      Result := i;
       exit;
     end;
     dec(i);
   end;
+end;
+
+function TTranslationSection.FindLine(AName: String): String;
+var
+  i: Integer;
+begin
+  i := FindLineIdx(AName);
+  Result := '';
+  if i >= 0 then
+    Result := Strings[i];
 end;
 
 function TTranslationSection.CleanLineContent(AText: String): String;
@@ -322,14 +334,23 @@ var
   i: SizeInt;
 begin
   Result := AText;
-  i := pos(' "', Result);
-  if i > 0 then
-    system.Delete(Result, 1, i+1);
-
+  if (Result <> '') and (Result[1] = '"') then
+    system.Delete(Result, 1, 1);
   if (Result <> '') and (Result[Length(Result)] = '"') then
     system.Delete(Result, Length(Result), 1);
 
   Result := StringReplace(Result, '\"', '"', [rfReplaceAll]);
+end;
+
+procedure TTranslationSection.SetMsgStrContent(AValue: String);
+var
+  i: Integer;
+begin
+  i := FindLineIdx('msgstr ');
+  if i < 0 then i := Add('');
+
+  Strings[i] := 'msgstr "' + AValue + '"';
+  FMsgStr := '';
 end;
 
 procedure TTranslationSection.SetTextStr(const Value: string);
@@ -631,29 +652,6 @@ end;
 procedure TPotFileList.FindDuplicateMsgId(ARes: TPotFile; AFlags: TFindDupFlags
   );
 
-  procedure AddDup(ANewVarName: String; ASrc: TPotSection);
-  var
-    po: TPoFile;
-    poSect: TPoSection;
-    e: LongInt;
-    i: Integer;
-    n: String;
-  begin
-    n := ASrc.Owner.Name;
-    po := ARes.PoFiles.PoFileForLang(n+'  ');
-    e := po.IndexOfVarContent(ANewVarName);
-    i := 0;
-    while e >= 0 do begin
-      inc(i);
-      po := ARes.PoFiles.PoFileForLang(n+'_'+IntToStr(i));
-      e := po.IndexOfVarContent(ANewVarName);
-    end;
-    poSect := TPoSection.Create;
-    poSect.Text := '#: ' + ANewVarName + LineEnding +
-      'msgstr "' + ASrc.VarNameContent + ': ' + ASrc.MsgIdCleanContent + '"' + LineEnding;
-    po.Add(poSect);
-  end;
-
   function GetComparableMsgId(msgid: string): String;
   var
     i, j: Integer;
@@ -685,6 +683,31 @@ procedure TPotFileList.FindDuplicateMsgId(ARes: TPotFile; AFlags: TFindDupFlags
     end;
   end;
 
+  procedure AddDup(ANewVarName: String; ATargetPot: TPotSection; ASrc: TPotSection);
+  var
+    po: TPoFile;
+    poSect: TPoSection;
+    e: LongInt;
+    i: Integer;
+    n, cmpMsgId, s: String;
+  begin
+    n := ASrc.Owner.Name;
+    po := ARes.PoFiles.PoFileForLang(n+'  ');
+    e := po.IndexOfVarContent(ANewVarName);
+    i := 0;
+    while e >= 0 do begin
+      inc(i);
+      po := ARes.PoFiles.PoFileForLang(n+'_'+IntToStr(i));
+      e := po.IndexOfVarContent(ANewVarName);
+    end;
+    poSect := TPoSection.Create;
+    poSect.Text := '#: ' + ANewVarName + LineEnding +
+      'msgstr "' + ASrc.VarNameContent + ': ' + ASrc.MsgIdCleanContent + '"' + LineEnding;
+    po.Add(poSect);
+
+    ATargetPot.MsgStrContent := ATargetPot.MsgStrCleanContent + ',' + ASrc.VarNameIdent;
+  end;
+
 var
   TmpHash: TFPObjectHashTable;
   i, j: Integer;
@@ -709,7 +732,7 @@ begin
       else
       if dupPotItm.Owner = ARes then begin
         // already a dup
-        AddDup(DupPotItm.VarNameContent, potItm);
+        AddDup(DupPotItm.VarNameContent, dupPotItm, potItm);
       end
       else
       begin
@@ -719,8 +742,8 @@ begin
         ARes.Add(newDupPotItm);
         TmpHash[msgid] := newDupPotItm;
 
-        AddDup(newDupPotItm.VarNameContent, dupPotItm);
-        AddDup(newDupPotItm.VarNameContent, potItm);
+        AddDup(newDupPotItm.VarNameContent, newDupPotItm, dupPotItm);
+        AddDup(newDupPotItm.VarNameContent, newDupPotItm, potItm);
       end;
     end;
   end;
