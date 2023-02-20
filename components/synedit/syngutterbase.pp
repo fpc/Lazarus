@@ -442,7 +442,10 @@ begin
       NewWidth := NewWidth + Parts[i].Width;
     end;
 
-  if FWidth = NewWidth then exit;
+  if FWidth = NewWidth then begin
+    SetChildBounds;
+    exit;
+  end;
 
   IncChangeLock;
   try
