@@ -1277,6 +1277,7 @@
       <Unit>
         <Filename Value="idetranslations.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="IDETranslations"/>
       </Unit>
       <Unit>
         <Filename Value="useunitdlg.pas"/>
@@ -1419,6 +1420,7 @@
       <Unit>
         <Filename Value="findinfileswnd.pas"/>
         <IsPartOfProject Value="True"/>
+        <HasResources Value="True"/>
         <UnitName Value="FindInFilesWnd"/>
       </Unit>
       <Unit>

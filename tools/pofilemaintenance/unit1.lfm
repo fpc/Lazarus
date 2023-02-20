@@ -1,0 +1,239 @@
+object Form1: TForm1
+  Left = 426
+  Height = 571
+  Top = 223
+  Width = 896
+  AllowDropFiles = True
+  Caption = 'Po-File maintenance'
+  ClientHeight = 571
+  ClientWidth = 896
+  OnCreate = FormCreate
+  OnDropFiles = FormDropFiles
+  LCLVersion = '2.3.0.0'
+  object lbPoFiles: TListBox
+    Left = 0
+    Height = 493
+    Top = 26
+    Width = 250
+    Align = alLeft
+    ItemHeight = 0
+    OnClick = lbPoFilesClick
+    TabOrder = 0
+  end
+  object ToolBar1: TToolBar
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 896
+    Caption = 'ToolBar1'
+    ShowCaptions = True
+    TabOrder = 1
+    object ToolButton1: TToolButton
+      Left = 1
+      Top = 2
+      Caption = 'Open POT'
+      OnClick = ToolButton1Click
+    end
+    object tbMovePoItems: TToolButton
+      Left = 202
+      Top = 2
+      Caption = 'Move items to'
+      DropdownMenu = popMoveTo
+      Enabled = False
+      Style = tbsButtonDrop
+    end
+    object tbSave: TToolButton
+      Left = 170
+      Top = 2
+      Caption = 'Save'
+      Enabled = False
+      OnClick = tbSaveClick
+    end
+    object tbDupId: TToolButton
+      Left = 296
+      Top = 2
+      Caption = 'Find duplicate MsgId'
+      DropdownMenu = popDupFinder
+      OnClick = tbDupIdClick
+      Style = tbsDropDown
+    end
+    object ToolButton2: TToolButton
+      Left = 162
+      Height = 22
+      Top = 2
+      Caption = 'ToolButton2'
+      Style = tbsSeparator
+    end
+    object ToolButton3: TToolButton
+      Left = 63
+      Height = 22
+      Top = 2
+      Caption = 'ToolButton3'
+      Style = tbsSeparator
+    end
+    object tbShowMsgIdEntries: TToolButton
+      Left = 71
+      Top = 2
+      Caption = 'MsgId'
+      Down = True
+      Grouped = True
+      OnClick = tbShowMsgIdEntriesClick
+      Style = tbsCheck
+    end
+    object tbShowPoFileInfo: TToolButton
+      Left = 112
+      Top = 2
+      Caption = 'Po-Files'
+      Grouped = True
+      OnClick = tbShowMsgIdEntriesClick
+      Style = tbsCheck
+    end
+  end
+  object Splitter1: TSplitter
+    Left = 250
+    Height = 493
+    Top = 26
+    Width = 7
+    MinSize = 200
+  end
+  object lbPoItems: TListBox
+    Left = 257
+    Height = 493
+    Top = 26
+    Width = 350
+    Align = alLeft
+    ItemHeight = 0
+    MultiSelect = True
+    OnClick = lbPoItemsClick
+    TabOrder = 3
+  end
+  object pnlSearch: TPanel
+    Left = 0
+    Height = 52
+    Top = 519
+    Width = 896
+    Align = alBottom
+    AutoSize = True
+    ClientHeight = 52
+    ClientWidth = 896
+    TabOrder = 4
+    object edSearchPoItems: TEdit
+      Left = 3
+      Height = 23
+      Top = 3
+      Width = 865
+      Align = alClient
+      BorderSpacing.Around = 2
+      OnChange = edSearchPoItemsChange
+      OnEditingDone = edSearchPoItemsEditingDone
+      TabOrder = 0
+      TextHint = 'Search po items (comma separated)'
+    end
+    object btnClearSearchPoItem: TSpeedButton
+      Left = 870
+      Height = 23
+      Top = 3
+      Width = 23
+      Align = alRight
+      BorderSpacing.Around = 2
+      Caption = 'X'
+      OnClick = btnClearSearchPoItemClick
+    end
+    object Panel1: TPanel
+      Left = 1
+      Height = 23
+      Top = 28
+      Width = 894
+      Align = alBottom
+      AutoSize = True
+      BevelOuter = bvNone
+      ClientHeight = 23
+      ClientWidth = 894
+      TabOrder = 1
+      object chkSearchPoItemFullWord: TCheckBox
+        Left = 709
+        Height = 19
+        Top = 2
+        Width = 72
+        Align = alRight
+        BorderSpacing.Around = 2
+        Caption = 'Full words'
+        OnChange = chkSearchPoItemFullWordChange
+        OnClick = chkSearchPoItemFullWordChange
+        TabOrder = 0
+      end
+      object chkSearchPoItemIdText: TCheckBox
+        Left = 592
+        Height = 19
+        Top = 2
+        Width = 115
+        Align = alRight
+        BorderSpacing.Around = 2
+        Caption = 'Also search ID text'
+        OnChange = chkSearchPoItemFullWordChange
+        OnClick = chkSearchPoItemFullWordChange
+        TabOrder = 1
+      end
+      object chkSearchPoItemIgnoreUnit: TCheckBox
+        Left = 783
+        Height = 19
+        Top = 2
+        Width = 109
+        Align = alRight
+        BorderSpacing.Around = 2
+        Caption = 'Ignore unit name'
+        Checked = True
+        OnChange = chkSearchPoItemFullWordChange
+        OnClick = chkSearchPoItemFullWordChange
+        State = cbChecked
+        TabOrder = 2
+      end
+    end
+  end
+  object Splitter2: TSplitter
+    Left = 607
+    Height = 493
+    Top = 26
+    Width = 5
+  end
+  object memInfo: TMemo
+    Left = 612
+    Height = 493
+    Top = 26
+    Width = 284
+    Align = alClient
+    ReadOnly = True
+    ScrollBars = ssAutoBoth
+    TabOrder = 6
+  end
+  object OpenDialog1: TOpenDialog
+    Title = 'Open pot file'
+    Filter = 'pot|*.pot'
+    Left = 88
+    Top = 88
+  end
+  object Timer1: TTimer
+    Interval = 1500
+    OnTimer = Timer1Timer
+    Left = 299
+    Top = 213
+  end
+  object popMoveTo: TPopupMenu
+    Left = 93
+    Top = 16
+  end
+  object popDupFinder: TPopupMenu
+    Left = 228
+    Top = 25
+    object mnDupIgnCase: TMenuItem
+      AutoCheck = True
+      Caption = 'Ignore case'
+      ShowAlwaysCheckable = True
+    end
+    object mnDupIgnoreSpaceDiff: TMenuItem
+      AutoCheck = True
+      Caption = 'Ignore space diffs'
+      ShowAlwaysCheckable = True
+    end
+  end
+end
