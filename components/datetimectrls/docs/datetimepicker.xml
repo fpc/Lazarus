@@ -588,7 +588,7 @@ time values, but does use the property to align the button(s) on the control.
 </descr>
 <seealso>
 <link id="TDateTimePicker"/>
-<link id="#datetimectrls.dbdatetimepicker.TDBDateTimePicker"/>
+<link id="#datetimectrls.dbdatetimepicker.TDBDateTimePicker">TDBDateTimePicker</link>
 </seealso>
 </element>
 
@@ -1459,9 +1459,9 @@ using keyboard navigation or by mouse click in the client area for the control.
 <seealso>
 <link id="TCustomDateTimePicker.Options"/>
 <link id="TCustomDateTimePicker.DoExit"/>
-<link id="#lcl.controls.TWinControl.Invalidate"/>
-<link id="#lcl.controls.TWinControl.CMEnter"/>
-<link id="#lcl.controls.TWinControl.OnEnter"/>
+<link id="#lcl.controls.TWinControl.Invalidate">TWinControl.Invalidate</link>
+<link id="#lcl.controls.TWinControl.CMEnter">TWinControl.CMEnter</link>
+<link id="#lcl.controls.TWinControl.OnEnter">TWinControl.OnEnter</link>
 </seealso>
 </element>
 
@@ -1697,7 +1697,7 @@ streaming mechanism.
 <link id="TCustomDateTimePicker.MonthDisplay"/>
 <link id="TCustomDateTimePicker.MonthNames"/>
 <link id="TCustomDateTimePicker.CustomMonthNames"/>
-<link id="#lcl.controls.TWinControl.Loaded"/>
+<link id="#lcl.controls.TWinControl.Loaded">TWinControl.Loaded</link>
 </seealso>
 </element>
 
@@ -3151,10 +3151,10 @@ value on the control.
 <descr>
 <p>
 When DateMode is set to dmComboBox, there is a drop-down button displayed for 
-the control - like on a combo-box. When user clicks the button, the calendar 
-control is displayed and allows the user to pick the date. When set to 
-dmUpDown, a TUpDown button control is displayed to increment or decrement the 
-value in the selected date part.
+the control - like on a combo-box. When the user clicks the button, the 
+calendar control is displayed and allows the user to pick the date. When set 
+to dmUpDown, a TUpDown button control is displayed to increment or decrement 
+the value in the selected date/time part.
 </p>
 <p>
 The button is displayed on the right-hand edge of the control when BiDiMode is 
@@ -3907,7 +3907,7 @@ deprecated in the class instance.
 </descr>
 <seealso>
 <link id="TCustomDateTimePicker"/>
-<link id="#datetimectrls.dbdatetimepicker.TDBDateTimePicker"/>
+<link id="#datetimectrls.dbdatetimepicker.TDBDateTimePicker">TDBDateTimePicker</link>
 </seealso>
 </element>
 

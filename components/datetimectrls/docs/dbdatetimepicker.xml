@@ -241,7 +241,7 @@ Indicates whether the data/time value can be modified using the control.
 </element>
 
 <element name="TDBDateTimePicker.ArrowShape" link="#datetimectrls.datetimepicker.TCustomDateTimePicker.ArrowShape"/>
-<element name="TDBDateTimePicker.ShowCheckBox" link="#datetimectrls.datetimepicker.TCustomDateTimePicker.ShowChechBox"/>
+<element name="TDBDateTimePicker.ShowCheckBox" link="#datetimectrls.datetimepicker.TCustomDateTimePicker.ShowCheckBox"/>
 <element name="TDBDateTimePicker.Checked" link="#datetimectrls.datetimepicker.TCustomDateTimePicker.Checked"/>
 <element name="TDBDateTimePicker.CenturyFrom" link="#datetimectrls.datetimepicker.TCustomDateTimePicker.CenturyFrom"/>
 <element name="TDBDateTimePicker.DateDisplayOrder" link="#datetimectrls.datetimepicker.TCustomDateTimePicker.DateDisplayOrder"/>
@@ -341,10 +341,10 @@ Added in LCL version 2.4.0.
 <link id="TDBDateTimePicker.ArrowShape"/>
 <link id="TDBDateTimePicker.AutoButtonSize"/>
 <link id="TDBDateTimePicker.DateMode"/>
-<link id="TDBDateTimePicker.ShowCheckBox"/>
-<link id="#datetimectrls.datetimepicker.TCustomDateTimePicker.Options"/>
-<link id="#datetimectrls.datetimepicker.TDateTimePickerOptions"/>
-<link id="#datetimectrls.datetimepicker.TDateTimePickerOption"/>
+<link id="#datetimectrls.datetimepicker.TCustomDateTimePicker.ShowCheckBox">TCustomDateTimePicker.ShowCheckBox</link>
+<link id="#datetimectrls.datetimepicker.TCustomDateTimePicker.Options">TCustomDateTimePicker.Options</link>
+<link id="#datetimectrls.datetimepicker.TDateTimePickerOptions">TDateTimePickerOptions</link>
+<link id="#datetimectrls.datetimepicker.TDateTimePickerOption">TDateTimePickerOption</link>
 </seealso>
 </element>
 
