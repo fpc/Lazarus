@@ -295,7 +295,18 @@ var
       end;
     end;
   end;
-  
+
+  procedure HandleListViewOwnerDataHint(ALV: TCustomListViewAccess);
+  var
+    DataHintInfo: PNMLVCACHEHINT;
+  begin
+    debugln('HandleListViewOwnerDataHint');
+    DataHintInfo := PNMLVCACHEHINT(LPARAM);
+    if not Assigned(DataHintInfo) or (not ALV.OwnerData) then
+      Exit;
+    ALV.DoOwnerDataHint(DataHintInfo^.iFrom, DataHintInfo^.iTo);
+  end;
+
 begin
   Result := False;
   case Msg of
@@ -312,6 +323,8 @@ begin
           end;
         LVN_ODFINDITEM:
           HandleListViewFindItem(TCustomListViewAccess(AWinControl));
+        LVN_ODCACHEHINT:
+          HandleListViewOwnerDataHint(TCustomListViewAccess(AWinControl));
       end;
     end;
   end;
