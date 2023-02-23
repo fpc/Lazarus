@@ -11,7 +11,7 @@ ComCtrls
 <descr>
 <p>
 <file>comctrls.pp</file> contains classes and types like those found in the 
-Delphi <file>comctrls</file> unit.
+Delphi <file>comctrls.pp</file> unit.
 </p>
 <p>
 The following components are added to the Lazarus IDE:
@@ -684,7 +684,7 @@ AStatusBar.Panels[0];
 It is also the target member for an enumerator. For example:
 </p>
 <code>// var AStatusBar: TStatusBar;
-//   APanel: TStatusPanel;
+// APanel: TStatusPanel;
 for APanel in AStatusBar.Panels do
 begin
 APanel.Alignment := taCenter;
@@ -9459,153 +9459,187 @@ container.
 
 <element name="TOwnerDataListItem">
 <short>
-List item used in a list view control when owner data (virtual) mode is 
+List item class used in a list view control when OwnerData (virtual) mode is 
 enabled.
 </short>
 <descr>
 <p>
 TOwnerDataListItem is a TListItem descendant which implements a list item 
-used for a list view control in virtual mode.
+used for a list view control in virtual mode. It is the singleton with the 
+currently selected list item when the list view control has enabled its 
+OwnerData property.
+</p>
+<p>
+TOwnerDataListItem provides overridden methods which allow the list item 
+to be maintained in an item cache instead of the Items collection for 
+the list view control. The class instance is, however, still owned by the 
+TListItems collection in the list view control.
+</p>
+<p>
+An internal TOwnerDataListItem instance is allocated in the TCustomListView 
+constructor for use in the control.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomListView.OwnerData"/>
+<link id="TCustomListView.Items"/>
+<link id="TListItems"/>
+<link id="TListItems"/>
+</seealso>
 </element>
 
 <element name="TOwnerDataListItem.FDataIndex"/>
 <element name="TOwnerDataListItem.FCached"/>
-
-<element name="TOwnerDataListItem.GetCaption">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TOwnerDataListItem.GetCaption.Result">
-<short/>
-</element>
-
-<element name="TOwnerDataListItem.GetIndex">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TOwnerDataListItem.GetIndex.Result">
-<short/>
-</element>
-
-<element name="TOwnerDataListItem.GetImageIndex">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TOwnerDataListItem.GetImageIndex.Result">
-<short/>
-</element>
-
-<element name="TOwnerDataListItem.SetCaption">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TOwnerDataListItem.SetCaption.AValue">
-<short/>
-</element>
-
-<element name="TOwnerDataListItem.SetImageIndex">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TOwnerDataListItem.SetImageIndex.AValue">
-<short/>
-</element>
-
-<element name="TOwnerDataListItem.GetSubItems">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TOwnerDataListItem.GetSubItems.Result">
-<short/>
-</element>
-
-<element name="TOwnerDataListItem.DoCacheItem">
-<short/>
-<descr/>
-<seealso/>
-</element>
+<element name="TOwnerDataListItem.GetCaption"/>
+<element name="TOwnerDataListItem.GetCaption.Result"/>
+<element name="TOwnerDataListItem.GetIndex"/>
+<element name="TOwnerDataListItem.GetIndex.Result"/>
+<element name="TOwnerDataListItem.GetImageIndex"/>
+<element name="TOwnerDataListItem.GetImageIndex.Result"/>
+<element name="TOwnerDataListItem.SetCaption"/>
+<element name="TOwnerDataListItem.SetCaption.AValue"/>
+<element name="TOwnerDataListItem.SetImageIndex"/>
+<element name="TOwnerDataListItem.SetImageIndex.AValue"/>
+<element name="TOwnerDataListItem.GetSubItems"/>
+<element name="TOwnerDataListItem.GetSubItems.Result"/>
+<element name="TOwnerDataListItem.DoCacheItem"/>
 
 <element name="TOwnerDataListItem.IsOwnerData">
 <short>
-<b>True</b> if the owner for the list item has been assigned and can be 
-updated in the widgetset class.
+Indicates if the virtual list item has an owner collection and allows updates.
 </short>
 <descr/>
 <seealso/>
 </element>
 <element name="TOwnerDataListItem.IsOwnerData.Result">
-<short/>
+<short>
+<b>True</b> if the owner for the list item has been assigned, and the widget 
+flags allow updates to its values.
+</short>
 </element>
 
 <element name="TOwnerDataListItem.SetDataIndex">
-<short>Sets the internal index position for the virtual item.</short>
+<short>
+Sets the index position for the virtual list item and updates the item cache.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TOwnerDataListItem.SetDataIndex.ADataIndex">
-<short/>
+<short>
+New position where the list item is stored in the item cache.
+</short>
 </element>
 
 <element name="TOwnerDataListItem.SetOwner">
-<short>Sets the TListItems container which owns the list item.</short>
-<descr/>
-<seealso/>
+<short>
+Sets the TListItems container which owns the virtual list item.
+</short>
+<descr>
+<p>
+Changing the owner for the list item causes values in internal members to be 
+cleared, including:
+</p>
+<ul>
+<li>Flags (an empty set).</li>
+<li>States (an empty set).</li>
+<li>ImageIndex (-1 for the unassigned value).</li>
+<li>SubItems (frees the TStrings instance for the member).</li>
+</ul>
+</descr>
+<seealso>
+<link id="TCustomListView.Items"/>
+<link id="TListItems"/>
+</seealso>
 </element>
 <element name="TOwnerDataListItem.SetOwner.AOwner">
-<short/>
+<short>
+TListItems instance which owns the virtual list item.
+</short>
 </element>
 
 <element name="TListItemsEnumerator">
 <short>
 Implements an enumerator for TListItem values in a TListItems container.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>TListItemsEnumerator</var> is the type returned from the GetEnumerator 
+method in TListItems. It implements the enumerator for the indexed Item 
+property in TListItems.
+</p>
+</descr>
+<seealso>
+<link id="TListItems.GetEnumerator"/>
+<link id="TListItems.Item"/>
+<link id="TListItem"/>
+</seealso>
 </element>
 
 <element name="TListItemsEnumerator.FItems"/>
 <element name="TListItemsEnumerator.FPosition"/>
-
-<element name="TListItemsEnumerator.GetCurrent">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TListItemsEnumerator.GetCurrent.Result">
-<short/>
-</element>
+<element name="TListItemsEnumerator.GetCurrent"/>
+<element name="TListItemsEnumerator.GetCurrent.Result"/>
 
 <element name="TListItemsEnumerator.Create">
 <short>Constructor for the class instance.</short>
-<descr/>
+<descr>
+<p>
+On exit, the internal position for the enumerator is set to -1. Use MoveNext 
+to position the enumerator on its initial TListItem value prior to accessing 
+the Current property in the enumerator.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TListItemsEnumerator.Create.AItems">
-<short>List items navigated in the enumerator.</short>
+<short>
+Container with the list items navigated in the enumerator.
+</short>
 </element>
 
 <element name="TListItemsEnumerator.MoveNext">
 <short>Moves to the next value for the enumerator.</short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>MoveNext</var> is a <var>Boolean</var> function used to move the 
+enumerator to the next value in the list items container. The return value is 
+<b>True</b> if the new position is valid for the TListItems container. The 
+return value is <b>False</b> if the new position is larger than Count-1 from 
+the TListItems container.
+</p>
+</descr>
+<seealso>
+<link id="TListItems.Count"/>
+</seealso>
 </element>
 <element name="TListItemsEnumerator.MoveNext.Result">
 <short/>
 </element>
 
 <element name="TListItemsEnumerator.Current">
-<short>Current value for the enumerator.</short>
-<descr/>
-<seealso/>
+<short>
+Current value for the enumerator.
+</short>
+<descr>
+<p>
+<var>Current</var> is a read-only <var>TListItem</var> property which contains 
+the list item found at the current position for the enumerator. The property 
+value is <b>Nil</b> (and an exception is raised) if Current is used to access 
+a position prior to or after a valid position in the list item container.
+</p>
+<p>
+Use MoveNext to move the enumerator to the first/next list item in the 
+container. When MoveNext returns <b>False</b>, there are no more list items 
+available to the enumerator.
+</p>
+</descr>
+<seealso>
+<link id="TListItemsEnumerator.MoveNext"/>
+<link id="TListItems.Count"/>
+<link id="TListItems"/>
+<link id="TListItem"/>
+</seealso>
 </element>
 
 <element name="TListItemsFlag">
@@ -14454,13 +14488,18 @@ handler is not assigned.
 
 <element name="TCustomListView.DoGetOwnerData">
 <short>
-Performs actions to get list item data when OwnerData is <b>True</b>.
+Performs actions needed to get list item data when OwnerData is <b>True</b>.
 </short>
 <descr>
 <p>
-Signals the OnData event handler (when assigned) to get the data for the list 
-item. Properties in Item are updated in the event handler with the values 
-needed for the list item.
+Signals the OnData event handler (when assigned) to get the data for a list 
+item. Properties in Item should be updated in the event handler with the 
+values for the list item.
+</p>
+<p>
+DoGetOwnerData is called when the internal TOwnerDataListItem instance in the 
+control loads its value(s) by signalling the OnData event handler in the 
+control.
 </p>
 </descr>
 <seealso/>
@@ -14476,18 +14515,31 @@ Signals the OnDataHint event handler (when assigned).
 <descr>
 <p>
 The AStartIndex and AEndIndex parameters are passed as arguments to the 
-OnDataHint event handler.
+OnDataHint event handler. They contain the index positions for the virtual 
+list items which are visible on the control. The values are extracted from a 
+caching hint provided by the widgetset class instance.
 </p>
 <p>
 The return value is <b>True</b> if the OnDataHint event handler has been 
 assigned for the control.
 </p>
-<remark>
-DoOwnerDataHint is not used in the current LCL implementation.
-</remark>
+<p>
+Use OnDataHint to perform actions needed to pre-load the content for the 
+specified range of list items into the virtual data source when OwnerData is 
+enabled.
+</p>
+<p>
+Use the OnData event handler to populate properties in the currently selected 
+list item when OwnerData is enabled.
+</p>
 </descr>
+<version>
+Modified in LCL 2.4 to provide support for caching hints in the widgetset 
+class on the Windows platform.
+</version>
 <seealso>
 <link id="TCustomListView.OnDataHint"/>
+<link id="TCustomListView.OnData"/>
 </seealso>
 </element>
 <element name="TCustomListView.DoOwnerDataHint.Result">
@@ -14497,12 +14549,14 @@ DoOwnerDataHint is not used in the current LCL implementation.
 </element>
 <element name="TCustomListView.DoOwnerDataHint.AStartIndex">
 <short>
-First index position needed from the OwnerData for the control.
+First index position needed for the visible virtual list items when OwnerData 
+is enabled.
 </short>
 </element>
 <element name="TCustomListView.DoOwnerDataHint.AEndIndex">
 <short>
-First index position needed from the OwnerData for the control.
+Final index position needed for the visible virtual list items when OwnerData 
+is enabled.
 </short>
 </element>
 
@@ -14510,11 +14564,18 @@ First index position needed from the OwnerData for the control.
 <short>
 Signals the OnDataStateChange event handler (when assigned).
 </short>
-<descr/>
+<descr>
+<remark>
+Not used in the current LCL implementation.
+</remark>
+</descr>
 <seealso/>
 </element>
 <element name="TCustomListView.DoOwnerDataStateChange.Result">
-<short/>
+<short>
+Returns <b>True</b> if the OnDataStateChange event handler has been assigned 
+for the control.
+</short>
 </element>
 <element name="TCustomListView.DoOwnerDataStateChange.AStartIndex">
 <short/>
@@ -15411,14 +15472,17 @@ causes an icon and caption to displayed for each list item. List items are
 arranged in columns, filled from top to bottom and then left to right.
 </p>
 <p>
-See TViewStyle for a description of the view style values and their meanings.
+See <link id="TViewStyle">TViewStyle</link> for a description of the view 
+style values and their meanings.
 </p>
 <p>
 Changing the value for the property causes the widgetset control to be 
 updated when its handle has been allocated.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TViewStyle"/>
+</seealso>
 </element>
 
 <element name="TCustomListView.OnChange">
@@ -15602,22 +15666,51 @@ for the Windows platform only in the current LCL version.
 
 <element name="TCustomListView.OnDataHint">
 <short>
-The event handler is not signalled in the current LCL implementation.
+Event handler signalled to load a range of cached list items in the virtual 
+storage for the control.
 </short>
 <descr>
 <p>
-<var>OnDataHint</var> is not used in the current LCL implementation. In 
-virtual mode (OwnerData = <b>True</b>), only the most recently accessed 
-virtual list item exists in the list view control. The data hinting, or 
-pre-fetch caching, feature is not used in the current implementation.
+<var>OnDataHint</var> is a TLVDataHintEvent property with the event handler 
+signalled when a caching hint is received for the list view control.
 </p>
+<p>
+In virtual mode (OwnerData = <b>True</b>), only the most recently accessed 
+virtual list item exists in the list view control. Data hinting, or 
+pre-fetch caching, allows a range of values to be loaded into the virtual 
+storage for the list items.
+</p>
+<p>
+Arguments passed to the event handler identify the starting and ending 
+positions for the list items needed for the visible area on the control.
+</p>
+<p>
+OnDataHint is signalled from the DoOwnerDataHint method, and occurs when a 
+cache hint is received and handled in the widgetset class.
+</p>
+<p>
+Use the OnData event handler to load the values for the selected list item 
+from the virtual storage.
+</p>
+<remark>
+OnDataHint is signalled for the Windows platform only. Cache hint information 
+is not provided by other widgetsets.
+</remark>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomListView.OnData"/>
+<link id="TCustomListView.OwnerData"/>
+<link id="TLVDataHintEvent"/>
+</seealso>
 </element>
 
 <element name="TCustomListView.OnDataStateChange">
 <short>Not used in the current LCL version.</short>
-<descr>Not used in the current LCL version.</descr>
+<descr>
+<p>
+Not used in the current LCL version.
+</p>
+</descr>
 <seealso/>
 </element>
 
@@ -16437,25 +16530,50 @@ etc.
 
 <element name="TCustomListView.FindData">
 <short>
-Locates the specified list item data in the Items for the control.
+Locates a list item with a given value starting from the specified position in 
+Items.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>FindData</var> is a <var>TListItem</var> function used to locate the list 
+item which has the value specified in the Data argument. FindData calls the 
+FindData method in Items to get the return value (TListItem) for the method.
+</p>
+</descr>
+<seealso>
+<link id="TCustomListView.Items"/>
+<link id="TListItems.FindData"/>
+<link id="TListItem"/>
+</seealso>
 </element>
 <element name="TCustomListView.FindData.Result">
-<short/>
+<short>
+TListItem instance which contains the specified Data, or <b>Nil</b> if a list 
+item is not found in the method.
+</short>
 </element>
 <element name="TCustomListView.FindData.StartIndex">
-<short/>
+<short>
+Ordinal position in Items for the first entry examined in the method.
+</short>
 </element>
 <element name="TCustomListView.FindData.Value">
-<short/>
+<short>
+Pointer to the data for the list item to locate in the method.
+</short>
 </element>
 <element name="TCustomListView.FindData.Inclusive">
-<short/>
+<short>
+<b>True</b> if the item at the position in StartIndex is included in the 
+compared values. <b>False</b> if the comparison starts on the item following 
+StartIndex.
+</short>
 </element>
 <element name="TCustomListView.FindData.Wrap">
-<short/>
+<short>
+<b>True</b> if the search can wrap to the top of the list if an item is not 
+found. <b>False</b> if the search ends at the last item in the list.
+</short>
 </element>
 
 <element name="TCustomListView.GetHitTestInfoAt">
@@ -16478,18 +16596,41 @@ assigned.
 
 <element name="TCustomListView.GetItemAt">
 <short>
-<var>GetItemAt</var> - find and return the list item at the specified 
-coordinates.
+Finds and return the list item at the specified coordinates.
 </short>
+<descr>
+<p>
+<var>GetItemAt</var> is a <var>TListItem</var> function used to get the list 
+item which is located at the coordinates specified in X and Y. GetItemAt calls 
+the corresponding method in the widgetset class instance to get the index 
+position for the list item at the coordinates. 
+</p>
+<p>
+The return value contains the TListItem instance in Items indicated by the 
+widgetset class. The return value may be <b>Nil</b> if the coordinates are not 
+within an item found on the list view control, or the handle for the widget 
+has not been allocated.
+</p>
+<p>
+GetItemAt is used to implement methods like GetNearestItem.
+</p>
+</descr>
 </element>
 <element name="TCustomListView.GetItemAt.Result">
-<short/>
+<short>
+List item found at the specified coordinates, or <b>Nil</b> if a list item is 
+not found.
+</short>
 </element>
 <element name="TCustomListView.GetItemAt.x">
-<short/>
+<short>
+Horizontal coordinate for the requested list item.
+</short>
 </element>
 <element name="TCustomListView.GetItemAt.y">
-<short/>
+<short>
+Vertical coordinate for the requested list item.
+</short>
 </element>
 
 <element name="TCustomListView.GetNearestItem">
@@ -16506,13 +16647,20 @@ a list item. If no item is found <b>Nil</b> is returned.
 <seealso/>
 </element>
 <element name="TCustomListView.GetNearestItem.Result">
-<short/>
+<short>
+List item closest to the specified point, or <b>Nil</b> if a list item is not 
+found.
+</short>
 </element>
 <element name="TCustomListView.GetNearestItem.APoint">
-<short/>
+<short>
+TPoint instance with the coordinates examined in the method.
+</short>
 </element>
 <element name="TCustomListView.GetNearestItem.Direction">
-<short/>
+<short>
+Search direction when trying to locate the nearest list item.
+</short>
 </element>
 
 <element name="TCustomListView.GetNextItem">
@@ -16595,7 +16743,9 @@ Selects all Items in the control when MultiSelect has been enabled.
 </element>
 
 <element name="TCustomListView.IsEditing">
-<short>Indicates if the editor is active in the list view control.</short>
+<short>
+Indicates if the editor is active in the list view control.
+</short>
 <descr>
 Delphi compatible function which returns <b>True</b> if the list view editor 
 is active.
@@ -16687,13 +16837,15 @@ Check box display cannot be enabled for virtual mode.
 </element>
 
 <element name="TCustomListView.Column">
-<short>Provides indexed access to the columns defined for the control.</short>
+<short>
+Provides indexed access to the columns defined for the control.
+</short>
 <descr>
 <p>
 <var>Column</var> is an indexed read-only <var>TListColumn</var> property 
 which provides access to the information for a given column by its position. 
 The column whose information is to be retrieved is determined by an index 
-(AIndex). As with nearly all indexes, this index is 0 based.
+(AIndex). As with nearly all indexes, this index is 0-based.
 </p>
 <p>
 Use the <var>Columns</var> property to add, change or delete a column 
@@ -16718,7 +16870,7 @@ is SubItem[1], ad infinitum.
 </element>
 <element name="TCustomListView.Column.AIndex">
 <short>
-Ordinal position in Columns for the column instance.
+Ordinal position in Columns for the column definition.
 </short>
 </element>
 
@@ -17084,11 +17236,26 @@ disables virtual mode for the list view control.
 </p>
 <p>
 When set to <b>True</b>, the Items property does not contain the actual data 
-displayed on the control. The display values are retrieved using the OnData, 
-OnDataFind, and OnDataHint event handlers. Only the most recently accessed 
-owner data item exists in the list view control. This allows the list view to 
-be used to display a large number of items with a minimal amount of overhead.
+displayed on the control. Only the most recently accessed list item exists in 
+the list view control. This allows the list view to be used to display a large 
+number of items with a minimal amount of overhead. List item content is 
+located and retrieved using event handlers in the control. 
 </p>
+<dl>
+<dt>OnData</dt>
+<dd>
+Retrieves the content for the selected / focused virtual list item.
+</dd>
+<dt>OnDataFind</dt>
+<dd>
+Locates a virtual list item with a specified value.
+</dd>
+<dt>OnDataHint</dt>
+<dd>
+Notifies the control when a caching hint for virtual data is received and 
+handled in the control.
+</dd>
+</dl>
 <p>
 Set the value for the Count property in Items to indicate the number of owner 
 data items available to the list view control. Assign a routine to OnData to 
@@ -17099,7 +17266,6 @@ for the owner data.
 When OwnerData is set to <b>False</b>, all values displayed on the list view 
 control are maintained in the Items property.
 </p>
-
 <p>
 OwnerData is one of the TListViewProperty values included in the 
 TListViewProperties set type and exchanged with the widgetset class. The 
@@ -17110,8 +17276,11 @@ causes the widgetset class to be updated with the new value.
 </descr>
 <seealso>
 <link id="TCustomListView.Items"/>
+<link id="TCustomListView.Columns"/>
+<link id="TCustomListView.Column"/>
 <link id="TCustomListView.OnData"/>
 <link id="TCustomListView.OnDataFind"/>
+<link id="TCustomListView.OnDataHint"/>
 <link id="TCustomListView.OnDataHint"/>
 <link id="TListItems.Count"/>
 <link id="TListViewProperties"/>
@@ -34301,7 +34470,7 @@ property.
 <p>Usage example:</p>
 <code>// save old expanded state
 OldExpanded := TTreeNodeExpandedState.Create(ATreeView);
-//   ... change a lot of nodes ...
+// ... change a lot of nodes ...
 // restore old expanded state
 OldExpanded.Apply(ATreeView);
 OldExpanded.Free;
