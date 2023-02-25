@@ -1117,6 +1117,7 @@ begin
       Add('aarch64');
       Add('arm');
       Add('i386');
+      Add('loongarch64');
       Add('m68k');
       Add('powerpc');
       Add('powerpc64');

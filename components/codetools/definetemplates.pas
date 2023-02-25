@@ -192,13 +192,14 @@ const
   FPCOperatingSystemAlternative2Names: array[1..2] of shortstring =(
       'bsd', 'linux' // see GetDefaultSrcOS2ForTargetOS
     );
-  FPCProcessorNames: array[1..15] of shortstring =(
+  FPCProcessorNames: array[1..16] of shortstring =(
       'aarch64',
       'arm',
       'avr',
       'i386',
       'i8086',
       'jvm',
+      'loongarch64',
       'm68k',
       'mips',
       'mipsel',
@@ -3760,6 +3761,8 @@ begin
     Result:=Result+'ia64'
   else if SysUtils.CompareText(TargetCPU,'aarch64')=0 then
     Result:=Result+'aarch64'
+  else if SysUtils.CompareText(TargetCPU,'loongarch64')=0 then
+    Result:=Result+'loongarch64'
   else if SysUtils.CompareText(TargetCPU,'xtensa')=0 then
     Result:=Result+'xtensa'
   else if SysUtils.CompareText(TargetCPU,'wasm32')=0 then
@@ -3899,22 +3902,28 @@ procedure GetTargetProcessors(const TargetCPU: string; aList: TStrings);
     aList.Add('lx6');
   end;
 
+  procedure LoongArch64;
+  begin
+    aList.Add('LOONGARCH64');
+  end;
+
 begin
   case TargetCPU of
-    'arm'    : Arm;
-    'avr'    : AVR;
-    'i386'   : Intel_i386;
-    'i8086'  : Intel_i8086;
-    'm68k'   : M68k;
-    'powerpc'  : PowerPC;
-    'powerpc64': PowerPC64;
-    'sparc'  : Sparc;
-    'x86_64' : Intel_x86_64;
-    'mipsel','mips' : Mips;
-    'jvm'    : ;
-    'aarch64'  : ;
-    'xtensa' : Xtensa;
-    'wasm32' : ;
+    'arm'            : Arm;
+    'avr'            : AVR;
+    'i386'           : Intel_i386;
+    'i8086'          : Intel_i8086;
+    'm68k'           : M68k;
+    'powerpc'        : PowerPC;
+    'powerpc64'      : PowerPC64;
+    'sparc'          : Sparc;
+    'x86_64'         : Intel_x86_64;
+    'mipsel','mips'  : Mips;
+    'jvm'            : ;
+    'aarch64'        : ;
+    'loongarch64'    : LoongArch64;
+    'xtensa'         : Xtensa;
+    'wasm32'         : ;
   end;
 end;
 

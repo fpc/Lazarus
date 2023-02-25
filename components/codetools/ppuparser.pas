@@ -185,7 +185,10 @@ type
           cpu_riscv32,                  { 19 }
           cpu_riscv64,                  { 20 }
           cpu_xtensa,                   { 21 }
-          cpu_z80                       { 22 }
+          cpu_z80,                      { 22 }
+          cpu_mips64,                   { 23 }
+          cpu_mips64el,                 { 24 }
+          cpu_loongarch64               { 25 }
     );
 
 const
@@ -212,7 +215,10 @@ const
      'riscv32',
      'riscv64',
      'xtensa',
-     'z80'
+     'z80',
+     'mips64',
+     'mips64el',
+     'loongarch64'
      );
 
 // from ppu.pas
@@ -242,7 +248,10 @@ const
     { 19 } 32 {'riscv32'},
     { 20 } 64 {'riscv64'},
     { 21 } 32 {'xtensa'},
-    { 22 } 16 {'z80'}
+    { 22 } 16 {'z80'},
+    { 23 } 64 {'mips64'},
+    { 24 } 64 {'mips64el'},
+    { 25 } 64 {'loongarch64'}
     );
   CpuAluBitSize : array[tsystemcpu] of longint =
     (
@@ -268,7 +277,10 @@ const
     { 19 } 32 {'riscv32'},
     { 20 } 64 {'riscv64'},
     { 21 } 32 {'xtensa'},
-    { 22 }  8 {'z80'}
+    { 22 }  8 {'z80'},
+    { 23 } 64 {'mips64'},
+    { 24 } 64 {'mips64el'},
+    { 25 } 64 {'loongarch64'}
     );
 
 type
@@ -912,7 +924,16 @@ type
         system_aarch64_ios,        { 86 }
         system_x86_64_iphonesim,   { 87 }
         system_aarch64_win64,      { 107 }
-        system_aarch64_darwin      { 111 }
+        system_aarch64_darwin,     { 111 }
+        system_z80_amstradcpc,     { 112 }
+        system_m68k_sinclairql,    { 113 }
+        system_wasm32_wasi,        { 114 }
+        system_aarch64_freebsd,    { 115 }
+        system_aarch64_embedded,   { 116 }
+        system_mips64_linux,       { 117 }
+        system_mips64el_linux,     { 118 }
+        system_riscv32_freertos,   { 119 }
+        system_loongarch64_linux   { 120 }
       );
 const
   // taken form ppudump.pp
@@ -1006,7 +1027,16 @@ const
   { 86 }  'iOS-AArch64',
   { 87 }  'iPhoneSim-x86-64',
   { 107 }  'Win64-AArch64',
-  { 111 }  'Darwin-AArch64'
+  { 111 }  'Darwin-AArch64',
+  { 112 }  'Amstradcpc-z80',
+  { 113 }  'Sinclairql-m68k',
+  { 114 }  'Wasi-wasm32',
+  { 115 }  'Freebsd-AArch64',
+  { 116 }  'Embedded-AArch64',
+  { 117 }  'Linux-MIPS64',
+  { 118 }  'Linux-MIPS64el',
+  { 119 }  'Freertos-riscv32',
+  { 120 }  'Linux-loongarch64'
   );
 begin
   if w<=ord(high(ttarget)) then
