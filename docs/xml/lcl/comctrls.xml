@@ -930,7 +930,7 @@ for the status bar. It calls either the Update or PanelUpdate method in the
 widget when one or all of the Panels on the status bar need to be redrawn.
 </p>
 <p>
-<var>PanelIndex</var> contains the ordinal position for the panel(s) updated  
+<var>PanelIndex</var> contains the ordinal position for the panel(s) updated 
 on the status bar. A value in the range <b>0..Panels.Count-1</b> causes the 
 corresponding panel to be redrawn when the status bar is updated. -1 (or any 
 value less than zero actually) causes all of the defined Panels to be redrawn.
@@ -4393,7 +4393,7 @@ Page object (TCustomPage) for the tab closed on the control.
 
 <element name="TCustomTabControl.HotTrack">
 <short>
-Enables or disables drawing a "hotlighted" tab when the mouse pointer is 
+Enables or disables drawing a "hot-lighted" tab when the mouse pointer is 
 hovered over the control.
 </short>
 <descr>
@@ -4684,7 +4684,7 @@ Reads and write the value for the OwnerDraw property in Tabs.
 <p>
 <var>OwnerDraw</var> is a <var>Boolean</var> property. Its value is read from 
 and written to the corresponding property in Tabs. In widgetset classes, it 
-affects the style flags for a tab -  but is not used in the current LCL 
+affects the style flags for a tab - but is not used in the current LCL 
 version or its widgetsets.
 </p>
 </descr>
@@ -4782,7 +4782,7 @@ value and the design-time flags for the control. The new value is also sent to
 the widgetset class instance.
 </p>
 <p>
-No actions are needed or performed when PageIndex is set to -1, or when its  
+No actions are needed or performed when PageIndex is set to -1, or when its 
 value is larger than PageCount-1.
 </p>
 <p>
@@ -5196,7 +5196,7 @@ The value in Height is not stored in the LCL component streaming mechanism,
 and changing the value in Height has no effect. The origin (Left, Top) and 
 dimensions (Width, Height) for the tab sheet are determined when the parent 
 control (TPageControl) is resized. Height always contains the number of 
-vertical pixels in the visibile area on the parent control.
+vertical pixels in the visible area on the parent control.
 </p>
 <p>
 Place a TScrollBox control (aligned to alClient) on the tab sheet to provide a 
@@ -5327,7 +5327,7 @@ The value in Width is not stored in the LCL component streaming mechanism,
 and changing the value in Width has no effect. The origin (Left, Top) and 
 dimensions (Width, Height) for the tab sheet are determined when the parent 
 control (TPageControl) is resized. Width always contains the number of 
-horizontal pixels in the visibile area on the parent control.
+horizontal pixels in the visible area on the parent control.
 </p>
 <p>
 Place a TScrollBox control (aligned to alClient) on the tab sheet to provide a 
@@ -5391,7 +5391,7 @@ all tab sheets from the PageControl. The <var>TPageControl.PageCount</var> is
 </p>
 <p>
 Note, however, that the controls on the tab sheets are only destroyed when 
-their <var>Owner</var> is one of the tabsheets. Otherwise they still exist on 
+their <var>Owner</var> is one of the tab sheets. Otherwise they still exist on 
 the form, but their <var>Parent</var> has been set to <var>nil</var>.
 </p>
 </descr>
@@ -7074,7 +7074,6 @@ including border space.
 
 <element name="TTabControl.SetScrollOpposite">
 <short>Sets the value for the ScrollOpposite property.</short>
-<short/>
 <descr/>
 <seealso>
 <link id="TTabControl.ScrollOpposite"/>
@@ -7086,7 +7085,6 @@ including border space.
 
 <element name="TTabControl.SetStyle">
 <short>Sets the value for the Style property.</short>
-<short/>
 <descr/>
 <seealso>
 <link id="TTabControl.Style"/>
@@ -7621,7 +7619,9 @@ Gets the rectangle where the tab at the specified position is drawn.
 Gets the number of rows needed to render the Tabs on the control.
 </short>
 <descr>
+<p>
 Always returns 1 in TTabControl.
+</p>
 </descr>
 <seealso/>
 </element>
@@ -8310,6 +8310,7 @@ TListItem is the type stored in the TListItems container.
 </seealso>
 </element>
 
+<!-- private -->
 <element name="TListItem.FOwner"/>
 <element name="TListItem.FFlags"/>
 <element name="TListItem.FSubItems"/>
@@ -8505,34 +8506,35 @@ and Selected.
 </element>
 
 <element name="TListItem.WSUpdateText">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Copies text values from the list item to the corresponding position in the 
+widgetset class instance.
+</short>
+<descr>
+<p>
+<var>WSUpdateText</var> uses the value in Index to determine which list view 
+item is updated in the widget. Methods in the widget are called to store 
+values from the Caption and SubItems properties to the corresponding list item 
+in the widget.
+</p>
+<p>
+WSUpdateText is called from methods in TListItems, like SetItem and 
+WSCreateCacheItem, when WSUpdateText returns True.
+</p>
+</descr>
+<seealso>
+<link id="TListItem.Index"/>
+<link id="TListItem.Caption"/>
+<link id="TListItem.SubItems"/>
+<link id="TListItems.SetItem"/>
+<link id="TListItems.WSCreateCacheItem"/>
+</seealso>
 </element>
 
-<element name="TListItem.WSUpdateImages">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TListItem.WSUpdateChecked">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TListItem.WSSetState">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TListItem.WSUpdateState">
-<short/>
-<descr/>
-<seealso/>
-</element>
+<element name="TListItem.WSUpdateImages"/>
+<element name="TListItem.WSUpdateChecked"/>
+<element name="TListItem.WSSetState"/>
+<element name="TListItem.WSUpdateState"/>
 
 <element name="TListItem.SetChecked">
 <short>Sets the value for the Checked property.</short>
@@ -9454,7 +9456,10 @@ container.
 <element name="TListItemClass">
 <short>Class reference used to create new instances of TListItem.</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TListItem"/>
+<link id="TLVCreateItemClassEvent"/>
+</seealso>
 </element>
 
 <element name="TOwnerDataListItem">
@@ -9812,7 +9817,7 @@ Value for the Count property.
 <element name="TListItems.GetItem">
 <short>
 Gets the value for the indexed Item property.
-</short>.
+</short>
 <descr/>
 <seealso>
 <link id="TListItems.Item"/>
@@ -9843,10 +9848,20 @@ TListItem instance at the specified position in the indexed property.
 
 <element name="TListItems.WSCreateItems">
 <short>
-<var>WSCreateItems</var> - instruction to the widgetset to create Items.
+Creates list items in the widgetset class, and cache entries for the values.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>WSCreateItems</var> is called when the window handle is initialized for a 
+list view control, and virtual mode has not been enabled in the control using 
+its OwnerData property.
+</p>
+</descr>
+<seealso>
+<link id="TCustomListView.InitializeWnd"/>
+<link id="TCustomListView.Items"/>
+<link id="TCustomListView.OwnerData"/>
+</seealso>
 </element>
 
 <element name="TListItems.DoFinalizeWnd">
@@ -10416,16 +10431,33 @@ is not found prior to the end of the container.
 </element>
 
 <element name="TListItems.GetEnumerator">
-<short>Gets an enumerator for the list items in the container.</short>
-<descr/>
+<short>
+Gets an enumerator for the list items in the container.
+</short>
+<descr>
+<p>
+<var>GetEnumerator</var> is a <var>TListItemsEnumerator</var> function which 
+returns an enumerator for the TListItem instances in the indexed Item 
+property. It creates the TListItemsEnumerator instance in the return value 
+using the current class instance as the container with the enumerated values.
+</p>
+<remark>
+The enumerator returned from the method is not pre-positioned on the first 
+list item. Call the MoveNext method in the enumerator prior to accessing its 
+Current property.
+</remark>
+</descr>
 <seealso>
-<link id="TListItemsEnumerator"/>
+<link id="TListItems.Item"/>
 <link id="TListItem"/>
+<link id="TListItemsEnumerator.MoveNext"/>
+<link id="TListItemsEnumerator.Current"/>
 </seealso>
 </element>
 <element name="TListItems.GetEnumerator.Result">
 <short>
-TListItemsEnumerator instance used to access the item values in the container.
+TListItemsEnumerator instance used to access the list item values in the 
+container.
 </short>
 </element>
 
@@ -10433,7 +10465,22 @@ TListItemsEnumerator instance used to access the item values in the container.
 <short>
 Gets the ordinal position in the container for the specified list item.
 </short>
-<descr/>
+<descr>
+<p>
+If the container has cached items, the cache index for the list item in AItem 
+is used as the return value. If a cached entry is not already assigned, the 
+IndexOf method in the internal storage is called locate the specified list 
+item.
+</p>
+<p>
+The return value is -1 if the specified list item is not found in the 
+container.
+</p>
+<p>
+The list item and its position in the list are stored in the internal cache 
+for subsequent use in the container.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TListItems.IndexOf.Result">
@@ -10450,32 +10497,72 @@ TListItem instance to locate in the container.
 
 <element name="TListItems.Insert">
 <short>
-<var>Insert</var> an item in the list at <var>AIndex</var>, returning the 
-value of the <var>ListItem</var>.
+Creates and inserts a list item at the specified ordinal position in the 
+container.
 </short>
-<descr/>
+<descr>
+<p>
+<var>Insert</var> is a <var>TListItem</var> function used to insert a new 
+TListItem instance into the container at the ordinal position specified in 
+<var>AIndex</var>.
+</p>
+<p>
+If the container has an assigned owner (TCustomListView), its CreateListItem 
+method is called to create the new list item. Otherwise, the TListItem is 
+created with the container class instance as the owner of the list item.
+</p>
+<p>
+Inserts calls the InsertItem method to store the list item at the position 
+specified in AIndex in the internal stage for the container.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TListItems.Insert.Result">
-<short/>
+<short>
+TListItem instance stored in the method.
+</short>
 </element>
 <element name="TListItems.Insert.AIndex">
-<short/>
+<short>
+Ordinal position in the container where the list item is stored.
+</short>
 </element>
 
 <element name="TListItems.InsertItem">
 <short>
-<var>InsertItem</var> - procedure to insert <var>AItem</var> at position 
-<var>AIndex</var> in the list.
+Inserts the specified list item at the specified position in the internal 
+storage for the container.
 </short>
-<descr/>
+<descr>
+<p>
+<var>InsertItem</var> is a method used to insert the list item in AItem at the 
+ordinal position in AIndex in the internal storage for the container. Values 
+in AItem and AIndex are also stored in the cached entries for the container.
+</p>
+<p>
+If an owner (TCustomListView) has been assigned for the container, and its 
+handle is valid, the widgetset class is updated with the content for the 
+inserted list item. This includes the text, images, and checked state for the 
+list item.
+</p>
+<p>
+The ItemInserted method in the owner is also called to notify the control of 
+the inserted list item. This executes an overridden Insert method (when 
+implemented) and signals the OnInsert event handler for the control.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TListItems.InsertItem.AItem">
-<short/>
+<short>
+List item inserted into the internal storage for the container.
+</short>
 </element>
 <element name="TListItems.InsertItem.AIndex">
-<short/>
+<short>
+Ordinal position in the internal storage where the list item is inserted.
+</short>
 </element>
 
 <element name="TListItems.Flags">
@@ -10483,7 +10570,7 @@ value of the <var>ListItem</var>.
 <descr>
 <p>
 <var>Flags</var> is a read-only <var>TListItemsFlags</var> property with the 
-flag values currently assigned to the list. Values in flags are added and 
+flag values currently assigned to the list. Values in Flags are added and 
 removed as needed in methods for the class instance.
 </p>
 </descr>
@@ -10496,8 +10583,26 @@ removed as needed in methods for the class instance.
 <short>
 The number of TListItem instances stored in the container.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>Count</var> is an <var>Integer</var> property with the number of list 
+items stored in the container. Its value is read from the Count property in 
+the internal list used to store the list items. Setting a new value for the 
+property is ignored; the property value is maintained as list items are added 
+to or removed from the internal storage.
+</p>
+<p>
+Count determines the upper limit for the positions in the indexed Item 
+property. Index values must be in the range 0..Count-1 when Count has a 
+non-zero value.
+</p>
+</descr>
+<seealso>
+<link id="TListItems.Item"/>
+<link id="TListItems.AddItem"/>
+<link id="TListItems.InsertItem"/>
+<link id="TListItems.Delete"/>
+</seealso>
 </element>
 
 <element name="TListItems.Item">
@@ -10567,8 +10672,8 @@ argument passed to the method.
 
 <element name="TOwnerDataListItems">
 <short>
-Faux container for the items in a list view control when owner data (virtual) 
-mode is enabled.
+Container for the items in a list view control when owner data (virtual) mode 
+is enabled.
 </short>
 <descr>
 <p>
@@ -10612,18 +10717,36 @@ when owner data is enabled.
 </element>
 
 <element name="TOwnerDataListItems.Clear">
-<short>Frees the list items stored in the Items property.</short>
-<descr/>
-<seealso/>
+<short>
+Frees and <b>Nil</b>s the list items stored in the container.
+</short>
+<descr>
+<p>
+<var>Clear</var> is an overridden method in <var>TOwnerDataListItems</var>. It 
+reimplements the method introduced in the ancestor class (TListItems) to free 
+and <b>Nil</b> each of the TListItem instances stored in the internal storage 
+for the container. Prior to exit, the Count property is set to 0.
+</p>
+<p>
+Clear does <b>not</b> call the inherited method.
+</p>
+</descr>
+<seealso>
+<link id="TListItems.Clear"/>
+<link id="TListItems.Count"/>
+<link id="TListItem"/>
+</seealso>
 </element>
 
 <element name="TWidth">
-<short>ImageIndex.</short>
+<short>
+Range type with values allowed in width propertied in TListColumn.
+</short>
 <descr>
 <p>
 <var>TWidth</var> is an <var>Integer</var> range type with values in the 
-range <b>0..MaxInt</b>. TWidth is the type used to implement the WidthType, 
-MinWidth, MaxWidth, and Width properties in TListColumn.
+range <b>0..MaxInt</b>. TWidth is the type used to implement the MinWidth, 
+MaxWidth, Width and WidthType properties in TListColumn.
 </p>
 </descr>
 <seealso>
@@ -11588,18 +11711,50 @@ match is found.
 </element>
 
 <element name="TLVDataHintEvent">
-<short>Not used in the current LCL implementation.</short>
-<descr/>
-<seealso/>
+<short>
+Specifies a handler routine for data hint events in TListView.
+</short>
+<descr>
+<p>
+<var>TLVDataHintEvent</var> is an object procedure type which specifies a 
+handler routine for data hints in TListView controls. TLVDataHintEvent is the 
+type used for the OnDataHint event handler in TCustomListView and descendent 
+classes.
+</p>
+<p>
+An application can implement and assign a handler routine to perform actions 
+needed to pre-load or cache values from an external source. It is used when 
+virtual mode is enabled in the list view control.
+</p>
+<p>
+The arguments passed to the handler routine identify the list view control for 
+the event, and the range of list item positions currently visible on the list 
+view control.
+</p>
+<p>
+TLVDataHintEvent and OnDataHint events are used on the Windows platform only. 
+Other widgetsets do not implement the data hinting mechanism.
+</p>
+</descr>
+<seealso>
+<link id="TCustomListView.OnDataHint"/>
+<link id="TCustomListView.OwnerData"/>
+</seealso>
 </element>
 <element name="TLVDataHintEvent.Sender">
-<short/>
+<short>
+Object (TCustomListView) for the event notification.
+</short>
 </element>
 <element name="TLVDataHintEvent.StartIndex">
-<short/>
+<short>
+Initial position for visible list items on the list view control.
+</short>
 </element>
 <element name="TLVDataHintEvent.EndIndex">
-<short/>
+<short>
+Final position for visible list items on the list view control.
+</short>
 </element>
 
 <element name="TLVDataStateChangeEvent">
@@ -12278,7 +12433,7 @@ new list view item.
 <descr>
 <p>
 Arguments to the object procedure identify the list view control 
-(<var>Sender</var>)  and the class type (<var>ItemClass</var>) used to create 
+(<var>Sender</var>) and the class type (<var>ItemClass</var>) used to create 
 new list view items. ItemClass is a variable parameter which is updated in 
 the event handler with the TListItemClass class reference needed for the list 
 view control.
@@ -18594,158 +18749,39 @@ control.
 </short>
 </element>
 
-<element name="TCustomUpDown.GetPosition">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TCustomUpDown.GetPosition.Result">
-<short/>
-</element>
-
-<element name="TCustomUpDown.BTimerExec">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TCustomUpDown.BTimerExec.Sender">
-<short/>
-</element>
-
-<element name="TCustomUpDown.GetFlat">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TCustomUpDown.GetFlat.Result">
-<short/>
-</element>
-
-<element name="TCustomUpDown.SetAlignButton">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TCustomUpDown.SetAlignButton.Value">
-<short/>
-</element>
-
-<element name="TCustomUpDown.SetArrowKeys">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TCustomUpDown.SetArrowKeys.Value">
-<short/>
-</element>
-
-<element name="TCustomUpDown.SetAssociate">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TCustomUpDown.SetAssociate.Value">
-<short/>
-</element>
-
-<element name="TCustomUpDown.SetIncrement">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TCustomUpDown.SetIncrement.Value">
-<short/>
-</element>
-
-<element name="TCustomUpDown.SetMax">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TCustomUpDown.SetMax.Value">
-<short/>
-</element>
-
-<element name="TCustomUpDown.SetMin">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TCustomUpDown.SetMin.Value">
-<short/>
-</element>
-
-<element name="TCustomUpDown.SetMinRepeatInterval">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TCustomUpDown.SetMinRepeatInterval.AValue">
-<short/>
-</element>
-
-<element name="TCustomUpDown.SetOrientation">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TCustomUpDown.SetOrientation.Value">
-<short/>
-</element>
-
-<element name="TCustomUpDown.SetPosition">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TCustomUpDown.SetPosition.Value">
-<short/>
-</element>
-
-<element name="TCustomUpDown.SetThousands">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TCustomUpDown.SetThousands.Value">
-<short/>
-</element>
-
-<element name="TCustomUpDown.SetFlat">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TCustomUpDown.SetFlat.Value">
-<short/>
-</element>
-
-<element name="TCustomUpDown.SetWrap">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TCustomUpDown.SetWrap.Value">
-<short/>
-</element>
-
-<element name="TCustomUpDown.UpdateAlignButtonPos">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TCustomUpDown.UpdateOrientation">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TCustomUpDown.UpdateUpDownPositionText">
-<short/>
-<descr/>
-<seealso/>
-</element>
+<element name="TCustomUpDown.GetPosition"/>
+<element name="TCustomUpDown.GetPosition.Result"/>
+<element name="TCustomUpDown.BTimerExec"/>
+<element name="TCustomUpDown.BTimerExec.Sender"/>
+<element name="TCustomUpDown.GetFlat"/>
+<element name="TCustomUpDown.GetFlat.Result"/>
+<element name="TCustomUpDown.SetAlignButton"/>
+<element name="TCustomUpDown.SetAlignButton.Value"/>
+<element name="TCustomUpDown.SetArrowKeys"/>
+<element name="TCustomUpDown.SetArrowKeys.Value"/>
+<element name="TCustomUpDown.SetAssociate"/>
+<element name="TCustomUpDown.SetAssociate.Value"/>
+<element name="TCustomUpDown.SetIncrement"/>
+<element name="TCustomUpDown.SetIncrement.Value"/>
+<element name="TCustomUpDown.SetMax"/>
+<element name="TCustomUpDown.SetMax.Value"/>
+<element name="TCustomUpDown.SetMin"/>
+<element name="TCustomUpDown.SetMin.Value"/>
+<element name="TCustomUpDown.SetMinRepeatInterval"/>
+<element name="TCustomUpDown.SetMinRepeatInterval.AValue"/>
+<element name="TCustomUpDown.SetOrientation"/>
+<element name="TCustomUpDown.SetOrientation.Value"/>
+<element name="TCustomUpDown.SetPosition"/>
+<element name="TCustomUpDown.SetPosition.Value"/>
+<element name="TCustomUpDown.SetThousands"/>
+<element name="TCustomUpDown.SetThousands.Value"/>
+<element name="TCustomUpDown.SetFlat"/>
+<element name="TCustomUpDown.SetFlat.Value"/>
+<element name="TCustomUpDown.SetWrap"/>
+<element name="TCustomUpDown.SetWrap.Value"/>
+<element name="TCustomUpDown.UpdateAlignButtonPos"/>
+<element name="TCustomUpDown.UpdateOrientation"/>
+<element name="TCustomUpDown.UpdateUpDownPositionText"/>
 
 <element name="TCustomUpDown.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
@@ -18776,7 +18812,9 @@ decremented.
 </element>
 
 <element name="TCustomUpDown.InitializeWnd">
-<short/>
+<short>
+Initializes the window handle for the control.
+</short>
 <descr>
 <p>
 InitializeWnd is an overridden method used to initialize the widgetset class 
@@ -18793,110 +18831,294 @@ Orientation, and UseArrowKeys properties.
 
 <element name="TCustomUpDown.AssociateKeyDown">
 <short>
-<var>AssociateKeyDown</var> - protected procedure for dealing with action to 
-be taken if an associate key (Shift, Ctrl or Alt) is pressed while the 
-control is active.
+Implements the OnKeyDown event handler assigned to the Associate control in 
+the class instance.
 </short>
-<descr/>
+<descr>
+<p>
+<var>AssociateKeyDown</var> is assigned as an OnKeyDown handler routine for 
+the control in the Associate property. It allows cursor keys (like Left, 
+Right, Up and Down) entered in the Associate control to be applied to the 
+Position in the Up/Down control. This includes using the Min, Max, and 
+Increment values as needed for the Orientation in the control.
+</p>
+<p>
+Key is set to 0 if the key down event is handled in the routine.
+</p>
+<p>
+No actions are performed in the method if ArrowKeys is not enabled for the 
+control, or when ShiftState is not an empty set (meaning no modifiers for the 
+key event).
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TCustomUpDown.AssociateKeyDown.Sender">
-<short/>
+<short>
+Control (Associate) generating the event notification.
+</short>
 </element>
 <element name="TCustomUpDown.AssociateKeyDown.Key">
-<short/>
+<short>
+Virtual key code for the key down event.
+</short>
 </element>
 <element name="TCustomUpDown.AssociateKeyDown.ShiftState">
-<short/>
+<short>
+Shift, Ctrl, or Alt modifier for the key down event.
+</short>
 </element>
 
 <element name="TCustomUpDown.AssociateMouseWheel">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Implements an OnMouseWheel event handler assigned to the Associate control in 
+the class instance.
+</short>
+<descr>
+<p>
+<var>AssociateMouseWheel</var> is assigned as an OnMouseWheel handler routine 
+for the control in the Associate property. It ensures that a mouse wheel event 
+in Associate is applied to the Up/Down control by calling its AdjustPos method.
+</p>
+<p>
+WheelDelta indicates the direction the mouse wheel was scrolled. A positive 
+non-zero value indicates the mouse wheel was scrolled upwards. A negative 
+non-zero value indicates the mouse wheel was scrolled downwards.
+</p>
+<p>
+AdjustPos is called to apply the change to the control by incrementing or 
+decrementing the value in Position as needed. The Handled argument is set to 
+True if the wheel event was applied to the control.
+</p>
+<p>
+No actions are performed in the method when WheelDelta contains 0. Handled is 
+set to False in this situation.
+</p>
+<p>
+AssociateMouseWheel is assigned when a control is assigned to the Associate 
+property.
+</p>
+</descr>
+<seealso>
+<link id="TCustomUpDown.AdjustPos"/>
+<link id="TCustomUpDown.Associate"/>
+<link id="TCustomUpDown.Increment"/>
+<link id="TCustomUpDown.Max"/>
+<link id="TCustomUpDown.Min"/>
+<link id="TCustomUpDown.Position"/>
+<link id="TCustomUpDown.Wrap"/>
+</seealso>
 </element>
 <element name="TCustomUpDown.AssociateMouseWheel.Sender">
-<short/>
+<short>
+Control (Associate) generating the event notification.
+</short>
 </element>
 <element name="TCustomUpDown.AssociateMouseWheel.Shift">
-<short/>
+<short>
+Shift, Ctrl, or Alt modifier for the mouse wheel event.
+</short>
 </element>
 <element name="TCustomUpDown.AssociateMouseWheel.WheelDelta">
-<short/>
+<short>
+Units of movement and direction for the mouse wheel event.
+</short>
 </element>
 <element name="TCustomUpDown.AssociateMouseWheel.MousePos">
-<short/>
+<short>
+Coordinates for the mouse pointer when the mouse wheel event was detected.
+</short>
 </element>
 <element name="TCustomUpDown.AssociateMouseWheel.Handled">
-<short/>
+<short>
+Returns <b>True</b> if the mouse wheel event was handled in the routine.
+</short>
 </element>
 
 <element name="TCustomUpDown.OnAssociateChangeBounds">
 <short>
-<var>OnAssociateChangeBounds</var> - event handler for a change in bounds of 
-the associate control.
+Implements an OnChangeBounds event handler assigned to the Associate control 
+in the class instance.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>OnAssociateChangeBounds</var> ensures that the control is repositioned 
+and realigned to the Associate control when its bounds have been changed.
+</p>
+<p>
+The AlignButton property is used to determine which coordinates (Left, Right, 
+Width, or Height) are adjusted to align and position the control adjacent to 
+the Associate control.
+</p>
+<dl>
+<dt>udLeft, udRight</dt>
+<dd>
+Causes the Top and Height properties for the control to be set to the 
+corresponding values in Associate. The Left property is calculated to place 
+the up/down control relative to the specified edge for the Associate control.
+</dd>
+<dt>upTop, udBottom</dt>
+<dd>
+Causes the Left and Width properties for the control to be set to the 
+corresponding values in Associate. The Top property is calculated to place the 
+up/down control relative to the specified edge for the Associate control.
+</dd>
+</dl>
+<p>
+SetBounds is called to apply the calculated Left, Top, Width, and Height 
+values to the control.
+</p>
+<p>
+No actions are performed in the method if a control has not been assigned to 
+the Associate property in the class instance.
+</p>
+<p>
+OnAssociateChangeBounds is assigned when a control is assigned to the 
+Associate property.
+</p>
+</descr>
+<seealso>
+<link id="TCustomUpDown.AlignButton"/>
+<link id="TCustomUpDown.Associate"/>
+<link id="TUDAlignButton"/>
+<link id="#lcl.controls.TWinControl.SetBounds">TWinControl.SetBounds</link>
+<link id="#lcl.controls.TControl.Width">TControl.Width</link>
+<link id="#lcl.controls.TControl.Height">TControl.Height</link>
+<link id="#lcl.controls.TControl.Left">TControl.Left</link>
+<link id="#lcl.controls.TControl.Top">TControl.Top</link>
+</seealso>
 </element>
 <element name="TCustomUpDown.OnAssociateChangeBounds.Sender">
-<short/>
+<short>
+Control for the event notification. Not used in the method.
+</short>
 </element>
 
 <element name="TCustomUpDown.OnAssociateChangeEnabled">
 <short>
-Event handler signalled when Enabled is changed for the associated control.
+Implements an OnEnabledChanged event handler assigned to the Associate control 
+in the class instance.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>OnAssociateChangeEnabled</var> ensures that the Enabled property is 
+updated when the corresponding property in the Associate control has been 
+changed. When the Enabled property has been changed, the overridden SetEnabled 
+method id called to update the enabled state for the speed buttons on the 
+control.
+</p>
+<p>
+No actions are performed in the method if a control has not been assigned to 
+the Associate property.
+</p>
+<p>
+OnAssociateChangeEnabled is assigned when a new value is stored to the 
+Associate property.
+</p>
+</descr>
+<seealso>
+<link id="TCustomUpDown.Associate"/>
+<link id="TCustomUpDown.SetEnabled"/>
+<link id="#lcl.controls.TControl.Enabled"/>
+</seealso>
 </element>
 <element name="TCustomUpDown.OnAssociateChangeEnabled.Sender">
-<short/>
+<short>
+Control (Associate) for the event notification.
+</short>
 </element>
 
 <element name="TCustomUpDown.OnAssociateChangeVisible">
 <short>
-Event handler signalled when Visible is changed for the associated control.
+Implements an OnVisibleChanged event handler assigned to the Associate control 
+in the class instance.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>OnAssociateChangeVisible</var> ensures that the Visible property for the 
+control is updated when the corresponding property has been changed in the 
+Associate control. It calls the SetVisible method to apply the new property 
+value to the control.
+</p>
+<p>
+See <link id="#lcl.controls.TControl.SetVisible">TControl.SetVisible</link> 
+for more information about the actions performed when the Visible property is 
+updated.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.controls.TControl.SetVisible">TControl.SetVisible</link>
+<link id="#lcl.controls.TControl.Visible">TControl.Visible</link>
+</seealso>
 </element>
 <element name="TCustomUpDown.OnAssociateChangeVisible.Sender">
-<short/>
+<short>
+Control (Associate) for the event notification.
+</short>
 </element>
 
 <element name="TCustomUpDown.DoMouseWheelDown">
 <short>
 Performs actions when a mouse wheel down event occurs for the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>DoMouseWheelDown</var> is an overridden method in 
+<var>TCustomUpDown</var>. It calls the inherited method on entry to signal an 
+assigned OnMouseWheelDown event handler for the control. If the mouse wheel 
+event was not handled in the ancestor class, and a handle for the widget has 
+not been assigned, the Click method for the decrement speed button is called 
+to apply the mouse wheel event to the control.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.controls.TControl.DoMouseWheelDown">TControl.DoMouseWheelDown</link>
+<link id="#lcl.controls.TControl.DoMouseWheel">TControl.DoMouseWheel</link>
+</seealso>
 </element>
 <element name="TCustomUpDown.DoMouseWheelDown.Result">
-<short/>
+<short>
+Returns <b>True</b> if the mouse wheel event was handled by an OnMouseWheel 
+event handler in the ancestor class.
+</short>
 </element>
 <element name="TCustomUpDown.DoMouseWheelDown.Shift">
-<short/>
+<short>
+Shift, Ctrl, or Alt modifier for the mouse wheel event.  
+</short>
 </element>
 <element name="TCustomUpDown.DoMouseWheelDown.MousePos">
-<short/>
+<short>
+Coordinates for the mouse pointer when the wheel event was received.
+</short>
 </element>
 
+<!-- TODO: Needs description. -->
 <element name="TCustomUpDown.DoMouseWheelUp">
 <short>
 Performs actions when a mouse wheel up event occurs for the control.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="#lcl.controls.TControl.DoMouseWheelUp">TControl.DoMouseWheelUp</link>
+<link id="#lcl.controls.TControl.DoMouseWheel">TControl.DoMouseWheel</link>
+</seealso>
 </element>
 <element name="TCustomUpDown.DoMouseWheelUp.Result">
-<short/>
+<short>
+Returns <b>True</b> if the mouse wheel event was handled by an OnMouseWheel 
+event handler in the ancestor class.
+</short>
 </element>
 <element name="TCustomUpDown.DoMouseWheelUp.Shift">
-<short/>
+<short>
+Shift, Ctrl, or Alt modifier for the mouse wheel event.  
+</short>
 </element>
 <element name="TCustomUpDown.DoMouseWheelUp.MousePos">
-<short/>
+<short>
+Coordinates for the mouse pointer when the wheel event was received.
+</short>
 </element>
 
 <element name="TCustomUpDown.DoMouseWheelLeft">
@@ -19132,7 +19354,7 @@ Event handler signalled to determine if the control can change its value.
 
 <element name="TCustomUpDown.OnClick">
 <short>
-<var>OnClick</var> - special event handler for a click on up or down button.
+Event handler signalled when a button on the control is clicked.
 </short>
 <descr>
 <p>
@@ -19148,20 +19370,26 @@ variable and adjust the display.
 </element>
 
 <element name="TCustomUpDown.Orientation">
-<short>Whether horizontal or vertical.</short>
+<short>
+Indicates the horizontal or vertical orientation for the button(s) relative to 
+the Associate control.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TCustomUpDown.Position">
-<short>The <var>Position</var> of the UpDown control.</short>
+<short>
+The current position (or value) for the control as a SmallInt type.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TCustomUpDown.Thousands">
 <short>
-If <b>True</b>, multiply all displayed values and the Increment by 1000.
+Enables or disables use of the thousands separator when displaying the 
+text for the Position property.
 </short>
 <descr/>
 <seealso/>
@@ -19188,18 +19416,33 @@ beyond the extreme value.
 
 <element name="TCustomUpDown.Create">
 <short>
-<var>Create</var> - constructor for <var>TCustomUpDown</var>: calls inherited 
-<var>Create</var>, initializes orientation, max and min, bounds, size and 
-alignment.
+Constructor for the class instance.
 </short>
-<descr/>
+<descr>
+<p>
+<var>Create</var> is the constructor for <var>TCustomUpDown</var>. It calls 
+the inherited <var>Create</var> method, and initializes properties for the 
+class instance. For example:
+</p>
+<ul>
+<li>Orientation</li>
+<li>Max</li>
+<li>Min</li>
+<li>Bounds</li>
+<li>Width</li>
+<li>Height</li>
+<li>Alignment</li>
+</ul>
+</descr>
 <seealso>
 <link id="#rtl.classes.TComponent.Create">TComponent.Create</link>
 <link id="#lcl.controls.TCustomControl.Create">TCustomControl.Create</link>
 </seealso>
 </element>
 <element name="TCustomUpDown.Create.AOwner">
-<short/>
+<short>
+Owner of the class instance.
+</short>
 </element>
 
 <element name="TCustomUpDown.Destroy">
@@ -20575,7 +20818,7 @@ Indicates if all buttons in a group can have their Down property set to
 <descr>
 <p>
 <var>AllowAllUp</var>, when <b>True</b>, indicates that all buttons in a 
-group are allowed to be  'Up' at the same time. The default value for the 
+group are allowed to be 'Up' at the same time. The default value for the 
 property is <b>False</b>, and indicates that one of the grouped buttons must 
 have its Down property set to <b>True</b>.
 </p>
