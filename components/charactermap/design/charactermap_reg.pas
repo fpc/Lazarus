@@ -31,7 +31,7 @@ implementation
 var
   CharacterMapDialog: TCharacterMapDialog = nil;
 
-procedure ShowCharacterMapProc(ASender: TObject);
+procedure ShowCharacterMapProc({%H-}ASender: TObject);
 begin
   if CharacterMapDialog = nil then
     Application.CreateForm(TCharacterMapDialog, CharacterMapDialog);
@@ -59,7 +59,6 @@ end;
 procedure TCharacterMapDialog.InsertCharacter(const C: TUTF8Char);
 var
   FActiveEdit: TSourceEditorInterface;
-  synEdit: TSynEdit;
 begin
   FActiveEdit := SourceEditorManagerIntf.ActiveSourceWindow.ActiveEditor;
   if Assigned(FActiveEdit) then
