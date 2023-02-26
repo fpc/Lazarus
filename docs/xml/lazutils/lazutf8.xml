@@ -2891,17 +2891,6 @@ the uppercase equivalent for all characters in the char type.
 <seealso/>
 </element>
 
-<element name="ReplaceSubstring">
-<short>Deprecated. Use the version in LazStringUtils instead.</short>
-<descr>
-<p>
-Deprecated in version 2.1 To be removed in versions after 2.2.
-</p>
-</descr>
-<seealso/>
-</element>
-
-
 <element name="UTF8GetStandardCodePage">
 <short>Gets the default system code page for the wide string manager.</short>
 <descr>
