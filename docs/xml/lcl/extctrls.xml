@@ -7697,12 +7697,26 @@ Ununsed client area where the child controls are aligned.
 <short>Calculates the preferred size for the control.</short>
 <descr>
 <p>
-<var>CalculatePreferredSize</var> is an overridden procedure used to 
-calculate the preferred height and width for the flow panel. 
-CalculatePreferredSize calls the inherited method.
+<var>CalculatePreferredSize</var> is an overridden procedure used to calculate 
+the preferred height and width for the flow panel. The preferred height and 
+width are used in the LCL auto-sizing algorithm as the default size for the 
+control. CalculatePreferredSize calls the inherited method on entry to 
+calculate preferred dimensions for its child Controls.
+</p>
+<p>
+CalculatePreferredSize extends the inherited method to calculate the preferred 
+width and height using the FlowStyle for the child Controls. It ensures that 
+additional space for bevels on the panel and BorderSpacing for the child 
+controls are included in the calculated preferred width and height. Only 
+visible child controls are included in the calculated values.
 </p>
 </descr>
+<version>
+Modified in LCL 2.2.6+ to exclude hidden child controls from the calculated 
+dimensions for the flow panel.
+</version>
 <seealso>
+<link id="TCustomFlowPanel.FlowStyle"/>
 <link id="#lcl.controls.TControl.CalculatePreferredSize">TControl.CalculatePreferredSize</link>
 </seealso>
 </element>
