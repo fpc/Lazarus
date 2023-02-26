@@ -398,6 +398,8 @@ begin
     for I := 0 to ControlCount-1 do
     begin
       xControl := FControlList.Items[I].Control;
+      if not xControl.Visible then
+        Continue;
       if FFlowStyle in [fsLeftRightTopBottom, fsRightLeftTopBottom, fsLeftRightBottomTop, fsRightLeftBottomTop] then
       begin
         PreferredHeight := Max(PreferredHeight,
