@@ -272,7 +272,7 @@ type
 
   { TConvertedDelphiProjectDescriptor }
 
-  TConvertedDelphiProjectDescriptor = class(TProjectEmptyProgramDescriptor)
+  TConvertedDelphiProjectDescriptor = class(TProjectDescriptor)
   private
   public
     function InitProject(AProject: TLazProject): TModalResult; override;
