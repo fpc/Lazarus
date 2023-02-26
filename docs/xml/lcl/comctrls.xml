@@ -8519,7 +8519,7 @@ in the widget.
 </p>
 <p>
 WSUpdateText is called from methods in TListItems, like SetItem and 
-WSCreateCacheItem, when WSUpdateText returns True.
+WSCreateCacheItem, when WSUpdateText returns <b>True</b>.
 </p>
 </descr>
 <seealso>
@@ -19084,7 +19084,7 @@ event handler in the ancestor class.
 </element>
 <element name="TCustomUpDown.DoMouseWheelDown.Shift">
 <short>
-Shift, Ctrl, or Alt modifier for the mouse wheel event.  
+Shift, Ctrl, or Alt modifier for the mouse wheel event.
 </short>
 </element>
 <element name="TCustomUpDown.DoMouseWheelDown.MousePos">
@@ -19093,12 +19093,20 @@ Coordinates for the mouse pointer when the wheel event was received.
 </short>
 </element>
 
-<!-- TODO: Needs description. -->
 <element name="TCustomUpDown.DoMouseWheelUp">
 <short>
 Performs actions when a mouse wheel up event occurs for the control.
 </short>
-<descr/>
+<descr>
+<p>
+<var>DoMouseWheelUp</var> is an overridden method in <var>TCustomUpDown</var>. 
+It calls the inherited method on entry to signal an assigned OnMouseWheelUp 
+event handler for the control. If the mouse wheel event was not handled in the 
+ancestor class, and a handle for the widget has not been assigned, the Click 
+method for the increment speed button is called to apply the mouse wheel event 
+to the control.
+</p>
+</descr>
 <seealso>
 <link id="#lcl.controls.TControl.DoMouseWheelUp">TControl.DoMouseWheelUp</link>
 <link id="#lcl.controls.TControl.DoMouseWheel">TControl.DoMouseWheel</link>
@@ -19106,13 +19114,13 @@ Performs actions when a mouse wheel up event occurs for the control.
 </element>
 <element name="TCustomUpDown.DoMouseWheelUp.Result">
 <short>
-Returns <b>True</b> if the mouse wheel event was handled by an OnMouseWheel 
+Returns <b>True</b> if the mouse wheel event was handled by an OnMouseWheelUp
 event handler in the ancestor class.
 </short>
 </element>
 <element name="TCustomUpDown.DoMouseWheelUp.Shift">
 <short>
-Shift, Ctrl, or Alt modifier for the mouse wheel event.  
+Shift, Ctrl, or Alt modifier for the mouse wheel event.
 </short>
 </element>
 <element name="TCustomUpDown.DoMouseWheelUp.MousePos">
@@ -19129,13 +19137,20 @@ Performs actions when a mouse wheel left event occurs for the control.
 <seealso/>
 </element>
 <element name="TCustomUpDown.DoMouseWheelLeft.Result">
-<short/>
+<short>
+Returns <b>True</b> if the mouse wheel event was handled by an 
+OnMouseWheelLeft event handler in the ancestor class.
+</short>
 </element>
 <element name="TCustomUpDown.DoMouseWheelLeft.Shift">
-<short/>
+<short>
+Shift, Ctrl, or Alt modifier for the mouse wheel event.
+</short>
 </element>
 <element name="TCustomUpDown.DoMouseWheelLeft.MousePos">
-<short/>
+<short>
+Coordinates for the mouse pointer when the wheel event was received.
+</short>
 </element>
 
 <element name="TCustomUpDown.DoMouseWheelRight">
@@ -19146,54 +19161,118 @@ Performs actions when a mouse wheel right event occurs for the control.
 <seealso/>
 </element>
 <element name="TCustomUpDown.DoMouseWheelRight.Result">
-<short/>
+<short>
+Returns <b>True</b> if the mouse wheel event was handled by an 
+OnMouseWheelRight event handler in the ancestor class.
+</short>
 </element>
 <element name="TCustomUpDown.DoMouseWheelRight.Shift">
-<short/>
+<short>
+Shift, Ctrl, or Alt modifier for the mouse wheel event.
+</short>
 </element>
 <element name="TCustomUpDown.DoMouseWheelRight.MousePos">
-<short/>
+<short>
+Coordinates for the mouse pointer when the wheel event was received.
+</short>
 </element>
 
 <element name="TCustomUpDown.MouseEnter">
 <short>
 Performs actions when the mouse pointer enters the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>MouseEnter</var> is an overridden method in <var>TCustomUpDown</var>. It 
+ensures that the inherited method, which signals the OnMouseEnter event, is 
+called only once when the mouse pointer enters the control or its Associate 
+control. An internal member in the class instance is used to track whether the 
+mouse pointer is already in either of the controls.
+</p>
+</descr>
+<seealso>
+<link id="TCustomUpDown.Associate"/>
+<link id="#lcl.controls.TControl.MouseEnter">TControl.MouseEnter</link>
+<link id="#lcl.controls.TControl.OnMouseEnter">TControl.OnMouseEnter</link>
+</seealso>
 </element>
 
 <element name="TCustomUpDown.MouseLeave">
 <short>
 Performs actions when the mouse pointer leaves the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>MouseLeave</var> is an overridden method in <var>TCustomUpDown</var>. It 
+ensures that the inherited method, which signals the OnMouseLeave event, is 
+called only once when the mouse pointer leaves the control or its Associate 
+control. An internal member in the class instance is used to track whether the 
+mouse pointer is in either of the controls.
+</p>
+</descr>
+<seealso>
+<link id="TCustomUpDown.Associate"/>
+<link id="#lcl.controls.TControl.MouseLeave">TControl.MouseLeave</link>
+<link id="#lcl.controls.TControl.OnMouseLeave">TControl.OnMouseLeave</link>
+</seealso>
 </element>
 
 <element name="TCustomUpDown.DoSetBounds">
 <short>
 Applies the specified bounds to the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>DoSetBounds</var> is an overridden method in <var>TCustomUpDown</var>. It 
+calls the inherited method on entry to apply the origin and size arguments to 
+the bounds and client rectangle for the control.
+</p>
+<p>
+If a handle has not been allocated for the widgetset class, the value in 
+Orientation is used to update the size and position of the increment and 
+decrement speed buttons on the control. Each speed button uses a rectangular 
+shape proportional to the Width or Height for the control. The SetBounds 
+method in the speed buttons is called to apply the calculated origin and size 
+for each.
+</p>
+</descr>
+<seealso>
+<link id="TCustomUpDown.Orientation"/>
+<link id="TUDOrientation"/>
+<link id="#lcl.controls.TWinControl.DoSetBounds">TWinControl.DoSetBounds</link>
+<link id="#lcl.controls.TControl.ClientWidth">TControl.ClientWidth</link>
+<link id="#lcl.controls.TControl.SetBounds">TControl.SetBounds</link>
+</seealso>
 </element>
 <element name="TCustomUpDown.DoSetBounds.ALeft">
-<short/>
+<short>
+New value for the Left property in the control.
+</short>
 </element>
 <element name="TCustomUpDown.DoSetBounds.ATop">
-<short/>
+<short>
+New value for the Top property in the control.
+</short>
 </element>
 <element name="TCustomUpDown.DoSetBounds.AWidth">
-<short/>
+<short>
+New value for the Width property in the control.
+</short>
 </element>
 <element name="TCustomUpDown.DoSetBounds.AHeight">
-<short/>
+<short>
+New value for the Height property in the control.
+</short>
 </element>
 
 <element name="TCustomUpDown.SetEnabled">
 <short>Sets the value for the Enabled property.</short>
-<descr/>
+<descr>
+<p>
+Ensures that the Enabled property for speed buttons on the control are updated 
+when a handle has not been assigned for the widget.
+</p>
+</descr>
 <seealso>
 <link id="#lcl.controls.TControl.Enabled">TControl.Enabled</link>
 </seealso>
@@ -19204,41 +19283,102 @@ Applies the specified bounds to the control.
 
 <element name="TCustomUpDown.GetControlClassDefaultSize">
 <short>
-<var>GetControlClassDefaultSize</var> returns its own defaults, overriding 
-inherited values.
+Class function which returns the default size used for the class.
 </short>
+<descr>
+<p>
+The width (for the default Orientation) is 17 pixels. The height is 31 pixels.
+</p>
+</descr>
 <seealso>
 <link id="#LCL.controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
 </seealso>
 </element>
 <element name="TCustomUpDown.GetControlClassDefaultSize.Result">
-<short/>
+<short>
+TSize instance with the default width and height in its CX and CY members.
+</short>
 </element>
 
 <element name="TCustomUpDown.CalculatePreferredSize">
-<short>Calculates the preferred width and height for the control.</short>
-<descr/>
+<short>
+Calculates the preferred width and height for the control.
+</short>
+<descr>
+<p>
+Returns the preferred width and height (in pixels) for the class instance. The 
+value in Orientation is used to determine the width and height values returned 
+in the PreferredWidth and PreferredHeight arguments.
+</p>
+<dl>
+<dt>udHorizontal</dt>
+<dd>
+PreferredWidth is set to 31 pixels. PreferredHeight is set to 17 pixels.
+</dd>
+<dt>udVertical (the default)</dt>
+<dd>
+PreferredWidth is set to 17 pixels. PreferredHeight is set to 31 pixels.
+</dd>
+</dl>
+</descr>
 <seealso/>
 </element>
 <element name="TCustomUpDown.CalculatePreferredSize.PreferredWidth">
-<short/>
+<short>
+Returns the preferred width for the control in pixels.
+</short>
 </element>
 <element name="TCustomUpDown.CalculatePreferredSize.PreferredHeight">
-<short/>
+<short>
+Returns the preferred height for the control in pixels.
+</short>
 </element>
 <element name="TCustomUpDown.CalculatePreferredSize.WithThemeSpace">
-<short/>
+<short>
+Not used in the method.
+</short>
 </element>
 
 <element name="TCustomUpDown.CanChange">
 <short>
-<var>CanChange</var> - if <b>True</b>, control can be changed.
+Indicates whether a change using the control can be applied.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>CanChange</var> is a <var>Boolean</var> function used to determine if a 
+change caused by interaction with the control can be applied. CanChange is 
+called from the Click method, and occurs prior to applying a new value to the 
+Position property and signalling the OnClick event handler. If CanChange 
+returns <b>False</b>, the new value is <b>not</b> applied to the Position 
+property and the event handler is <b>not</b> signalled.
+</p>
+<p>
+CanChange uses the OnChanging and OnChangingEx event handlers to determine the 
+return value for the method. The default return value is <b>True</b> and is 
+used if both event handlers are unassigned in the control.
+</p>
+<remark>
+Both events are signalled (when assigned) and both can update the return value 
+in their handler routines.
+</remark>
+<p>
+Use OnChanging to handle application logic not tied to the value in Position 
+or the direction for the value change. Use OnChangingEx to handle logic where 
+the new value and change direction are examined.
+</p>
+</descr>
+<seealso>
+<link id="TCustomUpDown.Click"/>
+<link id="TCustomUpDown.OnChanging"/>
+<link id="TCustomUpDown.OnChangingEx"/>
+<link id="TCustomUpDown.Position"/>
+</seealso>
 </element>
 <element name="TCustomUpDown.CanChange.Result">
-<short/>
+<short>
+Returns <b>True</b> if the assigned event handlers allow the Position property 
+to be changed.
+</short>
 </element>
 
 <element name="TCustomUpDown.Notification">
@@ -19260,67 +19400,227 @@ removal of the associate control, this is performed.
 
 <element name="TCustomUpDown.Click">
 <short>
-<var>Click</var> - calls <var>OnClick</var> event handler if it is assigned.
+Handles a mouse click on a speed button in the control.
 </short>
-<descr/>
+<descr>
+<p>
+<var>Click</var> is an overloaded method in <var>TCustomUpDown</var> used to 
+respond to a mouse click on the speed button specified in Button. Click 
+ensures that the button click is applied to the value in Position. It uses the 
+values in Increment, Min, and Max to validate and range limit the new value 
+according to the Button clicked on the control.
+</p>
+<p>
+Click calls CanChange to determine whether the new value can be applied to the 
+Position property. If CanChange returns <b>False</b>, the new value is not 
+applied. If it returns <b>True</b>, the value is Position is updated and the 
+OnClick event handler is signalled (when assigned).
+</p>
+<remark>
+Click does <b>not</b> call the inherited (parameter-less) method in TControl.
+</remark>
+</descr>
 <seealso>
+<link id="TCustomUpDown.Position"/>
+<link id="TCustomUpDown.Increment"/>
+<link id="TCustomUpDown.Min"/>
+<link id="TCustomUpDown.Max"/>
+<link id="TCustomUpDown.CanChange"/>
 <link id="#lcl.controls.TControl.Click">TControl.Click</link>
 </seealso>
 </element>
 <element name="TCustomUpDown.Click.Button">
-<short/>
+<short>
+Identifies the button clicked on the control.
+</short>
 </element>
 
 <element name="TCustomUpDown.AlignButton">
 <short>
 <var>AlignButton</var> - how to align the button: left or right.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>AlignButton</var> is a <var>TUDAlignButton</var> property which specifies 
+the alignment for the speed buttons on the control relative to the Associate 
+control. The default value for the property is udRight, and causes the buttons 
+to be aligned on the right-hand edge of the Associate control. Changing the 
+value for the property causes the control to be resized and realigned to the 
+Associate control.
+</p>
+<p>
+See <link id="TUDAlignButton">TUDAlignButton</link> for the values allowed in 
+the property and their meanings.
+</p>
+</descr>
+<seealso>
+<link id="TCustomUpDown.Associate"/>
+<link id="TUDAlignButton"/>
+</seealso>
 </element>
 
 <element name="TCustomUpDown.ArrowKeys">
 <short>
-<var>ArrowKeys</var> - if <b>True</b>, the control can be operated by the 
-keyboard's arrow keys which would simulate a click on the Next or Previous 
-button.
+Enables or disables button clicks when cursor keys are pressed in the 
+Associate control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>ArrowKeys</var> is a <var>Boolean</var> property which indicates whether 
+cursor keys pressed while the Associate control has focus are applied as 
+button clicks in the control. The default value for the property is 
+<b>True</b>. Changing the value for the property causes the widgetset class to 
+be updated when its handle has been assigned.
+</p>
+<p>
+ArrowKeys is used in the AssociateKeyDown method which is assigned as an 
+OnKeyDown event handler in the Associate control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomUpDown.Associate"/>
+<link id="TCustomUpDown.AssociateKeyDown"/>
+<link id="TCustomUpDown.Click"/>
+</seealso>
 </element>
 
 <element name="TCustomUpDown.Associate">
 <short>
-<var>Associate</var> - the associated control whose properties (controlled 
-variable) are to be changed by the UpDown control.
+Control used to display and edit the Position for the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>Associate</var> is a <var>TWinControl</var> property with the control 
+used to display and edit the value for the Position property in the control.
+</p>
+<p>
+Changing the value for the property causes a previously assigned control to be 
+disconnected; its event handlers are unassigned and the the Associate property 
+is <b>Nil</b>'d prior to setting the new value for the property.
+</p>
+<p>
+The new control in the property value is connected to the class instance. This 
+is done by setting its text to the value in Position, and by assigning event 
+handler routines for the control. These include the AssociateKeyDown, 
+OnAssociateChangeBounds, OnAssociateChangeEnabled, OnAssociateChangeVisible, 
+and AssociateMouseWheel methods in the class.
+</p>
+<p>
+Please note that the Associate control must have the same Parent as the class 
+instance. An Exception is raised with the message in rsIsAlreadyAssociatedWith 
+if another control on the Parent is already associated with the TUpDown class 
+instance.
+</p>
+<p>
+In addition, the value assigned to Associate cannot be derived from 
+TCustomUpDown, TCustomTreeView or TCustomListView. The new property value is 
+ignored if these controls are assigned to Associate.
+</p>
+<p>
+Since Associate is declared as TWinControl, event handlers may need to cast 
+the value to a derived type to access properties or methods specific to the 
+descendant.
+</p>
+</descr>
+<errors>
+Raises an Exception with the message in rsIsAlreadyAssociatedWith if another 
+control on the Parent is already associated with the class instance.
+</errors>
+<seealso>
+<link id="TCustomUpDown.Position"/>
+<link id="TCustomUpDown.AssociateKeyDown"/>
+<link id="TCustomUpDown.OnAssociateChangeBounds"/>
+<link id="TCustomUpDown.OnAssociateChangeEnabled"/>
+<link id="TCustomUpDown.OnAssociateChangeVisible"/>
+<link id="TCustomUpDown.AssociateMouseWheel"/>
+<link id="#lcl.controls.TWinControl">TWinControl</link>
+<link id="#lcl.controls.TControl.Parent">TControl.Parent</link>
+</seealso>
 </element>
 
 <element name="TCustomUpDown.Increment">
 <short>
-The amount by which the controlled variable is to be increased or decreased 
-on each click.
+The amount by which Position is increased or decreased for each button click.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>Increment</var> is an <var>Integer</var> property which contains an 
+amount by which the value in Position is increased or decreased when a button 
+is clicked on the control. It is also used to apply cursor Up or Down keys 
+pressed when the Associate control has focus. It is specified as a positive 
+value, but is negated when the Down button is clicked or the Down arrow key is 
+pressed.
+</p>
+<p>
+The default value for the property is 1. Changing the property value causes 
+the widgetset class to be updated when its handle has been assigned.
+</p>
+<p>
+Increment is used in the Click method when the property value is validated and 
+range limited to the settings in Min and Max. It is also used in the AdjustPos 
+method called when key down events are handled for the Associate control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomUpDown.Associate"/>
+<link id="TCustomUpDown.Min"/>
+<link id="TCustomUpDown.Max"/>
+<link id="TCustomUpDown.Position"/>
+<link id="TCustomUpDown.AdjustPos"/>
+<link id="TCustomUpDown.Click"/>
+</seealso>
 </element>
 
 <element name="TCustomUpDown.Max">
 <short>
-<var>Max</var> - greatest value of controlled variable.
+The largest value allowed in the Position property.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>Max</var> is a <var>SmallInt</var> property which contains the largest 
+value allowed in the Position property. The default value for the property is 
+100. A new value assigned to the property is also applied to Position if it is 
+larger than the new value in Max. The new value is also applied to the 
+widgetset class instance when its handle has been assigned.
+</p>
+<p>
+Values in Min and Max are used in the Click method when a new value for 
+Position is validated and range limited. It is also used in AdjustPos when key 
+down events are handled for the control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomUpDown.Min"/>
+<link id="TCustomUpDown.Position"/>
+<link id="TCustomUpDown.Click"/>
+<link id="TCustomUpDown.AdjustPos"/>
+</seealso>
 </element>
 
 <element name="TCustomUpDown.Min">
 <short>
-<var>Min</var> - least value of controlled variable.
+The smallest value allowed in the Position property.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>Mix</var> is a <var>SmallInt</var> property which contains the smallest 
+value allowed in the Position property. The default value for the property is 
+0. A new value assigned to the property is also applied to Position if it is 
+smaller than the new value in Min. The new value is also applied to the 
+widgetset class instance when its handle has been assigned.
+</p>
+<p>
+Values in Min and Max are used in the Click method when a new value for 
+Position is validated and range limited. It is also used in AdjustPos when key 
+down events are handled for the control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomUpDown.Max"/>
+<link id="TCustomUpDown.Position"/>
+<link id="TCustomUpDown.Click"/>
+<link id="TCustomUpDown.AdjustPos"/>
+</seealso>
 </element>
 
 <element name="TCustomUpDown.MinRepeatInterval">
@@ -19329,27 +19629,85 @@ Minimum interval that must elapse before the action for the control is
 repeated.
 </short>
 <descr>
-MinRepeatInterval is a Byte property.
-The default value for the property is 100.
+<p>
+<var>MinRepeatInterval</var> is a <var>Byte</var> property which contains the 
+minimum interval that must elapse before a help button on the control can be 
+repeated. The default value for the property is 100. The value is used during 
+execution of the mouse timer to adjust the frequency that the timer event 
+(Click) is called.
+</p>
+<p>
+MinRepeatInterval cannot be set to a value smaller that 25.
+</p>
 </descr>
-<seealso/>
+<seealso>
+</seealso>
 </element>
 
 <element name="TCustomUpDown.OnChanging">
 <short>
-<var>OnChanging</var> - event handler for a change in the value of the 
-controlled variable.
+Event handler signalled prior to changing the value in the Position property.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>OnChanging</var> is a <var>TUDChangingEvent</var> property with the event 
+handler signalled prior to setting a new value for the Position property. The 
+handler include a Boolean AllowChange argument which indicates if a change to 
+the Position property is allowed in the control. Setting AllowChange to 
+<b>False</b> in the handler routine prevents a change from being applied to 
+the property value.
+</p>
+<p>
+OnChanging is signalled (when assigned) from CanChange, and is used to get the 
+return value for the method. It allows the application to accept or reject a 
+change to Position using logic specific to the application.
+</p>
+<p>
+Use OnChangingEx to implement an event handler which examines the new property 
+value and direction (increase or decrease) for the changed value.
+</p>
+</descr>
+<seealso>
+<link id="TCustomUpDown.CanChange"/>
+<link id="TCustomUpDown.Position"/>
+<link id="TCustomUpDown.OnChangingEx"/>
+<link id="TUDChangingEvent"/>
+</seealso>
 </element>
 
 <element name="TCustomUpDown.OnChangingEx">
 <short>
-Event handler signalled to determine if the control can change its value.
+Event handler signalled to determine if the control can change the value in 
+the Position property.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>OnChangingEx</var> is a <var>TUDChangingEventEx</var> property with the 
+event handler signalled prior to setting a new value for the Position 
+property. The handler include a Boolean AllowChange argument which indicates 
+if a change to the Position property is allowed in the control. Setting 
+AllowChange to <b>False</b> in the handler routine prevents a change from 
+being applied to the property value.
+</p>
+<p>
+OnChangingEx also includes arguments with new value for the Position property 
+and whether the change is an increase or decrease to the value.
+</p>
+<p>
+OnChangingEx is signalled (when assigned) from CanChange, and is used to get 
+the return value for the method.
+</p>
+<p>
+Use OnChanging to implement an event handler which uses logic not based on the 
+proposed new value for the Position property.
+</p>
+</descr>
+<seealso>
+<link id="TCustomUpDown.CanChange"/>
+<link id="TCustomUpDown.Position"/>
+<link id="TCustomUpDown.OnChanging"/>
+<link id="TUDChangingEventEx"/>
+</seealso>
 </element>
 
 <element name="TCustomUpDown.OnClick">
@@ -19358,32 +19716,89 @@ Event handler signalled when a button on the control is clicked.
 </short>
 <descr>
 <p>
-<var>OnClick</var> - special event handler for a click on up or down button.
+<var>OnClick</var> is a <var>TUDClickEvent</var> property with the event 
+handler signalled when a button on the control has been clicked. A Button 
+argument is passed to the event handler to indicate which button, increment 
+or decrement, was clicked on the control.
 </p>
 <p>
-The event handler must determine whether the [next] or [prev] button was 
-clicked and therefore whether to increment or decrement the controlled 
-variable and adjust the display.
+OnClick is signalled from the Click method. It occurs after the new property 
+value has been validated and range limited using Min and Max. It also occurs 
+after CanChange has been called to determine if the new property value can be 
+applied to Position. OnClick occurs immediately after the new value has been 
+assigned to the Position property.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomUpDown.Click"/>
+<link id="TCustomUpDown.Max"/>
+<link id="TCustomUpDown.Min"/>
+<link id="TCustomUpDown.Position"/>
+<link id="TUDClickEvent"/>
+<link id="TUDBtnType"/>
+</seealso>
 </element>
 
 <element name="TCustomUpDown.Orientation">
 <short>
-Indicates the horizontal or vertical orientation for the button(s) relative to 
-the Associate control.
+Indicates the horizontal or vertical orientation for the button(s) displayed 
+on the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>Orientation</var> is a <var>TUDOrientation</var> property which indicates 
+the horizontal or vertical orientation for the buttons displayed on the 
+control. The default value for the property is udVertical, and causes the 
+speed buttons to be stacked vertically with the the button glyphs drawn in the 
+upwards and downwards directions. Use udHorizontal to orient the buttons 
+side-by-side with their glyphs pointing towards the left and right.
+</p>
+<p>
+Changing the value for the property causes the positions and sizes for the 
+speed buttons to be updated for the new value in the property. The widgetset 
+class is updated when its handle has been assigned.
+</p>
+<p>
+Use AlignButton to specify the edge on the Associate control where the buttons 
+are aligned.
+</p>
+</descr>
+<seealso>
+<link id="TCustomUpDown.AlignButton"/>
+<link id="TCustomUpDown.Associate"/>
+</seealso>
 </element>
 
 <element name="TCustomUpDown.Position">
 <short>
 The current position (or value) for the control as a SmallInt type.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>Position</var> is a <var>SmallInt</var> property with the current value 
+for the control. Its value is read from the Caption text in the Associate 
+control (when assigned), and converted to an Integer value used in the 
+property. Values in Min and Max are used as the property value if the 
+converted integer exceeds one of these limits.
+</p>
+<p>
+Changing the value for the property causes the numeric value to be converted 
+to its string representation and stored in the Caption text for the Associate 
+control. When Thousands is enabled, the thousands separator from 
+DefaultFormatSettings is included in the string value. The widgetset class 
+instance is updated if its handle has been assigned.
+</p>
+<p>
+Use Min and Max to specify the lower and upper limits for the value in 
+Position.
+</p>
+</descr>
+<seealso>
+<link id="TCustomUpDown.Associate"/>
+<link id="TCustomUpDown.Max"/>
+<link id="TCustomUpDown.Min"/>
+<link id="TCustomUpDown.Thousands"/>
+</seealso>
 </element>
 
 <element name="TCustomUpDown.Thousands">
@@ -19391,27 +19806,75 @@ The current position (or value) for the control as a SmallInt type.
 Enables or disables use of the thousands separator when displaying the 
 text for the Position property.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+When set to <b>True</b>, the thousands separator from DefaultFormatSettings is 
+applied to the textual representation for the value in the Position property. 
+The string is stored as the Caption for the Associate control. When set to 
+<b>False</b>, the text assigned to the Associate control does not include the 
+thousands separator.
+</p>
+<p>
+The default value for the Thousands property is <b>True</b>.
+</p>
+<p>
+Thousands is used when a new value is assigned to either the Position or 
+Associate property.
+</p>
+</descr>
+<seealso>
+<link id="TCustomUpDown.Associate"/>
+<link id="TCustomUpDown.Position"/>
+</seealso>
 </element>
 
 <element name="TCustomUpDown.Flat">
 <short>
-Indicates of the speed buttons for the control are drawn using a flat 
+Indicates whether the speed buttons for the control are drawn using a flat 
 appearance.
 </short>
-<descr/>
+<descr>
+<p>
+The default value for the property is <b>False</b>. Changing the property 
+value causes the Flat property in each of the speed buttons to be updated.
+</p>
+</descr>
 <seealso/>
 </element>
 
 <element name="TCustomUpDown.Wrap">
 <short>
-If <b>True</b>, displayed control or value starts again from minimum or 
-maximum value if clicking a button would cause incrementing or decrementing 
-beyond the extreme value.
+Enables or disables wrap-around for the value in Position when it exceeds the 
+limits in Min or Max.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>Wrap</var> is a <var>Boolean</var> property which indicates if the value 
+in Position is wrapped to the Min or Max value when incremented/decremented 
+beyond the limits for the value.
+</p>
+<p>
+The default value for the property is <b>False</b>, and prevents any change to 
+the value in Position when it would exceed the lower or upper limit. When set 
+to <b>True</b>, incrementing Position beyond the value in Max causes it to be 
+reset to the value in Min. Likewise, decrementing Position beyond the value in 
+Min causes it to be reset to the value in Max.
+</p>
+<p>
+Changing the value for the property causes the widgetset class to be updated 
+when its handle has been assigned.
+</p>
+<p>
+Wrap is used in the Click method when a new value is applied to Position 
+following a button click on the control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomUpDown.Position"/>
+<link id="TCustomUpDown.Max"/>
+<link id="TCustomUpDown.Min"/>
+<link id="TCustomUpDown.Click"/>
+</seealso>
 </element>
 
 <element name="TCustomUpDown.Create">
@@ -28976,7 +29439,7 @@ FindNodeWithTextPath calls the FindNode method in the current TTreeNode
 instance to locate the next tree node with the required identifier Text. The 
 process is repeated until all of the identifiers have been located, or a node 
 is not found for one of the identifiers in TextPath. The Expanded property in 
-a tree node is set to True prior to calling GetNode.
+a tree node is set to <b>True</b> prior to calling GetNode.
 </p>
 <p>
 The return value is the TTreeNode instance found at the specified path, or 
