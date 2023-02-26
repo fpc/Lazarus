@@ -4772,7 +4772,7 @@ begin
       Result:=CompareFileNames(ProjectDir,FilePath)=0;
     end;
   end else
-    Result:=true;
+    Result:=true;  // Returns True also when AFilename=''
 end;
 
 procedure TProject.GetVirtualDefines(DefTree: TDefineTree; DirDef: TDirectoryDefines);

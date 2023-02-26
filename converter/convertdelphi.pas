@@ -90,8 +90,8 @@ type
     fLazUnitFilename: string;
     // Extension of the new Lazarus file. If empty, gets the original file's ext.
     fLazFileExt: string;
-    // Unit's info. Actually TUnitInfo, for projects only.
-    fUnitInfo: TObject;
+    // Unit's info, for projects only.
+    fUnitInfo: TUnitInfo;
     // Actual code for unit and form file.
     fPascalBuffer: TCodeBuffer;
     fLFMBuffer: TCodeBuffer;
@@ -170,9 +170,9 @@ type
   private
     // Either Project or LazPackage. Typecasted to right types in property getter.
     fProjPack: iProjPack;
-    fLazPMainFilename: string;         // .lpi or .lpk file name
+    fLazPInfoFilename: string;         // .lpi or .lpk file name
     fDelphiPFilename: string;          // .dpr or .dpk file name
-    fLazPMainSuffix: string;           // '.lpi' or '.lpk' suffix
+    fLazPInfoSuffix: string;           // '.lpi' or '.lpk' suffix
     fLazPSuffix: string;   // '.lpr' or empty. '.lpk' is for the XML main package
     fDelphiPSuffix: string;            // '.dpr' or '.dpk' suffix
     // Main unit with resource code
@@ -300,7 +300,7 @@ var
   p: LongInt;
 begin
   Result:='';       // Default: ignore absolute paths
-  ProjectDir:=ExtractFilePath(AProjPack.fLazPMainFilename);
+  ProjectDir:=ExtractFilePath(AProjPack.fLazPInfoFilename);
   ShortProjectDir:=PathDelim+ExtractFileName(ChompPathDelim(ProjectDir))+PathDelim;
   p:=System.Pos(ShortProjectDir,Filename);
   if (p>0) then
@@ -1007,8 +1007,8 @@ begin
       StartTime:=Now;
       fSettings.ClearLog;
       // create/open lazarus project or package file
-      fLazPMainFilename:=fSettings.DelphiToLazFilename(fSettings.MainFilename,
-                                                       fLazPMainSuffix, false);
+      fLazPInfoFilename:=fSettings.DelphiToLazFilename(fSettings.MainFilename,
+                                                       fLazPInfoSuffix, false);
       // Find Delphi project / package file name
       if FilenameExtIs(fSettings.MainFilename,fDelphiPSuffix) then
         fDelphiPFilename:=fSettings.MainFilename
@@ -1169,7 +1169,7 @@ var
       fProjPack.AddPackageDependency(LazarusPkgName);
       fSettings.AddLogLine(mluNote,
         Format(lisConvDelphiAddedPackageDependency,[LazarusPkgName]),
-        fLazPMainFilename);
+        fLazPInfoFilename);
     end;
   end;
 
@@ -1322,7 +1322,7 @@ begin
     s:='-dBorland -dVer150 -dDelphi7 -dCompiler6_Up -dPUREPASCAL';
     Options.CustomOptions:=s;
     fSettings.AddLogLine(mluNote, Format(lisConvDelphiAddedCustomOptionDefines,[s]),
-      fLazPMainFilename);
+      fLazPInfoFilename);
   end;
 end;
 
@@ -1435,7 +1435,7 @@ begin
     if not Assigned(Dep) then begin
       fProjPack.AddPackageDependency(s);
       fSettings.AddLogLine(mluNote, Format(lisConvDelphiAddedPackageDependency,[s]),
-                           fLazPMainFilename);
+                           fLazPInfoFilename);
       Dep:=FindDependencyByName(s);
       if Assigned(Dep) then
         PackageGraph.OpenDependency(Dep,false);
@@ -1475,7 +1475,7 @@ end;
 constructor TConvertDelphiProject.Create(const aProjectFilename: string);
 begin
   inherited Create(aProjectFilename, lisConvDelphiConvertDelphiProject);
-  fLazPMainSuffix:='.lpi';
+  fLazPInfoSuffix:='.lpi';
   fLazPSuffix:='.lpr';
   fDelphiPSuffix:='.dpr';
 end;
@@ -1491,10 +1491,10 @@ var
   Desc: TConvertedDelphiProjectDescriptor;
 begin
   Result:=mrOK;
-  if FileExistsUTF8(fLazPMainFilename) then begin
+  if FileExistsUTF8(fLazPInfoFilename) then begin
     // there is already a lazarus project -> open it, if not already open
-    if (Project1=nil) or (CompareFilenames(Project1.ProjectInfoFile,fLazPMainFilename)<>0) then
-      Result:=LazarusIDE.DoOpenProjectFile(fLazPMainFilename,[]);
+    if (Project1=nil) or (CompareFilenames(Project1.ProjectInfoFile,fLazPInfoFilename)<>0) then
+      Result:=LazarusIDE.DoOpenProjectFile(fLazPInfoFilename,[]);
   end else begin
     // create a new lazarus project
     Desc:=TConvertedDelphiProjectDescriptor.Create;
@@ -1504,7 +1504,7 @@ begin
       Desc.Free;
     end;
     if Assigned(Project1) then
-      Project1.ProjectInfoFile:=fLazPMainFilename;
+      Project1.ProjectInfoFile:=fLazPInfoFilename;
   end;
   fProjPack:=Project1;
   if Result<>mrOK then exit;
@@ -1551,7 +1551,6 @@ function TConvertDelphiProject.AddUnit(AFileName: string;
                                        out OutUnitInfo: TUnitInfo): TModalResult;
 // add new unit to project
 var
-  CurUnitInfo: TUnitInfo;
   RP, PureUnitName: String;
 begin
   Result:=mrOK;
@@ -1570,24 +1569,23 @@ begin
   begin
     fMainUnitConverter.fUsedUnitsTool.Remove(PureUnitName);
     fSettings.AddLogLine(mluNote, Format(lisConvDelphiProjOmittedUnit,[PureUnitName]),
-                         fLazPMainFilename);
+                         fLazPInfoFilename);
     TryAddPackageDep(PureUnitName, fSettings.OmitProjUnits[PureUnitName]);
   end
   else begin
     // Check unitname and create UnitInfo.
-    CurUnitInfo:=LazProject.UnitInfoWithFilename(AFileName);
-    if CurUnitInfo=nil then begin
+    OutUnitInfo:=LazProject.UnitInfoWithFilename(AFileName);
+    if OutUnitInfo=nil then begin
       if FilenameHasPascalExt(AFileName) then begin
-        CurUnitInfo:=LazProject.UnitWithUnitname(PureUnitName);
-        Assert(CurUnitInfo=nil,
+        OutUnitInfo:=LazProject.UnitWithUnitname(PureUnitName);
+        Assert(OutUnitInfo=nil,
           Format('TConvertDelphiProject.AddUnit: Unitname %s exists twice',[PureUnitName]));
       end;
-      CurUnitInfo:=TUnitInfo.Create(nil);
-      CurUnitInfo.Filename:=AFileName;
-      LazProject.AddFile(CurUnitInfo,false);
+      OutUnitInfo:=TUnitInfo.Create(nil);
+      OutUnitInfo.Filename:=AFileName;
+      LazProject.AddFile(OutUnitInfo,false);
     end;
-    CurUnitInfo.IsPartOfProject:=true;
-    OutUnitInfo:=CurUnitInfo;
+    OutUnitInfo.IsPartOfProject:=true;
   end;
 end;
 
@@ -1802,7 +1800,7 @@ end;
 constructor TConvertDelphiPackage.Create(const aPackageFilename: string);
 begin
   inherited Create(aPackageFilename, lisConvDelphiConvertDelphiPackage);
-  fLazPMainSuffix:='.lpk'; // Main XML package file, not compatible with Delphi
+  fLazPInfoSuffix:='.lpk'; // Main XML package file, not compatible with Delphi
   fLazPSuffix:='';         // '.lpk' is reserved to the main XML file
   fDelphiPSuffix:='.dpk';
 end;
@@ -1818,17 +1816,17 @@ var
   PkgName: String;
 begin
   fProjPack:=nil;
-  if FileExistsUTF8(fLazPMainFilename) then begin
+  if FileExistsUTF8(fLazPInfoFilename) then begin
     // there is already a lazarus package file -> open the package editor
-    Result:=PackageEditingInterface.DoOpenPackageFile(fLazPMainFilename,[pofAddToRecent],true);
+    Result:=PackageEditingInterface.DoOpenPackageFile(fLazPInfoFilename,[pofAddToRecent],true);
     if Result<>mrOK then exit;
   end;
   // search package in graph
-  PkgName:=ExtractFileNameOnly(fLazPMainFilename);
+  PkgName:=ExtractFileNameOnly(fLazPInfoFilename);
   fProjPack:=PackageGraph.FindPackageWithName(PkgName,nil);
   if fProjPack<>nil then begin
     // there is already a package loaded with this name ...
-    if CompareFilenames(LazPackage.Filename,fLazPMainFilename)<>0 then begin
+    if CompareFilenames(LazPackage.Filename,fLazPInfoFilename)<>0 then begin
       // ... but it is not the package file we want -> stop
       MessageDlg(lisConvDelphiPackageNameExists,
         Format(lisConvDelphiThereIsAlreadyAPackageWithTheNamePleaseCloseThisPa,
@@ -1844,7 +1842,7 @@ begin
     fProjPack:=PackageGraph.CreateNewPackage(PkgName);
     PackageGraph.AddDependencyToPackage(LazPackage,
                   PackageGraph.LCLPackage.CreateDependencyWithOwner(LazPackage));
-    LazPackage.Filename:=fLazPMainFilename;
+    LazPackage.Filename:=fLazPInfoFilename;
     fProjPack.BaseCompilerOptions.SyntaxMode:='delphi';
     // open a package editor
     PackageEditors.OpenEditor(LazPackage,true);
@@ -1889,7 +1887,7 @@ begin
     begin
       Include(Flags, pffHasRegisterProc);
       fSettings.AddLogLine(mluNote, Format(lisConvAddingFlagForRegister,[PureUnitName]),
-                           fLazPMainFilename);
+                           fLazPInfoFilename);
     end;
     // Add new unit to package
     LazPackage.AddFile(AFileName, PureUnitName, pftUnit, Flags, cpNormal);
