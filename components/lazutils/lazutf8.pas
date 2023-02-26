@@ -214,9 +214,6 @@ procedure LazGetShortLanguageID(var Lang: String);
 var
   FPUpChars: array[char] of char;
 
-procedure ReplaceSubstring(var s: string; StartPos, Count: SizeInt;
-  const Insertion: string); deprecated 'Use it from unit LazStringUtils'; // Deprecated in 2.1 / 29.10.2020 / Remove in 2.3
-
 implementation
 
 uses
@@ -4091,57 +4088,6 @@ begin
 
   // Simply making sure its length is at most 2 should be enough for most languages
   if Length(Lang) > 2 then Lang := Lang[1] + Lang[2];
-end;
-
-procedure ReplaceSubstring(var s: string; StartPos, Count: SizeInt;
-  const Insertion: string);
-// This was moved to LazStringUtils and a deprecated copy was left here. Will be removed.
-var
-  MaxCount: SizeInt;
-  InsertionLen: SizeInt;
-  SLen: SizeInt;
-  RestLen: SizeInt;
-  p: PByte;
-begin
-  SLen:=length(s);
-  if StartPos>SLen then begin
-    s:=s+Insertion;
-    exit;
-  end;
-  if StartPos<1 then StartPos:=1;
-  if Count<0 then Count:=0;
-  MaxCount:=SLen-StartPos+1;
-  if Count>MaxCount then
-    Count:=MaxCount;
-  InsertionLen:=length(Insertion);
-  if (Count=0) and (InsertionLen=0) then
-    exit; // nothing to do
-  if (Count=InsertionLen) then begin
-    if CompareMem(PByte(s)+StartPos-1,Pointer(Insertion),Count) then
-      // already the same content
-      exit;
-    UniqueString(s);
-  end else begin
-    RestLen:=SLen-StartPos-Count+1;
-    if InsertionLen<Count then begin
-      // shorten
-      if RestLen>0 then begin
-        UniqueString(s);
-        p:=PByte(s)+StartPos-1;
-        System.Move((p+Count)^,(p+InsertionLen)^,RestLen);
-      end;
-      Setlength(s,SLen-Count+InsertionLen);
-    end else begin
-      // longen
-      Setlength(s,SLen-Count+InsertionLen);
-      if RestLen>0 then begin
-        p:=PByte(s)+StartPos-1;
-        System.Move((p+Count)^,(p+InsertionLen)^,RestLen);
-      end;
-    end;
-  end;
-  if InsertionLen>0 then
-    System.Move(PByte(Insertion)^,(PByte(s)+StartPos-1)^,InsertionLen);
 end;
 
 procedure InitFPUpchars;
