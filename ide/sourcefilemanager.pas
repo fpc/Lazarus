@@ -3676,8 +3676,9 @@ begin
           ActiveModeName:=Modes[0].Name;
 
       // init resource files
-      if not Project1.ProjResources.Regenerate(Project1.MainFilename, True, False,'') then
-        DebugLn('InitNewProject Project1.Resources.Regenerate failed');
+      if Project1.MainUnitID>=0 then
+        if not Project1.ProjResources.Regenerate(Project1.MainFilename, True, False,'') then
+          DebugLn('InitNewProject Project1.Resources.Regenerate failed');
     finally
       Project1.EndUpdate;
     end;
@@ -6307,7 +6308,7 @@ var
   UnitCode, LFMCode: TCodeBuffer;
 begin
   if Project1=nil then exit(mrCancel);
-  // try to find a unit name without expaning the path. this is required if unit is virtual
+  // try to find a unit name without expanding the path. this is required if unit is virtual
   // in other case file name will be expanded with the wrong path
   AFilename:=UnitFilename;
   AnUnitInfo:=Project1.UnitInfoWithFilename(AFilename);

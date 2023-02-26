@@ -46,7 +46,7 @@ uses
   // IDE
   IDEProcs, DialogProcs, CompilerOptions, ProjPackCommon, Project,
   ProjectDescriptorTypes, PackageDefs, PackageSystem, PackageEditor,
-  BasePkgManager, LazarusIDEStrConsts, SearchPathProcs,
+  BasePkgManager, LazarusIDEStrConsts, SearchPathProcs, SourceFileManager,
   // Converter
   ConverterTypes, ConvertSettings, ConvCodeTool, MissingUnits, MissingPropertiesDlg,
   UsedUnits;
@@ -619,6 +619,8 @@ begin
     if not fOwnerConverter.fSettings.SameDfmFile then
       Result:=LoadCodeBuffer(fLFMBuffer,LfmFilename,
                              [lbfCheckIfText,lbfUpdateFromDisk],true);
+    if fUnitInfo<>nil then
+      Result:=LoadLFM(fUnitInfo,fLFMBuffer,[ofOnlyIfExists],[]);
   end;
 end;
 

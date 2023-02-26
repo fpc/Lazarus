@@ -2083,7 +2083,8 @@ var
 begin
   Result:=mrOk;
   // update project resource
-  Project1.ProjResources.Regenerate(Project1.MainFileName, False, True, TestDir);
+  if Project1.MainUnitID>=0 then
+    Project1.ProjResources.Regenerate(Project1.MainFileName, False, True, TestDir);
   AnUnitInfo := Project1.FirstPartOfProject;
   while AnUnitInfo<>nil do 
   begin
