@@ -18413,7 +18413,7 @@ singleton to be updated.
 <descr>
 <p>
 <var>TIDesigner</var> is a <var>TObject</var> descendant which specifies the 
-interface used for visual Form designers . TIDesigner is the type used for 
+interface used for visual Form designers. TIDesigner is the type used for 
 the <var>TCustomForm.Designer</var> property.
 </p>
 <p>
