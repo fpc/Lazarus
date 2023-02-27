@@ -143,6 +143,8 @@ type
     Filters: TStringList; // filled by updateFilterList()
     NSFilters: NSMutableArray;
     lastSelectedItemIndex: Integer; // -1 means invalid or none selected
+    class function alloc: id; override;
+    procedure dealloc; override;
     procedure updateFilterList(); message 'updateFilterList';
     function setDialogFilter(ASelectedFilterIndex: Integer): Integer; message 'setDialogFilter:';
     procedure comboboxAction(sender: id); message 'comboboxAction:';
@@ -565,7 +567,7 @@ begin
   accessoryView.addSubview(okButton.autorelease);
   accessoryView.addSubview(cancelButton.autorelease);
 
-  colorPanel.setDelegate(colorDelegate);
+  colorPanel.setDelegate(colorDelegate.autorelease);
   colorPanel.setAccessoryView(accessoryView.autorelease);
   colorPanel.setShowsAlpha(False);
   colorPanel.setDefaultButtonCell(okButton.cell);
@@ -740,7 +742,7 @@ begin
   accessoryView.addSubview(okButton.autorelease);
   accessoryView.addSubview(cancelButton.autorelease);
 
-  fontPanel.setDelegate(FontDelegate);
+  fontPanel.setDelegate(FontDelegate.autorelease);
   fontPanel.setAccessoryView(accessoryView.autorelease);
   fontPanel.setDefaultButtonCell(okButton.cell);
 
@@ -891,6 +893,18 @@ end;
 
 { TCocoaFilterComboBox }
 
+class function TCocoaFilterComboBox.alloc: id;
+begin
+  Result := inherited alloc;
+  TCocoaFilterComboBox(Result).NSFilters := NSMutableArray.alloc.init;
+end;
+
+procedure TCocoaFilterComboBox.dealloc;
+begin
+  NSFilters.release;
+  inherited dealloc;
+end;
+
 class procedure TCocoaFilterComboBox.DoParseFilters(AFileDialog: TFileDialog; AOutput: TStringList);
 var
   lFilterParser, lExtParser: TParseStringList;
@@ -1032,6 +1046,7 @@ var
   uti : CFStringRef;
   ext : string;
   j   : integer;
+  UTIFilters: NSMutableArray;
 begin
   if (Filters = nil) or (Filters.Count=0) then
   begin
@@ -1044,14 +1059,14 @@ begin
       ASelectedFilterIndex := 0;
     Result := ASelectedFilterIndex;
     lCurFilter := TStringList(Filters.Objects[ASelectedFilterIndex]);
-    NSFilters := NSMutableArray.alloc.init;
+    UTIFilters := NSMutableArray.alloc.init;
     for i:=0 to lCurFilter.Count-1 do
     begin
       ext := lCurFilter[i];
       if (ext='') then Continue;
       if (ext='*.*') or (ext = '*') then begin
         //uti:=CFSTR('public.content');
-        NSFilters.removeAllObjects;
+        UTIFilters.removeAllObjects;
         break;
       end else begin
         // using the last part of the extension, as Cocoa doesn't suppot
@@ -1066,28 +1081,21 @@ begin
           CFStringRef(NSString.stringWithUTF8String(PChar(ext))), CFSTR('public.data'));
       end;
       if Assigned(uti) then
-        NSFilters.addObject(id(uti));
+        UTIFilters.addObject(id(uti));
     end;
 
-    if (NSFilters.count = 0) then
+    if (UTIFilters.count = 0) then
     begin
       // select any file
-      NSFilters.addObject(id(CFSTR('public.content')));
-      NSFilters.addObject(id(CFSTR('public.data')));
+      UTIFilters.addObject(id(CFSTR('public.content')));
+      UTIFilters.addObject(id(CFSTR('public.data')));
     end;
-    DialogHandle.setAllowedFileTypes(NSFilters);
-    NSFilters.autorelease;
+    DialogHandle.setAllowedFileTypes(UTIFilters);
+    UTIFilters.release;
     exit;
   end;
 
-  if NSFilters = nil then
-  begin
-    NSFilters := NSMutableArray.alloc.init;
-  end
-  else
-  begin
-    NSFilters.removeAllObjects();
-  end;
+  NSFilters.removeAllObjects();
 
   if (Filters.Count > 0) and (ASelectedFilterIndex >= 0) and
    (ASelectedFilterIndex < Filters.Count) then

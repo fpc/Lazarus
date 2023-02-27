@@ -223,7 +223,7 @@ begin
   list.callback := TLCLCheckboxListCallback.CreateWithView(list, AWinControl);
   list.lclSetFirstColumCheckboxes(true);
   //list.list := TCocoaStringList.Create(list);
-  list.addTableColumn(NSTableColumn.alloc.init);
+  list.addTableColumn(NSTableColumn.alloc.init.autorelease);
   list.setHeaderView(nil);
   list.setDataSource(list);
   list.setDelegate(list);
@@ -235,7 +235,6 @@ begin
   scroll := EmbedInScrollView(list);
   if not Assigned(scroll) then
   begin
-    list.dealloc;
     Result := 0;
     Exit;
   end;

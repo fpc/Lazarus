@@ -517,6 +517,7 @@ begin
     menuItem.addTrackingArea(track);
     track.release;
     mn.setView(menuItem);
+    menuItem.release;
   end;
 end;
 

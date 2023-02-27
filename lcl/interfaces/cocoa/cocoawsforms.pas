@@ -307,6 +307,7 @@ begin
   TCocoaPanel(win).callback := cb;
 
   win.setContentView(cnt);
+  doc.release;
 
   Result := TLCLIntfHandle(cnt);
 end;
@@ -832,7 +833,9 @@ begin
 
     cnt.addSubview_positioned_relativeTo(ds, NSWindowAbove, nil);
     doc.overlay := ds;
+    ds.release;
   end;
+  doc.release;
 
   Result := TLCLIntfHandle(cnt);
 end;

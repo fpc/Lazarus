@@ -72,6 +72,7 @@ begin
 
     c := NSCalendar.alloc.initWithCalendarIdentifier(NSString.string_);
     Result.setCalendar(c);
+    c.release;
 
     TCocoaDatePicker(Result).callback:= TLCLCommonCallback.Create(Result, ATarget);
 

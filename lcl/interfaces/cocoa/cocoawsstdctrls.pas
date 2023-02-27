@@ -1565,6 +1565,7 @@ begin
   TextViewSetAllignment(txt, TCustomMemo(AWinControl).Alignment);
   txt.wantReturns := TCustomMemo(AWinControl).WantReturns;
   txt.callback.SetTabSuppress(not TCustomMemo(AWinControl).WantTabs);
+  txt.release;
   Result := TLCLIntfHandle(scr);
 end;
 
@@ -2224,7 +2225,7 @@ begin
   end;
   cb := TLCLListBoxCallback.CreateWithView(list, AWinControl);
   list.callback := cb;
-  list.addTableColumn(NSTableColumn.alloc.init);
+  list.addTableColumn(NSTableColumn.alloc.init.autorelease);
   list.setHeaderView(nil);
   list.setDataSource(list);
   list.setDelegate(list);
@@ -2244,7 +2245,6 @@ begin
   scroll := EmbedInScrollView(list);
   if not Assigned(scroll) then
   begin
-    list.dealloc;
     Result := 0;
     Exit;
   end;

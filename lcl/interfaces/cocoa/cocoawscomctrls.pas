@@ -1013,7 +1013,7 @@ begin
     lTableLV := AllocCocoaTableListView.initWithFrame(ns);
     if lTableLV = nil then
     begin
-      lCocoaLV.dealloc;
+      lCocoaLV.release;
       Result := 0;
       exit;
     end;
@@ -1042,6 +1042,7 @@ begin
     // Windows compatibility. on Windows there's no extra space between columns
     sz.width := 0;
     lTableLV.setIntercellSpacing(sz);;
+    lTableLV.release;
     {$IFDEF COCOA_DEBUG_LISTVIEW}
     WriteLn(Format('[TCocoaWSCustomListView.CreateHandle] headerView=%d', [PtrInt(lTableLV.headerView)]));
     {$ENDIF}
@@ -1117,6 +1118,7 @@ begin
   lNSColumn.headerCell.setStringValue(lTitle);
   lNSColumn.setResizingMask(NSTableColumnUserResizingMask);
   lTableLV.addTableColumn(lNSColumn);
+  lNSColumn.release;
   lTitle.release;
 end;
 
@@ -1643,7 +1645,7 @@ begin
   lvpShowColumnHeaders:
     if (AIsSet <> Assigned(lTableLV.headerView)) then
     begin
-      if AIsSet then lTableLv.setHeaderView ( NSTableHeaderView.alloc.init )
+      if AIsSet then lTableLv.setHeaderView ( NSTableHeaderView.alloc.init.autorelease )
       else lTableLv.setHeaderView(nil);
     end;
 {  lvpShowWorkAreas,
@@ -1898,6 +1900,8 @@ begin
     img := NSImage(NSImage.alloc).initWithSize( rep.size );
     img.addRepresentation(rep);
     Result := img;
+	rep.release;
+
   finally
     bmp.Free;
   end;

@@ -1196,6 +1196,7 @@ begin
   cmp.setMinute(m);
   cmp.setSecond(s);
   Result := NSCalendar.currentCalendar.dateFromComponents(cmp);
+  cmp.release;
 end;
 
 function NSDateToDateTime(const aDateTime: NSDate): TDateTime;

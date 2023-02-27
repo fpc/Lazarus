@@ -557,6 +557,7 @@ begin
   NSNotificationCenter(NSNotificationCenter.defaultCenter).removeObserver(callback);
   callback.release;
   if (HdrCell<>nil) then hdrCell.Release;
+  if (BtnCell<>nil) then BtnCell.Release;
   inherited Destroy;
 end;
 

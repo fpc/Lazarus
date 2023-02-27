@@ -67,6 +67,7 @@ type
     fvscroll : NSScroller;
   public
     callback: ICommonCallback;
+    procedure dealloc; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     function lclContentView: NSView; override;
@@ -327,6 +328,13 @@ begin
 end;
 
 { TCocoaManualScrollView }
+
+procedure TCocoaManualScrollView.dealloc;
+begin
+  if Assigned(fhscroll) then fhscroll.release;
+  if Assigned(fvscroll) then fvscroll.release;
+  inherited dealloc;
+end;
 
 function TCocoaManualScrollView.lclGetCallback: ICommonCallback;
 begin

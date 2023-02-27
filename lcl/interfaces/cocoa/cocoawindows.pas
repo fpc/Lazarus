@@ -518,6 +518,7 @@ end;
 
 procedure TCocoaWindowContent.dealloc;
 begin
+  if Assigned(_stringValue) then _stringValue.release;
   inherited dealloc;
 end;
 

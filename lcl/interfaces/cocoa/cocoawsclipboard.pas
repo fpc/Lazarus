@@ -352,6 +352,7 @@ begin
         lNSText := NSStringUtf8(lText);
 
         pasteboard.setString_forType(lNSText, lCurFormat.CocoaFormat);
+        lNsText.release;
       end;
       ccdtCocoaStandard, ccdtNonStandard:
       begin

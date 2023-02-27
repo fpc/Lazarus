@@ -501,6 +501,7 @@ end;
 procedure TCocoaTableListView.dealloc;
 begin
   //if Assigned(Items) then FreeAndNil(Items);
+  if Assigned(beforeSel) then beforeSel.release;
   if Assigned(smallimages) then smallimages.release; // all contents is released automatically
   inherited dealloc;
 end;
@@ -790,8 +791,8 @@ var
   dstl : NSUInteger;
   data : TCompareData;
 begin
-  rm := NSMutableIndexSet.alloc.init;
-  ad := NSMutableIndexSet.alloc.init;
+  rm := NSMutableIndexSet.alloc.init.autorelease;
+  ad := NSMutableIndexSet.alloc.init.autorelease;
   removed := rm;
   added := ad;
 

@@ -64,6 +64,7 @@ type
     lclEnabled: Boolean;
     // cocoa
     class function alloc: id; override;
+    procedure dealloc; override;
     procedure setFrame(aframe: NSRect); override;
     // lcl
     function lclIsEnabled: Boolean; override;
@@ -419,6 +420,15 @@ class function TCocoaTabControl.alloc: id;
 begin
   Result := inherited alloc;
   TCocoaTabControl(Result).fulltabs := NSMutableArray(NSMutableArray.alloc).init;
+end;
+
+procedure TCocoaTabControl.dealloc;
+begin
+  if Assigned(fulltabs) then begin
+    fulltabs.release;
+    fulltabs := nil;
+  end;
+  inherited dealloc;
 end;
 
 procedure TCocoaTabControl.setFrame(aframe: NSRect);

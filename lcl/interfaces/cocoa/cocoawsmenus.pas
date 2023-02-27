@@ -65,6 +65,7 @@ type
     attachedAppleMenu: Boolean;
     isKeyEq: Boolean;
   public
+    procedure dealloc; override;
     procedure lclItemSelected(sender: id); message 'lclItemSelected:';
     procedure createAppleMenu(); message 'createAppleMenu';
     procedure overrideAppleMenu(AItem: TCocoaMenuItem); message 'overrideAppleMenu:';
@@ -299,6 +300,17 @@ end;
 
 { TCocoaMenu }
 
+procedure TCocoaMenu.dealloc;
+begin
+  if appleMenu <> nil then begin
+    if indexOfItem(appleMenu) >= 0 then
+      removeItem(appleMenu);
+    appleMenu.release;
+    appleMenu := nil;
+  end;
+  inherited dealloc;
+end;
+
 procedure TCocoaMenu.lclItemSelected(sender:id);
 begin
 
@@ -319,6 +331,7 @@ begin
   // add the submenu
   lNSSubmenu := NSMenu.alloc.initWithTitle(NSString.string_);
   appleMenu.setSubmenu(lNSSubmenu);
+  lNSSubmenu.release;
 
   appleMenu.attachAppleMenuItems();
 end;
@@ -419,6 +432,7 @@ end;
 procedure TCocoaMenuItem.attachAppleMenuItems();
 var
   item    : NSMenuItem;
+  itemSubMenu: NSMenu;
 begin
   if attachedAppleMenuItems then Exit;
   if not hasSubmenu() then Exit;
@@ -431,8 +445,11 @@ begin
   item.setTarget(nil);
   item.setAction(nil);
   submenu.insertItem_atIndex(item, submenu.itemArray.count);
-  item.setSubmenu(NSMenu.alloc.initWithTitle( ControlTitleToNSStr(rsMacOSMenuServices)));
+  itemSubMenu := NSMenu.alloc.initWithTitle( ControlTitleToNSStr(rsMacOSMenuServices));
+  item.setSubmenu(itemSubMenu);
+  itemSubMenu.release;
   NSApplication(NSApp).setServicesMenu(item.submenu);
+  item.release;
 
   // Separator
   submenu.insertItem_atIndex(NSMenuItem.separatorItem, submenu.itemArray.count);
@@ -440,14 +457,17 @@ begin
   // Hide App     Meta-H
   item := LCLMenuItemInit( TCocoaMenuItem_HideApp.alloc, Format(rsMacOSMenuHide, [Application.Title]), VK_H, [ssMeta]);
   submenu.insertItem_atIndex(item, submenu.itemArray.count);
+  item.release;
 
   // Hide Others  Meta-Alt-H
   item := LCLMenuItemInit( TCocoaMenuItem_HideOthers.alloc, rsMacOSMenuHideOthers, VK_H, [ssMeta, ssAlt]);
   submenu.insertItem_atIndex(item, submenu.itemArray.count);
+  item.release;
 
   // Show All
   item := LCLMenuItemInit( TCocoaMenuItem_ShowAllApp.alloc, rsMacOSMenuShowAll);
   submenu.insertItem_atIndex(item, submenu.itemArray.count);
+  item.release;
 
   // Separator
   submenu.insertItem_atIndex(NSMenuItem.separatorItem, submenu.itemArray.count);
@@ -455,6 +475,7 @@ begin
   // Quit   Meta-Q
   item := LCLMenuItemInit( TCocoaMenuItem_Quit.alloc, Format(rsMacOSMenuQuit, [Application.Title]), VK_Q, [ssMeta]);
   submenu.insertItem_atIndex(item, submenu.itemArray.count);
+  item.release;
 
   attachedAppleMenuItems := True;
 end;
@@ -627,6 +648,7 @@ begin
       Parent := AllocCocoaMenu(AMenuItem.Parent.Caption);
       Parent.setDelegate(TCocoaMenuItem(ParObj));
       NSMenuItem(ParObj).setSubmenu(Parent);
+      Parent.release;
 
       // no longer respond to clicks. LCL might still need to get an event
       // yet the menu should not close
@@ -639,23 +661,22 @@ begin
   else
     Exit;
 
-  item := nil;
+  idx := AMenuItem.MenuVisibleIndex;
+  if idx < 0 then idx := Parent.numberOfItems;
+
   MenuObj := NSObject(AMenuItem.Handle);
-  if MenuObj.isKindOfClass(NSMenuItem) then
-    item := NSMenuItem(MenuObj)
+  if MenuObj.isKindOfClass(NSMenuItem) then begin
+    item := NSMenuItem(MenuObj);
+    Parent.insertItem_atIndex(NSMenuItem(item), idx)
+  end
   else if MenuObj.isKindOfClass(NSMenu) then
   begin
     Menu := NSMenu(MenuObj);
     item := NSMenuItem(NSMenuItem.alloc).initWithTitle_action_keyEquivalent(
       ControlTitleToNSStr(AMenuItem.Caption), nil, NSString.string_ );
     item.setSubmenu( Menu );
-  end;
-
-  if Assigned(item) then
-  begin
-    idx := AMenuItem.MenuVisibleIndex;
-    if idx < 0 then idx := Parent.numberOfItems;
-    Parent.insertItem_atIndex(NSMenuItem(item), idx)
+    Parent.insertItem_atIndex(NSMenuItem(item), idx);
+    item.release;
   end;
 end;
 
@@ -702,6 +723,7 @@ begin
       ANSMenu := AllocCocoaMenu(AMenuItem.Caption);
       ANSMenu.setDelegate(TCocoaMenuItem(item));
       item.setSubmenu(ANSMenu);
+      ANSMenu.release;
     end;
 
     TCocoaMenuItem(item).menuItemCallback:=TLCLMenuItemCallback.Create(item, AMenuItem);
@@ -762,6 +784,8 @@ begin
     if nsitem.isSeparatorItem and Assigned(nsitem.menu) then
       nsitem.menu.removeItem(nsitem);
     // separator items are not "alloced", thus should not be released
+  end else if item.isKindOfClass_(TCocoaMenu) then begin
+    item.release;
   end;
 
 end;
