@@ -163,7 +163,7 @@ value specified in <var>aText</var> to the output for the renderer.
 </p>
 <p>
 AddOutput ensures that a space character is included for wrapped lines in the 
-HTML when there are no pending new lines . Otherwise, the required number of 
+HTML when there are no pending new lines. Otherwise, the required number of 
 line ending sequences are appended to the output for the render and the line 
 count is increased accordingly. If the line count exceeds the maximum number 
 allowed in <var>Render</var>, the value in <var>MoreMark</var> is appended to 
