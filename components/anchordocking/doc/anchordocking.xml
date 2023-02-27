@@ -62,7 +62,7 @@ If BringToFront=true then all parent pages are made active and the top form is f
       </element>
       <element name="TAnchorDockMaster.MakeDockSite">
         <short>Give AForm a dockmanager to make it a custom dock site</short>
-        <descr>Sites defines at which sides a site can be docked. The site is docked by putting it onto the form with a splitter and use the Align property . For example alBottom when docking to the bottom. The ResizePolicy defines what happens with the docked site when AForm is resized. 
+        <descr>Sites defines at which sides a site can be docked. The site is docked by putting it onto the form with a splitter and use the Align property. For example alBottom when docking to the bottom. The ResizePolicy defines what happens with the docked site when AForm is resized. 
 </descr>
       </element>
       <element name="TAnchorDockMaster.MakeVisible">
@@ -86,7 +86,7 @@ If BringToFront=true then the form gets focus.
       </element>
       <element name="TAnchorDockMaster.SaveLayoutToConfig">
         <short>Save all layout data to Config</short>
-        <descr>Unneded old data is not deleted. Better start with a fresh Config instead of reusing the old.
+        <descr>Unneeded old data is not deleted. Better start with a fresh Config instead of reusing the old.
 </descr>
       </element>
       <element name="TAnchorDockMaster.ConfigIsEmpty">
@@ -124,7 +124,7 @@ Use this during layout changes.
         <short>Adds AControl to the list of controls to be simplified.</short>
       </element>
       <element name="TAnchorDockMaster.NeedFree">
-        <short>Add AControl ot the list of controls to be freed.</short>
+        <short>Add AControl to the list of controls to be freed.</short>
         <descr>After simplification some sites and splitters are not needed, but still referenced. The free is delayed after SimplifyPendingEvents.
 </descr>
       </element>
@@ -168,7 +168,7 @@ Sites without children are removed and its parent marked for simplification.
       </element>
       <element name="TAnchorDockMaster.PageAreaInPercent">
         <short>Percentage of width/height of sites used for mouse snap area for page docking</short>
-        <descr>Page docking is done by draging the mouse over the center of a site. The size of this center area is defined by this value.
+        <descr>Page docking is done by dragging the mouse over the center of a site. The size of this center area is defined by this value.
 </descr>
       </element>
       <element name="TAnchorDockMaster.HeaderAlignTop">
