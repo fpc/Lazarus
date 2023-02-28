@@ -4808,6 +4808,9 @@ Causes the current page only to be printed.
 TTaskDialogFlag values are stored in the TTaskDialogFlags type, as used in 
 the TCustomTaskDialog.Flags property.
 </descr>
+<version>
+Modified in LCL 2.4.0 to include tfEmulateClassicStyle in the enumeration.
+</version>
 <seealso>
 <link id="TTaskDialogFlags"/>
 <link id="TCustomTaskDialog.Flags"/>
@@ -4887,6 +4890,12 @@ Form position will be poOwnerFormCenter, instead of poScreenCenter.
 </element>
 <element name="TTaskDialogFlag.tfForceNonNative">
 <short>Forces use of an emulated task dialog form.</short>
+</element>
+<element name="TTaskDialogFlag.tfEmulateClassicStyle">
+<short>
+Used to enforce conformity in the visual appearance of a dialog in an 
+application which is not using a theme.
+</short>
 </element>
 
 <element name="TTaskDialogFlags">
