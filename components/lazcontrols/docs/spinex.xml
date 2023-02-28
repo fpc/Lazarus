@@ -1024,8 +1024,8 @@ control for the grouped edit control.
 <seealso>
 <link id="TSpinEditExBase.Edit"/>
 <link id="TSpinEditExBase.UpDownVisible"/>
-<link id="#lcl.comctrols.TUpDown.Orientation">TUpDown.Orientation</link>
-<link id="#lcl.comctrols.TUDOrientation">TUDOrientation</link>
+<link id="#lcl.comctrls.TUpDown.Orientation">TUpDown.Orientation</link>
+<link id="#lcl.comctrls.TUDOrientation">TUDOrientation</link>
 <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.Buddy">TCustomAbstractGroupedEdit.Buddy</link>
 <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.Layout">TCustomAbstractGroupedEdit.Layout</link>
 </seealso>
