@@ -257,7 +257,7 @@ Represents the information icon.
 </element>
 <element name="TTaskDialogFooterIcon.tfiShield">
 <short>
-Represents the shield  icon. 
+Represents the shield icon. 
 </short>
 </element>
 
@@ -324,7 +324,7 @@ button on a task dialog.
 <short>
 Causes buttons define on a task dialog to be displayed as command links with 
 standard glyph images instead of as plain push buttons. The first line of 
-text in a button caption is used as the main text for button. Following  
+text in a button caption is used as the main text for button. Following 
 lines are displayed as additional notes for the command link.
 </short>
 </element>
@@ -373,7 +373,7 @@ milliseconds.
 </element>
 <element name="TTaskDialogFlag.tdfPositionRelativeToWindow">
 <short>
-Causes tha task dialog to be centered relative to the parent window for the 
+Causes the task dialog to be centered relative to the parent window for the 
 dialog. When omitted, or when a handle for the parent window has not been 
 specified, the dialog is centered on the active monitor for an application.
 </short>
@@ -391,7 +391,7 @@ Causes all radio buttons on a task dialog to be unselected when it is displayed.
 </element>
 <element name="TTaskDialogFlag.tdfCanBeMinimized">
 <short>
-Allows the taask dialog to be minimized. 
+Allows the task dialog to be minimized. 
 </short>
 </element>
 <element name="TTaskDialogFlag.tdfQuery">
@@ -1147,12 +1147,25 @@ Application.DialogHandle.
 </p>
 <p>
 If <var>aNonNative</var> is <b>True</b>, the Delphi emulation code will always 
-be used. <var>aEmulateClassicStyle</var> can be set to enforce conformity with 
-the non-themed user interface - see 
-<url href="http://synopse.info/forum/viewtopic.php?pid=2867#p2867">
-http://synopse.info/forum/viewtopic.php?pid=2867#p2867
-</url>.
+be used.
 </p>
+<p>
+<var>aEmulateClassicStyle</var> can be set to enforce conformity when using a 
+non-themed user interface (classic) - see 
+<url href="http://synopse.info/forum/viewtopic.php?pid=2867#p2867">
+http://synopse.info/forum/viewtopic.php?pid=2867#p2867</url>. This argument 
+is set to <b>True</b> if the tfEmulateClassicStyle flag has been included in 
+the Flags property for the TCustomTaskDialog. When enabled, the following 
+visual changes are applied to the dialog:
+</p>
+<ul>
+<li>Labels use a taller font height with Bold in the font style.</li>
+<li>Buttons are wider but smaller in height.</li>
+<li>
+The default font is either Calibri, Tahoma, or Arial on the dialog form.
+</li>
+<li>Panels use the clDefault color instead of clWindow.</li>
+</ul>
 <p>
 <var>aOnButtonClicked</var> can be set to a callback routine executed when a 
 button is clicked.
@@ -1202,7 +1215,7 @@ Ordinal position for the default radio button selected on the task dialog.
 </element>
 <element name="TTaskDialog.Execute.aWidth">
 <short>
-Specifies the display width for the task dialog form, or 0 to automtically calculate the width.
+Specifies the display width for the task dialog form, or 0 to automatically calculate the width.
 </short>
 </element>
 <element name="TTaskDialog.Execute.aParent">
@@ -1219,7 +1232,7 @@ task dialog.
 </element>
 <element name="TTaskDialog.Execute.aEmulateClassicStyle">
 <short>
-<b>True</b> forces a non-themed user interface to be used.
+<b>True</b> forces a non-themed (classic) user interface to be used.
 </short>
 </element>
 <element name="TTaskDialog.Execute.aOnButtonClicked">
