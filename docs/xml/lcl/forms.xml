@@ -2456,10 +2456,75 @@ added using the TFrame component on the Standard tab in the Lazarus IDE; you
 will be prompted for the TFrame class to use for the component.
 </p>
 <p>
-Frames can also be created entirely in code at run-time. They do not have to 
-be installed in the Lazarus IDE. One drawback is that complex inheritance 
-hierarchies for <var>TFrame</var> classes can be problematic; they do not 
-propagate changes to all derived frames in a multi-level inheritance tree.
+Frames can also be created in code at run-time. They do not have to be 
+installed in the Lazarus IDE. For example:
+</p>
+<code>
+unit Unit1;
+
+{$mode objfpc}{$H+}
+
+interface
+
+uses
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls;
+
+type
+
+  { TForm1 }
+
+  TForm1 = class(TForm)
+    Button1: TButton;
+    GroupBox1: TGroupBox;
+    procedure Button1Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+  private
+    { private declarations }
+    Frame: TFrame;
+  public
+    { public declarations }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+uses
+  Unit2{TFrame1}, Unit3{TFrame2}, Unit4{TFrame3};
+
+{$R *.lfm}
+
+{ TForm1 }
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  Frame := TFrame1.Create(GroupBox1);
+  Frame.Parent := GroupBox1;
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  if not Assigned(Frame) then
+  begin
+    Frame := TFrame1.Create(GroupBox1);
+    Frame.Parent := GroupBox1;
+  end else if Frame is TFrame1 then begin
+    Frame.Free;
+    Frame := TFrame2.Create(GroupBox1);
+    Frame.Parent := GroupBox1;
+  end else if Frame is TFrame2 then begin
+    Frame.Free;
+    Frame := TFrame3.Create(GroupBox1);
+    Frame.Parent := GroupBox1;
+  end else begin
+    FreeAndNil(Frame);
+  end;
+end;
+
+end.
+</code>
+<p>
+One drawback is that complex inheritance hierarchies for <var>TFrame</var> classes can be problematic; they do not propagate changes to all derived frames in a multi-level inheritance tree.
 </p>
 </descr>
 <seealso>
@@ -2863,10 +2928,81 @@ added using the TFrame component on the Standard tab in the Lazarus IDE; you
 will be prompted for the TFrame class to use for the component.
 </p>
 <p>
-Frames can also be created entirely in code at run-time. They do not have to 
-be installed in the Lazarus IDE. One drawback is that complex inheritance 
-hierarchies for <var>TFrame</var> classes can be problematic; they do not 
-propagate changes to all derived frames in the entire inheritance tree.
+Frames can be created and designed in the Lazarus IDE by creating a new Frame 
+module, and using the unit in your application. An existing frame can be 
+added using the TFrame component on the Standard tab in the Lazarus IDE; you 
+will be prompted for the TFrame class to use for the component.
+</p>
+<p>
+Frames can also be created in code at run-time. They do not have to be 
+installed in the Lazarus IDE. For example:
+</p>
+<code>
+unit Unit1;
+
+{$mode objfpc}{$H+}
+
+interface
+
+uses
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls;
+
+type
+
+  { TForm1 }
+
+  TForm1 = class(TForm)
+    Button1: TButton;
+    GroupBox1: TGroupBox;
+    procedure Button1Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+  private
+    { private declarations }
+    Frame: TFrame;
+  public
+    { public declarations }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+uses
+  Unit2{TFrame1}, Unit3{TFrame2}, Unit4{TFrame3};
+
+{$R *.lfm}
+
+{ TForm1 }
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  Frame := TFrame1.Create(GroupBox1);
+  Frame.Parent := GroupBox1;
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  if not Assigned(Frame) then
+  begin
+    Frame := TFrame1.Create(GroupBox1);
+    Frame.Parent := GroupBox1;
+  end else if Frame is TFrame1 then begin
+    Frame.Free;
+    Frame := TFrame2.Create(GroupBox1);
+    Frame.Parent := GroupBox1;
+  end else if Frame is TFrame2 then begin
+    Frame.Free;
+    Frame := TFrame3.Create(GroupBox1);
+    Frame.Parent := GroupBox1;
+  end else begin
+    FreeAndNil(Frame);
+  end;
+end;
+
+end.
+</code>
+<p>
+One drawback is that complex inheritance hierarchies for <var>TFrame</var> classes can be problematic; they do not propagate changes to all derived frames in a multi-level inheritance tree.
 </p>
 <p>
 TFrame contains a new property which indicates the LCL (Lazarus Component 
@@ -2877,7 +3013,7 @@ sets the visibility for properties defines in ancestor classes.
 </descr>
 <seealso/>
 </element>
-<element name="TFrame.FLCLVersion" link="#lcl.forms.TFrame.LCLVersion"/>
+<element name="TFrame.FLCLVersion"/>
 <element name="TFrame.LCLVersionIsStored" link="#lcl.forms.TFrame.LCLVersion"/>
 <element name="TFrame.LCLVersionIsStored.Result"/>
 
