@@ -18,7 +18,7 @@ uses
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEUtils, IDEDialogs,
   // Pas2Js
-  PJSDsgnOptions, strpas2jsdesign, SimpleWebSrvOptionsFrame;
+  PJSDsgnOptions, strpas2jsdesign, PJSController, SimpleWebSrvOptionsFrame;
 
 Type
   { TPas2jsOptionsFrame }
@@ -238,6 +238,7 @@ begin
   PJSOptions.ElectronFileName:=ElectronExeComboBox.Text;
   PJSOptions.AtomTemplateDir:=AtomTemplateDirComboBox.Text;
   PJSOptions.VSCodeTemplateDir:=VSCodeTemplateDirComboBox.Text;
+  TPJSController.Instance.StoreMacros;
   If PJSOptions.Modified then
     PJSOptions.Save;
 end;

@@ -23,6 +23,7 @@ Type
 
   TPJSController = Class
   Private
+    FMacroPas2js: TTransferMacro;
     FOnRefresh: TNotifyEvent;
     function GetPas2JSPath(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
     function GetPas2JSBrowser(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
@@ -44,9 +45,10 @@ Type
     Constructor Create;
     Destructor Destroy; override;
     Class Procedure DoneInstance;
-    Class Function instance :  TPJSController;
+    Class Function Instance: TPJSController;
     Procedure Hook; virtual;
     Procedure UnHook; virtual;
+    Procedure StoreMacros; virtual;
     // Determine project HTML file from custom data
     class function GetProjectHTMLFile(aProject: TLazProject): TLazProjectFile;
     class function GetProjectHTMLFilename(aProject: TLazProject): string;
@@ -56,6 +58,7 @@ Type
     function GetProjectLocation(aProject: TLazProject): string; virtual;
     function GetProjectURL(aProject: TLazProject): string; virtual;
     Property OnRefresh : TNotifyEvent Read FOnRefresh Write FonRefresh;
+    property MacroPas2js: TTransferMacro read FMacroPas2js;
   end;
 
 Const
@@ -84,7 +87,7 @@ begin
   FreeAndNil(Ctrl)
 end;
 
-class function TPJSController.instance: TPJSController;
+class function TPJSController.Instance: TPJSController;
 begin
   if Ctrl=Nil then
     Ctrl:=TPJSController.Create;
@@ -170,6 +173,7 @@ begin
   Result:=mrOk;
   aProject:=LazarusIDE.ActiveProject;
   if aProject=nil then exit;
+  StoreMacros;
   if aProject.IsVirtual then
     begin
     if not SaveHTMLFileToTestDir(aProject) then
@@ -520,8 +524,7 @@ end;
 
 procedure TPJSController.Hook;
 begin
-  IDEMacros.Add(TTransferMacro.Create('Pas2JS', '', pjsdPas2JSExecutable, @
-    GetPas2JSPath, []));
+  FMacroPas2js:=IDEMacros.Add('Pas2JS', '', pjsdPas2JSExecutable, @GetPas2JSPath, [tmfLazbuild]);
   IDEMacros.Add(TTransferMacro.Create('Pas2JSBrowser', '',
     pjsdPas2JSSelectedBrowserExecutable, @GetPas2JSBrowser, []));
   IDEMacros.Add(TTransferMacro.Create('Pas2JSNodeJS', '',
@@ -538,7 +541,13 @@ end;
 
 procedure TPJSController.UnHook;
 begin
-  // Nothing for the moment
+  FMacroPas2js:=nil;
+end;
+
+procedure TPJSController.StoreMacros;
+begin
+  if PJSOptions=nil then exit;
+  FMacroPas2js.LazbuildValue:=PJSOptions.GetParsedCompilerFilename;
 end;
 
 finalization

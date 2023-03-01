@@ -346,7 +346,7 @@ begin
   if Assigned(Pas2JSHandler) then; // Silence compiler warning
   PJSOptions:=TPas2jsOptions.Create;
   PJSOptions.Load;
-  TPJSController.Instance.Hook;
+  TPJSController.Instance.Hook; // this registers macros and events
 
   // register new-project items
   RegisterProjectDescriptor(TProjectPas2JSWebApp.Create);
