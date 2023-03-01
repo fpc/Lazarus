@@ -11871,7 +11871,7 @@ begin
   and (FRenamingComponents.IndexOf(AComponent)>=0) then
     exit; // already validated
 
-  if SysUtils.CompareText(AComponent.Name,'Owner')=0 then
+  if SysUtils.CompareText(NewName,'Owner')=0 then
     // 'Owner' is used by TReader/TWriter
     raise EComponentError.Create(lisOwnerIsAlreadyUsedByTReaderTWriterPleaseChooseAnot);
 
