@@ -107,7 +107,7 @@ type
   public
     constructor Create(AMemManager: TFpDbgMemManager); override;
     destructor Destroy; override;
-    function AddInternalBreakPointToId(ABrkPoint: TFpInternalBreakpoint): Integer;
+    function AddInternalBreakPointToId(ABrkPoint: TFpDbgBreakpoint): Integer;
     function GetInternalBreakPointFromId(AnId: Integer): TFpDbgBreakpoint;
     function GetIdFromInternalBreakPoint(ABrkPoint: TFpDbgBreakpoint): Integer;
     procedure RemoveInternalBreakPoint(AnId: Integer);
@@ -257,7 +257,7 @@ begin
 end;
 
 function TFpServerDbgController.AddInternalBreakPointToId(
-  ABrkPoint: TFpInternalBreakpoint): Integer;
+  ABrkPoint: TFpDbgBreakpoint): Integer;
 begin
   inc(FBreakPointIdCnt);
   Result := FBreakPointIdCnt;

@@ -143,7 +143,7 @@ type
   private
     FFileName: string;
     FLine: integer;
-    FBreakPoint: TFpInternalBreakpoint;
+    FBreakPoint: TFpDbgBreakpoint;
     FBreakServerId: Integer;
   public
     procedure ComposeSuccessEvent(var AnEvent: TFpDebugEvent); override;
