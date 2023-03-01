@@ -2529,7 +2529,7 @@ begin
       ctsFreePascalSourceDir,'',FPCSrcDir,da_Directory);
     Result.AddChild(MainDir);
     DefTempl:=TDefineTemplate.Create('Reset SrcPath',
-      ctsSrcPathInitialization,ExternalMacroStart+'SrcPath','',da_DefineRecurse);
+      ctsSrcPathInitialization,SrcPathMacroName,'',da_DefineRecurse);
     MainDir.AddChild(DefTempl);
     DefTempl:=TDefineTemplate.Create('Reset UnitPath',
       ctsUnitPathInitialization,UnitPathMacroName,'',da_DefineRecurse);
@@ -2623,7 +2623,7 @@ begin
       +';'+Dir+'rtl'+DS+'objpas'+DS;
     RTLOSDir.AddChild(TDefineTemplate.Create('Src Path',
       Format(ctsAddsDirToSourcePath,[aTargetCPU]),
-      ExternalMacroStart+'SrcPath',s,da_DefineRecurse));
+      SrcPathMacroName,s,da_DefineRecurse));
     RTLDir.AddChild(RTLOSDir);
 
     // fcl
@@ -2648,7 +2648,7 @@ begin
     FCLDBDir.AddChild(FCLDBInterbaseDir);
     FCLDBInterbaseDir.AddChild(TDefineTemplate.Create('SrcPath',
       'SrcPath addition',
-      ExternalMacroStart+'SrcPath',
+      SrcPathMacroName,
       d(Dir+'/packages/base/ibase;'+SrcPathMacro)
       ,da_Define));
 
@@ -2818,14 +2818,14 @@ begin
        'debugsvr',da_Directory);
     UtilsDir.AddChild(DebugSvrDir);
     DebugSvrDir.AddChild(TDefineTemplate.Create('Interface Path',
-      Format(ctsAddsDirToSourcePath,['..']),ExternalMacroStart+'SrcPath',
-      '..;'+ExternalMacroStart+'SrcPath',da_DefineRecurse));
+      Format(ctsAddsDirToSourcePath,['..']),SrcPathMacroName,
+      '..;'+SrcPathMacroName,da_DefineRecurse));
 
     // installer
     InstallerDir:=TDefineTemplate.Create('Installer',ctsInstallerDirectories,'',
        'installer',da_Directory);
     InstallerDir.AddChild(TDefineTemplate.Create('SrcPath','SrcPath addition',
-      ExternalMacroStart+'SrcPath',
+      SrcPathMacroName,
       SrcPathMacro+';'+Dir+'ide;'+Dir+'fv',da_Define));
     MainDir.AddChild(InstallerDir);
 
@@ -2833,7 +2833,7 @@ begin
     CompilerDir:=TDefineTemplate.Create('Compiler',ctsCompiler,'','compiler',
        da_Directory);
     CompilerDir.AddChild(TDefineTemplate.Create('SrcPath','SrcPath addition',
-      ExternalMacroStart+'SrcPath',
+      SrcPathMacroName,
       SrcPathMacro+';'+Dir+aTargetCPU,da_Define));
     CompilerDir.AddChild(TDefineTemplate.Create('IncPath','IncPath addition',
       IncludePathMacroName,
@@ -2844,7 +2844,7 @@ begin
     UtilsDir:=TDefineTemplate.Create('utils',ctsUtilsDirectories,'',
        'utils',da_Directory);
     UtilsDir.AddChild(TDefineTemplate.Create('SrcPath','SrcPath addition',
-      ExternalMacroStart+'SrcPath',
+      SrcPathMacroName,
       SrcPathMacro+';..',da_Define));
     CompilerDir.AddChild(UtilsDir);
 
@@ -6680,14 +6680,14 @@ begin
     da_Directory);
   // clear src path
   MainDir.AddChild(TDefineTemplate.Create('Clear SrcPath','Clear SrcPath',
-    ExternalMacroStart+'SrcPath','',da_DefineRecurse));
+    SrcPathMacroName,'',da_DefineRecurse));
   // if SrcOS<>win
   IfTemplate:=TDefineTemplate.Create('IF '''+SrcOS+'''<>''win''',
     ctsIfTargetOSIsNotWin32,'',''''+SrcOS+'''<>''win''',da_If);
     // then define #SrcPath := #SrcPath;lcl/nonwin32
     IfTemplate.AddChild(TDefineTemplate.Create('win32api for non win',
       Format(ctsAddsDirToSourcePath,[d(LazarusSrcDir+'/lcl/nonwin32')]),
-      ExternalMacroStart+'SrcPath',
+      SrcPathMacroName,
       d(LazarusSrcDir+'/lcl/nonwin32;')+SrcPath,da_DefineRecurse));
   MainDir.AddChild(IfTemplate);
   // define 'LCL'
@@ -6703,7 +6703,7 @@ begin
     '','ide',da_Directory);
   DirTempl.AddChild(TDefineTemplate.Create('IDE path addition',
     Format(ctsAddsDirToSourcePath,['designer, debugger, synedit, ...']),
-    ExternalMacroStart+'SrcPath',
+    SrcPathMacroName,
       d(LazarusSrcDir+'/ide;'
        +LazarusSrcDir+'/ide/frames;'
        +LazarusSrcDir+'/designer;'
@@ -6735,16 +6735,18 @@ begin
     ,da_DefineRecurse));
   // include path addition
   DirTempl.AddChild(TDefineTemplate.Create('includepath addition',
-    Format(ctsSetsIncPathTo,['include, include/packages/ideconfig/TargetOS, include/packages/ideconfig/SrcOS']),
+    Format(ctsSetsIncPathTo,['include, include/packages/ideconfig/include/TargetOS']),
     IncludePathMacroName,
-    d(LazarusSrcDir+'/ide/include;'),
+    d(LazarusSrcDir+'/ide/include;')
+    +d(LazarusSrcDir+'/ide/packages/ideconfig;')
+    +d(LazarusSrcDir+'/ide/packages/ideconfig/include/'+TargetOS+';'),
     da_DefineRecurse));
   MainDir.AddChild(DirTempl);
 
   // <LazarusSrcDir>/designer
   DirTempl:=TDefineTemplate.Create('Designer',ctsDesignerDirectory,
     '','designer',da_Directory);
-  DirTempl.AddChild(TDefineTemplate.Create('components path addition',
+  DirTempl.AddChild(TDefineTemplate.Create('components path',
     Format(ctsAddsDirToSourcePath,['synedit']),
     SrcPathMacroName,
       d('../components/lazutils'
@@ -6761,12 +6763,12 @@ begin
        +';../components/custom')
        +';'+SrcPath
     ,da_Define));
-  DirTempl.AddChild(TDefineTemplate.Create('main path addition',
+  DirTempl.AddChild(TDefineTemplate.Create('source path',
     Format(ctsAddsDirToSourcePath,[ctsLazarusMainDirectory]),
     SrcPathMacroName,
     d('../ide;../packager;')+SrcPath
     ,da_Define));
-  DirTempl.AddChild(TDefineTemplate.Create('includepath addition',
+  DirTempl.AddChild(TDefineTemplate.Create('includepath',
     Format(ctsIncludeDirectoriesPlusDirs,['include']),
     IncludePathMacroName,
     d('../ide/include;../ide/packages/ideconfig/include/'+TargetOS),
@@ -6783,7 +6785,7 @@ begin
     '','debugger',da_Directory);
   DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
     Format(ctsAddsDirToSourcePath,['lcl, components']),
-    ExternalMacroStart+'SrcPath',
+    SrcPathMacroName,
       d(LazarusSrcDir+'/debugger;'
        +LazarusSrcDir+'/debugger/frames;'
        +LazarusSrcDir+'/ide;'
@@ -6810,7 +6812,7 @@ begin
     '','converter',da_Directory);
   DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
     Format(ctsAddsDirToSourcePath,['lcl, components']),
-    ExternalMacroStart+'SrcPath',
+    SrcPathMacroName,
       d('../ide'
        +';../ide/packages/ideconfig;'
        +';../components/buildintf'
@@ -6889,7 +6891,7 @@ begin
     '','examples',da_Directory);
   DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
     Format(ctsAddsDirToSourcePath,['lcl']),
-    ExternalMacroStart+'SrcPath',
+    SrcPathMacroName,
       d('../lcl'
       +';../lcl/interfaces/'+WidgetType+';'+SrcPath)
     ,da_Define));
@@ -6905,7 +6907,7 @@ begin
     '','custom',da_Directory);
   SubDirTempl.AddChild(TDefineTemplate.Create('lazarus standard components',
     Format(ctsAddsDirToSourcePath,['synedit']),
-    ExternalMacroStart+'SrcPath',
+    SrcPathMacroName,
     d('../synedit;')
     +SrcPath
     ,da_DefineRecurse));
@@ -6917,7 +6919,7 @@ begin
     ctsToolsDirectory,'','tools',da_Directory);
   DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
     Format(ctsAddsDirToSourcePath,['lcl']),
-    ExternalMacroStart+'SrcPath',
+    SrcPathMacroName,
     d('../lcl;../lcl/interfaces/'+WidgetType
     +';../components/codetools')
     +';'+SrcPath
@@ -6928,7 +6930,7 @@ begin
     DirTempl.AddChild(ToolsInstallDirTempl);
     ToolsInstallDirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
       Format(ctsAddsDirToSourcePath,['lcl']),
-      ExternalMacroStart+'SrcPath',
+      SrcPathMacroName,
       d('../../lcl;../../lcl/interfaces/'+WidgetType
       +';../../components/codetools')
       +';'+SrcPath
@@ -6962,7 +6964,7 @@ begin
     '',ProjectDir,da_Directory);
   DirTempl.AddChild(TDefineTemplate.Create('LCL',
     Format(ctsAddsDirToSourcePath,['lcl']),
-    ExternalMacroStart+'SrcPath',
+    SrcPathMacroName,
     LazarusSrcDir+PathDelim+'lcl;'
      +LazarusSrcDir+PathDelim+'lcl'+PathDelim+'interfaces'
      +PathDelim+WidgetType
@@ -7033,7 +7035,7 @@ begin
   MainDirTempl.AddChild(CreateDelphiCompilerDefinesTemplate(DelphiVersion,Owner));
   MainDirTempl.AddChild(TDefineTemplate.Create('SrcPath',
       Format(ctsSetsSrcPathTo,['RTL, VCL']),
-      ExternalMacroStart+'SrcPath',
+      SrcPathMacroName,
       GetForcedPathDelims(
           CreateDelphiSrcPath(DelphiVersion,DefinePathMacro+'/')+'$(#SrcPath)'),
       da_DefineRecurse));
@@ -7058,7 +7060,7 @@ begin
      ExternalMacroStart+'DelphiDir',DelphiDirectory,da_DefineRecurse));
   MainDirTempl.AddChild(TDefineTemplate.Create('SrcPath',
       Format(ctsAddsDirToSourcePath,['Delphi RTL+VCL']),
-      ExternalMacroStart+'SrcPath',
+      SrcPathMacroName,
       GetForcedPathDelims(CreateDelphiSrcPath(DelphiVersion,'$(#DelphiDir)/')
                        +'$(#SrcPath)'),
       da_DefineRecurse));
@@ -7140,7 +7142,7 @@ begin
   MainDirTempl.AddChild(CreateKylixCompilerDefinesTemplate(KylixVersion,Owner));
   MainDirTempl.AddChild(TDefineTemplate.Create('SrcPath',
       Format(ctsSetsSrcPathTo,['RTL, CLX']),
-      ExternalMacroStart+'SrcPath',
+      SrcPathMacroName,
       GetForcedPathDelims(CreateKylixSrcPath(KylixVersion,DefinePathMacro+'/')
                        +'$(#SrcPath)'),
       da_DefineRecurse));
@@ -7165,7 +7167,7 @@ begin
      ExternalMacroStart+'KylixDir',KylixDirectory,da_DefineRecurse));
   MainDirTempl.AddChild(TDefineTemplate.Create('SrcPath',
       Format(ctsAddsDirToSourcePath,['Kylix RTL+VCL']),
-      ExternalMacroStart+'SrcPath',
+      SrcPathMacroName,
       GetForcedPathDelims(CreateKylixSrcPath(KylixVersion,'$(#KylixDir)/')
                        +'$(#SrcPath)'),
       da_DefineRecurse));
