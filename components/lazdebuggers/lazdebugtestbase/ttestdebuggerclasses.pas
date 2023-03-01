@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, DbgIntfDebuggerBase, IdeDebuggerBase, Debugger,
   IdeDebuggerWatchResult, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
-  LazDebuggerValueConverter;
+  LazDebuggerValueConverter, LazDebuggerTemplate;
 
 type
 
@@ -78,18 +78,14 @@ type
 
   { TTestWatchValue }
 
-  TTestWatchValue = class(TWatchValue, TWatchValueIntf)
+  TTestWatchValue = class(specialize TDbgDataRequestTemplateBase<TWatchValue, TWatchValueIntf>, TWatchValueIntf)
   private
     FCurrentResData: TCurrentResData;
     FUpdateCount: Integer;
   protected
     (* TWatchValueIntf *)
-    procedure BeginUpdate;
-    procedure EndUpdate;
-    procedure AddNotification(AnEventType: TWatcheEvaluateEvent;
-      AnEvent: TNotifyEvent);
-    procedure RemoveNotification(AnEventType: TWatcheEvaluateEvent;
-      AnEvent: TNotifyEvent);
+    procedure BeginUpdate; reintroduce;
+    procedure EndUpdate; reintroduce;
     function ResData: TLzDbgWatchDataIntf;
     function GetDbgValConverter: TLazDbgValueConvertSelectorIntf;
   protected
@@ -104,6 +100,7 @@ type
                        const AStackFrame: Integer
                       );
     constructor Create(AOwnerWatch: TWatch); override;
+    destructor Destroy;
   end;
 
   { TTestWatchValueList }
@@ -410,18 +407,6 @@ begin
   ReleaseReference; // Last statemnet, may call Destroy
 end;
 
-procedure TTestWatchValue.AddNotification(AnEventType: TWatcheEvaluateEvent;
-  AnEvent: TNotifyEvent);
-begin
-  //
-end;
-
-procedure TTestWatchValue.RemoveNotification(AnEventType: TWatcheEvaluateEvent;
-  AnEvent: TNotifyEvent);
-begin
-  //
-end;
-
 function TTestWatchValue.ResData: TLzDbgWatchDataIntf;
 begin
   if FCurrentResData = nil then
@@ -519,6 +504,12 @@ begin
   FDisplayFormat := Watch.DisplayFormat;
   FEvaluateFlags := Watch.EvaluateFlags;
   FRepeatCount   := Watch.RepeatCount;
+end;
+
+destructor TTestWatchValue.Destroy;
+begin
+  inherited Destroy;
+  DoDestroy;
 end;
 
 { TTestWatchValueList }

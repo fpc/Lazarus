@@ -136,7 +136,7 @@ type
 
   TFpThreadWorkerWatchValueEvalUpdate = class(TFpThreadWorkerWatchValueEval)
   private
-    procedure DoWachCanceled(Sender: TObject);
+    procedure DoWachCanceled(Sender: TDbgDataRequestIntf; Data: TDbgDataRequestEventData);
   protected
     procedure UpdateWatch_DecRef(Data: PtrInt = 0); override;
     procedure DoRemovedFromLinkedList; override; // _DecRef
@@ -1055,7 +1055,8 @@ end;
 
 { TFpThreadWorkerWatchValueEvalUpdate }
 
-procedure TFpThreadWorkerWatchValueEvalUpdate.DoWachCanceled(Sender: TObject);
+procedure TFpThreadWorkerWatchValueEvalUpdate.DoWachCanceled(
+  Sender: TDbgDataRequestIntf; Data: TDbgDataRequestEventData);
 begin
   assert(system.ThreadID = classes.MainThreadID, 'TFpThreadWorkerWatchValueEvalUpdate.DoWachCanceled: system.ThreadID = classes.MainThreadID');
   RequestStop;

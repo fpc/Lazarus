@@ -44,8 +44,9 @@ uses
   LazClasses, Maps, LazMethodList,
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfDebuggerBase, LazDebuggerIntf,
-  LazDebuggerIntfBaseTypes, LazDebuggerValueConverter, IdeDebuggerBase,
-  IdeDebuggerWatchResult, IdeDebuggerOpts, IdeDebuggerBackendValueConv;
+  LazDebuggerIntfBaseTypes, LazDebuggerValueConverter, LazDebuggerTemplate,
+  IdeDebuggerBase, IdeDebuggerWatchResult, IdeDebuggerOpts,
+  IdeDebuggerBackendValueConv;
 
 const
   XMLBreakPointsNode = 'BreakPoints';
@@ -748,19 +749,16 @@ type
 
   { TCurrentWatchValue }
 
-  TCurrentWatchValue = class(TIdeWatchValue, TWatchValueIntf)
+  TCurrentWatchValue = class(specialize TDbgDataRequestTemplateBase<TIdeWatchValue, TWatchValueIntf>, TWatchValueIntf)
   private
     FCurrentResData: TCurrentResData;
     FCurrentBackEndExpression: String;
     FUpdateCount: Integer;
-    FEvents: array [TWatcheEvaluateEvent] of TMethodList;
     FDbgBackendConverter: TIdeDbgValueConvertSelector;
 
   (* TWatchValueIntf *)
-    procedure BeginUpdate;
-    procedure EndUpdate;
-    procedure AddNotification(AnEventType: TWatcheEvaluateEvent; AnEvent: TNotifyEvent);
-    procedure RemoveNotification(AnEventType: TWatcheEvaluateEvent; AnEvent: TNotifyEvent);
+    procedure BeginUpdate; reintroduce;
+    procedure EndUpdate; reintroduce;
     function ResData: TLzDbgWatchDataIntf;
     function GetDbgValConverter: TLazDbgValueConvertSelectorIntf;
   private
@@ -3978,22 +3976,6 @@ begin
   ReleaseReference; // Last statemnet, may call Destroy
 end;
 
-procedure TCurrentWatchValue.AddNotification(AnEventType: TWatcheEvaluateEvent;
-  AnEvent: TNotifyEvent);
-begin
-  if FEvents[AnEventType] = nil then
-    FEvents[AnEventType] := TMethodList.Create;
-  FEvents[AnEventType].Add(TMethod(AnEvent));
-end;
-
-procedure TCurrentWatchValue.RemoveNotification(
-  AnEventType: TWatcheEvaluateEvent; AnEvent: TNotifyEvent);
-begin
-  if FEvents[AnEventType] = nil then
-    exit;
-  FEvents[AnEventType].Remove(TMethod(AnEvent));
-end;
-
 function TCurrentWatchValue.ResData: TLzDbgWatchDataIntf;
 begin
   assert(FUpdateCount > 0, 'TCurrentWatchValue.ResData: FUpdateCount > 0');
@@ -4060,8 +4042,7 @@ end;
 
 procedure TCurrentWatchValue.CancelRequestData;
 begin
-  if FEvents[weeCancel] <> nil then
-    FEvents[weeCancel].CallNotifyEvents(Self);
+  CallNotifications(weeCancel, default(TDbgDataRequestEventData));
 end;
 
 procedure TCurrentWatchValue.DoDataValidityChanged(AnOldValidity: TDebuggerDataState);
@@ -4087,8 +4068,7 @@ begin
   if (FCurrentResData <> nil) and (FResultData = nil) then
     FCurrentResData.FreeResultAndSubData;
   FCurrentResData.Free;
-  for e in FEvents do
-    e.Free;
+  DoDestroy;
   FDbgBackendConverter.Free;
   inherited Destroy;
 end;

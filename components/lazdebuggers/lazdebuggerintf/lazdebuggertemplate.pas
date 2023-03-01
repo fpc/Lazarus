@@ -25,6 +25,41 @@ uses
 
 type
 
+
+  { TDbgDataRequestTemplateBase }
+
+  generic TDbgDataRequestTemplateBase<_BASE: TObject; _SENDER_INTF: TDbgDataRequestIntf> = class(_BASE)
+  private type
+    TDbgDataRequestEventList = specialize TFPGList<TDbgDataRequestEvent>;
+  private
+    FEventLists: array [TDbgDataRequestEventType] of TDbgDataRequestEventList;
+  protected
+    procedure AddNotification(AnEventType: TDbgDataRequestEventType; AnEvent: TDbgDataRequestEvent);
+    procedure RemoveNotification(AnEventType: TDbgDataRequestEventType; AnEvent: TDbgDataRequestEvent);
+    procedure CallNotifications(AnEventType: TDbgDataRequestEventType; AnEventData: TDbgDataRequestEventData);
+
+    procedure BeginUpdate; virtual;
+    procedure EndUpdate; virtual;
+
+    procedure DoDestroy; // FPC can not compile "destructor Destroy; override;"
+  end;
+
+  { TDbgDataRequestTemplate }
+
+  generic TDbgDataRequestTemplate<_BASE: TObject; _SENDER_INTF: TDbgDataRequestIntf>
+    = class(specialize TDbgDataRequestTemplateBase<_BASE, _SENDER_INTF>, TDbgDataRequestIntf)
+  private type
+    TNotifyEventList = specialize TFPGList<TNotifyEvent>;
+  private
+    FFreeNotifyList: TNotifyEventList;
+  protected
+    procedure AddFreeNotification(ANotification: TNotifyEvent);
+    procedure RemoveFreeNotification(ANotification: TNotifyEvent);
+    procedure CallFreeNotifications;
+
+    procedure DoDestroy; // FPC can not compile "destructor Destroy; override;"
+  end;
+
   { TInternalDbgMonitorBase }
 
   generic TInternalDbgMonitorBase<
@@ -93,6 +128,93 @@ type
   end;
 
 implementation
+
+{ TDbgDataRequestTemplateBase }
+
+procedure TDbgDataRequestTemplateBase.AddNotification(
+  AnEventType: TDbgDataRequestEventType; AnEvent: TDbgDataRequestEvent);
+begin
+  if FEventLists[AnEventType] = nil then
+    FEventLists[AnEventType] := TDbgDataRequestEventList.Create;
+
+  FEventLists[AnEventType].Add(AnEvent);
+end;
+
+procedure TDbgDataRequestTemplateBase.RemoveNotification(
+  AnEventType: TDbgDataRequestEventType; AnEvent: TDbgDataRequestEvent);
+begin
+  if FEventLists[AnEventType] = nil then
+    exit;
+
+  FEventLists[AnEventType].Remove(AnEvent);
+end;
+
+procedure TDbgDataRequestTemplateBase.CallNotifications(
+  AnEventType: TDbgDataRequestEventType; AnEventData: TDbgDataRequestEventData);
+var
+  i: integer;
+begin
+  if FEventLists[AnEventType] = nil then
+    exit;
+
+  for i := FEventLists[AnEventType].Count - 1 downto 0 do
+    FEventLists[AnEventType][i](Self as _SENDER_INTF, AnEventData)
+end;
+
+procedure TDbgDataRequestTemplateBase.BeginUpdate;
+begin
+  //
+end;
+
+procedure TDbgDataRequestTemplateBase.EndUpdate;
+begin
+  //
+end;
+
+procedure TDbgDataRequestTemplateBase.DoDestroy;
+var
+  i: TDbgDataRequestEventType;
+begin
+  for i := low(TDbgDataRequestEventType) to high(TDbgDataRequestEventType) do
+    FEventLists[i].Free;
+end;
+
+{ TDbgDataRequestTemplate }
+
+procedure TDbgDataRequestTemplate.AddFreeNotification(
+  ANotification: TNotifyEvent);
+begin
+  if FFreeNotifyList = nil then
+    FFreeNotifyList := TNotifyEventList.Create;
+
+  FFreeNotifyList.Add(ANotification);
+end;
+
+procedure TDbgDataRequestTemplate.RemoveFreeNotification(
+  ANotification: TNotifyEvent);
+begin
+  if FFreeNotifyList = nil then
+    exit;
+
+  FFreeNotifyList.Remove(ANotification);
+end;
+
+procedure TDbgDataRequestTemplate.CallFreeNotifications;
+var
+  i: integer;
+begin
+  if FFreeNotifyList = nil then
+    exit;
+
+  for i := FFreeNotifyList.Count - 1 downto 0 do
+    FFreeNotifyList[i](nil)
+end;
+
+procedure TDbgDataRequestTemplate.DoDestroy;
+begin
+  FFreeNotifyList.Free;
+  inherited DoDestroy;
+end;
 
 { TInternalDbgMonitorBase }
 
