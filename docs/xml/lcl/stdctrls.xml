@@ -2456,6 +2456,11 @@ width for the list is calculated using the <var>ItemWidth</var> and
 <var>ItemHeight</var> properties. The dimensions are passed to the widgetset 
 class using the SetComboMinDropDownSize routine in the LCL interface.
 </p>
+<remark>
+In the current LCL version, AdjustDropDown is not implemented for the QT 
+platforms. They do not implement SetComboMinDropDownSize called to update the 
+widgetset class when one of the values is changed.
+</remark>
 </descr>
 <seealso>
 <link id="TCustomComboBox.ItemWidth"/>
@@ -3011,6 +3016,11 @@ Setting a new value for the property causes the <var>AdjustDropDown</var>
 method to be called to adjust the dimensions for the list to the values in 
 <var>ItemHeight</var>, <var>ItemWidth</var>, and <var>DropDownCount</var>.
 </p>
+<remark>
+In the current LCL version, ItemWidth is not implemented for the QT platforms. 
+They do not implement SetComboMinDropDownSize called to update the widgetset 
+class when the value is changed.
+</remark>
 <p>
 Use <var>ItemHeight</var> to specify the number of pixels required for items 
 displayed in the drop-down list for the control.
