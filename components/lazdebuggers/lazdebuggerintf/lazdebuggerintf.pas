@@ -32,18 +32,11 @@ type
   TInternalDbgSupplierIntfType = interface end;
 
   generic TInternalDbgMonitorIntf<_SUPPLIER_INTF> = interface(TInternalDbgMonitorIntfType)
-    function GetSupplier: _SUPPLIER_INTF;
-    procedure SetSupplier(ASupplier: _SUPPLIER_INTF);
-
-    procedure DoStateChange(const AOldState, ANewState: TDBGState);
-
-    property Supplier: _SUPPLIER_INTF read GetSupplier write SetSupplier;
+    procedure RemoveSupplier(ASupplier: _SUPPLIER_INTF);
   end;
 
   generic TInternalDbgSupplierIntf<_MONITOR_INTF> = interface(TInternalDbgSupplierIntfType)
     procedure SetMonitor(AMonitor: _MONITOR_INTF);
-
-    procedure DoStateChange(const AOldState: TDBGState);
   end;
 
   {$ENDREGION}
@@ -274,11 +267,11 @@ type
 
   TWatchesMonitorIntf  = interface(specialize TInternalDbgMonitorIntf<TWatchesSupplierIntf>)
     procedure InvalidateWatchValues;
+    procedure DoStateChange(const AOldState, ANewState: TDBGState); //deprecated;
   end;
 
   TWatchesSupplierIntf = interface(specialize TInternalDbgSupplierIntf<TWatchesMonitorIntf>)
     procedure RequestData(AWatchValue: TWatchValueIntf);
-    procedure TriggerInvalidateWatchValues;
   end;
 
 {%endregion   ^^^^^  Watches  ^^^^^   }

@@ -590,7 +590,7 @@ type
 
   TWatchesSupplier = class(specialize TWatchesSupplierClassTemplate<TDebuggerDataSupplierBase>, TWatchesSupplierIntf)
   protected
-    procedure DoStateChange(const AOldState: TDBGState); override;
+    procedure DoStateChange(const AOldState: TDBGState); virtual;
     procedure InternalRequestData(AWatchValue: TWatchValueIntf); virtual;
   public
     constructor Create(const ADebugger: TDebuggerIntf);

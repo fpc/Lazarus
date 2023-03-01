@@ -36,23 +36,22 @@ type
   strict private
     FSupplier: _SUPPLIER_INTF;
   private
-    function GetSupplier: _SUPPLIER_INTF;
     procedure SetSupplier(ASupplier: _SUPPLIER_INTF);
-
+    procedure RemoveSupplier(ASupplier: _SUPPLIER_INTF);
   protected
     procedure DoNewSupplier; virtual;
-    procedure DoStateChange(const AOldState, ANewState: TDBGState); virtual;
 
     procedure DoDestroy; // FPC can not compile "destructor Destroy; override;"
   public
-    property Supplier: _SUPPLIER_INTF read GetSupplier write SetSupplier;
+    property Supplier: _SUPPLIER_INTF read FSupplier write SetSupplier;
   end;
 
   { TInternalDbgSupplierBase }
 
   generic TInternalDbgSupplierBase<
     _BASE: TObject;
-    _MONITOR_INTF//: TInternalDbgMonitorIntfType
+    _SUPPLIER_INTF: TInternalDbgSupplierIntfType;
+    _MONITOR_INTF //: TInternalDbgMonitorIntfType
     >
     = class(_BASE)
   strict private
@@ -61,7 +60,6 @@ type
     procedure SetMonitor(AMonitor: _MONITOR_INTF);
   protected
     procedure DoNewMonitor; virtual;
-    procedure DoStateChange(const AOldState: TDBGState); virtual;
 
     procedure DoDestroy; // FPC can not compile "destructor Destroy; override;"
 
@@ -79,12 +77,13 @@ type
   )
   protected
     procedure InvalidateWatchValues; virtual;
+    procedure DoStateChange(const AOldState, ANewState: TDBGState); virtual; // deprecated;
   end;
 
   { TWatchesSupplierClassTemplate }
 
   generic TWatchesSupplierClassTemplate<_BASE: TObject> = class(
-    specialize TInternalDbgSupplierBase<_BASE, TWatchesMonitorIntf>,
+    specialize TInternalDbgSupplierBase<_BASE, TWatchesSupplierIntf, TWatchesMonitorIntf>,
     TWatchesSupplierIntf
   )
   protected
@@ -96,11 +95,6 @@ type
 implementation
 
 { TInternalDbgMonitorBase }
-
-function TInternalDbgMonitorBase.GetSupplier: _SUPPLIER_INTF;
-begin
-  Result := FSupplier;
-end;
 
 procedure TInternalDbgMonitorBase.SetSupplier(ASupplier: _SUPPLIER_INTF);
 begin
@@ -114,13 +108,13 @@ begin
   DoNewSupplier;
 end;
 
-procedure TInternalDbgMonitorBase.DoNewSupplier;
+procedure TInternalDbgMonitorBase.RemoveSupplier(ASupplier: _SUPPLIER_INTF);
 begin
-  //
+  if Supplier = ASupplier then
+    Supplier := nil;
 end;
 
-procedure TInternalDbgMonitorBase.DoStateChange(const AOldState,
-  ANewState: TDBGState);
+procedure TInternalDbgMonitorBase.DoNewSupplier;
 begin
   //
 end;
@@ -146,20 +140,21 @@ begin
   //
 end;
 
-procedure TInternalDbgSupplierBase.DoStateChange(const AOldState: TDBGState);
-begin
-  //
-end;
-
 procedure TInternalDbgSupplierBase.DoDestroy;
 begin
   if FMonitor <> nil then
-    FMonitor.Supplier := nil;
+    FMonitor.RemoveSupplier(Self as _SUPPLIER_INTF);
 end;
 
 { TWatchesMonitorClassTemplate }
 
 procedure TWatchesMonitorClassTemplate.InvalidateWatchValues;
+begin
+  //
+end;
+
+procedure TWatchesMonitorClassTemplate.DoStateChange(const AOldState,
+  ANewState: TDBGState);
 begin
   //
 end;
@@ -173,7 +168,7 @@ end;
 
 procedure TWatchesSupplierClassTemplate.TriggerInvalidateWatchValues;
 begin
-  if Monitor <> nil then
+  if (Self <> nil) and (Monitor <> nil) then
     Monitor.InvalidateWatchValues;
 end;
 
