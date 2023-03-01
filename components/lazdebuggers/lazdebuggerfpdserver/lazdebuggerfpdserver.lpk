@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <Name Value="LazDebuggerFPDServer"/>
     <Type Value="DesignTime"/>
     <Author Value="Joost van der Sluis"/>
@@ -23,13 +23,17 @@
         <Type Value="Binary"/>
       </Item2>
     </Files>
-    <RequiredPkgs Count="2">
+    <CompatibilityMode Value="True"/>
+    <RequiredPkgs Count="3">
       <Item1>
-        <PackageName Value="DebuggerIntf"/>
+        <PackageName Value="LCLBase"/>
       </Item1>
       <Item2>
-        <PackageName Value="FCL"/>
+        <PackageName Value="DebuggerIntf"/>
       </Item2>
+      <Item3>
+        <PackageName Value="FCL"/>
+      </Item3>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>

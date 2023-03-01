@@ -6,13 +6,14 @@ interface
 
 uses
   Classes, strutils, SysUtils, ssockets, fgl, process, syncobjs, fpjson,
-  forms, dialogs,
+  Forms, dialogs,
   DbgIntfDebuggerBase, DbgIntfBaseTypes,
 //  jsonparser,
   {$IFDEF UNIX}
   BaseUnix,
   {$ENDIF}
-  LazLoggerBase, lazCollections, LazSysUtils, LazStringUtils, UTF8Process, maps;
+  LazLoggerBase, lazCollections, LazSysUtils, LazStringUtils, UTF8Process, maps,
+  LazDebuggerIntf, LazDebuggerIntfBaseTypes;
 
 type
   TThreadedQueueString = specialize TLazThreadedQueue<string>;
@@ -180,12 +181,12 @@ type
 
   TFPDSendWatchEvaluateCommand = class(TFPDSendCommand)
   private
-    FWatchValue: TWatchValue;
+    FWatchValue: TWatchValueIntf;
     procedure DoWatchFreed(Sender: TObject);
   protected
     procedure ComposeJSon(AJsonObject: TJSONObject); override;
   public
-    constructor create(AWatchValue: TWatchValue);
+    constructor create(AWatchValue: TWatchValueIntf);
     destructor Destroy; override;
     procedure DoOnCommandSuccesfull(ACommandResponse: TJSonObject); override;
     procedure DoOnCommandFailed(ACommandResponse: TJSonObject); override;
@@ -396,7 +397,7 @@ type
 
   TFPWatches = class(TWatchesSupplier)
   protected
-    procedure InternalRequestData(AWatchValue: TWatchValue); override;
+    procedure InternalRequestData(AWatchValue: TWatchValueIntf); override;
   end;
 
   { TFPCallStackSupplier }
@@ -626,7 +627,7 @@ begin
   AJsonObject.Add('expression',FWatchValue.Expression);
 end;
 
-constructor TFPDSendWatchEvaluateCommand.create(AWatchValue: TWatchValue);
+constructor TFPDSendWatchEvaluateCommand.create(AWatchValue: TWatchValueIntf);
 begin
   inherited create(true);
   AWatchValue.AddFreeNotification(@DoWatchFreed);
@@ -668,7 +669,7 @@ end;
 
 { TFPWatches }
 
-procedure TFPWatches.InternalRequestData(AWatchValue: TWatchValue);
+procedure TFPWatches.InternalRequestData(AWatchValue: TWatchValueIntf);
 begin
   TFPDServerDebugger(Debugger).QueueCommand(TFPDSendWatchEvaluateCommand.create(AWatchValue));
   inherited InternalRequestData(AWatchValue);
