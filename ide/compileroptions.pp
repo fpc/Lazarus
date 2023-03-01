@@ -97,7 +97,7 @@ type
   end;
 
   { TIDEBuildMacros
-    - every package and project has this list of build macros
+    - every package and project has this list of build macros (editable via GUI)
       every build macro has
       - a list of possible values
       - and has a default value, or an expression to define the default

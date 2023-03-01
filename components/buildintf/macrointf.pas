@@ -22,6 +22,7 @@ uses
   MacroDefIntf;
 
 type
+
   { TIDEMacros - macros for paths and compiler settings }
 
   TIDEMacros = class
@@ -39,7 +40,9 @@ type
     // file utility functions
     function CreateAbsoluteSearchPath(var SearchPath: string;
                                       const BaseDirectory: string): boolean;
-    procedure Add(NewMacro: TTransferMacro); virtual; abstract;
+    procedure Add(NewMacro: TTransferMacro); virtual; abstract; overload;
+    function Add(const AName, AValue, ADescription: string;
+      AMacroFunction: TMacroFunction; TheFlags: TTransferMacroFlags): TTransferMacro; virtual; overload;
   end;
 
 const
@@ -119,6 +122,14 @@ begin
   if not SubstituteMacros(BaseDir) then exit(false);
   Result:=SubstituteMacros(SearchPath);
   SearchPath:=MinimizeSearchPath(LazFileUtils.CreateAbsoluteSearchPath(SearchPath,BaseDir));
+end;
+
+function TIDEMacros.Add(const AName, AValue, ADescription: string;
+  AMacroFunction: TMacroFunction; TheFlags: TTransferMacroFlags
+  ): TTransferMacro;
+begin
+  Result:=TTransferMacro.Create(AName,AValue,ADescription,AMacroFunction,TheFlags);
+  Add(Result);
 end;
 
 end.

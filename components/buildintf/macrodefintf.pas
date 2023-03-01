@@ -29,18 +29,26 @@ Type
                             var Abort: boolean): string of object;
 
   TTransferMacroFlag = (
-    tmfInteractive
+    tmfInteractive,
+    tmfLazbuild // store value for lazbuild
     );
   TTransferMacroFlags = set of TTransferMacroFlag;
 
+  { TTransferMacro }
+
   TTransferMacro = class
+  private
+    FLazbuildValue: string;
+  protected
+    procedure SetLazbuildValue(const AValue: string); virtual;
   public
     Name: string;
     Value: string;
     Description: string;
     MacroFunction: TMacroFunction;
     Flags: TTransferMacroFlags;
-    constructor Create(AName, AValue, ADescription:string;
+    property LazbuildValue: string read FLazbuildValue write SetLazbuildValue;
+    constructor Create(const AName, AValue, ADescription:string;
       AMacroFunction: TMacroFunction; TheFlags: TTransferMacroFlags);
   end;
 
@@ -49,7 +57,13 @@ implementation
 
 { TTransferMacro }
 
-constructor TTransferMacro.Create(AName, AValue, ADescription:string;
+procedure TTransferMacro.SetLazbuildValue(const AValue: string);
+begin
+  if FLazbuildValue=AValue then Exit;
+  FLazbuildValue:=AValue;
+end;
+
+constructor TTransferMacro.Create(const AName, AValue, ADescription: string;
   AMacroFunction: TMacroFunction; TheFlags: TTransferMacroFlags);
 begin
   Name:=AName;

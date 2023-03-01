@@ -34,7 +34,7 @@ uses
   Classes, SysUtils, Laz_AVL_Tree,
   // LazUtils
   FileUtil, LazFileUtils, LazUtilities, LazFileCache, LazUTF8,
-  Laz2_XMLCfg, AvgLvlTree, LazLoggerBase, LazTracer,
+  Laz2_XMLCfg, LazLoggerBase, LazTracer,
   // LCL
   StdCtrls, ExtCtrls,
   // CodeTools

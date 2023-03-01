@@ -35,17 +35,20 @@ unit TransferMacros;
 interface
 
 uses
-  Classes, SysUtils, Types,
+  Classes, SysUtils,
   // LazUtils
-  LazFileUtils, LazUTF8,
+  LazFileUtils, LazUTF8, LazFileCache, LazConfigStorage,
   // CodeTools
   FileProcs, CodeToolManager,
   // BuildIntf
-  MacroIntf, MacroDefIntf,
+  MacroIntf, MacroDefIntf, BaseIDEIntf,
   // IdeConfig
-  TransferMacrosIntf,
+  TransferMacrosIntf, LazConf,
   // IDE
   LazarusIDEStrConsts;
+
+const
+  LazbuildMacrosFileName = 'lazbuildmacros.xml';
 
 type
 
@@ -76,10 +79,10 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    function Count: integer; override;
     property Items[Index: integer]: TTransferMacro
        read GetItems write SetItems; default;
     procedure SetValue(const MacroName, NewValue: string); override;
-    function Count: integer; override;
     procedure Clear; override;
     procedure Delete(Index: integer); override;
     procedure Add(NewMacro: TTransferMacro); override;
@@ -98,15 +101,22 @@ type
     property MaxUsePerMacro: integer read FMaxUsePerMacro write FMaxUsePerMacro default 3;
   end;
 
-{ TLazIDEMacros }
+  { TLazIDEMacros }
 
-type
   TLazIDEMacros = class(TIDEMacros)
+  private
+    FLazbuildMacroFileAge: longint; // file age when last time the lazbuild macros were stored
+    FLazbuildMacros: TStringListUTF8Fast; // last stored lazbuild macros
   public
+    destructor Destroy; override;
     function StrHasMacros(const s: string): boolean; override;
     function SubstituteMacros(var s: string): boolean; override;
     function IsMacro(const Name: string): boolean; override;
-    procedure Add(NewMacro: TTransferMacro);override;
+    procedure Add(NewMacro: TTransferMacro);override; overload;
+  public
+    // lazbuild macros
+    procedure LoadLazbuildMacros; // called by lazbuild
+    procedure SaveLazbuildMacros; // called by IDE
   end;
 
 function GetGlobalMacroList: TTransferMacroList; inline;
@@ -543,6 +553,12 @@ end;
 
 { TLazIDEMacros }
 
+destructor TLazIDEMacros.Destroy;
+begin
+  FreeAndNil(FLazbuildMacros);
+  inherited Destroy;
+end;
+
 function TLazIDEMacros.StrHasMacros(const s: string): boolean;
 begin
   Result:=GlobalMacroList.StrHasMacros(s);
@@ -562,6 +578,147 @@ procedure TLazIDEMacros.Add(NewMacro: TTransferMacro);
 Begin
   GlobalMacroList.Add(NewMacro);
 end;
+
+procedure TLazIDEMacros.LoadLazbuildMacros;
+var
+  aFilename, s, aMacroName, Value: String;
+  Macros: TTransferMacroList;
+  Cfg: TConfigStorage;
+  i: Integer;
+  p: SizeInt;
+  EnvVars: TStringListUTF8Fast;
+  aMacro: TTransferMacro;
+begin
+  aFilename:=AppendPathDelim(GetPrimaryConfigPath)+LazbuildMacrosFileName;
+  if not FileExistsCached(aFilename) then exit;
+
+  Macros:=GlobalMacroList;
+  FLazbuildMacros:=TStringListUTF8Fast.Create;
+  EnvVars:=TStringListUTF8Fast.Create;
+  Cfg:=GetIDEConfigStorage(aFilename,true);
+  try
+    Cfg.GetValue('Macros',FLazbuildMacros);
+
+    for i:=0 to FLazbuildMacros.Count-1 do
+    begin
+      s:=FLazbuildMacros[i];
+      p:=Pos('=',s);
+      if (p<2) then continue;
+      aMacroName:=LeftStr(s,p-1);
+      Value:=copy(s,p+1,length(s));
+      aMacro:=Macros.FindByName(aMacroName);
+      if aMacro<>nil then
+        continue; // macro exists
+      Macros.Add(TTransferMacro.Create(aMacroName,Value,'From IDE lazbuild macro list',nil,[]));
+    end;
+  finally
+    EnvVars.Free;
+    Cfg.Free;
+  end;
+end;
+
+procedure TLazIDEMacros.SaveLazbuildMacros;
+var
+  aFilename, Value, s, aMacroName: String;
+  i: Integer;
+  aMacro: TTransferMacro;
+  NeedSave: Boolean;
+  Cfg: TConfigStorage;
+  Macros: TTransferMacroList;
+  p: SizeInt;
+begin
+  aFilename:=AppendPathDelim(GetPrimaryConfigPath)+LazbuildMacrosFileName;
+
+  Macros:=GlobalMacroList;
+
+  NeedSave:=false;
+
+  // load old config
+  if FLazbuildMacros=nil then
+  begin
+    FLazbuildMacros:=TStringListUTF8Fast.Create;
+    Cfg:=GetIDEConfigStorage(aFilename,true);
+    try
+      Cfg.GetValue('Macros',FLazbuildMacros);
+    finally
+      Cfg.Free;
+    end;
+    FLazbuildMacroFileAge:=FileAgeUTF8(aFilename);
+  end;
+
+  // clean up old macros
+  for i:=FLazbuildMacros.Count-1 downto 0 do begin
+    s:=FLazbuildMacros[i];
+    p:=Pos('=',s);
+    if (p>1) then
+    begin
+      aMacroName:=LeftStr(s,p-1);
+      aMacro:=Macros.FindByName(aMacroName);
+      if (aMacro<>nil) and (tmfLazbuild in aMacro.Flags) then
+        continue;
+    end;
+    FLazbuildMacros.Delete(i);
+    NeedSave:=true;
+  end;
+
+  // check new values
+  for i:=0 to Macros.Count-1 do
+  begin
+    aMacro:=Macros[i];
+    if not (tmfLazbuild in aMacro.Flags) then continue;
+    if aMacro.LazbuildValue<>'' then
+      Value:=aMacro.LazbuildValue
+    else
+      Value:=aMacro.Value;
+    if Value='' then
+    begin
+      // currently the macro is not set -> keep the old value
+      continue;
+    end;
+    if FLazbuildMacros.Values[aMacro.Name]<>Value then
+    begin
+      FLazbuildMacros.Values[aMacro.Name]:=Value;
+      NeedSave:=true;
+    end;
+  end;
+
+  if FLazbuildMacros.Count=0 then
+  begin
+    // no lazbuild macros -> delete config
+    if FileExistsCached(aFilename) then
+      DeleteFile(aFilename);
+    exit;
+  end;
+
+  if (not NeedSave) then
+  begin
+    if (not FileExistsCached(aFilename))
+        or ((FLazbuildMacroFileAge<>0) and (FileAgeCached(aFilename)<>FLazbuildMacroFileAge)) then
+      NeedSave:=true;
+  end;
+
+  if not NeedSave then exit;
+
+  Cfg:=GetIDEConfigStorage(aFilename,false);
+  try
+    FLazbuildMacros.Clear;
+    for i:=0 to Macros.Count-1 do
+    begin
+      aMacro:=Macros[i];
+      if not (tmfLazbuild in aMacro.Flags) then continue;
+      if aMacro.LazbuildValue<>'' then
+        Value:=aMacro.LazbuildValue
+      else
+        Value:=aMacro.Value;
+      FLazbuildMacros.Add(aMacro.Name+'='+Value);
+    end;
+    Cfg.SetValue('Macros',FLazbuildMacros);
+  finally
+    Cfg.Free;
+  end;
+  FLazbuildMacroFileAge:=FileAgeUTF8(aFilename);
+end;
+
 
 procedure InternalInit;
 var
