@@ -3956,7 +3956,7 @@ end;
 procedure TCurrentWatchValue.DoBeginUpdating;
 begin
   AddReference;
-  FCurrentBackEndExpression := GetBackendExpression;
+  FCurrentBackEndExpression := inherited GetBackendExpression;
 end;
 
 procedure TCurrentWatchValue.DoEndUpdating;
