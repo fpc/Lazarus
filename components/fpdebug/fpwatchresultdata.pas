@@ -320,12 +320,13 @@ const
   MAX_TOTAL_ARRAY_CNT = 5000;
   MAX_TOTAL_ARRAY_CNT_EXTRA_DEPTH = 3500; // reset
 var
-  Cnt, i, CurRecurseDynArray, OuterIdx: Integer;
-  LowBnd, StartIdx: Int64;
+  Cnt, i, CurRecurseDynArray, OuterIdx, CacheCnt: Integer;
+  LowBnd, StartIdx, CacheMax, CacheSize, j: Int64;
   Addr: TDBGPtr;
   ti: TFpSymbol;
   EntryRes: TLzDbgWatchDataIntf;
-  MemberValue: TFpValue;
+  MemberValue, TmpVal: TFpValue;
+  Cache: TFpDbgMemCacheBase;
 begin
   Result := True;
 
@@ -362,6 +363,7 @@ begin
 
   AddTypeNameToResData(AnFpValue, AnResData);
 
+  Cache := nil;
   try
     if (Cnt <= 0) or
        (FHasEmbeddedPointer) or
@@ -385,8 +387,39 @@ begin
     else if (FRecurseCnt > 0) and (FOuterArrayIdx >   1) and (Cnt >   50) then Cnt := 50;
 
     /////////////////////
-    // add mem read cache ??
-    // Bound types
+    // Bound types ??
+
+    CacheMax  := StartIdx;
+    CacheSize := 0;
+    CacheCnt  := 200;
+    MemberValue := AnFpValue.Member[StartIdx+LowBnd]; // // TODO : CheckError // ClearError for AnFpValue
+    if (MemberValue = nil) or (not IsTargetNotNil(MemberValue.Address)) or
+       (Context.MemManager.CacheManager = nil)
+    then begin
+      CacheMax := StartIdx + Cnt; // no caching possible
+    end
+    else begin
+      repeat
+        TmpVal := AnFpValue.Member[StartIdx + Min(CacheCnt, Cnt) + LowBnd]; // // TODO : CheckError // ClearError for AnFpValue
+        if IsTargetNotNil(TmpVal.Address) then begin
+          {$PUSH}{$R-}{$Q-}
+          CacheSize := TmpVal.Address.Address - MemberValue.Address.Address;
+          TmpVal.ReleaseReference;
+          {$POP}
+          if CacheSize > Context.MemManager.MemLimits.MaxMemReadSize then begin
+            CacheSize := 0;
+            CacheCnt := CacheCnt div 2;
+            if CacheCnt <= 1 then
+              break;
+            continue;
+          end;
+        end;
+        break;
+      until false;
+      if CacheSize = 0 then
+        CacheMax := StartIdx + Cnt; // no caching possible
+    end;
+    MemberValue.ReleaseReference;
 
     inc(FTotalArrayCnt, Cnt);
     for i := StartIdx to StartIdx + Cnt - 1 do begin
@@ -394,7 +427,28 @@ begin
         FTotalArrayCnt := MAX_TOTAL_ARRAY_CNT_EXTRA_DEPTH;
       if i > FOuterArrayIdx then
         FOuterArrayIdx := i;
+
       MemberValue := AnFpValue.Member[i+LowBnd]; // // TODO : CheckError // ClearError for AnFpValue
+      if (i >= CacheMax) and (CacheSize > 0) and (MemberValue <> nil) then begin
+        if Cache <> nil then
+          Context.MemManager.CacheManager.RemoveCache(Cache);
+        Cache := nil;
+
+        if IsTargetNotNil(MemberValue.Address) then begin
+          CacheMax := Min(i + CacheCnt, StartIdx + Cnt);
+          if (CacheMax > i + 1) then begin
+            j := CacheMax - i;
+            if j < CacheCnt then
+              CacheSize := (CacheSize div CacheCnt) * j + j div 2;
+
+            if CacheSize > 0 then
+              Cache := Context.MemManager.CacheManager.AddCache(MemberValue.Address.Address, CacheSize)
+          end;
+        end
+        else
+          CacheMax := StartIdx + Cnt; // no caching possible
+      end;
+
       EntryRes := AnResData.SetNextArrayData;
       if MemberValue = nil then
         EntryRes.CreateError('Error: Could not get member')
@@ -408,6 +462,8 @@ begin
   finally
     FRecurseDynArray := CurRecurseDynArray;
     FOuterArrayIdx := OuterIdx;
+    if Cache <> nil then
+      Context.MemManager.CacheManager.RemoveCache(Cache);
   end
 end;
 

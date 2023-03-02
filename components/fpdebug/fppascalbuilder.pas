@@ -7,7 +7,7 @@ unit FpPascalBuilder;
 interface
 
 uses
-  Classes, SysUtils, DbgIntfBaseTypes, DbgIntfDebuggerBase, FpDbgInfo,
+  Classes, SysUtils, Math, DbgIntfBaseTypes, DbgIntfDebuggerBase, FpDbgInfo,
   FpdMemoryTools, FpErrorMessages, FpDbgDwarfDataClasses, FpDbgDwarf,
   FpDbgClasses,
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif},
@@ -1247,9 +1247,11 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
   var
     s: String;
     i: Integer;
-    MemberValue: TFpValue;
-    Cnt, FullCnt: Integer;
-    d: Int64;
+    MemberValue, TmpVal: TFpValue;
+    Cnt, FullCnt, CacheCnt, LowBnd: Integer;
+    CacheMax, CacheSize: Int64;
+    StartIdx, j: Int64;
+    Cache: TFpDbgMemCacheBase;
   begin
     APrintedValue := '';
 
@@ -1281,19 +1283,82 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
     else if (ANestLevel > 0) and (Cnt > 10) then Cnt := 10
     else if (Cnt > 300)                     then Cnt := 300;
 
-    if (AValue.IndexTypeCount = 0) or (not AValue.IndexType[0].GetValueLowBound(AValue, d)) then
-      d := 0;
-    for i := d to d + Cnt - 1 do begin
-      MemberValue := AValue.Member[i];
-      if MemberValue <> nil then
-        InternalPrintValue(s, MemberValue, AnAddressSize, AFlags * PV_FORWARD_FLAGS, ANestLevel+1, AnIndent, ADisplayFormat, -1, nil, AOptions)
-      else
-        s := '{error}';
+    if (AValue.IndexTypeCount = 0) or (not AValue.IndexType[0].GetValueLowBound(AValue, StartIdx)) then
+      StartIdx := 0;
+
+    Cache := nil;
+    try
+      LowBnd := 0; // TODO: see WatchResultData
+      CacheMax  := StartIdx;
+      CacheSize := 0;
+      CacheCnt  := 200;
+      MemberValue := AValue.Member[StartIdx+LowBnd]; // // TODO : CheckError // ClearError for AValue
+      if (MemberValue = nil) or (not IsTargetNotNil(MemberValue.Address)) or
+         (Context.MemManager.CacheManager = nil)
+      then begin
+        CacheMax := StartIdx + Cnt; // no caching possible
+      end
+      else begin
+        repeat
+          TmpVal := AValue.Member[StartIdx + min(CacheCnt, Cnt) + LowBnd]; // // TODO : CheckError // ClearError for AValue
+          if IsTargetNotNil(TmpVal.Address) then begin
+            {$PUSH}{$R-}{$Q-}
+            CacheSize := TmpVal.Address.Address - MemberValue.Address.Address;
+            TmpVal.ReleaseReference;
+            {$POP}
+            if CacheSize > Context.MemManager.MemLimits.MaxMemReadSize then begin
+              CacheSize := 0;
+              CacheCnt := CacheCnt div 2;
+              if CacheCnt <= 1 then
+                break;
+              continue;
+            end;
+          end;
+          break;
+        until false;
+        if CacheSize = 0 then
+          CacheMax := StartIdx + Cnt; // no caching possible
+      end;
       MemberValue.ReleaseReference;
-      if APrintedValue = ''
-      then APrintedValue := s
-      else APrintedValue := APrintedValue + ', ' + s;
+
+      for i := StartIdx to StartIdx + Cnt - 1 do begin
+        MemberValue := AValue.Member[i];
+        if MemberValue <> nil then begin
+          if (i >= CacheMax) and (CacheSize > 0) then begin
+            if Cache <> nil then
+              Context.MemManager.CacheManager.RemoveCache(Cache);
+            Cache := nil;
+
+            if IsTargetNotNil(MemberValue.Address) then begin
+              CacheMax := Min(i + CacheCnt, StartIdx + Cnt);
+              if (CacheMax > i + 1) then begin
+                j := CacheMax - i;
+                if j < CacheCnt then
+                  CacheSize := (CacheSize div CacheCnt) * j + j div 2;
+
+                if CacheSize > 0 then
+                  Cache := Context.MemManager.CacheManager.AddCache(MemberValue.Address.Address, CacheSize)
+              end;
+            end
+            else
+              CacheMax := StartIdx + Cnt; // no caching possible
+          end;
+
+          InternalPrintValue(s, MemberValue, AnAddressSize, AFlags * PV_FORWARD_FLAGS, ANestLevel+1, AnIndent, ADisplayFormat, -1, nil, AOptions)
+        end
+        else
+          s := '{error}';
+        MemberValue.ReleaseReference;
+        if APrintedValue = ''
+        then APrintedValue := s
+        else APrintedValue := APrintedValue + ', ' + s;
+      end;
+
+    finally
+      if Cache <> nil then
+        Context.MemManager.CacheManager.RemoveCache(Cache);
     end;
+
     if Cnt < FullCnt then
       APrintedValue := APrintedValue + ', {'+IntToStr(FullCnt-Cnt)+' more elements}';
     APrintedValue := '(' + APrintedValue + ')';
