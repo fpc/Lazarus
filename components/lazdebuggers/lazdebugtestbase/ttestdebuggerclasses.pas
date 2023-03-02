@@ -100,7 +100,7 @@ type
                        const AStackFrame: Integer
                       );
     constructor Create(AOwnerWatch: TWatch); override;
-    destructor Destroy;
+    destructor Destroy; override;
   end;
 
   { TTestWatchValueList }
