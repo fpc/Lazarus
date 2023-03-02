@@ -31,6 +31,8 @@ procedure Register;
 
 implementation
 
+{$R exampleprojects_images.res}
+
 uses
     uLaz_Examples, uConst, ExWinSettings;
 
