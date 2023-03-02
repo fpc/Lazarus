@@ -285,6 +285,34 @@ type
 {%endregion   ^^^^^  Watches  ^^^^^   }
 
 
+{%region   ^^^^^  Locals  ^^^^^   }
+
+  TLocalsListIntf = interface(TDbgDataRequestIntf)
+    function Add(AName: String): TLzDbgWatchDataIntf;
+
+    function GetStackFrame: Integer;
+    function GetThreadId: Integer;
+    procedure SetValidity(AValue: TDebuggerDataState);
+
+    property ThreadId: Integer read GetThreadId;
+    property StackFrame: Integer read GetStackFrame;
+    property Validity: TDebuggerDataState {read GetValidity} write SetValidity;
+  end;
+
+
+  TLocalsSupplierIntf = interface;
+
+  TLocalsMonitorIntf  = interface(specialize TInternalDbgMonitorIntf<TLocalsSupplierIntf>)
+    procedure InvalidateLocalValues;
+    procedure DoStateChange(const AOldState, ANewState: TDBGState); //deprecated;
+  end;
+
+  TLocalsSupplierIntf = interface(specialize TInternalDbgSupplierIntf<TLocalsMonitorIntf>)
+    procedure RequestData(ALocalsList: TLocalsListIntf);
+  end;
+
+{%endregion   ^^^^^  Locals  ^^^^^   }
+
 
 implementation
 

@@ -198,14 +198,14 @@ type
 
   TLldbDebuggerCommandLocals = class(TLldbDebuggerCommand)
   private
-    FLocals: TLocals;
+    FLocals: TLocalsListIntf;
     FLocalsInstr: TLldbInstructionLocals;
     procedure DoLocalsFreed(Sender: TObject);
     procedure LocalsInstructionFinished(Sender: TObject);
   protected
     procedure DoExecute; override;
   public
-    constructor Create(AOwner: TLldbDebugger; ALocals: TLocals);
+    constructor Create(AOwner: TLldbDebugger; ALocals: TLocalsListIntf);
     destructor Destroy; override;
   end;
 
@@ -478,7 +478,7 @@ type
 
   TLldbLocals = class(TLocalsSupplier)
   public
-    procedure RequestData(ALocals: TLocals); override;
+    procedure RequestData(ALocals: TLocalsListIntf); override;
   end;
 
   {%endregion   ^^^^^  Locals  ^^^^^   }
@@ -1301,14 +1301,17 @@ procedure TLldbDebuggerCommandLocals.LocalsInstructionFinished(Sender: TObject
 var
   n: String;
   i: Integer;
+  r: TLzDbgWatchDataIntf;
 begin
   if FLocals <> nil then begin
-    FLocals.Clear;
+    FLocals.BeginUpdate;
     for i := 0 to FLocalsInstr.Res.Count - 1 do begin
       n := FLocalsInstr.Res.Names[i];
-      FLocals.Add(n, FLocalsInstr.Res.Values[n]);
+      r := FLocals.Add(n);
+      r.CreatePrePrinted(FLocalsInstr.Res.Values[n]);
     end;
-    FLocals.SetDataValidity(ddsValid);
+    FLocals.Validity := ddsValid;
+    FLocals.EndUpdate;
   end;
 
   ReleaseRefAndNil(FLocalsInstr);
@@ -1343,7 +1346,7 @@ begin
 end;
 
 constructor TLldbDebuggerCommandLocals.Create(AOwner: TLldbDebugger;
-  ALocals: TLocals);
+  ALocals: TLocalsListIntf);
 begin
   FLocals := ALocals;
   FLocals.AddFreeNotification(@DoLocalsFreed);
@@ -1670,7 +1673,7 @@ end;
 
 { TLldbLocals }
 
-procedure TLldbLocals.RequestData(ALocals: TLocals);
+procedure TLldbLocals.RequestData(ALocals: TLocalsListIntf);
 var
   Cmd: TLldbDebuggerCommandLocals;
 begin

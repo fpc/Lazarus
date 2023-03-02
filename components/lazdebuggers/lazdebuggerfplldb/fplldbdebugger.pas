@@ -226,13 +226,13 @@ type
   TFpLldbDebuggerCommandLocals = class(TLldbDebuggerCommand)
   private
     FOwner: TFPLldbLocals;
-    FLocals: TLocals;
+    FLocals: TLocalsListIntf;
     procedure DoLocalsFreed(Sender: TObject);
   protected
     procedure DoExecute; override;
     procedure DoCancel; override;
   public
-    constructor Create(AOwner: TFPLldbLocals; ALocals: TLocals);
+    constructor Create(AOwner: TFPLldbLocals; ALocals: TLocalsListIntf);
   end;
 
   { TFPLldbLocals }
@@ -240,12 +240,12 @@ type
   TFPLldbLocals = class(TLocalsSupplier)
   private
     FLocalsEvalCancel: Boolean;
-    procedure ProcessLocals(ALocals: TLocals);
+    procedure ProcessLocals(ALocals: TLocalsListIntf);
   protected
     function  FpDebugger: TFpLldbDebugger;
     procedure DoStateChange(const AOldState: TDBGState); override;
   public
-    procedure RequestData(ALocals: TLocals); override;
+    procedure RequestData(ALocals: TLocalsListIntf); override;
   end;
 
   { TFpLldbLineInfo }
@@ -392,7 +392,8 @@ begin
     TFpLldbDebugger(Debugger).MemReader.Enabled := False;
 end;
 
-constructor TFpLldbDebuggerCommandLocals.Create(AOwner: TFPLldbLocals; ALocals: TLocals);
+constructor TFpLldbDebuggerCommandLocals.Create(AOwner: TFPLldbLocals;
+  ALocals: TLocalsListIntf);
 begin
   inherited Create(AOwner.FpDebugger);
   FOwner := AOwner;
@@ -404,16 +405,17 @@ end;
 
 { TFPLldbLocals }
 
-procedure TFPLldbLocals.ProcessLocals(ALocals: TLocals);
+procedure TFPLldbLocals.ProcessLocals(ALocals: TLocalsListIntf);
 var
   Ctx: TFpDbgSymbolScope;
   ProcVal: TFpValue;
   i: Integer;
   m: TFpValue;
   n, v: String;
+  r: TLzDbgWatchDataIntf;
 begin
   if FLocalsEvalCancel then begin
-    ALocals.SetDataValidity(ddsInvalid);
+    ALocals.Validity := ddsInvalid;
     exit;
   end;
 
@@ -422,23 +424,23 @@ begin
   ProcVal := nil;
   try
     if (Ctx = nil) or (Ctx.SymbolAtAddress = nil) then begin
-      ALocals.SetDataValidity(ddsInvalid);
+      ALocals.Validity := ddsInvalid;
       exit;
     end;
 
     ProcVal := Ctx.ProcedureAtAddress;
 
     if (ProcVal = nil) then begin
-      ALocals.SetDataValidity(ddsInvalid);
+      ALocals.Validity := ddsInvalid;
       exit;
     end;
     FpDebugger.FPrettyPrinter.AddressSize := ctx.SizeOfAddress;
     FpDebugger.FPrettyPrinter.Context := ctx.LocationContext;
 
-    ALocals.Clear;
+    ALocals.BeginUpdate;
     for i := 0 to ProcVal.MemberCount - 1 do begin
       if FLocalsEvalCancel then begin
-        ALocals.SetDataValidity(ddsInvalid);
+        ALocals.Validity := ddsInvalid;
         exit;
       end;
       m := ProcVal.Member[i];
@@ -449,10 +451,12 @@ begin
           n := '';
         FpDebugger.FPrettyPrinter.PrintValue(v, m);
         m.ReleaseReference;
-        ALocals.Add(n, v);
+        r := ALocals.Add(n);
+        r.CreatePrePrinted(v);
       end;
     end;
-    ALocals.SetDataValidity(ddsValid);
+    ALocals.Validity := ddsValid;
+    ALocals.EndUpdate;
   finally
     Ctx.ReleaseReference;
     ProcVal.ReleaseReference;
@@ -471,7 +475,7 @@ begin
   FLocalsEvalCancel := False;
 end;
 
-procedure TFPLldbLocals.RequestData(ALocals: TLocals);
+procedure TFPLldbLocals.RequestData(ALocals: TLocalsListIntf);
 var
   LocalsCmdObj: TFpLldbDebuggerCommandLocals;
 begin

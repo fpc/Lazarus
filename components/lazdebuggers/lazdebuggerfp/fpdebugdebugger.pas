@@ -116,13 +116,13 @@ type
 
   TFpThreadWorkerLocalsUpdate = class(TFpThreadWorkerLocals)
   private
-    FLocals: TLocals;
+    FLocals: TLocalsListIntf;
     procedure DoLocalsFreed_DecRef(Sender: TObject);
   protected
     procedure UpdateLocals_DecRef(Data: PtrInt = 0); override;
     procedure DoRemovedFromLinkedList; override; // _DecRef
   public
-    constructor Create(ADebugger: TFpDebugDebuggerBase; ALocals: TLocals);
+    constructor Create(ADebugger: TFpDebugDebuggerBase; ALocals: TLocalsListIntf);
   end;
 
   { TFpThreadWorkerModifyUpdate }
@@ -528,7 +528,7 @@ type
     procedure DoStateLeavePause; override;
   public
     destructor Destroy; override;
-    procedure RequestData(ALocals: TLocals); override;
+    procedure RequestData(ALocals: TLocalsListIntf); override;
   end;
 
   { TFPRegisters }
@@ -683,7 +683,7 @@ begin
       FDebugger.OnFeedback(self, 'Failed to modify value', '', ftError, [frOk]);
   end;
   //
-  FDebugger.Locals.TriggerInvalidateLocals;
+  FDebugger.Locals.TriggerInvalidateLocalsValues;
   FDebugger.Watches.TriggerInvalidateWatchValues;
   FDebugger.CallStack.CurrentCallStackList.Clear;
 
@@ -998,24 +998,27 @@ var
   i: Integer;
   r: TResultEntry;
   dbg: TFpDebugDebugger;
+  rv: TLzDbgWatchDataIntf;
 begin
   assert(system.ThreadID = classes.MainThreadID, 'TFpThreadWorkerLocals.UpdateLocals_DecRef: system.ThreadID = classes.MainThreadID');
 
   if FLocals <> nil then begin
     FLocals.RemoveFreeNotification(@DoLocalsFreed_DecRef);
-    FLocals.Clear;
     if FResults = nil then begin
-      FLocals.SetDataValidity(ddsInvalid);
+      FLocals.Validity := ddsInvalid;
       FLocals := nil;
       UnQueue_DecRef;
       exit;
     end;
 
+    FLocals.BeginUpdate;
     for i := 0 to FResults.Count - 1 do begin
       r := FResults[i];
-      FLocals.Add(r.Name, r.Value);
+      rv := FLocals.Add(r.Name);
+      rv.CreatePrePrinted(r.Value);
     end;
-    FLocals.SetDataValidity(ddsValid);
+    FLocals.Validity := ddsValid;
+    FLocals.EndUpdate;
 
     FLocals := nil;
   end;
@@ -1034,7 +1037,7 @@ begin
     end
     else begin
       FLocals.RemoveFreeNotification(@DoLocalsFreed_DecRef);
-      FLocals.SetDataValidity(ddsInvalid);
+      FLocals.Validity := ddsInvalid;
     end;
     FLocals := nil;
   end;
@@ -1042,7 +1045,7 @@ begin
 end;
 
 constructor TFpThreadWorkerLocalsUpdate.Create(ADebugger: TFpDebugDebuggerBase;
-  ALocals: TLocals);
+  ALocals: TLocalsListIntf);
 begin
   // Runs in IDE thread (TThread.Queue)
   assert(system.ThreadID = classes.MainThreadID, 'TFpThreadWorkerLocals.Create: system.ThreadID = classes.MainThreadID');
@@ -1875,12 +1878,12 @@ begin
   inherited Destroy;
 end;
 
-procedure TFPLocals.RequestData(ALocals: TLocals);
+procedure TFPLocals.RequestData(ALocals: TLocalsListIntf);
 var
   WorkItem: TFpThreadWorkerLocalsUpdate;
 begin
   if not FpDebugger.IsPausedAndValid then begin
-    ALocals.SetDataValidity(ddsInvalid);
+    ALocals.Validity := ddsInvalid;
     exit;
   end;
 

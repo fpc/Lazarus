@@ -212,12 +212,12 @@ type
 
   TFPDSendLocalsCommand = class(TFPDSendCommand)
   private
-    FLocals: TLocals;
+    FLocals: TLocalsListIntf;
     procedure DoLocalsFreed(Sender: TObject);
   protected
     procedure ComposeJSon(AJsonObject: TJSONObject); override;
   public
-    constructor create(ALocals: TLocals);
+    constructor create(ALocals: TLocalsListIntf);
     destructor Destroy; override;
     procedure DoOnCommandSuccesfull(ACommandResponse: TJSonObject); override;
     procedure DoOnCommandFailed(ACommandResponse: TJSonObject); override;
@@ -383,7 +383,7 @@ type
 
   TFPLocals = class(TLocalsSupplier)
   public
-    procedure RequestData(ALocals: TLocals); override;
+    procedure RequestData(ALocals: TLocalsListIntf); override;
   end;
 
   { TFPRegisters }
@@ -511,7 +511,7 @@ begin
   AJsonObject.Add('command','locals');
 end;
 
-constructor TFPDSendLocalsCommand.create(ALocals: TLocals);
+constructor TFPDSendLocalsCommand.create(ALocals: TLocalsListIntf);
 begin
   inherited create(True);
   ALocals.AddFreeNotification(@DoLocalsFreed);
@@ -530,39 +530,42 @@ var
   JSonLocalsArr: TJSONArray;
   JSonLocalsEntryObj: TJSONObject;
   i: Integer;
+  r: TLzDbgWatchDataIntf;
 begin
   inherited DoOnCommandSuccesfull(ACommandResponse);
   if assigned(FLocals) then
     begin
-    FLocals.Clear;
+    FLocals.BeginUpdate;
     JSonLocalsArr := ACommandResponse.Get('locals', TJSONArray(nil));
     if assigned(JSonLocalsArr) and (JSonLocalsArr.Count>0) then
       begin
       for i := 0 to JSonLocalsArr.Count - 1 do
         begin
         JSonLocalsEntryObj := JSonLocalsArr.Items[i] as TJSONObject;
-        FLocals.Add(JSonLocalsEntryObj.Get('name', ''), JSonLocalsEntryObj.Get('value', ''));
+        r := FLocals.Add(JSonLocalsEntryObj.Get('name', ''));
+        r.CreatePrePrinted(JSonLocalsEntryObj.Get('value', ''));
         end;
       end;
-    FLocals.SetDataValidity(ddsValid);
+    FLocals.Validity := ddsValid;
+    FLocals.EndUpdate;
     end;
 end;
 
 procedure TFPDSendLocalsCommand.DoOnCommandFailed(ACommandResponse: TJSonObject);
 begin
-  FLocals.SetDataValidity(ddsInvalid);
+  FLocals.Validity := ddsInvalid;
 end;
 
-procedure TFPLocals.RequestData(ALocals: TLocals);
+procedure TFPLocals.RequestData(ALocals: TLocalsListIntf);
 begin
   if (Debugger = nil) or not(Debugger.State = dsPause)
   then begin
-    ALocals.SetDataValidity(ddsInvalid);
+    ALocals.Validity := ddsInvalid;
     exit;
   end;
 
   TFPDServerDebugger(Debugger).QueueCommand(TFPDSendLocalsCommand.create(ALocals));
-  ALocals.SetDataValidity(ddsRequested);
+  ALocals.Validity := ddsRequested;
 end;
 
 { TFPDBGDisassembler }

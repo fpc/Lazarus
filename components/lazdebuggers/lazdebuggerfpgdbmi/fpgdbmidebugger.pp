@@ -172,25 +172,25 @@ type
   TFpGDBMIDebuggerCommandLocals = class(TGDBMIDebuggerCommand)
   private
     FOwner: TFPGDBMILocals;
-    FLocals: TLocals;
+    FLocals: TLocalsListIntf;
     procedure DoLocalsFreed(Sender: TObject);
   protected
     function DoExecute: Boolean; override;
     procedure DoLockQueueExecute; override;
     procedure DoUnLockQueueExecute; override;
   public
-    constructor Create(AOwner: TFPGDBMILocals; ALocals: TLocals);
+    constructor Create(AOwner: TFPGDBMILocals; ALocals: TLocalsListIntf);
   end;
 
   { TFPGDBMILocals }
 
   TFPGDBMILocals = class(TGDBMILocals)
   private
-    procedure ProcessLocals(ALocals: TLocals);
+    procedure ProcessLocals(ALocals: TLocalsListIntf);
   protected
     function  FpDebugger: TFpGDBMIDebugger;
   public
-    procedure RequestData(ALocals: TLocals); override;
+    procedure RequestData(ALocals: TLocalsListIntf); override;
   end;
 
   { TFpGDBMILineInfo }
@@ -224,7 +224,7 @@ begin
   if (CurrentDebugger <> nil) and (CurrentDebugger.Watches <> nil) then
     CurrentDebugger.Watches.TriggerInvalidateWatchValues;
   if (CurrentDebugger <> nil) and (CurrentDebugger.Locals <> nil) then
-    CurrentDebugger.Locals.TriggerInvalidateLocals;
+    CurrentDebugger.Locals.TriggerInvalidateLocalsValues;
 end;
 
 { TFpGDBMIDebuggerCommandLocals }
@@ -253,7 +253,8 @@ begin
   //
 end;
 
-constructor TFpGDBMIDebuggerCommandLocals.Create(AOwner: TFPGDBMILocals; ALocals: TLocals);
+constructor TFpGDBMIDebuggerCommandLocals.Create(AOwner: TFPGDBMILocals;
+  ALocals: TLocalsListIntf);
 begin
   inherited Create(AOwner.FpDebugger);
   FOwner := AOwner;
@@ -264,32 +265,33 @@ end;
 
 { TFPGDBMILocals }
 
-procedure TFPGDBMILocals.ProcessLocals(ALocals: TLocals);
+procedure TFPGDBMILocals.ProcessLocals(ALocals: TLocalsListIntf);
 var
   Ctx: TFpDbgSymbolScope;
   ProcVal: TFpValue;
   i: Integer;
   m: TFpValue;
   n, v: String;
+  r: TLzDbgWatchDataIntf;
 begin
   FpDebugger.LockUnLoadDwarf;
   try
     Ctx := FpDebugger.GetInfoContextForContext(ALocals.ThreadId, ALocals.StackFrame);
     if (Ctx = nil) or (Ctx.SymbolAtAddress = nil) then begin
-      ALocals.SetDataValidity(ddsInvalid);
+      ALocals.Validity := ddsInvalid;
       exit;
     end;
 
     ProcVal := Ctx.ProcedureAtAddress;
 
     if (ProcVal = nil) then begin
-      ALocals.SetDataValidity(ddsInvalid);
+      ALocals.Validity := ddsInvalid;
       exit;
     end;
     FpDebugger.FPrettyPrinter.AddressSize := ctx.SizeOfAddress;
     FpDebugger.FPrettyPrinter.Context := ctx.LocationContext;
 
-    ALocals.Clear;
+    ALocals.BeginUpdate;
     for i := 0 to ProcVal.MemberCount - 1 do begin
       m := ProcVal.Member[i];
       if m <> nil then begin
@@ -299,11 +301,13 @@ begin
           n := '';
         FpDebugger.FPrettyPrinter.PrintValue(v, m);
         m.ReleaseReference;
-        ALocals.Add(n, v);
+        r := ALocals.Add(n);
+        r.CreatePrePrinted(v);
       end;
     end;
     ProcVal.ReleaseReference;
-    ALocals.SetDataValidity(ddsValid);
+    ALocals.Validity := ddsValid;
+    ALocals.EndUpdate;
   finally
     FpDebugger.UnLockUnLoadDwarf;
   end;
@@ -314,7 +318,7 @@ begin
   Result := TFpGDBMIDebugger(Debugger);
 end;
 
-procedure TFPGDBMILocals.RequestData(ALocals: TLocals);
+procedure TFPGDBMILocals.RequestData(ALocals: TLocalsListIntf);
 var
   LocalsCmdObj: TFpGDBMIDebuggerCommandLocals;
 begin

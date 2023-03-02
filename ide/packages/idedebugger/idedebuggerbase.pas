@@ -191,6 +191,64 @@ type
     destructor Destroy; override;
   end;
 
+   { TLocalsValue }
+
+   TLocalsValue = class(TDbgEntityValue)
+   private
+     FName: String;
+     FValue: String;
+   protected
+     procedure DoAssign(AnOther: TDbgEntityValue); override;
+   public
+     procedure Init(AName: String; AValue: TWatchResultData);
+     property Name: String read FName;
+     property Value: String read FValue;
+   end;
+
+ { TLocals }
+
+  TLocals = class(TDbgEntityValuesList)
+  private
+    function GetEntry(AnIndex: Integer): TLocalsValue;
+    function GetName(const AnIndex: Integer): String;
+    function GetValue(const AnIndex: Integer): String;
+  protected
+    function CreateEntry: TDbgEntityValue; override;
+  public
+    procedure Add(const AName, AValue: String); overload; deprecated;
+    procedure SetDataValidity({%H-}AValidity: TDebuggerDataState); virtual;
+  public
+    function Count: Integer;reintroduce; virtual;
+    property Entries[AnIndex: Integer]: TLocalsValue read GetEntry;
+    property Names[const AnIndex: Integer]: String read GetName;
+    property Values[const AnIndex: Integer]: String read GetValue;
+  end;
+
+  { TLocalsList }
+
+  TLocalsList = class(TDbgEntitiesThreadStackList)
+  private
+    function GetEntry(AThreadId, AStackFrame: Integer): TLocals;
+    function GetEntryByIdx(AnIndex: Integer): TLocals;
+  protected
+    //function CreateEntry(AThreadId, AStackFrame: Integer): TDbgEntityValuesList; override;
+  public
+    property EntriesByIdx[AnIndex: Integer]: TLocals read GetEntryByIdx;
+    property Entries[AThreadId, AStackFrame: Integer]: TLocals read GetEntry; default;
+  end;
+
+  { TLocalsMonitor }
+
+  TLocalsMonitor = class(specialize TLocalsMonitorClassTemplate<TDebuggerDataHandler>, TLocalsMonitorIntf)
+  protected
+    procedure DoStateChange(const AOldState, ANewState: TDBGState); reintroduce;
+
+    // from TDebuggerDataMonitor
+    procedure DoModified; virtual;                                              // user-modified / xml-storable data modified
+  public
+    destructor Destroy; override;
+  end;
+
 implementation
 
 var
@@ -864,6 +922,95 @@ destructor TWatchesMonitor.Destroy;
 begin
   DoDestroy;
   inherited Destroy;
+end;
+
+{ TLocalsValue }
+
+procedure TLocalsValue.DoAssign(AnOther: TDbgEntityValue);
+begin
+  inherited DoAssign(AnOther);
+  FName := TLocalsValue(AnOther).FName;
+  FValue := TLocalsValue(AnOther).FValue;
+end;
+
+procedure TLocalsValue.Init(AName: String; AValue: TWatchResultData);
+begin
+  FName := AName;
+  FValue := AValue.AsString;
+  AValue.Free;
+end;
+
+{ TLocalsList }
+
+function TLocalsList.GetEntry(AThreadId, AStackFrame: Integer): TLocals;
+begin
+  Result := TLocals(inherited Entries[AThreadId, AStackFrame]);
+end;
+
+function TLocalsList.GetEntryByIdx(AnIndex: Integer): TLocals;
+begin
+  Result := TLocals(inherited EntriesByIdx[AnIndex]);
+end;
+
+{ TLocals }
+
+function TLocals.GetEntry(AnIndex: Integer): TLocalsValue;
+begin
+  Result := TLocalsValue(inherited Entries[AnIndex]);
+end;
+
+function TLocals.GetName(const AnIndex: Integer): String;
+begin
+  Result := Entries[AnIndex].Name;
+end;
+
+function TLocals.GetValue(const AnIndex: Integer): String;
+begin
+  Result := Entries[AnIndex].Value;
+end;
+
+function TLocals.CreateEntry: TDbgEntityValue;
+begin
+  Result := TLocalsValue.Create;
+end;
+
+procedure TLocals.Add(const AName, AValue: String);
+var
+  v: TLocalsValue;
+begin
+  assert(not Immutable, 'TLocalsBase.Add Immutable');
+  v := TLocalsValue(CreateEntry);
+  v.FName := AName;
+  v.FValue := AValue;
+  inherited Add(v);
+end;
+
+procedure TLocals.SetDataValidity(AValidity: TDebuggerDataState);
+begin
+  //
+end;
+
+function TLocals.Count: Integer;
+begin
+  Result := inherited Count;
+end;
+
+{ TLocalsMonitor }
+
+procedure TLocalsMonitor.DoStateChange(const AOldState, ANewState: TDBGState);
+begin
+  DoStateChangeEx(AOldState, ANewState);
+end;
+
+procedure TLocalsMonitor.DoModified;
+begin
+  //
+end;
+
+destructor TLocalsMonitor.Destroy;
+begin
+  inherited Destroy;
+  DoDestroy;
 end;
 
 initialization

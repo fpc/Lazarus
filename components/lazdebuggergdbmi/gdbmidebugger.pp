@@ -894,7 +894,7 @@ type
     procedure Changed;
     constructor Create(const ADebugger: TDebuggerIntf);
     destructor Destroy; override;
-    procedure RequestData(ALocals: TLocals); override;
+    procedure RequestData(ALocals: TLocalsListIntf); override;
   end;
 
   { TGDBMIDebuggerBase }
@@ -1224,7 +1224,7 @@ type
 
   TGDBMIDebuggerCommandLocals = class(TGDBMIDebuggerCommand)
   private
-    FLocals: TLocals;
+    FLocals: TLocalsListIntf;
   protected
     procedure DoLockQueueExecute; override;
     procedure DoUnLockQueueExecute; override;
@@ -1232,7 +1232,7 @@ type
     procedure DoUnLockQueueExecuteForInstr; override;
     function DoExecute: Boolean; override;
   public
-    constructor Create(AOwner: TGDBMIDebuggerBase; ALocals: TLocals);
+    constructor Create(AOwner: TGDBMIDebuggerBase; ALocals: TLocalsListIntf);
     destructor Destroy; override;
     function DebugText: String; override;
   end;
@@ -11077,6 +11077,7 @@ function TGDBMIDebuggerCommandLocals.DoExecute: Boolean;
     LocList, List: TGDBMINameValueList;
     Item: PGDBMINameValue;
     Name, Value: String;
+    r: TLzDbgWatchDataIntf;
   begin
     LocList := TGDBMINameValueList.Create(AParams);
     List := TGDBMINameValueList.Create('');
@@ -11129,7 +11130,8 @@ function TGDBMIDebuggerCommandLocals.DoExecute: Boolean;
       else
         Value := ProcessGDBResultStruct(Value, [prNoLeadingTab, prMakePrintAble, prStripAddressFromString]);
 
-      FLocals.Add(Name, Value);
+      r := FLocals.Add(Name);
+      r.CreatePrePrinted(Value);
     end;
     FreeAndNil(List);
     FreeAndNil(LocList);
@@ -11146,7 +11148,6 @@ begin
   FContext.StackContext := ccUseLocal;
   FContext.StackFrame := FLocals.StackFrame;
 
-  FLocals.Clear;
   // args
   ExecuteCommand('-stack-list-arguments 1 %0:d %0:d',
     [FTheDebugger.FCurrentStackFrame], R, [cfNoStackContext]);
@@ -11165,19 +11166,20 @@ begin
     AddLocals(List.Values['locals']);
     FreeAndNil(List);
   end;
-  FLocals.SetDataValidity(ddsValid);
+  FLocals.Validity := ddsValid;
 end;
 
-constructor TGDBMIDebuggerCommandLocals.Create(AOwner: TGDBMIDebuggerBase; ALocals: TLocals);
+constructor TGDBMIDebuggerCommandLocals.Create(AOwner: TGDBMIDebuggerBase;
+  ALocals: TLocalsListIntf);
 begin
   inherited Create(AOwner);
   FLocals := ALocals;
-  FLocals.AddReference;
+  FLocals.BeginUpdate;
 end;
 
 destructor TGDBMIDebuggerCommandLocals.Destroy;
 begin
-  ReleaseRefAndNil(FLocals);
+  FLocals.EndUpdate;
   inherited Destroy;
 end;
 
@@ -11192,7 +11194,7 @@ end;
 
 procedure TGDBMILocals.Changed;
 begin
-  TriggerInvalidateLocals;
+  TriggerInvalidateLocalsValues;
 end;
 
 constructor TGDBMILocals.Create(const ADebugger: TDebuggerIntf);
@@ -11229,7 +11231,7 @@ begin
             and (Debugger.State <> dsInternalPause);
 end;
 
-procedure TGDBMILocals.RequestData(ALocals: TLocals);
+procedure TGDBMILocals.RequestData(ALocals: TLocalsListIntf);
 var
   EvaluationCmdObj: TGDBMIDebuggerCommandLocals;
 begin

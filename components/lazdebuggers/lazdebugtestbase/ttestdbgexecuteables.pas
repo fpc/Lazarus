@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, fgl, TestDbgConfig, TestDbgCompilerProcess,
   TestOutputLogger, TTestDebuggerClasses, TestCommonSources, LazDebuggerIntf,
   LazDebuggerIntfBaseTypes, LazFileUtils, LazLoggerBase, FileUtil,
-  LazStringUtils, DbgIntfDebuggerBase, fpcunit;
+  LazStringUtils, DbgIntfDebuggerBase, IdeDebuggerBase, fpcunit;
 
 type
 

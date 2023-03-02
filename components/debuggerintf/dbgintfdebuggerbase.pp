@@ -161,7 +161,7 @@ type
     procedure DoStateLeavePause; virtual;
     procedure DoStateLeavePauseClean; virtual;
     procedure DoStateChangeEx(const AOldState, ANewState: TDBGState); virtual;
-    property  NotifiedState: TDBGState read FNotifiedState;                     // The last state seen by DoStateChange
+//    property  NotifiedState: TDBGState read FNotifiedState;                     // The last state seen by DoStateChange
     property  OldState: TDBGState read FOldState;                               // The state before last DoStateChange
   public
   end;
@@ -608,76 +608,14 @@ type
  ******************************************************************************
  ******************************************************************************}
 
-    // TODO: a more watch-like value object
-    TLocalsMonitor = class;
-
-   { TLocalsValue }
-
-   TLocalsValue = class(TDbgEntityValue)
-   private
-     FName: String;
-     FValue: String;
-   protected
-     procedure DoAssign(AnOther: TDbgEntityValue); override;
-   public
-     property Name: String read FName;
-     property Value: String read FValue;
-   end;
-
- { TLocals }
-
-  TLocals = class(TDbgEntityValuesList)
-  private
-    function GetEntry(AnIndex: Integer): TLocalsValue;
-    function GetName(const AnIndex: Integer): String;
-    function GetValue(const AnIndex: Integer): String;
-  protected
-    function CreateEntry: TDbgEntityValue; override;
-  public
-    procedure Add(const AName, AValue: String);
-    procedure SetDataValidity({%H-}AValidity: TDebuggerDataState); virtual;
-  public
-    function Count: Integer;reintroduce; virtual;
-    property Entries[AnIndex: Integer]: TLocalsValue read GetEntry;
-    property Names[const AnIndex: Integer]: String read GetName;
-    property Values[const AnIndex: Integer]: String read GetValue;
-  end;
-
-  { TLocalsList }
-
-  TLocalsList = class(TDbgEntitiesThreadStackList)
-  private
-    function GetEntry(AThreadId, AStackFrame: Integer): TLocals;
-    function GetEntryByIdx(AnIndex: Integer): TLocals;
-  protected
-    //function CreateEntry(AThreadId, AStackFrame: Integer): TDbgEntityValuesList; override;
-  public
-    property EntriesByIdx[AnIndex: Integer]: TLocals read GetEntryByIdx;
-    property Entries[AThreadId, AStackFrame: Integer]: TLocals read GetEntry; default;
-  end;
-
   { TLocalsSupplier }
 
-  TLocalsSupplier = class(TDebuggerDataSupplier)
-  private
-    function GetMonitor: TLocalsMonitor;
-    procedure SetMonitor(AValue: TLocalsMonitor);
-    property  Monitor: TLocalsMonitor read GetMonitor write SetMonitor;
-  public
-    procedure TriggerInvalidateLocals;
-    procedure RequestData(ALocals: TLocals); virtual;
-  end;
-
-  { TLocalsMonitor }
-
-  TLocalsMonitor = class(TDebuggerDataMonitor)
-  private
-    function GetSupplier: TLocalsSupplier;
-    procedure SetSupplier(AValue: TLocalsSupplier);
+  TLocalsSupplier = class(specialize TLocalsSupplierClassTemplate<TDebuggerDataSupplierBase>, TLocalsSupplierIntf)
   protected
-    procedure InvalidateLocals; virtual;
+    procedure DoStateChange(const AOldState: TDBGState); virtual;
   public
-    property Supplier: TLocalsSupplier read GetSupplier write SetSupplier;
+    destructor Destroy; override;
+    procedure RequestData(ALocalsList: TLocalsListIntf); virtual;
   end;
 
 {%endregion   ^^^^^  Locals  ^^^^^   }
@@ -2626,70 +2564,6 @@ begin
   ARegisters.SetDataValidity(ddsInvalid);
 end;
 
-{ TLocalsValue }
-
-procedure TLocalsValue.DoAssign(AnOther: TDbgEntityValue);
-begin
-  inherited DoAssign(AnOther);
-  FName := TLocalsValue(AnOther).FName;
-  FValue := TLocalsValue(AnOther).FValue;
-end;
-
-{ TLocalsListBase }
-
-function TLocalsList.GetEntry(AThreadId, AStackFrame: Integer): TLocals;
-begin
-  Result := TLocals(inherited Entries[AThreadId, AStackFrame]);
-end;
-
-function TLocalsList.GetEntryByIdx(AnIndex: Integer): TLocals;
-begin
-  Result := TLocals(inherited EntriesByIdx[AnIndex]);
-end;
-
-{ TLocalsBase }
-
-function TLocals.GetEntry(AnIndex: Integer): TLocalsValue;
-begin
-  Result := TLocalsValue(inherited Entries[AnIndex]);
-end;
-
-function TLocals.GetName(const AnIndex: Integer): String;
-begin
-  Result := Entries[AnIndex].Name;
-end;
-
-function TLocals.GetValue(const AnIndex: Integer): String;
-begin
-  Result := Entries[AnIndex].Value;
-end;
-
-function TLocals.CreateEntry: TDbgEntityValue;
-begin
-  Result := TLocalsValue.Create;
-end;
-
-procedure TLocals.Add(const AName, AValue: String);
-var
-  v: TLocalsValue;
-begin
-  assert(not Immutable, 'TLocalsBase.Add Immutable');
-  v := TLocalsValue(CreateEntry);
-  v.FName := AName;
-  v.FValue := AValue;
-  inherited Add(v);
-end;
-
-procedure TLocals.SetDataValidity(AValidity: TDebuggerDataState);
-begin
-  //
-end;
-
-function TLocals.Count: Integer;
-begin
-  Result := inherited Count;
-end;
-
 { TRegisterDisplayValue }
 
 function TRegisterDisplayValue.GetValue(ADispFormat: TRegisterDisplayFormat): String;
@@ -4008,42 +3882,23 @@ end;
 
 { TLocalsSupplier }
 
-function TLocalsSupplier.GetMonitor: TLocalsMonitor;
+procedure TLocalsSupplier.DoStateChange(const AOldState: TDBGState);
 begin
-  Result := TLocalsMonitor(inherited Monitor);
-end;
-
-procedure TLocalsSupplier.SetMonitor(AValue: TLocalsMonitor);
-begin
-  inherited Monitor := AValue;
-end;
-
-procedure TLocalsSupplier.TriggerInvalidateLocals;
-begin
+  if (Debugger = nil) then Exit;
+  DoStateChangeEx(AOldState, Debugger.State);
   if Monitor <> nil then
-    Monitor.InvalidateLocals;
+    Monitor.DoStateChange(AOldState, Debugger.State);
 end;
 
-procedure TLocalsSupplier.RequestData(ALocals: TLocals);
+destructor TLocalsSupplier.Destroy;
 begin
-  ALocals.SetDataValidity(ddsInvalid)
+  inherited Destroy;
+  DoDestroy;
 end;
 
-{ TLocalsMonitor }
-
-function TLocalsMonitor.GetSupplier: TLocalsSupplier;
+procedure TLocalsSupplier.RequestData(ALocalsList: TLocalsListIntf);
 begin
-  Result := TLocalsSupplier(inherited Supplier);
-end;
-
-procedure TLocalsMonitor.SetSupplier(AValue: TLocalsSupplier);
-begin
-  inherited Supplier := AValue;
-end;
-
-procedure TLocalsMonitor.InvalidateLocals;
-begin
-  //
+  ALocalsList.Validity := ddsInvalid;
 end;
 
 { TBaseLineInfo }
