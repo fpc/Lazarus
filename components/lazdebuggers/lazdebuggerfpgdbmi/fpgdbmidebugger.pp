@@ -586,7 +586,7 @@ begin
         else
         if not FpDebugger.EvaluateExpression(WatchValue, WatchValue.Expression, ResText, ResTypeInfo)
         then begin
-          if IsWatchValueAlive then    debugln(['TFPGDBMIWatches.InternalRequestData FAILED ', WatchValue.Expression]);
+          if IsWatchValueAlive then    debugln(DBG_ERRORS, ['TFPGDBMIWatches.InternalRequestData FAILED ', WatchValue.Expression]);
           if IsWatchValueAlive then
             inherited InternalRequestData(WatchValue);
         end;

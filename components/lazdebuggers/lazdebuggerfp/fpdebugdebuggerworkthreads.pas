@@ -347,6 +347,8 @@ type
   end;
 
 implementation
+var
+  DBG_VERBOSE, DBG_WARNINGS, FPDBG_FUNCCALL: PLazLoggerLogGroup;
 
 { TFpDbgDebggerThreadWorkerItem }
 
@@ -845,7 +847,7 @@ begin
   if not (FunctionResultSymbolType.Kind in [skInteger, skCurrency, skPointer, skEnum,
       skCardinal, skBoolean, skChar, skClass, skString, skAnsiString, skWideString])
   then begin
-    DebugLn(['Error result kind  ', dbgs(FunctionSymbolType.Kind)]);
+    DebugLn(FPDBG_FUNCCALL or DBG_WARNINGS, ['Error result kind  ', dbgs(FunctionSymbolType.Kind)]);
     AnError := CreateError(fpErrAnyError, ['Result type of function not supported']);
     exit;
   end;
@@ -854,7 +856,7 @@ begin
   if (not FunctionResultSymbolType.ReadSize(nil, FunctionResultDataSize)) or
      (FunctionResultDataSize >  FDebugger.MemManager.RegisterSize(0))
   then begin
-    DebugLn(['Error result size', dbgs(FunctionResultDataSize)]);
+    DebugLn(FPDBG_FUNCCALL or DBG_WARNINGS, ['Error result size', dbgs(FunctionResultDataSize)]);
     //ReturnMessage := 'Unable to call function. The size of the function-result exceeds the content-size of a register.';
     AnError := CreateError(fpErrAnyError, ['Result type of function not supported']);
     exit;
@@ -878,7 +880,7 @@ begin
         StringResultDecRefAddress := FDebugger.GetCached_FPC_ANSISTR_DECR_REF;
 
       if (StringResultDecRefAddress = 0) then begin
-        DebugLn(['Error result kind  ', dbgs(FunctionSymbolType.Kind)]);
+        DebugLn(FPDBG_FUNCCALL or DBG_WARNINGS, ['Error result kind  ', dbgs(FunctionSymbolType.Kind)]);
         AnError := CreateError(fpErrAnyError, ['Result type of function not supported']);
         exit;
       end;
@@ -900,7 +902,7 @@ begin
 
     ProcAddress := AFunctionValue.EntryPCAddress;
     if not IsReadableLoc(ProcAddress) then begin
-      DebugLn(['Error proc addr']);
+      DebugLn(FPDBG_FUNCCALL or DBG_WARNINGS, ['Error proc addr']);
       AnError := CreateError(fpErrAnyError, ['Unable to calculate function address']);
       exit;
     end;
@@ -935,7 +937,7 @@ begin
         else begin
           ExprParamVal := AParams.Items[FoundIdx].ResultValue;
           if (ExprParamVal = nil) then begin
-            DebugLn('Internal error for arg %d ', [FoundIdx]);
+            DebugLn(FPDBG_FUNCCALL or DBG_WARNINGS, 'Internal error for arg %d ', [FoundIdx]);
             AnError := AnExpressionPart.Expression.Error;
             if not IsError(AnError) then
               AnError := CreateError(fpErrAnyError, ['internal error, computing parameter']);
@@ -945,7 +947,7 @@ begin
           rk := ExprParamVal.Kind;
           if not(rk in [skInteger, {skCurrency,} skPointer, skEnum, skCardinal, skBoolean, skChar, skClass, skRecord, skString, skAnsiString, skWideString])
           then begin
-            DebugLn('Error not supported kind arg %d : %s ', [FoundIdx, dbgs(rk)]);
+            DebugLn(FPDBG_FUNCCALL or DBG_WARNINGS, 'Error not supported kind arg %d : %s ', [FoundIdx, dbgs(rk)]);
             AnError := CreateError(fpErrAnyError, ['parameter type not supported']);
             exit;
           end;
@@ -986,7 +988,7 @@ begin
           if (TempSymbol.Kind <> rk) and
              ( (TempSymbol.Kind in [skInteger, skCardinal]) <> (rk in [skInteger, skCardinal]) )
           then begin
-            DebugLn('Error kind mismatch for arg %d : %s <> %s', [FoundIdx, dbgs(TempSymbol.Kind), dbgs(rk)]);
+            DebugLn(FPDBG_FUNCCALL or DBG_WARNINGS, 'Error kind mismatch for arg %d : %s <> %s', [FoundIdx, dbgs(TempSymbol.Kind), dbgs(rk)]);
             AnError := CreateError(fpErrAnyError, ['wrong type for parameter']);
             exit;
           end;
@@ -996,7 +998,7 @@ begin
           ParameterSymbolArr[FoundIdx].TypeSym  := TempSymbol;
         end;
         //if not IsTargetOrRegNotNil(FDebugger.DbgController.CurrentProcess.CallParamDefaultLocation(FoundIdx)) then begin
-        //  DebugLn('error to many args / not supported / arg > %d ', [FoundIdx]);
+        //  DebugLn(FPDBG_FUNCCALL or DBG_WARNINGS, 'error to many args / not supported / arg > %d ', [FoundIdx]);
         //  AnError := CreateError(fpErrAnyError, ['too many parameter / not supported']);
         //  exit;
         //end;
@@ -1005,7 +1007,7 @@ begin
     end;
 
     if (FoundIdx <> PCnt) then begin
-      DebugLn(['Error param count']);
+      DebugLn(FPDBG_FUNCCALL or DBG_WARNINGS, ['Error param count']);
       AnError := CreateError(fpErrAnyError, ['wrong amount of parameters']);
       exit;
     end;
@@ -1017,7 +1019,7 @@ begin
     try
       if (ASelfValue <> nil) then begin
         if not CallContext.AddParam(SelfTypeSym.TypeInfo, ASelfValue) then begin
-          DebugLn('Internal error for self');
+          DebugLn(FPDBG_FUNCCALL or DBG_WARNINGS, 'Internal error for self');
           AnError := CallContext.LastError;
           exit;
         end;
@@ -1025,7 +1027,7 @@ begin
 
       if (StringResultDecRefAddress <> 0) then begin
         if not CallContext.AddStringResult then begin
-          DebugLn('Internal error for string result');
+          DebugLn(FPDBG_FUNCCALL or DBG_WARNINGS, 'Internal error for string result');
           AnError := CallContext.LastError;
           exit;
         end;
@@ -1040,14 +1042,14 @@ begin
         else
           ParRes := CallContext.AddParam(ParameterSymbolArr[i].TypeSym.TypeInfo, ParameterSymbolArr[i].ParamVal);
         if not ParRes then begin
-          DebugLn('Internal error for arg %d ', [i]);
+          DebugLn(FPDBG_FUNCCALL or DBG_WARNINGS, 'Internal error for arg %d ', [i]);
           AnError := CallContext.LastError;
           exit;
         end;
       end;
 
       if not CallContext.FinalizeParams then begin
-        DebugLn('Internal error after params');
+        DebugLn(FPDBG_FUNCCALL or DBG_WARNINGS, 'Internal error after params');
         AnError := CallContext.LastError;
         exit;
       end;
@@ -1056,7 +1058,7 @@ begin
       FDebugger.RunProcessLoop(not FAllowFunctionsAllThread);
 
       if not CallContext.IsValid then begin
-        DebugLn(['Error in call ',CallContext.Message]);
+        DebugLn(FPDBG_FUNCCALL or DBG_WARNINGS, ['Error in call ',CallContext.Message]);
         //ReturnMessage := CallContext.Message;
         AnError := CallContext.LastError;
         if not IsError(AnError) then
@@ -1476,6 +1478,11 @@ begin
   FInternalBreakpoint := AnInternalBreakpoint;
   inherited Create(ADebugger, twpUser);
 end;
+
+initialization
+  DBG_VERBOSE     := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
+  DBG_WARNINGS    := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
+  FPDBG_FUNCCALL := DebugLogger.FindOrRegisterLogGroup('FPDBG_FUNCCALL' {$IFDEF FPDBG_FUNCCALL} , True {$ENDIF} );
 
 end.
 

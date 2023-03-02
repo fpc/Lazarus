@@ -1914,7 +1914,7 @@ function HasConsoleSupport: Boolean;
 implementation
 
 var
-  DBG_DATA_MONITORS, DBG_LOCATION_INFO: PLazLoggerLogGroup;
+  DBG_VERBOSE, DBG_BREAKPOINT, DBG_DATA_MONITORS, DBG_LOCATION_INFO: PLazLoggerLogGroup;
 
 function dbgs(AFlag: TDebuggerLocationFlag): String;
 begin
@@ -2596,7 +2596,7 @@ begin
     NewSnap.LoadDataFromXMLConfig(AConfig, APath + 'SnapEntry' + IntToStr(i) + '/', UIProv);
     if not(NewSnap.IsHistory or NewSnap.IsSnapshot) then begin
       RemoveHistoryEntryFromMonitors(NewSnap); // TODO: add user feedback / warning
-      debugln(['************** Snapshot loaded, but not kept']);
+      debugln(DBG_VERBOSE, ['************** Snapshot loaded, but not kept']);
     end;
     NewSnap.ReleaseReference;
   end;
@@ -2611,7 +2611,7 @@ begin
     NewSnap.LoadDataFromXMLConfig(AConfig, APath + 'HistEntry' + IntToStr(i) + '/', UIProv);
     if not(NewSnap.IsHistory or NewSnap.IsSnapshot) then begin
       RemoveHistoryEntryFromMonitors(NewSnap); // TODO: add user feedback / warning
-      debugln(['************** Snapshot loaded, but not kept']);
+      debugln(DBG_VERBOSE, ['************** Snapshot loaded, but not kept']);
     end;
     NewSnap.ReleaseReference;
   end;
@@ -5613,9 +5613,9 @@ procedure TIDEBreakPoint.DisableGroups;
 var
   n: Integer;
 begin
-  {$IFDEF DBG_BREAKPOINT}
-  DebugLn(['DisableGroups: ', DebugText, ' Cnt=',  FDisableGroupList.Count]);
-  {$ENDIF}
+{$IFDEF DBG_BREAKPOINT}
+  DebugLn(DBG_BREAKPOINT, ['DisableGroups: ', DebugText, ' Cnt=',  FDisableGroupList.Count]);
+{$ENDIF}
   for n := 0 to FDisableGroupList.Count - 1 do
     FDisableGroupList[n].Enabled := False;
 end;
@@ -5650,9 +5650,9 @@ procedure TIDEBreakPoint.EnableGroups;
 var
   n: Integer;
 begin
-  {$IFDEF DBG_BREAKPOINT}
-  DebugLn(['EnableGroups: ', DebugText, ' Cnt=',  FEnableGroupList.Count]);
-  {$ENDIF}
+{$IFDEF DBG_BREAKPOINT}
+  DebugLn(DBG_BREAKPOINT, ['EnableGroups: ', DebugText, ' Cnt=',  FEnableGroupList.Count]);
+{$ENDIF}
 
   for n := 0 to FEnableGroupList.Count - 1 do
     FEnableGroupList[n].Enabled := True;
@@ -8346,6 +8346,8 @@ begin
 end;
 
 initialization
+  DBG_VERBOSE       := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
+  DBG_BREAKPOINT    := DebugLogger.FindOrRegisterLogGroup('DBG_BREAKPOINT' {$IFDEF DBG_BREAKPOINT} , True {$ENDIF} );
   DBG_DATA_MONITORS := DebugLogger.FindOrRegisterLogGroup('DBG_DATA_MONITORS' {$IFDEF DBG_DATA_MONITORS} , True {$ENDIF} );
   DBG_LOCATION_INFO := DebugLogger.FindOrRegisterLogGroup('DBG_LOCATION_INFO' {$IFDEF DBG_LOCATION_INFO} , True {$ENDIF} );
 

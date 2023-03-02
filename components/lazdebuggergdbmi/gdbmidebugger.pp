@@ -4066,7 +4066,7 @@ begin
     else
     begin
       // unknown
-      debugln(['WARNING: TGDBMIDisassembleResultList.Parse: unknown disass entry',
+      debugln(DBG_VERBOSE or DBG_WARNINGS, ['WARNING: TGDBMIDisassembleResultList.Parse: unknown disass entry',
               DbgsPCLen(Itm^.Name),': ',DbgsPCLen(Itm^.Value)]);
     end;
   end;
@@ -5042,7 +5042,7 @@ function TGDBMIDebuggerCommandDisassemble.DoExecute: Boolean;
 
       if DisAssList.Count < 2
       then begin
-        debugln('Error failed to get enough data for dsassemble');
+        debugln(DBG_WARNINGS, 'Error failed to get enough data for dsassemble');
         // create a dummy range, so we will not retry
         NewRange.Capacity := 1;
         NewRange.RangeStartAddr   := AFirstAddr.Value;
@@ -5737,7 +5737,7 @@ begin
       exit;
     end;
 
-    DebugLn(['TGDBMIDebuggerBase.StartDebugging WorkingDir="', FTheDebugger.WorkingDir,'"']);
+    DebugLn(DBG_VERBOSE, ['TGDBMIDebuggerBase.StartDebugging WorkingDir="', FTheDebugger.WorkingDir,'"']);
     if FTheDebugger.WorkingDir <> ''
     then begin
       // to workaround a possible bug in gdb, first set the workingdir to .
@@ -6594,7 +6594,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
 
     if (DebuggerState = dsRun)
     then begin
-      debugln(['********** WARNING: breakpoint hit, but nothing known about it ABreakId=', ABreakID, ' brbtno=', List.Values['bkptno'] ]);
+      debugln(DBG_VERBOSE or DBG_WARNINGS, ['********** WARNING: breakpoint hit, but nothing known about it ABreakId=', ABreakID, ' brbtno=', List.Values['bkptno'] ]);
       {$IFDEF DBG_VERBOSE_BRKPOINT}
       debugln(['-*- List of breakpoints Cnt=', FTheDebugger.Breakpoints.Count]);
       for ABreakID := 0 to FTheDebugger.Breakpoints.Count - 1 do
@@ -7444,7 +7444,7 @@ var
           end;
           if i < 0
           then begin
-            DebugLn(['CommandExecute: exStepOver, frame not found: ', i]);
+            DebugLn(DBG_VERBOSE or DBG_WARNINGS, ['CommandExecute: exStepOver, frame not found: ', i]);
             DoEndStepping; // TODO: User-error feedback
           end;
         end;
@@ -7732,8 +7732,8 @@ begin
     then begin
       // Handle the unforeseen
       if (StoppedParams <> '')
-      then debugln(['ERROR: Got stop params, but did not change FTheDebugger.state: ', StoppedParams])
-      else debugln(['ERROR: Got NO stop params at all, but was running']);
+      then debugln(DBG_VERBOSE or DBG_WARNINGS, ['ERROR: Got stop params, but did not change FTheDebugger.state: ', StoppedParams])
+      else debugln(DBG_VERBOSE or DBG_WARNINGS, ['ERROR: Got NO stop params at all, but was running']);
       SetDebuggerState(dsPause);
     end;
   end;
@@ -8873,7 +8873,7 @@ var
   Report, Report2: string;
 begin
   try
-    debugln(['ERROR: Exception occurred in ',Sender.ClassName+': ',
+    debugln(DBG_VERBOSE or DBG_WARNINGS, ['ERROR: Exception occurred in ',Sender.ClassName+': ',
               AnException.ClassName, ' Msg="', AnException.Message, '" Addr=', dbgs(ExceptAddr),
               ' Dbg.State=', dbgs(State)]);
     Report :=  BackTraceStrFunc(ExceptAddr);
@@ -8886,7 +8886,7 @@ begin
     end;
   except
   end;
-  debugln(Report);
+  debugln(DBG_VERBOSE or DBG_WARNINGS, [Report]);
 
   if MessageDlg(gdbmiTheDebuggerExperiencedAnUnknownCondition,
     Format(gdbmiPressIgnoreToContinueDebuggingThisMayNOTBeSafePres,
@@ -9258,7 +9258,7 @@ begin
   except
     On E: Exception do DoUnknownException(Self, E);
     else
-      debugln(['ERROR: Exception occurred in ',ClassName+': ',
+      debugln(DBG_VERBOSE or DBG_WARNINGS, ['ERROR: Exception occurred in ',ClassName+': ',
                 '" Addr=', dbgs(ExceptAddr), ' Dbg.State=', dbgs(State)]);
   end;
 
@@ -12821,7 +12821,7 @@ begin
 
     On E: Exception do FTheDebugger.DoUnknownException(Self, E)
     else
-      debugln(['ERROR: Exception occurred in ',ClassName+'.DoExecute ',
+      debugln(DBG_VERBOSE or DBG_WARNINGS, ['ERROR: Exception occurred in ',ClassName+'.DoExecute ',
                 '" Addr=', dbgs(ExceptAddr), ' Dbg.State=', dbgs(FTheDebugger.State)]);
   end;
   // No re-raise in the except block. So no try-finally required

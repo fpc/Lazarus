@@ -117,7 +117,7 @@ uses
   SysUtils;
 
 var
-  DBG_CMD_ECHO, DBG_CMD_ECHO_FULL: PLazLoggerLogGroup;
+  DBG_WARNINGS, DBG_CMD_ECHO, DBG_CMD_ECHO_FULL: PLazLoggerLogGroup;
 
 {------------------------------------------------------------------------------
   Function: WaitForHandles
@@ -157,7 +157,7 @@ begin
   end;
   if Max=0 then begin
     // no valid handle, so no change possible
-    DebugLn('WaitForHandles: Error: no handles');
+    DebugLn(DBG_WARNINGS or DBG_CMD_ECHO, 'WaitForHandles: Error: no handles');
     exit;
   end;
 
@@ -249,7 +249,7 @@ begin
       R := Windows.PeekNamedPipe(PipeHandle, nil, 0, nil, @TotalBytesAvailable, nil);
       if not R then begin
         // PeekNamedPipe failed
-        DebugLn('PeekNamedPipe failed, GetLastError is ', IntToStr(GetLastError));
+        DebugLn(DBG_WARNINGS or DBG_CMD_ECHO, 'PeekNamedPipe failed, GetLastError is ', IntToStr(GetLastError));
         Exit;
       end;
       if R then begin
@@ -401,12 +401,12 @@ begin
   then begin
     try
       FDbgProcess.Execute;
-      DebugLn('[TCmdLineDebugger] Debug PID: ', IntToStr(FDbgProcess.Handle));
+      DebugLn(DBG_CMD_ECHO, '[TCmdLineDebugger] Debug PID: ', IntToStr(FDbgProcess.Handle));
       Result := FDbgProcess.Running;
     except
       on E: Exception do begin
         FOutputBuf := E.Message;
-        DebugLn('Exception while executing debugger: ', FOutputBuf);
+        DebugLn(DBG_WARNINGS or DBG_CMD_ECHO, 'Exception while executing debugger: ', FOutputBuf);
       end;
     end;
   end;
@@ -622,7 +622,7 @@ begin
     {$EndIf}
   end
   else begin
-    DebugLn('[TCmdLineDebugger.SendCmdLn] Unable to send <', ACommand, '>. No process running.');
+    DebugLn(DBG_WARNINGS or DBG_CMD_ECHO, '[TCmdLineDebugger.SendCmdLn] Unable to send <', ACommand, '>. No process running.');
     DoWriteError;
   end;
 end;
@@ -658,6 +658,7 @@ begin
 end;
 
 initialization
+  DBG_WARNINGS      := DebugLogger.FindOrRegisterLogGroup('DBG_CMD_ECHO' {$IF defined(DBG_VERBOSE) or defined(DBG_CMD_ECHO)} , True {$ENDIF} );
   DBG_CMD_ECHO      := DebugLogger.FindOrRegisterLogGroup('DBG_CMD_ECHO' {$IF defined(DBG_VERBOSE) or defined(DBG_CMD_ECHO)} , True {$ENDIF} );
   DBG_CMD_ECHO_FULL := DebugLogger.FindOrRegisterLogGroup('DBG_CMD_ECHO_FULL' {$IF defined(DBG_VERBOSE_FULL_DATA) or defined(DBG_CMD_ECHO_FULL)} , True {$ENDIF} );
 

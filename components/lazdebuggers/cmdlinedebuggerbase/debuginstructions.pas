@@ -206,7 +206,7 @@ function dbgsInstr(AnInstr: TDBGInstruction): String;
 implementation
 
 var
-  DBGMI_TIMEOUT_DEBUG, DBG_THREAD_AND_FRAME, DBG_VERBOSE: PLazLoggerLogGroup;
+  DBGMI_TIMEOUT_DEBUG, DBGMI_QUEUE_DEBUG, DBG_THREAD_AND_FRAME, DBG_VERBOSE: PLazLoggerLogGroup;
 
 function dbgs(AState: TDBGInstructionState): String;
 begin
@@ -294,7 +294,7 @@ end;
 procedure TDBGInstruction.SetContentReceieved;
 begin
   FState := disContentReceived;
-debugln('disContentReceived');
+  debugln(DBG_VERBOSE and DBGMI_QUEUE_DEBUG, 'disContentReceived');
 end;
 
 procedure TDBGInstruction.InternalCreate(ACommand: String; AThread,
@@ -333,7 +333,7 @@ end;
 
 procedure TDBGInstruction.Cancel;
 begin
-debugln(['TDBGInstruction.Cancel ', Command]);
+  debugln(DBGMI_QUEUE_DEBUG, ['TDBGInstruction.Cancel ', Command]);
   if FState = disQueued then
     FQueue.RemoveInstruction(Self)
   else
@@ -357,7 +357,7 @@ end;
 
 procedure TDBGInstruction.MarkAsSuccess;
 begin
-debugln(['TDBGInstruction.MarkAsSuccess SUCCESS ', Command]);
+  debugln(DBGMI_QUEUE_DEBUG, ['TDBGInstruction.MarkAsSuccess SUCCESS ', Command]);
   FState := disComleted;
   if FOnSuccess <> nil then FOnSuccess(Self);
   if FOnFinish <> nil then FOnFinish(Self);
@@ -368,7 +368,7 @@ end;
 
 procedure TDBGInstruction.MarkAsFailed;
 begin
-debugln(['TDBGInstruction.MarkAsFailed FAILED ',Command]);
+  debugln(DBGMI_QUEUE_DEBUG, ['TDBGInstruction.MarkAsFailed FAILED ',Command]);
   FState := disFailed;
   if FOnFailure <> nil then FOnFailure(Self);
   if FOnFinish <> nil then FOnFinish(Self);
@@ -436,7 +436,7 @@ begin
     exit;
   if FRunningInstruction <> nil then
     exit;
-debugln(['TDBGInstructionQueue.RunQueue ', dbgsInstr(FCurrentInstruction), ' / ', dbgsInstr(FRunningInstruction)]);
+  debugln(DBGMI_QUEUE_DEBUG, ['TDBGInstructionQueue.RunQueue ', dbgsInstr(FCurrentInstruction), ' / ', dbgsInstr(FRunningInstruction)]);
 
   if FCurrentInstruction = nil then begin
     FCurrentInstruction := GetNextInstructionToRun;
@@ -444,7 +444,7 @@ debugln(['TDBGInstructionQueue.RunQueue ', dbgsInstr(FCurrentInstruction), ' / '
       exit;
     FCurrentInstruction.AddReference;
     RemoveInstruction(FCurrentInstruction);
-DebugLnEnter(['>> Current Instruction: ', FCurrentInstruction.Command]);
+    DebugLn(DBG_VERBOSE and DBGMI_QUEUE_DEBUG, ['>> Current Instruction: ', FCurrentInstruction.Command]);
   end;
 
   // set FCurrentInstruction to a pre running state, while changing stack....
@@ -547,15 +547,14 @@ end;
 
 procedure TDBGInstructionQueue.DoInstructionFinished(Sender: TDBGInstruction);
 begin
-DebugLnExit(['<< Finished Instruction: ', FRunningInstruction.Command, ' // ', Sender=FRunningInstruction]);
-if nil = FCurrentInstruction then DebugLnExit(['<< Current Instruction: ']);
+  DebugLn(DBGMI_QUEUE_DEBUG, ['<< Finished Instruction: ', FRunningInstruction.Command, ' // ', Sender=FRunningInstruction]);
   ReleaseRefAndNil(FRunningInstruction);
   RunQueue;
 end;
 
 procedure TDBGInstructionQueue.RunInstruction(AnInstruction: TDBGInstruction);
 begin
-DebugLnEnter(['>> Running Instruction: ', AnInstruction.Command]);
+  DebugLn(DBGMI_QUEUE_DEBUG, ['>> Running Instruction: ', AnInstruction.Command]);
   FRunningInstruction := AnInstruction;
   FRunningInstruction.AddReference;
   FRunningInstruction.SendCommandDataToDBG;
@@ -655,7 +654,7 @@ end;
 
 procedure TDBGInstructionQueue.QueueInstruction(AnInstruction: TDBGInstruction);
 begin
-debugln(['TDBGInstructionQueue.QueueInstruction ', AnInstruction.DebugText]);
+  debugln(DBGMI_QUEUE_DEBUG, ['TDBGInstructionQueue.QueueInstruction ', AnInstruction.DebugText]);
   Assert(AnInstruction.State = disNew, 'queue only new instr');
   AnInstruction.AddReference;
   AnInstruction.FNextQueuedInstruction := nil;
@@ -671,6 +670,7 @@ end;
 
 initialization
   DBGMI_TIMEOUT_DEBUG := DebugLogger.FindOrRegisterLogGroup('DBGMI_TIMEOUT_DEBUG' {$IFDEF DBGMI_TIMEOUT_DEBUG} , True {$ENDIF} );
+  DBGMI_QUEUE_DEBUG := DebugLogger.FindOrRegisterLogGroup('DBGMI_QUEUE_DEBUG' {$IFDEF DBGMI_QUEUE_DEBUG} , True {$ENDIF} );
   DBG_THREAD_AND_FRAME := DebugLogger.FindOrRegisterLogGroup('DBG_THREAD_AND_FRAME' {$IFDEF DBG_THREAD_AND_FRAME} , True {$ENDIF} );
   DBG_VERBOSE := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
 

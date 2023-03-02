@@ -612,7 +612,7 @@ begin
       sleep(30);
     end;
 
-    debugln(['TFpLldbDbgMemReader.ReadMemory  got mem ', AnAddress, ' ', ASize, ' ', Length(InStr.Res)]);
+    debugln(DBG_VERBOSE, ['TFpLldbDbgMemReader.ReadMemory  got mem ', AnAddress, ' ', ASize, ' ', Length(InStr.Res)]);
 
     if Length(InStr.Res) <> ASize then
       exit;
@@ -822,7 +822,7 @@ begin
   if (FpDebugger.FWatchEvalList.Count = 0) or (FWatchEvalLock > 0) or FWatchEvalCancel then
     exit;
 
-debugln(['ProcessEvalList ']);
+  debugln(DBG_VERBOSE, ['ProcessEvalList ']);
   inc(FWatchEvalLock);
   FpDebugger.LockUnLoadDwarf;
   try // TODO: if the stack/thread is changed, registers will be wrong
@@ -840,7 +840,7 @@ debugln(['ProcessEvalList ']);
         ResTypeInfo := nil;
         if not FpDebugger.EvaluateExpression(WatchValue, WatchValue.Expression, ResText, ResTypeInfo)
         then begin
-          if IsWatchValueAlive then    debugln(['TFPLldbWatches.InternalRequestData FAILED ', WatchValue.Expression]);
+          if IsWatchValueAlive then    debugln(DBG_VERBOSE or DBG_ERRORS, ['TFPLldbWatches.InternalRequestData FAILED ', WatchValue.Expression]);
           if IsWatchValueAlive then
             inherited InternalRequestData(WatchValue);
         end;

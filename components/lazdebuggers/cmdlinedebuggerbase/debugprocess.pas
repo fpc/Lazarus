@@ -166,20 +166,17 @@ begin
       break;
 
     if r < 0 then begin
-DebugLn('TTTTT pipe err');
+      DebugLn(DBG_WARNINGS, 'TDebugProcessReadThread.Execute: pipe err');
       Queue(FOnPipeError);
       exit;
     end;
 
     if (R > 0) and (FpFD_ISSET(FStream.Handle,FDS)=1) then begin
-DebugLn('TTTTT data avail');
       Queue(FOnDataAvail);
       RTLeventWaitFor(FAsyncLoopWaitEvent);
-DebugLn('TTTTT data avail continue');
     end;
 
   end;
-DebugLn(['TTTTT loop end ', Terminated]);
   RemoveQueuedEvents(Self, FOnDataAvail);
   RemoveQueuedEvents(Self, FOnPipeError);
 end;
@@ -225,7 +222,7 @@ end;
 
 procedure TDebugAsyncProcess.ThreadPipeError;
 begin
-DebugLn(['got pipe err / is running ', Running]);
+  DebugLn(DBG_WARNINGS, ['TDebugAsyncProcess.ThreadPipeError: got pipe err / is running ', Running]);
   Terminate(0);
   HandleProcessTermination(0, cerExit, 0);
 end;
@@ -253,7 +250,6 @@ end;
 procedure TDebugAsyncProcess.HandleProcessTermination(AData: PtrInt;
   AReason: TChildExitReason; AInfo: dword);
 begin
-DebugLn('HandleProcessTermination');
   UnhookProcessHandle;
   UnhookPipeHandle;
   if FOnTerminate <> nil then
@@ -311,9 +307,7 @@ begin
   if FReadThread <> nil then begin
     TerminataThread;
     FReadThread.WaitFor;
-debugln(['DESTROY thread destroying']);
     FreeAndNil(FReadThread);
-debugln(['DESTROY thread destroyed']);
   end;
   {$ENDIF}
   inherited;
@@ -328,9 +322,7 @@ begin
   if FReadThread <> nil then begin
     TerminataThread;
     FReadThread.WaitFor;
-debugln(['DESTROY thread destroying']);
     FreeAndNil(FReadThread);
-debugln(['DESTROY thread destroyed']);
   end;
   {$ENDIF}
   Result := inherited Terminate(AExitCode);
@@ -547,7 +539,7 @@ end;
 
 procedure TDebugProcess.StopDebugProcess;
 begin
-debugln(['TDebugProcess.StopDebugProcess FDbgProcess = nil ',FDbgProcess = nil]);
+  debugln(DBG_VERBOSE, ['TDebugProcess.StopDebugProcess FDbgProcess = nil ',FDbgProcess = nil]);
   if FDbgProcess = nil then exit;
 
   FDbgProcess.Terminate(0);

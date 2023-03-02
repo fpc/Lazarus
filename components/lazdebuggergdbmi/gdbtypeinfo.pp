@@ -735,7 +735,7 @@ begin
   Result.Kind := CheckKeyword;
   if Result.Kind = ptprkSimple then begin
     Result.Kind := ptprkError;
-    debugln('** WARNING: ptype info format error: ' + ATypeText);
+    debugln(DBG_WARNINGS, '** WARNING: ptype info format error: ' + ATypeText);
     exit;
   end;
 
@@ -1831,7 +1831,7 @@ begin
   end;
 
 
-  if CurPtr < EndPtr then debugln(['Scan aborted: ', PCLenToString(FText)]);
+  if CurPtr < EndPtr then debugln(DBG_WARNINGS, ['Scan aborted: ', PCLenToString(FText)]);
   if CurPtr < EndPtr then FreeAndNil(Result);
 end;
 
@@ -2587,7 +2587,7 @@ var
     then exit;
 
     if IsReqError(t)
-    then debugln('Failed "ptype expr^[^]" request for class expression');
+    then debugln(DBG_WARNINGS, 'Failed "ptype expr^[^]" request for class expression');
 
     if (not IsReqError(t)) and (ptprfPointer in FReqResults[t].Result.Flags)
     then begin

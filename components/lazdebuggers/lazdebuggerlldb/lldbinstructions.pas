@@ -409,6 +409,8 @@ type
 end;
 
 implementation
+var
+  DBG_VERBOSE: PLazLoggerLogGroup;
 
 { TLldbInstructionValueBase }
 
@@ -424,7 +426,7 @@ begin
       '}': dec(FCurly);
     end;
     inc(i);
-    if FCurly<0 then debugln(['ParseStruct curly too low ', FCurly]);
+    if FCurly<0 then debugln(DBG_VERBOSE, ['ParseStruct curly too low ', FCurly]);
   end;
   Result := FCurly <= 0;
 end;
@@ -1312,7 +1314,6 @@ begin
 
 
   if StrStartsWith(AData, '* thread #') or StrStartsWith(AData, '  thread #') then begin
-DebugLn(['######### add ',AData]);
     l := Length(FRes);
     SetLength(FRes, l+1);
     FRes[l] := AData;
@@ -1481,6 +1482,8 @@ begin
   Queue.SendDataToDBG(Self, 'version'); // end marker // do not sent before new prompt
 end;
 
+initialization
+  DBG_VERBOSE       := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
 
 end.
 

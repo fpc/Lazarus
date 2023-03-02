@@ -542,7 +542,7 @@ function TFpDbgInfoCallContext.AddOrdinalParam(AParamSymbolType: TFpSymbol; AVal
 var
   ParamSymbol: TFpValue;
 begin
-debugln(['TFpDbgInfoCallContext.AddOrdinalParam ',FNextParamRegister]);
+  debugln(FPDBG_FUNCCALL, ['TFpDbgInfoCallContext.AddOrdinalParam ',FNextParamRegister]);
   Result := False;
   if AParamSymbolType = nil then
     AParamSymbolType := TFpSymbolCallParamOrdinalOrPointer.Create('', 0)

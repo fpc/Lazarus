@@ -802,7 +802,6 @@ function TDbgWinProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread;
         Result := True;
         break;
       end;
-debugln(['HasThreadInSkippingBreak ',Result]);
   end;
 
 var
@@ -811,7 +810,7 @@ var
   WinAThread: TDbgWinThread absolute AThread;
   HasExceptionCleared, EventThreadNeedsTempBrkRemove: Boolean;
 begin
-debugln(FPDBG_WINDOWS, ['TDbgWinProcess.Continue ',SingleStep, ' # ', ' # ',DbgSTime]);
+  debugln(FPDBG_WINDOWS, ['TDbgWinProcess.Continue ',SingleStep, ' # ', ' # ',DbgSTime]);
   HasExceptionCleared := (WinAThread <> nil) and WinAThread.FHasExceptionCleared;
 
   if assigned(AThread) and not FThreadMap.HasId(AThread.ID) then begin
@@ -984,10 +983,10 @@ begin
             // we currently do not use the file handle => close it
             if MDebugEvent.CreateProcessInfo.hFile <> 0 then
               if not CloseHandle(MDebugEvent.CreateProcessInfo.hFile) then
-                debugln([DBG_WARNINGS, 'Failed to close new process file handle: ',GetLastErrorText]);
+                debugln(DBG_WARNINGS, ['Failed to close new process file handle: ',GetLastErrorText]);
             if _DebugActiveProcessStop <> nil then
               if not _DebugActiveProcessStop(MDebugEvent.dwProcessId) then
-                debugln([DBG_WARNINGS, 'Failed to detach: ',GetLastErrorText]);
+                debugln(DBG_WARNINGS, ['Failed to detach: ',GetLastErrorText]);
 
             Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE);
             Done := False;
