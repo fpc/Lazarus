@@ -602,6 +602,7 @@ begin
     for i := 0 to ProcVal.MemberCount - 1 do begin
       if FLocalsEvalCancel then begin
         ALocals.Validity := ddsInvalid;
+        ALocals.EndUpdate;
         exit;
       end;
       m := ProcVal.Member[i];
