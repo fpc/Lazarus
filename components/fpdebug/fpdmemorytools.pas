@@ -1080,6 +1080,7 @@ function TFpDbgMemReaderBase.ReadMemoryPartial(AnAddress: TDbgPtr;
 var
   SizeRemaining, sz: Cardinal;
   Offs: Integer;
+  Dummy: QWord;
 begin
   ABytesRead := ASize;
   Result := ReadMemory(AnAddress, ASize, ADest);
@@ -1089,6 +1090,11 @@ begin
   SizeRemaining := ASize;
   Offs := 0;
   ABytesRead := 0;
+
+  // check if the address is readable at all
+  Result := ReadMemory(AnAddress, 1, @Dummy);
+  if not Result then
+    exit;
 
   while SizeRemaining > 0 do begin
     Result := False;

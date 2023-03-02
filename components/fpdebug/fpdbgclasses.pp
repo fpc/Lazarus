@@ -2378,6 +2378,7 @@ var
   SizeRemaining, sz: Cardinal;
   Offs: Integer;
   APartAddr: TDBGPtr;
+  Dummy: QWord;
 begin
   // subclasses can do better implementation if checking for error reasons, such as part_read
   APartSize := ASize;
@@ -2389,6 +2390,11 @@ begin
   Offs := 0;
   APartAddr := AAdress;
   APartSize := 0;
+
+  // check if the address is readable at all
+  Result := ReadData(AAdress, 1, Dummy);
+  if not Result then
+    exit;
 
   while SizeRemaining > 0 do begin
     Result := False;
