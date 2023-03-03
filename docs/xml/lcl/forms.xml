@@ -85,10 +85,15 @@ Used to define members in control classes.
 </element>
 
 <element name="TProcedureOfObject">
-<short>Type used for an object procedure that takes no arguments.</short>
+<short>
+Type used for an object procedure that takes no arguments.
+</short>
 <descr>
 <p>
-Used to define members in control classes.
+<var>TProcedureOfObject</var> is a type which represents a parameter-less 
+object procedure. It is used in control classes to represent an event handler 
+which when signalled expects no arguments - not even a Sender object instance. 
+For example: TCustomUpDown uses it for its internal mouse timer event.
 </p>
 </descr>
 <seealso/>
@@ -203,7 +208,6 @@ option.
 </element>
 
 <!-- Modified in 43d7f203. -->
-
 <element name="TCloseAction">
 <short>
 Represents actions that can occur when a form is closed.
@@ -235,7 +239,6 @@ Uncomment when the topic exists in RTL documentation.
 </element>
 
 <!-- Added in 43d7f203. -->
-
 <element name="caNone">
 <short>
 Represents the caNone enumeration value in TCloseAction.
@@ -311,11 +314,7 @@ enabled.
 </seealso>
 </element>
 
-<element name="TCustomHintAction.Hint" link="#lcl.actnlist.TCustomAction.Hint">
-<short>The text used for the Hint.</short>
-<descr/>
-<seealso/>
-</element>
+<element name="TCustomHintAction.Hint" link="#lcl.actnlist.TCustomAction.Hint"/>
 
 <element name="TScrollBarKind">
 <short>The orientation of a scroll bar.</short>
@@ -2524,7 +2523,9 @@ end;
 end.
 </code>
 <p>
-One drawback is that complex inheritance hierarchies for <var>TFrame</var> classes can be problematic; they do not propagate changes to all derived frames in a multi-level inheritance tree.
+One drawback is that complex inheritance hierarchies for <var>TFrame</var> 
+classes can be problematic; they do not propagate changes to all derived 
+frames in a multi-level inheritance tree.
 </p>
 </descr>
 <seealso>
@@ -3002,13 +3003,15 @@ end;
 end.
 </code>
 <p>
-One drawback is that complex inheritance hierarchies for <var>TFrame</var> classes can be problematic; they do not propagate changes to all derived frames in a multi-level inheritance tree.
+One drawback is that complex inheritance hierarchies for <var>TFrame</var> 
+classes can be problematic; they do not propagate changes to all derived 
+frames in a multi-level inheritance tree.
 </p>
 <p>
 TFrame contains a new property which indicates the LCL (Lazarus Component 
 Library) version number used in the container. An overridden constructor is 
 also introduced to initialize the value in the LCLVersion property. TFrame 
-sets the visibility for properties defines in ancestor classes.
+sets the visibility for properties defined in ancestor classes.
 </p>
 </descr>
 <seealso/>
@@ -5055,7 +5058,7 @@ Performs a delayed bounds change using the DelayedEvent for the control.
 <var>TCustomForm</var>. It re-implements the method from the ancestor class, 
 and does not call the inherited method.
 </p>
-<p> 
+<p>
 DoOnChangeBounds sets an internal flag to indicate that a delayed bounds 
 change event has been requested. It increments an internal counter to track 
 the number of pending delayed events.
@@ -16922,7 +16925,7 @@ HintPause is an Integer property with the number of milliseconds to wait
 before a Hint window is displayed for a form or control.
 </p>
 <p>
-The default value is defines in the DefHintPause constant and assigned to the 
+The default value is defined in the DefHintPause constant and assigned to the 
 property in the constructor for the application instance.
 </p>
 <p>
@@ -19042,21 +19045,39 @@ TWindowState value for the specified string, or wsNormal by default.
 </element>
 
 <element name="dbgs">
-<short>Formats various typed values into readable text.</short>
-<descr/>
+<short>
+Formats debugger messages for various types by converting their values into 
+readable text.
+</short>
+<descr>
+<p>
+<var>dbgs</var> is overloaded in <file>forms.pp</file>. The overloads handle 
+creating textual information for the TWindowState, TCloseAction, and 
+TScrollBarKind types. The text is used in DebugLn and WriteLn messages in the 
+Lazarus debugger.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="dbgs.Result">
-<short>The formatted value.</short>
+<short>
+The formatted text with values for the specified argument.
+</short>
 </element>
 <element name="dbgs.State">
-<short/>
+<short>
+TWindowState instance with values included in the text.
+</short>
 </element>
 <element name="dbgs.Action">
-<short/>
+<short>
+TCloseAction instance with values included in the text.
+</short>
 </element>
 <element name="dbgs.Kind">
-<short/>
+<short>
+TScrollBar instance with values included in the text.
+</short>
 </element>
 
 <element name="TFocusState">
@@ -19153,7 +19174,9 @@ object.
 </short>
 </element>
 <element name="TGetDesignerFormEvent.APersistent">
-<short/>
+<short>
+TPersistent instance for the event notification.
+</short>
 </element>
 
 <element name="TIsFormDesignFunction">
