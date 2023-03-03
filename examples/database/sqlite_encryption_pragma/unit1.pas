@@ -442,8 +442,8 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 begin
 
-  // Ensure we're using the local sqlite3.dll
-  SQLiteLibraryName := 'sqlite3.dll';
+  // Ensure we're using the local sqlite3.dll, other OS will be OK.
+  {$ifdef WINDOWS}SQLiteLibraryName := 'sqlite3.dll';{$endif}
 
   // Set the path to the database
   SQLite3Connection1.DatabaseName := 'new.db';
