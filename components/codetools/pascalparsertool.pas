@@ -257,6 +257,7 @@ type
     function SkipTypeReference(ExceptionOnError: boolean): boolean;
     function SkipSpecializeParams(ExceptionOnError: boolean): boolean;
     function WordIsPropertyEnd: boolean;
+    function WordIsStatemendEnd: boolean;
     function AllowAttributes: boolean; inline;
     function AllowAnonymousFunctions: boolean; inline;
   public
@@ -3249,6 +3250,26 @@ begin
   until false;
 end;
 
+function TPascalParserTool.WordIsStatemendEnd: boolean;
+var
+  p: PChar;
+begin
+  p:=@Src[CurPos.StartPos];
+  case UpChars[p^] of
+  'E':
+    case UpChars[p[1]] of
+     'L': if UpAtomIs('ELSE') then exit(true);
+     'N': if UpAtomIs('END') then exit(true);
+     'X': if UpAtomIs('EXCEPT') then exit(true);
+    end;
+  'F': if UpAtomIs('FINALLY') then exit(true);
+  'O': if UpAtomIs('OTHERWISE') then exit(true);
+  'U': if UpAtomIs('UNTIL') then exit(true);
+  end;
+  Result:=false;
+end;
+
+
 function TPascalParserTool.ReadTilStatementEnd(ExceptionOnError,
   CreateNodes: boolean): boolean;
 // after reading the current atom will be on the last atom of the statement
@@ -3272,10 +3293,17 @@ begin
           exit;
         end;
       cafSemicolon: exit;
-      else
-        if CurPos.StartPos>SrcLen then exit;
-        ReadNextAtom;
+      cafWord:
+        begin
+          if WordIsStatemendEnd then
+          begin
+            UndoReadNextAtom;
+            exit;
+          end;
+        end;
       end;
+      if CurPos.StartPos>SrcLen then exit;
+      ReadNextAtom;
     end;
   end;
 end;
