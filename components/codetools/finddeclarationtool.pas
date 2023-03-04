@@ -7679,6 +7679,9 @@ begin
       end;
     end;
     // check result
+    if (AncestorContext.Node.Desc = ctnGenericParameter) then
+      RaiseExpected('generic param with type restriction')
+    else
     if not (AncestorContext.Node.Desc in AllClasses) then
       RaiseExpected('class');
     if AncestorContext.Node=ClassNode then begin
@@ -14054,15 +14057,29 @@ begin
 end;
 
 function TFindDeclarationParams.FindGenericParamType: Boolean;
+  function SearchInGenericRestrictions: boolean;
+  begin
+    Result := False;
+    if (NewNode.FirstChild = nil)
+    or (NewNode.FirstChild.Desc <> ctnGenericConstraint) then exit;
+
+    Identifier:=@NewCodeTool.Src[NewNode.FirstChild.StartPos];
+    Result:=NewCodeTool.FindIdentifierInContext(Self);
+  end;
 var
   i, n: integer;
   GenParamType: TCodeTreeNode;
   OldGenParam: TGenericParams;
 begin
+  Include(Flags, fdfDoNotCache);
   // NewCodeTool, NewNode=GenericParamType
-  if not Assigned(NewCodeTool) or not Assigned(NewNode)
-  or not Assigned(GenParams.ParamValuesTool)
-  or not Assigned(GenParams.SpecializeParamsNode) then exit(false);
+  if not Assigned(NewCodeTool) or not Assigned(NewNode) then exit(false);
+  if not Assigned(GenParams.ParamValuesTool)
+  or not Assigned(GenParams.SpecializeParamsNode)
+  then begin
+    Result :=  SearchInGenericRestrictions;
+    exit;
+  end;
   n:=0;
   GenParamType:=NewNode;
   while GenParamType<>nil do begin
