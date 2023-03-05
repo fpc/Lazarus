@@ -5580,6 +5580,7 @@ var
   LogPixX, LMarginPix, RMarginPix,
   LogPixY, TMarginPix, BMarginPix,
   H: Integer;
+  oldPrinterFileName: String;
 begin
   // check ir BeginPrint was called
   if not Printed then begin
@@ -5588,6 +5589,12 @@ begin
       Printer.Title := Hyper.TitleNode.Title
     else
       Printer.Title := 'HTML Document';
+
+    // Avoid showing the print file selection dialog appearing in case of some
+    // PDF printers.
+    oldPrinterFileName := Printer.FileName;
+    Printer.FileName := 'test';
+
     Printer.BeginDoc;
     GetRelativeAspect(Printer.Canvas.Handle);
     {$IF NOT DEFINED(WINDOWS)}
@@ -5620,6 +5627,7 @@ begin
     if H mod PrintHeight <> 0 then
       Inc(PageCount);
     Printer.Abort;
+    Printer.FileName := oldPrinterFileName;
   end else
     raise Exception.Create('BeginPrint must be called before ResetPrint.');
 end;
@@ -5679,7 +5687,6 @@ begin
     oldRD := Hyper.RenderDevice;
     BeginPrint;
     try
-
       preview := TIpHTMLPreview.Create(Application);
       with preview do
         try
