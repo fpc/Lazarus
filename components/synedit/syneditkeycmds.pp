@@ -511,7 +511,7 @@ end;
 { Command mapping routines }
 
 const
-  EditorCommandStrs: array[0..171] of TIdentMapEntry = (
+  EditorCommandStrs: array[0..172] of TIdentMapEntry = (
     (Value: ecNone; Name: 'ecNone'),
     (Value: ecLeft; Name: 'ecLeft'),
     (Value: ecRight; Name: 'ecRight'),
@@ -585,6 +585,7 @@ const
     (Value: ecSelectAll; Name: 'ecSelectAll'),
     (Value: ecDeleteLastChar; Name: 'ecDeleteLastChar'),
     (Value: ecDeleteChar; Name: 'ecDeleteChar'),
+    (Value: ecDeleteCharNoCrLf; Name: 'ecDeleteCharNoCrLf'),
     (Value: ecDeleteWord; Name: 'ecDeleteWord'),
     (Value: ecDeleteLastWord; Name: 'ecDeleteLastWord'),
     (Value: ecDeleteBOL; Name: 'ecDeleteBOL'),
