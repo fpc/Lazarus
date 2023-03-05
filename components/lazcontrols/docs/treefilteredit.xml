@@ -197,9 +197,29 @@ owner control.
 Moves the tree node and data at the specified position to the position in 
 NewIndex.
 </short>
-<descr/>
+<descr>
+<p>
+<var>Move</var> ensures that the current tree node selected on the filtered 
+edit control is saved and restored after the node has is moved to its new 
+position. The Move method in the original Items data (TStrings) is called to 
+relocate the content to the position in NewIndex. InvalidateBranch is called 
+to sort and filter the tree nodes and their data, and to update the filtered 
+tree edit and its associated tree view control.
+</p>
+</descr>
+<version>
+Modified in LCL 2.2.6 to save and restore the current tree node selected in 
+the owner tree view control.
+</version>
 <seealso>
 <link id="TTreeFilterBranch.InvalidateBranch"/>
+<link id="TTreeFilterEdit.StoreSelection"/>
+<link id="TTreeFilterEdit.RestoreSelection"/>
+<link id="TTreeFilterBranch.Items"/>
+<link id="TBranchList"/>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.OnFilterItemEx">TCustomControlFilterEdit.OnFilterItemEx</link>
+<link id="#lcl.comctrls.TCustomTreeview.Items">TCustomTreeview.Items</link>
+<link id="#rtl.classes.TStrings.Move">TStrings.Move</link>
 </seealso>
 </element>
 <element name="TTreeFilterBranch.Move.CurIndex">
