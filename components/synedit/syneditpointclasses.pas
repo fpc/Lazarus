@@ -2751,7 +2751,13 @@ end;
 
 function TSynEditSelection.GetLastLineHasSelection: Boolean;
 begin
-  Result := (LastLineBytePos.x > 1) or ((FActiveSelectionMode = smLine) and FForceSingleLineSelected);
+  Result := (LastLineBytePos.x > 1) or
+            ( (FActiveSelectionMode = smLine) and
+              ( FForceSingleLineSelected or       // Selection may be zero lenght, but will be entire line
+                (FEndLinePos <> FStartLinePos) or // Any selection in line-mode covers the last line
+                (FEndBytePos <> FStartBytePos)
+              )
+            );
 end;
 
 function TSynEditSelection.GetColumnLeftCharPos: Integer;
