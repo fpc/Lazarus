@@ -554,8 +554,14 @@ type
   { TGenericParams }
 
   TGenericParams = record
+    // values given in "specialize" statement
     ParamValuesTool: TFindDeclarationTool;
     SpecializeParamsNode: TCodeTreeNode;
+    // "generic" definition to which those values can be applied
+    GenericTool: TFindDeclarationTool;
+    GenericNode: TCodeTreeNode;
+    // *chain* of earlier params, in case of nested generic
+    // there will always be 0 or 1 entry. This acts like a pointer, only with automatic FreeMem
     OuterGenParam: array of TGenericParams;
   end;
 
@@ -607,7 +613,8 @@ type
                               ParamCompatibilityList: TTypeCompatibilityList);
   private
     procedure SetGenericParamValues(SpecializeParamsTool: TFindDeclarationTool;
-                SpecializeNode: TCodeTreeNode);
+                SpecializeNode: TCodeTreeNode;
+                GenericTool: TFindDeclarationTool; GenericNode: TCodeTreeNode);
     function FindGenericParamType: Boolean;
     procedure AddOperandPart(aPart: string);
     property ExtractedOperand: string read FExtractedOperand;
@@ -5620,7 +5627,6 @@ begin
         NameNode:=SpecializeNode.FirstChild;
         Result.Node:=NameNode;
         if Result.Node=nil then break;
-        Params.SetGenericParamValues(Self, SpecializeNode);
         SearchIdentifier(SpecializeNode,NameNode.StartPos,IsPredefined,Result);
         if (Result.Node=nil) or (Result.Node.Desc<>ctnGenericType) then begin
           // not a generic
@@ -5629,6 +5635,7 @@ begin
           RaiseExceptionFmt(20170421200156,ctsStrExpectedButAtomFound,
                             [ctsGenericIdentifier,GetAtom]);
         end;
+        Params.SetGenericParamValues(Self, SpecializeNode, Result.Tool, Result.Node);
       end else
         break;
     end;
@@ -7667,8 +7674,10 @@ begin
       Params:=TFindDeclarationParams.Create;
       Params.GenParams := ResultParams.GenParams;
       if IdentifierNode.Desc=ctnSpecialize then begin
-         SpecializeNode:=IdentifierNode;
-         Params.SetGenericParamValues(Self, SpecializeNode);
+        if AncestorContext.Node.Desc <> ctnGenericType then
+          RaiseExpected('generic type');
+        SpecializeNode:=IdentifierNode;
+        Params.SetGenericParamValues(Self, SpecializeNode, AncestorContext.Tool, AncestorContext.Node);
       end;
       try
         Params.Flags:=fdfDefaultForExpressions+[fdfFindChildren];
@@ -14038,8 +14047,8 @@ begin
 end;
 
 procedure TFindDeclarationParams.SetGenericParamValues(
-  SpecializeParamsTool: TFindDeclarationTool;
-  SpecializeNode: TCodeTreeNode);
+  SpecializeParamsTool: TFindDeclarationTool; SpecializeNode: TCodeTreeNode;
+  GenericTool: TFindDeclarationTool; GenericNode: TCodeTreeNode);
 var
   GenP: TGenericParams;
 begin
@@ -14054,6 +14063,8 @@ begin
 
   GenParams.ParamValuesTool := SpecializeParamsTool;
   GenParams.SpecializeParamsNode := SpecializeNode.FirstChild.NextBrother;
+  GenParams.GenericTool := GenericTool;
+  GenParams.GenericNode := GenericNode;
 end;
 
 function TFindDeclarationParams.FindGenericParamType: Boolean;
@@ -14080,12 +14091,37 @@ begin
     Result :=  SearchInGenericRestrictions;
     exit;
   end;
+
+  // n := Find the index of the param in the generic list
   n:=0;
   GenParamType:=NewNode;
   while GenParamType<>nil do begin
     GenParamType:=GenParamType.PriorBrother;
     inc(n);
   end;
+
+  OldGenParam := GenParams;
+  while (GenParams.ParamValuesTool <> nil) and
+    ( (NewNode.StartPos < GenParams.GenericNode.StartPos) or
+      (NewNode.EndPos > GenParams.GenericNode.EndPos) or
+      (NewCodeTool <> GenParams.GenericTool)
+    )
+  do begin
+    if Length(GenParams.OuterGenParam) > 0 then
+      GenParams := GenParams.OuterGenParam[0]
+    else begin
+      GenParams.ParamValuesTool:=nil;
+      GenParams.SpecializeParamsNode:=nil;
+    end;
+  end;
+
+  if (GenParams.ParamValuesTool = nil) then begin
+    GenParams := OldGenParam;
+    Result :=  SearchInGenericRestrictions;
+    exit;
+  end;
+
+
   with GenParams.ParamValuesTool do begin
     MoveCursorToNodeStart(GenParams.SpecializeParamsNode);
     ReadNextAtom;
@@ -14108,7 +14144,6 @@ begin
     Identifier:=@Src[CurPos.StartPos];
     IdentifierTool:=GenParams.ParamValuesTool;
     ContextNode:=GenParams.SpecializeParamsNode;
-    OldGenParam := GenParams;
     if Length(GenParams.OuterGenParam) > 0 then
       GenParams := GenParams.OuterGenParam[0]
     else begin
