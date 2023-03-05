@@ -2705,10 +2705,17 @@ begin
         else
           ExecCommandRepeated;
       end;
-    ecSelColCmdRangeStart..ecSelColCmdRangeEnd:
+    ecSelectionStart..ecSelectionEnd:
+    //ecSelColCmdRangeStart..ecSelColCmdRangeEnd:
       begin
-        Include(FStateFlags, sfSkipUndoCarets);
-        Include(FStateFlags, sfExtendingColumnSel);
+        if (Command <> ecSelectAll) and
+           ( (Command in [ecSelColCmdRangeStart..ecSelColCmdRangeEnd]) or
+             (SelectionObj.ActiveSelectionMode = smColumn)
+           )
+        then begin
+          Include(FStateFlags, sfSkipUndoCarets);
+          Include(FStateFlags, sfExtendingColumnSel);
+        end;
       end;
     ecLeft..ecSmartWordRight: begin
         Include(FStateFlags, sfSkipUndoCarets);
