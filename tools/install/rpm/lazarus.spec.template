@@ -51,7 +51,7 @@ fi
 
 %install
 [ %{buildroot} != "/" ] && ( rm -rf %{buildroot} )
-LAZARUSDIR=%{_libdir}/%{name}
+LAZARUSDIR=%{_datadir}/%{name}
 mkdir -p %{buildroot}$LAZARUSDIR
 mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_datadir}/pixmaps
@@ -77,7 +77,6 @@ cat lazarus/tools/install/linux/environmentoptions.xml | sed -e "s#__LAZARUSDIR_
 [ %{buildroot} != "/" ] && ( rm -rf %{buildroot} )
 
 %post
-%{_libdir}/%{name}/tools/install/rpm/create_gtk1_links.sh
 #update-desktop-database &> /dev/null ||:
 
 %postun
@@ -85,7 +84,7 @@ update-desktop-database &> /dev/null ||:
 
 %files
 %defattr(-,root,root,-)
-%{_libdir}/%{name}
+%{_datadir}/%{name}
 %{_bindir}/*
   %{_datadir}/pixmaps/lazarus.png
   %{_datadir}/applications/lazarus.desktop
