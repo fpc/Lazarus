@@ -44,7 +44,7 @@ uses
   LCLIntf,
   Buttons,
   Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, Spin, IpHtml, IpConst;
+  StdCtrls, ExtCtrls, Spin, IpHtml, IpConst, IpHtmlTypes;
 
 type
 
