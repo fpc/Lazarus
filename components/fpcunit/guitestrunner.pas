@@ -152,6 +152,7 @@ type
     testSuite: TTest;
     FFirstFailure: TTreeNode; // reference to first failed test
     FConfStore: TIniFile;
+    Running: boolean;
     procedure BuildTree(rootNode: TTreeNode; aSuite: TTestSuite);
     procedure ClearDetails;
     function  FindNode(aTest: TTest): TTreeNode;
@@ -459,8 +460,8 @@ end;
 
 procedure TGUITestRunner.ActRunHighLightedTestUpdate(Sender: TObject);
 begin
-  (Sender as TAction).Enabled := ((TestTree.Selected <> nil)
-    and (TestTree.Selected.Data <> nil));
+  (Sender as TAction).Enabled := (not Running) and
+      (TestTree.Selected <> nil) and (TestTree.Selected.Data <> nil);
 end;
 
 procedure TGUITestRunner.ActUncheckCurrentSuiteExecute(Sender: TObject);
@@ -1002,6 +1003,7 @@ var
   xMethod: TOnBeforeOrAfterRunTestEvent;
   I: integer;
 begin
+  Running := true;
   if Assigned(FGuiTestRunnerHandlers[gtrhtBeforeRunTest]) then
   begin
     for I := 0 to FGuiTestRunnerHandlers[gtrhtBeforeRunTest].Count-1 do
@@ -1064,6 +1066,7 @@ begin
         xMethod(Self);
       end;
     end;
+    Running := false;
   end;
 end;
 
