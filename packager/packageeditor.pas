@@ -2478,7 +2478,8 @@ begin
     FPropGui.SetDisableI18NCB(SelDisableI18NForLFM);
 
     // move up/down (only single selection)
-    aVisible:=(not (SortAlphabetically or SingleSelectedRemoved))
+    aVisible := (FilterEdit.Filter='')
+       and (not (SortAlphabetically or SingleSelectedRemoved))
        and ((SingleSelectedFile<>nil) or (SingleSelectedDep<>nil));
     MoveUpBtn.Enabled  :=aVisible and Assigned(SingleSelectedNode.GetPrevVisibleSibling);
     MoveDownBtn.Enabled:=aVisible and Assigned(SingleSelectedNode.GetNextVisibleSibling);
@@ -2989,7 +2990,6 @@ begin
   FilesBranch.Move(OldIndex,NewIndex);
   UpdatePEProperties;
   UpdateStatusBar;
-  //FilterEdit.InvalidateFilter;
 end;
 
 procedure TPackageEditorForm.DoMoveDependency(Offset: integer);
@@ -3012,7 +3012,6 @@ begin
   RequiredBranch.Move(OldIndex,NewIndex);
   UpdatePEProperties;
   UpdateStatusBar;
-  //FilterEdit.InvalidateFilter;
 end;
 
 procedure TPackageEditorForm.DoSortFiles;

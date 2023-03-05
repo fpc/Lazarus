@@ -398,8 +398,10 @@ end;
 
 procedure TTreeFilterBranch.Move(CurIndex, NewIndex: integer);
 begin
+  fOwner.StoreSelection;
   fOriginalData.Move(CurIndex, NewIndex);
   InvalidateBranch;
+  fOwner.RestoreSelection;
 end;
 
 { TFileNameItem }
@@ -562,7 +564,7 @@ begin
   SelectNode:=Nil;
   // ToDo: support more than one items or otherwise clean the code.
   Assert(fSelectionList.Count < 2,
-    'TTreeFilterEdit.RestoreSelection: fSelectionList has more than one items.');
+    'TTreeFilterEdit.RestoreSelection: fSelectionList has more than one item.');
   if fSelectionList.Count > 0 then
   begin
     CurText:=fSelectionList[0];
