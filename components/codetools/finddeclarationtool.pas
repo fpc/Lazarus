@@ -615,6 +615,7 @@ type
     procedure SetGenericParamValues(SpecializeParamsTool: TFindDeclarationTool;
                 SpecializeNode: TCodeTreeNode;
                 GenericTool: TFindDeclarationTool; GenericNode: TCodeTreeNode);
+    procedure AppendGenericParamValues(AGenParams: TGenericParams);
     function FindGenericParamType: Boolean;
     procedure AddOperandPart(aPart: string);
     property ExtractedOperand: string read FExtractedOperand;
@@ -5338,6 +5339,12 @@ var
                             [ctsTypeIdentifier,GetAtom]);
         end;
         Context:=TestContext;
+        if  (fodDoNotCache in SubParams.NewFlags) then begin
+          Include(Params.Flags, fdfDoNotCache);
+          Include(Params.NewFlags, fodDoNotCache);
+        end;
+        SubParams.AppendGenericParamValues(Params.GenParams);
+        Params.GenParams:=SubParams.GenParams;
         {$IFDEF ShowTriedBaseContexts}
         debugln(['TFindDeclarationTool.FindBaseTypeOfNode.SearchIdentifier found ',GetIdentifier(@Src[IdentStart]),' Node=',Context.Node.DescAsString,' ',Context.Tool.CleanPosToStr(Context.Node.StartPos,true)]);
         {$ENDIF}
@@ -14082,6 +14089,23 @@ begin
   GenParams.SpecializeParamsNode := SpecializeNode.FirstChild.NextBrother;
   GenParams.GenericTool := GenericTool;
   GenParams.GenericNode := GenericNode;
+end;
+
+procedure TFindDeclarationParams.AppendGenericParamValues(
+  AGenParams: TGenericParams);
+var
+  p: TGenericParams;
+begin
+  if GenParams.ParamValuesTool = nil then begin
+    GenParams := AGenParams;
+    exit;
+  end;
+
+  p:=GenParams;
+  while Length(p.OuterGenParam)>0 do
+    p:=p.OuterGenParam[0];
+  SetLength(p.OuterGenParam, 1);
+  p.OuterGenParam[0]:=AGenParams;
 end;
 
 function TFindDeclarationParams.FindGenericParamType: Boolean;

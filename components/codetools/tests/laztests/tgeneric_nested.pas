@@ -357,7 +357,7 @@ var
 begin
   fv{declaration:GEN_1.fv} := default(_REC {declaration:GEN_1._REC} );
 
-  fy{declaration:GEN_1.TFld1.fy}.r1a{ TODO: declaration:TRec1.r1a} := 1;
+  fy{declaration:GEN_1.TFld1.fy}.r1a{declaration:TRec1.r1a} := 1;
   FField1{declaration:GEN_Field.FField1}.r1a{declaration:TRec1.r1a} := 1;
 
   a0.FField1{declaration:GEN_Field.FField1} := default(_REC {declaration:GEN_1._REC} );
@@ -376,7 +376,7 @@ var
 begin
   fv{declaration:GEN_1.fv} := default(_REC {declaration:GEN_1._REC} );
 
-  fy{declaration:GEN_1.TFld2.fy}.r2a{ TODO: declaration:TRec2.r2a} := 1;
+  fy{declaration:GEN_1.TFld2.fy}.r2a{declaration:TRec2.r2a} := 1;
   FField1{declaration:GEN_Field.FField1}.r2a{declaration:TRec2.r2a} := 1;
 
   a0.FField1{declaration:GEN_Field.FField1} := default(_REC {declaration:GEN_1._REC} );
@@ -431,7 +431,7 @@ var
 begin
   fv{declaration:GENB_1.fv} := default(_REC {declaration:GENB_1._REC} );
 
-  fy{declaration:GENB_1.TFldB1.fy}.r1a{ TODO: declaration:TRec1.r1a} := 1;
+  fy{declaration:GENB_1.TFldB1.fy}.r1a{declaration:TRec1.r1a} := 1;
   FField1{declaration:GEN_Field.FField1}.r1a{declaration:TRec1.r1a} := 1;
 
   a0.FField1{declaration:GEN_Field.FField1} := default(_REC {declaration:GENB_1._REC} );
@@ -450,7 +450,7 @@ var
 begin
   fv{declaration:GENB_1.fv} := default(_REC {declaration:GENB_1._REC} );
 
-  fy{declaration:GENB_1.TFldB2.fy}.r2a{ TODO: declaration:TRec2.r2a} := 1;
+  fy{declaration:GENB_1.TFldB2.fy}.r2a{declaration:TRec2.r2a} := 1;
   FField1{declaration:GEN_Field.FField1}.r2a{declaration:TRec2.r2a} := 1;
 
   a0.FField1{declaration:GEN_Field.FField1} := default(_REC {declaration:GENB_1._REC} );
@@ -505,7 +505,7 @@ var
 begin
   fv{declaration:GENB_2.fv} := default(_REC {declaration:GENB_2._REC} );
 
-  fy{declaration:GENB_2.TFldB1.fy}.r1a{ TODO: declaration:TRec1.r1a} := 1;
+  fy{declaration:GENB_2.TFldB1.fy}.r1a{declaration:TRec1.r1a} := 1;
   FField1{declaration:GEN_Field.FField1}.r1a{declaration:TRec1.r1a} := 1;
 
   a0.FField1{declaration:GEN_Field.FField1} := default(_REC {declaration:GENB_2._REC} );
@@ -524,7 +524,7 @@ var
 begin
   fv{declaration:GENB_2.fv} := default(_REC {declaration:GENB_2._REC} );
 
-  fy{declaration:GENB_2.TFldB2.fy}.r2a{ TODO: declaration:TClass1.TRec2.r2a} := 1;
+  fy{declaration:GENB_2.TFldB2.fy}.r2a{declaration:TClass1.TRec2.r2a} := 1;
   FField1{declaration:GEN_Field.FField1}.r2a{declaration:TClass1.TRec2.r2a} := 1;
 
   a0.FField1{declaration:GEN_Field.FField1} := default(_REC {declaration:GENB_2._REC} );
@@ -543,7 +543,7 @@ var
 begin
   fv{declaration:GENB_2.fv} := default(_REC {declaration:GENB_2._REC} );
 
-  fy{declaration:GENB_2.TFldB3.fy}.r3a{ TODO: declaration:TClass1.TRec3.r3a} := 1;
+  fy{declaration:GENB_2.TFldB3.fy}.r3a{declaration:TClass1.TRec3.r3a} := 1;
   FField1{declaration:GEN_Field.FField1}.r3a{declaration:TClass1.TRec3.r3a} := 1;
 
   a0.FField1{declaration:GEN_Field.FField1} := default(_REC {declaration:GENB_2._REC} );
@@ -609,7 +609,7 @@ begin
   fv{declaration:GENB_1.fv} := default(_REC {declaration:GENI_1._REC} );
   fIv{declaration:GENI_1.fIv} := default(_REC {declaration:GENI_1._REC} );
 
-  fy{declaration:GENI_1.TFldI1.fy}.r1a{ TODO: declaration:TRec1.r1a} := 1;
+  fy{declaration:GENI_1.TFldI1.fy}.r1a{declaration:TRec1.r1a} := 1;
   FField1{declaration:GEN_Field.FField1}.r1a{declaration:TRec1.r1a} := 1;
 
   b0.FField1{declaration:GEN_Field.FField1} := default(_REC {declaration:GENI_1._REC} );
@@ -635,7 +635,7 @@ begin
   fv{declaration:GENB_1.fv} := default(_REC {declaration:GENI_1._REC} );
   fIv{declaration:GENI_1.fIv} := default(_REC {declaration:GENI_1._REC} );
 
-  fy{declaration:GENI_1.TFldI2.fy}.r2a{ TODO: declaration:TRec2.r2a} := 1;
+  fy{declaration:GENI_1.TFldI2.fy}.r2a{declaration:TRec2.r2a} := 1;
   FField1{declaration:GEN_Field.FField1}.r2a{declaration:TRec2.r2a} := 1;
 
   b0.FField1{declaration:GEN_Field.FField1} := default(_REC {declaration:GENI_1._REC} );
@@ -693,7 +693,7 @@ begin
   b2.FField1{declaration:GEN_Field.FField1}.r2a{declaration:TClass1.TRec2.r2a} := 1;
   a0.FField1{declaration:GEN_Field.FField1} := default(_REC {declaration:GENI_2B1._REC} );
   a1.FField1{declaration:GEN_Field.FField1}.r1a{declaration:TRec1.r1a} := 1;
-  a2.FField1{declaration:GEN_Field.FField1}.r2a{ TODO: declaration:TClass1.TRec2.r2a} := 1;
+  a2.FField1{declaration:GEN_Field.FField1}.r2a{declaration:TClass1.TRec2.r2a} := 1;
 end;
 
 { GENI_2B1.TFldI1 }
@@ -711,7 +711,7 @@ begin
   fv{declaration:GENB_1.fv} := default(_REC {declaration:GENI_2B1._REC} );
   fIv{declaration:GENI_2B1.fIv} := default(_REC {declaration:GENI_2B1._REC} );
 
-  fy{declaration:GENI_2B1.TFldI1.fy}.r1a{ TODO: declaration:TRec1.r1a} := 1;
+  fy{declaration:GENI_2B1.TFldI1.fy}.r1a{declaration:TRec1.r1a} := 1;
   FField1{declaration:GEN_Field.FField1}.r1a{declaration:TRec1.r1a} := 1;
 
   b0.FField1{declaration:GEN_Field.FField1} := default(_REC {declaration:GENI_2B1._REC} );
@@ -719,7 +719,7 @@ begin
   b2.FField1{declaration:GEN_Field.FField1}.r2a{declaration:TClass1.TRec2.r2a} := 1;
   a0.FField1{declaration:GEN_Field.FField1} := default(_REC {declaration:GENI_2B1._REC} );
   a1.FField1{declaration:GEN_Field.FField1}.r1a{declaration:TRec1.r1a} := 1;
-  a2.FField1{declaration:GEN_Field.FField1}.r2a{ TODO: declaration:TClass1.TRec2.r2a} := 1;
+  a2.FField1{declaration:GEN_Field.FField1}.r2a{declaration:TClass1.TRec2.r2a} := 1;
 end;
 
 { GENI_2B1.TFldI2 }
@@ -736,7 +736,7 @@ var
 begin
   fv{declaration:GENB_1.fv} := default(_REC {declaration:GENI_2B1._REC} );
 
-  fy{declaration:GENI_2B1.TFldI2.fy}.r2a{ TODO: declaration:TClass1.TRec2.r2a} := 1;
+  fy{declaration:GENI_2B1.TFldI2.fy}.r2a{declaration:TClass1.TRec2.r2a} := 1;
   FField1{declaration:GEN_Field.FField1}.r2a{declaration:TClass1.TRec2.r2a} := 1;
 
   b0.FField1{declaration:GEN_Field.FField1} := default(_REC {declaration:GENI_2B1._REC} );
@@ -744,7 +744,7 @@ begin
   b2.FField1{declaration:GEN_Field.FField1}.r2a{declaration:TClass1.TRec2.r2a} := 1;
   a0.FField1{declaration:GEN_Field.FField1} := default(_REC {declaration:GENI_2B1._REC} );
   a1.FField1{declaration:GEN_Field.FField1}.r1a{declaration:TRec1.r1a} := 1;
-  a2.FField1{declaration:GEN_Field.FField1}.r2a{ TODO declaration:TClass1.TRec2.r2a} := 1;
+  a2.FField1{declaration:GEN_Field.FField1}.r2a{declaration:TClass1.TRec2.r2a} := 1;
 end;
 
 { GENI_2B1.TFldI3 }
@@ -761,7 +761,7 @@ var
 begin
   fv{declaration:GENB_1.fv} := default(_REC {declaration:GENI_2B1._REC} );
 
-  fy{declaration:GENI_2B1.TFldI3.fy}.r3a{ TODO: declaration:TClass1.TRec3.r3a} := 1;
+  fy{declaration:GENI_2B1.TFldI3.fy}.r3a{declaration:TClass1.TRec3.r3a} := 1;
   FField1{declaration:GEN_Field.FField1}.r3a{declaration:TClass1.TRec3.r3a} := 1;
 
   b0.FField1{declaration:GEN_Field.FField1} := default(_REC {declaration:GENI_2B1._REC} );
@@ -769,7 +769,7 @@ begin
   b2.FField1{declaration:GEN_Field.FField1}.r2a{declaration:TClass1.TRec2.r2a} := 1;
   a0.FField1{declaration:GEN_Field.FField1} := default(_REC {declaration:GENI_2B1._REC} );
   a1.FField1{declaration:GEN_Field.FField1}.r1a{declaration:TRec1.r1a} := 1;
-  a2.FField1{declaration:GEN_Field.FField1}.r2a{ TODO declaration:TClass1.TRec2.r2a} := 1;
+  a2.FField1{declaration:GEN_Field.FField1}.r2a{declaration:TClass1.TRec2.r2a} := 1;
 end;
 
 { GENI_2B1 }
@@ -794,7 +794,7 @@ begin
   b2.FField1{declaration:GEN_Field.FField1}.r2a{declaration:TClass1.TRec2.r2a} := 1;
   a0.FField1{declaration:GEN_Field.FField1} := default(_REC {declaration:GENI_2B1._REC} );
   a1.FField1{declaration:GEN_Field.FField1}.r1a{declaration:TRec1.r1a} := 1;
-  a2.FField1{declaration:GEN_Field.FField1}.r2a{ TODO declaration:TClass1.TRec2.r2a} := 1;
+  a2.FField1{declaration:GEN_Field.FField1}.r2a{declaration:TClass1.TRec2.r2a} := 1;
 end;
 
 { GENI_2.TFldI0 }
@@ -838,7 +838,7 @@ begin
   fv{declaration:GENB_2.fv} := default(_REC {declaration:GENI_2._REC} );
   fIv{declaration:GENI_2.fIv} := default(_REC {declaration:GENI_2._REC} );
 
-  fy{declaration:GENI_2.TFldI1.fy}.r1a{ TODO: declaration:TRec1.r1a} := 1;
+  fy{declaration:GENI_2.TFldI1.fy}.r1a{declaration:TRec1.r1a} := 1;
   FField1{declaration:GEN_Field.FField1}.r1a{declaration:TRec1.r1a} := 1;
 
   b0.FField1{declaration:GEN_Field.FField1} := default(_REC {declaration:GENI_2._REC} );
@@ -864,7 +864,7 @@ begin
   fv{declaration:GENB_2.fv} := default(_REC {declaration:GENI_2._REC} );
   fIv{declaration:GENI_2.fIv} := default(_REC {declaration:GENI_2._REC} );
 
-  fy{declaration:GENI_2.TFldI2.fy}.r2a{ TODO: declaration:TClass1.TRec2.r2a} := 1;
+  fy{declaration:GENI_2.TFldI2.fy}.r2a{declaration:TClass1.TRec2.r2a} := 1;
   FField1{declaration:GEN_Field.FField1}.r2a{declaration:TClass1.TRec2.r2a} := 1;
 
   b0.FField1{declaration:GEN_Field.FField1} := default(_REC {declaration:GENI_2._REC} );
@@ -889,7 +889,7 @@ var
 begin
   fv{declaration:GENB_2.fv} := default(_REC {declaration:GENI_2._REC} );
 
-  fy{declaration:GENI_2.TFldI3.fy}.r3a{ TODO: declaration:TClass1.TRec3.r3a} := 1;
+  fy{declaration:GENI_2.TFldI3.fy}.r3a{declaration:TClass1.TRec3.r3a} := 1;
   FField1{declaration:GEN_Field.FField1}.r3a{declaration:TClass1.TRec3.r3a} := 1;
 
   b0.FField1{declaration:GEN_Field.FField1} := default(_REC {declaration:GENI_2._REC} );
