@@ -209,6 +209,15 @@ begin
   FindDeclarations(aCode);
 end;
 
+type
+TFindDeclarationToolHelper = class helper for TFindDeclarationTool
+    procedure ClearNodeCaches;
+  end;
+procedure TFindDeclarationToolHelper.ClearNodeCaches;
+begin
+  inherited ClearNodeCaches;
+end;
+
 procedure TCustomTestFindDeclaration.FindDeclarations(aCode: TCodeBuffer);
 
   procedure PrependPath(Prefix: string; var Path: string);
@@ -270,7 +279,7 @@ var
   FoundPath: String;
   Src: String;
   NameStartPos, i, l, IdentifierStartPos, IdentifierEndPos,
-    BlockTopLine, BlockBottomLine, CommentEnd, StartOffs: Integer;
+    BlockTopLine, BlockBottomLine, CommentEnd, StartOffs, TestLoop: Integer;
   Marker, ExpectedType, NewType, ExpexctedCompletion, ExpexctedTerm,
     ExpexctedCompletionPart, ExpexctedTermPart: String;
   IdentItem: TIdentifierListItem;
@@ -281,205 +290,214 @@ var
 begin
   FMainCode:=aCode;
   DoParseModule(MainCode,FMainTool);
-  CommentP:=1;
   Src:=MainTool.Src;
 
   CodeToolBoss.IdentComplIncludeKeywords := False;
   if pos('{%identcomplincludekeywords:on}', LowerCase(Src)) > 0 then
     CodeToolBoss.IdentComplIncludeKeywords := True;
 
-  while CommentP<length(Src) do begin
-    CommentP:=FindNextComment(Src,CommentP);
-    if CommentP>length(Src) then break;
-    p:=CommentP;
-    CommentP:=FindCommentEnd(Src,CommentP,MainTool.Scanner.NestedComments);
-    if Src[p]<>'{' then continue;
-    if Src[p+1] in ['$','%',' ',#0..#31] then continue;
-
-    // allow spaces before the comment
-    IdentifierEndPos:=p;
-    while (IdentifierEndPos>1) and (IsSpaceChar[Src[IdentifierEndPos-1]]) do
-      dec(IdentifierEndPos);
-    IdentifierStartPos:=IdentifierEndPos;
-    while (IdentifierStartPos>1) and (IsIdentChar[Src[IdentifierStartPos-1]]) do
-      dec(IdentifierStartPos);
-    if IdentifierStartPos=p then begin
-      WriteSource(p,MainTool);
-      Fail('missing identifier in front of marker at '+MainTool.CleanPosToStr(p));
-    end;
-    inc(p);
-    NameStartPos:=p;
-    if Src[p] in ['#','@'] then begin
-      {#name}  {@name}
-      inc(p);
-      if not IsIdentStartChar[Src[p]] then begin
-        WriteSource(p,MainTool);
-        Fail('Expected identifier at '+MainTool.CleanPosToStr(p,true));
+  for TestLoop := 0 to 2 do begin
+    // Pass 1: Eval with cache from previous run
+    CommentP:=1;
+    while CommentP<length(Src) do begin
+      if TestLoop = 2 then begin  // Pass 2: Eval each test, with an empty cache
+        CodeToolBoss.CurCodeTool.ClearNodeCaches;
+        MainTool.ClearNodeCaches;
       end;
-      NameStartPos:=p;
-      while IsIdentChar[Src[p]] do inc(p);
-      Marker:=copy(Src,NameStartPos,p-NameStartPos);
-      AddMarker(Marker,Src[NameStartPos],CommentP,IdentifierStartPos,IdentifierEndPos);
-      continue;
-    end;
 
-    CommentEnd := CommentP;
-    CommentP := p-1;
-    repeat
-      NameStartPos:=CommentP+1;
-      p := NameStartPos;
-      CommentP := PosEx('|', Src, NameStartPos);
-      if (CommentP < 1) or (CommentP > CommentEnd) then
-        CommentP := CommentEnd;
+      CommentP:=FindNextComment(Src,CommentP);
+      if CommentP>length(Src) then break;
+      p:=CommentP;
+      CommentP:=FindCommentEnd(Src,CommentP,MainTool.Scanner.NestedComments);
+      if Src[p]<>'{' then continue;
+      if Src[p+1] in ['$','%',' ',#0..#31] then continue;
 
-      // check for specials:
-      {declaration:path}
-      {guesstype:type}
-      if not IsIdentStartChar[Src[p]] then continue;
-      while (p<=length(Src)) and (IsIdentChar[Src[p]]) do inc(p);
-      Marker:=copy(Src,NameStartPos,p-NameStartPos);
-      if (p>length(Src)) or (Src[p]<>':') then begin
+      // allow spaces before the comment
+      IdentifierEndPos:=p;
+      while (IdentifierEndPos>1) and (IsSpaceChar[Src[IdentifierEndPos-1]]) do
+        dec(IdentifierEndPos);
+      IdentifierStartPos:=IdentifierEndPos;
+      while (IdentifierStartPos>1) and (IsIdentChar[Src[IdentifierStartPos-1]]) do
+        dec(IdentifierStartPos);
+      if IdentifierStartPos=p then begin
         WriteSource(p,MainTool);
-        AssertEquals('Expected : at '+MainTool.CleanPosToStr(p,true),'declaration',Marker);
+        Fail('missing identifier in front of marker at '+MainTool.CleanPosToStr(p));
+      end;
+      inc(p);
+      NameStartPos:=p;
+      if Src[p] in ['#','@'] then begin
+        {#name}  {@name}
+        inc(p);
+        if not IsIdentStartChar[Src[p]] then begin
+          WriteSource(p,MainTool);
+          Fail('Expected identifier at '+MainTool.CleanPosToStr(p,true));
+        end;
+        NameStartPos:=p;
+        while IsIdentChar[Src[p]] do inc(p);
+        Marker:=copy(Src,NameStartPos,p-NameStartPos);
+        if TestLoop=0 then
+          AddMarker(Marker,Src[NameStartPos],CommentP,IdentifierStartPos,IdentifierEndPos);
         continue;
       end;
-      inc(p);
-      PathPos:=p;
 
-      //debugln(['TTestFindDeclaration.FindDeclarations Marker="',Marker,'" params: ',dbgstr(MainTool.Src,p,CommentP-p)]);
-      if (Marker='declaration') or (Marker='completion') then begin
-        ExpectedPath:=copy(Src,PathPos,CommentP-1-PathPos);
-        {$IFDEF VerboseFindDeclarationTests}
-        debugln(['TTestFindDeclaration.FindDeclarations searching "',Marker,'" at ',MainTool.CleanPosToStr(NameStartPos-1),' ExpectedPath=',ExpectedPath]);
-        {$ENDIF}
+      CommentEnd := CommentP;
+      CommentP := p-1;
+      repeat
+        NameStartPos:=CommentP+1;
+        p := NameStartPos;
+        CommentP := PosEx('|', Src, NameStartPos);
+        if (CommentP < 1) or (CommentP > CommentEnd) then
+          CommentP := CommentEnd;
 
-        if (Marker='declaration') then begin
-          MainTool.CleanPosToCaret(IdentifierStartPos,CursorPos);
-
-          // test FindDeclaration
-          if not CodeToolBoss.FindDeclaration(CursorPos.Code,CursorPos.X,CursorPos.Y,
-            FoundCursorPos.Code,FoundCursorPos.X,FoundCursorPos.Y,FoundTopLine,
-            BlockTopLine,BlockBottomLine)
-          then begin
-            if ExpectedPath<>'' then begin
-              //if (CodeToolBoss.ErrorCode<>nil) then begin
-                //ErrorTool:=CodeToolBoss.GetCodeToolForSource(CodeToolBoss.ErrorCode);
-                //if ErrorTool<>MainTool then
-                 // WriteSource(,ErrorTool);
-              WriteSource(IdentifierStartPos,MainTool);
-              Fail('find declaration failed at '+MainTool.CleanPosToStr(IdentifierStartPos,true)+': '+CodeToolBoss.ErrorMessage);
-            end;
-            continue;
-          end else begin
-            FoundTool:=CodeToolBoss.GetCodeToolForSource(FoundCursorPos.Code,true,true) as TFindDeclarationTool;
-            FoundPath:='';
-            FoundNode:=nil;
-            if (FoundCursorPos.Y=1) and (FoundCursorPos.X=1) then begin
-              // unit
-              FoundPath:=ExtractFileNameOnly(FoundCursorPos.Code.Filename);
-            end else begin
-              FoundTool.CaretToCleanPos(FoundCursorPos,FoundCleanPos);
-              if (FoundCleanPos>1) and (IsIdentChar[FoundTool.Src[FoundCleanPos-1]]) then
-                dec(FoundCleanPos);
-              FoundNode:=FoundTool.FindDeepestNodeAtPos(FoundCleanPos,true);
-              //debugln(['TTestFindDeclaration.FindDeclarations Found: ',FoundTool.CleanPosToStr(FoundNode.StartPos,true),' FoundNode=',FoundNode.DescAsString]);
-              FoundPath:=NodeAsPath(FoundTool,FoundNode);
-            end;
-            //debugln(['TTestFindDeclaration.FindDeclarations FoundPath=',FoundPath]);
-            if LowerCase(ExpectedPath)<>LowerCase(FoundPath) then begin
-              WriteSource(IdentifierStartPos,MainTool);
-              AssertEquals('find declaration wrong at '+MainTool.CleanPosToStr(IdentifierStartPos,true),LowerCase(ExpectedPath),LowerCase(FoundPath));
-            end;
-          end;
+        // check for specials:
+        {declaration:path}
+        {guesstype:type}
+        if not IsIdentStartChar[Src[p]] then continue;
+        while (p<=length(Src)) and (IsIdentChar[Src[p]]) do inc(p);
+        Marker:=copy(Src,NameStartPos,p-NameStartPos);
+        if (p>length(Src)) or (Src[p]<>':') then begin
+          WriteSource(p,MainTool);
+          AssertEquals('Expected : at '+MainTool.CleanPosToStr(p,true),'declaration',Marker);
+          continue;
         end;
+        inc(p);
+        PathPos:=p;
 
-        // test identifier completion
-        if (ExpectedPath<>'') then begin
-          for ExpexctedCompletionPart in ExpectedPath.Split(';') do begin
-            ExpexctedCompletion := ExpexctedCompletionPart;
-            StartOffs := 0;
-            if (ExpexctedCompletion <> '') and (ExpexctedCompletion[1] in ['+','-']) then begin
-              i := Pos('=', ExpexctedCompletion);
-              if i > 1 then begin
-                StartOffs := StrToIntDef(copy(ExpexctedCompletion, 1, i-1), 0);
-                Delete(ExpexctedCompletion, 1, i);
-              end
-              else
-                StartOffs := 0;
-            end;
-            StartOffs := StartOffs + IdentifierStartPos;
-            MainTool.CleanPosToCaret(StartOffs,CursorPos);
+        //debugln(['TTestFindDeclaration.FindDeclarations Marker="',Marker,'" params: ',dbgstr(MainTool.Src,p,CommentP-p)]);
+        if (Marker='declaration') or (Marker='completion') then begin
+          ExpectedPath:=copy(Src,PathPos,CommentP-1-PathPos);
+          {$IFDEF VerboseFindDeclarationTests}
+          debugln(['TTestFindDeclaration.FindDeclarations searching "',Marker,'" at ',MainTool.CleanPosToStr(NameStartPos-1),' ExpectedPath=',ExpectedPath]);
+          {$ENDIF}
 
-            if not CodeToolBoss.GatherIdentifiers(CursorPos.Code,CursorPos.X,CursorPos.Y)
+          if (Marker='declaration') then begin
+            MainTool.CleanPosToCaret(IdentifierStartPos,CursorPos);
+
+            // test FindDeclaration
+            if not CodeToolBoss.FindDeclaration(CursorPos.Code,CursorPos.X,CursorPos.Y,
+              FoundCursorPos.Code,FoundCursorPos.X,FoundCursorPos.Y,FoundTopLine,
+              BlockTopLine,BlockBottomLine)
             then begin
-              if ExpexctedCompletion<>'' then begin
-                WriteSource(StartOffs,MainTool);
-                AssertEquals('GatherIdentifiers failed at '+MainTool.CleanPosToStr(StartOffs,true)+': '+CodeToolBoss.ErrorMessage,false,true);
+              if ExpectedPath<>'' then begin
+                //if (CodeToolBoss.ErrorCode<>nil) then begin
+                  //ErrorTool:=CodeToolBoss.GetCodeToolForSource(CodeToolBoss.ErrorCode);
+                  //if ErrorTool<>MainTool then
+                   // WriteSource(,ErrorTool);
+                WriteSource(IdentifierStartPos,MainTool);
+                Fail('find declaration (Loop: '+IntToStr(TestLoop)+') failed at '+MainTool.CleanPosToStr(IdentifierStartPos,true)+': '+CodeToolBoss.ErrorMessage);
               end;
               continue;
             end else begin
-              for ExpexctedTermPart in ExpexctedCompletion.Split(',') do begin
-                ExpexctedTerm := ExpexctedTermPart;
-                ExpInvert := (ExpexctedTerm <> '') and (ExpexctedTerm[1] = '!');
-                if ExpInvert then
-                  Delete(ExpexctedTerm, 1, 1);
-                i:=CodeToolBoss.IdentifierList.GetFilteredCount-1;
-                while i>=0 do begin
-                  IdentItem:=CodeToolBoss.IdentifierList.FilteredItems[i];
-                  //debugln(['TTestFindDeclaration.FindDeclarations ',IdentItem.Identifier]);
-                  l:=length(IdentItem.Identifier);
-                  if ((l=length(ExpexctedTerm)) or (ExpexctedTerm[length(ExpexctedTerm)-l]='.'))
-                  and (CompareText(IdentItem.Identifier,RightStr(ExpexctedTerm,l))=0)
-                  then break;
-                  dec(i);
-                end;
-                if (i<0) and not ExpInvert then begin
-                  WriteSource(StartOffs,MainTool);
-                  AssertEquals('GatherIdentifiers misses "'+ExpexctedTerm+'" at '+MainTool.CleanPosToStr(StartOffs,true),true,i>=0);
-                end
-                else
-                if ExpInvert and (i>=0) then begin
-                  WriteSource(StartOffs,MainTool);
-                  AssertEquals('GatherIdentifiers should not have "'+ExpexctedTerm+'" at '+MainTool.CleanPosToStr(StartOffs,true),true,i>=0);
-                end;
+              FoundTool:=CodeToolBoss.GetCodeToolForSource(FoundCursorPos.Code,true,true) as TFindDeclarationTool;
+              FoundPath:='';
+              FoundNode:=nil;
+              if (FoundCursorPos.Y=1) and (FoundCursorPos.X=1) then begin
+                // unit
+                FoundPath:=ExtractFileNameOnly(FoundCursorPos.Code.Filename);
+              end else begin
+                FoundTool.CaretToCleanPos(FoundCursorPos,FoundCleanPos);
+                if (FoundCleanPos>1) and (IsIdentChar[FoundTool.Src[FoundCleanPos-1]]) then
+                  dec(FoundCleanPos);
+                FoundNode:=FoundTool.FindDeepestNodeAtPos(FoundCleanPos,true);
+                //debugln(['TTestFindDeclaration.FindDeclarations Found: ',FoundTool.CleanPosToStr(FoundNode.StartPos,true),' FoundNode=',FoundNode.DescAsString]);
+                FoundPath:=NodeAsPath(FoundTool,FoundNode);
+              end;
+              //debugln(['TTestFindDeclaration.FindDeclarations FoundPath=',FoundPath]);
+              if LowerCase(ExpectedPath)<>LowerCase(FoundPath) then begin
+                WriteSource(IdentifierStartPos,MainTool);
+                AssertEquals('find declaration (Loop: '+IntToStr(TestLoop)+') wrong at '+MainTool.CleanPosToStr(IdentifierStartPos,true),LowerCase(ExpectedPath),LowerCase(FoundPath));
               end;
             end;
           end;
-        end
-      end else if Marker='guesstype' then begin
-        ExpectedType:=copy(Src,PathPos,CommentP-1-PathPos);
-        {$IFDEF VerboseFindDeclarationTests}
-        debugln(['TTestFindDeclaration.FindDeclarations "',Marker,'" at ',Tool.CleanPosToStr(NameStartPos-1),' ExpectedType=',ExpectedType]);
-        {$ENDIF}
-        MainTool.CleanPosToCaret(IdentifierStartPos,CursorPos);
 
-        // test GuessTypeOfIdentifier
-        ListOfPFindContext:=nil;
-        try
-          if not CodeToolBoss.GuessTypeOfIdentifier(CursorPos.Code,CursorPos.X,CursorPos.Y,
-            ItsAKeyword, IsSubIdentifier, ExistingDefinition, ListOfPFindContext,
-            NewExprType, NewType)
-          then begin
-            if ExpectedType<>'' then
-              AssertEquals('GuessTypeOfIdentifier failed at '+MainTool.CleanPosToStr(IdentifierStartPos,true)+': '+CodeToolBoss.ErrorMessage,false,true);
-            continue;
-          end else begin
-            //debugln(['TTestFindDeclaration.FindDeclarations FoundPath=',FoundPath]);
-            if LowerCase(ExpectedType)<>LowerCase(NewType) then begin
-              WriteSource(IdentifierStartPos,MainTool);
-              AssertEquals('GuessTypeOfIdentifier wrong at '+MainTool.CleanPosToStr(IdentifierStartPos,true),LowerCase(ExpectedType),LowerCase(NewType));
+          // test identifier completion
+          if (ExpectedPath<>'') then begin
+            for ExpexctedCompletionPart in ExpectedPath.Split(';') do begin
+              ExpexctedCompletion := ExpexctedCompletionPart;
+              StartOffs := 0;
+              if (ExpexctedCompletion <> '') and (ExpexctedCompletion[1] in ['+','-']) then begin
+                i := Pos('=', ExpexctedCompletion);
+                if i > 1 then begin
+                  StartOffs := StrToIntDef(copy(ExpexctedCompletion, 1, i-1), 0);
+                  Delete(ExpexctedCompletion, 1, i);
+                end
+                else
+                  StartOffs := 0;
+              end;
+              StartOffs := StartOffs + IdentifierStartPos;
+              MainTool.CleanPosToCaret(StartOffs,CursorPos);
+
+              if not CodeToolBoss.GatherIdentifiers(CursorPos.Code,CursorPos.X,CursorPos.Y)
+              then begin
+                if ExpexctedCompletion<>'' then begin
+                  WriteSource(StartOffs,MainTool);
+                  AssertEquals('GatherIdentifiers (Loop: '+IntToStr(TestLoop)+') failed at '+MainTool.CleanPosToStr(StartOffs,true)+': '+CodeToolBoss.ErrorMessage,false,true);
+                end;
+                continue;
+              end else begin
+                for ExpexctedTermPart in ExpexctedCompletion.Split(',') do begin
+                  ExpexctedTerm := ExpexctedTermPart;
+                  ExpInvert := (ExpexctedTerm <> '') and (ExpexctedTerm[1] = '!');
+                  if ExpInvert then
+                    Delete(ExpexctedTerm, 1, 1);
+                  i:=CodeToolBoss.IdentifierList.GetFilteredCount-1;
+                  while i>=0 do begin
+                    IdentItem:=CodeToolBoss.IdentifierList.FilteredItems[i];
+                    //debugln(['TTestFindDeclaration.FindDeclarations ',IdentItem.Identifier]);
+                    l:=length(IdentItem.Identifier);
+                    if ((l=length(ExpexctedTerm)) or (ExpexctedTerm[length(ExpexctedTerm)-l]='.'))
+                    and (CompareText(IdentItem.Identifier,RightStr(ExpexctedTerm,l))=0)
+                    then break;
+                    dec(i);
+                  end;
+                  if (i<0) and not ExpInvert then begin
+                    WriteSource(StartOffs,MainTool);
+                    AssertEquals('GatherIdentifiers misses "'+ExpexctedTerm+'" at '+MainTool.CleanPosToStr(StartOffs,true),true,i>=0);
+                  end
+                  else
+                  if ExpInvert and (i>=0) then begin
+                    WriteSource(StartOffs,MainTool);
+                    AssertEquals('GatherIdentifiers should not have "'+ExpexctedTerm+'" at '+MainTool.CleanPosToStr(StartOffs,true),true,i>=0);
+                  end;
+                end;
+              end;
             end;
-          end;
-        finally
-          FreeListOfPFindContext(ListOfPFindContext);
-        end;
+          end
+        end else if Marker='guesstype' then begin
+          ExpectedType:=copy(Src,PathPos,CommentP-1-PathPos);
+          {$IFDEF VerboseFindDeclarationTests}
+          debugln(['TTestFindDeclaration.FindDeclarations "',Marker,'" at ',Tool.CleanPosToStr(NameStartPos-1),' ExpectedType=',ExpectedType]);
+          {$ENDIF}
+          MainTool.CleanPosToCaret(IdentifierStartPos,CursorPos);
 
-      end else begin
-        WriteSource(IdentifierStartPos,MainTool);
-        AssertEquals('Unknown marker at '+MainTool.CleanPosToStr(IdentifierStartPos,true),'declaration',Marker);
-        continue;
-      end;
-    until CommentP >= CommentEnd;
+          // test GuessTypeOfIdentifier
+          ListOfPFindContext:=nil;
+          try
+            if not CodeToolBoss.GuessTypeOfIdentifier(CursorPos.Code,CursorPos.X,CursorPos.Y,
+              ItsAKeyword, IsSubIdentifier, ExistingDefinition, ListOfPFindContext,
+              NewExprType, NewType)
+            then begin
+              if ExpectedType<>'' then
+                AssertEquals('GuessTypeOfIdentifier (Loop: '+IntToStr(TestLoop)+') failed at '+MainTool.CleanPosToStr(IdentifierStartPos,true)+': '+CodeToolBoss.ErrorMessage,false,true);
+              continue;
+            end else begin
+              //debugln(['TTestFindDeclaration.FindDeclarations FoundPath=',FoundPath]);
+              if LowerCase(ExpectedType)<>LowerCase(NewType) then begin
+                WriteSource(IdentifierStartPos,MainTool);
+                AssertEquals('GuessTypeOfIdentifier (Loop: '+IntToStr(TestLoop)+') wrong at '+MainTool.CleanPosToStr(IdentifierStartPos,true),LowerCase(ExpectedType),LowerCase(NewType));
+              end;
+            end;
+          finally
+            FreeListOfPFindContext(ListOfPFindContext);
+          end;
+
+        end else begin
+          WriteSource(IdentifierStartPos,MainTool);
+          AssertEquals('Unknown marker at '+MainTool.CleanPosToStr(IdentifierStartPos,true),'declaration',Marker);
+          continue;
+        end;
+      until CommentP >= CommentEnd;
+    end;
   end;
   CheckReferenceMarkers;
   CodeToolBoss.IdentComplIncludeKeywords := False;

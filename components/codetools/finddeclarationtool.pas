@@ -4302,6 +4302,8 @@ var
         {$ENDIF}
         // identifier found
         Params.SetResult(Self,Node);
+        Include(Params.Flags, fdfDoNotCache);
+        Include(Params.NewFlags, fodDoNotCache);
         Result:=CheckResult(true,true);
         if not (fdfCollect in Flags) then
           exit;
@@ -4872,6 +4874,12 @@ var
             end;
           end;
 
+        ctnGenericType:
+          begin
+            Include(Params.Flags, fdfDoNotCache);
+            Include(Params.NewFlags, fodDoNotCache);
+          end;
+
         else
           break;
         end;
@@ -5098,7 +5106,9 @@ begin
   end;}
   // if we are here, the identifier was not found and there was no error
   if (FirstSearchedNode<>nil) and (Params.FoundProc=nil)
-  and ([fdfCollect,fdfExtractOperand]*Flags=[]) then begin
+  and ([fdfCollect,fdfExtractOperand,fdfDoNotCache]*Flags=[])
+  and ([fdfDoNotCache]*Params.Flags=[])
+  and ([fodDoNotCache]*Params.NewFlags=[]) then begin
     // add result to cache
     Params.NewNode:=nil;
     Params.NewCodeTool:=nil;
@@ -12514,6 +12524,13 @@ var Node: TCodeTreeNode;
 begin
   {$IFDEF CheckNodeTool}CheckNodeTool(StartNode);{$ENDIF}
   if StartNode=nil then exit;
+  //Node:=StartNode;
+  //while Node<>nil do begin
+  //  if Node.Desc=ctnGenericType then
+  //    exit;
+  //  Node:=Node.Parent;
+  //end;
+
   if EndNode=nil then EndNode:=StartNode;
 
   if Params.NewNode<>nil then begin
@@ -14083,6 +14100,7 @@ var
   OldGenParam: TGenericParams;
 begin
   Include(Flags, fdfDoNotCache);
+  Include(NewFlags, fodDoNotCache);
   // NewCodeTool, NewNode=GenericParamType
   if not Assigned(NewCodeTool) or not Assigned(NewNode) then exit(false);
   if not Assigned(GenParams.ParamValuesTool)
