@@ -19,21 +19,55 @@ is part of the <file>LazControls</file> package.
 </descr>
 
 <element name="TImageIndexEvent">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Specifies an event handler used to get the position of the image for a tree node.
+</short>
+<descr>
+<p>
+<var>TImageIndexEvent</var> is an <var>Integer</var> object function type 
+which specifies an event handler signalled to get the position for an image 
+associated with a tree node in a tree view control. Arguments passed to the 
+object method indicates the text for the tree node, it data, and its enabled 
+state in the tree.
+</p>
+<p>
+The return value contains the ordinal position for the image selected for a 
+tree node. It is stored in both the ImageIndex and SelectedIndex properties 
+for the TTreeNode instance.
+</p>
+<p>
+TImageIndexEvent is the type used to implement the OnGetImageIndex event 
+handler in the TTreeFilterEdit control. The event is signalled when 
+TTreeFilterBranch sorts, filters and displays the tree nodes on its 
+TTreeFilterEdit and TTreeView controls.
+</p>
+</descr>
+<seealso>
+<link id="TTreeFilterEdit.OnGetImageIndex"/>
+<link id="TTreeFilterBranch.AddNodeData"/>
+<link id="TTreeFilterBranch.GetData"/>
+</seealso>
 </element>
 <element name="TImageIndexEvent.Result">
-<short/>
+<short>
+Ordinal position for the image selected for a tree node in the event handler 
+routine.
+</short>
 </element>
 <element name="TImageIndexEvent.Str">
-<short/>
+<short>
+Text for the tree node used in the event handler.
+</short>
 </element>
 <element name="TImageIndexEvent.Data">
-<short/>
+<short>
+Object reference with the data for the tree node.
+</short>
 </element>
 <element name="TImageIndexEvent.AIsEnabled">
-<short/>
+<short>
+Returns <b>True</b> if the tree node is enabled.
+</short>
 </element>
 
 <element name="TFilterNodeEvent">
@@ -115,13 +149,19 @@ Text, a data reference, and an associated file name can be added for the node.
 </descr>
 </element>
 <element name="TTreeFilterBranch.AddNodeData.ANodeText">
-<short/>
+<short>
+Text for the tree node data.
+</short>
 </element>
 <element name="TTreeFilterBranch.AddNodeData.AData">
-<short/>
+<short>
+Object reference with the user-specified data for the tree node.
+</short>
 </element>
 <element name="TTreeFilterBranch.AddNodeData.AFullFilename">
-<short/>
+<short>
+Full file path and name for a tree node used in a directory hierarchy.
+</short>
 </element>
 
 <element name="TTreeFilterBranch.DeleteData">
@@ -234,9 +274,23 @@ Ordinal position where tree node data is relocated in the method.
 </element>
 
 <element name="TTreeFilterBranch.Items">
-<short/>
+<short>
+Contains the original tree node data for the class instance.
+</short>
 <descr/>
-<seealso/>
+<p>
+<var>Items</var> is a read-only <var>TStringList</var> property which contains 
+the original data displayed for a branch in a filtered tree view control. It 
+contains data for the tree nodes stored using AddNodeData, and maintained 
+using GeteData / DeleteData / FreeNodeData / ClearNodeData. Items is used when 
+the tree nodes are sorted and filtered in the class instance.
+</p>
+<seealso>
+<link id="TTreeFilterBranch.AddNodeData"/>
+<link id="TTreeFilterBranch.GetData"/>
+<link id="TTreeFilterBranch.FreeNodeData"/>
+<link id="TTreeFilterBranch.ClearNodeData"/>
+</seealso>
 </element>
 
 <element name="TBranchList">
