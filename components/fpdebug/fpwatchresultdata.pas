@@ -27,12 +27,13 @@ type
     FFirstIndexOffs: Integer;
     FRecurseCnt, FRecurseCntLow,
     FRecursePointerCnt,
-    FRecurseInstanceCnt, FRecurseDynArray: integer;
+    FRecurseInstanceCnt, FRecurseDynArray, FRecurseArray: integer;
     FRecurseAddrList: TDbgPtrList;
     FLastValueKind: TDbgSymbolKind;
     FHasEmbeddedPointer: Boolean;
     FOuterArrayIdx, FTotalArrayCnt: integer;
     FRepeatCount: Integer;
+    FArrayTypeDone: Boolean;
   protected
     function CheckError(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): boolean;
 
@@ -111,6 +112,8 @@ var
   t: TFpSymbol;
   TpName: String;
 begin
+  if FArrayTypeDone then
+    exit;
   t := AnFpValue.TypeInfo;
   if ADeref and (t <> nil) then
     t := t.TypeInfo;
@@ -331,8 +334,10 @@ begin
   Result := True;
 
   Cnt := AnFpValue.MemberCount;
-  if CheckError(AnFpValue, AnResData) then
+  if CheckError(AnFpValue, AnResData) then begin
+    AddTypeNameToResData(AnFpValue, AnResData);
     exit;
+  end;
   CurRecurseDynArray := FRecurseDynArray;
   OuterIdx := FOuterArrayIdx;
 
@@ -363,6 +368,7 @@ begin
 
   AddTypeNameToResData(AnFpValue, AnResData);
 
+  inc(FRecurseArray);
   Cache := nil;
   try
     if (Cnt <= 0) or
@@ -455,13 +461,18 @@ begin
       else
         DoWritePointerWatchResultData(MemberValue, EntryRes, Addr);
       MemberValue.ReleaseReference;
+      if FRecurseArray = 1 then
+        FArrayTypeDone := True;
     end;
     DebugLn(IsError(AnFpValue.LastError), ['!!! ArrayToResData() unexpected error in array value', ErrorHandler.ErrorAsString(AnFpValue.LastError)]);
     AnFpValue.ResetError;
 
   finally
+    if FRecurseArray = 1 then
+      FArrayTypeDone := False;
     FRecurseDynArray := CurRecurseDynArray;
     FOuterArrayIdx := OuterIdx;
+    dec(FRecurseArray);
     if Cache <> nil then
       Context.MemManager.CacheManager.RemoveCache(Cache);
   end
@@ -473,16 +484,22 @@ function TFpWatchResultConvertor.StructToResData(AnFpValue: TFpValue;
   procedure AddVariantMembers(VariantPart: TFpValue; ResAnch: TLzDbgWatchDataIntf);
   var
     VariantContainer, VMember: TFpValue;
-    i, j: Integer;
+    i, j, CurRecurseArray: Integer;
     ResField, ResList: TLzDbgWatchDataIntf;
     discr: QWord;
-    hasDiscr, FoundDiscr, UseDefault: Boolean;
+    hasDiscr, FoundDiscr, UseDefault, CurArrayTypeDone: Boolean;
     MBVis: TLzDbgFieldVisibility;
     n: String;
   begin
     VariantContainer := VariantPart.Member[-1];
     if VariantContainer = nil then
       exit;
+
+    CurRecurseArray := FRecurseArray;
+    CurArrayTypeDone := FArrayTypeDone;
+    FArrayTypeDone := False;
+    FRecurseArray := 0; // Allow an inside array to optimize
+    try
 
     ResList := ResAnch.AddField('', dfvUnknown, [dffVariant]);
     ResList.CreateArrayValue(datUnknown);
@@ -555,6 +572,10 @@ function TFpWatchResultConvertor.StructToResData(AnFpValue: TFpValue;
       end;
       if FoundDiscr then
         break;
+    end;
+    finally
+      FRecurseArray := CurRecurseArray;
+      FArrayTypeDone := CurArrayTypeDone;
     end;
   end;
 
@@ -893,10 +914,12 @@ begin
     FRecurseCnt         := -2;
   FRecurseInstanceCnt :=  0;
   FRecurseDynArray    :=  0;
+  FRecurseArray       := 0;
   FRecursePointerCnt := 0;
   FRecurseCntLow := FRecurseCnt+1;
   FOuterArrayIdx := -1;
   FTotalArrayCnt :=  0;
+  FArrayTypeDone := False;
 
   FLastValueKind := AnFpValue.Kind;
   FHasEmbeddedPointer := False;
