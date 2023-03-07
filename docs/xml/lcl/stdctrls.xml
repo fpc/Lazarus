@@ -9793,9 +9793,16 @@ the character used as an accelerator key is drawn with an underline in the
 control.
 </p>
 <p>
-An accelerator character is any value with a leading Ampersand (&amp;) 
-character in <var>Caption</var>. To use an Ampersand character as an 
-accelerator, it must be entered as 2 Ampersand characters (&amp;&amp;).
+An accelerator is defined in <var>Caption</var> using a leading Ampersand 
+(&amp;) character. The character immediately after the Ampersand character 
+sets the key value for the short cut. As an example: Setting Caption to 
+'&amp;User Name' causes Alt+U to be used as the accelerator key. Any 
+occurrences of Ampersand (&amp;) followed by a Space (#32) are <b>not</b> 
+displayed in the Caption value.
+</p>
+<p>
+To display an Ampersand character in Caption, it must be entered as two 
+adjacent Ampersand characters (&amp;&amp;).
 </p>
 <p>
 Set ShowAccelChar to <b>True</b> to enable underline drawing for the 
@@ -9855,6 +9862,8 @@ control to be forwarded to another windowed control.
 </descr>
 <seealso>
 <link id="HowToUseStdCtrls"/>
+<link id="TCustomLabel"/>
+<link id="TLabel"/>
 </seealso>
 </element>
 
@@ -9865,13 +9874,7 @@ control to be forwarded to another windowed control.
 <element name="TStaticText.BidiMode" link="#lcl.controls.TControl.BiDiMode"/>
 <element name="TStaticText.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
 <element name="TStaticText.BorderStyle" link="#lcl.stdctrls.TCustomStaticText.BorderStyle"/>
-
-<element name="TStaticText.Caption" link="#lcl.controls.TControl.Caption">
-<short>Text displayed in the control.</short>
-<descr/>
-<seealso/>
-</element>
-
+<element name="TStaticText.Caption" link="#lcl.controls.TControl.Caption"/>
 <element name="TStaticText.Color" link="#lcl.controls.TControl.Color"/>
 <element name="TStaticText.Constraints" link="#lcl.controls.TControl.Constraints"/>
 <element name="TStaticText.DoubleBuffered" link="#lcl.controls.TWinControl.DoubleBuffered"/>
@@ -10558,7 +10561,7 @@ WSSetText ensures that <b>Ampersand</b> (<b>&amp;</b>) characters used to
 define an accelerator key in <var>AText</var> are handled for the widgetset 
 class. The Ampersand character(s) are removed from AText, and the virtual key 
 code equivalent is stored in the <var>Shortcut</var> property. By default, 
-the Shortcut uses the <var>ssCtrl</var> shift modifier for the accelerator 
+the Shortcut uses the <var>ssAlt</var> shift modifier for the accelerator 
 key.
 </p>
 <p>
