@@ -317,11 +317,14 @@ begin
       while (IdentifierEndPos>1) and (IsSpaceChar[Src[IdentifierEndPos-1]]) do
         dec(IdentifierEndPos);
       IdentifierStartPos:=IdentifierEndPos;
-      while (IdentifierStartPos>1) and (IsIdentChar[Src[IdentifierStartPos-1]]) do
-        dec(IdentifierStartPos);
-      if IdentifierStartPos=p then begin
-        WriteSource(p,MainTool);
-        Fail('missing identifier in front of marker at '+MainTool.CleanPosToStr(p));
+      // allow after . (for completion)
+      if not ((IdentifierStartPos>1) and (Src[IdentifierStartPos-1]='.')) then begin
+        while (IdentifierStartPos>1) and (IsIdentChar[Src[IdentifierStartPos-1]]) do
+          dec(IdentifierStartPos);
+        if IdentifierStartPos=p then begin
+          WriteSource(p,MainTool);
+          Fail('missing identifier in front of marker at '+MainTool.CleanPosToStr(p));
+        end;
       end;
       inc(p);
       NameStartPos:=p;
