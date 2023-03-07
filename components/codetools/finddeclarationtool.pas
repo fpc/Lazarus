@@ -4879,6 +4879,7 @@ var
           begin
             Include(Params.Flags, fdfDoNotCache);
             Include(Params.NewFlags, fodDoNotCache);
+          // do not search again in this node, go on ...
           end;
 
         else
@@ -14109,6 +14110,36 @@ begin
 end;
 
 function TFindDeclarationParams.FindGenericParamType: Boolean;
+
+  function DoFindIdentifierInContext(Tool: TFindDeclarationTool): boolean;
+  var
+    SubParams: TFindDeclarationParams;
+    p: TFindDeclarationInput;
+  begin
+    SubParams:=TFindDeclarationParams.Create(Self);
+    try
+      SubParams.GenParams:=GenParams;
+      SubParams.ContextNode:=ContextNode;
+      SubParams.Flags:=Flags;
+      SubParams.SetIdentifier(IdentifierTool, Identifier, nil);
+
+      Result:=Tool.FindIdentifierInContext(SubParams);
+
+      if Result then begin
+        NewNode:=SubParams.NewNode;
+        NewCodeTool:=SubParams.NewCodeTool;
+        if  (fodDoNotCache in SubParams.NewFlags) then begin
+          Include(Flags, fdfDoNotCache);
+          Include(NewFlags, fodDoNotCache);
+        end;
+        //SubParams.AppendGenericParamValues(GenParams);
+        //GenParams:=SubParams.GenParams;
+      end;
+    finally
+      SubParams.Free;
+    end;
+  end;
+
   function SearchInGenericRestrictions: boolean;
   begin
     Result := False;
@@ -14116,12 +14147,13 @@ function TFindDeclarationParams.FindGenericParamType: Boolean;
     or (NewNode.FirstChild.Desc <> ctnGenericConstraint) then exit;
 
     Identifier:=@NewCodeTool.Src[NewNode.FirstChild.StartPos];
-    Result:=NewCodeTool.FindIdentifierInContext(Self);
+    Result := DoFindIdentifierInContext(NewCodeTool);
   end;
 var
   i, n: integer;
   GenParamType: TCodeTreeNode;
   OldGenParam: TGenericParams;
+  ContextTool: TFindDeclarationTool;
 begin
   Include(Flags, fdfDoNotCache);
   Include(NewFlags, fodDoNotCache);
@@ -14183,16 +14215,18 @@ begin
       if CurPos.Flag<>cafWord then
         RaiseExceptionFmt(20170421200710,ctsIdentExpectedButAtomFound,[GetAtom]);
     end;
+
     Identifier:=@Src[CurPos.StartPos];
     IdentifierTool:=GenParams.ParamValuesTool;
     ContextNode:=GenParams.SpecializeParamsNode;
+    ContextTool:=GenParams.ParamValuesTool;
     if Length(GenParams.OuterGenParam) > 0 then
       GenParams := GenParams.OuterGenParam[0]
     else begin
       GenParams.ParamValuesTool:=nil;
       GenParams.SpecializeParamsNode:=nil;
     end;
-    Result:=FindIdentifierInContext(Self);
+    Result:=DoFindIdentifierInContext(ContextTool);
     GenParams := OldGenParam;
   end;
 end;
