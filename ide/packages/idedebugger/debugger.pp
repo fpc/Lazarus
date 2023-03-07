@@ -3845,6 +3845,8 @@ begin
     FNewResultData := TWatchResultDataError.Create(AVal)
   else
     TWatchResultDataError(FNewResultData).Create(AVal);
+  if FStoredResultData <> nil then
+    FNewResultData.SetTypeName(FStoredResultData.TypeName);
   AfterDataCreated;
 end;
 
