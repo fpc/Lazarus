@@ -5328,7 +5328,10 @@ var
         // only types allowed here
         TestContext.Tool:=SubParams.NewCodeTool;
         TestContext.Node:=SubParams.NewNode;
-        if not (TestContext.Node.Desc in [ctnTypeDefinition,ctnGenericType,ctnGenericParameter]) then
+        if (not (TestContext.Node.Desc in [ctnTypeDefinition,ctnGenericType,ctnGenericParameter,ctnSpecializeParam]))
+        // TODO: the parser marks ctnSpecializeParam as ctnIdentifier (at least for types like "string"
+        and not ((TestContext.Node.Desc=ctnIdentifier) and (TestContext.Node.Parent<>nil) and (TestContext.Node.Parent.Desc=ctnSpecializeParams))
+        then
         begin
           // not a type
           {$IFDEF ShowTriedBaseContexts}
@@ -5580,7 +5583,7 @@ begin
           Result.Node:=Result.Node.Parent;
         break;
       end else
-      if (Result.Node.Desc in [ctnIdentifier,ctnOnIdentifier])
+      if (Result.Node.Desc in [ctnIdentifier,ctnOnIdentifier,ctnSpecializeParam])
       then begin
         // this type is just an alias for another type
         // -> search the basic type
@@ -14227,6 +14230,19 @@ begin
       GenParams.SpecializeParamsNode:=nil;
     end;
     Result:=DoFindIdentifierInContext(ContextTool);
+
+    if not Result then begin
+      GenParamType := ContextNode.FirstChild;
+      for i := 2 to n do if GenParamType <> nil then GenParamType := GenParamType.NextBrother;
+      if GenParamType <> nil then begin
+        NewNode:=GenParamType;
+        NewCodeTool:=ContextTool;
+        Include(Flags, fdfDoNotCache);
+        Include(NewFlags, fodDoNotCache);
+        Result := True;
+      end;
+    end;
+
     GenParams := OldGenParam;
   end;
 end;
