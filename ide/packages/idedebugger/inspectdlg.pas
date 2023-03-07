@@ -38,11 +38,11 @@ uses
   DbgIntfDebuggerBase, DbgIntfBaseTypes, LazClasses, SpinEx, LazDebuggerIntf,
   LazDebuggerIntfBaseTypes,
   // IDE
-  BaseDebugManager, InputHistory, Debugger,
-  IdeDebuggerWatchResPrinter, IdeDebuggerWatchResult, IdeDebuggerWatchResUtils,
-  IdeDebuggerBase, ArrayNavigationFrame, IdeDebuggerOpts,
-  IdeDebuggerBackendValueConv, WatchInspectToolbar, DebuggerDlg,
-  EnvironmentOpts, RecentListProcs, IdeDebuggerStringConstants;
+  BaseDebugManager, InputHistory, Debugger, IdeDebuggerWatchResPrinter,
+  IdeDebuggerWatchResult, IdeDebuggerWatchResUtils, IdeDebuggerBase,
+  ArrayNavigationFrame, IdeDebuggerOpts, IdeDebuggerBackendValueConv,
+  WatchInspectToolbar, DebuggerDlg, EnvironmentOpts, RecentListProcs,
+  IdeDebuggerStringConstants, IdeDebuggerUtils;
 
 type
 
@@ -198,7 +198,7 @@ begin
   WatchInspectNav1.ColTypeEnabled := True;
   WatchInspectNav1.ColVisibilityEnabled := False;
 
-  v := FWatchPrinter.PrintWatchValue(Res, wdfDefault);
+  v := ClearMultiline(FWatchPrinter.PrintWatchValue(Res, wdfDefault));
   StatusBar1.SimpleText:=ShortenedExpression+' : '+Res.TypeName + ' = ' + v;
 
   GridDataSetup;
@@ -224,11 +224,11 @@ begin
   WatchInspectNav1.ColTypeEnabled := True;
   WatchInspectNav1.ColVisibilityEnabled := False;
 
-  v := FWatchPrinter.PrintWatchValue(Res, wdfDefault);
+  v := ClearMultiline(FWatchPrinter.PrintWatchValue(Res, wdfDefault));
   StatusBar1.SimpleText:=ShortenedExpression+' : '+Res.TypeName + ' = ' + v;
 
   GridDataSetup;
-  v := FWatchPrinter.PrintWatchValue(Res, wdfPointer);
+  v := ClearMultiline(FWatchPrinter.PrintWatchValue(Res, wdfPointer));
   FGridData.Cells[1,1]:=WatchInspectNav1.Expression;
   FGridData.Cells[2,1]:=Res.TypeName;
   FGridData.Cells[3,1]:=v;
@@ -238,7 +238,7 @@ begin
     FGridData.RowCount := 3;
     FGridData.Cells[1,2]:=Format(lisInspectPointerTo, ['']);
     FGridData.Cells[2,2]:=Res.TypeName;
-    FGridData.Cells[3,2]:=FWatchPrinter.PrintWatchValue(Res, wdfDefault);
+    FGridData.Cells[3,2]:=ClearMultiline(FWatchPrinter.PrintWatchValue(Res, wdfDefault));
   end;
 end;
 
@@ -260,7 +260,7 @@ begin
   WatchInspectNav1.ColTypeEnabled := True;
   WatchInspectNav1.ColVisibilityEnabled := False;
 
-  v := FWatchPrinter.PrintWatchValue(Res, wdfDefault);
+  v := ClearMultiline(FWatchPrinter.PrintWatchValue(Res, wdfDefault));
   StatusBar1.SimpleText:=ShortenedExpression+' : '+Res.TypeName + ' = ' + v;
 
   GridDataSetup;
@@ -343,7 +343,7 @@ begin
       Entry := Res.SelectedEntry;
       FGridData.Cells[1,i+1-SubStart] := IntToStr(LowBnd + ResIdxOffs + i);
       FGridData.Cells[2,i+1-SubStart] := Entry.TypeName;
-      FGridData.Cells[3,i+1-SubStart] := FWatchPrinter.PrintWatchValue(Entry, wdfDefault);
+      FGridData.Cells[3,i+1-SubStart] := ClearMultiline(FWatchPrinter.PrintWatchValue(Entry, wdfDefault));
     end;
   end;
 end;
@@ -457,7 +457,7 @@ begin
       else FGridData.Cells[2,f] := '';
 
       if Fld <> nil
-      then FGridData.Cells[3,f] := FWatchPrinter.PrintWatchValue(Fld, wdfDefault)
+      then FGridData.Cells[3,f] := ClearMultiline(FWatchPrinter.PrintWatchValue(Fld, wdfDefault))
       else FGridData.Cells[3,f] := '<error>';
 
       FGridData.Cells[4,f] := FieldLocationNames[FldInfo.FieldVisibility];
@@ -1220,7 +1220,7 @@ begin
       //  skDecomposable: ;
         else begin
             Clear;
-            StatusBar1.SimpleText:=Format(lisInspectUnavailableError, [ShortenedExpression, FHumanReadable]);
+            StatusBar1.SimpleText:=Format(lisInspectUnavailableError, [ShortenedExpression, ClearMultiline(FHumanReadable)]);
             ErrorLabel.Caption :=Format(lisInspectUnavailableError, [ShortenedExpression, FHumanReadable]);
             PageControl.ActivePage := ErrorPage;
           end;
@@ -1280,7 +1280,7 @@ begin
 //        rdkConvertRes:    InspectResDataStruct;
         else begin
             Clear;
-            StatusBar1.SimpleText:=Format(lisInspectUnavailableError, [ShortenedExpression, FHumanReadable]);
+            StatusBar1.SimpleText:=Format(lisInspectUnavailableError, [ShortenedExpression, ClearMultiline(FHumanReadable)]);
             ErrorLabel.Caption :=Format(lisInspectUnavailableError, [ShortenedExpression, FHumanReadable]);
             PageControl.ActivePage := ErrorPage;
           end;
@@ -1291,7 +1291,7 @@ begin
   end;
 
   Clear;
-  StatusBar1.SimpleText:=Format(lisInspectUnavailableError, [ShortenedExpression, FHumanReadable]);
+  StatusBar1.SimpleText:=Format(lisInspectUnavailableError, [ShortenedExpression, ClearMultiline(FHumanReadable)]);
   ErrorLabel.Caption :=Format(lisInspectUnavailableError, [ShortenedExpression, FHumanReadable]);
   PageControl.ActivePage := ErrorPage;
 end;

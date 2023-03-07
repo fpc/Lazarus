@@ -10,6 +10,7 @@ uses
 function HexDigicCount(ANum: QWord; AByteSize: Integer = 0; AForceAddr: Boolean = False): integer;
 function QuoteText(AText: Utf8String): UTf8String;
 function QuoteWideText(AText: WideString): WideString;
+function ClearMultiline(const AValue: ansistring): ansistring;
 
 implementation
 
@@ -211,5 +212,38 @@ begin
   until False;
 end;
 
+function ClearMultiline(const AValue: ansistring): ansistring;
+var
+  j: SizeInt;
+  ow: SizeInt;
+  NewLine: Boolean;
+begin
+  ow:=0;
+  SetLength(Result{%H-},Length(AValue));
+  NewLine:=true;
+  for j := 1 to Length(AValue) do begin
+    if (AValue[j]=#13) or (AValue[j]=#10) then begin
+      NewLine:=true;
+      inc(ow);
+      Result[ow]:=#32; // insert one space instead of new line
+    end
+    else if Avalue[j] in [#9,#32] then begin
+      if not NewLine then begin // strip leading spaces after new line
+        inc(ow);
+        Result[ow]:=#32;
+      end;
+    end else begin
+      inc(ow);
+      Result[ow]:=AValue[j];
+      NewLine:=false;
+    end;
+  end;
+  If ow>255 then begin
+    //Limit watch to 255 chars in length
+    Result:=Copy(Result,1,252)+'...';
+  end else begin
+    SetLength(Result,ow);
+  end;
+end;
 end.
 
