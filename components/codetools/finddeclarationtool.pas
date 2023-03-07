@@ -13819,7 +13819,7 @@ begin
   if FFoundProcStackFirst=aFoundProc then
     FFoundProcStackFirst:=aFoundProc^.Next;
   if FFoundProcStackLast=aFoundProc then
-    FFoundProcStackLast:=aFoundProc^.Next;
+    FFoundProcStackLast:=aFoundProc^.Prior;
   with aFoundProc^ do begin
     if Next<>nil then
       Next^.Prior:=Prior;
