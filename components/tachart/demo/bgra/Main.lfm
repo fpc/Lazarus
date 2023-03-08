@@ -21,9 +21,9 @@ object Form1: TForm1
     Height = 481
     Top = 0
     Width = 716
-    ActivePage = tsBarEffects
+    ActivePage = tsSimple
     Align = alClient
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 1
     object tsSimple: TTabSheet
       Caption = 'Simple'
@@ -91,6 +91,9 @@ object Form1: TForm1
         BackColor = clMoneyGreen
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
+        Legend.Alignment = laBottomCenter
+        Legend.ColumnCount = 4
+        Legend.Visible = True
         Title.Brush.Color = clBtnFace
         Title.Brush.Style = bsClear
         Title.Font.Color = clBlue
@@ -104,6 +107,7 @@ object Form1: TForm1
         Color = clGreen
         DoubleBuffered = True
         object chSimpleLineSeries1: TLineSeries
+          Title = 'Line'
           ZPosition = 10
           LinePen.Color = clMaroon
           LinePen.Style = psDot
@@ -112,15 +116,18 @@ object Form1: TForm1
         end
         object chSimpleBarSeries1: TBarSeries
           Transparency = 60
+          Title = 'Bar'
           BarBrush.Color = 3059701
           Source = RandomChartSource1
         end
         object chSimplePieSeries1: TPieSeries
           Transparency = 128
           Active = False
+          Title = 'Pie'
           Source = RandomChartSource1
         end
         object chSimpleAreaSeries1: TAreaSeries
+          Title = 'Area'
           ZPosition = 9
           AreaBrush.Color = clRed
           AreaBrush.Style = bsDiagCross
