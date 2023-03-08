@@ -2186,6 +2186,8 @@ begin
 end;
 
 function TSynPasSyn.Func108: TtkTokenKind;
+var
+  InClass: Boolean;
 begin
   if KeyComp('Operator') then
   begin
@@ -2195,10 +2197,16 @@ begin
       CloseBeginEndBlocksBeforeProc;
       if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
         EndPascalCodeFoldBlockLastLine;
-      if ((rsImplementation in fRange) and
-        not(TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtRecord])) then
+
+      InClass := TopPascalCodeFoldBlockType in [{cfbtClass,} cfbtClassSection, cfbtRecord]; // only in records
+      if ( (rsImplementation in fRange) and (not InClass) ) then
         StartPascalCodeFoldBlock(cfbtProcedure);
+
+      if InClass then
+        fRange := fRange + [rsAfterClassMembers];
+      //fRange := fRange + [rsAtProcName];
     end;
+    fRange := fRange + [rsInProcHeader];
     Result := tkKey;
   end
   else
