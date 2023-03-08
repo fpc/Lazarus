@@ -476,7 +476,6 @@ var
   OldCompilerFilename: String;
 begin
   Result:=nil;
-exit;
 
   OldCompilerFilename:=EnvironmentOptions.CompilerFilename;
   try
