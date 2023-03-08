@@ -122,6 +122,7 @@ constructor TBGRABitmapDrawer.Create(ABitmap: TBGRABitmap);
 begin
   inherited Create;
   FBitmap := ABitmap;
+  Canvas.DrawFontBackground := false;
 end;
 
 procedure TBGRABitmapDrawer.Ellipse(AX1, AY1, AX2, AY2: Integer);
