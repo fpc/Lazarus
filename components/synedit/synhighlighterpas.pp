@@ -89,6 +89,7 @@ type
     // or full class declaration  TFoo = class ... end;
     // Also included after class modifiers "sealed" and "abstract"
     rsAtClass,
+    rsInObjcProtocol,
     rsAfterClass,
     rsAfterIdentifierOrValue, // anywhere where a ^ deref can happen "foo^", "foo^^", "foo()^", "foo[]^"
     rsAfterIdentifierOrValueAdd,
@@ -1083,8 +1084,10 @@ begin
         if tfb = cfbtClassSection then
           EndPascalCodeFoldBlockLastLine;
         // after class-section either a class OR a record can close with the same "end"
-        if TopPascalCodeFoldBlockType = cfbtClass then
-          EndPascalCodeFoldBlock
+        if TopPascalCodeFoldBlockType = cfbtClass then begin
+          EndPascalCodeFoldBlock;
+          fRange := fRange - [rsInObjcProtocol];
+        end
         else
         if TopPascalCodeFoldBlockType = cfbtRecord then
           EndPascalCodeFoldBlock;
@@ -1193,6 +1196,16 @@ begin
     if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
       EndPascalCodeFoldBlockLastLine;
     StartPascalCodeFoldBlock(cfbtAsm);
+  end
+  else
+  if (fRange * [rsAfterClass, rsInObjcProtocol] = [rsAfterClass, rsInObjcProtocol]) and
+     KeyComp('name') and
+     (PasCodeFoldRange.BracketNestLevel = 0) and
+     (TopPascalCodeFoldBlockType in [cfbtClass])
+  then
+  begin
+    Result := tkKey;
+    fRange := fRange + [rsAtClass];
   end
   else Result := tkIdentifier;
 end;
@@ -2001,7 +2014,18 @@ end;
 
 function TSynPasSyn.Func97: TtkTokenKind;
 begin
-  if KeyComp('Threadvar') then Result := tkKey else Result := tkIdentifier;
+  if KeyComp('Threadvar') then Result := tkKey
+  else
+  if (rsInObjcProtocol in fRange) and
+     KeyComp('required') and
+     (PasCodeFoldRange.BracketNestLevel = 0) and
+     (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection])
+  then begin
+    Result := tkKey;
+    fRange := fRange - [rsAfterClassMembers, rsVarTypeInSpecification];
+    StartPascalCodeFoldBlock(cfbtClassSection);
+  end
+  else Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func98: TtkTokenKind;
@@ -2094,6 +2118,16 @@ begin
     end;
     fRange := fRange + [rsInProcHeader];
     Result := tkKey;
+  end
+  else
+  if (rsInObjcProtocol in fRange) and
+     KeyComp('optional') and
+     (PasCodeFoldRange.BracketNestLevel = 0) and
+     (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection])
+  then begin
+    Result := tkKey;
+    fRange := fRange - [rsAfterClassMembers, rsVarTypeInSpecification];
+    StartPascalCodeFoldBlock(cfbtClassSection);
   end
   else Result := tkIdentifier;
 end;
@@ -2391,7 +2425,7 @@ begin
     Result := tkKey;
     if (rsAfterEqualOrColon in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
     begin
-      fRange := fRange + [rsAtClass];
+      fRange := fRange + [rsAtClass, rsInObjcProtocol];
       StartPascalCodeFoldBlock(cfbtClass);
     end;
   end
@@ -3314,8 +3348,10 @@ begin
   if tfb = cfbtUses then
     EndPascalCodeFoldBlock;
 
-  if (tfb = cfbtClass) and ((rsAfterClass in fRange) or InSkipBlocks) then
+  if (tfb = cfbtClass) and ((rsAfterClass in fRange) or InSkipBlocks) then begin
     EndPascalCodeFoldBlock(True, True);
+    fRange := fRange - [rsInObjcProtocol];
+  end;
 
   while (tfb in [cfbtIfThen,cfbtIfElse,cfbtForDo,cfbtWhileDo,cfbtWithDo]) do begin
     EndPascalCodeFoldBlock(True);
