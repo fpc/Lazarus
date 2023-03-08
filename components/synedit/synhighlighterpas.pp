@@ -1977,11 +1977,15 @@ end;
 
 function TSynPasSyn.Func94: TtkTokenKind;
 begin
-  if KeyComp('Assembler') then Result := tkKey else
-    if KeyComp('Readonly') then
-    begin
-      if rsProperty in fRange then Result := tkKey else Result := tkIdentifier;
-    end else Result := tkIdentifier;
+  if KeyComp('Assembler') then Result := tkKey
+  else
+  if KeyComp('Readonly') then
+  begin
+    if (fRange * [rsProperty, rsAtPropertyOrReadWrite, rsAfterEqualOrColon] =  [rsProperty]) and
+       (PasCodeFoldRange.BracketNestLevel = 0)
+    then Result := tkKey
+    else Result := tkIdentifier;
+  end else Result := tkIdentifier;
 end;
 
 function TSynPasSyn.Func95: TtkTokenKind;
