@@ -122,17 +122,16 @@ procedure TCodyNodeInfoDialog.ReportBaseTypeCache(Report: TStringList;
 var
   Cache: TBaseTypeCache;
   BaseContext: TFindContext;
-  LastBaseContext: TFindContext;
+  LastBaseContext, AliasContext, LastAliasContext: TFindContext;
   i: Integer;
   Visited: TFPList;
-  NextTool: TFindDeclarationTool;
-  NextNode: TCodeTreeNode;
 begin
   LastBaseContext:=CleanFindContext;
+  LastAliasContext:=CleanFindContext;
   i:=0;
   Visited:=TFPList.Create;
   try
-    while Node<>nil do begin
+    if Node<>nil then begin
       inc(i);
       ReportNode(dbgs(i)+': ',Tool,Node);
       if not (Node.Cache is TBaseTypeCache) then begin
@@ -150,19 +149,11 @@ begin
         ReportNode('  Base: ',BaseContext.Tool,BaseContext.Node);
         LastBaseContext:=BaseContext;
       end;
-
-      NextTool:=TFindDeclarationTool(Cache.NextTool);
-      NextNode:=Cache.NextNode;
-      if (NextNode<>nil) and (NextTool=nil) then begin
-        Report.Add('Error: node without tool: Cache.NextTool=nil, Cache.NextNode='+NextNode.DescAsString);
-        exit;
+      AliasContext:=CreateFindContext(TFindDeclarationTool(Cache.AliasTool),Cache.AliasNode);
+      if CompareFindContexts(@LastAliasContext,@AliasContext)<>0 then begin
+        ReportNode('  Alias: ',AliasContext.Tool,AliasContext.Node);
+        LastAliasContext:=AliasContext;
       end;
-      if NextNode=Node then begin
-        // base node reached
-        exit;
-      end;
-      Node:=NextNode;
-      Tool:=NextTool;
     end;
   finally
     Visited.Free;

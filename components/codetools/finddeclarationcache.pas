@@ -182,8 +182,8 @@ type
   public
     BaseNode: TCodeTreeNode; // final base type
     BaseTool: TPascalParserTool;
-    NextNode: TCodeTreeNode; // next node on path to the BaseNode
-    NextTool: TPascalParserTool;
+    AliasNode: TCodeTreeNode; // alias "type T1 = T2;"
+    AliasTool: TPascalParserTool;
     NextCache: TBaseTypeCache; // used for mem manager
     Owner: TCodeTreeNode;
     procedure BindToOwner(NewOwner: TCodeTreeNode);
@@ -274,6 +274,8 @@ type
   TCodeTreeNodeStackEntry = record
     Tool: TPascalParserTool;
     Node: TCodeTreeNode;
+    AliasTool: TPascalParserTool;
+    AliasNode: TCodeTreeNode;
   end;
   PCodeTreeNodeStackEntry = ^TCodeTreeNodeStackEntry;
 
@@ -1223,6 +1225,8 @@ begin
   end;
   Entry^.Tool:=NewTool;
   Entry^.Node:=NewNode;
+  Entry^.AliasTool:=nil;
+  Entry^.AliasNode:=nil;
 end;
 
 function NodeExistsInStack(NodeStack: PCodeTreeNodeStack;

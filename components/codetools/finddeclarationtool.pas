@@ -5362,6 +5362,8 @@ var
     end;
   end;
 
+  var NewAliasNode: TCodeTreeNode;
+
   procedure CheckResult(var Context: TFindContext);
   var
     ResultNode: TCodeTreeNode;
@@ -5369,28 +5371,29 @@ var
     AliasContext: TFindContext;
     Cache: TBaseTypeCache;
   begin
-    if (NodeStack<>nil) and (NodeStack<>@MyNodeStack) then exit; // will be handled by caller
-
-    if (Context.Node<>nil) and (Context.Node.Desc in [ctnProcedure,ctnProcedureHead])
-    and (fdfFunctionResult in Params.Flags) then begin
-      // Note: do not resolve a constructor here
-      //       because TMyClass.Create should return TMyClass
-      //       and not TObject, where the Create is defined
-      // a proc -> if this is a function then return the Context type
-      //debugln(['TFindDeclarationTool.FindBaseTypeOfNode checking function Context: ',Context.Tool.ExtractNode(Context.Node,[])]);
-      Context.Tool.BuildSubTreeForProcHead(Context.Node,ResultNode);
-      if (ResultNode<>nil) then begin
-        // a function or an overloaded operator
-        // search further for the base type of the function Context type
-        OldFlags:=Params.Flags;
-        Exclude(Params.Flags,fdfFunctionResult);
-        //debugln(['TFindDeclarationTool.FindBaseTypeOfNode searching for function Context type: ',Context.Tool.ExtractNode(DummyNode,[])]);
-        Context:=Context.Tool.FindBaseTypeOfNode(Params,ResultNode,AliasType);
-        AliasType:=nil;  // aliasing has been done
-        Params.Flags:=OldFlags;
-        exit;
+    if not( (NodeStack<>nil) and (NodeStack<>@MyNodeStack) )then begin // will be handled by caller
+      if (Context.Node<>nil) and (Context.Node.Desc in [ctnProcedure,ctnProcedureHead])
+      and (fdfFunctionResult in Params.Flags) then begin
+        // Note: do not resolve a constructor here
+        //       because TMyClass.Create should return TMyClass
+        //       and not TObject, where the Create is defined
+        // a proc -> if this is a function then return the Context type
+        //debugln(['TFindDeclarationTool.FindBaseTypeOfNode checking function Context: ',Context.Tool.ExtractNode(Context.Node,[])]);
+        Context.Tool.BuildSubTreeForProcHead(Context.Node,ResultNode);
+        if (ResultNode<>nil) then begin
+          // a function or an overloaded operator
+          // search further for the base type of the function Context type
+          OldFlags:=Params.Flags;
+          Exclude(Params.Flags,fdfFunctionResult);
+          //debugln(['TFindDeclarationTool.FindBaseTypeOfNode searching for function Context type: ',Context.Tool.ExtractNode(DummyNode,[])]);
+          Context:=Context.Tool.FindBaseTypeOfNode(Params,ResultNode,AliasType);
+          AliasType:=nil;  // aliasing has been done
+          Params.Flags:=OldFlags;
+          exit;
+        end;
       end;
     end;
+
     if (Context.Node=nil) and (fdfExceptionOnNotFound in Params.Flags) then begin
       if (Context.Tool<>nil) and (Params.Identifier<>nil) then begin
 
@@ -5402,27 +5405,11 @@ var
       end;
       RaiseBaseTypeOfNotFound;
     end;
-    if AliasType<>nil then begin
-      // follow the base type chain to the first type
-      // for example: var d: TDateTime;  use TDateTime, instead of Double.
-      AliasContext.Node:=Node;
+
+    if (AliasType<>nil) and (NewAliasNode <> nil) then begin
+      AliasContext.Node:=NewAliasNode;
       AliasContext.Tool:=Self;
-      while AliasContext.Node<>nil do begin
-        if AliasContext.Node.Desc in [ctnTypeDefinition,ctnGenericType] then begin
-          {$IF defined(ShowExprEval) or defined(ShowTriedBaseContexts)}
-          debugln(['TFindDeclarationTool.FindBaseTypeOfNode.CheckResult using alias ',AliasContext.Tool.ExtractDefinitionName(AliasContext.Node),' instead of base type ',Context.Node.DescAsString]);
-          {$ENDIF}
-          AliasType^:=AliasContext;
-          exit;
-        end;
-        if AliasContext.Node.Cache is TBaseTypeCache then begin
-          Cache:=TBaseTypeCache(AliasContext.Node.Cache);
-          if AliasContext.Node=Cache.NextNode then break;
-          AliasContext.Node:=Cache.NextNode;
-          AliasContext.Tool:=TFindDeclarationTool(Cache.NextTool);
-        end else
-          break;
-      end;
+      AliasType^ := AliasContext;
     end;
   end;
 
@@ -5430,17 +5417,23 @@ var
   OldInput: TFindDeclarationInput;
   ClassIdentNode: TCodeTreeNode;
   TestContext: TFindContext;
-  OldPos: integer;
+  OldPos, i: integer;
   SpecializeNode: TCodeTreeNode;
   NameNode: TCodeTreeNode;
   IsPredefined: boolean;
   OldStartFlags: TFindDeclarationFlags;
+  NodeStackEntry: PCodeTreeNodeStackEntry;
 begin
+  NewAliasNode := nil;
   {$IFDEF CheckNodeTool}CheckNodeTool(Node);{$ENDIF}
   //debugln(['TFindDeclarationTool.FindBaseTypeOfNode Flags=[',dbgs(Params.Flags),'] CacheValid=',Node.Cache is TBaseTypeCache]);
   if (Node<>nil) and (Node.Cache is TBaseTypeCache) then begin
     // base type already cached
     Result:=CreateFindContext(TBaseTypeCache(Node.Cache));
+    if AliasType <> nil then begin
+      AliasType^.Tool := TFindDeclarationTool(TBaseTypeCache(Node.Cache).AliasTool);
+      AliasType^.Node := TBaseTypeCache(Node.Cache).AliasNode;
+    end;
     CheckResult(Result);
     exit;
   end;
@@ -5460,6 +5453,11 @@ begin
         if NodeStack^.StackPtr>=0 then
           AddNodeToStack(NodeStack,Result.Tool,Result.Node);
         Result:=CreateFindContext(TBaseTypeCache(Result.Node.Cache));
+        // May be replaced with NewAliasNode
+        if AliasType <> nil then begin
+          AliasType^.Tool := TFindDeclarationTool(TBaseTypeCache(Result.Node.Cache).AliasTool);
+          AliasType^.Node := TBaseTypeCache(Result.Node.Cache).AliasNode;
+        end;
         break;
       end;
       {$IFDEF ShowTriedBaseContexts}
@@ -5481,6 +5479,21 @@ begin
       end;
 
       AddNodeToStack(NodeStack,Result.Tool,Result.Node);
+
+      if Result.Node.Desc in [ctnTypeDefinition,ctnGenericType] then begin
+        if NewAliasNode = nil then  NewAliasNode := Result.Node;
+
+        i := NodeStack^.StackPtr-1;
+        while i >= 0 do begin
+          NodeStackEntry := GetNodeStackEntry(NodeStack, i);
+          if (NodeStackEntry^.AliasTool <> nil)
+          or (NodeStackEntry^.Node.Desc in [ctnTypeDefinition,ctnGenericType]) then
+            break;
+          NodeStackEntry^.AliasTool := Self;
+          NodeStackEntry^.AliasNode := Result.Node;
+          dec(i);
+        end;
+      end;
 
       if (Result.Node.Desc in (AllSimpleIdentifierDefinitions+[ctnGenericType]))
       then begin
@@ -5666,7 +5679,10 @@ begin
     if NodeStack=@MyNodeStack then begin
       // cache the result in all nodes
       // do not cache the result of generic type
-      if not Assigned(Params.GenParams.ParamValuesTool) then
+      if (not Assigned(Params.GenParams.ParamValuesTool))
+      and (not (fdfDoNotCache in Params.Flags))
+      and (not (fodDoNotCache in Params.NewFlags))
+      then
         CreateBaseTypeCaches(NodeStack,Result);
       // free node stack
       FinalizeNodeStack(NodeStack);
@@ -12701,19 +12717,14 @@ begin
       {$IFDEF ShowBaseTypeCache}
       DebugLn('  i=',DbgS(i),' Node=',Entry^.Node.DescAsString,' "',copy(Entry^.Tool.Src,Entry^.Node.StartPos,15),'"');
       {$ENDIF}
+      if Entry^.AliasNode = nil then continue;
       BaseTypeCache:=
         CreateNewBaseTypeCache(TFindDeclarationTool(Entry^.Tool),Entry^.Node);
       if BaseTypeCache<>nil then begin
         BaseTypeCache.BaseNode:=Result.Node;
         BaseTypeCache.BaseTool:=Result.Tool;
-        if i<NodeStack^.StackPtr then begin
-          NextEntry:=GetNodeStackEntry(NodeStack,i+1);
-          BaseTypeCache.NextNode:=NextEntry^.Node;
-          BaseTypeCache.NextTool:=NextEntry^.Tool;
-        end else begin
-          BaseTypeCache.NextNode:=Result.Node;
-          BaseTypeCache.NextTool:=Result.Tool;
-        end;
+        BaseTypeCache.AliasNode:=Entry^.AliasNode;
+        BaseTypeCache.AliasTool:=Entry^.AliasTool;
       end;
     end;
   end;

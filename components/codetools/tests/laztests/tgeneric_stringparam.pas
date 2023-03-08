@@ -38,8 +38,8 @@ begin
   MyData.Foo.{completion:Name,Address,!Helping} ;
   MyString.Foo.{completion:Helping,!Name,!Address} ;
 
-  d1 := MyData.Foo;
-  s1 := MyString.Foo;
+  d1{guesstype:TDataItem} := MyData.Foo;
+  s1{guesstype:string} := MyString.Foo;
 
   MyData.bar(x);
   MyString.bar(y);
