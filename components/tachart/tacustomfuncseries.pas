@@ -309,8 +309,15 @@ constructor TPointsDrawFuncHelper.Create(
   ACalc: TTransformFunc; AStep: Integer);
 begin
   inherited Create(ASeries, ACalc, AStep);
-  FExtent.a.X := Min(AMinX, AMaxX);
-  FExtent.b.X := Max(AMaxX, AMinX);
+  if ASeries.IsRotated then
+  begin
+    FExtent.a.Y := Min(AMinX, AMaxX);
+    FExtent.b.Y := Max(AMaxX, AMinX);
+  end else
+  begin
+    FExtent.a.X := Min(AMinX, AMaxX);
+    FExtent.b.X := Max(AMaxX, AMinX);
+  end;
   FStartIndex := AStartIndex;
 end;
 
@@ -320,6 +327,7 @@ var
   xa, xg1, xa1, dx, xfg: Double;
   j, n: Integer;
   ser: TBasicPointSeriesAccess;
+  isRotated: Boolean;
 begin
   if FGraphStep = 0 then exit;
 
@@ -332,11 +340,17 @@ begin
   ser := TBasicPointSeriesAccess(FSeries);
   n := Length(ser.FGraphPoints);
   dx := abs(FGraphStep);
+  isRotated := ser.IsRotated;
 
   xa := FAxisToGraphXr(AXg);
   j := Max(0, FStartIndex - ser.FLoBound);
-  while (j < n) and (xa > ser.FGraphPoints[j].X) do inc(j);
-  if j < n then xfg := ser.FGraphPoints[j].X else exit;
+
+  while (j < n) and (xa > TDoublePointBoolArr(ser.FGraphPoints[j])[isRotated]) do inc(j);
+  if j < n then xfg := TDoublePointBoolArr(ser.FGraphPoints[j])[isRotated] else exit;
+
+
+ // while (j < n) and (xa > ser.FGraphPoints[j].X) do inc(j);
+ // if j < n then xfg := ser.FGraphPoints[j].X else exit;
   AOnMoveTo(AXg, xa);
 
   while AXg < AXMax do begin
@@ -346,8 +360,13 @@ begin
       xg1 := xfg;
       xa1 := ser.GetXValue(j + ser.FLoBound);
       inc(j);
-      while (j < n) and (xfg > ser.FGraphPoints[j].X) do inc(j);   // skip unordered points
-      if j < n then xfg := ser.FGraphPoints[j].X else xfg := Infinity;
+
+      while (j < n) and (xfg > TDoublePointBoolArr(ser.FGraphPoints[j])[isRotated]) do inc(j);   // skip unordered points
+      if j < n then xfg := TDoublePointBoolArr(ser.FGraphPoints[j])[isRotated] else xfg := Infinity;
+
+
+      //while (j < n) and (xfg > ser.FGraphPoints[j].X) do inc(j);   // skip unordered points
+      //if j < n then xfg := ser.FGraphPoints[j].X else xfg := Infinity;
     end;
     AOnLineTo(xg1, xa1);
     AXg := xg1;

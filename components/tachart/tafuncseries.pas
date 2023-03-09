@@ -1466,7 +1466,6 @@ begin
   for s in FSplines do
     if not s.IsFewPoints then
       DrawSpline(s);
-
   DrawErrorBars(ADrawer);
   DrawLabels(ADrawer, 0);
   DrawPointers(ADrawer, 0, true);
@@ -1579,6 +1578,11 @@ var
   ext: TDoubleRect;
 begin
   ext := FChart.CurrentExtent;
+  if IsRotated then
+  begin
+    Exchange(ext.a.x, ext.a.y);
+    Exchange(ext.b.x, ext.b.y);
+  end;
 
   if (csoExtrapolateLeft in FOptions) and (ASpline = FSplines[0]) then
     AXmin := ext.a.x
