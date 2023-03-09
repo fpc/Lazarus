@@ -7559,6 +7559,10 @@ begin
       CurIdentifier:=GetProcNameIdentifier(Node);
       if CompareIdentifierPtrs(CurIdentifier,Identifier)=0 then
         exit(Node);
+    end else if Node.Desc=ctnGenericType then begin
+      if (Node.FirstChild<>nil)
+      and (CompareIdentifierPtrs(@Src[Node.FirstChild.StartPos],Identifier)=0) then
+        exit(Node);
     end;
     // next
     if Node.PriorBrother<>nil then

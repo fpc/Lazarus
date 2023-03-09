@@ -541,7 +541,9 @@ begin
          then exit(KeyWordFuncClassFinal);
     end;
   'G':
-    if CompareSrcIdentifiers(p,'GENERIC') and (Scanner.CompilerMode in [cmDELPHI,cmOBJFPC]) then
+    if CompareSrcIdentifiers(p,'GENERIC') and (Scanner.CompilerMode in [cmDELPHI,cmOBJFPC])
+    and (CurNode.Desc <> ctnTypeSection)
+    then
       exit(KeyWordFuncClassMethod);
   'P':
     case UpChars[p[1]] of
