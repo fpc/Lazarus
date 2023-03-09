@@ -1199,7 +1199,7 @@ begin
     StartPascalCodeFoldBlock(cfbtAsm);
   end
   else
-  if (fRange * [rsAfterClass, rsInObjcProtocol] = [rsAfterClass, rsInObjcProtocol]) and
+  if (fRange * [rsAfterClass, rsInObjcProtocol, rsInProcHeader] = [rsAfterClass, rsInObjcProtocol]) and
      ((CompilerMode = pcmMacPas) or not (rsCompilerModeSet in fRange)) and
      KeyComp('name') and
      (PasCodeFoldRange.BracketNestLevel = 0) and
@@ -1208,6 +1208,16 @@ begin
   begin
     Result := tkKey;
     fRange := fRange + [rsAtClass];
+  end
+  else
+  if (PasCodeFoldRange.BracketNestLevel = 0) and
+     (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsInProcHeader]) and
+     (TopPascalCodeFoldBlockType in ProcModifierAllowed) and
+     KeyComp('name') // procedure foo; public name 'abc';
+  then
+  begin
+    Result := tkIdentifier;
+    FRange := FRange + [rsInProcHeader];
   end
   else Result := tkIdentifier;
 end;
@@ -1321,8 +1331,13 @@ end;
 
 function TSynPasSyn.Func42: TtkTokenKind;
 begin
-  if KeyComp('Alias') then
-    Result := tkKey
+  if (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsWasInProcHeader]) and
+     (TopPascalCodeFoldBlockType in ProcModifierAllowed) and
+     KeyComp('Alias')
+  then begin
+    Result := tkKey;
+    FRange := FRange + [rsInProcHeader];
+  end
   else
   if KeyComp('Final') and
      (TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection]) and
@@ -1540,7 +1555,14 @@ begin
       if (TopPascalCodeFoldBlockType=cfbtClassSection) then
         EndPascalCodeFoldBlockLastLine;
       StartPascalCodeFoldBlock(cfbtClassSection);
-    end;
+    end
+    else
+    // outside class: procedure foo; public name 'abc';
+    if (PasCodeFoldRange.BracketNestLevel = 0) and
+       (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsWasInProcHeader]) and
+       (TopPascalCodeFoldBlockType in ProcModifierAllowed)
+    then
+      FRange := FRange + [rsInProcHeader];
   end
   else if KeyComp('Record') then begin
     StartPascalCodeFoldBlock(cfbtRecord);
@@ -3114,6 +3136,13 @@ begin
        ( (rsProperty in fRange) or not(rsAfterClassMembers in fRange) )
     then
       fRange := fRange + [rsVarTypeInSpecification];
+
+    // modifiers "alias: 'foo';"
+    if (PasCodeFoldRange.BracketNestLevel = 0) and
+       (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsInProcHeader]) and
+       (TopPascalCodeFoldBlockType in ProcModifierAllowed)
+    then
+      FRange := FRange + [rsInProcHeader];
   end;
 end;
 
@@ -3354,6 +3383,10 @@ procedure TSynPasSyn.SquareOpenProc;
 begin
   inc(Run);
   fTokenID := tkSymbol;
+  if (PasCodeFoldRange.BracketNestLevel = 0) and
+     (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsWasInProcHeader])
+  then
+    FOldRange := FOldRange - [rsWasInProcHeader];
   PasCodeFoldRange.IncBracketNestLevel;
 end;
 
@@ -3363,6 +3396,12 @@ begin
   fTokenID := tkSymbol;
   fRange := fRange + [rsAfterIdentifierOrValueAdd];
   PasCodeFoldRange.DecBracketNestLevel;
+
+  if (PasCodeFoldRange.BracketNestLevel = 0) and
+     (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsWasInProcHeader]) and
+     (TopPascalCodeFoldBlockType in ProcModifierAllowed)
+  then
+    FRange := FRange + [rsInProcHeader] - [rsWasInProcHeader]; // rsWasInProcHeader was removed from FOldRange
 end;
 
 procedure TSynPasSyn.EqualSignProc;
@@ -3489,6 +3528,13 @@ begin
     end;
     Inc(Run);
   end;
+
+  // modifiers like "alias" take a string as argument
+  if (PasCodeFoldRange.BracketNestLevel = 0) and
+     (fRange * [rsInProcHeader, rsProperty, rsAfterEqualOrColon, rsWasInProcHeader] = [rsInProcHeader]) and
+     (TopPascalCodeFoldBlockType in ProcModifierAllowed)
+  then
+    FRange := FRange + [rsInProcHeader];
 end;
 
 procedure TSynPasSyn.StringProc_MultiLineDQ;
@@ -3569,6 +3615,8 @@ begin
         SlashContinueProc
       else begin
         FOldRange := fRange;
+        if (PasCodeFoldRange.BracketNestLevel = 1) then // procedure foo; [attr...]
+          FOldRange := FOldRange - [rsWasInProcHeader];
         FTokenFlags := [];
         //if rsAtEqual in fRange then
         //  fRange := fRange + [rsAfterEqualOrColon] - [rsAtEqual]
