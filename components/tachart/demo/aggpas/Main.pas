@@ -10,6 +10,8 @@ unit Main;
 
 {$mode objfpc}{$H+}
 
+{.$DEFINE USE_SYSTEM_COLORS}
+
 interface
 
 uses
@@ -53,16 +55,22 @@ implementation
 uses
   TAChartUtils, TADrawerCanvas;
 
+{$IF DEFINED(LCLGtk2) or DEFINED(LCLGtk3) or DEFINED(LCLQt) or DEFINED(LCLQt5)}
 const
   FONT_DIR = '/usr/share/fonts/truetype/';
+{$ENDIF}
 
 { TMainForm }
 
 procedure TMainForm.cbAggPasClick(Sender: TObject);
 begin
   if cbAggPas.Checked then
-    Chart.GUIConnector := ChartGUIConnectorAggPas
-  else
+  begin
+    Chart.GUIConnector := ChartGUIConnectorAggPas;
+    {$IFDEF USE_SYSTEM_COLORS}
+    Chart.Drawer.DoChartColorToFPColor := @ChartColorSysToFPColor;
+    {$ENDIF}
+  end else
     Chart.GUIConnector := nil;
 end;
 
@@ -84,6 +92,11 @@ begin
   {$IF DEFINED(LCLGtk2) or DEFINED(LCLGtk3) or DEFINED(LCLQt) or DEFINED(LCLQt5)}
   ChartGUIConnectorAggPas.FontDir := FONT_DIR;
   {$ENDIF}
+
+  {$IFDEF USE_SYSTEM_COLORS}
+  Chart.Color := clForm;
+  Chart.BackColor := clWindow;
+  {$ENDIF}
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
@@ -103,6 +116,10 @@ begin
   Chart.Title.Text.Text := 'AggPas';
   d := TAggPasDrawer.Create(FAggCanvas);
   d.DoGetFontOrientation := @CanvasGetFontOrientationFunc;
+  // The next instruction is required if system colors are used
+  {$IFDEF USE_SYSTEM_COLORS}
+  d.DoChartColorToFPColor := @ChartColorSysToFPColor;
+  {$ENDIF}
   {$IF DEFINED(LCLGtk2) or DEFINED(LCLGtk3) or DEFINED(LCLQt) or DEFINED(LCLQt5)}
   (d as TAggPasDrawer).FontDir := FONT_DIR;
   {$ENDIF}

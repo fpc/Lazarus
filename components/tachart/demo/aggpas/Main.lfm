@@ -86,12 +86,14 @@ object MainForm: TMainForm
     BorderSpacing.Around = 6
     Color = clMoneyGreen
     object ChartPieSeries: TPieSeries
+      Title = 'Pie'
       ZPosition = 1
       Source = RandomChartSource
     end
     object ChartConstantLine: TConstantLine
       Pen.Color = clTeal
       Pen.Width = 3
+      Title = 'const'
     end
     object ChartLineSeries: TLineSeries
       Title = 'Line'
