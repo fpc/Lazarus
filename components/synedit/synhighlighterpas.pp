@@ -78,6 +78,7 @@ type
     rsAtPropertyOrReadWrite, // very first word after property (name of the property) or after read write in property
     rsInterface,
     rsImplementation,   // Program or Implementation
+    rsCompilerModeSet,  // there was an explicit {$mode ...
 
     // we need to detect:    type TFoo = procedure; // must not fold
     //                       var  foo: procedure;   // must not fold
@@ -1199,6 +1200,7 @@ begin
   end
   else
   if (fRange * [rsAfterClass, rsInObjcProtocol] = [rsAfterClass, rsInObjcProtocol]) and
+     ((CompilerMode = pcmMacPas) or not (rsCompilerModeSet in fRange)) and
      KeyComp('name') and
      (PasCodeFoldRange.BracketNestLevel = 0) and
      (TopPascalCodeFoldBlockType in [cfbtClass])
@@ -1791,7 +1793,9 @@ begin
     if not (rsAfterClassMembers in fRange) then
       Result := tkIdentifier;
   end
-  else if KeyComp('ObjcClass') then begin
+  else if ((CompilerMode = pcmMacPas) or not (rsCompilerModeSet in fRange)) and
+    KeyComp('ObjcClass')
+  then begin
     Result := tkKey;
     if (rsAfterEqualOrColon in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
     begin
@@ -2250,12 +2254,13 @@ end;
 
 function TSynPasSyn.Func124: TtkTokenKind;
 begin
-  if KeyComp('ObjcCategory') then
-  begin
+  if ((CompilerMode = pcmMacPas) or not (rsCompilerModeSet in fRange)) and
+     KeyComp('ObjcCategory')
+  then begin
     Result := tkKey;
     if (rsAfterEqualOrColon in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
     begin
-      fRange := fRange + [rsAtClass];
+      fRange := fRange + [rsAtClass] - [rsVarTypeInSpecification, rsAfterEqual];
       StartPascalCodeFoldBlock(cfbtClass);
     end;
   end
@@ -2432,8 +2437,9 @@ end;
 
 function TSynPasSyn.Func144: TtkTokenKind;
 begin
-  if KeyComp('ObjcProtocol') then
-  begin
+  if ((CompilerMode = pcmMacPas) or not (rsCompilerModeSet in fRange)) and
+     KeyComp('ObjcProtocol')
+  then begin
     Result := tkKey;
     if (rsAfterEqualOrColon in fRange) and (PasCodeFoldRange.BracketNestLevel = 0) then
     begin
@@ -2891,6 +2897,7 @@ begin
   if TextComp('mode') then begin
     // $mode directive
     inc(Run,4);
+    include(fRange, rsCompilerModeSet);
     // skip space
     while (fLine[Run] in [' ',#9,#10,#13]) do inc(Run);
     if TextComp('objfpc') then
@@ -2904,7 +2911,9 @@ begin
     else if TextComp('tp') then
       CompilerMode:=pcmTP
     else if TextComp('macpas') then
-      CompilerMode:=pcmMacPas;
+      CompilerMode:=pcmMacPas
+    else
+      exclude(fRange, rsCompilerModeSet);
   end;
   repeat
     case fLine[Run] of
