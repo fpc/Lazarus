@@ -464,14 +464,23 @@ begin
     for i := 1 to High(symbol) do
       symbol[i] := FlipRect(symbol[i]);
 
+  // Whisker
   ADrawer.Pen := FWhiskersPen;
+  ADrawer.SetPenColor(FWhiskersPen.Color);
   ADrawer.SetBrushParams(bsClear, clTAColor);
   for i := 1 to 3 do
     ADrawer.Line(symbol[i].TopLeft, symbol[i].BottomRight);
+
+  // Box
   ADrawer.Pen := FBoxPen;
+  ADrawer.SetPenColor(FBoxPen.Color);
   ADrawer.Brush:= FBoxBrush;
+  ADrawer.SetBrushColor(FBoxBrush.Color);
   ADrawer.Rectangle(symbol[4]);
+
+  // Median line
   ADrawer.Pen := FMedianPen;
+  ADrawer.SetPenColor(FMedianPen.Color);
   ADrawer.Line(symbol[5].TopLeft, symbol[5].BottomRight);
 end;
 
@@ -559,7 +568,15 @@ begin
   if not RequestValidChartScaling then exit;
 
   ADrawer.Pen := BubblePen;
+  if BubblePen.Color = clDefault then
+    ADrawer.SetPenColor(FChart.GetDefaultColor(dctFont))
+  else
+    ADrawer.SetPenColor(BubblePen.Color);
   ADrawer.Brush := BubbleBrush;
+  if BubbleBrush.Color = clDefault then
+    ADrawer.SetBrushColor(FChart.GetDefaultColor(dctBrush))
+  else
+    ADrawer.SetBrushColor(BubbleBrush.Color);
 
   ext := ParentChart.CurrentExtent;
   clipR.TopLeft := ParentChart.GraphToImage(ext.a);
@@ -1215,6 +1232,7 @@ begin
     PrepareBox(i);
     DrawBox(ixb1, ixb2, iyqmin, iyqmax);
     ADrawer.Pen := WhiskersPen;
+    ADrawer.SetPenColor(WhiskersPen.Color);
     
     // Draw median line
     PrepareLine(i, MedianPen);
@@ -1698,8 +1716,9 @@ procedure TOpenHighLowCloseSeries.Draw(ADrawer: IChartDrawer);
         clr := FCandleStickUpBrush.Color
       else
         clr := FCandleStickDownBrush.Color;
-      ADrawer.SetPenParams(FCandleStickLinePen.Style, clr);
-    end;
+    end else
+      clr := FCandlestickLinePen.Color;
+    ADrawer.SetPenParams(FCandleStickLinePen.Style, clr);
     DoLine(x, yhigh, x, ylow);
     DoRect(x - tw, yopen, x + tw, yclose);
   end;
@@ -1737,10 +1756,12 @@ begin
     if (yopen <= yclose) then begin
       p := LinePen;
       ADrawer.Brush := FCandleStickUpBrush;
+      ADrawer.SetBrushColor(FCandleStickUpBrush.Color);
     end
     else begin
       p := DownLinePen;
       ADrawer.Brush := FCandleStickDownBrush;
+      ADrawer.SetBrushColor(FCandleStickDownBrush.Color);
     end;
     ADrawer.Pen := p;
     with Source[i]^ do
@@ -2132,6 +2153,10 @@ begin
   p1 := ParentChart.GraphToImage(AStartPt);
   p2 := ParentChart.GraphToImage(AEndPt);
   ADrawer.Pen := APen;
+  if APen.Color = clDefault then
+    ADrawer.SetPenColor(FChart.GetDefaultColor(dctFont))
+  else
+    ADrawer.SetPenColor(APen.Color);
   ADrawer.Line(p1.x, p1.y, p2.x, p2.y);
   if FArrow.Visible then begin
     len := sqrt(sqr(p2.x - p1.x) + sqr(p2.y - p1.y)) * 0.01 / ADrawer.Scale(1);

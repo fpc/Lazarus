@@ -74,6 +74,7 @@ object MainForm: TMainForm
         Title.LabelBrush.Style = bsClear
       end>
     BackColor = clSkyBlue
+    Legend.BackgroundBrush.Color = clWhite
     Legend.Visible = True
     Margins.Left = 25
     Margins.Right = 25

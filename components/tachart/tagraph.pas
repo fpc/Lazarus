@@ -1046,6 +1046,23 @@ begin
 end;
 
 procedure TChart.DrawBackWall(ADrawer: IChartDrawer);
+
+  procedure SetFramePen;
+  begin
+    with ADrawer do begin
+      if FFrame.Visible then
+      begin
+        Pen := FFrame;
+        if FFrame.Color = clDefault then
+          SetPenColor(GetDefaultColor(dctFont))
+        else
+          SetPenColor(FFrame.Color);
+      end
+      else
+        SetPenParams(psClear, clTAColor);
+    end;
+  end;
+
 var
   defaultDrawing: Boolean = true;
   ic: IChartTCanvasDrawer;
@@ -1059,15 +1076,9 @@ begin
     OnBeforeDrawBackWall(Self, ic.Canvas, FClipRect, defaultDrawing);
 
   if defaultDrawing then
+  begin
+    SetFramePen;
     with ADrawer do begin
-      if FFrame.Visible then
-      begin
-        Pen := FFrame;
-        if FFrame.Color = clDefault then
-          SetPenColor(GetDefaultColor(dctFont));
-      end
-      else
-        SetPenParams(psClear, clTAColor);
       if BackColor = clDefault then
         clr := GetDefaultColor(dctBrush)
       else
@@ -1076,6 +1087,7 @@ begin
       with FClipRect do
         Rectangle(Left, Top, Right + 1, Bottom + 1);
     end;
+  end;
 
   if Assigned(OnAfterCustomDrawBackWall) then
     OnAfterCustomDrawBackwall(Self, ADrawer, FClipRect);
@@ -1085,7 +1097,7 @@ begin
   // Z axis
   if (Depth > 0) and FFrame.Visible then begin
     scaled_depth := ADrawer.Scale(Depth);
-    ADrawer.Pen := FFrame;
+    SetFramePen;
     with FClipRect do
       ADrawer.Line(Left, Bottom, Left - scaled_depth, Bottom + scaled_depth);
   end;

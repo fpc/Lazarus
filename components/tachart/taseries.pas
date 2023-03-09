@@ -623,6 +623,10 @@ var
 
     ADrawer.SetBrushParams(bsClear, clTAColor);
     ADrawer.Pen := LinePen;
+    if LinePen.Color = clDefault then
+      ADrawer.SetPenColor(FChart.GetDefaultColor(dctFont))
+    else
+      ADrawer.SetPenColor(LinePen.Color);
     if Styles <> nil then
       Styles.Apply(ADrawer, AIndex, Depth = 0);
       // "true" avoids painting of spaces in non-solid lines in brush color
@@ -671,6 +675,10 @@ var
       exit;
 
     ADrawer.Pen := LinePen;
+    if LinePen.Color = clDefault then
+      ADrawer.SetPenColor(FChart.GetDefaultColor(dctFont))
+    else
+      ADrawer.SetPenColor(LinePen.Color);
     imgPt1 := ParentChart.GraphToImage(gp);
     col1 := GetPtColor(i + FLoBound);
 
@@ -1050,6 +1058,10 @@ begin
 
   ADrawer.SetBrushParams(bsClear, clTAColor);
   ADrawer.Pen := FPen;
+  if FPen.Color = clDefault then
+    ADrawer.SetPenColor(FChart.GetDefaultColor(dctFont))
+  else
+    ADrawer.SetPenColor(FPen.Color);
 
   with ParentChart do
     case LineStyle of
@@ -1272,7 +1284,16 @@ var
     ic: IChartTCanvasDrawer;
   begin
     ADrawer.Pen := BarPen;
+    if BarPen.Color = clDefault then
+      ADrawer.SetPenColor(FChart.GetDefaultColor(dctFont))
+    else
+      ADrawer.SetPenColor(BarPen.Color);
     ADrawer.Brush := BarBrush;
+    if BarBrush.Color = clDefault then
+      ADrawer.SetBrushColor(FChart.GetDefaultColor(dctBrush))
+    else
+      ADrawer.SetPenColor(BarPen.Color);
+
     c := Source[pointIndex]^.Color;
     if c <> clTAColor then
       ADrawer.BrushColor := c;
@@ -2208,7 +2229,15 @@ var
 
       // Prepare painting
       ADrawer.Brush := AreaBrush;
+      if AreaBrush.Color = clDefault then
+        ADrawer.SetBrushColor(FChart.GetDefaultColor(dctBrush))
+      else
+        ADrawer.SetBrushColor(AreaBrush.Color);
       ADrawer.Pen := AreaContourPen;
+      if AreaContourPen.Color = clDefault then
+        ADrawer.SetPenColor(FChart.GetDefaultColor(dctFont))
+      else
+        ADrawer.SetPenColor(AreaContourPen.Color);
       if Styles <> nil then
         Styles.Apply(ADrawer, j - j0);
 
@@ -2234,11 +2263,19 @@ var
       if AreaLinesPen.Style <> psClear then begin
         if FBanded and (j > -1) then begin
           ADrawer.Pen := AreaLinesPen;
+          if AreaLinesPen.Color = clDefault then
+            ADrawer.SetPenColor(FChart.GetDefaultColor(dctFont))
+          else
+            ADrawer.SetPenColor(AreaLinesPen.Color);
           for i := 1 to numDataPts-2 do
             ADrawer.Line(pts[i], pts[numpts - 1 - i]);
         end else
         if not FBanded then begin
           ADrawer.Pen := AreaLinesPen;
+          if AreaLinesPen.Color = clDefault then
+            ADrawer.SetPenColor(FChart.GetDefaultColor(dctFont))
+          else
+            ADrawer.SetPenColor(AreaLinesPen.Color);
           zeroPt := pts[numDataPts];
           for i := 1 to numDataPts-2 do begin
             if IsRotated then zeroPt.Y := pts[i].Y else zeroPt.X := pts[i].X;

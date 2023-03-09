@@ -32,9 +32,9 @@ begin
   chart.LeftAxis.Marks.Frame.Visible := true;
   chart.LeftAxis.Marks.Frame.Style := psSolid;
   chart.LeftAxis.Marks.Frame.FPColor := colBlack;
-  chart.LeftAxis.Grid.FPColor := colDkGray;
+  chart.LeftAxis.Grid.FPColor := colSilver;
   chart.BottomAxis.Marks.Visible := false;
-  chart.BottomAxis.Grid.FPColor := colDkGray;
+  chart.BottomAxis.Grid.FPColor := colSilver;
   chart.Color := $FFA0A0;
   chart.BackColor := $FFFFFF;
   bs := TBarSeries.Create(nil);

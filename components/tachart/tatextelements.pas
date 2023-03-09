@@ -386,11 +386,12 @@ begin
       if FOwner <> nil then clr := FOwner.Color else clr := clBtnFace;
     end else
       clr := Color;
-    ADrawer.SetBrushParams(Style, ColorToRGB(clr));
+    ADrawer.SetBrushParams(Style, clr);
   end;
   if IsMarginRequired then begin
+    ADrawer.Pen := GetFrame;
     if GetFrame.Visible then
-      ADrawer.Pen := GetFrame
+      ADrawer.SetPenColor(GetFrame.Color)
     else
       ADrawer.SetPenParams(psClear, clTAColor);
     ADrawer.Polygon(labelPoly, 0, Length(labelPoly));
@@ -422,6 +423,7 @@ begin
   p := GetLinkPen;
   if p.Visible then begin
     ADrawer.Pen := p;
+    ADrawer.SetPenColor(p.Color);
     ADrawer.Line(ADataPoint, ALabelCenter);
   end;
 end;

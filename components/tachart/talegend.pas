@@ -712,11 +712,15 @@ begin
   try
     drawer.Brush := BackgroundBrush;
     if BackgroundBrush.Color = clDefault then
-      drawer.SetBrushColor(ColorToRGB(FOwner.GetDefaultColor(dctBrush)));
+      drawer.SetBrushColor(FOwner.GetDefaultColor(dctBrush))
+    else
+      drawer.SetBrushColor(BackgroundBrush.Color);
     if Frame.Visible then begin
       drawer.Pen := Frame;
       if Frame.Color = clDefault then
-        drawer.SetPenColor(ColorToRGB(FOwner.GetDefaultColor(dctFont)));
+        drawer.SetPenColor(FOwner.GetDefaultColor(dctFont))
+      else
+        drawer.SetPenColor(Frame.Color);
     end else
       drawer.SetPenParams(psClear, clTAColor);
     r := AData.FBounds;

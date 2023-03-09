@@ -360,7 +360,9 @@ begin
   if FAxis.Grid.Visible then begin
     FDrawer.Pen := FAxis.Grid;
     if (FAxis.Grid.Color = clDefault) then
-      FDrawer.SetPenColor(GetDefaultPenColor);
+      FDrawer.SetPenColor(GetDefaultPenColor)
+    else
+      FDrawer.SetPenColor(FAxis.Grid.Color);
     FDrawer.SetBrushParams(bsClear, clTAColor);
     GridLine(coord);
     FPrevCoord := coord;
@@ -392,7 +394,9 @@ begin
   if not APen.Visible and not FAxis.Arrow.Visible then exit;
   FDrawer.Pen := APen;
   if (APen.Color = clDefault) then
-    FDrawer.SetPenColor(GetDefaultPenColor);
+    FDrawer.SetPenColor(GetDefaultPenColor)
+  else
+    FDrawer.SetPenColor(APen.Color);
   if APen.Visible then
     LineZ(AStart, AEnd);
   if FAxis.Arrow.Visible then begin

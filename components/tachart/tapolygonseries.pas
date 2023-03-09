@@ -139,7 +139,15 @@ begin
   begin
     SetLength(FPoints, nPoints);
     ADrawer.SetBrush(FBrush);
+    if FBrush.Color = clDefault then
+      ADrawer.SetBrushColor(FChart.GetDefaultColor(dctBrush))
+    else
+      ADrawer.SetBrushColor(FBrush.Color);
     ADrawer.SetPen(FPen);
+    if FPen.Color = clDefault then
+      ADrawer.SetPenColor(FChart.GetDefaultColor(dctFont))
+    else
+      ADrawer.SetPenColor(FPen.Color);
     ADrawer.Polygon(FPoints, 0, Length(FPoints));
     exit;
   end;
@@ -166,6 +174,10 @@ begin
   if FBrush.Style <> bsClear then
   begin
     ADrawer.SetBrush(FBrush);
+    if Brush.Color = clDefault then
+      ADrawer.SetBrushColor(FChart.GetDefaultColor(dctBrush))
+    else
+      ADrawer.SetBrushColor(Brush.Color);
     ADrawer.SetPenParams(psClear, clTAColor);
     ADrawer.Polygon(FPoints, 0, Length(FPoints));
   end;
@@ -174,6 +186,10 @@ begin
   if FPen.Style <> psClear then
   begin
     ADrawer.Pen := FPen;
+    if FPen.Color = clDefault then
+      ADrawer.SetPenColor(FChart.GetDefaultColor(dctFont))
+    else
+      ADrawer.SetPenColor(FPen.Color);
     for i := 0 to High(FStart) - 1 do
       ADrawer.PolyLine(FPoints, FStart[i], FStart[i+1] - FStart[i]);
   end;

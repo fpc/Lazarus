@@ -210,8 +210,11 @@ procedure TAggPasDrawer.Polygon(
 begin
   if ANumPts <= 0 then exit;
   FCanvas.Polygon(APoints, false, AStartIndex, ANumPts);
-  FCanvas.Polyline(APoints, AStartIndex, ANumPts);
-  FCanvas.Line(APoints[ANumPts - 1], APoints[0])
+  if FCanvas.Pen.Style <> psClear then
+  begin
+    FCanvas.Polyline(APoints, AStartIndex, ANumPts);
+    FCanvas.Line(APoints[ANumPts - 1], APoints[0])
+  end;
 end;
 
 procedure TAggPasDrawer.Polyline(

@@ -4,7 +4,18 @@
   Note that the AggPas version coming with Lazarus is unmaintained at the moment 
   and rather buggy. Font support works fine only on Windows. On Linux, you must 
   specify the directory with your fonts in the constant FONT_DIR defined below. 
-  On macOS (cocoa), text output is not supported at all. }
+  On macOS (cocoa), text output is not supported at all.
+
+  By default, system colors are not supported and usually rendered as black.
+  Therefore, use clWhite instead of clWindow for Chart.BackColor etc.
+  If you absolute need system color support assign the function
+  ChartColorSysToFPColor (in unit TADrawerCanvas) to property DoChartColorToFPColor
+  of the chart's drawer:
+
+    Chart.Drawer.DoChartColorToFPColor := @ChartColorSysToFPColor.
+
+  Note, however, that this pulls in the LCL.
+  }
 
 unit Main;
 
@@ -96,6 +107,8 @@ begin
   {$IFDEF USE_SYSTEM_COLORS}
   Chart.Color := clForm;
   Chart.BackColor := clWindow;
+  Chart.Legend.BackgroundBrush.Color := clDefault;
+  Chart.Frame.Color := clBtnShadow;
   {$ENDIF}
 end;
 
