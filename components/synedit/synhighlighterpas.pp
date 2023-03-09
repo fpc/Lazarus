@@ -1751,9 +1751,12 @@ function TSynPasSyn.Func81: TtkTokenKind;
 var
   tbf: TPascalCodeFoldBlockType;
 begin
-  if KeyComp('Stored') then
-  begin
-    if rsProperty in fRange then Result := tkKey else Result := tkIdentifier;
+  if (fRange * [rsProperty, rsAtPropertyOrReadWrite, rsAfterEqualOrColon] =  [rsProperty]) and
+     (PasCodeFoldRange.BracketNestLevel = 0) and
+     KeyComp('Stored')
+  then begin
+    Result := tkKey;
+    fRange := fRange + [rsAtPropertyOrReadWrite] - [rsVarTypeInSpecification];
   end
   else if KeyComp('Interface') then begin
     if (rsAfterEqual in fRange) and (PasCodeFoldRange.BracketNestLevel = 0)
