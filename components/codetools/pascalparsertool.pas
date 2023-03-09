@@ -1724,7 +1724,7 @@ begin
       end;
     end;
     if NeedIdentifier and UpAtomIs('SPECIALIZE') then begin
-      ReadSpecialize(phpCreateNodes in Attr,Extract,Copying,Attr);
+      ReadTypeReference(phpCreateNodes in Attr,Extract,Copying,Attr);
       NeedIdentifier:=false;
     end;
     if NeedIdentifier then begin
@@ -4460,6 +4460,12 @@ var
 begin
   if (Scanner.CompilerMode=cmOBJFPC) and UpAtomIs('SPECIALIZE') then begin
     ReadSpecialize(CreateNodes,Extract,Copying,Attr);
+    while CurPos.Flag=cafPoint do begin
+      // e.g. atype<params>.subtype
+      Next;
+      AtomIsIdentifierSaveE(20180411194209);
+      Next;
+    end;
     exit;
   end;
   if CreateNodes then begin
