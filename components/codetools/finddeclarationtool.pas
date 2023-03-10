@@ -5311,6 +5311,12 @@ var
         end else begin
           IsPredefined:=true;
         end;
+        if  (fodDoNotCache in SubParams.NewFlags) then begin
+          Include(Params.Flags, fdfDoNotCache);
+          Include(Params.NewFlags, fodDoNotCache);
+        end;
+        SubParams.AppendGenericParamValues(Params.GenParams);
+        Params.GenParams:=SubParams.GenParams;
         exit;
       end;
 
