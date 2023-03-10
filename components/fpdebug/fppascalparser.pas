@@ -497,6 +497,14 @@ type
     function DoGetResultValue: TFpValue; override;
   end;
 
+  { TFpPascalExpressionPartOperatorMemberIn }
+
+  TFpPascalExpressionPartOperatorMemberIn = class(TFpPascalExpressionPartBinaryOperator)    // enum in set
+  protected
+    procedure Init; override;
+    function DoGetResultValue: TFpValue; override;
+  end;
+
 implementation
 
 var
@@ -517,6 +525,7 @@ const
   PRECEDENCE_AND        = 12;        // a AND b
   PRECEDENCE_PLUS_MINUS = 13;        // a + b
   PRECEDENCE_OR         = 13;        // a OR b  // XOR
+  PRECEDENCE_IN         = 19;        // enum IN set // officially the same as PRECEDENCE_COMPARE
   PRECEDENCE_COMPARE    = 20;        // a <> b // a=b
 
 type
@@ -2354,6 +2363,8 @@ var
               NewPart := TFpPascalExpressionPartOperatorUnaryNot.Create(Self, CurPtr, TokenEndPtr-1);
         end;
       2: case chr(ord(CurPtr^) AND $DF) of
+          'I': if CheckToken('N', CurPtr) then
+              NewPart := TFpPascalExpressionPartOperatorMemberIn.Create(Self, CurPtr, TokenEndPtr-1);
           'O': if CheckToken('R', CurPtr) then
               NewPart := TFpPascalExpressionPartOperatorOr.Create(Self, ootOr, CurPtr, TokenEndPtr-1);
         end;
@@ -4285,6 +4296,66 @@ begin
 
 
   SetError(fpErrorNotAStructure, [MemberName, Items[0].GetText]);
+end;
+
+{ TFpPascalExpressionPartOperatorMemberIn }
+
+procedure TFpPascalExpressionPartOperatorMemberIn.Init;
+begin
+  FPrecedence := PRECEDENCE_IN;
+  inherited Init;
+end;
+
+function TFpPascalExpressionPartOperatorMemberIn.DoGetResultValue: TFpValue;
+var
+  AVal, ASet, m: TFpValue;
+  s, s2: String;
+  i: Integer;
+begin
+  Result := nil;
+  if Count <> 2 then begin
+    SetError('"in" requires 2 values');
+    exit;
+  end;
+
+  ASet := Items[1].ResultValue;
+  if (ASet = nil) or (ASet.Kind <> skSet) then begin
+    SetError('"in" requires a set');
+    exit;
+  end;
+
+  AVal := Items[0].ResultValue;
+  if AVal = nil then begin
+    SetError('"in" requires an enum');
+    exit;
+  end;
+
+
+  if AVal.Kind <> skEnumValue then begin
+    SetError('"in" requires an enum');
+    exit;
+  end;
+
+
+  s := LowerCase(AVal.AsString);
+
+  for i := 0 to ASet.MemberCount-1 do begin
+    m := ASet.Member[i];
+    s2 := LowerCase(m.AsString);
+    m.ReleaseReference;
+    if s = s2 then begin
+      Result := TFpValueConstBool.Create(True);
+      {$IFDEF WITH_REFCOUNT_DEBUG}
+      if Result <> nil then
+        Result.DbgRenameReference(nil, 'DoGetResultValue');{$ENDIF}
+      exit;
+    end;
+  end;
+
+  Result := TFpValueConstBool.Create(False);
+  {$IFDEF WITH_REFCOUNT_DEBUG}
+  if Result <> nil then
+    Result.DbgRenameReference(nil, 'DoGetResultValue');{$ENDIF}
 end;
 
 initialization
