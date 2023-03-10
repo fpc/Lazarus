@@ -5423,6 +5423,7 @@ var
   IsPredefined: boolean;
   OldStartFlags: TFindDeclarationFlags;
   NodeStackEntry: PCodeTreeNodeStackEntry;
+  Cache: TObject;
 begin
   NewAliasNode := nil;
   {$IFDEF CheckNodeTool}CheckNodeTool(Node);{$ENDIF}
@@ -5449,14 +5450,15 @@ begin
   try
     while (Result.Node<>nil) do begin
       if (Result.Node.Cache is TBaseTypeCache) then begin
+        Cache := Result.Node.Cache;
         // base type already cached
         if NodeStack^.StackPtr>=0 then
           AddNodeToStack(NodeStack,Result.Tool,Result.Node);
         Result:=CreateFindContext(TBaseTypeCache(Result.Node.Cache));
         // May be replaced with NewAliasNode
         if AliasType <> nil then begin
-          AliasType^.Tool := TFindDeclarationTool(TBaseTypeCache(Result.Node.Cache).AliasTool);
-          AliasType^.Node := TBaseTypeCache(Result.Node.Cache).AliasNode;
+          AliasType^.Tool := TFindDeclarationTool(TBaseTypeCache(Cache).AliasTool);
+          AliasType^.Node := TBaseTypeCache(Cache).AliasNode;
         end;
         break;
       end;
@@ -8947,6 +8949,8 @@ var
   ExprType: TExpressionType;
   FirstParamStartPos: Integer;
   FirstParamProcContext: TFindContext;
+  MyContextAliasType: TFindContext;
+  ContextAliasType: PFindContext;
 
   procedure RaiseIdentExpected(const Id: int64);
   begin
@@ -9176,7 +9180,7 @@ var
       ResolveTypeLessProperty;
     end;
 
-    CurAliasType:=nil;
+    CurAliasType:=ContextAliasType;
     if AtEnd then CurAliasType:=AliasType;
 
     // find base type
@@ -9657,7 +9661,10 @@ var
                 //   TMyClass.Create.
                 //   :=TMyClass.Create;
                 // use this class (the constructor can be defined in the ancestor)
-                ExprType.Context:=Context;
+                if MyContextAliasType.Tool<> nil then
+                  ExprType.Context:=MyContextAliasType
+                else
+                  ExprType.Context:=Context;
                 Params.Load(OldInput,true);
                 exit;
               end;
@@ -10270,6 +10277,8 @@ var
   end;
   
 begin
+  MyContextAliasType := CleanFindContext;
+  ContextAliasType:=@MyContextAliasType;
   Result:=CleanExpressionType;
   FirstParamStartPos := -1;
   FirstParamProcContext := CleanFindContext;

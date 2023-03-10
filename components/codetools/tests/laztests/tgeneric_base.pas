@@ -1264,8 +1264,43 @@ begin
   {completion:MyBaseOnlyProc;MyBaseAndMyClassProc1;MyBaseAndMySubProc1;MyEveryProc1}
 end;
 
-
 begin
-
+  a1{guesstype:TTest_Field1}                  := TTest_Field1.Create;
+  a1{guesstype:TTestInherit_Field1}           := TTestInherit_Field1.Create;
+  a1{guesstype:TTestInline_Field1}            := TTestInline_Field1.Create;
+  a1{guesstype:TTestInline_Field1_Wrong}      := TTestInline_Field1_Wrong.Create;
+  a1{guesstype:TTestInline_Field1_Rec}        := TTestInline_Field1_Rec.Create;
+  a1{guesstype:TTest_TField1}                 := TTest_TField1.Create;
+  a1{guesstype:TTestInherit_TField1}          := TTestInherit_TField1.Create;
+  a1{guesstype:TTestInline_TField1}           := TTestInline_TField1.Create;
+  a1{guesstype:TTest_Forw_Field1}             := TTest_Forw_Field1.Create;
+  a1{guesstype:TTestInherit_Forw_Field1}      := TTestInherit_Forw_Field1.Create;
+  a1{guesstype:TTestInline_Forw_Field1}       := TTestInline_Forw_Field1.Create;
+  a1{guesstype:TTest_Forw_Field2}             := TTest_Forw_Field2.Create;
+  a1{guesstype:TTestInherit_Forw_Field2}      := TTestInherit_Forw_Field2.Create;
+  a1{guesstype:TTestInline_Forw_Field2}       := TTestInline_Forw_Field2.Create;
+  a1{guesstype:TTest_Forw_Field3}             := TTest_Forw_Field3.Create;
+  a1{guesstype:TTestInherit_Forw_Field3}      := TTestInherit_Forw_Field3.Create;
+  a1{guesstype:TTestInline_Forw_Field3}       := TTestInline_Forw_Field3.Create;
+  a1{guesstype:TTest_Forw_TField1}            := TTest_Forw_TField1.Create;
+  a1{guesstype:TTestInherit_Forw_TField1}     := TTestInherit_Forw_TField1.Create;
+  a1{guesstype:TTestInline_Forw_TField1}      := TTestInline_Forw_TField1.Create;
+  a1{guesstype:TTest_ForwBase_Field1}         := TTest_ForwBase_Field1.Create;
+  a1{guesstype:TTestInherit_ForwBase_Field1}  := TTestInherit_ForwBase_Field1.Create;
+  a1{guesstype:TTestInline_ForwBase_Field1}   := TTestInline_ForwBase_Field1.Create;
+  a1{guesstype:TTest_ForwBase_TField1}        := TTest_ForwBase_TField1.Create;
+  a1{guesstype:TTestInherit_ForwBase_TField1} := TTestInherit_ForwBase_TField1.Create;
+  a1{guesstype:TTestInline_ForwBase_TField1}  := TTestInline_ForwBase_TField1.Create;
+  a1{guesstype:TTest_Base1}                   := TTest_Base1.Create;
+  a1{guesstype:TTestInherhit_Base1}           := TTestInherhit_Base1.Create;
+  a1{guesstype:TTestInline_Base1}             := TTestInline_Base1.Create;
+  a1{guesstype:TTestInline_Base1Sub}          := TTestInline_Base1Sub.Create;
+  a1{guesstype:TTest_TBase1}                  := TTest_TBase1.Create;
+  a1{guesstype:TTestInherhit_TBase1}          := TTestInherhit_TBase1.Create;
+  a1{guesstype:TTestInline_TBase1}            := TTestInline_TBase1.Create;
+  a1{guesstype:TTestInline_TBase1Sub}         := TTestInline_TBase1Sub.Create;
+  a1{guesstype:TTest_ForwBase_Base1}          := TTest_ForwBase_Base1.Create;
+  a1{guesstype:TTest_ForwBaseInherhit_Base1}  := TTest_ForwBaseInherhit_Base1.Create;
+  a1{guesstype:TTest_ForwBaseInline_Base1}    := TTest_ForwBaseInline_Base1.Create;
 end.
 
