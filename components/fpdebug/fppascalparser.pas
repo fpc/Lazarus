@@ -105,12 +105,18 @@ type
 
   { TFpPascalExpressionPartList }
 
-  TFpPascalExpressionPartList = class
+  TFpPascalExpressionPartList = class(TStrings)
+  public // TStrings
+    procedure Clear; override;
+    procedure Delete(Index: Integer); override;
+    procedure Insert(Index: Integer; const S: string); override;
+  protected // TStrings
+    function Get(Index: Integer): string; override;
+    //function GetCount: Integer; virtual; abstract;
   protected
     function GetItems(AIndex: Integer): TFpPascalExpressionPart; virtual; abstract;
-    function GetCount: Integer; virtual; abstract;
   public
-    property Count: Integer read GetCount;
+    //property Count: Integer read GetCount;
     property Items[AIndex: Integer]: TFpPascalExpressionPart read GetItems;
   end;
 
@@ -336,6 +342,7 @@ type
   TFpPascalExpressionPartBracketSet = class(TFpPascalExpressionPartSquareBracket)
   // a in [x, y, z]
   protected
+    function DoGetResultValue: TFpValue; override;
     function HandleNextPartInBracket(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
     function HandleSeparator(ASeparatorType: TSeparatorType; var APart: TFpPascalExpressionPart): Boolean; override;
   end;
@@ -702,6 +709,26 @@ end;
 function DbgsSymbol(AVal: TFpSymbol; {%H-}AIndent: String): String;
 begin
   Result := DbgSName(AVal);
+end;
+
+procedure TFpPascalExpressionPartList.Clear;
+begin
+  assert(False, 'TFpPascalExpressionPartList.Clear: False');
+end;
+
+procedure TFpPascalExpressionPartList.Delete(Index: Integer);
+begin
+  assert(False, 'TFpPascalExpressionPartList.Delete: False');
+end;
+
+procedure TFpPascalExpressionPartList.Insert(Index: Integer; const S: string);
+begin
+  assert(False, 'TFpPascalExpressionPartList.Insert: False');
+end;
+
+function TFpPascalExpressionPartList.Get(Index: Integer): string;
+begin
+  Result := Items[Index].GetText();
 end;
 
 { TFpPascalExpressionPartListForwarder }
@@ -1592,6 +1619,11 @@ begin
 end;
 
 { TFpPascalExpressionPartBracketSet }
+
+function TFpPascalExpressionPartBracketSet.DoGetResultValue: TFpValue;
+begin
+  Result := TFpValueConstSet.Create(TFpPascalExpressionPartListForwarder.Create(Self, 0, Count));
+end;
 
 function TFpPascalExpressionPartBracketSet.HandleNextPartInBracket(APart: TFpPascalExpressionPart): TFpPascalExpressionPart;
 begin
@@ -3620,6 +3652,36 @@ function TFpPascalExpressionPartOperatorPlusMinus.DoGetResultValue: TFpValue;
     else
       SetError('Operation + not supported');
   end;
+  function AddSets(ASetVal, AOtherVal: TFpValue): TFpValue;
+  var
+    r: TStringList;
+    i: Integer;
+    m: TFpValue;
+    s: String;
+  begin
+    Result := nil;
+    case AOtherVal.Kind of
+      skSet: begin
+        r := TStringList.Create;
+        r.CaseSensitive := False;
+        for i := 0 to ASetVal.MemberCount - 1 do begin
+          m := ASetVal.Member[i];
+          s := m.AsString;
+          m.ReleaseReference;
+          r.Add(s);
+        end;
+        for i := 0 to AOtherVal.MemberCount - 1 do begin
+          m := AOtherVal.Member[i];
+          s := m.AsString;
+          m.ReleaseReference;
+          if r.IndexOf(s) < 0 then
+            r.Add(s);
+        end;
+        Result := TFpValueConstSet.Create(r);
+      end;
+      else SetError('Operator +: set union requires a set as 2nd operator');
+    end;
+  end;
 
   function SubPointerFromValue(APointerVal, AOtherVal: TFpValue): TFpValue;
   begin
@@ -3657,6 +3719,37 @@ function TFpPascalExpressionPartOperatorPlusMinus.DoGetResultValue: TFpValue;
       else SetError('Subtraction not supported');
     end;
   end;
+  function SubtractSets(ASetVal, AOtherVal: TFpValue): TFpValue;
+  var
+    r: TStringList;
+    i, j: Integer;
+    m: TFpValue;
+    s: String;
+  begin
+    Result := nil;
+    case AOtherVal.Kind of
+      skSet: begin
+        r := TStringList.Create;
+        r.CaseSensitive := False;
+        for i := 0 to ASetVal.MemberCount - 1 do begin
+          m := ASetVal.Member[i];
+          s := m.AsString;
+          m.ReleaseReference;
+          r.Add(s);
+        end;
+        for i := 0 to AOtherVal.MemberCount - 1 do begin
+          m := AOtherVal.Member[i];
+          s := m.AsString;
+          m.ReleaseReference;
+          j := r.IndexOf(s);
+          if j >= 0 then
+            r.Delete(j);
+        end;
+        Result := TFpValueConstSet.Create(r);
+      end;
+      else SetError('Operator -: set diff requires a set as 2nd operator');
+    end;
+  end;
 {$POP}
 var
   tmp1, tmp2: TFpValue;
@@ -3688,6 +3781,8 @@ begin
                  end;
       skString, skAnsiString, skWideString, skChar{, skWideChar}:
                   Result := ConcateCharData(tmp1, tmp2);
+      skSet:
+                  Result := AddSets(tmp1, tmp2);
     end;
   end
   else begin
@@ -3696,6 +3791,8 @@ begin
       skInteger:  Result := SubValueFromInt(tmp1, tmp2);
       skCardinal: Result := SubValueFromCardinal(tmp1, tmp2);
       skFloat:    Result := SubValueFromFloat(tmp1, tmp2);
+      skSet:
+                  Result := SubtractSets(tmp1, tmp2);
     end;
   end;
 
@@ -3741,6 +3838,35 @@ function TFpPascalExpressionPartOperatorMulDiv.DoGetResultValue: TFpValue;
       skCardinal: Result := TFpValueConstFloat.Create(AFloatVal.AsFloat * AOtherVal.AsCardinal);
       skFloat:    Result := TFpValueConstFloat.Create(AFloatVal.AsFloat * AOtherVal.AsFloat);
       else SetError('Multiply not supported');
+    end;
+  end;
+  function MultiplySets(ASetVal, AOtherVal: TFpValue): TFpValue;
+  var
+    r: TStringList;
+    i, j: Integer;
+    m: TFpValue;
+    s, s1, s2: String;
+  begin
+    Result := nil;
+    case AOtherVal.Kind of
+      skSet: begin
+        r := TStringList.Create;
+        for i := 0 to ASetVal.MemberCount - 1 do begin
+          m := ASetVal.Member[i];
+          s := m.AsString;
+          s1 := LowerCase(s);
+          m.ReleaseReference;
+          for j := 0 to AOtherVal.MemberCount - 1 do begin
+            m := AOtherVal.Member[j];
+            s2 := LowerCase(m.AsString);
+            m.ReleaseReference;
+            if s1 = s2 then
+              r.Add(s);
+          end;
+        end;
+        Result := TFpValueConstSet.Create(r);
+      end;
+      else SetError('Operator *: set intersection requires a set as 2nd operator');
     end;
   end;
 
@@ -3828,6 +3954,7 @@ begin
       skInteger:  Result := MultiplyIntWithValue(tmp1, tmp2);
       skCardinal: Result := MultiplyCardinalWithValue(tmp1, tmp2);
       skFloat:    Result := MultiplyFloatWithValue(tmp1, tmp2);
+      skSet:      Result := MultiplySets(tmp1, tmp2);
     end;
   end
   else
@@ -4036,6 +4163,46 @@ function TFpPascalExpressionPartOperatorCompare.DoGetResultValue: TFpValue;
     else
       SetError('= not supported');
   end;
+  function SetEqual(ASetVal, AOtherVal: TFpValue; AReverse: Boolean = False): TFpValue;
+  var
+    r: TStringList;
+    i: Integer;
+    m: TFpValue;
+    s: String;
+  begin
+    Result := nil;
+    if AOtherVal.Kind <> skSet then begin
+      SetError(GetText + ' not supported');
+      exit;
+    end;
+
+    r := TStringList.Create;
+    try
+      r.CaseSensitive := False;
+      for i := 0 to ASetVal.MemberCount - 1 do begin
+        m := ASetVal.Member[i];
+        s := m.AsString;
+        m.ReleaseReference;
+        if r.IndexOf(s) < 0 then
+          r.Add(s);
+      end;
+      r.Sorted := True;
+
+      for i := 0 to AOtherVal.MemberCount - 1 do begin
+        m := AOtherVal.Member[i];
+        s := m.AsString;
+        m.ReleaseReference;
+        if r.IndexOf(s) < 0 then begin
+          Result := TFpValueConstBool.Create(AReverse);
+          exit;
+        end;
+      end;
+
+      Result := TFpValueConstBool.Create(not AReverse);
+    finally
+      r.Free;
+    end;
+  end;
 
   function IntGreaterThanValue(AIntVal, AOtherVal: TFpValue; AReverse: Boolean = False): TFpValue;
   begin
@@ -4115,6 +4282,40 @@ function TFpPascalExpressionPartOperatorCompare.DoGetResultValue: TFpValue;
       SetError('= not supported');
   end;
 
+  function SymDiffSets(ASetVal, AOtherVal: TFpValue): TFpValue;
+  var
+    r: TStringList;
+    i, j, c: Integer;
+    m: TFpValue;
+    s: String;
+  begin
+    Result := nil;
+    r := TStringList.Create;
+    r.CaseSensitive := False;
+    for i := 0 to ASetVal.MemberCount - 1 do begin
+      m := ASetVal.Member[i];
+      s := m.AsString;
+      m.ReleaseReference;
+      if r.IndexOf(s) < 0 then
+        r.Add(s);
+    end;
+    c := r.Count;
+    for i := 0 to AOtherVal.MemberCount - 1 do begin
+      m := AOtherVal.Member[i];
+      s := m.AsString;
+      m.ReleaseReference;
+      j := r.IndexOf(s);
+      if j < c then begin // otherwise the 2nd set has duplicate idents
+        if j >= 0 then begin
+          r.Delete(j);
+          dec(c)
+        end
+        else
+          r.Add(s);
+      end;
+    end;
+    Result := TFpValueConstSet.Create(r);
+  end;
 {$POP}
 var
   tmp1, tmp2: TFpValue;
@@ -4151,6 +4352,7 @@ begin
         end;
       skString, skAnsiString, skWideString, skChar{, skWideChar}:
                   Result := CharDataEqualToValue(tmp1, tmp2, (s = '<>'));
+      skSet:      Result := SetEqual(tmp1, tmp2, (s = '<>'));
     end;
   end
   else
@@ -4183,7 +4385,8 @@ begin
   end
   else
   if GetText = '><' then begin
-    // compare SET
+    if (tmp1.Kind = skSet) and (tmp2.Kind = skSet) then
+      Result := SymDiffSets(tmp1, tmp2);
   end;
 
  {$IFDEF WITH_REFCOUNT_DEBUG}if Result <> nil then

@@ -369,6 +369,34 @@ type
     destructor Destroy; override;
   end;
 
+  { TFpValueConstEnumValue }
+
+  TFpValueConstEnumValue = class(TFpValueConstWithType)
+  private
+    FName: String;
+  protected
+    function GetFieldFlags: TFpValueFieldFlags; override;
+    function GetKind: TDbgSymbolKind; override;
+    function GetAsString: AnsiString; override;
+  public
+    constructor Create(AName: String);
+  end;
+
+  { TFpValueConstSet }
+
+  TFpValueConstSet = class(TFpValueConstWithType)
+  private
+    FNames: TStrings;
+  protected
+    function GetFieldFlags: TFpValueFieldFlags; override;
+    function GetKind: TDbgSymbolKind; override;
+    function GetMember(AIndex: Int64): TFpValue; override;
+    function GetMemberCount: Integer; override;
+  public
+    constructor Create(ANames: TStrings);
+    destructor Destroy; override;
+  end;
+
   TFpDbgSymbolScope = class;
 
   { TFpSymbol }
@@ -1351,6 +1379,65 @@ destructor TFpValueTypeDefinition.Destroy;
 begin
   inherited Destroy;
   FSymbol.ReleaseReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FSymbol, 'TFpValueTypeDeclaration'){$ENDIF};
+end;
+
+{ TFpValueConstEnumValue }
+
+function TFpValueConstEnumValue.GetFieldFlags: TFpValueFieldFlags;
+begin
+  Result := inherited GetFieldFlags;
+  Result := Result + [{svfOrdinal,} svfIdentifier];
+end;
+
+function TFpValueConstEnumValue.GetKind: TDbgSymbolKind;
+begin
+  Result := skEnumValue;
+end;
+
+function TFpValueConstEnumValue.GetAsString: AnsiString;
+begin
+  Result := FName;
+end;
+
+constructor TFpValueConstEnumValue.Create(AName: String);
+begin
+  inherited Create;
+  FName := AName;
+end;
+
+{ TFpValueConstSet }
+
+function TFpValueConstSet.GetFieldFlags: TFpValueFieldFlags;
+begin
+  Result := inherited GetFieldFlags;
+  Result := Result + [svfMembers];
+end;
+
+function TFpValueConstSet.GetKind: TDbgSymbolKind;
+begin
+  Result := skSet;
+end;
+
+function TFpValueConstSet.GetMember(AIndex: Int64): TFpValue;
+begin
+  Result := TFpValueConstEnumValue.Create(FNames[AIndex]);
+end;
+
+function TFpValueConstSet.GetMemberCount: Integer;
+begin
+  Result := FNames.Count;
+end;
+
+constructor TFpValueConstSet.Create(ANames: TStrings);
+begin
+  inherited Create;
+  FNames := ANames;
+end;
+
+destructor TFpValueConstSet.Destroy;
+begin
+  inherited Destroy;
+  FNames.Free;
 end;
 
 { TDbgInfoAddressContext }

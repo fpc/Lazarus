@@ -4077,7 +4077,7 @@ begin
     t.Clear;
     // Constant values
     //t.Add('', '^char(1)^+[1]',   weMatchErr('Can not evaluate: "\[1\]"'));
-    t.Add('', '^char(1)^+[1]',   weMatchErr('Can not evaluate: "\['));
+    t.Add('', '^char(1)^+[1]',   weMatchErr('.'));
 
 
     t.EvaluateWatches;
