@@ -69,6 +69,7 @@ function __read(Handle: cint; var Buffer; Count: size_t): ssize_t; cdecl;externa
 function __write(Handle: cint; const Buffer; Count: size_t): ssize_t; cdecl;external clib name 'write';
 function __close(Handle: cint): cint; cdecl;external clib name 'close';
 function getpt:cint;cdecl;external clib name 'getpt';
+function posix_openpt(oflag: cint):cint;cdecl;external clib name 'posix_openpt';
 function grantpt(__fd:cint):cint;cdecl;external clib name 'grantpt';
 function unlockpt(__fd:cint):cint;cdecl;external clib name 'unlockpt';
 function ptsname_r(__fd:cint; __buf:Pchar; __buflen:size_t):cint;cdecl;external clib name 'ptsname_r';

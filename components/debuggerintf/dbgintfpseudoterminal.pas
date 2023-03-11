@@ -122,7 +122,7 @@ var
 
 begin
   Close;
-  FPTy := getpt;
+  FPTy := posix_openpt(O_RDWR + O_NOCTTY);
   if FPTy < 0 then Error;
   if (grantpt(FPTy) < 0) or (unlockpt(FPTy) < 0) then begin
     Error;
