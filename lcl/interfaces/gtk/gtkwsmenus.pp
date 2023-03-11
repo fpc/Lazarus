@@ -163,10 +163,7 @@ begin
   if AMenuItem.RadioItem and not AMenuItem.HasIcon then
     Widget := gtk_radio_menu_item_new(nil)
   else
-  if AMenuItem.IsCheckItem or AMenuItem.HasIcon then
-    Widget := gtk_check_menu_item_new
-  else
-    Widget := gtk_menu_item_new;
+    Widget := gtk_check_menu_item_new;
 
   WidgetInfo := CreateWidgetInfo(Widget);
   WidgetInfo^.LCLObject := AMenuItem;
@@ -315,10 +312,17 @@ end;
 
 class procedure TGtkWSMenuItem.UpdateMenuIcon(const AMenuItem: TMenuItem;
   const HasIcon: Boolean; const AIcon: TBitmap);
+var
+  HBoxWidget: PGtkWidget;
 begin
   if not WSCheckMenuItem(AMenuItem, 'UpdateMenuIcon') then
     Exit;
-  // TODO
+  HBoxWidget := gtk_object_get_data(PGtkObject(AMenuItem.Handle), 'LCLHBox');
+  if HBoxWidget <> nil then begin
+    DestroyWidget(HBoxWidget);
+    gtk_object_set_data(PGtkObject(AMenuItem.Handle), 'LCLHBox', nil);
+  end;
+  UpdateInnerMenuItem(AMenuItem, PGtkWidget(AMenuItem.Handle));
 end;
 {$ENDIF}
 

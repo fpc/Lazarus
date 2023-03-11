@@ -5870,7 +5870,8 @@ begin
   if not LCLMenuItem.HasIcon then
   begin
     // call default draw function
-    OldCheckMenuItemDrawProc(MenuItem,Area);
+    if LCLMenuItem.IsCheckItem then
+      OldCheckMenuItemDrawProc(MenuItem,Area);
     exit;
   end;
   IconSize:=LCLMenuItem.GetIconSize(0);
@@ -6056,6 +6057,11 @@ var
       //  ShortCutToText(NewShortCut);
       if LabelWidget = nil then
       begin
+        // create a label to act as padding
+        LabelWidget := PGtkLabel(gtk_label_new(''));
+        gtk_misc_set_padding(PGtkMisc(LabelWidget), 10, 0);
+        gtk_container_add(GTK_CONTAINER(HBoxWidget), PGtkWidget(LabelWidget));
+        gtk_widget_show(PGtkWidget(LabelWidget));
         // create a label for the ShortCut
         LabelWidget := PGtkLabel(gtk_label_new(PChar(Pointer(s))));
         gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLShortCutLabel', LabelWidget);
@@ -6150,7 +6156,7 @@ begin
       // a separator is an empty gtkmenuitem
       exit;
     end;
-    HBoxWidget := gtk_hbox_new(false, 20);
+    HBoxWidget := gtk_hbox_new(false, 0);
     {$ifdef GTK2}
     gtk_widget_set_direction(PGtkWidget(HBoxWidget), WidgetDirection[UseRTL]);
     {$endif}
