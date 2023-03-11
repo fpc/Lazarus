@@ -45,6 +45,7 @@ type
           const AParams: TCreateParams): HWND; override;
     class function GetDoubleBuffered(const AWinControl: TWinControl): Boolean; override;
     class procedure SetParams(const AScrollBar: TCustomScrollBar); override;
+    class procedure ScrollBy(const AWinControl: TWinControl; DeltaX, DeltaY: integer); override;
   end;
 
   { TWin32WSCustomGroupBox }
@@ -552,6 +553,65 @@ begin
       sbVertical:
         SetWindowLongPtrW(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) or SBS_VERT);
     end;
+  end;
+end;
+
+class procedure TWin32WSScrollBar.ScrollBy(const AWinControl: TWinControl;
+  DeltaX, DeltaY: integer);
+var
+  Scrollbar: TCustomScrollBar absolute AWinControl;
+  lPos: Integer;
+  lScrollInfo: TScrollInfo;
+  Msg: TLMVScroll;
+begin
+  if AWinControl.HandleAllocated then
+  begin
+    lScrollInfo.cbSize:=SizeOf(lScrollInfo);
+    lScrollInfo.fMask := {SIF_PAGE or }SIF_POS{ or SIF_RANGE};
+    GetScrollInfo(AWinControl.Handle, SB_CTL, lScrollInfo);
+
+    lPos := lScrollInfo.nPos;
+
+    if Scrollbar.Kind = sbHorizontal then
+      lPos -= DeltaX
+    else
+      lPos -= DeltaY;
+
+    lScrollInfo.nPos:=lPos;
+
+    // send our desired new position
+    SetScrollInfo(AWinControl.Handle, SB_CTL, lScrollInfo, True);
+
+    // retrieve the actual accepted position
+    GetScrollInfo(AWinControl.Handle, SB_CTL, lScrollInfo);
+
+    // this seems to be the best way to update the LCL scrollbar. It's identical
+    // to what gtk sends.
+
+    //LM_VSCROLL = LM_HSCROLL + 1;
+    Msg.Msg:=LM_HSCROLL + Ord(Scrollbar.Kind); // sbHorizontal = 0 sbVertical = 1;
+    with Msg do
+    begin
+      Pos := lPos;
+      if Pos < High(SmallPos) then
+        SmallPos := Pos
+      else
+        SmallPos := High(SmallPos);
+    end;
+
+    Msg.ScrollBar:=AWinControl.Handle;
+
+    // begin move
+    Msg.ScrollCode := SB_THUMBTRACK;
+    DeliverMessage(AWinControl, Msg);
+
+    // moved
+    Msg.ScrollCode := SB_THUMBPOSITION;
+    DeliverMessage(AWinControl, Msg);
+
+    // done moving
+    Msg.ScrollCode:=SB_ENDSCROLL;
+    DeliverMessage(AWinControl, Msg);
   end;
 end;
 
