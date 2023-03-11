@@ -34,6 +34,7 @@ type
     FOuterArrayIdx, FTotalArrayCnt: integer;
     FRepeatCount: Integer;
     FArrayTypeDone: Boolean;
+    FEncounteredError: Boolean;
   protected
     function CheckError(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): boolean;
 
@@ -100,6 +101,7 @@ begin
     exit;
   Result := IsError(AnFpValue.LastError);
   if Result then begin
+    FEncounteredError := True;
     if AnResData <> nil then
       AnResData.CreateError(ErrorHandler.ErrorAsString(AnFpValue.LastError));
     AnFpValue.ResetError;
@@ -330,6 +332,8 @@ var
   EntryRes: TLzDbgWatchDataIntf;
   MemberValue, TmpVal: TFpValue;
   Cache: TFpDbgMemCacheBase;
+  Dummy: QWord;
+  MLoc: TFpDbgMemLocation;
 begin
   Result := True;
 
@@ -460,6 +464,23 @@ begin
         EntryRes.CreateError('Error: Could not get member')
       else
         DoWritePointerWatchResultData(MemberValue, EntryRes, Addr);
+
+      if (i = StartIdx) and (MemberValue <> nil) and FEncounteredError then begin
+        MLoc := MemberValue.Address;
+        if IsValidLoc(MLoc) then
+          Context.ReadMemory(MLoc, SizeVal(1), @Dummy);
+        if ( IsError(Context.LastMemError) or (not IsValidLoc(MLoc)) ) and
+           (MLoc <> AnFpValue.DataAddress) and (IsValidLoc(AnFpValue.DataAddress))
+        then
+          Context.ReadMemory(AnFpValue.DataAddress, SizeVal(1), @Dummy);
+        if IsError(Context.LastMemError) then begin
+          // array is in unreadable memory
+          AnResData.CreateError(ErrorHandler.ErrorAsString(Context.LastMemError));
+          MemberValue.ReleaseReference;
+          exit;
+        end;
+      end;
+
       MemberValue.ReleaseReference;
       if FRecurseArray = 1 then
         FArrayTypeDone := True;
@@ -592,6 +613,8 @@ var
   MbName: String;
   MBVis: TLzDbgFieldVisibility;
   Addr: TDBGPtr;
+  Dummy: QWord;
+  MLoc: TFpDbgMemLocation;
 begin
   Result := True;
 
@@ -713,6 +736,22 @@ begin
       if not DoWritePointerWatchResultData(MemberValue, ResField, Addr) then
         ResField.CreateError('Unknown');
 
+      if (i = 0) and (MemberValue <> nil) and FEncounteredError then begin
+        MLoc := MemberValue.Address;
+        if IsValidLoc(MLoc) then
+          Context.ReadMemory(MemberValue.Address, SizeVal(1), @Dummy);
+        if ( IsError(Context.LastMemError) or (not IsValidLoc(MLoc)) ) and
+           (MLoc <> AnFpValue.DataAddress) and (IsValidLoc(AnFpValue.DataAddress))
+        then
+          Context.ReadMemory(AnFpValue.DataAddress, SizeVal(1), @Dummy);
+        if IsError(Context.LastMemError) then begin
+          // struct is in unreadable memory
+          AnResData.CreateError(ErrorHandler.ErrorAsString(Context.LastMemError));
+          MemberValue.ReleaseReference;
+          exit;
+        end;
+      end;
+
       MemberValue.ReleaseReference;
     end;
   finally
@@ -778,6 +817,7 @@ var
   s: String;
 begin
   Result := False;
+  FEncounteredError := False;
   case AnFpValue.Kind of
     skPointer:  Result := PointerToResData(AnFpValue, AnResData);
     skInteger,
