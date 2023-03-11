@@ -7617,8 +7617,12 @@ begin
     {$ENDIF}
     if gtk_selection_convert(ClipboardWidget,TypeAtom,FormatID,TimeID) <> GdkFalse then
     begin
-      gtk_clipboard_wait_for_contents(gtk_clipboard_get(TypeAtom), FormatID);
-      Result:=EventData^.Data;
+      // WaitForClipboardAnswer provides a timeout as in some cases
+      // gtk_clipboard_wait_for_contents can wait forever
+      if WaitForClipboardAnswer(EventData) then begin
+        gtk_clipboard_wait_for_contents(gtk_clipboard_get(TypeAtom), FormatID);
+        Result:=EventData^.Data;
+      end;
     end;
   finally
     ClipboardSelectionData.Remove(EventData);
