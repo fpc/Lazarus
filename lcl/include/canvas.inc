@@ -1776,7 +1776,6 @@ end;
 function TCanvas.TextExtent(const Text: string): TSize;
 var
   DCIndex: Integer;
-  ARect: TRect;
 
   procedure SaveState;
   begin
@@ -1795,17 +1794,13 @@ begin
   Result.cY := 0;
   if Text='' then exit;
   RequiredState([csHandleValid, csFontValid]);
-
   DCIndex := 0;
   if Font.IsDefault then
   begin
     SaveState;
     SelectObject(FHandle, OnGetSystemFont());
   end;
-
-  ARect := Rect(0, 0, 0, 0);
   GetTextExtentPoint(FHandle, PChar(Text), Length(Text), Result);
-
   RestoreState;
 end;
 
