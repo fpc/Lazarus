@@ -315,16 +315,14 @@ function TGtkWidgetSet.ClipboardGetData(ClipboardType: TClipboardType;
 type
   PGdkAtom = ^TGdkAtom;
 var
-  FormatAtom, FormatTry: TGdkAtom;
-  SupportedCnt, i: integer;
+  SupportedCnt: integer;
   SupportedFormats: PGdkAtom;
-  SelData: TGtkSelectionData;
-  CompoundTextList: PPGChar;
-  CompoundTextCount: integer;
 
   function IsFormatSupported(CurFormat: TGdkAtom): boolean;
-  var a: integer;
-     AllID: TGdkAtom;
+  var
+    a: integer;
+    AllID: TGdkAtom;
+    SelData: TGtkSelectionData;
   begin
     //DebugLn('IsFormatSupported CurFormat=',dbgs(CurFormat),' SupportedCnt=',dbgs(SupportedCnt));
     if CurFormat=0 then begin
@@ -363,6 +361,12 @@ var
     Result:=(a>=0);
   end;
 
+var
+  FormatAtom, FormatTry: TGdkAtom;
+  i: integer;
+  SelData: TGtkSelectionData;
+  CompoundTextList: PPGChar;
+  CompoundTextCount: integer;
 begin
   {$IfDef DEBUG_CLIPBOARD}
   DebugLn('[TGtkWidgetSet.ClipboardGetData] A ClipboardWidget=',Dbgs(ClipboardWidget),' FormatID=',ClipboardFormatToMimeType(FormatID),' Now=',dbgs(Now));
