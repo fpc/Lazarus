@@ -54,6 +54,7 @@ end;
 {-----------------------------------------------}
 function TCanvas.GetClipRect: TRect;
 begin
+  RequiredState([csHandleValid]);
   // return actual clipping rectangle
   if GetClipBox(FHandle, @Result) = ERROR then
     Result := Rect(0, 0, 2000, 2000);{Just in Case}
