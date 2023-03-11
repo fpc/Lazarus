@@ -1706,6 +1706,7 @@ var
   i: Integer;
   li: TLegendItemBrushPenRect;
   s: TChartStyle;
+  addToLegend: Boolean;
 begin
   case Legend.Multiplicity of
     lmSingle:
@@ -1724,11 +1725,17 @@ begin
     lmStyle:
       if Styles <> nil then
         for s in Styles.Styles do
-          AItems.Add(TLegendItemBrushPenRect.Create(
-            IfThen(s.UseBrush, s.Brush, ABrush) as TBrush,
-            IfThen(s.UsePen, s.Pen, APen) as TPen,
-            LegendTextStyle(s)
-          ));
+        begin
+          addToLegend := true;
+          if Assigned(Styles.OnAddStyleToLegend) then
+            Styles.OnAddStyleToLegend(s, self, addToLegend);
+          if addToLegend then
+            AItems.Add(TLegendItemBrushPenRect.Create(
+              IfThen(s.UseBrush, s.Brush, ABrush) as TBrush,
+              IfThen(s.UsePen, s.Pen, APen) as TPen,
+              LegendTextStyle(s)
+            ));
+        end;
   end;
 end;
 

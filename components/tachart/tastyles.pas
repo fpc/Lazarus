@@ -84,10 +84,14 @@ type
 
   { TChartStyles }
 
+  TAddStyleToLegendEvent = procedure (AStyle: TChartStyle; ASeries: TObject;
+    var AddToLegend: Boolean) of object;
+
   TChartStyles = class(TComponent)
   private
     FBroadcaster: TBroadcaster;
     FStyles: TChartStyleList;
+    FOnAddStyleToLegend: TAddStyleToLegendEvent;
     procedure SetStyles(AValue: TChartStyleList);
   public
     constructor Create(AOwner: TComponent); override;
@@ -100,6 +104,8 @@ type
     property Broadcaster: TBroadcaster read FBroadcaster;
   published
     property Styles: TChartStyleList read FStyles write SetStyles;
+    property OnAddStyleToLegend: TAddStyleToLegendEvent
+      read FOnAddStyleToLegend write FOnAddStyleToLegend;
   end;
 
 procedure Register;
