@@ -9375,11 +9375,47 @@ word-wrapped, clipped, etc. If omitted, the current <var>TextStyle</var> for
 the canvas is used.
 </short>
 </element>
+
 <element name="TCanvas.TextExtent">
 <short>
-Calculates the size for the specified Text using the canvas Font.</short>
-<descr/>
-<seealso/>
+Calculates the width and height for the specified Text using the Font for the 
+canvas.
+</short>
+<descr>
+<p>
+<var>TextExtent</var> is a <var>TSize</var> function used to get the width and 
+height for the specified Text using the Font for the canvas instance.
+</p>
+<p>
+The TSize type in the return value returns the Width and Height for the Text 
+in pixels using the cX (Width) and cY (Height) members. Both members are set 
+to 0 if Text is an empty string (''), and when either the Handle or Font for 
+the canvas are invalid. The CreateHandle and CreateFont methods are called to 
+attempt to create the items when needed.
+</p>
+<p>
+If the Font has the default un-initialized settings, the OnGetSystemFont event 
+handler is signalled to get the default system font selected for the canvas.
+</p>
+<p>
+TextExtent calls the GetTextExtentPoint routine in the widgetset interface to 
+get the return value for the method.
+</p>
+<p>
+TextExtent is used in methods like TextWidth, TextHeight and DoGetTextSize.
+</p>
+</descr>
+<seealso>
+<link id="TCanvas.RequiredState"/>
+<link id="TCanvas.Handle"/>
+<link id="TCanvas.Font"/>
+<link id="TCanvas.CreateHandle"/>
+<link id="TCanvas.CreateFont"/>
+<link id="TCanvas.TextWidth"/>
+<link id="TCanvas.TextHeight"/>
+<link id="TCanvas.DoGetTextSize"/>
+<link id="OnGetSystemFont"/>
+</seealso>
 </element>
 <element name="TCanvas.TextExtent.Result">
 <short>TSize instance with the Width and Height for the text.</short>
@@ -9387,6 +9423,7 @@ Calculates the size for the specified Text using the canvas Font.</short>
 <element name="TCanvas.TextExtent.Text">
 <short>Text examined and measured in the method.</short>
 </element>
+
 <element name="TCanvas.TextHeight">
 <short>Gets the height for the specified text using the canvas Font.</short>
 <descr>
