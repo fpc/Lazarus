@@ -24072,7 +24072,7 @@ text
   grid.Clean([gzNormal]);
 </code>
 <p>
-<b>Clean all cells except grid column headers:</b>
+<b>Clean all cells except fixed grid columns:</b>
 </p>
 <code>
   grid.Clean([gzNormal, gzFixedRows]);
