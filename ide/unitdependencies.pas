@@ -265,8 +265,8 @@ type
       ParentTVNode: TTreeNode; ParentUDNode: TUDNode; Expand: boolean);
     procedure FreeUsesGraph;
     function GetPopupTV_UDNode(out UDNode: TUDNode): boolean;
-    procedure GraphOptsApplyClicked(AnOpts: TLvlGraphOptions; AGraph: TLvlGraph
-      );
+    procedure GraphOptsApplyClicked(AnOpts: TLvlGraphOptions; AGraph: TLvlGraph);
+    function HandleProjectOpened(Sender: TObject; {%H-}AProject: TLazProject): TModalResult;
     procedure SelectNextSearchTV(TV: TTreeView; StartTVNode: TTreeNode;
       SearchNext, SkipStart: boolean);
     function FindNextTVNode(StartNode: TTreeNode;
@@ -595,6 +595,8 @@ begin
   EnvironmentOptions.RegisterSubConfig(FPackageGraphOpts, 'UnitDependencies/PackageGraph');
   EnvironmentOptions.RegisterSubConfig(FUnitGraphOpts, 'UnitDependencies/UnitGraph');
 
+  LazarusIDE.AddHandlerOnProjectOpened(@HandleProjectOpened);
+  LazarusIDE.AddHandlerOnProjectClose(@HandleProjectOpened);
   StartParsing;
 end;
 
@@ -792,8 +794,7 @@ begin
       if UsedByIntf>0 then
         s+=LineEnding+Format(lisUDUsedByInterfaces, [IntToStr(UsedByIntf)]);
       if UsedByImpl>0 then
-        s+=LineEnding+Format(lisUDUsedByImplementations, [IntToStr(UsedByImpl)]
-          );
+        s+=LineEnding+Format(lisUDUsedByImplementations, [IntToStr(UsedByImpl)]);
     end;
   end;
   HintInfo^.HintStr:=s;
@@ -844,11 +845,11 @@ begin
   IdleConnected:=true;
 end;
 
-
 procedure TUnitDependenciesWindow.FormDestroy(Sender: TObject);
 begin
   IdleConnected:=false;
-
+  LazarusIDE.RemoveHandlerOnProjectClose(@HandleProjectOpened);
+  LazarusIDE.RemoveHandlerOnProjectOpened(@HandleProjectOpened);
   FreeUsesGraph;
   FreeAndNil(FNewGroups);
   FreeAndNil(FNewUsesGraph);
@@ -862,8 +863,7 @@ begin
   FreeAndNil(FUnitGraphOpts);
 end;
 
-procedure TUnitDependenciesWindow.GroupsLvlGraphSelectionChanged(Sender: TObject
-  );
+procedure TUnitDependenciesWindow.GroupsLvlGraphSelectionChanged(Sender: TObject);
 begin
   UpdateUnitsLvlGraph;
 end;
@@ -893,8 +893,7 @@ begin
       ProgressBar1.Style:=pbstNormal;
       RefreshButton.Enabled:=true;
       Timer1.Enabled:=false;
-      StatsLabel.Caption:=Format(lisUDUnits2, [IntToStr(
-        FUsesGraph.FilesTree.Count)]);
+      StatsLabel.Caption:=Format(lisUDUnits2, [IntToStr(FUsesGraph.FilesTree.Count)]);
       // update controls
       UpdateAll;
     end;
@@ -2266,6 +2265,14 @@ begin
   MainIDEInterface.SaveEnvironment;
 end;
 
+function TUnitDependenciesWindow.HandleProjectOpened(Sender: TObject;
+  AProject: TLazProject): TModalResult;
+begin
+  Result:=mrOk;
+  if FFlags=[] then
+    StartParsing;
+end;
+
 procedure TUnitDependenciesWindow.UpdateAllUnitsTreeView;
 var
   TV: TTreeView;
@@ -2450,7 +2457,8 @@ var
   UnitSet: TFPCUnitSetCache;
 begin
   UnitSet:=CodeToolBoss.GetUnitSetForDirectory('');
-  Result:=UnitSet.FPCSourceDirectory;
+  if Assigned(UnitSet) then
+    Result:=UnitSet.FPCSourceDirectory;
 end;
 
 function TUnitDependenciesWindow.IsFPCSrcGroup(Group: TUGGroup): boolean;
