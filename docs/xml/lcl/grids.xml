@@ -19526,14 +19526,14 @@ Clears the cached fixed rows and row count values for the grid control.
 </short>
 <descr>
 <p>
-<var>ClearRows</var> is a <var>Boolean</var> function used to all rows in the 
-grid control. This includes the fixed row for the control. The return value 
-is <b>True</b> if rows are successfully cleared in the method. It is 
+<var>ClearRows</var> is a <var>Boolean</var> function used to remove all rows 
+in the grid control. This includes the fixed row for the control. The return 
+value is <b>True</b> if rows are successfully cleared in the method. It is 
 <b>False</b> if the grid is already empty.
 </p>
 <p>
-Sets EditorMode to <b>False</b> if a cell editor is visible on the grid 
-control. Sets values in the FixedRows and and RowCount properties to 0 (zero).
+ClearRows sets EditorMode to <b>False</b> if a cell editor is visible on the 
+grid control. It sets values in the FixedRows and and RowCount properties to 0 (zero).
 </p>
 <p>
 It does not change values in the FixedCols or ColCount properties.
@@ -19541,7 +19541,9 @@ It does not change values in the FixedCols or ColCount properties.
 </descr>
 <seealso>
 <link id="TCustomGrid.RowCount"/>
+<link id="TCustomGrid.ColCount"/>
 <link id="TCustomGrid.FixedRows"/>
+<link id="TCustomGrid.FixedCols"/>
 <link id="TCustomGrid.EditorMode"/>
 <link id="TCustomGrid.Clear"/>
 </seealso>
@@ -19581,10 +19583,18 @@ to RowCount or ColCount values.
 Compatibility: This applies to Lazarus grids only; under Delphi/Kylix a grid 
 cannot be completely emptied.
 </p>
+<p>
+Use FixedRows, FixedCols, RowCount, and ColCount to specify the number of rows 
+or columns on the grid.
+</p>
 </descr>
 <seealso>
 <link id="TCustomGrid.ClearCols"/>
 <link id="TCustomGrid.ClearRows"/>
+<link id="TCustomGrid.RowCount"/>
+<link id="TCustomGrid.ColCount"/>
+<link id="TCustomGrid.FixedCols"/>
+<link id="TCustomGrid.FixedRows"/>
 <link id="TCustomGrid.EditorMode"/>
 <link id="TCustomGrid.VisualChange"/>
 <link id="TCustomGrid.SizeChanged"/>
@@ -24040,7 +24050,9 @@ control.
 </element>
 
 <element name="TCustomStringGrid.Clean">
-<short>Removes cell content using the specified options.</short>
+<short>
+Removes cell content which match the specified options.
+</short>
 <descr>
 <p>
 Cleans all cells in the grid subject to the given <var>CleanOptions</var>, 
@@ -24075,8 +24087,24 @@ text
 <b>Clean all cells except fixed grid columns:</b>
 </p>
 <code>
+  // leaves cell content in fixed columns
   grid.Clean([gzNormal, gzFixedRows]);
 </code>
+<p>
+<b>Clean non-fixed cells in a rectangular region:</b>
+</p>
+<code>
+  // 4x3 cell area after fixed columns and rows
+  grid.Clean(grid.FixedCols, grid.FixedRows, grid.FixedCols+3, 
+    grid.FixedRols+2, [gzNormal]) 
+</code>
+<p>
+Use Clear to remove all columns and rows on the grid.
+</p>
+<p>
+Use ColCount, FixedCols, RowCount, and FixedRows to adjust the number of 
+columns or rows for the specific types.
+</p>
 </descr>
 <seealso/>
 </element>
