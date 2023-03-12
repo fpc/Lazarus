@@ -50,7 +50,12 @@ type
   TSeparatorType = (ppstComma);
 
   TFpIntrinsicPrefix = (ipColon, ipExclamation, ipNoPrefix);
-  TFpIntrinsicFunc = (ifErrorNotFound, ifLength, ifChildClass, ifRefCount, ifPos, ifSubStr);
+  TFpIntrinsicFunc = (
+    ifErrorNotFound,
+    ifChildClass,
+    ifLength, ifRefCount, ifPos, ifSubStr, ifLower, ifUpper,
+    ifRound, ifTrunc
+  );
 
   TFpPascalParserCallFunctionProc = function (AnExpressionPart: TFpPascalExpressionPart;
     AFunctionValue: TFpValue; ASelfValue: TFpValue; AParams: TFpPascalExpressionPartList;
@@ -237,6 +242,10 @@ type
     function DoRefCnt(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
     function DoPos(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
     function DoSubStr(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+    function DoLower(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+    function DoUpper(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+    function DoRound(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+    function DoTrunc(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
 
     function DoGetResultValue: TFpValue; override;
     function DoGetResultValue(AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
@@ -2134,7 +2143,7 @@ begin
 
   CmpCase := nil;
   if AParams.Count = 4 then begin
-    if not GetArg(AParams, 3, Tmp, 'argument required') then
+    if not GetArg(AParams, 3, CmpCase, 'argument required') then
       exit;
     if (CmpCase.Kind <> skBoolean) then begin
       SetError('bool argument expected');
@@ -2146,8 +2155,8 @@ begin
   s2 := Tmp2.AsString;
 
   if (CmpCase <> nil) and (CmpCase.AsBool) then begin
-    s1 := LowerCase(s1);
-    s2 := LowerCase(s2);
+    s1 := AnsiLowerCase(s1);
+    s2 := AnsiLowerCase(s2);
   end;
 
   if (s1 = '') or (s2 = '') then
@@ -2278,6 +2287,75 @@ begin
 
 end;
 
+function TFpPascalExpressionPartIntrinsic.DoLower(
+  AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+var
+  Arg: TFpValue;
+begin
+  Result := nil;
+  if not CheckArgumentCount(AParams, 1) then
+    exit;
+  if not GetArg(AParams, 1, Arg, 'argument required') then
+    exit;
+
+  Result := TFpValueConstString.Create(AnsiLowerCase(Arg.AsString));
+end;
+
+function TFpPascalExpressionPartIntrinsic.DoUpper(
+  AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+var
+  Arg: TFpValue;
+begin
+  Result := nil;
+  if not CheckArgumentCount(AParams, 1) then
+    exit;
+  if not GetArg(AParams, 1, Arg, 'argument required') then
+    exit;
+
+  Result := TFpValueConstString.Create(AnsiUpperCase(Arg.AsString));
+end;
+
+function TFpPascalExpressionPartIntrinsic.DoRound(
+  AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+var
+  Arg, Digits: TFpValue;
+begin
+  Result := nil;
+  if not CheckArgumentCount(AParams, 1, 2) then
+    exit;
+  if not GetArg(AParams, 1, Arg, 'argument required') then
+    exit;
+
+  Digits := nil;
+  if AParams.Count = 3 then begin
+    if not GetArg(AParams, 2, Digits, 'optional') then
+      exit;
+    if not (Digits.Kind in [skCardinal, skInteger]) then begin
+      SetError('int argument expected');
+      exit;
+    end;
+  end;
+
+  if (Digits = nil) or (Digits.AsInteger = 0) then
+    Result := TFpValueConstNumber.Create(QWord(Round(Arg.AsFloat)), True)
+  else
+    Result := TFpValueConstFloat.Create(RoundTo(Arg.AsFloat, Digits.AsInteger));
+end;
+
+function TFpPascalExpressionPartIntrinsic.DoTrunc(
+  AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
+var
+  Arg: TFpValue;
+begin
+  Result := nil;
+  if not CheckArgumentCount(AParams, 1) then
+    exit;
+  if not GetArg(AParams, 1, Arg, 'argument required') then
+    exit;
+
+  Result := TFpValueConstNumber.Create(QWord(trunc(Arg.AsFloat)), True);
+end;
+
 function TFpPascalExpressionPartIntrinsic.DoGetResultValue: TFpValue;
 begin
   Result := nil;
@@ -2300,6 +2378,10 @@ begin
     ifRefCount:   Result := DoRefCnt(AParams);
     ifPos:        Result := DoPos(AParams);
     ifSubStr:     Result := DoSubStr(AParams);
+    ifLower:      Result := DoLower(AParams);
+    ifUpper:      Result := DoUpper(AParams);
+    ifRound:      Result := DoRound(AParams);
+    ifTrunc:      Result := DoTrunc(AParams);
   end;
   {$IFDEF WITH_REFCOUNT_DEBUG}
   if Result <> nil then
@@ -2836,6 +2918,12 @@ begin
   case ALen of
     2: if strlicomp(AStart, 'CC', 2) = 0     then Result := ifChildClass;
     3: if strlicomp(AStart, 'POS', 3) = 0     then Result := ifPos;
+    5: case AStart^ of
+        'l', 'L': if strlicomp(AStart, 'LOWER', 5) = 0 then Result := ifLower;
+        'u', 'U': if strlicomp(AStart, 'UPPER', 5) = 0 then Result := ifUpper;
+        'r', 'R': if strlicomp(AStart, 'ROUND', 5) = 0 then Result := ifRound;
+        't', 'T': if strlicomp(AStart, 'TRUNC', 5) = 0 then Result := ifTrunc;
+       end;
     6: case AStart^ of
         'l', 'L': if strlicomp(AStart, 'LENGTH', 6) = 0 then Result := ifLength;
         'r', 'R': if strlicomp(AStart, 'REFCNT', 6) = 0 then Result := ifRefCount;

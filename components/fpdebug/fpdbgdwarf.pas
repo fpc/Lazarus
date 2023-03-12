@@ -264,6 +264,7 @@ type
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetAsCardinal: QWord; override;
     function GetAsInteger: Int64; override;
+    function GetAsFloat: Extended; override;
     procedure SetAsInteger(AValue: Int64); override;
     procedure SetAsCardinal(AValue: QWord); override;
   end;
@@ -276,6 +277,7 @@ type
   protected
     function GetAsCardinal: QWord; override;
     function GetAsInteger: Int64; override;
+    function GetAsFloat: Extended; override;
     procedure SetAsCardinal(AValue: QWord); override;
     function GetFieldFlags: TFpValueFieldFlags; override;
   end;
@@ -2277,6 +2279,11 @@ begin
   FIntValue := Result;
 end;
 
+function TFpValueDwarfInteger.GetAsFloat: Extended;
+begin
+  Result := GetAsInteger;
+end;
+
 procedure TFpValueDwarfInteger.SetAsInteger(AValue: Int64);
 var
   Size: TFpDbgValueSize;
@@ -2326,6 +2333,11 @@ end;
 function TFpValueDwarfCardinal.GetAsInteger: Int64;
 begin
   Result := Int64(GetAsCardinal);
+end;
+
+function TFpValueDwarfCardinal.GetAsFloat: Extended;
+begin
+  Result := GetAsInteger;
 end;
 
 function TFpValueDwarfCardinal.GetFieldFlags: TFpValueFieldFlags;

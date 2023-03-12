@@ -269,6 +269,7 @@ type
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetAsCardinal: QWord; override;
     function GetAsInteger: Int64; override;
+    function GetAsFloat: Extended; override;
   public
     constructor Create(AValue: QWord; ASigned: Boolean = True);
   end;
@@ -1333,6 +1334,11 @@ end;
 function TFpValueConstNumber.GetAsInteger: Int64;
 begin
   Result := Int64(FValue);
+end;
+
+function TFpValueConstNumber.GetAsFloat: Extended;
+begin
+  Result := GetAsInteger;
 end;
 
 constructor TFpValueConstNumber.Create(AValue: QWord; ASigned: Boolean);
