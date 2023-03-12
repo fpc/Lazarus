@@ -766,7 +766,7 @@ function TFpWatchResultConvertor.ProcToResData(AnFpValue: TFpValue;
   AnResData: TLzDbgWatchDataIntf): Boolean;
 var
   addr: TDBGPtr;
-  s, LocName, TpName: String;
+  s, LocName: String;
   t, sym: TFpSymbol;
   proc: TFpSymbolDwarf;
   par: TFpValueDwarf;

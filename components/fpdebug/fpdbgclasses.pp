@@ -2766,8 +2766,6 @@ end;
 
 function TDbgProcess.InsertBreakInstructionCode(const ALocation: TDBGPtr; out
   OrigValue: Byte; AMakeTempRemoved: Boolean): Boolean;
-var
-  i: Integer;
 begin
   Result := FProcess.ReadData(ALocation, 1, OrigValue);
   if not Result then begin

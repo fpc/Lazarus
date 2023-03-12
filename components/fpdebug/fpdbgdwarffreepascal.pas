@@ -256,16 +256,16 @@ type
     function IsValidTypeCast: Boolean; override;
     procedure Reset; override;
     function GetFieldFlags: TFpValueFieldFlags; override;
-    function GetSubString(AStartIndex, ALen: Int64; out ASubStr: AnsiString;
-      AIgnoreBounds: Boolean = False): Boolean; override;
-    function GetSubWideString(AStartIndex, ALen: Int64; out
-      ASubStr: WideString; AIgnoreBounds: Boolean = False): Boolean; override;
     function GetAsString: AnsiString; override;
     function GetAsWideString: WideString; override;
     procedure SetAsCardinal(AValue: QWord); override;
     function GetAsCardinal: QWord; override;
     function GetMemberCount: Integer; override;
   public
+    function GetSubString(AStartIndex, ALen: Int64; out ASubStr: AnsiString;
+      AIgnoreBounds: Boolean = False): Boolean; override;
+    function GetSubWideString(AStartIndex, ALen: Int64; out
+      ASubStr: WideString; AIgnoreBounds: Boolean = False): Boolean; override;
     function GetFpcRefCount(out ARefCount: Int64): Boolean; override;
     property DynamicCodePage: TSystemCodePage read GetCodePage;
   end;

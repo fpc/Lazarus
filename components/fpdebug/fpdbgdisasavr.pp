@@ -1179,9 +1179,6 @@ end;
 function TAvrAsmDecoder.GetFunctionFrameReturnAddress(AnAddress, AStartPC,
   AEndPC: TDBGPtr; out returnAddressOffset: word; out AnIsOutsideFrame: Boolean
   ): Boolean;
-var
-  ADataLen: Cardinal;
-  AData: PByte;
 begin
   { Cases to consider:
     A - if (AStartPC + MaxPrologueSize < AnAddress) and (AnAddress + MaxEpilogueSize < AEndPC)

@@ -322,13 +322,14 @@ type
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetDataAddress: TFpDbgMemLocation; override;
     function GetDerefAddress: TFpDbgMemLocation; override;
+    function GetAsString: AnsiString; override;
+    function GetAsWideString: WideString; override;
+    function GetMember(AIndex: Int64): TFpValue; override;
+  public
     function GetSubString(AStartIndex, ALen: Int64; out ASubStr: AnsiString;
       AIgnoreBounds: Boolean = False): Boolean; override;
     function GetSubWideString(AStartIndex, ALen: Int64; out
       ASubStr: WideString; AIgnoreBounds: Boolean = False): Boolean; override;
-    function GetAsString: AnsiString; override;
-    function GetAsWideString: WideString; override;
-    function GetMember(AIndex: Int64): TFpValue; override;
   end;
 
   { TFpValueDwarfEnum }
@@ -963,6 +964,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     FLastChildByName: TFpSymbolDwarf;
 
     procedure CreateMembers;
+  protected
     function GetNestedSymbolEx(AIndex: Int64; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
     function GetNestedSymbolExByName(const AIndex: String; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
     function GetNestedSymbolCount: Integer; override;
@@ -1031,12 +1033,12 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     FStateMachine: TDwarfLineInfoStateMachine;
     FFrameBaseParser: TDwarfLocationExpression;
     FDwarf: TFpDwarfInfo;
-    function GetLineEndAddress: TDBGPtr; override;
-    function GetLineStartAddress: TDBGPtr; override;
     function GetLineUnfixed: TDBGPtr;
     function StateMachineValid: Boolean;
     function  ReadVirtuality(out AFlags: TDbgSymbolFlags): Boolean;
   protected
+    function GetLineEndAddress: TDBGPtr; override;
+    function GetLineStartAddress: TDBGPtr; override;
     function GetFrameBase(ASender: TDwarfLocationExpression): TDbgPtr;
     function GetFlags: TDbgSymbolFlags; override;
     procedure TypeInfoNeeded; override;
@@ -2547,7 +2549,6 @@ function TFpValueDwarfPointer.GetSubString(AStartIndex, ALen: Int64; out
   ASubStr: AnsiString; AIgnoreBounds: Boolean): Boolean;
 var
   t: TFpSymbol;
-  i: Cardinal;
   Size: TFpDbgValueSize;
   Addr: TFpDbgMemLocation;
   WSubStr: WideString;
@@ -2621,7 +2622,6 @@ function TFpValueDwarfPointer.GetSubWideString(AStartIndex, ALen: Int64; out
   ASubStr: WideString; AIgnoreBounds: Boolean): Boolean;
 var
   t: TFpSymbol;
-  i: Cardinal;
   Size: TFpDbgValueSize;
   Addr: TFpDbgMemLocation;
   NSubStr: AnsiString;
@@ -2694,7 +2694,6 @@ end;
 function TFpValueDwarfPointer.GetAsString: AnsiString;
 var
   t: TFpSymbol;
-  i: Cardinal;
   Size: TFpDbgValueSize;
 begin
   Result := '';
@@ -2728,7 +2727,6 @@ end;
 function TFpValueDwarfPointer.GetAsWideString: WideString;
 var
   t: TFpSymbol;
-  i: Cardinal;
 begin
   Result := '';
   t := TypeInfo;
@@ -5821,9 +5819,6 @@ end;
 
 function TFpSymbolDwarfTypeVariant.GetNestedSymbolEx(AIndex: Int64; out
   AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol;
-var
-  i: Int64;
-  ti: TFpSymbolDwarfType;
 begin
   CreateMembers;
 

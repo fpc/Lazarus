@@ -1966,7 +1966,6 @@ procedure TDbgController.SendEvents(out continue: boolean);
 var
   HasPauseRequest: Boolean;
   CurWatch: TFpInternalWatchpoint;
-  i: Integer;
 begin
   // reset pause request. If Pause() is called after this, it will be seen in the next loop
   HasPauseRequest := InterLockedExchange(FPauseRequest, 0) = 1;

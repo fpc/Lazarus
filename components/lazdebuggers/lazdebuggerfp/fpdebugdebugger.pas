@@ -2496,8 +2496,6 @@ begin
 end;
 
 function TFpLineInfo.IndexOf(const ASource: String): integer;
-var
-  Src: String;
 begin
   Result := FRequestedSources.IndexOf(ASource);
   (* For dsInit, dsPause:

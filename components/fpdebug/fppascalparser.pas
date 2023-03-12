@@ -870,7 +870,6 @@ end;
 function TFpPasParserValueCastToPointer.GetAsString: AnsiString;
 var
   t: TFpSymbol;
-  i: Cardinal;
   Size: TFpDbgValueSize;
   a: TFpDbgMemLocation;
 begin
@@ -909,7 +908,6 @@ end;
 function TFpPasParserValueCastToPointer.GetAsWideString: WideString;
 var
   t: TFpSymbol;
-  i: Cardinal;
   Size: TFpDbgValueSize;
   a: TFpDbgMemLocation;
 begin
@@ -2162,7 +2160,7 @@ function TFpPascalExpressionPartIntrinsic.DoSubStr(
   AParams: TFpPascalExpressionPartBracketArgumentList): TFpValue;
 var
   Tmp, Tmp2, Tmp3, Tmp4: TFpValue;
-  s1, s2: String;
+  s1: String;
   w1: WideString;
   p1, p2: Int64;
   UsePtr: Boolean;

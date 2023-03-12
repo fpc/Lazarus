@@ -565,7 +565,7 @@ end;
 
 function TFpDbgInfoCallContext.AddOrdinalParam(AValue: QWord): Boolean;
 begin
-  AddOrdinalParam(nil, AValue);
+  Result := AddOrdinalParam(nil, AValue);
 end;
 
 function TFpDbgInfoCallContext.AddStringResult: Boolean;
@@ -590,7 +590,7 @@ function TFpDbgInfoCallContext.AddOrdinalViaRefAsParam(AValue: QWord): Boolean;
 var
   m: TDBGPtr;
 begin
-  AddOrdinalViaRefAsParam(AValue, m);
+  Result := AddOrdinalViaRefAsParam(AValue, m);
 end;
 
 function TFpDbgInfoCallContext.AddOrdinalViaRefAsParam(AValue: QWord; out
