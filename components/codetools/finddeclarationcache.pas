@@ -168,7 +168,7 @@ type
       1. i variable node points to its type node 'integer'.
       2. 'integer' node points to type definition node 'integer'.
       3. 'integer' identifier node points to its base type 'longint'.
-      4. 'longint' identifier node points points to its range.
+      4. 'longint' identifier node points to its range.
       
       FindBaseTypeOfNode will search this chain, and on success will create
       TBaseTypeCache(s). The All four nodes will point directly to the range.
