@@ -734,6 +734,8 @@ begin
 
   if FBrowseHistoryIndex >= FBrowseHistory.Count then
     FBrowseHistoryIndex := FBrowseHistory.Count - 1;
+  if FBrowseHistoryIndex <= 0 then
+    exit;
 
   dec(FBrowseHistoryIndex);
   Execute(FBrowseHistory[FBrowseHistoryIndex], True);
