@@ -1426,7 +1426,7 @@ function TFpPascalExpressionPartBracketIndex.DoGetResultValue: TFpValue;
 var
   TmpVal, TmpVal2, TmpIndex: TFpValue;
   i: Integer;
-  Offs: Int64;
+  Offs, Len: Int64;
   ti: TFpSymbol;
   IsPChar: Boolean;
   v: String;
@@ -1498,54 +1498,72 @@ begin
         end;
       skString, skAnsiString: begin
           //TODO: move to FpDwarfValue.member ??
-          if (svfInteger in TmpIndex.FieldFlags) then
-            Offs := TmpIndex.AsInteger
-          else
-          if (svfOrdinal in TmpIndex.FieldFlags) and (TmpIndex.AsCardinal <= high(Int64))
-          then
-            Offs := Int64(TmpIndex.AsCardinal)
-          else
-          begin
-            SetError('Can not calculate Index');
-            TmpVal.ReleaseReference;
-            exit;
-          end;
+          if (Count = 2) and (Items[1] is TFpPascalExpressionPartOperatorArraySlice)
+          then begin
+            Offs := TFpPascalExpressionPartOperatorArraySlice(Items[1]).StartValue;
+            Len  := TFpPascalExpressionPartOperatorArraySlice(Items[1]).EndValue - Offs + 1;
+            TmpVal.GetSubString(Offs, Len, v);
+            TmpVal2 := TFpValueConstString.Create(v);
+          end
+          else begin
+            if (svfInteger in TmpIndex.FieldFlags) then
+              Offs := TmpIndex.AsInteger
+            else
+            if (svfOrdinal in TmpIndex.FieldFlags) and (TmpIndex.AsCardinal <= high(Int64))
+            then
+              Offs := Int64(TmpIndex.AsCardinal)
+            else
+            begin
+              SetError('Can not calculate Index');
+              TmpVal.ReleaseReference;
+              exit;
+            end;
 
-          if (not TmpVal.GetSubString(Offs, 1, v)) or (v = '') then begin
-            SetError('Index out of range');
-            TmpVal.ReleaseReference;
-            exit;
-          end;
+            if (not TmpVal.GetSubString(Offs, 1, v)) or (v = '') then begin
+              SetError('Index out of range');
+              TmpVal.ReleaseReference;
+              exit;
+            end;
 
-          TmpVal2 := TFpValueConstChar.Create(v[1]);
-          if TmpVal.TypeInfo <> nil then
-            TFpValueConstChar(TmpVal2).SetType(TmpVal.TypeInfo.TypeInfo);
+            TmpVal2 := TFpValueConstChar.Create(v[1]);
+            if TmpVal.TypeInfo <> nil then
+              TFpValueConstChar(TmpVal2).SetType(TmpVal.TypeInfo.TypeInfo);
+          end;
           a := TmpVal.DataAddress;
           if IsTargetAddr(a) and IsReadableMem(a) then
             TFpValueConstChar(TmpVal2).SetAddress(a + Offs-1);
         end;
       skWideString: begin
           //TODO: move to FpDwarfValue.member ??
-          if (svfInteger in TmpIndex.FieldFlags) then
-            Offs := TmpIndex.AsInteger
-          else
-          if (svfOrdinal in TmpIndex.FieldFlags) and (TmpIndex.AsCardinal <= high(Int64))
-          then
-            Offs := Int64(TmpIndex.AsCardinal)
-          else
-          begin
-            SetError('Can not calculate Index');
-            TmpVal.ReleaseReference;
-            exit;
-          end;
+          if (Count = 2) and (Items[1] is TFpPascalExpressionPartOperatorArraySlice)
+          then begin
+            Offs := TFpPascalExpressionPartOperatorArraySlice(Items[1]).StartValue;
+            Len  := TFpPascalExpressionPartOperatorArraySlice(Items[1]).EndValue - Offs + 1;
+            TmpVal.GetSubWideString(Offs, Len, w);
+            TmpVal2 := TFpValueConstString.Create(w);
+          end
+          else begin
+            if (svfInteger in TmpIndex.FieldFlags) then
+              Offs := TmpIndex.AsInteger
+            else
+            if (svfOrdinal in TmpIndex.FieldFlags) and (TmpIndex.AsCardinal <= high(Int64))
+            then
+              Offs := Int64(TmpIndex.AsCardinal)
+            else
+            begin
+              SetError('Can not calculate Index');
+              TmpVal.ReleaseReference;
+              exit;
+            end;
 
-          if (not TmpVal.GetSubWideString(Offs, 1, w)) or (w='') then begin
-            SetError('Index out of range');
-            TmpVal.ReleaseReference;
-            exit;
-          end;
+            if (not TmpVal.GetSubWideString(Offs, 1, w)) or (w='') then begin
+              SetError('Index out of range');
+              TmpVal.ReleaseReference;
+              exit;
+            end;
 
-          TmpVal2 := TFpValueConstWideChar.Create(w[1]);
+            TmpVal2 := TFpValueConstWideChar.Create(w[1]);
+          end;
           a := TmpVal.DataAddress;
           if IsTargetAddr(a) and IsReadableMem(a) then
             TFpValueConstWideChar(TmpVal2).SetAddress(a + (Offs-1)*2);
@@ -4764,7 +4782,24 @@ begin
 end;
 
 function TFpPascalExpressionPartOperatorArraySliceController.DoGetResultValue: TFpValue;
+var
+  tmp: TFpValue;
 begin
+  if (FSlicePart.Parent <> nil) and
+     (FSlicePart.Parent is TFpPascalExpressionPartBracketIndex) and
+     (FSlicePart.Parent.Count = 2) // variable and ONE index
+  then begin
+    tmp := FSlicePart.Parent.Items[0].ResultValue;
+    if (tmp <> nil) and (Tmp.Kind in [skString, skAnsiString, skWideString])
+    then begin
+      // Handled in TFpPascalExpressionPartBracketIndex.DoGetResultValue
+      Result := Items[0].ResultValue;
+      if Result <> nil then
+        Result.AddReference;
+      exit;
+    end;
+  end;
+
   Result := TFpPasParserValueSlicedArray.Create(Self);
 end;
 
