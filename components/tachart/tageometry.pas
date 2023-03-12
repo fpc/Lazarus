@@ -76,6 +76,7 @@ function MeasureRotatedRect(const ASize: TPoint; AAngle: Double): TSize;
 function NextNumberSeq(
   const APoints: array of TDoublePoint; var AStart, AEnd: Integer): Boolean;
 function PointDist(const A, B: TPoint): Integer; inline;
+function PointDist(const A, B: TDoublePoint): Double; inline;
 function PointDistX(const A, B: TPoint): Integer; inline;
 function PointDistY(const A, B: TPoint): Integer; inline;
 function PointLineDist(const P, A, B: TPoint): Integer; overload;
@@ -556,6 +557,11 @@ end;
 function PointDist(const A, B: TPoint): Integer;
 begin
   Result := Min(Sqr(Int64(A.X) - B.X) + Sqr(Int64(A.Y) - B.Y), MaxInt);
+end;
+
+function PointDist(const A, B: TDoublePoint): Double;
+begin
+  Result := Sqrt(Sqr(A.X - B.X) + Sqr(A.Y - B.Y));
 end;
 
 function PointDistX(const A, B: TPoint): Integer;
