@@ -2044,15 +2044,9 @@ function TCodeCompletionCodeTool.CompleteEventAssignment(CleanCursorPos,
     // check for semicolon at end of statement
     MoveCursorToCleanPos(UserEventAtom.EndPos);
     ReadNextAtom;
-    if CurPos.Flag = cafRoundBracketOpen then
-      if Scanner.CompilerMode <> cmDELPHI then
-        Exit // indeed it is assignment to function, e.g. x:=sin(y);
-      else begin
-        ReadNextAtom;
-        if CurPos.Flag <> cafRoundBracketClose then
-          Exit; // in Delhi mode empty brackets are allowed after method: OnClick:=FormCreate();
-        ReadNextAtom;
-      end;
+    if CurPos.Flag = cafRoundBracketOpen then begin
+      exit;  // e.g. x:=sin(y); ->  don't create an event
+    end;
     if AtomIsChar(';') then
       SemicolonPos:=CurPos.StartPos
     else
@@ -2162,8 +2156,8 @@ function TCodeCompletionCodeTool.CompleteEventAssignment(CleanCursorPos,
     end;
 
     RValue:=AnEventName+';';
-    if (AddrOperatorPos>0)
-    or (Scanner.CompilerMode in [cmDelphi,cmDELPHIUNICODE])
+    if (AddrOperatorPos<1)
+    and not (Scanner.CompilerMode in [cmDelphi,cmDELPHIUNICODE])
     then
       RValue:='@'+RValue;
     if (AddrOperatorPos>0) or (UserEventAtom.StartPos>0) then begin
