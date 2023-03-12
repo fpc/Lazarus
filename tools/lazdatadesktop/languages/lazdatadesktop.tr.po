@@ -62,6 +62,14 @@ msgctxt "lazdatadeskstr.scoloptions"
 msgid "Options"
 msgstr "Seçenekler"
 
+#: lazdatadeskstr.scolreadonly
+msgid "Read-Only"
+msgstr ""
+
+#: lazdatadeskstr.scolrequired
+msgid "Required"
+msgstr ""
+
 #: lazdatadeskstr.scolsize
 msgid "Size"
 msgstr "Boyut"
@@ -69,6 +77,14 @@ msgstr "Boyut"
 #: lazdatadeskstr.scoltype
 msgid "Type"
 msgstr "Tip"
+
+#: lazdatadeskstr.scommit
+msgid "Commit"
+msgstr ""
+
+#: lazdatadeskstr.scommittransaction
+msgid "Commit active transaction"
+msgstr ""
 
 #: lazdatadeskstr.sconfirmclose
 msgid "Confirm close"
@@ -202,6 +218,10 @@ msgstr "Uygulama zamanı: %s"
 #: lazdatadeskstr.sexport
 msgid "Export data"
 msgstr "Verileri dışa aktar"
+
+#: lazdatadeskstr.sfalse
+msgid "False"
+msgstr ""
 
 #: lazdatadeskstr.sfield
 msgid "Field"
@@ -765,6 +785,10 @@ msgstr "Yeni tablo için bir ad girin:"
 msgid "Next"
 msgstr "Sonraki"
 
+#: lazdatadeskstr.sno
+msgid "No"
+msgstr ""
+
 #: lazdatadeskstr.snodedatabase
 msgctxt "lazdatadeskstr.snodedatabase"
 msgid "Database"
@@ -852,6 +876,14 @@ msgstr "Alınan kayıtlar:% d"
 msgid "Retry the statement"
 msgstr "İfadeyi yeniden dene"
 
+#: lazdatadeskstr.srollback
+msgid "Rollback"
+msgstr ""
+
+#: lazdatadeskstr.srollbackransaction
+msgid "Rollback active transaction"
+msgstr ""
+
 #: lazdatadeskstr.srowsaffected
 #, object-pascal-format
 msgid "Query executed successfully: %d rows affected."
@@ -923,6 +955,10 @@ msgstr "Devam et, bir sonraki hatada dur"
 msgid "Table"
 msgstr "Tablo"
 
+#: lazdatadeskstr.strue
+msgid "True"
+msgstr ""
+
 #: lazdatadeskstr.sunknownconnection
 #, object-pascal-format
 msgid "Unknown connection: %s"
@@ -948,4 +984,8 @@ msgstr "Değer"
 #: lazdatadeskstr.swhichcurrentdicttouse
 msgid "A data dictionary is active.Would you like to import into this data dictionary ?"
 msgstr "Bir veri sözlüğü etkin. Bu veri sözlüğüne aktarmak ister misiniz?"
+
+#: lazdatadeskstr.syes
+msgid "Yes"
+msgstr ""
 

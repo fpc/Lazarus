@@ -63,6 +63,14 @@ msgctxt "lazdatadeskstr.scoloptions"
 msgid "Options"
 msgstr "选项"
 
+#: lazdatadeskstr.scolreadonly
+msgid "Read-Only"
+msgstr ""
+
+#: lazdatadeskstr.scolrequired
+msgid "Required"
+msgstr ""
+
 #: lazdatadeskstr.scolsize
 msgid "Size"
 msgstr "大小"
@@ -70,6 +78,14 @@ msgstr "大小"
 #: lazdatadeskstr.scoltype
 msgid "Type"
 msgstr "类型"
+
+#: lazdatadeskstr.scommit
+msgid "Commit"
+msgstr ""
+
+#: lazdatadeskstr.scommittransaction
+msgid "Commit active transaction"
+msgstr ""
 
 #: lazdatadeskstr.sconfirmclose
 msgid "Confirm close"
@@ -205,6 +221,10 @@ msgstr "执行时间:%s"
 #: lazdatadeskstr.sexport
 msgid "Export data"
 msgstr "导出data"
+
+#: lazdatadeskstr.sfalse
+msgid "False"
+msgstr ""
 
 #: lazdatadeskstr.sfield
 msgid "Field"
@@ -768,6 +788,10 @@ msgstr "输入一个名称对于新table:"
 msgid "Next"
 msgstr "下一个"
 
+#: lazdatadeskstr.sno
+msgid "No"
+msgstr ""
+
 #: lazdatadeskstr.snodedatabase
 msgctxt "lazdatadeskstr.snodedatabase"
 msgid "Database"
@@ -849,6 +873,14 @@ msgstr ""
 msgid "Retry the statement"
 msgstr "重试该声明(statement)"
 
+#: lazdatadeskstr.srollback
+msgid "Rollback"
+msgstr ""
+
+#: lazdatadeskstr.srollbackransaction
+msgid "Rollback active transaction"
+msgstr ""
+
 #: lazdatadeskstr.srowsaffected
 #, object-pascal-format
 msgid "Query executed successfully: %d rows affected."
@@ -920,6 +952,10 @@ msgstr "继续,在下一个错误上停止"
 msgid "Table"
 msgstr "Table"
 
+#: lazdatadeskstr.strue
+msgid "True"
+msgstr ""
+
 #: lazdatadeskstr.sunknownconnection
 #, object-pascal-format
 msgid "Unknown connection: %s"
@@ -945,4 +981,8 @@ msgstr "值"
 #: lazdatadeskstr.swhichcurrentdicttouse
 msgid "A data dictionary is active.Would you like to import into this data dictionary ?"
 msgstr "一个数据字典是激活的.你想导入到这个数据字典吗?"
+
+#: lazdatadeskstr.syes
+msgid "Yes"
+msgstr ""
 

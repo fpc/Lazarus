@@ -62,6 +62,14 @@ msgctxt "lazdatadeskstr.scoloptions"
 msgid "Options"
 msgstr "Einstellungen"
 
+#: lazdatadeskstr.scolreadonly
+msgid "Read-Only"
+msgstr ""
+
+#: lazdatadeskstr.scolrequired
+msgid "Required"
+msgstr ""
+
 #: lazdatadeskstr.scolsize
 msgid "Size"
 msgstr "Größe"
@@ -69,6 +77,14 @@ msgstr "Größe"
 #: lazdatadeskstr.scoltype
 msgid "Type"
 msgstr "Typ"
+
+#: lazdatadeskstr.scommit
+msgid "Commit"
+msgstr ""
+
+#: lazdatadeskstr.scommittransaction
+msgid "Commit active transaction"
+msgstr ""
 
 #: lazdatadeskstr.sconfirmclose
 msgid "Confirm close"
@@ -204,6 +220,10 @@ msgstr "Ausführungszeit: %s"
 #: lazdatadeskstr.sexport
 msgid "Export data"
 msgstr "Daten exportieren"
+
+#: lazdatadeskstr.sfalse
+msgid "False"
+msgstr ""
 
 #: lazdatadeskstr.sfield
 msgid "Field"
@@ -767,6 +787,10 @@ msgstr "Geben Sie einen Namen für die neue Tabelle ein:"
 msgid "Next"
 msgstr "Weiter"
 
+#: lazdatadeskstr.sno
+msgid "No"
+msgstr ""
+
 #: lazdatadeskstr.snodedatabase
 msgctxt "lazdatadeskstr.snodedatabase"
 msgid "Database"
@@ -854,6 +878,14 @@ msgstr "abgerufene Datensätze: %d"
 msgid "Retry the statement"
 msgstr "Anweisung erneut ausführen"
 
+#: lazdatadeskstr.srollback
+msgid "Rollback"
+msgstr ""
+
+#: lazdatadeskstr.srollbackransaction
+msgid "Rollback active transaction"
+msgstr ""
+
 #: lazdatadeskstr.srowsaffected
 #, object-pascal-format
 msgid "Query executed successfully: %d rows affected."
@@ -925,6 +957,10 @@ msgstr "Fortsetzen, beim nächsten Fehler anhalten"
 msgid "Table"
 msgstr "Tabelle"
 
+#: lazdatadeskstr.strue
+msgid "True"
+msgstr ""
+
 #: lazdatadeskstr.sunknownconnection
 #, object-pascal-format
 msgid "Unknown connection: %s"
@@ -950,4 +986,8 @@ msgstr "Wert"
 #: lazdatadeskstr.swhichcurrentdicttouse
 msgid "A data dictionary is active.Would you like to import into this data dictionary ?"
 msgstr "Es ist ein Daten-Verzeichnis aktiv. Soll in dieses Daten-Verzeichnis importiert werden?"
+
+#: lazdatadeskstr.syes
+msgid "Yes"
+msgstr ""
 

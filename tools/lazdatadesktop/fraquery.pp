@@ -1,13 +1,14 @@
 unit fraquery;
 
 {$mode objfpc}{$H+}
+{$modeswitch typehelpers}
 
 interface
 
 uses
   Classes, SysUtils, FileUtil, SynHighlighterSQL, SynEdit, LResources, Forms,
   DB, LCLType, Controls, ComCtrls, StdCtrls, ActnList, Dialogs, ExtCtrls, Menus,
-  fpDatadict, fradata, lazdatadeskstr, sqlscript;
+  fpDatadict, fradata, lazdatadeskstr, sqlscript, sqldb, fpddsqldb;
 
 type
    TExecuteMode = (emSingle,emSelection,emScript,emSelectionScript);
@@ -19,6 +20,8 @@ type
   TQueryFrame = class(TFrame)
     ACloseQuery: TAction;
     ACreateCode: TAction;
+    aCommit: TAction;
+    aRollBack: TAction;
     AExecuteSelectionScript: TAction;
     AExecuteScript: TAction;
     AExecuteSelection: TAction;
@@ -52,16 +55,23 @@ type
     TBLoadSQL: TToolButton;
     TBSaveSQL: TToolButton;
     TBSep3: TToolButton;
-    ToolButton1: TToolButton;
-    ToolButton2: TToolButton;
+    TBExport: TToolButton;
+    TBCreateCode: TToolButton;
+    btnCommit: TToolButton;
+    btnRollback: TToolButton;
+    ToolButton5: TToolButton;
     TSResult: TTabSheet;
     TSData: TTabSheet;
-    ToolBar1: TToolBar;
+    TBQuery: TToolBar;
+    procedure aCommitExecute(Sender: TObject);
+    procedure aCommitUpdate(Sender: TObject);
     procedure AExecuteExecute(Sender: TObject);
     procedure AExecuteScriptExecute(Sender: TObject);
     procedure AExecuteSelectionExecute(Sender: TObject);
     procedure AExecuteSelectionScriptExecute(Sender: TObject);
     procedure AExecuteSingleExecute(Sender: TObject);
+    procedure aRollBackExecute(Sender: TObject);
+    procedure aRollBackUpdate(Sender: TObject);
     procedure BExecClick(Sender: TObject);
     procedure CloseQueryClick(Sender: TObject);
     procedure HaveNextQuery(Sender: TObject);
@@ -97,14 +107,18 @@ type
     procedure DoSQLStatement(Sender: TObject; Statement: TStrings; var StopExecution: Boolean);
     // Execute SQL
     procedure DoExecuteQuery(Const Qry: String; ACount : Integer = 0);
+    function GetTransaction: TSQLTransaction;
     procedure LocalizeFrame;
     function SelectionHint: Boolean;
     procedure SetTableNames;
   public
   Protected
+    Function HaveTransaction : Boolean;
+    Function TransactionIsActive : Boolean;
     procedure SetEngine(const AValue: TFPDDEngine);
     Function GetDataset: TDataset;
     Procedure CreateControls; virtual;
+    Property Transaction : TSQLTransaction Read GetTransaction;
   Public
     Constructor Create(AOwner : TComponent); override;
     Destructor Destroy; override;
@@ -128,11 +142,41 @@ type
     { public declarations }
   end;
 
+   { TSQLDBHelper }
+
+   TSQLDBHelper = class helper for TSQLDBDDEngine
+   private
+     function GetConn: TSQLConnection;
+     function GetTrans: TSQLTransaction;
+   Public
+     Property SQLConnection : TSQLConnection Read GetConn;
+     Property Transaction : TSQLTransaction Read GetTrans;
+   end;
 implementation
 
-uses strutils, sqldb, fpdataexporter, fpcodegenerator;
+uses strutils, fpdataexporter, fpcodegenerator;
 
 {$r *.lfm}
+
+{ TSQLDBHelper }
+
+function TSQLDBHelper.GetConn: TSQLConnection;
+begin
+  Result:=Connection
+end;
+
+function TSQLDBHelper.GetTrans: TSQLTransaction;
+
+Var
+  Conn : TSQLConnection;
+
+begin
+  Conn:=SQLConnection;
+  if Assigned(Conn) then
+    Result:=Conn.Transaction
+  else
+    Result:=Nil;
+end;
 
 
 constructor TQueryFrame.Create(AOwner: TComponent);
@@ -176,6 +220,19 @@ begin
   end;
 end;
 
+function TQueryFrame.HaveTransaction: Boolean;
+begin
+  Result:=(Dataset is TSQLQuery) and Assigned(TSQLQuery(Dataset).SQLTransaction);
+  if not Result then
+    if FEngine is TSQLDBDDEngine then
+      Result:=Assigned(TSQLDBDDEngine(FEngine).Transaction);
+end;
+
+function TQueryFrame.TransactionIsActive: Boolean;
+begin
+
+end;
+
 procedure TQueryFrame.ExportDataClick(Sender: TObject);
 begin
   ExportData;
@@ -213,6 +270,11 @@ begin
   ACreateCode.Hint:=SHintCreateCode;
   ODSQL.Filter:=SSQLFilters;
   SDSQL.Filter:=SSQLFilters;
+  aCommit.Caption:=SCommit;
+  aCommit.Hint:=SCommitTransaction;
+  aRollback.Caption:=SRollback;
+  aRollBack.Hint:=SRollbackransaction;
+
 end;
 
 procedure TQueryFrame.CreateControls;
@@ -259,7 +321,7 @@ begin
     CloseDataset;
 end;
 
-function TQueryFrame.CountStatements(Const S : String) : Integer;
+function TQueryFrame.CountStatements(const S: String): Integer;
 
 Var
   I : integer;
@@ -356,6 +418,18 @@ begin
   end;
 end;
 
+procedure TQueryFrame.aCommitExecute(Sender: TObject);
+begin
+  if HaveTransaction then
+    Transaction.Commit;
+end;
+
+procedure TQueryFrame.aCommitUpdate(Sender: TObject);
+
+begin
+  (Sender as TAction).Enabled:=HaveTransaction and Transaction.Active;
+end;
+
 procedure TQueryFrame.AExecuteScriptExecute(Sender: TObject);
 begin
   ClearResults;
@@ -378,6 +452,17 @@ procedure TQueryFrame.AExecuteSingleExecute(Sender: TObject);
 begin
   ClearResults;
   ExecuteQuery(Trim(FMSQL.Lines.Text));
+end;
+
+procedure TQueryFrame.aRollBackExecute(Sender: TObject);
+begin
+  if HaveTransaction then
+    Transaction.RollBack;
+end;
+
+procedure TQueryFrame.aRollBackUpdate(Sender: TObject);
+begin
+  (Sender as TAction).Enabled:=HaveTransaction and Transaction.Active;
 end;
 
 procedure TQueryFrame.CloseQueryClick(Sender : TObject);
@@ -516,7 +601,7 @@ begin
   FMSQL.Lines.SaveToFile(AFileName);
 end;
 
-procedure TQueryFrame.DoExecuteQuery(Const Qry : String; ACount : Integer = 0);
+procedure TQueryFrame.DoExecuteQuery(const Qry: String; ACount: Integer);
 
 Var
   DS : TDataset;
@@ -573,8 +658,18 @@ begin
   ACloseQuery.Update;
 end;
 
+function TQueryFrame.GetTransaction: TSQLTransaction;
+begin
+  Result:=Nil;
+  if (Dataset is TSQLQuery) then
+    Result:=TSQLQuery(Dataset).SQLTransaction;
+  if (Result=Nil) then
+    if FEngine is TSQLDBDDEngine then
+      Result:=TSQLDBDDEngine(FEngine).Transaction;
+end;
 
-function TQueryFrame.ExecuteQuery(Const Qry: String; ACount : Integer = 0): Boolean;
+
+function TQueryFrame.ExecuteQuery(const Qry: String; ACount: Integer): Boolean;
 
 Var
   Msg : String;

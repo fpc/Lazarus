@@ -42,6 +42,8 @@ resourcestring
   SColSize            = 'Size';
   SColFields          = 'Fields';
   SColOptions         = 'Options';
+  SColRequired        = 'Required';
+  SColReadOnly        = 'Read-Only';
   SQuery              = 'Run query';
   SSelectedObject     = 'Selected object';
 
@@ -276,6 +278,16 @@ resourcestring
   sld_Fromconnection       = 'From connection';
   //
   sld_LegacyView = 'Legacy List View';
+
+  STrue  = 'True';
+  SFalse = 'False';
+  SYes   = 'Yes';
+  SNo    = 'No';
+  SCommit = 'Commit';
+  SCommitTransaction = 'Commit active transaction';
+  SRollback = 'Rollback';
+  SRollbackransaction = 'Rollback active transaction';
+
 
 implementation
 

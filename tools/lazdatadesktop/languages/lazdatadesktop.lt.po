@@ -63,6 +63,14 @@ msgctxt "lazdatadeskstr.scoloptions"
 msgid "Options"
 msgstr "Parinktys"
 
+#: lazdatadeskstr.scolreadonly
+msgid "Read-Only"
+msgstr ""
+
+#: lazdatadeskstr.scolrequired
+msgid "Required"
+msgstr ""
+
 #: lazdatadeskstr.scolsize
 msgid "Size"
 msgstr "Dydis"
@@ -70,6 +78,14 @@ msgstr "Dydis"
 #: lazdatadeskstr.scoltype
 msgid "Type"
 msgstr "Tipas"
+
+#: lazdatadeskstr.scommit
+msgid "Commit"
+msgstr ""
+
+#: lazdatadeskstr.scommittransaction
+msgid "Commit active transaction"
+msgstr ""
 
 #: lazdatadeskstr.sconfirmclose
 msgid "Confirm close"
@@ -205,6 +221,10 @@ msgstr "Vykdymas užtruko: %s"
 #: lazdatadeskstr.sexport
 msgid "Export data"
 msgstr "Eksportuoti duomenis"
+
+#: lazdatadeskstr.sfalse
+msgid "False"
+msgstr ""
 
 #: lazdatadeskstr.sfield
 msgid "Field"
@@ -768,6 +788,10 @@ msgstr "Įveskite naujosios lentelės pavadinimą:"
 msgid "Next"
 msgstr "Tolesnis"
 
+#: lazdatadeskstr.sno
+msgid "No"
+msgstr ""
+
 #: lazdatadeskstr.snodedatabase
 msgctxt "lazdatadeskstr.snodedatabase"
 msgid "Database"
@@ -855,6 +879,14 @@ msgstr "Įrašų paimta: %d"
 msgid "Retry the statement"
 msgstr "Kartoti sakinį"
 
+#: lazdatadeskstr.srollback
+msgid "Rollback"
+msgstr ""
+
+#: lazdatadeskstr.srollbackransaction
+msgid "Rollback active transaction"
+msgstr ""
+
 #: lazdatadeskstr.srowsaffected
 #, object-pascal-format
 msgid "Query executed successfully: %d rows affected."
@@ -926,6 +958,10 @@ msgstr "Testi sustojant įvykus kitai klaidai"
 msgid "Table"
 msgstr "Lentelė"
 
+#: lazdatadeskstr.strue
+msgid "True"
+msgstr ""
+
 #: lazdatadeskstr.sunknownconnection
 #, object-pascal-format
 msgid "Unknown connection: %s"
@@ -951,4 +987,8 @@ msgstr "Vertė"
 #: lazdatadeskstr.swhichcurrentdicttouse
 msgid "A data dictionary is active.Would you like to import into this data dictionary ?"
 msgstr "Duomenų žodynas yra veikiamasis. Importuoti į šį žodyną?"
+
+#: lazdatadeskstr.syes
+msgid "Yes"
+msgstr ""
 

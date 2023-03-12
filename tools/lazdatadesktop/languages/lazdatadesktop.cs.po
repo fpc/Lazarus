@@ -62,6 +62,14 @@ msgctxt "lazdatadeskstr.scoloptions"
 msgid "Options"
 msgstr "Volby"
 
+#: lazdatadeskstr.scolreadonly
+msgid "Read-Only"
+msgstr ""
+
+#: lazdatadeskstr.scolrequired
+msgid "Required"
+msgstr ""
+
 #: lazdatadeskstr.scolsize
 msgid "Size"
 msgstr "Velikost"
@@ -69,6 +77,14 @@ msgstr "Velikost"
 #: lazdatadeskstr.scoltype
 msgid "Type"
 msgstr "Typ"
+
+#: lazdatadeskstr.scommit
+msgid "Commit"
+msgstr ""
+
+#: lazdatadeskstr.scommittransaction
+msgid "Commit active transaction"
+msgstr ""
 
 #: lazdatadeskstr.sconfirmclose
 msgid "Confirm close"
@@ -198,6 +214,10 @@ msgstr ""
 #: lazdatadeskstr.sexport
 msgid "Export data"
 msgstr "Exportovat data"
+
+#: lazdatadeskstr.sfalse
+msgid "False"
+msgstr ""
 
 #: lazdatadeskstr.sfield
 msgid "Field"
@@ -761,6 +781,10 @@ msgstr "Zadeje název pro novou tabulku:"
 msgid "Next"
 msgstr "Další"
 
+#: lazdatadeskstr.sno
+msgid "No"
+msgstr ""
+
 #: lazdatadeskstr.snodedatabase
 msgctxt "lazdatadeskstr.snodedatabase"
 msgid "Database"
@@ -842,6 +866,14 @@ msgstr ""
 msgid "Retry the statement"
 msgstr ""
 
+#: lazdatadeskstr.srollback
+msgid "Rollback"
+msgstr ""
+
+#: lazdatadeskstr.srollbackransaction
+msgid "Rollback active transaction"
+msgstr ""
+
 #: lazdatadeskstr.srowsaffected
 #, object-pascal-format
 msgid "Query executed successfully: %d rows affected."
@@ -913,6 +945,10 @@ msgstr ""
 msgid "Table"
 msgstr "Tabulka"
 
+#: lazdatadeskstr.strue
+msgid "True"
+msgstr ""
+
 #: lazdatadeskstr.sunknownconnection
 #, object-pascal-format
 msgid "Unknown connection: %s"
@@ -938,4 +974,8 @@ msgstr "Hodnota"
 #: lazdatadeskstr.swhichcurrentdicttouse
 msgid "A data dictionary is active.Would you like to import into this data dictionary ?"
 msgstr "Nějaký datový slovník je aktivní. Přejete si do něj data importovat?"
+
+#: lazdatadeskstr.syes
+msgid "Yes"
+msgstr ""
 

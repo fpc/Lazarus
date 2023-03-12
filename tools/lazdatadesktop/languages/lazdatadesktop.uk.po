@@ -64,6 +64,14 @@ msgctxt "lazdatadeskstr.scoloptions"
 msgid "Options"
 msgstr "Параметри"
 
+#: lazdatadeskstr.scolreadonly
+msgid "Read-Only"
+msgstr ""
+
+#: lazdatadeskstr.scolrequired
+msgid "Required"
+msgstr ""
+
 #: lazdatadeskstr.scolsize
 msgid "Size"
 msgstr "Розмір"
@@ -71,6 +79,14 @@ msgstr "Розмір"
 #: lazdatadeskstr.scoltype
 msgid "Type"
 msgstr "Тип"
+
+#: lazdatadeskstr.scommit
+msgid "Commit"
+msgstr ""
+
+#: lazdatadeskstr.scommittransaction
+msgid "Commit active transaction"
+msgstr ""
 
 #: lazdatadeskstr.sconfirmclose
 msgid "Confirm close"
@@ -196,6 +212,10 @@ msgstr "Час виконання: %s"
 #: lazdatadeskstr.sexport
 msgid "Export data"
 msgstr "Експорт даних"
+
+#: lazdatadeskstr.sfalse
+msgid "False"
+msgstr ""
 
 #: lazdatadeskstr.sfield
 msgid "Field"
@@ -759,6 +779,10 @@ msgstr "Введіть ім'я для нової таблиці:"
 msgid "Next"
 msgstr "Наступний"
 
+#: lazdatadeskstr.sno
+msgid "No"
+msgstr ""
+
 #: lazdatadeskstr.snodedatabase
 msgctxt "lazdatadeskstr.snodedatabase"
 msgid "Database"
@@ -842,6 +866,14 @@ msgstr "Вибрано записів: %d"
 msgid "Retry the statement"
 msgstr "Повторити інструкцію"
 
+#: lazdatadeskstr.srollback
+msgid "Rollback"
+msgstr ""
+
+#: lazdatadeskstr.srollbackransaction
+msgid "Rollback active transaction"
+msgstr ""
+
 #: lazdatadeskstr.srowsaffected
 #, object-pascal-format
 msgid "Query executed successfully: %d rows affected."
@@ -913,6 +945,10 @@ msgstr "Продовжити, зупинитись на наступній по�
 msgid "Table"
 msgstr "Таблиця"
 
+#: lazdatadeskstr.strue
+msgid "True"
+msgstr ""
+
 #: lazdatadeskstr.sunknownconnection
 #, object-pascal-format
 msgid "Unknown connection: %s"
@@ -938,4 +974,8 @@ msgstr "Значення"
 #: lazdatadeskstr.swhichcurrentdicttouse
 msgid "A data dictionary is active.Would you like to import into this data dictionary ?"
 msgstr "Словник даних активний.Ви хочете імпортувати в цей словник даних ?"
+
+#: lazdatadeskstr.syes
+msgid "Yes"
+msgstr ""
 
