@@ -161,7 +161,8 @@ function TFpDbgValueConverterVariantNormalizer.ConvertValue(
 
 var
   m, m2, vtype: TFpValue;
-  discr, i: Int64;
+  discr: Int64;
+  i: Integer;
   t: TFpSymbol;
   OldResData: TLzDbgWatchDataIntf;
 begin
