@@ -411,7 +411,7 @@ begin
     else begin
       repeat
         TmpVal := AnFpValue.Member[StartIdx + Min(CacheCnt, Cnt) + LowBnd]; // // TODO : CheckError // ClearError for AnFpValue
-        if IsTargetNotNil(TmpVal.Address) then begin
+        if (TmpVal <> nil) and IsTargetNotNil(TmpVal.Address) then begin
           {$PUSH}{$R-}{$Q-}
           CacheSize := TmpVal.Address.Address - MemberValue.Address.Address;
           TmpVal.ReleaseReference;

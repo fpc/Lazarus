@@ -481,6 +481,60 @@ begin
     CreateExpr('x * [,a]', False);
     CreateExpr('x * [a,]', False);
 
+
+    CreateExpr('a[1..2]', True);
+    TestExpr([], TFpPascalExpressionPartOperatorArraySliceController, '..', 1);
+    TestExpr([0], TFpPascalExpressionPartBracketIndex, '[', 2);
+    TestExpr([0,0], TFpPascalExpressionPartIdentifier, 'a', 0);
+    TestExpr([0,1], TFpPascalExpressionPartOperatorArraySlice, '..', 2);
+    TestExpr([0,1,0], TFpPascalExpressionPartConstantNumber, '1', 0);
+    TestExpr([0,1,1], TFpPascalExpressionPartConstantNumber, '2', 0);
+
+    CreateExpr('a[1..2]+9', True);
+    TestExpr([], TFpPascalExpressionPartOperatorArraySliceController, '..', 1);
+    TestExpr([0], TFpPascalExpressionPartOperatorPlusMinus, '+', 2);
+    TestExpr([0,0], TFpPascalExpressionPartBracketIndex, '[', 2);
+    TestExpr([0,0,0], TFpPascalExpressionPartIdentifier, 'a', 0);
+    TestExpr([0,0,1], TFpPascalExpressionPartOperatorArraySlice, '..', 2);
+    TestExpr([0,0,1,0], TFpPascalExpressionPartConstantNumber, '1', 0);
+    TestExpr([0,0,1,1], TFpPascalExpressionPartConstantNumber, '2', 0);
+    TestExpr([0,1], TFpPascalExpressionPartConstantNumber, '9', 0);
+
+    CreateExpr('a[1..2][3..4]', True);
+    TestExpr([], TFpPascalExpressionPartOperatorArraySliceController, '..', 1);
+    TestExpr([0], TFpPascalExpressionPartOperatorArraySliceController, '..', 1);
+    TestExpr([0,0], TFpPascalExpressionPartBracketIndex, '[', 2);
+    //
+    TestExpr([0,0,0], TFpPascalExpressionPartBracketIndex, '[', 2);
+    TestExpr([0,0,0,0], TFpPascalExpressionPartIdentifier, 'a', 0);
+    TestExpr([0,0,0,1], TFpPascalExpressionPartOperatorArraySlice, '..', 2);
+    TestExpr([0,0,0,1,0], TFpPascalExpressionPartConstantNumber, '1', 0);
+    TestExpr([0,0,0,1,1], TFpPascalExpressionPartConstantNumber, '2', 0);
+    //
+    TestExpr([0,0,1], TFpPascalExpressionPartOperatorArraySlice, '..', 2);
+    TestExpr([0,0,1,0], TFpPascalExpressionPartConstantNumber, '3', 0);
+    TestExpr([0,0,1,1], TFpPascalExpressionPartConstantNumber, '4', 0);
+
+
+    CreateExpr('a[1..2][3..4]+9', True);
+    TestExpr([], TFpPascalExpressionPartOperatorArraySliceController, '..', 1);
+    TestExpr([0], TFpPascalExpressionPartOperatorArraySliceController, '..', 1);
+    TestExpr([0,0], TFpPascalExpressionPartOperatorPlusMinus, '+', 2);
+    TestExpr([0,0,0], TFpPascalExpressionPartBracketIndex, '[', 2);
+    //
+    TestExpr([0,0,0,0], TFpPascalExpressionPartBracketIndex, '[', 2);
+    TestExpr([0,0,0,0,0], TFpPascalExpressionPartIdentifier, 'a', 0);
+    TestExpr([0,0,0,0,1], TFpPascalExpressionPartOperatorArraySlice, '..', 2);
+    TestExpr([0,0,0,0,1,0], TFpPascalExpressionPartConstantNumber, '1', 0);
+    TestExpr([0,0,0,0,1,1], TFpPascalExpressionPartConstantNumber, '2', 0);
+    //
+    TestExpr([0,0,0,1], TFpPascalExpressionPartOperatorArraySlice, '..', 2);
+    TestExpr([0,0,0,1,0], TFpPascalExpressionPartConstantNumber, '3', 0);
+    TestExpr([0,0,0,1,1], TFpPascalExpressionPartConstantNumber, '4', 0);
+    //
+    TestExpr([0,0,1], TFpPascalExpressionPartConstantNumber, '9', 0);
+
+
   finally
     CurrentTestExprObj.Free;
   end;

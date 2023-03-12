@@ -593,7 +593,7 @@ begin
           i := FGridData.Row;
           if (i < 1) or (i >= FGridData.RowCount) then exit;
           s := FGridData.Cells[1, i];
-          Execute(WatchInspectNav1.Expression + '[' + s + ']');
+          Execute(GetExpressionForArrayElement(WatchInspectNav1.Expression, s));
         end;
       rdkStruct: begin
           i := FGridData.Row;

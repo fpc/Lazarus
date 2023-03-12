@@ -12,6 +12,22 @@ function QuoteText(AText: Utf8String): UTf8String;
 function QuoteWideText(AText: WideString): WideString;
 function ClearMultiline(const AValue: ansistring): ansistring;
 
+(* GetExpressionForArrayElement
+  If "AnArrayExpression" returns an array, get a new Expression that returns
+  the element "[AnIndex]"
+  In case "AnArrayExpression" is an array slice, the new "AnIndex" has to
+  replace the slice-range.
+  E.g. Entry [15] from "Foo[11..19]" must result in "Foo[15]"
+
+  By default "AnIndex" has the lower slice-value as index.
+  That is
+  - For a slice "Foo[11..19]" (with type TFoo = array [0..100])
+  - The slice would defined as "Slice[11..19]"
+    The Index "11" returns Foo[11]
+*)
+function GetExpressionForArrayElement(AnArrayExpression: AnsiString; AnIndex: String): AnsiString; overload;
+function GetExpressionForArrayElement(AnArrayExpression: AnsiString; AnIndex: Integer): AnsiString; overload;
+
 implementation
 
 function HexDigicCount(ANum: QWord; AByteSize: Integer = 0; AForceAddr: Boolean = False): integer;
@@ -245,5 +261,98 @@ begin
     SetLength(Result,ow);
   end;
 end;
+
+function GetExpressionForArrayElement(AnArrayExpression: AnsiString;
+  AnIndex: String): AnsiString;
+var
+  s, e, p, p2: PChar;
+  MaybeBeforeRange, InString, FoundDotDot: Boolean;
+  RStart, InRndBracket, InSqrBracket: Integer;
+begin
+  Result := AnArrayExpression + '[' + AnIndex + ']';
+  if AnArrayExpression = '' then
+    exit;
+
+  s := @AnArrayExpression[1];
+  p := s;
+  e := @AnArrayExpression[Length(AnArrayExpression)];
+  MaybeBeforeRange := False;
+  InString := False;
+  dec(p);
+  while p < e do begin
+    inc(p);
+    if p^ = '''' then begin
+      InString := not InString;
+      MaybeBeforeRange := True; // sub-range of string
+      Continue;
+    end;
+    if InString then
+      Continue;
+
+    if p^ in ['@', '^', '.', '+', '-', '*', '/', '(', ',', '=', '<', '>', '#', '$', '%', '&', '!'] then
+      MaybeBeforeRange := False  // after operator. A [1..5] would be a set of byte
+
+    else
+    if p^ in ['a'..'z', 'A'..'Z', '_', ')', ']'] then
+      MaybeBeforeRange := True  // after identifier, or after ")" or "]"
+
+    else
+    if (p^ = '[') and MaybeBeforeRange then begin
+      // maybe found first range
+      p2 := nil;
+      RStart := p - s; // Length of substring before "["
+
+
+      // check if this is a slice
+      InRndBracket := 0;
+      InSqrBracket := 0;
+      FoundDotDot := False;
+      while p < e do begin
+        inc(p);
+        if p^ = '''' then begin
+          InString := not InString;
+          Continue;
+        end;
+        if InString then
+          Continue;
+        if (p^ = '.') and (p[1] = '.') then begin FoundDotDot := True; inc(p); end
+        else if (p^ = '(') then inc(InRndBracket)
+        else if (p^ = ')') then begin
+          dec(InRndBracket);
+          if InRndBracket < 0 then
+            break; // something wrong.
+        end
+        else if (p^ = '[') then begin
+          inc(InSqrBracket);
+          if p2 = nil then p2 := p; // continue outer loop from here
+        end
+        else if (p^ = ']') then begin
+          dec(InSqrBracket);
+          if InSqrBracket < 0 then begin
+            if (not FoundDotDot) or (InRndBracket <> 0) then
+              break; // not a range, continue outer loop
+            // Found
+            Result := copy(AnArrayExpression, 1 , RStart+1) +
+              AnIndex +
+              copy(AnArrayExpression, p-s + 1, Length(AnArrayExpression));
+            exit;
+          end;
+        end;
+      end;
+
+
+      MaybeBeforeRange := p2 = nil;  // after "]"
+      if p2 <> nil then
+        p := p2; // continue after first "[" in above loop
+    end;
+  end;
+end;
+
+function GetExpressionForArrayElement(AnArrayExpression: AnsiString;
+  AnIndex: Integer): AnsiString;
+begin
+  Result := GetExpressionForArrayElement(AnArrayExpression, IntToStr(AnIndex));
+end;
+
 end.
 
