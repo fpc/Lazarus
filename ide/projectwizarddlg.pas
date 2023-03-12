@@ -28,8 +28,15 @@ unit ProjectWizardDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Buttons,
-  LazarusIDEStrConsts, IDEImagesIntf, EnvironmentOpts, StdCtrls;
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls, StdCtrls, Graphics, Dialogs, Buttons,
+  // BuildIntf
+  PackageIntf,
+  // IdeIntf
+  IDEImagesIntf,
+  // IDE
+  LazarusIDEStrConsts, EnvironmentOpts;
 
 type
   TProjectWizardSelectionType = (
@@ -68,7 +75,6 @@ function ShowProjectWizardDlg(out ARecentProject: String): TProjectWizardSelecti
 implementation
 
 {$R *.lfm}
-uses PackageIntf;
 
 function ShowProjectWizardDlg(out ARecentProject: String): TProjectWizardSelectionType;
 var
