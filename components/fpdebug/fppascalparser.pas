@@ -139,6 +139,7 @@ type
     procedure SetError(AMsg: String = ''); // deprecated;
     procedure SetError(APart: TFpPascalExpressionPart; AMsg: String = ''); // deprecated;
     procedure SetError(AnErrorCode: TFpErrorCode; AData: array of const);
+    procedure SetError(AnError: TFpError);
   protected
     function DebugText(AIndent: String; {%H-}AWithResults: Boolean): String; virtual; // Self desc only
     function DebugDump(AIndent: String; AWithResults: Boolean): String; virtual;
@@ -523,7 +524,6 @@ type
     FSlicePart: TFpPascalExpressionPartOperatorArraySlice;
     FInResetEvaluationForIndex: Boolean;
   protected
-    function HandleNextPart(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
     function DoGetResultValue: TFpValue; override;
     procedure ResetEvaluationForIndex;
     procedure ResetEvaluationForAnchestors; override;
@@ -532,6 +532,7 @@ type
       ASlicePart: TFpPascalExpressionPartOperatorArraySlice;
       ATopPart: TFpPascalExpressionPart;
       AStartChar: PChar; AnEndChar: PChar = nil);
+    function HandleNextPart(APart: TFpPascalExpressionPart): TFpPascalExpressionPart; override;
   end;
 
   { TFpPascalExpressionPartOperatorArraySlice }
@@ -2144,9 +2145,13 @@ function TFpPascalExpressionPartIntrinsic.DoSubStr(
 var
   Tmp, Tmp2, Tmp3, Tmp4: TFpValue;
   s1, s2: String;
+  w1: WideString;
   p1, p2: Int64;
   UsePtr: Boolean;
   Addr: QWord;
+  t: TFpSymbol;
+  Size: TFpDbgValueSize;
+  ctx: TFpDbgLocationContext;
 begin
   Result := nil;
   if not CheckArgumentCount(AParams, 3,4) then
@@ -2167,14 +2172,8 @@ begin
     UsePtr := Tmp4.AsBool;
   end;
 
-  s1 := Tmp.AsString;
-  if (s1 = '') and (Tmp.Kind in [skPointer, skAddress]) then begin
-    if (AParams.Count = 5) and not UsePtr then begin
-      SetError('expected true for argument 4');
-      exit;
-    end;
+  if not (Tmp.Kind in [skString, skAnsiString, skWideString]) then
     UsePtr := True;
-  end;
 
   if svfInteger in Tmp2.FieldFlags then
     p1 := Tmp2.AsInteger
@@ -2218,21 +2217,49 @@ begin
       exit;
     end;
 
+    if Tmp.Kind = skPointer then begin
+      Size := SizeVal(1);
+      t := Tmp.TypeInfo;
+      if t <> nil then
+        t := t.TypeInfo;
+      if (t = nil) or      // Only test for hardcoded size. TODO: dwarf 3 could have variable size, but for char that is not expected
+         not t.ReadSize(nil, Size)
+      then
+        Size := SizeVal(1);
+    end;
+
+    ctx := Expression.Context.LocationContext;
     {$PUSH}{$R-}{$Q-}
-    Expression.Context.MemManager.ReadPChar(TargetLoc(Addr+QWord(p1)), p2, s1, True);
+    if (Tmp.Kind = skWideString) or
+       ( (Tmp.Kind = skPointer) and (Size.Size = 2))
+    then begin
+      if not ( (ctx.MemManager.SetLength(w1, p2)) and
+               (ctx.ReadMemory(TargetLoc(Addr+QWord(p1*2)), SizeVal(p2*2), @w1[1])) )
+      then begin
+        SetError(ctx.LastMemError);
+        s1 := '';
+      end
+      else
+        s1 := w1;
+    end
+    else begin
+      if not ( (ctx.MemManager.SetLength(s1, p2)) and
+               (ctx.ReadMemory(TargetLoc(Addr+QWord(p1)), SizeVal(p2), @s1[1])) )
+      then begin
+        SetError(ctx.LastMemError);
+        s1 := '';
+      end;
+    end;
     {$POP}
     Result := TFpValueConstString.Create(s1);
-    exit;
+  end
+  else
+  begin
+    if not Tmp.GetSubString(p1, p2, s1) and (s1 = '') then
+      SetError(Tmp.LastError);
+    Result := TFpValueConstString.Create(s1);
   end;
 
-  if (s1 = '') then begin
-    Result := TFpValueConstString.Create('');
-    exit;
-  end;
-
-  {$PUSH}{$R-}{$Q-}
-  Result := TFpValueConstString.Create(copy(s1, p1, p2));
-  {$POP}
 end;
 
 function TFpPascalExpressionPartIntrinsic.DoGetResultValue: TFpValue;
@@ -2950,6 +2977,11 @@ end;
 procedure TFpPascalExpressionPart.SetError(AnErrorCode: TFpErrorCode; AData: array of const);
 begin
   FExpression.SetError(AnErrorCode, AData);
+end;
+
+procedure TFpPascalExpressionPart.SetError(AnError: TFpError);
+begin
+  FExpression.SetError(AnError);
 end;
 
 procedure TFpPascalExpressionPart.Init;
