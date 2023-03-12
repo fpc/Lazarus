@@ -30,6 +30,7 @@ Resourcestring
 
   rsStandardHTMLAction = 'Standard HTML Element action.';
   rsDBEditHTMLAction = 'Standard Data-Aware HTML Element action.';
+  rsDBHTMLAction = 'Standard Data-Aware HTML read-only Element action.';
   rsDBButtonHTMLAction = 'Data-aware HTML button action.';
 
   rsActionListEditorNewAction = 'New Element Action';

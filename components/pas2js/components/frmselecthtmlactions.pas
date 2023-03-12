@@ -158,9 +158,9 @@ begin
   Result:=THTMLElementAction;
   if PreferDB then
     if {%H-}IndexText(aEl.TagName,['input','select','textarea'])<>-1 then
-      begin
-      Result:=TDBHTMLInputElementAction;
-      end;
+      Result:=TDBHTMLInputElementAction
+    else
+      Result:=TDBHTMLElementAction;
 end;
 
 

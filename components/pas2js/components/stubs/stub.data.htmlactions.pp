@@ -8,6 +8,7 @@ interface
 uses sysutils, classes, Stub.HTMLActions, db;
 
 Type
+  TDBCustomHTMLElementAction = Class;
   TDBCustomHTMLInputElementAction = Class;
   TDBCustomHTMLButtonElementAction = Class;
 
@@ -16,20 +17,29 @@ Type
   THTMLActionDataLink = class(TDataLink)
   private
     FFieldName: string;
-    FAction : TDBCustomHTMLInputElementAction;
+    FAction : TDBCustomHTMLElementAction;
     procedure SetFieldName(AValue: string);
   public
-    constructor Create(aAction : TDBCustomHTMLInputElementAction);
+    constructor Create(aAction : TDBCustomHTMLElementAction);
     property FieldName: string read FFieldName write SetFieldName;
   end;
 
+  TFieldTextData = Record
+    Field : TField;
+    Value : String;
+  end;
+
+  TGetFieldTextEvent = procedure(Sender : TObject; var aData : TFieldTextData) of object;
 
   { TDBCustomHTMLInputElementAction }
 
-  TDBCustomHTMLInputElementAction = class(THTMLCustomElementAction)
+  { TDBHTMLCustomElementAction }
+
+  TDBCustomHTMLElementAction = class(THTMLCustomElementAction)
   Private
     FLink : THTMLActionDataLink;
     FOnEndEditing: TNotifyEvent;
+    FOnGetFieldText: TGetFieldTextEvent;
     FOnLayoutChanged: TNotifyEvent;
     FOnStartEditing: TNotifyEvent;
     function GetDataSource: TDatasource;
@@ -46,6 +56,28 @@ Type
     Property OnStartEditing : TNotifyEvent Read FOnStartEditing Write FOnStartEditing;
     Property OnEndEditing : TNotifyEvent Read FOnEndEditing Write FOnEndEditing;
     Property OnLayoutChanged : TNotifyEvent Read FOnLayoutChanged Write FOnLayoutChanged;
+    Property OnGetFieldText : TGetFieldTextEvent Read FOnGetFieldText Write FOnGetFieldText;
+  end;
+
+  TDBHTMLElementAction = class(TDBCustomHTMLElementAction)
+  Published
+    Property Events;
+    Property CustomEvents;
+    Property ElementID;
+    Property PreventDefault;
+    Property StopPropagation;
+    Property OnExecute;
+    Property BeforeBind;
+    Property AfterBind;
+    Property Datasource;
+    Property FieldName;
+    Property OnStartEditing;
+    Property OnEndEditing;
+    Property OnLayoutChanged;
+    Property OnGetFieldText;
+  end;
+
+  TDBCustomHTMLInputElementAction = class(TDBCustomHTMLElementAction)
   end;
   
   TDBHTMLInputElementAction = class(TDBCustomHTMLInputElementAction)
@@ -63,6 +95,7 @@ Type
     Property OnStartEditing;
     Property OnEndEditing;
     Property OnLayoutChanged;
+    Property OnGetFieldText;
   end;
 
   { TButtonActionDataLink }
@@ -159,37 +192,35 @@ end;
 
 { TDBCustomHTMLInputElementAction }
 
-function TDBCustomHTMLInputElementAction.GetDataSource: TDatasource;
+function TDBCustomHTMLElementAction.GetDataSource: TDatasource;
 begin
   Result:=Link.DataSource;
 end;
 
 
-function TDBCustomHTMLInputElementAction.GetFieldName: String;
+function TDBCustomHTMLElementAction.GetFieldName: String;
 begin
   Result:=Link.FieldName;
 end;
 
-procedure TDBCustomHTMLInputElementAction.SetDatasource(AValue: TDatasource);
+procedure TDBCustomHTMLElementAction.SetDatasource(AValue: TDatasource);
 begin
   if aValue=Link.DataSource then exit;
   Link.Datasource:=aValue;
 end;
 
-procedure TDBCustomHTMLInputElementAction.SetFieldName(AValue: String);
+procedure TDBCustomHTMLElementAction.SetFieldName(AValue: String);
 begin
   Link.FieldName:=aValue;
 end;
 
-
-
-constructor TDBCustomHTMLInputElementAction.Create(aOwner: TComponent);
+constructor TDBCustomHTMLElementAction.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
   FLink:=THTMLActionDataLink.Create(Self);
 end;
 
-destructor TDBCustomHTMLInputElementAction.Destroy;
+destructor TDBCustomHTMLElementAction.Destroy;
 begin
   FreeAndNil(FLink);
   inherited Destroy;
@@ -206,7 +237,7 @@ end;
 
 
 
-constructor THTMLActionDataLink.Create(aAction: TDBCustomHTMLInputElementAction);
+constructor THTMLActionDataLink.Create(aAction: TDBCustomHTMLElementAction);
 begin
   Inherited Create;
   FAction:=aAction;

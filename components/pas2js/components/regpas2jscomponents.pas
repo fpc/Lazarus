@@ -164,6 +164,7 @@ Procedure RegisterStandardHTMLActions;
 
 begin
   RegisterPas2JSAction(THTMLElementAction,rsStandardHTMLAction);
+  RegisterPas2JSAction(TDBHTMLElementAction,rsDBHTMLAction);
   RegisterPas2JSAction(TDBHTMLInputElementAction,rsDBEditHTMLAction);
   RegisterPas2JSAction(TDBHTMLButtonElementAction,rsDBButtonHTMLAction);
 end;
