@@ -666,6 +666,8 @@ begin
         LI.Caption:=FD.FieldName;
         LI.SubItems.Add(GetEnumName(TypeInfo(TFieldType),Ord(FD.FieldType)));
         LI.SubItems.Add(IntToStr(FD.Size));
+        LI.SubItems.Add(BoolToStr(FD.Required,SYes,SNo));
+        LI.SubItems.Add(BoolToStr(FD.ReadOnly,SYes,SNo));
         end;
     Finally
       TD.Free;
@@ -694,7 +696,13 @@ begin
   LC.Width:=80;
   LC:=LV.Columns.Add;
   LC.Caption:=SColSize;
-  LC.Width:=30;
+  LC.Width:=90;
+  LC:=LV.Columns.Add;
+  LC.Caption:=SColRequired;
+  LC.Width:=90;
+  LC:=LV.Columns.Add;
+  LC.Caption:=SColReadonly;
+  LC.Width:=90;
   LV.Parent:=FDisplay;
   LV.Align:=alClient;
   LV.BeginUpdate;
