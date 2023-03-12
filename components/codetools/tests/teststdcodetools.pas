@@ -76,6 +76,7 @@ const
   SpaceChars = [#9,#10,#13,' '];
 var
   ExpectedP, ActualP: PChar;
+  WroteBoth: boolean;
 
   function FindLineEnd(p: PChar): PChar;
   begin
@@ -87,6 +88,17 @@ var
   begin
     while (p>MinP) and not (p[-1] in [#10,#13]) do dec(p);
     Result:=p;
+  end;
+
+  procedure WriteBoth;
+  begin
+    if WroteBoth then exit;
+    WroteBoth:=true;
+    writeln('DiffFound Actual:-----------------------');
+    writeln(Actual);
+    writeln('DiffFound Expected:---------------------');
+    writeln(Expected);
+    writeln('DiffFound ------------------------------');
   end;
 
   procedure DiffFound;
@@ -122,16 +134,13 @@ var
         // write empty line with pointer ^
         for i:=1 to 2+ExpectedP-StartPos do write(' ');
         writeln('^');
+        WriteBoth;
         AssertEquals(Msg,ExpLine,ActLine);
         break;
       end;
     until p^=#0;
 
-    writeln('DiffFound Actual:-----------------------');
-    writeln(Actual);
-    writeln('DiffFound Expected:---------------------');
-    writeln(Expected);
-    writeln('DiffFound ------------------------------');
+    WriteBoth;
     Fail('diff found, but lines are the same, internal error');
   end;
 
@@ -141,6 +150,7 @@ var
 begin
   if Expected='' then Expected:=' ';
   if Actual='' then Actual:=' ';
+  WroteBoth:=false;
   ExpectedP:=PChar(Expected);
   ActualP:=PChar(Actual);
   repeat

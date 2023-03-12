@@ -42,6 +42,8 @@ type
     procedure TestCompleteVariableWithSpecializedType;
     procedure TestCompleteMethodSignature_Empty_Parentheses;
     procedure TestCompleteMethodSignature_Without_Parentheses;
+    procedure TestCompleteEventAssignmentDelphi;
+    procedure TestCompleteEventAssignmentObjFPC;
   end;
 
 implementation
@@ -896,6 +898,106 @@ begin
     ,'implementation'
     ,'procedure Foo;'
     ,'begin'
+    ,'end;'
+    ,'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteEventAssignmentDelphi;
+begin
+  Test('TestCompleteEventAssignmentDelphi',
+    ['unit SomeUnit;'
+    ,'{$MODE DELPHI}'
+    ,'interface'
+    ,'type'
+    ,'  TNotifyEvent = procedure(Sender: TObject) of object;'
+    ,'  TBird = class'
+    ,'  private'
+    ,'  public'
+    ,'    Eagle: TBird;'
+    ,'    OnClick: TNotifyEvent;'
+    ,'    procedure Fly;'
+    ,'  end;'
+    ,'implementation'
+    ,'procedure TBird.Fly;'
+    ,'begin;'
+    ,'  Eagle.OnClick:='
+    ,'end;'
+    ,'end.'],
+    16,18,
+    ['unit SomeUnit;'
+    ,'{$MODE DELPHI}'
+    ,'interface'
+    ,'type'
+    ,'  TNotifyEvent = procedure(Sender: TObject) of object;'
+    ,'  { TBird }'
+    ,'  TBird = class'
+    ,'  private'
+    ,'    procedure EagleClick(Sender: TObject);'
+    ,'  public'
+    ,'    Eagle: TBird;'
+    ,'    OnClick: TNotifyEvent;'
+    ,'    procedure Fly;'
+    ,'  end;'
+    ,'implementation'
+    ,''
+    ,'procedure TBird.EagleClick(Sender: TObject);'
+    ,'begin'
+    ,''
+    ,'end;'
+    ,''
+    ,'procedure TBird.Fly;'
+    ,'begin;'
+    ,'  Eagle.OnClick:=EagleClick;'
+    ,'end;'
+    ,'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteEventAssignmentObjFPC;
+begin
+  Test('TestCompleteEventAssignmentDelphi',
+    ['unit SomeUnit;'
+    ,'{$MODE ObjFPC}'
+    ,'interface'
+    ,'type'
+    ,'  TNotifyEvent = procedure(Sender: TObject) of object;'
+    ,'  TBird = class'
+    ,'  private'
+    ,'  public'
+    ,'    Eagle: TBird;'
+    ,'    OnClick: TNotifyEvent;'
+    ,'    procedure Fly;'
+    ,'  end;'
+    ,'implementation'
+    ,'procedure TBird.Fly;'
+    ,'begin;'
+    ,'  Eagle.OnClick:='
+    ,'end;'
+    ,'end.'],
+    16,18,
+    ['unit SomeUnit;'
+    ,'{$MODE ObjFPC}'
+    ,'interface'
+    ,'type'
+    ,'  TNotifyEvent = procedure(Sender: TObject) of object;'
+    ,'  { TBird }'
+    ,'  TBird = class'
+    ,'  private'
+    ,'    procedure EagleClick(Sender: TObject);'
+    ,'  public'
+    ,'    Eagle: TBird;'
+    ,'    OnClick: TNotifyEvent;'
+    ,'    procedure Fly;'
+    ,'  end;'
+    ,'implementation'
+    ,''
+    ,'procedure TBird.EagleClick(Sender: TObject);'
+    ,'begin'
+    ,''
+    ,'end;'
+    ,''
+    ,'procedure TBird.Fly;'
+    ,'begin;'
+    ,'  Eagle.OnClick:=@EagleClick;'
     ,'end;'
     ,'end.']);
 end;
