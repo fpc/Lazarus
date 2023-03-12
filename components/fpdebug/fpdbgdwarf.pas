@@ -322,6 +322,10 @@ type
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetDataAddress: TFpDbgMemLocation; override;
     function GetDerefAddress: TFpDbgMemLocation; override;
+    function GetSubString(AStartIndex, ALen: Int64; out ASubStr: AnsiString;
+      AIgnoreBounds: Boolean = False): Boolean; override;
+    function GetSubWideString(AStartIndex, ALen: Int64; out
+      ASubStr: WideString; AIgnoreBounds: Boolean = False): Boolean; override;
     function GetAsString: AnsiString; override;
     function GetAsWideString: WideString; override;
     function GetMember(AIndex: Int64): TFpValue; override;
@@ -2537,6 +2541,154 @@ begin
     Result := InvalidLoc
   else
     Result := inherited;
+end;
+
+function TFpValueDwarfPointer.GetSubString(AStartIndex, ALen: Int64; out
+  ASubStr: AnsiString; AIgnoreBounds: Boolean): Boolean;
+var
+  t: TFpSymbol;
+  i: Cardinal;
+  Size: TFpDbgValueSize;
+  Addr: TFpDbgMemLocation;
+  WSubStr: WideString;
+begin
+  ASubStr := '';
+  Result := True;
+
+  t := TypeInfo;
+  if t = nil then
+    exit;
+  t := t.TypeInfo;
+  if t = nil then
+    exit;
+  if IsNilLoc(OrdOrDataAddr) then
+    exit;
+
+  // Only test for hardcoded size. TODO: dwarf 3 could have variable size, but for char that is not expected
+  if not t.ReadSize(nil, Size) then
+    exit;
+
+
+  if Size.Size = 2 then begin
+    Result := GetSubWideString(AStartIndex, ALen, WSubStr, AIgnoreBounds);
+    ASubStr := WSubStr;
+    exit;
+  end;
+
+  Addr := GetDerefAddress;
+  Result := (MemManager <> nil) and (t <> nil) and (t.Kind = skChar) and IsReadableMem(Addr);
+  if  Result then begin // pchar
+    if AIgnoreBounds then begin
+      if (MemManager.MemLimits.MaxStringLen > 0) and
+         (QWord(ALen) > MemManager.MemLimits.MaxStringLen)
+      then
+        ALen := MemManager.MemLimits.MaxStringLen;
+
+      {$PUSH}{$Q-}
+      Addr.Address := Addr.Address + AStartIndex - 1;
+      {$POP}
+      if not ( (MemManager.SetLength(ASubStr, ALen)) and
+               (Context.ReadMemory(Addr, SizeVal(ALen), @ASubStr[1])) )
+      then begin
+        ASubStr := '';
+        SetLastError(Context.LastMemError);
+      end;
+    end
+    else begin
+      if (AStartIndex < 1) then begin
+        Result := False;
+        AStartIndex := 1;
+      end;
+      if (MemManager.MemLimits.MaxStringLen > 0) and
+         (QWord(ALen) > MemManager.MemLimits.MaxNullStringSearchLen)
+      then
+        ALen := MemManager.MemLimits.MaxNullStringSearchLen;
+
+      if not MemManager.ReadPChar(Addr, ALen, ASubStr) then begin
+        ASubStr := '';
+        SetLastError(Context.LastMemError);
+      end
+      else
+      if AStartIndex > 1 then
+        Delete(ASubStr, 1, AStartIndex-1);
+    end;
+  end
+  else
+    SetLastError(CreateError(fpErrAnyError));
+end;
+
+function TFpValueDwarfPointer.GetSubWideString(AStartIndex, ALen: Int64; out
+  ASubStr: WideString; AIgnoreBounds: Boolean): Boolean;
+var
+  t: TFpSymbol;
+  i: Cardinal;
+  Size: TFpDbgValueSize;
+  Addr: TFpDbgMemLocation;
+  NSubStr: AnsiString;
+begin
+  ASubStr := '';
+  Result := True;
+
+  t := TypeInfo;
+  if t = nil then
+    exit;
+  t := t.TypeInfo;
+  if t = nil then
+    exit;
+  if IsNilLoc(OrdOrDataAddr) then
+    exit;
+
+  // Only test for hardcoded size. TODO: dwarf 3 could have variable size, but for char that is not expected
+  if not t.ReadSize(nil, Size) then
+    exit;
+
+
+  if Size.Size = 1 then begin
+    Result := GetSubString(AStartIndex, ALen, NSubStr, AIgnoreBounds);
+    ASubStr := NSubStr;
+    exit;
+  end;
+
+  Addr := GetDerefAddress;
+  Result := (MemManager <> nil) and (t <> nil) and (t.Kind = skChar) and IsReadableMem(Addr);
+  if  Result then begin // pchar
+    if AIgnoreBounds then begin
+      if (MemManager.MemLimits.MaxStringLen > 0) and
+         (QWord(ALen) > MemManager.MemLimits.MaxStringLen * 2)
+      then
+        ALen := MemManager.MemLimits.MaxStringLen * 2;
+
+      {$PUSH}{$Q-}
+      Addr.Address := Addr.Address + (AStartIndex - 1) * 2;
+      {$POP}
+      if not ( (MemManager.SetLength(ASubStr, ALen)) and
+               (Context.ReadMemory(Addr, SizeVal(ALen*2), @ASubStr[1])) )
+      then begin
+        ASubStr := '';
+        SetLastError(Context.LastMemError);
+      end;
+    end
+    else begin
+      if (AStartIndex < 1) then begin
+        Result := False;
+        AStartIndex := 1;
+      end;
+      if (MemManager.MemLimits.MaxStringLen > 0) and
+         (QWord(ALen) > MemManager.MemLimits.MaxNullStringSearchLen * 2)
+      then
+        ALen := MemManager.MemLimits.MaxNullStringSearchLen * 2;
+
+      if not MemManager.ReadPWChar(Addr, ALen, ASubStr) then begin
+        ASubStr := '';
+        SetLastError(Context.LastMemError);
+      end
+      else
+      if AStartIndex > 1 then
+        Delete(ASubStr, 1, AStartIndex-1);
+    end;
+  end
+  else
+    SetLastError(CreateError(fpErrAnyError));
 end;
 
 function TFpValueDwarfPointer.GetAsString: AnsiString;

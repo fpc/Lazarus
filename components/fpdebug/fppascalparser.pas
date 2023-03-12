@@ -1510,14 +1510,13 @@ begin
             exit;
           end;
 
-          v := TmpVal.AsString;
-          if (Offs < 1) or (Offs > Length(v)) then begin
+          if (not TmpVal.GetSubString(Offs, 1, v)) or (v = '') then begin
             SetError('Index out of range');
             TmpVal.ReleaseReference;
             exit;
           end;
 
-          TmpVal2 := TFpValueConstChar.Create(v[Offs]);
+          TmpVal2 := TFpValueConstChar.Create(v[1]);
           if TmpVal.TypeInfo <> nil then
             TFpValueConstChar(TmpVal2).SetType(TmpVal.TypeInfo.TypeInfo);
           a := TmpVal.DataAddress;
@@ -1539,14 +1538,13 @@ begin
             exit;
           end;
 
-          w := TmpVal.AsWideString;
-          if (Offs < 1) or (Offs > Length(w)) then begin
+          if (not TmpVal.GetSubWideString(Offs, 1, w)) or (w='') then begin
             SetError('Index out of range');
             TmpVal.ReleaseReference;
             exit;
           end;
 
-          TmpVal2 := TFpValueConstWideChar.Create(w[Offs]);
+          TmpVal2 := TFpValueConstWideChar.Create(w[1]);
           a := TmpVal.DataAddress;
           if IsTargetAddr(a) and IsReadableMem(a) then
             TFpValueConstWideChar(TmpVal2).SetAddress(a + (Offs-1)*2);

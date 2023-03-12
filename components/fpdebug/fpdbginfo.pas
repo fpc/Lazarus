@@ -111,6 +111,7 @@ type
     FEvalFlags: set of (efSizeDone, efSizeUnavail);
     FLastError: TFpError;
     FSize: TFpDbgValueSize;
+    procedure SetAsString(AStartIndex, ALen: Int64; AValue: AnsiString);
   protected
     procedure Reset; virtual; // keeps lastmember and structureninfo
     procedure SetLastError(ALastError: TFpError);
@@ -159,6 +160,17 @@ type
     property RefCount;
 
     function GetSize(out ASize: TFpDbgValueSize): Boolean; inline;
+
+    (* AsString[AStartIndex, ALen: Int64]
+       - AStartIndex is 1-based
+       - AIgnoreBounds may not be supported by all data types
+       - If AStartIndex/ALen are out of bounds then
+         - Result will be false / LastError will NOT be set
+         - SubStr will contain any part that was in bounds
+       - If Result is false, AND LastError is set: no data was retrieved
+    *)
+    function GetSubString(AStartIndex, ALen: Int64; out ASubStr: AnsiString; AIgnoreBounds: Boolean = False): Boolean; virtual;
+    function GetSubWideString(AStartIndex, ALen: Int64; out ASubStr: WideString; AIgnoreBounds: Boolean = False): Boolean; virtual;
 
     // Kind: determines which types of value are available
     property Kind: TDbgSymbolKind read GetKind;
@@ -1070,6 +1082,59 @@ end;
 function TFpValue.GetEntryPCAddress: TFpDbgMemLocation;
 begin
   Result := InvalidLoc;
+end;
+
+function TFpValue.GetSubString(AStartIndex, ALen: Int64; out
+  ASubStr: AnsiString; AIgnoreBounds: Boolean): Boolean;
+begin
+  Result := AIgnoreBounds;
+  ASubStr := '';
+  If (ALen < 1) or (AStartIndex < 1) then
+    exit;
+
+  ASubStr := AsString;
+  If ALen = 1 then begin
+    Result := AStartIndex <= Length(ASubStr);
+    if Result then
+      ASubStr := ASubStr[AStartIndex]
+    else
+      ASubStr := '';
+  end
+  else begin
+    Result := AStartIndex + ALen <= Length(ASubStr);
+    ASubStr := Copy(ASubStr, AStartIndex, ALen);
+  end;
+  if AIgnoreBounds then
+    Result := True;
+end;
+
+function TFpValue.GetSubWideString(AStartIndex, ALen: Int64; out
+  ASubStr: WideString; AIgnoreBounds: Boolean): Boolean;
+begin
+  Result := AIgnoreBounds;
+  ASubStr := '';
+  If (ALen < 1) or (AStartIndex < 1) then
+    exit;
+
+  ASubStr := AsWideString;
+  If ALen = 1 then begin
+    Result := AStartIndex <= Length(ASubStr);
+    if Result then
+      ASubStr := ASubStr[AStartIndex]
+    else
+      ASubStr := '';
+  end
+  else begin
+    Result := AStartIndex + ALen <= Length(ASubStr);
+    ASubStr := Copy(ASubStr, AStartIndex, ALen);
+  end;
+  if AIgnoreBounds then
+    Result := True;
+end;
+
+procedure TFpValue.SetAsString(AStartIndex, ALen: Int64; AValue: AnsiString);
+begin
+
 end;
 
 procedure TFpValue.Reset;
