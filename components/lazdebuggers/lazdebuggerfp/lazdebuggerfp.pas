@@ -10,7 +10,8 @@ interface
 uses
   FpDebugDebugger, FpDebugDebuggerUtils, FpDebugDebuggerWorkThreads, 
   FpDebugValueConvertors, FpDebugDebuggerBase, FpDebuggerResultData, 
-  FpDebugConvDebugForJson, FpDebugStringConstants, LazarusPackageIntf;
+  FpDebugConvDebugForJson, FpDebugStringConstants, 
+  FpDebugFpcConvVariantNormalizer, LazarusPackageIntf;
 
 implementation
 

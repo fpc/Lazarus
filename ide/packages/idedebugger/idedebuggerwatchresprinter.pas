@@ -454,6 +454,7 @@ begin
     rdkProcedure,
     rdkFunctionRef,
     rdkProcedureRef: Result := PrintProc(AResValue, ADispFormat, ANestLvl);
+    rdkVariant: Result := PrintWatchValueEx(AResValue.DerefData, ADispFormat, ANestLvl);
   end;
 end;
 

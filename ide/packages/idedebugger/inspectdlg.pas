@@ -85,6 +85,7 @@ type
     FUpdatedData: Boolean;
     FWatchPrinter: TWatchResultPrinter;
     FCurrentResData: TWatchResultData;
+    FCurrentTypePrefix: AnsiString;
     FHumanReadable: ansistring;
     FGridData: TStringGrid;
     FGridMethods: TStringGrid;
@@ -199,11 +200,11 @@ begin
   WatchInspectNav1.ColVisibilityEnabled := False;
 
   v := ClearMultiline(FWatchPrinter.PrintWatchValue(Res, wdfDefault));
-  StatusBar1.SimpleText:=ShortenedExpression+' : '+Res.TypeName + ' = ' + v;
+  StatusBar1.SimpleText:=ShortenedExpression+' : '+FCurrentTypePrefix+Res.TypeName + ' = ' + v;
 
   GridDataSetup;
   FGridData.Cells[1,1]:=WatchInspectNav1.Expression;
-  FGridData.Cells[2,1]:=Res.TypeName;
+  FGridData.Cells[2,1]:=FCurrentTypePrefix+Res.TypeName;
   FGridData.Cells[3,1]:=v;
 end;
 
@@ -225,12 +226,12 @@ begin
   WatchInspectNav1.ColVisibilityEnabled := False;
 
   v := ClearMultiline(FWatchPrinter.PrintWatchValue(Res, wdfDefault));
-  StatusBar1.SimpleText:=ShortenedExpression+' : '+Res.TypeName + ' = ' + v;
+  StatusBar1.SimpleText:=ShortenedExpression+' : '+FCurrentTypePrefix+Res.TypeName + ' = ' + v;
 
   GridDataSetup;
   v := ClearMultiline(FWatchPrinter.PrintWatchValue(Res, wdfPointer));
   FGridData.Cells[1,1]:=WatchInspectNav1.Expression;
-  FGridData.Cells[2,1]:=Res.TypeName;
+  FGridData.Cells[2,1]:=FCurrentTypePrefix+Res.TypeName;
   FGridData.Cells[3,1]:=v;
 
   Res := Res.DerefData;
@@ -261,11 +262,11 @@ begin
   WatchInspectNav1.ColVisibilityEnabled := False;
 
   v := ClearMultiline(FWatchPrinter.PrintWatchValue(Res, wdfDefault));
-  StatusBar1.SimpleText:=ShortenedExpression+' : '+Res.TypeName + ' = ' + v;
+  StatusBar1.SimpleText:=ShortenedExpression+' : '+FCurrentTypePrefix+Res.TypeName + ' = ' + v;
 
   GridDataSetup;
   FGridData.Cells[1,1]:=WatchInspectNav1.Expression;
-  FGridData.Cells[2,1]:=Res.TypeName;
+  FGridData.Cells[2,1]:=FCurrentTypePrefix+Res.TypeName;
   // TODO: show declaration (all elements)
   FGridData.Cells[3,1]:=v;
 end;
@@ -301,7 +302,7 @@ begin
     exit;
   end;
 
-  StatusBar1.SimpleText:=ShortenedExpression+': '+Res.TypeName + '  Len: ' + IntToStr(Res.ArrayLength);
+  StatusBar1.SimpleText:=ShortenedExpression+': '+FCurrentTypePrefix+Res.TypeName + '  Len: ' + IntToStr(Res.ArrayLength);
 
   LowBnd := Res.LowBound;
   if FUpdatedData then begin
@@ -341,6 +342,7 @@ begin
     for i := SubStart to SubStart+CurPageCount-1 do begin
       Res.SetSelectedIndex(i);
       Entry := Res.SelectedEntry;
+      Entry := Entry.ConvertedRes;
       FGridData.Cells[1,i+1-SubStart] := IntToStr(LowBnd + ResIdxOffs + i);
       FGridData.Cells[2,i+1-SubStart] := Entry.TypeName;
       FGridData.Cells[3,i+1-SubStart] := ClearMultiline(FWatchPrinter.PrintWatchValue(Entry, wdfDefault));
@@ -371,9 +373,9 @@ begin
   if Res.Anchestor <> nil then
     AnchType := Res.Anchestor.TypeName;
   if (Res.ValueKind = rdkStruct) and (AnchType <> '') then
-    StatusBar1.SimpleText:=Format(lisInspectClassInherit, [ShortenedExpression, Res.TypeName, AnchType])
+    StatusBar1.SimpleText:=Format(lisInspectClassInherit, [ShortenedExpression, FCurrentTypePrefix+Res.TypeName, AnchType])
   else
-    StatusBar1.SimpleText:=ShortenedExpression+' : '+Res.TypeName + ' = ' + FHumanReadable;
+    StatusBar1.SimpleText:=ShortenedExpression+' : '+FCurrentTypePrefix+Res.TypeName + ' = ' + FHumanReadable;
 
   GridDataSetup;
   FldCnt := 0;
@@ -407,6 +409,7 @@ begin
   m := 1;
   for FldInfo in res do begin
     Fld := FldInfo.Field;
+    Fld := Fld.ConvertedRes;
     Fld2 := ExtractProcResFromMethod(Fld);
     if (MethCnt > 0) and
        (Fld <> nil) and
@@ -1198,6 +1201,7 @@ begin
   FAlternateExpression := '';
   FExpressionWasEvaluated := True;
   FCurrentResData := WatchInspectNav1.CurrentWatchValue.ResultData;
+  FCurrentTypePrefix := '';
   FHumanReadable := FWatchPrinter.PrintWatchValue(FCurrentResData, wdfStructure);
 
   if WatchInspectNav1.CurrentWatchValue.Validity = ddsValid then begin
@@ -1229,18 +1233,15 @@ begin
     else begin
     // resultdata
 
-      if (FCurrentResData.ValueKind = rdkConvertRes)
-      then begin
-        if (FCurrentResData.FieldCount > 0) then
-        //if (FCurrentResData.FieldCount = 1) then
-          FCurrentResData := FCurrentResData.Fields[0].Field;
+      while (FCurrentResData.ValueKind = rdkConvertRes) or (FCurrentResData.ValueKind = rdkVariant) do
+      begin
+        FCurrentResData := FCurrentResData.ConvertedRes;
 
-        if (FCurrentResData.FieldCount > 1) and
-           ( (FCurrentResData.Fields[0].Field = nil) or
-             (FCurrentResData.Fields[0].Field.ValueKind = rdkError)
-           )
-        then
-          FCurrentResData := FCurrentResData.Fields[1].Field;
+        if FCurrentResData.ValueKind = rdkVariant then begin
+          if FCurrentResData.TypeName <> '' then
+            FCurrentTypePrefix := FCurrentResData.TypeName+ ': ';
+          FCurrentResData := FCurrentResData.DerefData;
+        end;
       end;
 
 

@@ -9,7 +9,8 @@ uses
   Classes, SysUtils, FpDbgInfo, FpdMemoryTools, FpDbgCallContextInfo,
   FpPascalBuilder, FpErrorMessages, FpDbgClasses, FpDbgUtil, DbgIntfBaseTypes,
   LazClasses, LCLProc, Forms, StdCtrls, Controls, StrUtils, FpDebugDebuggerBase,
-  FpDebugStringConstants, LazDebuggerValueConverter, LazDebuggerIntfBaseTypes;
+  FpDebugStringConstants, LazDebuggerValueConverter, LazDebuggerIntfBaseTypes,
+  LazDebuggerIntf;
 
 type
   (* TFpDbgValueConverter and descendants
@@ -32,25 +33,55 @@ type
     constructor Create; virtual;
     procedure Assign(ASource: TFpDbgValueConverter); virtual;
     function CreateCopy: TLazDbgValueConverterIntf; virtual;
+    function NeedConversionLimit: Boolean; virtual;
+    (* CanHandleValue must return the SAME RESULT if called repeatedly (e.g. in an array)
+       CanHandleValue must NOT depend on DATA, or anything that can change
+       CanHandleValue must ONLY check type info (or other data that will not change)
+       - For any other/uncertain case the converter should create an error (empty text) in
+         ConvertValue, changing AnResData
+    *)
+    function CanHandleValue(ASourceValue: TFpValue; AnFpDebugger: TFpDebugDebuggerBase): Boolean; virtual;
+    (* ConvertValue
+       * AnResData = nil
+         => Do nothing => ConvertValue must have done AnResData.Create....
+       * Result <> nil  /  AnResData <> nil
+         => Use Result (instead of ASourceValue) to build watch-data
+         => use the new AnResData (in case it changed)
+            If the new AnResData = nil, then do nothing
+       * Result = nil
+         - AnResData NOT-changed
+         => Create an error (IDE will show ASourceValue)
+         - AnResData CHANGED
+         => Do nothing  => ConvertValue must have done AnResData.Create....
+    *)
     function ConvertValue(ASourceValue: TFpValue;
                           AnFpDebugger: TFpDebugDebuggerBase;
-                          AnExpressionScope: TFpDbgSymbolScope
+                          AnExpressionScope: TFpDbgSymbolScope;
+                          var AnResData: TLzDbgWatchDataIntf  // if changed, then the converter has done its job, and should return nil
                          ): TFpValue; virtual; abstract;
     procedure SetError(AnError: TFpError);
     property LastErrror: TFpError read FLastErrror;
   end;
   TFpDbgValueConverterClass = class of TFpDbgValueConverter;
 
+  { TConverterSettingsFrameBase }
+
+  TConverterSettingsFrameBase = class(TFrame, TLazDbgValueConverterSettingsFrameIntf)
+  protected
+    function GetFrame: TObject; virtual;
+  public
+    procedure ReadFrom(AConvertor: TLazDbgValueConverterIntf); virtual;
+    function WriteTo(AConvertor: TLazDbgValueConverterIntf): Boolean; virtual;
+  end;
+
   { TConverterWithFuncCallSettingsFrame }
 
-  TConverterWithFuncCallSettingsFrame = class(TFrame, TLazDbgValueConverterSettingsFrameIntf)
+  TConverterWithFuncCallSettingsFrame = class(TConverterSettingsFrameBase)
     chkRunAll: TCheckBox;
-  protected
-    function GetFrame: TObject;
   public
     constructor Create(TheOwner: TComponent); override;
-    procedure ReadFrom(AConvertor: TLazDbgValueConverterIntf);
-    function WriteTo(AConvertor: TLazDbgValueConverterIntf): Boolean;
+    procedure ReadFrom(AConvertor: TLazDbgValueConverterIntf); override;
+    function WriteTo(AConvertor: TLazDbgValueConverterIntf): Boolean; override;
   end;
 
   { TFpDbgValueConverterWithFuncCall }
@@ -81,6 +112,7 @@ type
     class function GetDebuggerClass: TClass; override;
   end;
 
+  (**** Call SysVarToLStr on variant ****)
 
   { TFpDbgValueConverterVariantToLStr }
 
@@ -94,7 +126,8 @@ type
     function GetRegistryEntry: TLazDbgValueConvertRegistryEntryClass; override;
     function ConvertValue(ASourceValue: TFpValue;
                           AnFpDebugger: TFpDebugDebuggerBase;
-                          AnExpressionScope: TFpDbgSymbolScope
+                          AnExpressionScope: TFpDbgSymbolScope;
+                          var AnResData: TLzDbgWatchDataIntf
                          ): TFpValue; override;
   end;
 
@@ -128,6 +161,17 @@ begin
   c := TFpDbgValueConverterClass(ClassType).Create;
   c.Assign(Self);
   Result := c;
+end;
+
+function TFpDbgValueConverter.NeedConversionLimit: Boolean;
+begin
+  Result := True;
+end;
+
+function TFpDbgValueConverter.CanHandleValue(ASourceValue: TFpValue;
+  AnFpDebugger: TFpDebugDebuggerBase): Boolean;
+begin
+  Result := True;
 end;
 
 procedure TFpDbgValueConverter.SetError(AnError: TFpError);
@@ -166,6 +210,25 @@ begin
   //
 end;
 
+{ TConverterSettingsFrameBase }
+
+function TConverterSettingsFrameBase.GetFrame: TObject;
+begin
+  Result := Self;
+end;
+
+procedure TConverterSettingsFrameBase.ReadFrom(
+  AConvertor: TLazDbgValueConverterIntf);
+begin
+  //
+end;
+
+function TConverterSettingsFrameBase.WriteTo(
+  AConvertor: TLazDbgValueConverterIntf): Boolean;
+begin
+  Result := False; // nothing changed
+end;
+
 { TConverterWithFuncCallSettingsFrame }
 
 procedure TConverterWithFuncCallSettingsFrame.ReadFrom(
@@ -195,11 +258,6 @@ begin
   Result :=  chkRunAll.Checked <> c.FuncCallRunAllThreads;
 
   c.FuncCallRunAllThreads := chkRunAll.Checked;
-end;
-
-function TConverterWithFuncCallSettingsFrame.GetFrame: TObject;
-begin
-  Result := Self;
 end;
 
 constructor TConverterWithFuncCallSettingsFrame.Create(TheOwner: TComponent);
@@ -424,8 +482,8 @@ begin
 end;
 
 function TFpDbgValueConverterVariantToLStr.ConvertValue(ASourceValue: TFpValue;
-  AnFpDebugger: TFpDebugDebuggerBase; AnExpressionScope: TFpDbgSymbolScope
-  ): TFpValue;
+  AnFpDebugger: TFpDebugDebuggerBase; AnExpressionScope: TFpDbgSymbolScope;
+  var AnResData: TLzDbgWatchDataIntf): TFpValue;
 var
   NewResult, ProcVal, m: TFpValue;
   ProcSym: TFpSymbol;

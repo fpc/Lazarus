@@ -751,6 +751,7 @@ type
     function GetDirectFieldCount: Integer; virtual; abstract;
     function GetFieldCount: Integer; virtual; abstract;
     function GetFields(AnIndex: Integer): TWatchResultDataFieldInfo; virtual; abstract;
+    function GetConvertedRes: TWatchResultData; virtual;
 
     function GetFieldVisibility: TLzDbgFieldVisibility; virtual; abstract;
 
@@ -816,6 +817,8 @@ type
     property FieldCount:       Integer read GetFieldCount;
     property DirectFieldCount: Integer read GetDirectFieldCount; // without inherited fields
     property Fields[AnIndex: Integer]: TWatchResultDataFieldInfo read GetFields;
+
+    property ConvertedRes: TWatchResultData read GetConvertedRes;
 
     // variant
     property FieldVisibility: TLzDbgFieldVisibility read GetFieldVisibility;
@@ -1447,6 +1450,7 @@ type
     function GetClassID: TWatchResultDataClassID; override;
   protected
     function GetBackendValueHandler: TLazDbgValueConverterIntf; override;
+    function GetConvertedRes: TWatchResultData; override;
   public
     constructor Create(AHandler: TLazDbgValueConverterIntf);
   end;
@@ -2584,6 +2588,11 @@ end;
 function TWatchResultData.GetClassID: TWatchResultDataClassID;
 begin
   Result := wdPrePrint;
+end;
+
+function TWatchResultData.GetConvertedRes: TWatchResultData;
+begin
+  Result := Self;
 end;
 
 function TWatchResultData.GetTypeName: String;
@@ -4701,6 +4710,19 @@ end;
 function TWatchResultDataConverted.GetBackendValueHandler: TLazDbgValueConverterIntf;
 begin
   Result := FType.FHandler;
+end;
+
+function TWatchResultDataConverted.GetConvertedRes: TWatchResultData;
+begin
+  if (FieldCount > 0) then
+    Result := Fields[0].Field;
+
+  if (FieldCount > 1) and
+     ( (Fields[0].Field = nil) or
+       (Fields[0].Field.ValueKind = rdkError)
+     )
+  then
+    Result := Fields[1].Field;
 end;
 
 constructor TWatchResultDataConverted.Create(

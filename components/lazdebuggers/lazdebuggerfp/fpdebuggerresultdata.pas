@@ -109,7 +109,7 @@ function TFpLazDbgWatchResultConvertor.DoValueToResData(AnFpValue: TFpValue;
 var
   NewFpVal: TFpValue;
   CurConv: TFpDbgValueConverter;
-  AnResFld: TLzDbgWatchDataIntf;
+  AnResFld, AnResFld2: TLzDbgWatchDataIntf;
   WasInArray, WasInNonConvert: Boolean;
 begin
   Result := False;
@@ -153,35 +153,43 @@ begin
         CurConv := GetValConv(AnFpValue, RecurseCnt <> RecurseCntLow);
       end;
 
-      if (CurConv <> nil) then begin
+      if (CurConv <> nil) and CurConv.CanHandleValue(AnFpValue, Debugger) then begin
         AnResFld := AnResData.CreateValueHandlerResult(CurConv);
 
         if (FMaxTotalConv <= 0) then
           ReleaseRefAndNil(CurConv)
         else
+        if CurConv.NeedConversionLimit then
           dec(FMaxTotalConv);
 
         if FInArray then begin
           if (FCurMaxArrayConv <= 0) then
             ReleaseRefAndNil(CurConv)
           else
+          if CurConv.NeedConversionLimit then
             dec(FCurMaxArrayConv);
         end;
 
         if (CurConv <> nil) then begin
           FInNonConvert := True;
 
-          NewFpVal := CurConv.ConvertValue(AnFpValue, Debugger, ExpressionScope);
-          if NewFpVal <> nil then begin
-            Result := inherited DoValueToResData(NewFpVal, AnResFld);
+          AnResFld2 := AnResFld;
+          NewFpVal := CurConv.ConvertValue(AnFpValue, Debugger, ExpressionScope, AnResFld2);
+          if AnResFld2 = AnResFld then begin
+            if NewFpVal <> nil then begin
+              Result := inherited DoValueToResData(NewFpVal, AnResFld);
+            end
+            else begin
+              if IsError(CurConv.LastErrror) then
+                AnResFld.CreateError(ErrorHandler.ErrorAsString(CurConv.LastErrror))
+              else
+                AnResFld.CreateError('Conversion failed');
+              Result := True;
+            end;
           end
-          else begin
-            if IsError(CurConv.LastErrror) then
-              AnResFld.CreateError(ErrorHandler.ErrorAsString(CurConv.LastErrror))
-            else
-              AnResFld.CreateError('Conversion failed');
-            Result := True;
-          end;
+          else
+          if (AnResFld2 <> nil) and (NewFpVal <> nil) then
+            Result := inherited DoValueToResData(NewFpVal, AnResFld2);
         end
         else
           AnResFld.CreateError('');

@@ -7,8 +7,9 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, ExtCtrls, StdCtrls, ActnList,
   FpDebugStringConstants, FpDebugValueConvertors, FpDebugDebuggerBase,
-  LazDebuggerValueConverter, LazDebuggerIntfBaseTypes, FpDbgInfo, FpDbgClasses,
-  FpdMemoryTools, FpDbgCallContextInfo, FpErrorMessages, DbgIntfBaseTypes;
+  LazDebuggerValueConverter, LazDebuggerIntfBaseTypes, LazDebuggerIntf,
+  FpDbgInfo, FpDbgClasses, FpdMemoryTools, FpDbgCallContextInfo,
+  FpErrorMessages, DbgIntfBaseTypes;
 
 type
 
@@ -52,7 +53,8 @@ type
     procedure Assign(ASource: TFpDbgValueConverter); override;
     function ConvertValue(ASourceValue: TFpValue;
                           AnFpDebugger: TFpDebugDebuggerBase;
-                          AnExpressionScope: TFpDbgSymbolScope
+                          AnExpressionScope: TFpDbgSymbolScope;
+                          var AnResData: TLzDbgWatchDataIntf
                          ): TFpValue; override;
 
   published
@@ -213,8 +215,8 @@ begin
 end;
 
 function TFpDbgValueConverterJsonForDebug.ConvertValue(ASourceValue: TFpValue;
-  AnFpDebugger: TFpDebugDebuggerBase; AnExpressionScope: TFpDbgSymbolScope
-  ): TFpValue;
+  AnFpDebugger: TFpDebugDebuggerBase; AnExpressionScope: TFpDbgSymbolScope;
+  var AnResData: TLzDbgWatchDataIntf): TFpValue;
 var
   CurProccess: TDbgProcess;
   TpName, JsonText: String;

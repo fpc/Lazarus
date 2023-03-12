@@ -56,6 +56,10 @@
         <Filename Value="fpdebugstringconstants.pas"/>
         <UnitName Value="FpDebugStringConstants"/>
       </Item>
+      <Item>
+        <Filename Value="fpdebugfpcconvvariantnormalizer.pas"/>
+        <UnitName Value="FpDebugFpcConvVariantNormalizer"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>
