@@ -5375,7 +5375,6 @@ var
     ResultNode: TCodeTreeNode;
     OldFlags: TFindDeclarationFlags;
     AliasContext: TFindContext;
-    Cache: TBaseTypeCache;
   begin
     if not( (NodeStack<>nil) and (NodeStack<>@MyNodeStack) )then begin // will be handled by caller
       if (Context.Node<>nil) and (Context.Node.Desc in [ctnProcedure,ctnProcedureHead])
@@ -12715,7 +12714,6 @@ procedure TFindDeclarationTool.CreateBaseTypeCaches(
 var i: integer;
   Entry: PCodeTreeNodeStackEntry;
   BaseTypeCache: TBaseTypeCache;
-  NextEntry: PCodeTreeNodeStackEntry;
 begin
   {$IFDEF ShowBaseTypeCache}
   DbgOut('[TFindDeclarationTool.CreateBaseTypeCaches] ',
@@ -14147,7 +14145,6 @@ function TFindDeclarationParams.FindGenericParamType: Boolean;
   function DoFindIdentifierInContext(Tool: TFindDeclarationTool): boolean;
   var
     SubParams: TFindDeclarationParams;
-    p: TFindDeclarationInput;
   begin
     SubParams:=TFindDeclarationParams.Create(Self);
     try
