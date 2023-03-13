@@ -1765,10 +1765,6 @@ msgstr ""
 msgid "New template"
 msgstr ""
 
-#: lr_const.sno
-msgid "No"
-msgstr ""
-
 #: lr_const.snotassigned
 #, fuzzy
 msgctxt "lr_const.snotassigned"
@@ -2849,8 +2845,4 @@ msgstr ""
 #: lr_const.swordwrap
 msgid "Word wrap"
 msgstr "Sözcük kaydırma"
-
-#: lr_const.syes
-msgid "Yes"
-msgstr "Evet"
 

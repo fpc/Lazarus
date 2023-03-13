@@ -1749,10 +1749,6 @@ msgstr ""
 msgid "New template"
 msgstr ""
 
-#: lr_const.sno
-msgid "No"
-msgstr ""
-
 #: lr_const.snotassigned
 msgctxt "lr_const.snotassigned"
 msgid "[None]"
@@ -2825,9 +2821,5 @@ msgstr ""
 
 #: lr_const.swordwrap
 msgid "Word wrap"
-msgstr ""
-
-#: lr_const.syes
-msgid "Yes"
 msgstr ""
 

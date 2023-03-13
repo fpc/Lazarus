@@ -1759,10 +1759,6 @@ msgstr "mm"
 msgid "New template"
 msgstr "Naujas šablonas"
 
-#: lr_const.sno
-msgid "No"
-msgstr "Ne"
-
 #: lr_const.snotassigned
 msgctxt "lr_const.snotassigned"
 msgid "[None]"
@@ -2836,8 +2832,4 @@ msgstr "Žodžių skirtukas"
 #: lr_const.swordwrap
 msgid "Word wrap"
 msgstr "Laužyti tekstą"
-
-#: lr_const.syes
-msgid "Yes"
-msgstr "Taip"
 

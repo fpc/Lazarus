@@ -1758,10 +1758,6 @@ msgstr "ММ"
 msgid "New template"
 msgstr "Новий шаблон"
 
-#: lr_const.sno
-msgid "No"
-msgstr "Ні"
-
 #: lr_const.snotassigned
 msgctxt "lr_const.snotassigned"
 msgid "[None]"
@@ -2835,8 +2831,4 @@ msgstr "Розрив слова"
 #: lr_const.swordwrap
 msgid "Word wrap"
 msgstr "Перенесення слів"
-
-#: lr_const.syes
-msgid "Yes"
-msgstr "Так"
 

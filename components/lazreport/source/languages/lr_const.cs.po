@@ -1769,10 +1769,6 @@ msgstr "MM"
 msgid "New template"
 msgstr "Nová šablona"
 
-#: lr_const.sno
-msgid "No"
-msgstr "Ne"
-
 #: lr_const.snotassigned
 msgctxt "lr_const.snotassigned"
 msgid "[None]"
@@ -2853,8 +2849,4 @@ msgstr "Zalamování slov"
 #: lr_const.swordwrap
 msgid "Word wrap"
 msgstr "Zalamování řádků"
-
-#: lr_const.syes
-msgid "Yes"
-msgstr "Ano"
 

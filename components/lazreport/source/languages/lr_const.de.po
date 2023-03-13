@@ -1766,10 +1766,6 @@ msgstr "mm"
 msgid "New template"
 msgstr "Neue Vorlage"
 
-#: lr_const.sno
-msgid "No"
-msgstr "Nein"
-
 #: lr_const.snotassigned
 msgctxt "lr_const.snotassigned"
 msgid "[None]"
@@ -2843,8 +2839,4 @@ msgstr "Worttrennung"
 #: lr_const.swordwrap
 msgid "Word wrap"
 msgstr "Wortumbruch"
-
-#: lr_const.syes
-msgid "Yes"
-msgstr "Ja"
 

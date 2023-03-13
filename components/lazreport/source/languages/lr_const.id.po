@@ -1819,10 +1819,6 @@ msgstr "MM"
 msgid "New template"
 msgstr ""
 
-#: lr_const.sno
-msgid "No"
-msgstr "Tidak"
-
 #: lr_const.snotassigned
 msgctxt "lr_const.snotassigned"
 msgid "[None]"
@@ -2906,8 +2902,4 @@ msgstr "Pisah kata"
 #: lr_const.swordwrap
 msgid "Word wrap"
 msgstr "Gulung kata"
-
-#: lr_const.syes
-msgid "Yes"
-msgstr "Ya"
 

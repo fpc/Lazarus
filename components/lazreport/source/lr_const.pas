@@ -207,8 +207,6 @@ resourcestring
 //--- General resources -------------------------------------------------------
   sOk = 'Ok';
   sCancel = 'Cancel';
-  sYes = 'Yes';
-  sNo = 'No';
   sPg = 'Page';
   sRepFile = 'Report file';
   sRemovePg = 'Remove this page?';

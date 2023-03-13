@@ -1757,10 +1757,6 @@ msgstr "MM"
 msgid "New template"
 msgstr "Nouveau modèle"
 
-#: lr_const.sno
-msgid "No"
-msgstr "Non"
-
 #: lr_const.snotassigned
 msgctxt "lr_const.snotassigned"
 msgid "[None]"
@@ -2834,8 +2830,4 @@ msgstr "Coupure de mot"
 #: lr_const.swordwrap
 msgid "Word wrap"
 msgstr "Retour automatique à la ligne"
-
-#: lr_const.syes
-msgid "Yes"
-msgstr "Oui"
 

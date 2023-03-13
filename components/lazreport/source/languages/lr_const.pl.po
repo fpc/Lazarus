@@ -1765,10 +1765,6 @@ msgstr "MM"
 msgid "New template"
 msgstr "Nowy szablon"
 
-#: lr_const.sno
-msgid "No"
-msgstr "Nie"
-
 #: lr_const.snotassigned
 msgctxt "lr_const.snotassigned"
 msgid "[None]"
@@ -2842,8 +2838,4 @@ msgstr "Dzielenie wyrazów"
 #: lr_const.swordwrap
 msgid "Word wrap"
 msgstr "Zawijanie tekstu"
-
-#: lr_const.syes
-msgid "Yes"
-msgstr "Tak"
 
