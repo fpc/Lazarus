@@ -190,6 +190,11 @@ type
         const FoundContext: TFindContext): TIdentifierFoundResult;
     procedure RemoveNewMainUsesSectionUnit(p: PChar);
   protected
+    const
+      CreateMethodBodies_ProcAttrBodyDef = [phpWithStart,
+                   phpAddClassname,phpWithVarModifiers,
+                   phpWithParameterNames,phpWithResultType,
+                   phpWithCallingSpecs,phpWithAssembler];
     procedure CheckWholeUnitParsed(var Node1, Node2: TCodeTreeNode;
       Range: TLinkScannerRange = lsrEnd);
     procedure FreeClassInsertionList;
@@ -202,6 +207,12 @@ type
            out CommentStart, CommentEnd: integer): boolean;
     function FindProcAndClassNode(CursorNode: TCodeTreeNode; out ProcNode,
       AClassNode: TCodeTreeNode): boolean;
+    procedure CreateMethodBodies_Insert(const TheClassName: string;
+                  ANodeExt: TCodeTreeNodeExtension; InsertPos, Indent: integer);
+    procedure CreateMethodBodies_CreateCode(TheNodeExt: TCodeTreeNodeExtension; Indent: integer);
+    function CreateMethodBodies_FindNeighbourClass(SearchUp: boolean; StartImpl: TCodeTreeNode): TCodeTreeNode;
+    procedure CreateMethodBodies_FindInsertPointForNewClass(
+           out InsertPos, Indent: LongInt);
     function CreateMissingClassProcBodies(UpdateSignatures: boolean): boolean;
     function ApplyChangesAndJumpToFirstNewProc(CleanPos: integer;
            OldTopLine: integer; AddMissingProcBodies: boolean;
@@ -8757,71 +8768,255 @@ begin
                        ExtractClassName(ClassNode,true,true,false));
 end;
 
-function TCodeCompletionCodeTool.CreateMissingClassProcBodies(
-  UpdateSignatures: boolean): boolean;
-const
-  ProcAttrDefToBody = [phpWithStart,
-               phpAddClassname,phpWithVarModifiers,
-               phpWithParameterNames,phpWithResultType,
-               phpWithCallingSpecs,phpWithAssembler];
+procedure TCodeCompletionCodeTool.CreateMethodBodies_Insert(const TheClassName: string;
+  ANodeExt: TCodeTreeNodeExtension; InsertPos, Indent: integer);
 var
-  TheClassName: string;
   Beauty: TBeautifyCodeOptions;
-
-  procedure InsertProcBody(ANodeExt: TCodeTreeNodeExtension;
-    InsertPos, Indent: integer);
-  var ProcCode: string;
-  begin
-    if ANodeExt.ExtTxt3<>'' then
-      ProcCode:=ANodeExt.ExtTxt3
-    else
-      ProcCode:=ANodeExt.ExtTxt1;
-    ProcCode:=Beauty.AddClassAndNameToProc(ProcCode,TheClassName,'');
+  ProcCode: string;
+begin
+  Beauty:=FSourceChangeCache.BeautifyCodeOptions;
+  if ANodeExt.ExtTxt3<>'' then
+    ProcCode:=ANodeExt.ExtTxt3
+  else
+    ProcCode:=ANodeExt.ExtTxt1;
+  ProcCode:=Beauty.AddClassAndNameToProc(ProcCode,TheClassName,'');
+  {$IFDEF CTDEBUG}
+  DebugLn('CreateMethodBodies_Insert ',TheClassName,' "',ProcCode,'"');
+  {$ENDIF}
+  ProcCode:=Beauty.BeautifyProc(ProcCode,Indent,ANodeExt.ExtTxt3='');
+  FSourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,ProcCode);
+  if FJumpToProcHead.Name='' then begin
+    // remember one proc body to jump to after the completion
+    FJumpToProcHead.Name:=ANodeExt.Txt;
+    FJumpToProcHead.Group:=TPascalMethodGroup(ANodeExt.Flags);
+    FJumpToProcHead.ResultType:=ANodeExt.ExtTxt4;
+    if System.Pos('.',FJumpToProcHead.Name)<1 then
+      FJumpToProcHead.Name:=TheClassName+'.'+FJumpToProcHead.Name;
+    if FJumpToProcHead.Name[length(FJumpToProcHead.Name)]<>';' then
+      FJumpToProcHead.Name:=FJumpToProcHead.Name+';';
     {$IFDEF CTDEBUG}
-    DebugLn('CreateMissingClassProcBodies InsertProcBody ',TheClassName,' "',ProcCode,'"');
+    DebugLn('CreateMethodBodies_Insert FJumpToProcHead.Name="',FJumpToProcHead.Name,'"');
     {$ENDIF}
-    ProcCode:=Beauty.BeautifyProc(ProcCode,Indent,ANodeExt.ExtTxt3='');
-    FSourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,ProcCode);
-    if FJumpToProcHead.Name='' then begin
-      // remember one proc body to jump to after the completion
-      FJumpToProcHead.Name:=ANodeExt.Txt;
-      FJumpToProcHead.Group:=TPascalMethodGroup(ANodeExt.Flags);
-      FJumpToProcHead.ResultType:=ANodeExt.ExtTxt4;
-      if System.Pos('.',FJumpToProcHead.Name)<1 then
-        FJumpToProcHead.Name:=TheClassName+'.'+FJumpToProcHead.Name;
-      if FJumpToProcHead.Name[length(FJumpToProcHead.Name)]<>';' then
-        FJumpToProcHead.Name:=FJumpToProcHead.Name+';';
-      {$IFDEF CTDEBUG}
-      DebugLn('CreateMissingClassProcBodies FJumpToProcHead.Name="',FJumpToProcHead.Name,'"');
-      {$ENDIF}
+  end;
+end;
+
+procedure TCodeCompletionCodeTool.CreateMethodBodies_CreateCode(
+  TheNodeExt: TCodeTreeNodeExtension; Indent: integer);
+var
+  Beauty: TBeautifyCodeOptions;
+  ANode: TCodeTreeNode;
+  ProcCode: string;
+begin
+  Beauty:=FSourceChangeCache.BeautifyCodeOptions;
+  CheckForOverrideAndAddInheritedCode(TheNodeExt,Indent);
+  if (TheNodeExt.ExtTxt1='') and (TheNodeExt.ExtTxt3='') then begin
+    ANode:=TheNodeExt.Node;
+    if (ANode<>nil) and (ANode.Desc=ctnProcedure) then begin
+      ProcCode:=ExtractProcHead(ANode,CreateMethodBodies_ProcAttrBodyDef+[phpWithEmptyParamList]);
+      //debugln(['CreateCodeForMissingProcBody Definition="',ProcCode,'"']);
+      TheNodeExt.ExtTxt3:=Beauty.BeautifyProc(ProcCode,Indent,true);
+      //debugln(['CreateCodeForMissingProcBody Beautified="',TheNodeExt.ExtTxt3,'"']);
     end;
   end;
+end;
 
-  procedure CreateCodeForMissingProcBody(TheNodeExt: TCodeTreeNodeExtension;
-    Indent: integer);
-  var
-    ANode: TCodeTreeNode;
-    ProcCode: string;
+function TCodeCompletionCodeTool.CreateMethodBodies_FindNeighbourClass(
+  SearchUp: boolean; StartImpl: TCodeTreeNode): TCodeTreeNode;
+// If SearchUp=true(false) then search the nearest class declaration
+// in front of (behind) CodeCompleteClassNode with a method body.
+// Return the last (first) such method body.
+var
+  Node, ImplNode, MethodNode: TCodeTreeNode;
+  NeighbourClassName, MethodClassName: String;
+begin
+  Result:=nil;
+  Node:=CodeCompleteClassNode;
+  repeat
+    if SearchUp then
+      Node:=Node.Prior
+    else
+      Node:=Node.Next;
+    if Node=nil then
+      exit;
+    if Node.Desc in AllClassObjects then begin
+      // a class in front (behind) -> check if it has a method body
+      NeighbourClassName:=ExtractClassName(Node,true,true,false);
+      ImplNode:=StartImpl;
+      MethodNode:=nil;
+      while (ImplNode<>nil) and (ImplNode.Desc<>ctnBeginBlock) do begin
+        if NodeIsMethodBody(ImplNode) then begin
+          MethodClassName:=ExtractClassNameOfProcNode(ImplNode,true);
+          if CompareText(MethodClassName,NeighbourClassName)=0 then
+          begin
+            // neighbour class has a method body
+            // -> get last (first)
+            if (MethodNode=nil)
+                or (SearchUp and (MethodNode.StartPos<ImplNode.StartPos))
+                or ((not SearchUp) and (MethodNode.StartPos>ImplNode.StartPos))
+            then
+              MethodNode:=ImplNode;
+          end;
+        end;
+        ImplNode:=ImplNode.NextBrother;
+      end;
+      if MethodNode<>nil then
+        exit(MethodNode);
+    end;
+  until false;
+end;
+
+procedure TCodeCompletionCodeTool.CreateMethodBodies_FindInsertPointForNewClass(
+  out InsertPos, Indent: LongInt);
+// find a nice insert position for the first method body of the current class
+var
+  Beauty: TBeautifyCodeOptions;
+
+  procedure SetIndentAndInsertPos(Node: TCodeTreeNode; Behind: boolean);
   begin
-    CheckForOverrideAndAddInheritedCode(TheNodeExt,Indent);
-    if (TheNodeExt.ExtTxt1='') and (TheNodeExt.ExtTxt3='') then begin
-      ANode:=TheNodeExt.Node;
-      if (ANode<>nil) and (ANode.Desc=ctnProcedure) then begin
-        ProcCode:=ExtractProcHead(ANode,ProcAttrDefToBody+[phpWithEmptyParamList]);
-        //debugln(['CreateCodeForMissingProcBody Definition="',ProcCode,'"']);
-        TheNodeExt.ExtTxt3:=Beauty.BeautifyProc(ProcCode,Indent,true);
-        //debugln(['CreateCodeForMissingProcBody Beautified="',TheNodeExt.ExtTxt3,'"']);
+    Indent:=Beauty.GetLineIndent(Src,Node.StartPos);
+    if Behind then
+      InsertPos:=FindLineEndOrCodeAfterPosition(Node.EndPos)
+    else
+      InsertPos:=FindLineEndOrCodeInFrontOfPosition(Node.StartPos);
+  end;
+
+  procedure SetInsertPosBehindProc(ProcNode: TCodeTreeNode);
+  begin
+    SetIndentAndInsertPos(ProcNode,true);
+    InsertPos:=SkipResourceDirective(InsertPos);
+  end;
+
+  procedure SetInsertPosInFrontOfProc(ProcNode: TCodeTreeNode);
+  begin
+    // the comments in front of the method probably belong to the class
+    // Therefore insert behind the node in front of the first method
+    Indent:=Beauty.GetLineIndent(Src,ProcNode.StartPos);
+    if ProcNode.PriorBrother<>nil then begin
+      InsertPos:=FindLineEndOrCodeAfterPosition(ProcNode.PriorBrother.EndPos);
+    end else begin
+      InsertPos:=ProcNode.Parent.StartPos;
+      while (InsertPos<=ProcNode.StartPos)
+      and (not IsSpaceChar[Src[InsertPos]]) do
+        inc(InsertPos);
+    end;
+    InsertPos:=SkipResourceDirective(InsertPos);
+  end;
+
+var
+  StartSearchProc, NearestProcNode, UnitInterfaceNode, ImplementationNode: TCodeTreeNode;
+begin
+  Beauty:=FSourceChangeCache.BeautifyCodeOptions;
+  InsertPos:=0;
+  Indent:=0;
+  ImplementationNode:=FindImplementationNode;
+  StartSearchProc:=nil;
+  UnitInterfaceNode:=FindInterfaceNode;
+  if (UnitInterfaceNode<>nil)
+  and CodeCompleteClassNode.HasAsParent(UnitInterfaceNode) then begin
+    // class is in interface section
+    // -> insert at the end of the implementation section
+    if ImplementationNode=nil then begin
+      // there is no implementation section -> create it
+      InsertPos:=UnitInterfaceNode.EndPos;
+      Indent:=Beauty.GetLineIndent(Src,UnitInterfaceNode.StartPos);
+      if not CodeCompleteSrcChgCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,
+        CodeCompleteSrcChgCache.BeautifyCodeOptions.BeautifyKeyWord('implementation'))
+      then begin
+        MoveCursorToCleanPos(InsertPos);
+        RaiseException(20170421201812,'unable to insert implementation section (read only?)');
+      end;
+      exit;
+    end else if (ImplementationNode.FirstChild=nil)
+    or (ImplementationNode.FirstChild.Desc=ctnBeginBlock) then begin
+      // implementation section is empty
+      Indent:=Beauty.GetLineIndent(Src,ImplementationNode.StartPos);
+      if ImplementationNode.FirstChild<>nil then
+        InsertPos:=ImplementationNode.FirstChild.StartPos
+      else
+        InsertPos:=ImplementationNode.EndPos;
+      exit;
+    end;
+
+    // search neighbour class in front and insert behind its method bodies
+    NearestProcNode:=CreateMethodBodies_FindNeighbourClass(true,ImplementationNode.FirstChild);
+    if NearestProcNode<>nil then begin
+      SetInsertPosBehindProc(NearestProcNode);
+      exit;
+    end;
+    // search neighbour class behind and insert in front of its method bodies
+      NearestProcNode:=CreateMethodBodies_FindNeighbourClass(false,ImplementationNode.FirstChild);
+    if NearestProcNode<>nil then begin
+      SetInsertPosInFrontOfProc(NearestProcNode);
+      exit;
+    end;
+
+    StartSearchProc:=ImplementationNode.FirstChild;
+  end else begin
+    // class is not in interface section
+    StartSearchProc:=CodeCompleteClassNode.GetTopMostNodeOfType(ctnTypeSection);
+  end;
+  case Beauty.ForwardProcBodyInsertPolicy of
+  fpipInFrontOfMethods:
+    begin
+      // Try to insert new proc in front of existing methods
+
+      // find first method
+      NearestProcNode:=StartSearchProc;
+      while (NearestProcNode<>nil) and (NearestProcNode.Desc<>ctnBeginBlock)
+      and (not NodeIsMethodBody(NearestProcNode)) do
+        NearestProcNode:=NearestProcNode.NextBrother;
+      if NearestProcNode<>nil then begin
+        SetInsertPosInFrontOfProc(NearestProcNode);
+        exit;
+      end;
+    end;
+  fpipBehindMethods:
+    begin
+      // Try to insert new proc behind existing methods
+
+      // find last method (go to last brother and search backwards)
+      if (StartSearchProc<>nil) and (StartSearchProc.Parent<>nil) then
+        NearestProcNode:=StartSearchProc.Parent.LastChild
+      else
+        NearestProcNode:=nil;
+      while (NearestProcNode<>nil) and (not NodeIsMethodBody(NearestProcNode)) do
+        NearestProcNode:=NearestProcNode.PriorBrother;
+      if NearestProcNode<>nil then begin
+        SetInsertPosBehindProc(NearestProcNode);
+        exit;
       end;
     end;
   end;
 
+  // Default position: Insert behind last node
+  if (StartSearchProc<>nil)
+  and (StartSearchProc.Parent<>nil) then begin
+    NearestProcNode:=StartSearchProc.Parent.LastChild;
+    if NearestProcNode.Desc=ctnBeginBlock then
+      NearestProcNode:=NearestProcNode.PriorBrother;
+  end;
+  if NearestProcNode<>nil then begin
+    Indent:=0;
+    SetIndentAndInsertPos(NearestProcNode,true);
+    InsertPos:=SkipResourceDirective(InsertPos);
+    exit;
+  end;
+
+  RaiseException(20170421201815,'TCodeCompletionCodeTool.CreateMissingClassProcBodies.FindInsertPointForNewClass '
+   +' Internal Error: no insert position found');
+end;
+
+function TCodeCompletionCodeTool.CreateMissingClassProcBodies(
+  UpdateSignatures: boolean): boolean;
 var
+  TheClassName: string;
+  Beauty: TBeautifyCodeOptions;
   ProcBodyNodes, ClassProcs: TAVLTree;
   ANodeExt, ANodeExt2: TCodeTreeNodeExtension;
   ExistingNode, MissingNode, AnAVLNode, NextAVLNode,
   NearestAVLNode: TAVLTreeNode;
   cmp, MissingNodePosition: integer;
-  FirstExistingProcBody, LastExistingProcBody, ImplementationNode,
+  FirstExistingProcBody, LastExistingProcBody,
   ANode, ANode2: TCodeTreeNode;
   ClassStartComment, s: string;
   Caret1, Caret2: TCodeXYPosition;
@@ -8829,6 +9024,8 @@ var
   NearestNodeValid: boolean;
   
   procedure FindTopMostAndBottomMostProcBodies;
+  var
+    ANode: TCodeTreeNode;
   begin
     ExistingNode:=ProcBodyNodes.FindLowest;
     if ExistingNode<>nil then
@@ -8881,120 +9078,6 @@ var
     end;
   end;
 
-  procedure FindInsertPointForNewClass(out InsertPos, Indent: LongInt);
-
-    procedure SetIndentAndInsertPos(Node: TCodeTreeNode; Behind: boolean);
-    begin
-      Indent:=Beauty.GetLineIndent(Src,Node.StartPos);
-      if Behind then
-        InsertPos:=FindLineEndOrCodeAfterPosition(Node.EndPos)
-      else
-        InsertPos:=FindLineEndOrCodeInFrontOfPosition(Node.StartPos);
-    end;
-
-  var
-    StartSearchProc: TCodeTreeNode;
-    NearestProcNode: TCodeTreeNode;
-    UnitInterfaceNode: TCodeTreeNode;
-  begin
-    InsertPos:=0;
-    Indent:=0;
-    ImplementationNode:=FindImplementationNode;
-    StartSearchProc:=nil;
-    UnitInterfaceNode:=FindInterfaceNode;
-    if (UnitInterfaceNode<>nil)
-    and CodeCompleteClassNode.HasAsParent(UnitInterfaceNode) then begin
-      // class is in interface section
-      // -> insert at the end of the implementation section
-      if ImplementationNode=nil then begin
-        // create implementation section
-        InsertPos:=UnitInterfaceNode.EndPos;
-        Indent:=Beauty.GetLineIndent(Src,UnitInterfaceNode.StartPos);
-        if not CodeCompleteSrcChgCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,
-          CodeCompleteSrcChgCache.BeautifyCodeOptions.BeautifyKeyWord('implementation'))
-        then begin
-          MoveCursorToCleanPos(InsertPos);
-          RaiseException(20170421201812,'unable to insert implementation section (read only?)');
-        end;
-        exit;
-      end else if (ImplementationNode.FirstChild=nil)
-      or (ImplementationNode.FirstChild.Desc=ctnBeginBlock) then begin
-        // implementation is empty
-        Indent:=Beauty.GetLineIndent(Src,ImplementationNode.StartPos);
-        if ImplementationNode.FirstChild<>nil then
-          InsertPos:=ImplementationNode.FirstChild.StartPos
-        else
-          InsertPos:=ImplementationNode.EndPos;
-        exit;
-      end;
-      StartSearchProc:=ImplementationNode.FirstChild;
-    end else begin
-      // class is not in interface section
-      StartSearchProc:=CodeCompleteClassNode.GetTopMostNodeOfType(ctnTypeSection);
-    end;
-    case Beauty.ForwardProcBodyInsertPolicy of
-    fpipInFrontOfMethods:
-      begin
-        // Try to insert new proc in front of existing methods
-
-        // find first method
-        NearestProcNode:=StartSearchProc;
-        while (NearestProcNode<>nil) and (NearestProcNode.Desc<>ctnBeginBlock)
-        and (not NodeIsMethodBody(NearestProcNode)) do
-          NearestProcNode:=NearestProcNode.NextBrother;
-        if NearestProcNode<>nil then begin
-          // the comments in front of the first method probably belong to the class
-          // Therefore insert behind the node in front of the first method
-          Indent:=Beauty.GetLineIndent(Src,NearestProcNode.StartPos);
-          if NearestProcNode.PriorBrother<>nil then begin
-            InsertPos:=FindLineEndOrCodeAfterPosition(NearestProcNode.PriorBrother.EndPos);
-          end else begin
-            InsertPos:=NearestProcNode.Parent.StartPos;
-            while (InsertPos<=NearestProcNode.StartPos)
-            and (not IsSpaceChar[Src[InsertPos]]) do
-              inc(InsertPos);
-          end;
-          InsertPos:=SkipResourceDirective(InsertPos);
-          exit;
-        end;
-      end;
-    fpipBehindMethods:
-      begin
-        // Try to insert new proc behind existing methods
-
-        // find last method (go to last brother and search backwards)
-        if (StartSearchProc<>nil) and (StartSearchProc.Parent<>nil) then
-          NearestProcNode:=StartSearchProc.Parent.LastChild
-        else
-          NearestProcNode:=nil;
-        while (NearestProcNode<>nil) and (not NodeIsMethodBody(NearestProcNode)) do
-          NearestProcNode:=NearestProcNode.PriorBrother;
-        if NearestProcNode<>nil then begin
-          SetIndentAndInsertPos(NearestProcNode,NearestProcNode.Desc<>ctnBeginBlock);
-          InsertPos:=SkipResourceDirective(InsertPos);
-          exit;
-        end;
-      end;
-    end;
-
-    // Default position: Insert behind last node
-    if (StartSearchProc<>nil)
-    and (StartSearchProc.Parent<>nil) then begin
-      NearestProcNode:=StartSearchProc.Parent.LastChild;
-      if NearestProcNode.Desc=ctnBeginBlock then
-        NearestProcNode:=NearestProcNode.PriorBrother;
-    end;
-    if NearestProcNode<>nil then begin
-      Indent:=0;
-      SetIndentAndInsertPos(NearestProcNode,true);
-      InsertPos:=SkipResourceDirective(InsertPos);
-      exit;
-    end;
-
-    RaiseException(20170421201815,'TCodeCompletionCodeTool.CreateMissingClassProcBodies.FindInsertPointForNewClass '
-     +' Internal Error: no insert position found');
-  end;
-  
   procedure InsertClassMethodsComment(InsertPos, Indent: integer);
   var
     CommentStartPos: integer;
@@ -9093,7 +9176,7 @@ begin
       {$IFDEF VerboseCreateMissingClassProcBodies}
       debugln(['TCodeCompletionCodeTool.CreateMissingClassProcBodies Beauty.UpdateAllMethodSignatures=',Beauty.UpdateAllMethodSignatures,' ',OnlyNode<>nil]);
       {$ENDIF}
-      if not UpdateProcBodySignatures(ClassProcs,ProcBodyNodes,ProcAttrDefToBody,
+      if not UpdateProcBodySignatures(ClassProcs,ProcBodyNodes,CreateMethodBodies_ProcAttrBodyDef,
         ProcsCopied,OnlyNode)
       then exit;
     end;
@@ -9160,7 +9243,7 @@ begin
       {$IF defined(CTDEBUG) or defined(VerboseCreateMissingClassProcBodies)}
       DebugLn('TCodeCompletionCodeTool.CreateMissingClassProcBodies Starting class in implementation ');
       {$ENDIF}
-      FindInsertPointForNewClass(InsertPos,Indent);
+      CreateMethodBodies_FindInsertPointForNewClass(InsertPos,Indent);
       {$IFDEF VerboseCreateMissingClassProcBodies}
       debugln(['TCodeCompletionCodeTool.CreateMissingClassProcBodies Indent=',Indent,' InsertPos=',dbgstr(copy(Src,InsertPos-10,10)),'|',dbgstr(copy(Src,InsertPos,10))]);
       {$ENDIF}
@@ -9172,8 +9255,8 @@ begin
         ANodeExt:=TCodeTreeNodeExtension(MissingNode.Data);
         MissingNode:=ClassProcs.FindPrecessor(MissingNode);
         if ProcNodeHasSpecifier(ANodeExt.Node,psEXTERNAL) then continue;
-        CreateCodeForMissingProcBody(ANodeExt,Indent);
-        InsertProcBody(ANodeExt,InsertPos,Indent);
+        CreateMethodBodies_CreateCode(ANodeExt,Indent);
+        CreateMethodBodies_Insert(TheClassName,ANodeExt,InsertPos,Indent);
       end;
       
     end else begin
@@ -9268,8 +9351,8 @@ begin
               end;
             end;
           end;
-          CreateCodeForMissingProcBody(ANodeExt,Indent);
-          InsertProcBody(ANodeExt,InsertPos,0);
+          CreateMethodBodies_CreateCode(ANodeExt,Indent);
+          CreateMethodBodies_Insert(TheClassName,ANodeExt,InsertPos,0);
         end;
       end;
     end;
