@@ -8604,11 +8604,6 @@ msgstr "Отключить параметр -Xg?"
 msgid "Disable option -Xg"
 msgstr "Отключить параметр -Xg"
 
-#: lazarusidestrconsts.lisdisassassembler
-msgctxt "lazarusidestrconsts.lisdisassassembler"
-msgid "Assembler"
-msgstr "Ассемблер"
-
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
 msgstr "Отбросить изменения"

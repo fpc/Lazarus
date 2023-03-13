@@ -8616,11 +8616,6 @@ msgstr "Poista valinta -Xg?"
 msgid "Disable option -Xg"
 msgstr "Poista valinta -Xg"
 
-#: lazarusidestrconsts.lisdisassassembler
-msgctxt "lazarusidestrconsts.lisdisassassembler"
-msgid "Assembler"
-msgstr ""
-
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
 msgstr "Hylkää muutokset"

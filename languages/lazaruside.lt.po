@@ -8759,11 +8759,6 @@ msgstr "Išjungti parinktį „-Xg“?"
 msgid "Disable option -Xg"
 msgstr "Išjungti parinktį „-Xg“"
 
-#: lazarusidestrconsts.lisdisassassembler
-msgctxt "lazarusidestrconsts.lisdisassassembler"
-msgid "Assembler"
-msgstr "Asembleris"
-
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
 msgstr "Neįrašyti pakeitimų"

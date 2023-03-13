@@ -8644,11 +8644,6 @@ msgstr "Desativar opção -Xg?"
 msgid "Disable option -Xg"
 msgstr "Desativar opção -Xg"
 
-#: lazarusidestrconsts.lisdisassassembler
-msgctxt "lazarusidestrconsts.lisdisassassembler"
-msgid "Assembler"
-msgstr "Assembler"
-
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
 msgstr "&Descartar alterações"

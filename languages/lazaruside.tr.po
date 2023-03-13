@@ -8570,11 +8570,6 @@ msgstr "-Xg Seçeneğini Devre Dışı Bırak?"
 msgid "Disable option -Xg"
 msgstr "-Xg Seçeneğini Devre Dışı Bırak"
 
-#: lazarusidestrconsts.lisdisassassembler
-msgctxt "lazarusidestrconsts.lisdisassassembler"
-msgid "Assembler"
-msgstr "Assembler"
-
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
 msgstr "Değişiklikleri gözardı et"

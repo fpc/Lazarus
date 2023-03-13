@@ -8635,11 +8635,6 @@ msgstr "-Xg beállítás letiltása?"
 msgid "Disable option -Xg"
 msgstr "-Xg beállítás letiltása"
 
-#: lazarusidestrconsts.lisdisassassembler
-msgctxt "lazarusidestrconsts.lisdisassassembler"
-msgid "Assembler"
-msgstr "Assembler"
-
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
 msgstr "Változások eldobása"

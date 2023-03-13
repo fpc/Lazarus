@@ -8643,11 +8643,6 @@ msgstr "禁用选项-Xg?"
 msgid "Disable option -Xg"
 msgstr "禁用选项-Xg"
 
-#: lazarusidestrconsts.lisdisassassembler
-msgctxt "lazarusidestrconsts.lisdisassassembler"
-msgid "Assembler"
-msgstr "汇编"
-
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
 msgstr "放弃更改"

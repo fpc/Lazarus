@@ -8678,11 +8678,6 @@ msgstr "Zakázat Volbu -Xg?"
 msgid "Disable option -Xg"
 msgstr "Zakázat volbu -Xg"
 
-#: lazarusidestrconsts.lisdisassassembler
-msgctxt "lazarusidestrconsts.lisdisassassembler"
-msgid "Assembler"
-msgstr "Assembler"
-
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
 msgstr "Zahodit změny"

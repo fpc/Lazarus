@@ -8755,11 +8755,6 @@ msgstr "-Xgを無効化しますか？"
 msgid "Disable option -Xg"
 msgstr "-Xgを無効化"
 
-#: lazarusidestrconsts.lisdisassassembler
-msgctxt "lazarusidestrconsts.lisdisassassembler"
-msgid "Assembler"
-msgstr "アセンブラ"
-
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
 msgstr "変更を破棄"
