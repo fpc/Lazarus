@@ -788,6 +788,7 @@ type
     procedure RestoreTempBreakInstructionCodes;
     function HasInsertedBreakInstructionAtLocation(const ALocation: TDBGPtr): Boolean; // returns Int3, if there is no break at this location
 
+    function CanContinueForWatchEval(ACurrentThread: TDbgThread): boolean; virtual;
     function Continue(AProcess: TDbgProcess; AThread: TDbgThread; SingleStep: boolean): boolean; virtual;
     function WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean; virtual; abstract;
     function ResolveDebugEvent(AThread: TDbgThread): TFPDEvent; virtual;
@@ -2874,6 +2875,12 @@ function TDbgProcess.HasInsertedBreakInstructionAtLocation(
   const ALocation: TDBGPtr): Boolean;
 begin
   Result := FBreakMap.HasInsertedBreakInstructionAtLocation(ALocation);
+end;
+
+function TDbgProcess.CanContinueForWatchEval(ACurrentThread: TDbgThread
+  ): boolean;
+begin
+  Result := True;
 end;
 
 procedure TDbgProcess.MaskBreakpointsInReadData(const AAdress: TDbgPtr; const ASize: Cardinal; var AData);

@@ -370,6 +370,7 @@ type
 
     procedure LoadInfo; override;
 
+    function CanContinueForWatchEval(ACurrentThread: TDbgThread): boolean; override;
     function Continue(AProcess: TDbgProcess; AThread: TDbgThread; SingleStep: boolean): boolean; override;
     function WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean; override;
   end;
@@ -1501,6 +1502,13 @@ begin
         end;
       end;
     end;
+end;
+
+function TDbgLinuxProcess.CanContinueForWatchEval(ACurrentThread: TDbgThread
+  ): boolean;
+begin
+  Result := inherited CanContinueForWatchEval(ACurrentThread);
+  Result := Result and (TDbgLinuxThread(ACurrentThread).FExceptionSignal = 0)
 end;
 
 function TDbgLinuxProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread; SingleStep: boolean): boolean;

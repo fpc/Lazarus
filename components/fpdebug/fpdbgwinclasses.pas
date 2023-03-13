@@ -213,6 +213,7 @@ type
 
     class function isSupported(ATargetInfo: TTargetDescriptor): boolean; override;
 
+    function CanContinueForWatchEval(ACurrentThread: TDbgThread): boolean; override;
     function Continue(AProcess: TDbgProcess; AThread: TDbgThread; SingleStep: boolean): boolean; override;
     function Detach(AProcess: TDbgProcess; AThread: TDbgThread): boolean; override;
     function WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean; override;
@@ -787,6 +788,20 @@ class function TDbgWinProcess.isSupported(ATargetInfo: TTargetDescriptor
 begin
   result := (ATargetInfo.OS = osWindows) and
             (ATargetInfo.machineType in [mt386, mtX86_64]);
+end;
+
+function TDbgWinProcess.CanContinueForWatchEval(ACurrentThread: TDbgThread
+  ): boolean;
+begin
+  Result := inherited CanContinueForWatchEval(ACurrentThread);
+  Result := Result and
+    ( (TDbgWinThread(ACurrentThread).FHasExceptionCleared) or
+      (MDebugEvent.dwDebugEventCode <> EXCEPTION_DEBUG_EVENT) or
+      (MDebugEvent.Exception.ExceptionRecord.ExceptionCode = EXCEPTION_BREAKPOINT) or
+      (MDebugEvent.Exception.ExceptionRecord.ExceptionCode = STATUS_WX86_BREAKPOINT) or
+      (MDebugEvent.Exception.ExceptionRecord.ExceptionCode = EXCEPTION_SINGLE_STEP) or
+      (MDebugEvent.Exception.ExceptionRecord.ExceptionCode = STATUS_WX86_SINGLE_STEP)
+    );
 end;
 
 function TDbgWinProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread;

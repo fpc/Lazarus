@@ -2118,7 +2118,8 @@ begin
   Result := nil;
   if (FPDEvent in [deExitProcess, deFailed]) or
      (FMainProcess = nil) or (FCurrentProcess = nil) or
-     (FCurrentThread = nil)
+     (FCurrentThread = nil) or
+     (not FCurrentProcess.CanContinueForWatchEval(FCurrentThread))
   then
     exit;
 
