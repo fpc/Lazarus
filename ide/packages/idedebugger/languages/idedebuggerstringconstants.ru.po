@@ -720,7 +720,6 @@ msgid "Disable Groups"
 msgstr "Отключить группы"
 
 #: idedebuggerstringconstants.lisdisassassembler
-#, fuzzy
 msgctxt "idedebuggerstringconstants.lisdisassassembler"
 msgid "Assembler"
 msgstr "Ассемблер"
