@@ -219,10 +219,6 @@ msgstr "Uygulama zamanı: %s"
 msgid "Export data"
 msgstr "Verileri dışa aktar"
 
-#: lazdatadeskstr.sfalse
-msgid "False"
-msgstr ""
-
 #: lazdatadeskstr.sfield
 msgid "Field"
 msgstr "Alan"
@@ -954,10 +950,6 @@ msgstr "Devam et, bir sonraki hatada dur"
 #: lazdatadeskstr.stable
 msgid "Table"
 msgstr "Tablo"
-
-#: lazdatadeskstr.strue
-msgid "True"
-msgstr ""
 
 #: lazdatadeskstr.sunknownconnection
 #, object-pascal-format

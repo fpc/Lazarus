@@ -216,10 +216,6 @@ msgstr ""
 msgid "Export data"
 msgstr "Esporta i dati"
 
-#: lazdatadeskstr.sfalse
-msgid "False"
-msgstr ""
-
 #: lazdatadeskstr.sfield
 msgid "Field"
 msgstr "Campo"
@@ -962,10 +958,6 @@ msgstr ""
 #: lazdatadeskstr.stable
 msgid "Table"
 msgstr "Tabella"
-
-#: lazdatadeskstr.strue
-msgid "True"
-msgstr ""
 
 #: lazdatadeskstr.sunknownconnection
 #, object-pascal-format

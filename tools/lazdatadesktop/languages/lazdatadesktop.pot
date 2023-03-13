@@ -195,10 +195,6 @@ msgstr ""
 msgid "Export data"
 msgstr ""
 
-#: lazdatadeskstr.sfalse
-msgid "False"
-msgstr ""
-
 #: lazdatadeskstr.sfield
 msgid "Field"
 msgstr ""
@@ -923,10 +919,6 @@ msgstr ""
 
 #: lazdatadeskstr.stable
 msgid "Table"
-msgstr ""
-
-#: lazdatadeskstr.strue
-msgid "True"
 msgstr ""
 
 #: lazdatadeskstr.sunknownconnection

@@ -213,10 +213,6 @@ msgstr "Час виконання: %s"
 msgid "Export data"
 msgstr "Експорт даних"
 
-#: lazdatadeskstr.sfalse
-msgid "False"
-msgstr ""
-
 #: lazdatadeskstr.sfield
 msgid "Field"
 msgstr "Поле"
@@ -944,10 +940,6 @@ msgstr "Продовжити, зупинитись на наступній по�
 #: lazdatadeskstr.stable
 msgid "Table"
 msgstr "Таблиця"
-
-#: lazdatadeskstr.strue
-msgid "True"
-msgstr ""
 
 #: lazdatadeskstr.sunknownconnection
 #, object-pascal-format

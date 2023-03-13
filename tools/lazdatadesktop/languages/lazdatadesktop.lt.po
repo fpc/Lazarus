@@ -222,10 +222,6 @@ msgstr "Vykdymas užtruko: %s"
 msgid "Export data"
 msgstr "Eksportuoti duomenis"
 
-#: lazdatadeskstr.sfalse
-msgid "False"
-msgstr ""
-
 #: lazdatadeskstr.sfield
 msgid "Field"
 msgstr "Laukelis"
@@ -957,10 +953,6 @@ msgstr "Testi sustojant įvykus kitai klaidai"
 #: lazdatadeskstr.stable
 msgid "Table"
 msgstr "Lentelė"
-
-#: lazdatadeskstr.strue
-msgid "True"
-msgstr ""
 
 #: lazdatadeskstr.sunknownconnection
 #, object-pascal-format

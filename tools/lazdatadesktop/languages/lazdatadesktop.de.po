@@ -221,10 +221,6 @@ msgstr "Ausführungszeit: %s"
 msgid "Export data"
 msgstr "Daten exportieren"
 
-#: lazdatadeskstr.sfalse
-msgid "False"
-msgstr ""
-
 #: lazdatadeskstr.sfield
 msgid "Field"
 msgstr "Feld"
@@ -956,10 +952,6 @@ msgstr "Fortsetzen, beim nächsten Fehler anhalten"
 #: lazdatadeskstr.stable
 msgid "Table"
 msgstr "Tabelle"
-
-#: lazdatadeskstr.strue
-msgid "True"
-msgstr ""
 
 #: lazdatadeskstr.sunknownconnection
 #, object-pascal-format

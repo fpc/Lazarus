@@ -211,10 +211,6 @@ msgstr "Futási idő: %s"
 msgid "Export data"
 msgstr "Adat exportálása"
 
-#: lazdatadeskstr.sfalse
-msgid "False"
-msgstr ""
-
 #: lazdatadeskstr.sfield
 msgid "Field"
 msgstr "Mező"
@@ -942,10 +938,6 @@ msgstr "Folytatás a következő hibáig"
 #: lazdatadeskstr.stable
 msgid "Table"
 msgstr "Tábla"
-
-#: lazdatadeskstr.strue
-msgid "True"
-msgstr ""
 
 #: lazdatadeskstr.sunknownconnection
 #, object-pascal-format

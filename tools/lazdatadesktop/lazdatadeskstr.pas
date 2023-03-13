@@ -279,8 +279,6 @@ resourcestring
   //
   sld_LegacyView = 'Legacy List View';
 
-  STrue  = 'True';
-  SFalse = 'False';
   SYes   = 'Yes';
   SNo    = 'No';
   SCommit = 'Commit';
