@@ -331,6 +331,7 @@ type
     property MemManager: TFpDbgMemManager read FMemManager;
     property DefaultContext: TFpDbgLocationContext read GetDefaultContext; // CurrentThread, TopStackFrame
     property LastError: TFpError read FLastError;
+    property Event: TFPDEvent read FPDEvent;
 
     property ExecutableFilename: string read FExecutableFilename write SetExecutableFilename;
     property AttachToPid: Integer read FAttachToPid write FAttachToPid;
@@ -2114,6 +2115,13 @@ var
   Context: TFpDbgInfoCallContext;
 begin
   debugln(FPDBG_FUNCCALL, ['CallRoutine BEGIN']);
+  Result := nil;
+  if (FPDEvent in [deExitProcess, deFailed]) or
+     (FMainProcess = nil) or (FCurrentProcess = nil) or
+     (FCurrentThread = nil)
+  then
+    exit;
+
   Context := TFpDbgInfoCallContext.Create(ABaseContext, AMemReader, AMemConverter, FCurrentProcess, FCurrentThread);
   Context.AddReference;
   InitializeCommand(TDbgControllerCallRoutineCmd.Create(self, FunctionAddress, Context));

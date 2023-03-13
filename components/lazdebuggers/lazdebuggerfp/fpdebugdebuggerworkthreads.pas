@@ -1015,6 +1015,10 @@ begin
 
     CallContext := FDebugger.DbgController.Call(ProcAddress, FExpressionScope.LocationContext,
       FDebugger.MemReader, FDebugger.MemConverter);
+    if CallContext = nil then begin
+      AnError := CreateError(fpErrAnyError, ['function call not possible']);
+      exit;
+    end;
 
     try
       if (ASelfValue <> nil) then begin

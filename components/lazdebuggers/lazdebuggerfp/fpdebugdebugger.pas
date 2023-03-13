@@ -4658,6 +4658,9 @@ begin
     for t in FDbgController.CurrentProcess.ThreadMap do
       if (t <> ct) and (t.SuspendCount > 0) then // new threads will have count=0
         t.DecSuspendCount;
+
+  if FDbgController.Event = deExitProcess then
+    Application.QueueAsyncCall(@DebugLoopFinished, 0);
 end;
 
 class function TFpDebugDebugger.Caption: String;

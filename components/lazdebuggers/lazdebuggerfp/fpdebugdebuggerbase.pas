@@ -167,6 +167,8 @@ begin
     AMemConverter := MemConverter;
 
   CallContext := DbgController.Call(TargetLoc(AProcAddr), ABaseContext, AMemReader, AMemConverter);
+  if CallContext = nil then
+    exit;
   try
     CallContext.AddOrdinalViaRefAsParam(AStringDataAddr);
     CallContext.FinalizeParams;
@@ -193,6 +195,9 @@ begin
 
   Result := False;
   CallContext := DbgController.Call(TargetLoc(ASetLengthProcAddr), ABaseContext, AMemReader, AMemConverter);
+  if CallContext = nil then
+    exit;
+
   try
     if not CallContext.AddOrdinalViaRefAsParam(0, AParamAddr) then
       exit;

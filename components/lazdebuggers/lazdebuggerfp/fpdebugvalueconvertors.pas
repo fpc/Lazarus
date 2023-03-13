@@ -444,6 +444,8 @@ begin
     MgrAddr := AnFpDebugger.DbgController.CurrentThread.AllocStackMem(1024); // enough space for the record
     CallContext := AnFpDebugger.DbgController.Call(ProcSym.Address, AnExpressionScope.LocationContext,
       AnFpDebugger.MemReader, AnFpDebugger.MemConverter);
+    if CallContext = nil then
+      exit;
     try
       CallContext.AddOrdinalParam(nil, MgrAddr);
       CallContext.FinalizeParams;
@@ -563,6 +565,10 @@ begin
     StringAddr := 0;
     CallContext := AnFpDebugger.DbgController.Call(ProcLoc, AnExpressionScope.LocationContext,
       AnFpDebugger.MemReader, AnFpDebugger.MemConverter);
+    if CallContext = nil then begin
+      SetError(CreateError(fpErrAnyError, ['function call not possible']));
+      exit;
+    end;
     try
       CallContext.AddStringResult;
       CallContext.FinalizeParams; // force the string as first param (32bit) // TODO

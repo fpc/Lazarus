@@ -276,6 +276,10 @@ begin
 
     CallContext := AnFpDebugger.DbgController.Call(TargetLoc(ProcAddr), AnExpressionScope.LocationContext,
       AnFpDebugger.MemReader, AnFpDebugger.MemConverter);
+    if CallContext = nil then begin
+      SetError(CreateError(fpErrAnyError, ['function call not possible']));
+      exit;
+    end;
 
     if (not CallContext.AddOrdinalParam(ASourceValue.Address.Address)) or
        (not CallContext.AddOrdinalViaRefAsParam(TpNameAddr, TpNameRefAddr)) or
