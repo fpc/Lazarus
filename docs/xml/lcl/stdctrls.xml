@@ -13633,7 +13633,70 @@ input directly in the control.
 <element name="TLabel.AutoSize" link="#lcl.stdctrls.TCustomLabel.AutoSize"/>
 <element name="TLabel.BidiMode" link="#lcl.controls.TControl.BiDiMode"/>
 <element name="TLabel.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
-<element name="TLabel.Caption" link="#lcl.controls.TControl.Caption"/>
+
+<element name="TLabel.Caption">
+<short>
+The text displayed for the control.
+</short>
+<descr>
+<p>
+<var>Caption</var> is a <var>TCaption</var> property with the text displayed 
+for the control. By default, Caption  has the same value as the Name property 
+used for the control. An explicit value can be assigned at design-time using 
+the Object Inspector, or by the developer in program code.
+</p>
+<p>
+Caption can be used to display an accelerator (or shortcut) key which allows 
+an associated control to be given focus or executed. The shortcut key is 
+identified by placing an Ampersand (&amp;) character in front of the character 
+used as the accelerator key. Use two Ampersand characters to display a single 
+Ampersand which is not a shortcut key.
+</p>
+<p>
+Set ShowAccelChar to <b>False</b> to disable display and use of the 
+accelerator key in the control. This also allows Caption to display an
+Ampersand (&amp;) character without escaping its value.
+</p>
+<p>
+Use FocusControl to specify the control which is focused/activated when the 
+accelerator key is detected and ShowAccelerator is enabled.
+</p>
+<p>
+Set values in Font to specify the typeface, size, color, and style used to 
+display the Caption text. Use Color to set the background color for the 
+control.
+</p>
+<p>
+For example: 
+</p>
+<code>
+{
+var
+  ALabel: TLabel;
+  Form1: TForm;
+  Memo1: TMemo;
+}
+
+ALabel.ShowAccelerator := True;
+ALabel.FocusControl := Memo1;
+ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
+</code>
+<p>
+Displays the 'N' character with an underline indicating the accelerator key. 
+Pressing Alt+N activates the shortcut key and causes the associated TMemo 
+control to be given focus.
+</p>
+</descr>
+<seealso>
+<link id="TLabel.ShowAccelChar"/>
+<link id="TLabel.FocusControl"/>
+<link id="TLabel.Color"/>
+<link id="TLabel.Font"/>
+<link id="TLabel.Layout"/>
+<link id="#lcl.controls.TControl.Caption">TControl.Caption</link>
+</seealso>
+</element>
+
 <element name="TLabel.Color"  link="#lcl.stdctrls.TCustomLabel.Color"/>
 <element name="TLabel.Constraints" link="#lcl.controls.TControl.Constraints"/>
 <element name="TLabel.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
