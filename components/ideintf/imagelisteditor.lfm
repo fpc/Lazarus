@@ -1,14 +1,12 @@
 object ImageListEditorDlg: TImageListEditorDlg
   Left = 453
-  Height = 484
+  Height = 455
   Top = 144
-  Width = 617
+  Width = 579
   BorderIcons = [biSystemMenu, biHelp]
   Caption = 'ImagesList Editor'
-  ClientHeight = 484
-  ClientWidth = 617
-  Constraints.MinHeight = 394
-  Constraints.MinWidth = 560
+  ClientHeight = 455
+  ClientWidth = 579
   OnClose = FormClose
   OnCreate = FormCreate
   OnResize = FormResize
@@ -23,14 +21,14 @@ object ImageListEditorDlg: TImageListEditorDlg
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = BtnPanel
     Left = 372
-    Height = 440
+    Height = 411
     Top = 6
-    Width = 239
+    Width = 201
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Selected Image'
-    ClientHeight = 420
-    ClientWidth = 235
+    ClientHeight = 391
+    ClientWidth = 197
     TabOrder = 1
     object LabelTransparent: TLabel
       AnchorSideLeft.Control = RadioGroup
@@ -38,9 +36,10 @@ object ImageListEditorDlg: TImageListEditorDlg
       AnchorSideTop.Control = RadioGroup
       Left = 93
       Height = 15
-      Top = 304
+      Top = 275
       Width = 96
       BorderSpacing.Left = 6
+      BorderSpacing.Right = 6
       Caption = 'Transparent Color:'
     end
     object Preview: TScrollBox
@@ -50,9 +49,9 @@ object ImageListEditorDlg: TImageListEditorDlg
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = RadioGroup
       Left = 6
-      Height = 292
+      Height = 263
       Top = 6
-      Width = 223
+      Width = 185
       HorzScrollBar.Increment = 1
       HorzScrollBar.Page = 1
       HorzScrollBar.Smooth = True
@@ -73,7 +72,7 @@ object ImageListEditorDlg: TImageListEditorDlg
       AnchorSideBottom.Side = asrBottom
       Left = 6
       Height = 110
-      Top = 304
+      Top = 275
       Width = 81
       Anchors = [akLeft, akBottom]
       AutoFill = True
@@ -108,11 +107,12 @@ object ImageListEditorDlg: TImageListEditorDlg
       AnchorSideTop.Side = asrBottom
       Left = 93
       Height = 22
-      Top = 323
+      Top = 294
       Width = 96
       Selected = clFuchsia
       Style = [cbStandardColors, cbExtendedColors, cbIncludeDefault, cbCustomColor, cbPrettyNames]
       BorderSpacing.Top = 4
+      BorderSpacing.Right = 6
       Enabled = False
       ItemHeight = 16
       OnChange = ColorBoxTransparentClick
@@ -124,14 +124,14 @@ object ImageListEditorDlg: TImageListEditorDlg
     AnchorSideTop.Control = Owner
     AnchorSideBottom.Control = BtnPanel
     Left = 6
-    Height = 440
+    Height = 411
     Top = 6
     Width = 360
     Anchors = [akTop, akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Images'
-    ClientHeight = 420
+    ClientHeight = 391
     ClientWidth = 356
     TabOrder = 0
     object BtnAdd: TButton
@@ -285,7 +285,7 @@ object ImageListEditorDlg: TImageListEditorDlg
       AnchorSideBottom.Control = GroupBoxL
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 408
+      Height = 379
       Top = 6
       Width = 186
       Anchors = [akTop, akLeft, akBottom]
@@ -391,8 +391,8 @@ object ImageListEditorDlg: TImageListEditorDlg
   object BtnPanel: TButtonPanel
     Left = 6
     Height = 26
-    Top = 452
-    Width = 605
+    Top = 423
+    Width = 567
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'

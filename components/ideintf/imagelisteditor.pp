@@ -694,6 +694,15 @@ begin
     btnSaveAll,
     btnAddNewResolution,
     btnDeleteResolution]);
+
+  Constraints.MinWidth := GroupboxL.Width + GroupboxL.BorderSpacing.Around*2 +
+    LabelTransparent.Left + Max(LabelTransparent.Width, ColorBoxTransparent.Width) + LabelTransparent.BorderSpacing.Right +
+    GroupBoxR.BorderSpacing.Around;
+  Constraints.MinHeight := GroupBoxL.BorderSpacing.Around*2 + GroupBoxL.Height - GroupBoxL.ClientHeight +
+    btnDeleteResolution.Top + btnDeleteResolution.Height +
+    ImageListbox.BorderSpacing.Around + BtnPanel.Height + BtnPanel.BorderSpacing.Around;
+  if Width < Constraints.MinWidth then Width := Constraints.MinWidth; // Enforce Constraints
+  if Height < Constraints.MinHeight then Height := Constraints.MinHeight;
 end;
 
 procedure TImageListEditorDlg.UpdatePreviewImage;
