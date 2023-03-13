@@ -7785,11 +7785,6 @@ msgstr "Araç çubuğu görünsün"
 msgid "Coolbar width"
 msgstr "Araç çubuğu genişliği"
 
-#: lazarusidestrconsts.liscopy
-msgctxt "lazarusidestrconsts.liscopy"
-msgid "Copy"
-msgstr "Kopyala"
-
 #: lazarusidestrconsts.liscopyallitemstoclipboard
 msgid "Copy All Items to Clipboard"
 msgstr "Tüm Öğeleri Panoya Kopyala"
@@ -8077,11 +8072,6 @@ msgstr "Özel Program"
 msgid "A Custom Free Pascal program."
 msgstr "Özel Free Pascal programı."
 
-#: lazarusidestrconsts.liscut
-msgctxt "lazarusidestrconsts.liscut"
-msgid "Cut"
-msgstr "Kes"
-
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
 msgstr "Veri modülü"
@@ -8089,14 +8079,6 @@ msgstr "Veri modülü"
 #: lazarusidestrconsts.lisdate
 msgid "Date"
 msgstr "Tarih"
-
-#: lazarusidestrconsts.lisdbgasmcopyaddresstoclipboard
-msgid "Copy address to Clipboard"
-msgstr "Adresi panoya kopyala"
-
-#: lazarusidestrconsts.lisdbgasmcopytoclipboard
-msgid "Copy to Clipboard"
-msgstr "Panoya kopyala"
 
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
@@ -8592,30 +8574,6 @@ msgstr "-Xg Seçeneğini Devre Dışı Bırak"
 msgctxt "lazarusidestrconsts.lisdisassassembler"
 msgid "Assembler"
 msgstr "Assembler"
-
-#: lazarusidestrconsts.lisdisassgotoaddredittexthint
-msgid "($address)"
-msgstr "($address)"
-
-#: lazarusidestrconsts.lisdisassgotoaddress
-msgctxt "lazarusidestrconsts.lisdisassgotoaddress"
-msgid "Goto Address"
-msgstr "Adrese Git"
-
-#: lazarusidestrconsts.lisdisassgotoaddresshint
-msgctxt "lazarusidestrconsts.lisdisassgotoaddresshint"
-msgid "Goto Address"
-msgstr "Adrese Git"
-
-#: lazarusidestrconsts.lisdisassgotocurrentaddress
-msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddress"
-msgid "Goto Current Address"
-msgstr "Geçerli Adrese Git"
-
-#: lazarusidestrconsts.lisdisassgotocurrentaddresshint
-msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddresshint"
-msgid "Goto Current Address"
-msgstr "Geçerli Adrese Git"
 
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
@@ -13393,51 +13351,6 @@ msgstr "Seçimi Sırala ..."
 msgid "S&ource"
 msgstr "Ka&ynak"
 
-#: lazarusidestrconsts.lismenustepinto
-msgid "Step In&to"
-msgstr "İçeri a&dım"
-
-#: lazarusidestrconsts.lismenustepintocontext
-msgid "Step Into (Context)"
-msgstr "İçeri Gir (Bağlam)"
-
-#: lazarusidestrconsts.lismenustepintoinstr
-msgctxt "lazarusidestrconsts.lismenustepintoinstr"
-msgid "Step Into Instruction"
-msgstr "Öğretim adım"
-
-#: lazarusidestrconsts.lismenustepintoinstrhint
-msgctxt "lazarusidestrconsts.lismenustepintoinstrhint"
-msgid "Step Into Instruction"
-msgstr "Öğretim adım"
-
-#: lazarusidestrconsts.lismenustepout
-msgid "Step O&ut"
-msgstr "Dışarı &çıkmak"
-
-#: lazarusidestrconsts.lismenustepover
-msgid "&Step Over"
-msgstr "&Adım atmak"
-
-#: lazarusidestrconsts.lismenustepovercontext
-msgid "Step Over (Context)"
-msgstr "Aşama (Bağlam)"
-
-#: lazarusidestrconsts.lismenustepoverinstr
-msgctxt "lazarusidestrconsts.lismenustepoverinstr"
-msgid "Step Over Instruction"
-msgstr "Öğretim Aşırı Adım"
-
-#: lazarusidestrconsts.lismenustepoverinstrhint
-msgctxt "lazarusidestrconsts.lismenustepoverinstrhint"
-msgid "Step Over Instruction"
-msgstr "Öğretim Aşırı Adım"
-
-#: lazarusidestrconsts.lismenusteptocursor
-msgctxt "lazarusidestrconsts.lismenusteptocursor"
-msgid "Step over to &Cursor"
-msgstr "İ&mleç'e geçin"
-
 #: lazarusidestrconsts.lismenuswapcaseselection
 msgid "Swap Case in Selection"
 msgstr "Seçimde Takas Yap"
@@ -13482,11 +13395,6 @@ msgstr "&Görünüm"
 #: lazarusidestrconsts.lismenuviewanchoreditor
 msgid "Anchor Editor"
 msgstr "Çapa Editör"
-
-#: lazarusidestrconsts.lismenuviewassembler
-msgctxt "lazarusidestrconsts.lismenuviewassembler"
-msgid "Assembler"
-msgstr "Assembler"
 
 #: lazarusidestrconsts.lismenuviewcodebrowser
 msgctxt "lazarusidestrconsts.lismenuviewcodebrowser"
@@ -14793,11 +14701,6 @@ msgstr "derleyiciyi geçerek \"%s\" tanımını farklı değerlerle iki kez tan�
 #, object-pascal-format
 msgid "passing compiler option -%s twice with different values"
 msgstr "derleyici seçeneğinin geçilmesi - farklı değerlerle iki kez %s"
-
-#: lazarusidestrconsts.lispaste
-msgctxt "lazarusidestrconsts.lispaste"
-msgid "Paste"
-msgstr "Yapıştır"
 
 #: lazarusidestrconsts.lispasteclipboard
 msgid "paste clipboard"

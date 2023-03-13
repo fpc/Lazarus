@@ -47,7 +47,7 @@ uses
   // IDEIntf
   IDEDialogs, PropEdits, PropEditUtils, ComponentEditors, MenuIntf,
   IDEImagesIntf, FormEditingIntf, ComponentReg, IDECommands, LazIDEIntf,
-  ProjectIntf, ObjectInspector,
+  ProjectIntf, ObjectInspector, IdeIntfStrConsts,
   // IDE
   LazarusIDEStrConsts, EnvironmentOpts, EditorOptions, SourceEditor,
   // Designer

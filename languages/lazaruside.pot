@@ -7804,11 +7804,6 @@ msgstr ""
 msgid "Coolbar width"
 msgstr ""
 
-#: lazarusidestrconsts.liscopy
-msgctxt "lazarusidestrconsts.liscopy"
-msgid "Copy"
-msgstr ""
-
 #: lazarusidestrconsts.liscopyallitemstoclipboard
 msgid "Copy All Items to Clipboard"
 msgstr ""
@@ -8096,25 +8091,12 @@ msgstr ""
 msgid "A Custom Free Pascal program."
 msgstr ""
 
-#: lazarusidestrconsts.liscut
-msgctxt "lazarusidestrconsts.liscut"
-msgid "Cut"
-msgstr ""
-
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
 msgstr ""
 
 #: lazarusidestrconsts.lisdate
 msgid "Date"
-msgstr ""
-
-#: lazarusidestrconsts.lisdbgasmcopyaddresstoclipboard
-msgid "Copy address to Clipboard"
-msgstr ""
-
-#: lazarusidestrconsts.lisdbgasmcopytoclipboard
-msgid "Copy to Clipboard"
 msgstr ""
 
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
@@ -8610,30 +8592,6 @@ msgstr ""
 #: lazarusidestrconsts.lisdisassassembler
 msgctxt "lazarusidestrconsts.lisdisassassembler"
 msgid "Assembler"
-msgstr ""
-
-#: lazarusidestrconsts.lisdisassgotoaddredittexthint
-msgid "($address)"
-msgstr ""
-
-#: lazarusidestrconsts.lisdisassgotoaddress
-msgctxt "lazarusidestrconsts.lisdisassgotoaddress"
-msgid "Goto Address"
-msgstr ""
-
-#: lazarusidestrconsts.lisdisassgotoaddresshint
-msgctxt "lazarusidestrconsts.lisdisassgotoaddresshint"
-msgid "Goto Address"
-msgstr ""
-
-#: lazarusidestrconsts.lisdisassgotocurrentaddress
-msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddress"
-msgid "Goto Current Address"
-msgstr ""
-
-#: lazarusidestrconsts.lisdisassgotocurrentaddresshint
-msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddresshint"
-msgid "Goto Current Address"
 msgstr ""
 
 #: lazarusidestrconsts.lisdiscardchanges
@@ -13376,51 +13334,6 @@ msgstr ""
 msgid "S&ource"
 msgstr ""
 
-#: lazarusidestrconsts.lismenustepinto
-msgid "Step In&to"
-msgstr ""
-
-#: lazarusidestrconsts.lismenustepintocontext
-msgid "Step Into (Context)"
-msgstr ""
-
-#: lazarusidestrconsts.lismenustepintoinstr
-msgctxt "lazarusidestrconsts.lismenustepintoinstr"
-msgid "Step Into Instruction"
-msgstr ""
-
-#: lazarusidestrconsts.lismenustepintoinstrhint
-msgctxt "lazarusidestrconsts.lismenustepintoinstrhint"
-msgid "Step Into Instruction"
-msgstr ""
-
-#: lazarusidestrconsts.lismenustepout
-msgid "Step O&ut"
-msgstr ""
-
-#: lazarusidestrconsts.lismenustepover
-msgid "&Step Over"
-msgstr ""
-
-#: lazarusidestrconsts.lismenustepovercontext
-msgid "Step Over (Context)"
-msgstr ""
-
-#: lazarusidestrconsts.lismenustepoverinstr
-msgctxt "lazarusidestrconsts.lismenustepoverinstr"
-msgid "Step Over Instruction"
-msgstr ""
-
-#: lazarusidestrconsts.lismenustepoverinstrhint
-msgctxt "lazarusidestrconsts.lismenustepoverinstrhint"
-msgid "Step Over Instruction"
-msgstr ""
-
-#: lazarusidestrconsts.lismenusteptocursor
-msgctxt "lazarusidestrconsts.lismenusteptocursor"
-msgid "Step over to &Cursor"
-msgstr ""
-
 #: lazarusidestrconsts.lismenuswapcaseselection
 msgid "Swap Case in Selection"
 msgstr ""
@@ -13465,11 +13378,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuviewanchoreditor
 msgid "Anchor Editor"
-msgstr ""
-
-#: lazarusidestrconsts.lismenuviewassembler
-msgctxt "lazarusidestrconsts.lismenuviewassembler"
-msgid "Assembler"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuviewcodebrowser
@@ -14762,11 +14670,6 @@ msgstr ""
 #: lazarusidestrconsts.lispassingcompileroptiontwicewithdifferentvalues
 #, object-pascal-format
 msgid "passing compiler option -%s twice with different values"
-msgstr ""
-
-#: lazarusidestrconsts.lispaste
-msgctxt "lazarusidestrconsts.lispaste"
-msgid "Paste"
 msgstr ""
 
 #: lazarusidestrconsts.lispasteclipboard

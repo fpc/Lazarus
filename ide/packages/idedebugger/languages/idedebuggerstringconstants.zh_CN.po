@@ -594,6 +594,14 @@ msgctxt "lazarusidestrconsts.lisdbgallitemenablehint"
 msgid "Enable all"
 msgstr "激活所有"
 
+#: idedebuggerstringconstants.lisdbgasmcopyaddresstoclipboard
+msgid "Copy address to Clipboard"
+msgstr ""
+
+#: idedebuggerstringconstants.lisdbgasmcopytoclipboard
+msgid "Copy to Clipboard"
+msgstr "复制到剪贴板"
+
 #: idedebuggerstringconstants.lisdbgbreakpointpropertieshint
 msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
 msgid "Breakpoint Properties ..."
@@ -717,6 +725,37 @@ msgstr "禁用断点"
 #: idedebuggerstringconstants.lisdisablegroups
 msgid "Disable Groups"
 msgstr "禁用组"
+
+#: idedebuggerstringconstants.lisdisassassembler
+#, fuzzy
+msgctxt "idedebuggerstringconstants.lisdisassassembler"
+msgid "Assembler"
+msgstr "汇编"
+
+#: idedebuggerstringconstants.lisdisassgotoaddredittexthint
+#, fuzzy
+msgid "($address)"
+msgstr "地址:"
+
+#: idedebuggerstringconstants.lisdisassgotoaddress
+msgctxt "idedebuggerstringconstants.lisdisassgotoaddress"
+msgid "Goto Address"
+msgstr "转到地址"
+
+#: idedebuggerstringconstants.lisdisassgotoaddresshint
+msgctxt "idedebuggerstringconstants.lisdisassgotoaddresshint"
+msgid "Goto Address"
+msgstr "转到地址"
+
+#: idedebuggerstringconstants.lisdisassgotocurrentaddress
+msgctxt "idedebuggerstringconstants.lisdisassgotocurrentaddress"
+msgid "Goto Current Address"
+msgstr "转到当前地址"
+
+#: idedebuggerstringconstants.lisdisassgotocurrentaddresshint
+msgctxt "idedebuggerstringconstants.lisdisassgotocurrentaddresshint"
+msgid "Goto Current Address"
+msgstr "转到当前地址"
 
 #: idedebuggerstringconstants.lisenableall
 msgid "&Enable All"
@@ -1002,6 +1041,55 @@ msgstr "中断(Break)(&B)"
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "帮助(&H)"
+
+#: idedebuggerstringconstants.lismenustepinto
+msgid "Step In&to"
+msgstr "单步进入(&t)"
+
+#: idedebuggerstringconstants.lismenustepintocontext
+msgid "Step Into (Context)"
+msgstr "单步进入(上下文)"
+
+#: idedebuggerstringconstants.lismenustepintoinstr
+msgctxt "idedebuggerstringconstants.lismenustepintoinstr"
+msgid "Step Into Instruction"
+msgstr "单步进入指令"
+
+#: idedebuggerstringconstants.lismenustepintoinstrhint
+msgctxt "idedebuggerstringconstants.lismenustepintoinstrhint"
+msgid "Step Into Instruction"
+msgstr "单步进入指令"
+
+#: idedebuggerstringconstants.lismenustepout
+msgid "Step O&ut"
+msgstr "单步跳出(&u)"
+
+#: idedebuggerstringconstants.lismenustepover
+msgid "&Step Over"
+msgstr "单步跳过(&S)"
+
+#: idedebuggerstringconstants.lismenustepovercontext
+msgid "Step Over (Context)"
+msgstr "单步跳过(上下文)"
+
+#: idedebuggerstringconstants.lismenustepoverinstr
+msgctxt "idedebuggerstringconstants.lismenustepoverinstr"
+msgid "Step Over Instruction"
+msgstr "单步跳过指令"
+
+#: idedebuggerstringconstants.lismenustepoverinstrhint
+msgctxt "idedebuggerstringconstants.lismenustepoverinstrhint"
+msgid "Step Over Instruction"
+msgstr "单步跳过指令"
+
+#: idedebuggerstringconstants.lismenusteptocursor
+msgid "Step over to &Cursor"
+msgstr "单步跳过到光标(&C)"
+
+#: idedebuggerstringconstants.lismenuviewassembler
+msgctxt "idedebuggerstringconstants.lismenuviewassembler"
+msgid "Assembler"
+msgstr "汇编"
 
 #: idedebuggerstringconstants.lismenuviewbreakpoints
 msgid "BreakPoints"

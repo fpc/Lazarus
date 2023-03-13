@@ -49,6 +49,14 @@ msgstr "Peru"
 msgid "Continue"
 msgstr "Jatka"
 
+#: ideintfstrconsts.liscopy
+msgid "Copy"
+msgstr "Kopioi"
+
+#: ideintfstrconsts.liscut
+msgid "Cut"
+msgstr "Leikkaa"
+
 #: ideintfstrconsts.lisdelete
 msgid "Delete"
 msgstr "Poista"
@@ -88,6 +96,10 @@ msgstr "Ei"
 #: ideintfstrconsts.lisok
 msgid "OK"
 msgstr ""
+
+#: ideintfstrconsts.lispaste
+msgid "Paste"
+msgstr "Liitä"
 
 #: ideintfstrconsts.lisyes
 msgid "Yes"

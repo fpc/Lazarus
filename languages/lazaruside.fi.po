@@ -7830,11 +7830,6 @@ msgstr "Coolbar &näytetään"
 msgid "Coolbar width"
 msgstr "Coolbar leveys"
 
-#: lazarusidestrconsts.liscopy
-msgctxt "lazarusidestrconsts.liscopy"
-msgid "Copy"
-msgstr "Kopioi"
-
 #: lazarusidestrconsts.liscopyallitemstoclipboard
 msgid "Copy All Items to Clipboard"
 msgstr "Kopioi kaikki leikepöydälle"
@@ -8122,11 +8117,6 @@ msgstr "Mukautettu ohjelma"
 msgid "A Custom Free Pascal program."
 msgstr "Mukautettu Free Pascal -ohjelma."
 
-#: lazarusidestrconsts.liscut
-msgctxt "lazarusidestrconsts.liscut"
-msgid "Cut"
-msgstr "Leikkaa"
-
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
 msgstr ""
@@ -8134,14 +8124,6 @@ msgstr ""
 #: lazarusidestrconsts.lisdate
 msgid "Date"
 msgstr "Päiväys"
-
-#: lazarusidestrconsts.lisdbgasmcopyaddresstoclipboard
-msgid "Copy address to Clipboard"
-msgstr ""
-
-#: lazarusidestrconsts.lisdbgasmcopytoclipboard
-msgid "Copy to Clipboard"
-msgstr "Kopioi leikepöydälle"
 
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
@@ -8638,30 +8620,6 @@ msgstr "Poista valinta -Xg"
 msgctxt "lazarusidestrconsts.lisdisassassembler"
 msgid "Assembler"
 msgstr ""
-
-#: lazarusidestrconsts.lisdisassgotoaddredittexthint
-msgid "($address)"
-msgstr ""
-
-#: lazarusidestrconsts.lisdisassgotoaddress
-msgctxt "lazarusidestrconsts.lisdisassgotoaddress"
-msgid "Goto Address"
-msgstr "Mene osoitteeseen"
-
-#: lazarusidestrconsts.lisdisassgotoaddresshint
-msgctxt "lazarusidestrconsts.lisdisassgotoaddresshint"
-msgid "Goto Address"
-msgstr "Mene osoitteeseen"
-
-#: lazarusidestrconsts.lisdisassgotocurrentaddress
-msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddress"
-msgid "Goto Current Address"
-msgstr "Mene nykyiseen osoitteeseen"
-
-#: lazarusidestrconsts.lisdisassgotocurrentaddresshint
-msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddresshint"
-msgid "Goto Current Address"
-msgstr "Mene nykyiseen osoitteeseen"
 
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
@@ -13403,51 +13361,6 @@ msgstr "Järjestä valinta ..."
 msgid "S&ource"
 msgstr "&Lähdekoodi"
 
-#: lazarusidestrconsts.lismenustepinto
-msgid "Step In&to"
-msgstr "Askella &sisään"
-
-#: lazarusidestrconsts.lismenustepintocontext
-msgid "Step Into (Context)"
-msgstr "Askella sisään (konteksti)"
-
-#: lazarusidestrconsts.lismenustepintoinstr
-msgctxt "lazarusidestrconsts.lismenustepintoinstr"
-msgid "Step Into Instruction"
-msgstr "Askella sisään käskyyn"
-
-#: lazarusidestrconsts.lismenustepintoinstrhint
-msgctxt "lazarusidestrconsts.lismenustepintoinstrhint"
-msgid "Step Into Instruction"
-msgstr "Askella sisään käskyyn"
-
-#: lazarusidestrconsts.lismenustepout
-msgid "Step O&ut"
-msgstr "Askella &ulos"
-
-#: lazarusidestrconsts.lismenustepover
-msgid "&Step Over"
-msgstr "Askella yli"
-
-#: lazarusidestrconsts.lismenustepovercontext
-msgid "Step Over (Context)"
-msgstr "Askella yli (konteksti)"
-
-#: lazarusidestrconsts.lismenustepoverinstr
-msgctxt "lazarusidestrconsts.lismenustepoverinstr"
-msgid "Step Over Instruction"
-msgstr "Askella yli käskystä"
-
-#: lazarusidestrconsts.lismenustepoverinstrhint
-msgctxt "lazarusidestrconsts.lismenustepoverinstrhint"
-msgid "Step Over Instruction"
-msgstr "Askella yli käskystä"
-
-#: lazarusidestrconsts.lismenusteptocursor
-msgctxt "lazarusidestrconsts.lismenusteptocursor"
-msgid "Step over to &Cursor"
-msgstr ""
-
 #: lazarusidestrconsts.lismenuswapcaseselection
 msgid "Swap Case in Selection"
 msgstr "Käännä kirjaimen koko valinnassa"
@@ -13492,11 +13405,6 @@ msgstr "&Näytä"
 #: lazarusidestrconsts.lismenuviewanchoreditor
 msgid "Anchor Editor"
 msgstr "Ankkurointi"
-
-#: lazarusidestrconsts.lismenuviewassembler
-msgctxt "lazarusidestrconsts.lismenuviewassembler"
-msgid "Assembler"
-msgstr ""
 
 #: lazarusidestrconsts.lismenuviewcodebrowser
 msgctxt "lazarusidestrconsts.lismenuviewcodebrowser"
@@ -14786,11 +14694,6 @@ msgstr ""
 #, object-pascal-format
 msgid "passing compiler option -%s twice with different values"
 msgstr ""
-
-#: lazarusidestrconsts.lispaste
-msgctxt "lazarusidestrconsts.lispaste"
-msgid "Paste"
-msgstr "Liitä"
 
 #: lazarusidestrconsts.lispasteclipboard
 msgid "paste clipboard"

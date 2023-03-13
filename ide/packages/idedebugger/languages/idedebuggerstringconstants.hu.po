@@ -593,6 +593,14 @@ msgctxt "lazarusidestrconsts.lisdbgallitemenablehint"
 msgid "Enable all"
 msgstr "Összes engedélyezése"
 
+#: idedebuggerstringconstants.lisdbgasmcopyaddresstoclipboard
+msgid "Copy address to Clipboard"
+msgstr ""
+
+#: idedebuggerstringconstants.lisdbgasmcopytoclipboard
+msgid "Copy to Clipboard"
+msgstr "Másolás a vágólapra"
+
 #: idedebuggerstringconstants.lisdbgbreakpointpropertieshint
 msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
 msgid "Breakpoint Properties ..."
@@ -716,6 +724,36 @@ msgstr "Töréspont letiltása"
 #: idedebuggerstringconstants.lisdisablegroups
 msgid "Disable Groups"
 msgstr "Csoport Letiltása"
+
+#: idedebuggerstringconstants.lisdisassassembler
+#, fuzzy
+msgctxt "idedebuggerstringconstants.lisdisassassembler"
+msgid "Assembler"
+msgstr "Assembler"
+
+#: idedebuggerstringconstants.lisdisassgotoaddredittexthint
+msgid "($address)"
+msgstr ""
+
+#: idedebuggerstringconstants.lisdisassgotoaddress
+msgctxt "idedebuggerstringconstants.lisdisassgotoaddress"
+msgid "Goto Address"
+msgstr "Ugrás címhez"
+
+#: idedebuggerstringconstants.lisdisassgotoaddresshint
+msgctxt "idedebuggerstringconstants.lisdisassgotoaddresshint"
+msgid "Goto Address"
+msgstr "Ugrás címhez"
+
+#: idedebuggerstringconstants.lisdisassgotocurrentaddress
+msgctxt "idedebuggerstringconstants.lisdisassgotocurrentaddress"
+msgid "Goto Current Address"
+msgstr "Ugrás a jelenlegi címhez"
+
+#: idedebuggerstringconstants.lisdisassgotocurrentaddresshint
+msgctxt "idedebuggerstringconstants.lisdisassgotocurrentaddresshint"
+msgid "Goto Current Address"
+msgstr "Ugrás a jelenlegi címhez"
 
 #: idedebuggerstringconstants.lisenableall
 msgid "&Enable All"
@@ -999,6 +1037,55 @@ msgstr "Megszakítás"
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "&Súgó"
+
+#: idedebuggerstringconstants.lismenustepinto
+msgid "Step In&to"
+msgstr "Belépni"
+
+#: idedebuggerstringconstants.lismenustepintocontext
+msgid "Step Into (Context)"
+msgstr "Belépni (ebben az összefüggésben)"
+
+#: idedebuggerstringconstants.lismenustepintoinstr
+msgctxt "idedebuggerstringconstants.lismenustepintoinstr"
+msgid "Step Into Instruction"
+msgstr "Belépni az utasításba"
+
+#: idedebuggerstringconstants.lismenustepintoinstrhint
+msgctxt "idedebuggerstringconstants.lismenustepintoinstrhint"
+msgid "Step Into Instruction"
+msgstr "Belépni az utasításba"
+
+#: idedebuggerstringconstants.lismenustepout
+msgid "Step O&ut"
+msgstr "Kilépni"
+
+#: idedebuggerstringconstants.lismenustepover
+msgid "&Step Over"
+msgstr "Átlépni"
+
+#: idedebuggerstringconstants.lismenustepovercontext
+msgid "Step Over (Context)"
+msgstr "Átlépni (ebben az összefüggésben)"
+
+#: idedebuggerstringconstants.lismenustepoverinstr
+msgctxt "idedebuggerstringconstants.lismenustepoverinstr"
+msgid "Step Over Instruction"
+msgstr "Átlépni az utasítást"
+
+#: idedebuggerstringconstants.lismenustepoverinstrhint
+msgctxt "idedebuggerstringconstants.lismenustepoverinstrhint"
+msgid "Step Over Instruction"
+msgstr "Átlépni az utasítást"
+
+#: idedebuggerstringconstants.lismenusteptocursor
+msgid "Step over to &Cursor"
+msgstr ""
+
+#: idedebuggerstringconstants.lismenuviewassembler
+msgctxt "idedebuggerstringconstants.lismenuviewassembler"
+msgid "Assembler"
+msgstr "Assembler"
 
 #: idedebuggerstringconstants.lismenuviewbreakpoints
 msgid "BreakPoints"

@@ -7819,11 +7819,6 @@ msgstr "&Показывать инструментальные панели"
 msgid "Coolbar width"
 msgstr "Ширина панели"
 
-#: lazarusidestrconsts.liscopy
-msgctxt "lazarusidestrconsts.liscopy"
-msgid "Copy"
-msgstr "Копировать"
-
 #: lazarusidestrconsts.liscopyallitemstoclipboard
 msgid "Copy All Items to Clipboard"
 msgstr "Копировать все строки в буфер обмена"
@@ -8111,11 +8106,6 @@ msgstr "Программа пользователя"
 msgid "A Custom Free Pascal program."
 msgstr "Пользовательская программа на Free Pascal."
 
-#: lazarusidestrconsts.liscut
-msgctxt "lazarusidestrconsts.liscut"
-msgid "Cut"
-msgstr "Вырезать"
-
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
 msgstr "Модуль данных"
@@ -8123,14 +8113,6 @@ msgstr "Модуль данных"
 #: lazarusidestrconsts.lisdate
 msgid "Date"
 msgstr "Дата"
-
-#: lazarusidestrconsts.lisdbgasmcopyaddresstoclipboard
-msgid "Copy address to Clipboard"
-msgstr "Копировать адрес в буфер обмена"
-
-#: lazarusidestrconsts.lisdbgasmcopytoclipboard
-msgid "Copy to Clipboard"
-msgstr "Копировать в буфер обмена"
 
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
@@ -8626,30 +8608,6 @@ msgstr "Отключить параметр -Xg"
 msgctxt "lazarusidestrconsts.lisdisassassembler"
 msgid "Assembler"
 msgstr "Ассемблер"
-
-#: lazarusidestrconsts.lisdisassgotoaddredittexthint
-msgid "($address)"
-msgstr "($адрес)"
-
-#: lazarusidestrconsts.lisdisassgotoaddress
-msgctxt "lazarusidestrconsts.lisdisassgotoaddress"
-msgid "Goto Address"
-msgstr "Перейти по адресу"
-
-#: lazarusidestrconsts.lisdisassgotoaddresshint
-msgctxt "lazarusidestrconsts.lisdisassgotoaddresshint"
-msgid "Goto Address"
-msgstr "Перейти по адресу"
-
-#: lazarusidestrconsts.lisdisassgotocurrentaddress
-msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddress"
-msgid "Goto Current Address"
-msgstr "Перейти по текущему адресу"
-
-#: lazarusidestrconsts.lisdisassgotocurrentaddresshint
-msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddresshint"
-msgid "Goto Current Address"
-msgstr "Перейти по текущему адресу"
 
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
@@ -13446,51 +13404,6 @@ msgstr "Сортировать выделенное ..."
 msgid "S&ource"
 msgstr "&Код"
 
-#: lazarusidestrconsts.lismenustepinto
-msgid "Step In&to"
-msgstr "Шаг со в&ходом"
-
-#: lazarusidestrconsts.lismenustepintocontext
-msgid "Step Into (Context)"
-msgstr "Шаг со входом (контекстно-зависимый)"
-
-#: lazarusidestrconsts.lismenustepintoinstr
-msgctxt "lazarusidestrconsts.lismenustepintoinstr"
-msgid "Step Into Instruction"
-msgstr "Шаг со входом в инструкцию"
-
-#: lazarusidestrconsts.lismenustepintoinstrhint
-msgctxt "lazarusidestrconsts.lismenustepintoinstrhint"
-msgid "Step Into Instruction"
-msgstr "Шаг со входом в инструкцию"
-
-#: lazarusidestrconsts.lismenustepout
-msgid "Step O&ut"
-msgstr "Шаг с в&ыходом"
-
-#: lazarusidestrconsts.lismenustepover
-msgid "&Step Over"
-msgstr "Шаг в &обход"
-
-#: lazarusidestrconsts.lismenustepovercontext
-msgid "Step Over (Context)"
-msgstr "Шаг в обход (контекстно-зависимый)"
-
-#: lazarusidestrconsts.lismenustepoverinstr
-msgctxt "lazarusidestrconsts.lismenustepoverinstr"
-msgid "Step Over Instruction"
-msgstr "Шаг в обход инструкции"
-
-#: lazarusidestrconsts.lismenustepoverinstrhint
-msgctxt "lazarusidestrconsts.lismenustepoverinstrhint"
-msgid "Step Over Instruction"
-msgstr "Шаг в обход инструкции"
-
-#: lazarusidestrconsts.lismenusteptocursor
-msgctxt "lazarusidestrconsts.lismenusteptocursor"
-msgid "Step over to &Cursor"
-msgstr "Шаг в обход до &курсора"
-
 #: lazarusidestrconsts.lismenuswapcaseselection
 msgid "Swap Case in Selection"
 msgstr "Переключить регистр выделенного"
@@ -13536,11 +13449,6 @@ msgstr "&Вид"
 #: lazarusidestrconsts.lismenuviewanchoreditor
 msgid "Anchor Editor"
 msgstr "Редактор привязок"
-
-#: lazarusidestrconsts.lismenuviewassembler
-msgctxt "lazarusidestrconsts.lismenuviewassembler"
-msgid "Assembler"
-msgstr "Ассемблер"
 
 #: lazarusidestrconsts.lismenuviewcodebrowser
 msgctxt "lazarusidestrconsts.lismenuviewcodebrowser"
@@ -14853,11 +14761,6 @@ msgstr "неоднократная передача определения ко�
 #, object-pascal-format
 msgid "passing compiler option -%s twice with different values"
 msgstr "неоднократная передача параметра компилятора -%s с разными значениями"
-
-#: lazarusidestrconsts.lispaste
-msgctxt "lazarusidestrconsts.lispaste"
-msgid "Paste"
-msgstr "Вставить"
 
 #: lazarusidestrconsts.lispasteclipboard
 msgid "paste clipboard"

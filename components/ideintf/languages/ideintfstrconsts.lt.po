@@ -49,6 +49,14 @@ msgstr "Atsisakyti"
 msgid "Continue"
 msgstr "Tęsti"
 
+#: ideintfstrconsts.liscopy
+msgid "Copy"
+msgstr "Kopijuoti"
+
+#: ideintfstrconsts.liscut
+msgid "Cut"
+msgstr "Iškirpti"
+
 #: ideintfstrconsts.lisdelete
 msgid "Delete"
 msgstr "Pašalinti"
@@ -88,6 +96,10 @@ msgstr "Ne"
 #: ideintfstrconsts.lisok
 msgid "OK"
 msgstr "gerai"
+
+#: ideintfstrconsts.lispaste
+msgid "Paste"
+msgstr "Įdėti"
 
 #: ideintfstrconsts.lisyes
 msgid "Yes"

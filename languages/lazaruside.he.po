@@ -8242,11 +8242,6 @@ msgstr ""
 msgid "Coolbar width"
 msgstr ""
 
-#: lazarusidestrconsts.liscopy
-msgctxt "lazarusidestrconsts.liscopy"
-msgid "Copy"
-msgstr "העתק"
-
 #: lazarusidestrconsts.liscopyallitemstoclipboard
 #, fuzzy
 #| msgid "Copy all items to clipboard"
@@ -8555,11 +8550,6 @@ msgstr "תכנית של המשתמש"
 msgid "A Custom Free Pascal program."
 msgstr ""
 
-#: lazarusidestrconsts.liscut
-msgctxt "lazarusidestrconsts.liscut"
-msgid "Cut"
-msgstr "חתוך"
-
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
 msgstr "מודול תאריך"
@@ -8567,16 +8557,6 @@ msgstr "מודול תאריך"
 #: lazarusidestrconsts.lisdate
 msgid "Date"
 msgstr "תאריך"
-
-#: lazarusidestrconsts.lisdbgasmcopyaddresstoclipboard
-msgid "Copy address to Clipboard"
-msgstr ""
-
-#: lazarusidestrconsts.lisdbgasmcopytoclipboard
-#, fuzzy
-#| msgid "Copy to clipboard"
-msgid "Copy to Clipboard"
-msgstr "העתק ללוח הזמני"
 
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
@@ -9088,38 +9068,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisdisassassembler"
 msgid "Assembler"
 msgstr "Assembler"
-
-#: lazarusidestrconsts.lisdisassgotoaddredittexthint
-msgid "($address)"
-msgstr ""
-
-#: lazarusidestrconsts.lisdisassgotoaddress
-#, fuzzy
-#| msgid "Goto address"
-msgctxt "lazarusidestrconsts.lisdisassgotoaddress"
-msgid "Goto Address"
-msgstr "לך לכתובת"
-
-#: lazarusidestrconsts.lisdisassgotoaddresshint
-#, fuzzy
-#| msgid "Goto address"
-msgctxt "lazarusidestrconsts.lisdisassgotoaddresshint"
-msgid "Goto Address"
-msgstr "לך לכתובת"
-
-#: lazarusidestrconsts.lisdisassgotocurrentaddress
-#, fuzzy
-#| msgid "Goto current address"
-msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddress"
-msgid "Goto Current Address"
-msgstr "לך לכתובת נוכחית"
-
-#: lazarusidestrconsts.lisdisassgotocurrentaddresshint
-#, fuzzy
-#| msgid "Goto current address"
-msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddresshint"
-msgid "Goto Current Address"
-msgstr "לך לכתובת נוכחית"
 
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
@@ -14255,69 +14203,6 @@ msgstr "סדר את הבחירה ..."
 msgid "S&ource"
 msgstr ""
 
-#: lazarusidestrconsts.lismenustepinto
-#, fuzzy
-#| msgid "Step in&to"
-msgid "Step In&to"
-msgstr "קפוץ לתוך"
-
-#: lazarusidestrconsts.lismenustepintocontext
-#, fuzzy
-#| msgid "Step into (Context)"
-msgid "Step Into (Context)"
-msgstr "צעד לתוך (הקשר)"
-
-#: lazarusidestrconsts.lismenustepintoinstr
-#, fuzzy
-#| msgid "Step into instruction"
-msgctxt "lazarusidestrconsts.lismenustepintoinstr"
-msgid "Step Into Instruction"
-msgstr "צעד לתוך ההוראה"
-
-#: lazarusidestrconsts.lismenustepintoinstrhint
-#, fuzzy
-#| msgid "Step into instruction"
-msgctxt "lazarusidestrconsts.lismenustepintoinstrhint"
-msgid "Step Into Instruction"
-msgstr "צעד לתוך ההוראה"
-
-#: lazarusidestrconsts.lismenustepout
-#, fuzzy
-#| msgid "Step o&ut"
-msgid "Step O&ut"
-msgstr "קפוץ החוצה"
-
-#: lazarusidestrconsts.lismenustepover
-#, fuzzy
-#| msgid "&Step over"
-msgid "&Step Over"
-msgstr "קפוץ מעבר ל"
-
-#: lazarusidestrconsts.lismenustepovercontext
-#, fuzzy
-#| msgid "Step over (Context)"
-msgid "Step Over (Context)"
-msgstr "צעד מעבר (הקשר)"
-
-#: lazarusidestrconsts.lismenustepoverinstr
-#, fuzzy
-#| msgid "Step over instruction"
-msgctxt "lazarusidestrconsts.lismenustepoverinstr"
-msgid "Step Over Instruction"
-msgstr "צעד מעבר להוראה"
-
-#: lazarusidestrconsts.lismenustepoverinstrhint
-#, fuzzy
-#| msgid "Step over instruction"
-msgctxt "lazarusidestrconsts.lismenustepoverinstrhint"
-msgid "Step Over Instruction"
-msgstr "צעד מעבר להוראה"
-
-#: lazarusidestrconsts.lismenusteptocursor
-msgctxt "lazarusidestrconsts.lismenusteptocursor"
-msgid "Step over to &Cursor"
-msgstr ""
-
 #: lazarusidestrconsts.lismenuswapcaseselection
 #, fuzzy
 #| msgid "Swap case in selection"
@@ -14377,11 +14262,6 @@ msgstr "הצגה&"
 #: lazarusidestrconsts.lismenuviewanchoreditor
 msgid "Anchor Editor"
 msgstr "עורך המעגנים"
-
-#: lazarusidestrconsts.lismenuviewassembler
-msgctxt "lazarusidestrconsts.lismenuviewassembler"
-msgid "Assembler"
-msgstr "Assembler"
 
 #: lazarusidestrconsts.lismenuviewcodebrowser
 #, fuzzy
@@ -15728,11 +15608,6 @@ msgstr ""
 #, object-pascal-format
 msgid "passing compiler option -%s twice with different values"
 msgstr ""
-
-#: lazarusidestrconsts.lispaste
-msgctxt "lazarusidestrconsts.lispaste"
-msgid "Paste"
-msgstr "הדבק"
 
 #: lazarusidestrconsts.lispasteclipboard
 msgid "paste clipboard"

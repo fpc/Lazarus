@@ -593,6 +593,14 @@ msgctxt "lazarusidestrconsts.lisdbgallitemenablehint"
 msgid "Enable all"
 msgstr "Povolit vše"
 
+#: idedebuggerstringconstants.lisdbgasmcopyaddresstoclipboard
+msgid "Copy address to Clipboard"
+msgstr ""
+
+#: idedebuggerstringconstants.lisdbgasmcopytoclipboard
+msgid "Copy to Clipboard"
+msgstr "Kopírovat do schránky"
+
 #: idedebuggerstringconstants.lisdbgbreakpointpropertieshint
 msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
 msgid "Breakpoint Properties ..."
@@ -716,6 +724,36 @@ msgstr "Zakázat Bod přerušení"
 #: idedebuggerstringconstants.lisdisablegroups
 msgid "Disable Groups"
 msgstr "Zakázat skupiny"
+
+#: idedebuggerstringconstants.lisdisassassembler
+#, fuzzy
+msgctxt "idedebuggerstringconstants.lisdisassassembler"
+msgid "Assembler"
+msgstr "Assembler"
+
+#: idedebuggerstringconstants.lisdisassgotoaddredittexthint
+msgid "($address)"
+msgstr ""
+
+#: idedebuggerstringconstants.lisdisassgotoaddress
+msgctxt "idedebuggerstringconstants.lisdisassgotoaddress"
+msgid "Goto Address"
+msgstr "Jít na adresu"
+
+#: idedebuggerstringconstants.lisdisassgotoaddresshint
+msgctxt "idedebuggerstringconstants.lisdisassgotoaddresshint"
+msgid "Goto Address"
+msgstr "Jít na adresu"
+
+#: idedebuggerstringconstants.lisdisassgotocurrentaddress
+msgctxt "idedebuggerstringconstants.lisdisassgotocurrentaddress"
+msgid "Goto Current Address"
+msgstr "Jít na aktuální adresu"
+
+#: idedebuggerstringconstants.lisdisassgotocurrentaddresshint
+msgctxt "idedebuggerstringconstants.lisdisassgotocurrentaddresshint"
+msgid "Goto Current Address"
+msgstr "Jít na aktuální adresu"
 
 #: idedebuggerstringconstants.lisenableall
 msgid "&Enable All"
@@ -999,6 +1037,55 @@ msgstr "&Přerušit"
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "&Nápověda"
+
+#: idedebuggerstringconstants.lismenustepinto
+msgid "Step In&to"
+msgstr "Vejít do"
+
+#: idedebuggerstringconstants.lismenustepintocontext
+msgid "Step Into (Context)"
+msgstr "Krok dovnitř (Kontext)"
+
+#: idedebuggerstringconstants.lismenustepintoinstr
+msgctxt "idedebuggerstringconstants.lismenustepintoinstr"
+msgid "Step Into Instruction"
+msgstr "Krok do instrukce"
+
+#: idedebuggerstringconstants.lismenustepintoinstrhint
+msgctxt "idedebuggerstringconstants.lismenustepintoinstrhint"
+msgid "Step Into Instruction"
+msgstr "Krok do instrukce"
+
+#: idedebuggerstringconstants.lismenustepout
+msgid "Step O&ut"
+msgstr "Vyjít ven"
+
+#: idedebuggerstringconstants.lismenustepover
+msgid "&Step Over"
+msgstr "Přejít přes"
+
+#: idedebuggerstringconstants.lismenustepovercontext
+msgid "Step Over (Context)"
+msgstr "Krok přes (Kontext)"
+
+#: idedebuggerstringconstants.lismenustepoverinstr
+msgctxt "idedebuggerstringconstants.lismenustepoverinstr"
+msgid "Step Over Instruction"
+msgstr "Krok přes instrukci"
+
+#: idedebuggerstringconstants.lismenustepoverinstrhint
+msgctxt "idedebuggerstringconstants.lismenustepoverinstrhint"
+msgid "Step Over Instruction"
+msgstr "Krok přes instrukci"
+
+#: idedebuggerstringconstants.lismenusteptocursor
+msgid "Step over to &Cursor"
+msgstr ""
+
+#: idedebuggerstringconstants.lismenuviewassembler
+msgctxt "idedebuggerstringconstants.lismenuviewassembler"
+msgid "Assembler"
+msgstr "Assembler"
 
 #: idedebuggerstringconstants.lismenuviewbreakpoints
 msgid "BreakPoints"

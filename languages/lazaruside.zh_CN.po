@@ -7856,11 +7856,6 @@ msgstr "工具条可见(&v)"
 msgid "Coolbar width"
 msgstr "工具条宽度"
 
-#: lazarusidestrconsts.liscopy
-msgctxt "lazarusidestrconsts.liscopy"
-msgid "Copy"
-msgstr "复制"
-
 #: lazarusidestrconsts.liscopyallitemstoclipboard
 msgid "Copy All Items to Clipboard"
 msgstr "复制所有项目到剪贴板"
@@ -8148,11 +8143,6 @@ msgstr "自定义程序"
 msgid "A Custom Free Pascal program."
 msgstr "一个自定义Free Pascal程序."
 
-#: lazarusidestrconsts.liscut
-msgctxt "lazarusidestrconsts.liscut"
-msgid "Cut"
-msgstr "剪切"
-
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
 msgstr "Data模块"
@@ -8160,14 +8150,6 @@ msgstr "Data模块"
 #: lazarusidestrconsts.lisdate
 msgid "Date"
 msgstr "日期"
-
-#: lazarusidestrconsts.lisdbgasmcopyaddresstoclipboard
-msgid "Copy address to Clipboard"
-msgstr ""
-
-#: lazarusidestrconsts.lisdbgasmcopytoclipboard
-msgid "Copy to Clipboard"
-msgstr "复制到剪贴板"
 
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
@@ -8665,31 +8647,6 @@ msgstr "禁用选项-Xg"
 msgctxt "lazarusidestrconsts.lisdisassassembler"
 msgid "Assembler"
 msgstr "汇编"
-
-#: lazarusidestrconsts.lisdisassgotoaddredittexthint
-#, fuzzy
-msgid "($address)"
-msgstr "地址:"
-
-#: lazarusidestrconsts.lisdisassgotoaddress
-msgctxt "lazarusidestrconsts.lisdisassgotoaddress"
-msgid "Goto Address"
-msgstr "转到地址"
-
-#: lazarusidestrconsts.lisdisassgotoaddresshint
-msgctxt "lazarusidestrconsts.lisdisassgotoaddresshint"
-msgid "Goto Address"
-msgstr "转到地址"
-
-#: lazarusidestrconsts.lisdisassgotocurrentaddress
-msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddress"
-msgid "Goto Current Address"
-msgstr "转到当前地址"
-
-#: lazarusidestrconsts.lisdisassgotocurrentaddresshint
-msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddresshint"
-msgid "Goto Current Address"
-msgstr "转到当前地址"
 
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
@@ -13494,51 +13451,6 @@ msgstr "排序选择..."
 msgid "S&ource"
 msgstr "源代码(&o)"
 
-#: lazarusidestrconsts.lismenustepinto
-msgid "Step In&to"
-msgstr "单步进入(&t)"
-
-#: lazarusidestrconsts.lismenustepintocontext
-msgid "Step Into (Context)"
-msgstr "单步进入(上下文)"
-
-#: lazarusidestrconsts.lismenustepintoinstr
-msgctxt "lazarusidestrconsts.lismenustepintoinstr"
-msgid "Step Into Instruction"
-msgstr "单步进入指令"
-
-#: lazarusidestrconsts.lismenustepintoinstrhint
-msgctxt "lazarusidestrconsts.lismenustepintoinstrhint"
-msgid "Step Into Instruction"
-msgstr "单步进入指令"
-
-#: lazarusidestrconsts.lismenustepout
-msgid "Step O&ut"
-msgstr "单步跳出(&u)"
-
-#: lazarusidestrconsts.lismenustepover
-msgid "&Step Over"
-msgstr "单步跳过(&S)"
-
-#: lazarusidestrconsts.lismenustepovercontext
-msgid "Step Over (Context)"
-msgstr "单步跳过(上下文)"
-
-#: lazarusidestrconsts.lismenustepoverinstr
-msgctxt "lazarusidestrconsts.lismenustepoverinstr"
-msgid "Step Over Instruction"
-msgstr "单步跳过指令"
-
-#: lazarusidestrconsts.lismenustepoverinstrhint
-msgctxt "lazarusidestrconsts.lismenustepoverinstrhint"
-msgid "Step Over Instruction"
-msgstr "单步跳过指令"
-
-#: lazarusidestrconsts.lismenusteptocursor
-msgctxt "lazarusidestrconsts.lismenusteptocursor"
-msgid "Step over to &Cursor"
-msgstr "单步跳过到光标(&C)"
-
 #: lazarusidestrconsts.lismenuswapcaseselection
 msgid "Swap Case in Selection"
 msgstr "交换大小写在选择区"
@@ -13584,11 +13496,6 @@ msgstr "查看(&V)"
 #: lazarusidestrconsts.lismenuviewanchoreditor
 msgid "Anchor Editor"
 msgstr "锚编辑器"
-
-#: lazarusidestrconsts.lismenuviewassembler
-msgctxt "lazarusidestrconsts.lismenuviewassembler"
-msgid "Assembler"
-msgstr "汇编"
 
 #: lazarusidestrconsts.lismenuviewcodebrowser
 msgctxt "lazarusidestrconsts.lismenuviewcodebrowser"
@@ -14896,11 +14803,6 @@ msgstr ""
 #, object-pascal-format
 msgid "passing compiler option -%s twice with different values"
 msgstr ""
-
-#: lazarusidestrconsts.lispaste
-msgctxt "lazarusidestrconsts.lispaste"
-msgid "Paste"
-msgstr "粘贴"
 
 #: lazarusidestrconsts.lispasteclipboard
 msgid "paste clipboard"

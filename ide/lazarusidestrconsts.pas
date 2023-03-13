@@ -73,9 +73,6 @@ resourcestring
   lisRestart = 'Restart';
   lisUndo = 'Undo';
   lisRedo = 'Redo';
-  lisCut = 'Cut';
-  lisCopy = 'Copy';
-  lisPaste = 'Paste';
   lisDown = 'Down';
   lisUp   = 'Up';
   lisRight = 'Right';
@@ -444,9 +441,6 @@ resourcestring
   lisMenuViewRegisters = 'Registers';
   lisMenuViewThreads = 'Threads';
   lisMenuViewHistory = 'History';
-  lisMenuViewAssembler = 'Assembler';
-  lisDbgAsmCopyToClipboard = 'Copy to Clipboard';
-  lisDbgAsmCopyAddressToClipboard = 'Copy address to Clipboard';
   lisMenuViewDebugOutput = 'Debug Output';
   lisMenuViewDebugEvents = 'Event Log';
   lisMenuIDEInternals = 'IDE Internals';
@@ -483,24 +477,9 @@ resourcestring
   lisMenuAbortBuild = 'Abort Build';
   lisMenuProjectRun = '&Run';
   lisBFAlwaysBuildBeforeRun = 'Always build before run';
-  lisDisAssGotoCurrentAddress = 'Goto Current Address';
-  lisDisAssGotoCurrentAddressHint = 'Goto Current Address';
-  lisDisAssGotoAddress = 'Goto Address';
-  lisDisAssGotoAddressHint = 'Goto Address';
-  lisDisAssGotoAddrEditTextHint = '($address)';
 
   lisBFRunCommand = 'Run Command';
   lisMenuShowExecutionPoint = 'S&how Execution Point';
-  lisMenuStepInto = 'Step In&to';
-  lisMenuStepOver = '&Step Over';
-  lisMenuStepIntoInstr = 'Step Into Instruction';
-  lisMenuStepIntoInstrHint = 'Step Into Instruction';
-  lisMenuStepOverInstr = 'Step Over Instruction';
-  lisMenuStepOverInstrHint = 'Step Over Instruction';
-  lisMenuStepIntoContext = 'Step Into (Context)';
-  lisMenuStepOverContext = 'Step Over (Context)';
-  lisMenuStepOut = 'Step O&ut';
-  lisMenuStepToCursor = 'Step over to &Cursor';
   lisMenuRunToCursor = 'Run to Cursor';
   lisKMStopProgram = 'Stop Program';
   lisContinueAndDoNotAskAgain = 'Continue and do not ask again';
@@ -5942,8 +5921,6 @@ resourcestring
   //IDE info dialog
   lisIDEInfoInformationAboutTheIDE = 'Information about the IDE';
 
-  //Disassembler dialog
-  lisDisAssAssembler = 'Assembler';
   lisKeepRelativeIndentationOfMultiLineTemplate = 'Keep relative indentation '
     +'of multi line template';
   lisTheCurrentFPCHasNoConfigFileItWillProbablyMissSome = 'The current FPC '

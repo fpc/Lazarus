@@ -174,6 +174,9 @@ type
     // move/copy to another SourceEditorWindow
     procedure MoveToWindow(AWindowIndex: Integer); virtual; abstract;
     procedure CopyToWindow(AWindowIndex: Integer); virtual; abstract;
+
+    //
+    function  DebugToSourceLine(aLinePos: Integer): Integer; virtual; abstract;
   public
     property BlockBegin: TPoint read GetBlockBegin write SetBlockBegin;
     property BlockEnd: TPoint read GetBlockEnd write SetBlockEnd;
@@ -259,6 +262,7 @@ type
     semWindowHide,      // Called after a Window is hidden
     semEditorCreate,    // Called after a new editor was created and added to list
     semEditorDestroy,   // Called when an Editor is destroyed / after it is removed fron the list of editors
+    semEditorOptsChanged, // Called when EditorOptions changed / called with TIDEEditorOptions as Sender
     semEditorActivate,  // Editor is ActiveEditor
     semEditorStatus,    // any status change of the editor (Caret, Selection, topline, ...)
     semEditorMouseDown,

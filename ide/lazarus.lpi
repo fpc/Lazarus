@@ -1428,12 +1428,6 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="IdeTransferMacros"/>
       </Unit>
-      <Unit>
-        <Filename Value="../debugger/assemblerdlg.pp"/>
-        <IsPartOfProject Value="True"/>
-        <HasResources Value="True"/>
-        <UnitName Value="AssemblerDlg"/>
-      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

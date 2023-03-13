@@ -11,6 +11,10 @@ resourcestring
   // *** Common single word resources that can be safely shared around Lazarus and add-on packages ***
   lisLazarus = 'Lazarus';
 
+  lisCut = 'Cut';
+  lisCopy = 'Copy';
+  lisPaste = 'Paste';
+
   lisOk = 'OK';
   lisCancel = 'Cancel';
   lisYes = 'Yes';

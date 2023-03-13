@@ -51,6 +51,14 @@ msgstr "Kanselleer"
 msgid "Continue"
 msgstr "Gaan aan"
 
+#: ideintfstrconsts.liscopy
+msgid "Copy"
+msgstr "Kopieer"
+
+#: ideintfstrconsts.liscut
+msgid "Cut"
+msgstr "Sny"
+
 #: ideintfstrconsts.lisdelete
 msgid "Delete"
 msgstr ""
@@ -91,6 +99,10 @@ msgstr ""
 #: ideintfstrconsts.lisok
 msgid "OK"
 msgstr ""
+
+#: ideintfstrconsts.lispaste
+msgid "Paste"
+msgstr "Plak"
 
 #: ideintfstrconsts.lisyes
 msgid "Yes"

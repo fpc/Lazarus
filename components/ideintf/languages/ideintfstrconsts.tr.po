@@ -49,6 +49,14 @@ msgstr "İptal"
 msgid "Continue"
 msgstr "Devam et"
 
+#: ideintfstrconsts.liscopy
+msgid "Copy"
+msgstr "Kopyala"
+
+#: ideintfstrconsts.liscut
+msgid "Cut"
+msgstr "Kes"
+
 #: ideintfstrconsts.lisdelete
 msgid "Delete"
 msgstr "Sil"
@@ -88,6 +96,10 @@ msgstr "Hayır"
 #: ideintfstrconsts.lisok
 msgid "OK"
 msgstr "TAMAM"
+
+#: ideintfstrconsts.lispaste
+msgid "Paste"
+msgstr "Yapıştır"
 
 #: ideintfstrconsts.lisyes
 msgid "Yes"

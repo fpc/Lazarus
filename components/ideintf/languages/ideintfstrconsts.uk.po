@@ -49,6 +49,14 @@ msgstr "Скасувати"
 msgid "Continue"
 msgstr "Продовжити"
 
+#: ideintfstrconsts.liscopy
+msgid "Copy"
+msgstr "Копіювати"
+
+#: ideintfstrconsts.liscut
+msgid "Cut"
+msgstr "Вирізати"
+
 #: ideintfstrconsts.lisdelete
 msgid "Delete"
 msgstr "Вилучити"
@@ -88,6 +96,10 @@ msgstr "Ні"
 #: ideintfstrconsts.lisok
 msgid "OK"
 msgstr "Гаразд"
+
+#: ideintfstrconsts.lispaste
+msgid "Paste"
+msgstr "Вставити"
 
 #: ideintfstrconsts.lisyes
 msgid "Yes"

@@ -49,6 +49,14 @@ msgstr "Zrušiť"
 msgid "Continue"
 msgstr "Pokračovať"
 
+#: ideintfstrconsts.liscopy
+msgid "Copy"
+msgstr "Kopírovať"
+
+#: ideintfstrconsts.liscut
+msgid "Cut"
+msgstr "Vystrihnúť"
+
 #: ideintfstrconsts.lisdelete
 msgid "Delete"
 msgstr "Zmazať"
@@ -88,6 +96,10 @@ msgstr "Nie"
 #: ideintfstrconsts.lisok
 msgid "OK"
 msgstr "OK"
+
+#: ideintfstrconsts.lispaste
+msgid "Paste"
+msgstr "Vložiť"
 
 #: ideintfstrconsts.lisyes
 msgid "Yes"

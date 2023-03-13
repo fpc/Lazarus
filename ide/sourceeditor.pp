@@ -67,7 +67,7 @@ uses
   // IdeIntf
   SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf, IDEHelpIntf, IDEImagesIntf,
   IDEWindowIntf, ProjectIntf, MacroDefIntf, ToolBarIntf, IDEDialogs, IDECommands,
-  EditorSyntaxHighlighterDef,
+  EditorSyntaxHighlighterDef, IdeIntfStrConsts,
   // DebuggerIntf
   DbgIntfDebuggerBase, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
   // IDE units
@@ -79,7 +79,8 @@ uses
   EncloseSelectionDlg, EncloseIfDef, InvertAssignTool, SourceEditProcs,
   SourceMarks, SearchFrm, MultiPasteDlg, EditorMacroListViewer,
   EditorToolbarStatic, editortoolbar_options, InputhistoryWithSearchOpt,
-  FPDocHints, MainIntf, GotoFrm, BaseDebugManager, Debugger, TransferMacrosIntf;
+  FPDocHints, MainIntf, GotoFrm, BaseDebugManager, Debugger,
+  IdeDebuggerStringConstants, TransferMacrosIntf;
 
 type
   TSourceNotebook = class;
@@ -526,7 +527,7 @@ type
     procedure ClearExecutionMarks;
     procedure LineInfoNotificationChange(const {%H-}ASender: TObject; const ASource: String);
     function  SourceToDebugLine(aLinePos: Integer): Integer;
-    function  DebugToSourceLine(aLinePos: Integer): Integer;
+    function  DebugToSourceLine(aLinePos: Integer): Integer; override;
 
     procedure InvalidateAllIfdefNodes;
     procedure SetIfdefNodeState(ALinePos, AstartPos: Integer; AState: TSynMarkupIfdefNodeState);
@@ -10493,6 +10494,8 @@ begin
     FDefaultCompletionForm.LongLineHintTime := EditorOpts.CompletionLongLineHintInMSec;
     FDefaultCompletionForm.LongLineHintType := EditorOpts.CompletionLongLineHintType;
   end;
+
+  FChangeNotifyLists[semEditorOptsChanged].CallNotifyEvents(EditorOpts);
 end;
 
 function TSourceEditorManager.Beautify(const Src: string;

@@ -1671,6 +1671,7 @@ type
     procedure ReadDefaultsForHighlighterDivDrawSettings(Syn: TSrcIDEHighlighter);
     procedure WriteHighlighterDivDrawSettings(Syn: TSrcIDEHighlighter);
     procedure GetHighlighterSettings(Syn: TSrcIDEHighlighter); // read highlight settings from config file
+    procedure GetSynEditorSettings(ASynEdit: TObject; SimilarEdit: TObject = nil); override;
     procedure GetSynEditSettings(ASynEdit: TSynEdit; SimilarEdit: TSynEdit = nil); // read synedit settings from config file
     function CreateSyn(LazSynHilighter: TLazSyntaxHighlighter): TSrcIDEHighlighter;
     function CreateSynHighlighter(LazSynHilighter: TLazSyntaxHighlighter): TObject; override;
@@ -5753,6 +5754,12 @@ begin
     TSynPasSyn(Syn).ExtendedKeywordsMode := PasExtendedKeywordsMode;
     TSynPasSyn(Syn).StringKeywordMode := PasStringKeywordMode;
   end;;
+end;
+
+procedure TEditorOptions.GetSynEditorSettings(ASynEdit: TObject;
+  SimilarEdit: TObject);
+begin
+  GetSynEditSettings(ASynEdit as TSynEdit, SimilarEdit as TSynEdit);
 end;
 
 procedure TEditorOptions.SetMarkupColor(Syn : TSrcIDEHighlighter;

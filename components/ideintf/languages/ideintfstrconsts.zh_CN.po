@@ -49,6 +49,14 @@ msgstr "取消"
 msgid "Continue"
 msgstr "继续"
 
+#: ideintfstrconsts.liscopy
+msgid "Copy"
+msgstr "复制"
+
+#: ideintfstrconsts.liscut
+msgid "Cut"
+msgstr "剪切"
+
 #: ideintfstrconsts.lisdelete
 msgid "Delete"
 msgstr "删除"
@@ -88,6 +96,10 @@ msgstr ""
 #: ideintfstrconsts.lisok
 msgid "OK"
 msgstr "确定"
+
+#: ideintfstrconsts.lispaste
+msgid "Paste"
+msgstr "粘贴"
 
 #: ideintfstrconsts.lisyes
 msgid "Yes"

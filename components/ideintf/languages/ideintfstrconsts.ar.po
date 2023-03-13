@@ -50,6 +50,14 @@ msgstr ""
 msgid "Continue"
 msgstr ""
 
+#: ideintfstrconsts.liscopy
+msgid "Copy"
+msgstr "إنسخ"
+
+#: ideintfstrconsts.liscut
+msgid "Cut"
+msgstr "قص"
+
 #: ideintfstrconsts.lisdelete
 msgid "Delete"
 msgstr "إمح"
@@ -90,6 +98,10 @@ msgstr ""
 #: ideintfstrconsts.lisok
 msgid "OK"
 msgstr ""
+
+#: ideintfstrconsts.lispaste
+msgid "Paste"
+msgstr "ألصق"
 
 #: ideintfstrconsts.lisyes
 msgid "Yes"

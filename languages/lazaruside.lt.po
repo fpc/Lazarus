@@ -7968,11 +7968,6 @@ msgstr "„CoolBar“ &matomas"
 msgid "Coolbar width"
 msgstr "„CollBar“ plotis"
 
-#: lazarusidestrconsts.liscopy
-msgctxt "lazarusidestrconsts.liscopy"
-msgid "Copy"
-msgstr "Kopijuoti"
-
 #: lazarusidestrconsts.liscopyallitemstoclipboard
 msgid "Copy All Items to Clipboard"
 msgstr "Visus elementus kopijuoti į iškarpinę"
@@ -8260,11 +8255,6 @@ msgstr "naudotojo programa"
 msgid "A Custom Free Pascal program."
 msgstr "Savos kurybos „Free Pascal“ programa."
 
-#: lazarusidestrconsts.liscut
-msgctxt "lazarusidestrconsts.liscut"
-msgid "Cut"
-msgstr "Iškirpti"
-
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
 msgstr "Duomenų modulis"
@@ -8272,14 +8262,6 @@ msgstr "Duomenų modulis"
 #: lazarusidestrconsts.lisdate
 msgid "Date"
 msgstr "Data"
-
-#: lazarusidestrconsts.lisdbgasmcopyaddresstoclipboard
-msgid "Copy address to Clipboard"
-msgstr ""
-
-#: lazarusidestrconsts.lisdbgasmcopytoclipboard
-msgid "Copy to Clipboard"
-msgstr "Kopijuoti į iškarpinę"
 
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
@@ -8781,30 +8763,6 @@ msgstr "Išjungti parinktį „-Xg“"
 msgctxt "lazarusidestrconsts.lisdisassassembler"
 msgid "Assembler"
 msgstr "Asembleris"
-
-#: lazarusidestrconsts.lisdisassgotoaddredittexthint
-msgid "($address)"
-msgstr ""
-
-#: lazarusidestrconsts.lisdisassgotoaddress
-msgctxt "lazarusidestrconsts.lisdisassgotoaddress"
-msgid "Goto Address"
-msgstr "Šokti į adresą"
-
-#: lazarusidestrconsts.lisdisassgotoaddresshint
-msgctxt "lazarusidestrconsts.lisdisassgotoaddresshint"
-msgid "Goto Address"
-msgstr "Šokti į adresą"
-
-#: lazarusidestrconsts.lisdisassgotocurrentaddress
-msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddress"
-msgid "Goto Current Address"
-msgstr "Šokti į veikiamąjį adresą"
-
-#: lazarusidestrconsts.lisdisassgotocurrentaddresshint
-msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddresshint"
-msgid "Goto Current Address"
-msgstr "Šokti į veikiamąjį adresą"
 
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
@@ -13662,51 +13620,6 @@ msgstr "Rūšiuoti pažymėtą…"
 msgid "S&ource"
 msgstr "Kodas"
 
-#: lazarusidestrconsts.lismenustepinto
-msgid "Step In&to"
-msgstr "Žengti &gilyn"
-
-#: lazarusidestrconsts.lismenustepintocontext
-msgid "Step Into (Context)"
-msgstr "Žengti gilyn (kontekstas)"
-
-#: lazarusidestrconsts.lismenustepintoinstr
-msgctxt "lazarusidestrconsts.lismenustepintoinstr"
-msgid "Step Into Instruction"
-msgstr "Žengti į komandą"
-
-#: lazarusidestrconsts.lismenustepintoinstrhint
-msgctxt "lazarusidestrconsts.lismenustepintoinstrhint"
-msgid "Step Into Instruction"
-msgstr "Žengti į komandą"
-
-#: lazarusidestrconsts.lismenustepout
-msgid "Step O&ut"
-msgstr "Žengti &laukan"
-
-#: lazarusidestrconsts.lismenustepover
-msgid "&Step Over"
-msgstr "Žengti &virš"
-
-#: lazarusidestrconsts.lismenustepovercontext
-msgid "Step Over (Context)"
-msgstr "Žengti virš (kontekstas)"
-
-#: lazarusidestrconsts.lismenustepoverinstr
-msgctxt "lazarusidestrconsts.lismenustepoverinstr"
-msgid "Step Over Instruction"
-msgstr "Žengti virš komandos"
-
-#: lazarusidestrconsts.lismenustepoverinstrhint
-msgctxt "lazarusidestrconsts.lismenustepoverinstrhint"
-msgid "Step Over Instruction"
-msgstr "Žengti virš komandos"
-
-#: lazarusidestrconsts.lismenusteptocursor
-msgctxt "lazarusidestrconsts.lismenusteptocursor"
-msgid "Step over to &Cursor"
-msgstr ""
-
 #: lazarusidestrconsts.lismenuswapcaseselection
 msgid "Swap Case in Selection"
 msgstr "Pažymėtame apkeisti raidžių dydžius"
@@ -13752,11 +13665,6 @@ msgstr "&Rodymas"
 #: lazarusidestrconsts.lismenuviewanchoreditor
 msgid "Anchor Editor"
 msgstr "Prieraišų rengyklė"
-
-#: lazarusidestrconsts.lismenuviewassembler
-msgctxt "lazarusidestrconsts.lismenuviewassembler"
-msgid "Assembler"
-msgstr "Asembleris"
 
 #: lazarusidestrconsts.lismenuviewcodebrowser
 msgctxt "lazarusidestrconsts.lismenuviewcodebrowser"
@@ -15099,11 +15007,6 @@ msgstr "kompiliatoriaus apibrėžtis „%s“ peduodama du kart su skirtingomis 
 #, object-pascal-format
 msgid "passing compiler option -%s twice with different values"
 msgstr "kompiliatoriaus parinktis „-%s“ peduodama du kart su skirtingomis vertėmis"
-
-#: lazarusidestrconsts.lispaste
-msgctxt "lazarusidestrconsts.lispaste"
-msgid "Paste"
-msgstr "Įdėti"
 
 #: lazarusidestrconsts.lispasteclipboard
 msgid "paste clipboard"

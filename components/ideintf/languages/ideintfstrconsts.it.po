@@ -50,6 +50,14 @@ msgstr "Annulla"
 msgid "Continue"
 msgstr "Continua"
 
+#: ideintfstrconsts.liscopy
+msgid "Copy"
+msgstr "Copia"
+
+#: ideintfstrconsts.liscut
+msgid "Cut"
+msgstr "Taglia"
+
 #: ideintfstrconsts.lisdelete
 msgid "Delete"
 msgstr "Cancella"
@@ -90,6 +98,10 @@ msgstr "No"
 #: ideintfstrconsts.lisok
 msgid "OK"
 msgstr "ok"
+
+#: ideintfstrconsts.lispaste
+msgid "Paste"
+msgstr "Incolla"
 
 #: ideintfstrconsts.lisyes
 msgid "Yes"

@@ -42,7 +42,7 @@ uses
   // IdeIntf
   IDECommands,
   // IDE
-  LazarusIDEStrConsts, LazConf, Debugger;
+  IdeDebuggerStringConstants, LazarusIDEStrConsts, LazConf, Debugger;
 
 type
   TKeyMapScheme = (

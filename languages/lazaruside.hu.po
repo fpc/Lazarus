@@ -7849,11 +7849,6 @@ msgstr "Az eszköztár látható"
 msgid "Coolbar width"
 msgstr "Eszköztár szélessége"
 
-#: lazarusidestrconsts.liscopy
-msgctxt "lazarusidestrconsts.liscopy"
-msgid "Copy"
-msgstr "Másolás"
-
 #: lazarusidestrconsts.liscopyallitemstoclipboard
 msgid "Copy All Items to Clipboard"
 msgstr "Minden elem másolása a vágólapra"
@@ -8141,11 +8136,6 @@ msgstr "Egyedi program"
 msgid "A Custom Free Pascal program."
 msgstr "Egyedi Free Pascal program."
 
-#: lazarusidestrconsts.liscut
-msgctxt "lazarusidestrconsts.liscut"
-msgid "Cut"
-msgstr "Kivágás"
-
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
 msgstr "Adat modul"
@@ -8153,14 +8143,6 @@ msgstr "Adat modul"
 #: lazarusidestrconsts.lisdate
 msgid "Date"
 msgstr "Dátum"
-
-#: lazarusidestrconsts.lisdbgasmcopyaddresstoclipboard
-msgid "Copy address to Clipboard"
-msgstr ""
-
-#: lazarusidestrconsts.lisdbgasmcopytoclipboard
-msgid "Copy to Clipboard"
-msgstr "Másolás a vágólapra"
 
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
@@ -8657,30 +8639,6 @@ msgstr "-Xg beállítás letiltása"
 msgctxt "lazarusidestrconsts.lisdisassassembler"
 msgid "Assembler"
 msgstr "Assembler"
-
-#: lazarusidestrconsts.lisdisassgotoaddredittexthint
-msgid "($address)"
-msgstr ""
-
-#: lazarusidestrconsts.lisdisassgotoaddress
-msgctxt "lazarusidestrconsts.lisdisassgotoaddress"
-msgid "Goto Address"
-msgstr "Ugrás címhez"
-
-#: lazarusidestrconsts.lisdisassgotoaddresshint
-msgctxt "lazarusidestrconsts.lisdisassgotoaddresshint"
-msgid "Goto Address"
-msgstr "Ugrás címhez"
-
-#: lazarusidestrconsts.lisdisassgotocurrentaddress
-msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddress"
-msgid "Goto Current Address"
-msgstr "Ugrás a jelenlegi címhez"
-
-#: lazarusidestrconsts.lisdisassgotocurrentaddresshint
-msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddresshint"
-msgid "Goto Current Address"
-msgstr "Ugrás a jelenlegi címhez"
 
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
@@ -13484,51 +13442,6 @@ msgstr "Kijelölés rendezése ..."
 msgid "S&ource"
 msgstr "F&orráskód"
 
-#: lazarusidestrconsts.lismenustepinto
-msgid "Step In&to"
-msgstr "Belépni"
-
-#: lazarusidestrconsts.lismenustepintocontext
-msgid "Step Into (Context)"
-msgstr "Belépni (ebben az összefüggésben)"
-
-#: lazarusidestrconsts.lismenustepintoinstr
-msgctxt "lazarusidestrconsts.lismenustepintoinstr"
-msgid "Step Into Instruction"
-msgstr "Belépni az utasításba"
-
-#: lazarusidestrconsts.lismenustepintoinstrhint
-msgctxt "lazarusidestrconsts.lismenustepintoinstrhint"
-msgid "Step Into Instruction"
-msgstr "Belépni az utasításba"
-
-#: lazarusidestrconsts.lismenustepout
-msgid "Step O&ut"
-msgstr "Kilépni"
-
-#: lazarusidestrconsts.lismenustepover
-msgid "&Step Over"
-msgstr "Átlépni"
-
-#: lazarusidestrconsts.lismenustepovercontext
-msgid "Step Over (Context)"
-msgstr "Átlépni (ebben az összefüggésben)"
-
-#: lazarusidestrconsts.lismenustepoverinstr
-msgctxt "lazarusidestrconsts.lismenustepoverinstr"
-msgid "Step Over Instruction"
-msgstr "Átlépni az utasítást"
-
-#: lazarusidestrconsts.lismenustepoverinstrhint
-msgctxt "lazarusidestrconsts.lismenustepoverinstrhint"
-msgid "Step Over Instruction"
-msgstr "Átlépni az utasítást"
-
-#: lazarusidestrconsts.lismenusteptocursor
-msgctxt "lazarusidestrconsts.lismenusteptocursor"
-msgid "Step over to &Cursor"
-msgstr ""
-
 #: lazarusidestrconsts.lismenuswapcaseselection
 msgid "Swap Case in Selection"
 msgstr "Kis- és nagybetűk váltása a kijelölésben"
@@ -13574,11 +13487,6 @@ msgstr "&Nézet"
 #: lazarusidestrconsts.lismenuviewanchoreditor
 msgid "Anchor Editor"
 msgstr "Horgonyszerkesztő"
-
-#: lazarusidestrconsts.lismenuviewassembler
-msgctxt "lazarusidestrconsts.lismenuviewassembler"
-msgid "Assembler"
-msgstr "Assembler"
 
 #: lazarusidestrconsts.lismenuviewcodebrowser
 msgctxt "lazarusidestrconsts.lismenuviewcodebrowser"
@@ -14890,11 +14798,6 @@ msgstr "a(z) \"%s\" fordítói definíció kétszer fordul elő, eltérő érté
 #, object-pascal-format
 msgid "passing compiler option -%s twice with different values"
 msgstr "a fordító -%s kapcsolója kétszer fordul elő, eltérő értékekkel"
-
-#: lazarusidestrconsts.lispaste
-msgctxt "lazarusidestrconsts.lispaste"
-msgid "Paste"
-msgstr "Beillesztés"
 
 #: lazarusidestrconsts.lispasteclipboard
 msgid "paste clipboard"

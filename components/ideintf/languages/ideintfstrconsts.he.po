@@ -50,6 +50,14 @@ msgstr "בטל"
 msgid "Continue"
 msgstr "המשך"
 
+#: ideintfstrconsts.liscopy
+msgid "Copy"
+msgstr "העתק"
+
+#: ideintfstrconsts.liscut
+msgid "Cut"
+msgstr "חתוך"
+
 #: ideintfstrconsts.lisdelete
 msgid "Delete"
 msgstr "מחק"
@@ -94,6 +102,10 @@ msgstr "לא"
 #| msgid "ok"
 msgid "OK"
 msgstr "אשר"
+
+#: ideintfstrconsts.lispaste
+msgid "Paste"
+msgstr "הדבק"
 
 #: ideintfstrconsts.lisyes
 msgid "Yes"

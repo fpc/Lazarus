@@ -68,7 +68,7 @@ uses
   // IDEIntf
   IDEImagesIntf, SrcEditorIntf, LazIDEIntf, MenuIntf, NewItemIntf, PackageIntf,
   IDECommands, IDEWindowIntf, ProjectIntf, ToolBarIntf, ObjectInspector,
-  PropEdits, IDEDialogs, IDEUtils, EditorSyntaxHighlighterDef,
+  PropEdits, IDEDialogs, IDEUtils, EditorSyntaxHighlighterDef, IdeIntfStrConsts,
   // IDEDebugger
   IdeDebuggerStringConstants,
   // IDE

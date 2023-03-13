@@ -7964,11 +7964,6 @@ msgstr "クールバーを表示(&v)"
 msgid "Coolbar width"
 msgstr "クールバーの幅"
 
-#: lazarusidestrconsts.liscopy
-msgctxt "lazarusidestrconsts.liscopy"
-msgid "Copy"
-msgstr "コピー"
-
 #: lazarusidestrconsts.liscopyallitemstoclipboard
 msgid "Copy All Items to Clipboard"
 msgstr "すべての項目をクリップボードにコピー"
@@ -8256,11 +8251,6 @@ msgstr "カスタムプログラム"
 msgid "A Custom Free Pascal program."
 msgstr "カスタムFree Pascalプログラム"
 
-#: lazarusidestrconsts.liscut
-msgctxt "lazarusidestrconsts.liscut"
-msgid "Cut"
-msgstr "切り取り"
-
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
 msgstr "データモジュール"
@@ -8268,14 +8258,6 @@ msgstr "データモジュール"
 #: lazarusidestrconsts.lisdate
 msgid "Date"
 msgstr "日付"
-
-#: lazarusidestrconsts.lisdbgasmcopyaddresstoclipboard
-msgid "Copy address to Clipboard"
-msgstr ""
-
-#: lazarusidestrconsts.lisdbgasmcopytoclipboard
-msgid "Copy to Clipboard"
-msgstr "クリップボードにコピー"
 
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
@@ -8777,30 +8759,6 @@ msgstr "-Xgを無効化"
 msgctxt "lazarusidestrconsts.lisdisassassembler"
 msgid "Assembler"
 msgstr "アセンブラ"
-
-#: lazarusidestrconsts.lisdisassgotoaddredittexthint
-msgid "($address)"
-msgstr ""
-
-#: lazarusidestrconsts.lisdisassgotoaddress
-msgctxt "lazarusidestrconsts.lisdisassgotoaddress"
-msgid "Goto Address"
-msgstr "アドレスに移動"
-
-#: lazarusidestrconsts.lisdisassgotoaddresshint
-msgctxt "lazarusidestrconsts.lisdisassgotoaddresshint"
-msgid "Goto Address"
-msgstr "アドレスに移動"
-
-#: lazarusidestrconsts.lisdisassgotocurrentaddress
-msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddress"
-msgid "Goto Current Address"
-msgstr "現在のアドレスに移動"
-
-#: lazarusidestrconsts.lisdisassgotocurrentaddresshint
-msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddresshint"
-msgid "Goto Current Address"
-msgstr "現在のアドレスに移動"
 
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
@@ -13632,51 +13590,6 @@ msgstr "選択部分をソートする ..."
 msgid "S&ource"
 msgstr "ソース(&o)"
 
-#: lazarusidestrconsts.lismenustepinto
-msgid "Step In&to"
-msgstr "ステップイン(&t)"
-
-#: lazarusidestrconsts.lismenustepintocontext
-msgid "Step Into (Context)"
-msgstr "ステップイン（コンテクスト）"
-
-#: lazarusidestrconsts.lismenustepintoinstr
-msgctxt "lazarusidestrconsts.lismenustepintoinstr"
-msgid "Step Into Instruction"
-msgstr "ステップイン命令"
-
-#: lazarusidestrconsts.lismenustepintoinstrhint
-msgctxt "lazarusidestrconsts.lismenustepintoinstrhint"
-msgid "Step Into Instruction"
-msgstr "ステップイン命令"
-
-#: lazarusidestrconsts.lismenustepout
-msgid "Step O&ut"
-msgstr "ステップアウト(&u)"
-
-#: lazarusidestrconsts.lismenustepover
-msgid "&Step Over"
-msgstr "ステップオーバー(&S)"
-
-#: lazarusidestrconsts.lismenustepovercontext
-msgid "Step Over (Context)"
-msgstr "ステップオーバー（コンテクスト）"
-
-#: lazarusidestrconsts.lismenustepoverinstr
-msgctxt "lazarusidestrconsts.lismenustepoverinstr"
-msgid "Step Over Instruction"
-msgstr "ステップオーバー命令"
-
-#: lazarusidestrconsts.lismenustepoverinstrhint
-msgctxt "lazarusidestrconsts.lismenustepoverinstrhint"
-msgid "Step Over Instruction"
-msgstr "ステップオーバー命令"
-
-#: lazarusidestrconsts.lismenusteptocursor
-msgctxt "lazarusidestrconsts.lismenusteptocursor"
-msgid "Step over to &Cursor"
-msgstr ""
-
 #: lazarusidestrconsts.lismenuswapcaseselection
 msgid "Swap Case in Selection"
 msgstr "選択範囲の大文字小文字を反転"
@@ -13722,11 +13635,6 @@ msgstr "表示(&V)"
 #: lazarusidestrconsts.lismenuviewanchoreditor
 msgid "Anchor Editor"
 msgstr "アンカーエディタ"
-
-#: lazarusidestrconsts.lismenuviewassembler
-msgctxt "lazarusidestrconsts.lismenuviewassembler"
-msgid "Assembler"
-msgstr "アセンブラ"
 
 #: lazarusidestrconsts.lismenuviewcodebrowser
 msgctxt "lazarusidestrconsts.lismenuviewcodebrowser"
@@ -15063,11 +14971,6 @@ msgstr "コンパイラ定義\"%s\"を２回違う値で通過"
 #, object-pascal-format
 msgid "passing compiler option -%s twice with different values"
 msgstr "コンパイラオプション-%sを２回違う値で通過"
-
-#: lazarusidestrconsts.lispaste
-msgctxt "lazarusidestrconsts.lispaste"
-msgid "Paste"
-msgstr "貼り付け"
 
 #: lazarusidestrconsts.lispasteclipboard
 msgid "paste clipboard"

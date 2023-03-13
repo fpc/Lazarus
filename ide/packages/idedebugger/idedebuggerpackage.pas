@@ -17,7 +17,7 @@ uses
   WatchesDlg, CallStackDlg, LocalsDlg, ThreadDlg, BreakPropertyDlgGroups, 
   HistoryDlg, PseudoTerminalDlg, RegistersDlg, DebugOutputForm, ExceptionDlg, 
   FeedbackDlg, DebugAttachDialog, BreakPropertyDlg, EvaluateDlg, InspectDlg, 
-  BreakPointsDlg, LazarusPackageIntf;
+  BreakPointsDlg, AssemblerDlg, LazarusPackageIntf;
 
 implementation
 

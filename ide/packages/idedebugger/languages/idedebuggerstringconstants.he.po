@@ -591,6 +591,16 @@ msgctxt "lazarusidestrconsts.lisdbgallitemenablehint"
 msgid "Enable all"
 msgstr "אפשר הכל"
 
+#: idedebuggerstringconstants.lisdbgasmcopyaddresstoclipboard
+msgid "Copy address to Clipboard"
+msgstr ""
+
+#: idedebuggerstringconstants.lisdbgasmcopytoclipboard
+#, fuzzy
+#| msgid "Copy to clipboard"
+msgid "Copy to Clipboard"
+msgstr "העתק ללוח הזמני"
+
 #: idedebuggerstringconstants.lisdbgbreakpointpropertieshint
 #, fuzzy
 #| msgid "Breakpoint Properties..."
@@ -716,6 +726,44 @@ msgstr "נטרל נקודת עצירה"
 #: idedebuggerstringconstants.lisdisablegroups
 msgid "Disable Groups"
 msgstr ""
+
+#: idedebuggerstringconstants.lisdisassassembler
+#, fuzzy
+msgctxt "idedebuggerstringconstants.lisdisassassembler"
+msgid "Assembler"
+msgstr "Assembler"
+
+#: idedebuggerstringconstants.lisdisassgotoaddredittexthint
+msgid "($address)"
+msgstr ""
+
+#: idedebuggerstringconstants.lisdisassgotoaddress
+#, fuzzy
+#| msgid "Goto address"
+msgctxt "idedebuggerstringconstants.lisdisassgotoaddress"
+msgid "Goto Address"
+msgstr "לך לכתובת"
+
+#: idedebuggerstringconstants.lisdisassgotoaddresshint
+#, fuzzy
+#| msgid "Goto address"
+msgctxt "idedebuggerstringconstants.lisdisassgotoaddresshint"
+msgid "Goto Address"
+msgstr "לך לכתובת"
+
+#: idedebuggerstringconstants.lisdisassgotocurrentaddress
+#, fuzzy
+#| msgid "Goto current address"
+msgctxt "idedebuggerstringconstants.lisdisassgotocurrentaddress"
+msgid "Goto Current Address"
+msgstr "לך לכתובת נוכחית"
+
+#: idedebuggerstringconstants.lisdisassgotocurrentaddresshint
+#, fuzzy
+#| msgid "Goto current address"
+msgctxt "idedebuggerstringconstants.lisdisassgotocurrentaddresshint"
+msgid "Goto Current Address"
+msgstr "לך לכתובת נוכחית"
 
 #: idedebuggerstringconstants.lisenableall
 msgid "&Enable All"
@@ -1003,6 +1051,73 @@ msgstr ""
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
 msgstr "עזרה&"
+
+#: idedebuggerstringconstants.lismenustepinto
+#, fuzzy
+#| msgid "Step in&to"
+msgid "Step In&to"
+msgstr "קפוץ לתוך"
+
+#: idedebuggerstringconstants.lismenustepintocontext
+#, fuzzy
+#| msgid "Step into (Context)"
+msgid "Step Into (Context)"
+msgstr "צעד לתוך (הקשר)"
+
+#: idedebuggerstringconstants.lismenustepintoinstr
+#, fuzzy
+#| msgid "Step into instruction"
+msgctxt "idedebuggerstringconstants.lismenustepintoinstr"
+msgid "Step Into Instruction"
+msgstr "צעד לתוך ההוראה"
+
+#: idedebuggerstringconstants.lismenustepintoinstrhint
+#, fuzzy
+#| msgid "Step into instruction"
+msgctxt "idedebuggerstringconstants.lismenustepintoinstrhint"
+msgid "Step Into Instruction"
+msgstr "צעד לתוך ההוראה"
+
+#: idedebuggerstringconstants.lismenustepout
+#, fuzzy
+#| msgid "Step o&ut"
+msgid "Step O&ut"
+msgstr "קפוץ החוצה"
+
+#: idedebuggerstringconstants.lismenustepover
+#, fuzzy
+#| msgid "&Step over"
+msgid "&Step Over"
+msgstr "קפוץ מעבר ל"
+
+#: idedebuggerstringconstants.lismenustepovercontext
+#, fuzzy
+#| msgid "Step over (Context)"
+msgid "Step Over (Context)"
+msgstr "צעד מעבר (הקשר)"
+
+#: idedebuggerstringconstants.lismenustepoverinstr
+#, fuzzy
+#| msgid "Step over instruction"
+msgctxt "idedebuggerstringconstants.lismenustepoverinstr"
+msgid "Step Over Instruction"
+msgstr "צעד מעבר להוראה"
+
+#: idedebuggerstringconstants.lismenustepoverinstrhint
+#, fuzzy
+#| msgid "Step over instruction"
+msgctxt "idedebuggerstringconstants.lismenustepoverinstrhint"
+msgid "Step Over Instruction"
+msgstr "צעד מעבר להוראה"
+
+#: idedebuggerstringconstants.lismenusteptocursor
+msgid "Step over to &Cursor"
+msgstr ""
+
+#: idedebuggerstringconstants.lismenuviewassembler
+msgctxt "idedebuggerstringconstants.lismenuviewassembler"
+msgid "Assembler"
+msgstr "Assembler"
 
 #: idedebuggerstringconstants.lismenuviewbreakpoints
 msgid "BreakPoints"

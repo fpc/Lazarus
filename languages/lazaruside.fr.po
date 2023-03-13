@@ -7836,11 +7836,6 @@ msgstr "La barre est &visible"
 msgid "Coolbar width"
 msgstr "Largeur des barres d'outils"
 
-#: lazarusidestrconsts.liscopy
-msgctxt "lazarusidestrconsts.liscopy"
-msgid "Copy"
-msgstr "Copier"
-
 #: lazarusidestrconsts.liscopyallitemstoclipboard
 msgid "Copy All Items to Clipboard"
 msgstr "Copier tous les éléments dans le presse-papiers"
@@ -8128,11 +8123,6 @@ msgstr "Programme personnalisé"
 msgid "A Custom Free Pascal program."
 msgstr "Un programme personnalisé en Free Pascal."
 
-#: lazarusidestrconsts.liscut
-msgctxt "lazarusidestrconsts.liscut"
-msgid "Cut"
-msgstr "Couper"
-
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
 msgstr "Module de données"
@@ -8140,14 +8130,6 @@ msgstr "Module de données"
 #: lazarusidestrconsts.lisdate
 msgid "Date"
 msgstr "Date"
-
-#: lazarusidestrconsts.lisdbgasmcopyaddresstoclipboard
-msgid "Copy address to Clipboard"
-msgstr ""
-
-#: lazarusidestrconsts.lisdbgasmcopytoclipboard
-msgid "Copy to Clipboard"
-msgstr "Copier vers le presse-papiers"
 
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
@@ -8644,30 +8626,6 @@ msgstr "Désactiver l'option -Xg"
 msgctxt "lazarusidestrconsts.lisdisassassembler"
 msgid "Assembler"
 msgstr "Assembleur"
-
-#: lazarusidestrconsts.lisdisassgotoaddredittexthint
-msgid "($address)"
-msgstr "($adresse)"
-
-#: lazarusidestrconsts.lisdisassgotoaddress
-msgctxt "lazarusidestrconsts.lisdisassgotoaddress"
-msgid "Goto Address"
-msgstr "Aller à l'adresse"
-
-#: lazarusidestrconsts.lisdisassgotoaddresshint
-msgctxt "lazarusidestrconsts.lisdisassgotoaddresshint"
-msgid "Goto Address"
-msgstr "Aller à l'adresse"
-
-#: lazarusidestrconsts.lisdisassgotocurrentaddress
-msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddress"
-msgid "Goto Current Address"
-msgstr "Aller à l'adresse en cours"
-
-#: lazarusidestrconsts.lisdisassgotocurrentaddresshint
-msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddresshint"
-msgid "Goto Current Address"
-msgstr "Aller à l'adresse en cours"
 
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
@@ -13471,51 +13429,6 @@ msgstr "Trier la sélection..."
 msgid "S&ource"
 msgstr "S&ource"
 
-#: lazarusidestrconsts.lismenustepinto
-msgid "Step In&to"
-msgstr "Pas à pas &approfondi"
-
-#: lazarusidestrconsts.lismenustepintocontext
-msgid "Step Into (Context)"
-msgstr "Pas à pas dans (contexte)"
-
-#: lazarusidestrconsts.lismenustepintoinstr
-msgctxt "lazarusidestrconsts.lismenustepintoinstr"
-msgid "Step Into Instruction"
-msgstr "Pas à pas dans l'instruction"
-
-#: lazarusidestrconsts.lismenustepintoinstrhint
-msgctxt "lazarusidestrconsts.lismenustepintoinstrhint"
-msgid "Step Into Instruction"
-msgstr "Pas à pas dans l'instruction"
-
-#: lazarusidestrconsts.lismenustepout
-msgid "Step O&ut"
-msgstr "Pas à pas : &sortir"
-
-#: lazarusidestrconsts.lismenustepover
-msgid "&Step Over"
-msgstr "&Pas à pas"
-
-#: lazarusidestrconsts.lismenustepovercontext
-msgid "Step Over (Context)"
-msgstr "Pas à pas : par dessus (contexte)"
-
-#: lazarusidestrconsts.lismenustepoverinstr
-msgctxt "lazarusidestrconsts.lismenustepoverinstr"
-msgid "Step Over Instruction"
-msgstr "Pas à pas sur instruction"
-
-#: lazarusidestrconsts.lismenustepoverinstrhint
-msgctxt "lazarusidestrconsts.lismenustepoverinstrhint"
-msgid "Step Over Instruction"
-msgstr "Pas à pas sur instruction"
-
-#: lazarusidestrconsts.lismenusteptocursor
-msgctxt "lazarusidestrconsts.lismenusteptocursor"
-msgid "Step over to &Cursor"
-msgstr "Aller jusqu'au &Curseur"
-
 #: lazarusidestrconsts.lismenuswapcaseselection
 msgid "Swap Case in Selection"
 msgstr "Inverser la casse dans la sélection"
@@ -13561,11 +13474,6 @@ msgstr "&Voir"
 #: lazarusidestrconsts.lismenuviewanchoreditor
 msgid "Anchor Editor"
 msgstr "Éditeur d'ancres"
-
-#: lazarusidestrconsts.lismenuviewassembler
-msgctxt "lazarusidestrconsts.lismenuviewassembler"
-msgid "Assembler"
-msgstr "Assembleur"
 
 #: lazarusidestrconsts.lismenuviewcodebrowser
 msgctxt "lazarusidestrconsts.lismenuviewcodebrowser"
@@ -14881,11 +14789,6 @@ msgstr "la définition \"%s\" est passée deux fois au compilateur avec des vale
 #, object-pascal-format
 msgid "passing compiler option -%s twice with different values"
 msgstr "l'option \"-%s\" est passée deux fois au compilateur avec des valeurs différentes"
-
-#: lazarusidestrconsts.lispaste
-msgctxt "lazarusidestrconsts.lispaste"
-msgid "Paste"
-msgstr "Coller"
 
 #: lazarusidestrconsts.lispasteclipboard
 msgid "paste clipboard"

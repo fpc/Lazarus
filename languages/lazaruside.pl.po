@@ -7984,11 +7984,6 @@ msgstr "Pasek jest &widoczny"
 msgid "Coolbar width"
 msgstr "Szerokość paska"
 
-#: lazarusidestrconsts.liscopy
-msgctxt "lazarusidestrconsts.liscopy"
-msgid "Copy"
-msgstr "Kopiuj"
-
 #: lazarusidestrconsts.liscopyallitemstoclipboard
 msgid "Copy All Items to Clipboard"
 msgstr "Kopiuj wszystkie elementy do schowka"
@@ -8280,11 +8275,6 @@ msgstr "Program"
 msgid "A Custom Free Pascal program."
 msgstr "Free Pascal Component Library"
 
-#: lazarusidestrconsts.liscut
-msgctxt "lazarusidestrconsts.liscut"
-msgid "Cut"
-msgstr "Wytnij"
-
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
 msgstr "Moduł danych"
@@ -8292,14 +8282,6 @@ msgstr "Moduł danych"
 #: lazarusidestrconsts.lisdate
 msgid "Date"
 msgstr "Data"
-
-#: lazarusidestrconsts.lisdbgasmcopyaddresstoclipboard
-msgid "Copy address to Clipboard"
-msgstr ""
-
-#: lazarusidestrconsts.lisdbgasmcopytoclipboard
-msgid "Copy to Clipboard"
-msgstr "Kopiuj"
 
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
@@ -8800,30 +8782,6 @@ msgstr "Wyłącz opcję -Xg"
 msgctxt "lazarusidestrconsts.lisdisassassembler"
 msgid "Assembler"
 msgstr "Asembler"
-
-#: lazarusidestrconsts.lisdisassgotoaddredittexthint
-msgid "($address)"
-msgstr ""
-
-#: lazarusidestrconsts.lisdisassgotoaddress
-msgctxt "lazarusidestrconsts.lisdisassgotoaddress"
-msgid "Goto Address"
-msgstr "Idź do adresu"
-
-#: lazarusidestrconsts.lisdisassgotoaddresshint
-msgctxt "lazarusidestrconsts.lisdisassgotoaddresshint"
-msgid "Goto Address"
-msgstr "Idź do adresu"
-
-#: lazarusidestrconsts.lisdisassgotocurrentaddress
-msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddress"
-msgid "Goto Current Address"
-msgstr "Idź do bieżącego adresu"
-
-#: lazarusidestrconsts.lisdisassgotocurrentaddresshint
-msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddresshint"
-msgid "Goto Current Address"
-msgstr "Idź do bieżącego adresu"
 
 #: lazarusidestrconsts.lisdiscardchanges
 msgid "Discard changes"
@@ -13641,53 +13599,6 @@ msgstr "Sortuj zaznaczone ..."
 msgid "S&ource"
 msgstr "Źródło"
 
-#: lazarusidestrconsts.lismenustepinto
-msgid "Step In&to"
-msgstr "Uruchom wchodząc do funkcji"
-
-#: lazarusidestrconsts.lismenustepintocontext
-#, fuzzy
-msgid "Step Into (Context)"
-msgstr "Kontekst"
-
-#: lazarusidestrconsts.lismenustepintoinstr
-msgctxt "lazarusidestrconsts.lismenustepintoinstr"
-msgid "Step Into Instruction"
-msgstr "Wejdź do instrukcji"
-
-#: lazarusidestrconsts.lismenustepintoinstrhint
-msgctxt "lazarusidestrconsts.lismenustepintoinstrhint"
-msgid "Step Into Instruction"
-msgstr "Wejdź do instrukcji"
-
-#: lazarusidestrconsts.lismenustepout
-msgid "Step O&ut"
-msgstr "Uruchom do końca funkcji"
-
-#: lazarusidestrconsts.lismenustepover
-msgid "&Step Over"
-msgstr "Uruchom nie wchodząc do funkcji"
-
-#: lazarusidestrconsts.lismenustepovercontext
-#, fuzzy
-msgid "Step Over (Context)"
-msgstr "Dojdź do kursora"
-
-#: lazarusidestrconsts.lismenustepoverinstr
-msgctxt "lazarusidestrconsts.lismenustepoverinstr"
-msgid "Step Over Instruction"
-msgstr "Przejdź przez instrukcję"
-
-#: lazarusidestrconsts.lismenustepoverinstrhint
-msgctxt "lazarusidestrconsts.lismenustepoverinstrhint"
-msgid "Step Over Instruction"
-msgstr "Przejdź przez instrukcję"
-
-#: lazarusidestrconsts.lismenusteptocursor
-msgctxt "lazarusidestrconsts.lismenusteptocursor"
-msgid "Step over to &Cursor"
-msgstr "Dojdź do kursora"
-
 #: lazarusidestrconsts.lismenuswapcaseselection
 msgid "Swap Case in Selection"
 msgstr "Zamień wielkość liter"
@@ -13734,11 +13645,6 @@ msgstr "&Widok"
 #: lazarusidestrconsts.lismenuviewanchoreditor
 msgid "Anchor Editor"
 msgstr "Edytor zakotwiczeń"
-
-#: lazarusidestrconsts.lismenuviewassembler
-msgctxt "lazarusidestrconsts.lismenuviewassembler"
-msgid "Assembler"
-msgstr "Asembler"
 
 #: lazarusidestrconsts.lismenuviewcodebrowser
 msgctxt "lazarusidestrconsts.lismenuviewcodebrowser"
@@ -15051,11 +14957,6 @@ msgstr ""
 #, object-pascal-format
 msgid "passing compiler option -%s twice with different values"
 msgstr ""
-
-#: lazarusidestrconsts.lispaste
-msgctxt "lazarusidestrconsts.lispaste"
-msgid "Paste"
-msgstr "Wklej"
 
 #: lazarusidestrconsts.lispasteclipboard
 msgid "paste clipboard"

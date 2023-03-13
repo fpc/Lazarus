@@ -52,6 +52,14 @@ msgstr "Batal"
 msgid "Continue"
 msgstr "Lanjutkan"
 
+#: ideintfstrconsts.liscopy
+msgid "Copy"
+msgstr "Copy"
+
+#: ideintfstrconsts.liscut
+msgid "Cut"
+msgstr "Cut"
+
 #: ideintfstrconsts.lisdelete
 msgid "Delete"
 msgstr "Hapus"
@@ -94,6 +102,10 @@ msgstr ""
 #: ideintfstrconsts.lisok
 msgid "OK"
 msgstr "OK"
+
+#: ideintfstrconsts.lispaste
+msgid "Paste"
+msgstr "Paste"
 
 #: ideintfstrconsts.lisyes
 msgid "Yes"

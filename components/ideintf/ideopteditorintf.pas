@@ -51,6 +51,7 @@ type
   protected
     function GetTabPosition: TTabPosition; virtual; abstract;
   public
+    procedure GetSynEditorSettings(ASynEdit: TObject; SimilarEdit: TObject = nil); virtual; abstract;
     // read-only access to options needed by external packages.
     // feel free to extend when needed
     function CreateSynHighlighter(LazSynHilighter: TLazSyntaxHighlighter): TObject; virtual; abstract; // returns sub-class of TSynCustomHighlighter

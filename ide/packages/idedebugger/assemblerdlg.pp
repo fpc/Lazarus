@@ -14,14 +14,13 @@ uses
   // Codetools
   CodeToolManager, CodeCache,
   // IdeIntf
-  IDEWindowIntf, IDECommands, IDEImagesIntf,
+  IDEWindowIntf, IDECommands, IDEImagesIntf, SrcEditorIntf, IDEOptEditorIntf,
+  IdeIntfStrConsts,
   // DebuggerIntf
-  DbgIntfDebuggerBase,
+  DbgIntfDebuggerBase, SynEdit,
   LazDebuggerIntfBaseTypes,
   // IDEDebugger
-  DebuggerDlg, Debugger, BaseDebugManager,
-  // IDE
-  LazarusIDEStrConsts, EditorOptions, SourceEditor;
+  DebuggerDlg, Debugger, BaseDebugManager, IdeDebuggerStringConstants;
 
 type
 
@@ -158,7 +157,7 @@ type
     procedure SetTopLine(ALine: Integer);
     function IndexOfAddr(const AnAddr: TDBGPtr): Integer;
     procedure UpdateLocation(const AAddr: TDBGPtr);
-    procedure DoEditorOptsChanged(Sender: TObject; Restore: boolean);
+    procedure DoEditorOptsChanged(Sender: TObject);
   protected
     function GetSourceCodeLine(SrcFileName: string; SrcLineNumber: Integer): string;
     procedure DoBeginUpdate; override;
@@ -271,7 +270,7 @@ begin
 
   Caption := lisDisAssAssembler;
 
-  EditorOpts.AddHandlerAfterWrite(@DoEditorOptsChanged);
+  SourceEditorManagerIntf.RegisterChangeEvent(semEditorOptsChanged, @DoEditorOptsChanged);
   Caption := lisMenuViewAssembler;
   CopyToClipboard.Caption := lisDbgAsmCopyToClipboard;
   popCopyAddr.Caption := lisDbgAsmCopyAddressToClipboard;
@@ -315,7 +314,7 @@ end;
 
 destructor TAssemblerDlg.Destroy;
 begin
-  EditorOpts.RemoveHandlerAfterWrite(@DoEditorOptsChanged);
+  SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorOptsChanged, @DoEditorOptsChanged);
   SetDisassembler(nil);
   SetDebugger(nil);
   FDisassemblerNotification.OnChange := nil;
@@ -564,7 +563,7 @@ procedure TAssemblerDlg.DoEndUpdate;
 begin
   inherited DoEndUpdate;
   if FVisibleChanged then begin
-    DoEditorOptsChanged(nil, False);
+    DoEditorOptsChanged(nil);
     if FCurrentLocation <> 0 then
       UpdateLocation(FCurrentLocation);
   end;
@@ -578,7 +577,7 @@ begin
     if IsUpdating then begin
       FVisibleChanged := True
     end else begin
-      DoEditorOptsChanged(nil, False);
+      DoEditorOptsChanged(nil);
       if FCurrentLocation <> 0 then
         UpdateLocation(FCurrentLocation);
     end;
@@ -888,25 +887,24 @@ begin
   UpdateView;
 end;
 
-procedure TAssemblerDlg.DoEditorOptsChanged(Sender: TObject; Restore: boolean);
+procedure TAssemblerDlg.DoEditorOptsChanged(Sender: TObject);
 var
   TM: TTextMetric;
+  Syn: TSynEdit;
 begin
-  if Restore then exit;
-  pbAsm.Font.Size := EditorOpts.EditorFontSize;
-  pbAsm.Font.Name := EditorOpts.EditorFont;
-  if EditorOpts.DisableAntialiasing then
-    pbAsm.Font.Quality := fqNonAntialiased
-  else
-    pbAsm.Font.Quality := fqDefault;
+  Syn := TSynEdit.Create(nil);
+  IDEEditorOptions.GetSynEditorSettings(Syn);
 
+  Font := Syn.Font;
   if GetTextMetrics(pbAsm.Canvas.Handle, TM{%H-}) then
   begin
     FCharWidth := TM.tmMaxCharWidth; // EditorOpts.ExtraCharSpacing +
     sbHorizontal.SmallChange := FCharWidth;
-    FLineHeight := Max(6,EditorOpts.ExtraLineSpacing + TM.tmHeight);
+    FLineHeight := Max(6, Syn.ExtraLineSpacing + TM.tmHeight);
     SetLineCount(pbAsm.Height div FLineHeight);
   end;
+
+  Syn.Free;
 end;
 
 procedure TAssemblerDlg.SetLocation(ADebugger: TDebuggerIntf; const AAddr: TDBGPtr;
@@ -1010,7 +1008,7 @@ end;
 function TAssemblerDlg.GetSourceCodeLine(SrcFileName: string; SrcLineNumber: Integer): string;
 var
   PasSource: TCodeBuffer;
-  Editor: TSourceEditor;
+  Editor: TSourceEditorInterface;
 begin
   Result := '';
   if SrcLineNumber < 1 then exit;
@@ -1020,7 +1018,7 @@ begin
   if PasSource = nil
   then exit;
 
-  Editor := SourceEditorManager.SourceEditorIntfWithFilename(SrcFileName);
+  Editor := SourceEditorManagerIntf.SourceEditorIntfWithFilename(SrcFileName);
   if Editor <> nil then
     SrcLineNumber := Editor.DebugToSourceLine(SrcLineNumber);
 

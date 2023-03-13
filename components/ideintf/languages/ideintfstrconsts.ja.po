@@ -49,6 +49,14 @@ msgstr "キャンセル"
 msgid "Continue"
 msgstr "継続"
 
+#: ideintfstrconsts.liscopy
+msgid "Copy"
+msgstr "コピー"
+
+#: ideintfstrconsts.liscut
+msgid "Cut"
+msgstr "切り取り"
+
 #: ideintfstrconsts.lisdelete
 msgid "Delete"
 msgstr "削除"
@@ -88,6 +96,10 @@ msgstr "いいえ"
 #: ideintfstrconsts.lisok
 msgid "OK"
 msgstr "OK"
+
+#: ideintfstrconsts.lispaste
+msgid "Paste"
+msgstr "貼り付け"
 
 #: ideintfstrconsts.lisyes
 msgid "Yes"

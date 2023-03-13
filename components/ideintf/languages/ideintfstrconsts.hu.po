@@ -49,6 +49,14 @@ msgstr "Mégsem"
 msgid "Continue"
 msgstr "Folytatás"
 
+#: ideintfstrconsts.liscopy
+msgid "Copy"
+msgstr "Másolás"
+
+#: ideintfstrconsts.liscut
+msgid "Cut"
+msgstr "Kivágás"
+
 #: ideintfstrconsts.lisdelete
 msgid "Delete"
 msgstr "Törlés"
@@ -88,6 +96,10 @@ msgstr "Nem"
 #: ideintfstrconsts.lisok
 msgid "OK"
 msgstr "OK"
+
+#: ideintfstrconsts.lispaste
+msgid "Paste"
+msgstr "Beillesztés"
 
 #: ideintfstrconsts.lisyes
 msgid "Yes"
