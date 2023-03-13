@@ -44,6 +44,11 @@ type
     procedure TestCompleteMethodSignature_Without_Parentheses;
     procedure TestCompleteEventAssignmentDelphi;
     procedure TestCompleteEventAssignmentObjFPC;
+    procedure TestCompleteClass_Unit_NewClass;
+    procedure TestCompleteClass_Unit_NewClass_BehindOldClass;
+    procedure TestCompleteClass_Unit_NewClass_InFrontOfOldClass;
+    procedure TestCompleteClass_Unit_NewClass_BetweenOldClasses;
+    procedure TestCompleteNestedClass_Unit_NewClass_BehindParentClass;
   end;
 
 implementation
@@ -998,6 +1003,247 @@ begin
     ,'procedure TBird.Fly;'
     ,'begin;'
     ,'  Eagle.OnClick:=@EagleClick;'
+    ,'end;'
+    ,'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteClass_Unit_NewClass;
+// test creating the first method body of a class
+begin
+  Test('TestCompleteClass_Unit_NewClass',
+    ['unit SomeUnit;'
+    ,'{$MODE ObjFPC}'
+    ,'interface'
+    ,'type'
+    ,'  TBird = class'
+    ,'    procedure Fly;'
+    ,'  end;'
+    ,'implementation'
+    ,'end.'],
+    6,4,
+    ['unit SomeUnit;'
+    ,'{$MODE ObjFPC}'
+    ,'interface'
+    ,'type'
+    ,''
+    ,'  { TBird }'
+    ,''
+    ,'  TBird = class'
+    ,'    procedure Fly;'
+    ,'  end;'
+    ,'implementation'
+    ,''
+    ,'procedure TBird.Fly;'
+    ,'begin'
+    ,'end;'
+    ,''
+    ,'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteClass_Unit_NewClass_BehindOldClass;
+// test if a new class is created behind
+begin
+  Test('TestCompleteClass_Unit_NewClass_BehindOldClass',
+    ['unit SomeUnit;'
+    ,'{$MODE ObjFPC}'
+    ,'interface'
+    ,'type'
+    ,'  TBird = class'
+    ,'    procedure Fly;'
+    ,'  end;'
+    ,'  TCheetah = class'
+    ,'    procedure Run;'
+    ,'  end;'
+    ,'implementation'
+    ,''
+    ,'procedure TBird.Fly;'
+    ,'begin'
+    ,'end;'
+    ,''
+    ,'end.'],
+    9,4,
+    ['unit SomeUnit;'
+    ,'{$MODE ObjFPC}'
+    ,'interface'
+    ,'type'
+    ,'  TBird = class'
+    ,'    procedure Fly;'
+    ,'  end;'
+    ,'  { TCheetah }'
+    ,'  TCheetah = class'
+    ,'    procedure Run;'
+    ,'  end;'
+    ,'implementation'
+    ,''
+    ,'procedure TBird.Fly;'
+    ,'begin'
+    ,'end;'
+    ,''
+    ,'procedure TCheetah.Run;'
+    ,'begin'
+    ,'end;'
+    ,''
+    ,'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteClass_Unit_NewClass_InFrontOfOldClass;
+begin
+  Test('TestCompleteClass_Unit_NewClass_BehindOldClass',
+    ['unit SomeUnit;'
+    ,'{$MODE ObjFPC}'
+    ,'interface'
+    ,'type'
+    ,'  TBird = class'
+    ,'    procedure Fly;'
+    ,'  end;'
+    ,'  TCheetah = class'
+    ,'    procedure Run;'
+    ,'  end;'
+    ,'implementation'
+    ,''
+    ,'procedure TCheetah.Run;'
+    ,'begin'
+    ,'end;'
+    ,''
+    ,'end.'],
+    6,4,
+    ['unit SomeUnit;'
+    ,'{$MODE ObjFPC}'
+    ,'interface'
+    ,'type'
+    ,'  { TBird }'
+    ,'  TBird = class'
+    ,'    procedure Fly;'
+    ,'  end;'
+    ,'  TCheetah = class'
+    ,'    procedure Run;'
+    ,'  end;'
+    ,'implementation'
+    ,''
+    ,'procedure TBird.Fly;'
+    ,'begin'
+    ,'end;'
+    ,''
+    ,'procedure TCheetah.Run;'
+    ,'begin'
+    ,'end;'
+    ,''
+    ,'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteClass_Unit_NewClass_BetweenOldClasses;
+begin
+  Test('TestCompleteClass_Unit_NewClass_BetweenOldClasses',
+    ['unit SomeUnit;'
+    ,'{$MODE ObjFPC}'
+    ,'interface'
+    ,'type'
+    ,'  TBird = class'
+    ,'    procedure Fly;'
+    ,'  end;'
+    ,'  TCheetah = class'
+    ,'    procedure Run;'
+    ,'  end;'
+    ,'  TFish = class'
+    ,'    procedure Swim;'
+    ,'  end;'
+    ,'implementation'
+    ,''
+    ,'procedure TBird.Fly;'
+    ,'begin'
+    ,'end;'
+    ,''
+    ,'procedure TFish.Swim;'
+    ,'begin'
+    ,'end;'
+    ,'end.'],
+    9,4,
+    ['unit SomeUnit;'
+    ,'{$MODE ObjFPC}'
+    ,'interface'
+    ,'type'
+    ,'  TBird = class'
+    ,'    procedure Fly;'
+    ,'  end;'
+    ,'  { TCheetah }'
+    ,'  TCheetah = class'
+    ,'    procedure Run;'
+    ,'  end;'
+    ,'  TFish = class'
+    ,'    procedure Swim;'
+    ,'  end;'
+    ,'implementation'
+    ,''
+    ,'procedure TBird.Fly;'
+    ,'begin'
+    ,'end;'
+    ,''
+    ,'procedure TCheetah.Run;'
+    ,'begin'
+    ,'end;'
+    ,''
+    ,'procedure TFish.Swim;'
+    ,'begin'
+    ,'end;'
+    ,'end.']);
+end;
+
+procedure TTestCodeCompletion.
+  TestCompleteNestedClass_Unit_NewClass_BehindParentClass;
+begin
+  Test('TestCompleteNestedClass_Unit_NewClass_BehindParentClass',
+    ['unit SomeUnit;'
+    ,'{$MODE ObjFPC}'
+    ,'interface'
+    ,'type'
+    ,'  TBird = class'
+    ,'  type'
+    ,'    TWing = class'
+    ,'      procedure Flap;'
+    ,'    end;'
+    ,'    procedure Fly;'
+    ,'  end;'
+    ,'  TFish = class'
+    ,'    procedure Swim;'
+    ,'  end;'
+    ,'implementation'
+    ,''
+    ,'procedure TBird.Fly;'
+    ,'begin'
+    ,'end;'
+    ,''
+    ,'procedure TFish.Swim;'
+    ,'begin'
+    ,'end;'
+    ,'end.'],
+    8,4,
+    ['unit SomeUnit;'
+    ,'{$MODE ObjFPC}'
+    ,'interface'
+    ,'type'
+    ,'  TBird = class'
+    ,'  type'
+    ,'    { TWing }'
+    ,'    TWing = class'
+    ,'      procedure Flap;'
+    ,'    end;'
+    ,'    procedure Fly;'
+    ,'  end;'
+    ,'  TFish = class'
+    ,'    procedure Swim;'
+    ,'  end;'
+    ,'implementation'
+    ,''
+    ,'procedure TBird.Fly;'
+    ,'begin'
+    ,'end;'
+    ,''
+    ,'procedure TBird.TWing.Flap;'
+    ,'begin'
+    ,'end;'
+    ,''
+    ,'procedure TFish.Swim;'
+    ,'begin'
     ,'end;'
     ,'end.']);
 end;
