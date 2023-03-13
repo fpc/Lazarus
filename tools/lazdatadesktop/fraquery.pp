@@ -230,7 +230,10 @@ end;
 
 function TQueryFrame.TransactionIsActive: Boolean;
 begin
-
+  Result:=HaveTransaction;
+  if Result then
+    if FEngine is TSQLDBDDEngine then
+      Result:=TSQLDBDDEngine(FEngine).Transaction.Active;
 end;
 
 procedure TQueryFrame.ExportDataClick(Sender: TObject);
