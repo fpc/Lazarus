@@ -896,7 +896,7 @@ begin
   IDEEditorOptions.GetSynEditorSettings(Syn);
 
   Font := Syn.Font;
-  if GetTextMetrics(pbAsm.Canvas.Handle, TM{%H-}) then
+  if HandleAllocated and GetTextMetrics(pbAsm.Canvas.Handle, TM{%H-}) then
   begin
     FCharWidth := TM.tmMaxCharWidth; // EditorOpts.ExtraCharSpacing +
     sbHorizontal.SmallChange := FCharWidth;
