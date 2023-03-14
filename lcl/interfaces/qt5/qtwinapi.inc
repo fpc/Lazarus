@@ -5034,6 +5034,7 @@ end;
 function TQtWidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
 var
   PenPos, LastPos: TPoint;
+  OldBkMode: Integer;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI LineTo]');
@@ -5045,12 +5046,17 @@ begin
 
   TQtDeviceContext(DC).getPenPos(@PenPos);
   LastPos := Point(X, Y);
+  if TQtDeviceContext(DC).pen.getStyle = QtCustomDashLine then
+    OldBkMode := SetBkMode(DC, TRANSPARENT);
   if TQtDeviceContext(DC).pen.getCosmetic then
     LastPos := TQtDeviceContext(DC).GetLineLastPixelPos(PenPos, LastPos);
   if QPainter_testRenderHint(TQtDeviceContext(DC).Widget, QPainterAntialiasing) then
     TQtDeviceContext(DC).drawLineF(PenPos.X, PenPos.Y, LastPos.X, LastPos.Y)
   else
     TQtDeviceContext(DC).drawLine(PenPos.X, PenPos.Y, LastPos.X, LastPos.Y);
+
+  if TQtDeviceContext(DC).pen.getStyle = QtCustomDashLine then
+    SetBkMode(DC, OldBkMode);
   MoveToEx(DC, X, Y, nil);
 
   Result := True;
