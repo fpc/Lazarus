@@ -115,9 +115,6 @@ type
   { TFpThreadWorkerLocalsUpdate }
 
   TFpThreadWorkerLocalsUpdate = class(TFpThreadWorkerLocals)
-  private
-    FLocals: TLocalsListIntf;
-    procedure DoLocalsFreed_DecRef(Sender: TObject);
   protected
     procedure UpdateLocals_DecRef(Data: PtrInt = 0); override;
     procedure DoRemovedFromLinkedList; override; // _DecRef
@@ -985,41 +982,15 @@ end;
 
 { TFpThreadWorkerLocalsUpdate }
 
-procedure TFpThreadWorkerLocalsUpdate.DoLocalsFreed_DecRef(Sender: TObject);
-begin
-  assert(system.ThreadID = classes.MainThreadID, 'TFpThreadWorkerLocals.DoLocalsFreed_DecRef: system.ThreadID = classes.MainThreadID');
-  FLocals := nil;
-  RequestStop;
-  UnQueue_DecRef;
-end;
-
 procedure TFpThreadWorkerLocalsUpdate.UpdateLocals_DecRef(Data: PtrInt);
 var
-  i: Integer;
-  r: TResultEntry;
   dbg: TFpDebugDebugger;
-  rv: TLzDbgWatchDataIntf;
 begin
   assert(system.ThreadID = classes.MainThreadID, 'TFpThreadWorkerLocals.UpdateLocals_DecRef: system.ThreadID = classes.MainThreadID');
 
   if FLocals <> nil then begin
-    FLocals.RemoveFreeNotification(@DoLocalsFreed_DecRef);
-    if FResults = nil then begin
-      FLocals.Validity := ddsInvalid;
-      FLocals := nil;
-      UnQueue_DecRef;
-      exit;
-    end;
-
-    FLocals.BeginUpdate;
-    for i := 0 to FResults.Count - 1 do begin
-      r := FResults[i];
-      rv := FLocals.Add(r.Name);
-      rv.CreatePrePrinted(r.Value);
-    end;
     FLocals.Validity := ddsValid;
     FLocals.EndUpdate;
-
     FLocals := nil;
   end;
 
@@ -1036,8 +1007,8 @@ begin
       exit;
     end
     else begin
-      FLocals.RemoveFreeNotification(@DoLocalsFreed_DecRef);
       FLocals.Validity := ddsInvalid;
+      FLocals.EndUpdate;
     end;
     FLocals := nil;
   end;
@@ -1050,7 +1021,7 @@ begin
   // Runs in IDE thread (TThread.Queue)
   assert(system.ThreadID = classes.MainThreadID, 'TFpThreadWorkerLocals.Create: system.ThreadID = classes.MainThreadID');
   FLocals := ALocals;
-  FLocals.AddFreeNotification(@DoLocalsFreed_DecRef);
+  FLocals.BeginUpdate;
   FThreadId := ALocals.ThreadId;
   FStackFrame := ALocals.StackFrame;
   inherited Create(ADebugger, twpLocal);

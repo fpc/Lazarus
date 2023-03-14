@@ -238,13 +238,14 @@ type
    TLocalsValue = class(TDbgEntityValue)
    private
      FName: String;
-     FValue: String;
+     FValue: TWatchResultData;
    protected
      procedure DoAssign(AnOther: TDbgEntityValue); override;
    public
+     destructor Destroy; override;
      procedure Init(AName: String; AValue: TWatchResultData);
      property Name: String read FName;
-     property Value: String read FValue;
+     property Value: TWatchResultData read FValue;
    end;
 
  { TLocals }
@@ -253,17 +254,17 @@ type
   private
     function GetEntry(AnIndex: Integer): TLocalsValue;
     function GetName(const AnIndex: Integer): String;
-    function GetValue(const AnIndex: Integer): String;
+    function GetValue(const AnIndex: Integer): TWatchResultData;
   protected
     function CreateEntry: TDbgEntityValue; override;
   public
-    procedure Add(const AName, AValue: String); overload; deprecated;
+    procedure Add(const AName: String; AValue: TWatchResultData); overload; deprecated;
     procedure SetDataValidity({%H-}AValidity: TDebuggerDataState); virtual;
   public
     function Count: Integer;reintroduce; virtual;
     property Entries[AnIndex: Integer]: TLocalsValue read GetEntry;
     property Names[const AnIndex: Integer]: String read GetName;
-    property Values[const AnIndex: Integer]: String read GetValue;
+    property Values[const AnIndex: Integer]: TWatchResultData read GetValue;
   end;
 
   { TLocalsList }
@@ -975,14 +976,20 @@ procedure TLocalsValue.DoAssign(AnOther: TDbgEntityValue);
 begin
   inherited DoAssign(AnOther);
   FName := TLocalsValue(AnOther).FName;
-  FValue := TLocalsValue(AnOther).FValue;
+  FValue.Free;
+  FValue := TLocalsValue(AnOther).FValue.CreateCopy();
+end;
+
+destructor TLocalsValue.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FValue);
 end;
 
 procedure TLocalsValue.Init(AName: String; AValue: TWatchResultData);
 begin
   FName := AName;
-  FValue := AValue.AsString;
-  AValue.Free;
+  FValue := AValue;
 end;
 
 { TLocalsList }
@@ -1009,7 +1016,7 @@ begin
   Result := Entries[AnIndex].Name;
 end;
 
-function TLocals.GetValue(const AnIndex: Integer): String;
+function TLocals.GetValue(const AnIndex: Integer): TWatchResultData;
 begin
   Result := Entries[AnIndex].Value;
 end;
@@ -1019,7 +1026,7 @@ begin
   Result := TLocalsValue.Create;
 end;
 
-procedure TLocals.Add(const AName, AValue: String);
+procedure TLocals.Add(const AName: String; AValue: TWatchResultData);
 var
   v: TLocalsValue;
 begin

@@ -191,18 +191,11 @@ type
 
   TFpThreadWorkerLocals = class(TFpDbgDebggerThreadWorkerLinkedItem)
   protected type
-    TResultEntry = record
-      Name, Value: String;
-      class operator = (a, b: TResultEntry): Boolean;
-    end;
-    TResultList = specialize TFPGList<TResultEntry>;
   protected
+    FLocals: TLocalsListIntf;
     FThreadId, FStackFrame: Integer;
-    FResults: TResultList;
     procedure UpdateLocals_DecRef(Data: PtrInt = 0); virtual; abstract;
     procedure DoExecute; override;
-  public
-    destructor Destroy; override;
   end;
 
   { TFpThreadWorkerModify }
@@ -657,24 +650,15 @@ begin
   inherited Create(ADebugger, 1, twpThread);
 end;
 
-{ TFpThreadWorkerLocals.TResultEntry }
-
-class operator TFpThreadWorkerLocals.TResultEntry. = (a, b: TResultEntry
-  ): Boolean;
-begin
-  Result := False;
-  assert(False, 'TFpThreadWorkerLocals.TResultEntry.=: False');
-end;
-
 { TFpThreadWorkerLocals }
 
 procedure TFpThreadWorkerLocals.DoExecute;
 var
   LocalScope: TFpDbgSymbolScope;
   ProcVal, m: TFpValue;
-  PrettyPrinter: TFpPascalPrettyPrinter;
   i: Integer;
-  r: TResultEntry;
+  WatchResConv: TFpLazDbgWatchResultConvertor;
+  ResData: TLzDbgWatchDataIntf;
 begin
   LocalScope := FDebugger.DbgController.CurrentProcess.FindSymbolScope(FThreadId, FStackFrame);
   if (LocalScope = nil) or (LocalScope.SymbolAtAddress = nil) then begin
@@ -688,37 +672,31 @@ begin
     exit;
   end;
 
-  PrettyPrinter := TFpPascalPrettyPrinter.Create(LocalScope.SizeOfAddress);
-  PrettyPrinter.Context := LocalScope.LocationContext;
-//  PrettyPrinter.MemManager.DefaultContext := LocalScope.LocationContext;
+  WatchResConv := TFpLazDbgWatchResultConvertor.Create(LocalScope.LocationContext);
+  WatchResConv.MaxArrayConv := TFpDebugDebuggerProperties(FDebugger.GetProperties).MemLimits.MaxArrayConversionCnt;
+  WatchResConv.MaxTotalConv := TFpDebugDebuggerProperties(FDebugger.GetProperties).MemLimits.MaxTotalConversionCnt;
+  WatchResConv.Debugger := FDebugger;
+  WatchResConv.ExpressionScope := LocalScope;
 
-  FResults := TResultList.Create;
   for i := 0 to ProcVal.MemberCount - 1 do begin
     m := ProcVal.Member[i];
     if m <> nil then begin
-      if m.DbgSymbol <> nil then
-        r.Name := m.DbgSymbol.Name
-      else
-        r.Name := '';
-      //if not StopRequested then // finish getting all names?
-      PrettyPrinter.PrintValue(r.Value, m);
+      ResData := FLocals.Add(m.DbgSymbol.Name);
+      if not  WatchResConv.WriteWatchResultData(m, ResData)
+      then begin
+        ResData.CreateError('Unknown Error');
+      end;
       m.ReleaseReference;
-      FResults.Add(r);
     end;
     if StopRequested then
       Break;
   end;
-  PrettyPrinter.Free;
+
+  WatchResConv.Free;
   ProcVal.ReleaseReference;
   LocalScope.ReleaseReference;
 
   Queue(@UpdateLocals_DecRef);
-end;
-
-destructor TFpThreadWorkerLocals.Destroy;
-begin
-  FResults.Free;
-  inherited Destroy;
 end;
 
 { TFpThreadWorkerModify }

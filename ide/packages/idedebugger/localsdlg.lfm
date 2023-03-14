@@ -5,33 +5,42 @@ object LocalsDlg: TLocalsDlg
   Width = 500
   HorzScrollBar.Page = 499
   VertScrollBar.Page = 199
-  ActiveControl = lvLocals
   BorderStyle = bsSizeToolWin
   Caption = 'Locals'
   ClientHeight = 200
   ClientWidth = 500
-  LCLVersion = '2.1.0.0'
-  object lvLocals: TListView
+  LCLVersion = '2.3.0.0'
+  object vtLocals: TDbgTreeView
     Left = 0
     Height = 200
     Top = 0
     Width = 500
     Align = alClient
-    Columns = <    
+    Header.AutoSizeIndex = 0
+    Header.Columns = <    
       item
-        Caption = 'Name'
-        Width = 150
+        Position = 0
       end    
       item
-        Caption = 'Value'
+        Position = 2
+      end    
+      item
+        MaxWidth = 300
+        Options = [coAllowClick, coDraggable, coEnabled, coParentBidiMode, coParentColor, coResizable, coShowDropMark, coAllowFocus, coEditable]
+        Position = 1
       end>
-    MultiSelect = True
+    Header.Options = [hoColumnResize, hoDrag, hoShowSortGlyphs, hoVisible]
     PopupMenu = PopupMenu1
-    ReadOnly = True
-    RowSelect = True
-    SortType = stText
     TabOrder = 0
-    ViewStyle = vsReport
+    TreeOptions.AutoOptions = [toAutoScrollOnExpand, toAutoSort, toAutoTristateTracking, toAutoDeleteMovedNodes, toAutoChangeScale]
+    TreeOptions.MiscOptions = [toFullRepaintOnResize, toInitOnSave, toWheelPanning]
+    TreeOptions.PaintOptions = [toShowButtons, toShowDropmark, toShowRoot, toShowTreeLines, toThemeAware, toUseBlendedImages, toUseExplorerTheme]
+    TreeOptions.SelectionOptions = [toFullRowSelect, toMultiSelect, toRightClickSelect]
+    OnChange = vtLocalsChange
+    OnDragOver = vtLocalsDragOver
+    OnDragDrop = vtLocalsDragDrop
+    OnFocusChanged = vtLocalsFocusChanged
+    OnNodeDblClick = vtLocalsNodeDblClick
   end
   object ActionList1: TActionList
     Left = 152
@@ -83,13 +92,6 @@ object LocalsDlg: TLocalsDlg
       OnUpdate = actInspectUpdate
       ShortCut = 16451
     end
-    object actEvaluateAll: TAction
-      Category = 'main'
-      Caption = 'actEvaluateAll'
-      OnExecute = actEvaluateAllExecute
-      OnUpdate = actCopyAllUpdate
-      ShortCut = 16466
-    end
   end
   object PopupMenu1: TPopupMenu
     Left = 38
@@ -102,9 +104,6 @@ object LocalsDlg: TLocalsDlg
     end
     object MenuItem3: TMenuItem
       Action = actEvaluate
-    end
-    object MenuItem9: TMenuItem
-      Action = actEvaluateAll
     end
     object MenuItem4: TMenuItem
       Caption = '-'

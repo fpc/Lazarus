@@ -7072,7 +7072,9 @@ begin
   APath := APath + 'Entry';
   for i := 0 to c - 1 do begin
     Add(AConfig.GetValue(APath + IntToStr(i) + '/Expression', ''),
-        AConfig.GetValue(APath + IntToStr(i) + '/Value', ''));
+        TWatchResultData.CreateFromXMLConfig(AConfig, APath + IntToStr(i) + '/')
+       );
+
   end;
 end;
 
@@ -7086,7 +7088,7 @@ begin
   APath := APath + 'Entry';
   for i := 0 to Count - 1 do begin
     AConfig.SetValue(APath + IntToStr(i) + '/Expression', Names[i]);
-    AConfig.SetValue(APath + IntToStr(i) + '/Value', Values[i]);
+    Values[i].SaveDataToXMLConfig(AConfig, APath + IntToStr(i) + '/');
   end;
 end;
 
@@ -7177,14 +7179,17 @@ var
 begin
   FCurrentResData := FCurrentResData.RootResultData;
   // TODO: maybe create an error entry, if only FNewResultData is missing
-  if (FCurrentResData = nil) or (FCurrentResData.FNewResultData = nil) then
+  if (FCurrentResData = nil) then
     exit;
+  if (FCurrentResData.FNewResultData = nil) then begin
+    FreeAndNil(FCurrentResData);
+    exit;
+  end;
 
   FCurrentResData.Done;
 
   v := TLocalsValue(CreateEntry);
   v.Init(FCurrentResName, FCurrentResData.FNewResultData);
-  FCurrentResData.FNewResultData := nil;
 
   if IsUpdating then
     FCurrentResList.Add(v)

@@ -44,9 +44,11 @@ uses
   // IdeIntf
   IDEWindowIntf,
   // DebuggerIntf
-  DbgIntfDebuggerBase, LazDebuggerIntf,
-  // IDE
-  IdeDebuggerStringConstants, BaseDebugManager, EnvironmentOpts, Debugger, DebuggerDlg;
+  DbgIntfDebuggerBase, laz.VirtualTrees, LazDebuggerIntf,
+  // IDE Debugger
+  IdeDebuggerStringConstants, BaseDebugManager, EnvironmentOpts, Debugger,
+  DebuggerDlg, IdeDebuggerWatchResPrinter, IdeDebuggerUtils, DebuggerTreeView,
+  IdeDebuggerWatchResult, IdeDebuggerBase, Controls, ActiveX;
 
 type
 
@@ -59,10 +61,9 @@ type
     actCopyValue: TAction;
     actCopyAll: TAction;
     actCopyRAWValue: TAction;
-    actEvaluateAll: TAction;
     actWath: TAction;
     ActionList1: TActionList;
-    lvLocals: TListView;
+    vtLocals: TDbgTreeView;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
@@ -71,28 +72,38 @@ type
     MenuItem6: TMenuItem;
     MenuItem7: TMenuItem;
     MenuItem8: TMenuItem;
-    MenuItem9: TMenuItem;
     PopupMenu1: TPopupMenu;
     procedure actCopyAllExecute(Sender: TObject);
     procedure actCopyAllUpdate(Sender: TObject);
     procedure actCopyNameExecute(Sender: TObject);
     procedure actCopyValueExecute(Sender: TObject);
-    procedure actEvaluateAllExecute(Sender: TObject);
     procedure actEvaluateExecute(Sender: TObject);
     procedure actInspectExecute(Sender: TObject);
     procedure actInspectUpdate(Sender: TObject);
     procedure actCopyRAWValueExecute(Sender: TObject);
     procedure actWathExecute(Sender: TObject);
+    procedure vtLocalsChange(Sender: TBaseVirtualTree; Node: PVirtualNode);
+    procedure vtLocalsDragDrop(Sender: TBaseVirtualTree; Source: TObject;
+      DataObject: IDataObject; Formats: TFormatArray; Shift: TShiftState;
+      const Pt: TPoint; var Effect: LongWord; Mode: TDropMode);
+    procedure vtLocalsDragOver(Sender: TBaseVirtualTree; Source: TObject;
+      Shift: TShiftState; State: TDragState; const Pt: TPoint; Mode: TDropMode;
+      var Effect: LongWord; var Accept: Boolean);
+    procedure vtLocalsFocusChanged(Sender: TBaseVirtualTree;
+      Node: PVirtualNode; Column: TColumnIndex);
+    procedure vtLocalsNodeDblClick(Sender: TBaseVirtualTree;
+      const HitInfo: THitInfo);
   private
+    FWatchPrinter: TWatchResultPrinter;
     FUpdateFlags: set of (ufNeedUpdating);
-    EvaluateAllCallbackItem: TListItem;
+    function GetSelected: TLocalsValue; // The focused Selected Node
     procedure CopyRAWValueEvaluateCallback(Sender: TObject; ASuccess: Boolean;
       ResultText: String; ResultDBGType: TDBGType);
     procedure CopyValueEvaluateCallback(Sender: TObject; ASuccess: Boolean;
       ResultText: String; ResultDBGType: TDBGType);
-    procedure EvaluateAllCallback(Sender: TObject; ASuccess: Boolean;
-      ResultText: String; ResultDBGType: TDBGType);
+    procedure DoLocalValueFreed(Sender: TObject);
 
+    procedure ClearTree(OnlyClearNodeData: boolean = False);
     procedure LocalsChanged(Sender: TObject);
     function  GetThreadId: Integer;
     function  GetSelectedThreads(Snap: TSnapshot): TIdeThreads;
@@ -105,6 +116,7 @@ type
     procedure ColSizeSetter(AColId: Integer; ASize: Integer);
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     property LocalsMonitor;
     property ThreadsMonitor;
     property CallStackMonitor;
@@ -112,7 +124,6 @@ type
   end;
 
 function ValueToRAW(const AValue: string): string;
-function ExtractValue(const AValue: string; AType: string = ''): string;
 
 implementation
 
@@ -277,34 +288,76 @@ begin
   ThreadsNotification.OnCurrent   := @LocalsChanged;
   CallstackNotification.OnCurrent := @LocalsChanged;
   SnapshotNotification.OnCurrent  := @LocalsChanged;
+  FWatchPrinter := TWatchResultPrinter.Create;
 
   Caption:= lisLocals;
-  lvLocals.Columns[0].Caption:= lisName;
-  lvLocals.Columns[1].Caption:= lisValue;
+  vtLocals.Header.Columns[0].Text:= lisName;
+  vtLocals.Header.Columns[1].Text:= lisValue;
   actInspect.Caption := lisInspect;
   actWath.Caption := lisWatch;
   actEvaluate.Caption := lisEvaluateModify;
-  actEvaluateAll.Caption := lisEvaluateAll;
   actCopyName.Caption := lisLocalsDlgCopyName;
   actCopyValue.Caption := lisLocalsDlgCopyValue;
   actCopyRAWValue.Caption := lisLocalsDlgCopyRAWValue;
   actCopyAll.Caption := lisCopyAll;
 
   for i := low(COL_WIDTHS) to high(COL_WIDTHS) do
-    lvLocals.Column[i].Width := COL_WIDTHS[i];
+    vtLocals.Header.Columns[i].Width := COL_WIDTHS[i];
+end;
+
+destructor TLocalsDlg.Destroy;
+begin
+  ClearTree;
+  inherited Destroy;
+  FWatchPrinter.free;
 end;
 
 procedure TLocalsDlg.actInspectUpdate(Sender: TObject);
 begin
-  (Sender as TAction).Enabled := Assigned(lvLocals.Selected);
+  (Sender as TAction).Enabled := Assigned(GetSelected);
 end;
 
 procedure TLocalsDlg.actCopyRAWValueExecute(Sender: TObject);
+var
+  LVal: TLocalsValue;
+  ResVal: TWatchResultData;
 begin
-  if not DebugBoss.Evaluate(lvLocals.Selected.Caption, @CopyRAWValueEvaluateCallback, []) then
+  LVal := GetSelected;
+  if LVal = nil then
+    exit;
+
+  ResVal := LVal.Value;
+  if ResVal = nil then
+    exit;
+
+  if (ResVal.ValueKind <> rdkPrePrinted) then begin
+    while ResVal <> nil do begin
+      case ResVal.ValueKind of
+        rdkVariant: ResVal := ResVal.DerefData;
+        rdkConvertRes: ResVal := ResVal.ConvertedRes;
+        //rdkPCharOrString:
+        else break;
+      end;
+    end;
+
+    if ResVal.ValueKind in [rdkString, rdkWideString, rdkChar] then begin
+      Clipboard.Open;
+      Clipboard.AsText := ResVal.AsString;
+      Clipboard.Close;
+    end
+    else begin
+      Clipboard.Open;
+      Clipboard.AsText := ClearMultiline(FWatchPrinter.PrintWatchValue(LVal.Value, wdfDefault));
+      Clipboard.Close;
+    end;
+
+    exit;
+  end;
+
+  if not DebugBoss.Evaluate(LVal.Name, @CopyRAWValueEvaluateCallback, []) then
   begin
     Clipboard.Open;
-    Clipboard.AsText := ValueToRAW(lvLocals.Selected.SubItems[0]);
+    Clipboard.AsText := ValueToRAW(ClearMultiline(FWatchPrinter.PrintWatchValue(LVal.Value, wdfDefault)));
     Clipboard.Close;
   end;
 end;
@@ -313,8 +366,13 @@ procedure TLocalsDlg.actWathExecute(Sender: TObject);
 var
   S: String;
   Watch: TCurrentWatch;
+  LVal: TLocalsValue;
 begin
-  S := lvLocals.Selected.Caption;
+  LVal := GetSelected;
+  if LVal = nil then
+    exit;
+
+  S := LVal.Name;
   if s = '' then
     exit;
   if DebugBoss.Watches.CurrentWatches.Find(S) = nil then
@@ -332,76 +390,128 @@ begin
   DebugBoss.ViewDebugDialog(ddtWatches);
 end;
 
+procedure TLocalsDlg.vtLocalsChange(Sender: TBaseVirtualTree; Node: PVirtualNode
+  );
+begin
+
+end;
+
+procedure TLocalsDlg.vtLocalsDragDrop(Sender: TBaseVirtualTree;
+  Source: TObject; DataObject: IDataObject; Formats: TFormatArray;
+  Shift: TShiftState; const Pt: TPoint; var Effect: LongWord; Mode: TDropMode);
+begin
+
+end;
+
+procedure TLocalsDlg.vtLocalsDragOver(Sender: TBaseVirtualTree;
+  Source: TObject; Shift: TShiftState; State: TDragState; const Pt: TPoint;
+  Mode: TDropMode; var Effect: LongWord; var Accept: Boolean);
+begin
+
+end;
+
+procedure TLocalsDlg.vtLocalsFocusChanged(Sender: TBaseVirtualTree;
+  Node: PVirtualNode; Column: TColumnIndex);
+begin
+
+end;
+
+procedure TLocalsDlg.vtLocalsNodeDblClick(Sender: TBaseVirtualTree;
+  const HitInfo: THitInfo);
+begin
+
+end;
+
+function TLocalsDlg.GetSelected: TLocalsValue;
+begin
+  Result := TLocalsValue(vtLocals.FocusedItem(True));
+end;
+
 procedure TLocalsDlg.actInspectExecute(Sender: TObject);
 begin
-  DebugBoss.Inspect(lvLocals.Selected.Caption);
+  if GetSelected <> nil then
+    DebugBoss.Inspect(GetSelected.Name);
 end;
 
 procedure TLocalsDlg.actEvaluateExecute(Sender: TObject);
 begin
-  DebugBoss.EvaluateModify(lvLocals.Selected.Caption);
+  if GetSelected <> nil then
+  DebugBoss.EvaluateModify(GetSelected.Name);
 end;
 
 procedure TLocalsDlg.actCopyNameExecute(Sender: TObject);
 begin
   Clipboard.Open;
-  Clipboard.AsText := lvLocals.Selected.Caption;
+  if GetSelected <> nil then
+    Clipboard.AsText := GetSelected.Name
+  else
+    Clipboard.AsText := '';
   Clipboard.Close;
 end;
 
 procedure TLocalsDlg.actCopyAllExecute(Sender: TObject);
 Var
   AStringList : TStringList;
-  I : Integer;
+  LVal: TLocalsValue;
+  VNode: PVirtualNode;
 begin
-  if lvLocals.Items.Count > 0 then begin
-    AStringList := TStringList.Create;
-    for I := 0 to lvLocals.Items.Count - 1 do
-      AStringList.Values[lvLocals.Items[I].Caption] := lvLocals.Items[I].SubItems[0];
-    Clipboard.Open;
-    Clipboard.AsText := AStringList.Text;
-    Clipboard.Close;
-    FreeAndNil(AStringList);
+  AStringList := TStringList.Create;
+  for VNode in vtLocals.NoInitNodes do begin
+    LVal := TLocalsValue((vtLocals.NodeItem[VNode]));
+    if LVal <> nil then
+      AStringList.Values[LVal.Name] := ClearMultiline(FWatchPrinter.PrintWatchValue(LVal.Value, wdfDefault));
   end;
+
+  Clipboard.Open;
+  Clipboard.AsText := AStringList.Text;
+  Clipboard.Close;
+  FreeAndNil(AStringList);
 end;
 
 procedure TLocalsDlg.actCopyAllUpdate(Sender: TObject);
 begin
-  (Sender as TAction).Enabled := lvLocals.Items.Count > 0;
+  (Sender as TAction).Enabled := vtLocals.ChildCount[nil] > 0;
 end;
 
 procedure TLocalsDlg.actCopyValueExecute(Sender: TObject);
+var
+  LVal: TLocalsValue;
+  ResVal: TWatchResultData;
 begin
-  if not DebugBoss.Evaluate(lvLocals.Selected.Caption, @CopyValueEvaluateCallback, []) then
+  LVal := GetSelected;
+  if LVal = nil then
+    exit;
+
+  ResVal := LVal.Value;
+  if ResVal = nil then
+    exit;
+
+  if (ResVal.ValueKind <> rdkPrePrinted) then begin
+    Clipboard.Open;
+    Clipboard.AsText := ClearMultiline(FWatchPrinter.PrintWatchValue(LVal.Value, wdfDefault));
+    Clipboard.Close;
+    exit;
+  end;
+
+  if not DebugBoss.Evaluate(LVal.Name, @CopyValueEvaluateCallback, []) then
   begin
     Clipboard.Open;
-    Clipboard.AsText := lvLocals.Selected.SubItems[0];
+    Clipboard.AsText := ClearMultiline(FWatchPrinter.PrintWatchValue(LVal.Value, wdfDefault));
     Clipboard.Close;
   end
 end;
 
-procedure TLocalsDlg.actEvaluateAllExecute(Sender: TObject);
-var
-  I: Integer;
-begin
-  for I := 0 to lvLocals.Items.Count-1 do
-  begin
-    EvaluateAllCallbackItem := lvLocals.Items[I];
-    DebugBoss.Evaluate(EvaluateAllCallbackItem.Caption, @EvaluateAllCallback, []);
-  end;
-  EvaluateAllCallbackItem := nil;
-end;
-
 procedure TLocalsDlg.LocalsChanged(Sender: TObject);
 var
-  n, idx: Integer;                               
-  List: TStringListUTF8Fast;
-  Item: TListItem;
+  n: Integer;
   Locals: TIDELocals;
   Snap: TSnapshot;
+  s: String;
+  LVal: TLocalsValue;
+  VNode, VN2: PVirtualNode;
 begin
   if (ThreadsMonitor = nil) or (CallStackMonitor = nil) or (LocalsMonitor=nil) then begin
-    lvLocals.Items.Clear;
+    ClearTree;
     exit;
   end;
 
@@ -414,7 +524,7 @@ begin
   DebugLn(DBG_DATA_MONITORS, ['DebugDataMonitor: TLocalsDlg.LocalsChanged']);
 
   if GetStackframe < 0 then begin // TODO need dedicated validity property
-    lvLocals.Items.Clear;
+    ClearTree;
     exit;
   end;
 
@@ -429,54 +539,48 @@ begin
     Caption:= lisLocals;
   end;
 
-  List := TStringListUTF8Fast.Create;
+  if Locals = nil
+  then begin
+    ClearTree;
+    VNode:= vtLocals.AddChild(nil, nil);
+    vtLocals.NodeText[VNode, 1] := lisLocalsNotEvaluated;
+    Exit;
+  end;
+
+  BeginUpdate;
   try
-    BeginUpdate;
-    try
-      if Locals = nil
-      then begin
-        lvLocals.Items.Clear;
-        Item := lvLocals.Items.Add;
-        Item.Caption := '';
-        Item.SubItems.add(lisLocalsNotEvaluated);
-        Exit;
-      end;
+    ClearTree(True);
+    for n := 0 to Locals.Count - 1 do begin
+      LVal := Locals.Entries[n];
+      LVal.AddFreeNotification(@DoLocalValueFreed);
 
-      //Get existing items
-      for n := 0 to lvLocals.Items.Count - 1 do
-      begin
-        Item := lvLocals.Items[n];
-        List.AddObject(Item.Caption, Item);
-      end;
+      VNode := vtLocals.FindNodeForText(LVal.Name, 0);
+      if (VNode = nil) then begin
+        VNode := vtLocals.AddChild(nil, LVal);
+        LVal.AddFreeNotification(@DoLocalValueFreed);
+      end
+      else
+        vtLocals.NodeItem[VNode] := LVal;
 
-      // add/update entries
-      for n := 0 to Locals.Count - 1 do
-      begin
-        idx := List.IndexOf(Locals.Names[n]);
-        if idx = -1
-        then begin
-          // New entry
-          Item := lvLocals.Items.Add;
-          Item.Caption := Locals.Names[n];
-          Item.SubItems.Add(ExtractValue(Locals.Values[n]));
-        end
-        else begin
-          // Existing entry
-          Item := TListItem(List.Objects[idx]);
-          Item.SubItems[0] := ExtractValue(Locals.Values[n]);
-          List.Delete(idx);
-        end;
-      end;
-
-      // remove obsolete entries
-      for n := 0 to List.Count - 1 do
-        lvLocals.Items.Delete(TListItem(List.Objects[n]).Index);
-
-    finally
-      EndUpdate;
+      s := ClearMultiline(FWatchPrinter.PrintWatchValue(LVal.Value, wdfDefault));
+      vtLocals.NodeText[VNode, 0] := LVal.Name;
+      vtLocals.NodeText[VNode, 1] := s;
     end;
+
+
+    VNode := vtLocals.GetFirstNoInit;
+    while VNode <> nil do begin
+      if (vtLocals.NodeItem[VNode] = nil) and (vtLocals.NodeControl[VNode] = nil) then begin
+        VN2 := VNode;
+        VNode := vtLocals.GetNextVisibleSiblingNoInit(VNode);
+        vtLocals.DeleteNode(VN2);
+      end
+      else
+        VNode := vtLocals.GetNextVisibleNoInit(VNode);
+    end;
+
   finally
-    List.Free;
+    EndUpdate;
   end;
 end;
 
@@ -537,31 +641,23 @@ end;
 
 procedure TLocalsDlg.DoBeginUpdate;
 begin
-  lvLocals.BeginUpdate;
+  inherited DoBeginUpdate;
+  vtLocals.BeginUpdate;
 end;
 
 procedure TLocalsDlg.DoEndUpdate;
 begin
+  inherited DoEndUpdate;
   if ufNeedUpdating in FUpdateFlags then LocalsChanged(nil);
-  lvLocals.EndUpdate;
-end;
-
-procedure TLocalsDlg.EvaluateAllCallback(Sender: TObject; ASuccess: Boolean;
-  ResultText: String; ResultDBGType: TDBGType);
-begin
-  if ASuccess then
-  begin
-    if Assigned(EvaluateAllCallbackItem) then
-      EvaluateAllCallbackItem.SubItems[0] := ExtractValue(ResultText, ResultDBGType.TypeName);
-  end;
-  FreeAndNil(ResultDBGType);
+  vtLocals.EndUpdate;
+  vtLocalsChange(nil, nil);
 end;
 
 function TLocalsDlg.ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
 begin
-  if (AColId - 1 >= 0) and (AColId - 1 < lvLocals.ColumnCount) then begin
-    ASize := lvLocals.Column[AColId - 1].Width;
-    Result := (ASize <> COL_WIDTHS[AColId - 1]) and (not lvLocals.Column[AColId - 1].AutoSize);
+  if (AColId - 1 >= 0) and (AColId - 1 < vtLocals.Header.Columns.Count) then begin
+    ASize := vtLocals.Header.Columns[AColId - 1].Width;
+    Result := (ASize <> COL_WIDTHS[AColId - 1]);
   end
   else
     Result := False;
@@ -570,33 +666,79 @@ end;
 procedure TLocalsDlg.ColSizeSetter(AColId: Integer; ASize: Integer);
 begin
   case AColId of
-    COL_LOCALS_NAME:   lvLocals.Column[0].Width := ASize;
-    COL_LOCALS_VALUE:  lvLocals.Column[1].Width := ASize;
+    COL_LOCALS_NAME:   vtLocals.Header.Columns[0].Width := ASize;
+    COL_LOCALS_VALUE:  vtLocals.Header.Columns[1].Width := ASize;
   end;
 end;
 
 procedure TLocalsDlg.CopyRAWValueEvaluateCallback(Sender: TObject;
   ASuccess: Boolean; ResultText: String; ResultDBGType: TDBGType);
+var
+  LVal: TLocalsValue;
 begin
   Clipboard.Open;
   if ASuccess then
     Clipboard.AsText := ValueToRAW(ExtractValue(ResultText, ResultDBGType.TypeName))
   else
-    Clipboard.AsText := ValueToRAW(lvLocals.Selected.SubItems[0]);
+  begin
+    LVal := GetSelected;
+    if (LVal <> nil) and (LVal.Value <> nil) then begin
+      Clipboard.Open;
+      Clipboard.AsText := ValueToRAW(ClearMultiline(FWatchPrinter.PrintWatchValue(LVal.Value, wdfDefault)));
+      Clipboard.Close;
+    end;
+  end;
   Clipboard.Close;
   FreeAndNil(ResultDBGType);
 end;
 
 procedure TLocalsDlg.CopyValueEvaluateCallback(Sender: TObject;
   ASuccess: Boolean; ResultText: String; ResultDBGType: TDBGType);
+var
+  LVal: TLocalsValue;
 begin
   Clipboard.Open;
   if ASuccess then
     Clipboard.AsText := ExtractValue(ResultText, ResultDBGType.TypeName)
-  else
-    Clipboard.AsText := lvLocals.Selected.SubItems[0];
+  else begin
+    LVal := GetSelected;
+    if (LVal <> nil) and (LVal.Value <> nil) then begin
+      Clipboard.Open;
+      Clipboard.AsText := ClearMultiline(FWatchPrinter.PrintWatchValue(LVal.Value, wdfDefault));
+      Clipboard.Close;
+    end;
+  end;
   Clipboard.Close;
   FreeAndNil(ResultDBGType);
+end;
+
+procedure TLocalsDlg.DoLocalValueFreed(Sender: TObject);
+var
+  nd: PVirtualNode;
+begin
+  nd := vtLocals.FindNodeForItem(Sender);
+  if nd = nil then
+    exit;
+
+  //vtLocals.OnItemRemoved := nil;
+  vtLocals.NodeItem[nd] := nil;
+  //vtLocals.OnItemRemoved := @DoItemRemovedFromView;
+end;
+
+procedure TLocalsDlg.ClearTree(OnlyClearNodeData: boolean);
+var
+  LVal: TLocalsValue;
+  VNode: PVirtualNode;
+begin
+  for VNode in vtLocals.NoInitNodes do begin
+    LVal := TLocalsValue(vtLocals.NodeItem[VNode]);
+    if LVal <> nil then
+      LVal.RemoveFreeNotification(@DoLocalValueFreed);
+    vtLocals.NodeItem[VNode] := nil;
+  end;
+
+  if not OnlyClearNodeData then
+    vtLocals.Clear;
 end;
 
 initialization

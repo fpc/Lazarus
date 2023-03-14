@@ -56,6 +56,7 @@ type
 
     procedure SelectNode(Node: PVirtualNode; ASetFocus: boolean = True);
     function FindNodeForItem(AnItem: TObject): PVirtualNode;
+    function FindNodeForText(AText: String; AColumn: integer): PVirtualNode;
     procedure DeleteNodeEx(Node: PVirtualNode; FreeItem: Boolean; Reindex: Boolean = True);
 
     property NodeItem[Node: PVirtualNode]: TObject read GetNodeItem write SetNodeItem;
@@ -345,6 +346,18 @@ var
 begin
   for VNode in NoInitNodes do begin
     if GetNodeItem(VNode) = AnItem then
+      exit(VNode);
+  end;
+  Result := nil;
+end;
+
+function TDbgTreeView.FindNodeForText(AText: String; AColumn: integer
+  ): PVirtualNode;
+var
+  VNode: PVirtualNode;
+begin
+  for VNode in NoInitNodes do begin
+    if GetNodeText(VNode, AColumn) = AText then
       exit(VNode);
   end;
   Result := nil;
