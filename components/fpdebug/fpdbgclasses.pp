@@ -632,6 +632,11 @@ type
     function InstructionLength: Integer; virtual;
   end;
 
+  TDbgInstInfo = record
+    InstrType: (itAny, itJump);
+    InstrTargetOffs: Int64; // offset from the START address of instruction
+  end;
+
   { TDbgAsmDecoder }
 
   TDbgAsmDecoder = class
@@ -643,7 +648,8 @@ type
   public
     constructor Create(AProcess: TDbgProcess); virtual; abstract;
 
-    procedure Disassemble(var AAddress: Pointer; out ACodeBytes: String; out ACode: String); virtual; abstract;
+    procedure Disassemble(var AAddress: Pointer; out ACodeBytes: String; out ACode: String; out AnInfo: TDbgInstInfo); virtual; overload;
+    procedure Disassemble(var AAddress: Pointer; out ACodeBytes: String; out ACode: String); virtual; abstract; overload;
     procedure ReverseDisassemble(var AAddress: Pointer; out ACodeBytes: String; out ACode: String); virtual;
 
     function GetInstructionInfo(AnAddress: TDBGPtr): TDbgAsmInstruction; virtual; abstract;
@@ -1828,6 +1834,13 @@ end;
 function TDbgAsmDecoder.GetCanReverseDisassemble: boolean;
 begin
   Result := false;
+end;
+
+procedure TDbgAsmDecoder.Disassemble(var AAddress: Pointer; out
+  ACodeBytes: String; out ACode: String; out AnInfo: TDbgInstInfo);
+begin
+  AnInfo := Default(TDbgInstInfo);
+  Disassemble(AAddress, ACodeBytes, ACode);
 end;
 
 // Naive backwards scanner, decode MaxInstructionSize

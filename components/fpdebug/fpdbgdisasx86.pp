@@ -562,6 +562,7 @@ type
     constructor Create(AProcess: TDbgProcess); override;
     destructor Destroy; override;
 
+    procedure Disassemble(var AAddress: Pointer; out ACodeBytes: String; out ACode: String; out AnInfo: TDbgInstInfo); override;
     procedure Disassemble(var AAddress: Pointer; out ACodeBytes: String; out ACode: String); override;
     function GetInstructionInfo(AnAddress: TDBGPtr): TDbgAsmInstruction; override;
 
@@ -4915,7 +4916,8 @@ begin
   Result := FInstruction.OpCode.Opcode;
 end;
 
-procedure TX86AsmDecoder.Disassemble(var AAddress: Pointer; out ACodeBytes: String; out ACode: String);
+procedure TX86AsmDecoder.Disassemble(var AAddress: Pointer; out
+  ACodeBytes: String; out ACode: String; out AnInfo: TDbgInstInfo);
 const
   MEMPTR: array[TOperandSize] of string = (
     { os0    } '',
@@ -4938,10 +4940,12 @@ var
   Instr: TInstruction;
   S, Soper: String;
   n, i: Integer;
+  TargetAddrOffs: Int64;
   HasMem: Boolean;
   OpcodeName: String;
   Code: PByte;
 begin
+  AnInfo := default(TDbgInstInfo);
   Code := AAddress;
   Disassembler.Disassemble(FProcess.Mode, AAddress, Instr);
 
@@ -4989,6 +4993,28 @@ begin
 {$endif}
 
 
+  if (Instr.OpCode.Opcode in [OPcall, OPj__, OPjcxz, OPjecxz, OPjmp, OPjmpe, OPjrcxz]) and
+     (Instr.OperCnt = 1) and
+     (hvfSigned in Instr.Operand[1].FormatFlags)
+  then begin
+    TargetAddrOffs := 1;
+    case Instr.Operand[1].ByteCount of
+      1: TargetAddrOffs := smallint(PByte(@Code[Instr.Operand[1].CodeIndex])^);
+      2: TargetAddrOffs := shortint(PWord(@Code[Instr.Operand[1].CodeIndex])^);
+      4: TargetAddrOffs := Integer(PDWord(@Code[Instr.Operand[1].CodeIndex])^);
+      8: TargetAddrOffs := Int64(PQWord(@Code[Instr.Operand[1].CodeIndex])^);
+    end;
+    if TargetAddrOffs <> 1 then begin
+      AnInfo.InstrType := itJump;
+      {$PUSH}{$R-}{$Q-}
+      if not (hvfPrefixPositive in Instr.Operand[1].FormatFlags) then
+        TargetAddrOffs := -TargetAddrOffs;
+      AnInfo.InstrTargetOffs := TDbgPtr(AAddress) - TDbgPtr(Code) + TargetAddrOffs;
+      {$POP}
+    end;
+  end;
+
+
   OpcodeName := OPCODE_PREFIX[Instr.OpCode.Prefix];
   OpcodeName := OpcodeName + OPCODE_NAME[Instr.OpCode.Opcode];
   OpcodeName := OpcodeName + OPCODE_SUFFIX[Instr.OpCode.Suffix];
@@ -5019,6 +5045,14 @@ begin
     inc(Code);
   end;
   ACodeBytes := S;
+end;
+
+procedure TX86AsmDecoder.Disassemble(var AAddress: Pointer; out
+  ACodeBytes: String; out ACode: String);
+var
+  AnInfo: TDbgInstInfo;
+begin
+  Disassemble(AAddress, ACodeBytes, ACode, AnInfo);
 end;
 
 function TX86AsmDecoder.GetInstructionInfo(AnAddress: TDBGPtr): TDbgAsmInstruction;

@@ -2136,6 +2136,7 @@ var
   ADisassembler: TDbgAsmDecoder;
   AOffset: longint;
   RealReadLen: Cardinal;
+  AnInfo: TDbgInstInfo;
 
   procedure AddInfoToRange(ALineAddr: TDBGPtr; ATargetRange: TDBGDisassemblerEntryRange);
   var
@@ -2176,6 +2177,27 @@ var
     AnEntry.FuncName := AFuncName;
     AnEntry.SrcStatementIndex:=StatIndex;
     AnEntry.Offset := AOffset;
+    AnEntry.TargetAddr := 0;
+    AnEntry.TargetName := '';
+    AnEntry.TargetFile := '';
+    AnEntry.TargetLine := 0;
+    if AnInfo.InstrType = itJump then begin
+      {$PUSH}{$R-}{$Q-}
+      AnEntry.TargetAddr := ALineAddr + AnInfo.InstrTargetOffs;
+      {$POP}
+      Sym := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.FindProcSymbol(AnEntry.TargetAddr);
+      if Sym <> nil then begin
+        AnEntry.TargetName := Sym.Name;
+        AnEntry.TargetFile := Sym.FileName;
+        AnEntry.TargetLine := Sym.Line;
+        {$PUSH}{$R-}{$Q-}
+        AOffset := int32(int64(AnEntry.TargetAddr) - int64(Sym.Address.Address));
+        {$POP}
+        if AOffset <> 0 then
+          AnEntry.TargetName := AnEntry.TargetName + '+' + IntToStr(AOffset);
+        Sym.ReleaseReference;
+      end;
+    end;
     ATargetRange.Append(@AnEntry);
     inc(StatIndex);
   end;
@@ -2284,7 +2306,7 @@ begin
         else begin
           while tmpAddr < AnAddr do begin
             p := @CodeBin[bytesDisassembled];
-            ADisassembler.Disassemble(p, ADump, AStatement);
+            ADisassembler.Disassemble(p, ADump, AStatement, AnInfo);
 
             prevInstructionSize := p - @CodeBin[bytesDisassembled];
             if prevInstructionSize = 0 then
@@ -2308,6 +2330,10 @@ begin
             AnEntry.FuncName := '';
             AnEntry.SrcStatementIndex:=StatIndex;
             AnEntry.Offset := -1;
+            AnEntry.TargetAddr := 0;
+            AnEntry.TargetName := '';
+            AnEntry.TargetFile := '';
+            AnEntry.TargetLine := 0;
             ARange.Append(@AnEntry);
             inc(StatIndex);
           end;
@@ -2332,7 +2358,7 @@ begin
       for i := 0 to ALinesAfter-1 do
         begin
         p := @CodeBin[bytesDisassembled];
-        ADisassembler.Disassemble(p, ADump, AStatement);
+        ADisassembler.Disassemble(p, ADump, AStatement, AnInfo);
 
         prevInstructionSize := p - @CodeBin[bytesDisassembled];
         bytesDisassembled := bytesDisassembled + prevInstructionSize;

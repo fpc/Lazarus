@@ -1010,6 +1010,9 @@ type
     SrcFileLine: Integer;            // Line in SrcFile
     SrcStatementIndex: SmallInt;     // Index of Statement, within list of Stmnt of the same SrcLine
     SrcStatementCount: SmallInt;     // Count of Statements for this SrcLine
+    TargetAddr: TDbgPtr;             // Absolute Addr for relative jump/call
+    TargetName, TargetFile: String;
+    TargetLine: Integer;
   end;
 
   TDisassemblerAddressValidity =

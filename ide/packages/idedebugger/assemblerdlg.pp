@@ -44,6 +44,7 @@ type
     FileName, FullFileName: String;
     SourceLine: Integer;
     ImageIndex: Integer;
+    TargetAddr: TDbgPtr;             // Absolute Addr for relative jump/call
   end;
   TAsmDlgLineEntries = Array of TAsmDlgLineEntry;
 
@@ -1068,7 +1069,7 @@ var
   DoneLocation: TDBGPtr;
   DoneTopLine, DoneLineCount: Integer;
   DoneCountBefore, DoneCountAfter: Integer;
-  Line, Idx: Integer;
+  Line, Idx, W: Integer;
   Itm, NextItm, PrevItm: PDisassemblerEntry;
   LineIsSrc, HasLineOutOfRange: Boolean;
   s: String;
@@ -1090,6 +1091,11 @@ begin
     Exit;
   end;
   FUpdating := True;
+
+  if FDebugger = nil
+  then W := 16
+  else W := FDebugger.TargetWidth div 4;
+
 
   try
     FUpdateNeeded := False;
@@ -1260,6 +1266,23 @@ begin
       ALineMap[Line].Statement  := Itm^.Statement;
       ALineMap[Line].SourceLine := Itm^.SrcFileLine;
       ALineMap[Line].ImageIndex := -1;
+      ALineMap[Line].TargetAddr := Itm^.TargetAddr;
+
+      s := StringOfChar(' ', min(4, 40 - Length(ALineMap[Line].Statement))) + '#';
+      if Itm^.TargetAddr <> 0 then begin
+        ALineMap[Line].Statement := ALineMap[Line].Statement + s + ' $' + IntToHex(Itm^.TargetAddr, W);
+        s := '';
+      end;
+      if Itm^.TargetName <> '' then begin
+        ALineMap[Line].Statement := ALineMap[Line].Statement + s + ' ' + Itm^.TargetName;
+        s := '';
+      end;
+      if Itm^.TargetFile <> '' then begin
+        ALineMap[Line].Statement := ALineMap[Line].Statement + s + ' ' + ExtractFileName(Itm^.TargetFile);
+        if Itm^.TargetLine <> 0 then
+          ALineMap[Line].Statement := ALineMap[Line].Statement + ':' + IntToStr(Itm^.TargetLine);
+        s := '';
+      end;
 
       inc(Line);
       inc(idx);
