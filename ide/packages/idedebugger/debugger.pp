@@ -3972,7 +3972,6 @@ begin
   if (FCurrentResData <> nil) and (FCurrentResData.FNewResultData <> nil) then begin
     FCurrentResData.Done;
     SetResultData(FCurrentResData.FNewResultData);
-    FCurrentResData.FNewResultData := nil;
 
     if ResultData.ValueKind = rdkError then
       NewValid := ddsError;
