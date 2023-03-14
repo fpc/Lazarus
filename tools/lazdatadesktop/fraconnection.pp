@@ -127,33 +127,10 @@ end;
 
 constructor TConnectionFrame.Create(AOwner: TComponent);
 
-Const
-  ImageNames : Array[0..9] of string =
-        ('ddconnection','ddtables','ddtable','ddfields','ddfield',
-         'ddindexes','ddindex','ddtabledata',
-         // Need images for these...
-         'ddtables','ddtables');
-
-
-
-Var
-  P : TPortableNetworkGraphic;
-  I : Integer;
-
 begin
   inherited Create(AOwner);
   FTSDisplay.Caption:=SSelectedObject;
   FTSQuery.Caption:=SQuery;
-{  For I:=0 to 8 do
-    begin
-    P:=TPortableNetworkGraphic.Create;
-    try
-      P.LoadFromResourceName(HInstance,ImageNames[i]);
-      FImgList.Add(P,Nil);
-    finally
-      P.Free;
-    end;
-    end;          }
   // Query panel
   FQueryPanel:= TQueryFrame.Create(Self);
   FQueryPanel.Name:='FQueryPanel';

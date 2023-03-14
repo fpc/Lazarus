@@ -202,7 +202,6 @@ Function CreateDatasetFromTabledef(TD : TDDTableDef;AOwner : TComponent = Nil) :
 Var
   MDS : TMemDataset;
   I : Integer;
-  FD : TFieldDef;
   FDD : TDDFieldDef;
 
 begin
@@ -498,7 +497,6 @@ Function TDataDictEditor.NewTableObject(AObjectName: String; TD: TDDTableDef; AO
 
 Var
   TN : TTreeNode;
-  FD : TDDFieldDef;
   POT : TEditObjectType;
   II : Integer;
 
@@ -693,6 +691,7 @@ Var
 begin
   EOT:=TEditObjectType((Sender as TMenuItem).Tag);
   S:=ObjectTypeName(EOT);
+  N:='';
   if InputQuery(Format(SNewObject,[S]),Format(SNameFor,[S]),N) then
     begin
     case EOT of
@@ -931,11 +930,11 @@ end;
 procedure TDataDictEditor.DeleteGlobalObject(AObject: TObject);
 
 Var
-  N,NN : TTreeNode;
+  N : TTreeNode;
 
 begin
   N:=FindNodeWithData(FTV,Pointer(AObject));
-  NN:=SelectNextNode(N,FDDNode);
+  SelectNextNode(N,FDDNode);
   AObject.Free;
   Modified:=True;
 end;
@@ -943,11 +942,11 @@ end;
 procedure TDataDictEditor.DeleteTableObject(AObject: TObject);
 
 Var
-  N,NN : TTreeNode;
+  N : TTreeNode;
 
 begin
   N:=FindNodeWithData(FTV,Pointer(AObject));
-  NN:=SelectNextNode(N,Nil);
+  SelectNextNode(N,Nil);
   AObject.Free;
   Modified:=True;
 end;
