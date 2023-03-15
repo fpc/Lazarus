@@ -2244,58 +2244,6 @@ for Columns.
 </seealso>
 </element>
 
-<!-- TODO: Removed in 06701d05a7
-<element name="TCustomShellListView.Resize">
-<short>Updates the size for Columns in the list view.</short>
-<descr>
-<p>
-<var>Resize</var> is a method used to update the size for <var>Columns</var> 
-defined in the list view control. <var>Resize</var> calls the inherited 
-method to capture the internal Width and ClientWidth for the control, and to 
-signal the OnResize event handler (when assigned).
-</p>
-<p>
-Resize checks the <var>Columns</var> defined for the control. No additional 
-actions are performed in the method if fewer than 3 (three) columns are 
-defined for the control. This is the number of columns defined in the 
-constructor for the <var>vsReport</var> <var>ViewStyle</var>.
-</p>
-<p>
-No additional actions are performed if <var>AutoSizeColumns</var> is set to 
-<b>False</b> and an explicit width has been assigned for the first column in 
-the list view control.
-</p>
-<p>
-When AutoSizeColumns is set to <b>True</b>, Resize adjusts the width for the 
-columns so that they fill the display area for the control without the need 
-for a horizontal scroll bar. The value in <var>ClientWidth</var> is used to 
-determine the available space for the columns. The first column (Name) uses a 
-larger percentage of the available display area (50% when the control width 
-is less than 400 pixels, 70% for a larger control width). The remaining 
-columns (Size and Type) get equal portions of the remaining display area.
-</p>
-<p>
-Set AutoSizeColumns to <b>False</b> use the widths explicitly assigned to 
-entries in the <var>Columns</var> property.
-</p>
-<p>
-<var>Resize</var> is used called from the <var>Create</var> constructor, when 
-the bounds for the control are updated in the <var>ChangeBounds</var> method. 
-It is also called when <var>AutoSizing</var> is enabled for the control, and 
-when a new value is assigned to the <var>Width</var> property.
-</p>
-</descr>
-<seealso>
-<link id="TCustomShellListView.AutoSizeColumns"/>
-<link id="TCustomShellListView.Create"/>
-<link id="#lcl.comctrls.TCustomListView.ViewStyle">TCustomListView.ViewStyle</link>
-<link id="#lcl.comctrls.TCustomListView.Columns">TCustomListView.Columns</link>
-<link id="#lcl.comctrls.TListColumns">TListColumns</link>
-<link id="#lcl.comctrls.TViewStyle">TViewStyle</link>
-<link id="#lcl.controls.TControl.Width">TControl.Width</link>
-</seealso>
-</element> -->
-
 <element name="TCustomShellListView.SetAutoSizeColumns">
 <short>Sets the value for the AutoSizeColumns property.</short>
 <descr/>
