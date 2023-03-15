@@ -143,16 +143,28 @@ object AssemblerDlg: TAssemblerDlg
       Action = actGotoAddr
     end
     object ToolButton1: TToolButton
-      Left = 212
+      Left = 258
       Height = 22
       Top = 2
       Caption = 'ToolButton1'
       Style = tbsDivider
     end
     object ToolButtonCopy: TToolButton
-      Left = 217
+      Left = 263
       Top = 2
       Action = actCopy
+    end
+    object tbJumpBack: TToolButton
+      Left = 212
+      Top = 2
+      Caption = 'tbJumpBack'
+      OnClick = tbJumpBackClick
+    end
+    object tbJumpForward: TToolButton
+      Left = 235
+      Top = 2
+      Caption = 'tbJumpForward'
+      OnClick = tbJumpForwardClick
     end
   end
   object PopupMenu1: TPopupMenu
