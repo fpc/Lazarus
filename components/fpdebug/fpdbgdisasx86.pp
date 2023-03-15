@@ -4999,17 +4999,15 @@ begin
   then begin
     TargetAddrOffs := 1;
     case Instr.Operand[1].ByteCount of
-      1: TargetAddrOffs := smallint(PByte(@Code[Instr.Operand[1].CodeIndex])^);
-      2: TargetAddrOffs := shortint(PWord(@Code[Instr.Operand[1].CodeIndex])^);
+      1: TargetAddrOffs := shortint(PByte(@Code[Instr.Operand[1].CodeIndex])^);
+      2: TargetAddrOffs := smallint(PWord(@Code[Instr.Operand[1].CodeIndex])^);
       4: TargetAddrOffs := Integer(PDWord(@Code[Instr.Operand[1].CodeIndex])^);
       8: TargetAddrOffs := Int64(PQWord(@Code[Instr.Operand[1].CodeIndex])^);
     end;
     if TargetAddrOffs <> 1 then begin
       AnInfo.InstrType := itJump;
       {$PUSH}{$R-}{$Q-}
-      if not (hvfPrefixPositive in Instr.Operand[1].FormatFlags) then
-        TargetAddrOffs := -TargetAddrOffs;
-      AnInfo.InstrTargetOffs := TDbgPtr(AAddress) - TDbgPtr(Code) + TargetAddrOffs;
+      AnInfo.InstrTargetOffs := Int64(TDbgPtr(AAddress) - TDbgPtr(Code)) + TargetAddrOffs;
       {$POP}
     end;
   end;
