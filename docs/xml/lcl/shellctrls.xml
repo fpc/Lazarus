@@ -1817,6 +1817,103 @@ the notification. Or, use the <var>ListView</var> property in the
 <short>List item for the event notification.</short>
 </element>
 
+<element name="TShellListItem">
+<short>
+Implements the class used for list items maintained in TShelllListView.
+</short>
+<descr>
+<p>
+<var>TShellListItem</var> is a <var>TListItem</var> descendant which 
+implements the class used for the list items in the TShellListView control. It 
+extends the ancestor class with the FileInfo property used for file system 
+information about the list item. It also includes the IsFolder method to 
+identify whether the list item is a directory on the local file system.
+</p>
+<p>
+TShellListItem is the default class type used to create a new list item in the 
+TCustomShellListView.CreateListItem method. It can, however be overridden by 
+using an OnCreateItemClass event handler in the shell list view control. It is 
+also used in the PopulateWithRoot method in TCustomShellListView to cast a new 
+TFileItem instance created when the a file is added to the Items for the 
+control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomShellListView.CreateListItem"/>
+<link id="TCustomShellListView.OnCreateItemClass"/>
+<link id="TCustomShellListView.PopulateWithRoot"/>
+<link id="TCustomShellListView.Items"/>
+<link id="#lcl.comctrls.TListItem">TListItem</link>
+<link id="#lcl.comctrls.TListItems.Add">TListItems.Add</link>
+TFileItem.Create
+</seealso>
+</element>
+
+<!-- private -->
+<element name="TShellListItem.FFileInfo"/>
+
+<!-- public -->
+<element name="TShellListItem.isFolder">
+<short>
+Checks for the directory attribute in the file system information for the list 
+item.
+</short>
+<descr>
+<p>
+The return value is <b>True</b> if the Attr member in FileInfo includes the 
+faDirectory flag value.
+</p>
+</descr>
+<seealso>
+<link id="TShellListItem.FileInfo"/>
+<link id="TFileItem.Create"/>
+<link id="#rtl.sysutils.FindFirst">FindFirst</link>
+<link id="#rtl.sysutils.FindNext">FindNext</link>
+<link id="#rtl.sysutils.TRawbyteSearchRec">TRawbyteSearchRec</link>
+<link id="#rtl.sysutils.TUnicodeSearchRec">TUnicodeSearchRec</link>
+</seealso>
+</element>
+<element name="TShellListItem.isFolder.Result">
+<short>
+Returns <b>True</b> if the list item represents a directory on the local file 
+system.
+</short>
+</element>
+
+<element name="TShellListItem.FileInfo">
+<short>
+File system information about the list item.
+</short>
+<descr>
+<p>
+<var>FileInfo</var> is a <var>TSearchRec</var> property which contains file 
+system information about the list item. It is a record instance returned from 
+the FindFirst or FindNext routines in the RTL, and contains the attributes for 
+a file or folder on the local file system. FileInfo includes values like:
+</p>
+<ul>
+<li>Timestamp</li>
+<li>Size</li>
+<li>Attributes</li>
+<li>Excluded Attributes</li>
+<li>Find Handle</li>
+<li>File Mode (on UNIX-like platforms)</li>
+<li>Find Data Structure (or symlink structure on UNIX-like platforms)</li>
+</ul>
+</descr>
+<seealso>
+<link id="TCustomShellListView.DoAddItem"/>
+<link id="TCustomShellListView.PopulateWithRoot"/>
+<link id="TCustomShellTreeView.DoAddItem"/>
+<link id="TCustomShellTreeView.PopulateTreeNodeWithFiles"/>
+<link id="TAddItemEvent"/>
+<link id="#rtl.sysutils.FindFirst">FindFirst</link>
+<link id="#rtl.sysutils.FindNext">FindNext</link>
+<link id="#rtl.sysutils.TRawbyteSearchRec">TRawbyteSearchRec</link>
+<link id="#rtl.sysutils.TUnicodeSearchRec">TUnicodeSearchRec</link>
+</seealso>
+</element>
+
 <element name="TCustomShellListView">
 <short>
 The base class that defines a list view control to display the files, 
@@ -2037,6 +2134,31 @@ is called for the class instance or its Parent.
 </seealso>
 </element>
 
+<element name="TCustomShellListView.CreateListItem">
+<short>
+Create a new entry added to the Items for the shell control.
+</short>
+<descr>
+<p>
+<var>CreateListItem</var> is an overridden TListItem function in 
+TCustomShellListView. It ensures that the TShellListItem class type is used 
+for new Items added to the shell control. If an OnCreateItemClass event 
+handler has been assigned, the inherited method in TCustomListView is called 
+to confirm/override the item class used and to create the new instance added 
+to Items.
+</p>
+<p>
+The return value contains the new TListItem (or descendent) class instance 
+created for the list item in the method.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.comctrls.TCustomListView.CreatelistItem">TCustomListView.CreatelistItem</link>
+<link id="#lcl.comctrls.TListItem">TListItem</link>
+<link id="#lcl.comctrls.TListItems.Add">TListItems.Add</link>
+</seealso>
+</element>
+
 <element name="TCustomShellListView.PopulateWithRoot">
 <short>
 Fills the list view with file system information for the directory in Root.
@@ -2061,10 +2183,16 @@ specified for the control. Each of the files in the list are passed to
 DoAddItem / OnAddItem to determine if they can be added to the Items property.
 </p>
 <p>
-A TListItem instance is added to Items to represent each of the files or 
-directories. The Data property in the list item is used to store a pointer to 
-the file size. Values are added to SubItems in the list item to store the
-string representation for the file size, and the file extension.
+The add method in Items is called to create the list items which represent 
+each of the files or directories. If a list item is a TShellListItem class 
+type, its FileInfo property is updated with the file information from the 
+TFileItem created in GetFilesInDir.
+</p>
+<p>
+The Caption is used to store the file or directory name in the list item. The 
+Data property in the list item is used to store a pointer to the file size. 
+Values are added to SubItems in the list item to store the string 
+representation for the file size, and the file extension.
 </p>
 <p>
 When UseBuiltInIcons is set to <b>True</b>, the GetBuiltInImageIndex method 
@@ -2096,6 +2224,7 @@ using the option specified in the FileSortType property.
 <link id="TCustomShellListView.OnAddItem"/>
 <link id="TCustomShellListView.OnFileAdded"/>
 <link id="TCustomShellListView.CreateHandle"/>
+<link id="TShellListItem"/>
 <link id="TAddItemEvent"/>
 <link id="TCSLVFileAddedEvent"/>
 </seealso>
@@ -2960,9 +3089,9 @@ For <var>TMaskCaseSensitivity</var>, a string version of the enumeration
 value is used as the return value. For example:
 </p>
 <code>
-    'mcsPlatformDefault'
-    'mcsCaseInsensitive'
-    'mcsCaseSensitive'
+  'mcsPlatformDefault'
+  'mcsCaseInsensitive'
+  'mcsCaseSensitive'
 </code>
 </descr>
 <seealso>
