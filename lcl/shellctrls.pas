@@ -236,6 +236,16 @@ type
 
   TCSLVFileAddedEvent = procedure(Sender: TObject; Item: TListItem) of object;
 
+  { TShellListItem }
+
+  TShellListItem = class(TListItem)
+  private
+    FFileInfo: TSearchRec;
+  public
+    function isFolder: Boolean;
+    property FileInfo: TSearchRec read FFileInfo write FFileInfo;
+  end;
+
   TCustomShellListView = class(TCustomListView)
   private
     FAutoSizeColumns: Boolean;
@@ -258,6 +268,7 @@ type
     class procedure WSRegisterClass; override;
     procedure AdjustColWidths;
     procedure CreateHandle; override;
+    function CreateListItem: TListItem; override;
     procedure PopulateWithRoot();
     procedure DoOnResize; override;
     procedure SetAutoSizeColumns(const Value: Boolean); virtual;
@@ -439,6 +450,13 @@ end;
 operator = (const A, B: TMethod): Boolean;
 begin
   Result := (A.Code = B.Code) and (A.Data = B.Data);
+end;
+
+{ TShellListItem }
+
+function TShellListItem.isFolder: Boolean;
+begin
+  Result := (FFileInfo.Attr and faDirectory) = faDirectory;
 end;
 
 { TFileItem : internal helper class used for temporarily storing info in an internal TStrings component}
@@ -1676,6 +1694,8 @@ begin
       if CanAdd then
       begin
         NewItem := Items.Add;
+        if (NewItem is TShellListItem) then
+          TShellListItem(NewItem).FileInfo := TFileItem(Files.Objects[i]).FileInfo;
         CurFileName := Files.Strings[i];
         CurFilePath := IncludeTrailingPathDelimiter(FRoot) + CurFileName;
         // First column - Name
@@ -1749,6 +1769,14 @@ begin
     PopulateWithRoot;
     FPopulateDelayed := false;
   end;
+end;
+
+function TCustomShellListView.CreateListItem: TListItem;
+begin
+  if Assigned(OnCreateItemClass) then
+    Result := inherited CreateListItem
+  else
+    Result := TShellListItem.Create(Items);
 end;
 
 procedure TCustomShellListView.DoOnResize;
