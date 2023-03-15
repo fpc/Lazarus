@@ -356,7 +356,8 @@ end;
 
 destructor TAssemblerDlg.Destroy;
 begin
-  SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorOptsChanged, @DoEditorOptsChanged);
+  if SourceEditorManagerIntf <> nil then
+    SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorOptsChanged, @DoEditorOptsChanged);
   SetDisassembler(nil);
   SetDebugger(nil);
   FDisassemblerNotification.OnChange := nil;
