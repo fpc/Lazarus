@@ -1838,6 +1838,9 @@ TFileItem instance created when the a file is added to the Items for the
 control.
 </p>
 </descr>
+<version>
+Added in LCL version 2.4.
+</version>
 <seealso>
 <link id="TCustomShellListView.CreateListItem"/>
 <link id="TCustomShellListView.OnCreateItemClass"/>
@@ -1864,6 +1867,9 @@ The return value is <b>True</b> if the Attr member in FileInfo includes the
 faDirectory flag value.
 </p>
 </descr>
+<version>
+Added in LCL version 2.4.
+</version>
 <seealso>
 <link id="TShellListItem.FileInfo"/>
 <link id="TFileItem.Create"/>
@@ -1901,6 +1907,9 @@ a file or folder on the local file system. FileInfo includes values like:
 <li>Find Data Structure (or symlink structure on UNIX-like platforms)</li>
 </ul>
 </descr>
+<version>
+Added in LCL version 2.4.
+</version>
 <seealso>
 <link id="TCustomShellListView.DoAddItem"/>
 <link id="TCustomShellListView.PopulateWithRoot"/>
@@ -2152,6 +2161,9 @@ The return value contains the new TListItem (or descendent) class instance
 created for the list item in the method.
 </p>
 </descr>
+<version>
+Added in LCL version 2.4.
+</version>
 <seealso>
 <link id="#lcl.comctrls.TCustomListView.CreatelistItem">TCustomListView.CreatelistItem</link>
 <link id="#lcl.comctrls.TListItem">TListItem</link>
@@ -2213,6 +2225,10 @@ The Sort method is called prior to exit to order the Items in the control
 using the option specified in the FileSortType property.
 </p>
 </descr>
+<version>
+Updated in LCL version 2.4 to use TShellListItem as the item class for list 
+items.
+</version>
 <seealso>
 <link id="TCustomShellListView.Root"/>
 <link id="TCustomShellListView.Items"/>
