@@ -1843,12 +1843,12 @@ Added in LCL version 2.4.
 </version>
 <seealso>
 <link id="TCustomShellListView.CreateListItem"/>
-<link id="TCustomShellListView.OnCreateItemClass"/>
 <link id="TCustomShellListView.PopulateWithRoot"/>
 <link id="TCustomShellListView.Items"/>
+<link id="TCustomListView.OnCreateItemClass"/>
+<link id="TFileItem.Create"/>
 <link id="#lcl.comctrls.TListItem">TListItem</link>
 <link id="#lcl.comctrls.TListItems.Add">TListItems.Add</link>
-TFileItem.Create
 </seealso>
 </element>
 
