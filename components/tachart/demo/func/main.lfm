@@ -99,20 +99,20 @@ object Form1: TForm1
         end
       end
       object cbDomain: TCheckBox
-        Left = 541
+        Left = 543
         Height = 19
         Top = 401
-        Width = 62
+        Width = 60
         Anchors = [akRight, akBottom]
         Caption = 'Domain'
         OnChange = cbDomainChange
         TabOrder = 1
       end
       object cbRotate: TCheckBox
-        Left = 541
+        Left = 543
         Height = 19
         Top = 376
-        Width = 54
+        Width = 52
         Anchors = [akRight, akBottom]
         Caption = 'Rotate'
         OnChange = cbRotateChange
@@ -200,7 +200,7 @@ object Form1: TForm1
           Left = 0
           Height = 19
           Top = 339
-          Width = 77
+          Width = 75
           Anchors = [akLeft, akBottom]
           BorderSpacing.Bottom = 4
           Caption = 'Interpolate'
@@ -213,7 +213,7 @@ object Form1: TForm1
           Left = 0
           Height = 19
           Top = 283
-          Width = 98
+          Width = 96
           Anchors = [akLeft, akBottom]
           BorderSpacing.Bottom = 2
           Caption = 'Expand legend'
@@ -294,7 +294,7 @@ object Form1: TForm1
           Left = 16
           Height = 19
           Top = 304
-          Width = 83
+          Width = 81
           Anchors = [akLeft, akBottom]
           BorderSpacing.Left = 16
           BorderSpacing.Bottom = 16
@@ -415,7 +415,7 @@ object Form1: TForm1
           Left = 123
           Height = 19
           Top = 7
-          Width = 75
+          Width = 73
           AutoSize = True
           BorderSpacing.Left = 24
           Caption = 'Random X'
@@ -440,10 +440,10 @@ object Form1: TForm1
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = iseSplineDegree
           AnchorSideTop.Side = asrCenter
-          Left = 294
+          Left = 290
           Height = 19
           Top = 7
-          Width = 51
+          Width = 49
           AutoSize = True
           BorderSpacing.Left = 16
           Caption = 'Cubic'
@@ -458,10 +458,10 @@ object Form1: TForm1
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = pnSpline
           AnchorSideTop.Side = asrCenter
-          Left = 214
+          Left = 212
           Height = 19
           Top = 7
-          Width = 64
+          Width = 62
           AutoSize = True
           BorderSpacing.Left = 16
           Caption = 'B-Spline'
@@ -475,10 +475,10 @@ object Form1: TForm1
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = iseSplineDegree
           AnchorSideTop.Side = asrCenter
-          Left = 369
+          Left = 363
           Height = 19
           Top = 7
-          Width = 50
+          Width = 48
           AutoSize = True
           BorderSpacing.Left = 24
           Caption = 'Log Y'
@@ -552,7 +552,7 @@ object Form1: TForm1
           Left = 4
           Height = 19
           Top = 4
-          Width = 92
+          Width = 90
           BorderSpacing.Left = 4
           BorderSpacing.Top = 4
           BorderSpacing.Bottom = 4

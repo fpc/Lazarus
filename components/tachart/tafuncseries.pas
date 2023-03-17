@@ -20,7 +20,7 @@ interface
 uses
   Classes, Graphics, typ, Types,
   TAChartUtils, TACustomFuncSeries, TACustomSeries, TACustomSource, TASources,
-  TADrawUtils, TAFitUtils, TALegend, TATypes, TAFitLib, TAStyles;
+  TADrawUtils, TAFitUtils, TALegend, TATypes, TAFitLib, TAStyles, TAColorMap;
 
 const
   DEF_FUNC_STEP = 2;
@@ -406,7 +406,7 @@ type
     property OnGetPointerStyle;
   end;
 
-  TColorMapPalette = (cmpHot, cmpCold, cmpRainbow, cmpMonochrome);
+  TColorMapPalette = TAColorMap.TColorMapPalette;
 
   TFuncCalculate3DEvent =
     procedure (const AX, AY: Double; out AZ: Double) of object;
@@ -417,17 +417,17 @@ type
     TUseImage = (cmuiAuto, cmuiAlways, cmuiNever);
   strict private
     FBrush: TBrush;
+    FColorMap: TColorMap;
     FColorSource: TCustomChartSource;
     FColorSourceListener: TListener;
     FInterpolate: Boolean;
     FStepX: TFuncSeriesStep;
     FStepY: TFuncSeriesStep;
     FUseImage: TUseImage;
-    FColorExtentMin, FColorExtentMax: Double;
-    FBuiltinColorSource: TListChartSource;
-    FBuiltinPalette: TColormapPalette;
     FPaletteMax: Double;
     FPaletteMin: Double;
+    function GetBuiltinColorSource: TListChartSource;
+    function GetBuiltinPalette: TColorMapPalette;
     function GetColorSource: TCustomChartSource;
     function IsColorSourceStored: boolean;
     function IsPaletteMaxStored: Boolean;
@@ -443,13 +443,10 @@ type
     procedure SetUseImage(AValue: TUseImage);
   protected
     FMinZ, FMaxZ: Double;
-    procedure BuildPalette(APalette: TColorMapPalette);
-    procedure CheckColorSource(ASource: TCustomChartSource);
-    procedure ColorSourceChanged(ASender: TObject); virtual;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     procedure GetZRange(ARect: TRect; dx, dy: Integer);
-    procedure UpdateColorExtent;
     class procedure GetXYCountNeeded(out AXCount, AYCount: Cardinal); virtual;
+    property BuiltinColorSource: TListChartSource read GetBuiltinColorSource;
 
   public
     procedure Assign(ASource: TPersistent); override;
@@ -457,7 +454,6 @@ type
     destructor Destroy; override;
 
   public
-    function ColorByValue(AValue: Double): TColor;
     function FunctionValue(AX, AY: Double): Double; virtual;
     procedure Draw(ADrawer: IChartDrawer); override;
     function IsEmpty: Boolean; override;
@@ -466,7 +462,7 @@ type
     property AxisIndexY;
     property Brush: TBrush read FBrush write SetBrush;
     property BuiltInPalette: TColorMapPalette
-      read FBuiltinPalette write SetBuiltinPalette default cmpHot;
+      read GetBuiltinPalette write SetBuiltinPalette default cmpHot;
     property BuiltInPaletteMax: Double
       read FPaletteMax write SetPaletteMax stored IsPaletteMaxStored;
     property BuiltInPaletteMin: Double
@@ -2461,161 +2457,40 @@ end;
 
 { TCustomColorMapSeries }
 
-procedure TCustomColorMapSeries.Assign(ASource: TPersistent);
-begin
-  if ASource is TCustomColorMapSeries then
-    with TCustomColorMapSeries(ASource) do begin
-      Self.Brush := FBrush;
-      Self.BuiltinPalette := FBuiltinPalette;
-      Self.BuiltinPaletteMax := FPaletteMax;
-      Self.BuiltinPaletteMin := FPaletteMin;
-      Self.ColorSource := FColorSource;
-      Self.FInterpolate := FInterpolate;
-      Self.FStepX := FStepX;
-      Self.FStepY := FStepY;
-    end;
-  inherited Assign(ASource);
-end;
-
-procedure TCustomColorMapSeries.BuildPalette(APalette: TColorMapPalette);
-var
-  i: Integer;
-  h, s, l: Byte;
-  cmax, cmin, factor: Double;
-  ex: TDoubleRect;
-begin
-  with FBuiltinColorSource do begin
-    BeginUpdate;
-    try
-      Clear;
-      case APalette of
-        cmpHot:
-          begin
-            Add(0, 0, '', clBlack);
-            Add(1/3, 0, '', clRed);
-            Add(2/3, 0, '', clYellow);
-            Add(1, 0, '', clWhite);
-          end;
-        cmpCold:
-          begin
-            ColorToHLS(clBlue, h, l, s);
-            i := 0;
-            while i <= 255 do begin
-              Add(i, 0, '', HLSToColor(h, i, s));
-              inc(i, 32);
-            end;
-            Add(255, 0, '', clWhite);
-          end;
-        cmpRainbow:
-          begin
-            i := 0;
-            while i <= 255 do begin      // i is hue
-              Add(i, 0, '', HLSToColor(i, 128, 255));
-              inc(i, 32);
-            end;
-            Add(255, 0, '', HLSToColor(255, 128, 255));
-          end;
-        cmpMonochrome:
-          begin
-            i := 0;
-            while i <= 255 do begin
-              Add(i, 0, '', RgbToColor(i, i, i));
-              inc(i, 32);
-            end;
-            Add(255, 0, '', clWhite);
-          end;
-      else
-        raise EChartError.CreateFmt('[%s.BuildPalette] Palette not supported', [NameOrClassName(Self)]){%H-};
-      end;
-
-      if FPaletteMin < FPaletteMax then begin
-        cmin := FPaletteMin;
-        cmax := FPaletteMax;
-       end else
-      if FPaletteMax < FPaletteMin then begin
-        cmin := FPaletteMax;
-        cmax := FPaletteMin;
-      end else
-        exit;
-
-      ex := Extent;
-      if (ex.a.x = ex.b.x) then
-        exit;
-      factor := (cmax - cmin) / (ex.b.x - ex.a.x);
-      for i:=0 to Count-1 do
-        Item[i]^.X := (Item[i]^.X - ex.a.x) * factor + cmin;
-    finally
-      EndUpdate;
-    end;
-  end;
-end;
-
-procedure TCustomColorMapSeries.CheckColorSource(ASource: TCustomChartSource);
-var
-  nx, ny: Cardinal;
-begin
-  if ASource = nil then
-    exit;
-  GetXYCountNeeded(nx, ny);
-  if ASource.XCount < nx then
-    raise EXCountError.CreateFmt(rsSourceCountError, [ClassName, nx, 'x']);
-  if ASource.YCount < ny then
-    raise EYCountError.CreateFmt(rsSourceCountError, [ClassName, ny, 'y']);
-end;
-
-function TCustomColorMapSeries.ColorByValue(AValue: Double): TColor;
-var
-  lb, ub: Integer;
-  c1, c2: TColor;
-  v1, v2: Double;
-begin
-  if (ColorSource = nil) or (ColorSource.Count = 0) then exit(clTAColor);
-  ColorSource.FindBounds(AValue, SafeInfinity, lb, ub);
-  if Interpolate and InRange(lb, 1, ColorSource.Count - 1) then begin
-    with ColorSource[lb - 1]^ do begin
-      v1 := X;
-      c1 := Color;
-    end;
-    with ColorSource[lb]^ do begin
-      v2 := X;
-      c2 := Color;
-    end;
-    if v2 <= v1 then
-      Result := c1
-    else
-      Result := InterpolateRGB(c1, c2, (AValue - v1) / (v2 - v1));
-  end
-  else
-    Result := ColorSource[EnsureRange(lb, 0, ColorSource.Count - 1)]^.Color;
-end;
-
 constructor TCustomColorMapSeries.Create(AOwner: TComponent);
-const
-  BUILTIN_SOURCE_NAME = 'BuiltinColors';
 var
   nx, ny: Cardinal;
 begin
   inherited Create(AOwner);
-  FColorSourceListener := TListener.Create(@FColorSource, @ColorSourceChanged);
+
   GetXYCountNeeded(nx, ny);
-  FBuiltinColorSource := TBuiltinListChartSource.Create(self, nx, ny);
-  FBuiltinColorSource.XCount := nx;
-  FBuiltinColorSource.YCount := ny;
-  FBuiltinColorSource.Name := BUILTIN_SOURCE_NAME;
-  FBuiltinColorSource.Broadcaster.Subscribe(FColorSourceListener);
+  FColorMap := TColorMap.Create(Self, nx, ny);
+  FColorMap.BuiltinPalette := cmpHot;
+  FColorMap.OnChanged := @StyleChanged;
+
   FBrush := TBrush.Create;
   FBrush.OnChange := @StyleChanged;
   FStepX := DEF_COLORMAP_STEP;
   FStepY := DEF_COLORMAP_STEP;
-  SetBuiltinPalette(cmpHot);
 end;
 
 destructor TCustomColorMapSeries.Destroy;
 begin
-  FreeAndNil(FColorSourceListener);
-  FreeAndNil(FBuiltinColorSource);
+  FreeAndNil(FColorMap);
   FreeAndNil(FBrush);
   inherited Destroy;
+end;
+
+procedure TCustomColorMapSeries.Assign(ASource: TPersistent);
+begin
+  if ASource is TCustomColorMapSeries then
+    with TCustomColorMapSeries(ASource) do begin
+      Self.FColorMap := FColorMap;
+      Self.Brush := FBrush;
+      Self.FStepX := FStepX;
+      Self.FStepY := FStepY;
+    end;
+  inherited Assign(ASource);
 end;
 
 procedure TCustomColorMapSeries.Draw(ADrawer: IChartDrawer);
@@ -2666,7 +2541,7 @@ begin
 
   GetZRange(r, scaled_stepX, scaled_stepY);
 
-  if FColorExtentMin = FColorExtentMax then begin
+  if FColorMap.ColorExtentMin = FColorMap.ColorExtentMax then begin
     ADrawer.FillRect(r.Left, r.Top, r.Right, r.Bottom);
     exit;
   end;
@@ -2696,14 +2571,14 @@ begin
           if ColorSource = nil then
             cellColor := Brush.Color
           else
-            cellColor := ColorByValue(v);
+            cellColor := FColorMap.ColorByValue(v);
           for y := cell.Top - r.Top to cell.Bottom - r.Top - 2 do
             for x := cell.Left - r.Left to cell.Right - r.Left - 2 do
               img.TColors[x, y] := cellColor;
         end
         else begin
           if ColorSource <> nil then
-            ADrawer.BrushColor := ColorByValue(v);
+            ADrawer.BrushColor := FColorMap.ColorByValue(v);
           ADrawer.Rectangle(cell);
         end;
         pt.X := next.X;
@@ -2723,12 +2598,19 @@ begin
   Result := 0.0;
 end;
 
+function TCustomColorMapSeries.GetBuiltinColorSource: TListChartSource;
+begin
+  Result := FColorMap.BuiltinColorSource;
+end;
+
+function TCustomColorMapSeries.GetBuiltinPalette: TColorMapPalette;
+begin
+  Result := FColorMap.BuiltinPalette;
+end;
+
 function TCustomColorMapSeries.GetColorSource: TCustomChartSource;
 begin
-  if Assigned(FColorSource) then
-    Result := FColorSource
-  else
-    Result := FBuiltinColorSource;
+  Result := FColorMap.ColorSource;
 end;
 
 procedure TCustomColorMapSeries.GetLegendItems(AItems: TChartLegendItems);
@@ -2854,17 +2736,17 @@ end;
 
 function TCustomColorMapSeries.IsColorSourceStored: boolean;
 begin
-  Result := FColorSource <> nil;
+  Result := FColorMap.IsColorSourceStored;
 end;
 
 function TCustomColorMapSeries.IsPaletteMaxStored: Boolean;
 begin
-  Result := FPaletteMax <> 0;
+  Result := FColorMap.IsPaletteMaxStored;
 end;
 
 function TCustomColorMapSeries.IsPaletteMinStored: Boolean;
 begin
-  Result := FPaletteMin <> 0;
+  Result := FColorMap.IsPaletteMinStored;
 end;
 
 procedure TCustomColorMapSeries.SetBrush(AValue: TBrush);
@@ -2876,43 +2758,29 @@ end;
 
 procedure TCustomColorMapSeries.SetBuiltinPalette(AValue: TColorMapPalette);
 begin
-  FBuiltinPalette := AValue;
-  BuildPalette(FBuiltinPalette);
+  FColorMap.BuiltinPalette := AValue;
 end;
 
 procedure TCustomColorMapSeries.SetColorSource(AValue: TCustomChartSource);
 begin
-  if AValue = FBuiltinColorSource then
-    AValue := nil;
-  if FColorSource = AValue then
-    exit;
-  CheckColorSource(AValue);
-  if FColorSourceListener.IsListening then
-    ColorSource.Broadcaster.Unsubscribe(FColorSourceListener);
-  FColorSource := AValue;
-  ColorSource.Broadcaster.Subscribe(FColorSourceListener);
-  ColorSourceChanged(Self);
+  FColorMap.ColorSource := AValue;
 end;
 
 procedure TCustomColorMapSeries.SetInterpolate(AValue: Boolean);
 begin
   if FInterpolate = AValue then exit;
-  FInterpolate := AValue;
+  FColorMap.Interpolate := AValue;
   UpdateParentChart;
 end;
 
 procedure TCustomColorMapSeries.SetPaletteMax(AValue: Double);
 begin
-  if AValue = FPaletteMax then exit;
-  FPaletteMax := AValue;
-  BuildPalette(FBuiltinPalette);
+  FColorMap.PaletteMax := AValue;
 end;
 
 procedure TCustomColorMapSeries.SetPaletteMin(AValue: Double);
 begin
-  if AValue = FPaletteMin then exit;
-  FPaletteMin := AValue;
-  BuildPalette(FBuiltinPalette);
+  FColorMap.PaletteMin := AValue;
 end;
 
 procedure TCustomColorMapSeries.SetStepX(AValue: TFuncSeriesStep);
@@ -2934,28 +2802,6 @@ begin
   if FUseImage = AValue then exit;
   FUseImage := AValue;
   UpdateParentChart;
-end;
-
-procedure TCustomColorMapSeries.ColorSourceChanged(ASender: TObject);
-begin
-  if (ASender <> FBuiltinColorSource) and (ASender is TCustomChartSource) then
-    try
-      CheckColorSource(TCustomChartSource(ASender));
-    except
-      ColorSource := nil; // revert to built-in source
-      raise;
-    end;
-  UpdateColorExtent;
-  StyleChanged(ASender);
-end;
-
-procedure TCustomColorMapSeries.UpdateColorExtent;
-var
-  ext: TDoubleRect;
-begin
-  ext := ColorSource.Extent;
-  FColorExtentMin := ext.a.x;
-  FColorExtentMax := ext.b.x;
 end;
 
 
