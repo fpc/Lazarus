@@ -418,17 +418,15 @@ type
   strict private
     FBrush: TBrush;
     FColorMap: TColorMap;
-    FColorSource: TCustomChartSource;
-    FColorSourceListener: TListener;
-    FInterpolate: Boolean;
     FStepX: TFuncSeriesStep;
     FStepY: TFuncSeriesStep;
     FUseImage: TUseImage;
-    FPaletteMax: Double;
-    FPaletteMin: Double;
     function GetBuiltinColorSource: TListChartSource;
     function GetBuiltinPalette: TColorMapPalette;
     function GetColorSource: TCustomChartSource;
+    function GetInterpolate: Boolean;
+    function GetPaletteMax: Double;
+    function GetPaletteMin: Double;
     function IsColorSourceStored: boolean;
     function IsPaletteMaxStored: Boolean;
     function IsPaletteMinStored: Boolean;
@@ -449,9 +447,9 @@ type
     property BuiltinColorSource: TListChartSource read GetBuiltinColorSource;
 
   public
-    procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Assign(ASource: TPersistent); override;
 
   public
     function FunctionValue(AX, AY: Double): Double; virtual;
@@ -464,13 +462,13 @@ type
     property BuiltInPalette: TColorMapPalette
       read GetBuiltinPalette write SetBuiltinPalette default cmpHot;
     property BuiltInPaletteMax: Double
-      read FPaletteMax write SetPaletteMax stored IsPaletteMaxStored;
+      read GetPaletteMax write SetPaletteMax stored IsPaletteMaxStored;
     property BuiltInPaletteMin: Double
-      read FPaletteMin write SetPaletteMin stored IsPaletteMinStored;
+      read GetPaletteMin write SetPaletteMin stored IsPaletteMinStored;
     property ColorSource: TCustomChartSource
       read GetColorSource write SetColorSource stored IsColorSourceStored;
     property Interpolate: Boolean
-      read FInterpolate write SetInterpolate default false;
+      read GetInterpolate write SetInterpolate default false;
     property StepX: TFuncSeriesStep
       read FStepX write SetStepX default DEF_COLORMAP_STEP;
     property StepY: TFuncSeriesStep
@@ -2613,6 +2611,21 @@ begin
   Result := FColorMap.ColorSource;
 end;
 
+function TCustomColorMapSeries.GetInterpolate: Boolean;
+begin
+  Result := FColorMap.Interpolate;
+end;
+
+function TCustomColorMapSeries.GetPaletteMax: Double;
+begin
+  Result := FColorMap.PaletteMax;
+end;
+
+function TCustomColorMapSeries.GetPaletteMin: Double;
+begin
+  Result := FColorMap.PaletteMin;
+end;
+
 procedure TCustomColorMapSeries.GetLegendItems(AItems: TChartLegendItems);
 
   function PrepareFormats: TStrings;
@@ -2768,7 +2781,7 @@ end;
 
 procedure TCustomColorMapSeries.SetInterpolate(AValue: Boolean);
 begin
-  if FInterpolate = AValue then exit;
+  if GetInterpolate = AValue then exit;
   FColorMap.Interpolate := AValue;
   UpdateParentChart;
 end;
