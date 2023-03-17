@@ -718,10 +718,7 @@ begin
     Exit;
     end;
 
-  // We do not strace-back to the return address, we need the calling-address.
-  // This is difficult though. But we assume that ReturnAddress-1 is part of
-  // the instruction that made the call.
-  NewCallStackEntry := TDbgCallstackEntry.create(Thread, NextIdx, FrameBase, ReturnAddress-1);
+  NewCallStackEntry := TDbgCallstackEntry.create(Thread, NextIdx, FrameBase, ReturnAddress);
 
   // Fill other registers
   for i := 0 to High(Row.RegisterArray) do
