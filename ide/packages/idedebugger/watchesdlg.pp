@@ -41,12 +41,12 @@ uses
   Classes, Forms, Controls, math, sysutils, LazLoggerBase, LazUTF8, Clipbrd,
   {$ifdef Windows} ActiveX, {$else} laz.FakeActiveX, {$endif}
   IDEWindowIntf, Menus, ComCtrls, ActnList, ExtCtrls, StdCtrls, LCLType,
-  LMessages, IDEImagesIntf, Debugger,
-  DebuggerTreeView, IdeDebuggerBase, DebuggerDlg, DbgIntfBaseTypes,
-  DbgIntfDebuggerBase, DbgIntfMiscClasses, SynEdit, laz.VirtualTrees, SpinEx,
-  LazDebuggerIntf, LazDebuggerIntfBaseTypes, BaseDebugManager, EnvironmentOpts,
-  IdeDebuggerWatchResult, IdeDebuggerWatchResPrinter,
-  ArrayNavigationFrame, IdeDebuggerUtils, IdeIntfStrConsts, IdeDebuggerStringConstants;
+  LMessages, IDEImagesIntf, Debugger, DebuggerTreeView, IdeDebuggerBase,
+  DebuggerDlg, DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfMiscClasses,
+  SynEdit, laz.VirtualTrees, SpinEx, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
+  BaseDebugManager, EnvironmentOpts, IdeDebuggerWatchResult,
+  IdeDebuggerWatchResPrinter, ArrayNavigationFrame, IdeDebuggerUtils,
+  IdeIntfStrConsts, IdeDebuggerStringConstants, DbgTreeViewWatchData;
 
 type
 
@@ -56,6 +56,8 @@ type
     wdsfNeedDeleteCurrent,
     wdsDeleting
   );
+
+  TDbgTreeViewWatchValueMgr = class;
 
   { TWatchesDlg }
 
@@ -136,11 +138,8 @@ type
     procedure tvWatchesDragOver(Sender: TBaseVirtualTree; Source: TObject;
       Shift: TShiftState; State: TDragState; const Pt: TPoint; Mode: TDropMode;
       var Effect: LongWord; var Accept: Boolean);
-    procedure tvWatchesExpanded(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure tvWatchesFocusChanged(Sender: TBaseVirtualTree;
       Node: PVirtualNode; Column: TColumnIndex);
-    procedure tvWatchesInitChildren(Sender: TBaseVirtualTree;
-      Node: PVirtualNode; var ChildCount: Cardinal);
     procedure tvWatchesNodeDblClick(Sender: TBaseVirtualTree;
       const HitInfo: THitInfo);
     procedure popAddClick(Sender: TObject);
@@ -152,21 +151,17 @@ type
     procedure popDeleteAllClick(Sender: TObject);
   private
     FQueuedUnLockCommandProcessing: Boolean;
-    procedure DoItemRemovedFromView(Sender: TDbgTreeView; AnItem: TObject;
-      ANode: PVirtualNode);
     procedure DoUnLockCommandProcessing(Data: PtrInt);
-    procedure DoWatchFreed(Sender: TObject);
     function GetWatches: TIdeWatches;
     procedure ContextChanged(Sender: TObject);
     procedure SnapshotChanged(Sender: TObject);
-    procedure WatchNavChanged(Sender: TArrayNavigationBar; AValue: Int64);
   private
+    FWatchTreeMgr: TDbgTreeViewWatchValueMgr;
     FWatchPrinter: TWatchResultPrinter;
     FWatchesInView: TIdeWatches;
     FPowerImgIdx, FPowerImgIdxGrey: Integer;
     FUpdateAllNeeded, FInEndUpdate: Boolean;
     FWatchInUpDateItem, FCurrentWatchInUpDateItem: TIdeWatch;
-    FExpandingWatch: TIdeWatch;
     FStateFlags: TWatchesDlgStateFlags;
     function GetSelected: TIdeWatch; // The focused Selected Node
     function  GetThreadId: Integer;
@@ -178,10 +173,6 @@ type
 
     procedure UpdateInspectPane;
     procedure UpdateItem(const VNode: PVirtualNode; const AWatch: TIdeWatch);
-    procedure UpdateArraySubItems(const VNode: PVirtualNode;
-      const AWatchValue: TIdeWatchValue; out ChildCount: LongWord);
-    procedure UpdateSubItems(const VNode: PVirtualNode;
-      const AWatchValue: TIdeWatchValue; out ChildCount: LongWord);
     procedure UpdateAll;
     procedure DisableAllActions;
     function  GetSelectedSnapshot: TSnapshot;
@@ -201,6 +192,26 @@ type
     property CallStackMonitor;
     property BreakPoints;
     property SnapshotManager;
+  end;
+
+  { TDbgTreeViewWatchValueMgr }
+
+  TDbgTreeViewWatchValueMgr = class(TDbgTreeViewWatchDataMgr)
+  private
+    FQueuedUnLockCommandProcessing: Boolean;
+    procedure DoUnLockCommandProcessing(Data: PtrInt);
+  protected
+    FWatchDlg: TWatchesDlg;
+
+    function WatchAbleResultFromNode(AVNode: PVirtualNode): TWatchAbleResultIntf; override;
+    function WatchAbleResultFromObject(AWatchAble: TObject): TWatchAbleResultIntf; override;
+
+    procedure UpdateColumnsText(AWatchAble: TObject; AWatchAbleResult: TWatchAbleResultIntf; AVNode: PVirtualNode); override;
+    procedure ConfigureNewSubItem(AWatchAble: TObject); override;
+    procedure UpdateSubItems(AWatchAble: TObject; AWatchAbleResult: TWatchAbleResultIntf;
+      AVNode: PVirtualNode; out ChildCount: LongWord); override;
+    procedure UpdateSubItemsLocked(AWatchAble: TObject; AWatchAbleResult: TWatchAbleResultIntf;
+      AVNode: PVirtualNode; out ChildCount: LongWord); override;
   end;
 
 
@@ -236,6 +247,9 @@ end;
 constructor TWatchesDlg.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FWatchTreeMgr := TDbgTreeViewWatchValueMgr.Create(tvWatches);
+  FWatchTreeMgr.FWatchDlg := Self;
+
   FWatchPrinter := TWatchResultPrinter.Create;
   FWatchesInView := nil;
   FStateFlags := [];
@@ -312,7 +326,7 @@ begin
   tvWatches.Header.Columns[1].Width := COL_WIDTHS[COL_WATCH_VALUE];
   tvWatches.Header.Columns[2].Width := COL_WIDTHS[COL_WATCH_DATAADDR];
 
-  tvWatches.OnItemRemoved := @DoItemRemovedFromView;
+  //tvWatches.OnItemRemoved := @DoItemRemovedFromView;
 end;
 
 destructor TWatchesDlg.Destroy;
@@ -323,6 +337,7 @@ begin
   FQueuedUnLockCommandProcessing := False;
 
   FreeAndNil(FWatchPrinter);
+  FWatchTreeMgr.Free;
   tvWatches.Clear; // Must clear all nodes before any owned "Nav := TArrayNavigationBar" are freed;
   inherited Destroy;
 end;
@@ -624,20 +639,6 @@ begin
   end;
 end;
 
-procedure TWatchesDlg.tvWatchesExpanded(Sender: TBaseVirtualTree;
-  Node: PVirtualNode);
-var
-  AWatch: TIdeWatch;
-begin
-  Node := tvWatches.GetFirstChildNoInit(Node);
-  while Node <> nil do begin
-    AWatch := TIdeWatch(tvWatches.NodeItem[Node]);
-    if AWatch <> nil then
-      UpdateItem(Node, AWatch);
-    Node := tvWatches.GetNextSiblingNoInit(Node);
-  end;
-end;
-
 procedure TWatchesDlg.tvWatchesFocusChanged(Sender: TBaseVirtualTree;
   Node: PVirtualNode; Column: TColumnIndex);
 begin
@@ -879,28 +880,6 @@ begin
   end;
 end;
 
-procedure TWatchesDlg.WatchNavChanged(Sender: TArrayNavigationBar; AValue: Int64
-  );
-var
-  VNode: PVirtualNode;
-  AWatch: TIdeWatch;
-  WatchValue: TIdeWatchValue;
-  c: LongWord;
-begin
-  if Sender.OwnerData = nil then
-    exit;
-
-  AWatch := TIdeWatch(Sender.OwnerData);
-  if AWatch.Enabled and AWatch.HasAllValidParents(GetThreadId, GetStackframe) then begin
-    VNode := tvWatches.FindNodeForItem(AWatch);
-    if VNode = nil then
-      exit;
-
-    WatchValue := AWatch.Values[GetThreadId, GetStackframe];
-    UpdateSubItems(VNode, WatchValue, c);
-  end;
-end;
-
 function TWatchesDlg.GetWatches: TIdeWatches;
 var
   Snap: TSnapshot;
@@ -919,28 +898,6 @@ procedure TWatchesDlg.DoUnLockCommandProcessing(Data: PtrInt);
 begin
   FQueuedUnLockCommandProcessing := False;
   DebugBoss.UnLockCommandProcessing;
-end;
-
-procedure TWatchesDlg.DoWatchFreed(Sender: TObject);
-var
-  nd: PVirtualNode;
-begin
-  nd := tvWatches.FindNodeForItem(Sender);
-  if nd = nil then
-    exit;
-
-  tvWatches.OnItemRemoved := nil;
-  tvWatches.NodeItem[nd] := nil;
-  tvWatches.OnItemRemoved := @DoItemRemovedFromView;
-end;
-
-procedure TWatchesDlg.DoItemRemovedFromView(Sender: TDbgTreeView;
-  AnItem: TObject; ANode: PVirtualNode);
-begin
-  if AnItem <> nil then begin
-    TWatch(AnItem).ClearDisplayData;
-    TWatch(AnItem).RemoveFreeNotification(@DoWatchFreed);
-  end;
 end;
 
 procedure TWatchesDlg.DoBeginUpdate;
@@ -1231,81 +1188,7 @@ begin
     FWatchInUpDateItem := AWatch.TopParentWatch;
   FCurrentWatchInUpDateItem := AWatch;
   try
-    tvWatches.NodeText[VNode, COL_WATCH_EXPR-1]:= AWatch.DisplayName;
-    tvWatches.NodeText[VNode, 2] := '';
-    if AWatch.Enabled and AWatch.HasAllValidParents(GetThreadId, GetStackframe) then begin
-      WatchValue := AWatch.Values[GetThreadId, GetStackframe];
-      if (WatchValue <> nil) and
-         ( (GetSelectedSnapshot = nil) or not(WatchValue.Validity in [ddsUnknown, ddsEvaluating, ddsRequested]) )
-      then begin
-        if (WatchValue.Validity = ddsValid) and (WatchValue.ResultData <> nil) then begin
-          WatchValueStr := FWatchPrinter.PrintWatchValue(WatchValue.ResultData, WatchValue.DisplayFormat);
-          WatchValueStr := ClearMultiline(DebugBoss.FormatValue(WatchValue.TypeInfo, WatchValueStr));
-          if (WatchValue.ResultData.ValueKind = rdkArray) and (WatchValue.ResultData.ArrayLength > 0)
-          then tvWatches.NodeText[VNode, COL_WATCH_VALUE-1] := Format(drsLen, [WatchValue.ResultData.ArrayLength]) + WatchValueStr
-          else tvWatches.NodeText[VNode, COL_WATCH_VALUE-1] := WatchValueStr;
-          if WatchValue.ResultData.HasDataAddress then begin
-            da := WatchValue.ResultData.DataAddress;
-            if da = 0
-            then tvWatches.NodeText[VNode, 2] := 'nil'
-            else tvWatches.NodeText[VNode, 2] := '$' + IntToHex(da, HexDigicCount(da, 4, True));
-          end
-        end
-        else begin
-          if (WatchValue.TypeInfo <> nil) and
-             (WatchValue.TypeInfo.Attributes * [saArray, saDynArray] <> []) and
-             (WatchValue.TypeInfo.Len >= 0)
-          then tvWatches.NodeText[VNode, COL_WATCH_VALUE-1] := Format(drsLen, [WatchValue.TypeInfo.Len]) + WatchValue.Value
-          else tvWatches.NodeText[VNode, COL_WATCH_VALUE-1] := WatchValue.Value;
-        end;
-      end
-      else
-        tvWatches.NodeText[VNode, COL_WATCH_VALUE-1]:= '<not evaluated>';
-
-      if ( ((DebugBoss <> nil) and (DebugBoss.State <> dsRun)) or
-           ((GetSelectedSnapshot <> nil) and not(AWatch is TCurrentWatch) )
-         ) and
-         (WatchValue <> nil) and (WatchValue.Validity <> ddsRequested)
-      then begin
-        TypInfo := WatchValue.TypeInfo;
-        if DoDelayedDelete then
-          exit;
-
-        HasChildren := ( (TypInfo <> nil) and (TypInfo.Fields <> nil) and (TypInfo.Fields.Count > 0) ) or
-                       ( (WatchValue.ResultData <> nil) and
-                         ( ( (WatchValue.ResultData.FieldCount > 0) and (WatchValue.ResultData.ValueKind <> rdkConvertRes) )
-                           or
-                           //( (WatchValue.ResultData.ValueKind = rdkArray) and (WatchValue.ResultData.ArrayLength > 0) )
-                           (WatchValue.ResultData.ArrayLength > 0)
-                       ) );
-        tvWatches.HasChildren[VNode] := HasChildren;
-        if HasChildren and tvWatches.Expanded[VNode] then begin
-          if (WatchValue.Validity = ddsValid) then begin
-            (* The current "AWatch" should be done. Allow UpdateItem for nested entries *)
-            exclude(FStateFlags, wdsfUpdating);
-            FCurrentWatchInUpDateItem := nil;
-
-            //AWatch.BeginChildUpdate;
-            UpdateSubItems(VNode, WatchValue, c);
-            //AWatch.EndChildUpdate; // This would currently trigger "UpdateAll" even when nothing changed, causing an endless loop
-          end;
-        end
-        else
-        if AWatch <> FExpandingWatch then
-          tvWatches.DeleteChildren(VNode, False);
-      end;
-    end
-    else
-    if not AWatch.Enabled then
-      tvWatches.NodeText[VNode, COL_WATCH_VALUE-1]:= '<disabled>'
-    else
-    if (GetSelectedSnapshot = nil) and
-       (DebugBoss <> nil) and (DebugBoss.State in [dsPause, dsInternalPause])
-    then
-      tvWatches.NodeText[VNode, COL_WATCH_VALUE-1]:= '<evaluating>'
-    else
-      tvWatches.NodeText[VNode, COL_WATCH_VALUE-1]:= '<not evaluated>';
-
+    FWatchTreeMgr.UpdateWatchData(AWatch, VNode);
   finally
     if IsOuterUpdate then
       FWatchInUpDateItem := nil;
@@ -1315,220 +1198,6 @@ begin
     EndUpdate;
     DebugBoss.UnLockCommandProcessing;
     tvWatches.Invalidate;
-  end;
-end;
-
-procedure TWatchesDlg.UpdateArraySubItems(const VNode: PVirtualNode;
-  const AWatchValue: TIdeWatchValue; out ChildCount: LongWord);
-var
-  NewWatch, AWatch: TIdeWatch;
-  i, TotalCount: Integer;
-  ResData: TWatchResultData;
-  ExistingNode, nd: PVirtualNode;
-  Nav: TArrayNavigationBar;
-  Offs, KeepCnt, KeepBelow: Int64;
-begin
-  ChildCount := 0;
-  ResData := AWatchValue.ResultData;
-  if (ResData = nil) then
-    exit;
-
-  TotalCount := ResData.ArrayLength;
-  if (ResData.ValueKind <> rdkArray) or (TotalCount = 0) then
-    TotalCount := ResData.Count;
-
-  AWatch := AWatchValue.Watch;
-  ExistingNode := tvWatches.GetFirstChildNoInit(VNode);
-  if ExistingNode = nil then
-    ExistingNode := tvWatches.AddChild(VNode, nil)
-  else
-    tvWatches.NodeItem[ExistingNode] := nil;
-
-  Nav := TArrayNavigationBar(tvWatches.NodeControl[ExistingNode]);
-  if Nav = nil then begin
-    Nav := TArrayNavigationBar.Create(Self);
-    Nav.ParentColor := False;
-    Nav.ParentBackground := False;
-    Nav.Color := tvWatches.Colors.BackGroundColor;
-    Nav.LowBound := ResData.LowBound;
-    Nav.HighBound := ResData.LowBound + TotalCount - 1;
-    Nav.ShowBoundInfo := True;
-    Nav.Index := ResData.LowBound;
-    Nav.PageSize := 10;
-    Nav.OwnerData := AWatch;
-    Nav.OnIndexChanged := @WatchNavChanged;
-    Nav.OnPageSize := @WatchNavChanged;
-    Nav.HardLimits := not(ResData.ValueKind = rdkArray);
-    tvWatches.NodeControl[ExistingNode] := Nav;
-    tvWatches.NodeText[ExistingNode, 0] := ' ';
-    tvWatches.NodeText[ExistingNode, 1] := ' ';
-  end;
-  ChildCount := Nav.LimitedPageSize;
-
-  ExistingNode := tvWatches.GetNextSiblingNoInit(ExistingNode);
-
-  Offs := Nav.Index;
-  for i := 0 to ChildCount - 1 do begin
-    NewWatch := AWatchValue.ChildrenByNameAsArrayEntry[Offs +  i];
-    if NewWatch = nil then begin
-      dec(ChildCount);
-      continue;
-    end;
-
-    if AWatch is TCurrentWatch then begin
-      NewWatch.DisplayFormat := wdfDefault;
-      NewWatch.Enabled       := AWatch.Enabled;
-      if (defClassAutoCast in AWatch.EvaluateFlags) then
-        NewWatch.EvaluateFlags := NewWatch.EvaluateFlags + [defClassAutoCast];
-    end;
-
-    if ExistingNode <> nil then begin
-      tvWatches.NodeItem[ExistingNode] := NewWatch;
-      nd := ExistingNode;
-      ExistingNode := tvWatches.GetNextSiblingNoInit(ExistingNode);
-    end
-    else begin
-      nd := tvWatches.AddChild(VNode, NewWatch);
-    end;
-    UpdateItem(nd, NewWatch);
-  end;
-
-  inc(ChildCount); // for the nav row
-
-  if AWatch is TCurrentWatch then begin
-    KeepCnt := Nav.PageSize;
-    KeepBelow := KeepCnt;
-    KeepCnt := Max(Max(50, KeepCnt+10),
-             Min(KeepCnt*10, 500) );
-    KeepBelow := Min(KeepBelow, KeepCnt - Nav.PageSize);
-    AWatch.LimitChildWatchCount(KeepCnt, ResData.LowBound + KeepBelow);
-  end;
-end;
-
-procedure TWatchesDlg.UpdateSubItems(const VNode: PVirtualNode;
-  const AWatchValue: TIdeWatchValue; out ChildCount: LongWord);
-var
-  NewWatch, AWatch: TIdeWatch;
-  TypInfo: TDBGType;
-  i: Integer;
-  ResData: TWatchResultData;
-  ExistingNode, nd: PVirtualNode;
-  ChildInfo: TWatchResultDataFieldInfo;
-  AnchClass: String;
-  IsGdbmiArray: Boolean;
-begin
-  ChildCount := 0;
-
-  if (AWatchValue.ResultData <> nil) and (AWatchValue.ResultData.FieldCount > 0) and
-     (AWatchValue.ResultData.ValueKind <> rdkConvertRes)
-  then begin
-    ResData := AWatchValue.ResultData;
-    AWatch := AWatchValue.Watch;
-    ExistingNode := tvWatches.GetFirstChildNoInit(VNode);
-    if ExistingNode <> nil then
-      tvWatches.NodeControl[ExistingNode].Free;
-
-    AnchClass := ResData.TypeName;
-    for ChildInfo in ResData do begin
-      NewWatch := AWatchValue.ChildrenByNameAsField[ChildInfo.FieldName, AnchClass];
-      if NewWatch = nil then begin
-        continue;
-      end;
-      inc(ChildCount);
-
-      if AWatch is TCurrentWatch then begin
-        NewWatch.DisplayFormat := wdfDefault;
-        NewWatch.Enabled       := AWatch.Enabled;
-        if EnvironmentOptions.DebuggerAutoSetInstanceFromClass then
-          NewWatch.EvaluateFlags := [defClassAutoCast];
-      end;
-
-      if ExistingNode <> nil then begin
-        tvWatches.NodeItem[ExistingNode] := NewWatch;
-        nd := ExistingNode;
-        ExistingNode := tvWatches.GetNextSiblingNoInit(ExistingNode);
-      end
-      else begin
-        nd := tvWatches.AddChild(VNode, NewWatch);
-      end;
-      UpdateItem(nd, NewWatch);
-    end;
-
-  end
-  else
-  if (AWatchValue.ResultData <> nil) and
-  //(AWatchValue.ResultData.ValueKind = rdkArray) and
-  (AWatchValue.ResultData.ArrayLength > 0)
-  then begin
-    UpdateArraySubItems(VNode, AWatchValue, ChildCount);
-  end
-  else begin
-    // Old Interface
-    TypInfo := AWatchValue.TypeInfo;
-    AWatch := AWatchValue.Watch;
-
-    if (TypInfo <> nil) and (TypInfo.Fields <> nil) then begin
-      IsGdbmiArray := TypInfo.Attributes * [saDynArray, saArray] <> [];
-      ChildCount := TypInfo.Fields.Count;
-      ExistingNode := tvWatches.GetFirstChildNoInit(VNode);
-
-      AnchClass := TypInfo.TypeName;
-      for i := 0 to TypInfo.Fields.Count-1 do begin
-        if IsGdbmiArray then
-          NewWatch := AWatchValue.ChildrenByNameAsArrayEntry[StrToInt64Def(TypInfo.Fields[i].Name, 0)]
-        else
-          NewWatch := AWatchValue.ChildrenByNameAsField[TypInfo.Fields[i].Name, AnchClass];
-        if NewWatch = nil then begin
-          dec(ChildCount);
-          continue;
-        end;
-        if AWatch is TCurrentWatch then begin
-          NewWatch.DisplayFormat := wdfDefault;
-          NewWatch.Enabled       := AWatch.Enabled;
-          if EnvironmentOptions.DebuggerAutoSetInstanceFromClass then
-            NewWatch.EvaluateFlags := [defClassAutoCast];
-        end;
-
-        if ExistingNode <> nil then begin
-          tvWatches.NodeItem[ExistingNode] := NewWatch;
-          nd := ExistingNode;
-          ExistingNode := tvWatches.GetNextSiblingNoInit(ExistingNode);
-        end
-        else begin
-          nd := tvWatches.AddChild(VNode, NewWatch);
-        end;
-        UpdateItem(nd, NewWatch);
-      end;
-    end;
-  end;
-
-  tvWatches.ChildCount[VNode] := ChildCount;
-end;
-
-procedure TWatchesDlg.tvWatchesInitChildren(Sender: TBaseVirtualTree;
-  Node: PVirtualNode; var ChildCount: Cardinal);
-// VTV.OnInitChildren
-var
-  VNdWatch: TIdeWatch;
-  WatchValue: TIdeWatchValue;
-begin
-  ChildCount := 0;
-  VNdWatch := TIdeWatch(tvWatches.NodeItem[Node]);
-  FExpandingWatch := VNdWatch;
-
-  DebugBoss.LockCommandProcessing;
-  DebugBoss.Watches.CurrentWatches.BeginUpdate;
-  VNdWatch.BeginChildUpdate;
-  try
-    WatchValue := VNdWatch.Values[GetThreadId, GetStackframe];
-    UpdateSubItems(Node, WatchValue, ChildCount);
-  finally
-    VNdWatch.EndChildUpdate;
-    DebugBoss.Watches.CurrentWatches.EndUpdate;
-    if not FQueuedUnLockCommandProcessing then
-      Application.QueueAsyncCall(@DoUnLockCommandProcessing, 0);
-    FQueuedUnLockCommandProcessing := True;
-    FExpandingWatch := nil;
   end;
 end;
 
@@ -1606,15 +1275,7 @@ begin
 
   BeginUpdate;
   try
-    VNode := tvWatches.FindNodeForItem(AWatch);
-    if VNode = nil
-    then begin
-      VNode := tvWatches.AddChild(nil, AWatch);
-      tvWatches.SelectNode(VNode);
-      AWatch.AddFreeNotification(@DoWatchFreed);
-    end;
-
-    UpdateItem(VNode, AWatch);
+    FWatchTreeMgr.AddWatchData(AWatch);
   finally
     EndUpdate;
   end;
@@ -1652,6 +1313,119 @@ begin
     exit;
   tvWatches.DeleteNode(tvWatches.FindNodeForItem(AWatch));
   tvWatchesChange(nil, nil);
+end;
+
+{ TDbgTreeViewWatchValueMgr }
+
+procedure TDbgTreeViewWatchValueMgr.DoUnLockCommandProcessing(Data: PtrInt);
+begin
+  FQueuedUnLockCommandProcessing := False;
+  DebugBoss.UnLockCommandProcessing;
+end;
+
+function TDbgTreeViewWatchValueMgr.WatchAbleResultFromNode(AVNode: PVirtualNode): TWatchAbleResultIntf;
+var
+  AWatchAble: TObject;
+begin
+  AWatchAble := TreeView.NodeItem[AVNode];
+  if AWatchAble = nil then exit(nil);
+
+  Result := TIdeWatch(AWatchAble).Values[FWatchDlg.GetThreadId, FWatchDlg.GetStackframe];
+end;
+
+function TDbgTreeViewWatchValueMgr.WatchAbleResultFromObject(AWatchAble: TObject): TWatchAbleResultIntf;
+var
+  nd: TObject;
+begin
+  if AWatchAble = nil then exit(nil);
+
+  Result := TIdeWatch(AWatchAble).Values[FWatchDlg.GetThreadId, FWatchDlg.GetStackframe];
+end;
+
+procedure TDbgTreeViewWatchValueMgr.UpdateColumnsText(AWatchAble: TObject;
+  AWatchAbleResult: TWatchAbleResultIntf; AVNode: PVirtualNode);
+var
+  WatchValueStr: String;
+  da: TDBGPtr;
+begin
+  TreeView.NodeText[AVNode, COL_WATCH_EXPR-1]:= TIdeWatch(AWatchAble).DisplayName;
+  TreeView.NodeText[AVNode, 2] := '';
+
+  if (AWatchAbleResult = nil) then begin
+    TreeView.NodeText[AVNode, COL_WATCH_VALUE-1]:= '<not evaluated>';
+    exit;
+  end;
+
+
+  if AWatchAbleResult.Enabled then begin
+    if (FWatchDlg.GetSelectedSnapshot = nil) or  // live watch
+       (AWatchAbleResult.Validity in [ddsValid, ddsInvalid, ddsError]) // snapshot
+    then begin
+      if (AWatchAbleResult.Validity = ddsValid) and (AWatchAbleResult.ResultData <> nil) then begin
+        WatchValueStr := FWatchDlg.FWatchPrinter.PrintWatchValue(AWatchAbleResult.ResultData, AWatchAbleResult.DisplayFormat);
+        WatchValueStr := ClearMultiline(DebugBoss.FormatValue(AWatchAbleResult.TypeInfo, WatchValueStr));
+        if (AWatchAbleResult.ResultData.ValueKind = rdkArray) and (AWatchAbleResult.ResultData.ArrayLength > 0)
+        then TreeView.NodeText[AVNode, COL_WATCH_VALUE-1] := Format(drsLen, [AWatchAbleResult.ResultData.ArrayLength]) + WatchValueStr
+        else TreeView.NodeText[AVNode, COL_WATCH_VALUE-1] := WatchValueStr;
+        if AWatchAbleResult.ResultData.HasDataAddress then begin
+          da := AWatchAbleResult.ResultData.DataAddress;
+          if da = 0
+          then TreeView.NodeText[AVNode, 2] := 'nil'
+          else TreeView.NodeText[AVNode, 2] := '$' + IntToHex(da, HexDigicCount(da, 4, True));
+        end
+      end
+      else begin
+        if (AWatchAbleResult.TypeInfo <> nil) and
+           (AWatchAbleResult.TypeInfo.Attributes * [saArray, saDynArray] <> []) and
+           (AWatchAbleResult.TypeInfo.Len >= 0)
+        then TreeView.NodeText[AVNode, COL_WATCH_VALUE-1] := Format(drsLen, [AWatchAbleResult.TypeInfo.Len]) + AWatchAbleResult.Value
+        else TreeView.NodeText[AVNode, COL_WATCH_VALUE-1] := AWatchAbleResult.Value;
+      end;
+    end
+    else
+    if (FWatchDlg.GetSelectedSnapshot = nil) and
+       (DebugBoss <> nil) and (DebugBoss.State in [dsPause, dsInternalPause])
+    then
+      TreeView.NodeText[AVNode, COL_WATCH_VALUE-1]:= '<evaluating>'
+    else
+      TreeView.NodeText[AVNode, COL_WATCH_VALUE-1]:= '<not evaluated>';
+  end
+  else
+    TreeView.NodeText[AVNode, COL_WATCH_VALUE-1]:= '<disabled>';
+
+end;
+
+procedure TDbgTreeViewWatchValueMgr.ConfigureNewSubItem(AWatchAble: TObject);
+begin
+  if (AWatchAble <> nil) and (AWatchAble is TCurrentWatch) then
+    TCurrentWatch(AWatchAble).DisplayFormat := wdfDefault;
+end;
+
+procedure TDbgTreeViewWatchValueMgr.UpdateSubItems(AWatchAble: TObject;
+  AWatchAbleResult: TWatchAbleResultIntf; AVNode: PVirtualNode; out
+  ChildCount: LongWord);
+begin
+  exclude(FWatchDlg.FStateFlags, wdsfUpdating);
+  FWatchDlg.FCurrentWatchInUpDateItem := nil;
+  inherited UpdateSubItems(AWatchAble, AWatchAbleResult, AVNode, ChildCount);
+end;
+
+procedure TDbgTreeViewWatchValueMgr.UpdateSubItemsLocked(AWatchAble: TObject;
+  AWatchAbleResult: TWatchAbleResultIntf; AVNode: PVirtualNode; out
+  ChildCount: LongWord);
+begin
+  DebugBoss.LockCommandProcessing;
+  DebugBoss.Watches.CurrentWatches.BeginUpdate;
+  TIdeWatch(AWatchAble).BeginChildUpdate;
+  try
+    UpdateSubItems(AWatchAble, AWatchAbleResult, AVNode, ChildCount);
+  finally
+    TIdeWatch(AWatchAble).EndChildUpdate;
+    DebugBoss.Watches.CurrentWatches.EndUpdate;
+    if not FQueuedUnLockCommandProcessing then
+      Application.QueueAsyncCall(@DoUnLockCommandProcessing, 0);
+    FQueuedUnLockCommandProcessing := True;
+  end;
 end;
 
 initialization

@@ -532,14 +532,17 @@ type
 
   { TIdeWatchValue }
 
-  TIdeWatchValue = class(TWatchValue)
+  TIdeWatchValue = class(TWatchValue, TWatchAbleResultIntf)
   private
-    function GetChildrenByNameAsArrayEntry(AName: Int64): TIdeWatch;
-    function GetChildrenByNameAsField(AName, AClassName: String): TIdeWatch;
+    function GetChildrenByNameAsArrayEntry(AName: Int64): TObject; // TIdeWatch;
+    function GetChildrenByNameAsField(AName, AClassName: String): TObject; // TIdeWatch;
     function GetWatch: TIdeWatch;
+    function GetEnabled: Boolean;
   protected
     function GetTypeInfo: TDBGType; override;
     function GetValue: String; override;
+    function GetResultData: TWatchResultData; override;
+    function GetValidity: TDebuggerDataState; override;
 
     procedure RequestData; virtual;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
@@ -561,8 +564,8 @@ type
 
     function MaybeCopyResult(ASourceWatch: TIdeWatch): boolean;
 
-    property ChildrenByNameAsField[AName, AClassName: String]: TIdeWatch read GetChildrenByNameAsField;
-    property ChildrenByNameAsArrayEntry[AName: Int64]: TIdeWatch read GetChildrenByNameAsArrayEntry;
+    property ChildrenByNameAsField[AName, AClassName: String]: TObject read GetChildrenByNameAsField;
+    property ChildrenByNameAsArrayEntry[AName: Int64]: TObject read GetChildrenByNameAsArrayEntry;
   end;
 
   { TIdeWatchValueList }
@@ -587,7 +590,7 @@ type
 
   { TIdeWatch }
 
-  TIdeWatch = class(TWatch)
+  TIdeWatch = class(TWatch, TWatchAbleDataIntf)
   private
     FChildWatches: TIdeWatches;
     FDisplayName: String;
@@ -601,6 +604,8 @@ type
     function GetAnyValidParentWatchValue(AThreadId: Integer; AStackFrame: Integer): TIdeWatchValue;
     function GetWatchDisplayName: String;
     procedure SetDisplayName(AValue: String); reintroduce;
+    function GetEnabled: Boolean;
+    function GetExpression: String;
   protected
     procedure InitChildWatches;
     function CreateChildWatches: TIdeWatches; virtual;
@@ -4214,10 +4219,34 @@ begin
     ddsInvalid:                  Result := '<invalid>';
     ddsError:                    Result := '<Error: '+ (inherited GetValue) +'>';
   end;
-
 end;
 
-function TIdeWatchValue.GetChildrenByNameAsArrayEntry(AName: Int64): TIdeWatch;
+function TIdeWatchValue.GetResultData: TWatchResultData;
+var
+  i: Integer;
+begin
+  Result := inherited GetResultData;
+  if (Watch = nil) or (not Watch.Enabled) then
+    exit;
+  i := DbgStateChangeCounter;  // workaround for state changes during TWatchValue.GetResultData
+  if Validity = ddsUnknown then begin
+    Validity := ddsRequested;
+    RequestData;
+    if i <> DbgStateChangeCounter then exit; // in case the debugger did run.
+    // TODO: The watch can also be deleted by the user
+    Result := inherited GetResultData;
+  end;
+end;
+
+function TIdeWatchValue.GetValidity: TDebuggerDataState;
+begin
+  if (Watch = nil) or (Watch.HasAllValidParents(ThreadId, StackFrame)) then
+    Result := inherited GetValidity
+  else
+    Result := ddsEvaluating; // ddsWaitForParent;
+end;
+
+function TIdeWatchValue.GetChildrenByNameAsArrayEntry(AName: Int64): TObject;
 begin
   Result := nil;
   if FWatch = nil then
@@ -4232,7 +4261,7 @@ begin
 end;
 
 function TIdeWatchValue.GetChildrenByNameAsField(AName, AClassName: String
-  ): TIdeWatch;
+  ): TObject;
 begin
   Result := nil;
   if FWatch = nil then
@@ -4249,6 +4278,13 @@ end;
 function TIdeWatchValue.GetWatch: TIdeWatch;
 begin
   Result := TIdeWatch(inherited Watch);
+end;
+
+function TIdeWatchValue.GetEnabled: Boolean;
+begin
+  Result := Watch <> nil;
+  if Result then
+    Result := Watch.Enabled;
 end;
 
 function TIdeWatchValue.GetTypeInfo: TDBGType;
@@ -6491,6 +6527,16 @@ begin
   DoModified;
 end;
 
+function TIdeWatch.GetEnabled: Boolean;
+begin
+  Result := inherited Enabled;
+end;
+
+function TIdeWatch.GetExpression: String;
+begin
+  Result := inherited Expression;
+end;
+
 procedure TIdeWatch.SetParentWatch(AValue: TIdeWatch);
 begin
   if FParentWatch = AValue then Exit;
@@ -6535,6 +6581,9 @@ begin
   Result.DisplayFormat := DisplayFormat;
   Result.DbgBackendConverter := DbgBackendConverter;
   Result.FDisplayName := ADispName;
+  if (defClassAutoCast in EvaluateFlags) then
+    Result.EvaluateFlags := Result.EvaluateFlags + [defClassAutoCast];
+
   EndChildUpdate;
 end;
 

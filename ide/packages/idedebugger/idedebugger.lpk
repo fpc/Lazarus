@@ -178,6 +178,10 @@
         <Filename Value="assemblerdlg.pp"/>
         <UnitName Value="AssemblerDlg"/>
       </Item>
+      <Item>
+        <Filename Value="dbgtreeviewwatchdata.pas"/>
+        <UnitName Value="DbgTreeViewWatchData"/>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

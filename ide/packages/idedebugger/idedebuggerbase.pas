@@ -1,6 +1,7 @@
 unit IdeDebuggerBase;
 
 {$mode objfpc}{$H+}
+{$Interfaces CORBA}
 
 interface
 
@@ -12,6 +13,47 @@ uses
   LazDebuggerValueConverter, FpDebugConvDebugForJson;
 
 type
+
+  TFreeNotifyingIntf = interface ['fni']
+    procedure AddFreeNotification(ANotification: TNotifyEvent);
+    procedure RemoveFreeNotification(ANotification: TNotifyEvent);
+  end;
+
+
+  TWatchAbleDataIntf = interface(TFreeNotifyingIntf) ['wdi']
+    procedure LimitChildWatchCount(AMaxCnt: Integer; AKeepIndexEntriesBelow: Int64 = low(Int64)); virtual;
+    procedure ClearDisplayData;  // Clear any cached display-data / keep only what's needed for the snapshot
+
+    function GetEnabled: Boolean;
+    function GetExpression: String;
+    function GetDisplayName: String;
+
+    property Enabled: Boolean read GetEnabled;
+    property Expression: String read GetExpression; // thread save / non-changing in begin/end-uptdate
+    property DisplayName: String read GetDisplayName;
+  end;
+
+  TWatchAbleResultIntf = interface ['wdr']
+    function GetChildrenByNameAsArrayEntry(AName: Int64): TObject;
+    function GetChildrenByNameAsField(AName, AClassName: String): TObject;
+
+    function GetEnabled: Boolean;
+    function GetValidity: TDebuggerDataState;
+    function GetDisplayFormat: TWatchDisplayFormat;
+    function GetTypeInfo: TDBGType; deprecated;
+    function GetValue: string;
+    function GetResultData: TWatchResultData;
+
+    property ChildrenByNameAsField[AName, AClassName: String]: TObject read GetChildrenByNameAsField;
+    property ChildrenByNameAsArrayEntry[AName: Int64]: TObject read GetChildrenByNameAsArrayEntry;
+
+    property Enabled: Boolean read GetEnabled;
+    property Validity: TDebuggerDataState read GetValidity;
+    property DisplayFormat: TWatchDisplayFormat read GetDisplayFormat;
+    property TypeInfo: TDBGType read GetTypeInfo;
+    property Value: string read GetValue; // for <Error> etc
+    property ResultData: TWatchResultData read GetResultData;
+  end;
 
   TWatch = class;
 
@@ -270,7 +312,10 @@ end;
 
 function TWatchValue.GetValidity: TDebuggerDataState;
 begin
-  Result := FValidity;
+  if Watch <> nil then
+    Result := FValidity
+  else
+    Result := ddsUnknown;
 end;
 
 function TWatchValue.GetStackFrame: Integer;

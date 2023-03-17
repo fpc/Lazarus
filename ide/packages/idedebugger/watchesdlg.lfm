@@ -47,9 +47,7 @@ object WatchesDlg: TWatchesDlg
     OnChange = tvWatchesChange
     OnDragOver = tvWatchesDragOver
     OnDragDrop = tvWatchesDragDrop
-    OnExpanded = tvWatchesExpanded
     OnFocusChanged = tvWatchesFocusChanged
-    OnInitChildren = tvWatchesInitChildren
     OnNodeDblClick = tvWatchesNodeDblClick
   end
   object ToolBar1: TToolBar
@@ -187,7 +185,6 @@ object WatchesDlg: TWatchesDlg
         Width = 200
         Align = alTop
         Caption = '...'
-        Color = clDefault
         ParentColor = False
       end
     end
