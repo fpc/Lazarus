@@ -600,6 +600,7 @@ type
     function GetValue(const AThreadId: Integer; const AStackFrame: Integer): TIdeWatchValue;
     function GetAnyValidParentWatchValue(AThreadId: Integer; AStackFrame: Integer): TIdeWatchValue;
     function GetWatchDisplayName: String;
+    procedure SetDisplayName(AValue: String); reintroduce;
   protected
     procedure InitChildWatches;
     function CreateChildWatches: TIdeWatches; virtual;
@@ -628,7 +629,7 @@ type
     function HasAllValidParents(AThreadId: Integer; AStackFrame: Integer): boolean;
     property ParentWatch: TIdeWatch read FParentWatch;
     property TopParentWatch: TIdeWatch read GetTopParentWatch;
-    property DisplayName: String read GetWatchDisplayName write FDisplayName;
+    property DisplayName: String read GetWatchDisplayName write SetDisplayName;
   public
     property Values[const AThreadId: Integer; const AStackFrame: Integer]: TIdeWatchValue
              read GetValue;
@@ -6481,6 +6482,13 @@ begin
     Result := FDisplayName
   else
     Result := FExpression;
+end;
+
+procedure TIdeWatch.SetDisplayName(AValue: String);
+begin
+  FDisplayName := AValue;
+  Changed;
+  DoModified;
 end;
 
 procedure TIdeWatch.SetParentWatch(AValue: TIdeWatch);
