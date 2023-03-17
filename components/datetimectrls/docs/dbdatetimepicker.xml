@@ -14,7 +14,7 @@ Implements a database-aware version of the date/time picker control.
 <p>
 <file>DBDateTimePicker.pas</file> contains an implementation of the
 database-aware date/time picker control. It contains the 
-<var>TDBDateTimePicker</var> type, descended from 
+<var>TDBDateTimePicker</var> control, descended from 
 <var>TCustomDateTimePicker</var>, which adds properties and methods 
 needed to read and write the date/time value for the control using a 
 DataSource, DataField, and an internal TFieldDataLink class instance.
@@ -68,12 +68,34 @@ Implements a database-aware version of the TDateTimePicker control.
 <var>TDBDateTimePicker</var> is a <var>TCustomDateTimePicker</var> descendant 
 which implements a database-aware date/time picker control. 
 </p>
-<!-- TODO: Merge content from TCustomDateTimePicker. -->
 <p>
-It adds properties and methods needed to read and write the date/time value 
-for the control using a DataSource, DataField, and an internal TFieldDataLink 
-class instance. It provides support for displaying and storing a value in a 
-database field which has a null value.
+Like TCustom DateTimePicker, it does not use the native Windows control. It 
+has been tested on Windows with Win32/64 and QT widgetsets, as well as on 
+Linux with QT and GTK2 widgetsets.
+</p>
+<p>
+Please note that, like TDateTimePicker, the control does not descend from 
+TEdit. As a result, it does not have the unnecessary caret just like its VCL 
+counterpart.
+</p>
+<p>
+The control allows the user to enter Date, Time, or DateTime values. It 
+incorporates a button on the control to display a drop-down calendar for date 
+values, or up and down buttons to increment and decrement the numeric values 
+in a time. Individual parts in the date/time values can be changed using the 
+Up and Down cursor keys, or by entering the value directly into the control.
+</p>
+<p>
+It uses locale-specific settings to format and display date / time values by 
+default, but allows these settings to be overridden. It ignores the BiDiMode 
+setting when formatting date and time values, but does use the property to 
+align the button(s) on the control.
+</p>
+<p>
+TDBDateTimePicker adds properties and methods needed to read and write the 
+date / time value for the control using a DataSource, DataField, and an 
+internal TFieldDataLink class instance. It provides support for displaying and 
+storing a value in a database field which has a null value.
 </p>
 <p>
 TDBDateTimePicker sets the visibility for properties and events introduced in 
@@ -144,16 +166,67 @@ the field to its previous state.
 <short>
 Validates and applies a user-specified date/time value for the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>ConfirmChanges</var> is an overridden method in TDBDateTimePicker. It 
+calls the inherited method on entry to validate a user-specified values in the 
+date / time parts before they are applied to the control.
+</p>
+<p>
+See 
+<link id="#datetimectrls.datetimepicker.TCustomDateTimePicker.ConfirmChanges">
+TCustomDateTimePicker.ConfirmChanges</link> for the specific actions performed 
+in the ancestor class.
+</p>
+<p>
+In TDBDateTimePicker, it ensures that the internal field data link 
+(TFieldDataLink) has been assigned before the updated value is written to the 
+DataField. The modified value is not stored if the field data link has not 
+been assigned (or is no longer valid) for the control. An exception which 
+occurs when accessing the data link is caught and re-raised after focusing the 
+control.
+</p>
+<p>
+ConfirmChanges is called from the EditingDone method, and when the value for 
+the ReadOnly property is changed.
+</p>
+</descr>
+<seealso>
+<link id="TDBDateTimePicker.DataSource"/>
+<link id="TDBDateTimePicker.DataField"/>
+<link id="TDBDateTimePicker.MinDate"/>
+<link id="TDBDateTimePicker.MaxDate"/>
+<link id="TDBDateTimePicker.CenturyFrom"/>
+<link id="#datetimectrls.datetimepicker.TCustomDateTimePicker.ConfirmChanges">TCustomDateTimePicker.ConfirmChanges</link>
+<link id="#datetimectrls.datetimepicker.TCustomDateTimePicker.DateTime">TCustomDateTimePicker.DateTime</link>
+<link id="#datetimectrls.datetimepicker.TCustomDateTimePicker.Date">TCustomDateTimePicker.Date</link>
+<link id="#datetimectrls.datetimepicker.TCustomDateTimePicker.Time">TCustomDateTimePicker.Time</link>
+<link id="#lcl.dbctrls.TFieldDataLink">TFieldDataLink</link>
+</seealso>
 </element>
 
 <element name="TDBDateTimePicker.UndoChanges">
 <short>
 Reverts changes to the date/time value in the control and its linked dataset.
 </short>
-<descr/>
+<descr>
+<p>
+<var>UndoChanges</var> is an overridden method in TDBDateTimePicker. It calls 
+the Reset method in the internal field data link (TFieldDataLink) when changes 
+to the control have been cancelled or undone. This reloads the date / time 
+value from the DataField in the DataSource.
+</p>
+<p>
+UndoChanges calls the inherited method prior to exit to update the TDateTime 
+value for the control.
+</p>
+</descr>
 <seealso>
+<link id="#datetimectrls.datetimepicker.TCustomDateTimePicker.UndoChanges">TCustomDateTimePicker.UndoChanges</link>
+<link id="#datetimectrls.datetimepicker.TCustomDateTimePicker.DateTime">TCustomDateTimePicker.DateTime</link>
+<link id="#datetimectrls.datetimepicker.TCustomDateTimePicker.Date">TCustomDateTimePicker.Date</link>
+<link id="#datetimectrls.datetimepicker.TCustomDateTimePicker.Time">TCustomDateTimePicker.Time</link>
+<link id="#lcl.dbctrls.TFieldDataLink.Reset">TFieldDataLink.Reset</link>
 </seealso>
 </element>
 
@@ -220,24 +293,104 @@ instance used in the class.
 <short>
 Name for the field where the date/time value is stored in the linked dataset.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>DataField</var> is a String property which contains the name for the 
+field used to read and write the TDateTime value for the control. The property 
+value is read from and written to the internal field data link 
+(TFieldDataLink) used in the class instance.
+</p>
+<p>
+Changing the value for the property causes the DataSource to be checked for a 
+valid field with the specified name. The dataset in DataSource must be active 
+to validate the TField instance. ReadOnly is updated to reflect whether the 
+dataset is active and the field name is valid. The TDateTime value for the 
+control is set to NullDate if the dataset is closed or field name is not a 
+valid field in the dataset.
+</p>
+</descr>
+<seealso>
+<link id="TDBDateTimePicker.DataSource"/>
+<link id="TDBDateTimePicker.ReadOnly"/>
+<link id="#datetimectrls.datetimepicker.TCustomDateTimePicker.DateTime">TCustomDateTimePicker.DateTime</link>
+<link id="#datetimectrls.datetimepicker.TCustomDateTimePicker.Date">TCustomDateTimePicker.Date</link>
+<link id="#datetimectrls.datetimepicker.TCustomDateTimePicker.Time">TCustomDateTimePicker.Time</link>
+<link id="#datetimectrls.datetimepicker.NullDate">NullDate</link>
+<link id="#lcl.dbctrls.TFieldDataLink">TFieldDataLink</link>
+<link id="#fcl.db.TDataSource">TDataSource</link>
+<link id="#fcl.db.TDataSet">TDataSet</link>
+<link id="#fcl.db.TDataSet">TField</link>
+</seealso>
 </element>
 
 <element name="TDBDateTimePicker.DataSource">
 <short>
-Provides access to the dataset for the date/time value.
+Provides access to the dataset and field for the date/time value.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+DataSource is a TDataSource property which provides access to the dataset and 
+the field where the TDateTime value  for the control is stored. It acts as a 
+mediator to handle communication between the database-aware control and its 
+dataset. The value for the property is read from and written to the internal 
+field data link (TFieldDataLink) instance used in the class.
+</p>
+<p>
+Changing the value for the property causes the dataset to be checked for a 
+valid field with the specified name. The dataset in DataSource must be active 
+to validate the TField instance. ReadOnly is updated to reflect whether the 
+dataset is active and the field name is valid. The TDateTime value for the 
+control is set to NullDate if the dataset is closed or field name is not a 
+valid field in the dataset.
+</p>
+<p>
+Use DataField to specify the name of the field where the date / time value is 
+stored.
+</p>
+</descr>
+<seealso>
+<link id="TDBDateTimePicker.DataField"/>
+<link id="TDBDateTimePicker.ReadOnly"/>
+<link id="TDBDateTimePicker.Field"/>
+<link id="#datetimectrls.datetimepicker.NullDate">NullDate</link>
+<link id="#lcl.dbctrls.TFieldDataLink">TFieldDataLink</link>
+<link id="#fcl.db.TDataSource">TDataSource</link>
+<link id="#fcl.db.TDataSet">TDataSet</link>
+<link id="#fcl.db.TDataSet">TField</link>
+</seealso>
 </element>
 
 <element name="TDBDateTimePicker.ReadOnly">
 <short>
 Indicates whether the data/time value can be modified using the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>ReadOnly</var> is a <var>Boolean</var> property which indicates whether 
+the TDateTime value for the control can be changed. It reintroduces the 
+property from the ancestor class with an overridden write specifier to 
+validate the Field and Dataset in the DataSource.
+</p>
+<p>
+ReadOnly may be automatically set to <b>False</b> if the dataset for the 
+control is not active or does not allow changes. It may also be set to 
+<b>False</b> if a value specified for the DataSource or DataField properties 
+is not valid, and when Active is changed to <b>False</b>.
+</p>
+<p>
+Set ReadOnly to <b>False</b> to prevent the value from being changes at 
+run-time through interaction with the control.
+</p>
+</descr>
+<seealso>
+<link id="TDBDateTimePicker.DataField"/>
+<link id="TDBDateTimePicker.DataSource"/>
+<link id="TDBDateTimePicker.Field"/>
+<link id="#lcl.dbctrls.TFieldDataLink">TFieldDataLink</link>
+<link id="#fcl.db.TDataSource">TDataSource</link>
+<link id="#fcl.db.TDataSet">TDataSet</link>
+<link id="#fcl.db.TDataSet">TField</link>
+</seealso>
 </element>
 
 <element name="TDBDateTimePicker.ArrowShape" link="#datetimectrls.datetimepicker.TCustomDateTimePicker.ArrowShape"/>
