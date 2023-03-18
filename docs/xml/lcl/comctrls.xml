@@ -25717,15 +25717,45 @@ signalled (when assigned).
 </seealso>
 </element>
 
-<!-- HERE -->
-
 <element name="TCustomTrackBar.Reversed">
 <short>
-<b>True</b> if the values on the track bar are displayed from right-to-left in 
-ascending order.
+Set to <b>True</b> to display values on the track bar in reverse order.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>Reversed</var> is a <var>Boolean</var> property which indicates if values 
+on the track bar are displayed in the reverse order for the Orientation on the 
+control.
+</p>
+<p>
+The default value for the property is <b>False</b>. When Orientation is 
+trHorizontal, the Min value for the control appears on the left-hand edge and 
+the Max value appears on the right-hand edge. When Orientation is trVertical, 
+the Min value for the control appears on the top edge and the Max value 
+appears on the bottom edge.
+</p>
+<p>
+When Reversed is set to <b>True</b>, the display order for the values are 
+reversed along the selected Orientation. When Orientation is trHorizontal, the 
+Min value for the control appears on the right-hand edge and the Max value 
+appears on the left-hand edge. When Orientation is trVertical, the Min value 
+for the control appears on the bottom edge and the Max value appears on the 
+top edge.
+</p>
+<p>
+Changing the value for the property causes the ApplyChanges method to be 
+called to update the visual appearance for the control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTrackBar.Orientation"/>
+<link id="TCustomTrackBar.Min"/>
+<link id="TCustomTrackBar.Max"/>
+<link id="TCustomTrackBar.Position"/>
+<link id="TCustomTrackBar.SelStart"/>
+<link id="TCustomTrackBar.SelEnd"/>
+<link id="TCustomTrackBar.ApplyChanges"/>
+</seealso>
 </element>
 
 <element name="TCustomTrackBar.ScalePos">
@@ -25735,11 +25765,13 @@ Position where the scale is displayed for the track bar control.
 <descr>
 <remark>
 ScalePos is a GTK-specific property. It is not implemented or supported for 
-other widgetsets. Use the TickMarks property on other platforms.
+other widgetsets. Use the TickMarks property on other platforms. 
 </remark>
 </descr>
 <seealso>
 <link id="TCustomTrackBar.TickMarks"/>
+<link id="TCustomTrackBar.Frequency"/>
+<link id="TCustomTrackBar.LineSize"/>
 </seealso>
 </element>
 
@@ -25748,7 +25780,13 @@ other widgetsets. Use the TickMarks property on other platforms.
 Ending value for the selection range on the track bar control.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCustomTrackBar.SelStart"/>
+<link id="TCustomTrackBar.ShowSelRange"/>
+<link id="TCustomTrackBar.Position"/>
+<link id="TCustomTrackBar.Min"/>
+<link id="TCustomTrackBar.Max"/>
+</seealso>
 </element>
 
 <element name="TCustomTrackBar.SelStart">
@@ -25756,7 +25794,13 @@ Ending value for the selection range on the track bar control.
 Starting value for the selection range on the track bar control.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCustomTrackBar.SelEnd"/>
+<link id="TCustomTrackBar.ShowSelRange"/>
+<link id="TCustomTrackBar.Position"/>
+<link id="TCustomTrackBar.Min"/>
+<link id="TCustomTrackBar.Max"/>
+</seealso>
 </element>
 
 <element name="TCustomTrackBar.ShowSelRange">
@@ -25765,7 +25809,13 @@ Enables or disables a highlighted selection range with tick marks using the
 values in SelStart and SelEnd.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCustomTrackBar.SelStart"/>
+<link id="TCustomTrackBar.SelEnd"/>
+<link id="TCustomTrackBar.Position"/>
+<link id="TCustomTrackBar.Min"/>
+<link id="TCustomTrackBar.Max"/>
+</seealso>
 </element>
 
 <element name="TCustomTrackBar.TabStop">
