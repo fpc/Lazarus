@@ -1,8 +1,24 @@
 {
- *****************************************************************************
-  See the file COPYING.modifiedLGPL.txt, included in this distribution,
-  for details about the license.
- *****************************************************************************
+***************************************************************************/
+
+***************************************************************************
+*                                                                         *
+*   This source is free software; you can redistribute it and/or modify   *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+*   This code is distributed in the hope that it will be useful, but      *
+*   WITHOUT ANY WARRANTY; without even the implied warranty of            *
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU     *
+*   General Public License for more details.                              *
+*                                                                         *
+*   A copy of the GNU General Public License is available on the World    *
+*   Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also      *
+*   obtain it by writing to the Free Software Foundation,                 *
+*   Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.   *
+*                                                                         *
+***************************************************************************
 
   Author: Mattias Gaertner
 
@@ -54,6 +70,7 @@ type
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure PkgEditSpeedButtonClick(Sender: TObject);
     procedure ShowReplaceSpeedButtonClick(Sender: TObject);
   private
     DirectoriesPathEditBtn: TPathEditorButton;
@@ -121,6 +138,7 @@ end;
 procedure TLazFindInFilesWindow.FormCreate(Sender: TObject);
 begin
   ShowReplaceSpeedButton.Caption:='';
+  ShowReplaceSpeedButton.Hint:='Show replace';
   TextToFindCombobox.TextHint:='Find text';
   StoreAndNewSpeedButton.Hint:='Store results in search results window and start a new search';
   CaseSensitiveSpeedButton.Hint:='Case Sensitive';
@@ -199,6 +217,11 @@ begin
 end;
 
 procedure TLazFindInFilesWindow.FormDestroy(Sender: TObject);
+begin
+
+end;
+
+procedure TLazFindInFilesWindow.PkgEditSpeedButtonClick(Sender: TObject);
 begin
 
 end;

@@ -16,7 +16,7 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
     AnchorSideBottom.Control = TextToFindCombobox
     AnchorSideBottom.Side = asrBottom
     Left = 686
-    Height = 30
+    Height = 32
     Top = 0
     Width = 23
     AllowAllUp = True
@@ -32,7 +32,7 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
     AnchorSideBottom.Control = TextToFindCombobox
     AnchorSideBottom.Side = asrBottom
     Left = 709
-    Height = 30
+    Height = 32
     Top = 0
     Width = 23
     AllowAllUp = True
@@ -48,7 +48,7 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
     AnchorSideBottom.Control = TextToFindCombobox
     AnchorSideBottom.Side = asrBottom
     Left = 732
-    Height = 30
+    Height = 32
     Top = 0
     Width = 23
     AllowAllUp = True
@@ -65,7 +65,7 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
     AnchorSideBottom.Control = TextToFindCombobox
     AnchorSideBottom.Side = asrBottom
     Left = 778
-    Height = 30
+    Height = 32
     Top = 0
     Width = 23
     AllowAllUp = True
@@ -82,7 +82,7 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
     AnchorSideBottom.Control = TextToFindCombobox
     AnchorSideBottom.Side = asrBottom
     Left = 755
-    Height = 30
+    Height = 32
     Top = 0
     Width = 23
     AllowAllUp = True
@@ -98,7 +98,7 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
     AnchorSideBottom.Control = TextToFindCombobox
     AnchorSideBottom.Side = asrBottom
     Left = 663
-    Height = 30
+    Height = 32
     Top = 0
     Width = 23
     Anchors = [akTop, akRight, akBottom]
@@ -112,7 +112,7 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
     AnchorSideBottom.Control = TextToFindCombobox
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 30
+    Height = 32
     Top = 0
     Width = 23
     AllowAllUp = True
@@ -120,6 +120,8 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
     Caption = '<>'
     GroupIndex = 1
     OnClick = ShowReplaceSpeedButtonClick
+    ShowHint = True
+    ParentShowHint = False
   end
   object TextToFindCombobox: TComboBox
     AnchorSideLeft.Control = ShowReplaceSpeedButton
@@ -127,7 +129,7 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = StoreAndNewSpeedButton
     Left = 23
-    Height = 30
+    Height = 32
     Top = 0
     Width = 640
     Anchors = [akTop, akLeft, akRight]
@@ -140,8 +142,8 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = ReplaceButton
     Left = 23
-    Height = 30
-    Top = 36
+    Height = 32
+    Top = 38
     Width = 718
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -671,8 +673,8 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = SrcDividerBevel
     Left = 0
-    Height = 153
-    Top = 140
+    Height = 145
+    Top = 148
     Width = 801
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 6
@@ -685,14 +687,14 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 62
-    Top = 72
+    Height = 66
+    Top = 76
     Width = 801
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
     BevelOuter = bvNone
-    ClientHeight = 62
+    ClientHeight = 66
     ClientWidth = 801
     TabOrder = 4
     object DirectoriesComboBox: TComboBox
@@ -700,8 +702,8 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
       AnchorSideTop.Control = FileMaskComboBox
       AnchorSideTop.Side = asrBottom
       Left = 0
-      Height = 30
-      Top = 32
+      Height = 32
+      Top = 34
       Width = 778
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 2
@@ -715,7 +717,7 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
       AnchorSideLeft.Control = WherePanel
       AnchorSideTop.Control = WherePanel
       Left = 0
-      Height = 30
+      Height = 32
       Top = 0
       Width = 227
       ItemHeight = 0
@@ -729,7 +731,7 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
       AnchorSideBottom.Control = FileMaskComboBox
       AnchorSideBottom.Side = asrBottom
       Left = 229
-      Height = 30
+      Height = 32
       Top = 0
       Width = 38
       AllowAllUp = True
@@ -739,6 +741,8 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
       Caption = 'Editor'
       Down = True
       GroupIndex = 31
+      ShowHint = True
+      ParentShowHint = False
     end
     object InProjectFilesSpeedButton1: TSpeedButton
       AnchorSideLeft.Control = InEditorFilesSpeedButton
@@ -747,7 +751,7 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
       AnchorSideBottom.Control = FileMaskComboBox
       AnchorSideBottom.Side = asrBottom
       Left = 269
-      Height = 30
+      Height = 32
       Top = 0
       Width = 44
       AllowAllUp = True
@@ -758,6 +762,8 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
       Caption = 'Project'
       Down = True
       GroupIndex = 32
+      ShowHint = True
+      ParentShowHint = False
     end
     object PkgComboBox: TComboBox
       AnchorSideLeft.Control = InProjectFilesSpeedButton1
@@ -765,7 +771,7 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
       AnchorSideTop.Control = FileMaskComboBox
       AnchorSideRight.Control = PkgEditSpeedButton
       Left = 315
-      Height = 30
+      Height = 32
       Top = 0
       Width = 463
       Anchors = [akTop, akLeft, akRight]
@@ -782,11 +788,12 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
       AnchorSideBottom.Control = PkgComboBox
       AnchorSideBottom.Side = asrBottom
       Left = 778
-      Height = 30
+      Height = 32
       Top = 0
       Width = 23
       Anchors = [akTop, akRight, akBottom]
       Caption = '...'
+      OnClick = PkgEditSpeedButtonClick
     end
   end
   object ReplaceButton: TButton
@@ -795,7 +802,7 @@ object LazFindInFilesWindow: TLazFindInFilesWindow
     AnchorSideRight.Side = asrBottom
     Left = 741
     Height = 31
-    Top = 36
+    Top = 38
     Width = 60
     Anchors = [akTop, akRight]
     AutoSize = True
