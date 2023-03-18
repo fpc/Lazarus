@@ -45,7 +45,7 @@ uses
   IDEExternToolIntf, IDEOptEditorIntf,
   // IDE
   IDEProcs, DialogProcs, CompilerOptions, ProjPackCommon, Project,
-  ProjectDescriptorTypes, PackageDefs, PackageSystem, PackageEditor,
+  PackageDefs, PackageSystem, PackageEditor,
   BasePkgManager, LazarusIDEStrConsts, SearchPathProcs, SourceFileManager,
   // Converter
   ConverterTypes, ConvertSettings, ConvCodeTool, MissingUnits, MissingPropertiesDlg,
