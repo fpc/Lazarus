@@ -62,6 +62,7 @@ uses
   Splash,
   Main,
   AboutFrm,
+  LazDebuggerFpLldb, LazDebuggerFp, laz.virtualtreeview_package,
   // use the custom IDE static packages AFTER 'main'
   {$IFDEF AddStaticPkgs}
   {$I staticpackages.inc}
