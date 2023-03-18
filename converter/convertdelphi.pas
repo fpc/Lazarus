@@ -1420,30 +1420,39 @@ end;
 function TConvertDelphiProjPack.CheckPackageDep(AUnitName: string): Boolean;
 // Check if the given unit can be found in existing packages. Add a dependency if found.
 // This is called only if the unit is reported as missing.
-// Returns True if a dependency was really added.
+// Returns True if the unit was found.
 var
-  Pack: TPkgFile;
+  RegComp: TRegisteredComponent;
+  PackFile: TPkgFile;
   Dep: TPkgDependency;
   s: String;
 begin
   Result:=False;
-  Pack:=PackageGraph.FindUnitInAllPackages(AUnitName, True);
-  if Assigned(Pack) then begin
+  PackFile:=PackageGraph.FindUnitInAllPackages(AUnitName, True);
+  if PackFile=Nil then begin
+    // Do heuristics. Units of some registered components are not included in
+    //  their package file. Try to find 'T' + UnitName. Helps with Indy package.
+    RegComp := IDEComponentPalette.FindRegComponent('T'+AUnitName);
+    if RegComp is TPkgComponent then
+      PackFile:=TPkgComponent(RegComp).PkgFile;
+  end;
+  if Assigned(PackFile) then begin
     // Found from package: add package to project dependencies and open it.
-    s:=Pack.LazPackage.Name;
+    s:=PackFile.LazPackage.Name;
     if s='LCLBase' then
       s:='LCL';
     Dep:=FindDependencyByName(s);
-    if not Assigned(Dep) then begin
+    if Dep=Nil then begin
       fProjPack.AddPackageDependency(s);
       fSettings.AddLogLine(mluNote, Format(lisConvDelphiAddedPackageDependency,[s]),
                            fLazPInfoFilename);
       Dep:=FindDependencyByName(s);
       if Assigned(Dep) then
         PackageGraph.OpenDependency(Dep,false);
-      Result:=True;
     end;
-  end else begin;
+    Result:=True;
+  end
+  else begin
     // ToDo: Install the required package automatically from a repository...
   end;
 end;

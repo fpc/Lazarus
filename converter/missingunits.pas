@@ -81,7 +81,7 @@ var
   MissingUnitsDialog: TMissingUnitsDialog;
 
 function AskMissingUnits(AMainMissingUnits, AImplMissingUnits: TStrings;
-                         AMainUnitName: string; ATargetDelphi: boolean): TModalResult;
+                         AUnitName: string; ATargetDelphi: boolean): TModalResult;
 
 
 implementation
@@ -89,7 +89,7 @@ implementation
 {$R *.lfm}
 
 function AskMissingUnits(AMainMissingUnits, AImplMissingUnits: TStrings;
-                         AMainUnitName: string; ATargetDelphi: boolean): TModalResult;
+                         AUnitName: string; ATargetDelphi: boolean): TModalResult;
 var
   UNFDialog: TMissingUnitsDialog;
 
@@ -114,7 +114,7 @@ var
   end;
 
 var
-  UnitsTitle, s: string;
+  s: string;
   i: Integer;
   ImplRemoved: Boolean;
 begin
@@ -124,14 +124,13 @@ begin
   Result:=mrCancel;
   // A title text containing filename.
   if (AMainMissingUnits.Count + AImplMissingUnits.Count) = 1 then
-    s:=lisUnitNotFoundInProject
+    s:=lisUnitNotFoundInFile
   else
-    s:=lisUnitsNotFoundInProject;
-  UnitsTitle:=Format(s, [AMainUnitName]);
+    s:=lisUnitsNotFoundInFile;
 
   UNFDialog:=TMissingUnitsDialog.Create(nil);
   with UNFDialog do begin
-    Caption:=UnitsTitle;
+    Caption:=Format(s, [AUnitName]);
     MissingUnitsGroupBox.Caption:=lisTheseUnitsWereNotFound;
     ChoicesLabel.Caption:=lisMissingUnitsChoices;
     SearchButton.Caption:=lisMissingUnitsSearch;
