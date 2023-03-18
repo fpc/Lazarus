@@ -197,7 +197,7 @@ type
     {$ENDIF}
     function GetCurrentDebuggerClass: TDebuggerClass; override;    (* TODO: workaround for http://bugs.freepascal.org/view.php?id=21834   *)
     function AttachDebugger: TModalResult;
-    procedure CallWatchesInvalidatedHandlers(ASender: TObject);
+    procedure CallWatchesInvalidatedHandlers(Sender: TObject);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -3370,7 +3370,7 @@ begin
   end;
 end;
 
-procedure TDebugManager.CallWatchesInvalidatedHandlers(ASender: TObject);
+procedure TDebugManager.CallWatchesInvalidatedHandlers(Sender: TObject);
 begin
   FWatchesInvalidatedNotificationList.CallNotifyEvents(Self);
 end;
