@@ -1428,6 +1428,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="IdeTransferMacros"/>
       </Unit>
+      <Unit>
+        <Filename Value="../packager/pkgsysbasepkgs.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="PkgSysBasePkgs"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
