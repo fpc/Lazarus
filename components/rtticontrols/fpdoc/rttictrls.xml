@@ -311,7 +311,9 @@ Auto-save the property value when EditingDone is called for the RTTI control.
 </short>
 </element>
 
-<!-- TODO:
+<!-- 
+These are not implemented in the code... they're in a comment
+
 <element name="TPropertyLinkOption.ploDisableOnNil">
 <short>Disable the control if the link is disconnected.</short>
 </element>
@@ -2545,19 +2547,18 @@ property values in a linked object.
 </seealso>
 </element>
 
-<!-- TODO: Add links to ancestors -->
 <element name="TTIRadioGroup.Align" link="#lcl.controls.TControl.Align"/>
 <element name="TTIRadioGroup.Anchors" link="#lcl.controls.TControl.Anchors"/>
 <element name="TTIRadioGroup.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
-<element name="TTIRadioGroup.Caption"/>
-<element name="TTIRadioGroup.ChildSizing"/>
-<element name="TTIRadioGroup.Color"/>
-<element name="TTIRadioGroup.ColumnLayout"/>
-<element name="TTIRadioGroup.Columns"/>
+<element name="TTIRadioGroup.Caption" link="#lcl.controls.TControl.Caption"/>
+<element name="TTIRadioGroup.ChildSizing" link="#lcl.controls.TWinControl.ChildSizing"/>
+<element name="TTIRadioGroup.Color" link="#lcl.controls.TControl.Color"/>
+<element name="TTIRadioGroup.ColumnLayout" link="#lcl.extctrls.TCustomRadioGroup.ColumnLayout"/>
+<element name="TTIRadioGroup.Columns" link="#lcl.extctrls.TCustomRadioGroup.Columns"/>
 <element name="TTIRadioGroup.Constraints" link="#lcl.controls.TControl.Constraints"/>
 <element name="TTIRadioGroup.Enabled" link="#lcl.controls.TControl.Enabled"/>
-<element name="TTIRadioGroup.ItemIndex"/>
-<element name="TTIRadioGroup.Link"/>
+<element name="TTIRadioGroup.ItemIndex" link="#lcl.extctrls.TCustomRadioGroup.ItemIndex"/>
+<element name="TTIRadioGroup.Link" link="#lcl.extctrls.TCustomRadioGroup.Link"/>
 <element name="TTIRadioGroup.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TTIRadioGroup.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TTIRadioGroup.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
@@ -2700,18 +2701,17 @@ property values in a linked object.
 </seealso>
 </element>
 
-<!-- TODO: Needs links to ancestors -->
 <element name="TTICheckGroup.Align" link="#lcl.controls.TControl.Align"/>
 <element name="TTICheckGroup.Anchors" link="#lcl.controls.TControl.Anchors"/>
 <element name="TTICheckGroup.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
-<element name="TTICheckGroup.Caption"/>
-<element name="TTICheckGroup.Color"/>
-<element name="TTICheckGroup.ColumnLayout"/>
-<element name="TTICheckGroup.Columns"/>
+<element name="TTICheckGroup.Caption" link="#lcl.controls.TControl.Caption"/>
+<element name="TTICheckGroup.Color" link="#lcl.controls.TControl.Color"/>
+<element name="TTICheckGroup.ColumnLayout" link="#lcl.extctrls.TCustomCheckGroup.ColumnLayout"/>
+<element name="TTICheckGroup.Columns" link="#lcl.extctrls.TCustomCheckGroup.Columns"/>
 <element name="TTICheckGroup.Constraints" link="#lcl.controls.TControl.Constraints"/>
 <element name="TTICheckGroup.Enabled" link="#lcl.controls.TControl.Enabled"/>
-<element name="TTICheckGroup.Items"/>
-<element name="TTICheckGroup.Link"/>
+<element name="TTICheckGroup.Items" link="#lcl.extctrls.TCustomCheckGroup.Items"/>
+<element name="TTICheckGroup.Link" link="#rtticontrols.rttictrls.TTICustomCheckGroup.Link"/>
 <element name="TTICheckGroup.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TTICheckGroup.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TTICheckGroup.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
@@ -2855,17 +2855,16 @@ maintain property values in a linked object.
 </seealso>
 </element>
 
-<!-- TODO: Needs links to ancestors -->
 <element name="TTICheckListBox.Align" link="#lcl.controls.TControl.Align"/>
 <element name="TTICheckListBox.Anchors" link="#lcl.controls.TControl.Anchors"/>
 <element name="TTICheckListBox.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
-<element name="TTICheckListBox.BorderStyle"/>
+<element name="TTICheckListBox.BorderStyle" link="#lcl.stdctrls.TCustomCheckListBox.BorderStyle"/>
 <element name="TTICheckListBox.Constraints" link="#lcl.controls.TControl.Constraints"/>
-<element name="TTICheckListBox.ExtendedSelect"/>
-<element name="TTICheckListBox.Items"/>
-<element name="TTICheckListBox.ItemHeight"/>
-<element name="TTICheckListBox.Link"/>
-<element name="TTICheckListBox.MultiSelect"/>
+<element name="TTICheckListBox.ExtendedSelect" link="#lcl.stdctrls.TCustomListBox.ExtendedSelect"/>
+<element name="TTICheckListBox.Items" link="#lcl.stdctrls.TCustomListBox.Items"/>
+<element name="TTICheckListBox.ItemHeight" link="#lcl.stdctrls.TCustomListBox.ItemHeight"/>
+<element name="TTICheckListBox.Link" link="#rtticontrols.rttictrls.TTICustomCheckListBox.Link"/>
+<element name="TTICheckListBox.MultiSelect" link="#lcl.stdctrls.TCustomListBox.MultiSelect"/>
 <element name="TTICheckListBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TTICheckListBox.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
 <element name="TTICheckListBox.OnDrawItem"/>
@@ -2881,15 +2880,18 @@ maintain property values in a linked object.
 <element name="TTICheckListBox.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TTICheckListBox.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
 <element name="TTICheckListBox.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TTICheckListBox.Sorted"/>
-<element name="TTICheckListBox.Style"/>
-<element name="TTICheckListBox.TabOrder"/>
-<element name="TTICheckListBox.TabStop"/>
-<element name="TTICheckListBox.TopIndex"/>
+<element name="TTICheckListBox.Sorted" link="#lcl.stdctrls.TCustomListBox.Sorted"/>
+<element name="TTICheckListBox.Style" link="#lcl.stdctrls.TCustomListBox.Style"/>
+<element name="TTICheckListBox.TabOrder" link="#lcl.stdctrls.TCustomListBox.TabOrder"/>
+<element name="TTICheckListBox.TabStop" link="#lcl.stdctrls.TCustomListBox.TabStop"/>
+<element name="TTICheckListBox.TopIndex" link="#lcl.stdctrls.TCustomListBox.TopIndex"/>
 <element name="TTICheckListBox.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TTICustomListBox">
-<short/>
+<short>
+Implements a list box control which uses RTTI to access and maintain property 
+values in a linked object.
+</short>
 <descr/>
 <seealso>
 <link id="#lcl.stdctrls.TCustomListBox">TCustomListBox</link>
@@ -3022,23 +3024,22 @@ control.
 </seealso>
 </element>
 
-<!-- TODO: Needs links to ancestors -->
 <element name="TTIListBox.Align" link="#lcl.controls.TControl.Align"/>
 <element name="TTIListBox.Anchors" link="#lcl.controls.TControl.Anchors"/>
 <element name="TTIListBox.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
-<element name="TTIListBox.BorderStyle"/>
-<element name="TTIListBox.ClickOnSelChange"/>
+<element name="TTIListBox.BorderStyle" link="#lcl.stdctrls.TCustomListBox.BorderStyle"/>
+<element name="TTIListBox.ClickOnSelChange" link="#lcl.stdctrls.TCustomListBox.ClickOnSelChange"/>
 <element name="TTIListBox.Constraints" link="#lcl.controls.TControl.Constraints"/>
-<element name="TTIListBox.ExtendedSelect"/>
-<element name="TTIListBox.Font"/>
-<element name="TTIListBox.IntegralHeight"/>
-<element name="TTIListBox.ItemHeight"/>
-<element name="TTIListBox.MultiSelect"/>
-<element name="TTIListBox.Link"/>
+<element name="TTIListBox.ExtendedSelect" link="#lcl.stdctrls.TCustomListBox.ExtendedSelect"/>
+<element name="TTIListBox.Font" link="#lcl.stdctrls.TCustomListBox.Font"/>
+<element name="TTIListBox.IntegralHeight" link="#lcl.stdctrls.TCustomListBox.IntegralHeight"/>
+<element name="TTIListBox.ItemHeight" link="#lcl.stdctrls.TCustomListBox.ItemHeight"/>
+<element name="TTIListBox.MultiSelect" link="#lcl.stdctrls.TCustomListBox.MultiSelect"/>
+<element name="TTIListBox.Link" link="#rtticontrols.rttictrls.TTICustomListBox.Link"/>
 <element name="TTIListBox.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TTIListBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TTIListBox.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
-<element name="TTIListBox.OnDrawItem"/>
+<element name="TTIListBox.OnDrawItem" link="#lcl.stdctrls.TCustomListBox.OnDrawItem"/>
 <element name="TTIListBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TTIListBox.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
 <element name="TTIListBox.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
@@ -3048,22 +3049,22 @@ control.
 <element name="TTIListBox.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
 <element name="TTIListBox.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
 <element name="TTIListBox.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
-<element name="TTIListBox.OnMouseEnter"/>
-<element name="TTIListBox.OnMouseLeave"/>
-<element name="TTIListBox.OnMouseWheel"/>
-<element name="TTIListBox.OnMouseWheelDown"/>
-<element name="TTIListBox.OnMouseWheelUp"/>
+<element name="TTIListBox.OnMouseEnter" link="#lcl.stdctrls.TCustomListBox.OnMouseEnter"/>
+<element name="TTIListBox.OnMouseLeave" link="#lcl.stdctrls.TCustomListBox.BorderStyle"/>
+<element name="TTIListBox.OnMouseWheel" link="#lcl.stdctrls.TCustomListBox.OnMouseWheel"/>
+<element name="TTIListBox.OnMouseWheelDown" link="#lcl.stdctrls.TCustomListBox.OnMouseWheelDown"/>
+<element name="TTIListBox.OnMouseWheelUp" link="#lcl.stdctrls.TCustomListBox.OnMouseWheelUp"/>
 <element name="TTIListBox.OnResize" link="#lcl.controls.TControl.OnResize"/>
-<element name="TTIListBox.OnSelectionChange"/>
+<element name="TTIListBox.OnSelectionChange" link="#lcl.stdctrls.TCustomListBox.OnSelectionChange"/>
 <element name="TTIListBox.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TTIListBox.ParentFont"/>
+<element name="TTIListBox.ParentFont" link="#lcl.stdctrls.TCustomListBox.ParentFont"/>
 <element name="TTIListBox.PopupMenu" link="#lcl.stdctrls.TCustomEdit.PopupMenu"/>
 <element name="TTIListBox.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TTIListBox.Sorted"/>
-<element name="TTIListBox.Style"/>
-<element name="TTIListBox.TabOrder"/>
-<element name="TTIListBox.TabStop"/>
-<element name="TTIListBox.TopIndex"/>
+<element name="TTIListBox.Sorted" link="#lcl.stdctrls.TCustomListBox.Sorted"/>
+<element name="TTIListBox.Style" link="#lcl.stdctrls.TCustomListBox.Style"/>
+<element name="TTIListBox.TabOrder" link="#lcl.stdctrls.TCustomListBox.TabOrder"/>
+<element name="TTIListBox.TabStop" link="#lcl.stdctrls.TCustomListBox.TabStop"/>
+<element name="TTIListBox.TopIndex" link="#lcl.stdctrls.TCustomListBox.TopIndex"/>
 <element name="TTIListBox.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TTICustomCheckBox">
@@ -3207,28 +3208,27 @@ control.
 </seealso>
 </element>
 
-<!-- TODO: Needs links to ancestors -->
-<element name="TTICheckBox.Action"/>
+<element name="TTICheckBox.Action" link="#lcl.controls.TControl.Action"/>
 <element name="TTICheckBox.Align" link="#lcl.controls.TControl.Align"/>
-<element name="TTICheckBox.AllowGrayed"/>
+<element name="TTICheckBox.AllowGrayed" link="#lcl.stdctrls.TCustomCheckBox.AllowGrayed"/>
 <element name="TTICheckBox.Anchors" link="#lcl.controls.TControl.Anchors"/>
-<element name="TTICheckBox.AutoSize"/>
+<element name="TTICheckBox.AutoSize" link="#lcl.controls.TControl.AutoSize"/>
 <element name="TTICheckBox.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
-<element name="TTICheckBox.Caption"/>
+<element name="TTICheckBox.Caption" link="#lcl.controls.TControl.Caption"/>
 <element name="TTICheckBox.Constraints" link="#lcl.controls.TControl.Constraints"/>
-<element name="TTICheckBox.DragCursor"/>
-<element name="TTICheckBox.DragKind"/>
-<element name="TTICheckBox.DragMode"/>
+<element name="TTICheckBox.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
+<element name="TTICheckBox.DragKind" link="#lcl.controls.TControl.DragKind"/>
+<element name="TTICheckBox.DragMode" link="#lcl.controls.TControl.DragMode"/>
 <element name="TTICheckBox.Enabled" link="#lcl.controls.TControl.Enabled"/>
-<element name="TTICheckBox.Hint"/>
-<element name="TTICheckBox.Link"/>
-<element name="TTICheckBox.OnChange"/>
+<element name="TTICheckBox.Hint" link="#lcl.controls.TControl.Hint"/>
+<element name="TTICheckBox.Link" link="#rtticontrols.rttictrls.TTICustomCheckBox"/>
+<element name="TTICheckBox.OnChange" link="#lcl.controls.TControl.OnChange"/>
 <element name="TTICheckBox.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TTICheckBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
-<element name="TTICheckBox.OnDragDrop"/>
-<element name="TTICheckBox.OnDragOver"/>
+<element name="TTICheckBox.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
+<element name="TTICheckBox.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
 <element name="TTICheckBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
-<element name="TTICheckBox.OnEndDrag"/>
+<element name="TTICheckBox.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>
 <element name="TTICheckBox.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
 <element name="TTICheckBox.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
 <element name="TTICheckBox.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
@@ -3240,9 +3240,9 @@ control.
 <element name="TTICheckBox.PopupMenu" link="#lcl.stdctrls.TCustomEdit.PopupMenu"/>
 <element name="TTICheckBox.PropertyNameAsCaption"/>
 <element name="TTICheckBox.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TTICheckBox.State"/>
-<element name="TTICheckBox.TabOrder"/>
-<element name="TTICheckBox.TabStop"/>
+<element name="TTICheckBox.State" link="#lcl.stdctrls.TCustomCheckBox.State"/>
+<element name="TTICheckBox.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TTICheckBox.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
 <element name="TTICheckBox.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TTICustomButton">
@@ -3316,19 +3316,18 @@ action for the control.
 </seealso>
 </element>
 
-<!-- TODO: Needs links to ancestors -->
-<element name="TTIButton.Action"/>
+<element name="TTIButton.Action" link="#lcl.controls.TControl.Action"/>
 <element name="TTIButton.Align" link="#lcl.controls.TControl.Align"/>
 <element name="TTIButton.Anchors" link="#lcl.controls.TControl.Anchors"/>
 <element name="TTIButton.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
-<element name="TTIButton.Cancel"/>
-<element name="TTIButton.Caption"/>
+<element name="TTIButton.Cancel" link="#lcl.stdctrls.TCustomButton.Cancel"/>
+<element name="TTIButton.Caption" link="#lcl.controls.TControl.Caption"/>
 <element name="TTIButton.Constraints" link="#lcl.controls.TControl.Constraints"/>
-<element name="TTIButton.Default"/>
+<element name="TTIButton.Default" link="#lcl.stdctrls.TCustomButton.Default"/>
 <element name="TTIButton.Enabled" link="#lcl.controls.TControl.Enabled"/>
-<element name="TTIButton.Font"/>
-<element name="TTIButton.Link"/>
-<element name="TTIButton.ModalResult"/>
+<element name="TTIButton.Font" link="#lcl.controls.TControl.Font"/>
+<element name="TTIButton.Link" link="#rtticontrols.rttictrls.TTICustomButton.Link"/>
+<element name="TTIButton.ModalResult" link="#rtticontrols.rttictrls.TTICustomButton.ModalResult"/>
 <element name="TTIButton.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TTIButton.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TTIButton.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
@@ -3343,8 +3342,8 @@ action for the control.
 <element name="TTIButton.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
 <element name="TTIButton.PopupMenu" link="#lcl.stdctrls.TCustomEdit.PopupMenu"/>
 <element name="TTIButton.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TTIButton.TabOrder"/>
-<element name="TTIButton.TabStop"/>
+<element name="TTIButton.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TTIButton.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
 <element name="TTIButton.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TTICustomLabel">
@@ -3445,31 +3444,30 @@ the control.
 </seealso>
 </element>
 
-<!-- TODO: Needs links to ancestors -->
 <element name="TTILabel.Align" link="#lcl.controls.TControl.Align"/>
-<element name="TTILabel.Alignment"/>
+<element name="TTILabel.Alignment" link="#lcl.stdctrls.TCustomLabel.Alignment"/>
 <element name="TTILabel.Anchors" link="#lcl.controls.TControl.Anchors"/>
-<element name="TTILabel.AutoSize"/>
+<element name="TTILabel.AutoSize" link="#lcl.stdctrls.TCustomLabel.AutoSize"/>
 <element name="TTILabel.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
-<element name="TTILabel.Color"/>
+<element name="TTILabel.Color" link="#lcl.stdctrls.TCustomLabel.Color"/>
 <element name="TTILabel.Constraints" link="#lcl.controls.TControl.Constraints"/>
-<element name="TTILabel.FocusControl"/>
-<element name="TTILabel.Font"/>
-<element name="TTILabel.Layout"/>
-<element name="TTILabel.Link"/>
+<element name="TTILabel.FocusControl" link="#lcl.stdctrls.TCustomLabel.FocusControl"/>
+<element name="TTILabel.Font" link="#lcl.controls.TControl.Font"/>
+<element name="TTILabel.Layout" link="#lcl.controls.TControl.Layout"/>
+<element name="TTILabel.Link" link="#rtticontrols.rttictrls.TTICustomLabel.Link"/>
 <element name="TTILabel.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TTILabel.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TTILabel.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
 <element name="TTILabel.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
-<element name="TTILabel.OnMouseEnter"/>
-<element name="TTILabel.OnMouseLeave"/>
+<element name="TTILabel.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
+<element name="TTILabel.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
 <element name="TTILabel.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
 <element name="TTILabel.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
 <element name="TTILabel.OnResize" link="#lcl.controls.TControl.OnResize"/>
-<element name="TTILabel.ParentFont"/>
-<element name="TTILabel.ShowAccelChar"/>
+<element name="TTILabel.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+<element name="TTILabel.ShowAccelChar" link="#lcl.stdctrls.TCustomLabel.ShowAccelChar"/>
 <element name="TTILabel.Visible" link="#lcl.controls.TControl.Visible"/>
-<element name="TTILabel.WordWrap"/>
+<element name="TTILabel.WordWrap" link="#lcl.stdctrls.TCustomLabel.WordWrap"/>
 
 <element name="TTICustomGroupbox">
 <short/>
@@ -3560,18 +3558,17 @@ control.
 </seealso>
 </element>
 
-<!-- TODO: Needs links to ancestors -->
 <element name="TTIGroupBox.Align" link="#lcl.controls.TControl.Align"/>
 <element name="TTIGroupBox.Anchors" link="#lcl.controls.TControl.Anchors"/>
 <element name="TTIGroupBox.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
-<element name="TTIGroupBox.ChildSizing"/>
-<element name="TTIGroupBox.ClientHeight"/>
-<element name="TTIGroupBox.ClientWidth"/>
-<element name="TTIGroupBox.Color"/>
+<element name="TTIGroupBox.ChildSizing" link="#lcl.controls.TWinControl.ChildSizing"/>
+<element name="TTIGroupBox.ClientHeight" link="#lcl.controls.TControl.ClientHeight"/>
+<element name="TTIGroupBox.ClientWidth" link="#lcl.controls.TControl.ClientWidth"/>
+<element name="TTIGroupBox.Color" link="#lcl.controls.TControl.Color"/>
 <element name="TTIGroupBox.Constraints" link="#lcl.controls.TControl.Constraints"/>
 <element name="TTIGroupBox.Enabled" link="#lcl.controls.TControl.Enabled"/>
-<element name="TTIGroupBox.Font"/>
-<element name="TTIGroupBox.Link"/>
+<element name="TTIGroupBox.Font" link="#lcl.controls.TControl.Font"/>
+<element name="TTIGroupBox.Link" link="#rtticontrols.rttictrls.TTICustomGroupbox.Link"/>
 <element name="TTIGroupBox.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TTIGroupBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TTIGroupBox.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
@@ -3585,13 +3582,13 @@ control.
 <element name="TTIGroupBox.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
 <element name="TTIGroupBox.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
 <element name="TTIGroupBox.OnResize" link="#lcl.controls.TControl.OnResize"/>
-<element name="TTIGroupBox.ParentColor"/>
-<element name="TTIGroupBox.ParentFont"/>
+<element name="TTIGroupBox.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+<element name="TTIGroupBox.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
 <element name="TTIGroupBox.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
 <element name="TTIGroupBox.PopupMenu" link="#lcl.stdctrls.TCustomEdit.PopupMenu"/>
 <element name="TTIGroupBox.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TTIGroupBox.TabOrder"/>
-<element name="TTIGroupBox.TabStop"/>
+<element name="TTIGroupBox.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TTIGroupBox.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
 <element name="TTIGroupBox.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TTICustomMemo">
@@ -3700,17 +3697,16 @@ control.
 </seealso>
 </element>
 
-<!-- TODO: Needs links to ancestors -->
 <element name="TTIMemo.Align" link="#lcl.controls.TControl.Align"/>
 <element name="TTIMemo.Anchors" link="#lcl.controls.TControl.Anchors"/>
 <element name="TTIMemo.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
-<element name="TTIMemo.Color"/>
+<element name="TTIMemo.Color" link="#lcl.controls.TControl.Color"/>
 <element name="TTIMemo.Constraints" link="#lcl.controls.TControl.Constraints"/>
-<element name="TTIMemo.Font"/>
-<element name="TTIMemo.Lines"/>
-<element name="TTIMemo.Link"/>
-<element name="TTIMemo.MaxLength"/>
-<element name="TTIMemo.OnChange"/>
+<element name="TTIMemo.Font" link="#lcl.controls.TControl.Font"/>
+<element name="TTIMemo.Lines" link="#lcl.stdctrls.TCustomMemo.Lines"/>
+<element name="TTIMemo.Link" link="#rtticontrols.rttictrls.TTICustomMemo.Link"/>
+<element name="TTIMemo.MaxLength" link="#lcl.stdctrls.TCustomEdit.MaxLength"/>
+<element name="TTIMemo.OnChange" link="#lcl.stdctrls.TCustomEdit.OnChange"/>
 <element name="TTIMemo.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TTIMemo.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
 <element name="TTIMemo.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
@@ -3720,15 +3716,15 @@ control.
 <element name="TTIMemo.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
 <element name="TTIMemo.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
 <element name="TTIMemo.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
-<element name="TTIMemo.OnMouseEnter"/>
-<element name="TTIMemo.OnMouseLeave"/>
-<element name="TTIMemo.ParentFont"/>
+<element name="TTIMemo.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
+<element name="TTIMemo.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
+<element name="TTIMemo.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
 <element name="TTIMemo.PopupMenu" link="#lcl.stdctrls.TCustomEdit.PopupMenu"/>
-<element name="TTIMemo.ReadOnly"/>
-<element name="TTIMemo.ScrollBars"/>
-<element name="TTIMemo.Tabstop"/>
+<element name="TTIMemo.ReadOnly" link="#lcl.stdctrls.TCustomEdit.ReadOnly"/>
+<element name="TTIMemo.ScrollBars" link="#lcl.stdctrls.TCustomMemo.ScrollBars"/>
+<element name="TTIMemo.Tabstop" link="#lcl.stdctrls.TCustomEdit.TabStop"/>
 <element name="TTIMemo.Visible" link="#lcl.controls.TControl.Visible"/>
-<element name="TTIMemo.WordWrap"/>
+<element name="TTIMemo.WordWrap" link="#lcl.stdctrls.TCustomMemo.WordWrap"/>
 
 <element name="TTICustomCalendar">
 <short/>
@@ -3832,14 +3828,13 @@ control.
 </seealso>
 </element>
 
-<!-- TODO: Needs links to ancestors -->
 <element name="TTICalendar.Align" link="#lcl.controls.TControl.Align"/>
 <element name="TTICalendar.Anchors" link="#lcl.controls.TControl.Anchors"/>
 <element name="TTICalendar.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
 <element name="TTICalendar.Constraints" link="#lcl.controls.TControl.Constraints"/>
-<element name="TTICalendar.DisplaySettings"/>
-<element name="TTICalendar.Link"/>
-<element name="TTICalendar.OnChange"/>
+<element name="TTICalendar.DisplaySettings" link="#lcl.calendar.TCustomCalendar.DisplaySettings"/>
+<element name="TTICalendar.Link" link="#rtticontrols.rttictrls.TTICustomCalendar.Link"/>
+<element name="TTICalendar.OnChange" link="#lcl.calendar.TCustomCalendar.OnChange"/>
 <element name="TTICalendar.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TTICalendar.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TTICalendar.OnDayChanged"/>
@@ -3858,7 +3853,7 @@ control.
 <element name="TTICalendar.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TTICalendar.OnYearChanged"/>
 <element name="TTICalendar.PopupMenu" link="#lcl.stdctrls.TCustomEdit.PopupMenu"/>
-<element name="TTICalendar.Tabstop"/>
+<element name="TTICalendar.Tabstop" link="#lcl.controls.TWinControl.TabStop"/>
 <element name="TTICalendar.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TTICustomImage">
@@ -3948,26 +3943,25 @@ control.
 </seealso>
 </element>
 
-<!-- TODO: Needs links to ancestors -->
 <element name="TTIImage.Align" link="#lcl.controls.TControl.Align"/>
 <element name="TTIImage.Anchors" link="#lcl.controls.TControl.Anchors"/>
-<element name="TTIImage.AutoSize"/>
+<element name="TTIImage.AutoSize" link="#lcl.extctrls.TCustomImage.AutoSize"/>
 <element name="TTIImage.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
-<element name="TTIImage.Center"/>
+<element name="TTIImage.Center" link="#lcl.extctrls.TCustomImage.Center"/>
 <element name="TTIImage.Constraints" link="#lcl.controls.TControl.Constraints"/>
-<element name="TTIImage.Link"/>
+<element name="TTIImage.Link" link="#rtticontrols.rttictrls.TTICustomImage.Link"/>
 <element name="TTIImage.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
-<element name="TTIImage.OnClick" link="#lcl.controls.TControl.OnClick"/>
-<element name="TTIImage.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
-<element name="TTIImage.OnMouseEnter"/>
-<element name="TTIImage.OnMouseLeave"/>
-<element name="TTIImage.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
-<element name="TTIImage.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
-<element name="TTIImage.OnPaint"/>
+<element name="TTIImage.OnClick" link="#lcl.extctrls.TCustomImage.OnClick"/>
+<element name="TTIImage.OnMouseDown" link="#lcl.extctrls.TCustomImage.OnMouseDown"/>
+<element name="TTIImage.OnMouseEnter" link="#lcl.extctrls.TCustomImage.OnMouseEnter"/>
+<element name="TTIImage.OnMouseLeave" link="#lcl.extctrls.TCustomImage.OnMouseLeave"/>
+<element name="TTIImage.OnMouseMove" link="#lcl.extctrls.TCustomImage.OnMouseMove"/>
+<element name="TTIImage.OnMouseUp" link="#lcl.extctrls.TCustomImage.OnMouseUp"/>
+<element name="TTIImage.OnPaint" link="#lcl.controls.TGraphicControl.OnPaint"/>
 <element name="TTIImage.OnResize" link="#lcl.controls.TControl.OnResize"/>
-<element name="TTIImage.Proportional"/>
-<element name="TTIImage.Stretch"/>
-<element name="TTIImage.Transparent"/>
+<element name="TTIImage.Proportional" link="#lcl.extctrls.TCustomImage.Proportional"/>
+<element name="TTIImage.Stretch" link="#lcl.extctrls.TCustomImage.Stretch"/>
+<element name="TTIImage.Transparent" link="#lcl.extctrls.TCustomImage.Transparent"/>
 <element name="TTIImage.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TTICustomFloatSpinEdit">
@@ -4087,18 +4081,17 @@ used.
 </seealso>
 </element>
 
-<!-- TODO: Needs links to ancestors -->
 <element name="TTIFloatSpinEdit.Align" link="#lcl.controls.TControl.Align"/>
 <element name="TTIFloatSpinEdit.Anchors" link="#lcl.controls.TControl.Anchors"/>
 <element name="TTIFloatSpinEdit.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
 <element name="TTIFloatSpinEdit.Constraints" link="#lcl.controls.TControl.Constraints"/>
-<element name="TTIFloatSpinEdit.DecimalPlaces"/>
+<element name="TTIFloatSpinEdit.DecimalPlaces" link="#lcl.spin.TCustomFloatSpinEdit.DecimalPlaces"/>
 <element name="TTIFloatSpinEdit.Enabled" link="#lcl.controls.TControl.Enabled"/>
-<element name="TTIFloatSpinEdit.Increment"/>
-<element name="TTIFloatSpinEdit.Link"/>
-<element name="TTIFloatSpinEdit.MaxValue"/>
-<element name="TTIFloatSpinEdit.MinValue"/>
-<element name="TTIFloatSpinEdit.OnChange"/>
+<element name="TTIFloatSpinEdit.Increment" link="#lcl.spin.TCustomFloatSpinEdit.Increment"/>
+<element name="TTIFloatSpinEdit.Link" link="#rtticontrols.rttictrls.TTICustomFloatSpinEdit.Link"/>
+<element name="TTIFloatSpinEdit.MaxValue" link="#lcl.spin.TCustomFloatSpinEdit.MaxValue"/>
+<element name="TTIFloatSpinEdit.MinValue" link="#lcl.spin.TCustomFloatSpinEdit.MinValue"/>
+<element name="TTIFloatSpinEdit.OnChange" link="#lcl.stdctrls.TCustomEdit.OnChange"/>
 <element name="TTIFloatSpinEdit.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TTIFloatSpinEdit.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TTIFloatSpinEdit.OnClick" link="#lcl.controls.TControl.OnClick"/>
@@ -4114,9 +4107,9 @@ used.
 <element name="TTIFloatSpinEdit.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
 <element name="TTIFloatSpinEdit.PopupMenu" link="#lcl.stdctrls.TCustomEdit.PopupMenu"/>
 <element name="TTIFloatSpinEdit.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TTIFloatSpinEdit.TabStop"/>
-<element name="TTIFloatSpinEdit.TabOrder"/>
-<element name="TTIFloatSpinEdit.UseRTTIMinMax"/>
+<element name="TTIFloatSpinEdit.TabStop" link="#lcl.stdctrls.TCustomEdit.TabStop"/>
+<element name="TTIFloatSpinEdit.TabOrder" link="#lcl.stdctrls.TCustomEdit.TabOrder"/>
+<element name="TTIFloatSpinEdit.UseRTTIMinMax" link="#rtticontrols.rttictrls.TTICustomFloatSpinEdit.UseRTTIMinMax"/>
 <element name="TTIFloatSpinEdit.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TTICustomSpinEdit">
@@ -4249,17 +4242,16 @@ used.
 </seealso>
 </element>
 
-<!-- TODO: Needs links to ancestors -->
 <element name="TTISpinEdit.Align" link="#lcl.controls.TControl.Align"/>
 <element name="TTISpinEdit.Anchors" link="#lcl.controls.TControl.Anchors"/>
 <element name="TTISpinEdit.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
 <element name="TTISpinEdit.Constraints" link="#lcl.controls.TControl.Constraints"/>
 <element name="TTISpinEdit.Enabled" link="#lcl.controls.TControl.Enabled"/>
-<element name="TTISpinEdit.Increment"/>
-<element name="TTISpinEdit.Link"/>
-<element name="TTISpinEdit.MaxValue"/>
-<element name="TTISpinEdit.MinValue"/>
-<element name="TTISpinEdit.OnChange"/>
+<element name="TTISpinEdit.Increment" link="#lcl.spin.TCustomSpinEdit.Increment"/>
+<element name="TTISpinEdit.Link" link="#rtticontrols.rttictrls.TTICustomSpinEdit.Link"/>
+<element name="TTISpinEdit.MaxValue" link="#lcl.spin.TCustomSpinEdit.MaxValue"/>
+<element name="TTISpinEdit.MinValue" link="#lcl.spin.TCustomSpinEdit.MinValue"/>
+<element name="TTISpinEdit.OnChange" link="#lcl.stdctrls.TCustomEdit.OnChange"/>
 <element name="TTISpinEdit.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TTISpinEdit.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TTISpinEdit.OnClick" link="#lcl.controls.TControl.OnClick"/>
@@ -4275,9 +4267,9 @@ used.
 <element name="TTISpinEdit.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
 <element name="TTISpinEdit.PopupMenu" link="#lcl.stdctrls.TCustomEdit.PopupMenu"/>
 <element name="TTISpinEdit.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TTISpinEdit.TabStop"/>
-<element name="TTISpinEdit.TabOrder"/>
-<element name="TTISpinEdit.UseRTTIMinMax"/>
+<element name="TTISpinEdit.TabStop" link="#lcl.stdctrls.TCustomEdit.TabStop"/>
+<element name="TTISpinEdit.TabOrder" link="#lcl.stdctrls.TCustomEdit.TabOrder"/>
+<element name="TTISpinEdit.UseRTTIMinMax" link="#rtticontrols.rttictrls.TTICustomSpinEdit.UseRTTIMinMax"/>
 <element name="TTISpinEdit.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TTICustomTrackBar">
@@ -4397,50 +4389,49 @@ used in the Min and Max properties.
 </seealso>
 </element>
 
-<!-- TODO: Needs links to ancestors -->
 <element name="TTITrackBar.Align" link="#lcl.controls.TControl.Align"/>
 <element name="TTITrackBar.Anchors" link="#lcl.controls.TControl.Anchors"/>
 <element name="TTITrackBar.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
 <element name="TTITrackBar.Constraints" link="#lcl.controls.TControl.Constraints"/>
-<element name="TTITrackBar.DragCursor"/>
-<element name="TTITrackBar.DragMode"/>
+<element name="TTITrackBar.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
+<element name="TTITrackBar.DragMode" link="#lcl.controls.TControl.DragMode"/>
 <element name="TTITrackBar.Enabled" link="#lcl.controls.TControl.Enabled"/>
-<element name="TTITrackBar.Frequency"/>
-<element name="TTITrackBar.Hint"/>
-<element name="TTITrackBar.LineSize"/>
-<element name="TTITrackBar.Link"/>
-<element name="TTITrackBar.Max"/>
-<element name="TTITrackBar.Min"/>
-<element name="TTITrackBar.OnChange"/>
+<element name="TTITrackBar.Frequency" link="#lcl.comctrls.TCustomTrackBar.Frequency"/>
+<element name="TTITrackBar.Hint" link="#lcl.controls.TControl.Hint"/>
+<element name="TTITrackBar.LineSize" link="#lcl.comctrls.TCustomTrackBar.LineSize"/>
+<element name="TTITrackBar.Link" link="#rtticontrols.rttictrls.TTICustomTrackBar.Link"/>
+<element name="TTITrackBar.Max" link="#lcl.comctrls.TCustomTrackBar.Max"/>
+<element name="TTITrackBar.Min" link="#lcl.comctrls.TCustomTrackBar.Min"/>
+<element name="TTITrackBar.OnChange" link="#lcl.comctrls.TCustomTrackBar.OnChange"/>
 <element name="TTITrackBar.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TTITrackBar.OnClick" link="#lcl.controls.TControl.OnClick"/>
-<element name="TTITrackBar.OnDragDrop"/>
-<element name="TTITrackBar.OnDragOver"/>
+<element name="TTITrackBar.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
+<element name="TTITrackBar.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
 <element name="TTITrackBar.OnClick" link="#lcl.controls.TControl.OnClick"/>
-<element name="TTITrackBar.OnEndDrag"/>
+<element name="TTITrackBar.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>
 <element name="TTITrackBar.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
 <element name="TTITrackBar.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
 <element name="TTITrackBar.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
-<element name="TTITrackBar.OnMouseEnter"/>
-<element name="TTITrackBar.OnMouseLeave"/>
+<element name="TTITrackBar.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
+<element name="TTITrackBar.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
 <element name="TTITrackBar.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
 <element name="TTITrackBar.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
 <element name="TTITrackBar.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
 <element name="TTITrackBar.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
 <element name="TTITrackBar.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
 <element name="TTITrackBar.OnResize" link="#lcl.controls.TControl.OnResize"/>
-<element name="TTITrackBar.OnStartDrag"/>
-<element name="TTITrackBar.Orientation"/>
-<element name="TTITrackBar.PageSize"/>
+<element name="TTITrackBar.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
+<element name="TTITrackBar.Orientation" link="#lcl.comctrls.TCustomTrackBar.Orientation"/>
+<element name="TTITrackBar.PageSize" link="#lcl.comctrls.TCustomTrackBar.PageSize"/>
 <element name="TTITrackBar.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
 <element name="TTITrackBar.PopupMenu" link="#lcl.stdctrls.TCustomEdit.PopupMenu"/>
-<element name="TTITrackBar.ScalePos"/>
+<element name="TTITrackBar.ScalePos" link="#lcl.comctrls.TCustomTrackBar.ScalePos"/>
 <element name="TTITrackBar.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TTITrackBar.TabOrder"/>
-<element name="TTITrackBar.TabStop"/>
-<element name="TTITrackBar.TickMarks"/>
-<element name="TTITrackBar.TickStyle"/>
-<element name="TTITrackBar.UseRTTIMinMax"/>
+<element name="TTITrackBar.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TTITrackBar.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+<element name="TTITrackBar.TickMarks" link="#lcl.comctrls.TCustomTrackBar.TickMarks"/>
+<element name="TTITrackBar.TickStyle" link="#lcl.comctrls.TCustomTrackBar.TickStyle"/>
+<element name="TTITrackBar.UseRTTIMinMax" link="#lcl.comctrls.TCustomTrackBar.UseRTTIMinMax"/>
 <element name="TTITrackBar.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TTICustomProgressBar">
@@ -4562,42 +4553,41 @@ Indicates whether minimum and maximum values from the linked control are used.
 </seealso>
 </element>
 
-<!-- TODO: Needs links to ancestors -->
 <element name="TTIProgressBar.Align" link="#lcl.controls.TControl.Align"/>
 <element name="TTIProgressBar.Anchors" link="#lcl.controls.TControl.Anchors"/>
-<element name="TTIProgressBar.BarShowText"/>
+<element name="TTIProgressBar.BarShowText" link="#lcl.comctrls.TCustomProgressBar.BarShowText"/>
 <element name="TTIProgressBar.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
-<element name="TTIProgressBar.BorderWidth"/>
+<element name="TTIProgressBar.BorderWidth" link="#lcl.controls.TWinControl.BorderWidth"/>
 <element name="TTIProgressBar.Constraints" link="#lcl.controls.TControl.Constraints"/>
-<element name="TTIProgressBar.DragCursor"/>
-<element name="TTIProgressBar.DragKind"/>
-<element name="TTIProgressBar.DragMode"/>
+<element name="TTIProgressBar.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
+<element name="TTIProgressBar.DragKind" link="#lcl.controls.TControl.DragKind"/>
+<element name="TTIProgressBar.DragMode" link="#lcl.controls.TControl.DragMode"/>
 <element name="TTIProgressBar.Enabled" link="#lcl.controls.TControl.Enabled"/>
-<element name="TTIProgressBar.Hint"/>
-<element name="TTIProgressBar.Link"/>
-<element name="TTIProgressBar.Max"/>
-<element name="TTIProgressBar.Min"/>
-<element name="TTIProgressBar.OnDragDrop"/>
-<element name="TTIProgressBar.OnDragOver"/>
+<element name="TTIProgressBar.Hint" link="#lcl.controls.TControl.Hint"/>
+<element name="TTIProgressBar.Link" link="#rtticontrols.rttictrls.TTICustomProgressBar.Link"/>
+<element name="TTIProgressBar.Max" link="#lcl.comctrls.TCustomProgressBar.Max"/>
+<element name="TTIProgressBar.Min" link="#lcl.comctrls.TCustomProgressBar.Min"/>
+<element name="TTIProgressBar.OnDragDrop"link="#lcl.controls.TControl.OnDragDrop"/>
+<element name="TTIProgressBar.OnDragOver"link="#lcl.controls.TControl.OnDragOver"/>
 <element name="TTIProgressBar.OnClick" link="#lcl.controls.TControl.OnClick"/>
-<element name="TTIProgressBar.OnEndDrag"/>
+<element name="TTIProgressBar.OnEndDrag"link="#lcl.controls.TControl.OnEndDrag"/>
 <element name="TTIProgressBar.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
 <element name="TTIProgressBar.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
 <element name="TTIProgressBar.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
 <element name="TTIProgressBar.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
 <element name="TTIProgressBar.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
-<element name="TTIProgressBar.OnStartDock"/>
-<element name="TTIProgressBar.OnStartDrag"/>
-<element name="TTIProgressBar.Orientation"/>
+<element name="TTIProgressBar.OnStartDock" link="#lcl.controls.TControl.OnStartDock"/>
+<element name="TTIProgressBar.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
+<element name="TTIProgressBar.Orientation" link="#lcl.comctrls.TCustomProgressBar.Orientation"/>
 <element name="TTIProgressBar.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
 <element name="TTIProgressBar.PopupMenu" link="#lcl.stdctrls.TCustomEdit.PopupMenu"/>
-<element name="TTIProgressBar.Position"/>
+<element name="TTIProgressBar.Position" link="#lcl.comctrls.TCustomProgressBar.Max"/>
 <element name="TTIProgressBar.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TTIProgressBar.Smooth"/>
-<element name="TTIProgressBar.Step"/>
-<element name="TTIProgressBar.TabOrder"/>
-<element name="TTIProgressBar.TabStop"/>
-<element name="TTIProgressBar.UseRTTIMinMax"/>
+<element name="TTIProgressBar.Smooth" link="#lcl.comctrls.TCustomProgressBar.Smooth"/>
+<element name="TTIProgressBar.Step" link="#lcl.comctrls.TCustomProgressBar.Step"/>
+<element name="TTIProgressBar.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TTIProgressBar.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+<element name="TTIProgressBar.UseRTTIMinMax" link="#rtticontrols.rttictrls.TTICustomProgressBar.UseRTTIMinMax"/>
 <element name="TTIProgressBar.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TTICustomColorButton">
@@ -4773,20 +4763,19 @@ property values in a linked object.
 </seealso>
 </element>
 
-<!-- TODO: Needs links to ancestors -->
 <element name="TTIColorButton.Align" link="#lcl.controls.TControl.Align"/>
 <element name="TTIColorButton.Anchors" link="#lcl.controls.TControl.Anchors"/>
 <element name="TTIColorButton.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
-<element name="TTIColorButton.BorderWidth"/>
-<element name="TTIColorButton.ButtonColor"/>
-<element name="TTIColorButton.Hint"/>
-<element name="TTIColorButton.Link"/>
+<element name="TTIColorButton.BorderWidth" link="#lcl.dialogs.TColorButton.BorderWidth"/>
+<element name="TTIColorButton.ButtonColor" link="#lcl.dialogs.TColorButton.ButtonColor"/>
+<element name="TTIColorButton.Hint" link="#lcl.dialogs.TColorButton.Hint"/>
+<element name="TTIColorButton.Link" link="#rtticontrols.rttictrls.TTICustomColorButton.Link"/>
 <element name="TTIColorButton.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TTIColorButton.OnColorChanged"/>
 <element name="TTIColorButton.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
 <element name="TTIColorButton.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
 <element name="TTIColorButton.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
-<element name="TTIColorButton.OnPaint"/>
+<element name="TTIColorButton.OnPaint" link="#lcl.dialogs.TColorButton.OnPaint"/>
 <element name="TTIColorButton.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TTIColorButton.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
 <element name="TTIColorButton.PopupMenu" link="#lcl.stdctrls.TCustomEdit.PopupMenu"/>
