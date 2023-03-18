@@ -1896,7 +1896,6 @@ Base class for an edit control which uses RTTI to access and maintain
 a property value in a linked object.
 </short>
 <descr>
-<!-- WIP: HERE -->
 <p>
 <var>TTICustomEdit</var> extends <var>TCustomEdit</var> to allow the the 
 RTTI-enabled edit control to read and write its value from an associated edit 
