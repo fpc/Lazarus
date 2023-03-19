@@ -218,6 +218,10 @@ msgstr "Графа рядка"
 msgid "Pass-count column"
 msgstr "Графа числа проходів"
 
+#: idedebuggerstringconstants.drscolwidthaddr
+msgid "Address column"
+msgstr ""
+
 #: idedebuggerstringconstants.drscolwidthbrkpointimg
 msgid "Break indication column"
 msgstr "Графа індикації зупинки"

@@ -218,6 +218,10 @@ msgstr "行列"
 msgid "Pass-count column"
 msgstr "通过统计列"
 
+#: idedebuggerstringconstants.drscolwidthaddr
+msgid "Address column"
+msgstr ""
+
 #: idedebuggerstringconstants.drscolwidthbrkpointimg
 msgid "Break indication column"
 msgstr "中断标示列"

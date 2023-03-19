@@ -217,6 +217,10 @@ msgstr "Eilutės stulpelis"
 msgid "Pass-count column"
 msgstr "Praėjimų skaičiaus stulpelis"
 
+#: idedebuggerstringconstants.drscolwidthaddr
+msgid "Address column"
+msgstr ""
+
 #: idedebuggerstringconstants.drscolwidthbrkpointimg
 msgid "Break indication column"
 msgstr "Stabdos indikatoriaus stulpelis"

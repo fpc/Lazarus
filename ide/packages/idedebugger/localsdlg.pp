@@ -42,7 +42,7 @@ uses
   // LazUtils
   LazLoggerBase, LazStringUtils, LazUTF8,
   // IdeIntf
-  IDEWindowIntf,
+  IDEWindowIntf, IDEImagesIntf,
   // DebuggerIntf
   DbgIntfDebuggerBase, laz.VirtualTrees, LazDebuggerIntf,
   LazDebuggerIntfBaseTypes,
@@ -68,6 +68,10 @@ type
     actCopyRAWValue: TAction;
     actWath: TAction;
     ActionList1: TActionList;
+    ToolBar1: TToolBar;
+    ToolButtonPower: TToolButton;
+    ToolButton2: TToolButton;
+    btnShowDataAddr: TToolButton;
     vtLocals: TDbgTreeView;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
@@ -87,6 +91,9 @@ type
     procedure actInspectUpdate(Sender: TObject);
     procedure actCopyRAWValueExecute(Sender: TObject);
     procedure actWathExecute(Sender: TObject);
+    procedure btnShowDataAddrClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure ToolButtonPowerClick(Sender: TObject);
     procedure vtLocalsChange(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure vtLocalsDragDrop(Sender: TBaseVirtualTree; Source: TObject;
       DataObject: IDataObject; Formats: TFormatArray; Shift: TShiftState;
@@ -99,6 +106,7 @@ type
     procedure vtLocalsNodeDblClick(Sender: TBaseVirtualTree;
       const HitInfo: THitInfo);
   private
+    FPowerImgIdx, FPowerImgIdxGrey: Integer;
     FWatchPrinter: TWatchResultPrinter;
     FLocolsTreeMgr: TDbgTreeViewLocalsValueMgr;
 
@@ -160,7 +168,8 @@ var
 const
   COL_LOCALS_NAME   = 1;
   COL_LOCALS_VALUE  = 2;
-  COL_WIDTHS: Array[0..1] of integer = ( 50,   150);
+  COL_ADDR_VALUE    = 3;
+  COL_WIDTHS: Array[0..2] of integer = (100, 250, 80);
 
 function LocalsDlgColSizeGetter(AForm: TCustomForm; AColId: Integer; var ASize: Integer): Boolean;
 begin
@@ -316,10 +325,12 @@ begin
   FWatchPrinter.FormatFlags := [rpfClearMultiLine];
   FLocolsTreeMgr := TDbgTreeViewLocalsValueMgr.Create(vtLocals);
   FLocolsTreeMgr.FLocalsDlg := Self;
+  ToolBar1.Images := IDEImages.Images_16;
 
   Caption:= lisLocals;
   vtLocals.Header.Columns[0].Text:= lisName;
   vtLocals.Header.Columns[1].Text:= lisValue;
+  vtLocals.Header.Columns[2].Text := dlgValueDataAddr;
   actInspect.Caption := lisInspect;
   actWath.Caption := lisWatch;
   actEvaluate.Caption := lisEvaluateModify;
@@ -327,6 +338,14 @@ begin
   actCopyValue.Caption := lisLocalsDlgCopyValue;
   actCopyRAWValue.Caption := lisLocalsDlgCopyRAWValue;
   actCopyAll.Caption := lisCopyAll;
+  btnShowDataAddr.ImageIndex := IDEImages.LoadImage('ce_implementation');
+
+  FPowerImgIdx := IDEImages.LoadImage('debugger_power');
+  FPowerImgIdxGrey := IDEImages.LoadImage('debugger_power_grey');
+  ToolButtonPower.ImageIndex := FPowerImgIdx;
+  ToolButtonPower.Caption := lisDbgWinPower;
+  ToolButtonPower.Hint := lisDbgWinPowerHint;
+
 
   for i := low(COL_WIDTHS) to high(COL_WIDTHS) do
     vtLocals.Header.Columns[i].Width := COL_WIDTHS[i];
@@ -416,6 +435,31 @@ begin
     end;
   end;
   DebugBoss.ViewDebugDialog(ddtWatches);
+end;
+
+procedure TLocalsDlg.btnShowDataAddrClick(Sender: TObject);
+begin
+  if btnShowDataAddr.Down then
+    vtLocals.Header.Columns[2].Options := vtLocals.Header.Columns[2].Options + [coVisible]
+  else
+    vtLocals.Header.Columns[2].Options := vtLocals.Header.Columns[2].Options - [coVisible];
+end;
+
+procedure TLocalsDlg.FormShow(Sender: TObject);
+begin
+  LocalsChanged(nil);
+end;
+
+procedure TLocalsDlg.ToolButtonPowerClick(Sender: TObject);
+begin
+  if ToolButtonPower.Down
+  then begin
+    ToolButtonPower.ImageIndex := FPowerImgIdx;
+    LocalsChanged(nil);
+  end
+  else begin
+    ToolButtonPower.ImageIndex := FPowerImgIdxGrey;
+  end;
 end;
 
 procedure TLocalsDlg.vtLocalsChange(Sender: TBaseVirtualTree; Node: PVirtualNode
@@ -538,6 +582,8 @@ var
   LVal: TIdeLocalsValue;
   VNode, VN2: PVirtualNode;
 begin
+  if (not ToolButtonPower.Down) or (not Visible) then exit;
+
   if (DebugBoss = nil) or (ThreadsMonitor = nil) or (CallStackMonitor = nil) or (LocalsMonitor=nil) then begin
     ClearTree;
     exit;
@@ -715,6 +761,7 @@ begin
   case AColId of
     COL_LOCALS_NAME:   vtLocals.Header.Columns[0].Width := ASize;
     COL_LOCALS_VALUE:  vtLocals.Header.Columns[1].Width := ASize;
+    COL_ADDR_VALUE:    vtLocals.Header.Columns[2].Width := ASize;
   end;
 end;
 
@@ -793,6 +840,7 @@ procedure TDbgTreeViewLocalsValueMgr.UpdateColumnsText(AWatchAble: TObject;
 var
   s: String;
   ResData: TWatchResultData;
+  da: TDBGPtr;
 begin
   ResData :=  AWatchAbleResult.ResultData;
   if ResData = nil then
@@ -801,6 +849,14 @@ begin
     s := FLocalsDlg.FWatchPrinter.PrintWatchValue(ResData, wdfDefault);
   TreeView.NodeText[AVNode, 0] := TIdeLocalsValue(AWatchAble).DisplayName;
   TreeView.NodeText[AVNode, 1] := s;
+
+  if (ResData <> nil) and (ResData.HasDataAddress) then begin
+    da := ResData.DataAddress;
+    if da = 0
+    then TreeView.NodeText[AVNode, 2] := 'nil'
+    else TreeView.NodeText[AVNode, 2] := '$' + IntToHex(da, HexDigicCount(da, 4, True));
+  end
+
 end;
 
 procedure TDbgTreeViewLocalsValueMgr.ConfigureNewSubItem(AWatchAble: TObject);
@@ -816,6 +872,7 @@ initialization
   LocalsDlgWindowCreator.OnGetDividerSize := @LocalsDlgColSizeGetter;
   LocalsDlgWindowCreator.DividerTemplate.Add('LocalsName',  COL_LOCALS_NAME,  @drsColWidthName);
   LocalsDlgWindowCreator.DividerTemplate.Add('LocalsValue', COL_LOCALS_VALUE, @drsColWidthValue);
+  LocalsDlgWindowCreator.DividerTemplate.Add('LocalsAddr', COL_ADDR_VALUE, @drsColWidthAddr);
   LocalsDlgWindowCreator.CreateSimpleLayout;
 
   DBG_DATA_MONITORS := DebugLogger.FindOrRegisterLogGroup('DBG_DATA_MONITORS' {$IFDEF DBG_DATA_MONITORS} , True {$ENDIF} );

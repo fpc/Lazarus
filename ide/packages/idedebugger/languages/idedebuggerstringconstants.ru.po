@@ -216,6 +216,10 @@ msgstr "Столбец строки"
 msgid "Pass-count column"
 msgstr "Столбец числа проходов"
 
+#: idedebuggerstringconstants.drscolwidthaddr
+msgid "Address column"
+msgstr ""
+
 #: idedebuggerstringconstants.drscolwidthbrkpointimg
 msgid "Break indication column"
 msgstr "Столбец индикации останова"

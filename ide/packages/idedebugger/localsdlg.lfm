@@ -9,11 +9,12 @@ object LocalsDlg: TLocalsDlg
   Caption = 'Locals'
   ClientHeight = 200
   ClientWidth = 500
+  OnShow = FormShow
   LCLVersion = '2.3.0.0'
   object vtLocals: TDbgTreeView
     Left = 0
-    Height = 200
-    Top = 0
+    Height = 174
+    Top = 26
     Width = 500
     Align = alClient
     Header.AutoSizeIndex = 0
@@ -41,6 +42,38 @@ object LocalsDlg: TLocalsDlg
     OnDragDrop = vtLocalsDragDrop
     OnFocusChanged = vtLocalsFocusChanged
     OnNodeDblClick = vtLocalsNodeDblClick
+  end
+  object ToolBar1: TToolBar
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 500
+    Caption = 'ToolBar1'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 1
+    object ToolButtonPower: TToolButton
+      Left = 1
+      Top = 2
+      AllowAllUp = True
+      Down = True
+      OnClick = ToolButtonPowerClick
+      Style = tbsCheck
+    end
+    object ToolButton2: TToolButton
+      Left = 24
+      Height = 22
+      Top = 2
+      Caption = 'ToolButton2'
+      Style = tbsSeparator
+    end
+    object btnShowDataAddr: TToolButton
+      Left = 32
+      Top = 2
+      Caption = '$^'
+      OnClick = btnShowDataAddrClick
+      Style = tbsCheck
+    end
   end
   object ActionList1: TActionList
     Left = 152

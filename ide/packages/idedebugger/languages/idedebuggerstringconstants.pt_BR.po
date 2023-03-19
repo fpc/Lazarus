@@ -224,6 +224,10 @@ msgstr "Coluna linha"
 msgid "Pass-count column"
 msgstr "Coluna contagem passagens"
 
+#: idedebuggerstringconstants.drscolwidthaddr
+msgid "Address column"
+msgstr ""
+
 #: idedebuggerstringconstants.drscolwidthbrkpointimg
 msgid "Break indication column"
 msgstr "Coluna indicação parada"

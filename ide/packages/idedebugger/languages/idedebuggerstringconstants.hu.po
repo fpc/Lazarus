@@ -217,6 +217,10 @@ msgstr "Sor oszlop"
 msgid "Pass-count column"
 msgstr "Áthaladás-szám oszlop"
 
+#: idedebuggerstringconstants.drscolwidthaddr
+msgid "Address column"
+msgstr ""
+
 #: idedebuggerstringconstants.drscolwidthbrkpointimg
 msgid "Break indication column"
 msgstr "Megszakítás jelzés oszlop"

@@ -351,6 +351,7 @@ resourcestring
   drsColWidthName        = 'Name column';
   drsColWidthExpression  = 'Expression column';
   drsColWidthValue       = 'Value column';
+  drsColWidthAddr        = 'Address column';
   drsColWidthState       = 'State column';
   drsColWidthIndex       = 'Index column';
   drsColWidthSource      = 'Source column';

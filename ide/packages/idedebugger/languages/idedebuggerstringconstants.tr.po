@@ -207,6 +207,10 @@ msgstr "Satır sütunu"
 msgid "Pass-count column"
 msgstr "Geçiş-sayısı sütunu"
 
+#: idedebuggerstringconstants.drscolwidthaddr
+msgid "Address column"
+msgstr ""
+
 #: idedebuggerstringconstants.drscolwidthbrkpointimg
 msgid "Break indication column"
 msgstr "Kırılma göstergesi sütunu"

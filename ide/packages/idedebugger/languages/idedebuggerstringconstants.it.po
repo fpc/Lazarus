@@ -219,6 +219,10 @@ msgstr "Colonna Riga"
 msgid "Pass-count column"
 msgstr "Colonna Numero-passi"
 
+#: idedebuggerstringconstants.drscolwidthaddr
+msgid "Address column"
+msgstr ""
+
 #: idedebuggerstringconstants.drscolwidthbrkpointimg
 msgid "Break indication column"
 msgstr "Colonna indicazione Break"
