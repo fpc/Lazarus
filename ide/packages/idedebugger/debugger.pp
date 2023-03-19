@@ -2781,6 +2781,7 @@ var
 begin
   XmlConf := TXMLConfig.CreateClean('');
   XmlConf.Clear;
+  XmlConf.WriteFlags := [];
   SaveDataToXMLConfig(XmlConf, 'History/');
   s := TStringStream.Create('');
   XmlConf.WriteToStream(s);

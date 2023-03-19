@@ -7,7 +7,7 @@ object HistoryDialog: THistoryDialog
   Caption = 'HistoryDialog'
   ClientHeight = 240
   ClientWidth = 422
-  LCLVersion = '1.1'
+  LCLVersion = '2.3.0.0'
   object lvHistory: TListView
     Left = 0
     Height = 214
@@ -59,21 +59,21 @@ object HistoryDialog: THistoryDialog
       Style = tbsCheck
     end
     object tbClear: TToolButton
-      Left = 159
+      Left = 155
       Top = 2
       Caption = 'tbClear'
       OnClick = tbClearClick
     end
     object ToolButton1: TToolButton
       Left = 47
+      Height = 22
       Top = 2
-      Width = 10
       Caption = 'ToolButton1'
       Style = tbsSeparator
     end
     object tbHist: TToolButton
       Tag = 1
-      Left = 57
+      Left = 55
       Top = 2
       Caption = 'tbHist'
       Down = True
@@ -83,7 +83,7 @@ object HistoryDialog: THistoryDialog
     end
     object tbSnap: TToolButton
       Tag = 1
-      Left = 80
+      Left = 78
       Top = 2
       Caption = 'tbSnap'
       Grouped = True
@@ -91,39 +91,39 @@ object HistoryDialog: THistoryDialog
       Style = tbsCheck
     end
     object ToolButton4: TToolButton
-      Left = 103
+      Left = 101
+      Height = 22
       Top = 2
-      Width = 10
       Caption = 'ToolButton4'
       Style = tbsSeparator
     end
     object tbMakeSnap: TToolButton
-      Left = 113
+      Left = 109
       Top = 2
       Caption = 'tbMakeSnap'
       OnClick = tbMakeSnapClick
     end
     object tbRemove: TToolButton
-      Left = 136
+      Left = 132
       Top = 2
       Caption = 'tbRemove'
       OnClick = tbRemoveClick
     end
     object ToolButton2: TToolButton
-      Left = 182
+      Left = 178
+      Height = 22
       Top = 2
-      Width = 10
       Caption = 'ToolButton2'
       Style = tbsSeparator
     end
     object tbExport: TToolButton
-      Left = 215
+      Left = 209
       Top = 2
       Caption = 'tbExport'
       OnClick = tbExportClick
     end
     object tbImport: TToolButton
-      Left = 192
+      Left = 186
       Top = 2
       Caption = 'tbImport'
       OnClick = tbImportClick
@@ -134,14 +134,15 @@ object HistoryDialog: THistoryDialog
     DefaultExt = '.xml'
     Filter = 'xml|*.xml|all|*.*'
     Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
-    left = 49
-    top = 106
+    Left = 49
+    Top = 106
   end
   object SaveDialog1: TSaveDialog
     Title = 'Export to'
     DefaultExt = '.xml'
     Filter = 'xml|*.xml|all|*.*'
-    left = 128
-    top = 104
+    Options = [ofOverwritePrompt, ofPathMustExist, ofEnableSizing, ofViewDetail]
+    Left = 128
+    Top = 104
   end
 end
