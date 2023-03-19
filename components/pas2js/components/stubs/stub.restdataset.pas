@@ -108,13 +108,47 @@ Type
 
   TGetQueryParamsEvent = Procedure (Sender : TDataset; IsReadURL : Boolean; var QueryString : String) of object;
 
+  TUpdateStatus = (usModified, usInserted, usDeleted);
+  TUpdateStatusSet = Set of TUpdateStatus;
+
+  TResolveStatus = (rsUnresolved, rsResolving, rsResolved, rsResolveFailed);
+  TResolveStatusSet = Set of TResolveStatus;
+
+  TUpdateMode = (upWhereAll, upWhereChanged, upWhereKeyOnly);
+  TResolverResponse = (rrSkip, rrAbort, rrMerge, rrApply, rrIgnore);
+  JSValue = variant;
+
+  TResolveInfo = record
+    Data : JSValue;
+    Status : TUpdateStatus;
+    ResolveStatus : TResolveStatus;
+    Error : String; // Only filled on error.
+    BookMark : TBookmark;
+    _private : JSValue; // for use by descendents of TDataset
+  end;
+  TResolveInfoArray = Array of TResolveInfo;
+
+  // Record so we can extend later on
+  TResolveResults = record
+    Records : TResolveInfoArray;
+  end;
+
+  TOnRecordResolveEvent = Procedure (Sender : TDataset; info : TResolveInfo) of object;
+  TApplyUpdatesEvent = Procedure (Sender : TDataset; info : TResolveResults) of object;
+  TDatasetLoadFailEvent = procedure(DataSet: TDataSet; ID : Integer; Const ErrorMsg : String) of object;
+
   { TSQLDBRestDataset }
 
   TSQLDBRestDataset = Class(TJSONDataset)
   private
+    FAfterApplyUpdates: TApplyUpdatesEvent;
+    FAfterRefresh: TDataSetNotifyEvent;
+    FBeforeApplyUpdates: TDatasetNotifyEvent;
     FConnection: TSQLDBRestConnection;
     FDatabaseConnection: String;
     FOnGetQueryParams: TGetQueryParamsEvent;
+    FOnLoadFail: TDatasetLoadFailEvent;
+    FOnRecordResolved: TOnRecordResolveEvent;
     FParams: TQueryParams;
     FResourceID: String;
     FResourceName: String;
@@ -144,6 +178,12 @@ Type
     Property ResourceID : String Read FResourceID Write FResourceID;
     // Automatically call ApplyUpdates when a Post/Delete happens.
     Property AutoApplyUpdates : Boolean Read FAutoApplyUpdates Write FAutoApplyUpdates;
+    // REST  update events
+    Property BeforeApplyUpdates : TDatasetNotifyEvent Read FBeforeApplyUpdates Write FBeforeApplyUpdates;
+    Property AfterApplyUpdates : TApplyUpdatesEvent Read FAfterApplyUpdates Write FAfterApplyUpdates;
+    property AfterRefresh: TDataSetNotifyEvent read FAfterRefresh write FAfterRefresh;
+    Property OnRecordResolved : TOnRecordResolveEvent Read FOnRecordResolved Write FOnRecordResolved;
+    property OnLoadFail : TDatasetLoadFailEvent Read FOnLoadFail Write FOnLoadFail;
   end;
 
 
