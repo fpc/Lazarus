@@ -171,7 +171,7 @@ end;
 const
   AttrSpecialChars : array[boolean] of TSetOfChar = (
     ['<', '"', '''', '&', #0..#31], // false: default
-    ['<', '"', '''', '&']  // true: write special characters
+    ['<', '"', '''', '&', #0]  // true: write special characters
     );
   TextSpecialChars = ['<', '>', '&', #0..#31];
   CDSectSpecialChars = [']'];
