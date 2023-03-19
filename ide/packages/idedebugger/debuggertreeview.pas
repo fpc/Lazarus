@@ -56,8 +56,10 @@ type
 
     procedure SelectNode(Node: PVirtualNode; ASetFocus: boolean = True);
     function FindNodeForItem(AnItem: TObject): PVirtualNode;
-    function FindNodeForText(AText: String; AColumn: integer): PVirtualNode;
+    function FindNodeForText(AText: String; AColumn: integer; ATopLvlOnly: Boolean = False): PVirtualNode;
     procedure DeleteNodeEx(Node: PVirtualNode; FreeItem: Boolean; Reindex: Boolean = True);
+    // LazMoveTo: Don't mess with children
+    procedure LazMoveTo(Source, Target: PVirtualNode; Mode: TVTNodeAttachMode);
 
     property NodeItem[Node: PVirtualNode]: TObject read GetNodeItem write SetNodeItem;
     property NodeText[Node: PVirtualNode; AColumn: integer]: String read GetNodeText write SetNodeText;
@@ -351,14 +353,19 @@ begin
   Result := nil;
 end;
 
-function TDbgTreeView.FindNodeForText(AText: String; AColumn: integer
-  ): PVirtualNode;
+function TDbgTreeView.FindNodeForText(AText: String; AColumn: integer;
+  ATopLvlOnly: Boolean): PVirtualNode;
 var
   VNode: PVirtualNode;
 begin
-  for VNode in NoInitNodes do begin
+  VNode := GetFirstNoInit;
+  while VNode <> nil do begin
     if GetNodeText(VNode, AColumn) = AText then
       exit(VNode);
+    if ATopLvlOnly then
+      VNode := GetNextSiblingNoInit(VNode)
+    else
+      VNode := GetNextNoInit(VNode);
   end;
   Result := nil;
 end;
@@ -375,6 +382,46 @@ begin
   DeleteNode(Node, Reindex);
   if FreeItem then
     Item.Free;
+end;
+
+procedure TDbgTreeView.LazMoveTo(Source, Target: PVirtualNode; Mode: TVTNodeAttachMode);
+var
+  NewNode: PVirtualNode;
+begin
+  if Target = nil then
+  begin
+    Target := RootNode;
+    Mode := amAddChildFirst;
+  end;
+
+  if Target = RootNode then
+  begin
+    case Mode of
+      amInsertBefore:
+        Mode := amAddChildFirst;
+      amInsertAfter:
+        Mode := amAddChildLast;
+    end;
+  end;
+
+  if (Source <> Target) and HasAsParent(Target, Source) then
+    exit;
+
+  // Disconnect from old location.
+  InternalDisconnectNode(Source, True);
+  // Connect to new location.
+  InternalConnectNode(Source, Target, Self, Mode);
+  DoNodeMoved(Source);
+
+
+  InvalidateCache;
+  if (UpdateCount = 0) then
+  begin
+    ValidateCache;
+    UpdateScrollBars(True);
+    Invalidate;
+  end;
+  StructureChange(Source, crNodeMoved);
 end;
 
 initialization

@@ -43,7 +43,7 @@ type
     constructor Create(ATreeView: TDbgTreeView);
     //destructor Destroy; override;
 
-    procedure AddWatchData(AWatchAble: TObject; AWatchAbleResult: TWatchAbleResultIntf = nil);
+    function AddWatchData(AWatchAble: TObject; AWatchAbleResult: TWatchAbleResultIntf = nil; AVNode: PVirtualNode = nil): PVirtualNode;
     procedure UpdateWatchData(AWatchAble: TObject; AVNode: PVirtualNode; AWatchAbleResult: TWatchAbleResultIntf = nil);
 
     property CancelUpdate: Boolean read FCancelUpdate write FCancelUpdate;
@@ -365,19 +365,26 @@ begin
   FTreeView.OnInitChildren := @TreeViewInitChildren;
 end;
 
-procedure TDbgTreeViewWatchDataMgr.AddWatchData(AWatchAble: TObject;
-  AWatchAbleResult: TWatchAbleResultIntf);
-var
-  AVNode: PVirtualNode;
+function TDbgTreeViewWatchDataMgr.AddWatchData(AWatchAble: TObject;
+  AWatchAbleResult: TWatchAbleResultIntf; AVNode: PVirtualNode): PVirtualNode;
 begin
   if AWatchAble = nil then
     exit;
-  AVNode := FTreeView.FindNodeForItem(AWatchAble);
-  if AVNode = nil then begin
-    AVNode := FTreeView.AddChild(nil, AWatchAble);
+
+  if (AVNode <> nil) then begin
+    FTreeView.NodeItem[AVNode] := AWatchAble;
     FTreeView.SelectNode(AVNode);
     (AWatchAble as TFreeNotifyingIntf).AddFreeNotification(@DoWatchAbleFreed);
+  end
+  else begin
+    AVNode := FTreeView.FindNodeForItem(AWatchAble);
+    if AVNode = nil then begin
+      AVNode := FTreeView.AddChild(nil, AWatchAble);
+      FTreeView.SelectNode(AVNode);
+      (AWatchAble as TFreeNotifyingIntf).AddFreeNotification(@DoWatchAbleFreed);
+    end;
   end;
+  Result := AVNode;
 
   UpdateWatchData(AWatchAble, AVNode, AWatchAbleResult);
 end;

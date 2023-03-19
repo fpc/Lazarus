@@ -235,18 +235,20 @@ type
 
    { TLocalsValue }
 
-   TLocalsValue = class(TDbgEntityValue)
-   private
-     FName: String;
-     FValue: TWatchResultData;
-   protected
-     procedure DoAssign(AnOther: TDbgEntityValue); override;
-   public
-     destructor Destroy; override;
-     procedure Init(AName: String; AValue: TWatchResultData);
-     property Name: String read FName;
-     property Value: TWatchResultData read FValue;
-   end;
+  TLocalsValue = class(TDbgEntityValue)
+  protected
+    FName: String;
+    FValue: TWatchResultData;
+    function GetValue: String; virtual;
+    function GetResultData: TWatchResultData; virtual;
+    procedure DoAssign(AnOther: TDbgEntityValue); override;
+  public
+    destructor Destroy; override;
+    procedure Init(AName: String; AValue: TWatchResultData);
+    property Name: String read FName;
+    property Value: String read GetValue;
+    property ResultData: TWatchResultData read GetResultData;
+  end;
 
  { TLocals }
 
@@ -254,17 +256,18 @@ type
   private
     function GetEntry(AnIndex: Integer): TLocalsValue;
     function GetName(const AnIndex: Integer): String;
-    function GetValue(const AnIndex: Integer): TWatchResultData;
+    function GetResultData(const AnIndex: Integer): TWatchResultData;
   protected
     function CreateEntry: TDbgEntityValue; override;
   public
-    procedure Add(const AName: String; AValue: TWatchResultData); overload; deprecated;
+    function Add(const AName: String; AValue: TWatchResultData): TLocalsValue; virtual; overload;
     procedure SetDataValidity({%H-}AValidity: TDebuggerDataState); virtual;
   public
     function Count: Integer;reintroduce; virtual;
+    function Find(AName: String): TLocalsValue;
     property Entries[AnIndex: Integer]: TLocalsValue read GetEntry;
     property Names[const AnIndex: Integer]: String read GetName;
-    property Values[const AnIndex: Integer]: TWatchResultData read GetValue;
+    property Values[const AnIndex: Integer]: TWatchResultData read GetResultData;
   end;
 
   { TLocalsList }
@@ -972,6 +975,18 @@ end;
 
 { TLocalsValue }
 
+function TLocalsValue.GetValue: String;
+begin
+  Result := '';
+  if FValue <> nil then
+    Result := FValue.AsString;
+end;
+
+function TLocalsValue.GetResultData: TWatchResultData;
+begin
+  Result := FValue;
+end;
+
 procedure TLocalsValue.DoAssign(AnOther: TDbgEntityValue);
 begin
   inherited DoAssign(AnOther);
@@ -1016,9 +1031,9 @@ begin
   Result := Entries[AnIndex].Name;
 end;
 
-function TLocals.GetValue(const AnIndex: Integer): TWatchResultData;
+function TLocals.GetResultData(const AnIndex: Integer): TWatchResultData;
 begin
-  Result := Entries[AnIndex].Value;
+  Result := Entries[AnIndex].ResultData;
 end;
 
 function TLocals.CreateEntry: TDbgEntityValue;
@@ -1026,15 +1041,14 @@ begin
   Result := TLocalsValue.Create;
 end;
 
-procedure TLocals.Add(const AName: String; AValue: TWatchResultData);
-var
-  v: TLocalsValue;
+function TLocals.Add(const AName: String; AValue: TWatchResultData
+  ): TLocalsValue;
 begin
   assert(not Immutable, 'TLocalsBase.Add Immutable');
-  v := TLocalsValue(CreateEntry);
-  v.FName := AName;
-  v.FValue := AValue;
-  inherited Add(v);
+  Result := TLocalsValue(CreateEntry);
+  Result.FName := AName;
+  Result.FValue := AValue;
+  inherited Add(Result);
 end;
 
 procedure TLocals.SetDataValidity(AValidity: TDebuggerDataState);
@@ -1045,6 +1059,20 @@ end;
 function TLocals.Count: Integer;
 begin
   Result := inherited Count;
+end;
+
+function TLocals.Find(AName: String): TLocalsValue;
+var
+  i: Integer;
+begin
+  i := Count - 1;
+  while i >= 0 do begin
+    Result := Entries[i];
+    if Result.Name = AName then
+      exit;
+    dec(i);
+  end;
+  Result := nil;
 end;
 
 { TLocalsMonitor }

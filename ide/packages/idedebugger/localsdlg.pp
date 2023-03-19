@@ -45,12 +45,16 @@ uses
   IDEWindowIntf,
   // DebuggerIntf
   DbgIntfDebuggerBase, laz.VirtualTrees, LazDebuggerIntf,
+  LazDebuggerIntfBaseTypes,
   // IDE Debugger
   IdeDebuggerStringConstants, BaseDebugManager, EnvironmentOpts, Debugger,
   DebuggerDlg, IdeDebuggerWatchResPrinter, IdeDebuggerUtils, DebuggerTreeView,
-  IdeDebuggerWatchResult, IdeDebuggerBase, Controls, ActiveX;
+  IdeDebuggerWatchResult, IdeDebuggerBase, DbgTreeViewWatchData, Controls,
+  ActiveX;
 
 type
+
+    TDbgTreeViewLocalsValueMgr = class;
 
   { TLocalsDlg }
 
@@ -95,16 +99,18 @@ type
       const HitInfo: THitInfo);
   private
     FWatchPrinter: TWatchResultPrinter;
+    FLocolsTreeMgr: TDbgTreeViewLocalsValueMgr;
+
     FUpdateFlags: set of (ufNeedUpdating);
     function GetSelected: TLocalsValue; // The focused Selected Node
     procedure CopyRAWValueEvaluateCallback(Sender: TObject; ASuccess: Boolean;
       ResultText: String; ResultDBGType: TDBGType);
     procedure CopyValueEvaluateCallback(Sender: TObject; ASuccess: Boolean;
       ResultText: String; ResultDBGType: TDBGType);
-    procedure DoLocalValueFreed(Sender: TObject);
 
     procedure ClearTree(OnlyClearNodeData: boolean = False);
     procedure LocalsChanged(Sender: TObject);
+    procedure SubLocalChanged(Sender: TObject);
     function  GetThreadId: Integer;
     function  GetSelectedThreads(Snap: TSnapshot): TIdeThreads;
     function GetStackframe: Integer;
@@ -121,6 +127,23 @@ type
     property ThreadsMonitor;
     property CallStackMonitor;
     property SnapshotManager;
+  end;
+
+  { TDbgTreeViewLocalsValueMgr }
+
+  TDbgTreeViewLocalsValueMgr = class(TDbgTreeViewWatchDataMgr)
+  private
+    FLocalsDlg: TLocalsDlg;
+  protected
+    function WatchAbleResultFromNode(AVNode: PVirtualNode): TWatchAbleResultIntf; override;
+    function WatchAbleResultFromObject(AWatchAble: TObject): TWatchAbleResultIntf; override;
+
+    procedure UpdateColumnsText(AWatchAble: TObject; AWatchAbleResult: TWatchAbleResultIntf; AVNode: PVirtualNode); override;
+    procedure ConfigureNewSubItem(AWatchAble: TObject); override;
+    //procedure UpdateSubItems(AWatchAble: TObject; AWatchAbleResult: TWatchAbleResultIntf;
+    //  AVNode: PVirtualNode; out ChildCount: LongWord); override;
+    //procedure UpdateSubItemsLocked(AWatchAble: TObject; AWatchAbleResult: TWatchAbleResultIntf;
+    //  AVNode: PVirtualNode; out ChildCount: LongWord); override;
   end;
 
 function ValueToRAW(const AValue: string): string;
@@ -289,6 +312,8 @@ begin
   CallstackNotification.OnCurrent := @LocalsChanged;
   SnapshotNotification.OnCurrent  := @LocalsChanged;
   FWatchPrinter := TWatchResultPrinter.Create;
+  FLocolsTreeMgr := TDbgTreeViewLocalsValueMgr.Create(vtLocals);
+  FLocolsTreeMgr.FLocalsDlg := Self;
 
   Caption:= lisLocals;
   vtLocals.Header.Columns[0].Text:= lisName;
@@ -310,6 +335,7 @@ begin
   ClearTree;
   inherited Destroy;
   FWatchPrinter.free;
+  FLocolsTreeMgr.Free;
 end;
 
 procedure TLocalsDlg.actInspectUpdate(Sender: TObject);
@@ -326,7 +352,7 @@ begin
   if LVal = nil then
     exit;
 
-  ResVal := LVal.Value;
+  ResVal := LVal.ResultData;
   if ResVal = nil then
     exit;
 
@@ -347,7 +373,7 @@ begin
     end
     else begin
       Clipboard.Open;
-      Clipboard.AsText := ClearMultiline(FWatchPrinter.PrintWatchValue(LVal.Value, wdfDefault));
+      Clipboard.AsText := ClearMultiline(FWatchPrinter.PrintWatchValue(ResVal, wdfDefault));
       Clipboard.Close;
     end;
 
@@ -357,7 +383,7 @@ begin
   if not DebugBoss.Evaluate(LVal.Name, @CopyRAWValueEvaluateCallback, []) then
   begin
     Clipboard.Open;
-    Clipboard.AsText := ValueToRAW(ClearMultiline(FWatchPrinter.PrintWatchValue(LVal.Value, wdfDefault)));
+    Clipboard.AsText := ValueToRAW(ClearMultiline(FWatchPrinter.PrintWatchValue(ResVal, wdfDefault)));
     Clipboard.Close;
   end;
 end;
@@ -459,7 +485,7 @@ begin
   for VNode in vtLocals.NoInitNodes do begin
     LVal := TLocalsValue((vtLocals.NodeItem[VNode]));
     if LVal <> nil then
-      AStringList.Values[LVal.Name] := ClearMultiline(FWatchPrinter.PrintWatchValue(LVal.Value, wdfDefault));
+      AStringList.Values[LVal.Name] := ClearMultiline(FWatchPrinter.PrintWatchValue(LVal.ResultData, wdfDefault));
   end;
 
   Clipboard.Open;
@@ -482,13 +508,13 @@ begin
   if LVal = nil then
     exit;
 
-  ResVal := LVal.Value;
+  ResVal := LVal.ResultData;
   if ResVal = nil then
     exit;
 
   if (ResVal.ValueKind <> rdkPrePrinted) then begin
     Clipboard.Open;
-    Clipboard.AsText := ClearMultiline(FWatchPrinter.PrintWatchValue(LVal.Value, wdfDefault));
+    Clipboard.AsText := ClearMultiline(FWatchPrinter.PrintWatchValue(ResVal, wdfDefault));
     Clipboard.Close;
     exit;
   end;
@@ -496,7 +522,7 @@ begin
   if not DebugBoss.Evaluate(LVal.Name, @CopyValueEvaluateCallback, []) then
   begin
     Clipboard.Open;
-    Clipboard.AsText := ClearMultiline(FWatchPrinter.PrintWatchValue(LVal.Value, wdfDefault));
+    Clipboard.AsText := ClearMultiline(FWatchPrinter.PrintWatchValue(ResVal, wdfDefault));
     Clipboard.Close;
   end
 end;
@@ -507,10 +533,10 @@ var
   Locals: TIDELocals;
   Snap: TSnapshot;
   s: String;
-  LVal: TLocalsValue;
+  LVal: TIdeLocalsValue;
   VNode, VN2: PVirtualNode;
 begin
-  if (ThreadsMonitor = nil) or (CallStackMonitor = nil) or (LocalsMonitor=nil) then begin
+  if (DebugBoss = nil) or (ThreadsMonitor = nil) or (CallStackMonitor = nil) or (LocalsMonitor=nil) then begin
     ClearTree;
     exit;
   end;
@@ -529,6 +555,19 @@ begin
   end;
 
   Snap := GetSelectedSnapshot;
+
+  if (Snap = nil) then begin
+    if (DebugBoss.State in [dsInit, dsIdle, dsStop]) then begin
+      ClearTree;
+      exit;
+    end;
+
+    if not (DebugBoss.State in [dsPause, dsInternalPause]) then begin
+      ClearTree(True);
+      exit;
+    end;
+  end;
+
   if (Snap <> nil)
   then begin
     Locals := LocalsMonitor.Snapshots[Snap][GetThreadId, GetStackframe];
@@ -539,32 +578,29 @@ begin
     Caption:= lisLocals;
   end;
 
-  if Locals = nil
-  then begin
+  if (Locals = nil) then begin
     ClearTree;
-    VNode:= vtLocals.AddChild(nil, nil);
-    vtLocals.NodeText[VNode, 1] := lisLocalsNotEvaluated;
+    Exit;
+  end;
+
+  if (Locals is TCurrentLocals) and (TCurrentLocals(Locals).Validity in [ddsUnknown, ddsRequested, ddsEvaluating])
+  then begin
+    Locals.Count; // trigger
+    ClearTree(True);
     Exit;
   end;
 
   BeginUpdate;
   try
     ClearTree(True);
+    VN2 := nil;
     for n := 0 to Locals.Count - 1 do begin
-      LVal := Locals.Entries[n];
-      LVal.AddFreeNotification(@DoLocalValueFreed);
-
-      VNode := vtLocals.FindNodeForText(LVal.Name, 0);
-      if (VNode = nil) then begin
-        VNode := vtLocals.AddChild(nil, LVal);
-        LVal.AddFreeNotification(@DoLocalValueFreed);
-      end
-      else
-        vtLocals.NodeItem[VNode] := LVal;
-
-      s := ClearMultiline(FWatchPrinter.PrintWatchValue(LVal.Value, wdfDefault));
-      vtLocals.NodeText[VNode, 0] := LVal.Name;
-      vtLocals.NodeText[VNode, 1] := s;
+      LVal := TIdeLocalsValue(Locals.Entries[n]);
+      VNode := vtLocals.FindNodeForText(LVal.DisplayName, 0, True);
+      if (VNode <> nil) and (VNode^.PrevSibling <> VN2) then
+        vtLocals.LazMoveTo(VNode, VN2, amInsertAfter);
+      VNode := FLocolsTreeMgr.AddWatchData(LVal, LVal, VNode);
+      VN2 := VNode;
     end;
 
 
@@ -578,10 +614,19 @@ begin
       else
         VNode := vtLocals.GetNextVisibleNoInit(VNode);
     end;
-
   finally
     EndUpdate;
+    vtLocals.Invalidate;
   end;
+end;
+
+procedure TLocalsDlg.SubLocalChanged(Sender: TObject);
+var
+  VNode: PVirtualNode;
+begin
+  VNode := vtLocals.FindNodeForItem(Sender);
+  if VNode <> nil then
+    FLocolsTreeMgr.UpdateWatchData(TSubLocalsValue(Sender), VNode);
 end;
 
 function TLocalsDlg.GetThreadId: Integer;
@@ -682,9 +727,9 @@ begin
   else
   begin
     LVal := GetSelected;
-    if (LVal <> nil) and (LVal.Value <> nil) then begin
+    if (LVal <> nil) and (LVal.ResultData <> nil) then begin
       Clipboard.Open;
-      Clipboard.AsText := ValueToRAW(ClearMultiline(FWatchPrinter.PrintWatchValue(LVal.Value, wdfDefault)));
+      Clipboard.AsText := ValueToRAW(ClearMultiline(FWatchPrinter.PrintWatchValue(LVal.ResultData, wdfDefault)));
       Clipboard.Close;
     end;
   end;
@@ -702,27 +747,14 @@ begin
     Clipboard.AsText := ExtractValue(ResultText, ResultDBGType.TypeName)
   else begin
     LVal := GetSelected;
-    if (LVal <> nil) and (LVal.Value <> nil) then begin
+    if (LVal <> nil) and (LVal.ResultData <> nil) then begin
       Clipboard.Open;
-      Clipboard.AsText := ClearMultiline(FWatchPrinter.PrintWatchValue(LVal.Value, wdfDefault));
+      Clipboard.AsText := ClearMultiline(FWatchPrinter.PrintWatchValue(LVal.ResultData, wdfDefault));
       Clipboard.Close;
     end;
   end;
   Clipboard.Close;
   FreeAndNil(ResultDBGType);
-end;
-
-procedure TLocalsDlg.DoLocalValueFreed(Sender: TObject);
-var
-  nd: PVirtualNode;
-begin
-  nd := vtLocals.FindNodeForItem(Sender);
-  if nd = nil then
-    exit;
-
-  //vtLocals.OnItemRemoved := nil;
-  vtLocals.NodeItem[nd] := nil;
-  //vtLocals.OnItemRemoved := @DoItemRemovedFromView;
 end;
 
 procedure TLocalsDlg.ClearTree(OnlyClearNodeData: boolean);
@@ -731,14 +763,47 @@ var
   VNode: PVirtualNode;
 begin
   for VNode in vtLocals.NoInitNodes do begin
-    LVal := TLocalsValue(vtLocals.NodeItem[VNode]);
-    if LVal <> nil then
-      LVal.RemoveFreeNotification(@DoLocalValueFreed);
     vtLocals.NodeItem[VNode] := nil;
+    if OnlyClearNodeData then
+      vtLocals.NodeText[VNode, 1] := '<not evaluated>';
   end;
 
   if not OnlyClearNodeData then
     vtLocals.Clear;
+end;
+
+{ TDbgTreeViewLocalsValueMgr }
+
+function TDbgTreeViewLocalsValueMgr.WatchAbleResultFromNode(AVNode: PVirtualNode
+  ): TWatchAbleResultIntf;
+begin
+  Result := TIdeLocalsValue(TreeView.NodeItem[AVNode]);
+end;
+
+function TDbgTreeViewLocalsValueMgr.WatchAbleResultFromObject(
+  AWatchAble: TObject): TWatchAbleResultIntf;
+begin
+  Result := TIdeLocalsValue(AWatchAble);
+end;
+
+procedure TDbgTreeViewLocalsValueMgr.UpdateColumnsText(AWatchAble: TObject;
+  AWatchAbleResult: TWatchAbleResultIntf; AVNode: PVirtualNode);
+var
+  s: String;
+  ResData: TWatchResultData;
+begin
+  ResData :=  AWatchAbleResult.ResultData;
+  if ResData = nil then
+    s := AWatchAbleResult.Value
+  else
+    s := ClearMultiline(FLocalsDlg.FWatchPrinter.PrintWatchValue(ResData, wdfDefault));
+  TreeView.NodeText[AVNode, 0] := TIdeLocalsValue(AWatchAble).DisplayName;
+  TreeView.NodeText[AVNode, 1] := s;
+end;
+
+procedure TDbgTreeViewLocalsValueMgr.ConfigureNewSubItem(AWatchAble: TObject);
+begin
+  TSubLocalsValue(AWatchAble).OnChange := @FLocalsDlg.SubLocalChanged;
 end;
 
 initialization

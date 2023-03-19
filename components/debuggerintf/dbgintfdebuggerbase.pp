@@ -1806,6 +1806,8 @@ type
     class function GetDebuggerClassByName(const AIndex: String): TDebuggerClass; static;
     function FindDebuggerClass(const Astring: String): TDebuggerClass;
   public
+    procedure RequestWatchData(AWatchValue: TWatchValueIntf); virtual; abstract;
+  public
     class function DebuggerCount: Integer;
 
     procedure RegisterValueFormatter(const aSymbolKind: TDBGSymbolKind;

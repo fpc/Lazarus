@@ -26,7 +26,7 @@ function ClearMultiline(const AValue: ansistring): ansistring;
     The Index "11" returns Foo[11]
 *)
 function GetExpressionForArrayElement(AnArrayExpression: AnsiString; AnIndex: String): AnsiString; overload;
-function GetExpressionForArrayElement(AnArrayExpression: AnsiString; AnIndex: Integer): AnsiString; overload;
+function GetExpressionForArrayElement(AnArrayExpression: AnsiString; AnIndex: Int64): AnsiString; overload;
 
 implementation
 
@@ -349,7 +349,7 @@ begin
 end;
 
 function GetExpressionForArrayElement(AnArrayExpression: AnsiString;
-  AnIndex: Integer): AnsiString;
+  AnIndex: Int64): AnsiString;
 begin
   Result := GetExpressionForArrayElement(AnArrayExpression, IntToStr(AnIndex));
 end;

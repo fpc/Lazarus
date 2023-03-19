@@ -24,10 +24,10 @@ type
     FOwner: TDbgEntityValuesList;
     FFlags: set of (devImmutable);
     function GetImmutable: Boolean;
-    function GetStackFrame: Integer;
-    function GetThreadId: Integer;
     procedure SetImmutable(AValue: Boolean);
   protected
+    function GetStackFrame: Integer;
+    function GetThreadId: Integer;
     procedure DoAssign({%H-}AnOther: TDbgEntityValue); virtual;
     property Owner: TDbgEntityValuesList read FOwner;
   public
@@ -63,7 +63,7 @@ type
     constructor Create(AThreadId, AStackFrame: Integer);
     destructor Destroy; override;
     procedure Assign(AnOther: TDbgEntityValuesList);       // assert other has same thread/stack
-    procedure Add(AnEntry: TDbgEntityValue);
+    procedure Add(AnEntry: TDbgEntityValue); virtual;
     procedure Clear;
     function Count: Integer;
     property Entries[AnIndex: Integer]: TDbgEntityValue read GetEntry;
