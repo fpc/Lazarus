@@ -65,6 +65,8 @@ uses
   LazDebuggerFpLldb, LazDebuggerFp, laz.virtualtreeview_package,
   // use the custom IDE static packages AFTER 'main'
   {$IFDEF AddStaticPkgs}
+  // In case you get duplicate identifier errors in the uses clause,
+  // rebuild the IDE using "make clean all"
   {$I staticpackages.inc}
   {$ENDIF}
   {$IFDEF BigIDE}
