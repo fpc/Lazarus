@@ -7837,10 +7837,8 @@ var
   PkgCompileFlags: TPkgCompileFlags;
   OldToolStatus: TIDEToolStatus;
   CompilerKind: TPascalCompiler;
-  {$IFDEF EnableBuildIDEUsingLazbuild}
   ErrMsg: String;
   r: integer;
-  {$ENDIF}
 begin
   if ToolStatus<>itNone then begin
     IDEMessageDialog(lisNotNow,lisYouCanNotBuildLazarusWhileDebuggingOrCompiling,
