@@ -193,11 +193,13 @@ type
     function ExtractOptionsFromCFG(const CFGFilename: string): TModalResult;
     procedure MissingUnitsSub(AUsedUnits: TUsedUnits);
     function DoMissingUnits(AUsedUnitsTool: TUsedUnitsTool): integer; override;
-    function AddToProjectLater(AFileName: string): Boolean;
+    function AddToProjectLater(const AFileName: string): Boolean;
     function MaybeDeleteFiles: TModalResult;
     function CheckUnitForConversion(aFileName: string): Boolean;
+    procedure AddDependency(APackName: String);
+    function PathHasPascalUnitFile(const AUnitName, ASearchPath: string): Boolean;
     function CheckPackageDep(AUnitName: string): Boolean;
-    function TryAddPackageDep(AUnitName, ADefaultPkgName: string): Boolean;
+    function TryAddPackageDep(const AUnitName, ADefaultPkgName: string): Boolean;
   protected
     function CreateInstance: TModalResult; virtual; abstract;
     function CreateMainSourceFile: TModalResult; virtual; abstract;
@@ -206,9 +208,10 @@ type
     function ExtractOptionsFromDelphiSource: TModalResult; virtual; abstract;
     // Abstract base for the fake Project / Package virtual methods.
     function GetMainName: string; virtual; abstract;
-    function SaveAndMaybeClose({%H-}aFilename: string): TModalResult; virtual;
-    function ContainsFile(aFileName: string): Boolean; virtual; abstract;
+    function SaveAndMaybeClose(const {%H-}aFilename: string): TModalResult; virtual;
+    function ContainsFile(const aFileName: string): Boolean; virtual; abstract;
     function FindDependencyByName(const PackageName: string): TPkgDependency; virtual; abstract;
+    function FirstDependency: TPkgDependency; virtual; abstract;
   public
     constructor Create(const AFilename, ADescription: string);
     destructor Destroy; override;
@@ -234,9 +237,10 @@ type
     function ExtractOptionsFromDelphiSource: TModalResult; override;
     // Fake Project virtual methods.
     function GetMainName: string; override;
-    function SaveAndMaybeClose(Filename: string): TModalResult; override;
-    function ContainsFile(aFileName: string): Boolean; override;
+    function SaveAndMaybeClose(const Filename: string): TModalResult; override;
+    function ContainsFile(const aFileName: string): Boolean; override;
     function FindDependencyByName(const PackageName: string): TPkgDependency; override;
+    function FirstDependency: TPkgDependency; override;
   public
     constructor Create(const aProjectFilename: string);
     destructor Destroy; override;
@@ -261,8 +265,9 @@ type
     function ExtractOptionsFromDelphiSource: TModalResult; override;
     // Fake Package virtual methods.
     function GetMainName: string; override;
-    function ContainsFile(aFileName: string): Boolean; override;
+    function ContainsFile(const aFileName: string): Boolean; override;
     function FindDependencyByName(const PackageName: string): TPkgDependency; override;
+    function FirstDependency: TPkgDependency; override;
   public
     constructor Create(const aPackageFilename: string);
     destructor Destroy; override;
@@ -1362,7 +1367,7 @@ begin
   Result:=AUsedUnitsTool.MissingUnitCount;
 end;
 
-function TConvertDelphiProjPack.AddToProjectLater(AFileName: string): Boolean;
+function TConvertDelphiProjPack.AddToProjectLater(const AFileName: string): Boolean;
 var
   x: Integer;
 begin
@@ -1417,6 +1422,57 @@ begin
     Result:=False;
 end;
 
+procedure TConvertDelphiProjPack.AddDependency(APackName: String);
+// A unit was found from a package. Add the package as a dependency and open it.
+var
+  Dep: TPkgDependency;
+begin
+  if APackName='LCLBase' then
+    APackName:='LCL';
+  Dep:=FindDependencyByName(APackName);
+  if Assigned(Dep) then Exit;               // Already added.
+  fProjPack.AddPackageDependency(APackName);
+  fSettings.AddLogLine(mluNote, Format(lisConvDelphiAddedPackageDependency,[APackName]),
+                       fLazPInfoFilename);
+  Dep:=FindDependencyByName(APackName);
+  if Assigned(Dep) then
+    PackageGraph.OpenDependency(Dep,false);
+end;
+
+function TConvertDelphiProjPack.PathHasPascalUnitFile(const AUnitName, ASearchPath: string): Boolean;
+var
+  FileInfo: TSearchRec;
+  StartPos, p, l: Integer;
+  CurPath: String;
+begin
+  Result:=False;
+  // Split search path
+  StartPos:=1;
+  l:=length(ASearchPath);
+  while StartPos<=l do begin
+    p:=StartPos;
+    while (p<=l) and (ASearchPath[p]<>';') do inc(p);
+    CurPath:=TrimFilename(Copy(ASearchPath,StartPos,p-StartPos));
+    if CurPath<>'' then begin
+      // Search *.pas and *.pp files from the separated path.
+      if FindFirstUTF8(AppendPathDelim(CurPath)+'*.p*',faAnyFile,FileInfo)=0 then
+      try
+        repeat
+          // Check if special file
+          if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
+            Continue;
+          // CaseInsensitive compare.
+          if CompareText(AUnitName,ExtractFileNameOnly(FileInfo.Name))=0 then
+            Exit(True);
+        until FindNextUTF8(FileInfo)<>0;
+      finally
+        FindCloseUTF8(FileInfo);
+      end;
+    end;
+    StartPos:=p+1;
+  end;
+end;
+
 function TConvertDelphiProjPack.CheckPackageDep(AUnitName: string): Boolean;
 // Check if the given unit can be found in existing packages. Add a dependency if found.
 // This is called only if the unit is reported as missing.
@@ -1424,58 +1480,67 @@ function TConvertDelphiProjPack.CheckPackageDep(AUnitName: string): Boolean;
 var
   RegComp: TRegisteredComponent;
   PackFile: TPkgFile;
-  Dep: TPkgDependency;
-  s: String;
+  Package: TLazPackage;
+  PkgList: TFPList;
+  i: Integer;
 begin
   Result:=False;
   PackFile:=PackageGraph.FindUnitInAllPackages(AUnitName, True);
-  if PackFile=Nil then begin
-    // Do heuristics. Units of some registered components are not included in
-    //  their package file. Try to find 'T' + UnitName. Helps with Indy package.
-    RegComp := IDEComponentPalette.FindRegComponent('T'+AUnitName);
-    if RegComp is TPkgComponent then
-      PackFile:=TPkgComponent(RegComp).PkgFile;
-  end;
   if Assigned(PackFile) then begin
-    // Found from package: add package to project dependencies and open it.
-    s:=PackFile.LazPackage.Name;
-    if s='LCLBase' then
-      s:='LCL';
-    Dep:=FindDependencyByName(s);
-    if Dep=Nil then begin
-      fProjPack.AddPackageDependency(s);
-      fSettings.AddLogLine(mluNote, Format(lisConvDelphiAddedPackageDependency,[s]),
-                           fLazPInfoFilename);
-      Dep:=FindDependencyByName(s);
-      if Assigned(Dep) then
-        PackageGraph.OpenDependency(Dep,false);
-    end;
-    Result:=True;
-  end
-  else begin
-    // ToDo: Install the required package automatically from a repository...
+    AddDependency(PackFile.LazPackage.Name);
+    Exit(True);
   end;
+  // Do heuristics. Units of some registered components are not included in
+  //  their package file. Try to find 'T'+UnitName. Helps with Indy package.
+  RegComp := IDEComponentPalette.FindRegComponent('T'+AUnitName);
+  if RegComp is TPkgComponent then begin
+    PackFile:=TPkgComponent(RegComp).PkgFile;
+    Assert(Assigned(PackFile), 'TConvertDelphiProjPack.CheckPackageDep: PackFile=Nil.');
+    AddDependency(PackFile.LazPackage.Name);
+    Exit(True);
+  end;
+  // Try to find the unit from all package dependencies by their search path.
+  try // Again needed when the unit is not included in a package file.
+    PackageGraph.GetAllRequiredPackages(nil,FirstDependency,PkgList);
+    for i:=0 to PkgList.Count-1 do begin
+      Package:=TLazPackage(PkgList[i]);
+      if PackageGraph.LazarusBasePackages.IndexOf(Package)>=0 then
+        Continue;   // Skip base packages.
+      if PathHasPascalUnitFile(AUnitName,
+               Package.CompilerOptions.GetParsedPath(pcosUnitPath,icoNone,false))
+      or PathHasPascalUnitFile(AUnitName,
+               Package.SourceDirectories.CreateSearchPathFromAllFiles)
+      //or PathHasPascalUnitFile(AUnitName, Package.GetOutputDirectory)
+      or PathHasPascalUnitFile(AUnitName, Package.Directory) then
+      begin
+        AddDependency(Package.Name);
+        Exit(True);
+      end;
+    end;
+  finally
+    PkgList.Free;
+  end;
+  // ToDo: Install the required package automatically from a repository...
 end;
 
-function TConvertDelphiProjPack.TryAddPackageDep(AUnitName, ADefaultPkgName: string): Boolean;
+function TConvertDelphiProjPack.TryAddPackageDep(const AUnitName,
+  ADefaultPkgName: string): Boolean;
 var
   Dep: TPkgDependency;
 begin
   Result:=False;
-  if ADefaultPkgName<>'' then begin
-    Dep:=FindDependencyByName(ADefaultPkgName);
-    if not Assigned(Dep) then begin
-      // Add dependency based on unit name (default is ignored)
-      Result:=CheckPackageDep(AUnitName);
-      if not Result then
-        // Package was not found. Add a message about a package that must be installed.
-        fSettings.AddLogLine(mluWarning,
-                        Format(lisConvDelphiPackageRequired, [ADefaultPkgName]));
-    end;
-  end;
+  if ADefaultPkgName='' then Exit;
+  Dep:=FindDependencyByName(ADefaultPkgName);
+  if Assigned(Dep) then Exit;  // Already added.
+  // Add dependency based on unit name (default is ignored).
+  Result:=CheckPackageDep(AUnitName);
+  if Result then Exit;
+  // Package was not found. Add a message about a package that must be installed.
+  fSettings.AddLogLine(mluWarning,
+                       Format(lisConvDelphiPackageRequired, [ADefaultPkgName]));
 end;
 
-function TConvertDelphiProjPack.SaveAndMaybeClose(aFilename: string): TModalResult;
+function TConvertDelphiProjPack.SaveAndMaybeClose(const aFilename: string): TModalResult;
 begin
   Result:=mrOK; // Do nothing. Overridden in project.
 end;
@@ -1769,7 +1834,7 @@ begin
   fProjPack:=AValue;
 end;
 
-function TConvertDelphiProject.ContainsFile(aFileName: string): Boolean;
+function TConvertDelphiProject.ContainsFile(const aFileName: string): Boolean;
 begin
   Result:=Assigned(LazProject.UnitInfoWithFilename(aFileName));
 end;
@@ -1779,6 +1844,11 @@ begin
   Result:=LazProject.FindDependencyByName(PackageName);
 end;
 
+function TConvertDelphiProject.FirstDependency: TPkgDependency;
+begin
+  Result:=LazProject.FirstRequiredDependency;
+end;
+
 function TConvertDelphiProject.GetMainName: string;
 begin
   Result:='';
@@ -1786,7 +1856,7 @@ begin
     Result:=LazProject.MainUnitInfo.Filename;
 end;
 
-function TConvertDelphiProject.SaveAndMaybeClose(Filename: string): TModalResult;
+function TConvertDelphiProject.SaveAndMaybeClose(const Filename: string): TModalResult;
 var
   UnitIndex: Integer;
   AnUnitInfo: TUnitInfo;
@@ -2079,7 +2149,7 @@ begin
   Result:=LazPackage.Filename;
 end;
 
-function TConvertDelphiPackage.ContainsFile(aFileName: string): Boolean;
+function TConvertDelphiPackage.ContainsFile(const aFileName: string): Boolean;
 begin
   Result:=Assigned(LazPackage.FindPkgFile(aFileName, True, False));
 end;
@@ -2087,6 +2157,11 @@ end;
 function TConvertDelphiPackage.FindDependencyByName(const PackageName: string): TPkgDependency;
 begin
   Result:=LazPackage.FindDependencyByName(PackageName);
+end;
+
+function TConvertDelphiPackage.FirstDependency: TPkgDependency;
+begin
+  Result:=LazPackage.FirstRequiredDependency;
 end;
 
 
