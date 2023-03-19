@@ -4995,7 +4995,8 @@ begin
 
   if (Instr.OpCode.Opcode in [OPcall, OPj__, OPjcxz, OPjecxz, OPjmp, OPjmpe, OPjrcxz]) and
      (Instr.OperCnt = 1) and
-     (hvfSigned in Instr.Operand[1].FormatFlags)
+     (hvfSigned in Instr.Operand[1].FormatFlags) and
+     (Instr.Operand[1].Value = '%s')  // no register
   then begin
     TargetAddrOffs := 1;
     case Instr.Operand[1].ByteCount of
