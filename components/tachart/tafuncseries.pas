@@ -18,7 +18,7 @@ unit TAFuncSeries;
 interface
 
 uses
-  Classes, Graphics, typ, Types,
+  Classes, Graphics, typ, Types, IntfGraphics,
   TAChartUtils, TACustomFuncSeries, TACustomSeries, TACustomSource, TASources,
   TADrawUtils, TAFitUtils, TALegend, TATypes, TAFitLib, TAStyles, TAColorMap;
 
@@ -421,6 +421,7 @@ type
     FStepX: TFuncSeriesStep;
     FStepY: TFuncSeriesStep;
     FUseImage: TUseImage;
+    FBufferImage: TLazIntfImage;
     function GetBuiltinColorSource: TListChartSource;
     function GetBuiltinPalette: TColorMapPalette;
     function GetColorSource: TCustomChartSource;
@@ -441,9 +442,11 @@ type
     procedure SetUseImage(AValue: TUseImage);
   protected
     FMinZ, FMaxZ: Double;
+    function BufferImageValid: Boolean;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     procedure GetZRange(ARect: TRect; dx, dy: Integer);
     class procedure GetXYCountNeeded(out AXCount, AYCount: Cardinal); virtual;
+    procedure InvalidateBufferImage;
     property BuiltinColorSource: TListChartSource read GetBuiltinColorSource;
 
   public
@@ -452,8 +455,9 @@ type
     procedure Assign(ASource: TPersistent); override;
 
   public
-    function FunctionValue(AX, AY: Double): Double; virtual;
+    procedure ClipRectChanged; override;
     procedure Draw(ADrawer: IChartDrawer); override;
+    function FunctionValue(AX, AY: Double): Double; virtual;
     function IsEmpty: Boolean; override;
   published
     property AxisIndexX;
@@ -501,7 +505,7 @@ implementation
 
 uses
   {$IF FPC_FullVersion >= 30101}ipf{$ELSE}ipf_fix{$ENDIF},
-  GraphType, GraphUtil, IntfGraphics, Math, spe, StrUtils, SysUtils,
+  GraphType, GraphUtil, Math, spe, StrUtils, SysUtils,
   TAChartStrConsts, TAGeometry, TAGraph, TAMath;
 
 const
@@ -2474,6 +2478,7 @@ end;
 
 destructor TCustomColorMapSeries.Destroy;
 begin
+  FreeAndNil(FBufferImage);
   FreeAndNil(FColorMap);
   FreeAndNil(FBrush);
   inherited Destroy;
@@ -2491,6 +2496,20 @@ begin
   inherited Assign(ASource);
 end;
 
+{ Returns whether there exists a buffer image of the color map at the moment. }
+function TCustomColorMapSeries.BufferImageValid: Boolean;
+begin
+  Result := Assigned(FBufferImage);
+end;
+
+{ Is called by the chart when it detects a change in the clip rect (series area).
+  The ColorMapSeries must recalculate the buffer image afterwards in the
+  next paint event. }
+procedure TCustomColorMapSeries.ClipRectChanged;
+begin
+  InvalidateBufferImage;
+end;
+
 procedure TCustomColorMapSeries.Draw(ADrawer: IChartDrawer);
 var
   ext: TDoubleRect;
@@ -2500,7 +2519,6 @@ var
   pt, next, offset: TPoint;
   gp: TDoublePoint;
   v: Double;
-  img: TLazIntfImage = nil;
   rawImage: TRawImage;
   optimize: Boolean;
   x, y: Integer;
@@ -2528,8 +2546,18 @@ begin
     cmuiNever: optimize := false;
   end;
   if optimize then
-    img := CreateLazIntfImage(rawImage, r.BottomRight - r.TopLeft)
-  else begin
+  begin
+    if BufferImageValid then
+    begin
+      ADrawer.PutImage(r.Left, r.Top, FBufferImage);
+      exit;
+    end else
+    begin
+      FBufferImage.Free;
+      FBufferImage := CreateLazIntfImage(rawImage, r.BottomRight - r.TopLeft)
+    end;
+  end else
+  begin
     ADrawer.Brush := Brush;
     ADrawer.SetPenParams(psClear, clTAColor);
   end;
@@ -2544,50 +2572,45 @@ begin
     exit;
   end;
 
-  try
-    pt.Y := (r.Top div scaled_stepY - 1) * scaled_stepY + offset.Y mod scaled_stepY;
-    while pt.Y <= r.Bottom do begin
-      next.Y := pt.Y + scaled_stepY;
-      if next.Y <= r.Top then begin
-        pt.Y := next.Y;
+  pt.Y := (r.Top div scaled_stepY - 1) * scaled_stepY + offset.Y mod scaled_stepY;
+  while pt.Y <= r.Bottom do begin
+    next.Y := pt.Y + scaled_stepY;
+    if next.Y <= r.Top then begin
+      pt.Y := next.Y;
+      continue;
+    end;
+    pt.X := (r.Left div scaled_stepX - 1) * scaled_stepX + offset.X mod scaled_stepX;
+    while pt.X <= r.Right do begin
+      next.X := pt.X + scaled_stepX;
+      if next.X <= r.Left then begin
+        pt.X := next.X;
         continue;
       end;
-      pt.X := (r.Left div scaled_stepX - 1) * scaled_stepX + offset.X mod scaled_stepX;
-      while pt.X <= r.Right do begin
-        next.X := pt.X + scaled_stepX;
-        if next.X <= r.Left then begin
-          pt.X := next.X;
-          continue;
-        end;
-        gp := GraphToAxis(ParentChart.ImageToGraph((pt + next) div 2));
-//        if not (csDesigning in ComponentState) then
-          v := FunctionValue(gp.X, gp.Y);
-        cell := Rect(
-          Max(pt.X, r.Left), Max(pt.Y, r.Top),
-          Min(next.X, r.Right) + 1, Min(next.Y, r.Bottom) + 1);
-        if optimize then begin
-          if ColorSource = nil then
-            cellColor := Brush.Color
-          else
-            cellColor := FColorMap.ColorByValue(v);
-          for y := cell.Top - r.Top to cell.Bottom - r.Top - 2 do
-            for x := cell.Left - r.Left to cell.Right - r.Left - 2 do
-              img.TColors[x, y] := cellColor;
-        end
-        else begin
-          if ColorSource <> nil then
-            ADrawer.BrushColor := FColorMap.ColorByValue(v);
-          ADrawer.Rectangle(cell);
-        end;
-        pt.X := next.X;
+      gp := GraphToAxis(ParentChart.ImageToGraph((pt + next) div 2));
+      v := FunctionValue(gp.X, gp.Y);
+      cell := Rect(
+        Max(pt.X, r.Left), Max(pt.Y, r.Top),
+        Min(next.X, r.Right) + 1, Min(next.Y, r.Bottom) + 1);
+      if optimize then begin
+        if ColorSource = nil then
+          cellColor := Brush.Color
+        else
+          cellColor := FColorMap.ColorByValue(v);
+        for y := cell.Top - r.Top to cell.Bottom - r.Top - 2 do
+          for x := cell.Left - r.Left to cell.Right - r.Left - 2 do
+            FBufferImage.TColors[x, y] := cellColor;
+      end
+      else begin
+        if ColorSource <> nil then
+          ADrawer.BrushColor := FColorMap.ColorByValue(v);
+        ADrawer.Rectangle(cell);
       end;
-      pt.Y := next.Y;
+      pt.X := next.X;
     end;
-    if optimize then
-      ADrawer.PutImage(r.Left, r.Top, img);
-  finally
-    FreeAndNil(img);
+    pt.Y := next.Y;
   end;
+  if optimize and BufferImageValid then
+    ADrawer.PutImage(r.Left, r.Top, FBufferImage);
 end;
 
 function TCustomColorMapSeries.FunctionValue(AX, AY: Double): Double;
@@ -2742,6 +2765,14 @@ begin
   end;
 end;
 
+{ Destroys the current buffer image because some parameter affecting it has
+  changed. The buffer image will be recreated when the series is painted the
+  next time. }
+procedure TCustomColorMapSeries.InvalidateBufferImage;
+begin
+  FreeAndNil(FBufferImage);
+end;
+
 function TCustomColorMapSeries.IsEmpty: Boolean;
 begin
   Result := true;
@@ -2766,33 +2797,40 @@ procedure TCustomColorMapSeries.SetBrush(AValue: TBrush);
 begin
   if FBrush = AValue then exit;
   FBrush := AValue;
+  InvalidateBufferImage;
   UpdateParentChart;
 end;
 
 procedure TCustomColorMapSeries.SetBuiltinPalette(AValue: TColorMapPalette);
 begin
+  InvalidateBufferImage;
   FColorMap.BuiltinPalette := AValue;
+  UpdateParentChart;
 end;
 
 procedure TCustomColorMapSeries.SetColorSource(AValue: TCustomChartSource);
 begin
+  InvalidateBufferImage;
   FColorMap.ColorSource := AValue;
 end;
 
 procedure TCustomColorMapSeries.SetInterpolate(AValue: Boolean);
 begin
   if GetInterpolate = AValue then exit;
+  InvalidateBufferImage;
   FColorMap.Interpolate := AValue;
   UpdateParentChart;
 end;
 
 procedure TCustomColorMapSeries.SetPaletteMax(AValue: Double);
 begin
+  InvalidateBufferImage;
   FColorMap.PaletteMax := AValue;
 end;
 
 procedure TCustomColorMapSeries.SetPaletteMin(AValue: Double);
 begin
+  InvalidateBufferImage;
   FColorMap.PaletteMin := AValue;
 end;
 
@@ -2800,6 +2838,7 @@ procedure TCustomColorMapSeries.SetStepX(AValue: TFuncSeriesStep);
 begin
   if FStepX = AValue then exit;
   FStepX := AValue;
+  InvalidateBufferImage;
   UpdateParentChart;
 end;
 
@@ -2807,6 +2846,7 @@ procedure TCustomColorMapSeries.SetStepY(AValue: TFuncSeriesStep);
 begin
   if FStepY = AValue then exit;
   FStepY := AValue;
+  InvalidateBufferImage;
   UpdateParentChart;
 end;
 
@@ -2814,6 +2854,7 @@ procedure TCustomColorMapSeries.SetUseImage(AValue: TUseImage);
 begin
   if FUseImage = AValue then exit;
   FUseImage := AValue;
+  InvalidateBufferImage;
   UpdateParentChart;
 end;
 
@@ -2846,6 +2887,7 @@ procedure TColorMapSeries.SetOnCalculate(AValue: TFuncCalculate3DEvent);
 begin
   if TMethod(FOnCalculate) = TMethod(AValue) then exit;
   FOnCalculate := AValue;
+  InvalidateBufferImage;
   UpdateParentChart;
 end;
 

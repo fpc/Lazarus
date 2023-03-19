@@ -75,6 +75,7 @@ type
     destructor Destroy; override;
 
   public
+    procedure ClipRectChanged; virtual; virtual;
     procedure Draw(ADrawer: IChartDrawer); virtual; abstract;
     function GetAxisBounds(AAxis: TChartAxis; out AMin, AMax: Double): boolean; virtual; abstract;
     function GetGraphBounds: TDoubleRect; virtual; abstract;
@@ -835,6 +836,8 @@ procedure TChart.DisplaySeries(ADrawer: IChartDrawer);
   begin
     try
       ADrawer.SetTransparency(ATransparency);
+      if FClipRect <> FOldClipRect then
+        ASeries.ClipRectChanged;
       ASeries.Draw(ADrawer);
     except
       ASeries.Active := false;
@@ -2048,6 +2051,11 @@ begin
 end;
 
 procedure TBasicChartSeries.BeforeDraw;
+begin
+  // empty
+end;
+
+procedure TBasicChartSeries.ClipRectChanged;
 begin
   // empty
 end;
