@@ -628,7 +628,7 @@ begin
         MakeExe);
       Tool.FreeData:=true;
       Tool.Process.Executable:=LazbuildExe;
-      Tool.Process.Parameters.Add('--user-ide=');
+      Tool.Process.Parameters.Add('--build-ide=');
       Tool.Process.Parameters.Add('--lazarusdir=.');
       Tool.Process.Parameters.Add('--pcp='+GetPrimaryConfigPath);
       Tool.AddParsers(SubToolFPC);

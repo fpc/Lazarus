@@ -5129,7 +5129,7 @@ var
 begin
   Result:=false;
   LazDir:=EnvironmentOptions.GetParsedLazarusDirectory;
-  if (LazDir='') or not FilenameIsPascalSource(LazDir) then
+  if (LazDir='') or not FilenameIsAbsolute(LazDir) then
   begin
     if Verbose then
       debugln(['Error: (lazarus) TLazPackageGraph.ParseBasePackages missing LazarusDir "',LazDir,'"']);
