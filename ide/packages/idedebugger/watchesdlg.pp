@@ -251,6 +251,7 @@ begin
   FWatchTreeMgr.FWatchDlg := Self;
 
   FWatchPrinter := TWatchResultPrinter.Create;
+  FWatchPrinter.FormatFlags := [rpfClearMultiLine];
   FWatchesInView := nil;
   FStateFlags := [];
   nbInspect.Visible := False;
@@ -1133,12 +1134,14 @@ begin
   end;
 
   InspectMemo.WordWrap := True;
+  FWatchPrinter.FormatFlags := [rpfIndent, rpfMultiLine];
   if d.ResultData <> nil then
     s := FWatchPrinter.PrintWatchValue(d.ResultData, d.DisplayFormat)
   else
     s := d.Value;
   InspectMemo.Text := DebugBoss.FormatValue(d.TypeInfo, s);
   finally
+    FWatchPrinter.FormatFlags := [rpfClearMultiLine];
     DebugBoss.UnLockCommandProcessing;
   end;
 end;
@@ -1362,8 +1365,9 @@ begin
        (AWatchAbleResult.Validity in [ddsValid, ddsInvalid, ddsError]) // snapshot
     then begin
       if (AWatchAbleResult.Validity = ddsValid) and (AWatchAbleResult.ResultData <> nil) then begin
+        FWatchDlg.FWatchPrinter.FormatFlags := [rpfClearMultiLine];
         WatchValueStr := FWatchDlg.FWatchPrinter.PrintWatchValue(AWatchAbleResult.ResultData, AWatchAbleResult.DisplayFormat);
-        WatchValueStr := ClearMultiline(DebugBoss.FormatValue(AWatchAbleResult.TypeInfo, WatchValueStr));
+        WatchValueStr := DebugBoss.FormatValue(AWatchAbleResult.TypeInfo, WatchValueStr);
         if (AWatchAbleResult.ResultData.ValueKind = rdkArray) and (AWatchAbleResult.ResultData.ArrayLength > 0)
         then TreeView.NodeText[AVNode, COL_WATCH_VALUE-1] := Format(drsLen, [AWatchAbleResult.ResultData.ArrayLength]) + WatchValueStr
         else TreeView.NodeText[AVNode, COL_WATCH_VALUE-1] := WatchValueStr;

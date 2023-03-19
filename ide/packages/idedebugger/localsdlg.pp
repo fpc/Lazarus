@@ -312,6 +312,7 @@ begin
   CallstackNotification.OnCurrent := @LocalsChanged;
   SnapshotNotification.OnCurrent  := @LocalsChanged;
   FWatchPrinter := TWatchResultPrinter.Create;
+  FWatchPrinter.FormatFlags := [rpfClearMultiLine];
   FLocolsTreeMgr := TDbgTreeViewLocalsValueMgr.Create(vtLocals);
   FLocolsTreeMgr.FLocalsDlg := Self;
 
@@ -373,7 +374,7 @@ begin
     end
     else begin
       Clipboard.Open;
-      Clipboard.AsText := ClearMultiline(FWatchPrinter.PrintWatchValue(ResVal, wdfDefault));
+      Clipboard.AsText := FWatchPrinter.PrintWatchValue(ResVal, wdfDefault);
       Clipboard.Close;
     end;
 
@@ -383,7 +384,7 @@ begin
   if not DebugBoss.Evaluate(LVal.Name, @CopyRAWValueEvaluateCallback, []) then
   begin
     Clipboard.Open;
-    Clipboard.AsText := ValueToRAW(ClearMultiline(FWatchPrinter.PrintWatchValue(ResVal, wdfDefault)));
+    Clipboard.AsText := ValueToRAW(FWatchPrinter.PrintWatchValue(ResVal, wdfDefault));
     Clipboard.Close;
   end;
 end;
@@ -485,7 +486,7 @@ begin
   for VNode in vtLocals.NoInitNodes do begin
     LVal := TLocalsValue((vtLocals.NodeItem[VNode]));
     if LVal <> nil then
-      AStringList.Values[LVal.Name] := ClearMultiline(FWatchPrinter.PrintWatchValue(LVal.ResultData, wdfDefault));
+      AStringList.Values[LVal.Name] := FWatchPrinter.PrintWatchValue(LVal.ResultData, wdfDefault);
   end;
 
   Clipboard.Open;
@@ -514,7 +515,7 @@ begin
 
   if (ResVal.ValueKind <> rdkPrePrinted) then begin
     Clipboard.Open;
-    Clipboard.AsText := ClearMultiline(FWatchPrinter.PrintWatchValue(ResVal, wdfDefault));
+    Clipboard.AsText := FWatchPrinter.PrintWatchValue(ResVal, wdfDefault);
     Clipboard.Close;
     exit;
   end;
@@ -522,7 +523,7 @@ begin
   if not DebugBoss.Evaluate(LVal.Name, @CopyValueEvaluateCallback, []) then
   begin
     Clipboard.Open;
-    Clipboard.AsText := ClearMultiline(FWatchPrinter.PrintWatchValue(ResVal, wdfDefault));
+    Clipboard.AsText := FWatchPrinter.PrintWatchValue(ResVal, wdfDefault);
     Clipboard.Close;
   end
 end;
@@ -729,7 +730,7 @@ begin
     LVal := GetSelected;
     if (LVal <> nil) and (LVal.ResultData <> nil) then begin
       Clipboard.Open;
-      Clipboard.AsText := ValueToRAW(ClearMultiline(FWatchPrinter.PrintWatchValue(LVal.ResultData, wdfDefault)));
+      Clipboard.AsText := ValueToRAW(FWatchPrinter.PrintWatchValue(LVal.ResultData, wdfDefault));
       Clipboard.Close;
     end;
   end;
@@ -749,7 +750,7 @@ begin
     LVal := GetSelected;
     if (LVal <> nil) and (LVal.ResultData <> nil) then begin
       Clipboard.Open;
-      Clipboard.AsText := ClearMultiline(FWatchPrinter.PrintWatchValue(LVal.ResultData, wdfDefault));
+      Clipboard.AsText := FWatchPrinter.PrintWatchValue(LVal.ResultData, wdfDefault);
       Clipboard.Close;
     end;
   end;
@@ -796,7 +797,7 @@ begin
   if ResData = nil then
     s := AWatchAbleResult.Value
   else
-    s := ClearMultiline(FLocalsDlg.FWatchPrinter.PrintWatchValue(ResData, wdfDefault));
+    s := FLocalsDlg.FWatchPrinter.PrintWatchValue(ResData, wdfDefault);
   TreeView.NodeText[AVNode, 0] := TIdeLocalsValue(AWatchAble).DisplayName;
   TreeView.NodeText[AVNode, 1] := s;
 end;
