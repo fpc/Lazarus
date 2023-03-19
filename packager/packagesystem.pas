@@ -2369,7 +2369,7 @@ begin
   PkgList:=nil;
   try
     GetAllRequiredPackages(nil,FirstAutoInstallDependency,PkgList,[pirCompileOrder]);
-    StaticPackagesInc:='';
+    StaticPackagesInc:='// In case of duplicate identifier errors, see lazarus.pp'+LineEnding;
     if PkgList<>nil then begin
       for i:=0 to PkgList.Count-1 do begin
         APackage:=TLazPackage(PkgList[i]);
