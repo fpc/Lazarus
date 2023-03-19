@@ -49,8 +49,9 @@ uses
   // IDE Debugger
   IdeDebuggerStringConstants, BaseDebugManager, EnvironmentOpts, Debugger,
   DebuggerDlg, IdeDebuggerWatchResPrinter, IdeDebuggerUtils, DebuggerTreeView,
-  IdeDebuggerWatchResult, IdeDebuggerBase, DbgTreeViewWatchData, Controls,
-  ActiveX;
+  IdeDebuggerWatchResult, IdeDebuggerBase, DbgTreeViewWatchData,
+  {$ifdef Windows} ActiveX, {$else} laz.FakeActiveX, {$endif}
+  Controls;
 
 type
 
