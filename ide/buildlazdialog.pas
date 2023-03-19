@@ -200,8 +200,10 @@ type
     function ShowConfigBuildLazDlg(AProfiles: TBuildLazarusProfiles;
       ADisableCompilation: Boolean): TModalResult;
     function MakeLazarus(Profile: TBuildLazarusProfile; Flags: TBuildLazarusFlags): TModalResult;
+    function MakeIDEUsingLazbuild(Clean: boolean): TModalResult;
     function IsWriteProtected(Profile: TBuildLazarusProfile): Boolean;
     function SaveIDEMakeOptions(Profile: TBuildLazarusProfile; Flags: TBuildLazarusFlags): TModalResult;
+    function SearchMakeExe(Interactive: boolean): string;
   public
     property PackageOptions: string read fPackageOptions write fPackageOptions;
     property ProfileChanged: boolean read fProfileChanged write fProfileChanged;
@@ -455,18 +457,7 @@ begin
     if s<>'' then
       EnvironmentOverrides.Values['PP']:=s;
 
-    Executable:=EnvironmentOptions.GetParsedMakeFilename;
-    if (Executable<>'') and (not FileExistsUTF8(Executable)) then
-      Executable:=FindDefaultExecutablePath(Executable);
-    if (Executable='') or (not FileExistsUTF8(Executable)) then begin
-      Executable:=FindDefaultMakePath;
-      if (Executable='') or (not FileExistsUTF8(Executable)) then begin
-        IDEMessageDialog(lisMakeNotFound,
-          Format(lisTheProgramMakeWasNotFoundThisToolIsNeededToBuildLa, [LineEnding]),
-          mtError, [mbCancel]);
-        exit;
-      end;
-    end;
+    Executable:=SearchMakeExe(true);
 
     // add -w option to print leaving/entering messages of "make"
     AddCmdLineParam('-w',false);
@@ -561,6 +552,99 @@ begin
     EnvironmentOverrides.Free;
     if LazarusIDE<>nil then
       LazarusIDE.MainBarSubTitle:='';
+  end;
+end;
+
+function TLazarusBuilder.MakeIDEUsingLazbuild(Clean: boolean): TModalResult;
+var
+  s, MakeExe, LazbuildExe: String;
+  Tool: TAbstractExternalTool;
+  EnvironmentOverrides: TStringList;
+begin
+  Result:=mrCancel;
+
+  EnvironmentOverrides:=TStringList.Create;
+  try
+    EnvironmentOverrides.Values['LANG']:= 'en_US';
+    s:=EnvironmentOptions.GetParsedCompilerFilename;
+    if s<>'' then
+      EnvironmentOverrides.Values['PP']:=s;
+
+    MakeExe:=SearchMakeExe(true);
+    fWorkingDir:=EnvironmentOptions.GetParsedLazarusDirectory;
+    if not CheckDirectoryWritable(fWorkingDir) then
+      exit;
+
+    // clean up
+    if Clean then
+    begin
+      Tool:=ExternalToolList.Add('make distclean');
+      Tool.Reference(Self,ClassName);
+      try
+        Tool.Data:=TIDEExternalToolData.Create(IDEToolCompileIDE,'make distclean',
+          MakeExe);
+        Tool.FreeData:=true;
+        Tool.Process.Executable:=MakeExe;
+        Tool.Process.Parameters.Add('distclean');
+        Tool.Process.CurrentDirectory:=fWorkingDir;
+        Tool.AddParsers(SubToolMake);
+        Tool.EnvironmentOverrides:=EnvironmentOverrides;
+        Tool.Execute;
+        Tool.WaitForExit;
+        if Tool.ErrorMessage<>'' then
+          exit(mrCancel);
+      finally
+        Tool.Release(Self);
+      end;
+    end;
+
+    // build lazbuild
+    Tool:=ExternalToolList.Add('make lazbuild');
+    Tool.Reference(Self,ClassName);
+    try
+      Tool.Data:=TIDEExternalToolData.Create(IDEToolCompileIDE,'make lazbuild',
+        MakeExe);
+      Tool.FreeData:=true;
+      Tool.Process.Executable:=MakeExe;
+      Tool.Process.Parameters.Add('lazbuild');
+      Tool.AddParsers(SubToolFPC);
+      Tool.AddParsers(SubToolMake);
+      Tool.Process.CurrentDirectory:=fWorkingDir;
+      Tool.EnvironmentOverrides:=EnvironmentOverrides;
+      Tool.Execute;
+      Tool.WaitForExit;
+      if Tool.ErrorMessage<>'' then
+        exit(mrCancel);
+    finally
+      Tool.Release(Self);
+    end;
+
+    // build the IDE using lazbuild
+    LazbuildExe:=AppendPathDelim(fWorkingDir)+'lazbuild'+GetExeExt;
+    Tool:=ExternalToolList.Add('lazbuild --useride=');
+    Tool.Reference(Self,ClassName);
+    try
+      Tool.Data:=TIDEExternalToolData.Create(IDEToolCompileIDE,'lazbuild --user-ide=',
+        MakeExe);
+      Tool.FreeData:=true;
+      Tool.Process.Executable:=LazbuildExe;
+      Tool.Process.Parameters.Add('--user-ide=');
+      Tool.Process.Parameters.Add('--lazarusdir=.');
+      Tool.Process.Parameters.Add('--pcp='+GetPrimaryConfigPath);
+      Tool.AddParsers(SubToolFPC);
+      Tool.AddParsers(SubToolMake);
+      Tool.Process.CurrentDirectory:=fWorkingDir;
+      Tool.EnvironmentOverrides:=EnvironmentOverrides;
+      Tool.Execute;
+      Tool.WaitForExit;
+      if Tool.ErrorMessage<>'' then
+        exit(mrCancel);
+    finally
+      Tool.Release(Self);
+    end;
+
+  finally
+    EnvironmentOverrides.Free;
   end;
 end;
 
@@ -996,6 +1080,25 @@ begin
     end;
   end;
   Result:=mrOk;
+end;
+
+function TLazarusBuilder.SearchMakeExe(Interactive: boolean): string;
+begin
+  Result:=EnvironmentOptions.GetParsedMakeFilename;
+  if (Result<>'') and (not FileExistsUTF8(Result)) then
+    Result:=FindDefaultExecutablePath(Result);
+  if (Result='') or (not FileExistsUTF8(Result)) then begin
+    Result:=FindDefaultMakePath;
+    if (Result='') or (not FileExistsUTF8(Result)) then begin
+      Result:='';
+      if not Interactive then
+        exit;
+      IDEMessageDialog(lisMakeNotFound,
+        Format(lisTheProgramMakeWasNotFoundThisToolIsNeededToBuildLa, [LineEnding]),
+        mtError, [mbCancel]);
+      exit;
+    end;
+  end;
 end;
 
 { TConfigureBuildLazarusDlg }

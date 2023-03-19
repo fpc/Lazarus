@@ -1522,7 +1522,7 @@ begin
   while Dependency<>nil do begin
     if (Dependency.LoadPackageResult=lprSuccess)
     and (not Dependency.RequiredPackage.Missing)
-    and (not PackageGraph.IsStaticBasePackage(Dependency.PackageName))
+    and (not PackageGraph.IsCompiledInBasePackage(Dependency.PackageName))
     and (not (Dependency.RequiredPackage.PackageType in [lptRunTime,lptRunTimeOnly]))
     then begin
       if sl.IndexOf(Dependency.PackageName)<0 then begin
@@ -4004,7 +4004,7 @@ var
   function PkgInOldLazarusDir(APackage: TLazPackage): boolean;
   begin
     Result:=FileIsInPath(APackage.Filename,OldLazarusSrcDir)
-      or PackageGraph.IsStaticBasePackage(APackage.Name)
+      or PackageGraph.IsCompiledInBasePackage(APackage.Name)
       or (SysUtils.CompareText(copy(APackage.Filename,1,length(LazDirMacro)),LazDirMacro)=0)
   end;
 
@@ -5531,7 +5531,7 @@ begin
     PkgList:=nil;
     FPMakeList:=nil;
     try
-      PackageGraph.ParseBasePackages;
+      PackageGraph.ParseBasePackages(false);
 
       // check if package is designtime package
       if APackage.PackageType in [lptRunTime,lptRunTimeOnly] then begin
@@ -5681,7 +5681,7 @@ begin
   end;
 
   // check if package is a lazarus base package
-  if PackageGraph.IsStaticBasePackage(APackage.Name) then begin
+  if PackageGraph.IsCompiledInBasePackage(APackage.Name) then begin
     Result:=IDEMessageDialogAb(lisUninstallImpossible,
       Format(lisThePackageCanNotBeUninstalledBecauseItIsNeededByTh,[APackage.Name]),
       mtError,[mbCancel],ShowAbort);
@@ -5704,7 +5704,7 @@ begin
       if Result<>mrOk then exit;
     end;
 
-    PackageGraph.ParseBasePackages;
+    PackageGraph.ParseBasePackages(false);
 
     // remove package from auto installed packages
     if APackage.AutoInstall<>pitNope then begin
@@ -5919,7 +5919,7 @@ begin
   NewFirstAutoInstallDependency:=nil;
   PkgList:=nil;
   try
-    PackageGraph.ParseBasePackages;
+    PackageGraph.ParseBasePackages(false);
 
     if not (piiifClear in Flags) then
     begin
@@ -5991,7 +5991,7 @@ begin
       CurDependency:=PackageGraph.FirstAutoInstallDependency;
       while CurDependency<>nil do begin
         if (CurDependency.RequiredPackage<>nil)
-        and (not PackageGraph.IsStaticBasePackage(CurDependency.PackageName)) then
+        and (not PackageGraph.IsCompiledInBasePackage(CurDependency.PackageName)) then
           CurDependency.RequiredPackage.AutoInstall:=pitNope;
         CurDependency:=CurDependency.NextRequiresDependency;
       end;
@@ -6066,7 +6066,7 @@ begin
       Dependencies:=nil;
       while OldDependency<>nil do begin
         if (OldDependency.RequiredPackage<>nil)
-        and PackageGraph.IsStaticBasePackage(OldDependency.RequiredPackage.Name) then
+        and PackageGraph.IsCompiledInBasePackage(OldDependency.RequiredPackage.Name) then
         begin
           Dependency:=TPkgDependency.Create;
           Dependency.Assign(OldDependency);

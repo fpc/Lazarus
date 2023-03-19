@@ -7837,6 +7837,10 @@ var
   PkgCompileFlags: TPkgCompileFlags;
   OldToolStatus: TIDEToolStatus;
   CompilerKind: TPascalCompiler;
+  {$IFDEF EnableBuildIDEUsingLazbuild}
+  ErrMsg: String;
+  r: integer;
+  {$ENDIF}
 begin
   if ToolStatus<>itNone then begin
     IDEMessageDialog(lisNotNow,lisYouCanNotBuildLazarusWhileDebuggingOrCompiling,
@@ -7883,7 +7887,27 @@ begin
     end;
     MainBuildBoss.SetBuildTargetIDE;
 
-    PackageGraph.ParseBasePackages;
+    {$IFDEF EnableBuildIDEUsingLazbuild}
+    ErrMsg:=PackageGraph.SrcBasePackagesNeedLazbuild;
+    if ErrMsg<>'' then
+    begin
+      r:=IDEQuestionDialog('Major changes detected',
+        'The Lazarus sources use a different list of base packages.'+LineEnding
+        +'It is recommended to compile the IDE clean using lazbuild.',
+        mtConfirmation,[mrYes,'Clean up + lazbuild',21,'No clean up + lazbuild',mrIgnore,'Compile normally',mrCancel]);
+      case r of
+      mrYes:
+        exit(fBuilder.MakeIDEUsingLazbuild(true));
+      21:
+        exit(fBuilder.MakeIDEUsingLazbuild(false));
+      mrIgnore: ;
+      else
+        exit;
+      end;
+    end;
+    {$ELSE}
+    PackageGraph.ParseBasePackages(false);
+    {$ENDIF}
 
     // clean up
     PkgCompileFlags:=[];

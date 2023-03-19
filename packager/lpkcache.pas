@@ -242,7 +242,7 @@ begin
         Info.LPKFilename:=CurFilename;
         Info.InLazSrc:=FileIsInPath(Info.LPKFilename,
                                   EnvironmentOptions.GetParsedLazarusDirectory);
-        Info.Base:=Info.InLazSrc and PackageGraph.IsStaticBasePackage(Info.ID.Name);
+        Info.Base:=Info.InLazSrc and PackageGraph.IsCompiledInBasePackage(Info.ID.Name);
         Pkg:=PackageGraph.FindPackageWithFilename(Info.LPKFilename);
         if Pkg<>nil then
           Info.Installed:=Pkg.Installed;

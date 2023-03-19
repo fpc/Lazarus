@@ -1155,7 +1155,7 @@ procedure TInstallPkgSetDialog.AddToUninstall;
     APackage:=PackageGraph.FindPackageWithID(aPackageID);
     if APackage<>nil then begin
       // check if package is a base package
-      if PackageGraph.IsStaticBasePackage(APackage.Name) then begin
+      if PackageGraph.IsCompiledInBasePackage(APackage.Name) then begin
         MessageDlg(lisUninstallImpossible,
           Format(lisThePackageCanNotBeUninstalledBecauseItIsNeededByTh, [
             APackage.Name]), mtError, [mbCancel], 0);

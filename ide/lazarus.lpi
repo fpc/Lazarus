@@ -609,6 +609,7 @@
       <Unit>
         <Filename Value="../packager/lpkcache.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="LPKCache"/>
       </Unit>
       <Unit>
         <Filename Value="frames/editor_general_options.pas"/>
