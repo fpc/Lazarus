@@ -5531,6 +5531,7 @@ begin
     PkgList:=nil;
     FPMakeList:=nil;
     try
+      PackageGraph.ParseBasePackages;
 
       // check if package is designtime package
       if APackage.PackageType in [lptRunTime,lptRunTimeOnly] then begin
@@ -5702,6 +5703,8 @@ begin
       Result:=DoSavePackage(APackage,[]);
       if Result<>mrOk then exit;
     end;
+
+    PackageGraph.ParseBasePackages;
 
     // remove package from auto installed packages
     if APackage.AutoInstall<>pitNope then begin
@@ -5916,6 +5919,8 @@ begin
   NewFirstAutoInstallDependency:=nil;
   PkgList:=nil;
   try
+    PackageGraph.ParseBasePackages;
+
     if not (piiifClear in Flags) then
     begin
       // add existing install packages to list

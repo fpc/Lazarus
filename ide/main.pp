@@ -7883,6 +7883,8 @@ begin
     end;
     MainBuildBoss.SetBuildTargetIDE;
 
+    PackageGraph.ParseBasePackages;
+
     // clean up
     PkgCompileFlags:=[];
     if (not (blfDontClean in Flags))

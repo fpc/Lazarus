@@ -2378,6 +2378,13 @@ begin
         or IsStaticBasePackage(APackage.Name)
         or (APackage.PackageType in [lptRunTime,lptRunTimeOnly])
         then continue;
+
+        if FSrcBasePackages.IndexOf(APackage.Name)>0 then
+        begin
+          debugln(['Note: (lazarus) TLazPackageGraph.SaveAutoInstallConfig: omitting base package "',APackage.Name,'"']);
+          continue;
+        end;
+
         StaticPackagesInc:=StaticPackagesInc
             +ExtractFileNameOnly(APackage.GetCompileSourceFilename)
             +','+LineEnding;
@@ -5140,7 +5147,7 @@ begin
     if (Atom='') or (Atom=')') then break;
     if Atom[1]='''' then
     begin
-      PkgName:=copy(Atom,2,length(Atom)-1);
+      PkgName:=copy(Atom,2,length(Atom)-2);
       if IsValidPkgName(PkgName) then
         FSrcBasePackages.Add(PkgName);
     end;
