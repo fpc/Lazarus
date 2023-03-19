@@ -214,6 +214,9 @@ type
     FRegistrationFile: TPkgFile;
     FRegistrationPackage: TLazPackage;
     FRegistrationUnitName: string;
+    FSrcBasePackages: TStringListUTF8Fast;
+    FSrcBasePackagesFilename: string;
+    FSrcBasePackagesFileChangeStep: integer;
     FSynEditPackage: TLazPackage;
     FLazControlsPackage: TLazPackage;
     FTree: TAVLTree; // sorted tree of TLazPackage
@@ -427,6 +430,7 @@ type
   public
     // installed packages
     FirstAutoInstallDependency: TPkgDependency;
+    function ParseBasePackages: boolean; // read list from current sources
     procedure LoadStaticBasePackages;
     procedure LoadAutoInstallPackages(PkgList: TStringList);
     procedure SortAutoInstallDependencies;
@@ -1083,6 +1087,7 @@ begin
   FTree:=TAVLTree.Create(@CompareLazPackageID);
   FItems:=TFPList.Create;
   FLazarusBasePackages:=TFPList.Create;
+  FSrcBasePackages:=TStringListUTF8Fast.Create;
   if GlobalMacroList<>nil then begin
     GlobalMacroList.Add(TTransferMacro.Create('PkgDir','',
       lisPkgMacroPackageDirectoryParameterIsPackageID, @MacroFunctionPkgDir, []));
@@ -1116,6 +1121,7 @@ begin
     OnGetAllRequiredPackages:=nil;
   Clear;
   FreeAndNil(FLazarusBasePackages);
+  FreeAndNil(FSrcBasePackages);
   FreeAndNil(FItems);
   FreeAndNil(FTree);
   FreeAndNil(FFindFileCache);
@@ -5104,6 +5110,41 @@ begin
     debugln(['Hint: (lazarus) wrote fpmake.pp: ',FpmakeFPCFilename]);
 
   Result:=mrOk;
+end;
+
+function TLazPackageGraph.ParseBasePackages: boolean;
+var
+  LazDir, SrcFilename, Atom, PkgName: String;
+  Code: TCodeBuffer;
+  p, AtomStart: integer;
+begin
+  LazDir:=EnvironmentOptions.GetParsedLazarusDirectory;
+  if LazDir='' then exit;
+  SrcFilename:=AppendPathDelim(LazDir)+'packager'+PathDelim+'pkgsysbasepkgs.pas';
+  if not FileExistsCached(SrcFilename) then exit;
+  Code:=CodeToolBoss.LoadFile(SrcFilename,true,false);
+  if Code=nil then exit;
+  if (FSrcBasePackagesFilename=SrcFilename)
+      and (FSrcBasePackagesFileChangeStep=Code.FileChangeStep) then
+    exit(true); // cache valid
+
+  FSrcBasePackagesFilename:=SrcFilename;
+  FSrcBasePackagesFileChangeStep:=Code.FileChangeStep;
+  FSrcBasePackages.Clear;
+
+  if SearchCodeInSource(Code.Source,'LazarusIDEBasePkgNames:',1,p,false)<1 then
+    exit;
+  AtomStart:=p;
+  repeat
+    Atom:=ReadNextPascalAtom(Code.Source,p,AtomStart);
+    if (Atom='') or (Atom=')') then break;
+    if Atom[1]='''' then
+    begin
+      PkgName:=copy(Atom,2,length(Atom)-1);
+      if IsValidPkgName(PkgName) then
+        FSrcBasePackages.Add(PkgName);
+    end;
+  until false;
 end;
 
 function TLazPackageGraph.PreparePackageOutputDirectory(APackage: TLazPackage;
