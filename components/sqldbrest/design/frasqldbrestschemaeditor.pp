@@ -5,7 +5,9 @@ unit fraSQLDBRestSchemaEditor;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, ExtCtrls, ComCtrls, StdCtrls, ActnList, PropertyStorage, sqldbschemaedittools, sqldbrestschema, sqldbrestbridge;
+  Classes, SysUtils, Forms, Controls, ExtCtrls, ComCtrls, StdCtrls, ActnList, PropertyStorage,
+  sqldbschemaedittools, sqldbrestschema, sqldbrestbridge;
+
 
 type
 
@@ -13,6 +15,9 @@ type
 
   TSQLDBRestSchemaEditorFrame = class(TFrame)
     AAddField: TAction;
+    AAddParameter: TAction;
+    ADeleteParameter: TAction;
+    AEditParameter: TAction;
     ADeleteField: TAction;
     AEditField: TAction;
     AResourceEdit: TAction;
@@ -21,28 +26,40 @@ type
     AShowConnections: TAction;
     alResources: TActionList;
     ILResources: TImageList;
-    LFrame: TLabel;
+    lblSelect: TLabel;
     LResources: TLabel;
+    Panel1: TPanel;
+    Panel2: TPanel;
     PDock: TPanel;
     PResources: TPanel;
     Splitter1: TSplitter;
+    TBResourceAdd: TToolButton;
+    TBResourceDelete: TToolButton;
+    TBResourceEdit: TToolButton;
     TBResources: TToolBar;
     TBShowConnectionsPane: TToolButton;
     ToolButton1: TToolButton;
-    TBResourceAdd: TToolButton;
-    TBResourceEdit: TToolButton;
-    TBResourceDelete: TToolButton;
     ToolButton2: TToolButton;
     ToolButton3: TToolButton;
     ToolButton4: TToolButton;
     ToolButton5: TToolButton;
+    ToolButton6: TToolButton;
+    ToolButton7: TToolButton;
+    ToolButton8: TToolButton;
+    ToolButton9: TToolButton;
     TVResources: TTreeView;
     procedure AAddFieldExecute(Sender: TObject);
     procedure AAddFieldUpdate(Sender: TObject);
+    procedure AAddParameterExecute(Sender: TObject);
+    procedure AAddParameterUpdate(Sender: TObject);
     procedure ADeleteFieldExecute(Sender: TObject);
     procedure ADeleteFieldUpdate(Sender: TObject);
+    procedure ADeleteParameterExecute(Sender: TObject);
+    procedure ADeleteParameterUpdate(Sender: TObject);
     procedure AEditFieldExecute(Sender: TObject);
     procedure AEditFieldUpdate(Sender: TObject);
+    procedure AEditParameterExecute(Sender: TObject);
+    procedure AEditParameterUpdate(Sender: TObject);
     procedure AResourceAddExecute(Sender: TObject);
     procedure AResourceDeleteExecute(Sender: TObject);
     procedure AResourceDeleteUpdate(Sender: TObject);
@@ -68,13 +85,17 @@ type
     // Data handling
     Procedure Changed;
     procedure DoFieldListChanged(Sender: TObject);
+    procedure DoParameterListChanged(Sender: TObject);
     function GetModified: Boolean;
     Function SelectedResource : TMySQLDBRestResource;
     Function SelectedField : TSQLDBRestField;
+    Function SelectedParameter : TSQLDBRestParam;
     function AddFieldToResource(aResource: TMySQLDBRestResource): TSQLDBRestField;
+    function AddParameterToResource(aResource: TMySQLDBRestResource): TSQLDBRestParam;
     function AddResource: TMySQLDBRestResource;
     Procedure DeleteResource(R : TMySQLDBRestResource);
     Procedure DeleteField(F : TSQLDBRestField);
+    Procedure DeleteParameter(P : TSQLDBRestParam);
     Function ImportResource(aConnection: TMySQLDBRestConnection; const ATableName: UTF8String; AMinFieldOptions : TRestFieldOptions =  []) : TTreeNode;
     // Various editors
     procedure ConfigFrame(F: TBaseEditFrame; aData: TObject);
@@ -96,8 +117,18 @@ type
     procedure RefreshNode(aData: TObject);
     Function AddResourceToTree(Res: TMySQLDBRestResource) : TTreeNode;
     function FindFieldNode(aResource: TSQLDBRestField): TTreeNode;
+
+    function FindParameterNode(aResource: TSQLDBRestParam): TTreeNode;
+    procedure ShowResourceParameters(aNode: TTreeNode; aResource: TSQLDBRestResource);
+    procedure ShowRestParameter(aNode: TTreeNode; aParam: TSQLDBRestParam);
+    procedure ShowParameterDialog(aParam: TSQLDBRestParam);
+    procedure ShowParametersEditor(aResource: TMySQLDBRestResource);
+    procedure ShowParameterEditor(aParam: TSQLDBRestParam);
+
+    procedure DoOnSelectParameter(Sender: TObject);
     function FindResourceNode(aResource: TSQLDBRestResource): TTreeNode;
     function FindResourceFieldsNode(aResource: TSQLDBRestResource): TTreeNode;
+    function FindResourceParametersNode(aResource: TSQLDBRestResource): TTreeNode;
     procedure ShowResource(aNode: TTreeNode; aResource: TMySQLDBRestResource);
     procedure ShowResourceFields(aNode: TTreeNode; aResource: TMySQLDBRestResource);
     procedure ShowRestField(aNode: TTreeNode; aField: TSQLDBRestField);
@@ -122,7 +153,17 @@ type
 
 implementation
 
-uses typinfo,dialogs, dlgrestfieldoptions, frasqldbrestresourceedit, frasqldbresourcefields,  frasqldbrestfieldedit, fraschematableseditor, frmeditframedialog;
+uses
+  typinfo,
+  dialogs,
+  dlgrestfieldoptions,
+  frasqldbrestresourceedit,
+  frasqldbresourcefields,
+  frasqldbresourceparams,
+  frasqldbrestfieldedit,
+  frasqldbrestparamedit,
+  fraschematableseditor,
+  frmeditframedialog;
 
 {$R *.lfm}
 
@@ -135,6 +176,7 @@ procedure TSQLDBRestSchemaEditorFrame.RefreshNode(aData : TObject);
 Var
   R : TMySQLDBRestResource;
   F : TSQLDBRestField;
+  P : TSQLDBRestParam;
   N : TTreeNode;
 
 begin
@@ -154,6 +196,14 @@ begin
     If Assigned(N) then
       ShowRestField(N,F);
     end;
+   if (aData is TSQLDBRestParam) then
+    begin
+    P:=aData as TSQLDBRestParam;
+    N:=FindParameterNode(P);
+    If Assigned(N) then
+      ShowRestParameter(N,P);
+    end;
+
 end;
 
 procedure TSQLDBRestSchemaEditorFrame.RemoveCurrentFrame(DoRefreshNode : Boolean = True);
@@ -179,8 +229,9 @@ begin
     Align:=alClient;
     Connections:=Self.Connections;
     FrameData:=aData;
+    Resource:=SelectedResource;
     MinFieldOptions:=ImportOpts;
-    LFrame.Caption:=F.FrameCaption;
+    lblSelect.Caption:=F.FrameCaption;
     end;
   FCurrentFrame:=F;
 end;
@@ -197,6 +248,8 @@ begin
   F:=TSQLDBRestResourceEditFrame.Create(Self);
   F.OnFieldsChanged:=@DoFieldListChanged;
   F.OnSelectField:=@DoOnSelectField;
+  F.OnSelectParameter:=@DoOnSelectParameter;
+  F.OnParametersChanged:=@DoParameterListChanged;
   ConfigFrame(F,aResource);
 end;
 
@@ -270,6 +323,55 @@ begin
     end;
 end;
 
+
+procedure TSQLDBRestSchemaEditorFrame.ShowParameterDialog(aParam: TSQLDBRestParam);
+
+Var
+  F : TSQLDBRestParameterEditFrame;
+  N  : TTreeNode;
+
+begin
+  F:=TSQLDBRestParameterEditFrame.Create(Self);
+  if ShowEditFrameInForm(F,aParam) then // Frees frame;
+    begin
+    N:=FindParameterNode(aParam);
+    if Assigned(N) then
+      begin
+      ShowRestParameter(N,aParam);
+      TVResources.Selected:=N;
+      end;
+    Changed;
+    end;
+end;
+
+
+procedure TSQLDBRestSchemaEditorFrame.ShowParameterEditor(
+  aParam: TSQLDBRestParam);
+
+Var
+  F : TSQLDBRestParameterEditFrame;
+
+begin
+  RemoveCurrentFrame;
+  F:=TSQLDBRestParameterEditFrame.Create(Self);
+  ConfigFrame(F,aParam);
+  F.Param:=aParam;
+end;
+
+procedure TSQLDBRestSchemaEditorFrame.ShowParametersEditor(
+  aResource: TMySQLDBRestResource);
+
+Var
+  F : TResourceParametersEditFrame;
+
+begin
+  RemoveCurrentFrame;
+  F:=TResourceParametersEditFrame.Create(Self);
+  F.OnSelectParameter:=@DoOnSelectParameter;
+  ConfigFrame(F,aResource);
+end;
+
+
 procedure TSQLDBRestSchemaEditorFrame.ShowFieldEditor(aField: TSQLDBRestField);
 
 Var
@@ -308,6 +410,19 @@ begin
     end;
 end;
 
+function TSQLDBRestSchemaEditorFrame.FindResourceParametersNode(aResource: TSQLDBRestResource): TTreeNode;
+
+begin
+  Result:=FindResourceNode(aResource);
+  if Result<>Nil then
+    begin
+    Result:=Result.GetFirstChild;
+    While (Result<>Nil) and (Result.ImageIndex<>idxParameters) do
+      Result:=Result.GetNextSibling;
+    end;
+end;
+
+
 procedure TSQLDBRestSchemaEditorFrame.DoOnSelectResource(Sender : TObject);
 
 Var
@@ -335,6 +450,22 @@ begin
     end;
 end;
 
+
+procedure TSQLDBRestSchemaEditorFrame.DoOnSelectParameter(Sender: TObject);
+
+Var
+  N : TTreeNode;
+
+begin
+  if (Sender is TSQLDBRestParam) then
+    begin
+    N:=FindParameterNode(Sender as TSQLDBRestParam);
+    if Assigned(N) then
+      TVResources.Selected:=N;
+    end;
+end;
+
+
 procedure TSQLDBRestSchemaEditorFrame.ShowSchemaEditor(aSchema: TSQLDBRestSchema);
 Var
   F : TSQLDBRestSchemaTablesEditFrame;
@@ -354,6 +485,8 @@ begin
     idxTable : ShowResourceEditor(TMySQLDBRestResource(Node.Data));
     idxField : ShowFieldEditor(TSQLDBRestField(Node.Data));
     idxFields : ShowFieldsEditor(TMySQLDBRestResource(Node.Data));
+    idxParameters : ShowParametersEditor (TMySQLDBRestResource(Node.Data));
+    idxParameter : ShowParameterEditor(TSQLDBRestParam(Node.Data));
   end;
 end;
 
@@ -504,6 +637,20 @@ begin
     ShowResource(N,R);
 end;
 
+procedure TSQLDBRestSchemaEditorFrame.DoParameterListChanged(Sender: TObject);
+
+Var
+  N: TTreeNode;
+  R : TMySQLDBRestResource;
+
+begin
+  // Sender is resource.
+  R:=Sender as TMySQLDBRestResource;
+  N:=FindResourceNode(R);
+  if Assigned(N) then
+    ShowResource(N,R);
+end;
+
 
 function TSQLDBRestSchemaEditorFrame.FindFieldNode(aResource: TSQLDBRestField): TTreeNode;
 
@@ -517,6 +664,22 @@ begin
   else
     Result:=Nil;
 end;
+
+
+function TSQLDBRestSchemaEditorFrame.FindParameterNode(aResource: TSQLDBRestParam): TTreeNode;
+
+Var
+  N : TTreeNode;
+
+begin
+  N:=TVResources.Items.FindNodeWithData(aResource);
+  if N.ImageIndex=idxParameter then
+    Result:=N
+  else
+    Result:=Nil;
+end;
+
+
 
 function TSQLDBRestSchemaEditorFrame.SelectedResource: TMySQLDBRestResource;
 
@@ -538,6 +701,23 @@ begin
   Result:=FModified;
 end;
 
+
+function TSQLDBRestSchemaEditorFrame.SelectedParameter: TSQLDBRestParam;
+
+Var
+  N : TTreeNode;
+
+begin
+  N:=TVResources.Selected;
+  While (N<>Nil) and (N.ImageIndex<>idxParameter) do
+    N:=N.Parent;
+  if Assigned(N) and (TObject(N.Data) is TSQLDBRestParam) then
+    Result:=TSQLDBRestParam(N.Data)
+  else
+    Result:=Nil;
+end;
+
+
 function TSQLDBRestSchemaEditorFrame.SelectedField: TSQLDBRestField;
 
 Var
@@ -558,6 +738,9 @@ constructor TSQLDBRestSchemaEditorFrame.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
   FSchema:=TMySQLDBRestSchema.Create(Self);
+  AAddParameter.Visible:=Not FakeParams;
+  AEditParameter.Visible:=Not FakeParams;;
+  ADeleteParameter.Visible:=Not FakeParams;;
   ShowResources;
   FImportOpts:=[foInInsert,foInUpdate,foFilter,foOrderBy,foOrderByDesc];
 end;
@@ -640,6 +823,19 @@ begin
     aNode.StateIndex:=idxKeyField;
 end;
 
+
+
+procedure TSQLDBRestSchemaEditorFrame.ShowRestParameter(aNode : TTreeNode; aParam : TSQLDBRestParam);
+
+begin
+  aNode.DeleteChildren;
+  aNode.Text:=aParam.Name;
+  aNode.ImageIndex:=idxParameter;
+  aNode.SelectedIndex:=idxParameter;
+  aNode.Data:=aParam;
+end;
+
+
 function TSQLDBRestSchemaEditorFrame.DoCheckSave: Boolean;
 begin
   Result:=Assigned(FCurrentFrame) and FCurrentFrame.Modified;
@@ -667,6 +863,28 @@ begin
     end;
 end;
 
+
+procedure TSQLDBRestSchemaEditorFrame.ShowResourceParameters(aNode : TTreeNode; aResource : TSQLDBRestResource);
+
+Var
+  PN,PaN : TTreeNode;
+  P : TSQLDBRestParam;
+  I : Integer;
+
+begin
+  PaN:=aNode.TreeNodes.AddChild(aNode,SParameters);
+  PaN.Data:=aResource;
+  PaN.ImageIndex:=idxParameters;
+  PaN.SelectedIndex:=idxParameters;
+  For I:=0 to aResource.Parameters.Count-1 do
+    begin
+    P:=aResource.Parameters[i];
+    PN:=PaN.TreeNodes.AddChild(PaN,P.Name);
+    ShowRestParameter(PN,P);
+    end;
+end;
+
+
 procedure TSQLDBRestSchemaEditorFrame.ShowResource(aNode : TTreeNode; aResource : TMySQLDBRestResource);
 
 Var
@@ -686,7 +904,9 @@ begin
   N.Data:=aResource;
   N.ImageIndex:=idxTableInfo;
   N.SelectedIndex:=idxTableInfo;
-  ShowResourceFields(aNode,aResource)
+  ShowResourceFields(aNode,aResource);
+  if not FakeParams then
+    ShowResourceParameters(aNode,aResource)
 end;
 
 function TSQLDBRestSchemaEditorFrame.AddResourceToTree(Res: TMySQLDBRestResource): TTreeNode;
@@ -755,7 +975,19 @@ begin
   (Sender as TAction).Enabled:=(SelectedResource<>Nil)
 end;
 
+procedure TSQLDBRestSchemaEditorFrame.AAddParameterExecute(Sender: TObject);
+begin
+  if (SelectedResource<>Nil) then
+    AddParameterToResource(SelectedResource);
+end;
+
+procedure TSQLDBRestSchemaEditorFrame.AAddParameterUpdate(Sender: TObject);
+begin
+  (Sender as TAction).Enabled:=(SelectedResource<>Nil)
+end;
+
 procedure TSQLDBRestSchemaEditorFrame.ADeleteFieldExecute(Sender: TObject);
+
 Var
   R : TMySQLDBRestResource;
   F : TSQLDBRestField;
@@ -771,6 +1003,24 @@ end;
 procedure TSQLDBRestSchemaEditorFrame.ADeleteFieldUpdate(Sender: TObject);
 begin
   (Sender as Taction).Enabled:=(SelectedField<>Nil)
+end;
+
+procedure TSQLDBRestSchemaEditorFrame.ADeleteParameterExecute(Sender: TObject);
+Var
+  R : TMySQLDBRestResource;
+  P : TSQLDBRestParam;
+
+begin
+  P:=SelectedParameter;
+  R:=SelectedResource;
+  if Assigned(P) and (QuestionDlg(SDeleteParameterCaption, Format(SDeleteParameterMsg, [P.Name,R.ResourceName, LineEnding]),
+                 mtWarning, [mrYes, SYesDelete, mrNo, SNoDoNotDelete], 0) = mrYes) then
+    DeleteParameter(P);
+end;
+
+procedure TSQLDBRestSchemaEditorFrame.ADeleteParameterUpdate(Sender: TObject);
+begin
+  (Sender as Taction).Enabled:=(SelectedParameter<>Nil)
 end;
 
 procedure TSQLDBRestSchemaEditorFrame.AEditFieldExecute(Sender: TObject);
@@ -790,10 +1040,62 @@ begin
   (Sender as TAction).Enabled:=(SelectedField<>Nil);
 end;
 
+procedure TSQLDBRestSchemaEditorFrame.AEditParameterExecute(Sender: TObject);
+
+
+Var
+  P : TSQLDBRestParam;
+
+begin
+  P:=SelectedParameter;
+  if (P<>Nil) then
+    ShowParameterDialog(P);
+end;
+
+procedure TSQLDBRestSchemaEditorFrame.AEditParameterUpdate(Sender: TObject);
+begin
+  (Sender as TAction).Enabled:=(SelectedParameter<>Nil);
+end;
+
 procedure TSQLDBRestSchemaEditorFrame.AAddFieldExecute(Sender: TObject);
 begin
   if (SelectedResource<>Nil) then
     AddFieldToResource(SelectedResource);
+end;
+
+function TSQLDBRestSchemaEditorFrame.AddParameterToResource(aResource: TMySQLDBRestResource): TSQLDBRestParam;
+
+Var
+  N : String;
+  P : TSQLDBRestParam;
+  PaN,PN : TTreeNode;
+
+begin
+  if FakeParams then
+    exit;
+  N:='Param'+IntToStr(aResource.Parameters.Count+1);
+  Repeat
+    P:=Nil;
+    // Maybe ask field name ?
+    If Not InputQuery(SNewParameter,Format(SNameForParameter,[aResource.ResourceName]),N) then
+      N:=''
+    else
+      begin
+      P:=aResource.Parameters.Find(N);
+      if P<>Nil then
+        ShowMessage(Format(SErrDuplicateParameter,[N]));
+      end;
+  Until (P=nil) or (N='');
+  if N='' then
+    exit;
+  Result:=aResource.Parameters.AddParam(N);
+  PaN:=FindResourceParametersNode(aResource);
+  if Not assigned(PaN) then
+    Raise ESQLDBRest.CreateFmt(0,'Internal error: Cannot find node for parameters for resource %s',[aResource.ResourceName]);
+  PN:=TVResources.Items.AddChild(PaN,Result.Name);
+  ShowRestParameter(PN,Result);
+  TVResources.Selected:=PN;
+  Changed;
 end;
 
 function TSQLDBRestSchemaEditorFrame.AddFieldToResource(aResource: TMySQLDBRestResource): TSQLDBRestField;
@@ -916,6 +1218,38 @@ begin
   R.Free;
   Changed;
 end;
+
+procedure TSQLDBRestSchemaEditorFrame.DeleteParameter(P: TSQLDBRestParam);
+
+Var
+  NCurrent,NNext : TTreeNode;
+
+begin
+  RemoveCurrentFrame(False);
+  NCurrent:=FindParameterNode(P);
+  if Assigned(NCurrent) then
+    begin
+    NNext:=NCurrent.GetNextSibling;
+    if NNext=Nil then
+      NNext:=NCurrent.GetPrevSibling;
+    if NNext=Nil then
+      NNext:=NCurrent.Parent;
+    end;
+  if NNext=Nil then
+    begin
+    NNext:=TVResources.Selected;
+    While (NNext<>Nil) and Not(NNext.ImageIndex in [idxParameters,idxTable]) do
+      NNext:=NNext.Parent;
+    if NNext=Nil then
+      NNext:=FSchemaNode;
+    end;
+  if Assigned(NCurrent) then
+    TVResources.Items.Delete(NCurrent);
+  TVResources.Selected:=NNext;
+  P.Free;
+  Changed;
+end;
+
 
 procedure TSQLDBRestSchemaEditorFrame.DeleteField(F: TSQLDBRestField);
 

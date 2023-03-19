@@ -59,6 +59,8 @@ end;
 procedure TSQLDBRestSchemaEditorForm.FormCloseQuery(Sender: TObject; var CanClose: boolean);
 begin
   fraEditor.CheckSave;
+  canClose:=True;
+  PSSchema.Save;
 end;
 
 procedure TSQLDBRestSchemaEditorForm.FormShow(Sender: TObject);

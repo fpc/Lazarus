@@ -8,9 +8,11 @@ unit sqldbrestschemadesigner;
 interface
 
 uses
-  dlgrestfieldoptions, dlgsqldbrestconnection, fraconnections, fraschematableseditor, frasqldbfullrestschemaaditor, 
-  frasqldbrestfieldedit, frasqldbrestresourceedit, fraSQLDBRestSchemaEditor, frmeditframedialog, sqldbschemaedittools, 
-  frasqldbresourcefields, build304, LazarusPackageIntf;
+  dlgrestfieldoptions, dlgsqldbrestconnection, fraconnections, 
+  fraschematableseditor, frasqldbfullrestschemaaditor, frasqldbrestfieldedit, 
+  frasqldbrestresourceedit, fraSQLDBRestSchemaEditor, frmeditframedialog, 
+  sqldbschemaedittools, frasqldbresourcefields, build304, 
+  frasqldbresourceparams, frasqldbrestparamedit, LazarusPackageIntf;
 
 implementation
 

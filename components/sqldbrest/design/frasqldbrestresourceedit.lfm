@@ -1,23 +1,20 @@
-object SQLDBRestResourceEditFrame: TSQLDBRestResourceEditFrame
-  Left = 0
+inherited SQLDBRestResourceEditFrame: TSQLDBRestResourceEditFrame
   Height = 497
-  Top = 0
-  Width = 568
+  Width = 599
   ClientHeight = 497
-  ClientWidth = 568
-  TabOrder = 0
+  ClientWidth = 599
   DesignLeft = 496
   DesignTop = 301
-  object CBConnection: TComboBox
+  object CBConnection: TComboBox[0]
     Left = 120
-    Height = 31
+    Height = 29
     Top = 72
     Width = 192
     ItemHeight = 0
     Style = csDropDownList
     TabOrder = 0
   end
-  object EName: TEdit
+  object EName: TEdit[1]
     Left = 120
     Height = 27
     Top = 8
@@ -25,7 +22,7 @@ object SQLDBRestResourceEditFrame: TSQLDBRestResourceEditFrame
     TabOrder = 1
     Text = 'EName'
   end
-  object ETableName: TEdit
+  object ETableName: TEdit[2]
     Left = 120
     Height = 27
     Top = 40
@@ -34,19 +31,19 @@ object SQLDBRestResourceEditFrame: TSQLDBRestResourceEditFrame
     TabOrder = 2
     Text = 'ETableName'
   end
-  object CBEnabled: TCheckBox
+  object CBEnabled: TCheckBox[3]
     Left = 120
-    Height = 22
+    Height = 23
     Top = 109
-    Width = 69
+    Width = 76
     Caption = 'Enabled'
     TabOrder = 3
   end
-  object CGOperations: TCheckGroup
+  object CGOperations: TCheckGroup[4]
     Left = 16
     Height = 64
     Top = 136
-    Width = 533
+    Width = 564
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
     Caption = 'Allowed REST Operations'
@@ -57,10 +54,10 @@ object SQLDBRestResourceEditFrame: TSQLDBRestResourceEditFrame
     ChildSizing.ShrinkHorizontal = crsScaleChilds
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
-    ChildSizing.ControlsPerLine = 3
-    ClientHeight = 46
-    ClientWidth = 531
-    Columns = 3
+    ChildSizing.ControlsPerLine = 4
+    ClientHeight = 47
+    ClientWidth = 562
+    Columns = 4
     Items.Strings = (
       'Get'
       'Post'
@@ -68,13 +65,14 @@ object SQLDBRestResourceEditFrame: TSQLDBRestResourceEditFrame
       'Delete'
       'Options'
       'Head'
+      'Patch'
     )
     TabOrder = 4
     Data = {
-      06000000020202020202
+      0700000002020202020202
     }
   end
-  object Label1: TLabel
+  object Label1: TLabel[5]
     Left = 24
     Height = 24
     Top = 8
@@ -85,7 +83,7 @@ object SQLDBRestResourceEditFrame: TSQLDBRestResourceEditFrame
     Layout = tlCenter
     ParentColor = False
   end
-  object Label2: TLabel
+  object Label2: TLabel[6]
     Left = 26
     Height = 27
     Top = 40
@@ -96,7 +94,7 @@ object SQLDBRestResourceEditFrame: TSQLDBRestResourceEditFrame
     Layout = tlCenter
     ParentColor = False
   end
-  object Label3: TLabel
+  object Label3: TLabel[7]
     Left = 8
     Height = 29
     Top = 74
@@ -107,33 +105,33 @@ object SQLDBRestResourceEditFrame: TSQLDBRestResourceEditFrame
     Layout = tlCenter
     ParentColor = False
   end
-  object CBInMetadata: TCheckBox
+  object CBInMetadata: TCheckBox[8]
     Left = 231
-    Height = 22
+    Height = 23
     Top = 109
-    Width = 124
+    Width = 133
     Caption = 'Show in metadata'
     TabOrder = 5
   end
-  object PageControl1: TPageControl
+  object PCResource: TPageControl[9]
     Left = 0
     Height = 289
     Top = 208
-    Width = 568
-    ActivePage = TSFields
+    Width = 599
+    ActivePage = TSSelect
     Align = alBottom
     Anchors = [akTop, akLeft, akRight, akBottom]
-    TabIndex = 4
+    TabIndex = 0
     TabOrder = 6
     object TSSelect: TTabSheet
       Caption = 'Select SQL'
-      ClientHeight = 254
-      ClientWidth = 562
+      ClientHeight = 259
+      ClientWidth = 589
       inline SESelect: TSynEdit
         Left = 0
-        Height = 214
+        Height = 219
         Top = 40
-        Width = 562
+        Width = 589
         Align = alClient
         Font.Height = 13
         Font.Name = 'DejaVu Sans Mono'
@@ -633,11 +631,11 @@ object SQLDBRestResourceEditFrame: TSQLDBRestResourceEditFrame
         Left = 0
         Height = 40
         Top = 0
-        Width = 562
+        Width = 589
         Align = alTop
         BevelOuter = bvLowered
         ClientHeight = 40
-        ClientWidth = 562
+        ClientWidth = 589
         TabOrder = 1
         object BGenerate: TButton
           Left = 8
@@ -663,17 +661,25 @@ object SQLDBRestResourceEditFrame: TSQLDBRestResourceEditFrame
           Action = AUpdateFields
           TabOrder = 2
         end
+        object BParams: TButton
+          Left = 416
+          Height = 25
+          Top = 8
+          Width = 152
+          Action = AUpdateParams
+          TabOrder = 3
+        end
       end
     end
     object TSInsert: TTabSheet
       Caption = 'Insert SQL'
-      ClientHeight = 254
-      ClientWidth = 562
+      ClientHeight = 259
+      ClientWidth = 589
       inline SEInsert: TSynEdit
         Left = 0
-        Height = 254
+        Height = 259
         Top = 0
-        Width = 562
+        Width = 589
         Align = alClient
         Font.Height = 13
         Font.Name = 'DejaVu Sans Mono'
@@ -1172,13 +1178,13 @@ object SQLDBRestResourceEditFrame: TSQLDBRestResourceEditFrame
     end
     object TabSheet3: TTabSheet
       Caption = 'Update SQL'
-      ClientHeight = 254
-      ClientWidth = 562
+      ClientHeight = 259
+      ClientWidth = 589
       inline SEupdate: TSynEdit
         Left = 0
-        Height = 199
+        Height = 259
         Top = 0
-        Width = 701
+        Width = 589
         Align = alClient
         Font.Height = 13
         Font.Name = 'DejaVu Sans Mono'
@@ -1677,13 +1683,13 @@ object SQLDBRestResourceEditFrame: TSQLDBRestResourceEditFrame
     end
     object TSDelete: TTabSheet
       Caption = 'Delete SQL'
-      ClientHeight = 254
-      ClientWidth = 562
+      ClientHeight = 259
+      ClientWidth = 589
       inline SEDelete: TSynEdit
         Left = 0
-        Height = 199
+        Height = 259
         Top = 0
-        Width = 701
+        Width = 589
         Align = alClient
         Font.Height = 13
         Font.Name = 'DejaVu Sans Mono'
@@ -2182,17 +2188,17 @@ object SQLDBRestResourceEditFrame: TSQLDBRestResourceEditFrame
     end
     object TSFields: TTabSheet
       Caption = 'Fields'
-      ClientHeight = 254
-      ClientWidth = 562
+      ClientHeight = 259
+      ClientWidth = 589
       object PButtons1: TPanel
         Left = 0
         Height = 40
         Top = 0
-        Width = 562
+        Width = 589
         Align = alTop
         BevelOuter = bvLowered
         ClientHeight = 40
-        ClientWidth = 562
+        ClientWidth = 589
         TabOrder = 0
         object BFields1: TButton
           Left = 8
@@ -2204,30 +2210,130 @@ object SQLDBRestResourceEditFrame: TSQLDBRestResourceEditFrame
         end
       end
       inline fraFields: TResourceFieldsEditFrame
-        Height = 214
+        Height = 219
         Top = 40
-        Width = 562
+        Width = 589
         Align = alClient
-        ClientHeight = 214
-        ClientWidth = 562
+        ClientHeight = 219
+        ClientWidth = 589
         TabOrder = 1
         inherited LVFields: TListView
-          Height = 214
-          Width = 562
+          Height = 219
+          Width = 589
+          Columns = <          
+            item
+              AutoSize = True
+              Caption = 'Public name'
+              Width = 91
+            end          
+            item
+              AutoSize = True
+              Caption = 'Native field name'
+              Width = 125
+            end          
+            item
+              Caption = 'Type'
+              Width = 80
+            end          
+            item
+              Caption = 'Native type'
+              Width = 120
+            end          
+            item
+              AutoSize = True
+              Caption = 'Sequence'
+              Width = 76
+            end          
+            item
+              Caption = 'Key'
+              Width = 40
+            end          
+            item
+              Caption = 'Insert'
+            end          
+            item
+              Caption = 'Update'
+            end          
+            item
+              Caption = 'Required'
+            end          
+            item
+              Caption = 'Filter'
+            end          
+            item
+              Caption = 'Order by'
+              Width = 64
+            end          
+            item
+              Caption = 'Order by Desc'
+              Width = 102
+            end>
+        end
+      end
+    end
+    object TSparameters: TTabSheet
+      Caption = 'Parameters'
+      ClientHeight = 259
+      ClientWidth = 589
+      inline fraParameters: TResourceParametersEditFrame
+        Height = 217
+        Top = 42
+        Width = 589
+        Align = alClient
+        ClientHeight = 217
+        ClientWidth = 589
+        inherited LVParameters: TListView
+          Height = 217
+          Width = 589
+          Columns = <          
+            item
+              AutoSize = True
+              Caption = 'Name'
+            end          
+            item
+              Caption = 'Data type'
+              Width = 120
+            end          
+            item
+              AutoSize = True
+              Caption = 'Default value'
+              Width = 404
+            end>
+          SortColumn = 2
+          SortDirection = sdDescending
+        end
+      end
+      object pnlParambuttons: TPanel
+        Left = 0
+        Height = 42
+        Top = 0
+        Width = 589
+        Align = alTop
+        BevelOuter = bvLowered
+        ClientHeight = 42
+        ClientWidth = 589
+        TabOrder = 1
+        object BParams1: TButton
+          Left = 8
+          Height = 25
+          Top = 8
+          Width = 152
+          Action = AUpdateParams
+          TabOrder = 0
         end
       end
     end
   end
-  object SynSQLSyn1: TSynSQLSyn
+  object SynSQLSyn1: TSynSQLSyn[10]
     DefaultFilter = 'SQL Files (*.sql)|*.sql'
     Enabled = False
     SQLDialect = sqlInterbase6
-    left = 88
-    top = 256
+    Left = 88
+    Top = 256
   end
-  object aLResource: TActionList
-    left = 443
-    top = 60
+  object aLResource: TActionList[11]
+    Left = 443
+    Top = 60
     object AGenerateSQL: TAction
       Category = 'SQL'
       Caption = 'Generate default'
@@ -2244,6 +2350,12 @@ object SQLDBRestResourceEditFrame: TSQLDBRestResourceEditFrame
       Caption = 'Update Fields'
       OnExecute = AUpdateFieldsExecute
       OnUpdate = AUpdateFieldsUpdate
+    end
+    object AUpdateParams: TAction
+      Category = 'SQL'
+      Caption = 'Update parameters'
+      OnExecute = AUpdateParamsExecute
+      OnUpdate = AUpdateParamsUpdate
     end
   end
 end

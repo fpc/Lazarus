@@ -5,20 +5,26 @@ unit frasqldbrestresourceedit;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, ComCtrls, ActnList, lresources,
-  sqldbrestbridge, sqldbRestSchema, SynEdit, SynHighlighterSQL, sqldbschemaedittools, frasqldbresourcefields;
+  Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, ComCtrls, ActnList,
+  lresources, db, sqldbrestbridge, sqldbRestSchema, SynEdit, SynHighlighterSQL,
+  sqldbschemaedittools, frasqldbresourcefields, frasqldbresourceparams;
+
+
 
 type
 
   { TSQLDBRestResourceEditFrame }
 
   TSQLDBRestResourceEditFrame = class(TBaseEditFrame)
+    AUpdateParams: TAction;
     AUpdateFields: TAction;
     AValidateSQL: TAction;
     AGenerateSQL: TAction;
     aLResource: TActionList;
     BFields1: TButton;
     BGenerate: TButton;
+    BParams: TButton;
+    BParams1: TButton;
     BValidate: TButton;
     BFields: TButton;
     CBEnabled: TCheckBox;
@@ -30,15 +36,18 @@ type
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
-    PageControl1: TPageControl;
+    pnlParambuttons: TPanel;
+    PCResource: TPageControl;
     PButtons: TPanel;
     PButtons1: TPanel;
     fraFields: TResourceFieldsEditFrame;
+    fraParameters: TResourceParametersEditFrame;
     SESelect: TSynEdit;
     SEInsert: TSynEdit;
     SEupdate: TSynEdit;
     SEDelete: TSynEdit;
     SynSQLSyn1: TSynSQLSyn;
+    TSparameters: TTabSheet;
     TSFields: TTabSheet;
     TSSelect: TTabSheet;
     TSInsert: TTabSheet;
@@ -47,22 +56,32 @@ type
     procedure AGenerateSQLExecute(Sender: TObject);
     procedure AUpdateFieldsExecute(Sender: TObject);
     procedure AUpdateFieldsUpdate(Sender: TObject);
+    procedure AUpdateParamsExecute(Sender: TObject);
+    procedure AUpdateParamsUpdate(Sender: TObject);
     procedure AValidateSQLExecute(Sender: TObject);
     procedure AValidateSQLUpdate(Sender: TObject);
     procedure ETableNameEditingDone(Sender: TObject);
   private
     FOnFieldsChanged: TNotifyEvent;
+    FOnParametersChanged: TNotifyEvent;
     FResource: TSQLDBRestResource;
     function GetOnFieldSelected: TNotifyEvent;
+    function GetOnParameterSelected: TNotifyEvent;
     function HaveSelectSQL: Boolean;
     procedure SetOnFieldSelected(AValue: TNotifyEvent);
+    procedure SetOnParameterSelected(AValue: TNotifyEvent);
     procedure SetResource(AValue: TSQLDBRestResource);
   Protected
     procedure FieldsChanged;
     Procedure UpdateFieldList;
+
+    procedure ParametersChanged;
+    Procedure UpdateParameterList;
+
     procedure SetConnections(AValue: TSQLDBRestConnectionList); override;
     Procedure SetFrameData(aData: TObject); override;
   public
+    constructor create(aOwner : TComponent); override;
     Function Modified : Boolean; override;
     Procedure SaveData; override;
     procedure ShowConnections;
@@ -70,12 +89,14 @@ type
     Function FrameCaption: String; override;
     Property Resource : TSQLDBRestResource Read FResource Write SetResource;
     Property OnFieldsChanged : TNotifyEvent Read FOnFieldsChanged Write FOnFieldsChanged;
+    Property OnParametersChanged : TNotifyEvent Read FOnParametersChanged Write FOnParametersChanged;
     Property OnSelectField : TNotifyEvent Read GetOnFieldSelected Write SetOnFieldSelected;
+    Property OnSelectParameter : TNotifyEvent Read GetOnParameterSelected Write SetOnParameterSelected;
   end;
 
 implementation
 
-uses dialogs, sqldb;
+uses dialogs, sqldb, TypInfo;
 
 {$R *.lfm}
 
@@ -107,14 +128,38 @@ begin
   Result:=FraFields.OnSelectField;
 end;
 
+function TSQLDBRestResourceEditFrame.GetOnParameterSelected: TNotifyEvent;
+begin
+  Result:=FraParameters.OnSelectParameter;
+end;
+
 procedure TSQLDBRestResourceEditFrame.SetOnFieldSelected(AValue: TNotifyEvent);
 begin
   FraFields.OnSelectField:=aValue;
 end;
 
+procedure TSQLDBRestResourceEditFrame.SetOnParameterSelected(
+  AValue: TNotifyEvent);
+begin
+  FraParameters.OnSelectParameter:=aValue;
+end;
+
 procedure TSQLDBRestResourceEditFrame.AUpdateFieldsUpdate(Sender: TObject);
 begin
   (Sender as Taction).Enabled:=(ETableName.Text<>'') or HaveSelectSQL;
+end;
+
+procedure TSQLDBRestResourceEditFrame.AUpdateParamsExecute(Sender: TObject);
+begin
+  if Resource.Parameters.Count>0 then
+     if QuestionDlg(SResetParameters, Format(SResetParametersPrompt, [LineEnding, LineEnding]), mtWarning,
+       [mrYes, SYesResetParameters, mrNo,SDoNotResetParameters], 0) <> mrYes then exit;
+  UpdateParameterList;
+end;
+
+procedure TSQLDBRestResourceEditFrame.AUpdateParamsUpdate(Sender: TObject);
+begin
+  (Sender as Taction).Enabled:=HaveSelectSQL;
 end;
 
 procedure TSQLDBRestResourceEditFrame.AValidateSQLExecute(Sender: TObject);
@@ -144,6 +189,7 @@ begin
   if FResource=AValue then Exit;
   FResource:=AValue;
   fraFields.Resource:=Resource;
+  fraParameters.Resource:=Resource;
   ShowResource;
 end;
 
@@ -153,6 +199,7 @@ begin
   If Assigned(FonFieldsChanged) then
     FOnFieldsChanged(FResource);
 end;
+
 
 procedure TSQLDBRestResourceEditFrame.UpdateFieldList;
 
@@ -175,6 +222,31 @@ begin
     Q.Free;
   end;
 end;
+
+
+procedure TSQLDBRestResourceEditFrame.ParametersChanged;
+begin
+  FraParameters.ShowResource;
+  If Assigned(FOnParametersChanged) then
+    FOnParametersChanged(FResource);
+end;
+
+procedure TSQLDBRestResourceEditFrame.UpdateParameterList;
+
+Var
+  Q : TSQLQuery;
+  SQL : String;
+  idxFields : TStringArray;
+  Parms : TParams;
+
+begin
+  SQL:=Trim(SESelect.Lines.Text);
+  if SQL='' then
+    SQL:=Resource.GenerateDefaultSQL(skSelect);
+  Resource.PopulateParametersFromSQl(SQL,true);
+  ParametersChanged;
+end;
+
 
 procedure TSQLDBRestResourceEditFrame.ShowConnections;
 
@@ -204,6 +276,25 @@ end;
 procedure TSQLDBRestResourceEditFrame.SetFrameData(aData: TObject);
 begin
   Resource:=aData as TMySQLDBRestResource;
+end;
+
+constructor TSQLDBRestResourceEditFrame.create(aOwner: TComponent);
+
+var
+  ro : TRestOperation;
+  S : String;
+
+begin
+  inherited create(aOwner);
+  CGOperations.Items.Clear;
+  For ro:=Succ(Low(TRestOperation)) to High(TRestOperation) do
+    begin
+    S:=GetEnumName(TypeInfo(TRestOperation),Ord(RO));
+    Delete(S,1,2);
+    CGOperations.Items.Add(S);
+    end;
+  AUpdateParams.Visible:=Not FakeParams;
+  PCResource.ActivePageIndex:=0;
 end;
 
 function TSQLDBRestResourceEditFrame.Modified: Boolean;

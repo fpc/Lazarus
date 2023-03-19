@@ -211,6 +211,8 @@ begin
   else
     Result:=FField.PublicName;
   Result:=Format(SEditObject,[SField,Result]);
+  If Assigned(Resource) then
+    Result:=SResource+' '+Resource.ResourceName+' - '+Result;
 end;
 
 end.

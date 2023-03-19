@@ -164,7 +164,11 @@ end;
 constructor TfraConnections.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+{$IF DECLARED(TSQLDBFakeRestParam)}
   FConnections:=TSQLDBRestConnectionList.Create(TMySQLDBRestConnection);
+{$ELSE}
+  FConnections:=TSQLDBRestConnectionList.Create(Self,TMySQLDBRestConnection);
+{$ENDIF}
 end;
 
 destructor TfraConnections.Destroy;

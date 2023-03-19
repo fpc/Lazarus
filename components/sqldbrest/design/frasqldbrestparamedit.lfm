@@ -1,0 +1,68 @@
+inherited SQLDBRestParameterEditFrame: TSQLDBRestParameterEditFrame
+  Height = 455
+  Width = 473
+  ClientHeight = 455
+  ClientWidth = 473
+  DesignLeft = 499
+  DesignTop = 339
+  object LName: TLabel[0]
+    Left = 24
+    Height = 27
+    Top = 8
+    Width = 92
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = '&Name'
+    FocusControl = EName
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object edtDefaultValue: TEdit[1]
+    Left = 120
+    Height = 27
+    Top = 72
+    Width = 200
+    TabOrder = 0
+    TextHint = 'Name of sequence to generate value'
+  end
+  object EName: TEdit[2]
+    Left = 120
+    Height = 27
+    Top = 8
+    Width = 200
+    TabOrder = 1
+    TextHint = 'Name as seen by users'
+  end
+  object CBDataType: TComboBox[3]
+    Left = 120
+    Height = 29
+    Top = 40
+    Width = 152
+    ItemHeight = 0
+    Style = csDropDownList
+    TabOrder = 2
+  end
+  object LDefaultValue: TLabel[4]
+    Left = 8
+    Height = 27
+    Top = 72
+    Width = 108
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = 'Default &value'
+    Layout = tlCenter
+    ParentColor = False
+  end
+  object lDatatype: TLabel[5]
+    Left = 8
+    Height = 27
+    Top = 40
+    Width = 108
+    Alignment = taRightJustify
+    AutoSize = False
+    Caption = '&Data type'
+    FocusControl = CBDataType
+    Layout = tlCenter
+    ParentColor = False
+  end
+end

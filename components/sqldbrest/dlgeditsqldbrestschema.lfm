@@ -1,7 +1,7 @@
 object SQLDBRestSchemaEditorForm: TSQLDBRestSchemaEditorForm
-  Left = 573
+  Left = 503
   Height = 515
-  Top = 284
+  Top = 267
   Width = 809
   Caption = 'Edit Schema'
   ClientHeight = 515
@@ -9,11 +9,12 @@ object SQLDBRestSchemaEditorForm: TSQLDBRestSchemaEditorForm
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnShow = FormShow
-  LCLVersion = '2.1.0.0'
+  SessionProperties = 'Width;Top;Left;Height'
+  LCLVersion = '2.3.0.0'
   object BPSchema: TButtonPanel
     Left = 6
-    Height = 42
-    Top = 467
+    Height = 38
+    Top = 471
     Width = 797
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -27,20 +28,21 @@ object SQLDBRestSchemaEditorForm: TSQLDBRestSchemaEditorForm
     ShowButtons = [pbOK, pbCancel]
   end
   inline fraEditor: TSchemaEditorFrame
-    Height = 461
+    Height = 465
     Width = 809
     Align = alClient
-    ClientHeight = 461
+    ClientHeight = 465
     ClientWidth = 809
     TabOrder = 1
     inherited fraConn: TfraConnections
-      Height = 461
+      Height = 465
       Width = 203
       Align = alLeft
-      ClientHeight = 461
+      ClientHeight = 465
       ClientWidth = 203
       inherited TVConnections: TTreeView
-        Height = 404
+        Height = 409
+        Top = 56
         Width = 203
       end
       inherited ToolBar1: TToolBar
@@ -53,46 +55,28 @@ object SQLDBRestSchemaEditorForm: TSQLDBRestSchemaEditorForm
         end
       end
       inherited Label1: TLabel
+        Height = 16
         Width = 203
       end
     end
     inherited splConnection: TSplitter
-      Height = 461
+      Height = 465
     end
     inherited fraSchema: TSQLDBRestSchemaEditorFrame
       Left = 208
-      Height = 461
+      Height = 465
       Width = 601
       Align = alClient
-      ClientHeight = 461
+      ClientHeight = 465
       ClientWidth = 601
       TabOrder = 2
       inherited PResources: TPanel
-        Height = 461
+        Height = 433
         Width = 170
-        ClientHeight = 461
+        ClientHeight = 433
         ClientWidth = 170
-        inherited TBResources: TToolBar
-          Width = 170
-          EdgeInner = esRaised
-          EdgeOuter = esLowered
-          inherited ToolButton1: TToolButton
-            Height = 30
-          end
-          inherited ToolButton2: TToolButton
-            Height = 30
-          end
-          inherited ToolButton4: TToolButton
-            Left = 1
-            Top = 30
-          end
-          inherited ToolButton5: TToolButton
-            Left = 31
-            Top = 30
-          end
-        end
         inherited TVResources: TTreeView
-          Height = 404
+          Height = 409
           Width = 170
         end
         inherited LResources: TLabel
@@ -101,16 +85,31 @@ object SQLDBRestSchemaEditorForm: TSQLDBRestSchemaEditorForm
       end
       inherited Splitter1: TSplitter
         Left = 170
-        Height = 461
+        Height = 433
       end
       inherited PDock: TPanel
         Left = 175
-        Height = 461
+        Height = 433
         Width = 426
-        ClientHeight = 461
-        ClientWidth = 426
-        inherited LFrame: TLabel
-          Width = 426
+      end
+      inherited Panel1: TPanel
+        Width = 601
+        ClientWidth = 601
+        inherited Panel2: TPanel
+          inherited TBResources: TToolBar
+            inherited ToolButton1: TToolButton
+              Height = 30
+            end
+            inherited ToolButton2: TToolButton
+              Height = 30
+            end
+            inherited ToolButton9: TToolButton
+              Height = 30
+            end
+          end
+        end
+        inherited lblSelect: TLabel
+          Width = 266
         end
       end
     end
@@ -121,7 +120,7 @@ object SQLDBRestSchemaEditorForm: TSQLDBRestSchemaEditorForm
     Active = False
     OnSaveProperties = PSSchemaSaveProperties
     OnRestoreProperties = PSSchemaRestoreProperties
-    left = 464
-    top = 296
+    Left = 464
+    Top = 296
   end
 end
