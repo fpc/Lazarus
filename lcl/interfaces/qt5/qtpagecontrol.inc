@@ -176,6 +176,7 @@ begin
     QtTabWidget := TQtTabWidget.Create(AWinControl, AParams);
     QtTabWidget.setTabPosition(QTabWidgetTabPositionMap[TCustomTabControl(AWinControl).TabPosition]);
     QtTabWidget.setTabsClosable(nboShowCloseButtons in TCustomTabControl(AWinControl).Options);
+    QtTabWidget.setTabSize(TCustomTabControl(AWinControl).TabHeight, TCustomTabControl(AWinControl).TabWidth);
     {$IFDEF DARWIN}
     QTabWidget_setElideMode(QTabWidgetH(QtTabWidget.Widget), QtElideNone);
     {$ENDIF}
@@ -499,29 +500,10 @@ end;
 
 class procedure TQtWSCustomTabControl.SetTabSize(
   const ATabControl: TCustomTabControl; const ATabWidth, ATabHeight: integer);
-var
-  ASize, ANewSize: TSize;
-  WS: WideString;
 begin
   if not WSCheckHandleAllocated(ATabControl, 'SetTabSize') then
     Exit;
-  ASize.cx := -1;
-  ASize.cy := -1;
-  ANewSize := ASize;
-  if ATabWidth > 0 then
-    ANewSize.cx := ATabWidth;
-  if ATabHeight > 0 then
-    ANewSize.cy := ATabHeight;
-  if (ATabWidth = 0) and (ATabHeight = 0) then
-    WS := ''
-  else
-  begin
-    if ATabControl.TabPosition in [tpLeft, tpRight] then
-      WS := {%H-}Format('QTabBar::tab { height: %dpx; width: %dpx; }',[ANewSize.cx, ANewSize.cy])
-    else
-      WS := {%H-}Format('QTabBar::tab { height: %dpx; width: %dpx; }',[ANewSize.cy, ANewSize.cx]);
-  end;
-  QWidget_setStyleSheet(TQtTabWidget(ATabControl.Handle).Widget, @WS);
+  TQtTabWidget(ATabControl.Handle).setTabSize(ATabHeight, ATabWidth);
 end;
 
 class procedure TQtWSCustomTabControl.ShowTabs(const ATabControl: TCustomTabControl;

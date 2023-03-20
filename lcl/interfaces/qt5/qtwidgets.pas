@@ -1014,6 +1014,7 @@ type
     procedure setTabPosition(ATabPosition: QTabWidgetTabPosition);
     procedure setTabIcon(index: Integer; icon: QIconH);
     procedure setTabText(index: Integer; p2: WideString);
+    procedure setTabSize(const AHeight, AWidth: integer);
     procedure setTabsClosable(AValue: Boolean);
     function tabAt(APoint: TPoint): Integer;
 
@@ -10974,6 +10975,23 @@ end;
 procedure TQtTabWidget.setTabText(index: Integer; p2: WideString);
 begin
   QTabWidget_setTabText(QTabWidgetH(Widget), index, @p2);
+end;
+
+procedure TQtTabWidget.setTabSize(const AHeight, AWidth: integer);
+var
+  ANewSize: TSize;
+  WS: WideString;
+begin
+  ANewSize := Default(TSize);
+  if AWidth > 0 then
+    ANewSize.cx := AWidth;
+  if AHeight > 0 then
+    ANewSize.cy := AHeight;
+  if (AWidth <= 0) and (AHeight <= 0) then
+    WS := ''
+  else
+    WS := {%H-}Format('QTabBar::tab { height: %dpx; width: %dpx; }',[ANewSize.cy, ANewSize.cx]);
+  QWidget_setStyleSheet(Widget, @WS);
 end;
 
 procedure TQtTabWidget.setTabsClosable(AValue: Boolean);
