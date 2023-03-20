@@ -697,6 +697,8 @@ begin
 
   while (l > 0) and (Result[l] in [' ', #9])
     do dec(l);
+  if l <= 0 then
+    exit;
 
   if Result[l] <> '}' then
     exit;
