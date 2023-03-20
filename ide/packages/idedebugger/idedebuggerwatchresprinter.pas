@@ -225,10 +225,16 @@ begin
   if Result = '' then
     Result := '()'
   else begin
-    Result[ANestLvl*2+1] := '(';
-    Result[Length(Result)] := ')';
-    //Delete(Result, Length(Result), 1)
-    //Result := Result + sep + ')';
+    if indent = '' then
+      Result := '(' + Result + ')'
+    else
+    begin
+      UniqueString(Result);
+      Result[ANestLvl*2+1] := '(';
+      Result[Length(Result)] := ')';
+      //Delete(Result, Length(Result), 1)
+      //Result := Result + sep + ')';
+    end;
   end;
 
   tn := AResValue.TypeName;
