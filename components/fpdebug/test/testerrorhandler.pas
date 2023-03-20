@@ -28,7 +28,7 @@ var
   e: TFpError;
   e2: TFpError;
 begin
-  e := CreateError(fpErrSymbolNotFound, ['a']);
+  e := CreateError(fpErrSymbolNotFound_p, ['a', '']);
   e2 := CreateError(fpErrLocationParserMemRead, e, []);
   ErrorHandler.ErrorAsString(e2);
 end;

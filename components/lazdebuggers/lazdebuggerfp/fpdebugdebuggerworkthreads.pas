@@ -1129,6 +1129,7 @@ begin
       APasExpr.OnFunctionCall  := @DoWatchFunctionCall;
     APasExpr.ResultValue; // trigger full validation
     if not APasExpr.Valid then begin
+      ErrorHandler.OnErrorTextLookup := @GetErrorText;
       AResText := ErrorHandler.ErrorAsString(APasExpr.Error);
       if FWatchValue <> nil then begin
         FWatchValue.Value := AResText;

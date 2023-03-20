@@ -322,6 +322,7 @@ type
 
 function weMatch(AExpVal: String; ASymKind: TDBGSymbolKind; ATypeName: String=''): TWatchExpectationResult;
 function weMatchErr(AExpVal: String): TWatchExpectationResult;
+function weMatchFpErr(AExpVal: String): TWatchExpectationResult; // take stirng for FORMAT()
 
 function weInteger(AExpVal: Int64; ATypeName: String=#1; ASize: Integer = 4): TWatchExpectationResult;
 function weCardinal(AExpVal: QWord; ATypeName: String=#1; ASize: Integer = 4): TWatchExpectationResult;
@@ -445,6 +446,27 @@ end;
 
 function weMatchErr(AExpVal: String): TWatchExpectationResult;
 begin
+  Result := Default(TWatchExpectationResult);
+  Result.ExpResultKind := rkMatch;
+  Result.ExpSymKind := skNone;
+  Result.ExpTextData := AExpVal;
+  Result.AddFlag(ehExpectErrorText);
+end;
+
+function weMatchFpErr(AExpVal: String): TWatchExpectationResult;
+var
+  i, j: integer;
+begin
+  AExpVal := QuoteRegExprMetaChars(AExpVal);
+  i := pos('%', AExpVal);
+  while (i > 0) and (i < Length(AExpVal)) do begin
+    j := i + 1;
+    while (j <= Length(AExpVal)) and not (AExpVal[j] in ['a'..'z', 'A'..'Z']) do inc(j);
+    AExpVal[i] := '.';
+    AExpVal[i+1] := '*';
+    delete(AExpVal, i+2, j-i-1);
+    i := pos('%', AExpVal);
+  end;
   Result := Default(TWatchExpectationResult);
   Result.ExpResultKind := rkMatch;
   Result.ExpSymKind := skNone;

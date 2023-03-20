@@ -30,9 +30,9 @@ unit FpDebugDebuggerUtils;
 interface
 
 uses
-  FpDbgUtil, FpdMemoryTools, FpPascalParser,
+  FpDbgUtil, FpdMemoryTools, FpPascalParser, FpErrorMessages,
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif},
-  DbgIntfDebuggerBase, sysutils, Classes, syncobjs, Forms;
+  DbgIntfDebuggerBase, sysutils, Classes, syncobjs, Forms, FpDebugStringConstants;
 
 type
 
@@ -189,11 +189,45 @@ type
     property OnQueueIdle: TThreadMethod read GetOnQueueIdle write SetOnQueueIdle;
   end;
 
+function GetErrorText(AnErrorCode: TFpErrorCode; out AnErrorText: AnsiString): Boolean;
 
 implementation
 
 var
   FPDBG_QUEUE: PLazLoggerLogGroup;
+
+function GetErrorText(AnErrorCode: TFpErrorCode; out AnErrorText: AnsiString
+  ): Boolean;
+begin
+  Result := True;
+  case AnErrorCode of
+    fpErrSymbolNotFound_p:                   AnErrorText := LazErrSymbolNotFound_p;
+    fpErrIndexOutOfRange:                    AnErrorText := LazErrIndexOutOfRange;
+    fpErrTypeNotIndexable:                   AnErrorText := LazErrTypeNotIndexable;
+    fpErrExpectedOrdinalVal_p:               AnErrorText := LazErrExpectedOrdinalVal_p;
+    fpErrCannotCastToPointer_p:              AnErrorText := LazErrCannotCastToPointer_p;
+    fpErrCannotDeref_p:                      AnErrorText := LazErrCannotDeref_p;
+
+    fpErrPasParserEmptyExpression:           AnErrorText := LazErrPasParserEmptyExpression;
+    fpErrPasParserUnexpectedEndOfExpression: AnErrorText := LazErrPasParserUnexpectedEndOfExpression;
+    fpErrPasParserUnexpectedToken_p:         AnErrorText := LazErrPasParserUnexpectedToken_p;
+    fpErrPasParserUnknownIntrinsic_p:        AnErrorText := LazErrPasParserUnknownIntrinsic_p;
+
+    fpErrPasParserMissingOpenBracket_p:      AnErrorText := LazErrPasParserMissingOpenBracket_p;
+    fpErrPasParserWrongOpenBracket_p:        AnErrorText := LazErrPasParserWrongOpenBracket_p;
+    fpErrPasParserMissingIndexExpression:    AnErrorText := LazErrPasParserMissingIndexExpression;
+    fpErrPasParserMissingExprAfterComma:     AnErrorText := LazErrPasParserMissingExprAfterComma;
+    fpErrPasParserIndexError_Wrapper:        AnErrorText := LazErrPasParserIndexError_Wrapper;
+    fpErrPasParserUnterminatedString_p:      AnErrorText := LazErrPasParserUnterminatedString_p;
+    fpErrPasParserExpectedNumber_p:          AnErrorText := LazErrPasParserExpectedNumber_p;
+
+    fpErrPasParser_AtStart:                  AnErrorText := LazErrPasParser_AtStart;
+    fpErrPasParser_PositionAfter:            AnErrorText := LazErrPasParser_PositionAfter;
+    fpErrPasParser_Position:                 AnErrorText := LazErrPasParser_Position;
+
+    else Result := False;
+  end;
+end;
 
 { TFpDebugDebuggerPropertiesMemLimits }
 

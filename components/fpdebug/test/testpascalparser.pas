@@ -11,18 +11,6 @@ uses
 
 type
 
-  { TTestPascalParser }
-
-  TTestPascalParser = class(TTestCase)
-  published
-    procedure TestParser;
-  end;
-
-implementation
-
-
-type
-
   { TTestFpPascalExpression }
 
   TTestFpPascalExpression=class(TFpPascalExpression)
@@ -30,12 +18,44 @@ type
     property ExpressionPart;
   end;
 
+  { TTestPascalParser }
+
+  TTestPascalParser = class(TTestCase)
+  private
+    CurrentTestExprText: String;
+    CurrentTestExprObj: TTestFpPascalExpression;
+    procedure CreateExpr(t: string; ExpValid: Boolean; SkipExpValid: Boolean = False);
+  published
+    procedure TestParser;
+    procedure TestParserError;
+  end;
+
+implementation
+
 { TTestFpPascalExpression }
 
-procedure TTestPascalParser.TestParser;
+procedure TTestPascalParser.CreateExpr(t: string; ExpValid: Boolean;
+  SkipExpValid: Boolean);
 var
-  CurrentTestExprText: String;
-  CurrentTestExprObj: TTestFpPascalExpression;
+  s: String;
+  ctx: TFpDbgSimpleLocationContext;
+  sc: TFpDbgSymbolScope;
+begin
+  ctx := TFpDbgSimpleLocationContext.Create(nil, 0, 4, 0, 0);
+  sc := TFpDbgSymbolScope.Create(ctx);
+  FreeAndNil(CurrentTestExprObj);
+  CurrentTestExprText := t;
+  CurrentTestExprObj := TTestFpPascalExpression.Create(CurrentTestExprText, sc);
+DebugLn(CurrentTestExprObj.DebugDump);
+  if not SkipExpValid then begin
+    s := ErrorHandler.ErrorAsString(CurrentTestExprObj.Error);
+    AssertEquals('Valid '+s+ ' # '+CurrentTestExprText, ExpValid, CurrentTestExprObj.Valid);
+  end;
+  ctx.ReleaseReference;
+  sc.ReleaseReference;
+end;
+
+procedure TTestPascalParser.TestParser;
 
   function GetChild(p: TFpPascalExpressionPart; i: array of integer): TFpPascalExpressionPart;
   var
@@ -68,24 +88,6 @@ var
     AText: String; AChildCount: Integer = -1);
   begin
     TestExpr(GetChild(i), AClass, AText, AChildCount);
-  end;
-
-  procedure CreateExpr(t: string; ExpValid: Boolean);
-  var
-    s: String;
-    ctx: TFpDbgSimpleLocationContext;
-    sc: TFpDbgSymbolScope;
-  begin
-    ctx := TFpDbgSimpleLocationContext.Create(nil, 0, 4, 0, 0);
-    sc := TFpDbgSymbolScope.Create(ctx);
-    FreeAndNil(CurrentTestExprObj);
-    CurrentTestExprText := t;
-    CurrentTestExprObj := TTestFpPascalExpression.Create(CurrentTestExprText, sc);
-DebugLn(CurrentTestExprObj.DebugDump);
-    s := ErrorHandler.ErrorAsString(CurrentTestExprObj.Error);
-    AssertEquals('Valid '+s+ ' # '+CurrentTestExprText, ExpValid, CurrentTestExprObj.Valid);
-    ctx.ReleaseReference;
-    sc.ReleaseReference;
   end;
 
 begin
@@ -538,6 +540,103 @@ begin
   finally
     CurrentTestExprObj.Free;
   end;
+end;
+
+procedure TTestPascalParser.TestParserError;
+
+  procedure AssertPrintError;
+  var
+    s: String;
+  begin
+    CurrentTestExprObj.ResultValue;
+    AssertTrue('Got an error', IsError(CurrentTestExprObj.Error));
+
+    s := ErrorHandler.ErrorAsString(CurrentTestExprObj.Error);
+    AssertTrue('format error msg', pos('Internal Error:', s) < 1);
+  end;
+
+  procedure AssertError(const AnErrCode: array of TFpErrorCode);
+  var
+    GotErrCode: TFpErrorCode;
+    Err: TFpError;
+    i: Integer;
+  begin
+    CurrentTestExprObj.ResultValue;
+    Err := CurrentTestExprObj.Error;
+    AssertTrue('correct err code', IsError(Err));
+
+    for i := low(AnErrCode) to high(AnErrCode) do begin
+      AssertTrue('has sub error', Length(Err) >= i);
+      GotErrCode := CurrentTestExprObj.Error[i].ErrorCode;
+      AssertEquals('correct err code', AnErrCode[i], GotErrCode);
+    end;
+
+    AssertPrintError;
+  end;
+
+  procedure TestExpr(Expr: String; AnErrCode: TFpErrorCode);
+  begin
+    CreateExpr(Expr, False, True);
+    AssertError([AnErrCode]);
+  end;
+
+  procedure TestExpr(Expr: String; const AnErrCode: array of TFpErrorCode);
+  begin
+    CreateExpr(Expr, False, True);
+    AssertError(AnErrCode);
+  end;
+
+var
+  s: String;
+begin
+  // self test
+  s := ErrorHandler.ErrorAsString(CreateError(-1));
+  AssertFalse('self test format error msg', pos('Internal Error:', s) < 1);
+  s := ErrorHandler.ErrorAsString(CreateError(fpErrPasParserUnexpectedToken_p, []));
+  AssertFalse('self test format error msg', pos('Internal Error:', s) < 1);
+
+
+  TestExpr('£',        fpErrPasParserUnexpectedToken_p);
+  TestExpr(':foobar',  fpErrPasParserUnknownIntrinsic_p);
+
+  TestExpr('1..2',     fpErrPasParserUnexpectedToken_p);
+  TestExpr('[1...2]',  fpErrPasParserUnexpectedToken_p);
+
+  TestExpr('1)',       fpErrPasParserMissingOpenBracket_p);
+  TestExpr('[1)',      fpErrPasParserWrongOpenBracket_p);
+
+  TestExpr('1a ',      fpErrPasParserExpectedNumber_p);
+  TestExpr('$ ',       fpErrPasParserExpectedNumber_p);
+  TestExpr('$x',       fpErrPasParserExpectedNumber_p);
+  TestExpr('$1x',      fpErrPasParserExpectedNumber_p);
+  TestExpr('0x',       fpErrPasParserExpectedNumber_p);
+  TestExpr('0x1z',     fpErrPasParserExpectedNumber_p);
+  TestExpr('& ',       fpErrPasParserExpectedNumber_p);
+  TestExpr('&1z ',     fpErrPasParserExpectedNumber_p);
+  TestExpr('%9 ',      fpErrPasParserExpectedNumber_p);
+  TestExpr('%1z ',     fpErrPasParserExpectedNumber_p);
+
+  TestExpr('''a',      fpErrPasParserUnterminatedString_p);
+  TestExpr('#',        fpErrPasParserUnexpectedEndOfExpression);
+  TestExpr('# ',       fpErrPasParserExpectedNumber_p);
+  TestExpr('#.',       fpErrPasParserExpectedNumber_p);
+  TestExpr('#12a',     fpErrPasParserExpectedNumber_p);
+  TestExpr('#af',      fpErrPasParserExpectedNumber_p);
+  TestExpr('#$az',     fpErrPasParserExpectedNumber_p);
+  TestExpr('#$z',     fpErrPasParserExpectedNumber_p);
+  TestExpr('#&79',      fpErrPasParserExpectedNumber_p);
+  TestExpr('#&9',      fpErrPasParserExpectedNumber_p);
+  TestExpr('#%13',      fpErrPasParserExpectedNumber_p);
+  TestExpr('#%3',      fpErrPasParserExpectedNumber_p);
+
+  TestExpr('''abc''[]',    fpErrPasParserMissingIndexExpression);
+  TestExpr('''abc''[#1]',  [fpErrPasParserIndexError_Wrapper, fpErrExpectedOrdinalVal_p]);
+  TestExpr('''abc''[99]',  [fpErrPasParserIndexError_Wrapper, fpErrIndexOutOfRange]);
+  TestExpr('1[99]',        [fpErrPasParserIndexError_Wrapper, fpErrTypeNotIndexable]);
+
+  //TestExpr('@''ab''',      fpErrCannotCastToPointer_p);
+  ///TestExpr('^T(''ab'')',      fpErrCannotCastToPointer_p);
+
 end;
 
 

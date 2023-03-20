@@ -10,7 +10,8 @@ uses
   TTestWatchUtilities, TestCommonSources, TestDbgConfig, LazDebuggerIntf,
   LazDebuggerIntfBaseTypes, LazDebuggerValueConverter, DbgIntfDebuggerBase,
   DbgIntfBaseTypes, FpDbgInfo, FpPascalParser, FpDbgCommon, Forms,
-  IdeDebuggerBase, IdeDebuggerWatchResult, IdeDebuggerBackendValueConv;
+  IdeDebuggerBase, IdeDebuggerWatchResult, IdeDebuggerBackendValueConv,
+  FpDebugStringConstants;
 
 type
 
@@ -4078,6 +4079,12 @@ begin
     // Constant values
     //t.Add('', '^char(1)^+[1]',   weMatchErr('Can not evaluate: "\[1\]"'));
     t.Add('', '^char(1)^+[1]',   weMatchErr('.'));
+
+    t.Add('', 'not_exist_fooxyz',    weMatchFpErr(LazErrSymbolNotFound_p));
+    t.Add('', 'gvAnsi4[99]',         weMatchFpErr(LazErrPasParserIndexError_Wrapper + '%x' + LazErrIndexOutOfRange)).IgnAll(stDwarf2);
+    t.Add('', 'gvIntStatArray[1,2]', weMatchFpErr(LazErrPasParserIndexError_Wrapper + '%x'  + LazErrTypeNotIndexable));
+    t.Add('', 'gvIntStatArray^',     weMatchFpErr(LazErrCannotDeref_p));
+    t.Add('', '^byte(''abc'')^',     weMatchErr('.'));
 
 
     t.EvaluateWatches;

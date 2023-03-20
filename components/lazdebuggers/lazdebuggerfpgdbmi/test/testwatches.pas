@@ -595,7 +595,7 @@ begin
       if (i in [5..7]) and not(BrkIdx in [4, 5]) then
         ErrCodeNotFound := fpErrNoMemberWithName
       else
-        ErrCodeNotFound := fpErrSymbolNotFound;
+        ErrCodeNotFound := fpErrSymbolNotFound_p;
 
 
       if i in [0, 5] then begin
@@ -703,7 +703,7 @@ begin
         r := AddFmtDef(Format('%sSet2%1:s', [s,s2]),     '^\[\]', skSimple, '', [fTpMtch]);
         UpdExpRes(r, stDwarf, '', skSimple); // no sets in dwarf2
 
-        AddError(Format('%sByte1%1:s^', [s,s2]), fpErrCannotDereferenceType); // ERROR
+        AddError(Format('%sByte1%1:s^', [s,s2]), fpErrCannotDeref_p); // ERROR
     end; // i2
 
     end; // i
@@ -893,7 +893,7 @@ begin
       AddExpInt('%0:sDynDynInt1%1:s[%0:sDynDynInt1%1:s[3,0], %0:sDynDynInt1%1:s[3,1]]', [s,s2],    1012, M_Int);
       AddExpInt('%0:sDynDynInt1%1:s[%0:sDynDynInt1%1:s[3,0]][%0:sDynDynInt1%1:s[3,1]]', [s,s2],    1012, M_Int);
 
-      AddError('%0:sDynDynInt1%1:s[FooNoExistFoo, %0:sDynDynInt1%1:s[3,1]]', [s,s2], fpErrSymbolNotFound); // ERROR
+      AddError('%0:sDynDynInt1%1:s[FooNoExistFoo, %0:sDynDynInt1%1:s[3,1]]', [s,s2], fpErrSymbolNotFound_p); // ERROR
       AddError('%0:sDynDynInt1%1:s[%0:sDynDynInt1%1:s[3,0].NoMember, %0:sDynDynInt1%1:s[3,1]]', [s,s2], fpErrorNotAStructure); // ERROR
 
 

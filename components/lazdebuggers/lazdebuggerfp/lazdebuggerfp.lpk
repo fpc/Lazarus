@@ -61,6 +61,9 @@
         <UnitName Value="FpDebugFpcConvVariantNormalizer"/>
       </Item>
     </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+    </i18n>
     <RequiredPkgs>
       <Item>
         <PackageName Value="CmdLineDebuggerBase"/>
