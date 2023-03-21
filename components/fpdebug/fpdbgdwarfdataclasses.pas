@@ -146,6 +146,7 @@ type
   TDwarfAbbrevFlag = (
     dafHasChildren,
     dafHasName,
+    dafHasArtifical,
     dafHasLowAddr,
     dafHasStartScope,
     dafHasAbstractOrigin
@@ -1600,6 +1601,9 @@ begin
       if attrib = DW_AT_name then
         Include(f, dafHasName)
       else
+      if attrib = DW_AT_artificial then
+        Include(f, dafHasArtifical)
+      else
       if attrib = DW_AT_low_pc then
         Include(f, dafHasLowAddr)
       else
@@ -2911,7 +2915,7 @@ begin
         Continue;
       end;
 
-      if ASkipArtificial then begin
+      if ASkipArtificial and (dafHasArtifical in FAbbrev^.flags) then begin
         if ReadValue(DW_AT_artificial, Val) and (Val <> 0) then begin
           GoNext;
           Continue;
@@ -3424,7 +3428,8 @@ function TDwarfInformationEntry.IsArtificial: Boolean;
 var
   Val: Integer;
 begin
-  Result := ReadValue(DW_AT_artificial, Val);
+  Result := dafHasArtifical in FAbbrev^.flags;
+  if Result then Result := ReadValue(DW_AT_artificial, Val);
   if Result then Result := Val <> 0;
 end;
 
