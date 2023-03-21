@@ -205,25 +205,25 @@ var
   // when the tracking loop is over
   //
   // See topic: https://forum.lazarus.freepascal.org/index.php/topic,56419.0.html
-  menuTrack : TList = nil;
+  menuTrack : NSMutableArray;
 
 procedure MenuTrackStarted(mn: NSMenu);
 begin
-  if not Assigned(menuTrack) then menuTrack:=TList.Create;
-  menuTrack.Add(mn);
+  if menuTrack = nil then menuTrack := NSMutableArray.alloc.init;
+  menuTrack.addObject(mn);
 end;
 
 procedure MenuTrackEnded(mn: NSMenu);
 var
   i : integer;
 begin
-  if not Assigned(menuTrack) then
+  if menuTrack = nil then
     // it's possible if popup menu was used, without mainmenu in the app
     Exit;
 
-  i := menuTrack.IndexOf(mn);
-  if i>=0 then
-    menuTrack.Delete(i);
+  i := menuTrack.indexOfObject(mn);
+  if i >= 0 then
+    menuTrack.removeObjectAtIndex(i);
 end;
 
 procedure MenuTrackCancelAll;
@@ -231,13 +231,13 @@ var
   i  : integer;
   mn : NSMenu;
 begin
-  if not Assigned(menuTrack) then Exit;
-  for i:=menuTrack.Count-1 downto 0 do begin
-    mn := NSMenu(menuTrack[i]);
+  if menuTrack = nil then Exit;
+  for i:=menuTrack.count - 1 downto 0 do begin
+    mn := NSMenu(menuTrack.objectAtIndex(i));
     if Assigned(mn) then
       mn.cancelTracking;
   end;
-  menuTrack.Clear;
+  menuTrack.removeAllObjects;
 end;
 
 function LCLMenuItemInit(item: NSMenuItem; const atitle: string; ashortCut: TShortCut): id;
@@ -1074,6 +1074,6 @@ initialization
 
 finalization
   MenuTrackCancelAll;
-  if Assigned(menuTrack) then menuTrack.Free;
+  if menuTrack <> nil then menuTrack.release;
 
 end.
