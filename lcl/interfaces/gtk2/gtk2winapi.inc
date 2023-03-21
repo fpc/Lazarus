@@ -5850,10 +5850,10 @@ begin
       begin
         //DebugLn('Trace:TODO: [TGtk2WidgetSet.GetSystemMetrics] --> SM_CYSIZE           ');
       end;
-    SM_CXSIZEFRAME,
-    SM_CYSIZEFRAME:
+    SM_CXSIZEFRAME, // same as SM_CXFRAME
+    SM_CYSIZEFRAME: // same as SM_CYFRAME
       begin
-        Result := FCachedBorderSize;
+        Result := Max(FCachedBorderSize, 0);
       end;
     SM_CXSMICON,
     SM_CYSMICON:

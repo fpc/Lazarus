@@ -2700,7 +2700,8 @@ begin
           gdk_window_get_size(AWindow, @AW, @AH);
           FCachedTitleBarHeight := ARect.Height - AH - 1;
           FCachedBorderSize := (ARect.Width - AW) div 2;
-          Result := ARect.Height - AH - 1;
+          //debugln(['TGtk2WidgetSet.GetTitleBarHeight ',dbgs(ARect),' AW=',AW,' AH=',AH]);
+          Result := FCachedTitleBarHeight;
           break;
         end;
       end;
