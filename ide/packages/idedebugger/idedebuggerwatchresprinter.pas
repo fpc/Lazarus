@@ -385,7 +385,11 @@ begin
   Result := '';
   case AResValue.ValueKind of
     rdkError:
+      begin
       Result := 'Error: ' + AResValue.AsString;
+      if rpfClearMultiLine in FFormatFlags then
+        Result := ClearMultiline(Result);
+    end;
     rdkUnknown:
       Result := 'Error: Unknown';
     rdkPrePrinted: begin

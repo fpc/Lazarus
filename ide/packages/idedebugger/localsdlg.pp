@@ -844,7 +844,7 @@ var
 begin
   ResData :=  AWatchAbleResult.ResultData;
   if ResData = nil then
-    s := AWatchAbleResult.Value
+    s := ClearMultiline(AWatchAbleResult.Value)
   else
     s := FLocalsDlg.FWatchPrinter.PrintWatchValue(ResData, wdfDefault);
   TreeView.NodeText[AVNode, 0] := TIdeLocalsValue(AWatchAble).DisplayName;

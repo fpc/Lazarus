@@ -1383,7 +1383,7 @@ begin
            (AWatchAbleResult.TypeInfo.Attributes * [saArray, saDynArray] <> []) and
            (AWatchAbleResult.TypeInfo.Len >= 0)
         then TreeView.NodeText[AVNode, COL_WATCH_VALUE-1] := Format(drsLen, [AWatchAbleResult.TypeInfo.Len]) + AWatchAbleResult.Value
-        else TreeView.NodeText[AVNode, COL_WATCH_VALUE-1] := AWatchAbleResult.Value;
+        else TreeView.NodeText[AVNode, COL_WATCH_VALUE-1] := ClearMultiline(AWatchAbleResult.Value);
       end;
     end
     else
