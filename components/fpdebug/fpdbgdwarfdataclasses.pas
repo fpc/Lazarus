@@ -2904,6 +2904,13 @@ begin
         Continue;
       end;
 
+      if (sc^.NameHash <> ANameInfo.NameHash) and
+         (FAbbrev^.tag <> DW_TAG_enumeration_type)
+      then begin
+        GoNext;
+        Continue;
+      end;
+
       if ASkipArtificial then begin
         if ReadValue(DW_AT_artificial, Val) and (Val <> 0) then begin
           GoNext;
