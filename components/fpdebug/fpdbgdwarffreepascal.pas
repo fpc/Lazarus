@@ -94,7 +94,19 @@ type
     FOuterNestContext: TFpDbgSymbolScope;
     FOuterNotFound: Boolean;
     FClassVarStaticPrefix: String;
+
+    FSystemCU, FSysUtilsCU, FTypInfoCU: TDwarfCompilationUnit;
+    FFoundSystemInfoEntry: TDwarfInformationEntry;
+    FInAllUnitSearch, FSearchSpecialCuDone: boolean;
   protected
+    function FindExportedSymbolInUnit(CU: TDwarfCompilationUnit;
+      const ANameInfo: TNameSearchInfo; out
+      AnInfoEntry: TDwarfInformationEntry; out AnIsExternal: Boolean;
+      AFindFlags: TFindExportedSymbolsFlags = []): Boolean; override;
+    function FindExportedSymbolInUnits(const AName: String;
+      const ANameInfo: TNameSearchInfo; SkipCompUnit: TDwarfCompilationUnit;
+      out ADbgValue: TFpValue; const OnlyUnitNameLower: String = ''): Boolean;
+      override;
     function FindLocalSymbol(const AName: String; const ANameInfo: TNameSearchInfo;
       InfoEntry: TDwarfInformationEntry; out ADbgValue: TFpValue): Boolean; override;
     function FindSymbolInStructure(const AName: String;
@@ -562,6 +574,64 @@ end;
 
 var
   ParentFpLowerNameInfo, ParentFp2LowerNameInfo: TNameSearchInfo; // case sensitive
+
+
+function TFpDwarfFreePascalSymbolScope.FindExportedSymbolInUnit(
+  CU: TDwarfCompilationUnit; const ANameInfo: TNameSearchInfo; out
+  AnInfoEntry: TDwarfInformationEntry; out AnIsExternal: Boolean;
+  AFindFlags: TFindExportedSymbolsFlags): Boolean;
+begin
+  // those units have scoped enums, that conflict with common types
+  if (CU = FSysUtilsCU) or (CU = FTypInfoCU) then
+    Include(AFindFlags, fsfIgnoreEnumVals);
+
+  Result := inherited FindExportedSymbolInUnit(CU, ANameInfo, AnInfoEntry,
+    AnIsExternal, AFindFlags);
+
+  if Result and FInAllUnitSearch and (CU = FSystemCU) then begin
+    FFoundSystemInfoEntry := AnInfoEntry;
+    AnInfoEntry := nil;
+    Result := False;
+  end;
+end;
+
+function TFpDwarfFreePascalSymbolScope.FindExportedSymbolInUnits(
+  const AName: String; const ANameInfo: TNameSearchInfo;
+  SkipCompUnit: TDwarfCompilationUnit; out ADbgValue: TFpValue;
+  const OnlyUnitNameLower: String): Boolean;
+var
+  i: Integer;
+  CU: TDwarfCompilationUnit;
+  FoundInfoEntry: TDwarfInformationEntry;
+  FndIsExternal: Boolean;
+  s: String;
+begin
+  if not FSearchSpecialCuDone then begin
+    for i := 0 to Dwarf.CompilationUnitsCount - 1 do begin
+      CU := Dwarf.CompilationUnits[i];
+      s := LowerCase(CU.UnitName);
+      if (s = 'system') then
+        FSystemCU := CU;
+      if (s = 'sysutils') then
+        FSysUtilsCU := CU;
+      if (s = 'typinfo') and (pos('objpas', LowerCase(CU.FileName)) > 0) then
+        FTypInfoCU := CU;
+    end;
+    FSearchSpecialCuDone := True;
+  end;
+
+  FInAllUnitSearch := True;
+  FFoundSystemInfoEntry := nil;
+  Result := inherited FindExportedSymbolInUnits(AName, ANameInfo, SkipCompUnit,
+    ADbgValue, OnlyUnitNameLower);
+  FInAllUnitSearch := False;
+
+  if (not Result) and (FFoundSystemInfoEntry <> nil) then
+    ADbgValue := SymbolToValue(TFpSymbolDwarf.CreateSubClass(AName, FFoundSystemInfoEntry));
+
+  FFoundSystemInfoEntry.ReleaseReference;
+end;
+
 function TFpDwarfFreePascalSymbolScope.FindLocalSymbol(const AName: String;
   const ANameInfo: TNameSearchInfo; InfoEntry: TDwarfInformationEntry; out
   ADbgValue: TFpValue): Boolean;
