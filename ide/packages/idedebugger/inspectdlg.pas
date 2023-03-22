@@ -63,6 +63,7 @@ type
     PropertiesPage: TTabSheet;
     MethodsPage: TTabSheet;
     ErrorPage: TTabSheet;
+    TimerFilter: TTimer;
     TimerClearData: TTimer;
     WatchInspectNav1: TWatchInspectNav;
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
@@ -74,6 +75,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure menuCopyValueClick(Sender: TObject);
     procedure TimerClearDataTimer(Sender: TObject);
+    procedure TimerFilterTimer(Sender: TObject);
   private
     //FDataGridHook,
     //FPropertiesGridHook,
@@ -100,6 +102,9 @@ type
     procedure DoEnvOptChanged(Sender: TObject; Restore: boolean);
     procedure DoWatchesInvalidated(Sender: TObject);
     procedure DoWatchUpdated(const ASender: TIdeWatches; const AWatch: TIdeWatch);
+    procedure EdFilterChanged(Sender: TObject);
+    procedure EdFilterClear(Sender: TObject);
+    procedure EdFilterDone(Sender: TObject);
     procedure Localize;
     function  ShortenedExpression: String;
     procedure ContextChanged(Sender: TObject);
@@ -283,7 +288,9 @@ var
   i, SubStart: Integer;
   WVal: TWatchValue;
   CurIndexOffs, ResIdxOffs: Int64;
-  CurPageCount: Integer;
+  CurPageCount, FldCnt, f: Integer;
+  s: String;
+  filter: TCaption;
 begin
   DataPage.TabVisible:=true;
   PropertiesPage.TabVisible:=false;
@@ -333,20 +340,47 @@ begin
   Res := WVal.ResultData;
 
   GridDataSetup;
-  if Res.Count > 0 then begin
-    ResIdxOffs := WVal.FirstIndexOffs;
-    SubStart := CurIndexOffs - ResIdxOffs;
-    CurPageCount := Min(CurPageCount, Res.Count - SubStart);
 
-    FGridData.RowCount:= CurPageCount + 1;
-    for i := SubStart to SubStart+CurPageCount-1 do begin
-      Res.SetSelectedIndex(i);
-      Entry := Res.SelectedEntry;
-      Entry := Entry.ConvertedRes;
-      FGridData.Cells[1,i+1-SubStart] := IntToStr(LowBnd + ResIdxOffs + i);
-      FGridData.Cells[2,i+1-SubStart] := Entry.TypeName;
-      FGridData.Cells[3,i+1-SubStart] := ClearMultiline(FWatchPrinter.PrintWatchValue(Entry, wdfDefault));
+  filter := LowerCase(WatchInspectNav1.edFilter.Text);
+  FldCnt := FGridData.RowCount;
+  FGridData.BeginUpdate;
+  f := 1;
+  try
+    if Res.Count > 0 then begin
+      ResIdxOffs := WVal.FirstIndexOffs;
+      SubStart := CurIndexOffs - ResIdxOffs;
+      CurPageCount := Min(CurPageCount, Res.Count - SubStart);
+
+      FGridData.RowCount:= CurPageCount + 1;
+      for i := SubStart to SubStart+CurPageCount-1 do begin
+        Res.SetSelectedIndex(i);
+        Entry := Res.SelectedEntry;
+        Entry := Entry.ConvertedRes;
+        s := ClearMultiline(FWatchPrinter.PrintWatchValue(Entry, wdfDefault));
+
+        if (filter <> '') and
+           // index
+           ( (not WatchInspectNav1.ColTypeEnabled) or (not WatchInspectNav1.ColTypeIsDown) or
+             (pos(filter, IntToStr(LowBnd + ResIdxOffs + i)) < 1)
+           ) and
+           // type
+           (pos(filter, LowerCase(Entry.TypeName)) < 1) and
+           // value
+           (pos(filter, LowerCase(s)) < 1)
+        then
+          continue;
+
+        if f >= FldCnt then
+          FGridData.RowCount := max(f+1, 2);
+        FGridData.Cells[1,f] := IntToStr(LowBnd + ResIdxOffs + i);
+        FGridData.Cells[2,f] := Entry.TypeName;
+        FGridData.Cells[3,f] := s;
+        inc(f);
+      end;
     end;
+    FGridData.RowCount    := max(f, 2);
+  finally
+    FGridData.EndUpdate;
   end;
 end;
 
@@ -354,11 +388,31 @@ procedure TIDEInspectDlg.InspectResDataStruct;
 const
   FieldLocationNames: array[TLzDbgFieldVisibility] of string = //(dfvUnknown, dfvPrivate, dfvProtected, dfvPublic, dfvPublished);
     ('', 'Private', 'Protected', 'Public', 'Published');
+
+  function TypeDesc(FldInfo: TWatchResultDataFieldInfo; Fld, Fld2: TWatchResultData): string;
+  begin
+    Result := '';
+    if (Fld2 <> nil) and (Fld2.ValueKind in [rdkFunction, rdkProcedure]) then begin
+      if dffConstructor in FldInfo.FieldFlags
+      then Result := 'Constructor'
+      else if dffDestructor in FldInfo.FieldFlags
+      then Result := 'Destructor'
+      else if Fld2.ValueKind = rdkFunction
+      then Result := 'Function'
+      else if Fld2.ValueKind = rdkPCharOrString
+      then Result:= 'Procedure';
+    end
+    else
+    if Fld <> nil then
+      Result := Fld.TypeName;
+  end;
+
 var
   Res, Fld, Fld2: TWatchResultData;
   FldCnt, MethCnt, f, m: Integer;
   FldInfo: TWatchResultDataFieldInfo;
-  AnchType: String;
+  AnchType, s: String;
+  filter: TCaption;
 begin
   Res := FCurrentResData;
 
@@ -378,96 +432,112 @@ begin
     StatusBar1.SimpleText:=ShortenedExpression+' : '+FCurrentTypePrefix+Res.TypeName + ' = ' + FHumanReadable;
 
   GridDataSetup;
-  FldCnt := 0;
-  MethCnt := 0;
 
-  if Res.StructType in [dstClass, dstObject] then begin
-    for FldInfo in res do begin
-      if (FldInfo.Field <> nil) and
-         ( (FldInfo.Field.ValueKind in [rdkFunction, rdkProcedure, rdkFunctionRef, rdkProcedureRef]) or
-           (ExtractProcResFromMethod(FldInfo.Field) <> nil)
-         )
-      then
-        inc(MethCnt)
-      else
-        inc(FldCnt);
-    end;
-  end
-  else
-  for FldInfo in res do
-    inc(FldCnt);
+  FldCnt := FGridData.RowCount;
+  MethCnt := FGridMethods.RowCount;
 
-  DataPage.TabVisible := FldCnt > 0;
-  PropertiesPage.TabVisible :=false;
-  MethodsPage.TabVisible := MethCnt > 0;
-  if not (PageControl.ActivePage = MethodsPage) then
-    PageControl.ActivePage := DataPage;
-
-  FGridData.RowCount    := max(FldCnt+1, 2);
-  FGridMethods.RowCount := max(MethCnt+1, 2);
   f := 1;
   m := 1;
-  for FldInfo in res do begin
-    Fld := FldInfo.Field;
-    Fld := Fld.ConvertedRes;
-    Fld2 := ExtractProcResFromMethod(Fld);
-    if (MethCnt > 0) and
-       (Fld <> nil) and
-       ( (Fld.ValueKind in [rdkFunction, rdkProcedure, rdkFunctionRef, rdkProcedureRef]) or
-         (Fld2 <> nil)
-       )
-    then begin
-      if Fld2 = nil then Fld2 := Fld;
+  filter := LowerCase(WatchInspectNav1.edFilter.Text);
+  FGridData.BeginUpdate;
+  FGridMethods.BeginUpdate;
+  try
+    for FldInfo in res do begin
+      Fld := FldInfo.Field;
+      Fld := Fld.ConvertedRes;
+      Fld2 := ExtractProcResFromMethod(Fld);
 
-      FGridMethods.Cells[0,m] := FldInfo.FieldName;
+      if (MethCnt > 0) and
+         (Fld <> nil) and
+         ( (Fld.ValueKind in [rdkFunction, rdkProcedure, rdkFunctionRef, rdkProcedureRef]) or
+           (Fld2 <> nil)
+         )
+      then begin
+        if Fld2 = nil then Fld2 := Fld;
 
-      if Fld <> nil then begin
-        if Fld2.ValueKind in [rdkFunction, rdkProcedure] then begin
-          if dffConstructor in FldInfo.FieldFlags
-          then FGridMethods.Cells[1,m] := 'Constructor'
-          else if dffDestructor in FldInfo.FieldFlags
-          then FGridMethods.Cells[1,m] := 'Destructor'
-          else if Fld2.ValueKind = rdkFunction
-          then FGridMethods.Cells[1,m] := 'Function'
-          else if Fld2.ValueKind = rdkPCharOrString
-          then FGridMethods.Cells[1,m] := 'Procedure'
-          else FGridMethods.Cells[1,m] := '';
-        end
-        else
-          FGridMethods.Cells[1,m] := Fld.TypeName;
+        if (filter <> '') and
+           // name
+           (pos(filter, LowerCase(FldInfo.FieldName)) < 1) and
+           // type
+           (pos(filter, LowerCase(TypeDesc(FldInfo, Fld, Fld2))) < 1) and
+           // value
+           ( (Fld2 = nil) or (pos(filter, LowerCase(IntToHex(Fld2.AsQWord, 16))) < 1) )
+        then
+          continue;
+
+        if m >= MethCnt then
+          FGridMethods.RowCount := max(m+1, 2);
+
+        FGridMethods.Cells[0,m] := FldInfo.FieldName;
+        FGridMethods.Cells[1,m] := TypeDesc(FldInfo, Fld, Fld2);
+
+        FGridMethods.Cells[2,m] := '';
+
+        if Fld2 = nil then Fld2 := Fld;
+        if Fld2 <> nil
+        then FGridMethods.Cells[3,m] := IntToHex(Fld2.AsQWord, 16)
+        else FGridMethods.Cells[3,m] := '';
+
+        inc(m);
       end
-      else
-        FGridMethods.Cells[1,m] := '';
+      else begin
+        s := '';
+        if Fld <> nil then
+          s := ClearMultiline(FWatchPrinter.PrintWatchValue(Fld, wdfDefault));
+        if (filter <> '') and
+           // name
+           (pos(filter, LowerCase(FldInfo.FieldName)) < 1) and
+           // type
+           ( (not WatchInspectNav1.ColTypeEnabled) or (not WatchInspectNav1.ColTypeIsDown) or
+             (Fld = nil) or (pos(filter, LowerCase(Fld.TypeName)) < 1)
+           ) and
+           // class
+           ( (not WatchInspectNav1.ColClassEnabled) or (not WatchInspectNav1.ColClassIsDown) or
+             (FldInfo.Owner = nil) or (pos(filter, LowerCase(FldInfo.Owner.TypeName)) < 1)
+           ) and
+           // visibilty section
+           ( (not WatchInspectNav1.ColVisibilityEnabled) or (not WatchInspectNav1.ColVisibilityIsDown) or
+             (pos(filter, LowerCase(FieldLocationNames[FldInfo.FieldVisibility])) < 1)
+           ) and
+           // value
+           (pos(filter, LowerCase(s)) < 1)
+        then
+          continue;
 
-      FGridMethods.Cells[2,m] := '';
+        if f >= FldCnt then
+          FGridData.RowCount := max(f+1, 2);
 
-      if Fld2 = nil then Fld2 := Fld;
-      if Fld2 <> nil
-      then FGridMethods.Cells[3,m] := IntToHex(Fld2.AsQWord, 16)
-      else FGridMethods.Cells[3,m] := '';
+        if FldInfo.Owner <> nil
+        then FGridData.Cells[0,f] := FldInfo.Owner.TypeName
+        else FGridData.Cells[0,f] := '';
 
-      inc(m);
-    end
-    else begin
-      if FldInfo.Owner <> nil
-      then FGridData.Cells[0,f] := FldInfo.Owner.TypeName
-      else FGridData.Cells[0,f] := '';
+        FGridData.Cells[1,f] := FldInfo.FieldName;
 
-      FGridData.Cells[1,f] := FldInfo.FieldName;
+        if Fld <> nil
+        then FGridData.Cells[2,f] := Fld.TypeName
+        else FGridData.Cells[2,f] := '';
 
-      if Fld <> nil
-      then FGridData.Cells[2,f] := Fld.TypeName
-      else FGridData.Cells[2,f] := '';
+        if Fld <> nil
+        then FGridData.Cells[3,f] := s
+        else FGridData.Cells[3,f] := '<error>';
 
-      if Fld <> nil
-      then FGridData.Cells[3,f] := ClearMultiline(FWatchPrinter.PrintWatchValue(Fld, wdfDefault))
-      else FGridData.Cells[3,f] := '<error>';
+        FGridData.Cells[4,f] := FieldLocationNames[FldInfo.FieldVisibility];
 
-      FGridData.Cells[4,f] := FieldLocationNames[FldInfo.FieldVisibility];
-
-      inc(f);
+        inc(f);
+      end;
     end;
+    FGridData.RowCount    := max(f, 2);
+    FGridMethods.RowCount := max(m, 2);
+  finally
+    FGridData.EndUpdate;
+    FGridMethods.EndUpdate;
   end;
+
+  DataPage.TabVisible := f > 1;
+  PropertiesPage.TabVisible :=false;
+  MethodsPage.TabVisible := m > 1;
+  if not (PageControl.ActivePage = MethodsPage) then
+    PageControl.ActivePage := DataPage;
 end;
 
 procedure TIDEInspectDlg.DataGridMouseDown(Sender: TObject; Button: TMouseButton;
@@ -529,6 +599,11 @@ begin
     exit;
   TimerClearData.Enabled := False;
   Clear;
+end;
+
+procedure TIDEInspectDlg.TimerFilterTimer(Sender: TObject);
+begin
+  EdFilterDone(nil);
 end;
 
 procedure TIDEInspectDlg.DataGridDoubleClick(Sender: TObject);
@@ -1116,6 +1191,10 @@ begin
   WatchInspectNav1.OnArrayPageSize := @ArrayNavChanged;
   WatchInspectNav1.ShowArrayNav := False;
 
+  WatchInspectNav1.edFilter.OnChange := @EdFilterChanged;
+  WatchInspectNav1.edFilter.OnEditingDone := @EdFilterDone;
+  WatchInspectNav1.edFilter.OnButtonClick := @EdFilterClear;
+
   FGridData:=TStringGrid.Create(DataPage);
   DataPage.InsertControl(FGridData);
   GridDataSetup(True);
@@ -1180,8 +1259,10 @@ procedure TIDEInspectDlg.DoWatchUpdated(const ASender: TIdeWatches;
 begin
   if (WatchInspectNav1.CurrentWatchValue = nil) or
      not (WatchInspectNav1.CurrentWatchValue.Validity in [ddsError, ddsInvalid, ddsValid])
-  then
+  then begin
+    WatchInspectNav1.edFilter.Clear;
     exit;
+  end;
   if (AWatch <> WatchInspectNav1.CurrentWatchValue.Watch) or
      (ASender <> WatchInspectNav1.Watches)
   then
@@ -1207,6 +1288,7 @@ begin
   if WatchInspectNav1.CurrentWatchValue.Validity = ddsValid then begin
     if WatchInspectNav1.CurrentWatchValue.TypeInfo <> nil then begin
       WatchInspectNav1.ShowArrayNav := False;
+      WatchInspectNav1.edFilter.Visible := False;
       case WatchInspectNav1.CurrentWatchValue.TypeInfo.Kind of
         skClass, skObject, skInterface: InspectClass();
         skRecord: InspectRecord();
@@ -1248,6 +1330,9 @@ begin
       WatchInspectNav1.ShowArrayNav := (FCurrentResData.ValueKind = rdkArray) or
         (FCurrentResData.ArrayLength > 0);
       WatchInspectNav1.ArrayNavigationBar1.HardLimits := (FCurrentResData.ValueKind <> rdkArray);
+
+      WatchInspectNav1.edFilter.Visible := (FCurrentResData.ValueKind in [rdkStruct, rdkArray]) or
+        (FCurrentResData.FieldCount > 0) or (FCurrentResData.ArrayLength > 0);
 
       if FCurrentResData.ArrayLength > 0 then
         InspectResDataArray
@@ -1295,6 +1380,31 @@ begin
   StatusBar1.SimpleText:=Format(lisInspectUnavailableError, [ShortenedExpression, ClearMultiline(FHumanReadable)]);
   ErrorLabel.Caption :=Format(lisInspectUnavailableError, [ShortenedExpression, FHumanReadable]);
   PageControl.ActivePage := ErrorPage;
+end;
+
+procedure TIDEInspectDlg.EdFilterChanged(Sender: TObject);
+begin
+  if FCurrentResData <> nil then begin
+    TimerFilter.Enabled := False;
+    TimerFilter.Enabled := True;
+  end;
+end;
+
+procedure TIDEInspectDlg.EdFilterClear(Sender: TObject);
+begin
+  WatchInspectNav1.edFilter.Text := '';
+end;
+
+procedure TIDEInspectDlg.EdFilterDone(Sender: TObject);
+begin
+  TimerFilter.Enabled := False;
+  if (FCurrentResData <> nil) and (WatchInspectNav1.CurrentWatchValue <> nil) then begin
+    if (FCurrentResData.FieldCount > 0) or (FCurrentResData.ValueKind = rdkStruct) then
+      InspectResDataStruct
+    else
+    if (FCurrentResData.ArrayLength > 0) or (FCurrentResData.ValueKind = rdkArray) then
+      InspectResDataArray;
+  end;
 end;
 
 procedure TIDEInspectDlg.DoDebuggerState(ADebugger: TDebuggerIntf;

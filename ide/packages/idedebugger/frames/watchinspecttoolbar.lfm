@@ -133,19 +133,33 @@ object WatchInspectNav: TWatchInspectNav
       Style = tbsCheck
     end
     object tbDivCol: TToolButton
-      Left = 366
+      Left = 516
       Height = 22
       Top = 2
       Caption = 'tbDivCol'
       Style = tbsDivider
     end
+    object edFilter: TEditButton
+      Left = 366
+      Height = 23
+      Top = 2
+      Width = 150
+      ButtonWidth = 23
+      MaxLength = 0
+      NumGlyphs = 1
+      PasswordChar = #0
+      TabOrder = 0
+      TextHint = 'filter'
+      Visible = False
+    end
     inline ArrayNavigationBar1: TArrayNavigationBar
-      Left = 371
+      Left = 521
       Height = 23
       Top = 2
       Width = 253
       ClientHeight = 23
       ClientWidth = 253
+      TabOrder = 1
       inherited btnArrayFastDown: TSpeedButton
         Height = 23
       end
@@ -178,39 +192,39 @@ object WatchInspectNav: TWatchInspectNav
       end
     end
     object tbDivArray: TToolButton
-      Left = 624
+      Left = 774
       Height = 22
       Top = 2
       Caption = 'tbDivArray'
       Style = tbsDivider
     end
     object BtnAddWatch: TToolButton
-      Left = 629
+      Left = 779
       Top = 2
       Caption = 'Add Watch'
       OnClick = BtnAddWatchClick
     end
     object BtnInspect: TToolButton
-      Left = 748
+      Left = 898
       Top = 2
       Caption = 'Inspect'
       OnClick = BtnInspectClick
     end
     object BtnEvaluate: TToolButton
-      Left = 696
+      Left = 846
       Top = 2
       Caption = 'Evaluate'
       OnClick = BtnEvaluateClick
     end
     object tbDivAdd: TToolButton
-      Left = 794
+      Left = 944
       Height = 22
       Top = 2
       Caption = 'tbDivAdd'
       Style = tbsDivider
     end
     object btnEvalHistory: TToolButton
-      Left = 799
+      Left = 949
       Top = 2
       Caption = 'History'
       DropdownMenu = mnuHistory

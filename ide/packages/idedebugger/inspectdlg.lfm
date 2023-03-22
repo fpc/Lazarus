@@ -58,7 +58,6 @@ object IDEInspectDlg: TIDEInspectDlg
         Top = 0
         Width = 490
         Align = alTop
-        Color = clDefault
         ParentColor = False
         PopupMenu = PopupMenu1
         OnMouseDown = DataGridMouseDown
@@ -72,7 +71,7 @@ object IDEInspectDlg: TIDEInspectDlg
     ClientHeight = 50
     ClientWidth = 498
     inherited ToolBar1: TToolBar
-      Height = 47
+      Height = 68
       Width = 498
       inherited tbDivPower: TToolButton
         Height = 22
@@ -84,15 +83,22 @@ object IDEInspectDlg: TIDEInspectDlg
         Height = 22
       end
       inherited tbDivCol: TToolButton
+        Left = 151
         Height = 22
+        Top = 24
+      end
+      inherited edFilter: TEditButton
+        Left = 1
+        Top = 24
       end
       inherited ArrayNavigationBar1: TArrayNavigationBar
-        Left = 1
+        Left = 156
         Height = 23
         Top = 24
         Width = 253
         ClientHeight = 23
         ClientWidth = 253
+        TabOrder = 1
         inherited btnArrayFastDown: TSpeedButton
           Height = 23
         end
@@ -125,30 +131,30 @@ object IDEInspectDlg: TIDEInspectDlg
         end
       end
       inherited tbDivArray: TToolButton
-        Left = 254
+        Left = 409
         Height = 22
         Top = 24
       end
       inherited BtnAddWatch: TToolButton
-        Left = 259
+        Left = 414
         Top = 24
       end
       inherited BtnInspect: TToolButton
-        Left = 378
-        Top = 24
+        Left = 53
+        Top = 46
       end
       inherited BtnEvaluate: TToolButton
-        Left = 326
-        Top = 24
+        Left = 1
+        Top = 46
       end
       inherited tbDivAdd: TToolButton
-        Left = 424
+        Left = 99
         Height = 22
-        Top = 24
+        Top = 46
       end
       inherited btnEvalHistory: TToolButton
-        Left = 429
-        Top = 24
+        Left = 104
+        Top = 46
       end
     end
     inherited Panel1: TPanel
@@ -176,5 +182,11 @@ object IDEInspectDlg: TIDEInspectDlg
       Caption = 'menuCopyValue'
       OnClick = menuCopyValueClick
     end
+  end
+  object TimerFilter: TTimer
+    Interval = 250
+    OnTimer = TimerFilterTimer
+    Left = 409
+    Top = 155
   end
 end

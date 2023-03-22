@@ -6,9 +6,9 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, ComCtrls, Buttons, StdCtrls, ExtCtrls,
-  Menus, LCLType, SpinEx, IDEImagesIntf, LazUTF8, LazClasses, LazDebuggerIntf,
-  IdeDebuggerStringConstants, ArrayNavigationFrame, IdeDebuggerOpts, Debugger,
-  IdeDebuggerBackendValueConv, IdeDebuggerBase;
+  Menus, LCLType, EditBtn, SpinEx, IDEImagesIntf, LazUTF8, LazClasses,
+  LazDebuggerIntf, IdeDebuggerStringConstants, ArrayNavigationFrame,
+  IdeDebuggerOpts, Debugger, IdeDebuggerBackendValueConv, IdeDebuggerBase;
 
 type
 
@@ -22,6 +22,7 @@ type
 
   TWatchInspectNav = class(TFrame)
     btnDisplayFormat: TToolButton;
+    edFilter: TEditButton;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
@@ -564,6 +565,9 @@ begin
   BtnEvaluate.Caption := drsEvaluate;
   BtnInspect.ImageIndex := IDEImages.LoadImage('debugger_inspect');
   BtnInspect.Caption := drsInspect;
+
+  edFilter.Images := IDEImages.Images_16;
+  edFilter.ImageIndex := IDEImages.LoadImage('btnfiltercancel');
 
   btnEvalHistory.Caption := drsHistory;
   btnEvalHistory.ImageIndex := IDEImages.LoadImage('evaluate_no_hist');
