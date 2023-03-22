@@ -99,9 +99,8 @@ allows hexadecimal values in the range <b>-$7FFFFFFF-1..$7FFFFFFF</b> and
 represent the minimum and maximum values for the Long data type.
 </p>
 <p>
-Bytes in the hexadecimal value are used as follows:
+Bytes in the hexadecimal value are used as follows: <b>$OOBBGGRR</b>.
 </p>
-<code>$OOBBGGRR</code>
 <dl>
 <dt>OO</dt>
 <dd>
