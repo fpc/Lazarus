@@ -19255,7 +19255,7 @@ cell editors, and loads any bitmaps required for the control.
 </p>
 <remark>
 The inherited method calls SetBounds and VisualChange, so the grid needs to 
-be fully instantiated it is called.
+be fully instantiated before it is called.
 </remark>
 </descr>
 <seealso>
