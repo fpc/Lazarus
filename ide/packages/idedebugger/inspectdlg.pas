@@ -31,7 +31,7 @@ uses
   Classes, SysUtils, Math,
   // LCL
   LCLProc, LCLType, Grids, StdCtrls, Menus, Forms, Controls, Graphics, ComCtrls,
-  ExtCtrls, Buttons, Spin, Clipbrd,
+  ExtCtrls, Buttons, Spin, Clipbrd, LMessages,
   // IdeIntf
   IDEWindowIntf, IDEImagesIntf, ObjectInspector, PropEdits,
   // DebuggerIntf
@@ -92,6 +92,7 @@ type
     FGridData: TStringGrid;
     FGridMethods: TStringGrid;
     FExpressionWasEvaluated: Boolean;
+    FInKeyForward: Boolean;
 
     procedure ArrayNavChanged(Sender: TArrayNavigationBar; AValue: Int64);
     procedure DoAddEval(Sender: TObject);
@@ -703,11 +704,56 @@ begin
 end;
 
 procedure TIDEInspectDlg.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+
+  procedure SentToGrid;
+  var
+    grid: TStringGrid;
+    Message: TLMKeyDown;
+  begin
+    if FGridData.IsVisible then grid := FGridData
+    else if FGridMethods.IsVisible then grid := FGridMethods
+    else
+      exit;
+
+    Message := Default(TLMKeyDown);
+    Message.Msg      := CN_KEYDOWN;
+    Message.CharCode := Key;
+    Message.KeyData  := ShiftStateToKeys(Shift);
+    FInKeyForward := True;
+    grid.Dispatch(Message);
+    FInKeyForward := False;
+    Key := 0;
+  end;
+
 begin
-  if (Key = VK_ESCAPE) and (not Docked) and
-     (not WatchInspectNav1.DropDownOpen)
-  then
-    Close;
+  case Key of
+    VK_ESCAPE: begin
+      if (not Docked) and (not WatchInspectNav1.DropDownOpen) then
+        Close;
+    end;
+    VK_UP, VK_DOWN, VK_HOME, VK_END, VK_PRIOR, VK_NEXT: begin
+      if FInKeyForward then exit;
+      if (ssCtrl in Shift) or (not WatchInspectNav1.EdInspect.Focused) then begin
+        Exclude(Shift, ssCtrl);
+        SentToGrid;
+      end;
+    end;
+    VK_LEFT: begin
+      if (ssAlt in Shift) then
+        WatchInspectNav1.GoPrevBrowseEntry;
+    end;
+    VK_RIGHT: begin
+      if (ssAlt in Shift) then
+        WatchInspectNav1.GoNextBrowseEntry;
+    end;
+    VK_RETURN: begin
+      if not (ssCtrl in Shift) then
+        exit;
+
+      DataGridDoubleClick(nil);
+      Key := 0;
+    end;
+  end;
 end;
 
 procedure TIDEInspectDlg.Localize;
@@ -1196,10 +1242,12 @@ begin
   WatchInspectNav1.edFilter.OnButtonClick := @EdFilterClear;
 
   FGridData:=TStringGrid.Create(DataPage);
+  FGridData.TabAdvance := aaNone;
   DataPage.InsertControl(FGridData);
   GridDataSetup(True);
 
   FGridMethods:=TStringGrid.Create(MethodsPage);
+  FGridMethods.TabAdvance := aaNone;
   MethodsPage.InsertControl(FGridMethods);
   GridMethodsSetup(True);
 
