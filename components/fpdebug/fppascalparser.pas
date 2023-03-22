@@ -5016,7 +5016,7 @@ end;
 
 constructor TFpPasParserValueSlicedArray.Create(ASlice: TFpPascalExpressionPartOperatorArraySliceController);
 begin
-  inherited Create(nil);
+  inherited Create(ASlice);
   FArraySlice := ASlice;
   FLowBoundIndex := TFpPasParserValueSlicedArrayIndex.Create('');
   FLowBoundIndex.FLowBound := SlicePart.StartValue;
