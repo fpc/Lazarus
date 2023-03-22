@@ -198,14 +198,14 @@ type
 
   TLldbDebuggerCommandLocals = class(TLldbDebuggerCommand)
   private
-    FLocals: TLocalsListIntf;
+    FLocals: IDbgLocalsListIntf;
     FLocalsInstr: TLldbInstructionLocals;
     procedure DoLocalsFreed(Sender: TObject);
     procedure LocalsInstructionFinished(Sender: TObject);
   protected
     procedure DoExecute; override;
   public
-    constructor Create(AOwner: TLldbDebugger; ALocals: TLocalsListIntf);
+    constructor Create(AOwner: TLldbDebugger; ALocals: IDbgLocalsListIntf);
     destructor Destroy; override;
   end;
 
@@ -214,7 +214,7 @@ type
   TLldbDebuggerCommandEvaluate = class(TLldbDebuggerCommand)
   private
     FInstr: TLldbInstructionExpression;
-    FWatchValue: TWatchValueIntf;
+    FWatchValue: IDbgWatchValueIntf;
     FExpr: String;
     FFlags: TWatcheEvaluateFlags;
     FCallback: TDBGEvaluateResultCallback;
@@ -225,7 +225,7 @@ type
     procedure DoExecute; override;
   public
     // TODO: Pass FCurrentStackFrame to create
-    constructor Create(AOwner: TLldbDebugger; AWatchValue: TWatchValueIntf);
+    constructor Create(AOwner: TLldbDebugger; AWatchValue: IDbgWatchValueIntf);
     constructor Create(AOwner: TLldbDebugger; AnExpr: String; AFlags: TWatcheEvaluateFlags;
                        ACallback: TDBGEvaluateResultCallback);
     destructor Destroy; override;
@@ -478,7 +478,7 @@ type
 
   TLldbLocals = class(TLocalsSupplier)
   public
-    procedure RequestData(ALocals: TLocalsListIntf); override;
+    procedure RequestData(ALocals: IDbgLocalsListIntf); override;
   end;
 
   {%endregion   ^^^^^  Locals  ^^^^^   }
@@ -493,7 +493,7 @@ type
   TLldbWatches = class(TWatchesSupplier)
   private
   protected
-    procedure InternalRequestData(AWatchValue: TWatchValueIntf); override;
+    procedure InternalRequestData(AWatchValue: IDbgWatchValueIntf); override;
   public
   end;
 
@@ -1301,7 +1301,7 @@ procedure TLldbDebuggerCommandLocals.LocalsInstructionFinished(Sender: TObject
 var
   n: String;
   i: Integer;
-  r: TLzDbgWatchDataIntf;
+  r: IDbgWatchDataIntf;
 begin
   if FLocals <> nil then begin
     FLocals.BeginUpdate;
@@ -1346,7 +1346,7 @@ begin
 end;
 
 constructor TLldbDebuggerCommandLocals.Create(AOwner: TLldbDebugger;
-  ALocals: TLocalsListIntf);
+  ALocals: IDbgLocalsListIntf);
 begin
   FLocals := ALocals;
   FLocals.AddFreeNotification(@DoLocalsFreed);
@@ -1673,7 +1673,7 @@ end;
 
 { TLldbLocals }
 
-procedure TLldbLocals.RequestData(ALocals: TLocalsListIntf);
+procedure TLldbLocals.RequestData(ALocals: IDbgLocalsListIntf);
 var
   Cmd: TLldbDebuggerCommandLocals;
 begin
@@ -1686,7 +1686,7 @@ end;
 
 { TLldbWatches }
 
-procedure TLldbWatches.InternalRequestData(AWatchValue: TWatchValueIntf);
+procedure TLldbWatches.InternalRequestData(AWatchValue: IDbgWatchValueIntf);
 var
   Cmd: TLldbDebuggerCommandEvaluate;
 begin
@@ -2596,7 +2596,7 @@ begin
 end;
 
 constructor TLldbDebuggerCommandEvaluate.Create(AOwner: TLldbDebugger;
-  AWatchValue: TWatchValueIntf);
+  AWatchValue: IDbgWatchValueIntf);
 begin
   FWatchValue := AWatchValue;
   FWatchValue.AddFreeNotification(@DoWatchFreed);

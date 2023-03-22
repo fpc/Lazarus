@@ -198,7 +198,7 @@ type
     function ShowBreakPointProperties(const ABreakpoint: TIDEBreakPoint): TModalresult; virtual; abstract;
     function ShowWatchProperties(const AWatch: TCurrentWatch; AWatchExpression: String = ''): TModalresult; virtual; abstract;
 
-    procedure RequestWatchData(AWatchValue: TWatchValueIntf); override;
+    procedure RequestWatchData(AWatchValue: IDbgWatchValueIntf); override;
     // Dialog routines
     procedure CreateDebugDialog(Sender: TObject; aFormName: string;
                           var AForm: TCustomForm; DoDisableAutoSizing: boolean); virtual; abstract;
@@ -250,7 +250,7 @@ implementation
 
 { TBaseDebugManager }
 
-procedure TBaseDebugManager.RequestWatchData(AWatchValue: TWatchValueIntf);
+procedure TBaseDebugManager.RequestWatchData(AWatchValue: IDbgWatchValueIntf);
 begin
   if (Watches <> nil) and (Watches.Supplier <> nil)
   then

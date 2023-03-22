@@ -28,7 +28,7 @@ type
 
   { TDbgDataRequestTemplateBase }
 
-  generic TDbgDataRequestTemplateBase<_BASE: TObject; _SENDER_INTF: TDbgDataRequestIntf> = class(_BASE)
+  generic TDbgDataRequestTemplateBase<_BASE: TObject; _SENDER_INTF: IDbgDataRequestIntf> = class(_BASE)
   private type
     TDbgDataRequestEventList = specialize TFPGList<TDbgDataRequestEvent>;
   strict private
@@ -52,8 +52,8 @@ type
 
   { TDbgDataRequestTemplate }
 
-  generic TDbgDataRequestTemplate<_BASE: TObject; _SENDER_INTF: TDbgDataRequestIntf>
-    = class(specialize TDbgDataRequestTemplateBase<_BASE, _SENDER_INTF>, TDbgDataRequestIntf)
+  generic TDbgDataRequestTemplate<_BASE: TObject; _SENDER_INTF: IDbgDataRequestIntf>
+    = class(specialize TDbgDataRequestTemplateBase<_BASE, _SENDER_INTF>, IDbgDataRequestIntf)
   private type
     TNotifyEventList = specialize TFPGList<TNotifyEvent>;
   strict private
@@ -70,8 +70,8 @@ type
 
   generic TInternalDbgMonitorBase<
     _BASE: TObject;
-    _MONITOR_INTF: TInternalDbgMonitorIntfType;
-    _SUPPLIER_INTF//: TInternalDbgSupplierIntfType
+    _MONITOR_INTF: IInternalDbgMonitorIntfType;
+    _SUPPLIER_INTF//: IInternalDbgSupplierIntfType
     >
     = class(_BASE)
   strict private
@@ -91,8 +91,8 @@ type
 
   generic TInternalDbgSupplierBase<
     _BASE: TObject;
-    _SUPPLIER_INTF: TInternalDbgSupplierIntfType;
-    _MONITOR_INTF //: TInternalDbgMonitorIntfType
+    _SUPPLIER_INTF: IInternalDbgSupplierIntfType;
+    _MONITOR_INTF //: IInternalDbgMonitorIntfType
     >
     = class(_BASE)
   strict private
@@ -113,8 +113,8 @@ type
   { TWatchesMonitorClassTemplate }
 
   generic TWatchesMonitorClassTemplate<_BASE: TObject> = class(
-    specialize TInternalDbgMonitorBase<_BASE, TWatchesMonitorIntf, TWatchesSupplierIntf>,
-    TWatchesMonitorIntf
+    specialize TInternalDbgMonitorBase<_BASE, IDbgWatchesMonitorIntf, IDbgWatchesSupplierIntf>,
+    IDbgWatchesMonitorIntf
   )
   protected
     procedure InvalidateWatchValues; virtual;
@@ -124,20 +124,20 @@ type
   { TWatchesSupplierClassTemplate }
 
   generic TWatchesSupplierClassTemplate<_BASE: TObject> = class(
-    specialize TInternalDbgSupplierBase<_BASE, TWatchesSupplierIntf, TWatchesMonitorIntf>,
-    TWatchesSupplierIntf
+    specialize TInternalDbgSupplierBase<_BASE, IDbgWatchesSupplierIntf, IDbgWatchesMonitorIntf>,
+    IDbgWatchesSupplierIntf
   )
   protected
   public
-    procedure RequestData(AWatchValue: TWatchValueIntf); virtual;
+    procedure RequestData(AWatchValue: IDbgWatchValueIntf); virtual;
     procedure TriggerInvalidateWatchValues; virtual;
   end;
 
   { TLocalsMonitorClassTemplate }
 
   generic TLocalsMonitorClassTemplate<_BASE: TObject> = class(
-    specialize TInternalDbgMonitorBase<_BASE, TLocalsMonitorIntf, TLocalsSupplierIntf>,
-    TLocalsMonitorIntf
+    specialize TInternalDbgMonitorBase<_BASE, IDbgLocalsMonitorIntf, IDbgLocalsSupplierIntf>,
+    IDbgLocalsMonitorIntf
   )
   protected
     procedure InvalidateLocalValues; virtual;
@@ -147,12 +147,12 @@ type
   { TLocalsSupplierClassTemplate }
 
   generic TLocalsSupplierClassTemplate<_BASE: TObject> = class(
-    specialize TInternalDbgSupplierBase<_BASE, TLocalsSupplierIntf, TLocalsMonitorIntf>,
-    TLocalsSupplierIntf
+    specialize TInternalDbgSupplierBase<_BASE, IDbgLocalsSupplierIntf, IDbgLocalsMonitorIntf>,
+    IDbgLocalsSupplierIntf
   )
   protected
   public
-    procedure RequestData(ALocalsList: TLocalsListIntf); virtual;
+    procedure RequestData(ALocalsList: IDbgLocalsListIntf); virtual;
     procedure TriggerInvalidateLocalsValues; virtual;
   end;
 
@@ -331,7 +331,7 @@ end;
 
 { TWatchesSupplierClassTemplate }
 
-procedure TWatchesSupplierClassTemplate.RequestData(AWatchValue: TWatchValueIntf);
+procedure TWatchesSupplierClassTemplate.RequestData(AWatchValue: IDbgWatchValueIntf);
 begin
   AWatchValue.Validity := ddsError;
 end;
@@ -357,7 +357,7 @@ end;
 
 { TLocalsSupplierClassTemplate }
 
-procedure TLocalsSupplierClassTemplate.RequestData(ALocalsList: TLocalsListIntf
+procedure TLocalsSupplierClassTemplate.RequestData(ALocalsList: IDbgLocalsListIntf
   );
 begin
   ALocalsList.Validity := ddsError;

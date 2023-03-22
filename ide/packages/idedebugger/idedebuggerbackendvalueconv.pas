@@ -12,20 +12,20 @@ type
 
   { TIdeDbgValueConvertSelector }
 
-  TIdeDbgValueConvertSelector = class(TFreeNotifyingObject, TLazDbgValueConvertSelectorIntf)
+  TIdeDbgValueConvertSelector = class(TFreeNotifyingObject, ILazDbgValueConvertSelectorIntf)
   private
-    FConverter: TLazDbgValueConverterIntf;
+    FConverter: ILazDbgValueConverterIntf;
     FMatchTypeNames: TStrings;
     FEnabled: Boolean;
     FName: String;
 
-    procedure SetConverter(AValue: TLazDbgValueConverterIntf);
+    procedure SetConverter(AValue: ILazDbgValueConverterIntf);
   protected
-    function GetConverter: TLazDbgValueConverterIntf;
+    function GetConverter: ILazDbgValueConverterIntf;
 
     function AllowedTypeNames: TStrings;
   public
-    constructor Create(AConverter: TLazDbgValueConverterIntf);
+    constructor Create(AConverter: ILazDbgValueConverterIntf);
     destructor Destroy; override;
 
     function CreateCopy: TIdeDbgValueConvertSelector;
@@ -33,7 +33,7 @@ type
     procedure LoadDataFromXMLConfig(const AConfig: TRttiXMLConfig; const APath: string);
     procedure SaveDataToXMLConfig(const AConfig: TRttiXMLConfig; const APath: string);
   published
-    property Converter: TLazDbgValueConverterIntf read FConverter write SetConverter;
+    property Converter: ILazDbgValueConverterIntf read FConverter write SetConverter;
     property Enabled: Boolean read FEnabled write FEnabled;
     property Name: String read FName write FName;
     property MatchTypeNames: TStrings read FMatchTypeNames;
@@ -44,14 +44,14 @@ type
 
   TIdeDbgValueConvertSelectorList = class(
     specialize TFPGObjectList<TIdeDbgValueConvertSelector>,
-    TLazDbgValueConvertSelectorListIntf
+    ILazDbgValueConvertSelectorListIntf
   )
   private
     FLock: TLazMonitor;
     FChanged: Boolean;
     FOnChanged: TNotifyEvent;
     function Count: Integer;
-    function Get(Index: Integer): TLazDbgValueConvertSelectorIntf;
+    function Get(Index: Integer): ILazDbgValueConvertSelectorIntf;
     function GetIdeItems(Index: Integer): TIdeDbgValueConvertSelector;
     procedure PutIdeItems(Index: Integer; AValue: TIdeDbgValueConvertSelector);
     procedure SetChanged(AValue: Boolean);
@@ -82,7 +82,7 @@ implementation
 
 { TIdeDbgValueConvertSelector }
 
-procedure TIdeDbgValueConvertSelector.SetConverter(AValue: TLazDbgValueConverterIntf);
+procedure TIdeDbgValueConvertSelector.SetConverter(AValue: ILazDbgValueConverterIntf);
 begin
   if FConverter = AValue then Exit;
   if FConverter <> nil then
@@ -92,7 +92,7 @@ begin
     FConverter.AddReference;
 end;
 
-function TIdeDbgValueConvertSelector.GetConverter: TLazDbgValueConverterIntf;
+function TIdeDbgValueConvertSelector.GetConverter: ILazDbgValueConverterIntf;
 begin
   Result := FConverter;
 end;
@@ -102,7 +102,7 @@ begin
   Result := FMatchTypeNames;
 end;
 
-constructor TIdeDbgValueConvertSelector.Create(AConverter: TLazDbgValueConverterIntf);
+constructor TIdeDbgValueConvertSelector.Create(AConverter: ILazDbgValueConverterIntf);
 begin
   inherited Create;
   Converter := AConverter;
@@ -168,7 +168,7 @@ begin
 end;
 
 function TIdeDbgValueConvertSelectorList.Get(Index: Integer
-  ): TLazDbgValueConvertSelectorIntf;
+  ): ILazDbgValueConvertSelectorIntf;
 begin
   Result := Items[Index];
 end;

@@ -20,19 +20,19 @@ type
      - Any setting that the IDE may need to store, should be published
   *)
 
-  TFpDbgValueConverter = class(TRefCountedObject, TLazDbgValueConverterIntf)
+  TFpDbgValueConverter = class(TRefCountedObject, ILazDbgValueConverterIntf)
   private
     FLastErrror: TFpError;
   protected
     function GetObject: TObject;
-    function GetSettingsFrame: TLazDbgValueConverterSettingsFrameIntf; virtual;
+    function GetSettingsFrame: ILazDbgValueConverterSettingsFrameIntf; virtual;
     procedure Init; virtual;
   public
     class function GetName: String; virtual; abstract;
     function GetRegistryEntry: TLazDbgValueConvertRegistryEntryClass; virtual;
     constructor Create; virtual;
     procedure Assign(ASource: TFpDbgValueConverter); virtual;
-    function CreateCopy: TLazDbgValueConverterIntf; virtual;
+    function CreateCopy: ILazDbgValueConverterIntf; virtual;
     function NeedConversionLimit: Boolean; virtual;
     (* CanHandleValue must return the SAME RESULT if called repeatedly (e.g. in an array)
        CanHandleValue must NOT depend on DATA, or anything that can change
@@ -57,7 +57,7 @@ type
     function ConvertValue(ASourceValue: TFpValue;
                           AnFpDebugger: TFpDebugDebuggerBase;
                           AnExpressionScope: TFpDbgSymbolScope;
-                          var AnResData: TLzDbgWatchDataIntf  // if changed, then the converter has done its job, and should return nil
+                          var AnResData: IDbgWatchDataIntf  // if changed, then the converter has done its job, and should return nil
                          ): TFpValue; virtual; abstract;
     procedure SetError(AnError: TFpError);
     property LastErrror: TFpError read FLastErrror;
@@ -66,12 +66,12 @@ type
 
   { TConverterSettingsFrameBase }
 
-  TConverterSettingsFrameBase = class(TFrame, TLazDbgValueConverterSettingsFrameIntf)
+  TConverterSettingsFrameBase = class(TFrame, ILazDbgValueConverterSettingsFrameIntf)
   protected
     function GetFrame: TObject; virtual;
   public
-    procedure ReadFrom(AConvertor: TLazDbgValueConverterIntf); virtual;
-    function WriteTo(AConvertor: TLazDbgValueConverterIntf): Boolean; virtual;
+    procedure ReadFrom(AConvertor: ILazDbgValueConverterIntf); virtual;
+    function WriteTo(AConvertor: ILazDbgValueConverterIntf): Boolean; virtual;
   end;
 
   { TConverterWithFuncCallSettingsFrame }
@@ -80,8 +80,8 @@ type
     chkRunAll: TCheckBox;
   public
     constructor Create(TheOwner: TComponent); override;
-    procedure ReadFrom(AConvertor: TLazDbgValueConverterIntf); override;
-    function WriteTo(AConvertor: TLazDbgValueConverterIntf): Boolean; override;
+    procedure ReadFrom(AConvertor: ILazDbgValueConverterIntf); override;
+    function WriteTo(AConvertor: ILazDbgValueConverterIntf): Boolean; override;
   end;
 
   { TFpDbgValueConverterWithFuncCall }
@@ -98,7 +98,7 @@ type
 
   { TFpDbgValueConvertSelectorIntfHelper }
 
-  TFpDbgValueConvertSelectorIntfHelper = type helper for TLazDbgValueConvertSelectorIntf
+  TFpDbgValueConvertSelectorIntfHelper = type helper for ILazDbgValueConvertSelectorIntf
     function CheckMatch(AValue: TFpValue; IgnoreInstanceClass: boolean = False): Boolean;
     function CheckTypeMatch(AValue: TFpValue; IgnoreInstanceClass: boolean = False): Boolean;
   end;
@@ -107,7 +107,7 @@ type
 
   TFpDbgValueConverterRegistryEntry = class(TLazDbgValueConvertRegistryEntry)
   public
-    class function CreateValueConvertorIntf: TLazDbgValueConverterIntf; override;
+    class function CreateValueConvertorIntf: ILazDbgValueConverterIntf; override;
     class function GetName: String; override;
     class function GetDebuggerClass: TClass; override;
   end;
@@ -120,14 +120,14 @@ type
   private
     function GetProcAddrFromMgr(AnFpDebugger: TFpDebugDebuggerBase; AnExpressionScope: TFpDbgSymbolScope): TDbgPtr;
   protected
-    function GetSettingsFrame: TLazDbgValueConverterSettingsFrameIntf; override;
+    function GetSettingsFrame: ILazDbgValueConverterSettingsFrameIntf; override;
   public
     class function GetName: String; override;
     function GetRegistryEntry: TLazDbgValueConvertRegistryEntryClass; override;
     function ConvertValue(ASourceValue: TFpValue;
                           AnFpDebugger: TFpDebugDebuggerBase;
                           AnExpressionScope: TFpDbgSymbolScope;
-                          var AnResData: TLzDbgWatchDataIntf
+                          var AnResData: IDbgWatchDataIntf
                          ): TFpValue; override;
   end;
 
@@ -154,7 +154,7 @@ end;
 
 { TFpDbgValueConverter }
 
-function TFpDbgValueConverter.CreateCopy: TLazDbgValueConverterIntf;
+function TFpDbgValueConverter.CreateCopy: ILazDbgValueConverterIntf;
 var
   c: TFpDbgValueConverter;
 begin
@@ -184,7 +184,7 @@ begin
   Result := Self;
 end;
 
-function TFpDbgValueConverter.GetSettingsFrame: TLazDbgValueConverterSettingsFrameIntf;
+function TFpDbgValueConverter.GetSettingsFrame: ILazDbgValueConverterSettingsFrameIntf;
 begin
   Result := nil;
 end;
@@ -218,13 +218,13 @@ begin
 end;
 
 procedure TConverterSettingsFrameBase.ReadFrom(
-  AConvertor: TLazDbgValueConverterIntf);
+  AConvertor: ILazDbgValueConverterIntf);
 begin
   //
 end;
 
 function TConverterSettingsFrameBase.WriteTo(
-  AConvertor: TLazDbgValueConverterIntf): Boolean;
+  AConvertor: ILazDbgValueConverterIntf): Boolean;
 begin
   Result := False; // nothing changed
 end;
@@ -232,7 +232,7 @@ end;
 { TConverterWithFuncCallSettingsFrame }
 
 procedure TConverterWithFuncCallSettingsFrame.ReadFrom(
-  AConvertor: TLazDbgValueConverterIntf);
+  AConvertor: ILazDbgValueConverterIntf);
 var
   c: TFpDbgValueConverterWithFuncCall;
 begin
@@ -245,7 +245,7 @@ begin
 end;
 
 function TConverterWithFuncCallSettingsFrame.WriteTo(
-  AConvertor: TLazDbgValueConverterIntf): Boolean;
+  AConvertor: ILazDbgValueConverterIntf): Boolean;
 var
   c: TFpDbgValueConverterWithFuncCall;
 begin
@@ -401,7 +401,7 @@ end;
 
 { TFpDbgValueConverterRegistryEntry }
 
-class function TFpDbgValueConverterRegistryEntry.CreateValueConvertorIntf: TLazDbgValueConverterIntf;
+class function TFpDbgValueConverterRegistryEntry.CreateValueConvertorIntf: ILazDbgValueConverterIntf;
 begin
   Result := TFpDbgValueConverterClass(GetConvertorClass).Create;
 end;
@@ -468,7 +468,7 @@ begin
   end;
 end;
 
-function TFpDbgValueConverterVariantToLStr.GetSettingsFrame: TLazDbgValueConverterSettingsFrameIntf;
+function TFpDbgValueConverterVariantToLStr.GetSettingsFrame: ILazDbgValueConverterSettingsFrameIntf;
 begin
   Result := TConverterWithFuncCallSettingsFrame.Create(nil);
 end;
@@ -485,7 +485,7 @@ end;
 
 function TFpDbgValueConverterVariantToLStr.ConvertValue(ASourceValue: TFpValue;
   AnFpDebugger: TFpDebugDebuggerBase; AnExpressionScope: TFpDbgSymbolScope;
-  var AnResData: TLzDbgWatchDataIntf): TFpValue;
+  var AnResData: IDbgWatchDataIntf): TFpValue;
 var
   NewResult, ProcVal, m: TFpValue;
   ProcSym: TFpSymbol;

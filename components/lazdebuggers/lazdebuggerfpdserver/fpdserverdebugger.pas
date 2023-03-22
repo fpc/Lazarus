@@ -181,12 +181,12 @@ type
 
   TFPDSendWatchEvaluateCommand = class(TFPDSendCommand)
   private
-    FWatchValue: TWatchValueIntf;
+    FWatchValue: IDbgWatchValueIntf;
     procedure DoWatchFreed(Sender: TObject);
   protected
     procedure ComposeJSon(AJsonObject: TJSONObject); override;
   public
-    constructor create(AWatchValue: TWatchValueIntf);
+    constructor create(AWatchValue: IDbgWatchValueIntf);
     destructor Destroy; override;
     procedure DoOnCommandSuccesfull(ACommandResponse: TJSonObject); override;
     procedure DoOnCommandFailed(ACommandResponse: TJSonObject); override;
@@ -212,12 +212,12 @@ type
 
   TFPDSendLocalsCommand = class(TFPDSendCommand)
   private
-    FLocals: TLocalsListIntf;
+    FLocals: IDbgLocalsListIntf;
     procedure DoLocalsFreed(Sender: TObject);
   protected
     procedure ComposeJSon(AJsonObject: TJSONObject); override;
   public
-    constructor create(ALocals: TLocalsListIntf);
+    constructor create(ALocals: IDbgLocalsListIntf);
     destructor Destroy; override;
     procedure DoOnCommandSuccesfull(ACommandResponse: TJSonObject); override;
     procedure DoOnCommandFailed(ACommandResponse: TJSonObject); override;
@@ -383,7 +383,7 @@ type
 
   TFPLocals = class(TLocalsSupplier)
   public
-    procedure RequestData(ALocals: TLocalsListIntf); override;
+    procedure RequestData(ALocals: IDbgLocalsListIntf); override;
   end;
 
   { TFPRegisters }
@@ -397,7 +397,7 @@ type
 
   TFPWatches = class(TWatchesSupplier)
   protected
-    procedure InternalRequestData(AWatchValue: TWatchValueIntf); override;
+    procedure InternalRequestData(AWatchValue: IDbgWatchValueIntf); override;
   end;
 
   { TFPCallStackSupplier }
@@ -511,7 +511,7 @@ begin
   AJsonObject.Add('command','locals');
 end;
 
-constructor TFPDSendLocalsCommand.create(ALocals: TLocalsListIntf);
+constructor TFPDSendLocalsCommand.create(ALocals: IDbgLocalsListIntf);
 begin
   inherited create(True);
   ALocals.AddFreeNotification(@DoLocalsFreed);
@@ -530,7 +530,7 @@ var
   JSonLocalsArr: TJSONArray;
   JSonLocalsEntryObj: TJSONObject;
   i: Integer;
-  r: TLzDbgWatchDataIntf;
+  r: IDbgWatchDataIntf;
 begin
   inherited DoOnCommandSuccesfull(ACommandResponse);
   if assigned(FLocals) then
@@ -556,7 +556,7 @@ begin
   FLocals.Validity := ddsInvalid;
 end;
 
-procedure TFPLocals.RequestData(ALocals: TLocalsListIntf);
+procedure TFPLocals.RequestData(ALocals: IDbgLocalsListIntf);
 begin
   if (Debugger = nil) or not(Debugger.State = dsPause)
   then begin
@@ -630,7 +630,7 @@ begin
   AJsonObject.Add('expression',FWatchValue.Expression);
 end;
 
-constructor TFPDSendWatchEvaluateCommand.create(AWatchValue: TWatchValueIntf);
+constructor TFPDSendWatchEvaluateCommand.create(AWatchValue: IDbgWatchValueIntf);
 begin
   inherited create(true);
   AWatchValue.AddFreeNotification(@DoWatchFreed);
@@ -672,7 +672,7 @@ end;
 
 { TFPWatches }
 
-procedure TFPWatches.InternalRequestData(AWatchValue: TWatchValueIntf);
+procedure TFPWatches.InternalRequestData(AWatchValue: IDbgWatchValueIntf);
 begin
   TFPDServerDebugger(Debugger).QueueCommand(TFPDSendWatchEvaluateCommand.create(AWatchValue));
   inherited InternalRequestData(AWatchValue);

@@ -28,23 +28,23 @@ type
     procedure DoWatchAbleFreed(Sender: TObject);
     procedure WatchNavChanged(Sender: TArrayNavigationBar; AValue: Int64);
   protected
-    function  WatchAbleResultFromNode(AVNode: PVirtualNode): TWatchAbleResultIntf; virtual; abstract;
-    function  WatchAbleResultFromObject(AWatchAble: TObject): TWatchAbleResultIntf; virtual; abstract;
+    function  WatchAbleResultFromNode(AVNode: PVirtualNode): IWatchAbleResultIntf; virtual; abstract;
+    function  WatchAbleResultFromObject(AWatchAble: TObject): IWatchAbleResultIntf; virtual; abstract;
 
-    procedure UpdateColumnsText(AWatchAble: TObject; AWatchAbleResult: TWatchAbleResultIntf; AVNode: PVirtualNode); virtual; abstract;
+    procedure UpdateColumnsText(AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf; AVNode: PVirtualNode); virtual; abstract;
     procedure ConfigureNewSubItem(AWatchAble: TObject); virtual;
 
-    procedure UpdateSubItemsLocked(AWatchAble: TObject; AWatchAbleResult: TWatchAbleResultIntf; AVNode: PVirtualNode; out ChildCount: LongWord); virtual;
-    procedure UpdateSubItems(AWatchAble: TObject; AWatchAbleResult: TWatchAbleResultIntf; AVNode: PVirtualNode; out ChildCount: LongWord); virtual;
-    procedure DoUpdateArraySubItems(AWatchAble: TObject; AWatchAbleResult: TWatchAbleResultIntf; AVNode: PVirtualNode; out ChildCount: LongWord);
-    procedure DoUpdateStructSubItems(AWatchAble: TObject; AWatchAbleResult: TWatchAbleResultIntf; AVNode: PVirtualNode; out ChildCount: LongWord);
-    procedure DoUpdateOldSubItems(AWatchAble: TObject; AWatchAbleResult: TWatchAbleResultIntf; AVNode: PVirtualNode; out ChildCount: LongWord);
+    procedure UpdateSubItemsLocked(AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf; AVNode: PVirtualNode; out ChildCount: LongWord); virtual;
+    procedure UpdateSubItems(AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf; AVNode: PVirtualNode; out ChildCount: LongWord); virtual;
+    procedure DoUpdateArraySubItems(AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf; AVNode: PVirtualNode; out ChildCount: LongWord);
+    procedure DoUpdateStructSubItems(AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf; AVNode: PVirtualNode; out ChildCount: LongWord);
+    procedure DoUpdateOldSubItems(AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf; AVNode: PVirtualNode; out ChildCount: LongWord);
   public
     constructor Create(ATreeView: TDbgTreeView);
     //destructor Destroy; override;
 
-    function AddWatchData(AWatchAble: TObject; AWatchAbleResult: TWatchAbleResultIntf = nil; AVNode: PVirtualNode = nil): PVirtualNode;
-    procedure UpdateWatchData(AWatchAble: TObject; AVNode: PVirtualNode; AWatchAbleResult: TWatchAbleResultIntf = nil);
+    function AddWatchData(AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf = nil; AVNode: PVirtualNode = nil): PVirtualNode;
+    procedure UpdateWatchData(AWatchAble: TObject; AVNode: PVirtualNode; AWatchAbleResult: IWatchAbleResultIntf = nil);
 
     property CancelUpdate: Boolean read FCancelUpdate write FCancelUpdate;
     property TreeView: TDbgTreeView read FTreeView;
@@ -81,7 +81,7 @@ procedure TDbgTreeViewWatchDataMgr.WatchNavChanged(Sender: TArrayNavigationBar;
 var
   VNode: PVirtualNode;
   AWatchAble: TObject;
-  AWatchAbleResult: TWatchAbleResultIntf;
+  AWatchAbleResult: IWatchAbleResultIntf;
   c: LongWord;
 begin
   if Sender.OwnerData = nil then
@@ -106,14 +106,14 @@ begin
 end;
 
 procedure TDbgTreeViewWatchDataMgr.UpdateSubItemsLocked(AWatchAble: TObject;
-  AWatchAbleResult: TWatchAbleResultIntf; AVNode: PVirtualNode; out
+  AWatchAbleResult: IWatchAbleResultIntf; AVNode: PVirtualNode; out
   ChildCount: LongWord);
 begin
   UpdateSubItems(AWatchAble, AWatchAbleResult, AVNode, ChildCount);
 end;
 
 procedure TDbgTreeViewWatchDataMgr.UpdateSubItems(AWatchAble: TObject;
-  AWatchAbleResult: TWatchAbleResultIntf; AVNode: PVirtualNode; out
+  AWatchAbleResult: IWatchAbleResultIntf; AVNode: PVirtualNode; out
   ChildCount: LongWord);
 var
   ResData: TWatchResultData;
@@ -148,7 +148,7 @@ begin
 end;
 
 procedure TDbgTreeViewWatchDataMgr.DoUpdateArraySubItems(AWatchAble: TObject;
-  AWatchAbleResult: TWatchAbleResultIntf; AVNode: PVirtualNode; out
+  AWatchAbleResult: IWatchAbleResultIntf; AVNode: PVirtualNode; out
   ChildCount: LongWord);
 var
   NewWatchAble: TObject;
@@ -214,7 +214,7 @@ begin
     else begin
       nd := FTreeView.AddChild(AVNode, NewWatchAble);
     end;
-    (NewWatchAble as TFreeNotifyingIntf).AddFreeNotification(@DoWatchAbleFreed);
+    (NewWatchAble as IFreeNotifyingIntf).AddFreeNotification(@DoWatchAbleFreed);
     UpdateWatchData(NewWatchAble, nd);
   end;
 
@@ -225,11 +225,11 @@ begin
   KeepCnt := max(max(50, KeepCnt+10),
            Min(KeepCnt*10, 500) );
   KeepBelow := Min(KeepBelow, KeepCnt - Nav.PageSize);
-  (AWatchAble as TWatchAbleDataIntf).LimitChildWatchCount(KeepCnt, ResData.LowBound + KeepBelow);
+  (AWatchAble as IWatchAbleDataIntf).LimitChildWatchCount(KeepCnt, ResData.LowBound + KeepBelow);
 end;
 
 procedure TDbgTreeViewWatchDataMgr.DoUpdateStructSubItems(AWatchAble: TObject;
-  AWatchAbleResult: TWatchAbleResultIntf; AVNode: PVirtualNode; out
+  AWatchAbleResult: IWatchAbleResultIntf; AVNode: PVirtualNode; out
   ChildCount: LongWord);
 var
   ResData: TWatchResultData;
@@ -264,13 +264,13 @@ begin
     else begin
       nd := FTreeView.AddChild(AVNode, NewWatchAble);
     end;
-    (NewWatchAble as TFreeNotifyingIntf).AddFreeNotification(@DoWatchAbleFreed);
+    (NewWatchAble as IFreeNotifyingIntf).AddFreeNotification(@DoWatchAbleFreed);
     UpdateWatchData(NewWatchAble, nd);
   end;
 end;
 
 procedure TDbgTreeViewWatchDataMgr.DoUpdateOldSubItems(AWatchAble: TObject;
-  AWatchAbleResult: TWatchAbleResultIntf; AVNode: PVirtualNode; out
+  AWatchAbleResult: IWatchAbleResultIntf; AVNode: PVirtualNode; out
   ChildCount: LongWord);
 var
   TypInfo: TDBGType;
@@ -307,7 +307,7 @@ begin
       else begin
         nd := FTreeView.AddChild(AVNode, NewWatchAble);
       end;
-      (NewWatchAble as TFreeNotifyingIntf).AddFreeNotification(@DoWatchAbleFreed);
+      (NewWatchAble as IFreeNotifyingIntf).AddFreeNotification(@DoWatchAbleFreed);
       UpdateWatchData(NewWatchAble, nd);
     end;
   end;
@@ -331,7 +331,7 @@ procedure TDbgTreeViewWatchDataMgr.TreeViewInitChildren(
   Sender: TBaseVirtualTree; Node: PVirtualNode; var ChildCount: Cardinal);
 var
   AWatchAble: TObject;
-  AWatchAbleResult: TWatchAbleResultIntf;
+  AWatchAbleResult: IWatchAbleResultIntf;
 begin
   ChildCount := 0;
   AWatchAble := FTreeView.NodeItem[Node];
@@ -351,7 +351,7 @@ procedure TDbgTreeViewWatchDataMgr.DoItemRemovedFromView(Sender: TDbgTreeView;
   AWatchAble: TObject; ANode: PVirtualNode);
 begin
   if AWatchAble <> nil then
-    with (AWatchAble as TWatchAbleDataIntf) do begin
+    with (AWatchAble as IWatchAbleDataIntf) do begin
       ClearDisplayData;
       RemoveFreeNotification(@DoWatchAbleFreed);
     end;
@@ -366,7 +366,7 @@ begin
 end;
 
 function TDbgTreeViewWatchDataMgr.AddWatchData(AWatchAble: TObject;
-  AWatchAbleResult: TWatchAbleResultIntf; AVNode: PVirtualNode): PVirtualNode;
+  AWatchAbleResult: IWatchAbleResultIntf; AVNode: PVirtualNode): PVirtualNode;
 begin
   if AWatchAble = nil then
     exit;
@@ -374,14 +374,14 @@ begin
   if (AVNode <> nil) then begin
     FTreeView.NodeItem[AVNode] := AWatchAble;
     FTreeView.SelectNode(AVNode);
-    (AWatchAble as TFreeNotifyingIntf).AddFreeNotification(@DoWatchAbleFreed);
+    (AWatchAble as IFreeNotifyingIntf).AddFreeNotification(@DoWatchAbleFreed);
   end
   else begin
     AVNode := FTreeView.FindNodeForItem(AWatchAble);
     if AVNode = nil then begin
       AVNode := FTreeView.AddChild(nil, AWatchAble);
       FTreeView.SelectNode(AVNode);
-      (AWatchAble as TFreeNotifyingIntf).AddFreeNotification(@DoWatchAbleFreed);
+      (AWatchAble as IFreeNotifyingIntf).AddFreeNotification(@DoWatchAbleFreed);
     end;
   end;
   Result := AVNode;
@@ -390,7 +390,7 @@ begin
 end;
 
 procedure TDbgTreeViewWatchDataMgr.UpdateWatchData(AWatchAble: TObject;
-  AVNode: PVirtualNode; AWatchAbleResult: TWatchAbleResultIntf);
+  AVNode: PVirtualNode; AWatchAbleResult: IWatchAbleResultIntf);
 var
   TypInfo: TDBGType;
   HasChildren: Boolean;

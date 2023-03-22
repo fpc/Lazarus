@@ -46,8 +46,8 @@ type
     FValConvList: TIdeDbgValueConvertSelectorList;
     FCurIdx: Integer;
     FCurConvConf: TIdeDbgValueConvertSelector;
-    FCurConv: TLazDbgValueConverterIntf;
-    FCurConvSettings: TLazDbgValueConverterSettingsFrameIntf;
+    FCurConv: ILazDbgValueConverterIntf;
+    FCurConvSettings: ILazDbgValueConverterSettingsFrameIntf;
 
     procedure SetCurConv(AValConv: TIdeDbgValueConvertSelector);
     procedure UpdateConvForClass;
@@ -206,7 +206,7 @@ end;
 procedure TIdeDbgValConvFrame.SetCurConv(AValConv: TIdeDbgValueConvertSelector);
 begin
   FCurConvConf := AValConv;
-  FCurConv := TLazDbgValueConvertSelectorIntf(FCurConvConf).GetConverter;
+  FCurConv := ILazDbgValueConvertSelectorIntf(FCurConvConf).GetConverter;
   UpdateConvPanel;
 end;
 

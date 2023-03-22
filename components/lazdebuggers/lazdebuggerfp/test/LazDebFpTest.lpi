@@ -359,7 +359,7 @@
           </Linking>
         </CompilerOptions>
       </Item20>
-      <SharedMatrixOptions Count="26">
+      <SharedMatrixOptions Count="27">
         <Item1 ID="892138315231" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O- CRriot gh gt Sa,O- CRriot gh gtt Sa,O- CRriot gh gttt Sa,O- CRriot  Sa,O- opt,32 bit O- CRriot gh gt,O- CRriot gh gtttt &lt;nil> Sa" Value="-O-"/>
         <Item2 ID="942436582238" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O1 Criot gh gt Sa,O1 Criot gh gtt Sa Si,O1 Criot Si,O1 opt" Value="-O-1"/>
         <Item3 ID="862987172568" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O2 CRriot Sa Si,O2 Sa Si,O2 opt,O2 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG" Value="-O-2"/>
@@ -386,6 +386,7 @@
         <Item24 ID="282360485400" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O4 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG,O2 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG,O3 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG" Value="-dTEST_FPDEBUG_SINGLE_THREAD"/>
         <Item25 ID="285688265515" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O4 opt,O3 opt,O4 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG,O2 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG,O3 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG" Value="-uFPDEBUG_THREAD_CHECK"/>
         <Item26 ID="552902072333" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O4 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG,O2 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG,O3 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG" Value="-dTEST_LOG_TIME"/>
+        <Item27 ID="424192151463" Targets="#project,LazDebuggerFp,FpDebug,DebuggerIntf,IdeDebugger,LazDebugTestBase" Modes="O2 opt TEST_FPDEBUG_SINGLE_THREAD NO_LOG" Value="-uINLINE_OFF"/>
       </SharedMatrixOptions>
     </BuildModes>
     <PublishOptions>

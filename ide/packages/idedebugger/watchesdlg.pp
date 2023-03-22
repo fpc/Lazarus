@@ -203,14 +203,14 @@ type
   protected
     FWatchDlg: TWatchesDlg;
 
-    function WatchAbleResultFromNode(AVNode: PVirtualNode): TWatchAbleResultIntf; override;
-    function WatchAbleResultFromObject(AWatchAble: TObject): TWatchAbleResultIntf; override;
+    function WatchAbleResultFromNode(AVNode: PVirtualNode): IWatchAbleResultIntf; override;
+    function WatchAbleResultFromObject(AWatchAble: TObject): IWatchAbleResultIntf; override;
 
-    procedure UpdateColumnsText(AWatchAble: TObject; AWatchAbleResult: TWatchAbleResultIntf; AVNode: PVirtualNode); override;
+    procedure UpdateColumnsText(AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf; AVNode: PVirtualNode); override;
     procedure ConfigureNewSubItem(AWatchAble: TObject); override;
-    procedure UpdateSubItems(AWatchAble: TObject; AWatchAbleResult: TWatchAbleResultIntf;
+    procedure UpdateSubItems(AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf;
       AVNode: PVirtualNode; out ChildCount: LongWord); override;
-    procedure UpdateSubItemsLocked(AWatchAble: TObject; AWatchAbleResult: TWatchAbleResultIntf;
+    procedure UpdateSubItemsLocked(AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf;
       AVNode: PVirtualNode; out ChildCount: LongWord); override;
   end;
 
@@ -1326,7 +1326,7 @@ begin
   DebugBoss.UnLockCommandProcessing;
 end;
 
-function TDbgTreeViewWatchValueMgr.WatchAbleResultFromNode(AVNode: PVirtualNode): TWatchAbleResultIntf;
+function TDbgTreeViewWatchValueMgr.WatchAbleResultFromNode(AVNode: PVirtualNode): IWatchAbleResultIntf;
 var
   AWatchAble: TObject;
 begin
@@ -1336,7 +1336,7 @@ begin
   Result := TIdeWatch(AWatchAble).Values[FWatchDlg.GetThreadId, FWatchDlg.GetStackframe];
 end;
 
-function TDbgTreeViewWatchValueMgr.WatchAbleResultFromObject(AWatchAble: TObject): TWatchAbleResultIntf;
+function TDbgTreeViewWatchValueMgr.WatchAbleResultFromObject(AWatchAble: TObject): IWatchAbleResultIntf;
 var
   nd: TObject;
 begin
@@ -1346,7 +1346,7 @@ begin
 end;
 
 procedure TDbgTreeViewWatchValueMgr.UpdateColumnsText(AWatchAble: TObject;
-  AWatchAbleResult: TWatchAbleResultIntf; AVNode: PVirtualNode);
+  AWatchAbleResult: IWatchAbleResultIntf; AVNode: PVirtualNode);
 var
   WatchValueStr: String;
   da: TDBGPtr;
@@ -1406,7 +1406,7 @@ begin
 end;
 
 procedure TDbgTreeViewWatchValueMgr.UpdateSubItems(AWatchAble: TObject;
-  AWatchAbleResult: TWatchAbleResultIntf; AVNode: PVirtualNode; out
+  AWatchAbleResult: IWatchAbleResultIntf; AVNode: PVirtualNode; out
   ChildCount: LongWord);
 begin
   exclude(FWatchDlg.FStateFlags, wdsfUpdating);
@@ -1415,7 +1415,7 @@ begin
 end;
 
 procedure TDbgTreeViewWatchValueMgr.UpdateSubItemsLocked(AWatchAble: TObject;
-  AWatchAbleResult: TWatchAbleResultIntf; AVNode: PVirtualNode; out
+  AWatchAbleResult: IWatchAbleResultIntf; AVNode: PVirtualNode; out
   ChildCount: LongWord);
 begin
   DebugBoss.LockCommandProcessing;

@@ -17,8 +17,8 @@ type
   private
     FDebugger: TFpDebugDebuggerBase;
     FExpressionScope: TFpDbgSymbolScope;
-    FValConvList: TLazDbgValueConvertSelectorListIntf;
-    FValConfig: TLazDbgValueConvertSelectorIntf;
+    FValConvList: ILazDbgValueConvertSelectorListIntf;
+    FValConfig: ILazDbgValueConvertSelectorIntf;
 
     FExtraDephtLevelIsArray: Boolean; // defExtraDepth / RecurseCnt=-1
     FExtraDephtLevelItemConv: TFpDbgValueConverter;
@@ -35,9 +35,9 @@ type
     destructor Destroy; override;
 
     function DoValueToResData(AnFpValue: TFpValue;
-      AnResData: TLzDbgWatchDataIntf): Boolean; override;
-    property ValConvList: TLazDbgValueConvertSelectorListIntf read FValConvList write FValConvList;
-    property ValConfig: TLazDbgValueConvertSelectorIntf read FValConfig write FValConfig;
+      AnResData: IDbgWatchDataIntf): Boolean; override;
+    property ValConvList: ILazDbgValueConvertSelectorListIntf read FValConvList write FValConvList;
+    property ValConfig: ILazDbgValueConvertSelectorIntf read FValConfig write FValConfig;
     property Debugger: TFpDebugDebuggerBase read FDebugger write FDebugger;
     property ExpressionScope: TFpDbgSymbolScope read FExpressionScope write FExpressionScope;
     property MaxArrayConv: Integer read FMaxArrayConv write SetMaxArrayConv;
@@ -105,11 +105,11 @@ begin
 end;
 
 function TFpLazDbgWatchResultConvertor.DoValueToResData(AnFpValue: TFpValue;
-  AnResData: TLzDbgWatchDataIntf): Boolean;
+  AnResData: IDbgWatchDataIntf): Boolean;
 var
   NewFpVal: TFpValue;
   CurConv: TFpDbgValueConverter;
-  AnResFld, AnResFld2: TLzDbgWatchDataIntf;
+  AnResFld, AnResFld2: IDbgWatchDataIntf;
   WasInArray, WasInNonConvert: Boolean;
 begin
   Result := False;

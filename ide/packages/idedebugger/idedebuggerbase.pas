@@ -14,13 +14,13 @@ uses
 
 type
 
-  TFreeNotifyingIntf = interface ['fni']
+  IFreeNotifyingIntf = interface ['fni']
     procedure AddFreeNotification(ANotification: TNotifyEvent);
     procedure RemoveFreeNotification(ANotification: TNotifyEvent);
   end;
 
 
-  TWatchAbleDataIntf = interface(TFreeNotifyingIntf) ['wdi']
+  IWatchAbleDataIntf = interface(IFreeNotifyingIntf) ['wdi']
     procedure LimitChildWatchCount(AMaxCnt: Integer; AKeepIndexEntriesBelow: Int64 = low(Int64)); virtual;
     procedure ClearDisplayData;  // Clear any cached display-data / keep only what's needed for the snapshot
 
@@ -33,7 +33,7 @@ type
     property DisplayName: String read GetDisplayName;
   end;
 
-  TWatchAbleResultIntf = interface ['wdr']
+  IWatchAbleResultIntf = interface ['wdr']
     function GetChildrenByNameAsArrayEntry(AName: Int64): TObject;
     function GetChildrenByNameAsField(AName, AClassName: String): TObject;
 
@@ -223,7 +223,7 @@ type
 
   { TWatchesMonitor }
 
-  TWatchesMonitor = class(specialize TWatchesMonitorClassTemplate<TDebuggerDataHandler>, TWatchesMonitorIntf)
+  TWatchesMonitor = class(specialize TWatchesMonitorClassTemplate<TDebuggerDataHandler>, IDbgWatchesMonitorIntf)
   protected
     procedure DoStateChange(const AOldState, ANewState: TDBGState); reintroduce;
 
@@ -285,7 +285,7 @@ type
 
   { TLocalsMonitor }
 
-  TLocalsMonitor = class(specialize TLocalsMonitorClassTemplate<TDebuggerDataHandler>, TLocalsMonitorIntf)
+  TLocalsMonitor = class(specialize TLocalsMonitorClassTemplate<TDebuggerDataHandler>, IDbgLocalsMonitorIntf)
   protected
     procedure DoStateChange(const AOldState, ANewState: TDBGState); reintroduce;
 
@@ -358,7 +358,7 @@ function TWatchValue.GetResultData: TWatchResultData;
   end;
 
 var
-  UsedConv: TLazDbgValueConverterIntf;
+  UsedConv: ILazDbgValueConverterIntf;
   SrcData: TWatchResultData;
 
   function CreateJson: TWatchResultDataJSon;

@@ -15,7 +15,7 @@ type
 
   { TJsonForDebugSettingsFrame }
 
-  TJsonForDebugSettingsFrame = class(TFrame, TLazDbgValueConverterSettingsFrameIntf)
+  TJsonForDebugSettingsFrame = class(TFrame, ILazDbgValueConverterSettingsFrameIntf)
     ConverterWithFuncCallSettingsFrame1: TConverterWithFuncCallSettingsFrame;
     edFuncName: TEdit;
     edJsonAddress: TEdit;
@@ -27,8 +27,8 @@ type
   private
 
   protected
-    procedure ReadFrom(AConvertor: TLazDbgValueConverterIntf);
-    function WriteTo(AConvertor: TLazDbgValueConverterIntf): Boolean;
+    procedure ReadFrom(AConvertor: ILazDbgValueConverterIntf);
+    function WriteTo(AConvertor: ILazDbgValueConverterIntf): Boolean;
     function GetFrame: TObject;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -45,7 +45,7 @@ type
     function GetProcAddr(AnFpDebugger: TFpDebugDebuggerBase; AnExpressionScope: TFpDbgSymbolScope): TDBGPtr;
     function JsonAddressKeyIsStored: Boolean;
   protected
-    function GetSettingsFrame: TLazDbgValueConverterSettingsFrameIntf; override;
+    function GetSettingsFrame: ILazDbgValueConverterSettingsFrameIntf; override;
     procedure Init; override;
   public
     class function GetName: String; override;
@@ -54,7 +54,7 @@ type
     function ConvertValue(ASourceValue: TFpValue;
                           AnFpDebugger: TFpDebugDebuggerBase;
                           AnExpressionScope: TFpDbgSymbolScope;
-                          var AnResData: TLzDbgWatchDataIntf
+                          var AnResData: IDbgWatchDataIntf
                          ): TFpValue; override;
 
   published
@@ -77,7 +77,7 @@ implementation
 { TJsonForDebugSettingsFrame }
 
 procedure TJsonForDebugSettingsFrame.ReadFrom(
-  AConvertor: TLazDbgValueConverterIntf);
+  AConvertor: ILazDbgValueConverterIntf);
 var
   c: TFpDbgValueConverterJsonForDebug;
 begin
@@ -94,7 +94,7 @@ begin
 end;
 
 function TJsonForDebugSettingsFrame.WriteTo(
-  AConvertor: TLazDbgValueConverterIntf): Boolean;
+  AConvertor: ILazDbgValueConverterIntf): Boolean;
 var
   c: TFpDbgValueConverterJsonForDebug;
 begin
@@ -182,7 +182,7 @@ begin
   Result := FFunctionName <> 'JsonForDebug';
 end;
 
-function TFpDbgValueConverterJsonForDebug.GetSettingsFrame: TLazDbgValueConverterSettingsFrameIntf;
+function TFpDbgValueConverterJsonForDebug.GetSettingsFrame: ILazDbgValueConverterSettingsFrameIntf;
 begin
   Result := TJsonForDebugSettingsFrame.Create(nil);
 end;
@@ -216,7 +216,7 @@ end;
 
 function TFpDbgValueConverterJsonForDebug.ConvertValue(ASourceValue: TFpValue;
   AnFpDebugger: TFpDebugDebuggerBase; AnExpressionScope: TFpDbgSymbolScope;
-  var AnResData: TLzDbgWatchDataIntf): TFpValue;
+  var AnResData: IDbgWatchDataIntf): TFpValue;
 var
   CurProccess: TDbgProcess;
   TpName, JsonText: String;

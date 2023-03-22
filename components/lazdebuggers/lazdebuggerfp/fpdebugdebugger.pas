@@ -119,7 +119,7 @@ type
     procedure UpdateLocals_DecRef(Data: PtrInt = 0); override;
     procedure DoRemovedFromLinkedList; override; // _DecRef
   public
-    constructor Create(ADebugger: TFpDebugDebuggerBase; ALocals: TLocalsListIntf);
+    constructor Create(ADebugger: TFpDebugDebuggerBase; ALocals: IDbgLocalsListIntf);
   end;
 
   { TFpThreadWorkerModifyUpdate }
@@ -133,12 +133,12 @@ type
 
   TFpThreadWorkerWatchValueEvalUpdate = class(TFpThreadWorkerWatchValueEval)
   private
-    procedure DoWachCanceled(Sender: TDbgDataRequestIntf; Data: TDbgDataRequestEventData);
+    procedure DoWachCanceled(Sender: IDbgDataRequestIntf; Data: TDbgDataRequestEventData);
   protected
     procedure UpdateWatch_DecRef(Data: PtrInt = 0); override;
     procedure DoRemovedFromLinkedList; override; // _DecRef
   public
-    constructor Create(ADebugger: TFpDebugDebuggerBase; AWatchValue: TWatchValueIntf);
+    constructor Create(ADebugger: TFpDebugDebuggerBase; AWatchValue: IDbgWatchValueIntf);
   end;
 
   { TFpThreadWorkerBreakPointSetUpdate }
@@ -487,7 +487,7 @@ type
     function  FpDebugger: TFpDebugDebugger;
     procedure StopWorkes;
     procedure DoStateLeavePause; override;
-    procedure InternalRequestData(AWatchValue: TWatchValueIntf); override;
+    procedure InternalRequestData(AWatchValue: IDbgWatchValueIntf); override;
   public
     destructor Destroy; override;
   end;
@@ -525,7 +525,7 @@ type
     procedure DoStateLeavePause; override;
   public
     destructor Destroy; override;
-    procedure RequestData(ALocals: TLocalsListIntf); override;
+    procedure RequestData(ALocals: IDbgLocalsListIntf); override;
   end;
 
   { TFPRegisters }
@@ -1016,7 +1016,7 @@ begin
 end;
 
 constructor TFpThreadWorkerLocalsUpdate.Create(ADebugger: TFpDebugDebuggerBase;
-  ALocals: TLocalsListIntf);
+  ALocals: IDbgLocalsListIntf);
 begin
   // Runs in IDE thread (TThread.Queue)
   assert(system.ThreadID = classes.MainThreadID, 'TFpThreadWorkerLocals.Create: system.ThreadID = classes.MainThreadID');
@@ -1030,7 +1030,7 @@ end;
 { TFpThreadWorkerWatchValueEvalUpdate }
 
 procedure TFpThreadWorkerWatchValueEvalUpdate.DoWachCanceled(
-  Sender: TDbgDataRequestIntf; Data: TDbgDataRequestEventData);
+  Sender: IDbgDataRequestIntf; Data: TDbgDataRequestEventData);
 begin
   assert(system.ThreadID = classes.MainThreadID, 'TFpThreadWorkerWatchValueEvalUpdate.DoWachCanceled: system.ThreadID = classes.MainThreadID');
   RequestStop;
@@ -1043,7 +1043,7 @@ end;
 procedure TFpThreadWorkerWatchValueEvalUpdate.UpdateWatch_DecRef(Data: PtrInt);
 var
   dbg: TFpDebugDebuggerBase;
-  w: TWatchValueIntf;
+  w: IDbgWatchValueIntf;
 begin
   assert(system.ThreadID = classes.MainThreadID, 'TFpThreadWorkerWatchValueEval.UpdateWatch_DecRef: system.ThreadID = classes.MainThreadID');
 
@@ -1061,7 +1061,7 @@ end;
 
 procedure TFpThreadWorkerWatchValueEvalUpdate.DoRemovedFromLinkedList;
 var
-  w: TWatchValueIntf;
+  w: IDbgWatchValueIntf;
 begin
   if FWatchValue <> nil then begin
     w := FWatchValue;
@@ -1075,7 +1075,7 @@ begin
 end;
 
 constructor TFpThreadWorkerWatchValueEvalUpdate.Create(
-  ADebugger: TFpDebugDebuggerBase; AWatchValue: TWatchValueIntf);
+  ADebugger: TFpDebugDebuggerBase; AWatchValue: IDbgWatchValueIntf);
 begin
   assert(system.ThreadID = classes.MainThreadID, 'TFpThreadWorkerWatchValueEval.Create: system.ThreadID = classes.MainThreadID');
   FWatchValue := AWatchValue;
@@ -1849,7 +1849,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TFPLocals.RequestData(ALocals: TLocalsListIntf);
+procedure TFPLocals.RequestData(ALocals: IDbgLocalsListIntf);
 var
   WorkItem: TFpThreadWorkerLocalsUpdate;
 begin
@@ -2543,7 +2543,7 @@ begin
   FWatchEvalWorkers.WaitForWorkers(True);
 end;
 
-procedure TFPWatches.InternalRequestData(AWatchValue: TWatchValueIntf);
+procedure TFPWatches.InternalRequestData(AWatchValue: IDbgWatchValueIntf);
 var
   WorkItem: TFpThreadWorkerWatchValueEvalUpdate;
 begin

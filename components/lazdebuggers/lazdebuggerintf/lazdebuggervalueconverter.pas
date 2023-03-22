@@ -9,48 +9,48 @@ uses
   Classes, SysUtils, fgl;
 
 type
-  TLazDbgValueConverterIntf = interface;
+  ILazDbgValueConverterIntf = interface;
   TLazDbgValueConvertRegistryEntry = class;
   TLazDbgValueConvertRegistryEntryClass = class of TLazDbgValueConvertRegistryEntry;
 
-  TLazDbgValueConverterSettingsFrameIntf = interface
-    procedure ReadFrom(AConvertor: TLazDbgValueConverterIntf);
-    function WriteTo(AConvertor: TLazDbgValueConverterIntf): Boolean;
+  ILazDbgValueConverterSettingsFrameIntf = interface
+    procedure ReadFrom(AConvertor: ILazDbgValueConverterIntf);
+    function WriteTo(AConvertor: ILazDbgValueConverterIntf): Boolean;
 
     function GetFrame: TObject;  // TFrame
     procedure Free;
   end;
 
-  TLazDbgValueConverterIntf = interface
+  ILazDbgValueConverterIntf = interface
     procedure AddReference;
     procedure ReleaseReference;
-    function CreateCopy: TLazDbgValueConverterIntf;
+    function CreateCopy: ILazDbgValueConverterIntf;
 
     function GetObject: TObject;
     function GetRegistryEntry: TLazDbgValueConvertRegistryEntryClass;
-    function GetSettingsFrame: TLazDbgValueConverterSettingsFrameIntf;
+    function GetSettingsFrame: ILazDbgValueConverterSettingsFrameIntf;
   end;
 
-  TLazDbgValueConvertSelectorIntf = interface
+  ILazDbgValueConvertSelectorIntf = interface
     procedure AddFreeNotification(ANotification: TNotifyEvent);
     procedure RemoveFreeNotification(ANotification: TNotifyEvent);
-    function GetConverter: TLazDbgValueConverterIntf;
+    function GetConverter: ILazDbgValueConverterIntf;
 
     function AllowedTypeNames: TStrings;
   end;
 
-  { TLazDbgValueConvertSelectorListIntf }
+  { ILazDbgValueConvertSelectorListIntf }
 
-  TLazDbgValueConvertSelectorListIntf = interface
+  ILazDbgValueConvertSelectorListIntf = interface
     function Count: Integer;
-    function Get(Index: Integer): TLazDbgValueConvertSelectorIntf;
-    property Items[Index: Integer]: TLazDbgValueConvertSelectorIntf read Get; default;
+    function Get(Index: Integer): ILazDbgValueConvertSelectorIntf;
+    property Items[Index: Integer]: ILazDbgValueConvertSelectorIntf read Get; default;
 
     procedure Lock;
     procedure Unlock;
 
-    //function CreateCopy: TLazDbgValueConvertSelectorListIntf;
-    //procedure Assign(ASource: TLazDbgValueConvertSelectorListIntf);
+    //function CreateCopy: ILazDbgValueConvertSelectorListIntf;
+    //procedure Assign(ASource: ILazDbgValueConvertSelectorListIntf);
     //procedure Free;
   end;
 
@@ -58,7 +58,7 @@ type
 
   TLazDbgValueConvertRegistryEntry = class
   public
-    class function CreateValueConvertorIntf: TLazDbgValueConverterIntf; virtual; abstract;
+    class function CreateValueConvertorIntf: ILazDbgValueConverterIntf; virtual; abstract;
     class function GetName: String; virtual; abstract;
     class function GetConvertorClass: TClass; virtual; abstract;
     class function GetDebuggerClass: TClass; virtual; abstract; //  class of TDebuggerIntf
@@ -74,7 +74,7 @@ type
 function ValueConverterRegistry: TLazDbgValueConvertRegistry;
 
 var
-  ValueConverterConfigList: TLazDbgValueConvertSelectorListIntf;
+  ValueConverterConfigList: ILazDbgValueConvertSelectorListIntf;
 
 implementation
 var

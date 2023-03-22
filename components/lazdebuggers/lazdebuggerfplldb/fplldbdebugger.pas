@@ -212,7 +212,7 @@ type
     property MemReader: TFpLldbDbgMemReader read FMemReader;
   protected
     procedure DoWatchFreed(Sender: TObject);
-    function EvaluateExpression(AWatchValue: TWatchValueIntf;
+    function EvaluateExpression(AWatchValue: IDbgWatchValueIntf;
                                 AExpression: String;
                                 out AResText: String;
                                 out ATypeInfo: TDBGType;
@@ -265,7 +265,7 @@ type
     procedure DoStateChange(const AOldState: TDBGState); override;
     procedure ProcessEvalList;
     procedure QueueCommand;
-    procedure InternalRequestData(AWatchValue: TWatchValueIntf); override;
+    procedure InternalRequestData(AWatchValue: IDbgWatchValueIntf); override;
   public
   end;
 
@@ -276,13 +276,13 @@ type
   TFpLldbDebuggerCommandLocals = class(TLldbDebuggerCommand)
   private
     FOwner: TFPLldbLocals;
-    FLocals: TLocalsListIntf;
+    FLocals: IDbgLocalsListIntf;
     procedure DoLocalsFreed(Sender: TObject);
   protected
     procedure DoExecute; override;
     procedure DoCancel; override;
   public
-    constructor Create(AOwner: TFPLldbLocals; ALocals: TLocalsListIntf);
+    constructor Create(AOwner: TFPLldbLocals; ALocals: IDbgLocalsListIntf);
   end;
 
   { TFPLldbLocals }
@@ -290,12 +290,12 @@ type
   TFPLldbLocals = class(TLocalsSupplier)
   private
     FLocalsEvalCancel: Boolean;
-    procedure ProcessLocals(ALocals: TLocalsListIntf);
+    procedure ProcessLocals(ALocals: IDbgLocalsListIntf);
   protected
     function  FpDebugger: TFpLldbDebugger;
     procedure DoStateChange(const AOldState: TDBGState); override;
   public
-    procedure RequestData(ALocals: TLocalsListIntf); override;
+    procedure RequestData(ALocals: IDbgLocalsListIntf); override;
   end;
 
   { TFpLldbLineInfo }
@@ -554,7 +554,7 @@ begin
 end;
 
 constructor TFpLldbDebuggerCommandLocals.Create(AOwner: TFPLldbLocals;
-  ALocals: TLocalsListIntf);
+  ALocals: IDbgLocalsListIntf);
 begin
   inherited Create(AOwner.FpDebugger);
   FOwner := AOwner;
@@ -566,14 +566,14 @@ end;
 
 { TFPLldbLocals }
 
-procedure TFPLldbLocals.ProcessLocals(ALocals: TLocalsListIntf);
+procedure TFPLldbLocals.ProcessLocals(ALocals: IDbgLocalsListIntf);
 var
   Ctx: TFpDbgSymbolScope;
   ProcVal: TFpValue;
   i: Integer;
   m: TFpValue;
   n, v: String;
-  r: TLzDbgWatchDataIntf;
+  r: IDbgWatchDataIntf;
 begin
   if FLocalsEvalCancel then begin
     ALocals.Validity := ddsInvalid;
@@ -637,7 +637,7 @@ begin
   FLocalsEvalCancel := False;
 end;
 
-procedure TFPLldbLocals.RequestData(ALocals: TLocalsListIntf);
+procedure TFPLldbLocals.RequestData(ALocals: IDbgLocalsListIntf);
 var
   LocalsCmdObj: TFpLldbDebuggerCommandLocals;
 begin
@@ -972,7 +972,7 @@ end;
 
 procedure TFPLldbWatches.ProcessEvalList;
 var
-  WatchValue: TWatchValueIntf;
+  WatchValue: IDbgWatchValueIntf;
   ResTypeInfo: TDBGType;
   ResText: String;
 
@@ -990,7 +990,7 @@ begin
   try // TODO: if the stack/thread is changed, registers will be wrong
     while (FpDebugger.FWatchEvalList.Count > 0) and (FEvaluationCmdObj = nil) and (not FWatchEvalCancel)
     do begin
-      WatchValue := TWatchValueIntf(FpDebugger.FWatchEvalList[0]);
+      WatchValue := IDbgWatchValueIntf(FpDebugger.FWatchEvalList[0]);
     if FpDebugger.Registers.CurrentRegistersList[WatchValue.ThreadId, WatchValue.StackFrame].Count = 0 then begin
       // trigger register
       FpDebugger.Registers.CurrentRegistersList[FpDebugger.CurrentThreadId, FpDebugger.CurrentStackFrame].Count;
@@ -1029,7 +1029,7 @@ begin
   FEvaluationCmdObj.ReleaseReference;
 end;
 
-procedure TFPLldbWatches.InternalRequestData(AWatchValue: TWatchValueIntf);
+procedure TFPLldbWatches.InternalRequestData(AWatchValue: IDbgWatchValueIntf);
 begin
   if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause]) then begin
     AWatchValue.Validity := ddsInvalid;
@@ -1311,7 +1311,7 @@ begin
       ReleaseRefAndNil(FLastContext[i]);
     if not(State in [dsPause, dsInternalPause]) then begin
       for i := 0 to FWatchEvalList.Count - 1 do begin
-        TWatchValueIntf(FWatchEvalList[i]).RemoveFreeNotification(@DoWatchFreed);
+        IDbgWatchValueIntf(FWatchEvalList[i]).RemoveFreeNotification(@DoWatchFreed);
         //TWatchValueBase(FWatchEvalList[i]).Validity := ddsInvalid;
       end;
       FWatchEvalList.Clear;
@@ -1628,7 +1628,7 @@ begin
   FWatchEvalList.Remove(pointer(Sender));
 end;
 
-function TFpLldbDebugger.EvaluateExpression(AWatchValue: TWatchValueIntf; AExpression: String;
+function TFpLldbDebugger.EvaluateExpression(AWatchValue: IDbgWatchValueIntf; AExpression: String;
   out AResText: String; out ATypeInfo: TDBGType; EvalFlags: TWatcheEvaluateFlags): Boolean;
 var
   Ctx: TFpDbgSymbolScope;

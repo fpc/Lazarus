@@ -18,7 +18,7 @@ type
 
   TFpDbgValueConverterVariantNormalizer = class(TFpDbgValueConverter)
   protected
-    //function GetSettingsFrame: TLazDbgValueConverterSettingsFrameIntf; override;  // TConverterSettingsFrameBase
+    //function GetSettingsFrame: ILazDbgValueConverterSettingsFrameIntf; override;  // TConverterSettingsFrameBase
   public
     class function GetName: String; override;
     function GetRegistryEntry: TLazDbgValueConvertRegistryEntryClass; override;
@@ -27,7 +27,7 @@ type
     function ConvertValue(ASourceValue: TFpValue;
                           AnFpDebugger: TFpDebugDebuggerBase;
                           AnExpressionScope: TFpDbgSymbolScope;
-                          var AnResData: TLzDbgWatchDataIntf
+                          var AnResData: IDbgWatchDataIntf
                          ): TFpValue; override;
   end;
 
@@ -103,7 +103,7 @@ end;
 
 function TFpDbgValueConverterVariantNormalizer.ConvertValue(
   ASourceValue: TFpValue; AnFpDebugger: TFpDebugDebuggerBase;
-  AnExpressionScope: TFpDbgSymbolScope; var AnResData: TLzDbgWatchDataIntf
+  AnExpressionScope: TFpDbgSymbolScope; var AnResData: IDbgWatchDataIntf
   ): TFpValue;
 
   procedure ReturnSourceValue;
@@ -164,7 +164,7 @@ var
   discr: Int64;
   i: Integer;
   t: TFpSymbol;
-  OldResData: TLzDbgWatchDataIntf;
+  OldResData: IDbgWatchDataIntf;
 begin
   Result := nil;
 

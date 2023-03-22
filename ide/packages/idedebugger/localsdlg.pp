@@ -144,14 +144,14 @@ type
   private
     FLocalsDlg: TLocalsDlg;
   protected
-    function WatchAbleResultFromNode(AVNode: PVirtualNode): TWatchAbleResultIntf; override;
-    function WatchAbleResultFromObject(AWatchAble: TObject): TWatchAbleResultIntf; override;
+    function WatchAbleResultFromNode(AVNode: PVirtualNode): IWatchAbleResultIntf; override;
+    function WatchAbleResultFromObject(AWatchAble: TObject): IWatchAbleResultIntf; override;
 
-    procedure UpdateColumnsText(AWatchAble: TObject; AWatchAbleResult: TWatchAbleResultIntf; AVNode: PVirtualNode); override;
+    procedure UpdateColumnsText(AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf; AVNode: PVirtualNode); override;
     procedure ConfigureNewSubItem(AWatchAble: TObject); override;
-    //procedure UpdateSubItems(AWatchAble: TObject; AWatchAbleResult: TWatchAbleResultIntf;
+    //procedure UpdateSubItems(AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf;
     //  AVNode: PVirtualNode; out ChildCount: LongWord); override;
-    //procedure UpdateSubItemsLocked(AWatchAble: TObject; AWatchAbleResult: TWatchAbleResultIntf;
+    //procedure UpdateSubItemsLocked(AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf;
     //  AVNode: PVirtualNode; out ChildCount: LongWord); override;
   end;
 
@@ -824,19 +824,19 @@ end;
 { TDbgTreeViewLocalsValueMgr }
 
 function TDbgTreeViewLocalsValueMgr.WatchAbleResultFromNode(AVNode: PVirtualNode
-  ): TWatchAbleResultIntf;
+  ): IWatchAbleResultIntf;
 begin
   Result := TIdeLocalsValue(TreeView.NodeItem[AVNode]);
 end;
 
 function TDbgTreeViewLocalsValueMgr.WatchAbleResultFromObject(
-  AWatchAble: TObject): TWatchAbleResultIntf;
+  AWatchAble: TObject): IWatchAbleResultIntf;
 begin
   Result := TIdeLocalsValue(AWatchAble);
 end;
 
 procedure TDbgTreeViewLocalsValueMgr.UpdateColumnsText(AWatchAble: TObject;
-  AWatchAbleResult: TWatchAbleResultIntf; AVNode: PVirtualNode);
+  AWatchAbleResult: IWatchAbleResultIntf; AVNode: PVirtualNode);
 var
   s: String;
   ResData: TWatchResultData;

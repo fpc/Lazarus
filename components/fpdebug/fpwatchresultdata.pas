@@ -36,37 +36,37 @@ type
     FArrayTypeDone: Boolean;
     FEncounteredError: Boolean;
   protected
-    function CheckError(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): boolean;
+    function CheckError(AnFpValue: TFpValue; AnResData: IDbgWatchDataIntf): boolean;
 
-    procedure AddTypeNameToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf; ADeref: Boolean = False);
+    procedure AddTypeNameToResData(AnFpValue: TFpValue; AnResData: IDbgWatchDataIntf; ADeref: Boolean = False);
 
-    function PointerToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): Boolean;
-    function NumToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): Boolean;
+    function PointerToResData(AnFpValue: TFpValue; AnResData: IDbgWatchDataIntf): Boolean;
+    function NumToResData(AnFpValue: TFpValue; AnResData: IDbgWatchDataIntf): Boolean;
 
-    function CharToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): Boolean;
-    function StringToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): Boolean;
-    function WideStringToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): Boolean;
+    function CharToResData(AnFpValue: TFpValue; AnResData: IDbgWatchDataIntf): Boolean;
+    function StringToResData(AnFpValue: TFpValue; AnResData: IDbgWatchDataIntf): Boolean;
+    function WideStringToResData(AnFpValue: TFpValue; AnResData: IDbgWatchDataIntf): Boolean;
 
-    function BoolToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): Boolean;
-    function EnumToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): Boolean;
-    function SetToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): Boolean;
+    function BoolToResData(AnFpValue: TFpValue; AnResData: IDbgWatchDataIntf): Boolean;
+    function EnumToResData(AnFpValue: TFpValue; AnResData: IDbgWatchDataIntf): Boolean;
+    function SetToResData(AnFpValue: TFpValue; AnResData: IDbgWatchDataIntf): Boolean;
 
-    function FloatToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): Boolean;
+    function FloatToResData(AnFpValue: TFpValue; AnResData: IDbgWatchDataIntf): Boolean;
 
-    function ArrayToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): Boolean;
+    function ArrayToResData(AnFpValue: TFpValue; AnResData: IDbgWatchDataIntf): Boolean;
 
-    function StructToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): Boolean;
+    function StructToResData(AnFpValue: TFpValue; AnResData: IDbgWatchDataIntf): Boolean;
 
-    function ProcToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): Boolean;
+    function ProcToResData(AnFpValue: TFpValue; AnResData: IDbgWatchDataIntf): Boolean;
 
     function DoValueToResData(AnFpValue: TFpValue;
-                              AnResData: TLzDbgWatchDataIntf
+                              AnResData: IDbgWatchDataIntf
                              ): Boolean; virtual;
     function DoWriteWatchResultData(AnFpValue: TFpValue;
-                                  AnResData: TLzDbgWatchDataIntf
+                                  AnResData: IDbgWatchDataIntf
                                  ): Boolean;
     function DoWritePointerWatchResultData(AnFpValue: TFpValue;
-                                  AnResData: TLzDbgWatchDataIntf;
+                                  AnResData: IDbgWatchDataIntf;
                                   AnAddr: TDbgPtr
                                  ): Boolean;
 
@@ -77,7 +77,7 @@ type
     destructor Destroy; override;
 
     function WriteWatchResultData(AnFpValue: TFpValue;
-                                  AnResData: TLzDbgWatchDataIntf;
+                                  AnResData: IDbgWatchDataIntf;
                                   ARepeatCount: Integer = 0
                                  ): Boolean;
 
@@ -94,7 +94,7 @@ implementation
 { TFpWatchResultConvertor }
 
 function TFpWatchResultConvertor.CheckError(AnFpValue: TFpValue;
-  AnResData: TLzDbgWatchDataIntf): boolean;
+  AnResData: IDbgWatchDataIntf): boolean;
 begin
   Result := AnFpValue = nil;
   if Result then
@@ -109,7 +109,7 @@ begin
 end;
 
 procedure TFpWatchResultConvertor.AddTypeNameToResData(AnFpValue: TFpValue;
-  AnResData: TLzDbgWatchDataIntf; ADeref: Boolean);
+  AnResData: IDbgWatchDataIntf; ADeref: Boolean);
 var
   t: TFpSymbol;
   TpName: String;
@@ -127,9 +127,9 @@ begin
 end;
 
 function TFpWatchResultConvertor.PointerToResData(AnFpValue: TFpValue;
-  AnResData: TLzDbgWatchDataIntf): Boolean;
+  AnResData: IDbgWatchDataIntf): Boolean;
 var
-  DerefRes: TLzDbgWatchDataIntf;
+  DerefRes: IDbgWatchDataIntf;
   DerefVal: TFpValue;
   addr: QWord;
 begin
@@ -217,7 +217,7 @@ begin
 end;
 
 function TFpWatchResultConvertor.NumToResData(AnFpValue: TFpValue;
-  AnResData: TLzDbgWatchDataIntf): Boolean;
+  AnResData: IDbgWatchDataIntf): Boolean;
 begin
   Result := True;
   if AnFpValue.Kind = skCardinal then
@@ -228,7 +228,7 @@ begin
 end;
 
 function TFpWatchResultConvertor.CharToResData(AnFpValue: TFpValue;
-  AnResData: TLzDbgWatchDataIntf): Boolean;
+  AnResData: IDbgWatchDataIntf): Boolean;
 begin
   Result := True;
   AnResData.CreateCharValue(AnFpValue.AsCardinal, SizeToFullBytes(AnFpValue.DataSize));
@@ -236,7 +236,7 @@ begin
 end;
 
 function TFpWatchResultConvertor.StringToResData(AnFpValue: TFpValue;
-  AnResData: TLzDbgWatchDataIntf): Boolean;
+  AnResData: IDbgWatchDataIntf): Boolean;
 begin
   Result := True;
   AnResData.CreateString(AnFpValue.AsString);
@@ -244,7 +244,7 @@ begin
 end;
 
 function TFpWatchResultConvertor.WideStringToResData(AnFpValue: TFpValue;
-  AnResData: TLzDbgWatchDataIntf): Boolean;
+  AnResData: IDbgWatchDataIntf): Boolean;
 begin
   Result := True;
   AnResData.CreateWideString(AnFpValue.AsWideString);
@@ -252,7 +252,7 @@ begin
 end;
 
 function TFpWatchResultConvertor.BoolToResData(AnFpValue: TFpValue;
-  AnResData: TLzDbgWatchDataIntf): Boolean;
+  AnResData: IDbgWatchDataIntf): Boolean;
 begin
   Result := True;
   AnResData.CreateBoolValue(AnFpValue.AsCardinal, SizeToFullBytes(AnFpValue.DataSize));
@@ -260,7 +260,7 @@ begin
 end;
 
 function TFpWatchResultConvertor.EnumToResData(AnFpValue: TFpValue;
-  AnResData: TLzDbgWatchDataIntf): Boolean;
+  AnResData: IDbgWatchDataIntf): Boolean;
 var
   ValSize: TFpDbgValueSize;
 begin
@@ -276,7 +276,7 @@ begin
 end;
 
 function TFpWatchResultConvertor.SetToResData(AnFpValue: TFpValue;
-  AnResData: TLzDbgWatchDataIntf): Boolean;
+  AnResData: IDbgWatchDataIntf): Boolean;
 var
   m: TFpValue;
   Names: array of String;
@@ -300,7 +300,7 @@ begin
 end;
 
 function TFpWatchResultConvertor.FloatToResData(AnFpValue: TFpValue;
-  AnResData: TLzDbgWatchDataIntf): Boolean;
+  AnResData: IDbgWatchDataIntf): Boolean;
 var
   p: TLzDbgFloatPrecission;
   s: TFpDbgValueSize;
@@ -320,7 +320,7 @@ begin
 end;
 
 function TFpWatchResultConvertor.ArrayToResData(AnFpValue: TFpValue;
-  AnResData: TLzDbgWatchDataIntf): Boolean;
+  AnResData: IDbgWatchDataIntf): Boolean;
 const
   MAX_TOTAL_ARRAY_CNT = 5000;
   MAX_TOTAL_ARRAY_CNT_EXTRA_DEPTH = 3500; // reset
@@ -329,7 +329,7 @@ var
   LowBnd, StartIdx, CacheMax, CacheSize, j: Int64;
   Addr: TDBGPtr;
   ti: TFpSymbol;
-  EntryRes: TLzDbgWatchDataIntf;
+  EntryRes: IDbgWatchDataIntf;
   MemberValue, TmpVal: TFpValue;
   Cache: TFpDbgMemCacheBase;
   Dummy: QWord;
@@ -500,13 +500,13 @@ begin
 end;
 
 function TFpWatchResultConvertor.StructToResData(AnFpValue: TFpValue;
-  AnResData: TLzDbgWatchDataIntf): Boolean;
+  AnResData: IDbgWatchDataIntf): Boolean;
 
-  procedure AddVariantMembers(VariantPart: TFpValue; ResAnch: TLzDbgWatchDataIntf);
+  procedure AddVariantMembers(VariantPart: TFpValue; ResAnch: IDbgWatchDataIntf);
   var
     VariantContainer, VMember: TFpValue;
     i, j, CurRecurseArray: Integer;
-    ResField, ResList: TLzDbgWatchDataIntf;
+    ResField, ResList: IDbgWatchDataIntf;
     discr: QWord;
     hasDiscr, FoundDiscr, UseDefault, CurArrayTypeDone: Boolean;
     MBVis: TLzDbgFieldVisibility;
@@ -601,7 +601,7 @@ function TFpWatchResultConvertor.StructToResData(AnFpValue: TFpValue;
   end;
 
 type
-  TAnchestorMap = specialize TFPGMap<PtrUInt, TLzDbgWatchDataIntf>;
+  TAnchestorMap = specialize TFPGMap<PtrUInt, IDbgWatchDataIntf>;
 var
   vt: TLzDbgStructType;
   Cache: TFpDbgMemCacheBase;
@@ -609,7 +609,7 @@ var
   i, j, WasRecurseInstanceCnt: Integer;
   MemberValue: TFpValue;
   ti, sym: TFpSymbol;
-  ResAnch, ResField, TopAnch, UnkAnch: TLzDbgWatchDataIntf;
+  ResAnch, ResField, TopAnch, UnkAnch: IDbgWatchDataIntf;
   MbName: String;
   MBVis: TLzDbgFieldVisibility;
   Addr: TDBGPtr;
@@ -763,7 +763,7 @@ begin
 end;
 
 function TFpWatchResultConvertor.ProcToResData(AnFpValue: TFpValue;
-  AnResData: TLzDbgWatchDataIntf): Boolean;
+  AnResData: IDbgWatchDataIntf): Boolean;
 var
   addr: TDBGPtr;
   s, LocName: String;
@@ -811,7 +811,7 @@ begin
 end;
 
 function TFpWatchResultConvertor.DoValueToResData(AnFpValue: TFpValue;
-  AnResData: TLzDbgWatchDataIntf): Boolean;
+  AnResData: IDbgWatchDataIntf): Boolean;
 var
   PrettyPrinter: TFpPascalPrettyPrinter;
   s: String;
@@ -868,7 +868,7 @@ begin
 end;
 
 function TFpWatchResultConvertor.DoWriteWatchResultData(AnFpValue: TFpValue;
-  AnResData: TLzDbgWatchDataIntf): Boolean;
+  AnResData: IDbgWatchDataIntf): Boolean;
 var
   DidHaveEmbeddedPointer: Boolean;
 begin
@@ -909,7 +909,7 @@ begin
 end;
 
 function TFpWatchResultConvertor.DoWritePointerWatchResultData(
-  AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf; AnAddr: TDbgPtr
+  AnFpValue: TFpValue; AnResData: IDbgWatchDataIntf; AnAddr: TDbgPtr
   ): Boolean;
 begin
   if FRecurseAddrList.IndexOf(AnAddr) >= 0 then
@@ -935,7 +935,7 @@ begin
 end;
 
 function TFpWatchResultConvertor.WriteWatchResultData(AnFpValue: TFpValue;
-  AnResData: TLzDbgWatchDataIntf; ARepeatCount: Integer): Boolean;
+  AnResData: IDbgWatchDataIntf; ARepeatCount: Integer): Boolean;
 begin
   Result := False;
   if AnResData = nil then

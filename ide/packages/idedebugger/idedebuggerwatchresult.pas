@@ -513,7 +513,7 @@ type
 
   TWatchResultTypeConverted = object(TWatchResultTypeStructBase)
   private
-    FHandler: TLazDbgValueConverterIntf;
+    FHandler: ILazDbgValueConverterIntf;
   public
     procedure AfterAssign(ATypeOnly: Boolean = False);
     procedure DoFree;
@@ -698,7 +698,7 @@ type
 //    FDataFlags: TWatchResultDataFlags;
   //  Addr: TDbgPtr;
   // MemDump
-    function GetBackendValueHandler: TLazDbgValueConverterIntf; virtual;
+    function GetBackendValueHandler: ILazDbgValueConverterIntf; virtual;
     function GetClassID: TWatchResultDataClassID; virtual; //abstract;
   protected
     class function GetStorageClass: TWatchResultStorageClass; virtual; abstract;
@@ -793,7 +793,7 @@ type
     property NestedType: TWatchResultData read GetNestedType; // NESTED TYPE FOR NESTED STORAGE
 
     property ElementName[AnIndex: Integer]: String read GetElementName;
-    property BackendValueHandler: TLazDbgValueConverterIntf read GetBackendValueHandler;
+    property BackendValueHandler: ILazDbgValueConverterIntf read GetBackendValueHandler;
 
     // Array
     property ArrayType: TLzDbgArrayType read GetArrayType;
@@ -1449,10 +1449,10 @@ type
   private
     function GetClassID: TWatchResultDataClassID; override;
   protected
-    function GetBackendValueHandler: TLazDbgValueConverterIntf; override;
+    function GetBackendValueHandler: ILazDbgValueConverterIntf; override;
     function GetConvertedRes: TWatchResultData; override;
   public
-    constructor Create(AHandler: TLazDbgValueConverterIntf);
+    constructor Create(AHandler: ILazDbgValueConverterIntf);
   end;
 
   { TGenericWatchResultDataProc }
@@ -2600,7 +2600,7 @@ begin
   Result := FTypeName;
 end;
 
-function TWatchResultData.GetBackendValueHandler: TLazDbgValueConverterIntf;
+function TWatchResultData.GetBackendValueHandler: ILazDbgValueConverterIntf;
 begin
   Result := nil;
 end;
@@ -4707,7 +4707,7 @@ begin
   Result := wdConverted;
 end;
 
-function TWatchResultDataConverted.GetBackendValueHandler: TLazDbgValueConverterIntf;
+function TWatchResultDataConverted.GetBackendValueHandler: ILazDbgValueConverterIntf;
 begin
   Result := FType.FHandler;
 end;
@@ -4726,7 +4726,7 @@ begin
 end;
 
 constructor TWatchResultDataConverted.Create(
-  AHandler: TLazDbgValueConverterIntf);
+  AHandler: ILazDbgValueConverterIntf);
 begin
   assert((FType.FHandler=nil) or (FType.FHandler=AHandler) or (AHandler=nil), 'TWatchResultDataConverted.Create: (FType.FHandler=nil) or (FType.FHandler=AHandler) or (AHandler=nil)');
   if (AHandler <> FType.FHandler) and (AHandler <> nil) then begin

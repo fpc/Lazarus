@@ -873,7 +873,7 @@ type
     procedure Changed;
     procedure Clear;
     function  ForceQueuing: Boolean;
-    procedure InternalRequestData(AWatchValue: TWatchValueIntf); override;
+    procedure InternalRequestData(AWatchValue: IDbgWatchValueIntf); override;
     property  ParentFPListChangeStamp: Integer read FParentFPListChangeStamp;
   public
     constructor Create(const ADebugger: TDebuggerIntf);
@@ -894,7 +894,7 @@ type
     procedure Changed;
     constructor Create(const ADebugger: TDebuggerIntf);
     destructor Destroy; override;
-    procedure RequestData(ALocals: TLocalsListIntf); override;
+    procedure RequestData(ALocals: IDbgLocalsListIntf); override;
   end;
 
   { TGDBMIDebuggerBase }
@@ -1224,7 +1224,7 @@ type
 
   TGDBMIDebuggerCommandLocals = class(TGDBMIDebuggerCommand)
   private
-    FLocals: TLocalsListIntf;
+    FLocals: IDbgLocalsListIntf;
   protected
     procedure DoLockQueueExecute; override;
     procedure DoUnLockQueueExecute; override;
@@ -1232,7 +1232,7 @@ type
     procedure DoUnLockQueueExecuteForInstr; override;
     function DoExecute: Boolean; override;
   public
-    constructor Create(AOwner: TGDBMIDebuggerBase; ALocals: TLocalsListIntf);
+    constructor Create(AOwner: TGDBMIDebuggerBase; ALocals: IDbgLocalsListIntf);
     destructor Destroy; override;
     function DebugText: String; override;
   end;
@@ -1473,7 +1473,7 @@ type
     FEvalFlags: TWatcheEvaluateFlags;
     FExpression: String;
     FDisplayFormat: TWatchDisplayFormat;
-    FWatchValue: TWatchValueIntf;
+    FWatchValue: IDbgWatchValueIntf;
     FTextValue: String;
     FNumValue: TDBGPtr;
     FHasNumValue: (nvNone, nvUnsigned, nvSigned);
@@ -1493,7 +1493,7 @@ type
     procedure UnSelectContext;
   public
     constructor Create(AOwner: TGDBMIDebuggerBase; AExpression: String; ADisplayFormat: TWatchDisplayFormat);
-    constructor Create(AOwner: TGDBMIDebuggerBase; AWatchValue: TWatchValueIntf);
+    constructor Create(AOwner: TGDBMIDebuggerBase; AWatchValue: IDbgWatchValueIntf);
     destructor Destroy; override;
     function DebugText: String; override;
     property Expression: String read FExpression;
@@ -11077,7 +11077,7 @@ function TGDBMIDebuggerCommandLocals.DoExecute: Boolean;
     LocList, List: TGDBMINameValueList;
     Item: PGDBMINameValue;
     Name, Value: String;
-    r: TLzDbgWatchDataIntf;
+    r: IDbgWatchDataIntf;
   begin
     LocList := TGDBMINameValueList.Create(AParams);
     List := TGDBMINameValueList.Create('');
@@ -11170,7 +11170,7 @@ begin
 end;
 
 constructor TGDBMIDebuggerCommandLocals.Create(AOwner: TGDBMIDebuggerBase;
-  ALocals: TLocalsListIntf);
+  ALocals: IDbgLocalsListIntf);
 begin
   inherited Create(AOwner);
   FLocals := ALocals;
@@ -11231,7 +11231,7 @@ begin
             and (Debugger.State <> dsInternalPause);
 end;
 
-procedure TGDBMILocals.RequestData(ALocals: TLocalsListIntf);
+procedure TGDBMILocals.RequestData(ALocals: IDbgLocalsListIntf);
 var
   EvaluationCmdObj: TGDBMIDebuggerCommandLocals;
 begin
@@ -11316,7 +11316,7 @@ begin
             and (Debugger.State <> dsInternalPause);
 end;
 
-procedure TGDBMIWatches.InternalRequestData(AWatchValue: TWatchValueIntf);
+procedure TGDBMIWatches.InternalRequestData(AWatchValue: IDbgWatchValueIntf);
 var
   EvaluationCmdObj: TGDBMIDebuggerCommandEvaluate;
 begin
@@ -14821,7 +14821,7 @@ begin
 end;
 
 constructor TGDBMIDebuggerCommandEvaluate.Create(AOwner: TGDBMIDebuggerBase;
-  AWatchValue: TWatchValueIntf);
+  AWatchValue: IDbgWatchValueIntf);
 begin
   Create(AOwner, AWatchValue.Expression, AWatchValue.DisplayFormat);
   EvalFlags := AWatchValue.EvaluateFlags;

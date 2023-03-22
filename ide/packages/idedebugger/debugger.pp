@@ -532,7 +532,7 @@ type
 
   { TIdeWatchValue }
 
-  TIdeWatchValue = class(TWatchValue, TWatchAbleResultIntf)
+  TIdeWatchValue = class(TWatchValue, IWatchAbleResultIntf)
   private
     function GetChildrenByNameAsArrayEntry(AName: Int64): TObject; // TIdeWatch;
     function GetChildrenByNameAsField(AName, AClassName: String): TObject; // TIdeWatch;
@@ -590,7 +590,7 @@ type
 
   { TIdeWatch }
 
-  TIdeWatch = class(TWatch, TWatchAbleDataIntf, TFreeNotifyingIntf)
+  TIdeWatch = class(TWatch, IWatchAbleDataIntf, IFreeNotifyingIntf)
   private
     FChildWatches: TIdeWatches;
     FDisplayName: String;
@@ -665,7 +665,7 @@ type
 
   { TCurrentResData }
 
-  TCurrentResData = class(TObject, TLzDbgWatchDataIntf)
+  TCurrentResData = class(TObject, IDbgWatchDataIntf)
   private type
     TCurrentResDataFlag = (
       crfDone, crfWasDone, crfSubDataCreated,
@@ -692,7 +692,7 @@ type
     procedure AfterDataCreated; virtual;
     procedure AfterSubDataCreated(ASubData: TCurrentResData);
     procedure FinishCurrentArrayElement;
-    function  InternalPCharShouldBeStringValue(APCharResult: TCurrentResData): TLzDbgWatchDataIntf;
+    function  InternalPCharShouldBeStringValue(APCharResult: TCurrentResData): IDbgWatchDataIntf;
     procedure WriteFieldsToRes(AStartIdx: Integer; AClassResData: TWatchResultDataEx);
 
     function  CreateSubCurrentResData: TCurrentResData; inline;
@@ -708,7 +708,7 @@ type
 
     procedure DebugPrint(AText: String);
   public
-    {%region ***** TLzDbgWatchDataIntf ***** }
+    {%region ***** IDbgWatchDataIntf ***** }
     procedure CreatePrePrinted(AVal: String);  virtual; // ATypes: TLzDbgWatchDataTypes);
     procedure CreateString(AVal: String);  virtual;// AnEncoding // "pchar data"
     procedure CreateWideString(AVal: WideString); virtual;
@@ -716,46 +716,46 @@ type
     procedure CreateNumValue(ANumValue: QWord; ASigned: Boolean; AByteSize: Integer = 0); virtual;
     procedure CreatePointerValue(AnAddrValue: TDbgPtr); virtual;
     procedure CreateFloatValue(AFloatValue: Extended; APrecission: TLzDbgFloatPrecission); virtual;
-    function  CreateProcedure(AVal: TDBGPtr; AnIsFunction: Boolean; ALoc, ADesc: String): TLzDbgWatchDataIntf;
-    function  CreateProcedureRef(AVal: TDBGPtr; AnIsFunction: Boolean; ALoc, ADesc: String): TLzDbgWatchDataIntf;
+    function  CreateProcedure(AVal: TDBGPtr; AnIsFunction: Boolean; ALoc, ADesc: String): IDbgWatchDataIntf;
+    function  CreateProcedureRef(AVal: TDBGPtr; AnIsFunction: Boolean; ALoc, ADesc: String): IDbgWatchDataIntf;
     function  CreateArrayValue(AnArrayType: TLzDbgArrayType;
                                ATotalCount: Integer = 0;
                                ALowIdx: Integer = 0
-                              ): TLzDbgWatchDataIntf; virtual;
+                              ): IDbgWatchDataIntf; virtual;
     procedure CreateBoolValue(AnOrdBoolValue: QWord; AByteSize: Integer = 0);
     procedure CreateEnumValue(ANumValue: QWord; AName: String; AByteSize: Integer = 0; AnIsEnumIdent: Boolean = False);
 //    //procedure CreateEnumValue(ANumValue: QWord; const ANames: TStringDynArray; const AOrdValues: TIntegerDynArray);
     procedure CreateSetValue(const ANames: TStringDynArray);
     //procedure CreateSetValue(const ASetVal: TLzDbgSetData; const ANames: TStringDynArray); //; const AOrdValues: array of Integer);
-    function CreateVariantValue(AName: String = ''; AVisibility: TLzDbgFieldVisibility = dfvUnknown): TLzDbgWatchDataIntf;
+    function CreateVariantValue(AName: String = ''; AVisibility: TLzDbgFieldVisibility = dfvUnknown): IDbgWatchDataIntf;
     procedure CreateStructure(AStructType: TLzDbgStructType;
                               ADataAddress: TDBGPtr = 0
                               //AOwnFieldCount: Integer = 0;    // Fields declared in this structure (no anchestors)
                               //ARecurseFieldCount: Integer = 0 // Fields including anchestors
                              );
-    function CreateValueHandlerResult(AValueHandler: TLazDbgValueConverterIntf): TLzDbgWatchDataIntf;
+    function CreateValueHandlerResult(AValueHandler: ILazDbgValueConverterIntf): IDbgWatchDataIntf;
 
     procedure CreateError(AVal: String); virtual;
 
-    function  SetPCharShouldBeStringValue: TLzDbgWatchDataIntf;
+    function  SetPCharShouldBeStringValue: IDbgWatchDataIntf;
     procedure SetTypeName(ATypeName: String);
 
-    function  SetDerefData: TLzDbgWatchDataIntf;
+    function  SetDerefData: IDbgWatchDataIntf;
     procedure SetDataAddress(AnAddr: TDbgPtr);
-    function  SetNextArrayData: TLzDbgWatchDataIntf;
+    function  SetNextArrayData: IDbgWatchDataIntf;
 
-    function  SetAnchestor(ATypeName: String): TLzDbgWatchDataIntf;
+    function  SetAnchestor(ATypeName: String): IDbgWatchDataIntf;
     function  AddField(AFieldName: String;
                        AVisibility: TLzDbgFieldVisibility;
                        AFlags: TLzDbgFieldFlags
-//                       AnAnchestor: TLzDbgWatchDataIntf  // nil => unknown
-                      ): TLzDbgWatchDataIntf;
-    {%endregion ***** TLzDbgWatchDataIntf ***** }
+//                       AnAnchestor: IDbgWatchDataIntf  // nil => unknown
+                      ): IDbgWatchDataIntf;
+    {%endregion ***** IDbgWatchDataIntf ***** }
   end;
 
   { TCurrentWatchValue }
 
-  TCurrentWatchValue = class(specialize TDbgDataRequestTemplateBase<TIdeWatchValue, TWatchValueIntf>, TWatchValueIntf)
+  TCurrentWatchValue = class(specialize TDbgDataRequestTemplateBase<TIdeWatchValue, IDbgWatchValueIntf>, IDbgWatchValueIntf)
   private
     FCurrentResData: TCurrentResData;
     FCurrentBackEndExpression: String;
@@ -763,11 +763,11 @@ type
     FDbgBackendConverter: TIdeDbgValueConvertSelector;
 
   protected
-  (* TWatchValueIntf *)
+  (* IDbgWatchValueIntf *)
     procedure DoBeginUpdating; override;
     procedure DoEndUpdating; override;
-    function ResData: TLzDbgWatchDataIntf;
-    function GetDbgValConverter: TLazDbgValueConvertSelectorIntf;
+    function ResData: IDbgWatchDataIntf;
+    function GetDbgValConverter: ILazDbgValueConvertSelectorIntf;
   private
     FOnValidityChanged: TNotifyEvent;
     FSnapShot: TIdeWatchValue;
@@ -780,7 +780,7 @@ type
     procedure RequestData; override;
     procedure CancelRequestData;
     procedure DoDataValidityChanged({%H-}AnOldValidity: TDebuggerDataState); override;
-    function TWatchValueIntf.GetExpression = GetBackendExpression;
+    function IDbgWatchValueIntf.GetExpression = GetBackendExpression;
   public
     destructor Destroy; override;
     property SnapShot: TIdeWatchValue read FSnapShot write SetSnapShot;
@@ -926,7 +926,7 @@ type
 
   { TIdeLocalsValue }
 
-  TIdeLocalsValue = class(TLocalsValue, TWatchAbleResultIntf, TWatchAbleDataIntf, TFreeNotifyingIntf)
+  TIdeLocalsValue = class(TLocalsValue, IWatchAbleResultIntf, IWatchAbleDataIntf, IFreeNotifyingIntf)
   private
     FSubLocals: TSubLocals;
     FDisplayName: String;
@@ -990,15 +990,15 @@ type
 
   { TSubLocalsValue }
 
-  TSubLocalsValue = class(specialize TDbgDataRequestTemplateBase<THistoryLocalValue, TWatchValueIntf>, TWatchValueIntf)
+  TSubLocalsValue = class(specialize TDbgDataRequestTemplateBase<THistoryLocalValue, IDbgWatchValueIntf>, IDbgWatchValueIntf)
   private
     FValidity: TDebuggerDataState;
     FCurrentResData: TCurrentResData;
   private
     FOnChange: TNotifyEvent;
-    // TWatchValueIntf
+    // IDbgWatchValueIntf
     function GetEvaluateFlags: TWatcheEvaluateFlags;
-    function GetDbgValConverter: TLazDbgValueConvertSelectorIntf;
+    function GetDbgValConverter: ILazDbgValueConvertSelectorIntf;
     function GetFirstIndexOffs: Int64;
     function GetRepeatCount: Integer;
     function GetValidity: TDebuggerDataState; override;
@@ -1006,7 +1006,7 @@ type
     procedure SetValidity(AValue: TDebuggerDataState);
     procedure SetValue(AValue: String);
 
-    function ResData: TLzDbgWatchDataIntf; // new ResData for debugger to fill in
+    function ResData: IDbgWatchDataIntf; // new ResData for debugger to fill in
     procedure DoBeginUpdating; override;
     procedure DoEndUpdating; override;
     procedure RequestData;
@@ -1038,12 +1038,12 @@ type
 
   { TCurrentLocals }
 
-  TCurrentLocals = class(specialize TDbgDataRequestTemplateBase<THistoryLocals, TLocalsListIntf>, TLocalsListIntf)
+  TCurrentLocals = class(specialize TDbgDataRequestTemplateBase<THistoryLocals, IDbgLocalsListIntf>, IDbgLocalsListIntf)
   private
     FMonitor: TIdeLocalsMonitor;
     FDataValidity: TDebuggerDataState;
   private
-  (* TLocalsListIntf *)
+  (* IDbgLocalsListIntf *)
     FCurrentResName: String;
     FCurrentResData: TCurrentResData;
     FCurrentResList: TRefCntObjList;
@@ -1053,7 +1053,7 @@ type
     procedure DoBeginUpdating; override;
     procedure DoEndUpdating; override;
     procedure SetValidity(AValue: TDebuggerDataState);
-    function Add(AName: String): TLzDbgWatchDataIntf; overload;
+    function Add(AName: String): IDbgWatchDataIntf; overload;
   protected
     procedure FinishCurrentRes(AnInUpdate: Boolean = False);
     function CreateEntry: TDbgEntityValue; override;
@@ -3446,7 +3446,7 @@ begin
 end;
 
 function TCurrentResData.InternalPCharShouldBeStringValue(
-  APCharResult: TCurrentResData): TLzDbgWatchDataIntf;
+  APCharResult: TCurrentResData): IDbgWatchDataIntf;
 begin
   assert(FNewResultData = nil, 'TCurrentResData.InternalPCharShouldBeStringValue: FNewResultData = nil');
 
@@ -3754,7 +3754,7 @@ begin
 end;
 
 function TCurrentResData.CreateProcedure(AVal: TDBGPtr; AnIsFunction: Boolean;
-  ALoc, ADesc: String): TLzDbgWatchDataIntf;
+  ALoc, ADesc: String): IDbgWatchDataIntf;
 begin
   BeforeCreateValue;
   if AnIsFunction then begin
@@ -3777,7 +3777,7 @@ begin
 end;
 
 function TCurrentResData.CreateProcedureRef(AVal: TDBGPtr;
-  AnIsFunction: Boolean; ALoc, ADesc: String): TLzDbgWatchDataIntf;
+  AnIsFunction: Boolean; ALoc, ADesc: String): IDbgWatchDataIntf;
 begin
   BeforeCreateValue;
   if AnIsFunction then begin
@@ -3845,7 +3845,7 @@ begin
 end;
 
 function TCurrentResData.CreateVariantValue(AName: String;
-  AVisibility: TLzDbgFieldVisibility): TLzDbgWatchDataIntf;
+  AVisibility: TLzDbgFieldVisibility): IDbgWatchDataIntf;
 begin
   BeforeCreateValue;
   assert((FNewResultData=nil) or (FNewResultData.ValueKind=rdkVariant), 'TCurrentResData.CreateVariantValue: (FNewResultData=nil) or (FNewResultData.ValueKind=rdkVariant)');
@@ -3885,7 +3885,7 @@ begin
 end;
 
 function TCurrentResData.CreateValueHandlerResult(
-  AValueHandler: TLazDbgValueConverterIntf): TLzDbgWatchDataIntf;
+  AValueHandler: ILazDbgValueConverterIntf): IDbgWatchDataIntf;
 begin
   BeforeCreateValue;
   assert((FNewResultData=nil) or (FNewResultData.ValueKind=rdkConvertRes), 'TCurrentResData.CreateVariantValue: (FNewResultData=nil) or (FNewResultData.ValueKind=rdkConvertRes)');
@@ -3901,7 +3901,7 @@ begin
 end;
 
 function TCurrentResData.CreateArrayValue(AnArrayType: TLzDbgArrayType;
-  ATotalCount: Integer; ALowIdx: Integer): TLzDbgWatchDataIntf;
+  ATotalCount: Integer; ALowIdx: Integer): IDbgWatchDataIntf;
 begin
   BeforeCreateValue;
   assert((FNewResultData=nil) or ((FNewResultData=nil) or (FNewResultData.ValueKind=rdkArray)), 'TCurrentResData.CreateArrayValue: (FNewResultData=nil) or ((FNewResultData=nil) or (FNewResultData.ValueKind=rdkArray))');
@@ -3961,7 +3961,7 @@ begin
   AfterDataCreated;
 end;
 
-function TCurrentResData.SetPCharShouldBeStringValue: TLzDbgWatchDataIntf;
+function TCurrentResData.SetPCharShouldBeStringValue: IDbgWatchDataIntf;
 begin
   assert(FNewResultData<>nil, 'TCurrentResData.SetPCharShouldBeStringValue: FNewResultData<>nil');
   assert(FOwnerCurrentData=nil, 'TCurrentResData.SetPCharShouldBeStringValue: FOwnerCurrentData=nil');
@@ -3976,7 +3976,7 @@ begin
   FNewResultData.SetTypeName(ATypeName);
 end;
 
-function TCurrentResData.SetDerefData: TLzDbgWatchDataIntf;
+function TCurrentResData.SetDerefData: IDbgWatchDataIntf;
 begin
   if (FNewResultData<> nil) and (FNewResultData.ValueKind = rdkConvertRes) then begin
     Result := AddField('', dfvUnknown, []);
@@ -3995,7 +3995,7 @@ begin
   FNewResultData.SetDataAddress(AnAddr);
 end;
 
-function TCurrentResData.SetNextArrayData: TLzDbgWatchDataIntf;
+function TCurrentResData.SetNextArrayData: IDbgWatchDataIntf;
 begin
   assert((FNewResultData<>nil) and (FNewResultData.ValueKind=rdkArray), 'TCurrentResData.SetNextArrayData: (FNewResultData<>nil) and (FNewResultData.ValueKind=rdkArray)');
 
@@ -4004,7 +4004,7 @@ begin
   Result := FSubCurrentData;
 end;
 
-function TCurrentResData.SetAnchestor(ATypeName: String): TLzDbgWatchDataIntf;
+function TCurrentResData.SetAnchestor(ATypeName: String): IDbgWatchDataIntf;
 begin
   assert((FNewResultData<>nil) and (FNewResultData.ValueKind in  [rdkStruct]), 'TCurrentResData.SetAnchestor: (FNewResultData<>nil) and (FNewResultData.ValueKind in  [rdkStruct])');
   assert(FSubCurrentData=nil, 'TCurrentResData.SetAnchestor: FSubCurrentData=nil');
@@ -4033,7 +4033,7 @@ end;
 
 function TCurrentResData.AddField(AFieldName: String;
   AVisibility: TLzDbgFieldVisibility; AFlags: TLzDbgFieldFlags
-  ): TLzDbgWatchDataIntf;
+  ): IDbgWatchDataIntf;
 var
   NewField: TCurrentResData;
 begin
@@ -4100,7 +4100,7 @@ begin
   ReleaseReference; // Last statemnet, may call Destroy
 end;
 
-function TCurrentWatchValue.ResData: TLzDbgWatchDataIntf;
+function TCurrentWatchValue.ResData: IDbgWatchDataIntf;
 begin
   assert(UpdateCount > 0, 'TCurrentWatchValue.ResData: FUpdateCount > 0');
   if FCurrentResData = nil then
@@ -4108,7 +4108,7 @@ begin
   Result := FCurrentResData;
 end;
 
-function TCurrentWatchValue.GetDbgValConverter: TLazDbgValueConvertSelectorIntf;
+function TCurrentWatchValue.GetDbgValConverter: ILazDbgValueConvertSelectorIntf;
 begin
   Result := FDbgBackendConverter;
 end;
@@ -4608,7 +4608,7 @@ end;
 procedure TIdeWatchesMonitor.RequestData(AWatchValue: TCurrentWatchValue);
 begin
   if Supplier <> nil
-  then Supplier.RequestData(TWatchValueIntf(AWatchValue))
+  then Supplier.RequestData(IDbgWatchValueIntf(AWatchValue))
   else AWatchValue.Validity := ddsInvalid;
 end;
 
@@ -7359,7 +7359,7 @@ end;
 
 { TSubLocalsValue }
 
-function TSubLocalsValue.ResData: TLzDbgWatchDataIntf;
+function TSubLocalsValue.ResData: IDbgWatchDataIntf;
 begin
   if FCurrentResData = nil then
     FCurrentResData := TCurrentResData.Create;
@@ -7446,7 +7446,7 @@ begin
   Result := [];
 end;
 
-function TSubLocalsValue.GetDbgValConverter: TLazDbgValueConvertSelectorIntf;
+function TSubLocalsValue.GetDbgValConverter: ILazDbgValueConvertSelectorIntf;
 begin
   Result := nil;
 end;
@@ -7614,7 +7614,7 @@ begin
   end;
 end;
 
-function TCurrentLocals.Add(AName: String): TLzDbgWatchDataIntf;
+function TCurrentLocals.Add(AName: String): IDbgWatchDataIntf;
 begin
   FinishCurrentRes;
   FCurrentResName := AName;

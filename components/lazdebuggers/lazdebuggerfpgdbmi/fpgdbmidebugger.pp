@@ -102,7 +102,7 @@ type
   protected
     procedure ClearWatchEvalList;
     procedure DoWatchFreed(Sender: TObject);
-    function EvaluateExpression(AWatchValue: TWatchValueIntf;
+    function EvaluateExpression(AWatchValue: IDbgWatchValueIntf;
                                 AExpression: String;
                                 out AResText: String;
                                 out ATypeInfo: TDBGType;
@@ -161,7 +161,7 @@ type
     //procedure DoStateChange(const AOldState: TDBGState); override;
     procedure ProcessEvalList;
     procedure QueueCommand;
-    procedure InternalRequestData(AWatchValue: TWatchValueIntf); override;
+    procedure InternalRequestData(AWatchValue: IDbgWatchValueIntf); override;
   public
   end;
 
@@ -172,25 +172,25 @@ type
   TFpGDBMIDebuggerCommandLocals = class(TGDBMIDebuggerCommand)
   private
     FOwner: TFPGDBMILocals;
-    FLocals: TLocalsListIntf;
+    FLocals: IDbgLocalsListIntf;
     procedure DoLocalsFreed(Sender: TObject);
   protected
     function DoExecute: Boolean; override;
     procedure DoLockQueueExecute; override;
     procedure DoUnLockQueueExecute; override;
   public
-    constructor Create(AOwner: TFPGDBMILocals; ALocals: TLocalsListIntf);
+    constructor Create(AOwner: TFPGDBMILocals; ALocals: IDbgLocalsListIntf);
   end;
 
   { TFPGDBMILocals }
 
   TFPGDBMILocals = class(TGDBMILocals)
   private
-    procedure ProcessLocals(ALocals: TLocalsListIntf);
+    procedure ProcessLocals(ALocals: IDbgLocalsListIntf);
   protected
     function  FpDebugger: TFpGDBMIDebugger;
   public
-    procedure RequestData(ALocals: TLocalsListIntf); override;
+    procedure RequestData(ALocals: IDbgLocalsListIntf); override;
   end;
 
   { TFpGDBMILineInfo }
@@ -254,7 +254,7 @@ begin
 end;
 
 constructor TFpGDBMIDebuggerCommandLocals.Create(AOwner: TFPGDBMILocals;
-  ALocals: TLocalsListIntf);
+  ALocals: IDbgLocalsListIntf);
 begin
   inherited Create(AOwner.FpDebugger);
   FOwner := AOwner;
@@ -265,14 +265,14 @@ end;
 
 { TFPGDBMILocals }
 
-procedure TFPGDBMILocals.ProcessLocals(ALocals: TLocalsListIntf);
+procedure TFPGDBMILocals.ProcessLocals(ALocals: IDbgLocalsListIntf);
 var
   Ctx: TFpDbgSymbolScope;
   ProcVal: TFpValue;
   i: Integer;
   m: TFpValue;
   n, v: String;
-  r: TLzDbgWatchDataIntf;
+  r: IDbgWatchDataIntf;
 begin
   FpDebugger.LockUnLoadDwarf;
   try
@@ -318,7 +318,7 @@ begin
   Result := TFpGDBMIDebugger(Debugger);
 end;
 
-procedure TFPGDBMILocals.RequestData(ALocals: TLocalsListIntf);
+procedure TFPGDBMILocals.RequestData(ALocals: IDbgLocalsListIntf);
 var
   LocalsCmdObj: TFpGDBMIDebuggerCommandLocals;
 begin
@@ -555,7 +555,7 @@ end;
 
 procedure TFPGDBMIWatches.ProcessEvalList;
 var
-  WatchValue: TWatchValueIntf;
+  WatchValue: IDbgWatchValueIntf;
   ResTypeInfo: TDBGType;
   ResText: String;
 
@@ -578,7 +578,7 @@ begin
   try // TODO: if the stack/thread is changed, registers will be wrong
     while (FpDebugger.FWatchEvalList.Count > 0) and (FEvaluationCmdObj = nil) do begin
       try
-        WatchValue := TWatchValueIntf(FpDebugger.FWatchEvalList[0]);
+        WatchValue := IDbgWatchValueIntf(FpDebugger.FWatchEvalList[0]);
         ResTypeInfo := nil;
         if UseGDB then begin
           inherited InternalRequestData(WatchValue);
@@ -612,7 +612,7 @@ begin
   FpDebugger.QueueCommand(FEvaluationCmdObj, ForceQueuing);
 end;
 
-procedure TFPGDBMIWatches.InternalRequestData(AWatchValue: TWatchValueIntf);
+procedure TFPGDBMIWatches.InternalRequestData(AWatchValue: IDbgWatchValueIntf);
 begin
   if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause]) then begin
     AWatchValue.Validity := ddsInvalid;
@@ -981,7 +981,7 @@ var
   i: Integer;
 begin
   for i := 0 to FWatchEvalList.Count - 1 do begin
-    TWatchValueIntf(FWatchEvalList[i]).RemoveFreeNotification(@DoWatchFreed);
+    IDbgWatchValueIntf(FWatchEvalList[i]).RemoveFreeNotification(@DoWatchFreed);
     //TWatchValueBase(FWatchEvalList[i]).Validity := ddsInvalid;
   end;
   FWatchEvalList.Clear;
@@ -998,7 +998,7 @@ begin
   FWatchEvalList.Remove(pointer(Sender));
 end;
 
-function TFpGDBMIDebugger.EvaluateExpression(AWatchValue: TWatchValueIntf; AExpression: String;
+function TFpGDBMIDebugger.EvaluateExpression(AWatchValue: IDbgWatchValueIntf; AExpression: String;
   out AResText: String; out ATypeInfo: TDBGType; EvalFlags: TWatcheEvaluateFlags): Boolean;
 var
   Ctx: TFpDbgSymbolScope;

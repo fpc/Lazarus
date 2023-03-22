@@ -588,14 +588,14 @@ type
 
   { TWatchesSupplier }
 
-  TWatchesSupplier = class(specialize TWatchesSupplierClassTemplate<TDebuggerDataSupplierBase>, TWatchesSupplierIntf)
+  TWatchesSupplier = class(specialize TWatchesSupplierClassTemplate<TDebuggerDataSupplierBase>, IDbgWatchesSupplierIntf)
   protected
     procedure DoStateChange(const AOldState: TDBGState); virtual;
-    procedure InternalRequestData(AWatchValue: TWatchValueIntf); virtual;
+    procedure InternalRequestData(AWatchValue: IDbgWatchValueIntf); virtual;
   public
     constructor Create(const ADebugger: TDebuggerIntf);
     destructor Destroy; override;
-    procedure RequestData(AWatchValue: TWatchValueIntf); reintroduce;
+    procedure RequestData(AWatchValue: IDbgWatchValueIntf); reintroduce;
   end;
 
 {%endregion   ^^^^^  Watches  ^^^^^   }
@@ -610,12 +610,12 @@ type
 
   { TLocalsSupplier }
 
-  TLocalsSupplier = class(specialize TLocalsSupplierClassTemplate<TDebuggerDataSupplierBase>, TLocalsSupplierIntf)
+  TLocalsSupplier = class(specialize TLocalsSupplierClassTemplate<TDebuggerDataSupplierBase>, IDbgLocalsSupplierIntf)
   protected
     procedure DoStateChange(const AOldState: TDBGState); virtual;
   public
     destructor Destroy; override;
-    procedure RequestData(ALocalsList: TLocalsListIntf); virtual;
+    procedure RequestData(ALocalsList: IDbgLocalsListIntf); virtual;
   end;
 
 {%endregion   ^^^^^  Locals  ^^^^^   }
@@ -1626,7 +1626,7 @@ type
     function GetRunErrorText(ARunError: Integer): string;
     //function GetUnitInfoProvider: TDebuggerUnitInfoProvider;
     function  GetState: TDBGState;
-    function GetWatches: TWatchesSupplierIntf;
+    function GetWatches: IDbgWatchesSupplierIntf;
     function  ReqCmd(const ACommand: TDBGCommand;
                      const AParams: array of const): Boolean; overload;
     function  ReqCmd(const ACommand: TDBGCommand;
@@ -1764,7 +1764,7 @@ type
     class function SupportedCommandsFor(AState: TDBGState): TDBGCommands; virtual;
     property TargetWidth: Byte read GetTargetWidth;                              // Currently only 32 or 64
     //property Waiting: Boolean read GetWaiting;                                   // Set when the debugger is wating for a command to complete
-    property WatchSupplier: TWatchesSupplierIntf read GetWatches;                                 // list of all watches etc
+    property WatchSupplier: IDbgWatchesSupplierIntf read GetWatches;                                 // list of all watches etc
     property Watches: TWatchesSupplier read FWatches;                                 // list of all watches etc
     property Threads: TThreadsSupplier read FThreads;
     property WorkingDir: String read FWorkingDir write FWorkingDir;              // The working dir of the exe being debugged
@@ -1806,7 +1806,7 @@ type
     class function GetDebuggerClassByName(const AIndex: String): TDebuggerClass; static;
     function FindDebuggerClass(const Astring: String): TDebuggerClass;
   public
-    procedure RequestWatchData(AWatchValue: TWatchValueIntf); virtual; abstract;
+    procedure RequestWatchData(AWatchValue: IDbgWatchValueIntf); virtual; abstract;
   public
     class function DebuggerCount: Integer;
 
@@ -3848,7 +3848,7 @@ end;
 
 { TWatchesSupplier }
 
-procedure TWatchesSupplier.RequestData(AWatchValue: TWatchValueIntf);
+procedure TWatchesSupplier.RequestData(AWatchValue: IDbgWatchValueIntf);
 begin
   if FNotifiedState  in [dsPause, dsInternalPause]
   then InternalRequestData(AWatchValue)
@@ -3868,7 +3868,7 @@ begin
     Monitor.DoStateChange(AOldState, Debugger.State);
 end;
 
-procedure TWatchesSupplier.InternalRequestData(AWatchValue: TWatchValueIntf);
+procedure TWatchesSupplier.InternalRequestData(AWatchValue: IDbgWatchValueIntf);
 begin
   AWatchValue.SetValidity(ddsInvalid);
 end;
@@ -3901,7 +3901,7 @@ begin
   DoDestroy;
 end;
 
-procedure TLocalsSupplier.RequestData(ALocalsList: TLocalsListIntf);
+procedure TLocalsSupplier.RequestData(ALocalsList: IDbgLocalsListIntf);
 begin
   ALocalsList.Validity := ddsInvalid;
 end;
@@ -5687,7 +5687,7 @@ begin
   Result := FState;
 end;
 
-function TDebuggerIntf.GetWatches: TWatchesSupplierIntf;
+function TDebuggerIntf.GetWatches: IDbgWatchesSupplierIntf;
 begin
   Result := FWatches;
 end;

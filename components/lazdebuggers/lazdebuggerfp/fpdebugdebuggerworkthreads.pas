@@ -192,7 +192,7 @@ type
   TFpThreadWorkerLocals = class(TFpDbgDebggerThreadWorkerLinkedItem)
   protected type
   protected
-    FLocals: TLocalsListIntf;
+    FLocals: IDbgLocalsListIntf;
     FThreadId, FStackFrame: Integer;
     procedure UpdateLocals_DecRef(Data: PtrInt = 0); virtual; abstract;
     procedure DoExecute; override;
@@ -229,7 +229,7 @@ type
       AFunctionValue, ASelfValue: TFpValue; AParams: TFpPascalExpressionPartList;
       out AResult: TFpValue; var AnError: TFpError): boolean;
   protected
-    FWatchValue: TWatchValueIntf;
+    FWatchValue: IDbgWatchValueIntf;
     function EvaluateExpression(const AnExpression: String;
                                 AStackFrame, AThreadId: Integer;
                                 ADispFormat: TWatchDisplayFormat;
@@ -658,7 +658,7 @@ var
   ProcVal, m: TFpValue;
   i: Integer;
   WatchResConv: TFpLazDbgWatchResultConvertor;
-  ResData: TLzDbgWatchDataIntf;
+  ResData: IDbgWatchDataIntf;
 begin
   LocalScope := FDebugger.DbgController.CurrentProcess.FindSymbolScope(FThreadId, FStackFrame);
   if (LocalScope = nil) or (LocalScope.SymbolAtAddress = nil) then begin
@@ -1106,7 +1106,7 @@ var
   ResValue: TFpValue;
   CastName, ResText2: String;
   WatchResConv: TFpLazDbgWatchResultConvertor;
-  ResData: TLzDbgWatchDataIntf;
+  ResData: IDbgWatchDataIntf;
   i: Integer;
 begin
   Result := False;

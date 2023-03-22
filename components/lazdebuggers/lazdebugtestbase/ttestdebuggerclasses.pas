@@ -78,16 +78,16 @@ type
 
   { TTestWatchValue }
 
-  TTestWatchValue = class(specialize TDbgDataRequestTemplateBase<TWatchValue, TWatchValueIntf>, TWatchValueIntf)
+  TTestWatchValue = class(specialize TDbgDataRequestTemplateBase<TWatchValue, IDbgWatchValueIntf>, IDbgWatchValueIntf)
   private
     FCurrentResData: TCurrentResData;
     FUpdateCount: Integer;
   protected
-    (* TWatchValueIntf *)
+    (* IDbgWatchValueIntf *)
     procedure BeginUpdate; reintroduce;
     procedure EndUpdate; reintroduce;
-    function ResData: TLzDbgWatchDataIntf;
-    function GetDbgValConverter: TLazDbgValueConvertSelectorIntf;
+    function ResData: IDbgWatchDataIntf;
+    function GetDbgValConverter: ILazDbgValueConvertSelectorIntf;
   protected
     procedure RequestData;
     function GetTypeInfo: TDBGType; override;
@@ -407,14 +407,14 @@ begin
   ReleaseReference; // Last statemnet, may call Destroy
 end;
 
-function TTestWatchValue.ResData: TLzDbgWatchDataIntf;
+function TTestWatchValue.ResData: IDbgWatchDataIntf;
 begin
   if FCurrentResData = nil then
     FCurrentResData := TCurrentResData.Create;
   Result := FCurrentResData;
 end;
 
-function TTestWatchValue.GetDbgValConverter: TLazDbgValueConvertSelectorIntf;
+function TTestWatchValue.GetDbgValConverter: ILazDbgValueConvertSelectorIntf;
 begin
   Result := nil;
 end;

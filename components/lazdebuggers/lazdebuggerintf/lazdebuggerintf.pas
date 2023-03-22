@@ -28,14 +28,14 @@ type
 
   {$REGION ***** Internal types ***** }
 
-  TInternalDbgMonitorIntfType  = interface end;
-  TInternalDbgSupplierIntfType = interface end;
+  IInternalDbgMonitorIntfType  = interface end;
+  IInternalDbgSupplierIntfType = interface end;
 
-  generic TInternalDbgMonitorIntf<_SUPPLIER_INTF> = interface(TInternalDbgMonitorIntfType)
+  generic IInternalDbgMonitorIntf<_SUPPLIER_INTF> = interface(IInternalDbgMonitorIntfType)
     procedure RemoveSupplier(ASupplier: _SUPPLIER_INTF);
   end;
 
-  generic TInternalDbgSupplierIntf<_MONITOR_INTF> = interface(TInternalDbgSupplierIntfType)
+  generic IInternalDbgSupplierIntf<_MONITOR_INTF> = interface(IInternalDbgSupplierIntfType)
     procedure SetMonitor(AMonitor: _MONITOR_INTF);
   end;
 
@@ -50,7 +50,7 @@ type
                         ddsError                       // Error, but got some Value to display (e.g. error msg)
                        );
 
-  TDbgDataRequestIntf = interface;
+  IDbgDataRequestIntf = interface;
 
   TDbgDataRequestEventType = (
     weeCancel
@@ -59,9 +59,9 @@ type
     case TDbgDataRequestEventType of
       weeCancel: ();
   end;
-  TDbgDataRequestEvent = procedure(Sender: TDbgDataRequestIntf; Data: TDbgDataRequestEventData) of object;
+  TDbgDataRequestEvent = procedure(Sender: IDbgDataRequestIntf; Data: TDbgDataRequestEventData) of object;
 
-  TDbgDataRequestIntf = interface
+  IDbgDataRequestIntf = interface
     procedure AddFreeNotification(ANotification: TNotifyEvent);
     procedure RemoveFreeNotification(ANotification: TNotifyEvent);
 
@@ -145,7 +145,7 @@ type
   TLzDbgFieldFlag  = (dffClass, dffAbstract, dffVirtual, dffOverwritten, dffConstructor, dffDestructor, dffVariant);
   TLzDbgFieldFlags = set of TLzDbgFieldFlag;
 
-  { TLzDbgWatchDataIntf:
+  { IDbgWatchDataIntf:
     - Interface for providing result-data.
     - REQUIREMENTS (for the backend)
       ** INIT with Create...." **
@@ -163,11 +163,11 @@ type
       ** SetPCharShouldBeStringValue
          - Like array elements: The 2nd value must have the same type as the first.
          - Not allowed to be called on nested elements
-    - Adding nested data (calling any method returning a new TLzDbgWatchDataIntf)
+    - Adding nested data (calling any method returning a new IDbgWatchDataIntf)
       The Frontend may return "nil" to indicate it does not want this particular data.
   }
 
-  TLzDbgWatchDataIntf = interface
+  IDbgWatchDataIntf = interface
     procedure CreatePrePrinted(AVal: String); // ATypes: TLzDbgWatchDataTypes);
     procedure CreateString(AVal: String);// AnEncoding // "pchar data" // shortstring
     procedure CreateWideString(AVal: WideString);
@@ -181,17 +181,17 @@ type
     procedure CreateSetValue(const ANames: TStringDynArray); //; const AOrdValues: array of Integer);
 //    // CreateSetValue: "ASetVal" only has "length(ANames)" entries. Any higher value will be ignored / should be zero
 //    procedure CreateSetValue(const ASetVal: TLzDbgSetData; const ANames: TStringDynArray); //; const AOrdValues: array of Integer);
-    function CreateVariantValue(AName: String = ''; AVisibility: TLzDbgFieldVisibility = dfvUnknown): TLzDbgWatchDataIntf;
+    function CreateVariantValue(AName: String = ''; AVisibility: TLzDbgFieldVisibility = dfvUnknown): IDbgWatchDataIntf;
 
     //temporary
-    function CreateProcedure(AVal: TDBGPtr; AnIsFunction: Boolean; ALoc, ADesc: String): TLzDbgWatchDataIntf;
-    function CreateProcedureRef(AVal: TDBGPtr; AnIsFunction: Boolean; ALoc, ADesc: String): TLzDbgWatchDataIntf;
+    function CreateProcedure(AVal: TDBGPtr; AnIsFunction: Boolean; ALoc, ADesc: String): IDbgWatchDataIntf;
+    function CreateProcedureRef(AVal: TDBGPtr; AnIsFunction: Boolean; ALoc, ADesc: String): IDbgWatchDataIntf;
 
     // Returns Intf for setting element-type => for empty array
     function CreateArrayValue(AnArrayType: TLzDbgArrayType;
                               ATotalCount: Integer = 0;
                               ALowIdx: Integer = 0
-                             ): TLzDbgWatchDataIntf;
+                             ): IDbgWatchDataIntf;
 
     procedure CreateStructure(AStructType: TLzDbgStructType;
                               ADataAddress: TDBGPtr = 0
@@ -200,7 +200,7 @@ type
                              );
     // returns the intf for the converted result
     // Use SetDerefData to get the interface for the NON-converted result
-    function CreateValueHandlerResult(AValueHandler: TLazDbgValueConverterIntf): TLzDbgWatchDataIntf;
+    function CreateValueHandlerResult(AValueHandler: ILazDbgValueConverterIntf): IDbgWatchDataIntf;
     procedure CreateError(AVal: String);
 
     // For all Values
@@ -208,7 +208,7 @@ type
        - Current Res should be "PChar-based"
        - Result of this function should be used for "String-based"
     *)
-    function  SetPCharShouldBeStringValue: TLzDbgWatchDataIntf;
+    function  SetPCharShouldBeStringValue: IDbgWatchDataIntf;
     // For all Values (except error)
     procedure SetTypeName(ATypeName: String);
 
@@ -216,35 +216,35 @@ type
     procedure SetDataAddress(AnAddr: TDbgPtr);
 
     // For Pointers:
-    function  SetDerefData: TLzDbgWatchDataIntf;
+    function  SetDerefData: IDbgWatchDataIntf;
 
     // For Arrays
-    (* - The returned TLzDbgWatchDataIntf is only valid until the next call of SetNextItemData.
+    (* - The returned IDbgWatchDataIntf is only valid until the next call of SetNextItemData.
          For nested arrays, this includes calls to any outer arrays SetNextItemData.
        - Type related (ASigned, AByteSize, APrecission, ...) are taken from the
          proto-type or the  first Item only. They are ignored on subsequent items
     *)
-    function  SetNextArrayData: TLzDbgWatchDataIntf;
+    function  SetNextArrayData: IDbgWatchDataIntf;
 
     // For structures:
-    function  SetAnchestor(ATypeName: String): TLzDbgWatchDataIntf; // Only: object, class, interface
+    function  SetAnchestor(ATypeName: String): IDbgWatchDataIntf; // Only: object, class, interface
     function  AddField(AFieldName: String;
                        AVisibility: TLzDbgFieldVisibility;
                        AFlags: TLzDbgFieldFlags
-//                       AnAnchestor: TLzDbgWatchDataIntf  // nil => unknown
-                      ): TLzDbgWatchDataIntf;
+//                       AnAnchestor: IDbgWatchDataIntf  // nil => unknown
+                      ): IDbgWatchDataIntf;
   end;
 
-  { TWatchValueIntf }
+  { IDbgWatchValueIntf }
 
-  TWatchValueIntf = interface(TDbgDataRequestIntf)
-    function ResData: TLzDbgWatchDataIntf;
+  IDbgWatchValueIntf = interface(IDbgDataRequestIntf)
+    function ResData: IDbgWatchDataIntf;
 
     (* ***** Methods for the front-end to provide the request  ***** *)
 
     function GetDisplayFormat: TWatchDisplayFormat;
     function GetEvaluateFlags: TWatcheEvaluateFlags;
-    function GetDbgValConverter: TLazDbgValueConvertSelectorIntf;
+    function GetDbgValConverter: ILazDbgValueConvertSelectorIntf;
     function GetExpression: String;
     function GetFirstIndexOffs: Int64;
     function GetRepeatCount: Integer;
@@ -271,15 +271,15 @@ type
 
 
 
-  TWatchesSupplierIntf = interface;
+  IDbgWatchesSupplierIntf = interface;
 
-  TWatchesMonitorIntf  = interface(specialize TInternalDbgMonitorIntf<TWatchesSupplierIntf>)
+  IDbgWatchesMonitorIntf  = interface(specialize IInternalDbgMonitorIntf<IDbgWatchesSupplierIntf>)
     procedure InvalidateWatchValues;
     procedure DoStateChange(const AOldState, ANewState: TDBGState); //deprecated;
   end;
 
-  TWatchesSupplierIntf = interface(specialize TInternalDbgSupplierIntf<TWatchesMonitorIntf>)
-    procedure RequestData(AWatchValue: TWatchValueIntf);
+  IDbgWatchesSupplierIntf = interface(specialize IInternalDbgSupplierIntf<IDbgWatchesMonitorIntf>)
+    procedure RequestData(AWatchValue: IDbgWatchValueIntf);
   end;
 
 {%endregion   ^^^^^  Watches  ^^^^^   }
@@ -287,8 +287,8 @@ type
 
 {%region   ^^^^^  Locals  ^^^^^   }
 
-  TLocalsListIntf = interface(TDbgDataRequestIntf)
-    function Add(AName: String): TLzDbgWatchDataIntf;
+  IDbgLocalsListIntf = interface(IDbgDataRequestIntf)
+    function Add(AName: String): IDbgWatchDataIntf;
 
     function GetStackFrame: Integer;
     function GetThreadId: Integer;
@@ -300,15 +300,15 @@ type
   end;
 
 
-  TLocalsSupplierIntf = interface;
+  IDbgLocalsSupplierIntf = interface;
 
-  TLocalsMonitorIntf  = interface(specialize TInternalDbgMonitorIntf<TLocalsSupplierIntf>)
+  IDbgLocalsMonitorIntf  = interface(specialize IInternalDbgMonitorIntf<IDbgLocalsSupplierIntf>)
     procedure InvalidateLocalValues;
     procedure DoStateChange(const AOldState, ANewState: TDBGState); //deprecated;
   end;
 
-  TLocalsSupplierIntf = interface(specialize TInternalDbgSupplierIntf<TLocalsMonitorIntf>)
-    procedure RequestData(ALocalsList: TLocalsListIntf);
+  IDbgLocalsSupplierIntf = interface(specialize IInternalDbgSupplierIntf<IDbgLocalsMonitorIntf>)
+    procedure RequestData(ALocalsList: IDbgLocalsListIntf);
   end;
 
 {%endregion   ^^^^^  Locals  ^^^^^   }

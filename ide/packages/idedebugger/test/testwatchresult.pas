@@ -36,7 +36,7 @@ type
   TTestIdeDebuggerWatchResult = class(TTestCase)
   private type
     TTwoResRecord = record
-      NestPtr, NestNum: TLzDbgWatchDataIntf;
+      NestPtr, NestNum: IDbgWatchDataIntf;
     end;
     TTestCreateDataKind = (
       cdErrNum,
@@ -210,18 +210,18 @@ type
 
     function SaveLoad(ARes: TWatchResultData): TWatchResultData;
 
-    function CreatePointer(ResIntf: TLzDbgWatchDataIntf; AnAddr: QWord; ATypeName: String=''; ASkipSetDeref: boolean = False): TLzDbgWatchDataIntf;
+    function CreatePointer(ResIntf: IDbgWatchDataIntf; AnAddr: QWord; ATypeName: String=''; ASkipSetDeref: boolean = False): IDbgWatchDataIntf;
 
-    function CreatePtrPrePrint(ResIntf: TLzDbgWatchDataIntf; AnAddr: QWord; AStr: String): TLzDbgWatchDataIntf;
-    function CreatePtrNum(ResIntf: TLzDbgWatchDataIntf; AnAddr: QWord; ANum: Int64; AByteSize: integer = 4): TLzDbgWatchDataIntf;
-    function CreatePtrErr(ResIntf: TLzDbgWatchDataIntf; AnAddr: QWord; AnErr: String): TLzDbgWatchDataIntf;
-    function CreatePtrPtrNum(ResIntf: TLzDbgWatchDataIntf; AnAddr: QWord; ANum: Int64; AByteSize: integer = 2): TTwoResRecord;
-    function CreatePtrPtrErr(ResIntf: TLzDbgWatchDataIntf; AnAddr: QWord; AnErr: String): TTwoResRecord;
-    function CreateArrayOfNum(ResIntf: TLzDbgWatchDataIntf; ANum: Int64; AByteSize: integer = 2): TTwoResRecord;
-    function CreateArrayOfErr(ResIntf: TLzDbgWatchDataIntf; AnErr: String): TTwoResRecord;
-    function CreateEmptyArrayOfNum(ResIntf: TLzDbgWatchDataIntf; ANum: Int64; AByteSize: integer = 2): TTwoResRecord;
-    function CreatePtrArrayOfNum(ResIntf: TLzDbgWatchDataIntf; ANum: Int64; AByteSize: integer = 2): TTwoResRecord;
-    procedure CreateStruct(ResIntf: TLzDbgWatchDataIntf;
+    function CreatePtrPrePrint(ResIntf: IDbgWatchDataIntf; AnAddr: QWord; AStr: String): IDbgWatchDataIntf;
+    function CreatePtrNum(ResIntf: IDbgWatchDataIntf; AnAddr: QWord; ANum: Int64; AByteSize: integer = 4): IDbgWatchDataIntf;
+    function CreatePtrErr(ResIntf: IDbgWatchDataIntf; AnAddr: QWord; AnErr: String): IDbgWatchDataIntf;
+    function CreatePtrPtrNum(ResIntf: IDbgWatchDataIntf; AnAddr: QWord; ANum: Int64; AByteSize: integer = 2): TTwoResRecord;
+    function CreatePtrPtrErr(ResIntf: IDbgWatchDataIntf; AnAddr: QWord; AnErr: String): TTwoResRecord;
+    function CreateArrayOfNum(ResIntf: IDbgWatchDataIntf; ANum: Int64; AByteSize: integer = 2): TTwoResRecord;
+    function CreateArrayOfErr(ResIntf: IDbgWatchDataIntf; AnErr: String): TTwoResRecord;
+    function CreateEmptyArrayOfNum(ResIntf: IDbgWatchDataIntf; ANum: Int64; AByteSize: integer = 2): TTwoResRecord;
+    function CreatePtrArrayOfNum(ResIntf: IDbgWatchDataIntf; ANum: Int64; AByteSize: integer = 2): TTwoResRecord;
+    procedure CreateStruct(ResIntf: IDbgWatchDataIntf;
                           StrctTyp: TLzDbgStructType;
                           WithFld: Boolean;
                           WithAnch: Integer;
@@ -232,7 +232,7 @@ type
                           aOnlyFieldData: Boolean = False
                          );
 
-    function  CreateData(ResIntf: TLzDbgWatchDataIntf;
+    function  CreateData(ResIntf: IDbgWatchDataIntf;
                          AKind: TTestCreateDataKind; AnErr: Boolean;
                          ATypeName: String = '';
                          ANumVal: Int64 = 200;
@@ -909,8 +909,8 @@ begin
 end;
 
 function TTestIdeDebuggerWatchResult.CreatePointer(
-  ResIntf: TLzDbgWatchDataIntf; AnAddr: QWord; ATypeName: String;
-  ASkipSetDeref: boolean): TLzDbgWatchDataIntf;
+  ResIntf: IDbgWatchDataIntf; AnAddr: QWord; ATypeName: String;
+  ASkipSetDeref: boolean): IDbgWatchDataIntf;
 begin
   Result := nil;
   ResIntf.CreatePointerValue(AnAddr);
@@ -921,8 +921,8 @@ begin
 end;
 
 function TTestIdeDebuggerWatchResult.CreatePtrPrePrint(
-  ResIntf: TLzDbgWatchDataIntf; AnAddr: QWord; AStr: String
-  ): TLzDbgWatchDataIntf;
+  ResIntf: IDbgWatchDataIntf; AnAddr: QWord; AStr: String
+  ): IDbgWatchDataIntf;
 begin
   ResIntf.CreatePointerValue(AnAddr);
   ResIntf.SetTypeName('TMyPtr');
@@ -931,8 +931,8 @@ begin
   Result.SetTypeName('TMyText');
 end;
 
-function TTestIdeDebuggerWatchResult.CreatePtrNum(ResIntf: TLzDbgWatchDataIntf;
-  AnAddr: QWord; ANum: Int64; AByteSize: integer): TLzDbgWatchDataIntf;
+function TTestIdeDebuggerWatchResult.CreatePtrNum(ResIntf: IDbgWatchDataIntf;
+  AnAddr: QWord; ANum: Int64; AByteSize: integer): IDbgWatchDataIntf;
 begin
   ResIntf.CreatePointerValue(AnAddr);
   ResIntf.SetTypeName('TMyPtr');
@@ -941,8 +941,8 @@ begin
   Result.SetTypeName('TMyNum');
 end;
 
-function TTestIdeDebuggerWatchResult.CreatePtrErr(ResIntf: TLzDbgWatchDataIntf;
-  AnAddr: QWord; AnErr: String): TLzDbgWatchDataIntf;
+function TTestIdeDebuggerWatchResult.CreatePtrErr(ResIntf: IDbgWatchDataIntf;
+  AnAddr: QWord; AnErr: String): IDbgWatchDataIntf;
 begin
   ResIntf.CreatePointerValue(AnAddr);
   ResIntf.SetTypeName('TMyPtr');
@@ -951,7 +951,7 @@ begin
 end;
 
 function TTestIdeDebuggerWatchResult.CreatePtrPtrNum(
-  ResIntf: TLzDbgWatchDataIntf; AnAddr: QWord; ANum: Int64; AByteSize: integer
+  ResIntf: IDbgWatchDataIntf; AnAddr: QWord; ANum: Int64; AByteSize: integer
   ): TTwoResRecord;
 begin
   ResIntf.CreatePointerValue(AnAddr);
@@ -967,7 +967,7 @@ begin
 end;
 
 function TTestIdeDebuggerWatchResult.CreatePtrPtrErr(
-  ResIntf: TLzDbgWatchDataIntf; AnAddr: QWord; AnErr: String): TTwoResRecord;
+  ResIntf: IDbgWatchDataIntf; AnAddr: QWord; AnErr: String): TTwoResRecord;
 begin
   ResIntf.CreatePointerValue(AnAddr);
   ResIntf.SetTypeName('TMyPtr');
@@ -980,10 +980,10 @@ begin
   Result.NestNum.CreateError(AnErr);
 end;
 
-function TTestIdeDebuggerWatchResult.CreateArrayOfNum(ResIntf: TLzDbgWatchDataIntf;
+function TTestIdeDebuggerWatchResult.CreateArrayOfNum(ResIntf: IDbgWatchDataIntf;
   ANum: Int64; AByteSize: integer): TTwoResRecord;
 var
-  dat: TLzDbgWatchDataIntf;
+  dat: IDbgWatchDataIntf;
 begin
   Result.NestPtr := ResIntf.CreateArrayValue(datDynArray, 2);
 
@@ -995,9 +995,9 @@ begin
 end;
 
 function TTestIdeDebuggerWatchResult.CreateArrayOfErr(
-  ResIntf: TLzDbgWatchDataIntf; AnErr: String): TTwoResRecord;
+  ResIntf: IDbgWatchDataIntf; AnErr: String): TTwoResRecord;
 var
-  dat: TLzDbgWatchDataIntf;
+  dat: IDbgWatchDataIntf;
 begin
   Result.NestPtr := ResIntf.CreateArrayValue(datDynArray, 2);
 
@@ -1006,16 +1006,16 @@ begin
 end;
 
 function TTestIdeDebuggerWatchResult.CreateEmptyArrayOfNum(
-  ResIntf: TLzDbgWatchDataIntf; ANum: Int64; AByteSize: integer): TTwoResRecord;
+  ResIntf: IDbgWatchDataIntf; ANum: Int64; AByteSize: integer): TTwoResRecord;
 var
-  p, dat: TLzDbgWatchDataIntf;
+  p, dat: IDbgWatchDataIntf;
 begin
   Result.NestNum := ResIntf.CreateArrayValue(datDynArray, 2);
 //  Result.NestNum.CreateNumValue(ANum, True, 2); // proto
 end;
 
 function TTestIdeDebuggerWatchResult.CreatePtrArrayOfNum(
-  ResIntf: TLzDbgWatchDataIntf; ANum: Int64; AByteSize: integer): TTwoResRecord;
+  ResIntf: IDbgWatchDataIntf; ANum: Int64; AByteSize: integer): TTwoResRecord;
 begin
   ResIntf.CreatePointerValue(1500);
   Result.NestPtr := ResIntf.SetDerefData;
@@ -1024,13 +1024,13 @@ begin
 end;
 
 procedure TTestIdeDebuggerWatchResult.CreateStruct(
-  ResIntf: TLzDbgWatchDataIntf; StrctTyp: TLzDbgStructType; WithFld: Boolean;
+  ResIntf: IDbgWatchDataIntf; StrctTyp: TLzDbgStructType; WithFld: Boolean;
   WithAnch: Integer; WithAnch1Fld, WithAnch2Fld: Boolean; aEntryType1,
   aEntryType2: TTestCreateDataKind; aErr1, aErr2: Boolean; aNil: Boolean;
   aOnlyFieldData: Boolean);
 var
   ExpCnt: Integer;
-  FldIntf, Anch1Intf: TLzDbgWatchDataIntf;
+  FldIntf, Anch1Intf: IDbgWatchDataIntf;
 begin
   if aNil then begin
     if StrctTyp in [dstClass, dstInterface] then
@@ -1090,7 +1090,7 @@ begin
   end;
 end;
 
-function TTestIdeDebuggerWatchResult.CreateData(ResIntf: TLzDbgWatchDataIntf;
+function TTestIdeDebuggerWatchResult.CreateData(ResIntf: IDbgWatchDataIntf;
   AKind: TTestCreateDataKind; AnErr: Boolean; ATypeName: String;
   ANumVal: Int64; AnAddr: QWord; AnErrPreFix: String): TTwoResRecord;
 begin
@@ -1265,7 +1265,7 @@ end;
 procedure TTestIdeDebuggerWatchResult.TestWatchPointer;
 var
   t: TTestWatchResWrapper;
-  ResIntfPtr, ResIntfPtr2: TLzDbgWatchDataIntf;
+  ResIntfPtr, ResIntfPtr2: IDbgWatchDataIntf;
 begin
   t.Init;
   t.ResIntf.CreatePointerValue(0);
@@ -1327,7 +1327,7 @@ end;
 procedure TTestIdeDebuggerWatchResult.TestWatchResPCharOrString;
 var
   t: TTestWatchResWrapper;
-  ResIntfStr: TLzDbgWatchDataIntf;
+  ResIntfStr: IDbgWatchDataIntf;
   i0, i1, x: Integer;
   Res: TWatchResultData;
 begin
@@ -1430,7 +1430,7 @@ end;
 procedure TTestIdeDebuggerWatchResult.TestWatchResPCharOrStringWithPtr;
 var
   t: TTestWatchResWrapper;
-  ResIntfStr, n1: TLzDbgWatchDataIntf;
+  ResIntfStr, n1: IDbgWatchDataIntf;
   i0, i1, x: Integer;
   Res: TWatchResultData;
 begin
@@ -1544,7 +1544,7 @@ var
   x: Integer;
   aEntryType, aEntryTypeSecond: TTestCreateDataKind;
   ASetError, ASetErrorSecond: Integer;
-  ResIntfStr: TLzDbgWatchDataIntf;
+  ResIntfStr: IDbgWatchDataIntf;
   Res: TWatchResultData;
 begin
   for  x :=  0 to 2 do
@@ -1593,7 +1593,7 @@ var
   aEntryType: TTestCreateDataKind;
   aLen, aLenSecond: Integer;
   AErrIdx, AErrIdxSecond, i: Integer;
-  ResIntfStr, ProtoIntf: TLzDbgWatchDataIntf;
+  ResIntfStr, ProtoIntf: IDbgWatchDataIntf;
   Res, ResArray: TWatchResultData;
 begin
   (*
@@ -1719,7 +1719,7 @@ end;
 procedure TTestIdeDebuggerWatchResult.TestWatchArray;
 var
   t: TTestWatchResWrapper;
-  ProtoIntf: TLzDbgWatchDataIntf;
+  ProtoIntf: IDbgWatchDataIntf;
   Res: TWatchResultData;
   i, x: Integer;
   aSetProto: Boolean;
@@ -1776,7 +1776,7 @@ end;
 procedure TTestIdeDebuggerWatchResult.TestWatchArrayNested;
 var
   t: TTestWatchResWrapper;
-  ProtoIntf, InnerIntf, ExtraIntf, ExtraEntryIntf: TLzDbgWatchDataIntf;
+  ProtoIntf, InnerIntf, ExtraIntf, ExtraEntryIntf: IDbgWatchDataIntf;
   Res, InnerRes: TWatchResultData;
   i, j, x: Integer;
   iLen, IErrIx: integer;
@@ -2023,7 +2023,7 @@ var
   StrctTyp: TLzDbgStructType;
   WithFld, aErr, aUsePtr, aOuterErr, aNil: Boolean;
   aEntryType: TTestCreateDataKind;
-  ProtoIntf, AnchIntf: TLzDbgWatchDataIntf;
+  ProtoIntf, AnchIntf: IDbgWatchDataIntf;
 begin
   StrctTyp := dstClass;
   for x :=  0 to 2 do
@@ -2125,7 +2125,7 @@ end;
 procedure TTestIdeDebuggerWatchResult.TestWatchArrayStuct;
 var
   t: TTestWatchResWrapper;
-  ProtoIntf, FldIntf, OuterIntf: TLzDbgWatchDataIntf;
+  ProtoIntf, FldIntf, OuterIntf: IDbgWatchDataIntf;
   x, WithAnch, i: Integer;
   StrctTyp: TLzDbgStructType;
   aSetProto, aUsePtr, aUseExtraStuct, WithFld, aErr1, aErr2, aErr1b, aErr2b,
@@ -2294,7 +2294,7 @@ var
   Res, EntryRes, FieldRes, InnerEntryRes, InnerFieldRes: TWatchResultData;
   x, InnerEntryCnt_0, InnerEntryCnt_1: Integer;
   aEntryType1, aEntryType1Second: TTestCreateDataKind;
-  EntryIntf, FieldIntf, InnerEntryIntf, InnerFieldIntf: TLzDbgWatchDataIntf;
+  EntryIntf, FieldIntf, InnerEntryIntf, InnerFieldIntf: IDbgWatchDataIntf;
   aErr_0_Fi1, aErr_1_Fi1: Boolean;
 begin
   for x :=  0 to 2 do
@@ -2524,7 +2524,7 @@ procedure TTestIdeDebuggerWatchResult.TestWatchArrayVariant;
 var
   t: TTestWatchResWrapper;
   x, aVarErr: Integer;
-  EntryIntf, VarIntf: TLzDbgWatchDataIntf;
+  EntryIntf, VarIntf: IDbgWatchDataIntf;
   Res: TWatchResultData;
   aEntryType1, aEntryType2: TTestCreateDataKind;
   aErr1, aErr2: Boolean;
