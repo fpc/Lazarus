@@ -1645,8 +1645,8 @@ function TFpValueDwarfV3FreePascalString.GetFieldFlags: TFpValueFieldFlags;
 begin
   Result := inherited GetFieldFlags;
   case TypeInfo.Kind of
-    skWideString: Result := Result + [svfWideString];
-    else          Result := Result + [svfString];
+    skWideString: Result := Result + [svfWideString, svfDataAddress];
+    else          Result := Result + [svfString, svfDataAddress];
   end;
 end;
 

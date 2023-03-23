@@ -3991,7 +3991,7 @@ end;
 
 procedure TCurrentResData.SetDataAddress(AnAddr: TDbgPtr);
 begin
-  assert((FNewResultData<>nil) and (FNewResultData.ValueKind=rdkArray), 'TCurrentResData.SetDataAddress: (FNewResultData<>nil) and (FNewResultData.ValueKind=rdkArray)');
+  assert((FNewResultData<>nil) and (FNewResultData.ValueKind in [rdkArray, rdkString, rdkWideString]), 'TCurrentResData.SetDataAddress: (FNewResultData<>nil) and (FNewResultData.ValueKind in [rdkArray, rdkString, rdkWideString])');
   FNewResultData.SetDataAddress(AnAddr);
 end;
 

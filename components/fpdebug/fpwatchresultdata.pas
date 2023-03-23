@@ -240,6 +240,8 @@ function TFpWatchResultConvertor.StringToResData(AnFpValue: TFpValue;
 begin
   Result := True;
   AnResData.CreateString(AnFpValue.AsString);
+  if svfDataAddress in AnFpValue.FieldFlags then
+    AnResData.SetDataAddress(AnFpValue.DataAddress.Address);
   AddTypeNameToResData(AnFpValue, AnResData);
 end;
 
@@ -248,6 +250,8 @@ function TFpWatchResultConvertor.WideStringToResData(AnFpValue: TFpValue;
 begin
   Result := True;
   AnResData.CreateWideString(AnFpValue.AsWideString);
+  if svfDataAddress in AnFpValue.FieldFlags then
+    AnResData.SetDataAddress(AnFpValue.DataAddress.Address);
   AddTypeNameToResData(AnFpValue, AnResData);
 end;
 

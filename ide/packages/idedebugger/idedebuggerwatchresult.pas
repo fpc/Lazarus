@@ -116,6 +116,7 @@ type
     VKind = rdkWideString;
   private
     FWideText: WideString;
+    FAddress: TDBGPtr;
   protected
     property GetAsWideString: WideString read FWideText;
     function GetAsString: String; inline;
@@ -124,6 +125,7 @@ type
                                     var AnOverrideTemplate: TOverrideTemplateData;
                                     AnAsProto: Boolean);
     procedure SaveDataToXMLConfig(const AConfig: TXMLConfig; const APath: string; AnAsProto: Boolean);
+    property GetDataAddress: TDBGPtr read FAddress;
   end;
 
   { TWatchResultValueOrdNumBase }
@@ -1062,6 +1064,10 @@ type
   TWatchResultDataWideString = class(specialize TGenericWatchResultData<TWatchResultValueWideString>)
   private
     function GetClassID: TWatchResultDataClassID; override;
+  protected
+    function GetHasDataAddress: Boolean; override;
+    function GetDataAddress: TDBGPtr; override;
+    procedure SetDataAddress(AnAddr: TDbgPtr); override;
   public
     constructor Create(AStringVal: WideString);
   end;
@@ -1733,6 +1739,7 @@ procedure TWatchResultValueWideString.LoadDataFromXMLConfig(
 begin
   inherited LoadDataFromXMLConfig(AConfig, APath, AnEntryTemplate, AnOverrideTemplate, AnAsProto);
   FWideText := AConfig.GetValue(APath + 'Value', '');
+  FAddress := TDBGPtr(AConfig.GetValue(APath + 'Addr', 0));
 end;
 
 procedure TWatchResultValueWideString.SaveDataToXMLConfig(
@@ -1740,6 +1747,7 @@ procedure TWatchResultValueWideString.SaveDataToXMLConfig(
 begin
   inherited SaveDataToXMLConfig(AConfig, APath, AnAsProto);
   AConfig.SetValue(APath + 'Value', FWideText);
+  AConfig.SetDeleteValue(APath + 'Addr', Int64(FAddress), 0);
 end;
 
 { TWatchResultValueOrdNumBase }
@@ -3496,6 +3504,21 @@ end;
 function TWatchResultDataWideString.GetClassID: TWatchResultDataClassID;
 begin
   Result := wdWString;
+end;
+
+function TWatchResultDataWideString.GetHasDataAddress: Boolean;
+begin
+  Result := True;
+end;
+
+function TWatchResultDataWideString.GetDataAddress: TDBGPtr;
+begin
+  Result := FData.FAddress;
+end;
+
+procedure TWatchResultDataWideString.SetDataAddress(AnAddr: TDbgPtr);
+begin
+  FData.FAddress := AnAddr;
 end;
 
 constructor TWatchResultDataWideString.Create(AStringVal: WideString);
