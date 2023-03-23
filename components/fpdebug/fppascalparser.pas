@@ -3036,7 +3036,10 @@ begin
   Result := ifErrorNotFound;
   case ALen of
     2: if strlicomp(AStart, 'CC', 2) = 0     then Result := ifChildClass;
-    3: if strlicomp(AStart, 'POS', 3) = 0     then Result := ifPos;
+    3: case AStart^ of
+        'l', 'L': if strlicomp(AStart, 'LEN', 3) = 0 then Result := ifLength;
+        'p', 'P': if strlicomp(AStart, 'POS', 3) = 0 then Result := ifPos;
+    end;
     5: case AStart^ of
         'l', 'L': if strlicomp(AStart, 'LOWER', 5) = 0 then Result := ifLower;
         'u', 'U': if strlicomp(AStart, 'UPPER', 5) = 0 then Result := ifUpper;
