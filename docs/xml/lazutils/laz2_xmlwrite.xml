@@ -54,8 +54,7 @@ WriteXMLFile and WriteXML routines.
 <!-- enumeration value Visibility: default -->
 <element name="TXMLWriterFlag.xwfSpecialCharsInAttributeValue">
 <short>
-Enables writing Carriage Return (Decimal 13) characters in attribute values 
-instead of the numeric character entity &amp;xD;
+Enables writing unencoded #1..#32 (including Carriage Return) characters in attribute values. Without this flag they will be encoded to their numeric character entity &amp;xD; instead.
 </short>
 </element>
 <element name="TXMLWriterFlag.xwfPreserveWhiteSpace">
