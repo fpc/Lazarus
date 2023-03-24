@@ -3855,53 +3855,54 @@ begin
     //DebugLn(' TCustomSynEdit.MouseMove CAPTURE Mouse=',dbgs(X),',',dbgs(Y),' Caret=',dbgs(CaretXY),', BlockBegin=',dbgs(BlockBegin),' BlockEnd=',dbgs(BlockEnd));
     if sfIsDragging in fStateFlags then
       FBlockSelection.IncPersistentLock;
-    FInternalCaret.AssignFrom(FCaret);
-    FInternalCaret.LineCharPos := PixelsToRowColumn(Point(X,Y));
-
-    if (fStateFlags * [sfMouseSelecting, sfIsDragging] = [sfMouseSelecting]) and
-       (FMouseSelectionCmd in [emcStartSelectTokens, emcStartSelectWords, emcStartSelectLines])
-    then begin
-      FInternalCaret.LineCharPos := PixelsToRowColumn(Point(X,Y), [scmForceLeftSidePos]);
-      forw := ComparePoints(FInternalCaret.LineBytePos, FBlockSelection.StartLineBytePos) >= 0;
-      s := FInternalCaret.LineText;
-      i := length(s) + 1;
-      p1 := FInternalCaret.LineBytePos;
-      case FMouseSelectionCmd of
-        emcStartSelectTokens: begin
-            if forw then
-              p1.X := FWordBreaker.NextBoundary(s, p1.X)
-            else
-              p1.X := Max(1, FWordBreaker.PrevBoundary(s, p1.X, True));
-          end;
-        emcStartSelectWords: begin
-            if forw then begin
-              j := FWordBreaker.NextWordStart(s, p1.X);
-              if j < 1 then j := i;
-              p1.X := FWordBreaker.NextWordEnd(s, p1.X);
-              if p1.X < 1 then p1.X := i;
-              p1.X := Min(p1.X, j);
-            end
-            else
-              p1.X := Max(1, Max(FWordBreaker.PrevWordEnd(s, p1.X, True),
-                                 FWordBreaker.PrevWordStart(s, p1.X, True)));
-          end;
-        emcStartSelectLines: begin
-            if forw then
-              p1.X := i
-            else
-              p1.X := 1;
-          end;
-        end;
-        if p1.X < 1 then p1.X := i;
-        FInternalCaret.LineBytePos := p1;
-    end;
 
     // compare to Bounds => Padding area does not scroll
-    if ( (X >= FTextArea.Bounds.Left)   or (LeftChar <= 1) ) and
-       ( (X <  FTextArea.Bounds.Right)  or (LeftChar >= CurrentMaxLeftChar) ) and
-       ( (Y >= FTextArea.Bounds.Top)    or (TopView <= 1) ) and
-       ( (Y <  FTextArea.Bounds.Bottom) or (TopView >= CurrentMaxTopView) )
+    if (X >= FTextArea.Bounds.Left)   and
+       (X <  FTextArea.Bounds.Right)  and
+       (Y >= FTextArea.Bounds.Top)    and
+       (Y <  FTextArea.Bounds.Bottom)
     then begin
+      FInternalCaret.AssignFrom(FCaret);
+      FInternalCaret.LineCharPos := PixelsToRowColumn(Point(X,Y));
+
+      if (fStateFlags * [sfMouseSelecting, sfIsDragging] = [sfMouseSelecting]) and
+         (FMouseSelectionCmd in [emcStartSelectTokens, emcStartSelectWords, emcStartSelectLines])
+      then begin
+        FInternalCaret.LineCharPos := PixelsToRowColumn(Point(X,Y), [scmForceLeftSidePos]);
+        forw := ComparePoints(FInternalCaret.LineBytePos, FBlockSelection.StartLineBytePos) >= 0;
+        s := FInternalCaret.LineText;
+        i := length(s) + 1;
+        p1 := FInternalCaret.LineBytePos;
+        case FMouseSelectionCmd of
+          emcStartSelectTokens: begin
+              if forw then
+                p1.X := FWordBreaker.NextBoundary(s, p1.X)
+              else
+                p1.X := Max(1, FWordBreaker.PrevBoundary(s, p1.X, True));
+            end;
+          emcStartSelectWords: begin
+              if forw then begin
+                j := FWordBreaker.NextWordStart(s, p1.X);
+                if j < 1 then j := i;
+                p1.X := FWordBreaker.NextWordEnd(s, p1.X);
+                if p1.X < 1 then p1.X := i;
+                p1.X := Min(p1.X, j);
+              end
+              else
+                p1.X := Max(1, Max(FWordBreaker.PrevWordEnd(s, p1.X, True),
+                                   FWordBreaker.PrevWordStart(s, p1.X, True)));
+            end;
+          emcStartSelectLines: begin
+              if forw then
+                p1.X := i
+              else
+                p1.X := 1;
+            end;
+          end;
+          if p1.X < 1 then p1.X := i;
+          FInternalCaret.LineBytePos := p1;
+      end;
+
       if (sfMouseSelecting in fStateFlags) and not FInternalCaret.IsAtPos(FCaret) then
         Include(fStateFlags, sfMouseDoneSelecting);
       FBlockSelection.StickyAutoExtend := False;
