@@ -1041,7 +1041,7 @@ constructor TXMLConfig.Create(AOwner: TComponent);
 begin
   // for compatibility with old TXMLConfig, which wrote #13 as #13, not as &xD;
   FReadFlags:=[xrfAllowLowerThanInAttributeValue,xrfAllowSpecialCharsInAttributeValue];
-  FWriteFlags:=[xwfSpecialCharsInAttributeValue];
+  FWriteFlags:=[xwfSpecialCharsInAttributeValue, xwfAllowNullCharsInAttributeValue];
   inherited Create(AOwner);
   InitFormatSettings;
 end;

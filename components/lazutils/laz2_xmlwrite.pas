@@ -29,7 +29,8 @@ uses Classes, LazUTF8, laz2_DOM, SysUtils, laz2_xmlutils;
 
 type
   TXMLWriterFlag = (
-    xwfSpecialCharsInAttributeValue, // write #13 as #13 instead of as &xD;
+    xwfAllowNullCharsInAttributeValue, // Do not throw an exception, when #0 is written in an attribute value (always encoded as &#0;
+    xwfSpecialCharsInAttributeValue,   // write #01..#31 as it is (just the byte itself) instead of as &xD;
     xwfPreserveWhiteSpace
     );
   TXMLWriterFlags = set of TXMLWriterFlag;
@@ -51,6 +52,18 @@ type
   TXMLWriter = class;
   TSpecialCharCallback = procedure(Sender: TXMLWriter; const s: DOMString;
     var idx: Integer);
+
+  { EXMLWriteError }
+
+  EXMLWriteError = class(Exception)
+  private
+    FErrorMessage: string;
+    FNode: TDOMNode;
+  public
+    constructor Create(const msg: string; ANode: TDOMNode);
+    property ErrorMessage: string read FErrorMessage;
+    property Node: TDOMNode read FNode;
+  end;
 
   PAttrFixup = ^TAttrFixup;
   TAttrFixup = record
@@ -75,6 +88,7 @@ type
     FScratch: TFPList;
     FNSDefs: TFPList;
     FWriteFlags: TXMLWriterFlags;
+    FCurrentNode: TDOMNode;
     procedure wrtChars(Src: DOMPChar; Length: Integer);
     procedure IncIndent;
     procedure DecIndent; {$IFDEF HAS_INLINE} inline; {$ENDIF}
@@ -123,6 +137,14 @@ type
   Public
     constructor Create(AStream: TStream);
   end;
+
+{ EXMLWriteError }
+
+constructor EXMLWriteError.Create(const msg: string; ANode: TDOMNode);
+begin
+  inherited Create(msg);
+  FNode := ANode;
+end;
 
 { ---------------------------------------------------------------------
     TTextXMLWriter
@@ -363,7 +385,11 @@ begin
     '&': Sender.wrtStr(AmpStr);
     '<': Sender.wrtStr(ltStr);
     // Escape whitespace using CharRefs to be consistent with W3 spec § 3.3.3
-    #0..#15: Sender.wrtStr('&#x'+HexChr[ord(s[idx])]+';');
+    #0: if xwfAllowNullCharsInAttributeValue in Sender.FWriteFlags then
+        Sender.wrtStr('&#x'+HexChr[ord(s[idx])]+';')
+      else
+        raise EXMLWriteError.Create('Null not allowed here', Sender.FCurrentNode);
+    #1..#15: Sender.wrtStr('&#x'+HexChr[ord(s[idx])]+';');
     #16..#31: Sender.wrtStr('&#x1'+HexChr[ord(s[idx])-16]+';');
   else
     Sender.wrtChr(s[idx]);
@@ -443,6 +469,7 @@ end;
 
 procedure TXMLWriter.WriteNode(node: TDOMNode);
 begin
+  FCurrentNode := Node;
   case node.NodeType of
     ELEMENT_NODE:                VisitElement(node);
     ATTRIBUTE_NODE:              VisitAttribute(node);
