@@ -52,6 +52,11 @@ WriteXMLFile and WriteXML routines.
 </seealso>
 </element>
 <!-- enumeration value Visibility: default -->
+<element name="TXMLWriterFlag.xwfAllowNullCharsInAttributeValue">
+<short>
+Enables writing encoded #0.  Without this flag an error will be raised.
+</short>
+</element>
 <element name="TXMLWriterFlag.xwfSpecialCharsInAttributeValue">
 <short>
 Enables writing unencoded #1..#32 (including Carriage Return) characters in attribute values. Without this flag they will be encoded to their numeric character entity &amp;xD; instead.
