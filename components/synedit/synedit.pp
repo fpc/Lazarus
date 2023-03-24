@@ -6336,23 +6336,32 @@ begin
   inherited;
   LastMouseCaret:=Point(-1,-1);
   if (eoAcceptDragDropEditing in FOptions2) and (Source is TCustomSynEdit) then begin
-    Accept := False;
-    if (not ReadOnly) and TCustomSynEdit(Source).SelAvail then
-    begin
-      FBlockSelection.IncPersistentLock;
-      try
-        //if State = dsDragLeave then //restore prev caret position
-        //  ComputeCaret(FMouseDownX, FMouseDownY)
-        //else //position caret under the mouse cursor
-        ComputeCaret(X, Y);
+    Accept := (X >= FTextArea.Bounds.Left)   and
+              (X <  FTextArea.Bounds.Right)  and
+              (Y >= FTextArea.Bounds.Top)    and
+              (Y <  FTextArea.Bounds.Bottom);
 
-        Accept := CheckDragDropAccecpt(LogicalCaretXY, Source, DropMove);
+    if Accept and (not ReadOnly) and TCustomSynEdit(Source).SelAvail then
+    begin
+      //if State = dsDragLeave then //restore prev caret position
+      //  ComputeCaret(FMouseDownX, FMouseDownY)
+      //else //position caret under the mouse cursor
+      FInternalCaret.AssignFrom(FCaret);
+      FInternalCaret.LineCharPos := PixelsToRowColumn(Point(X,Y));
+      Accept := CheckDragDropAccecpt(FInternalCaret.LineBytePos, Source, DropMove);
+
+      if Accept then begin
+        FBlockSelection.IncPersistentLock;
+        try
+          FCaret.LineCharPos := FInternalCaret.LineCharPos;
+        finally
+          FBlockSelection.DecPersistentLock;
+        end;
+
         if DropMove then
           DragCursor := crDrag
         else
           DragCursor := crMultiDrag;
-      finally
-        FBlockSelection.DecPersistentLock;
       end;
     end;
   end;
