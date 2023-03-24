@@ -1287,6 +1287,7 @@ begin
     CreateMenuSeparatorSection(mnuRun,itmRunnning,'itmRunnning');
     ParentMI:=itmRunnning;
     CreateMenuItem(ParentMI,itmRunMenuRunWithoutDebugging,'itmRunMenuRunWithoutDebugging',lisMenuRunWithoutDebugging,'menu_run_withoutdebugging');
+    CreateMenuItem(ParentMI,itmRunMenuRunWithDebugging,'itmRunMenuRunWithDebugging',lisMenuRunWithDebugging,'menu_run_withdebugging');
     CreateMenuItem(ParentMI,itmRunMenuRun,'itmRunMenuRun',lisMenuProjectRun,'menu_run');
     CreateMenuItem(ParentMI,itmRunMenuPause,'itmRunMenuPause',lisPause,'menu_pause', False);
     CreateMenuItem(ParentMI,itmRunMenuShowExecutionPoint,'itmRunMenuShowExecutionPoint',

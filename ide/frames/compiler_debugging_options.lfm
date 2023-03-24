@@ -9,14 +9,13 @@ object CompilerDebuggingOptionsFrame: TCompilerDebuggingOptionsFrame
   DesignLeft = 225
   DesignTop = 275
   object chkDebugGDB: TCheckBox
-    AnchorSideTop.Control = grpChecks
+    AnchorSideTop.Control = chkRunWithDebug
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 19
-    Top = 107
+    Top = 132
     Width = 689
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Top = 6
     BorderSpacing.Around = 6
     Caption = 'chkDebugGDB'
     OnChange = chkDebugGDBChange
@@ -30,7 +29,7 @@ object CompilerDebuggingOptionsFrame: TCompilerDebuggingOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 118
-    Top = 132
+    Top = 157
     Width = 701
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -89,10 +88,10 @@ object CompilerDebuggingOptionsFrame: TCompilerDebuggingOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideRight.Control = grpInfoForGDB
       AnchorSideRight.Side = asrBottom
-      Left = 113
+      Left = 111
       Height = 23
       Top = 3
-      Width = 581
+      Width = 583
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Around = 3
       ItemHeight = 15
@@ -106,7 +105,7 @@ object CompilerDebuggingOptionsFrame: TCompilerDebuggingOptionsFrame
       Left = 6
       Height = 15
       Top = 7
-      Width = 101
+      Width = 99
       BorderSpacing.Around = 6
       Caption = 'lblDbgSymbolType'
       ParentColor = False
@@ -120,7 +119,7 @@ object CompilerDebuggingOptionsFrame: TCompilerDebuggingOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 114
-    Top = 255
+    Top = 280
     Width = 701
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -178,7 +177,7 @@ object CompilerDebuggingOptionsFrame: TCompilerDebuggingOptionsFrame
       Left = 6
       Height = 19
       Top = 25
-      Width = 115
+      Width = 112
       BorderSpacing.Top = 3
       Caption = 'chkTrashVariables'
       TabOrder = 1
@@ -204,7 +203,7 @@ object CompilerDebuggingOptionsFrame: TCompilerDebuggingOptionsFrame
       Left = 6
       Height = 19
       Top = 6
-      Width = 89
+      Width = 87
       BorderSpacing.Left = 6
       Caption = 'chkChecksIO'
       TabOrder = 0
@@ -216,7 +215,7 @@ object CompilerDebuggingOptionsFrame: TCompilerDebuggingOptionsFrame
       Left = 6
       Height = 19
       Top = 28
-      Width = 110
+      Width = 108
       BorderSpacing.Top = 3
       Caption = 'chkChecksRange'
       TabOrder = 1
@@ -228,7 +227,7 @@ object CompilerDebuggingOptionsFrame: TCompilerDebuggingOptionsFrame
       Left = 6
       Height = 19
       Top = 50
-      Width = 125
+      Width = 123
       BorderSpacing.Top = 3
       BorderSpacing.Bottom = 6
       Caption = 'chkChecksOverflow'
@@ -238,10 +237,10 @@ object CompilerDebuggingOptionsFrame: TCompilerDebuggingOptionsFrame
       AnchorSideLeft.Control = chkChecksIO
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = chkChecksIO
-      Left = 165
+      Left = 163
       Height = 19
       Top = 6
-      Width = 105
+      Width = 103
       BorderSpacing.Left = 70
       Caption = 'chkChecksStack'
       TabOrder = 3
@@ -249,22 +248,34 @@ object CompilerDebuggingOptionsFrame: TCompilerDebuggingOptionsFrame
     object chkVerifyObjMethodCall: TCheckBox
       AnchorSideLeft.Control = chkChecksStack
       AnchorSideTop.Control = chkChecksRange
-      Left = 165
+      Left = 163
       Height = 19
       Top = 28
-      Width = 150
+      Width = 148
       Caption = 'chkVerifyObjMethodCall'
       TabOrder = 4
     end
     object chkAssertion: TCheckBox
       AnchorSideLeft.Control = chkVerifyObjMethodCall
       AnchorSideTop.Control = chkChecksOverflow
-      Left = 165
+      Left = 163
       Height = 19
       Top = 50
-      Width = 88
+      Width = 86
       Caption = 'chkAssertion'
       TabOrder = 5
     end
+  end
+  object chkRunWithDebug: TCheckBox
+    AnchorSideTop.Control = grpChecks
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 19
+    Top = 107
+    Width = 118
+    BorderSpacing.Top = 6
+    BorderSpacing.Around = 6
+    Caption = 'chkRunWithDebug'
+    TabOrder = 4
   end
 end

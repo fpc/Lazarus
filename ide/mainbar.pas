@@ -294,6 +294,7 @@ type
         itmRunMenuAbortBuild: TIDEMenuCommand;
       //itmRunnning: TIDEMenuSection;
         itmRunMenuRunWithoutDebugging: TIDEMenuCommand;
+        itmRunMenuRunWithDebugging: TIDEMenuCommand;
         itmRunMenuRun: TIDEMenuCommand;
         itmRunMenuPause: TIDEMenuCommand;
         itmRunMenuShowExecutionPoint: TIDEMenuCommand;
@@ -849,6 +850,7 @@ procedure TMainIDEBar.AllowCompilation(aAllow: Boolean);
 begin
   // Run menu
   itmRunMenuRunWithoutDebugging.Enabled:=aAllow;
+  itmRunMenuRunWithDebugging.Enabled:=aAllow;
   itmRunMenuRun.Enabled:=aAllow;
   itmRunMenuCompile.Enabled:=aAllow;
   itmRunMenuBuild.Enabled:=aAllow;

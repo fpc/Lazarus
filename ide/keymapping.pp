@@ -800,6 +800,7 @@ begin
     ecBuildManyModes          : Result:= srkmecBuildManyModes;
     ecAbortBuild              : Result:= srkmecAbortBuild;
     ecRunWithoutDebugging     : Result:= srkmecRunWithoutDebugging;
+    ecRunWithDebugging        : Result:= srkmecRunWithDebugging;
     ecRun                     : Result:= srkmecRun;
     ecPause                   : Result:= srkmecPause;
     ecShowExecutionPoint      : Result:= srkmecShowExecutionPoint;
@@ -1466,6 +1467,7 @@ begin
   ecBuildManyModes:      SetSingle(VK_UNKNOWN,[]);
   ecAbortBuild:          SetSingle(VK_UNKNOWN,[]);
   ecRunWithoutDebugging: SetSingle(VK_F9, [XCtrl, ssShift]);
+  ecRunWithDebugging:    SetSingle(VK_F9, [ssAlt, ssShift]);
   ecRun:                 SetSingle(VK_F9,[]);
   ecPause:               SetSingle(VK_UNKNOWN,[]);
   ecShowExecutionPoint:  SetSingle(VK_UNKNOWN,[]);
@@ -1910,6 +1912,7 @@ begin
   ecBuildManyModes:      SetSingle(VK_UNKNOWN,[]);
   ecAbortBuild:          SetSingle(VK_UNKNOWN,[]);
   ecRunWithoutDebugging: SetSingle(VK_F9,[ssCtrl, ssShift]);
+  ecRunWithDebugging:    SetSingle(VK_F9, [ssAlt, ssShift]);
   ecRun:                 SetSingle(VK_F9,[]);
   ecPause:               SetSingle(VK_UNKNOWN,[]);
   ecShowExecutionPoint:  SetSingle(VK_UNKNOWN,[]);
@@ -2543,6 +2546,7 @@ begin
   ecBuildManyModes:      SetSingle(VK_UNKNOWN,[]);
   ecAbortBuild:          SetSingle(VK_UNKNOWN,[]);
   ecRunWithoutDebugging: SetSingle(VK_R,[ssMeta, ssCtrl]);
+  ecRunWithDebugging:    SetSingle(VK_R, [ssAlt, ssShift]);
   ecRun:                 SetSingle(VK_R,[ssMeta]);
   ecPause:               SetSingle(VK_UNKNOWN,[]);
   ecShowExecutionPoint:  SetSingle(VK_UNKNOWN,[]);
@@ -3263,6 +3267,7 @@ begin
   AddDefault(C, 'Build many modes', lisKMBuildManyModes, ecBuildManyModes);
   AddDefault(C, 'Abort building', lisKMAbortBuilding, ecAbortBuild);
   AddDefault(C, 'Run without debugging', lisMenuRunWithoutDebugging, ecRunWithoutDebugging);
+  AddDefault(C, 'Run without debugging', lisMenuRunWithDebugging, ecRunWithDebugging);
   AddDefault(C, 'Run program', lisKMRunProgram, ecRun);
   AddDefault(C, 'Pause program', lisKMPauseProgram, ecPause);
   AddDefault(C, 'Show execution point', n(lisMenuShowExecutionPoint), ecShowExecutionPoint);

@@ -279,6 +279,7 @@ const
   ecResetDebugger           = ecFirstLazarus + 416;
   ecRunParameters           = ecFirstLazarus + 417;
   ecRunToCursor             = ecFirstLazarus + 418;
+  ecRunWithDebugging        = ecFirstLazarus + 419;
 
   ecBuildFile               = ecFirstLazarus + 431;
   ecRunFile                 = ecFirstLazarus + 432;

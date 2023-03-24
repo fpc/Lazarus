@@ -177,6 +177,7 @@ type
     procedure SetPassLinkerOpt(const AValue: Boolean);
     procedure SetRangeChecks(const AValue: Boolean);
     procedure SetRelocatableUnit(const AValue: Boolean);
+    procedure SetRunWithoutDebug(AValue: Boolean);
     procedure SetShowAll(const AValue: Boolean);
     procedure SetShowCompProc(const AValue: Boolean);
     procedure SetShowCond(const AValue: Boolean);
@@ -294,6 +295,7 @@ type
     fCustomConfigFile: Boolean;
     fConfigFilePath: String;
     fUseCommentsInCustomOptions: Boolean;
+    fRunWithoutDebug: Boolean;
   protected
     function GetCompilerPath: String; virtual; abstract;
     function GetCustomOptions: string; virtual; abstract;
@@ -419,6 +421,7 @@ type
     property SmallerCode: boolean read FSmallerCode write SetSmallerCode;
 
     // linking:
+    property RunWithoutDebug: Boolean read fRunWithoutDebug write SetRunWithoutDebug;
     property GenerateDebugInfo: Boolean read fGenDebugInfo write SetGenDebugInfo;
     property DebugInfoType: TCompilerDbgSymbolType read FDebugInfoType write SetDebugInfoType;
     property DebugInfoTypeStr: String read GetDebugInfoTypeStr;
@@ -699,6 +702,13 @@ procedure TLazCompilerOptions.SetRelocatableUnit(const AValue: Boolean);
 begin
   if fRelocatableUnit=AValue then exit;
   fRelocatableUnit:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetRunWithoutDebug(AValue: Boolean);
+begin
+  if fRunWithoutDebug = AValue then Exit;
+  fRunWithoutDebug := AValue;
   IncreaseChangeStamp;
 end;
 

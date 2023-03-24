@@ -19,6 +19,7 @@ type
   { TCompilerDebuggingOptionsFrame }
 
   TCompilerDebuggingOptionsFrame = class(TAbstractIDEOptionsEditor)
+    chkRunWithDebug: TCheckBox;
     chkChecksIO: TCheckBox;
     chkChecksOverflow: TCheckBox;
     chkChecksRange: TCheckBox;
@@ -106,6 +107,7 @@ begin
   grpOtherDebuggingInfo.Caption := dlgCOOtherDebuggingInfo;
 
   chkDebugGDB.Caption := dlgCOGDB;
+  chkRunWithDebug.Caption := dlgRunWithDebug;
   lblDbgSymbolType.Caption := dlgCOSymbolType;
   dropDbgSymbolType.Items.Clear;
   // Adjust constants above, if re-ordering
@@ -135,6 +137,7 @@ begin
     chkAssertion.Checked := IncludeAssertionCode;
 
     chkDebugGDB.Checked := GenerateDebugInfo;
+    chkRunWithDebug.Checked := not RunWithoutDebug;
     dropDbgSymbolType.ItemIndex := SymbolToIndex(DebugInfoType);
     chkUseLineInfoUnit.Checked := UseLineInfoUnit;
     chkUseValgrind.Checked := UseValgrind;
@@ -160,6 +163,7 @@ begin
     IncludeAssertionCode := chkAssertion.Checked;
 
     GenerateDebugInfo := chkDebugGDB.Checked;
+    RunWithoutDebug := not chkRunWithDebug.Checked;
     DebugInfoType := IndexToSymbol(dropDbgSymbolType.ItemIndex);
     UseLineInfoUnit := chkUseLineInfoUnit.Checked;
     UseValgrind := chkUseValgrind.Checked;

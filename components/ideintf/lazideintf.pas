@@ -388,6 +388,7 @@ type
                             FinalizeResources: boolean = True): TModalResult; virtual; abstract;
     function DoRunProject: TModalResult; virtual; abstract;
     function DoRunProjectWithoutDebug: TModalResult; virtual; abstract;
+    function DoRunProjectWithDebug: TModalResult; virtual; abstract;
     function GetProjectFileForProjectEditor(AEditor: TSourceEditorInterface): TLazProjectFile; virtual; abstract;
     function DoCallProjectChangedHandler(HandlerType: TLazarusIDEHandlerType;
                                          AProject: TLazProject): TModalResult;

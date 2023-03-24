@@ -343,6 +343,7 @@ type
     procedure mnuBuildManyModesClicked(Sender: TObject);
     procedure mnuAbortBuildProjectClicked(Sender: TObject);
     procedure mnuRunMenuRunWithoutDebugging(Sender: TObject);
+    procedure mnuRunMenuRunWithDebugging(Sender: TObject);
     procedure mnuRunProjectClicked(Sender: TObject);
     procedure mnuPauseProjectClicked(Sender: TObject);
     procedure mnuShowExecutionPointClicked(Sender: TObject);
@@ -832,6 +833,7 @@ type
     function DoInitProjectRun: TModalResult; override;
     function DoRunProject: TModalResult; override;
     function DoRunProjectWithoutDebug: TModalResult; override;
+    function DoRunProjectWithDebug: TModalResult; override;
     function DoSaveProjectToTestDirectory(Flags: TSaveFlags): TModalResult;
     procedure RunFinished(Sender: TObject);
     function QuitIDE: boolean;
@@ -3081,6 +3083,7 @@ begin
     itmRunMenuBuildManyModes.Command:=GetCommand(ecBuildManyModes, @mnuBuildManyModesClicked);
     itmRunMenuAbortBuild.Command:=GetCommand(ecAbortBuild, @mnuAbortBuildProjectClicked);
     itmRunMenuRunWithoutDebugging.Command:=GetCommand(ecRunWithoutDebugging, @mnuRunMenuRunWithoutDebugging);
+    itmRunMenuRunWithDebugging.Command:=GetCommand(ecRunWithDebugging, @mnuRunMenuRunWithDebugging);
     itmRunMenuRun.Command:=GetCommand(ecRun, @mnuRunProjectClicked, TRunToolButton);
     itmRunMenuPause.Command:=GetCommand(ecPause, @mnuPauseProjectClicked);
     itmRunMenuShowExecutionPoint.Command:=GetCommand(ecShowExecutionPoint, @mnuShowExecutionPointClicked);
@@ -4592,6 +4595,11 @@ end;
 procedure TMainIDE.mnuRunMenuRunWithoutDebugging(Sender: TObject);
 begin
   DoRunProjectWithoutDebug;
+end;
+
+procedure TMainIDE.mnuRunMenuRunWithDebugging(Sender: TObject);
+begin
+  DoRunProjectWithDebug;
 end;
 
 procedure TMainIDE.mnuRunProjectClicked(Sender: TObject);
@@ -7436,33 +7444,11 @@ begin
 end;
 
 function TMainIDE.DoRunProject: TModalResult;
-var
-  Handled: Boolean;
 begin
-  DebugLn('Hint: (lazarus) [TMainIDE.DoRunProject] INIT');
-
-  if (DoInitProjectRun <> mrOK)
-  or (ToolStatus <> itDebugger)
-  then begin
-    Result := mrAbort;
-    Exit;
-  end;
-  debugln('Hint: (lazarus) [TMainIDE.DoRunProject] Debugger=',DbgSName(DebuggerOptions.CurrentDebuggerClass));
-
-  try
-    Result:=mrCancel;
-    Handled:=false;
-    Result := DoCallRunDebug(Handled);
-    if Handled or (Result<>mrOk) then
-      exit;
-  finally
-    if Result<>mrOk then
-      ToolStatus:=itNone;
-  end;
-
-  Result := DebugBoss.StartDebugging;
-
-  DebugLn('Hint: (lazarus) [TMainIDE.DoRunProject] END');
+  if Project1.CompilerOptions.RunWithoutDebug then
+    Result := DoRunProjectWithoutDebug
+  else
+    Result := DoRunProjectWithDebug;
 end;
 
 function TMainIDE.DoRunProjectWithoutDebug: TModalResult;
@@ -7566,6 +7552,36 @@ begin
     Process.Free;
     Params.Free;
   end;
+end;
+
+function TMainIDE.DoRunProjectWithDebug: TModalResult;
+var
+  Handled: Boolean;
+begin
+  DebugLn('Hint: (lazarus) [TMainIDE.DoRunProjectWithDebug] INIT');
+
+  if (DoInitProjectRun <> mrOK)
+  or (ToolStatus <> itDebugger)
+  then begin
+    Result := mrAbort;
+    Exit;
+  end;
+  debugln('Hint: (lazarus) [TMainIDE.DoRunProjectWithDebug] Debugger=',DbgSName(DebuggerOptions.CurrentDebuggerClass));
+
+  try
+    Result:=mrCancel;
+    Handled:=false;
+    Result := DoCallRunDebug(Handled);
+    if Handled or (Result<>mrOk) then
+      exit;
+  finally
+    if Result<>mrOk then
+      ToolStatus:=itNone;
+  end;
+
+  Result := DebugBoss.StartDebugging;
+
+  DebugLn('Hint: (lazarus) [TMainIDE.DoRunProjectWithDebug] END');
 end;
 
 procedure TMainIDE.RunFinished(Sender: TObject);
