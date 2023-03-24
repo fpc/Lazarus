@@ -41,7 +41,7 @@ uses
   TypInfo, Classes, SysUtils, math, Types, fgl,
   // LazUtils
   Laz2_XMLCfg, LazFileUtils, LazStringUtils, LazUtilities, LazLoggerBase,
-  LazClasses, Maps, LazMethodList,
+  LazClasses, Maps, LazMethodList, laz2_XMLWrite,
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfDebuggerBase, LazDebuggerIntf,
   LazDebuggerIntfBaseTypes, LazDebuggerValueConverter, LazDebuggerTemplate,
@@ -2781,7 +2781,7 @@ var
 begin
   XmlConf := TXMLConfig.CreateClean('');
   XmlConf.Clear;
-  XmlConf.WriteFlags := [];
+  XmlConf.WriteFlags := [xwfAllowNullCharsInAttributeValue];
   SaveDataToXMLConfig(XmlConf, 'History/');
   s := TStringStream.Create('');
   XmlConf.WriteToStream(s);
