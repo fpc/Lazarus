@@ -1159,7 +1159,7 @@ uses
       IpAnImgL,
     {$ENDIF}
   {$ENDIF}
-  LazStringUtils;
+  StrUtils, LazStringUtils;
   
 
 type
@@ -2020,10 +2020,22 @@ end;
 { TIpHtmlNodeBLOCKQUOTE }
 
 procedure TIpHtmlNodeBLOCKQUOTE.Enqueue;
+var
+  hf: Integer;
+  elem: PIpHtmlElement;
 begin
+  // display: block;
+  hf := Props.FontSize;
+  elem := TIpHtmlOpener(Owner).BuildLinefeedEntry(etHardLF, hf);
+  EnqueueElement(elem);
+
   EnqueueElement(TIpHtmlOpener(Owner).FLIndent);
   inherited;
   EnqueueElement(TIpHtmlOpener(Owner).FLOutdent);
+
+  // close the block
+  elem := TIpHtmlOpener(Owner).BuildLinefeedEntry(etHardLF, hf);
+  EnqueueElement(elem);
 end;
 
 
@@ -2097,13 +2109,11 @@ end;
 
 procedure TIpHtmlNodeDD.Enqueue;
 var
-  h, hf: Integer;
   elem: PIpHtmlElement;
 begin
-  hf := Props.FontSize;
+  // avoid top and bottom margins... they're always inherited from DL
   if ChildCount > 0 then begin
-    h := GetMargin(Props.ElemMarginTop, hf div 2);
-    elem := TIpHtmlOpener(Owner).BuildLineFeedEntry(etSoftLF, h);
+    elem := TIpHtmlOpener(Owner).BuildLineFeedEntry(etSoftLF, 0);
     EnqueueElement(elem);
   end;
 
@@ -2112,8 +2122,7 @@ begin
   EnqueueElement(TIpHtmlOpener(Owner).FLOutdent);
 
   if ChildCount > 0 then begin
-    h := GetMargin(Props.ElemMarginTop, hf);
-    elem := TIpHtmlOpener(Owner).BuildLineFeedEntry(etSoftLF, h);
+    elem := TIpHtmlOpener(Owner).BuildLineFeedEntry(etSoftLF, 0);
     EnqueueElement(elem);
   end;
 end;
@@ -2212,11 +2221,26 @@ begin
 end;
 
 procedure TIpHtmlNodeDL.Enqueue;
+var
+  hf, h: Integer;
+  elem: PIpHtmlElement;
 begin
-  EnqueueElement(TIpHtmlOpener(Owner).HardLF);
-  EnqueueElement(TIpHtmlOpener(Owner).FLIndent);
+  // display block
+  hf := Props.FontSize;
+  h := GetMargin(Props.ElemMarginTop, hf);
+  elem := TIpHtmlOpener(Owner).BuildLinefeedEntry(etHardLF, h);
+  EnqueueElement(elem);
+
+  // indent not needed here
+  // EnqueueElement(TIpHtmlOpener(Owner).FLIndent);
   inherited;
-  EnqueueElement(TIpHtmlOpener(Owner).FLOutdent);
+  // outdent not needed here
+  // EnqueueElement(TIpHtmlOpener(Owner).FLOutdent);
+
+  // close the block
+  h := GetMargin(Props.ElemMarginBottom, hf);
+  elem := TIpHtmlOpener(Owner).BuildLinefeedEntry(etHardLF, h);
+  EnqueueElement(elem);
 end;
 
 
@@ -2229,9 +2253,32 @@ begin
 end;
 
 procedure TIpHtmlNodeDT.Enqueue;
+var
+  hf, h: integer;
+  elem: PIPHtmlElement;
 begin
+  //  display inline block
+  // avoid top margin... it's always inherited from DL
+  // use fractional font height between DD and DT
+  if ChildCount > 0 then
+  begin
+    hf := Props.FontSize;
+    h := 3 * (hf div 8);
+    elem := TIPHtmlOpener(Owner).BuildLinefeedEntry(etSoftLF, h);
+    EnqueueElement(elem);
+  end;
+
   inherited;
-  EnqueueElement(TIpHtmlOpener(Owner).HardLF);
+
+  // close the inline block
+  // use fractional font height between DT and DD
+  if ChildCount > 0 then
+  begin
+    hf := Props.FontSize;
+    h := hf div 8;
+    elem := TIPHtmlOpener(Owner).BuildLinefeedEntry(etSoftLF, h);
+    EnqueueElement(elem);
+  end;
 end;
 
 
@@ -2429,27 +2476,70 @@ end;
 
 procedure TIpHtmlNodeList.Enqueue;
 var
-  i: Integer;
+  i, hf: Integer;
   lOwner: TIpHtmlOpener;
   lParentNode: TIpHtmlNodeOpener;
+  elem: PIpHtmlElement;
 begin
   lOwner := TIpHtmlOpener(Owner);
   lParentNode := TIpHtmlNodeOpener(FParentNode);
-  
+  hf := Props.FontSize;
+
   if ChildCount > 0 then begin
-    EnqueueElement(lOwner.SoftLF);
+    // nested list has different first line margin
+    if (FParentNode is TIpHtmlNodeOL) or
+      (FParentNode is TIpHtmlNodeList) or
+      (FParentNode is TIpHtmlNodeLI) then
+    begin
+      elem := lOwner.BuildLineFeedEntry(etHardLF, 0);
+      lParentNode.EnqueueElement(elem);
+      elem := lOwner.BuildLineFeedEntry(etSoftLF, 3 * (hf div 16));
+      lParentNode.EnqueueElement(elem);
+      lParentNode.EnqueueElement(lOwner.FLIndent);
+    end
+    // start block container and inline block for list items
+    else
+    begin
+      elem := lOwner.BuildLineFeedEntry(etHardLF, hf);
+      EnqueueElement(elem);
+      elem := lOwner.BuildLineFeedEntry(etSoftLF, 3 * (hf div 16));
+      EnqueueElement(elem);
+      EnqueueElement(lOwner.FLIndent);
+    end;
   end;
-  
-  {render list}
-  lParentNode.EnqueueElement(lOwner.FLIndent);
+
+  // render list
   for i := 0 to Pred(ChildCount) do
-    if ChildNode[i] is TIpHtmlNodeLI then begin
+  begin
+    // handle list items
+    if (ChildNode[i] is TIpHtmlNodeLI) then
+    begin
       TIpHtmlNodeLI(ChildNode[i]).Enqueue;
-      lParentNode.EnqueueElement(lOwner.SoftLF);
-    end else
+      elem := lOwner.BuildLineFeedEntry(etSoftLF, 3 * (hf div 16));
+      EnqueueElement(elem);
+    end
+    // handle a nested list
+    else
       TIpHtmlNodeOpener(ChildNode[i]).Enqueue;
-  lParentNode.EnqueueElement(lOwner.FLOutdent);
-  EnqueueElement(lOwner.SoftLF);
+  end;
+
+  if ChildCount > 0 then begin
+    // close inline block
+    lParentNode.EnqueueElement(lOwner.FLOutdent);
+    elem := lOwner.BuildLineFeedEntry(etSoftLF, 0);
+    EnqueueElement(elem);
+
+    // nested list has different bottom margin
+    if (FParentNode is TIpHtmlNodeOL) or
+      (FParentNode is TIpHtmlNodeList) or
+      (FParentNode is TIpHtmlNodeLI) then
+      elem := lOwner.BuildLineFeedEntry(etSoftLF, hf div 8)
+    // close the block
+    else
+      elem := lOwner.BuildLineFeedEntry(etHardLF, 3 * (hf div 8));
+    EnqueueElement(elem);
+  end;
+
 end;
 
 procedure TIpHtmlNodeList.LoadAndApplyCSSProps;
@@ -2518,27 +2608,26 @@ end;
 
 procedure TIpHtmlNodePRE.Enqueue;
 var
-  h: Integer;
+  hf, h: Integer;
   elem: PIpHtmlElement;
 begin
-  //hf := Props.FontSize;
-  if ChildCount > 0 then begin
-    h := GetMargin(Props.ElemMarginTop, 0);
-    elem := TIpHtmlOpener(Owner).BuildLineFeedEntry(etSoftLF, h);
-    EnqueueElement(elem);
-  end;
-  //EnqueueElement(Owner.HardLF);
-  inherited Enqueue;
-  if ChildCount > 0 then begin
-    h := GetMargin(Props.ElemMarginTop, 0);
-    elem := TIpHtmlOpener(Owner).BuildLineFeedEntry(etSoftLF, h);
+  hf := Props.FontSize;
+
+  // start block with top margin
+  if (ChildCount > 0) then begin
+    h := GetMargin(Props.ElemMarginTop, hf);
+    elem := TIpHtmlOpener(Owner).BuildLineFeedEntry(etHardLF, h);
     EnqueueElement(elem);
   end;
 
-  {
-  if FChildren.Count > 0 then
-    EnqueueElement(Owner.HardLF);
-    }
+  inherited Enqueue;
+
+  // close block with optional bottom margin
+  if (ChildCount > 0) then begin
+    h := GetMargin(Props.ElemMarginBottom, 0);
+    elem := TIpHtmlOpener(Owner).BuildLineFeedEntry(etHardLF, h);
+    EnqueueElement(elem);
+  end;
 end;
 
 
@@ -3134,7 +3223,7 @@ var
 begin
   if FParentNode is TIpHtmlNodeOL then begin
     S := TIpHtmlNodeOL(FParentNode).GetNumString;
-    SetRawWordValue(WordEntry, S + '.');
+    SetRawWordValue(WordEntry, S);
     EnqueueElement(WordEntry);
   end else
     EnqueueElement(Element);
@@ -3191,62 +3280,97 @@ end;
 procedure TIpHtmlNodeOL.Enqueue;
 var
   i: Integer;
+  iVal: Integer;
   lParentNode: TIpHtmlNodeOpener;
   lOwner: TIpHtmlOpener;
+  elem: PIpHtmlElement;
+  hf: Integer;
 begin
+  // display block
   lOwner := TIpHtmlOpener(Owner);
   lParentNode := TIpHtmlNodeOpener(FParentNode);
+  hf := Props.FontSize;
   
-  {render list}
   if ChildCount > 0 then begin
-    EnqueueElement(lOwner.SoftLF);
+    // nested list has different top margin
+    if (FParentNode is TIpHtmlNodeOL) or
+      (FParentNode is TIpHtmlNodeList) or
+      (FParentNode is TIpHtmlNodeLI) then
+    begin
+      elem := lOwner.BuildLineFeedEntry(etHardLF, 0);
+      lParentNode.EnqueueElement(elem);
+      elem := lOwner.BuildLineFeedEntry(etSoftLF, 3 * (hf div 16));
+      lParentNode.EnqueueElement(elem);
+      lParentNode.EnqueueElement(lOwner.FLIndent);
+    end
+    // start block container and inline block for list items
+    else
+    begin
+      elem := lOwner.BuildLineFeedEntry(etHardLF, hf);
+      EnqueueElement(elem);
+      elem := lOwner.BuildLineFeedEntry(etSoftLF, 3 * (hf div 16));
+      EnqueueElement(elem);
+      EnqueueElement(lOwner.FLIndent);
+    end;
   end;
-  lParentNode.EnqueueElement(lOwner.FLIndent);
+
+  // render list
+  iVal := -1;
   for i := 0 to Pred(ChildCount) do
-    if ChildNode[i] is TIpHtmlNodeLI then begin
-      Counter := Start + i;
+  begin
+    // handle list items
+    if (ChildNode[i] is TIpHtmlNodeLI) then
+    begin
+      Inc(iVal);
+      Counter := Start + iVal;
       TIpHtmlNodeLI(ChildNode[i]).Enqueue;
-      lParentNode.EnqueueElement(lOwner.SoftLF);
-    end else
+      elem := lOwner.BuildLineFeedEntry(etSoftLF, 3 * (hf div 16));
+      EnqueueElement(elem);
+    end
+    // handle a nested list
+    else
       TIpHtmlNodeOpener(ChildNode[i]).Enqueue;
-  lParentNode.EnqueueElement(lOwner.FLOutdent);
-  lParentNode.EnqueueElement(lOwner.SoftLF);
+  end;
+
+  if ChildCount > 0 then begin
+    // close inline block
+    lParentNode.EnqueueElement(lOwner.FLOutdent);
+    elem := lOwner.BuildLineFeedEntry(etSoftLF, 0);
+    EnqueueElement(elem);
+
+    // nested list has different bottom margin
+    if (FParentNode is TIpHtmlNodeOL) or
+      (FParentNode is TIpHtmlNodeList) or
+      (FParentNode is TIpHtmlNodeLI)  then
+      elem := lOwner.BuildLineFeedEntry(etSoftLF, hf div 8)
+    // close the block
+    else
+      elem := lOwner.BuildLineFeedEntry(etHardLF, 3 * (hf div 8));
+    EnqueueElement(elem);
+  end;
 end;
 
 function TIpHtmlNodeOL.GetNumString: string;
-
-  function IntToRomanStr(i : Integer): string;
-  const
-    RC : array[0..6] of AnsiChar = ('M', 'D', 'C', 'L', 'X', 'V', 'I');
-    RV : array[0..6] of Integer = (1000, 500, 100, 50, 10, 5, 1);
-  var
-    n : Integer;
-  begin
-    Result := '';
-    n := 0;
-    repeat
-      while i >= RV[n] do begin
-        Result := Result + RC[n];
-        Dec(i, RV[n]);
-      end;
-      Inc(n);
-    until i = 0;
-  end;
-
 begin
   Result := ''; // stop warning
   case Style of
   olArabic :
-    str(Counter, Result);
+    Str(Counter, Result);
   olLowerAlpha :
     Result := chr(ord('a') + Counter - 1);
   olUpperAlpha :
     Result := chr(ord('A') + Counter - 1);
   olLowerRoman :
-    Result := LowerCase(IntToRomanStr(Counter));
+    // rtl version... its not buggy
+    Result := Lowercase(StrUtils.IntToRoman(Counter));
   olUpperRoman :
-    Result := IntToRomanStr(Counter);
+    // rtl version... its not buggy
+    Result := StrUtils.IntToRoman(Counter);
   end;
+  Result := Result + '. ';
+  // right-align roman counter values
+  if Style in [olLowerRoman, olUpperRoman] then
+    Result := PadLeft(Result, 7);
 end;
 
 procedure TIpHtmlNodeOL.LoadAndApplyCSSProps;
@@ -3540,34 +3664,46 @@ end;
 procedure TIpHtmlNodeTABLE.Enqueue;
 var
   lOwner: TIpHtmlOpener;
+  h: Integer;
+  elem: PIpHtmlElement;
 begin
+  // display block
   lOwner := TIpHtmlOpener(Owner);
   
-//The commented code below prevents a blank line before the table
-{
-  case Align of
-  hiaTop,
-  hiaMiddle,
-  hiaBottom,
-  hiaCenter :
-    EnqueueElement(Owner.SoftLF);
-  end;
-}
-  EnqueueElement(lOwner.SoftLF);
+  //The commented code below prevents a blank line before the table
+  {
+    case Align of
+    hiaTop,
+    hiaMiddle,
+    hiaBottom,
+    hiaCenter :
+      EnqueueElement(Owner.SoftLF);
+    end;
+  }
 
+  // vertical margin: specified in CSS or none
+  h := GetMargin(Props.ElemMarginTop, 0);
+  elem := TIpHtmlOpener(Owner).BuildLinefeedEntry(etSoftLF, h);
+  EnqueueElement(elem);
+
+  // insert element content
   EnqueueElement(Element);
 
-  EnqueueElement(lOwner.SoftLF);
-  EnqueueElement(lOwner.HardLF);  // LFs needed otherwise next element is too close
-{
-  case Align of
-  hiaTop,
-  hiaMiddle,
-  hiaBottom,
-  hiaCenter :
-    EnqueueElement(Owner.SoftLF);
-  end;
-}
+  // close block
+  // vertical margin: specified in CSS or none
+  h := GetMargin(Props.ElemMarginBottom, 0);
+  elem := TIpHtmlOpener(Owner).BuildLinefeedEntry(etHardLF, h);
+  EnqueueElement(elem);
+
+  {
+    case Align of
+    hiaTop,
+    hiaMiddle,
+    hiaBottom,
+    hiaCenter :
+      EnqueueElement(Owner.SoftLF);
+    end;
+   }
 end;
 
 procedure TIpHtmlNodeTABLE.SetBorder(const Value: Integer);

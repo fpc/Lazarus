@@ -8,7 +8,6 @@ object TestForm: TTestForm
   ClientHeight = 620
   ClientWidth = 866
   OnCreate = FormCreate
-  LCLVersion = '2.3.0.0'
   object Panel1: TPanel
     Left = 6
     Height = 576
@@ -28,7 +27,6 @@ object TestForm: TTestForm
       Top = 0
       Width = 80
       Caption = 'html file name:'
-      Color = clDefault
       ParentColor = False
     end
     object FileNameEdit1: TFileNameEdit
@@ -96,8 +94,8 @@ object TestForm: TTestForm
       Align = alClient
       BorderSpacing.Top = 3
       DataProvider = IpHtmlDataProvider
-      FixedTypeface = 'Courier New'
-      DefaultTypeFace = 'default'
+      FixedTypeface = 'monospace'
+      DefaultTypeFace = 'sans-serif'
       DefaultFontSize = 12
       FlagErrors = False
       PrintSettings.MarginLeft = 0.5

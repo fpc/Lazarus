@@ -4476,14 +4476,16 @@ var
   h: Integer;
 begin
   hf := Props.FontSize;
+  // mimic layout/line spacing used in Chrome and Firefox
   if FChildren.Count > 0 then begin
-    h := GetMargin(Props.ElemMarginTop, hf div 2);
+    h := GetMargin(Props.ElemMarginTop, 3 * (Owner.DefaultFontSize div 2));
     elem := Owner.BuildLinefeedEntry(etSoftLF, h);
     EnqueueElement(elem);
   end;
   inherited Enqueue;
+  // mimic layout/line spacing used in Chrome and Firefox
   if FChildren.Count > 0 then begin
-    h := GetMargin(Props.ElemMarginBottom, hf div 4);
+    h := GetMargin(Props.ElemMarginBottom, hf div 2);
     elem := Owner.BuildLinefeedEntry(etSoftLF, h);
     EnqueueElement(elem);
   end;
