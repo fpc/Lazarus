@@ -1080,6 +1080,41 @@ the given path.
 </short>
 </element>
 
+<element name="TCustomShellTreeView.ExpandCollapseMode">
+<short>
+Controls the actions performed when a tree node is expanded or collapsed on 
+the control.
+</short>
+<descr>
+<p>
+<var>ExpandCollapseMode</var> is a <var>TExpandCollapseMode</var> property 
+which determines the actions performed when a tree node is expanded or 
+collapsed on the tree view control. The default value for the property is 
+ecmRefreshedExpanding. This value causes the child nodes for a given tree node 
+to be deleted and recreated when the node is expanded.
+</p>
+<p>
+See <link id="TExpandCollapseMode">TExpandCollapseMode</link> for the other 
+values allowed in the property, and the corresponding actions performed in the 
+tree node.
+</p>
+<p>
+ExpandCollapseMode is used in the CanExpand and Collapse methods.
+</p>
+</descr>
+<version>
+Added in LCL version 2.4.
+</version>
+<seealso>
+<link id="TCustomShellTreeView.CanExpand"/>
+<link id="TCustomShellTreeView.Collapse"/>
+<link id="TCustomShellTreeView.PopulateTreeNodeWithFiles"/>
+<link id="TExpandCollapseMode"/>
+<link id="#lcl.comctrls.TTreeNode.Collapse">TTreeNode.Collapse</link>
+<link id="#lcl.comctrls.TTreeNode.Expand">TTreeNode.Expand</link>
+</seealso>
+</element>
+
 <element name="TCustomShellTreeView.Create">
 <short>
 Constructor for the class instance.
