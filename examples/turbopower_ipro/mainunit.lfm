@@ -10,7 +10,7 @@ object MainForm: TMainForm
   ClientHeight = 327
   ClientWidth = 569
   OnCreate = MainFormCreate
-  LCLVersion = '2.2.0.4'
+  LCLVersion = '2.3.0.0'
   object IpHtmlPanel1: TIpHtmlPanel
     Left = 0
     Height = 285

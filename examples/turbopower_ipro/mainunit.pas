@@ -11,7 +11,7 @@ uses
   {$ifdef UsePreview}
   OsPrinters,
   {$endif}
-  LazFileUtils, LazUTF8, IpHtml;
+  LazFileUtils, LazUTF8, IpHtml, IpHtmlNodes;
 
 type
   TSimpleIpHtml = class(TIpHtml)

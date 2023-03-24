@@ -30,7 +30,6 @@ type
       const PostData: TIpFormDataEntity; var Stream: TStream);
     procedure DataProvider1GetImage(Sender: TIpHtmlNode; const URL: string;
       var Picture: TPicture);
-    procedure DataProvider1Leave(Sender: TIpHtml);
     procedure DataProvider1ReportReference(Sender: TObject; const URL: string);
     procedure FormCreate(Sender: TObject);
   private
@@ -79,7 +78,6 @@ begin
     OnCanHandle:=@DataProvider1CanHandle;
     OnGetHtml:=@DataProvider1GetHtml;
     OnGetImage:=@DataProvider1GetImage;
-    OnLeave:=@DataProvider1Leave;
     OnCheckURL:=@DataProvider1CheckURL;
     OnReportReference:=@DataProvider1ReportReference;
   end;
@@ -166,11 +164,6 @@ procedure TForm1.DataProvider1GetImage(Sender: TIpHtmlNode; const URL: string;
 begin
   debugln(['TForm1.DataProvider1GetImage ',URL]);
   Picture:=nil;
-end;
-
-procedure TForm1.DataProvider1Leave(Sender: TIpHtml);
-begin
-
 end;
 
 procedure TForm1.DataProvider1ReportReference(Sender: TObject; const URL: string

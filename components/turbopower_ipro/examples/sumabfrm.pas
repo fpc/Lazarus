@@ -6,7 +6,7 @@ unit sumabfrm;
 interface
 
 uses
-  Classes, SysUtils, Ipfilebroker, IpHtml, Forms, Dialogs;
+  Classes, SysUtils, IpFileBroker, IpHtml, IpHtmlNodes, Forms, Dialogs;
 
 type
 

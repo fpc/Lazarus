@@ -9,7 +9,7 @@ object FHtmFileExp1: TFHtmFileExp1
   ClientWidth = 777
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object IpHtmlPanel1: TIpHtmlPanel
     Left = 0
     Height = 525

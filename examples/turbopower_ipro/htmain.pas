@@ -12,8 +12,9 @@ unit htmain;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, IpHtml, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, ComCtrls, StdCtrls;
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
+  ExtCtrls, ComCtrls, StdCtrls,
+  IpHtml, IpHtmlNodes;
 
 type
 

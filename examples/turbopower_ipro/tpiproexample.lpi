@@ -65,5 +65,12 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="11"/>
+    <Linking>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
   </CompilerOptions>
 </CONFIG>

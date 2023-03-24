@@ -7,7 +7,7 @@ object MainForm: TMainForm
   ClientHeight = 660
   ClientWidth = 966
   OnCreate = FormCreate
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.3.0.0'
   object Panel1: TPanel
     Left = 0
     Height = 626
@@ -106,7 +106,7 @@ object MainForm: TMainForm
       Left = 4
       Height = 25
       Top = 5
-      Width = 112
+      Width = 111
       AutoSize = True
       BorderSpacing.Left = 4
       BorderSpacing.Top = 4
@@ -118,7 +118,7 @@ object MainForm: TMainForm
     end
   end
   object OpenDialog1: TOpenDialog
-    left = 591
-    top = 133
+    Left = 591
+    Top = 133
   end
 end
