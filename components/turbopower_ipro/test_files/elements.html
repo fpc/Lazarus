@@ -1,0 +1,362 @@
+<html>
+<head>
+<style type="text/css">
+body {
+font-family: "Roboto", Arial, Helvetica, sans-serif;
+font-size: 14pt;
+}
+
+pre {
+font-family: "JetBrains Mono", "Source Code Pro", "Courier New", Courier, monospace;
+color: Navy;
+}
+
+a {
+}
+
+dl {
+}
+
+dt {
+color: DarkGreen;
+font-weight: bold;
+font-style: italic;
+}
+
+dd {
+}
+
+li {
+}
+
+table {
+width: 100%;
+background-color: #ececec;
+}
+
+table.otra {
+width: 100%;
+background-color: SkyBlue;
+margin-top: 96px;
+margin-bottom: 96px;
+}
+
+table.nce {
+width: 28%;
+background-color: #ececec;
+}
+
+caption {
+background-color: #ececec;
+color: Gray;
+text-align: center;
+width: 100%;
+}
+
+th {
+background-color: CornflowerBlue;
+color: White;
+font-weight: Bold;
+text-align: center;
+}
+
+td {
+background-color: OldLace;
+font-family: monospace;
+
+}
+
+table.nce tr td {
+text-align: center;
+}
+
+del {
+background-color: Gold;
+color: OrangeRed;
+}
+
+ins {
+background-color: PaleGreen;
+color: Green;
+}
+
+var {
+font-family: monospace;
+font-style: italic;
+font-weight: bold;
+color: Green;
+}
+
+abbr {
+font-weight: bold;
+color: Navy;
+}
+
+blockquote {
+font-style: italic;
+}
+
+q {
+font-style: italic;
+}
+
+address {
+}
+
+hr {
+}
+</style>
+</head>
+<body>
+<h1>H1 Heading</h1>
+<h2>H2 Heading</h2>
+<h3>H3 Heading</h3>
+<h4>H4 Heading</h4>
+<h5>H5 Heading</h5>
+<h6>H6 Heading</h6>
+<p>
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+ut labore et dolore magna aliqua. Sed id semper risus in. Venenatis cras sed felis eget
+velit aliquet sagittis. Sagittis vitae et leo duis ut diam quam nulla porttitor. Luctus
+accumsan tortor posuere ac ut. Aliquet sagittis id consectetur purus ut faucibus.
+</p>
+<h3>PRE Element</h3>
+<p>
+The following contains program code enclosed in an HTML PRE tag. Please note the more
+conventional line spacing (instead of double spacing) used for preformatted content.
+Top and bottom margins in CSS are supported for the PRE element.
+</p>
+<pre>
+procedure TForm1.ShowHTML(Src: string);
+var
+  ss: TStringStream;
+  NewHTML: TIpHtml;
+begin
+  ss := TStringStream.Create(Src);
+  try
+    NewHTML := TIpHtml.Create;
+    debugln(['TForm1.ShowHTML BEFORE SETHTML']);
+    IpHtmlPanel1.SetHtml(NewHTML);
+    debugln(['TForm1.ShowHTML BEFORE LOADFROMSTREAM']);
+    NewHTML.LoadFromStream(ss);
+  finally
+    ss.Free;
+  end;
+end;
+</pre>
+<p>
+The preceding contains program code enclosed in an HTML PRE tag.
+</p>
+<h3>DL Element</h3>
+<p>
+The following is an example of the HTML DL tag. Please note the more conventional
+line spacing (instead of double spacing) used for the DT and DD elements in the
+definition list.
+</p>
+<dl>
+  <dt>Item A</dt>
+  <dd>Info for Item A</dd>
+  <dt>Item B</dt>
+  <dd>Info for Item B</dd>
+  <dt>Item C</dt>
+  <dd>Info for Item C</dd>
+</dl>
+<p>
+The preceding s an example of the HTML DL tag.
+</p>
+<h3>TABLE Element</h3>
+<p>
+The following table does not specify margins on any of the edges. There is limited CSS
+support for the TABLE element.
+</p>
+<table border="1" cellpadding="2" cellspacing="4">
+  <caption>Table A Caption</caption>
+  <thead>
+    <tr>
+      <th>Column A</th>
+      <th>Column B</th>
+      <th>Column C</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Row 1 Col A</td>
+      <td>Row 1 Col B</td>
+      <td>Row 1 Col C</td>
+    </tr>
+    <tr>
+      <td>Row 2 Col A</td>
+      <td>Row 2 Col B</td>
+      <td>Row 2 Col C</td>
+    </tr>
+    <tr>
+      <td>Row 3 Col A</td>
+      <td>Row 3 Col B</td>
+      <td>Row 3 Col C</td>
+    </tr>
+  </tbody>
+</table>
+<p>
+The following table specifies a margin of 96px on all edges. Only top and bottom margins
+actually work.
+</p>
+<table class="otra" border="1" cellpadding="2" cellspacing="4">
+  <caption>Table B Caption</caption>
+  <thead>
+    <tr>
+      <th>Column A</th>
+      <th>Column B</th>
+      <th>Column C</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Row 1 Col A</td>
+      <td>Row 1 Col B</td>
+      <td>Row 1 Col C</td>
+    </tr>
+    <tr>
+      <td>Row 2 Col A</td>
+      <td>Row 2 Col B</td>
+      <td>Row 2 Col C</td>
+    </tr>
+    <tr>
+      <td>Row 3 Col A</td>
+      <td>Row 3 Col B</td>
+      <td>Row 3 Col C</td>
+    </tr>
+  </tbody>
+</table>
+<p>
+This concludes the TABLE portion of the program.
+</p>
+<h3>UL Element</h3>
+<p>
+The following contains list items in a HTML UL tag. Please note the more conventional
+line spacing (instead of double spacing) used for the LI elements in the list.
+Top and bottom margins in CSS are supported for the UL element.
+</p>
+<ul>
+  <li>List Item A</li>
+  <li>List Item B</li>
+  <ul type="circle">
+    <li>List Item BA</li>
+    <li>List Item BB</li>
+    <li>List Item BC</li>
+  </ul>
+  <li>List Item C</li>
+</ul>
+<p>
+The preceding contains list items in a HTML UL tag.
+</p>
+<h3>OL Element</h3>
+<p>
+The following contains list items in a HTML OL tag. Please note the more conventional
+line spacing (instead of double spacing) used for the LI elements in the list.
+Top and bottom margins in CSS are supported for the OL element.
+</p>
+<ol>
+  <li>List Item A</li>
+  <ol type="a">
+    <li>List Item AA</li>
+    <li>List Item AB</li>
+    <li>List Item AC</li>
+  </ol>
+  <li>List Item B
+  <ol type="i">
+    <li>List Item B1</li>
+    <li>List Item B2</li>
+    <li>List Item B3</li>
+    <li>List Item B4</li>
+    <li>List Item B5</li>
+    <li>List Item B6</li>
+    <li>List Item B7</li>
+    <li>List Item B8</li>
+    <li>List Item B9</li>
+    <li>List Item B10</li>
+  </ol>
+  </li>
+  <li>List Item C</li>
+</ol>
+<p>
+The preceding contains list items in a HTML OL tag.
+</p>
+<hr/>
+<h3>ABBR Element</h3>
+<p>
+The <abbr title="World Health Organization">WHO</abbr> was founded in 1948.
+</p>
+<h3>ADDRESS Element</h3>
+<p>
+<address>
+Written by John Doe.<br/>
+Visit us at:<br/>
+https://example.com<br/>
+P.O. Box 564, Disneyland<br/>
+USA
+</address>
+</p>
+<h3>A Element</h3>
+<p>
+<a href="https://www.w3schools.com/">Visit W3Schools.com!</a>
+</p>
+<h3>BLOCKQUOTE Element</h3>
+<blockquote cite="http://www.worldwildlife.org/who/index.html">
+For 60 years, <abbr title="World Wildlife Foundation">WWF</abbr> has worked to help
+people and nature thrive. As the world's leading conservation organization,
+WWF works in nearly 100 countries. At every level, we collaborate with people around
+the world to develop and deliver innovative solutions that protect communities,
+wildlife, and the places in which they live.
+</blockquote>
+<h3>Q Element</h3>
+<p>
+WWF's goal is to: <q>Build a future where people live in harmony with nature.</q>
+</p>
+<h3>Phrasing Elements</h3>
+<p>
+<b>Bold</b> using the HTML B tag.<br/>
+<strong>Strong</strong> using the HTML STRONG tag.<br/>
+<i>Italic</i> using the HTML I tag.<br/>
+<em>Emphasis</em> using the HTML EM tag.<br/>
+<mark>Mark</mark> using the HTML MARK tag.<br/>
+<small>Small</small> using the HTML SMALL tag.<br/>
+<del>Deleted</del> using the HTML DEL tag.<br/>
+<sup>Superscript</sup> using the HTML SUP tag.<br/>
+<ins>Inserted</ins> uing the HTML INS tag.<br/>
+<sub>Subscript</sub> using the HTML SUB tag.<br/>
+<var>Variable</var> using the HTML VAR tag.
+</p>
+
+<h3>Named Character Entities</h3>
+<table class="nce">
+<tr>
+<th>Character</th>
+<th>Entity</th>
+</tr>
+<tr>
+<td>&amp;</td>
+<td>&amp;amp;</td>
+</tr>
+<tr>
+<td>&lt;</td>
+<td>&amp;lt;</td>
+</tr>
+<tr>
+<td>&gt;</td>
+<td>&amp;gt;</td>
+</tr>
+<tr>
+<td>&quot;</td>
+<td>&amp;quot;</td>
+</tr>
+</table>
+</p>
+<h3>Tempor Incididunt</h3>
+<p>
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+ut labore et dolore magna aliqua. Sed id semper risus in. Venenatis cras sed felis eget
+velit aliquet sagittis. Sagittis vitae et leo duis ut diam quam nulla porttitor. Luctus
+accumsan tortor posuere ac ut. Aliquet sagittis id consectetur purus ut faucibus.
+</p>
+</body>
+</html>
