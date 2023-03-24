@@ -1904,7 +1904,12 @@ begin
     until Value > $10FFFF;
 
     case Value of
-      $00..$08, $0B..$0C, $0E..$1F:
+      $00:
+        if (xrfAllowSpecialCharsInAttributeValue in FFlags) then
+          BufAppend(ToFill, DOMChar(Value))
+        else
+          FatalError('Invalid character reference');
+      $01..$08, $0B..$0C, $0E..$1F:
         if FXML11 or (xrfAllowSpecialCharsInAttributeValue in FFlags) then
           BufAppend(ToFill, DOMChar(Value))
         else
