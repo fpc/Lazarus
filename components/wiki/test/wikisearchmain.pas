@@ -35,7 +35,7 @@ uses
   // SynEdit
   SynEdit, SynHighlighterHTML, SynEditHighlighter,
   // TurboPower_IPro
-  IpHtml, Ipfilebroker,
+  IpHtml, Ipfilebroker, IpHtmlNodes,
   // Wiki
   WikiHelpManager, WikiSearchOptions, WikiParser, WikiFormat;
 
