@@ -6672,7 +6672,7 @@ begin
 end;
 
 var
-  ThisNameInfo, SelfNameInfo: TNameSearchInfo;
+  ThisNameInfo, SelfDollarNameInfo, SelfNameInfo: TNameSearchInfo;
 function TFpSymbolDwarfDataProc.GetSelfParameter(AnAddress: TDbgPtr): TFpValueDwarf;
 var
   InfoEntry: TDwarfInformationEntry;
@@ -6681,6 +6681,7 @@ var
 begin
   // special: search "self"
   // Todo nested procs
+  // TODO: move to FreePascal unit
   Result := nil;
   InfoEntry := InformationEntry.Clone;
   //StartScopeIdx := InfoEntry.ScopeIndex;
@@ -6691,6 +6692,12 @@ begin
     found := InfoEntry.GoNamedChildEx(ThisNameInfo);
     if found then
       found := InfoEntry.IsArtificial;
+    if not found then begin
+      InfoEntry.ScopeIndex := InformationEntry.ScopeIndex;
+      found := InfoEntry.GoNamedChildEx(SelfDollarNameInfo);
+      if found then
+        found := InfoEntry.IsArtificial;
+    end;
     if not found then begin
       InfoEntry.ScopeIndex := InformationEntry.ScopeIndex;
       found := InfoEntry.GoNamedChildEx(SelfNameInfo);
@@ -6930,7 +6937,8 @@ initialization
   FPDBG_DWARF_DATA_WARNINGS := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_DATA_WARNINGS' {$IFDEF FPDBG_DWARF_DATA_WARNINGS} , True {$ENDIF} );
 
   ThisNameInfo := NameInfoForSearch('THIS');
-  SelfNameInfo := NameInfoForSearch('$SELF');
+  SelfNameInfo := NameInfoForSearch('SELF');
+  SelfDollarNameInfo := NameInfoForSearch('$SELF');
 
 end.
 
