@@ -2367,7 +2367,7 @@ resourcestring
   dlgCOInfoForGDB = 'Debugger info';
   dlgCOOtherDebuggingInfo = 'Other debugging info';
   dlgCOGDB = 'Generate info for the debugger (slower / increases exe-size)';
-  dlgRunWithDebug = 'Run uses the debugger. (Disable for release-mode)';
+  dlgRunWithDebug = 'Run uses the debugger (disable for release-mode)';
   dlgCOSymbolType = 'Type of debug info';
   dlgCOSymbolTypeAuto = 'Automatic';
   dlgCOSymbolTypeStabs = 'Stabs';
