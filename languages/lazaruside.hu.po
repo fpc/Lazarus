@@ -3607,6 +3607,10 @@ msgstr "Felhasználói felülírások"
 msgid "Run Parameters"
 msgstr "Futtatási paraméterek"
 
+#: lazarusidestrconsts.dlgrunwithdebug
+msgid "Run uses the debugger (disable for release-mode)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsavecurrentdesktop
 msgid "Save current desktop"
 msgstr "Jelenlegi felület mentése"
@@ -5630,6 +5634,7 @@ msgid "There are several Free Pascal Compilers in your path.%s%s%sMaybe you forg
 msgstr "Több Free Pascal fordító is van az útvonalakon.%s%s%sTalán nem lett törölve egy régebbi fordító?"
 
 #: lazarusidestrconsts.lisccoskip
+msgctxt "lazarusidestrconsts.lisccoskip"
 msgid "Skip"
 msgstr "Átlépés"
 
@@ -13362,6 +13367,10 @@ msgctxt "lazarusidestrconsts.lismenuruntocursor"
 msgid "Run to Cursor"
 msgstr "Átlépni a beszúrási jelig"
 
+#: lazarusidestrconsts.lismenurunwithdebugging
+msgid "Run with Debugging"
+msgstr ""
+
 #: lazarusidestrconsts.lismenurunwithoutdebugging
 msgid "Run without Debugging"
 msgstr "Futtatás hibakeresés nélkül"
@@ -13673,7 +13682,9 @@ msgid "2) Search for units. Found paths are added to project settings."
 msgstr "2) Unit-ok keresése. A talált útvonalak a projekt beállításai közé kerülnek."
 
 #: lazarusidestrconsts.lismissingunitsinfo3
-msgid "3) Abort now, install packages or fix paths and try again."
+#, fuzzy
+#| msgid "3) Abort now, install packages or fix paths and try again."
+msgid "3) Leave these units in uses sections as they are."
 msgstr "3) Megszakítás most, csomagok telepítése vagy útvonalak javítása és újra próbálkozás."
 
 #: lazarusidestrconsts.lismissingunitssearch
@@ -13681,7 +13692,10 @@ msgid "Search Unit Path"
 msgstr "Unit útvonal keresése"
 
 #: lazarusidestrconsts.lismissingunitsskip
-msgid "Skip this Unit"
+#, fuzzy
+#| msgid "Skip this Unit"
+msgctxt "lazarusidestrconsts.lismissingunitsskip"
+msgid "Skip"
 msgstr "A unit kihagyása"
 
 #: lazarusidestrconsts.lismitnotice
@@ -19521,10 +19535,10 @@ msgstr "a(z) %s unit nem található"
 msgid "unit %s not found at new position \"%s\""
 msgstr "a %s unit nem található az új helyen: \"%s\""
 
-#: lazarusidestrconsts.lisunitnotfoundinproject
+#: lazarusidestrconsts.lisunitnotfoundinfile
 #, object-pascal-format
-msgid "A unit not found in project %s"
-msgstr "Egy unit nem található a projektben: %s"
+msgid "A unit not found in file %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunitoutputdirectory
 msgid "Unit Output directory"
@@ -19543,10 +19557,10 @@ msgstr "Unit útvonalak"
 msgid "unit %s requires package %s"
 msgstr "a(z) %s unit igényli a(z) %s csomagot"
 
-#: lazarusidestrconsts.lisunitsnotfoundinproject
+#: lazarusidestrconsts.lisunitsnotfoundinfile
 #, object-pascal-format
-msgid "Units not found in project %s"
-msgstr "Nem található unitok a projektben: %s"
+msgid "Units not found in file %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunusedunitsof
 #, object-pascal-format
@@ -21260,6 +21274,10 @@ msgstr "fájl futtatása"
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
 msgstr "futtatási paraméterek"
+
+#: lazarusidestrconsts.srkmecrunwithdebugging
+msgid "run with debugging"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecrunwithoutdebugging
 msgid "run without debugging"

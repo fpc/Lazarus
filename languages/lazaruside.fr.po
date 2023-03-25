@@ -3607,6 +3607,10 @@ msgstr "Redéfinitions de l'utilisateur"
 msgid "Run Parameters"
 msgstr "Paramètres d'exécution"
 
+#: lazarusidestrconsts.dlgrunwithdebug
+msgid "Run uses the debugger (disable for release-mode)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsavecurrentdesktop
 msgid "Save current desktop"
 msgstr "Enregistrer le bureau courant"
@@ -5629,6 +5633,7 @@ msgid "There are several Free Pascal Compilers in your path.%s%s%sMaybe you forg
 msgstr "Il y a plusieurs compilateurs FreePascal dans votre chemin. %s%s%s Peut-être avez-vous oublié de supprimer un ancien compilateur ?"
 
 #: lazarusidestrconsts.lisccoskip
+msgctxt "lazarusidestrconsts.lisccoskip"
 msgid "Skip"
 msgstr "Ignorer"
 
@@ -13349,6 +13354,10 @@ msgctxt "lazarusidestrconsts.lismenuruntocursor"
 msgid "Run to Cursor"
 msgstr "Exécuter jusqu'au curseur"
 
+#: lazarusidestrconsts.lismenurunwithdebugging
+msgid "Run with Debugging"
+msgstr ""
+
 #: lazarusidestrconsts.lismenurunwithoutdebugging
 msgid "Run without Debugging"
 msgstr "Exécuter sans débogage"
@@ -13660,7 +13669,9 @@ msgid "2) Search for units. Found paths are added to project settings."
 msgstr "2) Rechercher les unités. Les chemins trouvés sont ajoutés aux paramètres du projet."
 
 #: lazarusidestrconsts.lismissingunitsinfo3
-msgid "3) Abort now, install packages or fix paths and try again."
+#, fuzzy
+#| msgid "3) Abort now, install packages or fix paths and try again."
+msgid "3) Leave these units in uses sections as they are."
 msgstr "3) Abandonner maintenant, installer les paquets ou corriger les chemins et essayer à nouveau."
 
 #: lazarusidestrconsts.lismissingunitssearch
@@ -13668,7 +13679,10 @@ msgid "Search Unit Path"
 msgstr "Recherche du chemin de l'unité"
 
 #: lazarusidestrconsts.lismissingunitsskip
-msgid "Skip this Unit"
+#, fuzzy
+#| msgid "Skip this Unit"
+msgctxt "lazarusidestrconsts.lismissingunitsskip"
+msgid "Skip"
 msgstr "Ignorer cette unité"
 
 #: lazarusidestrconsts.lismitnotice
@@ -19512,10 +19526,10 @@ msgstr "unité %s introuvable"
 msgid "unit %s not found at new position \"%s\""
 msgstr "unité %s introuvable à la nouvelle position \"%s\""
 
-#: lazarusidestrconsts.lisunitnotfoundinproject
+#: lazarusidestrconsts.lisunitnotfoundinfile
 #, object-pascal-format
-msgid "A unit not found in project %s"
-msgstr "Une unité du projet %s est introuvable"
+msgid "A unit not found in file %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunitoutputdirectory
 msgid "Unit Output directory"
@@ -19534,10 +19548,10 @@ msgstr "Chemins des unités"
 msgid "unit %s requires package %s"
 msgstr "l'unité %s requiert le paquet %s"
 
-#: lazarusidestrconsts.lisunitsnotfoundinproject
+#: lazarusidestrconsts.lisunitsnotfoundinfile
 #, object-pascal-format
-msgid "Units not found in project %s"
-msgstr "Unités non trouvées dans le projet %s"
+msgid "Units not found in file %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunusedunitsof
 #, object-pascal-format
@@ -21251,6 +21265,10 @@ msgstr "exécuter le fichier"
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
 msgstr "paramètres d'exécution"
+
+#: lazarusidestrconsts.srkmecrunwithdebugging
+msgid "run with debugging"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecrunwithoutdebugging
 msgid "run without debugging"

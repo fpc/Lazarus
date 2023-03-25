@@ -3591,6 +3591,10 @@ msgstr ""
 msgid "Run Parameters"
 msgstr ""
 
+#: lazarusidestrconsts.dlgrunwithdebug
+msgid "Run uses the debugger (disable for release-mode)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsavecurrentdesktop
 msgid "Save current desktop"
 msgstr ""
@@ -5621,6 +5625,7 @@ msgid "There are several Free Pascal Compilers in your path.%s%s%sMaybe you forg
 msgstr ""
 
 #: lazarusidestrconsts.lisccoskip
+msgctxt "lazarusidestrconsts.lisccoskip"
 msgid "Skip"
 msgstr ""
 
@@ -13340,6 +13345,10 @@ msgctxt "lazarusidestrconsts.lismenuruntocursor"
 msgid "Run to Cursor"
 msgstr "Hardloop tot by merker"
 
+#: lazarusidestrconsts.lismenurunwithdebugging
+msgid "Run with Debugging"
+msgstr ""
+
 #: lazarusidestrconsts.lismenurunwithoutdebugging
 msgid "Run without Debugging"
 msgstr ""
@@ -13668,7 +13677,7 @@ msgid "2) Search for units. Found paths are added to project settings."
 msgstr ""
 
 #: lazarusidestrconsts.lismissingunitsinfo3
-msgid "3) Abort now, install packages or fix paths and try again."
+msgid "3) Leave these units in uses sections as they are."
 msgstr ""
 
 #: lazarusidestrconsts.lismissingunitssearch
@@ -13676,7 +13685,8 @@ msgid "Search Unit Path"
 msgstr ""
 
 #: lazarusidestrconsts.lismissingunitsskip
-msgid "Skip this Unit"
+msgctxt "lazarusidestrconsts.lismissingunitsskip"
+msgid "Skip"
 msgstr ""
 
 #: lazarusidestrconsts.lismitnotice
@@ -19502,9 +19512,9 @@ msgstr ""
 msgid "unit %s not found at new position \"%s\""
 msgstr ""
 
-#: lazarusidestrconsts.lisunitnotfoundinproject
+#: lazarusidestrconsts.lisunitnotfoundinfile
 #, object-pascal-format
-msgid "A unit not found in project %s"
+msgid "A unit not found in file %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisunitoutputdirectory
@@ -19524,9 +19534,9 @@ msgstr ""
 msgid "unit %s requires package %s"
 msgstr ""
 
-#: lazarusidestrconsts.lisunitsnotfoundinproject
+#: lazarusidestrconsts.lisunitsnotfoundinfile
 #, object-pascal-format
-msgid "Units not found in project %s"
+msgid "Units not found in file %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisunusedunitsof
@@ -21258,6 +21268,10 @@ msgstr ""
 
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecrunwithdebugging
+msgid "run with debugging"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecrunwithoutdebugging

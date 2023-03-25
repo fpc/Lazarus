@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-01-22 03:15+0300\n"
+"PO-Revision-Date: 2023-03-25 11:52+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -3594,6 +3594,10 @@ msgstr "Пользовательские перекрытия"
 msgid "Run Parameters"
 msgstr "Параметры запуска"
 
+#: lazarusidestrconsts.dlgrunwithdebug
+msgid "Run uses the debugger (disable for release-mode)"
+msgstr "Запускать в отладчике (отключите в режиме сборки Release)"
+
 #: lazarusidestrconsts.dlgsavecurrentdesktop
 msgid "Save current desktop"
 msgstr "Сохранить текущий рабочий стол"
@@ -5615,6 +5619,7 @@ msgid "There are several Free Pascal Compilers in your path.%s%s%sMaybe you forg
 msgstr "В ваших путях имеется несколько компиляторов Free Pascal.%s%s%sВозможно, вы забыли удалить старый компилятор?"
 
 #: lazarusidestrconsts.lisccoskip
+msgctxt "lazarusidestrconsts.lisccoskip"
 msgid "Skip"
 msgstr "Пропустить"
 
@@ -13324,6 +13329,10 @@ msgctxt "lazarusidestrconsts.lismenuruntocursor"
 msgid "Run to Cursor"
 msgstr "Запустить до курсора"
 
+#: lazarusidestrconsts.lismenurunwithdebugging
+msgid "Run with Debugging"
+msgstr "Запустить с отладкой"
+
 #: lazarusidestrconsts.lismenurunwithoutdebugging
 msgid "Run without Debugging"
 msgstr "Запустить без отладки"
@@ -13635,16 +13644,17 @@ msgid "2) Search for units. Found paths are added to project settings."
 msgstr "2) Найти модули. Обнаруженные пути добавить в проект."
 
 #: lazarusidestrconsts.lismissingunitsinfo3
-msgid "3) Abort now, install packages or fix paths and try again."
-msgstr "3) Прерваться, установить пакеты либо исправить пути, и попытаться снова."
+msgid "3) Leave these units in uses sections as they are."
+msgstr "3) Оставить эти модули в выражениях Uses без изменений."
 
 #: lazarusidestrconsts.lismissingunitssearch
 msgid "Search Unit Path"
 msgstr "Найти путь к модулю"
 
 #: lazarusidestrconsts.lismissingunitsskip
-msgid "Skip this Unit"
-msgstr "Пропустить этот модуль"
+msgctxt "lazarusidestrconsts.lismissingunitsskip"
+msgid "Skip"
+msgstr "Пропустить"
 
 #: lazarusidestrconsts.lismitnotice
 msgid ""
@@ -19484,10 +19494,10 @@ msgstr "модуль %s не найден"
 msgid "unit %s not found at new position \"%s\""
 msgstr "модуль %s не найден по новому местонахождению \"%s\""
 
-#: lazarusidestrconsts.lisunitnotfoundinproject
+#: lazarusidestrconsts.lisunitnotfoundinfile
 #, object-pascal-format
-msgid "A unit not found in project %s"
-msgstr "Не найден модуль в проекте %s"
+msgid "A unit not found in file %s"
+msgstr "Не найден модуль в файле %s"
 
 #: lazarusidestrconsts.lisunitoutputdirectory
 msgid "Unit Output directory"
@@ -19506,10 +19516,10 @@ msgstr "Пути к модулям"
 msgid "unit %s requires package %s"
 msgstr "модуль %s требует пакет %s"
 
-#: lazarusidestrconsts.lisunitsnotfoundinproject
+#: lazarusidestrconsts.lisunitsnotfoundinfile
 #, object-pascal-format
-msgid "Units not found in project %s"
-msgstr "Не найдены модули в проекте %s"
+msgid "Units not found in file %s"
+msgstr "Не найдены модули в файле %s"
 
 #: lazarusidestrconsts.lisunusedunitsof
 #, object-pascal-format
@@ -21223,6 +21233,10 @@ msgstr "Запустить файл"
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
 msgstr "Параметры запуска"
+
+#: lazarusidestrconsts.srkmecrunwithdebugging
+msgid "run with debugging"
+msgstr "Запустить с отладкой"
 
 #: lazarusidestrconsts.srkmecrunwithoutdebugging
 msgid "run without debugging"

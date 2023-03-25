@@ -3625,6 +3625,10 @@ msgstr "用户覆盖"
 msgid "Run Parameters"
 msgstr "运行参数"
 
+#: lazarusidestrconsts.dlgrunwithdebug
+msgid "Run uses the debugger (disable for release-mode)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsavecurrentdesktop
 msgid "Save current desktop"
 msgstr "保存当前桌面"
@@ -5649,6 +5653,7 @@ msgid "There are several Free Pascal Compilers in your path.%s%s%sMaybe you forg
 msgstr "这里有多个Free Pascal编译器在你的路径.%s%s%s你可能忘记删除一个旧的编译器?"
 
 #: lazarusidestrconsts.lisccoskip
+msgctxt "lazarusidestrconsts.lisccoskip"
 msgid "Skip"
 msgstr "跳过"
 
@@ -13370,6 +13375,10 @@ msgctxt "lazarusidestrconsts.lismenuruntocursor"
 msgid "Run to Cursor"
 msgstr "运行到光标"
 
+#: lazarusidestrconsts.lismenurunwithdebugging
+msgid "Run with Debugging"
+msgstr ""
+
 #: lazarusidestrconsts.lismenurunwithoutdebugging
 msgid "Run without Debugging"
 msgstr "运行不带调试"
@@ -13682,7 +13691,9 @@ msgid "2) Search for units. Found paths are added to project settings."
 msgstr "2)搜索单元.找到的路径被添加到工程设置."
 
 #: lazarusidestrconsts.lismissingunitsinfo3
-msgid "3) Abort now, install packages or fix paths and try again."
+#, fuzzy
+#| msgid "3) Abort now, install packages or fix paths and try again."
+msgid "3) Leave these units in uses sections as they are."
 msgstr "3)现在放弃,安装软件包或修复路径,并再次尝试."
 
 #: lazarusidestrconsts.lismissingunitssearch
@@ -13690,7 +13701,10 @@ msgid "Search Unit Path"
 msgstr "查找单元路径"
 
 #: lazarusidestrconsts.lismissingunitsskip
-msgid "Skip this Unit"
+#, fuzzy
+#| msgid "Skip this Unit"
+msgctxt "lazarusidestrconsts.lismissingunitsskip"
+msgid "Skip"
 msgstr "跳过这个单元"
 
 #: lazarusidestrconsts.lismitnotice
@@ -19532,10 +19546,10 @@ msgstr "单元:%s未找到"
 msgid "unit %s not found at new position \"%s\""
 msgstr "单元%s未找到 在新位置\"%s\""
 
-#: lazarusidestrconsts.lisunitnotfoundinproject
+#: lazarusidestrconsts.lisunitnotfoundinfile
 #, object-pascal-format
-msgid "A unit not found in project %s"
-msgstr "一个单元未找到在工程%s"
+msgid "A unit not found in file %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunitoutputdirectory
 msgid "Unit Output directory"
@@ -19554,10 +19568,10 @@ msgstr "单元路径"
 msgid "unit %s requires package %s"
 msgstr "单元%s需要软件包%s"
 
-#: lazarusidestrconsts.lisunitsnotfoundinproject
+#: lazarusidestrconsts.lisunitsnotfoundinfile
 #, object-pascal-format
-msgid "Units not found in project %s"
-msgstr "单元未找到在工程%s"
+msgid "Units not found in file %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunusedunitsof
 #, object-pascal-format
@@ -21301,6 +21315,10 @@ msgstr "运行文件"
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
 msgstr "运行参数"
+
+#: lazarusidestrconsts.srkmecrunwithdebugging
+msgid "run with debugging"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecrunwithoutdebugging
 msgid "run without debugging"

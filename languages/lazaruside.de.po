@@ -3661,6 +3661,10 @@ msgstr "Benutzervorgaben"
 msgid "Run Parameters"
 msgstr "Start-Parameter"
 
+#: lazarusidestrconsts.dlgrunwithdebug
+msgid "Run uses the debugger (disable for release-mode)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsavecurrentdesktop
 msgid "Save current desktop"
 msgstr "Aktiven Desktop speichern"
@@ -5700,6 +5704,7 @@ msgid "There are several Free Pascal Compilers in your path.%s%s%sMaybe you forg
 msgstr "Es sind mehrere Free-Pascal-Compiler im Pfad.%s%s%sWurde vergessen, einen alten Compiler zu löschen?"
 
 #: lazarusidestrconsts.lisccoskip
+msgctxt "lazarusidestrconsts.lisccoskip"
 msgid "Skip"
 msgstr "Übergehen"
 
@@ -13439,6 +13444,10 @@ msgctxt "lazarusidestrconsts.lismenuruntocursor"
 msgid "Run to Cursor"
 msgstr "Start bis &Cursor"
 
+#: lazarusidestrconsts.lismenurunwithdebugging
+msgid "Run with Debugging"
+msgstr ""
+
 #: lazarusidestrconsts.lismenurunwithoutdebugging
 msgid "Run without Debugging"
 msgstr "Start ohne Debugger"
@@ -13752,7 +13761,9 @@ msgid "2) Search for units. Found paths are added to project settings."
 msgstr "2) Unit-Pfad auswählen, der zu den Projekteinstellungen hinzugefügt wird."
 
 #: lazarusidestrconsts.lismissingunitsinfo3
-msgid "3) Abort now, install packages or fix paths and try again."
+#, fuzzy
+#| msgid "3) Abort now, install packages or fix paths and try again."
+msgid "3) Leave these units in uses sections as they are."
 msgstr "3) Jetzt abbrechen, die Unit-Pfade korrigieren oder Packages installieren und noch einmal probieren."
 
 #: lazarusidestrconsts.lismissingunitssearch
@@ -13760,7 +13771,10 @@ msgid "Search Unit Path"
 msgstr "Unit-Pfade durchsuchen"
 
 #: lazarusidestrconsts.lismissingunitsskip
-msgid "Skip this Unit"
+#, fuzzy
+#| msgid "Skip this Unit"
+msgctxt "lazarusidestrconsts.lismissingunitsskip"
+msgid "Skip"
 msgstr "Diese Unit überspringen"
 
 #: lazarusidestrconsts.lismitnotice
@@ -19647,10 +19661,10 @@ msgstr "Unit %s nicht gefunden"
 msgid "unit %s not found at new position \"%s\""
 msgstr "Unit %s nicht an neuer Position \"%s\" gefunden"
 
-#: lazarusidestrconsts.lisunitnotfoundinproject
+#: lazarusidestrconsts.lisunitnotfoundinfile
 #, object-pascal-format
-msgid "A unit not found in project %s"
-msgstr "Eine Unit in Projekt %s nicht gefunden"
+msgid "A unit not found in file %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunitoutputdirectory
 msgid "Unit Output directory"
@@ -19669,10 +19683,10 @@ msgstr "Unit-Pfade"
 msgid "unit %s requires package %s"
 msgstr "Unit %s benötigt Package %s"
 
-#: lazarusidestrconsts.lisunitsnotfoundinproject
+#: lazarusidestrconsts.lisunitsnotfoundinfile
 #, object-pascal-format
-msgid "Units not found in project %s"
-msgstr "Units in Projekt %s nicht gefunden"
+msgid "Units not found in file %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunusedunitsof
 #, object-pascal-format
@@ -21392,6 +21406,10 @@ msgstr "Datei starten"
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
 msgstr "Startparameter"
+
+#: lazarusidestrconsts.srkmecrunwithdebugging
+msgid "run with debugging"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecrunwithoutdebugging
 msgid "run without debugging"

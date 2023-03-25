@@ -3608,6 +3608,10 @@ msgstr "Користувацькі перекриття"
 msgid "Run Parameters"
 msgstr "Параметри виконання"
 
+#: lazarusidestrconsts.dlgrunwithdebug
+msgid "Run uses the debugger (disable for release-mode)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsavecurrentdesktop
 msgid "Save current desktop"
 msgstr "Зберегти поточну стільницю"
@@ -5630,6 +5634,7 @@ msgid "There are several Free Pascal Compilers in your path.%s%s%sMaybe you forg
 msgstr "За вашим шляхом є кілька компіляторів Free Pascal.%s%s%sМожливо ви забули видалити старий компілятор?"
 
 #: lazarusidestrconsts.lisccoskip
+msgctxt "lazarusidestrconsts.lisccoskip"
 msgid "Skip"
 msgstr "Пропустити"
 
@@ -13360,6 +13365,10 @@ msgctxt "lazarusidestrconsts.lismenuruntocursor"
 msgid "Run to Cursor"
 msgstr "Виконати до курсора"
 
+#: lazarusidestrconsts.lismenurunwithdebugging
+msgid "Run with Debugging"
+msgstr ""
+
 #: lazarusidestrconsts.lismenurunwithoutdebugging
 msgid "Run without Debugging"
 msgstr "Запустити без зневадження"
@@ -13671,7 +13680,9 @@ msgid "2) Search for units. Found paths are added to project settings."
 msgstr "2) Шукати модулі. Знайдені шляхи додати до параметрів проєкту."
 
 #: lazarusidestrconsts.lismissingunitsinfo3
-msgid "3) Abort now, install packages or fix paths and try again."
+#, fuzzy
+#| msgid "3) Abort now, install packages or fix paths and try again."
+msgid "3) Leave these units in uses sections as they are."
 msgstr "3) Перервати зараз, встановити пакунки або виправити шляхи і спробувати знов."
 
 #: lazarusidestrconsts.lismissingunitssearch
@@ -13679,7 +13690,10 @@ msgid "Search Unit Path"
 msgstr "Шлях пошуку модуля"
 
 #: lazarusidestrconsts.lismissingunitsskip
-msgid "Skip this Unit"
+#, fuzzy
+#| msgid "Skip this Unit"
+msgctxt "lazarusidestrconsts.lismissingunitsskip"
+msgid "Skip"
 msgstr "Пропустити цей модуль"
 
 #: lazarusidestrconsts.lismitnotice
@@ -19520,10 +19534,10 @@ msgstr "модуль %s не знайдено"
 msgid "unit %s not found at new position \"%s\""
 msgstr "модуль %s не знайдено у новому розташуванні \"%s\""
 
-#: lazarusidestrconsts.lisunitnotfoundinproject
+#: lazarusidestrconsts.lisunitnotfoundinfile
 #, object-pascal-format
-msgid "A unit not found in project %s"
-msgstr "Модуль не знайдено в проєкті %s"
+msgid "A unit not found in file %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunitoutputdirectory
 msgid "Unit Output directory"
@@ -19542,10 +19556,10 @@ msgstr "Шляхи до модулів"
 msgid "unit %s requires package %s"
 msgstr "модуль %s потребує пакунка %s"
 
-#: lazarusidestrconsts.lisunitsnotfoundinproject
+#: lazarusidestrconsts.lisunitsnotfoundinfile
 #, object-pascal-format
-msgid "Units not found in project %s"
-msgstr "Модулі не знайдено в проєкті %s"
+msgid "Units not found in file %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunusedunitsof
 #, object-pascal-format
@@ -21259,6 +21273,10 @@ msgstr "запуск файлу"
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
 msgstr "параметри запуску"
+
+#: lazarusidestrconsts.srkmecrunwithdebugging
+msgid "run with debugging"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecrunwithoutdebugging
 msgid "run without debugging"

@@ -3699,6 +3699,10 @@ msgstr "Naudotojo pakeitimai"
 msgid "Run Parameters"
 msgstr "Starto parametrai"
 
+#: lazarusidestrconsts.dlgrunwithdebug
+msgid "Run uses the debugger (disable for release-mode)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgsavecurrentdesktop
 msgid "Save current desktop"
 msgstr ""
@@ -5748,6 +5752,7 @@ msgid "There are several Free Pascal Compilers in your path.%s%s%sMaybe you forg
 msgstr "Kelyje aptikti keli Free Pascal kompiliatoriai.%s%s%sGalbūt užmiršot ištrinti senąjį kompiliatorių?"
 
 #: lazarusidestrconsts.lisccoskip
+msgctxt "lazarusidestrconsts.lisccoskip"
 msgid "Skip"
 msgstr "Praleisti"
 
@@ -13540,6 +13545,10 @@ msgctxt "lazarusidestrconsts.lismenuruntocursor"
 msgid "Run to Cursor"
 msgstr "Startuoti iki ž&ymeklio"
 
+#: lazarusidestrconsts.lismenurunwithdebugging
+msgid "Run with Debugging"
+msgstr ""
+
 #: lazarusidestrconsts.lismenurunwithoutdebugging
 msgid "Run without Debugging"
 msgstr "Vykdyti be derinimo"
@@ -13853,7 +13862,9 @@ msgid "2) Search for units. Found paths are added to project settings."
 msgstr "2) Ieškoti modulių. Rastųjų keliai bus pridėti prie projekto nuostatų."
 
 #: lazarusidestrconsts.lismissingunitsinfo3
-msgid "3) Abort now, install packages or fix paths and try again."
+#, fuzzy
+#| msgid "3) Abort now, install packages or fix paths and try again."
+msgid "3) Leave these units in uses sections as they are."
 msgstr "3) Nutraukti dabar, įdiegti paketus ar taisyti kelius, ir bandyti išnaujo."
 
 #: lazarusidestrconsts.lismissingunitssearch
@@ -13861,7 +13872,10 @@ msgid "Search Unit Path"
 msgstr "Modulių paieškos kelias"
 
 #: lazarusidestrconsts.lismissingunitsskip
-msgid "Skip this Unit"
+#, fuzzy
+#| msgid "Skip this Unit"
+msgctxt "lazarusidestrconsts.lismissingunitsskip"
+msgid "Skip"
 msgstr "Praleisti šį modulį"
 
 #: lazarusidestrconsts.lismitnotice
@@ -19796,10 +19810,10 @@ msgstr "modulis „%s“ nerastas"
 msgid "unit %s not found at new position \"%s\""
 msgstr "naujoje pozicijoje „%1:s“ modulis „%0:s“ nerastas"
 
-#: lazarusidestrconsts.lisunitnotfoundinproject
+#: lazarusidestrconsts.lisunitnotfoundinfile
 #, object-pascal-format
-msgid "A unit not found in project %s"
-msgstr "Projekte „%s“ nepavyko rasti modulio"
+msgid "A unit not found in file %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunitoutputdirectory
 msgid "Unit Output directory"
@@ -19818,10 +19832,10 @@ msgstr "Modulių keliai"
 msgid "unit %s requires package %s"
 msgstr "moduliui „%s“ reikia paketo „%s“"
 
-#: lazarusidestrconsts.lisunitsnotfoundinproject
+#: lazarusidestrconsts.lisunitsnotfoundinfile
 #, object-pascal-format
-msgid "Units not found in project %s"
-msgstr "Projekte „%s“ nepavyko rasti modulių"
+msgid "Units not found in file %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunusedunitsof
 #, object-pascal-format
@@ -21541,6 +21555,10 @@ msgstr "startuoti failą"
 #: lazarusidestrconsts.srkmecrunparameters
 msgid "run parameters"
 msgstr "starto parametrai"
+
+#: lazarusidestrconsts.srkmecrunwithdebugging
+msgid "run with debugging"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecrunwithoutdebugging
 msgid "run without debugging"
