@@ -32,12 +32,12 @@ msgstr "Не удалось присоединиться к процессу \"%
 #: fperrormessages.msgfperrcannotcasttopointer_p
 #, object-pascal-format
 msgid "Can't cast value to pointer '%1:s'%2:s"
-msgstr ""
+msgstr "Невозможно привести значение к указателю '%1:s'%2:s"
 
 #: fperrormessages.msgfperrcannotderef_p
 #, object-pascal-format
 msgid "Can't dereference expression '%1:s'%2:s"
-msgstr ""
+msgstr "Невозможно разыменовать выражение '%1:s'%2:s"
 
 #: fperrormessages.msgfperrcannotreadmemataddr
 #, object-pascal-format
@@ -64,7 +64,7 @@ msgstr "Не удалось запустить процесс \"%1:s\".%0:sСо�
 #, object-pascal-format
 msgctxt "fperrormessages.msgfperrexpectedordinalval_p"
 msgid "Expected an ordinal value, but found '%1:s'%2:s"
-msgstr ""
+msgstr "Ожидалось простое значение, но найдено '%1:s'%2:s"
 
 #: fperrormessages.msgfperrfailedreadregiseter
 msgid "Failed to read data from register"
@@ -79,7 +79,7 @@ msgstr "Не удалось записать данные"
 #, object-pascal-format
 msgctxt "fperrormessages.msgfperrindexoutofrange"
 msgid "Index out of range: %1:d"
-msgstr ""
+msgstr "Индекс вне границ диапазона: %1:d"
 
 #: fperrormessages.msgfperrlocationparser
 msgid "Internal Error: Cannot calculate location."
@@ -118,84 +118,82 @@ msgstr "Невозможно получить элемент \"%1:s\" из не�
 
 #: fperrormessages.msgfperrpasparseremptyexpression
 msgid "Empty expression"
-msgstr ""
+msgstr "Пустое выражение"
 
 #: fperrormessages.msgfperrpasparserexpectednumber_p
 #, object-pascal-format
 msgctxt "fperrormessages.msgfperrpasparserexpectednumber_p"
 msgid "Expected Number, but found '%1:s'%2:s"
-msgstr ""
+msgstr "Ожидалось число, но найдено '%1:s'%2:s"
 
 #: fperrormessages.msgfperrpasparserindexerror_wrapper
 #, object-pascal-format
 msgid "Index error at pos %2:d for '%1:s'[]: %3:s"
-msgstr ""
+msgstr "Ошибка индекса в позиции %2:d для '%1:s'[]: %3:s"
 
 #: fperrormessages.msgfperrpasparserinvalidexpression
 msgid "Invalid Expression"
 msgstr "Неверное выражение"
 
 #: fperrormessages.msgfperrpasparsermissingexpraftercomma
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Expected Expression after Comma, but found closing bracket %1:s"
+#, object-pascal-format
 msgid "Expected Expression after Comma, but found closing bracket %1:s at pos %2:d"
-msgstr "После запятой ожидалось выражение, но найдена закрывающая скобка %1:s"
+msgstr "После запятой ожидалось выражение, но найдена закрывающая скобка %1:s, позиция %2:d"
 
 #: fperrormessages.msgfperrpasparsermissingindexexpression
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Expected Expression but found closing bracket: %1:s"
+#, object-pascal-format
 msgid "Expected Expression but found closing bracket: '%1:s' at pos %2:d"
-msgstr "Ожидалось выражение, но найдена закрывающая скобка: %1:s"
+msgstr "Ожидалось выражение, но найдена закрывающая скобка: %1:s, позиция %2:d"
 
 #: fperrormessages.msgfperrpasparsermissingopenbracket_p
 #, object-pascal-format
 msgctxt "fperrormessages.msgfperrpasparsermissingopenbracket_p"
 msgid "No opening bracket for '%1:s' found%2:s"
-msgstr ""
+msgstr "Открывающая скобка для '%1:s' не найдена%2:s"
 
 #: fperrormessages.msgfperrpasparserunexpectedendofexpression
 #, object-pascal-format
 msgid "Unexpected end of expression after '%1:s'"
-msgstr ""
+msgstr "Неожиданный конец выражения после '%1:s'"
 
 #: fperrormessages.msgfperrpasparserunexpectedtoken_p
 #, object-pascal-format
 msgctxt "fperrormessages.msgfperrpasparserunexpectedtoken_p"
 msgid "Unexpected token '%1:s'%2:s"
-msgstr ""
+msgstr "Неизвестный элемент '%1:s'%2:s"
 
 #: fperrormessages.msgfperrpasparserunknownintrinsic_p
 #, object-pascal-format
 msgctxt "fperrormessages.msgfperrpasparserunknownintrinsic_p"
 msgid "Intrinsic function '%1:s' not found%2:s"
-msgstr ""
+msgstr "Внутренняя функция '%1:s' не найдена%2:s"
 
 #: fperrormessages.msgfperrpasparserunterminatedstring_p
 #, object-pascal-format
 msgctxt "fperrormessages.msgfperrpasparserunterminatedstring_p"
 msgid "String not terminated%1:s"
-msgstr ""
+msgstr "Строка не имеет признака конца%1:s"
 
 #: fperrormessages.msgfperrpasparserwrongopenbracket_p
 #, object-pascal-format
 msgctxt "fperrormessages.msgfperrpasparserwrongopenbracket_p"
 msgid "Mismatched opening bracket ('%3:s' at pos %2:d) for '%1:s' found%4:s"
-msgstr ""
+msgstr "Найдена несбалансированная открывающая скобка ('%3:s' в позиции %2:d) для '%1:s'%4:s"
 
 #: fperrormessages.msgfperrpasparser_atstart
 msgid " at start of expression"
-msgstr ""
+msgstr " в начале выражения"
 
 #: fperrormessages.msgfperrpasparser_position
 #, object-pascal-format
 msgid " at pos %1:d"
-msgstr ""
+msgstr " в позиции %1:d"
 
 #: fperrormessages.msgfperrpasparser_positionafter
 #, object-pascal-format
 msgctxt "fperrormessages.msgfperrpasparser_positionafter"
 msgid " at pos %1:d after '%2:s'"
-msgstr ""
+msgstr " в позиции %1:d после '%2:s'"
 
 #: fperrormessages.msgfperrreadmemsizelimit
 msgid "Memory read size exceeds limit"
@@ -204,7 +202,7 @@ msgstr "Размер читаемой памяти превышает разре
 #: fperrormessages.msgfperrsymbolnotfound_p
 #, object-pascal-format
 msgid "Identifier not found: \"%1:s\"%2:s"
-msgstr ""
+msgstr "Идентификатор не найден: \"%1:s\"%2:s"
 
 #: fperrormessages.msgfperrtypehasnoindex
 #, object-pascal-format
@@ -214,7 +212,7 @@ msgstr "Невозможно получить доступ к элементу �
 #: fperrormessages.msgfperrtypenotindexable
 msgctxt "fperrormessages.msgfperrtypenotindexable"
 msgid "The value has no index"
-msgstr ""
+msgstr "Значение не имеет индекса"
 
 #: fperrormessages.msgfpinternalerrcannotreadinvalidmem
 msgid "Internal error: Missing data location"
