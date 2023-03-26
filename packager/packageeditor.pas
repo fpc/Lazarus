@@ -1202,13 +1202,6 @@ begin
     DoMoveDependency(-1);
 end;
 
-procedure TPackageEditorForm.OnIdle(Sender: TObject; var Done: Boolean);
-begin
-  if fUpdateLock>0 then exit;
-  IdleConnected:=false;
-  UpdatePending;
-end;
-
 procedure TPackageEditorForm.MoveDownBtnClick(Sender: TObject);
 begin
   if SortAlphabetically then exit;
@@ -1216,6 +1209,13 @@ begin
     DoMoveCurrentFile(1)
   else if Assigned(GetSingleSelectedDependency) then
     DoMoveDependency(1)
+end;
+
+procedure TPackageEditorForm.OnIdle(Sender: TObject; var Done: Boolean);
+begin
+  if fUpdateLock>0 then exit;
+  IdleConnected:=false;
+  UpdatePending;
 end;
 
 procedure TPackageEditorForm.OpenButtonClick(Sender: TObject);

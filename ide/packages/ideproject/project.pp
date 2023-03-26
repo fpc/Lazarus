@@ -996,11 +996,11 @@ type
     // search
     function IndexOf(AUnitInfo: TUnitInfo): integer;
     function IndexOfUnitWithName(const AnUnitName: string;
-                      OnlyProjectUnits:boolean; IgnoreUnit: TUnitInfo): integer;
+                      OnlyProjectUnits: boolean; IgnoreUnit: TUnitInfo): integer;
     function IndexOfUnitWithComponent(AComponent: TComponent;
-                      OnlyProjectUnits:boolean; IgnoreUnit: TUnitInfo): integer;
+                      OnlyProjectUnits: boolean; IgnoreUnit: TUnitInfo): integer;
     function IndexOfUnitWithComponentName(const AComponentName: string;
-                      OnlyProjectUnits:boolean; IgnoreUnit: TUnitInfo): integer;
+                      OnlyProjectUnits: boolean; IgnoreUnit: TUnitInfo): integer;
     function IndexOfFilename(const AFilename: string): integer;
     function IndexOfFilename(const AFilename: string;
                              SearchFlags: TProjectFileSearchFlags): integer;
@@ -1037,15 +1037,15 @@ type
     function UpdateIsPartOfProjectFromMainUnit: TModalResult;
 
     // Application.CreateForm statements
-    function AddCreateFormToProjectFile(const AClassName, AName:string): boolean;
+    function AddCreateFormToProjectFile(const AClassName, AName: string): boolean;
     function RemoveCreateFormFromProjectFile(const AName: string): boolean;
-    function FormIsCreatedInProjectFile(const AClassname, AName:string): boolean;
+    function FormIsCreatedInProjectFile(const AClassname, AName: string): boolean;
     function GetAutoCreatedFormsList: TStrings;
     property TmpAutoCreatedForms: TStrings read FTmpAutoCreatedForms write FTmpAutoCreatedForms;
 
     // resources
     function GetMainResourceFilename(AnUnitInfo: TUnitInfo): string;
-    function GetResourceFile(AnUnitInfo: TUnitInfo; Index:integer):TCodeBuffer;
+    function GetResourceFile(AnUnitInfo: TUnitInfo; Index: integer): TCodeBuffer;
     procedure LoadDefaultIcon; override;
 
     // filenames and fileinfo
@@ -4310,14 +4310,14 @@ begin
     MainUnitInfo.Modified:=true;
 end;
 
-function TProject.RemoveCreateFormFromProjectFile(const AName:string):boolean;
+function TProject.RemoveCreateFormFromProjectFile(const AName: string): boolean;
 begin
   Result:=CodeToolBoss.RemoveCreateFormStatement(MainUnitInfo.Source,AName);
   if Result then
     MainUnitInfo.Modified:=true;
 end;
 
-function TProject.FormIsCreatedInProjectFile(const AClassname,AName:string): boolean;
+function TProject.FormIsCreatedInProjectFile(const AClassname,AName: string): boolean;
 var p: integer;
 begin
   Result:=(CodeToolBoss.FindCreateFormStatement(MainUnitInfo.Source,
@@ -4325,14 +4325,13 @@ begin
   if p=0 then ;
 end;
 
-function TProject.IndexOfUnitWithName(const AnUnitName:string; 
-  OnlyProjectUnits:boolean; IgnoreUnit: TUnitInfo):integer;
+function TProject.IndexOfUnitWithName(const AnUnitName: string;
+  OnlyProjectUnits: boolean; IgnoreUnit: TUnitInfo): integer;
 begin
   if AnUnitName='' then exit(-1);
   Result:=UnitCount-1;
   while (Result>=0) do begin
-    if ((OnlyProjectUnits and Units[Result].IsPartOfProject)
-    or (not OnlyProjectUnits))
+    if (Units[Result].IsPartOfProject or not OnlyProjectUnits)
     and (IgnoreUnit<>Units[Result])
     and (Units[Result].Unit_Name<>'')
     then begin
@@ -4345,12 +4344,11 @@ begin
 end;
 
 function TProject.IndexOfUnitWithComponent(AComponent: TComponent;
-  OnlyProjectUnits:boolean; IgnoreUnit: TUnitInfo):integer;
+  OnlyProjectUnits: boolean; IgnoreUnit: TUnitInfo): integer;
 begin
   Result:=UnitCount-1;
   while (Result>=0) do begin
-    if (OnlyProjectUnits and Units[Result].IsPartOfProject) 
-    or (not OnlyProjectUnits)
+    if (Units[Result].IsPartOfProject or not OnlyProjectUnits)
     and (IgnoreUnit<>Units[Result]) then begin
       if Units[Result].Component=AComponent then
         exit;
@@ -4364,8 +4362,7 @@ function TProject.IndexOfUnitWithComponentName(const AComponentName: string;
 begin
   Result:=UnitCount-1;
   while (Result>=0) do begin
-    if ((OnlyProjectUnits and Units[Result].IsPartOfProject)
-    or (not OnlyProjectUnits))
+    if (Units[Result].IsPartOfProject or not OnlyProjectUnits)
     and (IgnoreUnit<>Units[Result]) then begin
       if (CompareText(Units[Result].ComponentName,AComponentName)=0)
       or ((Units[Result].Component<>nil)
@@ -4388,7 +4385,8 @@ begin
 end;
 
 function TProject.GetResourceFile(AnUnitInfo: TUnitInfo; Index:integer): TCodeBuffer;
-var i, LinkIndex: integer;
+var
+  i, LinkIndex: integer;
 begin
   LinkIndex:=-1;
   i:=0;
@@ -4430,7 +4428,7 @@ begin
   LoadSaveFilenameHandler(AFilename,true);
 end;
 
-function TProject.GetMainResourceFilename(AnUnitInfo: TUnitInfo):string;
+function TProject.GetMainResourceFilename(AnUnitInfo: TUnitInfo): string;
 var CodeBuf: TCodeBuffer;
 begin
   CodeBuf:=GetResourceFile(AnUnitInfo,1);
