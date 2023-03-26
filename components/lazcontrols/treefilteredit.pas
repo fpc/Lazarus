@@ -397,11 +397,13 @@ begin
 end;
 
 procedure TTreeFilterBranch.Move(CurIndex, NewIndex: integer);
+var
+  item: TTreeNode;
 begin
-  fOwner.StoreSelection;
+  item := fRootNode.Items[CurIndex];
+  item.Index := NewIndex;
+  item.MakeVisible;
   fOriginalData.Move(CurIndex, NewIndex);
-  InvalidateBranch;
-  fOwner.RestoreSelection;
 end;
 
 { TFileNameItem }
