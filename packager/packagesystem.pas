@@ -713,11 +713,9 @@ begin
       if fpfValueChanged in Param.Flags then begin
         Msg:='';
         if Param.Kind in [fpkBoolean,fpkValue] then
-          Msg:=Format(lisPassingCompilerOptionTwiceWithDifferentValues, [Param.
-            Name])
+          Msg:=Format(lisPassingCompilerOptionTwiceWithDifferentValues, [Param.Name])
         else if Param.Kind=fpkDefine then
-          Msg:=Format(lisPassingCompilerDefineTwiceWithDifferentValues, [Param.
-            Name]);
+          Msg:=Format(lisPassingCompilerDefineTwiceWithDifferentValues, [Param.Name]);
         if Msg='' then continue;
         if Target<>'' then Msg:=Target+' '+Msg;
         IDEMessagesWindow.AddCustomMessage(mluNote,Msg,'',0,0,ViewCaption);
