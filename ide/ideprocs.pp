@@ -39,6 +39,7 @@ uses
   StdCtrls, ExtCtrls,
   // CodeTools
   BasicCodeTools, CodeToolManager, CodeToolsConfig, CodeCache, KeywordFuncLists,
+  FileProcs,
   // BuildIntf
   PackageIntf,
   // IDE
@@ -70,6 +71,7 @@ function FindFPCTool(const Executable, CompilerFilename: string): string;
 procedure ResolveLinksInFileList(List: TStrings; RemoveDanglingLinks: Boolean);
 function FindProgram(ProgramName, BaseDirectory: string;
                      WithBaseDirectory: boolean): string;
+function PathHasPascalUnitFile(const AUnitName, ASearchPath: string): Boolean;
 
 // XMLconfig
 function LoadXMLConfigViaCodeBuffer(Filename: string): TXMLConfig;
@@ -528,6 +530,45 @@ begin
     Include(Flags,sffDontSearchInBasePath);
   Result:=FileUtil.SearchFileInPath(ProgramName,BaseDirectory,
                                     GetProgramSearchPath,PathSep,Flags);
+end;
+
+function PathHasPascalUnitFile(const AUnitName, ASearchPath: string): Boolean;
+// Try to find a file matching AUnitName + Pascal file extension.
+// ASearchPath can have many ';' separated paths.
+// Only a file name is compared, not the actual unit name inside a file.
+var
+  FileInfo: TSearchRec;
+  StartPos, p, l: Integer;
+  CurPath: String;
+begin
+  Result:=False;
+  // Split search path
+  StartPos:=1;
+  l:=length(ASearchPath);
+  while StartPos<=l do begin
+    p:=StartPos;
+    while (p<=l) and (ASearchPath[p]<>';') do inc(p);
+    CurPath:=TrimFilename(Copy(ASearchPath,StartPos,p-StartPos));
+    if CurPath<>'' then begin
+      // Search files from the separated path.
+      if FindFirstUTF8(AppendPathDelim(CurPath)+AllFilesMask,faAnyFile,FileInfo)=0 then
+      try
+        repeat
+          // Check if special file
+          if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
+            Continue;
+          // CaseInsensitive compare Pascal file names. Pointer cast avoids #0 check.
+          if (CompareFilenameOnly(PChar(Pointer(FileInfo.Name)),Length(FileInfo.Name),
+                                  PChar(Pointer(AUnitName)),Length(AUnitName))=0)
+          and FilenameIsPascalUnit(FileInfo.Name) then
+            Exit(True);
+        until FindNextUTF8(FileInfo)<>0;
+      finally
+        FindCloseUTF8(FileInfo);
+      end;
+    end;
+    StartPos:=p+1;
+  end;
 end;
 
 function PointToCfgStr(const Point: TPoint): string;

@@ -102,7 +102,7 @@ const
 
 function CompareAnsiStringFilenames(Data1, Data2: Pointer): integer;
 function CompareFilenameOnly(Filename: PChar; FilenameLen: integer;
-   NameOnly: PChar; NameOnlyLen: integer; CaseSensitive: boolean): integer;
+   NameOnly: PChar; NameOnlyLen: integer; CaseSensitive: boolean = false): integer;
 
 // searching .pas, .pp, .p
 function FilenameIsPascalUnit(const Filename: string;

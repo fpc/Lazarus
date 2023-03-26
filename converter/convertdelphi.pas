@@ -197,7 +197,6 @@ type
     function MaybeDeleteFiles: TModalResult;
     function CheckUnitForConversion(aFileName: string): Boolean;
     procedure AddDependency(APackName: String);
-    function PathHasPascalUnitFile(const AUnitName, ASearchPath: string): Boolean;
     function CheckPackageDep(AUnitName: string): Boolean;
     function TryAddPackageDep(const AUnitName, ADefaultPkgName: string): Boolean;
   protected
@@ -1439,40 +1438,6 @@ begin
     PackageGraph.OpenDependency(Dep,false);
 end;
 
-function TConvertDelphiProjPack.PathHasPascalUnitFile(const AUnitName, ASearchPath: string): Boolean;
-var
-  FileInfo: TSearchRec;
-  StartPos, p, l: Integer;
-  CurPath: String;
-begin
-  Result:=False;
-  // Split search path
-  StartPos:=1;
-  l:=length(ASearchPath);
-  while StartPos<=l do begin
-    p:=StartPos;
-    while (p<=l) and (ASearchPath[p]<>';') do inc(p);
-    CurPath:=TrimFilename(Copy(ASearchPath,StartPos,p-StartPos));
-    if CurPath<>'' then begin
-      // Search *.pas and *.pp files from the separated path.
-      if FindFirstUTF8(AppendPathDelim(CurPath)+'*.p*',faAnyFile,FileInfo)=0 then
-      try
-        repeat
-          // Check if special file
-          if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
-            Continue;
-          // CaseInsensitive compare.
-          if CompareText(AUnitName,ExtractFileNameOnly(FileInfo.Name))=0 then
-            Exit(True);
-        until FindNextUTF8(FileInfo)<>0;
-      finally
-        FindCloseUTF8(FileInfo);
-      end;
-    end;
-    StartPos:=p+1;
-  end;
-end;
-
 function TConvertDelphiProjPack.CheckPackageDep(AUnitName: string): Boolean;
 // Check if the given unit can be found in existing packages. Add a dependency if found.
 // This is called only if the unit is reported as missing.
@@ -1481,8 +1446,7 @@ var
   RegComp: TRegisteredComponent;
   PackFile: TPkgFile;
   Package: TLazPackage;
-  PkgList: TFPList;
-  i: Integer;
+  i, Cnt: Integer;
 begin
   Result:=False;
   PackFile:=PackageGraph.FindUnitInAllPackages(AUnitName, True);
@@ -1499,26 +1463,23 @@ begin
     AddDependency(PackFile.LazPackage.Name);
     Exit(True);
   end;
-  // Try to find the unit from all package dependencies by their search path.
-  try // Again needed when the unit is not included in a package file.
-    PackageGraph.GetAllRequiredPackages(nil,FirstDependency,PkgList);
-    for i:=0 to PkgList.Count-1 do begin
-      Package:=TLazPackage(PkgList[i]);
-      if PackageGraph.LazarusBasePackages.IndexOf(Package)>=0 then
-        Continue;   // Skip base packages.
-      if PathHasPascalUnitFile(AUnitName,
-               Package.CompilerOptions.GetParsedPath(pcosUnitPath,icoNone,false))
-      or PathHasPascalUnitFile(AUnitName,
-               Package.SourceDirectories.CreateSearchPathFromAllFiles)
-      //or PathHasPascalUnitFile(AUnitName, Package.GetOutputDirectory)
-      or PathHasPascalUnitFile(AUnitName, Package.Directory) then
-      begin
-        AddDependency(Package.Name);
-        Exit(True);
-      end;
+  // Try to find the unit from all open packages by their search path.
+  // Again needed when the unit is not included in a package file.
+  Cnt:=PackageGraph.Count;
+  for i:=0 to Cnt-1 do begin
+    Package:=PackageGraph.Packages[i];
+    if PackageGraph.LazarusBasePackages.IndexOf(Package)>=0 then
+      Continue;   // Skip base packages.
+    if PathHasPascalUnitFile(AUnitName,
+             Package.CompilerOptions.GetParsedPath(pcosUnitPath,icoNone,false))
+    or PathHasPascalUnitFile(AUnitName,
+             Package.SourceDirectories.CreateSearchPathFromAllFiles)
+    //or PathHasPascalUnitFile(AUnitName, Package.GetOutputDirectory)
+    or PathHasPascalUnitFile(AUnitName, Package.Directory) then
+    begin
+      AddDependency(Package.Name);
+      Exit(True);
     end;
-  finally
-    PkgList.Free;
   end;
   // ToDo: Install the required package automatically from a repository...
 end;
