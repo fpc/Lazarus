@@ -937,8 +937,10 @@ begin
 
   OnlyFilesNodeSelected:=ItemsTreeView.Selected = FFilesNode;
   SetItem(ProjInspMenuAddDiskFile,@mnuAddDiskFileClick,OnlyFilesNodeSelected);
-  SetItem(ProjInspMenuRemoveNonExistingFiles,@RemoveNonExistingFilesMenuItemClick,OnlyFilesNodeSelected and not LazProject.IsVirtual);
-  SetItem(ProjInspMenuOpenFolder,@mnuOpenFolderClick,OnlyFilesNodeSelected);
+  SetItem(ProjInspMenuRemoveNonExistingFiles,@RemoveNonExistingFilesMenuItemClick,
+          OnlyFilesNodeSelected and not LazProject.IsVirtual);
+  SetItem(ProjInspMenuOpenFolder,@mnuOpenFolderClick,
+          OnlyFilesNodeSelected and not LazProject.IsVirtual);
 
   OnlyDependenciesNodeSelected:=ItemsTreeView.Selected = FDependenciesNode;
   SetItem(ProjInspMenuAddDependency,@mnuAddReqClick,OnlyDependenciesNodeSelected);
