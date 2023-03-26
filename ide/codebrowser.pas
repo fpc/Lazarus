@@ -3352,7 +3352,7 @@ begin
   Filename:=Msg.GetFullFilename;
   KnownFilename:= LazarusIDE.FindSourceFile(Filename, Project1.Directory,
                     [fsfSearchForProject, fsfUseIncludePaths, fsfMapTempToVirtualFiles]);
-  Caret:=Point(Msg.Line,Msg.Column);
+  Caret:=Point(Msg.Column,Msg.Line);
 
   if (KnownFilename <> '') and (KnownFilename <> Filename) then begin
     if LazarusIDE.DoOpenFileAndJumpToPos(KnownFilename,Caret,-1,-1,-1,OpnFlagsPlainFile)<>mrOk
@@ -3361,8 +3361,7 @@ begin
     then exit;
   end
   else
-  if LazarusIDE.DoOpenFileAndJumpToPos(Filename,Caret,-1,-1,-1,OpnFlagsPlainFile
-    )<>mrOk
+  if LazarusIDE.DoOpenFileAndJumpToPos(Filename,Caret,-1,-1,-1,OpnFlagsPlainFile)<>mrOk
   then exit;
 
   // start code browser
