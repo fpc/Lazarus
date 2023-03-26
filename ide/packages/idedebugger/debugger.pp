@@ -7723,9 +7723,6 @@ procedure TCurrentLocals.SetDataValidity(AValidity: TDebuggerDataState);
 begin
   if FDataValidity = AValidity then exit;
 
-  if (FDataValidity in [ddsUnknown, ddsEvaluating, ddsRequested]) and (FSnapShot <> nil)
-  then FSnapShot.Assign(Self);
-
   FDataValidity := AValidity;
   FMonitor.NotifyChange(Self);
 end;
