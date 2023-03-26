@@ -304,7 +304,11 @@ begin
   if (pt.TokenType = ttClass) and pt.HasParentNode(ProcedureHeadings) and
     (not IsGenericFunctionOrProperty(pt)) and
     (RoundBracketLevel(pt) < 1) then
-    exit(True);
+  begin
+    // 'class' is not a type:     procedure DisplayItems<T: class>(TheItems: TEnumerable<T>);
+    if pt.PriorSolidTokenType<>ttColon then
+      exit(True);
+  end;
 
   { "uses UnitName in 'File'" has a blank line before UnitName }
   if IsIdentifier(pt, idStrict) and (pt.HasParentNode(nUses)) and (ptNext.TokenType = ttIn) then
