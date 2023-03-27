@@ -36,6 +36,7 @@ type
 
   TWatchResultValue = object
   protected
+    function GetIsDephtlessData: Boolean; inline;
     function GetAsString: String; inline;
     function GetAsWideString: WideString; inline;
     function GetAsQWord: QWord; inline;
@@ -78,6 +79,7 @@ type
   private
     FText: String;
   protected
+    function GetIsDephtlessData: Boolean; inline; // TODO: if the debugger introduces different len -limits depending on depth....
     property GetAsString: String read FText;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
                                     const AnEntryTemplate: TWatchResultData;
@@ -118,6 +120,7 @@ type
     FWideText: WideString;
     FAddress: TDBGPtr;
   protected
+    function GetIsDephtlessData: Boolean; inline; // TODO: if the debugger introduces different len -limits depending on depth....
     property GetAsWideString: WideString read FWideText;
     function GetAsString: String; inline;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
@@ -134,6 +137,7 @@ type
   private
     FNumValue: QWord;
   protected
+    function GetIsDephtlessData: Boolean; inline;
     property GetAsQWord: QWord read FNumValue;
     function GetAsInt64: Int64; inline;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
@@ -190,6 +194,7 @@ type
   protected const
     VKind = rdkPointerVal;
   protected
+    //function GetIsDephtlessData: Boolean; inline; // Done in TWatchResultDataPointer
     function GetAsString: String; inline;
     property GetDataAddress: TDBGPtr read FNumValue;
   end;
@@ -220,6 +225,7 @@ type
   private
     FFloatValue: Extended;
   protected
+    function GetIsDephtlessData: Boolean; inline;
     property GetAsFloat: Extended read FFloatValue;
     function GetAsString: String; inline;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
@@ -289,6 +295,7 @@ type
   private
     FNames: Array of String;
   protected
+    function GetIsDephtlessData: Boolean; inline;
     function GetCount: Integer; inline;
     function GetElementName(AnIndex: integer): String; inline;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
@@ -724,6 +731,8 @@ type
   protected
     function GetValueKind: TWatchResultDataKind; virtual; //abstract;
     function GetTypeName: String; virtual;
+    function GetIsFullDephtEvaluated: Boolean; virtual;
+
     function GetAsString: String; virtual; abstract;
     function GetAsDesc: String; virtual; abstract;
     function GetAsWideString: WideString; virtual; abstract;
@@ -781,6 +790,7 @@ type
   public
     property ValueKind: TWatchResultDataKind read GetValueKind;
     property TypeName: String read GetTypeName;
+    property IsFullDephtEvaluated: Boolean read GetIsFullDephtEvaluated;
 
     property AsString: String read GetAsString;
     property AsDesc: String read GetAsDesc;
@@ -968,6 +978,8 @@ type
     procedure ClearData; override;
   protected
     function GetValueKind: TWatchResultDataKind; override;
+    function GetIsFullDephtEvaluated: Boolean; override;
+
     function GetAsString: String; override;
     function GetAsDesc: String; override;
     function GetAsWideString: WideString; override;
@@ -1114,6 +1126,7 @@ type
     FCurrentDerefData: TWatchResultData; // needed if this is an array element
     function GetClassID: TWatchResultDataClassID; override;
   protected
+    function GetIsFullDephtEvaluated: Boolean; override;
     function GetHasDataAddress: Boolean; override;
     function GetAsString: String; override;
     function GetDerefData: TWatchResultData; override;
@@ -1203,6 +1216,8 @@ type
   private
     FCurrentElement: TWatchResultData;
     FOverrideTemplateData: TOverrideTemplateData;
+  protected
+    function GetIsFullDephtEvaluated: Boolean; override;
   public
     procedure SetEntryPrototype(AnEntry: TWatchResultData); override;
     procedure WriteValueToStorage(AnIndex: Integer; AValue: TWatchResultData); override;
@@ -1236,6 +1251,8 @@ type
   TWatchResultDataPCharOrString = class(specialize TWatchResultDataArrayBase<TWatchResultValuePCharOrString, TWatchResultTypeArrayBase>)
   private
     function GetClassID: TWatchResultDataClassID; override;
+  protected
+    function GetIsFullDephtEvaluated: Boolean; override;
   public
     procedure SetEntryPrototype(AnEntry: TWatchResultData); override;
   end;
@@ -1565,6 +1582,11 @@ const
 
 { TWatchResultValue }
 
+function TWatchResultValue.GetIsDephtlessData: Boolean;
+begin
+  Result := False;
+end;
+
 function TWatchResultValue.GetAsString: String;
 begin
   Result := '';
@@ -1691,6 +1713,11 @@ end;
 
 { TWatchResultValueTextBase }
 
+function TWatchResultValueTextBase.GetIsDephtlessData: Boolean;
+begin
+  Result := True;
+end;
+
 procedure TWatchResultValueTextBase.LoadDataFromXMLConfig(
   const AConfig: TXMLConfig; const APath: string;
   const AnEntryTemplate: TWatchResultData;
@@ -1727,6 +1754,11 @@ end;
 
 { TWatchResultValueWideString }
 
+function TWatchResultValueWideString.GetIsDephtlessData: Boolean;
+begin
+  Result := True;
+end;
+
 function TWatchResultValueWideString.GetAsString: String;
 begin
   Result := FWideText;
@@ -1751,6 +1783,11 @@ begin
 end;
 
 { TWatchResultValueOrdNumBase }
+
+function TWatchResultValueOrdNumBase.GetIsDephtlessData: Boolean;
+begin
+  Result := True;
+end;
 
 function TWatchResultValueOrdNumBase.GetAsInt64: Int64;
 begin
@@ -1872,6 +1909,11 @@ end;
 
 { TWatchResultValueFloat }
 
+function TWatchResultValueFloat.GetIsDephtlessData: Boolean;
+begin
+  Result := True;
+end;
+
 function TWatchResultValueFloat.GetAsString: String;
 begin
   Result := FloatToStr(FFloatValue);
@@ -1945,6 +1987,11 @@ begin
 end;
 
 { TWatchResultValueSet }
+
+function TWatchResultValueSet.GetIsDephtlessData: Boolean;
+begin
+  Result := True;
+end;
 
 function TWatchResultValueSet.GetCount: Integer;
 begin
@@ -2608,6 +2655,11 @@ begin
   Result := FTypeName;
 end;
 
+function TWatchResultData.GetIsFullDephtEvaluated: Boolean;
+begin
+  Result := False;
+end;
+
 function TWatchResultData.GetBackendValueHandler: ILazDbgValueConverterIntf;
 begin
   Result := nil;
@@ -3157,6 +3209,11 @@ begin
   Result := FData.VKind;
 end;
 
+function TGenericWatchResultData.GetIsFullDephtEvaluated: Boolean;
+begin
+  Result := FData.GetIsDephtlessData;
+end;
+
 function TGenericWatchResultData.GetAsString: String;
 begin
   Result := FData.GetAsString;
@@ -3598,6 +3655,11 @@ begin
   Result := wdPtr;
 end;
 
+function TWatchResultDataPointer.GetIsFullDephtEvaluated: Boolean;
+begin
+  Result := (DerefData <> nil) and (DerefData.IsFullDephtEvaluated);
+end;
+
 function TWatchResultDataPointer.GetHasDataAddress: Boolean;
 begin
   Result := True;
@@ -3828,6 +3890,13 @@ end;
 
 { TWatchResultDataArrayBase }
 
+function TWatchResultDataArrayBase.GetIsFullDephtEvaluated: Boolean;
+begin
+  Result := FData.GetIsDephtlessData and  // No partly elevated elements
+            (Count = ArrayLength);        // all elements present
+  // TODO: if not GetIsDephtlessData => iterate all elements
+end;
+
 procedure TWatchResultDataArrayBase.SetEntryPrototype(AnEntry: TWatchResultData);
 begin
   assert(FType.FEntryTemplate=nil, 'TWatchResultDataArrayBase.SetEntryPrototype: FType.FEntryTemplate=nil');
@@ -4000,6 +4069,11 @@ end;
 function TWatchResultDataPCharOrString.GetClassID: TWatchResultDataClassID;
 begin
   Result := wdPChrStr;
+end;
+
+function TWatchResultDataPCharOrString.GetIsFullDephtEvaluated: Boolean;
+begin
+  Result := False; // TODO
 end;
 
 { TWatchResultDataArray }

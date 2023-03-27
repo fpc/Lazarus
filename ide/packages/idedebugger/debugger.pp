@@ -4172,7 +4172,12 @@ begin
     if MaybeCopyResult(Watch.ParentWatch) then
       exit;
 
-  MaybeCopyResultForChild;
+  if MaybeCopyResultForChild and
+     (FResultData <> nil) and FResultData.IsFullDephtEvaluated
+  then begin
+    Validity := ddsValid;
+    exit;
+  end;
   TCurrentWatch(Watch).RequestData(self);
 end;
 
@@ -7556,7 +7561,13 @@ end;
 
 procedure TSubLocalsValue.RequestData;
 begin
-  MaybeCopyResultForChild;
+  if MaybeCopyResultForChild and
+     (FValue <> nil) and FValue.IsFullDephtEvaluated
+  then begin
+    FValidity := ddsValid;
+    exit;
+  end;
+
   if(DebugBossManager <> nil) and
      (FValidity = ddsUnknown) and
      (TSubLocals(Owner).TopOwner is TCurrentLocals) and
