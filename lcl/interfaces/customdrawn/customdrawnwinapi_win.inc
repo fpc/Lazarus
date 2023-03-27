@@ -1245,10 +1245,12 @@ begin
 end;
 *)
 
+{$ifdef CD_UseNativeMonitors}
 function TCDWidgetSet.EnumDisplayMonitors(hdc: HDC; lprcClip: PRect; lpfnEnum: MonitorEnumProc; dwData: LPARAM): LongBool;
 begin
   Result := MultiMon.EnumDisplayMonitors(hdc, lprcClip, lpfnEnum, dwData);
 end;
+{$endif}
 
 type
   TProcRedirRec = record
