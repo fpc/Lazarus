@@ -239,37 +239,45 @@ NewIndex.
 </short>
 <descr>
 <p>
-<var>Move</var> ensures that the current tree node selected on the filtered 
-edit control is saved and restored after the node has is moved to its new 
-position. The Move method in the original Items data (TStrings) is called to 
-relocate the content to the position in NewIndex. InvalidateBranch is called 
-to sort and filter the tree nodes and their data, and to update the filtered 
-tree edit and its associated tree view control.
+<var>Move</var> is a method used to change the ordinal position for a tree node and its associated data in the root node for the branch. 
+</p>
+<p>
+CurIndex contains the ordinal position for the tree node relocated in the 
+method.
+</p>
+<p>
+NewIndex contains the new ordinal position for the tree node.
+</p>
+<p>
+Move changes the value in the Index property for the TTreeNode instance to 
+NewIndex to reorder the tree node in the branch. It also moves data for the 
+tree node supplied by the caller using the specified ordinal positions.
+</p>
+<p>
+Move calls the MakeVisible method in the TTreeNode instance to ensure that it 
+is visible on the Tree View control (when assigned). If the Tree View control 
+is not assigned, the parent nodes for the tree node are expanded to make the 
+node visible in the tree.
 </p>
 </descr>
-<version>
-Modified in LCL 2.2.6 to save and restore the current tree node selected in 
-the owner tree view control.
-</version>
 <seealso>
-<link id="TTreeFilterBranch.InvalidateBranch"/>
-<link id="TTreeFilterEdit.StoreSelection"/>
-<link id="TTreeFilterEdit.RestoreSelection"/>
 <link id="TTreeFilterBranch.Items"/>
 <link id="TBranchList"/>
-<link id="#lcl.editbtn.TCustomControlFilterEdit.OnFilterItemEx">TCustomControlFilterEdit.OnFilterItemEx</link>
 <link id="#lcl.comctrls.TCustomTreeview.Items">TCustomTreeview.Items</link>
+<link id="#lcl.comctrls.TTreeNode.Index">TTreeNode.Index</link>
+<link id="#lcl.comctrls.TTreeNode.MakeVisible">TTreeNode.MakeVisible</link>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.OnFilterItemEx">TCustomControlFilterEdit.OnFilterItemEx</link>
 <link id="#rtl.classes.TStrings.Move">TStrings.Move</link>
 </seealso>
 </element>
 <element name="TTreeFilterBranch.Move.CurIndex">
 <short>
-Ordinal position for the tree node data moved in the method.
+Ordinal position for the tree node and data moved in the method.
 </short>
 </element>
 <element name="TTreeFilterBranch.Move.NewIndex">
 <short>
-Ordinal position where tree node data is relocated in the method.
+Ordinal position where tree node and data are relocated in the method.
 </short>
 </element>
 
