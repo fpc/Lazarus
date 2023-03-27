@@ -426,7 +426,7 @@ end;
 
 procedure TWatchValue.SetResultData(AResultData: TWatchResultData);
 begin
-  assert(FResultData=nil, 'TWatchValue.SetResultData: FResultData=nil');
+  ResultData.Free;
   FResultData := AResultData;
 end;
 

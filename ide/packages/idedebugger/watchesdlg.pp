@@ -1362,9 +1362,10 @@ begin
 
   if AWatchAbleResult.Enabled then begin
     if (FWatchDlg.GetSelectedSnapshot = nil) or  // live watch
-       (AWatchAbleResult.Validity in [ddsValid, ddsInvalid, ddsError]) // snapshot
+       (AWatchAbleResult.Validity in [ddsValid, ddsInvalid, ddsError]) or // snapshot
+       (AWatchAbleResult.ResultData <> nil)
     then begin
-      if (AWatchAbleResult.Validity = ddsValid) and (AWatchAbleResult.ResultData <> nil) then begin
+      if (AWatchAbleResult.ResultData <> nil) then begin
         FWatchDlg.FWatchPrinter.FormatFlags := [rpfClearMultiLine];
         WatchValueStr := FWatchDlg.FWatchPrinter.PrintWatchValue(AWatchAbleResult.ResultData, AWatchAbleResult.DisplayFormat);
         WatchValueStr := DebugBoss.FormatValue(AWatchAbleResult.TypeInfo, WatchValueStr);

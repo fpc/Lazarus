@@ -44,7 +44,7 @@ type
     //destructor Destroy; override;
 
     function AddWatchData(AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf = nil; AVNode: PVirtualNode = nil): PVirtualNode;
-    procedure UpdateWatchData(AWatchAble: TObject; AVNode: PVirtualNode; AWatchAbleResult: IWatchAbleResultIntf = nil);
+    procedure UpdateWatchData(AWatchAble: TObject; AVNode: PVirtualNode; AWatchAbleResult: IWatchAbleResultIntf = nil; AnIgnoreNodeVisible: Boolean = False);
 
     property CancelUpdate: Boolean read FCancelUpdate write FCancelUpdate;
     property TreeView: TDbgTreeView read FTreeView;
@@ -215,7 +215,7 @@ begin
       nd := FTreeView.AddChild(AVNode, NewWatchAble);
     end;
     (NewWatchAble as IFreeNotifyingIntf).AddFreeNotification(@DoWatchAbleFreed);
-    UpdateWatchData(NewWatchAble, nd);
+    UpdateWatchData(NewWatchAble, nd, nil, True);
   end;
 
   inc(ChildCount); // for the nav row
@@ -265,7 +265,7 @@ begin
       nd := FTreeView.AddChild(AVNode, NewWatchAble);
     end;
     (NewWatchAble as IFreeNotifyingIntf).AddFreeNotification(@DoWatchAbleFreed);
-    UpdateWatchData(NewWatchAble, nd);
+    UpdateWatchData(NewWatchAble, nd, nil, True);
   end;
 end;
 
@@ -308,7 +308,7 @@ begin
         nd := FTreeView.AddChild(AVNode, NewWatchAble);
       end;
       (NewWatchAble as IFreeNotifyingIntf).AddFreeNotification(@DoWatchAbleFreed);
-      UpdateWatchData(NewWatchAble, nd);
+      UpdateWatchData(NewWatchAble, nd, nil, True);
     end;
   end;
 end;
@@ -390,13 +390,14 @@ begin
 end;
 
 procedure TDbgTreeViewWatchDataMgr.UpdateWatchData(AWatchAble: TObject;
-  AVNode: PVirtualNode; AWatchAbleResult: IWatchAbleResultIntf);
+  AVNode: PVirtualNode; AWatchAbleResult: IWatchAbleResultIntf;
+  AnIgnoreNodeVisible: Boolean);
 var
   TypInfo: TDBGType;
   HasChildren: Boolean;
   c: LongWord;
 begin
-  if not FTreeView.FullyVisible[AVNode] then
+  if not (FTreeView.FullyVisible[AVNode] or AnIgnoreNodeVisible) then
     exit;
 
   if AWatchAbleResult = nil then

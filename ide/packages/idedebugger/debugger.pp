@@ -544,6 +544,8 @@ type
     function GetResultData: TWatchResultData; override;
     function GetValidity: TDebuggerDataState; override;
 
+    function FindParentValue: TIdeWatchValue;
+    function MaybeCopyResultForChild: boolean;
     procedure RequestData; virtual;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
                                 const APath: string);
@@ -568,6 +570,10 @@ type
     property ChildrenByNameAsArrayEntry[AName: Int64]: TObject read GetChildrenByNameAsArrayEntry;
   end;
 
+  TIdeTempWatchValue = class(TIdeWatchValue)
+    //procedure ClearDisplayData; override; // remove from value-list / unless settings/DisplayFormat is stored
+  end;
+
   { TIdeWatchValueList }
 
   TIdeWatchValueList = class(TWatchValueList)
@@ -576,6 +582,7 @@ type
     function GetEntryByIdx(AnIndex: integer): TIdeWatchValue;
     function GetWatch: TIdeWatch;
   protected
+    function CreateEntry(const AThreadId: Integer; const AStackFrame: Integer): TWatchValue; override;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
                                 APath: string);
     procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
@@ -945,7 +952,10 @@ type
     function GetChildrenByNameAsArrayEntry(AName: Int64): TObject;
     function GetChildrenByNameAsField(AName, AClassName: String): TObject;
 
-  private
+  protected
+    function FindParentValue: TIdeLocalsValue; virtual;
+    function MaybeCopyResultForChild: boolean;
+
     procedure CreateSubLocals; virtual;
     function GetSubLocal(ADispName, AnExpr: String): TIdeLocalsValue;
   protected
@@ -1012,6 +1022,7 @@ type
     procedure RequestData;
 
   protected
+    function FindParentValue: TIdeLocalsValue; override;
     function GetResultData: TWatchResultData; override;
     function GetValue: String; override;
   public
@@ -4161,6 +4172,7 @@ begin
     if MaybeCopyResult(Watch.ParentWatch) then
       exit;
 
+  MaybeCopyResultForChild;
   TCurrentWatch(Watch).RequestData(self);
 end;
 
@@ -4263,6 +4275,13 @@ end;
 function TIdeWatchValueList.GetWatch: TIdeWatch;
 begin
   Result := TIdeWatch(inherited Watch);
+end;
+
+function TIdeWatchValueList.CreateEntry(const AThreadId: Integer;
+  const AStackFrame: Integer): TWatchValue;
+begin
+  Result := TIdeTempWatchValue.Create(Watch, AThreadId, AStackFrame);
+  Add(Result);
 end;
 
 procedure TIdeWatchValueList.LoadDataFromXMLConfig(const AConfig: TXMLConfig;
@@ -4414,9 +4433,97 @@ begin
   end;
 end;
 
+function TIdeWatchValue.FindParentValue: TIdeWatchValue;
+var
+  ASourceWatch: TIdeWatch;
+  IsField, IsEntry: Boolean;
+  cn: String;
+begin
+  Result := nil;
+  if (Watch <> nil) and
+     (Watch.ParentWatch <> nil) and
+     (Watch.ParentWatch.DbgBackendConverter = Watch.DbgBackendConverter)
+  then begin
+    ASourceWatch := Watch.ParentWatch;
+
+    if (ASourceWatch.DisplayFormat  <> FWatch.DisplayFormat) or
+       (ASourceWatch.RepeatCount    <> FWatch.RepeatCount) or
+       (ASourceWatch.FirstIndexOffs <> FWatch.FirstIndexOffs) or
+       (ASourceWatch.EvaluateFlags  <> FWatch.EvaluateFlags)
+    then
+      exit;
+
+    Result := TIdeWatchValue(ASourceWatch.FValueList.ExistingEntries[ThreadId, StackFrame]);
+    if (Result <> nil) and (Result.FResultData = nil)
+    then
+      Result := nil;
+    if Result = nil then
+      exit;
+
+    if (Result.FResultData.ValueKind = rdkStruct) then begin
+      cn := Result.FResultData.TypeName;
+      if (GetBackendExpression <> ASourceWatch.GetBackendExpression + '.' + Watch.DisplayName) and
+         ( (not (defClassAutoCast in ASourceWatch.EvaluateFlags)) or
+           (GetBackendExpression <> cn + '(' + ASourceWatch.GetBackendExpression + ').' + Watch.DisplayName)
+         )
+      then
+        Result := nil;
+    end
+    else
+    if (Result.FResultData.ValueKind = rdkArray) then begin
+      if GetBackendExpression <> ASourceWatch.GetBackendExpression + '[' + Watch.DisplayName + ']'
+      then
+        Result := nil;
+    end
+    else
+      Result := nil;
+
+  end;
+end;
+
+function TIdeWatchValue.MaybeCopyResultForChild: boolean;
+var
+  IsField, IsEntry: Boolean;
+  ASrcValue: TIdeWatchValue;
+  f: TWatchResultDataFieldInfo;
+  i: int64;
+begin
+  Result := True;
+  if FResultData <> nil then
+    exit;
+
+  ASrcValue := FindParentValue;
+  if (ASrcValue <> nil) then begin
+    if (ASrcValue.FResultData.ValueKind = rdkStruct) then begin
+      for f in ASrcValue.FResultData do begin
+        if f.FieldName = Watch.DisplayName then begin
+          // TODO: mark this as a copy / or don't store it, then no copy is needed
+          FResultData := f.Field.CreateCopy;
+          exit;
+        end;
+      end;
+    end
+    else
+    if (ASrcValue.FResultData.ValueKind = rdkArray) and
+       TryStrToInt64(Watch.DisplayName, i) and
+       (i >= ASrcValue.FResultData.LowBound) and (i < ASrcValue.FResultData.Count)
+    then begin
+      ASrcValue.FResultData.SetSelectedIndex(i);
+      // TODO: mark this as a copy / or don't store it, then no copy is needed
+      FResultData := ASrcValue.FResultData.SelectedEntry.CreateCopy;
+      exit;
+    end;
+  end;
+
+  Result := False;
+end;
+
 procedure TIdeWatchValue.RequestData;
 begin
-  Validity := ddsInvalid;
+  if MaybeCopyResultForChild then
+    Validity := ddsValid
+  else
+    Validity := ddsInvalid;
 end;
 
 procedure TIdeWatchValue.LoadDataFromXMLConfig(const AConfig: TXMLConfig;
@@ -7221,10 +7328,52 @@ var
   Expr: String;
 begin
   Expr := Name;
-  if AClassName <> '' then
-    Expr := AClassName + '(' + Expr + ')';
+  // no defClassAutoCast for locals // if changed also update FindParentValue
+  //if AClassName <> '' then
+  //  Expr := AClassName + '(' + Expr + ')';
   Expr := Expr + '.' + AName;
   Result := GetSubLocal(AName, Expr);
+end;
+
+function TIdeLocalsValue.FindParentValue: TIdeLocalsValue;
+begin
+  Result := nil;
+end;
+
+function TIdeLocalsValue.MaybeCopyResultForChild: boolean;
+var
+  ParentVal: TIdeLocalsValue;
+  f: TWatchResultDataFieldInfo;
+  i: int64;
+begin
+  ParentVal := FindParentValue;
+  Result := (ParentVal <> nil) and (ParentVal.FValue <> nil);
+  if (not Result) or (FValue <> nil) then
+    exit;
+
+  if (ParentVal.FValue.ValueKind = rdkStruct) then begin
+    for f in ParentVal.FValue do begin
+      if f.FieldName = DisplayName then begin
+        // TODO: mark this as a copy / or don't store it, then no copy is needed
+        FValue := f.Field.CreateCopy;
+        Result := True;
+        exit;
+      end;
+    end
+  end;
+
+  if (ParentVal.FValue.ValueKind = rdkArray) and
+     TryStrToInt64(DisplayName, i) and
+     (i >= ParentVal.FValue.LowBound) and (i < ParentVal.FValue.Count)
+  then begin
+    ParentVal.FValue.SetSelectedIndex(i);
+    // TODO: mark this as a copy / or don't store it, then no copy is needed
+    FValue := ParentVal.FValue.SelectedEntry.CreateCopy;
+    Result := True;
+    exit;
+  end;
+
+  Result := False;
 end;
 
 procedure TIdeLocalsValue.CreateSubLocals;
@@ -7407,6 +7556,7 @@ end;
 
 procedure TSubLocalsValue.RequestData;
 begin
+  MaybeCopyResultForChild;
   if(DebugBossManager <> nil) and
      (FValidity = ddsUnknown) and
      (TSubLocals(Owner).TopOwner is TCurrentLocals) and
@@ -7415,6 +7565,37 @@ begin
     FValidity := ddsRequested;
     DebugBossManager.RequestWatchData(Self);
   end;
+end;
+
+function TSubLocalsValue.FindParentValue: TIdeLocalsValue;
+var
+  LocalsList: TIDELocals;
+  i: Integer;
+begin
+  Result := nil;
+  if not (Owner is TSubLocals) then
+    exit;
+  LocalsList := TSubLocals(Owner);
+  if TSubLocals(LocalsList).FOwnerLocals = nil then
+    exit;
+
+  LocalsList := TSubLocals(LocalsList).FOwnerLocals;
+  i := LocalsList.Count - 1;
+  while i >= 0 do begin
+    Result := TIdeLocalsValue(LocalsList.Entries[i]);
+    if (Result.FValue <> nil) and
+       ( ( (Result.FValue.ValueKind = rdkStruct) and
+           (FName = Result.FName + '.' + DisplayName)
+         ) or
+         ( (Result.FValue.ValueKind = rdkArray) and
+           (FName = Result.FName + '[' + DisplayName + ']')
+       ) )
+    then
+      exit;
+    dec(i);
+  end;
+
+  Result := nil;
 end;
 
 function TSubLocalsValue.GetResultData: TWatchResultData;
