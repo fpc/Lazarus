@@ -4566,10 +4566,10 @@ Indicates whether minimum and maximum values from the linked control are used.
 <element name="TTIProgressBar.Link" link="#rtticontrols.rttictrls.TTICustomProgressBar.Link"/>
 <element name="TTIProgressBar.Max" link="#lcl.comctrls.TCustomProgressBar.Max"/>
 <element name="TTIProgressBar.Min" link="#lcl.comctrls.TCustomProgressBar.Min"/>
-<element name="TTIProgressBar.OnDragDrop"link="#lcl.controls.TControl.OnDragDrop"/>
-<element name="TTIProgressBar.OnDragOver"link="#lcl.controls.TControl.OnDragOver"/>
+<element name="TTIProgressBar.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
+<element name="TTIProgressBar.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
 <element name="TTIProgressBar.OnClick" link="#lcl.controls.TControl.OnClick"/>
-<element name="TTIProgressBar.OnEndDrag"link="#lcl.controls.TControl.OnEndDrag"/>
+<element name="TTIProgressBar.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>
 <element name="TTIProgressBar.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
 <element name="TTIProgressBar.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
 <element name="TTIProgressBar.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
