@@ -41,8 +41,8 @@ This file is part of the Lazarus Component Library (LCL).
 <!-- unresolved external references -->
 <!-- used for FPC 3.3.X type aliases -->
 <element name="System.UITypes"/>
-<element name="UITypes"/>
-
+<!-- used for FPC 3.2.X -->
+<!-- <element name="UITypes"/> -->
 <element name="Classes"/>
 <element name="SysUtils"/>
 <element name="TypInfo"/>
