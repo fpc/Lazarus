@@ -168,8 +168,9 @@ implementation
 
 destructor TLazCanvasState.Destroy;
 begin
-  if Brush <> nil then Brush.Free;
-  if Pen <> nil then Pen.Free;
+  Brush.Free;
+  Pen.Free;
+  Font.Free;
   inherited Destroy;
 end;
 
@@ -540,10 +541,14 @@ begin
 end;
 
 destructor TLazCanvas.destroy;
+var
+  i: Integer;
 begin
+  for i := 0 to GraphicStateList.Count-1 do
+    TLazCanvasState(GraphicStateList[i]).Free;
   GraphicStateList.Free;
-  if FAssignedBrush <> nil then FAssignedBrush.Free;
-  if FAssignedPen <> nil then FAssignedPen.Free;
+  FAssignedBrush.Free;
+  FAssignedPen.Free;
   inherited destroy;
 end;
 
