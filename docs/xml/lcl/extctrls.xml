@@ -6101,30 +6101,110 @@ constructor.
 
 <element name="TCustomLabeledEdit.Create">
 <short>
-<var>Create</var> - constructor for <var>TCustomLabeledEdit</var>: calls 
-inherited <var>Create</var> then sets initial position and label spacing.
+Constructor for the class instance.
 </short>
-<descr/>
-<errors/>
+<descr>
+<p>
+<var>Create</var> is the overridden constructor for the class instance, and 
+calls the inherited method on entry. Create sets the default values for 
+properties, including:
+</p>
+<dl>
+<dt>LabelPosition</dt>
+<dd>
+<var>lpAbove</var> to align the bound label above the edit control.
+</dd>
+<dt>LabelSpacing</dt>
+<dd>
+<var>3</var> for the number of pixels between the bound label and the edit 
+control.
+</dd>
+</dl>
+<p>
+Create calls CreateInternalLabel to allocate and configure the TBoundLabel 
+instance used in the EditLabel property.
+</p>
+</descr>
 <seealso>
-<link id="#lcl.StdCtrls.TCustomEdit.Create">TCustomEdit.Create</link>
-<link id="#lcl.ExtCtrls.TBoundLabel.Create">TBoundLabel.Create</link>
+<link id="TCustomLabeledEdit.LabelPosition"/>
+<link id="TCustomLabeledEdit.LabelSpacing"/>
+<link id="TCustomLabeledEdit.EditLabel"/>
+<link id="TCustomLabeledEdit.CreateInternalLabel"/>
+<link id="#lcl.stdctrls.TCustomEdit.Create">TCustomEdit.Create</link>
+<link id="#lcl.extctrls.TBoundLabel.Create">TBoundLabel.Create</link>
 </seealso>
 </element>
 <element name="TCustomLabeledEdit.Create.TheOwner">
-<short>Owner of the class instance.</short>
+<short>Component which is the Owner of the class instance.</short>
 </element>
 
 <element name="TCustomLabeledEdit.EditLabel">
 <short>
-<var>EditLabel</var> - the label attached to the edit box.</short>
+<var>EditLabel</var> - the label attached to the edit box.
+</short>
+<descr>
+<p>
+<var>EditLabel</var> is a read-only <var>TBoundLabel</var> property which 
+contains the bound label displayed for the edit control.
+</p>
+<p>
+Use LabelPosition to specify the edge on the edit control to which the label 
+is aligned. Use LabelSpacing to set the number of pixels used as a spacer 
+between the edit control and the bound label.
+</p>
+<p>
+Values can be assigned to properties in the label at design-time using the 
+Object Inspector, or at run-time in program code. For example:
+</p>
+<p>
+Use Text to read or write the value for the control.
+</p>
+<code>
+LabeledEdit1.EditLabel.Caption := 'Unit Measure';
+LabeledEdit1.Text := 'Ångström';
+</code>
+</descr>
+<seealso/>
 </element>
 
 <element name="TCustomLabeledEdit.LabelPosition">
 <short>
-<var>LabelPosition</var> - whether above, below, to the left or to the right 
-of the Edit box.
+Edge on the edge control where the bound label is aligned.
 </short>
+<descr>
+<p>
+<var>LabelPosition</var> is a <var>TLabelPosition</var> property which 
+indicates the edge of the edit control where the bound label in EditLabel is 
+aligned. The default value for the property is lpAbove.
+</p>
+<p>
+Use one of the other TLabelPosition enumeration values to reposition the label 
+relative to the edit control.
+</p>
+<dl>
+<dt>lpAbove</dt>
+<dd>Positions the label above the edit control.</dd>
+<dt>lpBelow</dt>
+<dd>Positions the label below the edit control.</dd>
+<dt>lpLeft</dt>
+<dd>Positions the label on the left-hand edge of the edit control.</dd>
+<dt>lpRight</dt>
+<dd>Positions the label on the right-hand edge of the edit control.</dd>
+</dl>
+<p>
+Changing the value for the property causes EditLabel to be repositioned and 
+anchored to the edit control.
+</p>
+<p>
+Use LabelSpacing to specify the number of pixels used as a spacer between the 
+edit control and the bound label in Editlabel.
+</p>
+</descr>
+<seealso>
+<link id="TCustomLabeledEdit.EditLabel"/>
+<link id="TCustomLabeledEdit.LabelSpacing"/>
+<link id="TLabelPosition"/>
+</seealso>
 </element>
 
 <element name="TCustomLabeledEdit.LabelSpacing">
@@ -6145,15 +6225,15 @@ id="#lcl.ExtCtrls.TCustomLabeledEdit">TCustomLabeledEdit</link> from which
 most of the properties are inherited.
 </p>
 <p>
-Note particularly the <link 
-id="#lcl.ExtCtrls.TCustomLabeledEdit.EditLabel">EditLabel</link> property 
-(see <link id="#lcl.Extctrls.TBoundLabel">TBoundLabel</link>), which contains 
-the label attached to the Edit control.
+Note particularly the 
+<link id="#lcl.ExtCtrls.TCustomLabeledEdit.EditLabel">EditLabel</link> 
+property (see <link id="#lcl.Extctrls.TBoundLabel">TBoundLabel</link>), which 
+contains the label attached to the Edit control.
 </p>
 <p>
 Use LabelPosition to specify the location where EditLabel is displayed 
 relative to the edit box in the control. Use LabelSpacing to set the spacing 
-between EditLabel and the edit control.
+(in pixels) between EditLabel and the edit control.
 </p>
 </descr>
 <seealso>
@@ -6162,8 +6242,8 @@ between EditLabel and the edit control.
 <link id="TCustomLabeledEdit.LabelSpacing"/>
 <link id="TBoundLabel"/>
 <link id="TLabelPosition"/>
-<link id="#lcl.StdCtrls.TCustomEdit">TCustomEdit</link>
-<link id="#lcl.StdCtrls.TCustomLabel">TCustomLabel</link>
+<link id="#lcl.stdctrls.TCustomEdit">TCustomEdit</link>
+<link id="#lcl.stdctrls.TCustomLabel">TCustomLabel</link>
 </seealso>
 
 </element>
@@ -6267,7 +6347,7 @@ customizable border and a central text.
 <p>
 A Panel is a defined rectangular area on a form into which other components 
 can be placed to group them functionally and geographically. 
-<var>TCustomPanel</var> defines the positioning and beveling properties of 
+<var>TCustomPanel</var> defines the positioning and beveling properties of
 any descendent classes, and provides methods for painting and writing text to 
 the panel.
 </p>
