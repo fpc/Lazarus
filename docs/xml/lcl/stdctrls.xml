@@ -8356,11 +8356,19 @@ keys. The default value for the property is <b>True</b> in
 <p>
 <var>Text</var> is a <var>TCaption</var> property which contains the 
 UTF-8-encoded characters maintained as the value for the edit control. The 
-value in Text is read and written using the <var>RealGetText</var> and 
+property value can be assigned at design-time using the Object Inspector in 
+the Lazarus IDE, or at run-time in program code. For example:
+</p>
+<code>
+Edit1.Text := 'Ångström';
+ShowMessage('Unit Measure = ' + Edit1.Text);
+</code>
+<p>
+The value in Text is read and written using the <var>RealGetText</var> and
 <var>RealSetText</var> methods. Not only do they provide code compatibility 
 with the Delphi VCL, they support use of emulated <var>TextHint</var> 
-displays. The value in TextHint is assigned to Text when the inline hint text 
-is displayed for the control.
+displays. The value in TextHint is temporarily assigned to Text when an 
+inline hint is displayed for the control.
 </p>
 <p>
 The value in Text may be altered in the <var>TextChanged</var> method when 
@@ -8369,11 +8377,11 @@ the control.
 </p>
 </descr>
 <seealso>
-<link id="TCustomEdit.RealGetText"/>
-<link id="TCustomEdit.RealSetText"/>
 <link id="TCustomEdit.TextChanged"/>
 <link id="TCustomEdit.CharCase"/>
 <link id="TCustomEdit.TextHint"/>
+<link id="TCustomEdit.RealGetText"/>
+<link id="TCustomEdit.RealSetText"/>
 <link id="#lcl.controls.TControl.Text">TControl.Text</link>
 </seealso>
 </element>
