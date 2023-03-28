@@ -28150,10 +28150,15 @@ progress.
 <seealso/>
 </element>
 <element name="TTreeNode.WriteDebugReport.Prefix">
-<short/>
+<short>
+Value prepended to the debugger output.
+</short>
 </element>
 <element name="TTreeNode.WriteDebugReport.Recurse">
-<short/>
+<short>
+<b>True</b> to recurse into child nodes and include their values in the 
+debugger output.
+</short>
 </element>
 
 <element name="TTreeNode.AbsoluteIndex">
@@ -28406,10 +28411,42 @@ method is called with the <var>ncImageIndex</var> node change reason.
 Ordinal position for the node in its parent node.
 </short>
 <descr>
-Returns the number of previous siblings (nodes on same level in the parent 
-node).
+<p>
+<var>Index</var> is an <var>Integer</var> property which contains the ordinal 
+position for the class instance in its Parent node. It also indicates the 
+number of previous siblings (nodes on same level in the Parent node). Index 
+contains -1 if the node does not have an assigned Parent node.
+</p>
+<p>
+Changing the value for the property causes the tree node to be relocated in 
+the Parent node, or the Owner for top-level nodes. An ETreeViewError exception 
+is raised if the Index for a top-level node is changed and Owner has not been 
+assigned. The MoveTo method is called to relocate the the tree node to the new 
+position in the property value.
+</p>
+<p>
+Use AbsoluteIndex to get the position for a node including all of the 
+preceding sibling nodes and their children.
+</p>
 </descr>
-<seealso/>
+<errors>
+<dl>
+<dt>ETreeViewError</dt>
+<dd>
+Raised if the Index for a top-level node is changed and Owner has not been 
+assigned.
+</dd>
+</dl>
+</errors>
+<seealso>
+<link id="TTreeNode.Parent"/>
+<link id="TTreeNode.Owner"/>
+<link id="TTreeNode.MoveTo"/>
+<link id="TTreeNode.Level"/>
+<link id="TTreeNode.AbsoluteIndex"/>
+<link id="TTreeNodes.TopLvlItems"/>
+<link id="ETreeViewError"/>
+</seealso>
 </element>
 
 <element name="TTreeNode.IsFullHeightVisible">
@@ -28509,8 +28546,8 @@ starting at the current node.
 
 <element name="TTreeNode.MultiSelected">
 <short>
-<var>MultiSelected</var> - if <b>True</b>, several nodes have been selected 
-simultaneously (e.g. using the Shift or Ctrl key while selecting).
+<b>True</b> if more than one node has been selected simultaneously (e.g. using 
+the Shift or Ctrl key while selecting).
 </short>
 <descr/>
 <seealso/>
@@ -28520,8 +28557,46 @@ simultaneously (e.g. using the Shift or Ctrl key while selecting).
 <short>
 Graphic drawing effect applied to the node in the associated TreeView control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>NodeEffect</var> is a <var>TGraphicsDrawEffect</var> property with the 
+drawing effect applied to the tree node when it is drawn on the associated 
+TreeView control. NodeEffect controls the drawing style applied to both the 
+text and the image for a given node.
+</p>
+<p>
+The default value is gdeNormal as assigned in the constructor for the tree 
+node instance. This causes the tree node to be drawn with no effect applied to 
+the node. See <link id="#lazutils.graphtype.TGraphicsDrawEffect">
+TGraphicsDrawEffect</link> for the other values allowed in the property, and 
+their meanings.
+</p>
+<p>
+Changing the value for the property causes the the Update method to be called 
+to redraw the TreeView control for the node. The Changed method is called to 
+notify the TreeView control of the reason that the node was changed.
+</p>
+<p>
+Use the ImageIndex and OverlayIndex properties to specify the primary and 
+overlay images drawn for the tree node. The visual drawing effect is also 
+updated when values are changed in the Cut, Expanded, Focused, Selected, or 
+Enabled properties.
+</p>
+</descr>
+<seealso>
+<link id="TTreeNode.Update"/>
+<link id="TTreeNode.ImageIndex"/>
+<link id="TTreeNode.OverlayIndex"/>
+<link id="TTreeNode.Cut"/>
+<link id="TTreeNode.Expanded"/>
+<link id="TTreeNode.Focused"/>
+<link id="TTreeNode.Selected"/>
+<link id="TTreeNode.Enabled"/>
+<link id="TCustomTreeView.NodeChanged"/>
+<link id="TCustomTreeView.Invalidate"/>
+<link id="TCustomTreeView.Paint"/>
+<link id="#lazutils.graphtype.TGraphicsDrawEffect">TGraphicsDrawEffect</link>
+</seealso>
 </element>
 
 <element name="TTreeNode.OverlayIndex">
@@ -28541,11 +28616,20 @@ Owner of the tree node instance.
 </short>
 <descr>
 <p>
-Owner is a read-only TTreeNodes property with the container that owns the 
-current TTreeNode instance.
+<var>Owner</var> is a read-only <var>TTreeNodes</var> property with the 
+container that owns the current TTreeNode instance. The property value is 
+assigned in the Create method to the argument value passed to the constructor.
+</p>
+<p>
+Owner provides access to the properties and methods in the TTreeNodes 
+instance, including the tree view control which owns the container.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TTreeNode.Create"/>
+<link id="TTreeNodes.Owner"/>
+<link id="TCustomTreeView.Items"/>
+</seealso>
 </element>
 
 <element name="TTreeNode.Parent">
