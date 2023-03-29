@@ -3983,12 +3983,16 @@ one another.
 </p>
 <remark>
 <p>In general, a statement of the form:</p>
-<code>Destination:=Source;</code>
+<code>
+Destination:=Source;
+</code>
 <p>
 (where <var>Destination</var> and <var>Source</var> are classes) does not 
 achieve the same as a statement of the form.
 </p>
-<code>Destination.Assign(Source);</code>
+<code>
+Destination.Assign(Source);
+</code>
 <p>
 After the former statement, both <var>Source</var> and <var>Destination</var> 
 will point to the same object. The latter statement will copy the 
@@ -6161,7 +6165,7 @@ Use Text to read or write the value for the control.
 </p>
 <code>
 LabeledEdit1.EditLabel.Caption := 'Unit Measure';
-LabeledEdit1.Text := 'Ångström';
+LabeledEdit1.Text := 'Volts DC';
 </code>
 </descr>
 <seealso/>
@@ -6209,8 +6213,30 @@ edit control and the bound label in Editlabel.
 
 <element name="TCustomLabeledEdit.LabelSpacing">
 <short>
-<var>LabelSpacing</var> - the distance between the Label and the Edit box.
+Number of pixels between the control and its bound label.
 </short>
+<descr>
+<p>
+<var>LabelSpacing</var> is an <var>Integer</var> property with the number of 
+pixels used as a spacer between the edit control and its bound label in 
+EditLabel. The default value for the property is 3.
+</p>
+<p>
+Changing the value for the property causes EditLabel to be repositioned and 
+anchored to the edit control. The value is added as border spacing for the 
+anchored control in the DoPositionLabel method.
+</p>
+<p>
+Use LabelPosition to specify the edge on the control where EditLabel is 
+aligned.
+</p>
+</descr>
+<seealso>
+<link id="TCustomLabeledEdit.LabelPosition"/>
+<link id="TCustomLabeledEdit.EditLabel"/>
+<link id="TCustomLabeledEdit.DoPositionLabel"/>
+<link id="TBoundLabel"/>
+</seealso>
 </element>
 
 <element name="TLabeledEdit">
