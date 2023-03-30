@@ -62,6 +62,7 @@ type
   TDbgDataRequestEvent = procedure(Sender: IDbgDataRequestIntf; Data: TDbgDataRequestEventData) of object;
 
   IDbgDataRequestIntf = interface
+    ['{48D16FDC-8F02-4302-ABAA-4EA68827580D}']
     procedure AddFreeNotification(ANotification: TNotifyEvent);
     procedure RemoveFreeNotification(ANotification: TNotifyEvent);
 
@@ -168,6 +169,7 @@ type
   }
 
   IDbgWatchDataIntf = interface
+    ['{0FE00324-C265-4239-8781-51FFF8CEA31C}']
     procedure CreatePrePrinted(AVal: String); // ATypes: TLzDbgWatchDataTypes);
     procedure CreateString(AVal: String);// AnEncoding // "pchar data" // shortstring
     procedure CreateWideString(AVal: WideString);
@@ -238,6 +240,7 @@ type
   { IDbgWatchValueIntf }
 
   IDbgWatchValueIntf = interface(IDbgDataRequestIntf)
+    ['{20A8A0E3-C456-463D-8B33-DC0CF6037D6B}']
     function ResData: IDbgWatchDataIntf;
 
     (* ***** Methods for the front-end to provide the request  ***** *)
@@ -274,11 +277,13 @@ type
   IDbgWatchesSupplierIntf = interface;
 
   IDbgWatchesMonitorIntf  = interface(specialize IInternalDbgMonitorIntf<IDbgWatchesSupplierIntf>)
+    ['{42A7069E-D5DD-4350-A592-2000F67DC7E9}']
     procedure InvalidateWatchValues;
     procedure DoStateChange(const AOldState, ANewState: TDBGState); //deprecated;
   end;
 
   IDbgWatchesSupplierIntf = interface(specialize IInternalDbgSupplierIntf<IDbgWatchesMonitorIntf>)
+    ['{F893B607-C295-4A3A-8253-FAB3D03C5AD5}']
     procedure RequestData(AWatchValue: IDbgWatchValueIntf);
   end;
 
@@ -288,6 +293,7 @@ type
 {%region   ^^^^^  Locals  ^^^^^   }
 
   IDbgLocalsListIntf = interface(IDbgDataRequestIntf)
+    ['{B288AD25-7D54-447C-AE9D-32B3E9789BCE}']
     function Add(AName: String): IDbgWatchDataIntf;
 
     function GetStackFrame: Integer;
@@ -303,11 +309,13 @@ type
   IDbgLocalsSupplierIntf = interface;
 
   IDbgLocalsMonitorIntf  = interface(specialize IInternalDbgMonitorIntf<IDbgLocalsSupplierIntf>)
+    ['{7EBDD107-E55F-4E3F-9281-5CA0116EA75D}']
     procedure InvalidateLocalValues;
     procedure DoStateChange(const AOldState, ANewState: TDBGState); //deprecated;
   end;
 
   IDbgLocalsSupplierIntf = interface(specialize IInternalDbgSupplierIntf<IDbgLocalsMonitorIntf>)
+    ['{755A287E-4609-4E8B-94CF-08525DC9A082}']
     procedure RequestData(ALocalsList: IDbgLocalsListIntf);
   end;
 

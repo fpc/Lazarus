@@ -14,6 +14,7 @@ type
   TLazDbgValueConvertRegistryEntryClass = class of TLazDbgValueConvertRegistryEntry;
 
   ILazDbgValueConverterSettingsFrameIntf = interface
+    ['{0A2F548B-0621-4E2C-A94A-8DE5C3DF81B8}']
     procedure ReadFrom(AConvertor: ILazDbgValueConverterIntf);
     function WriteTo(AConvertor: ILazDbgValueConverterIntf): Boolean;
 
@@ -22,6 +23,7 @@ type
   end;
 
   ILazDbgValueConverterIntf = interface
+    ['{FC054A2E-17D3-4616-9F68-20E1169C29E8}']
     procedure AddReference;
     procedure ReleaseReference;
     function CreateCopy: ILazDbgValueConverterIntf;
@@ -32,6 +34,7 @@ type
   end;
 
   ILazDbgValueConvertSelectorIntf = interface
+    ['{BEF1676E-0404-4F82-80BD-ABA4522A505E}']
     procedure AddFreeNotification(ANotification: TNotifyEvent);
     procedure RemoveFreeNotification(ANotification: TNotifyEvent);
     function GetConverter: ILazDbgValueConverterIntf;
@@ -42,6 +45,7 @@ type
   { ILazDbgValueConvertSelectorListIntf }
 
   ILazDbgValueConvertSelectorListIntf = interface
+    ['{7004204B-14ED-4282-A150-81AF71D133E3}']
     function Count: Integer;
     function Get(Index: Integer): ILazDbgValueConvertSelectorIntf;
     property Items[Index: Integer]: ILazDbgValueConvertSelectorIntf read Get; default;

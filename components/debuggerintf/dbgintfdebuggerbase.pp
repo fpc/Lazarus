@@ -1563,7 +1563,7 @@ type
   }
   //TODO: remove TDebuggerIntf.OnEvent
 
-  TDebuggerEventLogInterface = interface
+  TDebuggerEventLogInterface = interface ['{92C1E508-E6EB-444E-8E75-566D3C8E49B0}']
     procedure LogCustomEvent(const ACategory: TDBGEventCategory;
                 const AEventType: TDBGEventType; const AText: String);
     procedure LogEventBreakPointHit(const ABreakpoint: TDBGBreakPoint; const ALocation: TDBGLocationRec);
