@@ -164,7 +164,7 @@ end;
 constructor TProjectDebugOptionsFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FClassOpts := TDebuggerClassOptionsFrame.Create(AOwner);
+  FClassOpts := TDebuggerClassOptionsFrame.Create(Self);
   FClassOpts.Parent := Self;
   FClassOpts.Align := alClient;
   FClassOpts.Visible := True;
