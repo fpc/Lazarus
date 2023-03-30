@@ -1689,9 +1689,7 @@ var
   lCDWinControl: TCDWinControl;
 begin
   lCDWinControl := TCDWinControl(AWinControl.Handle);
-
   TCDWSWinControl.ShowHide(AWinControl);
-
   if not lCDWinControl.CDControlInjected then
   begin
     InjectCDControl(AWinControl, lCDWinControl.CDControl);
@@ -1704,9 +1702,11 @@ class function TCDWSButton.GetText(const AWinControl: TWinControl;
 var
   lCDWinControl: TCDWinControl;
 begin
+  Result := False;
   lCDWinControl := TCDWinControl(AWinControl.Handle);
   if lCDWinControl.CDControl = nil then Exit;
   AText := TCDIntfButton(lCDWinControl.CDControl).Caption;
+  Result := True;
 end;
 
 class procedure TCDWSButton.SetText(const AWinControl: TWinControl;
