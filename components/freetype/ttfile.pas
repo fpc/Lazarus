@@ -495,6 +495,8 @@ const
    FFrameSize    := 0;
    FCurrentFrame := nil;
    FFrameCursor  := 0;
+
+   result := Success;
  end;
 
 (*******************************************************************
