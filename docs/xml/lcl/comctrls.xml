@@ -31344,7 +31344,7 @@ Implements the storage specifier for the DefaultItemHeight property.
 </element>
 <element name="TCustomTreeView.DefaultItemHeightIsStored.Result">
 <short>
-<b>True</b> when tvoAutoItemHeight in not in the Options for the control.
+<b>True</b> when tvoAutoItemHeight is not in the Options for the control.
 </short>
 </element>
 
@@ -31446,14 +31446,13 @@ is called to get the return value.
 
 <element name="TCustomTreeView.GetMaxLvl">
 <short>
-<var>GetMaxLvl</var> - returns the maximum level of branching of the tree 
-structure.
+Not used in the current LCL version.
 </short>
-<descr/>
-<seealso/>
 </element>
 <element name="TCustomTreeView.GetMaxLvl.Result">
-<short/>
+<short>
+Not used in the current LCL version.
+</short>
 </element>
 
 <element name="TCustomTreeView.GetMaxScrollLeft">
@@ -31480,7 +31479,7 @@ structure.
 
 <element name="TCustomTreeView.GetNodeAtY">
 <short>
-Gets an expanded node at the specified vertical coordinate.
+Gets the expanded tree node at the specified vertical coordinate.
 </short>
 <descr>
 <p>
@@ -31499,11 +31498,32 @@ GetInsertMarkAt, and GetHitTestInfoAt methods.
 
 <element name="TCustomTreeView.GetNodeWithExpandSignAt">
 <short>
-Gets an expanded tree node for the specified screen coordinates.
+Gets the tree node with an expand indicator at the specified coordinates.
 </short>
 <descr>
 <p>
-Used to implement the EnsureNodeIsVisible method.
+Calls GetNodeAtY to determine if the mouse pointer is positioned over a tree 
+node on the control. The return value contains the TTreeNode instance at the 
+specified coordinates on the tree view control. 
+</p>
+<p>
+The return value can contain <b>Nil</b> when:
+</p>
+<ul>
+<li>
+Y is not positioned over an expanded and visible tree node.
+</li>
+<li>
+X is not over the visible content for a tree node including a fold (expand / 
+collapse) indicator.
+</li>
+<li>
+In row select mode, the mouse pointer is not over the highlighted content on 
+the tree view control.
+</li>
+</ul>
+<p>
+Used in MouseDown to get the tree node under the mouse pointer.
 </p>
 </descr>
 <seealso/>
@@ -31516,8 +31536,8 @@ node is not found.
 </element>
 <element name="TCustomTreeView.GetNodeWithExpandSignAt.X">
 <short>
-Horizontal coordinate used to detected the border, expand indicator, or 
-display text for the tree node.
+Horizontal coordinate used to locate the expand indicator, border (in row 
+select), or text for the tree node.
 </short>
 </element>
 <element name="TCustomTreeView.GetNodeWithExpandSignAt.Y">
@@ -31527,8 +31547,15 @@ Vertical coordinate for the expanded node to locate in the node hierarchy.
 </element>
 
 <element name="TCustomTreeView.GetNodeDrawAreaHeight">
-<short>Gets the height for the usable drawing area in the control.</short>
-<descr/>
+<short>
+Gets the height for the usable drawing area on the tree view control.
+</short>
+<descr>
+<p>
+Calculated using the ClientHeight and BorderWidth for the control.
+Used in the implementation of the EnsureNodeIsVisible method.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TCustomTreeView.GetNodeDrawAreaHeight.Result">
@@ -31539,9 +31566,13 @@ Calculated usable client height after borders are removed.
 
 <element name="TCustomTreeView.GetNodeDrawAreaWidth">
 <short>
-Gets the width for the usable drawing area in the control.
+Gets the width for the usable drawing area on the tree view control.
 </short>
-<descr/>
+<descr>
+<p>
+Calculated using the ClientWidth and BorderWidth for the control.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TCustomTreeView.GetNodeDrawAreaWidth.Result">
@@ -31606,29 +31637,82 @@ expanded.
 
 <element name="TCustomTreeView.IsNodeHeightFullVisible">
 <short>
-<var>IsNodeHeightFullVisible</var> - returns <b>True</b> if the full height 
-of the specified node is visible in the current view.
+Indicates whether the full height for the specified tree node is visible on 
+the tree view control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>IsNodeHeightFullVisible</var> is a <var>Boolean</var> method which 
+indicates whether the tree node in ANode is fully visible vertically on the 
+tree view control.
+</p>
+<p>
+The return value is <b>True</b> if the Top and Height properties for the tree 
+node occur within the usable display area on the control.
+</p>
+<p>
+The return value is <b>False</b> when:
+</p>
+<ul>
+<li>
+The tree node in ANode has not been assigned (<b>Nil</b>).
+</li>
+<li>
+The tree node and its Parent nodes are not Visible and/or Expanded.
+</li>
+<li>
+The text displayed for the tree node is clipped (partially visible) at one of 
+the vertical edges of the control.
+</li>
+</ul>
+<p>
+IsNodeHeightFullVisible is used in the implementation of the 
+IsNodeHeightFullVisible method in TTreeNode.
+</p>
+</descr>
+<seealso>
+</seealso>
 </element>
 <element name="TCustomTreeView.IsNodeHeightFullVisible.Result">
-<short/>
+<short>
+True if the text for the specified tree node is fully visible within the 
+vertical bounds for the control.
+</short>
 </element>
 <element name="TCustomTreeView.IsNodeHeightFullVisible.ANode">
-<short/>
+<short>
+Tree node examined in the method.
+</short>
 </element>
 
 <element name="TCustomTreeView.IsInsertMarkVisible">
 <short>
-<var>IsInsertMarkVisible</var> - returns <b>True</b> if an Insert mark is 
-visible.
+Indicates whether an insertion mark is visible on the tree view control.
 </short>
-<descr/>
+<descr>
+<p>
+<b>What is an "insertion mark"?</b>
+</p>
+<p>
+An insertion mark is the visual indicator that identifies where a node added 
+or moved on the control will be placed. It is like a horizontal editing caret. 
+It is used during a node drag operation to show where the tree node will be 
+placed in the node hierarchy.
+</p>
+<p>
+IsInsertMarkVisible checks internal members in the tree view to determine 
+whether a node and an insert mark type (TTreeViewInsertMarkType) have been 
+assigned for the control. The return value is True when both members have been 
+assigned and the mark node is visible on the control. When an insertion mark 
+becomes visible for a node, the tree view control is redrawn.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TCustomTreeView.IsInsertMarkVisible.Result">
-<short/>
+<short>
+Returns <b>True</b> if an insertion mark is visible on the tree view control.
+</short>
 </element>
 
 <element name="TCustomTreeView.MoveSelection">
@@ -31751,7 +31835,7 @@ scroll bar visibility are reset, and the inherited method is called.
 
 <element name="TCustomTreeView.Click">
 <short>
-Performs actions needed when the Left mouse is clicked on the tree view 
+Performs actions needed when the Left mouse button is clicked on the tree view 
 control.
 </short>
 <descr>
@@ -31882,7 +31966,7 @@ Signals the OnCreateNodeClass event handler (when assigned).
 <short>Class reference used to create the new node instance.</short>
 </element>
 
-<element name="TCustomTreeView.DoEndDrag" link="#lcl.controls.TControl.DoEndDrag">
+<element name="TCustomTreeView.DoEndDrag">
 <short>
 Performs actions needed when a drag operation is completed for the control.
 </short>
@@ -31909,18 +31993,48 @@ timer is disabled. Tooltips are restored to their previous values.
 <short/>
 </element>
 
-<element name="TCustomTreeView.DoMouseWheel" link="#lcl.controls.TControl.DoMouseWheel"/>
+<element name="TCustomTreeView.DoMouseWheel">
+<short>
+Handles mouse wheel messages for the tree view control.
+</short>
+<descr>
+<p>
+<var>DoMouseWheel</var> is an overridden method in <var>TCustomTreeView</var>. 
+It calls the inherited method on entry to signal OnMouseWheel handlers (when 
+assigned). If the event is not handled in the ancestor class, the value in 
+WheelDelta is used to scroll the visible tree nodes by the corresponding 
+number of nodes for the default item height.
+</p>
+<p>
+Scroll bar positions are updated to reflect the new origin for the tree view 
+control. The tool tip for the current mouse pointer position is also updated 
+prior to exit.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.controls.TControl.DoMouseWheel">TControl.DoMouseWheel</link>
+</seealso>
+</element>
 <element name="TCustomTreeView.DoMouseWheel.Result">
-<short/>
+<short>
+Returns <b>True</b> if the mouse wheel event was handled.
+</short>
 </element>
 <element name="TCustomTreeView.DoMouseWheel.Shift">
-<short/>
+<short>
+Shift, Ctrl, or Alt modifier for the mouse wheel event.
+</short>
 </element>
 <element name="TCustomTreeView.DoMouseWheel.WheelDelta">
-<short/>
+<short>
+Number of "clicks" that the mouse wheel was moved.
+</short>
 </element>
 <element name="TCustomTreeView.DoMouseWheel.MousePos">
-<short/>
+<short>
+TPoint instance with the coordinates for the mouse pointer when the mouse 
+wheel event was detected.
+</short>
 </element>
 
 <element name="TCustomTreeView.DoMouseWheelHorz">
@@ -31931,9 +32045,12 @@ timer is disabled. Tooltips are restored to their previous values.
 needed to handle a horizontal mouse wheel message. It calls the inherited 
 method to signal the <var>OnMouseWheelHorz</var> event handler (when 
 assigned), or other chtOnMouseWheelHorz handlers registered in the 
-application. If the message is not handled in the ancestor, the value in 
+application. 
+</p>
+<p>
+If the message is not handled in the ancestor, the value in 
 <var>ScrolledLeft</var> is updated to apply the delta value in 
-<var>WheelDelta</var>. The position for a tool tip (or hint) is also updated 
+<var>WheelDelta</var>. The position for a tool tip (or hint) is also updated
 using the coordinates in Mouse.
 </p>
 </descr>
@@ -31942,20 +32059,31 @@ using the coordinates in Mouse.
 </seealso>
 </element>
 <element name="TCustomTreeView.DoMouseWheelHorz.Result">
-<short/>
+<short>
+Returns <b>True</b> if the wheel message was handled in an assigned event 
+handler or internally in the method.
+</short>
 </element>
 <element name="TCustomTreeView.DoMouseWheelHorz.Shift">
-<short/>
+<short>
+Shift, Alt, or Ctrl modifier for the mouse wheel message.
+</short>
 </element>
 <element name="TCustomTreeView.DoMouseWheelHorz.WheelDelta">
-<short/>
+<short>
+Number of "clicks" that the mouse wheel was moved.
+</short>
 </element>
 <element name="TCustomTreeView.DoMouseWheelHorz.MousePos">
-<short/>
+<short>
+Coordinates for the mouse pointer when the wheel event was detected.
+</short>
 </element>
 
 <element name="TCustomTreeView.DoPaint">
-<short>Implements the Paint method for the control.</short>
+<short>
+Implements the Paint method for the control.
+</short>
 <descr>
 <p>
 <var>DoPaint</var> is a method used render the control to its canvas. It 
@@ -32259,7 +32387,7 @@ Tree node examined in the method (and possibly updated in the event handler).
 
 <element name="TCustomTreeView.GetSelectedIndex">
 <short>
-Gets the index for the image used a selected node in the control.
+Gets the index for the image used for a selected tree node on the control.
 </short>
 <descr>
 <p>
@@ -32687,8 +32815,10 @@ set to <b>Nil</b> when the component is removed from the class instance.
 <short>Renders the tree view control.</short>
 <descr>
 <p>
-Calls DoPaint to render the tree nodes, scroll bars, and decorations for the 
-control.
+<var>Paint</var> is an overridden method in <var>TCustomTreeView</var>. It 
+calls the <link id="TCustomTreeView.DoPaint">DoPaint</link> method to update 
+the control state, default item height, borders, and scroll bars before 
+painting the nodes on the control.
 </p>
 </descr>
 <seealso>
@@ -32994,9 +33124,10 @@ object.
 <short>Turns accessibility on or off to speed up the control.</short>
 <descr>
 <p>
-This property is provided for the situation where a tree view contains a huge 
-number of items, lets say 10,000+. In this case accessibility might slow the 
-tree down, so turning this property off might make things faster.
+AccessibilityOn is provided for the situation where a tree view contains a 
+huge number of items, lets say 10,000+. In this case, accessibility might 
+affect the responsiveness and drawing performance for the tree view control. 
+Setting AccessibilityOn to <b>False</b> will likely make things faster.
 </p>
 </descr>
 <seealso/>
@@ -33468,28 +33599,174 @@ There is no example use case in either LCL or packages installed in the IDE.
 
 <element name="TCustomTreeView.OnCustomDraw">
 <short>
-<var>OnCustomDraw</var> - event handler for custom drawing.
+Event handler signalled to perform custom drawing for the tree view control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>OnCustomDraw</var> is a <var>TTVCustomDrawEvent</var> property with the 
+event handler signalled to perform custom drawing for the tree view control. 
+It is signalled (when assigned) from the CustomDraw method, and is used to 
+perform custom drawing for the control in the cdPrePaint drawing stage. It 
+occurs during execution of the Paint method.
+</p>
+<p>
+An application can implement OnCustomDraw to perform custom drawing for the 
+overall control including borders and decorations not related to nodes on the 
+tree view control.
+</p>
+<p>
+Arguments to the event handler include:
+</p>
+<dl>
+<dt>Sender</dt>
+<dd>
+The tree view control for the event notification.
+</dd>
+<dt>ARect</dt>
+<dd>
+The TRect instance with the bounds for the control on its canvas.
+</dd>
+<dt>DefaultDraw</dt>
+<dd>
+Boolean variable argument which indicates if Paint processing should be 
+continued on return from the handler routine. Set DefaultDraw to <b>True</b> 
+in the handler routine to enable drawing of the tree nodes, fold indicators, 
+insert marks, and the unused area on the control. Set DefaultDraw to 
+<var>False</var> to exit the paint process.
+</dd>
+</dl>
+<p>
+The handler routine should use the Canvas for the control to perform drawing 
+operations on the specified bounds rectangle.
+</p>
+<p>
+Use OnAdvancedCustomDraw to perform additional draw operations needed before 
+the tree nodes on the control is painted.
+</p>
+<p>
+Use OnCustomDrawItem and OnAdvancedCustomDrawItem to perform custom drawing 
+for tree nodes on the control. Use OnCustomDrawArrow to perform custom drawing 
+for expand/collapse indicators for tree nodes on the control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTreeView.Paint"/>
+<link id="TCustomTreeView.DoPaint"/>
+<link id="TCustomTreeView.CustomDraw"/>
+<link id="TCustomTreeView.OnAdvancedCustomDraw"/>
+<link id="TCustomTreeView.OnCustomDrawItem"/>
+<link id="TCustomTreeView.OnAdvancedCustomDrawItem"/>
+<link id="TCustomTreeView.OnCustomDrawArrow"/>
+<link id="TCustomDrawStage"/>
+<link id="TCustomDrawTarget"/>
+</seealso>
 </element>
 
 <element name="TCustomTreeView.OnCustomDrawItem">
 <short>
-<var>OnCustomDrawItem</var> - event handler for custom drawing item.
+Event handler signalled to custom draw an item (tree node) on the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>OnCustomDrawItem</var> is a <var>TTVCustomDrawItemEvent</var> property 
+with the event handler signalled to custom-draw the tree nodes displayed on 
+the tree view control. OnCustomDrawItem is signalled from the CustomDrawItem 
+method, and occurs during processing performed in the PaintNode method for the 
+control.
+</p>
+<p>
+Arguments to the event handler include:
+</p>
+<dl>
+<dt>Sender</dt>
+<dd>
+The tree view control for the event notification.
+</dd>
+<dt>Node</dt>
+<dd>
+The TTreeNode instance with the node custom-drawn in the handler routine.
+</dd>
+<dt>State</dt>
+<dd>
+TCustomDrawState value with the drawing state for the tree node.
+</dd>
+<dt>DefaultDraw</dt>
+<dd>
+Variable Boolean argument used to indicate whether the PaintNode process can 
+continue. Set to <b>False</b> in the handler routine to halt further paint 
+operations for the tree node.
+</dd>
+</dl>
+<p>
+If either OnCustomDrawItem or OnAdvancedCustomDrawItem are assigned, the 
+IsCustomDrawn method returns <b>True</b>.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTreeView.CustomDrawItem"/>
+<link id="TCustomTreeView.OnAdvancedCustomDrawItem"/>
+<link id="TCustomTreeView.IsCustomDrawn"/>
+<link id="TCustomTreeView.DoPaintNode"/>
+<link id="TCustomTreeView.PaintNode"/>
+<link id="TCustomTreeView.Paint"/>
+<link id="TTreeNode"/>
+<link id="TTVCustomDrawItemEvent"/>
+</seealso>
 </element>
 
 <element name="TCustomTreeView.OnCustomDrawArrow">
 <short>
-Event handler signalled to custom draw expand or collapse indicators.
+Event handler signalled to custom draw expand / collapse (fold) indicators 
+for a tree node.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>OnCustomDrawArrow</var> is a <var>TTVCustomDrawArrowEvent</var> property 
+with the event handler signalled to custom-draw the expand/collapse (fold) 
+indicator for a node on the tree view control.
+</p>
+<p>
+Arguments to the event handler include:
+</p>
+<dl>
+<dt>Sender</dt>
+<dd>
+The tree view control for the event notification.
+</dd>
+<dt>ARect</dt>
+<dd>
+TRect instance with the bounds on the drawing area where the indicator should 
+be drawn.
+</dd>
+<dt>ACollapsed</dt>
+<dd>
+Boolean value which indicates which indicator (expanded or collapsed) to to 
+draw on the tree view control. <b>True</b> indicates that the collapsed arrow 
+should be drawn.
+</dd>
+</dl>
+<p>
+Use the Canvas for the control to perform drawing operations in the handler 
+routine.
+</p>
+<p>
+OnCustomDrawArrow is signalled (when assigned) from the DoPaintNode method. If 
+OnCustomDrawArrow has not been assigned, the default drawing routines in the 
+class are used to paint the indicator using the style in the ExpansSignType, 
+ExpansSignSize, ExpansSignWidth, and ExpansSignColor properties.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTreeView.DoPaintNode"/>
+<link id="TCustomTreeView.ExpandSignType"/>
+<link id="TCustomTreeView.ExpandSignSize"/>
+<link id="TCustomTreeView.ExpandSignWidth"/>
+<link id="TCustomTreeView.ExpandSignColor"/>
+<link id="TTVCustomDrawArrowEvent"/>
+</seealso>
 </element>
 
+<!-- WIP: Here -->
 <element name="TCustomTreeView.OnDeletion">
 <short>
 Event handler signalled when a node is deleted from the node tree.
@@ -33500,8 +33777,7 @@ Event handler signalled when a node is deleted from the node tree.
 
 <element name="TCustomTreeView.OnEdited">
 <short>
-<var>OnEdited</var> - specialized event handler when the TreeView has been 
-edited.
+Event handler signalled when the tree view control has been edited.
 </short>
 <descr/>
 <seealso/>
@@ -33509,8 +33785,8 @@ edited.
 
 <element name="TCustomTreeView.OnEditing">
 <short>
-<var>OnEditing</var> - specialized event handler while a TreeView is being 
-edited.
+Event handler signalled when editing becomes active for a node on the tree 
+view control.
 </short>
 <descr/>
 <seealso/>
@@ -33526,8 +33802,7 @@ Event handler signalled when EndEditing is called for the control.
 
 <element name="TCustomTreeView.OnExpanded">
 <short>
-<var>OnExpanded</var> - specialized event handler when a TreeView has been 
-expanded.
+Event handler signalled when a node on the tree view control has been expanded.
 </short>
 <descr/>
 <seealso/>
@@ -33535,7 +33810,7 @@ expanded.
 
 <element name="TCustomTreeView.OnExpanding">
 <short>
-<var>OnExpanding</var> - specialized event handler while a TreeView is being 
+Event handler signalled when a node on the tree view control prior is being 
 expanded.
 </short>
 <descr/>
@@ -33544,7 +33819,8 @@ expanded.
 
 <element name="TCustomTreeView.OnGetImageIndex">
 <short>
-<var>OnGetImageIndex</var> - event handler for finding the index of an image.
+Event handler signalled to get the ordinal position for the image displayed 
+for a tree node on the control.
 </short>
 <descr/>
 <seealso/>
@@ -33552,8 +33828,8 @@ expanded.
 
 <element name="TCustomTreeView.OnGetSelectedIndex">
 <short>
-<var>OnGetSelectedIndex</var> - event handler for finding index of selected 
-item.
+Event handler signalled to get the ordinal position for the image displayed 
+for a selected node on the tree view control.
 </short>
 <descr/>
 <seealso/>
@@ -33694,7 +33970,8 @@ Right-click also selects tree-item. Else it only calls PopupMenu.
 
 <element name="TCustomTreeView.RowSelect">
 <short>
-When a tree-item is selected, paint selection background with full width.
+Paints the selection background over the full width of the control for a 
+selected tree node.
 </short>
 <descr/>
 <seealso/>
@@ -33744,8 +34021,8 @@ Enables an expand/collapse (fold/unfold) icon for nodes with child nodes.
 
 <element name="TCustomTreeView.ShowLines">
 <short>
-Enables the horizontal and vertical lines which join nodes in the tree 
-hierarchy.
+Enables or disables the horizontal and vertical lines which join nodes in the 
+tree hierarchy.
 </short>
 <descr/>
 <seealso/>
@@ -33753,7 +34030,7 @@ hierarchy.
 
 <element name="TCustomTreeView.ShowRoot">
 <short>
-Enables drawing of the root node indicator for the tree view control.
+Enables or disables drawing the root node indicator for the tree view control.
 </short>
 <descr/>
 <seealso/>
@@ -33770,7 +34047,7 @@ view control.
 
 <element name="TCustomTreeView.SortType">
 <short>
-Allows items to be sorted by caption, by Data property, or both.
+Allows items to be sorted by caption, by the Data property, or both.
 </short>
 <descr>
 <p>
@@ -33784,11 +34061,41 @@ ParentNode.CustomSort(nil) to sort only the child nodes of a single node.
 
 <element name="TCustomTreeView.ToolTips">
 <short>
-Show tooltip (hint) for a tree-item when the item is too long to fit by width 
-and mouse is over it.
+Indicates whether tool tips (hints) are enabled for nodes on the tree view 
+control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>ToolTips</var> is a <var>Boolean</var> property which indicates whether 
+tool tips (pop-up hints) are enabled for nodes on the tree view control. A 
+tool tip is activated when the mouse pointer is hovered over a node. The text 
+displayed on the tool tip is set to the Text property in the TTreeNode 
+instance.
+</p>
+<p>
+ToolTips is a convenience property; it indicates whether tvoToolTips has been 
+included in the Options for the control. The default value for the property is 
+True. Changing the property value causes Options to be updated to include or 
+exclude tvoToolTips in the set type.
+</p>
+<p>
+ToolTips is used (indirectly) in methods which respond to mouse or mouse wheel 
+events like: DoMouseWheel, DoMouseWheelHorz, and MouseMove.
+</p>
+<p>
+ToolTips is temporarily disabled when a drag operation is started for a node 
+on the tree view control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTreeView.Options"/>
+<link id="TCustomTreeView.DoMouseWheel"/>
+<link id="TCustomTreeView.DoMouseWheelHorz"/>
+<link id="TCustomTreeView.MouseMove"/>
+<link id="TTreeNode.Text"/>
+<link id="TTreeViewOptions"/>
+<link id="TTreeViewOption"/>
+</seealso>
 </element>
 
 <element name="TCustomTreeView.Create">
