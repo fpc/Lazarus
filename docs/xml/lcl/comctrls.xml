@@ -5904,92 +5904,129 @@ TCustomTabControl, where it is defined as a <var>String</var>.
 <seealso/>
 </element>
 <element name="TTabControlStrings.GetTabIndex.Result">
-<short/>
+<short>
+Ordinal position for the selected tab sheet on the control.
+</short>
 </element>
 
 <element name="TTabControlStrings.SetHotTrack">
 <short>
-<var>SetHotTrack</var> - specifies the status of HotTrack.</short>
+Sets the value for the HotTrack property.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTabControlStrings.HotTrack"/>
+</seealso>
 </element>
 <element name="TTabControlStrings.SetHotTrack.AValue">
-<short/>
+<short>
+New value for the HotTrack property.
+</short>
 </element>
 
 <element name="TTabControlStrings.SetImages">
 <short>
-<var>SetImages</var> - specifies the list of images to be used.</short>
+Sets the value for the Images property.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTabControlStrings.Images"/>
+</seealso>
 </element>
 <element name="TTabControlStrings.SetImages.AValue">
-<short/>
+<short>
+New value for the Images property.
+</short>
 </element>
 
 <element name="TTabControlStrings.SetMultiLine">
 <short>
-<var>SetMultiLine</var> - specifies whether multi-line captions are 
-used.</short>
+Sets the value for the MultiLine property.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTabControlStrings.MultiLine"/>
+</seealso>
 </element>
 <element name="TTabControlStrings.SetMultiLine.AValue">
-<short/>
+<short>
+New value for the MultiLine property.
+</short>
 </element>
 
 <element name="TTabControlStrings.SetMultiSelect">
 <short>
-<var>SetMultiSelect</var> - specifies whether MultiSelection is 
-available.</short>
+Sets the value for the MultiSelect property.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTabControlStrings.MultiSelect"/>
+</seealso>
 </element>
 <element name="TTabControlStrings.SetMultiSelect.AValue">
-<short/>
+<short>
+New value for the MultiSelect property.
+</short>
 </element>
 
 <element name="TTabControlStrings.SetOwnerDraw">
 <short>
-<var>SetOwnerDraw</var> - specifies whether an owner-derived drawing can be 
-used.</short>
+Sets the value for the OwnerDraw property.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTabControlStrings.OwnerDraw"/>
+</seealso>
 </element>
 <element name="TTabControlStrings.SetOwnerDraw.AValue">
-<short/>
+<short>
+New value for the OwnerDraw property.
+</short>
 </element>
 
 <element name="TTabControlStrings.SetRaggedRight">
 <short>
-<var>SetRaggedRight</var> - specifies whether ragged-right (as opposed to 
-right-justified) alignment is to be used.</short>
+Sets the value for the RaggedRight property.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTabControlStrings.RaggedRight"/>
+</seealso>
 </element>
 <element name="TTabControlStrings.SetRaggedRight.AValue">
-<short/>
+<short>
+New value for the RaggedRight property.
+</short>
 </element>
 
 <element name="TTabControlStrings.SetScrollOpposite">
 <short>
-<var>SetScrollOpposite</var> - specifies whether scroll bars are to operate 
-in the opposite sense to normal.</short>
+Sets the value for the ScrollOpposite property.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTabControlStrings.ScrollOpposite"/>
+</seealso>
 </element>
 <element name="TTabControlStrings.SetScrollOpposite.AValue">
-<short/>
+<short>
+New value for the ScrollOpposite property.
+</short>
 </element>
 
 <element name="TTabControlStrings.SetTabIndex">
 <short>
-<var>SetTabIndex</var> - specifies an index value for a tab.</short>
+Sets the value for the TabIndex property.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTabControlStrings.TabIndex"/>
+</seealso>
 </element>
 <element name="TTabControlStrings.SetTabIndex.AValue">
-<short/>
+<short>
+New value for the TabIndex property.
+</short>
 </element>
 
 <element name="TTabControlStrings.Create">
@@ -6018,28 +6055,48 @@ all <b>False</b>; Tab height and width to zero
 
 <element name="TTabControlStrings.GetHitTestInfoAt">
 <short>
-<var>GetHitTestInfoAt</var> - returns the results of a hit test at the 
-specified location X, Y.</short>
-<descr/>
-<seealso/>
+Returns hit test results for the specified location at X and Y.
+</short>
+<descr>
+<p>
+<var>GetHitTestInfoAt</var> always returns an empty THitTests set in 
+<var>TTabControlStrings</var>.
+</p>
+</descr>
+<seealso>
+<link id="THitTest"/>
+<link id="THitTests"/>
+</seealso>
 </element>
 <element name="TTabControlStrings.GetHitTestInfoAt.Result">
-<short/>
+<short>
+Set of THitTest values for the specified mouse pointer coordinates.
+</short>
 </element>
 <element name="TTabControlStrings.GetHitTestInfoAt.X">
-<short/>
+<short>
+Horizontal coordinate checked in the method.
+</short>
 </element>
 <element name="TTabControlStrings.GetHitTestInfoAt.Y">
-<short/>
+<short>
+Vertical coordinate checked in the method.
+</short>
 </element>
 
 <element name="TTabControlStrings.GetSize">
 <short>Gets the size for the String displayed on a tab control.</short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>GetSize</var> is an abstract virtual method in 
+<var>TTabControlStrings</var>. It must be implemented in a descendent class.
+</p>
+</descr>
 </element>
 <element name="TTabControlStrings.GetSize.Result">
-<short/>
+<short>
+Returns a set of THitTest result values for the specified location.
+</short>
 </element>
 
 <element name="TTabControlStrings.IndexOfTabAt">
@@ -7775,7 +7832,7 @@ object is drawn.
 <element name="TCustomDrawStage">
 <short>
 <var>TCustomDrawStage</var> a series of constants to define the drawing 
-stages.
+stages for custom-drawn controls.
 </short>
 <descr/>
 </element>
@@ -32457,31 +32514,86 @@ position.
 </element>
 
 <element name="TCustomTreeView.MouseUp">
-<short>Handles mouse up events for the control.</short>
-<descr/>
+<short>
+Handles a mouse up event for the control.
+</short>
+<descr>
+<p>
+<var>MouseUp</var> is an overridden method in <var>TCustomTreeView</var> used 
+to perform actions needed when a mouse up event occurs on the tree view 
+control. In TCustomTreeView, it ensures that a visible hint window is closed 
+before handling the mouse up event. It calls the inherited method to signal 
+the OnMouseUp event handler (when assigned).
+</p>
+<p>
+If PopupMenu is assigned, a right-shifted right mouse button click causes 
+the method to be exited to process the context menu request. (Nota bene: 
+RShift + RButton specifically; the code does not handle LShift + RButton.)
+</p>
+<p>
+For a Left mouse button up event, the control tries to select the tree node 
+under the pointer or toggle the editor state on a already selected tree node. 
+Use ReadOnly to enable or disable the tree node editor when the mouse up event 
+is handled.
+</p>
+<p>
+Values in the States property are updated prior to exiting from the method.
+</p>
+</descr>
 <seealso>
 <link id="#lcl.controls.TControl.MouseUp">TControl.MouseUp</link>
 </seealso>
 </element>
 <element name="TCustomTreeView.MouseUp.Button">
-<short/>
+<short>
+Mouse button for the mouse up event.
+</short>
 </element>
 <element name="TCustomTreeView.MouseUp.Shift">
-<short/>
+<short>
+Shift, Ctrl, or Alt modifier for the mouse up event.
+</short>
 </element>
 <element name="TCustomTreeView.MouseUp.X">
-<short/>
+<short>
+Horizontal coordinate for the mouse pointer in the mouse up event.
+</short>
 </element>
 <element name="TCustomTreeView.MouseUp.Y">
-<short/>
+<short>
+Vertical coordinate for the mouse pointer in the mouse up event.
+</short>
 </element>
 
 <element name="TCustomTreeView.MouseLeave">
 <short>
-Performs actions needed when the mouse cursor leaves the control.
+Performs actions needed when the mouse pointer leaves the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>MouseLeave</var> is an overridden method in <var>TCustomTreeView</var>.
+</p>
+<p>
+It ensures that States is updated to remove click or editing flags included in 
+the flag values. If a hint window is visible for the control, it is hidden. If 
+HotTrack has been enabled and included in the Options for the control, the 
+internal member used to track the hovered tree node is reset. Cursor is 
+restored to the default cursor shape and the control is redrawn.
+</p>
+<p>
+MouseLeave calls the inherited method prior to exit to signal the OnMouseLeave 
+event handler (when assigned).
+</p>
+</descr>
+<seealso>
+<link id="TCustomTreeView.States"/>
+<link id="TCustomTreeView.Options"/>
+<link id="TCustomTreeView.HotTrack"/>
+<link id="TTreeViewOptions"/>
+<link id="TTreeViewOption"/>
+<link id="#lcl.controls.TControl.Cursor">TControl.Cursor</link>
+<link id="#lcl.controls.TControl.MouseUp">TControl.MouseLeave</link>
+</seealso>
 </element>
 
 <element name="TCustomTreeView.NodeChanged">
@@ -32489,8 +32601,18 @@ Performs actions needed when the mouse cursor leaves the control.
 Performs actions when a property value in the specified tree node has been 
 changed.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Signals the OnNodeChanged event handler (when assigned) for the specified tree 
+node and change reason. NodeChanged is called when a tree node in Items calls 
+its Changed method.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTreeView.OnNodeChanged"/>
+<link id="TTreeNodeChangeReason"/>
+<link id="TTreeNode.Changed"/>
+</seealso>
 </element>
 <element name="TCustomTreeView.NodeChanged.Node">
 <short>Tree node with the changed property value.</short>
@@ -32946,25 +33068,31 @@ node when the property is changed.
 
 <element name="TCustomTreeView.HotTrack">
 <short>
-Additionally highlight/underline tree-item when mouse is over it.
+Enables or disables highlight / underline drawing styles on a tree item when 
+the mouse is hovered over it.
 </short>
 <descr/>
 <seealso>
+<link id="TCustomTreeView.Options"/>
 <link id="#lcl.comctrls.TCustomListview.HotTrack">TCustomListView.HotTrack</link>
 </seealso>
 </element>
 
 <element name="TCustomTreeView.HotTrackColor">
 <short>
-Font color used for the text in a tree node when hot tracking is enabled.
+Font color used to draw the text on a hovered tree node when hot tracking is 
+enabled.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCustomTreeView.Options"/>
+<link id="TCustomTreeView.HotTrack"/>
+</seealso>
 </element>
 
 <element name="TCustomTreeView.DisabledFontColor">
 <short>
-Font color used for tree nodes when the tree view is not enabled.
+Font color used for a tree node when the tree view or the node is not enabled.
 </short>
 <descr>
 <p>
@@ -32976,11 +33104,12 @@ The default value for the property is <var>clGrayText</var>.
 
 <element name="TCustomTreeView.Indent">
 <short>
-Size in pixels by which each nested branching level is to be indented.
+Number of pixels used to indent branch levels (child nodes) on the tree view 
+control.
 </short>
 <descr>
 <p>
-Use 0 for auto-sized value.
+Use 0 to auto-size the Indent value.
 </p>
 </descr>
 <seealso/>
@@ -33030,8 +33159,7 @@ Use <var>ClearMultiSelection</var> to remove all existing nodes in Selections.
 
 <element name="TCustomTreeView.OnAddition">
 <short>
-Event handler signalled when a tree node is added to the tree node Items in 
-the control.
+Event handler signalled when a tree node is added to the Items in the tree view control.
 </short>
 <descr>
 <p>
@@ -33107,10 +33235,26 @@ drawing item.
 
 <element name="TCustomTreeView.OnChange">
 <short>
-<var>OnChange</var> - specialized event handler for a change in the TreeView.
+Event handler for a change notification in the tree view control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>OnChange</var> is a <var>TTVChangedEvent</var> property with the event 
+handler signalled when a new tree node is selected on the tree view control.
+</p>
+<p>
+It is called from the Change method. It occurs when the change timer is 
+triggered while getting accessibility object information for a newly selected 
+node on the tree view control. The Sender argument contains the tree view 
+control for the change notification. The Node argument indicates the tree node 
+for the change notification.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTreeView.Change"/>
+<link id="TCustomTreeView.DoSelectionChanged"/>
+<link id="TTVChangedEvent"/>
+</seealso>
 </element>
 
 <element name="TCustomTreeView.OnChanging">
@@ -33142,29 +33286,123 @@ value is assigned to the Selection property.
 
 <element name="TCustomTreeView.OnCollapsed">
 <short>
-<var>OnCollapsed</var> - specialized event handler when part of the tree is 
-collapsed.
+Event handler signalled when a tree node has been collapsed on the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>OnCollapsed</var> is a TTVExpandedEvent property with the event handler 
+signalled when a tree node has been collapsed on the tree view control. It 
+allows the application to perform actions needed when a tree node has been 
+collapsed - whether by using the fold indicator on the tree view or by setting 
+the Expanded property in a TTreeNode to <b>False</b>.
+</p>
+<p>
+The Sender argument contains the tree view control for the event notification.
+</p>
+<p>
+The Node argument contains the collapsed tree node for the event.
+</p>
+<p>
+OnCollapsed is signalled from the Collapse method, and occurs after the 
+visibility and position in scroll bars have been updated for the control.
+</p>
+<p>
+Use OnCollapsing to perform actions needed immediately prior to setting 
+Expanded to <b>False</b> in a TTreeNode instance.
+</p>
+<p>
+Use OnExpanded to perform actions needed when a tree node has been expanded on 
+the tree view control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTreeView.Collapse"/>
+<link id="TCustomTreeView.CanCollapse"/>
+<link id="TCustomTreeView.OnCollapsing"/>
+<link id="TCustomTreeView.Expand"/>
+<link id="TCustomTreeView.OnExpanded"/>
+<link id="TTreeNode.Expanded"/>
+</seealso>
 </element>
 
 <element name="TCustomTreeView.OnCollapsing">
 <short>
-<var>OnCollapsing</var> - specialized event handler while part of the tree is 
-being collapsed.
+Event handler signalled prior to collapsing a node on the tree view control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>OnCollapsing</var> is a <var>TTVCollapsingEvent</var> property with the 
+event handler signalled prior to collapsing a node on the tree view control.
+</p>
+<p>
+The Sender argument is the tree view control for the event notification.
+</p>
+<p>
+Node contains the TTreeNode instance to be collapsed.
+</p>
+<p>
+AllowCollapse is a variable argument which indicates if the tree node can (or 
+should) be collapsed on the tree view control.
+</p>
+<p>
+OnCollapsing is signalled from the CanCollapse method (when assigned), and 
+occurs when the Expanded property in a tree node is changing from <b>True</b> 
+to <b>False</b>. The value returned in AllowCollapse is used as the return 
+value for the CanCollapse method. Setting AllowCollapse to <b>False</b> in the 
+handler routine prevents the tree node from being collapsed.
+</p>
+<p>
+Use OnCollapsed to perform actions needed after a tree node has been collapsed 
+on the control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTreeView.CanCollapse"/>
+<link id="TCustomTreeView.OnCollapsed"/>
+<link id="TTVCollapsingEvent"/>
+<link id="TTreeNode.Expanded"/>
+</seealso>
 </element>
 
 <element name="TCustomTreeView.OnCompare">
 <short>
-<var>OnCompare</var> - specialized event handler for comparisons within the 
-TreeView.
+Event handler signalled to compare and sort tree nodes in their default order.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>OnCompare</var> is a <var>TTVCompareEvent</var> property with the event 
+handler signalled to compare nodes on the tree view control. It is signalled 
+(when assigned) to determine the sort order for tree nodes in the 
+DefaultTreeViewSort method. Arguments to the event handler include:
+</p>
+<dl>
+<dt>Sender</dt>
+<dd>
+The tree view control for the event.
+</dd>
+<dt>Node1, Node2</dt>
+<dd>
+The tree nodes compared in the handler routine.
+</dd>
+<dt>Compare</dt>
+<dd>
+An Integer value with the relative sort order for the compared nodes. &lt;0 
+indicates that Node1 comes before Node2 in the sort order. &lt;0 indicates 
+that Node1 comes after Node2 in the sort order. 0 means that Node1 and Node2 
+have the same value in the sort order.
+</dd>
+</dl>
+<p>
+If OnCompare is not assigned, the sort order for tree nodes is determined 
+using the AnsiCompareStr (on Windows) or CompareStr (on UNIX-like platforms) 
+routines.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTreeView.DefaultTreeViewSort"/>
+<link id="TCustomTreeView.CustomSort"/>
+<link id="TCustomTreeView.AlphaSort"/>
+</seealso>
 </element>
 
 <element name="TCustomTreeView.OnCreateNodeClass">
@@ -33172,9 +33410,42 @@ TreeView.
 Event handler signalled to get the class reference used to create new tree 
 nodes.
 </short>
-<descr/>
+<descr>
+<p>
+<var>OnCreateNodeClass</var> is signalled (when assigned) when the CreateNode 
+method is executed for the tree view control.
+</p>
+<p>
+OnCreateNodeClass occurs after the OnCustomCreateItem event handler has been 
+signalled to get a TTreeNode for the purpose. If its return value is 
+<b>Nil</b>, DoCreateNodeClass is called to signal OnCreateNodeClass. It is not 
+signalled if a return value was assigned in the OnCustomCreateItem handler 
+routine.
+</p>
+<p>
+Sender contains the tree view control for the event handler.
+</p>
+<p>
+NodeClass is used to return the class reference needed to create a new node 
+for the control.
+</p>
+<p>
+A new instance of the class type is created and added to the node collection 
+in Items.
+</p>
+</descr>
 <seealso>
+<link id="TCustomTreeView.CreateNode"/>
 <link id="TCustomTreeView.DoCreateNodeClass"/>
+<link id="TCustomTreeView.Items"/>
+<link id="TCustomTreeView.OnCustomCreateItem"/>
+<link id="TTreeNodes.AddNode"/>
+<link id="TTreeNodes.AddObject"/>
+<link id="TTreeNodes.AddChildObject"/>
+<link id="TTreeNodes.AddObjectFirst"/>
+<link id="TTreeNodes.AddChildObjectFirst"/>
+<link id="TTreeNodes.InternalAddObject"/>
+<link id="TTreeNode"/>
 </seealso>
 </element>
 
@@ -33183,7 +33454,16 @@ nodes.
 <var>OnCustomCreateItem</var> - event handler for custom item creation.
 </short>
 <descr/>
-<seealso/>
+<notes>
+<note>
+There is no example use case in either LCL or packages installed in the IDE.
+</note>
+</notes>
+<seealso>
+<link id="TCustomTreeView.CreateNode"/>
+<link id="TCustomTreeView.Items"/>
+<link id="TCustomTreeView.OnCreateNodeClass"/>
+</seealso>
 </element>
 
 <element name="TCustomTreeView.OnCustomDraw">
@@ -35308,7 +35588,8 @@ expanded state of a TTreeView. The nodes are identified by their Text
 property.
 </p>
 <p>Usage example:</p>
-<code>// save old expanded state
+<code>
+// save old expanded state
 OldExpanded := TTreeNodeExpandedState.Create(ATreeView);
 // ... change a lot of nodes ...
 // restore old expanded state
