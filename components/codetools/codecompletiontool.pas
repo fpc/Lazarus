@@ -2033,6 +2033,8 @@ function TCodeCompletionCodeTool.CompleteEventAssignment(CleanCursorPos,
     while (CleanCursorPos<SrcLen)
     and (Src[CleanCursorPos] in [':','=',' ',#9]) do
       inc(CleanCursorPos);
+    if (CleanCursorPos<=SrcLen) and (Src[CleanCursorPos]='@') then
+      inc(CleanCursorPos);
     GetIdentStartEndAtPosition(Src,CleanCursorPos,
                                UserEventAtom.StartPos,UserEventAtom.EndPos);
     MoveCursorToAtomPos(UserEventAtom);
@@ -2167,15 +2169,14 @@ function TCodeCompletionCodeTool.CompleteEventAssignment(CleanCursorPos,
     end;
 
     RValue:=AnEventName+';';
-    if (AddrOperatorPos<1)
-    and not (Scanner.CompilerMode in [cmDelphi,cmDELPHIUNICODE])
-    then
+    if not (Scanner.CompilerMode in [cmDelphi,cmDELPHIUNICODE]) then
       RValue:='@'+RValue;
-    if (AddrOperatorPos>0) or (UserEventAtom.StartPos>0) then begin
-      // left := |SomeName  -> keep assignment and space behind
+    if AddrOperatorPos>0 then begin
+      // left := |@SomeName  -> keep value and space behind
       StartInsertPos:=AddrOperatorPos;
-      if StartInsertPos<1 then
-        StartInsertPos:=UserEventAtom.StartPos;
+    end else if UserEventAtom.StartPos>0 then begin
+      // left := |SomeName  -> keep value and space behind
+      StartInsertPos:=UserEventAtom.StartPos;
     end else begin
       // left :=|
       RValue:=':='+RValue;
@@ -2277,7 +2278,12 @@ begin
         {$ENDIF}
         // create a nice event name
         FullEventName:=CreateEventFullName(AClassNode,UserEventAtom,PropVarAtom);
-        if FullEventName='' then exit;
+        {$IFDEF VerboseCompleteEventAssign}
+        DebugLn('  CompleteEventAssignment: FullEventName="',FullEventName,'"');
+        {$ENDIF}
+        if FullEventName='' then begin
+          exit;
+        end;
 
         // add published method and method body and right side of assignment
         if not AddMethodCompatibleToProcType(AClassNode,FullEventName,ProcContext,

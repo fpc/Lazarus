@@ -44,6 +44,7 @@ type
     procedure TestCompleteMethodSignature_Without_Parentheses;
     procedure TestCompleteEventAssignmentDelphi;
     procedure TestCompleteEventAssignmentObjFPC;
+    procedure TestCompleteEventAssignmentObjFPC_AtName;
     procedure TestCompleteClass_Unit_NewClass;
     procedure TestCompleteClass_Unit_NewClass_BehindOldClass;
     procedure TestCompleteClass_Unit_NewClass_InFrontOfOldClass;
@@ -1003,6 +1004,56 @@ begin
     ,'procedure TBird.Fly;'
     ,'begin;'
     ,'  Eagle.OnClick:=@EagleClick;'
+    ,'end;'
+    ,'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteEventAssignmentObjFPC_AtName;
+begin
+  Test('TestCompleteEventAssignmentDelphi',
+    ['unit SomeUnit;'
+    ,'{$MODE ObjFPC}'
+    ,'interface'
+    ,'type'
+    ,'  TNotifyEvent = procedure(Sender: TObject) of object;'
+    ,'  TBird = class'
+    ,'  private'
+    ,'  public'
+    ,'    Eagle: TBird;'
+    ,'    OnClick: TNotifyEvent;'
+    ,'    procedure Fly;'
+    ,'  end;'
+    ,'implementation'
+    ,'procedure TBird.Fly;'
+    ,'begin;'
+    ,'  Eagle.OnClick:=@OnEagled'
+    ,'end;'
+    ,'end.'],
+    16,18,
+    ['unit SomeUnit;'
+    ,'{$MODE ObjFPC}'
+    ,'interface'
+    ,'type'
+    ,'  TNotifyEvent = procedure(Sender: TObject) of object;'
+    ,'  { TBird }'
+    ,'  TBird = class'
+    ,'  private'
+    ,'    procedure OnEagled(Sender: TObject);'
+    ,'  public'
+    ,'    Eagle: TBird;'
+    ,'    OnClick: TNotifyEvent;'
+    ,'    procedure Fly;'
+    ,'  end;'
+    ,'implementation'
+    ,''
+    ,'procedure TBird.OnEagled(Sender: TObject);'
+    ,'begin'
+    ,''
+    ,'end;'
+    ,''
+    ,'procedure TBird.Fly;'
+    ,'begin;'
+    ,'  Eagle.OnClick:=@OnEagled;'
     ,'end;'
     ,'end.']);
 end;
