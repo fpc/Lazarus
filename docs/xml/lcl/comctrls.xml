@@ -33707,7 +33707,7 @@ IsCustomDrawn method returns <b>True</b>.
 <link id="TCustomTreeView.OnAdvancedCustomDrawItem"/>
 <link id="TCustomTreeView.IsCustomDrawn"/>
 <link id="TCustomTreeView.DoPaintNode"/>
-<link id="TCustomTreeView.PaintNode"/>
+<link id="TCustomTreeView.DoPaint"/>
 <link id="TCustomTreeView.Paint"/>
 <link id="TTreeNode"/>
 <link id="TTVCustomDrawItemEvent"/>
@@ -33752,8 +33752,8 @@ routine.
 <p>
 OnCustomDrawArrow is signalled (when assigned) from the DoPaintNode method. If 
 OnCustomDrawArrow has not been assigned, the default drawing routines in the 
-class are used to paint the indicator using the style in the ExpansSignType, 
-ExpansSignSize, ExpansSignWidth, and ExpansSignColor properties.
+class are used to paint the indicator using the style in the ExpandSignType, 
+ExpandSignSize, ExpandSignWidth, and ExpandSignColor properties.
 </p>
 </descr>
 <seealso>
@@ -33766,52 +33766,224 @@ ExpansSignSize, ExpansSignWidth, and ExpansSignColor properties.
 </seealso>
 </element>
 
-<!-- WIP: Here -->
 <element name="TCustomTreeView.OnDeletion">
 <short>
 Event handler signalled when a node is deleted from the node tree.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>OnDeletion</var> is a <var>TTVExpandedEvent</var> property with the event 
+handler signalled when a tree node is deleted from the node tree in the Items 
+property. It is signalled (when assigned) from the Delete method. It occurs 
+when a TTreeNode instance in Items is freed.
+</p>
+<p>
+Arguments to handler routine include:
+</p>
+<dl>
+<dt>Sender</dt>
+<dd>
+The object instance (TCustomTreeView) for the event notification.
+</dd>
+<dt>Node</dt>
+<dd>
+The TTreeNode instance which is being deleted.
+</dd>
+</dl>
+<p>
+OnDeletion occurs after the States property in the tree view has been updated 
+to include nsDeleting, and before the TTreeNode instance is destroyed.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTreeView.Delete"/>
+<link id="TCustomTreeView.States"/>
+<link id="TCustomTreeView.Items"/>
+<link id="TTreeNode.Destroy"/>
+</seealso>
 </element>
 
 <element name="TCustomTreeView.OnEdited">
 <short>
 Event handler signalled when the tree view control has been edited.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>OnEdited</var> is a <var>TTVEditedEvent</var> property with the event 
+handler signalled when editing has been completed for a node on the tree view 
+control.
+</p>
+<p>
+OnEdited is signalled (when assigned) from the EndEditing method, and occurs 
+when the edited text for the node is retrieved from the node editor and stored 
+in the TTreeNode instance. It allows the application to examine, update, or 
+override the value stored in the Text property for the node.
+</p>
+<p>
+Arguments to the event handler include:
+</p>
+<dl>
+<dt>Sender</dt>
+<dd>
+The object instance (TCustomTreeView) for the event.
+</dd>
+<dt>Node</dt>
+<dd>
+The TTreeNode instance for the edited value.
+</dd>
+<dt>S</dt>
+<dd>
+A String variable with the new value from the tree node editor. The handler 
+routine can assign a new value to the argument.
+</dd>
+</dl>
+<p>
+OnEditing occurs after the States property has been updated to exclude 
+tvsIsEditing from the flag values, and before the new value is stored in the 
+TTreeNode instance.
+</p>
+<p>
+Use OnEndEditing to perform actions needed when the tree node is disconnected 
+from the internal node Editor and the control is redrawn.
+</p>
+<p>
+Use OnEditing to perform actions needed when editing is started for a tree 
+node on the control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTreeView.EndEditing"/>
+<link id="TCustomTreeView.States"/>
+<link id="TCustomTreeView.OnEditingEnd"/>
+<link id="TCustomTreeView.OnEditing"/>
+<link id="TTreeNode.Text"/>
+<link id="TTVEditedEvent"/>
+</seealso>
 </element>
 
 <element name="TCustomTreeView.OnEditing">
 <short>
-Event handler signalled when editing becomes active for a node on the tree 
-view control.
+Event handler signalled to determine whether the editor can be enabled for a 
+tree node.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>OnEditing</var> is a <var>TTVEditingEvent</var> property with the event 
+handler signalled to determine whether an editor can be enabled for a node on 
+the tree view control. OnEditing is signalled (when assigned) from the CanEdit 
+method, and occurs when the BeginEditing method is called. This can be in 
+response to a key down event handled for the tree view control, or when the 
+EditText method is called for a TTreeNode instance in Items.
+</p>
+<p>
+Arguments to the event handler include:
+</p>
+<dl>
+<dt>
+Sender
+</dt>
+<dd>
+The object instance (TCustomTreeView) for the event.
+</dd>
+<dt>
+Node
+</dt>
+<dd>
+The TTreeNode instance to be edited on the control.
+</dd>
+<dt>
+AllowEdit
+</dt>
+<dd>
+A Boolean variable argument which indicates whether the node editor can be 
+enabled for the tree node. The handler routine can set AllowEdit to False to 
+prevent the node editor from being enabled.
+</dd>
+</dl>
+<p>
+Use OnEdited to perform actions needed when editing has been completed for the 
+node.
+</p>
+<p>
+Use OnEditingEnd to perform actions needed when a tree node is disconnected 
+from the node editor for the control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTreeView.CanEdit"/>
+<link id="TCustomTreeView.BeginEditing"/>
+<link id="TCustomTreeView.EndEditing"/>
+<link id="TCustomTreeView.OnEditingEnd"/>
+<link id="TCustomTreeView.KeyDown"/>
+<link id="TCustomTreeView.Options"/>
+<link id="TCustomTreeView.States"/>
+<link id="TTreeNode.EditText"/>
+</seealso>
 </element>
 
 <element name="TCustomTreeView.OnEditingEnd">
 <short>
 Event handler signalled when EndEditing is called for the control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>OnEditingEnd</var> is a <var>TTVEditingEndEvent</var> property with the 
+event handler signalled when the node editor for the tree view control is 
+deactivated or reset. It is signalled (when assigned) from the EndEditing 
+method, which occurs during node selection or scrolling and when a tree node 
+calls its EndEditing method.
+</p>
+<p>
+Arguments to the event handler include:
+</p>
+<dl>
+<dt>
+Sender
+</dt>
+<dd>
+The object instance (TCustomTreeView) for the event.
+</dd>
+<dt>
+Node
+</dt>
+<dd>
+The tree node which was edited on the control.
+</dd>
+<dt>
+Cancel
+</dt>
+<dd>
+A Boolean value which indicates if the editing is being cancelled. 
+<b>False</b> generally indicates that editing is being reset due to selection 
+or scrolling of tree nodes on the control.
+</dd>
+</dl>
+<p>
+Use OnEditingEnd to perform any action needed that result from the editing 
+action or the node editor reset.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTreeView.EndEditing"/>
+<link id="TTreeNode.EndEditing"/>
+<link id="TTVEditingEndEvent"/>
+</seealso>
 </element>
 
 <element name="TCustomTreeView.OnExpanded">
 <short>
 Event handler signalled when a node on the tree view control has been expanded.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<!-- WIP: Here -->
+</descr>
+<seealso>
+</seealso>
 </element>
 
 <element name="TCustomTreeView.OnExpanding">
 <short>
-Event handler signalled when a node on the tree view control prior is being 
-expanded.
+Event handler signalled prior to expanding a node on the tree view control.
 </short>
 <descr/>
 <seealso/>
