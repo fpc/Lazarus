@@ -33931,7 +33931,7 @@ Event handler signalled when EndEditing is called for the control.
 event handler signalled when the node editor for the tree view control is 
 deactivated or reset. It is signalled (when assigned) from the EndEditing 
 method, which occurs during node selection or scrolling and when a tree node 
-calls its EndEditing method.
+calls its EndEdit method.
 </p>
 <p>
 Arguments to the event handler include:
@@ -33965,7 +33965,7 @@ action or the node editor reset.
 </descr>
 <seealso>
 <link id="TCustomTreeView.EndEditing"/>
-<link id="TTreeNode.EndEditing"/>
+<link id="TTreeNode.EndEdit"/>
 <link id="TTVEditingEndEvent"/>
 </seealso>
 </element>
@@ -33975,9 +33975,58 @@ action or the node editor reset.
 Event handler signalled when a node on the tree view control has been expanded.
 </short>
 <descr>
-<!-- WIP: Here -->
+<p>
+<var>OnExpanded</var> is a <var>TTVExpandedEvent</var> property with the event 
+handler signalled when a node on the tree view control has been expanded. It 
+is signalled (when assigned) from the Expand method, and occurs after child 
+nodes have been displayed and scroll bars for the control have been updated. 
+Values in the States property have already been updated to indicate that a 
+node has been expanded and that visible items need to be updated.
+</p>
+<p>
+An application can implement a handler routine to perform actions needed when 
+the tree node or its children become visible on the control.
+</p>
+<p>
+Arguments for the event handler include:
+</p>
+<dl>
+<dt>
+Sender
+</dt>
+<dd>
+The object instance (TCustomTreeView) for the event.
+</dd>
+<dt>
+Node
+</dt>
+<dd>
+The TTreeNode instance with the node expanded on the tree view control.
+</dd>
+</dl>
+<p>
+Use OnExpanding to perform actions needed immediately prior to expanding a 
+node on the tree view control.
+</p>
+<p>
+Use OnCollapsing and OnCollapsed to perform actions before or after a node is 
+collapsed on the tree view control.
+</p>
 </descr>
 <seealso>
+<link id="TCustomTreeView.Expand"/>
+<link id="TCustomTreeView.OnExpanding"/>
+<link id="TCustomTreeView.OnCollapsing"/>
+<link id="TCustomTreeView.OnCollapsed"/>
+<link id="TCustomTreeView.AutoExpand"/>
+<link id="TCustomTreeView.CanCollapse"/>
+<link id="TCustomTreeView.CanExpand"/>
+<link id="TCustomTreeView.Collapse"/>
+<link id="TCustomTreeView.States"/>
+<link id="TTVExpandedEvent"/>
+<link id="TTreeNode.Expand"/>
+<link id="TTreeNode.Expanded"/>
+<link id="TTreeNode.Visible"/>
 </seealso>
 </element>
 
@@ -33985,17 +34034,119 @@ Event handler signalled when a node on the tree view control has been expanded.
 <short>
 Event handler signalled prior to expanding a node on the tree view control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>OnExpanding</var> is a <var>TTVExpandingEvent</var> property with the 
+event handler signalled before a tree node is expanded on the tree view 
+control. It is signalled (when assigned) from the CanExpand method, and allows 
+the application to perform actions needed before the tree node is expanded to 
+reveal its child nodes.
+</p>
+<p>
+Arguments for the event handler include:
+</p>
+<dl>
+<dt>
+Sender
+</dt>
+<dd>
+Object instance (TCustomTreeView) for the event.
+</dd>
+<dt>
+Node
+</dt>
+<dd>
+The TTreeNode instance to be expanded on the tree view control.
+</dd>
+<dt>
+AllowExpansion
+</dt>
+<dd>
+Boolean variable argument which indicates whether the tree node can be 
+expanded on the control. Set AllowExpansion to <b>False</b> to prevent 
+expansion of the tree node.
+</dd>
+</dl>
+<p>
+OnExpanding is <b>not</b> signalled if the tree node does not have any 
+child nodes (HasChildren is <b>False</b>).
+</p>
+<p>
+Use OnExpanded to perform actions needed after a tree node has been expanded 
+on the control.
+</p>
+<p>
+Use OnCollapsing and OnCollapsed to perform actions before or after a node is 
+collapsed on the tree view control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTreeView.CanExpand"/>
+<link id="TCustomTreeView.NodeHasChildren"/>
+<link id="TCustomTreeView.OnExpanded"/>
+<link id="TCustomTreeView.OnCollapsing"/>
+<link id="TCustomTreeView.OnCollapsed"/>
+<link id="TTVExpandingEvent"/>
+<link id="TTreeNode.Expanded"/>
+<link id="TTreeNode.Visible"/>
+<link id="TTreeNode.HasChildren"/>
+</seealso>
 </element>
 
 <element name="TCustomTreeView.OnGetImageIndex">
 <short>
 Event handler signalled to get the ordinal position for the image displayed 
-for a tree node on the control.
+on a tree node.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>OnGetImageIndex</var> is a <var>TTVExpandedEvent</var> property with the 
+event handler signalled to get the index for an image displayed on a tree 
+node. The index is an ordinal position in the Images assigned for the control. 
+OnGetImageIndex allows a value assigned to the ImageIndex property in the tree 
+node to be overridden, or set to a default value.
+</p>
+<p>
+OnGetImageIndex is signalled (when assigned) from the DoPaintNode method. 
+It occurs when the Icon for a node is drawn using the Images for the tree view 
+control. It is not a signalled if Images has not been assigned (contains 
+<b>Nil</b>).
+</p>
+<p>
+Arguments to the event handler include:
+</p>
+<dl>
+<dt>
+Sender
+</dt>
+<dd>
+The object instance (TCustomTreeView) for the event.
+</dd>
+<dt>
+Node
+</dt>
+<dd>
+The TTreeNode instance examined in the handler routine.
+</dd>
+</dl>
+<p>
+The handler routine should select and assign a value to the ImageIndex 
+property in Node; there is no way to provide the value as a separate argument 
+or return value.
+</p>
+<p>
+Use OnGetSelectedIndex to get the image index for the a selected node on the 
+tree view control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTreeview.Images"/>
+<link id="TCustomTreeview.DoPaintNode"/>
+<link id="TCustomTreeview.DoPaint"/>
+<link id="TCustomTreeview.OnGetSelectedIndex"/>
+<link id="TTreeNode.ImageIndex"/>
+<link id="TTVExpandedEvent"/>
+</seealso>
 </element>
 
 <element name="TCustomTreeView.OnGetSelectedIndex">
@@ -34003,8 +34154,55 @@ for a tree node on the control.
 Event handler signalled to get the ordinal position for the image displayed 
 for a selected node on the tree view control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>OnGetSelectedIndex</var> is a <var>TTVExpandedEvent</var> property with 
+the event handler signalled to get the index position for the selected image 
+on a tree view node. The index is an ordinal position in the Images assigned 
+for the control.
+</p>
+<p>
+OnGetSelectedIndex is signalled (when assigned) from the OnGetSelectedIndex 
+method, and occurs when a tree node is painted to the tree view control. It 
+allows a value assigned to the SelectedIndex property in the tree node to be 
+overridden, or set to a default value. OnGetSelectedIndex is <b>not</b> 
+signalled if Images has not been assigned (is <b>Nil</b>).
+</p>
+<p>
+Arguments to the event handler include:
+</p>
+<dl>
+<dt>
+Sender
+</dt>
+<dd>
+The object instance (TCustomTreeView) for the event.
+</dd>
+<dt>
+Node
+</dt>
+<dd>
+The TTreeNode instance examined in the handler routine.
+</dd>
+</dl>
+<p>
+The handler routine should select and assign a value to the SelectedIndex 
+property in Node; there is no way to provide the value as a separate argument 
+or return value.
+</p>
+<p>
+Use OnGetImageIndex to get the image index for the a node which is not 
+selected on the tree view control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTreeview.Images"/>
+<link id="TCustomTreeview.DoPaintNode"/>
+<link id="TCustomTreeview.DoPaint"/>
+<link id="TCustomTreeview.OnGetImageIndex"/>
+<link id="TTreeNode.SelectedIndex"/>
+<link id="TTVExpandedEvent"/>
+</seealso>
 </element>
 
 <element name="TCustomTreeView.OnHasChildren">
@@ -34012,10 +34210,46 @@ for a selected node on the tree view control.
 Event handler signalled to determine if a given node in the tree view has 
 child nodes.
 </short>
-<descr/>
+<descr>
+<p>
+<var>OnHasChildren</var> is a <var>TTVHasChildrenEvent</var> property with the 
+event handler signalled to determine whether a specified node has child nodes. 
+It is signalled (when assigned) from the NodeHasChildren method, and allows 
+the control to determine whether child nodes for a given node can be displayed 
+on the control. It occurs when a TTreeNode instance gets the value for its 
+HasChildren property and updates the States for the node.
+</p>
+<p>
+Arguments to the event handler include:
+</p>
+<dl>
+<dt>
+Sender
+</dt>
+<dd>
+The TCustomTreeView instance for the event.
+</dd>
+<dt>
+ANode
+</dt>
+<dd>
+The TTreeNode instance examine for child nodes in the handler routine.
+</dd>
+</dl>
+<p>
+The handler routine returns a Boolean value which indicates whether the 
+specified node has child nodes which can be displayed on the control. The 
+return value can be set to False - even when the tree node actually has child 
+nodes. This allows properties in child nodes, like Data or Level, to be 
+used to determine their effective visibility.
+</p>
+</descr>
 <seealso>
+<link id="TCustomTreeView.NodeHasChildren"/>
 <link id="TTVHasChildrenEvent"/>
 <link id="TTreeNode.HasChildren"/>
+<link id="TTreeNode.States"/>
+<link id="TTreeNode.Items"/>
 </seealso>
 </element>
 
@@ -34187,10 +34421,40 @@ display area.
 <short>
 Enables an expand/collapse (fold/unfold) icon for nodes with child nodes.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>ShowButtons</var> is a <var>Boolean</var> property which indicates 
+whether an expand / collapse (fold) indicator is drawn for a tree node which 
+has child nodes. The default value for the property is <b>True</b>, and causes 
+an indicator to be drawn for qualified tree nodes.
+</p>
+<p>
+ShowButtons is a convenience property; its value is read from and written to 
+the Options for the control. When set to <b>True</b>, the value tvoShowButtons 
+is included in the Options property. When set to <b>False</b>, tvoShowButtons 
+is excluded from Options. Changing the value for the property causes the 
+control to be redrawn.
+</p>
+<p>
+ShowButtons is used during the paint process in the DoPaintNode method.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTreeView.Options"/>
+<link id="TCustomTreeView.ExpandSignType"/>
+<link id="TCustomTreeView.ExpandSignColor"/>
+<link id="TCustomTreeView.ExpandSignSize"/>
+<link id="TCustomTreeView.ExpandSignWidth"/>
+<link id="TCustomTreeView.AutoExpand"/>
+<link id="TCustomTreeView.ShowLines"/>
+<link id="TCustomTreeView.ShowRoot"/>
+<link id="TCustomTreeView.ShowSeparators"/>
+<link id="TTreeNode.HasChildren"/>
+<link id="TTreeNode.Expanded"/>
+</seealso>
 </element>
 
+<!-- WIP: Here -->
 <element name="TCustomTreeView.ShowLines">
 <short>
 Enables or disables the horizontal and vertical lines which join nodes in the 
