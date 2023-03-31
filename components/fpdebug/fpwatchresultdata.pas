@@ -406,7 +406,11 @@ begin
     CacheMax  := StartIdx;
     CacheSize := 0;
     CacheCnt  := 200;
-    MemberValue := AnFpValue.Member[StartIdx+LowBnd]; // // TODO : CheckError // ClearError for AnFpValue
+    //if (ti = nil) or (ti.Flags * [sfDynArray, sfStatArray] = []) then
+    if (ti = nil) then
+      MemberValue := nil  // could be mapped array slice, with non consecutive entries
+    else
+      MemberValue := AnFpValue.Member[StartIdx+LowBnd]; // // TODO : CheckError // ClearError for AnFpValue
     if (MemberValue = nil) or (not IsTargetNotNil(MemberValue.Address)) or
        (Context.MemManager.CacheManager = nil)
     then begin
