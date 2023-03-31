@@ -528,6 +528,7 @@ begin
   );*)
 
   lFont.Size := Abs(LogFont.lfHeight);
+  lFont.ftFont.SizeInPoints := lFont.Size;
 
 (*  // Some values at available on Qt documentation at a table
   // Others are guesses. The best would be to test different values for those
