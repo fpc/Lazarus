@@ -4992,14 +4992,17 @@ begin
     Result := FArraySlice.Items[0].ResultValue;
     if Result <> nil then
       Result.AddReference;
+      Result.Reset;
     exit;
   end;
 
   SlicePart.FCurrentIndex := AIndex;
   FArraySlice.ResetEvaluationForIndex;
   Result := FArraySlice.Items[0].ResultValue;
-  if Result <> nil then
+  if Result <> nil then begin
     Result.AddReference;
+    Result.Reset;
+  end;
 end;
 
 function TFpPasParserValueSlicedArray.GetMemberCount: Integer;

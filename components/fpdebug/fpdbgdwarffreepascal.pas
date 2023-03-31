@@ -201,7 +201,6 @@ type
   protected
     function IsValidTypeCast: Boolean; override;
     function GetInternMemberByName(const AIndex: String): TFpValue;
-    procedure Reset; override;
     function GetMemberCount: Integer; override;
   private
     FValue: String;
@@ -210,6 +209,8 @@ type
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetAsString: AnsiString; override;
     function GetAsWideString: WideString; override;
+  public
+    procedure Reset; override;
   end;
 
   (* *** "Open Array" in params *** *)
@@ -266,7 +267,6 @@ type
     function CheckTypeAndGetAddr(out AnAddr: TFpDbgMemLocation): boolean;
   protected
     function IsValidTypeCast: Boolean; override;
-    procedure Reset; override;
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetAsString: AnsiString; override;
     function GetAsWideString: WideString; override;
@@ -274,6 +274,7 @@ type
     function GetAsCardinal: QWord; override;
     function GetMemberCount: Integer; override;
   public
+    procedure Reset; override;
     function GetSubString(AStartIndex, ALen: Int64; out ASubStr: AnsiString;
       AIgnoreBounds: Boolean = False): Boolean; override;
     function GetSubWideString(AStartIndex, ALen: Int64; out
@@ -1730,8 +1731,8 @@ begin
     end;
   end
   else begin
-    {$PUSH}{$Q-}
-    Addr.Address := Addr.Address + AStartIndex - 1;
+    {$PUSH}{$Q-}{$R-}
+    Addr.Address := Addr.Address + QWord(AStartIndex - 1);
     {$POP}
     if not ( (MemManager.SetLength(RResult, ALen)) and
              (Context.ReadMemory(Addr, SizeVal(ALen), @RResult[1])) )

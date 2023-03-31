@@ -210,7 +210,6 @@ type
     function GetDwarfDataAddress(out AnAddress: TFpDbgMemLocation; ATargetType: TFpSymbolDwarfType = nil): Boolean; virtual;
     function GetStructureDwarfDataAddress(out AnAddress: TFpDbgMemLocation): Boolean;
 
-    procedure Reset; override; // keeps lastmember and structureninfo
     function GetFieldFlags: TFpValueFieldFlags; override;
     function HasTypeCastInfo: Boolean;
     function IsValidTypeCast: Boolean; virtual;
@@ -226,6 +225,7 @@ type
   public
     constructor Create(ADwarfTypeSymbol: TFpSymbolDwarfType);
     destructor Destroy; override;
+    procedure Reset; override; // keeps lastmember and structureninfo
     property TypeInfo: TFpSymbolDwarfType read FTypeSymbol;
     function MemManager: TFpDbgMemManager; inline;
     procedure SetDataSymbol(AValueSymbol: TFpSymbolDwarfData);
@@ -251,11 +251,11 @@ type
   protected
     FEvaluated: set of (doneUInt, doneInt, doneAddr, doneFloat);
   protected
-    procedure Reset; override;
     function GetFieldFlags: TFpValueFieldFlags; override; // svfOrdinal
     function IsValidTypeCast: Boolean; override;
   public
     constructor Create(ADwarfTypeSymbol: TFpSymbolDwarfType);
+    procedure Reset; override;
   end;
 
   { TFpValueDwarfInteger }
@@ -346,7 +346,6 @@ type
     FMemberValueDone: Boolean;
     procedure InitMemberIndex;
   protected
-    procedure Reset; override;
     //function IsValidTypeCast: Boolean; override;
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetAsCardinal: QWord; override;
@@ -356,6 +355,8 @@ type
     // Has exactly 0 (if the ordinal value is out of range) or 1 member (the current value's enum)
     function GetMemberCount: Integer; override;
     function GetMember({%H-}AIndex: Int64): TFpValue; override;
+  public
+    procedure Reset; override;
   end;
 
   { TFpValueDwarfEnumMember }
@@ -391,7 +392,6 @@ type
     FTypedNumValue: TFpValue;
     procedure InitMap;
   protected
-    procedure Reset; override;
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetMemberCount: Integer; override;
     function GetMember(AIndex: Int64): TFpValue; override;
@@ -400,6 +400,7 @@ type
     procedure SetAsString(AValue: AnsiString); override;
   public
     destructor Destroy; override;
+    procedure Reset; override;
   end;
 
   { TFpValueDwarfStructBase }
@@ -471,7 +472,6 @@ type
     FBounds: array of array[0..1] of int64;
     procedure DoGetBounds; virtual;
   protected
-    procedure Reset; override;
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetKind: TDbgSymbolKind; override;
     function GetAsCardinal: QWord; override;
@@ -493,6 +493,7 @@ type
   public
     constructor Create(ADwarfTypeSymbol: TFpSymbolDwarfType; AnArraySymbol :TFpSymbolDwarfTypeArray);
     destructor Destroy; override;
+    procedure Reset; override;
     function GetOrdering(out ARowMajor: Boolean): Boolean; inline;
     function GetStride(out AStride: TFpDbgValueSize): Boolean; inline; // UnAdjusted Stride
     function GetMemberSize(out ASize: TFpDbgValueSize): Boolean; inline;  // array.stride or typeinfe.size

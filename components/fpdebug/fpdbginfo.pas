@@ -113,7 +113,6 @@ type
     FSize: TFpDbgValueSize;
     procedure SetAsString(AStartIndex, ALen: Int64; AValue: AnsiString);
   protected
-    procedure Reset; virtual; // keeps lastmember and structureninfo
     procedure SetLastError(ALastError: TFpError);
 
     function GetKind: TDbgSymbolKind; virtual;
@@ -158,6 +157,7 @@ type
   public
     constructor Create;
     property RefCount;
+    procedure Reset; virtual; // keeps lastmember and structureninfo
 
     function GetSize(out ASize: TFpDbgValueSize): Boolean; inline;
 
