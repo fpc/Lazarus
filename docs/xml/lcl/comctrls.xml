@@ -34454,31 +34454,101 @@ ShowButtons is used during the paint process in the DoPaintNode method.
 </seealso>
 </element>
 
-<!-- WIP: Here -->
 <element name="TCustomTreeView.ShowLines">
 <short>
 Enables or disables the horizontal and vertical lines which join nodes in the 
 tree hierarchy.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>ShowLines</var> is a <var>Boolean</var> property used to enable or 
+disable drawing of lines which connect the nodes on the tree view control. 
+When enabled, a line is drawn to connect a tree node to its parent, sibling 
+and child nodes. Values in TreeLineColor and TreeLinePenStyle are used to draw 
+the connector lines in the DoPaintNode method.
+</p>
+<p>
+ShowLines is a convenience property; its value is read from and written to the 
+Options for the control. ShowLines contains <b>True</b> when the value 
+tvoShowLines has been included in Options. Changing the value for the property 
+causes Options to be updated to include or exclude tvoShowLines as needed for 
+the Boolean value. The control is redrawn when Options is modified.
+</p>
+<p>
+The default value for the ShowLines property is <b>True</b>.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTreeView.Options"/>
+<link id="TCustomTreeView.TreeLineColor"/>
+<link id="TCustomTreeView.TreeLinePenStyle"/>
+<link id="TCustomTreeView.ShowButtons"/>
+<link id="TCustomTreeView.ShowRoot"/>
+<link id="TCustomTreeView.ShowSeparators"/>
+</seealso>
 </element>
 
 <element name="TCustomTreeView.ShowRoot">
 <short>
-Enables or disables drawing the root node indicator for the tree view control.
+Enables or disables drawing the root node for the tree view control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>ShowRoot</var> is a <var>Boolean</var> property which Enables or disables 
+drawing the root node for the tree view control.
+</p>
+<p>
+When enabled, the root node is represented by an expand / collapse indicator 
+which does not contain any text. Top-level nodes which have child nodes also 
+have expand / collapse indicators when ShowRoot is enabled. When disabled, the 
+expand / collapse indicators at the top-level of the node hierarchy are 
+omitted and only the text for the top-level nodes is displayed. The default 
+value for the property is <b>True</b>.
+</p>
+<p>
+ShowRoot is a convenience property; its value is read from and written to the 
+Options for the control. ShowRoot contains <b>True</b> when the value 
+tvoShowRoot has been included in the Options property, and <b>False</b> if the 
+value has been omitted. Changing the value for the property causes Options to 
+be updated to include or exclude tvoShowRoot as needed for the Boolean value. 
+The control is redrawn when the value in Options is modified.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTreeView.Options"/>
+<link id="TCustomTreeView.ShowButtons"/>
+<link id="TCustomTreeView.ShowLines"/>
+<link id="TCustomTreeView.ShowSeparators"/>
+<link id="TCustomTreeView.ExpandSignType"/>
+<link id="TCustomTreeView.ExpandSignColor"/>
+<link id="TCustomTreeView.ExpandSignSize"/>
+<link id="TCustomTreeView.ExpandSignWidth"/>
+</seealso>
 </element>
 
 <element name="TCustomTreeView.ShowSeparators">
 <short>
-Indicates if horizontal separator lines are drawn between nodes in the tree 
-view control.
+Indicates whether horizontal separator lines are drawn between nodes on the 
+tree view control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+ShowSeparators is a Boolean property which enables or disables drawing of 
+separator lines between the nodes on the tree view control.
+</p>
+<remark>
+In the current LCL version, the TTreeView descendant does not raised the 
+visibility of this protected property.
+</remark>
+</descr>
+<seealso>
+<link id="TCustomTreeView.Options"/>
+<link id="TCustomTreeView.TreeLineColor"/>
+<link id="TCustomTreeView.TreeLinePenStyle"/>
+<link id="TCustomTreeView.ShowButtons"/>
+<link id="TCustomTreeView.ShowLines"/>
+<link id="TCustomTreeView.ShowSeparators"/>
+</seealso>
 </element>
 
 <element name="TCustomTreeView.SortType">
@@ -34506,7 +34576,8 @@ control.
 tool tips (pop-up hints) are enabled for nodes on the tree view control. A 
 tool tip is activated when the mouse pointer is hovered over a node. The text 
 displayed on the tool tip is set to the Text property in the TTreeNode 
-instance.
+instance. The tool tip is displayed only when the text for the node is longer 
+than the available display area on the control.
 </p>
 <p>
 ToolTips is a convenience property; it indicates whether tvoToolTips has been 
@@ -34522,6 +34593,11 @@ events like: DoMouseWheel, DoMouseWheelHorz, and MouseMove.
 ToolTips is temporarily disabled when a drag operation is started for a node 
 on the tree view control.
 </p>
+<p>
+Use Hint and ShowHint to enable or disable a pop-up hint window on the 
+control. Both Hints and ToolTips can be active at the same time - but the 
+effect may be a little overwhelming.
+</p>
 </descr>
 <seealso>
 <link id="TCustomTreeView.Options"/>
@@ -34531,6 +34607,8 @@ on the tree view control.
 <link id="TTreeNode.Text"/>
 <link id="TTreeViewOptions"/>
 <link id="TTreeViewOption"/>
+<link id="#lcl.controls.TControl.Hint">TControl.Hint</link>
+<link id="#lcl.controls.TControl.ShowHint">TControl.ShowHint</link>
 </seealso>
 </element>
 
