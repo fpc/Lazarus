@@ -1154,7 +1154,7 @@ begin
   r := Root;
   FRoot := nil; // Prevent any being-destroyed object from removing its node.
   try
-    FreeNodeData(Root);
+    FreeNodeData(r);
   finally
     FRoot := r;
   end;
