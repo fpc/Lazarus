@@ -1147,9 +1147,17 @@ procedure TAVLTree.FreeAndClear;
   end;
 
 // TAVLTree.FreeAndClear
+var
+  r: TAVLTreeNode;
 begin
   // free all data
-  FreeNodeData(Root);
+  r := Root;
+  FRoot := nil; // Prevent any being-destroyed object from removing its node.
+  try
+    FreeNodeData(Root);
+  finally
+    FRoot := r;
+  end;
   // free all nodes
   Clear;
 end;
