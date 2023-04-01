@@ -636,6 +636,7 @@ begin
     ProjectGroupEditorForm:=nil;
   ProjectGroupManager.Editor:=Self;
   if (PGEditMenuSectionMisc<>nil)
+  and (IDEMenuRoots <> nil) // it is RegisterIDEMenuSection, and will be freed by the IDE, but PGEditMenuSectionMisc will not be nil
   and (PGEditMenuSectionMisc.MenuItem=PopupMenuMore.Items) then
     PGEditMenuSectionMisc.MenuItem:=nil;
   //debugln(['TProjectGroupEditorForm.FormDestroy END ',ProjectGroup<>nil]);
