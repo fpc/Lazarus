@@ -3818,6 +3818,7 @@ type
     property ShowHint;
     property ShowLines;
     property ShowRoot;
+    property ShowSeparators;
     property SortType;
     property StateImages;
     property StateImagesWidth;
