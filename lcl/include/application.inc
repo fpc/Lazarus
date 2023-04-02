@@ -135,6 +135,7 @@ begin
   if Assigned(FOnDestroy) then FOnDestroy(Self);
 
   ProcessAsyncCallQueue;
+  OnDecLCLRefcountToZero := nil;
 
   if OnMenuPopupHandler=@MenuPopupHandler then
     OnMenuPopupHandler:=nil;
@@ -2331,6 +2332,12 @@ begin
   end;
 end;
 
+procedure TApplication.DoDecLCLRefcountToZero(Sender: TObject);
+begin
+  OnDecLCLRefcountToZero := nil;
+  QueueAsyncCall(@FreeComponent, 0);
+end;
+
 procedure TApplication.FreeComponent(Data: PtrInt);
 begin
   if Data<>0 then
@@ -2401,8 +2408,12 @@ begin
       exit;
     FComponentsToRelease.Add(AComponent);
     AComponent.FreeNotification(Self);
-    if IsFirstItem then
-      QueueAsyncCall(@FreeComponent, 0);
+    if IsFirstItem then begin
+      if TLCLComponent(AComponent).LCLRefCount>0 then
+        OnDecLCLRefcountToZero := @DoDecLCLRefcountToZero
+      else
+        QueueAsyncCall(@FreeComponent, 0);
+    end;
   end;
 end;
 

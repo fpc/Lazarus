@@ -85,6 +85,9 @@ type
     property ReferenceAllocated: Boolean read GetReferenceAllocated;
   end;
 
+var
+  OnDecLCLRefcountToZero: TNotifyEvent;
+
 implementation
 
 uses
@@ -180,6 +183,8 @@ end;
 procedure TLCLComponent.DecLCLRefCount;
 begin
   dec(FLCLRefCount);
+  if (FLCLRefCount <= 0) and (OnDecLCLRefcountToZero <> nil) then
+    OnDecLCLRefcountToZero(Self);
 end;
 
 { TLCLReferenceComponent }

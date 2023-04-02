@@ -1523,6 +1523,7 @@ type
     procedure DoIdleActions;
     procedure MenuPopupHandler(Sender: TObject);
     procedure ProcessAsyncCallQueue;
+    procedure DoDecLCLRefcountToZero(Sender: TObject);
     procedure FreeComponent(Data: PtrInt);
     procedure ReleaseComponents;
     procedure DoBeforeFinalization;
