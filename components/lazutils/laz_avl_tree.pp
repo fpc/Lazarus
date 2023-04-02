@@ -639,7 +639,6 @@ end;
 
 constructor TAVLTree.Create(const OnCompareMethod: TListSortCompare);
 begin
-  fNodeMgr:=LazNodeMemManager;
   FOnCompare:=OnCompareMethod;
   Init;
 end;
@@ -647,7 +646,6 @@ end;
 constructor TAVLTree.CreateObjectCompare(
   const OnCompareMethod: TObjectSortCompare);
 begin
-  fNodeMgr:=LazNodeMemManager;
   FOnObjectCompare:=OnCompareMethod;
   Init;
 end;
