@@ -29360,6 +29360,7 @@ Adds a new tree node as a sibling of the specified node.
 <element name="TTreeNodes.Add.S">
 <short>Text for the new tree node.</short>
 </element>
+<!-- WIP: Here -->
 <element name="TTreeNodes.Add.Data">
 <short>Pointer to the data for the new tree node.</short>
 </element>
@@ -35243,7 +35244,7 @@ node hierarchy generated using SaveToFile.
 </p>
 <p>
 Each tree node in FileName is represented using leading Tab (#9) characters 
-for the level in the tree node, followed by the Text for the node and an 
+for the Level in the tree node, followed by the Text for the node and an 
 end-of-line sequence (#13#10). TTreeNode instances are created and added to
 the Items property when the node values are read from the file.
 </p>
@@ -35320,13 +35321,41 @@ TStream instance with the tree node data loaded in the method.
 </short>
 </element>
 
-<!-- WIP: Here -->
 <element name="TCustomTreeView.SaveToFile">
 <short>
 Saves the tree nodes in Items to the specified file.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>SaveToFile</var> is a method used to save the tree nodes in Items to the 
+specified file name. FileName is a qualified path to the file on the local 
+file system where the tree node data is stored. If FileName already exists, it 
+is recreated and previous values in the file are lost.
+</p>
+<p>
+SaveToFile visits each of the TTreeNode instances in Items and writes a 
+textual representation for the tree nodes to the file. Each tree node is 
+represented by leading Tab (#9) characters to denote the Level for the tree 
+node, followed by the Text for the node and an end-of-line sequence (#13#10).
+</p>
+<p>
+Use LoadFromFile to load and recreate the tree nodes for the control from the 
+file created in the method.
+</p>
+<p>
+Use SaveToStream and LoadFromStream to read or write tree node information 
+using stream-based storage.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTreeView.Items"/>
+<link id="TCustomTreeView.SaveToStream"/>
+<link id="TCustomTreeView.LoadFromStream"/>
+<link id="TCustomTreeView.LoadFromFile"/>
+<link id="TTreeNode.Level"/>
+<link id="TTreeNode.Text"/>
+<link id="TTreeNodes"/>
+</seealso>
 </element>
 <element name="TCustomTreeView.SaveToFile.FileName">
 <short>
@@ -35338,8 +35367,42 @@ File name where the tree node data is stored.
 <short>
 Saves the tree nodes in Items to the specified stream.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>SaveToStream</var> is a method used to store a textual representation for 
+the tree nodes in Items to the specified Stream. Stream is the TStream 
+instance where the tree node data is stored.
+</p>
+<p>
+SaveToStream visits each of the TTreeNode instances in Items and writes the 
+tree node information to the stream. Each node is represented Each tree node 
+is represented by leading Tab (#9) characters to denote the Level for the tree
+node, followed by the Text for the node and an end-of-line sequence (#13#10).
+</p>
+<remark>
+SaveToStream does <b>not</b> change the position in Stream prior to writing  
+node values. It assumes the stream position has been set in the calling 
+routine. It does <b>not</b> reset the stream position when the method has been 
+completed.
+</remark>
+<p>
+Use LoadFromStream to load and create tree nodes in Items from stream-based 
+storage.
+</p>
+<p>
+Use LoadFromFile and SaveToFile to read and write the node hierarchy using 
+file-based storage.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTreeView.Items"/>
+<link id="TCustomTreeView.LoadFromStream"/>
+<link id="TCustomTreeView.LoadFromFile"/>
+<link id="TCustomTreeView.SaveToFile"/>
+<link id="TTreeNode.Level"/>
+<link id="TTreeNode.Text"/>
+<link id="TTreeNodes"/>
+</seealso>
 </element>
 <element name="TCustomTreeView.SaveToStream.Stream">
 <short>
@@ -35352,7 +35415,24 @@ TStream instance where the tree node data is stored.
 Generates a formatted message with information about the tree view control and 
 optionally tree nodes in Items.
 </short>
-<descr/>
+<descr>
+<p>
+<var>WriteDebugReport</var> is a method used to generate a formatted message 
+with information about the tree view control, and optionally the tree nodes in 
+Items. It is used to create and write debugger messages using the DbgOut and 
+DebugLn routines.
+</p>
+<p>
+The value in Prefix identifies the tree view control and the context for the 
+message. It is written, along with the ClassName and address for the class 
+instance, as the first line in the debugger message.
+</p>
+<p>
+When AllNodes is set to <b>True</b>, the WriteDebugReport method in Items is 
+called to include information about the tree nodes in the container in the 
+debugger message.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TCustomTreeView.WriteDebugReport.Prefix">
@@ -35688,20 +35768,43 @@ calculated.
 </element>
 
 <element name="TCustomTreeView.BottomItem">
-<short>Last visible tree node starting at the TopItem in the control.</short>
+<short>
+Contains the last visible tree node starting at the TopItem in the control.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TCustomTreeView.Color">
-<short>Color used for the background in the control display area.</short>
+<short>
+Color used to fill the background on the control display area.
+</short>
 <descr>
 <p>
-The default value for the property is <var>clWindow</var>. Contains the same 
-value as the <var>BackgroundColor</var> property.
+Color is a TColor property with the background color for the tree view 
+control. The default value for the property is <var>clWindow</var>. Changing 
+the value for the property causes the control to be redrawn.
+</p>
+<p>
+Color contains the same value as the <var>BackgroundColor</var> property. 
+Color / BackgroundColor is used when the Paint method is called to draw the 
+control. It provides the background color for both the control and its tree 
+nodes.
+</p>
+<p>
+Use SelectionColor to specify the background color for the selected tree 
+node(s) on the control.
+</p>
+<p>
+Use Font, DisabledFontColor, and HotTrackColor to control the font colors used 
+for tree node text on the control.
 </p>
 </descr>
 <seealso>
+<link id="TCustomTreeView.BackgroundColor"/>
+<link id="TCustomTreeView.Paint"/>
+<link id="TCustomTreeView.DoPaint"/>
+<link id="TCustomTreeView.DoPaintNode"/>
 <link id="#lcl.controls.TControl.Color">TControl.Color</link>
 </seealso>
 </element>
@@ -36000,7 +36103,7 @@ its parent or children.
 <p>
 <var>Items</var> is a <var>TTreeNodes</var> property with the container used 
 to access and maintain the hierarchical list of <var>TTreeNode</var> 
-instances displayed in the tree view control.
+instances displayed on the tree view control.
 </p>
 <p>
 Items allows indexed access to the TTreeNode instances in the container by 
@@ -36012,8 +36115,9 @@ AText := ATreeView.Items[0].Text;  // caption for the first tree node
 AText := ATreeView.Items.Item[0].Text;  // caption for the first tree node
 </code>
 <p>
-Methods in Items can be used to access and maintain the tree nodes and their 
-hierarchy, including:
+The nodes in Items can be added at design-time using the Object Inspector, or 
+at run-time. Methods in Items can be used to access and maintain the tree 
+nodes and their hierarchy, including:
 </p>
 <ul>
 <li>Add</li>
@@ -36026,6 +36130,15 @@ hierarchy, including:
 <p>
 See <link id="TTreeNodes">TTreeNodes</link> for more information about the 
 properties and methods in the container class.
+</p>
+<p>
+Use the Select, ClearSelect and ClearSelection methods to maintain the 
+selected node(s) on the tree view control. Use MultiSelect to enable or 
+disable multiple tree node selection on the control.
+</p>
+<p>
+Use Selected, Selections, and SelectionCount to access single- or 
+multi-selected nodes on the tree view control.
 </p>
 </descr>
 <seealso>
