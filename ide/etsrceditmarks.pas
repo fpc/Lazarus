@@ -176,6 +176,7 @@ type
   private
     fAllChanges: TAvlTree; // tree of TETSingleSrcChanges sorted for Filename
     FAutoSync: boolean;
+    fClearing: boolean;
     fPendingChanges: TAvlTree; // tree of TETSingleSrcChanges sorted for Filename
     FOnSync: TNotifyEvent;
     FSyncQueued: boolean;
@@ -625,9 +626,15 @@ end;
 
 procedure TETMultiSrcChanges.Clear;
 begin
-  SyncQueued:=false;
-  fPendingChanges.Clear;
-  fAllChanges.FreeAndClear;
+  if fClearing then exit;
+  fClearing:=true;
+  try
+    SyncQueued:=false;
+    fPendingChanges.Clear;
+    fAllChanges.FreeAndClear;
+  finally
+    fClearing:=false;
+  end;
 end;
 
 function TETMultiSrcChanges.GetChanges(const aFilename: string;
@@ -753,7 +760,7 @@ begin
   if Filename='' then
     raise Exception.Create('TETSingleSrcChanges.SetMultiSrcChanges empty filename');
   if (FMultiSrcChanges<>nil) then begin
-    if (csDestroying in FMultiSrcChanges.ComponentState) then begin
+    if (csDestroying in FMultiSrcChanges.ComponentState) or FMultiSrcChanges.fClearing then begin
       fInPendingTree:=false;
     end else begin
       InPendingTree:=false;
