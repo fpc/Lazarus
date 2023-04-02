@@ -194,17 +194,19 @@ procedure FilterConfigFileContent;
 var
   l: TStrings;
   i: Integer;
+  LowerOpt: String;
 begin
   ResetParamsAndCfg;
   l := GetCfgFileContent;
   if l = nil then exit;
   i := l.Count - 1;
   while i >= 0 do begin
+    LowerOpt := LowerCase(l[i]);
     if not(
-        (copy(l[i], 1, 22) = '--primary-config-path=') or
-        (copy(l[i], 1, 24) = '--secondary-config-path=') or
-        (copy(l[i], 1,  6) = '--pcp=') or
-        (copy(l[i], 1,  6) = '--scp=')
+        LazStartsStr('--primary-config-path=', LowerOpt) or
+        LazStartsStr('--secondary-config-path=', LowerOpt) or
+        LazStartsStr('--pcp=', LowerOpt) or
+        LazStartsStr('--scp=', LowerOpt)
        )
     then
       l.Delete(i);
@@ -1438,6 +1440,7 @@ end;
 constructor TLazBuildApplication.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  CaseSensitiveOptions:=False;
   SetupDialogs;
   Files:=TStringList.Create;
   fMaxProcessCount:=-1;
