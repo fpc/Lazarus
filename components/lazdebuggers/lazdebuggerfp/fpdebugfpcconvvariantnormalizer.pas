@@ -192,7 +192,7 @@ begin
 
     discr := vtype.AsInteger;
     try
-      for i := 0 to m.MemberCount do begin
+      for i := 0 to m.MemberCount - 1 do begin
         m2 := m.Member[i];
         try
           if (m2 <> nil) and
