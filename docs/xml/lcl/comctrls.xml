@@ -32485,9 +32485,9 @@ Collapses the current node (when expanded) and moves to the parent node.
 Expands the current node (when needed), or moves to the next expanded node in 
 the tree.
 </dd>
-<dt>VK_ADD (Plus)</dt>
+<dt>VK_ADD (NumPad Plus)</dt>
 <dd>Expands the current node.</dd>
-<dt>VK_SUBTRACT (Minus)</dt>
+<dt>VK_SUBTRACT (NumPad Minus)</dt>
 <dd>Collapses the current node.</dd>
 <dt>VK_F2</dt>
 <dd>Calls BeginEditing for the Selected node if the control is not 
@@ -32830,7 +32830,7 @@ painting the nodes on the control.
 
 <element name="TCustomTreeView.ScrollView">
 <short>
-Scrolls the visible area in the control by the specified horizontal and 
+Scrolls the visible area for the control by the specified horizontal and 
 vertical offsets.
 </short>
 <descr/>
@@ -32876,10 +32876,15 @@ update the value for the <var>DefaultItemHeight</var> property. No actions
 are performed in the method for the following conditions:
 </p>
 <ul>
-<li>tvoAutoItemHeight has not been included in the Options for the 
-control.</li>
-<li>The handle for the control has not been allocated.</li>
-<li>The handle for the control Canvas has not been allocated.</li>
+<li>
+tvoAutoItemHeight has not been included in the Options for the control.
+</li>
+<li>
+The handle for the control has not been allocated.
+</li>
+<li>
+The handle for the control Canvas has not been allocated.
+</li>
 </ul>
 <p>
 The height for the Text in the node is calculated using the 
@@ -32968,17 +32973,17 @@ argument. The following scroll codes are handled in the method:
 <dt>SB_LINERIGHT</dt>
 <dd>
 Increments ScrolledLeft by one-half of the default ItemHeight for the 
-control. (?)
+control.
 </dd>
 <dt>SB_LINELEFT</dt>
 <dd>
 Decrements ScrolledLeft by one-half of the default ItemHeight for the 
-control. (?)
+control.
 </dd>
 <dt>SB_PAGERIGHT</dt>
-<dd>Increments ScrolledLeft by one page of lines. (?)</dd>
+<dd>Increments ScrolledLeft by one page of lines.</dd>
 <dt>SB_PAGELEFT</dt>
-<dd>Decrements ScrolleLeft by one page of lines. (?)</dd>
+<dd>Decrements ScrolleLeft by one page of lines.</dd>
 <dt>SB_THUMBPOSITION, SB_THUMBTRACK</dt>
 <dd>Sets ScrolledLeft to the current scroll bar position in Msg.</dd>
 <dt>SB_ENDSCROLL</dt>
@@ -34533,18 +34538,27 @@ tree view control.
 </short>
 <descr>
 <p>
-ShowSeparators is a Boolean property which enables or disables drawing of 
-separator lines between the nodes on the tree view control.
+<var>ShowSeparators</var> is a <var>Boolean</var> property which enables or 
+disables drawing of separator lines between the nodes on the tree view 
+control. When enabled, a line is drawn across the width of the control between 
+each of the nodes. The values in TreeLineColor and TreeLinePenStyle are used 
+to draw the horizontal line in the DoPaintNode method.
 </p>
-<remark>
-In the current LCL version, the TTreeView descendant does not raised the 
-visibility of this protected property.
-</remark>
+<p>
+ShowSeparators is a convenience property; its value is read from and written 
+to the Options for the control. ShowSeparators contains <b>True</b> when the 
+value tvoShowSeparators has been included in the Options property, and 
+<b>False</b> if the value has been omitted. Changing the value for the 
+property causes Options to be updated to include or exclude tvoShowSeparators 
+as needed for the Boolean value. The control is redrawn when the value in 
+Options is modified.
+</p>
 </descr>
 <seealso>
 <link id="TCustomTreeView.Options"/>
 <link id="TCustomTreeView.TreeLineColor"/>
 <link id="TCustomTreeView.TreeLinePenStyle"/>
+<link id="TCustomTreeView.DoPaintNode"/>
 <link id="TCustomTreeView.ShowButtons"/>
 <link id="TCustomTreeView.ShowLines"/>
 <link id="TCustomTreeView.ShowSeparators"/>
@@ -34675,10 +34689,17 @@ Owner of the class instance.
 
 <element name="TCustomTreeView.Destroy">
 <short>
-<var>Destroy</var> - destructor for <var>TCustomTreeView</var>: frees images, 
-nodes and links, then calls the inherited Destroy method.
+Destructor for the class instance.
 </short>
-<descr/>
+<descr>
+<p>
+<var>Destroy</var> is the overridden destructor for the class instance. It 
+calls LockSelectionChangeEvent on entry to prevent changes to the Selected 
+tree node while the class is being freed. Destroys frees references and 
+resources allocated to members in the class instance. It calls the inherited 
+Destroy method prior to exit.
+</p>
+</descr>
 <seealso>
 <link id="#lcl.controls.TCustomControl.Destroy">TCustomControl.Destroy</link>
 <link id="#rtl.classes.TComponent.Destroy">TComponent.Destroy</link>
@@ -34869,32 +34890,119 @@ accented characters. Unlike AnsiCompareText, the comparison is case sensitive.
 
 <element name="TCustomTreeView.GetHitTestInfoAt">
 <short>
-<var>GetHitTestInfoAt</var> - returns the result of a hit test at the point 
-(X, Y).
+Returns hit test results for the specified coordinates.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>GetHitTestInfoAt</var> is a THitTests function used to gather hit test 
+results for the coordinates specified in X and Y. The return value indicates 
+the part(s) of a node on the tree view control beneath the given coordinates. 
+The results are an empty set if none of the THitTest values apply to the 
+specified position (Such as when X, Y is not within the client area for the 
+control).
+</p>
+<p>
+In the current implementation, the following THitTest enumeration values are 
+used:
+</p>
+<dl>
+<dt>
+htOnItem
+</dt>
+<dd>
+The position is over a node on the tree view control.
+</dd>
+<dt>
+htOnIndent
+</dt>
+<dd>
+The position is over the indent prior to a node.
+</dd>
+<dt>
+htOnButton
+</dt>
+<dd>
+The position is over an expand / collapse indicator for a tree node.
+</dd>
+<dt>
+htOnStateIcon
+</dt>
+<dd>
+The position is over the state icon for a tree node.
+</dd>
+<dt>
+htOnIcon
+</dt>
+<dd>
+The position is over the main icon for a tree node.
+</dd>
+<dt>
+htOnLabel
+</dt>
+<dd>
+The position is over the text displayed for a tree node.
+</dd>
+<dt>
+htNowhere
+</dt>
+<dd>
+The position is over a part of a node which does not qualify for the previous 
+values.
+</dd>
+</dl>
+<p>
+The following THitTest values are not used in the current implementation: 
+htAbove, htBelow, htOnRight, htToLeft, and htToRight.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTreeView.GetNodeAtY"/>
+<link id="TTreeNode"/>
+<link id="THitTests"/>
+<link id="THitTest"/>
+</seealso>
 </element>
 <element name="TCustomTreeView.GetHitTestInfoAt.Result">
-<short/>
+<short>
+Set of THitTest values for the node at the specified coordinates.
+</short>
 </element>
 <element name="TCustomTreeView.GetHitTestInfoAt.X">
-<short/>
+<short>
+Horizontal coordinate examined in the method.
+</short>
 </element>
 <element name="TCustomTreeView.GetHitTestInfoAt.Y">
-<short/>
+<short>
+Vertical coordinate examined in the method.
+</short>
 </element>
 
 <element name="TCustomTreeView.GetNodeAt">
 <short>
 Searches all expanded nodes for the tree node at the specified position.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Calls GetNodeAtY to get the node which has the vertical coordinate specified 
+in Y. The node is used as the return value for the method if the X coordinate 
+is within the display area for the node content defined as the left edge of 
+the state icon and the right edge of the Text for the node. The return value 
+is <b>Nil</b> if a node is not found, or the coordinates are not in the usable 
+client area for the control (ClientWidth-BorderWidth and ClientHeight-BorderWidth).
+</p>
+</descr>
+<seealso>
+<link id="TCustomTreeView.GetNodeAt"/>
+<link id="TCustomTreeView.Options"/>
+<link id="TTreeViewOptions"/>
+<link id="TTreeViewOption"/>
+</seealso>
 </element>
 <element name="TCustomTreeView.GetNodeAt.Result">
 <short>
-Visible tree node at the specified position, or <b>Nil</b> when not found.
+Visible tree node at the specified position, or <b>Nil</b> when a node is not 
+found at the position.
 </short>
 </element>
 <element name="TCustomTreeView.GetNodeAt.X">
@@ -34906,20 +35014,26 @@ Visible tree node at the specified position, or <b>Nil</b> when not found.
 
 <element name="TCustomTreeView.GetNodeWithExpandSignAt">
 <short>
-Gets the tree node at the specified vertical coordinate with a visible expand 
-symbol.
+Gets the tree node at the specified coordinates which has a visible expand 
+indicator, or <b>Nil</b>.
 </short>
 <descr/>
 <seealso/>
 </element>
 <element name="TCustomTreeView.GetNodeWithExpandSignAt.Result">
-<short/>
+<short>
+Tree node at the specified position, or <b>Nil</b>.
+</short>
 </element>
 <element name="TCustomTreeView.GetNodeWithExpandSignAt.X">
-<short/>
+<short>
+Horizontal coordinate examined in the method.
+</short>
 </element>
 <element name="TCustomTreeView.GetNodeWithExpandSignAt.Y">
-<short/>
+<short>
+Vertical coordinate examined in the method.
+</short>
 </element>
 
 <element name="TCustomTreeView.GetInsertMarkAt">
@@ -34930,10 +35044,14 @@ Determines if there is an insert mark at the specified coordinates.
 <seealso/>
 </element>
 <element name="TCustomTreeView.GetInsertMarkAt.X">
-<short/>
+<short>
+Horizontal coordinate examined in the method.
+</short>
 </element>
 <element name="TCustomTreeView.GetInsertMarkAt.Y">
-<short/>
+<short>
+Vertical coordinate examined in the method.
+</short>
 </element>
 <element name="TCustomTreeView.GetInsertMarkAt.AnInsertMarkNode">
 <short/>
@@ -34964,10 +35082,14 @@ Places an insert mark at the specified coordinates.
 <seealso/>
 </element>
 <element name="TCustomTreeView.SetInsertMarkAt.X">
-<short/>
+<short>
+Horizontal coordinate updated in the method.
+</short>
 </element>
 <element name="TCustomTreeView.SetInsertMarkAt.Y">
-<short/>
+<short>
+Vertical coordinate updated in the method.
+</short>
 </element>
 
 <element name="TCustomTreeView.Invalidate">
@@ -35074,91 +35196,181 @@ method is called.
 
 <element name="TCustomTreeView.FullCollapse">
 <short>
-Collapses all nodes in the tree view and displays only the root for the tree.
+Collapses all tree nodes on the tree view control.
 </short>
 <descr>
 <p>
 Visits all top-level tree nodes in the Items property and calls their 
-Collapse method.
+Collapse methods. Top-level nodes will still be visible, but are displayed in 
+the Collapsed state.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TCustomTreeView.Collapse"/>
+<link id="TCustomTreeView.Expand"/>
+<link id="TCustomTreeView.FullExpand"/>
+<link id="TTreeNode.Collapse"/>
+<link id="TTreeNode.Expand"/>
+<link id="TTreeNode.Expanded"/>
+</seealso>
 </element>
 
 <element name="TCustomTreeView.FullExpand">
 <short>
-Expands all nodes in the tree view.
+Expands all tree nodes on the tree view control.
 </short>
 <descr>
 <p>
-Visits all top-level tree nodes in Items and calls their Expand method.
+Visits all top-level tree nodes in Items and calls their Expand methods.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TTreeNode.Expand"/>
+<link id="TTreeNodes.GetFirstNode"/>
+</seealso>
 </element>
 
 <element name="TCustomTreeView.LoadFromFile">
 <short>
-Load tree view data from the specified file.
+Loads tree nodes from the specified file.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>LoadFromFile</var> is a method used to load the tree nodes from the 
+specified file name into the Items property. <var>FileName</var> is a 
+qualified file name which contains the textual representation for the tree 
+node hierarchy generated using SaveToFile.
+</p>
+<p>
+Each tree node in FileName is represented using leading Tab (#9) characters 
+for the level in the tree node, followed by the Text for the node and an 
+end-of-line sequence (#13#10). TTreeNode instances are created and added to
+the Items property when the node values are read from the file.
+</p>
+<p>
+Use SaveToFile to store the textual representation for tree nodes in Items to 
+a given file name.
+</p>
+<p>
+Use SaveToStream and LoadFromStream to read and write the node hierarchy using 
+stream-based storage.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTreeView.Items"/>
+<link id="TCustomTreeView.SaveToFile"/>
+<link id="TCustomTreeView.SaveToStream"/>
+<link id="TCustomTreeView.LoadFromStream"/>
+<link id="TTreeNode.Level"/>
+<link id="TTreeNode.Text"/>
+<link id="TTreeNodes"/>
+</seealso>
 </element>
 <element name="TCustomTreeView.LoadFromFile.FileName">
-<short/>
+<short>
+File name with the tree node data loaded in the method.
+</short>
 </element>
 
 <element name="TCustomTreeView.LoadFromStream">
 <short>
-Loads tree view data from the specified stream.
+Loads tree nodes from the specified stream.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>LoadFromStream</var> is a method used to load the tree nodes from the 
+specified TStream instance into the Items property. <var>Stream</var> contains 
+the textual representation for the tree node hierarchy generated using 
+SaveToStream.
+</p>
+<p>
+Each tree node in Stream is represented using leading Tab (#9) characters 
+for the level in the tree node, followed by the Text for the node and an 
+end-of-line sequence (#13#10). TTreeNode instances are created and added to
+the Items property when the node values are read from the stream.
+</p>
+<remark>
+LoadFromStream does <b>not</b> change the position in Stream prior to reading 
+node values. It assumes the stream position has been set in the calling 
+routine. It does <b>not</b> reset the stream position when the method has been 
+completed.
+</remark>
+<p>
+Use SaveToStream to store the textual representation for tree nodes in Items 
+to a given TStream instance.
+</p>
+<p>
+Use SaveToFile and LoadFromFile to read and write the node hierarchy using 
+file-based storage.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTreeView.Items"/>
+<link id="TCustomTreeView.SaveToStream"/>
+<link id="TCustomTreeView.SaveToFile"/>
+<link id="TCustomTreeView.LoadFromFile"/>
+<link id="TTreeNode.Level"/>
+<link id="TTreeNode.Text"/>
+<link id="TTreeNodes"/>
+</seealso>
 </element>
 <element name="TCustomTreeView.LoadFromStream.Stream">
-<short/>
+<short>
+TStream instance with the tree node data loaded in the method.
+</short>
 </element>
 
+<!-- WIP: Here -->
 <element name="TCustomTreeView.SaveToFile">
 <short>
-Saves the tree view data to the specified file.
+Saves the tree nodes in Items to the specified file.
 </short>
 <descr/>
 <seealso/>
 </element>
 <element name="TCustomTreeView.SaveToFile.FileName">
-<short/>
+<short>
+File name where the tree node data is stored.
+</short>
 </element>
 
 <element name="TCustomTreeView.SaveToStream">
 <short>
-Saves the tree view data to the specified stream.
+Saves the tree nodes in Items to the specified stream.
 </short>
 <descr/>
 <seealso/>
 </element>
 <element name="TCustomTreeView.SaveToStream.Stream">
-<short/>
+<short>
+TStream instance where the tree node data is stored.
+</short>
 </element>
 
 <element name="TCustomTreeView.WriteDebugReport">
 <short>
-<var>WriteDebugReport</var> - used for debugging.
+Generates a formatted message with information about the tree view control and 
+optionally tree nodes in Items.
 </short>
 <descr/>
 <seealso/>
 </element>
 <element name="TCustomTreeView.WriteDebugReport.Prefix">
-<short/>
+<short>
+Arbitrary value prepended to the formatted message. Identifies the tree 
+view instance or context for the message.
+</short>
 </element>
 <element name="TCustomTreeView.WriteDebugReport.AllNodes">
-<short/>
+<short>
+<b>True</b> if values in Items are included in the formatted message.
+</short>
 </element>
 
 <element name="TCustomTreeView.LockSelectionChangeEvent">
 <short>
-<var>LockSelectionChangeEvent</var> - if the selection has changed, lock its 
-status.
+Increments the internal counter used to lock selection change events for the 
+control.
 </short>
 <descr/>
 <seealso/>
@@ -35166,8 +35378,8 @@ status.
 
 <element name="TCustomTreeView.UnlockSelectionChangeEvent">
 <short>
-<var>UnlockSelectionChangeEvent</var> - unlock a selection to allow it to be 
-changed.
+Decrements the internal counter used to lock selection change events for the 
+control.
 </short>
 <descr/>
 <seealso/>
@@ -35175,8 +35387,7 @@ changed.
 
 <element name="TCustomTreeView.GetFirstMultiSelected">
 <short>
-<var>GetFirstMultiSelected</var> - returns the first node from a multiple 
-selection.
+Returns the first tree node multi-selected on the tree view control.
 </short>
 <descr>
 <p>
@@ -35199,7 +35410,7 @@ controls.
 <descr>
 <p>
 Uses the value from the internal member maintained in TTreeNodes. 
-GetLastMultiSelected is available when tvoAllowMultiSelect has been included 
+GetLastMultiSelected is available when tvoAllowMultiSelect has been included
 in the Options for the control.
 </p>
 </descr>
@@ -35338,10 +35549,15 @@ not been assigned.
 
 <element name="TCustomTreeView.StoreCurrentSelection">
 <short>
-Creates and fills a TStringList with the text for the selected nodes in the 
-control.
+Creates and fills a TStringList with the text for the selected nodes on the 
+tree view control.
 </short>
-<descr/>
+<descr>
+<p>
+It is the responsibility of the calling routine to free the TStringList 
+instance in the return value. Failure to do so will result in a memory leak.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TCustomTreeView.StoreCurrentSelection.Result">
@@ -35790,7 +36006,8 @@ instances displayed in the tree view control.
 Items allows indexed access to the TTreeNode instances in the container by 
 their ordinal position.
 </p>
-<code>// the following are equivalent
+<code>
+// the following are equivalent
 AText := ATreeView.Items[0].Text;  // caption for the first tree node
 AText := ATreeView.Items.Item[0].Text;  // caption for the first tree node
 </code>
@@ -36309,6 +36526,7 @@ The default value for the property is <b>False</b> in TTreeView.
 <element name="TTreeView.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
 <element name="TTreeView.ShowLines" link="#lcl.comctrls.TCustomTreeView.ShowLines"/>
 <element name="TTreeView.ShowRoot" link="#lcl.comctrls.TCustomTreeView.ShowRoot"/>
+<element name="TTreeView.ShowSeparators" link="#lcl.comctrls.TCustomTreeView.ShowSeparators"/>
 <element name="TTreeView.SortType" link="#lcl.comctrls.TCustomTreeView.SortType"/>
 <element name="TTreeView.StateImages" link="#lcl.comctrls.TCustomTreeView.StateImages"/>
 <element name="TTreeView.StateImagesWidth" link="#lcl.comctrls.TCustomTreeView.StateImagesWidth"/>
