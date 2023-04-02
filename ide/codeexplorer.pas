@@ -530,8 +530,10 @@ var
 begin
   if Button=mbMiddle then begin
     Node:=CodeTreeview.GetNodeAt(X,Y);
-    Node.Selected:=true;
-    JumpToSelection(true);
+    if Node <> nil then begin
+      Node.Selected:=true;
+      JumpToSelection(true);
+    end;
   end;
 end;
 
