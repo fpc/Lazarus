@@ -20,7 +20,7 @@
     balanced, so that inserting, deleting and finding a node is performed in
     O(log(#Nodes)).
 
-  Note! This is a copy of avl_tree unit from FPC 3.1.1 from 6th Apr 2017.
+  Note! This is a copy of avl_tree unit from FPC trunk from Apr 2023.
         Can be removed when FPC 3.2 is the minimun requirement for Lazarus and LazUtils.
 }
 unit Laz_AVL_Tree;
@@ -123,7 +123,6 @@ type
     function AddAscendingSequence(Data: Pointer; LastAdded: TAVLTreeNode;
       var Successor: TAVLTreeNode): TAVLTreeNode;
     procedure Delete(ANode: TAVLTreeNode);
-    // JuMa: Turned Remove and RemovePointer into functions.
     function Remove(Data: Pointer): boolean;
     function RemovePointer(Data: Pointer): boolean;
     procedure MoveDataLeftMost(var ANode: TAVLTreeNode);
@@ -624,21 +623,23 @@ procedure TAVLTree.Clear;
 
   procedure DeleteNode(ANode: TAVLTreeNode);
   begin
-    if ANode.Left<>nil then DeleteNode(ANode.Left);
-    if ANode.Right<>nil then DeleteNode(ANode.Right);
+    if ANode<>nil then begin
+      if ANode.Left<>nil then DeleteNode(ANode.Left);
+      if ANode.Right<>nil then DeleteNode(ANode.Right);
+    end;
     DisposeNode(ANode);
   end;
 
 // Clear
 begin
-  if Root<>nil then
-    DeleteNode(Root);
+  DeleteNode(Root);
   fRoot:=nil;
   FCount:=0;
 end;
 
 constructor TAVLTree.Create(const OnCompareMethod: TListSortCompare);
 begin
+  fNodeMgr:=LazNodeMemManager;
   FOnCompare:=OnCompareMethod;
   Init;
 end;
@@ -646,6 +647,7 @@ end;
 constructor TAVLTree.CreateObjectCompare(
   const OnCompareMethod: TObjectSortCompare);
 begin
+  fNodeMgr:=LazNodeMemManager;
   FOnObjectCompare:=OnCompareMethod;
   Init;
 end;
@@ -1118,7 +1120,7 @@ end;
 
 procedure TAVLTree.ConsistencyCheck;
 
-  procedure E(Msg: string);
+  procedure E(const Msg: string);
   begin
     raise Exception.Create('TAVLTree.ConsistencyCheck: '+Msg);
   end;
@@ -1362,7 +1364,7 @@ end;
 
 procedure TAVLTreeNode.ConsistencyCheck(Tree: TAVLTree);
 
-  procedure E(Msg: string);
+  procedure E(const Msg: string);
   begin
     raise Exception.Create('TAVLTreeNode.ConsistencyCheck: '+Msg);
   end;
