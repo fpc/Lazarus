@@ -18,7 +18,8 @@ uses
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEUtils, IDEDialogs,
   // Pas2Js
-  PJSDsgnOptions, strpas2jsdesign, PJSController, SimpleWebSrvOptionsFrame;
+  PJSDsgnOptions, strpas2jsdesign, PJSController, SimpleWebSrvOptionsFrame,
+  FileProcs;
 
 Type
   { TPas2jsOptionsFrame }
@@ -204,7 +205,7 @@ begin
   FDialog := ADialog;
 
   DefPas2jsExe:=GetStandardPas2jsExe;
-  Pas2jsPathLabel.Caption:=SafeFormat(pjsdPathOfXMacroPas2js, ['pas2js'+GetExeExt]);
+  Pas2jsPathLabel.Caption:=CTSafeFormat(pjsdPathOfXMacroPas2js, ['pas2js'+GetExeExt]);
   Pas2jsPathLabel.Hint:=Format(
     pjsdYouCanUseIDEMacrosLikeMakeExeWithoutAFullPathIsSea, [DefPas2jsExe]);
   Pas2jsPathBrowseButton.Hint:=pjsdBrowse;

@@ -144,6 +144,7 @@ function CfgStrToDate(const s: string; out Date: TDateTime; const aFormat: strin
 
 procedure CTIncreaseChangeStamp(var ChangeStamp: integer); inline;
 procedure CTIncreaseChangeStamp64(var ChangeStamp: int64); inline;
+function CTSafeFormat(const Fmt: String; const Args: Array of const): String; // on exception use SimpleFormat
 function SimpleFormat(const Fmt: String; const Args: Array of const): String;
 
 // misc
@@ -266,6 +267,24 @@ end;
 procedure CTIncreaseChangeStamp64(var ChangeStamp: int64);
 begin
   LazFileCache.LUIncreaseChangeStamp64(ChangeStamp);
+end;
+
+function CTSafeFormat(const Fmt: String; const Args: array of const): String;
+begin
+  // try with translated resourcestring
+  try
+    Result:=Format(Fmt,Args);
+    exit;
+  except
+    on E: Exception do
+      debugln(['ERROR: SafeFormat: ',E.Message]);
+  end;
+  // translation didn't work
+  // ToDo: find out how to get the resourcestring default value
+  //ResetResourceTables;
+
+  // use a safe fallback
+  Result:=SimpleFormat(Fmt,Args);
 end;
 
 function SimpleFormat(const Fmt: String; const Args: array of const): String;

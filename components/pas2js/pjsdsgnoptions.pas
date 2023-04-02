@@ -14,7 +14,7 @@ uses
   // LazUtils
   LazFileCache, LazConfigStorage, LazFileUtils, FileUtil,
   // Codetools
-  DefineTemplates,
+  DefineTemplates, FileProcs,
   // IdeIntf
   MacroIntf, BaseIDEIntf;
 
@@ -158,15 +158,15 @@ begin
     exit(false);
   end;
   if not FileExistsCached(Filename) then begin
-    Msg:=SafeFormat(pjsdFileNotFound, [Filename]);
+    Msg:=CTSafeFormat(pjsdFileNotFound, [Filename]);
     exit(false);
   end;
   if not DirPathExistsCached(ExtractFilePath(Filename)) then begin
-    Msg:=SafeFormat(pjsdDirectoryNotFound, [ExtractFilePath(Filename)]);
+    Msg:=CTSafeFormat(pjsdDirectoryNotFound, [ExtractFilePath(Filename)]);
     exit(false);
   end;
   if not FileIsExecutable(Filename) then begin
-    Msg:=SafeFormat(pjsdFileNotExecutable, [Filename]);
+    Msg:=CTSafeFormat(pjsdFileNotExecutable, [Filename]);
     exit(false);
   end;
   ShortFile:=ExtractFileNameOnly(Filename);

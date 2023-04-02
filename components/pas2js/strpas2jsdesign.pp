@@ -128,27 +128,7 @@ Resourcestring
   pjsRefreshAllClassesFromHTML = 'Refresh all classes from HTML source';
   rsHTTPRequestFailed = 'HTML request to service URL %s failed: %s';
 
-function SafeFormat(const Fmt: String; const Args: Array of const): String;
-
 implementation
-
-function SafeFormat(const Fmt: String; const Args: array of const): String;
-begin
-  // try with translated resourcestring
-  try
-    Result:=Format(Fmt,Args);
-    exit;
-  except
-    on E: Exception do
-      debugln(['ERROR: SafeFormat: ',E.Message]);
-  end;
-  // translation didn't work
-  // ToDo: find out how to get the resourcestring default value
-  //ResetResourceTables;
-
-  // use a safe fallback
-  Result:=SimpleFormat(Fmt,Args);
-end;
 
 end.
 

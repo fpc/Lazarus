@@ -134,8 +134,6 @@ function GetValueFromPrimaryConfig(OptionFilename, Path: string): string;
 function GetValueFromSecondaryConfig(OptionFilename, Path: string): string;
 function GetValueFromIDEConfig(OptionFilename, Path: string): string;
 
-function SafeFormat(const Fmt: String; const Args: Array of const): String;
-
 implementation
 
 function CheckLazarusDirectoryQuality(ADirectory: string;
@@ -389,7 +387,7 @@ begin
     i:=CfgCache.IndexOfUsedCfgFile;
     if i<0 then
     begin
-      Note:=SafeFormat(lisCompilerCfgIsMissing,['fpc.cfg']);
+      Note:=CTSafeFormat(lisCompilerCfgIsMissing,['fpc.cfg']);
       exit;
     end;
     if not CfgCache.HasPPUs then
@@ -649,7 +647,7 @@ begin
     i:=CfgCache.IndexOfUsedCfgFile;
     if i<0 then
     begin
-      Note:=SafeFormat(lisCompilerCfgIsMissing,['pas2js.cfg']);
+      Note:=CTSafeFormat(lisCompilerCfgIsMissing,['pas2js.cfg']);
       exit;
     end;
     //if not CheckPas('classes') then exit;
@@ -1070,24 +1068,6 @@ begin
       end;
     end;
   end;
-end;
-
-function SafeFormat(const Fmt: String; const Args: array of const): String;
-begin
-  // try with translated resourcestring
-  try
-    Result:=Format(Fmt,Args);
-    exit;
-  except
-    on E: Exception do
-      debugln(['ERROR: SafeFormat: ',E.Message]);
-  end;
-  // translation didn't work
-  // ToDo: find out how to get the resourcestring default value
-  //ResetResourceTables;
-
-  // use a safe fallback
-  Result:=SimpleFormat(Fmt,Args);
 end;
 
 { TSDFileInfoList }
