@@ -4990,9 +4990,10 @@ function TFpPasParserValueSlicedArray.GetMember(AIndex: Int64): TFpValue;
 begin
   if SlicePart.FCurrentIndex = AIndex then begin
     Result := FArraySlice.Items[0].ResultValue;
-    if Result <> nil then
+    if Result <> nil then begin
       Result.AddReference;
       Result.Reset;
+    end;
     exit;
   end;
 

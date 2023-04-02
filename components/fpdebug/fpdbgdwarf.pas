@@ -2599,6 +2599,8 @@ var
 begin
   ASubStr := '';
   Result := True;
+  if ALen <= 0 then
+    exit;
 
   t := TypeInfo;
   if t = nil then
@@ -2629,7 +2631,7 @@ begin
       then
         ALen := MemManager.MemLimits.MaxStringLen;
 
-      {$PUSH}{$Q-}
+      {$PUSH}{$Q-}{$R-}
       Addr.Address := Addr.Address + AStartIndex - 1;
       {$POP}
       if not ( (MemManager.SetLength(ASubStr, ALen)) and
@@ -2702,7 +2704,7 @@ begin
       then
         ALen := MemManager.MemLimits.MaxStringLen * 2;
 
-      {$PUSH}{$Q-}
+      {$PUSH}{$Q-}{$R-}
       Addr.Address := Addr.Address + (AStartIndex - 1) * 2;
       {$POP}
       if not ( (MemManager.SetLength(ASubStr, ALen)) and
@@ -4093,6 +4095,8 @@ begin
   // TODO: if FValueDone, and covers selected range, then use FValue;
   ASubStr := '';
   Result := True;
+  if ALen <= 0 then
+    exit;
 
   dec(AStartIndex);
   if AStartIndex < 0 then begin // not supported, return partial
