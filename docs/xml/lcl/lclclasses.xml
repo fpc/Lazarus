@@ -164,6 +164,8 @@ is destroyed.
 </element>
 
 <element name="TLCLComponent.IncLCLRefCount" link="#lcl.lclclasses.TLCLComponent.LCLRefCount"/>
+
+<!-- TODO: Modified in 0d415cb2. Issue #40183. -->
 <element name="TLCLComponent.DecLCLRefCount" link="#lcl.lclclasses.TLCLComponent.LCLRefCount"/>
 
 <element name="TLCLComponent.LCLRefCount">
@@ -340,6 +342,16 @@ prior to exiting from the method.
 <short>
 If <b>True</b>, a Reference has been allocated for this component.
 </short>
+</element>
+
+<!-- TODO: Added in 0d415cb2. Issue #40183. -->
+<element name="OnDecLCLRefcountToZero">
+<short/>
+<descr/>
+<verison>
+Added in LCL version 2.4.
+</verison>
+<seealso/>
 </element>
 
 </module>
