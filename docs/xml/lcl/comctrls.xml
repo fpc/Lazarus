@@ -29349,7 +29349,9 @@ freed. Destroy calls the inherited method prior to exit.
 Adds a new tree node as a sibling of the specified node.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTreeNodes.AddObject"/>
+</seealso>
 </element>
 <element name="TTreeNodes.Add.Result">
 <short>Tree node created and added in the method.</short>
@@ -29360,15 +29362,6 @@ Adds a new tree node as a sibling of the specified node.
 <element name="TTreeNodes.Add.S">
 <short>Text for the new tree node.</short>
 </element>
-<!-- WIP: Here -->
-<element name="TTreeNodes.Add.Data">
-<short>Pointer to the data for the new tree node.</short>
-</element>
-<element name="TTreeNodes.Add.AddMode">
-<short>
-Indicates the position for the new node relative to its sibling(s).
-</short>
-</element>
 
 <element name="TTreeNodes.AddChild">
 <short>
@@ -29376,7 +29369,9 @@ Adds a tree node with the specified text as a child of the specified parent
 node.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTreeNodes.AddChildObject"/>
+</seealso>
 </element>
 <element name="TTreeNodes.AddChild.Result">
 <short>TTreeNode instance created in the method.</short>
@@ -29390,88 +29385,142 @@ node.
 
 <element name="TTreeNodes.AddChildFirst">
 <short>
-<var>AddChildFirst</var> - adds a node with specified text as the first child 
-of the parent node and returns the new node.
+Adds a node with specified text as the first child of the parent node and 
+returns the new node.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTreeNodes.InternalAddObject"/>
+</seealso>
 </element>
 <element name="TTreeNodes.AddChildFirst.Result">
-<short/>
+<short>
+New child node created in the method.
+</short>
 </element>
 <element name="TTreeNodes.AddChildFirst.ParentNode">
-<short/>
+<short>
+Node which is the parent for the new child node.
+</short>
 </element>
 <element name="TTreeNodes.AddChildFirst.S">
-<short/>
+<short>
+Text for the child node created in the method.
+</short>
 </element>
 
 <element name="TTreeNodes.AddChildObject">
 <short>
-<var>AddChildObject</var> - adds a child node with specified text and 
-data-pointer to the parent node and returns the new node.
+Adds a child node with specified text and data to the parent node and returns 
+the new node.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTreeNodes.InternalAddObject"/>
+</seealso>
 </element>
 <element name="TTreeNodes.AddChildObject.Result">
-<short/>
+<short>
+TTreeNode instance created in the method.
+</short>
 </element>
 <element name="TTreeNodes.AddChildObject.ParentNode">
-<short/>
+<short>
+Node which is the parent for the new child node.
+</short>
 </element>
 <element name="TTreeNodes.AddChildObject.S">
-<short/>
+<short>
+Text for the child node created in the method.
+</short>
 </element>
 <element name="TTreeNodes.AddChildObject.Data">
-<short/>
+<short>
+Pointer to the data for the node created in the method.
+</short>
 </element>
 
 <element name="TTreeNodes.AddChildObjectFirst">
 <short>
-<var>AddChildObjectFirst</var> - adds a node with specified text and data as 
-the first child of the parent node and returns the new node.
+Adds a node with the specified text and data as the first child node in the 
+parent node.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTreeNodes.InternalAddObject"/>
+</seealso>
 </element>
 <element name="TTreeNodes.AddChildObjectFirst.Result">
-<short/>
+<short>
+TTreeNode instance created in the method.
+</short>
 </element>
 <element name="TTreeNodes.AddChildObjectFirst.ParentNode">
-<short/>
+<short>
+Node which is the parent for the new child node.
+</short>
 </element>
 <element name="TTreeNodes.AddChildObjectFirst.S">
-<short/>
+<short>
+Text for the tree node created in the method.
+</short>
 </element>
 <element name="TTreeNodes.AddChildObjectFirst.Data">
-<short/>
+<short>
+Pointer to the data for the new child node.
+</short>
 </element>
 
 <element name="TTreeNodes.AddFirst">
 <short>
-<var>AddFirst</var> - adds a node with specified text as the first node in 
-the same level as <var>SiblingNode.</var> and returns the new node.
+Adds a node with the specified text as the first node at the same level as the 
+sibling node.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTreeNodes.AddObjectFirst"/>
+</seealso>
 </element>
 <element name="TTreeNodes.AddFirst.Result">
-<short/>
+<short>
+TTreeNode instance created in the method.
+</short>
 </element>
 <element name="TTreeNodes.AddFirst.SiblingNode">
-<short/>
+<short>
+Node which is a sibling for the new node. Provides the Level for the new 
+node.
+</short>
 </element>
 <element name="TTreeNodes.AddFirst.S">
-<short/>
+<short>
+Text for the new node created in the method.
+</short>
 </element>
 
 <element name="TTreeNodes.AddNode">
 <short>
 Adds or inserts a tree node as a sibling to a specified relative node.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Method determines where the tree node is stored in relation to the Relative 
+node, and may be overridden (changed to naAdd or naInsert) if a parent or 
+sibling node cannot be determined for the operation.
+</p>
+<p>
+AddNode calls the InternalAddObject method to create the new node used as the 
+return value.
+</p>
+</descr>
+<errors>
+Raises an ETreeNodeError exception if the Relative node has not been assigned 
+and Method is not naAdd or naAddFirst.
+</errors>
+<seealso>
+<link id="TTreeNodes.InternalAddObject"/>
+<link id="ETreeNodeError"/>
+</seealso>
 </element>
 <element name="TTreeNodes.AddNode.Result">
 <short>Tree node with an updated Parent node after the operation.</short>
@@ -29494,65 +29543,100 @@ Adds or inserts a tree node as a sibling to a specified relative node.
 
 <element name="TTreeNodes.AddObject">
 <short>
-<var>AddObject</var> - adds a node with specified text and data-pointer in 
-the same level as <var>SiblingNode.</var> and returns the new node.
+Adds a node with the specified text and data at the same level as the sibling 
+node.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTreeNodes.InternalAddObject"/>
+</seealso>
 </element>
 <element name="TTreeNodes.AddObject.Result">
-<short/>
+<short>
+TTreeNode instance created in the method.
+</short>
 </element>
 <element name="TTreeNodes.AddObject.SiblingNode">
-<short/>
+<short>
+Node which is a sibling for the newly created tree node. Provides access to 
+the Parent node (when assigned).
+</short>
 </element>
 <element name="TTreeNodes.AddObject.S">
-<short/>
+<short>
+Text for the new tree node.
+</short>
 </element>
 <element name="TTreeNodes.AddObject.Data">
-<short/>
+<short>
+Pointer to the data for the new tree node.
+</short>
 </element>
 
 <element name="TTreeNodes.AddObjectFirst">
 <short>
-<var>AddObjectFirst</var> - adds a node with specified text and data-pointer 
-as the first node in the same level as <var>SiblingNode.</var> and returns 
-the new node.
+Adds a node with the specified text and data as the first node at the same 
+level as the sibling node.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTreeNodes.InternalAddObject"/>
+</seealso>
 </element>
 <element name="TTreeNodes.AddObjectFirst.Result">
-<short/>
+<short>
+TTreeNode instance created in the method.
+</short>
 </element>
 <element name="TTreeNodes.AddObjectFirst.SiblingNode">
-<short/>
+<short>
+Node which is a sibling for the new tree node. Provides the Level for the new tree node.
+</short>
 </element>
 <element name="TTreeNodes.AddObjectFirst.S">
-<short/>
+<short>
+Text for the new tree node.
+</short>
 </element>
 <element name="TTreeNodes.AddObjectFirst.Data">
-<short/>
+<short>
+Pointer to the data for the new tree node.
+</short>
 </element>
 
 <element name="TTreeNodes.FindNodeWithData">
 <short>
-<var>FindNodeWithData</var> - returns a node containing the specified data 
-pointer.
+Finds a node containing the specified data.
 </short>
-<descr/>
+<descr>
+<p>
+Iterates over the nodes in the container to locate a TTreeNode instance which 
+contains NodeData in its Data property. GetFirstNode provides the first node 
+examined in the container. The process continues until NodeData is located, or 
+GetNext does not return a TTreeNode instance.
+</p>
+<p>
+The return value contains <b>Nil</b> if NodeData is not found in the tree 
+nodes.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TTreeNodes.FindNodeWithData.Result">
-<short/>
+<short>
+TTreeNode instance which contains the specified data, or <b>Nil</b> when not 
+found.
+</short>
 </element>
 <element name="TTreeNodes.FindNodeWithData.NodeData">
-<short/>
+<short>
+Pointer to the node data to locate in tree nodes for the container.
+</short>
 </element>
 
 <element name="TTreeNodes.FindNodeWithText">
 <short>
-Finds a node containing the specified text string.
+Finds a tree node containing the specified text.
 </short>
 <descr>
 <p>
@@ -29713,13 +29797,20 @@ Gets the TTreeNodesEnumerator enumerator for the class instance.
 
 <element name="TTreeNodes.GetFirstNode">
 <short>
-<var>GetFirstNode</var> - returns the first node in the collection.
+Gets the first tree node in the container.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTreeNodes.TopLvlItems"/>
+<link id="TTreeNodes.TopLvlCount"/>
+<link id="TTreeNode.Level"/>
+</seealso>
 </element>
 <element name="TTreeNodes.GetFirstNode.Result">
-<short/>
+<short>
+TTreeNode instance which is stored as the first top-level tree node, or 
+<b>Nil</b> when the container is empty.
+</short>
 </element>
 
 <element name="TTreeNodes.GetFirstVisibleNode">
@@ -29728,10 +29819,17 @@ Gets the first top-level tree node with its Visible property set to
 <b>True</b>.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTreeNodes.TopLvlItems"/>
+<link id="TTreeNodes.TopLvlCount"/>
+<link id="TTreeNode.Level"/>
+<link id="TTreeNode.Visible"/>
+</seealso>
 </element>
 <element name="TTreeNodes.GetFirstVisibleNode.Result">
-<short/>
+<short>
+Visible TTreeNode instance found in the method, or <b>Nil</b>.
+</short>
 </element>
 
 <element name="TTreeNodes.GetFirstVisibleEnabledNode">
@@ -29739,21 +29837,37 @@ Gets the first top-level tree node with its Visible property set to
 Gets the first top-level sibling node that is visible and enabled.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTreeNodes.TopLvlItems"/>
+<link id="TTreeNodes.TopLvlCount"/>
+<link id="TTreeNode.Level"/>
+<link id="TTreeNode.Visible"/>
+<link id="TTreeNode.Enabled"/>
+</seealso>
 </element>
 <element name="TTreeNodes.GetFirstVisibleEnabledNode.Result">
-<short/>
+<short>
+Visible TTreeNode instance found in the method, or <b>Nil</b>.
+</short>
 </element>
 
 <element name="TTreeNodes.GetLastExpandedSubNode">
 <short>
-Absolute last visible, enabled, expanded tree node in the node hierarchy.
+Gets the last visible, enabled, expanded tree node in the node hierarchy.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTreeNodes.GetLastVisibleEnabledNode"/>
+<link id="TTreeNode.GetLastVisibleChild"/>
+<link id="TTreeNode.Visible"/>
+<link id="TTreeNode.Enabled"/>
+<link id="TTreeNode.Expanded"/>
+</seealso>
 </element>
 <element name="TTreeNodes.GetLastExpandedSubNode.Result">
-<short/>
+<short>
+TTreeNode instance found in the method, or <b>Nil</b>.
+</short>
 </element>
 
 <element name="TTreeNodes.GetLastNode">
@@ -29761,10 +29875,16 @@ Absolute last visible, enabled, expanded tree node in the node hierarchy.
 Gets the last top-level tree node in the container.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTreeNodes.TopLvlItems"/>
+<link id="TTreeNodes.TopLvlCount"/>
+<link id="TTreeNode.Level"/>
+</seealso>
 </element>
 <element name="TTreeNodes.GetLastNode.Result">
-<short/>
+<short>
+TTreeNode instance found in the method, or <b>Nil</b>.
+</short>
 </element>
 
 <element name="TTreeNodes.GetLastSubNode">
@@ -29772,10 +29892,14 @@ Gets the last top-level tree node in the container.
 Gets the last child or descendent node in the last top-level node.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTreeNode.GetLastSubChild"/>
+</seealso>
 </element>
 <element name="TTreeNodes.GetLastSubNode.Result">
-<short/>
+<short>
+TTreeNode instance found in the method, or <b>Nil</b>.
+</short>
 </element>
 
 <element name="TTreeNodes.GetLastVisibleNode">
@@ -29784,10 +29908,16 @@ Gets the last top-level tree node with its Visible property set to
 <b>True</b>.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTreeNodes.TopLvlItems"/>
+<link id="TTreeNodes.TopLvlCount"/>
+<link id="TTreeNode.Visible"/>
+</seealso>
 </element>
 <element name="TTreeNodes.GetLastVisibleNode.Result">
-<short/>
+<short>
+TTreeNode instance found in the method, or <b>Nil</b>.
+</short>
 </element>
 
 <element name="TTreeNodes.GetLastVisibleEnabledNode">
@@ -29795,7 +29925,12 @@ Gets the last top-level tree node with its Visible property set to
 Gets the last top-level sibling node that is visible and enabled.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTreeNodes.TopLvlItems"/>
+<link id="TTreeNodes.TopLvlCount"/>
+<link id="TTreeNode.Visible"/>
+<link id="TTreeNode.Enabled"/>
+</seealso>
 </element>
 <element name="TTreeNodes.GetLastVisibleEnabledNode.Result">
 <short>
@@ -29815,7 +29950,11 @@ valid ordinal position in the internal selection list. AIndex must be in the
 range <b>0..<var>SelectionCount</var>-1</b>.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TTreeNodes.SelectOnlyThis"/>
+<link id="TTreeNodes.SelectionCount"/>
+<link id="TTreeNodes.SelectionsChanged"/>
+</seealso>
 </element>
 <element name="TTreeNodes.GetSelections.Result">
 <short>Tree node at the specified position in the selection list.</short>
@@ -29826,78 +29965,120 @@ range <b>0..<var>SelectionCount</var>-1</b>.
 
 <element name="TTreeNodes.Insert">
 <short>
-Inserts a node with the specified text before the specified node.
+Inserts a tree node with the specified text before the specified node.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTreeNodes.InsertObject"/>
+<link id="TTreeNode.Text"/>
+<link id="TTreeNode.Level"/>
+</seealso>
 </element>
 <element name="TTreeNodes.Insert.Result">
-<short/>
+<short>
+TTreeNode instance created and stored in the method.
+</short>
 </element>
 <element name="TTreeNodes.Insert.NextNode">
-<short/>
+<short>
+Tree node that will become the next sibling for the inserted node.
+</short>
 </element>
 <element name="TTreeNodes.Insert.S">
-<short/>
+<short>
+Text for the tree node created and stored in the method.
+</short>
 </element>
 
 <element name="TTreeNodes.InsertBehind">
 <short>
-Inserts a new node with the specified text just after the specified node.
+Inserts a new tree node with the specified text just after the specified node.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTreeNodes.InsertObjectBehind"/>
+<link id="TTreeNode.Text"/>
+<link id="TTreeNode.Level"/>
+</seealso>
 </element>
 <element name="TTreeNodes.InsertBehind.Result">
-<short/>
+<short>
+TTreeNode instance created and stored in the method.
+</short>
 </element>
 <element name="TTreeNodes.InsertBehind.PrevNode">
-<short/>
+<short>
+Tree node that will become the previous sibling for the inserted node.
+</short>
 </element>
 <element name="TTreeNodes.InsertBehind.S">
-<short/>
+<short>
+Text for the tree node created and stored in the method.
+</short>
 </element>
 
 <element name="TTreeNodes.InsertObject">
 <short>
-<var>InsertObject</var> - inserts a new node with specified text and data 
-just before the specified Next node and returns the new node.
+Inserts a new tree node with the specified text and data just before the 
+specified node.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTreeNodes.InternalAddObject"/>
+</seealso>
 </element>
 <element name="TTreeNodes.InsertObject.Result">
-<short/>
+<short>
+TTreeNode instance created and stored in the method.
+</short>
 </element>
 <element name="TTreeNodes.InsertObject.NextNode">
-<short/>
+<short>
+Node which becomes the next sibling for the inserted node.
+</short>
 </element>
 <element name="TTreeNodes.InsertObject.S">
-<short/>
+<short>
+Text for the tree node created in the method.
+</short>
 </element>
 <element name="TTreeNodes.InsertObject.Data">
-<short/>
+<short>
+Pointer to the data for the tree node created in the method.
+</short>
 </element>
 
 <element name="TTreeNodes.InsertObjectBehind">
 <short>
-<var>InsertObjectBehind</var> - inserts a new node with specified text and 
-data-pointer just behind specified Previous node and returns the new node.
+Inserts a new tree node with the specified text and data just behind the 
+specified node.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTreeNodes.InternalAddObject"/>
+<link id="TTreeNodes.AddObject"/>
+<link id="TTreeNode.GetNextSibling"/>
+</seealso>
 </element>
 <element name="TTreeNodes.InsertObjectBehind.Result">
-<short/>
+<short>
+TTreeNode instance created and stored in the method.
+</short>
 </element>
 <element name="TTreeNodes.InsertObjectBehind.PrevNode">
-<short/>
+<short>
+Node which becomes the previous sibling for the inserted node.
+</short>
 </element>
 <element name="TTreeNodes.InsertObjectBehind.S">
-<short/>
+<short>
+Text for the tree node created in the method.
+</short>
 </element>
 <element name="TTreeNodes.InsertObjectBehind.Data">
-<short/>
+<short>
+Pointer to the data for the tree node created in the method.
+</short>
 </element>
 
 <element name="TTreeNodes.IsMultiSelection">
@@ -29906,7 +30087,9 @@ data-pointer just behind specified Previous node and returns the new node.
 selection list.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTreeNode.GetNextMultiSelected"/>
+</seealso>
 </element>
 <element name="TTreeNodes.IsMultiSelection.Result">
 <short>
@@ -29917,59 +30100,178 @@ selection list.
 
 <element name="TTreeNodes.Assign">
 <short>
-<var>Assign</var> - if <var>Source</var> is of correct type, copies 
-properties directly, otherwise calls inherited <var>Assign</var> which 
-probably raises an exception.
+Implements object persistence for the tree node container. 
 </short>
-<descr/>
+<descr>
+<p>
+<var>Assign</var> is an overridden method in <var>TTreeNodes</var> used to 
+copy values from the persistent object in Source to the current class 
+instance. Assign ensures that the cache for the container is cleared prior to 
+loading values from Source.
+</p>
+<p>
+If Source is derived from TTreeNodes, the nodes in the container are cleared 
+and recreated from the nodes in Source. Node information handled in the method 
+includes:
+</p>
+<ul>
+<li>ImageIndex</li>
+<li>SelectedIndex</li>
+<li>OverlayIndex</li>
+<li>StateIndex</li>
+<li>Height</li>
+<li>Data pointer (depending on LCL version)</li>
+<li>Count</li>
+<li>Expanded</li>
+<li>Text</li>
+</ul>
+<p>
+If Source is not derived from TTreeNodes, the inherited method is called to 
+perform object persistence.
+</p>
+<p>
+If Source is <b>Nil</b>, an EConvertError exception is raised.
+</p>
+</descr>
 <seealso>
+<link id="TTreeNodes.Clear"/>
+<link id="TTreeNode"/>
 <link id="#rtl.classes.TPersistent.Assign">TPersistent.Assign</link>
 </seealso>
 </element>
 <element name="TTreeNodes.Assign.Source">
-<short/>
+<short>
+Persistent object with the values copied in the method.
+</short>
 </element>
 
 <element name="TTreeNodes.BeginUpdate">
 <short>
 Starts an update process for the tree nodes in the container.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Increments the internal counter used to track active updates to the container.
+</p>
+</descr>
+<seealso>
+<link id="TTreeNodes.EndUpdate"/>
+<link id="TTreeNodes.Clear"/>
+<link id="TTreeNodes.FreeAllNodeData"/>
+</seealso>
 </element>
 
 <element name="TTreeNodes.Clear">
 <short>
 Removes tree nodes in the container and its internal cache.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>Clear</var> is a method used to remove all of the existing TTreeNode 
+instances found in the container. In addition, the internal TNodeCache for the 
+container is cleared.
+</p>
+<p>
+Clear visits the tree nodes in the container and calls its Delete method to 
+physically remove the node. This process is repeated until there a TTreeNode 
+instance is not available from the GetLastNode method. The internal selection 
+list for the container is cleared, as are child accessibility objects in the 
+Owner (TCustomTreeView).
+</p>
+<p>
+Clear encloses these operations with BeginUpdate and EndUpdate to prevent 
+updates to the container while the method is active.
+</p>
+</descr>
+<seealso>
+<link id="TTreeNodes.BeginUpdate"/>
+<link id="TTreeNodes.EndUpdate"/>
+<link id="TTreeNodes.GetLastNode"/>
+<link id="TTreeNode.Delete"/>
+<link id="TNodeCache"/>
+</seealso>
 </element>
 
 <element name="TTreeNodes.ClearMultiSelection">
 <short>
-<var>ClearMultiSelection</var> - clears a series of nodes in a 
-multi-selection (provided the selection has not already been cleared).
+Clears the nodes in a multi-selection and optionally the selected node on the 
+tree view control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>ClearMultiSelection</var> is a method used to remove the internal node 
+references used for a multi-selection range in the container. Each node in the 
+range sets its MultiSelected property to <b>False</b> to remove it from the 
+selection range. The GetNextMultiSelected method for the tree node is called 
+to get the next node in the multi-selection. The process is repeated until 
+there are no more nodes with their MultiSelected properties enabled.
+</p>
+<p>
+The ClearSelected argument indicates whether the Selected node in the tree 
+view control is cleared. When set to <b>True</b>, the Selected property in the 
+Owner is set to <b>Nil</b>. The default value for the argument is <b>False</b>.
+</p>
+<p>
+Updates to the multi-selection range are enclosed by calls to the 
+LockSelectionChangeEvent and UnlockSelectionChangeEvent methods in the Owner 
+control (when assigned). This prevents selection change events on the tree 
+view control while the method is active.
+</p>
+</descr>
+<seealso>
+<link id="TTreeNode.MultiSelected"/>
+<link id="TTreeNode.GetNextMultiSelected"/>
+<link id="TCustomTreeView.Selected"/>
+<link id="TCustomTreeView.LockSelectionChangeEvent"/>
+<link id="TCustomTreeView.UnlockSelectionChangeEvent"/>
+</seealso>
+</element>
+<element name="TTreeNodes.ClearMultiSelection.ClearSelected">
+<short>
+<b>True</b> to clear the Selected property on the tree view control.
+</short>
 </element>
 
 <element name="TTreeNodes.ConsistencyCheck">
 <short>
-<var>ConsistencyCheck</var> - makes sure all references to and from the nodes 
-are consistent.
+Makes sure all references for nodes in the container are consistent.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>ConsistencyCheck</var> is a method used to ensure that references between 
+nodes in the container are valid and consistent. ConsistencyCheck raises 
+catchable debugger exceptions when error conditions are detected in the class 
+instance, including:
+</p>
+<ul>
+<li>TopLvlItems is empty.</li>
+<li>TopLvlCount does not match the number of top-level items.</li>
+<li>Invalid sibling nodes or node count.</li>
+<li>Invalid child nodes or node count.</li>
+<li>Invalid index value for a node.</li>
+<li>A node is not found in the node cache.</li>
+</ul>
+</descr>
+<seealso>
+<link id="TTreeNode.ConsistencyCheck"/>
+</seealso>
 </element>
 
 <element name="TTreeNodes.Delete">
 <short>
 Removes the specified tree node from the container.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Delete calls the corresponding method in the tree node instance to physically 
+remove the node from the container. If the internal update counter is 0 and a 
+tree view control has been assigned in Owner, the tree view control is redrawn.
+</p>
+</descr>
+<seealso>
+<link id="TTreeNode.Delete"/>
+<link id="TCustomTreeview.Invalidate"/>
+</seealso>
 </element>
 <element name="TTreeNodes.Delete.Node">
 <short>Tree node deleted in the method.</short>
@@ -29979,13 +30281,21 @@ Removes the specified tree node from the container.
 <short>
 Finishes an update process for the tree nodes in the container.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Decrements the internal counter used to track active updates to the container.
+</p>
+</descr>
+<seealso>
+<link id="TTreeNodes.BeginUpdate"/>
+<link id="TTreeNodes.Clear"/>
+<link id="TTreeNodes.FreeAllNodeData"/>
+</seealso>
 </element>
 
 <element name="TTreeNodes.FreeAllNodeData">
 <short>
-Frees the pointer in the Data property for all nodes in the container.
+Frees the pointer in the Data property for each of the nodes in the container.
 </short>
 <descr/>
 <seealso/>
@@ -30099,7 +30409,7 @@ Sorts the top-level nodes using the specified sorting procedure.
 
 <element name="TTreeNodes.Count">
 <short>
-Contains the number of nodes in the container.
+Contains the number of tree nodes in the container.
 </short>
 <descr/>
 <seealso/>
