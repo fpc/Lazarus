@@ -14285,6 +14285,19 @@ needed).
 <seealso/>
 </element>
 
+<!-- TODO: Added in 0d415cb2. Issue #40183. -->
+<element name="TApplication.DoDecLCLRefcountToZero">
+<short/>
+<descr/>
+<version>
+Added in LCL version 2.4.
+</version>
+<seealso/>
+</element>
+<element name="TApplication.DoDecLCLRefcountToZero.Sender">
+<short/>
+</element>
+
 <element name="TApplication.FreeComponent" link="#lcl.forms.TApplication.ReleaseComponents"/>
 <element name="TApplication.FreeComponent.Data">
 <short>Ignored, should be zero.</short>
@@ -14667,6 +14680,7 @@ Object instance with the queued TMethod request removed in the method.
 </short>
 </element>
 
+<!-- TODO: Modified in 0d415cb2. Issue #40183. -->
 <element name="TApplication.ReleaseComponent">
 <short>
 Safely destroys a component used in the application.
