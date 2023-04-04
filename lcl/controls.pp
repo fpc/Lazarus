@@ -4032,11 +4032,6 @@ begin
   if Source is TControlChildSizing then begin
     SrcSizing:=TControlChildSizing(Source);
     if IsEqual(SrcSizing) then exit;
-
-    FEnlargeHorizontal:=SrcSizing.EnlargeHorizontal;
-    FEnlargeVertical:=SrcSizing.EnlargeVertical;
-    FShrinkHorizontal:=SrcSizing.ShrinkHorizontal;
-    FShrinkVertical:=SrcSizing.ShrinkVertical;
     FEnlargeHorizontal:=SrcSizing.EnlargeHorizontal;
     FEnlargeVertical:=SrcSizing.EnlargeVertical;
     FShrinkHorizontal:=SrcSizing.ShrinkHorizontal;
@@ -4061,10 +4056,6 @@ end;
 function TControlChildSizing.IsEqual(Sizing: TControlChildSizing): Boolean;
 begin
   Result:=(FEnlargeHorizontal=Sizing.EnlargeHorizontal)
-      and (FEnlargeVertical=Sizing.EnlargeVertical)
-      and (FShrinkHorizontal=Sizing.ShrinkHorizontal)
-      and (FShrinkVertical=Sizing.ShrinkVertical)
-      and (FEnlargeHorizontal=Sizing.EnlargeHorizontal)
       and (FEnlargeVertical=Sizing.EnlargeVertical)
       and (FShrinkHorizontal=Sizing.ShrinkHorizontal)
       and (FShrinkVertical=Sizing.ShrinkVertical)
