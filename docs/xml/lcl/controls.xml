@@ -18462,10 +18462,6 @@ The following property values are copied from Source:
 <li>EnlargeVertical</li>
 <li>ShrinkHorizontal</li>
 <li>ShrinkVertical</li>
-<li>EnlargeHorizontal</li>
-<li>EnlargeVertical</li>
-<li>ShrinkHorizontal</li>
-<li>ShrinkVertical</li>
 <li>ControlsPerLine</li>
 <li>Layout</li>
 <li>LeftRightSpacing</li>
@@ -18479,7 +18475,7 @@ the same values as the properties in the class instance.
 </p>
 <p>
 If Source is not derived from TControlChildSizing, the inherited Assign method 
-is called top copy the values in Source.
+is called to copy the values in Source.
 </p>
 </descr>
 <seealso/>
