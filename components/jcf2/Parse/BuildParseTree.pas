@@ -2536,6 +2536,7 @@ const
     ttProcedure, ttFunction, ttOperator, ttConstructor, ttDestructor, ttClass, ttAsm, ttGeneric, ttCase];
 var
   leEndVarSection: TTokenTypeSet;
+  lVarType:TVarType;
 begin
   leEndVarSection := END_VAR_SECTION;
   if pbClassVars then
@@ -2553,10 +2554,15 @@ begin
   Recognise([ttVar, ttThreadvar]);
 
   // can be empty
+  if pbClassVars then
+    lVarType:=vtInClassBody
+  else
+    lVarType:=vtNormal;
   while not (fcTokenList.FirstSolidTokenType in leEndVarSection) do
   begin
-    RecogniseVarDecl;
-    Recognise(ttSemicolon);
+    RecogniseVarDecl(lVarType);
+    if not (fcTokenList.FirstSolidTokenType in leEndVarSection) then
+      Recognise(ttSemicolon);
   end;
 
   PopNode;
