@@ -14285,14 +14285,34 @@ needed).
 <seealso/>
 </element>
 
-<!-- TODO: Added in 0d415cb2. Issue #40183. -->
 <element name="TApplication.DoDecLCLRefcountToZero">
-<short/>
-<descr/>
+<short>
+Performs actions needed when the reference count for a TLCLComponent instance 
+reaches 0 in the application.
+</short>
+<descr>
+<p>
+DoDecLCLRefcountToZero is used in the ReleaseComponent method, and is assigned 
+as the handler routine for the OnDecLCLRefcountToZero event when the 
+LCLRefCount for the TLCLComponent has a value larger than 0.
+</p>
+<p>
+DoDecLCLRefcountToZero ensures that the global OnDecLCLRefcountToZero handler 
+in <file>lclclasses.pp</file> is unassigned and a call to FreeComponent is 
+queued for asynchronous execution in the application. This is done to prevent 
+an exception that occurs when the component is freed while a previous call to 
+the OnDecLCLRefcountToZero handler is still in process.
+</p>
+</descr>
 <version>
 Added in LCL version 2.4.
 </version>
-<seealso/>
+<seealso>
+<link id="TApplication.ReleaseComponent"/>
+<link id="TApplication.FreeComponent"/>
+<link id="#lcl.lclclasses.TLCLComponent.LCLRefCount">TLCLComponent.LCLRefCount</link>
+<link id="#lcl.lclclasses.OnDecLCLRefcountToZero">OnDecLCLRefcountToZero</link>
+</seealso>
 </element>
 <element name="TApplication.DoDecLCLRefcountToZero.Sender">
 <short/>
@@ -14680,7 +14700,6 @@ Object instance with the queued TMethod request removed in the method.
 </short>
 </element>
 
-<!-- TODO: Modified in 0d415cb2. Issue #40183. -->
 <element name="TApplication.ReleaseComponent">
 <short>
 Safely destroys a component used in the application.
@@ -14688,19 +14707,26 @@ Safely destroys a component used in the application.
 <descr>
 <p>
 <var>ReleaseComponent</var> is a method used to ensure that the component in 
-AComponent is freed in the application. During normal processing, 
-ReleaseComponent adds the <var>TComponent</var> instance to a list and queues 
-an asynchronously call to <var>FreeComponent</var>. This allows the component 
-to be freed when the application enters an idle state.
+AComponent is freed in the application. 
+</p>
+<p>
+No actions are performed in the method if <var>Destroy</var> has already been 
+called for AComponent (<var>ComponentState</var> contains 
+<var>csDestroying</var>).
 </p>
 <p>
 If the Application <var>Flags</var> contains <var>AppDestroying</var>, the 
 <var>Free</var> method for AComponent is called immediately.
 </p>
 <p>
-No actions are performed in the method if <var>Destroy</var> has already been 
-called for AComponent (<var>ComponentState</var> contains 
-<var>csDestroying</var>).
+During normal processing, ReleaseComponent adds the component instance to a 
+list of components pending release when it is not already present. Its 
+FreeNotification method is called to perform notifications for owners. If it 
+is the first item in the pending release list, the OnDecLCLRefcountToZero 
+handler in <file>lclclasses.pp</file> is set to the DoDecLCLRefcountToZero 
+method for the application. This ensures that an asynchronously call to 
+<var>FreeComponent</var> is performed when the reference count reaches 0 and 
+the application enters an idle state.
 </p>
 <p>
 ReleaseComponent is called from the <var>ReleaseComponents</var> method in 
@@ -14848,7 +14874,7 @@ can be shown.
 </p>
 <p>
 The OnException event handler (and other handlers for the ahtException handler 
-type) are signalled (when assigned). If OnException handlers are not used,  
+type) are signalled (when assigned). If OnException handlers are not used, 
 the ShowException method is called.
 </p>
 <p>
