@@ -451,6 +451,8 @@ begin
     gtClass:       HandleClass(ANode);
     gtInterface:   HandleInterface(ANode);
     gtMethod:      HandleFunction(ANode);
+    gtFunctionMacro:; // ignore
+    gtDocSection:  ;  // ignore
     else
       girError(geError, 'Unknown NodeType: '+ANode.NodeName);
   end;

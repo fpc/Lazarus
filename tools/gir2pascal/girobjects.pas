@@ -568,7 +568,8 @@ begin
       begin
         FIsArray:=True;
         FPropType := TgirNamespace(Owner).LookupTypeByName(TDomElement(Node.FindNode('type')).GetAttribute('name'), Node.GetAttribute('c:type'));
-      end
+      end;
+      gtAttribute:; // ignore
       else
         WriteLn('Unknown Node Type for property : ', Node.NodeName);
         halt(1);
