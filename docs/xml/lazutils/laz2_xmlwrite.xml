@@ -54,12 +54,23 @@ WriteXMLFile and WriteXML routines.
 <!-- enumeration value Visibility: default -->
 <element name="TXMLWriterFlag.xwfAllowNullCharsInAttributeValue">
 <short>
-Enables writing encoded #0.  Without this flag an error will be raised.
+Enables writing encoded #0.  Without this flag an error will be raised. Please 
+note that enabling this option, and writing a null character, will produce an 
+XML document that cannot be handled by a validating XML processor. As per the 
+XML specifications, the null character (#0) (#$00) (&amp;x0;) (ASCII NULL) is 
+never valid in the content of an XML document. ReadXMLFile in the 
+<file>lazutils</file> package will handle the value.
 </short>
 </element>
 <element name="TXMLWriterFlag.xwfSpecialCharsInAttributeValue">
 <short>
-Enables writing unencoded #1..#32 (including Carriage Return) characters in attribute values. Without this flag they will be encoded to their numeric character entity &amp;xD; instead.
+Enables writing unencoded #1..#32 (including Carriage Return) characters in 
+attribute values. Without this flag they will be encoded to their numeric 
+character entity &amp;xD; instead. Please note that enabling this option, and 
+writing an attribute value in this range, will produce an XML document that 
+cannot be handled by a validating XML 1.0 processor. The values are also 
+discouraged for XML 1.1 processors. ReadXMLFile in the 
+<file>lazutils</file> package will handle the value.
 </short>
 </element>
 <element name="TXMLWriterFlag.xwfPreserveWhiteSpace">
@@ -105,7 +116,11 @@ exception will be raised.
 Flags contains values from the TXMLWriterFlag enumeration. Use Flags to 
 enable XML writing options in the routine. The default value for the argument 
 is an empty set (<b>[]</b>), and indicates that no options are enabled in the 
-routine.
+routine. Please note that use of TXMLWriterFlag options like 
+xwfAllowNullCharsInAttributeValue and xwfSpecialCharsInAttributeValue can 
+result in an XML document that cannot be handled by a validating XML 
+processor. The ReadXMLFile routine in <file>LazUtils</file> will accept and 
+handle the values.
 </p>
 </descr>
 <seealso>
@@ -164,7 +179,11 @@ exception will be raised.
 Flags contains values from the TXMLWriterFlag enumeration. Use Flags to 
 enable XML writing options in the routine. The default value for the argument 
 is an empty set (<b>[]</b>), and indicates that no options are enabled in the 
-routine.
+routine. Please note that use of TXMLWriterFlag options like 
+xwfAllowNullCharsInAttributeValue and xwfSpecialCharsInAttributeValue can 
+result in an XML document that cannot be handled by a validating XML 
+processor. The ReadXMLFile routine in <file>LazUtils</file> will accept and 
+handle the values.
 </p>
 </descr>
 <seealso>
