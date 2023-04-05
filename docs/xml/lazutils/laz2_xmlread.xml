@@ -92,7 +92,10 @@ Indicates the &amp;lt; character is allowed in attribute values.
 <element name="TXMLReaderFlag.xrfAllowSpecialCharsInAttributeValue">
 <short>
 Indicates control characters and reserved XML characters are allowed in XML 
-content.
+attribute values. Please note that enabling (and using) this option can result 
+in an XML document that is technically not valid. Null characters are never 
+allowed in an XML document. Controls characters are allowed in XML 1.1, but 
+must be encoded - which this flag circuments.
 </short>
 </element>
 <element name="TXMLReaderFlag.xrfAllowSpecialCharsInComments">
@@ -240,7 +243,13 @@ as the BaseURI in the XML Document.
 The Flags parameter contains <var>TXMLReaderFlag</var> values enabled in the 
 routine. The default value for the parameter is an empty set (<b>[]</b>), and 
 indicates that no options are enabled by default. Values in the Flags 
-parameter control the behavior enabled when XML content is de-serialized.
+parameter control the behavior enabled when XML content is de-serialized. 
+Please note that use of the xrfAllowSpecialCharsInAttributeValue flag allows 
+characters which are not normally allowed in an XML document. An XML document 
+created with this option enabled (and used) cannot be exchanged and processed 
+by an external validating XML processor. Technically, the XML document is 
+invalid. WriteXML and WriteXMLFile in <file>LazUtils</file> will accept and 
+process these values when configured to do so.
 </p>
 <p>
 ReadXMLFile creates a TXMLReader instance that is used to read, parse, and 
@@ -598,7 +607,6 @@ information and control.
 <link id="TDOMParser.OnError"/>
 </seealso>
 </element>
-
 
 <!-- argument Visibility: default -->
 <element name="TXMLErrorEvent.Error">
@@ -1103,7 +1111,8 @@ Function type used to get a decoder routine for the specified target encoding.
 the Decoder routine used to convert value in an arbitrary encoding to the encoding specified in AEncoding.
 </p>
 <p>
-TGetDecoderProc is the type passed as an argument to the RegisterDecoder routine.
+TGetDecoderProc is the type passed as an argument to the RegisterDecoder 
+routine.
 </p>
 </descr>
 <seealso>
