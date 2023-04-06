@@ -2455,7 +2455,7 @@ var
         on E: ECodeToolError do ;
       end;
       if Result.Tool=nil then begin
-        LFMTree.AddError(lfmeIdentifierNotFound,LFMObject,
+        LFMTree.AddError(lfmeUnitNotFound,LFMObject,
             'unit '+LFMObject.TypeUnitName+' not found',LFMObject.TypeUnitNamePosition);
         exit;
       end;

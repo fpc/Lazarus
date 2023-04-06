@@ -32,7 +32,7 @@ type
     constructor Create; override;
     destructor Destroy; override;
     procedure CheckLFM;
-    procedure CheckParseError(const CursorPos: TCodeXYPosition; Msg: string);
+    procedure CheckLFMParseError(ErrorType: TLFMErrorType; const CursorPos: TCodeXYPosition; ErrorMsg: string);
     procedure WriteSource(const CursorPos: TCodeXYPosition);
     property SourceCount: integer read GetSourceCount;
     property Sources[Index: integer]: TCodeBuffer read GetSources;
@@ -48,6 +48,7 @@ type
     procedure LFMEmptyForm;
     procedure LFMChildComponent;
     procedure LFMUnitname;
+    procedure LFM_RootUninameWrong;
   end;
 
 implementation
@@ -192,34 +193,44 @@ begin
   end;
 end;
 
-procedure TCustomTestLFMTrees.CheckParseError(const CursorPos: TCodeXYPosition;
-  Msg: string);
+procedure TCustomTestLFMTrees.CheckLFMParseError(ErrorType: TLFMErrorType;
+  const CursorPos: TCodeXYPosition; ErrorMsg: string);
 var
   LFMTree: TLFMTree;
+  LFMErr: TLFMError;
 begin
   LFMTree:=nil;
   try
     if CodeToolBoss.CheckLFM(UnitCode,LFMCode,LFMTree,true,true,true) then begin
       WriteSource(CursorPos);
-      Fail('missing parser error "'+Msg+'"');
+      Fail('TCustomTestLFMTrees.CheckLFMParseError Missing '+LFMErrorTypeNames[ErrorType]+': '+CursorPos.Code.Filename+'('+IntToStr(CursorPos.Y)+','+IntToStr(CursorPos.X)+'): '+ErrorMsg);
     end;
     if LFMTree=nil then begin
       WriteSource(CursorPos);
-      Fail('missing LFMTree, Msg="'+Msg+'"');
+      Fail('missing LFMTree');
     end;
-    if CursorPos.Code<>CodeToolBoss.ErrorCode then begin
-      WriteSource(CursorPos);
-      Fail('expected parser error "'+Msg+'" in "'+CursorPos.Code.Filename+'", not in "'+CodeToolBoss.ErrorCode.Filename+'"');
-    end;
-    if (CursorPos.Y<>CodeToolBoss.ErrorLine) or (CursorPos.X<>CodeToolBoss.ErrorColumn) then begin
-      WriteSource(CursorPos);
-      Fail('expected parser error "'+Msg+'" at line='+IntToStr(CursorPos.Y)+' col='+IntToStr(CursorPos.X)+', but got line='+IntToStr(CodeToolBoss.ErrorLine)+' col='+IntToStr(CodeToolBoss.ErrorColumn));
-    end;
-    if (Msg<>CodeToolBoss.ErrorMessage) then begin
-      WriteSource(CursorPos);
-      Fail('expected parser error "'+Msg+'" instead of "'+CodeToolBoss.ErrorMessage+'"');
+    LFMErr:=LFMTree.FirstError;
+    while LFMErr<>nil do begin
+      //writeln('LFM Error: (',LFMErr.Caret.Y,',',LFMErr.Caret.X,') ',LFMErr.ErrorMessage);
+      if (CursorPos.Code=LFMErr.Source)
+          and (CursorPos.X=LFMErr.Caret.X)
+          and (CursorPos.Y=LFMErr.Caret.Y)
+          and (ErrorType=LFMErr.ErrorType)
+          and (LFMErr.ErrorMessage=ErrorMsg) then
+      begin
+        // error found
+        exit;
+      end;
+      LFMErr:=LFMErr.NextError;
     end;
 
+    writeln('LFM Error Candidates:');
+    LFMErr:=LFMTree.FirstError;
+    while LFMErr<>nil do begin
+      writeln('LFM-Error: ',LFMErr.ErrorType,': (',LFMErr.Caret.Y,',',LFMErr.Caret.X,') ',LFMErr.ErrorMessage);
+      LFMErr:=LFMErr.NextError;
+    end;
+    Fail('TCustomTestLFMTrees.CheckLFMParseError Missing '+LFMErrorTypeNames[ErrorType]+': '+CursorPos.Code.Filename+'('+IntToStr(CursorPos.Y)+','+IntToStr(CursorPos.X)+'): '+ErrorMsg);
   finally
     LFMTree.Free;
   end;
@@ -300,6 +311,19 @@ begin
     'end'
     ]));
   CheckLFM;
+end;
+
+procedure TTestLFMTrees.LFM_RootUninameWrong;
+begin
+  AddControls;
+  AddFormUnit(['Button1: TButton']);
+  FLFMCode:=AddSource('unit1.lfm',LinesToStr([
+    'object Form1: Fool/TForm1',
+    '  object Button1: Controls/TButton',
+    '  end',
+    'end'
+    ]));
+  CheckLFMParseError(lfmeMissingRoot,CodeXYPosition(15,1,FLFMCode),'unitname Fool mismatch');
 end;
 
 initialization
