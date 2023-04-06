@@ -684,21 +684,21 @@ Toggle ensures the value in the <var>AllowGrayed</var> property is respected
 in the operation. When <var>AllowGrayed</var> is <b>True</b>, the following 
 order is used for toggling to the next available check box state:
 </p>
-<ol>
+<ul>
 <li>cbUnchecked</li>
 <li>cbChecked</li>
 <li>cbGrayed</li>
-<li>Rinse and repeat</li>
-</ol>
+<li>Cycle to cbUnchecked</li>
+</ul>
 <p>
 When <var>AllowGrayed</var> is <b>False</b>, the following order is used for 
 toggling to the next available check box state:
 </p>
-<ol>
+<ul>
 <li>cbUnchecked</li>
 <li>cbChecked</li>
-<li>Rinse and repeat</li>
-</ol>
+<li>Cycle to cbUnchecked</li>
+</ul>
 <p>
 Use <var>Checked</var> to set a specific item to a specified Boolean checked 
 state value. Use <var>State</var> to get or set the check box state as a 
