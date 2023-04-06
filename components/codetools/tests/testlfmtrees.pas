@@ -294,7 +294,7 @@ begin
   AddControls;
   AddFormUnit(['Button1: TButton']);
   FLFMCode:=AddSource('unit1.lfm',LinesToStr([
-    'object Form1: Controls/TForm1',
+    'object Form1: unit1/TForm1',
     '  object Button1: Controls/TButton',
     '  end',
     'end'

@@ -63,7 +63,7 @@ type
     destructor Destroy; override;
     procedure Unbind;
     procedure AddChild(ANode: TLFMTreeNode);
-    function GetIdentifier: string;
+    function GetIdentifier: string; virtual;
     procedure FindIdentifier(out IdentStart, IdentEnd: integer);
     function GetPath: string;
     function Next(SkipChildren: Boolean = False): TLFMTreeNode;
@@ -89,6 +89,8 @@ type
     AncestorNode: TObject; // TCodeTreeNode
     AncestorContextValid: boolean;
     constructor CreateVirtual; override;
+    function GetFullName(UnitNameSep: char = '/'; WithName: boolean = true): string;
+    function GetIdentifier: string; override;
   end;
 
   { TLFMNameParts }
@@ -823,7 +825,7 @@ begin
     while not Parser.TokenSymbolIs('END') do begin
       if Parser.Token=toEOF then begin
         Parser.Error('END not found for'
-          +' object='+ObjectNode.Name+':'+ObjectNode.TypeName
+          +' object='+ObjectNode.GetFullName
           +' starting at line '+IntToStr(ObjectStartLine));
       end;
       ProcessObject;
@@ -1015,6 +1017,29 @@ end;
 constructor TLFMObjectNode.CreateVirtual;
 begin
   TheType:=lfmnObject;
+  ChildPos:=-1;
+end;
+
+function TLFMObjectNode.GetFullName(UnitNameSep: char; WithName: boolean
+  ): string;
+begin
+  Result:=TypeUnitName;
+  if TypeName<>'' then begin
+    if Result<>'' then
+      Result:=Result+UnitNameSep+TypeName
+    else
+      Result:=TypeName;
+  end;
+  if (not WithName) or (Name='') then exit;
+  if Result<>'' then
+    Result:=Name+':'+Result
+  else
+    Result:=Name+':MissingLFMType';
+end;
+
+function TLFMObjectNode.GetIdentifier: string;
+begin
+  Result:=GetFullName;
 end;
 
 { TLFMPropertyNode }
@@ -1207,11 +1232,23 @@ begin
 end;
 
 function TLFMError.IsMissingObjectType: boolean;
+var
+  ObjNode: TLFMObjectNode;
 begin
   Result:=(ErrorType in [lfmeIdentifierNotFound,lfmeMissingRoot])
-      and (Node is TLFMObjectNode)
-      and (TLFMObjectNode(Node).TypeName<>'')
-      and (TLFMObjectNode(Node).TypeNamePosition=Position);
+      and (Node is TLFMObjectNode);
+  if not Result then exit;
+  ObjNode:=TLFMObjectNode(Node);
+  if ObjNode.TypeName='' then
+    exit(false);
+  if (Position>=ObjNode.TypeNamePosition)
+      and (Position<ObjNode.TypeNamePosition+length(ObjNode.TypeName)) then
+    exit(true);
+  if (ObjNode.TypeUnitName<>'')
+      and (Position>=ObjNode.TypeUnitNamePosition)
+      and (Position<ObjNode.TypeUnitNamePosition+length(ObjNode.TypeUnitName)) then
+    exit(true);
+  Result:=false;
 end;
 
 function TLFMError.GetNodePath: string;

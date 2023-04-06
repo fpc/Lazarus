@@ -2434,17 +2434,54 @@ var
       Result:=Result+'('+IntToStr(Caret.Y)+','+IntToStr(Caret.X)+')';
   end;
 
-  function FindClassContext(const ClassName: string): TFindContext;
+  function FindClassContext(LFMObject: TLFMObjectNode): TFindContext;
   var
     Params: TFindDeclarationParams;
     Identifier: PChar;
     OldInput: TFindDeclarationInput;
     StartTool: TStandardCodeTool;
+    aClassName: String;
   begin
     Result:=CleanFindContext;
+    aClassName:=LFMObject.TypeName;
+
+    if LFMObject.TypeUnitName<>'' then begin
+      // type with unitname
+      // -> search unit
+      try
+        Result.Tool:=FindCodeToolForUsedUnit(LFMObject.TypeUnitName,'',true);
+      except
+        // ignore search/parse errors
+        on E: ECodeToolError do ;
+      end;
+      if Result.Tool=nil then begin
+        LFMTree.AddError(lfmeIdentifierNotFound,LFMObject,
+            'unit '+LFMObject.TypeUnitName+' not found',LFMObject.TypeUnitNamePosition);
+        exit;
+      end;
+
+      // -> search class in unit interface
+      try
+        Result.Node:=Result.Tool.FindClassNodeInUnit(aClassName,true,false,true,false);
+      except
+        // ignore search/parse errors
+        on E: ECodeToolError do ;
+      end;
+      if (Result.Node=nil)
+          or (not (Result.Node.Desc in AllClasses)) then begin
+        Result.Tool:=nil;
+        LFMTree.AddError(lfmeIdentifierNotFound,LFMObject,
+            'type '+aClassName+' not found',LFMObject.TypeNamePosition);
+        exit;
+      end;
+
+      exit;
+    end;
+
+    // type without explicit unitname -> find declaration
     Params:=TFindDeclarationParams.Create;
     StartTool:=Self;
-    Identifier:=PChar(Pointer(ClassName));
+    Identifier:=PChar(Pointer(aClassName));
     try
       Params.Flags:=[fdfExceptionOnNotFound,
         fdfSearchInParentNodes,
@@ -2460,12 +2497,16 @@ var
           Params.Load(OldInput,true);
           Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,Params.NewNode);
           if (Result.Node=nil)
-          or (not (Result.Node.Desc in AllClasses)) then
+              or (not (Result.Node.Desc in AllClasses)) then
             Result:=CleanFindContext;
         end;
       except
         // ignore search/parse errors
         on E: ECodeToolError do ;
+      end;
+      if Result.Node=nil then begin
+        LFMTree.AddError(lfmeIdentifierNotFound,LFMObject,
+            'type '+aClassName+' not found',LFMObject.TypeNamePosition);
       end;
     finally
       Params.Free;
@@ -2503,7 +2544,7 @@ var
     begin
       if ChildContext.Node=nil then begin
         // this is an extra entry, created via DefineProperties.
-        // There is no generic way to test such things
+        // this depends on the runtime class, so codetools cannot check it
         exit;
       end;
 
@@ -2541,10 +2582,11 @@ var
           exit;
         end;
 
-        // ToDo: check if variable/property type exists
+        if LFMObject.TypeUnitName<>'' then begin
+          // ToDo: check unitname
 
+        end;
       end;
-
 
       // find class node
       //debugln(['CheckLFMChildObject searching class node: LFMObjectName="',LFMObjectName,'" ',FindContextToString(CreateFindContext(ChildContext.Tool,DefinitionNode))]);
@@ -2553,12 +2595,8 @@ var
       //debugln(['CheckLFMChildObject LFMObjectName="',LFMObjectName,'" class context: ',FindContextToString(ClassContext)]);
     end else begin
       // try the object type
-      ClassContext:=FindClassContext(LFMObject.TypeName);
-      if ClassContext.Node=nil then begin
-        // object type not found
-        LFMTree.AddError(lfmeIdentifierNotFound,LFMObject,
-            'type '+LFMObject.TypeName+' not found',LFMObject.TypeNamePosition);
-      end;
+      ClassContext:=FindClassContext(LFMObject);
+      if ClassContext.Node=nil then exit;
     end;
     // check child LFM nodes
     if ClassContext.Node<>nil then
@@ -2672,7 +2710,7 @@ var
   function CheckLFMRoot(RootLFMNode: TLFMTreeNode): boolean;
   var
     LookupRootLFMNode: TLFMObjectNode;
-    LookupRootTypeName: String;
+    LookupRootTypeName, LookupRootTypeUnitName, CurUnitName: String;
     RootClassNode: TCodeTreeNode;
   begin
     Result:=false;
@@ -2693,6 +2731,19 @@ var
     end;
 
     // find root type
+    LookupRootTypeUnitName:=LookupRootLFMNode.TypeUnitName;
+    if LookupRootTypeUnitName<>'' then begin
+      CurUnitName:=GetSourceName(false);
+      if SameText(CurUnitName,LookupRootTypeUnitName) then begin
+        // unitname fits
+      end else if RootMustBeClassInIntf or RootMustBeClassInUnit then begin
+        LFMTree.AddError(lfmeMissingRoot,LookupRootLFMNode,
+                         'unitname '+LookupRootLFMNode.TypeUnitName+' mismatch',
+                         LookupRootLFMNode.TypeUnitNamePosition);
+        exit;
+      end;
+    end;
+
     if RootMustBeClassInIntf then begin
       RootClassNode:=FindClassNodeInInterface(LookupRootTypeName,true,false,false);
       RootContext:=CleanFindContext;
@@ -2704,8 +2755,9 @@ var
       RootContext.Node:=RootClassNode;
       RootContext.Tool:=Self;
     end else begin
-      RootContext:=FindClassContext(LookupRootTypeName);
+      RootContext:=FindClassContext(LookupRootLFMNode);
       RootClassNode:=RootContext.Node;
+      if RootClassNode=nil then exit;
     end;
     if RootClassNode=nil then begin
       LFMTree.AddError(lfmeMissingRoot,LookupRootLFMNode,
