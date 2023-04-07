@@ -18,11 +18,11 @@ interface
 
 uses
   Classes, SysUtils, math, contnrs, process, utf8Process,
-  laz2_xmlread, laz2_xmlwrite, laz2_dom,
+  Laz2_XMLRead, Laz2_XMLWrite, Laz2_DOM,
   // image data formats
   fpreadpng,
-  fpvectorial, fpvutils, lazutf8, TypInfo,
-  fileutil, lazfileutils;
+  fpvectorial, fpvutils, LazUTF8, TypInfo,
+  FileUtil, LazFileUtils;
 
 type
   { TvSVGVectorialReader_RSVG }

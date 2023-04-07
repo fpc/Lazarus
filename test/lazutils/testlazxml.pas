@@ -15,8 +15,8 @@ unit TestLazXML;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testglobals, laz2_DOM, laz2_xmlutils, laz2_xpath,
-  laz2_XMLRead, LazLogger;
+  Classes, SysUtils, fpcunit, testglobals, Laz2_DOM, Laz2_XMLUtils, Laz2_XPath,
+  Laz2_XMLRead, LazLogger;
 
 type
 

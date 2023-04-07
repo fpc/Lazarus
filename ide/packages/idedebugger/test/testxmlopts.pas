@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, IdeDebuggerOpts, EnvironmentOpts, DbgIntfDebuggerBase,
-  Laz2_DOM, laz2_XMLRead, laz2_xpath, fpcunit,
+  Laz2_DOM, Laz2_XMLRead, Laz2_XPath, fpcunit,
   testregistry;
 
 type

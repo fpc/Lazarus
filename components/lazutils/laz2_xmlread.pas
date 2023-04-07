@@ -14,7 +14,7 @@
 
 }
 
-unit laz2_XMLRead;
+unit Laz2_XMLRead;
 
 {$ifdef fpc}
 {$MODE objfpc}{$H+}
@@ -26,7 +26,7 @@ unit laz2_XMLRead;
 interface
 
 uses
-  SysUtils, Classes, laz2_DOM;
+  SysUtils, Classes, Laz2_DOM;
 
 type
   TErrorSeverity = (esWarning, esError, esFatal);
@@ -160,7 +160,7 @@ procedure RegisterDecoder(Proc: TGetDecoderProc);
 implementation
 
 uses
-  UriParser, laz2_xmlutils, LazUTF8;
+  URIParser, Laz2_XMLUtils, LazUTF8;
 
 const
   PubidChars: TSetOfChar = [' ', #13, #10, 'a'..'z', 'A'..'Z', '0'..'9',

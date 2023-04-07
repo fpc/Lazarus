@@ -6,7 +6,7 @@
   for details about the license.
  *****************************************************************************
 }
-unit lcsvutils;
+unit LCSVUtils;
 
 {$mode objfpc}{$H+}
 {$modeswitch nestedprocvars}

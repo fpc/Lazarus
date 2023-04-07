@@ -15,7 +15,7 @@
 }
 
 
-unit laz2_XMLWrite;
+unit Laz2_XMLWrite;
 
 {$ifdef fpc}{$MODE objfpc}{$endif}
 {$H+}
@@ -25,7 +25,7 @@ unit laz2_XMLWrite;
 
 interface
 
-uses Classes, LazUTF8, laz2_DOM, SysUtils, laz2_xmlutils;
+uses Classes, SysUtils, LazUTF8, Laz2_DOM, Laz2_XMLUtils;
 
 type
   TXMLWriterFlag = (

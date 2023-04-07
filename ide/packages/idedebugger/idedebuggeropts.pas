@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, IDEOptionsIntf, Laz2_XMLCfg, LazFileUtils, LazUTF8,
-  LazLoggerBase, Laz2_DOM, laz2_XMLRead, laz2_XMLWrite, DbgIntfDebuggerBase,
+  LazLoggerBase, Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite, DbgIntfDebuggerBase,
   IdeDebuggerStringConstants, IdeDebuggerBackendValueConv, EnvironmentOpts;
 
 type

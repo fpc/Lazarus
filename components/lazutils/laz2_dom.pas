@@ -38,7 +38,7 @@ unit Laz2_DOM;
 interface
 
 uses
-  SysUtils, Classes, laz2_xmlutils;
+  SysUtils, Classes, Laz2_XMLUtils;
 
 // -------------------------------------------------------
 //   DOMException

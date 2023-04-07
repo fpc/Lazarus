@@ -83,8 +83,8 @@ unit Wiki2FPDocConvert;
 interface
 
 uses
-  Classes, SysUtils, WikiParser, laz2_DOM, LazFileUtils, laz2_XMLRead,
-  laz2_XMLWrite, LazLoggerBase, WikiFormat;
+  Classes, SysUtils, WikiParser, LazFileUtils,
+  Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite, LazLoggerBase, WikiFormat;
 
 type
 

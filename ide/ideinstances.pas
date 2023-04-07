@@ -43,9 +43,8 @@ uses
   {$ELSE}
   LazAdvancedIPC,
   {$ENDIF}
-  Interfaces, Controls, Forms, Dialogs, ExtCtrls, LCLProc,
-  LCLIntf, LCLType, LazFileUtils, LazUTF8, laz2_XMLRead, laz2_XMLWrite,
-  Laz2_DOM, FileUtil, UTF8Process,
+  Interfaces, Controls, Forms, Dialogs, ExtCtrls, LCLProc, LCLIntf, LCLType,
+  LazFileUtils, FileUtil, Laz2_XMLRead, Laz2_XMLWrite, Laz2_DOM, LazUTF8, UTF8Process,
   LazarusIDEStrConsts, IDECmdLine, LazConf;
 
 type

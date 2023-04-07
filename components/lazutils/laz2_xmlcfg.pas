@@ -27,9 +27,8 @@ interface
 
 uses
   {$IFDEF MEM_CHECK}MemCheck,{$ENDIF}
-  Classes, sysutils, LazFileCache,
-  Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite, LazUtilities,
-  typinfo;
+  Classes, sysutils, TypInfo,
+  LazFileCache, Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite, LazUtilities;
 
 type
 

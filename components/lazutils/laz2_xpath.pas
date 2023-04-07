@@ -16,13 +16,13 @@
 {$mode objfpc}
 {$H+}
 
-unit laz2_xpath;
+unit Laz2_XPath;
 
 interface
 
 uses
   Math, SysUtils, Classes, LazUtilsStrConsts,
-  laz2_DOM, laz2_xmlutils;
+  Laz2_DOM, Laz2_XMLUtils;
 
 type
   TXPathContext = class;

@@ -36,7 +36,7 @@ interface
 uses
   Classes, SysUtils,
   // LazUtils
-  laz2_XMLRead, laz2_DOM, LazLoggerBase, LazUTF8, LazStringUtils,
+  Laz2_XMLRead, Laz2_DOM, LazLoggerBase, LazUTF8, LazStringUtils,
   // CodeTools
   BasicCodeTools, KeywordFuncLists;
 

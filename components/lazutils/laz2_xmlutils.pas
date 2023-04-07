@@ -11,7 +11,7 @@
   Copyright (c) 2006 by Sergei Gorelkin, sergei_gorelkin@mail.ru
 
 }
-unit laz2_xmlutils;
+unit Laz2_XMLUtils;
 
 {$ifdef fpc}{$mode objfpc}{$endif}
 {$H+}

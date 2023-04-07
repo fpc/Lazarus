@@ -41,7 +41,7 @@ uses
   TypInfo, Classes, SysUtils, math, Types, fgl,
   // LazUtils
   Laz2_XMLCfg, LazFileUtils, LazStringUtils, LazUtilities, LazLoggerBase,
-  LazClasses, Maps, LazMethodList, laz2_XMLWrite,
+  LazClasses, Maps, LazMethodList, Laz2_XMLWrite,
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfDebuggerBase, LazDebuggerIntf,
   LazDebuggerIntfBaseTypes, LazDebuggerValueConverter, LazDebuggerTemplate,

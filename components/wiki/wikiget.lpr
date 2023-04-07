@@ -31,7 +31,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, CustApp, strutils, Laz_AVL_Tree,
   // LazUtils
-  LazFileUtils, laz2_XMLRead, laz2_DOM, laz2_XMLWrite, LazLogger, avglvltree,
+  LazFileUtils, Laz2_XMLRead, Laz2_DOM, Laz2_XMLWrite, LazLogger, avglvltree,
   LazUTF8, LazStringUtils,
   // CodeTools
   CodeToolsStructs,
