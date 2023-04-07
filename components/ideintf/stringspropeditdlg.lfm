@@ -78,6 +78,7 @@ object StringsPropEditorFrm: TStringsPropEditorFrm
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = SortButton
       AnchorSideRight.Side = asrBottom
+      AutoSize = True
       Left = 305
       Height = 27
       Top = 43
