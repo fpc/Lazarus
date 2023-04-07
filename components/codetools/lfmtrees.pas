@@ -987,9 +987,13 @@ begin
       PrependStr:=PrependStr+'noTree';
     end;}
     if PrependStr<>'' then begin
-      if Result<>'' then
-        Result:='/'+Result;
-       Result:=PrependStr+Result;
+      if Result<>'' then begin
+        if ANode is TLFMObjectNode then
+          Result:='.'+Result
+        else
+          Result:='/'+Result;
+      end;
+      Result:=PrependStr+Result;
     end;
     ANode:=ANode.Parent;
   end;

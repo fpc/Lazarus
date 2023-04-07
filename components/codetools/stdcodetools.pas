@@ -2372,8 +2372,6 @@ var
     const VarPropContext: TFindContext): TFindContext;
   var
     Params: TFindDeclarationParams;
-    Identifier: PChar;
-    OldInput: TFindDeclarationInput;
     TypeNode: TCodeTreeNode;
     VariableTypeName, AnUnitName, TypeName: String;
   begin
@@ -2390,11 +2388,9 @@ var
                          LFMObject.NamePosition);
       end;
       VariableTypeName:=VarPropContext.Tool.ExtractDefinitionNodeType(VarPropContext.Node);
-      Identifier:=@VarPropContext.Tool.Src[TypeNode.StartPos]
     end else if (VarPropContext.Node.Desc=ctnProperty) then begin
       TypeNode:=VarPropContext.Node;
       VariableTypeName:=VarPropContext.Tool.ExtractPropType(TypeNode,false,false);
-      Identifier:=VarPropContext.Tool.GetPropertyTypeIdentifier(TypeNode);
     end else begin
       LFMTree.AddError(lfmeObjectIncompatible,LFMObject,
                        LFMObject.Name+' is not a variable'
@@ -2410,13 +2406,8 @@ var
         fdfExceptionOnPredefinedIdent,fdfIgnoreMissingParams,
         fdfIgnoreOverloadedProcs,fdfIgnoreCurContextNode];
       Params.ContextNode:=TypeNode;
-      Params.SetIdentifier(VarPropContext.Tool,Identifier,nil);
       try
-        Params.Save(OldInput);
-        if VarPropContext.Tool.FindIdentifierInContext(Params) then begin
-          Params.Load(OldInput,true);
-          Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,Params.NewNode);
-        end;
+        Result:=VarPropContext.Tool.FindBaseTypeOfNode(Params,TypeNode);
       except
         // ignore search/parse errors
         on E: ECodeToolError do begin
