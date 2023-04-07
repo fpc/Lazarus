@@ -48,7 +48,8 @@ type
     procedure LFMEmptyForm;
     procedure LFMChildComponent;
     procedure LFMUnitname;
-    procedure LFM_RootUninameWrong;
+    procedure LFM_RootUnitnameWrong;
+    procedure LFM_ChildUnitnameWrong;
   end;
 
 implementation
@@ -313,7 +314,7 @@ begin
   CheckLFM;
 end;
 
-procedure TTestLFMTrees.LFM_RootUninameWrong;
+procedure TTestLFMTrees.LFM_RootUnitnameWrong;
 begin
   AddControls;
   AddFormUnit(['Button1: TButton']);
@@ -324,6 +325,19 @@ begin
     'end'
     ]));
   CheckLFMParseError(lfmeMissingRoot,CodeXYPosition(15,1,FLFMCode),'unitname Fool mismatch');
+end;
+
+procedure TTestLFMTrees.LFM_ChildUnitnameWrong;
+begin
+  AddControls;
+  AddFormUnit(['Button1: TButton']);
+  FLFMCode:=AddSource('unit1.lfm',LinesToStr([
+    'object Form1: unit1/TForm1',
+    '  object Button1: Fool/TButton',
+    '  end',
+    'end'
+    ]));
+  CheckLFMParseError(lfmeObjectIncompatible,CodeXYPosition(19,2,FLFMCode),'Controls expected, but Fool found. See unit1.pas(7,5)');
 end;
 
 initialization
