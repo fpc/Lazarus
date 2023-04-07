@@ -21,7 +21,6 @@ extension of ex-meta.
     David Bannon, Dec 2022
 }
 {$mode objfpc}{$H+}
-{X$define EXTESTMODE}
 
 {X$define ONLINE_EXAMPLES}
 
