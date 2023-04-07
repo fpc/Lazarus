@@ -2908,14 +2908,14 @@ control.
 </p>
 <p>
 At design-time, a dashed black line is drawn around the area for the control 
-and across its opposing corners. No other actions are performed in the method 
-at design-time.
+and across its opposing corners. Color is used to paint the background for the 
+control. No other actions are performed in the method at design-time.
 </p>
 <p>
 At run-time, the <var>OnPaint</var> event handler is used to render the 
 content for the control using the <var>Font</var> and <var>Color</var> 
-properties. The inherited <var>Paint</var> method is called to signal the 
-event handler.
+properties. Their values are assigned to the Canvas for the control, and the 
+inherited <var>Paint</var> method is called to signal the event handler.
 </p>
 </descr>
 <seealso>
