@@ -83,19 +83,14 @@ type
     ToolButton7: TToolButton;
     tbChangeFont: TToolButton;
     ToolButton9: TToolButton;
-    procedure edMethodsKeyDown(Sender: TObject; var Key: Word;
-      {%H-}Shift: TShiftState);
-    procedure edMethodsKeyPress(Sender: TObject; var Key: char);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure FormKeyPress(Sender: TObject; var Key: char);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormResize(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure SGDblClick(Sender: TObject);
     procedure SGDrawCell(Sender: TObject; aCol, aRow: Integer; aRect: TRect;
       {%H-}aState: TGridDrawState);
-    procedure SGMouseWheel(Sender: TObject; {%H-}Shift: TShiftState;
-      WheelDelta: Integer; {%H-}MousePos: TPoint; var Handled: Boolean);
     procedure SGSelectCell(Sender: TObject; {%H-}aCol, aRow: Integer;
       var {%H-}CanSelect: Boolean);
     procedure SomethingChange(Sender: TObject);
@@ -107,11 +102,12 @@ type
     FNewTopLine: integer;
     FImageIdxProcedure: Integer;
     FImageIdxFunction: Integer;
+    function GetCodeTreeNode(out lCodeTool: TCodeTool): TCodeTreeNode;
     { Initialise GUI }
     procedure SetupGUI;
     { Move editors focus to selected method. }
     procedure JumpToSelection;
-    { Populates Listview based on selected Class and user entered filter. }
+    { Populates grid based on selected Class and user entered filter. }
     procedure PopulateGrid;
     { Populates only tho cbObjects combo with available classes. }
     procedure PopulateObjectsCombo;
@@ -119,7 +115,6 @@ type
     function  PassFilter(pSearchAll: boolean; pProcName, pSearchStr: string; pCodeTool: TCodeTool; pNode: TCodeTreeNode): boolean;
     procedure ClearGrid;
   public
-    property MainFilename: string read FMainFilename;
     property Caret: TCodeXYPosition read FCaret;
     property NewTopLine: integer read FNewTopLine;
   end; 
@@ -141,28 +136,25 @@ const
     'Author: Graeme Geldenhuys  (graemeg@gmail.com)' + #10 +
     'Inspired by: GExperts  (www.gexperts.org)';
 
-
 { This is where it all starts. Gets called from Lazarus. }
-procedure ExecuteProcedureList(Sender: TObject);
-var
-  frm: TProcedureListForm;
+procedure ExecuteProcedureList({%H-}Sender: TObject);
 begin
-  Assert(Sender<>nil);  // removes compiler warning
-  
-  frm := TProcedureListForm.Create(nil);
-  try
-    frm.ShowModal;
-    if frm.ModalResult = mrOK then  // we need to jump
-    begin
-      LazarusIDE.DoOpenFileAndJumpToPos(frm.Caret.Code.Filename,
-          Point(frm.Caret.X, frm.Caret.Y), frm.NewTopLine, -1,-1,
-          [ofRegularFile,ofUseCache]);
+  with TProcedureListForm.Create(nil) do
+    try
+      if ShowModal = mrOK then
+      begin
+        LazarusIDE.DoOpenFileAndJumpToPos(
+          Caret.Code.Filename,
+          Point(Caret.X, Caret.Y),
+          NewTopLine,
+          -1, -1,
+          [ofRegularFile,ofUseCache]
+        );
+      end;
+    finally
+      Free;
     end;
-  finally
-    frm.Free;
-  end;
 end;
-
 
 function FilterFits(const SubStr, Str: string): boolean;
 var
@@ -243,20 +235,15 @@ end;
 
 procedure TProcedureListForm.FormCreate(Sender: TObject);
 begin
+  SetupGUI;
   if SourceEditorManagerIntf.ActiveEditor = nil then
-  begin
-    //SetupGUI makes the dialog look as it should, and is clears the listview
-    //thus preventing a crash when clicking on the LV
-    SetupGUI;
     Exit; //==>
-  end;
 
   FMainFilename := SourceEditorManagerIntf.ActiveEditor.Filename;
-  Caption := Caption + ExtractFileName(FMainFilename);
-  SetupGUI;
+  Caption := Caption + ' - ' + ExtractFileName(FMainFilename);
   PopulateObjectsCombo;
   PopulateGrid;
-  StatusBar.Panels[0].Text := self.MainFilename;
+  StatusBar.Panels[0].Text := FMainFilename;
   tbFilterStart.Down := EnvironmentOptions.ProcedureListFilterStart;
   IDEDialogLayoutList.ApplyLayout(Self, 950, 680);
 end;
@@ -266,6 +253,122 @@ begin
   EnvironmentOptions.ProcedureListFilterStart := tbFilterStart.Down;
   ClearGrid;
   IDEDialogLayoutList.SaveLayout(self);
+end;
+
+procedure TProcedureListForm.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Shift = [] then
+  begin
+
+    { Form }
+    if Key = VK_RETURN then
+    begin
+      JumpToSelection;
+      Key := 0;
+    end
+    else if Key = VK_ESCAPE then
+    begin
+      Key := 0;
+      ModalResult := mrCancel;
+    end
+
+    { Arrows }
+    else if Key = VK_DOWN then
+    begin
+      if SG.Row < SG.FixedRows then // if (Row = -1) or (Row < FixedRows)
+      begin
+        if SG.RowCount > SG.FixedRows then
+          SG.Row := SG.FixedRows;
+      end else begin
+        if (SG.Row + 1) < SG.RowCount then
+          SG.Row := SG.Row + 1;
+      end;
+      Key := 0;
+    end
+    else if Key = VK_UP then
+    begin
+      if SG.Row < SG.FixedRows then // if (Row = -1) or (Row < FixedRows)
+      begin
+        if SG.RowCount > SG.FixedRows then
+          SG.Row := SG.RowCount - 1;
+      end else begin
+        if SG.Row > SG.FixedRows then
+          SG.Row := SG.Row - 1;
+      end;
+      Key := 0;
+    end
+
+    { PageUp and PageDown }
+    else if Key = VK_NEXT then
+    begin
+      if SG.Row < SG.FixedRows then // if (Row = -1) or (Row < FixedRows)
+      begin
+        if SG.RowCount > SG.FixedRows then
+          SG.Row := SG.FixedRows;
+      end else begin
+        SG.Row := Min(SG.RowCount - 1, SG.Row + (SG.VisibleRowCount - 1));
+      end;
+      Key := 0;
+    end
+    else if Key = VK_PRIOR then
+    begin
+      if SG.Row < SG.FixedRows then // if (Row = -1) or (Row < FixedRows)
+      begin
+        if SG.Row > SG.FixedRows then
+          SG.Row := SG.Row - 1;
+      end else begin
+        SG.Row := Max(SG.FixedRows, SG.Row - (SG.VisibleRowCount - 1));
+      end;
+      Key := 0;
+    end
+
+    { Home and End }
+    else if Key = VK_HOME then
+    begin
+      if SG.RowCount > SG.FixedRows then
+        SG.Row := SG.FixedRows;
+      Key := 0;
+    end
+    else if Key = VK_END then
+    begin
+      if SG.RowCount > SG.FixedRows then
+        SG.Row := SG.RowCount - 1;
+      Key := 0;
+    end;
+
+  end;  // if Shift = []
+
+  if Shift = [ssCtrl] then
+  begin
+
+    { Scroll one line }
+    if Key = VK_DOWN then
+    begin
+      if SG.RowCount > SG.FixedRows then
+        SG.TopRow := Max(SG.FixedRows, Min(SG.RowCount - 1, SG.TopRow + 1));
+      Key := 0;
+    end
+    else if Key = VK_UP then
+    begin
+      if SG.RowCount > SG.FixedRows then
+        SG.TopRow := Max(SG.FixedRows, Min(SG.RowCount - 1, SG.TopRow - 1));
+      Key := 0;
+    end
+
+    { Copy }
+    else if Key = VK_C then
+    begin
+      // copy the selected procedure only if no text is selected in edMethods
+      if edMethods.SelLength = 0 then
+      begin
+        tbCopyClick(Sender);
+        Key := 0;
+      end;
+    end;
+
+  end;  // if Shift = [ssCtrl]
+
 end;
 
 procedure TProcedureListForm.FormResize(Sender: TObject);
@@ -288,15 +391,12 @@ procedure TProcedureListForm.SGDrawCell(Sender: TObject; aCol, aRow: Integer;
   aRect: TRect; aState: TGridDrawState);
 var
   bmp: TBitmap;
-  grid: TStringGrid;
   iconTop, imageIdx: Integer;
   rowObj: TGridRowObject;
 begin
-  grid := TStringGrid(Sender);
-
-  if (aCol = 0) and (aRow >= grid.FixedRows) then
+  if (aCol = SG_COLIDX_IMAGE) and (aRow >= SG.FixedRows) then
   begin
-    rowObj := TGridRowObject(grid.Rows[aRow].Objects[0]);
+    rowObj := TGridRowObject(SG.Rows[aRow].Objects[0]);
     if Assigned(rowObj) then
     begin
       imageIdx := rowObj.ImageIdx;
@@ -305,22 +405,12 @@ begin
       try
         IDEImages.Images_16.GetBitmap(imageIdx, bmp);
         iconTop := ((aRect.Bottom - aRect.Top) - bmp.Height) div 2 + aRect.Top;
-        grid.Canvas.Draw(aRect.Left,iconTop, bmp);
+        SG.Canvas.Draw(aRect.Left,iconTop, bmp);
       finally
         bmp.Free;
       end;
     end;
   end;
-end;
-
-procedure TProcedureListForm.SGMouseWheel(Sender: TObject; Shift: TShiftState;
-  WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
-var
-  NLines: integer;
-begin
-  NLines := -WheelDelta * 3 div 120;
-  SG.TopRow := Max(SG.FixedRows, Min(SG.RowCount - 1, SG.TopRow + NLines));
-  Handled := True;
 end;
 
 procedure TProcedureListForm.SGSelectCell(Sender: TObject; aCol, aRow: Integer;
@@ -337,9 +427,6 @@ end;
 
 procedure TProcedureListForm.SetupGUI;
 begin
-  self.KeyPreview     := True;
-  self.Position       := poScreenCenter;
-
   // assign resource strings to Captions and Hints
   self.Caption          := lisPListProcedureList;
   lblObjects.Caption    := lisPListObjects;
@@ -363,19 +450,9 @@ begin
   tbFilterAny.ImageIndex   := IDEImages.LoadImage('filter_any_place');
   tbFilterStart.ImageIndex := IDEImages.LoadImage('filter_from_begin');
 
-  SG.Columns[SG_COLIDX_IMAGE].Width  := 20;
-  SG.Columns[SG_COLIDX_PROCEDURE].Width  := 300;
-  SG.Columns[SG_COLIDX_TYPE].Width  := 110;
-  SG.Columns[SG_COLIDX_LINE].Width  := 60;
-
   FImageIdxProcedure  := IDEImages.LoadImage('cc_procedure');
   FImageIdxFunction   := IDEImages.LoadImage('cc_function');;
-
-  cbObjects.Style     := csDropDownList;
-  cbObjects.Sorted    := True;
-  cbObjects.DropDownCount := 8;
 end;
-
 
 procedure TProcedureListForm.JumpToSelection;
 var
@@ -393,7 +470,7 @@ begin
   if lRowObject.NodeStartPos < 0 then
     Exit;
 
-  CodeBuffer := CodeToolBoss.LoadFile(MainFilename,false,false);
+  CodeBuffer := CodeToolBoss.LoadFile(FMainFilename,false,false);
   if CodeBuffer = nil then
     Exit; //==>
 
@@ -409,43 +486,16 @@ begin
   self.ModalResult := mrOK;
 end;
 
-
 procedure TProcedureListForm.PopulateGrid;
 var
-  lSrcEditor: TSourceEditorInterface;
-  lCodeBuffer: TCodeBuffer;
   lCodeTool: TCodeTool;
   lNode: TCodeTreeNode;
 begin
   SG.BeginUpdate;
   try
     ClearGrid;
-
-    { get active source editor }
-    lSrcEditor := SourceEditorManagerIntf.ActiveEditor;
-    if lSrcEditor = nil then
-      Exit; //==>
-    lCodeBuffer := lSrcEditor.CodeToolsBuffer as TCodeBuffer;
-
-    { parse source }
-    CodeToolBoss.Explore(lCodeBuffer,lCodeTool,False);
-
-    { copy the tree }
-    if (lCodeTool = nil)
-        or (lCodeTool.Tree = nil)
-        or (lCodeTool.Tree.Root = nil) then
-      Exit; //==>
-
-    { Find the starting point }
-    lNode := lCodeTool.FindImplementationNode;
-    if lNode = nil then
-    begin
-      { fall back - guess we are working with a program or there is a syntax error }
-      lNode := lCodeTool.Tree.Root;
-    end;
-
-    { populate the listview here }
-    lNode := lNode.FirstChild;
+    lNode := GetCodeTreeNode(lCodeTool);
+    if lCodeTool = nil then exit;;
     while lNode <> nil do
     begin
       if lNode.Desc = ctnProcedure then
@@ -455,7 +505,7 @@ begin
       lNode := lNode.Next;
     end;
   finally
-    if SG.RowCount > 0 then
+    if SG.RowCount > SG.FixedRows then
     begin
       SG.Row := SG.FixedRows;
     end;
@@ -463,64 +513,35 @@ begin
   end;
 end;
 
-
 procedure TProcedureListForm.PopulateObjectsCombo;
 var
-  lSrcEditor: TSourceEditorInterface;
-  lCodeBuffer: TCodeBuffer;
   lCodeTool: TCodeTool;
   lNode: TCodeTreeNode;
   lNodeText: string;
 begin
   cbObjects.Items.Clear;
   try
-    { get active source editor }
-    lSrcEditor := SourceEditorManagerIntf.ActiveEditor;
-    if lSrcEditor = nil then
-      Exit; //==>
-    lCodeBuffer := lSrcEditor.CodeToolsBuffer as TCodeBuffer;
-
-    { parse source }
-    CodeToolBoss.Explore(lCodeBuffer,lCodeTool,False);
-
-    if (lCodeTool = nil)
-        or (lCodeTool.Tree = nil)
-        or (lCodeTool.Tree.Root = nil) then
-      Exit; //==>
-
-    { copy the tree }
-    if Assigned(lCodeTool.Tree) then
+    lNode := GetCodeTreeNode(lCodeTool);
+    if lCodeTool = nil then exit;;
+    while lNode <> nil do
     begin
-      { Find the starting point }
-      lNode := lCodeTool.FindImplementationNode;
-      if lNode = nil then
+      if lNode.Desc = ctnProcedure then
       begin
-        { fall back - guess we are working with a program unit }
-        lNode := lCodeTool.Tree.Root;
-      end;
-      { populate the Combobox here! }
-      lNode := lNode.FirstChild;
-      while lNode <> nil do
-      begin
-        if lNode.Desc = ctnProcedure then
-        begin
-          lNodeText := lCodeTool.ExtractClassNameOfProcNode(lNode);
+        lNodeText := lCodeTool.ExtractClassNameOfProcNode(lNode);
+        if lNodeText <> '' then
           cbObjects.Items.Add(lNodeText);
-        end;
-        lNode := lNode.NextBrother;
       end;
+      lNode := lNode.NextBrother;
     end;
-    cbObjects.Sorted := true;
+  finally
     cbObjects.Sorted := false;
     cbObjects.Items.Insert(0, lisPListAll);
     cbObjects.Items.Insert(1, lisPListNone);
-  finally
     cbObjects.ItemIndex := 0;   // select <All> as the default
-    if (cbObjects.Items.Count > 0) and (cbObjects.Text = '') then  // some widgetsets have issues here so we do this
-      cbObjects.Text := cbObjects.Items[0];
+    if (cbObjects.Items.Count > 0) and (cbObjects.Text = '') then
+      cbObjects.Text := cbObjects.Items[0]; // some widgetsets have issues so we do this
   end;
 end;
-
 
 procedure TProcedureListForm.AddToGrid(pCodeTool: TCodeTool; pNode: TCodeTreeNode);
 var
@@ -531,7 +552,7 @@ var
   lRowObject: TGridRowObject;
   lRowIdx: Integer;
 begin
-  FSearchAll := cbObjects.Text = lisPListAll;
+  FSearchAll := cbObjects.ItemIndex = 0; // lisPListAll
 
   if FSearchAll and tbFilterAny.Down then
   begin
@@ -589,7 +610,6 @@ begin
 
 end;
 
-
 { Do we pass all the filter tests to continue? }
 function TProcedureListForm.PassFilter(pSearchAll: boolean;
   pProcName, pSearchStr: string; pCodeTool: TCodeTool; pNode: TCodeTreeNode
@@ -601,7 +621,7 @@ var
   begin
     { lets filter by class selection. }
     lClass := pCodeTool.ExtractClassNameOfProcNode(pNode);
-    if cbObjects.Text = lisPListNone then
+    if cbObjects.ItemIndex = 1 then // lisPListNone
       Result := lClass = ''
     else
       Result := lClass = cbObjects.Text;
@@ -619,13 +639,13 @@ begin
   end
   else
   if not pSearchAll and tbFilterStart.Down then
-    Result := ClassMatches and LazStartsStr(pSearchStr, pProcName)
+    Result := ClassMatches and LazStartsText(pSearchStr, pProcName)
   else
   if not pSearchAll and tbFilterAny.Down then
     Result := ClassMatches and FilterFits(pSearchStr, pProcName)
   else
   if pSearchAll and tbFilterStart.Down then
-    Result := LazStartsStr(pSearchStr, pProcName)
+    Result := LazStartsText(pSearchStr, pProcName)
   else
   if pSearchAll then
     Result := FilterFits(pSearchStr, pProcName);
@@ -641,73 +661,6 @@ begin
   SG.RowCount := SG.FixedRows;
 end;
 
-
-procedure TProcedureListForm.FormKeyPress(Sender: TObject; var Key: char);
-begin
-  if Key = #27 then   // Escape key
-  begin
-    self.ModalResult := mrCancel;
-  end;
-end;
-
-procedure TProcedureListForm.edMethodsKeyPress(Sender: TObject; var Key: char);
-begin
-  case Key of
-    #13:
-      begin
-        JumpToSelection;
-        Key := #0;
-      end;
-    #27:
-      begin
-        self.ModalResult := mrCancel;
-        Key := #0;
-      end;
-  end;
-end;
-
-procedure TProcedureListForm.edMethodsKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  if SG.RowCount <= SG.FixedRows then
-    Exit;
-
-  if Key = VK_DOWN then
-  begin
-    if SG.Row < (SG.RowCount - 1) then
-      SG.Row := SG.Row + 1;
-    Key := 0;
-  end
-  else if Key = VK_Up then
-  begin
-    if SG.Row > SG.FixedRows then
-      SG.Row := SG.Row - 1;
-    Key := 0;
-  end
-  else if Key = VK_Home then
-  begin
-    if SG.RowCount > SG.FixedRows then
-      SG.Row := SG.FixedRows;
-    Key := 0;
-  end
-  else if Key = VK_End then
-  begin
-    if SG.RowCount > SG.FixedRows then
-      SG.Row := SG.RowCount - 1;
-    Key := 0;
-  end
-  else if Key = VK_PRIOR then
-  begin
-    SG.Row := Max(SG.FixedRows, SG.Row - (SG.VisibleRowCount - 1));
-    Key := 0;
-  end
-  else if Key = VK_NEXT then
-  begin
-    SG.Row := Min(SG.RowCount - 1, SG.Row + (SG.VisibleRowCount - 1));
-    Key := 0;
-  end;
-end;
-
 procedure TProcedureListForm.SomethingChange(Sender: TObject);
 begin
   PopulateGrid;
@@ -720,8 +673,38 @@ end;
 
 procedure TProcedureListForm.tbCopyClick(Sender: TObject);
 begin
-  if SG.Row > 0 then
-    Clipboard.AsText := SG.Cells[SG_COLIDX_PROCEDURE,SG.Row];
+  if SG.Row >= SG.FixedRows then
+    Clipboard.AsText := SG.Cells[SG_COLIDX_PROCEDURE, SG.Row];
+end;
+
+function TProcedureListForm.GetCodeTreeNode(out lCodeTool: TCodeTool): TCodeTreeNode;
+var
+  lCodeBuffer: TCodeBuffer;
+begin
+  result := nil;
+
+  { get active source editor }
+  if SourceEditorManagerIntf.ActiveEditor = nil then exit;
+
+  lCodeBuffer := SourceEditorManagerIntf.ActiveEditor.CodeToolsBuffer as TCodeBuffer;
+  if lCodeBuffer = nil then exit;
+
+  { parse source }
+  CodeToolBoss.Explore(lCodeBuffer, lCodeTool, False);
+
+  if lCodeTool = nil then exit;
+  if lCodeTool.Tree = nil then exit;
+  if lCodeTool.Tree.Root = nil then exit;
+
+  { Find the starting point }
+  result := lCodeTool.FindImplementationNode;
+  if result = nil then
+  begin
+    { fall back - guess we are working with a program or there is a syntax error }
+    result := lCodeTool.Tree.Root;
+  end;
+
+  result := result.FirstChild;
 end;
 
 end.

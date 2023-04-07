@@ -7,12 +7,13 @@ object ProcedureListForm: TProcedureListForm
   Caption = 'Procedure List - '
   ClientHeight = 688
   ClientWidth = 952
+  KeyPreview = True
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  OnKeyPress = FormKeyPress
+  OnKeyDown = FormKeyDown
   OnResize = FormResize
   OnShow = FormShow
-  Position = poScreenCenter
+  Position = poMainFormCenter
   LCLVersion = '2.3.0.0'
   object StatusBar: TStatusBar
     Left = 0
@@ -184,8 +185,6 @@ object ProcedureListForm: TProcedureListForm
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
       OnChange = SomethingChange
-      OnKeyDown = edMethodsKeyDown
-      OnKeyPress = edMethodsKeyPress
       TabOrder = 0
     end
     object cbObjects: TComboBox
@@ -213,28 +212,41 @@ object ProcedureListForm: TProcedureListForm
     Top = 73
     Width = 952
     Align = alClient
+    AutoFillColumns = True
     ColCount = 4
     Columns = <    
       item
+        SizePriority = 0
         Title.Caption = ''
-        Width = 24
+        Width = 20
       end    
       item
         Title.Caption = 'Procedure'
-        Width = 200
-      end    
+        Width = 762
+      end
       item
+        SizePriority = 0
         Title.Caption = 'Type'
-      end    
+        Width = 110
+      end
       item
+        SizePriority = 0
         Title.Caption = 'Line'
+        Width = 60
       end>
     FixedCols = 0
-    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goRowSelect, goThumbTracking, goSmoothScroll, goCellEllipsis]
+    MouseWheelOption = mwGrid
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRowSelect, goThumbTracking, goSmoothScroll, goCellEllipsis]
     TabOrder = 3
+    TabStop = False
     OnDblClick = SGDblClick
     OnDrawCell = SGDrawCell
-    OnMouseWheel = SGMouseWheel
     OnSelectCell = SGSelectCell
+    ColWidths = (
+      20
+      762
+      110
+      60
+    )
   end
 end
