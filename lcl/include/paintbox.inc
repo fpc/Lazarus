@@ -27,15 +27,15 @@ end;
 procedure TPaintBox.Paint;
 begin
   if csDesigning in ComponentState then begin
-    Canvas.Brush.Color := Color;
     with Canvas do
     begin
       Pen.Style := psDash;
-      Pen.Color:=clBlack;
+      Pen.Color := clBlack;
+      Brush.Color := Self.Color;
       Brush.Style := bsClear;
-      Rectangle(0, 0, Self.Width - 1, Self.Height - 1);
-      Line(0,0,Self.Width-1,Self.Height-1);
-      Line(Self.Width-1,0,0,Self.Height-1);
+      Rectangle(0, 0, Self.Width, Self.Height);
+      Line(0,0,Self.Width,Self.Height);
+      Line(Self.Width,0,0,Self.Height);
     end;
     exit;
   end;
