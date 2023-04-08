@@ -41,9 +41,24 @@ uses
   // LazControls
   TreeFilterEdit,
   // IdeIntf
-  FormEditingIntf, IDEImagesIntf, PropEdits, ComponentReg,
+  FormEditingIntf, IDEImagesIntf, PropEdits, MenuIntf, ComponentReg,
   // IDE
   LazarusIDEStrConsts, PackageDefs, IDEOptionDefs, EnvironmentOpts, Designer;
+
+const
+  ComponentListMenuRootName = 'ComponentList';
+var
+  // menu section CompListMenuSectionOpen
+  CompListMenuOpenUnit: TIDEMenuCommand;
+  CompListMenuOpenPackage: TIDEMenuCommand;
+
+  // menu section CompListMenuSectionExpand
+  CompListMenuExpand: TIDEMenuCommand;
+  CompListMenuExpandAll: TIDEMenuCommand;
+
+  // menu section CompListMenuSectionCollapse
+  CompListMenuCollapse: TIDEMenuCommand;
+  CompListMenuCollapseAll: TIDEMenuCommand;
 
 type
 
@@ -52,10 +67,6 @@ type
   TComponentListForm = class(TForm)
     chbKeepOpen: TCheckBox;
     ButtonPanel: TPanel;
-    miCollapse: TMenuItem;
-    miCollapseAll: TMenuItem;
-    miExpand: TMenuItem;
-    miExpandAll: TMenuItem;
     OKButton: TButton;
     LabelSearch: TLabel;
     PageControl: TPageControl;
@@ -66,7 +77,7 @@ type
     pnPaletteTree: TPanel;
     Panel6: TPanel;
     Panel7: TPanel;
-    pmCollapseExpand: TPopupMenu;
+    CompListPopupMenu: TPopupMenu;
     TabSheetPaletteTree: TTabSheet;
     TabSheetInheritance: TTabSheet;
     TabSheetList: TTabSheet;
@@ -83,7 +94,7 @@ type
     procedure OKButtonClick(Sender: TObject);
     procedure ComponentsDblClick(Sender: TObject);    
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);    
-    procedure pmCollapseExpandPopup(Sender: TObject);
+    procedure CompListPopupMenuPopup(Sender: TObject);
     procedure tmDeselectTimer(Sender: TObject);
     procedure TreeFilterEdAfterFilter(Sender: TObject);
     procedure PageControlChange(Sender: TObject);
@@ -120,7 +131,34 @@ type
 var
   ComponentListForm: TComponentListForm;
 
+procedure RegisterStandardComponentListMenuItems;
+
 implementation
+
+procedure RegisterStandardComponentListMenuItems;
+var
+  AParent: TIDEMenuSection;
+begin
+  ComponentListMenuRoot := RegisterIDEMenuRoot(ComponentListMenuRootName);
+
+  // register the section for open
+  CompListMenuSectionOpen:=RegisterIDEMenuSection(ComponentListMenuRoot,'Open');
+  AParent:=CompListMenuSectionOpen;
+  CompListMenuOpenUnit:=RegisterIDEMenuCommand(AParent,'Open Unit','Open Unit');
+  CompListMenuOpenPackage:=RegisterIDEMenuCommand(AParent,'Open Package','Open Package');
+
+  // register the section for expand
+  CompListMenuSectionExpand:=RegisterIDEMenuSection(ComponentListMenuRoot,'Expand');
+  AParent:=CompListMenuSectionExpand;
+  CompListMenuExpand:=RegisterIDEMenuCommand(AParent,'Expand','Expand');
+  CompListMenuExpandAll:=RegisterIDEMenuCommand(AParent,'Expand All','Expand All');
+
+  // register the section for collapse
+  CompListMenuSectionCollapse:=RegisterIDEMenuSection(ComponentListMenuRoot,'Collapse');
+  AParent:=CompListMenuSectionCollapse;
+  CompListMenuCollapse:=RegisterIDEMenuCommand(AParent,'Collapse','Collapse');
+  CompListMenuCollapseAll:=RegisterIDEMenuCommand(AParent,'Collapse All','Collapse All');
+end;
 
 {$R *.lfm}
 
@@ -296,7 +334,6 @@ end;
 procedure TComponentListForm.SelectionWasChanged;
 begin
   SelectionToolButton.Down := (IDEComponentPalette.Selected = nil);
-  // ToDo: Select the component in active treeview.
   if FIgnoreSelection then
     Exit;
   if ListTree.IsVisible then
@@ -326,7 +363,7 @@ var
   PalList: TStringList;
   AClass: TClass;
   Node: TTreeNode;
-  ClssName: string;
+  aClassName: string;
   i, Ind: Integer;
   II: TImageIndex;
 begin
@@ -342,8 +379,8 @@ begin
     for i := PalList.Count - 1 downto 0 do
     begin
       AClass := TClass(PalList.Objects[i]);
-      ClssName := PalList[i];
-      if not FClassList.Find(ClssName, Ind) then
+      aClassName := PalList[i];
+      if not FClassList.Find(aClassName, Ind) then
       begin
         // Find out parent position
         if Assigned(AClass.ClassParent)
@@ -352,11 +389,11 @@ begin
         else
           Node := nil;
         // Add the item
-        if ClssName <> Comp.ComponentClass.ClassName then
-          Node := InheritanceTree.Items.AddChild(Node, ClssName)
+        if aClassName <> Comp.ComponentClass.ClassName then
+          Node := InheritanceTree.Items.AddChild(Node, aClassName)
         else
         begin
-          Node := InheritanceTree.Items.AddChildObject(Node, ClssName, Comp);
+          Node := InheritanceTree.Items.AddChildObject(Node, aClassName, Comp);
           if Comp is TPkgComponent then
             II := TPkgComponent(Comp).ImageIndex
           else
@@ -367,7 +404,7 @@ begin
             Node.SelectedIndex := Node.ImageIndex;
           end;
         end;
-        FClassList.AddObject(ClssName, Node);
+        FClassList.AddObject(aClassName, Node);
       end;
     end;
   finally
@@ -598,21 +635,47 @@ begin
   Node.Expand(True);
 end;
 
-procedure TComponentListForm.pmCollapseExpandPopup(Sender: TObject);
+procedure TComponentListForm.CompListPopupMenuPopup(Sender: TObject);
 var
   Node: TTreeNode;
 begin
-  Node := TreeFilterEd.FilteredTreeview.Selected;
-  if Node = nil then
+  //debugln(['TComponentListForm.CompListPopupMenuPopup ']);
+  ComponentListMenuRoot.MenuItem:=CompListPopupMenu.Items;
+
+  // expand/collapse
+  if (PageControl.ActivePage=TabSheetPaletteTree)
+      or (PageControl.ActivePage=TabSheetInheritance) then
   begin
-    miExpand.Enabled := False;
-    miCollapse.Enabled := False;
-  end
-  else
-  begin
-    miExpand.Enabled := (Node.HasChildren) and (not Node.Expanded);
-    miCollapse.Enabled := (Node.HasChildren) and (Node.Expanded);
+    Node := TreeFilterEd.FilteredTreeview.Selected;
+    if Node = nil then
+    begin
+      CompListMenuExpand.Enabled := False;
+      CompListMenuCollapse.Enabled := False;
+    end
+    else
+    begin
+      CompListMenuExpand.Enabled := (Node.HasChildren) and (not Node.Expanded);
+      CompListMenuCollapse.Enabled := (Node.HasChildren) and (Node.Expanded);
+    end;
+    CompListMenuExpand.Visible := true;
+    CompListMenuExpandAll.Visible := true;
+    CompListMenuCollapse.Visible := true;
+    CompListMenuCollapseAll.Visible := true;
+    CompListMenuExpand.OnClick:=@miExpandClick;
+    CompListMenuExpandAll.OnClick:=@miExpandAllClick;
+    CompListMenuCollapse.OnClick:=@miCollapseClick;
+    CompListMenuCollapseAll.OnClick:=@miCollapseAllClick;
+  end else begin
+    CompListMenuExpand.Visible := false;
+    CompListMenuExpandAll.Visible := false;
+    CompListMenuCollapse.Visible := false;
+    CompListMenuCollapseAll.Visible := false;
   end;
+
+  // open unit/package
+  // ToDo
+  CompListMenuOpenUnit.Visible:=false;
+  CompListMenuOpenPackage.Visible:=false;
 end;
 
 procedure TComponentListForm.SelectionToolButtonClick(Sender: TObject);

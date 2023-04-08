@@ -13,8 +13,8 @@ object ComponentListForm: TComponentListForm
   LCLVersion = '2.3.0.0'
   object PageControl: TPageControl
     Left = 0
-    Height = 397
-    Top = 27
+    Height = 395
+    Top = 29
     Width = 300
     ActivePage = TabSheetList
     Align = alClient
@@ -23,32 +23,34 @@ object ComponentListForm: TComponentListForm
     OnChange = PageControlChange
     object TabSheetList: TTabSheet
       Caption = 'List'
-      ClientHeight = 369
-      ClientWidth = 292
+      ClientHeight = 366
+      ClientWidth = 290
       object Panel7: TPanel
         Left = 0
-        Height = 369
+        Height = 366
         Top = 0
-        Width = 292
+        Width = 290
         Align = alClient
         BevelOuter = bvNone
         BorderWidth = 2
-        ClientHeight = 369
-        ClientWidth = 292
+        ClientHeight = 366
+        ClientWidth = 290
         TabOrder = 0
         object ListTree: TTreeView
           Left = 2
-          Height = 365
+          Height = 362
           Top = 2
-          Width = 288
+          Width = 286
           Align = alClient
           Indent = 25
+          PopupMenu = CompListPopupMenu
           ReadOnly = True
           RowSelect = True
           ScrollBars = ssAutoBoth
           ShowButtons = False
           ShowLines = False
           ShowRoot = False
+          ShowSeparators = False
           TabOrder = 0
           OnDblClick = ComponentsDblClick
           OnKeyPress = TreeKeyPress
@@ -59,31 +61,32 @@ object ComponentListForm: TComponentListForm
     end
     object TabSheetPaletteTree: TTabSheet
       Caption = 'Palette'
-      ClientHeight = 369
-      ClientWidth = 292
+      ClientHeight = 366
+      ClientWidth = 290
       object pnPaletteTree: TPanel
         Left = 0
-        Height = 369
+        Height = 366
         Top = 0
-        Width = 292
+        Width = 290
         Align = alClient
         BevelOuter = bvNone
         BorderWidth = 5
-        ClientHeight = 369
-        ClientWidth = 292
+        ClientHeight = 366
+        ClientWidth = 290
         TabOrder = 0
         object PalletteTree: TTreeView
           Left = 5
-          Height = 359
+          Height = 356
           Top = 5
-          Width = 282
+          Width = 280
           Align = alClient
-          PopupMenu = pmCollapseExpand
+          PopupMenu = CompListPopupMenu
           ReadOnly = True
           RightClickSelect = True
           RowSelect = True
           ScrollBars = ssAutoBoth
           ShowLines = False
+          ShowSeparators = False
           TabOrder = 0
           OnDblClick = ComponentsDblClick
           OnKeyPress = TreeKeyPress
@@ -94,31 +97,32 @@ object ComponentListForm: TComponentListForm
     end
     object TabSheetInheritance: TTabSheet
       Caption = 'Inheritance'
-      ClientHeight = 369
-      ClientWidth = 292
+      ClientHeight = 366
+      ClientWidth = 290
       object Panel6: TPanel
         Left = 0
-        Height = 369
+        Height = 366
         Top = 0
-        Width = 292
+        Width = 290
         Align = alClient
         BevelOuter = bvNone
         BorderWidth = 5
-        ClientHeight = 369
-        ClientWidth = 292
+        ClientHeight = 366
+        ClientWidth = 290
         TabOrder = 0
         object InheritanceTree: TTreeView
           Left = 5
-          Height = 359
+          Height = 356
           Top = 5
-          Width = 282
+          Width = 280
           Align = alClient
           Indent = 20
-          PopupMenu = pmCollapseExpand
+          PopupMenu = CompListPopupMenu
           ReadOnly = True
           RightClickSelect = True
           RowSelect = True
           ScrollBars = ssAutoBoth
+          ShowSeparators = False
           TabOrder = 0
           OnDblClick = ComponentsDblClick
           OnKeyPress = TreeKeyPress
@@ -130,13 +134,13 @@ object ComponentListForm: TComponentListForm
   end
   object FilterPanel: TPanel
     Left = 0
-    Height = 27
+    Height = 29
     Top = 0
     Width = 300
     Align = alTop
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 27
+    ClientHeight = 29
     ClientWidth = 300
     TabOrder = 0
     object SelectionToolButton: TSpeedButton
@@ -145,7 +149,7 @@ object ComponentListForm: TComponentListForm
       AnchorSideBottom.Control = FilterPanel
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 27
+      Height = 29
       Top = 0
       Width = 32
       AllowAllUp = True
@@ -162,7 +166,7 @@ object ComponentListForm: TComponentListForm
       Left = 38
       Height = 15
       Top = 6
-      Width = 63
+      Width = 66
       BorderSpacing.Around = 6
       Caption = 'LabelSearch'
       ParentColor = False
@@ -172,10 +176,10 @@ object ComponentListForm: TComponentListForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = LabelSearch
       AnchorSideTop.Side = asrCenter
-      Left = 75
-      Height = 23
-      Top = 2
-      Width = 221
+      Left = 110
+      Height = 32
+      Top = -3
+      Width = 186
       OnAfterFilter = TreeFilterEdAfterFilter
       ButtonWidth = 23
       Anchors = [akTop, akLeft, akRight]
@@ -198,18 +202,18 @@ object ComponentListForm: TComponentListForm
     TabOrder = 2
     object chbKeepOpen: TCheckBox
       Left = 8
-      Height = 19
+      Height = 23
       Top = 10
-      Width = 95
+      Width = 104
       Caption = 'chbKeepOpen'
       OnChange = chbKeepOpenChange
       TabOrder = 0
     end
     object OKButton: TButton
-      Left = 215
-      Height = 25
+      Left = 221
+      Height = 31
       Top = 8
-      Width = 78
+      Width = 72
       Anchors = [akTop, akRight]
       AutoSize = True
       Caption = 'OKButton'
@@ -219,29 +223,10 @@ object ComponentListForm: TComponentListForm
       TabOrder = 1
     end
   end
-  object pmCollapseExpand: TPopupMenu
-    OnPopup = pmCollapseExpandPopup
+  object CompListPopupMenu: TPopupMenu
+    OnPopup = CompListPopupMenuPopup
     Left = 160
     Top = 112
-    object miExpand: TMenuItem
-      Caption = 'Expand'
-      OnClick = miExpandClick
-    end
-    object miExpandAll: TMenuItem
-      Caption = 'Expand All'
-      OnClick = miExpandAllClick
-    end
-    object MenuItem1: TMenuItem
-      Caption = '-'
-    end
-    object miCollapse: TMenuItem
-      Caption = 'Collapse'
-      OnClick = miCollapseClick
-    end
-    object miCollapseAll: TMenuItem
-      Caption = 'Collapse All'
-      OnClick = miCollapseAllClick
-    end
   end
   object tmDeselect: TTimer
     Enabled = False

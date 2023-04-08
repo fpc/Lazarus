@@ -423,6 +423,12 @@ var
   // Component Palette, pages drop down. (no submenus allowed / only top level / must have OnClick(Proc))
   ComponentPalettePageDropDownExtraEntries: TIDEMenuSection = nil;
 
+  // Component List, items
+  ComponentListMenuRoot: TIDEMenuSection = nil;
+    CompListMenuSectionOpen: TIDEMenuSection;
+    CompListMenuSectionExpand: TIDEMenuSection;
+    CompListMenuSectionCollapse: TIDEMenuSection;
+
 function RegisterIDEMenuRoot(const Name: string; MenuItem: TMenuItem = nil
                              ): TIDEMenuSection;
 function RegisterIDEMenuSection(Parent: TIDEMenuSection;

@@ -2628,6 +2628,7 @@ begin
   RegisterStandardCodeExplorerMenuItems;
   RegisterStandardCodeTemplatesMenuItems;
   RegisterStandardDesignerMenuItems;
+  RegisterStandardComponentListMenuItems;
 end;
 
 procedure TMainIDE.SetupStandardProjectTypes;

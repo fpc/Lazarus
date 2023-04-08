@@ -626,7 +626,8 @@ begin
       PalettePopupMenu:=TPopupMenu.Create(nil);
       PalettePopupMenu.OnPopup:=@PalettePopupMenuPopup;
       PalettePopupMenu.Name:='PalettePopupMenu';
-      // Component List
+
+      // menuitem: Component List
       PalettePopupMenu.Images := IDEImages.Images_16;
       miCompList:=TMenuItem.Create(PalettePopupMenu);
       with miCompList do begin
@@ -636,6 +637,8 @@ begin
         ImageIndex := IDEImages.LoadImage('menu_view_components');
       end;
       PalettePopupMenu.Items.Add(miCompList);
+
+      // menuitem Options
       miOptions:=TMenuItem.Create(PalettePopupMenu);
       with miOptions do begin
         Name:='OptionsMenuItem';

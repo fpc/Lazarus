@@ -5603,8 +5603,6 @@ begin
   if NewPopupMenu<>FPopupMenu then begin
     FPopupMenu:=NewPopupMenu;
     if FEditor<>nil then begin
-      if FEditor.PopupMenu <> nil then // Todo: why?
-        FEditor.PopupMenu.RemoveFreeNotification(FEditor);
       FEditor.PopupMenu:=NewPopupMenu;
     end;
   end;
