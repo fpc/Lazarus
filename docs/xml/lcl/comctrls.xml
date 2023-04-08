@@ -5468,13 +5468,10 @@ in Client.
 <descr/>
 <seealso/>
 </element>
-<element name="TPageControl.FindPageWithDockClient.Result">
-<short/>
-</element>
-<element name="TPageControl.FindPageWithDockClient.Client">
-<short/>
-</element>
+<element name="TPageControl.FindPageWithDockClient.Result"/>
+<element name="TPageControl.FindPageWithDockClient.Client"/>
 
+<!-- protected -->
 <element name="TPageControl.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
 <element name="TPageControl.GetPageClass">
@@ -5515,19 +5512,29 @@ Called to check whether this control allows docking and where.
 </seealso>
 </element>
 <element name="TPageControl.DockOver.Source">
-<short/>
+<short>
+Object with the display rectangle and alignment for the hover notification.
+</short>
 </element>
 <element name="TPageControl.DockOver.X">
-<short/>
+<short>
+Horizontal coordinate for the dockable object.
+</short>
 </element>
 <element name="TPageControl.DockOver.Y">
-<short/>
+<short>
+Vertical coordinate for the dockable object.
+</short>
 </element>
 <element name="TPageControl.DockOver.State">
-<short/>
+<short>
+Indicates whether the object is entering, moving, or leaving the dock site.
+</short>
 </element>
 <element name="TPageControl.DockOver.Accept">
-<short/>
+<short>
+Returns <b>True</b> if the object can be docked.
+</short>
 </element>
 
 <element name="TPageControl.DoRemoveDockClient">
@@ -6039,18 +6046,26 @@ inherited <var>Create</var> then sets many local defaults.</short>
 calls the inherited <var>Create</var> method then sets default values in the 
 class instance.
 </p>
-<p>Among the defaults set are:</p>
 <p>
-HotTrack, Multiline, MultiSelect, OwnerDraw, RaggedRight, ScrollOpposite - 
-all <b>False</b>; Tab height and width to zero
+Among the defaults set are:
 </p>
+<ul>
+<li>
+HotTrack, Multiline, MultiSelect, OwnerDraw, RaggedRight, ScrollOpposite (all set to <b>False</b>)
+</li>
+<li>
+Tab height and width (Set to zero).
+</li>
+</ul>
 </descr>
 <seealso>
 <link id="#rtl.system.TObject.Create">TObject.Create</link>
 </seealso>
 </element>
 <element name="TTabControlStrings.Create.TheTabControl">
-<short/>
+<short>
+TTabControl instance where the string values are used.
+</short>
 </element>
 
 <element name="TTabControlStrings.GetHitTestInfoAt">
@@ -6101,44 +6116,75 @@ Returns a set of THitTest result values for the specified location.
 
 <element name="TTabControlStrings.IndexOfTabAt">
 <short>
-<var>IndexOfTabAt</var> - returns the Index value of the tab at the specified 
-location X, Y.</short>
-<descr/>
+Gets the ordinal position for the value of the tab at the specified 
+location X, Y.
+</short>
+<descr>
+<p>
+<var>IndexOfTabAt</var> always returns 0 in TTabControlStrings. It is 
+overridden in descendent classes to return the position in the Notebook or 
+TabSheet for the tabbed control.
+</p>
+<p>
+Used in the implementation of the IndexOfTabAt method in TTabControl.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TTabControlStrings.IndexOfTabAt.Result">
-<short/>
+<short>
+Ordinal position in Items for the named tab at the specified coordinates.
+</short>
 </element>
 <element name="TTabControlStrings.IndexOfTabAt.X">
-<short/>
+<short>
+Horizontal coordinate for the tab to locate in Items.
+</short>
 </element>
 <element name="TTabControlStrings.IndexOfTabAt.Y">
-<short/>
+<short>
+Vertical coordinate for the tab to locate in Items.
+</short>
 </element>
 
 <element name="TTabControlStrings.RowCount">
 <short>
-<var>RowCount</var> - number of rows (for a multi-row string).</short>
-<descr/>
+Returns the number of rows needed (for a multi-row string).
+</short>
+<descr>
+<p>
+<var>RowCount</var> always returns 1 in TTabControlStrings.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TTabControlStrings.RowCount.Result">
-<short/>
+<short>
+Number of row needed to represent tab names on the associated control.
+</short>
 </element>
 
 <element name="TTabControlStrings.TabRect">
 <short>
-<var>TabRec</var> - returns the coordinates of the rectangle for the tab with 
-specified index.
+Returns the coordinates of the rectangle for the tab with specified index.
 </short>
-<descr/>
+<descr>
+<p>
+<var>TabRect</var> always returns a zero-filled TRect instance in 
+TTabControlStrings.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TTabControlStrings.TabRect.Result">
-<short/>
+<short>
+TRect instance with the display area for the tab at the specified ordinal position.
+</short>
 </element>
 <element name="TTabControlStrings.TabRect.Index">
-<short/>
+<short>
+Ordinal position for the tab with the caption represented in the return value.
+</short>
 </element>
 
 <element name="TTabControlStrings.ImageListChange">
@@ -6149,19 +6195,27 @@ specified index.
 <seealso/>
 </element>
 <element name="TTabControlStrings.ImageListChange.Sender">
-<short/>
+<short>
+Object (TCustomTabControl) instance for the change notification.
+</short>
 </element>
 
 <element name="TTabControlStrings.ScrollTabs">
 <short>
-<var>ScrollTabs</var> - scrolls the tabs by an amount specified by 
-<var>Delta</var>.
+Scrolls the tabs by the amount specified in Delta.
 </short>
-<descr/>
+<descr>
+<p>
+<var>ScrollTabs</var> sets the visible when a scroll message occurs on the 
+associated tab control.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TTabControlStrings.ScrollTabs.Delta">
-<short/>
+<short>
+Indicates the direction and number of tabs for the scroll operation.
+</short>
 </element>
 
 <element name="TTabControlStrings.TabControlBoundsChange">
@@ -6210,11 +6264,15 @@ bounds of a Tab Control.
 <seealso/>
 </element>
 <element name="TTabControlStrings.IsUpdating.Result">
-<short/>
+<short>
+Returns <b>True</b> if an update is in progress.
+</short>
 </element>
 
 <element name="TTabControlStrings.TabControl">
-<short>The <var>TabControl</var> to which these strings apply.</short>
+<short>
+The <var>TabControl</var> to which these strings apply.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -7920,40 +7978,61 @@ TCustomDrawState determines how a item will be drawn.
 
 <element name="TCustomDrawResultFlag">
 <short>
-<var>TCustomDrawResultFlag</var> - enumerated type, a series of flags to 
-signify the result of a drawing process.
+Represents flags returned as custom drawing results.
 </short>
+<seealso>
+<link id="TCustomDrawResult"/>
+<link id="TCustomListView.IntfCustomDraw"/>
+</seealso>
 </element>
 <element name="TCustomDrawResultFlag.cdrSkipDefault">
-<short/>
+<short>
+Skips default drawing routines when a custom drawing process has failed.
+</short>
 </element>
 <element name="TCustomDrawResultFlag.cdrNotifyPostpaint">
-<short/>
+<short>
+Included in the drawing result when a drawing target supports cdPostPaint.
+</short>
 </element>
 <element name="TCustomDrawResultFlag.cdrNotifyItemdraw">
-<short/>
+<short>
+Included in the drawing result when an item drawing target supports cdPrePaint 
+or cdPreErase.
+</short>
 </element>
 <element name="TCustomDrawResultFlag.cdrNotifySubitemdraw">
-<short/>
+<short>
+Included in the drawing result when a subitem drawing target supports 
+cdPrePaint.
+</short>
 </element>
-<element name="TCustomDrawResultFlag.cdrNotifyPosterase">
-<short/>
+<element name="TCustomDrawResultFlag.cdrNotifyPostErase">
+<short>
+Included in the drawing result when an item drawing target supports 
+cdPostErase.
+</short>
 </element>
-<element name="TCustomDrawResultFlag.cdrNotifyItemerase">
-<short/>
+<element name="TCustomDrawResultFlag.cdrNotifyItemErase">
+<short>
+Not used in the current LCL implementation.
+</short>
 </element>
 
 <element name="TCustomDrawResult">
 <short>
-<var>TCustomDrawResult</var> - set of <var>TCustomDrawResultFlag</var>.
-</short>.
+Set type used to store TCustomDrawResultFlag enumeration values.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCustomDrawResultFlag"/>
+<link id="TCustomListView.IntfCustomDraw"/>
+</seealso>
 </element>
 
 <element name="TSortType">
 <short>
-Indicates the sort mechanism used for items in tree view and list view 
+Indicates the sort mechanism used for the items in tree view and list view 
 controls.
 </short>
 <descr>
@@ -8051,7 +8130,6 @@ being destroyed or created.
 </element>
 <element name="TListItemFlag.lifCreated">
 <short>List item has been marked as created by a notify message.</short>
-<short/>
 </element>
 
 <element name="TListItemFlags">
@@ -18562,43 +18640,85 @@ to bottom to represent the progress for the process.
 
 <element name="TUDAlignButton">
 <short>
-<var>TUDAlignButton</var> - enumerated type contains constants for alignment 
-of an UpDown button.
-</short>
-<descr/>
-<seealso/>
+Contains values used to align the buttons on a TUpDown control.</short>
+<descr>
+<p>
+<var>TUDAlignButton</var> is an enumerated type with values that indicate the 
+alignment for the up/down buttons on a TUpDown control. The value indicates 
+where the buttons are positioned relative to the edit on the control. Values 
+from TUDAlignButton can be assigned to the AlignButton property in a TUpDown 
+control.
+</p>
+<p>
+See TUDOrientation for the orientation of the arrows drawn on a TUpDown 
+control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomUpDown.AlignButton"/>
+<link id="TUpDown.AlignButton"/>
+<link id="TUDOrientation"/>
+</seealso>
 </element>
 <element name="TUDAlignButton.udLeft">
-<short/>
+<short>
+The up/down button is aligned on the left-hand edge of a TUpDown control.
+</short>
 </element>
 <element name="TUDAlignButton.udRight">
-<short/>
+<short>
+The up/down button is aligned on the right-hand edge of a TUpDown control.
+</short>
 </element>
 <element name="TUDAlignButton.udTop">
-<short/>
+<short>
+The up/down button is aligned on the top edge of a TUpDown control.
+</short>
 </element>
 <element name="TUDAlignButton.udBottom">
-<short/>
+<short>
+The up/down button is aligned on the bottom edge of a TUpDown control.
+</short>
 </element>
 
 <element name="TUDOrientation">
 <short>
-<var>TUDOrientation</var> - enumerated type with constants for orientation of 
-UpDown button (Horizontal or Vertical).
+Indicates the orientation for the arrows on a TUpDOwn control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>TUDOrientation</var> is an enumerated type with values that control the  
+orientation of the button arrows drawn on a TUpDown control. Values in 
+TUDOrientation can be assigned to the Orientation property in TUpDown.
+</p>
+<p>
+See TUDAlignButton for the values used to align the arrow buttons on a TUpDown 
+control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomUpDown.Orientation"/>
+<link id="TUpDown.Orientation"/>
+<link id="TUDAlignButton"/>
+</seealso>
 </element>
 <element name="TUDOrientation.udHorizontal">
-<short/>
+<short>
+Button arrows are drawn side-by-side with the arrows pointing to the left and 
+right.
+</short>
 </element>
 <element name="TUDOrientation.udVertical">
-<short/>
+<short>
+Button arrows are stacked vertically with the arrows pointing upward and 
+downward.
+</short>
 </element>
 
 <element name="TUpDownDirection">
 <short>
-Indicates whether a value is being increased, decreased, or not changed.
+Indicates whether a value in a TUpDown control is being increased, decreased, 
+or not changed.
 </short>
 <descr>
 <p>
@@ -18635,58 +18755,125 @@ buttons used in a <var>TCustomUpDown</var> control.
 </element>
 <element name="TUDBtnType.btPrev">
 <short>Represents the Previous (Down, Decrease Value) button.</short>
-<short/>
 </element>
 
 <element name="TUDClickEvent">
 <short>
-<var>TUDClickEvent</var> - generic event handling procedure for clicking on 
-an UpDown button.
+Specifies an event handler signalled for a button click on a TUpDown control.  
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>TUDClickEvent</var> is the type used to implement a handler routine in 
+the OnClick property in TCustomUpDown.
+</p>
+</descr>
+<seealso>
+<link id="TCustomUpDown.OnClick"/>
+</seealso>
 </element>
 <element name="TUDClickEvent.Sender">
-<short/>
+<short>
+Object (TCustomUpDown) for the click event.
+</short>
 </element>
 <element name="TUDClickEvent.Button">
-<short/>
+<short>
+Indicates whether the up or down button is applied in the click event.
+</short>
 </element>
 
 <element name="TUDChangingEvent">
 <short>
-<var>TUDChangingEvent</var> - generic event handling procedure for changes in 
-UpDown button.
+Specifies an event handler signalled prior to changing the value in a TUpDown 
+control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>TUDChangingEvent</var> allows an application to control whether a pending 
+change to the value in TUpDown can be applied to the control. Set the 
+AllowChange argument to False in the handler routine to prevent the change 
+from being applied to the control.
+</p>
+<p>
+TUDChangingEvent is the type used to implement the OnChanging property in 
+TUpDown.
+</p>
+<p>
+Use TUDChangingEventEx and OnChangingEx for the event which includes the new 
+value for the control and the direction in which the value will be changed.
+</p>
+</descr>
+<seealso>
+<link id="TCustomUpDown.OnChanging"/>
+<link id="TCustomUpDown.OnChangingEx"/>
+<link id="TUpDown.OnChanging"/>
+<link id="TUpDown.OnChangingEx"/>
+<link id="TUDChangingEventEx"/>
+</seealso>
 </element>
 <element name="TUDChangingEvent.Sender">
-<short/>
+<short>
+Object (TCustomUpDown) for the event.
+</short>
 </element>
 <element name="TUDChangingEvent.AllowChange">
-<short/>
+<short>
+Indicates whether the value change can be applied to the TUpdown control. 
+Return <b>False</b> to prevent the change to the control value.
+</short>
 </element>
 
 <element name="TUDChangingEventEx">
 <short>
-Specifies an event handler signalled with additional information when the 
-value for a TUpDown control is about to change.
+Specifies an event handler signalled prior to changing the value in a TUpDown 
+control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>TUDChangingEventEx</var> allows an application to control whether a 
+pending change to the value in TUpDown can be applied to the control. It is 
+similar to TUDChangingEvent, but includes the new value for the control and 
+indicates the direction for the pending change. Set the AllowChange argument 
+to False in the handler routine to prevent the change from being applied to 
+the control.
+</p>
+<p>
+TUDChangingEventEx is the type used to implement the OnChangingEx property in 
+TUpDown.
+</p>
+<p>
+Use TUDChangingEvent and OnChanging for the event which provides a simple 
+notification of a pending value change in the control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomUpDown.OnChangingEx"/>
+<link id="TCustomUpDown.OnChanging"/>
+<link id="TUpDown.OnChangingEx"/>
+<link id="TUpDown.OnChanging"/>
+<link id="TUDChangingEvent"/>
+</seealso>
 </element>
 <element name="TUDChangingEventEx.Sender">
-<short/>
+<short>
+Object (TCustomUpDown) for the event.
+</short>
 </element>
 <element name="TUDChangingEventEx.AllowChange">
-<short/>
+<short>
+Indicates whether the value change can be applied to the TUpdown control. 
+Return <b>False</b> to prevent the change to the control value.
+</short>
 </element>
 <element name="TUDChangingEventEx.NewValue">
-<short/>
+<short>
+New value for the TUpdown control.
+</short>
 </element>
 <element name="TUDChangingEventEx.Direction">
-<short/>
+<short>
+Direction for the pending value change (up or down).
+</short>
 </element>
 
 <element name="TCustomUpDown">
@@ -19449,10 +19636,14 @@ removal of the associate control, this is performed.
 </seealso>
 </element>
 <element name="TCustomUpDown.Notification.AComponent">
-<short/>
+<short>
+Component added or removed in the notification.
+</short>
 </element>
 <element name="TCustomUpDown.Notification.Operation">
-<short/>
+<short>
+Operation performed in the notification.
+</short>
 </element>
 
 <element name="TCustomUpDown.Click">
@@ -23295,7 +23486,6 @@ TCoolBand is the type used for the items in the TCoolBands collection.
 
 <element name="TCoolBand.GetVisible">
 <short>Gets the value for the Visible property.</short>
-<short/>
 <descr/>
 <seealso>
 <link id="TCoolBand.Visible"/>
@@ -23318,7 +23508,6 @@ TCoolBand is the type used for the items in the TCoolBands collection.
 
 <element name="TCoolBand.SetBorderStyle">
 <short>Sets the value for the BorderStyle property.</short>
-<short/>
 <descr/>
 <seealso>
 <link id="TCoolBand.BorderStyle"/>
