@@ -4516,12 +4516,21 @@ form updates. For the initial call to <var>BeginFormUpdate</var>,
 <var>DisableAutoSizing</var> is called to suspend auto-sizing.
 </p>
 <p>
-Use <var>EndFormUpdate</var> to decrement the update counter. When the update 
-count reaches <b>0</b>, auto-sizing is re-enabled.
+<var>EndFormUpdate</var> decrements the internal update counter. When the 
+update count reaches <b>0</b>, auto-sizing is re-enabled.
+</p>
+<p>
+BeginFormUpdate is called from the CreateNew method and disables auto-sizing 
+while the new form instance is configured. EndFormUpdate is called from the 
+AfterConstruction method, and occurs after the bounds for the form have been 
+updated but before the form is scaled using AutoAdjustLayout.
 </p>
 </descr>
 <seealso>
 <link id="TCustomForm.EndFormUpdate"/>
+<link id="TCustomForm.AutoAdjustLayout"/>
+<link id="TCustomForm.CreateNew"/>
+<link id="TCustomForm.Create"/>
 <link id="#lcl.controls.TControl.DisableAutoSizing">TControl.DisableAutoSizing</link>
 <link id="#lcl.controls.TControl.EnableAutoSizing">TControl.EnableAutoSizing</link>
 </seealso>
@@ -4748,15 +4757,32 @@ queued <var>OnResize</var> or <var>OnChangeBounds</var> events, and from the
 </element>
 
 <element name="TCustomForm.EndFormUpdate">
-<short>Unlocks form updates; used with BeginFormUpdate.</short>
+<short>
+Decrements the form update counter, and re-enables auto-sizing on the form.
+</short>
 <descr>
 <p>
-When the update counter reaches zero, FormEndUpdated is invoked to realize 
-the pending changes.
+EndFormUpdate is used along with <var>BeginFormUpdate</var> method to manage 
+auto-sizing during form updates. An initial call to <var>BeginFormUpdate</var> 
+disables auto-sizing when the form instance is created.
+</p>
+<p>
+<var>EndFormUpdate</var> decrements the internal update counter. When the 
+update count reaches <b>0</b>, auto-sizing is re-enabled.
+</p>
+<p>
+BeginFormUpdate is called from the CreateNew method and disables auto-sizing 
+while the new form instance is configured. EndFormUpdate is called from the 
+AfterConstruction method, and occurs after the bounds for the form have been 
+updated but before the form is scaled using AutoAdjustLayout.
 </p>
 </descr>
 <seealso>
 <link id="TCustomForm.BeginFormUpdate"/>
+<link id="TCustomForm.AutoAdjustLayout"/>
+<link id="TCustomForm.CreateNew"/>
+<link id="TCustomForm.Create"/>
+<link id="TCustomForm.AfterConstruction"/>
 <link id="#lcl.controls.TWinControl.FormEndUpdated">TWinControl.FormEndUpdated</link>
 </seealso>
 </element>
