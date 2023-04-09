@@ -4085,7 +4085,9 @@ end;
 
 function TPkgComponent.ImageIndex: TImageIndex;
 begin
-  Result := IDEImages.GetImageIndex(ComponentClass.ClassName, 24);
+  Result := IDEImages.GetImageIndex(ComponentClass.UnitName+'.'+ComponentClass.ClassName, 24);
+  if Result<0 then
+    Result := IDEImages.GetImageIndex(ComponentClass.ClassName, 24);
   if Result=-1 then
     Result := IDEImages.GetImageIndex('default', 24);
 end;
