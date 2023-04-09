@@ -834,8 +834,10 @@ type
       out AncestorClassName: string; DirtySearch: boolean): boolean;
 
     // form components
-    function CompleteComponent(Code: TCodeBuffer;
+    function AddPublishedVariables(Code: TCodeBuffer;
           AComponent, AncestorComponent: TComponent): boolean;
+    function CompleteComponent(Code: TCodeBuffer;
+          AComponent, AncestorComponent: TComponent): boolean; deprecated 'use AddPublishedVariables';
     function PublishedVariableExists(Code: TCodeBuffer;
           const AClassName, AVarName: string;
           ErrorOnClassNotFound: boolean): boolean;
@@ -5793,8 +5795,8 @@ begin
   end;
 end;
 
-function TCodeToolManager.CompleteComponent(Code: TCodeBuffer;
-  AComponent, AncestorComponent: TComponent): boolean;
+function TCodeToolManager.AddPublishedVariables(Code: TCodeBuffer; AComponent,
+  AncestorComponent: TComponent): boolean;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
@@ -5802,11 +5804,17 @@ begin
   {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
-    Result:=FCurCodeTool.CompleteComponent(AComponent,AncestorComponent,
+    Result:=FCurCodeTool.AddPublishedVariables(AComponent,AncestorComponent,
                                            SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
   end;
+end;
+
+function TCodeToolManager.CompleteComponent(Code: TCodeBuffer; AComponent,
+  AncestorComponent: TComponent): boolean;
+begin
+  Result:=AddPublishedVariables(Code,AComponent,AncestorComponent);
 end;
 
 function TCodeToolManager.PublishedVariableExists(Code: TCodeBuffer;

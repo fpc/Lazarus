@@ -65,9 +65,11 @@ type
     function CollectPublishedMethods(Params: TFindDeclarationParams;
       const FoundContext: TFindContext): TIdentifierFoundResult;
   public
-    function CompleteComponent(AComponent, AncestorComponent: TComponent;
+    function AddPublishedVariables(AComponent, AncestorComponent: TComponent;
         SourceChangeCache: TSourceChangeCache): boolean;
-  
+    function CompleteComponent(AComponent, AncestorComponent: TComponent;
+        SourceChangeCache: TSourceChangeCache): boolean; deprecated 'use AddPublishedVariables';
+
     function GetCompatiblePublishedMethods(const AClassName: string;
         PropInstance: TPersistent; const PropName: string;
         const Proc: TGetStrProc): boolean;
@@ -1370,8 +1372,9 @@ begin
   Result:=ifrProceedSearch;
 end;
 
-function TEventsCodeTool.CompleteComponent(AComponent, AncestorComponent: TComponent;
-  SourceChangeCache: TSourceChangeCache): boolean;
+function TEventsCodeTool.AddPublishedVariables(AComponent,
+  AncestorComponent: TComponent; SourceChangeCache: TSourceChangeCache
+  ): boolean;
 { - Adds all missing published variable declarations to the class definition
     in the source
 }
@@ -1420,6 +1423,13 @@ begin
   finally
     FreeClassInsertionList;
   end;
+end;
+
+function TEventsCodeTool.CompleteComponent(AComponent,
+  AncestorComponent: TComponent; SourceChangeCache: TSourceChangeCache
+  ): boolean;
+begin
+  Result:=AddPublishedVariables(AComponent,AncestorComponent,SourceChangeCache);
 end;
 
 function TEventsCodeTool.GetCompatiblePublishedMethods(

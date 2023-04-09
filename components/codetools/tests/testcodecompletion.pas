@@ -18,15 +18,7 @@ type
     procedure Test(Title: string; Src: array of string; Line, Col: integer;
       Expected: array of string);
   published
-    procedure TestIntfProcUpdateArgName;
-    procedure TestIntfCompleteMethodBody_ResultGenericObjFPC;
-    procedure TestIntfCompleteMethodBody_ResultGenericDelphi;
-    procedure TestMethodUpdateArgName_GenericObjFPC;
-    procedure TestMethodUpdateArgName_GenericDelphi;
-    procedure TestCompleteMethodSignature_Def_GenericObjFPC;
-    procedure TestCompleteMethodSignature_Body_GenericObjFPC;
-    procedure TestCompleteMethodSignature_Def_GenericDelphi;
-    procedure TestCompleteMethodSignature_Body_GenericDelphi; // todo
+    // class completion: add missing method body
     procedure TestCompleteMethodBody_GenericObjFPC;
     procedure TestCompleteMethodBody_GenericDelphi;
     procedure TestCompleteMethodBody_GenericMethod;
@@ -34,22 +26,40 @@ type
     procedure TestCompleteMethodBody_GenericFunctionResultDelphi;
     procedure TestCompleteMethodBody_ParamGenericObjFPC;
     procedure TestCompleteMethodBody_ParamGenericDelphi;
+    // class completion: sync method arg name to body
+    procedure TestMethodUpdateArgName_GenericObjFPC;
+    procedure TestMethodUpdateArgName_GenericDelphi;
+    procedure TestCompleteMethodSignature_Def_GenericObjFPC;
+    procedure TestCompleteMethodSignature_Body_GenericObjFPC;
+    procedure TestCompleteMethodSignature_Def_GenericDelphi;
+    procedure TestCompleteMethodSignature_Body_GenericDelphi; // todo
+    // class completion: sync method parentheses to body
+    procedure TestCompleteMethodSignature_Empty_Parentheses;
+    procedure TestCompleteMethodSignature_Without_Parentheses;
+    // class completion: property
     procedure TestCompleteProperty_TypeWithUnitname;
     procedure TestCompleteProperty_TypeGenericObjFPC;
     procedure TestCompleteProperty_TypeGenericDelphi;
     procedure TestCompleteProperty_GenericObjFPC;
     procedure TestCompleteProperty_GenericDelphi;
-    procedure TestCompleteVariableWithSpecializedType;
-    procedure TestCompleteMethodSignature_Empty_Parentheses;
-    procedure TestCompleteMethodSignature_Without_Parentheses;
-    procedure TestCompleteEventAssignmentDelphi;
-    procedure TestCompleteEventAssignmentObjFPC;
-    procedure TestCompleteEventAssignmentObjFPC_AtName;
+    // class completion: insert first method body between other classes
     procedure TestCompleteClass_Unit_NewClass;
     procedure TestCompleteClass_Unit_NewClass_BehindOldClass;
     procedure TestCompleteClass_Unit_NewClass_InFrontOfOldClass;
     procedure TestCompleteClass_Unit_NewClass_BetweenOldClasses;
     procedure TestCompleteNestedClass_Unit_NewClass_BehindParentClass;
+
+    // procedure completion: sync interface procedure to body
+    procedure TestIntfProcUpdateArgName;
+    procedure TestIntfCompleteMethodBody_ResultGenericObjFPC;
+    procedure TestIntfCompleteMethodBody_ResultGenericDelphi;
+
+    // declare local variable
+    procedure TestCompleteVariableWithSpecializedType;
+    // complete event assignment
+    procedure TestCompleteEventAssignmentDelphi;
+    procedure TestCompleteEventAssignmentObjFPC;
+    procedure TestCompleteEventAssignmentObjFPC_AtName;
   end;
 
 implementation
@@ -1298,7 +1308,6 @@ begin
     ,'end;'
     ,'end.']);
 end;
-
 
 initialization
   RegisterTests([TTestCodeCompletion]);

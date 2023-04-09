@@ -12403,8 +12403,8 @@ begin
     SourceEditorManager.AddJumpPointClicked(Self);
     // Add component definitions to form's source code
     Ancestor:=GetAncestorLookupRoot(FComponentAddedUnit);
-    CodeToolBoss.CompleteComponent(FComponentAddedUnit.Source,
-                                   FComponentAddedDesigner.LookupRoot, Ancestor);
+    CodeToolBoss.AddPublishedVariables(FComponentAddedUnit.Source,
+                                  FComponentAddedDesigner.LookupRoot, Ancestor);
     FComponentAddedDesigner:=nil;
   end;
 

@@ -37,7 +37,7 @@
         <PackageName Value="fpcunitconsolerunner"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="17">
+    <Units Count="20">
       <Unit0>
         <Filename Value="runtestscodetools.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -119,6 +119,21 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestLFMTrees"/>
       </Unit16>
+      <Unit17>
+        <Filename Value="testdesignerformtools.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestDesignerFormTools"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="moduletests/dsgn_bearcontrols.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Dsgn_BearControls"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="moduletests/dsgn_bearbuttons.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Dsgn_BearButtons"/>
+      </Unit19>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
