@@ -4202,9 +4202,30 @@ Added in LCL version 2.3.0. Available since version 2.4.0.
 </element>
 
 <element name="TCustomSpeedButton.ImageWidth">
-<short>Width for the glyph bitmap displayed on the control.</short>
-<descr></descr>
-<seealso></seealso>
+<short>
+Width for the glyph bitmap displayed on the control.
+</short>
+<descr>
+<p>
+<var>ImageWidth</var> is an <var>Integer</var> property with the Width in 
+pixels for the TCustomImage instances stored in the Images property. The 
+default value for the property is 0, and indicates that an explicit value has 
+not been assigned for the property. This causes the Width property in the 
+TCustomImageList to be used for an image retrieved from the list.
+</p>
+<p>
+Changing the property value causes the external TButtonGlyph instance in the 
+class to be updated with the new value. InvalidatePreferredSize is called to 
+recalculate the preferred dimensions for the class instance. AdjustSize is 
+called to auto-size the visible control and its parent.
+</p>
+</descr>
+<seealso>
+<link id="TCustomSpeedBtn.Images"/>
+<link id="TCustomSpeedBtn.ImageIndex"/>
+<link id="TCustomSpeedBtn.Glyph"/>
+<link id="TButtonGlyph"/>
+</seealso>
 </element>
 
 <element name="TCustomSpeedButton.Layout">
@@ -4212,25 +4233,107 @@ Added in LCL version 2.3.0. Available since version 2.4.0.
 Indicates the alignment of the glyph bitmap relative to the caption for the 
 control.
 </short>
-<descr></descr>
-<seealso></seealso>
+<descr>
+<p>
+<var>Layout</var> is a <var>TButtonLayout</var> property which indicates the 
+position for the glyph on the speed button relative to the caption text for 
+the control. The default value for the property is blGlyphLeft. It causes the 
+Margin, Glyph (or image), Spacing, and Caption to be aligned to the left edge 
+of the button surface.
+</p>
+<p>
+Changing the property value causes the control to be redrawn.
+</p>
+<p>
+Layout is used in the MeasureDraw method to position and size the text and 
+glyph image for the button.
+</p>
+<p>
+Use Margin to set the space reserved prior to the glyph bitmap on the aligned 
+edge of the control. Use Spacing to set the space reserved between the Glyph 
+image and the Caption relative to the aligned edge of the control.
+</p>
+</descr>
+<seealso>
+<link id="TCustomSpeedButton.Caption"/>
+<link id="TCustomSpeedButton.Glyph"/>
+<link id="TCustomSpeedButton.Images"/>
+<link id="TCustomSpeedButton.ImageIndex"/>
+<link id="TCustomSpeedButton.Margin"/>
+<link id="TCustomSpeedButton.Spacing"/>
+<link id="TCustomSpeedButton.MeasureDraw"/>
+<link id="TButtonLayout"/>
+</seealso>
 </element>
 
 <element name="TCustomSpeedButton.Margin">
-<short>Space around the Glyph bitmap and Caption for the control.</short>
+<short>
+Space between the glyph bitmap and the aligned edge in the button layout.
+</short>
 <descr>
 <p>
-A value of -1 centers the content. If Spacing is -1 too then there is the 
-same space on the left, between the glyph and caption, and on the right.
+<var>Margin</var> is an <var>Integer</var> property with the space reserved 
+between the Glyph image an the edge of the control. It occurs on the edge 
+specified in Layout, and generally refers to a number of pixels. The value -1 
+has special meaning; it causes both the glyph and caption to be centered on 
+the button surface.
+</p>
+<p>
+Margin is used in the MeasureDraw method when the glyph image and caption text 
+are positioned and sized on the control.
+</p>
+<p>
+Use Layout to specify the edge on the button control to which the glyph 
+bitmap and caption are aligned.
+</p>
+<p>
+Use Spacing to set the space reserved between the glyph bitmap and the 
+caption for the control.
 </p>
 </descr>
-<seealso></seealso>
+<seealso>
+<link id="TCustomSpeedBtn.Caption"/>
+<link id="TCustomSpeedBtn.Glyph"/>
+<link id="TCustomSpeedBtn.Images"/>
+<link id="TCustomSpeedBtn.ImageIndex"/>
+<link id="TCustomSpeedBtn.Layout"/>
+<link id="TCustomSpeedBtn.Spacing"/>
+<link id="TCustomSpeedBtn.MeasureDraw"/>
+</seealso>
 </element>
 
 <element name="TCustomSpeedButton.NumGlyphs">
-<short>The number of glyph bitmaps available for the control.</short>
-<descr></descr>
-<seealso></seealso>
+<short>
+The number of glyph bitmaps available for the control.
+</short>
+<descr>
+<p>
+<var>NumGlyphs</var> is an <var>Integer</var> property which contains the 
+number of glyph images available to the button control. Its value is read from 
+and written to the NumGlyphs property in the internal TButtonGlyph instance 
+used in the control.
+</p>
+<p>
+The default value for the property is 1, and is set when a bitmap is assigned 
+to the Glyph property or an image list is assigned to Images. Changing the 
+value for the property causes the control to be redrawn.
+</p>
+<p>
+Use Images to assign a user-specified list of images that can be used as the 
+glyph for the button states. Use ImageIndex, PressedImageIndex, HotImageIndex, 
+and DisabledImageIndex to specify which image is displayed on the control for 
+the button states.
+</p>
+</descr>
+<seealso>
+<link id="TCustomSpeedButton.Images"/>
+<link id="TCustomSpeedButton.Glyph"/>
+<link id="TCustomSpeedButton.ImageIndex"/>
+<link id="TCustomSpeedButton.PressedImageIndex"/>
+<link id="TCustomSpeedButton.HotImageIndex"/>
+<link id="TCustomSpeedButton.DisabledImageIndex"/>
+<link id="TButtonGlyph"/>
+</seealso>
 </element>
 
 <element name="TCustomSpeedButton.PressedImageIndex">
