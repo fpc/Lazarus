@@ -83,7 +83,7 @@ end;
 procedure TForm1.StringGrid1HeaderClick(
   Sender: TObject; IsColumn: Boolean; Index: Integer);
 begin
-  if not IsColumn then exit;
+  if (not IsColumn) or (Index = 0) then exit;
   with StringGrid1.Columns[Index - 1].Title do begin
     if ImageIndex = 2 then
       ImageIndex := 0
