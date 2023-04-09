@@ -37,7 +37,7 @@ uses
   LCLType, Forms, Controls, Graphics, StdCtrls, ExtCtrls, ComCtrls, Menus, Buttons,
   Dialogs, ImgList,
   // LazUtils
-  LazLoggerBase, LazUTF8, LazFileCache,
+  LazLoggerBase, LazUTF8, LazFileCache, AvgLvlTree,
   // LazControls
   TreeFilterEdit,
   // IdeIntf
@@ -105,8 +105,6 @@ type
     FOnOpenPackage: TNotifyEvent;
     FOnOpenUnit: TNotifyEvent;
     PrevChangeStamp: Integer;
-    // List for Component inheritence view
-    FClassList: TStringListUTF8Fast;
     FInitialized: Boolean;
     FIgnoreSelection: Boolean;
     FPageControlChange: Boolean;
@@ -116,14 +114,17 @@ type
     procedure ClearSelection;
     procedure ComponentWasAdded({%H-}ALookupRoot, {%H-}AComponent: TComponent;
                                 {%H-}ARegisteredComponent: TRegisteredComponent);
+    function GetSelectedTreeComp(aTree: TTreeView): TRegisteredComponent;
     procedure miOpenPackage(Sender: TObject);
     procedure miOpenUnit(Sender: TObject);
     procedure SelectionWasChanged;
-    procedure DoComponentInheritence(Comp: TRegisteredComponent);
+    procedure AddComponentInheritanceNodes(ClassToNodeTree: TPointerToPointerTree; Comp: TRegisteredComponent);
+    procedure SelectTreeComp(aTree: TTreeView);
     procedure UpdateComponents;
     procedure UpdateButtonState;
     function IsDocked: Boolean;
     procedure AddSelectedComponent;
+    function GetRegCompClassname(RegComp: TRegisteredComponent): string;
   protected
     procedure UpdateShowing; override;
   public
@@ -265,6 +266,14 @@ begin
   CurDesigner.AddComponent(AComponent, AComponent.ComponentClass, NewParent, FAddCompNewLeft, FAddCompNewTop, 0, 0);
 end;
 
+function TComponentListForm.GetRegCompClassname(RegComp: TRegisteredComponent
+  ): string;
+begin
+  Result:=RegComp.ComponentClass.ClassName;
+  if RegComp.HasAmbiguousClassName then
+    Result:=Result+'('+RegComp.ComponentClass.UnitName+')';
+end;
+
 procedure TComponentListForm.chbKeepOpenChange(Sender: TObject);
 begin
   EnvironmentOptions.ComponentListKeepOpen := chbKeepOpen.Checked;
@@ -293,13 +302,13 @@ begin
   InheritanceTree.Selected := Nil;
 end;
 
-procedure SelectTreeComp(aTree: TTreeView);
+procedure TComponentListForm.SelectTreeComp(aTree: TTreeView);
 var
   Node: TTreeNode;
 begin
   with IDEComponentPalette do
     if Assigned(Selected) then
-      Node := aTree.Items.FindNodeWithText(Selected.ComponentClass.ClassName)
+      Node := aTree.Items.FindNodeWithText(GetRegCompClassname(Selected))
     else
       Node := Nil;
   aTree.Selected := Node;
@@ -307,7 +316,7 @@ begin
     aTree.Selected.MakeVisible;
 end;
 
-function GetSelectedTreeComp(aTree: TTreeView): TRegisteredComponent;
+function TComponentListForm.GetSelectedTreeComp(aTree: TTreeView): TRegisteredComponent;
 begin
   if Assigned(aTree.Selected) then
     Result := TRegisteredComponent(aTree.Selected.Data)
@@ -390,59 +399,61 @@ begin
   inherited UpdateShowing;
 end;
 
-procedure TComponentListForm.DoComponentInheritence(Comp: TRegisteredComponent);
+procedure TComponentListForm.AddComponentInheritanceNodes(
+  ClassToNodeTree: TPointerToPointerTree; Comp: TRegisteredComponent);
 // Walk down to parent, stop on TComponent,
 //  since components are at least TComponent descendants.
 var
-  PalList: TStringList;
-  AClass: TClass;
-  Node: TTreeNode;
+  InheritanceList: TFPList;
+  aClass: TClass;
+  Node, ParentNode: TTreeNode;
   aClassName: string;
-  i, Ind: Integer;
+  i: Integer;
   II: TImageIndex;
+  CurRegComp: TRegisteredComponent;
 begin
-  PalList := TStringList.Create;
+  InheritanceList := TFPList.Create;
   try
-    AClass := Comp.ComponentClass;
-    while (AClass.ClassInfo <> nil) and (AClass.ClassType <> TComponent.ClassType) do
+    aClass := Comp.ComponentClass;
+    while (aClass.ClassInfo <> nil) and (aClass.ClassType <> TComponent.ClassType) do
     begin
-      PalList.AddObject(AClass.ClassName, TObject(AClass));
-      AClass := AClass.ClassParent;
+      InheritanceList.Add(TObject(aClass));
+      aClass := aClass.ClassParent;
     end;
     // Build the tree
-    for i := PalList.Count - 1 downto 0 do
+    ParentNode:=nil;
+    for i := InheritanceList.Count - 1 downto 0 do
     begin
-      AClass := TClass(PalList.Objects[i]);
-      aClassName := PalList[i];
-      if not FClassList.Find(aClassName, Ind) then
+      aClass := TClass(InheritanceList[i]);
+      Node:=TTreeNode(ClassToNodeTree[aClass]);
+      if Node=nil then
       begin
-        // Find out parent position
-        if Assigned(AClass.ClassParent)
-        and FClassList.Find(AClass.ClassParent.ClassName, Ind) then
-          Node := TTreeNode(FClassList.Objects[Ind])
+        if aClass=Comp.ComponentClass then
+          CurRegComp:=Comp
         else
-          Node := nil;
-        // Add the item
-        if aClassName <> Comp.ComponentClass.ClassName then
-          Node := InheritanceTree.Items.AddChild(Node, aClassName)
+          CurRegComp:=IDEComponentPalette.FindRegComponent(aClass);
+        if CurRegComp<>nil then
+          aClassName:=GetRegCompClassname(CurRegComp)
         else
+          aClassName:=aClass.ClassName;
+
+        // Add the node
+        Node := InheritanceTree.Items.AddChildObject(ParentNode, aClassName, CurRegComp);
+        ClassToNodeTree[aClass]:=Node;
+        if CurRegComp is TPkgComponent then
+          II := TPkgComponent(CurRegComp).ImageIndex
+        else
+          II := -1;
+        if II>=0 then
         begin
-          Node := InheritanceTree.Items.AddChildObject(Node, aClassName, Comp);
-          if Comp is TPkgComponent then
-            II := TPkgComponent(Comp).ImageIndex
-          else
-            II := -1;
-          if II>=0 then
-          begin
-            Node.ImageIndex := II;
-            Node.SelectedIndex := Node.ImageIndex;
-          end;
+          Node.ImageIndex := II;
+          Node.SelectedIndex := II;
         end;
-        FClassList.AddObject(aClassName, Node);
       end;
+      ParentNode:=Node;
     end;
   finally
-    PalList.Free;
+    InheritanceList.Free;
   end;
 end;
 
@@ -457,19 +468,19 @@ var
   APaletteNode: TTreeNode;
   i, j: Integer;
   CurIcon: TImageIndex;
+  aClassName: String;
+  aClassToTreeNode: TPointerToPointerTree;
 begin
   if [csDestroying,csLoading]*ComponentState<>[] then exit;
   Screen.BeginWaitCursor;
   ListTree.BeginUpdate;
   PalletteTree.BeginUpdate;
   InheritanceTree.Items.BeginUpdate;
-  FClassList := TStringListUTF8Fast.Create;
+  aClassToTreeNode := TPointerToPointerTree.Create;
   try
     ListTree.Items.Clear;
     PalletteTree.Items.Clear;
     InheritanceTree.Items.Clear;
-    FClassList.Sorted := true;
-    FClassList.Duplicates := dupIgnore;
  //   ParentInheritence := InheritanceTree.Items.Add(nil, 'TComponent');
 //    FClassList.AddObject('TComponent', ParentInheritence);
     // Iterate all pages
@@ -484,10 +495,11 @@ begin
       for j := 0 to Comps.Count-1 do begin
         Comp := Comps[j];
         if not Comp.Visible then Continue;
+        aClassName := GetRegCompClassname(Comp);
         // Flat list item
-        AListNode := ListTree.Items.AddChildObject(Nil, Comp.ComponentClass.ClassName, Comp);
+        AListNode := ListTree.Items.AddChildObject(Nil, aClassName, Comp);
         // Palette layout item
-        APaletteNode := PalletteTree.Items.AddChildObject(ParentNode, Comp.ComponentClass.ClassName, Comp);
+        APaletteNode := PalletteTree.Items.AddChildObject(ParentNode, aClassName, Comp);
         if Comp is TPkgComponent then
           CurIcon := TPkgComponent(Comp).ImageIndex
         else
@@ -500,7 +512,7 @@ begin
           APaletteNode.SelectedIndex := AListNode.ImageIndex;
         end;
         // Component inheritence item
-        DoComponentInheritence(Comp);
+        AddComponentInheritanceNodes(aClassToTreeNode,Comp);
       end;
     end;
     InheritanceTree.AlphaSort;
@@ -510,7 +522,7 @@ begin
     {$ENDIF}
     PrevChangeStamp := IDEComponentPalette.ChangeStamp;
   finally
-    FClassList.Free;
+    aClassToTreeNode.Free;
     InheritanceTree.Items.EndUpdate;
     PalletteTree.EndUpdate;
     ListTree.EndUpdate;

@@ -146,6 +146,8 @@ type
     FRealPage: TBaseComponentPage;
     FVisible: boolean;
   protected
+    FNextSameName: TRegisteredComponent;
+    FPrevSameName: TRegisteredComponent;
   public
     constructor Create(TheComponentClass: TComponentClass; const ThePageName: string);
     destructor Destroy; override;
@@ -155,13 +157,17 @@ type
     procedure AddToPalette; virtual;
     function CanBeCreatedInDesigner: boolean; virtual;
     function GetCreationClass: TComponentClass; virtual;
+    function HasAmbiguousClassName: boolean; virtual; // true if another component class with same name (different unit) is registered
+    function GetFullClassName(const UnitSep: char = '/'): string; virtual;
   public
-    property ComponentClass: TComponentClass read FComponentClass;
+    property ComponentClass: TComponentClass read FComponentClass; // Beware of ambiguous classnames
     property OnGetCreationClass: TOnGetCreationClass read FOnGetCreationClass
                                                      write FOnGetCreationClass;
     property OrigPageName: string read FOrigPageName; // case sensitive
     property RealPage: TBaseComponentPage read FRealPage write FRealPage;
     property Visible: boolean read FVisible write FVisible;
+    property NextSameName: TRegisteredComponent read FNextSameName;
+    property PrevSameName: TRegisteredComponent read FPrevSameName;
   end;
 
   { TBaseComponentPage }
@@ -719,6 +725,12 @@ end;
 
 destructor TRegisteredComponent.Destroy;
 begin
+  if FPrevSameName<>nil then
+    FPrevSameName.FNextSameName:=FNextSameName;
+  if FNextSameName<>nil then
+    FNextSameName.FPrevSameName:=FPrevSameName;
+  FPrevSameName:=nil;
+  FNextSameName:=nil;
   if Assigned(FRealPage) and Assigned(FRealPage.Palette) then
     FRealPage.Palette.RemoveRegComponent(Self);
   inherited Destroy;
@@ -752,6 +764,16 @@ begin
   Result:=FComponentClass;
   if Assigned(OnGetCreationClass) then
     OnGetCreationClass(Self,Result);
+end;
+
+function TRegisteredComponent.HasAmbiguousClassName: boolean;
+begin
+  Result:=(FPrevSameName<>nil) or (FNextSameName<>nil);
+end;
+
+function TRegisteredComponent.GetFullClassName(const UnitSep: char): string;
+begin
+  Result:=ComponentClass.UnitName+UnitSep+ComponentClass.ClassName;
 end;
 
 { TBaseComponentPage }
@@ -944,7 +966,7 @@ begin
   rcl := TRegisteredCompList(fOrigComponentPageCache.Objects[i]);
   for i := 0 to rcl.Count-1 do
     if rcl[i].Visible then
-      DestCompNames.Add(rcl[i].ComponentClass.ClassName);
+      DestCompNames.Add(rcl[i].GetFullClassName);
 end;
 
 function TBaseComponentPalette.RefUserCompsForPage(PageName: string): TRegisteredCompList;
@@ -1056,8 +1078,25 @@ end;
 procedure TBaseComponentPalette.AddRegComponent(NewComponent: TRegisteredComponent);
 var
   NewPriority: TComponentPriority;
-  InsertIndex: Integer;
+  InsertIndex, i: Integer;
+  OtherComp: TRegisteredComponent;
+  CurClassName: String;
 begin
+  // check for ambiguous classname
+  CurClassName:=NewComponent.ComponentClass.ClassName;
+  for i:=0 to fComps.Count-1 do
+  begin
+    OtherComp:=TRegisteredComponent(fComps[i]);
+    if SameText(OtherComp.ComponentClass.ClassName,CurClassName) then
+    begin
+      while OtherComp.NextSameName<>nil do
+        OtherComp:=OtherComp.NextSameName;
+      OtherComp.FNextSameName:=NewComponent;
+      NewComponent.FPrevSameName:=OtherComp;
+      break;
+    end;
+  end;
+
   // Store components to fComps, sorting them by priority.
   NewPriority:=NewComponent.GetPriority;
   InsertIndex:=0;
@@ -1065,6 +1104,7 @@ begin
   and (ComparePriority(NewPriority,fComps[InsertIndex].GetPriority)<=0) do
     inc(InsertIndex);
   fComps.Insert(InsertIndex,NewComponent);
+
   DoPageAddedComponent(NewComponent);
 
   if NewComponent.FOrigPageName = '' then Exit;
@@ -1118,7 +1158,7 @@ begin
     Exit(fLastFoundRegComp);
   // Linear search. Can be optimized if needed.
   for i := 0 to fComps.Count-1 do
-    if fComps[i].ComponentClass.ClassName = ACompClassName then
+    if SameText(fComps[i].ComponentClass.ClassName, ACompClassName) then
     begin
       fLastFoundCompClassName := ACompClassName;
       fLastFoundRegComp := fComps[i];
@@ -1132,7 +1172,7 @@ var
   i: Integer;
 begin
   if FindRegComponent(Prefix)=nil then begin
-    Result:=Prefix+'1';
+    Result:=Prefix;
   end else begin
     i:=1;
     repeat
