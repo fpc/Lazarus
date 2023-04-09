@@ -1960,6 +1960,7 @@ begin
         RegistrationError(lisPkgSysInvalidComponentClass);
         continue;
       end;
+      CurClassname:=CurComponent.UnitName+'/'+CurClassname;
     {$IFNDEF StopOnRegError}
     except
       on E: Exception do begin
