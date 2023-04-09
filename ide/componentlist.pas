@@ -37,11 +37,11 @@ uses
   LCLType, Forms, Controls, Graphics, StdCtrls, ExtCtrls, ComCtrls, Menus, Buttons,
   Dialogs, ImgList,
   // LazUtils
-  LazLoggerBase, LazUTF8,
+  LazLoggerBase, LazUTF8, LazFileCache,
   // LazControls
   TreeFilterEdit,
   // IdeIntf
-  FormEditingIntf, IDEImagesIntf, PropEdits, MenuIntf, ComponentReg,
+  FormEditingIntf, IDEImagesIntf, PropEdits, MenuIntf, ComponentReg, LazIDEIntf,
   // IDE
   LazarusIDEStrConsts, PackageDefs, IDEOptionDefs, EnvironmentOpts, Designer;
 
@@ -102,6 +102,8 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure SelectionToolButtonClick(Sender: TObject);
   private
+    FOnOpenPackage: TNotifyEvent;
+    FOnOpenUnit: TNotifyEvent;
     PrevChangeStamp: Integer;
     // List for Component inheritence view
     FClassList: TStringListUTF8Fast;
@@ -114,6 +116,8 @@ type
     procedure ClearSelection;
     procedure ComponentWasAdded({%H-}ALookupRoot, {%H-}AComponent: TComponent;
                                 {%H-}ARegisteredComponent: TRegisteredComponent);
+    procedure miOpenPackage(Sender: TObject);
+    procedure miOpenUnit(Sender: TObject);
     procedure SelectionWasChanged;
     procedure DoComponentInheritence(Comp: TRegisteredComponent);
     procedure UpdateComponents;
@@ -126,6 +130,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetSelectedComponent: TRegisteredComponent;
+    function GetSelectedPkgComp: TPkgComponent;
+    property OnOpenPackage: TNotifyEvent read FOnOpenPackage write FOnOpenPackage;
+    property OnOpenUnit: TNotifyEvent read FOnOpenUnit write FOnOpenUnit;
   end;
   
 var
@@ -144,20 +151,20 @@ begin
   // register the section for open
   CompListMenuSectionOpen:=RegisterIDEMenuSection(ComponentListMenuRoot,'Open');
   AParent:=CompListMenuSectionOpen;
-  CompListMenuOpenUnit:=RegisterIDEMenuCommand(AParent,'Open Unit','Open Unit');
-  CompListMenuOpenPackage:=RegisterIDEMenuCommand(AParent,'Open Package','Open Package');
+  CompListMenuOpenUnit:=RegisterIDEMenuCommand(AParent,'Open Unit','Open Unit');// resourcestring is set later
+  CompListMenuOpenPackage:=RegisterIDEMenuCommand(AParent,'Open Package','Open Package'); // resourcestring is set later
 
   // register the section for expand
   CompListMenuSectionExpand:=RegisterIDEMenuSection(ComponentListMenuRoot,'Expand');
   AParent:=CompListMenuSectionExpand;
-  CompListMenuExpand:=RegisterIDEMenuCommand(AParent,'Expand','Expand');
-  CompListMenuExpandAll:=RegisterIDEMenuCommand(AParent,'Expand All','Expand All');
+  CompListMenuExpand:=RegisterIDEMenuCommand(AParent, 'Expand', lisExpand);
+  CompListMenuExpandAll:=RegisterIDEMenuCommand(AParent, 'Expand All', lisExpandAll2);
 
   // register the section for collapse
   CompListMenuSectionCollapse:=RegisterIDEMenuSection(ComponentListMenuRoot,'Collapse');
   AParent:=CompListMenuSectionCollapse;
-  CompListMenuCollapse:=RegisterIDEMenuCommand(AParent,'Collapse','Collapse');
-  CompListMenuCollapseAll:=RegisterIDEMenuCommand(AParent,'Collapse All','Collapse All');
+  CompListMenuCollapse:=RegisterIDEMenuCommand(AParent, 'Collapse', lisCollapse);
+  CompListMenuCollapseAll:=RegisterIDEMenuCommand(AParent, 'Collapse All',lisCollapseAll2);
 end;
 
 {$R *.lfm}
@@ -319,6 +326,11 @@ begin
     Result := GetSelectedTreeComp(InheritanceTree)
 end;
 
+function TComponentListForm.GetSelectedPkgComp: TPkgComponent;
+begin
+  Result:=GetSelectedComponent as TPkgComponent;
+end;
+
 function TComponentListForm.IsDocked: Boolean;
 begin
   Result := (HostDockSite<>Nil) and (HostDockSite.Parent<>Nil);
@@ -329,6 +341,28 @@ procedure TComponentListForm.ComponentWasAdded(ALookupRoot, AComponent: TCompone
 begin
   ClearSelection;
   UpdateButtonState;
+end;
+
+procedure TComponentListForm.miOpenPackage(Sender: TObject);
+var
+  PkgComponent: TPkgComponent;
+begin
+  PkgComponent:=GetSelectedPkgComp;
+  if (PkgComponent=nil) or (PkgComponent.PkgFile=nil)
+      or (PkgComponent.PkgFile.LazPackage=nil) then exit;
+  if Assigned(OnOpenPackage) then
+    OnOpenPackage(PkgComponent.PkgFile.LazPackage);
+end;
+
+procedure TComponentListForm.miOpenUnit(Sender: TObject);
+var
+  PkgComponent: TPkgComponent;
+begin
+  PkgComponent:=GetSelectedPkgComp;
+  if (PkgComponent=nil) or (PkgComponent.PkgFile=nil)
+      or (PkgComponent.PkgFile.LazPackage=nil) then exit;
+  if Assigned(OnOpenUnit) then
+    OnOpenUnit(PkgComponent);
 end;
 
 procedure TComponentListForm.SelectionWasChanged;
@@ -638,6 +672,10 @@ end;
 procedure TComponentListForm.CompListPopupMenuPopup(Sender: TObject);
 var
   Node: TTreeNode;
+  PkgComponent: TPkgComponent;
+  APackage: TLazPackage;
+  PkgFile: TPkgFile;
+  ShownFilename, UnitFilename: String;
 begin
   //debugln(['TComponentListForm.CompListPopupMenuPopup ']);
   ComponentListMenuRoot.MenuItem:=CompListPopupMenu.Items;
@@ -673,9 +711,33 @@ begin
   end;
 
   // open unit/package
-  // ToDo
-  CompListMenuOpenUnit.Visible:=false;
-  CompListMenuOpenPackage.Visible:=false;
+  PkgComponent:=GetSelectedPkgComp;
+  if (PkgComponent=nil) or (PkgComponent.PkgFile=nil) then
+  begin
+    CompListMenuOpenUnit.Caption:=lisOpenUnit;
+    CompListMenuOpenUnit.Visible:=false;
+    CompListMenuOpenPackage.Caption:=lisOpenPackage3;
+    CompListMenuOpenPackage.Visible:=false;
+  end else begin
+    PkgFile:=PkgComponent.PkgFile;
+    APackage:=PkgFile.LazPackage;
+    CompListMenuOpenPackage.Caption:=Format(lisCPOpenPackage, [APackage.IDAsString]);
+    CompListMenuOpenPackage.Visible:=true;
+    CompListMenuOpenPackage.OnClick:=@miOpenPackage;
+
+    ShownFilename:=PkgFile.Filename;
+    UnitFilename:=PkgFile.GetFullFilename;
+    if not FileExistsCached(UnitFilename) then begin
+      UnitFilename:=LazarusIDE.FindSourceFile(ExtractFilename(UnitFilename),
+                                              APackage.Directory,[]);
+      if FileExists(UnitFilename) then
+        UnitFilename:=ShownFilename;
+    end;
+    CompListMenuOpenUnit.Caption:=Format(lisCPOpenUnit, [ShownFilename]);
+    CompListMenuOpenUnit.Enabled:=FileExistsCached(UnitFilename);
+    CompListMenuOpenUnit.Visible:=true;
+    CompListMenuOpenUnit.OnClick:=@miOpenUnit;
+  end;
 end;
 
 procedure TComponentListForm.SelectionToolButtonClick(Sender: TObject);

@@ -149,6 +149,9 @@ type
                   const ComponentPath: string): TComponent; virtual; abstract;
     function FindReferencedRootComponent(CurRoot: TPersistent; 
          const ComponentName: string): TComponent; virtual; abstract;
+
+    procedure IDEComponentPaletteOpenPackage(Sender: TObject); virtual; abstract;
+    procedure IDEComponentPaletteOpenUnit(Sender: TObject); virtual; abstract;
   end;
 
 var

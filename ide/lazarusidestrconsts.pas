@@ -355,6 +355,10 @@ resourcestring
   lisMenuInsertChangeLogEntry = 'ChangeLog Entry';
 
   lisMenuFind = 'Find';
+  lisExpand = 'Expand';
+  lisExpandAll2 = 'Expand All';
+  lisCollapse = 'Collapse';
+  lisCollapseAll2 = 'Collapse All';
   lisBtnFind = '&Find';
   lisMenuFindNext = 'Find &Next';
   lisMenuFind2 = '&Find ...';
@@ -5959,6 +5963,7 @@ resourcestring
   dlgInsertImplementation = 'Implementation';
   dlgNoAvailableUnits = 'No available units to add.';
   lisOpenUnit = 'Open Unit';
+  lisOpenPackage3 = 'Open Package';
   lisInsteadOfCompilePackageCreateASimpleMakefile = 'Instead of compile '
     +'package create a simple Makefile.';
   lisOnlyRegisterTheLazarusPackageFilesLpkDoNotBuild = 'Only register the '

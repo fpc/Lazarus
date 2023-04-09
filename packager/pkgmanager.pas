@@ -169,8 +169,8 @@ type
       ): boolean;
   public
     // component palette
-    procedure IDEComponentPaletteOpenPackage(Sender: TObject);
-    procedure IDEComponentPaletteOpenUnit(Sender: TObject);
+    procedure IDEComponentPaletteOpenPackage(Sender: TObject); override;
+    procedure IDEComponentPaletteOpenUnit(Sender: TObject); override;
     // end event handlers - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   private

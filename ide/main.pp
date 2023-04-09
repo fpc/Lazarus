@@ -1540,7 +1540,6 @@ constructor TMainIDE.Create(TheOwner: TComponent);
 var
   Layout: TSimpleWindowLayout;
   FormCreator: TIDEWindowCreator;
-  PkgMngr: TPkgManager;
   CompPalette: TComponentPalette;
 begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create START');{$ENDIF}
@@ -1626,8 +1625,7 @@ begin
   DebuggerDlg.OnProcessCommand := @ProcessIDECommand;
   DebuggerDlg.OnTranslateKey:= @DoTranslateKey;
 
-  PkgMngr:=TPkgManager.Create(nil);
-  PkgBoss:=PkgMngr;
+  PkgBoss:=TPkgManager.Create(nil);
   PkgBoss.ConnectMainBarEvents;
   LPKInfoCache:=TLPKInfoCache.Create;
   HelpBoss:=TIDEHelpManager.Create(nil);
@@ -1647,8 +1645,8 @@ begin
   // componentpalette
   CompPalette:=TComponentPalette.Create;
   IDEComponentPalette:=CompPalette;
-  CompPalette.OnOpenPackage:=@PkgMngr.IDEComponentPaletteOpenPackage;
-  CompPalette.OnOpenUnit:=@PkgMngr.IDEComponentPaletteOpenUnit;
+  CompPalette.OnOpenPackage:=@PkgBoss.IDEComponentPaletteOpenPackage;
+  CompPalette.OnOpenUnit:=@PkgBoss.IDEComponentPaletteOpenUnit;
   CompPalette.PageControl:=MainIDEBar.ComponentPageControl;
   CompPalette.OnChangeActivePage:=@MainIDEBar.SetMainIDEHeightEvent;
   // load installed packages
@@ -6093,6 +6091,8 @@ begin
   begin
     IDEWindowCreators.CreateForm(ComponentListForm,TComponentListForm,
        State=iwgfDisabled,OwningComponent);
+    ComponentListForm.OnOpenPackage:=@PkgBoss.IDEComponentPaletteOpenPackage;
+    ComponentListForm.OnOpenUnit:=@PkgBoss.IDEComponentPaletteOpenUnit;
   end else if State=iwgfDisabled then
     ComponentListForm.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.DoShowComponentList'){$ENDIF};
   if State>=iwgfShow then
