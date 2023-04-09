@@ -7157,9 +7157,17 @@ msgstr "Startuoti po"
 msgid "Execute before"
 msgstr "Startuoti prieš"
 
+#: lazarusidestrconsts.liscollapse
+msgid "Collapse"
+msgstr ""
+
 #: lazarusidestrconsts.liscollapseall
 msgid "Collapse All (/)"
 msgstr "Suskleisti visus (/)"
+
+#: lazarusidestrconsts.liscollapseall2
+msgid "Collapse All"
+msgstr ""
 
 #: lazarusidestrconsts.liscollapseallclasses
 msgid "Collapse all classes"
@@ -9595,9 +9603,17 @@ msgstr "Išeiti"
 msgid "Exit code %s"
 msgstr "Baigimo kodas „%s“"
 
+#: lazarusidestrconsts.lisexpand
+msgid "Expand"
+msgstr ""
+
 #: lazarusidestrconsts.lisexpandall
 msgid "Expand All (*)"
 msgstr "Išskleisti visus (*)"
+
+#: lazarusidestrconsts.lisexpandall2
+msgid "Expand All"
+msgstr ""
 
 #: lazarusidestrconsts.lisexpandallclasses
 msgid "Expand all classes"
@@ -14773,6 +14789,10 @@ msgstr "Atverti paketą?"
 #, object-pascal-format
 msgid "Open package %s"
 msgstr "Atverti paketą %s"
+
+#: lazarusidestrconsts.lisopenpackage3
+msgid "Open Package"
+msgstr ""
 
 #: lazarusidestrconsts.lisopenpackagefile
 msgid "Open Package File"

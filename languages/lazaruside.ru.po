@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-03-25 11:52+0300\n"
+"PO-Revision-Date: 2023-04-10 01:32+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -7009,9 +7009,17 @@ msgstr "Выполнить после компиляции"
 msgid "Execute before"
 msgstr "Выполнить перед компиляцией"
 
+#: lazarusidestrconsts.liscollapse
+msgid "Collapse"
+msgstr "Свернуть"
+
 #: lazarusidestrconsts.liscollapseall
 msgid "Collapse All (/)"
 msgstr "Свернуть всё (/)"
+
+#: lazarusidestrconsts.liscollapseall2
+msgid "Collapse All"
+msgstr "Свернуть все"
 
 #: lazarusidestrconsts.liscollapseallclasses
 msgid "Collapse all classes"
@@ -9438,9 +9446,17 @@ msgstr "Выход"
 msgid "Exit code %s"
 msgstr "Код завершения %s"
 
+#: lazarusidestrconsts.lisexpand
+msgid "Expand"
+msgstr "Развернуть"
+
 #: lazarusidestrconsts.lisexpandall
 msgid "Expand All (*)"
 msgstr "Развернуть всё (*)"
+
+#: lazarusidestrconsts.lisexpandall2
+msgid "Expand All"
+msgstr "Развернуть все"
 
 #: lazarusidestrconsts.lisexpandallclasses
 msgid "Expand all classes"
@@ -14524,6 +14540,10 @@ msgstr "Открыть пакет?"
 #, object-pascal-format
 msgid "Open package %s"
 msgstr "Открыть пакет %s"
+
+#: lazarusidestrconsts.lisopenpackage3
+msgid "Open Package"
+msgstr "Открыть пакет"
 
 #: lazarusidestrconsts.lisopenpackagefile
 msgid "Open Package File"

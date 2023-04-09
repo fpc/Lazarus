@@ -7153,9 +7153,17 @@ msgstr "次の後に実行："
 msgid "Execute before"
 msgstr "次の前に実行："
 
+#: lazarusidestrconsts.liscollapse
+msgid "Collapse"
+msgstr ""
+
 #: lazarusidestrconsts.liscollapseall
 msgid "Collapse All (/)"
 msgstr "すべてを折り畳み (/)"
+
+#: lazarusidestrconsts.liscollapseall2
+msgid "Collapse All"
+msgstr ""
 
 #: lazarusidestrconsts.liscollapseallclasses
 msgid "Collapse all classes"
@@ -9591,9 +9599,17 @@ msgstr "終了"
 msgid "Exit code %s"
 msgstr "コード%sを終了"
 
+#: lazarusidestrconsts.lisexpand
+msgid "Expand"
+msgstr ""
+
 #: lazarusidestrconsts.lisexpandall
 msgid "Expand All (*)"
 msgstr "すべて展開(*)"
+
+#: lazarusidestrconsts.lisexpandall2
+msgid "Expand All"
+msgstr ""
 
 #: lazarusidestrconsts.lisexpandallclasses
 msgid "Expand all classes"
@@ -14736,6 +14752,10 @@ msgstr "パッケージをオープンしますか?"
 #, object-pascal-format
 msgid "Open package %s"
 msgstr "パッケージを開く %s"
+
+#: lazarusidestrconsts.lisopenpackage3
+msgid "Open Package"
+msgstr ""
 
 #: lazarusidestrconsts.lisopenpackagefile
 msgid "Open Package File"

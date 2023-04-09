@@ -7081,9 +7081,17 @@ msgstr "Spustit pak"
 msgid "Execute before"
 msgstr "Spustit před"
 
+#: lazarusidestrconsts.liscollapse
+msgid "Collapse"
+msgstr ""
+
 #: lazarusidestrconsts.liscollapseall
 msgid "Collapse All (/)"
 msgstr "Sesunout vše (/)"
+
+#: lazarusidestrconsts.liscollapseall2
+msgid "Collapse All"
+msgstr ""
 
 #: lazarusidestrconsts.liscollapseallclasses
 msgid "Collapse all classes"
@@ -9515,9 +9523,17 @@ msgstr "Ukončit"
 msgid "Exit code %s"
 msgstr "Exit kód %s"
 
+#: lazarusidestrconsts.lisexpand
+msgid "Expand"
+msgstr ""
+
 #: lazarusidestrconsts.lisexpandall
 msgid "Expand All (*)"
 msgstr "Rozevřít vše (*)"
+
+#: lazarusidestrconsts.lisexpandall2
+msgid "Expand All"
+msgstr ""
 
 #: lazarusidestrconsts.lisexpandallclasses
 msgid "Expand all classes"
@@ -14644,6 +14660,10 @@ msgstr "Otevřít balíček?"
 #, object-pascal-format
 msgid "Open package %s"
 msgstr "Otevřít balíček %s"
+
+#: lazarusidestrconsts.lisopenpackage3
+msgid "Open Package"
+msgstr ""
 
 #: lazarusidestrconsts.lisopenpackagefile
 msgid "Open Package File"

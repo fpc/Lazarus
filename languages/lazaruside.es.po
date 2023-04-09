@@ -7198,9 +7198,17 @@ msgstr "Ejecutar después de"
 msgid "Execute before"
 msgstr "Ejecutar antes de"
 
+#: lazarusidestrconsts.liscollapse
+msgid "Collapse"
+msgstr ""
+
 #: lazarusidestrconsts.liscollapseall
 msgid "Collapse All (/)"
 msgstr "Colapsar Todo (/)"
+
+#: lazarusidestrconsts.liscollapseall2
+msgid "Collapse All"
+msgstr ""
 
 #: lazarusidestrconsts.liscollapseallclasses
 msgid "Collapse all classes"
@@ -9662,9 +9670,17 @@ msgstr "Salir"
 msgid "Exit code %s"
 msgstr "Código de salida %s"
 
+#: lazarusidestrconsts.lisexpand
+msgid "Expand"
+msgstr ""
+
 #: lazarusidestrconsts.lisexpandall
 msgid "Expand All (*)"
 msgstr "Expandir Todo (*)"
+
+#: lazarusidestrconsts.lisexpandall2
+msgid "Expand All"
+msgstr ""
 
 #: lazarusidestrconsts.lisexpandallclasses
 msgid "Expand all classes"
@@ -14940,6 +14956,10 @@ msgstr "¿Abrir paquete?"
 #, object-pascal-format
 msgid "Open package %s"
 msgstr "Abrir paquete %s"
+
+#: lazarusidestrconsts.lisopenpackage3
+msgid "Open Package"
+msgstr ""
 
 #: lazarusidestrconsts.lisopenpackagefile
 msgid "Open Package File"

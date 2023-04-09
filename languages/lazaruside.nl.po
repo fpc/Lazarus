@@ -7260,8 +7260,16 @@ msgstr "Voer uit Na"
 msgid "Execute before"
 msgstr "Voer uit Voor"
 
+#: lazarusidestrconsts.liscollapse
+msgid "Collapse"
+msgstr ""
+
 #: lazarusidestrconsts.liscollapseall
 msgid "Collapse All (/)"
+msgstr ""
+
+#: lazarusidestrconsts.liscollapseall2
+msgid "Collapse All"
 msgstr ""
 
 #: lazarusidestrconsts.liscollapseallclasses
@@ -9724,8 +9732,16 @@ msgstr "Verlaat"
 msgid "Exit code %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisexpand
+msgid "Expand"
+msgstr ""
+
 #: lazarusidestrconsts.lisexpandall
 msgid "Expand All (*)"
+msgstr ""
+
+#: lazarusidestrconsts.lisexpandall2
+msgid "Expand All"
 msgstr ""
 
 #: lazarusidestrconsts.lisexpandallclasses
@@ -15008,6 +15024,10 @@ msgstr "Open Pakket?"
 #: lazarusidestrconsts.lisopenpackage2
 #, object-pascal-format
 msgid "Open package %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisopenpackage3
+msgid "Open Package"
 msgstr ""
 
 #: lazarusidestrconsts.lisopenpackagefile

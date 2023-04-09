@@ -7407,8 +7407,16 @@ msgstr "בצע אחרי"
 msgid "Execute before"
 msgstr "בצע לפני"
 
+#: lazarusidestrconsts.liscollapse
+msgid "Collapse"
+msgstr ""
+
 #: lazarusidestrconsts.liscollapseall
 msgid "Collapse All (/)"
+msgstr ""
+
+#: lazarusidestrconsts.liscollapseall2
+msgid "Collapse All"
 msgstr ""
 
 #: lazarusidestrconsts.liscollapseallclasses
@@ -9914,8 +9922,16 @@ msgstr "יציאה"
 msgid "Exit code %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisexpand
+msgid "Expand"
+msgstr ""
+
 #: lazarusidestrconsts.lisexpandall
 msgid "Expand All (*)"
+msgstr ""
+
+#: lazarusidestrconsts.lisexpandall2
+msgid "Expand All"
 msgstr ""
 
 #: lazarusidestrconsts.lisexpandallclasses
@@ -15371,6 +15387,10 @@ msgstr "לפתוח חבילה?"
 #, object-pascal-format
 msgid "Open package %s"
 msgstr "פתח חבילה %s"
+
+#: lazarusidestrconsts.lisopenpackage3
+msgid "Open Package"
+msgstr ""
 
 #: lazarusidestrconsts.lisopenpackagefile
 msgid "Open Package File"

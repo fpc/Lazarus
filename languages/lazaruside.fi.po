@@ -7024,9 +7024,17 @@ msgstr "Suorita jälkeen"
 msgid "Execute before"
 msgstr "Suorita ennen"
 
+#: lazarusidestrconsts.liscollapse
+msgid "Collapse"
+msgstr ""
+
 #: lazarusidestrconsts.liscollapseall
 msgid "Collapse All (/)"
 msgstr "Supista kaikki (/)"
+
+#: lazarusidestrconsts.liscollapseall2
+msgid "Collapse All"
+msgstr ""
 
 #: lazarusidestrconsts.liscollapseallclasses
 msgid "Collapse all classes"
@@ -9441,9 +9449,17 @@ msgstr "Lopeta"
 msgid "Exit code %s"
 msgstr "Lopetuskoodi %s"
 
+#: lazarusidestrconsts.lisexpand
+msgid "Expand"
+msgstr ""
+
 #: lazarusidestrconsts.lisexpandall
 msgid "Expand All (*)"
 msgstr "Laajenna kaikki (*)"
+
+#: lazarusidestrconsts.lisexpandall2
+msgid "Expand All"
+msgstr ""
 
 #: lazarusidestrconsts.lisexpandallclasses
 msgid "Expand all classes"
@@ -14461,6 +14477,10 @@ msgstr "Avaa paketti?"
 #, object-pascal-format
 msgid "Open package %s"
 msgstr "Avaa paketti %s"
+
+#: lazarusidestrconsts.lisopenpackage3
+msgid "Open Package"
+msgstr ""
 
 #: lazarusidestrconsts.lisopenpackagefile
 msgid "Open Package File"
