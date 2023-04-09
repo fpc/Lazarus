@@ -4528,7 +4528,7 @@ updated but before the form is scaled using AutoAdjustLayout.
 </descr>
 <seealso>
 <link id="TCustomForm.EndFormUpdate"/>
-<link id="TCustomForm.AutoAdjustLayout"/>
+<link id="TCustomDesignControl.AutoAdjustLayout"/>
 <link id="TCustomForm.CreateNew"/>
 <link id="TCustomForm.Create"/>
 <link id="#lcl.controls.TControl.DisableAutoSizing">TControl.DisableAutoSizing</link>
@@ -4779,7 +4779,7 @@ updated but before the form is scaled using AutoAdjustLayout.
 </descr>
 <seealso>
 <link id="TCustomForm.BeginFormUpdate"/>
-<link id="TCustomForm.AutoAdjustLayout"/>
+<link id="TCustomDesignControl.AutoAdjustLayout"/>
 <link id="TCustomForm.CreateNew"/>
 <link id="TCustomForm.Create"/>
 <link id="TCustomForm.AfterConstruction"/>

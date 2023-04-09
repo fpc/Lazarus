@@ -4221,9 +4221,9 @@ called to auto-size the visible control and its parent.
 </p>
 </descr>
 <seealso>
-<link id="TCustomSpeedBtn.Images"/>
-<link id="TCustomSpeedBtn.ImageIndex"/>
-<link id="TCustomSpeedBtn.Glyph"/>
+<link id="TCustomSpeedButton.Images"/>
+<link id="TCustomSpeedButton.ImageIndex"/>
+<link id="TCustomSpeedButton.Glyph"/>
 <link id="TButtonGlyph"/>
 </seealso>
 </element>
@@ -4255,7 +4255,6 @@ image and the Caption relative to the aligned edge of the control.
 </p>
 </descr>
 <seealso>
-<link id="TCustomSpeedButton.Caption"/>
 <link id="TCustomSpeedButton.Glyph"/>
 <link id="TCustomSpeedButton.Images"/>
 <link id="TCustomSpeedButton.ImageIndex"/>
@@ -4263,6 +4262,7 @@ image and the Caption relative to the aligned edge of the control.
 <link id="TCustomSpeedButton.Spacing"/>
 <link id="TCustomSpeedButton.MeasureDraw"/>
 <link id="TButtonLayout"/>
+<link id="#lcl.controls.TControl.Caption">TControl.Caption</link>
 </seealso>
 </element>
 
@@ -4292,13 +4292,13 @@ caption for the control.
 </p>
 </descr>
 <seealso>
-<link id="TCustomSpeedBtn.Caption"/>
-<link id="TCustomSpeedBtn.Glyph"/>
-<link id="TCustomSpeedBtn.Images"/>
-<link id="TCustomSpeedBtn.ImageIndex"/>
-<link id="TCustomSpeedBtn.Layout"/>
-<link id="TCustomSpeedBtn.Spacing"/>
-<link id="TCustomSpeedBtn.MeasureDraw"/>
+<link id="TCustomSpeedButton.Glyph"/>
+<link id="TCustomSpeedButton.Images"/>
+<link id="TCustomSpeedButton.ImageIndex"/>
+<link id="TCustomSpeedButton.Layout"/>
+<link id="TCustomSpeedButton.Spacing"/>
+<link id="TCustomSpeedButton.MeasureDraw"/>
+<link id="#lcl.controls.TControl.Caption">TControl.Caption</link>
 </seealso>
 </element>
 
