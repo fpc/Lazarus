@@ -7496,7 +7496,7 @@ allocated for the form.
 </p>
 <p>
 The value in ModalResult is updated when the <var>ShowModal</var> method is 
-called for the form instance. It may is updated in the <var>CloseModal</var> 
+called for the form instance. It is updated in the <var>CloseModal</var> 
 method when <var>CloseQuery</var> is <b>False</b> and <var>CloseAction</var> 
 is <var>caNone</var>. Finally, it is set to <var>mrCancel</var> in the 
 <var>Close</var> method when <var>FormState</var> contains the value 
@@ -12268,7 +12268,7 @@ The default font used for system task dialogs and controls like TSpeedButton.
 <descr>
 <p>
 <var>Fonts</var> is a read-only <var>TStrings</var> property which contains 
-the names for the fonts available using the <var>EnumFontFamiliesEx</var> 
+the names for the fonts found using the <var>EnumFontFamiliesEx</var> 
 routine for the widgetset. Values in Fonts are sorted alphabetically in 
 ascending order.
 </p>
