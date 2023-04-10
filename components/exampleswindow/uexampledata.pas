@@ -65,6 +65,7 @@ const
 type
     TExampleDataSource = (FromGitlabTree,  // Read all remote project meta files
                           FromLocalTree,   // Read all local Git project meta files
+                          FromThirdParty,  // Packages listed in first block of packagefiles.xml
                           FromCacheFile,   // Load data from Local Cache File
                           FromLazSrcTree); // Searches the Lazarus Src Tree, eg ~/examples; ~/components
 
@@ -361,7 +362,15 @@ begin
     if DebugThis then debugln('TExampleData.GetThirdParty - looking at [' + FullPkgFileName + ']');
     if not FileExists(FullPkgFileName) then
         exit(false);                                        // only real error return code
-    ReadXMLFile(doc, FullPkgFileName);                      // Hmm, xml exceptions ?
+    try
+        ReadXMLFile(doc, FullPkgFileName);
+    except on E: Exception do begin
+            debugln('Warning :  [TExampleData.GetThirdPartyDir] XML Error : ' + E.Message);
+            if assigned(doc) then
+                doc.free;
+            exit(false);
+        end;
+    end;
     try
         FullPkgFileName := ExtractFileDir(FullPkgFileName); // Remove the LPK name, might be best we can do.
         NodeB := doc.DocumentElement.FindNode('Package');
@@ -666,10 +675,8 @@ begin
         FromLocalTree  : begin                           // not used in Lazarus Package
                             if ScanLocalTree(GitDir, False) then        // This should leave relative paths, suitable to upload to gitlab
                          end;
-        FromLazSrcTree : begin
-                            ScanLocalTree(IDEEnvironmentOptions.GetParsedLazarusDirectory, True); // Scan the Lazarus SRC tree
-                            ScanThirdPartyPkg();         // Get, eg, any OPM Examples or ones manually installed by user.
-            end;
+        FromLazSrcTree : ScanLocalTree(IDEEnvironmentOptions.GetParsedLazarusDirectory, True); // Scan the Lazarus SRC tree
+        FromThirdParty : ScanThirdPartyPkg();         // Get, eg, any OPM Examples or ones manually installed by user.
         FromCacheFile  : begin
                             if not LoadCacheFile(ExampleWorkingDir()+ 'master' + MetaFileExt) then begin
                                 DownLoadFile('master' + MetaFileExt, ExampleWorkingDir()+ 'master' + MetaFileExt);

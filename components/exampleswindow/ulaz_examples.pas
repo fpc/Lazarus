@@ -546,7 +546,12 @@ begin
     {$ifdef ONLINE_EXAMPLES}
     Ex.LoadExData(FromCacheFile);
     {$else}
+    Screen.BeginWaitCursor;
+    Application.ProcessMessages;
     Ex.LoadExData(FromLazSrcTree);
+    Ex.LoadExData(FromThirdParty);
+    Screen.EndWaitCursor;
+    Application.ProcessMessages;
     {$endif}
     if Ex.ErrorMsg <> '' then
         Showmessage(Ex.ErrorMsg);                       // Note : previously, we treated this as fatal ?
