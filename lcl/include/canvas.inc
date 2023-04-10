@@ -754,8 +754,8 @@ begin
 
     // Next copy the bitmap to a intfimage to be able to make the color change
     lIntfImage.LoadFromBitmap(lPaintedBitmap.Handle, 0);
-    for x := 0 to lSrcWidth-1 do
-      for y := 0 to lSrcHeight-1 do
+    for y := 0 to lSrcHeight-1 do
+      for x := 0 to lSrcWidth-1 do
       begin
         lPixelColor := lIntfImage.Colors[x, y];
         if (lPixelColor.red = lTransparentColor.red) and
