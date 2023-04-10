@@ -1451,8 +1451,8 @@ resourcestring
   dlgRightBottomClr = 'Guide lines Right,Bottom';
   dlgGrabberColor = 'Grabber color';
   dlgMarkerColor = 'Marker color';
-  dlgBorderSpacingColor = 'BorderSpacing frame color';
-  dlgNonFormBackgroundColor = 'Other Designer background color (e. g. TDataModule)';
+  dlgBorderSpacingColor = 'BorderSpacing frame';
+  dlgNonFormBackgroundColor = 'Other Designer background (e. g. TDataModule)';
   dlgRuberbandSelectionColor = 'Rubberband Selection';
   dlgRuberbandCreationColor = 'Rubberband Creation';
   dlgRubberbandSelectsGrandChildren = 'Select grandchildren';
