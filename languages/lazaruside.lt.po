@@ -854,8 +854,14 @@ msgid "Block indent (tabs)"
 msgstr "Blokų įtrauka (tabuliatoriais)"
 
 #: lazarusidestrconsts.dlgborderspacecanbesetinanchoreditor
-msgid "Border space can be set in Anchor editor. A red line is shown if spacing > 0."
+#, fuzzy
+#| msgid "Border space can be set in Anchor editor. A red line is shown if spacing > 0."
+msgid "Border space can be set in Anchor editor. A colored line is shown if spacing > 0."
 msgstr "Rėmelio storį galima nustatyti prieraišų rengyklėje. Kai storis didesnis nei 0, tai rodoma raudona linija."
+
+#: lazarusidestrconsts.dlgborderspacingcolor
+msgid "BorderSpacing frame"
+msgstr ""
 
 #: lazarusidestrconsts.dlgbrackethighlight
 msgid "Bracket highlight"
@@ -3222,7 +3228,7 @@ msgid "No Highlight"
 msgstr "Jokių paryškinimų"
 
 #: lazarusidestrconsts.dlgnonformbackgroundcolor
-msgid "Other Designer background color (e. g. TDataModule)"
+msgid "Other Designer background (e. g. TDataModule)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgnotebooktabpos

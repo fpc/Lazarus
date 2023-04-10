@@ -843,8 +843,14 @@ msgid "Block indent (tabs)"
 msgstr "Lohkon sisennys (tabit)"
 
 #: lazarusidestrconsts.dlgborderspacecanbesetinanchoreditor
-msgid "Border space can be set in Anchor editor. A red line is shown if spacing > 0."
+#, fuzzy
+#| msgid "Border space can be set in Anchor editor. A red line is shown if spacing > 0."
+msgid "Border space can be set in Anchor editor. A colored line is shown if spacing > 0."
 msgstr "Reuna voidaan asettaa ankkurointi-editorissa. Punainen viiva näytetään jos reuna > 0."
+
+#: lazarusidestrconsts.dlgborderspacingcolor
+msgid "BorderSpacing frame"
+msgstr ""
 
 #: lazarusidestrconsts.dlgbrackethighlight
 msgid "Bracket highlight"
@@ -3125,7 +3131,7 @@ msgid "No Highlight"
 msgstr "Ei korostusta"
 
 #: lazarusidestrconsts.dlgnonformbackgroundcolor
-msgid "Other Designer background color (e. g. TDataModule)"
+msgid "Other Designer background (e. g. TDataModule)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgnotebooktabpos

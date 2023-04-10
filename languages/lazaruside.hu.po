@@ -841,8 +841,14 @@ msgid "Block indent (tabs)"
 msgstr "Blokk behúzás (tab-ok)"
 
 #: lazarusidestrconsts.dlgborderspacecanbesetinanchoreditor
-msgid "Border space can be set in Anchor editor. A red line is shown if spacing > 0."
+#, fuzzy
+#| msgid "Border space can be set in Anchor editor. A red line is shown if spacing > 0."
+msgid "Border space can be set in Anchor editor. A colored line is shown if spacing > 0."
 msgstr "A keret-térköz beállítható a Horgonyszerkesztőben. Egy piros vonal jelenik meg ha a távolság > 0."
+
+#: lazarusidestrconsts.dlgborderspacingcolor
+msgid "BorderSpacing frame"
+msgstr ""
 
 #: lazarusidestrconsts.dlgbrackethighlight
 msgid "Bracket highlight"
@@ -3146,7 +3152,7 @@ msgid "No Highlight"
 msgstr "Nincs kiemelés"
 
 #: lazarusidestrconsts.dlgnonformbackgroundcolor
-msgid "Other Designer background color (e. g. TDataModule)"
+msgid "Other Designer background (e. g. TDataModule)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgnotebooktabpos

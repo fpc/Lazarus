@@ -853,8 +853,14 @@ msgid "Block indent (tabs)"
 msgstr "Rientro blocco(Tab)"
 
 #: lazarusidestrconsts.dlgborderspacecanbesetinanchoreditor
-msgid "Border space can be set in Anchor editor. A red line is shown if spacing > 0."
+#, fuzzy
+#| msgid "Border space can be set in Anchor editor. A red line is shown if spacing > 0."
+msgid "Border space can be set in Anchor editor. A colored line is shown if spacing > 0."
 msgstr "Lo spazio attorno può essere impostato nell'editor di Anchor. Se lo spazio è > 0 è mostrata una linea rossa."
+
+#: lazarusidestrconsts.dlgborderspacingcolor
+msgid "BorderSpacing frame"
+msgstr ""
 
 #: lazarusidestrconsts.dlgbrackethighlight
 msgid "Bracket highlight"
@@ -3242,7 +3248,7 @@ msgid "No Highlight"
 msgstr "Nessuna evidenziazione"
 
 #: lazarusidestrconsts.dlgnonformbackgroundcolor
-msgid "Other Designer background color (e. g. TDataModule)"
+msgid "Other Designer background (e. g. TDataModule)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgnotebooktabpos

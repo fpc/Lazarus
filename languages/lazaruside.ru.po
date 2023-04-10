@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-04-10 01:32+0300\n"
+"PO-Revision-Date: 2023-04-11 02:01+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -842,8 +842,12 @@ msgid "Block indent (tabs)"
 msgstr "Отступ блока в ТАБах"
 
 #: lazarusidestrconsts.dlgborderspacecanbesetinanchoreditor
-msgid "Border space can be set in Anchor editor. A red line is shown if spacing > 0."
-msgstr "Зазор может быть установлен в редакторе привязок. Если зазор больше нуля, отображается прямоугольник."
+msgid "Border space can be set in Anchor editor. A colored line is shown if spacing > 0."
+msgstr "Если установленный в редакторе привязок зазор больше нуля, отображается цветная рамка"
+
+#: lazarusidestrconsts.dlgborderspacingcolor
+msgid "BorderSpacing frame"
+msgstr "Рамка зазоров"
 
 #: lazarusidestrconsts.dlgbrackethighlight
 msgid "Bracket highlight"
@@ -3133,8 +3137,8 @@ msgid "No Highlight"
 msgstr "Не подсвечивать"
 
 #: lazarusidestrconsts.dlgnonformbackgroundcolor
-msgid "Other Designer background color (e. g. TDataModule)"
-msgstr "Цвет фона прочих редакторов (например, TDataModule)"
+msgid "Other Designer background (e. g. TDataModule)"
+msgstr "Фон прочих редакторов (например, TDataModule)"
 
 #: lazarusidestrconsts.dlgnotebooktabpos
 msgid "Source notebook tabs position"

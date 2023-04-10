@@ -843,8 +843,14 @@ msgid "Block indent (tabs)"
 msgstr "Blok girintisi (sekmeler)"
 
 #: lazarusidestrconsts.dlgborderspacecanbesetinanchoreditor
-msgid "Border space can be set in Anchor editor. A red line is shown if spacing > 0."
+#, fuzzy
+#| msgid "Border space can be set in Anchor editor. A red line is shown if spacing > 0."
+msgid "Border space can be set in Anchor editor. A colored line is shown if spacing > 0."
 msgstr "Çapa düzenleyicide kenarlık alanı ayarlanabilir. Boşluk > 0 ise kırmızı bir çizgi gösterilir."
+
+#: lazarusidestrconsts.dlgborderspacingcolor
+msgid "BorderSpacing frame"
+msgstr ""
 
 #: lazarusidestrconsts.dlgbrackethighlight
 msgid "Bracket highlight"
@@ -3101,7 +3107,9 @@ msgid "No Highlight"
 msgstr "Vurgulama Yok"
 
 #: lazarusidestrconsts.dlgnonformbackgroundcolor
-msgid "Other Designer background color (e. g. TDataModule)"
+#, fuzzy
+#| msgid "Other Designer background color (e. g. TDataModule)"
+msgid "Other Designer background (e. g. TDataModule)"
 msgstr "Diğer Tasarımcı arka plan rengi (örneğin TDataModule)"
 
 #: lazarusidestrconsts.dlgnotebooktabpos

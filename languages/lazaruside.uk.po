@@ -844,8 +844,14 @@ msgid "Block indent (tabs)"
 msgstr "Відступ блока (таби)"
 
 #: lazarusidestrconsts.dlgborderspacecanbesetinanchoreditor
-msgid "Border space can be set in Anchor editor. A red line is shown if spacing > 0."
+#, fuzzy
+#| msgid "Border space can be set in Anchor editor. A red line is shown if spacing > 0."
+msgid "Border space can be set in Anchor editor. A colored line is shown if spacing > 0."
 msgstr "Зазор можна встановити у редакторі прив'язок. Якщо зазор > 0, виводиться червона лінія."
+
+#: lazarusidestrconsts.dlgborderspacingcolor
+msgid "BorderSpacing frame"
+msgstr ""
 
 #: lazarusidestrconsts.dlgbrackethighlight
 msgid "Bracket highlight"
@@ -3147,7 +3153,9 @@ msgid "No Highlight"
 msgstr "Без підсвічування"
 
 #: lazarusidestrconsts.dlgnonformbackgroundcolor
-msgid "Other Designer background color (e. g. TDataModule)"
+#, fuzzy
+#| msgid "Other Designer background color (e. g. TDataModule)"
+msgid "Other Designer background (e. g. TDataModule)"
 msgstr "Інший колір тла Дизайнера (наприклад, TDataModule)"
 
 #: lazarusidestrconsts.dlgnotebooktabpos
