@@ -80,6 +80,7 @@ const
   DefaultAutoSaveIntervalInSecs = 300;
 
   DefaultRubberbandSelectsGrandChilds = false;
+  DefaultBorderSpacingColor = clRed;
   DefaultGridColor = clBlack;
   DefaultGridSize = 8;
   DefaultGuideLineColorLeftTop = clBlue;
@@ -577,6 +578,7 @@ type
     FCreateComponentFocusNameProperty: boolean;
     FSwitchToFavoritesOITab: boolean;
     FShowBorderSpacing: boolean;
+    FBorderSpacingColor: TColor;
     FShowGrid: boolean;
     FSnapToGrid: boolean;
     FGridSizeX: integer;
@@ -808,6 +810,7 @@ type
        
     // form editor
     property ShowBorderSpacing: boolean read FShowBorderSpacing write FShowBorderSpacing;
+    property BorderSpacingColor: TColor read FBorderSpacingColor write FBorderSpacingColor;
     property ShowGrid: boolean read FShowGrid write FShowGrid;
     property SnapToGrid: boolean read FSnapToGrid write FSnapToGrid;
     property GridColor: TColor read FGridColor write FGridColor;
@@ -1825,6 +1828,7 @@ begin
   // EnvironmentOptionsDialog editor
   FShowGrid:=true;
   FShowBorderSpacing:=false;
+  FBorderSpacingColor:=DefaultBorderSpacingColor;
   FGridColor:=DefaultGridColor;
   FSnapToGrid:=true;
   FGridSizeX:=DefaultGridSize;
@@ -2309,6 +2313,7 @@ begin
     // form editor
     FShowGrid:=FXMLCfg.GetValue(Path+'FormEditor/ShowGrid',true);
     FShowBorderSpacing:=FXMLCfg.GetValue(Path+'FormEditor/ShowBorderSpacing',false);
+    FBorderSpacingColor:=FXMLCfg.GetValue(Path+'FormEditor/BorderSpacingColor',DefaultBorderSpacingColor);
     FGridColor:=FXMLCfg.GetValue(Path+'FormEditor/GridColor',DefaultGridColor);
     FSnapToGrid:=FXMLCfg.GetValue(Path+'FormEditor/SnapToGrid',true);
     FGridSizeX:=FXMLCfg.GetValue(Path+'FormEditor/GridSizeX',DefaultGridSize);
@@ -2686,6 +2691,7 @@ begin
 
     // form editor
     FXMLCfg.SetDeleteValue(Path+'FormEditor/ShowBorderSpacing',FShowBorderSpacing,false);
+    FXMLCfg.SetDeleteValue(Path+'FormEditor/BorderSpacingColor',FBorderSpacingColor,DefaultBorderSpacingColor);
     FXMLCfg.SetDeleteValue(Path+'FormEditor/ShowGrid',FShowGrid,true);
     FXMLCfg.SetDeleteValue(Path+'FormEditor/GridColor',FGridColor,DefaultGridColor);
     FXMLCfg.SetDeleteValue(Path+'FormEditor/SnapToGrid',FSnapToGrid,true);

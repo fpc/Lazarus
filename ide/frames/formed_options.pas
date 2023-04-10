@@ -36,6 +36,7 @@ uses
 type
   TDesignerColor = (
     dcGrid,
+    dcBorderSpacing,
     dcGridLinesLeftTop,
     dcGridLinesRightBottom,
     dcGrabber,
@@ -163,6 +164,7 @@ begin
   begin
     // read colors
     ColorsListBox.Items.Objects[Ord(dcGrid)] := TObject(PtrInt(GridColor));
+    ColorsListBox.Items.Objects[Ord(dcBorderSpacing)] := TObject(PtrInt(BorderSpacingColor));
     ColorsListBox.Items.Objects[Ord(dcGridLinesLeftTop)] := TObject(PtrInt(GuideLineColorLeftTop));
     ColorsListBox.Items.Objects[Ord(dcGridLinesRightBottom)] := TObject(PtrInt(GuideLineColorRightBottom));
     ColorsListBox.Items.Objects[Ord(dcGrabber)] := TObject(PtrInt(GrabberColor));
@@ -199,6 +201,7 @@ begin
   begin
     // write colors
     GridColor := ColorsListBox.Colors[Ord(dcGrid)];
+    BorderSpacingColor := ColorsListBox.Colors[Ord(dcBorderSpacing)];
     GuideLineColorLeftTop := ColorsListBox.Colors[Ord(dcGridLinesLeftTop)];
     GuideLineColorRightBottom := ColorsListBox.Colors[Ord(dcGridLinesRightBottom)];
     GrabberColor := ColorsListBox.Colors[Ord(dcGrabber)];
@@ -245,6 +248,7 @@ procedure TFormEditorOptionsFrame.ColorsListBoxGetColors(
   Sender: TCustomColorListBox; Items: TStrings);
 begin
   Items.Add(dlgGridColor);
+  Items.Add(dlgBorderSpacingColor);
   Items.Add(dlgLeftTopClr);
   Items.Add(dlgRightBottomClr);
   Items.Add(dlgGrabberColor);

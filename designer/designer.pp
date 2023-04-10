@@ -3251,7 +3251,7 @@ begin
     
     if ShowBorderSpacing then
     begin
-      aDDC.Canvas.Brush.Color := clRed;
+      aDDC.Canvas.Brush.Color := EnvironmentOptions.BorderSpacingColor;
       for i := 0 to Count - 1 do
       begin
         CurControl := AWinControl.Controls[i];

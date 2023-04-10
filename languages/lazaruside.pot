@@ -3450,6 +3450,10 @@ msgstr ""
 msgid "Show border spacing"
 msgstr ""
 
+#: lazarusidestrconsts.dlgborderspacingcolor
+msgid "BorderSpacing frame color"
+msgstr ""
+
 #: lazarusidestrconsts.dlgqshowgrid
 msgid "Show grid"
 msgstr ""

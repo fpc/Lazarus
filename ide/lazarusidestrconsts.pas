@@ -1432,7 +1432,7 @@ resourcestring
   dlgGridConsistsOfSmallDots = 'Grid consists of small dots which help aligning controls.';
   dlgQShowBorderSpacing = 'Show border spacing';
   dlgBorderSpaceCanBeSetInAnchorEditor = 'Border space can be set in Anchor editor. '
-    +'A red line is shown if spacing > 0.';
+    +'A colored line is shown if spacing > 0.';
   dlgQSnapToGrid = 'Snap to grid';
   dlgDistanceBetweenGridPointsIsSmallestStep = 'Distance between grid points is '
     +'the smallest step when moving a control.';
@@ -1451,6 +1451,7 @@ resourcestring
   dlgRightBottomClr = 'Guide lines Right,Bottom';
   dlgGrabberColor = 'Grabber color';
   dlgMarkerColor = 'Marker color';
+  dlgBorderSpacingColor = 'BorderSpacing frame color';
   dlgNonFormBackgroundColor = 'Other Designer background color (e. g. TDataModule)';
   dlgRuberbandSelectionColor = 'Rubberband Selection';
   dlgRuberbandCreationColor = 'Rubberband Creation';
