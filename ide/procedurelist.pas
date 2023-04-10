@@ -260,115 +260,107 @@ procedure TProcedureListForm.FormKeyDown(Sender: TObject; var Key: Word;
 begin
   if Shift = [] then
   begin
+    case Key of
 
     { Form }
-    if Key = VK_RETURN then
-    begin
-      JumpToSelection;
-      Key := 0;
-    end
-    else if Key = VK_ESCAPE then
-    begin
-      Key := 0;
-      ModalResult := mrCancel;
-    end
+    VK_RETURN : begin
+        JumpToSelection;
+        Key := 0;
+      end;
+    VK_ESCAPE : begin
+        Key := 0;
+        ModalResult := mrCancel;
+      end;
 
     { Arrows }
-    else if Key = VK_DOWN then
-    begin
-      if SG.Row < SG.FixedRows then // if (Row = -1) or (Row < FixedRows)
-      begin
-        if SG.RowCount > SG.FixedRows then
-          SG.Row := SG.FixedRows;
-      end else begin
-        if (SG.Row + 1) < SG.RowCount then
-          SG.Row := SG.Row + 1;
+    VK_DOWN : begin
+        if SG.Row < SG.FixedRows then // if (Row = -1) or (Row < FixedRows)
+        begin
+          if SG.RowCount > SG.FixedRows then
+            SG.Row := SG.FixedRows;
+        end else begin
+          if (SG.Row + 1) < SG.RowCount then
+            SG.Row := SG.Row + 1;
+        end;
+        Key := 0;
       end;
-      Key := 0;
-    end
-    else if Key = VK_UP then
-    begin
-      if SG.Row < SG.FixedRows then // if (Row = -1) or (Row < FixedRows)
-      begin
-        if SG.RowCount > SG.FixedRows then
-          SG.Row := SG.RowCount - 1;
-      end else begin
-        if SG.Row > SG.FixedRows then
-          SG.Row := SG.Row - 1;
+    VK_UP : begin
+        if SG.Row < SG.FixedRows then // if (Row = -1) or (Row < FixedRows)
+        begin
+          if SG.RowCount > SG.FixedRows then
+            SG.Row := SG.RowCount - 1;
+        end else begin
+          if SG.Row > SG.FixedRows then
+            SG.Row := SG.Row - 1;
+        end;
+        Key := 0;
       end;
-      Key := 0;
-    end
 
     { PageUp and PageDown }
-    else if Key = VK_NEXT then
-    begin
-      if SG.Row < SG.FixedRows then // if (Row = -1) or (Row < FixedRows)
-      begin
-        if SG.RowCount > SG.FixedRows then
-          SG.Row := SG.FixedRows;
-      end else begin
-        SG.Row := Min(SG.RowCount - 1, SG.Row + (SG.VisibleRowCount - 1));
+    VK_NEXT : begin
+        if SG.Row < SG.FixedRows then // if (Row = -1) or (Row < FixedRows)
+        begin
+          if SG.RowCount > SG.FixedRows then
+            SG.Row := SG.FixedRows;
+        end else begin
+          SG.Row := Min(SG.RowCount - 1, SG.Row + (SG.VisibleRowCount - 1));
+        end;
+        Key := 0;
       end;
-      Key := 0;
-    end
-    else if Key = VK_PRIOR then
-    begin
-      if SG.Row < SG.FixedRows then // if (Row = -1) or (Row < FixedRows)
-      begin
-        if SG.Row > SG.FixedRows then
-          SG.Row := SG.Row - 1;
-      end else begin
-        SG.Row := Max(SG.FixedRows, SG.Row - (SG.VisibleRowCount - 1));
+    VK_PRIOR : begin
+        if SG.Row < SG.FixedRows then // if (Row = -1) or (Row < FixedRows)
+        begin
+          if SG.Row > SG.FixedRows then
+            SG.Row := SG.Row - 1;
+        end else begin
+          SG.Row := Max(SG.FixedRows, SG.Row - (SG.VisibleRowCount - 1));
+        end;
+        Key := 0;
       end;
-      Key := 0;
-    end
 
     { Home and End }
-    else if Key = VK_HOME then
-    begin
-      if SG.RowCount > SG.FixedRows then
-        SG.Row := SG.FixedRows;
-      Key := 0;
-    end
-    else if Key = VK_END then
-    begin
-      if SG.RowCount > SG.FixedRows then
-        SG.Row := SG.RowCount - 1;
-      Key := 0;
-    end;
+    VK_HOME : begin
+        if SG.RowCount > SG.FixedRows then
+          SG.Row := SG.FixedRows;
+        Key := 0;
+      end;
+    VK_END : begin
+        if SG.RowCount > SG.FixedRows then
+          SG.Row := SG.RowCount - 1;
+        Key := 0;
+      end;
 
+    end;  // case
   end;  // if Shift = []
 
   if Shift = [ssCtrl] then
   begin
+    case Key of
 
     { Scroll one line }
-    if Key = VK_DOWN then
-    begin
-      if SG.RowCount > SG.FixedRows then
-        SG.TopRow := Max(SG.FixedRows, Min(SG.RowCount - 1, SG.TopRow + 1));
-      Key := 0;
-    end
-    else if Key = VK_UP then
-    begin
-      if SG.RowCount > SG.FixedRows then
-        SG.TopRow := Max(SG.FixedRows, Min(SG.RowCount - 1, SG.TopRow - 1));
-      Key := 0;
-    end
-
-    { Copy }
-    else if Key = VK_C then
-    begin
-      // copy the selected procedure only if no text is selected in edMethods
-      if edMethods.SelLength = 0 then
-      begin
-        tbCopyClick(Sender);
+    VK_DOWN : begin
+        if SG.RowCount > SG.FixedRows then
+          SG.TopRow := Max(SG.FixedRows, Min(SG.RowCount - 1, SG.TopRow + 1));
         Key := 0;
       end;
-    end;
+    VK_UP : begin
+        if SG.RowCount > SG.FixedRows then
+          SG.TopRow := Max(SG.FixedRows, Min(SG.RowCount - 1, SG.TopRow - 1));
+        Key := 0;
+      end;
 
+    { Copy }
+    VK_C : begin
+        // copy the selected procedure only if no text is selected in edMethods
+        if edMethods.SelLength = 0 then
+        begin
+          tbCopyClick(Sender);
+          Key := 0;
+        end;
+      end;
+
+    end;  // case
   end;  // if Shift = [ssCtrl]
-
 end;
 
 procedure TProcedureListForm.FormResize(Sender: TObject);
