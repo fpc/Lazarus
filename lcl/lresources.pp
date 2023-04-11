@@ -2029,26 +2029,33 @@ var
 begin
   { examples:
     object Form1: TForm1
-    inherited AboutBox2: TAboutBox2
+    inherited AboutBox2: ns.unit2/TAboutBox2
   }
   LFMComponentName:='';
   LFMClassName := '';
   LFMType := '';
   Token := '';
   while (LFMStream.Read(c,1)=1) and (LFMStream.Position<1000) do begin
-    if c in ['a'..'z','A'..'Z','0'..'9','_'] then
-      Token := Token + c
-    else begin
-      if Token<>'' then begin
-        if LFMType = '' then
-          LFMType := Token
-        else if LFMComponentName='' then
-          LFMComponentName:=Token
-        else if LFMClassName = '' then
-          LFMClassName := Token;
-        Token := '';
+    case c of
+    ' ',#9,':':
+      begin
+        if Token<>'' then begin
+          if LFMType = '' then
+            LFMType := Token
+          else if LFMComponentName='' then
+            LFMComponentName:=Token
+          else if LFMClassName = '' then
+          begin
+            LFMClassName := Token;
+            exit;
+          end;
+          Token := '';
+        end;
       end;
-      if c in [#10,#13] then break;
+    'a'..'z','A'..'Z','0'..'9','_','.','/':
+      Token:=Token+c;
+    else
+      break;
     end;
   end;
   LFMStream.Position:=0;
@@ -2070,21 +2077,21 @@ var
 begin
   { examples:
     object Form1: TForm1
-    inherited AboutBox2: TAboutBox2
+    inherited AboutBox2: ns.unit1/TAboutBox2
 
-    - LFMType is the first word on the line
+    - LFMType is the first word on the line, e.g. object or inherited
     - LFMComponentName is the second word
-    - LFMClassName is the fourth token
+    - LFMClassName is the third
   }
 
-  // read first word => LFMType
+  // read LFMType
   p:=1;
   while (p<=length(LFMSource))
   and (LFMSource[p] in ['a'..'z','A'..'Z','0'..'9','_']) do
     inc(p);
   LFMType:=copy(LFMSource,1,p-1);
 
-  // read second word => LFMComponentName
+  // read LFMComponentName
   while (p<=length(LFMSource)) and (LFMSource[p] in [' ',#9]) do inc(p);
   StartPos:=p;
   while (p<=length(LFMSource))
@@ -2092,11 +2099,11 @@ begin
     inc(p);
   LFMComponentName:=copy(LFMSource,StartPos,p-StartPos);
 
-  // read third word => LFMClassName
+  // read LFMClassName
   while (p<=length(LFMSource)) and (LFMSource[p] in [' ',#9,':']) do inc(p);
   StartPos:=p;
   while (p<=length(LFMSource))
-  and (LFMSource[p] in ['a'..'z','A'..'Z','0'..'9','_']) do
+  and (LFMSource[p] in ['a'..'z','A'..'Z','0'..'9','_','.','/']) do
     inc(p);
   LFMClassName:=copy(LFMSource,StartPos,p-StartPos);
 end;
