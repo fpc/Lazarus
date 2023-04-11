@@ -1326,7 +1326,8 @@ stored in the <var>TCanvasState</var> set type used to implement the
 <short>The handle for the canvas is valid.</short>
 </element>
 <element name="TCanvasStates.csFontValid">
-<short>Font properties correspond to the selected Font Handle in the Device 
+<short>
+Font properties correspond to the selected Font Handle in the Device 
 Context (DC).
 </short>
 </element>
@@ -2758,6 +2759,7 @@ property differs from the existing value.
 <element name="TFont.SetPitch.Value">
 <short>New value for the property.</short>
 </element>
+
 <element name="TFont.SetSize">
 <short>
 <var>SetSize</var> - if
@@ -2773,6 +2775,7 @@ method, performs the appropriate rounding and sets the
 <element name="TFont.SetSize.AValue">
 <short/>
 </element>
+
 <element name="TFont.SetStyle">
 <short>
 <var>SetStyle</var> - specify which style to use.
@@ -2913,9 +2916,6 @@ allocated.
 </p>
 </descr>
 <seealso/>
-<notes>
-<note>Deprecated?</note>
-</notes>
 </element>
 <element name="TFont.IsDefault">
 <short>
@@ -8257,22 +8257,50 @@ Angle (in degrees) relative to StartAngle where the arc ends.
 <element name="TCanvas.BrushCopy">
 <short>
 Copies part of a bitmap to a rectangle on the canvas and replaces the 
-transparent color with the Brush color.
+transparent color with the canvas Brush color.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+The end result is that pixels copied from ABitmap using the color in 
+ATransparentColor are replaced with the brush color for the canvas. This makes 
+the copied area in ASourceRect partially transparent when applied to ADestRect.
+</p>
+<p>
+Pixels colors from ASourceRect are applied to a temporary image, and the 
+StretchDraw method is called to draw the copied rectangle onto the canvas.
+</p>
+<p>
+Set the Color property in Brush before calling the method.
+</p>
+</descr>
+<seealso>
+<link id="TCanvas.Brush"/>
+<link id="TCanvas.StretchDraw"/>
+<link id="TBrush.Color"/>
+<link id="TColorToFPColor"/>
+<link id="TBitmap"/>
+</seealso>
 </element>
-<element name="TCanvas.BrushCopy.Dest">
-<short/>
+<element name="TCanvas.BrushCopy.ADestRect">
+<short>
+Rectangle on the canvas where the content from ABitmap is stored.
+</short>
 </element>
-<element name="TCanvas.BrushCopy.InternalImages">
-<short/>
+<element name="TCanvas.BrushCopy.ABitmap">
+<short>
+TBitmap with the pixel content copied in the method.
+</short>
 </element>
-<element name="TCanvas.BrushCopy.Src">
-<short/>
+<element name="TCanvas.BrushCopy.ASourceRect">
+<short>
+Rectangle with the bounds for the copied region in ABitmap.
+</short>
 </element>
-<element name="TCanvas.BrushCopy.TransparentColor">
-<short/>
+<element name="TCanvas.BrushCopy.ATransparentColor">
+<short>
+Specifies the pixel color in ABitmap which becomes transparent when copied to 
+the destination rectangle on the Canvas.
+</short>
 </element>
 
 <element name="TCanvas.Chord">
@@ -8282,7 +8310,7 @@ positions on the circumference.
 </short>
 <descr>
 <p>
-Use Chord to draw a filled Chord-shape on the canvas.
+Use Chord to draw a filled Chord shape on the canvas.
 </p>
 <p>
 The angles angle1 and angle2 are 1/16th of a degree. For example, a full 
@@ -8341,91 +8369,232 @@ points (sx, sy, ex, ey).
 <element name="TCanvas.Chord.y2">
 <short/>
 </element>
+
 <element name="TCanvas.CopyRect">
 <short>
 Copies the rectangle found at <var>Source</var> in <var>SrcCanvas</var> to 
-the destination position <var>Dest</var>.
+the destination position in <var>Dest</var>.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>CopyRect</var> is a method used to copy a rectangular area from another 
+TCanvas instance to the specified location on the canvas instance.
+</p>
+<p>
+No actions are performed in the method if SrcCanvas has not been assigned, or 
+when the width or height in either Source or Dest is zero (0) pixels.
+</p>
+<p>
+CopyRect calls the StretchBlt routine in the LCL interface to expand or shrink 
+the content in Source to the dimensions in Dest. The CopyMode property 
+provides the raster operation for the block transfer.
+</p>
+<p>
+CopyRect calls Changing to signal an assigned OnChanging event handler prior 
+to the block transfer. CopyRect calls Changed to signal an assigned OnChange 
+event handler immediately after to the block transfer.
+</p>
+</descr>
+<seealso>
+<link id="TCanvas.CopyMode"/>
+<link id="TCanvas.Changing"/>
+<link id="TCanvas.Changed"/>
+</seealso>
 </element>
 <element name="TCanvas.CopyRect.Dest">
-<short/>
+<short>
+TRect instance with the bounds where the copied values are stored on the 
+canvas. 
+</short>
 </element>
 <element name="TCanvas.CopyRect.SrcCanvas">
-<short/>
+<short>
+TCanvas instance with the value copied in the method.
+</short>
 </element>
 <element name="TCanvas.CopyRect.Source">
-<short/>
+<short>
+TRect instance with the content copied in the method.
+</short>
 </element>
+
 <element name="TCanvas.Draw">
 <short>
-<var>Draw</var> - copies bounds from <var>SrcGraphic</var>, then calls 
-<var>StretchDraw</var> to perform the drawing.
+Draws the image content in SrcGraphic on the canvas at the specified position.
 </short>
-<descr/>
+<descr>
+<p>
+<var>Draw</var> is reintroduced method in TCanvas; it reimplements the 
+inherited method to use the TGraphic instance in SrcGraphic as the container 
+for the image content drawn in the method.
+</p>
+<p>
+No actions are performed in the method if SrcGraphic has not been assigned.
+</p>
+<p>
+Draw calls the StretchDraw method to draw the content in SrcGraphic on the 
+canvas at the position specified in X and Y. The Width and Height in 
+SrcGraphic are used to size the destination rectangle on the canvas.
+</p>
+</descr>
 <seealso>
 <link id="TCanvas.StretchDraw"/>
+<link id="TGraphic.Width"/>
+<link id="TGraphic.Height"/>
+<link id="#rtl.classes.TRect">TRect</link>
 </seealso>
 </element>
 <element name="TCanvas.Draw.X">
-<short/>
+<short>
+Horizontal coordinate where the content is drawn.
+</short>
 </element>
 <element name="TCanvas.Draw.Y">
-<short/>
+<short>
+Vertical coordinate where the content is drawn.
+</short>
 </element>
 <element name="TCanvas.Draw.SrcGraphic">
-<short/>
+<short>
+TGraphic instance with the image content drawn in the method.
+</short>
 </element>
+
 <element name="TCanvas.DrawFocusRect">
 <short>
-<var>DrawFocusRect</var> - draws a focused rectangle at the specified 
-position.
+Draws a focus rectangle around the specified rectangle on the canvas.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>DrawFocusRect</var> is a method used to draw a focus rectangle around the 
+rectangular region specified in ARect.
+</p>
+<p>
+DrawFocusRect calls Changing to signal an assigned OnChanging event handler 
+prior to drawing the focus rectangle. It calls Changed to signal an assigned 
+OnChange event handler immediately after drawing the focus rectangle.
+</p>
+<p>
+DrawFocusRect calls the DrawFocusRect routine in the LCL interface to perform 
+the drawing opertation using the Handle for the canvas.
+</p>
+</descr>
+<seealso>
+<link id="TCanvas.Changing"/>
+<link id="TCanvas.Changed"/>
+<link id="#lcl.lclintf.DrawFocusRect">LCLIntf.DrawFocusRect</link>
+</seealso>
 </element>
 <element name="TCanvas.DrawFocusRect.ARect">
-<short/>
+<short>
+TRect instance with the bounds for the drawing operation.
+</short>
 </element>
+
 <element name="TCanvas.StretchDraw">
 <short>
-<var>StretchDraw</var> - uses the <var>Draw</var> method of the source 
-graphic (<var>TGraphic</var>).
+Expands or contracts the specific graphic content to fit the specified 
+destination rectangle on the canvas.
 </short>
-<descr/>
+<descr>
+<p>
+StretchDraw is a reintroduced method in TCanvas; it reimplements the inherited 
+method to use the specified TGraphic content in the drawing operation instead 
+of a TFPCustomImage instance.
+</p>
+<p>
+No actions are performed in the method if SrcGraphic has not been assigned.
+</p>
+<p>
+DestRect provides the rectangular area on the canvas where the graphic content 
+is drawn. The Draw method in SrcGraphic is called to draw the image content 
+onto the canvas instance. If the dimensions in DestRect differ from the Width 
+or Height in SrcGraphic, the imgae content is expanded or contracted to fit 
+the destination rectangle. This may causes the aspect ratio for the image 
+content to be changed.
+</p>
+<p>
+StretchDraw calls Changing to signal an assigned OnChanging event handler 
+immediately before the drawing operation. It calls Changed to signal an 
+assigned OnChange event handler when the drawing operation has been completed.
+</p>
+</descr>
 <seealso>
+<link id="TCanvas.Changing"/>
+<link id="TCanvas.Changed"/>
 <link id="TGraphic.Draw"/>
+<link id="#rtl.classes.TRect">TRect</link>
 </seealso>
 </element>
 <element name="TCanvas.StretchDraw.DestRect">
-<short/>
+<short>
+TRect instance where the specified content is drawn on the canvas.
+</short>
 </element>
 <element name="TCanvas.StretchDraw.SrcGraphic">
-<short/>
+<short>
+TGraphic instance with the image content drawn in the method.
+</short>
 </element>
 
 <element name="TCanvas.Ellipse">
-<short>Draws a filled ellipse (or circle) on the canvas.</short>
-<descr/>
+<short>
+Draws a filled ellipse (or circle) on the canvas.
+</short>
+<descr>
+<p>
+<var>Ellipse</var> is an overloaded, reintroduced method in TCanvas used to 
+draw a filled ellipse shape. The overloaded variants allow the shape to be 
+defined either as a rectangular area where the shape is drawn, or by using 
+Integer coordinates to establish the major and minor axis for the shape.
+</p>
+<p>
+ARect is the TRect instance with the bounds for the shape.
+</p>
+<p>
+x1, y1, x2, and y2 allows the bounds for the shape to be specified as Integer 
+values.
+</p>
+<p>
+The bounds are used to calculate the vertex, co-vertex, linear eccentricity 
+and focal points for the shape.
+</p>
+<p>
+When the bounds area is a square, the resulting shape is a circle.
+</p>
+<p>
+Ellipse calls the Ellipse routine in the LCL interface to perform the drawing 
+operation.
+</p>
+</descr>
 <seealso>
-<link id="#lcl.lclintf.Ellipse">Ellipse</link>
+<link id="#lcl.lclintf.Ellipse">LCLIntf.Ellipse</link>
 </seealso>
 </element>
 <element name="TCanvas.Ellipse.ARect">
-<short/>
+<short>
+TRect instance with the bounds for the shape.
+</short>
 </element>
 <element name="TCanvas.Ellipse.x1">
-<short/>
+<short>
+Left coordinate for the bounding box.
+</short>
 </element>
 <element name="TCanvas.Ellipse.y1">
-<short/>
+<short>
+Top coordinate for the bounding box.
+</short>
 </element>
 <element name="TCanvas.Ellipse.x2">
-<short/>
+<short>
+Right coordinate for the bounding box.
+</short>
 </element>
 <element name="TCanvas.Ellipse.y2">
-<short/>
+<short>
+Bottom coordinate for the bounding box.
+</short>
 </element>
 
 <element name="TCanvas.FillRect">
@@ -9013,6 +9182,7 @@ connected.
 <element name="TCanvas.PolyBezier.Continuous">
 <short/>
 </element>
+
 <element name="TCanvas.Polygon">
 <short>
 Draws a closed, many-sided shape using the Pen for the canvas.
@@ -9071,6 +9241,7 @@ end of the line.
 <element name="TCanvas.Polygon.NumPts">
 <short/>
 </element>
+
 <element name="TCanvas.Polyline">
 <short>
 Draws a line which connects a set of points on the canvas.
