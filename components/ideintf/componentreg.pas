@@ -275,7 +275,7 @@ type
     procedure AddRegComponent(NewComponent: TRegisteredComponent);
     procedure RemoveRegComponent(AComponent: TRegisteredComponent);
     function FindRegComponent(ACompClass: TClass): TRegisteredComponent;
-    function FindRegComponent(const ACompClassName: string): TRegisteredComponent;
+    function FindRegComponent(const ACompClassName: string): TRegisteredComponent; // can be UnitName/ClassName
     function CreateNewClassName(const Prefix: string): string;
     procedure Update({%H-}ForceUpdateAll: Boolean); virtual;
     procedure IterateRegisteredClasses(Proc: TGetComponentClassEvent);
@@ -1152,18 +1152,29 @@ function TBaseComponentPalette.FindRegComponent(const ACompClassName: string): T
 // Return registered component based on LCL component class name.
 var
   i: Integer;
+  HasUnitName: Boolean;
+  aComp: TRegisteredComponent;
+  CurClassName: String;
 begin
   // A small optimization. If same type is asked many times, return it quickly.
   if ACompClassName = fLastFoundCompClassName then
     Exit(fLastFoundRegComp);
   // Linear search. Can be optimized if needed.
+  HasUnitName:=Pos('/',ACompClassName)>0;
   for i := 0 to fComps.Count-1 do
-    if SameText(fComps[i].ComponentClass.ClassName, ACompClassName) then
+  begin
+    Result:=fComps[i];
+    if HasUnitName then
+      CurClassName:=Result.GetUnitName+'/'+Result.ComponentClass.ClassName
+    else
+      CurClassName:=Result.ComponentClass.ClassName;
+    if SameText(CurClassName, ACompClassName) then
     begin
       fLastFoundCompClassName := ACompClassName;
-      fLastFoundRegComp := fComps[i];
-      Exit(fLastFoundRegComp);
+      fLastFoundRegComp := Result;
+      exit;
     end;
+  end;
   Result:=nil;
 end;
 

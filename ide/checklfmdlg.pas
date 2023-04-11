@@ -36,7 +36,7 @@ uses
   // LCL
   LCLProc, LResources, Forms, Controls, Dialogs, Buttons, StdCtrls, ExtCtrls,
   // LazUtils
-  LazStringUtils,
+  LazStringUtils, AvgLvlTree,
   // CodeTools
   BasicCodeTools, CodeCache, CodeToolManager, LFMTrees,
   // SynEdit
@@ -155,8 +155,12 @@ type
 function QuickCheckLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer;
   out LFMType, LFMComponentName, LFMClassName: string;
   out LCLVersion: string; out MissingClasses: TStrings): TModalResult;
+const
+  ClassFound = 'found';
+  ClassMissing = 'missing';
 var
   LFMTree: TLFMTree;
+  Classes: TStringToStringTree;
   
   procedure FindLCLVersion;
   var
@@ -182,33 +186,47 @@ var
   // A nested class means a TFrame installed as a component.
   var
     i: Integer;
-    AClassName: String;
+    AClassName, AnUnitName, AFullName: String;
     RegComp: TRegisteredComponent;
   begin
     AClassName:=ObjNode.TypeName;
-    // search in already missing classes
-    if (MissingClasses<>nil) then begin
-      for i:=0 to MissingClasses.Count-1 do
-        if SysUtils.CompareText(AClassName,MissingClasses[i])=0 then
-          exit;
-    end;
-    // ToDo: search only in used packages
+    AnUnitName:=ObjNode.TypeUnitName;
+    if AnUnitName<>'' then
+      AFullName:=AnUnitName+'/'+AClassName
+    else
+      AFullName:=AClassName;
+    if Classes[AFullName]<>'' then exit;
+
     // search in designer base classes
-    if BaseFormEditor1.FindDesignerBaseClassByName(AClassName,true)<>nil then
+    if BaseFormEditor1.FindDesignerBaseClassByName(AFullName,true)<>nil then
+    begin
+      Classes[AFullName]:=ClassFound;
       exit;
+    end;
     // search in global registered classes
-    if GetClass(ObjNode.TypeName)<>nil then
+    {$IFDEF FPC_FULLVERSION>30300}
+    if GetClass(AnUnitName,AClassName)<>nil then
+    {$ELSE}
+    if GetClass(AClassName)<>nil then
+    {$ENDIF}
+    begin
+      Classes[AFullName]:=ClassFound;
       exit;
+    end;
     // search in registered classes
-    RegComp:=IDEComponentPalette.FindRegComponent(ObjNode.TypeName);
+    RegComp:=IDEComponentPalette.FindRegComponent(AFullName);
     if (RegComp<>nil) and (RegComp.GetUnitName<>'')
-    and not RegComp.ComponentClass.InheritsFrom(TCustomFrame) then // Nested TFrame
+    and not RegComp.ComponentClass.InheritsFrom(TCustomFrame) // Nested TFrame
+    then begin
+      Classes[AFullName]:=ClassFound;
       exit;
+    end;
     // class is missing
-    DebugLn(['QuickCheckLFMBuffer->FindMissingClass ',ObjNode.Name,':',ObjNode.TypeName,' IsInherited=',ObjNode.IsInherited]);
+    DebugLn(['QuickCheckLFMBuffer->FindMissingClass ',ObjNode.Name,':',AFullName,' IsInherited=',ObjNode.IsInherited]);
     if MissingClasses=nil then
       MissingClasses:=TStringList.Create;
-    MissingClasses.Add(AClassName);
+    MissingClasses.Add(AFullName);
+    Classes[AFullName]:=ClassMissing;
   end;
   
   procedure FindMissingClasses;
@@ -221,15 +239,20 @@ var
     // skip root
     Node := Node.Next;
     // check all other
-    while Node <> nil do
-    begin
-      if Node is TLFMObjectNode then
+    Classes:=TStringToStringTree.Create(false);
+    try
+      while Node <> nil do
       begin
-        FindMissingClass(ObjNode);
-        Node := Node.Next(ObjNode.IsInline); // skip children if node is inline
-      end
-      else
-        Node := Node.Next;
+        if Node is TLFMObjectNode then
+        begin
+          FindMissingClass(ObjNode);
+          Node := Node.Next(ObjNode.IsInline); // skip children if node is inline
+        end
+        else
+          Node := Node.Next;
+      end;
+    finally
+      Classes.Free;
     end;
   end;
   

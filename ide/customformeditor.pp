@@ -182,7 +182,7 @@ type
     procedure UnregisterDesignerBaseClass(AClass: TComponentClass); override;
     function IndexOfDesignerBaseClass(AClass: TComponentClass): integer; override;
     function DescendFromDesignerBaseClass(AClass: TComponentClass): integer; override;
-    function FindDesignerBaseClassByName(const AClassName: shortstring; WithDefaults: boolean): TComponentClass; override;
+    function FindDesignerBaseClassByName(const AClassName: shortstring; WithDefaults: boolean): TComponentClass; override; // can be UnitName/ClassName
 
     function StandardDesignerBaseClassesCount: Integer; override;
     // designers
@@ -1891,34 +1891,43 @@ function TCustomFormEditor.FindDesignerBaseClassByName(
   const AClassName: shortstring; WithDefaults: boolean): TComponentClass;
 var
   i: Integer;
+  HasUnitName: Boolean;
+
+  function Fits(aClass: TComponentClass): boolean;
+  begin
+    if HasUnitName then
+      Result:=SameText(AClass.UnitName+'/'+aClass.ClassName,AClassName)
+    else
+      Result:=SameText(aClass.ClassName,AClassName);
+  end;
 
   function SearchInParent(AParent: TComponentClass): TComponentClass;
   begin
     Result := nil;
     while AParent <> nil do
     begin
-      if CompareText(AClassName, AParent.ClassName)=0 then
+      if Fits(AParent) then
         Exit(AParent);
       AParent:=TComponentClass(AParent.ClassParent);
       if AParent = TComponent then
-        Exit;
+        exit;
     end;
   end;
 
 begin
+  HasUnitName:=Pos('/',AClassName)>0;
   if WithDefaults then
   begin
     for i := 0 to StandardDesignerBaseClassesCount - 1 do
     begin
       Result := SearchInParent(StandardDesignerBaseClasses[i]);
-      if Result <> nil then
-        Exit(StandardDesignerBaseClasses[i]);
+      if Result <> nil then exit;
     end;
   end;
   for i:=FDesignerBaseClasses.Count-1 downto 0 do
   begin
     Result:=DesignerBaseClasses[i];
-    if CompareText(Result.ClassName,AClassName)=0 then exit;
+    if Fits(Result) then exit;
   end;
   Result:=nil;
 end;

@@ -361,10 +361,6 @@ type
     // components
     function AddUnitDepsForCompClasses(const UnitFilename: string;
       ComponentClasses: TClassList; Quiet: boolean): TModalResult; override;
-{    function GetMissingDependenciesForUnit(const UnitFilename: string;
-                         ComponentClassnames: TStrings;
-                         var List: TOwnerPackageArray): TModalResult;
-}
     function GetUsableComponentUnits(CurRoot: TPersistent): TFPList; override; // list of TUnitInfo
     procedure IterateComponentNames(CurRoot: TPersistent; TypeData: PTypeData;
                                     Proc: TGetStrProc); override;
@@ -4663,26 +4659,7 @@ begin
   end;
   Result:=mrOk;
 end;
-{
-function TPkgManager.GetMissingDependenciesForUnit(
-  const UnitFilename: string; ComponentClassnames: TStrings;
-  var List: TOwnerPackageArray): TModalResult;
-// returns a list of packages needed to use the Component in the unit
-var
-  AllPackages: TPackagePackageArray;
-  AllUnits: TStringList;
-begin
-  List:=nil;
-  Result:=GetUnitsAndDependenciesForComponents(ComponentClassnames,AllPackages,AllUnits);
-  try
-    if Result<>mrOK then Exit;
-    Result:=FilterMissingDependenciesForUnit(UnitFilename,AllPackages,List);
-  finally
-    AllPackages.Free;
-    AllUnits.Free;
-  end;
-end;
-}
+
 function TPkgManager.GetOwnersOfUnit(const UnitFilename: string): TFPList;
 begin
   Result:=GetPossibleOwnersOfUnit(UnitFilename,[]);
