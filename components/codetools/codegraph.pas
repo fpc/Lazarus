@@ -666,7 +666,7 @@ begin
 
   try
     // init queue
-    SetLength(NodeQueue,Nodes.Count);
+    SetLength(NodeQueue{%H-},Nodes.Count);
     QueueStart:=0;
     QueueEnd:=0;
     // add all nodes without incoming edges and set all FInternalFlags to

@@ -530,7 +530,7 @@ procedure TFPCMsgFile.LoadFromList(List: TStrings);
       inc(p);
     until false;
     if p=StartPos then exit(false);
-    SetLength(s,p-StartPos);
+    SetLength(s{%H-},p-StartPos);
     System.Move(StartPos^,s[1],length(s));
     inc(p);
     Result:=true;

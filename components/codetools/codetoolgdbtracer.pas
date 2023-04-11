@@ -731,7 +731,7 @@ begin
   try
     WriteToStream(ms);
     ms.Position:=0;
-    SetLength(Result,ms.Size);
+    SetLength(Result{%H-},ms.Size);
     if Result<>'' then
       ms.Read(Result[1],length(Result));
   finally

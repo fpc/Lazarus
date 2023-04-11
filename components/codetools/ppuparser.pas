@@ -192,7 +192,7 @@ type
     );
 
 const
-  PPU_CPUNames : array[tsystemcpu] of string[9]=
+  PPU_CPUNames : array[tsystemcpu] of string =
     ('none',
      'i386',
      'm68k',
@@ -2220,7 +2220,7 @@ var
 
 begin
   l:=ReadEntryLongint;
-  SetLength(Result,l);
+  SetLength(Result{%H-},l);
   if l>0 then begin
     if FEntryPos+l>FEntry.size then
       ErrorOutOfBytes;

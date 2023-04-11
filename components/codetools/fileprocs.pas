@@ -321,7 +321,7 @@ var
 begin
   Result:=Fmt;
   if Low(Args)>High(Args) then exit;
-  SetLength(Used,High(Args)-Low(Args)+1);
+  SetLength(Used{%H-},High(Args)-Low(Args)+1);
   for RunIndex:=Low(Args) to High(Args) do
     Used[RunIndex]:=false;
   RunIndex:=Low(Args);
