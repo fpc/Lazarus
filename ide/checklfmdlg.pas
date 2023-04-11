@@ -185,7 +185,6 @@ var
   // Add a missing or nested class to MissingClasses.
   // A nested class means a TFrame installed as a component.
   var
-    i: Integer;
     AClassName, AnUnitName, AFullName: String;
     RegComp: TRegisteredComponent;
   begin
