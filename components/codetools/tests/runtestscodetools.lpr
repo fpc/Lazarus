@@ -40,7 +40,7 @@ uses
   TestStdCodetools, TestFindDeclaration, TestIdentCompletion, TestCompleteBlock,
   TestRefactoring, TestCodeCompletion, TestCompReaderWriterPas,
   fdt_arrays, TestCTPas2js, TestChangeDeclaration, TestLFMTrees, 
-  TestDesignerFormTools, Dsgn_BearButtons;
+  TestDesignerFormTools, Dsgn_BearButtons, Dsgn_AmbigBearBtn;
 
 const
   ConfigFilename = 'codetools.config';

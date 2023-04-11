@@ -65,10 +65,8 @@ type
     function CollectPublishedMethods(Params: TFindDeclarationParams;
       const FoundContext: TFindContext): TIdentifierFoundResult;
   public
-    function AddPublishedVariables(AComponent, AncestorComponent: TComponent;
-        SourceChangeCache: TSourceChangeCache): boolean;
     function CompleteComponent(AComponent, AncestorComponent: TComponent;
-        SourceChangeCache: TSourceChangeCache): boolean; deprecated 'use AddPublishedVariables';
+        SourceChangeCache: TSourceChangeCache; CheckUnits: boolean): boolean;
 
     function GetCompatiblePublishedMethods(const AClassName: string;
         PropInstance: TPersistent; const PropName: string;
@@ -1372,20 +1370,74 @@ begin
   Result:=ifrProceedSearch;
 end;
 
-function TEventsCodeTool.AddPublishedVariables(AComponent,
-  AncestorComponent: TComponent; SourceChangeCache: TSourceChangeCache
-  ): boolean;
+function TEventsCodeTool.CompleteComponent(AComponent,
+  AncestorComponent: TComponent; SourceChangeCache: TSourceChangeCache;
+  CheckUnits: boolean): boolean;
 { - Adds all missing published variable declarations to the class definition
     in the source
+  - If CheckUnits=true then check used units for ambiguous classnames and add unitnames
 }
+var
+  MissingClassTypes, ClassesNeedingUnitName: TFPList; // list of TComponentClass
+
+  procedure CheckAmbiguity;
+  var
+    UsesNode, UseUnitNode: TCodeTreeNode;
+    AnUnitName, InFilename, CompClassName, CompUnitName, SourceName: string;
+    NewCodeTool: TFindDeclarationTool;
+    Params: TFindDeclarationParams;
+    i, NewTopLine, BlockTopLine, BlockBottomLine: integer;
+    aCompClass: TComponentClass;
+    NewPos: TCodeXYPosition;
+  begin
+    if MissingClassTypes.Count=0 then exit;
+    // search classtypes in used units
+    UsesNode:=FindMainUsesNode;
+    if UsesNode=nil then exit;
+    Params:=TFindDeclarationParams.Create(nil);
+    try
+      UseUnitNode:=UsesNode.LastChild;
+      while UseUnitNode<>nil do begin
+        AnUnitName:=ExtractUsedUnitName(UseUnitNode,@InFilename);
+        UseUnitNode:=UseUnitNode.PriorBrother;
+        if AnUnitName='' then continue;
+        NewCodeTool:=FindCodeToolForUsedUnit(AnUnitName,InFilename,false);
+        if NewCodeTool=nil then continue;
+        SourceName:=ExtractFileNameOnly(NewCodeTool.MainFilename);
+
+        // search the classtypes in the interface of the used unit
+        for i:=0 to MissingClassTypes.Count-1 do begin
+          aCompClass:=TComponentClass(MissingClassTypes[i]);
+          if ClassesNeedingUnitName.IndexOf(aCompClass)>=0 then continue;
+          CompClassName:=aCompClass.ClassName;
+          CompUnitName:=aCompClass.UnitName;
+          if SameText(CompUnitName,SourceName) then
+            continue; // this is the unit of the component class
+
+          if not NewCodeTool.FindDeclarationInInterface(CompClassName,
+            NewPos, NewTopLine, BlockTopLine, BlockBottomLine) then continue;
+
+          // found component classtype in another unit -> needs unitname
+          ClassesNeedingUnitName.Add(aCompClass);
+        end;
+      end;
+    finally
+      Params.Free;
+    end;
+  end;
+
 var
   i: Integer;
   CurComponent: TComponent;
   VarName, VarType: String;
-  UpperClassName, UpperCompName: String;
+  UpperClassName: String;
+  MissingComponents: TFPList; // list of TComponent
 begin
+  Result:=false;
+  ClassesNeedingUnitName:=TFPList.Create;
+  MissingComponents:=TFPList.Create;
+  MissingClassTypes:=TFPList.Create;
   try
-    Result:=false;
     ClearIgnoreErrorAfter;
     BuildTree(lsrImplementationStart);
     UpperClassName:=UpperCaseStr(AComponent.ClassName);
@@ -1395,7 +1447,8 @@ begin
     // initialize class for code completion
     CodeCompleteClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
     CodeCompleteSrcChgCache:=SourceChangeCache;
-    // complete all child components
+
+    // collect all missing component variables
     for i:=0 to AComponent.ComponentCount-1 do begin
       CurComponent:=AComponent.Components[i];
       {$IFDEF CTDEBUG}
@@ -1404,14 +1457,27 @@ begin
       VarName:=CurComponent.Name;
       if VarName='' then continue;
       if (AncestorComponent<>nil)
-      and (AncestorComponent.FindComponent(VarName)<>nil) then continue;
-      UpperCompName:=UpperCaseStr(VarName);
-      VarType:=CurComponent.ClassName;
+          and (AncestorComponent.FindComponent(VarName)<>nil) then continue;
       // add missing published variable
-      if not VarExistsInCodeCompleteClass(UpperCompName) then begin
-        //DebugLn('[TEventsCodeTool.CompleteComponent] ADDING variable ',CurComponent.Name,':',CurComponent.ClassName);
-        AddClassInsertion(UpperCompName,VarName+':'+VarType+';',VarName,ncpPublishedVars);
+      if not VarExistsInCodeCompleteClass(UpperCaseStr(VarName)) then begin
+        MissingComponents.Add(CurComponent);
+        if MissingClassTypes.IndexOf(Pointer(CurComponent.ClassType))<0 then
+          MissingClassTypes.Add(CurComponent.ClassType);
       end;
+    end;
+
+    if CheckUnits then
+      CheckAmbiguity;
+
+    // add component variable declarations
+    for i:=0 to MissingComponents.Count-1 do begin
+      CurComponent:=AComponent.Components[i];
+      VarName:=CurComponent.Name;
+      VarType:=CurComponent.ClassName;
+      if ClassesNeedingUnitName.IndexOf(CurComponent.ClassType)>=0 then
+        VarType:=CurComponent.UnitName+'.'+VarType;
+      //DebugLn('[TEventsCodeTool.CompleteComponent] ADDING variable ',CurComponent.Name,':',CurComponent.ClassName);
+      AddClassInsertion(UpperCaseStr(VarName),VarName+':'+VarType+';',VarName,ncpPublishedVars);
     end;
     {$IFDEF CTDEBUG}
     DebugLn('[TEventsCodeTool.CompleteComponent] invoke class completion');
@@ -1421,15 +1487,11 @@ begin
     DebugLn('[TEventsCodeTool.CompleteComponent] END');
     {$ENDIF}
   finally
+    MissingClassTypes.Free;
+    MissingComponents.Free;
+    ClassesNeedingUnitName.Free;
     FreeClassInsertionList;
   end;
-end;
-
-function TEventsCodeTool.CompleteComponent(AComponent,
-  AncestorComponent: TComponent; SourceChangeCache: TSourceChangeCache
-  ): boolean;
-begin
-  Result:=AddPublishedVariables(AComponent,AncestorComponent,SourceChangeCache);
 end;
 
 function TEventsCodeTool.GetCompatiblePublishedMethods(

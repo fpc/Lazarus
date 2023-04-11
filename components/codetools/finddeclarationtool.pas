@@ -1108,7 +1108,6 @@ type
     FUnitName: string;
     FFound: Boolean;
     FResults: TStringList;
-
     procedure Iterate(const AFilename: string);
   public
     constructor Create;

@@ -225,6 +225,8 @@ type
     // published variables
     function FindPublishedVariable(const AClassName, AVarName: string;
           ExceptionOnClassNotFound: boolean): TCodeTreeNode;
+    function GatherPublishedVarTypes(const AClassName: string;
+          out VarNameToType: TStringToStringTree): boolean;
     function AddPublishedVariable(const AClassName,VarName, VarType: string;
           SourceChangeCache: TSourceChangeCache): boolean; virtual;
     function RemovePublishedVariable(const AClassName, AVarName: string;
@@ -374,6 +376,7 @@ type
           SourceChangeCache: TSourceChangeCache;
           const Filter: TOnIDEDirectiveFilter = nil): boolean;
 
+    // debugging
     procedure CalcMemSize(Stats: TCTMemStats); override;
   end;
 
@@ -4547,6 +4550,97 @@ begin
       end;
     end;
     SectionNode:=SectionNode.NextBrother;
+  end;
+end;
+
+function TStandardCodeTool.GatherPublishedVarTypes(const AClassName: string;
+  out VarNameToType: TStringToStringTree): boolean;
+var
+  ClassNode, SectionNode, Node, VarNode, TypeNode: TCodeTreeNode;
+  SimpleTypes: TStringToStringTree;
+  VarName, NewType, VarType, CurUnitName: String;
+  Params: TFindDeclarationParams;
+  aContext: TFindContext;
+begin
+  Result:=true;
+  VarNameToType:=nil;
+  // search class
+  if (AClassName='') or (length(AClassName)>255) then
+    RaiseExceptionFmt(20230411091809,ctsinvalidClassName, [AClassName]);
+  BuildTree(lsrImplementationStart);
+  ClassNode:=FindClassNodeInInterface(AClassName,true,false,false);
+  if ClassNode=nil then
+    RaiseExceptionFmt(20230411091811,ctsclassNotFound, [AClassName]);
+  // traverse class declaration
+  SimpleTypes:=TStringToStringTree.Create(false);
+  try
+    SectionNode:=ClassNode.FirstChild;
+    while (SectionNode<>nil) do begin
+      if SectionNode.Desc=ctnClassPublished then begin
+        Node:=SectionNode.FirstChild;
+        while Node<>nil do begin
+          VarNode:=Node;
+          Node:=Node.NextBrother;
+          if (VarNode.Desc<>ctnVarDefinition) then continue;
+          // published variable
+          TypeNode:=FindTypeNodeOfDefinition(VarNode);
+          if TypeNode=nil then continue;
+          if TypeNode.Desc<>ctnIdentifier then continue;
+          // read variable name
+          VarName:=GetIdentifier(@Src[VarNode.StartPos]);
+          //debugln(['TStandardCodeTool.GatherPublishedVarTypes VarName="',VarName,'"']);
+          // read variable type
+          MoveCursorToNodeStart(TypeNode);
+          ReadNextAtom;
+          if not AtomIsIdentifier then
+            continue;
+          VarType:=GetAtom;
+          while ReadNextAtomIs('.') do begin
+            ReadNextAtom;
+            if not AtomIsIdentifier then
+              break;
+            VarType:=VarType+'.'+GetAtom;
+          end;
+          //debugln(['TStandardCodeTool.GatherPublishedVarTypes VarType="',VarType,'"']);
+          if (CurPos.Flag<>cafSemicolon) then begin
+            //debugln(['TStandardCodeTool.GatherPublishedVarTypes WARNING not a simple type: ',VarName]);
+            continue; // e.g. specialize A<B>
+          end;
+          if (Pos('.',VarType)<1) then begin
+            // simple type without unitname
+            NewType:=SimpleTypes[VarType];
+            if NewType='' then
+            begin
+              // resolve simple type
+              Params:=TFindDeclarationParams.Create;
+              try
+                Params.ContextNode:=TypeNode;
+                // resolve alias
+                aContext:=FindBaseTypeOfNode(Params,TypeNode);
+                //debugln(['TStandardCodeTool.GatherPublishedVarTypes Type "',VarType,'" found at ',FindContextToString(aContext,false)]);
+                if aContext.Node.Desc=ctnClass then
+                  VarType:=aContext.Tool.ExtractClassName(aContext.Node,false);
+                CurUnitName:=aContext.Tool.GetSourceName(false);
+                // unitname.vartype
+                NewType:=CurUnitName+'.'+VarType;
+                //debugln(['TStandardCodeTool.GatherPublishedVarTypes Resolved: "',VarType,'" = "',NewType,'"']);
+                SimpleTypes[VarType]:=NewType;
+              finally
+                Params.Free;
+              end;
+            end;
+            VarType:=NewType;
+          end;
+          //debugln(['TStandardCodeTool.GatherPublishedVarTypes Added ',VarName,':',VarType]);
+          if VarNameToType=nil then
+            VarNameToType:=TStringToStringTree.Create(false);
+          VarNameToType[VarName]:=VarType;
+        end;
+      end;
+      SectionNode:=SectionNode.NextBrother;
+    end;
+  finally
+    SimpleTypes.Free;
   end;
 end;
 
