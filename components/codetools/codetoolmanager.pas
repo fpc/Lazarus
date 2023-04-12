@@ -840,7 +840,8 @@ type
           const AClassName, AVarName: string;
           ErrorOnClassNotFound: boolean): boolean;
     function GatherPublishedVarTypes(Code: TCodeBuffer; const AClassName: string;
-          out VarNameToType: TStringToStringTree): boolean;
+          out VarNameToType: TStringToStringTree // VarName to NS.UnitName/ClassType
+          ): boolean;
     function AddPublishedVariable(Code: TCodeBuffer;
           const AClassName,VarName, VarType: string): boolean;
     function RemovePublishedVariable(Code: TCodeBuffer;

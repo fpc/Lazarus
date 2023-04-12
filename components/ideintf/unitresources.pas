@@ -42,7 +42,8 @@ type
       PascalBuffer, LFMBuffer: TObject; // TCodeBuffer
       out LFMType, LFMComponentName, LFMClassName: string;
       out LCLVersion: string;
-      out MissingClasses: TStrings// e.g. MyFrame2:TMyFrame
+      out MissingClasses: TStrings;// e.g. 'TMyFrame' or 'MyUnit.TMyFrame'
+      out AmbiguousClasses: TFPList // list of TRegisteredComponent
       ): TModalResult; virtual; abstract;
     class function Priority: integer; virtual; // higher priority is tested first
     class function DefaultComponentClass: TComponentClass; virtual;

@@ -52,7 +52,7 @@ type
     class function GetUnitResourceFilename(AUnitFilename: string; {%H-}Loading: boolean): string; override;
     class function QuickCheckResourceBuffer(PascalBuffer, LFMBuffer: TObject; out
       LFMType, LFMComponentName, LFMClassName: string; out LCLVersion: string;
-      out MissingClasses: TStrings): TModalResult; override;
+      out MissingClasses: TStrings; out AmbiguousClasses: TFPList): TModalResult; override;
   end;
 
 implementation
@@ -144,13 +144,14 @@ begin
   end;
 end;
 
-class function TLFMUnitResourcefileFormat.QuickCheckResourceBuffer(PascalBuffer,
-  LFMBuffer: TObject; out LFMType, LFMComponentName, LFMClassName: string; out
-  LCLVersion: string; out MissingClasses: TStrings): TModalResult;
+class function TLFMUnitResourcefileFormat.QuickCheckResourceBuffer(
+  PascalBuffer, LFMBuffer: TObject; out LFMType, LFMComponentName,
+  LFMClassName: string; out LCLVersion: string; out MissingClasses: TStrings;
+  out AmbiguousClasses: TFPList): TModalResult;
 begin
   Result := QuickCheckLFMBuffer(PascalBuffer as TCodeBuffer,
     LFMBuffer as TCodeBuffer, LFMType, LFMComponentName, LFMClassName,
-    LCLVersion, MissingClasses);
+    LCLVersion, MissingClasses, AmbiguousClasses);
 end;
 
 initialization

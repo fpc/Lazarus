@@ -4621,8 +4621,8 @@ begin
                 if aContext.Node.Desc=ctnClass then
                   VarType:=aContext.Tool.ExtractClassName(aContext.Node,false);
                 CurUnitName:=aContext.Tool.GetSourceName(false);
-                // unitname.vartype
-                NewType:=CurUnitName+'.'+VarType;
+                // unitname/vartype
+                NewType:=CurUnitName+'/'+VarType;
                 //debugln(['TStandardCodeTool.GatherPublishedVarTypes Resolved: "',VarType,'" = "',NewType,'"']);
                 SimpleTypes[VarType]:=NewType;
               finally

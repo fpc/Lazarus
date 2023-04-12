@@ -8,7 +8,7 @@ uses
   Classes, Controls, SysUtils, RtlConsts,
   LCLMemManager, forms, LazFileUtils,
   dom, XMLRead, XMLWrite,
-  ProjectIntf, UnitResources, CodeCache;
+  ProjectIntf, UnitResources, CodeCache, CodeToolManager;
 
 type
 
@@ -28,7 +28,8 @@ type
     class function CreateWriter(s: TStream; var DestroyDriver: boolean): TWriter; override;
     class function QuickCheckResourceBuffer(PascalBuffer, LFMBuffer: TObject;
       out LFMType, LFMComponentName, LFMClassName: string; out
-      LCLVersion: string; out MissingClasses: TStrings): TModalResult; override;
+      LCLVersion: string; out MissingClasses: TStrings;
+      out AmbiguousClasses: TFPList): TModalResult; override;
   end;
 
   { TXMLReader }
@@ -98,16 +99,17 @@ type
   private
     procedure CreateXML;
   public
-    constructor Create(Stream: TStream; BufSize: Integer);
+    constructor Create(Stream: TStream; {%H-}BufSize: Integer);
     destructor Destroy; override;
 
     procedure BeginCollection; override;
-    procedure BeginComponent(Component: TComponent; Flags: TFilerFlags;
-      ChildPos: Integer); override;
+    procedure BeginComponent(Component: TComponent; {%H-}Flags: TFilerFlags;
+      {%H-}ChildPos: Integer); override;
     procedure BeginList; override;
     procedure EndList; override;
     procedure BeginProperty(const PropName: String); override;
     procedure EndProperty; override;
+    procedure WriteSignature; override;
 
     //Please don't use write, better use WriteBinary whenever possible
     procedure Write(const Buffer; Count: Longint); override;
@@ -128,8 +130,6 @@ type
     procedure WriteFloat(const Value: Extended);  override;
     procedure WriteSingle(const Value: Single); override;
     procedure WriteDate(const Value: TDateTime); override;
-
-
   end;
 
   { TFileDescPascalUnitWithXMLResource }
@@ -139,7 +139,7 @@ type
     constructor Create; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
-    function GetImplementationSource(const Filename, SourceName, ResourceName: string): string; override;
+    function GetImplementationSource(const Filename, {%H-}SourceName, {%H-}ResourceName: string): string; override;
   end;
 
 
@@ -226,8 +226,8 @@ begin
   inc(FListLevel,2);
   ANewNode := FXMLDoc.CreateElement('object');
 
-  ANewNode.AttribStrings['type'] := Component.ClassName;
-  ANewNode.AttribStrings['name'] := Component.Name;
+  ANewNode.AttribStrings['type'] := Component.ClassName{%H-};
+  ANewNode.AttribStrings['name'] := Component.Name{%H-};
   if not assigned(FObjNode) then
     FXMLDoc.AppendChild(ANewNode)
   else
@@ -259,7 +259,7 @@ procedure TXMLObjectWriter.BeginProperty(const PropName: String);
 begin
   FCurNode := FXMLDoc.CreateElement('property');
   FObjNode.AppendChild(FCurNode);
-  FCurNode.AttribStrings['name'] := PropName;
+  FCurNode.AttribStrings['name'] := PropName{%H-};
 end;
 
 procedure TXMLObjectWriter.EndProperty;
@@ -267,14 +267,19 @@ begin
   // Do nothing
 end;
 
-procedure TXMLObjectWriter.Write(const Buffer; Count: Longint);
+procedure TXMLObjectWriter.WriteSignature;
 begin
 
 end;
 
+procedure TXMLObjectWriter.Write(const Buffer; Count: Longint);
+begin
+  raise Exception.Create('TXMLObjectWriter.Write');
+end;
+
 procedure TXMLObjectWriter.WriteBinary(const Buffer; Count: LongInt);
 begin
-
+  raise Exception.Create('TXMLObjectWriter.WriteBinary');
 end;
 
 procedure TXMLObjectWriter.WriteBoolean(Value: Boolean);
@@ -293,7 +298,7 @@ end;
 
 procedure TXMLObjectWriter.WriteCurrency(const Value: Currency);
 begin
-
+  raise Exception.Create('TXMLObjectWriter.WriteCurrency');
 end;
 
 procedure TXMLObjectWriter.WriteIdent(const Ident: string);
@@ -322,7 +327,7 @@ end;
 
 procedure TXMLObjectWriter.WriteSet(Value: LongInt; SetType: Pointer);
 begin
-
+  raise Exception.Create('TXMLObjectWriter.WriteSet');
 end;
 
 procedure TXMLObjectWriter.WriteString(const Value: String);
@@ -333,32 +338,32 @@ end;
 
 procedure TXMLObjectWriter.WriteWideString(const Value: WideString);
 begin
-
+  raise Exception.Create('TXMLObjectWriter.WriteWideString');
 end;
 
 procedure TXMLObjectWriter.WriteUnicodeString(const Value: UnicodeString);
 begin
-
+  raise Exception.Create('TXMLObjectWriter.WriteUnicodeString');
 end;
 
 procedure TXMLObjectWriter.WriteVariant(const VarValue: Variant);
 begin
-
+  raise Exception.Create('TXMLObjectWriter.WriteVariant');
 end;
 
 procedure TXMLObjectWriter.WriteFloat(const Value: Extended);
 begin
-  //
+  raise Exception.Create('TXMLObjectWriter.WriteFloat');
 end;
 
 procedure TXMLObjectWriter.WriteSingle(const Value: Single);
 begin
-  //
+  raise Exception.Create('TXMLObjectWriter.WriteSingle');
 end;
 
 procedure TXMLObjectWriter.WriteDate(const Value: TDateTime);
 begin
-  //
+  raise Exception.Create('TXMLObjectWriter.WriteDate');
 end;
 
 { TXMLWriter }
@@ -580,7 +585,6 @@ class procedure TXMLUnitResourcefileFormat.QuickReadXML(s: TStream; out
   AComponentName, AClassName, ALCLVersion: string);
 var
   AXMLDocument: TXMLDocument;
-  ms: TStringStream;
   ObjNode: TDOMNode;
 begin
   ReadXMLFile(AXMLDocument, s);
@@ -609,7 +613,8 @@ var
   cb: TCodeBuffer;
   nx,ny,nt: integer;
 begin
-//  result := CodeToolBoss.FindResourceDirective(Source as TCodeBuffer,1,1,cb,nx,ny,nt, ResourceDirectiveFilename,false);
+  result := CodeToolBoss.FindResourceDirective(Source as TCodeBuffer,
+    1,1,cb,nx,ny,nt, '*.xml',false);
 end;
 
 class function TXMLUnitResourcefileFormat.GetUnitResourceFilename(
@@ -661,21 +666,21 @@ end;
 
 class function TXMLUnitResourcefileFormat.QuickCheckResourceBuffer(
   PascalBuffer, LFMBuffer: TObject; out LFMType, LFMComponentName,
-  LFMClassName: string; out LCLVersion: string; out MissingClasses: TStrings
-  ): TModalResult;
+  LFMClassName: string; out LCLVersion: string; out MissingClasses: TStrings;
+  out AmbiguousClasses: TFPList): TModalResult;
 var
   ms: TStringStream;
 begin
   Result:=mrOk;
+  LFMType:='unknown';
+  MissingClasses := nil;
+  AmbiguousClasses:=nil;
   ms := TStringStream.Create((LFMBuffer as TCodeBuffer).Source);
   try
     QuickReadXML(ms, LFMComponentName, LFMClassName, LCLVersion);
   finally
     ms.Free;
   end;
-
-  LFMType:='unknown';
-  MissingClasses := nil;
 end;
 
 end.

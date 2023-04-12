@@ -129,7 +129,8 @@ type
 function QuickCheckLFMBuffer({%H-}PascalBuffer, LFMBuffer: TCodeBuffer;
   out LFMType, LFMComponentName, LFMClassName: string;
   out LCLVersion: string;
-  out MissingClasses: TStrings// e.g. MyFrame2:TMyFrame
+  out MissingClasses: TStrings;// e.g. MyFrame2:TMyFrame
+  out AmbiguousClasses: TFPList
   ): TModalResult;
 // Now this is just a wrapper for designer/changeclassdialog. Could be moved there.
 function RepairLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer;
@@ -152,9 +153,9 @@ type
     NewText: string;
   end;
 
-function QuickCheckLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer;
-  out LFMType, LFMComponentName, LFMClassName: string;
-  out LCLVersion: string; out MissingClasses: TStrings): TModalResult;
+function QuickCheckLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer; out LFMType,
+  LFMComponentName, LFMClassName: string; out LCLVersion: string; out
+  MissingClasses: TStrings; out AmbiguousClasses: TFPList): TModalResult;
 const
   ClassFound = 'found';
   ClassMissing = 'missing';
@@ -196,6 +197,24 @@ var
       AFullName:=AClassName;
     if Classes[AFullName]<>'' then exit;
 
+    // search in registered classes
+    RegComp:=IDEComponentPalette.FindRegComponent(AFullName);
+    {$IFDEF VerboseIDEAmbiguousClasses}
+    debugln(['QuickCheckLFMBuffer.FindMissingClass AFullName="',AFullName,'" RegComp=',RegComp<>nil]);
+    {$ENDIF}
+    if (RegComp<>nil) and (RegComp.GetUnitName<>'')
+    and not RegComp.ComponentClass.InheritsFrom(TCustomFrame) // not Nested TFrame
+    then begin
+      Classes[AFullName]:=ClassFound;
+      if (AnUnitName='') and RegComp.HasAmbiguousClassName then
+      begin
+        if AmbiguousClasses=nil then
+          AmbiguousClasses:=TFPList.Create;
+        if AmbiguousClasses.IndexOf(RegComp)<0 then
+          AmbiguousClasses.Add(RegComp);
+      end;
+      exit;
+    end;
     // search in designer base classes
     if BaseFormEditor1.FindDesignerBaseClassByName(AFullName,true)<>nil then
     begin
@@ -209,14 +228,6 @@ var
     if GetClass(AClassName)<>nil then
     {$ENDIF}
     begin
-      Classes[AFullName]:=ClassFound;
-      exit;
-    end;
-    // search in registered classes
-    RegComp:=IDEComponentPalette.FindRegComponent(AFullName);
-    if (RegComp<>nil) and (RegComp.GetUnitName<>'')
-    and not RegComp.ComponentClass.InheritsFrom(TCustomFrame) // Nested TFrame
-    then begin
       Classes[AFullName]:=ClassFound;
       exit;
     end;
@@ -259,6 +270,7 @@ begin
   //DebugLn(['QuickCheckLFMBuffer LFMBuffer=',LFMBuffer.Filename]);
   LCLVersion:='';
   MissingClasses:=nil;
+  AmbiguousClasses:=nil;
 
   // read header
   ReadLFMHeader(LFMBuffer.Source,LFMType,LFMComponentName,LFMClassName);
