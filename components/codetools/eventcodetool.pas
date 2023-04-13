@@ -1459,7 +1459,10 @@ begin
       if (AncestorComponent<>nil)
           and (AncestorComponent.FindComponent(VarName)<>nil) then continue;
       // add missing published variable
-      if not VarExistsInCodeCompleteClass(UpperCaseStr(VarName)) then begin
+      if VarExistsInCodeCompleteClass(UpperCaseStr(VarName)) then begin
+        //debugln(['TEventsCodeTool.CompleteComponent Var Exists=',VarName]);
+      end else begin
+        //debugln(['TEventsCodeTool.CompleteComponent Var Missing=',VarName]);
         MissingComponents.Add(CurComponent);
         if MissingClassTypes.IndexOf(Pointer(CurComponent.ClassType))<0 then
           MissingClassTypes.Add(CurComponent.ClassType);
@@ -1471,12 +1474,12 @@ begin
 
     // add component variable declarations
     for i:=0 to MissingComponents.Count-1 do begin
-      CurComponent:=AComponent.Components[i];
+      CurComponent:=TComponent(MissingComponents[i]);
       VarName:=CurComponent.Name;
       VarType:=CurComponent.ClassName;
       if ClassesNeedingUnitName.IndexOf(CurComponent.ClassType)>=0 then
         VarType:=CurComponent.UnitName+'.'+VarType;
-      //DebugLn('[TEventsCodeTool.CompleteComponent] ADDING variable ',CurComponent.Name,':',CurComponent.ClassName);
+      DebugLn('[TEventsCodeTool.CompleteComponent] ADDING variable ',CurComponent.Name,':',VarType);
       AddClassInsertion(UpperCaseStr(VarName),VarName+':'+VarType+';',VarName,ncpPublishedVars);
     end;
     {$IFDEF CTDEBUG}
