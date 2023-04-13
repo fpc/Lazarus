@@ -174,10 +174,10 @@ function FindClassNode(const AComponent: TComponentClass): PClassNode;
 var
   idx: integer;
 begin
-  Result := nil;
   if WSClassesList.Search(AComponent, idx) then
-    Exit(WSClassesList[idx]);
-  Result := FindNodeParent(AComponent.ClassParent);
+    Result := WSClassesList[idx]
+  else
+    Result := FindNodeParent(AComponent.ClassParent);
 end;
 
 function FindWSComponentClass(const AComponent: TComponentClass): TWSLCLComponentClass;
