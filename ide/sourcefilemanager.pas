@@ -260,6 +260,8 @@ function CloseDependingUnitComponents(AnUnitInfo: TUnitInfo;
                                       Flags: TCloseFlags): TModalResult;
 function UnitComponentIsUsed(AnUnitInfo: TUnitInfo;
                              CheckHasDesigner: boolean): boolean;
+procedure CompleteUnitComponent(AnUnitInfo: TUnitInfo;
+  AComponent, AncestorComponent: TComponent);
 function RemoveFilesFromProject(UnitInfos: TFPList): TModalResult;
 function AskSaveProject(const ContinueText, ContinueBtn: string): TModalResult;
 function SaveEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean;
@@ -7615,6 +7617,94 @@ begin
   if Project1.UnitComponentIsUsed(AnUnitInfo,CheckHasDesigner) then
     exit(true);
   //DebugLn(['UnitComponentIsUsed ',AnUnitInfo.Filename,' ',dbgs(AnUnitInfo.Flags)]);
+end;
+
+procedure CompleteUnitComponent(AnUnitInfo: TUnitInfo; AComponent,
+  AncestorComponent: TComponent);
+var
+  CheckUnits: Boolean;
+  i: Integer;
+  aComp: TComponent;
+  aCompClass: TComponentClass;
+  CheckedClasses: TAvgLvlTree;
+  RegComp: TRegisteredComponent;
+  UnitsLCInUnitPath: TStringToStringTree;
+  AnUnitName, s, InFilename, aFilename: String;
+  Tool: TCodeTool;
+begin
+  CheckUnits:=false;
+  Tool:=nil;
+  CheckedClasses:=nil;
+  UnitsLCInUnitPath:=nil;
+  try
+    for i:=0 to AComponent.ComponentCount-1 do
+    begin
+      aComp:=AComponent.Components[i];
+      if (AncestorComponent<>nil) and (AncestorComponent.FindComponent(aComp.Name)<>nil) then
+        continue;
+      aCompClass:=TComponentClass(aComp.ClassType);
+      if CheckedClasses=nil then
+        CheckedClasses:=TAvgLvlTree.Create;
+      if CheckedClasses.Find(aCompClass)<>nil then
+        continue;
+      CheckedClasses.Add(aCompClass);
+
+      RegComp:=IDEComponentPalette.FindRegComponent(aCompClass);
+      if RegComp=nil then
+        continue; // e.g. a nested frame
+      if not RegComp.HasAmbiguousClassName then
+        continue;
+
+      // ambiguous componentclass -> check if there are multiple in the unitpath
+      while RegComp.PrevSameName<>nil do
+        RegComp:=RegComp.PrevSameName;
+      while RegComp<>nil do
+      begin
+        if RegComp.ComponentClass<>aCompClass then
+        begin
+          if Tool=nil then
+          begin
+            CodeToolBoss.Explore(AnUnitInfo.Source,Tool,false,true);
+            if Tool=nil then
+            begin
+              MainIDE.DoJumpToCompilerMessage(true);
+              exit;
+            end;
+          end;
+          AnUnitName:=RegComp.GetUnitName;
+          if UnitsLCInUnitPath=nil then
+            UnitsLCInUnitPath:=TStringToStringTree.Create(true);
+          s:=UnitsLCInUnitPath[lowercase(AnUnitName)];
+          if s='' then
+          begin
+            InFilename:='';
+            aFilename:=Tool.FindUnitCaseInsensitive(AnUnitName,InFilename);
+            {$IFDEF VerboseIDEAmbiguousClasses}
+            debugln(['CompleteUnitComponent RegComp=',RegComp.GetUnitName+'/'+RegComp.ComponentClass.ClassName,' Found in UnitPath="',aFilename,'"']);
+            {$ENDIF}
+            if aFilename<>'' then
+              s:='found'
+            else
+              s:='missing';
+            UnitsLCInUnitPath[lowercase(AnUnitName)]:=s;
+          end;
+          if s='found' then
+          begin
+            CheckUnits:=true; // another componentclass with same classname is available in unitpath
+            break;
+          end;
+        end;
+        RegComp:=RegComp.NextSameName;
+      end;
+      if CheckUnits then break;;
+    end;
+
+    CodeToolBoss.CompleteComponent(AnUnitInfo.Source,
+                      AComponent, AncestorComponent, CheckUnits);
+  finally
+    UnitsLCInUnitPath.Free;
+    CheckedClasses.Free;
+  end;
 end;
 
 function RemoveFilesFromProject(UnitInfos: TFPList): TModalResult;

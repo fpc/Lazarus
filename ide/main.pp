@@ -12388,7 +12388,7 @@ var
   Ancestor: TComponent;
   AnUnitInfo: TUnitInfo;
   AnIDesigner: TIDesigner;
-  HasResources, CheckUnits: Boolean;
+  HasResources: Boolean;
   FileItem: PStringToStringItem;
 begin
   GetDefaultProcessList.FreeStoppedProcesses;
@@ -12403,9 +12403,7 @@ begin
     SourceEditorManager.AddJumpPointClicked(Self);
     // Add component definitions to form's source code
     Ancestor:=GetAncestorLookupRoot(FComponentAddedUnit);
-    CheckUnits:=false;
-    CodeToolBoss.CompleteComponent(FComponentAddedUnit.Source,
-                      FComponentAddedDesigner.LookupRoot, Ancestor, CheckUnits);
+    CompleteUnitComponent(FComponentAddedUnit,FComponentAddedDesigner.LookupRoot,Ancestor);
     FComponentAddedDesigner:=nil;
   end;
 
