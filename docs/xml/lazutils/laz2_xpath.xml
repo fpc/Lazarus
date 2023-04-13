@@ -47,7 +47,10 @@ This file is part of the <file>LazUtils</file> package.
 <element name="TXPathToken">
 <short>Identifies token types used in XPath expressions.</short>
 <descr></descr>
-<seealso></seealso>
+<seealso>
+<link id="TXPathScanner"/>
+<link id="TXPathKeyword"/>
+</seealso>
 </element>
 
 <!-- enumeration value Visibility: default -->
@@ -145,7 +148,10 @@ Represents keywords used in XPath syntax.
 TXPathKeyword is an enumeration type that represents the axis names, node 
 tests, operators, and standard functions available in XPath syntax.
 </descr>
-<seealso></seealso>
+<seealso>
+<link id="TXPathScanner"/>
+<link id="TXPathToken"/>
+</seealso>
 </element>
 <element name="TXPathKeyword.xkNone">
 <short>No axis specified.</short>
@@ -1726,12 +1732,14 @@ parse tree consists of TXPathExprNode (and descendent) class instances which
 evaluate the XPath expressions and generate the result(s).
 </p>
 <p>
-TXPathScanner is used in the implementation of the TXPathExpression class.
+TXPathScanner is used in the implementation of the TXPathExpression class and 
+the EvaluateXPathExpression routine.
 </p>
 </descr>
 <seealso>
 <link id="TXPathExprNode"/>
 <link id="TXPathExpression"/>
+<link id="EvaluateXPathExpression"/>
 </seealso>
 </element>
 
@@ -2817,8 +2825,25 @@ Provides indexed access to XPath variables in the XPath environment.
 <short>
 Evaluates an XPath expression using the specified scanner and resolver.
 </short>
-<descr></descr>
-<seealso></seealso>
+<descr>
+<p>
+<var>TXPathExpression</var> is a class used to evaluate an XML XPath 
+expression provided to an XPath scanner. It contains methods used to evaluate 
+the expression in the scanner and return a TXPathVariable with the node(s) or 
+value(s) which match the expression.
+</p>
+<p>
+TXPathExpression instances are created and used in the EvaluateXPathExpression 
+routine.
+</p>
+</descr>
+<seealso>
+<link id="TXPathExpression.Evaluate"/>
+<link id="TXPathScanner"/>
+<link id="TXPathNSResolver"/>
+<link id="TXPathVariable"/>
+<link id="EvaluateXPathExpression"/>
+</seealso>
 </element>
 
 <element name="TXPathExpression.FRootNode"/>
@@ -2859,10 +2884,37 @@ argument is set to True.
 <element name="TXPathExpression.Evaluate">
 <short>
 Evaluates an XPath expression using the scanner for the class instance with 
-the specified context node and environment.
+the specified context node and XPath environment.
 </short>
-<descr></descr>
-<seealso></seealso>
+<descr>
+<p>
+<var>Evaluate</var> is an overloaded method in TXPathExpression used to select 
+node(s) or value(s) in the specified context which match an XPath expression. 
+It returns a TXPathVariable type which contains the node(s) or value(s) which 
+match the expression used in the XPath scanner for the class instance.
+</p>
+<p>
+An overloaded variant allows the XPath environment to be provided during 
+expression evaluation. The TXPathEnvironment argument allows variable names, 
+variable values, and functions to be added to or removed from the execution 
+environment. It also provides an implementation of the core functions in the 
+XPath function library.
+</p>
+<p>
+Evaluate iteratively calls the Evaluate method for nodes in the root context 
+to capture the return value for the method.
+</p>
+<p>
+No actions are performed in the method if a root node has not been assigned in 
+the XPath scanner. In this situation, the return value is <b>Nil</b>.
+</p>
+</descr>
+<seealso>
+<link id="TXPathEnvironment"/>
+<link id="TXPathScanner"/>
+<link id="TXPathVariable"/>
+<link id="TXPathExprNode.Evaluate"/>
+</seealso>
 </element>
 <element name="TXPathExpression.Evaluate.Result">
 <short>Value from the evaluated expression.</short>
@@ -2886,8 +2938,24 @@ namespace resolver.
 used to locate and return a node or tree of nodes that match the XPath 
 expression specified in <var>AExpressionString</var>. AExpressionString is 
 similar to a SQL query, and is used to navigate and select DOM nodes found in 
-the <var>AContextNode</var> argument. XPath syntax is defined in the 
-specification located at:
+the <var>AContextNode</var> argument.
+</p>
+<p>
+Some examples (for specific xml document content) include:
+</p>
+<code>
+/bookstore/book
+/bookstore/book[1]
+/bookstore/book[last()]
+/bookstore/book[price&lt;35.00]/title
+//title[@lang]
+//title[@lang="en"]
+//title[starts-with(text(),"Introduction to")]
+//book[@genre="Science Fiction"]
+//*[contains(@class, "nav")]
+</code>
+<p>
+XPath expressions and syntax are defined in the specification located at:
 </p>
 <p>
 <url href="https://www.w3.org/TR/1999/REC-xpath-19991116/">
@@ -2930,7 +2998,17 @@ application using methods like <var>AsNodeSet</var>, <var>AsBoolean</var>, or
 <var>TXPathNumberVariable</var>, or <var>TXPathStringVariable</var>.
 </p>
 </descr>
-<seealso></seealso>
+<seealso>
+<link id="TXPathExpression.Evaluate"/>
+<link id="TXPathScanner"/>
+<link id="TXPathNSResolver"/>
+<link id="TXPathVariable"/>
+<link id="TXPathNodeSetVariable"/>
+<link id="TXPathBooleanVariable"/>
+<link id="TXPathNumberVariable"/>
+<link id="TXPathStringVariable"/>
+<link id="#lazutils.laz2_dom.TDomNode">TDomNode</link>
+</seealso>
 </element>
 <element name="EvaluateXPathExpression.Result">
 <short>XPath variable representing the evaluated XPath expression.</short>
