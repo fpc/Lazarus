@@ -279,6 +279,8 @@ type
     function ItemsAreEqual(p1, p2: PStringMapItem): boolean; override;
     function CreateCopy(Src: PStringMapItem): PStringMapItem; override;
   public
+    procedure Assign(Source: TCustomStringMap); override;
+    procedure AddTree(Source: TStringToPointerTree); overload;
     function GetData(const Name: string; out Value: Pointer): boolean;
     function GetNodeData(Node: TAVLTreeNode): PStringToPointerTreeItem; inline;
     function GetEnumerator: TStringToPointerTreeEnumerator;
@@ -509,6 +511,35 @@ begin
   NewItem^.Name:=SrcItem^.Name;
   NewItem^.Value:=SrcItem^.Value;
   Result:=PStringMapItem(NewItem);
+end;
+
+procedure TStringToPointerTree.Assign(Source: TCustomStringMap);
+var
+  Node: TAvlTreeNode;
+  Item: PStringToPointerTreeItem;
+begin
+  if (Source=nil) or (Source.ClassType<>ClassType) then
+    raise Exception.Create('invalid class');
+  Clear;
+  Node:=Source.Tree.FindLowest;
+  while Node<>nil do begin
+    Item:=PStringToPointerTreeItem(Node.Data);
+    Values[Item^.Name]:=Item^.Value;
+    Node:=Node.Successor;
+  end;
+end;
+
+procedure TStringToPointerTree.AddTree(Source: TStringToPointerTree);
+var
+  Node: TAVLTreeNode;
+  Item: PStringToPointerTreeItem;
+begin
+  Node:=Source.Tree.FindLowest;
+  while Node<>nil do begin
+    Item:=PStringToPointerTreeItem(Node.Data);
+    Values[Item^.Name]:=Item^.Value;
+    Node:=Node.Successor;
+  end;
 end;
 
 function TStringToPointerTree.GetData(const Name: string; out Value: Pointer): boolean;

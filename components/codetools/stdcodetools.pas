@@ -4606,31 +4606,38 @@ begin
             //debugln(['TStandardCodeTool.GatherPublishedVarTypes WARNING not a simple type: ',VarName]);
             continue; // e.g. specialize A<B>
           end;
-          if (Pos('.',VarType)<1) then begin
-            // simple type without unitname
-            NewType:=SimpleTypes[VarType];
-            if NewType='' then
-            begin
-              // resolve simple type
-              Params:=TFindDeclarationParams.Create;
-              try
-                Params.ContextNode:=TypeNode;
-                // resolve alias
-                aContext:=FindBaseTypeOfNode(Params,TypeNode);
-                //debugln(['TStandardCodeTool.GatherPublishedVarTypes Type "',VarType,'" found at ',FindContextToString(aContext,false)]);
-                if aContext.Node.Desc=ctnClass then
-                  VarType:=aContext.Tool.ExtractClassName(aContext.Node,false);
+
+          NewType:=SimpleTypes[VarType];
+          if NewType='' then
+          begin
+            // resolve simple type
+            Params:=TFindDeclarationParams.Create;
+            try
+              Params.ContextNode:=TypeNode;
+              // resolve alias
+              aContext:=FindBaseTypeOfNode(Params,TypeNode);
+              //debugln(['TStandardCodeTool.GatherPublishedVarTypes Type "',VarType,'" found at ',FindContextToString(aContext,false)]);
+              if aContext.Node.Desc in AllClasses then
+                NewType:=aContext.Tool.ExtractClassName(aContext.Node,false)
+              else if aContext.Node.Desc in AllPascalTypes then
+                NewType:=aContext.Tool.ExtractDefinitionName(aContext.Node)
+              else
+                NewType:='';
+              if IsValidIdent(NewType,true,true) then
+              begin
                 CurUnitName:=aContext.Tool.GetSourceName(false);
                 // unitname/vartype
-                NewType:=CurUnitName+'/'+VarType;
-                //debugln(['TStandardCodeTool.GatherPublishedVarTypes Resolved: "',VarType,'" = "',NewType,'"']);
-                SimpleTypes[VarType]:=NewType;
-              finally
-                Params.Free;
+                NewType:=CurUnitName+'/'+NewType;
+              end else begin
+                NewType:='';
               end;
+              //debugln(['TStandardCodeTool.GatherPublishedVarTypes Resolved: "',VarType,'" = "',NewType,'"']);
+              SimpleTypes[VarType]:=NewType;
+            finally
+              Params.Free;
             end;
-            VarType:=NewType;
           end;
+          VarType:=NewType;
           //debugln(['TStandardCodeTool.GatherPublishedVarTypes Added ',VarName,':',VarType]);
           if VarNameToType=nil then
             VarNameToType:=TStringToStringTree.Create(false);

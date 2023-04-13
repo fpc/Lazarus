@@ -45,7 +45,7 @@ uses
   Forms, Menus, Dialogs,
   // LazUtils
   FileUtil, LazFileUtils, LazFileCache, CompWriterPas, LazLoggerBase, LazTracer,
-  LazUTF8,
+  LazUTF8, AvgLvlTree,
   // Codetools
   CodeCache, CodeTree, CodeToolManager, FindDeclarationTool,
   // IDEIntf
@@ -111,8 +111,8 @@ type
       var BinStreams: TFPList;// list of TExtMemoryStream;
       var Abort: boolean);
     procedure JITListFindClass(Sender: TObject;
-                               const ComponentClassName: string;
-                               var ComponentClass: TComponentClass);
+                   const VarName, ComponentUnitName, ComponentClassName: string;
+                   var ComponentClass: TComponentClass);
 
     function GetDesignerBaseClasses(Index: integer): TComponentClass; override;
     function GetStandardDesignerBaseClasses(Index: integer): TComponentClass; override;
@@ -2189,7 +2189,7 @@ begin
     jfeUnknownComponentClass:
       begin
         aMsg:=Format(lisCFEClassNotFound,
-                     [aMsg, LineEnding, JITComponentList.CurUnknownClass]);
+                     [aMsg, LineEnding, JITComponentList.CurUnknownClassName]);
       end;
   end;
   if Buttons=[mbIgnore,mbCancel] then begin
@@ -2351,43 +2351,87 @@ begin
   end;
 end;
 
-procedure TCustomFormEditor.JITListFindClass(Sender: TObject;
-  const ComponentClassName: string; var ComponentClass: TComponentClass);
+procedure TCustomFormEditor.JITListFindClass(Sender: TObject; const VarName,
+  ComponentUnitName, ComponentClassName: string;
+  var ComponentClass: TComponentClass);
+
+  function FindRegisteredComp(const aClassName: string): TRegisteredComponent;
+  begin
+    Result:=IDEComponentPalette.FindRegComponent(aClassName);
+    if Result=nil then exit;
+    if Result.ComponentClass.InheritsFrom(TCustomFrame) then
+    begin
+      debugln(['TCustomFormEditor.JITListFindClass.FindRegisteredComp "',aClassName,'", ignoring registered TFrame descendant "',dbgsname(Result.ComponentClass),'"']);
+      exit(nil); // Nested TFrame
+    end;
+  end;
+
 var
   AnUnitInfo: TUnitInfo;
   Component: TComponent;
   RegComp: TRegisteredComponent;
   JITList: TJITComponentList;
-  i: Integer;
 begin
-  //DebugLn(['TCustomFormEditor.JITListFindClass ',ComponentClassName]);
-  RegComp:=IDEComponentPalette.FindRegComponent(ComponentClassName);
-  if (RegComp<>nil) and
-  not RegComp.ComponentClass.InheritsFrom(TCustomFrame) then // Nested TFrame
+  //DebugLn(['TCustomFormEditor.JITListFindClass Var="',VarName,'" "',ComponentUnitName,'/',ComponentClassName,'"']);
+
+  JITList:=Sender as TJITComponentList;
+  //DebugLn(['TCustomFormEditor.JITListFindClass JITList.ContextObject=',DbgSName(JITList.ContextObject)]);
+  if JITList.ContextObject is TUnitInfo then begin
+    AnUnitInfo:=TUnitInfo(JITList.ContextObject);
+    {$IFDEF VerboseIDEAmbiguousClasses}
+    if AnUnitInfo.ComponentVarsToClasses<>nil then
+      debugln(['TCustomFormEditor.JITListFindClass AnUnitInfo.ComponentVarsToClasses.Count=',AnUnitInfo.ComponentVarsToClasses.Count])
+    else
+      debugln(['TCustomFormEditor.JITListFindClass AnUnitInfo.ComponentVarsToClasses=nil']);
+    {$ENDIF}
+    if (AnUnitInfo.ComponentVarsToClasses<>nil) and (VarName<>'') then
+    begin
+      ComponentClass:=TComponentClass(AnUnitInfo.ComponentVarsToClasses[VarName]);
+      if ComponentClass<>nil then
+      begin
+        // use a specific class for this variable
+        debugln(['TCustomFormEditor.JITListFindClass VarName="',VarName,'" "',ComponentUnitName,'/',ComponentClassName,'" ComponentClass from UnitInfo-Vars=',ComponentClass.UnitName,'/',ComponentClass.ClassName]);
+        exit;
+      end;
+    end;
+    {$IFDEF VerboseIDEAmbiguousClasses}
+    if AnUnitInfo.ComponentTypesToClasses<>nil then
+      debugln(['TCustomFormEditor.JITListFindClass AnUnitInfo.ComponentTypesToClasses.Count=',AnUnitInfo.ComponentTypesToClasses.Count])
+    else
+      debugln(['TCustomFormEditor.JITListFindClass AnUnitInfo.ComponentTypesToClasses=nil']);
+    {$ENDIF}
+    if AnUnitInfo.ComponentTypesToClasses<>nil then
+    begin
+      ComponentClass:=TComponentClass(AnUnitInfo.ComponentTypesToClasses[ComponentClassName]);
+      if ComponentClass<>nil then
+      begin
+        // use a specific class for this classname
+        debugln(['TCustomFormEditor.JITListFindClass VarName="',VarName,'" "',ComponentUnitName,'/',ComponentClassName,'" ComponentClass from UnitInfo-Classes=',ComponentClass.UnitName,'/',ComponentClass.ClassName]);
+        exit;
+      end;
+    end;
+  end;
+
+  // search in the registered components
+  RegComp:=nil;
+  if ComponentUnitName<>'' then
+    RegComp:=FindRegisteredComp(ComponentUnitName+'/'+ComponentClassName);
+  if RegComp=nil then
+  begin
+    // search without unitname in the registered components
+    RegComp:=FindRegisteredComp(ComponentClassName);
+    if (RegComp<>nil) and RegComp.HasAmbiguousClassName then
+    begin
+      debugln(['TCustomFormEditor.JITListFindClass VarName="',VarName,'" "',ComponentUnitName,'/',ComponentClassName,'". Found ambigious registered ComponentClass=',dbgsname(RegComp.ComponentClass)]);
+      // ToDo: ask user
+    end;
+  end;
+  if (RegComp<>nil) then
   begin
     //DebugLn(['TCustomFormEditor.JITListFindClass ',ComponentClassName,' is registered as ',DbgSName(RegComp.ComponentClass)]);
     ComponentClass:=RegComp.ComponentClass;
   end else begin
-    JITList:=Sender as TJITComponentList;
-    //DebugLn(['TCustomFormEditor.JITListFindClass JITList.ContextObject=',DbgSName(JITList.ContextObject)]);
-    if JITList.ContextObject is TUnitInfo then begin
-      AnUnitInfo:=TUnitInfo(JITList.ContextObject);
-      if AnUnitInfo.ComponentFallbackClasses<>nil then
-        for i:=0 to AnUnitInfo.ComponentFallbackClasses.Count-1 do begin
-          if CompareText(AnUnitInfo.ComponentFallbackClasses[i],ComponentClassName)=0
-          then begin
-            {$IFDEF EnableNestedComponentsWithoutLFM}
-            ComponentClass:=TComponentClass(Pointer(AnUnitInfo.ComponentFallbackClasses.Objects[i]));
-            if ComponentClass<>nil then begin
-              // ToDo: create or share a jitclass
-              debugln(['TCustomFormEditor.JITListFindClass searched "',ComponentClassName,'", found fallback class "',DbgSName(ComponentClass),'" of unitinfo ',AnUnitInfo.Filename]);
-              exit;
-            end;
-            {$ENDIF}
-          end;
-        end;
-    end;
-
+    // search in open and hidden designer forms (e.g. nested frames)
     AnUnitInfo:=Project1.FirstUnitWithComponent;
     while AnUnitInfo<>nil do begin
       Component:=AnUnitInfo.Component;
@@ -2400,7 +2444,10 @@ begin
       AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;
     end;
   end;
-  //DebugLn(['TCustomFormEditor.JITListFindClass Searched=',ComponentClassName,' Found=',DbgSName(ComponentClass)]);
+  //if ComponentClass=nil then
+  //  DebugLn(['TCustomFormEditor.JITListFindClass Searched VarName="',VarName,'" "',ComponentUnitName,'/',ComponentClassName,'" Not Found'])
+  //else
+  //  DebugLn(['TCustomFormEditor.JITListFindClass Searched VarName="',VarName,'" "',ComponentUnitName,'/',ComponentClassName,'" Found ',ComponentClass.UnitName,'/',ComponentClass.ClassName])
 end;
 
 function TCustomFormEditor.GetDesignerBaseClasses(Index: integer): TComponentClass;

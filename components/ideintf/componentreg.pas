@@ -1153,7 +1153,6 @@ function TBaseComponentPalette.FindRegComponent(const ACompClassName: string): T
 var
   i: Integer;
   HasUnitName: Boolean;
-  aComp: TRegisteredComponent;
   CurClassName: String;
 begin
   // A small optimization. If same type is asked many times, return it quickly.
@@ -1170,6 +1169,9 @@ begin
       CurClassName:=Result.ComponentClass.ClassName;
     if SameText(CurClassName, ACompClassName) then
     begin
+      if not HasUnitName then
+        while Result.PrevSameName<>nil do
+          Result:=Result.PrevSameName;
       fLastFoundCompClassName := ACompClassName;
       fLastFoundRegComp := Result;
       exit;

@@ -84,7 +84,7 @@ type
                                 var BinStreams: TFPList;// list of TExtMemoryStream;
                                 var Abort: boolean) of object;
   TJITFindClass = procedure(Sender: TObject;
-                            const ComponentClassName: string;
+                            const VarName, aClassUnitName, aClassName: string;
                             var ComponentClass: TComponentClass) of object;
 
 
@@ -98,7 +98,9 @@ type
   TJITComponentList = class(TComponent)
   private
     FContextObject: TObject;
-    FCurUnknownClass: string;
+    FCurUnknownVarName: string;
+    FCurUnknownClassName: string;
+    FCurUnknownClassUnitName: string;
     FCurUnknownProperty: string;
     FErrors: TLRPositionLinks;
     FOnBeforeCreate: TJITBeforeCreateEvent;
@@ -150,6 +152,8 @@ type
       var Handled: Boolean);
     procedure ReaderFindComponentClass({%H-}Reader: TReader;
       const FindClassName: Ansistring; var ComponentClass: TComponentClass);
+    procedure ReaderFindComponentClassEx(Reader: TReader; const aName,
+      anUnitname, aClassName: AnsiString; var ComponentClass: TComponentClass);
     procedure ReaderCreateComponent(Reader: TReader;
       ComponentClass: TComponentClass; var Component: TComponent);
     procedure ReaderReadComponent(Component: TComponent);
@@ -224,7 +228,9 @@ type
     property CurReadChildClass: TComponentClass read FCurReadChildClass;
     property CurReadErrorMsg: string read FCurReadErrorMsg;
     property CurUnknownProperty: string read FCurUnknownProperty;
-    property CurUnknownClass: string read FCurUnknownClass;
+    property CurUnknownVarName: string read FCurUnknownVarName;
+    property CurUnknownClassName: string read FCurUnknownClassName;
+    property CurUnknownClassUnitName: string read FCurUnknownClassUnitName;
     property ContextObject: TObject read FContextObject;
     property Errors: TLRPositionLinks read FErrors;
   end;
@@ -1026,6 +1032,9 @@ begin
   Reader.OnAncestorNotFound:=@ReaderAncestorNotFound;
   Reader.OnCreateComponent:=@ReaderCreateComponent;
   Reader.OnFindComponentClass:=@ReaderFindComponentClass;
+  {$IFDEF FPC_FULLVERSION>30300}
+  Reader.OnFindComponentClassEx:=@ReaderFindComponentClassEx;
+  {$ENDIF}
 
   {$IFDEF VerboseJITForms}
   debugln('[TJITComponentList.InitReading] B');
@@ -1948,20 +1957,31 @@ end;
 procedure TJITComponentList.ReaderFindComponentClass(Reader: TReader;
   const FindClassName: Ansistring; var ComponentClass: TComponentClass);
 begin
+  ReaderFindComponentClassEx(Reader,'','',FindClassName,ComponentClass);
+end;
+
+procedure TJITComponentList.ReaderFindComponentClassEx(Reader: TReader;
+  const aName, anUnitname, aClassName: AnsiString;
+  var ComponentClass: TComponentClass);
+begin
+  if Reader=nil then ;
   fCurReadChild:=nil;
   fCurReadChildClass:=ComponentClass;
-  FCurUnknownClass:=FindClassName;
+  FCurUnknownVarName:=aName;
+  FCurUnknownClassUnitName:=anUnitname;
+  FCurUnknownClassName:=aClassName;
   if ComponentClass=nil then begin
     if Assigned(OnFindClass) then
-      OnFindClass(Self,FindClassName,ComponentClass);
+      OnFindClass(Self,FCurUnknownVarName,FCurUnknownClassUnitName,FCurUnknownClassName,ComponentClass);
     fCurReadChildClass:=ComponentClass;
     if ComponentClass=nil then begin
-      DebugLn('[TJITComponentList.ReaderFindComponentClass] '''+FindClassName
-         +''' is unregistered');
+      DebugLn('Error: (lazarus) [TJITComponentList.ReaderFindComponentClassEx] VarName="',FCurUnknownVarName,'" Unit="',FCurUnknownClassUnitName,'" Class="',FCurUnknownClassName,'" is not registered');
       // The reader will create a ReaderError automatically
     end;
   end;
-  FCurUnknownClass:='';
+  FCurUnknownVarName:='';
+  FCurUnknownClassUnitName:='';
+  FCurUnknownClassName:='';
 end;
 
 procedure TJITComponentList.ReaderCreateComponent(Reader: TReader;
@@ -1978,7 +1998,7 @@ procedure TJITComponentList.ReaderReadComponent(Component: TComponent);
 begin
   fCurReadChild:=Component;
   fCurReadChildClass:=TComponentClass(Component.ClassType);
-  DebugLn('TJITComponentList.ReaderReadComponent A ',Component.Name,':',Component.ClassName);
+  DebugLn('Info: (lazarus) TJITComponentList.ReaderReadComponent ',Component.Name,':',Component.UnitName,'/',Component.ClassName);
 end;
 
 //==============================================================================

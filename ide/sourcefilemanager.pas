@@ -250,7 +250,9 @@ function ResolveAmbiguousLFMClasses(AnUnitInfo: TUnitInfo;
   const LFMClassName: string;
   AmbiguousClasses: TFPList; // list of TPkgComponent
   OpenFlags: TOpenFlags;
-  out ResolvedClasses, ResolvedVars: TStringToPointerTree): TModalResult;
+  out ResolvedClasses: TStringToPointerTree; // ClassName to TComponentClass
+  out ResolvedVars: TStringToPointerTree // VarName to TComponentClass
+  ): TModalResult;
 function OpenComponent(const UnitFilename: string; OpenFlags: TOpenFlags;
     CloseFlags: TCloseFlags; out Component: TComponent): TModalResult;
 function CloseUnitComponent(AnUnitInfo: TUnitInfo; Flags: TCloseFlags): TModalResult;
@@ -5983,7 +5985,7 @@ var
   PreventAutoSize: Boolean;
   NewControl: TControl;
   ARestoreVisible: Boolean;
-  AncestorClass: TComponentClass;
+  NestedAncestorClass: TComponentClass;
   DsgControl: TCustomDesignControl;
   {$IF (FPC_FULLVERSION >= 30003)}
   DsgDataModule: TDataModule;
@@ -6052,6 +6054,11 @@ begin
     if AnUnitInfo.Component=nil then begin
       // load/create new instance
 
+      if AnUnitInfo.ComponentTypesToClasses<>nil then
+        AnUnitInfo.ComponentTypesToClasses.Clear;
+      if AnUnitInfo.ComponentVarsToClasses<>nil then
+        AnUnitInfo.ComponentVarsToClasses.Clear;
+
       if (NewClassName='') or (LFMType='') then begin
         DebugLn(['LoadLFM LFM file corrupt']);
         Result:=IDEMessageDialog(lisLFMFileCorrupt,
@@ -6072,6 +6079,8 @@ begin
         {$IFDEF VerboseLFMSearch}
         DebugLn(['LoadLFM has nested: ',AnUnitInfo.Filename]);
         {$ENDIF}
+        if AnUnitInfo.ComponentTypesToClasses=nil then
+          AnUnitInfo.ComponentTypesToClasses:=TStringToPointerTree.Create(false);
         for i:=MissingClasses.Count-1 downto 0 do begin
           NestedClassName:=MissingClasses[i];
           {$IFDEF VerboseLFMSearch}
@@ -6087,24 +6096,18 @@ begin
             Result:=LoadComponentDependencyHidden(AnUnitInfo,NestedClassName,
                       OpenFlags,
               {$IFDEF EnableNestedComponentsWithoutLFM}false,{$ELSE}true,{$ENDIF}
-                      NestedClass,NestedUnitInfo,AncestorClass);
+                      NestedClass,NestedUnitInfo,NestedAncestorClass);
             if Result<>mrOk then begin
               DebugLn(['LoadLFM DoLoadComponentDependencyHidden NestedClassName=',NestedClassName,' failed for ',AnUnitInfo.Filename]);
               exit;
             end;
             if NestedClass<>nil then
-              MissingClasses.Objects[i]:=TObject(Pointer(NestedClass))
-            else if AncestorClass<>nil then
-              MissingClasses.Objects[i]:=TObject(Pointer(AncestorClass));
+              AnUnitInfo.ComponentTypesToClasses[NestedClassName]:=NestedClass
+            else if NestedAncestorClass<>nil then
+              AnUnitInfo.ComponentTypesToClasses[NestedClassName]:=NestedAncestorClass;
           end;
         end;
         //DebugLn(['LoadLFM had nested: ',AnUnitInfo.Filename]);
-        if AnUnitInfo.ComponentFallbackClasses<>nil then begin
-          AnUnitInfo.ComponentFallbackClasses.Free;
-          AnUnitInfo.ComponentFallbackClasses:=nil;
-        end;
-        AnUnitInfo.ComponentFallbackClasses:=MissingClasses;
-        MissingClasses:=nil;
       end;
 
       if (AmbiguousClasses<>nil) and (AmbiguousClasses.Count>0) then
@@ -6113,6 +6116,18 @@ begin
           OpenFlags,ResolvedClasses,ResolvedVars)<>mrOk
         then
           exit;
+        if ResolvedClasses<>nil then
+        begin
+          if AnUnitInfo.ComponentTypesToClasses=nil then
+            AnUnitInfo.ComponentTypesToClasses:=TStringToPointerTree.Create(false);
+          AnUnitInfo.ComponentTypesToClasses.AddTree(ResolvedClasses);
+        end;
+        if ResolvedVars<>nil then
+        begin
+          if AnUnitInfo.ComponentVarsToClasses=nil then
+            AnUnitInfo.ComponentVarsToClasses:=TStringToPointerTree.Create(false);
+          AnUnitInfo.ComponentVarsToClasses.AddTree(ResolvedVars);
+        end;
       end;
 
       BinStream:=nil;
@@ -6266,6 +6281,14 @@ begin
     MissingClasses.Free;
     ResolvedVars.Free;
     ResolvedClasses.Free;
+    if AnUnitInfo.ComponentTypesToClasses<>nil then begin
+      AnUnitInfo.ComponentTypesToClasses.Free;
+      AnUnitInfo.ComponentTypesToClasses:=nil;
+    end;
+    if AnUnitInfo.ComponentVarsToClasses<>nil then begin
+      AnUnitInfo.ComponentVarsToClasses.Free;
+      AnUnitInfo.ComponentVarsToClasses:=nil;
+    end;
     if ReferencesLocked then begin
       if Project1<>nil then
         Project1.UnlockUnitComponentDependencies;
@@ -6326,7 +6349,8 @@ end;
 
 function ResolveAmbiguousLFMClasses(AnUnitInfo: TUnitInfo;
   const LFMClassName: string; AmbiguousClasses: TFPList; OpenFlags: TOpenFlags;
-  out ResolvedClasses, ResolvedVars: TStringToPointerTree): TModalResult;
+  out ResolvedClasses: TStringToPointerTree; out
+  ResolvedVars: TStringToPointerTree): TModalResult;
 // Some registered component classes have ambiguous names, e.g. two TButton
 // The correct classtype of each variable is defined in the Pascal unit.
 // But at designtime, sources can be messy, contain temporary errors
@@ -6374,7 +6398,7 @@ begin
   try
     // quick check, what classes are in the unitpath
     {$IFDEF VerboseIDEAmbiguousClasses}
-    debugln(['ResolveAmbiguousLFMClasses Checking UnitPaths... AmbiguousClasses.Count=',AmbiguousClasses.Count]);
+    debugln(['ResolveAmbiguousLFMClasses Checking UnitPaths... AmbiguousClasses=',AmbiguousClasses.Count]);
     {$ENDIF}
     for i:=AmbiguousClasses.Count-1 downto 0 do
     begin
@@ -6383,7 +6407,7 @@ begin
       while RegComp.PrevSameName<>nil do
         RegComp:=RegComp.PrevSameName;
       {$IFDEF VerboseIDEAmbiguousClasses}
-      debugln(['ResolveAmbiguousLFMClasses Search in Unitpath ',i,'/',AmbiguousClasses.Count,' RegComp=',RegComp.GetUnitName+'/'+RegComp.ComponentClass.ClassName]);
+      debugln(['ResolveAmbiguousLFMClasses Checking Unitpath: ',i,'/',AmbiguousClasses.Count,' RegComp=',RegComp.GetUnitName+'/'+RegComp.ComponentClass.ClassName]);
       {$ENDIF}
       while RegComp<>nil do
       begin
@@ -6408,15 +6432,15 @@ begin
         RegComp:=RegComp.NextSameName;
       end;
 
-      {$IFDEF VerboseIDEAmbiguousClasses}
-      debugln(['ResolveAmbiguousLFMClasses Checked UnitPaths ',i,'/',AmbiguousClasses.Count,' Candidates=',Candidates.Count]);
-      {$ENDIF}
       if Candidates.Count=1 then
       begin
         RegComp:=TRegisteredComponent(Candidates[0]);
+        {$IFDEF VerboseIDEAmbiguousClasses}
+        debugln(['ResolveAmbiguousLFMClasses Resolved by UnitPaths ',i,'/',AmbiguousClasses.Count,' RegComp=',RegComp.GetUnitName+'/'+RegComp.ComponentClass.ClassName]);
+        {$ENDIF}
         if ResolvedClasses=nil then
           ResolvedClasses:=TStringToPointerTree.Create(false);
-        ResolvedClasses[RegComp.ClassName]:=RegComp;
+        ResolvedClasses[RegComp.ComponentClass.ClassName]:=RegComp.ComponentClass;
         AmbiguousClasses.Delete(i);
       end;
     end;
@@ -6484,11 +6508,11 @@ begin
         begin
           RegComp:=TRegisteredComponent(Candidates[0]);
           {$IFDEF VerboseIDEAmbiguousClasses}
-          debugln(['ResolveAmbiguousLFMClasses only one candidates via uses: ',RegComp.GetUnitName,'/',RegComp.ComponentClass.CLassName]);
+          debugln(['ResolveAmbiguousLFMClasses Resolved via Uses: ',RegComp.GetUnitName,'/',RegComp.ComponentClass.ClassName]);
           {$ENDIF}
           if ResolvedClasses=nil then
             ResolvedClasses:=TStringToPointerTree.Create(false);
-          ResolvedClasses[RegComp.ClassName]:=RegComp;
+          ResolvedClasses[RegComp.ComponentClass.ClassName]:=RegComp.ComponentClass;
           AmbiguousClasses.Delete(i);
         end;
       end;
@@ -6521,7 +6545,8 @@ begin
         aClassName:=Item^.Value; // 'ns.unitname/classname'
         RegComp:=IDEComponentPalette.FindRegComponent(aClassName);
         {$IFDEF VerboseIDEAmbiguousClasses}
-        debugln(['ResolveAmbiguousLFMClasses VarName="',VarName,'": "',aClassName,'" RegComp=',RegComp<>nil]);
+        if RegComp<>nil then
+          debugln(['ResolveAmbiguousLFMClasses VarName="',VarName,'": "',aClassName,'" Found RegComp=',RegComp.ComponentClass.UnitName,'/',RegComp.ComponentClass.ClassName]);
         {$ENDIF}
         if RegComp=nil then
         begin
@@ -6540,7 +6565,7 @@ begin
         begin
           if ResolvedVars=nil then
             ResolvedVars:=TStringToPointerTree.Create(false);
-          ResolvedVars[VarName]:=RegComp;
+          ResolvedVars[VarName]:=RegComp.ComponentClass;
         end;
         AVLNode:=VarNameToType.Tree.FindSuccessor(AVLNode);
       end;
