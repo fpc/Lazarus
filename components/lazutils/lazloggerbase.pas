@@ -289,7 +289,7 @@ function GetParamByName(const AName: String; AnIndex: Integer): string;
 function GetDebugLoggerGroups: TLazLoggerLogGroupList; inline;
 procedure SetDebugLoggerGroups(ALogGroups: TLazLoggerLogGroupList);
 
-function GetDebugLogger: TLazLogger; {$IfDef FPC_FULLVERSION >= 030300} inline; {$EndIf}
+function GetDebugLogger: TLazLogger; {$If FPC_FULLVERSION >= 030300} inline; {$EndIf}
 function GetExistingDebugLogger: TLazLogger; inline; // No Autocreate
 procedure SetDebugLogger(ALogger: TLazLogger);
 

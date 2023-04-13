@@ -222,7 +222,7 @@ var
       exit;
     end;
     // search in global registered classes
-    {$IFDEF FPC_FULLVERSION>30300}
+    {$IF FPC_FULLVERSION>30300}
     if GetClass(AnUnitName,AClassName)<>nil then
     {$ELSE}
     if GetClass(AClassName)<>nil then

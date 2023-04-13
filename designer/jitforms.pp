@@ -1032,7 +1032,7 @@ begin
   Reader.OnAncestorNotFound:=@ReaderAncestorNotFound;
   Reader.OnCreateComponent:=@ReaderCreateComponent;
   Reader.OnFindComponentClass:=@ReaderFindComponentClass;
-  {$IFDEF FPC_FULLVERSION>30300}
+  {$IF FPC_FULLVERSION>30300}
   Reader.OnFindComponentClassEx:=@ReaderFindComponentClassEx;
   {$ENDIF}
 
