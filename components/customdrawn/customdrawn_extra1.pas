@@ -40,7 +40,8 @@ type
 
 implementation
 
-{procedure TCDButtonDrawerGrad.DrawToIntfImage(ADest: TFPImageCanvas;
+(*
+procedure TCDButtonDrawerGrad.DrawToIntfImage(ADest: TFPImageCanvas;
   CDButton: TCDButton);
 begin
 
@@ -105,7 +106,8 @@ begin
   ARightBorder := 9;
 end;
 
-  RegisterTrackBarDrawer(TCDTrackBarDrawerGraph.Create, dsExtra1);}
+  RegisterTrackBarDrawer(TCDTrackBarDrawerGraph.Create, dsExtra1);
+*)
 
 { TCDDrawerExtra1 }
 
@@ -123,7 +125,7 @@ procedure TCDDrawerExtra1.DrawTrackBar(ADest: TCanvas;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDPositionedCStateEx);
 var
   lDrawingBottom, StepsCount, i: Integer;
-  pStart, pEnd: integer; // for drawing the decorative bars
+  pStart: integer; // for drawing the decorative bars
   dRect: TRect;
   pStepWidth, pHalfStepWidth: Integer;
   CDBarEdge: Integer;

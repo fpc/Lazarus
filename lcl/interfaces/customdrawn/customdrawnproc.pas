@@ -312,13 +312,12 @@ end;
 
 procedure SendFormToBack(ACDForm: TCDNonNativeForm);
 var
-  lCount, lCurIndex: Integer;
+  lCurIndex: Integer;
 begin
   // Hide the form
   ACDForm.Visible := False;
 
   InitNonNativeForms();
-  lCount := NonNativeForms.Count;
   lCurIndex := NonNativeForms.IndexOf(ACDForm);
   {$IFDEF VerboseCDForms}
     DebugLn(Format('SendFormToBack lOldIndex=%d lNewIndex=0', [lCurIndex]));

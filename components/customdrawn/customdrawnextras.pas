@@ -78,7 +78,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure EraseBackground(DC: HDC); override;
+    procedure EraseBackground({%H-}DC: HDC); override;
     procedure Paint; override;
     function GetStateBitmap(): TBitmap;
   end;

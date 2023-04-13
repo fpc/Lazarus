@@ -83,7 +83,7 @@ end;
 function TSliceScaling.InternalGetBitmapElements(bmpArrayStates: TBitmapArray;
   Number, BorderWidth, BorderHeight: integer): TBitmapArrays;
 var
-  bmpArrayParts: TBitmapArrays;
+  bmpArrayParts: TBitmapArrays = nil;
   i, tempWidth, tempHeight: integer;
 begin
   if (BorderWidth * 2 > bmpArrayStates[0].Width) or (BorderWidth < 0) then
@@ -111,7 +111,7 @@ end;
 
 function TSliceScaling.GetBitmap(Filename: string; Number: integer; ALoadFromResource: Boolean = False): TBitmapArray;
 var
-  bmpArray: TBitmapArray;
+  bmpArray: TBitmapArray = nil;
   temp: TBitmap;
   i: integer;
   s: TSize;
@@ -139,7 +139,7 @@ end;
 function TSliceScaling.GetBitmapPart(Source: TBitmap;
   BorderWidth, BorderHeight: integer): TBitmapArray;
 var
-  bmpArray: TBitmapArray;
+  bmpArray: TBitmapArray = nil;
 begin
   SetLength(bmpArray, 9);
   Result := bmpArray;

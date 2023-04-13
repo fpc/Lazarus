@@ -239,7 +239,7 @@ procedure TCDDrawerWinCE.DrawTab(ADest: TCanvas; ADestPos: TPoint;
 var
   IsSelected, IsAddButton: Boolean;
   lTabWidth, lTabHeight, lTabTopPos: Integer;
-  Points: array of TPoint;
+  Points: array of TPoint = nil;
   lCaption: String;
   lTabHeightCorrection: Integer = 0;
 begin
