@@ -83,6 +83,7 @@ type
     ToolButton7: TToolButton;
     tbChangeFont: TToolButton;
     ToolButton9: TToolButton;
+    procedure edMethodsKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -102,17 +103,18 @@ type
     FNewTopLine: integer;
     FImageIdxProcedure: Integer;
     FImageIdxFunction: Integer;
+    FImageIdxConstructor: Integer;
+    FImageIdxDestructor: Integer;
+    iconBmp: TBitmap;
     function GetCodeTreeNode(out lCodeTool: TCodeTool): TCodeTreeNode;
-    { Initialise GUI }
-    procedure SetupGUI;
     { Move editors focus to selected method. }
     procedure JumpToSelection;
     { Populates grid based on selected Class and user entered filter. }
     procedure PopulateGrid;
     { Populates only tho cbObjects combo with available classes. }
     procedure PopulateObjectsCombo;
-    procedure AddToGrid(pCodeTool: TCodeTool; pNode: TCodeTreeNode);
-    function  PassFilter(pSearchAll: boolean; pProcName, pSearchStr: string; pCodeTool: TCodeTool; pNode: TCodeTreeNode): boolean;
+    function AddToGrid(pCodeTool: TCodeTool; pNode: TCodeTreeNode): boolean;
+    function PassFilter(pSearchAll: boolean; pProcName, pSearchStr: string; pCodeTool: TCodeTool; pNode: TCodeTreeNode): boolean;
     procedure ClearGrid;
   public
     property Caret: TCodeXYPosition read FCaret;
@@ -235,9 +237,39 @@ end;
 
 procedure TProcedureListForm.FormCreate(Sender: TObject);
 begin
-  SetupGUI;
-  if SourceEditorManagerIntf.ActiveEditor = nil then
-    Exit; //==>
+  // assign resource strings to Captions and Hints
+  Caption            := lisPListProcedureList;
+  lblObjects.Caption := lisPListObjects;
+  lblSearch.Caption  := lisMenuSearch;
+  tbAbout.Hint       := lisMenuTemplateAbout;
+  tbJumpTo.Hint      := lisPListJumpToSelection;
+  tbFilterAny.Hint   := lisPListFilterAny;
+  tbFilterStart.Hint := lisPListFilterStart;
+  tbChangeFont.Hint  := lisPListChangeFont;
+  tbCopy.Hint        := lisPListCopyMethodToClipboard;
+  SG.Columns[SG_COLIDX_PROCEDURE].Title.Caption := lisProcedure;
+  SG.Columns[SG_COLIDX_TYPE     ].Title.Caption := lisPListType;
+  SG.Columns[SG_COLIDX_LINE     ].Title.Caption := dlgAddHiAttrGroupLine;
+
+  // assign resource images to toolbuttons
+  TB.Images := IDEImages.Images_16;
+  tbCopy.ImageIndex        := IDEImages.LoadImage('laz_copy');
+  tbChangeFont.ImageIndex  := IDEImages.LoadImage('item_font');
+  tbAbout.ImageIndex       := IDEImages.LoadImage('menu_information');
+  tbJumpTo.ImageIndex      := IDEImages.LoadImage('menu_goto_line');
+  tbFilterAny.ImageIndex   := IDEImages.LoadImage('filter_any_place');
+  tbFilterStart.ImageIndex := IDEImages.LoadImage('filter_from_begin');
+
+  // assign resource images to procedures
+  iconBmp := TBitmap.Create;
+  FImageIdxProcedure       := IDEImages.LoadImage('cc_procedure');
+  FImageIdxFunction        := IDEImages.LoadImage('cc_function');
+  FImageIdxConstructor     := IDEImages.LoadImage('cc_constructor');
+  FImageIdxDestructor      := IDEImages.LoadImage('cc_destructor');
+
+  SG.FocusRectVisible := false;
+
+  if SourceEditorManagerIntf.ActiveEditor = nil then Exit; //==>
 
   FMainFilename := SourceEditorManagerIntf.ActiveEditor.Filename;
   Caption := Caption + ' - ' + ExtractFileName(FMainFilename);
@@ -248,11 +280,35 @@ begin
   IDEDialogLayoutList.ApplyLayout(Self, 950, 680);
 end;
 
+procedure TProcedureListForm.edMethodsKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+
+  if (Shift = []) and (Key in [VK_A..VK_Z]) then
+  begin
+    edMethods.SelText := chr(Key + $20); // VK-codes matches ASCII chars
+    Key := 0;
+  end;
+
+  if (Shift = [ssShift]) and (Key in [VK_A..VK_Z]) then
+  begin
+    edMethods.SelText := chr(Key); // VK-codes matches ASCII chars
+    Key := 0;
+  end;
+
+  if (Shift = []) and (Key = VK_OEM_PERIOD) then
+  begin
+    edMethods.SelText := '.';
+    Key := 0;
+  end;
+
+end;
+
 procedure TProcedureListForm.FormDestroy(Sender: TObject);
 begin
   EnvironmentOptions.ProcedureListFilterStart := tbFilterStart.Down;
   ClearGrid;
-  IDEDialogLayoutList.SaveLayout(self);
+  IDEDialogLayoutList.SaveLayout(Self);
+  FreeAndNil(iconBmp);
 end;
 
 procedure TProcedureListForm.FormKeyDown(Sender: TObject; var Key: Word;
@@ -274,6 +330,8 @@ begin
 
     { Arrows }
     VK_DOWN : begin
+        if cbObjects.Focused then exit;
+
         if SG.Row < SG.FixedRows then // if (Row = -1) or (Row < FixedRows)
         begin
           if SG.RowCount > SG.FixedRows then
@@ -285,6 +343,8 @@ begin
         Key := 0;
       end;
     VK_UP : begin
+        if cbObjects.Focused then exit;
+
         if SG.Row < SG.FixedRows then // if (Row = -1) or (Row < FixedRows)
         begin
           if SG.RowCount > SG.FixedRows then
@@ -318,6 +378,13 @@ begin
         Key := 0;
       end;
 
+    end;  // case
+  end;  // if Shift = []
+
+  if Shift = [ssCtrl] then
+  begin
+    case Key of
+
     { Home and End }
     VK_HOME : begin
         if SG.RowCount > SG.FixedRows then
@@ -329,13 +396,6 @@ begin
           SG.Row := SG.RowCount - 1;
         Key := 0;
       end;
-
-    end;  // case
-  end;  // if Shift = []
-
-  if Shift = [ssCtrl] then
-  begin
-    case Key of
 
     { Scroll one line }
     VK_DOWN : begin
@@ -365,7 +425,7 @@ end;
 
 procedure TProcedureListForm.FormResize(Sender: TObject);
 begin
-  StatusBar.Panels[0].Width := self.ClientWidth - 105;
+  StatusBar.Panels[0].Width := ClientWidth - 105;
 end;
 
 procedure TProcedureListForm.FormShow(Sender: TObject);
@@ -382,8 +442,7 @@ end;
 procedure TProcedureListForm.SGDrawCell(Sender: TObject; aCol, aRow: Integer;
   aRect: TRect; aState: TGridDrawState);
 var
-  bmp: TBitmap;
-  iconTop, imageIdx: Integer;
+  iconLeft, iconTop: Integer;
   rowObj: TGridRowObject;
 begin
   if (aCol = SG_COLIDX_IMAGE) and (aRow >= SG.FixedRows) then
@@ -391,15 +450,12 @@ begin
     rowObj := TGridRowObject(SG.Rows[aRow].Objects[0]);
     if Assigned(rowObj) then
     begin
-      imageIdx := rowObj.ImageIdx;
-
-      bmp := TBitmap.Create;
-      try
-        IDEImages.Images_16.GetBitmap(imageIdx, bmp);
-        iconTop := ((aRect.Bottom - aRect.Top) - bmp.Height) div 2 + aRect.Top;
-        SG.Canvas.Draw(aRect.Left,iconTop, bmp);
-      finally
-        bmp.Free;
+      if rowObj.ImageIdx >= 0 then
+      begin
+        IDEImages.Images_16.GetBitmap(rowObj.ImageIdx, iconBmp);
+        iconLeft := aRect.Width - iconBmp.Width; // right align
+        iconTop  := aRect.Top  + (aRect.Height - iconBmp.Height) div 2; // center align
+        SG.Canvas.Draw(iconLeft, iconTop, iconBmp);
       end;
     end;
   end;
@@ -415,35 +471,6 @@ begin
   begin
     StatusBar.Panels[0].Text := rowObject.FullProcedureName;
   end;
-end;
-
-procedure TProcedureListForm.SetupGUI;
-begin
-  // assign resource strings to Captions and Hints
-  self.Caption          := lisPListProcedureList;
-  lblObjects.Caption    := lisPListObjects;
-  lblSearch.Caption     := lisMenuSearch;
-  tbAbout.Hint          := lisMenuTemplateAbout;
-  tbJumpTo.Hint         := lisPListJumpToSelection;
-  tbFilterAny.Hint      := lisPListFilterAny;
-  tbFilterStart.Hint    := lisPListFilterStart;
-  tbChangeFont.Hint     := lisPListChangeFont;
-  tbCopy.Hint           := lisPListCopyMethodToClipboard;
-  SG.Columns[SG_COLIDX_PROCEDURE].Title.Caption   := lisProcedure;
-  SG.Columns[SG_COLIDX_TYPE].Title.Caption   := lisPListType;
-  SG.Columns[SG_COLIDX_LINE].Title.Caption   := dlgAddHiAttrGroupLine;
-  
-  // assign resource images to toolbuttons
-  TB.Images := IDEImages.Images_16;
-  tbCopy.ImageIndex        := IDEImages.LoadImage('laz_copy');
-  tbChangeFont.ImageIndex  := IDEImages.LoadImage('item_font');
-  tbAbout.ImageIndex       := IDEImages.LoadImage('menu_information');
-  tbJumpTo.ImageIndex      := IDEImages.LoadImage('menu_goto_line');
-  tbFilterAny.ImageIndex   := IDEImages.LoadImage('filter_any_place');
-  tbFilterStart.ImageIndex := IDEImages.LoadImage('filter_from_begin');
-
-  FImageIdxProcedure  := IDEImages.LoadImage('cc_procedure');
-  FImageIdxFunction   := IDEImages.LoadImage('cc_function');;
 end;
 
 procedure TProcedureListForm.JumpToSelection;
@@ -475,14 +502,17 @@ begin
     Exit; //==>
 
   { This should close the form }
-  self.ModalResult := mrOK;
+  ModalResult := mrOK;
 end;
 
 procedure TProcedureListForm.PopulateGrid;
 var
   lCodeTool: TCodeTool;
   lNode: TCodeTreeNode;
+  lShown, lTotal: integer;
 begin
+  lShown := 0;
+  lTotal := 0;
   SG.BeginUpdate;
   try
     ClearGrid;
@@ -492,16 +522,17 @@ begin
     begin
       if lNode.Desc = ctnProcedure then
       begin
-        AddToGrid(lCodeTool, lNode);
+        inc(lTotal);
+        if AddToGrid(lCodeTool, lNode) then
+          inc(lShown);
       end;
       lNode := lNode.Next;
     end;
   finally
     if SG.RowCount > SG.FixedRows then
-    begin
       SG.Row := SG.FixedRows;
-    end;
     SG.EndUpdate;
+    StatusBar.Panels[1].Text := inttostr(lShown) + ' / ' + inttostr(lTotal);
   end;
 end;
 
@@ -535,7 +566,7 @@ begin
   end;
 end;
 
-procedure TProcedureListForm.AddToGrid(pCodeTool: TCodeTool; pNode: TCodeTreeNode);
+function TProcedureListForm.AddToGrid(pCodeTool: TCodeTool; pNode: TCodeTreeNode): boolean;
 var
   lNodeText: string;
   lCaret: TCodeXYPosition;
@@ -544,6 +575,8 @@ var
   lRowObject: TGridRowObject;
   lRowIdx: Integer;
 begin
+  result := false;
+
   FSearchAll := cbObjects.ItemIndex = 0; // lisPListAll
 
   if FSearchAll and tbFilterAny.Down then
@@ -595,11 +628,18 @@ begin
                    phpWithOfObject,phpWithCallingSpecs,phpWithProcModifiers]);
   lRowObject.FullProcedureName := lNodeText;
 
-  if PosI('procedure', lNodeText) > 0 then
+  if PosI('procedure ', lNodeText) > 0 then
     lRowObject.ImageIdx := FImageIdxProcedure
+  else if PosI('function ', lNodeText) > 0 then
+    lRowObject.ImageIdx := FImageIdxFunction
+  else if PosI('constructor ', lNodeText) > 0 then
+    lRowObject.ImageIdx := FImageIdxConstructor
+  else if PosI('destructor ', lNodeText) > 0 then
+    lRowObject.ImageIdx := FImageIdxDestructor
   else
-    lRowObject.ImageIdx := FImageIdxFunction;
+    lRowObject.ImageIdx := -1;
 
+  result := true;
 end;
 
 { Do we pass all the filter tests to continue? }

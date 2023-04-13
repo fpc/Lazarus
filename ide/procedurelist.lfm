@@ -185,6 +185,7 @@ object ProcedureListForm: TProcedureListForm
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
       OnChange = SomethingChange
+      OnKeyDown = edMethodsKeyDown
       TabOrder = 0
     end
     object cbObjects: TComboBox
@@ -213,16 +214,17 @@ object ProcedureListForm: TProcedureListForm
     Width = 952
     Align = alClient
     AutoFillColumns = True
+    BorderStyle = bsNone
     ColCount = 4
     Columns = <    
       item
         SizePriority = 0
         Title.Caption = ''
-        Width = 20
+        Width = 19
       end    
       item
         Title.Caption = 'Procedure'
-        Width = 762
+        Width = 763
       end
       item
         SizePriority = 0
@@ -236,15 +238,15 @@ object ProcedureListForm: TProcedureListForm
       end>
     FixedCols = 0
     MouseWheelOption = mwGrid
-    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRowSelect, goThumbTracking, goSmoothScroll, goCellEllipsis]
+    Options = [goFixedHorzLine, goHorzLine, goRowSelect, goThumbTracking, goSmoothScroll, goCellEllipsis]
     TabOrder = 3
     TabStop = False
     OnDblClick = SGDblClick
     OnDrawCell = SGDrawCell
     OnSelectCell = SGSelectCell
     ColWidths = (
-      20
-      762
+      19
+      763
       110
       60
     )
