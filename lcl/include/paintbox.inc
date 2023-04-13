@@ -35,7 +35,8 @@ begin
       Brush.Style := bsClear;
       Rectangle(0, 0, Self.Width, Self.Height);
       Line(0,0,Self.Width,Self.Height);
-      Line(Self.Width-1,0,-1,Self.Height);
+      Line(0,Self.Height-1,Self.Width-1, 0);
+//      Line(Self.Width-1,0,-1,Self.Height);
     end;
     exit;
   end;
