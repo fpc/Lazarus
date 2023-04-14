@@ -321,8 +321,6 @@ appearance, size, and textual content.
 
 <element name="TStatusPanel.FIntfFlag">
 <short>Field used by Widgetset classes. Do not use it in the LCL.</short>
-<descr>Field used by Widgetset classes. Do not use it in the LCL.</descr>
-<seealso/>
 </element>
 
 <element name="TStatusPanel.GetDisplayName">
@@ -418,9 +416,11 @@ its InvalidatePanel method.
 Implements persistence for the class type.
 </short>
 <descr>
+<p>
 <var>Assign</var> copies text, width, alignment, bevel and style properties 
 from <var>Source</var> if it is of correct type, otherwise calls inherited 
 <var>Assign</var> (which will probably raise an exception).
+</p>
 </descr>
 <seealso>
 <link id="#rtl.Classes.TPersistent.Assign">TPersistent.Assign</link>
@@ -630,8 +630,10 @@ been changed.
 <element name="TStatusPanels.Create">
 <short>Constructor for the class instance.</short>
 <descr>
+<p>
 <var>Create</var> - constructor for <var>TStatusPanels</var>: calls inherited 
 <var>Create</var> and attaches itself to StatusBar.
+</p>
 </descr>
 <seealso>
 <link id="#rtl.Classes.TCollection.Create">TCollection.Create</link>
@@ -1432,7 +1434,9 @@ the control.
 <element name="TStatusBar.UseSystemFont">
 <short>Indicates the System font is used for the control.</short>
 <descr>
+<p>
 This is used to provide VCL-compatibility in widgetset classes.
+</p>
 </descr>
 <seealso/>
 </element>
@@ -1520,7 +1524,9 @@ status bar.
 Contains values which can be assigned to the Flags property in TCustomPage.
 </short>
 <descr>
+<p>
 Reflects the status or state for the handle used in a custom page control.
+</p>
 </descr>
 <seealso/>
 </element>
@@ -2038,8 +2044,10 @@ when the Handle for the control has not been allocated.
 Not stored in LCL component streaming for TCustomPage.
 </short>
 <descr>
+<p>
 The value for the Left property is not stored in the LCL component streaming 
 mechanism for TCustomPage.
+</p>
 </descr>
 <seealso>
 <link id="#lcl.controls.TControl.Left">TControl.Left</link>
@@ -2051,8 +2059,10 @@ mechanism for TCustomPage.
 Not stored in LCL component streaming for TCustomPage.
 </short>
 <descr>
+<p>
 The value for the Top property is not stored in the LCL component streaming 
 mechanism for TCustomPage.
+</p>
 </descr>
 <seealso>
 <link id="#lcl.controls.TControl.Left">TControl.Left</link>
@@ -2064,8 +2074,10 @@ mechanism for TCustomPage.
 Not stored in LCL component streaming for TCustomPage.
 </short>
 <descr>
+<p>
 The value for the Width property is not stored in the LCL component streaming 
 mechanism for TCustomPage.
+</p>
 </descr>
 <seealso>
 <link id="#lcl.controls.TControl.Width">TControl.Width</link>
@@ -2077,8 +2089,10 @@ mechanism for TCustomPage.
 Not stored in LCL component streaming for TCustomPage.
 </short>
 <descr>
+<p>
 The value for the Height property is not stored in the LCL component 
 streaming mechanism for TCustomPage.
+</p>
 </descr>
 <seealso>
 <link id="#lcl.controls.TControl.Height">TControl.Height</link>
@@ -2090,8 +2104,10 @@ streaming mechanism for TCustomPage.
 Not stored in LCL component streaming for TCustomPage.
 </short>
 <descr>
+<p>
 The value for the TabOrder property is not stored in the LCL component 
 streaming mechanism for TCustomPage.
+</p>
 </descr>
 <seealso>
 <link id="#lcl.controls.TWinControl.TabOrder">TWinControl.TabOrder</link>
@@ -9879,7 +9895,9 @@ then the cache is not valid.
 <element name="TListItems.ReadData">
 <short/>
 <descr>
+<p>
 Reads data in a Delphi compatible way.
+</p>
 </descr>
 <seealso/>
 </element>
@@ -9890,7 +9908,9 @@ Reads data in a Delphi compatible way.
 <element name="TListItems.ReadLazData">
 <short/>
 <descr>
+<p>
 Reads data in a 64-bit safe way.
+</p>
 </descr>
 <seealso/>
 </element>
@@ -9901,7 +9921,9 @@ Reads data in a 64-bit safe way.
 <element name="TListItems.WriteLazData">
 <short/>
 <descr>
+<p>
 Writes data in a 64-bit safe way.
+</p>
 </descr>
 <seealso/>
 </element>
@@ -14042,10 +14064,12 @@ TSize instance with the default dimensions for a new instance of the class.
 Calls the inherited method, and sets default values in properties.
 </short>
 <descr>
+<p>
 <var>InitializeWnd</var> - calls inherited method, then sets style, adds 
 columns, sets imagelists and item depending properties (scroll bars, sorting 
 etc), adds items and sets other miscellaneous properties (default item 
-height, hot track styles, hover time etc)
+height, hot track styles, hover time etc).
+</p>
 </descr>
 <seealso>
 <link id="#lcl.controls.TWinControl.InitializeWnd">TWinControl.InitializeWnd</link>
@@ -14107,12 +14131,14 @@ container.
 Creates a new TListItems instance used in the Items property.
 </short>
 <descr>
+<p>
 <var>CreateListItems</var> allocates the container used for the 
 <var>Items</var> property when <var>OwnerData</var> is set to <b>False</b>. 
 It creates and returns a new <var>TListItems</var> instance using the list 
 view control as the Owner of the items in the container. A 
-<var>TOwnerDataListItems</var> instance is allocated for use in Items when 
+<var>TOwnerDataListItems</var> instance is allocated for use in Items when
 OwnerData is changed to <b>True</b>.
+</p>
 </descr>
 <seealso>
 <link id="TCustomListView.Items"/>
@@ -14750,8 +14776,10 @@ event handler to be signalled.
 <element name="TCustomListView.GetUpdateCount">
 <short>Gets the value for the internal update counter.</short>
 <descr>
+<p>
 The internal counter is maintained when the BeginUpdate and EndUpdate methods 
 are called.
+</p>
 </descr>
 <seealso/>
 </element>
@@ -17041,8 +17069,10 @@ Selects all Items in the control when MultiSelect has been enabled.
 Indicates if the editor is active in the list view control.
 </short>
 <descr>
+<p>
 Delphi compatible function which returns <b>True</b> if the list view editor 
 is active.
+</p>
 </descr>
 <seealso/>
 </element>
@@ -20292,23 +20322,31 @@ for accessing a drop-down menu).
 <example file="comctrls/ttoolbutton.pas"/>
 </element>
 <element name="TToolButtonStyle.tbsButton">
-<descr>The button appears and functions like a normal button.</descr>
+<short>The button appears and functions like a normal button.</short>
 </element>
 <element name="TToolButtonStyle.tbsCheck">
-<descr>Clicking the button toggles the Down property. Once selected, the 
-button remains selected until clicked again.</descr>
+<short>
+Clicking the button toggles the Down property. Once selected, the button 
+remains selected until clicked again.
+</short>
 </element>
 <element name="TToolButtonStyle.tbsDropDown">
-<descr>The button displays a downwards-pointing arrow (suitable for accessing 
-a drop-down menu).</descr>
+<short>
+The button displays a downwards-pointing arrow (suitable for accessing 
+a drop-down menu).
+</short>
 </element>
 <element name="TToolButtonStyle.tbsSeparator">
-<descr>The button appears as an empty space on the toolbar (used to separate 
-other controls).</descr>
+<short>
+The button appears as an empty space on the toolbar (used to separate other 
+controls).
+</short>
 </element>
 <element name="TToolButtonStyle.tbsDivider">
-<descr>The button appears as a vertical line on the toolbar (used to separate 
-other controls).</descr>
+<short>
+The button appears as a vertical line on the toolbar (used to separate other 
+controls).
+</short>
 </element>
 
 <element name="TToolButtonFlag">
@@ -23391,10 +23429,12 @@ drawing styles used for the grab bar (or gripper) in
 <element name="TDragBand">
 <short>Represents the drag actions for TCoolBar.</short>
 <descr>
+<p>
 <var>TDragBand</var> is an enumerated type with values that indicates the 
 action performed when a <var>TCoolBar</var> band control is dragged. 
 TDragBand is used in the implementation of <var>TCustomCoolBar</var> / 
 <var>TCoolBar</var>.
+</p>
 </descr>
 <seealso>
 <link id="TCustomCoolBar.MouseDown"/>
@@ -26295,9 +26335,11 @@ property.
 <element name="TNodeStates">
 <short>Set type used to store TNodeState value(s).</short>
 <descr>
+<p>
 <var>TNodeStates</var> is a set type used to store zero or more values from 
 the <var>TNodeState</var> enumeration. TNodeStates is the type used to 
 implement the <var>TTreeNode.States</var> property.
+</p>
 </descr>
 <seealso>
 <link id="TTreeNode.States"/>
@@ -28425,7 +28467,9 @@ without taking into account the level of ancestry.
 The number of nodes where the current node is the parent node.
 </short>
 <descr>
+<p>
 Contains the same value as the Count property in Items.
+</p>
 </descr>
 <seealso/>
 </element>
@@ -28854,8 +28898,10 @@ Enabled properties.
 Ordinal position for the overlay image used for the node.
 </short>
 <descr>
+<p>
 This icon is drawn above the normal icon. If Images.HasOverlays then it is 
 fetched from Images via Images.Overlay(Node.Overlay) for Delphi compatibility.
+</p>
 </descr>
 <seealso/>
 </element>
@@ -30766,9 +30812,11 @@ Node is drawn with a selection rectangle and focus highlighting.
 Set type used to store values from the TTreeViewState enumeration.
 </short>
 <descr>
+<p>
 TTreeViewStates is a set type used to store zero or more values from the 
 TTreeViewState enumeration. TTreeViewStates is the type used for the States 
 property in TCustomTreeView.
+</p>
 </descr>
 <seealso>
 <link id="TCustomTreeView.States"/>
