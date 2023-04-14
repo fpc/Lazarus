@@ -7961,9 +7961,11 @@ and stored internally in the controls.
 <element name="TCustomDrawState">
 <short>
 <var>TCustomDrawState</var> - set of <var>TCustomDrawStateFlag</var>.
-</short>.
+</short>
 <descr>
+<p>
 TCustomDrawState determines how a item will be drawn.
+</p>
 </descr>
 <seealso>
 <link id="TCustomDrawStateFlag"/>
@@ -12367,7 +12369,9 @@ Ordinal position for the sub-item draw in handler routine.
 </short>
 </element>
 <element name="TLVCustomDrawSubItemEvent.State">
+<short>
 Drawing state for the sub-item (like selected, focused, disabled).
+</short>
 </element>
 <element name="TLVCustomDrawSubItemEvent.DefaultDraw">
 <short>
@@ -18759,7 +18763,7 @@ buttons used in a <var>TCustomUpDown</var> control.
 
 <element name="TUDClickEvent">
 <short>
-Specifies an event handler signalled for a button click on a TUpDown control.  
+Specifies an event handler signalled for a button click on a TUpDown control.
 </short>
 <descr>
 <p>
