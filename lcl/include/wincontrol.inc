@@ -7784,7 +7784,6 @@ begin
     end;
     for i:=0 to ControlCount-1 do begin
       AChild:=Controls[i];
-      if AChild=nil then ;
       AChild.FBaseParentClientSize:=LoadedClientSize;
       //DebugLn(['TWinControl.Loaded Self=',DbgSName(Self),' AChild=',AChild,' AChild.FBaseParentClientSize=',dbgs(AChild.FBaseParentClientSize)]);
     end;
