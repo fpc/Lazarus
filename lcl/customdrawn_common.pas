@@ -363,13 +363,36 @@ end;
 function TCDDrawerCommon.GetClientArea(ADest: TCanvas; ASize: TSize;
   AControlId: TCDControlID; AState: TCDControlState; AStateEx: TCDControlStateEx
   ): TRect;
+var
+  lWidth: Integer = 0;
+  lRows: Integer = 1;
+  lTabCtrlState : TCDCTabControlStateEx;
+  lLastIndex, i, lIndex: Integer;
 begin
   Result := Bounds(0, 0, ASize.cx, ASize.cy);
 
   case AControlId of
   cidCTabControl:
   begin
-    Result.Top := GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_HEIGHT, AState, AStateEx) + 2;
+    lTabCtrlState := TCDCTabControlStateEx(AStateEx);
+    lLastIndex := lTabCtrlState.TabCount - Ord(not(nboShowAddTabButton in lTabCtrlState.Options));
+    if nboMultiLine in lTabCtrlState.Options then
+    begin
+      lIndex := lTabCtrlState.CurTabIndex;
+      for i := 0 to lLastIndex do
+      begin
+        lTabCtrlState.TabIndex:=i;
+        lWidth := lWidth + GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_WIDTH, AState, AStateEx);
+        if lWidth > ASize.Width then
+        begin
+          lWidth:=0;
+          Inc(lRows);
+        end;
+      end;
+      lTabCtrlState.TabIndex:=lIndex;
+    end;
+
+    Result.Top := GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_HEIGHT, AState, AStateEx)*lRows + 2;
     Result.Left := 2;
     Result.Right := Result.Right - 2;
     Result.Bottom := Result.Bottom - 2;
@@ -1765,10 +1788,28 @@ procedure TCDDrawerCommon.DrawCTabControlFrame(ADest: TCanvas;
   ADestPos: TPoint; ASize: TSize; AState: TCDControlState;
   AStateEx: TCDCTabControlStateEx);
 var
-  CaptionHeight: Integer;
+  CaptionHeight, lIndex, i: Integer;
+  lWidth: Integer = 0;
+  lRows: Integer = 1;
 begin
   if AStateEx.TabCount = 0 then CaptionHeight := 0
-  else CaptionHeight := GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_HEIGHT, AState, AStateEx);
+  else if not (nboMultiLine in AStateEx.Options) then
+    CaptionHeight := GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_HEIGHT, AState, AStateEx)
+  else begin
+    lIndex := AStateEx.TabIndex;
+    for i := 0 to AStateEx.TabCount - ord(not(nboShowAddTabButton in AStateEx.Options)) do
+    begin
+      lWidth := lWidth + GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_WIDTH, AState, AStateEx);
+      if lWidth > ASize.Width then
+      begin
+        lWidth := 0;
+        Inc(lRows);
+      end;
+    end;
+    AStateEx.TabIndex := lIndex;
+    CaptionHeight := GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_HEIGHT, AState, AStateEx) * lRows;
+  end;
+
 
   DrawRaisedFrame(ADest, Point(0, CaptionHeight), Size(ASize.cx, ASize.cy-CaptionHeight));
 end;
@@ -1787,22 +1828,31 @@ procedure TCDDrawerCommon.DrawTabs(ADest: TCanvas; ADestPos: TPoint;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDCTabControlStateEx);
 var
   IsPainting: Boolean = False;
-  lLastTabIndex, i: Integer;
+  lLastTabIndex, i, lWidth: Integer;
 begin
   AStateEx.CurStartLeftPos := 0;
+  AStateEx.CurStartTopPos := 0;
   if nboShowAddTabButton in AStateEx.Options then lLastTabIndex := AStateEx.Tabs.Count
   else lLastTabIndex := AStateEx.Tabs.Count - 1;
 
   for i := 0 to lLastTabIndex do
   begin
-    if i = AStateEx.LeftmostTabVisibleIndex then
+    if (i = AStateEx.LeftmostTabVisibleIndex) or (nboMultiLine in AStateEx.Options) then
       IsPainting := True;
 
     if IsPainting then
     begin
       AStateEx.CurTabIndex := i;
+      lWidth := GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_WIDTH, AState, AStateEx);
+
+      if (nboMultiLine in AStateEx.Options) and (AStateEx.CurStartLeftPos+lWidth > ADest.Width) then
+      begin
+        AStateEx.CurStartLeftPos := 0;
+        AStateEx.CurStartTopPos:=AStateEx.CurStartTopPos+GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_HEIGHT, AState, AStateEx) ;
+      end;
+
       DrawTab(ADest, ADestPos, ASize, AState, AStateEx);
-      AStateEx.CurStartLeftPos := AStateEx.CurStartLeftPos + GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_WIDTH, AState, AStateEx);
+      AStateEx.CurStartLeftPos := AStateEx.CurStartLeftPos + lWidth;
     end;
   end;
 end;
@@ -1824,7 +1874,7 @@ begin
   if not IsSelected then lTabHeightCorrection := 3;
   if IsSelected then lTabRightBorderExtraHeight := 1;
 
-  lTabTopPos := lTabHeightCorrection;
+  lTabTopPos := lTabHeightCorrection+AStateEx.CurStartTopPos;
   lTabHeight := GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_HEIGHT, AState, AStateEx)-lTabHeightCorrection;
   lTabWidth := GetMeasuresEx(ADest, TCDCTABCONTROL_TAB_WIDTH, AState, AStateEx);
 

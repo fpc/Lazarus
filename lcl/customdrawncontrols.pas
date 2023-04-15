@@ -3270,6 +3270,7 @@ function TCDCustomTabControl.MousePosToTabIndex(X, Y: Integer): Integer;
 var
   i: Integer;
   CurStartLeftPos: Integer = 0;
+  CurStartTopPos: Integer = 0;
   VisiblePagesStarted: Boolean = False;
   lLastTab, lTabWidth, lTabHeight: Integer;
 begin
@@ -3280,7 +3281,7 @@ begin
 
   for i := 0 to lLastTab do
   begin
-    if i = FTabCState.LeftmostTabVisibleIndex then
+    if (i = FTabCState.LeftmostTabVisibleIndex) or (nboMultiLine in Options) then
       VisiblePagesStarted := True;
 
     if VisiblePagesStarted then
@@ -3288,9 +3289,17 @@ begin
       FTabCState.CurTabIndex := i;
       lTabWidth := FDrawer.GetMeasuresEx(Canvas, TCDCTABCONTROL_TAB_WIDTH, FState, FTabCState);
       lTabHeight := FDrawer.GetMeasuresEx(Canvas, TCDCTABCONTROL_TAB_HEIGHT, FState, FTabCState);
+      if (nboMultiLine in Options) and (lTabWidth+CurStartLeftPos > Width) then
+      begin
+        Inc(CurStartTopPos, lTabHeight);
+        CurStartLeftPos := 0;
+      end;
+
       if (X > CurStartLeftPos) and
         (X < CurStartLeftPos + lTabWidth) and
-        (Y < lTabHeight) then
+        (Y < lTabHeight+CurStartTopPos) and
+        (Y >= CurStartTopPos)
+        then
       begin
         Exit(i);
       end;

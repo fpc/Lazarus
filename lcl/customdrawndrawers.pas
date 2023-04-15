@@ -257,6 +257,7 @@ type
     // Used internally by the drawers
     CurTabIndex: Integer;// For Tab routines, obtain the index
     CurStartLeftPos: Integer;
+    CurStartTopPos: Integer;
   end;
 
   TCDSpinStateEx = class(TCDPositionedCStateEx)
