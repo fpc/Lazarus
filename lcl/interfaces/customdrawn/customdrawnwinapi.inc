@@ -5033,10 +5033,13 @@ begin
   {$ifdef VerboseQTWinAPI}
   WriteLn('Trace:> [WinAPI RestoreDC] DC=', dbghex(DC),' SavedDC=',SavedDC);
   {$Endif}
-  Result := False;
-  if not IsValidDC(DC) then Exit;
+  if (SavedDC=0) or (not IsValidDC(DC)) then Exit(False);
 
-  LazDC.RestoreState(SavedDC);
+  if SavedDC>0 then
+    LazDC.RestoreState(SavedDC-1)
+  else
+    LazDC.RestoreState(SavedDC);
+
   Result := True;
   {$ifdef VerboseQTWinAPI}
   WriteLn('Trace:< [WinAPI RestoreDC]');
@@ -5079,7 +5082,7 @@ begin
     exit;
   end;
 
-  Result := LazDC.SaveState();
+  Result := LazDC.SaveState()+1;
 
   {$ifdef VerboseQTWinAPI}
   WriteLn('Trace:< [WinAPI SaveDC] result=', Result);
