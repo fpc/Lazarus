@@ -542,6 +542,8 @@ type
     procedure SetHeight(AValue: integer); override;
     procedure SetWidth(AValue: integer); override;
     procedure OnImageOperation(Img: TAggFPImage; Operation: TAggFPImgOperation); virtual;
+    procedure SetClipping(const AValue: Boolean); override;
+    procedure SetClipRect(const AValue: TRect); override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -3321,6 +3323,19 @@ begin
   end;
 
 end;
+
+procedure TAggFPCanvas.SetClipping(const AValue: Boolean);
+begin
+  inherited;
+  m_rasterizer.m_clipping := AValue;
+end;
+
+procedure TAggFPCanvas.SetClipRect(const AValue: TRect);
+begin
+  m_rasterizer.clip_box(AValue.Left, AValue.Top, AValue.Right, AValue.Bottom);
+  m_rasterizer.m_clipping := Clipping;
+end;
+
 
 { TAggFPPen }
 
