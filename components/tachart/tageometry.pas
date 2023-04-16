@@ -626,7 +626,7 @@ function ProjToLine(const P, A,B: TDoublePoint): TDoublePoint;
 var
   v, s: TDoublePoint;
 begin
-  if P = A then
+  if (P = A) or (A = B) then
     Result := A
   else if P = B then
     Result := B
