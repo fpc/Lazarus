@@ -9,51 +9,35 @@ unit uExampleData;
  **********************************************************************
 
 This unit is the backend that provides a List that contains details of Lazarus
-Example Projects. It might get its data from one of three different places,
+Example Projects. It might get its data from one of two different places,
 
 * The LazarusDir, thats the SRC dir, examples shipped with Lazarus.
-* Any Packages installed in Lazarus, looks in <pcp>packagefiles.xml
-
-  ( A locally cached master meta file          Disabled as of Feb 2022 )
-  ( A remote gitlab repository (ie, if the above is not present),  Disabled as of Feb 2022 )
+* Any Packages installed in Lazarus, looks in <pcp>staticpackages.inc and in
+  <pcp>packagefiles.xml. staticpackages.inc tells us its currently installed
+  but need to check in packagefiles.xml to find if its (a) a User install and
+  (b) if it has an example directory declared <ExamplesDirectory Value="../demo"/>
 
 This list can be used to populate the Lazarus Examples Window or used during the
 markup of existing Lazarus Projects. The unit is used by the Lazarus Package and
 a simple tool used to manage the meta data files.
 
--- PATHS (n.a. unless online mode enabled ) --
+As of April 12, 2023, this unit no longer includes code to get and manage example
+project in a remote git repo. As we now do cover third party project, a remote
+"lazarus src only" example repo sounds out of scope.
 
-This only really applies in the Out of Lazarus Package usage. David Bannon, Feb 2022
-
-Data is inserted into the list from different sources and might refer to
-content stored in different places.
-
-So, wrt FFname in the list, a path starting with a slash, / or \, is an absolute
-local path. OTOH, without a slash, its remote, eg, gitlab and relative to the
-top of the repository.
-
-Special case is when we are reading the local git repository, we are doing this
-to make a file to upload to the gilab repo that is an index of the remote repository,
-so, no leading slash and all paths are relative to the top of the local git repo.
-
-This unit does not interact directly with user but it does (hopefully not often)
-generate some error messages that may need i18n.  Only network errors have been done.
-
-WARNING - This unit includes code to download (and even upload) from a gitlab
-repo. At present its not being used and should get stripped out during linking.
-If it appears, long term, we are never to use the online approach, remove it !
-Code would be greatly simplified if we were not trying to also support OnLine.
 }
 
 {$mode ObjFPC}{$H+}
 {$WARN 6058 off : Call to subroutine "$1" marked as inline is not inlined}
+
+{X$define SHOW_DEBUG}      // ToDo : remove this
+
 interface
 
 uses
     Classes, SysUtils, fpjson, jsonparser, jsonscanner, // these are the FPC JSON tools
     httpprotocol,  // for http encoding
-    fphttpclient,  // determines a dependency on FPC 3.2.0 or later. Must for https downloads
-    ssockets, fpopenssl, base64,
+    base64,
     Laz2_XMLRead, Laz2_DOM, LazFileUtils, FileUtil, LazLoggerBase
     {$ifndef EXTESTMODE}
     , IDEOptionsIntf
@@ -63,19 +47,20 @@ const
     MetaFileExt = '.ex-meta';              // Extension of meta files.
 
 type
-    TExampleDataSource = (FromGitlabTree,  // Read all remote project meta files
-                          FromLocalTree,   // Read all local Git project meta files
+    TExampleDataSource = (FromGitlabTree,  // Read all remote project meta files                   not used
+                          FromLocalTree,   // Read all local Git project meta files                not used
                           FromThirdParty,  // Packages listed in first block of packagefiles.xml
-                          FromCacheFile,   // Load data from Local Cache File
+                          FromCacheFile,   // Load data from Local Cache File                      not used
                           FromLazSrcTree); // Searches the Lazarus Src Tree, eg ~/examples; ~/components
 
     PExRec=^TExRec;
     TExRec = record
           EName    : string;      // CamelCase version of the example name, filenameonly of metadata file.
-          Category : string;      // eg Beginner, NoDesign (read from remote data)
+          Category : string;      // eg Beginner, General, ThirdParty (read from remote data)
           Keywords : TStringList; // a list of (possibly multi-word) words, nil acceptable
-          FFName   : string;      // Path and filename of meta file. Maybe absolute or relative, no extension
+          FFName   : string;      // An Absolute Path and filename of meta file in its original position, not copy.
           Desc     : string;      // 1..many lines of description
+          ThirdParty : boolean;   // False if examples are shipped in Lazarus Src.
     end;
 
     { TExampleList }
@@ -90,20 +75,14 @@ type
              constructor Create();
              destructor Destroy; override;
                                          // Public - Puts new entry in List, Keys may be Nil
-             function InsertData(Cat, Desc, FFName, AName: string; Keys: TStringList): boolean;
+             function InsertData(Cat, Desc, FFName, AName: string; Keys: TStringList; IsTP: boolean=true): boolean;
              function Find(const FFname: string): PExRec;
              function AsJSON(Index: integer): string;
-             // Ret T if St is in Keywords at AnIndex, not necessarily equal to.
+                                        // Ret T if St is in Keywords at AnIndex, not necessarily equal to.
              function IsInKeywords(St : string; AnIndex : integer) : boolean;
              property Items[Index: integer]: PExRec read Get; default;
 
     end;
-
-{ Note - the above list is used to generate a master.ex-meta file that might be added
-the the gitlab repo. So, dir seperators MUST be /. On Windows, they will be read
-from a local tree as \ and a local master.ex-meta file will need to be converted.
-I think we will declare they are always /, when reading local filesystems on
-Windows, must convert during the insert into list stage.   }
 
 
     { TExampleData }
@@ -111,63 +90,57 @@ Windows, must convert during the insert into list stage.   }
     TExampleData = class
         private
             ErrorString : String;
-            ExList : TExampleList;
             GetListDataIndex : integer;
 
                                 // Passed full file name of the packagesfiles.xml file in PCP, returns
                                 // with the list filled with paths to some directory above the package
                                 // lpk file being a suitable place to start searching for Examples.
-            procedure CollectThirdPartyPackages(PkgFilesXML: String; AList: TStrings);
+            procedure CollectThirdPartyPackages(PkgFilesXML: String; AList, SList: TStrings);
+            function GetTheRecord(const FFname: string): PExRec;
                                 // Returns true if it has altered FullPkgFileName to where we can expect to find Examples
             function GetThirdPartyDir(var FullPkgFileName: string): boolean;
-                                // Triggers a search of installed packages other than ones from LazSrcTree
-                                // It assumes such packages are listed in <PCP>/packagefiles.xml
+            procedure ScanLazarusSrc;
+                                // Triggers a search of installed Third Party packages. Iterates over packagefiles.xml
+                                // and puts any potential paths to example directories in a list. Then iterates over
+                                // that list scanning blow each path looking for example directories (ie ones with a
+                                // ex_meta file). Any it finds are added to ExList.
             procedure ScanThirdPartyPkg;
-                                // Gets a Full URL and returns with St containing content, usually as JSON
-            function Downloader(URL: string; out SomeString: String): boolean;
-                                // Does a binary safe download of a file, URL will get repositary info prepended
-                                // and file ends up in FullDest which should be a full path and filename.
-            function DownLoadFile(const URL, FullDest: string): boolean;
                                 //function EscJSON(InStr: string): string;
             function ExtractArrayFromJSON(const Field: string; jItem: TJSONData; STL: TStringList): boolean;
                                 // Passed a json block, returns the indicated field, cannot handle arrays.
-                                // Don't rely on its base64 decoding a binary file, see DownLoadFile() instead.
-            function ExtractFromJSON(const Field, data: string; Base64: boolean=false) : string;
-            function ExtractFromJSON(const Field: string; const jItem: TJSONData; out
-                                        Res: string; Base64: boolean = false): boolean;
-
+            function ExtractFromJSON(const Field: string; const jItem: TJSONData; out Res: string; Base64: boolean = false): boolean;
                                 // Receives a pretested JSON (not just a field) containing metadata of an Example
                                 // Returns false if data missing, drops msg to console about bad field.
                                 // Path may be relative or absolute (ie starting with '/' or '\'). Ones without
                                 // a leading slash are remote, ie gitlab. Ones with a slash should be resolvable
                                 // locally. Note when indexing a local git tree, relative must be used, ie top of
                                 // git tree. In this mode of course, the entry will not be resolvable locally.
-            function InsertJSONData(jItem: TJSONData; FFName: string; AName: string = '' ): boolean;
-            function LoadCacheFile(FFName: string): boolean;
-            function ReadMasterJSON(FileContent: TStringList): boolean;
-            function ReadRemoteMetaFile(URL: string): boolean;   // download and read meta file
+            function InsertJSONData(jItem: TJSONData; FFName: string; IsTP : boolean; AName: string = ''): boolean;
                                 // Gets passed a block of json, wrapped in {} containing several fields relating
                                 // one example project. Path is ready to use in the List. Not suited to json
                                 // With an internal Path field (ie master.ex-meta)
-            function ReadSingleJSON(FileContent: TStringList; PathToStore: string = ''): boolean;
-            function ScanLocalTree(Path: string; PathAbs: boolean): boolean;
-                                // Will either scan and add what it finds to the List (if STL is nil) or it
-                                // will add each full URL to the StringList if its valid and created.
-            function ScanRemoteTree(Path: string; STL: TstringList = nil): boolean;
-            function ScanOneTree(Path: string; out St: string): boolean;
+            function ReadSingleJSON(FileContent: TStringList; IsTP : boolean; PathToStore: string = ''): boolean;
+                                // Scans local tree below 'Path' looking for any likely Example Metadata files.
+                                // For each, it loads content into a StringList and passes it to an Insert method.
+                                // Path should be absolute and points to an 'Examples' or 'Demo' dir in a Third Party
+                                // project (where it may find several project directories below).
+            function ScanLocalTree(Path: string): boolean;
             procedure fSetErrorString(Er : string);
+                                // Passed a full path to a metadata file, will open and process it.
+            function UseMetaDataFile(FFName: string; IsThirdParty : Boolean): boolean;
+            function DoesNameExist(AName : string) : boolean;
 
         public
-            LazConfigDir : string; // Where Lazarus keeps it config. Comes from uLaz_Examples, uIntf, LazarusIDE.GetPrimaryConfigPath
-            RemoteRepo : string; // eg  https://gitlab.com/api/v4/projects/32480729/repository/
+            ExList : TExampleList;
+            CatList : TStringList;      // A list of the categories we found in our examples, used by GUI.
+            LazConfigDir : string;      // Where Lazarus keeps it config. Comes from uLaz_Examples, uIntf, LazarusIDE.GetPrimaryConfigPath
+            ExamplesHome : string;      // dir above examples_working_dir where we copy examples to, set by uintf.pas, usually <lazConf>/
+            LazSrcDir    : string;      // Laz dir where, eg ~/examples lives
+            KeyFilter : string;         // A list of words, possibly grouped by " to filter Keywords
+            CatFilter  : string;        // A string that may contain 0 to n words, each word being a category as filtered by GetListData()
 
-            ExamplesHome : string; // dir above examples_working_dir where we copy examples to, set by uintf.pas, usually <lazConf>/
-            LazSrcDir    : string; // Laz dir where, eg ~/examples lives
-            GitDir     : string; // where we look for a local git repo containg examples
-            KeyFilter : string;  // A list of words, possibly grouped by " to filter Keywords
-            CatFilter  : string; // A string that may contain 0 to n words, each word being a category as filtered by GetListData()
-                                 // A service function, tests passed St to ensure its
-                                 // a valid lump of Example Meta Data.
+                                // A service function, tests passed St to ensure its
+                                // a valid lump of Example Meta Data.
             function TestJSON(const J: string; out Error, Cat: string): boolean;
                                 // Returns a path (with trailing delim) to where we will putting our downloaded
                                 // or copied Example Projects. It includes the working dir. Usually something
@@ -176,24 +149,26 @@ Windows, must convert during the insert into list stage.   }
                                 // Public, returns with next set of data, false if no more available.
                                 // Filters using CatFilter if CatFilter is not empty.
                                 // If passed KeyList is not nil, filters keywords against KeyList.
-            function GetListData(out Proj, Cat, Path, Keys: string; GetFirst: boolean;
-                KeyList: TStringList = nil): boolean;
+            function GetListData(out Proj, Cat, Path, Keys: string; out Index: integer;
+              GetFirst: boolean; KeyList: TStringList=nil): boolean;
                                 // Passed a created TStrings that it clears and fills in with all know categories
-            function getCategoryData(const CatList : TStrings) : boolean;
-                                // Pass the relative path and fileNameOnly of metafile, no extension (?)
-            function GetDesc(const FFname: string): string;
+            function getCategoryData(const ACatList : TStrings) : boolean;
             constructor Create;
+                                // This is the main "do it" call for this unit. It populates the list from the
+                                // indicated source and sorts it on a pre determined category.
             procedure LoadExData(DataSource: TExampleDataSource);
+                                // Passed a index to the ExList.
+                                // Returns a FullFilename to a lpi file of an Example, it might be the original one
+                                // in a ThirdParty Package or the one copied to the Example Working Area.
+                                // Ret '' if the lpi file is not found (because the project has not been copied or
+                                // because it somehow lacks an lpi file).
+            function GetProjectFile(ExIndex: integer): string;
+                                // Returns true if the item refered to has an .lpi file in either its original
+                                // directory (ThirdParty) or in the copy in ExampleWorkArea (Lazarus SRC).
+            function IsValidProject(ExIndex: integer): boolean;
             destructor Destroy; override;
             procedure DumpExData();
-                                // A service method, called by the GUI to download a project/
-                                // Pass it a full example remote dir (eg Beginner/Laz_Hello/).
-            function DownLoadDir(const FExampDir: string): boolean;
             function Count : integer;
-            function ExtractFieldsFromJSON(const JStr: string; out EName, Cat, Keys, Desc,
-                Error: string): boolean;
-                                // Rets T if passed name is already in list as a project name
-            function DoesNameExist(AName : string) : boolean;
             property ErrorMsg : string read ErrorString write FSetErrorString;
             class function EscJSON(InStr: string): string;
     end;
@@ -204,12 +179,6 @@ implementation
 uses
     uConst {$ifdef EXTESTMODE}, Main_Examples{$endif} ;
 
-{ A URL starts with eg 'https://gitlab.com/api/v4/projects/32480729/repository/'
-It contains a multidigit number that identifies the gitlab project. The number is a
-combination of Owner (account, group..) and repository name. Its identified in Gitlab
-web pages as "Project ID", group id will not work. A full URL might look like this -
-https://gitlab.com/api/v4/projects/32866275/repository/files/Utility%2FExScanner%2Fproject1.ico?ref=main
-}
 
 // =============================================================================
 //                T   E X A M P L E    L I S T
@@ -220,7 +189,7 @@ begin
     Result := PExRec(inherited get(Index));
 end;
 
-function TExampleList.InsertData(Cat, Desc, FFName, AName : string; Keys: TStringList): boolean;
+function TExampleList.InsertData(Cat, Desc, FFName, AName : string; Keys: TStringList; IsTP : boolean = true): boolean;
 var
     ExRecP : PExRec;
 begin
@@ -231,6 +200,7 @@ begin
     ExRecP^.Desc := Desc;
     ExRecP^.FFName := FFName;
     ExRecP^.EName := AName;
+    ExRecP^.ThirdParty := IsTP;
     result := (inherited Add(ExRecP) > -1);
 end;
 
@@ -262,9 +232,10 @@ var
 begin
     DebugLn('-------- ExampleData Examples List ' + Wherefrom + '----------');
     while i < count do begin
-        DebugLn('<<<< List - FFName=[' + Items[i]^.FFName +'] Cat=[' + Items[i]^.Category
+        DebugLn('----- List - FFName=[' + Items[i]^.FFName +'] Cat=[' + Items[i]^.Category
                 + '] EName=' + Items[i]^.EName
-                + '] Key=[' + Items[i]^.Keywords.Text + ']');
+                + '] ThirdParty=' + booltostr(Items[i]^.ThirdParty, True));
+//                + '] Key=[' + Items[i]^.Keywords.Text + ']');
         if ShowDesc then
             DebugLn(Items[i]^.Desc);
         inc(i);
@@ -304,16 +275,14 @@ end;
 //                     T     E X A M P L E   D A T A
 // =============================================================================
 
-// PkgFilesXML is the full path of the file "packagefiles.xml" which resides in the Lazarus primary config path.
-procedure TExampleData.CollectThirdPartyPackages(PkgFilesXML: String; AList: TStrings);
-// By WP, see https://forum.lazarus.freepascal.org/index.php/topic,62552.msg473109.html#msg473109
+
+procedure TExampleData.CollectThirdPartyPackages(PkgFilesXML: String; AList, SList: TStrings);
 var
-  doc: TXMLDocument;
-  userPkgLinks: TDOMNode;
-  pkgNode: TDOMNode;
-  filenameNode: TDOMNode;
-  filenameAttr: TDOMNode;
-  St : String;
+    doc: TXMLDocument;
+    userPkgLinks, pkgNode: TDOMNode;
+    NameNode, FileNameNode: TDOMNode;
+    FileNameAttr, NameAttr : TDOMNode;
+    St : String;
 begin
     if not FileExists(PkgFilesXML) then
         exit;
@@ -324,15 +293,21 @@ begin
             exit;
         pkgNode := userPkgLinks.FirstChild;
         while pkgNode <> nil do begin
-            filenameNode := pkgNode.FindNode('Filename');
-            if filenameNode <> nil then begin
-                filenameAttr := filenameNode.Attributes.GetNamedItem('Value');
-                if filenameAttr <> nil then begin
-                    // wp's code delivered ffn of installed project LPK file, I need a directory above any Examples
-                    St := filenameAttr.Nodevalue;
-                    ForcePathDelims(St);            // ExtractFileDir has problems with unexpected pathdelim....
-                    if GetThirdPartyDir(St) then
-                        AList.Add(St);
+            NameNode := pkgNode.FindNode('Name');
+            FileNameNode  := pkgNode.FindNode('Filename');
+            if  not ((NameNode = nil) or (FileNameNode = nil)) then begin
+                FileNameAttr := FileNameNode.Attributes.GetNamedItem('Value');
+                NameAttr := NameNode.Attributes.GetNamedItem('Value');
+                if not ((FileNameAttr = nil) or (NameAttr = nil)) then begin
+                    St := NameAttr.Nodevalue;
+                    if SList.IndexOf(St) > -1 then begin
+                        St := filenameAttr.Nodevalue;
+                        ForcePathDelims(St);            // ExtractFileDir has problems with unexpected pathdelim....
+                        if GetThirdPartyDir(St) then begin
+                            {$ifdef SHOW_DEBUG}debugln('CollectThirdPartyPackages adding St [' + St + ']');{$endif}
+                            AList.Add(St);
+                        end;
+                    end;
                 end;
             end;
             pkgNode := pkgNode.NextSibling;
@@ -342,24 +317,19 @@ begin
     end;
 end;
 
-{ First we look for a tag like <ExampleDirectory="../."/> just below <Package....
-  If we find it, good, thats authorative, exit.
 
-  Failing above, start with the full path and name to the LPK file, remove the filename.
-  We try and find Package->CompilerOptions->SearchPaths->OtherUnitFiles, if its
-  not present or empty, we assume that the LPK file is at the top of package tree.
-  Else we remove the rightmost dir item from the full path for each ..<PathSep> we
-  find in the OtherUnitFiles value.  }
+{ We look for a tag like <ExampleDirectory="../."/> just below <Package....
+  If we find it, we use that, relative to the actual path of the LPK file to
+  determine where we should, later, look for Examples.}
 
 function TExampleData.GetThirdPartyDir(var FullPkgFileName: string): boolean;
 var
     doc: TXMLDocument;
     NodeA, NodeB: TDOMNode;
-    ADir : string = '';
-    DebugThis : boolean = False;     // ToDo : remove these debug statements after suitable testing
+    ADir : string = 'INVALID';
 begin
     Result := true;
-    if DebugThis then debugln('TExampleData.GetThirdParty - looking at [' + FullPkgFileName + ']');
+    {$ifdef SHOW_DEBUG}debugln('TExampleData.GetThirdParty - looking at [' + FullPkgFileName + ']');{$endif}
     if not FileExists(FullPkgFileName) then
         exit(false);                                        // only real error return code
     try
@@ -375,30 +345,22 @@ begin
         FullPkgFileName := ExtractFileDir(FullPkgFileName); // Remove the LPK name, might be best we can do.
         NodeB := doc.DocumentElement.FindNode('Package');
         if NodeB = nil then exit;
-        NodeA := NodeB.FindNode('ExampleDirectory');
+        NodeA := NodeB.FindNode('ExamplesDirectory');
         if NodeA <> nil then begin
-            if DebugThis then debugln('ExampleDir Mode');
+            {$ifdef SHOW_DEBUG} debugln('ExampleDir Mode');{$endif}
             NodeB := NodeA.Attributes.GetNamedItem('Value');
             if NodeB <> nil then                            // Leave existing path in FullPkgFileName, ie assumes LPK file is level or above examples
-                ADir := NodeB.NodeValue;
-        end else begin
-            NodeA := NodeB.FindNode('CompilerOptions');     // OK, so, no ExampleDir ? we will try for OtherUnitFiles, might be OK
-            if NodeA = nil then exit;
-            NodeB := NodeA.FindNode('SearchPaths');
-            if NodeB = nil then exit;
-            NodeA := NodeB.FindNode('OtherUnitFiles');      // if we don't find OtherUnitFiles, we return with path of the LPK file and hope for the best
-            if NodeA = nil then exit;
-            NodeB := NodeA.Attributes.GetNamedItem('Value');
-            if NodeB = nil then exit;                       // Element is present but has no value ?
-            ADir := NodeB.NodeValue;
+                ADir := NodeB.NodeValue;                    // maybe something like eg ../../Examples
         end;
-        if debugThis then debugln('TExampleData.GetThirdParty - ADir [' + ADir + ']');
-        while ADir.StartsWith('..') do begin                // all we are interested in is the number of leading "../"
-            ADir := ADir.Remove(0, 3);
-            FullPkgFileName := ExtractFileDir(FullPkgFileName);
-        end;
-        Result := True;
-        if DebugThis then debugln('TExampleData.GetThirdParty - Returning OtherUnitFiles [' + FullPkgFileName + ']');
+        {$ifdef SHOW_DEBUG}
+        debugln('TExampleData.GetThirdParty - ADir=[' + ADir + '] and FullPkgFileName=[' + FullPkgFileName +']');
+        {$endif}
+        if ADir = 'INVALID' then
+            exit(False)
+        else FullPkgFileName := ExpandFileName(appendPathDelim(FullPkgFileName) + ADir);
+        {$ifdef SHOW_DEBUG}
+        debugln('GetThirdParty - FullPkgFileName=[' + FullPkgFileName +']');
+        {$endif}
     finally
         doc.free;
     end;
@@ -409,33 +371,53 @@ end;
 <CONFIG>
   <Package Version="4">
     <PathDelim Value="\"/>
-    <Name Value="KControlsLaz"/>
+    <Name Value="my_great_package"/>
     <Type Value="RunAndDesignTime"/>
-    <Author Value="Tomas Krysl"/>
-    <ExampleDirectory Value="../.">     // Maybe not there ....
-    <CompilerOptions>
-      <Version Value="11"/>
-      <PathDelim Value="\"/>
-      <SearchPaths>
-        <IncludeFiles Value="..\..\source"/>
-        <OtherUnitFiles Value="..\..\source"/>    // Maybe not there, maybe wrong for our purpose
+    <Author Value="David Bannon"/>
+    <ExampleDirectory Value="../Examples/">     // Maybe not there ....
+    .....
 *)
 
 procedure TExampleData.ScanThirdPartyPkg();
 var
-    STL : TStringList;
+    STL : TStringList;      // The list we collect potential example directories in.
+    SSlist : TStringList;   // The list of installed packages from staticpackages.inc
     i : integer;
+    St : string;
 begin
+    if not FileExists(LazConfigDir + 'staticpackages.inc') then
+        exit;               // No third party packages installed yet, that was easy !
+    SSList := TStringList.Create;
+//    SSList.Sorted := true;              // Don't sort 'cos we need edit each line below :-)
+    SSList.Duplicates := dupIgnore;
+    SSlist.LoadFromFile(LazConfigDir + 'staticpackages.inc');
+    if SSList.Count < 1 then begin               // an empty file, unlikely
+        SSList.Free;
+        exit;
+    end;
+    for i := 0 to SSList.Count -1 do begin
+        if SSList[i].EndsWith(',') then begin
+            St := SSList[i];
+            delete(St, length(St), 1);
+            SSList[i] := St;
+        end;
+    end;
     STL := TStringList.Create;
     STL.Sorted := true;
     STL.Duplicates := dupIgnore;
     try
-        CollectThirdPartyPackages(LazConfigDir + 'packagefiles.xml', STL);
-        for i := 0 to Stl.Count -1 do
-            ScanLocalTree(STL[i], True);
+        CollectThirdPartyPackages(LazConfigDir + 'packagefiles.xml', STL, SSList);
+        for i := 0 to Stl.Count -1 do begin
+            ScanLocalTree(STL[i]);
+            {$ifdef SHOW_DEBUG}
+            debugln('ScanThirdPartyPkg - Scanning ' + STL[i]);
+            {$endif}
+        end;
     finally
         STL.Free;
+        SSList.Free;
     end;
+    //ExList.DumpList('After ScanThirdPartyPkg');
 end;
 
 
@@ -459,40 +441,6 @@ end;
 function TExampleData.ExampleWorkingDir() : string;
 begin
     result := AppendPathDelim(ExamplesHome) + cExamplesDir + PathDelim ;
-end;
-
-
-function TExampleData.ExtractFieldsFromJSON(const JStr: string; out EName, Cat,
-                                                        Keys, Desc, Error: string): boolean;
-var
-    jData, jItem : TJSONData;
-    STL : TStringList;
-    St : string;
-begin
-    Error := '';
-    result := TestJSON(JStr, Error, Cat);
-    if Not Result then exit(False);               // some basic tests done, so
-    jData := GetJSON(JStr);                       // we know these 2 lines are safe.
-    jItem := jData.Items[0];
-    STL := TStringList.Create;
-    Result := False;
-    try
-        if not ExtractFromJSON('Description', jItem, Desc) then begin
-            Desc := '';
-        end;
-        Keys := '';
-        if ExtractArrayFromJSON('Keywords', JItem, StL) then begin
-            for St in STL do
-                Keys := Keys + '"' + ST + '",';
-            if Keys.length > 1 then
-                delete(Keys, Keys.Length, 1);
-        end;
-        EName := TJSONObject(jData).Names[0];
-        Result := True;
-    finally
-        STL.Free;
-        JData.Free;
-    end;
 end;
 
 function TExampleData.DoesNameExist(AName: string): boolean;
@@ -546,7 +494,7 @@ end;
 
 // jItem never contains Project Path, its either found in json Name (master)
 // or derived from where we found the project (individual). So, always passed here.
-function TExampleData.InsertJSONData(jItem : TJSONData; FFName : string; AName : string = ''): boolean;
+function TExampleData.InsertJSONData(jItem : TJSONData; FFName : string; IsTP : boolean; AName : string = ''): boolean;
 var
     Cat, Desc, AnotherName : String;
     // index : integer;
@@ -570,40 +518,65 @@ begin
     if DoesNameExist(AnotherName) then
         debugln('Warning: [TExampleData.InsertJSONData] duplicate Example Name found = '
             + AnotherName + ' ' + FFName)
-    else Result := ExList.InsertData(Cat, Desc, FFName, AnotherName, KeyWords);
+    else begin
+        Result := ExList.InsertData(Cat, Desc, FFName, AnotherName, KeyWords, IsTP);
+        if Result then
+            if CatList.Indexof(Cat) < 0 then
+                CatList.Add(Cat);
+    end;
     if not Result then KeyWords.Free;              // false means its not gone into list so our responsibility to free
 end;
 
-// Scans local tree below 'Path' looking for any likely Example Metadata files.
-// For each, it loads content into a StringList and passes it to an Insert method.
-// If AddPath, the full path is inserted, not just the relative one, eg extra dirs
-function TExampleData.ScanLocalTree(Path : string; PathAbs : boolean) : boolean;
+// Opens the examples.txt file in Examples dir of Lazarus Src, reads each line
+// as a ex-meta file, adds that example to List.
+procedure TExampleData.ScanLazarusSrc();
+var
+    LazExList : TStringList;
+    FFName, St : string;
+begin
+    FFName := LazSrcDir + 'examples' + PathDelim + 'examples.txt';
+    if not fileexists(FFName) then begin
+        debugln('Warning [TExampleData.ScanLazarusSrc] : ' + FFName + ' does not exist');
+        exit;
+    end;
+    LazExList := TStringList. Create;
+    LazExList.LoadFromFile(FFName);
+    for St in LazExList do
+        UseMetaDataFile(ExpandFileName(SetDirSeparators(LazSrcDir + St)), False);
+    LazExList.Free;
+end;
+
+function TExampleData.UseMetaDataFile(FFName : string; IsThirdParty : Boolean) : boolean;
+var
+    FileContent : TStringList;
+begin
+    FileContent := TStringList.Create;
+    try try
+        FileContent.LoadFromFile(FFName);                   // That is contents of one individual metadata file
+        except on E: Exception do
+               debugln('Warning : [TExampleData.UseMetaDataFile] ' + E.message);
+        end;
+        Result := ReadSingleJSON(FileContent, IsThirdParty, FFName);      // Calls InsertJSONData() if successful
+        if not Result then begin
+            debugln('Warning : [TExampleData.UseMetaDataFile] Bad Example Meta File : ' + FFName);
+            debugln(ErrorMsg);
+            exit;
+        end;
+    finally
+        FileContent.Free;
+    end;
+end;
+
+function TExampleData.ScanLocalTree(Path : string) : boolean;
 var
    STL : TStringList = nil;
-   FileContent : TStringList;
-   St, DirN : string;
+   St : string;
 begin
     STL := FindAllFiles(Path, '*' + MetaFileExt, True);
     try
         for St in STL do begin
-            if pos('master' + MetaFileExt, St) > 0 then continue;               // don't do master if you stumble across one
-            if pos(cExamplesDir, St) > 0 then continue;                         // thats our downloaded location
-            DirN := copy(St, 1, length(St) - length(ExtractFileName(St)) -1);   // now path without filename
-            if ExtractFileName(DirN) = 'backup' then continue;
-            FileContent := TStringList.Create;
-            try
-                FileContent.LoadFromFile(St);                        // That is contents of one individual metadata file
-                if PathAbs then
-                    Result := ReadSingleJSON(FileContent, St)       // Calls InsertJSONData() if successful
-                else  Result := ReadSingleJSON(FileContent, copy(St, Path.Length+1, 1000));    // "
-                if not Result then begin
-                    debugln('Offending file is ' + St);
-                    debugln(ErrorMsg);
-                    //exit(False);                                   // process all the good ones anyway, hope thats OK....
-                end;
-            finally
-                FileContent.Free;
-            end;
+            if St.EndsWith(MetaFileExt) then
+                UseMetaDataFile(ExpandFileName(SetDirSeparators(St)), True);
         end;
     finally
         STL.Free;
@@ -611,7 +584,7 @@ begin
 end;
 
 
-function TExampleData.ReadSingleJSON(FileContent : TStringList; PathToStore : string = '') : boolean;
+function TExampleData.ReadSingleJSON(FileContent : TStringList; IsTP : boolean; PathToStore : string = '') : boolean;
 var
     jData, jItem : TJSONData;
 begin
@@ -636,10 +609,10 @@ begin
                 end;
             end;
             if  TJSONObject(jItem).Count = 0 then begin
-                debugln('WARNING - file ' + PathToStore + ' does not contain suitable JSON : ');
+                debugln('WARNING : [TExampleData.ReadSingleJSON] - file ' + PathToStore + ' does not contain suitable JSON : ');
                 exit(false);
             end;
-            InsertJSONData(jItem, PathToStore, TJSONObject(jData).Names[0]);
+            InsertJSONData(jItem, PathToStore, IsTP, TJSONObject(jData).Names[0]);
         finally
             jData.free;
         end;
@@ -648,6 +621,7 @@ end;
 
 destructor TExampleData.Destroy;
 begin
+    CatList.Free;
     ExList.free;
     inherited Destroy;
 end;
@@ -660,7 +634,10 @@ end;
 constructor TExampleData.Create();
 begin
     ExList := TExampleList.Create;
+    CatList  := TStringList.Create;
+    LazSrcDir := IDEEnvironmentOptions.GetParsedLazarusDirectory;
 end;
+
 
 procedure TExampleData.LoadExData(DataSource: TExampleDataSource);
 begin
@@ -669,78 +646,10 @@ begin
     if not DirectoryExists(ExampleWorkingDir()) then
         if not ForceDirectory(ExampleWorkingDir()) then exit;
     case DataSource of
-        FromGitLabTree : begin                           // too slow to be useful
-                            ScanRemoteTree('');
-                         end;
-        FromLocalTree  : begin                           // not used in Lazarus Package
-                            if ScanLocalTree(GitDir, False) then        // This should leave relative paths, suitable to upload to gitlab
-                         end;
-        FromLazSrcTree : ScanLocalTree(IDEEnvironmentOptions.GetParsedLazarusDirectory, True); // Scan the Lazarus SRC tree
-        FromThirdParty : ScanThirdPartyPkg();         // Get, eg, any OPM Examples or ones manually installed by user.
-        FromCacheFile  : begin
-                            if not LoadCacheFile(ExampleWorkingDir()+ 'master' + MetaFileExt) then begin
-                                DownLoadFile('master' + MetaFileExt, ExampleWorkingDir()+ 'master' + MetaFileExt);
-                                LoadCacheFile(ExampleWorkingDir()+ 'master' + MetaFileExt);                  // ToDo : Test that worked
-                            end;
-                            ScanLocalTree(ExamplesHome, True);                // Get, eg, any OPM Examples
-                         end;
+        FromLazSrcTree : ScanLazarusSrc();          // get 'built in' examples from Lazarus
+        FromThirdParty : ScanThirdPartyPkg();       // Get, eg, any OPM Examples or ones manually installed by user.
     end;
     ExList.Sort(@CategorySorter);
-end;
-
-
-// ****************** Local master meta File methods ***************************
-
-function TExampleData.ReadMasterJSON(FileContent : TStringList) : boolean;
-var
-    jData, jItem : TJSONData;
-    i : integer;
-begin
-    Result := true;
-
-    if (FileContent.Count > 0) and (FileContent[0][1] = '{') then begin     // Ignore obvious non JSON
-        try
-            try
-                jData := GetJSON(FileContent.Text);                         // Is it valid JSON ?
-            except
-                on E: EJSONParser do begin
-                    ErrorMsg := 'ERROR EJSONParser - invalid JSON ' + E.Message;
-                    jData := Nil;                                           // Appears nothing is allocated if error  ?
-                    exit(false);
-                end;
-                on E: EScannerError do begin
-                    ErrorMsg := 'ERROR EScannerError - invalid JSON ' + E.Message;
-                    jData := Nil;                                           // Appears nothing is allocated if error  ?
-                    exit(false);
-                end;
-            end;
-            for i := 0 to jData.Count-1 do begin                            // check its real JSON, not just a field.
-                jItem := jData.Items[i];                                    // do not free.
-                if  TJSONObject(jItem).Count > 0 then begin                 // might be ...
-                    InsertJSONData(jItem, TJSONObject(jData).Names[i]);
-                end;
-            end;
-        finally
-            freeandnil(jData);
-        end;
-    end else result := False;
-end;
-
-function TExampleData.LoadCacheFile(FFName : string) : boolean;
-var
-    FileContent : TStringList;
-begin
-    if not FileExists(FFName) then exit(False);
-    FileContent := TStringList.Create;
-    try
-        FileContent.LoadFromFile(FFname);
-        Result := ReadMasterJSON(FileContent);
-        if not Result then
-            debugln('Offending file is ' + FFName);
-    finally
-        FileContent.Free;
-    end;
-    Result := true;
 end;
 
 class function TExampleData.EscJSON(InStr : string) : string;
@@ -755,8 +664,9 @@ end;
 
 // ********************  Methods relating to using the data  *******************
 
-function TExampleData.GetListData(out Proj, Cat, Path, Keys : string;
+function TExampleData.GetListData(out Proj, Cat, Path, Keys : string; out Index : integer;
                         GetFirst: boolean; KeyList : TStringList = nil): boolean;
+// ToDo : this would be a lot better just returning with the Index and letting calling process use Ex.ExList[i]^.xxxx
 var
    St : string;
    DoContinue : boolean = false;
@@ -792,94 +702,66 @@ begin
     Proj := ExList.Items[GetListDataIndex]^.EName;
     Cat := ExList.Items[GetListDataIndex]^.Category;
     Path := ExtractFilePath(ExList.Items[GetListDataIndex]^.FFname);
+    Index := GetListDataIndex;
     Keys := '';
     for St in ExList.Items[GetListDataIndex]^.Keywords do
         Keys := Keys + St + ' ';
     inc(GetListDataIndex);
 end;
 
-function TExampleData.getCategoryData(const CatList: TStrings): boolean;
+function TExampleData.getCategoryData(const ACatList: TStrings): boolean;
 var
    P : PExRec;
 begin
-    if CatList = nil then exit(false);
-    CatList.Clear;
+    if ACatList = nil then exit(false);
+    ACatList.Clear;
     for P in ExList do begin
-        if CatList.Indexof(P^.Category) < 0 then
-            CatList.Add(P^.Category);
+        if ACatList.Indexof(P^.Category) < 0 then
+            ACatList.Add(P^.Category);
     end;
     Result := True;
 end;
 
-// Passed the FFName, a combination of Path and Proj including '.ex-meta'.
-function TExampleData.GetDesc(const FFname: string): string;
+function TExampleData.IsValidProject(ExIndex : integer) : boolean;
 var
-   P : PExRec;
+    CheckPath : string;
+begin
+     CheckPath :=  GetProjectFile(ExIndex);
+     result := CheckPath <> '';
+end;
+
+function TExampleData.GetProjectFile(ExIndex : integer) : string;
+var
+    CheckPath : string;
+    Info : TSearchRec;
 begin
     Result := '';
-    for P in ExList do begin
-        if (lowercase(P^.FFname) = lowercase(FFname)+MetaFileExt) then begin     // extension must remain lower case
-            exit(P^.Desc);
+    if not ExList[ExIndex]^.ThirdParty then
+        CheckPath := ExampleWorkingDir + lowercase(ExList[ExIndex]^.EName) + PathDelim
+    else
+        CheckPath := ExtractFilePath(ExList[ExIndex]^.FFName);        // Remove metadata file name
+    {$ifdef SHOW_DEBUG} debugln('TExampleData.GetProjectFile Checking ' + CheckPath + ' for lpi file');{$endif}
+    if FindFirst(CheckPath + '*.lpi', faAnyFile, Info) = 0 then begin
+        Result := CheckPath + Info.Name;
+    end;
+    if Result = '' then
+        debugln('Hint : [TExampleData.GetProjectFile] - ' + CheckPath + ' does not contain an LPI file');
+    FindClose(Info);
+end;
+
+
+function TExampleData.GetTheRecord(const FFname: string) : PExRec;
+begin
+    for Result in ExList do begin
+        if (lowercase(Result^.FFname) = lowercase(FFname)+MetaFileExt) then begin     // extension must remain lower case
+            exit;
         end;
     end;
-    debugln('TExampleData.GetDesc - ERROR did not find Desc for ' + FFname);
-    //ExList.DumpList('TExampleData.GetDesc', True);
+    Result := Nil;
 end;
 
 
 //  *************   Methods relating to getting REMOTE data  *******************
-
-function TExampleData.DownLoadDir(const FExampDir : string): boolean;
-var
-   St : string;
-   STL : TStringlist;
-begin
-    STL := TStringList.Create;
-    try
-        result := ScanRemoteTree(FExampDir, STL);
-        for St in STL do begin
-            if not DirectoryExistsUTF8(ExampleWorkingDir() + ExtractFileDir(St)) then
-                ForceDirectory(ExampleWorkingDir() + ExtractFileDir(St));          // ToDo : but that might fail
-            DownLoadFile(St, ExampleWorkingDir() + St);
-        end;
-    finally
-        STL.Free;
-    end;
-end;
-
-
-function TExampleData.DownLoadFile(const URL, FullDest : string) : boolean;
-var
-    St, S : string;
-    MemBuffer      : TMemoryStream;
-    DecodedStream  : TMemoryStream;
-    Decoder        : TBase64DecodingStream;
-begin
-    if not Downloader(RemoteRepo + 'files/' + HTTPEncode(URL) + '?ref=main', St) then begin
-        ErrorMsg := 'TExampleData.ReadMetaFile - download FAILED ' + URL;
-        exit(false);
-    end;
-    S := ExtractFromJSON('content', St, False);               // Bring it back still base64 encoded
-    MemBuffer := TMemoryStream.Create;                        // Speedups possible here. BuffStream ?
-    try
-        MemBuffer.Write(S[1], S.length);
-        membuffer.Position := 0;
-        DecodedStream := TMemoryStream.Create;
-        Decoder       := TBase64DecodingStream.Create(MemBuffer);
-        try
-            DecodedStream.CopyFrom(Decoder, Decoder.Size);
-            DecodedStream.SaveToFile(FullDest);              // Does not appear to benifit from TBufferedFileStream
-        except on E: EStreamError do
-            ErrorMsg := 'TExampleData.DownLoadFile - Error decoding ' + URL + ' ' + E.Message;
-        end;
-    finally
-        MemBuffer.Free;
-        DecodedStream.Free;
-        Decoder.Free;
-    end;
-    result := fileexists(FullDest);
-end;
-
 
 // Passed some json, returns the indicated field IFF its an arrays. The TStringList
 // must have been created before being passed.
@@ -902,34 +784,6 @@ begin
             ErrorMsg := 'Exception while decoding JSON looking for ' + Field;
         end;
     end;
-end;
-
-function TExampleData.ExtractFromJSON(const Field, data : string; Base64 : boolean=false) : string;
-var
-    JData : TJSONData;
-    JObject : TJSONObject;
-    jStr : TJSONString;
-begin
-    result := '';
-    try
-        try
-            JData := GetJSON(Data);                         // requires a free
-            JObject := TJSONObject(jData);                  // does not require a free
-            if jObject.Find(Field, Jstr) then begin
-                if Base64 then
-                    Result := DecodeStringBase64(jStr.AsString)
-                else Result := jStr.AsString;
-            end else ErrorMsg := 'Response has no ' + Field + ' field';
-        except
-            on E:Exception do begin
-                        Result := '';               // Invalid JSON or content not present
-                        ErrorMsg := 'Exception while decoding JSON looking for ' + Field;
-            end;
-        end;
-    finally
-        JData.Free;
-    end;
-    if Result = '' then debugln('ERROR, we did not find content in ' + Field);
 end;
 
 // Returns false if cannot parse passed jItem, thats not necessarily an error,
@@ -959,118 +813,4 @@ begin
 end;
 
 
-// Gets passed the RHS of URL of a metadata file, adds that content to list.
-// eg Beginner/Laz_Hello/Laz_Hello.ex-meta
-function TExampleData.ReadRemoteMetaFile(URL : string): boolean;
-var
-    St : string;
-    StL : TStringList;
-begin
-    if not Downloader(RemoteRepo + 'files/' + HTTPEncode(URL) + '?ref=main', St) then begin
-        ErrorMsg := 'TExampleData.ReadMetaFile - download FAILED';
-        exit(false);
-    end;
-    StL := TStringList.Create;
-    try
-        STL.Text := ExtractFromJSON('content', St, True);                    // get 'content' and decode base64
-        result := ReadSingleJSON(STL, URL);
-        if not Result then
-            debugln('Offending remote file is ' + URL);
-    finally
-        STL.Free;
-    end;
-end;
-
-//           https://gitlab.com/api/v4/projects/32866275/repository/files/Utility/ExScanner/project1.ico?ref=main
-//     curl "https://gitlab.com/api/v4/projects/32866275/repository/files/Utility%2FExScanner%2Fproject1.ico?ref=main"
-
-function TExampleData.ScanRemoteTree(Path : string; STL : TstringList = nil) : boolean;
-// warning - recursive function.
-var
-   St : string;
-   jData : TJSONData;
-   jObject : TJSONObject;
-   jArray : TJSONArray;
-   i : integer;
-begin
-   ScanOneTree(Path, St);
-   jData := GetJSON(St);
-   jArray:=TJSONArray(jData);
-   for i:=0 to jArray.Count-1 do begin
-        jObject:= TJSONObject(jArray[i]);
-        if jObject.Find('type').AsString = 'tree' then                     // tree and blob are gitlab defines, in the download
-            ScanRemoteTree(jObject.Find('path').AsString, STL);
-        if (jObject.Find('type').AsString = 'blob') then begin             // A blob is a usable file
-            if STL <> nil then
-                 STL.add(jObject.Find('path').AsString)
-            else                                                           // OK, fill in List mode.
-                if (pos(MetaFileExt, jObject.Find('path').AsString) > 0) then begin
-                    if pos('master' + MetaFileExt, jObject.Find('path').AsString) < 1 then  // don't do master meta file
-                        if STL = Nil then
-                            ReadRemoteMetaFile(jObject.Find('path').AsString );
-            end;
-        end;
-   end;
-   jArray.Free;
-   Result := true;
-end;
-
-function TExampleData.ScanOneTree(Path : string; out St : string) : boolean;      // needed
-var
-   URL : string;
-begin
-    if Path <> '' then
-        URL := RemoteRepo + 'tree?path=' + Path
-    else URL := RemoteRepo + 'tree';
-    Result := Downloader(URL, St);
-end;
-
-
-function TExampleData.Downloader(URL: string; out SomeString: String): boolean;
-var
-    Client: TFPHTTPClient;
-begin
-    // This is a dumb downloader, if you need auth then maybe look at transgithub in tomboy-ng
-   // Further, gitlab API seems quite slow, up to a second for an 80K icon file ??
-   // curl "https://gitlab.com/api/v4/projects/32866275/repository/files/Utility%2FExScanner%2Fproject1.ico?ref=main"
-   // curl does the same thing in a bit over half that time. Hmm....
-    Client := TFPHttpClient.Create(nil);
-    Client.AddHeader('User-Agent','Mozilla/5.0 (compatible; fpweb)');
-    Client.AddHeader('Content-Type','application/json; charset=UTF-8');
-    Client.AllowRedirect := true;
-    SomeString := '';
-    try
-        try
-            SomeString := Client.Get(URL);
-        except
-            on E: ESocketError do begin
-                ErrorMsg := rsExNetWorkError + ' ' + E.Message;
-                exit(false);
-                end;
-            on E: EInOutError do begin
-                ErrorMsg := rsExNetWorkError + ' InOut ' + E.Message;
-                exit(False);
-                end;
-            on E: ESSL do begin
-                ErrorMsg := rsExNetWorkError + ' SSL ' + E.Message;
-                exit(False);
-                end;
-            on E: Exception do begin        // Following don't need i18n, we check they are there !
-                case Client.ResponseStatusCode of
-                    401 : ErrorMsg := 'GitHub.Downloader Exception ' + E.Message
-                            + ' downloading ' + URL
-                            + ' 401 Maybe your Token has expired or password is invalid ??';
-                    404 : ErrorMsg := 'GitHub.Downloader Exception ' + E.Message
-                            + ' downloading ' + URL + ' 404 File not found ' + URL;
-                end;
-                exit(false);
-                end;
-        end;
-    finally
-        Client.Free;
-    end;
-    result := true;
-end;
-
 end.
-

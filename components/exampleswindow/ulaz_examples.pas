@@ -43,7 +43,7 @@ type
 
     TFormLazExam = class(TForm)
         ButtonView: TButton;
-        ButtonDownload: TButton;
+        ButtonCopy: TButton;
         ButtonClose: TButton;
         ButtonOpen: TButton;
         CheckGroupCategory: TCheckGroup;
@@ -54,7 +54,7 @@ type
         Splitter2: TSplitter;
         StatusBar1: TStatusBar;
         procedure ButtonCloseClick(Sender: TObject);
-        procedure ButtonDownloadClick(Sender: TObject);
+        procedure ButtonCopyClick(Sender: TObject);
         procedure ButtonOpenClick(Sender: TObject);
         procedure ButtonViewClick(Sender: TObject);
         procedure CheckGroupCategoryDblClick(Sender: TObject);
@@ -65,7 +65,7 @@ type
         procedure EditSearchKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
         procedure FormCreate(Sender: TObject);
         procedure FormDestroy(Sender: TObject);
-        procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+        procedure FormKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
         procedure FormShow(Sender: TObject);
         procedure ListView1Click(Sender: TObject);
         procedure ListView1DblClick(Sender: TObject);
@@ -80,18 +80,13 @@ type
         procedure BuildSearchList(SL: TStringList; const Term: AnsiString);
                         // Copies the passed ex dir to a dir named for the Proj.
                         // SrcDir includes name of actual dir, DestDir does not.
+                        // Proj should be lowercase, used as dir name, as per Lazarus std
         function CopyFiles(const Proj, SrcDir, DestDir: string): boolean;
                         // Checks for existance of passed path, the last element of which is case Insensitive.
                         // Returns with the actual name of the full path if successful.
         function DirExistsCaseInSense(const APath: string; out ActualFullDir: string) : boolean;
-                        // Passed the Full Path (with or without trailing delim) to a Project Dir, rets F if not
-                        // present, T if Dir exists. If it finds an lpi file, rets with FFilename, else empty string.
-                        // WriteProjectToOpen will cause a download / copy of the files.
-                        // Sets the Regional Var, ProjectToOpen if WriteProjectToOpen is true.
-                        // Thats triggers a Lazarus Open when this window closes.
-        function GetProjectFile(const APath: string; WriteProjectToOpen: boolean = false): boolean;
         procedure KeyWordSearch;
-        procedure NewLVItem(const Proj, Path, KeyWords, Cat: string);
+        procedure NewLVItem(const Proj, Path, KeyWords, Cat: string; ExIndex: integer);
                         // Displays the current content of Examples List in the listview and
                         // populates the Category checkboxes.
         procedure LoadUpListView();
@@ -117,15 +112,16 @@ implementation
 
 // ------------------------ L I S T   V I E W ----------------------------------
 
-procedure TFormLazExam.NewLVItem(const Proj, Path, KeyWords, Cat : string);
+procedure TFormLazExam.NewLVItem(const Proj, Path, KeyWords, Cat : string; ExIndex : integer);
 var
     TheItem : TListItem;
 begin
     TheItem := ListView1.Items.Add;
     TheItem.Caption := Proj;
     TheItem.SubItems.Add(KeyWords);
-    TheItem.SubItems.Add(Path);
+    TheItem.SubItems.Add(Path);         // Thats the original path, not the working copy
     TheItem.SubItems.Add(Cat);
+    TheItem.Data := pointer(ExIndex);   // we are just storing an integer in here, not a pointer
 end;
 
 procedure TFormLazExam.ListView1SelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
@@ -137,28 +133,31 @@ procedure TFormLazExam.LoadUpListView();
 var
     Proj, Cat, Path, KeyW : string;
     Cnt : integer = 0;
+    ExIndex : integer;
     KeyList : TStringList = nil;
 begin
-    Screen.Cursor := crHourGlass;
+//    Screen.Cursor := crHourGlass;
     KeyList := TStringList.Create;
     ListView1.BeginUpdate;
     try
         BuildSearchList(KeyList, EditSearch.Text);
-        if Ex.GetListData(Proj, Cat, Path, KeyW, True, KeyList) then begin
-            NewLVItem(Proj, Path, KeyW, Cat);
+        if Ex.GetListData(Proj, Cat, Path, KeyW, ExIndex, True, KeyList) then begin
+            NewLVItem(Proj, ExtractFilePath(Ex.ExList[ExIndex]^.FFName), KeyW, Ex.ExList[ExIndex]^.Category, ExIndex);
+            // NewLVItem(Proj, Path, KeyW, Cat);
             inc(Cnt);
         end;
-        while Ex.GetListData(Proj, Cat, Path, KeyW, False, KeyList) do begin
-            NewLVItem(Proj, Path, KeyW, Cat);
+        while Ex.GetListData(Proj, Cat, Path, KeyW, ExIndex, False, KeyList) do begin
+            NewLVItem(Proj, ExtractFilePath(Ex.ExList[ExIndex]^.FFName), KeyW, Ex.ExList[ExIndex]^.Category, ExIndex);
+            // NewLVItem(Proj, Path, KeyW, Cat);
             inc(Cnt);
         end;
     finally
         KeyList.Free;
-        Screen.Cursor := crDefault;
+//        Screen.Cursor := crDefault;
         ListView1.EndUpdate;
     end;
     ButtonOpen.Enabled := false;
-    ButtonDownLoad.enabled := false;
+    ButtonCopy.enabled := false;
     ButtonView.enabled := false;
     Memo1.append(format(rsFoundExampleProjects, [Cnt]));
     StatusBar1.SimpleText := format(rsFoundExampleProjects, [Cnt]);
@@ -166,17 +165,22 @@ begin
 end;
 
 procedure TFormLazExam.ListView1Click(Sender: TObject);
+var
+    ExIndex : integer;
 begin
     if  ListView1.Selected = nil then exit;         // White space below entries ....
+    ExIndex := integer(ListView1.Selected.Data);    // Yes, tacky cludge, its not a pointer, just an integer
     Memo1.Clear;
     Memo1.append(ListView1.Selected.SubItems[1]);
     Memo1.append('');
-    Memo1.Append(Ex.GetDesc(ListView1.Selected.SubItems[1] + ListView1.Selected.Caption));
-    // ListView1.Selected.Caption may be CamelCase from JSON.Name rather than path where we found it.
-    ButtonDownLoad.enabled := true;
+    Memo1.Append(Ex.ExList[ExIndex]^.Desc);
+    ButtonCopy.enabled := true;
     ButtonView.enabled := true;
-    //ButtonOpen.Enabled := GetProjectFile(ListView1.Selected.SubItems[1]);
-    ButtonOpen.Enabled := GetProjectFile(Ex.ExampleWorkingDir() + ListView1.Selected.Caption);
+    ButtonOpen.Enabled := Ex.IsValidProject(ExIndex);
+    if Ex.ExList[ExIndex]^.ThirdParty then begin
+        ButtonCopy.Enabled := False;
+        ButtonView.Enabled := False;
+    end;
 end;
 
 procedure TFormLazExam.ListView1DblClick(Sender: TObject);
@@ -185,7 +189,7 @@ begin
     if ListView1.Selected = Nil then exit
     else
         LastListViewIndex := ListView1.ItemIndex;   // So other methods can find user choice
-    ButtonDownloadClick(self);
+    ButtonCopyClick(self);
     ButtonOpenClick(self);
 end;
 
@@ -229,47 +233,48 @@ procedure TFormLazExam.ButtonOpenClick(Sender: TObject);
 begin
     if LastListViewIndex < 0 then exit;
     ListView1.ItemIndex:= LastListViewIndex;
-    if GetProjectFile(Ex.ExampleWorkingDir() + ListView1.Selected.Caption, True)     // Sets ProjectToOpen on success
-        and ProjectToOpen.IsEmpty then
-            showmessage(rsExNoProjectFile)
-        else
-            close;
+    ProjectToOpen := Ex.GetProjectFile(integer(ListView1.Selected.Data));       // Yes, tacky cludge, its not a pointer, just an integer
+    if ProjectToOpen.IsEmpty then                                               // Computer says no
+       showmessage(rsExNoProjectFile)
+    else
+        close;
 end;
 
-procedure TFormLazExam.ButtonDownloadClick(Sender: TObject);
+procedure TFormLazExam.ButtonCopyClick(Sender: TObject);
+var
+    ExIndex : integer;
 begin
     if LastListViewIndex < 0 then exit;         // Can that happen ?
     ListView1.ItemIndex:= LastListViewIndex;
 
-    if GetProjectFile(Ex.ExampleWorkingDir() + ListView1.Selected.Caption) then begin
+    ExIndex := integer(ListView1.Selected.Data);  // Yes, tacky cludge, its not a pointer, just an integer
+    if Ex.ExList[ExIndex]^.ThirdParty then exit;  // We don't 'download' ThirdParty examples.
+
+    if Ex.IsValidProject(ExIndex) then begin
+//    if GetProjectFile(Ex.ExampleWorkingDir() + ListView1.Selected.Caption) then begin
         if Application.MessageBox(pchar(rsRefreshExistingExample)
                         , pchar(ListView1.Selected.Caption)
                         , MB_ICONQUESTION + MB_YESNO) <> IDYES then exit;
         // OK - we overwrite. Any other files user has added are not removed
     end;
     Screen.Cursor := crHourGlass;
+    Application.ProcessMessages;
     try
         if Ex <> nil then begin
-            {$ifdef ONLINE_EXAMPLES}
-            StatusBar1.SimpleText := rsExDownloadingProject;
-            Application.ProcessMessages;
-                EX.DownLoadDir(ListView1.Selected.SubItems[1]);
-            StatusBar1.SimpleText := rsExProjectDownloadedTo + ' ' + Ex.MasterMeta(True)
-                                                       + ListView1.Selected.Caption;
-            {$else}
             StatusBar1.SimpleText := rsExCopyingProject;
             Application.ProcessMessages;
-            if copyFiles(  ListView1.Selected.Caption,
+            // note we copy files to exampleworkingdir + lowercase(exampe name)
+            if copyFiles(  lowercase(ListView1.Selected.Caption),        // force toplevel ex dir to lowercase as per lazarus std
                         ListView1.Selected.SubItems[1], Ex.ExampleWorkingDir()) then
                 StatusBar1.SimpleText := rsExProjectCopiedTo + ' ' + Ex.ExampleWorkingDir()
                             + ListView1.Selected.Caption
             else StatusBar1.SimpleText := rsFailedToCopyFilesTo + ' ' + Ex.ExampleWorkingDir();
-            {$endif}
         end;
     finally
         Screen.Cursor := crDefault;
+        Application.ProcessMessages;
     end;
-    ButtonOpen.Enabled := GetProjectFile(Ex.ExampleWorkingDir() + ListView1.Selected.Caption);
+    ButtonOpen.Enabled := Ex.IsValidProject(ExIndex);
     ListView1.ItemIndex := -1;      // Unselect again for the Tabbers of this world.
 end;
 
@@ -294,7 +299,7 @@ var
     St  : string;
     ChopOff : integer;
 begin
-    ChopOff := length(AppendPathDelim(SrcDir));
+    ChopOff := length(ExpandFileName(AppendPathDelim(SrcDir)));
     if not ForceDirectoriesUTF8(DestDir + Proj) then exit(False);
     STL := FindAllDirectories(SrcDir, True);
     for St in STL do
@@ -304,7 +309,8 @@ begin
     STL := FindAllFiles(SrcDir, AllFilesMask, True, faAnyFile);
     for St in STL do begin
         if not copyfile(St, DestDir + Proj + copy(St, ChopOff, 1000)) then exit(False);
-        //debugln('TFormLazExam.CopyFiles Copy ' + ST + #10 + ' to ' + DestDir + Proj + copy(St, ChopOff, 1000));  // DRB
+//        debugln('TFormLazExam.CopyFiles Copy ' + ST + #10 + '    to ' + DestDir + Proj + copy(St, ChopOff, 1000));
+//        debugln('    [' + DestDir + '] [' + Proj +'] [' + copy(St, ChopOff, 1000) +']');
     end;
     STL.Free;
 end;
@@ -327,24 +333,6 @@ begin
     ListView1.Clear;
     PrimeCatFilter();
     LoadUpListView();
-end;
-
-
-// ---------------------- Setting Project to Open ------------------------------
-
-function TFormLazExam.GetProjectFile(const APath : string; WriteProjectToOpen : boolean = false) : boolean;
-var
-    Info : TSearchRec;
-    RealDir : string;
-    // The project dir name may not be a case match for the Project Name.
-    // We are looking here at dir under example_work_area so some match is expected
-begin
-    Result := DirExistsCaseInSense(APath, RealDir);
-    if not (Result and WriteProjectToOpen) then exit;
-    if FindFirst(RealDir + '*.lpi', faAnyFile, Info) = 0 then
-        ProjectToOpen := RealDir + Info.Name
-    else ProjectToOpen := '';
-    FindClose(Info);
 end;
 
 function TFormLazExam.DirExistsCaseInSense(const APath : string; out ActualFullDir : string) : boolean;
@@ -504,9 +492,9 @@ begin
     // These are ObjectInspector set but I believe I cannot get OI literals set in a Package ??
     ButtonClose.Caption := rsExampleClose;
     {$ifdef ONLINE_EXAMPLES}
-    ButtonDownload.Caption := rsExampleDownLoad;
+    ButtonCopy.Caption := rsExampleDownLoad;
     {$else}
-    ButtonDownload.Caption := rsExampleCopy;
+    ButtonCopy.Caption := rsExampleCopy;
     {$endif}
     ButtonView.Caption := rsExampleView;
     ButtonOpen.Caption := rsExampleOpen;
@@ -530,44 +518,40 @@ end;
 procedure TFormLazExam.FormShow(Sender: TObject);
 var
     i : integer;
+    T1, T2, T3, T4, T5 : dword;       // ToDo : remove
 begin
+    Screen.BeginWaitCursor;
+    Application.ProcessMessages;
+    T1 := gettickcount64();
     Memo1.clear;
-    EditSearch.text := '';              // or should we resume previous search ?
+    EditSearch.text := '';
     Top := Screen.Height div 10;
     Height := Screen.Height * 7 div 10;
     ListView1.Height:= Screen.Height * 3 div 10;
     Ex.Free;
     StatusBar1.SimpleText := rsExSearchingForExamples;
     Ex := TExampleData.Create();
-    Ex.GitDir     := GitDir;
     Ex.ExamplesHome := ExamplesHome;
-    Ex.RemoteRepo := RemoteRepo;
     EX.LazConfigDir := LazConfigDir;
-    {$ifdef ONLINE_EXAMPLES}
-    Ex.LoadExData(FromCacheFile);
-    {$else}
-    Screen.BeginWaitCursor;
-    Application.ProcessMessages;
+    T2 := gettickcount64();
     Ex.LoadExData(FromLazSrcTree);
+    T3 := gettickcount64();
     Ex.LoadExData(FromThirdParty);
-    Screen.EndWaitCursor;
-    Application.ProcessMessages;
-    {$endif}
     if Ex.ErrorMsg <> '' then
         Showmessage(Ex.ErrorMsg);                       // Note : previously, we treated this as fatal ?
-    ex.getCategoryData(CheckGroupCategory.Items);       // This sets the name of all categories in the CheckGroup
+    T4 := gettickcount64();
+    CheckGroupCategory.Items := Ex.CatList;             // 13-15mS for any of these
     for i := 0 to CheckGroupCategory.items.Count-1 do   // check all the categories we found.
         CheckGroupCategory.Checked[i] := true;
     ListView1.Clear;
     PrimeCatFilter();
     LoadUpListView();
     ListView1.SetFocus;
+    T5 := gettickcount64();
+    Screen.EndWaitCursor;
+    Application.ProcessMessages;
+    debugln('TFormLazExam.FormShow Timing ' + inttostr(T2-T1) + 'mS '  + inttostr(T3-T2) + 'mS '  + inttostr(T4-T3) + 'mS '  + inttostr(T5-T4) + 'mS');
 end;
-
-{   Must add a FormClose event 
-	IDEDialogLayoutList.SaveLayout(Self);
-}
-
 
 end.
 

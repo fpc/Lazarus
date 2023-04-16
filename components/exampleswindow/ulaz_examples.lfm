@@ -129,7 +129,7 @@ object FormLazExam: TFormLazExam
     Width = 781
     Panels = <>
   end
-  object ButtonDownload: TButton
+  object ButtonCopy: TButton
     AnchorSideLeft.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonOpen
@@ -137,12 +137,12 @@ object FormLazExam: TFormLazExam
     Left = 6
     Height = 31
     Top = 340
-    Width = 89
+    Width = 50
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Left = 6
-    Caption = 'Download'
-    OnClick = ButtonDownloadClick
+    Caption = 'Copy'
+    OnClick = ButtonCopyClick
     TabOrder = 5
   end
   object ButtonClose: TButton
@@ -151,7 +151,7 @@ object FormLazExam: TFormLazExam
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonOpen
     AnchorSideBottom.Side = asrBottom
-    Left = 270
+    Left = 231
     Height = 31
     Top = 340
     Width = 54
@@ -164,11 +164,11 @@ object FormLazExam: TFormLazExam
     TabOrder = 8
   end
   object ButtonOpen: TButton
-    AnchorSideLeft.Control = ButtonDownload
+    AnchorSideLeft.Control = ButtonCopy
     AnchorSideLeft.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = StatusBar1
-    Left = 101
+    Left = 62
     Height = 31
     Top = 340
     Width = 54
@@ -186,7 +186,7 @@ object FormLazExam: TFormLazExam
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonOpen
     AnchorSideBottom.Side = asrBottom
-    Left = 161
+    Left = 122
     Height = 31
     Top = 340
     Width = 103
