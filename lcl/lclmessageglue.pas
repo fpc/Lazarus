@@ -222,11 +222,12 @@ end;
 function LCLSendShowWindowMsg(const Target: TControl; Show: Boolean;
   Status: LPARAM = 0): PtrInt;
 var
-   Mess : TLMShowWindow;
+  Mess : TLMShowWindow;
 begin
   FillChar(Mess,SizeOf(Mess),0);
   Mess.Msg := LM_SHOWWINDOW;
-  Mess.Show := True;
+  Mess.Show := Show;
+  Mess.Status := Status;
 
   Result := DeliverMessage(Target, Mess);
 end;
