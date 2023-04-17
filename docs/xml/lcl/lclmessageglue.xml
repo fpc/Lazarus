@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
 <package name="lcl">
-
 <!--
 ====================================================================
 LCLMessageGlue
 ====================================================================
 -->
-
 <module name="LCLMessageGlue">
 <short>
 Contains routines used to send messages from widgetset classes to the LCL.
@@ -23,1315 +21,1014 @@ This file is part of the Lazarus Component Library (<b>LCL</b>).
 </p>
 </descr>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="Classes">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+<!-- unresolved references -->
+<element name="Classes"/>
+<element name="Forms"/>
+<element name="LCLClasses"/>
+<element name="LCLProc"/>
+<element name="Controls"/>
+<element name="Messages"/>
+<element name="LMessages"/>
+<element name="LCLType"/>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="Forms">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLProc">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="Controls">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LMessages">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- unresolved type reference Visibility: default -->
-<element name="LCLType">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: default -->
 <element name="DeliverMessage">
-<short/>
+<short>
+Delivers a message (TLMessage) to the specified component, control or object.
+</short>
 <descr>
+<p>
+<var>DeliverMessage</var> ensures that the reference count for a TLCLComponent 
+descendant in Target is maintained during message delivery. The reference 
+count is incremented prior to message delivery, and decremented when the 
+operation is completed.
+</p>
+<p>
+If Target is a TControl descendant, the TLMessage instance is sent to the 
+WindowProc method in the control. For TObject descendants, the message is sent 
+using the Dispatch method in the class instance.
+</p>
+<p>
+An exception which occurs during message delivery is forwarded to the 
+HandleException method in the Application.
+</p>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="#lcl.lmessages.TLMessage">TLMessage</link>
+<link id="#lcl.forms.Application">Application</link>
+<link id="#lcl.forms.TApplication.HandleException">TApplication.HandleException</link>
+<link id="#lcl.lclclasses.TLCLComponent">TLCLComponent</link>
+<link id="#lcl.controls.TControl.WindowProc">TControl.WindowProc</link>
+<link id="#rtl.system.TObject.Dispatch">TObject.Dispatch</link>
 </seealso>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="DeliverMessage.Result">
-<short/>
+<short>
+Pointer to the result code from the TLMessage instance.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="DeliverMessage.Target">
-<short/>
+<short>
+Control or object where the message is delivered.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="DeliverMessage.AMessage">
-<short/>
+<short>
+TLMessage instance with the message type constant and result code used in the 
+routine.
+</short>
 </element>
 
-<!-- function Visibility: default -->
+<element name="SendSimpleMessage">
+<short>
+Creates, configures, and delivers a message to the specified target control.
+</short>
+<descr>
+<p>
+Calls DeliverMessage to apply or dispatch the message to the target.
+</p>
+</descr>
+<seealso>
+<link id="DeliverMessage"/>
+<link id="#lcl.lmessages.TLMessage">TLMessage</link>
+</seealso>
+</element>
+<element name="SendSimpleMessage.Result">
+<short>
+Pointer to the integer result code in the message. 0 if the message was 
+accepted, non-zero if the message was rejected.
+</short>
+</element>
+<element name="SendSimpleMessage.Target">
+<short>
+Control where the message is delivered.
+</short>
+</element>
+<element name="SendSimpleMessage.Msg">
+<short>
+Message type constant sent in the simple message.
+</short>
+</element>
+
 <element name="LCLSendActivateMsg">
-<short/>
+<short>
+Delivers a LM_ACTIVATE message to the specified target control.
+</short>
 <descr>
+<p>
+Calls DeliverMessage to apply or dispatch the message to the target.
+</p>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="DeliverMessage"/>
+<link id="#lcl.lmessages.TLMessage">TLMessage</link>
 </seealso>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendActivateMsg.Result">
-<short/>
+<short>
+Pointer to the integer result code from the delivered message. 0 indicates the 
+message was accepted. A non-zero value indicates the message was rejected.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendActivateMsg.Target">
-<short/>
+<short>
+The Control where the LM_ACTIVATE message is delivered.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendActivateMsg.Active">
-<short/>
+<short>
+Indicates if the control should be active.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendActivateMsg.Minimized">
-<short/>
+<short>
+<b>True</b> if the control should be minimized. <b>False</b> if the control is 
+not in the minimized state.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendActivateMsg.ActiveWindow">
-<short/>
+<short>
+Optional handle for the current or newly active window for the control. 
+Default value is 0.
+</short>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendSetFocusMsg">
-<short/>
+<short>
+Sends a LM_SETFOCUS message to the target control.
+</short>
 <descr>
+<p>
+Calls SendSimpleMessage to send the message to the target.
+</p>
 </descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendSetFocusMsg.Result">
-<short/>
+<short>
+Pointer to the Integer result code for the message. 0 indicates the message 
+was accepted. A non-zero value indicates the message was rejected.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendSetFocusMsg.Target">
-<short/>
+<short>
+The control where the message is sent.
+</short>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendKillFocusMsg">
-<short/>
+<short>
+Sends a LM_KILLFOCUS message to the target control.
+</short>
 <descr>
+<p>
+Calls SendSimpleMessage to send the message to the target.
+</p>
 </descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendKillFocusMsg.Result">
-<short/>
+<short>
+Pointer to the Integer result code for the message. 0 indicates the message 
+was accepted. A non-zero value indicates the message was rejected.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendKillFocusMsg.Target">
-<short/>
+<short>
+The control where the message is sent.
+</short>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendShowWindowMsg">
-<short/>
+<short>
+Delivers a LM_SHOWWINDOW message to the target control.
+</short>
 <descr>
+<p>
+Calls DeliverMessage to apply or dispatch the message for the target control.
+</p>
 </descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<version>
+Modified in LCL version 2.4 to use the values in the Show and Status arguments 
+in the message for the target control.
+</version>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendShowWindowMsg.Result">
-<short/>
+<short>
+Pointer to the Integer result code for the message. 0 indicates the message 
+was accepted. A non-zero value indicates the message was rejected.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendShowWindowMsg.Target">
-<short/>
+<short>
+Component, control, or class instance where the message is delivered.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendShowWindowMsg.Show">
-<short/>
+<short>
+Contains <b>True</b> if the window is visible, otherwise <b>False</b>.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendShowWindowMsg.Status">
-<short/>
+<short>
+Normally contains zero. A non-zero value if the message was generated when 
+another window was shown or hidden.
+</short>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendSizeMsg">
-<short/>
+<short>
+Delivers a LM_SIZE message to the target control.
+</short>
 <descr>
+<p>
+The SizeType argument can contain values from the constants defined in the 
+LCLType unit, like:
+</p>
+<dl>
+<dt>SIZE_RESTORED (0)</dt>
+<dd>This is the default value.</dd>
+<dt>SIZE_MINIMIZED (1)</dt>
+<dd>The target was minimized.</dd>
+<dt>SIZE_MAXIMIZED (2)</dt>
+<dd>The target was maximized.</dd>
+<dt>SIZE_FULLSCREEN (16)</dt>
+<dd>Non-WINAPI value to support wsFullScreen state.</dd>
+<dt>Size_SourceIsInterface (128)</dt>
+<dd>
+This flag is automatically added to the argument value when FromInterface is 
+set to <b>True</b>.
+</dd>
+</dl>
+<p>
+Calls DeliverMessage to apply or dispatch the message to the target.
+</p>    
 </descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendSizeMsg.Result">
-<short/>
+<short>
+Pointer to the Integer result code for the message. 0 indicates the message 
+was accepted. A non-zero value indicates the message was rejected.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendSizeMsg.Target">
-<short/>
+<short>
+Component, control, or class instance where the message is delivered.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendSizeMsg.Width">
-<short/>
+<short>
+Contains the new width in pixels for the target.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendSizeMsg.Height">
-<short/>
+<short>
+Contains the new height in pixels for the target.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendSizeMsg.SizeType">
-<short/>
+<short>
+<b>True</b> if the message was sent from the widgetset to notify the LCL of a 
+size change.  <b>False</b> to make the widgetset change the size of the 
+control. Default value is <b>True</b>.
+</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendSizeMsg.FromInterface">
-<short/>
+<short>
+Indicates whether the sizing message originated in the LCL interface. Default 
+value is <b>True</b>.
+</short>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendMoveMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Delivers a LM_MOVE message to the target control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendMoveMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMoveMsg.Target">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMoveMsg.XPos">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMoveMsg.YPos">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMoveMsg.MoveType">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMoveMsg.FromInterface">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendMouseMoveMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Delivers a LM_MouseMove message to the target control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendMouseMoveMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMouseMoveMsg.Target">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMouseMoveMsg.XPos">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMouseMoveMsg.YPos">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMouseMoveMsg.ShiftState">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendMouseDownMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Delivers a TLMMouse button down message for the specified button to the target 
+control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendMouseDownMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMouseDownMsg.Target">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMouseDownMsg.XPos">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMouseDownMsg.YPos">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMouseDownMsg.Button">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMouseDownMsg.ShiftState">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendMouseUpMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Delivers a TLMMouse button up message for the specified button to the target 
+control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendMouseUpMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMouseUpMsg.Target">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMouseUpMsg.XPos">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMouseUpMsg.YPos">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMouseUpMsg.Button">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMouseUpMsg.ShiftState">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
-<element name="LCLSendCaptureChangedMsg">
+<element name="LCLSendMouseWheelMsg">
+<short>
+Delivers a TLMMouseEvent mouse wheel message to the target control.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="LCLSendMouseWheelMsg.Result">
 <short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+</element>
+<element name="LCLSendMouseWheelMsg.Target">
+<short/>
+</element>
+<element name="LCLSendMouseWheelMsg.XPos">
+<short/>
+</element>
+<element name="LCLSendMouseWheelMsg.YPos">
+<short/>
+</element>
+<element name="LCLSendMouseWheelMsg.WheelDelta">
+<short/>
+</element>
+<element name="LCLSendMouseWheelMsg.ShiftState">
+<short/>
 </element>
 
-<!-- function result Visibility: default -->
+<element name="LCLSendCaptureChangedMsg">
+<short>
+Sends a LM_CAPTURECHANGED message to the target control.
+</short>
+<descr>
+<p>
+A capture changed message occurs when mouse capture for a control is enabled. 
+Mouse capture indicates that mouse input is redirected to the target control, 
+even when the mouse pointer is not within the bounds for the control.
+</p>
+</descr>
+<seealso/>
+</element>
 <element name="LCLSendCaptureChangedMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendCaptureChangedMsg.Target">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendSelectionChangedMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Sends a LM_SELCHANGE message to the target control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendSelectionChangedMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendSelectionChangedMsg.Target">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendDestroyMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Sends a LM_DESTROY message to the target control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendDestroyMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendDestroyMsg.Target">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendChangedMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Delivers a LM_CHANGED message to the target control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendChangedMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendChangedMsg.Target">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendChangedMsg.ItemIndex">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendClickedMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Sends a LM_CLICKED message to the target control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendClickedMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendClickedMsg.Target">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
-<element name="LCLSendPressedMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="LCLSendPressedMsg.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="LCLSendPressedMsg.Target">
-<short/>
-</element>
-
-<!-- function Visibility: default -->
-<element name="LCLSendReleasedMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="LCLSendReleasedMsg.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="LCLSendReleasedMsg.Target">
-<short/>
-</element>
-
-<!-- function Visibility: default -->
-<element name="LCLSendMoveCursorMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="LCLSendMoveCursorMsg.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="LCLSendMoveCursorMsg.Target">
-<short/>
-</element>
-
-<!-- function Visibility: default -->
 <element name="LCLSendMouseEnterMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Sends a CM_MOUSEENTER control message to the target control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendMouseEnterMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMouseEnterMsg.Target">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendMouseLeaveMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Sends a CM_MOUSELEAVE control message to the target control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendMouseLeaveMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMouseLeaveMsg.Target">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
-<element name="LCLSendInsertTextMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="LCLSendInsertTextMsg.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="LCLSendInsertTextMsg.Target">
-<short/>
-</element>
-
-<!-- function Visibility: default -->
-<element name="LCLSendDeleteTextMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="LCLSendDeleteTextMsg.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="LCLSendDeleteTextMsg.Target">
-<short/>
-</element>
-
-<!-- function Visibility: default -->
 <element name="LCLSendSetEditableMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Sends a LM_SETEDITABLE message to the target control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendSetEditableMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendSetEditableMsg.Target">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendMoveWordMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Sends a LM_MOVEWORD message to the target control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendMoveWordMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMoveWordMsg.Target">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendMovePageMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Sends a LM_MOVEPAGE message to the target control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendMovePageMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMovePageMsg.Target">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendMoveToRowMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Sends a LM_MOVETOROW message to the target control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendMoveToRowMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMoveToRowMsg.Target">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendMoveToColumnMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Sends a LM_MOVETOCOLUMN message to the target control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendMoveToColumnMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMoveToColumnMsg.Target">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendKillCharMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Sends a LM_KILLCHAR message to the target control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendKillCharMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendKillCharMsg.Target">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendKillWordMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Sends a LM_KILLWORD message to the target control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendKillWordMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendKillWordMsg.Target">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendKillLineMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Sends a LM_KILLLINE message to the target control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendKillLineMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendKillLineMsg.Target">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendCutToClipboardMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Sends a LM_CUT message to the target control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendCutToClipboardMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendCutToClipboardMsg.Target">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendCopyToClipboardMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Sends a LM_COPY message to the target control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendCopyToClipboardMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendCopyToClipboardMsg.Target">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendPasteFromClipboardMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Sends a LM_PASTE message to the target control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendPasteFromClipboardMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendPasteFromClipboardMsg.Target">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
-<element name="LCLSendExposeEventMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="LCLSendExposeEventMsg.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="LCLSendExposeEventMsg.Target">
-<short/>
-</element>
-
-<!-- function Visibility: default -->
 <element name="LCLSendConfigureEventMsg">
+<short>
+Sends a LM_CONFIGUREEVENT message to the target control.
+</short>
 <short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendConfigureEventMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendConfigureEventMsg.Target">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendPaintMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Delivers a LM_PAINT message to the target control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendPaintMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendPaintMsg.Target">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendPaintMsg.DC">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendPaintMsg.PaintStruct">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
-<element name="LCLSendKeyDownEvent">
+<element name="LCLSendEraseBackgroundMsg">
+<short>
+Delivers a LM_ERASEBKGND message to the target control.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="LCLSendEraseBackgroundMsg.Result">
 <short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+</element>
+<element name="LCLSendEraseBackgroundMsg.Target">
+<short/>
+</element>
+<element name="LCLSendEraseBackgroundMsg.DC">
+<short/>
 </element>
 
-<!-- function result Visibility: default -->
+<element name="LCLSendKeyDownEvent">
+<short>
+Delivers a key down message to the target control.
+</short>
+<descr/>
+<seealso/>
+</element>
 <element name="LCLSendKeyDownEvent.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendKeyDownEvent.Target">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendKeyDownEvent.CharCode">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendKeyDownEvent.KeyData">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendKeyDownEvent.BeforeEvent">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendKeyDownEvent.IsSysKey">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendKeyUpEvent">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Delivers a key up message to the target control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendKeyUpEvent.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendKeyUpEvent.Target">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendKeyUpEvent.CharCode">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendKeyUpEvent.KeyData">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendKeyUpEvent.BeforeEvent">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendKeyUpEvent.IsSysKey">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
-<element name="LCLSendTimerMsg">
+<element name="LCLSendCharEvent">
+<short>
+Delivers a TLMChar message to the target control (and optionally to the 
+application).
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="LCLSendCharEvent.Result">
 <short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+</element>
+<element name="LCLSendCharEvent.Target">
+<short/>
+</element>
+<element name="LCLSendCharEvent.CharCode">
+<short/>
+</element>
+<element name="LCLSendCharEvent.KeyData">
+<short/>
+</element>
+<element name="LCLSendCharEvent.BeforeEvent">
+<short/>
+</element>
+<element name="LCLSendCharEvent.IsSysKey">
+<short/>
+</element>
+<element name="LCLSendCharEvent.ANotifyUserInput">
+<short/>
 </element>
 
-<!-- function result Visibility: default -->
+<element name="LCLSendUTF8KeyPress">
+<short>
+Applies the specified UTF-8-encoded character to the target control.
+</short>
+<descr/>
+<version>
+Modified in LCL version 2.4 to change the AUTF8Char argument to a variable 
+parameter.
+</version>
+<seealso/>
+</element>
+<element name="LCLSendUTF8KeyPress.Result">
+<short/>
+</element>
+<element name="LCLSendUTF8KeyPress.Target">
+<short/>
+</element>
+<element name="LCLSendUTF8KeyPress.AUTF8Char">
+<short/>
+</element>
+<element name="LCLSendUTF8KeyPress.IsSysKey">
+<short/>
+</element>
+
+<element name="LCLSendTimerMsg">
+<short>
+Delivers a LM_TIMER message to the target control.
+</short>
+<descr/>
+<seealso/>
+</element>
 <element name="LCLSendTimerMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendTimerMsg.Target">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendTimerMsg.TimerID">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendTimerMsg.TimerProc">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendExitMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Sends a LM_EXIT message to the target control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendExitMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendExitMsg.Target">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendCloseQueryMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Sends a LM_CLOSEQUERY message to the target control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendCloseQueryMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendCloseQueryMsg.Target">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendDragStartMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Sends a LM_DRAGSTART message to the target control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendDragStartMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendDragStartMsg.Target">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
-<element name="LCLSendDeactivateStartMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="LCLSendDeactivateStartMsg.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="LCLSendDeactivateStartMsg.Target">
-<short/>
-</element>
-
-<!-- function Visibility: default -->
 <element name="LCLSendMonthChangedMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Sends a LM_MONTHCHANGED message to the target control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendMonthChangedMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMonthChangedMsg.Target">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendYearChangedMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Sends a LM_YEARCHANGED message to the target control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendYearChangedMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendYearChangedMsg.Target">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendDayChangedMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Sends a LM_DAYCHANGED message to the target control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendDayChangedMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendDayChangedMsg.Target">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendMouseMultiClickMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Delivers a TLMMouse message for multiple button clicks to the target control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendMouseMultiClickMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMouseMultiClickMsg.Target">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMouseMultiClickMsg.XPos">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMouseMultiClickMsg.YPos">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMouseMultiClickMsg.Button">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMouseMultiClickMsg.ClickCount">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendMouseMultiClickMsg.ShiftState">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="LCLSendDrawListItemMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Delivers a LM_DRAWLISTITEM message using the specified drawing structure to 
+the target control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="LCLSendDrawListItemMsg.Result">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendDrawListItemMsg.Target">
 <short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="LCLSendDrawListItemMsg.DrawListItemStruct">
 <short/>
 </element>
 
-<!-- function Visibility: default -->
-<element name="LCLSendInternalPaintMsg">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<element name="LCLSendDropDownMsg">
+<short>
+Delivers a CBN_DROPDOWN notification message to the target control.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
-<element name="LCLSendInternalPaintMsg.Result">
+<element name="LCLSendDropDownMsg.Result">
+<short/>
+</element>
+<element name="LCLSendDropDownMsg.Target">
 <short/>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="LCLSendInternalPaintMsg.Target">
+<element name="LCLSendCloseUpMsg">
+<short>
+Delivers a CBN_CLOSEUP notification message to the target control.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="LCLSendCloseUpMsg.Result">
+<short/>
+</element>
+<element name="LCLSendCloseUpMsg.Target">
 <short/>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="LCLSendInternalPaintMsg.DC">
-<short/>
-</element>
-
-</module> <!-- LCLMessageGlue -->
-
+</module>
+<!-- LCLMessageGlue -->
 </package>
 </fpdoc-descriptions>
