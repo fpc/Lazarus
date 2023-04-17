@@ -982,17 +982,15 @@ msgstr "Локальные переменные"
 
 #: idedebuggerstringconstants.lislocalsdlgcopyaddr
 msgid "Copy &Data-Address"
-msgstr ""
+msgstr "Копировать адрес &данных"
 
 #: idedebuggerstringconstants.lislocalsdlgcopyall
-#, fuzzy
-#| msgid "Copy &all"
 msgid "Copy &all entries"
-msgstr "Копировать &всё"
+msgstr "Копировать &все элементы списка"
 
 #: idedebuggerstringconstants.lislocalsdlgcopyentry
 msgid "Copy entire entry"
-msgstr ""
+msgstr "Копировать элемент списка целиком"
 
 #: idedebuggerstringconstants.lislocalsdlgcopyname
 msgid "&Copy Name"
@@ -1007,10 +1005,8 @@ msgid "Copy &RAW Value"
 msgstr "Копировать &необработанное значение"
 
 #: idedebuggerstringconstants.lislocalsdlgcopyvalue
-#, fuzzy
-#| msgid "C&opy Value"
 msgid "C&opy Value (quoted)"
-msgstr "Копировать &значение"
+msgstr "Копировать &значение (обработанное)"
 
 #: idedebuggerstringconstants.lislocalsnotevaluated
 msgid "Locals not evaluated"
