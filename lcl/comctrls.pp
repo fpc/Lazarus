@@ -2096,7 +2096,7 @@ type
     FWrap: Boolean;
     FLastDropDownTick: QWord;
     FLastDown: Boolean;
-    procedure GetGroupBounds(var StartIndex, EndIndex: integer);
+    function GetGroupBounds(out StartIndex, EndIndex: integer): boolean;
     function GetIndex: Integer;
     function GetTextSize: TSize;
     function IsCheckedStored: Boolean;

@@ -622,37 +622,31 @@ var
   CurButton: TToolButton;
 begin
   if Value = FDown then exit;
-  if (csLoading in ComponentState) then
+  if csLoading in ComponentState then
   begin
     FDown := Value;
     Exit;
   end;
-  
-  //DebugLn('TToolButton.SetDown ',Style=tbsCheck,',',FDown,',',GroupAllUpAllowed);
-  if (Style = tbsCheck) and FDown and (not GroupAllUpAllowed) then
-    Exit;
 
-  FDown := Value;
-  
-  if (Style = tbsCheck) and FDown and Grouped then
+  //DebugLn('TToolButton.SetDown ',Style=tbsCheck,',',FDown,',',GroupAllUpAllowed);
+  if Value or (Style <> tbsCheck) or GroupAllUpAllowed then
   begin
-    // uncheck all other in the group
-    GetGroupBounds(StartIndex, EndIndex);
-    if StartIndex >= 0 then
-    begin
-      for i := StartIndex to EndIndex do
-      begin
-        CurButton := FToolBar.Buttons[i];
-        if (CurButton <> Self) and (CurButton.FDown) then
-        begin
-          CurButton.FDown := False;
-          CurButton.Invalidate;
-        end;
-      end;
-    end;
+    FDown := Value;
+    Invalidate;
   end;
 
-  Invalidate;
+  // uncheck all other in the group
+  if GetGroupBounds(StartIndex, EndIndex) then // this also checks Toolbar, Grouped and Style
+    for i := StartIndex to EndIndex do
+    begin
+      CurButton := FToolBar.Buttons[i];
+      if CurButton.FDown and (CurButton <> Self) then
+      begin
+        CurButton.FDown := False;
+        CurButton.Invalidate;
+      end;
+    end;
+
   if Assigned(FToolBar) then
     FToolBar.ToolButtonDown(Self, FDown);
 end;
@@ -668,41 +662,23 @@ end;
 procedure TToolButton.SetGrouped(Value: Boolean);
 var
   StartIndex, EndIndex: integer;
-  CheckedIndex: Integer;
-  i: Integer;
-  CurButton: TToolButton;
+  i, j: Integer;
 begin
   if FGrouped = Value then exit;
   FGrouped := Value;
   if csLoading in ComponentState then exit;
-  
+
   // make sure, that only one button in a group is checked
-  while FGrouped and (Style = tbsCheck) and Assigned(FToolBar) do
-  begin
-    GetGroupBounds(StartIndex, EndIndex);
-    if StartIndex >= 0 then
-    begin
-      CheckedIndex := -1;
-      i := StartIndex;
-      while i <= EndIndex do
-      begin
-        CurButton := FToolBar.Buttons[i];
-        if CurButton.Down then
-        begin
-          if CheckedIndex < 0 then
-            CheckedIndex := i
-          else
+  if GetGroupBounds(StartIndex, EndIndex) then // this also checks Toolbar, Grouped and Style
+    for i := StartIndex to EndIndex - 1 do // no need check last button
+      if FToolBar.Buttons[i].FDown then
+        // uncheck other buttons
+        for j := i + 1 to EndIndex do
+          if FToolBar.Buttons[j].FDown then
           begin
-            CurButton.Down := False;
-            // the last operation can change everything -> restart
-            break;
+            FToolBar.Buttons[j].FDown := false;
+            FToolBar.Buttons[j].Invalidate;
           end;
-        end;
-        inc(i);
-      end;
-      if i > EndIndex then break;
-    end;
-  end;
 end;
 
 procedure TToolButton.SetImageIndex(Value: TImageIndex);
@@ -819,35 +795,47 @@ begin
   Dec(FUpdateCount);
 end;
 
-{------------------------------------------------------------------------------
-  procedure TToolButton.GetGroupBounds(var StartIndex, EndIndex: integer);
-  
-  Return the index of the first and the last ToolButton in the group.
-  If no ToolBar then negative values are returned.
-  If not in a group then StartIndex=EndIndex.
-------------------------------------------------------------------------------}
-procedure TToolButton.GetGroupBounds(var StartIndex, EndIndex: integer);
+{-------------------------------------------------------------------------------
+function TToolButton.GetGroupBounds(out StartIndex, EndIndex: integer): boolean;
+
+Return the index of the first and the last ToolButton in the group.
+returns true only if:
+  ToolBar assigned
+  Style is tbsCheck
+  Grouped is true
+  all buttons in range is assigned
+  one or more buttons in a group
+else returns false (and StartIndex = EndIndex = -1)
+-------------------------------------------------------------------------------}
+function TToolButton.GetGroupBounds(out StartIndex, EndIndex: integer): boolean;
 var
   CurButton: TToolButton;
 begin
+  result := Grouped and (Style = tbsCheck) and Assigned(FToolBar);
+  if not result then
+  begin
+    StartIndex := -1;
+    EndIndex := -1;
+    exit;
+  end;
+
   StartIndex := Index;
   EndIndex := StartIndex;
-  if (Style <> tbsCheck) or (not Grouped) then exit;
-  while (StartIndex>0) do
+  while StartIndex > 0 do
   begin
-    CurButton:=FToolBar.Buttons[StartIndex-1];
-    if (CurButton<>nil) and CurButton.Grouped and (CurButton.Style in [tbsCheck, tbsSeparator, tbsDivider]) then
-      dec(StartIndex)
-    else
-      break;
+    CurButton := FToolBar.Buttons[StartIndex - 1];
+    if not Assigned(CurButton) then break;
+    if not CurButton.Grouped then break;
+    if not (CurButton.Style in [tbsCheck, tbsSeparator, tbsDivider]) then break;
+    dec(StartIndex);
   end;
-  while (EndIndex < FToolBar.FButtons.Count-1) do
+  while EndIndex < (FToolBar.FButtons.Count - 1) do
   begin
-    CurButton := FToolBar.Buttons[EndIndex+1];
-    if Assigned(CurButton) and CurButton.Grouped and (CurButton.Style in [tbsCheck, tbsSeparator, tbsDivider]) then
-      inc(EndIndex)
-    else
-      break;
+    CurButton := FToolBar.Buttons[EndIndex + 1];
+    if not Assigned(CurButton) then break;
+    if not CurButton.Grouped then break;
+    if not (CurButton.Style in [tbsCheck, tbsSeparator, tbsDivider]) then break;
+    inc(EndIndex);
   end;
 end;
 
@@ -1089,27 +1077,14 @@ function TToolButton.GroupAllUpAllowed: boolean;
 var
   StartIndex, EndIndex: integer;
   i: Integer;
-  CurButton: TToolButton;
 begin
-  Result := True;
-  if (Style = tbsCheck) and Grouped then
-  begin
-    GetGroupBounds(StartIndex, EndIndex);
-    if (StartIndex >= 0) then
-    begin
-      // allow all up, if one button has AllowAllUp
-      Result := False;
-      for i := StartIndex to EndIndex do
-      begin
-        CurButton := FToolBar.Buttons[i];
-        if CurButton.AllowAllUp then
-        begin
-          Result := True;
-          break;
-        end;
-      end;
-    end;
-  end;
+  if not GetGroupBounds(StartIndex, EndIndex) then // this also checks Toolbar, Grouped and Style
+    exit(true);
+  // allow all up, if one button has AllowAllUp
+  for i := StartIndex to EndIndex do
+    if FToolBar.Buttons[i].AllowAllUp then
+      exit(true);
+  exit(false);
 end;
 
 function TToolButton.DialogChar(var Message: TLMKey): boolean;
