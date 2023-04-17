@@ -988,9 +988,19 @@ msgctxt "lazarusidestrconsts.lislocals"
 msgid "Local Variables"
 msgstr "Místní proměnné"
 
+#: idedebuggerstringconstants.lislocalsdlgcopyaddr
+msgid "Copy &Data-Address"
+msgstr ""
+
 #: idedebuggerstringconstants.lislocalsdlgcopyall
-msgid "Copy &all"
+#, fuzzy
+#| msgid "Copy &all"
+msgid "Copy &all entries"
 msgstr "Kopírovat &vše"
+
+#: idedebuggerstringconstants.lislocalsdlgcopyentry
+msgid "Copy entire entry"
+msgstr ""
 
 #: idedebuggerstringconstants.lislocalsdlgcopyname
 msgid "&Copy Name"
@@ -1005,7 +1015,9 @@ msgid "Copy &RAW Value"
 msgstr "Kopírovat &RAW hodnotu"
 
 #: idedebuggerstringconstants.lislocalsdlgcopyvalue
-msgid "C&opy Value"
+#, fuzzy
+#| msgid "C&opy Value"
+msgid "C&opy Value (quoted)"
 msgstr "Kopírovat hodnotu"
 
 #: idedebuggerstringconstants.lislocalsnotevaluated

@@ -149,10 +149,13 @@ resourcestring
   lisLocals = 'Local Variables';
   lisLocalsNotEvaluated = 'Locals not evaluated';
   lisLocalsDlgCopyName = '&Copy Name';
-  lisLocalsDlgCopyValue = 'C&opy Value';
-  lisLocalsDlgCopyNameValue = 'Co&py Name and Value';
-  lisLocalsDlgCopyAll = 'Copy &all';
+  lisLocalsDlgCopyValue = 'C&opy Value (quoted)';
   lisLocalsDlgCopyRAWValue = 'Copy &RAW Value';
+  lisLocalsDlgCopyAddr = 'Copy &Data-Address';
+  lisLocalsDlgCopyEntry = 'Copy entire entry';
+  lisLocalsDlgCopyAll = 'Copy &all entries';
+
+  lisLocalsDlgCopyNameValue = 'Co&py Name and Value'; // Registers
 
   lisWatchToWatchPoint = 'Create &Data/Watch Breakpoint ...';
 

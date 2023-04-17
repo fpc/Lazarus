@@ -973,9 +973,19 @@ msgctxt "lazarusidestrconsts.lislocals"
 msgid "Local Variables"
 msgstr "Yerel değişkenler"
 
+#: idedebuggerstringconstants.lislocalsdlgcopyaddr
+msgid "Copy &Data-Address"
+msgstr ""
+
 #: idedebuggerstringconstants.lislocalsdlgcopyall
-msgid "Copy &all"
+#, fuzzy
+#| msgid "Copy &all"
+msgid "Copy &all entries"
 msgstr "Tümünü ko&pyala"
+
+#: idedebuggerstringconstants.lislocalsdlgcopyentry
+msgid "Copy entire entry"
+msgstr ""
 
 #: idedebuggerstringconstants.lislocalsdlgcopyname
 msgid "&Copy Name"
@@ -990,7 +1000,9 @@ msgid "Copy &RAW Value"
 msgstr "&RAW Değerini Kopyala"
 
 #: idedebuggerstringconstants.lislocalsdlgcopyvalue
-msgid "C&opy Value"
+#, fuzzy
+#| msgid "C&opy Value"
+msgid "C&opy Value (quoted)"
 msgstr "Değeri Kop&yala"
 
 #: idedebuggerstringconstants.lislocalsnotevaluated

@@ -202,7 +202,7 @@ begin
   actCopyName.Caption := lisLocalsDlgCopyName;
   actCopyValue.Caption := lisLocalsDlgCopyValue;
   actCopyNameValue.Caption := lisLocalsDlgCopyNameValue;
-  actCopyAll.Caption := lisLocalsDlgCopyAll;
+  actCopyAll.Caption := lisCopyAll;
 
   ToolButtonDispType.Hint := regdlgDisplayTypeForSelectedRegisters;
 

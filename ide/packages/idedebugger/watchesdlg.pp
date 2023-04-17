@@ -72,6 +72,10 @@ type
     actAddWatchPoint: TAction;
     actCopyName: TAction;
     actCopyValue: TAction;
+    actCopyRAWValue: TAction;
+    actCopyAddr: TAction;
+    actCopyEntry: TAction;
+    actCopyAll: TAction;
     actInspect: TAction;
     actEvaluate: TAction;
     actToggleInspectSite: TAction;
@@ -91,6 +95,10 @@ type
     popEvaluate: TMenuItem;
     popCopyName: TMenuItem;
     popCopyValue: TMenuItem;
+    menuCopyRawValue: TMenuItem;
+    menuCopyAddr: TMenuItem;
+    menuCopyEntry: TMenuItem;
+    menuCopyAll: TMenuItem;
     N3: TMenuItem;
     popAddWatchPoint: TMenuItem;
     mnuPopup: TPopupMenu;
@@ -120,7 +128,11 @@ type
     ToolButtonTrashAll: TToolButton;
     procedure actAddWatchPointExecute(Sender: TObject);
     procedure actCopyNameExecute(Sender: TObject);
+    procedure actCopyRAWValueExecute(Sender: TObject);
     procedure actCopyValueExecute(Sender: TObject);
+    procedure actCopyAddrExecute(Sender: TObject);
+    procedure actCopyEntryExecute(Sender: TObject);
+    procedure actCopyAllExecute(Sender: TObject);
     procedure actDisableSelectedExecute(Sender: TObject);
     procedure actEnableSelectedExecute(Sender: TObject);
     procedure actEvaluateExecute(Sender: TObject);
@@ -206,6 +218,9 @@ type
     function WatchAbleResultFromNode(AVNode: PVirtualNode): IWatchAbleResultIntf; override;
     function WatchAbleResultFromObject(AWatchAble: TObject): IWatchAbleResultIntf; override;
 
+    function GetFieldAsText(Nd: PVirtualNode; AWatchAble: TObject;
+      AWatchAbleResult: IWatchAbleResultIntf; AField: TTreeViewDataToTextField;
+      AnOpts: TTreeViewDataToTextOptions): String; override;
     procedure UpdateColumnsText(AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf; AVNode: PVirtualNode); override;
     procedure ConfigureNewSubItem(AWatchAble: TObject); override;
     procedure UpdateSubItems(AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf;
@@ -312,6 +327,10 @@ begin
 
   actCopyName.Caption := lisLocalsDlgCopyName;
   actCopyValue.Caption := lisLocalsDlgCopyValue;
+  actCopyRAWValue.Caption := lisLocalsDlgCopyRAWValue;
+  actCopyAddr.Caption     := lisLocalsDlgCopyAddr;
+  actCopyEntry.Caption    := lisLocalsDlgCopyEntry;
+  actCopyAll.Caption      := lisLocalsDlgCopyAll;
 
   actInspect.Caption := lisInspect;
   actEvaluate.Caption := lisEvaluateModify;
@@ -461,8 +480,13 @@ begin
   actDisableAll.Enabled := AllCanDisable;
   actDeleteAll.Enabled := tvWatches.RootNodeCount > 0;
 
-  actCopyName.Enabled := ItemSelected;
-  actCopyValue.Enabled := ItemSelected;
+  actCopyName.Enabled     := ItemSelected;
+  actCopyValue.Enabled    := ItemSelected;
+  actCopyRAWValue.Enabled := ItemSelected;
+  actCopyAddr.Enabled     := ItemSelected;
+  actCopyEntry.Enabled    := ItemSelected;
+  actCopyAll.Enabled      := tvWatches.ChildCount[nil] > 0;
+
 
   actProperties.Enabled := ItemSelected and (Watch.TopParentWatch = Watch);
   actAddWatch.Enabled := True;
@@ -799,31 +823,44 @@ begin
 end;
 
 procedure TWatchesDlg.actCopyNameExecute(Sender: TObject);
-var
-  Node: PVirtualNode;
-  AWatch: TIdeWatch;
 begin
-  Node := tvWatches.GetFocusedNode;
-  if Node = nil then
-    exit;
   Clipboard.Open;
-  AWatch := TIdeWatch(tvWatches.NodeItem[Node]);
-  if AWatch <> nil then
-    Clipboard.AsText := AWatch.Expression
-  else
-    Clipboard.AsText := tvWatches.NodeText[Node, COL_WATCH_EXPR-1];
+  Clipboard.AsText := FWatchTreeMgr.GetAsText(vdsSelectionOrFocus, [vdfName], []);
   Clipboard.Close;
 end;
 
 procedure TWatchesDlg.actCopyValueExecute(Sender: TObject);
-var
-  Node: PVirtualNode;
 begin
-  Node := tvWatches.GetFocusedNode;
-  if Node = nil then
-    exit;
   Clipboard.Open;
-  Clipboard.AsText := tvWatches.NodeText[Node, COL_WATCH_VALUE-1];
+  Clipboard.AsText := FWatchTreeMgr.GetAsText(vdsSelectionOrFocus, [vdfValue], []);
+  Clipboard.Close;
+end;
+
+procedure TWatchesDlg.actCopyRAWValueExecute(Sender: TObject);
+begin
+  Clipboard.Open;
+  Clipboard.AsText := FWatchTreeMgr.GetAsText(vdsSelectionOrFocus, [vdfValue], [vdoUnQuoted]);
+  Clipboard.Close;
+end;
+
+procedure TWatchesDlg.actCopyAddrExecute(Sender: TObject);
+begin
+  Clipboard.Open;
+  Clipboard.AsText := FWatchTreeMgr.GetAsText(vdsSelectionOrFocus, [vdfDataAddress], []);
+  Clipboard.Close;
+end;
+
+procedure TWatchesDlg.actCopyEntryExecute(Sender: TObject);
+begin
+  Clipboard.Open;
+  Clipboard.AsText := FWatchTreeMgr.GetAsText(vdsSelectionOrFocus, [vdfName, vdfDataAddress, vdfValue], []);
+  Clipboard.Close;
+end;
+
+procedure TWatchesDlg.actCopyAllExecute(Sender: TObject);
+begin
+  Clipboard.Open;
+  Clipboard.AsText := FWatchTreeMgr.GetAsText(vdsAll, [vdfName, vdfDataAddress, vdfValue], []);
   Clipboard.Close;
 end;
 
@@ -1343,6 +1380,65 @@ begin
   if AWatchAble = nil then exit(nil);
 
   Result := TIdeWatch(AWatchAble).Values[FWatchDlg.GetThreadId, FWatchDlg.GetStackframe];
+end;
+
+function TDbgTreeViewWatchValueMgr.GetFieldAsText(Nd: PVirtualNode;
+  AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf;
+  AField: TTreeViewDataToTextField; AnOpts: TTreeViewDataToTextOptions): String;
+var
+  ResVal: TWatchResultData;
+  da: TDBGPtr;
+begin
+  if AWatchAbleResult = nil then
+    exit(inherited);
+
+  Result := '';
+  case AField of
+    vdfName:
+      if AWatchAble <> nil then
+        Result := TIdeWatch(AWatchAble).Expression;
+    vdfValue: begin
+        if AWatchAbleResult = nil then begin
+          Result := '<not evaluated>';
+          exit;
+        end;
+        if not AWatchAbleResult.Enabled then begin
+          Result := '<disabled>';
+          exit;
+        end;
+        if vdoUnQuoted in AnOpts then begin
+          ResVal := AWatchAbleResult.ResultData;
+          while ResVal <> nil do begin
+            case ResVal.ValueKind of
+              rdkVariant: ResVal := ResVal.DerefData;
+              rdkConvertRes: ResVal := ResVal.ConvertedRes;
+              //rdkPCharOrString:
+              else break;
+            end;
+          end;
+          if (ResVal <> nil) and (ResVal.ValueKind in [rdkString, rdkWideString, rdkChar]) then begin
+            Result := ResVal.AsString;
+            exit;
+          end;
+        end;
+
+        if vdoAllowMultiLine in AnOpts then
+          FWatchDlg.FWatchPrinter.FormatFlags := [rpfIndent, rpfMultiLine];
+        try
+          Result := FWatchDlg.FWatchPrinter.PrintWatchValue(AWatchAbleResult.ResultData, AWatchAbleResult.DisplayFormat);
+        finally
+          FWatchDlg.FWatchPrinter.FormatFlags := [rpfClearMultiLine];
+        end;
+      end;
+    vdfDataAddress: begin
+      if AWatchAbleResult.ResultData.HasDataAddress then begin
+        da := AWatchAbleResult.ResultData.DataAddress;
+        if da = 0
+        then Result := 'nil'
+        else Result := '$' + IntToHex(da, HexDigicCount(da, 4, True));
+      end;
+    end;
+  end;
 end;
 
 procedure TDbgTreeViewWatchValueMgr.UpdateColumnsText(AWatchAble: TObject;

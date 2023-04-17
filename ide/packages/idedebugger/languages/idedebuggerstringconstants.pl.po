@@ -999,8 +999,16 @@ msgctxt "lazarusidestrconsts.lislocals"
 msgid "Local Variables"
 msgstr "Zmienne lokalne"
 
+#: idedebuggerstringconstants.lislocalsdlgcopyaddr
+msgid "Copy &Data-Address"
+msgstr ""
+
 #: idedebuggerstringconstants.lislocalsdlgcopyall
-msgid "Copy &all"
+msgid "Copy &all entries"
+msgstr ""
+
+#: idedebuggerstringconstants.lislocalsdlgcopyentry
+msgid "Copy entire entry"
 msgstr ""
 
 #: idedebuggerstringconstants.lislocalsdlgcopyname
@@ -1016,7 +1024,9 @@ msgid "Copy &RAW Value"
 msgstr "Kopiuj surową wartość (RAW)"
 
 #: idedebuggerstringconstants.lislocalsdlgcopyvalue
-msgid "C&opy Value"
+#, fuzzy
+#| msgid "C&opy Value"
+msgid "C&opy Value (quoted)"
 msgstr "K&opiuj wartość"
 
 #: idedebuggerstringconstants.lislocalsnotevaluated

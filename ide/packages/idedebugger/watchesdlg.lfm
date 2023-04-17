@@ -1,15 +1,15 @@
 object WatchesDlg: TWatchesDlg
-  Left = 321
-  Height = 200
-  Top = 437
-  Width = 500
+  Left = 299
+  Height = 240
+  Top = 355
+  Width = 539
   HorzScrollBar.Page = 499
   VertScrollBar.Page = 199
   ActiveControl = tvWatches
   BorderStyle = bsSizeToolWin
   Caption = 'Watch list'
-  ClientHeight = 200
-  ClientWidth = 500
+  ClientHeight = 240
+  ClientWidth = 539
   KeyPreview = True
   OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
@@ -17,9 +17,9 @@ object WatchesDlg: TWatchesDlg
   LCLVersion = '2.3.0.0'
   object tvWatches: TDbgTreeView
     Left = 0
-    Height = 174
+    Height = 214
     Top = 26
-    Width = 295
+    Width = 334
     Align = alClient
     DefaultText = 'Node'
     DragMode = dmAutomatic
@@ -54,7 +54,7 @@ object WatchesDlg: TWatchesDlg
     Left = 0
     Height = 26
     Top = 0
-    Width = 500
+    Width = 539
     Caption = 'ToolBar1'
     ParentShowHint = False
     ShowHint = True
@@ -149,8 +149,8 @@ object WatchesDlg: TWatchesDlg
     end
   end
   object InspectSplitter: TSplitter
-    Left = 295
-    Height = 174
+    Left = 334
+    Height = 214
     Top = 26
     Width = 5
     Align = alRight
@@ -158,8 +158,8 @@ object WatchesDlg: TWatchesDlg
     Visible = False
   end
   object nbInspect: TNotebook
-    Left = 300
-    Height = 174
+    Left = 339
+    Height = 214
     Top = 26
     Width = 200
     PageIndex = 0
@@ -169,7 +169,7 @@ object WatchesDlg: TWatchesDlg
     object Page1: TPage
       object InspectMemo: TMemo
         Left = 0
-        Height = 159
+        Height = 199
         Top = 15
         Width = 200
         Align = alClient
@@ -240,6 +240,18 @@ object WatchesDlg: TWatchesDlg
     object popCopyValue: TMenuItem
       Action = actCopyValue
     end
+    object menuCopyRawValue: TMenuItem
+      Action = actCopyRAWValue
+    end
+    object menuCopyAddr: TMenuItem
+      Action = actCopyAddr
+    end
+    object menuCopyEntry: TMenuItem
+      Action = actCopyEntry
+    end
+    object menuCopyAll: TMenuItem
+      Action = actCopyAll
+    end
   end
   object ActionList1: TActionList
     Left = 184
@@ -297,16 +309,6 @@ object WatchesDlg: TWatchesDlg
       )
       ShortCut = 16453
     end
-    object actCopyName: TAction
-      Category = 'copy'
-      Caption = 'actCopyName'
-      OnExecute = actCopyNameExecute
-    end
-    object actCopyValue: TAction
-      Category = 'copy'
-      Caption = 'actCopyValue'
-      OnExecute = actCopyValueExecute
-    end
     object actAddWatchPoint: TAction
       Caption = 'actAddWatchPoint'
       OnExecute = actAddWatchPointExecute
@@ -322,6 +324,39 @@ object WatchesDlg: TWatchesDlg
     object actToggleInspectSite: TAction
       Caption = 'actToggleInspectSite'
       OnExecute = actToggleInspectSiteExecute
+    end
+    object actCopyName: TAction
+      Category = 'copy'
+      Caption = 'actCopyName'
+      OnExecute = actCopyNameExecute
+    end
+    object actCopyValue: TAction
+      Category = 'copy'
+      Caption = 'actCopyValue'
+      OnExecute = actCopyValueExecute
+      ShortCut = 24643
+    end
+    object actCopyRAWValue: TAction
+      Category = 'copy'
+      Caption = 'actCopyRAWValue'
+      OnExecute = actCopyRAWValueExecute
+      ShortCut = 16451
+    end
+    object actCopyAddr: TAction
+      Category = 'copy'
+      Caption = 'actCopyAddr'
+      OnExecute = actCopyAddrExecute
+      ShortCut = 49219
+    end
+    object actCopyEntry: TAction
+      Category = 'copy'
+      Caption = 'actCopyEntry'
+      OnExecute = actCopyEntryExecute
+    end
+    object actCopyAll: TAction
+      Category = 'copy'
+      Caption = 'actCopyAll'
+      OnExecute = actCopyAllExecute
     end
   end
 end

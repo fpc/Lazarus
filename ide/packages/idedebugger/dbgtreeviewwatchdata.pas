@@ -12,6 +12,14 @@ uses
 
 type
 
+  TTreeViewDataScope       = (vdsFocus, vdsSelection, vdsSelectionOrFocus, vdsAll);
+  TTreeViewDataToTextField = (vdfName, vdfDataAddress, vdfValue);
+  TTreeViewDataToTextOption = (
+    vdoUnQuoted, vdoAllowMultiLine
+  );
+  TTreeViewDataToTextFields = set of TTreeViewDataToTextField;
+  TTreeViewDataToTextOptions = set of TTreeViewDataToTextOption;
+
   { TDbgTreeViewWatchDataMgr }
 
   TDbgTreeViewWatchDataMgr = class
@@ -31,6 +39,10 @@ type
     function  WatchAbleResultFromNode(AVNode: PVirtualNode): IWatchAbleResultIntf; virtual; abstract;
     function  WatchAbleResultFromObject(AWatchAble: TObject): IWatchAbleResultIntf; virtual; abstract;
 
+    function GetFieldAsText(Nd: PVirtualNode;
+      AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf; //AVNode: PVirtualNode
+      AField: TTreeViewDataToTextField;
+      AnOpts: TTreeViewDataToTextOptions): String; virtual;
     procedure UpdateColumnsText(AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf; AVNode: PVirtualNode); virtual; abstract;
     procedure ConfigureNewSubItem(AWatchAble: TObject); virtual;
 
@@ -45,6 +57,10 @@ type
 
     function AddWatchData(AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf = nil; AVNode: PVirtualNode = nil): PVirtualNode;
     procedure UpdateWatchData(AWatchAble: TObject; AVNode: PVirtualNode; AWatchAbleResult: IWatchAbleResultIntf = nil; AnIgnoreNodeVisible: Boolean = False);
+
+    function GetAsText(AScope: TTreeViewDataScope;
+      AFields: TTreeViewDataToTextFields;
+      AnOpts: TTreeViewDataToTextOptions): String;
 
     property CancelUpdate: Boolean read FCancelUpdate write FCancelUpdate;
     property TreeView: TDbgTreeView read FTreeView;
@@ -97,6 +113,18 @@ begin
       exit;
 
     UpdateSubItems(AWatchAble, AWatchAbleResult, VNode, c);
+  end;
+end;
+
+function TDbgTreeViewWatchDataMgr.GetFieldAsText(Nd: PVirtualNode;
+  AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf;
+  AField: TTreeViewDataToTextField; AnOpts: TTreeViewDataToTextOptions): String;
+begin
+  Result := '';
+  case AField of
+    vdfName:        Result := TreeView.NodeText[Nd, 0];
+    vdfDataAddress: Result := TreeView.NodeText[Nd, 1];
+    vdfValue:       Result := TreeView.NodeText[Nd, 2];
   end;
 end;
 
@@ -442,6 +470,63 @@ begin
     if AWatchAble <> FExpandingWatchAbleResult then
       FTreeView.DeleteChildren(AVNode, False);
   end
+end;
+
+function TDbgTreeViewWatchDataMgr.GetAsText(AScope: TTreeViewDataScope;
+  AFields: TTreeViewDataToTextFields; AnOpts: TTreeViewDataToTextOptions
+  ): String;
+
+  function GetEntryText(Nd: PVirtualNode): String;
+  var
+    AWatchAbleResult: IWatchAbleResultIntf;
+    AWatchAble: TObject;
+    r: String;
+  begin
+    AWatchAble := TreeView.NodeItem[Nd];
+    AWatchAbleResult := WatchAbleResultFromObject(AWatchAble);
+    Result := '';
+    if vdfName in AFields then
+      Result := GetFieldAsText(Nd, AWatchAble, AWatchAbleResult, vdfName, AnOpts);
+    if vdfDataAddress in AFields then begin
+      r := GetFieldAsText(Nd, AWatchAble, AWatchAbleResult, vdfDataAddress, AnOpts);
+      if r <> '' then begin
+        if Result <> '' then
+          Result := Result + ' ';
+        if (AFields - [vdfDataAddress]) <> [] then
+          Result := Result + '@';
+        Result := Result + r;
+      end;
+    end;
+    if vdfValue in AFields then begin
+      r := GetFieldAsText(Nd, AWatchAble, AWatchAbleResult, vdfValue, AnOpts);
+      if r <> '' then begin
+        if Result <> '' then
+          Result := Result + ' = ';
+        Result := Result + r;
+      end;
+    end;
+  end;
+
+var
+  Nd: PVirtualNode;
+  Itr: TVTVirtualNodeEnumeration;
+begin
+  Result := '';
+  if (AScope = vdsFocus) or
+     ( (AScope = vdsSelectionOrFocus) and (TreeView.SelectedCount=0) )
+  then begin
+    Nd := TreeView.FocusedNode;
+    Result := GetEntryText(Nd);
+    exit;
+  end;
+
+  case AScope of
+    vdsSelection, vdsSelectionOrFocus: Itr := TreeView.SelectedNodes;
+    vdsAll: Itr := TreeView.NoInitNodes;
+  end;
+  for Nd in Itr do begin
+    Result := Result + GetEntryText(Nd) + LineEnding;
+  end;
 end;
 
 end.

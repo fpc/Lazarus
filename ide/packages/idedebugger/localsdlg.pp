@@ -64,8 +64,10 @@ type
     actEvaluate: TAction;
     actCopyName: TAction;
     actCopyValue: TAction;
-    actCopyAll: TAction;
     actCopyRAWValue: TAction;
+    actCopyAddr: TAction;
+    actCopyEntry: TAction;
+    actCopyAll: TAction;
     actWath: TAction;
     ActionList1: TActionList;
     ToolBar1: TToolBar;
@@ -77,19 +79,23 @@ type
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
     MenuItem4: TMenuItem;
-    MenuItem5: TMenuItem;
-    MenuItem6: TMenuItem;
-    MenuItem7: TMenuItem;
-    MenuItem8: TMenuItem;
+    menuCopyName: TMenuItem;
+    menuCopyValue: TMenuItem;
+    menuCopyRawValue: TMenuItem;
+    menuCopyAddr: TMenuItem;
+    menuCopyEntry: TMenuItem;
+    menuCopyAll: TMenuItem;
     PopupMenu1: TPopupMenu;
-    procedure actCopyAllExecute(Sender: TObject);
-    procedure actCopyAllUpdate(Sender: TObject);
     procedure actCopyNameExecute(Sender: TObject);
     procedure actCopyValueExecute(Sender: TObject);
+    procedure actCopyRAWValueExecute(Sender: TObject);
+    procedure actCopyAddrExecute(Sender: TObject);
+    procedure actCopyEntryExecute(Sender: TObject);
+    procedure actCopyAllExecute(Sender: TObject);
+    procedure actCopyAllUpdate(Sender: TObject);
     procedure actEvaluateExecute(Sender: TObject);
     procedure actInspectExecute(Sender: TObject);
     procedure actInspectUpdate(Sender: TObject);
-    procedure actCopyRAWValueExecute(Sender: TObject);
     procedure actWathExecute(Sender: TObject);
     procedure btnShowDataAddrClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -147,6 +153,9 @@ type
     function WatchAbleResultFromNode(AVNode: PVirtualNode): IWatchAbleResultIntf; override;
     function WatchAbleResultFromObject(AWatchAble: TObject): IWatchAbleResultIntf; override;
 
+    function GetFieldAsText(Nd: PVirtualNode; AWatchAble: TObject;
+      AWatchAbleResult: IWatchAbleResultIntf; AField: TTreeViewDataToTextField;
+      AnOpts: TTreeViewDataToTextOptions): String; override;
     procedure UpdateColumnsText(AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf; AVNode: PVirtualNode); override;
     procedure ConfigureNewSubItem(AWatchAble: TObject); override;
     //procedure UpdateSubItems(AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf;
@@ -333,11 +342,13 @@ begin
   vtLocals.Header.Columns[2].Text := dlgValueDataAddr;
   actInspect.Caption := lisInspect;
   actWath.Caption := lisWatch;
-  actEvaluate.Caption := lisEvaluateModify;
-  actCopyName.Caption := lisLocalsDlgCopyName;
-  actCopyValue.Caption := lisLocalsDlgCopyValue;
+  actEvaluate.Caption     := lisEvaluateModify;
+  actCopyName.Caption     := lisLocalsDlgCopyName;
+  actCopyValue.Caption    := lisLocalsDlgCopyValue;
   actCopyRAWValue.Caption := lisLocalsDlgCopyRAWValue;
-  actCopyAll.Caption := lisCopyAll;
+  actCopyAddr.Caption     := lisLocalsDlgCopyAddr;
+  actCopyEntry.Caption    := lisLocalsDlgCopyEntry;
+  actCopyAll.Caption      := lisLocalsDlgCopyAll;
   btnShowDataAddr.ImageIndex := IDEImages.LoadImage('ce_implementation');
 
   FPowerImgIdx := IDEImages.LoadImage('debugger_power');
@@ -362,51 +373,6 @@ end;
 procedure TLocalsDlg.actInspectUpdate(Sender: TObject);
 begin
   (Sender as TAction).Enabled := Assigned(GetSelected);
-end;
-
-procedure TLocalsDlg.actCopyRAWValueExecute(Sender: TObject);
-var
-  LVal: TLocalsValue;
-  ResVal: TWatchResultData;
-begin
-  LVal := GetSelected;
-  if LVal = nil then
-    exit;
-
-  ResVal := LVal.ResultData;
-  if ResVal = nil then
-    exit;
-
-  if (ResVal.ValueKind <> rdkPrePrinted) then begin
-    while ResVal <> nil do begin
-      case ResVal.ValueKind of
-        rdkVariant: ResVal := ResVal.DerefData;
-        rdkConvertRes: ResVal := ResVal.ConvertedRes;
-        //rdkPCharOrString:
-        else break;
-      end;
-    end;
-
-    if ResVal.ValueKind in [rdkString, rdkWideString, rdkChar] then begin
-      Clipboard.Open;
-      Clipboard.AsText := ResVal.AsString;
-      Clipboard.Close;
-    end
-    else begin
-      Clipboard.Open;
-      Clipboard.AsText := FWatchPrinter.PrintWatchValue(ResVal, wdfDefault);
-      Clipboard.Close;
-    end;
-
-    exit;
-  end;
-
-  if not DebugBoss.Evaluate(LVal.Name, @CopyRAWValueEvaluateCallback, []) then
-  begin
-    Clipboard.Open;
-    Clipboard.AsText := ValueToRAW(FWatchPrinter.PrintWatchValue(ResVal, wdfDefault));
-    Clipboard.Close;
-  end;
 end;
 
 procedure TLocalsDlg.actWathExecute(Sender: TObject);
@@ -514,35 +480,8 @@ end;
 procedure TLocalsDlg.actCopyNameExecute(Sender: TObject);
 begin
   Clipboard.Open;
-  if GetSelected <> nil then
-    Clipboard.AsText := GetSelected.Name
-  else
-    Clipboard.AsText := '';
+  Clipboard.AsText := FLocolsTreeMgr.GetAsText(vdsSelectionOrFocus, [vdfName], []);
   Clipboard.Close;
-end;
-
-procedure TLocalsDlg.actCopyAllExecute(Sender: TObject);
-Var
-  AStringList : TStringList;
-  LVal: TLocalsValue;
-  VNode: PVirtualNode;
-begin
-  AStringList := TStringList.Create;
-  for VNode in vtLocals.NoInitNodes do begin
-    LVal := TLocalsValue((vtLocals.NodeItem[VNode]));
-    if LVal <> nil then
-      AStringList.Values[LVal.Name] := FWatchPrinter.PrintWatchValue(LVal.ResultData, wdfDefault);
-  end;
-
-  Clipboard.Open;
-  Clipboard.AsText := AStringList.Text;
-  Clipboard.Close;
-  FreeAndNil(AStringList);
-end;
-
-procedure TLocalsDlg.actCopyAllUpdate(Sender: TObject);
-begin
-  (Sender as TAction).Enabled := vtLocals.ChildCount[nil] > 0;
 end;
 
 procedure TLocalsDlg.actCopyValueExecute(Sender: TObject);
@@ -560,7 +499,7 @@ begin
 
   if (ResVal.ValueKind <> rdkPrePrinted) then begin
     Clipboard.Open;
-    Clipboard.AsText := FWatchPrinter.PrintWatchValue(ResVal, wdfDefault);
+    Clipboard.AsText := FLocolsTreeMgr.GetAsText(vdsSelectionOrFocus, [vdfValue], []);
     Clipboard.Close;
     exit;
   end;
@@ -568,9 +507,63 @@ begin
   if not DebugBoss.Evaluate(LVal.Name, @CopyValueEvaluateCallback, []) then
   begin
     Clipboard.Open;
-    Clipboard.AsText := FWatchPrinter.PrintWatchValue(ResVal, wdfDefault);
+    Clipboard.AsText := FLocolsTreeMgr.GetAsText(vdsSelectionOrFocus, [vdfValue], []);
     Clipboard.Close;
   end
+end;
+
+procedure TLocalsDlg.actCopyRAWValueExecute(Sender: TObject);
+var
+  LVal: TLocalsValue;
+  ResVal: TWatchResultData;
+begin
+  LVal := GetSelected;
+  if LVal = nil then
+    exit;
+
+  ResVal := LVal.ResultData;
+  if ResVal = nil then
+    exit;
+
+  if (ResVal.ValueKind <> rdkPrePrinted) then begin
+    Clipboard.Open;
+    Clipboard.AsText := FLocolsTreeMgr.GetAsText(vdsSelectionOrFocus, [vdfValue], [vdoUnQuoted]);
+    Clipboard.Close;
+    exit;
+  end;
+
+  if not DebugBoss.Evaluate(LVal.Name, @CopyRAWValueEvaluateCallback, []) then
+  begin
+    Clipboard.Open;
+    Clipboard.AsText := FLocolsTreeMgr.GetAsText(vdsSelectionOrFocus, [vdfValue], [vdoUnQuoted]);
+    Clipboard.Close;
+  end;
+end;
+
+procedure TLocalsDlg.actCopyAddrExecute(Sender: TObject);
+begin
+  Clipboard.Open;
+  Clipboard.AsText := FLocolsTreeMgr.GetAsText(vdsSelectionOrFocus, [vdfDataAddress], []);
+  Clipboard.Close;
+end;
+
+procedure TLocalsDlg.actCopyEntryExecute(Sender: TObject);
+begin
+  Clipboard.Open;
+  Clipboard.AsText := FLocolsTreeMgr.GetAsText(vdsSelectionOrFocus, [vdfName, vdfDataAddress, vdfValue], []);
+  Clipboard.Close;
+end;
+
+procedure TLocalsDlg.actCopyAllExecute(Sender: TObject);
+begin
+  Clipboard.Open;
+  Clipboard.AsText := FLocolsTreeMgr.GetAsText(vdsAll, [vdfName, vdfDataAddress, vdfValue], []);
+  Clipboard.Close;
+end;
+
+procedure TLocalsDlg.actCopyAllUpdate(Sender: TObject);
+begin
+  (Sender as TAction).Enabled := vtLocals.ChildCount[nil] > 0;
 end;
 
 procedure TLocalsDlg.LocalsChanged(Sender: TObject);
@@ -833,6 +826,65 @@ function TDbgTreeViewLocalsValueMgr.WatchAbleResultFromObject(
   AWatchAble: TObject): IWatchAbleResultIntf;
 begin
   Result := TIdeLocalsValue(AWatchAble);
+end;
+
+function TDbgTreeViewLocalsValueMgr.GetFieldAsText(Nd: PVirtualNode;
+  AWatchAble: TObject; AWatchAbleResult: IWatchAbleResultIntf;
+  AField: TTreeViewDataToTextField; AnOpts: TTreeViewDataToTextOptions): String;
+var
+  ResVal: TWatchResultData;
+  da: TDBGPtr;
+begin
+  if AWatchAbleResult = nil then
+    exit(inherited);
+
+  Result := '';
+  case AField of
+    vdfName:
+      if AWatchAble <> nil then
+        Result := TIdeLocalsValue(AWatchAble).Name;
+    vdfValue: begin
+        if AWatchAbleResult = nil then begin
+          Result := '<not evaluated>';
+          exit;
+        end;
+        if not AWatchAbleResult.Enabled then begin
+          Result := '<disabled>';
+          exit;
+        end;
+        if vdoUnQuoted in AnOpts then begin
+          ResVal := AWatchAbleResult.ResultData;
+          while ResVal <> nil do begin
+            case ResVal.ValueKind of
+              rdkVariant: ResVal := ResVal.DerefData;
+              rdkConvertRes: ResVal := ResVal.ConvertedRes;
+              //rdkPCharOrString:
+              else break;
+            end;
+          end;
+          if (ResVal <> nil) and (ResVal.ValueKind in [rdkString, rdkWideString, rdkChar]) then begin
+            Result := ResVal.AsString;
+            exit;
+          end;
+        end;
+
+        if vdoAllowMultiLine in AnOpts then
+          FLocalsDlg.FWatchPrinter.FormatFlags := [rpfIndent, rpfMultiLine];
+        try
+          Result := FLocalsDlg.FWatchPrinter.PrintWatchValue(AWatchAbleResult.ResultData, AWatchAbleResult.DisplayFormat);
+        finally
+          FLocalsDlg.FWatchPrinter.FormatFlags := [rpfClearMultiLine];
+        end;
+      end;
+    vdfDataAddress: begin
+      if AWatchAbleResult.ResultData.HasDataAddress then begin
+        da := AWatchAbleResult.ResultData.DataAddress;
+        if da = 0
+        then Result := 'nil'
+        else Result := '$' + IntToHex(da, HexDigicCount(da, 4, True));
+      end;
+    end;
+  end;
 end;
 
 procedure TDbgTreeViewLocalsValueMgr.UpdateColumnsText(AWatchAble: TObject;

@@ -1,7 +1,7 @@
 object LocalsDlg: TLocalsDlg
-  Left = 359
+  Left = 314
   Height = 200
-  Top = 126
+  Top = 92
   Width = 500
   HorzScrollBar.Page = 499
   VertScrollBar.Page = 199
@@ -112,18 +112,31 @@ object LocalsDlg: TLocalsDlg
       OnUpdate = actInspectUpdate
       ShortCut = 24643
     end
-    object actCopyAll: TAction
-      Category = 'copy'
-      Caption = 'actCopyAll'
-      OnExecute = actCopyAllExecute
-      OnUpdate = actCopyAllUpdate
-    end
     object actCopyRAWValue: TAction
       Category = 'copy'
       Caption = 'actCopyRAWValue'
       OnExecute = actCopyRAWValueExecute
       OnUpdate = actInspectUpdate
       ShortCut = 16451
+    end
+    object actCopyAddr: TAction
+      Category = 'copy'
+      Caption = 'actCopyAddr'
+      OnExecute = actCopyAddrExecute
+      OnUpdate = actInspectUpdate
+      ShortCut = 49219
+    end
+    object actCopyEntry: TAction
+      Category = 'copy'
+      Caption = 'actCopyEntry'
+      OnExecute = actCopyEntryExecute
+      OnUpdate = actInspectUpdate
+    end
+    object actCopyAll: TAction
+      Category = 'copy'
+      Caption = 'actCopyAll'
+      OnExecute = actCopyAllExecute
+      OnUpdate = actCopyAllUpdate
     end
   end
   object PopupMenu1: TPopupMenu
@@ -141,16 +154,22 @@ object LocalsDlg: TLocalsDlg
     object MenuItem4: TMenuItem
       Caption = '-'
     end
-    object MenuItem5: TMenuItem
+    object menuCopyName: TMenuItem
       Action = actCopyName
     end
-    object MenuItem6: TMenuItem
+    object menuCopyValue: TMenuItem
       Action = actCopyValue
     end
-    object MenuItem8: TMenuItem
+    object menuCopyRawValue: TMenuItem
       Action = actCopyRAWValue
     end
-    object MenuItem7: TMenuItem
+    object menuCopyAddr: TMenuItem
+      Action = actCopyAddr
+    end
+    object menuCopyEntry: TMenuItem
+      Action = actCopyEntry
+    end
+    object menuCopyAll: TMenuItem
       Action = actCopyAll
     end
   end

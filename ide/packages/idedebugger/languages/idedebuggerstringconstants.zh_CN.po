@@ -990,9 +990,19 @@ msgctxt "lazarusidestrconsts.lislocals"
 msgid "Local Variables"
 msgstr "局部变量"
 
+#: idedebuggerstringconstants.lislocalsdlgcopyaddr
+msgid "Copy &Data-Address"
+msgstr ""
+
 #: idedebuggerstringconstants.lislocalsdlgcopyall
-msgid "Copy &all"
+#, fuzzy
+#| msgid "Copy &all"
+msgid "Copy &all entries"
 msgstr "复制所有(&a)"
+
+#: idedebuggerstringconstants.lislocalsdlgcopyentry
+msgid "Copy entire entry"
+msgstr ""
 
 #: idedebuggerstringconstants.lislocalsdlgcopyname
 msgid "&Copy Name"
@@ -1007,7 +1017,9 @@ msgid "Copy &RAW Value"
 msgstr "复制原始数据(Raw)值(&R)"
 
 #: idedebuggerstringconstants.lislocalsdlgcopyvalue
-msgid "C&opy Value"
+#, fuzzy
+#| msgid "C&opy Value"
+msgid "C&opy Value (quoted)"
 msgstr "复制值(&o)"
 
 #: idedebuggerstringconstants.lislocalsnotevaluated
