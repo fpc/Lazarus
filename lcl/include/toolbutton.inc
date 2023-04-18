@@ -646,9 +646,6 @@ begin
         CurButton.Invalidate;
       end;
     end;
-
-  if Assigned(FToolBar) then
-    FToolBar.ToolButtonDown(Self, FDown);
 end;
 
 procedure TToolButton.SetDropdownMenu(Value: TPopupMenu);

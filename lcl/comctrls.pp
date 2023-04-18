@@ -2292,7 +2292,6 @@ type
     procedure SetShowCaptions(const AValue: Boolean);
     procedure SetTransparent(const AValue: Boolean);
     procedure SetWrapable(const AValue: Boolean);
-    procedure ToolButtonDown(AButton: TToolButton; NewDown: Boolean);
     procedure ImageListChange(Sender: TObject);
     procedure DisabledImageListChange(Sender: TObject);
     procedure HotImageListChange(Sender: TObject);

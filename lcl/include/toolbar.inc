@@ -191,11 +191,6 @@ begin
   SetButtonSize(AValue,ButtonHeight);
 end;
 
-procedure TToolBar.ToolButtonDown(AButton: TToolButton; NewDown: Boolean);
-begin
-  AButton.Down:=NewDown;
-end;
-
 procedure TToolBar.ImageListChange(Sender: TObject);
 begin
   if (Sender = Images) then UpdateVisibleBar;
