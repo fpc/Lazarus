@@ -35,7 +35,7 @@ unit ChangeClassDialog;
 interface
 
 uses
-  Classes, SysUtils, Laz_AVL_Tree,
+  Classes, SysUtils, AvgLvlTree,
   // LCL
   LCLProc, LCLType, LResources, Forms, Controls, Dialogs, StdCtrls, ButtonPanel,
   // Codetools
@@ -62,9 +62,10 @@ type
     procedure NewClassComboBoxKeyUp(Sender: TObject; var Key: Word;
       {%H-}Shift: TShiftState);
   private
-    FClasses: TAvlTree;
+    FClasses: TAvgLvlTree;
     FNewClass: TClass;
     FThePersistent: TPersistent;
+    FClassAmbiguous: TPointerToPointerTree;
     procedure SetNewClass(const AValue: TClass);
     procedure SetThePersistent(const AValue: TPersistent);
     procedure UpdateInfo;
@@ -73,8 +74,10 @@ type
     procedure FillAncestorListBox(AClass: TClass; AListBox: TListBox);
     procedure AddClass(const AClass: TPersistentClass);
     procedure AddComponentClass(const AClass: TComponentClass);
-    function CompareClasses({%H-}Tree: TAvlTree; Class1, Class2: TClass): integer;
+    function CompareClasses({%H-}Tree: TAvgLvlTree; Data1, Data2: Pointer): integer;
+    function ClassToCaption(aComp: TClass): string;
   public
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure FillNewClassComboBox;
     property ThePersistent: TPersistent read FThePersistent write SetThePersistent;
@@ -117,13 +120,12 @@ var
   LFMBuffer: TCodeBuffer;
   LFMTree: TLFMTree;
   UnitInfo: TUnitInfo;
-  OldParents: TStrings; // Name=OldParent pairs
 
   procedure ShowAbortMessage(const Msg: string);
   begin
     IDEMessageDialog('Error',
       Format(lisUnableToChangeClassOfTo, [Msg, LineEnding, PersistentName,
-        NewClass.ClassName]),
+        NewClass.UnitName+'.'+NewClass.ClassName]),
       mtError,[mbCancel]);
   end;
 
@@ -132,12 +134,6 @@ var
     Result:=false;
     // select only this persistent
     GlobalDesignHook.SelectOnlyThis(APersistent);
-    if (APersistent is TControl)
-    and (TControl(APersistent).Parent<>nil) then begin
-      if OldParents=nil then
-        OldParents:=TStringList.Create;
-      OldParents.Values[TControl(APersistent).Name]:=TControl(APersistent).Parent.Name;
-    end;
 
     // stream selection
     ComponentStream:=TMemoryStream.Create;
@@ -165,7 +161,7 @@ var
       exit;
     end;
     UnitCode:=UnitInfo.Source;
-    LFMBuffer:=CodeToolBoss.CreateTempFile('changeclass.lfm');
+    LFMBuffer:=CodeToolBoss.CreateTempFile('lazaruschangeclass.lfm');
     if (LFMBuffer=nil) or (ComponentStream.Size=0) then begin
       ShowAbortMessage(lisUnableToCreateTemporaryLfmBuffer);
       exit;
@@ -175,7 +171,7 @@ var
     //debugln('ChangePersistentClass-Before-Checking--------------------------------------------');
     //debugln(LFMBuffer.Source);
     //debugln('ChangePersistentClass-Before-Checking-------------------------------------------');
-    if not CodeToolBoss.CheckLFM(UnitCode,LFMBuffer,LFMTree,false,false,false) then
+    if not CodeToolBoss.ParseLFM(LFMBuffer,LFMTree) then
     begin
       debugln('ChangePersistentClass-Before--------------------------------------------');
       debugln(LFMBuffer.Source);
@@ -228,10 +224,7 @@ var
   function InsertStreamedSelection: boolean;
   var
     MemStream: TMemoryStream;
-    LFMType, LFMComponentName, LFMClassName: string;
-    AComponent: TComponent;
     NewParent: TWinControl;
-    NewParentName: string;
   begin
     Result:=false;
     if LFMBuffer.SourceLength=0 then exit;
@@ -243,19 +236,8 @@ var
       LFMBuffer.SaveToStream(MemStream);
       MemStream.Position:=0;
       NewParent:=nil;
-      if OldParents<>nil then begin
-        ReadLFMHeader(MemStream,LFMType,LFMComponentName,LFMClassName);
-        if (LFMType='') or (LFMClassName='') then ;
-        MemStream.Position:=0;
-        if LFMComponentName<>'' then begin
-          NewParentName:=OldParents.Values[LFMComponentName];
-          if NewParentName<>'' then begin
-            AComponent:=GlobalDesignHook.GetComponent(NewParentName);
-            if AComponent is TWinControl then
-              NewParent:=TWinControl(AComponent);
-          end;
-        end;
-      end;
+      if APersistent is TControl then
+        NewParent:=TControl(APersistent).Parent;
       Result:=FormEditingHook.InsertFromStream(MemStream,NewParent,
                                                [cpsfReplace]);
       if not Result then
@@ -269,7 +251,7 @@ begin
   Result:=mrCancel;
   if NewClass = nil then
     exit;
-  if CompareText(APersistent.ClassName,NewClass.ClassName)=0 then begin
+  if APersistent.ClassType=NewClass then begin
     Result:=mrOk;
     exit;
   end;
@@ -282,7 +264,6 @@ begin
   end;
   ComponentStream:=nil;
   LFMTree:=nil;
-  OldParents:=nil;
   try
     if not StreamSelection then exit;
     if not ParseLFMStream then exit;
@@ -291,7 +272,6 @@ begin
     if not InsertStreamedSelection then exit;
   finally
     ComponentStream.Free;
-    OldParents.Free;
     // Note: do not free LFMTree, it is cached by the codetools
   end;
   Result:=mrOk;
@@ -343,9 +323,9 @@ begin
   FillAncestorListBox(ThePersistent.ClassType,OldAncestorsListBox);
   if ThePersistent<>nil then begin
     if ThePersistent is TComponent then
-      OldClassLabel.Caption:=TComponent(ThePersistent).Name+': '+ThePersistent.ClassName
+      OldClassLabel.Caption:=TComponent(ThePersistent).Name+': '+ClassToCaption(ThePersistent.ClassType)
     else
-      OldClassLabel.Caption:=ThePersistent.ClassName;
+      OldClassLabel.Caption:=ClassToCaption(ThePersistent.ClassType);
     Caption:=Format(lisCCDChangeClassOf, [OldClassLabel.Caption]);
   end else begin
     OldClassLabel.Caption:=lisCCDNoClass;
@@ -355,14 +335,14 @@ end;
 
 procedure TChangeClassDlg.UpdateNewInfo;
 var
-  ANode: TAvlTreeNode;
+  ANode: TAvgLvlTreeNode;
 begin
   FNewClass:=nil;
   if FClasses<>nil then begin
     ANode:=FClasses.FindLowest;
     while (ANode<>nil) do begin
       FNewClass:=TClass(ANode.Data);
-      if (CompareText(NewClass.ClassName,NewClassComboBox.Text)=0) then
+      if (CompareText(ClassToCaption(NewClass),NewClassComboBox.Text)=0) then
         break
       else
         FNewClass:=nil;
@@ -371,7 +351,7 @@ begin
   end;
   FillAncestorListBox(NewClass,NewAncestorsListBox);
   if NewClass<>nil then begin
-    NewClassComboBox.Text:=NewClass.ClassName;
+    NewClassComboBox.Text:=ClassToCaption(NewClass);
     BtnPanel.OKButton.Enabled:=true;
   end
   else begin
@@ -387,7 +367,7 @@ var
   procedure AddAncestor(CurClass: TClass);
   begin
     if CurClass=nil then exit;
-    List.Add(CurClass.ClassName);
+    List.Add(ClassToCaption(CurClass));
     AddAncestor(CurClass.ClassParent);
   end;
   
@@ -409,7 +389,8 @@ begin
   AddClass(AClass);
 end;
 
-function TChangeClassDlg.CompareClasses(Tree: TAvlTree; Class1,Class2: TClass): integer;
+function TChangeClassDlg.CompareClasses(Tree: TAvgLvlTree; Data1, Data2: Pointer
+  ): integer;
 // sort:
 //   transforming ThePersistent to descending classes is easy
 //   transforming ThePersistent to ascending classes is medium
@@ -419,6 +400,9 @@ function TChangeClassDlg.CompareClasses(Tree: TAvlTree; Class1,Class2: TClass): 
 //   for every step from ancestor to class
 //
 //   otherwise sort for classnames
+var
+  Class1: TClass absolute Data1;
+  Class2: TClass absolute Data2;
 
   function AncestorDistance(ChildClass, AncestorClass: TClass): integer;
   begin
@@ -454,23 +438,70 @@ begin
     if Result<>0 then exit;
   end;
   Result:=CompareText(Class1.ClassName,Class2.ClassName);
+  if Result<>0 then exit;
+  Result:=CompareText(Class1.UnitName,Class2.UnitName);
+end;
+
+function TChangeClassDlg.ClassToCaption(aComp: TClass): string;
+begin
+  Result:=aComp.ClassName;
+  if FClassAmbiguous[aComp]<>nil then
+    Result:=Result+'('+aComp.UnitName+')';
+end;
+
+constructor TChangeClassDlg.Create(TheOwner: TComponent);
+var
+  i: Integer;
+  RegComp: TRegisteredComponent;
+  aComp, OldClass: TComponentClass;
+  FAllClasses: TStringToPointerTree; // lowercase classname to TClass
+  LowerClassName: String;
+begin
+  inherited Create(TheOwner);
+  FClassAmbiguous:=TPointerToPointerTree.Create;
+
+  FAllClasses:=TStringToPointerTree.Create(false);
+  try
+    for i:=0 to IDEComponentPalette.Comps.Count-1 do
+    begin
+      RegComp:=IDEComponentPalette.Comps[i];
+      aComp:=RegComp.ComponentClass;
+      while aComp<>TComponent do
+      begin
+        LowerClassName:=lowercase(aComp.ClassName);
+        OldClass:=TComponentClass(FAllClasses[LowerClassName]);
+        if OldClass=nil then
+          // new class
+          FAllClasses[LowerClassName]:=aComp
+        else if OldClass=aComp then
+          // already added
+          break
+        else if FClassAmbiguous[aComp]=nil then
+          // new ambiguous class
+          FClassAmbiguous[aComp]:=OldClass;
+        aComp:=TComponentClass(aComp.ClassParent);
+      end;
+    end;
+  finally
+    FAllClasses.Free;
+  end;
 end;
 
 destructor TChangeClassDlg.Destroy;
 begin
-  FClasses.Free;
-  FClasses:=nil;
+  FreeAndNil(FClassAmbiguous);
+  FreeAndNil(FClasses);
   inherited Destroy;
 end;
 
 procedure TChangeClassDlg.FillNewClassComboBox;
 var
-  ANode: TAvlTreeNode;
+  ANode: TAvgLvlTreeNode;
   List: TStringList;
 begin
   // create/clear tree
   if FClasses=nil then
-    FClasses:=TAvlTree.CreateObjectCompare(TObjectSortCompare(@CompareClasses))
+    FClasses:=TAvgLvlTree.CreateObjectCompare(@CompareClasses)
   else
     FClasses.Clear;
   // add class of ThePersistent
@@ -484,7 +515,7 @@ begin
   try
     ANode:=FClasses.FindLowest;
     while ANode<>nil do begin
-      List.Add(TClass(ANode.Data).ClassName);
+      List.Add(ClassToCaption(TClass(ANode.Data)));
       ANode:=FClasses.FindSuccessor(ANode);
     end;
     // assign to combobox
