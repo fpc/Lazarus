@@ -2032,6 +2032,9 @@ function HasConsoleSupport: Boolean;
 (******************************************************************************)
 (******************************************************************************)
 
+var
+  ProjectValueConverterSelectorList: TIdeDbgValueConvertSelectorList;
+
 implementation
 
 var
@@ -6852,8 +6855,14 @@ begin
   else Exclude(FEvaluateFlags, defSkipValConv);
 
   s := AConfig.GetValue(APath + 'FpDbgConv', '');
-  if s <> '' then
-    DbgBackendConverter := DebuggerOptions.BackendConverterConfig.IdeItemByName(s);
+  if s <> '' then begin
+    if AConfig.GetValue(APath + 'FpDbgConvIsFromProject', False) then begin
+      if ProjectValueConverterSelectorList <> nil then
+        DbgBackendConverter := ProjectValueConverterSelectorList.IdeItemByName(s);
+    end
+    else
+      DbgBackendConverter := DebuggerOptions.BackendConverterConfig.IdeItemByName(s);
+  end;
 
   TIdeWatchValueList(FValueList).LoadDataFromXMLConfig(AConfig, APath + 'ValueList/');
 end;
@@ -6872,8 +6881,12 @@ begin
   AConfig.SetDeleteValue(APath + 'RepeatCount', FRepeatCount, 0);
 
   AConfig.SetDeleteValue(APath + 'SkipFpDbgConv', defSkipValConv in FEvaluateFlags, False);
-  if DbgBackendConverter <> nil then
+  if DbgBackendConverter <> nil then begin
     AConfig.SetDeleteValue(APath + 'FpDbgConv', DbgBackendConverter.Name, '');
+    AConfig.SetDeleteValue(APath + 'FpDbgConvIsFromProject',
+      (ProjectValueConverterSelectorList<>nil) and (ProjectValueConverterSelectorList.IndexOf(DbgBackendConverter) >= 0),
+      False);
+  end;
 
   TIdeWatchValueList(FValueList).SaveDataToXMLConfig(AConfig, APath + 'ValueList/');
 end;
@@ -7007,8 +7020,14 @@ begin
   else Exclude(FEvaluateFlags, defSkipValConv);
 
   s := AConfig.GetValue(APath + 'FpDbgConv', '');
-  if s <> '' then
-    DbgBackendConverter := DebuggerOptions.BackendConverterConfig.IdeItemByName(s);
+  if s <> '' then begin
+    if AConfig.GetValue(APath + 'FpDbgConvIsFromProject', False) then begin
+      if ProjectValueConverterSelectorList <> nil then
+        DbgBackendConverter := ProjectValueConverterSelectorList.IdeItemByName(s);
+    end
+    else
+      DbgBackendConverter := DebuggerOptions.BackendConverterConfig.IdeItemByName(s);
+  end;
 end;
 
 procedure TCurrentWatch.SaveToXMLConfig(const AConfig: TXMLConfig; const APath: string);
@@ -7023,8 +7042,12 @@ begin
   AConfig.SetDeleteValue(APath + 'RepeatCount', FRepeatCount, 0);
 
   AConfig.SetDeleteValue(APath + 'SkipFpDbgConv', defSkipValConv in FEvaluateFlags, False);
-  if DbgBackendConverter <> nil then
+  if DbgBackendConverter <> nil then begin
     AConfig.SetDeleteValue(APath + 'FpDbgConv', DbgBackendConverter.Name, '');
+    AConfig.SetDeleteValue(APath + 'FpDbgConvIsFromProject',
+      (ProjectValueConverterSelectorList<>nil) and (ProjectValueConverterSelectorList.IndexOf(DbgBackendConverter) >= 0),
+      False);
+  end;
 end;
 
 { =========================================================================== }

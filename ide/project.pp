@@ -62,7 +62,7 @@ uses
   IDEOptionsIntf, IDEOptEditorIntf, IDEDialogs, LazIDEIntf, PackageIntf,
   // DebuggerIntf
   DbgIntfDebuggerBase,
-  {$IFnDEF LCLNOGUI} IdeDebuggerOpts, IdeDebuggerBackendValueConv,{$EndIf}
+  {$IFnDEF LCLNOGUI} IdeDebuggerOpts, IdeDebuggerBackendValueConv, Debugger,{$EndIf}
   // IDE
   EnvironmentOpts, CompOptsModes, ProjectResources, LazConf, ProjectIcon,
   IDECmdLine, IDEProcs, CompilerOptions, RunParamsOpts, ModeMatrixOpts,
@@ -3112,6 +3112,7 @@ begin
   if not FStoreBackendConverterConfigInSession then begin
     {$IFnDEF LCLNOGUI}
     FBackendConverterConfig.LoadDataFromXMLConfig(FXMLConfig, Path+'Debugger/BackendConv/');
+    ProjectValueConverterSelectorList := FBackendConverterConfig;
     {$EndIf}
     FBackendConverterConfigWasFromLPI := True;
   end;
@@ -3166,6 +3167,7 @@ begin
   if FStoreBackendConverterConfigInSession then begin
     {$IFnDEF LCLNOGUI}
     FBackendConverterConfig.LoadDataFromXMLConfig(FXMLConfig, Path+'Debugger/BackendConv/');
+    ProjectValueConverterSelectorList := FBackendConverterConfig;
     {$EndIf}
     FBackendConverterConfigWasFromSession := True;
   end;

@@ -2467,6 +2467,7 @@ end;
 procedure TDebugManager.DoBackendConverterChanged;
 begin
   ValueConverterSelectorList.Lock;
+  ProjectValueConverterSelectorList := nil;
 
   try
     ValueConverterSelectorList.Clear;
@@ -2475,6 +2476,8 @@ begin
     if (Project1 = nil) or (Project1.UseBackendConverterFromIDE) then
       DebuggerOptions.BackendConverterConfig.AssignEnabledTo(ValueConverterSelectorList, True);
 
+    if (Project1 <> nil) then
+      ProjectValueConverterSelectorList := Project1.BackendConverterConfig;
   finally
     ValueConverterSelectorList.Unlock;
   end;

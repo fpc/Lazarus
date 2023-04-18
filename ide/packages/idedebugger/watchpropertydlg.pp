@@ -74,7 +74,7 @@ type
     constructor Create(AOWner: TComponent; const AWatch: TIdeWatch; const AWatchExpression: String = ''); overload;
     destructor Destroy; override;
   end;
-  
+
 implementation
 
 {$R *.lfm}
@@ -123,6 +123,10 @@ begin
     else
     if dropFpDbgConv.ItemIndex - 2 < DebuggerOptions.BackendConverterConfig.Count then begin
       FWatch.DbgBackendConverter := DebuggerOptions.BackendConverterConfig.IdeItems[dropFpDbgConv.ItemIndex - 2];
+    end
+    else begin
+      if ProjectValueConverterSelectorList <> nil then
+        FWatch.DbgBackendConverter := ProjectValueConverterSelectorList.IdeItems[dropFpDbgConv.ItemIndex - 2 - DebuggerOptions.BackendConverterConfig.Count];
     end;
 
     FWatch.Enabled := chkEnabled.Checked;
@@ -160,7 +164,7 @@ const
      9     //wdfBinary
     );
 var
-  i: Integer;
+  i, i2: Integer;
 begin
   FWatch := AWatch;
   inherited Create(AOwner);
@@ -217,6 +221,10 @@ begin
   dropFpDbgConv.AddItem(dlgBackendConvOptDisabled, nil);
   for i := 0 to DebuggerOptions.BackendConverterConfig.Count - 1 do
     dropFpDbgConv.AddItem(DebuggerOptions.BackendConverterConfig.IdeItems[i].Name, nil);
+  i2 := dropFpDbgConv.Items.Count;
+  if (ProjectValueConverterSelectorList <> nil) then
+    for i := 0 to ProjectValueConverterSelectorList.Count - 1 do
+      dropFpDbgConv.AddItem(ProjectValueConverterSelectorList.IdeItems[i].Name, nil);
 
   dropFpDbgConv.ItemIndex := 0;
   if AWatch <> nil then begin
@@ -226,8 +234,14 @@ begin
     else
     if AWatch.DbgBackendConverter <> nil then begin
       i := DebuggerOptions.BackendConverterConfig.IndexOf(AWatch.DbgBackendConverter);
-      if i >= 0 then
+      if i >= 0 then begin
         dropFpDbgConv.ItemIndex := i + 2;
+      end
+      else begin
+        i := ProjectValueConverterSelectorList.IndexOf(AWatch.DbgBackendConverter);
+        if i >= 0 then
+          dropFpDbgConv.ItemIndex := i2 + i;
+      end;
     end;
   end;
 
