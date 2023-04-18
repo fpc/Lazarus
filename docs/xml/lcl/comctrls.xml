@@ -21611,8 +21611,8 @@ the tool button and its parent tool bar when needed.
 
 <element name="TToolButton.Down">
 <short>
-Is this button <var>Down</var> (i.e. has it been selected)? Default 
-<b>False</b>.
+Indicates whether the button is in the "Down" state, i. e. has it been 
+selected. The default value is <b>False</b>.
 </short>
 <descr>
 <p>
@@ -21631,7 +21631,18 @@ called to set the button state in the tool bar to the new property value. The
 button and the tool bar are redrawn following the change.
 </p>
 </descr>
-<seealso/>
+<version>
+The implementation was modified in LCL version 2.4 to ensure that an endless 
+loop is avoided when more than one grouped button a tool bar has its Down 
+property enabled, or when GroupAllUpAllowed is called.
+</version>
+<seealso>
+<link id="TToolButton.Grouped"/>
+<link id="TToolButton.AllowAllUp"/>
+<link id="TToolButton.Style"/>
+<link id="TToolButton.GroupAllUpAllowed"/>
+<link id="TToolBar.Buttons"/>
+</seealso>
 </element>
 
 <element name="TToolButton.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
