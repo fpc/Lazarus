@@ -1,5 +1,5 @@
 //******************************************************************************
-//  Copyright (c) 2005-2013 by Jan Van hijfte
+//  Copyright (c) 2005-2023 by Jan Van hijfte, Željan Rikalo
 //
 //  See the included file COPYING.TXT for details about the copyright.
 //
@@ -104,6 +104,21 @@ void QThread_terminate(QThreadH handle)
 void QThread_quit(QThreadH handle)
 {
 	((QThread *)handle)->quit();
+}
+
+bool QThread_isInterruptionRequested(QThreadH handle)
+{
+  return (bool) ((QThread *)handle)->isInterruptionRequested();
+}
+
+void QThread_requestInterruption(QThreadH handle)
+{
+  ((QThread *)handle)->requestInterruption();
+}
+
+int QThread_loopLevel(QThreadH handle)
+{
+  return (int) ((QThread *)handle)->loopLevel();
 }
 
 bool QThread_wait(QThreadH handle, unsigned long time)

@@ -31,6 +31,16 @@ void QGuiApplication_hook_hook_screenAdded(QGuiApplication_hookH handle, QHookH 
 	((QGuiApplication_hook *)handle)->hook_screenAdded(hook);
 }
 
+void QGuiApplication_hook_hook_screenRemoved(QGuiApplication_hookH handle, QHookH hook)
+{
+	((QGuiApplication_hook *)handle)->hook_screenRemoved(hook);
+}
+
+void QGuiApplication_hook_hook_primaryScreenChanged(QGuiApplication_hookH handle, QHookH hook)
+{
+	((QGuiApplication_hook *)handle)->hook_primaryScreenChanged(hook);
+}
+
 void QGuiApplication_hook_hook_lastWindowClosed(QGuiApplication_hookH handle, QHookH hook)
 {
 	((QGuiApplication_hook *)handle)->hook_lastWindowClosed(hook);

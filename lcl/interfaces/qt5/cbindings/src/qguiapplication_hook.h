@@ -1,5 +1,5 @@
 //******************************************************************************
-//  Copyright (c) 2005-2013 by Jan Van hijfte
+//  Copyright (c) 2005-2023 by Jan Van hijfte, Željan Rikalo
 //
 //  See the included file COPYING.TXT for details about the copyright.
 //
@@ -22,6 +22,8 @@ class QGuiApplication_hook : public QCoreApplication_hook {
     QGuiApplication_hook(QObject *handle) : QCoreApplication_hook(handle) {
       fontDatabaseChanged_event.func = NULL;
       screenAdded_event.func = NULL;
+      screenRemoved_event.func = NULL;
+      primaryScreenChanged_event.func = NULL;
       lastWindowClosed_event.func = NULL;
       focusObjectChanged_event.func = NULL;
       focusWindowChanged_event.func = NULL;
@@ -41,6 +43,20 @@ class QGuiApplication_hook : public QCoreApplication_hook {
       screenAdded_event = hook;
       if ( !hook.func )
         disconnect(handle, SIGNAL(screenAdded(QScreen*)), this, SLOT(screenAdded_hook(QScreen*)));
+    }
+    void hook_screenRemoved(QHook &hook) {
+      if ( !screenRemoved_event.func )
+        connect(handle, SIGNAL(screenRemoved(QScreen*)), this, SLOT(screenRemoved_hook(QScreen*)));
+      screenRemoved_event = hook;
+      if ( !hook.func )
+        disconnect(handle, SIGNAL(screenRemoved(QScreen*)), this, SLOT(screenRemoved_hook(QScreen*)));
+    }
+    void hook_primaryScreenChanged(QHook &hook) {
+      if ( !primaryScreenChanged_event.func )
+        connect(handle, SIGNAL(primaryScreenChanged(QScreen*)), this, SLOT(primaryScreenChanged_hook(QScreen*)));
+      primaryScreenChanged_event = hook;
+      if ( !hook.func )
+        disconnect(handle, SIGNAL(primaryScreenChanged(QScreen*)), this, SLOT(primaryScreenChanged_hook(QScreen*)));
     }
     void hook_lastWindowClosed(QHook &hook) { 
       if ( !lastWindowClosed_event.func )
@@ -91,6 +107,18 @@ class QGuiApplication_hook : public QCoreApplication_hook {
 	(*(func_type)screenAdded_event.func)(screenAdded_event.data, (QScreenH)screen);
       }
     }
+    void screenRemoved_hook(QScreen* screen) {
+      if ( screenRemoved_event.func ) {
+        typedef void (*func_type)(void *data, QScreenH screen);
+	(*(func_type)screenRemoved_event.func)(screenRemoved_event.data, (QScreenH)screen);
+      }
+    }
+    void primaryScreenChanged_hook(QScreen* screen) {
+      if ( primaryScreenChanged_event.func ) {
+        typedef void (*func_type)(void *data, QScreenH screen);
+	(*(func_type)primaryScreenChanged_event.func)(primaryScreenChanged_event.data, (QScreenH)screen);
+      }
+    }
     void lastWindowClosed_hook() {
       if ( lastWindowClosed_event.func ) {
         typedef void (*func_type)(void *data);
@@ -124,6 +152,8 @@ class QGuiApplication_hook : public QCoreApplication_hook {
   private:
     QHook fontDatabaseChanged_event;
     QHook screenAdded_event;
+    QHook screenRemoved_event;
+    QHook primaryScreenChanged_event;
     QHook lastWindowClosed_event;
     QHook focusObjectChanged_event;
     QHook focusWindowChanged_event;

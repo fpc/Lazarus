@@ -1,5 +1,5 @@
 //******************************************************************************
-//  Copyright (c) 2005-2013 by Jan Van hijfte
+//  Copyright (c) 2005-2023 by Jan Van hijfte, Željan Rikalo
 //
 //  See the included file COPYING.TXT for details about the copyright.
 //
@@ -18,6 +18,8 @@ C_EXPORT QGuiApplication_hookH QGuiApplication_hook_Create(QObjectH handle);
 C_EXPORT void QGuiApplication_hook_Destroy(QGuiApplication_hookH handle);
 C_EXPORT void QGuiApplication_hook_hook_fontDatabaseChanged(QGuiApplication_hookH handle, QHookH hook);
 C_EXPORT void QGuiApplication_hook_hook_screenAdded(QGuiApplication_hookH handle, QHookH hook);
+C_EXPORT void QGuiApplication_hook_hook_screenRemoved(QGuiApplication_hookH handle, QHookH hook);
+C_EXPORT void QGuiApplication_hook_hook_primaryScreenChanged(QGuiApplication_hookH handle, QHookH hook);
 C_EXPORT void QGuiApplication_hook_hook_lastWindowClosed(QGuiApplication_hookH handle, QHookH hook);
 C_EXPORT void QGuiApplication_hook_hook_focusObjectChanged(QGuiApplication_hookH handle, QHookH hook);
 C_EXPORT void QGuiApplication_hook_hook_focusWindowChanged(QGuiApplication_hookH handle, QHookH hook);
