@@ -1,5 +1,5 @@
 //******************************************************************************
-//  Copyright (c) 2005-2013 by Jan Van hijfte
+//  Copyright (c) 2005-2023 by Jan Van hijfte, Željan Rikalo
 //
 //  See the included file COPYING.TXT for details about the copyright.
 //
@@ -35,6 +35,9 @@ C_EXPORT void QThread_start(QThreadH handle, QThread::Priority AnonParam1);
 C_EXPORT void QThread_terminate(QThreadH handle);
 C_EXPORT void QThread_quit(QThreadH handle);
 C_EXPORT bool QThread_wait(QThreadH handle, unsigned long time);
+C_EXPORT bool QThread_isInterruptionRequested(QThreadH handle);
+C_EXPORT void QThread_requestInterruption(QThreadH handle);
+C_EXPORT int QThread_loopLevel(QThreadH handle);
 C_EXPORT void QThread_sleep(unsigned long AnonParam1);
 C_EXPORT void QThread_msleep(unsigned long AnonParam1);
 C_EXPORT void QThread_usleep(unsigned long AnonParam1);
