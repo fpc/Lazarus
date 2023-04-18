@@ -21612,29 +21612,47 @@ the tool button and its parent tool bar when needed.
 <element name="TToolButton.Down">
 <short>
 Indicates whether the button is in the "Down" state, i. e. has it been 
-selected. The default value is <b>False</b>.
+selected or clicked. 
 </short>
 <descr>
 <p>
 <var>Down</var> is a <var>Boolean</var> property which indicates if the tool 
 button is in a "pressed" or "down" state. The default value for the property 
-is <b>False</b>.
+is <b>False</b>, and causes the button to be drawn in its normal non-pressed 
+state. Down is updated when mouse down or up messages are handled for the 
+button.
 </p>
 <p>
-When the value for the property is changed to <b>True</b> in a check-box 
-button (<var>Style</var> = <var>tbsCheck</var>), other buttons on the parent 
-tool bar are also updated. Adjacent buttons with their <var>Grouped</var> 
-property set to <b>True</b> are checked to ensure that their Down property is 
-set to <b>False</b>. The button(s) are redrawn if their Down property was 
-changed. The <var>ToolButtonDown</var> method in the parent tool bar is 
-called to set the button state in the tool bar to the new property value. The 
-button and the tool bar are redrawn following the change.
+The Style property determines whether the Down state is temporary or 
+persistent. When Style contains tsButton, Down is reset to <b>False</b> when a 
+mouse up message occurs for the button. For the tbsCheck style, it is a 
+toggle; mouse down changes the state but mouse up does not automatically 
+release it.
+</p> 
+<p>
+Changing the value for the property causes the control to be redrawn. It may 
+also affect adjacent buttons on the tool bar with their Grouped properties  
+enabled. When Down is enabled for a Grouped button, the other buttons in the 
+group are updated to set their Down states to <b>False</b>.
+</p>
+<p>
+Set Grouped to <b>True</b> to include the button in a group of adjacent 
+buttons where only one of them can be in the Down state at any given time. The 
+group does not extend beyond separator or divider buttons defined on the tool 
+bar. Use AllowAllUp to control whether all of the buttons in a group can have 
+their Down properties set to <b>False</b>.
+</p>
+<p>
+Changing the property to <b>True</b> at design-time (or in program code) 
+causes a <i>non-grouped</i> tool button to be drawn in the pressed state 
+regardless of the setting in style. Display logic for the Style is reapplied 
+when mouse messages are handled for the control.
 </p>
 </descr>
 <version>
 The implementation was modified in LCL version 2.4 to ensure that an endless 
-loop is avoided when more than one grouped button a tool bar has its Down 
-property enabled, or when GroupAllUpAllowed is called.
+loop is avoided when Down is changed for grouped button, or when 
+GroupAllUpAllowed is called.
 </version>
 <seealso>
 <link id="TToolButton.Grouped"/>
@@ -21642,6 +21660,7 @@ property enabled, or when GroupAllUpAllowed is called.
 <link id="TToolButton.Style"/>
 <link id="TToolButton.GroupAllUpAllowed"/>
 <link id="TToolBar.Buttons"/>
+<link id="TToolButtonStyle"/>
 </seealso>
 </element>
 
@@ -21649,6 +21668,7 @@ property enabled, or when GroupAllUpAllowed is called.
 <element name="TToolButton.DragKind" link="#lcl.controls.TControl.DragKind"/>
 <element name="TToolButton.DragMode" link="#lcl.controls.TControl.DragMode"/>
 
+<!-- TODO: Description needs work. See Also links missing. -->
 <element name="TToolButton.DropdownMenu">
 <short>The drop-down menu that appears when the button is pressed.</short>
 <descr>
@@ -22182,10 +22202,6 @@ Called from the <var>FontChanged</var> method.
 
 <element name="TToolBar.SetWrapable"/>
 <element name="TToolBar.SetWrapable.AValue"/>
-
-<element name="TToolBar.ToolButtonDown"/>
-<element name="TToolBar.ToolButtonDown.AButton"/>
-<element name="TToolBar.ToolButtonDown.NewDown"/>
 
 <element name="TToolBar.ImageListChange"/>
 <element name="TToolBar.ImageListChange.Sender"/>
