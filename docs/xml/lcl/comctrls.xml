@@ -20289,35 +20289,18 @@ increment or decrement the number displayed by a specified amount.
 
 <element name="TToolButtonStyle">
 <short>
-<var>TToolButtonStyle</var> - enumerated type that determines the style of 
-the tool buttons.
+Enumerated type with values representing the display styles and behaviors for 
+buttons on a TToolBar control.
 </short>
 <descr>
-<p>These are the possible values of Style:</p>
-<ul>
-<li>
-<b>tbsButton</b> - The button appears and functions like a normal button.
-</li>
-<li>
-<b>tbsCheck</b> - Clicking the button toggles the Down property. Once 
-selected, the button remains selected until clicked again.
-</li>
-<li>
-<b>tbsDivider</b> - The button appears as a vertical line on the toolbar 
-(used to separate other controls).
-</li>
-<li>
-<b>tbsDropDown</b> - The button displays a downwards-pointing arrow (suitable 
-for accessing a drop-down menu).
-</li>
-<li>
-<b>tbsSeparator</b> - The button appears as an empty space on the toolbar 
-(used to separate other controls).
-</li>
-</ul>
+<p>
+Values in TToolButtonStyle indicate the visual display for a tool button and 
+its behavior when clicked. <var>TToolButtonStyle</var> is the type used to 
+implement the Style property in the TToolButton class.
+</p>
 </descr>
 <seealso>
-<link id="TToolButton"/>
+<link id="TToolButton.Style"/>
 </seealso>
 <example file="comctrls/ttoolbutton.pas"/>
 </element>
@@ -21668,18 +21651,45 @@ GroupAllUpAllowed is called.
 <element name="TToolButton.DragKind" link="#lcl.controls.TControl.DragKind"/>
 <element name="TToolButton.DragMode" link="#lcl.controls.TControl.DragMode"/>
 
-<!-- TODO: Description needs work. See Also links missing. -->
 <element name="TToolButton.DropdownMenu">
-<short>The drop-down menu that appears when the button is pressed.</short>
+<short>
+The drop-down menu displayed when the button is pressed.
+</short>
 <descr>
 <p>
-A <var>DropDownMenu</var> that appears when this button is selected.
+<var>DropdownMenu</var> is a <var>TPopupMenu</var> property which contains the 
+drop-down menu displayed for the button when its Style property is set to one 
+of the drop-down styles:
+</p>
+<dl>
+<dt>tbsDropDown</dt>
+<dd>
+Displays the menu when the drop-down indicator for the button is clicked.
+</dd>
+<dt>tbsButtonDrop</dt>
+<dd>
+Displays the menu when any part of the button is clicked. This style also 
+omits the divider between the button surface and the drop-down indicator.
+</dd>
+</dl>
+<p>
+DropdownMenu is displayed or hidden when the TToolBar.CheckMenuDropdown method 
+examines the flag values set when mouse messages are handled for the control.
 </p>
 <p>
-It uses the same code as a <link id="#lcl.menus.TPopupMenu">TPopupMenu</link> 
-and offers a series of additional menu choices.
+Create a TPopupMenu instance with the menu items or sub-menus needed, and 
+assign it to the property. Changing the value for the property causes the 
+TPopupMenu menu instance to be added to the free notifications for the 
+component.
 </p>
 </descr>
+<seealso>
+<link id="TToolButton.Style"/>
+<link id="TToolButton.CheckMenuDropdown"/>
+<link id="TToolBar.CheckMenuDropdown"/>
+<link id="TToolButtonStyle"/>
+<link id="#lcl.menus.TPopupMenu">TPopupMenu</link>
+</seealso>
 </element>
 
 <element name="TToolButton.Enabled">
@@ -21711,15 +21721,35 @@ Indicates if the tool button is a member of a group. The default value is
 <b>False</b>.
 </short>
 <descr>
-<p>Is this button a member of a group?</p>
 <p>
-This would mean behavior similar to the radio buttons in a <link 
-id="#lcl.extctrls.TRadioGroup">TRadioGroup</link> where only one button in 
-the group can be selected, or the check boxes in a <link 
-id="#lcl.extctrls.TCheckGroup">TCheckGroup</link> where more than one item 
-can be selected but the members of the group interact in some way.
+<var>Grouped</var> is a <var>Boolean</var> property which indicates that the 
+button is a member of a group when its value is set to <b>True</b>. A button 
+group is a range of adjacent tool buttons with their Grouped properties set to 
+<b>True</b>. The button range cannot extend beyond separators and dividers 
+used on a tool bar control.
+</p>
+<p>
+While Grouped can be assigned for any button style, it is significant when 
+Style is set to tbsCheck. If Grouped is enabled, the checked-style button 
+behaves like a check box in TCheckGroup or a radio button in TRadioGroup 
+where only one of the grouped controls can be selected or checked at a time.
+</p>
+<p>
+Changing the value for the property causes adjacent buttons on the TToolBar 
+instance to be examined to ensure that only one of the grouped buttons has its 
+Down property set to <b>True</b>.
+</p>
+<p>
+Use AllowAllUp to indicate whether all of the buttons in a group can have 
+their Down properties set to <b>False</b>.
 </p>
 </descr>
+<seealso>
+<link id="TToolButton.Style"/>
+<link id="TToolButton.Down"/>
+<link id="TToolButton.AllowAllUp"/>
+<link id="TToolButtonStyle"/>
+</seealso>
 </element>
 
 <element name="TToolButton.Height">
@@ -21900,30 +21930,91 @@ handler signalled when the left mouse button is clicked on the tool button.
 <element name="TToolButton.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
 
 <element name="TToolButton.ShowCaption">
-<short>Indicates if the Caption text is displayed on the tool button.</short>
+<short>
+Indicates whether the Caption text is displayed on the tool button.
+</short>
 <descr>
 <p>
-The <var>ShowCaptions</var> property in the parent tool bar takes precedence. 
-Setting <var>ShowCaption</var> to <var>False</var> is relevant only when the 
-<var>List</var> property in the tool bar is set to <b>True</b>.
+<var>ShowCaption</var> is a <var>Boolean</var> property which indicates 
+whether the value in the Caption property is displayed on the button surface. 
+The default value for the property is <b>True</b>, and enables the text on 
+buttons with a Style value that is are not a divider or a separator.
+</p>
+<p>
+ShowCaption is used in conjunction with the ShowCaptions property in the tool 
+bar where the button is displayed. The ShowCaptions property in the parent 
+tool bar takes precedence. Setting ShowCaption to <var>False</var> for the 
+button is relevant when the List property in the tool bar is <b>True</b>.
+</p>
+<p>
+ShowCaption is used in the Paint method when the text size for the Caption is 
+calculated.
 </p>
 </descr>
 <seealso>
+<link id="TToolButton.Caption"/>
+<link id="TToolButton.Style"/>
+<link id="TToolButton.Paint"/>
 <link id="TToolBar.ShowCaptions"/>
 <link id="TToolBar.List"/>
+<link id="TToolButtonStyle"/>
 </seealso>
 </element>
 
 <element name="TToolButton.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
 
 <element name="TToolButton.Style">
-<short>Determines the display style of the tool button.</short>
+<short>
+Determines the display style for the tool button.
+</short>
 <descr>
 <p>
-See TToolButtonStyle for the possible Style values.
+<var>Style</var> is a <var>TToolButtonStyle</var> property which controls the 
+visual display style and behavior for the button on its tool bar. Values 
+allowed in the property include:
+</p>
+<ul>
+<li>tbsButton</li>
+<li>tbsCheck</li>
+<li>tbsDropDown</li>
+<li>tbsSeparator</li>
+<li>tbsDivider</li>
+<li>tbsButtonDrop</li>
+</ul>
+<p>
+The default value for the property is tbsButton. This causes the button to be 
+displayed using the behavior for a TSpeedButton class instance. In other 
+words, it is a momentary button which performs its Click method when the left 
+mouse button is clicked and released.
+</p>
+<p>
+See <link id="TToolButtonStyle">TToolButtonStyle</link> for more information 
+about the values for the property.
+</p>
+<p>
+Changing the value for the property causes the Width, Height, and preferred 
+size for the button to be recalculated. If the button is Visible, the visible 
+area on the Parent tool bar is redisplayed by calling UpdateVisibleToolbar.
+</p>
+<p>
+Use Grouped and AllowAllUp to control button behavior for adjacent grouped 
+buttons on the tool bar using the checked style.
+</p>
+<p>
+Use the Caption and ShowCaption properties to control the text displayed on 
+the button.
 </p>
 </descr>
 <seealso>
+<link id="TToolButton.Grouped"/>
+<link id="TToolButton.AllowAllUp"/>
+<link id="TToolButton.DropdownMenu"/>
+<link id="TToolButton.Visible"/>
+<link id="TToolButton.Width"/>
+<link id="TToolButton.Height"/>
+<link id="TToolButton.UpdateVisibleToolbar"/>
+<link id="TToolBar.List"/>
+<link id="TToolBar.ShowCaptions"/>
 <link id="TToolButtonStyle"/>
 </seealso>
 <example file="comctrls/ttoolbutton.pas"/>
