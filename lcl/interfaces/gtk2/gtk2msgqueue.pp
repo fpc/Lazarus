@@ -130,7 +130,24 @@ begin
 end;
 
 destructor TGtkMessageQueue.destroy;
+var
+  QueueItem  : TGtkMessageQueueItem;
+  NextQueueItem : TGtkMessageQueueItem;
 begin
+  // cleanup outstanding PostMessages
+  // for example, this situation may appear on slow systems
+  Lock;
+  try
+    QueueItem:=FirstMessageItem;
+    while (QueueItem<>nil) do begin
+      NextQueueItem := TGtkMessageQueueItem(QueueItem.Next);
+      RemoveMessage(QueueItem,FPMF_All,true);
+      QueueItem := NextQueueItem;
+    end;
+  finally
+   Unlock;
+  end;
+
   inherited Destroy;
   fPaintMessages.destroy;
   {$IFNDEF USE_GTK_MAIN_OLD_ITERATION}
