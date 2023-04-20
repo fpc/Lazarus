@@ -22,7 +22,6 @@ There is an experimental support for:
 
 The LCL still contains code for GTK1, although this target is obsolete.
 
-
 ### Compilation
 
 You don't need ```./configure```, just do  
@@ -45,6 +44,7 @@ Start the IDE with:
 cd your/lazarus/directory
 ./lazarus
 ```
+
 ### Documentation
 
 The official site is www.lazarus-ide.org.
