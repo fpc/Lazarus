@@ -1322,19 +1322,10 @@ Var
   Var
     I : integer;
   begin
-    If CaseSensitiveOptions then
-      begin
-      I:=LongOpts.Count-1;
-      While (I>=0) and (LongOpts[i]<>S) do
-        Dec(i);
-      end
-    else
-      begin
-      S:=UpperCase(S);
-      I:=LongOpts.Count-1;
-      While (I>=0) and (UpperCase(LongOpts[i])<>S) do
-        Dec(i);
-      end;
+    S:=LowerCase(S);
+    I:=LongOpts.Count-1;
+    While (I>=0) and (LowerCase(LongOpts[i])<>S) do
+      Dec(i);
     Result:=(I<>-1);
   end;
 
@@ -1395,8 +1386,6 @@ begin
                    and (ToolParamStr(I+1)[i]<>OptionChar);
           If HaveArg then
             OV:=ToolParamStr(I+1);
-          If Not CaseSensitiveOptions then
-            O:=LowerCase(O);
           L:=Length(O);
           J:=2;
           NeedArg:=false;
@@ -1440,7 +1429,6 @@ end;
 constructor TLazBuildApplication.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  CaseSensitiveOptions:=False;
   SetupDialogs;
   Files:=TStringList.Create;
   fMaxProcessCount:=-1;
