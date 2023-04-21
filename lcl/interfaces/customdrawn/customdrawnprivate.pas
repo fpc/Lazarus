@@ -288,7 +288,7 @@ end;
 procedure CallbackKeyChar(AWindowHandle: TCDForm; AKeyData: Word; AChar: TUTF8Char);
 var
   lTarget: TWinControl;
-  lCharCode: Word = 0;
+  lCharCode: Word;
 begin
   lTarget := AWindowHandle.GetFocusedControl();
   {$ifdef VerboseCDEvents}
@@ -296,17 +296,20 @@ begin
   {$endif}
 
   if lTarget = nil then Exit; // Fixes a crash
-  if Length(AChar) = 1 then lCharCode := Word(AChar[1]);
+  if Length(AChar) = 1 then
+    lCharCode := Byte(AChar[1])
+  else
+    lCharCode:=0;
 
-//  if lCharCode <> 0 then LCLSendCharEvent(lTarget, lCharCode, AKeyData, True, False, True);
-  LCLSendUTF8KeyPress(lTarget, AChar, False);
+  if AChar<>'' then LCLSendUTF8KeyPress(lTarget, AChar, False);
+  if lCharCode <> 0 then LCLSendCharEvent(lTarget, lCharCode, AKeyData, True, False, True);
 
   // If this is a interface control, send the message to the main LCL control too
   if IsIntfControl(lTarget) then
   begin
     lTarget := lTarget.Parent;
-//    if lCharCode <> 0 then LCLSendCharEvent(lTarget, lCharCode, AKeyData, True, False, True);
-    LCLSendUTF8KeyPress(lTarget, AChar, False);
+    if AChar<>'' then LCLSendUTF8KeyPress(lTarget, AChar, False);
+    if lCharCode <> 0 then LCLSendCharEvent(lTarget, lCharCode, AKeyData, True, False, True);
   end;
 end;
 
