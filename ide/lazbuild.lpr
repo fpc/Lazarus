@@ -83,9 +83,9 @@ type
     function HasShortOrLongOpt(const C: Char; const S: String): Boolean;
 
     // codetools
-    procedure OnCodeBufferDecodeLoaded({%H-}Code: TCodeBuffer;
+    procedure CodeBufferDecodeLoaded({%H-}Code: TCodeBuffer;
          const {%H-}Filename: string; var Source, DiskEncoding, MemEncoding: string);
-    procedure OnCodeBufferEncodeSaving(Code: TCodeBuffer;
+    procedure CodeBufferEncodeSaving(Code: TCodeBuffer;
                                     const {%H-}Filename: string; var Source: string);
 
     // global package functions
@@ -99,15 +99,15 @@ type
                           PkgList: TFPList; out FilesChanged: boolean): boolean;
 
     // project
-    procedure OnProjectChangeInfoFile(TheProject: TProject);
+    procedure ProjectInfoFileChanged(TheProject: TProject);
 
     // dialogs
-    function OnIDEMessageDialog(const aCaption, aMsg: string;
-                                {%H-}DlgType: TMsgDlgType; {%H-}Buttons: TMsgDlgButtons;
-                                const {%H-}HelpKeyword: string): Integer;
-    function OnIDEQuestionDialog(const aCaption, aMsg: string;
-                                 {%H-}DlgType: TMsgDlgType; {%H-}Buttons: array of const;
-                                 const {%H-}HelpKeyword: string): Integer;
+    function IDEMessageDialogHandler(const aCaption, aMsg: string;
+                         {%H-}DlgType: TMsgDlgType; {%H-}Buttons: TMsgDlgButtons;
+                         const {%H-}HelpKeyword: string): Integer;
+    function IDEQuestionDialogHandler(const aCaption, aMsg: string;
+                         {%H-}DlgType: TMsgDlgType; {%H-}Buttons: array of const;
+                         const {%H-}HelpKeyword: string): Integer;
   protected
     function GetParams(Index: Integer): String; override;
     function GetParamCount: Integer; override;
@@ -270,7 +270,7 @@ end;
 
 { TLazBuildApplication }
 
-procedure TLazBuildApplication.OnCodeBufferEncodeSaving(Code: TCodeBuffer;
+procedure TLazBuildApplication.CodeBufferEncodeSaving(Code: TCodeBuffer;
   const Filename: string; var Source: string);
 begin
   if (Code.DiskEncoding<>'') and (Code.MemEncoding<>'')
@@ -285,7 +285,7 @@ begin
   end;
 end;
 
-procedure TLazBuildApplication.OnCodeBufferDecodeLoaded(Code: TCodeBuffer;
+procedure TLazBuildApplication.CodeBufferDecodeLoaded(Code: TCodeBuffer;
   const Filename: string; var Source, DiskEncoding, MemEncoding: string);
 begin
   //DebugLn(['TLazBuildApplication.OnCodeBufferDecodeLoaded Filename=',Filename,' Encoding=',GuessEncoding(Source)]);
@@ -325,7 +325,7 @@ begin
   Result:=CheckInterPkgFiles(IDEObject,PkgList,FilesChanged);
 end;
 
-procedure TLazBuildApplication.OnProjectChangeInfoFile(TheProject: TProject);
+procedure TLazBuildApplication.ProjectInfoFileChanged(TheProject: TProject);
 begin
   if TheProject<>Project1 then exit;
   if TheProject.IsVirtual then
@@ -334,9 +334,8 @@ begin
     CodeToolBoss.SetGlobalValue(ExternalMacroStart+'ProjPath',Project1.Directory)
 end;
 
-function TLazBuildApplication.OnIDEMessageDialog(const aCaption, aMsg: string;
-  DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; const HelpKeyword: string
-  ): Integer;
+function TLazBuildApplication.IDEMessageDialogHandler(const aCaption, aMsg: string;
+  DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; const HelpKeyword: string): Integer;
 begin
   DumpStack;
   Error(ErrorBuildFailed, Format(lisLazbuildIsNonInteractiveAbortingNow, [
@@ -344,9 +343,8 @@ begin
   Result:=mrCancel;
 end;
 
-function TLazBuildApplication.OnIDEQuestionDialog(const aCaption, aMsg: string;
-  DlgType: TMsgDlgType; Buttons: array of const; const HelpKeyword: string
-  ): Integer;
+function TLazBuildApplication.IDEQuestionDialogHandler(const aCaption, aMsg: string;
+  DlgType: TMsgDlgType; Buttons: array of const; const HelpKeyword: string): Integer;
 begin
   DumpStack;
   Error(ErrorBuildFailed, Format(lisLazbuildIsNonInteractiveAbortingNow, [
@@ -1013,7 +1011,7 @@ begin
 
     Result.MainProject:=true;
     Result.OnFileBackup:=@BuildBoss.BackupFileForWrite;
-    Result.OnChangeProjectInfoFile:=@OnProjectChangeInfoFile;
+    Result.OnChangeProjectInfoFile:=@ProjectInfoFileChanged;
 
   finally
     ProjectDesc.Free;
@@ -1241,8 +1239,8 @@ procedure TLazBuildApplication.SetupCodetools;
 begin
   // create a test unit needed to get from the compiler all macros and search paths
   CodeToolBoss.CompilerDefinesCache.TestFilename:=CreateCompilerTestPascalFilename;
-  CodeToolBoss.SourceCache.OnEncodeSaving:=@OnCodeBufferEncodeSaving;
-  CodeToolBoss.SourceCache.OnDecodeLoaded:=@OnCodeBufferDecodeLoaded;
+  CodeToolBoss.SourceCache.OnEncodeSaving:=@CodeBufferEncodeSaving;
+  CodeToolBoss.SourceCache.OnDecodeLoaded:=@CodeBufferDecodeLoaded;
   CodeToolBoss.SourceCache.DefaultEncoding:=EncodingUTF8;
 
   MainBuildBoss.LoadCompilerDefinesCaches;
@@ -1269,8 +1267,8 @@ end;
 
 procedure TLazBuildApplication.SetupDialogs;
 begin
-  LazMessageWorker:=@OnIDEMessageDialog;
-  LazQuestionWorker:=@OnIDEQuestionDialog;
+  LazMessageWorker:=@IDEMessageDialogHandler;
+  LazQuestionWorker:=@IDEQuestionDialogHandler;
 end;
 
 procedure TLazBuildApplication.StoreBaseSettings;
