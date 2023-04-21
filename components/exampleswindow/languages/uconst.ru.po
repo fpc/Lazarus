@@ -49,7 +49,7 @@ msgstr "Примеры проектов"
 
 #: uconst.rsexamplerefresh
 msgid "Refresh"
-msgstr ""
+msgstr "Обновить"
 
 #: uconst.rsexampleview
 msgid "View in Browser"
