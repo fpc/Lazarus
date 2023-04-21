@@ -70,16 +70,17 @@ type
 
             procedure DumpList(wherefrom: string; ShowDesc: boolean = false);
             function Get(Index: integer): PExRec;
-
+            function IsInKeywords(St : string; AnIndex : integer) : boolean;
          public
              constructor Create();
              destructor Destroy; override;
                                          // Public - Puts new entry in List, Keys may be Nil
              function InsertData(Cat, Desc, FFName, AName: string; Keys: TStringList; IsTP: boolean=true): boolean;
              function Find(const FFname: string): PExRec;
-             function AsJSON(Index: integer): string;
-                                        // Ret T if St is in Keywords at AnIndex, not necessarily equal to.
-             function IsInKeywords(St : string; AnIndex : integer) : boolean;
+//             function AsJSON(Index: integer): string;
+
+                                        // Ret T if all the strings in STL can match something in this record.
+             function IsInKeyWords(STL : TStringList; AnIndex : integer) : boolean;
              property Items[Index: integer]: PExRec read Get; default;
 
     end;
@@ -96,9 +97,10 @@ type
                                 // with the list filled with paths to some directory above the package
                                 // lpk file being a suitable place to start searching for Examples.
             procedure CollectThirdPartyPackages(PkgFilesXML: String; AList, SList: TStrings);
+
             function GetTheRecord(const FFname: string): PExRec;
                                 // Returns true if it has altered FullPkgFileName to where we can expect to find Examples
-            function GetThirdPartyDir(var FullPkgFileName: string): boolean;
+            function GetThirdPartyDir(var FullPkgFileName: string; CheckRunTimeOnly: boolean): boolean;
             procedure ScanLazarusSrc;
                                 // Triggers a search of installed Third Party packages. Iterates over packagefiles.xml
                                 // and puts any potential paths to example directories in a list. Then iterates over
@@ -137,8 +139,12 @@ type
             ExamplesHome : string;      // dir above examples_working_dir where we copy examples to, set by uintf.pas, usually <lazConf>/
             LazSrcDir    : string;      // Laz dir where, eg ~/examples lives
             KeyFilter : string;         // A list of words, possibly grouped by " to filter Keywords
-            CatFilter  : string;        // A string that may contain 0 to n words, each word being a category as filtered by GetListData()
+//            CatFilter  : string;        // A string that may contain 0 to n words, each word being a category as filtered by GetListData()
 
+                                // Returns an index to EXList complying with supplied KeyWords and or CatFilter,
+                                // if GetFirst, starts with lowest complient entry, then, increasing. Returns -1
+                                // when it can find no more
+            function FindListData(GetFirst: boolean; TheCatFilter: string; KeyList: TStringList=nil): integer;
                                 // A service function, tests passed St to ensure its
                                 // a valid lump of Example Meta Data.
             function TestJSON(const J: string; out Error, Cat: string): boolean;
@@ -149,8 +155,9 @@ type
                                 // Public, returns with next set of data, false if no more available.
                                 // Filters using CatFilter if CatFilter is not empty.
                                 // If passed KeyList is not nil, filters keywords against KeyList.
-            function GetListData(out Proj, Cat, Path, Keys: string; out Index: integer;
-              GetFirst: boolean; KeyList: TStringList=nil): boolean;
+//            function GetListData(out Proj, Cat, Path, Keys: string; out Index: integer;               // ToDo : remove this ?
+//              GetFirst: boolean; KeyList: TStringList=nil): boolean;
+
                                 // Passed a created TStrings that it clears and fills in with all know categories
             function getCategoryData(const ACatList : TStrings) : boolean;
             constructor Create;
@@ -205,7 +212,7 @@ begin
 end;
 
                     // Returns an unquoted string being one JSON Escaped record from list.
-function TExampleList.AsJSON(Index : integer) : string;                         // Not used, maybe remove ?   Or Add in EName
+(*function TExampleList.AsJSON(Index : integer) : string;                         // Not used, maybe remove ?   Or Add in EName
 begin
     Result := '';
     Result := Result + 'Category : ' + Items[Index]^.Category + #10;
@@ -213,9 +220,9 @@ begin
     Result := Result + Items[Index]^.Desc;
     Result := Result.Replace('\', '\\', [rfReplaceAll] );
     Result := Result.Replace('"', '\"', [rfReplaceAll] );
-end;
+end;  *)
 
-function TExampleList.IsInKeywords(St: string; AnIndex: integer): boolean;
+function TExampleList.IsInKeywords(St: string; AnIndex: integer): boolean;      // ToDo : private now I think
     var KeyWord : String;
 begin
     result := false;
@@ -223,6 +230,20 @@ begin
     for KeyWord in Items[AnIndex]^.Keywords do begin
         if pos(lowercase(St), lowercase(Keyword)) > 0 then exit(True);
     end;
+end;
+
+// Passed a List of keywords, tests each one against the list in the indicated
+// TExampleList item, returns false if if finds a string that if not included
+// in the TExampleList item keywords. Not a 1:1 match, the passed string can be
+// a substring of the TExampleList item keyword. Not visa versa. Case Insensitive
+function TExampleList.IsInKeyWords(STL: TStringList; AnIndex: integer): boolean;
+var
+    St : string;
+begin
+    for St in STL do
+        if not IsInKeywords(St, AnIndex)
+            then exit(False);
+    result := true;
 end;
 
 
@@ -277,12 +298,16 @@ end;
 
 
 procedure TExampleData.CollectThirdPartyPackages(PkgFilesXML: String; AList, SList: TStrings);
+// Think of this as iterating over the packagefiles.xml file, UserPkgLinks.  If
+// pkg is mentioned in staticpackages.inc, we tell GetThirdPartyDir() to not
+// worry about testing for RunTimeOnly.
 var
     doc: TXMLDocument;
     userPkgLinks, pkgNode: TDOMNode;
     NameNode, FileNameNode: TDOMNode;
     FileNameAttr, NameAttr : TDOMNode;
     St : String;
+    OnlyIfRunTime : boolean = false;      // if it turns out that it was not listed in staticpackages.inc
 begin
     if not FileExists(PkgFilesXML) then
         exit;
@@ -300,13 +325,12 @@ begin
                 NameAttr := NameNode.Attributes.GetNamedItem('Value');
                 if not ((FileNameAttr = nil) or (NameAttr = nil)) then begin
                     St := NameAttr.Nodevalue;
-                    if SList.IndexOf(St) > -1 then begin
-                        St := filenameAttr.Nodevalue;
-                        ForcePathDelims(St);            // ExtractFileDir has problems with unexpected pathdelim....
-                        if GetThirdPartyDir(St) then begin
+                    OnlyIfRunTime := SList.IndexOf(St) < 0;             // Comment this line to disallow RunTimeOnly
+                    St := filenameAttr.Nodevalue;
+                    ForcePathDelims(St);
+                    if GetThirdPartyDir(St, OnlyIfRunTime) then begin
                             {$ifdef SHOW_DEBUG}debugln('CollectThirdPartyPackages adding St [' + St + ']');{$endif}
                             AList.Add(St);
-                        end;
                     end;
                 end;
             end;
@@ -320,13 +344,19 @@ end;
 
 { We look for a tag like <ExampleDirectory="../."/> just below <Package....
   If we find it, we use that, relative to the actual path of the LPK file to
-  determine where we should, later, look for Examples.}
+  determine where we should, later, look for Examples.
 
-function TExampleData.GetThirdPartyDir(var FullPkgFileName: string): boolean;
+  if CheckRunTimeOnly, then it has aleady failed the staticpackages.inc test,
+  we give it a second chance, is it a RunTimeOnly ?
+  That is one without a <Type Value=xxx> element OR one with a <Type Value="RunTimeOnly"/>
+  But still must have the <ExampleDirectory Value=yyy> element.
+  }
+
+function TExampleData.GetThirdPartyDir(var FullPkgFileName: string; CheckRunTimeOnly : boolean): boolean;
 var
     doc: TXMLDocument;
     NodeA, NodeB: TDOMNode;
-    ADir : string = 'INVALID';
+    ADir : string = 'INVALID';              // Set to relative path from .lpk file to a dir above examples if available.
 begin
     Result := true;
     {$ifdef SHOW_DEBUG}debugln('TExampleData.GetThirdParty - looking at [' + FullPkgFileName + ']');{$endif}
@@ -347,7 +377,6 @@ begin
         if NodeB = nil then exit;
         NodeA := NodeB.FindNode('ExamplesDirectory');
         if NodeA <> nil then begin
-            {$ifdef SHOW_DEBUG} debugln('ExampleDir Mode');{$endif}
             NodeB := NodeA.Attributes.GetNamedItem('Value');
             if NodeB <> nil then                            // Leave existing path in FullPkgFileName, ie assumes LPK file is level or above examples
                 ADir := NodeB.NodeValue;                    // maybe something like eg ../../Examples
@@ -358,8 +387,20 @@ begin
         if ADir = 'INVALID' then
             exit(False)
         else FullPkgFileName := ExpandFileName(appendPathDelim(FullPkgFileName) + ADir);
+        if not DirectoryExists(FullPkgFileName) then begin
+            debugln('Warning : [TExampleData.GetThirdPartyDir] : invalid directory for examples - ' + FullPkgFileName);
+            exit(False);
+        end;
+        if CheckRunTimeOnly then begin                      // seems it must be a RunTimeOnly package, was not found in staticfiles.inc
+            NodeA := NodeB.FindNode('Type');
+            if NodeA <> nil then begin                      // Not being there is good, indicates its RunTimeOnly
+                NodeB := NodeA.Attributes.GetNamedItem('Value');
+                if NodeB.NodeValue <> 'RunTimeOnly' then    // if anything there, only RunTimeOnly works.
+                    exit(False);
+            end;
+        end;
         {$ifdef SHOW_DEBUG}
-        debugln('GetThirdParty - FullPkgFileName=[' + FullPkgFileName +']');
+        debugln('TExampleData.GetThirdParty - returning FullPkgFileName=[' + FullPkgFileName +']');
         {$endif}
     finally
         doc.free;
@@ -572,6 +613,7 @@ var
    STL : TStringList = nil;
    St : string;
 begin
+    Result := True;
     STL := FindAllFiles(Path, '*' + MetaFileExt, True);
     try
         for St in STL do begin
@@ -664,49 +706,29 @@ end;
 
 // ********************  Methods relating to using the data  *******************
 
-function TExampleData.GetListData(out Proj, Cat, Path, Keys : string; out Index : integer;
-                        GetFirst: boolean; KeyList : TStringList = nil): boolean;
-// ToDo : this would be a lot better just returning with the Index and letting calling process use Ex.ExList[i]^.xxxx
-var
-   St : string;
-   DoContinue : boolean = false;
+
+function TExampleData.FindListData(GetFirst: boolean; TheCatFilter : string; KeyList : TStringList = nil) : integer;
 begin
-    Result := True;
-    if CatFilter = '' then exit(False);
+    Result := -1;
+    if TheCatFilter = '' then exit;
     if GetFirst then
-        GetListDataIndex := 0;
+        GetListDataIndex := -1;
     while True do begin
-        if GetListDataIndex >= ExList.Count then exit(False);
-        if CatFilter <> '' then begin               // Find an entry in one of the categories
-            // orig a while instead of if, needed to use DoContinue ... Why ?
-            if pos(ExList.Items[GetListDataIndex]^.Category, CatFilter) < 1 then begin
+        inc(GetListDataIndex);
+        if GetListDataIndex >= ExList.Count then exit;          // end of list
+        if TheCatFilter <> '' then begin                        // Find an entry in one of the categories
+            // skip ahead until we find next item with complient Category
+            if pos(ExList.Items[GetListDataIndex]^.Category, TheCatFilter) < 1 then begin
                 inc(GetListDataIndex);
+                if GetListDataIndex >= ExList.Count then exit;
                 continue;
             end;
-        end;
-        Assert(Assigned(KeyList), 'TExampleData.GetListData: KeyList=Nil');
-        for St in KeyList do
-            // IndexOf requires a 1:1 match, we want to know if St is in the keyword.
-            //if ExList.Items[GetListDataIndex]^.Keywords.IndexOf(St) = -1 then begin
-            if not ExList.IsInKeywords(St, GetListDataIndex) then begin
-                inc(GetListDataIndex);
-                DoContinue := True;
-                Break;
-            end;
-        if DoContinue then begin          // Hmm, a GoTo would be easier ......
-            DoContinue := False;
-            Continue;
-        end;
-        break;
+        end;     // if to here, have an entry thats a match for category, how about keywords ?
+        if KeyList = nil then exit(GetListDataIndex);           // thats all we need then
+        if ExList.IsInKeywords(KeyList, GetListDataIndex) then  // Found one !
+            exit(GetListDataIndex);
+        // else, we loop around again, first find a category match then a keyword match, in both cases, if required.
     end;
-    Proj := ExList.Items[GetListDataIndex]^.EName;
-    Cat := ExList.Items[GetListDataIndex]^.Category;
-    Path := ExtractFilePath(ExList.Items[GetListDataIndex]^.FFname);
-    Index := GetListDataIndex;
-    Keys := '';
-    for St in ExList.Items[GetListDataIndex]^.Keywords do
-        Keys := Keys + St + ' ';
-    inc(GetListDataIndex);
 end;
 
 function TExampleData.getCategoryData(const ACatList: TStrings): boolean;

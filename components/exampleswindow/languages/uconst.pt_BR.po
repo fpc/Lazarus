@@ -28,14 +28,6 @@ msgstr "Categoria"
 msgid "Close"
 msgstr "Fechar"
 
-#: uconst.rsexamplecopy
-msgid "Copy to work area"
-msgstr "Copiar para a área de trabalho"
-
-#: uconst.rsexampledownload
-msgid "Download"
-msgstr "Download"
-
 #: uconst.rsexamplekeywords
 msgid "Keywords"
 msgstr "Palavras-chave"
@@ -55,6 +47,10 @@ msgstr "Caminho"
 #: uconst.rsexampleprojects
 msgid "Example Projects"
 msgstr "Projetos de exemplo"
+
+#: uconst.rsexamplerefresh
+msgid "Refresh"
+msgstr ""
 
 #: uconst.rsexampleview
 msgid "View in Browser"

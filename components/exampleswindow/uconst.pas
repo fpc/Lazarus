@@ -24,7 +24,8 @@ const
                                          // Immediate Local dir name under which we copy or
   cExamplesDir = 'examples_work_dir';    // download examples to. Carefull about simplifying it
   cConfigFileName = 'exampleprojectscfg.xml';
-  BaseURL = 'https://gitlab.com/dbannon/laz_examples/-/tree/main/';   // Online Examples, there for testing for now...
+//  BaseURL = 'https://gitlab.com/dbannon/laz_examples/-/tree/main/';   // Online Examples, there for testing for now...
+  BaseURL = 'https://gitlab.com/freepascal.org/lazarus/lazarus/-/tree/main/';
 
 
 resourcestring
@@ -50,15 +51,15 @@ resourcestring
 
     // These are ObjectInspector set but I believe I cannot get OI literals i18n in a Package ??
     rsExampleOpen = 'Open';                                 // Button Caption
-    rsExampleDownload = 'Download';                         //  "
+//    rsExampleDownload = 'Download';                         //  "
     rsExampleClose = 'Close';                               //  "
     rsExampleCategory = 'Category';                         //  "
-    rsExampleCopy = 'Copy to work area';                    //  "
+    rsExampleRefresh = 'Refresh';                           //  "
     rsExampleView = 'View in Browser';                      //  "
 
     // Settings Frame
-    rsGeneral = 'General';
     rsDirWhereExamplesGo = 'Directory where Examples go';
+    rsGeneral = 'General';
     rsDefault = 'Default';
 
     // ------- rsExampleData

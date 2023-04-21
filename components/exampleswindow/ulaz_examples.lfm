@@ -3,7 +3,7 @@ object FormLazExam: TFormLazExam
   Height = 400
   Top = 304
   Width = 781
-  Caption = 'Prototype Lazarus Examples Window'
+  Caption = 'Lazarus Examples Window'
   ClientHeight = 400
   ClientWidth = 781
   KeyPreview = True
@@ -59,10 +59,7 @@ object FormLazExam: TFormLazExam
         Width = 10
       end    
       item
-        Width = 10
-      end    
-      item
-        Width = 740
+        Width = 750
       end>
     ParentShowHint = False
     ReadOnly = True
@@ -129,46 +126,48 @@ object FormLazExam: TFormLazExam
     Width = 781
     Panels = <>
   end
-  object ButtonCopy: TButton
-    AnchorSideLeft.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = ButtonOpen
-    AnchorSideBottom.Side = asrBottom
-    Left = 6
-    Height = 31
-    Top = 340
-    Width = 50
-    Anchors = [akLeft, akBottom]
-    AutoSize = True
-    BorderSpacing.Left = 6
-    Caption = 'Copy'
-    OnClick = ButtonCopyClick
-    TabOrder = 5
-  end
-  object ButtonClose: TButton
+  object ButtonRefresh: TButton
     AnchorSideLeft.Control = ButtonView
     AnchorSideLeft.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonOpen
     AnchorSideBottom.Side = asrBottom
-    Left = 231
+    Left = 175
     Height = 31
     Top = 340
-    Width = 54
+    Width = 73
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Left = 6
+    Caption = 'Refresh'
+    OnClick = ButtonRefreshClick
+    TabOrder = 7
+  end
+  object ButtonClose: TButton
+    AnchorSideLeft.Control = ButtonView
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonOpen
+    AnchorSideBottom.Side = asrBottom
+    Left = 721
+    Height = 31
+    Top = 340
+    Width = 54
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
     Caption = 'Close'
     ModalResult = 11
     OnClick = ButtonCloseClick
     TabOrder = 8
   end
   object ButtonOpen: TButton
-    AnchorSideLeft.Control = ButtonCopy
-    AnchorSideLeft.Side = asrBottom
+    AnchorSideLeft.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = StatusBar1
-    Left = 62
+    Left = 6
     Height = 31
     Top = 340
     Width = 54
@@ -178,7 +177,7 @@ object FormLazExam: TFormLazExam
     BorderSpacing.Bottom = 6
     Caption = 'Open'
     OnClick = ButtonOpenClick
-    TabOrder = 6
+    TabOrder = 5
   end
   object ButtonView: TButton
     AnchorSideLeft.Control = ButtonOpen
@@ -186,7 +185,7 @@ object FormLazExam: TFormLazExam
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonOpen
     AnchorSideBottom.Side = asrBottom
-    Left = 122
+    Left = 66
     Height = 31
     Top = 340
     Width = 103
@@ -195,7 +194,7 @@ object FormLazExam: TFormLazExam
     BorderSpacing.Left = 6
     Caption = 'ButtonView'
     OnClick = ButtonViewClick
-    TabOrder = 7
+    TabOrder = 6
   end
   object EditSearch: TEdit
     AnchorSideLeft.Control = Owner

@@ -1,4 +1,5 @@
 unit uLaz_Examples;
+
 {
  **********************************************************************
   This file is part of a Lazarus Package, Examples Window.
@@ -19,23 +20,26 @@ potential 'other' example projects, recognisable by a valid json file with an
 extension of ex-meta.
 
     David Bannon, Dec 2022
+
 }
 {$mode objfpc}{$H+}
 
 {X$define ONLINE_EXAMPLES}
 
+
+
 interface
 
 uses
     Classes, SysUtils,
-    LazFileUtils, fileutil, LazLoggerBase,
+    LazFileUtils, FileUtil, LazLoggerBase,
     LCLType, LCLIntf, Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls,
     ExtCtrls, Buttons,
     {$ifndef EXTESTMODE}
     IDEImagesIntf,
     IDEWindowIntf,
     {$endif}
-    uexampledata, uConst;
+    uExampleData, uConst;
 
 type
 
@@ -43,7 +47,7 @@ type
 
     TFormLazExam = class(TForm)
         ButtonView: TButton;
-        ButtonCopy: TButton;
+        ButtonRefresh: TButton;
         ButtonClose: TButton;
         ButtonOpen: TButton;
         CheckGroupCategory: TCheckGroup;
@@ -54,29 +58,29 @@ type
         Splitter2: TSplitter;
         StatusBar1: TStatusBar;
         procedure ButtonCloseClick(Sender: TObject);
-        procedure ButtonCopyClick(Sender: TObject);
+        procedure ButtonRefreshClick(Sender: TObject);
         procedure ButtonOpenClick(Sender: TObject);
         procedure ButtonViewClick(Sender: TObject);
         procedure CheckGroupCategoryDblClick(Sender: TObject);
-        procedure CheckGroupCategoryItemClick(Sender: TObject; {%H-}Index: integer);
+        procedure CheckGroupCategoryItemClick(Sender: TObject; Index: integer);
         procedure ClearSearchButtonClick(Sender: TObject);
         procedure EditSearchChange(Sender: TObject);
         procedure EditSearchEnter(Sender: TObject);
-        procedure EditSearchKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
+        procedure EditSearchKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
         procedure FormCreate(Sender: TObject);
         procedure FormDestroy(Sender: TObject);
-        procedure FormKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
+        procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
         procedure FormShow(Sender: TObject);
         procedure ListView1Click(Sender: TObject);
         procedure ListView1DblClick(Sender: TObject);
         procedure ListView1Enter(Sender: TObject);
         procedure ListView1Exit(Sender: TObject);
-        procedure ListView1KeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
+        procedure ListView1KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
         procedure ListView1KeyPress(Sender: TObject; var Key: char);
-        procedure ListView1SelectItem(Sender: TObject; {%H-}Item: TListItem; {%H-}Selected: Boolean);
+        procedure ListView1SelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
     private
         MoveFocusKey : char;
-        LastListViewIndex : integer;    // If 0 or greater, its an index to ListView
+//        LastListViewIndex : integer;    // If 0 or greater, its an index to ListView
         procedure BuildSearchList(SL: TStringList; const Term: AnsiString);
                         // Copies the passed ex dir to a dir named for the Proj.
                         // SrcDir includes name of actual dir, DestDir does not.
@@ -85,12 +89,13 @@ type
                         // Checks for existance of passed path, the last element of which is case Insensitive.
                         // Returns with the actual name of the full path if successful.
         function DirExistsCaseInSense(const APath: string; out ActualFullDir: string) : boolean;
+        procedure DoCopy();
         procedure KeyWordSearch;
-        procedure NewLVItem(const Proj, Path, KeyWords, Cat: string; ExIndex: integer);
+        procedure NewLVItem(const Proj, KeyWords: string; ExIndex: PtrInt);
                         // Displays the current content of Examples List in the listview and
                         // populates the Category checkboxes.
         procedure LoadUpListView();
-        procedure PrimeCatFilter;
+
     public
         GitDir   : string;          // Not needed in Lazarus Package, used in dev's tool emt
         LazConfigDir : string;      // We will look for Laz config here.
@@ -109,18 +114,15 @@ implementation
 
 { TFormLazExam }
 
-
 // ------------------------ L I S T   V I E W ----------------------------------
 
-procedure TFormLazExam.NewLVItem(const Proj, Path, KeyWords, Cat : string; ExIndex : integer);
+procedure TFormLazExam.NewLVItem(const Proj, KeyWords : string; ExIndex : PtrInt);
 var
     TheItem : TListItem;
 begin
     TheItem := ListView1.Items.Add;
     TheItem.Caption := Proj;
     TheItem.SubItems.Add(KeyWords);
-    TheItem.SubItems.Add(Path);         // Thats the original path, not the working copy
-    TheItem.SubItems.Add(Cat);
     TheItem.Data := pointer(ExIndex);   // we are just storing an integer in here, not a pointer
 end;
 
@@ -131,25 +133,29 @@ end;
 
 procedure TFormLazExam.LoadUpListView();
 var
-    Proj, Cat, Path, KeyW : string;
-    Cnt : integer = 0;
+    i : integer;
     ExIndex : integer;
     KeyList : TStringList = nil;
+    CFilter : string = '';
+    KeyW    : string;
+    St      : string;
 begin
 //    Screen.Cursor := crHourGlass;
     KeyList := TStringList.Create;
+    for i := 0 to CheckGroupCategory.Items.Count -1 do begin
+        if  CheckGroupCategory.Checked[i] then
+            CFilter := CFilter + CheckGroupCategory.Items[i] + ' ';
+    end;
     ListView1.BeginUpdate;
     try
         BuildSearchList(KeyList, EditSearch.Text);
-        if Ex.GetListData(Proj, Cat, Path, KeyW, ExIndex, True, KeyList) then begin
-            NewLVItem(Proj, ExtractFilePath(Ex.ExList[ExIndex]^.FFName), KeyW, Ex.ExList[ExIndex]^.Category, ExIndex);
-            // NewLVItem(Proj, Path, KeyW, Cat);
-            inc(Cnt);
-        end;
-        while Ex.GetListData(Proj, Cat, Path, KeyW, ExIndex, False, KeyList) do begin
-            NewLVItem(Proj, ExtractFilePath(Ex.ExList[ExIndex]^.FFName), KeyW, Ex.ExList[ExIndex]^.Category, ExIndex);
-            // NewLVItem(Proj, Path, KeyW, Cat);
-            inc(Cnt);
+        ExIndex :=  Ex.FindListData(True, CFilter, KeyList);
+        while ExIndex > -1 do begin
+            KeyW := '';
+            for St in EX.ExList.Items[ExIndex]^.Keywords do
+                KeyW := KeyW + St + ' ';
+            NewLVItem(Ex.ExList[ExIndex]^.EName, KeyW, ExIndex);     // ToDo : review items
+            ExIndex :=  Ex.FindListData(False, CFilter, KeyList);
         end;
     finally
         KeyList.Free;
@@ -157,29 +163,29 @@ begin
         ListView1.EndUpdate;
     end;
     ButtonOpen.Enabled := false;
-    ButtonCopy.enabled := false;
+    ButtonRefresh.enabled := false;
     ButtonView.enabled := false;
-    Memo1.append(format(rsFoundExampleProjects, [Cnt]));
-    StatusBar1.SimpleText := format(rsFoundExampleProjects, [Cnt]);
-    LastListViewIndex := -1;        // start afresh
+    Memo1.append(format(rsFoundExampleProjects, [ListView1.Items.Count]));
+    StatusBar1.SimpleText := format(rsFoundExampleProjects, [ListView1.Items.Count]);
 end;
 
 procedure TFormLazExam.ListView1Click(Sender: TObject);
 var
     ExIndex : integer;
 begin
-    if  ListView1.Selected = nil then exit;         // White space below entries ....
-    ExIndex := integer(ListView1.Selected.Data);    // Yes, tacky cludge, its not a pointer, just an integer
+    if ListView1.Selected = nil then exit;      // White space below entries ....
+    ExIndex := PtrInt(ListView1.Selected.Data); // Yes, tacky cludge, its not a pointer, just an integer
     Memo1.Clear;
-    Memo1.append(ListView1.Selected.SubItems[1]);
+    Memo1.Append(ExtractFilePath(Ex.ExList[ExIndex]^.FFName));
     Memo1.append('');
     Memo1.Append(Ex.ExList[ExIndex]^.Desc);
-    ButtonCopy.enabled := true;
-    ButtonView.enabled := true;
-    ButtonOpen.Enabled := Ex.IsValidProject(ExIndex);
+    ButtonOpen.Enabled := True;
     if Ex.ExList[ExIndex]^.ThirdParty then begin
-        ButtonCopy.Enabled := False;
+        ButtonRefresh.Enabled := False;
         ButtonView.Enabled := False;
+    end else begin                                      // A Lazarus Example
+        ButtonRefresh.Enabled := Ex.IsValidProject(ExIndex);
+        ButtonView.Enabled := True;
     end;
 end;
 
@@ -188,21 +194,23 @@ procedure TFormLazExam.ListView1DblClick(Sender: TObject);
 begin
     if ListView1.Selected = Nil then exit
     else
-        LastListViewIndex := ListView1.ItemIndex;   // So other methods can find user choice
-    ButtonCopyClick(self);
+ {       LastListViewIndex := ListView1.ItemIndex};   // So other methods can find user choice
+    if not Ex.IsValidProject(PtrInt(ListView1.Selected.Data)) then
+        DoCopy();
     ButtonOpenClick(self);
 end;
 
 procedure TFormLazExam.ListView1Enter(Sender: TObject);
 begin
-    ListView1.ItemIndex := LastListViewIndex;    // possibly -1, half highlight item 0
+//    ListView1.ItemIndex := LastListViewIndex;    // possibly -1, half highlight item 0              ?????
 end;
 
 procedure TFormLazExam.ListView1Exit(Sender: TObject);
 begin
-    LastListViewIndex := ListView1.ItemIndex;        // save it before we leave, we'll be back
-    ListView1.ClearSelection;
-    ListView1.ItemIndex := -1;
+//    This is no longer needed, remove !
+//    LastListViewIndex := ListView1.ItemIndex;        // save it before we leave, we'll be back   TABTAB
+//    ListView1.ClearSelection;                        // Interferes with tabbing.
+//    ListView1.ItemIndex := -1;
 end;
 
 procedure TFormLazExam.ListView1KeyDown(Sender: TObject; var Key: Word;
@@ -230,28 +238,33 @@ end;
 // --------------------- B U T T O N S -----------------------------------------
 
 procedure TFormLazExam.ButtonOpenClick(Sender: TObject);
+var
+    ExIndex : integer;
 begin
-    if LastListViewIndex < 0 then exit;
-    ListView1.ItemIndex:= LastListViewIndex;
-    ProjectToOpen := Ex.GetProjectFile(integer(ListView1.Selected.Data));       // Yes, tacky cludge, its not a pointer, just an integer
-    if ProjectToOpen.IsEmpty then                                               // Computer says no
+    if ListView1.ItemIndex < 0 then exit;
+    ExIndex := PtrInt(ListView1.Selected.Data);     // Yes, tacky cludge, its not a pointer, just an integer
+    if not Ex.IsValidProject(ExIndex) then begin
+        DoCopy();
+        if not Ex.IsValidProject(ExIndex) then begin
+            showmessage('Error loading that example');    // no reason I can think of for that happening but ....
+            exit;
+        end;
+    end;
+    ProjectToOpen := Ex.GetProjectFile(ExIndex);
+    if ProjectToOpen.IsEmpty then                         // Computer says no
        showmessage(rsExNoProjectFile)
     else
         close;
 end;
 
-procedure TFormLazExam.ButtonCopyClick(Sender: TObject);
+procedure TFormLazExam.DoCopy();
 var
     ExIndex : integer;
 begin
-    if LastListViewIndex < 0 then exit;         // Can that happen ?
-    ListView1.ItemIndex:= LastListViewIndex;
-
-    ExIndex := integer(ListView1.Selected.Data);  // Yes, tacky cludge, its not a pointer, just an integer
-    if Ex.ExList[ExIndex]^.ThirdParty then exit;  // We don't 'download' ThirdParty examples.
-
+    if ListView1.ItemIndex < 0 then exit;
+    ExIndex := PtrInt(ListView1.Selected.Data);  // Yes, tacky cludge, its not a pointer, just an integer
+    if Ex.ExList[ExIndex]^.ThirdParty then exit; // We don't 'copy' ThirdParty examples.
     if Ex.IsValidProject(ExIndex) then begin
-//    if GetProjectFile(Ex.ExampleWorkingDir() + ListView1.Selected.Caption) then begin
         if Application.MessageBox(pchar(rsRefreshExistingExample)
                         , pchar(ListView1.Selected.Caption)
                         , MB_ICONQUESTION + MB_YESNO) <> IDYES then exit;
@@ -265,7 +278,7 @@ begin
             Application.ProcessMessages;
             // note we copy files to exampleworkingdir + lowercase(exampe name)
             if copyFiles(  lowercase(ListView1.Selected.Caption),        // force toplevel ex dir to lowercase as per lazarus std
-                        ListView1.Selected.SubItems[1], Ex.ExampleWorkingDir()) then
+                        ExtractFilePath(Ex.ExList[ExIndex]^.FFName), Ex.ExampleWorkingDir()) then
                 StatusBar1.SimpleText := rsExProjectCopiedTo + ' ' + Ex.ExampleWorkingDir()
                             + ListView1.Selected.Caption
             else StatusBar1.SimpleText := rsFailedToCopyFilesTo + ' ' + Ex.ExampleWorkingDir();
@@ -274,22 +287,29 @@ begin
         Screen.Cursor := crDefault;
         Application.ProcessMessages;
     end;
-    ButtonOpen.Enabled := Ex.IsValidProject(ExIndex);
-    ListView1.ItemIndex := -1;      // Unselect again for the Tabbers of this world.
+end;
+
+procedure TFormLazExam.ButtonRefreshClick(Sender: TObject);
+begin
+    DoCopy();
 end;
 
 procedure TFormLazExam.ButtonViewClick(Sender: TObject);
+var
+    ExIndex : integer;
+    St : string;
 begin
-    // When we get here, we will have left the ListView and therefore triggered its onExit
-    // Must restore its selected before we access it !
-    if LastListViewIndex < 0 then exit;         // lets not be silly
-    ListView1.ItemIndex:= LastListViewIndex;
-    OpenURL(BaseURL + ListView1.Selected.SubItems[2] + '/' + ListView1.Selected.Caption);
-    ListView1.ItemIndex := -1;
+    if ListView1.ItemIndex < 0 then exit;
+    ExIndex := PtrInt(ListView1.Selected.Data);
+    St := Ex.ExList[ExIndex]^.FFName;
+    delete(St, 1, length(Ex.LazSrcDir));
+    St := ExtractFilePath(St);
+    OpenURL(BaseURL + St);
 end;
 
 procedure TFormLazExam.ButtonCloseClick(Sender: TObject);
 begin
+    ProjectToOpen := '';                            // To be sure, to be sure
     Close;
 end;
 
@@ -331,7 +351,7 @@ begin
     if Ex = Nil then exit;
     Memo1.clear;
     ListView1.Clear;
-    PrimeCatFilter();
+//    PrimeCatFilter();             // ToDo : remove
     LoadUpListView();
 end;
 
@@ -447,19 +467,6 @@ begin
     KeyWordSearch();
 end;
 
-procedure TFormLazExam.PrimeCatFilter();
-var
-    i : integer;
-    St : string = '';
-begin
-    for i := 0 to CheckGroupCategory.Items.Count -1 do begin
-        if  CheckGroupCategory.Checked[i] then
-            St := St + CheckGroupCategory.Items[i] + ' ';
-    end;
-    Ex.CatFilter := St;
-end;
-
-
 // -------------------- H O U S E   K E E P I N G ------------------------------
 
 procedure TFormLazExam.FormCreate(Sender: TObject);
@@ -468,7 +475,6 @@ begin
     Caption := rsExampleProjects;
     ListView1.Column[0].Caption := rsExampleName;
     ListView1.Column[1].Caption := rsExampleKeyWords;
-    ListView1.Column[2].Caption := rsExamplePath;
     ListView1.AutoSortIndicator := True;
     ListView1.Column[0].SortIndicator := siDescending;
     ListView1.AutoSort := True;
@@ -477,10 +483,7 @@ begin
     ListView1.ViewStyle:= vsReport;
     ListView1.Column[0].AutoSize := true;
     ListView1.Column[1].AutoSize := true;
-    ListView1.Column[2].Visible := false;
     ListView1.ReadOnly := True;
-    LastListViewIndex := -1;        // Used to record ListView1.ItemIndex before Tabbing away
-
     EditSearch.TextHint := rsExSearchPrompt;
     {$ifndef EXTESTMODE}
     ClearSearchButton.Images := IDEImages.Images_16;
@@ -491,13 +494,9 @@ begin
     Ex := nil;
     // These are ObjectInspector set but I believe I cannot get OI literals set in a Package ??
     ButtonClose.Caption := rsExampleClose;
-    {$ifdef ONLINE_EXAMPLES}
-    ButtonCopy.Caption := rsExampleDownLoad;
-    {$else}
-    ButtonCopy.Caption := rsExampleCopy;
-    {$endif}
     ButtonView.Caption := rsExampleView;
     ButtonOpen.Caption := rsExampleOpen;
+    ButtonRefresh.Caption := rsExampleRefresh;
     CheckGroupCategory.Caption := rsExampleCategory;
     {$ifndef EXTESTMODE}
     IDEDialogLayoutList.ApplyLayout(Self);
@@ -522,6 +521,7 @@ var
 begin
     Screen.BeginWaitCursor;
     Application.ProcessMessages;
+    DisableAutoSizing;                    // good improvement on form draw time
     T1 := gettickcount64();
     Memo1.clear;
     EditSearch.text := '';
@@ -540,17 +540,17 @@ begin
     if Ex.ErrorMsg <> '' then
         Showmessage(Ex.ErrorMsg);                       // Note : previously, we treated this as fatal ?
     T4 := gettickcount64();
-    CheckGroupCategory.Items := Ex.CatList;             // 13-15mS for any of these
+    CheckGroupCategory.Items := Ex.CatList;
     for i := 0 to CheckGroupCategory.items.Count-1 do   // check all the categories we found.
         CheckGroupCategory.Checked[i] := true;
     ListView1.Clear;
-    PrimeCatFilter();
     LoadUpListView();
     ListView1.SetFocus;
     T5 := gettickcount64();
     Screen.EndWaitCursor;
     Application.ProcessMessages;
     debugln('TFormLazExam.FormShow Timing ' + inttostr(T2-T1) + 'mS '  + inttostr(T3-T2) + 'mS '  + inttostr(T4-T3) + 'mS '  + inttostr(T5-T4) + 'mS');
+    EnableAutoSizing;
 end;
 
 end.

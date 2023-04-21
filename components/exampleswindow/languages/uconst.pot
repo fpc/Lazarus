@@ -17,14 +17,6 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-#: uconst.rsexamplecopy
-msgid "Copy to work area"
-msgstr ""
-
-#: uconst.rsexampledownload
-msgid "Download"
-msgstr ""
-
 #: uconst.rsexamplekeywords
 msgid "Keywords"
 msgstr ""
@@ -43,6 +35,10 @@ msgstr ""
 
 #: uconst.rsexampleprojects
 msgid "Example Projects"
+msgstr ""
+
+#: uconst.rsexamplerefresh
+msgid "Refresh"
 msgstr ""
 
 #: uconst.rsexampleview
