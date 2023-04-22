@@ -12,7 +12,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
   Constraints.MinWidth = 625
   DesignTimePPI = 120
   OnShow = FormShow
-  Position = poScreenCenter
+  Position = poWorkAreaCenter
   object ButtonPanel: TButtonPanel
     AnchorSideLeft.Control = Owner
     AnchorSideRight.Control = Owner
