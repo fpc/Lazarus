@@ -75,7 +75,6 @@ type
     var Handled: boolean) of object;
   TOnComponentAdded = procedure(Sender: TObject; AComponent: TComponent;
                            ARegisteredComponent: TRegisteredComponent) of object;
-  TOnForwardKeyToObjectInspector = procedure(Sender: TObject; Key: TUTF8Char) of object;
   TOnHasParentCandidates = function: Boolean of object;
 
   TDesignerFlag = (
@@ -131,7 +130,7 @@ type
     FOnShowOptions: TNotifyEvent;
     FOnComponentAdded: TOnComponentAdded;
     FOnViewLFM: TNotifyEvent;
-    FOnForwardKeyToObjectInspector: TOnForwardKeyToObjectInspector;
+    FOnForwardKeyToOI: TOnForwardKeyToOI;
     FShiftState: TShiftState;
     FTheFormEditor: TCustomFormEditor;
     FPopupMenuComponentEditor: TBaseComponentEditor;
@@ -389,8 +388,8 @@ type
     property OnShowObjectInspector: TNotifyEvent read FOnShowObjectInspector write FOnShowObjectInspector;
     property OnShowAnchorEditor: TNotifyEvent read FOnShowAnchorEditor write FOnShowAnchorEditor;
     property OnShowTabOrderEditor: TNotifyEvent read FOnShowTabOrderEditor write FOnShowTabOrderEditor;
-    property OnForwardKeyToObjectInspector: TOnForwardKeyToObjectInspector read FOnForwardKeyToObjectInspector
-                                                                          write FOnForwardKeyToObjectInspector;
+    property OnForwardKeyToObjectInspector: TOnForwardKeyToOI read FOnForwardKeyToOI
+                                                             write FOnForwardKeyToOI;
     property OnChangeParent: TNotifyEvent read FOnChangeParent write FOnChangeParent;
 
     property ShowGrid: boolean read GetShowGrid write SetShowGrid;
@@ -4393,8 +4392,8 @@ end;
 procedure TDesigner.DoOnForwardKeyToObjectInspector(Sender: TObject;
   Key: TUTF8Char);
 begin
-  if Assigned(FOnForwardKeyToObjectInspector) then
-    FOnForwardKeyToObjectInspector(Self, Key);
+  if Assigned(FOnForwardKeyToOI) then
+    FOnForwardKeyToOI(Self, Key);
 end;
 
 function TDesigner.DoFormActivated(Active: boolean): boolean;

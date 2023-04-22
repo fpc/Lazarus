@@ -17,7 +17,7 @@
  *                                                                         *
  ***************************************************************************
 
-  Author: Howard Page-Clark }
+  Author: Howard Page-Clark, Juha Manninen and other contributors }
 
 unit MenuEditorForm;
 
@@ -32,7 +32,7 @@ uses
   LazTracer,
   // LCL
   Controls, StdCtrls, ExtCtrls, Forms, Graphics, Buttons, Menus, ButtonPanel,
-  ImgList, Themes, LCLintf,
+  ImgList, Themes, LCLintf, LCLType,
   // IdeIntf
   FormEditingIntf, PropEdits, ObjectInspector, IDEImagesIntf,
   // IDE
@@ -90,9 +90,11 @@ type
     procedure HidePopupAssignmentsInfo;
     procedure InitializeStatisticVars;
     procedure LoadFixedButtonGlyphs;
-    procedure OnDesignerSetSelection(const ASelection: TPersistentSelectionList);
+    procedure DesignerSetSelection(const ASelection: TPersistentSelectionList);
     procedure ProcessForPopup(aControl: TControl);
     procedure SetupPopupAssignmentsDisplay;
+  protected
+    procedure UTF8KeyPress(var UTF8Key: TUTF8Char); override;
   public
     constructor Create(aDesigner: TMenuDesignerBase); reintroduce;
     destructor Destroy; override;
@@ -178,6 +180,9 @@ type
     property ImageIndex: integer read GetImageIndex;
   end;
 
+var
+  OnForwardKeyToObjectInspector: TOnForwardKeyToOI;
+
 function GetNestingLevelDepth(aMenu: TMenu): integer;
 function ChooseIconFromImageListDlg(anImageList: TCustomImageList): integer;
 
@@ -262,13 +267,13 @@ end;
 
 procedure TMenuDesignerForm.FormShow(Sender: TObject);
 begin
-  GlobalDesignHook.AddHandlerSetSelection(@OnDesignerSetSelection);
+  GlobalDesignHook.AddHandlerSetSelection(@DesignerSetSelection);
 end;
 
 procedure TMenuDesignerForm.FormHide(Sender: TObject);
 begin
   FDesigner.FreeShadowMenu;
-  GlobalDesignHook.RemoveHandlerSetSelection(@OnDesignerSetSelection);
+  GlobalDesignHook.RemoveHandlerSetSelection(@DesignerSetSelection);
 end;
 
 procedure TMenuDesignerForm.HelpButtonClick(Sender: TObject);
@@ -279,7 +284,7 @@ begin
   OpenURL(helpPath);
 end;
 
-procedure TMenuDesignerForm.OnDesignerSetSelection(const ASelection: TPersistentSelectionList);
+procedure TMenuDesignerForm.DesignerSetSelection(const ASelection: TPersistentSelectionList);
 var
   mnu: TMenu;
   mi, tmp: TMenuItem;
@@ -371,6 +376,19 @@ begin
     Height:=45;
     Parent:=StatisticsGroupBox;
     Visible:=False;
+  end;
+end;
+
+procedure TMenuDesignerForm.UTF8KeyPress(var UTF8Key: TUTF8Char);
+begin
+  if ((Length(UTF8Key) = 1) and (Ord(UTF8Key[1]) < 32))
+  or (UTF8Key = sLineBreak) then // pass only printable characters
+    Exit;
+  if UTF8Key<>'' then
+  begin
+    if Assigned(OnForwardKeyToObjectInspector) then
+      OnForwardKeyToObjectInspector(Self, UTF8Key);
+    UTF8Key := '';
   end;
 end;
 
@@ -603,7 +621,7 @@ begin
   begin
     OI := FormEditingHook.GetCurrentObjectInspector;
     if Assigned(OI) then
-      OnDesignerSetSelection(OI.Selection);
+      DesignerSetSelection(OI.Selection);
   end;
 end;
 

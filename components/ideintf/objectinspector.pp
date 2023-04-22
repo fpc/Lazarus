@@ -262,9 +262,9 @@ type
 
   TOIPropertyHintEvent = function(Sender: TObject; PointedRow: TOIPropertyGridRow;
             out AHint: string): boolean of object;
-
   TOIEditorFilterEvent = procedure(Sender: TObject; aEditor: TPropertyEditor;
             var aShow: boolean) of object;
+  TOnForwardKeyToOI = procedure(Sender: TObject; Key: TUTF8Char) of object;
 
   TOICustomPropertyGrid = class(TCustomControl)
   private

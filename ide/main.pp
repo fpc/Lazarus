@@ -96,7 +96,7 @@ uses
   // designer
   JITForms, ComponentPalette, ComponentList, CompPagesPopup, IdeCoolbarData,
   ObjInspExt, Designer, FormEditor, CustomFormEditor, lfmUnitResource,
-  ControlSelection, AnchorEditor, TabOrderDlg, MenuEditor,
+  ControlSelection, AnchorEditor, TabOrderDlg, MenuEditor, MenuEditorForm,
   // LRT stuff
   Translations,
   // debugger
@@ -1653,6 +1653,9 @@ begin
   PkgBoss.LoadInstalledPackages;
 
   EditorMacroListViewer.LoadGlobalInfo; // Must be after packages are loaded/registered.
+
+  // Global reference to key handler, the menu editor will be created later.
+  MenuEditorForm.OnForwardKeyToObjectInspector:=@ForwardKeyToObjectInspector;
 
   FormEditor1.RegisterFrame;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create INSTALLED COMPONENTS');{$ENDIF}
