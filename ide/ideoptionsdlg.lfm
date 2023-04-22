@@ -4,7 +4,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
   Top = 202
   Width = 1000
   ActiveControl = FilterEdit
-  BorderIcons = [biSystemMenu]
+  BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'IDEOptionsDialog'
   ClientHeight = 625
   ClientWidth = 1000

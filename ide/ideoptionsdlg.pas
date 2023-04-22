@@ -277,13 +277,15 @@ begin
   IDEEditorGroups.LastSelected := FNewLastSelected;
   if not CheckValues then
     Exit;
-  IDEDialogLayoutList.SaveLayout(Self);
+  if WindowState <> wsMaximized then
+    IDEDialogLayoutList.SaveLayout(Self);
   ModalResult := mrOk;
 end;
 
 procedure TIDEOptionsDialog.CancelButtonClick(Sender: TObject);
 begin
-  IDEDialogLayoutList.SaveLayout(Self);
+  if WindowState <> wsMaximized then
+    IDEDialogLayoutList.SaveLayout(Self);
   ModalResult := mrCancel;
 end;
 
