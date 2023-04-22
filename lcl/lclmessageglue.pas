@@ -130,7 +130,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the simple message            *
+ *  Target      : The Control that will receive the simple message            *
  *  Msg         : Message type constant                                       *
  *                                                                            *
  ******************************************************************************}
@@ -152,7 +152,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_ACTIVATE       *
+ *  Target      : The Control that will receive the message LM_ACTIVATE       *
  *  Active      : Set to True.  This is currently ignored                     *
  *  Minimized   : Set to False. This is currently ignored                     *
  *  ActiveWindow: Optional. Pass the handle of the currently or newly         *
@@ -181,7 +181,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_SETFOCUS       *
+ *  Target      : The Control that will receive the message LM_SETFOCUS       *
  *                                                                            *
  ******************************************************************************}
 function LCLSendSetFocusMsg(const Target: TControl): PtrInt;
@@ -197,7 +197,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_KILLFOCUS      *
+ *  Target      : The Control that will receive the message LM_KILLFOCUS      *
  *                                                                            *
  ******************************************************************************}
 function LCLSendKillFocusMsg(const Target: TControl): PtrInt;
@@ -213,7 +213,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_SHOWWINDOW     *
+ *  Target      : The Control that will receive the message LM_SHOWWINDOW     *
  *  Show        : Set to True if Showing the window False otherwise           *
  *  Status      : Usually zero. Set to non-zero if the message was generated  *
  *                by another window showing or hiding.                        *
@@ -240,7 +240,7 @@ end;
  *                                                                            *
  * Params                                                                     *
  *                                                                            *
- * Target        : The Control that will recieve the message LM_SIZE          *
+ * Target        : The Control that will receive the message LM_SIZE          *
  * Width, Height : The new Width and Height for the control                   *
  * SizeType      : SIZE_RESTORED, SIZE_MINIMIZED, SIZE_MAXIMIZED,...          *
  * FromInterface : True if this message was sent from the widgetset to notify *
@@ -273,7 +273,7 @@ end;
  *                                                                            *
  * Params                                                                     *
  *                                                                            *
- * Target        : The Control that will recieve the message LM_MOVE          *
+ * Target        : The Control that will receive the message LM_MOVE          *
  * XPos, YPos    : The new Top and Left for the control                       *
  * MoveType      : Move_Default = update, 1 = force RequestAlign              *
  * FromInterface : True if this message was sent from the widgetset to notify *
@@ -306,7 +306,7 @@ end;
  *                                                                            *
  * Params                                                                     *
  *                                                                            *
- * Target        : The Control that will recieve the message LM_SIZE          *
+ * Target        : The Control that will receive the message LM_SIZE          *
  * XPos, YPos    : The Mouses X and Y position relative to the control.       *
  * ShiftState    : Modifier keys that are pressed at the time of the event    *
  *                                                                            *
@@ -335,7 +335,7 @@ end;
  *                                                                            *
  * Params                                                                     *
  *                                                                            *
- * Target        : The Control that will recieve the message LM_xBUTTONDOWN   *
+ * Target        : The Control that will receive the message LM_xBUTTONDOWN   *
  * XPos, YPos    : The Mouses X and Y position relative to the control.       *
  * Button        : TMouseButton (mbLeft, mbMiddle, mbRight)                   *
  * ShiftState    : Modifier keys that are pressed at the time of the event    *
@@ -371,7 +371,7 @@ end;
  *                                                                            *
  * Params                                                                     *
  *                                                                            *
- * Target        : The Control that will recieve the message LM_xBUTTONUP     *
+ * Target        : The Control that will receive the message LM_xBUTTONUP     *
  * XPos, YPos    : The Mouses X and Y position relative to the control.       *
  * Button        : TMouseButton (mbLeft, mbMiddle, mbRight)                   *
  * ShiftState    : Modifier keys that are pressed at the time of the event    *
@@ -407,7 +407,7 @@ end;
  *                                                                            *
  * Params                                                                     *
  *                                                                            *
- * Target        : The Control that will recieve the message LM_xBUTTONUP     *
+ * Target        : The Control that will receive the message LM_xBUTTONUP     *
  * XPos, YPos    : The Mouses X and Y position relative to the control.       *
  * WheelDelta    : -1 for Up, 1 for Down                                      *
  * ShiftState    : Modifier keys that are pressed at the time of the event    *
@@ -437,7 +437,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_CAPTURECHANGED *
+ *  Target      : The Control that will receive the message LM_CAPTURECHANGED *
  *                                                                            *
  ******************************************************************************}
 function LCLSendCaptureChangedMsg(const Target: TControl): PtrInt;
@@ -453,7 +453,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_SELCHANGE      *
+ *  Target      : The Control that will receive the message LM_SELCHANGE      *
  *                                                                            *
  ******************************************************************************}
 function LCLSendSelectionChangedMsg(const Target: TControl): PtrInt;
@@ -469,7 +469,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_DESTROY        *
+ *  Target      : The Control that will receive the message LM_DESTROY        *
  *                                                                            *
  ******************************************************************************}
 function LCLSendDestroyMsg(const Target: TControl): PtrInt;
@@ -485,7 +485,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_CHANGED        *
+ *  Target      : The Control that will receive the message LM_CHANGED        *
  *  ItemIndex   : Only used by Listviews and CheckBoxes. The Index of         *
  *                the Item that has changed.                                  *
  *                                                                            *
@@ -508,7 +508,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_CLICKED        *
+ *  Target      : The Control that will receive the message LM_CLICKED        *
  *                                                                            *
  ******************************************************************************}
 function LCLSendClickedMsg(const Target: TControl): PtrInt;
@@ -524,7 +524,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message CM_MOUSEENTER     *
+ *  Target      : The Control that will receive the message CM_MOUSEENTER     *
  *                                                                            *
  ******************************************************************************}
 function LCLSendMouseEnterMsg(const Target: TControl): PtrInt;
@@ -540,7 +540,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message CM_MOUSELEAVE     *
+ *  Target      : The Control that will receive the message CM_MOUSELEAVE     *
  *                                                                            *
  *                                                                            *
  ******************************************************************************}
@@ -558,7 +558,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_SETEDITABLE    *
+ *  Target      : The Control that will receive the message LM_SETEDITABLE    *
  *                                                                            *
  *  Not used by the LCL                                                       *
  *                                                                            *
@@ -576,7 +576,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_MOVEWORD       *
+ *  Target      : The Control that will receive the message LM_MOVEWORD       *
  *                                                                            *
  *  Not used by the LCL                                                       *
  *                                                                            *
@@ -594,7 +594,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_MOVEPAGE       *
+ *  Target      : The Control that will receive the message LM_MOVEPAGE       *
  *                                                                            *
  *  Not used by the LCL                                                       *
  *                                                                            *
@@ -612,7 +612,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_MOVETOROW      *
+ *  Target      : The Control that will receive the message LM_MOVETOROW      *
  *                                                                            *
  *  Not used by the LCL                                                       *
  *                                                                            *
@@ -630,7 +630,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_MOVETOCOLUMN   *
+ *  Target      : The Control that will receive the message LM_MOVETOCOLUMN   *
  *                                                                            *
  *  Not used by the LCL                                                       *
  *                                                                            *
@@ -648,7 +648,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_KILLCHAR       *
+ *  Target      : The Control that will receive the message LM_KILLCHAR       *
  *                                                                            *
  *  Not used by the LCL                                                       *
  *                                                                            *
@@ -666,7 +666,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_KILLWORD       *
+ *  Target      : The Control that will receive the message LM_KILLWORD       *
  *                                                                            *
  *  Not used by the LCL                                                       *
  *                                                                            *
@@ -684,7 +684,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_KILLLINE       *
+ *  Target      : The Control that will receive the message LM_KILLLINE       *
  *                                                                            *
  *  Not used by the LCL                                                       *
  *                                                                            *
@@ -702,7 +702,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_CUT            *
+ *  Target      : The Control that will receive the message LM_CUT            *
  *                                                                            *
  ******************************************************************************}
 function LCLSendCutToClipboardMsg(const Target: TControl): PtrInt;
@@ -718,7 +718,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_COPY           *
+ *  Target      : The Control that will receive the message LM_COPY           *
  *                                                                            *
  ******************************************************************************}
 function LCLSendCopyToClipboardMsg(const Target: TControl): PtrInt;
@@ -734,7 +734,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_COPY           *
+ *  Target      : The Control that will receive the message LM_COPY           *
  *                                                                            *
  ******************************************************************************}
 function LCLSendPasteFromClipboardMsg(const Target: TControl): PtrInt;
@@ -750,7 +750,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_CONFIGUREEVENT *
+ *  Target      : The Control that will receive the message LM_CONFIGUREEVENT *
  *                                                                            *
  *  Not used by the LCL                                                       *
  *                                                                            *
@@ -768,7 +768,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_PAINT          *
+ *  Target      : The Control that will receive the message LM_PAINT          *
  *  DC          : This is the Device Context                                  *
  *  PaintStruct : PaintStruct                                                 *
  *                                                                            *
@@ -806,7 +806,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message xx_xxKEYDOWN      *
+ *  Target      : The Control that will receive the message xx_xxKEYDOWN      *
  *  CharCode    : This is the VK Key code. Check if this has changed after    *
  *                sending the message.                                        *
  *  KeyData     : Bitwise or'ed combination of the KF_xxxx constants.         *
@@ -845,7 +845,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message xx_xxKEYUP        *
+ *  Target      : The Control that will receive the message xx_xxKEYUP        *
  *  CharCode    : This is the VK Key code. Check if this has changed after    *
  *                sending the message.                                        *
  *  KeyData     : Bitwise or'ed combination of the KF_xxxx constants.         *
@@ -917,7 +917,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_TIMER          *
+ *  Target      : The Control that will receive the message LM_TIMER          *
  *  TimerID     : ID of the timer.                                            *
  *  TimerProc   : The procedure to call.                                      *
  *                                                                            *
@@ -942,7 +942,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_EXIT           *
+ *  Target      : The Control that will receive the message LM_EXIT           *
  *                                                                            *
  *  Not used by the LCL                                                       *
  *                                                                            *
@@ -960,7 +960,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_CLOSEQUERY     *
+ *  Target      : The Control that will receive the message LM_CLOSEQUERY     *
  *                                                                            *
  ******************************************************************************}
 function LCLSendCloseQueryMsg(const Target: TControl): PtrInt;
@@ -976,7 +976,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_DRAGSTART      *
+ *  Target      : The Control that will receive the message LM_DRAGSTART      *
  *                                                                            *
  ******************************************************************************}
 function LCLSendDragStartMsg(const Target: TControl): PtrInt;
@@ -992,7 +992,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_MONTHCHANGED   *
+ *  Target      : The Control that will receive the message LM_MONTHCHANGED   *
  *                                                                            *
  ******************************************************************************}
 function LCLSendMonthChangedMsg(const Target: TControl): PtrInt;
@@ -1008,7 +1008,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_YEARCHANGED    *
+ *  Target      : The Control that will receive the message LM_YEARCHANGED    *
  *                                                                            *
  ******************************************************************************}
 function LCLSendYearChangedMsg(const Target: TControl): PtrInt;
@@ -1024,7 +1024,7 @@ end;
  *                                                                            *
  *  Params                                                                    *
  *                                                                            *
- *  Target      : The Control that will recieve the message LM_DAYCHANGED     *
+ *  Target      : The Control that will receive the message LM_DAYCHANGED     *
  *                                                                            *
  ******************************************************************************}
 function LCLSendDayChangedMsg(const Target: TControl): PtrInt;
@@ -1040,7 +1040,7 @@ end;
  *                                                                            *
  * Params                                                                     *
  *                                                                            *
- * Target        : The Control that will recieve the message LM_xBUTTONxxxCLK *
+ * Target        : The Control that will receive the message LM_xBUTTONxxxCLK *
  * XPos, YPos    : The Mouses X and Y position relative to the control.       *
  * Button        : TMouseButton (mbLeft, mbMiddle, mbRight)                   *
  * ClickCount    : 2 = LM_xBUTTONDBLCLK, 3 = LM_xBUTTONTRIPLECLK,             *
@@ -1098,7 +1098,7 @@ end;
  *                                                                            *
  * Params                                                                     *
  *                                                                            *
- * Target        : The Control that will recieve the message LM_DRAWLISTITEM  *
+ * Target        : The Control that will receive the message LM_DRAWLISTITEM  *
  * DrawListItemStruct : Pointer to a TDrawListItemStruct                      *
  *                                                                            *
  ******************************************************************************}
@@ -1121,7 +1121,7 @@ end;
  *                                                                            *
  * Params                                                                     *
  *                                                                            *
- * Target        : The Control that will recieve the message CN_Command       *
+ * Target        : The Control that will receive the message CN_Command       *
  *                                                                            *
  * Used to notify a combo that the combobox is popping down                   *
  *                                                                            *
