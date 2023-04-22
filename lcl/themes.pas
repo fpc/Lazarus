@@ -477,7 +477,7 @@ type
     function GetElementDetails(Detail: TThemedTreeview): TThemedElementDetails; overload;
     function GetElementDetails(Detail: TThemedWindow): TThemedElementDetails; overload;
     
-    function GetDetailSize(Details: TThemedElementDetails): TSize; virtual; deprecated 'use GetDetailSizeForPPI';
+    function GetDetailSize(Details: TThemedElementDetails): TSize; virtual;
     function GetDetailSizeForWindow(Details: TThemedElementDetails; const AWindow: HWND): TSize; virtual;
     function GetDetailSizeForPPI(Details: TThemedElementDetails; PPI: Integer): TSize; virtual;
     function GetDetailRegion(DC: HDC; Details: TThemedElementDetails; const R: TRect): HRGN; virtual;
