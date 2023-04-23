@@ -49,7 +49,7 @@ type
 
   TIdeBuildMode = (
     bmBuild,
-    bmCleanBuild,
+    bmCleanBuild, // obsolete since 2.3.0
     bmCleanAllBuild
   );
 
@@ -412,7 +412,7 @@ begin
   Profile:=TBuildLazarusProfile.Create(Self, lisLazCleanUpBuildAll);
   with Profile, fOwnerCnt do begin
     fTargetPlatform:=Platfrm;
-    fIdeBuildMode:=bmCleanBuild;
+    fIdeBuildMode:=bmCleanAllBuild;
     fUpdateRevisionInc:=True;
   end;
   Add(Profile);

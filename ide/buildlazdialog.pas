@@ -83,7 +83,6 @@ type
   TConfigureBuildLazarusDlg = class(TForm)
     CleanAllRadioButton: TRadioButton;
     CleanAutoRadioButton: TRadioButton;
-    CleanCommonRadioButton: TRadioButton;
     CleanOnceCheckBox: TCheckBox;
     CommonsDividerBevel: TDividerBevel;
     ConfirmBuildCheckBox: TCheckBox;
@@ -1144,7 +1143,6 @@ begin
 
   CleanUpGroupBox.Caption:=lisCleanUp;
   CleanAutoRadioButton.Caption:=lisAutomatically;
-  CleanCommonRadioButton.Caption:=lisCleanCommonFiles;
   CleanAllRadioButton.Caption:=lisCleanAll;
   CleanOnceCheckBox.Caption:=lisCleanOnlyOnce;
   CleanOnceCheckBox.Hint:=lisAfterCleaningUpSwitchToAutomaticClean;
@@ -1294,7 +1292,6 @@ var
   i: Integer;
 begin
   CleanAutoRadioButton.OnClick:=Nil;
-  CleanCommonRadioButton.OnClick:=Nil;
   CleanAllRadioButton.OnClick:=Nil;
   try
     LCLWidgetTypeComboBox.ItemIndex   :=ord(AProfile.TargetPlatform);
@@ -1304,8 +1301,7 @@ begin
     TargetCPUComboBox.Text            :=AProfile.TargetCPU;
     case AProfile.IdeBuildMode of
     bmBuild: CleanAutoRadioButton.Checked:=true;
-    bmCleanBuild: CleanCommonRadioButton.Checked:=true;
-    bmCleanAllBuild: CleanAllRadioButton.Checked:=true;
+    bmCleanBuild, bmCleanAllBuild: CleanAllRadioButton.Checked:=true;
     end;
     CleanOnceCheckBox.Checked:=AProfile.CleanOnce;
     OptionsMemo.Lines.Assign(AProfile.OptionsLines);
@@ -1313,7 +1309,6 @@ begin
       DefinesListBox.Checked[i]:=AProfile.Defines.IndexOf(DefinesListBox.Items[i]) > -1;
   finally
     CleanAutoRadioButton.OnClick:=@CleanRadioButtonClick;
-    CleanCommonRadioButton.OnClick:=@CleanRadioButtonClick;
     CleanAllRadioButton.OnClick:=@CleanRadioButtonClick;
   end;
 end;
@@ -1329,8 +1324,6 @@ begin
   AProfile.TargetCPU         :=TargetCPUComboBox.Text;
   if CleanAllRadioButton.Checked then
     AProfile.IdeBuildMode := bmCleanAllBuild
-  else if CleanCommonRadioButton.Checked then
-    AProfile.IdeBuildMode := bmCleanBuild
   else
     AProfile.IdeBuildMode := bmBuild;
   AProfile.CleanOnce:=CleanOnceCheckBox.Checked;

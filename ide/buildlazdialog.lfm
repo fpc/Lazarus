@@ -229,7 +229,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
           Height = 89
           Hint = 'Defines without -d'
           Top = 237
-          Width = 484
+          Width = 505
           Anchors = [akTop, akLeft, akRight, akBottom]
           ItemHeight = 0
           ParentShowHint = False
@@ -458,10 +458,10 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
           AnchorSideRight.Control = DetailsPanel
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = CommonsDividerBevel
-          Left = 496
+          Left = 517
           Height = 104
           Top = 222
-          Width = 188
+          Width = 167
           Anchors = [akTop, akRight, akBottom]
           AutoSize = True
           BorderSpacing.Left = 6
@@ -476,7 +476,7 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
           ChildSizing.Layout = cclLeftToRightThenTopToBottom
           ChildSizing.ControlsPerLine = 1
           ClientHeight = 88
-          ClientWidth = 186
+          ClientWidth = 165
           ParentShowHint = False
           ShowHint = True
           TabOrder = 13
@@ -493,40 +493,28 @@ object ConfigureBuildLazarusDlg: TConfigureBuildLazarusDlg
             TabOrder = 0
             TabStop = True
           end
-          object CleanCommonRadioButton: TRadioButton
+          object CleanAllRadioButton: TRadioButton
             AnchorSideTop.Control = CleanAutoRadioButton
             AnchorSideTop.Side = asrBottom
             Left = 6
             Height = 23
             Top = 35
-            Width = 174
-            BorderSpacing.Top = 6
-            Caption = 'CleanCommonRadioButton'
-            OnClick = CleanRadioButtonClick
-            TabOrder = 1
-          end
-          object CleanAllRadioButton: TRadioButton
-            AnchorSideTop.Control = CleanCommonRadioButton
-            AnchorSideTop.Side = asrBottom
-            Left = 6
-            Height = 23
-            Top = 64
             Width = 140
             BorderSpacing.Top = 6
             Caption = 'CleanAllRadioButton'
             OnClick = CleanRadioButtonClick
-            TabOrder = 2
+            TabOrder = 1
           end
           object CleanOnceCheckBox: TCheckBox
             AnchorSideTop.Control = CleanAllRadioButton
             AnchorSideTop.Side = asrBottom
             Left = 6
             Height = 23
-            Top = 93
+            Top = 64
             Width = 139
             BorderSpacing.Top = 6
             Caption = 'CleanOnceCheckBox'
-            TabOrder = 3
+            TabOrder = 2
           end
         end
       end
