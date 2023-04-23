@@ -2105,19 +2105,15 @@ state.
 
 <element name="TThemeServices.GetDetailSize">
 <short>
-Deprecated. Use GetDetailSizeForPPI instead.
+Gets the default dimensions for the specified theme element detail.
 </short>
 <descr>
 <p>
-Gets the default dimensions for the specified theme element detail. Calls 
-GetDetailSizeForPPI to get the return value for the method. -1 in the Width 
-and Height for the <var>TSize</var> instance means the size for the theme 
+Calls GetDetailSizeForPPI to get the return value for the method. -1 in the 
+Width and Height for the <var>TSize</var> instance means the size for the theme
 element detail is not known.
 </p>
 </descr>
-<version>
-Deprecated in LCL Version 2.4; use GetDetailSizeForPPI instead.
-</version>
 <seealso>
 <link id="TThemeServices.GetDetailSizeForPPI"/>
 <link id="TThemedElementDetails"/>
