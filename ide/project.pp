@@ -273,7 +273,6 @@ type
          this attribute contains the component name,
          even if the unit is not loaded, or the designer form is not created.
          A component can be for example a TForm or a TDataModule }
-    fComponentLFMLoadDate: longint;  // Load time of associated LFM form file.
     fComponentResourceName: string;
     FComponentLastBinStreamSize: TStreamSeekType;
     FComponentLastLFMStreamSize: TStreamSeekType;
@@ -285,8 +284,6 @@ type
     FFirstUsedByComponent: TUnitComponentDependency;
     FFlags: TUnitInfoFlags;
     fHasResources: boolean; // source has resource file
-    FIgnoreFileDateOnDiskValid: boolean;
-    FIgnoreFileDateOnDisk: longint;
     fLoaded: Boolean; // loaded in the source editor, needed to restore open files
     fLoadedDesigner: Boolean; // has a visible designer, needed to restore open designers
     FLoadingComponent: boolean;
@@ -300,6 +297,7 @@ type
     FRunFileIfActive: boolean;
     FSessionModified: boolean;
     fSource: TCodeBuffer;
+    FSourceLFM: TCodeBuffer;
     fUsageCount: extended;
     fUserReadOnly: Boolean;
     fSourceChangeStep: LongInt;
@@ -339,6 +337,7 @@ type
     procedure SetRunFileIfActive(const AValue: boolean);
     procedure SetSessionModified(const AValue: boolean);
     procedure SetSource(ABuffer: TCodeBuffer);
+    procedure SetSourceLFM(const AValue: TCodeBuffer);
     procedure SetTimeStamps;
     procedure SetUserReadOnly(const NewValue: boolean);
   protected
@@ -357,7 +356,7 @@ type
     function GetFileOwner: TObject; override;
     function GetFileOwnerName: string; override;
 
-    function ChangedOnDisk(CompareOnlyLoadSaveTime: boolean; IgnoreModifiedFlag: boolean = False): boolean;
+    function IsChangedOnDisk(CheckLFM: boolean): boolean;
     function IsAutoRevertLocked: boolean;
     function IsReverting: boolean;
     function IsMainUnit: boolean;
@@ -365,7 +364,7 @@ type
     function GetDirectory: string;
     function GetFullFilename: string; override;
     function GetShortFilename(UseUp: boolean): string; override;
-    function NeedsSaveToDisk: boolean;
+    function NeedsSaveToDisk(CheckLFM: boolean): boolean;
     function ReadOnly: boolean;
     function ReadUnitSource(ReadUnitName,Revert:boolean): TModalResult;
     function ShortFilename: string;
@@ -481,6 +480,7 @@ type
     property Project: TProject read FProject write SetProject;
     property RunFileIfActive: boolean read FRunFileIfActive write SetRunFileIfActive;
     property Source: TCodeBuffer read fSource write SetSource;
+    property SourceLFM: TCodeBuffer read FSourceLFM write SetSourceLFM;
     property DefaultSyntaxHighlighter: TLazSyntaxHighlighter
                                read FDefaultSyntaxHighlighter write SetDefaultSyntaxHighlighter;
     property UserReadOnly: Boolean read fUserReadOnly write SetUserReadOnly;
@@ -933,7 +933,7 @@ type
     function SomeDataModified(Verbose: boolean = false): boolean;
     function SomeSessionModified(Verbose: boolean = false): boolean;
     procedure MainSourceFilenameChanged;
-    procedure GetUnitsChangedOnDisk(var AnUnitList: TFPList; IgnoreModifiedFlag: boolean = False);
+    procedure GetSourcesChangedOnDisk(var ACodeBufferList: TFPList);
     function HasProjectInfoFileChangedOnDisk: boolean;
     procedure IgnoreProjectInfoFileOnDisk;
     function ReadProject(const NewProjectInfoFile: string;
@@ -980,6 +980,7 @@ type
     function IndexOfFilename(const AFilename: string): integer;
     function IndexOfFilename(const AFilename: string;
                              SearchFlags: TProjectFileSearchFlags): integer;
+    function IndexOfLFMFilename(const AFilename: string): integer; // only currently open lfm (SourceLFM<>nil)
     function ProjectUnitWithFilename(const AFilename: string): TUnitInfo;
     function ProjectUnitWithShortFilename(const ShortFilename: string): TUnitInfo;
     function ProjectUnitWithUnitname(const AnUnitName: string): TUnitInfo;
@@ -999,6 +1000,7 @@ type
     function UnitInfoWithFilename(const AFilename: string;
                     SearchFlags: TProjectFileSearchFlags): TUnitInfo;
     function UnitWithUnitname(const AnUnitname: string): TUnitInfo;
+    function UnitInfoWithLFMFilename(const AFilename: string): TUnitInfo; // only currently open lfm (SourceLFM<>nil)
     function AllEditorsInfoCount: Integer;
     property AllEditorsInfo[Index: Integer]: TUnitEditorInfo read GetAllEditorsInfo;
     function EditorInfoWithEditorComponent(AEditor:TSourceEditorInterface): TUnitEditorInfo;
@@ -1645,15 +1647,14 @@ begin
     if Result=mrAbort then exit;
   end;
   repeat
-    if not fSource.Save then begin
+    if fSource.Save then begin
+      Result:=mrOk;
+    end else begin
       ACaption:=lisCodeToolsDefsWriteError;
       AText:=Format(lisUnableToWriteFile2, [Filename]);
       Result:=IDEMessageDialog(ACaption,AText,mtError,mbAbortRetryIgnore);
       if Result=mrAbort then exit;
       if Result=mrIgnore then Result:=mrOk;
-    end else begin
-      Result:=mrOk;
-      FIgnoreFileDateOnDiskValid:=true;
     end;
   until Result<>mrRetry;
   Result:=mrOk;
@@ -1702,7 +1703,6 @@ begin
         exit;
     end else begin
       Source:=NewSource;
-      FIgnoreFileDateOnDiskValid:=true;
       Result:=mrOk;
     end;
   until Result<>mrRetry;
@@ -1778,7 +1778,6 @@ begin
   fFilename := '';
   fFileReadOnly := false;
   fHasResources := false;
-  FIgnoreFileDateOnDiskValid := false;
   fAutoReferenceSourceDir := true;
   inherited SetIsPartOfProject(false);
   Modified := false;
@@ -1803,6 +1802,7 @@ procedure TUnitInfo.ClearComponentDependencies;
 begin
   while FFirstRequiredComponent<>nil do FFirstRequiredComponent.Free;
   while FFirstUsedByComponent<>nil do FFirstUsedByComponent.Free;
+  SourceLFM:=nil;
 end;
 
 procedure TUnitInfo.WriteDebugReportUnitComponentDependencies(Prefix: string);
@@ -2198,53 +2198,35 @@ end;
 
 function TUnitInfo.ComponentLFMOnDiskHasChanged: boolean;
 // Associated LFM resource file on disk has changed since last load/save
-var
-  ResFilename: String;
 begin
-  if fComponentLFMLoadDate=0 then Exit(false);   // 0 means there is no LFM file.
-  ResFilename:=UnitResourceFileformat.GetUnitResourceFilename(Filename,true);
-  Result:=fComponentLFMLoadDate<>FileAgeCached(ResFilename);
-  if Result then
-    DebugLn(['TUnitInfo.ComponentLFMOnDiskHasChanged ', ResFilename, ' changed on disk.']);
+  if SourceLFM=nil then Exit(false);
+  if SourceLFM.FileOnDiskHasChanged then exit(true);
 end;
 
 procedure TUnitInfo.SetTimeStamps;
-var
-  ResFilename: String;
 begin
   if FSource<>nil then
     fSourceChangeStep:=FSource.ChangeStep  // Indicates any change is source
   else
     fSourceChangeStep:=CTInvalidChangeStamp;
-  // Associated LFM resource file timestamp
-  //if Component=nil then exit;  <- Component is here always nil for some reason.
-  if UnitResourceFileformat=nil then exit;   // Happens with LazBuild
-  ResFilename:=UnitResourceFileformat.GetUnitResourceFilename(Filename,true);
-  if FileExistsCached(ResFilename) then
-    fComponentLFMLoadDate:=FileAgeCached(ResFilename);
 end;
 
-function TUnitInfo.ChangedOnDisk(CompareOnlyLoadSaveTime: boolean;
-  IgnoreModifiedFlag: boolean): boolean;
+function TUnitInfo.IsChangedOnDisk(CheckLFM: boolean): boolean;
 begin
-  Result:=(Source<>nil) and Source.FileOnDiskHasChanged(IgnoreModifiedFlag);
-  if not Result then
-    Result:=ComponentLFMOnDiskHasChanged;
-  if Result
-  and (not CompareOnlyLoadSaveTime)
-  and FIgnoreFileDateOnDiskValid
-  and (FIgnoreFileDateOnDisk=Source.FileDateOnDisk) then
-    Result:=false;
+  Result:=(Source<>nil) and Source.FileOnDiskHasChanged;
+  if (not Result) and CheckLFM and (Component<>nil) and (SourceLFM<>nil) then
+    Result:=SourceLFM.FileOnDiskHasChanged;
+
   FileReadOnly:=(not IsVirtual) and FileExistsCached(Filename)
                  and not FileIsWritableCached(Filename);
 end;
 
 procedure TUnitInfo.IgnoreCurrentFileDateOnDisk;
 begin
-  if Source<>nil then begin
-    FIgnoreFileDateOnDiskValid:=true;
-    FIgnoreFileDateOnDisk:=Source.FileDateOnDisk;
-  end
+  if Source<>nil then
+    Source.MakeFileDateValid;
+  if SourceLFM<>nil then
+    SourceLFM.MakeFileDateValid;
 end;
 
 function TUnitInfo.ShortFilename: string;
@@ -2255,15 +2237,13 @@ begin
     Result:=Filename;
 end;
 
-function TUnitInfo.NeedsSaveToDisk: boolean;
+function TUnitInfo.NeedsSaveToDisk(CheckLFM: boolean): boolean;
 begin
-  Result:=IsVirtual or Modified or ChangedOnDisk(true);
+  Result:=IsVirtual or Modified or IsChangedOnDisk(CheckLFM);
   //DebugLn(['TUnitInfo.NeedsSaveToDisk ',filename,' Result=',Result,' Modified=',Modified]);
   if Result then Exit;
   if Source<>nil then
-    Result:=Source.FileOnDiskNeedsUpdate
-  else
-    Result:=not FileExistsUTF8(Filename);
+    Result:=Source.ChangeStep<>fSourceChangeStep;
 end;
 
 procedure TUnitInfo.UpdateUsageCount(Min, IfBelowThis, IncIfBelow: extended);
@@ -2478,7 +2458,6 @@ begin
   if (fSource<>nil) and IsAutoRevertLocked then
     fSource.UnlockAutoDiskRevert;
   fSource:=ABuffer;
-  FIgnoreFileDateOnDiskValid:=false;
   if (fSource<>nil) then begin
     SetTimeStamps;
     if IsAutoRevertLocked then
@@ -2487,6 +2466,12 @@ begin
     if (fProject<>nil) and (fProject.MainUnitInfo=Self) then
       fProject.MainSourceFilenameChanged;
   end;
+end;
+
+procedure TUnitInfo.SetSourceLFM(const AValue: TCodeBuffer);
+begin
+  if FSourceLFM=AValue then Exit;
+  FSourceLFM:=AValue;
 end;
 
 procedure TUnitInfo.SetUserReadOnly(const NewValue: boolean);
@@ -2638,7 +2623,6 @@ begin
   fFileReadOnly:=AValue;
   if fSource<>nil then
     fSource.ReadOnly:=ReadOnly;
-  SessionModified:=true;
 end;
 
 procedure TUnitInfo.SetComponent(const AValue: TComponent);
@@ -4801,20 +4785,25 @@ begin
   ExtendPath(SrcPathMacroName,CompilerOptions.SrcPath);
 end;
 
-procedure TProject.GetUnitsChangedOnDisk(var AnUnitList: TFPList;
-  IgnoreModifiedFlag: boolean);
+procedure TProject.GetSourcesChangedOnDisk(var ACodeBufferList: TFPList);
+
+  procedure Add(aCode: TCodeBuffer);
+  begin
+    if aCode=nil then exit;
+    if not aCode.FileOnDiskHasChanged then exit;
+    if ACodeBufferList=nil then
+      ACodeBufferList:=TFPList.Create;
+    if ACodeBufferList.IndexOf(aCode)<0 then
+      ACodeBufferList.Add(aCode);
+  end;
+
 var
   AnUnitInfo: TUnitInfo;
 begin
-  AnUnitList:=nil;
   AnUnitInfo:=fFirst[uilAutoRevertLocked];
   while (AnUnitInfo<>nil) do begin
-    if (AnUnitInfo.Source<>nil)
-    and AnUnitInfo.ChangedOnDisk(false, IgnoreModifiedFlag) then begin
-      if AnUnitList=nil then
-        AnUnitList:=TFPList.Create;
-      AnUnitList.Add(AnUnitInfo);
-    end;
+    Add(AnUnitInfo.Source);
+    Add(AnUnitInfo.SourceLFM);
     AnUnitInfo:=AnUnitInfo.fNext[uilAutoRevertLocked];
   end;
 end;
@@ -5969,6 +5958,17 @@ begin
     Result:=nil;
 end;
 
+function TProject.UnitInfoWithLFMFilename(const AFilename: string): TUnitInfo;
+var
+  i: Integer;
+begin
+  i:=IndexOfLFMFilename(AFilename);
+  if i>=0 then
+    Result:=Units[i]
+  else
+    Result:=nil;
+end;
+
 function TProject.AllEditorsInfoCount: Integer;
 begin
   Result := FAllEditorsInfoList.Count;
@@ -6168,6 +6168,19 @@ begin
     end;
     CurBaseFilename:=MakeFilenameComparable(Units[Result].Filename);
     if CompareFilenames(BaseFilename,CurBaseFilename)=0 then exit;
+    dec(Result);
+  end;
+end;
+
+function TProject.IndexOfLFMFilename(const AFilename: string): integer;
+var
+  CurUnit: TUnitInfo;
+begin
+  Result:=UnitCount-1;
+  while (Result>=0) do begin
+    CurUnit:=Units[Result];
+    if (CurUnit.SourceLFM<>nil)
+        and (CompareFilenames(AFilename,CurUnit.SourceLFM.Filename)=0) then exit;
     dec(Result);
   end;
 end;

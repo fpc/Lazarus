@@ -8668,10 +8668,11 @@ end;
 
 function TMainIDE.DoCheckFilesOnDisk(Instantaneous: boolean): TModalResult;
 var
-  AnUnitList, AIgnoreList: TFPList; // list of TUnitInfo
+  BufferList, AIgnoreList, LFMLoaded: TFPList; // list of TCodeBuffer
   APackageList: TStringList; // list of alternative lpkfilename and TLazPackage
   i: integer;
   CurUnit: TUnitInfo;
+  CurCode: TCodeBuffer;
 begin
   Result:=mrOk;
   if not CheckFilesOnDiskEnabled then exit;
@@ -8685,11 +8686,11 @@ begin
   Exclude(FIdleIdeActions, iiaCheckFilesOnDisk);
 
   CheckFilesOnDiskEnabled:=False;
-  AnUnitList:=nil;
+  BufferList:=nil;
   APackageList:=nil;
   AIgnoreList:=nil;
+  LFMLoaded:=nil;
   try
-    AIgnoreList := TFPList.Create;
     InvalidateFileStateCache;
 
     if Project1.HasProjectInfoFileChangedOnDisk then begin
@@ -8704,26 +8705,37 @@ begin
       exit(mrOk);
     end;
 
-    Project1.GetUnitsChangedOnDisk(AnUnitList, True);
+    AIgnoreList := TFPList.Create;
+    Project1.GetSourcesChangedOnDisk(BufferList);
     PkgBoss.GetPackagesChangedOnDisk(APackageList, True);
-    if (AnUnitList=nil) and (APackageList=nil) then exit;
-    Result:=ShowDiskDiffsDialog(AnUnitList,APackageList,AIgnoreList);
+    if (BufferList=nil) and (APackageList=nil) then exit;
+    Result:=ShowDiskDiffsDialog(BufferList,APackageList,AIgnoreList);
 
     // reload units
-    if AnUnitList<>nil then begin
-      for i:=0 to AnUnitList.Count-1 do begin
-        CurUnit:=TUnitInfo(AnUnitList[i]);
+    if BufferList<>nil then begin
+      LFMLoaded:=TFPList.Create;
+
+      // revert units and associated forms
+      for i:=0 to BufferList.Count-1 do begin
+        CurCode:=TCodeBuffer(BufferList[i]);
+
+        CurUnit:=Project1.UnitInfoWithFilename(CurCode.Filename);
+        if CurUnit=nil then continue;
         if (Result=mrOk)
-        and (AIgnoreList.IndexOf(CurUnit)<0) then // ignore current
+        and (AIgnoreList.IndexOf(CurUnit)<0) then
         begin
+          // revert
           if CurUnit.OpenEditorInfoCount > 0 then
           begin
             // Revert one Editor-View, the others follow
             Result:=OpenEditorFile(CurUnit.Filename, CurUnit.OpenEditorInfo[0].PageIndex,
                       CurUnit.OpenEditorInfo[0].WindowID, nil, [ofRevert], True);
             // Reload the form file in designer if there is one
-            if Assigned(CurUnit.Component) then
+            if Assigned(CurUnit.Component) and (AIgnoreList.IndexOf(CurUnit.SourceLFM)<0) then
+            begin
+              LFMLoaded.Add(CurUnit.SourceLFM);
               LoadLFM(CurUnit,[ofOnlyIfExists,ofRevert],[]);
+            end;
           end else if CurUnit.IsMainUnit then
           begin
             Result:=RevertMainUnit;
@@ -8732,12 +8744,30 @@ begin
             Result:=mrIgnore;
           if Result=mrAbort then exit;
         end else begin
+          // keep memory file
           //DebugLn(['DoCheckFilesOnDisk IgnoreCurrentFileDateOnDisk']);
           CurUnit.IgnoreCurrentFileDateOnDisk;
           CurUnit.Modified:=True;
           if CurUnit.OpenEditorInfoCount > 0 then
             CurUnit.OpenEditorInfo[0].EditorComponent.Modified:=True;
         end;
+      end;
+
+      // revert lfm, where the pascal source has not changed or should be kept
+      for i:=0 to BufferList.Count-1 do begin
+        CurCode:=TCodeBuffer(BufferList[i]);
+        if LFMLoaded.IndexOf(CurCode)>=0 then continue;
+        CurUnit:=Project1.UnitInfoWithLFMFilename(CurCode.Filename);
+        if CurUnit=nil then continue;
+        // designer form
+        if (Result=mrOk)
+            and Assigned(CurUnit.Component)
+            and (AIgnoreList.IndexOf(CurUnit.SourceLFM)<0) then
+        begin
+          LFMLoaded.Add(CurUnit.SourceLFM);
+          LoadLFM(CurUnit,[ofOnlyIfExists,ofRevert],[]);
+        end;
+        CurCode.MakeFileDateValid;
       end;
     end;
 
@@ -8754,7 +8784,8 @@ begin
     Result:=mrOk;
   finally
     CheckFilesOnDiskEnabled:=True;
-    AnUnitList.Free;
+    LFMLoaded.Free;
+    BufferList.Free;
     APackageList.Free;
     AIgnoreList.Free;
   end;
@@ -8899,7 +8930,7 @@ begin
   AnUnitInfo:=Project1.FirstUnitWithComponent;
   while AnUnitInfo<>nil do begin
     NextUnitInfo:=AnUnitInfo.NextUnitWithComponent;
-    if not AnUnitInfo.NeedsSaveToDisk then
+    if not AnUnitInfo.NeedsSaveToDisk(true) then
       CloseUnitComponent(AnUnitInfo,[]);
     AnUnitInfo:=NextUnitInfo;
   end;
@@ -11673,7 +11704,7 @@ var
 begin
   ADesigner:=TDesigner(Sender);
   GetDesignerUnit(ADesigner,ASrcEdit,AnUnitInfo);
-  if AnUnitInfo.NeedsSaveToDisk
+  if AnUnitInfo.NeedsSaveToDisk(true)
   then begin
     case IDEQuestionDialog(lisSaveChanges,
           Format(lisSaveFileBeforeClosingForm,

@@ -90,14 +90,14 @@ type
     function FileDateOnDisk: longint;
     function FileNeedsUpdate(IgnoreModifiedFlag: Boolean = False): boolean; // needs loading
     function FileOnDiskNeedsUpdate: boolean;
-    function FileOnDiskHasChanged(IgnoreModifiedFlag: Boolean = False): boolean;
-    function FileOnDiskIsEqual: boolean;
-    function AutoRevertFromDisk: boolean;
+    function FileOnDiskHasChanged: boolean;
+    function FileOnDiskIsEqual: boolean; // only checking properties, not checking content
+    function AutoRevertFromDisk: boolean; // true if not locked by LockAutoDiskRevert
     procedure LockAutoDiskRevert;
     procedure UnlockAutoDiskRevert;
     procedure IncrementRefCount;
     procedure ReleaseRefCount;
-    procedure MakeFileDateValid;
+    procedure MakeFileDateValid; // Note: if file does not exist, LoadDate becomes -1
     procedure InvalidateLoadDate;
     function SourceIsText: boolean;
   public
@@ -109,7 +109,7 @@ type
     property IsVirtual: boolean read FIsVirtual;
     property LastIncludedByFile: string read GetLastIncludedByFile
                                         write FLastIncludedByFile;
-    property LoadDate: longint read FLoadDate;
+    property LoadDate: longint read FLoadDate; // Note: can be -1 (file does not exist) even if LoadDateValid=true
     property LoadDateValid: boolean read FLoadDateValid;
     property FileChangeStep: integer read FFileChangeStep; // last loaded/saved changestep, only valid if LoadDateValid=true
     property OnSetFilename: TNotifyEvent read FOnSetFilename write FOnSetFilename;
@@ -1430,7 +1430,7 @@ procedure TCodeBuffer.MakeFileDateValid;
 begin
   FFileChangeStep:=ChangeStep;
   FLoadDateValid:=true;
-  FLoadDate:=FileAgeCached(Filename);
+  FLoadDate:=FileAgeCached(Filename); // can be -1 if not exist
 end;
 
 procedure TCodeBuffer.InvalidateLoadDate;
@@ -1484,14 +1484,17 @@ begin
           or (not FileExistsCached(Filename));
 end;
 
-function TCodeBuffer.FileOnDiskHasChanged(IgnoreModifiedFlag: Boolean): boolean;
+function TCodeBuffer.FileOnDiskHasChanged: boolean;
 // file on disk has changed since last load/save
 begin
   Result:=false;
   if IsVirtual then exit;
   // LoadDateValid is set to false after edit
-  if (IgnoreModifiedFlag or LoadDateValid) and FileExistsCached(Filename) then
-    Result:=(FileDateOnDisk<>LoadDate);
+  if LoadDateValid then begin
+    // Note: FileDateOnDisk and/or LoadDate can be -1 for file does not exist
+    //  see MakeFileDateValid
+    Result:=FileDateOnDisk<>LoadDate;
+  end;
   if Result then
     DebugLn(['TCodeBuffer.FileOnDiskHasChanged ',Filename,' LoadDate=',LoadDate]);
 end;
@@ -1502,12 +1505,15 @@ begin
     exit(true);
   if IsDeleted then
     exit(not FileExistsCached(Filename));
-  if (not LoadDateValid)
-  or Modified or (FFileChangeStep<>ChangeStep)
-  or (not FileExistsCached(Filename))
-  or (FileDateOnDisk<>LoadDate)
-  then
-    exit(false);
+  if (not LoadDateValid) then
+    exit(false);// not loaded, so cannot be equal (not checking content)
+
+  // LoadDateValid=true
+  if Modified or (FFileChangeStep<>ChangeStep) then
+    exit(false); // file modified in memory
+  if FileDateOnDisk<>LoadDate then
+    exit(false); // this covers the case that the file does not exist anymore
+
   Result:=true;
 end;
 

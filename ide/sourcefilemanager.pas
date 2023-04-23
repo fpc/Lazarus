@@ -2488,7 +2488,7 @@ begin
 
   // if nothing modified then a simple Save can be skipped
   //debugln(['SaveEditorFile A ',AnUnitInfo.Filename,' ',AnUnitInfo.NeedsSaveToDisk]);
-  if ([sfSaveToTestDir,sfSaveAs]*Flags=[]) and (not AnUnitInfo.NeedsSaveToDisk) then
+  if ([sfSaveToTestDir,sfSaveAs]*Flags=[]) and (not AnUnitInfo.NeedsSaveToDisk(true)) then
   begin
     if AEditor.Modified then
     begin
@@ -2570,7 +2570,7 @@ begin
       exit(mrCancel);
   end else
   begin
-    if AnUnitInfo.Modified or (MainIDE.CheckFilesOnDiskEnabled and AnUnitInfo.NeedsSaveToDisk) then
+    if AnUnitInfo.Modified or (MainIDE.CheckFilesOnDiskEnabled and AnUnitInfo.NeedsSaveToDisk(false)) then
     begin
       // save source to file
       DestFilename := AnUnitInfo.Filename;
@@ -6041,6 +6041,7 @@ begin
 
     // someone created a .lfm file -> Update HasResources
     AnUnitInfo.HasResources:=true;
+    AnUnitInfo.SourceLFM:=LFMBuf;
 
     // find the classname of the LFM, and check for inherited form
     AnUnitInfo.UnitResourceFileformat.QuickCheckResourceBuffer(
@@ -7886,7 +7887,7 @@ begin
   end else
   begin
     // not loaded in source editor (hidden)
-    SaveMainSrc := (sfSaveToTestDir in Flags) or MainUnitInfo.NeedsSaveToDisk;
+    SaveMainSrc := (sfSaveToTestDir in Flags) or MainUnitInfo.NeedsSaveToDisk(false);
     if SaveMainSrc and (MainUnitInfo.Source<>nil) then
     begin
       Result := SaveCodeBufferToFile(MainUnitInfo.Source, DestFilename);

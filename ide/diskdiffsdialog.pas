@@ -35,7 +35,7 @@ uses
   // CodeTools
   FileProcs, CodeCache,
   // LazUtils
-  LazFileUtils, UITypes,
+  LazFileUtils, UITypes, LazFileCache,
   // IdeIntf
   IDEImagesIntf,
   // SynEdit
@@ -70,9 +70,11 @@ type
   private
     FIgnoreList: TFPList;
     FPackageList: TStringList;
-    FUnitList: TFPList;
+    FCodeList: TFPList;
     FHasLocalModifications: Boolean;
+    FHasExistingFiles: Boolean;
     FCachedDiffs: TFPList; // List of PDiffItem
+    function ShortenFilename(const aFilename: string): string;
     procedure AddFile2Box(AInfo: TObject; AFileName: string; AModified: Boolean);
     procedure FillFilesListBox;
     procedure ApplyChecks;
@@ -80,15 +82,17 @@ type
     function GetCachedDiff(FileOwner: TObject; AltFilename: string): PDiffItem;
     procedure ClearCache;
   public
-    property UnitList: TFPList read FUnitList write FUnitList; // list of TUnitInfo
-    property PackageList: TStringList read FPackageList write FPackageList; // list of alternative filename and TLazPackage
-    property IgnoreList: TFPList read FIgnoreList write FIgnoreList;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    property CodeList: TFPList read FCodeList write FCodeList; // list of TCodeBuffer
+    property PackageList: TStringList read FPackageList write FPackageList; // list of alternative filename and TLazPackage
+    property IgnoreList: TFPList read FIgnoreList write FIgnoreList; // TCodeBuffer of TLazPackage
   end;
 
-function ShowDiskDiffsDialog(AnUnitList: TFPList;
-  APackageList: TStringList; AnIgnoreList: TFPList): TModalResult;
+function ShowDiskDiffsDialog(
+  ACodeList: TFPList; // list of TCodeBuffer
+  APackageList: TStringList; // list of TLazPackage
+  AnIgnoreList: TFPList): TModalResult;
 
 implementation
 
@@ -97,75 +101,83 @@ implementation
 var
   DiskDiffsDlg: TDiskDiffsDlg = nil;
 
-// Procedures used by ShowDiskDiffsDialog
+procedure CheckUnits(ACodeList, AnIgnoreList: TFPList);
 
-procedure CheckUnitsWithLoading(AnUnitList: TFPList);
+  function AddChangedBuffer(Code: TCodeBuffer): boolean;
+  var
+    fs: TFileStream;
+    s, DiskEncoding, MemEncoding, aFilename: string;
+  begin
+    if (Code=nil) or Code.IsVirtual then
+      exit(false);
+
+    aFilename:=Code.Filename;
+    if EnvironmentOptions.CheckDiskChangesWithLoading then
+    begin
+      // load and compare
+      try
+        fs := TFileStream.Create(aFilename, fmOpenRead or fmShareDenyNone);
+        try
+          SetLength(s{%H-}, fs.Size);
+          if s <> '' then
+            fs.Read(s[1], length(s));
+          DiskEncoding := '';
+          MemEncoding := '';
+          Code.CodeCache.OnDecodeLoaded(Code,aFilename,
+            s,DiskEncoding,MemEncoding);
+          //debugln(['CheckUnitsWithLoading ',aFilename,
+          //  ' ',length(s),'=',Code.SourceLength]);
+          if (MemEncoding=Code.MemEncoding)
+          and (DiskEncoding=Code.DiskEncoding)
+          and (length(s)=Code.SourceLength)
+          and (s=Code.Source) then begin
+            // same content -> no need to bother user
+            exit(false);
+          end;
+        finally
+          fs.Free;
+        end;
+      except
+        // unable to load, e.g. no longer exists or permission denied
+      end;
+    end;
+
+    // file has changed
+    Result:=true;
+  end;
+
 var
   i: Integer;
-  CurUnit: TUnitInfo;
-  CodeOk: Boolean;
-  MemCode: TCodeBuffer;
-  s, DiskEncoding, MemEncoding: String;
-  fs: TFileStream;
 begin
-  for i:=AnUnitList.Count-1 downto 0 do
+  for i:=ACodeList.Count-1 downto 0 do
   begin
-    CurUnit:=TUnitInfo(AnUnitList[i]);
-    MemCode:=CurUnit.Source;
-    CodeOk:=false;
-    try
-      fs := TFileStream.Create(MemCode.Filename, fmOpenRead or fmShareDenyNone);
-      try
-        SetLength(s{%H-}, fs.Size);
-        if s <> '' then
-          fs.Read(s[1], length(s));
-        DiskEncoding := '';
-        MemEncoding := '';
-        MemCode.CodeCache.OnDecodeLoaded(MemCode,MemCode.Filename,
-          s,DiskEncoding,MemEncoding);
-        //debugln(['CheckUnitsWithLoading ',MemCode.Filename,
-        //  ' ',length(s),'=',MemCode.SourceLength]);
-        if (MemEncoding=MemCode.MemEncoding)
-        and (DiskEncoding=MemCode.DiskEncoding)
-        and (length(s)=MemCode.SourceLength)
-        and (s=MemCode.Source) then begin
-          CodeOk:=true;
-        end;
-      finally
-        fs.Free;
-      end;
-    except
-      // unable to load
-    end;
-    if CodeOk then begin
-      if CurUnit.Source<>nil then
-        CurUnit.Source.MakeFileDateValid;
-      AnUnitList.Delete(i);
-    end;
+    if not AddChangedBuffer(TCodeBuffer(ACodeList[i])) then
+      AnIgnoreList.Add(ACodeList[i]);
   end;
 end;
 
-procedure CheckPackagesWithLoading(APackageList: TStringList);
+procedure CheckPackages(APackageList: TStringList; AnIgnoreList: TFPList);
 var
   i: Integer;
   CurPackage: TLazPackage;
   PackageOk: Boolean;
   fs: TFileStream;
   CurSource, DiskSource: string;
-  AltFilename: String;
+  AltFilename, LPKFilename: String;
 begin
   for i:=APackageList.Count-1 downto 0 do
   begin
     AltFilename:=APackageList[i];
     CurPackage:=TLazPackage(APackageList.Objects[i]);
+    LPKFilename:=CurPackage.Filename;
     PackageOk:=false;
     if CurPackage.LPKSource=nil then
       continue; // this package was not loaded/saved
-    if CompareFilenames(CurPackage.Filename,AltFilename)<>0 then
+    if CompareFilenames(LPKFilename,AltFilename)<>0 then
       continue; // lpk has vanished, an alternative lpk was found => show
     try
       CurPackage.SaveToString(CurSource);
-      fs:=TFileStream.Create(CurPackage.Filename,fmOpenRead);
+      fs:=TFileStream.Create(LPKFilename,fmOpenRead);
       try
         if fs.Size=length(CurSource) then begin
           // size has not changed => load to see difference
@@ -183,41 +195,52 @@ begin
         DebugLn(['CheckPackagesWithLoading Filename=',CurPackage.Filename,' Error=',E.Message]);
     end;
     if PackageOk then
-      APackageList.Delete(i);
+      AnIgnoreList.Add(CurPackage);
   end;
 end;
 
-function ShowDiskDiffsDialog(AnUnitList: TFPList; APackageList: TStringList;
+function ShowDiskDiffsDialog(ACodeList: TFPList; APackageList: TStringList;
   AnIgnoreList: TFPList): TModalResult;
 
   function ListsAreEmpty: boolean;
+  var
+    i: Integer;
   begin
-    Result:=((AnUnitList=nil) or (AnUnitList.Count=0))
-        and ((APackageList=nil) or (APackageList.Count=0));
+    if ACodeList<>nil then
+      for i:=0 to ACodeList.Count-1 do
+        if AnIgnoreList.IndexOf(ACodeList[i])<0 then
+          exit(false);
+    if APackageList<>nil then
+      for i:=0 to APackageList.Count-1 do
+        if AnIgnoreList.IndexOf(APackageList.Objects[i])<0 then
+          exit(false);
+    Result:=true;
   end;
 
 begin
   if (DiskDiffsDlg<>nil) or ListsAreEmpty then
     exit(mrIgnore);
-  if EnvironmentOptions.CheckDiskChangesWithLoading then begin
-    if Assigned(AnUnitList) then
-      CheckUnitsWithLoading(AnUnitList);
-    if Assigned(APackageList) then
-      CheckPackagesWithLoading(APackageList);
-    if ListsAreEmpty then exit(mrIgnore);
-  end;
+  if Assigned(ACodeList) then
+    CheckUnits(ACodeList,AnIgnoreList);
+  if Assigned(APackageList) then
+    CheckPackages(APackageList,AnIgnoreList);
+  if ListsAreEmpty then
+    exit(mrIgnore);
   DiskDiffsDlg:=TDiskDiffsDlg.Create(nil);
-  DiskDiffsDlg.UnitList:=AnUnitList;
-  DiskDiffsDlg.PackageList:=APackageList;
-  DiskDiffsDlg.IgnoreList:=AnIgnoreList;
-  DiskDiffsDlg.FillFilesListBox;
-  Result:=DiskDiffsDlg.ShowModal;
-  case Result of
-    mrOK : DiskDiffsDlg.ApplyChecks;
-    mrCancel : Result:=mrIgnore;
+  try
+    DiskDiffsDlg.CodeList:=ACodeList;
+    DiskDiffsDlg.PackageList:=APackageList;
+    DiskDiffsDlg.IgnoreList:=AnIgnoreList;
+    DiskDiffsDlg.FillFilesListBox;
+    Result:=DiskDiffsDlg.ShowModal;
+    case Result of
+      mrOK : DiskDiffsDlg.ApplyChecks;
+      mrCancel : Result:=mrIgnore;
+    end;
+  finally
+    DiskDiffsDlg.Free;
+    DiskDiffsDlg:=nil;
   end;
-  DiskDiffsDlg.Free;
-  DiskDiffsDlg:=nil;
   Assert(Result in [mrOK,mrIgnore], 'ShowDiskDiffsDialog: Invalid result '+IntToStr(Result));
 end;
 
@@ -245,6 +268,11 @@ begin
   IDEImages.Images_16.DrawForPPI(paintbx.Canvas, 0, 0, imgIndex, 16, ppi, GetCanvasScaleFactor);
 end;
 
+function TDiskDiffsDlg.ShortenFilename(const aFilename: string): string;
+begin
+  Result:=Project1.RemoveProjectPathFromFilename(aFilename);
+end;
+
 procedure TDiskDiffsDlg.AddFile2Box(AInfo: TObject; AFileName: string; AModified: Boolean);
 var
   i: Integer;
@@ -261,47 +289,81 @@ end;
 procedure TDiskDiffsDlg.FillFilesListBox;
 var
   i: integer;
-  UInfo: TUnitInfo;
+  CurUnit: TUnitInfo;
   APackage: TLazPackage;
+  aCode: TCodeBuffer;
+  aFilename, AltFilename: String;
+  CurModified: Boolean;
 begin
   FHasLocalModifications:=False;
+  FHasExistingFiles:=False;
   FilesListBox.Items.BeginUpdate;
   FilesListBox.Items.Clear;
-  if UnitList<>nil then
+  if CodeList<>nil then
   begin
-    for i:=0 to UnitList.Count-1 do begin
-      UInfo:=TUnitInfo(UnitList[i]);
-      AddFile2Box(UInfo, UInfo.ShortFilename, UInfo.Modified);
+    for i:=0 to CodeList.Count-1 do begin
+      aCode:=TCodeBuffer(CodeList[i]);
+      if IgnoreList.IndexOf(aCode)>=0 then continue;
+      aFilename:=aCode.Filename;
+      CurUnit:=Project1.UnitInfoWithFilename(aFilename);
+      if CurUnit=nil then
+        CurUnit:=Project1.UnitInfoWithLFMFilename(aFilename);
+      CurModified:=(CurUnit<>nil) and CurUnit.Modified;
+      AddFile2Box(aCode, ShortenFilename(aFilename), CurModified);
+      if (not FHasExistingFiles) and FileExistsCached(aFilename) then
+        FHasExistingFiles:=true;
     end;
   end;
   if PackageList<>nil then
   begin
     for i:=0 to PackageList.Count-1 do begin
       APackage:=TLazPackage(PackageList.Objects[i]);
+      if IgnoreList.IndexOf(APackage)>=0 then continue;
       AddFile2Box(APackage, APackage.Filename, APackage.Modified);
+      AltFilename:=PackageList[i];
+      if not FHasExistingFiles then
+      begin
+        if FileExistsCached(APackage.Filename)
+            or ((CompareFilenames(AltFilename,APackage.Filename)<>0)
+              and FileExistsCached(AltFilename)) then
+          FHasExistingFiles:=true;
+      end;
     end;
   end;
   FilesListBox.Items.EndUpdate;
   WarnImage.Visible:=FHasLocalModifications;
   WarnLabel.Visible:=FHasLocalModifications;
+  BtnPanel.OkButton.Visible:=FHasExistingFiles;
 end;
 
 procedure TDiskDiffsDlg.ShowDiff;
 var
   i: integer;
   DiffItem: PDiffItem;
+  AInfo: TObject;
+  aFilename: String;
+  aCode: TCodeBuffer;
 begin
-  i:=FilesListBox.ItemIndex;
   DiffItem:=nil;
-  if (i>=0) and (UnitList<>nil) then begin
-    if i<UnitList.Count then
-      DiffItem:=GetCachedDiff(TUnitInfo(UnitList[i]),'');
-    dec(i,UnitList.Count);
-  end;
-  if (i>=0) and (PackageList<>nil) then begin
-    if i<PackageList.Count then
-      DiffItem:=GetCachedDiff(TLazPackage(PackageList.Objects[i]),PackageList[i]);
-    dec(i,PackageList.Count);
+  i:=FilesListBox.ItemIndex;
+  if i>=0 then
+  begin
+    aFilename:=FilesListBox.Items[i];
+    if aFilename[1]='*' then
+      Delete(aFilename,1,1);
+    AInfo:=FilesListBox.Items.Objects[i];
+    if AInfo is TCodeBuffer then
+    begin
+      aCode:=TCodeBuffer(AInfo);
+      DiffItem:=GetCachedDiff(aCode,'');
+    end else if AInfo is TLazPackage then begin
+      for i:=0 to PackageList.Count-1 do
+        if PackageList.Objects[i]=AInfo then
+        begin
+          DiffItem:=GetCachedDiff(TLazPackage(AInfo),PackageList[i]);
+          break;
+        end;
+    end;
   end;
   if DiffItem<>nil then begin
     DiffSynEdit.Lines.Text:=DiffItem^.Diff;
@@ -316,10 +378,10 @@ var
   i: integer;
   fs: TFileStream;
   Filename: String;
-  AnUnitInfo: TUnitInfo;
   APackage: TLazPackage;
   Source: String;
   DiffOutput: TDiffOutput;
+  Code: TCodeBuffer;
 begin
   if FCachedDiffs=nil then
     FCachedDiffs:=TFPList.Create;
@@ -330,11 +392,11 @@ begin
   New(Result);
   Result^.Owner:=FileOwner;
   try
-    if FileOwner is TUnitInfo then begin
+    if FileOwner is TCodeBuffer then begin
       // compare disk and codetools
-      AnUnitInfo:=TUnitInfo(FileOwner);
-      Filename:=AnUnitInfo.Source.Filename;
-      Source:=AnUnitInfo.Source.Source;
+      Code:=TCodeBuffer(FileOwner);
+      Filename:=Code.Filename;
+      Source:=Code.Source;
     end else if FileOwner is TLazPackage then begin
       // compare disk and package
       APackage:=TLazPackage(FileOwner);
@@ -414,7 +476,6 @@ procedure TDiskDiffsDlg.ApplyChecks;
 var
   i: Integer;
 begin
-  FIgnoreList.Clear;
   for i := 0 to FilesListBox.Count-1 do
     if not FilesListBox.Checked[i] then
       FIgnoreList.Add(FilesListBox.Items.Objects[i]);
