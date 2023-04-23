@@ -6282,10 +6282,6 @@ msgstr "Syntaxe simplifiée (par exemple * au lieu de .*)"
 msgid "Clean all"
 msgstr "Tout nettoyer"
 
-#: lazarusidestrconsts.liscleancommonfiles
-msgid "Clean common files"
-msgstr "Nettoyer les fichiers communs"
-
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Nettoyer les codes sources de Lazarus"

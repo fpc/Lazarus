@@ -6281,10 +6281,6 @@ msgstr "Egyszerű szintaxis (pl. .* helyett *)"
 msgid "Clean all"
 msgstr "Minden tisztítása"
 
-#: lazarusidestrconsts.liscleancommonfiles
-msgid "Clean common files"
-msgstr "Általános fájlok törlése"
-
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Lazarus forráskód tisztítása"

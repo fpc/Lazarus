@@ -6231,10 +6231,6 @@ msgstr "Basit Sözdizimi (ör. *. * Yerine)"
 msgid "Clean all"
 msgstr "Hepsini temizle"
 
-#: lazarusidestrconsts.liscleancommonfiles
-msgid "Clean common files"
-msgstr "Ortak dosyaları temizle"
-
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Lazarus Kaynağını Temizle"

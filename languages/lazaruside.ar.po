@@ -6277,10 +6277,6 @@ msgstr ""
 msgid "Clean all"
 msgstr "نضّف الكلّ"
 
-#: lazarusidestrconsts.liscleancommonfiles
-msgid "Clean common files"
-msgstr ""
-
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr ""

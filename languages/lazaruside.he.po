@@ -6627,10 +6627,6 @@ msgstr "תחביר פשוט (כלומר * במקום .*)"
 msgid "Clean all"
 msgstr ""
 
-#: lazarusidestrconsts.liscleancommonfiles
-msgid "Clean common files"
-msgstr ""
-
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "נקה את קוד המקור של לזרוס"

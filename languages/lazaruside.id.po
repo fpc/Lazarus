@@ -6504,10 +6504,6 @@ msgstr "Sintaks Sederhana (contoh. * instead of .*)"
 msgid "Clean all"
 msgstr ""
 
-#: lazarusidestrconsts.liscleancommonfiles
-msgid "Clean common files"
-msgstr ""
-
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Bersihkan Sumber Lazarus"

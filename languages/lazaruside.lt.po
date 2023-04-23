@@ -6399,10 +6399,6 @@ msgstr "Paprasta sintaksė (pvz.: * vietoje .*)"
 msgid "Clean all"
 msgstr "Visiškas apvalymas"
 
-#: lazarusidestrconsts.liscleancommonfiles
-msgid "Clean common files"
-msgstr "Išvalyti bendrus failus"
-
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Apvalyti Lazarus aplankus"

@@ -6302,10 +6302,6 @@ msgstr "简单语法 (例如 * 取代 .*)"
 msgid "Clean all"
 msgstr "清理所有"
 
-#: lazarusidestrconsts.liscleancommonfiles
-msgid "Clean common files"
-msgstr "清除通用文件"
-
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "清理Lazarus源代码"

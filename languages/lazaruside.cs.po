@@ -6323,10 +6323,6 @@ msgstr "Jednoduchá syntaxe (např. * namísto .*)"
 msgid "Clean all"
 msgstr "Vyčistit vše"
 
-#: lazarusidestrconsts.liscleancommonfiles
-msgid "Clean common files"
-msgstr "Vyčistit běžné soubory"
-
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Vyčistit zdrojové soubory Lazarusu"

@@ -6483,10 +6483,6 @@ msgstr "Eenvoudige syntax (* i.p.v. .*)"
 msgid "Clean all"
 msgstr ""
 
-#: lazarusidestrconsts.liscleancommonfiles
-msgid "Clean common files"
-msgstr ""
-
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Maak Lazarus-broncode schoon"

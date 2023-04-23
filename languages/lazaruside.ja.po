@@ -6395,10 +6395,6 @@ msgstr "簡単な表記法 (例 * instead of .*)"
 msgid "Clean all"
 msgstr "すべて掃除"
 
-#: lazarusidestrconsts.liscleancommonfiles
-msgid "Clean common files"
-msgstr "共通ファイルを掃除"
-
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Lazarusソースを掃除"

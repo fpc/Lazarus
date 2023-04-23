@@ -6283,10 +6283,6 @@ msgstr "Простий синтаксис (напр., * замість .*)"
 msgid "Clean all"
 msgstr "Очистити все"
 
-#: lazarusidestrconsts.liscleancommonfiles
-msgid "Clean common files"
-msgstr "Очистити загальні файли"
-
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Очистити коди Lazarus"

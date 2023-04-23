@@ -6272,10 +6272,6 @@ msgstr "Yksinkertainen kielioppi (kuten * eikä .*)"
 msgid "Clean all"
 msgstr "Siivoa kaikki"
 
-#: lazarusidestrconsts.liscleancommonfiles
-msgid "Clean common files"
-msgstr "Siivoa yleiset tiedostot"
-
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr "Siivoa Lazaruksen lähdekoodi"
