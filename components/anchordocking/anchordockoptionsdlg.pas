@@ -22,6 +22,7 @@ type
   { TAnchorDockOptionsFrame }
 
   TAnchorDockOptionsFrame = class(TFrame)
+    FlatHeadersButtons: TCheckBox;
     DragThresholdLabel: TLabel;
     DragThresholdSpinEdit: TSpinEdit;
     DragThresholdTrackBar: TTrackBar;
@@ -202,7 +203,7 @@ begin
 
       HeaderAlignTopSpinEdit.Visible:=true;
       HeaderAlignTopTrackBar.Visible:=false;
-      HeaderAlignTopSpinEdit.AnchorToNeighbour(akTop,6,DockSitesCanBeMinimized);
+      HeaderAlignTopSpinEdit.AnchorToNeighbour(akTop,6,FlatHeadersButtons);
       HeaderAlignTopLabel.AnchorVerticalCenterTo(HeaderAlignTopSpinEdit);
       UpdateHeaderAlignTopLabel;
 
@@ -233,6 +234,7 @@ begin
       HeaderAlignLeftLabel.AnchorToNeighbour(akTop,6,HeaderAlignTopTrackBar);
       UpdateHeaderAlignLeftLabel;
     end;
+    FlatHeadersButtons.Enabled:={$IF DEFINED(MSWINDOWS)}True{$ELSE}False{$ENDIF};
     UpdateHeaderOptions;
   finally
     EnableAlign;
@@ -350,6 +352,7 @@ begin
     TheSettings.SplitterWidth:=SplitterWidthTrackBar.Position;
   end;
   TheSettings.DockSitesCanBeMinimized:=DockSitesCanBeMinimized.Checked;
+  TheSettings.FlatHeadersButtons:=FlatHeadersButtons.Checked;
   TheSettings.FloatingWindowsOnTop:=FloatingWindowsOnTop.Checked;
   TheSettings.HeaderFilled:=FilledHeadersCheckBox.Checked;
   TheSettings.HeaderFlatten:=FlattenHeadersCheckBox.Checked;
@@ -440,6 +443,10 @@ begin
   DockSitesCanBeMinimized.Checked:=TheSettings.DockSitesCanBeMinimized;
   DockSitesCanBeMinimized.Caption:=adrsAllowDockSitesToBeMinimized;
   DockSitesCanBeMinimized.Hint:=adrsAllowDockSitesToBeMinimized;
+
+  FlatHeadersButtons.Checked:=TheSettings.FlatHeadersButtons;
+  FlatHeadersButtons.Caption:=adrsFlatHeadersButtons;
+  FlatHeadersButtons.Hint:=adrsFlatHeadersButtonsHint;
 
   MultiLinePagesCheckBox.Caption:=adrsMultiLinePages;
   MultiLinePagesCheckBox.Hint:=adrsMultiLinePagesHint;
