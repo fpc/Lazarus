@@ -17,7 +17,6 @@ resourcestring
   adrsHeaderPosition = 'Header position';
   adrsEnlargeSide = 'Enlarge %s side';
   adrsMerge = 'Merge';
-  adrsEnlarge = 'Enlarge';
   adrsAutomatically = 'Automatically';
   adrsLeft = 'left';
   adrsTop = 'top';
