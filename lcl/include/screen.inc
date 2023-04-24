@@ -71,6 +71,7 @@ begin
   FDataModuleList := TFPList.Create;
   FPixelsPerInch := ScreenInfo.PixelsPerInchX;
   FSaveFocusedList := TFPList.Create;
+  FMagnetManager := TWindowMagnetManager.Create;
 
   AddDataModule := @DoAddDataModule;
   RemoveDataModule := @DoRemoveDataModule;
@@ -102,6 +103,7 @@ begin
   FreeThenNil(FCustomFormsZOrdered);
   FreeThenNil(FSaveFocusedList);
   FreeThenNil(FFonts);
+  FreeThenNil(FMagnetManager);
   // DestroyCursors; - free on widgetset free
   FCursorMap.Free;
   FMonitors.Free;

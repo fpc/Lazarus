@@ -968,6 +968,12 @@ begin
   Result := -1;
 end;
 
+function TWidgetSet.GetCompositorExtendedBorder(handle : HWND; var Borders: TRect) : Boolean;
+begin
+  Borders:= Rect(0,0,0,0);
+  Result:= True;
+end;
+
 function TWidgetSet.GetCurrentObject(DC: HDC; uObjectType: UINT): HGDIOBJ;
 begin
   Result := 0;

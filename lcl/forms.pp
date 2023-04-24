@@ -86,6 +86,7 @@ type
   TIDesigner = class;
   TMonitor = class;
   TScrollingWinControl = class;
+  TCustomForm = class;
 
   { Hint actions }
 
@@ -415,6 +416,43 @@ type
   end;
 
 
+  { TWindowMagnetOptions }
+
+  TWindowMagnetOptions = class(TPersistent)
+  private
+    FSnapMonitor: boolean;
+    FSnapForms: boolean;
+    FSnapFormTarget: boolean;
+    FDistance: integer;
+  public
+    constructor Create;
+    procedure AssignTo(Dest: TPersistent); override;
+  published
+    property SnapToMonitor: boolean read FSnapMonitor write FSnapMonitor default false;
+    property SnapToForms: boolean read FSnapForms write FSnapForms default false;
+    property SnapFormTarget: boolean read FSnapFormTarget write FSnapFormTarget default true;
+    property Distance: integer read FDistance write FDistance default 10;
+  end;
+
+  { TWindowMagnetManager }
+
+  TWindowMagnetManager = class
+  private
+    FEnabled: boolean;
+    FActiveForm: TCustomForm;
+    FPreviousSource, FPreviousReturn: TWindowPos;
+    FCompositorBorders: TRect;
+  protected
+    function SnapToSides(var x, cx: integer; px, pcx, pxout, pcxout: integer; dist: integer; leftsides, rightsides: TIntegerDynArray): boolean;
+    function SnapToMonitor(Opts: TWindowMagnetOptions; var WindowPos: TWindowPos): boolean;
+    function SnapToForms(Opts: TWindowMagnetOptions; var WindowPos: TWindowPos): boolean;
+  public
+    constructor Create;
+    property Enabled: boolean read FEnabled write FEnabled;
+    function SnapForm(Form: TCustomForm; var WindowPos: TWindowPos): boolean;
+  end;
+
+
   { TCustomForm }
 
   TBorderIcon = ( // Form title bar items
@@ -530,6 +568,7 @@ type
     FDelayedEventCtr: Integer;
     FDelayedOnChangeBounds, FDelayedOnResize: Boolean;
     FIsFirstOnShow, FIsFirstOnActivate: Boolean;
+    FSnapOptions: TWindowMagnetOptions;
     function GetClientHandle: HWND;
     function GetEffectiveShowInTaskBar: TShowInTaskBar;
     function GetMonitor: TMonitor;
@@ -568,12 +607,18 @@ type
     function FindDefaultForActiveControl: TWinControl;
     procedure UpdateMenu;
     procedure UpdateShowInTaskBar;
+    function GetScreenSnap: boolean;
+    procedure SetScreenSnap(aValue: boolean);
+    function GetSnapBuffer: integer;
+    procedure SetSnapBuffer(aValue: integer);
+    procedure SetSnapOptions(aValue: TWindowMagnetOptions);
   protected
     procedure WMActivate(var Message : TLMActivate); message LM_ACTIVATE;
     procedure WMCloseQuery(var message: TLMessage); message LM_CLOSEQUERY;
     procedure WMHelp(var Message: TLMHelp); message LM_HELP;
     procedure WMShowWindow(var message: TLMShowWindow); message LM_SHOWWINDOW;
     procedure WMSize(var message: TLMSize); message LM_Size;
+    procedure WMWindowPosChanging(var Message: TLMWindowPosChanging); message LM_WINDOWPOSCHANGING;
     procedure WMWindowPosChanged(var Message: TLMWindowPosChanged); message LM_WINDOWPOSCHANGED;
     procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
     procedure CMParentBiDiModeChanged(var Message: TLMessage); message CM_PARENTBIDIMODECHANGED;
@@ -753,6 +798,9 @@ type
     property LastActiveControl: TWinControl read FLastActiveControl;
     property PopupMode: TPopupMode read FPopupMode write SetPopupMode default pmNone;
     property PopupParent: TCustomForm read FPopupParent write SetPopupParent;
+    property SnapOptions: TWindowMagnetOptions read FSnapOptions write SetSnapOptions;
+    property ScreenSnap: boolean read GetScreenSnap write SetScreenSnap stored false;
+    property SnapBuffer: integer read GetSnapBuffer write SetSnapBuffer stored false;
 
     property OnActivate: TNotifyEvent read FOnActivate write FOnActivate;
     property OnClose: TCloseEvent read FOnClose write FOnClose stored IsForm;
@@ -898,8 +946,11 @@ type
     property PopupParent;
     property Position;
     property SessionProperties;
+    property ScreenSnap;
     property ShowHint;
     property ShowInTaskBar;
+    property SnapBuffer;
+    property SnapOptions;
     property UseDockManager;
     property LCLVersion: string read FLCLVersion write FLCLVersion stored LCLVersionIsStored;
     property Scaled;
@@ -1102,6 +1153,7 @@ type
     FPixelsPerInch : Integer;
     FSaveFocusedList: TFPList;
     FSystemFont: TFont;
+    FMagnetManager: TWindowMagnetManager;
     procedure DeleteCursor(AIndex: Integer);
     procedure DestroyCursors;
     procedure DestroyMonitors;
@@ -1157,6 +1209,7 @@ type
     function GetIconFont: TFont; virtual;
     function GetMenuFont: TFont; virtual;
     function GetSystemFont: TFont; virtual;
+    property MagnetManager: TWindowMagnetManager read FMagnetManager;
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
@@ -2323,6 +2376,7 @@ end;
 {$I application.inc}
 {$I applicationproperties.inc}
 {$I hintwindow.inc}
+{$I windowmagnet.inc}
 
 
 //==============================================================================

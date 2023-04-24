@@ -1801,6 +1801,45 @@ begin
   Result := Windows.GetClipRGN(DC, RGN);
 end;
 
+
+{------------------------------------------------------------------------------
+  Method: GetCompositorExtendedBorder
+  Params:
+    handle - A handle to a window
+    Borders - Record to recieve borders
+  Returns: If the function succeeds, return the internal border added by the compositor. Positive values indicate the window
+    appears smaller than it is.
+    If the function fails, Rect is unchanged.
+  Example:
+    If GetWindowRect returned Rect(0, 0, 1280, 1024) on Windows 10, the visible bounds rect is much smaller, with the difference
+    appearing as if it is not part of the window (transparent shadow). The "actual" frame is drawn at Rect(7, 0, 1273, 1017).
+    In this case, this function returns Rect(7, 0, 7, 7)
+ ------------------------------------------------------------------------------}
+
+function TWin32WidgetSet.GetCompositorExtendedBorder(handle : HWND; var Borders: TRect) : Boolean;
+var
+  wr, efb: TRect;
+begin
+  if not Assigned(DwmGetWindowAttribute) or not DwmCompositionEnabled then begin
+    // system does not have a compositor - no extended border
+    Borders:= Rect(0, 0, 0, 0);
+    Exit(True);
+  end;
+
+  Result:= GetWindowRect(handle, wr) <> 0;
+  if not Result then
+    Exit;
+
+  Result:= DwmGetWindowAttribute(handle, DWMWA_EXTENDED_FRAME_BOUNDS, @efb, sizeof(efb)) = S_OK;
+  if not Result then
+    Exit;
+
+  Borders.Left:= efb.Left - wr.Left;
+  Borders.Top:= efb.Top - wr.Top;
+  Borders.Right:= wr.Right - efb.Right;
+  Borders.Bottom:= wr.Bottom - efb.Bottom;
+end;
+
 {------------------------------------------------------------------------------
   Method: GetCurrentObject
   Params:
