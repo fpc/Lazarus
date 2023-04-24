@@ -159,6 +159,8 @@ type
     function GetDrawDetails: TThemedElementDetails; override;
     procedure CalculatePreferredSize(var PreferredWidth,
            PreferredHeight: integer; {%H-}WithThemeSpace: Boolean); override;
+  public
+    property OnPaint;
   end;
 
   TAnchorDockMinimizeButton = class(TCustomSpeedButton)
@@ -166,6 +168,8 @@ type
     function GetDrawDetails: TThemedElementDetails; override;
     procedure CalculatePreferredSize(var PreferredWidth,
            PreferredHeight: integer; {%H-}WithThemeSpace: Boolean); override;
+  public
+    property OnPaint;
   end;
 
 
@@ -197,12 +201,13 @@ type
 
   TAnchorDockHeader = class(TCustomPanel)
   private
-    FCloseButton: TCustomSpeedButton;
-    FMinimizeButton: TCustomSpeedButton;
+    FCloseButton: TAnchorDockCloseButton;
+    FMinimizeButton: TAnchorDockMinimizeButton;
     FHeaderPosition: TADLHeaderPosition;
     FFocused: Boolean;
     FUseTimer: Boolean;
     FMouseTimeStartX,FMouseTimeStartY:Integer;
+    procedure ButtonPaint(Sender: TObject);
     procedure CloseButtonClick(Sender: TObject);
     procedure MinimizeButtonClick(Sender: TObject);
     procedure HeaderPositionItemClick(Sender: TObject);
@@ -228,8 +233,8 @@ type
     procedure PopupMenuPopup(Sender: TObject); virtual;
   public
     constructor Create(TheOwner: TComponent); override;
-    property CloseButton: TCustomSpeedButton read FCloseButton;
-    property MinimizeButton: TCustomSpeedButton read FMinimizeButton;
+    property CloseButton:  TAnchorDockCloseButton read FCloseButton;
+    property MinimizeButton: TAnchorDockMinimizeButton read FMinimizeButton;
     property HeaderPosition: TADLHeaderPosition read FHeaderPosition write SetHeaderPosition;
     property BevelOuter default bvNone;
   end;
@@ -529,6 +534,7 @@ type
     FShowHeaderCaption: boolean;
     FSplitterWidth: integer;
     FDockSitesCanBeMinimized: boolean;
+    FFlatHeadersButtons: boolean;
     procedure SetAllowDragging(AValue: boolean);
     procedure SetDockOutsideMargin(AValue: integer);
     procedure SetDockParentMargin(AValue: integer);
@@ -549,6 +555,7 @@ type
     procedure SetHeaderFilled(AValue: boolean);
     procedure SetHeaderHighlightFocused(AValue: boolean);
     procedure SetDockSitesCanBeMinimized(AValue: boolean);
+    procedure SetFlatHeadersButtons(AValue: boolean);
   public
     property DragTreshold: integer read FDragTreshold write SetDragTreshold;
     property DockOutsideMargin: integer read FDockOutsideMargin write SetDockOutsideMargin;
@@ -568,6 +575,7 @@ type
     property HeaderFilled: boolean read FHeaderFilled write SetHeaderFilled;
     property HeaderHighlightFocused: boolean read FHeaderHighlightFocused write SetHeaderHighlightFocused;
     property DockSitesCanBeMinimized: boolean read FDockSitesCanBeMinimized write SetDockSitesCanBeMinimized;
+    property FlatHeadersButtons: boolean read FFlatHeadersButtons write SetFlatHeadersButtons;
     property FloatingWindowsOnTop: boolean read FFloatingWindowsOnTop write SetFloatingWindowsOnTop;
     property MultiLinePages: boolean read FMultiLinePages write SetMultiLinePages;
     procedure IncreaseChangeStamp; inline;
@@ -628,6 +636,7 @@ type
     FHeaderFilled: boolean;
     FHeaderHighlightFocused: boolean;
     FDockSitesCanBeMinimized: boolean;
+    FFlatHeadersButtons: boolean;
     FIdleConnected: Boolean;
     FManagerClass: TAnchorDockManagerClass;
     FMainDockForm: TCustomForm;
@@ -705,6 +714,7 @@ type
     procedure SetHeaderFilled(AValue: boolean);
     procedure SetHeaderHighlightFocused(AValue: boolean);
     procedure SetDockSitesCanBeMinimized(AValue: boolean);
+    procedure SetFlatHeadersButtons(AValue: boolean);
     procedure SetFloatingWindowsOnTop(AValue: boolean);
     procedure SetMultiLinePages(AValue: boolean);
 
@@ -836,6 +846,7 @@ type
     property HeaderFilled: boolean read FHeaderFilled write SetHeaderFilled default true;
     property HeaderHighlightFocused: boolean read FHeaderHighlightFocused write SetHeaderHighlightFocused default false;
     property DockSitesCanBeMinimized: boolean read FDockSitesCanBeMinimized write SetDockSitesCanBeMinimized default false;
+    property FlatHeadersButtons: boolean read FFlatHeadersButtons write SetFlatHeadersButtons default false;
 
     property SplitterWidth: integer read FSplitterWidth write SetSplitterWidth default 4;
     property ScaleOnResize: boolean read FScaleOnResize write SetScaleOnResize default true; // scale children when resizing a site
@@ -1475,6 +1486,13 @@ begin
   IncreaseChangeStamp;
 end;
 
+procedure TAnchorDockSettings.SetFlatHeadersButtons(AValue: boolean);
+begin
+  if FFlatHeadersButtons=AValue then Exit;
+  FFlatHeadersButtons:=AValue;
+  IncreaseChangeStamp;
+end;
+
 procedure TAnchorDockSettings.Assign(Source: TAnchorDockSettings);
 begin
   FChangeStamp := Source.FChangeStamp;
@@ -1483,6 +1501,7 @@ begin
   FDockOutsideMargin                := Source.FDockOutsideMargin;
   FDockParentMargin                 := Source.FDockParentMargin;
   FDockSitesCanBeMinimized          := Source.FDockSitesCanBeMinimized;
+  FlatHeadersButtons                := Source.FlatHeadersButtons;
   FDragTreshold                     := Source.FDragTreshold;
   FFloatingWindowsOnTop             := Source.FFloatingWindowsOnTop;
   FHeaderAlignLeft                  := Source.FHeaderAlignLeft;
@@ -1513,6 +1532,7 @@ begin
   DockOutsideMargin                := Config.GetValue('DockOutsideMargin',10);
   DockParentMargin                 := Config.GetValue('DockParentMargin',10);
   DockSitesCanBeMinimized          := Config.GetValue('DockSitesCanBeMinimized',False);
+  FlatHeadersButtons               := Config.GetValue('FlatHeadersButtons',False);
   DragTreshold                     := Config.GetValue('DragThreshold',4);
   FloatingWindowsOnTop             := Config.GetValue('FloatingWindowsOnTop',false);
   HeaderAlignLeft                  := Config.GetValue('HeaderAlignLeft',120);
@@ -1537,6 +1557,7 @@ begin
   Config.SetDeleteValue(Path+'DockOutsideMargin',DockOutsideMargin,10);
   Config.SetDeleteValue(Path+'DockParentMargin',DockParentMargin,10);
   Config.SetDeleteValue(Path+'DockSitesCanBeMinimized',DockSitesCanBeMinimized,False);
+  Config.SetDeleteValue(Path+'FlatHeadersButtons',FlatHeadersButtons,False);
   Config.SetDeleteValue(Path+'DragThreshold',DragTreshold,4);
   Config.SetDeleteValue(Path+'FloatingWindowsOnTop',FloatingWindowsOnTop,false);
   Config.SetDeleteValue(Path+'HeaderAlignLeft',HeaderAlignLeft,120);
@@ -1561,6 +1582,7 @@ begin
   Config.SetDeleteValue('DockOutsideMargin',DockOutsideMargin,10);
   Config.SetDeleteValue('DockParentMargin',DockParentMargin,10);
   Config.SetDeleteValue('DockSitesCanBeMinimized',DockSitesCanBeMinimized,False);
+  Config.SetDeleteValue('FlatHeadersButtons',DockSitesCanBeMinimized,False);
   Config.SetDeleteValue('DragThreshold',DragTreshold,4);
   Config.SetDeleteValue('FloatingWindowsOnTop',FloatingWindowsOnTop,false);
   Config.SetDeleteValue('HeaderAlignLeft',HeaderAlignLeft,120);
@@ -1585,6 +1607,7 @@ begin
       and (DockOutsideMargin=Settings.DockOutsideMargin)
       and (DockParentMargin=Settings.DockParentMargin)
       and (DockSitesCanBeMinimized=Settings.DockSitesCanBeMinimized)
+      and (FlatHeadersButtons=Settings.FlatHeadersButtons)
       and (DragTreshold=Settings.DragTreshold)
       and (FloatingWindowsOnTop=Settings.FloatingWindowsOnTop)
       and (HeaderAlignLeft=Settings.HeaderAlignLeft)
@@ -1611,6 +1634,7 @@ begin
   DockOutsideMargin                := Config.GetValue(Path+'DockOutsideMargin',10);
   DockParentMargin                 := Config.GetValue(Path+'DockParentMargin',10);
   DockSitesCanBeMinimized          := Config.GetValue(Path+'DockSitesCanBeMinimized',false);
+  FlatHeadersButtons               := Config.GetValue(Path+'FlatHeadersButtons',false);
   DragTreshold                     := Config.GetValue(Path+'DragThreshold',4);
   FloatingWindowsOnTop             := Config.GetValue(Path+'FloatingWindowsOnTop',false);  ;
   HeaderAlignLeft                  := Config.GetValue(Path+'HeaderAlignLeft',120);
@@ -2894,6 +2918,15 @@ begin
   OptionsChanged;
 end;
 
+procedure TAnchorDockMaster.SetFlatHeadersButtons(AValue: boolean);
+begin
+  if FFlatHeadersButtons=AValue then Exit;
+  FFlatHeadersButtons:=AValue;
+  InvalidateHeaders;
+  EnableAllAutoSizing;
+  OptionsChanged;
+end;
+
 procedure TAnchorDockMaster.SetFloatingWindowsOnTop(AValue: boolean);
 begin
   if FFloatingWindowsOnTop = AValue then Exit;
@@ -3139,6 +3172,7 @@ begin
   FRestoreLayouts:=TAnchorDockRestoreLayouts.Create;
   FHeaderHighlightFocused:=false;
   FDockSitesCanBeMinimized:=false;
+  FFlatHeadersButtons:=False;
   FOverlappingForm:=nil;
   FAllClosing:=False;
   FHeaderStyleName2ADHeaderStyle:=THeaderStyleName2ADHeaderStylesMap.create;
@@ -3819,6 +3853,14 @@ begin
   DockOutsideMargin                := Settings.DockOutsideMargin;
   DockParentMargin                 := Settings.DockParentMargin;
   DockSitesCanBeMinimized          := Settings.DockSitesCanBeMinimized;
+ {$IF DEFINED(MSWINDOWS)}
+  if Win32MajorVersion>=10 then
+    FlatHeadersButtons             := Settings.FlatHeadersButtons
+  else
+    FlatHeadersButtons             := False;
+ {$ELSE}
+  FlatHeadersButtons               := False;
+ {$ENDIF}
   DragTreshold                     := Settings.DragTreshold;
   FloatingWindowsOnTop             := Settings.FloatingWindowsOnTop;
   PageAreaInPercent                := Settings.PageAreaInPercent;
@@ -3842,6 +3884,7 @@ begin
   Settings.DockOutsideMargin                := DockOutsideMargin;
   Settings.DockParentMargin                 := DockParentMargin;
   Settings.DockSitesCanBeMinimized          := DockSitesCanBeMinimized;
+  Settings.FlatHeadersButtons               := FlatHeadersButtons;
   Settings.DragTreshold                     := DragTreshold;
   Settings.FloatingWindowsOnTop             := FloatingWindowsOnTop;
   Settings.PageAreaInPercent                := PageAreaInPercent;
@@ -6473,6 +6516,40 @@ begin
                                     @CloseButtonClick);
 end;
 
+procedure TAnchorDockHeader.ButtonPaint(Sender: TObject);
+  function BtnPart(btn: TCustomSpeedButton): TThemedElementDetails;
+  begin
+    ThemeServices.GetElementDetails(tbPushButtonNormal);
+  end;
+var
+  //LCanvas: TCanvas;
+  AStyle: TTextStyle;
+  btn: TCustomSpeedButton;
+  txt:String;
+  rect:TRect;
+begin
+  if DockMaster.FlatHeadersButtons and (Sender is TCustomSpeedButton) then begin
+    btn:=sender as TCustomSpeedButton;
+    try
+      AStyle:=btn.Canvas.TextStyle;
+      AStyle.Layout:=tlCenter;
+      AStyle.Alignment:=taCenter;
+      AStyle.ShowPrefix:=True;
+      rect:=btn.ClientRect;
+      InflateRect(rect,-1,-1);
+      btn.Canvas.Font.Name:='Segoe MDL2 Assets';
+      if sender is TAnchorDockMinimizeButton then begin
+        //txt:=#$EE#$9C#$98{E718};//Pin
+        txt:=#$EE#$A1#$80{E840};//pinned
+      end else
+        txt:=#$EE#$9C#$91{E711};//cross
+      btn.Canvas.TextRect(rect, rect.TopLeft.X, rect.TopLeft.Y,txt,AStyle);
+    finally
+    end;
+
+  end;
+end;
+
 procedure TAnchorDockHeader.CloseButtonClick(Sender: TObject);
 var
   HeaderParent:TAnchorDockHostSite;
@@ -6839,6 +6916,9 @@ begin
     ShowHint:=true;
     Hint:=adrsClose;
     OnClick:=@CloseButtonClick;
+   {$IF DEFINED(MSWINDOWS)}
+    if Win32MajorVersion>=10 then OnPaint:=@ButtonPaint;
+   {$ENDIF}
     AutoSize:=true;
   end;
   FMinimizeButton:=TAnchorDockMinimizeButton.Create(Self);
@@ -6849,6 +6929,9 @@ begin
     ShowHint:=true;
     Hint:=adrsMinimize;
     OnClick:=@MinimizeButtonClick;
+   {$IF DEFINED(MSWINDOWS)}
+    if Win32MajorVersion>=10 then OnPaint:=@ButtonPaint;
+   {$ENDIF}
     AutoSize:=true;
   end;
   Align:=alTop;
@@ -6881,7 +6964,10 @@ function WindowPart: TThemedWindow;
   end;
 
 begin
-  Result := ThemeServices.GetElementDetails(WindowPart);
+  if DockMaster.FlatHeadersButtons then
+    result := inherited
+  else
+    Result := ThemeServices.GetElementDetails(WindowPart);
 end;
 
 procedure SizeCorrector(var current,recomend:integer);
@@ -6912,7 +6998,7 @@ end;
 procedure TAnchorDockCloseButton.CalculatePreferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
-  with ThemeServices.GetDetailSize(ThemeServices.GetElementDetails(twSmallCloseButtonNormal)) do
+  with ThemeServices.GetDetailSize(ThemeServices.GetElementDetails({$IFDEF LCLWIN32}twCloseButtonNormal{$ELSE}twSmallCloseButtonNormal{$ENDIF})) do
   begin
     PreferredWidth:=cx;
     PreferredHeight:=cy;
@@ -6947,7 +7033,10 @@ function WindowPart: TThemedWindow;
   end;
 
 begin
-  Result := ThemeServices.GetElementDetails(WindowPart);
+  if DockMaster.FlatHeadersButtons then
+    result := inherited
+  else
+    Result := ThemeServices.GetElementDetails(WindowPart);
 end;
 
 procedure TAnchorDockMinimizeButton.CalculatePreferredSize(var PreferredWidth,
