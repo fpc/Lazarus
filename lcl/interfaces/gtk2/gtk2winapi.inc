@@ -2231,6 +2231,9 @@ var
   APen, TempPen: HPEN;
   LogPen : TLogPen;
   R: TRect;
+  P: Pointer;
+  AValue: TGValue;
+  Style: PGtkStyle;
 begin
   Result := False;
   if IsValidDC(DC) then
@@ -2245,6 +2248,32 @@ begin
       R := DevCtx.TransfRectIndirect(Rect)
     else
       R := Rect;
+
+    // paint a themed focus rectangle with fallback to the default method
+    P := GetStyleWidget(lgsDefault);
+    if P <> nil then
+     begin
+      FillChar(AValue{%H-}, SizeOf(AValue), 0);
+      g_value_init(@AValue, G_TYPE_INT);
+      gtk_widget_style_get_property(P, 'focus-line-width', @AValue);
+      if AValue.data[0].v_int > 0 then
+       LogPen.lopnWidth.X := AValue.data[0].v_int;
+     end;
+
+    if (DevCtx.Widget <> nil) then
+     begin
+      Style := gtk_widget_get_style(DevCtx.Widget);
+      if (Style <> nil) then
+       begin
+           gtk_paint_focus(
+                    Style, DevCtx.Drawable, GTK_WIDGET_STATE(DevCtx.Widget){GTK_STATE_ACTIVE},
+                    nil, DevCtx.Widget, nil,
+                    R.Left, R.Top,
+                    R.Width, R.Height);
+           Result := True;
+           exit;
+       end;
+     end;
 
     APen := CreatePenIndirect(LogPen);
     TempPen := SelectObject(DC, APen);
