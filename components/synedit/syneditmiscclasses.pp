@@ -2082,8 +2082,8 @@ begin
     end;
     Result := AClipboard.AddFormat(ClipboardFormatId, FMemStream.Memory^, FMemStream.Size);
     if FColumnModeFlag then begin
-      AClipboard.AddFormat(ClipboardFormatMSDEVColumnSelect, FormatBuf[0], 0);
-      AClipboard.AddFormat(ClipboardFormatBorlandIDEBlockType, FormatBuf[0], 1);
+      AClipboard.AddFormat(ClipboardFormatMSDEVColumnSelect, FormatBuf[0], 1);   // MSDEVColumnSelect needs some (arbitrary) data to be recognized. it is ignored when empty
+      AClipboard.AddFormat(ClipboardFormatBorlandIDEBlockType, FormatBuf[0], 1); // BorlandIDEBlockType needs 2 to be passed into the data block
     end;
   finally
     AClipboard.Close;
