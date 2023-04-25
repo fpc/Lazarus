@@ -3117,6 +3117,169 @@ been assigned to the Parent for the control.
 <element name="TFrame.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
 <element name="TFrame.Visible" link="#lcl.controls.TControl.Visible"/>
 
+<!-- TODO: Added in b8383813. -->
+<element name="TWindowMagnetOptions">
+<short/>
+<descr/>
+<version>
+Added in LCL version 2.4.
+</version>
+<seealso/>
+</element>
+
+<!-- private -->
+<element name="TWindowMagnetOptions.FSnapMonitor"/>
+<element name="TWindowMagnetOptions.FSnapForms"/>
+<element name="TWindowMagnetOptions.FSnapFormTarget"/>
+<element name="TWindowMagnetOptions.FDistance"/>
+
+<!-- public -->
+<element name="TWindowMagnetOptions.Create">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TWindowMagnetOptions.AssignTo">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TWindowMagnetOptions.AssignTo.Dest">
+<short/>
+</element>
+
+<!-- published -->
+<element name="TWindowMagnetOptions.SnapToMonitor">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TWindowMagnetOptions.SnapToForms">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TWindowMagnetOptions.SnapFormTarget">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TWindowMagnetOptions.Distance">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<!-- TODO: Added in b8383813. -->
+<element name="TWindowMagnetManager">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<!-- private -->
+<element name="TWindowMagnetManager.FEnabled"/>
+<element name="TWindowMagnetManager.FActiveForm"/>
+<element name="TWindowMagnetManager.FPreviousSource"/>
+<element name="TWindowMagnetManager.FPreviousReturn"/>
+<element name="TWindowMagnetManager.FCompositorBorders"/>
+
+<!-- protected -->
+<element name="TWindowMagnetManager.SnapToSides">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TWindowMagnetManager.SnapToSides.Result">
+<short/>
+</element>
+<element name="TWindowMagnetManager.SnapToSides.x">
+<short/>
+</element>
+<element name="TWindowMagnetManager.SnapToSides.cx">
+<short/>
+</element>
+<element name="TWindowMagnetManager.SnapToSides.px">
+<short/>
+</element>
+<element name="TWindowMagnetManager.SnapToSides.pcx">
+<short/>
+</element>
+<element name="TWindowMagnetManager.SnapToSides.pxout">
+<short/>
+</element>
+<element name="TWindowMagnetManager.SnapToSides.dist">
+<short/>
+</element>
+<element name="TWindowMagnetManager.SnapToSides.leftsides">
+<short/>
+</element>
+<element name="TWindowMagnetManager.SnapToSides.rightsides">
+<short/>
+</element>
+
+<element name="TWindowMagnetManager.SnapToMonitor">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TWindowMagnetManager.SnapToMonitor.Result">
+<short/>
+</element>
+<element name="TWindowMagnetManager.SnapToMonitor.Opts">
+<short/>
+</element>
+<element name="TWindowMagnetManager.SnapToMonitor.WindowPos">
+<short/>
+</element>
+
+<element name="TWindowMagnetManager.SnapToForms">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TWindowMagnetManager.SnapToForms.Result">
+<short/>
+</element>
+<element name="TWindowMagnetManager.SnapToForms.Opts">
+<short/>
+</element>
+<element name="TWindowMagnetManager.SnapToForms.WindowPos">
+<short/>
+</element>
+
+<!-- public -->
+<element name="TWindowMagnetManager.Create">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TWindowMagnetManager.Enabled">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TWindowMagnetManager.SnapForm">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TWindowMagnetManager.SnapForm.Result">
+<short/>
+</element>
+<element name="TWindowMagnetManager.SnapForm.Form">
+<short/>
+</element>
+<element name="TWindowMagnetManager.SnapForm.WindowPos">
+<short/>
+</element>
+
 <element name="TBorderIcon">
 <short>
 Represents a visual element in a window title bar; depends on window manager 
@@ -3653,7 +3816,8 @@ or platform, and provide a common API for form-related operations.
 <element name="TCustomForm.FDelayedOnChangeBounds"/>
 <element name="TCustomForm.FDelayedOnResize"/>
 <element name="TCustomForm.FIsFirstOnShow"/>
-<element name="TCustomForm.FIsFirstOnActivate"/>
+<element name="TCustomForm.FSnapOptions"/>
+
 <element name="TCustomForm.GetClientHandle" link="#lcl.forms.TCustomForm.ClientHandle"/>
 <element name="TCustomForm.GetClientHandle.Result"/>
 
@@ -4081,6 +4245,62 @@ The form has not been made visible (Showing is <b>False</b>).
 <seealso/>
 </element>
 
+<!-- TODO: Added in b8383813. -->
+<element name="TCustomForm.GetScreenSnap">
+<short/>
+<descr/>
+<version>
+Added in LCL version 2.4.
+</version>
+<seealso/>
+</element>
+<element name="TCustomForm.GetScreenSnap.Result">
+<short/>
+</element>
+
+<element name="TCustomForm.SetScreenSnap">
+<short/>
+<descr/>
+<version>
+Added in LCL version 2.4.
+</version>
+<seealso/>
+</element>
+<element name="TCustomForm.SetScreenSnap.AValue">
+<short/>
+</element>
+
+<element name="TCustomForm.GetSnapBuffer">
+<short/>
+<descr/>
+<version>
+Added in LCL version 2.4.
+</version>
+<seealso/>
+</element>
+<element name="TCustomForm.GetSnapBuffer.Result">
+<short/>
+</element>
+<element name="TCustomForm.SetSnapBuffer">
+<short/>
+</element>
+<element name="TCustomForm.SetSnapBuffer.AValue">
+<short/>
+</element>
+
+<!-- TODO: Added in 0b50d7cf. -->
+<element name="TCustomForm.SetSnapOptions">
+<short/>
+<descr/>
+<version>
+Added in LCL version 2.4.
+</version>
+<seealso/>
+</element>
+<element name="TCustomForm.SetSnapOptions.AValue">
+<short/>
+</element>
+
 <element name="TCustomForm.WMActivate">
 <short>
 Handles the LM_ACTIVATE message which activates or deactivates the form.
@@ -4185,6 +4405,20 @@ values in <var>Message</var>.
 </element>
 <element name="TCustomForm.WMSize.message">
 <short>Message examined in the method.</short>
+</element>
+
+
+<!-- TODO: Added in b8383813. -->
+<element name="TCustomForm.WMWindowPosChanging">
+<short/>
+<descr/>
+<version>
+Added in LCL version 2.4.
+</version>
+<seealso/>
+</element>
+<element name="TCustomForm.WMWindowPosChanging.Message">
+<short/>
 </element>
 
 <element name="TCustomForm.WMWindowPosChanged">
@@ -5863,6 +6097,7 @@ aspects of the form instance. At run-time, it also calls
 <short>Owner for the class instance.</short>
 </element>
 
+<!-- TODO: Modified in b8383813. -->
 <element name="TCustomForm.CreateNew">
 <short>Creates a form instance without a resource (.lfm) file.</short>
 <descr>
@@ -5896,6 +6131,8 @@ screen.</li>
 <short>Ignored in the current implementation.</short>
 </element>
 
+
+<!-- TODO: Modified in b8383813. -->
 <element name="TCustomForm.Destroy">
 <short>Destructor for the class instance.</short>
 <descr>
@@ -7664,6 +7901,34 @@ design-time.
 </seealso>
 </element>
 
+<!-- TODO: Added in b8383813. -->
+<element name="TCustomForm.SnapOptions">
+<short/>
+<descr/>
+<version>
+Added in LCL version 2.4.
+</version>
+<seealso/>
+</element>
+
+<element name="TCustomForm.ScreenSnap">
+<short/>
+<descr/>
+<version>
+Added in LCL version 2.4.
+</version>
+<seealso/>
+</element>
+
+<element name="TCustomForm.SnapBuffer">
+<short/>
+<descr/>
+<version>
+Added in LCL version 2.4.
+</version>
+<seealso/>
+</element>
+
 <element name="TCustomForm.OnActivate">
 <short>Handler called when the form receives focus.</short>
 <descr>
@@ -8561,8 +8826,16 @@ published.
 </seealso>
 </element>
 
+<!-- TODO: Added in b8383813. -->
+<element name="TForm.ScreenSnap" link="#lcl.forms.TCustomForm.ScreenSnap"/>
+
 <element name="TForm.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
 <element name="TForm.ShowInTaskBar" link="#lcl.forms.TCustomForm.ShowInTaskBar"/>
+
+<!-- TODO: Added in b8383813. -->
+<element name="TForm.SnapBuffer" link="#lcl.forms.TCustomForm.SnapBuffer"/>
+<element name="TForm.SnapOptions" link="#lcl.forms.TCustomForm.SnapOptions"/>
+
 <element name="TForm.UseDockManager" link="#lcl.controls.TWinControl.UseDockManager"/>
 
 <element name="TForm.LCLVersion">
@@ -10042,6 +10315,9 @@ application.
 <element name="TScreen.FSaveFocusedList"/>
 <element name="TScreen.FSystemFont" link="#lcl.forms.TScreen.SystemFont"/>
 
+<!-- TODO: Added in b8383813. -->
+<element name="TScreen.FMagnetManager"/>
+
 <!-- private -->
 <element name="TScreen.DeleteCursor">
 <short>Removes the specified cursor from the Cursors property.</short>
@@ -10783,6 +11059,17 @@ UseCLDefault define for the platform).
 <short>Value for the property.</short>
 </element>
 
+<!-- TODO: Added in b8383813. -->
+<element name="TScreen.MagnetManager">
+<short/>
+<descr/>
+<version>
+Added in LCL version 2.4.
+</version>
+<seealso/>
+</element>
+
+<!-- TODO: Modified in b8383813. -->
 <element name="TScreen.Create">
 <short>Constructor for the class instance.</short>
 <descr>
@@ -10814,6 +11101,7 @@ used to get system fonts for the application.
 <short>Owner of the class instance.</short>
 </element>
 
+<!-- TODO: Modified in b8383813. -->
 <element name="TScreen.Destroy">
 <short>Destructor for the class instance.</short>
 <descr>
