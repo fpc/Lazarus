@@ -1456,6 +1456,50 @@ an device context.
 <short/>
 </element>
 
+<element name="GetCompositorExtendedBorder">
+<short>
+Gets extended border added by the compositor for the Desktop Window Manager.
+</short>
+<descr>
+<p>
+Applies to Windows 10 or later version which support the dwmapi.
+</p>
+<p>
+For example:
+</p>
+<p>
+If GetWindowRect returns Rect(0, 0, 1280, 1024) on Windows 10, the visible 
+bounds rect is much smaller, with the difference appearing as if it is not 
+part of the window (transparent shadow). The "actual" frame is drawn at 
+Rect(7, 0, 1273, 1017). In this case, this function returns Rect(7, 0, 7, 7).
+</p>
+</descr>
+<version>
+Added in LCL version 2.4.
+</version>
+<seealso/>
+</element>
+<element name="GetCompositorExtendedBorder.Result">
+<short>
+Returns <b>True</b> if the function succeeds. A TRect instance with the 
+borders added by the compositor for the Desktop Window Manager is returned in 
+the Borders argument. Positive values indicate that the window rectangle is 
+smaller than the reported values. If the function fails, the values in Borders 
+are updated and are not significant.
+</short>
+</element>
+<element name="GetCompositorExtendedBorder.handle">
+<short>
+A handle to a window.
+</short>
+</element>
+<element name="GetCompositorExtendedBorder.Borders">
+<short>
+TRect instance with the extended border for the control in handle. Relevant 
+when the return value is <b>True</b>.
+</short>
+</element>
+
 <element name="GetCursorPos">
 <short/>
 <descr/>
