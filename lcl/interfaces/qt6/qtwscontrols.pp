@@ -401,38 +401,10 @@ begin
 end;
 
 class procedure TQtWSWinControl.ConstraintsChange(const AWinControl: TWinControl);
-const
-  QtMaxContraint = $FFFFFF;
-var
-  Widget: TQtWidget;
-  MW, MH: Integer;
 begin
   if not WSCheckHandleAllocated(AWincontrol, 'ConstraintsChange') then
     Exit;
-    
-  Widget := TQtWidget(AWinControl.Handle);
-  with AWinControl do
-  begin
-    MW := Constraints.MinWidth;
-    MH := Constraints.MinHeight;
-
-    if MW < QtMinimumWidgetSize then
-      MW := 0;
-    if MH < QtMinimumWidgetSize then
-      MH := 0;
-
-    Widget.setMinimumSize(MW, MH);
-
-    if Constraints.MaxWidth = 0 then
-      MW := QtMaxContraint
-    else
-      MW := Constraints.MaxWidth;
-    if Constraints.MaxHeight = 0 then
-      MH := QtMaxContraint
-    else
-      MH := Constraints.MaxHeight;
-    Widget.setMaximumSize(MW, MH);
-  end;
+  TQtWidget.ConstraintsChange(AWinControl);
 end;
 
 class procedure TQtWSWinControl.PaintTo(const AWinControl: TWinControl;

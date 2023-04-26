@@ -4538,6 +4538,7 @@ function TQtWidgetSet.GetWindowSize(Handle: hwnd; var Width, Height: Integer
   ): boolean;
 var
   ASize: TSize;
+  ARect: TRect;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI GetWindowSize]');
@@ -4545,9 +4546,17 @@ begin
   if Handle = 0 then
     Exit(False);
 
-  ASize := TQtWidget(Handle).getSize;
-  Height := ASize.cy;
-  Width := ASize.cx;
+  if (TQtWidget(Handle) is TQtMainWindow) and (not TQtMainWindow(Handle).IsMdiChild) then
+  begin
+    GetClientRect(Handle, ARect);
+    Width := ARect.Width;
+    Height := ARect.Height;
+  end else
+  begin
+    ASize := TQtWidget(Handle).getSize;
+    Width := ASize.cx;
+    Height := ASize.cy;
+  end;
 
   Result := True;
 
