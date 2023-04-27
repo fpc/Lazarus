@@ -301,14 +301,16 @@ begin
   else
     lCharCode:=0;
 
-  if AChar<>'' then LCLSendUTF8KeyPress(lTarget, AChar, False);
+  // Do not use LCLSendUTF8KeyPress! See Lazarus issues: #40211 and #40224
+  if AChar<>'' then lTarget.IntfUTF8KeyPress(AChar, 1, False);
   if lCharCode <> 0 then LCLSendCharEvent(lTarget, lCharCode, AKeyData, True, False, True);
 
   // If this is a interface control, send the message to the main LCL control too
   if IsIntfControl(lTarget) then
   begin
     lTarget := lTarget.Parent;
-    if AChar<>'' then LCLSendUTF8KeyPress(lTarget, AChar, False);
+    // Do not use LCLSendUTF8KeyPress! See Lazarus issues: #40211 and #40224
+    if AChar<>'' then lTarget.IntfUTF8KeyPress(AChar, 1, False);
     if lCharCode <> 0 then LCLSendCharEvent(lTarget, lCharCode, AKeyData, True, False, True);
   end;
 end;
