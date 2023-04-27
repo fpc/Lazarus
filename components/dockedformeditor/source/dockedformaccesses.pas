@@ -224,7 +224,7 @@ var
   i: Integer;
 begin
   Result := False;
-  {$IF DEFINED(LCLQt) OR DEFINED(LCLQt6)}
+  {$IF DEFINED(LCLQt)}
     // Menu is already shown in designer
     Exit;
   {$ENDIF}
