@@ -328,6 +328,8 @@ type
     property WidgetColorRole: QPaletteColorRole read FWidgetColorRole write FWidgetColorRole;
     property WidgetState: TQtWidgetStates read FWidgetState write FWidgetState;
     property WindowHandle: QWindowH read GetWindowHandle;
+  public
+    class procedure ConstraintsChange(const AWinControl: TWinControl);
   end;
 
   { TQtAbstractSlider , inherited by TQtScrollBar, TQtTrackBar }
@@ -685,6 +687,7 @@ type
     procedure UpdateRegion(ARgn: QRegionH); override;
     procedure Repaint(ARect: PRect = nil); override;
 
+    function GetClientRectFix(): TSize;
     procedure Resize(ANewWidth, ANewHeight: Integer); override;
     procedure setText(const W: WideString); override;
     procedure setMenuBar(AMenuBar: QMenuBarH);
@@ -1666,7 +1669,9 @@ type
     constructor Create(const AParent: QWidgetH); overload;
   public
     {$IFNDEF DARWIN}
+    function GetDesignState: Integer;
     function IsDesigning: Boolean;
+    function ShouldShowMenuBar: Boolean;
     {$ENDIF}
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function addMenu(AMenu: QMenuH): QActionH;
@@ -4327,6 +4332,7 @@ var
   {$ENDIF}
   B: Boolean;
   AQtClientRect: TRect;
+  mainWin: TQtMainWindow;
 begin
   {$ifdef VerboseQt}
     WriteLn('TQtWidget.SlotResize');
@@ -4389,6 +4395,16 @@ begin
           exit;
         end;
       end;
+    end;
+
+    // when resizing a form, need to adjust the height that will be sent to LCL
+    if (ClassType = TQtMainWindow) {$IFDEF QTSCROLLABLEFORMS} or (ClassType = TQtWindowArea){$ENDIF} then
+    begin
+      if ClassType = TQtMainWindow then
+        mainWin:= TQtMainWindow(self)
+      else
+        mainWin:= TQtMainWindow(LCLObject.Handle);
+      dec(NewSize.cy, mainWin.GetClientRectFix.cy);
     end;
 
     {keep LCL value while designing pageControl}
@@ -7324,6 +7340,7 @@ end;
 function TQtMainWindow.MenuBarNeeded: TQtMenuBar;
 var
   AParent: QWidgetH;
+  designState: Integer;
 begin
   if not Assigned(FMenuBar) then
   begin
@@ -7339,10 +7356,12 @@ begin
     if not (csDesigning in LCLObject.ComponentState) then
       FMenuBar.FIsApplicationMainMenu := {$IFDEF DARWIN}False{$ELSE}IsMainForm{$ENDIF}
     else
+    begin
       {$IFNDEF DARWIN}
-      FMenuBar.setProperty(FMenuBar.Widget,'lcldesignmenubar',1)
+      designState := IfThen( Assigned(LCLObject.Parent), 1, 2 );
+      FMenuBar.setProperty(FMenuBar.Widget,'lcldesignmenubar',designState);
       {$ENDIF}
-      ;
+    end;
 
     {$IFDEF DARWIN}
     if (csDesigning in LCLObject.ComponentState) or not IsMainForm then
@@ -7436,8 +7455,21 @@ begin
     inherited Repaint(ARect);
 end;
 
+// currently only handles the adjustments that MainMenu needs to make
+function TQtMainWindow.GetClientRectFix(): TSize;
+begin
+  if Assigned(FMenuBar) and FMenuBar.FVisible and (not IsMdiChild) then
+  begin
+    FMenuBar.sizeHint(@Result);
+    if Result.Height<10 then Result.Height:=0;
+  end else
+    Result:= TSize.Create(0,0);
+end;
+
 procedure TQtMainWindow.Resize(ANewWidth, ANewHeight: Integer);
 begin
+  inc( ANewHeight, GetClientRectFix.cy );
+
   if not IsMDIChild and not IsFrameWindow and
     (TCustomForm(LCLObject).BorderStyle in [bsDialog, bsNone, bsSingle]) and
      not (csDesigning in LCLObject.ComponentState) then
@@ -7451,12 +7483,55 @@ begin
   setWindowTitle(@W);
 end;
 
+// move from qtwscontrls.pp
+// to avoid unit circular references
+class procedure TQtWidget.ConstraintsChange(const AWinControl: TWinControl);
+const
+  QtMaxContraint = $FFFFFF;
+var
+  AWidget: TQtWidget;
+  MW, MH: Integer;
+  cy: Integer;
+begin
+  if (AWinControl is TCustomForm) then
+    cy:= TQtMainWindow(AWinControl.Handle).GetClientRectFix.cy
+  else
+    cy:= 0;
+
+  AWidget := TQtWidget(AWinControl.Handle);
+  with AWinControl do
+  begin
+    MW := Constraints.MinWidth;
+    MH := Constraints.MinHeight;
+
+    if MW <= QtMinimumWidgetSize then
+      MW := 0;
+    if MH <= QtMinimumWidgetSize then
+      MH := 0
+    else
+      inc(MH, cy);
+    AWidget.setMinimumSize(MW, MH);
+
+    MW := Constraints.MaxWidth;
+    MH := Constraints.MaxHeight;
+
+    if MW = 0 then
+      MW := QtMaxContraint;
+    if MH = 0 then
+      MH := QtMaxContraint
+    else
+      inc(MH, cy);
+    AWidget.setMaximumSize(MW, MH);
+  end;
+end;
+
 procedure TQtMainWindow.setMenuBar(AMenuBar: QMenuBarH);
 begin
   if IsMainForm then
     QMainWindow_setMenuBar(QMainWindowH(Widget), AMenuBar)
   else
     QLayout_setMenuBar(LayoutWidget, AMenuBar);
+  TQtWidget.ConstraintsChange(LCLObject);
 end;
 
 {------------------------------------------------------------------------------
@@ -7958,6 +8033,7 @@ begin
     Msg.Width := Word(getWidth);
     Msg.Height := Word(getHeight);
   end;
+  dec( Msg.Height, GetClientRectFix.cy );
   DeliverMessage(Msg);
 end;
 
@@ -16514,21 +16590,30 @@ end;
 
 {$IFNDEF DARWIN}
 function TQtMenuBar.IsDesigning: Boolean;
+begin
+  Result := GetDesignState() <> 0;
+end;
+
+function TQtMenuBar.ShouldShowMenuBar: Boolean;
+begin
+  Result := GetDesignState() <> 2;
+end;
+
+function TQtMenuBar.GetDesignState: Integer;
 var
   V: QVariantH;
   B: Boolean;
 begin
-  Result := (Widget <> nil);
-  if not Result then
-    exit(False);
+  Result := 0;
+  if Widget = nil then
+    exit;
 
-  Result := False;
   v := QVariant_create();
   try
     B := False;
     QObject_property(Widget, v, 'lcldesignmenubar');
     if QVariant_isValid(v) and not QVariant_isNull(v) then
-      Result := QVariant_toInt(V, @B) = 1;
+      Result := QVariant_toInt(V, @B);
   finally
     QVariant_destroy(v);
   end;
@@ -16614,7 +16699,7 @@ end;
 
 function TQtMenuBar.addMenu(AMenu: QMenuH): QActionH;
 begin
-  if not FVisible then
+  if ShouldShowMenuBar and (not FVisible) then
   begin
     FVisible := True;
     setVisible(FVisible);
@@ -16631,7 +16716,7 @@ var
   seq: QKeySequenceH;
   WStr: WideString;
 begin
-  if not FVisible then
+  if ShouldShowMenuBar and (not FVisible) then
   begin
     FVisible := True;
     setVisible(FVisible);
