@@ -1458,11 +1458,14 @@ an device context.
 
 <element name="GetCompositorExtendedBorder">
 <short>
-Gets extended border added by the compositor for the Desktop Window Manager.
+Gets extended border information added by the compositor for the Desktop 
+Window Manager.
 </short>
 <descr>
 <p>
-Applies to Windows 10 or later version which support the dwmapi.
+Applies to Windows version which support the Desktop Window Manager API. 
+dwmapi was introduced in Windows Vista, and is available on subsequent Windows 
+versions.
 </p>
 <p>
 For example:
@@ -1470,7 +1473,7 @@ For example:
 <p>
 If GetWindowRect returns Rect(0, 0, 1280, 1024) on Windows 10, the visible 
 bounds rect is much smaller, with the difference appearing as if it is not 
-part of the window (transparent shadow). The "actual" frame is drawn at 
+part of the window (the transparent shadow). The "actual" frame is drawn at 
 Rect(7, 0, 1273, 1017). In this case, this function returns Rect(7, 0, 7, 7).
 </p>
 </descr>
