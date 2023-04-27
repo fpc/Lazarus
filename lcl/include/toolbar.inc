@@ -90,9 +90,9 @@ begin
   FFlat := True;
   Height := 32;
   Details := ThemeServices.GetElementDetails(ttbSplitButtonDropDownNormal);
-  FThemeDropDownWidth := ThemeServices.GetDetailSize(Details).cx;
+  FThemeDropDownWidth := ThemeServices.GetDetailSizeForPPI(Details, Font.PixelsPerInch).cx;
   Details := ThemeServices.GetElementDetails(ttbDropDownButtonNormal);
-  FThemeButtonDropWidth := ThemeServices.GetDetailSize(Details).cx;
+  FThemeButtonDropWidth := ThemeServices.GetDetailSizeForPPI(Details, Font.PixelsPerInch).cx;
   FButtonHeight := -1;
   FButtonWidth := -1;
   FDropDownWidth := -1;

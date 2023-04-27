@@ -646,7 +646,7 @@ begin  { do not call inherited ! }
     [aEnabled, aState, not aDropped and FCheckHighlight]);
   if FNeedMeasure then
     begin
-      FCheckSize:=ThemeServices.GetDetailSize(aDetail);
+      FCheckSize:=ThemeServices.GetDetailSizeForPPI(aDetail, Font.PixelsPerInch);
       FTextHeight:=Canvas.TextHeight('ŠjÁÇ');
       if not aDropped then
         begin

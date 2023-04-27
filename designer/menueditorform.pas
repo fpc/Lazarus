@@ -840,7 +840,7 @@ begin
   FedPressed:=ThemeServices.GetElementDetails(tbRadioButtonCheckedPressed);
   FedUncheckedHot:=ThemeServices.GetElementDetails(tbRadioButtonUncheckedHot);
   FedCheckedHot:=ThemeServices.GetElementDetails(tbRadioButtonCheckedHot);
-  FedSize:=ThemeServices.GetDetailSize(FedUnChecked);
+  FedSize:=ThemeServices.GetDetailSizeForPPI(FedUnChecked, Font.PixelsPerInch);
   FRadioHeight:=Max(FedSize.cy, anImgList.Height);
   topOffset:=(FRadioHeight - FedSize.cy) div 2;
   FRadioRect:=Rect(0, topOffset, FedSize.cx, topOffset+FedSize.cy);

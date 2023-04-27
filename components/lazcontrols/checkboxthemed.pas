@@ -54,8 +54,6 @@ type
   private class var
     FThemeCheckBoxSize: TSize;
   protected
-    class function GetCheckBoxSize(const PixelsPerInch: Integer): TSize;
-  protected
     CheckBoxPressed: Boolean;
     KnobPosUnchecked, KnobPosChecked, KnobPosGrayed: Integer;
     procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: Integer;
@@ -83,6 +81,7 @@ type
     cFocusBorder: SmallInt = 2;
     cIndent: SmallInt = 5;
   public
+    class function GetCheckBoxSize(const PixelsPerInch: Integer): TSize;
     class procedure PaintSelf(ACanvas: TCanvas; ACaption: string; ARect: TRect;
       AState: TCheckBoxState; ARightToLeft, AHovered, APressed, AFocused: Boolean;
       AAlignment: TLeftRight; AEnabled: Boolean = True);
@@ -236,9 +235,11 @@ begin
 end;
 
 class procedure TCustomCheckBoxThemed.InitCheckBoxSize;
+var
+  Detail: TThemedElementDetails;
 begin
-  with ThemeServices do
-    FThemeCheckBoxSize := GetDetailSize(GetElementDetails(tbCheckBoxCheckedNormal));
+  Detail := ThemeServices.GetElementDetails(tbCheckBoxCheckedNormal);
+  FThemeCheckBoxSize := ThemeServices.GetDetailSizeForPPI(Detail, Screen.PixelsPerInch);
 end;
 
 function TCustomCheckBoxThemed.DialogChar(var Message: TLMKey): Boolean;
@@ -285,8 +286,7 @@ begin
   Result := TCheckBoxThemedActionLink;
 end;
 
-class function TCustomCheckBoxThemed.GetCheckBoxSize(
-  const PixelsPerInch: Integer): TSize;
+class function TCustomCheckBoxThemed.GetCheckBoxSize(const PixelsPerInch: Integer): TSize;
 begin
   if FThemeCheckBoxSize.cx<=0 then
     InitCheckBoxSize;

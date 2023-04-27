@@ -6998,7 +6998,9 @@ end;
 procedure TAnchorDockCloseButton.CalculatePreferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
-  with ThemeServices.GetDetailSize(ThemeServices.GetElementDetails({$IFDEF LCLWIN32}twCloseButtonNormal{$ELSE}twSmallCloseButtonNormal{$ENDIF})) do
+  with ThemeServices.GetDetailSizeForPPI(ThemeServices.GetElementDetails(
+      {$IFDEF LCLWIN32}twCloseButtonNormal{$ELSE}twSmallCloseButtonNormal{$ENDIF}),
+      Font.PixelsPerInch) do
   begin
     PreferredWidth:=cx;
     PreferredHeight:=cy;
@@ -7040,7 +7042,9 @@ end;
 procedure TAnchorDockMinimizeButton.CalculatePreferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
-  with ThemeServices.GetDetailSize(ThemeServices.GetElementDetails({$IFDEF LCLGtk2}twMDIRestoreButtonNormal{$ELSE}twMinButtonNormal{$ENDIF})) do
+  with ThemeServices.GetDetailSizeForPPI(ThemeServices.GetElementDetails(
+      {$IFDEF LCLGtk2}twMDIRestoreButtonNormal{$ELSE}twMinButtonNormal{$ENDIF}),
+      Font.PixelsPerInch) do
   begin
     PreferredWidth:=cx;
     PreferredHeight:=cy;

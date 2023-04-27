@@ -2036,15 +2036,14 @@ begin
   inherited FontChanged(Sender);
 end;
 
-function TCustomDateTimePicker.GetCheckBoxRect(
-  IgnoreRightToLeft: Boolean): TRect;
+function TCustomDateTimePicker.GetCheckBoxRect(IgnoreRightToLeft: Boolean): TRect;
 var
   Details: TThemedElementDetails;
   CSize: TSize;
 
 begin
   Details := ThemeServices.GetElementDetails(tbCheckBoxCheckedNormal);
-  CSize := ThemeServices.GetDetailSize(Details);
+  CSize := ThemeServices.GetDetailSizeForPPI(Details, Font.PixelsPerInch);
   CSize.cx := ScaleScreenToFont(CSize.cx);
   CSize.cy := ScaleScreenToFont(CSize.cy);
 
@@ -3869,7 +3868,7 @@ procedure TDTSpeedButton.Paint;
     else
       ArrowState := ttbSplitButtonDropDownDisabled;
     Details := ThemeServices.GetElementDetails(ArrowState);
-    ASize := ThemeServices.GetDetailSize(Details);
+    ASize := ThemeServices.GetDetailSizeForPPI(Details, Font.PixelsPerInch);
     ARect := Rect(0, 0, Width, Height);
     InflateRect(ARect, -(ARect.Right - ARect.Left - ASize.cx) div 2, 0);
     ThemeServices.DrawElement(Canvas.Handle, Details, ARect);

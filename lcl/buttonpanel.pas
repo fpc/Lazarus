@@ -299,7 +299,7 @@ begin
     Exit;
 
   Details := ThemeServices.GetElementDetails(tbPushButtonNormal);
-  DefButtonSize := ThemeServices.GetDetailSize(Details);
+  DefButtonSize := ThemeServices.GetDetailSizeForPPI(Details, Font.PixelsPerInch);
   FButtonsWidth := DefButtonSize.cx;
   FButtonsHeight := DefButtonSize.cy;
 
@@ -382,7 +382,7 @@ begin
     Exit;
 
   Details := ThemeServices.GetElementDetails(tbPushButtonNormal);
-  DefButtonSize := ThemeServices.GetDetailSize(Details);
+  DefButtonSize := ThemeServices.GetDetailSizeForPPI(Details, Font.PixelsPerInch);
 
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TCustomButtonPanel.UpdateButtonSize'){$ENDIF};
   try

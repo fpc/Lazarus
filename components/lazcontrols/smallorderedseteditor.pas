@@ -126,7 +126,7 @@ begin
       Details := ThemeServices.GetElementDetails(tbCheckBoxCheckedNormal)
     else
       Details := ThemeServices.GetElementDetails(tbCheckBoxUncheckedNormal);
-    R.Right:=R.Left+ThemeServices.GetDetailSize(Details).cx;
+    R.Right:=R.Left+ThemeServices.GetDetailSizeForPPI(Details, PixelsPerInch).cx;
     ThemeServices.DrawElement(ItemsTreeView.Canvas.Handle, Details, R, nil);
   end;
 end;
@@ -248,8 +248,8 @@ begin
   if Visible and (ImageList1.Count=0) then begin
     CheckedDetails := ThemeServices.GetElementDetails(tbCheckBoxCheckedNormal);
     UnCheckedDetails := ThemeServices.GetElementDetails(tbCheckBoxCheckedNormal);
-    CheckedSize:=ThemeServices.GetDetailSize(CheckedDetails);
-    UnCheckedSize:=ThemeServices.GetDetailSize(UnCheckedDetails);
+    CheckedSize:=ThemeServices.GetDetailSizeForPPI(CheckedDetails, PixelsPerInch);
+    UnCheckedSize:=ThemeServices.GetDetailSizeForPPI(UnCheckedDetails, PixelsPerInch);
     ImageList1.Width:=Max(CheckedSize.cx,UnCheckedSize.cx);
     ImageList1.Height:=Max(CheckedSize.cy,UnCheckedSize.cy);
     Bmp:=TBitmap.Create;

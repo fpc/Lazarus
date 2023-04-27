@@ -3475,7 +3475,7 @@ begin
   FExpandSignSize := -1;
   FExpandSignWidth := 2;
   Details := ThemeServices.GetElementDetails(ttGlyphOpened);
-  FThemeExpandSignSize := ThemeServices.GetDetailSize(Details).cx;
+  FThemeExpandSignSize := ThemeServices.GetDetailSizeForPPI(Details, Font.PixelsPerInch).cx;
   FTreeNodes := CreateNodes;
   BorderStyle := bsSingle;
   BorderWidth := 0;

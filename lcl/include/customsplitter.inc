@@ -881,7 +881,7 @@ procedure TCustomSplitter.Paint;
         BF_ADJUST or BF_RECT, @ARect);
 
     GripperRect := ARect;
-    GripperSize := ThemeServices.GetDetailSize(GripperDetails);
+    GripperSize := ThemeServices.GetDetailSizeForPPI(GripperDetails, Font.PixelsPerInch);
     if (GripperSize.cx <> -1) or (GripperSize.cy <> -1) then
     begin
       if ResizeAnchor in [akLeft,akRight] then

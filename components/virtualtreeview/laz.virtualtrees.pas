@@ -24375,7 +24375,7 @@ begin
       if UseThemes then
       begin
         Details := ThemeServices.GetElementDetails(tbCheckBoxCheckedNormal);
-        checkSize := ThemeServices.GetDetailSize(Details).CX;
+        checkSize := ThemeServices.GetDetailSizeForPPI(Details, Font.PixelsPerInch).CX;
         R := Rect(XPos, YPos, XPos + checkSize, YPos + checkSize);
         Details.Element := teButton;
         case Index of

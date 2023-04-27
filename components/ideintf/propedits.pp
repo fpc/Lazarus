@@ -30,7 +30,7 @@ uses
   StdCtrls, Buttons, Menus, ExtCtrls, ComCtrls, Dialogs, EditBtn, Grids, ValEdit,
   FileCtrl, PropertyStorage, Themes,
   // LazControls
-  {$IFnDEF UseOINormalCheckBox} CheckBoxThemed, {$ENDIF}
+  CheckBoxThemed,
   // LazUtils
   FileUtil, StringHashList, LazMethodList, LazLoggerBase, LazUtilities, LazStringUtils,
   GraphType, UITypes, FPCAdds, // for StrToQWord in older fpc versions
@@ -302,7 +302,9 @@ type
     FPropList: PInstPropList;
   protected
     // Draw Checkbox for Boolean and Set element editors.
+    {$IFDEF UseOINormalCheckBox}
     function DrawCheckbox(ACanvas: TCanvas; const ARect: TRect; IsTrue: Boolean): TRect;
+    {$ENDIF}
     function DrawCheckValue(ACanvas: TCanvas; const ARect: TRect;
       {%H-}AState: TPropEditDrawState; {%H-}IsTrue: Boolean): TRect;
     procedure DrawValue(const AValue: string; ACanvas:TCanvas; const ARect:TRect;
@@ -2775,6 +2777,7 @@ begin
   Result := (FPropList^[0].Instance <> nil) and IsStoredProp(FPropList^[0].Instance, FPropList^[0].PropInfo);
 end;
 
+{$IFDEF UseOINormalCheckBox}
 function TPropertyEditor.DrawCheckbox(ACanvas: TCanvas; const ARect: TRect;
   IsTrue: Boolean): TRect;
 // Draws a Checkbox using theme services for editing booleans.
@@ -2796,7 +2799,7 @@ begin
   else
     Check := tbCheckBoxUncheckedNormal;
   Details := ThemeServices.GetElementDetails(Check);
-  Sz := ThemeServices.GetDetailSize(Details);
+  Sz := TCustomCheckBoxThemed.GetCheckBoxSize(ScreenInfo.PixelsPerInchX);
   TopMargin := (ARect.Bottom - ARect.Top - Sz.cy) div 2;
   BRect := ARect;
   // Left varies by widgetset and theme etc. Real Checkbox itself has a left margin.
@@ -2809,6 +2812,7 @@ begin
   // Text will be written after the box.
   Inc(Result.Left, Sz.cx + 4);
 end;
+{$ENDIF}
 
 function TPropertyEditor.DrawCheckValue(ACanvas: TCanvas; const ARect: TRect;
                            AState: TPropEditDrawState; IsTrue: Boolean): TRect;
