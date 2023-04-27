@@ -6195,7 +6195,7 @@ begin
       if (Child.HostDockSite=Self) or (Child is TAnchorDockHostSite)
       or (Child is TAnchorDockPageControl) then begin
         if NewCaption<>'' then
-          NewCaption:=NewCaption+',';
+          NewCaption:=NewCaption+', ';
         NewCaption:=NewCaption+Child.Caption;
       end;
     end;
@@ -8078,8 +8078,26 @@ begin
 end;
 
 procedure TAnchorDockPageControl.UpdateDockCaption(Exclude: TControl);
+var
+  i: Integer;
+  Child: TControl;
+  NewCaption: String;
 begin
-  if Exclude=nil then ;
+  NewCaption:='';
+  for i:=0 to Pages.Count-1 do begin
+    Child:=Page[i];
+    if Child=Exclude then continue;
+    if NewCaption<>'' then
+      NewCaption:=NewCaption+', ';
+    NewCaption:=NewCaption+Child.Caption;
+  end;
+  //debugln(['TAnchorDockPageControl.UpdateDockCaption ',Caption,' ',NewCaption]);
+  if Caption=NewCaption then exit;
+  Caption:=NewCaption;
+  if Parent is TAnchorDockHostSite then
+    TAnchorDockHostSite(Parent).UpdateDockCaption;
+  if Parent is TAnchorDockPage then
+    TAnchorDockPage(Parent).UpdateDockCaption;
 end;
 
 procedure TAnchorDockPageControl.RemoveControl(AControl: TControl);
@@ -8142,7 +8160,7 @@ begin
     if Child=Exclude then continue;
     if not (Child is TAnchorDockHostSite) then continue;
     if NewCaption<>'' then
-      NewCaption:=NewCaption+',';
+      NewCaption:=NewCaption+', ';
     NewCaption:=NewCaption+Child.Caption;
   end;
   //debugln(['TAnchorDockPage.UpdateDockCaption ',Caption,' ',NewCaption]);
