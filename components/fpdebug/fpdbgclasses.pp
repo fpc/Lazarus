@@ -3297,7 +3297,8 @@ const
   MAX_FRAMES = 150000; // safety net
 var
   Address, FrameBase, LastFrameBase, Dummy: QWord;
-  Size, CountNeeded, IP, BP, CodeReadErrCnt, SP, i: integer;
+  Size, CountNeeded, IP, BP, CodeReadErrCnt, SP, i,
+    PrevStmtAddressOffs: integer;
   AnEntry, NewEntry: TDbgCallstackEntry;
   R, StackReg, FrameReg: TDbgRegisterValue;
   nIP, nBP, nSP: String;
@@ -3344,6 +3345,7 @@ begin
 
   FCallStackEntryList.FreeObjects:=true;
 
+  PrevStmtAddressOffs := 1;
   if FCallStackEntryList.Count > 0 then begin
     AnEntry := FCallStackEntryList[FCallStackEntryList.Count - 1];
     Address:=AnEntry.AnAddress;
@@ -3353,6 +3355,7 @@ begin
     StackPtr := R.NumValue;
   end
   else begin
+    PrevStmtAddressOffs := 0;
     Address := GetInstructionPointerRegisterValue;
     FrameBase := GetStackBasePointerRegisterValue;
     StackPtr := GetStackPointerRegisterValue;
@@ -3380,9 +3383,10 @@ begin
   CodeReadErrCnt := 0;
   while (CountNeeded > 0) do
   begin
-    if (Process.DbgInfo as TFpDwarfInfo).FindCallFrameInfo(Address, CIE, Row) and
+    if (Process.DbgInfo as TFpDwarfInfo).FindCallFrameInfo(Address - PrevStmtAddressOffs, CIE, Row) and
        TDwarfCallFrameInformation.TryObtainNextCallFrame(AnEntry, CIE, Size, NextIdx, Self, Row, Process, NewEntry)
     then begin
+      PrevStmtAddressOffs := 1;
       if not Assigned(NewEntry) then begin
         CU := (Process.DbgInfo as TFpDwarfInfo).CompilationUnitForAddr(Address);
         if (CU = nil) or (CU.DwarfSymbolClassMap = nil) or (not CU.DwarfSymbolClassMap.IgnoreCfiStackEnd) then
@@ -3408,6 +3412,7 @@ begin
         Continue;
       end;
     end;
+    PrevStmtAddressOffs := 1;
 
     if (FrameBase <> 0) and (FrameBase > LastFrameBase)
     then begin
