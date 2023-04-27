@@ -7,7 +7,6 @@ object RestrictionBrowserView: TRestrictionBrowserView
   ClientHeight = 405
   ClientWidth = 674
   OnCreate = FormCreate
-  LCLVersion = '2.1.0.0'
   object IssueMemo: TMemo
     Left = 323
     Height = 393
@@ -40,23 +39,23 @@ object RestrictionBrowserView: TRestrictionBrowserView
       Align = alTop
       BorderSpacing.Bottom = 6
       Caption = 'IssueFilterGroupBox'
-      ClientHeight = 77
+      ClientHeight = 76
       ClientWidth = 302
       TabOrder = 0
       object NameLabel: TLabel
         Left = 10
-        Height = 17
+        Height = 15
         Top = 44
-        Width = 77
+        Width = 60
         Caption = 'NameLabel'
         ParentColor = False
       end
       object FilterEdit: TTreeFilterEdit
         AnchorSideLeft.Control = NameLabel
         AnchorSideLeft.Side = asrBottom
-        Left = 93
-        Height = 27
-        Top = 41
+        Left = 76
+        Height = 23
+        Top = 40
         Width = 156
         ButtonWidth = 23
         BorderSpacing.Left = 6
@@ -81,6 +80,7 @@ object RestrictionBrowserView: TRestrictionBrowserView
       ScrollBars = ssAutoBoth
       ShowButtons = False
       ShowLines = False
+      ShowSeparators = False
       TabOrder = 1
       OnSelectionChanged = IssueTreeViewSelectionChanged
       Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoRowSelect, tvoShowRoot, tvoToolTips, tvoThemedDraw]

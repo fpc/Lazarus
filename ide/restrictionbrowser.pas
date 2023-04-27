@@ -111,6 +111,8 @@ begin
       Inc(X, Width);
     end;
   end;
+  Panel1.Width := X + 14; // add left offset + padding
+  Width := 2*Panel1.Width + Splitter1.Width; // make panel and memo sizes symmetric
   FilterEdit.OnAfterFilter := @SelectFirstVisible;
   UpdateIssueList;
 end;
