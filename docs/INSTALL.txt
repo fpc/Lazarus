@@ -44,8 +44,8 @@ properly:
     apt-get install lazarus #will pull in required gtk dependencies
 
   Download and install FreePascal. Either the rpm, tgz or the daily snapshot.
-  You need at least FPC 2.6.4 (3.0.0 is the stable version of FPC; uneven
-	versions like 3.1.1 are development versions).
+  You need at least FPC 3.2.0 (3.2.2 is the stable version of FPC; uneven
+	versions like 3.3.1 are development versions).
 
   To compile Lazarus (LCL + IDE) go to your unpacked Lazarus source and do:
   []$ make clean all
@@ -64,8 +64,8 @@ properly:
   http://developer.apple.com/.
 
   Download and install FreePascal. Either the dmg or the daily snapshot.
-  You need at least FPC 2.6.4 (2.6.4 is the stable version of FPC; uneven
-	versions like 3.1.1 are development versions).
+  You need at least FPC 3.2.0 (3.2.2 is the stable version of FPC; uneven
+	versions like 3.3.1 are development versions).
 
   To compile Lazarus (LCL + IDE) go to your unpacked Lazarus source and do:
   []$ make clean all
@@ -81,7 +81,7 @@ properly:
 --------------------------------------------------------------------------------
 2.1 Installing FreePascal under Linux:
 
-  Lazarus requires FPC (Free Pascal) version 2.6.4 (or newer) and it requires
+  Lazarus requires FPC (Free Pascal) version 3.2.0 (or newer) and it requires
   both the compiled FPC libs (binaries) and the FPC sources. Most of the Linux
   distributions contain packages for FreePascal (look for FPC). Use your package
   manager to install them.
@@ -97,7 +97,7 @@ properly:
   The FPC sources:
   The easiest way to get the Free Pascal sources is via git. Of course you can
   also download it as whole, see http://www.freepascal.org/develop.html
-  for the daily snapshot of the release tree (3.1.x).
+  for the daily snapshot of the release tree (3.3.x).
 
   The FPC sources via git:
   Create a directory where you would like to put the sources. You don't need
@@ -148,8 +148,8 @@ properly:
     (1) e.g. for FPC ftp://ftp.freepascal.org/fpc/dist/Linux/separate/sources.tar
      preferably an export (no .git/ dirs). The above file misses this
     (2) Lazarus source snapshot.
-  - _any_ starting compiler from the 2.6.4 branch) You can do a check by parsing
- 	  the output of 'fpc -v'  if it is 2.6.4, it is ok.
+  - _any_ starting compiler from the 3.2.2 branch) You can do a check by parsing
+ 	  the output of 'fpc -v'  if it is 3.2.2, it is ok.
   - dependant packages. (for FreeBSD that is gtk2, and
     GNU make, iconv and gettext)
 
@@ -172,11 +172,11 @@ properly:
   	            for ports)
 
        Create a symlink
-         ln -s $THEPREFIX/lib/fpc/2.6.4/ppc386 $THEPREFIX/bin/ppc386
+         ln -s $THEPREFIX/lib/fpc/3.2.2/ppc386 $THEPREFIX/bin/ppc386
 
        install sourceinstall PREFIX=$THEPREFIX
 
-  (5) (configure) run compiler/utils/samplecfg  $THEPREFIX/lib/fpc/2.6.4 $ETCDIR
+  (5) (configure) run compiler/utils/samplecfg  $THEPREFIX/lib/fpc/3.2.2 $ETCDIR
   (6) (optional, test), see if ppc386 -i gives output, else give a warning
                         that user need to add $PREFIX/bin to his current path.
       Try to compiler a program with -viwn, and see if that gives errors.
@@ -312,7 +312,7 @@ properly:
   ftp://ftp.freepascal.org/pub/fpc/source/lazarus.zip
 
   Then unzip it to c:\lazarus for example.
-  You have to install at least FPC 2.6.4, e.g. in
+  You have to install at least FPC 3.2.0, e.g. in
 	c:\pp\bin\win32. 
 	In this directory you can find a lot of exes (make, grep, ppc386, and so on).
 
