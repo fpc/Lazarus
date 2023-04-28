@@ -244,8 +244,8 @@ begin
   //Forms---
   CmdHTMLFrom := RegisterIDECommand(Cat, 'HTMLForm', SmiHTMLInsertForm, Key, nil, @ProcHTMLForm);
   CmdHTMLFormSelect      := RegisterIDECommand(Cat, 'HTMLFormSelect', SmiHTMLFormSelect, Key, nil, @ProcHTMLSelect);
-  CmdHTMLFormSelectOpt   := RegisterIDECommand(Cat, 'HTMLFormSelectOpt', SmiHTMLFormSelectOpt, Key, nil, @ProcHTMLSelectOptionsWD);
-  CmdHTMLFormSelectOptWD := RegisterIDECommand(Cat, 'HTMLFormSelectOptWD', SmiHTMLFormSelectOptWD, Key, nil, @ProcHTMLSelectOptions);
+  CmdHTMLFormSelectOpt   := RegisterIDECommand(Cat, 'HTMLFormSelectOpt', SmiHTMLFormSelectOpt, Key, nil, @ProcHTMLSelectOptions);
+  CmdHTMLFormSelectOptWD := RegisterIDECommand(Cat, 'HTMLFormSelectOptWD', SmiHTMLFormSelectOptWD, Key, nil, @ProcHTMLSelectOptionsWD);
   CmdHTMLFormCheckBtn    := RegisterIDECommand(Cat, 'HTMLFormCheckBtn', SmiHTMLFormCheckBox, Key, nil, @ProcHTMLCheckButton);
   CmdHTMLFormRadioBtn    := RegisterIDECommand(Cat, 'HTMLFormRadioBtn', SmiHTMLFormRadioBtn, Key, nil, @ProcHTMLRadioButton);
   CmdHTMLFormButton      := RegisterIDECommand(Cat, 'HTMLFormButton', SmiHTMLFormButtton, Key, nil, @ProcHTMLButton);
