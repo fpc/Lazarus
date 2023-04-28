@@ -324,6 +324,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     procedure UpdateDockCaption(Exclude: TControl = nil); override;
     property DockPages[Index: integer]: TAnchorDockPage read GetDockPages;
+    procedure InsertControl(AControl: TControl; Index: Integer); override;
     procedure RemoveControl(AControl: TControl); override;
     function GetActiveSite: TAnchorDockHostSite;
   end;
@@ -8100,12 +8101,19 @@ begin
     TAnchorDockPage(Parent).UpdateDockCaption;
 end;
 
+procedure TAnchorDockPageControl.InsertControl(AControl: TControl; Index: Integer);
+begin
+  inherited InsertControl(AControl, Index);
+  UpdateDockCaption;
+end;
+
 procedure TAnchorDockPageControl.RemoveControl(AControl: TControl);
 begin
   inherited RemoveControl(AControl);
   if (not (csDestroying in ComponentState)) then begin
     if (PageCount<=1) and (Parent is TAnchorDockHostSite) then
       DockMaster.NeedSimplify(Parent);
+    UpdateDockCaption;
   end;
 end;
 
