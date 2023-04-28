@@ -755,6 +755,7 @@ begin
   DefaultResFileExt:='';
   DefaultFileExt:='.html';
   VisibleInNewDialog:=true;
+  IsPascalUnit:=false;
 end;
 
 function THtmlFileDescriptor.GetLocalizedName: string;
@@ -800,6 +801,7 @@ begin
   DefaultResFileExt:='';
   DefaultFileExt:='.js';
   VisibleInNewDialog:=true;
+  IsPascalUnit:=false;
 end;
 
 function TJSFileDescriptor.GetLocalizedName: string;
@@ -839,6 +841,7 @@ begin
   DefaultResFileExt:='';
   DefaultFileExt:='.css';
   VisibleInNewDialog:=true;
+  IsPascalUnit:=false;
 end;
 
 function TCSSFileDescriptor.GetLocalizedName: string;
