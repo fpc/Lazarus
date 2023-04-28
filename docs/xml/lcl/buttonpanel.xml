@@ -676,8 +676,8 @@ Use <var>ShowButtons</var> to specify the visible buttons on the panel. Use
 <p>
 <var>UpdateSizes</var> is a procedure used to calculate the size for button 
 controls displayed on the panel. UpdateSizes gets the button size using 
-<var>GetElementDetails</var> in <var>ThemeServices</var>, and stores the 
-values in the internal members used in the panel class.
+GetElementDetails and GetDetailSizeForPPI in <file>ThemeServices</file>, and 
+stores the values in the internal members used in the panel class.
 </p>
 <p>
 All button controls on the panel are updated. <var>GetPreferredSize</var> is 
