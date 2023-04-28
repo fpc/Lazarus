@@ -202,7 +202,7 @@ but usually the window appear occupying all of the work area of a monitor.
 The window appears in full screen mode, when allowed by the platform. It 
 will, for example, attempt to appear on the top of task bars and other static 
 platform user interface elements. wsFullScreen is converted to wsMaximized 
-for use on the the Windows platform; the API does not provide a full screen 
+for use on the Windows platform; the API does not provide a full screen 
 option.
 </short>
 </element>
@@ -643,7 +643,7 @@ No actions are performed in the method if Message has any other value in its
 ScrollCode member. No actions are performed in the method at design-time.
 </p>
 <p>
-ScrollHandler ensures the the new value for the Position property is in the 
+ScrollHandler ensures the new value for the Position property is in the 
 range <b>0..<var>Range</var></b>. Calls <var>InvalidateScrollInfo</var> to 
 force scroll bar information to be re-initialized. Calls 
 <var>SetPosition</var> to apply the new value for the Position property and 
@@ -2318,7 +2318,7 @@ and <var>lapAutoAdjustForDPI</var> enumeration values.
 <p>
 <var>Create</var> is the overridden constructor for the class instance. 
 Create calls the inherited method using the value in <var>TheOwner</var> as 
-the the owner of the class instance. Create sets the default values for the 
+the owner of the class instance. Create sets the default values for the 
 following properties:
 </p>
 <ul>
@@ -3294,12 +3294,18 @@ Snap a specific form to an adjusted window position.
 </li>
 </ul>
 <p>
-Use the Enabled property to enable or disable the magnetic window manager in 
-the global Screen instance.
+The Enabled property determines whether the magnetic window manager is enabled 
+or disabled in the global Screen instance.
 </p>
+<remark>
+Use  of TWindowMagnetManager depends on the LM_WINDOWPOSCHANGING message 
+dispatched when the position for a form (window) is changed. In the current 
+LCL release, the LM_WINDOWPOSCHANGING message is dispatched for the Windows 
+platform only. None of the other widgetsets checked for or apply the message.
+</remark>
 </descr>
 <version>
-Added in LCL version 2.4.  
+Added in LCL version 2.4.
 </version>
 <seealso/>
 </element>
@@ -3488,20 +3494,28 @@ Snaps the specified form to the nearest snap target.
 <descr>
 <p>
 No actions are performed in the method when the Enabled property is set to 
-False, when the window flags indicate that the window is being shown or 
+<b>False</b>, when the window flags indicate that the window is being shown or 
 hidden, or at design-time.
 </p>
 <p>
 SnapForm calls the GetCompositorExtendedBorder routine to determine if the 
 size for the window is inaccurate for borders or shadows added by the 
-compositor for the desktop window manager. This weirdness applies to the 
-Windows platforms only. For other platforms, the size adjustment is not needed 
-and is not performed.
+compositor for the desktop window manager. Both the SnapToMonitor and 
+SnapToForms methods are called to determine the return value for the method.
 </p>
 <p>
 The return value is <b>True</b> if the window position was snapped to either 
 an edge on the monitor or another form instance in the application.
 </p>
+<p>
+SnapForm is called from the WMWindowPosChanging method when a 
+LM_WINDOWPOSCHANGING message is received and handled for a form instance.
+</p>
+<remark>
+In the current LCL release, the LM_WINDOWPOSCHANGING message is dispatched for 
+the Windows platform only. None of the other widgetsets checked for or apply 
+the message.
+</remark>
 </descr>
 <seealso>
 <link id="TWindowMagnetManager.Enabled"/>
@@ -4708,6 +4722,11 @@ for the form, and the distance at which the snapping behavior is engaged. You
 can also use the SnapBuffer and ScreenSnap properties to maintain Delphi VCL 
 code compatibility.
 </p>
+<remark>
+In the current LCL release, the LM_WINDOWPOSCHANGING message is dispatched for 
+the Windows platform only. None of the other widgetsets checked for or apply 
+the message.
+</remark>
 </descr>
 <version>
 Added in LCL version 2.4.
@@ -5881,7 +5900,7 @@ visible in the task bar when one of its forms is visible.
 </element>
 
 <element name="TCustomForm.AllAutoSized">
-<short>If the the form is about to show, calculate its metrics.</short>
+<short>If the form is about to show, calculate its metrics.</short>
 <descr>
 <p>
 <var>AllAutoSized</var> is an overridden method used to apply the position 
@@ -6401,7 +6420,6 @@ aspects of the form instance. At run-time, it also calls
 <short>Owner for the class instance.</short>
 </element>
 
-<!-- TODO: Modified in b8383813. -->
 <element name="TCustomForm.CreateNew">
 <short>Creates a form instance without a resource (.lfm) file.</short>
 <descr>
@@ -6419,11 +6437,18 @@ properties for the form instance, including:
 <li>Sets the default bounds for the form instance.</li>
 <li>Sets Visible to <b>False</b>.</li>
 <li>Sets WindowState to wsNormal.</li>
-<li>Allocates resources for the Icon property but does not assign a 
-bitmap.</li>
+<li>
+Allocates resources for the Icon property but does not assign a 
+bitmap.
+</li>
 <li>Sets the default value for Color.</li>
-<li>Calls Screen.AddForm to register the form instance on the current 
-screen.</li>
+<li>
+Calls Screen.AddForm to register the form instance on the current 
+screen.
+</li>
+<li>
+Allocates resources for the SnapOptions property.  
+</li>
 </ul>
 </descr>
 <seealso/>
@@ -6435,8 +6460,6 @@ screen.</li>
 <short>Ignored in the current implementation.</short>
 </element>
 
-
-<!-- TODO: Modified in b8383813. -->
 <element name="TCustomForm.Destroy">
 <short>Destructor for the class instance.</short>
 <descr>
@@ -6451,8 +6474,8 @@ screen.</li>
 <var>Destroy</var> disables auto-sizing to prevent resize messages while the 
 form is being freed. Destroy frees resources allocated for the form instance, 
 including its Icon and any allocated icon handles. The form instance is 
-removed from Screen, and its ActionLists are freed. Destroy frees all form 
-handlers added to the class instance.
+removed from Screen, and its ActionLists and SnapOptions are freed. Destroy 
+frees all form handlers added to the class instance.
 </p>
 <p>
 Destroy calls the inherited destructor prior to exiting from the method.
@@ -8257,6 +8280,12 @@ instance to an edge for another form in the application.
 Use the SnapOptions.SnapFormTarget property to control whether the form allows 
 other forms to be snapped to its edges.
 </p>
+<remark>
+Screen snapping depends on the LM_WINDOWPOSCHANGING message dispatched 
+when the position for a form (window) is changed. In the current LCL release, 
+the LM_WINDOWPOSCHANGING message is dispatched for the Windows platform only. 
+None of the other widgetsets checked for or apply the message.
+</remark>
 </descr>
 <version>
 Added in LCL version 2.4.
@@ -8270,6 +8299,12 @@ Distance from (or proximity to) an edge on a snap target where the snapping
 behavior is automatically engaged.
 </short>
 <descr>
+<remark>
+Screen snapping depends on the LM_WINDOWPOSCHANGING message dispatched 
+when the position for a form (window) is changed. In the current LCL release, 
+the LM_WINDOWPOSCHANGING message is dispatched for the Windows platform only. 
+None of the other widgetsets checked for or apply the message.
+</remark>
 </descr>
 <version>
 Added in LCL version 2.4.
@@ -10661,7 +10696,6 @@ application.
 <element name="TScreen.FSaveFocusedList"/>
 <element name="TScreen.FSystemFont" link="#lcl.forms.TScreen.SystemFont"/>
 
-<!-- TODO: Added in b8383813. -->
 <element name="TScreen.FMagnetManager"/>
 
 <!-- private -->
@@ -11417,15 +11451,16 @@ application. It is initialized in the Create constructor, and is enabled in
 the application by default.
 </p>
 <p>
-Set its Enabled property to <b>False</b> to disable screen and form snapping 
-behavior in the application.
-</p>
-<p>
 MagnetManager is used when a TForm instance receives and handles a 
 TLMWindowPosChanging (WMWindowPosChanging) message. Its SnapForm method is 
 called to adjust the window position when the form instance is close enough to 
 an edge that the snapping behavior is engaged.
 </p>
+<remark>
+In the current LCL release, the LM_WINDOWPOSCHANGING message is dispatched for 
+the Windows platform only. None of the other widgetsets checked for or apply 
+the message.
+</remark>
 </descr>
 <version>
 Added in LCL version 2.4.
@@ -11437,7 +11472,6 @@ Added in LCL version 2.4.
 </seealso>
 </element>
 
-<!-- TODO: Modified in b8383813. -->
 <element name="TScreen.Create">
 <short>Constructor for the class instance.</short>
 <descr>
@@ -11446,14 +11480,13 @@ Added in LCL version 2.4.
 calls the inherited method on entry.
 </p>
 <p>
-Create allocates resources needed for properties, including: 
-<var>Fonts</var>, <var>Monitors</var>, <var>CustomForms</var>, 
-<var>CustomFormsZOrdered</var>, and <var>DataModules</var>. Resources for 
-internal members are also allocated.
+Create allocates resources needed for properties, including: Fonts, Monitors, 
+CustomForms, CustomFormsZOrdered, MagnetManager, and DataModules. Resources 
+for internal members are also allocated.
 </p>
 <p>
-Create gets the default value used for the <var>PixelsPerInch</var> property 
-from the <var>ScreenInfo</var> variable in the LCL interface.
+Create gets the default value used for the PixelsPerInch property from the 
+ScreenInfo variable in the LCL interface.
 </p>
 <p>
 Create assigns methods in the class instance as the routines used by the 
@@ -11469,7 +11502,6 @@ used to get system fonts for the application.
 <short>Owner of the class instance.</short>
 </element>
 
-<!-- TODO: Modified in b8383813. -->
 <element name="TScreen.Destroy">
 <short>Destructor for the class instance.</short>
 <descr>
@@ -15826,7 +15858,7 @@ Called when the Hint timer has expired to stop showing the Hint.
 </element>
 
 <element name="TApplication.HintMouseMessage">
-<short>Called when the the mouse is over a control with a Hint.</short>
+<short>Called when the mouse is over a control with a Hint.</short>
 <descr>
 <p>
 Does nothing in the current LCL version.
