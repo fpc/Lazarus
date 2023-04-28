@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, ProjectIntf, PropEdits, ComponentEditors, fpjsondataset, dbpropedits,
-  db, stub.htmlfragment, stub.htmlactions, stub.data.htmlactions, stub.restdataset,
+  stub.htmlfragment, stub.htmlactions, stub.data.htmlactions, stub.restdataset,
   stub.webwidget, stub.bootstrapwidgets, stub.bootstraptablewidget, stub.bulmawidgets,
   stub.templateloader, stub.jsondataset, stub.dbwebwidget, stub.dbhtmlwidgets,
   stub.fprpcclient;
@@ -117,18 +117,18 @@ Type
     Property View : String Read FView Write FView;
   end;
 
-procedure register;
+procedure Register;
 
 implementation
 
 uses
   // LCL/Lazarus
-  Types, IDEWindowIntf, controls, forms, dialogs, formeditingintf, lazideintf, idemsgintf, IDEExternToolIntf, Menuintf,
+  IDEWindowIntf, controls, forms, dialogs, formeditingintf, lazideintf, idemsgintf, IDEExternToolIntf, Menuintf,
   // Pas2jsDesign
   pjscontroller, idehtmltools,
   // pas2jscomponents
-  frmHTMLActionsEditor, strpas2jscomponents, pas2jsrestutils, pas2jsrestcmd, frmpas2jsedithtml, p2jselementactions,
-  frmcreaterpcserviceclient, pas2jscompedits;
+  frmHTMLActionsEditor, strpas2jscomponents, pas2jsrestutils, pas2jsrestcmd, p2jselementactions,
+  pas2jscompedits;
 
 {$r pas2jsc_images.res}
 
@@ -246,7 +246,7 @@ begin
     end;
 end;
 
-procedure register;
+procedure Register;
 
 begin
   RegisterComponents('Pas2js',[THTMLElementActionList,TBootstrapModal,TBootstrapToastWidget,TTemplateLoader,TPas2jsRPCClient]);
@@ -428,5 +428,6 @@ initialization
 
 Finalization
   LogBridge.Free;
+  LogBridge:=nil;
 end.
 
