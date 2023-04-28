@@ -198,17 +198,6 @@ Sets an internal flag used to track mouse hover, and redraws the control.
 <element name="TCustomCheckBoxThemed.FThemeCheckBoxSize"/>
 
 <!-- protected members, methods, properties, and constants -->
-<element name="TCustomCheckBoxThemed.GetCheckBoxSize">
-<short>
-Gets the dimensions for the check box in the control scaled to the given 
-display density.
-</short>
-<descr/>
-<seealso/>
-</element>
-<element name="TCustomCheckBoxThemed.GetCheckBoxSize.Result">
-<short>TSize instance with the dimensions for the check box.</short>
-</element>
 <element name="TCustomCheckBoxThemed.GetCheckBoxSize.PixelsPerInch">
 <short>
 Design-time PPI setting used to scale to the PPI setting for the screen.
@@ -282,8 +271,8 @@ Gets the size needed for the check box when drawn using ThemeServices.
 <p>
 <var>InitCheckBoxSize</var> is a class method used to initialize the member 
 used to store the check box size when drawn using theme element details. 
-Calls the GetDetailSize method in ThemeServices to store the value for the 
-TPoint member.
+Calls the GetElementDetails and GetDetailSizeForPPI methods in ThemeServices 
+to get the values in the TPoint member.
 </p>
 </descr>
 <seealso/>
@@ -554,6 +543,26 @@ Internal constant with the space reserved for padding in the control.
 </element>
 
 <!-- public methods and propeties -->
+<element name="TCustomCheckBoxThemed.GetCheckBoxSize">
+<short>
+Gets the dimensions for the check box in the control scaled to the 
+display density.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomCheckBoxThemed.GetCheckBoxSize.Result">
+<short>
+TSize instance with the dimensions for the check box when scaled to the PPI 
+setting for the display.
+</short>
+</element>
+<element name="TCustomCheckBoxThemed.GetCheckBoxSize.PixelsPerInch">
+<short>
+Current Pixels Per Inch (PPI) setting for the check box size.
+</short>
+</element>
+
 <element name="TCustomCheckBoxThemed.PaintSelf">
 <short>Renders a check box control using the specified parameters.</short>
 <descr>
