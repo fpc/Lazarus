@@ -2105,15 +2105,21 @@ state.
 
 <element name="TThemeServices.GetDetailSize">
 <short>
-Gets the default dimensions for the specified theme element detail.
+Deprecated. Use GetDetailSizeForPPI instead.
 </short>
 <descr>
+<p>
+Gets the default dimensions for the specified theme element detail.
+</p>
 <p>
 Calls GetDetailSizeForPPI to get the return value for the method. -1 in the 
 Width and Height for the <var>TSize</var> instance means the size for the theme
 element detail is not known.
 </p>
 </descr>
+<version>
+Deprecated in Lazarus version 2.3.0 or higher.
+</version>
 <seealso>
 <link id="TThemeServices.GetDetailSizeForPPI"/>
 <link id="TThemedElementDetails"/>
@@ -2190,7 +2196,7 @@ in <var>PPI</var>.
 </p>
 <p>
 <var>Details</var> contains the theme element, part, and state values which 
-identify a  themed element or one of its constituent parts.
+identify a themed element or one of its constituent parts.
 </p>
 <p>
 <var>PPI</var> contains the Pixels per Inch values used to scale the size 
