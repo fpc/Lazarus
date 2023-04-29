@@ -329,8 +329,8 @@ begin
 
   lFile := TFileStream.Create('Terrain.raw', fmCreate);
   try
-    for x := 0 to 1023 do
-      for y := 0 to 1023 do
+    for y := 0 to 1023 do
+      for x := 0 to 1023 do
       begin
         lRed := lRasterImage.RasterImage.Colors[x, y].Red;
         lFile.WriteByte(Byte(lRed div $FF));

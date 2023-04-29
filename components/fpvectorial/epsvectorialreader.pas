@@ -1868,8 +1868,8 @@ begin
   begin
     if (lImageWidth*lImageHeight)*4 > Length(lImageData) then
       raise Exception.Create(Format('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: image data too small. Expected=%d Found=%d', [Length(lImageData), (lImageWidth*lImageHeight)*4]));
-    for x := 0 to lImageWidth - 1 do
-      for y := 0 to lImageHeight - 1 do
+    for y := 0 to lImageHeight - 1 do
+      for x := 0 to lImageWidth - 1 do
       begin
         lColorC := lImageData[(x+y*lImageWidth)*4] / $FF;
         lColorM := lImageData[(x+y*lImageWidth)*4+1] / $FF;
@@ -1886,8 +1886,8 @@ begin
   begin
     if (lImageWidth*lImageHeight)*3 > Length(lImageData) then
       raise Exception.Create(Format('[TvEPSVectorialReader.ExecutePaintingOperator] operator image: image data too small. Expected=%d Found=%d', [Length(lImageData), (lImageWidth*lImageHeight)*3]));
-    for x := 0 to lImageWidth - 1 do
-      for y := 0 to lImageHeight - 1 do
+    for y := 0 to lImageHeight - 1 do
+      for x := 0 to lImageWidth - 1 do
       begin
         lColor.Alpha := alphaOpaque;
         lColor.Red := lImageData[(x+y*lImageWidth)*3] * $101;

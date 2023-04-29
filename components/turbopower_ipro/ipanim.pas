@@ -662,8 +662,8 @@ begin
 
   if UseTransparentCopy then begin
     if Images[FCurrentFrame].Bitmap <> nil then
-      for x := 0 to Images[FCurrentFrame].Bitmap.Width - 1 do
-        for y := 0 to Images[FCurrentFrame].Bitmap.Height - 1 do
+      for y := 0 to Images[FCurrentFrame].Bitmap.Height - 1 do
+        for x := 0 to Images[FCurrentFrame].Bitmap.Width - 1 do
           if Images[FCurrentFrame].Bitmap.Canvas.Pixels[x, y] <>
              Images[FCurrentFrame].TransparentColor then begin
             if (x + Images[FCurrentFrame].XOffset < Bitmap.Width) and

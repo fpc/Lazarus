@@ -57,8 +57,8 @@ begin
 
   AImage.SetRawImage(lRawImage);
 
-  for x := 0 to RAW_IMAGE_WIDTH - 1 do
-    for y := 0 to RAW_IMAGE_HEIGHT - 1 do
+  for y := 0 to RAW_IMAGE_HEIGHT - 1 do
+    for x := 0 to RAW_IMAGE_WIDTH - 1 do
     begin
       lColor.Red := AStream.ReadByte() * $FF;
       AImage.Colors[x, y] := lColor;

@@ -500,8 +500,8 @@ begin
         begin
           TmpImage.Canvas.BrushCopy(IRect, FOriginal, ORect, FTransparentColor);
           with TmpImage do
-            for X := 0 to Width - 1 do
-              for Y := 0 to Height - 1 do
+            for Y := 0 to Height - 1 do
+              for X := 0 to Width - 1 do
                 Canvas.Pixels[X, Y] := MapColor(Canvas.Pixels[X, Y]);
           FIndexs[State] := FGlyphList.AddMasked(TmpImage, TColor(ColorToRGB(clBtnFace)));
         end;

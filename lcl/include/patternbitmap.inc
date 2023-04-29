@@ -105,11 +105,12 @@ begin
   FBitmap.Canvas.Brush.Style := bsSolid;
   FBitmap.Canvas.Brush.Color := colorBG;
   FBitmap.Canvas.Rectangle(0,0,7,7);
-  for x := 0 to 7 do for y := 0 to 7 do
-  begin
-    if ((not Odd(x)) and (not Odd(y))) xor ((Odd(x)) and (Odd(y))) then
-      FBitmap.Canvas.Pixels[x,y] := colorFG;
-  end;
+  for y := 0 to 7 do
+    for x := 0 to 7 do
+    begin
+      if ((not Odd(x)) and (not Odd(y))) xor ((Odd(x)) and (Odd(y))) then
+        FBitmap.Canvas.Pixels[x,y] := colorFG;
+    end;
 end;
 
 destructor TPatternBitmap.Destroy;

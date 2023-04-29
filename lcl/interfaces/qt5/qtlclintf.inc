@@ -298,8 +298,8 @@ begin
     W := (R.Right - R.Left - 1) div DX;
     H := (R.Bottom - R.Top - 1) div DY;
 
-    for X := 0 to W do
-      for Y := 0 to H do
+    for Y := 0 to H do
+      for X := 0 to W do
         QtDC.drawPoint(R.Left + X * DX, R.Top + Y * DY + 1);
   finally
     QtDC.restore;
