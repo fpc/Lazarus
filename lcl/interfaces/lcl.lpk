@@ -108,7 +108,7 @@ end;"/>
             <Item13 Value="gtk3"/>
             <Item14 Value="mui"/>
           </Values>
-          <ValueDescriptions Count="13"/>
+          <ValueDescriptions Count="14"/>
         </Item1>
         <Item2>
           <Identifier Value="fpGUIPlatform"/>
@@ -131,7 +131,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="2" Minor="3"/>
-    <Files Count="524">
+    <Files Count="528">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2592,6 +2592,22 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="qtx11dummywidget"/>
       </Item524>
+      <Item525>
+        <Filename Value="qt5/issues.xml"/>
+        <Type Value="Issues"/>
+      </Item525>
+      <Item526>
+        <Filename Value="qt6/issues.xml"/>
+        <Type Value="Issues"/>
+      </Item526>
+      <Item527>
+        <Filename Value="cocoa/issues.xml"/>
+        <Type Value="Issues"/>
+      </Item527>
+      <Item528>
+        <Filename Value="gtk3/issues.xml"/>
+        <Type Value="Issues"/>
+      </Item528>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../../docs/xml/lcl"/>
