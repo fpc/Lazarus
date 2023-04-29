@@ -2398,8 +2398,8 @@ begin
               ExpandRow(Index);
           end;
         end;
-        // WasValueClick param is only for Boolean checkboxes, toggled if user
-        //  clicks the square. It has no effect for Boolean ComboBox editor.
+        // WasValueClick param for SetItemIndexAndFocus is only for Boolean checkboxes,
+        // toggled if user clicks the square. It has no effect for Boolean ComboBox editor.
         Details := ThemeServices.GetElementDetails(tbCheckBoxCheckedNormal);
         Sz := ThemeServices.GetDetailSizeForPPI(Details, Font.PixelsPerInch);
         SetItemIndexAndFocus(Index, (X>SplitterX) and (X<=SplitterX+Sz.cx));

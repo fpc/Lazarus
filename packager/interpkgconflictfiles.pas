@@ -241,7 +241,8 @@ begin
     else
       Detail := tbCheckBoxUncheckedNormal;
     Details := ThemeServices.GetElementDetails(Detail);
-    aSize := ThemeServices.GetDetailSizeForPPI(Details, PixelsPerInch);
+    // Maybe: aSize := ThemeServices.GetDetailSizeForPPI(Details, PixelsPerInch);
+    aSize := ThemeServices.GetDetailSize(Details);
     NodeRect:=Node.DisplayRect(false);
     r:=Bounds(Node.DisplayIconLeft+(ImageList1.Width-aSize.cx) div 2,
        NodeRect.Top+(NodeRect.Bottom-NodeRect.Top-aSize.cy) div 2,
@@ -392,7 +393,8 @@ begin
   ButtonPanel1.OKButton.OnClick:=@OkButtonClick;
 
   Details := ThemeServices.GetElementDetails(tbCheckBoxCheckedNormal);
-  aSize := ThemeServices.GetDetailSizeForPPI(Details, PixelsPerInch);
+  // Maybe: aSize := ThemeServices.GetDetailSizeForPPI(Details, PixelsPerInch);
+  aSize := ThemeServices.GetDetailSize(Details);
   ImageList1.Width:=Max(16,aSize.cx);
   ImageList1.Height:=Max(16,aSize.cy);
   // add empty images

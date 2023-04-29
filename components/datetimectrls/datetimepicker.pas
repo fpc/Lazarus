@@ -2040,12 +2040,9 @@ function TCustomDateTimePicker.GetCheckBoxRect(IgnoreRightToLeft: Boolean): TRec
 var
   Details: TThemedElementDetails;
   CSize: TSize;
-
 begin
   Details := ThemeServices.GetElementDetails(tbCheckBoxCheckedNormal);
   CSize := ThemeServices.GetDetailSizeForPPI(Details, Font.PixelsPerInch);
-  CSize.cx := ScaleScreenToFont(CSize.cx);
-  CSize.cy := ScaleScreenToFont(CSize.cy);
 
   if IsRightToLeft and not IgnoreRightToLeft then begin
     Result.Right := ClientWidth - (BorderSpacing.InnerBorder + BorderWidth);
@@ -2062,10 +2059,8 @@ end;
  ---------------
   Returns upper left corner of the rectangle where the text is written.
   Also used in calculating our preferred size. }
-function TCustomDateTimePicker.GetTextOrigin(IgnoreRightToLeft: Boolean
-  ): TPoint;
-
-var   
+function TCustomDateTimePicker.GetTextOrigin(IgnoreRightToLeft: Boolean): TPoint;
+var
   Re: TRect;
   B: Integer;
   XL, XR: Integer;
@@ -3105,6 +3100,7 @@ var
   S: String;
 
 const
+  // Enabled, Checked, Mouse hover
   CheckStates: array[Boolean, Boolean, Boolean] of TThemedButton = (
     ((tbCheckBoxUncheckedDisabled, tbCheckBoxUncheckedDisabled),
      (tbCheckBoxCheckedDisabled, tbCheckBoxCheckedDisabled)),

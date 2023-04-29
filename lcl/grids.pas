@@ -4353,8 +4353,8 @@ begin
         soAscending: Details := ThemeServices.GetElementDetails(thHeaderSortArrowSortedUp);
         soDescending: Details := ThemeServices.GetElementDetails(thHeaderSortArrowSortedDown);
       end;
-
-      s := ThemeServices.GetDetailSizeForPPI(Details, Font.PixelsPerInch);
+      // Maybe: s := ThemeServices.GetDetailSizeForPPI(Details, Font.PixelsPerInch);
+      s := ThemeServices.GetDetailSize(Details);
     end else
       s := Size(-1, -1);
     if s.cx>0 then // theme services support sorted arrows
@@ -4839,7 +4839,8 @@ begin
   end else
   begin
     Details := ThemeServices.GetElementDetails(arrtb[AState]);
-    CSize := ThemeServices.GetDetailSizeForPPI(Details, Font.PixelsPerInch);
+    // Maybe: CSize := ThemeServices.GetDetailSizeForPPI(Details, Font.PixelsPerInch);
+    CSize := ThemeServices.GetDetailSize(Details);
     CSize.cx := MulDiv(CSize.cx, Font.PixelsPerInch, Screen.PixelsPerInch);
     CSize.cy := MulDiv(CSize.cy, Font.PixelsPerInch, Screen.PixelsPerInch);
   end;
