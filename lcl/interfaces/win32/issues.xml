@@ -25,15 +25,12 @@
 			<short>Bitmap button color cannot be changed</short>
 			<descr>It is impossible to implement without making them owner drawn.</descr>
 		</issue>
-		<issue name="TColorDialog.Title">
-			<short>The title cannot be changed, it is set by the OS.</short>
-		</issue>
 		<issue name="TPopupMenu.OnClose">
 			<short>OnClose happens before OnClick</short>
 			<descr>If you delete the clicked menu item during OnClose the OnClick will be omitted.</descr>
 		</issue>
 		<issue name="TProgressBar.Height">
-			<short>Progress bar height cannot be smaller then 10 on Windows XP if a Theme is used</short>
+			<short>Progress bar height cannot be smaller than 10 on Windows XP if a Theme is used.</short>
 			<descr>Associated bug report: http://bugs.freepascal.org/view.php?id=10626</descr>
 		</issue>
 		<issue name="TProgressBar.Orientation">
@@ -46,7 +43,7 @@
 		</issue>
 		<issue name="TPrinter.FileName">
 			<short>The format of generated file is system dependant</short>
-			<descr>The content of file created by using this property depends of the printer backend used, for example when using CUPS (mainly under Unix type systems) it will be postscript while under Windows it will be in a printer unspecified format</descr>
+			<descr>The content of file created by using this property depends of the printer backend used, for example when using CUPS (mainly under Unix type systems) it will be postscript while under Windows it will be in a printer unspecified format.</descr>
 		</issue>
 	</widgetset>
 </package>
