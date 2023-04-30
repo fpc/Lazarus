@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.4.3\n"
 
 #: projectgroupstrconst.lisabort
 msgid "Abort"
@@ -23,6 +23,16 @@ msgstr "Прервать загрузку группы проектов"
 #, object-pascal-format
 msgid "Target: %s"
 msgstr "Цель: %s"
+
+#: projectgroupstrconst.lisaddallfromdirectorycaption
+msgctxt "projectgroupstrconst.lisaddallfromdirectorycaption"
+msgid "Add all from directory recursively"
+msgstr "Добавить все из каталога рекурсивно"
+
+#: projectgroupstrconst.lisaddallfromdirectoryhint
+msgctxt "projectgroupstrconst.lisaddallfromdirectoryhint"
+msgid "Add all existing targets from directory and its subdirectories to project group"
+msgstr "Добавить все существующие цели из каталога и его подкаталогов в группу проектов"
 
 #: projectgroupstrconst.lisallfiles
 msgid "All files"

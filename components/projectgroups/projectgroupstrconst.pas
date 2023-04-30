@@ -67,6 +67,9 @@ Resourcestring
   lisProjectGroupSaveAsHint    = 'Save project group with a new name';
   lisProjectGroupNewCaption = 'New';
   lisProjectGroupNewHint    = 'New project group';
+  lisAddAllFromDirectoryCaption = 'Add all from directory recursively';
+  lisAddAllFromDirectoryHint = 'Add all existing '
+    +'targets from directory and its subdirectories to project group';
   lisProjectGroupAddCaption = 'Add';
   lisProjectGroupAddHint    = 'Add targets to project group';
   lisProjectGroupAddExistingCaption = 'Add from file';

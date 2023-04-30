@@ -25,6 +25,16 @@ msgstr "取消(Abort)加载工程组"
 msgid "Target: %s"
 msgstr "目标:%s"
 
+#: projectgroupstrconst.lisaddallfromdirectorycaption
+msgctxt "projectgroupstrconst.lisaddallfromdirectorycaption"
+msgid "Add all from directory recursively"
+msgstr ""
+
+#: projectgroupstrconst.lisaddallfromdirectoryhint
+msgctxt "projectgroupstrconst.lisaddallfromdirectoryhint"
+msgid "Add all existing targets from directory and its subdirectories to project group"
+msgstr ""
+
 #: projectgroupstrconst.lisallfiles
 msgid "All files"
 msgstr "所有文件"
