@@ -30,12 +30,12 @@ You don't need ```./configure```, just do
 This will create the Lazarus executable with a lot of packages.
 Start it and enjoy.
 
-If the above gives an error, you can try to build a minimal IDE with
+If the above gives an error, you can try to build a minimal IDE with  
 ```make clean all``` (```gmake clean all``` in BSD).
 
 ### Installation and Requirements
 
-See [docs/INSTALL.txt](docs/INSTALL.txt) file.
+See [Lazarus Wiki](https://wiki.freepascal.org/Category:Install) for details.
 
 ### Usage
 
