@@ -24,6 +24,16 @@ msgstr "Arrêter le chargement du groupe de projets"
 msgid "Target: %s"
 msgstr "Cible : %s"
 
+#: projectgroupstrconst.lisaddallfromdirectorycaption
+msgctxt "projectgroupstrconst.lisaddallfromdirectorycaption"
+msgid "Add all from directory recursively"
+msgstr ""
+
+#: projectgroupstrconst.lisaddallfromdirectoryhint
+msgctxt "projectgroupstrconst.lisaddallfromdirectoryhint"
+msgid "Add all existing targets from directory and its subdirectories to project group"
+msgstr ""
+
 #: projectgroupstrconst.lisallfiles
 msgid "All files"
 msgstr "Tous les fichiers"
