@@ -2470,8 +2470,15 @@ begin
   EcToggleMarkupWord:    SetSingle(VK_M,[ssMeta]);
   *)
 
-  ecGotoBookmarks:       SetSingle(VK_UNKNOWN,[]);
-  ecToggleBookmarks:     SetSingle(VK_UNKNOWN,[]);
+  {****************
+  IF no valid shortcut is defined here, they don't show neither in
+  Key Mapping page nor in toolbar config page and they can't be
+  user defined
+  *****************}
+  //ecGotoBookmarks:       SetSingle(VK_UNKNOWN,[]);
+  //ecToggleBookmarks:     SetSingle(VK_UNKNOWN,[]);}
+  ecGotoBookmarks:       SetSingle(VK_B,[ssCtrl]);
+  ecToggleBookmarks:     SetSingle(VK_B,[ssCtrl,ssShift]);
 
   // file menu
   ecNew:                 SetSingle(VK_N,[ssMeta]);
