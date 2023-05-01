@@ -1,5 +1,5 @@
 //******************************************************************************
-//  Copyright (c) 2005-2013 by Jan Van hijfte
+//  Copyright (c) 2005-2023 by Jan Van hijfte, Željan Rikalo
 //
 //  See the included file COPYING.TXT for details about the copyright.
 //
@@ -74,6 +74,16 @@ void QTimer_singleShot(int msec, const QObjectH receiver, const char* member)
 void QTimer_singleShot2(int msec, Qt::TimerType timerType, const QObjectH receiver, const char* member)
 {
 	QTimer::singleShot(msec, timerType, (const QObject*)receiver, member);
+}
+
+void QTimer_singleShot3(int msec, void (*TimeoutEvent)())
+{
+  QTimer::singleShot(msec, TimeoutEvent);
+}
+
+void QTimer_singleShot4(int msec, const QObjectH context, void (*TimeoutEvent)())
+{
+  QTimer::singleShot(msec, (const QObject*)context, TimeoutEvent);
 }
 
 void QTimer_start(QTimerH handle, int msec)
