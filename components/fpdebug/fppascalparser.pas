@@ -26,6 +26,7 @@ unit FpPascalParser;
 
 {$mode objfpc}{$H+}
 {$IFDEF INLINE_OFF}{$INLINE OFF}{$ENDIF}
+{$IF FPC_Fullversion=30202}{$Optimization NOPEEPHOLE}{$ENDIF}
 {$TYPEDADDRESS on}
 
 interface

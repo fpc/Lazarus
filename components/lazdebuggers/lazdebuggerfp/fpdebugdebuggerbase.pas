@@ -1,6 +1,7 @@
 unit FpDebugDebuggerBase;
 
 {$mode objfpc}{$H+}
+{$IF FPC_Fullversion=30202}{$Optimization NOPEEPHOLE}{$ENDIF}
 
 interface
 

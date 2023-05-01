@@ -26,6 +26,7 @@
 unit FpDebugDebugger;
 
 {$mode objfpc}{$H+}
+{$IF FPC_Fullversion=30202}{$Optimization NOPEEPHOLE}{$ENDIF}
 {$TYPEDADDRESS on}
 {$ModeSwitch advancedrecords}
 

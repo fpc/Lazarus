@@ -37,6 +37,7 @@ unit FpDbgDwarfDataClasses;
 {$mode objfpc}{$H+}
 {$ModeSwitch advancedrecords}
 {$IFDEF INLINE_OFF}{$INLINE OFF}{$ENDIF}
+{$IF FPC_Fullversion=30202}{$Optimization NOPEEPHOLE}{$ENDIF}
 {off $DEFINE USE_ABBREV_TMAP}
 
 interface

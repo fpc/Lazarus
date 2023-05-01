@@ -37,6 +37,7 @@ unit FpDbgDwarf;
 {$mode objfpc}{$H+}
 {$TYPEDADDRESS on}
 {$IFDEF INLINE_OFF}{$INLINE OFF}{$ENDIF}
+{$IF FPC_Fullversion=30202}{$Optimization NOPEEPHOLE}{$ENDIF}
 
 (* Notes:
 
