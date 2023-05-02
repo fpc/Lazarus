@@ -6437,11 +6437,22 @@ Or use this equivalent:
 <short>
 Determines if the Control uses an anchor on the side specified in Kind.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Not used in the current LCL implementation.
+</p>
+</descr>
+<seealso>
+<link id="DefaultSideForAnchorKind"/>
+<link id="TAnchorKind"/>
+<link id="TAnchorSideReference"/>
+</seealso>
 </element>
 <element name="TAnchorSide.IsSideStored.Result">
-<short/>
+<short>
+Returns <b>True</b> if Control is assigned and the Side property contains a 
+value other than the one in DefaultSideForAnchorKind.
+</short>
 </element>
 
 <element name="TAnchorSide.SetControl">
@@ -6958,16 +6969,23 @@ from TControlAutoSizePhase are stored in the
 <short/>
 </element>
 <element name="TControlAutoSizePhase.caspChangingProperties">
-<short/>
+<short>
+Indicates propertied have been locked while auto-sizing is active. 
+</short>
 </element>
 <element name="TControlAutoSizePhase.caspCreatingHandles">
 <short>Create/Destroy handles.</short>
 </element>
 <element name="TControlAutoSizePhase.caspComputingBounds">
-<short/>
+<short>
+Indicates that auto-sizing for a control and its child controls is being 
+performed.
+</short>
 </element>
 <element name="TControlAutoSizePhase.caspRealizingBounds">
-<short/>
+<short>
+Indicates that the wcfRealizingBounds flag is present in the control flags.
+</short>
 </element>
 <element name="TControlAutoSizePhase.caspShowing">
 <short>Makes a handle visible.</short>
@@ -6980,6 +6998,12 @@ Set type used to store values from the TControlAutoSizePhase enumeration.
 <descr/>
 <seealso>
 <link id="TControlAutoSizePhase"/>
+<link id="TControl.AutoSizePhases"/>
+<link id="TWinControl.AutoSizePhases"/>
+<link id="TWinControl.DoAutoSize"/>
+<link id="TWinControl.UpdateShowing"/>
+<link id="TWinControl.WMMove"/>
+<link id="TWinControl.WMSize"/>
 </seealso>
 </element>
 
@@ -24234,24 +24258,44 @@ allocated'.
 </seealso>
 </element>
 <element name="TWinControl.ScrollBy_WS.DeltaX">
-<short/>
+<short>
+Number of pixels scrolled in the horizontal direction.
+</short>
 </element>
 <element name="TWinControl.ScrollBy_WS.DeltaY">
-<short/>
+<short>
+Number of pixels scrolled in the vertical direction.
+</short>
 </element>
 
 <element name="TWinControl.ScrollBy">
 <short>
-Scrolls the control (and all child controls) by the specified amounts.
+Scrolls child controls by the specified number of pixels.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>ScrollBy</var> temporarily disables auto-sizing while the child Controls 
+are being moved, and re-enables auto-sizing prior to exiting form the method. 
+The Left and Top bounds for each of the child Controls are updated by the 
+amounts specified in DeltaX and DeltaY. The Height and Width values are not 
+modified.
+</p>
+</descr>
+<seealso>
+<link id="TWinControl.Controls"/>
+<link id="TWinControl.ControlCount"/>
+<link id="TControl.SetBounds"/>
+</seealso>
 </element>
 <element name="TWinControl.ScrollBy.DeltaX">
-<short>Increment for Left.</short>
+<short>
+Number of pixels scrolled in the horizontal direction.
+</short>
 </element>
 <element name="TWinControl.ScrollBy.DeltaY">
-<short>Increment for Top.</short>
+<short>
+Number of pixels scrolled in the vertical direction.
+</short>
 </element>
 
 <element name="TWinControl.WriteLayoutDebugReport" link="#lcl.controls.TControl.WriteLayoutDebugReport"/>
@@ -24286,16 +24330,24 @@ to exit from the method.
 <short>Layout mode applied in the method.</short>
 </element>
 <element name="TWinControl.AutoAdjustLayout.AFromPPI">
-<short/>
+<short>
+Existing pixels per inch (PPI) setting for the control.
+</short>
 </element>
 <element name="TWinControl.AutoAdjustLayout.AToPPI">
-<short/>
+<short>
+Target pixels per inch (PPI) setting for the control.
+</short>
 </element>
 <element name="TWinControl.AutoAdjustLayout.AOldFormWidth">
-<short/>
+<short>
+Form width before PPI scaling is applied.
+</short>
 </element>
 <element name="TWinControl.AutoAdjustLayout.ANewFormWidth">
-<short/>
+<short>
+Form width after PPI scaling is applied.
+</short>
 </element>
 
 <element name="TWinControl.FixDesignFontsPPIWithChildren">
@@ -24686,7 +24738,8 @@ message queue.
 
 <element name="TWinControl.AddControl">
 <short>
-Tells the widgetset to add a Handle object representing the current control.
+Tells the widgetset to add a Handle object representing the current control to 
+the Parent handle.
 </short>
 <descr>
 </descr>
@@ -25609,13 +25662,18 @@ control.
 
 <element name="TControlPropertyStorage.GetPropertyList">
 <short>
-Parses the <link id="TControl.SessionProperties"/> string into the given list.
+Parses the values from SessionProperties in the Root component into the given 
+list.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TControl.SessionProperties"/>
+</seealso>
 </element>
 <element name="TControlPropertyStorage.GetPropertyList.List">
-<short/>
+<short>
+TStrings instance where the component/property names and values are stored.
+</short>
 </element>
 
 <element name="TDockZone">
@@ -26714,18 +26772,30 @@ when a window is not found.
 <descr>
 <p>
 The result is very interface specific; use FindOwnerControl when Handle may 
-be a non-TWinControl handle.
+be a non-TWinControl handle. Handle can also be a child handle, and does not 
+need to be the Handle property of the Result.
+</p>
+<p>
+<b>Important</b>: In most cases, Result.Handle and the Handle parameter value 
+are <b>not</b> the same.
 </p>
 </descr>
 <seealso>
 <link id="FindOwnerControl"/>
+<link id="#lcl.lclintf.GetProp">GetProp</link>
 </seealso>
 </element>
 <element name="FindControl.Result">
-<short/>
+<short>
+TWinControl with the specified handle, or <b>Nil</b> if the handle is not 
+found.
+</short>
 </element>
 <element name="FindControl.Handle">
-<short/>
+<short>
+Handle for the control (or child control) used to locate the control in the 
+return value.
+</short>
 </element>
 
 <element name="FindOwnerControl">
@@ -26971,11 +27041,12 @@ freed in the finalization section.
 
 <element name="CursorToString">
 <short>
-Returns a string for the name of the cursor as identified by an integer 
-constant.
+Returns a string with the name for the cursor in the integer constant.
 </short>
 <descr>
+<p>
 Calls CursorToIdent to find correct entry in look-up table.
+</p>
 </descr>
 <seealso>
 <link id="CursorToIdent"/>
@@ -26984,11 +27055,14 @@ Calls CursorToIdent to find correct entry in look-up table.
 <element name="CursorToString.Result">
 <short>
 Returns a string with the name of the cursor type corresponding to the 
-integer constant.
+integer constant, or a value like '%-31' when Cursor is not found in the 
+look-up table.
 </short>
 </element>
 <element name="CursorToString.Cursor">
-<short/>
+<short>
+Numeric constant from the TCursor range converted to a string in the routine.
+</short>
 </element>
 
 <element name="StringToCursor">
@@ -27172,10 +27246,14 @@ located, the value in Handle is set to 0, and AWinControl is set to
 <seealso/>
 </element>
 <element name="CheckTransparentWindow.Handle">
-<short/>
+<short>
+Handle for the control (or parent) found for the specified windowed control.
+</short>
 </element>
 <element name="CheckTransparentWindow.AWinControl">
-<short/>
+<short>
+Handle for the windowed control examined in the routine.
+</short>
 </element>
 
 <element name="CheckMouseButtonDownUp">
@@ -27259,7 +27337,7 @@ Mouse button for the last mouse event.
 <short>
 <b>True</b> if the mouse event is a mouse down event. <b>False</b> for a mouse 
 up event.
-</short>  
+</short>
 </element>
 
 <element name="GetKeyShiftState">
@@ -27290,7 +27368,10 @@ have a non-zero value.
 <seealso/>
 </element>
 <element name="GetKeyShiftState.Result">
-<short/>
+<short>
+Set of Shift state values active for the virtual keys, or an empty set when 
+none of the keys are active.
+</short>
 </element>
 
 <element name="AdjustBorderSpace">
@@ -27363,10 +27444,15 @@ needs to be compared to the SYS_COLOR_BASE value used in the widgetset.
 <seealso/>
 </element>
 <element name="IsColorDefault.Result">
-<short/>
+<short>
+<b>True</b> if the specified control does not have an explicit value other 
+than the default color value ($80000000).
+</short>
 </element>
 <element name="IsColorDefault.AControl">
-<short/>
+<short>
+Control with the color value examined in the routine.
+</short>
 </element>
 
 <element name="BidiFlipAlignment">
@@ -27380,7 +27466,9 @@ always taCenter regardless of BidiMode.
 <seealso/>
 </element>
 <element name="BidiFlipAlignment.Result">
-<short/>
+<short>
+TAlignment value adjusted for the BidiAlignment in Flip.
+</short>
 </element>
 <element name="BidiFlipAlignment.Alignment">
 <short>TAlignment value converted in the method.</short>
@@ -27400,35 +27488,59 @@ BiDiMode is enabled.
 <seealso/>
 </element>
 <element name="BidiFlipAnchors.Result">
-<short/>
+<short>
+Set of TAnchor values for the control after the value in Flip has been applied.
+</short>
 </element>
 <element name="BidiFlipAnchors.Control">
-<short/>
+<short>
+Control with the anchors adjusted in the routine.
+</short>
 </element>
 <element name="BidiFlipAnchors.Flip">
-<short/>
+<short>
+<b>True</b> to flip the anchor values when BiDiMode is enabled.
+</short>
 </element>
 
 <element name="BidiFlipRect">
 <short>
-Flips the left and right coordinates relative to the ParentRect when Flip is 
-<b>True</b>.
+Flips the left and right coordinates in a rectangle and makes it relative to 
+the ParentRect when Flip is <b>True</b>.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+No actions are performed in the routine if Flip is set to False (the default 
+value).
+</p>
+</descr>
+<seealso>
+<link id="#lcl.grids.TCustomGrid.FlipRect">TCustomGrid.FlipRect</link>
+<link id="#lcl.colorbox.TCustomColorBox.DrawItem">TCustomColorBox.DrawItem</link>
+</seealso>
 </element>
 <element name="BidiFlipRect.Result">
-<short/>
+<short>
+TRect instance with the converted / adjusted Left and Right coordinates 
+calculated in the routine.
+</short>
 </element>
 <element name="BidiFlipRect.Rect">
-<short/>
+<short>
+TRect instance with the original Left and Right values potentially modified 
+in the routine.
+</short>
 </element>
 <element name="BidiFlipRect.ParentRect">
-<short/>
+<short>
+TRect instance with the parent coordinates where the values in Rect are 
+located.
+</short>
 </element>
 <element name="BidiFlipRect.Flip">
-<short/>
-</element>
+<short>
+<b>True</b> to flip the left and right values when BiDiMode is enabled.
+</short></element>
 
 <element name="ChangeBiDiModeAlignment">
 <short>
@@ -27567,28 +27679,24 @@ Register can also be used to register the controls required by an application.
 </element>
 
 <!-- 
-HERE:
 
-{$IF FPC_FULLVERSION >= 30300}
-const
-  dkDrag = SysUITypes.dkDrag;
-  dkDock = SysUITypes.dkDock;
+TODO: For FPC 3.3.0+. Uncomment when FPC 3.3 docs are released.
 
-  dmManual = SysUITypes.dmManual;
-  dmAutomatic = SysUITypes.dmAutomatic;
+<element name="dkDrag" link="#rtl.System.UITypes.dkDrag"/>
+<element name="dkDock" link="#rtl.System.UITypes.dkDock"/>
+<element name="dmManual" link="#rtl.System.UITypes.dmManual"/>
+<element name="dmAutomatic" link="#rtl.System.UITypes.dmAutomatic"/>
+<element name="dsDragEnter" link="#rtl.System.UITypes.dsDragEnter"/>
+<element name="dsDragLeave" link="#rtl.System.UITypes.dsDragLeave"/>
+<element name="dsDragMove" link="#rtl.System.UITypes.dsDragMove"/>
+<element name="dmDragEnter" link="#rtl.System.UITypes.dmDragEnter"/>
+<element name="dmDragLeave" link="#rtl.System.UITypes.dmDragLeave"/>
+<element name="dmDragMove" link="#rtl.System.UITypes.dmDragMove"/>
+<element name="dmDragDrop" link="#rtl.System.UITypes.dmDragDrop"/>
+<element name="dmDragCancel" link="#rtl.System.UITypes.dmDragCancel"/>
+<element name="dmFindTarget" link="#rtl.System.UITypes.dmFindTarget"/>
 
-  dsDragEnter = SysUITypes.dsDragEnter;
-  dsDragLeave = SysUITypes.dsDragLeave;
-  dsDragMove = SysUITypes.dsDragMove;
-
-  dmDragEnter = SysUITypes.dmDragEnter;
-  dmDragLeave = SysUITypes.dmDragLeave;
-  dmDragMove = SysUITypes.dmDragMove;
-  dmDragDrop = SysUITypes.dmDragDrop;
-  dmDragCancel = SysUITypes.dmDragCancel;
-  dmFindTarget = SysUITypes.dmFindTarget;
-{$ENDIF}
- -->
+-->
 
 <topic name="AutoSize">
 <short>
