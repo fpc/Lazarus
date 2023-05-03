@@ -52,6 +52,8 @@ function StrToNSString(const s: string; AutoRelease: Boolean = true): NSString;
 function StrToNSStr(const s: string; AutoRelease: Boolean = true): NSString; inline;
 function NSStringToString(ns: NSString): String;
 
+function NSStringRemoveLineBreak(const str: NSString): NSString;
+
 function GetNSObjectWindow(obj: NSObject): NSWindow;
 
 procedure SetNSText(text: NSText; const s: String); inline;
@@ -829,6 +831,12 @@ end;
 function NSStringToString(ns: NSString): String;
 begin
   Result := CFStringToStr(CFStringRef(ns));
+end;
+
+function NSStringRemoveLineBreak(const str: NSString): NSString;
+begin
+  Result:= str.stringByReplacingOccurrencesOfString_withString( NSStr(#10) , NSString.string_ );
+  Result:= Result.stringByReplacingOccurrencesOfString_withString( NSStr(#13), NSString.string_ );
 end;
 
 procedure SetNSText(text: NSText; const s: String); inline;

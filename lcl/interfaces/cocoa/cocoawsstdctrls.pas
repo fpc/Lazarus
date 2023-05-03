@@ -990,7 +990,6 @@ begin
     cell := NSTextFieldCell(field.cell);
     cell.setWraps(false);
     cell.setScrollable(true);
-    cell.setUsesSingleLineMode(true);
   end;
   TextFieldSetAllignment(field, TCustomEdit(AWinControl).Alignment);
   TextFieldSetBorderStyle(field, TCustomEdit(AWinControl).BorderStyle);
@@ -1213,16 +1212,18 @@ end;
 class procedure TCocoaWSCustomEdit.SetText(const AWinControl: TWinControl;
   const AText: String);
 var
-  txt : string;
-  mxl : Integer;
+  txt : NSString;              // NSString for AText
+  txtWithLineBreak: NSString;  // need not release
+  field: TCocoaTextField;
 begin
   if (AWinControl.HandleAllocated) then
   begin
-    txt := AText;
-    mxl := TCustomEdit(AWinControl).MaxLength;
-    if (mxl > 0) and (UTF8Length(txt) > mxl) then
-      txt := UTF8Copy(txt, 1, mxl);
-    ControlSetTextWithChangeEvent(NSControl(AWinControl.Handle), txt);
+    field:= TCocoaTextField(AWinControl.Handle);
+    txt:= NSStringUtf8(AText);
+    txtWithLineBreak := NSStringRemoveLineBreak(txt);
+    field.setStringValue(txtWithLineBreak);
+    field.textDidChange(nil); // check maxLength and calls controls callback (if any)
+    txt.release;
   end;
 end;
 
