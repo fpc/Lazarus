@@ -395,6 +395,11 @@ If you wish to allow use of your version of these files only under the terms of 
         <UnitName Value="LazSynGtk2IMM"/>
       </Item>
       <Item>
+        <Filename Value="lazsyncocoaimm.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="LazSynCocoaIMM"/>
+      </Item>
+      <Item>
         <Filename Value="lazsynimmbase.pas"/>
         <UnitName Value="LazSynIMMBase"/>
       </Item>

@@ -50,6 +50,10 @@ unit SynEdit;
   {$ENDIF}
 {$ENDIF}
 
+{$IFDEF LCLCOCOA}
+  {$DEFINE CocoaIME}
+{$ENDIF}
+
 {$I synedit.inc}
 
 
@@ -105,6 +109,9 @@ uses
   LazSynIMMBase,
   {$IFDEF WinIME}
   LazSynIMM,
+  {$ENDIF}
+  {$IFDEF CocoaIME}
+  LazSynCocoaIMM,
   {$ENDIF}
   {$IFDEF Gtk2IME}
   LazSynGtk2IMM,
@@ -437,6 +444,10 @@ type
   {$IFDEF Gtk2IME}
   protected
     procedure GTK_IMComposition(var Message: TMessage); message LM_IM_COMPOSITION;
+  {$ENDIF}
+  {$IFDEF CocoaIME}
+  private
+    procedure COCOA_IMComposition(var Message: TMessage); message LM_IM_COMPOSITION;
   {$ENDIF}
   {$IFDEF WinIME}
   private
@@ -2339,6 +2350,10 @@ begin
   {$ENDIF}
   FImeHandler.InvalidateLinesMethod := @InvalidateLines;
   {$ENDIF}
+  {$IFDEF CocoaIME}
+  FImeHandler := LazSynImeCocoa.Create(Self);
+  FImeHandler.InvalidateLinesMethod := @InvalidateLines;
+  {$ENDIF}
   {$IFDEF Gtk2IME}
   FImeHandler := LazSynImeGtk2 .Create(Self);
   FImeHandler.InvalidateLinesMethod := @InvalidateLines;
@@ -2923,6 +2938,13 @@ end;
 procedure TCustomSynEdit.GTK_IMComposition(var Message: TMessage);
 begin
   FImeHandler.WMImeComposition(Message);
+end;
+{$endif}
+
+{$ifdef CocoaIME}
+procedure TCustomSynEdit.Cocoa_IMComposition(var Message: TMessage);
+begin
+  Message.Result := PtrInt(FImeHandler);
 end;
 {$endif}
 
