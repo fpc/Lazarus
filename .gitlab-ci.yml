@@ -20,6 +20,7 @@ default:
 
 stages:  # List of stages for jobs, and their order of execution
   - prepenv
+  - clearcaches
   - prepcaches
   - build
 
@@ -57,6 +58,30 @@ update-build-env:  # This job updates building environment image. Run it if FPC 
       allow_failure: true
     - when: never
 
+clear-qt5pas-bindings:  # clear Qt5 Pascal bindings cache if changes are detected, as in this case full rebuild is needed
+  stage: clearcaches
+  script:
+    - echo "Clearing Qt5Pas bindings cache."
+  cache:
+    key: qt5pas-cache-$CI_COMMIT_REF_SLUG
+    policy: push
+    untracked: true
+  rules:
+    - changes:
+        - $QT5PAS_SRC/**/*
+
+clear-qt6pas-bindings:  # clear Qt6 Pascal bindings cache if changes are detected, as in this case full rebuild is needed
+  stage: clearcaches
+  script:
+    - echo "Clearing Qt6Pas bindings cache."
+  cache:
+    key: qt6pas-cache-$CI_COMMIT_REF_SLUG
+    policy: push
+    untracked: true
+  rules:
+    - changes:
+        - $QT6PAS_SRC/**/*
+
 update-qt5pas-bindings:  # build and cache Qt5 Pascal bindings
   stage: prepcaches
   script:
@@ -66,15 +91,11 @@ update-qt5pas-bindings:  # build and cache Qt5 Pascal bindings
     - make
   cache:
     key: qt5pas-cache-$CI_COMMIT_REF_SLUG
-#    policy: push
-    untracked: true
     paths:
       - $QT5PAS_SRC/
   rules:
     - !reference [.runscheduled, rules]
     - !reference [.onsuccessjob, rules]
-#    - changes:
-#        - $QT5PAS_SRC/**/*
 
 update-qt6pas-bindings:  # build and cache Qt6 Pascal bindings
   stage: prepcaches
@@ -85,15 +106,11 @@ update-qt6pas-bindings:  # build and cache Qt6 Pascal bindings
     - make
   cache:
     key: qt6pas-cache-$CI_COMMIT_REF_SLUG
-#    policy: push
-    untracked: true
     paths:
       - $QT6PAS_SRC/
   rules:
     - !reference [.runscheduled, rules]
     - !reference [.onsuccessjob, rules]
-#    - changes:
-#        - $QT6PAS_SRC/**/*
 
 .useqt5cache:  # this hidden job defines cache configuration used by Qt5 IDE building jobs
   script:
