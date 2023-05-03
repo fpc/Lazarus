@@ -93,6 +93,7 @@ type
     class procedure SetDropDownCount(const ACustomComboBox: TCustomComboBox; NewCount: Integer); override;
 
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
+    class procedure FreeItems(var AItems: TStrings); override;
     {class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;}
 
     class function GetItemHeight(const ACustomComboBox: TCustomComboBox): Integer; override;
@@ -1972,6 +1973,15 @@ begin
     Result:=TCocoaReadOnlyComboBox(ACustomComboBox.Handle).list
   else
     Result:=TCocoaComboBox(ACustomComboBox.Handle).list;
+end;
+
+class procedure TCocoaWSCustomComboBox.FreeItems(var AItems: TStrings);
+begin
+  // in Cocoa, TCocoaComboBox.list should be released in TCocoaComboBox.dealloc(),
+  // to avoid invalid TCocoaComboBox.list in TCocoaComboBox.comboBox_indexOfItemWithStringValue().
+  // which will be called even in TCocoaWSWinControl.DestoryWnd(),
+  // when TCocoaComboBox hasMarkedText (in IME state).
+  // after all, it is more appropriate to release with other resources in dealloc().
 end;
 
 class function TCocoaWSCustomComboBox.GetItemHeight(const ACustomComboBox:
