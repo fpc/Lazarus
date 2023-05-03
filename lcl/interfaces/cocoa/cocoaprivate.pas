@@ -75,6 +75,10 @@ type
     procedure KeyEvHandled;
     procedure SetTabSuppress(ASuppress: Boolean);
 
+    // only Cocoa Event Mechanism (no LCL Event), if the IME is in use
+    function IsCocoaOnlyState: Boolean;
+    procedure SetCocoaOnlyState( state:Boolean );
+
     function scrollWheel(Event: NSEvent): Boolean;
     function CanFocus: Boolean;
     // size, pos events
@@ -115,6 +119,7 @@ type
     // properties
     property HasCaret: Boolean read GetHasCaret write SetHasCaret;
     property IsOpaque: Boolean read GetIsOpaque write SetIsOpaque;
+    property CocoaOnlyState: Boolean read IsCocoaOnlyState write SetCocoaOnlyState;
   end;
 
   { LCLObjectExtension }

@@ -145,10 +145,8 @@ type
     keepWinLevel : NSInteger;
     //LCLForm: TCustomForm;
     procedure dealloc; override;
-    function acceptsFirstResponder: LCLObjCBoolean; override;
+    function makeFirstResponder(aResponder: NSResponder): ObjCBOOL; override;
     function canBecomeKeyWindow: LCLObjCBoolean; override;
-    function becomeFirstResponder: LCLObjCBoolean; override;
-    function resignFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     // mouse
@@ -737,6 +735,7 @@ begin
   //DebugLn('[TCocoaWindow.windowWillReturnFieldEditor_toObject]');
   Result := nil;
 
+  // NSTextView itself is NSTextFieldEditor, then windowWillReturnFieldEditor never called for NSTextView
   if (NSObject(client).isKindOfClass(NSTextField)) and Assigned(NSObject(client).lclGetCallBack) then
   begin
     if (fieldEditor = nil) then
@@ -842,30 +841,9 @@ begin
   inherited dealloc;
 end;
 
-function TCocoaWindow.acceptsFirstResponder: LCLObjCBoolean;
-begin
-  Result := True;
-end;
-
 function TCocoaWindow.canBecomeKeyWindow: LCLObjCBoolean;
 begin
   Result := Assigned(callback) and callback.CanActivate;
-end;
-
-function TCocoaWindow.becomeFirstResponder: LCLObjCBoolean;
-begin
-  Result := inherited becomeFirstResponder;
-  // uncommenting the following lines starts an endless focus loop
-
-//  if Assigned(callback) then
-//    callback.BecomeFirstResponder;
-end;
-
-function TCocoaWindow.resignFirstResponder: LCLObjCBoolean;
-begin
-  Result := inherited resignFirstResponder;
-//  if Assigned(callback) then
-//    callback.ResignFirstResponder;
 end;
 
 function TCocoaWindow.lclGetCallback: ICommonCallback;
@@ -998,6 +976,12 @@ var
   mn : NSMenu;
   allowcocoa : Boolean;
 begin
+  if Assigned(_keyEvCallback) and _keyEvCallback.IsCocoaOnlyState then
+  begin
+    inherited keyDown(event);
+    Exit;
+  end;
+
   if performKeyEquivalent(event) then
     Exit;
 
@@ -1015,6 +999,69 @@ begin
 
   inherited keyDown(event);
 end;
+
+// return proper focused responder by kind of class of NSResponder
+function getProperFocusedResponder( const aResponder : NSResponder): NSResponder;
+var
+  dl : NSObject;
+begin
+  Result := aResponder;
+  if Result.isKindOfClass(TCocoaFieldEditor) then
+  begin
+    dl := {%H-}NSObject( TCocoaFieldEditor(Result).delegate );
+    if Assigned(dl) and (dl.isKindOfClass(NSView)) then
+      Result := NSResponder(dl);
+  end
+  else
+  if Result.isKindOfClass(NSWindow) then
+  begin
+    // critical step to avoid infinite loops caused by
+    // 'Focus-fight' between LCL and COCOA
+    Result := nil;
+  end
+  else
+  begin
+    Result := Result.lclContentView;
+  end;
+end;
+
+// send KillFocus/SetFocus messages to LCL at the right time
+// 1. KillFocus/SetFocus messages should be sent after LCLIntf.SetFocus() in LCL,
+// and before generating CM_UIACTIVATE message in LCL,
+// this adapts to LCL, just like Win32.
+// 2. if KillFocus/SetFocus messages are delayed,
+// such as at the end of TCocoaApplication.sendevent(), it will cause many problems.
+// for example, there are two buttons showing the selected state.
+// 3. makeFirstResponder() already avoids infinite loops caused by 'Focus-fight'
+// between LCL and COCOA, see also:
+// https://wiki.lazarus.freepascal.org/Cocoa_Internals/Application#Focus_Change
+function TCocoaWindow.makeFirstResponder( aResponder : NSResponder ): ObjCBOOL;
+var
+  lastResponder : NSResponder;
+  newResponder : NSResponder;
+begin
+  lastResponder := self.firstResponder;
+  newResponder := aResponder;
+
+  // do toggle Focused Control
+  // Result=false when the focused control has not been changed
+  Result := inherited makeFirstResponder( newResponder );
+  if not Result then exit;
+
+  // send KillFocus/SetFocus messages to LCL
+  // 1st: send KillFocus Message first
+  lastResponder := getProperFocusedResponder( lastResponder );
+  if Assigned(lastResponder) and Assigned(lastResponder.lclGetCallback) then
+    lastResponder.lclGetCallback.ResignFirstResponder;
+
+  // 2st: send SetFocus Message
+  // focused control may not be aResponder
+  // get focused control via firstResponder again
+  newResponder := getProperFocusedResponder( self.firstResponder );
+  if Assigned(newResponder) and Assigned(newResponder.lclGetCallback) then
+    newResponder.lclGetCallback.BecomeFirstResponder;
+end;
+
 
 function TCocoaWindowContentDocument.draggingEntered(sender: NSDraggingInfoProtocol): NSDragOperation;
 begin
