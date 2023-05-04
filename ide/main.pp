@@ -5051,7 +5051,7 @@ begin
     IDEOptionsDialog.OnLoadIDEOptionsHook:=@IDEOptionsLoader;
     IDEOptionsDialog.OnSaveIDEOptionsHook:=@IDEOptionsSaver;
     IDEOptionsDialog.ReadAll;
-    IDEOptionsDialog.ShowModal;
+    Result := IDEOptionsDialog.ShowModal = mrOk;
   finally
     IDEOptionsDialog.Free;
   end;

@@ -37,8 +37,6 @@ uses
   // LazControls
   TreeFilterEdit,
   LazControlDsgn, // move this to lazarus.lpr
-  // LazUtils
-  LazUtilities,
   // IdeIntf
   IDEWindowIntf, IDEOptionsIntf, IDEOptEditorIntf, IDECommands, IDEHelpIntf,
   IdeIntfStrConsts, ProjectIntf, IDEImagesIntf,
@@ -215,16 +213,11 @@ begin
     GroupClass := FindGroupClass(Node);
   end;
   // Show the Build Mode panel for project compiler options
-  SetBuildModeVisibility((GroupClass <> nil) and (GroupClass.InheritsFrom(TProjectCompilerOptions)));
-  // Show the Apply button
+  SetBuildModeVisibility((GroupClass <> nil)
+                     and (GroupClass.InheritsFrom(TProjectCompilerOptions)));
+  // Show the Apply button only for global options (not project or package options).
   btnApply.Visible := (GroupClass <> nil)
-    // project options
-    and (not GroupClass.InheritsFrom(TProjectCompilerOptions))
-    and (not GroupClass.InheritsFrom(TProjectIDEOptions))
-    // package options
-    and (not GroupClass.InheritsFrom(TPackageIDEOptions))
-    and (not GroupClass.InheritsFrom(TPkgCompilerOptions))
-    ;
+                  and (GroupClass.InheritsFrom(TAbstractIDEEnvironmentOptions));
   // Hide the old and show the new editor frame
   if Assigned(AEditor) then
     FNewLastSelected := AEditor.Rec;
@@ -325,14 +318,10 @@ end;
 
 procedure TIDEOptionsDialog.ApplyButtonClick(Sender: TObject);
 begin
-  IDEEditorGroups.LastSelected := FNewLastSelected;
   if not CheckValues then
     Exit;
-
   WriteAll(false);  // write new values
-  //if ConsoleVerbosity>0 then
-    DebugLn(['Hint: (lazarus) TMainIDE.DoOpenIDEOptions: Options saved, updating TaskBar. Verbosity=', ConsoleVerbosity]);
-
+  DebugLn(['TIDEOptionsDialog.ApplyButtonClick: Options saved, updating TaskBar.']);
   // update TaskBarBehavior immediately
   if EnvironmentOptions.Desktop.SingleTaskBarButton
     then Application.TaskBarBehavior := tbSingleButton
@@ -341,10 +330,11 @@ end;
 
 procedure TIDEOptionsDialog.OkButtonClick(Sender: TObject);
 begin
-  ApplyButtonClick(Sender); // apply
-  if not CheckValues then // double call
-    Exit;
-
+  IDEEditorGroups.LastSelected := FNewLastSelected;
+  if btnApply.Visible then  // visible only for global options
+    ApplyButtonClick(Sender)
+  else if CheckValues then
+    WriteAll(false);  // write new values
   // close
   if WindowState <> wsMaximized then
     IDEDialogLayoutList.SaveLayout(Self);
@@ -355,8 +345,8 @@ procedure TIDEOptionsDialog.CancelButtonClick(Sender: TObject);
 begin
   // cancel
   WriteAll(true); // restore old values
+  // ToDo: Set build target only for project options.
   MainBuildBoss.SetBuildTargetProject1;
-
   // close
   if WindowState <> wsMaximized then
     IDEDialogLayoutList.SaveLayout(Self);
