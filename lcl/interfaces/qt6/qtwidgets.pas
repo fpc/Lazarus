@@ -16699,11 +16699,14 @@ end;
 
 function TQtMenuBar.addMenu(AMenu: QMenuH): QActionH;
 begin
+
+  {$IFNDEF DARWIN}
   if ShouldShowMenuBar and (not FVisible) then
   begin
     FVisible := True;
     setVisible(FVisible);
   end;
+  {$ENDIF}
   Result := QMenuBar_addMenu(QMenuBarH(Widget), AMenu);
 end;
 
@@ -16716,11 +16719,13 @@ var
   seq: QKeySequenceH;
   WStr: WideString;
 begin
+  {$IFNDEF DARWIN}
   if ShouldShowMenuBar and (not FVisible) then
   begin
     FVisible := True;
     setVisible(FVisible);
   end;
+  {$ENDIF}
   actionBefore := getActionByIndex(AIndex);
   if actionBefore <> nil then
     Result := QMenuBar_insertMenu(QMenuBarH(Widget), actionBefore, AMenu)
