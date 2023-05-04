@@ -984,11 +984,8 @@ begin
 end;
 
 function TQtFontInfo.GetFamily: WideString;
-var
-  WStr: WideString;
 begin
-  QFontInfo_family(FHandle, @WStr);
-  Result := UTF8ToUTF16(WStr);
+  QFontInfo_family(FHandle, @Result);
 end;
 
 function TQtFontInfo.GetFixedPitch: Boolean;
@@ -2016,6 +2013,7 @@ var
   QtPattern: TQRealArray;
   i: integer;
 begin
+  QtPattern := nil;
   SetLength(QtPattern, ALength);
   for i := 0 to ALength - 1 do
     QtPattern[i] := APattern[i];
@@ -3902,7 +3900,7 @@ begin
     Clip := Clipbrd.Clipboard(ctPrimarySelection);
     Clip.OnRequest := nil;
     FOnClipBoardRequest[ctPrimarySelection] := nil;
-    Clip.AsText := UTF8Decode(WStr);
+    Clip.AsText := UTF16ToUTF8(WStr);
     EndUpdate;
   end;
 end;
@@ -3945,13 +3943,11 @@ begin
       QMimeData_hasURLS(TempMimeData)) then
     begin
       QMimeData_text(TempMimeData, @Str);
-      Str := UTF16ToUTF8(Str);
 
-      Str2 := Clipbrd.Clipboard.AsText;
-
+      Str2 := UTF8ToUTF16(Clipbrd.Clipboard.AsText);
       Result := Str <> Str2;
       if Result then
-        Clipbrd.Clipboard.AsText := Str;
+        Clipbrd.Clipboard.AsText := UTF16ToUTF8(Str);
     end;
   finally
     FLockClip := False;
@@ -3995,7 +3991,7 @@ var
     begin
       DataStream.Size := 0;
       DataStream.Position := 0;
-      MimeType := FormatToMimeType(Clip.Formats[I]);
+      MimeType := UTF8ToUTF16(FormatToMimeType(Clip.Formats[I]));
       FOnClipBoardRequest[ClipboardType](Clip.Formats[I], DataStream);
       Data := QByteArray_create(PAnsiChar(DataStream.Memory), DataStream.Size);
       if (QByteArray_length(Data) > 1) and QByteArray_endsWith(Data, #0) then
@@ -4092,7 +4088,7 @@ var
 begin
   Result := False;
   QtMimeData := getMimeData(ClipbBoardTypeToQtClipboard[ClipBoardType]);
-  MimeType := FormatToMimeType(FormatID);
+  MimeType := UTF8ToUTF16(FormatToMimeType(FormatID));
   Data := QByteArray_create();
   QMimeData_data(QtMimeData, Data, @MimeType);
   s := QByteArray_size(Data);
@@ -4127,8 +4123,7 @@ begin
     for i := 0 to Count - 1 do
     begin
       QStringList_at(QtList, @Str, i);
-      Str := UTF16ToUTF8(Str);
-      List[i] := RegisterFormat(Str);
+      List[i] := RegisterFormat(UTF16ToUTF8(Str));
     end;
 
     Result := True;
@@ -4171,7 +4166,7 @@ function TQtClipboard.GetOwnerShip(ClipboardType: TClipboardType;
     begin
       DataStream.Size := 0;
       DataStream.Position := 0;
-      MimeType := FormatToMimeType(Formats[I]);
+      MimeType := UTF8ToUTF16(FormatToMimeType(Formats[I]));
       FOnClipBoardRequest[ClipboardType](Formats[I], DataStream);
       Data := QByteArray_create(PAnsiChar(DataStream.Memory), DataStream.Size);
       {do not remove #0 from Application/X-Laz-SynEdit-Tagged issue #25692}
@@ -4262,7 +4257,7 @@ begin
   QPrinterInfo_destroy(PrnInfo);
   if PrnName = '' then
     PrnName := 'unknown';
-  Result := UTF8ToUTF16(PrnName);
+  Result := PrnName;
 end;
 
 {returns available list of printers.
@@ -4291,16 +4286,16 @@ begin
       begin
         QPrinterInfo_printerName(Prntr, @PrnName);
         if QPrinterInfo_isDefault(Prntr) then
-          Lst.Insert(0, UTF8ToUTF16(PrnName))
+          Lst.Insert(0, UTF16ToUTF8(PrnName))
         else
-          Lst.Add(UTF8ToUTF16(PrnName));
+          Lst.Add(UTF16ToUTF8(PrnName));
       end;
     end;
   finally
     QPrinterInfo_destroy(PrnInfo);
   end;
 
-  i := Lst.IndexOf(Str);
+  i := Lst.IndexOf(UTF16ToUTF8(Str));
   if i > 0 then
     Lst.Move(i, 0);
   Result := Lst.Count > 0;
@@ -4354,11 +4349,8 @@ begin
 end;
 
 function TQtPrinter.getCreator: WideString;
-var
-  Str: WideString;
 begin
-  QPrinter_creator(Handle, @Str);
-  Result := UTF16ToUTF8(Str);
+  QPrinter_creator(Handle, @Result);
 end;
 
 function TQtPrinter.getDevType: Integer;
@@ -4367,11 +4359,8 @@ begin
 end;
 
 function TQtPrinter.getDocName: WideString;
-var
-  Str: WideString;
 begin
-  QPrinter_docName(Handle, @Str);
-  Result := UTF16ToUTF8(Str);
+  QPrinter_docName(Handle, @Result);
 end;
 
 function TQtPrinter.getDoubleSidedPrinting: Boolean;
@@ -4410,11 +4399,8 @@ begin
 end;
 
 function TQtPrinter.getPrintProgram: WideString;
-var
-  Str: WideString;
 begin
-  QPrinter_printProgram(Handle, @Str);
-  Result := UTF16ToUTF8(Str);
+  QPrinter_printProgram(Handle, @Result);
 end;
 
 function TQtPrinter.getPrintRange: QPrinterPrintRange;
@@ -4433,19 +4419,13 @@ begin
 end;
 
 procedure TQtPrinter.setCreator(const AValue: WideString);
-var
-  Str: WideString;
 begin
-  Str := GetUtf8String(AValue);
-  QPrinter_setCreator(Handle, @Str);
+  QPrinter_setCreator(Handle, @AValue);
 end;
 
 procedure TQtPrinter.setDocName(const AValue: WideString);
-var
-  Str: WideString;
 begin
-  Str := GetUtf8String(AValue);
-  QPrinter_setDocName(Handle, @Str);
+  QPrinter_setDocName(Handle, @AValue);
 end;
 
 procedure TQtPrinter.setDoubleSidedPrinting(const AValue: Boolean);
@@ -4469,36 +4449,24 @@ begin
 end;
 
 procedure TQtPrinter.setPrinterName(const AValue: WideString);
-var
-  Str: WideString;
 begin
-  Str := GetUtf8String(AValue);
-  if getPrinterName <> Str then
-    QPrinter_setPrinterName(Handle, @Str);
+  if getPrinterName <> AValue then
+    QPrinter_setPrinterName(Handle, @AValue);
 end;
 
 function TQtPrinter.getPrinterName: WideString;
-var
-  Str: WideString;
 begin
-  QPrinter_printerName(Handle, @Str);
-  Result := UTF16ToUTF8(Str);
+  QPrinter_printerName(Handle, @Result);
 end;
 
 procedure TQtPrinter.setOutputFileName(const AValue: WideString);
-var
-  Str: WideString;
 begin
-  Str := GetUtf8String(AValue);
-  QPrinter_setOutputFileName(Handle, @Str);
+  QPrinter_setOutputFileName(Handle, @AValue);
 end;
 
 function TQtPrinter.getOutputFileName: WideString;
-var
-  Str: WideString;
 begin
-  QPrinter_outputFileName(Handle, @Str);
-  Result := UTF16ToUTF8(Str);
+  QPrinter_outputFileName(Handle, @Result);
 end;
 
 procedure TQtPrinter.setOrientation(const AValue: QPrinterOrientation);
@@ -4532,11 +4500,8 @@ begin
 end;
 
 procedure TQtPrinter.setPrintProgram(const AValue: WideString);
-var
-  Str: WideString;
 begin
-  Str := GetUtf8String(AValue);
-  QPrinter_setPrintProgram(Handle, @Str);
+  QPrinter_setPrintProgram(Handle, @AValue);
 end;
 
 procedure TQtPrinter.setPrintRange(const AValue: QPrinterPrintRange);
@@ -5022,19 +4987,13 @@ begin
 end;
 
 function TQtActionGroup.addAction(text: WideString): QActionH;
-var
-  WStr: WideString;
 begin
-  WStr := GetUTF8String(text);
-  Result := QActionGroup_addAction(FHandle, @WStr);
+  Result := QActionGroup_addAction(FHandle, @text);
 end;
 
 function TQtActionGroup.addAction(icon: QIconH; text: WideString): QActionH;
-var
-  WStr: WideString;
 begin
-  WStr := GetUTF8String(text);
-  Result := QActionGroup_addAction(FHandle, icon, @WStr);
+  Result := QActionGroup_addAction(FHandle, icon, @text);
 end;
 
 procedure TQtActionGroup.removeAction(action: QActionH);

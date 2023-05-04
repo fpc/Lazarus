@@ -5724,11 +5724,8 @@ begin
 end;
 
 function TQtWidget.GetStyleSheet: WideString;
-var
-  WStr: WideString;
 begin
-  QWidget_styleSheet(Widget, @WStr);
-  Result := UTF16ToUTF8(WStr);
+  QWidget_styleSheet(Widget, @Result);
 end;
 
 {------------------------------------------------------------------------------
@@ -5804,11 +5801,8 @@ begin
 end;
 
 procedure TQtWidget.SetStyleSheet(const AValue: WideString);
-var
-  WStr: WideString;
 begin
-  WStr := GetUTF8String(AValue);
-  QWidget_setStyleSheet(Widget, @WStr);
+  QWidget_setStyleSheet(Widget, @AValue);
 end;
 
 procedure TQtWidget.SetWidget(const AValue: QWidgetH);
@@ -19640,11 +19634,11 @@ begin
       else
         ATitle := 'error file';
       if path <> nil then
-        ATitle := Format('%d x %d x %d',[ASize.cx, ASize.cy, QPixmap_depth(APixmap)]);
+        ATitle := UTF8ToUTF16(Format('%d x %d x %d',[ASize.cx, ASize.cy, QPixmap_depth(APixmap)]));
       QLabel_setText(FTextWidget, @ATitle);
       ATitle := ExtractFileName(path^);
       QWidget_setToolTip(FTextWidget, @ATitle);
-      ATitle := ATitle + LineEnding + Format('w %d x h %d x %d',[ASize.cx, ASize.cy, QPixmap_depth(APixmap)]);
+      ATitle := ATitle + LineEnding + UTF8ToUTF16(Format('w %d x h %d x %d',[ASize.cx, ASize.cy, QPixmap_depth(APixmap)]));
       QWidget_setToolTip(FPreviewWidget, @ATitle);
       ANewPixmap := QPixmap_create;
       // QPixmap_scaled(APixmap, ANewPixmap,
@@ -19975,35 +19969,23 @@ begin
 end;
 
 procedure TQtMessageBox.setDetailText(const AValue: WideString);
-var
-  Str: WideString;
 begin
-  Str := GetUTF8String(AValue);
-  QMessageBox_setDetailedText(QMessageBoxH(Widget), @Str);
+  QMessageBox_setDetailedText(QMessageBoxH(Widget), @AValue);
 end;
 
 function TQtMessageBox.getMessageStr: WideString;
-var
-  Str: WideString;
 begin
-  QMessageBox_text(QMessageBoxH(Widget), @Str);
-  Result := UTF16ToUTF8(Str);
+  QMessageBox_text(QMessageBoxH(Widget), @Result);
 end;
 
 function TQtMessageBox.getDetailText: WideString;
-var
-  Str: WideString;
 begin
-  QMessageBox_detailedText(QMessageBoxH(Widget), @Str);
-  Result := UTF16ToUTF8(Str);
+  QMessageBox_detailedText(QMessageBoxH(Widget), @Result);
 end;
 
 procedure TQtMessageBox.setMessageStr(const AValue: WideString);
-var
-  Str: WideString;
 begin
-  Str := GetUTF8String(AValue);
-  QMessageBox_setText(QMessageBoxH(Widget), @Str);
+  QMessageBox_setText(QMessageBoxH(Widget), @AValue);
 end;
 
 procedure TQtMessageBox.setMsgBoxType(const AValue: QMessageBoxIcon);
@@ -20020,7 +20002,7 @@ procedure TQtMessageBox.setTitle(const AValue: WideString);
 begin
   if AValue <> FTitle then
   begin
-    FTitle := GetUTF8String(AValue);
+    FTitle := AValue;
     QMessageBox_setWindowTitle(QMessageBoxH(Widget), @FTitle);
   end;
 end;
@@ -20124,22 +20106,16 @@ end;
 
 function TQtMessageBox.AddButton(ACaption: WideString; ABtnType: QMessageBoxStandardButton;
    AResult: Int64; const ADefaultBtn: Boolean; const AEscapeBtn: Boolean): QPushButtonH;
-var
-  Str: WideString;
 begin
   Result := QMessageBox_addButton(QMessageBoxH(Widget), ABtnType);
-  Str := GetUTF8String(ACaption);
-  QAbstractButton_setText(Result, @Str);
+  QAbstractButton_setText(Result, @ACaption);
   SetButtonProps(Result, AResult, ADefaultBtn, AEscapeBtn);
 end;
 
 function TQtMessageBox.AddButton(ACaption: WideString; AResult: Int64; const ADefaultBtn: Boolean;
   const AEscapeBtn: Boolean): QPushButtonH;
-var
-  Str: WideString;
 begin
-  Str := GetUTF8String(ACaption);
-  Result := QMessageBox_addButton(QMessageBoxH(Widget), @Str, QMessageBoxActionRole);
+  Result := QMessageBox_addButton(QMessageBoxH(Widget), @ACaption, QMessageBoxActionRole);
   SetButtonProps(Result, AResult, ADefaultBtn, AEscapeBtn);
 end;
 
