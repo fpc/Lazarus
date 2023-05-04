@@ -469,7 +469,7 @@ begin
 
     Flags := 0;
     if not (ofOverwritePrompt in TSaveDialog(FileDialog).Options) then
-      Flags := Flags or QFileDialogDontConfirmOverwrite;
+      Flags := Flags or QFileDialogOptionDontConfirmOverwrite;
     {$IFDEF HASX11}
     Clipboard.BeginX11SelectionLock;
     try
@@ -543,7 +543,7 @@ begin
 
     Flags := 0;
     if (ofReadOnly in TOpenDialog(FileDialog).Options) then
-      Flags := Flags or QFileDialogReadOnly;
+      Flags := Flags or QFileDialogOptionReadOnly;
 
     if (ofAllowMultiSelect in TOpenDialog(FileDialog).Options) then
     begin
