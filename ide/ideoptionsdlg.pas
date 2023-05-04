@@ -32,19 +32,20 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLProc, LCLType, Controls, Forms, ComCtrls, Buttons, ButtonPanel,
-  ExtCtrls, StdCtrls, Dialogs,
+  LCLType, Controls, Forms, ComCtrls, Buttons, ButtonPanel, ExtCtrls, StdCtrls, Dialogs,
   // LazControls
   TreeFilterEdit,
-  LazControlDsgn, // move this to lazarus.lpr
+  LazControlDsgn, // needed here to register components in LazControls palette. Why?
+  // LazUtils
+  LazLoggerBase,
   // IdeIntf
   IDEWindowIntf, IDEOptionsIntf, IDEOptEditorIntf, IDECommands, IDEHelpIntf,
-  IdeIntfStrConsts, ProjectIntf, IDEImagesIntf,
+  IdeIntfStrConsts, ProjectIntf,
   // IDE
   EnvironmentOpts, EditorOptions, BuildModesManager, BuildManager, Compiler_ModeMatrix,
   Project, LazarusIDEStrConsts,
   // Packager
-  PackageDefs, PackageSystem;
+  PackageDefs;
 
 type
   TIDEOptsDlgAction = (
