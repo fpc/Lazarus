@@ -6720,6 +6720,7 @@ begin
        +LazarusSrcDir+'/components/ideintf;'
        +LazarusSrcDir+'/components/lazutils;'
        +LazarusSrcDir+'/components/lazcontrols;'
+       +LazarusSrcDir+'/components/lazcontrols/design;'
        +LazarusSrcDir+'/components/synedit;'
        +LazarusSrcDir+'/components/codetools;'
        +LazarusSrcDir+'/components/lazdebuggergdbmi;'
