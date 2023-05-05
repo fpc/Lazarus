@@ -145,6 +145,8 @@ type
     property LastSelected: PIDEOptionsEditorRec read FLastSelected write FLastSelected;
   end;
 
+  { TAbstractOptionsEditorDialog }
+
   TAbstractOptionsEditorDialog = class(TForm)
   public
     function AddButton: TBitBtn; virtual; abstract;
@@ -181,6 +183,8 @@ const
 
 
 implementation
+
+{$R *.lfm}
 
 var
   FIDEEditorGroups: TIDEOptionsGroupList;

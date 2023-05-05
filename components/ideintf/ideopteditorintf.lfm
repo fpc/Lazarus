@@ -1,0 +1,7 @@
+object AbstractOptionsEditorDialog: TAbstractOptionsEditorDialog
+  Left = 365
+  Height = 500
+  Top = 201
+  Width = 800
+  LCLVersion = '2.3.0.0'
+end

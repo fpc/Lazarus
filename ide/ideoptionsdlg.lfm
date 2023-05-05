@@ -1,28 +1,23 @@
-object IDEOptionsDialog: TIDEOptionsDialog
-  Left = 372
-  Height = 500
+inherited IDEOptionsDialog: TIDEOptionsDialog
+  Left = 370
   Top = 202
-  Width = 800
   ActiveControl = FilterEdit
   BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'IDEOptionsDialog'
-  ClientHeight = 500
-  ClientWidth = 800
   Constraints.MinHeight = 350
   Constraints.MinWidth = 500
   KeyPreview = True
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   Position = poWorkAreaCenter
-  LCLVersion = '2.3.0.0'
-  object ButtonPanel: TButtonPanel
+  object ButtonPanel: TButtonPanel[0]
     AnchorSideLeft.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     Left = 6
-    Height = 42
-    Top = 452
+    Height = 56
+    Top = 438
     Width = 788
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
@@ -40,22 +35,22 @@ object IDEOptionsDialog: TIDEOptionsDialog
     TabOrder = 0
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
-  object CatTVSplitter: TSplitter
+  object CatTVSplitter: TSplitter[1]
     Left = 255
-    Height = 452
+    Height = 438
     Top = 0
     Width = 4
   end
-  object CategoryPanel: TPanel
+  object CategoryPanel: TPanel[2]
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 0
-    Height = 452
+    Height = 438
     Top = 0
     Width = 255
     Align = alLeft
     BevelOuter = bvNone
-    ClientHeight = 452
+    ClientHeight = 438
     ClientWidth = 255
     Constraints.MinWidth = 150
     TabOrder = 2
@@ -67,8 +62,8 @@ object IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = SettingsPanel
       Left = 6
-      Height = 403
-      Top = 43
+      Height = 388
+      Top = 44
       Width = 249
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Top = 6
@@ -87,7 +82,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideTop.Control = CategoryPanel
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 31
+      Height = 32
       Top = 6
       Width = 249
       OnFilterItem = FilterEditFilterItem
@@ -103,7 +98,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
     object SettingsPanel: TPanel
       Left = 0
       Height = 6
-      Top = 446
+      Top = 432
       Width = 255
       Align = alBottom
       AutoSize = True
@@ -112,7 +107,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
       TabOrder = 2
     end
   end
-  object BuildModeSelectPanel: TPanel
+  object BuildModeSelectPanel: TPanel[3]
     AnchorSideLeft.Control = CatTVSplitter
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = Owner
@@ -131,8 +126,8 @@ object IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideLeft.Control = BuildModesLabel
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = BuildModeSelectPanel
-      Left = 119
-      Height = 35
+      Left = 105
+      Height = 31
       Top = 6
       Width = 175
       BorderSpacing.Left = 6
@@ -148,8 +143,8 @@ object IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideTop.Control = BuildModeComboBox
       AnchorSideBottom.Control = BuildModeComboBox
       AnchorSideBottom.Side = asrBottom
-      Left = 295
-      Height = 35
+      Left = 281
+      Height = 31
       Top = 6
       Width = 23
       Anchors = [akTop, akLeft, akBottom]
@@ -163,15 +158,15 @@ object IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideTop.Control = BuildModeComboBox
       AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 19
+      Height = 15
       Top = 14
-      Width = 107
+      Width = 93
       BorderSpacing.Left = 6
       Caption = 'BuildModesLabel'
       ParentColor = False
     end
   end
-  object EditorsPanel: TScrollBox
+  object EditorsPanel: TScrollBox[4]
     AnchorSideLeft.Control = CatTVSplitter
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = BuildModeSelectPanel
@@ -180,7 +175,7 @@ object IDEOptionsDialog: TIDEOptionsDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel
     Left = 259
-    Height = 412
+    Height = 398
     Top = 40
     Width = 535
     HorzScrollBar.Page = 1

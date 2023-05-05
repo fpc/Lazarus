@@ -35,7 +35,6 @@ uses
   LCLType, Controls, Forms, ComCtrls, Buttons, ButtonPanel, ExtCtrls, StdCtrls, Dialogs,
   // LazControls
   TreeFilterEdit,
-  LazControlDsgn, // needed here to register components in LazControls palette. Why?
   // LazUtils
   LazLoggerBase,
   // IdeIntf
