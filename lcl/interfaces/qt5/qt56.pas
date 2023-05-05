@@ -5541,9 +5541,10 @@ function QGuiApplication_isSessionRestored(handle: QGuiApplicationH): Boolean; c
 procedure QGuiApplication_sessionId(handle: QGuiApplicationH; retval: PWideString); cdecl; external Qt5PasLib name 'QGuiApplication_sessionId';
 procedure QGuiApplication_sessionKey(handle: QGuiApplicationH; retval: PWideString); cdecl; external Qt5PasLib name 'QGuiApplication_sessionKey';
 function QGuiApplication_isSavingSession(handle: QGuiApplicationH): Boolean; cdecl; external Qt5PasLib name 'QGuiApplication_isSavingSession';
+{$IFNDEF QT_NO_SESSIONMANAGER}
 function QGuiApplication_isFallbackSessionManagementEnabled(): Boolean; cdecl; external Qt5PasLib name 'QGuiApplication_isFallbackSessionManagementEnabled';
 procedure QGuiApplication_setFallbackSessionManagementEnabled(AEnabled: boolean); cdecl; external Qt5PasLib name 'QGuiApplication_setFallbackSessionManagementEnabled';
-
+{$ENDIF}
 
 type
   QGuiApplication_fontDatabaseChanged_Event = procedure () of object cdecl;
