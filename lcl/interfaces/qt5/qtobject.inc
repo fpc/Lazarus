@@ -317,7 +317,8 @@ begin
   {$IF DEFINED(QtUseNativeEventLoop) AND NOT DEFINED(HASX11)}
   if not QCoreApplication_hasPendingEvents() then
   {$ENDIF}
-    QCoreApplication_processEvents(QEventLoopWaitForMoreEvents);
+  QAbstractEventDispatcher_processEvents(QThread_eventDispatcher(QThread_currentThread()), QEventLoopWaitForMoreEvents);
+  //  QCoreApplication_processEvents(QEventLoopWaitForMoreEvents);
 end;
 
 {------------------------------------------------------------------------------
@@ -329,7 +330,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TQtWidgetSet.AppProcessMessages;
 begin
-  QCoreApplication_processEvents(QEventLoopAllEvents);
+  QAbstractEventDispatcher_processEvents(QThread_eventDispatcher(QThread_currentThread()), QEventLoopAllEvents);
+  // QCoreApplication_processEvents(QEventLoopAllEvents);
 end;
 
 {------------------------------------------------------------------------------
