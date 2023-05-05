@@ -1807,25 +1807,20 @@ var
     AControl,AParent: TControl;
     SubControlsCount,realsubcontrolcoun: integer;
   begin
+    AControl:=nil;
+    AParent:=nil;
+    result:=adlclWrongly;
     if Node.IsSplitter then begin
       inc(ControlsCount);
       exit(adlclCorrect);
     end
-    else if Node=Tree.Root then begin
-      result:=adlclCorrect;
-      AControl:=nil;
-      AParent:=nil;
-    end
+    else if Node=Tree.Root then
+      result:=adlclCorrect
     else begin
       AControl:=FindControl(Node.Name);
       AParent:=FindControl(GetRealParent(Node).Name);
       if Node.NodeType=adltnLayout then result:=adlclCorrect
-      else if AControl is TAnchorDockPanel then result:=adlclCorrect
-      else if AControl=nil then result:=adlclWrongly
-      else if GetDockParent(AControl)<>AParent then result:=adlclWrongly
-      else
-      begin
-      end;
+      else if AControl is TAnchorDockPanel then result:=adlclCorrect;
     end;
     if AControl<>nil then
     if not (AControl is TAnchorDockHostSite) then
