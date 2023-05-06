@@ -1124,10 +1124,20 @@ procedure TCustomChartSource.FindBounds(
   AXMin, AXMax: Double; out ALB, AUB: Integer);
 
   function FindLB(const X: Double; L, R: Integer): Integer;
+  var
+    xVal: Double;
   begin
     while L <= R do begin
       Result := (R - L) div 2 + L;
-      if Item[Result]^.X < X then
+      xVal := Item[Result]^.X;
+      if IsNaN(xVal) then
+      begin
+        if (Result = 0) or (Result = Count-1) then
+          break
+        else
+          dec(L)
+      end else
+      if xVal < X then
         L := Result + 1
       else
         R := Result - 1;
@@ -1136,10 +1146,20 @@ procedure TCustomChartSource.FindBounds(
   end;
 
   function FindUB(const X: Double; L, R: Integer): Integer;
+  var
+    xVal: Double;
   begin
     while L <= R do begin
       Result := (R - L) div 2 + L;
-      if Item[Result]^.X <= X then
+      xVal := Item[Result]^.X;
+      if IsNaN(xVal) then
+      begin
+        if (Result = 0) or (Result = Count-1) then
+          break
+        else
+          inc(R);
+      end else
+      if xVal <= X then
         L := Result + 1
       else
         R := Result - 1;

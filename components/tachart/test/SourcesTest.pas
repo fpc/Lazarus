@@ -344,6 +344,10 @@ begin
   FSource.SetXValue(0, SafeNan);
   Check2(2, 2, -1e100, 3);
   Check2(2, 2, NegInfinity, 3);
+
+  FSource.Clear;
+  FSource.Add(SafeNaN, SafeNaN);
+  Check2(0, 0, NegInfinity, Infinity);
 end;
 
 procedure TListSourceTest.Cache;
