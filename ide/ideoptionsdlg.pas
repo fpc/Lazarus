@@ -343,8 +343,7 @@ end;
 
 procedure TIDEOptionsDialog.OkButtonClick(Sender: TObject);
 begin
-  if not Apply then
-    Exit;
+  Apply;
   // close
   if WindowState <> wsMaximized then
     IDEDialogLayoutList.SaveLayout(Self);
