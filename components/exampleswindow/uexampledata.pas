@@ -30,8 +30,6 @@ project in a remote git repo. As we now do cover third party project, a remote
 {$mode ObjFPC}{$H+}
 {$WARN 6058 off : Call to subroutine "$1" marked as inline is not inlined}
 
-{X$define SHOW_DEBUG}      // ToDo : remove this
-
 interface
 
 uses
@@ -174,7 +172,6 @@ type
                                 // directory (ThirdParty) or in the copy in ExampleWorkArea (Lazarus SRC).
             function IsValidProject(ExIndex: integer): boolean;
             destructor Destroy; override;
-            procedure DumpExData();
             function Count : integer;
             property ErrorMsg : string read ErrorString write FSetErrorString;
             class function EscJSON(InStr: string): string;
@@ -222,7 +219,7 @@ begin
     Result := Result.Replace('"', '\"', [rfReplaceAll] );
 end;  *)
 
-function TExampleList.IsInKeywords(St: string; AnIndex: integer): boolean;      // ToDo : private now I think
+function TExampleList.IsInKeywords(St: string; AnIndex: integer): boolean;
     var KeyWord : String;
 begin
     result := false;
@@ -668,11 +665,6 @@ begin
     inherited Destroy;
 end;
 
-procedure TExampleData.DumpExData;                   // ToDo : remove this, just a debug thingo
-begin
-    ExList.DumpList('TExampleData.Dump', True);
-end;
-
 constructor TExampleData.Create();
 begin
     ExList := TExampleList.Create;
@@ -716,18 +708,12 @@ begin
     while True do begin
         inc(GetListDataIndex);
         if GetListDataIndex >= ExList.Count then exit;          // end of list
-        if TheCatFilter <> '' then begin                        // Find an entry in one of the categories
-            // skip ahead until we find next item with complient Category
-            if pos(ExList.Items[GetListDataIndex]^.Category, TheCatFilter) < 1 then begin
-                inc(GetListDataIndex);
-                if GetListDataIndex >= ExList.Count then exit;
-                continue;
-            end;
-        end;     // if to here, have an entry thats a match for category, how about keywords ?
+        if pos(ExList.Items[GetListDataIndex]^.Category, TheCatFilter) < 1 then
+            continue;
+        // if to here, have an entry thats a match for category, how about keywords ?
         if KeyList = nil then exit(GetListDataIndex);           // thats all we need then
         if ExList.IsInKeywords(KeyList, GetListDataIndex) then  // Found one !
             exit(GetListDataIndex);
-        // else, we loop around again, first find a category match then a keyword match, in both cases, if required.
     end;
 end;
 
@@ -766,8 +752,6 @@ begin
     if FindFirst(CheckPath + '*.lpi', faAnyFile, Info) = 0 then begin
         Result := CheckPath + Info.Name;
     end;
-    if Result = '' then
-        debugln('Hint : [TExampleData.GetProjectFile] - ' + CheckPath + ' does not contain an LPI file');
     FindClose(Info);
 end;
 

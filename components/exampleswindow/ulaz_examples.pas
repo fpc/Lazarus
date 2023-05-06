@@ -154,7 +154,7 @@ begin
             KeyW := '';
             for St in EX.ExList.Items[ExIndex]^.Keywords do
                 KeyW := KeyW + St + ' ';
-            NewLVItem(Ex.ExList[ExIndex]^.EName, KeyW, ExIndex);     // ToDo : review items
+            NewLVItem(Ex.ExList[ExIndex]^.EName, KeyW, ExIndex);
             ExIndex :=  Ex.FindListData(False, CFilter, KeyList);
         end;
     finally
@@ -517,12 +517,12 @@ end;
 procedure TFormLazExam.FormShow(Sender: TObject);
 var
     i : integer;
-    T1, T2, T3, T4, T5 : dword;       // ToDo : remove
+    // T1, T2, T3, T4, T5 : dword;
 begin
     Screen.BeginWaitCursor;
     Application.ProcessMessages;
     DisableAutoSizing;                    // good improvement on form draw time
-    T1 := gettickcount64();
+    //T1 := gettickcount64();
     Memo1.clear;
     EditSearch.text := '';
     Top := Screen.Height div 10;
@@ -533,23 +533,23 @@ begin
     Ex := TExampleData.Create();
     Ex.ExamplesHome := ExamplesHome;
     EX.LazConfigDir := LazConfigDir;
-    T2 := gettickcount64();
+    //T2 := gettickcount64();
     Ex.LoadExData(FromLazSrcTree);
-    T3 := gettickcount64();
+    //T3 := gettickcount64();
     Ex.LoadExData(FromThirdParty);
     if Ex.ErrorMsg <> '' then
         Showmessage(Ex.ErrorMsg);                       // Note : previously, we treated this as fatal ?
-    T4 := gettickcount64();
+    //T4 := gettickcount64();
     CheckGroupCategory.Items := Ex.CatList;
     for i := 0 to CheckGroupCategory.items.Count-1 do   // check all the categories we found.
         CheckGroupCategory.Checked[i] := true;
     ListView1.Clear;
     LoadUpListView();
     ListView1.SetFocus;
-    T5 := gettickcount64();
+    //T5 := gettickcount64();
     Screen.EndWaitCursor;
     Application.ProcessMessages;
-    debugln('TFormLazExam.FormShow Timing ' + inttostr(T2-T1) + 'mS '  + inttostr(T3-T2) + 'mS '  + inttostr(T4-T3) + 'mS '  + inttostr(T5-T4) + 'mS');
+    //debugln('TFormLazExam.FormShow Timing ' + inttostr(T2-T1) + 'mS '  + inttostr(T3-T2) + 'mS '  + inttostr(T4-T3) + 'mS '  + inttostr(T5-T4) + 'mS');
     EnableAutoSizing;
 end;
 
