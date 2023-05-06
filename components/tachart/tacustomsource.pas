@@ -547,6 +547,8 @@ begin
   for i := 0 to High(AItem^.XList) do XList[i] := AItem^.XList[i];
   SetLength(YList, Length(AItem^.YList));
   for i := 0 to High(AItem^.YList) do YList[i] := AItem^.YList[i];
+  Text := AItem^.Text;
+  Color := AItem^.Color;
 end;
 
 function TChartDataItem.GetX(AIndex: Integer): Double;
