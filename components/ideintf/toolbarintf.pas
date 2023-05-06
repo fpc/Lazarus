@@ -327,6 +327,8 @@ var
   ActiveEditor: TSourceEditorInterface;
   ScreenXY: TPoint;
 begin
+  if ActivePopupMenu <> nil then // work around for issue #40161
+    exit;
   ActiveEditor := SourceEditorManagerIntf.ActiveEditor;
   if ActiveEditor=nil then
     Exit;
