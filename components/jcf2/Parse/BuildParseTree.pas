@@ -602,7 +602,7 @@ begin
     Recognise(ttPlatform);
 
   Recognise(ttSemicolon);
-
+  RecogniseNotSolidTokens;
   PopNode;
 
   RecogniseInterfaceSection;
@@ -730,7 +730,7 @@ begin
   PopNode;
 
   Recognise(ttSemicolon);
-
+  RecogniseNotSolidTokens;
   PopNode;
 
   RecogniseNotSolidTokens;
@@ -804,7 +804,7 @@ begin
     RecogniseUsesClause(True);
 
   RecogniseInterfaceDecls;
-
+  RecogniseNotSolidTokens;
   PopNode;
 end;
 
@@ -920,7 +920,7 @@ begin
     RecogniseUsesClause(True);
 
   RecogniseDeclSections;
-
+  RecogniseNotSolidTokens;
   PopNode;
 end;
 
@@ -1088,7 +1088,7 @@ begin
     if leFirstTokenType = ttOperator then
       break;
   end;
-
+  RecogniseNotSolidTokens;
   PopNode;
 end;
 
@@ -1184,7 +1184,7 @@ begin
     end;
     lc := fcTokenList.FirstSolidToken;
   end;
-
+  RecogniseNotSolidTokens;
   PopNode;
 end;
 
@@ -2564,7 +2564,7 @@ begin
     if not (fcTokenList.FirstSolidTokenType in leEndVarSection) then
       Recognise(ttSemicolon);
   end;
-
+  RecogniseNotSolidTokens;
   PopNode;
 end;
 
@@ -4715,7 +4715,7 @@ begin
   else
     RaiseParseError('Expected initialisation, begin or end', lc);
   end;
-
+  RecogniseNotSolidTokens;
   PopNode;
 end;
 

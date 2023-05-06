@@ -160,10 +160,12 @@ begin
         Result := FormattingSettings.Indent.KeepCommentsWithCodeElsewhere;
     end;
   end
-  else if (pt.TokenType = ttComment) and (pt.CommentStyle = eCompilerDirective)
-          and (CompilerDirectiveLineBreak(pt,True)=eAlways) then
+  else if (pt.TokenType = ttComment) and (pt.CommentStyle = eCompilerDirective) then
   begin
-    Result:=true;
+    if CompilerDirectiveLineBreak(pt,True)=eAlways then
+      Result := true
+    else if CompilerDirectiveLineBreak(pt,True) in [eLeave,eNever] then
+      Result := IsPreprocesorFirstSolidTokenOnLine(pt);
   end;
 end;
 

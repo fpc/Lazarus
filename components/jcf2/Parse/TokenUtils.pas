@@ -101,6 +101,7 @@ function IsCaseColon(const pt: TSourceToken): boolean;
 function IsLabelColon(const pt: TSourceToken): boolean;
 
 function IsFirstSolidTokenOnLine(const pt: TSourceToken): boolean;
+function IsPreprocesorFirstSolidTokenOnLine(const pt: TSourceToken): boolean;
 
 function IsUnaryOperator(const pt: TSourceToken): boolean;
 
@@ -889,6 +890,23 @@ begin
   else
   begin
     Result := pt.HasParentNode(nAsmOpcode, 2) or IsAsmParamKeyword(pt.SourceCode);
+  end;
+end;
+
+function IsPreprocesorFirstSolidTokenOnLine(const pt: TSourceToken): boolean;
+var
+  lY:integer;
+  lPriorSolidToken:TSourceToken;
+begin
+  Result:=false;
+  if pt=nil then
+    Exit;
+  if (pt.TokenType = ttComment) and (pt.CommentStyle = eCompilerDirective) then
+  begin
+    lY:=pt.YPosition;
+    lPriorSolidToken:=pt.PriorSolidToken;
+    if (lPriorSolidToken<>nil) and (lPriorSolidToken.YPosition<>lY) then
+      Result:=True;
   end;
 end;
 

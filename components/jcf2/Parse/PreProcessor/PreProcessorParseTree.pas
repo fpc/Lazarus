@@ -606,11 +606,17 @@ begin
       lcExcludedText.TokenType := ttConditionalCompilationRemoved;
       case lbLFBefore of
         eAlways:lcExcludedText.SourceCode := TrimRightSet(lsOutText,NativeTabSpace); //only spaces not returns
-        eLeave: lcExcludedText.SourceCode := lsOutText;
+        eLeave:
+        begin
+          if StrEndsWithLineEnd(lsOutText) then
+            lcExcludedText.SourceCode:=TrimRightSet(lsOutText,NativeTabSpace) //only spaces not returns
+          else
+            lcExcludedText.SourceCode := lsOutText;
+        end;
         eNever: lcExcludedText.SourceCode := TrimRight(lsOutText);  // spaces and returns
       end;
       case lbLFAfter of
-        eAlways: lcExcludedText.SourceCode := TrimLeft(lcExcludedText.SourceCode);
+        eAlways: ;
         eLeave: ;
         eNever: lcExcludedText.SourceCode := TrimLeft(lcExcludedText.SourceCode);
       end;
