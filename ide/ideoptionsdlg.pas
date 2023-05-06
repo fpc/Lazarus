@@ -93,6 +93,7 @@ type
     FPrevEditor: TAbstractIDEOptionsEditor;
     FSelectNode: TTreeNode;
     FSettings: TIDEOptionsEditorSettings;
+    function Apply: Boolean;
     function FindGroupClass(Node: TTreeNode): TAbstractIDEOptionsClass;
     procedure TraverseSettings(AOptions: TAbstractIDEOptions; anAction: TIDEOptsDlgAction);
     function CheckValues: boolean;
@@ -147,6 +148,7 @@ begin
   btnApply := AddButton;
   btnApply.LoadGlyphFromResource(idButtonRetry); // not the best glyph for this button
   btnApply.OnClick := @ApplyButtonClick;
+  btnApply.Constraints.MinWidth := 75;
   ButtonPanel.OKButton.OnClick := @OKButtonClick;
   ButtonPanel.OKButton.ModalResult := mrNone;
   ButtonPanel.CancelButton.OnClick := @CancelButtonClick;
@@ -316,12 +318,23 @@ begin
   end;
 end;
 
-procedure TIDEOptionsDialog.ApplyButtonClick(Sender: TObject);
+function TIDEOptionsDialog.Apply: Boolean;
 begin
-  if not CheckValues then
+  Result := CheckValues;
+  if not Result then
+  begin
+    DebugLn(['TIDEOptionsDialog.Apply: CheckValues failed!']);
     Exit;
+  end;
+  IDEEditorGroups.LastSelected := FNewLastSelected;
   WriteAll(false);  // write new values
-  DebugLn(['TIDEOptionsDialog.ApplyButtonClick: Options saved, updating TaskBar.']);
+end;
+
+procedure TIDEOptionsDialog.ApplyButtonClick(Sender: TObject);
+// This is called only for global options, ApplyButton is hidden otherwise.
+begin
+  if not Apply then
+    Exit;
   // update TaskBarBehavior immediately
   if EnvironmentOptions.Desktop.SingleTaskBarButton
     then Application.TaskBarBehavior := tbSingleButton
@@ -330,11 +343,8 @@ end;
 
 procedure TIDEOptionsDialog.OkButtonClick(Sender: TObject);
 begin
-  IDEEditorGroups.LastSelected := FNewLastSelected;
-  if btnApply.Visible then  // visible only for global options
-    ApplyButtonClick(Sender)
-  else if CheckValues then
-    WriteAll(false);  // write new values
+  if not Apply then
+    Exit;
   // close
   if WindowState <> wsMaximized then
     IDEDialogLayoutList.SaveLayout(Self);
