@@ -181,12 +181,14 @@ object ComponentListForm: TComponentListForm
       Top = -3
       Width = 186
       OnAfterFilter = TreeFilterEdAfterFilter
+      OnFilterItemEx = TreeFilterEdFilterItemEx
       ButtonWidth = 23
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 5
       NumGlyphs = 1
       MaxLength = 0
       TabOrder = 0
+      OnKeyDown = TreeFilterEdKeyDown
       FilteredTreeview = ListTree
     end
   end

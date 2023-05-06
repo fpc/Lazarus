@@ -98,6 +98,10 @@ type
     procedure tmDeselectTimer(Sender: TObject);
     procedure TreeFilterEdAfterFilter(Sender: TObject);
     procedure PageControlChange(Sender: TObject);
+    function TreeFilterEdFilterItemEx(const ACaption: string;
+      ItemData: Pointer; out Done: Boolean): Boolean;
+    procedure TreeFilterEdKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure TreeKeyPress(Sender: TObject; var Key: char);
     procedure FormKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure SelectionToolButtonClick(Sender: TObject);
@@ -114,17 +118,14 @@ type
     procedure ClearSelection;
     procedure ComponentWasAdded({%H-}ALookupRoot, {%H-}AComponent: TComponent;
                                 {%H-}ARegisteredComponent: TRegisteredComponent);
-    function GetSelectedTreeComp(aTree: TTreeView): TRegisteredComponent;
     procedure miOpenPackage(Sender: TObject);
     procedure miOpenUnit(Sender: TObject);
     procedure SelectionWasChanged;
     procedure AddComponentInheritanceNodes(ClassToNodeTree: TPointerToPointerTree; Comp: TRegisteredComponent);
-    procedure SelectTreeComp(aTree: TTreeView);
     procedure UpdateComponents;
     procedure UpdateButtonState;
     function IsDocked: Boolean;
-    procedure AddSelectedComponent;
-    function GetRegCompClassname(RegComp: TRegisteredComponent): string;
+    procedure AddSelectedComponent(ASaveSelection: boolean = false; AAddNeighboring: boolean = false);
   protected
     procedure UpdateShowing; override;
   public
@@ -142,6 +143,8 @@ var
 procedure RegisterStandardComponentListMenuItems;
 
 implementation
+
+{$R *.lfm}
 
 procedure RegisterStandardComponentListMenuItems;
 var
@@ -168,7 +171,51 @@ begin
   CompListMenuCollapseAll:=RegisterIDEMenuCommand(AParent, 'Collapse All',lisCollapseAll2);
 end;
 
-{$R *.lfm}
+function GetSelectedDesignComponent: TComponent;
+var
+  ASelections: TPersistentSelectionList;
+begin
+  Result := nil;
+  ASelections := TPersistentSelectionList.Create;
+  try
+    GlobalDesignHook.GetSelection(ASelections);
+    if (ASelections.Count > 0) and (ASelections[0] is TComponent) then
+      Result := TComponent(ASelections[0])
+    else if GlobalDesignHook.LookupRoot is TComponent then
+      Result := TComponent(GlobalDesignHook.LookupRoot);
+  finally
+    ASelections.Free;
+  end;
+end;
+
+function GetSelectedTreeComp(aTree: TTreeView): TRegisteredComponent;
+begin
+  if Assigned(aTree.Selected) then
+    Result := TRegisteredComponent(aTree.Selected.Data)
+  else
+    Result := nil;
+end;
+
+function GetRegCompClassname(RegComp: TRegisteredComponent): string;
+begin
+  Result:=RegComp.ComponentClass.ClassName;
+  if RegComp.HasAmbiguousClassName then
+    Result:=Result+'('+RegComp.ComponentClass.UnitName+')';
+end;
+
+procedure SelectTreeComp(aTree: TTreeView);
+var
+  Node: TTreeNode;
+begin
+  with IDEComponentPalette do
+    if Assigned(Selected) then
+      Node := aTree.Items.FindNodeWithText(GetRegCompClassname(Selected))
+    else
+      Node := Nil;
+  aTree.Selected := Node;
+  if aTree.Selected <> nil then
+    aTree.Selected.MakeVisible;
+end;
 
 { TComponentListForm }
 
@@ -223,55 +270,54 @@ begin
   inherited Destroy;
 end;
 
-procedure TComponentListForm.AddSelectedComponent;
+procedure TComponentListForm.AddSelectedComponent(ASaveSelection: boolean; AAddNeighboring: boolean);
 var
   AComponent: TRegisteredComponent;
-  ASelections: TPersistentSelectionList;
   NewParent: TComponent;
   CurDesigner: TDesigner;
+  lOldEvent: TOnComponentAdded;
 begin
   AComponent := GetSelectedComponent;
-  ASelections := TPersistentSelectionList.Create;
-  try
-    GlobalDesignHook.GetSelection(ASelections);
-    if (ASelections.Count>0) and (ASelections[0] is TComponent) then
-      NewParent := TComponent(ASelections[0])
-    else if GlobalDesignHook.LookupRoot is TComponent then
-      NewParent := TComponent(GlobalDesignHook.LookupRoot)
-    else
-      NewParent := nil;
-  finally
-    ASelections.Free;
-  end;
+  NewParent := GetSelectedDesignComponent;
 
-  if NewParent=nil then
+  // get parent component of neighboring component
+  if AAddNeighboring then
+    if NewParent.HasParent then
+      NewParent := NewParent.GetParentComponent;
+  if NewParent = nil then
     Exit;
 
-  CurDesigner:=TDesigner(FindRootDesigner(NewParent));
-  if CurDesigner=nil then
+  // get designer
+  CurDesigner := TDesigner(FindRootDesigner(NewParent));
+  if CurDesigner = nil then
     Exit;
 
+  // check parent
   CurDesigner.AddComponentCheckParent(NewParent, NewParent, nil, AComponent.ComponentClass);
-  if NewParent=nil then
+  if NewParent = nil then
     Exit;
 
-  if FAddCompNewParent<>NewParent then
+  // calculate offset
+  if FAddCompNewParent <> NewParent then
   begin
     FAddCompNewLeft := 0;
     FAddCompNewTop := 0;
     FAddCompNewParent := NewParent;
   end;
-  Inc(FAddCompNewLeft, 8);
-  Inc(FAddCompNewTop, 8);
-  CurDesigner.AddComponent(AComponent, AComponent.ComponentClass, NewParent, FAddCompNewLeft, FAddCompNewTop, 0, 0);
-end;
+  Inc(FAddCompNewLeft, EnvironmentOptions.GridSizeX);
+  Inc(FAddCompNewTop, EnvironmentOptions.GridSizeY);
 
-function TComponentListForm.GetRegCompClassname(RegComp: TRegisteredComponent
-  ): string;
-begin
-  Result:=RegComp.ComponentClass.ClassName;
-  if RegComp.HasAmbiguousClassName then
-    Result:=Result+'('+RegComp.ComponentClass.UnitName+')';
+  // add component
+  if ASaveSelection then
+  begin
+    lOldEvent := CurDesigner.OnComponentAdded; // save event
+    CurDesigner.OnComponentAdded := nil;       // clear event
+    CurDesigner.AddComponent(AComponent, AComponent.ComponentClass, NewParent, FAddCompNewLeft, FAddCompNewTop, 0, 0);
+    CurDesigner.OnComponentAdded := lOldEvent; // restore event
+  end else begin
+    CurDesigner.AddComponent(AComponent, AComponent.ComponentClass, NewParent, FAddCompNewLeft, FAddCompNewTop, 0, 0);
+  end;
+
 end;
 
 procedure TComponentListForm.chbKeepOpenChange(Sender: TObject);
@@ -300,28 +346,6 @@ begin
   ListTree.Selected := Nil;
   PalletteTree.Selected := Nil;
   InheritanceTree.Selected := Nil;
-end;
-
-procedure TComponentListForm.SelectTreeComp(aTree: TTreeView);
-var
-  Node: TTreeNode;
-begin
-  with IDEComponentPalette do
-    if Assigned(Selected) then
-      Node := aTree.Items.FindNodeWithText(GetRegCompClassname(Selected))
-    else
-      Node := Nil;
-  aTree.Selected := Node;
-  if aTree.Selected <> nil then
-    aTree.Selected.MakeVisible;
-end;
-
-function TComponentListForm.GetSelectedTreeComp(aTree: TTreeView): TRegisteredComponent;
-begin
-  if Assigned(aTree.Selected) then
-    Result := TRegisteredComponent(aTree.Selected.Data)
-  else
-    Result := nil;
 end;
 
 function TComponentListForm.GetSelectedComponent: TRegisteredComponent;
@@ -602,6 +626,101 @@ begin
   tmDeselect.Enabled := True;
 end;
 
+function TComponentListForm.TreeFilterEdFilterItemEx(const ACaption: string;
+  ItemData: Pointer; out Done: Boolean): Boolean;
+var
+  lExpressions: TStringList;
+  i: Integer;
+  lCaption: string;
+
+  function FilterByExpression(AFilter: string): boolean;
+  var
+    lConditions: TStringList;
+    i: Integer;
+  begin
+    lConditions := TStringList.Create;
+    try
+      lConditions.QuoteChar := #0;
+      lConditions.AddDelimitedText(AFilter, ' ', true);
+      for i := 0 to lConditions.Count - 1 do
+        if lConditions[i] <> '' then
+        begin
+          if lConditions[i][1] = '!' then
+          begin
+            lConditions[i] := RightStr(lConditions[i], length(lConditions[i]) - 1); // delete "!"
+            if Pos(lConditions[i], lCaption) > 0 then
+              exit(true);
+          end else begin
+            if Pos(lConditions[i], lCaption) <= 0 then
+              exit(true);
+          end;
+        end;
+      Result := false;
+    finally
+      FreeAndNil(lConditions);
+    end;
+  end;
+
+begin
+  Done := true;
+  if TreeFilterEd.Text = '' then exit(true);
+  lCaption := '"' + lowercase(ACaption) + '"';
+
+  lExpressions := TStringList.Create;
+  try
+    lExpressions.QuoteChar := #0;
+    lExpressions.AddDelimitedText(TreeFilterEd.Text, ',', true); // TreeFilterEd.Text always lowercase
+    for i := 0 to lExpressions.Count - 1 do
+      if lExpressions[i] <> '' then
+        if not FilterByExpression(lExpressions[i]) then
+          exit(true);
+    result := false;
+  finally
+    FreeAndNil(lExpressions);
+  end;
+end;
+
+procedure TComponentListForm.TreeFilterEdKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+
+  if (Key in [VK_A..VK_Z]) and ((Shift = []) or (Shift = [ssShift])) then
+  begin
+    TreeFilterEd.SelText := chr(Key + $20); // VK-codes matches ASCII chars
+    Key := 0;
+    exit;
+  end;
+
+  if (Key = VK_1) and (Shift = [ssShift]) then
+  begin
+    TreeFilterEd.SelText := '!';
+    Key := 0;
+    exit;
+  end;
+
+  if (Key = VK_LCL_QUOTE) and (Shift = [ssShift]) then
+  begin
+    TreeFilterEd.SelText := '"';
+    Key := 0;
+    exit;
+  end;
+
+  if (Key = VK_LCL_COMMA) and (Shift = []) then
+  begin
+    TreeFilterEd.SelText := ',';
+    Key := 0;
+    exit;
+  end;
+
+  if (Key = VK_LCL_MINUS) and (Shift = [ssShift]) then
+  begin
+    TreeFilterEd.SelText := '_';
+    Key := 0;
+    exit;
+  end;
+
+end;
+
 procedure TComponentListForm.tmDeselectTimer(Sender: TObject);
 begin
   tmDeselect.Enabled := False;
@@ -618,13 +737,63 @@ begin
 end;
 
 procedure TComponentListForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+var
+  AComponent: TRegisteredComponent;
 begin
-  if Key=VK_ESCAPE then
+  // add a neighboring component and leave focus on the selected component
+  if (Key = VK_RETURN) and (Shift = [ssCtrl]) then
   begin
-    if (IDEComponentPalette.Selected = nil) and not IsDocked  then //close only if no component is selected
-      Close
+    AComponent := GetSelectedComponent;
+    if AComponent <> nil then
+      AddSelectedComponent(true, true);
+    if TreeFilterEd.CanSetFocus then // not necessarily here?
+      TreeFilterEd.SetFocus;
+    Key := 0;
+    exit;
+  end;
+
+  // add a child component and leave focus on the selected component
+  if (Key = VK_RETURN) and (Shift = [ssShift]) then
+  begin
+    AComponent := GetSelectedComponent;
+    if AComponent <> nil then
+      AddSelectedComponent(true);
+    if TreeFilterEd.CanSetFocus then // not necessarily here?
+      TreeFilterEd.SetFocus;
+    Key := 0;
+    exit;
+  end;
+
+  // close
+  if (Key = VK_ESCAPE) and (Shift = []) then
+  begin
+    if (IDEComponentPalette.Selected = nil) and not IsDocked then
+      Close                            // close only if no component is selected
     else
-      ClearSelection; //unselect if component is selected
+      ClearSelection; // unselect if component is selected
+    Key := 0;
+    exit;
+  end;
+
+  // set focus on filter
+  if (Key = VK_F) and (Shift = [ssCtrl]) then
+  begin
+    if TreeFilterEd.CanSetFocus then // not necessarily here?
+      TreeFilterEd.SetFocus;
+    Key := 0;
+    exit;
+  end;
+
+  // select tab - [Ctrl+Tab] and [Ctrl+Shift+Tab]
+  if (Key = VK_TAB) and ((Shift = [ssCtrl]) or (Shift = [ssCtrl, ssShift])) then
+  begin
+    with PageControl do
+      if Shift = [ssCtrl]
+        then PageIndex := (            PageIndex + 1) mod PageCount
+        else PageIndex := (PageCount + PageIndex - 1) mod PageCount; // add "PageCount" - so that there is no negative number
+    PageControlChange(Sender);
+    Key := 0;
+    exit;
   end;
 end;
 
@@ -640,8 +809,8 @@ begin
 
   OldFocusedControl := Screen.ActiveControl;
   AddSelectedComponent;
-  if (OldFocusedControl<>nil) and OldFocusedControl.CanSetFocus then // AddComponent in docked mode steals focus to designer, get it back
-    OldFocusedControl.SetFocus;
+  if (OldFocusedControl<>nil) and OldFocusedControl.CanSetFocus then
+    OldFocusedControl.SetFocus; // AddComponent in docked mode steals focus to designer, get it back
 
   if not IsDocked and not chbKeepOpen.Checked then
     Close;
