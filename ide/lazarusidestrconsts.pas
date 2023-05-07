@@ -1320,6 +1320,7 @@ resourcestring
   lisImportEnvironmentOptions = 'Import environment options';
   lisComboBoxes = 'Combo Boxes';
   lisDropDownCount = 'Drop Down Count';
+  lisDropDownCountHint = 'Used for all ComboBoxes in IDE dialogs';
 
   // Desktop options
   dlgManageDesktops = 'Manage desktops';

@@ -79,7 +79,6 @@ type
   private
     function LangIDToCaption(const LangID: string): string;
     function CaptionToLangID(const ACaption: string): string;
-
     procedure DoLoadSettings(AOptions: TAbstractIDEOptions);
     procedure DoSaveSettings(AOptions: TAbstractIDEOptions);
   public
@@ -166,6 +165,7 @@ begin
   // comboboxes
   lblComboBoxes.Caption := lisComboBoxes;
   lblDropDownCount.Caption := lisDropDownCount;
+  spDropDownCount.Hint := lisDropDownCountHint;
 end;
 
 procedure TDesktopOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);

@@ -135,6 +135,22 @@ implementation
 
 {$R *.lfm}
 
+procedure SetDropDownCount(AWinControl: TWinControl);
+// Set global DropDownCount to all TCustomComboBox descendants under AWinControl.
+var
+  i: integer;
+begin
+  for i := 0 to AWinControl.ControlCount - 1 do
+  begin
+    if AWinControl.Controls[i] is TCustomComboBox then
+      TCustomComboBox(AWinControl.Controls[i]).DropDownCount :=
+                            EnvironmentOptions.DropDownCount;
+    // recursive call
+    if AWinControl.Controls[i] is TWinControl then
+      SetDropDownCount(TWinControl(AWinControl.Controls[i]));
+  end;
+end;
+
 { TIDEOptionsDialog }
 
 constructor TIDEOptionsDialog.Create(AOwner: TComponent);
@@ -229,6 +245,7 @@ begin
     if Assigned(AEditor) then begin
       AEditor.Align := alClient;
       AEditor.BorderSpacing.Around := 6;
+      SetDropDownCount(AEditor); ///TEST
       AEditor.Visible := True;
     end;
     FPrevEditor := AEditor;
@@ -339,6 +356,8 @@ begin
   if EnvironmentOptions.Desktop.SingleTaskBarButton
     then Application.TaskBarBehavior := tbSingleButton
     else Application.TaskBarBehavior := tbDefault;
+  // update DropDownCount property immediately
+  SetDropDownCount(EditorsPanel);
 end;
 
 procedure TIDEOptionsDialog.OkButtonClick(Sender: TObject);

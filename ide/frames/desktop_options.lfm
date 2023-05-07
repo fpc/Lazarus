@@ -1,10 +1,10 @@
 object DesktopOptionsFrame: TDesktopOptionsFrame
   Left = 0
-  Height = 523
+  Height = 542
   Top = 0
-  Width = 596
-  ClientHeight = 523
-  ClientWidth = 596
+  Width = 650
+  ClientHeight = 542
+  ClientWidth = 650
   TabOrder = 0
   Visible = False
   DesignLeft = 351
@@ -468,7 +468,10 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     Width = 75
     BorderSpacing.Left = 6
     BorderSpacing.Top = 3
-    MinValue = 5
+    MaxValue = 100
+    MinValue = 3
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 13
     Value = 8
   end
