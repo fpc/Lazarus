@@ -1760,13 +1760,13 @@ procedure TAnchorDockMaster.MarkCorrectlyLocatedControl(Tree: TAnchorDockLayoutT
 var
   Counter:integer;
 
-  function GetRealParent(Node:TAnchorDockLayoutTreeNode):TAnchorDockLayoutTreeNode;
+  function GetRealParent(Node:TAnchorDockLayoutTreeNode): TAnchorDockLayoutTreeNode;
   begin
-    result := Node;
-    while Assigned(result.Parent) do begin
-      result := result.Parent;
+    Result := Node;
+    while Assigned(Result.Parent) do begin
+      Result := Result.Parent;
       fTreeNameToDocker[Node.Name];
-      if result.NodeType in [adltnControl,adltnCustomSite] then exit
+      if Result.NodeType in [adltnControl,adltnCustomSite] then exit
     end;
   end;
 
@@ -1782,10 +1782,10 @@ var
     Result := Control;
   end;
 
-  procedure RealChildrenCount(AWinControl:twincontrol;var realsubcontrolcoun:integer);
+  procedure RealChildrenCount(AWinControl: TWinControl; var aCount:integer);
   var
-    i:integer;
-    ACountedControl:tcontrol;
+    i: integer;
+    ACountedControl: TControl;
   begin
      for i:=0 to AWinControl.ControlCount-1 do
        begin
@@ -1794,53 +1794,53 @@ var
          if not (ACountedControl is TAnchorDockHeader) then
          if not (ACountedControl is TAnchorDockPageControl) then
          if ACountedControl.IsVisible then
-           inc(realsubcontrolcoun);
-         if ACountedControl is TAnchorDockHostSite then
-         if ACountedControl.IsVisible then
-           RealChildrenCount(ACountedControl as TWinControl, realsubcontrolcoun);
+           inc(aCount);
+         if (ACountedControl is TAnchorDockHostSite)
+             and ACountedControl.IsVisible then
+           RealChildrenCount(ACountedControl as TWinControl, aCount);
        end;
   end;
 
-  function CheckNode(Node: TAnchorDockLayoutTreeNode; var ControlsCount: integer):TADLControlLocation;
+  function CheckNode(Node: TAnchorDockLayoutTreeNode; var ControlsCount: integer): TADLControlLocation;
   var
     i: Integer;
     AControl,AParent: TControl;
-    SubControlsCount,realsubcontrolcoun: integer;
+    SubControlsCount,RealSubControlsCount: integer;
   begin
     AControl:=nil;
     AParent:=nil;
-    result:=adlclWrongly;
+    Result:=adlclWrongly;
     if Node.IsSplitter then begin
       inc(ControlsCount);
       exit(adlclCorrect);
     end
     else if Node=Tree.Root then
-      result:=adlclCorrect
+      Result:=adlclCorrect
     else begin
       AControl:=FindControl(Node.Name);
       AParent:=FindControl(GetRealParent(Node).Name);
-      if Node.NodeType=adltnLayout then result:=adlclCorrect
-      else if AControl is TAnchorDockPanel then result:=adlclCorrect;
+      if Node.NodeType=adltnLayout then Result:=adlclCorrect
+      else if AControl is TAnchorDockPanel then Result:=adlclCorrect;
     end;
     if AControl<>nil then
     if not (AControl is TAnchorDockHostSite) then
-     inc(ControlsCount);
-    if result=adlclWrongly then exit;
+      inc(ControlsCount);
+    if Result=adlclWrongly then exit;
     if AControl=nil then AControl:=AParent;
     SubControlsCount:=0;
     for i:=0 to Node.Count-1 do
     begin
-      result:=CheckNode(Node[i],SubControlsCount);
-      if result=adlclWrongly then exit;
+      Result:=CheckNode(Node[i],SubControlsCount);
+      if Result=adlclWrongly then exit;
     end;
-    realsubcontrolcoun:=0;
+    RealSubControlsCount:=0;
     if (AControl is TAnchorDockHostSite) or (AControl is TAnchorDockPanel) then
     begin
-       RealChildrenCount(AControl as TWinControl,realsubcontrolcoun);
-       if SubControlsCount<>realsubcontrolcoun then Exit(adlclWrongly);
+       RealChildrenCount(AControl as TWinControl,RealSubControlsCount);
+       if SubControlsCount<>RealSubControlsCount then Exit(adlclWrongly);
     end;
     ControlsCount:=ControlsCount+SubControlsCount;
-    if result=adlclWrongly then exit;
+    if Result=adlclWrongly then exit;
     for i:=0 to Node.Count-1 do
     begin
       Node[i].ControlLocation:=adlclCorrect;
@@ -1848,9 +1848,9 @@ var
   end;
 
 begin
-  //We need compare dock tree and fact controls placement
-  //and mark controls which location is coincides with tree
-  //these controls can be not closrd in CloseUnneededAndWronglyLocatedControls
+  // Compare dock tree and actual layout of controls
+  // and mark controls which location coincides with tree
+  // these controls can be not closed in CloseUnneededAndWronglyLocatedControls
   Counter:=0;
   Tree.Root.ControlLocation:=CheckNode(Tree.Root,Counter);
 end;
@@ -1858,15 +1858,15 @@ end;
 function TAnchorDockMaster.CloseUnneededAndWronglyLocatedControls(Tree: TAnchorDockLayoutTree
   ): boolean;
 
-  function GetParentAnchorDockPageControl(thisControl: TControl):TAnchorDockPageControl;
+  function GetParentAnchorDockPageControl(aControl: TControl):TAnchorDockPageControl;
   begin
-    while thisControl<>nil do
+    while aControl<>nil do
     begin
-      if thisControl is TAnchorDockPageControl then
-        exit(thisControl as TAnchorDockPageControl);
-      thisControl:=thisControl.Parent;
+      if aControl is TAnchorDockPageControl then
+        exit(aControl as TAnchorDockPageControl);
+      aControl:=aControl.Parent;
     end;
-    result:=nil;
+    Result:=nil;
   end;
 
 var
