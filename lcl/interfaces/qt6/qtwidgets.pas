@@ -16548,18 +16548,19 @@ begin
       begin
         Result := (FTrackButton = QtLeftButton) and
           (QMouseEvent_button(QMouseEventH(Event)) <> FTrackButton);
+        {removed by issue #40249
         if Assigned(FMenuItem) and not (FMenuItem.Menu is TPopupMenu) then
         begin
           QMouseEvent_pos(QMouseEventH(Event), @APos);
           TempAction := QMenu_actionAt(QMenuH(Widget),
             @APos);
-          {trigger LCL if root of menu have OnClick() connected,
-           since qt won't do that for us.}
+          // trigger LCL if root of menu have OnClick() connected,
+          // since qt won't do that for us.
           if (QMouseEvent_button(QMouseEventH(Event)) = QtLeftButton) and
             Assigned(FMenuItem.OnClick) and
             (TempAction = nil) and not (FMenuItem.IsInMenuBar) then
             SlotTriggered();
-        end;
+        end;}
       end;
   end;
 end;
