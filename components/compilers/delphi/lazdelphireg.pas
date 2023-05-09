@@ -9,6 +9,7 @@ uses
 
 const
   SubToolDelphi = 'Delphi';
+  SubToolDelphiPriority = SubToolFPCPriority-10;
 
 type
 
@@ -23,13 +24,16 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ReadLine(Line: string; OutputIndex: integer; IsStdErr: boolean;
-      var Handled: boolean); override;
+      var Handled: boolean); override; // (worker thread)
     class function DefaultSubTool: string; override;
+    class function GetParserName: string; override;
+    class function GetLocalizedParserName: string; override;
+    class function Priority: integer; override;
   end;
   TDelphiCompilerParserClass = class of TDelphiCompilerParser;
 
 var
-  IDEDelphiCompilerParser: TDelphiCompilerParserClass = nil;
+  IDEDelphiCompilerParserClass: TDelphiCompilerParserClass = nil;
 
 procedure Register;
 
@@ -37,7 +41,7 @@ implementation
 
 procedure Register;
 begin
-
+  ExternalToolList.RegisterParser(TDelphiCompilerParser);
 end;
 
 { TDelphiCompilerParser }
@@ -45,12 +49,16 @@ end;
 constructor TDelphiCompilerParser.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+
+  // filename(linenumber): E2003 Undeclared identifier: 'foo'
   FRegExprFilenameLineIDMsg:=TRegExpr.Create;
   FRegExprFilenameLineIDMsg.ModifierStr:='I';
-  // filename(linenumber): E2003 Undeclared identifier: 'foo'
-  FRegExprFilenameLineIDMsg.Expression:='^(.*)\([0-9]+)\): ([HNWEF])([0-9]+) (.*)$';
+  FRegExprFilenameLineIDMsg.Expression:='^(.*)\(([0-9]+)\): ([HNWEF])([0-9]+) (.*)$';
+
   // filename(linenumber): Fatal: F2613 Unit 'Unit3' not found.
-  FRegExprFilenameLineUrgencyIDMsg.Expression:='^(.*)\([0-9]+)\) ([a-zA-Z]+): ([HNWEF])([0-9]+) (.*)$';
+  FRegExprFilenameLineUrgencyIDMsg:=TRegExpr.Create;
+  FRegExprFilenameLineUrgencyIDMsg.ModifierStr:='I';
+  FRegExprFilenameLineUrgencyIDMsg.Expression:='^(.*)\(([0-9]+)\) ([a-zA-Z]+): ([HNWEF])([0-9]+) (.*)$';
 end;
 
 destructor TDelphiCompilerParser.Destroy;
@@ -152,7 +160,22 @@ end;
 
 class function TDelphiCompilerParser.DefaultSubTool: string;
 begin
-  Result:='dcc';
+  Result:='DCC';
+end;
+
+class function TDelphiCompilerParser.GetParserName: string;
+begin
+  Result:='Delphi Compiler';
+end;
+
+class function TDelphiCompilerParser.GetLocalizedParserName: string;
+begin
+  Result:='Delphi Compiler';
+end;
+
+class function TDelphiCompilerParser.Priority: integer;
+begin
+  Result:=SubToolDelphiPriority;
 end;
 
 end.
