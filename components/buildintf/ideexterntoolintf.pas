@@ -1372,7 +1372,10 @@ begin
   Result:=nil;
   aClass:=ExternalToolList.FindParserWithName(ParserName);
   if aClass=nil then
+  begin
+    debugln(['error: (lazarus) TAbstractExternalTool.AddParserByName "',ParserName,'"']);
     raise Exception.Create(Format(lisUnableToFindParserWithName, [ParserName]));
+  end;
   Result:=AddParser(aClass);
 end;
 
