@@ -281,9 +281,15 @@ begin
   NewParent := GetSelectedDesignComponent;
 
   // get parent component of neighboring component
-  if AAddNeighboring then
-    if NewParent.HasParent then
-      NewParent := NewParent.GetParentComponent;
+  if AAddNeighboring and assigned(NewParent) then
+  begin
+    if (not (NewParent is TCustomForm)) and
+       (not (NewParent is TCustomFrame)) then
+    begin
+      if NewParent.HasParent then
+        NewParent := NewParent.GetParentComponent;
+    end;
+  end;
   if NewParent = nil then
     Exit;
 
