@@ -1213,18 +1213,26 @@ end;
 class procedure TCocoaWSCustomEdit.SetText(const AWinControl: TWinControl;
   const AText: String);
 var
-  txt : NSString;              // NSString for AText
-  txtWithLineBreak: NSString;  // need not release
-  field: TCocoaTextField;
+  txt : NSString;                 // NSString for AText
+  txtWithoutLineBreak: NSString;  // need not release
+  field: NSTextField;
 begin
-  if (AWinControl.HandleAllocated) then
+  if not AWinControl.HandleAllocated then exit;
+
+  field:= NSTextField(AWinControl.Handle);
+  if TCustomEdit(AWinControl).PasswordChar=#0 then
   begin
-    field:= TCocoaTextField(AWinControl.Handle);
+    // TCocoaTextField
     txt:= NSStringUtf8(AText);
-    txtWithLineBreak := NSStringRemoveLineBreak(txt);
-    field.setStringValue(txtWithLineBreak);
+    txtWithoutLineBreak:= NSStringRemoveLineBreak(txt);
+    field.setStringValue(txtWithoutLineBreak);
     field.textDidChange(nil); // check maxLength and calls controls callback (if any)
     txt.release;
+  end
+  else
+  begin
+    // TCocoaSecureTextField
+    ControlSetTextWithChangeEvent(field, AText);
   end;
 end;
 
