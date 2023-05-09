@@ -1595,6 +1595,7 @@ end;
 
 procedure TCocoaReadOnlyComboBox.dealloc;
 begin
+  FreeAndNil( list );
   if resultNS <> nil then resultNS.release;
   inherited dealloc;
 end;
