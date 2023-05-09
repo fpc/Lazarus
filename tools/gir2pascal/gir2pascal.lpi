@@ -85,7 +85,7 @@
   <CompilerOptions>
     <Version Value="11"/>
     <Target>
-      <Filename Value="gir2pascal"/>
+      <Filename Value="gir2pas"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
