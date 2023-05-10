@@ -132,7 +132,7 @@ callback must be thread save by itself. Changing the routine assigned to the
 property is <b>NOT</b> thread-safe.
 </p>
 <p>
-This file is part of the <file>LazUtils</file> package.
+<file>lazloggerbase.pas</file> is part of the <file>LazUtils</file> package.
 </p>
 </descr>
 <!-- unresolved externals -->

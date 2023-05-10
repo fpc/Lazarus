@@ -18,7 +18,7 @@ which is a <var>TStringList</var> that allows its <var>Objects</var> property
 to hold any type of record.
 </p>
 <p>
-This file is part of the <file>LazUtils</file> package.
+<file>extendedstrings.pas</file> is part of the <file>LazUtils</file> package.
 </p>
 <p>
 Author: Mattias Gaertner

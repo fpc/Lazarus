@@ -19,7 +19,7 @@ directory state information. It is used in the implementation of the Lazarus
 IDE, and in the LCL package system.
 </p>
 <p>
-This file is part of the <file>LazUtils</file> package.
+<file>lazfilecache.pas</file> is part of the <file>LazUtils</file> package.
 </p>
 </descr>
 

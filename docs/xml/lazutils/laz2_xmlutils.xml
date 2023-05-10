@@ -17,7 +17,7 @@ the UTF-8 encoding. It is copied from code in the FreePascal Free Component
 Library (FCL) and modified to provide UTF-8 support.
 </p>
 <p>
-This file is part of <file>LazUtils</file> package.
+<file>laz2_xmlutils.pas</file> is part of <file>LazUtils</file> package.
 </p>
 </descr>
 

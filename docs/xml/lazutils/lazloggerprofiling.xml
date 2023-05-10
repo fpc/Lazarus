@@ -14,7 +14,8 @@ Contains classes and routines used for profiling in the Lazarus debugger.
 </short>
 <descr>
 <p>
-This file is part of the <file>LazUtils</file> package.
+<file>lazloggerprofiling.pas</file> is part of the <file>LazUtils</file> 
+package.
 </p>
 </descr>
 

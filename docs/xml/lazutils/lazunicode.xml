@@ -13,15 +13,18 @@ enumerator.
 </short>
 <descr>
 <p>
-<var>lazunicode.pas</var> provides encoding-agnostic Unicode string 
+<file>lazunicode.pas</file> provides encoding-agnostic Unicode string 
 manipulation functions and an enumerator. It works transparently with UTF-8 
 and UTF-16 encodings, and allows one codebase to work for:
 </p>
 <ol>
 <li>Lazarus using its default UTF-8 encoding</li>
-<li>Future FPC and Lazarus versions with Delphi compatible UTF-16 
-encoding</li>
-<li>Delphi compatibility where String is defined as UnicodeString</li>
+<li>
+Future FPC and Lazarus versions with Delphi compatible UTF-16 encoding
+</li>
+<li>
+Delphi compatibility where String is defined as UnicodeString
+</li>
 </ol>
 <remark>
 Behavior of helper functions are altered using the <var>{$ModeSwitch 
@@ -29,7 +32,7 @@ UnicodeStrings}</var> directive; the correct routines for handling UTF-8 or
 UTF-16 are called based on the mode switch value.
 </remark>
 <p>
-This file is part of the <file>LazUtils</file> package.
+<file>lazunicode.pas</file> is part of the <file>LazUtils</file> package.
 </p>
 </descr>
 

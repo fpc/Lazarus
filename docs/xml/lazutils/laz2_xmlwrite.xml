@@ -12,7 +12,7 @@ Provides routines used to write XML content to a file, text file, or stream.
 </short>
 <descr>
 <p>
-<var>laz2_xmlwrite.pas</var> provides procedures and types used to write XML 
+<file>laz2_xmlwrite.pas</file> provides procedures and types used to write XML 
 content to a file, text file, or stream. laz2_xmlwrite.pas has classes in its 
 implementation section that are used to perform serialization of XML content 
 to the storage destination.
@@ -23,7 +23,7 @@ Modified in 2006 by Sergei Gorelkin, sergei_gorelkin@mail.ru <br/>
 Converted to use UTF-8 instead of widestrings by Mattias Gaertner.
 </p>
 <p>
-This file is part of the <file>LazUtils</file> package.
+<file>laz2_xmlwrite.pas</file> is part of the <file>LazUtils</file> package.
 </p>
 </descr>
 

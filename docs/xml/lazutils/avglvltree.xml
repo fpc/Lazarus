@@ -18,7 +18,7 @@ TAvlTree is an Average Level binary Tree, located in unit AVL_Tree in FPC
 packages.
 </p>
 <p>
-This file is part of the <file>lazutils</file> package.
+<file>avglvltree.pas</file> is part of the <file>lazutils</file> package.
 </p>
 </descr>
 

@@ -13,8 +13,8 @@ Contains TLookupStringList, an unsorted StringList with a fast lookup feature.
 <descr>
 <p>
 <file>lookupstringlist.pas</file> contains TLookupStringList, an unsorted 
-StringList with a fast lookup feature. This file is part of the 
-<file>LazUtils</file> package.
+StringList with a fast lookup feature. <file>lookupstringlist.pas</file> is 
+part of the <file>LazUtils</file> package.
 </p>
 <p>
 Authors: Juha Manninen / Antônio Galvão

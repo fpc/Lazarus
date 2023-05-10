@@ -12,7 +12,7 @@ Provides routines used to read XML content from a file, text file, or stream.
 </short>
 <descr>
 <p>
-This file is part of the <file>LazUtils</file> package.
+<file>laz_xmlread.pas</file> is part of the <file>LazUtils</file> package.
 </p>
 </descr>
 

@@ -26,7 +26,7 @@ Currently this unit includes only UTF8LowerCaseViaTables which is based on
 a UTF-16 table, but it might be extended to include various UTF-16 routines.
 </p>
 <p>
-This file is part of the <file>LazUtils</file> package.
+<file>lazutf16.pas</file> is part of the <file>LazUtils</file> package.
 </p>
 </descr>
 

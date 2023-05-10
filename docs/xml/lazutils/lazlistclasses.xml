@@ -196,7 +196,7 @@ overlaps with "To").
 </li>
 </ul>
 <p>
-This file is part of the <file>LazUtils</file> package.
+<file>lazlistclasses.pas</file> is part of the <file>LazUtils</file> package.
 </p>
 </descr>
 <version>Initial revision: May 2015</version>

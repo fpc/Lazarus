@@ -17,7 +17,7 @@ Contains classes and routines used to load/check/maintain translations from
 load/check/maintain translations from .po (portable object) files.
 </p>
 <p>
-This file is part of the <file>LazUtils</file> package.
+<file>translations.pas</file> is part of the <file>LazUtils</file> package.
 </p>
 <p>
 Initial authors: Mattias Gaertner, Bart Broersma, Giuliano Colla

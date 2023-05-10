@@ -15,7 +15,7 @@ LazPasReadUtil
 Helper functions for component serialized Pascal.
 </p>
 <p>
-This file is part of the <file>lazutils</file> package.
+<file>lazpasreadutil.pas</file> is part of the <file>lazutils</file> package.
 </p>
 </descr>
 

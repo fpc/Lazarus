@@ -21,7 +21,7 @@ Cardinal, Integer, and Int64 types. Each provides an overloaded
 handled in the method.
 </p>
 <p>
-This file is part of the <file>LazUtils</file> package.
+<file>integerlist.pas</file> is part of the <file>LazUtils</file> package.
 </p>
 </descr>
 

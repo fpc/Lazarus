@@ -21,7 +21,7 @@ It is copied from the FreePascal Free Component Library (<b>FCL</b>) and
 adapted to use UTF-8 strings instead of WideStrings.
 </p>
 <p>
-This file is part of the <file>LazUtils</file> package.
+<file>laz2_xmlcfg.pas</file> is part of the <file>LazUtils</file> package.
 </p>
 </descr>
 

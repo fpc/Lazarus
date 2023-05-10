@@ -6,7 +6,7 @@
 <short>Contains Unicode conversion tables for Asian code pages.</short>
 <descr>
 <p>
-This file is part of the <file>lazutils</file> package.
+<file>codepagesasian.pas</file> is part of the <file>lazutils</file> package.
 </p>
 </descr>
 

@@ -20,7 +20,8 @@ search path for files in the list.
 Author: Mattias Gaertner
 </p>
 <p>
-This file is part of the <file>lazutils</file> package.
+<file>filereferencelist.pas</file> is part of the <file>lazutils</file> 
+package.
 </p>
 </descr>
 

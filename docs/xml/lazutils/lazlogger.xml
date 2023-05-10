@@ -29,7 +29,7 @@ The easiest method is to use the unit and put "DebugLn"/ "DbgOut" /
 setup.
 </p>
 <p>
-This file is part of the <file>LazUtils</file> package.
+<file>LazLogger.pas</file> is part of the <file>LazUtils</file> package.
 </p>
 </descr>
 

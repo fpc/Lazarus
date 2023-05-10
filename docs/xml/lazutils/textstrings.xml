@@ -18,7 +18,7 @@ optimized for handling their complete text as a whole (instead of line by
 line).
 </p>
 <p>
-This file is part of the <file>lazutils</file> package.
+<file>textstrings.pas</file> is part of the <file>lazutils</file> package.
 </p>
 </descr>
 

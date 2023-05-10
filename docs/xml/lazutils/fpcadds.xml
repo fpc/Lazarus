@@ -18,7 +18,7 @@ the code page for conversions and the <var>RTL</var> file system to
 OS-es where the <var>RTL</var> (<b>Run-Time Library</b>) is UTF-8-enabled.
 </p>
 <p>
-This file is part of the <file>lazutils</file> package.
+<file>fpcadds.pas</file> is part of the <file>lazutils</file> package.
 </p>
 </descr>
 

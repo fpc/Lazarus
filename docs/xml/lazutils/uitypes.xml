@@ -15,7 +15,7 @@ Contains types and constants used in modal dialogs.
 <file>uitypes.pas</file> contains types and constants used in modal dialogs.
 </p>
 <p>
-This file is part of the <file>lazutils</file> package.
+<file>uitypes.pas</file> is part of the <file>lazutils</file> package.
 </p>
 <remark>
 The <file>UITypes</file> unit has been marked as deprecated in versions after 

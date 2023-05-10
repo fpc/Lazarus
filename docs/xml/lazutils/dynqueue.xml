@@ -14,7 +14,7 @@ DynQueue
 dynamic FIFO queue for arbitrary data.
 </p>
 <p>
-This file is part of the <file>lazutils</file> package.
+<file>dynqueue.pp</file> is part of the <file>lazutils</file> package.
 </p>
 </descr>
 

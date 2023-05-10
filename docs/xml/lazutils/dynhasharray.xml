@@ -12,7 +12,7 @@ Contains classes used to manage dynamic sets or associative arrays.
 </short>
 <descr>
 <p>
-<file>DynHashArray.pp</file> extends the functionality of Pascal by
+<file>dynhasharray.pp</file> extends the functionality of Pascal by
 offering alternative data structure: set like array (the order is not kept)
 with fast find/delete. Its size can change automatically during the
 execution of the program. The price is that it is somewhat slower than
@@ -66,7 +66,7 @@ Important: Items in the TDynHashArray must not change their key. When
 changing the key of an item, remove it and add it after the change.
 </p>
 <p>
-This file is part of the <file>LazUtils</file> package.
+<file>dynhasharray.pp</file> is part of the <file>LazUtils</file> package.
 </p>
 </descr>
 

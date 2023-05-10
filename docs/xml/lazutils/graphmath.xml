@@ -15,7 +15,8 @@ drawing.
 <p>
 <file>graphmath.pp</file> contains math helper routines for use for
 graphics drawing. It is used to simply cross-platform canvas drawing
-operations. This file is part of the <file>LazUtils</file> package.
+operations. <file>graphmath.pp</file> is part of the <file>LazUtils</file> 
+package.
 </p>
 </descr>
 

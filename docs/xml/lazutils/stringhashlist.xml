@@ -16,7 +16,7 @@ StringHashList
 implement a hashed list of string values.
 </p>
 <p>
-This file is part of the <file>lazutils</file> package.
+<file>stringhashlist.pas</file> is part of the <file>lazutils</file> package.
 </p>
 <p>
 Thanks to Markus Waldenburg.

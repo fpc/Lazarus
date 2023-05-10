@@ -10,7 +10,7 @@ laz2_DOM
 <short>Provides an implementation of DOM interfaces.</short>
 <descr>
 <p>
-<var>laz2_dom.pas</var> provides an Implementation of DOM (Document Object 
+<file>laz2_dom.pas</file> provides an Implementation of DOM (Document Object 
 Model) interfaces. It is a modified copy of the FCL dom.pp unit (revision 
 15251) adapted to use UTF-8 instead of WideString by Mattias Gaertner.
 </p>
@@ -33,7 +33,7 @@ Document Object Model (DOM) Level 2 Specification
 </url>
 </p>
 <p>
-This file is part of the <file>lazutils</file> package.
+<file>laz2_dom.pas</file> is part of the <file>lazutils</file> package.
 </p>
 </descr>
 

@@ -12,8 +12,8 @@ Provides routines used to read XML content from a file, text file, or stream.
 </short>
 <descr>
 <p>
-<var>laz2_xmlread.pas</var> provides routines used to read XML content from a 
-file, text file, or stream. It is copied from the FCL unit xmlread.pp (SVN 
+<file>laz2_xmlread.pas</file> provides routines used to read XML content from 
+a file, text file, or stream. It is copied from the FCL unit xmlread.pp (SVN 
 revision 15251), and adapted to use UTF-8 instead of widestrings by Mattias 
 Gaertner.
 </p>
@@ -23,7 +23,7 @@ Modified in 2006 by Sergei Gorelkin, sergei_gorelkin@mail.ru <br/>
 Converted to use UTF-8 instead of widestrings by Mattias Gaertner.
 </p>
 <p>
-This file is part of the <file>lazutils</file> package.
+<file>laz2_xmlread.pas</file> is part of the <file>lazutils</file> package.
 </p>
 </descr>
 

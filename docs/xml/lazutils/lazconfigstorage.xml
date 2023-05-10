@@ -12,7 +12,7 @@ Defines various base classes for loading and saving configuration files.
 </short>
 <descr>
 <p>
-This file is part of the <file>LazUtils</file> package.
+<file>lazconfigstorage.pas</file> is part of the <file>LazUtils</file> package.
 </p>
 <p>
 Author: Mattias Gaertner

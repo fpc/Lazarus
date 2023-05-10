@@ -17,7 +17,7 @@ objects/pointers with objects/pointers. Converted to use generics by Juha.
 Item and Object types can now be defined.
 </p>
 <p>
-This file is part of the <file>lazutils</file> package.
+<file>objectlists.pas</file> is part of the <file>lazutils</file> package.
 </p>
 </descr>
 

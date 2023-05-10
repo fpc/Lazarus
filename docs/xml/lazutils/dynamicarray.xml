@@ -10,12 +10,12 @@ DynamicArray
 <short>Implements a resizable 2-D array of Pointers.</short>
 <descr>
 <p>
-<file>dynamicarray.pas</file>implements a resizable 2-D array of Pointers. It 
+<file>dynamicarray.pas</file> implements a resizable 2-D array of Pointers. It 
 is used to implement the Cells, Cols, and Rows properties in 
 <var>TCustomGrid</var>, <var>TDrawGrid</var> and <var>TStringGrid</var>.
 </p>
 <p>
-This file is part of the <file>LazUtils</file> package.
+<file>dynamicarray.pas</file> is part of the <file>LazUtils</file> package.
 </p>
 <p>
 Author: Jesus Reyes

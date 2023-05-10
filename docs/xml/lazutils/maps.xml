@@ -20,7 +20,7 @@ size of 1, 2, 4, 8, 16 or 32 bytes. The data can be of any (constant) size.
 Author: Marc Weustink
 </p>
 <p>
-This file is part of the <file>LazUtils</file> package.
+<file>maps.pp</file> is part of the <file>LazUtils</file> package.
 </p>
 </descr>
 

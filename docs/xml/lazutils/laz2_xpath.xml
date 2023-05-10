@@ -12,9 +12,9 @@ An implementation of the XML Path Language (XPath) for Free Pascal.
 </short>
 <descr>
 <p>
-<var>laz2_xpath.pas</var> provides an implementation of the XML Path Language 
-(XPath) for the Lazarus IDE. It is based on the <var>xpath.pp</var> unit from 
-the Free Component Library (FCL).
+<file>laz2_xpath.pas</file> provides an implementation of the XML Path 
+Language (XPath) for the Lazarus IDE. It is based on the <file>xpath.pp</file> 
+unit from the Free Component Library (FCL).
 </p>
 <p>
 Copyright (c) 2000 - 2003 by Areca Systems GmbH / Sebastian Guenther, 
@@ -31,7 +31,7 @@ W3C Recommendation,
 </url>
 </p>
 <p>
-This file is part of the <file>LazUtils</file> package.
+<file>laz2_xpath.pas</file> is part of the <file>LazUtils</file> package.
 </p>
 </descr>
 

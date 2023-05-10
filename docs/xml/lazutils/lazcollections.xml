@@ -14,7 +14,7 @@ lazCollections
 thread-safe collections.
 </p>
 <p>
-This file is part of the <file>LazUtils</file> package.
+<file>lazCollections.pas</file> is part of the <file>LazUtils</file> package.
 </p>
 </descr>
 

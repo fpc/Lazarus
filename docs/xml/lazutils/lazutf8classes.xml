@@ -11,11 +11,11 @@ Implements UTF-8-enabled classes and routines.
 <p>
 <file>lazutf8classes.pas</file> implements UTF-8-enabled classes and 
 routines, including: TFileStreamUTF8, TMemoryStreamUTF8, and TStringListUTF8. 
-This file is part of the <file>LazUtils</file> package.
+<file>lazutf8classes.pas</file> is part of the <file>LazUtils</file> package.
 </p>
 <remark>
 lazutf8classes has an implementation dependency on the 
-<file>lazfileutils</file> unit.
+<file>lazfileutils.pas</file> unit.
 </remark>
 </descr>
 

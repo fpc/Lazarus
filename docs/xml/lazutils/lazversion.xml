@@ -17,7 +17,7 @@ Values in the unit are used as the basis for corresponding LCL version
 numbers in the <file>lclversion.pas</file> unit.
 </p>
 <p>
-This file is part of the <file>lazutils</file> package.
+<file>lazversion.pas</file> is part of the <file>lazutils</file> package.
 </p>
 </descr>
 
