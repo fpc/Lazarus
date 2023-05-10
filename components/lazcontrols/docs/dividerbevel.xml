@@ -9,9 +9,9 @@ forms, frames, and panels.
 </short>
 <descr>
 <p>
-<file>DividerBevel.pas</file> contains the <var>TDividerBevel</var> control, 
-a bevel with additional drawing features. This file is part of the 
-<file>LazControls</file> package.
+<file>dividerbevel.pas</file> contains the <var>TDividerBevel</var> control, 
+a bevel with additional drawing features. <file>dividerbevel.pas</file> is 
+part of the <file>LazControls</file> package.
 </p>
 </descr>
 

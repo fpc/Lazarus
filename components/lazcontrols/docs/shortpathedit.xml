@@ -14,7 +14,7 @@ ShortPathEdit
 directory edit control with a directory selection dialog.
 </p>
 <p>
-This file is part of the <file>LazControls</file> package.
+<file>ShortPathEdit.pas</file> is part of the <file>LazControls</file> package.
 </p>
 </descr>
 

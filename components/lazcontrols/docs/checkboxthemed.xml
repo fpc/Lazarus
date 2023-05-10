@@ -11,7 +11,8 @@ Implements a custom-drawn check box control drawn using theme services.
 custom-drawn check box control drawn using theme services.
 </p>
 <p>
-This file is part of the <file>LazControls</file> package.
+<file>checkboxthemed.pas</file> is part of the <file>LazControls</file> 
+package.
 </p>
 </descr>
 

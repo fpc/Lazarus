@@ -12,12 +12,13 @@ Implements a control used to filter the items in an associated list box.
 </short>
 <descr>
 <p>
-<file>ListFilterEdit.pas</file> contains classes and types used to implement 
+<file>listfilteredit.pas</file> contains classes and types used to implement 
 the <var>TListFilterEdit</var> control, an edit control which filters values 
 found in an associated list box.
 </p>
 <p>
-This file is part of the <file>LazControls</file> package.
+<file>listfilteredit.pas</file> is part of the <file>LazControls</file> 
+package.
 </p>
 </descr>
 

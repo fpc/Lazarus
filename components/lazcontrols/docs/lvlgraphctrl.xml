@@ -6,11 +6,11 @@
 <short>Implements a Level (or Layered) Graph control.</short>
 <descr>
 <p>
-<file>LvlGraphCtrl.pas</file> contains classes, types, constants, and 
+<file>lvlgraphctrl.pas</file> contains classes, types, constants, and 
 routines used to implement a Level (or Layered) Graph control.
 </p>
 <p>
-This file is part of the <file>LazControls</file> package.
+<file>lvlgraphctrl.pas</file> is part of the <file>LazControls</file> package.
 </p>
 </descr>
 

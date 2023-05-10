@@ -12,13 +12,14 @@ Implements an edit control used to filter an associated TListView control.
 </short>
 <descr>
 <p>
-<file>ListViewFilterEdit</file> contains classes and types used to implement 
-the <var>TListViewFilterEdit</var> control. It is used to filter the items 
-displayed for an associated <var>TListView</var> control by the caption or 
-sub-items in list item data.
+<file>listviewfilteredit.pas</file> contains classes and types used to 
+implement the <var>TListViewFilterEdit</var> control. It is used to filter the 
+items displayed for an associated <var>TListView</var> control by the caption 
+or sub-items in list item data.
 </p>
 <p>
-This file is part of the <file>LazControls</file> package.
+<file>listviewfilteredit.pas</file> is part of the <file>LazControls</file> 
+package.
 </p>
 </descr>
 

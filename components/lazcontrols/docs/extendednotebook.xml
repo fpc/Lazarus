@@ -9,12 +9,13 @@ the control.
 </short>
 <descr>
 <p>
-<file>ExtendedNotebook.pas</file> contains classes and types used to 
+<file>extendednotebook.pas</file> contains classes and types used to 
 implement an extended notebook control. It provides support for dragging and 
 dropping tabs on the control.
 </p>
 <p>
-This file is part of the <file>LazControls</file> package,
+<file>extendednotebook.pas</file> is part of the <file>LazControls</file> 
+package.
 </p>
 </descr>
 
