@@ -8840,6 +8840,10 @@ msgstr ""
 msgid "Drop Down Count"
 msgstr "下"
 
+#: lazarusidestrconsts.lisdropdowncounthint
+msgid "Used for all ComboBoxes in IDE dialogs"
+msgstr ""
+
 #: lazarusidestrconsts.lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
 msgstr "复制选择组件到剪贴板"

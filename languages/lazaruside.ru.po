@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-04-11 02:01+0300\n"
+"PO-Revision-Date: 2023-05-11 01:26+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -8795,6 +8795,10 @@ msgstr "Отрисовывать выделенное как находящее�
 #: lazarusidestrconsts.lisdropdowncount
 msgid "Drop Down Count"
 msgstr "Количество отображаемых элементов списка"
+
+#: lazarusidestrconsts.lisdropdowncounthint
+msgid "Used for all ComboBoxes in IDE dialogs"
+msgstr "Используется для всех раскрывающихся списков в диалогах IDE"
 
 #: lazarusidestrconsts.lisdsgcopycomponents
 msgid "Copy selected components to clipboard"

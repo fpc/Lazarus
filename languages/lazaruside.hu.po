@@ -8829,6 +8829,10 @@ msgstr "A kijelölést fókuszálva rajzolja ki, még akkor is ha az üzenetek a
 msgid "Drop Down Count"
 msgstr "Legördített elemek száma"
 
+#: lazarusidestrconsts.lisdropdowncounthint
+msgid "Used for all ComboBoxes in IDE dialogs"
+msgstr ""
+
 #: lazarusidestrconsts.lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
 msgstr "Kijelölt komponensek másolása a vágólapra"

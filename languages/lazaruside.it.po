@@ -8975,6 +8975,10 @@ msgstr "Disegnare come se avesse il fuoco, anche se la finestra non ha il fuoco.
 msgid "Drop Down Count"
 msgstr ""
 
+#: lazarusidestrconsts.lisdropdowncounthint
+msgid "Used for all ComboBoxes in IDE dialogs"
+msgstr ""
+
 #: lazarusidestrconsts.lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
 msgstr "Copia i componenti selezionati negli appunti"

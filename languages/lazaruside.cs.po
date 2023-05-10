@@ -8875,6 +8875,10 @@ msgstr "Vykreslit výběr zaměřený, i když okno Zprávy není aktivní. Pou�
 msgid "Drop Down Count"
 msgstr ""
 
+#: lazarusidestrconsts.lisdropdowncounthint
+msgid "Used for all ComboBoxes in IDE dialogs"
+msgstr ""
+
 #: lazarusidestrconsts.lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
 msgstr "Zkopírovat vybrané komponenty do schránky"

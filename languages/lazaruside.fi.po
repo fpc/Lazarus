@@ -8802,6 +8802,10 @@ msgstr "Piirrä valinta aina fokusoituna vaikkei viesti-ikkunalla olisi fokusta.
 msgid "Drop Down Count"
 msgstr ""
 
+#: lazarusidestrconsts.lisdropdowncounthint
+msgid "Used for all ComboBoxes in IDE dialogs"
+msgstr ""
+
 #: lazarusidestrconsts.lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
 msgstr "Kopioi valitut komponentit leikepöydälle"

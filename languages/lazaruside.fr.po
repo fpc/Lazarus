@@ -8818,6 +8818,10 @@ msgstr "Dessiner la sélection comme focalisée même si la fenêtre des message
 msgid "Drop Down Count"
 msgstr "Nombre d'éléments de liste déroulante"
 
+#: lazarusidestrconsts.lisdropdowncounthint
+msgid "Used for all ComboBoxes in IDE dialogs"
+msgstr ""
+
 #: lazarusidestrconsts.lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
 msgstr "Copier les composants sélectionnés vers le presse-papiers"

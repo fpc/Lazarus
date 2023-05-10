@@ -8831,6 +8831,10 @@ msgstr "Показувати вибране як таке, що перебува
 msgid "Drop Down Count"
 msgstr "Кількість розкривних списків"
 
+#: lazarusidestrconsts.lisdropdowncounthint
+msgid "Used for all ComboBoxes in IDE dialogs"
+msgstr ""
+
 #: lazarusidestrconsts.lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
 msgstr "Копіювати вибрані компоненти в буфер"

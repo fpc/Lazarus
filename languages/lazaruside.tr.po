@@ -8766,6 +8766,10 @@ msgstr "Mesajlar penceresinin odağı olmasa bile seçimi odaklanmış olarak ç
 msgid "Drop Down Count"
 msgstr "Aşağı açılır sayısı"
 
+#: lazarusidestrconsts.lisdropdowncounthint
+msgid "Used for all ComboBoxes in IDE dialogs"
+msgstr ""
+
 #: lazarusidestrconsts.lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
 msgstr "Seçilen bileşenleri panoya kopyala"

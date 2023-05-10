@@ -8950,6 +8950,10 @@ msgstr ""
 msgid "Drop Down Count"
 msgstr ""
 
+#: lazarusidestrconsts.lisdropdowncounthint
+msgid "Used for all ComboBoxes in IDE dialogs"
+msgstr ""
+
 #: lazarusidestrconsts.lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
 msgstr "Kopírovať vybraté komponenty do schránky"

@@ -8840,6 +8840,10 @@ msgstr "Desenhar a seleção focada, mesmo se a janela Mensagens não estiver em
 msgid "Drop Down Count"
 msgstr "Contagem Lista Suspensa"
 
+#: lazarusidestrconsts.lisdropdowncounthint
+msgid "Used for all ComboBoxes in IDE dialogs"
+msgstr ""
+
 #: lazarusidestrconsts.lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
 msgstr "Copiar componentes selecionados para Área de Transferência"
