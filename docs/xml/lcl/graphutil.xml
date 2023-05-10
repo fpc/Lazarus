@@ -10,7 +10,7 @@ GraphUtil
 <short>Contains routines and types used when drawing graphics.</short>
 <descr>
 <p>
-<var>GraphUtil.pp</var> contains routines and types used when drawing 
+<file>graphutil.pp</file> contains routines and types used when drawing 
 graphics. They focus primarily on converting colors and drawing gradients, 
 scroll bars, and arrows.
 </p>
@@ -32,6 +32,10 @@ where a lightness value of 0 or 1 is fully black or white (respectively).
 <p>
 GraphUtil is used in the Lazarus IDE, in LCL WidgetSet components, and 
 optional Lazarus components like FPReport, SynEdit, and TAChart.
+</p>
+<p>
+<file>graphutil.pp</file> is part of the Lazarus Component Library 
+(<b>LCL</b>).
 </p>
 </descr>
 

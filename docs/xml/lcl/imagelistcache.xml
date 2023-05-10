@@ -19,7 +19,8 @@ implement a cache for <var>TCustomImageList</var> instances. It is used mainly
 to cache image lists with the glyphs used on button controls.
 </p>
 <p>
-This file is part of the Lazarus Component Library (<b>LCL</b>).
+<file>imagelistcache.pas</file> is part of the Lazarus Component Library 
+(<b>LCL</b>).
 </p>
 </descr>
 

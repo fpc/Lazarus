@@ -17,7 +17,8 @@ not compiled into the LCL. This form is used to design the .lfm file.
 The source code is a copy of <file>../lcl/include/finddialog.inc</file>.
 </p>
 <p>
-This file is part of the Lazarus Component Library (<b>LCL</b>).
+<file>finddlgunit.pas</file> is part of the Lazarus Component Library 
+(<b>LCL</b>).
 </p>
 </descr>
 

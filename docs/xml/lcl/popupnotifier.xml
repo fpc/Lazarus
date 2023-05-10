@@ -21,7 +21,8 @@ Please note that <var>ExtCtrls</var> has a dependency on the
 <var>popupnotifier</var> and other units should be avoided.
 </remark>
 <p>
-This file is part of the Lazarus Component Library (<b>LCL</b>).
+<file>popupnotifier.pas</file> is part of the Lazarus Component Library 
+(<b>LCL</b>).
 </p>
 </descr>
 

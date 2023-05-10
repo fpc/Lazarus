@@ -7,7 +7,7 @@
 <short>Contains extended database controls.</short>
 <descr>
 <p>
-<var>dbextctrls.pp</var> contains extended database-aware controls used in 
+<file>dbextctrls.pp</file> contains extended database-aware controls used in 
 the Lazarus Component Library (<b>LCL</b>).
 </p>
 <p>

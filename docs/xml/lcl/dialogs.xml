@@ -11,8 +11,8 @@ Dialogs
 <descr>
 <p>
 <file>dialogs.pp</file> contains classes, types, and routines used to 
-implement common dialogs in an application. This file is part of the Lazarus 
-Component Library (<b>LCL</b>).
+implement common dialogs in an application. <file>dialogs.pp</file> is part of 
+the Lazarus Component Library (<b>LCL</b>).
 </p>
 <p>
 The following components are added to the Lazarus IDE component palette:

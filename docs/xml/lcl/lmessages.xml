@@ -15,7 +15,8 @@ for other platforms/widgetsets.
 <p>
 <file>lmessages.pp</file> contains Lazarus message codes and their mapping
 to message codes for other platforms/widgetsets.
-This file is part of the Lazarus Component Library (<b>LCL</b>).
+<file>lmessages.pp</file> is part of the Lazarus Component Library 
+(<b>LCL</b>).
 </p>
 </descr>
 

@@ -17,7 +17,8 @@ the LCL from the different widgetsets easier. Your mileage will vary if you
 try to use these procedures from within your program.
 </p>
 <p>
-This file is part of the Lazarus Component Library (<b>LCL</b>).
+<file>lclmessageglue.pas</file> is part of the Lazarus Component Library 
+(<b>LCL</b>).
 </p>
 </descr>
 

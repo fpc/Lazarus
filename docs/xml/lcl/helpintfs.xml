@@ -21,7 +21,8 @@ help system. To create your own help system, implement a descendant of
 <var>THelpManager</var>.
 </p>
 <p>
-This file is part of the Lazarus Component Library (<b>LCL</b>).
+<file>helpintfs.pas</file> is part of the Lazarus Component Library 
+(<b>LCL</b>).
 </p>
 <p>
 Author: Mattias Gaertner

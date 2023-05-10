@@ -12,7 +12,7 @@ Performs string translation in the Lazarus IDE and LCL.
 </short>
 <descr>
 <p>
-<var>lcltranslator.pas</var> contains classes and routines used to perform 
+<file>lcltranslator.pas</file> contains classes and routines used to perform 
 translation for strings used in Lazarus IDE and LCL (Lazarus Component 
 Library). It searches for .po (Portable Object) and/or .mo (Machine Object) 
 files used to perform I18n internationalization and L10n localization. The 
@@ -40,6 +40,10 @@ For more information, see the Lazarus Wiki article:
 href="http://wiki.lazarus.freepascal.org/Step-by-step_instructions_for_creating_multi-language_applications">
 Creating Multi-Language Applications
 </url>
+</p>
+<p>
+<file>lcltranslator.pas</file> is part of the Lazarus Component Library 
+(<b>LCL</b>).
 </p>
 </descr>
 

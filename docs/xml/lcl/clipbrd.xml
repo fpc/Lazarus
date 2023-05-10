@@ -14,8 +14,8 @@ Definitions for the Clipboard to hold Cut or Copied data for Pasting.
 <p>
 <file>clipbrd.pp</file> contains classes, types, and routines used to 
 implement TClipboard. TClipboard encapsulates the system clipboard for 
-supported platforms. This file is part of the Lazarus Component Library 
-(<b>LCL</b>).
+supported platforms. <file>clipbrd.pp</file> is part of the Lazarus Component 
+Library (<b>LCL</b>).
 </p>
 </descr>
 

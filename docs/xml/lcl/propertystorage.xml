@@ -20,7 +20,8 @@ implemented in a descendent class. For example: TControlPropertyStorage,
 TFormPropertyStorage, TIniPropStorage, TJSONPropStorage, and TXMLPropStorage.
 </p>
 <p>
-This file is part of the <b>Lazarus Component Library (LCL)</b>.
+<file>propertystorage.pas</file> is part of the Lazarus Component Library 
+<b>(LCL)</b>.
 </p>
 </descr>
 

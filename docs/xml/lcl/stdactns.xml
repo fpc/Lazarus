@@ -14,8 +14,8 @@ Defines standard actions used in Action Lists in the LCL.
 <p>
 <file>stdactns.pas</file> contains <var>TAction</var> descendents
 which can be used in <var>TActionList</var> for common actions
-performed using controls. This file is part of the Lazarus Component
-Library (<b>LCL</b>).
+performed using controls. <file>stdactns.pas</file> is part of the Lazarus 
+Component Library (<b>LCL</b>).
 </p>
 <p>
 The following components are registered but not displayed on the

@@ -23,7 +23,7 @@ following components are added to the Lazarus IDE component palette:
 <li>TMaskEdit</li>
 </ul>
 <p>
-This file is part of the Lazarus Component Library (<b>LCL</b>).
+<file>maskedit.pp</file> is part of the Lazarus Component Library (<b>LCL</b>).
 </p>
 </descr>
 

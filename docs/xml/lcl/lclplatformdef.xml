@@ -14,7 +14,8 @@ LCLPlatformDef
 routines used in LCL platform definitions.
 </p>
 <p>
-This file is part of the Lazarus Component Library (<b>LCL</b>).
+<file>lclplatformdef.pas</file> is part of the Lazarus Component Library 
+(<b>LCL</b>).
 </p>
 </descr>
 

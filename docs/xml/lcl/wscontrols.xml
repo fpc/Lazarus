@@ -10,7 +10,8 @@ WSControls
 <short>Contains the base interface classes for widgetset controls.</short>
 <descr>
 <p>
-This file is part of the Lazarus Component Library (<b>LCL</b>).
+<file>wscontrols.pp</file> is part of the Lazarus Component Library 
+(<b>LCL</b>).
 </p>
 </descr>
 
@@ -18,8 +19,10 @@ This file is part of the Lazarus Component Library (<b>LCL</b>).
 <element name="DefBtnColors">
 <short>Default colors used for button faces and button text.</short>
 <descr>
+<p>
 DefBtnColors is an array type which contains the default colors used for 
 button faces and button text in the widgetset class.
+</p>
 </descr>
 <seealso></seealso>
 </element>
@@ -27,7 +30,9 @@ button faces and button text in the widgetset class.
 <element name="TWSDragImageListResolution">
 <short></short>
 <descr>
+<p>
 TWSDragImageListResolution is a TWSCustomImageListResolution descendant.
+</p>
 </descr>
 <seealso></seealso>
 </element>
@@ -233,7 +238,9 @@ TWSDragImageListResolution is a TWSCustomImageListResolution descendant.
 <element name="TWSControl">
 <short></short>
 <descr>
+<p>
 TWSControl is a TWSLCLComponent descendant.
+</p>
 </descr>
 <seealso></seealso>
 </element>

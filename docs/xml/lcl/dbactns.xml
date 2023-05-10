@@ -17,7 +17,7 @@ Standard actions used to navigate and manipulate a dataset in a datasource.
 used to navigate and manipulate a dataset in a datasource.
 </p>
 <p>
-This file is part of the Lazarus Component Library (<b>LCL</b>).
+<file>dbactns.pp</file> is part of the Lazarus Component Library (<b>LCL</b>).
 </p>
 <p>
 The following components are registered but not displayed on the Lazarus IDE 

@@ -36,7 +36,8 @@ Lazarus resource include file.
 Author: Mattias Gaertner
 </p>
 <p>
-This file is part of the Lazarus Component Library (<b>LCL</b>).
+<file>lresources.pp</file> is part of the Lazarus Component Library 
+(<b>LCL</b>).
 </p>
 </descr>
 

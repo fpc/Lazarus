@@ -15,8 +15,7 @@ Defines classes for selecting a color from a combo-box or a list box.
 <file>colorbox.pas</file> contains <var>TColorBox</var> and 
 <var>TColorListBox</var>. TColorBox is a component that displays colors in a 
 combo-box control. TColorListBox is a component that displays colors in a 
-list box control. This file is part of the Lazarus Component Library 
-(<b>LCL</b>).
+list box control. <file>colorbox.pas</file> is part of the Lazarus Component Library (<b>LCL</b>).
 </p>
 <p>
 The following components are added to the Lazarus IDE component palette:
