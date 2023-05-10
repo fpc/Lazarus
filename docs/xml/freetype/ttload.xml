@@ -1,272 +1,277 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-  <package name="freetypelaz">
-    <!--
-    ====================================================================
-      TTLoad
-    ====================================================================
-    -->
-    <module name="TTLoad">
-      <short>TrueType Table loaders used in the FreeType library.</short>
-      <descr>
-        <p>
-          Copyright 1996 David Turner, Robert Wilhelm and Werner Lemberg.
-        </p>
-        <p>
-          This file is part of the FreeType project, and may only be used modified and distributed under
-          the terms of the FreeType project license, LICENSE.TXT. By continuing to use, modify or
-          distribute this file you indicate that you have read the license and understand and accept it
-          fully.
-        </p>
-        <p>
-          Difference between 1.0 and 1.1: HUGE!!!
-        </p>
-        <ul>
-          <li>Changed the load model to get in touch with TTFile 1.1</li>
-          <li>Now loads one whole resident table in one call</li>
-          <li>Defined resident and instance records/data</li>
-        </ul>
-      </descr>
+<package name="freetypelaz">
+<!--
+====================================================================
+TTLoad
+====================================================================
+-->
+<module name="TTLoad">
+<short>TrueType Table loaders used in the FreeType library.</short>
+<descr>
+<p>
+Copyright 1996 David Turner, Robert Wilhelm and Werner Lemberg.
+</p>
+<p>
+<file>ttload.pas</file> is part of the FreeType project, and may only be used 
+modified and distributed under the terms of the FreeType project license, 
+LICENSE.TXT. By continuing to use, modify or distribute this file you indicate 
+that you have read the license and understand and accept it fully.
+</p>
+<p>
+Difference between 1.0 and 1.1: HUGE!!!
+</p>
+<ul>
+<li>Changed the load model to get in touch with TTFile 1.1</li>
+<li>Now loads one whole resident table in one call</li>
+<li>Defined resident and instance records/data</li>
+</ul>
+</descr>
 
-      <!-- unresolved external references -->
-      <element name="TTTypes"/>
-      <element name="TTTables"/>
-      <element name="TTCMap"/>
-      <element name="TTObjs"/>
-      <element name="TTFile"/>
+<!-- unresolved external references -->
+<element name="TTTypes"/>
+<element name="TTTables"/>
+<element name="TTCMap"/>
+<element name="TTObjs"/>
+<element name="TTFile"/>
 
-      <element name="LookUp_TrueType_Table">
-        <short>Looks for a TrueType table by name.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="LookUp_TrueType_Table.Result">
-        <short>Index of the table if found, -1 otherwise.</short>
-      </element>
-      <element name="LookUp_TrueType_Table.face">
-        <short>Resident table to look for.</short>
-      </element>
-      <element name="LookUp_TrueType_Table.aTag">
-        <short>Searched tag.</short>
-      </element>
+<element name="LookUp_TrueType_Table">
+<short>Looks for a TrueType table by name.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="LookUp_TrueType_Table.Result">
+<short>Index of the table if found, -1 otherwise.</short>
+</element>
+<element name="LookUp_TrueType_Table.face">
+<short>Resident table to look for.</short>
+</element>
+<element name="LookUp_TrueType_Table.aTag">
+<short>Searched tag.</short>
+</element>
 
-      <element name="Load_TrueType_Directory">
-        <short/>
-        <descr>
-          <remark>
-            Please notes: A table directory doesn't own subttables. There is no constructor or destructor for it.
-          </remark>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="Load_TrueType_Directory.Result">
-        <short>True on success, or False on failure.</short>
-      </element>
-      <element name="Load_TrueType_Directory.face">
-        <short/>
-      </element>
-      <element name="Load_TrueType_Directory.faceIndex">
-        <short/>
-      </element>
+<element name="Load_TrueType_Directory">
+<short/>
+<descr>
+<remark>
+A table directory does not own subttables. There is no constructor or 
+destructor for it.
+</remark>
+</descr>
+<seealso/>
+</element>
+<element name="Load_TrueType_Directory.Result">
+<short><b>True</b> on success, or <b>False</b> on failure.</short>
+</element>
+<element name="Load_TrueType_Directory.face">
+<short/>
+</element>
+<element name="Load_TrueType_Directory.faceIndex">
+<short/>
+</element>
 
-      <element name="Load_TrueType_MaxProfile">
-        <short/>
-        <descr>
-          <remark>
-            Please notes : A maximum profile is a static table that owns no subttable. It has then no constructor nor destructor.
-          </remark>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="Load_TrueType_MaxProfile.Result">
-        <short>True on success, or False on failure.</short>
-      </element>
-      <element name="Load_TrueType_MaxProfile.face">
-        <short/>
-      </element>
+<element name="Load_TrueType_MaxProfile">
+<short/>
+<descr>
+<remark>
+A maximum profile is a static table that owns no subttable. It has then no 
+constructor nor destructor.
+</remark>
+</descr>
+<seealso/>
+</element>
+<element name="Load_TrueType_MaxProfile.Result">
+<short><b>True</b> on success, or <b>False</b> on failure.</short>
+</element>
+<element name="Load_TrueType_MaxProfile.face">
+<short/>
+</element>
 
-      <element name="Load_TrueType_Header">
-        <short>Load the TrueType header table in the resident table.</short>
-        <descr>
-          <remark>
-            A font header is a static table that owns no subttable. It has neither a constructor nor a destructor.
-          </remark>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="Load_TrueType_Header.Result">
-        <short>True on success, False on failure.</short>
-      </element>
-      <element name="Load_TrueType_Header.face">
-        <short>Current leading segment.</short>
-      </element>
+<element name="Load_TrueType_Header">
+<short>Load the TrueType header table in the resident table.</short>
+<descr>
+<remark>
+A font header is a static table that owns no subttable. It has neither a 
+constructor nor a destructor.
+</remark>
+</descr>
+<seealso/>
+</element>
+<element name="Load_TrueType_Header.Result">
+<short><b>True</b> on success, <b>False</b> on failure.</short>
+</element>
+<element name="Load_TrueType_Header.face">
+<short>Current leading segment.</short>
+</element>
 
-      <element name="Load_TrueType_Locations">
-        <short>Loads the location table in resident table.</short>
-        <descr>
-          <remark>
-            The Font Header <b>must</b> be loaded in the leading segment before calling this function. This table is destroyed directly by the resident destructor.
-          </remark>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="Load_TrueType_Locations.Result">
-        <short>True on success, False on failure.</short>
-      </element>
-      <element name="Load_TrueType_Locations.face">
-        <short>Current Resident Leading Segment.</short>
-      </element>
+<element name="Load_TrueType_Locations">
+<short>Loads the location table in resident table.</short>
+<descr>
+<remark>
+The Font Header <b>must</b> be loaded in the leading segment before calling 
+this function. This table is destroyed directly by the resident destructor.
+</remark>
+</descr>
+<seealso/>
+</element>
+<element name="Load_TrueType_Locations.Result">
+<short><b>True</b> on success, <b>False</b> on failure.</short>
+</element>
+<element name="Load_TrueType_Locations.face">
+<short>Current Resident Leading Segment.</short>
+</element>
 
-      <element name="Load_TrueType_CVT">
-        <short/>
-        <descr>
-          <remark>
-            Please note : This attribute table is destroyed by the resident destructor.
-          </remark>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="Load_TrueType_CVT.Result">
-        <short>True on success, False on failure.</short>
-      </element>
-      <element name="Load_TrueType_CVT.face">
-        <short/>
-      </element>
+<element name="Load_TrueType_CVT">
+<short/>
+<descr>
+<remark>
+This attribute table is destroyed by the resident destructor.
+</remark>
+</descr>
+<seealso/>
+</element>
+<element name="Load_TrueType_CVT.Result">
+<short><b>True</b> on success, <b>False</b> on failure.</short>
+</element>
+<element name="Load_TrueType_CVT.face">
+<short/>
+</element>
 
-      <element name="Load_TrueType_CMap">
-        <short/>
-        <descr>
-          <remark>
-            The Cmap table directory is destroyed by the resident destructor. The Cmap subtables must be destroyed by Free_CMap_Table.
-          </remark>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="Load_TrueType_CMap.Result">
-        <short>True on success, False on failure.</short>
-      </element>
-      <element name="Load_TrueType_CMap.face">
-        <short/>
-      </element>
+<element name="Load_TrueType_CMap">
+<short/>
+<descr>
+<remark>
+The Cmap table directory is destroyed by the resident destructor. The Cmap 
+subtables must be destroyed by Free_CMap_Table.
+</remark>
+</descr>
+<seealso/>
+</element>
+<element name="Load_TrueType_CMap.Result">
+<short><b>True</b> on success, <b>False</b> on failure.</short>
+</element>
+<element name="Load_TrueType_CMap.face">
+<short/>
+</element>
 
-      <element name="Load_TrueType_Gasp">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="Load_TrueType_Gasp.Result">
-        <short/>
-      </element>
-      <element name="Load_TrueType_Gasp.face">
-        <short/>
-      </element>
+<element name="Load_TrueType_Gasp">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="Load_TrueType_Gasp.Result">
+<short/>
+</element>
+<element name="Load_TrueType_Gasp.face">
+<short/>
+</element>
 
-      <element name="Load_TrueType_Names">
-        <short>Loads the name table into the face table.</short>
-        <descr>
-          <remark>
-            This attribute table is destroyed by the resident destructor.
-          </remark>
-        </descr>
-        <seealso/>
-      </element>
-      <element name="Load_TrueType_Names.Result">
-        <short>True on success, False on failure.</short>
-      </element>
-      <element name="Load_TrueType_Names.face">
-        <short/>
-      </element>
+<element name="Load_TrueType_Names">
+<short>Loads the name table into the face table.</short>
+<descr>
+<remark>
+This attribute table is destroyed by the resident destructor.
+</remark>
+</descr>
+<seealso/>
+</element>
+<element name="Load_TrueType_Names.Result">
+<short><b>True</b> on success, <b>False</b> on failure.</short>
+</element>
+<element name="Load_TrueType_Names.face">
+<short/>
+</element>
 
-      <element name="Load_TrueType_Programs">
-        <short>Load the Font and CVT programs in the resident table.</short>
-        <descr/>
-        <seealso/>
-      </element>
-       <element name="Load_TrueType_Programs.Result">
-        <short>True on success, False on failure.</short>
-      </element>
-      <element name="Load_TrueType_Programs.face">
-        <short/>
-      </element>
+<element name="Load_TrueType_Programs">
+<short>Load the Font and CVT programs in the resident table.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="Load_TrueType_Programs.Result">
+<short><b>True</b> on success, <b>False</b> on failure.</short>
+</element>
+<element name="Load_TrueType_Programs.face">
+<short/>
+</element>
 
-      <element name="Load_TrueType_Postscript">
-        <short>Loads the Postscript table.</short>
-        <descr/>
-        <seealso/>
-      </element>
-       <element name="Load_TrueType_Postscript.Result">
-        <short>True on success, False on failure.</short>
-      </element>
-      <element name="Load_TrueType_Postscript.face">
-        <short/>
-      </element>
+<element name="Load_TrueType_Postscript">
+<short>Loads the Postscript table.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="Load_TrueType_Postscript.Result">
+<short><b>True</b> on success, <b>False</b> on failure.</short>
+</element>
+<element name="Load_TrueType_Postscript.face">
+<short/>
+</element>
 
-      <element name="Load_TrueType_OS2">
-        <short>Load the OS/2 Table.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="Load_TrueType_OS2.Result">
-        <short>True on success, False on failure.</short>
-      </element>
-      <element name="Load_TrueType_OS2.face">
-        <short/>
-      </element>
+<element name="Load_TrueType_OS2">
+<short>Load the OS/2 Table.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="Load_TrueType_OS2.Result">
+<short><b>True</b> on success, <b>False</b> on failure.</short>
+</element>
+<element name="Load_TrueType_OS2.face">
+<short/>
+</element>
 
-      <element name="Load_TrueType_HDMX">
-        <short>Load the 'hdmx' tables.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="Load_TrueType_HDMX.Result">
-        <short>True on success, False on failure.</short>
-      </element>
-      <element name="Load_TrueType_HDMX.face">
-        <short/>
-      </element>
+<element name="Load_TrueType_HDMX">
+<short>Load the 'hdmx' tables.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="Load_TrueType_HDMX.Result">
+<short><b>True</b> on success, <b>False</b> on failure.</short>
+</element>
+<element name="Load_TrueType_HDMX.face">
+<short/>
+</element>
 
-      <element name="Load_TrueType_Metrics_Header">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="Load_TrueType_Metrics_Header.Result">
-        <short>True on success, False on failure.</short>
-      </element>
-      <element name="Load_TrueType_Metrics_Header.face">
-        <short>
-          When True, try to load the vertical header.
-        </short>
-      </element>
-      <element name="Load_TrueType_Metrics_Header.vertical">
-        <short/>
-      </element>
+<element name="Load_TrueType_Metrics_Header">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="Load_TrueType_Metrics_Header.Result">
+<short><b>True</b> on success, <b>False</b> on failure.</short>
+</element>
+<element name="Load_TrueType_Metrics_Header.face">
+<short>
+When True, try to load the vertical header.
+</short>
+</element>
+<element name="Load_TrueType_Metrics_Header.vertical">
+<short/>
+</element>
 
-      <element name="Load_TrueType_Any">
-        <short>Load any TrueType table in user memory.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="Load_TrueType_Any.Result">
-        <short>True on success, False on failure.</short>
-      </element>
-      <element name="Load_TrueType_Any.face">
-        <short>The face object for the font file.</short>
-      </element>
-      <element name="Load_TrueType_Any.tag">
-        <short>The table.</short>
-      </element>
-      <element name="Load_TrueType_Any.offset">
-        <short/>
-      </element>
-      <element name="Load_TrueType_Any.buffer">
-        <short/>
-      </element>
-      <element name="Load_TrueType_Any.length">
-        <short/>
-      </element>
+<element name="Load_TrueType_Any">
+<short>Load any TrueType table in user memory.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="Load_TrueType_Any.Result">
+<short><b>True</b> on success, <b>False</b> on failure.</short>
+</element>
+<element name="Load_TrueType_Any.face">
+<short>The face object for the font file.</short>
+</element>
+<element name="Load_TrueType_Any.tag">
+<short>The table.</short>
+</element>
+<element name="Load_TrueType_Any.offset">
+<short/>
+</element>
+<element name="Load_TrueType_Any.buffer">
+<short/>
+</element>
+<element name="Load_TrueType_Any.length">
+<short/>
+</element>
 
-    </module>
-    <!-- TTLoad -->
-  </package>
+</module>
+<!-- TTLoad -->
+</package>
 </fpdoc-descriptions>
