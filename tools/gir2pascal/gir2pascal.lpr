@@ -26,6 +26,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Classes, SysUtils,CommandLineOptions, DOM, XMLRead, girNameSpaces, girFiles,
+  process,
   girpascalwriter, girErrors, girCTypesMapping, girTokens, girObjects,
   girPascalClassWriter, girpascalwritertypes{$IFDEF UNIX}, baseunix, termio{$ENDIF};
 
@@ -58,6 +59,7 @@ type
     procedure WriteFile(Sender: TObject;  AName: String; AStream: TStringStream);
     procedure Terminate;
   protected
+    function LoadFile(const FileName: String): TXMLDocument;
     procedure DoRun; //override;
   public
     constructor Create;
@@ -113,21 +115,26 @@ begin
 end;
 
 function TGirConsoleConverter.NeedGirFile(AGirFile: TObject; NamespaceName: String): TXMLDocument;
+const
+  ext: Array of String = ('.gir', '.typelib');
 var
-  Sr: TSearchRec;
   Path: String;
+  fn: String;
+  n: Integer;
 begin
   WriteLn('Looking for gir file: ', NamespaceName);
   Result := nil;
   for Path in FPaths do
   begin
     WriteLn('Looking in path: ', Path);
-    if FindFirst(Path+NamespaceName+'.gir', faAnyFile, Sr) = 0 then
-    begin
-      ReadXMLFile(Result, Path+Sr.Name);
-      Exit;
+    for n := Low(ext) to High(ext) do begin
+      fn := Path + NamespaceName + ext[n];
+      WriteLn('Searching for: ', fn);
+      if FileExists(fn) then
+      begin
+        Exit(LoadFile(fn));
+      end;
     end;
-    FindClose(Sr);
   end;
   if Result = nil then
     WriteLn('Fatal: Unable to find gir file: ',NamespaceName);
@@ -172,7 +179,7 @@ var
   StartTime, EndTime:TDateTime;
 begin
   StartTime := Now;
-  ReadXMLFile(Doc, FFileToConvert);
+  Doc := LoadFile(FFileToConvert);
 
   girFile := TgirFile.Create(Self, FCmdOptions);
   girFile.OnNeedGirFile:=@NeedGirFile;
@@ -310,6 +317,37 @@ begin
 
   // stop program loop
   Terminate;
+end;
+
+function TGirConsoleConverter.LoadFile(const FileName: String): TXMLDocument;
+var
+  p: TProcess;
+  S: String = '';
+  n: Integer;
+begin
+  if FileName.EndsWith('.gir') then begin
+    ReadXMLFile(Result, FileName);
+  end else begin
+    p := TProcess.Create(nil);
+    p.Executable := 'g-ir-generate';
+    p.Parameters.add(FileName);
+    p.Options := [poUsePipes];
+    p.Execute;
+    try
+      ReadXMLFile(Result, p.Output);
+    except
+        WriteLn('############################################################');
+        n := p.Stderr.NumBytesAvailable;
+        SetLength(S, n + 1);
+        p.Stderr.Read(S[1], n);
+        S[n] := #0;
+        WriteLn('ExitCode = ', p.ExitCode);
+        WriteLn(S);
+        WriteLn('############################################################');
+        Result := nil;
+    end;
+    p.Free;
+  end;
 end;
 
 constructor TGirConsoleConverter.Create;
