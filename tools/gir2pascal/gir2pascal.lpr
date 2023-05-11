@@ -258,6 +258,12 @@ begin
     Halt;
   end;
 
+  FFileToConvert:=FCmdOptions.OptionValue('input');
+    AddPaths(ExtractFilePath(FFileToConvert));
+
+  if FCmdOptions.HasOption('paths') then
+    AddPaths(FCmdOptions.OptionValue('paths'));
+
   if not FCmdOptions.HasOption('no-default') then
     AddDefaultPaths;
 
@@ -266,14 +272,8 @@ begin
   else
     FOutPutDirectory:=IncludeTrailingPathDelimiter(GetCurrentDir);
 
-  FFileToConvert:=FCmdOptions.OptionValue('input');
-    AddPaths(ExtractFilePath(FFileToConvert));
-
   if FCmdOptions.HasOption('unit-prefix') then
     FUnitPrefix := FCmdOptions.OptionValue('unit-prefix');
-
-  if FCmdOptions.HasOption('paths') then
-    AddPaths(FCmdOptions.OptionValue('paths'));
 
   if FCmdOptions.HasOption('overwrite-files') then
     FOverWriteFiles:=True;
