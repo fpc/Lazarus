@@ -82,7 +82,7 @@ var
   Str: String;
 begin
   Strs := TStringList.Create;
-  Strs.Delimiter:=':';
+  Strs.Delimiter := FPaths.Delimiter;
   Strs.StrictDelimiter:=True;
   Strs.DelimitedText:=APaths;
 
@@ -355,6 +355,7 @@ begin
   //inherited Create(TheOwner);
   FCmdOptions := TCommandLineOptions.Create;
   FPaths := TStringList.Create;
+  FPaths.Delimiter := PathSep;
 end;
 
 destructor TGirConsoleConverter.Destroy;
