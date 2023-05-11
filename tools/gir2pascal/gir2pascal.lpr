@@ -95,9 +95,9 @@ end;
 
 procedure TGirConsoleConverter.VerifyOptions;
 begin
-  if not DirectoryExists(FOutPutDirectory) then
+  if not ForceDirectories(FOutPutDirectory) then
   begin
-    WriteLn(Format('Output directory "%s" does not exist!', [FOutPutDirectory]));
+    WriteLn(Format('Could not create output directory "%s"!', [FOutPutDirectory]));
     Terminate;
   end;
   if FFileToConvert = '' then
