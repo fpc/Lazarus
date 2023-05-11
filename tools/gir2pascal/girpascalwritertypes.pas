@@ -193,6 +193,8 @@ type
     function GetUnitPostfix: String;
     function UnitPrefix: String;
 
+    function cExternal(const cName: String = ''): String;
+
     // functions to ensure the type is being written in the correct declaration
     function WantTypeSection: TPDeclarationType;
     function WantConstSection: TPDeclarationConst;
@@ -843,6 +845,15 @@ begin
   Result := FUnitPrefix;
 end;
 
+function TPascalUnit.cExternal(const cName: String = ''): String;
+begin
+  Result := ' external {$ifdef MsWindows} ' + UnitName + '_library';
+  if cName <> '' then begin
+    Result += ' name ''' + cName + '''';
+  end;
+  Result += ' {$endif};';
+end;
+
 function TPascalUnit.WantTypeSection: TPDeclarationType;
 begin
   if (InterfaceSection.Declarations.Count = 0)
@@ -1227,7 +1238,7 @@ begin
 
   WriteFunctionTypeAndReturnType(AItem, RoutineType, Returns);
   Params := WriteFunctionParams(AItem.Params);
-  Postfix := ' external' +' {$ifdef MsWindows} '+UnitName+'_library'+' name ''' + aitem.CIdentifier+ ''' {$endif};';
+  Postfix := cExternal(AItem.CIdentifier);
   FuncSect := WantFunctionSection;
   if not (goLinkDynamic in FOptions) then
     FuncSect.Lines.Add(RoutineType +' '+ AItem.CIdentifier+ParenParams(Params)+Returns+Postfix)
@@ -1290,7 +1301,7 @@ begin
   if Pos('array of const', Params) + Pos('va_list', Params) > 0 then
     Prefix:='//';
   if not (goLinkDynamic in FOptions) then
-    Postfix := ' external' +' {$ifdef MsWindows} '+UnitName+'_library'+' name ''' + AFunction.CIdentifier+ ''' {$endif};'+DeprecatedS
+    Postfix := cExternal(AFunction.CIdentifier) + DeprecatedS
   else
     PostFix := ''+DeprecatedS;
 
@@ -1559,7 +1570,7 @@ var
   end;
   procedure AddGetTypeProc(AObj: TgirGType);
   const
-    GetTypeTemplate = 'function %s: %s; cdecl; external {$ifdef MsWindows} %s_library name ''%s'' {$endif};';
+    GetTypeTemplate = 'function %s: %s; cdecl;';
     GetTypeTemplateDyn = '%s: function:%s; cdecl;';
   var
     AType: String;
@@ -1574,7 +1585,7 @@ var
     if not (goLinkDynamic in FOptions) then
       begin
         AName:=AObj.GetTypeFunction;
-        UnitFuncs.Add(Format(GetTypeTemplate, [AName, AType,unitname,AName]))
+        UnitFuncs.Add(Format(GetTypeTemplate, [AName, AType]) + cExternal(AName));
       end
     else
     begin
