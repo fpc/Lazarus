@@ -72,14 +72,41 @@ type
 { TGirConsoleConverter }
 
 procedure TGirConsoleConverter.AddDefaultPaths;
+const
+{$ifdef Linux}
+{$ifdef CpuArmHF}
+  TargetArchLibC = '-gnueabihf';
+{$endif CpuArmHF}
+{$ifdef CpuArmEL}
+  TargetArchLibC = '-gnueabi';
+{$endif CpuArmEL}
+{$ifndef CpuArm}
+  TargetArchLibC = '-gnu';
+{$endif CpuArm}
+  TargetOs = 'linux'; {FpcTargetOs returns Linux instead of linux}
+{$else Linux}
+  TargetArchLibC = '';
+  TargetOs = {$Include %FpcTargetOs%};
+{$endif Linux}
+  TargetCpu = {$Include %FpcTargetCpu%};
+  TargetSystem = TargetOs + TargetArchLibC;
+  TargetMultiarch = TargetCpu + '-' + TargetSystem;
+
+var
+  DefaultSystemPaths: String;
+
 begin
-  FPaths.Add('/usr/share/gir-1.0/');
+  DefaultSystemPaths := '/usr/lib/' + TargetMultiarch + '/girepository-1.0' +
+     FPaths.Delimiter + '/usr/share/girepository-1.0' +
+     FPaths.Delimiter + '/usr/share/gir-1.0';
+  AddPaths(DefaultSystemPaths);
 end;
 
 procedure TGirConsoleConverter.AddPaths(APaths: String);
 var
   Strs: TStringList;
   Str: String;
+  Path: String;
 begin
   Strs := TStringList.Create;
   Strs.Delimiter := FPaths.Delimiter;
@@ -87,8 +114,12 @@ begin
   Strs.DelimitedText:=APaths;
 
   // so we can add the delimiter
-  for Str in Strs do
-    FPaths.Add(IncludeTrailingPathDelimiter(Str));
+  for Str in Strs do begin
+    Path := IncludeTrailingPathDelimiter(Str);
+    if FPaths.IndexOf(Path) < 0 then begin
+      FPaths.Add(Path);
+    end;
+  end;
 
   Strs.Free;
 end;
