@@ -209,31 +209,24 @@ var
 
 procedure MenuTrackStarted(mn: NSMenu);
 begin
-  if menuTrack = nil then menuTrack := NSMutableArray.alloc.init;
+  if not Assigned(menuTrack) then menuTrack := NSMutableArray.alloc.init;
   menuTrack.addObject(mn);
 end;
 
 procedure MenuTrackEnded(mn: NSMenu);
-var
-  i : integer;
 begin
-  if menuTrack = nil then
-    // it's possible if popup menu was used, without mainmenu in the app
-    Exit;
-
-  i := menuTrack.indexOfObject(mn);
-  if i >= 0 then
-    menuTrack.removeObjectAtIndex(i);
+  if Assigned(menuTrack) then
+    menuTrack.removeObject(mn);
 end;
 
 procedure MenuTrackCancelAll;
 var
-  i  : integer;
   mn : NSMenu;
 begin
-  if menuTrack = nil then Exit;
-  for i:=menuTrack.count - 1 downto 0 do begin
-    mn := NSMenu(menuTrack.objectAtIndex(i));
+  if not Assigned(menuTrack) then Exit;
+  if menuTrack.count = 0 then Exit;
+  for mn in menuTrack do
+  begin
     if Assigned(mn) then
       mn.cancelTracking;
   end;
@@ -449,7 +442,6 @@ begin
   item.setSubmenu(itemSubMenu);
   itemSubMenu.release;
   NSApplication(NSApp).setServicesMenu(item.submenu);
-  item.release;
 
   // Separator
   submenu.insertItem_atIndex(NSMenuItem.separatorItem, submenu.itemArray.count);
@@ -457,17 +449,14 @@ begin
   // Hide App     Meta-H
   item := LCLMenuItemInit( TCocoaMenuItem_HideApp.alloc, Format(rsMacOSMenuHide, [Application.Title]), VK_H, [ssMeta]);
   submenu.insertItem_atIndex(item, submenu.itemArray.count);
-  item.release;
 
   // Hide Others  Meta-Alt-H
   item := LCLMenuItemInit( TCocoaMenuItem_HideOthers.alloc, rsMacOSMenuHideOthers, VK_H, [ssMeta, ssAlt]);
   submenu.insertItem_atIndex(item, submenu.itemArray.count);
-  item.release;
 
   // Show All
   item := LCLMenuItemInit( TCocoaMenuItem_ShowAllApp.alloc, rsMacOSMenuShowAll);
   submenu.insertItem_atIndex(item, submenu.itemArray.count);
-  item.release;
 
   // Separator
   submenu.insertItem_atIndex(NSMenuItem.separatorItem, submenu.itemArray.count);
@@ -475,7 +464,6 @@ begin
   // Quit   Meta-Q
   item := LCLMenuItemInit( TCocoaMenuItem_Quit.alloc, Format(rsMacOSMenuQuit, [Application.Title]), VK_Q, [ssMeta]);
   submenu.insertItem_atIndex(item, submenu.itemArray.count);
-  item.release;
 
   attachedAppleMenuItems := True;
 end;
