@@ -1414,6 +1414,8 @@ begin
   end else
   begin
     QtTreeWidget := TQtTreeWidget(ALV.Handle);
+    if QtTreeWidget.InUpdate then
+      exit; // issue #40255
     TWI := QtTreeWidget.topLevelItem(AIndex);
     QtTreeWidget.BeginUpdate;
     case AState of
