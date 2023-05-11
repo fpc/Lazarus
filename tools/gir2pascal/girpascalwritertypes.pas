@@ -1227,7 +1227,7 @@ begin
 
   WriteFunctionTypeAndReturnType(AItem, RoutineType, Returns);
   Params := WriteFunctionParams(AItem.Params);
-  Postfix := ' external' +' {$ifdef Mswindows}'+UnitName+'_library '+' name ''' + aitem.CIdentifier+ '''{$endif};';
+  Postfix := ' external' +' {$ifdef MsWindows} '+UnitName+'_library'+' name ''' + aitem.CIdentifier+ ''' {$endif};';
   FuncSect := WantFunctionSection;
   if not (goLinkDynamic in FOptions) then
     FuncSect.Lines.Add(RoutineType +' '+ AItem.CIdentifier+ParenParams(Params)+Returns+Postfix)
@@ -1290,7 +1290,7 @@ begin
   if Pos('array of const', Params) + Pos('va_list', Params) > 0 then
     Prefix:='//';
   if not (goLinkDynamic in FOptions) then
-    Postfix := ' external' +' {$ifdef Mswindows}'+UnitName+'_library '+' name ''' + AFunction.CIdentifier+ '''{$endif};'+DeprecatedS
+    Postfix := ' external' +' {$ifdef MsWindows} '+UnitName+'_library'+' name ''' + AFunction.CIdentifier+ ''' {$endif};'+DeprecatedS
   else
     PostFix := ''+DeprecatedS;
 
@@ -1559,7 +1559,7 @@ var
   end;
   procedure AddGetTypeProc(AObj: TgirGType);
   const
-    GetTypeTemplate = 'function %s: %s; cdecl; external {$ifdef MSWindows} %s_library name ''%s'' {$endif};';
+    GetTypeTemplate = 'function %s: %s; cdecl; external {$ifdef MsWindows} %s_library name ''%s'' {$endif};';
     GetTypeTemplateDyn = '%s: function:%s; cdecl;';
   var
     AType: String;
