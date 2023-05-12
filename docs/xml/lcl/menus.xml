@@ -2944,11 +2944,41 @@ ID).
 
 <element name="TMenuItem.Hint">
 <short>
-<var>Hint</var>: shown in a statusbar if the main window has one and if the 
-statusbar has AutoHint set to <b>True</b>.
+Contains hint text displayed for the menu item.
 </short>
-<descr/>
+<descr>
+<p>
+<var>Hint</var> is a <var>TTranslateString</var> property with the text 
+displayed as a hint for the menu item. Its value may be overwritten with the 
+Caption from an Action assigned to the menu item. As a TTranslateString 
+property, the value can be localized using the i18n facilities in the Lazarus 
+IDE when enabled for a project.
+</p>
+<p>
+The hint text is displayed on the TStatusBar for a form when its AutoHint 
+property is enabled. For a top-level menu item, the hint text does not appear 
+until a menu item is selected / activated on the TMainMenu instance. Once an 
+item has been selected on the menu, hint text is displayed whenever the mouse 
+is hovered a menu item or when a new menu item is selected.
+</p>
+<p>
+Hint is also assigned to the Hint property in Application (TApplication) for 
+use in its OnShowHint event handler.
+</p>
+</descr>
+<version>
+Modified in LCL version 2.4.0 to use the TTranslateString type instead of 
+String.
+</version>
 <seealso/>
+<link id="TMenuItem.ActionChange"/>
+<link id="TMenuItem.IntfDoSelect"/>
+<link id="#lcl.actnlist.TCustomAction.Caption">TCustomAction.Caption</link>
+<link id="#lcl.actnlist.TCustomAction.AutoCheck">TCustomAction.AutoCheck</link>
+<link id="#lcl.comctrls.TStatusBar.AutoHint">TStatusBar.AutoHint</link>
+<link id="#lcl.forms.TApplication.Hint">TApplication.Hint</link>
+<link id="#lcl.forms.TApplication.OnShowHint">TApplication.OnShowHint</link>
+<link id="#lcl.lcltype.TTranslateString">TTranslateString</link>
 </element>
 
 <element name="TMenuItem.ImageIndex">
