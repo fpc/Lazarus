@@ -152,7 +152,7 @@ type
     FGlyphShowMode: TGlyphShowMode;
     FHandle: HMenu;
     FHelpContext: THelpContext;
-    FHint: String;
+    FHint: TTranslateString;
     FImageChangeLink: TChangeLink;
     FImageIndex: TImageIndex;
     FItems: TList; // list of TMenuItem
