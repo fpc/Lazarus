@@ -94,9 +94,10 @@ type
     chkPackages: TCheckBox;
     chkSourceEditor: TCheckBox;
     cboShowWhat: TComboBox;
-    grbOptions: TGroupBox;
+    lblOptions: TLabel;
     lblShowWhat: TLabel;
     lvTodo: TListView;
+    pnlOptions: TPanel;
     pnlShowWhat: TPanel;
     SaveDialog: TSaveDialog;
     ToolBar: TToolBar;
@@ -104,6 +105,8 @@ type
     tbRefresh: TToolButton;
     tbExport: TToolButton;
     N1: TToolButton;
+    N2: TToolButton;
+    N3: TToolButton;
     tbHelp: TToolButton;
     XMLPropStorage: TXMLPropStorage;
     procedure acExportExecute(Sender: TObject);
@@ -437,7 +440,7 @@ begin
   acExport.Caption := lisToDoExport;
   acHelp.Caption := lisHelp;
 
-  grbOptions.Caption := lisOptions;
+  lblOptions.Caption := lisOptions;
   chkListed.Caption := lisToDoListed;
   chkListed.Hint := lisToDoListedHint;
   chkUsed.Caption := lisToDoUsed;
