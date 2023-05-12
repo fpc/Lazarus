@@ -50,6 +50,8 @@ type
   { TTodoDialog }
 
   TTodoDialog = class(TForm)
+    Bevel1: TBevel;
+    Bevel2: TBevel;
     BtnPanel: TButtonPanel;
     chkAlternateTokens: TCheckBox;
     grpboxToDoType: TGroupBox;
@@ -67,6 +69,7 @@ type
     XMLPropStorage: TXMLPropStorage;
     procedure FormCloseQuery(Sender: TObject; var {%H-}CanClose: Boolean);
     procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure rdoToDoTypeChange(Sender: TObject);
   end;
   
@@ -195,6 +198,18 @@ begin
   XMLPropStorage.FileName := Concat(AppendPathDelim(LazarusIDE.GetPrimaryConfigPath),
     DefaultTodoListCfgFile);
   XMLPropStorage.Active := True;
+end;
+
+procedure TTodoDialog.FormShow(Sender: TObject);
+begin
+  TodoMemo.Constraints.MinHeight := OwnerEdit.Height;
+  Constraints.MinHeight := ToDoMemo.Top + ToDoMemo.Constraints.MinHeight +
+    ClientHeight - PriorityLabel.Top + PriorityLabel.BorderSpacing.Top;
+  // Constraints.MinWidth is set in Object Inspector for LCL scaling
+
+  // Enforce constraints
+  if Width < Constraints.MinWidth then Width := 0;
+  if Height < Constraints.MinHeight then Height := 0;
 end;
 
 procedure TTodoDialog.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
