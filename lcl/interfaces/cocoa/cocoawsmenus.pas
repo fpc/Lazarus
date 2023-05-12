@@ -442,6 +442,7 @@ begin
   item.setSubmenu(itemSubMenu);
   itemSubMenu.release;
   NSApplication(NSApp).setServicesMenu(item.submenu);
+  item.release;
 
   // Separator
   submenu.insertItem_atIndex(NSMenuItem.separatorItem, submenu.itemArray.count);
@@ -449,14 +450,17 @@ begin
   // Hide App     Meta-H
   item := LCLMenuItemInit( TCocoaMenuItem_HideApp.alloc, Format(rsMacOSMenuHide, [Application.Title]), VK_H, [ssMeta]);
   submenu.insertItem_atIndex(item, submenu.itemArray.count);
+  item.release;
 
   // Hide Others  Meta-Alt-H
   item := LCLMenuItemInit( TCocoaMenuItem_HideOthers.alloc, rsMacOSMenuHideOthers, VK_H, [ssMeta, ssAlt]);
   submenu.insertItem_atIndex(item, submenu.itemArray.count);
+  item.release;
 
   // Show All
   item := LCLMenuItemInit( TCocoaMenuItem_ShowAllApp.alloc, rsMacOSMenuShowAll);
   submenu.insertItem_atIndex(item, submenu.itemArray.count);
+  item.release;
 
   // Separator
   submenu.insertItem_atIndex(NSMenuItem.separatorItem, submenu.itemArray.count);
@@ -464,6 +468,7 @@ begin
   // Quit   Meta-Q
   item := LCLMenuItemInit( TCocoaMenuItem_Quit.alloc, Format(rsMacOSMenuQuit, [Application.Title]), VK_Q, [ssMeta]);
   submenu.insertItem_atIndex(item, submenu.itemArray.count);
+  item.release;
 
   attachedAppleMenuItems := True;
 end;
