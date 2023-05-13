@@ -204,6 +204,8 @@ begin
   InternalFinal;
   ToCollect.Free;
 
+  Modals.Free;
+
   CocoaWidgetSet := nil;
 end;
 

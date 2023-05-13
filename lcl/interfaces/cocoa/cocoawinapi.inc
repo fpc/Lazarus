@@ -2764,7 +2764,6 @@ begin
     DebugLn('[TCocoaWidgetSet.GetTextExtentPoint] DC: %x Str: %s Count: %d', [DC, Str, Count]);
   {$ENDIF}
   ctx:=CheckDC(DC);
-  Result:=Assigned(ctx);
   if not Assigned(ctx) then Exit(False);
   Result := ctx.GetTextExtentPoint(Str, Count, Size);
   {$IFDEF VerboseWinAPI}

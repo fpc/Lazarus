@@ -2228,6 +2228,7 @@ begin
       Size.cy := Round(height);
     finally
       CFRelease(CoreLine);
+      CFRelease(AttribStr);
     end;
   end;
   S.release;

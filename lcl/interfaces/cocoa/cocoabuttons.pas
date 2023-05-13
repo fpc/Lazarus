@@ -121,6 +121,9 @@ type
 
     procedure mouseDragged(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
+
+    function lclGetCallback: ICommonCallback; override;
+    procedure lclClearCallback; override;
   end;
 
 implementation
@@ -200,6 +203,16 @@ procedure TCocoaStepper.mouseMoved(event: NSEvent);
 begin
   if not callback.MouseMove(event) then
     inherited mouseMoved(event);
+end;
+
+function TCocoaStepper.lclGetCallback: ICommonCallback;
+begin
+  Result:= callback;
+end;
+
+procedure TCocoaStepper.lclClearCallback;
+begin
+  callback := nil;
 end;
 
 { TCocoaButton }
