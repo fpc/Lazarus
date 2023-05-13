@@ -269,12 +269,12 @@ begin
   {$endif}
   Result.setDocumentView(AView);
   Result.setDrawsBackground(false); // everything is covered anyway
-  if AReleaseView then AView.release;
   {$ifdef BOOLFIX}
   AView.setHidden_(Ord(false));
   {$else}
   AView.setHidden(false);
   {$endif}
+  if AReleaseView then AView.release;
   SetViewDefaults(Result);
 end;
 
