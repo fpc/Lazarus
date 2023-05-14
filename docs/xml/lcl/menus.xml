@@ -2966,10 +2966,6 @@ Hint is also assigned to the Hint property in Application (TApplication) for
 use in its OnShowHint event handler.
 </p>
 </descr>
-<version>
-Modified in LCL version 2.4.0 to use the TTranslateString type instead of 
-String.
-</version>
 <seealso/>
 <link id="TMenuItem.ActionChange"/>
 <link id="TMenuItem.IntfDoSelect"/>
