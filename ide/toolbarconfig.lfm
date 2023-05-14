@@ -12,7 +12,7 @@ object ToolBarConfig: TToolBarConfig
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object lblMenuTree: TLabel
     AnchorSideLeft.Control = TV
     AnchorSideLeft.Side = asrCenter
@@ -115,6 +115,7 @@ object ToolBarConfig: TToolBarConfig
     BorderSpacing.Bottom = 6
     ReadOnly = True
     ScrollBars = ssAutoBoth
+    ShowSeparators = False
     TabOrder = 1
     OnDblClick = TVDblClick
     OnSelectionChanged = TVSelectionChanged
@@ -137,7 +138,7 @@ object ToolBarConfig: TToolBarConfig
     ParentFont = False
     TabOrder = 0
     FilteredTreeview = TV
-    ExpandAllInitially = True
+    OnFilterNode = FilterEditFilterNode
   end
   object Splitter1: TSplitter
     AnchorSideLeft.Control = TV

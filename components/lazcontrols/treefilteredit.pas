@@ -20,7 +20,7 @@ uses
   // LCL
   LCLType, Graphics, ComCtrls, EditBtn,
   // LazUtils
-  LazFileUtils, LazUTF8, AvgLvlTree;
+  LazFileUtils, LazUTF8, LazLoggerBase, AvgLvlTree;
 
 type
   TImageIndexEvent = function (Str: String; Data: TObject;
@@ -476,21 +476,24 @@ var
   Pass, Done: Boolean;
 begin
   Result := False;
+  Pass := False;
   Done := False;
-  while (Node<>nil) and not Done do
+  while Node<>nil do
   begin
     // Filter with event handler if there is one.
     if Assigned(fOnFilterNode) then
       Pass := fOnFilterNode(Node, Done);
-    if not (Pass and Done) then
+    if not Done then
       Pass := DoFilterItem(Node.Text, Node.Data);
     if Pass and (fFirstPassedNode=Nil) then
       fFirstPassedNode:=Node;
     // Recursive call for child nodes.
-    Node.Visible:=FilterTree(Node.GetFirstChild) or Pass;
-    if Node.Visible then
-      Result:=True;
-    Node:=Node.GetNextSibling;
+    Node.Visible := FilterTree(Node.GetFirstChild) or Pass;
+    if Node.Visible then begin                 // Collapse all when Filter=''.
+      Node.Expanded := (Filter<>'') or fExpandAllInitially;
+      Result := True;
+    end;
+    Node := Node.GetNextSibling;
   end;
 end;
 

@@ -63,6 +63,7 @@ type
     Splitter1: TSplitter;
     TV: TTreeView;
     procedure btnHelpClick(Sender: TObject);
+    function FilterEditFilterNode({%H-}ItemNode: TTreeNode; out Done: Boolean): Boolean;
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -79,7 +80,6 @@ type
       {%H-}Selected: Boolean);
     procedure TVSelectionChanged(Sender: TObject);
   private
-    Image: TBitMap;
     defImageIndex: integer;
     procedure AddCommand;
     procedure AddDivider;
@@ -89,7 +89,6 @@ type
     procedure MoveUpDown(aOffset: integer);
     function NewLvItem(aCaption: string): TListItem;
     procedure RemoveCommand;
-    procedure SetupCaptions;
     procedure LoadCategories;
     procedure SortCategories(ACtgList: TStrings);
     procedure AddMenuItem(ParentNode: TTreeNode; CmdItem: TIDEButtonCommand);
@@ -163,9 +162,9 @@ begin
   lvToolbar.SmallImages := IDEImages.Images_16;
   // default image to be used when none is available
   defImageIndex := IDEImages.LoadImage('execute');
-
-  Image := TBitmap.Create;
-  SetupCaptions;
+  Caption             := lisToolbarConfiguration;
+  lblMenuTree.Caption := lisCoolbarAvailableCommands;
+  lblToolbar.Caption  := lisCoolbarToolbarCommands;
   LoadCategories;
   IDEDialogLayoutList.ApplyLayout(Self);
 end;
@@ -177,7 +176,7 @@ end;
 
 procedure TToolBarConfig.FormDestroy(Sender: TObject);
 begin
-  Image.Free;
+  ;
 end;
 
 procedure TToolBarConfig.lvToolbarDblClick(Sender: TObject);
@@ -198,6 +197,12 @@ end;
 procedure TToolBarConfig.btnHelpClick(Sender: TObject);
 begin
   OpenUrl('http://wiki.freepascal.org/IDE_Window:_Toolbar_Config');
+end;
+
+function TToolBarConfig.FilterEditFilterNode(ItemNode: TTreeNode; out Done: Boolean): Boolean;
+begin
+  Result := lvToolbar.FindCaption(0, ItemNode.Text, True, True, False) = Nil;
+  Done := not Result;
 end;
 
 procedure TToolBarConfig.UpdateButtonsState;
@@ -252,8 +257,7 @@ begin
   Node := TV.Selected;
   if (Node = Nil) or (Node.Data = Nil) then
     Exit;
-  CmdCaption := TIDEButtonCommand(Node.Data).Caption;
-  DeleteAmpersands(CmdCaption);
+  CmdCaption := TIDEButtonCommand(Node.Data).GetCaptionWithShortCut;
   lvItem := NewLvItem(CmdCaption);
   lvItem.Data := Node.Data;
   if Node.ImageIndex > -1 then
@@ -344,13 +348,6 @@ begin
   MoveUpDown(-1);
 end;
 
-procedure TToolBarConfig.SetupCaptions;
-begin
-  Caption             := lisToolbarConfiguration;
-  lblMenuTree.Caption := lisCoolbarAvailableCommands;
-  lblToolbar.Caption  := lisCoolbarToolbarCommands;
-end;
-
 procedure TToolBarConfig.LoadCategories;
 var
   i, l: integer;
@@ -424,7 +421,7 @@ var
   Node: TTreeNode;
 begin
   if CmdItem.Caption = '-' then Exit;   // divider
-  Node := TV.Items.AddChild(ParentNode, Format('%s', [CmdItem.GetCaptionWithShortCut]));
+  Node := TV.Items.AddChild(ParentNode, CmdItem.GetCaptionWithShortCut);
   Node.ImageIndex := CmdItem.ImageIndex;
   Node.SelectedIndex := CmdItem.ImageIndex;
   Node.Data := CmdItem;
@@ -500,8 +497,8 @@ begin
     begin
       Cmd := IDEToolButtonCategories.FindItemByMenuPathOrName(Value);
       AddToolBarItem(Cmd);      // Add command.
-      if Value <> SL[I] then
-        DebugLn(['TToolBarConfig.LoadSettings: SL[I]=', SL[I], ', Value=', Value]);
+      //if Value <> SL[I] then
+      //  DebugLn(['TToolBarConfig.LoadSettings: SL[I]=', SL[I], ', Value=', Value]);
       SL[I] := Value;
     end;
   end;

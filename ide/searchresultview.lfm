@@ -13,6 +13,7 @@ object SearchResultsView: TSearchResultsView
   OnClose = FormClose
   OnCreate = Form1Create
   OnKeyDown = FormKeyDown
+  LCLVersion = '2.3.0.0'
   object ControlBar1: TPanel
     Left = 0
     Height = 26
@@ -80,6 +81,7 @@ object SearchResultsView: TSearchResultsView
       MaxLength = 0
       TabOrder = 1
       OnChange = SearchInListChange
+      ExpandAllInitially = True
     end
     object CloseTabs: TToolBar
       Left = 616
