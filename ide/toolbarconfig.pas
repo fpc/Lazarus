@@ -444,7 +444,7 @@ begin
 end;
 
 procedure TToolBarConfig.AddToolBarItem(CmdItem: TIDEButtonCommand);
-Var
+var
   Node: TTreeNode;
   lvItem: TListItem;
 begin

@@ -706,7 +706,6 @@ begin
         exit;
       end;
     end;
-
     SearchPos:= TLazSearchMatchPos.Create;
     SearchPos.MatchStart:=MatchStart;
     SearchPos.MatchLen:=MatchLen;
@@ -771,28 +770,27 @@ begin
 end;
 
 procedure TSearchResultsView.Parse_Search_Phrases(var slPhrases: TStrings);
-var i, iLength: Integer;
-    sPhrases, sPhrase: string;
+var
+  i, iLength: Integer;
+  sPhrases, sPhrase: string;
 begin
- //Parse Phrases
- sPhrases := SearchInListEdit.Text;
- iLength := Length(sPhrases);
- sPhrase := '';
- for i:=1 to iLength do
+  //Parse Phrases
+  sPhrases := SearchInListEdit.Text;
+  iLength := Length(sPhrases);
+  sPhrase := '';
+  for i:=1 to iLength do
   begin
-   if ((sPhrases[i] = ' ') or (sPhrases[i] = ',') or (i = iLength)) then
+    if ((sPhrases[i] = ' ') or (sPhrases[i] = ',') or (i = iLength)) then
     begin
-     if not ((sPhrases[i] = ' ') or (sPhrases[i] = ',')) then
+      if not ((sPhrases[i] = ' ') or (sPhrases[i] = ',')) then
+        sPhrase := sPhrase + sPhrases[i];
+      if (sPhrase > ' ') then
+        slPhrases.Add(UpperCase(sPhrase)); //End of phrase, add to phrase list
+      sPhrase := '';//Reset sPhrase
+    end
+    else if (sPhrases[i] > ' ') then
       sPhrase := sPhrase + sPhrases[i];
-     if (sPhrase > ' ') then
-      slPhrases.Add(UpperCase(sPhrase));//End of phrase, add to phrase list
-     sPhrase := '';//Reset sPhrase
-    end else
-    begin
-     if (sPhrases[i] > ' ') then
-      sPhrase := sPhrase + sPhrases[i];
-    end;//End if ((sPhrases[i] = ' ') or (sPhrases[i] = ','))
-  end;//End for-loop i
+  end; //End for-loop i
 end;
 
 procedure TSearchResultsView.ResultsNoteBookChanging(Sender: TObject;
@@ -1347,7 +1345,7 @@ begin
     end;
 
   ChildNode := Items.AddChild(Node, Line);
-  Node.Expanded:=true;
+  Node.Expanded := true;
   ChildNode.Data := MatchPos;
 end;
 

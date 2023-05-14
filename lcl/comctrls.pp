@@ -1166,7 +1166,7 @@ type
                      Partial, Inclusive, Wrap: Boolean;
                      PartStart: Boolean = True): TListItem;
     function FindData(const AData: Pointer): TListItem; overload;
-    function FindData(StartIndex: Integer; Value: Pointer;  Inclusive, Wrap: Boolean): TListItem; overload;
+    function FindData(StartIndex: Integer; Value: Pointer; Inclusive, Wrap: Boolean): TListItem; overload;
     function GetEnumerator: TListItemsEnumerator;
     function IndexOf(const AItem: TListItem): Integer;
     function Insert(const AIndex: Integer) : TListItem;
@@ -1618,7 +1618,7 @@ type
     procedure Repaint; override;
     function FindCaption(StartIndex: Integer; Value: string;
       Partial, Inclusive, Wrap: Boolean; PartStart: Boolean = True): TListItem;
-    function FindData(StartIndex: Integer; Value: Pointer;  Inclusive, Wrap: Boolean): TListItem;
+    function FindData(StartIndex: Integer; Value: Pointer; Inclusive, Wrap: Boolean): TListItem;
     function GetHitTestInfoAt(X, Y: Integer): THitTests;
     function GetItemAt(x,y: integer): TListItem;
 
