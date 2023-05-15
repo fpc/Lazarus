@@ -167,6 +167,18 @@ type
 
 implementation
 
+const
+  DarkName = 'NSAppearanceNameDarkAqua'; // used in 10.14
+  DarkNameVibrant = 'NSAppearanceNameVibrantDark'; // used in 10.13
+
+var
+  NSSTR_DARK_NAME: NSString;
+  NSSTR_DARK_NAME_VIBRANT: NSString;
+  NSSTR_LINE_FEED: NSString;
+  NSSTR_CARRIAGE_RETURN: NSString;
+  NSSTR_LINE_SEPARATOR: NSString;
+  NSSTR_PARAGRAPH_SEPARATOR: NSString;
+
 procedure ApplicationWillShowModal;
 begin
   // Any place that would attempt to use Cocoa-native modality.
@@ -567,10 +579,6 @@ var
   _NSAppearanceClass : pobjc_class = nil;
   _NSAppearanceClassRead: Boolean = false;
 
-const
-  DarkName = 'NSAppearanceNameDarkAqua'; // used in 10.14
-  DarkNameVibrant = 'NSAppearanceNameVibrantDark'; // used in 10.13
-
 function NSAppearanceClass: pobjc_class;
 begin
   if not _NSAppearanceClassRead then
@@ -585,9 +593,9 @@ function IsAppearDark(Appear: NSAppearance): Boolean; inline;
 begin
   Result := Assigned(Appear)
             and (
-            Appear.name.isEqualToString(NSSTR(DarkName))
+            Appear.name.isEqualToString(NSSTR_DARK_NAME)
             or
-            Appear.name.isEqualToString(NSSTR(DarkNameVibrant))
+            Appear.name.isEqualToString(NSSTR_DARK_NAME_VIBRANT)
             )
 end;
 
@@ -835,8 +843,10 @@ end;
 
 function NSStringRemoveLineBreak(const str: NSString): NSString;
 begin
-  Result:= str.stringByReplacingOccurrencesOfString_withString( NSStr(#10) , NSString.string_ );
-  Result:= Result.stringByReplacingOccurrencesOfString_withString( NSStr(#13), NSString.string_ );
+  Result:= str.stringByReplacingOccurrencesOfString_withString( NSSTR_LINE_FEED, NSString.string_ );
+  Result:= Result.stringByReplacingOccurrencesOfString_withString( NSSTR_CARRIAGE_RETURN, NSString.string_ );
+  Result:= Result.stringByReplacingOccurrencesOfString_withString( NSSTR_LINE_SEPARATOR, NSString.string_ );
+  Result:= Result.stringByReplacingOccurrencesOfString_withString( NSSTR_PARAGRAPH_SEPARATOR, NSString.string_ );
 end;
 
 procedure SetNSText(text: NSText; const s: String); inline;
@@ -1331,5 +1341,18 @@ begin
   img.release;
 end;
 
+initialization
+  NSSTR_DARK_NAME:= NSSTR(DarkName);
+  NSSTR_DARK_NAME_VIBRANT:= NSSTR(DarkNameVibrant);
+  NSSTR_LINE_FEED:= NSStr(#10);
+  NSSTR_CARRIAGE_RETURN:= NSStr(#13);
+  NSSTR_LINE_SEPARATOR:= StrToNSString(#$E2#$80#$A8, false);
+  NSSTR_PARAGRAPH_SEPARATOR:= StrToNSString(#$E2#$80#$A9, false);
+
+finalization;
+  NSSTR_LINE_SEPARATOR.release;
+  NSSTR_PARAGRAPH_SEPARATOR.release;
+
 end.
+
 
