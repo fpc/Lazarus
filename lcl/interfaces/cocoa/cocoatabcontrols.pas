@@ -160,23 +160,21 @@ end;
 function AllocArrowButton(isPrev: Boolean): NSButton;
 var
   btn : NSButton;
-  r   : NSRect;
 begin
   btn:=NSButton(NSButton.alloc).initWithFrame(NSZeroRect);
   btn.setBezelStyle(NSRegularSquareBezelStyle);
   btn.setButtonType(NSMomentaryLightButton);
 
   if isPrev then
-    btn.setImage( NSImage.imageNamed( NSImageNameLeftFacingTriangleTemplate  ))
+    btn.setTitle( StrToNSString('◀') )
   else
-    btn.setImage( NSImage.imageNamed( NSImageNameRightFacingTriangleTemplate ));
+     btn.setTitle( StrToNSString('▶') );
 
   {$ifdef BOOLFIX}
   btn.setBordered_(Ord(false));
   {$else}
   btn.setBordered(false);
   {$endif}
-  btn.setTitle(NSString.string_);
   btn.sizeToFit();
   if not isPrev then btn.setAutoresizingMask(NSViewMinXMargin);
   Result:=btn;
@@ -184,7 +182,7 @@ end;
 
 const
   arrow_hofs = 12;
-  arrow_vofs = 20;
+  arrow_vofs = 10;
 
 procedure PlaceButton(isPrev: Boolean; abtn: NSButton; dst: NSTabView);
 var
