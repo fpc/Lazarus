@@ -26,7 +26,7 @@ object DelphiOptionsFrame: TDelphiOptionsFrame
     AnchorSideLeft.Control = lblDelphiPath
     AnchorSideTop.Control = lblDelphiPath
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Pas2jsPathBrowseButton
+    AnchorSideRight.Control = DelphiPathBrowseButton
     Left = 16
     Height = 27
     Top = 32
@@ -36,7 +36,7 @@ object DelphiOptionsFrame: TDelphiOptionsFrame
     ItemHeight = 0
     TabOrder = 0
   end
-  object Pas2jsPathBrowseButton: TButton
+  object DelphiPathBrowseButton: TButton
     AnchorSideTop.Control = cbDelphiPath
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
@@ -50,21 +50,10 @@ object DelphiOptionsFrame: TDelphiOptionsFrame
     AutoSize = True
     BorderSpacing.Right = 8
     Caption = '...'
+    OnClick = DelphiPathBrowseButtonClick
     ParentShowHint = False
     ShowHint = True
     TabOrder = 1
-  end
-  object cbGenConfig: TCheckBox
-    AnchorSideLeft.Control = lblDelphiPath
-    AnchorSideTop.Control = cbDelphiPath
-    AnchorSideTop.Side = asrBottom
-    Left = 16
-    Height = 23
-    Top = 67
-    Width = 377
-    BorderSpacing.Top = 8
-    Caption = 'Generate Delphi config file based on FPC compiler options'
-    TabOrder = 2
   end
   object cbConfigFileExtension: TComboBox
     AnchorSideLeft.Control = lblConfigFileExtension
@@ -72,19 +61,19 @@ object DelphiOptionsFrame: TDelphiOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 16
     Height = 27
-    Top = 122
+    Top = 91
     Width = 136
     BorderSpacing.Top = 8
     ItemHeight = 0
-    TabOrder = 3
+    TabOrder = 2
   end
   object lblConfigFileExtension: TLabel
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = cbGenConfig
+    AnchorSideTop.Control = cbDelphiPath
     AnchorSideTop.Side = asrBottom
     Left = 16
     Height = 16
-    Top = 98
+    Top = 67
     Width = 170
     BorderSpacing.Left = 16
     BorderSpacing.Top = 8
@@ -99,11 +88,11 @@ object DelphiOptionsFrame: TDelphiOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 16
     Height = 23
-    Top = 157
+    Top = 126
     Width = 306
     BorderSpacing.Top = 8
     Caption = 'Map filenames from Windows to Unix notation'
-    TabOrder = 4
+    TabOrder = 3
   end
   object lblAdditionalOptions: TLabel
     AnchorSideLeft.Control = Owner
@@ -111,7 +100,7 @@ object DelphiOptionsFrame: TDelphiOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 16
     Height = 16
-    Top = 188
+    Top = 157
     Width = 167
     BorderSpacing.Left = 16
     BorderSpacing.Top = 8
@@ -124,14 +113,14 @@ object DelphiOptionsFrame: TDelphiOptionsFrame
     AnchorSideLeft.Control = lblAdditionalOptions
     AnchorSideTop.Control = lblAdditionalOptions
     AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Pas2jsPathBrowseButton
+    AnchorSideRight.Control = DelphiPathBrowseButton
     Left = 16
     Height = 27
-    Top = 212
+    Top = 181
     Width = 577
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 8
     ItemHeight = 0
-    TabOrder = 5
+    TabOrder = 4
   end
 end

@@ -1,11 +1,14 @@
 unit delphitool;
 
 {$mode objfpc}{$H+}
+{$modeswitch typehelpers}
 
 interface
 
 uses
-  Classes, SysUtils, System.UITypes, dialogs, CompOptsIntf, IDEExternToolIntf, MacroDefIntf, MacroIntf, RegExpr, strdelphitool;
+  Classes, SysUtils, System.UITypes, dialogs,
+  ProjectIntf, CompOptsIntf, IDEExternToolIntf, MacroDefIntf, MacroIntf, RegExpr,
+  strdelphitool;
 
 
 Const
@@ -74,6 +77,19 @@ type
     Function GetCompilerArguments: string;
     Function GetCompileCommand: string;
     Class Property Instance: TDelphiTool read _Instance;
+  end;
+
+  { TLazProjectDelphiOptions }
+
+  TLazProjectDelphiOptions = class helper for TLazProject
+  private
+    function GetADO: String;
+    function GetDCF: Boolean;
+    procedure SetADO(AValue: String);
+    procedure SetDCF(AValue: Boolean);
+  Public
+    Property GenerateDelphiConfigFile : Boolean Read GetDCF Write SetDCF;
+    Property AdditionalDelphiOptions : String Read GetADO Write SetADO;
   end;
 
 implementation
@@ -425,6 +441,7 @@ function TDelphiTool.FPCToDelphiOpts(Opts : TLazCompilerOptions; aDelphiOpts: TS
   procedure AddOption(aValue : String; const FlagName : String);
 
   begin
+    IDEMacros.SubstituteMacros(aValue);
     AddOption(aValue<>'',FlagName+aValue);
   end;
 
@@ -433,9 +450,8 @@ begin
   AddOption(Opts.GetUnitPath(False,coptParsed,True),'U');
   AddOPtion(Opts.GetIncludePath(False,coptParsed,True),'I');
   AddOption(Opts.GenerateDebugInfo,'V');
-  AddOption(Opts.UnitOutputDirectory,'NU');
-  AddOption(Opts.UnitOutputDirectory,'NO');
-  AddOption(Opts.GetObjectPath(True,coptParsed,True),'O');
+  AddOption(Opts.GetUnitOutputDirectory(False),'NU');
+  AddOption(Opts.GetObjectPath(false,coptParsed,True),'O');
   AddOption(Opts.ShowWarn,'W');
   AddOption(Opts.ShowHints,'H');
   AddOption(Opts.DontUseConfigFile,'-no-config');
@@ -486,7 +502,7 @@ begin
   FMacros[dmConfigFileName].LazbuildValue:=GetCurrentConfigFileName;
   FMacros[dmCompileCommand].LazbuildValue:=GetCompileCommand;
   FMacros[dmAdditionalArgs].LazbuildValue:=GetCompilerArguments;
-  if DelphiToolOptions.GenerateConfigFile and assigned(LazarusIDE.ActiveProject) then
+  if Assigned(LazarusIDE.ActiveProject) and LazarusIDE.ActiveProject.GenerateDelphiConfigFile then
     GenerateConfigFilename(GetCurrentConfigFileName(False));
 end;
 
@@ -515,7 +531,7 @@ end;
 
 function TDelphiTool.GetCurrentConfigFileName(PrependAt: Boolean = True): String;
 begin
-  if Assigned(LazarusIDE.ActiveProject) and DelphiToolOptions.GenerateConfigFile then
+  if Assigned(LazarusIDE.ActiveProject) and LazarusIDE.ActiveProject.GenerateDelphiConfigFile then
     begin
     Result:=ChangeFileExt(LazarusIDE.ActiveProject.ProjectInfoFile,DelphiOptions.DefaultConfigExtension);
     if PrependAt then
@@ -526,9 +542,21 @@ begin
 end;
 
 function TDelphiTool.GetCompilerArguments: string;
+
+var
+  S : String;
+
 begin
   Result:=DelphiToolOptions.AdditionalOptions;
   IDEMacros.SubstituteMacros(Result);
+  if Assigned(LazarusIDE.ActiveProject) then
+    begin
+    S:=LazarusIDE.ActiveProject.AdditionalDelphiOptions;
+    if S<>'' then
+      IDEMacros.SubstituteMacros(S);
+    if S<>'' then
+      Result:=Result+' ';
+    end;
 end;
 
 
@@ -537,6 +565,28 @@ function TDelphiTool.GetCompileCommand: string;
 begin
   Result:='$(DCC) $(DCCARGS) $(DCCCONFIG)';
   IDEMacros.SubstituteMacros(Result);
+end;
+
+{ TLazProjectDelphiOptions }
+
+function TLazProjectDelphiOptions.GetADO: String;
+begin
+  Result:=CustomData[pKeyAdditionalOptions];
+end;
+
+function TLazProjectDelphiOptions.GetDCF: Boolean;
+begin
+  Result:=CustomData[pKeyGenConfigFile]='1';
+end;
+
+procedure TLazProjectDelphiOptions.SetADO(AValue: String);
+begin
+  CustomData[pKeyAdditionalOptions]:=aValue
+end;
+
+procedure TLazProjectDelphiOptions.SetDCF(AValue: Boolean);
+begin
+  CustomData[pKeyGenConfigFile]:=IntToStr(Ord(aValue));
 end;
 
 

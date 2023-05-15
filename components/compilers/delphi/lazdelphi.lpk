@@ -31,6 +31,10 @@
         <Filename Value="delphioptions.pas"/>
         <UnitName Value="delphioptions"/>
       </Item>
+      <Item>
+        <Filename Value="fraprojectdelphioptions.pas"/>
+        <UnitName Value="fraprojectdelphioptions"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>

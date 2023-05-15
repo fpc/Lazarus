@@ -18,12 +18,14 @@ const
   SSubToolDelphi = 'Delphi';
   SDelphiParserName = 'Delphi Compiler';
 
-  // Settings
+  // globoal Settings
   KeyCompiler  = 'compiler/value';
-  KeyGenConfigFile = 'genconfigfile/value';
   KeyConfigFileExt = 'configfileext/value';
   KeyConvertPaths = 'convertunixpath/value';
-
+  KeyAdditionalOptions = 'additionaloptions/value';
+  // Project settings
+  pKeyAdditionalOptions = 'additionaloptions';
+  pKeyGenConfigFile = 'genconfigfile';
 
 resourcestring
   SDelphiLocalizedParserName = 'Delphi Compiler';
@@ -35,7 +37,7 @@ resourcestring
   SDelphiCompilerConfigFileName = 'Delphi compiler configuration filename for project';
   SDelphiCompileCommand  = 'Delphi compile command';
   SDelphiCompilerArgs = 'Additional compiler options';
-
+  SSelectDelphiExecutable = 'Select Delphi compiler executable';
 
 implementation
 

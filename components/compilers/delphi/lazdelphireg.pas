@@ -5,13 +5,15 @@ unit LazDelphiReg;
 interface
 
 uses
-  Classes, SysUtils, IDEIntf, IDEOptionsIntf, IDEOptEditorIntf, IDEExternToolIntf, delphitool, fradelphioptions;
+  Classes, SysUtils, IDEIntf, IDEOptionsIntf, IDEOptEditorIntf, IDEExternToolIntf, delphitool,
+  fradelphioptions, fraprojectdelphioptions;
 
 var
   IDEDelphiCompilerParserClass : TDelphiCompilerParserClass = nil;
 
 var
-  DelphiToolsFrameID: integer = 1001;
+  DelphiToolsFrameID : integer = 1001;
+  DelphiToolsOptionsIndex : Integer = ProjectOptionsMisc + 100;
 
 procedure Register;
 
@@ -23,9 +25,10 @@ procedure Register;
 begin
   if IDEDelphiCompilerParserClass=Nil then
     IDEDelphiCompilerParserClass:=TDelphiCompilerParser;
-  ExternalToolList.RegisterParser(IDEDelphiCompilerParserClass);
-  DelphiToolsFrameID:=RegisterIDEOptionsEditor(  GroupEnvironment,TDelphiOptionsFrame, DelphiToolsFrameID)^.Index;
   DelphiToolOptions.Load;
+  ExternalToolList.RegisterParser(IDEDelphiCompilerParserClass);
+  DelphiToolsFrameID:=RegisterIDEOptionsEditor(GroupEnvironment,TDelphiOptionsFrame, DelphiToolsFrameID)^.Index;
+  DelphiToolsOptionsIndex:=RegisterIDEOptionsEditor(GroupProject,TProjectDelphiOptionsFrame, DelphiToolsOptionsIndex)^.Index;
   TDelphiTool.Instance.Hook;
 
 end;

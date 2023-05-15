@@ -19,13 +19,13 @@ type
   TDelphiOptionsFrame = class(TAbstractIDEOptionsEditor)
     cbConfigFileExtension: TComboBox;
     cbAdditionalOptions: TComboBox;
-    cbGenConfig: TCheckBox;
     cbConvertDosToUnix: TCheckBox;
     lblConfigFileExtension: TLabel;
     lblAdditionalOptions: TLabel;
-    Pas2jsPathBrowseButton: TButton;
+    DelphiPathBrowseButton: TButton;
     cbDelphiPath: TComboBox;
     lblDelphiPath: TLabel;
+    procedure DelphiPathBrowseButtonClick(Sender: TObject);
   private
 
   public
@@ -38,11 +38,31 @@ type
 
 implementation
 
-uses strdelphitool;
+uses dialogs, strdelphitool;
 
 {$R *.lfm}
 
 { TDelphiOptionsFrame }
+
+procedure TDelphiOptionsFrame.DelphiPathBrowseButtonClick(Sender: TObject);
+var
+  OpenDialog: TOpenDialog;
+  AFilename: String;
+begin
+  OpenDialog:=TOpenDialog.Create(nil);
+  try
+    //InputHistories.ApplyFileDialogSettings(OpenDialog);
+    OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
+    OpenDialog.Title:=SSelectDelphiExecutable;
+    OpenDialog.FileName:=cbDelphiPath.Text;
+    if OpenDialog.Execute then begin
+      AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
+      SetComboBoxText(cbDelphiPath,AFilename,cstFilename,30);
+    end;
+  finally
+    OpenDialog.Free;
+  end;
+end;
 
 function TDelphiOptionsFrame.GetTitle: String;
 begin
@@ -53,7 +73,6 @@ procedure TDelphiOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   lblDelphiPath.Caption:=SDelphiCompilerFileNameCaption;
   lblConfigFileExtension.Caption:=SConfigFileExtensionCaption;
-  cbGenConfig.Caption:=SGenerateConfigFileCaption;
   cbConvertDosToUnix.Caption:=SConvertDosToUnixCaption;
   cbConvertDosToUnix.Enabled:={$IFDEF UNIX}True{$ELSE}False{$ENDIF};
   lblAdditionalOptions.Caption:=SDelphiCompilerArgs;
@@ -66,7 +85,6 @@ var
 
 begin
   Opts:=DelphiToolOptions;
-  cbGenConfig.Checked:=Opts.GenerateConfigFile;
   cbConvertDosToUnix.Checked:=Opts.ConvertPathsToUnix;
   cbDelphiPath.Text:=Opts.CompilerFileName;
   cbConfigFileExtension.Text:=Opts.ConfigFileExtension;
@@ -79,7 +97,6 @@ var
 
 begin
   Opts:=DelphiToolOptions;
-  Opts.GenerateConfigFile:=cbGenConfig.Checked;
   Opts.ConvertPathsToUnix:=cbConvertDosToUnix.Checked;
   Opts.CompilerFileName:=cbDelphiPath.Text;
   Opts.ConfigFileExtension:=cbConfigFileExtension.Text;

@@ -1,0 +1,50 @@
+object ProjectDelphiOptionsFrame: TProjectDelphiOptionsFrame
+  Left = 0
+  Height = 240
+  Top = 0
+  Width = 736
+  ClientHeight = 240
+  ClientWidth = 736
+  TabOrder = 0
+  DesignLeft = 610
+  DesignTop = 313
+  object cbGenConfigFile: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 16
+    Height = 23
+    Top = 8
+    Width = 192
+    BorderSpacing.Left = 16
+    BorderSpacing.Top = 8
+    Caption = 'Generate Delphi config file '
+    TabOrder = 0
+  end
+  object lblAdditionalOptions: TLabel
+    AnchorSideLeft.Control = cbGenConfigFile
+    AnchorSideTop.Control = cbGenConfigFile
+    AnchorSideTop.Side = asrBottom
+    Left = 16
+    Height = 16
+    Top = 39
+    Width = 167
+    BorderSpacing.Top = 8
+    Caption = 'Additional compiler options'
+    ParentColor = False
+    ParentShowHint = False
+    ShowHint = True
+  end
+  object cbAdditionalOptions: TComboBox
+    AnchorSideLeft.Control = lblAdditionalOptions
+    AnchorSideTop.Control = lblAdditionalOptions
+    AnchorSideTop.Side = asrBottom
+    Left = 16
+    Height = 27
+    Top = 63
+    Width = 696
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 8
+    ItemHeight = 0
+    TabOrder = 1
+  end
+end

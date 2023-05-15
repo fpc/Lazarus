@@ -38,7 +38,6 @@ Type
     procedure Reset;
     class property Instance : TDelphiToolOptions Read _Instance;
     Property CompilerFileName : String Read FCompilerFileName Write FCompilerFileName;
-    Property GenerateConfigFile : Boolean Read FGenerateConfigFile Write FGenerateConfigFile;
     Property ConfigFileExtension : String Read FConfigFileExtension Write FConfigFileExtension;
     Property ConvertPathsToUnix : Boolean Read FConvertPathsToUnix Write FConvertPathsToUnix;
     Property AdditionalOptions : String Read FAdditionalOptions Write FAdditionalOptions;
@@ -60,19 +59,17 @@ end;
 procedure TDelphiToolOptions.LoadFromConfig(Cfg: TConfigStorage);
 begin
   CompilerFilename:=Cfg.GetValue(KeyCompiler, CompilerFilename);
-  GenerateConfigFile:=Cfg.GetValue(KeyGenConfigFile, GenerateConfigFile);
   ConfigFileExtension:=Cfg.GetValue(KeyConfigFileExt, ConfigFileExtension);
   ConvertPathsToUnix:=Cfg.GetValue(KeyConvertPaths, ConvertPathsToUnix);
-  AdditionalOptions:=Cfg.GetValue(KeyConvertPaths, AdditionalOptions);
+  AdditionalOptions:=Cfg.GetValue(KeyAdditionalOptions, AdditionalOptions);
 end;
 
 procedure TDelphiToolOptions.SaveToConfig(Cfg: TConfigStorage);
 begin
   Cfg.SetDeleteValue(KeyCompiler, CompilerFilename, DefaultCompilerFileName);
-  Cfg.SetDeleteValue(KeyGenConfigFile, GenerateConfigFile, DefaultGenConfig);
   Cfg.SetDeleteValue(KeyConfigFileExt, ConfigFileExtension, DefaultConfigExtension);
   Cfg.SetDeleteValue(KeyConvertPaths, ConvertPathsToUnix, DefaultConvertPathsToUnix);
-  Cfg.SetDeleteValue(KeyConvertPaths, AdditionalOptions, DefaultAdditionalOptions);
+  Cfg.SetDeleteValue(KeyAdditionalOptions, AdditionalOptions, DefaultAdditionalOptions);
 end;
 
 constructor TDelphiToolOptions.Create;
@@ -121,7 +118,6 @@ end;
 procedure TDelphiToolOptions.Reset;
 begin
   CompilerFileName:=DefaultCompilerFileName;
-  GenerateConfigFile:=DefaultGenConfig;
   ConfigFileExtension:=DefaultConfigExtension;
   ConvertPathsToUnix:=DefaultConvertPathsToUnix;
   AdditionalOptions:=DefaultAdditionalOptions;

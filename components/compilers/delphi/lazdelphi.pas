@@ -9,7 +9,7 @@ interface
 
 uses
   LazDelphiReg, delphitool, fradelphioptions, strdelphitool, delphioptions, 
-  LazarusPackageIntf;
+  fraprojectdelphioptions, LazarusPackageIntf;
 
 implementation
 
