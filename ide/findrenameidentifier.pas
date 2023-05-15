@@ -391,7 +391,7 @@ begin
 
     // rename identifier
     if Options.Rename then begin
-      if CompareIdentifiers(PChar(Identifier),PChar(CurUnitName))=0 then
+      if CompareDottedIdentifiers(PChar(Identifier),PChar(CurUnitName))=0 then
       begin
         IDEMessageDialog(srkmecRenameIdentifier,
           lisTheIdentifierIsAUnitPleaseUseTheFileSaveAsFunction,

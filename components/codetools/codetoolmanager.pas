@@ -2895,24 +2895,26 @@ begin
     CurCodePos:=PCodeXYPosition(ANode.Data);
     Code:=CurCodePos^.Code;
     Code.LineColToPosition(CurCodePos^.Y,CurCodePos^.X,IdentStartPos);
-    DebugLn('TCodeToolManager.RenameIdentifier File ',Code.Filename,' Line=',dbgs(CurCodePos^.Y),' Col=',dbgs(CurCodePos^.X),' Identifier=',GetIdentifier(@Code.Source[IdentStartPos]));
+    DebugLn('TCodeToolManager.RenameIdentifier File ',Code.Filename,
+            ' Line=',dbgs(CurCodePos^.Y),' Col=',dbgs(CurCodePos^.X),
+            ' Identifier=',GetDottedIdentifier(@Code.Source[IdentStartPos]));
     // search absolute position in source
     if IdentStartPos<1 then begin
       SetError(20170421203205,Code, CurCodePos^.Y, CurCodePos^.X, ctsPositionNotInSource);
       exit;
     end;
     // check if old identifier is there
-    if CompareIdentifiers(@Code.Source[IdentStartPos],PChar(Pointer(OldIdentifier)))<>0
+    if CompareDottedIdentifiers(@Code.Source[IdentStartPos],PChar(Pointer(OldIdentifier)))<>0
     then begin
       debugln(['TCodeToolManager.RenameIdentifier CONSISTENCY ERROR ',Dbgs(CurCodePos^),' ']);
       SetError(20170421203210,CurCodePos^.Code,CurCodePos^.Y,CurCodePos^.X,
         Format(ctsStrExpectedButAtomFound,[OldIdentifier,
-                                   GetIdentifier(@Code.Source[IdentStartPos])])
+                               GetDottedIdentifier(@Code.Source[IdentStartPos])])
         );
       exit;
     end;
     // change if needed
-    if CompareIdentifiersCaseSensitive(@Code.Source[IdentStartPos],
+    if CompareDottedIdentifiersCaseSens(@Code.Source[IdentStartPos],
        PChar(Pointer(NewIdentifier)))<>0
     then begin
       DebugLn('TCodeToolManager.RenameIdentifier Change ');
@@ -2930,7 +2932,7 @@ begin
         inc(SameLineCount);
 
     end else begin
-      DebugLn('TCodeToolManager.RenameIdentifier KEPT ',GetIdentifier(@Code.Source[IdentStartPos]));
+      DebugLn('TCodeToolManager.RenameIdentifier KEPT ',GetDottedIdentifier(@Code.Source[IdentStartPos]));
     end;
 
     LastCodePos := CurCodePos;

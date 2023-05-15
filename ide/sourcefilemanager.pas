@@ -2626,7 +2626,7 @@ begin
       Confirm:=(EnvironmentOptions.UnitRenameReferencesAction=urraAsk)
                and (not WasVirtual);
       Result:=ReplaceUnitUse(OldFilename,OldUnitName,NewFilename,NewUnitName,
-               true,true,Confirm);
+               false,false,Confirm);
       if Result<>mrOk then exit;
     end;
   end;
