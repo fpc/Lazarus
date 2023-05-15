@@ -858,6 +858,9 @@ type
     procedure EndUpdate;
     function IsUpdating: boolean;
   public
+    {$ifdef mswindows}
+    property Canvas : TCanvas read FCanvas; platform;
+    {$endif}
     property DisplayRect: TRect read GetDisplayRect;
   published
     property HotTrack: Boolean read GetHotTrack write SetHotTrack default False;
