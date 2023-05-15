@@ -8,7 +8,8 @@ unit LazDelphi;
 interface
 
 uses
-  LazDelphiReg, LazarusPackageIntf;
+  LazDelphiReg, delphitool, fradelphioptions, strdelphitool, delphioptions, 
+  LazarusPackageIntf;
 
 implementation
 

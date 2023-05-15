@@ -13,7 +13,23 @@
       <Item>
         <Filename Value="lazdelphireg.pas"/>
         <HasRegisterProc Value="True"/>
-        <UnitName Value="lazdelphireg"/>
+        <UnitName Value="LazDelphiReg"/>
+      </Item>
+      <Item>
+        <Filename Value="delphitool.pas"/>
+        <UnitName Value="delphitool"/>
+      </Item>
+      <Item>
+        <Filename Value="fradelphioptions.pas"/>
+        <UnitName Value="fradelphioptions"/>
+      </Item>
+      <Item>
+        <Filename Value="strdelphitool.pas"/>
+        <UnitName Value="strdelphitool"/>
+      </Item>
+      <Item>
+        <Filename Value="delphioptions.pas"/>
+        <UnitName Value="delphioptions"/>
       </Item>
     </Files>
     <RequiredPkgs>
