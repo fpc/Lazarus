@@ -94,6 +94,7 @@ inherited IDEOptionsDialog: TIDEOptionsDialog
       MaxLength = 0
       TabOrder = 1
       FilteredTreeview = CategoryTree
+      ExpandAllInitially = True
     end
     object SettingsPanel: TPanel
       Left = 0

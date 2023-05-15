@@ -484,7 +484,7 @@ begin
     if Assigned(fOnFilterNode) then
       Pass := fOnFilterNode(Node, Done);
     if not Done then
-      Pass := DoFilterItem(Node.Text, Node.Data);
+      Pass := Pass or DoFilterItem(Node.Text, Node.Data);
     if Pass and (fFirstPassedNode=Nil) then
       fFirstPassedNode:=Node;
     // Recursive call for child nodes.
