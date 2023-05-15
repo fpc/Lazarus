@@ -13,8 +13,9 @@ Implements a control used to filter an associated TTreeView control.
 <descr>
 <p>
 <file>treefilteredit.pas</file> contains classes and other types used to 
-implement a control used to filter an associated TTreeView control. This file 
-is part of the <file>LazControls</file> package.
+implement a control used to filter an associated TTreeView control. 
+<file>treefilteredit.pas</file> is part of the <file>LazControls</file> 
+package.
 </p>
 </descr>
 
@@ -495,13 +496,57 @@ mode for the control.
 
 <element name="TTreeFilterEdit.ApplyFilterCore">
 <short>
-Applies the Filter to branches in tree or the whole tree depending on the 
-mode of operation for the control.
+Applies the Filter to branches in the tree view or the entire tree depending 
+on the mode of operation for the control.
 </short>
-<descr/>
+<descr>
+<p>
+<var>ApplyFilterCore</var> is an overridden method in 
+<var>TTreeFilterEdit</var>. It implements the abstract virtual method 
+introduced in the TCustomControlFilterEdit ancestor.
+</p>
+<p>
+ApplyFilterCore is used to apply the value in Filter to either the entire list 
+of nodes or the selected child node branches in the tree view control. When 
+child tree nodes have been selected, the filter is applied using the 
+TTreeFilterBranch list.
+</p>
+<p>
+If the entire list of tree nodes are the target, the nodes are expanded when 
+ExpandAllInitially is enabled and the method is called for the first time. The 
+tree nodes are recursively filtered and the Visible property for the nodes is 
+updated as required for the Filter value.
+</p>
+<p>
+ApplyFilterCore is called from methods in the ancestor class when an idle 
+state is detected and the control has pending updates for the filter value, or 
+when the ForceFilter method is called.
+</p>
+<p>
+The BeginUpdate and EndUpdate methods in the FilteredTreeview control are 
+called to reduce the number of screen updates as the filter value is applied 
+to tree nodes. The ClearInvisibleSelection method in the tree view is called 
+to hide the selected tree node if it is no longer visible for the new filter 
+value, or to clear multi-selections when the new filter is applied.
+</p>
+<p>
+No actions are performed in the method if a value has not been assigned to the 
+FilteredTreeview property.
+</p>
+</descr>
 <seealso>
+<link id="TTreeFilterEdit.FilteredTreeview"/>
 <link id="TTreeFilterEdit.SortAndFilter"/>
+<link id="TTreeFilterEdit.ExpandAllInitially"/>
+<link id="TTreeFilterBranch"/>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.FilterLowercase">TCustomControlFilterEdit.FilterLowercase</link>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.ResetFilter">TCustomControlFilterEdit.ResetFilter</link>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.ForceFilter">TCustomControlFilterEdit.ForceFilter</link>
+<link id="#lcl.comctrls.TCustomTreeView.FullExpand">TCustomTreeView.FullExpand</link>
+<link id="#lcl.comctrls.TCustomTreeView.ClearInvisibleSelection">TCustomTreeView.ClearInvisibleSelection</link>
+<link id="#lcl.comctrls.TCustomTreeView.BeginUpdate">TCustomTreeView.BeginUpdate</link>
+<link id="#lcl.comctrls.TCustomTreeView.EndUpdate">TCustomTreeView.EndUpdate</link>
 </seealso>
 </element>
 
