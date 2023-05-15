@@ -3387,6 +3387,10 @@ msgctxt "lazarusidestrconsts.dlgpoicondescnone"
 msgid "(none)"
 msgstr "(немає)"
 
+#: lazarusidestrconsts.dlgpointertypecheck
+msgid "@<pointer> returns a typed pointer"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpoloadicon
 msgid "&Load Icon"
 msgstr "&Завантажити значок"
@@ -3908,10 +3912,6 @@ msgstr "Походження"
 #: lazarusidestrconsts.dlgstacksize
 msgid "Stack size"
 msgstr "Розмір стеку"
-
-#: lazarusidestrconsts.dlgstatickeyword
-msgid "Static keyword in objects"
-msgstr "Ключове слово Static в об'єктах"
 
 #: lazarusidestrconsts.dlgstopafternrerr
 msgid "Stop after number of errors:"

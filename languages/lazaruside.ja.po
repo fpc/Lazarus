@@ -3465,6 +3465,10 @@ msgctxt "lazarusidestrconsts.dlgpoicondescnone"
 msgid "(none)"
 msgstr "（なし）"
 
+#: lazarusidestrconsts.dlgpointertypecheck
+msgid "@<pointer> returns a typed pointer"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpoloadicon
 msgid "&Load Icon"
 msgstr "アイコンを読み込む(&L)"
@@ -4001,10 +4005,6 @@ msgstr "起点"
 #: lazarusidestrconsts.dlgstacksize
 msgid "Stack size"
 msgstr "スタックサイズ"
-
-#: lazarusidestrconsts.dlgstatickeyword
-msgid "Static keyword in objects"
-msgstr "オブジェクトの静的キーワード"
 
 #: lazarusidestrconsts.dlgstopafternrerr
 msgid "Stop after number of errors:"

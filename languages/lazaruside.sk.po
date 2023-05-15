@@ -3409,6 +3409,10 @@ msgctxt "lazarusidestrconsts.dlgpoicondescnone"
 msgid "(none)"
 msgstr "(žiadne)"
 
+#: lazarusidestrconsts.dlgpointertypecheck
+msgid "@<pointer> returns a typed pointer"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpoloadicon
 msgid "&Load Icon"
 msgstr "Načítať ikonu"
@@ -3941,10 +3945,6 @@ msgstr "Počiatok"
 #: lazarusidestrconsts.dlgstacksize
 msgid "Stack size"
 msgstr "Veľkosť zásobníka"
-
-#: lazarusidestrconsts.dlgstatickeyword
-msgid "Static keyword in objects"
-msgstr "Kľúčové slovo \"static\" v objektoch"
 
 #: lazarusidestrconsts.dlgstopafternrerr
 msgid "Stop after number of errors:"

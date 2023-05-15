@@ -3384,6 +3384,10 @@ msgctxt "lazarusidestrconsts.dlgpoicondescnone"
 msgid "(none)"
 msgstr "(semmi)"
 
+#: lazarusidestrconsts.dlgpointertypecheck
+msgid "@<pointer> returns a typed pointer"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpoloadicon
 msgid "&Load Icon"
 msgstr "Ikon betö&ltése"
@@ -3905,10 +3909,6 @@ msgstr "Kiindulópont"
 #: lazarusidestrconsts.dlgstacksize
 msgid "Stack size"
 msgstr "Verem mérete"
-
-#: lazarusidestrconsts.dlgstatickeyword
-msgid "Static keyword in objects"
-msgstr "\"Static\" kulcsszó az objektumokban"
 
 #: lazarusidestrconsts.dlgstopafternrerr
 msgid "Stop after number of errors:"

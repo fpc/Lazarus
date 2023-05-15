@@ -3467,6 +3467,10 @@ msgctxt "lazarusidestrconsts.dlgpoicondescnone"
 msgid "(none)"
 msgstr "(joks)"
 
+#: lazarusidestrconsts.dlgpointertypecheck
+msgid "@<pointer> returns a typed pointer"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpoloadicon
 msgid "&Load Icon"
 msgstr "Į&kelti piktogramą"
@@ -4003,10 +4007,6 @@ msgstr "Pradžia"
 #: lazarusidestrconsts.dlgstacksize
 msgid "Stack size"
 msgstr "Dėklo dydis"
-
-#: lazarusidestrconsts.dlgstatickeyword
-msgid "Static keyword in objects"
-msgstr "Objektuose statiniai baziniai žodžiai"
 
 #: lazarusidestrconsts.dlgstopafternrerr
 msgid "Stop after number of errors:"

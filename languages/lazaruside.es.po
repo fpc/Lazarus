@@ -3504,6 +3504,10 @@ msgctxt "lazarusidestrconsts.dlgpoicondescnone"
 msgid "(none)"
 msgstr "(ninguno)"
 
+#: lazarusidestrconsts.dlgpointertypecheck
+msgid "@<pointer> returns a typed pointer"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpoloadicon
 msgid "&Load Icon"
 msgstr "Cargar Icono"
@@ -4046,10 +4050,6 @@ msgstr "Origen"
 #: lazarusidestrconsts.dlgstacksize
 msgid "Stack size"
 msgstr "Tamaño pila (stack)"
-
-#: lazarusidestrconsts.dlgstatickeyword
-msgid "Static keyword in objects"
-msgstr "Palabra clave estática en los Objetos"
 
 #: lazarusidestrconsts.dlgstopafternrerr
 msgid "Stop after number of errors:"

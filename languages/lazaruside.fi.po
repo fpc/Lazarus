@@ -3368,6 +3368,10 @@ msgctxt "lazarusidestrconsts.dlgpoicondescnone"
 msgid "(none)"
 msgstr "(ei mitään)"
 
+#: lazarusidestrconsts.dlgpointertypecheck
+msgid "@<pointer> returns a typed pointer"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpoloadicon
 msgid "&Load Icon"
 msgstr "&Lataa kuvake"
@@ -3897,10 +3901,6 @@ msgstr "Lähtöpiste"
 #: lazarusidestrconsts.dlgstacksize
 msgid "Stack size"
 msgstr "Pinon koko"
-
-#: lazarusidestrconsts.dlgstatickeyword
-msgid "Static keyword in objects"
-msgstr "Static avainsana objekteissa"
 
 #: lazarusidestrconsts.dlgstopafternrerr
 msgid "Stop after number of errors:"

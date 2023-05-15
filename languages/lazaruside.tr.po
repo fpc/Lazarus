@@ -3340,6 +3340,10 @@ msgstr "(Boyut: %d:%d, bpp: %d)"
 msgid "(none)"
 msgstr "(Yok)"
 
+#: lazarusidestrconsts.dlgpointertypecheck
+msgid "@<pointer> returns a typed pointer"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpoloadicon
 msgid "&Load Icon"
 msgstr "&Simge Yükle"
@@ -3860,10 +3864,6 @@ msgstr "Köken"
 #: lazarusidestrconsts.dlgstacksize
 msgid "Stack size"
 msgstr "Yığın boyutu"
-
-#: lazarusidestrconsts.dlgstatickeyword
-msgid "Static keyword in objects"
-msgstr "Nesnelerdeki statik anahtar kelime"
 
 #: lazarusidestrconsts.dlgstopafternrerr
 msgid "Stop after number of errors:"
