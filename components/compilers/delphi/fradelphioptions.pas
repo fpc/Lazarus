@@ -66,7 +66,7 @@ end;
 
 function TDelphiOptionsFrame.GetTitle: String;
 begin
-  Result:=SDelphiToolOptionsTitle;
+  Result:=SDelphiLocalizedParserName;
 end;
 
 procedure TDelphiOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);

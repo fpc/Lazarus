@@ -37,7 +37,7 @@ implementation
 
 function TProjectDelphiOptionsFrame.GetTitle: string;
 begin
-  Result:=SDelphiToolOptionsTitle
+  Result:=SDelphiLocalizedParserName;
 end;
 
 procedure TProjectDelphiOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);

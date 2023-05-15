@@ -1,0 +1,39 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: strdelphitool.sconfigfileextensioncaption
+msgid "Configuration file extension"
+msgstr ""
+
+#: strdelphitool.sconvertdostounixcaption
+msgid "Map filenames from Windows to Unix notation"
+msgstr ""
+
+#: strdelphitool.sdelphicompilecommand
+msgid "Delphi compile command"
+msgstr ""
+
+#: strdelphitool.sdelphicompilerargs
+msgid "Additional compiler options"
+msgstr ""
+
+#: strdelphitool.sdelphicompilerconfigfilename
+msgid "Delphi compiler configuration filename for project"
+msgstr ""
+
+#: strdelphitool.sdelphicompilerfilenamecaption
+msgid "Delphi compiler executable"
+msgstr ""
+
+#: strdelphitool.sdelphilocalizedparsername
+msgid "Delphi Compiler"
+msgstr ""
+
+#: strdelphitool.sgenerateconfigfilecaption
+msgid "Generate Delphi config file based on FPC compiler options"
+msgstr ""
+
+#: strdelphitool.sselectdelphiexecutable
+msgid "Select Delphi compiler executable"
+msgstr ""
+

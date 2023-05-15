@@ -29,7 +29,6 @@ const
 
 resourcestring
   SDelphiLocalizedParserName = 'Delphi Compiler';
-  SDelphiToolOptionsTitle = 'Delphi compiler plugin options';
   SDelphiCompilerFileNameCaption = 'Delphi compiler executable';
   SConfigFileExtensionCaption = 'Configuration file extension';
   SGenerateConfigFileCaption = 'Generate Delphi config file based on FPC compiler options';
