@@ -224,6 +224,7 @@ type
   // visual controls like TListView and TTreeView.
   TCustomControlFilterEdit = class(TCustomEditButton)
   private
+    fFilter: string;
     fFilterLowercase: string;
     fFilterOptions: TFilterStringOptions;
     fIdleConnected: Boolean;
@@ -231,7 +232,6 @@ type
     fIsFirstSetFormActivate: Boolean;
     fOnAfterFilter: TNotifyEvent;
     procedure ApplyFilter(Immediately: Boolean = False);
-    function GetFilter: string;
     procedure SetFilter(const AValue: string);
     procedure SetFilterOptions(AValue: TFilterStringOptions);
     procedure SetSortData(AValue: Boolean);
@@ -246,7 +246,7 @@ type
     fOnFilterItemEx: TFilterItemExEvent;
     fOnCheckItem: TCheckItemEvent;
     procedure DestroyWnd; override;
-    procedure ActivateFilter;
+    procedure InternalSetFilter(const AValue: string);
     function DoDefaultFilterItem(const ACaption: string;
       const ItemData: Pointer): Boolean; virtual;
     function DoFilterItem(const ACaption: string;
@@ -274,7 +274,7 @@ type
     procedure StoreSelection; virtual; abstract;
     procedure RestoreSelection; virtual; abstract;
   public
-    property Filter: string read GetFilter write SetFilter;
+    property Filter: string read fFilter write SetFilter;
     property FilterLowercase: string read fFilterLowercase;
     property IdleConnected: Boolean read fIdleConnected write SetIdleConnected;
     property SortData: Boolean read fSortData write SetSortData;
@@ -1171,17 +1171,12 @@ begin
   inherited DestroyWnd;
 end;
 
-function TCustomControlFilterEdit.GetFilter: string;
+procedure TCustomControlFilterEdit.InternalSetFilter(const AValue: string);
 begin
-  Result:=Text;
-end;
-
-procedure TCustomControlFilterEdit.ActivateFilter;
-// Activate an existing filter text.
-// Used when user types text, and initially when a container control is assigned.
-begin
-  Button.Enabled:=Text<>'';
-  fFilterLowercase:=UTF8LowerCase(Text);
+  if fFilter=AValue then Exit;
+  Button.Enabled:=AValue<>'';
+  fFilter:=AValue;
+  fFilterLowercase:=UTF8LowerCase(fFilter);
   InvalidateFilter;
 end;
 
@@ -1189,6 +1184,7 @@ procedure TCustomControlFilterEdit.SetFilter(const AValue: string);
 begin
   if Text=AValue then Exit;
   Text:=AValue;           // ActivateFilter will be called by EditChange handler.
+  InternalSetFilter(AValue);
 end;
 
 procedure TCustomControlFilterEdit.SetFilterOptions(AValue: TFilterStringOptions);
@@ -1210,11 +1206,11 @@ function TCustomControlFilterEdit.DoDefaultFilterItem(const ACaption: string;
 var
   NPos: integer;
 begin
-  if Filter='' then
+  if fFilter='' then
     exit(True);
 
   if fsoCaseSensitive in fFilterOptions then
-    NPos := Pos(Filter, ACaption)
+    NPos := Pos(fFilter, ACaption)
   else
     NPos := Pos(fFilterLowercase, UTF8LowerCase(ACaption));
 
@@ -1298,7 +1294,7 @@ end;
 
 procedure TCustomControlFilterEdit.EditChange;
 begin
-  ActivateFilter;
+  InternalSetFilter(Text);
   inherited;
 end;
 
@@ -1348,10 +1344,11 @@ end;
 function TCustomControlFilterEdit.ForceFilter(AFilter: String): String;
 // Apply a new filter immediately without waiting for idle. Returns the previous filter.
 begin
-  Result := Filter;
-  if Result = AFilter then Exit;
-  Filter := AFilter;
-  ApplyFilter(True);
+  Result := FFilter;
+  if fFilter <> AFilter then begin
+    FFilter := AFilter;
+    ApplyFilter(True);
+  end;
 end;
 
 function TCustomControlFilterEdit.GetDefaultGlyphName: string;

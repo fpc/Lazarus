@@ -154,7 +154,7 @@ begin
   fFilteredListview:=AValue;
   if Assigned(fFilteredListview) then
   begin
-    ActivateFilter;
+    InternalSetFilter(Text);
     for i := 0 to fFilteredListview.Items.Count-1 do
       fOriginalData.Add(ListItem2Data(fFilteredListview.Items[i]));
   end;

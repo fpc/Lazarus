@@ -143,7 +143,7 @@ begin
   fFilteredListbox:=AValue;
   if Assigned(fFilteredListbox) then
   begin
-    ActivateFilter;
+    InternalSetFilter(Text);
     fOriginalData.Assign(fFilteredListbox.Items);
     if (fFilteredListbox is TCustomCheckListBox) and not Assigned(fCheckedItems) then
       fCheckedItems:=TStringMap.Create(False);

@@ -454,7 +454,7 @@ begin
   fFilteredTreeview := AValue;
   if fFilteredTreeview <> nil then
   begin
-    ActivateFilter;
+    InternalSetFilter(Text);
     fFilteredTreeview.FreeNotification(Self);
     fFilteredTreeview.AddHandlerOnBeforeDestruction(@OnBeforeTreeDestroy);
   end;
