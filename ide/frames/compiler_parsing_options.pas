@@ -121,13 +121,13 @@ begin
     AutoSize := True;
     Caption := dlgSyntaxOptions;
     Items.BeginUpdate;
-    Items.Add(dlgCOCOps + ' (-Sc, {$COPERATORS ON})');
-    Items.Add(dlgLabelGoto + ' (-Sg, {$GOTO ON})');
-    Items.Add(dlgCppInline + ' (-Si, {$INLINE ON})');
-    Items.Add(dlgCMacro + ' (-Sm, {$MACRO ON})');
-    Items.Add(dlgInitDoneOnly + ' (-Ss)');
-    Items.Add(dlgStaticKeyword + ' (-St)');
-    Items.Add(dlgCOAnsiStr + ' (-Sh, {$H+})');
+    Items.Add(dlgCOCOps          + ' (-Sc, {$COPERATORS ON})');
+    Items.Add(dlgLabelGoto       + ' (-Sg, {$GOTO ON})');
+    Items.Add(dlgCOAnsiStr       + ' (-Sh, {$H+})');
+    Items.Add(dlgCppInline       + ' (-Si, {$INLINE ON})');
+    Items.Add(dlgCMacro          + ' (-Sm, {$MACRO ON})');
+    Items.Add(dlgInitDoneOnly    + ' (-Ss)');
+    Items.Add(dlgPointerTypeCheck+ ' (-Sy, {$T+})');
     Items.EndUpdate;
   end;
 end;
@@ -151,11 +151,11 @@ begin
     begin
       Checked[0] := CStyleOperators;
       Checked[1] := AllowLabel;
-      Checked[2] := CPPInline;
-      Checked[3] := CStyleMacros;
-      Checked[4] := InitConstructor;
-      Checked[5] := StaticKeyword;
-      Checked[6] := UseAnsiStrings;
+      Checked[2] := UseAnsiStrings;
+      Checked[3] := CPPInline;
+      Checked[4] := CStyleMacros;
+      Checked[5] := InitConstructor;
+      Checked[6] := PointerTypeCheck;
     end;
   end;
 end;
@@ -171,12 +171,12 @@ begin
     with grpSyntaxOptions do
     begin
       CStyleOperators := Checked[0];
-      AllowLabel := Checked[1];
-      CPPInline := Checked[2];
-      CStyleMacros := Checked[3];
-      InitConstructor := Checked[4];
-      StaticKeyword := Checked[5];
-      UseAnsiStrings := Checked[6];
+      AllowLabel      := Checked[1];
+      UseAnsiStrings  := Checked[2];
+      CPPInline       := Checked[3];
+      CStyleMacros    := Checked[4];
+      InitConstructor := Checked[5];
+      PointerTypeCheck:= Checked[6];
     end;
   end;
 end;

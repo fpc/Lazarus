@@ -1592,11 +1592,11 @@ begin
   CStyleOperators := aXMLConfig.GetValue(p+'CStyleOperator/Value', true);
   IncludeAssertionCode := aXMLConfig.GetValue(p+'IncludeAssertionCode/Value', false);
   AllowLabel := aXMLConfig.GetValue(p+'AllowLabel/Value', true);
+  UseAnsiStrings := aXMLConfig.GetValue(p+'UseAnsiStrings/Value', FileVersion>=9);
   CPPInline := aXMLConfig.GetValue(p+'CPPInline/Value', true);
   CStyleMacros := aXMLConfig.GetValue(p+'CStyleMacros/Value', false);
   InitConstructor := aXMLConfig.GetValue(p+'InitConstructor/Value', false);
-  StaticKeyword := aXMLConfig.GetValue(p+'StaticKeyword/Value', false);
-  UseAnsiStrings := aXMLConfig.GetValue(p+'UseAnsiStrings/Value', FileVersion>=9);
+  PointerTypeCheck := aXMLConfig.GetValue(p+'PointerTypeCheck/Value', false);
 
   { CodeGeneration }
   p:=Path+'CodeGeneration/';
@@ -1810,11 +1810,11 @@ begin
   aXMLConfig.SetDeleteValue(p+'CStyleOperator/Value', CStyleOperators,true);
   aXMLConfig.SetDeleteValue(p+'IncludeAssertionCode/Value', IncludeAssertionCode,false);
   aXMLConfig.SetDeleteValue(p+'AllowLabel/Value', AllowLabel,true);
+  aXMLConfig.SetDeleteValue(p+'UseAnsiStrings/Value', UseAnsiStrings,true);
   aXMLConfig.SetDeleteValue(p+'CPPInline/Value', CPPInline,true);
   aXMLConfig.SetDeleteValue(p+'CStyleMacros/Value', CStyleMacros,false);
   aXMLConfig.SetDeleteValue(p+'InitConstructor/Value', InitConstructor,false);
-  aXMLConfig.SetDeleteValue(p+'StaticKeyword/Value', StaticKeyword,false);
-  aXMLConfig.SetDeleteValue(p+'UseAnsiStrings/Value', UseAnsiStrings,true);
+  aXMLConfig.SetDeleteValue(p+'PointerTypeCheck/Value', PointerTypeCheck,false);
 
   { CodeGeneration }
   p:=Path+'CodeGeneration/';
@@ -3252,8 +3252,8 @@ begin
       tempsw := tempsw + 'm';
     if (InitConstructor) then
       tempsw := tempsw + 's';
-    if (StaticKeyword) then
-      tempsw := tempsw + 't';
+    if (PointerTypeCheck) then
+      tempsw := tempsw + 'y';
   end;
 
   if (tempsw <> '') then begin
@@ -3307,11 +3307,11 @@ begin
   fCStyleOp := true;
   fIncludeAssertionCode := false;
   fAllowLabel := true;
+  fUseAnsiStr := true;
   fCPPInline := true;
   fCMacros := false;
   fInitConst := false;
-  fStaticKeyword := false;
-  fUseAnsiStr := true;
+  fPointerTypeCheck := false;
 
   // code generation
   fSmartLinkUnit := false;
@@ -3415,11 +3415,11 @@ begin
   fCStyleOp := CompOpts.fCStyleOp;
   fIncludeAssertionCode := CompOpts.fIncludeAssertionCode;
   fAllowLabel := CompOpts.fAllowLabel;
+  fUseAnsiStr := CompOpts.fUseAnsiStr;
   fCPPInline := CompOpts.fCPPInline;
   fCMacros := CompOpts.fCMacros;
   fInitConst := CompOpts.fInitConst;
-  fStaticKeyword := CompOpts.fStaticKeyword;
-  fUseAnsiStr := CompOpts.fUseAnsiStr;
+  fPointerTypeCheck := CompOpts.fPointerTypeCheck;
 
   // Code Generation
   fSmartLinkUnit := CompOpts.SmartLinkUnit;
@@ -3564,11 +3564,11 @@ begin
   if Done(Tool.AddDiff('CStyleOp',fCStyleOp,CompOpts.fCStyleOp)) then exit;
   if Done(Tool.AddDiff('IncludeAssertionCode',fIncludeAssertionCode,CompOpts.fIncludeAssertionCode)) then exit;
   if Done(Tool.AddDiff('AllowLabel',fAllowLabel,CompOpts.fAllowLabel)) then exit;
+  if Done(Tool.AddDiff('UseAnsiStr',fUseAnsiStr,CompOpts.fUseAnsiStr)) then exit;
   if Done(Tool.AddDiff('CPPInline',fCPPInline,CompOpts.fCPPInline)) then exit;
   if Done(Tool.AddDiff('CMacros',fCMacros,CompOpts.fCMacros)) then exit;
   if Done(Tool.AddDiff('InitConst',fInitConst,CompOpts.fInitConst)) then exit;
-  if Done(Tool.AddDiff('StaticKeyword',fStaticKeyword,CompOpts.fStaticKeyword)) then exit;
-  if Done(Tool.AddDiff('UseAnsiStr',fUseAnsiStr,CompOpts.fUseAnsiStr)) then exit;
+  if Done(Tool.AddDiff('PointerTypeCheck',fPointerTypeCheck,CompOpts.fPointerTypeCheck)) then exit;
 
   // code generation
   if Tool<>nil then Tool.Path:='Code';
