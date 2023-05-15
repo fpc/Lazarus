@@ -7813,6 +7813,47 @@ Indicates if there are unfinished updates for one of the Tabs on the control.
 <short/>
 </element>
 
+<element name="TTabControl.Canvas">
+<short>
+Provides access to the Canvas where the control is drawn.
+</short>
+<descr>
+<p>
+<var>Canvas</var> is a read-only <var>TCanvas</var> property in 
+<var>TTabControl</var>. It is introduced as a public property, so it can be 
+accessed at run-time in program code. It is a platform property, and is 
+available on the Windows platform only in the current LCL release. It 
+provides code compatibility with the tab control in the Delphi VCL.
+</p>
+<p>
+At run-time, a TControlCanvas instance is created and assigned to the property 
+member in the Create constructor.
+</p>
+<p>
+Canvas is used in the Paint method to perform drawing operations which render 
+the control. The handle for the Canvas may be temporarily updated in the 
+PaintWindow method to use a specified device context. In this case, the canvas 
+handle is reset to an unassigned value after the Paint method is called to 
+render the control.
+</p>
+<p>
+Use Canvas to access text metrics using the font for the canvas, or to perform 
+custom drawing operations on the control.
+</p>
+</descr>
+<version>
+Added in LCL version 2.4.0 for the Windows platform.
+</version>
+<seealso>
+<link id="TTabControl.Paint"/>
+<link id="TTabControl.PaintWindow"/>
+<link id="TTabControl.Font"/>
+<link id="TTabControl.Create"/>
+<link id="#lcl.controls.TControlCanvas">TControlCanvas</link>
+<link id="#lcl.graphics.TCanvas">TCanvas</link>
+</seealso>
+</element>
+
 <element name="TTabControl.DisplayRect">
 <short>Display area for the tab control.</short>
 <descr>
@@ -18787,11 +18828,11 @@ The up/down button is aligned on the bottom edge of a TUpDown control.
 
 <element name="TUDOrientation">
 <short>
-Indicates the orientation for the arrows on a TUpDOwn control.
+Indicates the orientation for the arrows on a TUpDown control.
 </short>
 <descr>
 <p>
-<var>TUDOrientation</var> is an enumerated type with values that control the  
+<var>TUDOrientation</var> is an enumerated type with values that control the 
 orientation of the button arrows drawn on a TUpDown control. Values in 
 TUDOrientation can be assigned to the Orientation property in TUpDown.
 </p>
@@ -21687,7 +21728,7 @@ release it.
 </p> 
 <p>
 Changing the value for the property causes the control to be redrawn. It may 
-also affect adjacent buttons on the tool bar with their Grouped properties  
+also affect adjacent buttons on the tool bar with their Grouped properties 
 enabled. When Down is enabled for a Grouped button, the other buttons in the 
 group are updated to set their Down states to <b>False</b>.
 </p>
@@ -24539,7 +24580,7 @@ the band.
 <p>
 <var>ParentBitmap</var> is a <var>Boolean</var> property which allows the 
 Bitmap assigned to the parent control (TCoolBar) to be used as the background 
-image for the band.  The default value for the property is <b>True</b>, and 
+image for the band. The default value for the property is <b>True</b>, and 
 enables use of the Bitmap assigned to the parent control.
 </p>
 <p>
@@ -36511,7 +36552,7 @@ is represented by leading Tab (#9) characters to denote the Level for the tree
 node, followed by the Text for the node and an end-of-line sequence (#13#10).
 </p>
 <remark>
-SaveToStream does <b>not</b> change the position in Stream prior to writing  
+SaveToStream does <b>not</b> change the position in Stream prior to writing 
 node values. It assumes the stream position has been set in the calling 
 routine. It does <b>not</b> reset the stream position when the method has been 
 completed.
