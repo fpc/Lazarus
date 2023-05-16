@@ -309,7 +309,7 @@ type
     /// reflect the the bottom most optional checkbox state
     // - if Verify is not '', should be set before execution
     // - after execution, will contain the final checkbox state
-    VerifyChecked: Boolean;
+    VerifyChecked: LongBool; // LongBool needed for TaskDialogIndirect parameter.
     /// low-level access to the task dialog implementation
     Dialog: TTaskDialogImplementation;
 
