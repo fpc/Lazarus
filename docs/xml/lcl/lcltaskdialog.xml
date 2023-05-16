@@ -1066,7 +1066,7 @@ The selected radio button on the dialog.
 </short>
 <descr>
 <p>
-The selected radio button; the first is numbered 0.
+The selected radio button; the first button is at ordinal position 0.
 </p>
 </descr>
 <seealso/>
@@ -1078,7 +1078,7 @@ The currently selected item in the selection list or combo-box.
 </short>
 <descr>
 <p>
-After execution, contains the selected item from the Selection list.
+After execution, it contains the selected item from the Selection list.
 </p>
 </descr>
 <seealso/>
@@ -1091,10 +1091,14 @@ Checked state for the verification check box.
 <descr>
 <p>
 Indicates whether state for the optional check box state at the bottom of the 
-dialog. If Verify is not '', should be set before execution. After execution, 
-will contain the final check box state.
+dialog. If Verify is not set to '', then VerifyChecked is set to <b>True</b> 
+before execution of the dialog. After execution, it will contain the returned 
+check box state.
 </p>
 </descr>
+<version>
+Modified in LCL version 2.4.0 to use the LongBool type (instead of Boolean).
+</version>
 <seealso/>
 </element>
 
@@ -1104,10 +1108,13 @@ Provides access to the task dialog implementation.
 </short>
 <descr>
 <p>
-Low-level access to the task dialog implementation.
+<var>TTaskDialogImplementation</var> type which provides low-level access to 
+the task dialog implementation.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TTaskDialogImplementation"/>
+</seealso>
 </element>
 
 <element name="TTaskDialog.Execute">
