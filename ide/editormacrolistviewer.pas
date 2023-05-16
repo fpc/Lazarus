@@ -1223,7 +1223,7 @@ begin
   Assert(Assigned(se) and (ActiveEditorMacro=nil) and (EditorMacroForRecording.State=emStopped),
          'TMacroListViewer.btnAddEditNewClick: Problem');
   lbMacroView.ItemIndex := -1;
-  M := TIdeEditorMacro.Create(nil);
+  M := EditorMacroPlayerClass.Create(nil);
   M.OnStateChange := @MacroListViewer.DoMacroStateChanged;
   M.OnChange := @MacroListViewer.DoMacroContentChanged;
   M.MacroName := Format(lisNewMacroName, [MacroRecCounter]);
