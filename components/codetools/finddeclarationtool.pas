@@ -6864,7 +6864,7 @@ var
       ReadNextAtom;  // read name
       ReadNextUsedUnit(UnitNamePos,UnitInFilePos); // read dotted name + IN file
       if CurPos.StartPos>SrcLen then break;
-      if CompareSrcIdentifiers(UnitNamePos.StartPos,UnitNameP) then begin // compare case insensitive
+      if CompareDottedSrcIdentifiers(UnitNamePos.StartPos,UnitNameP) then begin // compare case insensitive
         if CleanPosToCaret(UnitNamePos.StartPos,ReferencePos) then begin
           //DebugLn(['CheckUsesSection found in uses section: ',Dbgs(ReferencePos)]);
           Result:=true;

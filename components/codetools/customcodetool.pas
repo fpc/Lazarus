@@ -274,6 +274,8 @@ type
     function CompareSrcIdentifiers(Identifier1, Identifier2: PChar): boolean;
     function CompareSrcIdentifiers(CleanStartPos: integer;
       AnIdentifier: PChar): boolean;
+    function CompareDottedSrcIdentifiers(CleanStartPos: integer;
+      AnIdentifier: PChar): boolean;
     function CompareSrcIdentifiersMethod(Identifier1, Identifier2: Pointer): integer;
     function ExtractIdentifier(CleanStartPos: integer): string;
     function ExtractDottedIdentifier(CleanStartPos: integer): string;
@@ -3136,6 +3138,34 @@ begin
       exit(false);
   end;
   Result:=not IsIdentChar[Src[CleanStartPos]];
+end;
+
+function TCustomCodeTool.CompareDottedSrcIdentifiers(CleanStartPos: integer;
+  AnIdentifier: PChar): boolean;
+begin
+  Result:=false;
+  if (AnIdentifier=nil) or (CleanStartPos<1) or (CleanStartPos>SrcLen) then
+    exit;
+  if AnIdentifier^='&' then
+    Inc(AnIdentifier);
+  if Src[CleanStartPos]='&' then
+  begin
+    Inc(CleanStartPos);
+    if CleanStartPos>SrcLen then
+      exit;
+  end;
+  while IsDottedIdentChar[AnIdentifier^] do begin
+    if (UpChars[AnIdentifier^]=UpChars[Src[CleanStartPos]]) then begin
+      inc(AnIdentifier);
+      inc(CleanStartPos);
+      if CleanStartPos>SrcLen then begin
+        Result:=not IsDottedIdentChar[AnIdentifier^];
+        exit;
+      end;
+    end else
+      exit(false);
+  end;
+  Result:=not IsDottedIdentChar[Src[CleanStartPos]];
 end;
 
 function TCustomCodeTool.CompareSrcIdentifiersMethod(Identifier1,

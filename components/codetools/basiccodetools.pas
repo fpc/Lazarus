@@ -5183,7 +5183,7 @@ begin
     if not IsIdentStartChar[p^] then exit;
     repeat
       inc(p);
-    until not IsIdentChar[p^];
+    until not IsDottedIdentChar[p^];
     if p^<>'.' then break;
     inc(p);
   until false;
@@ -5211,7 +5211,7 @@ begin
     if not IsIdentStartChar[p^] then exit;
     repeat
       inc(p);
-    until not IsIdentChar[p^];
+    until not IsDottedIdentChar[p^];
     if p^<>'.' then break;
     inc(p);
   until false;
