@@ -3264,6 +3264,12 @@ ShowCurrentPage sets the Visible property in the previously selected Page to
 <seealso/>
 </element>
 
+<!-- private -->
+<element name="TCustomTabControl.TabHeightIsStored"/>
+<element name="TCustomTabControl.TabHeightIsStored.Result"/>
+<element name="TCustomTabControl.TabWidthIsStored"/>
+<element name="TCustomTabControl.TabWidthIsStored.Result"/>
+
 <element name="TCustomTabControl.UpdateAllDesignerFlags">
 <short>
 Updates control style flags to hide or display pages in the control at 
@@ -3328,10 +3334,27 @@ Performs actions needed to apply the specified auto-adjust layout policy.
 </short>
 <descr>
 <p>
-Notifies the widgetset class when Images is assigned and AMode contains an 
-adjustment policy that affects their scaling.
+<var>DoAutoAdjustLayout</var> is an overridden method in 
+<var>TCustomTabControl</var> used to apply the specified auto-adjustment 
+layout policy to the tabbed control. It calls the inherited method on entry to 
+adjust the size, position, and alignment for the control including border 
+spacing.
+</p>
+<p>
+DoAutoAdjustLayout ensures that the width and height for the tabs and their 
+assigned images are updated when needed. The image list in the widgetset class 
+is updated (when assigned) to use the resolution needed for the PPI setting in 
+Font. Values in TabWidth and TabHeight are adjusted (when assigned) using the 
+scaling factors in AXProportion and AYProportion.
+</p>
+<p>
+DoAutoAdjustLayout method is called from the DoAutoAdjustLayout method, and 
+occurs when a scaled form (and its controls) are displayed in an application.
 </p>
 </descr>
+<version>
+Modified in LCL version 2.4.0 to apply scaling factors to TabWidth and TabHeight.
+</version>
 <seealso>
 <link id="TCustomTabControl.Images"/>
 <link id="#lcl.controls.TControl.DoAutoAdjustLayout">TControl.DoAutoAdjustLayout</link>
@@ -4937,12 +4960,15 @@ Height in pixels for the tabs on the control.
 <p>
 <var>TabHeight</var> is a <var>SmallInt</var> property which contains the 
 number of pixels used as the height for the tabs displayed on the tabbed 
-control. The default value is 0 (zero) and causes the default value for the 
-native tab control to be used.
+control. The default value is 0 (zero) when an explicit value has not been 
+assigned, and causes the default height for the native tab control to be used.
 </p>
 <p>
 Changing the value for the property causes the widgetset class instance to be 
-updated with the new value.
+updated with the new value. The property value is included in the LCL 
+component streaming mechanism when an explicit positive non-zero value has 
+been assigned in the class instance. The value may be resized using a scaling 
+factor in the DoAutoAdjustLayout method.
 </p>
 <remark>
 Use of TabHeight requires support for the feature in the native tab control. 
@@ -4953,11 +4979,16 @@ capabilities for the platform (GetCapabilities).
 Use TabWidth to set the width for the tabs on the control.
 </p>
 </descr>
+<version>
+Modified in LCL version 2.4.0 to use a storage specifier for the property 
+value in LCL component streaming.
+</version>
 <seealso>
 <link id="TCustomTabControl.TabWidth"/>
 <link id="TCustomTabControl.Style"/>
 <link id="TCustomTabControl.ShowTabs"/>
 <link id="TCustomTabControl.GetCapabilities"/>
+<link id="TCustomTabControl.DoAutoAdjustLayout"/>
 </seealso>
 </element>
 
@@ -4989,12 +5020,15 @@ Width in pixels for the tabs on the control.
 <p>
 <var>TabWidth</var> is a <var>SmallInt</var> property which contains the 
 number of pixels used as the width for the tabs displayed on the tabbed 
-control. The default value is 0 (zero) and causes the default value for the 
-native tab control to be used.
+control. The default value is 0 (zero) when an explicit value has not been 
+assigned, and causes the default width for the native tab control to be used.
 </p>
 <p>
 Changing the value for the property causes the widgetset class instance to be 
-updated with the new value.
+updated with the new value. The property value is included in the LCL 
+component streaming mechanism when an explicit positive non-zero value has 
+been assigned in the class instance. The value may be resized using a scaling 
+factor in the DoAutoAdjustLayout method.
 </p>
 <remark>
 Use of TabWidth requires support for the feature in the native tab control. 
@@ -5002,14 +5036,19 @@ The property value is not used if nbcTabsSizeable is not included in the
 capabilities for the platform (GetCapabilities).
 </remark>
 <p>
-Use TabHeight to set the width for the tabs on the control.
+Use TabHeight to set the height for the tabs on the control.
 </p>
 </descr>
+<version>
+Modified in LCL version 2.4.0 to use a storage specifier for the property 
+value in LCL component streaming.
+</version>
 <seealso>
 <link id="TCustomTabControl.TabHeight"/>
 <link id="TCustomTabControl.Style"/>
 <link id="TCustomTabControl.ShowTabs"/>
 <link id="TCustomTabControl.GetCapabilities"/>
+<link id="TCustomTabControl.DoAutoAdjustLayout"/>
 </seealso>
 </element>
 
