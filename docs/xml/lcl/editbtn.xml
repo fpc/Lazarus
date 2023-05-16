@@ -933,7 +933,7 @@ The default value for the property is <var>bsNone</var> in
 <element name="TEditButton.Images" link="#lcl.editbtn.TCustomEditButton.Images"/>
 <element name="TEditButton.ImageIndex" link="#lcl.editbtn.TCustomEditButton.ImageIndex"/>
 <element name="TEditButton.ImageWidth" link="#lcl.editbtn.TCustomEditButton.ImageWidth"/>
-<element name="TEditButton.Layout"  link="#lcl.groupededit.TCustomAbstractGroupedEdit.Layout"/>
+<element name="TEditButton.Layout" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Layout"/>
 <element name="TEditButton.MaxLength" link="#lcl.stdctrls.TCustomEdit.MaxLength"/>
 <element name="TEditButton.NumGlyphs" link="#lcl.editbtn.TCustomEditButton.NumGlyphs"/>
 <element name="TEditButton.OnButtonClick" link="#lcl.editbtn.TCustomEditButton.OnButtonClick"/>
@@ -1136,12 +1136,13 @@ TListbox or TTreeview.
 <p>
 When the container control is connected to a filter control, the filtering 
 happens automatically as a user enters text. When the filter is empty and 
-does not have focus, it displays the greyed value "(filter)".
+does not have focus, it displays the grayed value "(filter)".
 </p>
 </descr>
 </element>
 
 <!-- private -->
+<element name="TCustomControlFilterEdit.fFilter"/>
 <element name="TCustomControlFilterEdit.fFilterLowercase"/>
 <element name="TCustomControlFilterEdit.fFilterOptions"/>
 <element name="TCustomControlFilterEdit.fIdleConnected"/>
@@ -1304,29 +1305,41 @@ Calls the inherited DestroyWnd method.
 </seealso>
 </element>
 
-<element name="TCustomControlFilterEdit.ActivateFilter">
+<element name="TCustomControlFilterEdit.InternalSetFilter">
 <short>
-Activates the Filter using the existing filter text.
+Performs actions needed when a new value is assigned to the Filter property.
 </short>
-<descr/>
+<descr>
 <p>
-<var>ActivateFilter</var> ensures that the Button for the control is enabled 
-when the value in Text is not an empty string (''). It stores an internal copy 
-of the Filter (converted to lowercase), and calls InvalidateFilter to set the 
-internal flags for the control.
+<var>InternalSetFilter</var> is called from the write access specifier for the 
+<var>Filter</var> property. It performs actions needed when the value in 
+Filter has been changed (and applied to Text), and the control needs to be 
+updated to reflect the modified value.
 </p>
-<p>
-ActivateFilter is called from the EditChange method when the user types the 
-value for the Text property. It is also called initially when a container 
-control is assigned.
-</p>
+<ul>
+<li>
+Sets the enabled state for the Button on the control; it is enabled when the 
+AValue argument contains a non-empty value.
+</li>
+<li>
+Sets the values in members for the Filter and FilterLowercase properties.
+</li>
+<li>
+Calls Invalidatefilter to update internal members which cause the control to 
+refresh the list of filtered items when an idle state occurs.
+</li>
+</ul>
+</descr>
+<version>
+Added in LCL version 2.4.0.
+</version>
 <seealso>
-<link id="TCustomControlFilterEdit.EditChange"/>
 <link id="TCustomControlFilterEdit.Filter"/>
-<link id="TCustomControlFilterEdit.Text"/>
-<link id="TCustomControlFilterEdit.InvalidateFilter"/>
-<link id="TCustomEditButton.Button"/>
+<link id="TCustomEditBtn.Button"/>
 </seealso>
+</element>
+<element name="TCustomControlFilterEdit.InternalSetFilter.AValue">
+<short/>
 </element>
 
 <element name="TCustomControlFilterEdit.DoDefaultFilterItem">
@@ -1431,14 +1444,17 @@ Performs actions needed when the Edit for the control is changed.
 <var>EditChange</var> is an overridden method in 
 <var>TCustomControlFilterEdit</var> used to apply the Filter for the control 
 when its value has been changed in the edit control. EditChange calls the 
-ActivateFilter method to apply the Filter value and update the enabled state 
-for the Button on the control.
+InternalSetFilter method to apply the Filter value and update the enabled 
+state for the Button on the control.
 </p>
 </descr>
+<version>
+Modified in LCL version 2.4.0 to call InternalSetFilter.
+</version>
 <seealso>
 <link id="TCustomControlFilterEdit.Filter"/>
 <link id="TCustomControlFilterEdit.Text"/>
-<link id="TCustomControlFilterEdit.ActivateFilter"/>
+<link id="TCustomControlFilterEdit.InternalSetFilter"/>
 <link id="TCustomControlFilterEdit.InvalidateFilter"/>
 <link id="TCustomEditButton.Button"/>
 </seealso>
@@ -1713,20 +1729,22 @@ Abstract virtual method that must be implemented in a descendent class.
 
 <element name="TCustomControlFilterEdit.Filter">
 <short>
-The textual representation for the filter value in the control.
+Contains the textual used to select the visible items in the associated 
+control.
 </short>
 <descr>
 <p>
 <var>Filter</var> is a <var>String</var> property which contains the value 
-used to filter the items in an associated control. It is a convenience 
-property; its value is read from and written to the Text property for the 
-control. Setting the value for the property in code, causes the Text property 
-to be updated.
+used to filter the items in an associated control. Filter is used when the 
+SortAndFilter and ApplyFilterCore methods (in descendent classes) are called 
+to apply the filter value to the items in an associated control.
 </p>
 <p>
-Filter is used when the SortAndFilter and ApplyFilterCore methods (in 
-descendent classes) are called to apply the filter value to the items in an 
-associated control.
+Changing the value for the property causes the value in the Text property 
+control to be updated. The InternalSetFilter method is called to perform 
+actions needed for the new property value. The new filter will be applied to 
+the associated Control when the OnChange handler for the Edit control is 
+called.
 </p>
 <p>
 Use FilterLowercase to access the Filter value converted to lowercase UTF-8 
@@ -1739,17 +1757,23 @@ been included in the set of options.
 </p>
 <p>
 Use ResetFilter to clear the filter value (and the Text property) for the 
-control.
+control. Use ForceFilter to immediately apply a specified Filter value to the 
+items in the associated Control.
 </p>
 </descr>
+<version>
+Modified in LCL version 2.4.0 to call InternalSetFilter when a new value is 
+assigned to the property.
+</version>
 <seealso>
 <link id="TCustomControlFilterEdit.Text"/>
 <link id="TCustomControlFilterEdit.FilterLowercase"/>
-<link id="TCustomControlFilterEdit.DoDefaultFilterItem"/>
+<link id="TCustomControlFilterEdit.InternalSetFilter"/>
 <link id="TCustomControlFilterEdit.FilterOptions"/>
+<link id="TCustomControlFilterEdit.ForceFilter"/>
+<link id="TCustomControlFilterEdit.DoDefaultFilterItem"/>
 <link id="TCustomControlFilterEdit.OnFilterItem"/>
 <link id="TCustomControlFilterEdit.OnFilterItemEx"/>
-<link id="TCustomControlFilterEdit.ActivateFilter"/>
 <link id="TCustomControlFilterEdit.EditChange"/>
 </seealso>
 </element>
@@ -1769,8 +1793,8 @@ used in a similar manner in routines assigned to the <var>OnFilterItem</var>
 and <var>OnFilterItemEx</var> event handlers.
 </p>
 <p>
-The value for FilterLowercase is derived and assigned in ActivateFilter, and 
-is called when the value for the edit control has been changed.
+The value for FilterLowercase is derived and assigned in InternalSetFilter, 
+and used when the value for the edit control has been changed.
 </p>
 </descr>
 <seealso>
@@ -1779,7 +1803,7 @@ is called when the value for the edit control has been changed.
 <link id="TCustomControlFilterEdit.FilterOptions"/>
 <link id="TCustomControlFilterEdit.OnFilterItem"/>
 <link id="TCustomControlFilterEdit.OnFilterItemEx"/>
-<link id="TCustomControlFilterEdit.ActivateFilter"/>
+<link id="TCustomControlFilterEdit.InternalSetFilter"/>
 <link id="TCustomControlFilterEdit.EditChange"/>
 </seealso>
 </element>
