@@ -683,6 +683,7 @@ from TCustomCheckListBox, the internal map used for checked items is created.
 <link id="TListFilterEdit.Items"/>
 <link id="TListFilterEdit.SelectionList"/>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.InternalSetFilter">TCustomControlFilterEdit.InternalSetFilter</link>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.Text">TCustomControlFilterEdit.Text</link>
 <link id="#lcl.stdctrls.TCustomListBox">TCustomListBox</link>
 <link id="#lcl.stdctrls.TListBox">TListBox</link>

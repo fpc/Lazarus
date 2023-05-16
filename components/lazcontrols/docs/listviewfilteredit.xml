@@ -587,10 +587,10 @@ not been assigned (contains Nil), or FilteredListView does not contain any
 list items in its Items property.
 </p>
 <p>
-Changing the value in the property causes the Filter text to be re-applied to 
-the control by calling the ActivateFilter method. Values in the Items property 
-are updated to reflect the list Items in FilteredListView after the Filter has 
-been applied.
+Changing the value in the property causes the filter Text to be re-applied to 
+the control by calling the InternalSetFilter method. Values in the Items 
+property are updated to reflect the list Items in FilteredListView after the 
+filter has been applied.
 </p>
 <p>
 Use the ByAllFields property to control whether SubItems in the list item data 
@@ -602,6 +602,7 @@ are included in the filtered values for the control.
 <link id="TListViewFilterEdit.Items"/>
 <link id="TListViewFilterEdit.ApplyFilterCore"/>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.InternalSetFilter">TCustomControlFilterEdit.InternalSetFilter</link>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.Text">TCustomControlFilterEdit.Text</link>
 <link id="#lcl.comctrls.TCustomListView">TCustomListView</link>
 </seealso>

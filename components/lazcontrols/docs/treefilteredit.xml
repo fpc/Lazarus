@@ -747,7 +747,12 @@ The associated TTreeView with the filtered tree nodes for the control.
 </short>
 <descr>
 <p>
-<var>FilteredTreeview</var> is a <var>TCustomTreeview</var> property with the associated tree view for the filter control. FilteredTreeview is used to display the tree nodes which match the Filter for the control. Assigning a new value to the property causes the ActivateFilter method to be called to update the Button for the control and apply the Filter to the tree nodes using the OnFilterNodes event handler.
+<var>FilteredTreeview</var> is a <var>TCustomTreeview</var> property with the 
+associated tree view for the filter control. FilteredTreeview is used to 
+display the tree nodes which match the Filter for the control. Assigning a new 
+value to the property causes the InternalSetFilter method to be called to 
+update the Button for the control and apply the Filter to the tree nodes using 
+the value in Text and the OnFilterNodes event handler.
 </p>
 </descr>
 <seealso/>
