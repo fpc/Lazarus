@@ -1335,7 +1335,7 @@ Added in LCL version 2.4.0.
 </version>
 <seealso>
 <link id="TCustomControlFilterEdit.Filter"/>
-<link id="TCustomEditBtn.Button"/>
+<link id="TCustomEditButton.Button"/>
 </seealso>
 </element>
 <element name="TCustomControlFilterEdit.InternalSetFilter.AValue">
