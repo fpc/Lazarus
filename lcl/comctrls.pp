@@ -421,6 +421,8 @@ type
     procedure SetTabPosition(tabPos: TTabPosition); virtual;
     procedure SetTabWidth(AValue: Smallint);
     procedure ShowCurrentPage;
+    function TabHeightIsStored: Boolean;
+    function TabWidthIsStored: Boolean;
     procedure UpdateAllDesignerFlags;
     procedure UpdateDesignerFlags(APageIndex: integer);
     procedure DoImageListDestroyResolutionHandle(Sender: TCustomImageList;
@@ -503,9 +505,9 @@ type
     property ScrollOpposite: Boolean read FScrollOpposite write FScrollOpposite default False;
     property ShowTabs: Boolean read FShowTabs write SetShowTabs default True;
     property Style: TTabStyle read FStyle write SetStyle default tsTabs;
-    property TabHeight: Smallint read FTabHeight write SetTabHeight default 0;
+    property TabHeight: Smallint read FTabHeight write SetTabHeight stored TabHeightIsStored;
     property TabPosition: TTabPosition read FTabPosition write SetTabPosition default tpTop;
-    property TabWidth: Smallint read FTabWidth write SetTabWidth default 0;
+    property TabWidth: Smallint read FTabWidth write SetTabWidth stored TabWidthIsStored;
   published
     property TabStop default true;
   end;

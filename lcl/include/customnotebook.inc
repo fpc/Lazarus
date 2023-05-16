@@ -843,6 +843,11 @@ begin
   DoSendTabSize;
 end;
 
+function TCustoMTabControl.TabHeightIsStored: Boolean;
+begin
+  Result := TabHeight > 0;
+end;
+
 {------------------------------------------------------------------------------
   TCustomTabControl SetTabPosition
  ------------------------------------------------------------------------------}
@@ -862,6 +867,11 @@ begin
   if not (nbcTabsSizeable in GetCapabilities) then Exit;
   FTabWidth := AValue;
   DoSendTabSize;
+end;
+
+function TCustomTabControl.TabWidthIsStored: Boolean;
+begin
+  Result := TabWidth > 0;
 end;
 
 {------------------------------------------------------------------------------
@@ -1047,6 +1057,10 @@ begin
   begin
     if Assigned(Images) then
       DoImageListChange(Self);
+    if TabHeightIsStored then
+      TabHeight := Round(TabHeight * AYProportion);
+    if TabWidthIsStored then
+      TabWidth := Round(TabWidth * AXProportion);
   end;
 end;
 
