@@ -15,11 +15,13 @@ type
   TForm1 = class(TForm)
     Bevel1: TBevel;
     Bevel2: TBevel;
+    BgColorBox: TColorBox;
     Button1: TBitBtn;
     cbCosmetic: TCheckBox;
     cbAntialiasing: TCheckBox;
     FigureCombo: TComboBox;
     Label10: TLabel;
+    LblBgColor: TLabel;
     Label7: TLabel;
     Label8: TLabel;
     Label9: TLabel;
@@ -82,20 +84,13 @@ end;
 
 procedure TForm1.BrushChange(Sender: TObject);
 begin
-  if BrushStyleCombo.ItemIndex <> -1 then
-    PaintBox.Canvas.Brush.Style := TBrushStyle(BrushStyleCombo.ItemIndex);
-
-  if PaintBox.Canvas.Brush.Style = bsPattern then
-    PaintBox.Canvas.Brush.Bitmap := FPattern
-  else
-    PaintBox.Canvas.Brush.Bitmap := nil;
-
   PaintBox.Invalidate;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 const
-  LineBitsDotted: array[0..7] of Word = ($55, $AA, $55, $AA, $55, $AA, $55, $AA);
+  //LineBitsDotted: array[0..7] of Word = ($55, $AA, $55, $AA, $55, $AA, $55, $AA);
+  LineBitsCheckerboard: array[0..7] of Word = ($3C, $3C, $3C, $3C, $C3, $C3, $C3, $C3);
 var
   ps: TPenStyle;
   bs: TBrushStyle;
@@ -106,9 +101,8 @@ begin
     amOff: cbAntialiasing.State := cbUnchecked;
   end;
 
-
   FPattern := TBitmap.Create;
-  FPattern.SetHandles(CreateBitmap(8, 8, 1, 1, @LineBitsDotted), 0);
+  FPattern.SetHandles(CreateBitmap(8, 8, 1, 1, @LineBitsCheckerboard), 0);
 
   PenStyleCombo.Items.BeginUpdate;
   for ps := Low(ps) to High(ps) do
@@ -138,7 +132,7 @@ procedure TForm1.PaintBoxPaint(Sender: TObject);
 
   procedure DrawFigure(R: TRect); inline;
   var
-    Points: array of TPoint;
+    Points: array of TPoint = nil;
   begin
     inflateRect(R, -10, -10);
     case FigureCombo.ItemIndex of
@@ -177,7 +171,26 @@ var
   ColWidth, RowHeight: Integer;
   R: TRect;
 begin
+  // Must be called before setting Brush.Style since it will set style to bsSolid
   PaintBox.Canvas.Brush.Color := BrushColorBox.Selected;
+
+  if BrushStyleCombo.ItemIndex <> -1 then
+    PaintBox.Canvas.Brush.Style := TBrushStyle(BrushStyleCombo.ItemIndex);
+
+  // Do not change the order of these statements; otherwise the foreground
+  // and background colors will not change.
+  if PaintBox.Canvas.Brush.Style in [bsPattern, bsImage] then
+  begin
+    PaintBox.Canvas.Brush.Bitmap := FPattern;
+    Paintbox.Canvas.Font.Color := BrushColorBox.Selected;
+    SetBkColor(Paintbox.Canvas.Handle, BgColorBox.Selected);
+  end
+  else
+  begin
+    PaintBox.Canvas.Brush.Bitmap := nil;
+    SetBkColor(Paintbox.Canvas.Handle, BgColorBox.Selected);
+    Paintbox.Canvas.Font.Color := BrushColorBox.Selected;
+  end;
 
   ColWidth := PaintBox.Width div 3;
   RowHeight := PaintBox.Height div 2;

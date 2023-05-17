@@ -8,6 +8,8 @@
         <CompatibilityMode Value="True"/>
       </Flags>
       <SessionStorage Value="InIDEConfig"/>
+      <Scaled Value="True"/>
+      <UseXPManifest Value="True"/>
     </General>
     <VersionInfo>
       <Language Value=""/>
@@ -56,6 +58,9 @@
       </SyntaxOptions>
     </Parsing>
     <Linking>
+      <Debugging>
+        <DebugInfoType Value="dsDwarf3"/>
+      </Debugging>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>

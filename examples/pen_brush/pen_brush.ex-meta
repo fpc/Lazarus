@@ -6,6 +6,6 @@
       "styles",
       "lines"
     ],
-    "Description" : "Demonstrates drawing (lines) in a range of styles, colours, widths etc."
+    "Description" : "Demonstrates usage of pens and brushes in a range of styles, colours, widths etc."
   }
 }

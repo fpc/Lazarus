@@ -10,7 +10,11 @@ uses
   Forms
   { you can add units after this }, Unit1;
 
+{$R *.res}
+
 begin
+  Application.Scaled:=True;
+  Application.Title:='';
   Application.Initialize;
   Application.CreateForm(TForm1, Form1);
   Application.Run;
