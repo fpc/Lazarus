@@ -2788,8 +2788,7 @@ ActionLink to be created and configured as needed.
 
 <element name="TMenuItem.AutoCheck">
 <short>
-Indicates whether a check mark is automatically drawn when the menu item is 
-selected.
+Indicates whether a check mark state is read from the Action for the menu item (when assigned).
 </short>
 <descr/>
 <seealso/>
@@ -2818,11 +2817,39 @@ when the Handle has been allocated and the Parent property is assigned.
 <short>
 Indicates whether a check mark is displayed beside the menu item.
 </short>
-<descr/>
+<descr>
+<p>
+<var>Checked</var> is a <var>Boolean</var> property which, when enabled, 
+displays a check mark prior to the Caption for the menu item. The default 
+value for the property is <b>False</b>.
+</p>
+<p>
+When RadioItem is enabled for the menu item, changing Checked to <b>True</b> 
+causes the adjacent radio button-style menu items to set their Checked 
+properties to <b>False</b>.
+</p>
+<p>
+The property value can be supplied by an Action assigned to the menu item. Use 
+AutoCheck to control whether the value from the assigned Action is used in the 
+Click method.
+</p>
+<remark>
+Use of Checked and an assigned image using ImageIndex are mutually exclusive 
+on the Windows platform. At run-time, an image assigned using ImageIndex takes 
+precedence and the check mark is not drawn.
+</remark>
+<p>
+Use ShowAlwaysCheckable to indicate that the menu item is always drawn using 
+the unchecked state - even when Checked is set to <b>True</b>.
+</p>
+</descr>
 <seealso>
 <link id="TMenuItem.AutoCheck"/>
 <link id="TMenuItem.IsCheckItem"/>
 <link id="TMenuItem.Click"/>
+<link id="TMenuItem.ImageIndex"/>
+<link id="TMenuItem.SubImages"/>
+<link id="TMenu.Images"/>
 </seealso>
 </element>
 
@@ -2982,8 +3009,23 @@ use in its OnShowHint event handler.
 Ordinal position in the list of images for the glyph displayed on the menu 
 item.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>ImageIndex</var> refers to the position in the images for the parent of 
+the menu item. This can be the Images property in TMenu, or the SubMenuImages 
+property in a parent menu item.
+</p>
+<remark>
+Use of Checked and an assigned image using ImageIndex are mutually exclusive 
+on the Windows platform. At run-time, an image assigned using ImageIndex takes 
+precedence and the check mark is not drawn.
+</remark>
+</descr>
+<seealso>
+<link id="TMenu.Images"/>
+<link id="TMenuItem.SubMenuImages"/>
+<link id="TMenuItem.Checked"/>
+</seealso>
 </element>
 
 <element name="TMenuItem.RadioItem">
@@ -4159,8 +4201,8 @@ instance.
 
 <element name="TPopupAlignment">
 <short>
-<var>TPopupAlignment</var> -  enumerated type to describe the position of 
-pop-up menu relative to the pop-up coordinates.
+An enumerated type to describe the position of pop-up menu relative to the 
+pop-up coordinates.
 </short>
 <descr>
 <dl>
