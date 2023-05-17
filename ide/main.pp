@@ -5162,7 +5162,8 @@ begin
     UpdateHighlighters(True);
     SourceEditorManager.ReloadEditorOptions;
     ReloadMenuShortCuts;
-    UpdateMacroListViewer;
+    if MacroListViewer <> nil then
+      MacroListViewer.UpdateDisplay;
   finally
     SourceEditorManager.EndGlobalUpdate;
   end;
@@ -5699,11 +5700,9 @@ end;
 procedure TMainIDE.OnLoadProjectInfoFromXMLConfig(TheProject: TProject;
   XMLConfig: TXMLConfig; Merge: boolean);
 begin
-  if TheProject=Project1 then
-    DebugBossMgr.LoadProjectSpecificInfo(XMLConfig,Merge);
-
-  if (TheProject=Project1) then
-    EditorMacroListViewer.LoadProjectSpecificInfo(XMLConfig);
+  if TheProject<>Project1 then exit;
+  DebugBossMgr.LoadProjectSpecificInfo(XMLConfig,Merge);
+  EditorMacroListViewer.LoadProjectSpecificInfo(XMLConfig);
 end;
 
 procedure TMainIDE.OnLoadSaveCustomData(Sender: TObject; Load: boolean;
@@ -5714,19 +5713,17 @@ var
 begin
   Handler:=FLazarusIDEHandlers[lihtLoadSafeCustomData];
   i := Handler.Count;
-  while Handler.NextDownIndex(i) do begin
+  while Handler.NextDownIndex(i) do
     TLazLoadSaveCustomDataEvent(Handler[i])(Sender,Load,Data,PathDelimChanged);
-  end;
 end;
 
 procedure TMainIDE.OnSaveProjectInfoToXMLConfig(TheProject: TProject;
   XMLConfig: TXMLConfig; WriteFlags: TProjectWriteFlags);
 begin
-  if (TheProject=Project1) and (not (pwfSkipDebuggerSettings in WriteFlags)) then
+  if TheProject<>Project1 then exit;
+  if not (pwfSkipDebuggerSettings in WriteFlags) then
     DebugBossMgr.SaveProjectSpecificInfo(XMLConfig,WriteFlags);
-
-  if (TheProject=Project1) then
-    EditorMacroListViewer.SaveProjectSpecificInfo(XMLConfig, WriteFlags);
+  EditorMacroListViewer.SaveProjectSpecificInfo(XMLConfig, WriteFlags);
 end;
 
 procedure TMainIDE.OnProjectChangeInfoFile(TheProject: TProject);
@@ -6194,6 +6191,11 @@ begin
   begin
     DoShowComponentList(State);
     AForm:=ComponentListForm;
+  end
+  else if ItIs(NonModalIDEWindowNames[nmiwMacroListViewer]) then
+  begin
+    ShowMacroListViewer(State);
+    AForm:=MacroListViewer;
   end
   else if ItIs(NonModalIDEWindowNames[nmiwEditorFileManager]) then
   begin

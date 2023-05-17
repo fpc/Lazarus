@@ -628,7 +628,7 @@
       <Unit>
         <Filename Value="editormacrolistviewer.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="MacroListView"/>
+        <ComponentName Value="MacroListViewer"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="EditorMacroListViewer"/>

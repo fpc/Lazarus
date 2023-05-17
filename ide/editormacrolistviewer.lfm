@@ -1,9 +1,9 @@
-object MacroListView: TMacroListView
+object MacroListViewer: TMacroListViewer
   Left = 390
   Height = 609
   Top = 249
   Width = 569
-  Caption = 'MacroListView'
+  Caption = 'MacroListViewer'
   ClientHeight = 609
   ClientWidth = 569
   Constraints.MinHeight = 562

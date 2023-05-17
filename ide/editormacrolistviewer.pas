@@ -189,9 +189,9 @@ type
     property OnRemove: TMacroAddedEvent read FOnRemove write FOnRemove;
   end;
 
-  { TMacroListView }
+  { TMacroListViewer }
 
-  TMacroListView = class(TForm)
+  TMacroListViewer = class(TForm)
     btnDelete: TBitBtn;
     btnEdit: TBitBtn;
     btnPlay: TBitBtn;
@@ -260,11 +260,8 @@ type
     procedure DoMacroContentChanged(Sender: TObject);
     procedure DoMacroStateChanged(Sender: TObject);
     procedure UpdateButtons;
-  protected
-    procedure DoEditorMacroStateChanged;
   public
     constructor Create(TheOwner: TComponent); override;
-    destructor Destroy; override;
     function  MacroByFullName(AName: String): TEditorMacro;
     procedure UpdateDisplay;
   end;
@@ -281,18 +278,8 @@ type
     procedure DoOnAdded; override;
   end;
 
-
-function MacroListViewer: TMacroListView;
-procedure ShowMacroListViewer;
-procedure UpdateMacroListViewer;
-procedure DoEditorMacroStateChanged;
-
-procedure LoadProjectSpecificInfo(XMLConfig: TXMLConfig);
-procedure SaveProjectSpecificInfo(XMLConfig: TXMLConfig; Flags: TProjectWriteFlags);
-procedure LoadGlobalInfo;
-procedure SaveGlobalInfo;
-
 var
+  MacroListViewer: TMacroListViewer = nil;
   OnKeyMapReloaded: procedure of object;
   OnEditorMacroStateChange: TNotifyEvent;
   // SelectedEditorMacro: Selected, for playing with default shortcut
@@ -301,11 +288,20 @@ var
 const
   EditorMacroVirtualDrive = '%Macro:|'; // do not use \ or /, they can be converted by the IDE
 
+procedure ShowMacroListViewer(State: TIWGetFormState = iwgfShowOnTop);
+
+procedure DoEditorMacroStateChanged;
+procedure LoadProjectSpecificInfo(XMLConfig: TXMLConfig);
+procedure SaveProjectSpecificInfo(XMLConfig: TXMLConfig; Flags: TProjectWriteFlags);
+procedure LoadGlobalInfo;
+procedure SaveGlobalInfo;
+
+
 implementation
 
-var
-  MacroListView: TMacroListView = nil;
+{$R *.lfm}
 
+var
   CurrentEditorMacroList: TEditorMacroList = nil;
   EditorMacroListRec, EditorMacroListProj, EditorMacroListGlob: TEditorMacroList;
 
@@ -319,30 +315,22 @@ var
 const
   GlobalConfFileName = 'EditorMacros.xml';
 
+procedure ShowMacroListViewer(State: TIWGetFormState);
+begin
+  if MacroListViewer = Nil then
+    IDEWindowCreators.CreateForm(MacroListViewer,TMacroListViewer,
+       State=iwgfDisabled,LazarusIDE.OwningComponent)
+  else if State=iwgfDisabled then
+    MacroListViewer.DisableAlign;
+  if State>=iwgfShow then
+    IDEWindowCreators.ShowForm(MacroListViewer,State=iwgfShowOnTop);
+end;
+
 procedure DoMacroListViewerWarningChanged({%H-}Sender: TObject);
 begin
-  if MacroListView = nil then exit;
-  MacroListView.LabelWarning.Caption := MacroListViewerWarningText;
-  MacroListView.PanelWarnings.Visible := MacroListViewerWarningText <> '';
-end;
-
-function MacroListViewer: TMacroListView;
-begin
-  if MacroListView = nil then
-    MacroListView := TMacroListView.Create(Application);
-  Result := MacroListView;
-  DoMacroListViewerWarningChanged(nil);
-end;
-
-procedure ShowMacroListViewer;
-begin
-  IDEWindowCreators.ShowForm(MacroListViewer, True);
-end;
-
-procedure UpdateMacroListViewer;
-begin
-  if MacroListView <> nil then
-    MacroListView.UpdateDisplay;
+  if MacroListViewer = nil then exit;
+  MacroListViewer.LabelWarning.Caption := MacroListViewerWarningText;
+  MacroListViewer.PanelWarnings.Visible := MacroListViewerWarningText <> '';
 end;
 
 function MacroListToName(AList: TEditorMacroList): string;
@@ -381,35 +369,35 @@ begin
 
   if (EditorMacroForRecording.State = emRecording) and (CurrentRecordingMacro = nil) then begin
     CurrentRecordingMacro := EditorMacroPlayerClass.Create(nil);
-    CurrentRecordingMacro.OnStateChange := @MacroListViewer.DoMacroStateChanged;
     CurrentRecordingMacro.OnChange := @MacroListViewer.DoMacroContentChanged;
+    CurrentRecordingMacro.OnStateChange := @MacroListViewer.DoMacroStateChanged;
     CurrentRecordingMacro.MacroName := Format(lisNewMacroName, [MacroRecCounter]);
     inc(MacroRecCounter);
     EditorMacroListRec.Add(CurrentRecordingMacro);
   end;
 
-  if MacroListView <> nil then
-    MacroListView.DoEditorMacroStateChanged;
+  if MacroListViewer <> nil then
+    MacroListViewer.UpdateDisplay;
 end;
 
 procedure LoadProjectSpecificInfo(XMLConfig: TXMLConfig);
 begin
-  if MacroListView<>nil then
-    MacroListView.FIgnoreMacroChanges := True;
+  if MacroListViewer<>nil then
+    MacroListViewer.FIgnoreMacroChanges := True;
   try
     EditorMacroListProj.ReadFromXmlConf(XMLConfig, '');
   finally
-    if MacroListView<>nil then
-      MacroListView.FIgnoreMacroChanges := False;
+    if MacroListViewer<>nil then begin
+      MacroListViewer.FIgnoreMacroChanges := False;
+      MacroListViewer.UpdateDisplay;
+    end;
   end;
 end;
 
 procedure SaveProjectSpecificInfo(XMLConfig: TXMLConfig; Flags: TProjectWriteFlags);
 begin
   if not (pwfSkipSeparateSessionInfo in Flags) then
-  begin
     EditorMacroListProj.WriteToXmlConf(XMLConfig, '');
-  end;
 end;
 
 procedure LoadGlobalInfo;
@@ -417,8 +405,8 @@ var
   Filename: String;
   XMLConfig: TXMLConfig;
 begin
-  if MacroListView<>nil then
-    MacroListView.FIgnoreMacroChanges := True;
+  if MacroListViewer<>nil then
+    MacroListViewer.FIgnoreMacroChanges := True;
   Filename := TrimFilename(AppendPathDelim(GetPrimaryConfigPath)+GlobalConfFileName);
   try
     XMLConfig := TXMLConfig.Create(Filename);
@@ -432,8 +420,8 @@ begin
       DebugLn('[EditorMacroListViewer.LoadGlobalInfo]  error reading "',Filename,'": ',E.Message);
     end;
   end;
-  if MacroListView<>nil then
-    MacroListView.FIgnoreMacroChanges := False;
+  if MacroListViewer<>nil then
+    MacroListViewer.FIgnoreMacroChanges := False;
 end;
 
 procedure SaveGlobalInfo;
@@ -499,7 +487,6 @@ begin
   end
   else
     FIdeCmd.LocalizedName := FOwner.MacroName;
-
 end;
 
 destructor TIdeEditorMacroKeyBinding.Destroy;
@@ -512,6 +499,7 @@ begin
 end;
 
 procedure TIdeEditorMacroKeyBinding.WriteToXmlConf(AConf: TXMLConfig; const APath: String);
+
   procedure ClearKey(const SubPath: string);
   begin
     AConf.DeleteValue(SubPath+'Key1');
@@ -519,6 +507,7 @@ procedure TIdeEditorMacroKeyBinding.WriteToXmlConf(AConf: TXMLConfig; const APat
     AConf.DeleteValue(SubPath+'Key2');
     AConf.DeleteValue(SubPath+'Shift2');
   end;
+
   procedure Store(const SubPath: string; Key: TIDEShortCut);
   var
     s: TShiftState;
@@ -548,6 +537,7 @@ begin
 end;
 
 procedure TIdeEditorMacroKeyBinding.ReadFromXmlConf(AConf: TXMLConfig; const APath: String);
+
   procedure Load(SubPath: string; out Key: TIDEShortCut);
   begin
     key.Key1   := AConf.GetValue(SubPath+'Key1',VK_UNKNOWN);
@@ -555,6 +545,7 @@ procedure TIdeEditorMacroKeyBinding.ReadFromXmlConf(AConf: TXMLConfig; const APa
     key.Key2   := AConf.GetValue(SubPath+'Key2',VK_UNKNOWN);
     key.Shift2 := CfgStrToShiftState(AConf.GetValue(SubPath+'Shift2',''));
   end;
+
 var
   SCut: TIDEShortCut;
 begin
@@ -1102,9 +1093,9 @@ begin
   FParams := FParams + IntToStr(AParam);
 end;
 
-{ TMacroListView }
+{ TMacroListViewer }
 
-procedure TMacroListView.btnRenameClick(Sender: TObject);
+procedure TMacroListViewer.btnRenameClick(Sender: TObject);
 var
   s: String;
   M: TEditorMacro;
@@ -1124,14 +1115,13 @@ begin
           s := '';
       end;
     end;
-
     if s <> '' then
       M.MacroName := s;
     UpdateDisplay;
   end;
 end;
 
-procedure TMacroListView.btnPlayClick(Sender: TObject);
+procedure TMacroListViewer.btnPlayClick(Sender: TObject);
 var
   i: Integer;
   M: TEditorMacro;
@@ -1163,7 +1153,7 @@ begin
 
 end;
 
-procedure TMacroListView.btnDeleteClick(Sender: TObject);
+procedure TMacroListViewer.btnDeleteClick(Sender: TObject);
 var
   m: TEditorMacro;
 begin
@@ -1182,7 +1172,7 @@ begin
   end;
 end;
 
-procedure TMacroListView.btnEditClick(Sender: TObject);
+procedure TMacroListViewer.btnEditClick(Sender: TObject);
 var
   M: TEditorMacro;
 begin
@@ -1194,7 +1184,7 @@ begin
     -1, -1, [ofVirtualFile, ofInternalFile]);
 end;
 
-procedure TMacroListView.btnRecordClick(Sender: TObject);
+procedure TMacroListViewer.btnRecordClick(Sender: TObject);
 var
   se: TSourceEditorInterface;
 begin
@@ -1217,21 +1207,21 @@ begin
   se.EditorControl.SetFocus;
 end;
 
-procedure TMacroListView.btnRecordStopClick(Sender: TObject);
+procedure TMacroListViewer.btnRecordStopClick(Sender: TObject);
 begin
   FIsPlaying := False;
   EditorMacroForRecording.Stop;
   UpdateButtons;
 end;
 
-procedure TMacroListView.btnAddEditNewClick(Sender: TObject);
+procedure TMacroListViewer.btnAddEditNewClick(Sender: TObject);
 var
   se: TSourceEditorInterface;
   M: TEditorMacro;
 begin
   se := SourceEditorManagerIntf.ActiveEditor;
   Assert(Assigned(se) and (ActiveEditorMacro=nil) and (EditorMacroForRecording.State=emStopped),
-         'TMacroListView.btnAddEditNewClick: Problem');
+         'TMacroListViewer.btnAddEditNewClick: Problem');
   lbMacroView.ItemIndex := -1;
   M := TIdeEditorMacro.Create(nil);
   M.OnStateChange := @MacroListViewer.DoMacroStateChanged;
@@ -1239,7 +1229,7 @@ begin
   M.MacroName := Format(lisNewMacroName, [MacroRecCounter]);
   inc(MacroRecCounter);
   CurrentEditorMacroList.Add(M);
-  Assert(not FIsPlaying, 'TMacroListView.btnAddEditNewClick: IsPlaying');
+  Assert(not FIsPlaying, 'TMacroListViewer.btnAddEditNewClick: IsPlaying');
   LazarusIDE.DoOpenEditorFile(
     EditorMacroVirtualDrive+MacroListToName(CurrentEditorMacroList)+'|'+M.MacroName,
     -1, -1, [ofVirtualFile, ofInternalFile]);
@@ -1247,7 +1237,7 @@ begin
   UpdateDisplay;
 end;
 
-procedure TMacroListView.btnSelectClick(Sender: TObject);
+procedure TMacroListViewer.btnSelectClick(Sender: TObject);
 begin
   if ActiveEditorMacro <> nil then exit;
   if lbMacroView.ItemIndex >= 0 then
@@ -1257,7 +1247,7 @@ begin
   UpdateDisplay;
 end;
 
-procedure TMacroListView.btnSetKeysClick(Sender: TObject);
+procedure TMacroListViewer.btnSetKeysClick(Sender: TObject);
 var
   i: integer;
   M: TEditorMacro;
@@ -1280,36 +1270,36 @@ begin
   if OnKeyMapReloaded <> nil then OnKeyMapReloaded();
 end;
 
-procedure TMacroListView.BtnWarnCloseClick(Sender: TObject);
+procedure TMacroListViewer.BtnWarnCloseClick(Sender: TObject);
 begin
   PanelWarnings.Visible := False;
 end;
 
-procedure TMacroListView.DoMacroStateChanged(Sender: TObject);
+procedure TMacroListViewer.DoMacroStateChanged(Sender: TObject);
 begin
   if OnEditorMacroStateChange <> nil then
     OnEditorMacroStateChange(Sender);
 end;
 
-procedure TMacroListView.FormActivate(Sender: TObject);
+procedure TMacroListViewer.FormActivate(Sender: TObject);
 begin
-  DebugLn(['TMacroListView.FormActivate: Active=', Active]);
+  DebugLn(['TMacroListViewer.FormActivate: Active=', Active]);
   lbMacroView.HideSelection := Active; // Active = False always ?
   UpdateButtons;
 end;
 
-procedure TMacroListView.HelpButtonClick(Sender: TObject);
+procedure TMacroListViewer.HelpButtonClick(Sender: TObject);
 begin
   LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
-procedure TMacroListView.lbMacroViewSelectItem(Sender: TObject; Item: TListItem;
+procedure TMacroListViewer.lbMacroViewSelectItem(Sender: TObject; Item: TListItem;
   Selected: Boolean);
 begin
   UpdateButtons;
 end;
 
-procedure TMacroListView.mnExportClick(Sender: TObject);
+procedure TMacroListViewer.mnExportClick(Sender: TObject);
 var
   Conf: TXMLConfig;
 begin
@@ -1327,7 +1317,7 @@ begin
   end;
 end;
 
-procedure TMacroListView.mnImportClick(Sender: TObject);
+procedure TMacroListViewer.mnImportClick(Sender: TObject);
 var
   Conf: TXMLConfig;
   NewMacro: TEditorMacro;
@@ -1336,8 +1326,8 @@ begin
     Conf := TXMLConfig.Create(OpenDialog1.FileName);
     try
       NewMacro := EditorMacroPlayerClass.Create(nil);
-      NewMacro.OnStateChange := @DoMacroStateChanged;
-      NewMacro.OnChange := @DoMacroContentChanged;
+      NewMacro.OnStateChange := @MacroListViewer.DoMacroStateChanged;
+      NewMacro.OnChange := @MacroListViewer.DoMacroContentChanged;
       NewMacro.ReadFromXmlConf(Conf, 'EditorMacros/Macro1/');
       if not NewMacro.IsEmpty then begin
         CurrentEditorMacroList.Add(NewMacro);
@@ -1352,13 +1342,13 @@ begin
   end;
 end;
 
-procedure TMacroListView.tbIDEClick(Sender: TObject);
+procedure TMacroListViewer.tbIDEClick(Sender: TObject);
 begin
   CurrentEditorMacroList := EditorMacroListGlob;
   UpdateDisplay;
 end;
 
-procedure TMacroListView.tbMoveIDEClick(Sender: TObject);
+procedure TMacroListViewer.tbMoveIDEClick(Sender: TObject);
 var
   i: Integer;
 begin
@@ -1371,7 +1361,7 @@ begin
   UpdateDisplay;
 end;
 
-procedure TMacroListView.tbMoveProjectClick(Sender: TObject);
+procedure TMacroListViewer.tbMoveProjectClick(Sender: TObject);
 var
   i: Integer;
 begin
@@ -1384,28 +1374,28 @@ begin
   UpdateDisplay;
 end;
 
-procedure TMacroListView.tbProjectClick(Sender: TObject);
+procedure TMacroListViewer.tbProjectClick(Sender: TObject);
 begin
   CurrentEditorMacroList := EditorMacroListProj;
   UpdateDisplay;
 end;
 
-procedure TMacroListView.tbRecordedClick(Sender: TObject);
+procedure TMacroListViewer.tbRecordedClick(Sender: TObject);
 begin
   CurrentEditorMacroList := EditorMacroListRec;
   UpdateDisplay;
 end;
 
-procedure TMacroListView.DoOnMacroListChange(Sender: TObject);
+procedure TMacroListViewer.DoOnMacroListChange(Sender: TObject);
 begin
   UpdateDisplay;
   if Sender = EditorMacroListProj then
     Project1.SessionModified := True;
 end;
 
-procedure TMacroListView.DoMacroContentChanged(Sender: TObject);
+procedure TMacroListViewer.DoMacroContentChanged(Sender: TObject);
 begin
-  if FIgnoreMacroChanges then exit;
+  if Assigned(Self) and Self.FIgnoreMacroChanges then exit;
 
   if EditorMacroListProj.IndexOf(Sender as TEditorMacro) >= 0 then
     Project1.Modified := True;
@@ -1413,7 +1403,7 @@ begin
     MainIDEInterface.SaveEnvironment(False);
 end;
 
-procedure TMacroListView.UpdateDisplay;
+procedure TMacroListViewer.UpdateDisplay;
 var
   NewItem: TListItem;
   i, idx: Integer;
@@ -1455,7 +1445,7 @@ begin
   UpdateButtons;
 end;
 
-procedure TMacroListView.UpdateButtons;
+procedure TMacroListViewer.UpdateButtons;
 var
   IsSel, IsErr, IsStopped: Boolean;
   M: TEditorMacro;
@@ -1513,7 +1503,7 @@ begin
   Update;
 end;
 
-function TMacroListView.MacroByFullName(AName: String): TEditorMacro;
+function TMacroListViewer.MacroByFullName(AName: String): TEditorMacro;
 const
   FolderStart = length(EditorMacroVirtualDrive)+1;
   NameStart = FolderStart+length('PRJ|');
@@ -1532,12 +1522,7 @@ begin
   Result := Alist.Macros[i];
 end;
 
-procedure TMacroListView.DoEditorMacroStateChanged;
-begin
-  UpdateDisplay;
-end;
-
-constructor TMacroListView.Create(TheOwner: TComponent);
+constructor TMacroListViewer.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FIgnoreMacroChanges := False;
@@ -1615,11 +1600,6 @@ begin
   OpenDialog1.Title := lisLoadMacroFrom;
   mnImport.Caption := lisDlgImport;
   mnExport.Caption := lisDlgExport;
-end;
-
-destructor TMacroListView.Destroy;
-begin
-  inherited Destroy;
 end;
 
 { TEditorMacroList }
@@ -1805,8 +1785,6 @@ begin
   AddList(EditorMacroListRec);
 end;
 
-
-{$R *.lfm}
 
 initialization
   if EditorMacroPlayerClass = nil then

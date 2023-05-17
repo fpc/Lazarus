@@ -94,7 +94,8 @@ type
     nmiwCodeBrowser,
     nmiwIssueBrowser,
     nmiwJumpHistory,
-    nmiwComponentList
+    nmiwComponentList,
+    nmiwMacroListViewer
     );
 
 const
@@ -130,7 +131,8 @@ const
     'CodeBrowser',
     'IssueBrowser',
     'JumpHistory',
-    'ComponentList'
+    'ComponentList',
+    'MacroListViewer'
    );
 
 type

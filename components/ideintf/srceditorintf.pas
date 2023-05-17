@@ -412,9 +412,10 @@ type
     FOnChange: TNotifyEvent;
     FOnStateChange: TNotifyEvent;
     procedure SetMacroNameFull(AValue: String);
+    procedure SetOnChange(AValue: TNotifyEvent);
   protected
-     procedure DoChanged;
-     procedure DoStateChanged;
+    procedure DoChanged;
+    procedure DoStateChanged;
 
     // (Un)setActivated: Must be called, whenever the state changes
     procedure SetActivated;
@@ -702,6 +703,12 @@ begin
   SetMacroName(AValue);
   if KeyBinding <> nil then
     KeyBinding.MacroNameChanged;
+end;
+
+procedure TEditorMacro.SetOnChange(AValue: TNotifyEvent);
+begin
+  if FOnChange=AValue then Exit;
+  FOnChange:=AValue;
 end;
 
 function TEditorMacro.GetErrorMsg: String;
