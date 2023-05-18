@@ -8,9 +8,12 @@ uses
   Classes, SysUtils, girNameSpaces, girObjects, girTokens, contnrs, StrUtils;
 
 type
-  TgirOption = (goWantTest, goLinkDynamic, goSeperateConsts, goClasses, goObjects, goIncludeDeprecated, goNoWrappers);
+  TgirOption = (goWantTest, goLinkDynamic, goSeperateConsts, goClasses, goObjects, goIncludeDeprecated, goNoWrappers,
+                goEnumAsIntConst, goEnumAsTypedIntConst, goEnumAsIntAliasConst, goEnumAsEnum, goEnumAsSet
+               );
   TgirOptions = set of TgirOption;
   TgirWriteEvent = procedure (Sender: TObject; AUnitName: AnsiString; AStream: TStringStream) of object;
+  TgirEnumImpl = goEnumAsIntConst..goEnumAsSet;
 
   TPDeclaration = class
     function AsString: String; virtual; abstract;
@@ -200,7 +203,7 @@ type
     procedure HandleNativeType(AItem: TgirNativeTypeDef);
     procedure HandleAlias(AItem: TgirAlias);
     procedure HandleCallback(AItem: TgirCallback);
-    procedure HandleEnum(AItem: TgirEnumeration; ADeclareType: Boolean = True);
+    procedure HandleEnum(AItem: TgirEnumeration);
     procedure HandleBitfield(AItem: TgirBitField);
     procedure HandleRecord(AItem: TgirRecord);
     procedure HandleOpaqueType(AItem: TgirFuzzyType);
@@ -906,7 +909,6 @@ end;
 procedure TPascalUnit.HandleAlias(AItem: TgirAlias);
 var
   ResolvedForName: String;
-  CType: TGirBaseType = nil;
   ProperUnit: TPascalUnit;
   TargetType: TGirBaseType = nil;
 begin
@@ -970,55 +972,101 @@ begin
     TypeSect.Lines.Add(IndentText(CB,2,0))
 end;
 
-procedure TPascalUnit.HandleEnum(AItem: TgirEnumeration; ADeclareType: Boolean = True);
+function CompareEnumValues(v1, v2: Pointer): Integer;
+begin
+  Result := StrToInt(PgirEnumMember(v1)^.Value) - StrToInt(PgirEnumMember(v2)^.Value);
+end;
+
+procedure TPascalUnit.HandleEnum(AItem: TgirEnumeration);
 var
   ConstSection: TPDeclarationConst;
+  Section: TPDeclarationWithLines;
   Entry: String;
   i: Integer;
   CName: String;
   TypeName: String;
   ProperUnit: TPascalUnit;
   IntType: String;
+  Value: String;
 begin
   ProperUnit := FGroup.GetUnitForType(utTypes);
   if ProperUnit <> Self then begin
-    ProperUnit.HandleEnum(AItem, ADeclareType);
+    ProperUnit.HandleEnum(AItem);
     Exit;
   end;
   ResolveTypeTranslation(AItem);
 
   ConstSection := WantConstSection;
-  ConstSection.Lines.Add('');
-                //ATK_HYPERLINK_IS_INLINE_
-  if ADeclareType then
-  begin
+  if goEnumAsSet in FOptions then begin
+    raise Exception.Create('Not yet supported!');
+  end else if goEnumAsEnum in FOptions then begin
+    // forces forward declarations to be written
+    ProcessType(AItem);
+    TypeName := AItem.TranslatedName;
+    Section := WantTypeSection;
+    Section.Lines.Add(IndentText(TypeName + ' = (', 2, 0));
+    Section.Lines.Add(IndentText(TypeName + 'MinValue = -$7FFFFFFF,', 4, 0));
+    AItem.Members.Sort(@CompareEnumValues)
+  end else if goEnumAsIntAliasConst in FOptions then begin
+    // forces forward declarations to be written
+    ProcessType(AItem);
+    TypeName := AItem.TranslatedName;
+    Section := WantConstSection;
+    Section.Lines.Add('');
+    Section.Lines.Add('type');
+    if AItem.NeedsSignedType then
+      IntType := 'Integer'
+    else
+      IntType := 'DWord';
+    // yes we cheat a little here using the const section to write type info
+    Section.Lines.Add(IndentText(TypeName + ' = type ' + IntType + ';', 2, 0));
+    Section.Lines.Add('const');
+    Section.Lines.Add(IndentText('{ '+ AItem.CType + ' }', 2, 0));
+  end else if goEnumAsTypedIntConst in FOptions then begin
     // forces forward declarations to be written
     ProcessType(AItem);
 
-    TypeName := ': '+AItem.TranslatedName;
-
+    TypeName := AItem.TranslatedName;
     if AItem.NeedsSignedType then
       IntType := 'Integer'
     else
       IntType := 'DWord';
 
     // yes we cheat a little here using the const section to write type info
+    ConstSection.Lines.Add('');
     ConstSection.Lines.Add('type');
     ConstSection.Lines.Add(IndentText(AItem.TranslatedName+' = '+IntType+';', 2,0));
     ConstSection.Lines.Add('const');
-  end
-  else
+    ConstSection.Lines.Add(IndentText('{ '+ AItem.CType + ' }', 2, 0));
+    Section := ConstSection;
+  end else begin
     TypeName:='';
-  ConstSection.Lines.Add(IndentText('{ '+ AItem.CType + ' }',2,0));
+    ConstSection.Lines.Add(IndentText('{ '+ AItem.CType + ' }', 2, 0));
+    Section := ConstSection;
+  end;
 
   for i := 0 to AItem.Members.Count-1 do
     begin
       CName := AItem.Members.Member[i]^.CIdentifier;
       if CName = 'ATK_HYPERLINK_IS_INLINE' then
         CName :='ATK_HYPERLINK_IS_INLINE_';
-      Entry := CName + TypeName+ ' = ' + AItem.Members.Member[i]^.Value+';';
-      ConstSection.Lines.Add(IndentText(Entry,2,0));
+      Value := AItem.Members.Member[i]^.Value;
+      if goEnumAsSet in FOptions then begin
+      end else if goEnumAsEnum in FOptions then begin
+        Entry := IndentText(CName + ' = ' + Value + ',', 4, 0);
+      end else if goEnumAsIntAliasConst in FOptions then begin
+        Entry := IndentText(CName + ' = ' + TypeName + '(' + Value + ');', 2, 0);
+      end else if goEnumAsTypedIntConst in FOptions then begin
+        Entry := IndentText(CName + ': ' + TypeName + ' = ' + Value + ';', 2, 0);
+      end else begin
+        Entry := IndentText(CName + ' = ' + Value + ';', 2, 0);
+      end;
+      Section.Lines.Add(Entry);
     end;
+  if goEnumAsEnum in FOptions then begin
+    Section.Lines.Add(IndentText(TypeName + 'MaxValue = $7FFFFFFF', 4, 0));
+    Section.Lines.Add(IndentText(');', 2, 0));
+  end;
   AItem.Writing:=msWritten;
 end;
 
@@ -1039,7 +1087,7 @@ var
   VarType: String;
  }
 begin
-  HandleEnum(AItem, True);
+  HandleEnum(AItem);
 (*
   Intf := WantTypeSection;
   CodeText := TPCodeText.Create;
@@ -1059,7 +1107,7 @@ begin
     Halt;
   end;
   }
-  HandleEnum(AItem, False);
+  HandleEnum(AItem);
 
   VarType:='DWord';
 

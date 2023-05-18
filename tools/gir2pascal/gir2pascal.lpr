@@ -45,6 +45,7 @@ type
     FUnitPrefix: String;
     FOverWriteFiles: Boolean;
     FOptions: TgirOptions;
+    FEnumImpl: TgirEnumImpl;
     procedure AddDefaultPaths;
     procedure AddPaths(APaths: String);
     procedure VerifyOptions;
@@ -256,6 +257,7 @@ begin
     AddOption(['P', 'unit-prefix'], True, 'Set a prefix to be added to each unitname.');
     AddOption(['M', 'max-version'], True, 'Do not include symbols introduced after <max-version>. Can be used multiple times. i.e "-M gtk-3.12 -M glib-2.23"');
     AddOption(['k', 'keep-deprecated-version'], True, 'Include deprecated symbols that are >= to $version. Uses the same format as --max-version. Has no effect if --deprecated is defined');
+    AddOption(['e', 'declare-enums-as'], True, 'Declare C enums as either IntConst, TypedIntConst, IntAliasConst, Enum or Set');
   end;
   FCmdOptions.ReadOptions;
   if FCmdOptions.OptionsMalformed then
@@ -263,6 +265,9 @@ begin
 end;
 
 procedure TGirConsoleConverter.DoRun;
+var
+  EnumImpl: TgirEnumImpl;
+  ErrorCode: Word;
 begin
   // quick check parameters
   CheckOptions;//('hnp:o:i:wtDCsO',['help','no-default','paths','output-directory', 'input', 'overwrite-files', 'test', 'dynamic', 'classes', 'seperate-units', 'objects']);
@@ -340,6 +345,15 @@ begin
     FUnitPrefix:=FCmdOptions.OptionValue('unit-prefix')
   else
     FUnitPrefix:='';
+
+  if FCmdOptions.HasOption('declare-enums-as') then begin
+    Val('goEnumAs' + FCmdOptions.OptionValue('declare-enums-as'), EnumImpl, ErrorCode);
+    if ErrorCode > 0 then begin
+      WriteLn('Invalid enum declaration type: "', FCmdOptions.OptionValue('declare-enums-as'), '"');
+      Terminate;
+    end;
+    Include(FOptions, EnumImpl);
+  end;
 
   VerifyOptions;
 
