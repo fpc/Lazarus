@@ -4062,7 +4062,7 @@ begin
       if AnUnitInfo.IsVirtual then begin
         if (sfSaveToTestDir in Flags) then
           Include(SaveFileFlags,sfSaveToTestDir)
-        else
+        else if not (sfSaveNonProjectFiles in Flags) then
           continue;
       end;
     end;

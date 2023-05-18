@@ -5775,7 +5775,7 @@ begin
     exit(mrAbort);
   end;
   if CurResult<>mrOk then Result:=mrCancel;
-  CurResult:=DoSaveProject(Flags);
+  CurResult:=DoSaveProject(Flags+[sfSaveNonProjectFiles]);
   if CurResult<>mrOK then begin
     if ConsoleVerbosity>0 then
       debugln(['Error: (lazarus) [TMainIDE.DoSaveAll] DoSaveProject failed']);
