@@ -214,6 +214,11 @@ msgctxt "fperrormessages.msgfperrtypenotindexable"
 msgid "The value has no index"
 msgstr "Значение не имеет индекса"
 
+#: fperrormessages.msgfpinternalerr
+#, object-pascal-format
+msgid "Internal error: %1:s"
+msgstr ""
+
 #: fperrormessages.msgfpinternalerrcannotreadinvalidmem
 msgid "Internal error: Missing data location"
 msgstr "Внутренняя ошибка: неизвестно расположение данных"

@@ -1182,6 +1182,9 @@ begin
       exit;
     end;
 
+    if (ResValue <> nil) and (ResValue.Kind = skAddress) then
+      ADispFormat := wdfMemDump;
+
     if (FWatchValue <> nil) and (ResValue <> nil) and
        (ADispFormat <> wdfMemDump)   // TODO
     then begin

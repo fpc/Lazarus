@@ -17,6 +17,7 @@ resourcestring
   drsConverterNormalizeVariant = 'Convert variant to value type';
   drsRunAllThreadsWhileEval = 'Run all threads while evaluating';
 
+  LazInternalErr                           = 'Internal error: %1:s';
 
   LazErrSymbolNotFound_p                   = 'Identifier not found: "%1:s"%2:s';
   LazErrIndexOutOfRange                    = 'Index out of range: %1:d';

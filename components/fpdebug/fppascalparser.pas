@@ -3787,6 +3787,7 @@ end;
 function TFpPascalExpressionPartOperatorDeRef.DoGetResultValue: TFpValue;
 var
   tmp: TFpValue;
+  addr: TFpDbgMemLocation;
 begin
   Result := nil;
   if Count <> 1 then exit;
@@ -3801,20 +3802,38 @@ begin
   end
   else
   if tmp.Kind = skPointer then begin
-    if (svfDataAddress in tmp.FieldFlags) and (IsReadableLoc(tmp.DerefAddress)) and // TODO, what if Not readable addr
-       (tmp.TypeInfo <> nil) //and (tmp.TypeInfo.TypeInfo <> nil)
-    then begin
-      Result := tmp.Member[0];
-      if Result <> nil then
+    if (svfDataAddress in tmp.FieldFlags) then begin
+      addr := tmp.DerefAddress;
+      if not IsAddress(addr) then begin
+        SetErrorWithPos(fpErrCannotDeref_p, [Items[0].GetText(MAX_ERR_EXPR_QUOTE_LEN)]);
+      end
+      else
+      if tmp.TypeInfo <> nil then begin
+        Result := tmp.Member[0];
+        if Result = nil then begin
+          SetErrorWithPos(fpErrCannotDeref_p, [Items[0].GetText(MAX_ERR_EXPR_QUOTE_LEN)]);
+          SetError(fpInternalErr, [], Expression.Error); // mark as internal error
+        end
+        else
+          {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
+      end
+      else begin
+        Result := TFpValueConstAddress.Create(addr);
         {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
-
+      end;
     end;
+  end
+  else
+  if tmp is TFpValueConstNumber then begin
+    addr := TargetLoc(tmp.AsCardinal);
+    Result := TFpValueConstAddress.Create(addr);
+    {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
   end
   //if tmp.Kind = skArray then // dynarray
   else
   begin
     Result := nil;
-    SetErrorWithPos(fpErrCannotDeref_p, [GetText]);
+    SetErrorWithPos(fpErrCannotDeref_p, [Items[0].GetText(MAX_ERR_EXPR_QUOTE_LEN)]);
   end;
 end;
 

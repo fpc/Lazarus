@@ -29,6 +29,8 @@ resourcestring
   MsgfpErrCannotCastToPointer_p              = 'Can''t cast value to pointer ''%1:s''%2:s';
   MsgfpErrCannotDeref_p                      = 'Can''t dereference expression ''%1:s''%2:s';
 
+  MsgfpInternalErr                           = 'Internal error: %1:s';
+
   // 100 memreader error
   MsgfpInternalErrfpErrFailedReadMem         = 'Internal error: Failed to read data from memory';
   MsgfpInternalErrCanNotReadInvalidMem       = 'Internal error: Missing data location';
@@ -88,6 +90,8 @@ const
   fpErrExpectedOrdinalVal_p            = TFpErrorCode( 9);
   fpErrCannotCastToPointer_p           = TFpErrorCode(10);
   fpErrCannotDeref_p                   = TFpErrorCode(11);
+
+  fpInternalErr                        = TFpErrorCode( 99);
 
   // 100 memreader error
   fpInternalErrFailedReadMem           = TFpErrorCode(100);
@@ -293,6 +297,7 @@ begin
     fpErrTypeHasNoIndex:                     Result := MsgfpErrTypeHasNoIndex;
     fpErrChangeVariableNotSupported:         Result := MsgfpErrChangeVariableNotSupported;
 
+    fpInternalErr:                     Result := MsgfpInternalErr;
     fpInternalErrCanNotReadInvalidMem: Result := MsgfpInternalErrCanNotReadInvalidMem;
     fpErrReadMemSizeLimit:             Result := MsgfpErrReadMemSizeLimit;
     fpInternalErrFailedReadMem:        Result := MsgfpInternalErrfpErrFailedReadMem;

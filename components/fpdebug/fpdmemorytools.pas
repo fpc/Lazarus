@@ -469,6 +469,7 @@ function ConstDerefLoc(AValue: QWord): TFpDbgMemLocation; inline;
 function AddBitOffset(const AnAddr: TFpDbgMemLocation; ABitOffset: Int64): TFpDbgMemLocation; inline;
 
 function IsTargetAddr(const ALocation: TFpDbgMemLocation): Boolean; inline;
+function IsAddress(const ALocation: TFpDbgMemLocation): Boolean; inline;
 function IsConstData(const ALocation: TFpDbgMemLocation): Boolean; inline;
 function IsInitializedLoc(const ALocation: TFpDbgMemLocation): Boolean; inline;
 function IsValidLoc(const ALocation: TFpDbgMemLocation): Boolean; inline;     // Valid, Nil allowed
@@ -600,6 +601,11 @@ end;
 function IsTargetAddr(const ALocation: TFpDbgMemLocation): Boolean;
 begin
   Result := ALocation.MType = mlfTargetMem;
+end;
+
+function IsAddress(const ALocation: TFpDbgMemLocation): Boolean;
+begin
+  Result := ALocation.MType in [mlfTargetMem, mlfSelfMem, mlfConstantDeref];
 end;
 
 function IsConstData(const ALocation: TFpDbgMemLocation): Boolean;

@@ -201,6 +201,8 @@ function GetErrorText(AnErrorCode: TFpErrorCode; out AnErrorText: AnsiString
 begin
   Result := True;
   case AnErrorCode of
+    fpInternalErr:                           AnErrorText := LazInternalErr;
+
     fpErrSymbolNotFound_p:                   AnErrorText := LazErrSymbolNotFound_p;
     fpErrIndexOutOfRange:                    AnErrorText := LazErrIndexOutOfRange;
     fpErrTypeNotIndexable:                   AnErrorText := LazErrTypeNotIndexable;
