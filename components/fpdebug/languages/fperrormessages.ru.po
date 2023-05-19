@@ -217,7 +217,7 @@ msgstr "Значение не имеет индекса"
 #: fperrormessages.msgfpinternalerr
 #, object-pascal-format
 msgid "Internal error: %1:s"
-msgstr ""
+msgstr "Внутренняя ошибка: %1:s"
 
 #: fperrormessages.msgfpinternalerrcannotreadinvalidmem
 msgid "Internal error: Missing data location"
