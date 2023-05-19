@@ -214,6 +214,8 @@ const
   bsBDiagonal = FPCanvas.bsBDiagonal;
   bsCross = FPCanvas.bsCross;
   bsDiagCross = FPCanvas.bsDiagCross;
+  bsImage = FPCanvas.bsImage;
+  bsPattern = FPCanvas.bsPattern;
 
   {$IFDEF HasFPEndCap}
   pecRound = FPCanvas.pecRound;
