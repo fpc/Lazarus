@@ -505,6 +505,7 @@ type
     procedure SlashContinueProc;
     procedure SpaceProc;
     procedure StringProc;
+    procedure DoubleQuoteProc;
     procedure StringProc_MultiLineDQ;
     procedure SymbolProc;
     function TypeHelpersIsStored: Boolean;
@@ -2827,7 +2828,7 @@ begin
       '%': fProcTable[I] := @BinaryProc;
       '&': fProcTable[I] := @OctalProc;
       #39: fProcTable[I] := @StringProc;
-      '"': fProcTable[I] := @StringProc_MultiLineDQ;
+      '"': fProcTable[I] := @DoubleQuoteProc;
       '0'..'9': fProcTable[I] := @NumberProc;
       'A'..'Z', 'a'..'z', '_':
         fProcTable[I] := @IdentProc;
@@ -3664,20 +3665,23 @@ begin
     FRange := FRange + [rsInProcHeader];
 end;
 
+procedure TSynPasSyn.DoubleQuoteProc;
+begin
+  if (spmsmDoubleQuote in FStringMultilineMode) then begin
+    Inc(Run);
+    StringProc_MultiLineDQ();
+  end
+  else
+    SymbolProc();
+end;
+
 procedure TSynPasSyn.StringProc_MultiLineDQ;
 begin
-  if (not (spmsmDoubleQuote in FStringMultilineMode)) then
-  begin
-    SymbolProc();
-    Exit;
-  end;
-
   fTokenID := tkString;
   fRange := fRange + [rsAnsiMultiDQ];
 
   while (fLine[Run] <> #0) do
   begin
-    Inc(Run);
     if (fLine[Run] = '"') then
     begin
       Inc(Run);
@@ -3687,6 +3691,7 @@ begin
         Break;
       end;
     end;
+    Inc(Run);
   end;
 end;
 
