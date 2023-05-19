@@ -1743,6 +1743,9 @@ DebugLn(DBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
       end;
     end;
 
+    if (ResValue <> nil) and (ResValue.Kind = skAddress) then
+      DispFormat := wdfMemDump;
+
     if (AWatchValue <> nil) and
        (ResValue <> nil) and (not IsError(ResValue.LastError)) and
        (DispFormat <> wdfMemDump) and (AWatchValue.RepeatCount <= 0)  // TODO
