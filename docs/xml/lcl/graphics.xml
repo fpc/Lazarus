@@ -1153,6 +1153,42 @@ degree cross-hatch.
 </seealso>
 </element>
 
+<element name="bsImage">
+<short>
+Represents the user-specified Image (bitmap) brush style.
+</short>
+<descr>
+<p>
+Alias for the TFPBrushStyle.bsImage enumeration value in the FCL. Fills a 
+shape with a user-specified image (bitmap).
+</p>
+</descr>
+<version>
+Added in LCL version 2.4.0.
+</version>
+<seealso>
+<link id="TBrushStyle"/>
+</seealso>
+</element>
+
+<element name="bsPattern">
+<short>
+Represents the user-specified Pattern (bitmap) brush style.
+</short>
+<descr>
+<p>
+Alias for the TFPBrushStyle.bsPattern enumeration value in the FCL. Fills a 
+shape with a user-specified pattern (bitmap).
+</p>
+</descr>
+<version>
+Added in LCL version 2.4.0.
+</version>
+<seealso>
+<link id="TBrushStyle"/>
+</seealso>
+</element>
+
 <element name="pecRound">
 <short>Represents the Round pen end cap.</short>
 <descr/>
