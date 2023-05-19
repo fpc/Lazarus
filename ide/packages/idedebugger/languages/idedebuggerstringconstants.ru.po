@@ -503,12 +503,18 @@ msgid "Clear"
 msgstr "Очистить"
 
 #: idedebuggerstringconstants.liscoladdress
-msgid "Address"
+#, fuzzy
+#| msgid "Address"
+msgid "Function Address"
 msgstr "Адрес"
 
 #: idedebuggerstringconstants.liscolclass
 msgid "Class"
 msgstr "Класс"
+
+#: idedebuggerstringconstants.liscolinstance
+msgid "Object Instance"
+msgstr ""
 
 #: idedebuggerstringconstants.liscolreturns
 msgid "Returns"

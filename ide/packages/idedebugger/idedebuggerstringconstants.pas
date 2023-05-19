@@ -223,7 +223,8 @@ resourcestring
   lisColClass = 'Class';
   lisColVisibility = 'Visibility';
   lisColReturns = 'Returns';
-  lisColAddress = 'Address';
+  lisColAddress = 'Function Address';
+  lisColInstance = 'Object Instance';
 
   // Breakpoint
   lisHitCount = 'Hitcount';

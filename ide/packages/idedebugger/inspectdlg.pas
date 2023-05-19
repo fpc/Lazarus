@@ -409,7 +409,7 @@ const
   end;
 
 var
-  Res, Fld, Fld2: TWatchResultData;
+  Res, Fld, Fld1, Fld2: TWatchResultData;
   FldCnt, MethCnt, f, m: Integer;
   FldInfo: TWatchResultDataFieldInfo;
   AnchType, s: String;
@@ -446,6 +446,7 @@ begin
     for FldInfo in res do begin
       Fld := FldInfo.Field;
       Fld := Fld.ConvertedRes;
+      Fld1 := ExtractInstanceResFromMethod(Fld);
       Fld2 := ExtractProcResFromMethod(Fld);
 
       if (MethCnt > 0) and
@@ -476,8 +477,25 @@ begin
 
         if Fld2 = nil then Fld2 := Fld;
         if Fld2 <> nil
-        then FGridMethods.Cells[3,m] := IntToHex(Fld2.AsQWord, 16)
-        else FGridMethods.Cells[3,m] := '';
+        then begin
+          if Fld2.AsQWord = 0 then
+            FGridMethods.Cells[3,m] := 'nil'
+          else
+            FGridMethods.Cells[3,m] := IntToHex(Fld2.AsQWord, 16);
+        end
+        else
+          FGridMethods.Cells[3,m] := '';
+
+        FGridMethods.Cells[4,m] := '';
+        if Fld1 <> nil then begin
+          if Fld1.DataAddress = 0 then
+            FGridMethods.Cells[4,m] := 'nil'
+          else
+          if Fld1.DataAddress = Res.DataAddress then
+            FGridMethods.Cells[4,m] := 'self'
+          else
+            FGridMethods.Cells[4,m] := IntToHex(Fld1.DataAddress, 16);
+        end;
 
         inc(m);
       end
@@ -1029,11 +1047,12 @@ begin
       RowCount:=2;
       FixedRows:=1;
       FixedCols:=0;
-      ColCount:=4;
+      ColCount:=5;
       Cols[0].Text:=lisName;
       Cols[1].Text:=dlgEnvType;
       Cols[2].Text:=lisColReturns;
       Cols[3].Text:=lisColAddress;
+      Cols[4].Text:=lisColInstance;
       Color:=clBtnFace;
     end;
   FGridMethods.RowCount:=1;
