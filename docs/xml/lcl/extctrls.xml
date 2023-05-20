@@ -4383,8 +4383,8 @@ Ensures that checked radio buttons have their TabStop property set to
 
 <element name="TCustomRadioGroup.UpdateInternalObjectList">
 <short>
-Calls the UpdateItems method to add or remove radio buttons for the grouped 
-control.
+Calls the private UpdateItems method to add or remove radio buttons for the 
+grouped control.
 </short>
 <descr>
 <p>
@@ -4563,6 +4563,38 @@ when a new value is assigned to the ItemIndex property.
 </p>
 </descr>
 <seealso/>
+</element>
+
+<element name="TCustomRadioGroup.Notification">
+<short>
+Handles the notification for a components inserted into or deleted from the 
+control.
+</short>
+<descr>
+<p>
+<var>Notification</var> is an overridden method in 
+<var>TCustomRadioGroup</var>. It calls the inherited method on entry to handle 
+notifications for pop-up menus, actions, or control references in AnchorSides. 
+In TCustomRadioGroup, it maintains the internal list of TRadioButton instances 
+when a radio button is removed from the control.
+</p>
+</descr>
+<version>
+Added in LCL version 2.4.0.
+</version>
+<seealso>
+<link id="#lcl.controls.TControl.Notification"/>
+</seealso>
+</element>
+<element name="TCustomRadioGroup.Notification.AComponent">
+<short>
+Component added to or removed from the control instance.
+</short>
+</element>
+<element name="TCustomRadioGroup.Notification.Operation">
+<short>
+Operation performed for the component.
+</short>
 </element>
 
 <element name="TCustomRadioGroup.Create">
@@ -5129,7 +5161,7 @@ Ordinal position for the check box clicked in the grouped control.
 
 <element name="TCustomCheckGroup.ItemKeyDown">
 <short>
-Implements the OnKeyDown event handler assigned to checkboxes in the control.
+Implements the OnKeyDown event handler assigned to check boxes in the control.
 </short>
 <descr/>
 <seealso/>
@@ -5146,7 +5178,7 @@ Implements the OnKeyDown event handler assigned to checkboxes in the control.
 
 <element name="TCustomCheckGroup.ItemKeyUp">
 <short>
-Implements the OnKeyUp event handler assigned to checkboxes in the control.
+Implements the OnKeyUp event handler assigned to check boxes in the control.
 </short>
 <descr/>
 <seealso/>
@@ -5163,7 +5195,7 @@ Implements the OnKeyUp event handler assigned to checkboxes in the control.
 
 <element name="TCustomCheckGroup.ItemKeyPress">
 <short>
-Implements the OnKeyPress event handler assigned to checkboxes in the control.
+Implements the OnKeyPress event handler assigned to check boxes in the control.
 </short>
 <descr/>
 <seealso/>
@@ -5177,7 +5209,7 @@ Implements the OnKeyPress event handler assigned to checkboxes in the control.
 
 <element name="TCustomCheckGroup.ItemUTF8KeyPress">
 <short>
-Implements the OnUTF8KeyPress event handler assigned to checkboxes in the 
+Implements the OnUTF8KeyPress event handler assigned to check boxes in the 
 control.
 </short>
 <descr/>
@@ -5224,7 +5256,7 @@ Items in the control.
 <short>Ordinal position for the check box updated in the method.</short>
 </element>
 <element name="TCustomCheckGroup.SetChecked.AValue">
-<short>New value for the checkbox.</short>
+<short>New value for the check box.</short>
 </element>
 
 <element name="TCustomCheckGroup.SetCheckEnabled">
@@ -5238,7 +5270,7 @@ Items in the control.
 <short>Ordinal position for the check box updated in the method.</short>
 </element>
 <element name="TCustomCheckGroup.SetCheckEnabled.AValue">
-<short>New value for the enable state in the checkbox.</short>
+<short>New value for the enable state in the check box.</short>
 </element>
 
 <element name="TCustomCheckGroup.SetColumnLayout">
@@ -5254,7 +5286,7 @@ Items in the control.
 
 <element name="TCustomCheckGroup.UpdateItems">
 <short>
-Adds or removes checkboxes for the Items defined for the control.
+Adds or removes check boxes for the Items defined for the control.
 </short>
 <descr/>
 <seealso>
@@ -5279,8 +5311,8 @@ Updates the control when the Items property is changed.
 </short>
 <descr>
 <p>
-Calls <var>UpdateItems</var> to refresh the checkboxes displayed for the 
-grouped edit control.
+Calls the private <var>UpdateItems</var> method to refresh the check boxes 
+displayed for the grouped edit control.
 </p>
 </descr>
 <seealso/>
@@ -5389,6 +5421,38 @@ mechanism.
 </element>
 
 <element name="TCustomCheckGroup.DoOnResize" link="#lcl.controls.TControl.DoOnResize"/>
+
+<element name="TCustomCheckGroup.Notification">
+<short>
+Handles the notification for a components inserted into or deleted from the 
+control.
+</short>
+<descr>
+<p>
+<var>Notification</var> is an overridden method in 
+<var>TCustomCheckGroup</var>. It calls the inherited method on entry to handle 
+notifications for pop-up menus, actions, or control references in AnchorSides. 
+In TCustomCheckGroup, it maintains the internal list of TCheckBox instances 
+when a check box is removed from the control.
+</p>
+</descr>
+<version>
+Added in LCL version 2.4.0.
+</version>
+<seealso>
+<link id="#lcl.controls.TControl.Notification"/>
+</seealso>
+</element>
+<element name="TCustomCheckGroup.Notification.AComponent">
+<short>
+Component added to or removed from the control instance.
+</short>
+</element>
+<element name="TCustomCheckGroup.Notification.Operation">
+<short>
+Operation performed for the component.
+</short>
+</element>
 
 <element name="TCustomCheckGroup.Create">
 <short>Constructor for the class instance.</short>
@@ -10568,9 +10632,9 @@ arguments for the method.
 <p>
 <var>GetControlInfo</var> is called from the InsertControl method when the 
 specified control is positioned, aligned, and added to the internal 
-TCrtlBands container for the control bar. GetControlInfo signals the 
+TCtrlBands container for the control bar. GetControlInfo signals the 
 OnBandInfo event handler (when assigned) to store information about the 
-bounds rectangle, width, and number of rows needed for the control  / band. 
+bounds rectangle, width, and number of rows needed for the control / band. 
 Values are returned in the Insets, PreferredSize, and RowCount variable 
 arguments.
 </p>
