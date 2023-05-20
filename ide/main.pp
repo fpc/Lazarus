@@ -3363,7 +3363,7 @@ end;
 
 procedure TMainIDE.mnuSaveAllClicked(Sender: TObject);
 begin
-  DoSaveAll([sfCheckAmbiguousFiles]);
+  DoSaveAll([sfCheckAmbiguousFiles,sfSaveNonProjectFiles]);
 end;
 
 procedure TMainIDE.mnuExportHtml(Sender: TObject);
@@ -3550,7 +3550,7 @@ begin
     end;
   ecOpen:                     mnuOpenClicked(Self);
   ecOpenUnit:                 DoUseUnitDlg(udOpenUnit);
-  ecSaveAll:                  DoSaveAll([sfCheckAmbiguousFiles]);
+  ecSaveAll:                  DoSaveAll([sfCheckAmbiguousFiles,sfSaveNonProjectFiles]);
   ecQuit:                     mnuQuitClicked(Self);
   ecRun:
     begin
@@ -5775,7 +5775,7 @@ begin
     exit(mrAbort);
   end;
   if CurResult<>mrOk then Result:=mrCancel;
-  CurResult:=DoSaveProject(Flags+[sfSaveNonProjectFiles]);
+  CurResult:=DoSaveProject(Flags);
   if CurResult<>mrOK then begin
     if ConsoleVerbosity>0 then
       debugln(['Error: (lazarus) [TMainIDE.DoSaveAll] DoSaveProject failed']);

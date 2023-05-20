@@ -4267,7 +4267,7 @@ begin
         mrYes: SaveEditorFile(Ed, [sfCheckAmbiguousFiles]);
         mrNo: ; // don't save
         mrAll: begin
-            MainIDE.DoSaveAll([]);
+            MainIDE.DoSaveAll([sfSaveNonProjectFiles]);
             break;
           end;
         mrIgnore: break; // don't save anymore

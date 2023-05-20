@@ -10846,7 +10846,7 @@ function TSourceEditorManager.MacroFuncSaveAll(const s: string;
   const Data: PtrInt; var Abort: boolean): string;
 begin
   Result:='';
-  Abort:=LazarusIDE.DoSaveAll([sfCheckAmbiguousFiles])<>mrOk;
+  Abort:=LazarusIDE.DoSaveAll([sfCheckAmbiguousFiles,sfSaveNonProjectFiles])<>mrOk;
 end;
 
 procedure TSourceEditorManager.InitMacros(AMacroList: TTransferMacroListIntf);
