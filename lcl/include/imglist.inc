@@ -599,7 +599,7 @@ begin
   if Index >= 0 then
   begin
     Image.DataSize := FWidth * FHeight * SizeOf(FData[0]);
-    Image.Data := @FData[Index * FWidth * FHeight];
+    Image.Data := pointer(@FData[Index * FWidth * FHeight]);
   end;
 end;
 

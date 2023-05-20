@@ -362,7 +362,7 @@ var
     Points[2].X := ARect.Left + 2;
     Points[2].y := y;
     Points[3] := Points[0];
-    Polygon(DC, @Points, 4, False);
+    Polygon(DC, @Points[Low(Points)], 4, False);
   end;
   procedure DrawRightArrow(ARect: TRect);
   var y, h: Integer;
@@ -377,7 +377,7 @@ var
     Points[2].X := ARect.Right - 2;
     Points[2].y := y;
     Points[3] := Points[0];
-    Polygon(DC, @Points, 4, False);
+    Polygon(DC, @Points[Low(Points)], 4, False);
   end;
   procedure DrawTopArrow(ARect: TRect);
   var x, h: Integer;
@@ -392,7 +392,7 @@ var
     Points[2].Y	 := ARect.Top + 2;
     Points[2].X := x;
     Points[3] := Points[0];
-    Polygon(DC, @Points, 4, False);
+    Polygon(DC, @Points[Low(Points)], 4, False);
   end;
   procedure DrawBottomArrow(ARect: TRect);
   var x, h: Integer;
@@ -407,7 +407,7 @@ var
     Points[2].Y := ARect.Bottom - 2;
     Points[2].X := X;
     Points[3] := Points[0];
-    Polygon(DC, @Points, 4, False);
+    Polygon(DC, @Points[Low(Points)], 4, False);
   end;
 
 begin

@@ -204,11 +204,11 @@ const
    np := source.n_points;
    nc := source.n_contours;
 
-   target.org   := @source.org^[np];
-   target.cur   := @source.cur^[np];
-   target.flags := @source.flags^[np];
+   target.org   := pointer(@source.org^[np]);
+   target.cur   := pointer(@source.cur^[np]);
+   target.flags := pointer(@source.flags^[np]);
 
-   target.conEnds := @source.conEnds^[nc];
+   target.conEnds := pointer(@source.conEnds^[nc]);
 
    target.n_points   := 0;
    target.n_contours := 0;

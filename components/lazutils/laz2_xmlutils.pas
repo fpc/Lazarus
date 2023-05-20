@@ -218,7 +218,7 @@ begin
   if Xml11 then
     Pages := Xml11NamePages
   else
-    Pages := @NamePages;
+    Pages := pointer(@NamePages);
 
   I := 0;
   if (Len = 0) or not ((Byte(Value[I]) in NamingBitmap[Pages^[hi(Word(Value[I]))]]) or
@@ -246,7 +246,7 @@ begin
   if Xml11 then
     Pages := Xml11NamePages
   else
-    Pages := @NamePages;
+    Pages := pointer(@NamePages);
   Result := False;
   if Value = '' then
     Exit;
@@ -278,7 +278,7 @@ begin
   if Xml11 then
     Pages := Xml11NamePages
   else
-    Pages := @NamePages;
+    Pages := pointer(@NamePages);
   Result := False;
   if Value = '' then
     Exit;
@@ -302,7 +302,7 @@ begin
   if Xml11 then
     Pages := Xml11NamePages
   else
-    Pages := @NamePages;
+    Pages := pointer(@NamePages);
   I := 1;
   Result := False;
   if Value = '' then

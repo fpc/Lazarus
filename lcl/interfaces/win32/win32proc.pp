@@ -1384,7 +1384,7 @@ begin
   tmp := nil;
   r := Windows.FormatMessage(
     FORMAT_MESSAGE_ALLOCATE_BUFFER or FORMAT_MESSAGE_FROM_SYSTEM or FORMAT_MESSAGE_ARGUMENT_ARRAY,
-    nil, AErrorCode, LANG_NEUTRAL, @tmp, 0, nil);
+    nil, AErrorCode, LANG_NEUTRAL, pointer(@tmp), 0, nil);
 
   if r = 0 then Exit('');
 
@@ -1610,7 +1610,7 @@ function WndClassName(Wnd: HWND): String; inline;
 var
   winClassName: array[0..19] of char;
 begin
-  GetClassName(Wnd, @winClassName, 20);
+  GetClassName(Wnd, @winClassName[low(winClassName)], Length(winClassName));
   Result := winClassName;
 end;
 
@@ -1618,7 +1618,7 @@ function WndText(Wnd: HWND): String; inline;
 var
   winText: array[0..255] of char;
 begin
-  GetWindowText(Wnd, @winText, 256);
+  GetWindowText(Wnd, @winText[low(winText)], Length(winText));
   Result := winText;
 end;
 
