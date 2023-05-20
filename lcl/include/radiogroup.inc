@@ -228,10 +228,7 @@ begin
         ARadioButton := TRadioButton(FButtonList[i]);
         ARadioButton.Checked := (i = FItemIndex);
         ARadioButton.Visible := true;
-        ARadioButton.Name := '';
       end;
-      for i:=0 to FButtonList.Count-1 do
-        TRadioButton(FButtonList[i]).Name:='RadioButton'+IntToStr(i);
 
       //FHiddenButton must remain the last item in Controls[], so that Controls[] is in sync with Items[]
       Self.RemoveControl(FHiddenButton);
@@ -479,7 +476,6 @@ begin
     if (Idx <> -1) and (Idx < Items.Count) then
     begin
       FButtonList.Delete(Idx);
-      AComponent.Name := '';
       Items.Delete(Idx);
     end;
   end;

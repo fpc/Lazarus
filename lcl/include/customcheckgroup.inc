@@ -249,10 +249,7 @@ begin
     for i:=0 to FItems.Count-1 do begin
       CheckBox:=TCheckBox(FButtonList[i]);
       CheckBox.Caption:=FItems[i];
-      CheckBox.Name := '';
     end;
-    for i:=0 to FButtonList.Count-1 do
-      TCheckBox(FButtonList[i]).Name:='CheckBox'+IntToStr(i);
   finally
     FUpdatingItems:=false;
   end;
@@ -426,7 +423,6 @@ begin
     if (Idx <> -1) and (Idx < Items.Count) then
     begin
       FButtonList.Delete(Idx);
-      AComponent.Name := '';  //otherwise we get duplicate name error in UpdateItems
       Items.Delete(Idx);
     end;
   end;
