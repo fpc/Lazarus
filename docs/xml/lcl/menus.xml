@@ -1454,8 +1454,8 @@ Child menu item.
 <descr>
 <p>
 Calls GetImageList to get the Images for the TMenu instance that owns the 
-menu item, or the SubImages from the Parent menu item. AValue indicates the 
-position in the image list used as the property value.
+menu item, or the SubMenuImages from the Parent menu item. AValue indicates 
+the position in the image list used as the property value.
 </p>
 <p>
 If an image list could not be located, no additional actions are performed in 
@@ -2848,7 +2848,7 @@ the unchecked state - even when Checked is set to <b>True</b>.
 <link id="TMenuItem.IsCheckItem"/>
 <link id="TMenuItem.Click"/>
 <link id="TMenuItem.ImageIndex"/>
-<link id="TMenuItem.SubImages"/>
+<link id="TMenuItem.SubMenuImages"/>
 <link id="TMenu.Images"/>
 </seealso>
 </element>
