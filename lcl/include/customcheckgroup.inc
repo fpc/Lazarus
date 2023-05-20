@@ -53,13 +53,22 @@ var
   b: TByteDynArray;
   i: Integer;
 begin
-  SaveCheckStates(b);
-
-  inherited Delete(AIndex);
-
-  for i:= AIndex to High(b)-1 do b[i] := b[i+1];
-  SetLength(b, Length(b)-1);
-  RestoreCheckStates(b);
+  if (FCheckgroup.FButtonList.Count < FCheckgroup.Items.Count) then
+    //CheckBox has already been removed from FButtonList (via Components[x].Free)
+    //All necessesary info for the checkboxes are already stored in FButtonList
+    //and FButtonList won't be altered in FCheckGroup.UpdateItems,
+    //so no need for SaveCheckStates/RestoreCheckStates.
+    //(Also in this scenario Items and FButtonList are out of sysnc, so SaveCheckStates
+    //will cause an EListError.)
+    //Issue #40261
+    inherited Delete(AIndex)
+  else begin
+    SaveCheckStates(b);
+    inherited Delete(AIndex);
+    for i:= AIndex to High(b)-1 do b[i] := b[i+1];
+    SetLength(b, Length(b)-1);
+    RestoreCheckStates(b);
+  end;
 end;
 
 procedure TCheckGroupStringList.InsertItem(Index: Integer; const S: string; O: TObject);
@@ -95,6 +104,7 @@ procedure TCheckGroupStringList.SaveCheckStates(out AStates: TByteDynArray);
 var
   i: Integer;
 begin
+  Assert(FCheckgroup.FButtonList.Count = FCheckgroup.Items.Count); //see TCheckGroupStringList.Delete()
   SetLength(AStates, FCheckgroup.Items.Count);
   for i:=0 to FCheckgroup.Items.Count-1 do begin
     AStates[i] := 0;
@@ -218,7 +228,8 @@ begin
     while (FButtonList.Count<FItems.Count) do begin
       CheckBox := TCheckBox.Create(Self);
       with CheckBox do begin
-        Name:='CheckBox'+IntToStr(FButtonList.Count);
+        //Don't set name here, it may already exist if Components[x].Free was used
+        //Issue #40261
         AutoSize := False;
         BorderSpacing.CellAlignHorizontal:=ccaLeftTop;
         BorderSpacing.CellAlignVertical:=ccaCenter;
@@ -233,10 +244,15 @@ begin
       end;
       FButtonList.Add(CheckBox);
     end;
+
+
     for i:=0 to FItems.Count-1 do begin
       CheckBox:=TCheckBox(FButtonList[i]);
       CheckBox.Caption:=FItems[i];
+      CheckBox.Name := '';
     end;
+    for i:=0 to FButtonList.Count-1 do
+      TCheckBox(FButtonList[i]).Name:='CheckBox'+IntToStr(i);
   finally
     FUpdatingItems:=false;
   end;
@@ -393,6 +409,27 @@ end;
 procedure TCustomCheckGroup.DoOnResize;
 begin
   inherited DoOnResize;
+end;
+
+procedure TCustomCheckGroup.Notification(AComponent: TComponent;
+  Operation: TOperation);
+var
+  Idx: Integer;
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (Assigned(FButtonList)) then
+  begin
+    Idx := FButtonList.IndexOf(AComponent);
+    //if triggered by Items.Delete, then
+    // * it will always be the last CheckBox('s) that will be removed
+    // * Items.Count will already have been decremented, so Idx will be equal to Items.Count
+    if (Idx <> -1) and (Idx < Items.Count) then
+    begin
+      FButtonList.Delete(Idx);
+      AComponent.Name := '';  //otherwise we get duplicate name error in UpdateItems
+      Items.Delete(Idx);
+    end;
+  end;
 end;
 
 function TCustomCheckGroup.Rows: integer;

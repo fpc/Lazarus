@@ -180,7 +180,7 @@ begin
       ARadioButton := TRadioButton.Create(Self);
       with ARadioButton do
       begin
-        Name := 'RadioButton'+IntToStr(FButtonList.Count);
+        //Don't set Name here, it may already exist if Components[x].Free was used. Issue #40261
         OnClick := @Self.Clicked;
         OnChange := @Self.Changed;
         OnEnter := @Self.ItemEnter;
@@ -228,7 +228,11 @@ begin
         ARadioButton := TRadioButton(FButtonList[i]);
         ARadioButton.Checked := (i = FItemIndex);
         ARadioButton.Visible := true;
+        ARadioButton.Name := '';
       end;
+      for i:=0 to FButtonList.Count-1 do
+        TRadioButton(FButtonList[i]).Name:='RadioButton'+IntToStr(i);
+
       //FHiddenButton must remain the last item in Controls[], so that Controls[] is in sync with Items[]
       Self.RemoveControl(FHiddenButton);
       Self.InsertControl(FHiddenButton);
@@ -460,6 +464,26 @@ begin
   if Assigned (FOnSelectionChanged) then FOnSelectionChanged(Self);
 end;
 
+procedure TCustomRadioGroup.Notification(AComponent: TComponent;
+  Operation: TOperation);
+var
+  Idx: Integer;
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (Assigned(FButtonList)) then
+  begin
+    Idx := FButtonList.IndexOf(AComponent);
+    //if triggered by Items.Delete, then
+    // * it will always be the last radiobutton(s) that will be removed
+    // * Items.Count will already have been decremented, so Idx will be equal to Items.Count
+    if (Idx <> -1) and (Idx < Items.Count) then
+    begin
+      FButtonList.Delete(Idx);
+      AComponent.Name := '';
+      Items.Delete(Idx);
+    end;
+  end;
+end;
 {------------------------------------------------------------------------------
   Method: TCustomRadioGroup.CanModify
   Params:  none

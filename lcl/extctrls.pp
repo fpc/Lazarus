@@ -730,6 +730,9 @@ type
     procedure SetItemIndex(Value: integer);
     function GetItemIndex: integer;
     procedure CheckItemIndexChanged; virtual;
+
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -853,6 +856,9 @@ type
     procedure WriteData(Stream: TStream);
     procedure Loaded; override;
     procedure DoOnResize; override;
+
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
