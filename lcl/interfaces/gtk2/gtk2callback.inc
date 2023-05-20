@@ -1105,7 +1105,7 @@ var
   {$IFDEF HasX}
   NetAtom: TGdkAtom;
   AtomType: TGdkAtom;
-  AIndex, ADesktop: pguint;
+  AIndex, ADesktop: Pguchar;
   AFormat: gint;
   ALength: gint;
   {$ENDIF}
@@ -1486,7 +1486,7 @@ begin
 
   if (Event^.is_hint <> 0) and (Event^._type = GDK_MOTION_NOTIFY) then
     GTKGetDevicePointer(Event^.window, Event^.device,
-      @Event^.x, @Event^.y, @Event^.state);
+      @Event^.x, @Event^.y, PGdkModifierType(@Event^.state));
 
   {$IFDEF VerboseMouseBugfix}
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseMotion);
@@ -1555,7 +1555,7 @@ begin
 
   if (Event^.is_hint <> 0) and (Event^._type = GDK_MOTION_NOTIFY) then
     GTKGetDevicePointer(Event^.window, Event^.device,
-      @Event^.x, @Event^.y, @Event^.state);
+      @Event^.x, @Event^.y, PGdkModifierType(@Event^.state));
 
   {$IFDEF VerboseMouseBugfix}
   DebugLn('[GTKMotionNotifyAfter] ',

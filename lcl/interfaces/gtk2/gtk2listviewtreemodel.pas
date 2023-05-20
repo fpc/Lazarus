@@ -138,7 +138,7 @@ var
   P: PPointer;
 begin
   // Do not change the order here!!
-  P := @g_iface^.row_changed;
+  P := PPointer(@g_iface^.row_changed);
 
   P^ := @TLCLListViewModel.row_changed;           Inc(P);
   P^ := @TLCLListViewModel.row_inserted;          Inc(P);

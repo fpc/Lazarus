@@ -1,5 +1,6 @@
 unit FpImgReaderMachoFile;
 
+{$T-} // TODO: Fix compilation with -Sy.
 {$mode objfpc}{$H+}
 
 interface

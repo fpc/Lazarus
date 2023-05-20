@@ -572,7 +572,7 @@ implementation
 
 function TLazListClassesInternalMem.GetDataPointer: PByte;
 begin
-  Result := @(FMem^.Data);
+  Result := PByte(@(FMem^.Data));
 end;
 
 function TLazListClassesInternalMem.GetFirstItemIndex: Integer;

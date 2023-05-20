@@ -467,7 +467,9 @@ begin
 {$ifdef UseStatusIcon}
   if FStatusIcon <> nil then
   begin
+{$T-} // PPGdkScreen = PGdkScreen; in FPC libs. @AScreen should be OK.
     gtk_status_icon_get_geometry(FStatusIcon, @AScreen, @AArea, @AOrientation);
+{$T+}
     Result.x := AArea.x;
     Result.y := AArea.y;
   end

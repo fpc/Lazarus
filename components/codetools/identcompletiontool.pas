@@ -4424,7 +4424,7 @@ begin
     StartPos:=ANode.StartPos;
     EndPos:=StartPos+20;
     if EndPos>ANode.EndPos then EndPos:=ANode.EndPos;
-    Result:=crc32(0, @Tool.Src[StartPos], EndPos-StartPos);
+    Result:=crc32(0, PByte(@Tool.Src[StartPos]), EndPos-StartPos);
   end else
     Result:=0;
 end;

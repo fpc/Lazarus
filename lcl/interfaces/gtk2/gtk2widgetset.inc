@@ -3623,7 +3623,7 @@ begin
     Exit;
   end;
 
-  gdk_drawable_get_size(AAlpha, @W, @H);
+  gdk_drawable_get_size(AAlpha, Pgint(@W), Pgint(@H));
   D := gdk_drawable_get_depth(AAlpha);
   if (D <> 1) and (D <> 8)
   then begin
@@ -4475,12 +4475,11 @@ var
   ScreenNum: Integer;
   RootWin: TWindow;
   WMAtom: TAtom;
-
   typeReturned: TAtom;
-  formatReturned: Integer;
-  nitemsReturned: PtrInt;
-  unused: PtrInt;
-  WidgetIndex, DesktopIndex: Pointer;
+  formatReturned: cint;
+  nitemsReturned: culong;
+  unused: culong;
+  WidgetIndex, DesktopIndex: Pcuchar;
   WidgetWin: TWindow;
 begin
   Result := True;
@@ -4503,8 +4502,7 @@ begin
        @typeReturned, @formatReturned, @nitemsReturned,
        @unused, @WidgetIndex) = Success then
     begin
-      if (typeReturned = XA_CARDINAL) and (formatReturned = 32) and
-        (WidgetIndex <> nil) then
+      if (typeReturned = XA_CARDINAL) and (formatReturned = 32) and (WidgetIndex <> nil) then
       begin
         // now get current active desktop index
         WMAtom := XInternAtom(Display,'_NET_CURRENT_DESKTOP', True);
@@ -4512,9 +4510,8 @@ begin
           XA_CARDINAL, @typeReturned, @formatReturned, @nitemsReturned,
           @unused, @DesktopIndex) = Success then
         begin
-          if (typeReturned = XA_CARDINAL) and (formatReturned = 32) and
-            (DesktopIndex <> nil) then
-            Result := PtrUint(WidgetIndex^) = PtrUint(DesktopIndex^);
+          if (typeReturned = XA_CARDINAL) and (formatReturned = 32) and (DesktopIndex <> nil) then
+            Result := WidgetIndex^ = DesktopIndex^;
         end;
       end;
 
@@ -4536,12 +4533,11 @@ var
   RootWin: TWindow;
   WMAtom: TAtom;
   WMWindow: TWindow;
-
   typeReturned: TAtom;
-  formatReturned: Integer;
-  nitemsReturned: PtrInt;
-  unused: PtrInt;
-  data: Pointer;
+  formatReturned: cint;
+  nitemsReturned: culong;
+  unused: culong;
+  data: Pcuchar;
   // Screen: PGdkScreen;
 begin
   Result := '';
@@ -4570,7 +4566,7 @@ begin
             (Data <> nil) then
           begin
             // this is our window manager window
-            WMWindow := TWindow(Data^);
+            WMWindow := PWindow(Data)^;
             XFree(Data);
             Data := nil;
           end;
@@ -4583,7 +4579,7 @@ begin
             @unused, @data) = Success then
           begin
             if (typeReturned = WMAtom) and (formatReturned = 8) then
-              Result := LowerCase(StrPas(Data));
+              Result := LowerCase(StrPas(PWideChar(Data)));
             if Data <> nil then
               XFree(Data);
             Data := nil;
@@ -4599,9 +4595,9 @@ var
   RootWin, ResultWindow: TWindow;
   WMAtom: TAtom;
   ActualTypeReturn: TAtom;
-  ActualFormatReturn: LongInt;
-  NItemsReturn, BytesAfterReturn: Cardinal;
-  Ptr: PByte;
+  ActualFormatReturn: cint;
+  NItemsReturn, BytesAfterReturn: culong;
+  Ptr: Pcuchar;
   Valid: Boolean;
 begin
   Result := 0;
@@ -4634,10 +4630,10 @@ var
   X11Window: TWindow;
   WMAtom: TAtom;
   typeReturned: TAtom;
-  formatReturned: Integer;
-  nitemsReturned: PtrInt;
-  unused: PtrInt;
-  data: Pointer;
+  formatReturned: cint;
+  nitemsReturned: culong;
+  unused: culong;
+  data: Pcuchar;
 begin
   Result := False;
   Display := gdk_x11_get_default_xdisplay;
@@ -4681,7 +4677,7 @@ end;
 procedure TGtk2WidgetSet.HideAllHints;
 var
   TopList, List: PGList;
-  Window: PGTKWindow;
+  Window: gpointer;
 begin
   TopList := gdk_window_get_toplevels;
   List := TopList;
@@ -4689,16 +4685,16 @@ begin
   begin
     if (List^.Data <> nil) then
     begin
-      gdk_window_get_user_data(PGDKWindow(List^.Data), Pgpointer(@Window));
+      gdk_window_get_user_data(PGDKWindow(List^.Data), @Window);
       if GDK_IS_WINDOW(PGDKWindow(List^.Data)) then
       begin
         if gtk_is_window(Window) then
         begin
-          if g_object_get_data(PGObject(Window),'lclhintwindow') <> nil then
+          if g_object_get_data(Window,'lclhintwindow') <> nil then
           begin
             if gdk_window_is_visible(PGDKWindow(List^.Data)) then
             begin
-              g_object_set_data(PGObject(Window),'lclneedrestorevisible',Pointer(1));
+              g_object_set_data(Window,'lclneedrestorevisible',Pointer(1));
               gdk_window_hide(PGDKWindow(List^.Data));
             end;
           end;
@@ -6618,7 +6614,7 @@ begin
     {$ENDIF}
     if (ALeft <= 0) or (ATop <= 0) or (AWidth <= 0) or (AHeight <= 0) then
     begin
-      gdk_screen_get_monitor_geometry(gdk_screen_get_default, 0, @R);
+      gdk_screen_get_monitor_geometry(gdk_screen_get_default, 0, PGdkRectangle(@R));
       aRequisition.width := 75;
       aRequisition.height := 32;
       AAllocation.x := R.CenterPoint.x;

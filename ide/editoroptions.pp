@@ -434,12 +434,13 @@ var
 const
 
   (* When adding new entries, ensure that resourcestrings are re-assigned in InitLocale *)
-  EditorOptionsDividerDefaults: array[TLazSyntaxHighlighter] of
-    TEditorOptionsDividerRecord =
+  EditorOptionsDividerDefaults: array[TLazSyntaxHighlighter] of TEditorOptionsDividerRecord =
     ( (Count: 0; Info: nil), // none
       (Count: 0; Info: nil), // text
+{$T-} // Fix compilation with -Sy. Type mismatch here. PEditorOptionsDividerInfoList <> TEditorOptionsDividerInfo
       (Count: 9; Info: @EditorOptionsDividerInfoPas[0]), // Freepas
       (Count: 9; Info: @EditorOptionsDividerInfoPas[0]), // pas
+{$T+}
       (Count: 0; Info: nil), // lfm
       (Count: 0; Info: nil), // xml
       (Count: 0; Info: nil), // html
@@ -642,9 +643,9 @@ const
       )
     );
 
+{$T-} // Fix compilation with -Sy. Type mismatch here.
   (* When adding new entries, ensure that resourcestrings are re-assigned in InitLocale *)
-  EditorOptionsFoldDefaults: array[TLazSyntaxHighlighter] of
-    TEditorOptionsFoldRecord =
+  EditorOptionsFoldDefaults: array[TLazSyntaxHighlighter] of TEditorOptionsFoldRecord =
     ( (Count:  0; HasMarkup: False; Info: nil), // none
       (Count:  0; HasMarkup: False; Info: nil), // text
       (Count: 27; HasMarkup: True; Info: @EditorOptionsFoldInfoPas[0]), // Freepas
@@ -667,6 +668,7 @@ const
       (Count:  0; HasMarkup: False; Info: nil), // PO
       (Count:  0; HasMarkup: False; Info: nil)  // Pike
     );
+{$T+}
 
 const
   EditorOptsFormatVersion = 13;

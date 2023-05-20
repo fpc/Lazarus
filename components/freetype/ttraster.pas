@@ -37,11 +37,12 @@
  *
  ******************************************************************)
 
-Unit TTRASTER;
+Unit TTRaster;
 
 interface
 
 {$R-} // TODO: Fix out-of-bounds accesses.
+{$T-} // TODO: Fix compilation with -Sy.
 {$I TTCONFIG.INC}
 
 uses
