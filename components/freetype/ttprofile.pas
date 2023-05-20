@@ -1,6 +1,7 @@
 unit TTProfile;
 
 {$R-} // TODO: Fix out-of-bounds accesses.
+{$T-} // TODO: Fix compilation with -Sy.
 {$mode objfpc}{$H+}
 
 interface

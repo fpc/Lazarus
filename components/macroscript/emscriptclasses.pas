@@ -390,7 +390,7 @@ begin
     Result := PPSVariantPointer(res)^.DataDest;
   end
   else
-    Result := @(PPSVariantRecord(res)^.data);
+    Result := PPoint(@(PPSVariantRecord(res)^.data));
 
   if typerec.BaseType <> btRecord then raise TEMScriptBadParamException.Create('Invalid result type for "point(x,y)"');
   if typerec.RealSize <> SizeOf({$IFDEF NeedTPointFix}TPoint2{$ELSE}TPoint{$ENDIF}) then raise TEMScriptBadParamException.Create('Invalid result size for "point(x,y)"');

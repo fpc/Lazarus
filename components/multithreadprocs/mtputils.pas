@@ -61,7 +61,7 @@ var
   Sorter: TParallelSortPointerList;
 begin
   if List.Count<=1 then exit;
-  Sorter:=TParallelSortPointerList.Create(@List.List[0],List.Count,Compare,
+  Sorter:=TParallelSortPointerList.Create(PPointer(@List.List[0]),List.Count,Compare,
                                           MaxThreadCount);
   try
     Sorter.OnSortPart:=OnSortPart;

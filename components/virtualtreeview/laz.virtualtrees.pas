@@ -17308,7 +17308,7 @@ begin
         GetKeyboardState(KeyState);
         // Avoid conversion to control characters. We have captured the control key state already in Shift.
         KeyState[VK_CONTROL] := 0;
-        if ToASCII(Message.CharCode, (Message.KeyData shr 16) and 7, KeyState, @Buffer, 0) > 0 then
+        if ToASCII(Message.CharCode, (Message.KeyData shr 16) and 7, KeyState, PWord(@Buffer), 0) > 0 then
         begin
           case Buffer[0] of
             '*':
@@ -17326,7 +17326,7 @@ begin
         // there is a problem with ToASCII when used in conjunction with dead chars.
         // The article recommends to call ToASCII twice to restore a deleted flag in the key message
         // structure under certain circumstances. It turned out it is best to always call ToASCII twice.
-        ToASCII(Message.CharCode, (Message.KeyData shr 16) and 7, KeyState, @Buffer, 0);
+        ToASCII(Message.CharCode, (Message.KeyData shr 16) and 7, KeyState, PWord(@Buffer), 0);
         {$endif}
         case CharCode of
           VK_F2:

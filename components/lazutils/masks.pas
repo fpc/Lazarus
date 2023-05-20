@@ -15,6 +15,7 @@
 }
 unit Masks;
 
+{$T-} // TODO: Fix compilation with -Sy.
 {$mode objfpc}{$H+}
 {.$define debug_maskcompiled}
 {.$define debug_anycharornone}

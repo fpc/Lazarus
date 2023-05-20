@@ -470,7 +470,7 @@ begin
   FCodeBase := NtHeaders.W32.OptionalHeader.BaseOfCode;
   SectionMax := FFileLoader.LoadMemory(
     DosHeader.e_lfanew +
-    (@NtHeaders.Sys.OptionalHeader - @NtHeaders.Sys) +
+    (Pointer(@NtHeaders.Sys.OptionalHeader) - @NtHeaders.Sys) +
     NtHeaders.Sys.FileHeader.SizeOfOptionalHeader,
     SizeOf(TImageSectionHeader) * NtHeaders.Sys.FileHeader.NumberOfSections,
     SectionHeader
