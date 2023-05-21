@@ -321,7 +321,6 @@ var
   i, xOldItemIndex, xSelStart, xSelEnd: Integer;
 begin
   fFilteredListbox.LockSelectionChange;
-  fFilteredListbox.Items.BeginUpdate;
   try
     if ASelect and fFilteredListbox.MultiSelect then
     begin
@@ -354,7 +353,6 @@ begin
     end;
   finally
     fFilteredListbox.UnlockSelectionChange;
-    fFilteredListbox.Items.EndUpdate;
   end;
 end;
 
