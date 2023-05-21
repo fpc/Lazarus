@@ -16,17 +16,6 @@
 }
 unit LCLVersion;
 
-{ At least 2.4.2 is required, except for wince which supports fpc 2.2.0+ too }
-{$ifdef Wince}
-  {$if defined(ver1) or (FPC_FULLVERSION<20200)}
-    {$fatal Lazarus for WinCE requires at least FPC 2.2.0}
-  {$endif}
-{$else}
-  {$if defined(ver1) or (FPC_FULLVERSION<20402) }
-    {$fatal Lazarus requires at least FPC 2.4.2}
-  {$endif}
-{$endif}
-
 {$mode objfpc}{$H+}
 
 interface
