@@ -47,7 +47,7 @@ uses
   // Codetools
   CodeTree, CodeToolManager, CodeCache, PascalParserTool, KeywordFuncLists,
   // IDEIntf
-  LazIDEIntf, IDEImagesIntf, SrcEditorIntf, IDEWindowIntf,
+  LazIDEIntf, IDEImagesIntf, SrcEditorIntf, IDEWindowIntf, TextTools,
   // IDE
   EnvironmentOpts, LazarusIDEStrConsts;
 
@@ -281,26 +281,11 @@ begin
 end;
 
 procedure TProcedureListForm.edMethodsKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+var
+  c: char;
 begin
-
-  if (Shift = []) and (Key in [VK_A..VK_Z]) then
-  begin
-    edMethods.SelText := chr(Key + $20); // VK-codes matches ASCII chars
-    Key := 0;
-  end;
-
-  if (Shift = [ssShift]) and (Key in [VK_A..VK_Z]) then
-  begin
-    edMethods.SelText := chr(Key); // VK-codes matches ASCII chars
-    Key := 0;
-  end;
-
-  if (Shift = []) and (Key = VK_OEM_PERIOD) then
-  begin
-    edMethods.SelText := '.';
-    Key := 0;
-  end;
-
+  if KeyToQWERTY(Key, Shift, c) then
+    edMethods.SelText := c;
 end;
 
 procedure TProcedureListForm.FormDestroy(Sender: TObject);

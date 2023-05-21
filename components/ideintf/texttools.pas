@@ -17,6 +17,8 @@ interface
 
 uses
   Classes, SysUtils,
+  // LCL
+  LCLType,
   // LazUtils
   UITypes;
 
@@ -83,7 +85,9 @@ procedure RESplit(const TheText, SeparatorRegExpr: string; Pieces: TStrings;
 function GetPathElement(const Path: string; StartPos: integer;
                         Stopper: char): string;
 
-
+// For searching and filtering items in different lists.
+function MultiWordSearch(aFilter, aText: string): boolean;
+function KeyToQWERTY(var Key: Word; Shift: TShiftState; out aChar: char; aLowerCase: boolean = false): boolean;
 
 
 //------------------------------------------------------------------------------
@@ -160,6 +164,84 @@ begin
   p:=StartPos;
   while (p<=length(Path)) and (Path[p]<>Stopper) do inc(p);
   Result:=copy(Path,StartPos,p-StartPos);
+end;
+
+function MultiWordSearch(aFilter, aText: string): boolean;
+var
+  lExpressions: TStringList;
+  i: Integer;
+
+  function FilterByExpression(AFilter: string): boolean;
+  var
+    lConditions: TStringList;
+    i: Integer;
+  begin
+    lConditions := TStringList.Create;
+    try
+      lConditions.QuoteChar := #0;
+      lConditions.AddDelimitedText(AFilter, ' ', true);
+      for i := 0 to lConditions.Count - 1 do
+        if lConditions[i] <> '' then
+        begin
+          if lConditions[i][1] = '!' then
+          begin
+            lConditions[i] := RightStr(lConditions[i], length(lConditions[i]) - 1); // delete "!"
+            if Pos(lConditions[i], aText) > 0 then
+              exit(true);
+          end else begin
+            if Pos(lConditions[i], aText) <= 0 then
+              exit(true);
+          end;
+        end;
+      Result := false;
+    finally
+      FreeAndNil(lConditions);
+    end;
+  end;
+
+begin
+  if aFilter = '' then exit(true);
+  aText := '"' + lowercase(aText) + '"';
+  aFilter := lowercase(aFilter);
+
+  lExpressions := TStringList.Create;
+  try
+    lExpressions.QuoteChar := #0;
+    lExpressions.AddDelimitedText(aFilter, ',', true);
+    for i := 0 to lExpressions.Count - 1 do
+      if lExpressions[i] <> '' then
+        if not FilterByExpression(lExpressions[i]) then
+          exit(true);
+    result := false;
+  finally
+    FreeAndNil(lExpressions);
+  end;
+end;
+
+function KeyToQWERTY(var Key: Word; Shift: TShiftState; out aChar: char; aLowerCase: boolean = false): boolean;
+begin
+  aChar := #0;
+
+  if Shift = [] then
+    case Key of
+      VK_A..VK_Z: aChar := chr(Key + $20); // VK-codes matches ASCII chars
+      VK_LCL_COMMA: aChar := ',';
+      VK_OEM_PERIOD: aChar := '.';
+    end
+  else if Shift = [ssShift] then
+    case Key of
+      VK_A..VK_Z:
+        if aLowerCase
+          then aChar := chr(Key + $20) // VK-codes matches ASCII chars
+          else aChar := chr(Key);
+      VK_LCL_MINUS: aChar := '_';
+      VK_1        : aChar := '!';
+      VK_LCL_QUOTE: aChar := '"';
+    end;
+
+  result := aChar <> #0;
+  if result then
+    Key := 0;
 end;
 
 end.

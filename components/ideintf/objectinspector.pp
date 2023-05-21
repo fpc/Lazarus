@@ -43,7 +43,7 @@ uses
   // IdeIntf
   IDEImagesIntf, IDEHelpIntf, ObjInspStrConsts,
   PropEdits, PropEditUtils, ComponentTreeView, OIFavoriteProperties,
-  ComponentEditors, ChangeParentDlg;
+  ComponentEditors, ChangeParentDlg, TextTools;
 
 const
   OIOptionsFileVersion = 3;
@@ -707,6 +707,9 @@ type
     FLastTreeSize: TRect;
 
     // These event handlers are assigned at run-time, no need for default published section.
+    function CompFilterEditFilterItemEx(const ACaption: string; ItemData: Pointer;
+      out Done: Boolean): Boolean;
+    procedure CompFilterEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ComponentTreeDblClick(Sender: TObject);
     procedure ComponentTreeGetNodeImageIndex(APersistent: TPersistent; var AIndex: integer);
     procedure ComponentTreeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -740,6 +743,7 @@ type
     procedure WidgetSetRestrictedPaint(Sender: TObject);
     procedure ComponentRestrictedPaint(Sender: TObject);
     procedure PropFilterEditAfterFilter(Sender: TObject);
+    procedure PropFilterEditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure NoteBookPageChange(Sender: TObject);
     procedure ChangeParentItemClick(Sender: TObject);
     procedure CollectionAddItem(Sender: TObject);
@@ -2567,15 +2571,21 @@ var
   end;
 
   procedure HandleUnshifted;
-  const
-    Page = 20;
   begin
     Handled := true;
     case Key of
       VK_UP   : SetItemIndexAndFocus(ItemIndex - 1);
       VK_DOWN : SetItemIndexAndFocus(ItemIndex + 1);
-      VK_PRIOR: SetItemIndexAndFocus(Max(ItemIndex - Page, 0));
-      VK_NEXT : SetItemIndexAndFocus(Min(ItemIndex + Page, FRows.Count - 1));
+      VK_PRIOR:
+        if (RowCount > 0) and (RowRect(0).Height > 0) then
+          SetItemIndexAndFocus(
+            Max(ItemIndex - (Height div RowRect(0).Height - 2), 0) // "-2" to little less than a page
+          );
+      VK_NEXT :
+        if (RowCount > 0) and (RowRect(0).Height > 0) then
+          SetItemIndexAndFocus(
+            Min(ItemIndex + (Height div RowRect(0).Height - 2), FRows.Count - 1) // "-2" to little less than a page
+          );
 
       VK_TAB: DoTabKey;
 
@@ -4402,6 +4412,8 @@ begin
   ComponentPanel.Constraints.MinHeight := 8;
   ComponentPanel.Visible := FShowComponentTree;
   CompFilterEdit.FilteredTreeview := ComponentTree;
+  CompFilterEdit.OnFilterItemEx := @CompFilterEditFilterItemEx;
+  CompFilterEdit.OnKeyDown := @CompFilterEditKeyDown;
 
   InfoPanel := TPanel.Create(Self);
   with InfoPanel do
@@ -4474,6 +4486,7 @@ begin
     Anchors := [akTop, akLeft, akRight];
     BorderSpacing.Left := 5;
     OnAfterFilter := @PropFilterEditAfterFilter;
+    OnKeyDown := @PropFilterEditKeyDown;
   end;
 
   CreateNoteBook;
@@ -4501,6 +4514,15 @@ begin
   GetActivePropertyGrid.PropNameFilter := PropFilterEdit.Filter;
   RebuildPropertyLists;
   FPropFilterUpdating := False;
+end;
+
+procedure TObjectInspectorDlg.PropFilterEditKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+var
+  c: char;
+begin
+  if KeyToQWERTY(Key, Shift, c, true) then
+    PropFilterEdit.SelText := c;
 end;
 
 procedure TObjectInspectorDlg.NoteBookPageChange(Sender: TObject);
@@ -4987,6 +5009,22 @@ begin
       end;
     end;
   end;
+end;
+
+function TObjectInspectorDlg.CompFilterEditFilterItemEx(const ACaption: string;
+  ItemData: Pointer; out Done: Boolean): Boolean;
+begin
+  Done := true;
+  result := MultiWordSearch(CompFilterEdit.Text, ACaption);
+end;
+
+procedure TObjectInspectorDlg.CompFilterEditKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+var
+  c: char;
+begin
+  if KeyToQWERTY(Key, Shift, c, true) then
+    CompFilterEdit.SelText := c;
 end;
 
 function TObjectInspectorDlg.GetComponentEditorForSelection: TBaseComponentEditor;

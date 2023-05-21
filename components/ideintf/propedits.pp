@@ -35,7 +35,7 @@ uses
   FileUtil, StringHashList, LazMethodList, LazLoggerBase, LazUtilities, LazStringUtils,
   GraphType, UITypes, FPCAdds, // for StrToQWord in older fpc versions
   // IdeIntf
-  ObjInspStrConsts, PropEditUtils,
+  ObjInspStrConsts, PropEditUtils, TextTools,
   // Forms with .lfm files
   FrmSelectProps, StringsPropEditDlg, KeyValPropEditDlg, CollectionPropEditForm,
   FileFilterPropEditor, PagesPropEditDlg, IDEWindowIntf;
@@ -7727,7 +7727,7 @@ var
     with GetTypeData(EnumType)^ do
       for i := MinValue to MaxValue do
       begin
-        Result := PosI(APropNameFilter, GetEnumName(EnumType,i)) > 0;
+        Result := MultiWordSearch(APropNameFilter, GetEnumName(EnumType,i));
         if Result then
           Break;
       end;
@@ -7754,7 +7754,8 @@ var
       begin
         propInfo := propList^[i];
 
-        Result := PosI(APropNameFilter, propInfo^.Name) > 0;
+        Result := MultiWordSearch(APropNameFilter, propInfo^.Name);
+
         if Result then break;
         //if encounter a Set check its elements name.
         if (propInfo^.PropType^.Kind = tkSet) then
@@ -7794,7 +7795,9 @@ var
     begin
       if (APropNameFilter = '') or AForceShow then
         exit;
-      Result := PosI(APropNameFilter, A.GetName) > 0; // Check single Props
+
+      Result := MultiWordSearch(APropNameFilter, A.GetName); // Check single Props
+
       // Check if check Set has element.
       if (ti^.Kind = tkSet) and (A.ClassType <> TSetElementPropertyEditor) then
         Result := Result or IsPropInSet(A.GetPropType);
@@ -7802,10 +7805,10 @@ var
       exit;
     end;
 
-    // Subroperties can change if user selects another object =>
+    // Subproperties can change if user selects another object =>
     // we must show the property, even if it is not interesting currently.
-    Result := paVolatileSubProperties in A.GetAttributes;
-    if Result then exit;
+    //Result := paVolatileSubProperties in A.GetAttributes; // Not really needed?
+    //if Result then exit;
 
     if tkClass in AFilter then
     begin
@@ -7816,7 +7819,9 @@ var
         // if no SubProperties check against filter name
         if (APropNameFilter = '') then
           exit;
-        Result := PosI(APropNameFilter, A.GetName) > 0;
+
+        Result := MultiWordSearch(APropNameFilter, A.GetName);
+
         if (paSubProperties in A.GetAttributes) then
           Result := Result or IsPropInClass(A.GetPropType);
 
@@ -7848,7 +7853,7 @@ var
           ed.SetPropEntry(0, obj, propList^[i]);
           ed.Initialize;
           // filter TClassPropertyEditor name recursively
-          Rec(ed, PosI(APropNameFilter, A.GetName) > 0 );
+          Rec(ed, MultiWordSearch(APropNameFilter, A.GetName));
         finally
           ed.Free;
         end;

@@ -42,6 +42,7 @@ uses
   TreeFilterEdit,
   // IdeIntf
   FormEditingIntf, IDEImagesIntf, PropEdits, MenuIntf, ComponentReg, LazIDEIntf,
+  TextTools,
   // IDE
   LazarusIDEStrConsts, PackageDefs, IDEOptionDefs, EnvironmentOpts, Designer;
 
@@ -634,97 +635,18 @@ end;
 
 function TComponentListForm.TreeFilterEdFilterItemEx(const ACaption: string;
   ItemData: Pointer; out Done: Boolean): Boolean;
-var
-  lExpressions: TStringList;
-  i: Integer;
-  lCaption: string;
-
-  function FilterByExpression(AFilter: string): boolean;
-  var
-    lConditions: TStringList;
-    i: Integer;
-  begin
-    lConditions := TStringList.Create;
-    try
-      lConditions.QuoteChar := #0;
-      lConditions.AddDelimitedText(AFilter, ' ', true);
-      for i := 0 to lConditions.Count - 1 do
-        if lConditions[i] <> '' then
-        begin
-          if lConditions[i][1] = '!' then
-          begin
-            lConditions[i] := RightStr(lConditions[i], length(lConditions[i]) - 1); // delete "!"
-            if Pos(lConditions[i], lCaption) > 0 then
-              exit(true);
-          end else begin
-            if Pos(lConditions[i], lCaption) <= 0 then
-              exit(true);
-          end;
-        end;
-      Result := false;
-    finally
-      FreeAndNil(lConditions);
-    end;
-  end;
-
 begin
   Done := true;
-  if TreeFilterEd.Text = '' then exit(true);
-  lCaption := '"' + lowercase(ACaption) + '"';
-
-  lExpressions := TStringList.Create;
-  try
-    lExpressions.QuoteChar := #0;
-    lExpressions.AddDelimitedText(TreeFilterEd.Text, ',', true); // TreeFilterEd.Text always lowercase
-    for i := 0 to lExpressions.Count - 1 do
-      if lExpressions[i] <> '' then
-        if not FilterByExpression(lExpressions[i]) then
-          exit(true);
-    result := false;
-  finally
-    FreeAndNil(lExpressions);
-  end;
+  result := MultiWordSearch(TreeFilterEd.Text, ACaption);
 end;
 
 procedure TComponentListForm.TreeFilterEdKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
+var
+  c: char;
 begin
-
-  if (Key in [VK_A..VK_Z]) and ((Shift = []) or (Shift = [ssShift])) then
-  begin
-    TreeFilterEd.SelText := chr(Key + $20); // VK-codes matches ASCII chars
-    Key := 0;
-    exit;
-  end;
-
-  if (Key = VK_1) and (Shift = [ssShift]) then
-  begin
-    TreeFilterEd.SelText := '!';
-    Key := 0;
-    exit;
-  end;
-
-  if (Key = VK_LCL_QUOTE) and (Shift = [ssShift]) then
-  begin
-    TreeFilterEd.SelText := '"';
-    Key := 0;
-    exit;
-  end;
-
-  if (Key = VK_LCL_COMMA) and (Shift = []) then
-  begin
-    TreeFilterEd.SelText := ',';
-    Key := 0;
-    exit;
-  end;
-
-  if (Key = VK_LCL_MINUS) and (Shift = [ssShift]) then
-  begin
-    TreeFilterEd.SelText := '_';
-    Key := 0;
-    exit;
-  end;
-
+  if KeyToQWERTY(Key, Shift, c) then
+    TreeFilterEd.SelText := c;
 end;
 
 procedure TComponentListForm.tmDeselectTimer(Sender: TObject);
