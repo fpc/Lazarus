@@ -40,6 +40,12 @@ type
     function AsString: String; override;
   end;
 
+  { TPDeclarationEnumTypes }
+
+  TPDeclarationEnumTypes = class(TPDeclarationWithLines)
+    function AsString: String; override;
+  end;
+
   { TPDeclarationVar }
 
   TPDeclarationVar = class(TPDeclarationWithLines)
@@ -111,6 +117,7 @@ type
   TPInterface = class(TPCommonSections)
   private
     FConstSection: TPDeclarationConst;
+    FEnumTypesSection: TPDeclarationEnumTypes;
     FFunctionSection: TPDeclarationFunctions;
     FUsesSection: TPUses;
   public
@@ -119,6 +126,7 @@ type
     function AsString: String; override;
     property UsesSection: TPUses read FUsesSection;
     property ConstSection: TPDeclarationConst read FConstSection;
+    property EnumTypesSection: TPDeclarationEnumTypes read FEnumTypesSection;
     property FunctionSection: TPDeclarationFunctions read FFunctionSection;
   end;
 
@@ -198,6 +206,7 @@ type
     // functions to ensure the type is being written in the correct declaration
     function WantTypeSection: TPDeclarationType;
     function WantConstSection: TPDeclarationConst;
+    function WantEnumTypesSection: TPDeclarationEnumTypes;
     function WantFunctionSection: TPDeclarationFunctions;
     // function WantVarSection: TPDeclarationVar;
 
@@ -316,6 +325,17 @@ begin
   Version := StringReplace(AVersion,'.','_',[rfReplaceAll]);
   Version := StringReplace(Version,'_0','',[rfReplaceAll]);
   Result := ANameSpace+Version;
+end;
+
+{ TPDeclarationEnumTypes }
+
+function TPDeclarationEnumTypes.AsString: String;
+begin
+  if Lines.Count > 0 then begin
+    Result := IndentText('type') + Lines.Text;
+  end else begin
+    Result := '';
+  end;
 end;
 
 { TPascalUnitGroup }
@@ -550,6 +570,7 @@ begin
   FUsesSection := AUses;
   FUsesSection.Units.Add('CTypes');
   FConstSection := TPDeclarationConst.Create;
+  FEnumTypesSection := TPDeclarationEnumTypes.Create;
   FFunctionSection := TPDeclarationFunctions.Create(ADynamicFunctions);
 end;
 
@@ -567,6 +588,7 @@ begin
   Result := IndentText('interface')+
       FUsesSection.AsString+
       FConstSection.AsString+
+      FEnumTypesSection.AsString +
       FDeclarations.AsString+
       FFunctionSection.AsString;
 end;
@@ -872,6 +894,11 @@ begin
   Result := InterfaceSection.ConstSection;
 end;
 
+function TPascalUnit.WantEnumTypesSection: TPDeclarationEnumTypes;
+begin
+  Result := InterfaceSection.EnumTypesSection;
+end;
+
 function TPascalUnit.WantFunctionSection: TPDeclarationFunctions;
 begin
   Result := InterfaceSection.FunctionSection;
@@ -1014,7 +1041,7 @@ begin
     // forces forward declarations to be written
     ProcessType(AItem);
     TypeName := AItem.TranslatedName;
-    Section := WantTypeSection;
+    Section := WantEnumTypesSection;
     Section.Lines.Add(IndentText(TypeName + ' = (', 2, 0));
     Section.Lines.Add(IndentText(TypeName + 'MinValue = -$7FFFFFFF,', 4, 0));
     AItem.Members.Sort(@CompareEnumValues)
