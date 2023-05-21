@@ -155,7 +155,7 @@ begin
       Checked[3] := CPPInline;
       Checked[4] := CStyleMacros;
       Checked[5] := InitConstructor;
-      Checked[6] := PointerTypeCheck;
+      Checked[6] := TypedAddress;
     end;
   end;
 end;
@@ -176,7 +176,7 @@ begin
       CPPInline       := Checked[3];
       CStyleMacros    := Checked[4];
       InitConstructor := Checked[5];
-      PointerTypeCheck:= Checked[6];
+      TypedAddress    := Checked[6];
     end;
   end;
 end;

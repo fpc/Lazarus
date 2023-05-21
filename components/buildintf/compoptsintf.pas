@@ -195,7 +195,7 @@ type
     procedure SetSmartLinkUnit(const AValue: Boolean);
     procedure SetStackChecks(const AValue: Boolean);
     procedure SetStackSize(const AValue: Integer);
-    procedure SetPointerTypeCheck(const AValue: Boolean);
+    procedure SetTypedAddress(const AValue: Boolean);
     procedure SetStopAfterErrCount(const AValue: integer);
     procedure SetStripSymbols(const AValue: Boolean);
     procedure SetSyntaxMode(const AValue: string);
@@ -232,7 +232,7 @@ type
     fCPPInline: Boolean;
     fCMacros: Boolean;
     fInitConst: Boolean;
-    fPointerTypeCheck: Boolean;
+    fTypedAddress: Boolean;
     // Code generation:
     fSmartLinkUnit: Boolean;
     fRelocatableUnit: Boolean;
@@ -397,7 +397,7 @@ type
     property CPPInline: Boolean read fCPPInline write SetCPPInline;
     property CStyleMacros: Boolean read fCMacros write SetCMacros;
     property InitConstructor: Boolean read fInitConst write SetInitConst;
-    property PointerTypeCheck: Boolean read fPointerTypeCheck write SetPointerTypeCheck;
+    property TypedAddress: Boolean read fTypedAddress write SetTypedAddress;
 
     // code generation:
     property IOChecks: Boolean read fIOChecks write SetIOChecks;
@@ -844,10 +844,10 @@ begin
   IncreaseChangeStamp;
 end;
 
-procedure TLazCompilerOptions.SetPointerTypeCheck(const AValue: Boolean);
+procedure TLazCompilerOptions.SetTypedAddress(const AValue: Boolean);
 begin
-  if fPointerTypeCheck=AValue then exit;
-  fPointerTypeCheck:=AValue;
+  if fTypedAddress=AValue then exit;
+  fTypedAddress:=AValue;
   IncreaseChangeStamp;
 end;
 
