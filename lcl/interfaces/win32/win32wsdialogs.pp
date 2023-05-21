@@ -818,7 +818,7 @@ class function TWin32WSOpenDialog.GetFileName(ShellItem: IShellItem): String;
 var
   FilePath: LPWStr;
 begin
-  if Succeeded(ShellItem.GetDisplayName(SIGDN(SIGDN_FILESYSPATH), FilePath)) then
+  if Succeeded(ShellItem.GetDisplayName(SIGDN(SIGDN_FILESYSPATH), LPWStr(@FilePath))) then
   begin
     Result := UTF16ToUTF8(FilePath);
     CoTaskMemFree(FilePath);
