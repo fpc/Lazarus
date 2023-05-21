@@ -393,8 +393,7 @@ begin
 
     if Fuzzy <> nil then
     begin
-      if {(Tmp.CType = Fuzzy.CType) or} (Tmp.Name = Fuzzy.Name) then
-      begin
+      if Tmp.Name = Fuzzy.Name then begin
         Fuzzy.ResolvedType := Tmp;
         Tmp.ImpliedPointerLevel:=Fuzzy.ImpliedPointerLevel;
         Tmp.DeprecatedOverride:= Tmp.DeprecatedOverride or Fuzzy.DeprecatedOverride;
@@ -419,8 +418,15 @@ begin
   // if the types are still fuzzy then we will search used namespaces for what we want
   for FuzzyP in StillFuzzy do //FuzzyP is Fuzzy absolute
   begin
-    if Fuzzy.ResolvedType <> nil then
-      continue;
+    for i:= 0 to FTypes.Count - 1 do begin
+      Tmp := TGirBaseType(FTypes.Items[i]);
+      if (Tmp <> Fuzzy) and (Tmp.CType = Fuzzy.Name) then begin
+        Fuzzy.ResolvedType := Tmp;
+        Tmp.ImpliedPointerLevel:=Fuzzy.ImpliedPointerLevel;
+        Tmp.DeprecatedOverride:= Tmp.DeprecatedOverride or Fuzzy.DeprecatedOverride;
+        //WriteLn('Resolved Fuzzy Type: ', Tmp.CType);
+      end;
+    end;
     for i := 0 to RequiredNameSpaces.Count-1 do
     begin
       ReqNS := TgirNamespace(RequiredNameSpaces.Items[i]);
