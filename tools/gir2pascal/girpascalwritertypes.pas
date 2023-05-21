@@ -914,6 +914,8 @@ begin
     //WriteLn('Warning: Forwards definitions already written for : ', Aitem.TranslatedName);
   AItem.ForwardDefinitionWritten := True;
   PTypes := MakePointerTypesForType(ATypeName, APointerLevel);
+  ALines.Add('');
+  Alines.Add(IndentText('{ ' + ATypeName + ' }', 2, 0));
   PTypes.Insert(0, ATypeName);
   for i := PTypes.Count-1 downto 1 do
     ALines.Add(IndentText(PTypes[i]+ ' = ^'+PTypes[i-1]+';',2,0));
@@ -939,7 +941,7 @@ begin
 
   TypeSect := WantTypeSection;
   AItem.TranslatedName:=AItem.CType;
-  //WritePointerTypesForType(Aitem, AItem.CType, AItem.ImpliedPointerLevel, TypeSect.Lines);
+  WritePointerTypesForType(Aitem, AItem.CType, AItem.ImpliedPointerLevel, TypeSect.Lines);
   if AItem.Name <> 'file' then
     TypeSect.Lines.Add(IndentText(SanitizeName(AItem.CType)+ ' = '+ AItem.PascalName+';', 2,0));
 end;
