@@ -1523,6 +1523,7 @@ var
   var
     SetFound: Boolean;
     PropType: String;
+    FieldName: String;
   begin
 
     if not MeetsVersionConstraints(Field) then
@@ -1572,7 +1573,11 @@ var
               Field.CType := AItem.CType+'_union_'+Field.Name;
               ResolveTypeTranslation(Field);
               HandleUnion(TgirUnion(Field));
-              TypeDecl.Add(IndentText(SanitizeName(Field.Name, UsedNames)+': '+ Field.TranslatedName+'; //union extracted from object and named '''+Field.TranslatedName+'''',4,0));
+              FieldName := Field.Name;
+              if FieldName = '' then begin
+                FieldName := '__unnamed_field__' + Field.CType;
+              end;
+              TypeDecl.Add(IndentText(SanitizeName(FieldName, UsedNames)+': '+ Field.TranslatedName+'; //union extracted from object and named '''+Field.TranslatedName+'''',4,0));
             end
        end;
     end;
