@@ -372,7 +372,7 @@ var
 begin
   ReqFlags:=[];
   if Target=IDEAsTarget then begin
-    Result:=GetList(LazarusIDE,PackageGraph.FirstAutoInstallDependency,ReqFlags);
+    Result:=GetList(LazarusIDE,PackageGraph.FirstInstallDependency,ReqFlags);
   end else if Target=ProjectAsTarget(Project1) then begin
     if not (pfUseDesignTimePackages in Project1.Flags) then
       Include(ReqFlags,pirSkipDesignTimeOnly);

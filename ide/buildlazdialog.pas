@@ -1404,7 +1404,7 @@ begin
   LazDir:=EnvironmentOptions.GetParsedLazarusDirectory;
   try
     PackageGraph.GetAllRequiredPackages(nil,
-      PackageGraph.FirstAutoInstallDependency,PkgList,[pirSkipDesignTimeOnly]);
+      PackageGraph.FirstInstallDependency,PkgList,[pirSkipDesignTimeOnly]);
 
     // add detail nodes
     if PkgList<>nil then

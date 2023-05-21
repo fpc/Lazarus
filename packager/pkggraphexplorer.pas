@@ -320,7 +320,7 @@ begin
   InstallPkgList:=nil;
   try
     PackageGraph.GetAllRequiredPackages(nil,
-      PackageGraph.FirstAutoInstallDependency,InstallPkgList,[]);
+      PackageGraph.FirstInstallDependency,InstallPkgList,[]);
     i:=0;
     Dependency:=Pkg.FirstRequiredDependency;
     while Dependency<>nil do begin
@@ -536,7 +536,7 @@ begin
     for i:=0 to Cnt-1 do
       fSortedPackages.Add(PackageGraph[i]);
     PackageGraph.GetAllRequiredPackages(nil,
-      PackageGraph.FirstAutoInstallDependency,InstallPkgList,[]);
+      PackageGraph.FirstInstallDependency,InstallPkgList,[]);
     // rebuild the TreeView
     PkgTreeView.BeginUpdate;
     // save old expanded state
@@ -608,7 +608,7 @@ begin
     for i:=0 to Cnt-1 do
       fSortedPackages.Add(PackageGraph[i]);
     PackageGraph.GetAllRequiredPackages(nil,
-      PackageGraph.FirstAutoInstallDependency,InstallPkgList,[]);
+      PackageGraph.FirstInstallDependency,InstallPkgList,[]);
 
     // save old selection
     OldSelected:='';
@@ -643,7 +643,7 @@ begin
       AddEdges(ProjectNode,Project1.FirstRequiredDependency);
 
     // add IDE dependencies
-    AddEdges(IDENode,PackageGraph.FirstAutoInstallDependency);
+    AddEdges(IDENode,PackageGraph.FirstInstallDependency);
 
     // add package dependencies
     AVLNode:=fSortedPackages.FindLowest;

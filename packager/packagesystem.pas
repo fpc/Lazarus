@@ -429,7 +429,7 @@ type
     function WriteFpmake(APackage: TLazPackage): TModalResult;
   public
     // installed packages
-    FirstAutoInstallDependency: TPkgDependency;
+    FirstInstallDependency: TPkgDependency;
     function ParseBasePackages(Verbose: boolean): boolean; // read list from current sources
     function SrcBasePackagesNeedLazbuild: string; // check if compiled-in and source base pkg list differ that a built using make is needed
     procedure LoadStaticBasePackages;
@@ -2255,14 +2255,14 @@ procedure TLazPackageGraph.LoadStaticBasePackages;
     Dependency: TPkgDependency;
     Quiet: Boolean;
   begin
-    if FindDependencyByNameInList(FirstAutoInstallDependency,pddRequires,PkgName)<>nil
+    if FindDependencyByNameInList(FirstInstallDependency,pddRequires,PkgName)<>nil
     then
       exit;
     Dependency:=TPkgDependency.Create;
     Dependency.Owner:=Self;
     Dependency.PackageName:=PkgName;
     Dependency.DependencyType:=pdtLazarus;
-    Dependency.AddToList(FirstAutoInstallDependency,pddRequires);
+    Dependency.AddToList(FirstInstallDependency,pddRequires);
     Quiet:=false;
     OpenInstalledDependency(Dependency,pitStatic,Quiet);
   end;
@@ -2285,7 +2285,7 @@ begin
   for i:=0 to PkgList.Count-1 do begin
     PackageName:=PkgList[i];
     if not IsValidPkgName(PackageName) then continue;
-    Dependency:=FindDependencyByNameInList(FirstAutoInstallDependency,
+    Dependency:=FindDependencyByNameInList(FirstInstallDependency,
                                            pddRequires,PackageName);
     //DebugLn('TLazPackageGraph.LoadAutoInstallPackages ',dbgs(Dependency),' ',PackageName);
     if Dependency<>nil then continue;
@@ -2293,7 +2293,7 @@ begin
     Dependency.Owner:=Self;
     Dependency.DependencyType:=pdtLazarus;
     Dependency.PackageName:=PackageName;
-    Dependency.AddToList(FirstAutoInstallDependency,pddRequires);
+    Dependency.AddToList(FirstInstallDependency,pddRequires);
     if OpenDependency(Dependency,false)<>lprSuccess then begin
       IDEMessageDialog(lisPkgMangUnableToLoadPackage,
         Format(lisPkgMangUnableToOpenThePackage, [PackageName, LineEnding]),
@@ -2309,7 +2309,7 @@ end;
 procedure TLazPackageGraph.SortAutoInstallDependencies;
 begin
   // sort install dependencies, so that lower packages come first
-  SortDependencyListTopologicallyOld(PackageGraph.FirstAutoInstallDependency,
+  SortDependencyListTopologicallyOld(PackageGraph.FirstInstallDependency,
                                                false);
 end;
 
@@ -2333,7 +2333,7 @@ begin
   Result:='';
   // get all required packages
   PkgList:=nil;
-  GetAllRequiredPackages(nil,FirstAutoInstallDependency,PkgList,[pirCompileOrder]);
+  GetAllRequiredPackages(nil,FirstInstallDependency,PkgList,[pirCompileOrder]);
   if PkgList=nil then exit;
   // get all usage options
   AddOptionsList:=GetUsageOptionsList(PkgList);
@@ -2369,7 +2369,7 @@ begin
   // create auto install package list for the Lazarus uses section
   PkgList:=nil;
   try
-    GetAllRequiredPackages(nil,FirstAutoInstallDependency,PkgList,[pirCompileOrder]);
+    GetAllRequiredPackages(nil,FirstInstallDependency,PkgList,[pirCompileOrder]);
     StaticPackagesInc:='// In case of duplicate identifier errors, see lazarus.pp'+LineEnding;
     if PkgList<>nil then begin
       for i:=0 to PkgList.Count-1 do begin
@@ -2413,11 +2413,11 @@ procedure TLazPackageGraph.FreeAutoInstallDependencies;
 var
   Dependency: TPkgDependency;
 begin
-  while Assigned(FirstAutoInstallDependency) do
+  while Assigned(FirstInstallDependency) do
   begin
-    Dependency:=FirstAutoInstallDependency;
+    Dependency:=FirstInstallDependency;
     Dependency.RequiredPackage:=nil;
-    Dependency.RemoveFromList(FirstAutoInstallDependency,pddRequires);
+    Dependency.RemoveFromList(FirstInstallDependency,pddRequires);
     Dependency.Free;
   end;
 end;
@@ -5194,7 +5194,7 @@ begin
     if IsCompiledInBasePackage(PkgName) then
       continue;
     // new base package
-    if FindDependencyByNameInList(FirstAutoInstallDependency,pddRequires,PkgName)<>nil
+    if FindDependencyByNameInList(FirstInstallDependency,pddRequires,PkgName)<>nil
     then
       exit; // it will be installed anyway -> ok
     // the sources need a base package, that this IDE will not install

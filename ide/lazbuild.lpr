@@ -663,7 +663,7 @@ begin
   Result:=false;
   PackageGraph.BeginUpdate(false);
   try
-    Dependency:=PackageGraph.FirstAutoInstallDependency;
+    Dependency:=PackageGraph.FirstInstallDependency;
     while Dependency<>nil do begin
       OldDependency:=Dependency;
       Dependency:=Dependency.NextRequiresDependency;
@@ -676,14 +676,14 @@ begin
 
     // check consistency
     CheckPackageGraphForCompilation(nil,
-                      PackageGraph.FirstAutoInstallDependency);
+                      PackageGraph.FirstInstallDependency);
 
     // compile all auto install dependencies
     CompilePolicy:=pupAsNeeded;
     if (BuildRecursive and BuildAll) or Clean then
       CompilePolicy:=pupOnRebuildingAll;
     CurResult:=PackageGraph.CompileRequiredPackages(nil,
-                   PackageGraph.FirstAutoInstallDependency,false,CompilePolicy);
+                   PackageGraph.FirstInstallDependency,false,CompilePolicy);
     if CurResult<>mrOk then exit;
 
   finally
