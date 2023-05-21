@@ -1070,7 +1070,7 @@ begin
     SW_MINIMIZE:
       win.miniaturize(nil);
     SW_MAXIMIZE:
-      win.zoom(nil);
+      if NOT win.isZoomed then win.zoom(nil);
     SW_SHOWFULLSCREEN:
       if Assigned(lCocoaWin) then
         lCocoaWin.lclSwitchFullScreen(true);

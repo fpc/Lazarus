@@ -720,6 +720,9 @@ begin
   //      the only thing that needs to be created is Content
 
   R := CreateParamsToNSRect(AParams);
+  if R.size.width<1 then R.size.width:=1;
+  if R.size.height<1 then R.size.height:=1;
+
   LR := R;
   LR.origin.x := 0;
   LR.origin.y := 0;

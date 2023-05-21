@@ -1493,6 +1493,9 @@ begin
   else
     ns := RectToNSRect(rr);
 
+  if ns.size.width<1 then ns.size.width:=1;
+  if ns.size.height<1 then ns.size.height:=1;
+
   {$IFDEF COCOA_DEBUG_SETBOUNDS}
   WriteLn(Format('LCLViewExtension.lclSetFrame: %s Bounds=%s height=%d ns_pos=%d %d ns_size=%d %d',
     [NSStringToString(Self.ClassName), dbgs(r), Round(svHeight),
