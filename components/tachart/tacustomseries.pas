@@ -309,8 +309,6 @@ type
     function GetZeroLevel: Double; virtual;
     function HasMissingYValue(AIndex: Integer; AMaxYIndex: Integer = MaxInt): Boolean;
     function NearestXNumber(var AIndex: Integer; ADir: Integer): Double;
-    procedure PrepareGraphPoints(
-      const AExtent: TDoubleRect; AFilterByExtent: Boolean);
     function SkipMissingValues(AIndex: Integer): Boolean; virtual;
     function ToolTargetDistance(const AParams: TNearestPointParams;
       AGraphPt: TDoublePoint; APointIdx, AXIdx, AYIdx: Integer): Integer; virtual;
@@ -326,6 +324,7 @@ type
 
   protected
     procedure AfterAdd; override;
+    procedure PrepareGraphPoints(const AExtent: TDoubleRect; AFilterByExtent: Boolean); virtual;
     procedure SourceChanged(ASender: TObject); override;
     procedure UpdateMargins(ADrawer: IChartDrawer; var AMargins: TRect); override;
 
