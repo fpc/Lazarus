@@ -222,7 +222,7 @@ end;
 *******************************************************************}
 class function TWin32WSCustomTrayIcon.Show(const ATrayIcon: TCustomTrayIcon): Boolean;
 var
-  Window: Windows.TWNDClassEx; // lp: LPWNDCLASS;
+  Window: Windows.TWNDClassEx;
 begin
   if not GetClassInfoEx(hInstance, szClassName, @Window) then
   begin

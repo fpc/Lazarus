@@ -214,7 +214,7 @@ end;
 function FindMenuItemAccelerator(const ACharCode: word; const AMenuHandle: HMENU): integer;
 var
   MenuItemIndex: integer;
-  ItemInfo: MENUITEMINFOW; // TMenuItemInfoA and TMenuItemInfoW have same size and same structure type
+  ItemInfo: MENUITEMINFOW;
   FirstMenuItem: TMenuItem;
   SiblingMenuItem: TMenuItem;
   i: integer;
@@ -1382,7 +1382,7 @@ end;
 
 function ChangeMenuFlag(const AMenuItem: TMenuItem; Flag: Cardinal; Value: boolean): boolean;
 var
-  MenuInfo: MENUITEMINFOW; // TMenuItemInfoA and TMenuItemInfoW have same size and same structure type
+  MenuInfo: MENUITEMINFOW;
 begin
   MenuInfo := Default(MENUITEMINFOW);
   MenuInfo.cbSize := sizeof(TMenuItemInfoW);
@@ -1405,7 +1405,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure SetMenuFlag(const Menu: HMenu; Flag: Cardinal; Value: boolean);
 var
-  MenuInfo: MENUITEMINFOW; // TMenuItemInfoA and TMenuItemInfoW have same size and same structure type
+  MenuInfo: MENUITEMINFOW;
 begin
   MenuInfo := Default(MENUITEMINFOW);
   MenuInfo.cbSize := sizeof(TMenuItemInfoW);
@@ -1422,7 +1422,7 @@ end;
 
 procedure UpdateCaption(const AMenuItem: TMenuItem; ACaption: String);
 var
-  MenuInfo: MENUITEMINFOW; // TMenuItemInfoA and TMenuItemInfoW have same size and same structure type
+  MenuInfo: MENUITEMINFOW;
   WideBuffer: widestring;
 begin
   if (AMenuItem.MergedParent = nil) or not AMenuItem.MergedParent.HandleAllocated then
@@ -1480,7 +1480,7 @@ end;
 
 class procedure TWin32WSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
 var
-  MenuInfo: MENUITEMINFOW; // TMenuItemInfoA and TMenuItemInfoW have same size and same structure type
+  MenuInfo: MENUITEMINFOW;
   ParentMenuHandle: HMenu;
   ParentOfParent: HMenu;
   CallMenuRes: Boolean;
@@ -1583,7 +1583,7 @@ end;
 class procedure TWin32WSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
 var
   ParentOfParentHandle, ParentHandle: HMENU;
-  MenuInfo: MENUITEMINFOW; // TMenuItemInfoA and TMenuItemInfoW have same size and same structure type
+  MenuInfo: MENUITEMINFOW;
   CallMenuRes: Boolean;
 begin
   if Assigned(AMenuItem.MergedParent) then

@@ -186,7 +186,6 @@ var
   AErrorCode: Cardinal;
   NCCreateParams: TNCCreateParams;
   WindowClassW, DummyClassW: WndClassW;
-  lp: LPWNDCLASSW;
 begin
   NCCreateParams.DefWndProc := nil;
   NCCreateParams.WinControl := AWinControl;
