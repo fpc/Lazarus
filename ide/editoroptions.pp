@@ -407,8 +407,7 @@ type
     BoolOpt: Boolean;  // Checkbox only
     MaxLevel: Integer;
   end;
-  TEditorOptionsDividerInfoList = Array [0..999] of TEditorOptionsDividerInfo;
-  PEditorOptionsDividerInfoList = ^TEditorOptionsDividerInfoList;
+  PEditorOptionsDividerInfoList = ^TEditorOptionsDividerInfo;
 
   TEditorOptionsDividerRecord = record
     Count: Integer;
@@ -437,10 +436,8 @@ const
   EditorOptionsDividerDefaults: array[TLazSyntaxHighlighter] of TEditorOptionsDividerRecord =
     ( (Count: 0; Info: nil), // none
       (Count: 0; Info: nil), // text
-{$T-} // Fix compilation with -Sy. Type mismatch here. PEditorOptionsDividerInfoList <> TEditorOptionsDividerInfo
       (Count: 9; Info: @EditorOptionsDividerInfoPas[0]), // Freepas
       (Count: 9; Info: @EditorOptionsDividerInfoPas[0]), // pas
-{$T+}
       (Count: 0; Info: nil), // lfm
       (Count: 0; Info: nil), // xml
       (Count: 0; Info: nil), // html
@@ -468,8 +465,7 @@ type
     Index: Integer;    // FHighlighter.FoldConf[index]
     Enabled: Boolean;
   end;
-  TEditorOptionsFoldInfoList = Array [0..999] of TEditorOptionsFoldInfo;
-  PEditorOptionsFoldInfoList = ^TEditorOptionsFoldInfoList;
+  PEditorOptionsFoldInfoList = ^TEditorOptionsFoldInfo;
 
   TEditorOptionsFoldRecord = record
     Count: Integer;
@@ -643,7 +639,6 @@ const
       )
     );
 
-{$T-} // Fix compilation with -Sy. Type mismatch here.
   (* When adding new entries, ensure that resourcestrings are re-assigned in InitLocale *)
   EditorOptionsFoldDefaults: array[TLazSyntaxHighlighter] of TEditorOptionsFoldRecord =
     ( (Count:  0; HasMarkup: False; Info: nil), // none
@@ -668,7 +663,6 @@ const
       (Count:  0; HasMarkup: False; Info: nil), // PO
       (Count:  0; HasMarkup: False; Info: nil)  // Pike
     );
-{$T+}
 
 const
   EditorOptsFormatVersion = 13;
@@ -5580,7 +5574,7 @@ begin
       ValidLang := StrToValidXMLName(Syn.LanguageName);
       FoldRec := EditorOptionsFoldDefaults[HighlighterList[h].TheType];
       for i := 0 to FoldRec.Count - 1 do begin
-        FoldInf := FoldRec.Info^[i];
+        FoldInf := FoldRec.Info[i];
         idx := FoldInf.Index;
         Path := 'EditorOptions/FoldConfig/Lang' + ValidLang + '/Type' + FoldInf.Xml + '/' ;
         // try reading the old config first
@@ -5625,8 +5619,8 @@ begin
   if (syn is TSynCustomFoldHighlighter) then begin
     TheFoldInfo := EditorOptionsFoldDefaults[HighlighterList[h].TheType];
     for i := 0 to TheFoldInfo.Count - 1 do
-      with TSynCustomFoldHighlighter(Syn).FoldConfig[TheFoldInfo.Info^[i].Index] do
-        Enabled := TheFoldInfo.Info^[i].Enabled;
+      with TSynCustomFoldHighlighter(Syn).FoldConfig[TheFoldInfo.Info[i].Index] do
+        Enabled := TheFoldInfo.Info[i].Enabled;
   end;
 end;
 
@@ -5650,13 +5644,13 @@ begin
     if (syn is TSynCustomFoldHighlighter) then begin
       TheFoldInfo := EditorOptionsFoldDefaults[HighlighterList[h].TheType];
       for i := 0 to TheFoldInfo.Count - 1 do begin
-        ConfName := TheFoldInfo.Info^[i].Xml;
+        ConfName := TheFoldInfo.Info[i].Xml;
         Path := 'EditorOptions/FoldConfig/Lang' +
           StrToValidXMLName(Syn.LanguageName) + '/Type' + ConfName + '/' ;
         XMLConfig.DeletePath(Path + 'Enabled/');
         XMLConfig.WriteObject(Path + 'Settings/',
-          TSynCustomFoldHighlighter(Syn).FoldConfig[TheFoldInfo.Info^[i].Index],
-          TSynCustomFoldHighlighter(DefSyn).FoldConfig[TheFoldInfo.Info^[i].Index]);
+          TSynCustomFoldHighlighter(Syn).FoldConfig[TheFoldInfo.Info[i].Index],
+          TSynCustomFoldHighlighter(DefSyn).FoldConfig[TheFoldInfo.Info[i].Index]);
       end;
     end;
 
@@ -5684,7 +5678,7 @@ begin
   // read settings, that are different from the defaults
   for i := 0 to TheInfo.Count - 1 do begin
     Conf := Syn.DividerDrawConfig[i];
-    ConfName := TheInfo.Info^[i].Xml;
+    ConfName := TheInfo.Info[i].Xml;
     Path := 'EditorOptions/DividerDraw/Lang' + Syn.LanguageName + '/Type' + ConfName + '/' ;
     Conf.MaxDrawDepth := XMLConfig.GetValue(Path + 'MaxDepth/Value', Conf.MaxDrawDepth);
     Conf.TopColor := XMLConfig.GetValue(Path + 'TopColor/Value', Conf.TopColor);
@@ -5703,7 +5697,7 @@ begin
   if h < 0 then exit;
   TheInfo := EditorOptionsDividerDefaults[HighlighterList[h].TheType];
   for i := 0 to TheInfo.Count - 1 do begin
-    Syn.DividerDrawConfig[i].MaxDrawDepth := TheInfo.Info^[i].MaxLeveL;
+    Syn.DividerDrawConfig[i].MaxDrawDepth := TheInfo.Info[i].MaxLeveL;
     Syn.DividerDrawConfig[i].TopColor := clDefault;
     Syn.DividerDrawConfig[i].NestColor := clDefault;
   end;
@@ -5730,7 +5724,7 @@ begin
     for i := 0 to TheInfo.Count - 1 do begin
       Conf := Syn.DividerDrawConfig[i];
       DefConf := DefSyn.DividerDrawConfig[i]; // default value
-      ConfName := TheInfo.Info^[i].Xml;
+      ConfName := TheInfo.Info[i].Xml;
       Path := 'EditorOptions/DividerDraw/Lang' +
         StrToValidXMLName(Syn.LanguageName) + '/Type' + ConfName + '/' ;
       XMLConfig.SetDeleteValue(Path + 'MaxDepth/Value', Conf.MaxDrawDepth,

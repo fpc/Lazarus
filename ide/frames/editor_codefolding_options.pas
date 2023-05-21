@@ -117,11 +117,11 @@ begin
   Hl := TSynCustomFoldHighlighter(FCurHighlighter);
 
   for i := 0 to FCurFoldInfo.Count - 1 do begin
-    if Hl.FoldConfig[FCurFoldInfo.Info^[i].Index].SupportedModes * [fmFold, fmHide] <> [] then begin
-      j := FoldConfigCheckListBox.Items.Add(FCurFoldInfo.Info^[i].Name);
+    if Hl.FoldConfig[FCurFoldInfo.Info[i].Index].SupportedModes * [fmFold, fmHide] <> [] then begin
+      j := FoldConfigCheckListBox.Items.Add(FCurFoldInfo.Info[i].Name);
       FoldConfigCheckListBox.Checked[j] :=
-        Hl.FoldConfig[FCurFoldInfo.Info^[i].Index].Enabled and
-        (Hl.FoldConfig[FCurFoldInfo.Info^[i].Index].Modes * [fmFold, fmHide] <> []);
+        Hl.FoldConfig[FCurFoldInfo.Info[i].Index].Enabled and
+        (Hl.FoldConfig[FCurFoldInfo.Info[i].Index].Modes * [fmFold, fmHide] <> []);
       FoldConfigCheckListBox.Items.Objects[j] := TObject({%H-}Pointer(PtrUInt(i)));
     end;
   end;
@@ -137,8 +137,8 @@ begin
   Hl := TSynCustomFoldHighlighter(FCurHighlighter);
   j := 0;
   for i := 0 to FCurFoldInfo.Count - 1 do begin
-    if Hl.FoldConfig[FCurFoldInfo.Info^[i].Index].SupportedModes * [fmFold, fmHide] <> [] then begin
-      Hl.FoldConfig[FCurFoldInfo.Info^[i].Index].Enabled
+    if Hl.FoldConfig[FCurFoldInfo.Info[i].Index].SupportedModes * [fmFold, fmHide] <> [] then begin
+      Hl.FoldConfig[FCurFoldInfo.Info[i].Index].Enabled
         := FoldConfigCheckListBox.Checked[j];
       inc(j);
     end;
@@ -163,7 +163,7 @@ begin
   AvailModes := [];
   Modes := [fmFold];
   if i >= 0 then begin
-    i := FCurFoldInfo.Info^[i].Index;
+    i := FCurFoldInfo.Info[i].Index;
     AvailModes := Hl.FoldConfig[i].SupportedModes * [fmFold, fmHide];
     Modes := Hl.FoldConfig[i].Modes * [fmFold, fmHide];
   end;
@@ -191,7 +191,7 @@ begin
   i := FoldConfigCheckListBox.ItemIndex;
   if i < 0 then exit;
   i := PtrUInt(FoldConfigCheckListBox.Items.Objects[i]);
-  i := FCurFoldInfo.Info^[i].Index;
+  i := FCurFoldInfo.Info[i].Index;
   Hl := TSynCustomFoldHighlighter(FCurHighlighter);
   Modes := [fmFold];
   if chkHide.Checked then Modes := [fmHide];

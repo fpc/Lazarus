@@ -116,7 +116,7 @@ begin
 
   DividerConfigListBox.Clear;
   for i := 0 to FCurDivInfo.Count - 1 do begin
-    DividerConfigListBox.Items.add(FCurDivInfo.Info^[i].Name);
+    DividerConfigListBox.Items.add(FCurDivInfo.Info[i].Name);
     DividerConfigListBox.Checked[i] :=
       FCurHighlighter.DividerDrawConfig[i].MaxDrawDepth > 0;
   end;
@@ -140,8 +140,8 @@ begin
   for i := 0 to FCurDivInfo.Count - 1 do begin
     if DividerConfigListBox.Checked[i] then begin
       if FCurHighlighter.DividerDrawConfig[i].MaxDrawDepth = 0 then begin
-        if FCurDivInfo.Info^[i].MaxLevel > 0 then
-          FCurHighlighter.DividerDrawConfig[i].MaxDrawDepth := FCurDivInfo.Info^[i].MaxLevel
+        if FCurDivInfo.Info[i].MaxLevel > 0 then
+          FCurHighlighter.DividerDrawConfig[i].MaxDrawDepth := FCurDivInfo.Info[i].MaxLevel
         else
           FCurHighlighter.DividerDrawConfig[i].MaxDrawDepth := 1;
       end;
@@ -156,7 +156,7 @@ begin
   NewDiv := FCurHighlighter.DividerDrawConfig[i];
   FCurDividerConf := nil;
 
-  b := FCurDivInfo.Info^[i].BoolOpt;
+  b := FCurDivInfo.Info[i].BoolOpt;
   DividerSpinPanel.Visible := not b;
   NestLvlPanel.Visible := not b;
   DividerSpinEdit.Value := NewDiv.MaxDrawDepth;

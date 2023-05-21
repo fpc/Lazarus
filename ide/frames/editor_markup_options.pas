@@ -193,7 +193,7 @@ begin
   i := chkKWGroups.ItemIndex;
   if i < 0 then exit;
   i := PtrUInt(chkKWGroups.Items.Objects[i]);
-  i := FCurFoldInfo.Info^[i].Index;
+  i := FCurFoldInfo.Info[i].Index;
   Hl := TSynCustomFoldHighlighter(FCurHighlighter);
 
   Modes := [fmMarkup];
@@ -247,7 +247,7 @@ begin
   j := 0;
   for i1 := 0 to chkKWGroups.Count - 1 do begin
     i := PtrUInt(chkKWGroups.Items.Objects[i1]);
-    idx := FCurFoldInfo.Info^[i].Index;
+    idx := FCurFoldInfo.Info[i].Index;
     if Hl.FoldConfig[idx].SupportedModes * [fmMarkup, fmOutline] <> [] then begin
       if not chkKWGroups.Checked[j] then
         Hl.FoldConfig[idx].Modes := Hl.FoldConfig[idx].Modes - FMask
@@ -313,10 +313,10 @@ begin
   if not FUseMarkupWordBracket then FMask := FMask - [fmMarkup];
   if not FUseMarkupOutline then FMask := FMask - [fmOutline];
   for i := 0 to FCurFoldInfo.Count - 1 do begin
-    if Hl.FoldConfig[FCurFoldInfo.Info^[i].Index].SupportedModes * FMask <> [] then begin
-      j := chkKWGroups.Items.Add(FCurFoldInfo.Info^[i].Name);
+    if Hl.FoldConfig[FCurFoldInfo.Info[i].Index].SupportedModes * FMask <> [] then begin
+      j := chkKWGroups.Items.Add(FCurFoldInfo.Info[i].Name);
       chkKWGroups.Checked[j] :=
-        (Hl.FoldConfig[FCurFoldInfo.Info^[i].Index].Modes * FMask <> []);
+        (Hl.FoldConfig[FCurFoldInfo.Info[i].Index].Modes * FMask <> []);
       chkKWGroups.Items.Objects[j] := TObject({%H-}Pointer(PtrUInt(i)));
     end;
   end;
@@ -373,7 +373,7 @@ begin
     i := PtrUInt(chkKWGroups.Items.Objects[i]);
 
   if i >= 0 then begin
-    i := FCurFoldInfo.Info^[i].Index;
+    i := FCurFoldInfo.Info[i].Index;
     FMask := [fmMarkup, fmOutline];
     if not FUseMarkupWordBracket then FMask := FMask - [fmMarkup];
     if not FUseMarkupOutline then FMask := FMask - [fmOutline];
