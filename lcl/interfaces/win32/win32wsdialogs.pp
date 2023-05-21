@@ -818,9 +818,9 @@ class function TWin32WSOpenDialog.GetFileName(ShellItem: IShellItem): String;
 var
   FilePath: LPWStr;
 begin
-  if Succeeded(ShellItem.GetDisplayName(SIGDN(SIGDN_FILESYSPATH), @FilePath)) then
+  if Succeeded(ShellItem.GetDisplayName(SIGDN(SIGDN_FILESYSPATH), FilePath)) then
   begin
-    Result := UTF16ToUTF8(WideString(FilePath));
+    Result := UTF16ToUTF8(FilePath);
     CoTaskMemFree(FilePath);
   end
   else
@@ -1202,6 +1202,7 @@ var
   CF: TChooseFontA absolute CFW;
   LF: LogFontA absolute LFW;
   UserResult: WINBOOL;
+  TempName: String;
 begin
   with TFontDialog(ACommonDialog) do
   begin
@@ -1252,7 +1253,7 @@ begin
     debugln(['TWin32WSFontDialog.CreateHandle calling DoShow']);
     {$endif}
     TFontDialog(ACommonDialog).DoShow;
-    UserResult := ChooseFontW(@CFW);
+    UserResult := ChooseFontW(LPCHOOSEFONT(@CFW)); // ChooseFontW signature may be wrong.
     // we need to update LF now
     LF.lfFaceName := UTF16ToUTF8(LFW.lfFaceName);
   end;
@@ -1265,14 +1266,12 @@ begin
       if not Win32WidgetSet.MetricsFailed and IsFontNameDefault(Name) then
       begin
         if Sysutils.strlcomp(
-          @Win32WidgetSet.Metrics.lfMessageFont.lfFaceName,
-          @LF.lfFaceName,
+          @Win32WidgetSet.Metrics.lfMessageFont.lfFaceName[0],
+          @LF.lfFaceName[0],
           Length(LF.lfFaceName)) = 0 then
         begin
-          Sysutils.StrLCopy(
-            @LF.lfFaceName,
-            PAnsiChar(Name), // Dialog.Font.Name
-            Length(LF.lfFaceName));
+          TempName := Name; // Dialog.Font.Name is a property and has getter method.
+          Sysutils.StrLCopy(@LF.lfFaceName[0], PChar(TempName), Length(LF.lfFaceName));
         end;
         if LF.lfHeight = Win32WidgetSet.Metrics.lfMessageFont.lfHeight then
           LF.lfHeight := 0;

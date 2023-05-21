@@ -169,15 +169,15 @@ begin
   tnidw.hIcon := ATrayIcon.Icon.Handle;
 
   WideBuffer := UTF8ToUTF16(ATrayIcon.Hint);
-  WideStrLCopy(@tnidw.szTip, PWideChar(WideBuffer), 127);
+  WideStrLCopy(@tnidw.szTip[0], PWideChar(WideBuffer), SizeOf(tnidw.szTip));
 
-  Result := Shell_NotifyIconW(NIM_ADD, @tnidw);
+  Result := Shell_NotifyIconW(NIM_ADD, PNotifyIconDataW(@tnidw));
   if not Result then
   begin
     // Try old version of TNotifyIconDataW
     tnidw.cbSize := SizeOf(TNotifyIconDataW);
-    WideStrLCopy(@tnidw.szTip, PWideChar(WideBuffer), 63);
-    Result := Shell_NotifyIconW(NIM_MODIFY, @tnidw);
+    WideStrLCopy(@tnidw.szTip[0], PWideChar(WideBuffer), 63);
+    Result := Shell_NotifyIconW(NIM_MODIFY, PNotifyIconDataW(@tnidw));
   end;
 end;
 
@@ -222,11 +222,11 @@ end;
 *******************************************************************}
 class function TWin32WSCustomTrayIcon.Show(const ATrayIcon: TCustomTrayIcon): Boolean;
 var
-  Window: Windows.TWndClassEx;
+  Window: Windows.TWNDClassEx; // lp: LPWNDCLASS;
 begin
-  if not GetClassInfo(hInstance, szClassName, @Window) then
+  if not GetClassInfoEx(hInstance, szClassName, @Window) then
   begin
-    ZeroMemory(@Window, SizeOf(TWndClassEx));
+    Window := Default(Windows.TWNDClassEx);
     Window.cbSize := SizeOf(TWndClassEx);
     Window.style := CS_OWNDC;
     Window.lpfnWndProc := @TrayWndProc;
@@ -278,14 +278,14 @@ begin
   tnidw.uFlags := NIF_TIP or NIF_ICON;
 
   WideBuffer := UTF8ToUTF16(ATrayIcon.Hint);
-  WideStrLCopy(@tnidw.szTip, PWideChar(WideBuffer), 127);
+  WideStrLCopy(@tnidw.szTip[0], PWideChar(WideBuffer), SizeOf(tnidw.szTip));
 
-  if not Shell_NotifyIconW(NIM_MODIFY, @tnidw) then
+  if not Shell_NotifyIconW(NIM_MODIFY, PNotifyIconDataW(@tnidw)) then
   begin
     // Try old version of TNotifyIconDataW
     tnidw.cbSize := SizeOf(TNotifyIconDataW);
-    WideStrLCopy(@tnidw.szTip, PWideChar(WideBuffer), 63);
-    Shell_NotifyIconW(NIM_MODIFY, @tnidw);
+    WideStrLCopy(@tnidw.szTip[0], PWideChar(WideBuffer), 63);
+    Shell_NotifyIconW(NIM_MODIFY, PNotifyIconDataW(@tnidw));
   end;
 end;
 
@@ -311,12 +311,12 @@ begin
   NotifyData.uFlags:=NIF_INFO;
   NotifyData.u.uTimeout:=ATrayIcon.BalloonTimeout;
   w:=UTF8ToUTF16(ATrayIcon.BalloonHint);
-  WideStrLCopy(@NotifyData.szInfo, PWideChar(w), High(NotifyData.szInfo));
+  WideStrLCopy(@NotifyData.szInfo[0], PWideChar(w), High(NotifyData.szInfo));
   w:=UTF8ToUTF16(ATrayIcon.BalloonTitle);
-  WideStrLCopy(@NotifyData.szInfoTitle, PWideChar(w), High(NotifyData.szInfoTitle));
+  WideStrLCopy(@NotifyData.szInfoTitle[0], PWideChar(w), High(NotifyData.szInfoTitle));
   NotifyData.dwInfoFlags:=FlagsMap[ATrayIcon.BalloonFlags];
 
-  Result:= Shell_NotifyIconW(NIM_MODIFY, @NotifyData);
+  Result:= Shell_NotifyIconW(NIM_MODIFY, PNotifyIconDataW(@NotifyData));
 end;
 
 {*******************************************************************

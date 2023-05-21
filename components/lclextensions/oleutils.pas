@@ -91,7 +91,7 @@ function TOLEStream.Read(var Buffer; Count: Integer): Integer;
 var
   Res: HRESULT;
 begin
-  Res:=FSrcStream.Read(@Buffer, Count, @Result);
+  Res:=FSrcStream.Read(@Buffer, Count, @Cardinal(Result));
   if Res <> S_OK then
     Raise Exception.Create('TOLEStream - Error while reading: '+ErrorString(Res));
 end;
@@ -144,7 +144,7 @@ function TOLEStream.Write(const Buffer; Count: Integer): Integer;
 var
   Res: HRESULT;
 begin
-  Res:=FSrcStream.Write(@Buffer,Count,@Result);
+  Res:=FSrcStream.Write(@Buffer,Count,@Cardinal(Result));
   if Res <> S_OK then
     Raise Exception.Create('TOLEStream - Error while writing: '+ErrorString(Res));
 end;

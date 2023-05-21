@@ -186,6 +186,7 @@ var
   AErrorCode: Cardinal;
   NCCreateParams: TNCCreateParams;
   WindowClassW, DummyClassW: WndClassW;
+  lp: LPWNDCLASSW;
 begin
   NCCreateParams.DefWndProc := nil;
   NCCreateParams.WinControl := AWinControl;
@@ -197,10 +198,12 @@ begin
     begin
       if SubClass then
       begin
-        if GetClassInfoW(System.HInstance, PWideChar(WideString(pClassName)), @WindowClassW) then
+        if GetClassInfoW(System.HInstance, PWideChar(WideString(pClassName)),
+                         LPWNDCLASSW(@WindowClassW)) then
         begin
           NCCreateParams.DefWndProc := WndProc(WindowClassW.lpfnWndProc);
-          if not GetClassInfoW(System.HInstance, PWideChar(WideString(pSubClassName)), @DummyClassW) then
+          if not GetClassInfoW(System.HInstance, PWideChar(WideString(pSubClassName)),
+                               LPWNDCLASSW(@DummyClassW)) then
           begin
             with WindowClassW do
             begin
@@ -208,7 +211,7 @@ begin
               hInstance := System.HInstance;
               lpszClassName := PWideChar(WideString(pSubClassName));
             end;
-            Windows.RegisterClassW(@WindowClassW);
+            Windows.RegisterClassW(LPWNDCLASSW(@WindowClassW));
           end;
           pClassName := pSubClassName;
         end;

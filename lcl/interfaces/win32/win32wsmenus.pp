@@ -214,7 +214,7 @@ end;
 function FindMenuItemAccelerator(const ACharCode: word; const AMenuHandle: HMENU): integer;
 var
   MenuItemIndex: integer;
-  ItemInfo: MENUITEMINFO;     // TMenuItemInfoA and TMenuItemInfoW have same size and same structure type
+  ItemInfo: MENUITEMINFOW; // TMenuItemInfoA and TMenuItemInfoW have same size and same structure type
   FirstMenuItem: TMenuItem;
   SiblingMenuItem: TMenuItem;
   i: integer;
@@ -222,7 +222,7 @@ var
 begin
   Result := MakeLResult(0, MNC_IGNORE);
   MenuItemIndex := -1;
-  ItemInfo.cbSize := sizeof(TMenuItemInfo);
+  ItemInfo.cbSize := sizeof(TMenuItemInfoW);
   ItemInfo.fMask := MIIM_DATA;
   if not GetMenuItemInfoW(AMenuHandle, 0, true, @ItemInfo) then Exit;
 
@@ -1382,10 +1382,10 @@ end;
 
 function ChangeMenuFlag(const AMenuItem: TMenuItem; Flag: Cardinal; Value: boolean): boolean;
 var
-  MenuInfo: MENUITEMINFO;     // TMenuItemInfoA and TMenuItemInfoW have same size and same structure type
+  MenuInfo: MENUITEMINFOW; // TMenuItemInfoA and TMenuItemInfoW have same size and same structure type
 begin
-  MenuInfo := Default(MENUITEMINFO);
-  MenuInfo.cbSize := sizeof(TMenuItemInfo);
+  MenuInfo := Default(MENUITEMINFOW);
+  MenuInfo.cbSize := sizeof(TMenuItemInfoW);
   MenuInfo.fMask := MIIM_FTYPE;         // don't retrieve caption (MIIM_STRING not included)
   GetMenuItemInfoW(AMenuItem.MergedParent.Handle, AMenuItem.Command, False, @MenuInfo);
   if Value then
@@ -1405,10 +1405,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure SetMenuFlag(const Menu: HMenu; Flag: Cardinal; Value: boolean);
 var
-  MenuInfo: MENUITEMINFO;     // TMenuItemInfoA and TMenuItemInfoW have same size and same structure type
+  MenuInfo: MENUITEMINFOW; // TMenuItemInfoA and TMenuItemInfoW have same size and same structure type
 begin
-  MenuInfo := Default(MENUITEMINFO);
-  MenuInfo.cbSize := sizeof(TMenuItemInfo);
+  MenuInfo := Default(MENUITEMINFOW);
+  MenuInfo.cbSize := sizeof(TMenuItemInfoW);
   MenuInfo.fMask := MIIM_TYPE;  //MIIM_FTYPE not work here please use only MIIM_TYPE, caption not retrieved (dwTypeData = nil)
   GetMenuItemInfoW(Menu, 0, True, @MenuInfo);
   if Value then
@@ -1422,16 +1422,16 @@ end;
 
 procedure UpdateCaption(const AMenuItem: TMenuItem; ACaption: String);
 var
-  MenuInfo: MENUITEMINFO;     // TMenuItemInfoA and TMenuItemInfoW have same size and same structure type
+  MenuInfo: MENUITEMINFOW; // TMenuItemInfoA and TMenuItemInfoW have same size and same structure type
   WideBuffer: widestring;
 begin
   if (AMenuItem.MergedParent = nil) or not AMenuItem.MergedParent.HandleAllocated then
     Exit;
 
-  MenuInfo := Default(MENUITEMINFO);
+  MenuInfo := Default(MENUITEMINFOW);
   with MenuInfo do
   begin
-    cbSize := sizeof(TMenuItemInfo);
+    cbSize := sizeof(TMenuItemInfoW);
     fMask := MIIM_FTYPE or MIIM_STATE;  // don't retrieve current caption
   end;
   GetMenuItemInfoW(AMenuItem.MergedParent.Handle, AMenuItem.Command, False, @MenuInfo);
@@ -1445,11 +1445,10 @@ begin
       fState := EnabledToStateFlag[AMenuItem.Enabled];
       if AMenuItem.Checked then
         fState := fState or MFS_CHECKED;
-//      AMenuItem.Caption := ACaption;          // Already set
-        WideBuffer := UTF8ToUTF16(CompleteMenuItemStringCaption(AMenuItem, ACaption, #9));
-        dwTypeData := PChar(WideBuffer);      // PWideChar forced to PChar
-        cch := length(WideBuffer);
-
+      //AMenuItem.Caption := ACaption;          // Already set
+      WideBuffer := UTF8ToUTF16(CompleteMenuItemStringCaption(AMenuItem, ACaption, #9));
+      dwTypeData := PWideChar(WideBuffer);
+      cch := length(WideBuffer);
       fMask := fMask or MIIM_STRING;      // caption updated too
     end
     else
@@ -1481,7 +1480,7 @@ end;
 
 class procedure TWin32WSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
 var
-  MenuInfo: MENUITEMINFO;     // TMenuItemInfoA and TMenuItemInfoW have same size and same structure type
+  MenuInfo: MENUITEMINFOW; // TMenuItemInfoA and TMenuItemInfoW have same size and same structure type
   ParentMenuHandle: HMenu;
   ParentOfParent: HMenu;
   CallMenuRes: Boolean;
@@ -1491,8 +1490,8 @@ begin
   if AMenuItem.MergedParent=nil then
     Exit;
   ParentMenuHandle := AMenuItem.MergedParent.Handle;
-  MenuInfo := Default(MENUITEMINFO);
-  MenuInfo.cbSize := sizeof(TMenuItemInfo);
+  MenuInfo := Default(MENUITEMINFOW);
+  MenuInfo.cbSize := sizeof(TMenuItemInfoW);
 
   // Following part fixes the case when an item is added in runtime
   // but the parent item has not defined the submenu flag (hSubmenu=0)
@@ -1552,7 +1551,7 @@ begin
       fState := fState or MFS_DISABLED;
     end;
     WideBuffer := UTF8ToUTF16(CompleteMenuItemCaption(AMenuItem, #9));
-    dwTypeData := PChar(WideBuffer);        // PWideChar forced to PChar
+    dwTypeData := PWideChar(WideBuffer);
     cch := length(WideBuffer);
 
     if AMenuItem.RadioItem then
@@ -1584,7 +1583,7 @@ end;
 class procedure TWin32WSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
 var
   ParentOfParentHandle, ParentHandle: HMENU;
-  MenuInfo: MENUITEMINFO;     // TMenuItemInfoA and TMenuItemInfoW have same size and same structure type
+  MenuInfo: MENUITEMINFOW; // TMenuItemInfoA and TMenuItemInfoW have same size and same structure type
   CallMenuRes: Boolean;
 begin
   if Assigned(AMenuItem.MergedParent) then
@@ -1596,10 +1595,10 @@ begin
        AMenuItem.MergedParent.MergedParent.HandleAllocated then
     begin
       ParentOfParentHandle := AMenuItem.MergedParent.MergedParent.Handle;
-      MenuInfo := Default(MENUITEMINFO);
+      MenuInfo := Default(MENUITEMINFOW);
       with MenuInfo do
       begin
-        cbSize := sizeof(TMenuItemInfo);
+        cbSize := sizeof(TMenuItemInfoW);
         fMask := MIIM_SUBMENU;
       end;
       GetMenuItemInfoW(ParentOfParentHandle, AMenuItem.MergedParent.Command, False, @MenuInfo);

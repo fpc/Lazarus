@@ -82,13 +82,11 @@ end;
 procedure TSynEditStringSystemWidthChars.DoGetPhysicalCharWidths(Line: PChar; LineLen,
   Index: Integer; PWidths: PPhysicalCharWidth);
 var
-  //s: UnicodeString;// wideString;
   i: DWORD;
-  cpRes: TGCPRESULTS;
+  cpRes: TGCPRESULTSW;
   outs: array of widechar;
   order, dx, caret: array of integer;
   cclass, glyph: array of word;
-
   s: WideString;
   j, k: Integer;
   l: SizeUInt;
@@ -106,20 +104,19 @@ begin
 if TextDrawer= nil then exit;;
 
   SetLength(s, LineLen+1);  // wide chars of UTF-16 <= bytes of UTF-8 string
-  if ConvertUTF8ToUTF16(PWideChar(S), LineLen+1, Line, LineLen, [toInvalidCharToSymbol], l) <> trNoError then
+  if ConvertUTF8ToUTF16(PWideChar(s), LineLen+1, Line, LineLen, [toInvalidCharToSymbol], l) <> trNoError then
     exit;
   SetLength(s, l - 1);
 
   cpRes.lStructSize := sizeof(cpRes);
   SetLength(outs, Length(s)+1);     cpRes.lpOutString := @outs[0];
-  SetLength(order, Length(s)+1);    cpRes.lpOrder     := @order[0];
+  SetLength(order, Length(s)+1);    cpRes.lpOrder     := PCardinal(@order[0]);
   SetLength(dx, Length(s)+1);       cpRes.lpDx        := @dx[0];
   SetLength(caret, Length(s)+1);    cpRes.lpCaretPos  := @caret[0];
-  SetLength(cclass, Length(s)+1);   cpRes.lpClass     := @cclass[0];
-  SetLength(glyph, Length(s)+1);    cpRes.lpGlyphs    := @glyph[0];
+  SetLength(cclass, Length(s)+1);   cpRes.lpClass     := PChar(@cclass[0]);
+  SetLength(glyph, Length(s)+1);    cpRes.lpGlyphs    := Pwidechar(@glyph[0]);
   cpRes.nGlyphs := length(s);
 
-//exit;
   {$IFDEF WithSynExperimentalCharWidth}
   // Need to find fallback font(s), and measure with them too.
   TextDrawer.BeginDrawing(FHandleOwner.Handle);
@@ -127,18 +124,16 @@ if TextDrawer= nil then exit;;
   if (i and GCP_ERROR) <> 0 then i := 0; //exit;
   i := i and FLI_MASK or GCP_GLYPHSHAPE;
 
-  i := GetCharacterPlacementW(
-  textdrawer.StockDC,  //FHandleOwner.Handle,
-  pwidechar(s), length(s), 0, @cpRes, i); //GCP_DIACRITIC + GCP_KASHIDA + GCP_LIGATE);
+  i := GetCharacterPlacementW(textdrawer.StockDC,  //FHandleOwner.Handle,
+      pwidechar(s), length(s), 0, @cpRes, i); //GCP_DIACRITIC + GCP_KASHIDA + GCP_LIGATE);
   TextDrawer.EndDrawing;
-  {$endif}
   if i = 0 then begin
     debugln(LOG_SynSystemWidthChars, ['TSynEditStringSystemWidthChars FAILED for line ', Index]);
     exit;
   end;
+  {$endif}
 
   k := 0; // index for order
-
   for j := 0 to LineLen-1 do begin
     if Line^ in [#$00..#$7F, #$C0..#$FF] then begin
       if PWidths^ <> 0 then begin
@@ -151,7 +146,6 @@ if TextDrawer= nil then exit;;
       end;
       inc(k);
     end;
-
     inc(PWidths);
     inc(Line);
   end;
