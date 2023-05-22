@@ -52,6 +52,7 @@ type
   { TLCLTabControlCallback }
 
   TLCLTabControlCallback = class(TLCLCommonCallback, ITabControlCallback)
+    function shouldSelectTabViewItem(aTabIndex: Integer): Boolean;
     procedure willSelectTabViewItem(aTabIndex: Integer);
     procedure didSelectTabViewItem(aTabIndex: Integer);
   end;
@@ -438,6 +439,11 @@ begin
 end;
 
 { TLCLTabControlCallback }
+
+function TLCLTabControlCallback.shouldSelectTabViewItem(aTabIndex: Integer): Boolean;
+begin
+  Result:= NOT TTabControl(Target).Dragging;
+end;
 
 procedure TLCLTabControlCallback.willSelectTabViewItem(aTabIndex: Integer);
 var
