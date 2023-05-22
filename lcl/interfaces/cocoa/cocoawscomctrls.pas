@@ -52,8 +52,11 @@ type
   { TLCLTabControlCallback }
 
   TLCLTabControlCallback = class(TLCLCommonCallback, ITabControlCallback)
+    function shouldSelectTabViewItem(aTabIndex: Integer): Boolean;
     procedure willSelectTabViewItem(aTabIndex: Integer);
     procedure didSelectTabViewItem(aTabIndex: Integer);
+  private
+    procedure sengNotifyMsg(aTabIndex:Integer; aCode:Integer);
   end;
 
   { TCocoaWSCustomPage }
@@ -439,7 +442,12 @@ end;
 
 { TLCLTabControlCallback }
 
-procedure TLCLTabControlCallback.willSelectTabViewItem(aTabIndex: Integer);
+function TLCLTabControlCallback.shouldSelectTabViewItem(aTabIndex: Integer): Boolean;
+begin
+  Result:= NOT TTabControl(Target).Dragging;
+end;
+
+procedure TLCLTabControlCallback.sengNotifyMsg(aTabIndex:Integer; aCode:Integer);
 var
   Msg: TLMNotify;
   Hdr: TNmHdr;
@@ -450,31 +458,22 @@ begin
   Msg.Msg := LM_NOTIFY;
   FillChar(Hdr, SizeOf(Hdr), 0);
 
-  Hdr.hwndFrom := FTarget.Handle;
-  Hdr.Code := TCN_SELCHANGING;
+  Hdr.hwndFrom := Target.Handle;
+  Hdr.Code := aCode;
   Hdr.idFrom := TTabControl(Target).TabToPageIndex(ATabIndex);
   Msg.NMHdr := @Hdr;
   Msg.Result := 0;
   LCLMessageGlue.DeliverMessage(Target, Msg);
 end;
 
-procedure TLCLTabControlCallback.didSelectTabViewItem(aTabIndex: Integer);
-var
-  Msg: TLMNotify;
-  Hdr: TNmHdr;
+procedure TLCLTabControlCallback.willSelectTabViewItem(aTabIndex: Integer);
 begin
-  if aTabIndex<0 then exit;
+  sengNotifyMsg(aTabIndex, TCN_SELCHANGING);
+end;
 
-  FillChar(Msg, SizeOf(Msg), 0);
-  Msg.Msg := LM_NOTIFY;
-  FillChar(Hdr, SizeOf(Hdr), 0);
-
-  Hdr.hwndFrom := FTarget.Handle;
-  Hdr.Code := TCN_SELCHANGE;
-  Hdr.idFrom := TTabControl(Target).TabToPageIndex(ATabIndex);
-  Msg.NMHdr := @Hdr;
-  Msg.Result := 0;
-  LCLMessageGlue.DeliverMessage(Target, Msg);
+procedure TLCLTabControlCallback.didSelectTabViewItem(aTabIndex: Integer);
+begin
+  sengNotifyMsg(aTabIndex, TCN_SELCHANGE);
 end;
 
 { TCocoaWSStatusBar }

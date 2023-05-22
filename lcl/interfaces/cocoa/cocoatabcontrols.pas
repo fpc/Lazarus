@@ -33,6 +33,7 @@ uses
 type
 
   ITabControlCallback = interface(ICommonCallback)
+    function shouldSelectTabViewItem(aTabIndex: Integer): Boolean;
     procedure willSelectTabViewItem(aTabIndex: Integer);
     procedure didSelectTabViewItem(aTabIndex: Integer);
   end;
@@ -529,6 +530,10 @@ function TCocoaTabControl.tabView_shouldSelectTabViewItem(tabView: NSTabView;
   tabViewItem: NSTabViewItem): Boolean;
 begin
   Result := True;
+  if Assigned(callback) then
+  begin
+    Result:= callback.shouldSelectTabViewItem( IndexOfTab( self, tabViewItem) );
+  end;
 end;
 
 procedure TCocoaTabControl.tabView_willSelectTabViewItem(tabView: NSTabView;
