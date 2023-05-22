@@ -163,7 +163,6 @@ function LCLSendActivateMsg(const Target: TControl; Active: Word; Minimized: Boo
 var
   Mess: TLMActivate;
 begin
-  Result := 0;
   FillChar(Mess, SizeOf(Mess), 0);
   Mess.Msg := LM_ACTIVATE;
   Mess.Active := Active;
