@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-12-26 15:21+0100\n"
-"PO-Revision-Date: 2022-12-09 10:55+0100\n"
+"PO-Revision-Date: 2023-05-23 12:39+0200\n"
 "Last-Translator: Slavko <slavino@slavino.sk>\n"
 "Language-Team: Slovenský <sk@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -952,10 +952,8 @@ msgid "lowercase"
 msgstr "malé písmená"
 
 #: lazarusidestrconsts.dlgcdtpreview
-#, fuzzy
-#| msgid "Preview (Max line length = 1)"
 msgid "Preview (max line length = 1)"
-msgstr "Ukážka (Maximálna dĺžka riadka = 1)"
+msgstr "Ukážka (maximálna dĺžka riadka = 1)"
 
 #: lazarusidestrconsts.dlgcdtreadprefix
 msgid "Read prefix"
@@ -1078,10 +1076,8 @@ msgid "Use Heaptrc unit (check for mem-leaks)"
 msgstr "Použiť jednotku Heaptrc (kontrola únikov pamäte)"
 
 #: lazarusidestrconsts.dlgcoincfiles
-#, fuzzy
-#| msgid "Include Files (-Fi):"
 msgid "Include files (-Fi):"
-msgstr "Súbory include (-Fi)"
+msgstr "Súbory include (-Fi):"
 
 #: lazarusidestrconsts.dlgcoinfoforgdb
 msgid "Debugger info"
@@ -1096,11 +1092,9 @@ msgid "Linking"
 msgstr "Linkovanie"
 
 #: lazarusidestrconsts.dlgcoloadsavehint
-#, fuzzy
-#| msgid "Load/Save"
 msgctxt "lazarusidestrconsts.dlgcoloadsavehint"
 msgid "Compiler options can be saved to an XML file."
-msgstr "Otvoriť/Uložiť"
+msgstr "Voľby kompilátora môžu byť uložené do XML súboru."
 
 #: lazarusidestrconsts.dlgcolor
 msgid "Color"
@@ -1268,7 +1262,6 @@ msgid "&Show Options"
 msgstr "Zobraziť voľby"
 
 #: lazarusidestrconsts.dlgcosmartlinkable
-#, fuzzy
 msgid "Smart linkable"
 msgstr "Smart linkovateľné"
 
@@ -1822,10 +1815,9 @@ msgid "PNG images"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfilterlazarusdesktopsettings
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterlazarusdesktopsettings"
 msgid "Lazarus Desktop Settings"
-msgstr "Nastavenia plochy Lazarus"
+msgstr "Nastavenia plochy Lazarusu"
 
 #: lazarusidestrconsts.dlgfilterlazaruseditorfile
 msgctxt "lazarusidestrconsts.dlgfilterlazaruseditorfile"
@@ -1854,29 +1846,25 @@ msgid "Lazarus other file"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfilterlazaruspackage
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterlazaruspackage"
 msgid "Lazarus package"
 msgstr "Balíček Lazarus"
 
 #: lazarusidestrconsts.dlgfilterlazarusproject
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterlazarusproject"
 msgid "Lazarus project"
 msgstr "Projekt Lazarus"
 
 #: lazarusidestrconsts.dlgfilterlazarusprojectsource
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterlazarusprojectsource"
 msgid "Lazarus project source"
-msgstr "Zdrojový kód Lazarus"
+msgstr "Zdrojový kód projektu Lazarus"
 
 #: lazarusidestrconsts.dlgfilterlazarussession
 msgid "Lazarus session"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfilterlazarusunit
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterlazarusunit"
 msgid "Lazarus unit"
 msgstr "Jednotka Lazarus"
@@ -1884,16 +1872,14 @@ msgstr "Jednotka Lazarus"
 #: lazarusidestrconsts.dlgfilterpascalfile
 msgctxt "lazarusidestrconsts.dlgfilterpascalfile"
 msgid "Pascal file"
-msgstr ""
+msgstr "Súbor Pascalu"
 
 #: lazarusidestrconsts.dlgfilterprograms
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterprograms"
 msgid "Programs"
 msgstr "Programy"
 
 #: lazarusidestrconsts.dlgfilterxml
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgfilterxml"
 msgid "XML files"
 msgstr "Súbory XML"
@@ -2131,10 +2117,8 @@ msgid "From b&eginning"
 msgstr "Od začiatku"
 
 #: lazarusidestrconsts.dlgfromcursor
-#, fuzzy
-#| msgid "&From cursor"
 msgid "From c&ursor"
-msgstr "&Od kurzora"
+msgstr "Od k&urzora"
 
 #: lazarusidestrconsts.dlgglobal
 msgid "&Global"
@@ -2525,20 +2509,14 @@ msgid "Main Menu"
 msgstr "Hlavné menu"
 
 #: lazarusidestrconsts.dlgmainviewforms
-#, fuzzy
-#| msgid "View project forms"
 msgid "View Project Forms"
 msgstr "Zobraziť formuláre projektu"
 
 #: lazarusidestrconsts.dlgmainviewframes
-#, fuzzy
-#| msgid "View project frames"
 msgid "View Project Frames"
 msgstr "Zobraziť rámce projektu"
 
 #: lazarusidestrconsts.dlgmainviewunits
-#, fuzzy
-#| msgid "View project units"
 msgctxt "lazarusidestrconsts.dlgmainviewunits"
 msgid "View Project Units"
 msgstr "Zobraziť jednotky projektu"
@@ -3021,13 +2999,11 @@ msgid "Messages"
 msgstr "Správy"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentdebug
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentdebug"
 msgid "Debug"
 msgstr "Ladiť"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgenterror
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgenterror"
 msgid "Error"
 msgstr "Chyba"
@@ -3473,7 +3449,6 @@ msgid "Priorities"
 msgstr ""
 
 #: lazarusidestrconsts.dlgproject
-#, fuzzy
 msgctxt "lazarusidestrconsts.dlgproject"
 msgid "Project"
 msgstr "Projekt"
@@ -4452,8 +4427,6 @@ msgid "Ambiguous Unit Name"
 msgstr "Nejednoznačné meno jednotky"
 
 #: lazarusidestrconsts.lisa2pancestortype
-#, fuzzy
-#| msgid "Ancestor Type"
 msgid "Ancestor type"
 msgstr "Typ predka"
 
@@ -4475,8 +4448,6 @@ msgid "Create New Component"
 msgstr ""
 
 #: lazarusidestrconsts.lisa2pcreatenewfile
-#, fuzzy
-#| msgid "Create new file"
 msgid "Create New File"
 msgstr "Vytvoriť nový súbor"
 
@@ -4947,20 +4918,18 @@ msgid "Invalid Package"
 msgstr "Neplatný balíček"
 
 #: lazarusidestrconsts.lisaf2pinvalidpackageid
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Invalid package ID: %s%s%s"
+#, object-pascal-format
 msgid "Invalid package ID: \"%s\""
-msgstr "Neplatný ID balíčka: %s%s%s"
+msgstr "Neplatné ID balíčka: \"%s\""
 
 #: lazarusidestrconsts.lisaf2ppackageisreadonly
 msgid "Package is read only"
 msgstr "Balíček je len na čítanie"
 
 #: lazarusidestrconsts.lisaf2ppackagenotfound
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Package %s%s%s not found."
+#, object-pascal-format
 msgid "Package \"%s\" not found."
-msgstr "Balíček %s%s%s nenájdený."
+msgstr "Balíček \"%s\" nenájdený."
 
 #: lazarusidestrconsts.lisaf2pshowall
 msgctxt "lazarusidestrconsts.lisaf2pshowall"
@@ -5528,10 +5497,8 @@ msgid "Cannot compile project"
 msgstr ""
 
 #: lazarusidestrconsts.liscannotcopytoplevelcomponent
-#, fuzzy
-#| msgid "Can not copy top level component."
 msgid "Cannot copy top level component."
-msgstr "Namôžete kopírovať najvyšší komponent"
+msgstr "Nie je možné kopírovať komponent najvyššej úrovne."
 
 #: lazarusidestrconsts.liscannotcreatefile
 #, object-pascal-format, fuzzy, badformat
@@ -5848,16 +5815,12 @@ msgid "Center a lost window"
 msgstr "Centrovať stratené okno"
 
 #: lazarusidestrconsts.liscentercontrolhorizontallyrelativetosibling
-#, fuzzy
-#| msgid "Center control horizontally relative to the given sibling"
 msgid "Center control horizontally relative to the given sibling. BorderSpacing is ignored."
-msgstr "Centrovať prvky vodorovne, relatívne k daným súrodencom"
+msgstr "Centrovať ovládací prvok vodorovne vzhľadom na daného súrodenca. BorderSpacing sa ignoruje."
 
 #: lazarusidestrconsts.liscentercontrolverticallyrelativetosibling
-#, fuzzy
-#| msgid "Center control vertically relative to the given sibling"
 msgid "Center control vertically relative to the given sibling. BorderSpacing is ignored."
-msgstr "Centrovať·prvky·zvislo,·relatívne·k·daným·súrodencom"
+msgstr "Centrovať ovládací prvok zvislo vzhľadom na daného súrodenca. BorderSpacing sa ignoruje."
 
 #: lazarusidestrconsts.liscenterform
 msgid "Center Form"
@@ -6692,10 +6655,8 @@ msgid " A token \"%s\" already exists! "
 msgstr " Token \"%s\" už existuje! "
 
 #: lazarusidestrconsts.liscodetemplautocompleteon
-#, fuzzy
-#| msgid "Auto complete on ..."
 msgid "Auto complete on"
-msgstr "Automatické dokončovanie na ..."
+msgstr "Automatické dokončovanie na"
 
 #: lazarusidestrconsts.liscodetemplchange
 msgctxt "lazarusidestrconsts.liscodetemplchange"
@@ -6725,10 +6686,9 @@ msgid "Action: %s"
 msgstr "Akcia: %s"
 
 #: lazarusidestrconsts.liscodetoolsdefsautocreatednodesreadonly
-#, object-pascal-format, fuzzy
-#| msgid "Auto created nodes can not be edited,%snor can they have non auto created child nodes."
+#, object-pascal-format
 msgid "Auto created nodes cannot be edited,%snor can they have non auto created child nodes."
-msgstr "Automaticky vytvorené uzly nemôžu byť upravované,%sani nemôžu mať neautomaticky vytvorené podriadené uzly"
+msgstr "Automaticky vytvorené uzly nemôžu byť upravované,%sani nemôžu mať neautomaticky vytvorené podriadené uzly."
 
 #: lazarusidestrconsts.liscodetoolsdefsautogenerated
 #, object-pascal-format
@@ -8739,7 +8699,7 @@ msgstr "Adresáre"
 
 #: lazarusidestrconsts.lisdirectory
 msgid "Directory: "
-msgstr "Adresár:"
+msgstr "Adresár: "
 
 #: lazarusidestrconsts.lisdirectorynotfound
 #, object-pascal-format
@@ -11490,16 +11450,12 @@ msgid "Lazarus default"
 msgstr "Lazarus (predvolené)"
 
 #: lazarusidestrconsts.liskmmacosxapple
-#, fuzzy
-#| msgid "Mac OS X (Apple style)"
 msgid "macOS, Apple style"
-msgstr "Mac OS X (štýl Apple )"
+msgstr "macOS (štýl Apple )"
 
 #: lazarusidestrconsts.liskmmacosxlaz
-#, fuzzy
-#| msgid "Mac OS X (Lazarus style)"
 msgid "macOS, Lazarus style"
-msgstr "Mac OS X (štýl Lazarus)"
+msgstr "macOS (štýl Lazarus)"
 
 #: lazarusidestrconsts.liskmnewpackage
 msgid "New package"
@@ -13363,11 +13319,9 @@ msgid "Lowercase Selection"
 msgstr "Výber na malé písmená"
 
 #: lazarusidestrconsts.lismenumacrolistview
-#, fuzzy
-#| msgid "Editor Macros ..."
 msgctxt "lazarusidestrconsts.lismenumacrolistview"
 msgid "Editor Macros"
-msgstr "Makrá editora ..."
+msgstr "Makrá editora"
 
 #: lazarusidestrconsts.lismenumakeresourcestring
 msgid "Make Resource String ..."
@@ -13761,7 +13715,7 @@ msgstr ""
 #: lazarusidestrconsts.lismenuviewregisters
 msgctxt "lazarusidestrconsts.lismenuviewregisters"
 msgid "Registers"
-msgstr ""
+msgstr "Registre"
 
 #: lazarusidestrconsts.lismenuviewrestrictionbrowser
 msgid "Restriction Browser"
@@ -17308,7 +17262,7 @@ msgstr "Obnovenie zlyhalo"
 
 #: lazarusidestrconsts.lisrevision
 msgid "Revision: "
-msgstr ""
+msgstr "Revízia: "
 
 #: lazarusidestrconsts.lisright
 msgctxt "lazarusidestrconsts.lisright"
@@ -18457,7 +18411,7 @@ msgstr "Súbor %s%s%s je symbolický odkaz. %s%sOtvoriť %s%s%s namiesto neho?"
 #: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi
 #, object-pascal-format
 msgid "The file \"%s\" is not a Lazarus project.%sCreate a new project for this \"%s\"?"
-msgstr ""
+msgstr "Súbor \"%s\" nie je projekt Lazarusu.%sVytvoriť nový projekt pre tento súbor \"%s\"?"
 
 #: lazarusidestrconsts.listhefilemaskisinvalid
 #, object-pascal-format
@@ -18470,14 +18424,12 @@ msgid "The file mask \"%s\" is not a valid regular expression."
 msgstr ""
 
 #: lazarusidestrconsts.listhefileseemstobeaprogramclosecurrentproject
-#, object-pascal-format, fuzzy, badformat
-#| msgid "The file %s%s%s%sseems to be a program. Close current project and create a new Lazarus project for this program?%s\"No\" will load the file as normal source."
+#, object-pascal-format
 msgid "The file \"%s\" seems to be a program.%sClose current project and create a new Lazarus project for this program?%s\"No\" will load the file as normal source."
-msgstr "Súbor %s%s%s%svyzerá byť programom. Zatvoriť aktuálny projekt a vytvoriť nový projekt Lazarus z tohoto programu?%s\"Nie\" načíta súbor ako bežný zdrojový kód."
+msgstr "Súbor \"%s\" vyzerá byť programom.%sZatvoriť aktuálny projekt a vytvoriť nový projekt Lazarus z tohoto programu?%s\"Nie\" načíta súbor ako bežný zdrojový kód."
 
 #: lazarusidestrconsts.listhefileseemstobetheprogramfileofanexistinglazarusp
-#, object-pascal-format, fuzzy
-#| msgid "The file %s seems to be the program file of an existing lazarus Project."
+#, object-pascal-format
 msgid "The file %s seems to be the program file of an existing Lazarus Project."
 msgstr "Súbor %s vyzerá byť programovým súborom existujúceho projektu Lazarus."
 
@@ -20681,7 +20633,7 @@ msgstr "Typ"
 
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"
-msgstr ""
+msgstr "&Revízia:"
 
 #: lazarusidestrconsts.rsselectaninheritedentry
 msgid "Select an inherited entry"
