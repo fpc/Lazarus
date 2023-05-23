@@ -96,7 +96,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings, SettingsTypes, JcfUIConsts;
+  JcfSettings, SettingsTypes, JcfUIConsts, JcfIdeRegister;
 
 constructor TfClarifySpaces.Create(AOwner: TComponent);
 begin
@@ -243,7 +243,7 @@ end;
 
 class function TfClarifySpaces.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormattingSettings;
+  Result := TIDEFormattingSettings;
 end;
 
 {-------------------------------------------------------------------------------

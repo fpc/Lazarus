@@ -55,7 +55,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings, JcfUIConsts, SetComments;
+  JcfSettings, JcfUIConsts, SetComments, JcfIdeRegister;
 
 constructor TfComments.Create(AOwner: TComponent);
 begin
@@ -97,7 +97,7 @@ end;
 
 class function TfComments.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormattingSettings;
+  Result := TIDEFormattingSettings;
 end;
 
 initialization

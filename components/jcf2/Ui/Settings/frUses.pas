@@ -67,7 +67,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings, JcfUIConsts;
+  JcfSettings, JcfUIConsts, JcfIdeRegister;
 
 constructor TfUses.Create(AOwner: TComponent);
 begin
@@ -131,7 +131,7 @@ end;
 
 class function TfUses.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormattingSettings;
+  Result := TIDEFormattingSettings;
 end;
 
 procedure TfUses.cbInsertInterfaceClick(Sender: TObject);

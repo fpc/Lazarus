@@ -76,7 +76,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings, JcfUIConsts;
+  JcfSettings, JcfUIConsts, JcfIdeRegister;
 
 constructor TfClarifyAlign.Create(AOwner: TComponent);
 begin
@@ -173,7 +173,7 @@ end;
 
 class function TfClarifyAlign.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormattingSettings;
+  Result := TIDEFormattingSettings;
 end;
 
 {-------------------------------------------------------------------------------

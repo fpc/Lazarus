@@ -62,7 +62,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings, SettingsTypes, JcfUIConsts;
+  JcfSettings, SettingsTypes, JcfUIConsts, JcfIdeRegister;
 
 procedure TfCompilerDirectReturns.FrameResize(Sender:TObject);
 begin
@@ -149,7 +149,7 @@ end;
 
 class function TfCompilerDirectReturns.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormattingSettings;
+  Result := TIDEFormattingSettings;
 end;
 
 initialization

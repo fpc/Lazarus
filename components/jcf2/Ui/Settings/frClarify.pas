@@ -58,7 +58,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings, SetClarify, JcfUIConsts;
+  JcfSettings, SetClarify, JcfUIConsts, JcfIdeRegister;
 
 constructor TfClarify.Create(AOwner: TComponent);
 begin
@@ -107,7 +107,7 @@ end;
 
 class function TfClarify.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormattingSettings;
+  Result := TIDEFormattingSettings;
 end;
 
 class function TfClarify.DefaultCollapseChildNodes: Boolean;

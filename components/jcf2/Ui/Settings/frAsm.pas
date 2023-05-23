@@ -68,7 +68,7 @@ uses
   { jcf }
   JcfSettings, JcfUIConsts,
   { local }
-  SettingsTypes, SetAsm;
+  SettingsTypes, SetAsm, JcfIdeRegister;
 
 procedure TfAsm.FrameResize(Sender:TObject);
 begin
@@ -137,7 +137,7 @@ end;
 
 class function TfAsm.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormattingSettings;
+  Result := TIDEFormattingSettings;
 end;
 
 initialization

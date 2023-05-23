@@ -148,7 +148,8 @@ uses
   CommandLineConstants in '..\CommandLineConstants.pas',
   StatusMessageReceiver in '..\StatusMessageReceiver.pas',
   JcfUiTools in '..\..\Ui\jcfuitools.pas',
-  MoveSpaceToBeforeColon in '..\..\Process\Spacing\MoveSpaceToBeforeColon.pas';
+  MoveSpaceToBeforeColon in '..\..\Process\Spacing\MoveSpaceToBeforeColon.pas',
+  jcfUiToolsNoGui in '..\..\Ui\jcfuitoolsnogui.pas';
 
 const
   CONFIG_FILE_NAME = 'jcfsettings.cfg';
@@ -397,6 +398,7 @@ var
 
 { main program starts here }
 begin
+  SetJcfUiClass(TJcfUINoGUI.Create);  // must be the first action.
   GetDefaultSettingsFileName := CmdLineDefGetDefaultSettingsFileName;
   feReturnCode := rcSuccess;
   { read registry }

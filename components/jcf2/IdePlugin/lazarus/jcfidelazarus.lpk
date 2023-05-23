@@ -731,6 +731,10 @@
         <Filename Value="..\..\Ui\jcfuitools.pas"/>
         <UnitName Value="JcfUiTools"/>
       </Item>
+      <Item>
+        <Filename Value="..\..\Ui\jcfuitoolsgui.pas"/>
+        <UnitName Value="JcfUiToolsGUI"/>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

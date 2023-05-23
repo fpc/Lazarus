@@ -16,8 +16,80 @@
         <DpiAware Value="True"/>
       </XPManifest>
     </General>
-    <BuildModes Count="1">
+    <BuildModes Count="3">
       <Item1 Name="Default" Default="True"/>
+      <Item2 Name="Debug">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="TestJCF"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir);..\Include"/>
+            <OtherUnitFiles Value="..\Parse;..\Utils;..\Settings;..\Process;..\Process\Returns;..\Process\Spacing;..\ReadWrite;..\Process\Indent;..\Process\Obfuscate;..\Process\Transform;..\Process\Warnings;..\Process\Capitalisation;..\Process\Info;..\Process\Align;..\Parse\UI;..\Parse\PreProcessor;..\Include;..\Settings\Streams;..;..\Ui;..\IdePlugin\lazarus"/>
+            <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <Parsing>
+            <SyntaxOptions>
+              <IncludeAssertionCode Value="True"/>
+            </SyntaxOptions>
+          </Parsing>
+          <CodeGeneration>
+            <Checks>
+              <IOChecks Value="True"/>
+              <RangeChecks Value="True"/>
+              <OverflowChecks Value="True"/>
+              <StackChecks Value="True"/>
+            </Checks>
+            <VerifyObjMethodCallValidity Value="True"/>
+          </CodeGeneration>
+          <Linking>
+            <Debugging>
+              <DebugInfoType Value="dsDwarf3"/>
+              <UseHeaptrc Value="True"/>
+              <TrashVariables Value="True"/>
+              <UseExternalDbgSyms Value="True"/>
+            </Debugging>
+            <Options>
+              <Win32>
+                <GraphicApplication Value="True"/>
+              </Win32>
+            </Options>
+          </Linking>
+        </CompilerOptions>
+      </Item2>
+      <Item3 Name="Release">
+        <CompilerOptions>
+          <Version Value="11"/>
+          <PathDelim Value="\"/>
+          <Target>
+            <Filename Value="TestJCF"/>
+          </Target>
+          <SearchPaths>
+            <IncludeFiles Value="$(ProjOutDir);..\Include"/>
+            <OtherUnitFiles Value="..\Parse;..\Utils;..\Settings;..\Process;..\Process\Returns;..\Process\Spacing;..\ReadWrite;..\Process\Indent;..\Process\Obfuscate;..\Process\Transform;..\Process\Warnings;..\Process\Capitalisation;..\Process\Info;..\Process\Align;..\Parse\UI;..\Parse\PreProcessor;..\Include;..\Settings\Streams;..;..\Ui;..\IdePlugin\lazarus"/>
+            <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+          </SearchPaths>
+          <CodeGeneration>
+            <SmartLinkUnit Value="True"/>
+            <Optimizations>
+              <OptimizationLevel Value="3"/>
+            </Optimizations>
+          </CodeGeneration>
+          <Linking>
+            <Debugging>
+              <GenerateDebugInfo Value="False"/>
+            </Debugging>
+            <LinkSmart Value="True"/>
+            <Options>
+              <Win32>
+                <GraphicApplication Value="True"/>
+              </Win32>
+            </Options>
+          </Linking>
+        </CompilerOptions>
+      </Item3>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
@@ -34,7 +106,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="97">
+    <Units Count="99">
       <Unit0>
         <Filename Value="TestJCF.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -431,6 +503,16 @@
         <Filename Value="..\Parse\PreProcessor\PreProcessorExpressionTokens.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit96>
+      <Unit97>
+        <Filename Value="..\Ui\jcfuitoolsnogui.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="JcfUiToolsNoGUI"/>
+      </Unit97>
+      <Unit98>
+        <Filename Value="..\Ui\jcfuitoolsgui.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="JcfUiToolsGUI"/>
+      </Unit98>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

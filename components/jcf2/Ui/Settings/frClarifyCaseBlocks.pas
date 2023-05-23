@@ -61,7 +61,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings, SettingsTypes, JcfUIConsts;
+  JcfSettings, SettingsTypes, JcfUIConsts, JcfIdeRegister;
 
 procedure TfClarifyCaseBlocks.FrameResize(Sender:TObject);
 begin
@@ -149,7 +149,7 @@ end;
 
 class function TfClarifyCaseBlocks.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormattingSettings;
+  Result := TIDEFormattingSettings;
 end;
 
 {-------------------------------------------------------------------------------

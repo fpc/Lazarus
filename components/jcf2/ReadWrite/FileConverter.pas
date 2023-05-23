@@ -249,7 +249,7 @@ begin
         else
           lsOutType := 'Output';
           
-        wRes :=MessageDlgUI(lsOutType + ' file ' + lsOut + ' exists already. Remove it?');
+        wRes := GetUI.MessageDlgUI(lsOutType + ' file ' + lsOut + ' exists already. Remove it?');
       end;
 
       if wRes = mrAll then
@@ -359,7 +359,7 @@ begin
       ProcessFile(lsDir + lsNames[liLoop]);
       if fbAbort then
         break;
-      UpdateGUI;
+      GetUI.UpdateGUI;
     end;
 
     { all subdirs }

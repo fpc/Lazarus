@@ -65,7 +65,7 @@ implementation
 {$R *.lfm}
 
 uses
-  SettingsTypes, JcfSettings, JcfUIConsts;
+  SettingsTypes, JcfSettings, JcfUIConsts, JcfIdeRegister;
 
 procedure TfClarifyReturns.FrameResize(Sender:TObject);
 begin
@@ -144,7 +144,7 @@ end;
 
 class function TfClarifyReturns.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormattingSettings;
+  Result := TIDEFormattingSettings;
 end;
 
 initialization

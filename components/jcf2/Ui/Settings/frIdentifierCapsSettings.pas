@@ -58,7 +58,7 @@ implementation
 {$R *.lfm}
 
 uses 
-  JcfSettings, JcfUIConsts;
+  JcfSettings, JcfUIConsts, JcfIdeRegister;
 
 constructor TfIdentifierCapsSettings.Create(AOwner: TComponent);
 begin
@@ -98,7 +98,7 @@ end;
 
 class function TfIdentifierCapsSettings.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormattingSettings;
+  Result := TIDEFormattingSettings;
 end;
 
 procedure TfIdentifierCapsSettings.cbEnableAnyWordsClick(Sender: TObject);

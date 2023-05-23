@@ -451,7 +451,7 @@ begin
   end;
   
   Inc(fiTokenCount);
-  UpdateGUI(fiTokenCount,UPDATE_INTERVAL);
+  GetUI.UpdateGUI(fiTokenCount,UPDATE_INTERVAL);
 
   { add trailing white space
     fixes some problems, causes others

@@ -154,7 +154,7 @@ begin
   fbConvertError := False;
   try { finally normal cursor }
     // this can take a long time for large files
-    SetWaitCursorUI;
+    GetUI.SetWaitCursorUI;
 
 
     // turn text into tokens
@@ -225,7 +225,7 @@ begin
       end;
     end;
   finally
-    RestoreCursorUI;
+    GetUI.RestoreCursorUI;
   end;
 end;
 
@@ -347,9 +347,9 @@ end;
 procedure TConverter.ShowParseTree;
 begin
   // This is always called from a Cursor:=crHourGlass block. Restore old cursor.
-  RestoreCursorUI;
+  GetUI.RestoreCursorUI;
   if fcBuildParseTree.Root <> nil then
-    ShowParseTreeUI(fcBuildParseTree.Root);
+    GetUI.ShowParseTreeUI(fcBuildParseTree.Root);
 end;
 
 procedure TConverter.ConvertPart(const piStartIndex, piEndIndex: Integer;

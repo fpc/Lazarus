@@ -181,7 +181,7 @@ const
    UPDATE_INTERVAL = 512;
 begin
   Inc(fiCurrentTokenIndex);
-  UpdateGUI(fiCurrentTokenIndex,UPDATE_INTERVAL);
+  GetUI.UpdateGUI(fiCurrentTokenIndex,UPDATE_INTERVAL);
 end;
 
 function TPreProcessorParseTree.CurrentToken: TSourceToken;

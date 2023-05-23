@@ -33,16 +33,16 @@ uses
   JcfRegistrySettings, JcfSetBase, JcfSettings, SetAlign, SetAsm, SetCaps, 
   SetClarify, SetComments, SetIndent, SetObfuscate, SetPreProcessor, 
   SetReplace, SetReturns, SetSpaces, SettingsTypes, SetTransform, SetUses, 
-  SetWordList, SettingsStream, fJcfErrorDisplay, Delay, IntList, 
-  JcfHelp, JcfLog, JcfMiscFunctions, fAbout,
-  JcfVersionConsts, frFiles, frObfuscateSettings, frClarify, frClarifySpaces, 
-  frClarifyIndent, frBlankLines, frClarifyAlign, frClarifyLongLineBreaker, 
-  frClarifyReturns, frCompilerDirectReturns, frClarifyBlocks, 
-  frClarifyCaseBlocks, frComments, frWarnings, frReservedCapsSettings, 
-  frAnyCapsSettings, frIdentifierCapsSettings, frNotIdentifierCapsSettings, 
-  frUnitCaps, frReplace, frUses, frTransform, frAsm, frPreProcessor, 
-  JcfUIConsts, Diff, diffmerge, JcfStringUtils,
-  JcfUnicodeFiles, JcfUiTools, LazarusPackageIntf;
+  SetWordList, SettingsStream, fJcfErrorDisplay, Delay, IntList, JcfHelp, 
+  JcfLog, JcfMiscFunctions, fAbout, JcfVersionConsts, frFiles, 
+  frObfuscateSettings, frClarify, frClarifySpaces, frClarifyIndent, 
+  frBlankLines, frClarifyAlign, frClarifyLongLineBreaker, frClarifyReturns, 
+  frCompilerDirectReturns, frClarifyBlocks, frClarifyCaseBlocks, frComments, 
+  frWarnings, frReservedCapsSettings, frAnyCapsSettings, 
+  frIdentifierCapsSettings, frNotIdentifierCapsSettings, frUnitCaps, 
+  frReplace, frUses, frTransform, frAsm, frPreProcessor, JcfUIConsts, Diff, 
+  diffmerge, JcfStringUtils, JcfUnicodeFiles, JcfUiTools, JcfUiToolsGUI, 
+  LazarusPackageIntf;
 
 implementation
 

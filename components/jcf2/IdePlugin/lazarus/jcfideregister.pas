@@ -41,13 +41,29 @@ uses
   // IdeIntf
   LazIDEIntf, MenuIntf, IdeCommands,
   // local
-  JcfIdeMain, JcfRegistrySettings, JcfUIConsts;
+  JcfIdeMain, JcfRegistrySettings, JcfUIConsts,
+  IDEOptionsIntf, IDEOptEditorIntf;
+
+type
+  TIDEFormattingSettings = class(TAbstractIDEEnvironmentOptions)
+  public
+    constructor Create(const pbReadRegFile: boolean);
+    destructor Destroy; override;
+    class function GetGroupCaption: String; override;
+    class function GetInstance: TAbstractIDEOptions; override;
+    procedure DoAfterWrite({%H-}Restore: boolean); override;
+  end;
 
 procedure Register;
 
 implementation
 
+uses
+  JcfSettings, JcfUiTools, JcfUiToolsGui;
+
 {$R jcfsettings.res}
+
+
 
 const
   FORMAT_MENU_NAME         = 'jcfJEDICodeFormat';
@@ -99,6 +115,7 @@ var
   Key: TIDEShortCut;
   Cmd: TIDECommand;
 begin
+  SetJcfUiClass(TJcfUIGUI.Create); //<< Don't erase, must be the first called function.
   SetLazarusDefaultFileName;
   GetDefaultSettingsFileName := IDEGetDefaultSettingsFileName;
 
@@ -133,11 +150,59 @@ begin
     lcJCFIDE.DoAbout);
 end;
 
+var
+  // a module var
+  mcIDEFormattingSettings: TIDEFormattingSettings = nil;
+
+constructor TIDEFormattingSettings.Create(const pbReadRegFile: boolean);
+begin
+  inherited Create();
+  FormattingSettings;  //create JCF FormattingSetting if not exitst.
+end;
+
+destructor TIDEFormattingSettings.Destroy;
+begin
+  if FormattingSettings.WriteOnExit then
+    FormattingSettings.Write;
+  inherited;
+end;
+
+function IDEFormattingSettings: TIDEFormattingSettings;
+begin
+  if mcIDEFormattingSettings = nil then
+    mcIDEFormattingSettings := TIDEFormattingSettings.Create(true);
+  Result := mcIDEFormattingSettings;
+end;
+
+class function TIDEFormattingSettings.GetGroupCaption: String;
+begin
+  Result := lisJCFFormatSettings;
+end;
+
+class function TIDEFormattingSettings.GetInstance: TAbstractIDEOptions;
+begin
+  Result := IDEFormattingSettings;
+end;
+
+procedure TIDEFormattingSettings.DoAfterWrite(Restore: boolean);
+begin
+  { settings are now in need of saving }
+  FormattingSettings.Dirty := True;
+  { check consistency of settings }
+  FormattingSettings.MakeConsistent;
+  { save to file }
+  FormattingSettings.Write;
+end;
+
 
 initialization
   lcJCFIDE := TJcfIdeMain.Create;
+  // IDEFormattingSettings;
+  JCFOptionsGroup := GetFreeIDEOptionsGroupIndex(GroupEditor);
+  RegisterIDEOptionsGroup(JCFOptionsGroup, TIDEFormattingSettings);
 
 finalization
   FreeAndNil(lcJCFIDE);
+  FreeAndNil(mcIDEFormattingSettings);
 end.
 

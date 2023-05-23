@@ -65,7 +65,7 @@ implementation
 
 uses
   { local }
-  JcfRegistrySettings, JcfSettings, JcfUIConsts;
+  JcfRegistrySettings, JcfSettings, JcfUIConsts, JcfIdeRegister;
 
 procedure TfFiles.ReadSettings(AOptions: TAbstractIDEOptions);
 var
@@ -177,7 +177,7 @@ end;
 
 class function TfFiles.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormattingSettings;
+  Result := TIDEFormattingSettings;
 end;
 
 initialization

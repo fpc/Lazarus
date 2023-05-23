@@ -36,6 +36,7 @@ type
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure edFileNameAcceptFileName(Sender: TObject; var Value: string);
+    procedure FormCreate(Sender: TObject);
     procedure Memo1StatusChange(Sender: TObject; Changes: TSynStatusChanges);
     procedure miCopyClick(Sender: TObject);
     procedure miCutClick(Sender: TObject);
@@ -171,7 +172,9 @@ uses
   SetAsm in '..\..\Settings\SetAsm.pas',
   RemoveReturnsAfter in '..\..\Process\Returns\RemoveReturnsAfter.pas',
   IndentAsmParam in '..\..\Process\Indent\IndentAsmParam.pas',
-  AsmKeywords in '..\..\Parse\AsmKeywords.pas';
+  AsmKeywords in '..\..\Parse\AsmKeywords.pas',
+  JcfUiTools in '..\..\Ui\jcfuitools.pas',
+  jcfUiToolsGui in '..\..\Ui\jcfuitoolsgui.pas';
 
 procedure TForm1.Button1Click(Sender: TObject);
 var
@@ -209,6 +212,11 @@ end;
 procedure TForm1.edFileNameAcceptFileName(Sender: TObject; var Value: string);
 begin
   Memo1.Lines.LoadFromFile(Value);
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  SetJcfUiClass(TJcfUIGUI.Create);
 end;
 
 procedure TForm1.Memo1StatusChange(Sender: TObject; Changes: TSynStatusChanges);

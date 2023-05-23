@@ -72,7 +72,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings, JcfUIConsts;
+  JcfSettings, JcfUIConsts, JcfIdeRegister;
 
 constructor TfClarifyIndent.Create(AOwner: TComponent);
 begin
@@ -167,7 +167,7 @@ end;
 
 class function TfClarifyIndent.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormattingSettings;
+  Result := TIDEFormattingSettings;
 end;
 
 {-------------------------------------------------------------------------------

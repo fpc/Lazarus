@@ -60,7 +60,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings, JcfUIConsts;
+  JcfSettings, JcfUIConsts, JcfIdeRegister;
 
 constructor TfWarnings.Create(AOwner: TComponent);
 begin
@@ -104,7 +104,7 @@ end;
 
 class function TfWarnings.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormattingSettings;
+  Result := TIDEFormattingSettings;
 end;
 
 procedure TfWarnings.FrameResize(Sender: TObject);

@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, StdCtrls, ExtCtrls,
-  IDEOptionsIntf, IDEOptEditorIntf;
+  IDEOptionsIntf, IDEOptEditorIntf, JcfIdeRegister;
 
 type
   { TfObfuscateSettings }
@@ -131,7 +131,7 @@ end;
 
 class function TfObfuscateSettings.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormattingSettings;
+  Result := TIDEFormattingSettings;
 end;
 
 initialization

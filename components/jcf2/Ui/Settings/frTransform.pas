@@ -63,7 +63,7 @@ implementation
 {$R *.lfm}
 
 uses 
-  SettingsTypes, JcfSettings, SetTransform, JcfUIConsts;
+  SettingsTypes, JcfSettings, SetTransform, JcfUIConsts, JcfIdeRegister;
 
 constructor TfTransform.Create(AOwner: TComponent);
 begin
@@ -144,7 +144,7 @@ end;
 
 class function TfTransform.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormattingSettings;
+  Result := TIDEFormattingSettings;
 end;
 
 initialization

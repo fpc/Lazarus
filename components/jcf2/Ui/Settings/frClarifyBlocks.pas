@@ -60,7 +60,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings, SettingsTypes, JcfUIConsts;
+  JcfSettings, SettingsTypes, JcfUIConsts, JcfIdeRegister;
 
 procedure TfClarifyBlocks.FrameResize(Sender:TObject);
 begin
@@ -140,7 +140,7 @@ end;
 
 class function TfClarifyBlocks.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormattingSettings;
+  Result := TIDEFormattingSettings;
 end;
 
 {-------------------------------------------------------------------------------

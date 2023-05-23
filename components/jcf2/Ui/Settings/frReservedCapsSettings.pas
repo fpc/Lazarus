@@ -61,7 +61,7 @@ implementation
 {$R *.lfm}
 
 uses 
-  SettingsTypes, JcfSettings, JcfUIConsts;
+  SettingsTypes, JcfSettings, JcfUIConsts, JcfIdeRegister;
 
 constructor TfrReservedCapsSettings.Create(AOwner: TComponent);
 begin
@@ -152,7 +152,7 @@ end;
 
 class function TfrReservedCapsSettings.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormattingSettings;
+  Result := TIDEFormattingSettings;
 end;
 
 initialization

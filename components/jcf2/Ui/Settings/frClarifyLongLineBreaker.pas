@@ -57,7 +57,7 @@ implementation
 {$R *.lfm}
 
 uses 
-  JcfSettings, SetReturns, JcfUIConsts;
+  JcfSettings, SetReturns, JcfUIConsts, JcfIdeRegister;
 
 
 constructor TfClarifyLongLineBreaker.Create(AOwner: TComponent);
@@ -106,7 +106,7 @@ end;
 
 class function TfClarifyLongLineBreaker.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormattingSettings;
+  Result := TIDEFormattingSettings;
 end;
 
 {-------------------------------------------------------------------------------

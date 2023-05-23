@@ -67,7 +67,7 @@ implementation
 {$R *.lfm}
 
 uses
-  JcfSettings, JcfUIConsts;
+  JcfSettings, JcfUIConsts, JcfIdeRegister;
 
 constructor TfBlankLines.Create(AOwner: TComponent);
 begin
@@ -134,7 +134,7 @@ end;
 
 class function TfBlankLines.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TFormattingSettings;
+  Result := TIDEFormattingSettings;
 end;
 
 initialization

@@ -190,11 +190,7 @@ implementation
 
 uses
   { jcf }
-  JcfStringUtils, JcfMiscFunctions, JcfUiTools
-  {$ifndef COMMAND_LINE}
-   ,lclintf  //< OpenDocument
-  {$endif}
-  ;
+  JcfStringUtils, JcfMiscFunctions, JcfUiTools;
 
 const
   REG_GENERAL_SECTION = 'General';
@@ -524,17 +520,15 @@ procedure TJCFRegistrySettings.ViewLog;
 var
   lsFile: string;
 begin
-  {$ifndef COMMAND_LINE}
   lsFile := LogFileName;
 
   if FileExists(lsFile) then
   begin
     //ShellExecEx('notepad.exe ', lsFile);
-    OpenDocument(lsFile);
+    GetUI.OpenDocumentUI(lsFile);
   end
   else
-    ShowErrorMessageUI('No log file found at ' + lsFile);
-  {$endif}
+    GetUI.ShowErrorMessageUI('No log file found at ' + lsFile);
 end;
 
 function TJCFRegistrySettings.DirIsExcluded(const psDir: string): boolean;

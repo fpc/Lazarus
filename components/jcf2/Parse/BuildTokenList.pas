@@ -972,7 +972,7 @@ begin
     lcNew := GetNextToken;
     lcList.Add(lcNew);
     Inc(liCounter);
-    UpdateGUI(liCounter, UPDATE_INTERVAL);
+    GetUI.UpdateGUI(liCounter, UPDATE_INTERVAL);
   end;
 
   Result := lcList;

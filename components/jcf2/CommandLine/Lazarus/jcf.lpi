@@ -24,7 +24,7 @@
           <Version Value="11"/>
           <SearchPaths>
             <IncludeFiles Value="../../Include"/>
-            <OtherUnitFiles Value="../../Output/Lazarus"/>
+            <OtherUnitFiles Value="../../Output/Lazarus;../../Ui"/>
             <UnitOutputDirectory Value="../../Output/Lazarus"/>
             <SrcPath Value="../../Include"/>
           </SearchPaths>
@@ -75,7 +75,7 @@
         <PackageName Value="FCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="121">
+    <Units Count="122">
       <Unit0>
         <Filename Value="jcf.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -280,7 +280,6 @@
       <Unit50>
         <Filename Value="../../Utils/JcfLog.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="JCFLog"/>
       </Unit50>
       <Unit51>
         <Filename Value="../../Settings/SetUses.pas"/>
@@ -564,13 +563,18 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="JcfUiTools"/>
       </Unit120>
+      <Unit121>
+        <Filename Value="../../Ui/jcfuitoolsnogui.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="JcfUiToolsNoGUI"/>
+      </Unit121>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="11"/>
     <SearchPaths>
       <IncludeFiles Value="../../Include"/>
-      <OtherUnitFiles Value="../../Output/Lazarus;../../IdePlugin/lazarus"/>
+      <OtherUnitFiles Value="../../Output/Lazarus;../../IdePlugin/lazarus;../../Ui"/>
       <UnitOutputDirectory Value="../../lib/CommandLine-$(TargetCPU)-$(TargetOS)-$(BuildMode)"/>
       <SrcPath Value="../../Include"/>
     </SearchPaths>
@@ -595,11 +599,7 @@
         <DebugInfoType Value="dsDwarf3"/>
         <UseHeaptrc Value="True"/>
         <TrashVariables Value="True"/>
-        <UseExternalDbgSyms Value="True"/>
       </Debugging>
     </Linking>
-    <Other>
-      <CustomOptions Value="-dCOMMAND_LINE"/>
-    </Other>
   </CompilerOptions>
 </CONFIG>
