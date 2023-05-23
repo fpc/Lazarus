@@ -570,7 +570,7 @@ type
 function EqualDateTime(const A, B: TDateTime): Boolean;
 function IsNullDate(DT: TDateTime): Boolean;
 
-function dbgs(const Parts: TDateTimeParts): string;
+function dbgs(const Parts: TDateTimeParts): string; overload;
 
 implementation
 
