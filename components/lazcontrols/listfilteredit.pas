@@ -200,21 +200,24 @@ begin
   clb:=Nil;
   if fFilteredListbox is TCustomCheckListBox then
     clb:=TCustomCheckListBox(fFilteredListbox);
-  fFilteredListbox.Clear;
   fFilteredListbox.Items.BeginUpdate;
-  for i:=0 to fSortedData.Count-1 do begin
-    s:=fSortedData[i];
-    ListInd:=fFilteredListbox.Items.AddObject(s, fSortedData.Objects[i]);
-    if Assigned(fSelectedPart) then
-      fFilteredListbox.Selected[i]:=fSelectedPart=fSortedData.Objects[i];
-    if Assigned(clb) then begin
-      if Assigned(OnCheckItem) then
-        clb.Checked[ListInd]:=OnCheckItem(fSortedData.Objects[i])
-      else
-        clb.Checked[ListInd]:=fCheckedItems.Contains(s);
+  try
+    fFilteredListbox.Clear;
+    for i:=0 to fSortedData.Count-1 do begin
+      s:=fSortedData[i];
+      ListInd:=fFilteredListbox.Items.AddObject(s, fSortedData.Objects[i]);
+      if Assigned(fSelectedPart) then
+        fFilteredListbox.Selected[i]:=fSelectedPart=fSortedData.Objects[i];
+      if Assigned(clb) then begin
+        if Assigned(OnCheckItem) then
+          clb.Checked[ListInd]:=OnCheckItem(fSortedData.Objects[i])
+        else
+          clb.Checked[ListInd]:=fCheckedItems.Contains(s);
+      end;
     end;
+  finally
+    fFilteredListbox.Items.EndUpdate;
   end;
-  fFilteredListbox.Items.EndUpdate;
   if FSimpleSelection and (fSortedData.Count > 0) then begin
     if (Text<>'') then begin
       MoveTo(0, true);
