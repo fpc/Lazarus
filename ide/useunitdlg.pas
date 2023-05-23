@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLType, Forms, Controls, StdCtrls, ExtCtrls, ButtonPanel, Dialogs, Graphics,
+  LCLType, LCLProc, Forms, Controls, StdCtrls, ExtCtrls, ButtonPanel, Dialogs, Graphics,
   // LazControls
   ListFilterEdit,
   // LazUtils
@@ -42,7 +42,7 @@ uses
   // BuildIntf
   ProjectIntf,
   // IdeIntf
-  IdeIntfStrConsts, LazIDEIntf, IDEImagesIntf, IDEWindowIntf,
+  IdeIntfStrConsts, LazIDEIntf, IDEImagesIntf, IDEWindowIntf, TextTools,
   // IDE
   LazarusIDEStrConsts, SourceEditor, Project, EnvironmentOpts, MainIntf;
 
@@ -60,17 +60,18 @@ type
     SectionRadioGroup: TRadioGroup;
     procedure AllUnitsCheckBoxChange(Sender: TObject);
     procedure FilterEditAfterFilter(Sender: TObject);
+    function FilterEditFilterItemEx(const ACaption: string; ItemData: Pointer;
+      out Done: Boolean): Boolean;
+    procedure FilterEditKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure SectionRadioGroupClick(Sender: TObject);
     procedure UnitsListBoxDblClick(Sender: TObject);
     procedure UnitsListBoxDrawItem({%H-}Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
-    procedure UnitsListBoxKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-    procedure UnitsListBoxMeasureItem({%H-}Control: TWinControl; {%H-}Index: Integer;
-      var AHeight: Integer);
   private
     UnitImgInd: Integer;
     FMainUsedUnits, FImplUsedUnits: TStringList;
@@ -204,14 +205,33 @@ begin
   ButtonPanel1.CancelButton.Caption:=lisCancel;
   UnitImgInd := IDEImages.LoadImage('item_unit');
   FProjUnits:=TStringListUTF8Fast.Create;
+  UnitsListBox.ItemHeight := IDEImages.Images_16.Height + 2;
 end;
 
 procedure TUseUnitDialog.FormDestroy(Sender: TObject);
 begin
-  FOtherUnits.Free;
-  FProjUnits.Free;
-  FImplUsedUnits.Free;
-  FMainUsedUnits.Free;
+  FreeThenNil(FOtherUnits);
+  FreeThenNil(FProjUnits);
+  FreeThenNil(FImplUsedUnits);
+  FreeThenNil(FMainUsedUnits);
+end;
+
+procedure TUseUnitDialog.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_A) and (Shift = [ssAlt]) then
+  begin
+    with AllUnitsCheckBox do
+      Checked := not Checked;
+    Key := 0;
+  end;
+  if (Key = VK_S) and (Shift = [ssAlt]) then
+  begin
+    with SectionRadioGroup do
+      if Enabled then
+        ItemIndex := (ItemIndex + 1) mod Items.Count;
+    Key := 0;
+  end;
 end;
 
 procedure TUseUnitDialog.FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -288,22 +308,6 @@ begin
   end;
 end;
 
-procedure TUseUnitDialog.UnitsListBoxKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  // A hack to prevent 'O' working as shortcut for OK-button.
-  // Should be removed when issue #20599 is resolved.
-  if (Key = VK_O) and (Shift = []) then
-    Key:=VK_UNKNOWN;
-end;
-
-procedure TUseUnitDialog.UnitsListBoxMeasureItem(Control: TWinControl;
-  Index: Integer; var AHeight: Integer);
-begin
-  if (AHeight <= IDEImages.Images_16.Height) then
-    AHeight := IDEImages.Images_16.Height + 2;
-end;
-
 procedure TUseUnitDialog.AddImplUsedUnits;
 var
   i, j: Integer;
@@ -349,8 +353,8 @@ var
   x: Integer;
 begin
   Result := False;
-  FreeAndNil(FMainUsedUnits);
-  FreeAndNil(FImplUsedUnits);
+  FreeThenNil(FMainUsedUnits);
+  FreeThenNil(FImplUsedUnits);
   if SrcEdit = nil then Exit;
   Assert(Assigned(SrcEdit.CodeBuffer));
   if DlgType=udUseUnit then
@@ -513,8 +517,24 @@ end;
 
 procedure TUseUnitDialog.FilterEditAfterFilter(Sender: TObject);
 begin
-  if (UnitsListBox.Count > 0) and (UnitsListBox.ItemIndex = -1) then
+  if (UnitsListBox.Count > 0) and (UnitsListBox.ItemIndex < 0) then
     UnitsListBox.ItemIndex := 0;
+end;
+
+function TUseUnitDialog.FilterEditFilterItemEx(const ACaption: string;
+  ItemData: Pointer; out Done: Boolean): Boolean;
+begin
+  Done := true;
+  result := MultiWordSearch(FilterEdit.Text, ACaption);
+end;
+
+procedure TUseUnitDialog.FilterEditKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  c: char;
+begin
+  if KeyToQWERTY(Key, Shift, c, true) then
+    FilterEdit.SelText := c;
 end;
 
 end.

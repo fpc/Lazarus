@@ -9,9 +9,11 @@ object UseUnitDialog: TUseUnitDialog
   ClientWidth = 363
   Constraints.MinHeight = 150
   Constraints.MinWidth = 200
+  KeyPreview = True
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnKeyDown = FormKeyDown
   Position = poScreenCenter
   LCLVersion = '2.1.0.0'
   object ButtonPanel1: TButtonPanel
@@ -84,8 +86,6 @@ object UseUnitDialog: TUseUnitDialog
     ItemHeight = 0
     OnDblClick = UnitsListBoxDblClick
     OnDrawItem = UnitsListBoxDrawItem
-    OnKeyDown = UnitsListBoxKeyDown
-    OnMeasureItem = UnitsListBoxMeasureItem
     Style = lbOwnerDrawFixed
     TabOrder = 1
   end
@@ -112,6 +112,7 @@ object UseUnitDialog: TUseUnitDialog
     Top = 6
     Width = 351
     OnAfterFilter = FilterEditAfterFilter
+    OnFilterItemEx = FilterEditFilterItemEx
     ButtonWidth = 23
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
@@ -119,6 +120,7 @@ object UseUnitDialog: TUseUnitDialog
     MaxLength = 0
     ParentFont = False
     TabOrder = 0
+    OnKeyDown = FilterEditKeyDown
     FilteredListbox = UnitsListBox
   end
 end

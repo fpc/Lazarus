@@ -51,7 +51,7 @@ uses
   // LazControls
   ListFilterEdit,
   // IdeIntf
-  IdeIntfStrConsts, IDEWindowIntf, IDEHelpIntf, IDEImagesIntf,
+  IdeIntfStrConsts, IDEWindowIntf, IDEHelpIntf, IDEImagesIntf, TextTools,
   // IDE
   LazarusIdeStrConsts, IDEProcs, CustomFormEditor, SearchPathProcs, PackageDefs;
 
@@ -120,14 +120,16 @@ type
     ProgressBar1: TProgressBar;
     RemoveBitBtn: TSpeedButton;
     SortAlphabeticallySpeedButton: TSpeedButton;
+    function FilterEditFilterItemEx(const ACaption: string; ItemData: Pointer;
+      out Done: Boolean): Boolean;
+    procedure FilterEditKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure ListboxDrawItem({%H-}Control: TWinControl; Index: Integer;
       ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure ListboxKeyPress(Sender: TObject; var Key: char);
-    procedure ListboxMeasureItem({%H-}Control: TWinControl; {%H-}Index: Integer;
-      var AHeight: Integer);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure SortAlphabeticallySpeedButtonClick(Sender: TObject);
     procedure OKButtonClick(Sender :TObject);
@@ -321,6 +323,8 @@ begin
   SortAlphabeticallySpeedButton.Hint:=lisPESortFilesAlphabetically;
   FilterEdit.ButtonHint:=lisClearFilter;
   IDEImages.AssignImage(SortAlphabeticallySpeedButton, 'pkg_sortalphabetically');
+
+  ListBox.ItemHeight := IDEImages.Images_16.Height + 2;
 end;
 
 procedure TViewUnitDialog.FormDestroy(Sender: TObject);
@@ -334,6 +338,22 @@ end;
 procedure TViewUnitDialog.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
+end;
+
+procedure TViewUnitDialog.FilterEditKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  c: char;
+begin
+  if KeyToQWERTY(Key, Shift, c, true) then
+    FilterEdit.SelText := c;
+end;
+
+function TViewUnitDialog.FilterEditFilterItemEx(const ACaption: string;
+  ItemData: Pointer; out Done: Boolean): Boolean;
+begin
+  Done := true;
+  result := MultiWordSearch(FilterEdit.Text, ACaption);
 end;
 
 procedure TViewUnitDialog.Init(const aCaption: string;
@@ -499,13 +519,6 @@ procedure TViewUnitDialog.ListboxKeyPress(Sender: TObject; var Key: char);
 begin
   if Key = Char(VK_RETURN) then
     OKButtonClick(nil);
-end;
-
-procedure TViewUnitDialog.ListboxMeasureItem(Control: TWinControl;
-  Index: Integer; var AHeight: Integer);
-begin
-  if AHeight <= IDEImages.Images_16.Height then
-    AHeight := IDEImages.Images_16.Height + 2;
 end;
 
 procedure TViewUnitDialog.MultiselectCheckBoxClick(Sender :TObject);

@@ -29,7 +29,6 @@ object ViewUnitDialog: TViewUnitDialog
     OnDblClick = OKButtonClick
     OnDrawItem = ListboxDrawItem
     OnKeyPress = ListboxKeyPress
-    OnMeasureItem = ListboxMeasureItem
     PopupMenu = popListBox
     Style = lbOwnerDrawFixed
     TabOrder = 1
@@ -85,6 +84,7 @@ object ViewUnitDialog: TViewUnitDialog
       Height = 23
       Top = 0
       Width = 335
+      OnFilterItemEx = FilterEditFilterItemEx
       ButtonHint = 'Clear Filter'
       ButtonWidth = 23
       Align = alClient
@@ -95,6 +95,7 @@ object ViewUnitDialog: TViewUnitDialog
       ParentShowHint = False
       ShowHint = True
       TabOrder = 0
+      OnKeyDown = FilterEditKeyDown
       FilteredListbox = Listbox
     end
   end
