@@ -115,6 +115,7 @@ function SearchPascalUnitInDir(const AnUnitName, BaseDirectory: string;
                                SearchCase: TCTSearchFileCase): string;
 function SearchPascalUnitInPath(const AnUnitName, BasePath, SearchPath,
                       Delimiter: string; SearchCase: TCTSearchFileCase): string;
+function IsPascalIncExt(FileExt: PChar; CaseSensitive: boolean = false): boolean;
 
 // searching .ppu
 function SearchPascalFileInDir(const ShortFilename, BaseDirectory: string;
@@ -131,10 +132,13 @@ function GetFPCParameterSrcFile(const CmdLine: string): string;
 
 type
   TCTPascalExtType = (petNone, petPAS, petPP, petP);
+  TCTPascalIncExtType = (pietNone, pietINC, pietPP, pietPAS);
 
 const
   CTPascalExtension: array[TCTPascalExtType] of string =
     ('', '.pas', '.pp', '.p');
+  CTPascalIncExtension: array[TCTPascalIncExtType] of string =
+    ('', '.inc', '.pp', '.pas');
 
 // store date locale independent, thread safe
 const DateAsCfgStrFormat='YYYYMMDD';
@@ -654,7 +658,7 @@ begin
   if (FileExt=nil) then exit;
   ExtLen:=strlen(FileExt);
   if ExtLen=0 then exit;
-  for e:=Low(CTPascalExtension) to High(CTPascalExtension) do begin
+  for e:=Succ(petNone) to High(CTPascalExtension) do begin
     if length(CTPascalExtension[e])<>ExtLen then
       continue;
     p:=PChar(Pointer(CTPascalExtension[e]));// pointer type cast avoids #0 check
@@ -780,6 +784,40 @@ begin
     StartPos:=p+1;
   end;
   Result:='';
+end;
+
+function IsPascalIncExt(FileExt: PChar; CaseSensitive: boolean): boolean;
+// check if asciiz FileExt is a CTPascalIncExtension
+var
+  ExtLen: Integer;
+  p: PChar;
+  e: TCTPascalIncExtType;
+  f: PChar;
+begin
+  Result:=false;
+  if (FileExt=nil) then exit;
+  ExtLen:=strlen(FileExt);
+  if ExtLen=0 then exit;
+  for e:=Succ(pietNone) to High(CTPascalIncExtension) do begin
+    if length(CTPascalIncExtension[e])<>ExtLen then
+      continue;
+    p:=PChar(Pointer(CTPascalIncExtension[e]));// pointer type cast avoids #0 check
+    f:=FileExt;
+    if CaseSensitive then begin
+      while (p^=f^) and (p^<>#0) do begin
+        inc(p);
+        inc(f);
+      end;
+    end else begin
+      while (FPUpChars[p^]=FPUpChars[f^]) and (p^<>#0) do
+      begin
+        inc(p);
+        inc(f);
+      end;
+    end;
+    if p^=#0 then
+      exit(true);
+  end;
 end;
 
 function SearchPascalFileInDir(const ShortFilename, BaseDirectory: string;
