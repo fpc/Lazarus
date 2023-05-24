@@ -86,7 +86,9 @@ type
     FAssignedFont: TFPCustomFont;
     FAssignedPen: TFPCustomPen;
     FBaseWindowOrg: TPoint;
-    FPolygonWindingMode: Boolean;
+    {$if FPC_FullVersion < 30301}
+    PolygonNonZeroWindingRule: Boolean;
+    {$endif}
     {$if defined(ver2_6)}
     FLazClipRegion: TFPCustomRegion;
     {$endif}
@@ -103,7 +105,9 @@ type
     // Routines broken/unimplemented/incompatible in FPC
     procedure DoRectangle (const Bounds:TRect); override;
     procedure DoRectangleFill (const Bounds:TRect); override;
+    {$if FPC_FullVersion < 30301}
     procedure DoPolygonFill (const points:array of TPoint); override;
+    {$endif}
     // Routines which don't work with out extended clipping in TFPImageCanvas
     procedure DoLine (x1,y1,x2,y2:integer); override;
     // Other abstract routines that need implementation
@@ -336,6 +340,7 @@ begin
   end;
 end;
 
+{$IF FPC_FullVersion < 30301}
 // unimplemented in FPC
 // algorithm explained here: http://alienryderflex.com/polygon_fill/
 procedure TLazCanvas.DoPolygonFill(const points: array of TPoint);
@@ -467,6 +472,7 @@ begin
     end;
   end;
 end;
+{$ENDIF}
 
 procedure TLazCanvas.DoLine(x1, y1, x2, y2: integer);
   procedure DrawOneLine (xx1,yy1, xx2,yy2:integer);
@@ -855,7 +861,7 @@ end;
 
 procedure TLazCanvas.Polygon(const Points: array of TPoint; Winding: Boolean);
 begin
-  FPolygonWindingMode := Winding;
+  PolygonNonZeroWindingRule := Winding;
   inherited Polygon(Points);
 end;
 
