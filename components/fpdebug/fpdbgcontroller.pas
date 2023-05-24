@@ -86,9 +86,9 @@ type
     FHiddenBreakAddr, FHiddenBreakInstrPtr, FHiddenBreakStackPtrAddr: TDBGPtr;
     function GetIsSteppedOut: Boolean;
   protected
-    function IsAtHiddenBreak: Boolean; inline;
     function HasHiddenBreak: Boolean; inline;
     function IsAtLastHiddenBreakAddr: Boolean; inline;
+    function IsOutOfHiddenBreakFrame: Boolean;  inline; // Stopped in/out-of the origin frame, maybe by a breakpoint after an exception
     function IsAtOrOutOfHiddenBreakFrame: Boolean;  inline; // Stopped in/out-of the origin frame, maybe by a breakpoint after an exception
     procedure SetHiddenBreak(AnAddr: TDBGPtr);
     procedure RemoveHiddenBreak;
@@ -220,6 +220,7 @@ type
     FWasOutsideFrame: boolean;
   protected
     function  GetOutsideFrame(var AnOutside: Boolean): Boolean;
+    function IsAtHiddenBreak: Boolean; inline;
     procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean); override;
     procedure InternalContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
   public
@@ -877,15 +878,6 @@ begin
   Result := (FStackFrameInfo <> nil) and FStackFrameInfo.HasSteppedOut;
 end;
 
-function TDbgControllerHiddenBreakStepBaseCmd.IsAtHiddenBreak: Boolean;
-begin
-  Result := (FHiddenBreakpoint <> nil) and
-            (FThread.GetInstructionPointerRegisterValue = FHiddenBreakAddr) and // FHiddenBreakpoint.HasLocation()
-            (FThread.GetStackPointerRegisterValue >= FHiddenBreakStackPtrAddr);
-            // if SP > FStackPtrRegVal >> then the brk was hit stepped out (should not happen)
-  debugln(FPDBG_COMMANDS and Result, ['BreakStepBaseCmd.IsAtHiddenBreak: At Hidden break = true']);
-end;
-
 function TDbgControllerHiddenBreakStepBaseCmd.HasHiddenBreak: Boolean;
 begin
   Result := FHiddenBreakpoint <> nil;
@@ -895,6 +887,17 @@ function TDbgControllerHiddenBreakStepBaseCmd.IsAtLastHiddenBreakAddr: Boolean;
 begin
   Result := (FThread.GetInstructionPointerRegisterValue = FHiddenBreakAddr);
   debugln(FPDBG_COMMANDS and Result, ['BreakStepBaseCmd.IsAtLastHiddenBreakAddr : At LAST Hidden break ADDR = true']);
+end;
+
+function TDbgControllerHiddenBreakStepBaseCmd.IsOutOfHiddenBreakFrame: Boolean;
+begin
+  Result := HasHiddenBreak;
+  if not Result then
+    exit;
+  (* This is to check, if we have left the original frame.  *)
+  Result := (FHiddenBreakStackPtrAddr < FThread.GetStackPointerRegisterValue);
+
+  debugln(FPDBG_COMMANDS and Result and (FHiddenBreakpoint <> nil), ['BreakStepBaseCmd.IsOutOfHiddenBreakFrame: Gone past hidden break = true']);
 end;
 
 function TDbgControllerHiddenBreakStepBaseCmd.IsAtOrOutOfHiddenBreakFrame: Boolean;
@@ -1238,6 +1241,15 @@ begin
   Result := FProcess.Disassembler.GetFunctionFrameInfo(FThread.GetInstructionPointerRegisterValue, AnOutside);
 end;
 
+function TDbgControllerStepOutCmd.IsAtHiddenBreak: Boolean;
+begin
+  Result := (FHiddenBreakpoint <> nil) and
+            (FThread.GetInstructionPointerRegisterValue = FHiddenBreakAddr) and // FHiddenBreakpoint.HasLocation()
+            (FThread.GetStackPointerRegisterValue > FHiddenBreakStackPtrAddr);
+            // if SP > FStackPtrRegVal >> then the brk was hit stepped out (should not happen)
+  debugln(FPDBG_COMMANDS and Result, ['TDbgControllerStepOutCmd.IsAtHiddenBreak: At Hidden break = true']);
+end;
+
 procedure TDbgControllerStepOutCmd.SetReturnAdressBreakpoint(
   AProcess: TDbgProcess; AnOutsideFrame: Boolean);
 var
@@ -1321,14 +1333,8 @@ begin
 
   if IsSteppedOut or IsAtHiddenBreak then begin
     UpdateThreadStepInfoAfterStepOut(FController.NextOnlyStopOnStartLine);
-
-    if IsAtOrOutOfHiddenBreakFrame then
-        RemoveHiddenBreak;
-
-    if FHiddenBreakpoint <> nil then
-      Finished := False
-    else
-      Finished := HasReachedEndLineOrSteppedOut(FController.NextOnlyStopOnStartLine);
+    RemoveHiddenBreak;
+    Finished := HasReachedEndLineOrSteppedOut(FController.NextOnlyStopOnStartLine);
   end;
 
   if Finished then
