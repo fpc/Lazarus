@@ -438,7 +438,7 @@ begin
     end;
 
     i := 0;
-    if FPolygonWindingMode and (Length(nodes) > 2) then
+    if PolygonNonZeroWindingRule and (Length(nodes) > 2) then
     begin
       // Non-zero winding rule
       windingNumber := 0;
