@@ -86,13 +86,14 @@ type
     destructor Destroy; override;
     property CodeList: TFPList read FCodeList write FCodeList; // list of TCodeBuffer
     property PackageList: TStringList read FPackageList write FPackageList; // list of alternative filename and TLazPackage
-    property IgnoreList: TFPList read FIgnoreList write FIgnoreList; // TCodeBuffer of TLazPackage
+    property IgnoreList: TFPList read FIgnoreList write FIgnoreList; // list of TCodeBuffer or TLazPackage
   end;
 
 function ShowDiskDiffsDialog(
   ACodeList: TFPList; // list of TCodeBuffer
   APackageList: TStringList; // list of TLazPackage
-  AnIgnoreList: TFPList): TModalResult;
+  AnIgnoreList: TFPList // ignore / mark modified
+  ): TModalResult; // ok=reload, cancel=ignore all/mark all modified
 
 implementation
 
@@ -101,7 +102,7 @@ implementation
 var
   DiskDiffsDlg: TDiskDiffsDlg = nil;
 
-procedure CheckUnits(ACodeList, AnIgnoreList: TFPList);
+procedure CheckUnits(ACodeList: TFPList);
 
   function AddChangedBuffer(Code: TCodeBuffer): boolean;
   var
@@ -132,6 +133,7 @@ procedure CheckUnits(ACodeList, AnIgnoreList: TFPList);
           and (length(s)=Code.SourceLength)
           and (s=Code.Source) then begin
             // same content -> no need to bother user
+            Code.MakeFileDateValid;
             exit(false);
           end;
         finally
@@ -152,11 +154,11 @@ begin
   for i:=ACodeList.Count-1 downto 0 do
   begin
     if not AddChangedBuffer(TCodeBuffer(ACodeList[i])) then
-      AnIgnoreList.Add(ACodeList[i]);
+      ACodeList.Delete(i);
   end;
 end;
 
-procedure CheckPackages(APackageList: TStringList; AnIgnoreList: TFPList);
+procedure CheckPackages(APackageList: TStringList);
 var
   i: Integer;
   CurPackage: TLazPackage;
@@ -195,7 +197,7 @@ begin
         DebugLn(['CheckPackagesWithLoading Filename=',CurPackage.Filename,' Error=',E.Message]);
     end;
     if PackageOk then
-      AnIgnoreList.Add(CurPackage);
+      APackageList.Delete(i);
   end;
 end;
 
@@ -221,9 +223,9 @@ begin
   if (DiskDiffsDlg<>nil) or ListsAreEmpty then
     exit(mrIgnore);
   if Assigned(ACodeList) then
-    CheckUnits(ACodeList,AnIgnoreList);
+    CheckUnits(ACodeList);
   if Assigned(APackageList) then
-    CheckPackages(APackageList,AnIgnoreList);
+    CheckPackages(APackageList);
   if ListsAreEmpty then
     exit(mrIgnore);
   DiskDiffsDlg:=TDiskDiffsDlg.Create(nil);

@@ -8663,6 +8663,8 @@ var
   i: integer;
   CurUnit: TUnitInfo;
   CurCode: TCodeBuffer;
+  CurPackage: TLazPackage;
+  Reload: TModalResult;
 begin
   Result:=mrOk;
   if not CheckFilesOnDiskEnabled then exit;
@@ -8699,7 +8701,7 @@ begin
     Project1.GetSourcesChangedOnDisk(BufferList);
     PkgBoss.GetPackagesChangedOnDisk(APackageList, True);
     if (BufferList=nil) and (APackageList=nil) then exit;
-    Result:=ShowDiskDiffsDialog(BufferList,APackageList,AIgnoreList);
+    Reload:=ShowDiskDiffsDialog(BufferList,APackageList,AIgnoreList);
 
     // reload units
     if BufferList<>nil then begin
@@ -8711,9 +8713,9 @@ begin
 
         CurUnit:=Project1.UnitInfoWithFilename(CurCode.Filename);
         if CurUnit=nil then continue;
-        if (Result=mrOk)
-        and (AIgnoreList.IndexOf(CurUnit)<0) then
-        begin
+
+        if (Reload=mrOk)
+        and (AIgnoreList.IndexOf(CurCode)<0) then begin
           // revert
           if CurUnit.OpenEditorInfoCount > 0 then
           begin
@@ -8734,7 +8736,7 @@ begin
             Result:=mrIgnore;
           if Result=mrAbort then exit;
         end else begin
-          // keep memory file
+          // keep memory file and mark as modified
           //DebugLn(['DoCheckFilesOnDisk IgnoreCurrentFileDateOnDisk']);
           CurUnit.IgnoreCurrentFileDateOnDisk;
           CurUnit.Modified:=True;
@@ -8748,25 +8750,47 @@ begin
         CurCode:=TCodeBuffer(BufferList[i]);
         if LFMLoaded.IndexOf(CurCode)>=0 then continue;
         CurUnit:=Project1.UnitInfoWithLFMFilename(CurCode.Filename);
-        if CurUnit=nil then continue;
+        if (CurUnit=nil) or (CurUnit.Component=nil) then continue;
         // designer form
-        if (Result=mrOk)
-            and Assigned(CurUnit.Component)
+        if (Reload=mrOk)
+            and (AIgnoreList.IndexOf(CurCode)<0)
             and (AIgnoreList.IndexOf(CurUnit.SourceLFM)<0) then
         begin
+          // revert form
           LFMLoaded.Add(CurUnit.SourceLFM);
           LoadLFM(CurUnit,[ofOnlyIfExists,ofRevert],[]);
+        end else begin
+          // mark as modified
+          if CurUnit.SourceLFM<>nil then
+            CurUnit.SourceLFM.MakeFileDateValid;
+          CurUnit.Modified:=True;
         end;
-        CurCode.MakeFileDateValid;
       end;
+
+      // update code filedates
+      for i:=0 to BufferList.Count-1 do
+        CurCode.MakeFileDateValid;
     end;
 
     // reload packages
     if APackageList<>nil then
     begin
-      for i:=APackageList.Count-1 downto 0 do
-        if AIgnoreList.IndexOf(APackageList.Objects[i])>=0 then
+      for i:=APackageList.Count-1 downto 0 do begin
+        if (Reload=mrOk)
+        and (AIgnoreList.IndexOf(APackageList.Objects[i])<0) then
+          // package should be reloaded
+        else begin
+          // keep package
+          CurPackage:=TLazPackage(APackageList.Objects[i]);
+          if CurPackage.Editor=nil then begin
+            if PkgBoss.DoOpenPackage(CurPackage,[pofMultiOpen],false)=mrAbort then
+              exit;
+          end;
+          CurPackage.Modified:=true;
           APackageList.Delete(i);
+        end;
+      end;
+
       Result:=PkgBoss.RevertPackages(APackageList);
       if Result<>mrOk then exit;
     end;
