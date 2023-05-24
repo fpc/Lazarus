@@ -296,6 +296,8 @@ var
 begin
   b := Bounds;
   SortRect (b);
+  dec(b.Right);
+  dec(b.Bottom);
 
   // Optimize when filling everything
   if (b.Left = 0) and (b.Top = 0) and (b.Right = Width) and (b.Bottom = Height)
