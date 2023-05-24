@@ -359,8 +359,8 @@ filtering are completed in the OnIdle handler for the control.
 
 <element name="TListFilterEdit.ApplyFilterCore">
 <short>
-Copies filtered string and object values from sorted data to the Items in 
-FilteredListbox.
+Copies sorted list box data which matches the filter value to the 
+FilteredListBox control.
 </short>
 <descr>
 <p>
@@ -380,15 +380,26 @@ to store both the caption and object instance to the Items property in
 FilteredListbox.
 </p>
 <p>
-If FilteredListbox is a TCheckListBox instance, the OnCheckItem event handler 
-is signalled (when assigned) using the object instance for the list item. If 
-OnCheckItem is not assigned, the internal list of checked items is applied to 
-FilteredListbox.
+If FilteredListbox is a TCheckListBox instance, the Checked state for the list 
+items is updated. The OnCheckItem event handler is signalled (when assigned) 
+using the object instance for the list item. The Boolean value returned from 
+the handler is applied as the Checked state for the corresponding list items. 
+If OnCheckItem is not assigned, the Checked state is <b>True</b> when the 
+internal map contains an entry with the caption for the list item.
+</p>
+<p>
+The selected item in FilteredListBox is also updated to match the SelectedPart 
+property for the control.
+</p>
+<p>
+Updates to the Items in FilteredListBox are surrounded by calls to its 
+BeginUpdate and EndUpdate methods. This is done to reduce screen flicker while 
+the filter value is applied to list items.
 </p>
 <p>
 If SimpleSelection is enabled, the MoveTo method is called to position and 
-select the list box item in FilteredListbox using the Text or sorted data 
-values in the control.
+select the list item in FilteredListbox using the Text (when assigned) or the 
+sorted data values.
 </p>
 </descr>
 <seealso>
@@ -399,6 +410,7 @@ values in the control.
 <link id="#lcl.editbtn.TCustomControlFilterEdit.OnCheckItem">TCustomControlFilterEdit.OnCheckItem</link>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.ApplyFilterCore">TCustomControlFilterEdit.ApplyFilterCore</link>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.SelectedPart">TCustomControlFilterEdit.SelectedPart</link>
 </seealso>
 </element>
 
