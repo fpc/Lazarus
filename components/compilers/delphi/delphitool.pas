@@ -384,7 +384,6 @@ function TDelphiTool.GetCompilerArgs(const s: string; const Data: PtrInt;
 
 
 begin
-
   if (s<>'') and (ConsoleVerbosity>=0) then
     debugln(['Hint: (lazarus) [TDelphiTool.GetCompilerPath] ignoring macro DCCARGS parameter "',s,'"']);
   Result:=GetCompilerArguments;
@@ -399,9 +398,6 @@ begin
   if (s<>'') and (ConsoleVerbosity>=0) then
     debugln(['Hint: (lazarus) [TDelphiTool.GetConfigPath] ignoring macro DCCCONFIG parameter "',s,'"']);
   Result:=GetCurrentConfigFilename;
-  if (Result='') then
-    Result:='Project1'+DelphiOptions.DefaultConfigExtension;
-  // debugln(['macro DCCCONFIG parameter: "',Result,'"']);
 end;
 
 destructor TDelphiTool.Destroy;
