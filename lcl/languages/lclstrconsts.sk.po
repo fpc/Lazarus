@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lclstrconsts\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-02-02 16:22+0100\n"
-"PO-Revision-Date: 2023-05-23 13:15+0200\n"
+"PO-Revision-Date: 2023-05-24 07:47+0200\n"
 "Last-Translator: Slavo Gbúr <slavusec@azet.sk>\n"
 "Language-Team: Slovenský <sk@li.org>\n"
 "Language: sk\n"
@@ -465,7 +465,7 @@ msgstr "Index mriežky mimo rozsahu."
 
 #: lclstrconsts.rsgroupindexcannotbelessthanprevious
 msgid "GroupIndex cannot be less than a previous menu item's GroupIndex"
-msgstr "GroupIndex nemôže byť menší ako GroupIndex predchádzajúcej položky menu"
+msgstr "GroupIndex nemôže byť menší ako GroupIndex predchádzajúcej položky ponuky"
 
 #: lclstrconsts.rsgtkfilter
 msgid "Filter:"
@@ -561,7 +561,7 @@ msgstr "Pomoc pre direktívu \"%s\" sa nenašla."
 #: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
 #, object-pascal-format
 msgid "Help for directive \"%s\" not found in Database \"%s\"."
-msgstr "Pomoc pre direktívu \"%s nebola nájdená v databáze %s."
+msgstr "Pomoc pre direktívu \"%s\" nebola nájdená v databáze \"%s\"."
 
 #: lclstrconsts.rshelphelpkeywordnotfound
 #, object-pascal-format
@@ -936,7 +936,7 @@ msgstr "%s%sStlačte tlačítko OK, ak chcete ignorovať a riskovať poškodenie
 #: lclstrconsts.rspriorrecordhint
 msgctxt "lclstrconsts.rspriorrecordhint"
 msgid "Prior"
-msgstr "Pred"
+msgstr "Predchádzajúci"
 
 #: lclstrconsts.rspromptonreplace
 msgid "Prompt on replace"
@@ -1264,7 +1264,7 @@ msgstr "Súčasný text nezodpovedá špecifikovanej maske."
 
 #: lclstrconsts.smenuindexerror
 msgid "Menu index out of range"
-msgstr "Index menu mimo rozsahu"
+msgstr "Index ponuky mimo rozsahu"
 
 #: lclstrconsts.smenuitemisnil
 msgid "MenuItem is nil"
@@ -1272,7 +1272,7 @@ msgstr "MenuItem je nil"
 
 #: lclstrconsts.smenunotfound
 msgid "Sub-menu is not in menu"
-msgstr "Podmenu nie je v menu"
+msgstr "Pod-ponuka nie je v ponuke"
 
 #: lclstrconsts.smkcalt
 msgid "Alt+"
