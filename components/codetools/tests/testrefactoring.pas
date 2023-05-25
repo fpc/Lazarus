@@ -111,7 +111,7 @@ begin
     end;
 
     if not CodeToolBoss.RenameIdentifier(PascalReferences,
-      OldIdentifier, NewIdentifier, DeclCode, @DeclarationCaretXY)
+      OldIdentifier, NewIdentifier, DeclCode, @DeclarationCaretXY, false)
     then begin
       Fail('CodeToolBoss.RenameIdentifier failed');
     end;

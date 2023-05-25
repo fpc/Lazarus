@@ -8380,8 +8380,9 @@ begin
           exit;
         end;
       end;
-      if not CodeToolBoss.RenameIdentifier(PascalReferences,OldUnitName,NewUnitName)
-      then begin
+      if not CodeToolBoss.RenameIdentifier(PascalReferences,OldUnitName,NewUnitName,
+                                           Nil,Nil,True) then
+      begin
         if (not IgnoreErrors) and (not Quiet) then
           MainIDE.DoJumpToCodeToolBossError;
         debugln('ReplaceUnitUse unable to commit');

@@ -553,7 +553,8 @@ type
           var TreeOfPCodeXYPosition: TAVLTree): boolean;
     function RenameIdentifier(TreeOfPCodeXYPosition: TAVLTree;
           const OldIdentifier, NewIdentifier: string;
-          DeclarationCode: TCodeBuffer = nil; DeclarationCaretXY: PPoint = nil): boolean;
+          DeclarationCode: TCodeBuffer; DeclarationCaretXY: PPoint;
+          DottedIdents: Boolean): boolean;
     function ReplaceWord(Code: TCodeBuffer; const OldWord, NewWord: string;
           ChangeStrings: boolean): boolean;
     function RemoveIdentifierDefinition(Code: TCodeBuffer; X, Y: integer
@@ -2854,7 +2855,16 @@ end;
 
 function TCodeToolManager.RenameIdentifier(TreeOfPCodeXYPosition: TAVLTree;
   const OldIdentifier, NewIdentifier: string; DeclarationCode: TCodeBuffer;
-  DeclarationCaretXY: PPoint): boolean;
+  DeclarationCaretXY: PPoint; DottedIdents: Boolean): boolean;
+
+  function GetIdent(Identifier: PChar): string;
+  begin
+    if DottedIdents then
+      Result:=GetDottedIdentifier(Identifier)
+    else
+      Result:=GetIdentifier(Identifier);
+  end;
+
 var
   ANode, ANode2: TAVLTreeNode;
   CurCodePos, LastCodePos: PCodeXYPosition;
@@ -2868,10 +2878,8 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.RenameIdentifier A Old=',OldIdentifier,' New=',NewIdentifier,' ',dbgs(TreeOfPCodeXYPosition<>nil));
   {$ENDIF}
-  if TreeOfPCodeXYPosition=nil then begin
-    Result:=true;
-    exit;
-  end;
+  if TreeOfPCodeXYPosition=nil then
+    exit(true);
   if not LazIsValidIdent(NewIdentifier,True,True) then exit;
 
   ClearCurCodeTool;
@@ -2882,9 +2890,9 @@ begin
   IdentLen:=length(OldIdentifier);
   IdentLenDiff := length(NewIdentifier) - IdentLen;
   if DeclarationCode = nil then
-    DeclarationCaretXY := nil;;
+    DeclarationCaretXY := nil;
   if DeclarationCaretXY = nil then
-    DeclarationCode := nil;;
+    DeclarationCode := nil;
 
   // the tree is sorted for descending line code positions
   // -> go from end of source to start of source, so that replacing does not
@@ -2897,26 +2905,30 @@ begin
     Code.LineColToPosition(CurCodePos^.Y,CurCodePos^.X,IdentStartPos);
     DebugLn('TCodeToolManager.RenameIdentifier File ',Code.Filename,
             ' Line=',dbgs(CurCodePos^.Y),' Col=',dbgs(CurCodePos^.X),
-            ' Identifier=',GetDottedIdentifier(@Code.Source[IdentStartPos]));
+            ' Identifier=',GetIdent(@Code.Source[IdentStartPos]));
     // search absolute position in source
     if IdentStartPos<1 then begin
       SetError(20170421203205,Code, CurCodePos^.Y, CurCodePos^.X, ctsPositionNotInSource);
       exit;
     end;
     // check if old identifier is there
-    if CompareDottedIdentifiers(@Code.Source[IdentStartPos],PChar(Pointer(OldIdentifier)))<>0
-    then begin
+    if DottedIdents then
+      i:=CompareDottedIdentifiers(@Code.Source[IdentStartPos],PChar(Pointer(OldIdentifier)))
+    else
+      i:=CompareIdentifiers(@Code.Source[IdentStartPos],PChar(Pointer(OldIdentifier)));
+    if i<>0 then begin
       debugln(['TCodeToolManager.RenameIdentifier CONSISTENCY ERROR ',Dbgs(CurCodePos^),' ']);
       SetError(20170421203210,CurCodePos^.Code,CurCodePos^.Y,CurCodePos^.X,
-        Format(ctsStrExpectedButAtomFound,[OldIdentifier,
-                               GetDottedIdentifier(@Code.Source[IdentStartPos])])
+        Format(ctsStrExpectedButAtomFound,[OldIdentifier,GetIdent(@Code.Source[IdentStartPos])])
         );
       exit;
     end;
     // change if needed
-    if CompareDottedIdentifiersCaseSens(@Code.Source[IdentStartPos],
-       PChar(Pointer(NewIdentifier)))<>0
-    then begin
+    if DottedIdents then
+      i:=CompareDottedIdentifiersCaseSens(@Code.Source[IdentStartPos],PChar(Pointer(NewIdentifier)))
+    else
+      i:=CompareIdentifiersCaseSensitive(@Code.Source[IdentStartPos],PChar(Pointer(NewIdentifier)));
+    if i<>0 then begin
       DebugLn('TCodeToolManager.RenameIdentifier Change ');
       SourceChangeCache.ReplaceEx(gtNone,gtNone,1,1,Code,
          IdentStartPos,IdentStartPos+IdentLen,NewIdentifier);
@@ -2932,7 +2944,7 @@ begin
         inc(SameLineCount);
 
     end else begin
-      DebugLn('TCodeToolManager.RenameIdentifier KEPT ',GetDottedIdentifier(@Code.Source[IdentStartPos]));
+      DebugLn('TCodeToolManager.RenameIdentifier KEPT ',GetIdent(@Code.Source[IdentStartPos]));
     end;
 
     LastCodePos := CurCodePos;

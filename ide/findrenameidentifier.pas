@@ -402,7 +402,7 @@ begin
       LazarusIDE.OpenEditorsOnCodeToolChange:=true;
       try
         if not CodeToolBoss.RenameIdentifier(PascalReferences,
-          Identifier,Options.RenameTo, DeclCode, @DeclarationCaretXY)
+          Identifier, Options.RenameTo, DeclCode, @DeclarationCaretXY, False)
         then begin
           LazarusIDE.DoJumpToCodeToolBossError;
           debugln('Error: (lazarus) DoFindRenameIdentifier unable to commit');
