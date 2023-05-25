@@ -1146,7 +1146,6 @@ destructor TDbgLinuxProcess.Destroy;
 begin
   FProcProcess.Free;
   FPostponedSignals.Free;
-  FreeAndNil(FSOLibEventBreakpoint);
   inherited Destroy;
 end;
 
@@ -1498,6 +1497,7 @@ begin
           // one or more libraries have been loaded. This breakpoint is used to
           // detect the (un)loading of libraries.
           FSOLibEventBreakpoint := AddBreak('_dl_debug_state', False, ALib);
+          TFpDbgBreakpoint(FSOLibEventBreakpoint).FreeByDbgProcess := True;
           end
         end;
       end;
