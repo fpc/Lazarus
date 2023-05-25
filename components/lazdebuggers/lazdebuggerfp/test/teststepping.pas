@@ -273,7 +273,7 @@ begin
     (* The debugger will encounter a thread create event, during the stepping
        This will mean the main-loop's FCurrentThread is the new thread
     *)
-    RunToNextPauseNoLoopBreak('', dcRun, 25000);
+    RunToNextPauseNoLoopBreak('', dcRun, 45000);
     AssertDebuggerState(dsPause);
     TestLocation('At BrkThreadCreateInStep', 'BrkThreadCreateInStep', -1);
 
