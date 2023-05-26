@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, LazFileUtils, LazLogger, DbgIntfDebuggerBase,
   TestDbgConfig, TTestDbgExecuteables, TestDbgTestSuites, TestDbgControl,
   FpDebugDebugger, LazDebuggerIntf, LazDebuggerIntfBaseTypes, Dialogs, Forms,
-  FpDbgDwarfFreePascal;
+  FpDbgDwarfFreePascal, FpDbgClasses;
 
 type
 
@@ -88,7 +88,8 @@ end;
 
 procedure THookedFpDebugDebugger.LockRelease;
 begin
-  inc(LockRelCount);
+  if (FDbgController <> nil) and not (FDbgController.Event in [deLoadLibrary, deUnloadLibrary]) then
+    inc(LockRelCount);
   inherited LockRelease;
 end;
 
