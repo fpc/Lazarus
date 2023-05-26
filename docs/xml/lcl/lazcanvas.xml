@@ -249,7 +249,7 @@ Developing with Graphics
 <element name="TLazCanvas.FAssignedFont"/>
 <element name="TLazCanvas.FAssignedPen"/>
 <element name="TLazCanvas.FBaseWindowOrg"/>
-<element name="TLazCanvas.FPolygonWindingMode"/>
+<element name="TLazCanvas.PolygonNonZeroWindingRule"/>
 <element name="TLazCanvas.FLazClipRegion"/>
 <element name="TLazCanvas.FWindowOrg"/>
 
@@ -385,25 +385,110 @@ Pen for the canvas.
 </element>
 
 <element name="TLazCanvas.DoRectangleFill">
-<short>Adjusts the FCL image rectangle to be LCL compatible.</short>
+<short>
+Adjusts the FCL image rectangle to be LCL compatible and draws a filled 
+rectangle on the canvas.
+</short>
 <descr>
 <p>
-Adjusts the fcl-image coordinate system to be compatible with coordinates 
-used in <var>TCanvas</var>.
+<var>DoRectangleFill</var> adjusts the fcl-image coordinate system to be 
+compatible with coordinates used in <var>TCanvas</var>.
+</p>
+<p>
+It calls the FCL SortRec routine (in <file>clipping.pp</file>) to normalize 
+the values in Bounds prior to the drawing operation. It also shrinks the 
+rectangle by a single pixel on the bottom and right edges for the border drawn 
+in the Rectangle method. The original values in Bounds are not changed though 
+- a temporary copy of Bounds is used in the method.
+</p>
+<p>
+Values in Brush, like the Color and Style properties, are used to draw the 
+filled rectangle. Style determines the routine(s) called to fill the drawing 
+area as follows:
+</p>
+<dl>
+<dt>bsSolid</dt>
+<dd>
+Fills the specified area with the Brush color. If the rectangle covers the 
+entire width and height for the canvas and Clipping is not enabled, the 
+FillColor method is used. Otherwise, the FillRectangleColor method is called 
+using the adjusted bounds for the canvas.
+</dd>
+<dt>bsPattern</dt>
+<dd>
+Calls FillRectanglePattern to fill the rectangle with the pattern specified 
+for the Brush.
+</dd>
+<dt>bsImage</dt>
+<dd>
+Fills the rectangle with the image assigned to the Brush. Uses 
+RelativeBrushImage to determine whether FillRectangleImageRel or 
+FillRectangleImage is called for the operation. A PixelCanvasException 
+exception is raised for the style if an image has not been assigned in Brush.
+</dd>
+<dt>bsBDiagonal</dt>
+<dd>
+Calls FillRectangleHashDiagonal to fill the rectangle using the size for the 
+hash pattern.
+</dd>
+<dt>bsFDiagonal</dt>
+<dd>
+Calls FillRectangleHashBackDiagonal to fill the rectangle using the size for 
+the hash pattern.
+</dd>
+<dt>bsCross</dt>
+<dd>
+Calls both FillRectangleHashHorizontal and FillRectangleHashVertical to fill 
+the rectangle using the size for the hash pattern.
+</dd>
+<dt>bsDiagCross</dt>
+<dd>
+Calls booth FillRectangleHashDiagonal and FillRectangleHashBackDiagonal to 
+fill the rectangle using the size for the hash pattern.
+</dd>
+<dt>bsHorizontal</dt>
+<dd>
+Calls FillRectangleHashHorizontal to fill the rectangle using the size for the 
+hash pattern.
+</dd>
+<dt>bsVertical</dt>
+<dd>
+Calls FillRectangleHashVertical to fill the rectangle using the size for the 
+hash pattern.
+</dd>
+</dl>
+<p>
+DoRectangleFill is an overridden method in TLazCanvas. It reimplements the 
+method introduced in the TFPPixelCanvas ancestor (in FCL), and does <b>not</b> 
+call the inherited method.
 </p>
 </descr>
+<vesion>
+Modified in LCL version 2.4.0 to decrease the bottom and right edges of the 
+rectangle by a single pixel. This fixes a difference between the rectangle 
+fill and a border drawn in the Rectangle method.
+</vesion>
 <seealso/>
 </element>
 <element name="TLazCanvas.DoRectangleFill.Bounds">
-<short>Rectangle bounds adjusted in the method.</short>
+<short>Rectangle with the bounds adjusted and used in the method.</short>
 </element>
 
 <element name="TLazCanvas.DoPolygonFill">
-<short>Implements a polygon fill algorithm not present in fcl-image.</short>
+<short>
+Implements a polygon fill algorithm not present in fcl-image prior to FPC 
+version 3.3.1.
+</short>
 <descr>
 <p>
-Implements a polygon fill algorithm not present in fcl-image. Part of the algorithm 
-is explained <url href="http://alienryderflex.com/polygon_fill/">here</url>.
+Implements a polygon fill algorithm not present in fcl-image. Part of the 
+algorithm is explained 
+<url href="http://alienryderflex.com/polygon_fill/">here</url>.
+</p>
+<p>
+DoPolygonFill is defined when using FPC versions prior to 3.3.1. In FPC 3.3.1, 
+the method already exists in the TFPPixelCanvas ancestor and is not needed in 
+TLazCanvas.
 </p>
 </descr>
 <version>
@@ -418,7 +503,7 @@ the non-zero winding rule in the fill operation.
 </seealso>
 </element>
 <element name="TLazCanvas.DoPolygonFill.points">
-<short>Array with the TPoint records for the polygon corners.</short>
+<short>Array with the TPoint records representing the polygon vertices.</short>
 </element>
 
 <element name="TLazCanvas.DoLine">
