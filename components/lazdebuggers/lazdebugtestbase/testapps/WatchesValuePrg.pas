@@ -14,6 +14,7 @@ program WatchesValuePrg;
 {$notes off}
 {$warnings off}
 {$inline off}
+{$IfnDEF WIndows} {$Codepage utf8} {$ENDIF}
 
 uses sysutils, Classes, variants;
 
