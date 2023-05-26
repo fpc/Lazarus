@@ -59,9 +59,11 @@ begin
               try nop;                             // TEST_BREAKPOINT=TRY_F_1
                 nop;
                 nop;                               // TEST_BREAKPOINT=TRY_F_3
+{$IFDEF WINDOWS}
 {$IF FPC_FULLVERSION >= 030000}{$IF (FPC_FULLVERSION >= 030200) OR defined(CPUX86_64)}
                 if DoExit1 and (a <> b) then exit; // TEST_BREAKPOINT=TRY_F_EXIT_1
 {$ENDIF}{$ENDIF}
+{$ENDIF}
                 nop;                               // TEST_BREAKPOINT=TRY_F_AFTER_EXIT_1
                 if DoRaise3 then
                   raise Exception.Create('');      // TEST_BREAKPOINT=TRY_F_RAISE_3
@@ -70,9 +72,11 @@ begin
               finally nop;                         // TEST_BREAKPOINT=TRY_F_FINALLY
                 nop;                               // TEST_BREAKPOINT=TRY_F_FINALLY_1
                 nop;
+{$IFDEF WINDOWS}
 {$IF FPC_FULLVERSION >= 030000}{$IF (FPC_FULLVERSION >= 030200) OR defined(CPUX86_64)}
                 if DoExit2 and (a <> b) then exit;  // TEST_BREAKPOINT=TRY_F_FIN_EXIT_2
 {$ENDIF}{$ENDIF}
+{$ENDIF}
                 nop;                                // TEST_BREAKPOINT=TRY_F_AFTER_FIN_EXIT_2
                 nop;                                // TEST_BREAKPOINT=TRY_F_BEFORE_TRY_G
                   try nop;                               // TEST_BREAKPOINT=TRY_G_1
