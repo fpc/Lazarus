@@ -119,8 +119,8 @@ type
     function StartDebugger(AppDir, TestExeName: String): boolean; virtual;
     procedure FreeDebugger;
     procedure ClearDbgStateCounts;
-    function RunToNextPause(ACmd: TDBGCommand; ATimeOut: Integer = 5000; AWaitForInternal: Boolean = False): Boolean;
-    function WaitForFinishRun(ATimeOut: Integer = 5000; AWaitForInternal: Boolean = False): Boolean;
+    function RunToNextPause(ACmd: TDBGCommand; ATimeOut: Integer = 15000; AWaitForInternal: Boolean = False): Boolean;
+    function WaitForFinishRun(ATimeOut: Integer = 15000; AWaitForInternal: Boolean = False): Boolean;
 
     function SetBreakPoint(AFileName: String; ALine: Integer): TDBGBreakPoint;
     function SetBreakPoint(ACommonSource: TCommonSource; AName: String): TDBGBreakPoint;

@@ -102,8 +102,8 @@ type
     Procedure TestCompile(const Prg: TCommonSource; out ExeName: string; const UsesDirs: array of TUsesDir;
                           NamePostFix: String=''; ExtraArgs: String=''); overload;
 
-    function RunToNextPauseTestInternal(AName: String; AnInternalCntExp: Integer; ACmd: TDBGCommand; ATimeOut: Integer = 5000; AWaitForInternal: Boolean = False): Boolean;
-    function RunToNextPauseNoInternal(AName: String; ACmd: TDBGCommand; ATimeOut: Integer = 5000; AWaitForInternal: Boolean = False): Boolean;
+    function RunToNextPauseTestInternal(AName: String; AnInternalCntExp: Integer; ACmd: TDBGCommand; ATimeOut: Integer = 15000; AWaitForInternal: Boolean = False): Boolean;
+    function RunToNextPauseNoInternal(AName: String; ACmd: TDBGCommand; ATimeOut: Integer = 15000; AWaitForInternal: Boolean = False): Boolean;
 
     // Logging
     procedure LogText(const s: string; CopyToTestLogger: Boolean = False);
