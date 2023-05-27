@@ -473,6 +473,8 @@ begin
   if (EnvironmentOptions=Nil) or (CoolBar=Nil) or (ComponentPageControl=Nil) then
     Exit;
 
+  Application.ProcessMessagesFromToolbar; // Wait for all widget sizes to be updated
+
   // IDE Coolbar height
   if EnvironmentOptions.Desktop.IDECoolBarOptions.Visible then
   begin

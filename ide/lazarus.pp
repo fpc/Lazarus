@@ -127,6 +127,7 @@ begin
   {$ENDIF}
 
   Application.Initialize;
+  Application.Name := 'Lazarus';
   LazIDEInstances.PerformCheck;
   if not LazIDEInstances.StartIDE then
     Exit;

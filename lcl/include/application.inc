@@ -232,7 +232,7 @@ begin
   end;
 end;
 
-function TApplication.GetExename: String;
+function TApplication.GetExename: string;
 Begin
   Result := ParamStrUTF8(0);
 end;
@@ -419,8 +419,20 @@ begin
     // when the programmer did a mistake, avoid getting strange errors
     raise Exception.Create('Application=nil');
   end;
+
+  inc(FCriticalRegionFlag);
+
+  DebugLn('ProcessMessages: FCriticalRegionFlag =%d, Self=%s',
+  [FCriticalRegionFlag,Self.Name]);
   WidgetSet.AppProcessMessages;
   ProcessAsyncCallQueue;
+  dec(FCriticalRegionFlag);
+end;
+
+procedure TApplication.ProcessMessagesFromToolbar;
+begin
+  Debugln('Process messages from Toolbar');
+  ProcessMessages;
 end;
 
 {------------------------------------------------------------------------------
@@ -515,7 +527,7 @@ begin
     Hint := GetLongHint(HintControl.Hint);
 end;
 
-procedure TApplication.SetCaptureExceptions(const AValue: boolean);
+procedure TApplication.SetCaptureExceptions(const AValue: Boolean);
 begin
   if FCaptureExceptions=AValue then exit;
   FCaptureExceptions:=AValue;
@@ -681,7 +693,7 @@ begin
   end;
 end;
 
-procedure TApplication.SetTitle(const AValue: String);
+procedure TApplication.SetTitle(const AValue: string);
 begin
   inherited SetTitle(AValue);
   WidgetSet.AppSetTitle(GetTitle);
@@ -886,7 +898,7 @@ begin
   {$endif}
 end;
 
-procedure TApplication.StartHintTimer(Interval: integer;
+procedure TApplication.StartHintTimer(Interval: Integer;
   TimerType: TAppHintTimerType);
 begin
   {$ifdef DebugHintWindow}
@@ -1280,7 +1292,7 @@ begin
     Result := False;
 end;
 
-function TApplication.HelpKeyword(const Keyword: String): Boolean;
+function TApplication.HelpKeyword(const Keyword: string): Boolean;
 var
   CallHelp: Boolean;
 begin
@@ -1358,7 +1370,7 @@ begin
     end;
 end;
 
-function TApplication.IsWaiting: boolean;
+function TApplication.IsWaiting: Boolean;
 begin
   Result:=AppWaiting in FFlags;
 end;
@@ -1482,7 +1494,7 @@ begin
   FApplicationHandlers[HandlerType].Remove(Handler);
 end;
 
-function TApplication.GetConsoleApplication: boolean;
+function TApplication.GetConsoleApplication: Boolean;
 begin
   Result:=false;
 end;
@@ -1529,7 +1541,7 @@ begin
   Include(FFlags,AppIdleEndSent);
 end;
 
-function TApplication.GetActive: boolean;
+function TApplication.GetActive: Boolean;
 begin
   Result := AppActive in Flags;
 end;
@@ -2014,7 +2026,7 @@ end;
   Invokes OnDropFilesEvent of the application.
   This function is called by the interface.
  ------------------------------------------------------------------------------}
-procedure TApplication.IntfDropFiles(const FileNames: array of String);
+procedure TApplication.IntfDropFiles(const FileNames: array of string);
 var
   i: LongInt;
 begin
@@ -2077,7 +2089,7 @@ begin
   UpdateMouseControl(CurMouseControl);
 end;
 
-function TApplication.IsShortcut(var Message: TLMKey): boolean;
+function TApplication.IsShortcut(var Message: TLMKey): Boolean;
 var
   ModalForm: TCustomForm;
 begin
@@ -2445,7 +2457,7 @@ begin
   end;
 end;
 
-function TApplication.IsRTLLang(const ALang: String): Boolean;
+function TApplication.IsRTLLang(const ALang: string): Boolean;
 var
  lng : String;
  p   : word;
@@ -2490,7 +2502,7 @@ begin
             ;
 end;
 
-function TApplication.Direction(const ALang: String): TBiDiMode;
+function TApplication.Direction(const ALang: string): TBiDiMode;
 const
   BidiModeMap: array[Boolean] of TBiDiMode = (bdLeftToRight, bdRightToLeft);
 begin

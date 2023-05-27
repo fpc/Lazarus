@@ -1454,6 +1454,7 @@ type
     FComponentsToReleaseSavedByModal: TFPList;
     FComponentsReleasingSavedByModal: TFPList;
     FCreatingForm: TForm;// currently created form (CreateForm), candidate for MainForm
+    FCriticalRegionFlag: Integer;
     FDoubleBuffered: TApplicationDoubleBuffered;
     FExceptionDialog: TApplicationExceptionDlg;
     FExtendedKeysSupport: Boolean;
@@ -1618,6 +1619,7 @@ type
     procedure Restore;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure ProcessMessages;
+    procedure ProcessMessagesFromToolbar;
     procedure Idle(Wait: Boolean);
     procedure Run;
     procedure ShowException(E: Exception); override;
