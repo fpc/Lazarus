@@ -6,13 +6,19 @@ unit LazPango1;
 {$PACKRECORDS C}
 {$MODESWITCH DUPLICATELOCALS+}
 
+{$ifdef Unix}
 {$LINKLIB libpango-1.0.so.0}
+{$endif}
 interface
 uses
-  CTypes, LazGObject2, Lazcairo1, LazGLib2;
+  CTypes, LazGObject2, LazGio2, LazHarfBuzz0, Lazcairo1, LazGLib2;
 
 const
-  Pango1_library = 'libpango-1.0.so.0';
+  {$ifdef MsWindows}
+  LazPango1_library = 'libpango-1.0.so.dll';
+  {$else}
+  LazPango1_library = 'libpango-1.0.so.0';
+  {$endif}
 
   PANGO_ANALYSIS_FLAG_CENTERED_BASELINE = 1;
   PANGO_ATTR_INDEX_FROM_TEXT_BEGINNING = 0;

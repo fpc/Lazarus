@@ -6,14 +6,19 @@ unit LazGModule2;
 {$PACKRECORDS C}
 {$MODESWITCH DUPLICATELOCALS+}
 
+{$ifdef Unix}
 {$LINKLIB libgmodule-2.0.so.0}
+{$endif}
 interface
 uses
   CTypes, LazGLib2;
 
 const
-  GModule2_library = 'libgmodule-2.0.so.0';
-
+  {$ifdef MsWindows}
+  LazGModule2_library = 'libgmodule-2.0.so.dll';
+  {$else}
+  LazGModule2_library = 'libgmodule-2.0.so.0';
+  {$endif}
 
 type
   TGModuleFlags = Integer;
