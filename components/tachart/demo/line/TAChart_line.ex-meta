@@ -1,5 +1,5 @@
 { "TAChart_line" : {
    "Category" : "TAChart",
-   "Keywords" : ["TAChart","line chart","pointers"],
-   "Description" : "Demonstrates a line chart and the various pointers it might use."}
+   "Keywords" : ["TAChart","line series","pointers","oscilloscope","color each point","custom-drawn","speed","3D","rotated"],
+   "Description" : "Demonstrates several aspects of the line series:\n-drawing speed\n-built-in and custom data point symbols (pointers)\n-oscilloscope mode\n-coloring individual data points."}
 }
