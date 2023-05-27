@@ -468,7 +468,7 @@ type
     function  FpDebugger: TFpDebugDebugger;
     procedure DoStateChange(const {%H-}AOldState: TDBGState); override;
     procedure ClearSources;
-    procedure DebugInfoChanged;
+    procedure DebugInfoChanged(ADbgInstance: TDbgInstance);
   public
     constructor Create(const ADebugger: TDebuggerIntf);
     destructor Destroy; override;
@@ -2435,18 +2435,18 @@ begin
   FRequestedSources.Clear;
 end;
 
-procedure TFpLineInfo.DebugInfoChanged;
+procedure TFpLineInfo.DebugInfoChanged(ADbgInstance: TDbgInstance);
 var
   i: Integer;
   Src: String;
 begin
-  if (FpDebugger.DebugInfo = nil) or not(FpDebugger.DebugInfo is TFpDwarfInfo) then
+  if (ADbgInstance.DbgInfo = nil) or not(ADbgInstance.DbgInfo is TFpDwarfInfo) then
     exit;
 
   for i := 0 to FRequestedSources.Count - 1 do begin
     if FRequestedSources.Objects[i] = nil then begin
       Src := FRequestedSources[i];
-      FRequestedSources.Objects[i] := TObject(TFpDwarfInfo(FpDebugger.DebugInfo).GetLineAddressMap(Src));
+      FRequestedSources.Objects[i] := TObject(TFpDwarfInfo(ADbgInstance.DbgInfo).GetLineAddressMap(Src));
       if FRequestedSources.Objects[i] <> nil then
         DoChange(Src);
     end;
@@ -2510,14 +2510,26 @@ end;
 
 procedure TFpLineInfo.Request(const ASource: String);
 var
-  i: Integer;
+  lmap: PDWarfLineMap;
+  lib: TDbgLibrary;
 begin
-  if (FpDebugger.DebugInfo = nil) or not(FpDebugger.DebugInfo is TFpDwarfInfo) then begin
-    FRequestedSources.AddObject(ASource, nil);
-    exit;
+  lmap := nil;
+
+  if (FpDebugger.DebugInfo <> nil) and (FpDebugger.DebugInfo is TFpDwarfInfo) then
+    lmap := TFpDwarfInfo(FpDebugger.DebugInfo).GetLineAddressMap(ASource);
+
+  if (lmap = nil) and (FpDebugger.DbgController <> nil) and (FpDebugger.DbgController.CurrentProcess <> nil) then begin
+    for lib in FpDebugger.DbgController.CurrentProcess.LibMap do begin
+      if (lib.DbgInfo <> nil) and  (lib.DbgInfo is TFpDwarfInfo) then begin
+        lmap := TFpDwarfInfo(lib.DbgInfo).GetLineAddressMap(ASource);
+        if lmap <> nil then
+          break;
+      end;
+    end;
   end;
-  i := FRequestedSources.AddObject(ASource, TObject(TFpDwarfInfo(FpDebugger.DebugInfo).GetLineAddressMap(ASource)));
-  if FRequestedSources.Objects[i] <> nil then
+
+  FRequestedSources.AddObject(ASource, TObject(lmap));
+  if lmap <> nil then
     DoChange(ASource);
 end;
 
@@ -3491,8 +3503,8 @@ end;
 
 procedure TFpDebugDebugger.FDbgControllerDebugInfoLoaded(Sender: TObject);
 begin
-  if LineInfo <> nil then begin
-    TFpLineInfo(LineInfo).DebugInfoChanged;
+  if (FDbgController <> nil) and (LineInfo <> nil) then begin
+    TFpLineInfo(LineInfo).DebugInfoChanged(FDbgController.CurrentProcess);
   end;
 end;
 
@@ -3502,12 +3514,15 @@ var
   i: Integer;
   ALib: TDbgLibrary;
 begin
-  for i := 0 to High(ALibraries) do
-    begin
+  for i := 0 to High(ALibraries) do begin
     ALib := ALibraries[i];
     n := ExtractFileName(ALib.Name);
     DoDbgEvent(ecModule, etModuleLoad, 'Loaded: ' + n + ' (' + ALib.Name +')');
+
+    if ALib.DbgInfo <> nil then begin
+      TFpLineInfo(LineInfo).DebugInfoChanged(ALib);
     end;
+  end;
 end;
 
 procedure TFpDebugDebugger.FDbgControllerLibraryUnloaded(var continue: boolean; ALibraries: TDbgLibraryArr);

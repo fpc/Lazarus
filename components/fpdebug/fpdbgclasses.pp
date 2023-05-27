@@ -769,6 +769,7 @@ type
     function  GetLineAddresses(AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray; ASymInstance: TDbgInstance = nil): Boolean;
     function  ContextFromProc(AThreadId, AStackFrame: Integer; AProcSym: TFpSymbol): TFpDbgLocationContext; inline; deprecated 'use TFpDbgSimpleLocationContext.Create';
     function  GetLib(const AHandle: THandle; out ALib: TDbgLibrary): Boolean;
+    property  LibMap: TLibraryMap read FLibMap;
     property  LastLibrariesLoaded: TDbgLibraryArr read GetLastLibrariesLoaded;
     property  LastLibrariesUnloaded: TDbgLibraryArr read GetLastLibrariesUnloaded;
     procedure UpdateBreakpointsForLibraryLoaded(ALib: TDbgLibrary);
