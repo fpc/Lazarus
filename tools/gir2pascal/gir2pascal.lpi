@@ -25,19 +25,7 @@
       <DestinationDirectory Value="/tmp/publishedproject/"/>
     </PublishOptions>
     <RunParams>
-      <local>
-        <CommandLineParams Value="-wni /home/andrew/programming/lazarus-ccr.old/applications/gobject-introspection/girfiles-from-felix/Gtk-3.0.gir -o /tmp/gir-out"/>
-        <LaunchingApplication Use="True" PathPlusParams="/usr/bin/gnome-terminal -t &apos;Lazarus Run Output&apos; -e &apos;$(LazarusDir)/tools/runwait.sh $(TargetCmdLine)&apos;"/>
-      </local>
       <FormatVersion Value="2"/>
-      <Modes Count="1">
-        <Mode0 Name="default">
-          <local>
-            <CommandLineParams Value="-wni /home/andrew/programming/lazarus-ccr.old/applications/gobject-introspection/girfiles-from-felix/Gtk-3.0.gir -o /tmp/gir-out"/>
-            <LaunchingApplication Use="True" PathPlusParams="/usr/bin/gnome-terminal -t &apos;Lazarus Run Output&apos; -e &apos;$(LazarusDir)/tools/runwait.sh $(TargetCmdLine)&apos;"/>
-          </local>
-        </Mode0>
-      </Modes>
     </RunParams>
     <Units Count="11">
       <Unit0>
