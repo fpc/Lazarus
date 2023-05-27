@@ -3937,7 +3937,7 @@ var
 begin
   if FCharWidth = 0 then exit;
   OldExtraChars := FExtraLineChars;
-  FExtraLineChars := Max(0, FExtraLinePixel - FClipExtraPixel + FCharWidth - 1)
+  FExtraLineChars := Max(0, FExtraLinePixel - FClipExtraPixel + FCharWidth)
                      div FCharWidth;
   if (FExtraLineChars <> OldExtraChars) and assigned(FOnExtraLineCharsChanged) then
     FOnExtraLineCharsChanged(Self);

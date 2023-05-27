@@ -8614,7 +8614,8 @@ begin
     //FScreenCaret.ClipRect := Rect(TextLeftPixelOffset(False), 0,
     //                              ClientWidth - TextRightPixelOffset - ScrollBarWidth + 1,
     //                              ClientHeight - ScrollBarWidth);
-    FScreenCaret.ClipExtraPixel := FTextArea.Bounds.Right - FTextArea.Bounds.Left - CharsInWindow * CharWidth;
+    // TextBounds.Left => account for padding
+    FScreenCaret.ClipExtraPixel := FTextArea.Bounds.Right - FTextArea.TextBounds.Left - CharsInWindow * CharWidth;
     UpdateCaret;
     FScreenCaret.UnLock;
 
