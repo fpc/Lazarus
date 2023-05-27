@@ -694,7 +694,7 @@ type
     procedure SetInsertMode(const Value: boolean);
     procedure SetKeystrokes(const Value: TSynEditKeyStrokes);
     procedure SetLastMouseCaret(const AValue: TPoint);
-    function  CurrentMaxLeftChar: Integer;
+    function  CurrentMaxLeftChar(AIncludeCharsInWin: Boolean = False): Integer;
     function  CurrentMaxLineLen: Integer;
     procedure SetLineText(Value: string);
     procedure SetMaxLeftChar(Value: integer);
@@ -4813,23 +4813,42 @@ begin
     fMarkupHighCaret.CheckState; // Todo need a global lock, including the markup
 end;
 
-function TCustomSynEdit.CurrentMaxLeftChar: Integer;
+function TCustomSynEdit.CurrentMaxLeftChar(AIncludeCharsInWin: Boolean
+  ): Integer;
 begin
   if not HandleAllocated then // don't know chars in window yet
     exit(MaxInt);
+
   Result := FTheLinesView.LengthOfLongestLine;
+  if (eoScrollPastEolAddPage in Options2) then
+    Result := Result + CharsInWindow - 1;
   if (eoScrollPastEol in Options) and (Result < fMaxLeftChar) then
     Result := fMaxLeftChar;
-  Result := Result - CharsInWindow + 1 + FScreenCaret.ExtraLineChars;
+  if (eoScrollPastEolAutoCaret in Options2) and (Result < FCaret.CharPos) then
+    Result := FCaret.CharPos;
+
+  if AIncludeCharsInWin then
+    Result := Result + 1 + FScreenCaret.ExtraLineChars
+  else
+    Result := Result - CharsInWindow + 1 + FScreenCaret.ExtraLineChars;
+
+  if Result < 1 then Result := 1;
 end;
 
-function TCustomSynEdit.CurrentMaxLineLen: Integer;
+function TCustomSynEdit.CurrentMaxLineLen: Integer; // called by TSynEditCaret
 begin
   if not HandleAllocated then // don't know chars in window yet
     exit(MaxInt);
+  if (eoScrollPastEolAutoCaret in Options2) then
+    exit(MaxInt);
+
   Result := FTheLinesView.LengthOfLongestLine + 1;
-  if (eoScrollPastEol in Options) and (Result < fMaxLeftChar) then
-    Result := fMaxLeftChar;
+  if (eoScrollPastEolAddPage in Options2) then
+    Result := Result + CharsInWindow - 1;
+  if (eoScrollPastEol in Options) and (Result < fMaxLeftChar + 1) then
+    Result := fMaxLeftChar + 1;
+
+  if Result < 1 then Result := 1;
 end;
 
 procedure TCustomSynEdit.SetLeftChar(Value: Integer);
@@ -5096,10 +5115,7 @@ begin
     ScrollInfo.nTrackPos := 0;
 
     // Horizontal
-    ScrollInfo.nMax := FTheLinesView.LengthOfLongestLine + 1;
-    if (eoScrollPastEol in Options) and (ScrollInfo.nMax < fMaxLeftChar + 1) then
-      ScrollInfo.nMax := fMaxLeftChar + 1;
-    inc(ScrollInfo.nMax, FScreenCaret.ExtraLineChars);
+    ScrollInfo.nMax := CurrentMaxLeftChar(True);
     if ((fScrollBars in [ssBoth, ssHorizontal]) or
         ((fScrollBars in [ssAutoBoth, ssAutoHorizontal]) and (ScrollInfo.nMax - 1 > CharsInWindow))
        ) xor (sfHorizScrollbarVisible in fStateFlags)
@@ -8452,7 +8468,7 @@ end;
 procedure TCustomSynEdit.UpdateOptions;
 begin
   FTrimmedLinesView.Enabled := eoTrimTrailingSpaces in fOptions;
-  FCaret.AllowPastEOL := (eoScrollPastEol in fOptions);
+  FCaret.AllowPastEOL := (eoScrollPastEol in fOptions) or (fOptions2 * [eoScrollPastEolAddPage, eoScrollPastEolAutoCaret] <> []);
   FCaret.KeepCaretX := (eoKeepCaretX in fOptions);
   FBlockSelection.Enabled := not(eoNoSelection in fOptions);
   FUndoList.GroupUndo := eoGroupUndo in fOptions;
@@ -8480,6 +8496,7 @@ procedure TCustomSynEdit.UpdateOptions2;
 begin
   FBlockSelection.Persistent := eoPersistentBlock in fOptions2;
   FCaret.SkipTabs := (eoCaretSkipTab in fOptions2);
+  FCaret.AllowPastEOL := (eoScrollPastEol in fOptions) or (fOptions2 * [eoScrollPastEolAddPage, eoScrollPastEolAutoCaret] <> []);
   if Assigned(fMarkupSelection) then
     fMarkupSelection.ColorTillEol := eoColorSelectionTillEol in fOptions2;
 end;
@@ -8529,19 +8546,15 @@ procedure TCustomSynEdit.SizeOrFontChanged(bFont: boolean);
 begin
   if HandleAllocated then begin
     LastMouseCaret:=Point(-1,-1);
-    RecalcCharsAndLinesInWin(False);
-
     //DebugLn('TCustomSynEdit.SizeOrFontChanged LinesInWindow=',dbgs(LinesInWindow),' ClientHeight=',dbgs(ClientHeight),' ',dbgs(LineHeight));
     //debugln('TCustomSynEdit.SizeOrFontChanged A ClientWidth=',dbgs(ClientWidth),' FLeftGutter.Width=',dbgs(FLeftGutter.Width),' ScrollBarWidth=',dbgs(ScrollBarWidth),' CharWidth=',dbgs(CharWidth),' CharsInWindow=',dbgs(CharsInWindow),' Width=',dbgs(Width));
-    if bFont then begin
-      UpdateScrollbars;
+    if bFont then
       Invalidate;
-    end else
+
+    Include(fStateFlags, sfScrollbarChanged);
+    RecalcCharsAndLinesInWin(True);
+    if sfScrollbarChanged in fStateFlags then
       UpdateScrollbars;
-    if not (eoScrollPastEol in Options) then
-      LeftChar := LeftChar;
-    if not (eoScrollPastEof in Options) then
-      TopView := TopView;
   end;
 end;
 
@@ -8620,8 +8633,7 @@ begin
     FScreenCaret.UnLock;
 
     if CheckCaret then begin
-      if not (eoScrollPastEol in Options) then
-        LeftChar := LeftChar;
+      LeftChar := LeftChar;
       if not (eoScrollPastEof in Options) then
         TopView := TopView;
     end;
@@ -8643,7 +8655,7 @@ begin
   try
     if not FCaret.MoveHoriz(DX) then begin
       if DX < 0 then begin
-        if (FCaret.LinePos > 1) and not(eoScrollPastEol in fOptions) then begin
+        if (FCaret.LinePos > 1) and (not(eoScrollPastEol in fOptions)) and (fOptions2 * [eoScrollPastEolAddPage, eoScrollPastEolAutoCaret] = []) then begin
           // move to end of prev line
           NewCaret.Y:= ToPos(FTheLinesView.AddVisibleOffsetToTextIndex(ToIdx(FCaret.LinePos), -1));
           if NewCaret.Y <> FCaret.LinePos then begin
@@ -8654,7 +8666,7 @@ begin
         end;
       end
       else begin
-        if not(eoScrollPastEol in fOptions) then begin
+        if (not(eoScrollPastEol in fOptions)) and (fOptions2 * [eoScrollPastEolAddPage, eoScrollPastEolAutoCaret] = []) then begin
           // move to begin of next line
           NewCaret.Y:= ToPos(FTheLinesView.AddVisibleOffsetToTextIndex(ToIdx(FCaret.LinePos), +1));
           if NewCaret.Y <= ToPos(FTheLinesView.ViewToTextIndex(ToIdx(FTheLinesView.ViewedCount))) then begin

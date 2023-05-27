@@ -143,6 +143,9 @@ type
     eoScrollByOneLess,         // Scroll vertically, by <PageUp> and <PageDown> keys, less by one line
     eoScrollPastEof,           // When scrolling to end-of-file, show last line at the top of the control, instead of the bottom
     eoScrollPastEol,           // Allows caret to go into empty space beyond end-of-line position
+                               // The caret can move (and the scrollbar provides scrolling for) up to either
+                               // - the length of the longest Line
+                               // - MaxLeftChar
     eoScrollHintFollows,       // The hint, showing vertical scroll position, follows the mouse cursor
     eoShowScrollHint,          // Shows hint, with the current scroll position, when scrolling vertically by dragging the scrollbar slider
     eoShowSpecialChars,        // Shows non-printable characters (spaces, tabulations) with greyed symbols
@@ -186,10 +189,15 @@ type
     eoColorSelectionTillEol,   // Colorize selection background only till EOL of each line, not till edge of control
     eoPersistentCaretStopBlink,// only if eoPersistentCaret > do not blink, draw fixed line
     eoNoScrollOnSelectRange,   // SelectALl, SelectParagraph, SelectToBrace will not scroll
-    eoAcceptDragDropEditing    // Accept dropping text dragged from a SynEdit (self or other).
+    eoAcceptDragDropEditing,   // Accept dropping text dragged from a SynEdit (self or other).
                                // OnDragOver: To use OnDragOver, this flag should NOT be set.
                                // WARNING: Currently OnDragOver also works, if drag-source is NOT TSynEdit, this may be change for other drag sources.
                                //          This may in future affect if OnDragOver is called at all or not.
+    eoScrollPastEolAddPage,    // Allows caret to go into empty space beyond end-of-line position
+                               // - Limit to length of longest line + width of one page
+                               // if eoScrollPastEol also is set, the bigger of the 2 limits is used
+    eoScrollPastEolAutoCaret   // Allows caret to go into empty space beyond end-of-line position
+                               // Limit will follow the caret / scrollbar-range extends when caret goes further
   );
   TSynEditorOptions2 = set of TSynEditorOption2;
 
