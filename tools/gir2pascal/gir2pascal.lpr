@@ -45,7 +45,6 @@ type
     FUnitPrefix: String;
     FOverWriteFiles: Boolean;
     FOptions: TgirOptions;
-    FEnumImpl: TgirEnumImpl;
     procedure AddDefaultPaths;
     procedure AddPaths(APaths: String);
     procedure VerifyOptions;

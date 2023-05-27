@@ -2623,7 +2623,7 @@ begin
   if FinalizeSection.Declarations.Count > 0 then
      Str.WriteString(FinalizeSection.AsString);
 
-  Str.WriteString('end.');
+  Str.WriteString('end.' + LineEnding);
 
   Result.Position:=0;
 end;
@@ -2633,7 +2633,7 @@ begin
   if (goWantTest in FOptions) then
   begin
     FTestPascalFile.WriteString(FTestPascalBody.Text);
-    FTestPascalFile.WriteString('end.');
+    FTestPascalFile.WriteString('end.' + LineEnding);
     //FTestCFile.Position:=0;
     FTestPascalFile.Position:=0;
   end;
