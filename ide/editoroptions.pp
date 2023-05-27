@@ -4948,7 +4948,8 @@ begin
           SynEditOptName := 'OverwriteBlock';
         eoAutoHideCursor:
           SynEditOptName := 'AutoHideCursor';
-        eoCaretMoveEndsSelection, eoPersistentCaretStopBlink, eoNoScrollOnSelectRange:
+        eoCaretMoveEndsSelection, eoPersistentCaretStopBlink, eoNoScrollOnSelectRange,
+        eoScrollPastEolAddPage, eoScrollPastEolAutoCaret:
           WriteStr(SynEditOptName, SynEditOpt2);
         else
           SynEditOptName := '';
@@ -5164,7 +5165,8 @@ begin
           SynEditOptName := 'OverwriteBlock';
         eoAutoHideCursor:
           SynEditOptName := 'AutoHideCursor';
-        eoCaretMoveEndsSelection, eoPersistentCaretStopBlink, eoNoScrollOnSelectRange:
+        eoCaretMoveEndsSelection, eoPersistentCaretStopBlink, eoNoScrollOnSelectRange,
+        eoScrollPastEolAddPage, eoScrollPastEolAutoCaret:
           WriteStr(SynEditOptName, SynEditOpt2);
         else
           SynEditOptName := '';
