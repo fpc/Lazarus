@@ -6,13 +6,19 @@ unit LazGio2;
 {$PACKRECORDS C}
 {$MODESWITCH DUPLICATELOCALS+}
 
+{$ifdef Unix}
 {$LINKLIB libgio-2.0.so.0}
+{$endif}
 interface
 uses
   CTypes, LazGObject2, LazGLib2;
 
 const
-  Gio2_library = 'libgio-2.0.so.0';
+  {$ifdef MsWindows}
+  LazGio2_library = 'libgio-2.0.so.dll';
+  {$else}
+  LazGio2_library = 'libgio-2.0.so.0';
+  {$endif}
 
   G_DESKTOP_APP_INFO_LOOKUP_EXTENSION_POINT_NAME = 'gio-desktop-app-info-lookup';
   G_FILE_ATTRIBUTE_ACCESS_CAN_DELETE = 'access::can-delete';

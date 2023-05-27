@@ -6,13 +6,19 @@ unit LazAtk1;
 {$PACKRECORDS C}
 {$MODESWITCH DUPLICATELOCALS+}
 
+{$ifdef Unix}
 {$LINKLIB libatk-1.0.so.0}
+{$endif}
 interface
 uses
   CTypes, LazGObject2, LazGLib2;
 
 const
-  Atk1_library = 'libatk-1.0.so.0';
+  {$ifdef MsWindows}
+  LazAtk1_library = 'libatk-1.0.so.dll';
+  {$else}
+  LazAtk1_library = 'libatk-1.0.so.0';
+  {$endif}
 
   ATK_BINARY_AGE = 20810;
   ATK_INTERFACE_AGE = 1;

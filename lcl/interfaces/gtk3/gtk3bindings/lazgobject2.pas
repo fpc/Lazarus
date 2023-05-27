@@ -6,13 +6,19 @@ unit LazGObject2;
 {$PACKRECORDS C}
 {$MODESWITCH DUPLICATELOCALS+}
 
+{$ifdef Unix}
 {$LINKLIB libgobject-2.0.so.0}
+{$endif}
 interface
 uses
   CTypes, LazGLib2;
 
 const
-  GObject2_library = 'libgobject-2.0.so.0';
+  {$ifdef MsWindows}
+  LazGObject2_library = 'libgobject-2.0.so.dll';
+  {$else}
+  LazGObject2_library = 'libgobject-2.0.so.0';
+  {$endif}
 
   G_PARAM_MASK = 255;
   G_PARAM_READWRITE = 0;

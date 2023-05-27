@@ -6,13 +6,19 @@ unit LazGdk3;
 {$PACKRECORDS C}
 {$MODESWITCH DUPLICATELOCALS+}
 
+{$ifdef Unix}
 {$LINKLIB libgdk-3.so.0}
+{$endif}
 interface
 uses
   CTypes, LazGdkPixbuf2, LazGio2, LazPango1, Lazcairo1, LazGLib2, LazGObject2;
 
 const
-  Gdk3_library = 'libgdk-3.so.0';
+  {$ifdef MsWindows}
+  LazGdk3_library = 'libgdk-3.so.dll';
+  {$else}
+  LazGdk3_library = 'libgdk-3.so.0';
+  {$endif}
 
   GDK_BUTTON_MIDDLE = 2;
   GDK_BUTTON_PRIMARY = 1;

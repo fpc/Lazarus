@@ -6,27 +6,41 @@ unit Lazxlib2;
 {$PACKRECORDS C}
 {$MODESWITCH DUPLICATELOCALS+}
 
+{$ifdef Unix}
+{$endif}
 interface
 uses
   CTypes;
 
 const
-  xlib2_library = '';
+  {$ifdef MsWindows}
+  Lazxlib2_library = '.dll';
+  {$else}
+  Lazxlib2_library = '';
+  {$endif}
 
 type
 
+
+  { TAtom }
   PPAtom = ^PAtom;
   PAtom = ^TAtom;
   TAtom = culong;
 
+
+  { TColormap }
   PPColormap = ^PColormap;
   PColormap = ^TColormap;
   TColormap = culong;
 
+
+  { TCursor }
   PPCursor = ^PCursor;
   PCursor = ^TCursor;
   TCursor = culong;
 
+
+  { TDisplay }
   PPDisplay = ^PDisplay;
   PDisplay = ^TDisplay;
 
@@ -35,26 +49,38 @@ type
 
 
 
+
+  { TDrawable }
   PPDrawable = ^PDrawable;
   PDrawable = ^TDrawable;
   TDrawable = culong;
 
+
+  { TGC }
   PPGC = ^PGC;
   PGC = ^TGC;
   TGC = pointer;
 
+
+  { TKeyCode }
   PPKeyCode = ^PKeyCode;
   PKeyCode = ^TKeyCode;
   TKeyCode = cuint8;
 
+
+  { TKeySym }
   PPKeySym = ^PKeySym;
   PKeySym = ^TKeySym;
   TKeySym = culong;
 
+
+  { TPicture }
   PPPicture = ^PPicture;
   PPicture = ^TPicture;
   TPicture = culong;
 
+
+  { TScreen }
   PPScreen = ^PScreen;
   PScreen = ^TScreen;
 
@@ -63,10 +89,14 @@ type
 
 
 
+
+  { Time }
   PPime = ^Pime;
   Pime = ^Time;
   Time = culong;
 
+
+  { TVisual }
   PPVisual = ^PVisual;
   PVisual = ^TVisual;
 
@@ -75,18 +105,29 @@ type
 
 
 
+
+  { TVisualID }
   PPVisualID = ^PVisualID;
   PVisualID = ^TVisualID;
   TVisualID = culong;
 
+
+  { TWindow }
   PPWindow = ^PWindow;
   PWindow = ^TWindow;
   TWindow = culong;
+
+
+  { TXEvent }
+  PPXEvent = ^PXEvent;
+  PXEvent = ^TXEvent;
   TXEvent = record
   end;
 
 
 
+
+  { TXConfigureEvent }
   PPXConfigureEvent = ^PXConfigureEvent;
   PXConfigureEvent = ^TXConfigureEvent;
 
@@ -95,14 +136,20 @@ type
 
 
 
+
+  { TXID }
   PPXID = ^PXID;
   PXID = ^TXID;
   TXID = culong;
 
+
+  { TPixmap }
   PPPixmap = ^PPixmap;
   PPixmap = ^TPixmap;
   TPixmap = culong;
 
+
+  { TXImage }
   PPXImage = ^PXImage;
   PXImage = ^TXImage;
 
@@ -111,6 +158,8 @@ type
 
 
 
+
+  { TXFontStruct }
   PPXFontStruct = ^PXFontStruct;
   PXFontStruct = ^TXFontStruct;
 
@@ -119,6 +168,8 @@ type
 
 
 
+
+  { TXTrapezoid }
   PPXTrapezoid = ^PXTrapezoid;
   PXTrapezoid = ^TXTrapezoid;
 
@@ -127,6 +178,8 @@ type
 
 
 
+
+  { TXVisualInfo }
   PPXVisualInfo = ^PXVisualInfo;
   PXVisualInfo = ^TXVisualInfo;
 
@@ -135,6 +188,8 @@ type
 
 
 
+
+  { TXWindowAttributes }
   PPXWindowAttributes = ^PXWindowAttributes;
   PXWindowAttributes = ^TXWindowAttributes;
 

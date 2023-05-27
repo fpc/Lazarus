@@ -6,14 +6,20 @@ unit LazGLib2;
 {$PACKRECORDS C}
 {$MODESWITCH DUPLICATELOCALS+}
 
+{$ifdef Unix}
 {$LINKLIB libgobject-2.0.so.0}
 {$LINKLIB libglib-2.0.so.0}
+{$endif}
 interface
 uses
   CTypes;
 
 const
-  GLib2_library = 'libgobject-2.0.so.0';
+  {$ifdef MsWindows}
+  LazGLib2_library = 'libgobject-2.0.so.dll';
+  {$else}
+  LazGLib2_library = 'libgobject-2.0.so.0';
+  {$endif}
 
   G_ASCII_DTOSTR_BUF_SIZE = 39;
   G_BIG_ENDIAN = 4321;

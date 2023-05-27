@@ -49,37 +49,26 @@ unit LazCairo1;
   October 2007
 *)
 
-{$mode ObjFpc}{$H+}
+{$MODE OBJFPC}{$H+}
 
+{$PACKRECORDS C}
+{$MODESWITCH DUPLICATELOCALS+}
+
+{$ifdef Unix}
+{$LINKLIB libcairo-gobject.so.2}
+{$LINKLIB libcairo.so.2}
+{$endif}
 interface
-
-Uses
+uses
   CTypes;
 
 const
-{$ifdef win32}
-  LIB_CAIRO = 'libcairo-2.dll';
-  {$IFDEF FPC}
-    {$ifndef NO_SMART_LINK}
-      {$smartlink on}
-    {$endif}
-  {$ENDIF}
-{$else}
-  {$ifdef darwin}
-    LIB_CAIRO = 'cairo';
-    {$linklib cairo}
+  {$ifdef MsWindows}
+  Lazcairo1_library = 'libcairo-gobject.so.dll';
   {$else}
-    {$ifdef UseCustomLibs}
-    LIB_CAIRO = '';
-    {$else}
-    LIB_CAIRO = 'libcairo.so.2';
-    {$endif}
+  Lazcairo1_library = 'libcairo-gobject.so.2';
   {$endif}
-{$endif}
-
-{$IFDEF FPC}
-  {$PACKRECORDS C}
-{$ENDIF}
+  LIB_CAIRO = Lazcairo1_library;
 
 type
   cairo_status_t = (

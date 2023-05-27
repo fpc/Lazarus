@@ -6,14 +6,19 @@ unit LazGtk3;
 {$PACKRECORDS C}
 {$MODESWITCH DUPLICATELOCALS+}
 
+{$ifdef Unix}
 {$LINKLIB libgtk-3.so.0}
-{$LINKLIB libgdk-3.so.0}
+{$endif}
 interface
 uses
   CTypes, LazAtk1, LazGdk3, Lazxlib2, LazGLib2, LazGdkPixbuf2, LazGObject2, LazGio2, Lazcairo1, LazPango1;
 
 const
-  Gtk3_library = 'libgtk-3.so.0';
+  {$ifdef MsWindows}
+  LazGtk3_library = 'libgtk-3.so.dll';
+  {$else}
+  LazGtk3_library = 'libgtk-3.so.0';
+  {$endif}
 
   GTK_BINARY_AGE = 806;
   GTK_INPUT_ERROR = -1;

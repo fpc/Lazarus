@@ -6,13 +6,19 @@ unit LazGdkPixbuf2;
 {$PACKRECORDS C}
 {$MODESWITCH DUPLICATELOCALS+}
 
+{$ifdef Unix}
 {$LINKLIB libgdk_pixbuf-2.0.so.0}
+{$endif}
 interface
 uses
   CTypes, LazGModule2, LazGio2, LazGLib2, LazGObject2;
 
 const
-  GdkPixbuf2_library = 'libgdk_pixbuf-2.0.so.0';
+  {$ifdef MsWindows}
+  LazGdkPixbuf2_library = 'libgdk_pixbuf-2.0.so.dll';
+  {$else}
+  LazGdkPixbuf2_library = 'libgdk_pixbuf-2.0.so.0';
+  {$endif}
 
   GDK_PIXBUF_FEATURES_H = 1;
   GDK_PIXBUF_MAGIC_NUMBER = 1197763408;
