@@ -2465,6 +2465,19 @@ function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree;
           AControl.Align:=alClient;
           for Side:=Low(TAnchorKind) to high(TAnchorKind) do
             AControl.AnchorSide[Side].Control:=nil;
+          {$IFDEF LCLCOCOA}
+          // trigger page to be ready, mainly for embedded Forms.
+          // eg. BreakPoints, Search Results, will be empty without trigger.
+          // for the embedding Form in TPageControl, the embedding Form cannot
+          // be self activated in Cocoa Interface.
+          // after long research, here is the least invasive.
+          // see also: https://gitlab.com/freepascal.org/lazarus/lazarus/-/issues/39763#note_1408260128
+          if AControl is TWinControl then
+          begin
+            TWinControl(AControl).HandleNeeded;
+            Site.Pages.PageIndex:= i;
+          end;
+          {$ENDIF}
         end;
         Site.Pages.PageIndex:=ANode.PageIndex;
       finally
