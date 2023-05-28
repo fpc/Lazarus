@@ -58,7 +58,7 @@ type
   end;
 
   TLazLoggerWriteEvent = procedure(Sender: TObject; S: string; var Handled: Boolean) of object;
-  TLazLoggerWriteExEvent = procedure(Sender: TObject; var LogTxt, LogIndent: string; var Handled: Boolean; AnInfo: TLazLoggerWriteExEventInfo) of object;
+  TLazLoggerWriteExEvent = procedure(Sender: TObject; var LogTxt, LogIndent: string; var Handled: Boolean; const AnInfo: TLazLoggerWriteExEventInfo) of object;
 
   TLazLoggerWidgetSetWriteEvent = procedure(Sender: TObject;
       S: string;
