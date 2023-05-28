@@ -736,7 +736,7 @@ begin
   {$ENDIF}
   Result := HMENU(TGtk3Menu.Create(AMenu, nil));
   g_signal_connect_data(TGtk3Menu(Result).Widget,'deactivate',
-    TGCallback(@gtkWSPopupMenuDeactivate), TGtk3Menu(Result), nil, 0);
+    TGCallback(@gtkWSPopupMenuDeactivate), TGtk3Menu(Result), nil, G_CONNECT_DEFAULT);
 
 end;
 

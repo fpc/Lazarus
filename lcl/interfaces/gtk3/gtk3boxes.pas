@@ -280,7 +280,7 @@ begin
 
   g_signal_connect_data(Dialog, 'delete-event',
     TGCallback(@BoxClosed),
-    @DialogResult, nil, 0);
+    @DialogResult, nil, G_CONNECT_DEFAULT);
 
   if Btns = GTK_BUTTONS_NONE then
   begin
@@ -375,7 +375,7 @@ begin
            g_object_set_data(PGObject(Dialog), 'modal_result', Pointer(idButtonCancel));
 
         g_signal_connect_data(Btn, 'clicked',
-          TGCallback(@ButtonClicked), @DialogResult, nil, 0);
+          TGCallback(@ButtonClicked), @DialogResult, nil, G_CONNECT_DEFAULT);
 
         if DefaultNdx = BtnIdx then
         begin
@@ -466,7 +466,7 @@ begin
 
   g_signal_connect_data(GPointer(Dialog), 'delete-event',
     TGCallback(@BoxClosed),
-    @DialogResult, nil, 0);
+    @DialogResult, nil, G_CONNECT_DEFAULT);
 
   if Btns = GTK_BUTTONS_NONE then
   begin
@@ -526,7 +526,7 @@ begin
 
   DialogResult:= 0;
   Dialog := gtk_dialog_new;
-  g_signal_connect_data(Dialog, 'delete-event', TGCallback(@BoxClosed), @DialogResult, nil, 0);
+  g_signal_connect_data(Dialog, 'delete-event', TGCallback(@BoxClosed), @DialogResult, nil, G_CONNECT_DEFAULT);
   gtk_window_set_default_size(PGtkWindow(Dialog), 100, 100);
   ALabel:= gtk_label_new(lpText);
   gtk_container_add (PGtkContainer(PGtkDialog(Dialog)^.get_content_area), ALabel);
