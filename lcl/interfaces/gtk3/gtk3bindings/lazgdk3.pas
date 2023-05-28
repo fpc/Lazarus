@@ -2377,35 +2377,6 @@ const
   GDK_OWNERSHIP_APPLICATION: TGdkGrabOwnership = 2;
 
 type
-  TGdkEventMask = Integer;
-const
-  { GdkEventMask }
-  GDK_EXPOSURE_MASK: TGdkEventMask = 2;
-  GDK_POINTER_MOTION_MASK: TGdkEventMask = 4;
-  GDK_POINTER_MOTION_HINT_MASK: TGdkEventMask = 8;
-  GDK_BUTTON_MOTION_MASK: TGdkEventMask = 16;
-  GDK_BUTTON1_MOTION_MASK: TGdkEventMask = 32;
-  GDK_BUTTON2_MOTION_MASK: TGdkEventMask = 64;
-  GDK_BUTTON3_MOTION_MASK: TGdkEventMask = 128;
-  GDK_BUTTON_PRESS_MASK: TGdkEventMask = 256;
-  GDK_BUTTON_RELEASE_MASK: TGdkEventMask = 512;
-  GDK_KEY_PRESS_MASK: TGdkEventMask = 1024;
-  GDK_KEY_RELEASE_MASK: TGdkEventMask = 2048;
-  GDK_ENTER_NOTIFY_MASK: TGdkEventMask = 4096;
-  GDK_LEAVE_NOTIFY_MASK: TGdkEventMask = 8192;
-  GDK_FOCUS_CHANGE_MASK: TGdkEventMask = 16384;
-  GDK_STRUCTURE_MASK: TGdkEventMask = 32768;
-  GDK_PROPERTY_CHANGE_MASK: TGdkEventMask = 65536;
-  GDK_VISIBILITY_NOTIFY_MASK: TGdkEventMask = 131072;
-  GDK_PROXIMITY_IN_MASK: TGdkEventMask = 262144;
-  GDK_PROXIMITY_OUT_MASK: TGdkEventMask = 524288;
-  GDK_SUBSTRUCTURE_MASK: TGdkEventMask = 1048576;
-  GDK_SCROLL_MASK: TGdkEventMask = 2097152;
-  GDK_TOUCH_MASK: TGdkEventMask = 4194304;
-  GDK_SMOOTH_SCROLL_MASK: TGdkEventMask = 8388608;
-  GDK_ALL_EVENTS_MASK: TGdkEventMask = 16777214;
-
-type
   TGdkInputMode = Integer;
 const
   { GdkInputMode }
@@ -2619,8 +2590,43 @@ const
   GDK_DEVICE_TYPE_SLAVE: TGdkDeviceType = 1;
   GDK_DEVICE_TYPE_FLOATING: TGdkDeviceType = 2;
 
+//TODO: This is hand written just to give the direction we need to go.
+//TODO: We need to make git2pas generate similar code for bitfields.
 type
   TGdkGrabStatus = Integer;
+  TGdkEventMaskIdx = (
+    TGdkEventMaskIdxMinValue = 0,
+    GDK_EXPOSURE_MASK = 1,
+    GDK_POINTER_MOTION_MASK = 2,
+    GDK_POINTER_MOTION_HINT_MASK = 3,
+    GDK_BUTTON_MOTION_MASK = 4,
+    GDK_BUTTON1_MOTION_MASK = 5,
+    GDK_BUTTON2_MOTION_MASK = 6,
+    GDK_BUTTON3_MOTION_MASK = 7,
+    GDK_BUTTON_PRESS_MASK = 8,
+    GDK_BUTTON_RELEASE_MASK = 9,
+    GDK_KEY_PRESS_MASK = 10,
+    GDK_KEY_RELEASE_MASK = 11,
+    GDK_ENTER_NOTIFY_MASK = 12,
+    GDK_LEAVE_NOTIFY_MASK = 13,
+    GDK_FOCUS_CHANGE_MASK = 14,
+    GDK_STRUCTURE_MASK = 15,
+    GDK_PROPERTY_CHANGE_MASK = 16,
+    GDK_VISIBILITY_NOTIFY_MASK = 17,
+    GDK_PROXIMITY_IN_MASK = 18,
+    GDK_PROXIMITY_OUT_MASK = 19,
+    GDK_SUBSTRUCTURE_MASK = 20,
+    GDK_SCROLL_MASK = 21,
+    GDK_TOUCH_MASK = 22,
+    GDK_SMOOTH_SCROLL_MASK = 23,
+    GDK_TOUCHPAD_GESTURE_MASK = 24,
+    GDK_TABLET_PAD_MASK = 25,
+    TGdkEventMaskIdxMaxValue = 31
+  );
+  TGdkEventMask = Set of TGdkEventMaskIdx;
+const
+  GDK_ALL_EVENTS_MASK = [TGdkEventMaskIdxMinValue..TGdkEventMaskIdxMaxValue];
+
 const
   { GdkGrabStatus }
   GDK_GRAB_SUCCESS: TGdkGrabStatus = 0;

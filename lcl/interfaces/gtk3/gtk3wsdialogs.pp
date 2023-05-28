@@ -906,8 +906,8 @@ begin
   if Widget^.get_has_window and Gtk3IsGdkWindow(Widget^.window) then
   begin
     gdk_window_set_events(Widget^.window,
-      gdk_window_get_events(Widget^.window)
-        or GDK_KEY_RELEASE_MASK or GDK_KEY_PRESS_MASK);
+      TGdkEventMask(Integer(gdk_window_get_events(Widget^.window))
+        or Integer(GDK_KEY_RELEASE_MASK) or Integer(GDK_KEY_PRESS_MASK)));
 
   end;
   AHandle := HwndFromGtkWidget(Widget);
@@ -1372,7 +1372,6 @@ begin
   end;
 
   if Button1<>'' then ;
-  if Action=0 then ;
 
   Result := THandle(TGtk3FileDialog.Create(ACommonDialog));
   // AFileDialog := PGtkFileChooserDialog(ADialog.Widget);

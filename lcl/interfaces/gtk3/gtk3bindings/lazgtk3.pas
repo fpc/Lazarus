@@ -1487,7 +1487,7 @@ type
     function get_direction: TGtkTextDirection; cdecl; inline;
     function get_display: PGdkDisplay; cdecl; inline;
     function get_double_buffered: gboolean; cdecl; inline;
-    function get_events: gint; cdecl; inline;
+    function get_events: TGdkEventMask; cdecl; inline;
     function get_frame_clock: PGdkFrameClock; cdecl; inline;
     function get_halign: TGtkAlign; cdecl; inline;
     function get_has_tooltip: gboolean; cdecl; inline;
@@ -1597,7 +1597,7 @@ type
     procedure set_device_events(device: PGdkDevice; events: TGdkEventMask); cdecl; inline;
     procedure set_direction(dir: TGtkTextDirection); cdecl; inline;
     procedure set_double_buffered(double_buffered: gboolean); cdecl; inline;
-    procedure set_events(events: gint); cdecl; inline;
+    procedure set_events(events: TGdkEventMask); cdecl; inline;
     procedure set_halign(align: TGtkAlign); cdecl; inline;
     procedure set_has_tooltip(has_tooltip: gboolean); cdecl; inline;
     procedure set_has_window(has_window: gboolean); cdecl; inline;
@@ -1650,7 +1650,7 @@ type
     property can_focus: gboolean read get_can_focus write set_can_focus;
     //property composite_child: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_composite_child ;
     property double_buffered: gboolean read get_double_buffered write set_double_buffered;
-    property events: gint read get_events write set_events;
+    property events: TGdkEventMask read get_events write set_events;
     //property expand: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_expand  { property is writeable but setter not declared } ;
     property halign: TGtkAlign read get_halign write set_halign;
     //property has_default1: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_has_default  { property is writeable but setter not declared } ;
@@ -13007,7 +13007,7 @@ function gtk_widget_get_device_events(widget: PGtkWidget; device: PGdkDevice): T
 function gtk_widget_get_direction(widget: PGtkWidget): TGtkTextDirection; cdecl; external;
 function gtk_widget_get_display(widget: PGtkWidget): PGdkDisplay; cdecl; external;
 function gtk_widget_get_double_buffered(widget: PGtkWidget): gboolean; cdecl; external;
-function gtk_widget_get_events(widget: PGtkWidget): gint; cdecl; external;
+function gtk_widget_get_events(widget: PGtkWidget): TGdkEventMask; cdecl; external;
 function gtk_widget_get_frame_clock(widget: PGtkWidget): PGdkFrameClock; cdecl; external;
 function gtk_widget_get_halign(widget: PGtkWidget): TGtkAlign; cdecl; external;
 function gtk_widget_get_has_tooltip(widget: PGtkWidget): gboolean; cdecl; external;
@@ -14581,7 +14581,7 @@ procedure gtk_widget_set_device_enabled(widget: PGtkWidget; device: PGdkDevice; 
 procedure gtk_widget_set_device_events(widget: PGtkWidget; device: PGdkDevice; events: TGdkEventMask); cdecl; external;
 procedure gtk_widget_set_direction(widget: PGtkWidget; dir: TGtkTextDirection); cdecl; external;
 procedure gtk_widget_set_double_buffered(widget: PGtkWidget; double_buffered: gboolean); cdecl; external;
-procedure gtk_widget_set_events(widget: PGtkWidget; events: gint); cdecl; external;
+procedure gtk_widget_set_events(widget: PGtkWidget; events: TGdkEventMask); cdecl; external;
 procedure gtk_widget_set_halign(widget: PGtkWidget; align: TGtkAlign); cdecl; external;
 procedure gtk_widget_set_has_tooltip(widget: PGtkWidget; has_tooltip: gboolean); cdecl; external;
 procedure gtk_widget_set_has_window(widget: PGtkWidget; has_window: gboolean); cdecl; external;
@@ -15075,7 +15075,7 @@ begin
   Result := LazGtk3.gtk_widget_get_double_buffered(@self);
 end;
 
-function TGtkWidget.get_events: gint; cdecl;
+function TGtkWidget.get_events: TGdkEventMask; cdecl;
 begin
   Result := LazGtk3.gtk_widget_get_events(@self);
 end;
@@ -15621,7 +15621,7 @@ begin
   LazGtk3.gtk_widget_set_double_buffered(@self, double_buffered);
 end;
 
-procedure TGtkWidget.set_events(events: gint); cdecl;
+procedure TGtkWidget.set_events(events: TGdkEventMask); cdecl;
 begin
   LazGtk3.gtk_widget_set_events(@self, events);
 end;

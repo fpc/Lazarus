@@ -896,30 +896,31 @@ implementation
 uses gtk3int,imglist,lclproc;
 
 const
-  GDK_DEFAULT_EVENTS_MASK: TGdkEventMask =
-    2 +        //GDK_EXPOSURE_MASK
-    4 +        //GDK_POINTER_MOTION_MASK
-    8 +        //GDK_POINTER_MOTION_HINT_MASK
-    16 +       //GDK_BUTTON_MOTION_MASK
-    32 +       //GDK_BUTTON1_MOTION_MASK
-    64 +       //GDK_BUTTON2_MOTION_MASK
-    128 +      //GDK_BUTTON3_MOTION_MASK
-    256 +      //GDK_BUTTON_PRESS_MASK
-    512 +      //GDK_BUTTON_RELEASE_MASK
-    1024 +     //GDK_KEY_PRESS_MASK
-    2048 +     //GDK_KEY_RELEASE_MASK
-    4096 +     //GDK_ENTER_NOTIFY_MASK
-    8192 +     //GDK_LEAVE_NOTIFY_MASK
-    16384 +    //GDK_FOCUS_CHANGE_MASK
-    32768 +    //GDK_STRUCTURE_MASK
-    65536 +    //GDK_PROPERTY_CHANGE_MASK
-    131072 +   //GDK_VISIBILITY_NOTIFY_MASK
-    262144 +   //GDK_PROXIMITY_IN_MASK
-    524288 +   //GDK_PROXIMITY_OUT_MASK
-    1048576 +  //GDK_SUBSTRUCTURE_MASK
-    2097152 +  //GDK_SCROLL_MASK
-    4194304;   //GDK_TOUCH_MASK
- // 8388608    //GDK_SMOOTH_SCROLL_MASK: there is a bug in GTK3, see https://stackoverflow.com/questions/11775161/gtk3-get-mouse-scroll-direction
+  GDK_DEFAULT_EVENTS_MASK = [
+    GDK_EXPOSURE_MASK, {2}
+    GDK_POINTER_MOTION_MASK, {4}
+    GDK_POINTER_MOTION_HINT_MASK, {8}
+    GDK_BUTTON_MOTION_MASK, {16}
+    GDK_BUTTON1_MOTION_MASK, {32}
+    GDK_BUTTON2_MOTION_MASK, {64}
+    GDK_BUTTON3_MOTION_MASK, {128}
+    GDK_BUTTON_PRESS_MASK, {256}
+    GDK_BUTTON_RELEASE_MASK, {512}
+    GDK_KEY_PRESS_MASK, {1024}
+    GDK_KEY_RELEASE_MASK, {2048}
+    GDK_ENTER_NOTIFY_MASK, {4096}
+    GDK_LEAVE_NOTIFY_MASK, {8192}
+    GDK_FOCUS_CHANGE_MASK, {16384}
+    GDK_STRUCTURE_MASK, {32768}
+    GDK_PROPERTY_CHANGE_MASK, {65536}
+    GDK_VISIBILITY_NOTIFY_MASK, {131072}
+    GDK_PROXIMITY_IN_MASK, {262144}
+    GDK_PROXIMITY_OUT_MASK, {524288}
+    GDK_SUBSTRUCTURE_MASK, {1048576}
+    GDK_SCROLL_MASK, {2097152}
+    GDK_TOUCH_MASK {4194304}
+ // GDK_SMOOTH_SCROLL_MASK {8388608} //there is a bug in GTK3, see https://stackoverflow.com/questions/11775161/gtk3-get-mouse-scroll-direction
+  ];
 
 function Gtk3EventToStr(AEvent: TGdkEventType): String;
 begin
@@ -2702,7 +2703,7 @@ begin
 
   if FCentralWidget <> nil then
   begin
-    FCentralWidget^.set_events(Integer(GDK_DEFAULT_EVENTS_MASK));
+    FCentralWidget^.set_events(GDK_DEFAULT_EVENTS_MASK);
     g_signal_connect_data(FCentralWidget, 'event', TGCallback(@Gtk3WidgetEvent), Self, nil, G_CONNECT_DEFAULT);
     for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
     begin
