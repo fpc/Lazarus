@@ -1626,7 +1626,7 @@ resourcestring
   dlgIndentsIndentGroupOptions = 'Indent';
   dlgCommentIndentGroupOptions = 'Comments and Strings';
   dlgCaretGroupOptions = 'Caret (Text Cursor)';
-  dlgCaretScrollGroupOptions = 'Allow Caret (Text Cursor) past end of line';
+  dlgCaretScrollGroupOptions = 'Caret (Text Cursor) past end of line';
   dlgMultiCaretGroupOptions = 'Multi-caret';
   dlgBlockGroupOptions = 'Selection';
   dlgAlwaysVisibleCursor = 'Always keep caret in visible area of editor';
@@ -1645,9 +1645,9 @@ resourcestring
   dlgCursorSkipsTab = 'Caret skips tabs';
   dlgScrollByOneLess = 'Scroll by one less';
   dlgScrollPastEndFile = 'Scroll past end of file';
-  dlgScrollPastEndLine = 'Allow past EOL - Always increase scroll range (large)';
-  dlgScrollPastEndLinePage = 'Allow past EOL - Always increase scroll range (one page)';
-  dlgScrollPastEndLineCaret = 'Allow past EOL - Auto increase/decrease scroll range';
+  dlgScrollPastEndLine = 'Always increase scroll range (large)';
+  dlgScrollPastEndLinePage = 'Always increase scroll range (one page)';
+  dlgScrollPastEndLineCaret = 'Auto increase/decrease scroll range';
   dlgScrollHint = 'Show scroll hint';
   lisShowSpecialCharacters = 'Show special characters';
   dlgCloseButtonsNotebook = 'Show close buttons in notebook';
