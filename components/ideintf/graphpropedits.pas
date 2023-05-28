@@ -819,6 +819,12 @@ initialization
   RegisterPropertyEditor(TypeInfo(TImageIndex), TPersistent, 'ImageIndex', TImageIndexPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TPersistent, 'OverlayImageIndex', TImageIndexPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TPersistent, 'SelectedImageIndex', TImageIndexPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TBitBtn, 'DisabledImageIndex', TImageIndexPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TSpeedButton, 'DisabledImageIndex', TImageIndexPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TBitBtn, 'HotImageIndex', TImageIndexPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TSpeedButton, 'HotImageIndex', TImageIndexPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TBitBtn, 'PressedImageIndex', TImageIndexPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TSpeedButton, 'PressedImageIndex', TImageIndexPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TGridColumnTitle, 'ImageIndex', TGridImageIndexPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TCustomGrid, 'ImageIndexSortAsc', TGridImageIndexPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TCustomGrid, 'ImageIndexSortDesc', TGridImageIndexPropertyEditor);
