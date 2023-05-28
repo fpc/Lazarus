@@ -594,7 +594,7 @@ end;
 
 function TGtk3WidgetSet.CreateStandardCursor(ACursor: SmallInt): HCURSOR;
 var
-  CursorValue: Integer;
+  CursorValue: TGdkCursorType;
 begin
   Result := 0;
   if ACursor < crLow then Exit;
@@ -625,9 +625,9 @@ begin
     crHandPoint:CursorValue := GDK_Hand2;
     crSizeAll:  CursorValue := GDK_FLEUR;
   else
-    CursorValue := -1;
+    CursorValue := GDK_CURSOR_IS_PIXMAP;
   end;
-  if CursorValue <> -1 then
+  if CursorValue <> GDK_CURSOR_IS_PIXMAP then
     Result := HCURSOR({%H-}PtrUInt(gdk_cursor_new(CursorValue)));
 end;
 

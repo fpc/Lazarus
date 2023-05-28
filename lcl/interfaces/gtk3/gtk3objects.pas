@@ -463,7 +463,7 @@ end;
 { TGtk3Cursor }
 
 constructor TGtk3Cursor.Create(ACur:integer);
-var gdk_cur:integer;
+var gdk_cur: TGdkCursorType;
 begin
   case ACur of
   crArrow: gdk_cur:=GDK_ARROW;
