@@ -264,6 +264,14 @@ type
   GTK_TEXT_DIR_LTR = 1,
   GTK_TEXT_DIR_RTL = 2
   );
+  TGtkSelectionMode = (
+    TGtkSelectionModeMinValue = -$7FFFFFFF,
+    GTK_SELECTION_NONE = 0,
+    GTK_SELECTION_SINGLE = 1,
+    GTK_SELECTION_BROWSE = 2,
+    GTK_SELECTION_MULTIPLE = 3,
+    TGtkSelectionModeMaxValue = $7FFFFFFF
+  );
   TGtkPolicyType = (
     TGtkPolicyTypeMinValue = -$7FFFFFFF,
     GTK_POLICY_ALWAYS = 0,
@@ -906,15 +914,6 @@ const
   GTK_ICON_VIEW_DROP_RIGHT: TGtkIconViewDropPosition = 3;
   GTK_ICON_VIEW_DROP_ABOVE: TGtkIconViewDropPosition = 4;
   GTK_ICON_VIEW_DROP_BELOW: TGtkIconViewDropPosition = 5;
-
-type
-  TGtkSelectionMode = Integer;
-const
-  { GtkSelectionMode }
-  GTK_SELECTION_NONE: TGtkSelectionMode = 0;
-  GTK_SELECTION_SINGLE: TGtkSelectionMode = 1;
-  GTK_SELECTION_BROWSE: TGtkSelectionMode = 2;
-  GTK_SELECTION_MULTIPLE: TGtkSelectionMode = 3;
 
 type
   TGtkMessageType = Integer;

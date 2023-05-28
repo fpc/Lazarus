@@ -386,8 +386,8 @@ class procedure TGtk3WSCustomListView.SetPropertyInternal(
   const AIsSet: Boolean);
 const
   BoolToSelectionMode: array[Boolean] of TGtkSelectionMode = (
-    1 {GTK_SELECTION_SINGLE},
-    3 {GTK_SELECTION_MULTIPLE}
+    GTK_SELECTION_SINGLE {1} ,
+    GTK_SELECTION_MULTIPLE {3}
   );
 begin
   case AProp of
