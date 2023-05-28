@@ -883,6 +883,10 @@ msgstr "Cursor texto principal ou primário"
 msgid "Caret (Text Cursor)"
 msgstr "Cursor Texto"
 
+#: lazarusidestrconsts.dlgcaretscrollgroupoptions
+msgid "Caret (Text Cursor) past end of line"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcasesensitive
 msgctxt "lazarusidestrconsts.dlgcasesensitive"
 msgid "&Case sensitive"
@@ -3673,8 +3677,18 @@ msgid "Scroll past end of file"
 msgstr "Rolar para o final do arquivo"
 
 #: lazarusidestrconsts.dlgscrollpastendline
-msgid "Allow caret to move past end of line"
+#, fuzzy
+#| msgid "Allow caret to move past end of line"
+msgid "Always increase scroll range (large)"
 msgstr "Permitir movimento cursor texto além do final de linha"
+
+#: lazarusidestrconsts.dlgscrollpastendlinecaret
+msgid "Auto increase/decrease scroll range"
+msgstr ""
+
+#: lazarusidestrconsts.dlgscrollpastendlinepage
+msgid "Always increase scroll range (one page)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgseachdirectorynotfound
 #, object-pascal-format

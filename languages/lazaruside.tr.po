@@ -885,6 +885,10 @@ msgstr "Ana veya birincil imleç"
 msgid "Caret (Text Cursor)"
 msgstr "İmleç (Metin İmleç)"
 
+#: lazarusidestrconsts.dlgcaretscrollgroupoptions
+msgid "Caret (Text Cursor) past end of line"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcasesensitive
 msgid "&Case sensitive"
 msgstr "&Harfe duyarlı"
@@ -3634,8 +3638,18 @@ msgid "Scroll past end of file"
 msgstr "Dosyanın sonuna kaydır"
 
 #: lazarusidestrconsts.dlgscrollpastendline
-msgid "Allow caret to move past end of line"
+#, fuzzy
+#| msgid "Allow caret to move past end of line"
+msgid "Always increase scroll range (large)"
 msgstr "İmlecin satırın sonunu geçmesine izin ver"
+
+#: lazarusidestrconsts.dlgscrollpastendlinecaret
+msgid "Auto increase/decrease scroll range"
+msgstr ""
+
+#: lazarusidestrconsts.dlgscrollpastendlinepage
+msgid "Always increase scroll range (one page)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgseachdirectorynotfound
 #, object-pascal-format

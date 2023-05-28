@@ -900,6 +900,10 @@ msgstr ""
 msgid "Caret (Text Cursor)"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcaretscrollgroupoptions
+msgid "Caret (Text Cursor) past end of line"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcasesensitive
 msgctxt "lazarusidestrconsts.dlgcasesensitive"
 msgid "&Case sensitive"
@@ -3773,8 +3777,16 @@ msgstr "Failo pabaiga nesustabdo slinkties"
 #: lazarusidestrconsts.dlgscrollpastendline
 #, fuzzy
 #| msgid "Caret past end of line"
-msgid "Allow caret to move past end of line"
+msgid "Always increase scroll range (large)"
 msgstr "Eilutės pabaiga nesustabdo slinkties"
+
+#: lazarusidestrconsts.dlgscrollpastendlinecaret
+msgid "Auto increase/decrease scroll range"
+msgstr ""
+
+#: lazarusidestrconsts.dlgscrollpastendlinepage
+msgid "Always increase scroll range (one page)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgseachdirectorynotfound
 #, object-pascal-format

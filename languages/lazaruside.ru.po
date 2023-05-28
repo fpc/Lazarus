@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-05-15 17:27+0300\n"
+"PO-Revision-Date: 2023-05-28 18:06+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -881,6 +881,10 @@ msgstr "Главный или первичный курсор"
 #: lazarusidestrconsts.dlgcaretgroupoptions
 msgid "Caret (Text Cursor)"
 msgstr "Курсор (в тексте)"
+
+#: lazarusidestrconsts.dlgcaretscrollgroupoptions
+msgid "Caret (Text Cursor) past end of line"
+msgstr "Перемещение курсора (в тексте) за конец строки"
 
 #: lazarusidestrconsts.dlgcasesensitive
 msgctxt "lazarusidestrconsts.dlgcasesensitive"
@@ -3664,8 +3668,16 @@ msgid "Scroll past end of file"
 msgstr "Прокручивать за конец файла"
 
 #: lazarusidestrconsts.dlgscrollpastendline
-msgid "Allow caret to move past end of line"
-msgstr "Разрешать перемещение курсора за конец строки"
+msgid "Always increase scroll range (large)"
+msgstr "Всегда увеличивать область прокрутки (намного)"
+
+#: lazarusidestrconsts.dlgscrollpastendlinecaret
+msgid "Auto increase/decrease scroll range"
+msgstr "Автоматически увеличивать/уменьшать область прокрутки"
+
+#: lazarusidestrconsts.dlgscrollpastendlinepage
+msgid "Always increase scroll range (one page)"
+msgstr "Всегда увеличивать область прокрутки (на одну страницу)"
 
 #: lazarusidestrconsts.dlgseachdirectorynotfound
 #, object-pascal-format

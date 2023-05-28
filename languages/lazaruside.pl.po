@@ -910,6 +910,10 @@ msgstr "Kolor (NotXor)"
 msgid "Caret (Text Cursor)"
 msgstr "Kursor (tekstowy)"
 
+#: lazarusidestrconsts.dlgcaretscrollgroupoptions
+msgid "Caret (Text Cursor) past end of line"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcasesensitive
 msgctxt "lazarusidestrconsts.dlgcasesensitive"
 msgid "&Case sensitive"
@@ -3782,8 +3786,18 @@ msgid "Scroll past end of file"
 msgstr "Przewijaj poza końcem pliku"
 
 #: lazarusidestrconsts.dlgscrollpastendline
-msgid "Allow caret to move past end of line"
+#, fuzzy
+#| msgid "Allow caret to move past end of line"
+msgid "Always increase scroll range (large)"
 msgstr "Dopuszczaj kursor poza końcem wiersza"
+
+#: lazarusidestrconsts.dlgscrollpastendlinecaret
+msgid "Auto increase/decrease scroll range"
+msgstr ""
+
+#: lazarusidestrconsts.dlgscrollpastendlinepage
+msgid "Always increase scroll range (one page)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgseachdirectorynotfound
 #, object-pascal-format

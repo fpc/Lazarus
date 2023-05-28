@@ -887,6 +887,10 @@ msgstr ""
 msgid "Caret (Text Cursor)"
 msgstr "Osoitin (Teksti kursori)"
 
+#: lazarusidestrconsts.dlgcaretscrollgroupoptions
+msgid "Caret (Text Cursor) past end of line"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcasesensitive
 msgid "&Case sensitive"
 msgstr "&Sama kirjainkoko"
@@ -3669,8 +3673,18 @@ msgid "Scroll past end of file"
 msgstr "Vieritä tiedostoa sen lopun yli"
 
 #: lazarusidestrconsts.dlgscrollpastendline
-msgid "Allow caret to move past end of line"
+#, fuzzy
+#| msgid "Allow caret to move past end of line"
+msgid "Always increase scroll range (large)"
 msgstr "Salli kursorin liikkua yli rivin lopun"
+
+#: lazarusidestrconsts.dlgscrollpastendlinecaret
+msgid "Auto increase/decrease scroll range"
+msgstr ""
+
+#: lazarusidestrconsts.dlgscrollpastendlinepage
+msgid "Always increase scroll range (one page)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgseachdirectorynotfound
 #, object-pascal-format

@@ -893,6 +893,10 @@ msgstr "颜色"
 msgid "Caret (Text Cursor)"
 msgstr "插入符光标(文本光标)"
 
+#: lazarusidestrconsts.dlgcaretscrollgroupoptions
+msgid "Caret (Text Cursor) past end of line"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcasesensitive
 msgctxt "lazarusidestrconsts.dlgcasesensitive"
 msgid "&Case sensitive"
@@ -3700,8 +3704,17 @@ msgstr "滚动到文件的结尾"
 
 #: lazarusidestrconsts.dlgscrollpastendline
 #, fuzzy
-msgid "Allow caret to move past end of line"
+#| msgid "Allow caret to move past end of line"
+msgid "Always increase scroll range (large)"
 msgstr "光标符号超过行的结尾"
+
+#: lazarusidestrconsts.dlgscrollpastendlinecaret
+msgid "Auto increase/decrease scroll range"
+msgstr ""
+
+#: lazarusidestrconsts.dlgscrollpastendlinepage
+msgid "Always increase scroll range (one page)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgseachdirectorynotfound
 #, object-pascal-format
