@@ -264,6 +264,43 @@ type
   GTK_TEXT_DIR_LTR = 1,
   GTK_TEXT_DIR_RTL = 2
   );
+  TGtkJustification = (
+    TGtkJustificationMinValue = -$7FFFFFFF,
+    GTK_JUSTIFY_LEFT = 0,
+    GTK_JUSTIFY_RIGHT = 1,
+    GTK_JUSTIFY_CENTER = 2,
+    GTK_JUSTIFY_FILL = 3,
+    TGtkJustificationMaxValue = $7FFFFFFF
+  );
+  TGtkShadowType = (
+    TGtkShadowTypeMinValue = -$7FFFFFFF,
+    GTK_SHADOW_NONE = 0,
+    GTK_SHADOW_IN = 1,
+    GTK_SHADOW_OUT = 2,
+    GTK_SHADOW_ETCHED_IN = 3,
+    GTK_SHADOW_ETCHED_OUT = 4,
+    TGtkShadowTypeMaxValue = $7FFFFFFF
+  );
+  TGtkScrollType = (
+    TGtkScrollTypeMinValue = -$7FFFFFFF,
+    GTK_SCROLL_NONE = 0,
+    GTK_SCROLL_JUMP = 1,
+    GTK_SCROLL_STEP_BACKWARD = 2,
+    GTK_SCROLL_STEP_FORWARD = 3,
+    GTK_SCROLL_PAGE_BACKWARD = 4,
+    GTK_SCROLL_PAGE_FORWARD = 5,
+    GTK_SCROLL_STEP_UP = 6,
+    GTK_SCROLL_STEP_DOWN = 7,
+    GTK_SCROLL_PAGE_UP = 8,
+    GTK_SCROLL_PAGE_DOWN = 9,
+    GTK_SCROLL_STEP_LEFT = 10,
+    GTK_SCROLL_STEP_RIGHT = 11,
+    GTK_SCROLL_PAGE_LEFT = 12,
+    GTK_SCROLL_PAGE_RIGHT = 13,
+    GTK_SCROLL_START = 14,
+    GTK_SCROLL_END = 15,
+    TGtkScrollTypeMaxValue = $7FFFFFFF
+  );
   TGtkSelectionMode = (
     TGtkSelectionModeMinValue = -$7FFFFFFF,
     GTK_SELECTION_NONE = 0,
@@ -271,6 +308,14 @@ type
     GTK_SELECTION_BROWSE = 2,
     GTK_SELECTION_MULTIPLE = 3,
     TGtkSelectionModeMaxValue = $7FFFFFFF
+  );
+  TGtkPackDirection = (
+    TGtkPackDirectionMinValue = -$7FFFFFFF,
+    GTK_PACK_DIRECTION_LTR = 0,
+    GTK_PACK_DIRECTION_RTL = 1,
+    GTK_PACK_DIRECTION_TTB = 2,
+    GTK_PACK_DIRECTION_BTT = 3,
+    TGtkPackDirectionMaxValue = $7FFFFFFF
   );
   TGtkPolicyType = (
     TGtkPolicyTypeMinValue = -$7FFFFFFF,
@@ -416,14 +461,6 @@ const
   GTK_WIDGET_HELP_TOOLTIP: TGtkWidgetHelpType = 0;
   GTK_WIDGET_HELP_WHATS_THIS: TGtkWidgetHelpType = 1;
 
-type
-  TGtkJustification = Integer;
-const
-  { GtkJustification }
-  GTK_JUSTIFY_LEFT: TGtkJustification = 0;
-  GTK_JUSTIFY_RIGHT: TGtkJustification = 1;
-  GTK_JUSTIFY_CENTER: TGtkJustification = 2;
-  GTK_JUSTIFY_FILL: TGtkJustification = 3;
 
 type
   TGtkMovementStep = Integer;
@@ -474,15 +511,6 @@ const
   GTK_ARROW_RIGHT: TGtkArrowType = 3;
   GTK_ARROW_NONE: TGtkArrowType = 4;
 
-type
-  TGtkShadowType = Integer;
-const
-  { GtkShadowType }
-  GTK_SHADOW_NONE: TGtkShadowType = 0;
-  GTK_SHADOW_IN: TGtkShadowType = 1;
-  GTK_SHADOW_OUT: TGtkShadowType = 2;
-  GTK_SHADOW_ETCHED_IN: TGtkShadowType = 3;
-  GTK_SHADOW_ETCHED_OUT: TGtkShadowType = 4;
 
 type
   TGtkArrowPlacement = Integer;
@@ -661,26 +689,6 @@ const
   GTK_ICON_SIZE_DND: TGtkIconSize = 5;
   GTK_ICON_SIZE_DIALOG: TGtkIconSize = 6;
 
-type
-  TGtkScrollType = Integer;
-const
-  { GtkScrollType }
-  GTK_SCROLL_NONE: TGtkScrollType = 0;
-  GTK_SCROLL_JUMP: TGtkScrollType = 1;
-  GTK_SCROLL_STEP_BACKWARD: TGtkScrollType = 2;
-  GTK_SCROLL_STEP_FORWARD: TGtkScrollType = 3;
-  GTK_SCROLL_PAGE_BACKWARD: TGtkScrollType = 4;
-  GTK_SCROLL_PAGE_FORWARD: TGtkScrollType = 5;
-  GTK_SCROLL_STEP_UP: TGtkScrollType = 6;
-  GTK_SCROLL_STEP_DOWN: TGtkScrollType = 7;
-  GTK_SCROLL_PAGE_UP: TGtkScrollType = 8;
-  GTK_SCROLL_PAGE_DOWN: TGtkScrollType = 9;
-  GTK_SCROLL_STEP_LEFT: TGtkScrollType = 10;
-  GTK_SCROLL_STEP_RIGHT: TGtkScrollType = 11;
-  GTK_SCROLL_PAGE_LEFT: TGtkScrollType = 12;
-  GTK_SCROLL_PAGE_RIGHT: TGtkScrollType = 13;
-  GTK_SCROLL_START: TGtkScrollType = 14;
-  GTK_SCROLL_END: TGtkScrollType = 15;
 
 type
   TGtkRegionFlags = Integer;
@@ -938,15 +946,6 @@ const
   { GtkSortType }
   GTK_SORT_ASCENDING: TGtkSortType = 0;
   GTK_SORT_DESCENDING: TGtkSortType = 1;
-
-type
-  TGtkPackDirection = (
-  { GtkPackDirection }
-  GTK_PACK_DIRECTION_LTR = 0,
-  GTK_PACK_DIRECTION_RTL = 1,
-  GTK_PACK_DIRECTION_TTB = 2,
-  GTK_PACK_DIRECTION_BTT = 3
-  );
 
 type
   TGtkMenuDirectionType = Integer;
