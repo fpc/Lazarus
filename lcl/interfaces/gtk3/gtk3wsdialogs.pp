@@ -1266,7 +1266,7 @@ begin
   if (ofShowHelp in OpenDialog.Options) then
   begin
     HelpButton := gtk_dialog_add_button(PGtkDialog(Dlg.Widget), GTK_STOCK_HELP, GTK_RESPONSE_NONE);
-    g_signal_connect_data(HelpButton, 'clicked', TGCallback(@gtkDialogHelpclickedCB), Dlg, nil, 0);
+    g_signal_connect_data(HelpButton, 'clicked', TGCallback(@gtkDialogHelpclickedCB), Dlg, nil, G_CONNECT_DEFAULT);
   end;
 
   if ofAllowMultiSelect in OpenDialog.Options then
@@ -1280,7 +1280,7 @@ begin
 
   // connect change event
   g_signal_connect_data(Dlg.Widget,
-    'selection-changed', TGCallback(@gtkFileChooserSelectionChangedCB), Dlg, nil, 0);
+    'selection-changed', TGCallback(@gtkFileChooserSelectionChangedCB), Dlg, nil, G_CONNECT_DEFAULT);
 
   // Sets the dialog options
 
@@ -1337,8 +1337,8 @@ class procedure TGtk3WSFileDialog.SetCallbacks(const AGtkWidget: PGtkWidget;
   const AWidgetInfo: TGtk3Dialog);
 begin
   TGtk3WSCommonDialog.SetCallbacks(AGtkWidget, AWidgetInfo);
-  g_signal_connect_data(AGtkWidget, 'response', TGCallback(@Gtk2FileChooserResponseCB), AWidgetInfo, nil, 0);
-  g_signal_connect_data(AGtkWidget, 'notify', TGCallback(@Gtk2FileChooserNotifyCB), AWidgetInfo, nil, 0);
+  g_signal_connect_data(AGtkWidget, 'response', TGCallback(@Gtk2FileChooserResponseCB), AWidgetInfo, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(AGtkWidget, 'notify', TGCallback(@Gtk2FileChooserNotifyCB), AWidgetInfo, nil, G_CONNECT_DEFAULT);
 end;
 
 {
@@ -1486,13 +1486,13 @@ begin
   //g_signal_connect_data(AGtkWidget,
   //  'destroy', TGCallback(@gtkDialogDestroyCB), AWidgetInfo, nil, 0);
   g_signal_connect_data(AGtkWidget,
-    'delete-event', TGCallback(@gtkDialogCloseQueryCB), AWidgetInfo, nil, 0);
+    'delete-event', TGCallback(@gtkDialogCloseQueryCB), AWidgetInfo, nil, G_CONNECT_DEFAULT);
   g_signal_connect_data(AGtkWidget,
-    'key-press-event', TGCallback(@GTKDialogKeyUpDownCB), AWidgetInfo, nil, 0);
+    'key-press-event', TGCallback(@GTKDialogKeyUpDownCB), AWidgetInfo, nil, G_CONNECT_DEFAULT);
   g_signal_connect_data(AGtkWidget,
-    'key-release-event', TGCallback(@GTKDialogKeyUpDownCB), AWidgetInfo, nil, 0);
+    'key-release-event', TGCallback(@GTKDialogKeyUpDownCB), AWidgetInfo, nil, G_CONNECT_DEFAULT);
   g_signal_connect_data(AGtkWidget,
-    'realize', TGCallback(@GTKDialogRealizeCB), AWidgetInfo, nil, 0);
+    'realize', TGCallback(@GTKDialogRealizeCB), AWidgetInfo, nil, G_CONNECT_DEFAULT);
 end;
 
 class procedure TGtk3WSCommonDialog.SetSizes(const AGtkWidget: PGtkWidget;

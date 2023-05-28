@@ -47,12 +47,13 @@ const
   G_BINDING_INVERT_BOOLEAN: TGBindingFlags = 4;
 
 type
-  TGConnectFlags = Integer;
-const
-  { GConnectFlags }
-  G_CONNECT_AFTER: TGConnectFlags = 1;
-  G_CONNECT_SWAPPED: TGConnectFlags = 2;
-
+  TGConnectFlags = (
+    TGConnectFlagsMinValue = -$7FFFFFFF,
+    G_CONNECT_DEFAULT = 0,
+    G_CONNECT_AFTER = 1,
+    G_CONNECT_SWAPPED = 2,
+    TGConnectFlagsMaxValue = $7FFFFFFF
+  );
 type
   TGParamFlags = DWord;
 const

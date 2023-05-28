@@ -2685,8 +2685,8 @@ begin
   // move signal connections into attach events
   if not gtk_widget_get_realized(FWidget) then
     FWidget^.set_events(GDK_DEFAULT_EVENTS_MASK);
-  g_signal_connect_data(FWidget, 'destroy', TGCallback(@TGtk3Widget.destroy_event), Self, nil, 0);
-  g_signal_connect_data(FWidget, 'event', TGCallback(@Gtk3WidgetEvent), Self, nil, 0);
+  g_signal_connect_data(FWidget, 'destroy', TGCallback(@TGtk3Widget.destroy_event), Self, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(FWidget, 'event', TGCallback(@Gtk3WidgetEvent), Self, nil, G_CONNECT_DEFAULT);
 
   for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
   begin
@@ -2702,8 +2702,8 @@ begin
 
   if FCentralWidget <> nil then
   begin
-    FCentralWidget^.set_events(GDK_DEFAULT_EVENTS_MASK);
-    g_signal_connect_data(FCentralWidget, 'event', TGCallback(@Gtk3WidgetEvent), Self, nil, 0);
+    FCentralWidget^.set_events(Integer(GDK_DEFAULT_EVENTS_MASK));
+    g_signal_connect_data(FCentralWidget, 'event', TGCallback(@Gtk3WidgetEvent), Self, nil, G_CONNECT_DEFAULT);
     for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
     begin
       FCentralWidget^.get_style_context^.get_background_color(i, @ARgba);
@@ -2720,16 +2720,16 @@ begin
     for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
       FCentralWidgetRGBA[i] := FWidgetRGBA[i];
   end;
-  g_signal_connect_data(GetContainerWidget,'draw', TGCallback(@Gtk3DrawWidget), Self, nil, 0);
-  g_signal_connect_data(GetContainerWidget,'scroll-event', TGCallback(@Gtk3ScrollEvent), Self, nil, 0);
+  g_signal_connect_data(GetContainerWidget,'draw', TGCallback(@Gtk3DrawWidget), Self, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(GetContainerWidget,'scroll-event', TGCallback(@Gtk3ScrollEvent), Self, nil, G_CONNECT_DEFAULT);
 
   // must hide all by default ???
   //FWidget^.hide;
 
-  g_signal_connect_data(FWidget,'hide', TGCallback(@Gtk3WidgetHide), Self, nil, 0);
-  g_signal_connect_data(FWidget,'show', TGCallback(@Gtk3WidgetShow), Self, nil, 0);
-  g_signal_connect_data(FWidget,'map', TGCallback(@Gtk3MapWidget), Self, nil, 0);
-  g_signal_connect_data(FWidget,'size-allocate',TGCallback(@Gtk3SizeAllocate), Self, nil, 0);
+  g_signal_connect_data(FWidget,'hide', TGCallback(@Gtk3WidgetHide), Self, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(FWidget,'show', TGCallback(@Gtk3WidgetShow), Self, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(FWidget,'map', TGCallback(@Gtk3MapWidget), Self, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(FWidget,'size-allocate',TGCallback(@Gtk3SizeAllocate), Self, nil, G_CONNECT_DEFAULT);
   // g_signal_connect_data(FWidget, 'motion_notify_event', TGCallback(@Gtk3MotionNotifyEvent), LCLObject, nil, 0);
 end;
 
@@ -3671,8 +3671,8 @@ begin
   Self.SetTextHint(TCustomEdit(Self.LCLObject).TextHint);
   Self.SetNumbersOnly(TCustomEdit(Self.LCLObject).NumbersOnly);
 
-  g_signal_connect_data(FWidget, 'changed', TGCallback(@Gtk3EntryChanged), Self, nil, 0);
-  g_signal_connect_data(FWidget, 'insert-text', TGCallback(@TGtk3Entry.InsertText), Self, nil, 0);
+  g_signal_connect_data(FWidget, 'changed', TGCallback(@Gtk3EntryChanged), Self, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(FWidget, 'insert-text', TGCallback(@TGtk3Entry.InsertText), Self, nil, G_CONNECT_DEFAULT);
 
   //g_signal_connect_data(PGtkEntry(FWidget)^.get_buffer, 'deleted-text', TGCallback(@Gtk3EntryDeletedText), Self, nil, 0);
   //g_signal_connect_data(PGtkEntry(FWidget)^.get_buffer, 'inserted-text', TGCallback(@Gtk3EntryInsertedText), Self, nil, 0);
@@ -3917,7 +3917,7 @@ end;
 procedure TGtk3Range.InitializeWidget;
 begin
   inherited InitializeWidget;
-  g_signal_connect_data(GetContainerWidget, 'value-changed', TGCallback(@Gtk3RangeChanged), Self, nil, 0);
+  g_signal_connect_data(GetContainerWidget, 'value-changed', TGCallback(@Gtk3RangeChanged), Self, nil, G_CONNECT_DEFAULT);
 end;
 
 procedure TGtk3Range.SetStep(AStep: Integer; APageSize: Integer);
@@ -4048,7 +4048,7 @@ begin
       SmallChange, LargeChange, PageSize);
     ARange^.adjustment^.set_value(Position);
     g_signal_connect_data(ARange^.adjustment,
-         'value-changed', TGCallback(@TGtk3ScrollBar.value_changed), Self, nil, 0);
+         'value-changed', TGCallback(@TGtk3ScrollBar.value_changed), Self, nil, G_CONNECT_DEFAULT);
   end;
 end;
 
@@ -4482,7 +4482,7 @@ begin
 
       if not (btn.Style in [tbsSeparator,tbsDivider]) then
       g_signal_connect_data(gtb,'clicked',
-        TGCallback(@TGtk3Toolbar.ButtonClicked), btn, nil, 0);
+        TGCallback(@TGtk3Toolbar.ButtonClicked), btn, nil, G_CONNECT_DEFAULT);
     end;
   end;
 
@@ -4700,9 +4700,9 @@ begin
     PGtkNoteBook(FCentralWidget)^.popup_disable;
   PGtkNoteBook(FCentralWidget)^.show;
 
-  g_signal_connect_data(FCentralWidget,'switch-page', TGCallback(@GtkNotebookSwitchPage), Self, nil, 0);
+  g_signal_connect_data(FCentralWidget,'switch-page', TGCallback(@GtkNotebookSwitchPage), Self, nil, G_CONNECT_DEFAULT);
   // this one triggers after above switch-page
-  g_signal_connect_data(FCentralWidget,'switch-page', TGCallback(@GtkNotebookAfterSwitchPage), Self, nil, 0);
+  g_signal_connect_data(FCentralWidget,'switch-page', TGCallback(@GtkNotebookAfterSwitchPage), Self, nil, G_CONNECT_DEFAULT);
 
   // those signals doesn't trigger with gtk3-3.6
   // g_signal_connect_data(FCentralWidget,'change-current-page', TGCallback(@GtkNotebookAfterSwitchPage), Self, nil, 0);
@@ -5043,8 +5043,8 @@ begin
 
   // move signal connections into attach events
   FWidget^.set_events(GDK_DEFAULT_EVENTS_MASK);
-  g_signal_connect_data(FWidget, 'event', TGCallback(@Gtk3MenuItemEvent), Self, nil, 0);
-  g_signal_connect_data(FWidget,'activate',TGCallBack(@Gtk3MenuItemActivated), Self, nil, 0);
+  g_signal_connect_data(FWidget, 'event', TGCallback(@Gtk3MenuItemEvent), Self, nil, G_CONNECT_DEFAULT);
+  g_signal_connect_data(FWidget,'activate',TGCallBack(@Gtk3MenuItemActivated), Self, nil, G_CONNECT_DEFAULT);
   // must hide all by default
   // FWidget^.hide;
 end;
@@ -5182,9 +5182,9 @@ begin
   {TODO: create real instances for scrollbars via TGtk3Widget.CreateFrom() ?}
   FBorderStyle := bsNone;
   g_signal_connect_data(getHorizontalScrollbar, 'change-value',
-    TGCallback(@Gtk3RangeScrollCB), Self, nil, 0);
+    TGCallback(@Gtk3RangeScrollCB), Self, nil, G_CONNECT_DEFAULT);
   g_signal_connect_data(getVerticalScrollbar, 'change-value',
-    TGCallback(@Gtk3RangeScrollCB), Self, nil, 0);
+    TGCallback(@Gtk3RangeScrollCB), Self, nil, G_CONNECT_DEFAULT);
 end;
 
 function TGtk3ScrollableWin.getClientBounds: TRect;
@@ -5475,7 +5475,7 @@ end;
 procedure TGtk3ListBox.InitializeWidget;
 begin
   inherited InitializeWidget;
-  g_signal_connect_data(GetSelection, 'changed', TGCallback(@Gtk3ListBoxSelectionChanged), Self, nil, 0);
+  g_signal_connect_data(GetSelection, 'changed', TGCallback(@Gtk3ListBoxSelectionChanged), Self, nil, G_CONNECT_DEFAULT);
 end;
 
 function TGtk3ListBox.getHorizontalScrollbar: PGtkScrollbar;
@@ -5786,7 +5786,7 @@ begin
   PGtkTreeView(FCentralWidget)^.append_column(AColumn);
   AColumn^.set_clickable(True);
 
-  g_signal_connect_data(Toggle, 'toggled', TGCallback(@Gtk3WS_CheckListBoxToggle), Self, nil, 0);
+  g_signal_connect_data(Toggle, 'toggled', TGCallback(@Gtk3WS_CheckListBoxToggle), Self, nil, G_CONNECT_DEFAULT);
 
   Renderer := LCLIntfCellRenderer_New(); // gtk_cell_renderer_text_new;
 
@@ -5968,11 +5968,11 @@ begin
   begin
     gtk_tree_selection_set_select_function(PGtkTreeView(FCentralWidget)^.get_selection, TGtkTreeSelectionFunc(@Gtk3WS_ListViewItemPreSelected),
       Self, nil);
-    g_signal_connect_data(PGtkTreeView(FCentralWidget)^.get_selection, 'changed', TGCallback(@Gtk3WS_ListViewItemSelected), Self, nil, 0);
+    g_signal_connect_data(PGtkTreeView(FCentralWidget)^.get_selection, 'changed', TGCallback(@Gtk3WS_ListViewItemSelected), Self, nil, G_CONNECT_DEFAULT);
   end else
   begin
     g_signal_connect_data (PGtkIconView(FCentralWidget), 'selection-changed',
-                        TGCallback(@Tgtk3ListView.selection_changed), Self, nil, 0);
+                        TGCallback(@Tgtk3ListView.selection_changed), Self, nil, G_CONNECT_DEFAULT);
   end;
   // if FIsTreeView then
   //  PGtkTreeView(FCentralWidget)^.set_search_column(0);
@@ -6195,7 +6195,7 @@ begin
   //store the TColumn in the column data for callbacks
   g_object_set_data(AGtkColumn, PgChar('TListColumn'), gpointer(AColumn));
 
-  g_signal_connect_data(AGtkColumn,'clicked', TGCallback(@Gtk3WS_ListViewColumnClicked), Self, nil, 0);
+  g_signal_connect_data(AGtkColumn,'clicked', TGCallback(@Gtk3WS_ListViewColumnClicked), Self, nil, G_CONNECT_DEFAULT);
   PGtkTreeView(GetContainerWidget)^.insert_column(AGtkColumn, AIndex);
   AGtkColumn^.set_clickable(True);
 
@@ -6895,32 +6895,32 @@ begin
   inherited InitializeWidget;
   // appears-as-list make it appear as list ... no way, its read only property.
   //OnChange
-  g_signal_connect_data(GetContainerWidget, 'changed', TGCallback(@Gtk3ComboBoxChanged), Self, nil, 0);
+  g_signal_connect_data(GetContainerWidget, 'changed', TGCallback(@Gtk3ComboBoxChanged), Self, nil, G_CONNECT_DEFAULT);
   //OnCloseUp
-  g_signal_connect_data(GetContainerWidget, 'notify', TGCallback(@GtkNotifyCombo), Self, nil, 0);
+  g_signal_connect_data(GetContainerWidget, 'notify', TGCallback(@GtkNotifyCombo), Self, nil, G_CONNECT_DEFAULT);
 
   //TODO: if we have an entry then use CreateFrom() to create TGtk3Entry
   if Gtk3IsEntry(PGtkComboBox(FWidget)^.get_child) then
   begin
     g_object_set_data(PGtkComboBox(FWidget)^.get_child, 'lclwidget', Self);
-    g_signal_connect_data(PGtkComboBox(FWidget)^.get_child, 'event', TGCallback(@Gtk3WidgetEvent), Self, nil, 0);
+    g_signal_connect_data(PGtkComboBox(FWidget)^.get_child, 'event', TGCallback(@Gtk3WidgetEvent), Self, nil, G_CONNECT_DEFAULT);
   end;
   if GetCellView <> nil then
   begin
     gtk_widget_set_events(FCellView, GDK_DEFAULT_EVENTS_MASK);
     g_object_set_data(FCellView, 'lclwidget', Self);
-    g_signal_connect_data(FCellView, 'event', TGCallback(@Gtk3WidgetEvent), Self, nil, 0);
+    g_signal_connect_data(FCellView, 'event', TGCallback(@Gtk3WidgetEvent), Self, nil, G_CONNECT_DEFAULT);
   end;
   // set to all combo widgets lclwidget data, so we will easy find TGtk3ComboBox in events.
   if PGtkComboBox(GetContainerWidget)^.priv3^.button <> nil then
   begin
     g_object_set_data(PGObject(PGtkComboBox(GetContainerWidget)^.priv3^.button), 'lclwidget', Self);
-    g_signal_connect_data(PGObject(PGtkComboBox(GetContainerWidget)^.priv3^.button), 'event', TGCallback(@Gtk3WidgetEvent), Self, nil, 0);
+    g_signal_connect_data(PGObject(PGtkComboBox(GetContainerWidget)^.priv3^.button), 'event', TGCallback(@Gtk3WidgetEvent), Self, nil, G_CONNECT_DEFAULT);
   end;
   if PGtkComboBox(GetContainerWidget)^.priv3^.popup_widget <> nil then
   begin
     g_object_set_data(PGObject(PGtkComboBox(GetContainerWidget)^.priv3^.popup_widget), 'lclwidget', Self);
-    g_signal_connect_data(PGObject(PGtkComboBox(GetContainerWidget)^.priv3^.popup_widget), 'event', TGCallback(@Gtk3WidgetEvent), Self, nil, 0);
+    g_signal_connect_data(PGObject(PGtkComboBox(GetContainerWidget)^.priv3^.popup_widget), 'event', TGCallback(@Gtk3WidgetEvent), Self, nil, G_CONNECT_DEFAULT);
     PGtkComboBox(GetContainerWidget)^.priv3^.popup_widget^.set_has_window(True);
     PGtkComboBox(GetContainerWidget)^.priv3^.popup_widget^.set_can_focus(True);
     // g_signal_connect_data(PGObject(PGtkComboBox(GetContainerWidget)^.priv3^.popup_widget), 'map', TGCallback(@Gtk3ComboMenuRealized), Self, nil, 0);
@@ -7049,7 +7049,7 @@ begin
   btn^.set_use_underline(true);
 
   g_signal_connect_data(btn,'clicked',
-        TGCallback(@TGtk3Button.ButtonClicked), LCLObject, nil, 0);
+        TGCallback(@TGtk3Button.ButtonClicked), LCLObject, nil, G_CONNECT_DEFAULT);
 
   LCLObject.ControlStyle:=LCLObject.ControlStyle+[csClickEvents];
 
@@ -7089,7 +7089,7 @@ end;
 procedure TGtk3ToggleButton.InitializeWidget;
 begin
   inherited InitializeWidget;
-  g_signal_connect_data(FWidget, 'toggled', TGCallback(@Gtk3Toggled), Self, nil, 0);
+  g_signal_connect_data(FWidget, 'toggled', TGCallback(@Gtk3Toggled), Self, nil, G_CONNECT_DEFAULT);
 end;
 
 function TGtk3ToggleButton.CreateWidget(const Params: TCreateParams): PGtkWidget;
@@ -7259,7 +7259,7 @@ procedure TGtk3CustomControl.InitializeWidget;
 begin
   inherited InitializeWidget;
   SetScrollBarsSignalHandlers;
-  g_signal_connect_data(GetScrolledWindow,'scroll-event', TGCallback(@Gtk3ScrolledWindowScrollEvent), Self, nil, 0);
+  g_signal_connect_data(GetScrolledWindow,'scroll-event', TGCallback(@Gtk3ScrolledWindowScrollEvent), Self, nil, G_CONNECT_DEFAULT);
 end;
 
 function TGtk3CustomControl.getClientRect: TRect;
@@ -7614,7 +7614,7 @@ begin
   FScrollWin^.get_hscrollbar^.set_can_focus(False);
   FScrollWin^.set_policy(GTK_POLICY_NEVER, GTK_POLICY_NEVER);
   PGtkContainer(Result)^.add(FBox);
-  g_signal_connect_data(Result,'window-state-event', TGCallback(@Gtk3WindowState), Self, nil, 0);
+  g_signal_connect_data(Result,'window-state-event', TGCallback(@Gtk3WindowState), Self, nil, G_CONNECT_DEFAULT);
 
 
   if not (csDesigning in AForm.ComponentState) then
@@ -7901,15 +7901,15 @@ procedure TGtk3Dialog.SetCallbacks;
 begin
   // common callbacks for all kind of dialogs
   g_signal_connect_data(fWidget,
-    'destroy', TGCallback(@TGtk3Dialog.DestroyCB), Self, nil, 0);
+    'destroy', TGCallback(@TGtk3Dialog.DestroyCB), Self, nil, G_CONNECT_DEFAULT);
   g_signal_connect_data(fWidget,
-    'delete-event', TGCallback(@TGtk3Dialog.CloseQueryCB), Self, nil, 0);
+    'delete-event', TGCallback(@TGtk3Dialog.CloseQueryCB), Self, nil, G_CONNECT_DEFAULT);
 
   g_signal_connect_data(fWidget,
-    'response', TGCallback(@Tgtk3DIalog.ResponseCB), Self, nil, 0);
+    'response', TGCallback(@Tgtk3DIalog.ResponseCB), Self, nil, G_CONNECT_DEFAULT);
 
   g_signal_connect_data(fWidget,
-    'close', TGCallback(@Tgtk3DIalog.CloseCB), Self, nil, 0);
+    'close', TGCallback(@Tgtk3DIalog.CloseCB), Self, nil, G_CONNECT_DEFAULT);
 
 
 (*  g_signal_connect_data(fWidget,
@@ -7918,7 +7918,7 @@ begin
     'key-release-event', TGCallback(@GTKDialogKeyUpDownCB), Self, nil, 0);*)
 
   g_signal_connect_data(fWidget,
-    'realize', TGCallback(@Tgtk3Dialog.RealizeCB), Self, nil, 0);
+    'realize', TGCallback(@Tgtk3Dialog.RealizeCB), Self, nil, G_CONNECT_DEFAULT);
 end;
 
 class function Tgtk3Dialog.RealizeCB(dlg: TGtk3Dialog): GBoolean; cdecl;
