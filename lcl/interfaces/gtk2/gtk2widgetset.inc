@@ -1055,7 +1055,9 @@ begin
   FMainPoll := nil;
   if not FIsLibraryInstance then
   begin
+    {$IFDEF HASX}
     FWSFrameRect := Rect(0, 0, 0, 0);
+    {$ENDIF}
     Gtk2MPF := g_main_context_get_poll_func(g_main_context_default);
     g_main_context_set_poll_func(g_main_context_default, @Gtk2PollFunction);
   end else
