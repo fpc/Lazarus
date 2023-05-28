@@ -87,6 +87,11 @@ type
     FrameBorders: TRect;
   end;
 
+  TGtkScrollStyle = record
+    Horizontal,
+	Vertical: TGtkPolicyType;
+  end;
+
 const
   SysColorMap: array [0..MAX_SYS_COLORS] of DWORD = (
     $C0C0C0,     {COLOR_SCROLLBAR}
@@ -276,7 +281,7 @@ function Gtk3IsGdkVisual(AVisual: PGObject): GBoolean;
 function Gtk3IsPangoContext(APangoContext: PGObject): GBoolean;
 function Gtk3IsPangoFontMetrics(APangoFontMetrics: PGObject): GBoolean;
 
-function Gtk3TranslateScrollStyle(const SS: TScrollStyle): TPoint;
+function Gtk3TranslateScrollStyle(const SS: TScrollStyle): TGtkScrollStyle;
 function Gtk3ScrollTypeToScrollCode(ScrollType: TGtkScrollType): LongWord;
 
 function TGDKColorToTColor(const value : TGDKColor) : TColor;
@@ -555,16 +560,23 @@ begin
   Result := (APangoFontMetrics <> nil);//  and  g_type_check_instance_is_a(PGTypeInstance(APangoFontMetrics), pango_font_metrics_get_type);
 end;
 
-function Gtk3TranslateScrollStyle(const SS: TScrollStyle): TPoint;
+function Gtk3TranslateScrollStyle(const SS: TScrollStyle): TGtkScrollStyle;
+  function return(Horiz, Vert: TGtkPolicyType): TGtkScrollStyle;
+  begin
+    with Result do begin
+	  Horizontal := Horiz;
+	  Vertical := Vert;
+	end;
+  end;
 begin
   case SS of
-    ssAutoBoth: Result:=Point(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-    ssAutoHorizontal: Result:=Point(GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
-    ssAutoVertical: Result:=Point(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-    ssBoth: Result:=Point(GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
-    ssHorizontal: Result:=Point(GTK_POLICY_ALWAYS, GTK_POLICY_NEVER);
-    ssNone: Result:=Point(GTK_POLICY_NEVER, GTK_POLICY_NEVER);
-    ssVertical: Result:=Point(GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+    ssAutoBoth: return(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+    ssAutoHorizontal: return(GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
+    ssAutoVertical: return(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+    ssBoth: return(GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
+    ssHorizontal: return(GTK_POLICY_ALWAYS, GTK_POLICY_NEVER);
+    ssNone: return(GTK_POLICY_NEVER, GTK_POLICY_NEVER);
+    ssVertical: return(GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
   end;
 end;
 
