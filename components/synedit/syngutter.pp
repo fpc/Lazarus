@@ -220,8 +220,8 @@ begin
   x := x - Left - LeftOffset;
   while Result < PartCount-1 do begin
     if Parts[Result].Visible then begin
-      if x >= Parts[Result].Width then
-        x := x - Parts[Result].Width
+      if x >= Parts[Result].FullWidth then
+        x := x - Parts[Result].FullWidth
       else
         break;
     end;
@@ -285,8 +285,8 @@ begin
     if Parts[i].Visible then
     begin
       rcLine.Left := rcLine.Right;
-      rcLine.Right := min(rcLine.Left + Parts[i].Width, AClip.Right);
-      Parts[i].Paint(Canvas, rcLine, FirstLine, LastLine);
+      rcLine.Right := min(rcLine.Left + Parts[i].FullWidth, AClip.Right);
+      Parts[i].PaintAll(Canvas, rcLine, FirstLine, LastLine);
     end;
   end;
 end;

@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, math,
   // LCL
-  LCLProc, Graphics, Controls, Menus,
+  LCLProc, Graphics, Controls, Menus, LCLIntf, LCLType,
   // LazUtils
   LazMethodList,
   // SynEdit
@@ -152,6 +152,8 @@ type
   TSynGutterPartBase = class(TSynObjectListItem)
   private
     FLeft, FWidth, FHeight, FTop: Integer;
+    FLeftOffset: integer;
+    FRightOffset: integer;
     FAutoSize : boolean;
     FVisible: Boolean;
     FSynEdit: TSynEditBase;
@@ -161,11 +163,14 @@ type
     FOnChange: TNotifyEvent;
     FOnGutterClick: TGutterClickEvent;
     FMouseActions: TSynEditMouseInternalActions;
+    function GetFullWidth: integer;
     function GetGutterArea: TLazSynSurfaceWithText;
     function GetGutterParts: TSynGutterPartListBase;
     function GetMouseActions: TSynEditMouseActions;
+    procedure SetLeftOffset(AValue: integer);
     procedure SetMarkupInfo(const AValue: TSynSelectedColor);
     procedure SetMouseActions(const AValue: TSynEditMouseActions);
+    procedure SetRightOffset(AValue: integer);
   protected
     function  CreateMouseActions: TSynEditMouseInternalActions; virtual;
     function Scale96ToFont(const ASize: Integer): Integer;
@@ -192,8 +197,8 @@ type
     property Left: Integer read FLeft;
     property Top: Integer read FTop;
     property Height:Integer read FHeight;
-    procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer);
-      virtual abstract;
+    procedure PaintAll(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer); virtual;
+    procedure Paint(Canvas: TCanvas; AClip: TRect; FirstLine, LastLine: integer); virtual; abstract;
     procedure ScalePPI(const AScaleFactor: Double); virtual;
   public
     // X/Y are relative to the gutter, not the gutter part
@@ -215,6 +220,9 @@ type
   published
     property AutoSize: boolean read FAutoSize write SetAutoSize default True;
     property Width: integer read FWidth write SetWidth default 10;
+    property FullWidth: integer read GetFullWidth; // includes Offsets
+    property LeftOffset: integer read FLeftOffset write SetLeftOffset default 0;
+    property RightOffset: integer read FRightOffset write SetRightOffset default 0;
     property Visible: boolean read FVisible write SetVisible default True;
     property MouseActions: TSynEditMouseActions
       read GetMouseActions write SetMouseActions;
@@ -439,7 +447,7 @@ begin
     begin
       if Parts[i].AutoSize then
         Parts[i].DoAutoSize;
-      NewWidth := NewWidth + Parts[i].Width;
+      NewWidth := NewWidth + Parts[i].FullWidth;
     end;
 
   if FWidth = NewWidth then begin
@@ -471,7 +479,7 @@ begin
   for i := 0 to PartCount - 1 do
     if Parts[i].Visible then begin
       Parts[i].SetBounds(NewLeft, Top, Height);
-      NewLeft := NewLeft + Parts[i].Width;
+      NewLeft := NewLeft + Parts[i].FullWidth;
     end;
   Exclude(FFlags, gfNeedChildBounds);
 end;
@@ -581,9 +589,21 @@ begin
   Result := FMouseActions.UserActions;
 end;
 
+procedure TSynGutterPartBase.SetLeftOffset(AValue: integer);
+begin
+  if FLeftOffset = AValue then Exit;
+  FLeftOffset := AValue;
+  VisibilityOrSize;
+end;
+
 function TSynGutterPartBase.GetGutterArea: TLazSynSurfaceWithText;
 begin
   Result := Gutter.GutterArea;
+end;
+
+function TSynGutterPartBase.GetFullWidth: integer;
+begin
+  Result := FWidth + FLeftOffset + FRightOffset;
 end;
 
 procedure TSynGutterPartBase.SetMarkupInfo(const AValue: TSynSelectedColor);
@@ -594,6 +614,13 @@ end;
 procedure TSynGutterPartBase.SetMouseActions(const AValue: TSynEditMouseActions);
 begin
   FMouseActions.UserActions := AValue;
+end;
+
+procedure TSynGutterPartBase.SetRightOffset(AValue: integer);
+begin
+  if FRightOffset = AValue then Exit;
+  FRightOffset := AValue;
+  VisibilityOrSize;
 end;
 
 function TSynGutterPartBase.PreferedWidth: Integer;
@@ -688,6 +715,8 @@ begin
 
   FVisible := True;
   FAutoSize := True;
+  FLeftOffset := 0;
+  FRightOffset := 0;
   Inherited Create(AOwner); // Todo: Lock the DoChange from RegisterItem, and call DoChange at the end (after/in autosize)
 end;
 
@@ -741,6 +770,44 @@ begin
     // Todo, maybe on Resize?
   end else
     inherited;
+end;
+
+procedure TSynGutterPartBase.PaintAll(Canvas: TCanvas; AClip: TRect; FirstLine,
+  LastLine: integer);
+var
+  OffsRect: TRect;
+begin
+  if not Visible then exit;
+
+    if MarkupInfo.Background = clNone then
+  begin
+    Paint(Canvas, AClip, FirstLine, LastLine);
+    exit;
+  end;
+
+  if FLeftOffset > 0 then begin
+    OffsRect := AClip;
+    OffsRect.Left := FLeft;
+    OffsRect.Right := FLeft + FLeftOffset;
+
+    Canvas.Brush.Color := MarkupInfo.Background;
+    LCLIntf.SetBkColor(Canvas.Handle, TColorRef(Canvas.Brush.Color));
+    Canvas.FillRect(OffsRect);
+  end;
+
+  if FRightOffset > 0 then begin
+    OffsRect := AClip;
+    OffsRect.Right := FLeft + FullWidth;
+    OffsRect.Left := OffsRect.Right - FRightOffset;
+
+    Canvas.Brush.Color := MarkupInfo.Background;
+    LCLIntf.SetBkColor(Canvas.Handle, TColorRef(Canvas.Brush.Color));
+    Canvas.FillRect(OffsRect);
+  end;
+
+  AClip.Left := AClip.Left + FLeftOffset;
+  AClip.Right := AClip.Right - FRightOffset;
+  Paint(Canvas, AClip, FirstLine, LastLine);
 end;
 
 function TSynGutterPartBase.HasCustomPopupMenu(out PopMenu: TPopupMenu): Boolean;
