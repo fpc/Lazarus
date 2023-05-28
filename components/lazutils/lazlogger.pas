@@ -20,6 +20,7 @@ uses
 type
 
   PLazLoggerLogGroup = LazLoggerBase.PLazLoggerLogGroup;
+  TLazLoggerWriteExEventInfo = LazLoggerBase.TLazLoggerWriteExEventInfo;
 
 {$DEFINE USED_BY_LAZLOGGER}
 {$I LazLoggerIntf.inc}
@@ -118,6 +119,8 @@ type
     FFileHandle: TLazLoggerFileHandle;
     FOnDbgOut: TLazLoggerWriteEvent;
     FOnDebugLn: TLazLoggerWriteEvent;
+    FOnDbgOutEx: TLazLoggerWriteExEvent;
+    FOnDebugLnEx: TLazLoggerWriteExEvent;
     FBlockHandler: TList;
 
 
@@ -159,9 +162,9 @@ type
     procedure ClearAllBlockHandler;
 
 
-    procedure DoDbgOut(s: string); override;
-    procedure DoDebugLn(s: string); override;
-    procedure DoDebuglnStack(const s: string); override;
+    procedure DoDbgOut(s: string; AGroup: PLazLoggerLogGroup = nil); override;
+    procedure DoDebugLn(s: string; AGroup: PLazLoggerLogGroup = nil); override;
+    procedure DoDebuglnStack(const s: string; AGroup: PLazLoggerLogGroup = nil); override;
 
     property FileHandle: TLazLoggerFileHandle read GetFileHandle write SetFileHandle;
   public
@@ -179,6 +182,8 @@ type
 
     property  OnDebugLn: TLazLoggerWriteEvent read FOnDebugLn write FOnDebugLn;
     property  OnDbgOut:  TLazLoggerWriteEvent read FOnDbgOut write FOnDbgOut;
+    property  OnDebugLnEx: TLazLoggerWriteExEvent read FOnDebugLnEx write FOnDebugLnEx;
+    property  OnDbgOutEx:  TLazLoggerWriteExEvent read FOnDbgOutEx write FOnDbgOutEx;
 
     procedure AddBlockHandler(AHandler: TLazLoggerBlockHandler); override;
     procedure RemoveBlockHandler(AHandler: TLazLoggerBlockHandler); override;
@@ -721,10 +726,13 @@ begin
   while BlockHandlerCount > 0 do RemoveBlockHandler(BlockHandler[0]);
 end;
 
-procedure TLazLoggerFile.DoDbgOut(s: string);
+procedure TLazLoggerFile.DoDbgOut(s: string; AGroup: PLazLoggerLogGroup);
 var
-  Handled: Boolean;
+  Indent: String;
+  Handled, AtBOL: Boolean;
   CB: TLazLoggerWriteEvent;
+  CB2: TLazLoggerWriteExEvent;
+  CbInfo: TLazLoggerWriteExEventInfo;
 begin
   if not IsInitialized then Init;
 
@@ -734,11 +742,26 @@ begin
      dirty reads should therefore yield the correct value: "true"
   *)
 
+  EnterCriticalsection(FIndentCriticalSection);
+  Indent := FDebugIndent;
+  LeaveCriticalsection(FIndentCriticalSection);
+
+  AtBOL := FDebugNestAtBOL;
+
+  CB2 := OnDbgOutEx;
+  if CB2 <> nil then
+  begin
+    Handled := False;
+    CbInfo.Group := AGroup;
+    CbInfo.DbgOutAtBOL := AtBOL;
+    CB2(Self, s, Indent, Handled, CbInfo);
+    if Handled then
+      Exit;
+  end;
+
   if s <> '' then begin
-    if FDebugNestAtBOL then begin
-      EnterCriticalsection(FIndentCriticalSection);
-      s := FDebugIndent + s;
-      LeaveCriticalsection(FIndentCriticalSection);
+    if AtBOL then begin
+      s := Indent + s;
     end;
     FDebugNestAtBOL := (s[length(s)] in [#10,#13]);
   end;
@@ -755,17 +778,35 @@ begin
   FileHandle.WriteToFile(s, Self);
 end;
 
-procedure TLazLoggerFile.DoDebugLn(s: string);
+procedure TLazLoggerFile.DoDebugLn(s: string; AGroup: PLazLoggerLogGroup);
 var
-  Handled: Boolean;
+  Indent: String;
+  Handled, AtBOL: Boolean;
   CB: TLazLoggerWriteEvent;
+  CB2: TLazLoggerWriteExEvent;
+  CbInfo: TLazLoggerWriteExEventInfo;
 begin
   if not IsInitialized then Init;
 
-  if FDebugNestAtBOL and (s <> '') then begin
-    EnterCriticalsection(FIndentCriticalSection);
-    s := FDebugIndent + s;
-    LeaveCriticalsection(FIndentCriticalSection);
+  EnterCriticalsection(FIndentCriticalSection);
+  Indent := FDebugIndent;
+  LeaveCriticalsection(FIndentCriticalSection);
+
+  AtBOL := FDebugNestAtBOL;
+
+  CB2 := OnDebugLnEx;
+  if CB2 <> nil then
+  begin
+    Handled := False;
+    CbInfo.Group := AGroup;
+    CbInfo.DbgOutAtBOL := AtBOL;
+    CB2(Self, s, Indent, Handled, CbInfo);
+    if Handled then
+      Exit;
+  end;
+
+  if AtBOL and (s <> '') then begin
+    s := Indent + s;
   end;
   FDebugNestAtBOL := True;
 
@@ -781,7 +822,8 @@ begin
   FileHandle.WriteLnToFile(LineBreaksToSystemLineBreaks(s), Self);
 end;
 
-procedure TLazLoggerFile.DoDebuglnStack(const s: string);
+procedure TLazLoggerFile.DoDebuglnStack(const s: string;
+  AGroup: PLazLoggerLogGroup);
 begin
   DebugLn(s);
   FileHandle.DoOpenFile;
@@ -823,7 +865,9 @@ begin
   inherited Assign(Src);
   if Src is TLazLoggerFile then begin
     FOnDbgOut  := TLazLoggerFile(Src).FOnDbgOut;
-    FOnDebugLn := TLazLoggerFile(Src).FOnDebugLn;;
+    FOnDebugLn := TLazLoggerFile(Src).FOnDebugLn;
+    FOnDbgOutEx  := TLazLoggerFile(Src).FOnDbgOutEx;
+    FOnDebugLnEx := TLazLoggerFile(Src).FOnDebugLnEx;
 
     FEnvironmentForLogFileName := TLazLoggerFile(Src).FEnvironmentForLogFileName;
     FParamForLogFileName       := TLazLoggerFile(Src).FParamForLogFileName;
