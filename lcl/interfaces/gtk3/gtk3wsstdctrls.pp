@@ -869,14 +869,14 @@ end;
 
 class procedure TGtk3WSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle);
 var
-  AScrollStyle: TPoint;
+  AScrollStyle: TGtkScrollStyle;
 begin
   if not WSCheckHandleAllocated(ACustomMemo, 'SetScrollBars') then
     Exit;
   AScrollStyle := Gtk3TranslateScrollStyle(ACustomMemo.ScrollBars);
   TGtk3Memo(ACustomMemo.Handle).BeginUpdate;
-  TGtk3Memo(ACustomMemo.Handle).HScrollBarPolicy := AScrollStyle.X;
-  TGtk3Memo(ACustomMemo.Handle).VScrollBarPolicy := AScrollStyle.Y;
+  TGtk3Memo(ACustomMemo.Handle).HScrollBarPolicy := AScrollStyle.Horizontal;
+  TGtk3Memo(ACustomMemo.Handle).VScrollBarPolicy := AScrollStyle.Vertical;
   TGtk3Memo(ACustomMemo.Handle).EndUpdate;
 end;
 

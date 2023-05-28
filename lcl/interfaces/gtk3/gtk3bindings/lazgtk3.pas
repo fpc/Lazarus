@@ -264,6 +264,14 @@ type
   GTK_TEXT_DIR_LTR = 1,
   GTK_TEXT_DIR_RTL = 2
   );
+  TGtkPolicyType = (
+    TGtkPolicyTypeMinValue = -$7FFFFFFF,
+    GTK_POLICY_ALWAYS = 0,
+    GTK_POLICY_AUTOMATIC = 1,
+    GTK_POLICY_NEVER = 2,
+    GTK_POLICY_EXTERNAL = 3,
+    TGtkPolicyTypeMaxValue = $7FFFFFFF
+  );
 
 type
   TGtkAccelFlags = Integer;
@@ -995,14 +1003,6 @@ const
   GTK_UNIT_POINTS: TGtkUnit = 1;
   GTK_UNIT_INCH: TGtkUnit = 2;
   GTK_UNIT_MM: TGtkUnit = 3;
-
-type
-  TGtkPolicyType = Integer;
-const
-  { GtkPolicyType }
-  GTK_POLICY_ALWAYS: TGtkPolicyType = 0;
-  GTK_POLICY_AUTOMATIC: TGtkPolicyType = 1;
-  GTK_POLICY_NEVER: TGtkPolicyType = 2;
 
 type
   TGtkPrintDuplex = Integer;

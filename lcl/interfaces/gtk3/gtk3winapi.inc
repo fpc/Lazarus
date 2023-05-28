@@ -3565,7 +3565,7 @@ function TGtk3WidgetSet.SetScrollInfo(Handle: HWND; SBStyle: Integer;
   *)
 
 const
-  POLICY: array[BOOLEAN] of TGTKPolicyType = (2, 0); // GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+  POLICY: array[BOOLEAN] of TGTKPolicyType = (GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 
 var
   Adjustment,hadj,vadj: PGtkAdjustment;

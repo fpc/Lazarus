@@ -5206,7 +5206,7 @@ function TGtk3Memo.CreateWidget(const Params: TCreateParams): PGtkWidget;
 var
   AMemo: TCustomMemo;
   ABuffer: PGtkTextBuffer;
-  AScrollStyle: TPoint;
+  AScrollStyle: TGtkScrollStyle;
 begin
   FScrollX := 0;
   FScrollY := 0;
@@ -5247,14 +5247,14 @@ begin
 
   if (gtk_get_major_version = 3) and (gtk_get_minor_version <= 8) then
   begin
-    if AScrollStyle.X = GTK_POLICY_NEVER then
-      AScrollStyle.X := GTK_POLICY_AUTOMATIC;
-    if AScrollStyle.Y = GTK_POLICY_NEVER then
-      AScrollStyle.Y := GTK_POLICY_AUTOMATIC;
+    if AScrollStyle.Horizontal = GTK_POLICY_NEVER then
+      AScrollStyle.Horizontal := GTK_POLICY_AUTOMATIC;
+    if AScrollStyle.Vertical = GTK_POLICY_NEVER then
+      AScrollStyle.Vertical := GTK_POLICY_AUTOMATIC;
   end;
 
 
-  PGtkScrolledWindow(Result)^.set_policy(AScrollStyle.X, AScrollStyle.Y);
+  PGtkScrolledWindow(Result)^.set_policy(AScrollStyle.Horizontal, AScrollStyle.Vertical);
 
   PGtkScrolledWindow(Result)^.set_shadow_type(BorderStyleShadowMap[AMemo.BorderStyle]);
   PGtkScrolledWindow(Result)^.get_vscrollbar^.set_can_focus(False);
@@ -5910,7 +5910,7 @@ end;
 function TGtk3ListView.CreateWidget(const Params: TCreateParams): PGtkWidget;
 var
   AListView: TCustomListView;
-  AScrollStyle: TPoint;
+  AScrollStyle: TGtkScrollStyle;
   PtrType: GType;
   TreeModel: PGtkTreeModel;
   iter:TGtkTreeIter;
@@ -5957,7 +5957,7 @@ begin
 
   AScrollStyle := Gtk3TranslateScrollStyle(TListView(AListView).ScrollBars);
   // gtk3 scrolled window hates GTK_POLICY_NONE
-  PGtkScrolledWindow(Result)^.set_policy(AScrollStyle.X, AScrollStyle.Y);
+  PGtkScrolledWindow(Result)^.set_policy(AScrollStyle.Horizontal, AScrollStyle.Vertical);
   PGtkScrolledWindow(Result)^.set_shadow_type(BorderStyleShadowMap[AListView.BorderStyle]);
   PGtkScrolledWindow(Result)^.get_vscrollbar^.set_can_focus(False);
   PGtkScrolledWindow(Result)^.get_hscrollbar^.set_can_focus(False);
