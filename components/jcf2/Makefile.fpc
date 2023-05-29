@@ -1,0 +1,60 @@
+#   File generated automatically by Lazarus Package Manager
+#
+#   Makefile.fpc for jcfbase 1.0
+#
+#   This file was generated on 25/05/2023
+
+[package]
+name=jcfbase
+version=1.0
+
+[compiler]
+unittargetdir=
+unitdir=Parse Parse/PreProcessor Process Process/Align Process/Capitalisation Process/Indent Process/Info Process/Obfuscate Process/Onceoffs Process/Returns Process/Spacing Process/Transform Process/Warnings ReadWrite Settings Settings/Streams Ui Utils IdePlugin/lazarus ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
+includedir=Include
+options= -MObjFPC -Scghi -O1 -g -gl -l -vewnhibq $(DBG_OPTIONS)
+
+[target]
+units=jcfbase.pas
+
+[clean]
+files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) \
+      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+
+[prerules]
+# LCL Platform
+ifndef LCL_PLATFORM
+ifeq ($(OS_TARGET),win32)
+LCL_PLATFORM=win32
+else
+ifeq ($(OS_TARGET),win64)
+LCL_PLATFORM=win32
+else
+ifeq ($(OS_TARGET),darwin)
+LCL_PLATFORM=cocoa
+else
+LCL_PLATFORM=gtk2
+endif
+endif
+endif
+endif
+export LCL_PLATFORM
+
+DBG_OPTIONS=
+ifeq ($(OS_TARGET),darwin)
+DBG_OPTIONS=-gw
+endif
+
+[rules]
+.PHONY: cleartarget compiled all
+
+cleartarget:
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/jcfbase$(PPUEXT)
+
+compiled:
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/jcfbase.compiled
+
+all: cleartarget $(COMPILER_UNITTARGETDIR) jcfbase$(PPUEXT) compiled
