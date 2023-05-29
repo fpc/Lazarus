@@ -51,6 +51,17 @@ Alias for the PLazLoggerLogGroup type in the LazLoggerBase unit.
 <seealso/>
 </element>
 
+<element name="TLazLoggerWriteExEventInfo">
+<short>
+Alias for the TLazLoggerWriteExEventInfo type in 
+<file>lazloggerbase.pas</file>.
+</short>
+<descr/>
+<seealso>
+<link id="#lazutils.lazloggerbase.TLazLoggerWriteExEventInfo">LazLoggerBase.TLazLoggerWriteExEventInfo</link>
+</seealso>
+</element>
+
 <!-- included from lazloggerintf.inc -->
 <element name="DebuglnStack">
 <short>Writes a message to the log.</short>
@@ -1178,7 +1189,9 @@ for the WinCE platform.
 
 <element name="TLazLoggerFile.FFileHandle"/>
 <element name="TLazLoggerFile.FOnDbgOut"/>
-<element name="TLazLoggerFile.FOnDbgLn"/>
+<element name="TLazLoggerFile.FOnDebugLn"/>
+<element name="TLazLoggerFile.FOnDbgOutEx"/>
+<element name="TLazLoggerFile.FOnDebugLnEx"/>
 <element name="TLazLoggerFile.FBlockHandler"/>
 <element name="TLazLoggerFile.FEnvironmentForLogFileName"/>
 <element name="TLazLoggerFile.FParamForLogFileName"/>
@@ -1292,6 +1305,7 @@ class instances.
 </descr>
 <seealso/>
 </element>
+
 <element name="TLazLoggerFile.DoDbgOut">
 <short>
 Performs actions needed to implement the DbgOut method for the logger class 
@@ -1307,6 +1321,12 @@ internal critical section is used to protect the current nesting level while
 preparing the indentation spaces for the message.
 </p>
 <p>
+DoDbgOut signals the OnDbgOutEx (when assigned) allow user-specified actions 
+to be performed to handle the indentation level and information for the logger 
+group specified in AGroup. If the log entry is handled in the OnDbgOutEx event 
+handler, no additional actions are performed in the method.
+</p>
+<p>
 The OnDbgOut event handler is signalled (when assigned) to allow 
 user-specified actions to be performed when writing the log message. If the 
 write operation is handled in the event handler, no additional actions are 
@@ -1314,11 +1334,23 @@ performed in the method. Otherwise, the WriteToFile method in FileHandle is
 called to write the log message to the device or file.
 </p>
 </descr>
-<seealso/>
+<version>
+Modified in LazUtils version 2.4.0 to write logger group information.
+</version>
+<seealso>
+<link id="TLazLoggerFile.OnDbgOutEx"/>
+<link id="TLazLoggerFile.OnDbgOutEx"/>
+<link id="TLazLoggerFile.FileHandle"/>
+<link id="TLazLoggerWriteExEventInfo"/>
+</seealso>
 </element>
 <element name="TLazLoggerFile.DoDbgOut.s">
 <short>Log message formatted and written in the method.</short>
 </element>
+<element name="TLazLoggerFile.DoDbgOut.AGroup">
+<short/>
+</element>
+
 <element name="TLazLoggerFile.DoDebugLn">
 <short>
 Performs actions needed to implement the DebugLn method for the logger class 
@@ -1326,18 +1358,32 @@ type.
 </short>
 <descr/>
 <seealso/>
+<version>
+Modified in LazUtils version 2.4.0 to include the AGroup argument.  
+</version>
 </element>
 <element name="TLazLoggerFile.DoDebugLn.s">
 <short/>
 </element>
+<element name="TLazLoggerFile.DoDebugLn.AGroup">
+<short/>
+</element>
+
 <element name="TLazLoggerFile.DoDebuglnStack">
 <short/>
 <descr/>
+<version>
+Modified in LazUtils version 2.4.0 to include the AGroup argument.  
+</version>
 <seealso/>
 </element>
 <element name="TLazLoggerFile.DoDebuglnStack.s">
 <short/>
 </element>
+<element name="TLazLoggerFile.DoDebugLnStack.AGroup">
+<short/>
+</element>
+
 <element name="TLazLoggerFile.FileHandle">
 <short>
 TLazLoggerFileHandle instance representing the file or device where log 
@@ -1532,6 +1578,29 @@ parameter is also provided that can be set to <b>True</b> to prevent the
 default action (writing to log) from being performed in the DoDbgOut method.
 </p>
 </descr>
+<seealso/>
+</element>
+
+<element name="TLazLoggerFile.OnDebugLnEx">
+<short>
+Event handler signalled to generate an extended log message with log group 
+information.
+</short>
+<descr/>
+<version>
+Added in LazUtils version 2.4.0.
+</version>
+<seealso/>
+</element>
+
+<element name="TLazLoggerFile.OnDbgOutEx">
+<short>
+Event handler signalled to generate an extended log message with log group 
+information.
+</short><descr/>
+<version>
+Added in LazUtils version 2.4.0.
+</version>
 <seealso/>
 </element>
 
