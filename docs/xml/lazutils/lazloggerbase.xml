@@ -261,6 +261,35 @@ Indicates the destination where output from a logger is written or stored.
 <short>Logger output is written to a text file.</short>
 </element>
 
+<element name="LazLoggerWriteExEventInfo">
+<short>
+Contains extended information for a write event in a logger.
+</short>
+<descr>
+<p>
+Passed as an argument to a TLazLoggerWriteExEvent handler routine.
+</p>
+</descr>
+<version>
+Added in LazUtils version 2.4.0.
+</version>
+<seealso>
+<link id="TLazLoggerWriteExEvent"/>
+<link id="PLazLoggerLogGroup"/>
+<link id="TLazLoggerLogGroup"/>
+</seealso>
+</element>
+<element name="TLazLoggerWriteExEventInfo.Group">
+<short>
+Remember the nesting level count if there is a single group.
+</short>
+</element>
+<element name="TLazLoggerWriteExEventInfo.DbgOutAtBOL">
+<short>
+Only for DbgOut. <b>True</b> if the first segment in a new line.
+</short>
+</element>
+
 <!-- procedure type Visibility: default -->
 <element name="TLazLoggerWriteEvent">
 <short>Specifies an event handler signalled to write logger output.</short>
@@ -277,6 +306,30 @@ Indicates the destination where output from a logger is written or stored.
 </element>
 <element name="TLazLoggerWriteEvent.Handled">
 <short></short>
+</element>
+
+<element name="TLazLoggerWriteExEvent">
+<short/>
+<descr/>
+<version>
+Added in LazUtils version 2.4.0.
+</version>
+<seealso/>
+</element>
+<element name="TLazLoggerWriteExEvent.Sender">
+<short/>
+</element>
+<element name="TLazLoggerWriteExEvent.LogTxt">
+<short/>
+</element>
+<element name="TLazLoggerWriteExEvent.LogIndent">
+<short/>
+</element>
+<element name="TLazLoggerWriteExEvent.Handled">
+<short/>
+</element>
+<element name="TLazLoggerWriteExEvent.AnInfo">
+<short/>
 </element>
 
 <!-- procedure type Visibility: default -->
@@ -635,6 +688,51 @@ Ordinal position for the property value retrieved in the method.
 </short>
 </element>
 
+<element name="TLazLogger.DoDbgOut">
+<short/>
+<descr/>
+<version>
+Added in LazUtils version 2.4.0.
+</version>
+<seealso/>
+</element>
+<element name="TLazLogger.DoDbgOut.s">
+<short/>
+</element>
+<element name="TLazLogger.DoDbgOut.AGroup">
+<short/>
+</element>
+
+<element name="TLazLogger.DoDebugLn">
+<short/>
+<descr/>
+<version>
+Added in LazUtils version 2.4.0.
+</version>
+<seealso/>
+</element>
+<element name="TLazLogger.DoDebugLn.s">
+<short/>
+</element>
+<element name="TLazLogger.DoDebugLn.AGroup">
+<short/>
+</element>
+
+<element name="TLazLogger.DoDebuglnStack">
+<short/>
+<descr/>
+<version>
+Added in LazUtils version 2.4.0.
+</version>
+<seealso/>
+</element>
+<element name="TLazLogger.DoDebuglnStack.s">
+<short/>
+</element>
+<element name="TLazLogger.DoDebuglnStack.AGroup">
+<short/>
+</element>
+
 <!-- procedure Visibility: protected -->
 <element name="TLazLogger.DoDbgOut">
 <short>Implements the DbgOut method for the logger type.</short>
@@ -945,8 +1043,10 @@ enabled.
 </short>
 <descr>
 </descr>
-<errors>
-</errors>
+<version>
+Modified in LazUtils version 2.4.0 to use group information for the enabled 
+logger.
+</version>
 <seealso>
 </seealso>
 </element>
@@ -961,8 +1061,10 @@ Generates a log message with formatted value(s) for the specified type(s).
 </short>
 <descr>
 </descr>
-<errors>
-</errors>
+<version>
+Modified in LazUtils version 2.4.0 to use group information for the enabled 
+logger.
+</version>
 <seealso>
 </seealso>
 </element>
@@ -1112,8 +1214,8 @@ message for the logger class instance.
 <!-- procedure Visibility: public -->
 <element name="TLazLogger.DebugLnEnter">
 <short>
-Increases the indentation level for the logger and writes an optional log 
-message.
+Writes an optional log message and increases the indentation level for the 
+logger.
 </short>
 <descr>
 </descr>
@@ -1123,10 +1225,14 @@ message.
 </seealso>
 </element>
 <element name="TLazLogger.DebugLnEnter.s">
-<short></short>
+<short>
+Log message written in the method.
+</short>
 </element>
 <element name="TLazLogger.DebugLnEnter.Args">
-<short></short>
+<short>
+Array of constant values written as messages in the logger.
+</short>
 </element>
 <element name="TLazLogger.DebugLnEnter.s1">
 <short>String argument for the method.</short>
@@ -1255,31 +1361,6 @@ message.
 </element>
 <element name="TLazLogger.DebugLnExit.s18">
 <short>String argument for the method.</short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazLogger.DebugLnStack.LogGroup">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazLogger.DbgOut.LogGroup">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazLogger.DebugLn.LogGroup">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazLogger.DebugLnEnter.LogGroup">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TLazLogger.DebugLnExit.LogGroup">
-<short></short>
 </element>
 
 <element name="TLazLogger.DumpExceptionBackTrace">
