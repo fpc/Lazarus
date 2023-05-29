@@ -828,7 +828,7 @@ type
     class function ResponseCB(response_id:gint; dlg: TGtk3Dialog): GBoolean; cdecl;
     class function RealizeCB(dlg:TGtk3Dialog): GBoolean; cdecl;
   protected
-    function response_handler(response_id:gint):boolean;virtual;
+    function response_handler(response_id:TGtkResponseType):boolean;virtual;
     function close_handler():boolean;virtual;
     procedure SetCallbacks;virtual;
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
@@ -852,7 +852,7 @@ type
 
   TGtk3FontSelectionDialog = class(TGtk3Dialog)
   protected
-    function response_handler(resp_id:gint):boolean; override;
+    function response_handler(resp_id:TGtkResponseType):boolean; override;
   public
     procedure InitializeWidget; override;
     constructor Create(const ACommonDialog: TCommonDialog); virtual; overload;
@@ -870,7 +870,7 @@ type
 
   TGtk3newColorSelectionDialog = class(TGtk3Dialog)
   protected
-    function response_handler(resp_id:gint):boolean;override;
+    function response_handler(resp_id:TGtkResponseType):boolean;override;
   public
     constructor Create(const ACommonDialog: TCommonDialog); virtual; overload;
     procedure InitializeWidget;override;
@@ -7955,12 +7955,12 @@ end;
 class function TGtk3Dialog.ResponseCB(response_id:gint; dlg: TGtk3Dialog): GBoolean; cdecl;
 begin
   if Assigned(dlg) then
-    Result:=dlg.response_handler(response_id)
+    Result:=dlg.response_handler(TGtkResponseType(response_id))
   else
     Result:= false;
 end;
 
-function TGtk3Dialog.response_handler(response_id:gint):boolean;
+function TGtk3Dialog.response_handler(response_id:TGtkResponseType):boolean;
 begin
  (* case response_id of
   GTK_RESPONSE_NONE:;
@@ -8133,7 +8133,7 @@ begin
   inherited InitializeWidget;
 end;
 
-function TGtk3FontSelectionDialog.response_handler(resp_id: gint): boolean;
+function TGtk3FontSelectionDialog.response_handler(resp_id: TGtkResponseType): boolean;
 var
   fnt:TFont;
   pch:PgtkFontChooser;
@@ -8244,7 +8244,7 @@ begin
   inherited;
 end;
 
-function TGtk3newColorSelectionDialog.response_handler(resp_id: gint): boolean;
+function TGtk3newColorSelectionDialog.response_handler(resp_id: TGtkResponseType): boolean;
 var
   clr:TColor;
   rgba:TGdkRGBA;

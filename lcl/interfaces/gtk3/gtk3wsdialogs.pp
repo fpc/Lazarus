@@ -418,7 +418,7 @@ begin
   end;
 end;
 
-procedure Gtk2FileChooserResponseCB(widget: PGtkFileChooser; arg1: gint;
+procedure Gtk2FileChooserResponseCB(widget: PGtkFileChooser; arg1: TGtkResponseType;
   data: gpointer); cdecl;
 
   procedure AddFile(List: TStrings; const NewFile: string);
