@@ -236,7 +236,7 @@ type
     procedure SetFilterOptions(AValue: TFilterStringOptions);
     procedure SetSortData(AValue: Boolean);
     procedure SetIdleConnected(const AValue: Boolean);
-    procedure OnIdle(Sender: TObject; var Done: Boolean);
+    procedure OnAsync(Data: PtrInt);
     function IsTextHintStored: Boolean;
   protected
     fNeedUpdate: Boolean;
@@ -1162,6 +1162,7 @@ end;
 
 destructor TCustomControlFilterEdit.Destroy;
 begin
+  IdleConnected := False;
   inherited Destroy;
 end;
 
@@ -1241,7 +1242,7 @@ begin
     Result := DoDefaultFilterItem(ACaption, ItemData);
 end;
 
-procedure TCustomControlFilterEdit.OnIdle(Sender: TObject; var Done: Boolean);
+procedure TCustomControlFilterEdit.OnAsync(Data: PtrInt);
 begin
   if fNeedUpdate then
     ApplyFilter(true);
@@ -1255,9 +1256,9 @@ begin
   if fIdleConnected=AValue then exit;
   fIdleConnected:=AValue;
   if fIdleConnected then
-    Application.AddOnIdleHandler(@OnIdle)
+    Application.QueueAsyncCall(@OnAsync, 0)
   else
-    Application.RemoveOnIdleHandler(@OnIdle);
+    Application.RemoveAsyncCalls(Self);
 end;
 
 procedure TCustomControlFilterEdit.EditKeyDown(var Key: Word; Shift: TShiftState);
