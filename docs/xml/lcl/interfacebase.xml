@@ -54,7 +54,6 @@ to add or remove event handlers in the class instance.
 
 <element name="PProcessEventHandler">
 <short>Pointer to a process event handler routine.</short>
-<short/>
 <descr>
 <p>
 PProcessEventHandler is an alias to the Pointer type. It is used in widgetset 
@@ -274,7 +273,9 @@ classes.</note></notes>
 <seealso/>
 </element>
 <element name="TLCLWndMethod.TheMessage">
-<short/>
+<short>
+Structure with the parameters for the message and its result code.
+</short>
 </element>
 
 <element name="TLCLCapability">
@@ -864,11 +865,13 @@ be preprocessed or modified prior to starting an application.
 <seealso/>
 </element>
 
-<!-- ptivate -->
+<!-- protected -->
 <element name="TWidgetSet.CreateThemeServices" link="#lcl.interfacebase.TWidgetSet.ThemeServices"/>
 <element name="TWidgetSet.CreateThemeServices.Result"/>
+
 <element name="TWidgetSet.GetAppHandle" link="#lcl.interfacebase.TWidgetSet.AppHandle"/>
 <element name="TWidgetSet.GetAppHandle.Result"/>
+
 <element name="TWidgetSet.SetAppHandle" link="#lcl.interfacebase.TWidgetSet.AppHandle"/>
 <element name="TWidgetSet.SetAppHandle.AValue"/>
 
@@ -917,7 +920,10 @@ it when adequate.
 <seealso/>
 </element>
 <element name="TWidgetSet.AppInit.ScreenInfo">
-<short/>
+<short>
+TScreenInfo instance with the PPI (Pixels per Inch) and color depth for the 
+platform.
+</short>
 </element>
 
 <element name="TWidgetSet.AppRun">
@@ -926,8 +932,8 @@ Enters a state in which the application waits for system messages.
 </short>
 <descr>
 <p>
-Called by Application.Run. Don't call this directly, the LCL will use it when 
-adequate.
+Called by Application.Run. Don't call this directly. The LCL will use it when 
+needed.
 </p>
 </descr>
 <seealso/>
@@ -1007,16 +1013,20 @@ use it when adequate.
 <short>Sets the icon in the taskbar.</short>
 <descr>
 <p>
-Don't call this directly, the LCL will use it when adequate.
+Don't call this directly. The LCL will use it when needed.
 </p>
 </descr>
 <seealso/>
 </element>
 <element name="TWidgetSet.AppSetIcon.Small">
-<short/>
+<short>
+HICON handle for the small icon for the application.
+</short>
 </element>
 <element name="TWidgetSet.AppSetIcon.Big">
-<short/>
+<short>
+HICON handle for the large icon for the application.
+</short>
 </element>
 
 <element name="TWidgetSet.AppSetTitle">
@@ -1029,7 +1039,9 @@ Don't call this directly, the LCL will use it when adequate.
 <seealso/>
 </element>
 <element name="TWidgetSet.AppSetTitle.ATitle">
-<short/>
+<short>
+Value stored as the Title for the application.
+</short>
 </element>
 
 <element name="TWidgetSet.AppSetVisible">
@@ -1042,14 +1054,16 @@ Don't call this directly, the LCL will use it when adequate.
 <seealso/>
 </element>
 <element name="TWidgetSet.AppSetVisible.AVisible">
-<short/>
+<short>
+<b>True</b> if the application is visible.
+</short>
 </element>
 
 <element name="TWidgetSet.AppRemoveStayOnTopFlags">
 <short>Resets all StayOnTop windows to NoTopmost.</short>
 <descr>
 <p>
-Don't call this directly, the LCL will use it when adequate.
+Don't call this directly. The LCL will use it when needed.
 </p>
 </descr>
 <seealso/>
@@ -1058,7 +1072,10 @@ Don't call this directly, the LCL will use it when adequate.
 <short><b>False</b> on failure.</short>
 </element>
 <element name="TWidgetSet.AppRemoveStayOnTopFlags.ASystemTopAlso">
-<short/>
+<short>
+Indicates if the System Stay On Top flag is removed too. The default value 
+is <b>False</b>.
+</short>
 </element>
 
 <element name="TWidgetSet.AppRestoreStayOnTopFlags">
@@ -1173,16 +1190,24 @@ class to use the image format and device context needed for the platform.
 <seealso/>
 </element>
 <element name="TWidgetSet.DCGetPixel.Result">
-<short/>
+<short>
+TGraphicsColor value with the color for the specified pixel.
+</short>
 </element>
 <element name="TWidgetSet.DCGetPixel.CanvasHandle">
-<short/>
+<short>
+Handle (device context) with the image data examined in the method.
+</short>
 </element>
 <element name="TWidgetSet.DCGetPixel.X">
-<short/>
+<short>
+Horizontal coordinate for the pixel examined in the method.
+</short>
 </element>
 <element name="TWidgetSet.DCGetPixel.Y">
-<short/>
+<short>
+Vertical coordinate for the pixel examined in the method.
+</short>
 </element>
 
 <element name="TWidgetSet.DCSetPixel">
@@ -1196,16 +1221,24 @@ class to use the image format and device context needed for the platform.
 <seealso/>
 </element>
 <element name="TWidgetSet.DCSetPixel.CanvasHandle">
-<short/>
+<short>
+Handle (device context) with the image data updated in the method.
+</short>
 </element>
 <element name="TWidgetSet.DCSetPixel.X">
-<short/>
+<short>
+Horizontal coordinate for the pixel updated in the method.
+</short>
 </element>
 <element name="TWidgetSet.DCSetPixel.Y">
-<short/>
+<short>
+Vertical coordinate for the pixel updated in the method.
+</short>
 </element>
 <element name="TWidgetSet.DCSetPixel.AColor">
-<short/>
+<short>
+Color value for the specified pixel.
+</short>
 </element>
 
 <element name="TWidgetSet.DCRedraw">
@@ -1245,12 +1278,20 @@ AntialiasingMode property is changed.
 </element>
 
 <element name="TWidgetSet.SetDesigning">
-<short/>
-<descr/>
+<short>
+Sets the flag which indicates a designer is active for the specified component.
+</short>
+<descr>
+<p>
+Not used in the current LCL version.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TWidgetSet.SetDesigning.AComponent">
-<short/>
+<short>
+Component for the designer flag value.
+</short>
 </element>
 
 <element name="TWidgetSet.InitStockFont">
@@ -4404,7 +4445,7 @@ point a second time at the end.
 </element>
 
 <element name="TWidgetSet.Polyline">
-<short>Draws a sequence of lines.</short>
+<short>Draws a sequence of lines between the specified points.</short>
 <descr>
 <p>
 Use Polyline to connect a set of points on the canvas.
@@ -4462,11 +4503,10 @@ The two parameters WParam and LParam will be passed along to the window
 together with the Msg identification number.
 </p>
 <p>
-The difference between SendMessage and PostMessage is the way that they 
-return control to the calling thread. With SendMessage control is not 
-returned until the window that the message was sent to has completed 
-processing the sent message, however with PostMessage control is returned 
-immediately.
+The difference between SendMessage and PostMessage is the way that they return 
+control to the calling thread. With SendMessage, control is not returned until 
+target window has completed processing the message. With PostMessage, control 
+is returned immediately.
 </p>
 </descr>
 <seealso>
@@ -4923,11 +4963,10 @@ The two parameters WParam and LParam will be passed to the message handler,
 together with the message ID.
 </p>
 <p>
-The difference between SendMessage and PostMessage is the way that they 
-return control to the calling thread. With SendMessage control is not 
-returned until the window that the message was sent to has completed 
-processing the sent message, however with PostMessage control is returned 
-immediately.
+The difference between SendMessage and PostMessage is the way that they return 
+control to the calling thread. With SendMessage, control is not returned until 
+the target window has completed processing the message. With PostMessage, 
+control is returned immediately.
 </p>
 </descr>
 <seealso>
@@ -7479,7 +7518,10 @@ AThen. Returns <b>False</b> when AMemSize is zero (0).
 </element>
 
 <element name="TInputDialogFunction">
-<short/>
+<short>
+Specifies the function called for a given platform to display and execute an 
+input dialog using the specified values.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -7487,16 +7529,23 @@ AThen. Returns <b>False</b> when AMemSize is zero (0).
 <short/>
 </element>
 <element name="TInputDialogFunction.InputCaption">
-<short/>
+<short>
+Value displayed as the caption or title for the input dialog.
+</short>
 </element>
 <element name="TInputDialogFunction.InputPrompt">
-<short/>
+<short>
+Contains the text displayed as the main content for the input dialog.
+</short>
 </element>
 <element name="TInputDialogFunction.MaskInput">
 <short/>
 </element>
 <element name="TInputDialogFunction.Value">
-<short/>
+<short>
+Returns the value entered in the edit control for the input dialog. Contains 
+the initial value for the edit control on entry.
+</short>
 </element>
 
 <element name="TPromptDialogFunction">
@@ -7563,33 +7612,53 @@ AThen. Returns <b>False</b> when AMemSize is zero (0).
 </element>
 
 <element name="TLoadBitmapFunction">
-<short/>
+<short>
+Specifies a function called to load a bitmap image from the specified file or 
+resource and return the handle for the image.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="LoadBitmapFunction"/>
+</seealso>
 </element>
 <element name="TLoadBitmapFunction.Result">
-<short/>
+<short>
+HBitmap handle for the bitmap image loaded in the routine.
+</short>
 </element>
 <element name="TLoadBitmapFunction.hInstance">
-<short/>
+<short>
+Handle for the resource where the specified bitmap is stored.
+</short>
 </element>
 <element name="TLoadBitmapFunction.lpBitmapName">
-<short/>
+<short>
+Name for the bitmap loaded in the routine.
+</short>
 </element>
 
 <element name="TLoadCursorFunction">
-<short/>
+<short>
+Specifies a function called to load a cursor shape with the specified 
+identifier and return the handle for the cursor image.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TLoadCursorFunction.Result">
-<short/>
+<short>
+HCursor handle for the specified cursor shape.
+</short>
 </element>
 <element name="TLoadCursorFunction.hInstance">
-<short/>
+<short>
+Handle for the resource where the specified cursor is stored.
+</short>
 </element>
 <element name="TLoadCursorFunction.lpCursorName">
-<short/>
+<short>
+Identifier for the cursor shape loaded in the routine.
+</short>
 </element>
 
 <element name="TLoadIconFunction">
@@ -7626,15 +7695,33 @@ AThen. Returns <b>False</b> when AMemSize is zero (0).
 </element>
 
 <element name="LoadBitmapFunction">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Variable with the function called to load a bitmap from a specified file or 
+resource and return its handle.
+</short>
+<descr>
+<p>
+Called from LoadBitmap implemented for the Windows platform widgetset.
+</p>
+</descr>
+<seealso>
+<link id="TLoadBitmapFunction"/>
+</seealso>
 </element>
 
 <element name="LoadIconFunction">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Variable with the function called to load an icon from a specified file or 
+resource and return its handle.
+</short>
+<descr>
+<p>
+Called from LoadIcon implemented for the Windows platform widgetset.
+</p>
+</descr>
+<seealso>
+<link id="TLoadIconFunction"/>
+</seealso>
 </element>
 
 <element name="WidgetSet">
@@ -7646,11 +7733,17 @@ Provides access to the widgetset class instance for the platform.
 <var>WidgetSet</var> is a unit global <var>TWidgetSet</var> variable with the 
 singleton used to access the widgetset class instance for the platform. 
 WidgetSet contains a TWidgetSet descendant which implements the properties, 
-methods, and events for a specific platform.
+methods, and events for a specific platform. 
+</p>
+<p>
+The value for the variable is assigned when the CreateWidgetset routine in 
+<file>forms.pp</file> is called. This occurs during initialization of the 
+<file>interfaces.pp</file> unit for a given platform.
 </p>
 </descr>
 <seealso>
 <link id="TWidgetSet"/>
+<link id="#lcl.forms.CreateWidgetset">CreateWidgetset</link>
 </seealso>
 </element>
 
