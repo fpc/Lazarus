@@ -20,15 +20,16 @@ const
   LazGtk3_library = 'libgtk-3.so.0';
   {$endif}
 
-  GTK_BINARY_AGE = 806;
+  GTK_BINARY_AGE = 2438;
   GTK_INPUT_ERROR = -1;
-  GTK_INTERFACE_AGE = 6;
+  GTK_INTERFACE_AGE = 32;
+  GTK_LEVEL_BAR_OFFSET_FULL = 'full';
   GTK_LEVEL_BAR_OFFSET_HIGH = 'high';
   GTK_LEVEL_BAR_OFFSET_LOW = 'low';
   GTK_MAJOR_VERSION = 3;
   GTK_MAX_COMPOSE_LEN = 7;
-  GTK_MICRO_VERSION = 6;
-  GTK_MINOR_VERSION = 8;
+  GTK_MICRO_VERSION = 38;
+  GTK_MINOR_VERSION = 24;
   GTK_PAPER_NAME_A3 = 'iso_a3';
   GTK_PAPER_NAME_A4 = 'iso_a4';
   GTK_PAPER_NAME_A5 = 'iso_a5';
@@ -69,7 +70,7 @@ const
   GTK_PRINT_SETTINGS_USE_COLOR = 'use-color';
   GTK_PRINT_SETTINGS_WIN32_DRIVER_EXTRA = 'win32-driver-extra';
   GTK_PRINT_SETTINGS_WIN32_DRIVER_VERSION = 'win32-driver-version';
-  GTK_PRIORITY_RESIZE = 10;
+  GTK_PRIORITY_RESIZE = 110;
   GTK_STOCK_ABOUT = 'gtk-about';
   GTK_STOCK_ADD_ = 'gtk-add';
   GTK_STOCK_APPLY = 'gtk-apply';
@@ -184,14 +185,18 @@ const
   GTK_STYLE_CLASS_CELL = 'cell';
   GTK_STYLE_CLASS_CHECK = 'check';
   GTK_STYLE_CLASS_COMBOBOX_ENTRY = 'combobox-entry';
+  GTK_STYLE_CLASS_CONTEXT_MENU = 'context-menu';
+  GTK_STYLE_CLASS_CSD = 'csd';
   GTK_STYLE_CLASS_CURSOR_HANDLE = 'cursor-handle';
   GTK_STYLE_CLASS_DEFAULT = 'default';
+  GTK_STYLE_CLASS_DESTRUCTIVE_ACTION = 'destructive-action';
   GTK_STYLE_CLASS_DIM_LABEL = 'dim-label';
   GTK_STYLE_CLASS_DND = 'dnd';
   GTK_STYLE_CLASS_DOCK = 'dock';
   GTK_STYLE_CLASS_ENTRY = 'entry';
   GTK_STYLE_CLASS_ERROR = 'error';
   GTK_STYLE_CLASS_EXPANDER = 'expander';
+  GTK_STYLE_CLASS_FLAT = 'flat';
   GTK_STYLE_CLASS_FRAME = 'frame';
   GTK_STYLE_CLASS_GRIP = 'grip';
   GTK_STYLE_CLASS_HEADER = 'header';
@@ -201,22 +206,33 @@ const
   GTK_STYLE_CLASS_INFO = 'info';
   GTK_STYLE_CLASS_INLINE_TOOLBAR = 'inline-toolbar';
   GTK_STYLE_CLASS_INSERTION_CURSOR = 'insertion-cursor';
+  GTK_STYLE_CLASS_LABEL = 'label';
   GTK_STYLE_CLASS_LEFT = 'left';
   GTK_STYLE_CLASS_LEVEL_BAR = 'level-bar';
   GTK_STYLE_CLASS_LINKED = 'linked';
+  GTK_STYLE_CLASS_LIST = 'list';
+  GTK_STYLE_CLASS_LIST_ROW = 'list-row';
   GTK_STYLE_CLASS_MARK = 'mark';
   GTK_STYLE_CLASS_MENU = 'menu';
   GTK_STYLE_CLASS_MENUBAR = 'menubar';
   GTK_STYLE_CLASS_MENUITEM = 'menuitem';
+  GTK_STYLE_CLASS_MESSAGE_DIALOG = 'message-dialog';
+  GTK_STYLE_CLASS_MONOSPACE = 'monospace';
+  GTK_STYLE_CLASS_NEEDS_ATTENTION = 'needs-attention';
   GTK_STYLE_CLASS_NOTEBOOK = 'notebook';
   GTK_STYLE_CLASS_OSD = 'osd';
+  GTK_STYLE_CLASS_OVERSHOOT = 'overshoot';
   GTK_STYLE_CLASS_PANE_SEPARATOR = 'pane-separator';
+  GTK_STYLE_CLASS_PAPER = 'paper';
+  GTK_STYLE_CLASS_POPOVER = 'popover';
+  GTK_STYLE_CLASS_POPUP = 'popup';
   GTK_STYLE_CLASS_PRIMARY_TOOLBAR = 'primary-toolbar';
   GTK_STYLE_CLASS_PROGRESSBAR = 'progressbar';
   GTK_STYLE_CLASS_PULSE = 'pulse';
   GTK_STYLE_CLASS_QUESTION = 'question';
   GTK_STYLE_CLASS_RADIO = 'radio';
   GTK_STYLE_CLASS_RAISED = 'raised';
+  GTK_STYLE_CLASS_READ_ONLY = 'read-only';
   GTK_STYLE_CLASS_RIGHT = 'right';
   GTK_STYLE_CLASS_RUBBERBAND = 'rubberband';
   GTK_STYLE_CLASS_SCALE = 'scale';
@@ -229,13 +245,21 @@ const
   GTK_STYLE_CLASS_SLIDER = 'slider';
   GTK_STYLE_CLASS_SPINBUTTON = 'spinbutton';
   GTK_STYLE_CLASS_SPINNER = 'spinner';
+  GTK_STYLE_CLASS_STATUSBAR = 'statusbar';
+  GTK_STYLE_CLASS_SUBTITLE = 'subtitle';
+  GTK_STYLE_CLASS_SUGGESTED_ACTION = 'suggested-action';
+  GTK_STYLE_CLASS_TITLE = 'title';
+  GTK_STYLE_CLASS_TITLEBAR = 'titlebar';
   GTK_STYLE_CLASS_TOOLBAR = 'toolbar';
   GTK_STYLE_CLASS_TOOLTIP = 'tooltip';
   GTK_STYLE_CLASS_TOP = 'top';
+  GTK_STYLE_CLASS_TOUCH_SELECTION = 'touch-selection';
   GTK_STYLE_CLASS_TROUGH = 'trough';
+  GTK_STYLE_CLASS_UNDERSHOOT = 'undershoot';
   GTK_STYLE_CLASS_VERTICAL = 'vertical';
   GTK_STYLE_CLASS_VIEW = 'view';
   GTK_STYLE_CLASS_WARNING = 'warning';
+  GTK_STYLE_CLASS_WIDE = 'wide';
   GTK_STYLE_PROPERTY_BACKGROUND_COLOR = 'background-color';
   GTK_STYLE_PROPERTY_BACKGROUND_IMAGE = 'background-image';
   GTK_STYLE_PROPERTY_BORDER_COLOR = 'border-color';
@@ -255,14 +279,48 @@ const
   GTK_STYLE_REGION_COLUMN_HEADER = 'column-header';
   GTK_STYLE_REGION_ROW = 'row';
   GTK_STYLE_REGION_TAB = 'tab';
-  GTK_TEXT_VIEW_PRIORITY_VALIDATE = 5;
+  GTK_TEXT_VIEW_PRIORITY_VALIDATE = 125;
+  GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID = -1;
+  GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID = -2;
 
 type
   TGtkTextDirection = (
-  { GtkTextDirection }
-  GTK_TEXT_DIR_NONE = 0,
-  GTK_TEXT_DIR_LTR = 1,
-  GTK_TEXT_DIR_RTL = 2
+    TGtkTextDirectionMinValue = -$7FFFFFFF,
+    GTK_TEXT_DIR_NONE = 0,
+    GTK_TEXT_DIR_LTR = 1,
+    GTK_TEXT_DIR_RTL = 2,
+    TGtkTextDirectionMaxValue = $7FFFFFFF
+  );
+  TGtkAccelFlags = (
+    TGtkAccelFlagsMinValue = -$7FFFFFFF,
+    GTK_ACCEL_VISIBLE = 1,
+    GTK_ACCEL_LOCKED = 2,
+    GTK_ACCEL_MASK = 7,
+    TGtkAccelFlagsMaxValue = $7FFFFFFF
+  );
+  TGtkDirectionType = (
+    TGtkDirectionTypeMinValue = -$7FFFFFFF,
+    GTK_DIR_TAB_FORWARD = 0,
+    GTK_DIR_TAB_BACKWARD = 1,
+    GTK_DIR_UP = 2,
+    GTK_DIR_DOWN = 3,
+    GTK_DIR_LEFT = 4,
+    GTK_DIR_RIGHT = 5,
+    TGtkDirectionTypeMaxValue = $7FFFFFFF
+  );
+  TGtkOrientation = (
+    TGtkOrientationMinValue = -$7FFFFFFF,
+    GTK_ORIENTATION_HORIZONTAL = 0,
+    GTK_ORIENTATION_VERTICAL = 1,
+    TGtkOrientationMaxValue = $7FFFFFFF
+  );
+  TGtkDestDefaults = (
+    TGtkDestDefaultsMinValue = -$7FFFFFFF,
+    GTK_DEST_DEFAULT_MOTION = 1,
+    GTK_DEST_DEFAULT_HIGHLIGHT = 2,
+    GTK_DEST_DEFAULT_DROP = 4,
+    GTK_DEST_DEFAULT_ALL = 7,
+    TGtkDestDefaultsMaxValue = $7FFFFFFF
   );
   TGtkJustification = (
     TGtkJustificationMinValue = -$7FFFFFFF,
@@ -325,41 +383,6 @@ type
     GTK_POLICY_EXTERNAL = 3,
     TGtkPolicyTypeMaxValue = $7FFFFFFF
   );
-
-type
-  TGtkAccelFlags = Integer;
-const
-  { GtkAccelFlags }
-  GTK_ACCEL_VISIBLE: TGtkAccelFlags = 1;
-  GTK_ACCEL_LOCKED: TGtkAccelFlags = 2;
-  GTK_ACCEL_MASK: TGtkAccelFlags = 7;
-
-type
-  TGtkDirectionType = Integer;
-const
-  { GtkDirectionType }
-  GTK_DIR_TAB_FORWARD: TGtkDirectionType = 0;
-  GTK_DIR_TAB_BACKWARD: TGtkDirectionType = 1;
-  GTK_DIR_UP: TGtkDirectionType = 2;
-  GTK_DIR_DOWN: TGtkDirectionType = 3;
-  GTK_DIR_LEFT: TGtkDirectionType = 4;
-  GTK_DIR_RIGHT: TGtkDirectionType = 5;
-
-type
-  TGtkOrientation = Integer;
-const
-  { GtkOrientation }
-  GTK_ORIENTATION_HORIZONTAL = TGtkOrientation(0);
-  GTK_ORIENTATION_VERTICAL = TGtkOrientation(1);
-
-type
-  TGtkDestDefaults = Integer;
-const
-  { GtkDestDefaults }
-  GTK_DEST_DEFAULT_MOTION: TGtkDestDefaults = 1;
-  GTK_DEST_DEFAULT_HIGHLIGHT: TGtkDestDefaults = 2;
-  GTK_DEST_DEFAULT_DROP: TGtkDestDefaults = 4;
-  GTK_DEST_DEFAULT_ALL: TGtkDestDefaults = 7;
 
 type
   TGtkStateFlags = Integer;
