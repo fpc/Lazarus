@@ -1155,8 +1155,8 @@ does not have focus, it displays the grayed value "(filter)".
 <descr>
 <p>
 Does its job at once when Immediately is set to <b>True</b>. Otherwise, it 
-connects the OnIdle event handler which applies the filter when the 
-Application is idle.
+connects the asynchronous event handler routine which applies the filter 
+asynchronously in the Application.
 </p>
 </descr>
 </element>
@@ -1208,41 +1208,54 @@ Sets the value for the Filter property.
 <short>New value for the property.</short>
 </element>
 
-<!-- this is private ATM -->
-<element name="TCustomControlFilterEdit.OnIdle">
+<!-- private -->
+<element name="TCustomControlFilterEdit.OnAsync">
 <short>
-Event handler signalled to apply a filter when an Application becomes idle.
+Performs actions to asynchronously apply the Filter to the Items for the 
+control.
 </short>
 <descr>
 <p>
-<var>OnIdle</var> is a procedure which implements a <var>TIdleEvent</var> 
-event handler signalled to apply a filter when the <var>Application</var> 
-becomes idle. OnIdle is assigned (using AddOnIdleHandler) or removed (using 
-RemoveOnIdleHandler) in the global Application instance when the value in 
-<var>IdleConnected</var> is changed.
+<var>OnAsync</var> is a method used apply the value in the Filter property to 
+the sorted Items for the control. It implements the TDataEvent routine passed 
+as an argument to the Application.QueueAsyncCall method.
 </p>
 <p>
-OnIdle uses an internal flag to determine if an update is needed, and when 
-set, calls <var>ApplyFilter</var> to activate the filter and resets the flag 
-value. Use the <var>OnFilterItemEx</var> or <var>OnFilterItem</var> 
-(deprecated) event handlers to perform actions needed to implement the filter.
+OnAsync ensures that the internal flag for pending filter updates is handled 
+by calling the private ApplyFilter method to immediately apply the pending 
+updates. Use the OnFilterItemEx or OnFilterItem (deprecated) event handlers to 
+perform actions needed to implement the filter.
 </p>
 <p>
-OnIdle signals the <var>OnAfterFilter</var> event handler (when assigned).
+OnAsync is executed (via Application.QueueAsyncCall) when the value in 
+IdleConnected is changed to <b>True</b>. This occurs when InvalidateFilter or 
+ForceFilter are called.
+</p>
+<p>
+The value in IdleConnected is reset to <b>False</b> when the filter has been 
+applied to the items in the control. OnAsync signals the OnAfterFilter event 
+handler (when assigned).
 </p>
 </descr>
+<version>
+Introduced in LCL version 2.4.0 as a replacement for the OnIdle event handler 
+routine.
+</version>
 <seealso>
 <link id="TCustomControlFilterEdit.OnFilterItem"/>
 <link id="TCustomControlFilterEdit.OnFilterItemEx"/>
 <link id="TCustomControlFilterEdit.IdleConnected"/>
 <link id="TCustomControlFilterEdit.OnAfterFilter"/>
+<link id="TCustomControlFilterEdit.InvalidateFilter"/>
+<link id="TCustomControlFilterEdit.ForceFilter"/>
+<link id="#lcl.forms.TApplication.QueueAsyncCall">TApplication.QueueAsyncCall</link>
 </seealso>
 </element>
-<element name="TCustomControlFilterEdit.OnIdle.Sender">
-<short>Object for the event notification.</short>
-</element>
-<element name="TCustomControlFilterEdit.OnIdle.Done">
-<short>Not used or updated in TCustomControlFilterEdit.</short>
+<element name="TCustomControlFilterEdit.OnAsync.Data">
+<short>
+Pointer to an Integer with the data for the asynchronous method. Always 
+contains 0 in OnAsync.
+</short>
 </element>
 
 <element name="TCustomControlFilterEdit.IsTextHintStored">
@@ -1663,19 +1676,54 @@ well as its internal flags, including:
 
 <element name="TCustomControlFilterEdit.InvalidateFilter">
 <short>
-Should be called when data was changed and it must be filtered again.
+Sets flags and property to indicate that the filter must be reapplied for the 
+control.
 </short>
 <descr>
 <p>
-Connects to OnIdle handler which filters the data later.
+<var>InvalidateFilter</var> is a method used to indicate that updates to the 
+Filter value are pending for the control. It sets the internal flag used to 
+track pending filter updates, and sets the IdelConnected property to 
+<b>True</b> to enable the asynchronous event handler routine for the control.
+</p>
+<p>
+InvalidateFilter is called from the private ApplyFilter method when the Filter 
+value is not immediately applied. InvalidateFilter is also called when a new 
+value is applied to the Filter or SortData properties, or when the 
+FilterOptions are modified for the control.
 </p>
 </descr>
+<seealso>
+<link id="TCustomControlFilterEdit.Filter"/>
+<link id="TCustomControlFilterEdit.IdleConnected"/>
+<link id="TCustomControlFilterEdit.SortData"/>
+<link id="TCustomControlFilterEdit.FilterOptions"/>
+</seealso>
 </element>
 
 <element name="TCustomControlFilterEdit.ResetFilter">
-<short>Removes the filter text and shows all items in the container.</short>
-<descr/>
-<seealso/>
+<short>
+Clears the Filter text to show all items in the control.
+</short>
+<descr>
+<p>
+<var>ResetFilter</var> clears the existing value in the Filter property by 
+setting it to an empty string (''). This results in the Text for control being 
+set to the same value, and the InvalidateFilter is called when the filter is 
+internally applied to the control.
+</p>
+<p>
+ResetFilter is called from the BuddyClick method - the OnClick handler routine 
+executed when the associated Button for the control is clicked. 
+</p>
+</descr>
+<seealso>
+<link id="TCustomControlFilterEdit.Filter"/>
+<link id="TCustomControlFilterEdit.Text"/>
+<link id="TCustomControlFilterEdit.BuddyClick"/>
+<link id="TCustomControlFilterEdit.InternalSetFilter"/>
+<link id="TCustomEditButton.Button"/>
+</seealso>
 </element>
 
 <element name="TCustomControlFilterEdit.ForceFilter">
@@ -1684,8 +1732,8 @@ Applies a new Filter immediately without waiting for an idle state.
 </short>
 <descr>
 <p>
-Calls the ApplyFilter method to immediately apply the value in Filter using 
-the ApplyFilterCore method in the implementation.
+Calls the private ApplyFilter method to immediately apply the value in Filter 
+using the ApplyFilterCore method in the implementation.
 </p>
 </descr>
 <seealso/>
@@ -1810,28 +1858,29 @@ and used when the value for the edit control has been changed.
 
 <element name="TCustomControlFilterEdit.IdleConnected">
 <short>
-Indicates if OnIdle has been connected to the Application singleton.
+Indicates if the asynchronous event handler routine is enabled for the 
+Application.
 </short>
 <descr>
 <p>
 <var>IdleConnected</var> is a <var>Boolean</var> property which indicates if 
-the <var>OnIdle</var> event handler in the class instance has been connected 
-to the <var>Application</var> singleton. When set to <b>True</b>, the 
+the asynchronous event handler routine is enabled for the 
+<var>Application</var> singleton. When set to <b>True</b>, the 
 <var>Filter</var> in the control will be applied when the application is in 
 an idle state.
 </p>
 <p>
-Changing the value in the property causes the Application singleton to be 
-updated by calling either the <var>AddOnIdleHandler</var> or the 
-<var>RemoveOnIdleHandler</var> method. The address for the <var>OnIdle</var> 
-method in the class is passed as an argument.
+Changing the value for the property causes the handler routine to be queued or 
+dequeued as an asynchronous method call for the Application. When set to 
+<b>True</b>, the TApplication.QueueAsyncCall method is called to enqueue the 
+asynchronous event handler routine. Otherwise, the Application.RemoveAsyncCalls is called to remove any pending asynchronous methods.
 </p>
 <p>
 IdleConnected is set to <b>True</b> in the <var>InvalidateFilter</var> method.
 </p>
 <p>
-IdleConnected is set to <b>False</b> in the OnIdle method after the Filter 
-has been applied for the control.
+IdleConnected is set to <b>False</b> in the asynchronous event handler routine 
+after the Filter has been applied for the control.
 </p>
 <p>
 The default value for the property is <b>False</b>.
@@ -1841,9 +1890,8 @@ The default value for the property is <b>False</b>.
 <link id="TCustomControlFilterEdit.Filter"/>
 <link id="TCustomControlFilterEdit.InvalidateFilter"/>
 <link id="#lcl.forms.Application">Application</link>
-<link id="#lcl.forms.TApplication">TApplication</link>
-<link id="#lcl.forms.TApplication.AddOnIdleHandler">TApplication.AddOnIdleHandler</link>
-<link id="#lcl.forms.TApplication.RemoveOnIdleHandler">TApplication.RemoveOnIdleHandler</link>
+<link id="#lcl.forms.TApplication.QueueAsyncCall">TApplication.QueueAsyncCall</link>
+<link id="#lcl.forms.TApplication.RemoveAsyncCalls">TApplication.RemoveAsyncCalls</link>
 </seealso>
 </element>
 
@@ -1855,14 +1903,14 @@ Indicates whether items are sorted as they are filtered.
 <p>
 <var>SortData</var> is a <var>Boolean</var> property which determines whether 
 items in the filtered control are sorted when the Filter value is applied in 
-the ApplyFilter method. An explicit default value is not assigned for the 
-property, but the default value for the Boolean type is <b>False</b>.
+the private ApplyFilter method. An explicit default value is not assigned for 
+the property, but the default value for the Boolean type is <b>False</b>.
 </p>
 <p>
 Changing the value for the property causes the InvalidateFilter method to be 
 called. This method sets internal flags to signify a pending update, and 
-enables the OnIdle event handler where the filter value is applied and sorting 
-is performed.
+enables the asynchronous event handler routine where the filter value is 
+applied and sorting is performed.
 </p>
 <p>
 Descendant classes provide an overridden SortAndFilter method which performs 
@@ -1941,8 +1989,8 @@ Event handler signalled after all items have been filtered in the control.
 </short>
 <descr>
 <p>
-OnAfterFilter is signalled from the OnIdle event handler, and occurs after 
-ApplyFilter has been completed. 
+OnAfterFilter is signalled from the asynchronous event handler routine, and 
+occurs after the private ApplyFilter method has been completed. 
 </p>
 </descr>
 <seealso>
