@@ -2148,6 +2148,11 @@ It refers to the position in the Images property where the associated image
 data is stored. The default value for the property is -1, and indicates that 
 an explicit value has not been assigned to the property.
 </p>
+<p>
+The Lazarus IDE provides a property editor that allows selection of one of the 
+Images from a drop-down image list. The position for the selected image is 
+stored as the property value in the Object Inspector.
+</p>
 </descr>
 <version>
 Added in LCL version 2.3.0. Available since version 2.4.0.
@@ -2224,6 +2229,11 @@ the mouse cursor - hovered). It refers to the position in the Images property
 where the associated image data is stored. The default value for the property 
 is -1, and indicates that an explicit value has not been assigned to the 
 property.
+</p>
+<p>
+The Lazarus IDE provides a property editor that allows selection of one of the 
+Images from a drop-down image list. The position for the selected image is 
+stored as the property value in the Object Inspector.
 </p>
 </descr>
 <version>
@@ -2436,6 +2446,11 @@ ordinal position for the bitmap displayed on the button when it is pressed
 (down). It refers to the position in the Images property where the associated 
 image data is stored. The default value for the property is -1, and indicates 
 that an explicit value has not been assigned to the property.
+</p>
+<p>
+The Lazarus IDE provides a property editor that allows selection of one of the 
+Images from a drop-down image list. The position for the selected image is 
+stored as the property value in the Object Inspector.
 </p>
 </descr>
 <version>
@@ -4002,6 +4017,11 @@ an explicit value has not been assigned for the property.
 The property value is read from and written to the image index members in 
 ButtonGlyph.
 </p>
+<p>
+The Lazarus IDE provides a property editor that allows selection of one of the 
+Images from a drop-down image list. The position for the selected image is 
+stored as the property value in the Object Inspector.
+</p>
 </descr>
 <version>
 Added in LCL version 2.3.0. Available since version 2.4.0.
@@ -4132,6 +4152,11 @@ that an explicit value has not been assigned for the property.
 <p>
 The property value is read from and written to the image index members in 
 ButtonGlyph.
+</p>
+<p>
+The Lazarus IDE provides a property editor that allows selection of one of the 
+Images from a drop-down image list. The position for the selected image is 
+stored as the property value in the Object Inspector.
 </p>
 </descr>
 <version>
@@ -4351,6 +4376,11 @@ explicit value has not been assigned for the property.
 <p>
 The property value is read from and written to the image index members in 
 ButtonGlyph.
+</p>
+<p>
+The Lazarus IDE provides a property editor that allows selection of one of the 
+Images from a drop-down image list. The position for the selected image is 
+stored as the property value in the Object Inspector.
 </p>
 </descr>
 <version>
