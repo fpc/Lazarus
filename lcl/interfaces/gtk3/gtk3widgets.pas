@@ -1477,14 +1477,14 @@ begin
 
   if ACtl is TGtk3Window then
   begin
-    AState:=TGtk3Window(ACtl).getWindowState;
-    if AState and GDK_WINDOW_STATE_ICONIFIED<>0 then
+    AState := TGtk3Window(ACtl).getWindowState;
+    if AState and GDK_WINDOW_STATE_ICONIFIED<>0  then
       Msg.SizeType := SIZE_MINIMIZED
     else
-    if AState and GDK_WINDOW_STATE_MAXIMIZED<>0 then
+    if AState and GDK_WINDOW_STATE_MAXIMIZED<>0  then
       Msg.SizeType := SIZE_MAXIMIZED
     else
-    if AState and GDK_WINDOW_STATE_FULLSCREEN<>0 then
+    if AState and GDK_WINDOW_STATE_FULLSCREEN<>0  then
       Msg.SizeType := SIZE_FULLSCREEN;
 
   end;
@@ -1580,11 +1580,11 @@ function GtkModifierStateToShiftState(AState: TGdkModifierType;
     AIsKeyEvent: Boolean): Cardinal;
 begin
   Result := 0;
-  if AState and GDK_SHIFT_MASK <> 0 then
+  if GDK_SHIFT_MASK in AState  then
     Result := Result or MK_SHIFT;
-  if AState and GDK_CONTROL_MASK <> 0 then
+  if GDK_CONTROL_MASK in AState  then
     Result := Result or MK_CONTROL;
-  if AState and GDK_MOD1_MASK <> 0 then
+  if GDK_MOD1_MASK in AState  then
   begin
     if AIsKeyEvent then
       Result := Result or KF_ALTDOWN

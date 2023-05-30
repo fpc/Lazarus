@@ -2332,43 +2332,6 @@ const
   GDK_CROSSING_DEVICE_SWITCH: TGdkCrossingMode = 8;
 
 type
-  TGdkModifierType = Integer;
-const
-  { GdkModifierType }
-  GDK_SHIFT_MASK: TGdkModifierType = 1;
-  GDK_LOCK_MASK: TGdkModifierType = 2;
-  GDK_CONTROL_MASK: TGdkModifierType = 4;
-  GDK_MOD1_MASK: TGdkModifierType = 8;
-  GDK_MOD2_MASK: TGdkModifierType = 16;
-  GDK_MOD3_MASK: TGdkModifierType = 32;
-  GDK_MOD4_MASK: TGdkModifierType = 64;
-  GDK_MOD5_MASK: TGdkModifierType = 128;
-  GDK_BUTTON1_MASK: TGdkModifierType = 256;
-  GDK_BUTTON2_MASK: TGdkModifierType = 512;
-  GDK_BUTTON3_MASK: TGdkModifierType = 1024;
-  GDK_BUTTON4_MASK: TGdkModifierType = 2048;
-  GDK_BUTTON5_MASK: TGdkModifierType = 4096;
-  GDK_MODIFIER_RESERVED_13_MASK: TGdkModifierType = 8192;
-  GDK_MODIFIER_RESERVED_14_MASK: TGdkModifierType = 16384;
-  GDK_MODIFIER_RESERVED_15_MASK: TGdkModifierType = 32768;
-  GDK_MODIFIER_RESERVED_16_MASK: TGdkModifierType = 65536;
-  GDK_MODIFIER_RESERVED_17_MASK: TGdkModifierType = 131072;
-  GDK_MODIFIER_RESERVED_18_MASK: TGdkModifierType = 262144;
-  GDK_MODIFIER_RESERVED_19_MASK: TGdkModifierType = 524288;
-  GDK_MODIFIER_RESERVED_20_MASK: TGdkModifierType = 1048576;
-  GDK_MODIFIER_RESERVED_21_MASK: TGdkModifierType = 2097152;
-  GDK_MODIFIER_RESERVED_22_MASK: TGdkModifierType = 4194304;
-  GDK_MODIFIER_RESERVED_23_MASK: TGdkModifierType = 8388608;
-  GDK_MODIFIER_RESERVED_24_MASK: TGdkModifierType = 16777216;
-  GDK_MODIFIER_RESERVED_25_MASK: TGdkModifierType = 33554432;
-  GDK_SUPER_MASK: TGdkModifierType = 67108864;
-  GDK_HYPER_MASK: TGdkModifierType = 134217728;
-  GDK_META_MASK: TGdkModifierType = 268435456;
-  GDK_MODIFIER_RESERVED_29_MASK: TGdkModifierType = 536870912;
-  GDK_RELEASE_MASK: TGdkModifierType = 1073741824;
-  GDK_MODIFIER_MASK: TGdkModifierType = 1543512063;
-
-type
   TGdkGrabOwnership = Integer;
 const
   { GdkGrabOwnership }
@@ -2551,6 +2514,49 @@ type
     GDK_LAST_CURSOR = 153,
     TGdkCursorTypeMaxValue = $7FFFFFFF
   );
+
+//TODO: This is hand written just to give the direction we need to go.
+//TODO: We need to make git2pas generate similar code for bitfields.
+  TGdkModifierTypeIdx = (
+    TGdkModifierTypeIdxMinValue = 0,
+    GDK_SHIFT_MASK = 0,
+    GDK_LOCK_MASK = 1,
+    GDK_CONTROL_MASK = 2,
+    GDK_MOD1_MASK = 3,
+    GDK_MOD2_MASK = 4,
+    GDK_MOD3_MASK = 5,
+    GDK_MOD4_MASK = 6,
+    GDK_MOD5_MASK = 7,
+    GDK_BUTTON1_MASK = 8,
+    GDK_BUTTON2_MASK = 9,
+    GDK_BUTTON3_MASK = 10,
+    GDK_BUTTON4_MASK = 11,
+    GDK_BUTTON5_MASK = 12,
+    GDK_MODIFIER_RESERVED_13_MASK = 13,
+    GDK_MODIFIER_RESERVED_14_MASK = 14,
+    GDK_MODIFIER_RESERVED_15_MASK = 15,
+    GDK_MODIFIER_RESERVED_16_MASK = 16,
+    GDK_MODIFIER_RESERVED_17_MASK = 17,
+    GDK_MODIFIER_RESERVED_18_MASK = 18,
+    GDK_MODIFIER_RESERVED_19_MASK = 19,
+    GDK_MODIFIER_RESERVED_20_MASK = 20,
+    GDK_MODIFIER_RESERVED_21_MASK = 21,
+    GDK_MODIFIER_RESERVED_22_MASK = 22,
+    GDK_MODIFIER_RESERVED_23_MASK = 23,
+    GDK_MODIFIER_RESERVED_24_MASK = 24,
+    GDK_MODIFIER_RESERVED_25_MASK = 25,
+    GDK_SUPER_MASK = 26,
+    GDK_HYPER_MASK = 27,
+    GDK_META_MASK = 28,
+    GDK_MODIFIER_RESERVED_29_MASK = 29,
+    GDK_RELEASE_MASK = 30,
+    TGdkModifierTypeIdxMaxValue = 31
+  );
+  TGdkModifierType = Set of TGdkModifierTypeIdx;
+const
+  GDK_MODIFIER_MASK = 1543512063;
+  GDK_ALL_MODIFIERS_MASK = [TGdkModifierTypeIdxMinValue..TGdkModifierTypeIdxMaxValue];
+
 const
   { GdkWindowHints }
   GDK_HINT_POS: TGdkWindowHints = 1;
@@ -3796,7 +3802,7 @@ type
     function get_entries_for_keycode(hardware_keycode: guint; keys: PPGdkKeymapKey; keyvals: PPguint; n_entries: Pgint): gboolean; cdecl; inline;
     function get_entries_for_keyval(keyval: guint; keys: PPGdkKeymapKey; n_keys: Pgint): gboolean; cdecl; inline;
     function get_modifier_mask(intent: TGdkModifierIntent): TGdkModifierType; cdecl; inline;
-    function get_modifier_state: guint; cdecl; inline;
+    function get_modifier_state: TGdkModifierType; cdecl; inline;
     function get_num_lock_state: gboolean; cdecl; inline;
     function have_bidi_layouts: gboolean; cdecl; inline;
     function lookup_key(key: PGdkKeymapKey): guint; cdecl; inline;
@@ -4076,7 +4082,7 @@ function gdk_keymap_get_entries_for_keycode(keymap: PGdkKeymap; hardware_keycode
 function gdk_keymap_get_entries_for_keyval(keymap: PGdkKeymap; keyval: guint; keys: PPGdkKeymapKey; n_keys: Pgint): gboolean; cdecl; external;
 function gdk_keymap_get_for_display(display: PGdkDisplay): PGdkKeymap; cdecl; external;
 function gdk_keymap_get_modifier_mask(keymap: PGdkKeymap; intent: TGdkModifierIntent): TGdkModifierType; cdecl; external;
-function gdk_keymap_get_modifier_state(keymap: PGdkKeymap): guint; cdecl; external;
+function gdk_keymap_get_modifier_state(keymap: PGdkKeymap): TGdkModifierType; cdecl; external;
 function gdk_keymap_get_num_lock_state(keymap: PGdkKeymap): gboolean; cdecl; external;
 function gdk_keymap_get_type: TGType; cdecl; external;
 function gdk_keymap_have_bidi_layouts(keymap: PGdkKeymap): gboolean; cdecl; external;
@@ -5973,7 +5979,7 @@ begin
   Result := LazGdk3.gdk_keymap_get_modifier_mask(@self, intent);
 end;
 
-function TGdkKeymap.get_modifier_state: guint; cdecl;
+function TGdkKeymap.get_modifier_state: TGdkModifierType; cdecl;
 begin
   Result := LazGdk3.gdk_keymap_get_modifier_state(@self);
 end;
