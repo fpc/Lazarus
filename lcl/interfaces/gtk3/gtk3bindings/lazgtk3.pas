@@ -354,6 +354,22 @@ type
     GTK_SHADOW_ETCHED_OUT = 4,
     TGtkShadowTypeMaxValue = $7FFFFFFF
   );
+
+//TODO: This is hand written just to give the direction we need to go.
+//TODO: We need to make git2pas generate similar code for bitfields.
+  TGtkCellRendererStateIdx = (
+    TGtkCellRendererStateIdxMinValue = 0,
+    GTK_CELL_RENDERER_SELECTED = 0,
+    GTK_CELL_RENDERER_PRELIT = 1,
+    GTK_CELL_RENDERER_INSENSITIVE = 2,
+    GTK_CELL_RENDERER_SORTED = 3,
+    GTK_CELL_RENDERER_FOCUSED = 4,
+    GTK_CELL_RENDERER_EXPANDABLE = 5,
+    GTK_CELL_RENDERER_EXPANDED = 6,
+    TGtkCellRendererStateIdxMaxValue = 31
+  );
+  TGtkCellRendererState = Set of TGtkCellRendererStateIdx;
+
   TGtkScrollType = (
     TGtkScrollTypeMinValue = -$7FFFFFFF,
     GTK_SCROLL_NONE = 0,
@@ -673,17 +689,6 @@ const
   GTK_CALENDAR_SHOW_WEEK_NUMBERS: TGtkCalendarDisplayOptions = 8;
   GTK_CALENDAR_SHOW_DETAILS: TGtkCalendarDisplayOptions = 32;
 
-type
-  TGtkCellRendererState = Integer;
-const
-  { GtkCellRendererState }
-  GTK_CELL_RENDERER_SELECTED: TGtkCellRendererState = 1;
-  GTK_CELL_RENDERER_PRELIT: TGtkCellRendererState = 2;
-  GTK_CELL_RENDERER_INSENSITIVE: TGtkCellRendererState = 4;
-  GTK_CELL_RENDERER_SORTED: TGtkCellRendererState = 8;
-  GTK_CELL_RENDERER_FOCUSED: TGtkCellRendererState = 16;
-  GTK_CELL_RENDERER_EXPANDABLE: TGtkCellRendererState = 32;
-  GTK_CELL_RENDERER_EXPANDED: TGtkCellRendererState = 64;
 
 type
   TGtkTreeModelFlags = Integer;

@@ -344,10 +344,19 @@ end;
 function GtkCellRendererStateToListViewDrawState(CellState: TGtkCellRendererState): TCustomDrawState;
 begin
   Result := [];
-  if CellState and GTK_CELL_RENDERER_SELECTED > 0 then Result := Result + [cdsSelected];
-  if CellState and GTK_CELL_RENDERER_PRELIT > 0 then Result := Result + [cdsHot];
-  if CellState and GTK_CELL_RENDERER_INSENSITIVE > 0 then Result := Result + [cdsDisabled, cdsGrayed];
-  if CellState and GTK_CELL_RENDERER_FOCUSED > 0 then Result := Result + [cdsFocused];
+  if GTK_CELL_RENDERER_SELECTED in CellState then begin
+    Include(Result, cdsSelected);
+  end;
+  if GTK_CELL_RENDERER_PRELIT in CellState then begin
+    Include(Result, cdsHot);
+  end;
+  if GTK_CELL_RENDERER_INSENSITIVE in CellState then begin
+    Include(Result, cdsDisabled);
+    Include(Result, cdsGrayed);
+  end;
+  if GTK_CELL_RENDERER_FOCUSED in CellState then begin
+    Include(Result, cdsFocused);
+  end;
 end;
 
 procedure LCLIntfCellRenderer_Render(cell: PGtkCellRenderer; cr: Pcairo_t;
@@ -501,18 +510,22 @@ begin
 
     // collect state flags
     State:=[odBackgroundPainted];
-    if (flags and GTK_CELL_RENDERER_SELECTED)>0 then
+    if GTK_CELL_RENDERER_SELECTED in flags then begin
       Include(State, odSelected);
-    if not Widget^.is_sensitive then
+    end;
+    if not Widget^.is_sensitive then begin
       Include(State, odInactive);
-    if Widget^.has_default then
+    end;
+    if Widget^.has_default then begin
       Include(State, odDefault);
-    if (flags and GTK_CELL_RENDERER_FOCUSED) <> 0 then
+    end;
+    if GTK_CELL_RENDERER_FOCUSED in flags then begin
       Include(State, odFocused);
-    
+    end;
+
     if AWinControl is TCustomCombobox then
     begin
-      if TCustomComboBox(AWinControl).DroppedDown and ((flags and GTK_CELL_RENDERER_PRELIT)>0) then
+      if TCustomComboBox(AWinControl).DroppedDown and (GTK_CELL_RENDERER_PRELIT in flags) then
         Include(State,odSelected);
     end;
   end else // is a listview
@@ -634,7 +647,7 @@ begin
   begin
     crType := g_type_from_name(CR_NAME);
     if crType = 0 then
-      crType := g_type_register_static(gtk_cell_renderer_text_get_type,'LCLIntfCellRenderer',@crInfo, 0);
+      crType := g_type_register_static(gtk_cell_renderer_text_get_type,'LCLIntfCellRenderer',@crInfo, TGTypeFlags(0));
   end;
   Result := crType;
 end;
