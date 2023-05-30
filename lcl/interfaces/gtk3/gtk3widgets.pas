@@ -3953,7 +3953,7 @@ begin
   fCentralWidget:=PGtkWidget(TGtkScale.new(Ord(ATrack.Orientation), nil));
   PgtkBox(Result)^.add(fCentralWidget);}
 
-  Result :=PGtkWidget(TGtkScale.new(Ord(ATrack.Orientation), nil));
+  Result :=PGtkWidget(TGtkScale.new(TGtkOrientation(ATrack.Orientation), nil));
 
   FOrientation := ATrack.Orientation;
   if ATrack.Reversed then
@@ -4040,7 +4040,7 @@ var
 begin
   AScrollBar := TCustomScrollBar(LCLObject);
   FWidgetType := FWidgetType + [wtScrollBar];
-  Result := TGtkScrollbar.new(Ord(AScrollBar.Kind), nil);
+  Result := TGtkScrollbar.new(TGtkOrientation(AScrollBar.Kind), nil);
   ARange := PGtkRange(Result);
   // ARange^.set_can_focus(True);
   with AScrollBar do
