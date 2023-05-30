@@ -908,7 +908,7 @@ begin
   dropWheelCtrl.ItemIndex  := ord(FTempMouseSettings.CtrlWheel);
   dropWheelAlt.ItemIndex   := ord(FTempMouseSettings.AltWheel);
   dropWheelShift.ItemIndex := ord(FTempMouseSettings.ShiftWheel);
-  dropWheelAltCtrl.ItemIndex      := ord(FTempMouseSettings.AltWheel);
+  dropWheelAltCtrl.ItemIndex      := ord(FTempMouseSettings.AltCtrlWheel);
   dropWheelShiftAlt.ItemIndex     := ord(FTempMouseSettings.ShiftAltWheel);
   dropWheelShiftCtrl.ItemIndex    := ord(FTempMouseSettings.ShiftCtrlWheel);
   dropWheelShiftAltCtrl.ItemIndex := ord(FTempMouseSettings.ShiftAltCtrlWheel);
@@ -917,7 +917,7 @@ begin
   dropWheelCtrlHoriz.ItemIndex  := ord(FTempMouseSettings.CtrlHorizWheel);
   dropWheelAltHoriz.ItemIndex   := ord(FTempMouseSettings.AltHorizWheel);
   dropWheelShiftHoriz.ItemIndex := ord(FTempMouseSettings.ShiftHorizWheel);
-  dropWheelAltCtrlHoriz.ItemIndex      := ord(FTempMouseSettings.AltHorizWheel);
+  dropWheelAltCtrlHoriz.ItemIndex      := ord(FTempMouseSettings.AltCtrlHorizWheel);
   dropWheelShiftAltHoriz.ItemIndex     := ord(FTempMouseSettings.ShiftAltHorizWheel);
   dropWheelShiftCtrlHoriz.ItemIndex    := ord(FTempMouseSettings.ShiftCtrlHorizWheel);
   dropWheelShiftAltCtrlHoriz.ItemIndex := ord(FTempMouseSettings.ShiftAltCtrlHorizWheel);
