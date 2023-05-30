@@ -322,6 +322,21 @@ type
     GTK_DEST_DEFAULT_ALL = 7,
     TGtkDestDefaultsMaxValue = $7FFFFFFF
   );
+  TGtkResponseType = (
+    TGtkResponseTypeMinValue = -$7FFFFFFF,
+    GTK_RESPONSE_HELP = -11,
+    GTK_RESPONSE_APPLY = -10,
+    GTK_RESPONSE_NO = -9,
+    GTK_RESPONSE_YES = -8,
+    GTK_RESPONSE_CLOSE = -7,
+    GTK_RESPONSE_CANCEL = -6,
+    GTK_RESPONSE_OK = -5,
+    GTK_RESPONSE_DELETE_EVENT = -4,
+    GTK_RESPONSE_ACCEPT = -3,
+    GTK_RESPONSE_REJECT = -2,
+    GTK_RESPONSE_NONE = -1,
+    TGtkResponseTypeMaxValue = $7FFFFFFF
+  );
   TGtkJustification = (
     TGtkJustificationMinValue = -$7FFFFFFF,
     GTK_JUSTIFY_LEFT = 0,
@@ -1185,25 +1200,6 @@ const
   GTK_RECENT_MANAGER_ERROR_WRITE: TGtkRecentManagerError = 5;
   GTK_RECENT_MANAGER_ERROR_UNKNOWN: TGtkRecentManagerError = 6;
 
-//type  ???
-//  TGtkResponseType = integer;
-//PPGtkResponseType = ^PGtkResponseType;
-//PGtkResponseType = ^TGtkResponseType;
-
-const
-  { GtkResponseType }
-  GTK_RESPONSE_NONE = -1;
-  GTK_RESPONSE_REJECT = -2;
-  GTK_RESPONSE_ACCEPT = -3;
-  GTK_RESPONSE_DELETE_EVENT = -4;
-  GTK_RESPONSE_OK = -5;
-  GTK_RESPONSE_CANCEL = -6;
-  GTK_RESPONSE_CLOSE = -7;
-  GTK_RESPONSE_YES = -8;
-  GTK_RESPONSE_NO = -9;
-  GTK_RESPONSE_APPLY = -10;
-  GTK_RESPONSE_HELP = -11;
-
 type
   TGtkScrollStep = Integer;
 const
@@ -1958,7 +1954,7 @@ type
     function new: PGtkDialog; cdecl; inline; static;
     //function new_with_buttons(title: Pgchar; parent: PGtkWindow; flags: TGtkDialogFlags; first_button_text: Pgchar; args: array of const): PGtkDialog; cdecl; inline; static;
     procedure add_action_widget(child: PGtkWidget; response_id: gint); cdecl; inline;
-    function add_button(button_text: Pgchar; response_id: gint): PGtkWidget; cdecl; inline;
+    function add_button(button_text: Pgchar; response_id: TGtkResponseType): PGtkWidget; cdecl; inline;
     //procedure add_buttons(first_button_text: Pgchar; args: array of const); cdecl; inline;
     function get_action_area: PGtkWidget; cdecl; inline;
     function get_content_area: PGtkWidget; cdecl; inline;
@@ -1968,7 +1964,7 @@ type
     function run: gint; cdecl; inline;
     //procedure set_alternative_button_order(first_response_id: gint; args: array of const); cdecl; inline;
     procedure set_alternative_button_order_from_array(n_params: gint; new_order: Pgint); cdecl; inline;
-    procedure set_default_response(response_id: gint); cdecl; inline;
+    procedure set_default_response(response_id: TGtkResponseType); cdecl; inline;
     procedure set_response_sensitive(response_id: gint; setting: gboolean); cdecl; inline;
   end;
 
@@ -11614,7 +11610,7 @@ function gtk_css_section_get_start_line(section: PGtkCssSection): guint; cdecl; 
 function gtk_css_section_get_start_position(section: PGtkCssSection): guint; cdecl; external;
 function gtk_css_section_get_type: TGType; cdecl; external;
 function gtk_css_section_ref(section: PGtkCssSection): PGtkCssSection; cdecl; external;
-function gtk_dialog_add_button(dialog: PGtkDialog; button_text: Pgchar; response_id: gint): PGtkWidget; cdecl; external;
+function gtk_dialog_add_button(dialog: PGtkDialog; button_text: Pgchar; response_id: TGtkResponseType): PGtkWidget; cdecl; external;
 function gtk_dialog_get_action_area(dialog: PGtkDialog): PGtkWidget; cdecl; external;
 function gtk_dialog_get_content_area(dialog: PGtkDialog): PGtkWidget; cdecl; external;
 function gtk_dialog_get_response_for_widget(dialog: PGtkDialog; widget: PGtkWidget): gint; cdecl; external;
@@ -13515,7 +13511,7 @@ procedure gtk_dialog_add_buttons(dialog: PGtkDialog; first_button_text: Pgchar; 
 procedure gtk_dialog_response(dialog: PGtkDialog; response_id: gint); cdecl; external;
 procedure gtk_dialog_set_alternative_button_order(dialog: PGtkDialog; first_response_id: gint; args: array of const); cdecl; external;
 procedure gtk_dialog_set_alternative_button_order_from_array(dialog: PGtkDialog; n_params: gint; new_order: Pgint); cdecl; external;
-procedure gtk_dialog_set_default_response(dialog: PGtkDialog; response_id: gint); cdecl; external;
+procedure gtk_dialog_set_default_response(dialog: PGtkDialog; response_id: TGtkResponseType); cdecl; external;
 procedure gtk_dialog_set_response_sensitive(dialog: PGtkDialog; response_id: gint; setting: gboolean); cdecl; external;
 procedure gtk_disable_setlocale; cdecl; external;
 procedure gtk_drag_dest_add_image_targets(widget: PGtkWidget); cdecl; external;
@@ -16619,7 +16615,7 @@ begin
   LazGtk3.gtk_dialog_add_action_widget(@self, child, response_id);
 end;
 
-function TGtkDialog.add_button(button_text: Pgchar; response_id: gint): PGtkWidget; cdecl;
+function TGtkDialog.add_button(button_text: Pgchar; response_id: TGtkResponseType): PGtkWidget; cdecl;
 begin
   Result := LazGtk3.gtk_dialog_add_button(@self, button_text, response_id);
 end;
@@ -16659,7 +16655,7 @@ begin
   LazGtk3.gtk_dialog_set_alternative_button_order_from_array(@self, n_params, new_order);
 end;
 
-procedure TGtkDialog.set_default_response(response_id: gint); cdecl;
+procedure TGtkDialog.set_default_response(response_id: TGtkResponseType); cdecl;
 begin
   LazGtk3.gtk_dialog_set_default_response(@self, response_id);
 end;

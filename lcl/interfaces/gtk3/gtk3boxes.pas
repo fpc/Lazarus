@@ -50,13 +50,14 @@ type
     function btn_ptr_info(ndx:integer):longint;
     procedure set_message_text(const msg:string;const is_pango_markup:boolean=false);
     procedure update_widget_list(const func:TBtnListFunction);
-    procedure CreateButton(const ALabel : String; const AResponse: Integer;
+    procedure CreateButton(const ALabel : String; const AResponse: Integer);
+    procedure CreateButton(const ALabel : String; const AResponse: TGtkResponseType;
       const AImageHint: Integer = -1);
     function lcl_result:integer;
     function btn_result:integer;
-    class function ResponseID(const AnID: Integer): Integer;
-    class function gtk_resp_to_lcl(const gtk_resp:integer):integer;
-    class function gtk_resp_to_btn(const gtk_resp:integer):integer;
+    class function ResponseID(const AnID: Integer): TGtkResponseType;
+    class function gtk_resp_to_lcl(const gtk_resp:TGtkResponseType):integer;
+    class function gtk_resp_to_btn(const gtk_resp:TGtkResponseType):integer;
     class function MessageType(ADialogType:longint):TGtkMessageType;
   end;
 
@@ -65,11 +66,11 @@ implementation
 
 // fake GTK button responses
 const
-  GTK_RESPONSE_LCL_ALL = -10;
-  GTK_RESPONSE_LCL_YESTOALL = -3; // GTK_RESPONSE_ACCEPT;
-  GTK_RESPONSE_LCL_RETRY = -12;
-  GTK_RESPONSE_LCL_IGNORE = -13;
-  GTK_RESPONSE_LCL_NOTOALL = -14;
+  GTK_RESPONSE_LCL_ALL = TGtkResponseType(-15);
+  GTK_RESPONSE_LCL_YESTOALL = GTK_RESPONSE_ACCEPT;
+  GTK_RESPONSE_LCL_RETRY = TGtkResponseType(-12);
+  GTK_RESPONSE_LCL_IGNORE = TGtkResponseType(-13);
+  GTK_RESPONSE_LCL_NOTOALL = TGtkResponseType(-14);
 
 
 { callbacks }
@@ -102,7 +103,7 @@ begin
 end;
 
 
-class function TGtk3DialogFactory.ResponseID(const AnID: Integer): Integer;
+class function TGtk3DialogFactory.ResponseID(const AnID: Integer): TGtkResponseType;
 begin
   case AnID of
     idButtonOK       : Result := GTK_RESPONSE_OK;
@@ -118,11 +119,11 @@ begin
     idButtonNoToAll  : Result := GTK_RESPONSE_LCL_NOTOALL;
     idButtonYesToAll : Result := GTK_RESPONSE_LCL_YESTOALL;
   else
-    Result:=AnID;
+    Result:=TGtkResponseType(AnID);
   end;
 end;
 
-class function TGtk3DialogFactory.gtk_resp_to_lcl(const gtk_resp:integer):integer;
+class function TGtk3DialogFactory.gtk_resp_to_lcl(const gtk_resp:TGtkResponseType):integer;
 begin
   case gtk_resp of
   GTK_RESPONSE_OK: Result:=ID_OK;
@@ -141,22 +142,22 @@ begin
   GTK_RESPONSE_LCL_NOTOALL: Result:=idButtonNoToAll;
   //GTK_RESPONSE_LCL_YESTOALL: Result:= idButtonYesToAll;
   else
-    Result:=gtk_resp;
+    Result:=Integer(gtk_resp);
   end;
 end;
 
-class function TGtk3DialogFactory.gtk_resp_to_btn(const gtk_resp:integer):integer;
+class function TGtk3DialogFactory.gtk_resp_to_btn(const gtk_resp:TGtkResponseType):integer;
 begin
   case gtk_resp of
-  -5{GTK_RESPONSE_OK}: Result:=  idButtonOk;
-  -6{GTK_RESPONSE_CANCEL}:  Result := idButtonCancel;
-  -7{GTK_RESPONSE_CLOSE}: Result:=idButtonClose;
-  -8{GTK_RESPONSE_YES}: Result:=idButtonYes;
-  -9{GTK_RESPONSE_NO}: Result:=idButtonNo;
+  GTK_RESPONSE_OK {-5} : Result:=  idButtonOk;
+  GTK_RESPONSE_CANCEL {-6} :  Result := idButtonCancel;
+  GTK_RESPONSE_CLOSE {-7} : Result:=idButtonClose;
+  GTK_RESPONSE_YES {-8} : Result:=idButtonYes;
+  GTK_RESPONSE_NO {-9} : Result:=idButtonNo;
 
-  -1{GTK_RESPONSE_NONE}: Result:=0;
-  -2{GTK_RESPONSE_REJECT}: Result:=idButtonAbort;
-  -3{GTK_RESPONSE_ACCEPT}: Result:=idButtonYesToAll;
+  GTK_RESPONSE_NONE {-1} : Result:=0;
+  GTK_RESPONSE_REJECT {-2} : Result:=idButtonAbort;
+  GTK_RESPONSE_ACCEPT {-3} : Result:=idButtonYesToAll;
 
   GTK_RESPONSE_LCL_RETRY: Result:=idButtonRetry;
   GTK_RESPONSE_LCL_IGNORE:  Result:=idButtonIgnore;
@@ -164,13 +165,18 @@ begin
   GTK_RESPONSE_LCL_NOTOALL: Result:=idButtonNoToAll;
   //GTK_RESPONSE_LCL_YESTOALL: Result:= idButtonYesToAll;
   else
-    Result:=gtk_resp;
+    Result:=Integer(gtk_resp);
   end;
+end;
+
+procedure TGtk3DialogFactory.CreateButton(const ALabel : String; const AResponse: Integer);
+begin
+   CreateButton(ALabel, TGtkResponseType(AResponse));
 end;
 
 procedure TGtk3DialogFactory.CreateButton(
     const ALabel : String;
-    const AResponse: Integer;
+    const AResponse: TGtkResponseType;
     const AImageHint: Integer = -1);
 var
   NewButton: PGtkWidget;
@@ -217,12 +223,12 @@ end;
 
 function TGtk3DialogFactory.lcl_result: integer;
 begin
-  Result:=gtk_resp_to_lcl(DialogResult);
+  Result:=gtk_resp_to_lcl(TGtkResponseType(DialogResult));
 end;
 
 function TGtk3DialogFactory.btn_result: integer;
 begin
-  Result:=gtk_resp_to_btn(DialogResult);
+  Result:=gtk_resp_to_btn(TGtkResponseType(DialogResult));
 end;
 
 class function TGtk3DialogFactory.MessageType(ADialogType:longint):TGtkMessageType;
@@ -306,7 +312,7 @@ begin
           idButtonYesToAll : CreateButton(dbtn.Caption, GTK_RESPONSE_LCL_YESTOALL, BtnID);
         end;
       end else
-         CreateButton(dbtn.Caption, dbtn.ModalResult, 0);
+         CreateButton(dbtn.Caption, TGtkResponseType(dbtn.ModalResult), 0);
 
     end;
   end;
