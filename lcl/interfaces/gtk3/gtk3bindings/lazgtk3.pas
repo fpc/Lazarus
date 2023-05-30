@@ -340,6 +340,32 @@ type
     GTK_STATE_FLAG_DROP_ACTIVE = 4096,
     TGtkStateFlagsMaxValue = $7FFFFFFF
   );
+
+type
+  TGtkAlign = (
+    TGtkAlignMinValue = -$7FFFFFFF,
+    GTK_ALIGN_FILL = 0,
+    GTK_ALIGN_START = 1,
+    GTK_ALIGN_END = 2,
+    GTK_ALIGN_CENTER = 3,
+    GTK_ALIGN_BASELINE = 4,
+    TGtkAlignMaxValue = $7FFFFFFF
+  );
+  TGtkWindowType = (
+    TGtkWindowTypeMinValue = -$7FFFFFFF,
+    GTK_WINDOW_TOPLEVEL = 0,
+    GTK_WINDOW_POPUP = 1,
+    TGtkWindowTypeMaxValue = $7FFFFFFF
+  );
+  TGtkWindowPosition = (
+    TGtkWindowPositionMinValue = -$7FFFFFFF,
+    GTK_WIN_POS_NONE = 0,
+    GTK_WIN_POS_CENTER = 1,
+    GTK_WIN_POS_MOUSE = 2,
+    GTK_WIN_POS_CENTER_ALWAYS = 3,
+    GTK_WIN_POS_CENTER_ON_PARENT = 4,
+    TGtkWindowPositionMaxValue = $7FFFFFFF
+  );
   TGtkResponseType = (
     TGtkResponseTypeMinValue = -$7FFFFFFF,
     GTK_RESPONSE_HELP = -11,
@@ -355,6 +381,54 @@ type
     GTK_RESPONSE_NONE = -1,
     TGtkResponseTypeMaxValue = $7FFFFFFF
   );
+  TGtkLicense = (
+    TGtkLicenseMinValue = -$7FFFFFFF,
+    GTK_LICENSE_UNKNOWN = 0,
+    GTK_LICENSE_CUSTOM = 1,
+    GTK_LICENSE_GPL_2_0 = 2,
+    GTK_LICENSE_GPL_3_0 = 3,
+    GTK_LICENSE_LGPL_2_1 = 4,
+    GTK_LICENSE_LGPL_3_0 = 5,
+    GTK_LICENSE_BSD = 6,
+    GTK_LICENSE_MIT_X11 = 7,
+    GTK_LICENSE_ARTISTIC = 8,
+    GTK_LICENSE_GPL_2_0_ONLY = 9,
+    GTK_LICENSE_GPL_3_0_ONLY = 10,
+    GTK_LICENSE_LGPL_2_1_ONLY = 11,
+    GTK_LICENSE_LGPL_3_0_ONLY = 12,
+    GTK_LICENSE_AGPL_3_0 = 13,
+    GTK_LICENSE_AGPL_3_0_ONLY = 14,
+    GTK_LICENSE_BSD_3 = 15,
+    GTK_LICENSE_APACHE_2_0 = 16,
+    GTK_LICENSE_MPL_2_0 = 17,
+    TGtkLicenseMaxValue = $7FFFFFFF
+  );
+  TGtkStateType = type Integer;
+  const
+    GTK_STATE_NORMAL = TGtkStateType(0);
+    GTK_STATE_ACTIVE = TGtkStateType(1);
+    GTK_STATE_PRELIGHT = TGtkStateType(2);
+    GTK_STATE_SELECTED = TGtkStateType(3);
+    GTK_STATE_INSENSITIVE = TGtkStateType(4);
+    GTK_STATE_INCONSISTENT = TGtkStateType(5);
+    GTK_STATE_FOCUSED = TGtkStateType(6);
+  type
+  TGtkDragResult = (
+    TGtkDragResultMinValue = -$7FFFFFFF,
+    GTK_DRAG_RESULT_SUCCESS = 0,
+    GTK_DRAG_RESULT_NO_TARGET = 1,
+    GTK_DRAG_RESULT_USER_CANCELLED = 2,
+    GTK_DRAG_RESULT_TIMEOUT_EXPIRED = 3,
+    GTK_DRAG_RESULT_GRAB_BROKEN = 4,
+    GTK_DRAG_RESULT_ERROR = 5,
+    TGtkDragResultMaxValue = $7FFFFFFF
+  );
+  TGtkWidgetHelpType = (
+    TGtkWidgetHelpTypeMinValue = -$7FFFFFFF,
+    GTK_WIDGET_HELP_TOOLTIP = 0,
+    GTK_WIDGET_HELP_WHATS_THIS = 1,
+    TGtkWidgetHelpTypeMaxValue = $7FFFFFFF
+  );
   TGtkJustification = (
     TGtkJustificationMinValue = -$7FFFFFFF,
     GTK_JUSTIFY_LEFT = 0,
@@ -362,6 +436,60 @@ type
     GTK_JUSTIFY_CENTER = 2,
     GTK_JUSTIFY_FILL = 3,
     TGtkJustificationMaxValue = $7FFFFFFF
+  );
+  TGtkMovementStep = (
+    TGtkMovementStepMinValue = -$7FFFFFFF,
+    GTK_MOVEMENT_LOGICAL_POSITIONS = 0,
+    GTK_MOVEMENT_VISUAL_POSITIONS = 1,
+    GTK_MOVEMENT_WORDS = 2,
+    GTK_MOVEMENT_DISPLAY_LINES = 3,
+    GTK_MOVEMENT_DISPLAY_LINE_ENDS = 4,
+    GTK_MOVEMENT_PARAGRAPHS = 5,
+    GTK_MOVEMENT_PARAGRAPH_ENDS = 6,
+    GTK_MOVEMENT_PAGES = 7,
+    GTK_MOVEMENT_BUFFER_ENDS = 8,
+    GTK_MOVEMENT_HORIZONTAL_PAGES = 9,
+    TGtkMovementStepMaxValue = $7FFFFFFF
+  );
+  TGtkIconSize = (
+    TGtkIconSizeMinValue = -$7FFFFFFF,
+    GTK_ICON_SIZE_INVALID = 0,
+    GTK_ICON_SIZE_MENU = 1,
+    GTK_ICON_SIZE_SMALL_TOOLBAR = 2,
+    GTK_ICON_SIZE_LARGE_TOOLBAR = 3,
+    GTK_ICON_SIZE_BUTTON = 4,
+    GTK_ICON_SIZE_DND = 5,
+    GTK_ICON_SIZE_DIALOG = 6,
+    TGtkIconSizeMaxValue = $7FFFFFFF
+  );
+  TGtkSensitivityType = (
+    TGtkSensitivityTypeMinValue = -$7FFFFFFF,
+    GTK_SENSITIVITY_AUTO = 0,
+    GTK_SENSITIVITY_ON = 1,
+    GTK_SENSITIVITY_OFF = 2,
+    TGtkSensitivityTypeMaxValue = $7FFFFFFF
+  );
+  TGtkBaselinePosition = (
+    TGtkBaselinePositionMinValue = -$7FFFFFFF,
+    GTK_BASELINE_POSITION_TOP = 0,
+    GTK_BASELINE_POSITION_CENTER = 1,
+    GTK_BASELINE_POSITION_BOTTOM = 2,
+    TGtkBaselinePositionMaxValue = $7FFFFFFF
+  );
+  TGtkPackType = (
+    TGtkPackTypeMinValue = -$7FFFFFFF,
+    GTK_PACK_START = 0,
+    GTK_PACK_END = 1,
+    TGtkPackTypeMaxValue = $7FFFFFFF
+  );
+  TGtkArrowType = (
+    TGtkArrowTypeMinValue = -$7FFFFFFF,
+    GTK_ARROW_UP = 0,
+    GTK_ARROW_DOWN = 1,
+    GTK_ARROW_LEFT = 2,
+    GTK_ARROW_RIGHT = 3,
+    GTK_ARROW_NONE = 4,
+    TGtkArrowTypeMaxValue = $7FFFFFFF
   );
   TGtkShadowType = (
     TGtkShadowTypeMinValue = -$7FFFFFFF,
@@ -371,6 +499,123 @@ type
     GTK_SHADOW_ETCHED_IN = 3,
     GTK_SHADOW_ETCHED_OUT = 4,
     TGtkShadowTypeMaxValue = $7FFFFFFF
+  );
+  TGtkArrowPlacement = (
+    TGtkArrowPlacementMinValue = -$7FFFFFFF,
+    GTK_ARROWS_BOTH = 0,
+    GTK_ARROWS_START = 1,
+    GTK_ARROWS_END = 2,
+    TGtkArrowPlacementMaxValue = $7FFFFFFF
+  );
+  TGtkAssistantPageType = (
+    TGtkAssistantPageTypeMinValue = -$7FFFFFFF,
+    GTK_ASSISTANT_PAGE_CONTENT = 0,
+    GTK_ASSISTANT_PAGE_INTRO = 1,
+    GTK_ASSISTANT_PAGE_CONFIRM = 2,
+    GTK_ASSISTANT_PAGE_SUMMARY = 3,
+    GTK_ASSISTANT_PAGE_PROGRESS = 4,
+    GTK_ASSISTANT_PAGE_CUSTOM = 5,
+    TGtkAssistantPageTypeMaxValue = $7FFFFFFF
+  );
+  TGtkAttachOptions = (
+    TGtkAttachOptionsMinValue = -$7FFFFFFF,
+    GTK_EXPAND = 1,
+    GTK_SHRINK = 2,
+    GTK_FILL = 4,
+    TGtkAttachOptionsMaxValue = $7FFFFFFF
+  );
+  TGtkPathPriorityType = (
+    TGtkPathPriorityTypeMinValue = -$7FFFFFFF,
+    GTK_PATH_PRIO_LOWEST = 0,
+    GTK_PATH_PRIO_GTK = 4,
+    GTK_PATH_PRIO_APPLICATION = 8,
+    GTK_PATH_PRIO_THEME = 10,
+    GTK_PATH_PRIO_RC = 12,
+    GTK_PATH_PRIO_HIGHEST = 15,
+    TGtkPathPriorityTypeMaxValue = $7FFFFFFF
+  );
+  TGtkBorderStyle = (
+    TGtkBorderStyleMinValue = -$7FFFFFFF,
+    GTK_BORDER_STYLE_NONE = 0,
+    GTK_BORDER_STYLE_SOLID = 1,
+    GTK_BORDER_STYLE_INSET = 2,
+    GTK_BORDER_STYLE_OUTSET = 3,
+    GTK_BORDER_STYLE_HIDDEN = 4,
+    GTK_BORDER_STYLE_DOTTED = 5,
+    GTK_BORDER_STYLE_DASHED = 6,
+    GTK_BORDER_STYLE_DOUBLE = 7,
+    GTK_BORDER_STYLE_GROOVE = 8,
+    GTK_BORDER_STYLE_RIDGE = 9,
+    TGtkBorderStyleMaxValue = $7FFFFFFF
+  );
+  TGtkBuilderError = (
+    TGtkBuilderErrorMinValue = -$7FFFFFFF,
+    GTK_BUILDER_ERROR_INVALID_TYPE_FUNCTION = 0,
+    GTK_BUILDER_ERROR_UNHANDLED_TAG = 1,
+    GTK_BUILDER_ERROR_MISSING_ATTRIBUTE = 2,
+    GTK_BUILDER_ERROR_INVALID_ATTRIBUTE = 3,
+    GTK_BUILDER_ERROR_INVALID_TAG = 4,
+    GTK_BUILDER_ERROR_MISSING_PROPERTY_VALUE = 5,
+    GTK_BUILDER_ERROR_INVALID_VALUE = 6,
+    GTK_BUILDER_ERROR_VERSION_MISMATCH = 7,
+    GTK_BUILDER_ERROR_DUPLICATE_ID = 8,
+    GTK_BUILDER_ERROR_OBJECT_TYPE_REFUSED = 9,
+    GTK_BUILDER_ERROR_TEMPLATE_MISMATCH = 10,
+    GTK_BUILDER_ERROR_INVALID_PROPERTY = 11,
+    GTK_BUILDER_ERROR_INVALID_SIGNAL = 12,
+    GTK_BUILDER_ERROR_INVALID_ID = 13,
+    TGtkBuilderErrorMaxValue = $7FFFFFFF
+  );
+  TGtkPositionType = (
+    TGtkPositionTypeMinValue = -$7FFFFFFF,
+    GTK_POS_LEFT = 0,
+    GTK_POS_RIGHT = 1,
+    GTK_POS_TOP = 2,
+    GTK_POS_BOTTOM = 3,
+    TGtkPositionTypeMaxValue = $7FFFFFFF
+  );
+  TGtkReliefStyle = (
+    TGtkReliefStyleMinValue = -$7FFFFFFF,
+    GTK_RELIEF_NORMAL = 0,
+    GTK_RELIEF_HALF = 1,
+    GTK_RELIEF_NONE = 2,
+    TGtkReliefStyleMaxValue = $7FFFFFFF
+  );
+  TGtkButtonBoxStyle = (
+    TGtkButtonBoxStyleMinValue = -$7FFFFFFF,
+    GTK_BUTTONBOX_SPREAD = 1,
+    GTK_BUTTONBOX_EDGE = 2,
+    GTK_BUTTONBOX_START = 3,
+    GTK_BUTTONBOX_END = 4,
+    GTK_BUTTONBOX_CENTER = 5,
+    GTK_BUTTONBOX_EXPAND = 6,
+    TGtkButtonBoxStyleMaxValue = $7FFFFFFF
+  );
+  TGtkButtonRole = (
+    TGtkButtonRoleMinValue = -$7FFFFFFF,
+    GTK_BUTTON_ROLE_NORMAL = 0,
+    GTK_BUTTON_ROLE_CHECK = 1,
+    GTK_BUTTON_ROLE_RADIO = 2,
+    TGtkButtonRoleMaxValue = $7FFFFFFF
+  );
+  TGtkButtonsType = (
+    TGtkButtonsTypeMinValue = -$7FFFFFFF,
+    GTK_BUTTONS_NONE = 0,
+    GTK_BUTTONS_OK = 1,
+    GTK_BUTTONS_CLOSE = 2,
+    GTK_BUTTONS_CANCEL = 3,
+    GTK_BUTTONS_YES_NO = 4,
+    GTK_BUTTONS_OK_CANCEL = 5,
+    TGtkButtonsTypeMaxValue = $7FFFFFFF
+  );
+  TGtkCalendarDisplayOptions = (
+    TGtkCalendarDisplayOptionsMinValue = -$7FFFFFFF,
+    GTK_CALENDAR_SHOW_HEADING = 1,
+    GTK_CALENDAR_SHOW_DAY_NAMES = 2,
+    GTK_CALENDAR_NO_MONTH_CHANGE = 4,
+    GTK_CALENDAR_SHOW_WEEK_NUMBERS = 8,
+    GTK_CALENDAR_SHOW_DETAILS = 32,
+    TGtkCalendarDisplayOptionsMaxValue = $7FFFFFFF
   );
 
 //TODO: This is hand written just to give the direction we need to go.
@@ -388,6 +633,32 @@ type
   );
   TGtkCellRendererState = Set of TGtkCellRendererStateIdx;
 
+  TGtkTreeModelFlags = (
+    TGtkTreeModelFlagsMinValue = -$7FFFFFFF,
+    GTK_TREE_MODEL_ITERS_PERSIST = 1,
+    GTK_TREE_MODEL_LIST_ONLY = 2,
+    TGtkTreeModelFlagsMaxValue = $7FFFFFFF
+  );
+  TGtkSizeRequestMode = (
+    TGtkSizeRequestModeMinValue = -$7FFFFFFF,
+    GTK_SIZE_REQUEST_HEIGHT_FOR_WIDTH = 0,
+    GTK_SIZE_REQUEST_WIDTH_FOR_HEIGHT = 1,
+    GTK_SIZE_REQUEST_CONSTANT_SIZE = 2,
+    TGtkSizeRequestModeMaxValue = $7FFFFFFF
+  );
+  TGtkCellRendererMode = (
+    TGtkCellRendererModeMinValue = -$7FFFFFFF,
+    GTK_CELL_RENDERER_MODE_INERT = 0,
+    GTK_CELL_RENDERER_MODE_ACTIVATABLE = 1,
+    GTK_CELL_RENDERER_MODE_EDITABLE = 2,
+    TGtkCellRendererModeMaxValue = $7FFFFFFF
+  );
+  TGtkCellRendererAccelMode = (
+    TGtkCellRendererAccelModeMinValue = -$7FFFFFFF,
+    GTK_CELL_RENDERER_ACCEL_MODE_GTK = 0,
+    GTK_CELL_RENDERER_ACCEL_MODE_OTHER = 1,
+    TGtkCellRendererAccelModeMaxValue = $7FFFFFFF
+  );
   TGtkScrollType = (
     TGtkScrollTypeMinValue = -$7FFFFFFF,
     GTK_SCROLL_NONE = 0,
@@ -408,6 +679,161 @@ type
     GTK_SCROLL_END = 15,
     TGtkScrollTypeMaxValue = $7FFFFFFF
   );
+  TGtkResizeMode = (
+    TGtkResizeModeMinValue = -$7FFFFFFF,
+    GTK_RESIZE_PARENT = 0,
+    GTK_RESIZE_QUEUE = 1,
+    GTK_RESIZE_IMMEDIATE = 2,
+    TGtkResizeModeMaxValue = $7FFFFFFF
+  );
+  TGtkCornerType = (
+    TGtkCornerTypeMinValue = -$7FFFFFFF,
+    GTK_CORNER_TOP_LEFT = 0,
+    GTK_CORNER_BOTTOM_LEFT = 1,
+    GTK_CORNER_TOP_RIGHT = 2,
+    GTK_CORNER_BOTTOM_RIGHT = 3,
+    TGtkCornerTypeMaxValue = $7FFFFFFF
+  );
+  TGtkCssProviderError = (
+    TGtkCssProviderErrorMinValue = -$7FFFFFFF,
+    GTK_CSS_PROVIDER_ERROR_FAILED = 0,
+    GTK_CSS_PROVIDER_ERROR_SYNTAX = 1,
+    GTK_CSS_PROVIDER_ERROR_IMPORT = 2,
+    GTK_CSS_PROVIDER_ERROR_NAME = 3,
+    GTK_CSS_PROVIDER_ERROR_DEPRECATED = 4,
+    GTK_CSS_PROVIDER_ERROR_UNKNOWN_VALUE = 5,
+    TGtkCssProviderErrorMaxValue = $7FFFFFFF
+  );
+  TGtkCssSectionType = (
+    TGtkCssSectionTypeMinValue = -$7FFFFFFF,
+    GTK_CSS_SECTION_DOCUMENT = 0,
+    GTK_CSS_SECTION_IMPORT = 1,
+    GTK_CSS_SECTION_COLOR_DEFINITION = 2,
+    GTK_CSS_SECTION_BINDING_SET = 3,
+    GTK_CSS_SECTION_RULESET = 4,
+    GTK_CSS_SECTION_SELECTOR = 5,
+    GTK_CSS_SECTION_DECLARATION = 6,
+    GTK_CSS_SECTION_VALUE = 7,
+    GTK_CSS_SECTION_KEYFRAMES = 8,
+    TGtkCssSectionTypeMaxValue = $7FFFFFFF
+  );
+  TGtkDebugFlag = (
+    TGtkDebugFlagMinValue = -$7FFFFFFF,
+    GTK_DEBUG_MISC = 1,
+    GTK_DEBUG_PLUGSOCKET = 2,
+    GTK_DEBUG_TEXT = 4,
+    GTK_DEBUG_TREE = 8,
+    GTK_DEBUG_UPDATES = 16,
+    GTK_DEBUG_KEYBINDINGS = 32,
+    GTK_DEBUG_MULTIHEAD = 64,
+    GTK_DEBUG_MODULES = 128,
+    GTK_DEBUG_GEOMETRY = 256,
+    GTK_DEBUG_ICONTHEME = 512,
+    GTK_DEBUG_PRINTING = 1024,
+    GTK_DEBUG_BUILDER = 2048,
+    GTK_DEBUG_SIZE_REQUEST = 4096,
+    GTK_DEBUG_NO_CSS_CACHE = 8192,
+    GTK_DEBUG_BASELINES = 16384,
+    GTK_DEBUG_PIXEL_CACHE = 32768,
+    GTK_DEBUG_NO_PIXEL_CACHE = 65536,
+    GTK_DEBUG_INTERACTIVE = 131072,
+    GTK_DEBUG_TOUCHSCREEN = 262144,
+    GTK_DEBUG_ACTIONS = 524288,
+    GTK_DEBUG_RESIZE = 1048576,
+    GTK_DEBUG_LAYOUT = 2097152,
+    TGtkDebugFlagMaxValue = $7FFFFFFF
+  );
+  TGtkDeleteType = (
+    TGtkDeleteTypeMinValue = -$7FFFFFFF,
+    GTK_DELETE_CHARS = 0,
+    GTK_DELETE_WORD_ENDS = 1,
+    GTK_DELETE_WORDS = 2,
+    GTK_DELETE_DISPLAY_LINES = 3,
+    GTK_DELETE_DISPLAY_LINE_ENDS = 4,
+    GTK_DELETE_PARAGRAPH_ENDS = 5,
+    GTK_DELETE_PARAGRAPHS = 6,
+    GTK_DELETE_WHITESPACE = 7,
+    TGtkDeleteTypeMaxValue = $7FFFFFFF
+  );
+  TGtkEntryIconPosition = (
+    TGtkEntryIconPositionMinValue = -$7FFFFFFF,
+    GTK_ENTRY_ICON_PRIMARY = 0,
+    GTK_ENTRY_ICON_SECONDARY = 1,
+    TGtkEntryIconPositionMaxValue = $7FFFFFFF
+  );
+  TGtkInputPurpose = (
+    TGtkInputPurposeMinValue = -$7FFFFFFF,
+    GTK_INPUT_PURPOSE_FREE_FORM = 0,
+    GTK_INPUT_PURPOSE_ALPHA = 1,
+    GTK_INPUT_PURPOSE_DIGITS = 2,
+    GTK_INPUT_PURPOSE_NUMBER = 3,
+    GTK_INPUT_PURPOSE_PHONE = 4,
+    GTK_INPUT_PURPOSE_URL = 5,
+    GTK_INPUT_PURPOSE_EMAIL = 6,
+    GTK_INPUT_PURPOSE_NAME = 7,
+    GTK_INPUT_PURPOSE_PASSWORD = 8,
+    GTK_INPUT_PURPOSE_PIN = 9,
+    GTK_INPUT_PURPOSE_TERMINAL = 10,
+    TGtkInputPurposeMaxValue = $7FFFFFFF
+  );
+  TGtkImageType = (
+    TGtkImageTypeMinValue = -$7FFFFFFF,
+    GTK_IMAGE_EMPTY = 0,
+    GTK_IMAGE_PIXBUF = 1,
+    GTK_IMAGE_STOCK = 2,
+    GTK_IMAGE_ICON_SET = 3,
+    GTK_IMAGE_ANIMATION = 4,
+    GTK_IMAGE_ICON_NAME = 5,
+    GTK_IMAGE_GICON = 6,
+    GTK_IMAGE_SURFACE = 7,
+    TGtkImageTypeMaxValue = $7FFFFFFF
+  );
+  TGtkPropagationPhase = (
+    TGtkPropagationPhaseMinValue = -$7FFFFFFF,
+    GTK_PHASE_NONE = 0,
+    GTK_PHASE_CAPTURE = 1,
+    GTK_PHASE_BUBBLE = 2,
+    GTK_PHASE_TARGET = 3,
+    TGtkPropagationPhaseMaxValue = $7FFFFFFF
+  );
+  TGtkEventSequenceState = (
+    TGtkEventSequenceStateMinValue = -$7FFFFFFF,
+    GTK_EVENT_SEQUENCE_NONE = 0,
+    GTK_EVENT_SEQUENCE_CLAIMED = 1,
+    GTK_EVENT_SEQUENCE_DENIED = 2,
+    TGtkEventSequenceStateMaxValue = $7FFFFFFF
+  );
+  TGtkExpanderStyle = (
+    TGtkExpanderStyleMinValue = -$7FFFFFFF,
+    GTK_EXPANDER_COLLAPSED = 0,
+    GTK_EXPANDER_SEMI_COLLAPSED = 1,
+    GTK_EXPANDER_SEMI_EXPANDED = 2,
+    GTK_EXPANDER_EXPANDED = 3,
+    TGtkExpanderStyleMaxValue = $7FFFFFFF
+  );
+  TGtkFileChooserAction = (
+    TGtkFileChooserActionMinValue = -$7FFFFFFF,
+    GTK_FILE_CHOOSER_ACTION_OPEN = 0,
+    GTK_FILE_CHOOSER_ACTION_SAVE = 1,
+    GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER = 2,
+    GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER = 3,
+    TGtkFileChooserActionMaxValue = $7FFFFFFF
+  );
+  TGtkFileChooserConfirmation = (
+    TGtkFileChooserConfirmationMinValue = -$7FFFFFFF,
+    GTK_FILE_CHOOSER_CONFIRMATION_CONFIRM = 0,
+    GTK_FILE_CHOOSER_CONFIRMATION_ACCEPT_FILENAME = 1,
+    GTK_FILE_CHOOSER_CONFIRMATION_SELECT_AGAIN = 2,
+    TGtkFileChooserConfirmationMaxValue = $7FFFFFFF
+  );
+  TGtkFileChooserError = (
+    TGtkFileChooserErrorMinValue = -$7FFFFFFF,
+    GTK_FILE_CHOOSER_ERROR_NONEXISTENT = 0,
+    GTK_FILE_CHOOSER_ERROR_BAD_FILENAME = 1,
+    GTK_FILE_CHOOSER_ERROR_ALREADY_EXISTS = 2,
+    GTK_FILE_CHOOSER_ERROR_INCOMPLETE_HOSTNAME = 3,
+    TGtkFileChooserErrorMaxValue = $7FFFFFFF
+  );
   TGtkSelectionMode = (
     TGtkSelectionModeMinValue = -$7FFFFFFF,
     GTK_SELECTION_NONE = 0,
@@ -415,6 +841,71 @@ type
     GTK_SELECTION_BROWSE = 2,
     GTK_SELECTION_MULTIPLE = 3,
     TGtkSelectionModeMaxValue = $7FFFFFFF
+  );
+  TGtkPanDirection = (
+    TGtkPanDirectionMinValue = -$7FFFFFFF,
+    GTK_PAN_DIRECTION_LEFT = 0,
+    GTK_PAN_DIRECTION_RIGHT = 1,
+    GTK_PAN_DIRECTION_UP = 2,
+    GTK_PAN_DIRECTION_DOWN = 3,
+    TGtkPanDirectionMaxValue = $7FFFFFFF
+  );
+  TGtkJunctionSides = (
+    TGtkJunctionSidesMinValue = -$7FFFFFFF,
+    GTK_JUNCTION_NONE = 0,
+    GTK_JUNCTION_CORNER_TOPLEFT = 1,
+    GTK_JUNCTION_CORNER_TOPRIGHT = 2,
+    GTK_JUNCTION_TOP = 3,
+    GTK_JUNCTION_CORNER_BOTTOMLEFT = 4,
+    GTK_JUNCTION_LEFT = 5,
+    GTK_JUNCTION_CORNER_BOTTOMRIGHT = 8,
+    GTK_JUNCTION_RIGHT = 10,
+    GTK_JUNCTION_BOTTOM = 12,
+    TGtkJunctionSidesMaxValue = $7FFFFFFF
+  );
+  TGtkStyleContextPrintFlags = (
+    TGtkStyleContextPrintFlagsMinValue = -$7FFFFFFF,
+    GTK_STYLE_CONTEXT_PRINT_NONE = 0,
+    GTK_STYLE_CONTEXT_PRINT_RECURSE = 1,
+    GTK_STYLE_CONTEXT_PRINT_SHOW_STYLE = 2,
+    TGtkStyleContextPrintFlagsMaxValue = $7FFFFFFF
+  );
+  TGtkIconThemeError = (
+    TGtkIconThemeErrorMinValue = -$7FFFFFFF,
+    GTK_ICON_THEME_NOT_FOUND = 0,
+    GTK_ICON_THEME_FAILED = 1,
+    TGtkIconThemeErrorMaxValue = $7FFFFFFF
+  );
+  TGtkScrollablePolicy = (
+    TGtkScrollablePolicyMinValue = -$7FFFFFFF,
+    GTK_SCROLL_MINIMUM = 0,
+    GTK_SCROLL_NATURAL = 1,
+    TGtkScrollablePolicyMaxValue = $7FFFFFFF
+  );
+  TGtkIconViewDropPosition = (
+    TGtkIconViewDropPositionMinValue = -$7FFFFFFF,
+    GTK_ICON_VIEW_NO_DROP = 0,
+    GTK_ICON_VIEW_DROP_INTO = 1,
+    GTK_ICON_VIEW_DROP_LEFT = 2,
+    GTK_ICON_VIEW_DROP_RIGHT = 3,
+    GTK_ICON_VIEW_DROP_ABOVE = 4,
+    GTK_ICON_VIEW_DROP_BELOW = 5,
+    TGtkIconViewDropPositionMaxValue = $7FFFFFFF
+  );
+  TGtkMessageType = (
+    TGtkMessageTypeMinValue = -$7FFFFFFF,
+    GTK_MESSAGE_INFO = 0,
+    GTK_MESSAGE_WARNING = 1,
+    GTK_MESSAGE_QUESTION = 2,
+    GTK_MESSAGE_ERROR = 3,
+    GTK_MESSAGE_OTHER = 4,
+    TGtkMessageTypeMaxValue = $7FFFFFFF
+  );
+  TGtkLevelBarMode = (
+    TGtkLevelBarModeMinValue = -$7FFFFFFF,
+    GTK_LEVEL_BAR_MODE_CONTINUOUS = 0,
+    GTK_LEVEL_BAR_MODE_DISCRETE = 1,
+    TGtkLevelBarModeMaxValue = $7FFFFFFF
   );
   TGtkPackDirection = (
     TGtkPackDirectionMinValue = -$7FFFFFFF,
@@ -424,6 +915,75 @@ type
     GTK_PACK_DIRECTION_BTT = 3,
     TGtkPackDirectionMaxValue = $7FFFFFFF
   );
+  TGtkMenuDirectionType = (
+    TGtkMenuDirectionTypeMinValue = -$7FFFFFFF,
+    GTK_MENU_DIR_PARENT = 0,
+    GTK_MENU_DIR_CHILD = 1,
+    GTK_MENU_DIR_NEXT = 2,
+    GTK_MENU_DIR_PREV = 3,
+    TGtkMenuDirectionTypeMaxValue = $7FFFFFFF
+  );
+  TGtkPopoverConstraint = (
+    TGtkPopoverConstraintMinValue = -$7FFFFFFF,
+    GTK_POPOVER_CONSTRAINT_NONE = 0,
+    GTK_POPOVER_CONSTRAINT_WINDOW = 1,
+    TGtkPopoverConstraintMaxValue = $7FFFFFFF
+  );
+  TGtkNotebookTab = (
+    TGtkNotebookTabMinValue = -$7FFFFFFF,
+    GTK_NOTEBOOK_TAB_FIRST = 0,
+    GTK_NOTEBOOK_TAB_LAST = 1,
+    TGtkNotebookTabMaxValue = $7FFFFFFF
+  );
+  TGtkNumberUpLayout = (
+    TGtkNumberUpLayoutMinValue = -$7FFFFFFF,
+    GTK_NUMBER_UP_LAYOUT_LEFT_TO_RIGHT_TOP_TO_BOTTOM = 0,
+    GTK_NUMBER_UP_LAYOUT_LEFT_TO_RIGHT_BOTTOM_TO_TOP = 1,
+    GTK_NUMBER_UP_LAYOUT_RIGHT_TO_LEFT_TOP_TO_BOTTOM = 2,
+    GTK_NUMBER_UP_LAYOUT_RIGHT_TO_LEFT_BOTTOM_TO_TOP = 3,
+    GTK_NUMBER_UP_LAYOUT_TOP_TO_BOTTOM_LEFT_TO_RIGHT = 4,
+    GTK_NUMBER_UP_LAYOUT_TOP_TO_BOTTOM_RIGHT_TO_LEFT = 5,
+    GTK_NUMBER_UP_LAYOUT_BOTTOM_TO_TOP_LEFT_TO_RIGHT = 6,
+    GTK_NUMBER_UP_LAYOUT_BOTTOM_TO_TOP_RIGHT_TO_LEFT = 7,
+    TGtkNumberUpLayoutMaxValue = $7FFFFFFF
+  );
+  TGtkPadActionType = (
+    TGtkPadActionTypeMinValue = -$7FFFFFFF,
+    GTK_PAD_ACTION_BUTTON = 0,
+    GTK_PAD_ACTION_RING = 1,
+    GTK_PAD_ACTION_STRIP = 2,
+    TGtkPadActionTypeMaxValue = $7FFFFFFF
+  );
+  TGtkPageOrientation = (
+    TGtkPageOrientationMinValue = -$7FFFFFFF,
+    GTK_PAGE_ORIENTATION_PORTRAIT = 0,
+    GTK_PAGE_ORIENTATION_LANDSCAPE = 1,
+    GTK_PAGE_ORIENTATION_REVERSE_PORTRAIT = 2,
+    GTK_PAGE_ORIENTATION_REVERSE_LANDSCAPE = 3,
+    TGtkPageOrientationMaxValue = $7FFFFFFF
+  );
+  TGtkPageSet = (
+    TGtkPageSetMinValue = -$7FFFFFFF,
+    GTK_PAGE_SET_ALL = 0,
+    GTK_PAGE_SET_EVEN = 1,
+    GTK_PAGE_SET_ODD = 2,
+    TGtkPageSetMaxValue = $7FFFFFFF
+  );
+  TGtkUnit = (
+    TGtkUnitMinValue = -$7FFFFFFF,
+    GTK_UNIT_NONE = 0,
+    GTK_UNIT_POINTS = 1,
+    GTK_UNIT_INCH = 2,
+    GTK_UNIT_MM = 3,
+    TGtkUnitMaxValue = $7FFFFFFF
+  );
+  TGtkPlacesOpenFlags = (
+    TGtkPlacesOpenFlagsMinValue = -$7FFFFFFF,
+    GTK_PLACES_OPEN_NORMAL = 1,
+    GTK_PLACES_OPEN_NEW_TAB = 2,
+    GTK_PLACES_OPEN_NEW_WINDOW = 4,
+    TGtkPlacesOpenFlagsMaxValue = $7FFFFFFF
+  );
   TGtkPolicyType = (
     TGtkPolicyTypeMinValue = -$7FFFFFFF,
     GTK_POLICY_ALWAYS = 0,
@@ -432,41 +992,250 @@ type
     GTK_POLICY_EXTERNAL = 3,
     TGtkPolicyTypeMaxValue = $7FFFFFFF
   );
-
-type
-
-  TGtkAlign = Integer;
-const
-  { GtkAlign }
-  GTK_ALIGN_FILL: TGtkAlign = 0;
-  GTK_ALIGN_START: TGtkAlign = 1;
-  GTK_ALIGN_END: TGtkAlign = 2;
-  GTK_ALIGN_CENTER: TGtkAlign = 3;
-
-type
-  TGtkResizeMode = Integer;
-const
-  { GtkResizeMode }
-  GTK_RESIZE_PARENT: TGtkResizeMode = 0;
-  GTK_RESIZE_QUEUE: TGtkResizeMode = 1;
-  GTK_RESIZE_IMMEDIATE: TGtkResizeMode = 2;
-
-type
-  TGtkWindowType = Integer;
-const
-  { GtkWindowType }
-  GTK_WINDOW_TOPLEVEL: TGtkWindowType = 0;
-  GTK_WINDOW_POPUP: TGtkWindowType = 1;
-
-type
-  TGtkWindowPosition = Integer;
-const
-  { GtkWindowPosition }
-  GTK_WIN_POS_NONE: TGtkWindowPosition = 0;
-  GTK_WIN_POS_CENTER: TGtkWindowPosition = 1;
-  GTK_WIN_POS_MOUSE: TGtkWindowPosition = 2;
-  GTK_WIN_POS_CENTER_ALWAYS: TGtkWindowPosition = 3;
-  GTK_WIN_POS_CENTER_ON_PARENT: TGtkWindowPosition = 4;
+  TGtkPrintDuplex = (
+    TGtkPrintDuplexMinValue = -$7FFFFFFF,
+    GTK_PRINT_DUPLEX_SIMPLEX = 0,
+    GTK_PRINT_DUPLEX_HORIZONTAL = 1,
+    GTK_PRINT_DUPLEX_VERTICAL = 2,
+    TGtkPrintDuplexMaxValue = $7FFFFFFF
+  );
+  TGtkPrintError = (
+    TGtkPrintErrorMinValue = -$7FFFFFFF,
+    GTK_PRINT_ERROR_GENERAL = 0,
+    GTK_PRINT_ERROR_INTERNAL_ERROR = 1,
+    GTK_PRINT_ERROR_NOMEM = 2,
+    GTK_PRINT_ERROR_INVALID_FILE = 3,
+    TGtkPrintErrorMaxValue = $7FFFFFFF
+  );
+  TGtkPrintOperationAction = (
+    TGtkPrintOperationActionMinValue = -$7FFFFFFF,
+    GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG = 0,
+    GTK_PRINT_OPERATION_ACTION_PRINT = 1,
+    GTK_PRINT_OPERATION_ACTION_PREVIEW = 2,
+    GTK_PRINT_OPERATION_ACTION_EXPORT = 3,
+    TGtkPrintOperationActionMaxValue = $7FFFFFFF
+  );
+  TGtkPrintOperationResult = (
+    TGtkPrintOperationResultMinValue = -$7FFFFFFF,
+    GTK_PRINT_OPERATION_RESULT_ERROR = 0,
+    GTK_PRINT_OPERATION_RESULT_APPLY = 1,
+    GTK_PRINT_OPERATION_RESULT_CANCEL = 2,
+    GTK_PRINT_OPERATION_RESULT_IN_PROGRESS = 3,
+    TGtkPrintOperationResultMaxValue = $7FFFFFFF
+  );
+  TGtkPrintPages = (
+    TGtkPrintPagesMinValue = -$7FFFFFFF,
+    GTK_PRINT_PAGES_ALL = 0,
+    GTK_PRINT_PAGES_CURRENT = 1,
+    GTK_PRINT_PAGES_RANGES = 2,
+    GTK_PRINT_PAGES_SELECTION = 3,
+    TGtkPrintPagesMaxValue = $7FFFFFFF
+  );
+  TGtkPrintQuality = (
+    TGtkPrintQualityMinValue = -$7FFFFFFF,
+    GTK_PRINT_QUALITY_LOW = 0,
+    GTK_PRINT_QUALITY_NORMAL = 1,
+    GTK_PRINT_QUALITY_HIGH = 2,
+    GTK_PRINT_QUALITY_DRAFT = 3,
+    TGtkPrintQualityMaxValue = $7FFFFFFF
+  );
+  TGtkPrintStatus = (
+    TGtkPrintStatusMinValue = -$7FFFFFFF,
+    GTK_PRINT_STATUS_INITIAL = 0,
+    GTK_PRINT_STATUS_PREPARING = 1,
+    GTK_PRINT_STATUS_GENERATING_DATA = 2,
+    GTK_PRINT_STATUS_SENDING_DATA = 3,
+    GTK_PRINT_STATUS_PENDING = 4,
+    GTK_PRINT_STATUS_PENDING_ISSUE = 5,
+    GTK_PRINT_STATUS_PRINTING = 6,
+    GTK_PRINT_STATUS_FINISHED = 7,
+    GTK_PRINT_STATUS_FINISHED_ABORTED = 8,
+    TGtkPrintStatusMaxValue = $7FFFFFFF
+  );
+  TGtkRcFlags = (
+    TGtkRcFlagsMinValue = -$7FFFFFFF,
+    GTK_RC_FG = 1,
+    GTK_RC_BG = 2,
+    GTK_RC_TEXT = 4,
+    GTK_RC_BASE = 8,
+    TGtkRcFlagsMaxValue = $7FFFFFFF
+  );
+  TGtkRecentSortType = (
+    TGtkRecentSortTypeMinValue = -$7FFFFFFF,
+    GTK_RECENT_SORT_NONE = 0,
+    GTK_RECENT_SORT_MRU = 1,
+    GTK_RECENT_SORT_LRU = 2,
+    GTK_RECENT_SORT_CUSTOM = 3,
+    TGtkRecentSortTypeMaxValue = $7FFFFFFF
+  );
+  TGtkRecentChooserError = (
+    TGtkRecentChooserErrorMinValue = -$7FFFFFFF,
+    GTK_RECENT_CHOOSER_ERROR_NOT_FOUND = 0,
+    GTK_RECENT_CHOOSER_ERROR_INVALID_URI = 1,
+    TGtkRecentChooserErrorMaxValue = $7FFFFFFF
+  );
+  TGtkRecentManagerError = (
+    TGtkRecentManagerErrorMinValue = -$7FFFFFFF,
+    GTK_RECENT_MANAGER_ERROR_NOT_FOUND = 0,
+    GTK_RECENT_MANAGER_ERROR_INVALID_URI = 1,
+    GTK_RECENT_MANAGER_ERROR_INVALID_ENCODING = 2,
+    GTK_RECENT_MANAGER_ERROR_NOT_REGISTERED = 3,
+    GTK_RECENT_MANAGER_ERROR_READ = 4,
+    GTK_RECENT_MANAGER_ERROR_WRITE = 5,
+    GTK_RECENT_MANAGER_ERROR_UNKNOWN = 6,
+    TGtkRecentManagerErrorMaxValue = $7FFFFFFF
+  );
+  TGtkRevealerTransitionType = (
+    TGtkRevealerTransitionTypeMinValue = -$7FFFFFFF,
+    GTK_REVEALER_TRANSITION_TYPE_NONE = 0,
+    GTK_REVEALER_TRANSITION_TYPE_CROSSFADE = 1,
+    GTK_REVEALER_TRANSITION_TYPE_SLIDE_RIGHT = 2,
+    GTK_REVEALER_TRANSITION_TYPE_SLIDE_LEFT = 3,
+    GTK_REVEALER_TRANSITION_TYPE_SLIDE_UP = 4,
+    GTK_REVEALER_TRANSITION_TYPE_SLIDE_DOWN = 5,
+    TGtkRevealerTransitionTypeMaxValue = $7FFFFFFF
+  );
+  TGtkScrollStep = (
+    TGtkScrollStepMinValue = -$7FFFFFFF,
+    GTK_SCROLL_STEPS = 0,
+    GTK_SCROLL_PAGES = 1,
+    GTK_SCROLL_ENDS = 2,
+    GTK_SCROLL_HORIZONTAL_STEPS = 3,
+    GTK_SCROLL_HORIZONTAL_PAGES = 4,
+    GTK_SCROLL_HORIZONTAL_ENDS = 5,
+    TGtkScrollStepMaxValue = $7FFFFFFF
+  );
+  TGtkToolbarStyle = (
+    TGtkToolbarStyleMinValue = -$7FFFFFFF,
+    GTK_TOOLBAR_ICONS = 0,
+    GTK_TOOLBAR_TEXT = 1,
+    GTK_TOOLBAR_BOTH = 2,
+    GTK_TOOLBAR_BOTH_HORIZ = 3,
+    TGtkToolbarStyleMaxValue = $7FFFFFFF
+  );
+  TGtkShortcutType = (
+    TGtkShortcutTypeMinValue = -$7FFFFFFF,
+    GTK_SHORTCUT_ACCELERATOR = 0,
+    GTK_SHORTCUT_GESTURE_PINCH = 1,
+    GTK_SHORTCUT_GESTURE_STRETCH = 2,
+    GTK_SHORTCUT_GESTURE_ROTATE_CLOCKWISE = 3,
+    GTK_SHORTCUT_GESTURE_ROTATE_COUNTERCLOCKWISE = 4,
+    GTK_SHORTCUT_GESTURE_TWO_FINGER_SWIPE_LEFT = 5,
+    GTK_SHORTCUT_GESTURE_TWO_FINGER_SWIPE_RIGHT = 6,
+    GTK_SHORTCUT_GESTURE = 7,
+    TGtkShortcutTypeMaxValue = $7FFFFFFF
+  );
+  TGtkSizeGroupMode = (
+    TGtkSizeGroupModeMinValue = -$7FFFFFFF,
+    GTK_SIZE_GROUP_NONE = 0,
+    GTK_SIZE_GROUP_HORIZONTAL = 1,
+    GTK_SIZE_GROUP_VERTICAL = 2,
+    GTK_SIZE_GROUP_BOTH = 3,
+    TGtkSizeGroupModeMaxValue = $7FFFFFFF
+  );
+  TGtkSpinButtonUpdatePolicy = (
+    TGtkSpinButtonUpdatePolicyMinValue = -$7FFFFFFF,
+    GTK_UPDATE_ALWAYS = 0,
+    GTK_UPDATE_IF_VALID = 1,
+    TGtkSpinButtonUpdatePolicyMaxValue = $7FFFFFFF
+  );
+  TGtkSpinType = (
+    TGtkSpinTypeMinValue = -$7FFFFFFF,
+    GTK_SPIN_STEP_FORWARD = 0,
+    GTK_SPIN_STEP_BACKWARD = 1,
+    GTK_SPIN_PAGE_FORWARD = 2,
+    GTK_SPIN_PAGE_BACKWARD = 3,
+    GTK_SPIN_HOME = 4,
+    GTK_SPIN_END = 5,
+    GTK_SPIN_USER_DEFINED = 6,
+    TGtkSpinTypeMaxValue = $7FFFFFFF
+  );
+  TGtkStackTransitionType = (
+    TGtkStackTransitionTypeMinValue = -$7FFFFFFF,
+    GTK_STACK_TRANSITION_TYPE_NONE = 0,
+    GTK_STACK_TRANSITION_TYPE_CROSSFADE = 1,
+    GTK_STACK_TRANSITION_TYPE_SLIDE_RIGHT = 2,
+    GTK_STACK_TRANSITION_TYPE_SLIDE_LEFT = 3,
+    GTK_STACK_TRANSITION_TYPE_SLIDE_UP = 4,
+    GTK_STACK_TRANSITION_TYPE_SLIDE_DOWN = 5,
+    GTK_STACK_TRANSITION_TYPE_SLIDE_LEFT_RIGHT = 6,
+    GTK_STACK_TRANSITION_TYPE_SLIDE_UP_DOWN = 7,
+    GTK_STACK_TRANSITION_TYPE_OVER_UP = 8,
+    GTK_STACK_TRANSITION_TYPE_OVER_DOWN = 9,
+    GTK_STACK_TRANSITION_TYPE_OVER_LEFT = 10,
+    GTK_STACK_TRANSITION_TYPE_OVER_RIGHT = 11,
+    GTK_STACK_TRANSITION_TYPE_UNDER_UP = 12,
+    GTK_STACK_TRANSITION_TYPE_UNDER_DOWN = 13,
+    GTK_STACK_TRANSITION_TYPE_UNDER_LEFT = 14,
+    GTK_STACK_TRANSITION_TYPE_UNDER_RIGHT = 15,
+    GTK_STACK_TRANSITION_TYPE_OVER_UP_DOWN = 16,
+    GTK_STACK_TRANSITION_TYPE_OVER_DOWN_UP = 17,
+    GTK_STACK_TRANSITION_TYPE_OVER_LEFT_RIGHT = 18,
+    GTK_STACK_TRANSITION_TYPE_OVER_RIGHT_LEFT = 19,
+    TGtkStackTransitionTypeMaxValue = $7FFFFFFF
+  );
+  TGtkWrapMode = (
+    TGtkWrapModeMinValue = -$7FFFFFFF,
+    GTK_WRAP_NONE = 0,
+    GTK_WRAP_CHAR = 1,
+    GTK_WRAP_WORD = 2,
+    GTK_WRAP_WORD_CHAR = 3,
+    TGtkWrapModeMaxValue = $7FFFFFFF
+  );
+  TGtkTextBufferTargetInfo = (
+    TGtkTextBufferTargetInfoMinValue = -$7FFFFFFF,
+    GTK_TEXT_BUFFER_TARGET_INFO_TEXT = -3,
+    GTK_TEXT_BUFFER_TARGET_INFO_RICH_TEXT = -2,
+    GTK_TEXT_BUFFER_TARGET_INFO_BUFFER_CONTENTS = -1,
+    TGtkTextBufferTargetInfoMaxValue = $7FFFFFFF
+  );
+  TGtkTextExtendSelection = (
+    TGtkTextExtendSelectionMinValue = -$7FFFFFFF,
+    GTK_TEXT_EXTEND_SELECTION_WORD = 0,
+    GTK_TEXT_EXTEND_SELECTION_LINE = 1,
+    TGtkTextExtendSelectionMaxValue = $7FFFFFFF
+  );
+  TGtkTextWindowType = (
+    TGtkTextWindowTypeMinValue = -$7FFFFFFF,
+    GTK_TEXT_WINDOW_PRIVATE = 0,
+    GTK_TEXT_WINDOW_WIDGET = 1,
+    GTK_TEXT_WINDOW_TEXT = 2,
+    GTK_TEXT_WINDOW_LEFT = 3,
+    GTK_TEXT_WINDOW_RIGHT = 4,
+    GTK_TEXT_WINDOW_TOP = 5,
+    GTK_TEXT_WINDOW_BOTTOM = 6,
+    TGtkTextWindowTypeMaxValue = $7FFFFFFF
+  );
+  TGtkTextViewLayer = (
+    TGtkTextViewLayerMinValue = -$7FFFFFFF,
+    GTK_TEXT_VIEW_LAYER_BELOW = 0,
+    GTK_TEXT_VIEW_LAYER_ABOVE = 1,
+    GTK_TEXT_VIEW_LAYER_BELOW_TEXT = 2,
+    GTK_TEXT_VIEW_LAYER_ABOVE_TEXT = 3,
+    TGtkTextViewLayerMaxValue = $7FFFFFFF
+  );
+  TGtkToolPaletteDragTargets = (
+    TGtkToolPaletteDragTargetsMinValue = -$7FFFFFFF,
+    GTK_TOOL_PALETTE_DRAG_ITEMS = 1,
+    GTK_TOOL_PALETTE_DRAG_GROUPS = 2,
+    TGtkToolPaletteDragTargetsMaxValue = $7FFFFFFF
+  );
+  TGtkTreeViewDropPosition = (
+    TGtkTreeViewDropPositionMinValue = -$7FFFFFFF,
+    GTK_TREE_VIEW_DROP_BEFORE = 0,
+    GTK_TREE_VIEW_DROP_AFTER = 1,
+    GTK_TREE_VIEW_DROP_INTO_OR_BEFORE = 2,
+    GTK_TREE_VIEW_DROP_INTO_OR_AFTER = 3,
+    TGtkTreeViewDropPositionMaxValue = $7FFFFFFF
+  );
+  TGtkTreeViewGridLines = (
+    TGtkTreeViewGridLinesMinValue = -$7FFFFFFF,
+    GTK_TREE_VIEW_GRID_LINES_NONE = 0,
+    GTK_TREE_VIEW_GRID_LINES_HORIZONTAL = 1,
+    GTK_TREE_VIEW_GRID_LINES_VERTICAL = 2,
+    GTK_TREE_VIEW_GRID_LINES_BOTH = 3,
+    TGtkTreeViewGridLinesMaxValue = $7FFFFFFF
+  );
 
 type
   TGtkDialogFlags = Integer;
@@ -476,81 +1245,6 @@ const
   GTK_DIALOG_DESTROY_WITH_PARENT: TGtkDialogFlags = 2;
 
 type
-  TGtkLicense = Integer;
-const
-  { GtkLicense }
-  GTK_LICENSE_UNKNOWN: TGtkLicense = 0;
-  GTK_LICENSE_CUSTOM: TGtkLicense = 1;
-  GTK_LICENSE_GPL_2_0: TGtkLicense = 2;
-  GTK_LICENSE_GPL_3_0: TGtkLicense = 3;
-  GTK_LICENSE_LGPL_2_1: TGtkLicense = 4;
-  GTK_LICENSE_LGPL_3_0: TGtkLicense = 5;
-  GTK_LICENSE_BSD: TGtkLicense = 6;
-  GTK_LICENSE_MIT_X11: TGtkLicense = 7;
-  GTK_LICENSE_ARTISTIC: TGtkLicense = 8;
-
-type
-  TGtkStateType = Integer;
-const
-  { GtkStateType }
-  GTK_STATE_NORMAL: TGtkStateType = 0;
-  GTK_STATE_ACTIVE: TGtkStateType = 1;
-  GTK_STATE_PRELIGHT: TGtkStateType = 2;
-  GTK_STATE_SELECTED: TGtkStateType = 3;
-  GTK_STATE_INSENSITIVE: TGtkStateType = 4;
-  GTK_STATE_INCONSISTENT: TGtkStateType = 5;
-  GTK_STATE_FOCUSED: TGtkStateType = 6;
-
-type
-  TGtkDragResult = Integer;
-const
-  { GtkDragResult }
-  GTK_DRAG_RESULT_SUCCESS: TGtkDragResult = 0;
-  GTK_DRAG_RESULT_NO_TARGET: TGtkDragResult = 1;
-  GTK_DRAG_RESULT_USER_CANCELLED: TGtkDragResult = 2;
-  GTK_DRAG_RESULT_TIMEOUT_EXPIRED: TGtkDragResult = 3;
-  GTK_DRAG_RESULT_GRAB_BROKEN: TGtkDragResult = 4;
-  GTK_DRAG_RESULT_ERROR: TGtkDragResult = 5;
-
-type
-  TGtkWidgetHelpType = Integer;
-const
-  { GtkWidgetHelpType }
-  GTK_WIDGET_HELP_TOOLTIP: TGtkWidgetHelpType = 0;
-  GTK_WIDGET_HELP_WHATS_THIS: TGtkWidgetHelpType = 1;
-
-
-type
-  TGtkMovementStep = Integer;
-const
-  { GtkMovementStep }
-  GTK_MOVEMENT_LOGICAL_POSITIONS: TGtkMovementStep = 0;
-  GTK_MOVEMENT_VISUAL_POSITIONS: TGtkMovementStep = 1;
-  GTK_MOVEMENT_WORDS: TGtkMovementStep = 2;
-  GTK_MOVEMENT_DISPLAY_LINES: TGtkMovementStep = 3;
-  GTK_MOVEMENT_DISPLAY_LINE_ENDS: TGtkMovementStep = 4;
-  GTK_MOVEMENT_PARAGRAPHS: TGtkMovementStep = 5;
-  GTK_MOVEMENT_PARAGRAPH_ENDS: TGtkMovementStep = 6;
-  GTK_MOVEMENT_PAGES: TGtkMovementStep = 7;
-  GTK_MOVEMENT_BUFFER_ENDS: TGtkMovementStep = 8;
-  GTK_MOVEMENT_HORIZONTAL_PAGES: TGtkMovementStep = 9;
-
-type
-  TGtkSensitivityType = Integer;
-const
-  { GtkSensitivityType }
-  GTK_SENSITIVITY_AUTO: TGtkSensitivityType = 0;
-  GTK_SENSITIVITY_ON: TGtkSensitivityType = 1;
-  GTK_SENSITIVITY_OFF: TGtkSensitivityType = 2;
-
-type
-  TGtkPackType = Integer;
-const
-  { GtkPackType }
-  GTK_PACK_START: TGtkPackType = 0;
-  GTK_PACK_END: TGtkPackType = 1;
-
-type
   TGtkApplicationInhibitFlags = Integer;
 const
   { GtkApplicationInhibitFlags }
@@ -558,184 +1252,6 @@ const
   GTK_APPLICATION_INHIBIT_SWITCH: TGtkApplicationInhibitFlags = 2;
   GTK_APPLICATION_INHIBIT_SUSPEND: TGtkApplicationInhibitFlags = 4;
   GTK_APPLICATION_INHIBIT_IDLE: TGtkApplicationInhibitFlags = 8;
-
-type
-  TGtkArrowType = Integer;
-const
-  { GtkArrowType }
-  GTK_ARROW_UP: TGtkArrowType = 0;
-  GTK_ARROW_DOWN: TGtkArrowType = 1;
-  GTK_ARROW_LEFT: TGtkArrowType = 2;
-  GTK_ARROW_RIGHT: TGtkArrowType = 3;
-  GTK_ARROW_NONE: TGtkArrowType = 4;
-
-
-type
-  TGtkArrowPlacement = Integer;
-const
-  { GtkArrowPlacement }
-  GTK_ARROWS_BOTH: TGtkArrowPlacement = 0;
-  GTK_ARROWS_START: TGtkArrowPlacement = 1;
-  GTK_ARROWS_END: TGtkArrowPlacement = 2;
-
-type
-  TGtkAssistantPageType = Integer;
-const
-  { GtkAssistantPageType }
-  GTK_ASSISTANT_PAGE_CONTENT: TGtkAssistantPageType = 0;
-  GTK_ASSISTANT_PAGE_INTRO: TGtkAssistantPageType = 1;
-  GTK_ASSISTANT_PAGE_CONFIRM: TGtkAssistantPageType = 2;
-  GTK_ASSISTANT_PAGE_SUMMARY: TGtkAssistantPageType = 3;
-  GTK_ASSISTANT_PAGE_PROGRESS: TGtkAssistantPageType = 4;
-  GTK_ASSISTANT_PAGE_CUSTOM: TGtkAssistantPageType = 5;
-
-type
-  TGtkAttachOptions = Integer;
-const
-  { GtkAttachOptions }
-  GTK_EXPAND: TGtkAttachOptions = 1;
-  GTK_SHRINK: TGtkAttachOptions = 2;
-  GTK_FILL: TGtkAttachOptions = 4;
-
-type
-  TGtkPathType = Integer;
-const
-  { GtkPathType }
-  GTK_PATH_WIDGET: TGtkPathType = 0;
-  GTK_PATH_WIDGET_CLASS: TGtkPathType = 1;
-  GTK_PATH_CLASS: TGtkPathType = 2;
-
-type
-  TGtkPathPriorityType = Integer;
-const
-  { GtkPathPriorityType }
-  GTK_PATH_PRIO_LOWEST: TGtkPathPriorityType = 0;
-  GTK_PATH_PRIO_GTK: TGtkPathPriorityType = 4;
-  GTK_PATH_PRIO_APPLICATION: TGtkPathPriorityType = 8;
-  GTK_PATH_PRIO_THEME: TGtkPathPriorityType = 10;
-  GTK_PATH_PRIO_RC: TGtkPathPriorityType = 12;
-  GTK_PATH_PRIO_HIGHEST: TGtkPathPriorityType = 15;
-
-type
-  TGtkBorderStyle = Integer;
-const
-  { GtkBorderStyle }
-  GTK_BORDER_STYLE_NONE: TGtkBorderStyle = 0;
-  GTK_BORDER_STYLE_SOLID: TGtkBorderStyle = 1;
-  GTK_BORDER_STYLE_INSET: TGtkBorderStyle = 2;
-  GTK_BORDER_STYLE_OUTSET: TGtkBorderStyle = 3;
-  GTK_BORDER_STYLE_HIDDEN: TGtkBorderStyle = 4;
-  GTK_BORDER_STYLE_DOTTED: TGtkBorderStyle = 5;
-  GTK_BORDER_STYLE_DASHED: TGtkBorderStyle = 6;
-  GTK_BORDER_STYLE_DOUBLE: TGtkBorderStyle = 7;
-  GTK_BORDER_STYLE_GROOVE: TGtkBorderStyle = 8;
-  GTK_BORDER_STYLE_RIDGE: TGtkBorderStyle = 9;
-
-type
-  TGtkBuilderError = Integer;
-const
-  { GtkBuilderError }
-  GTK_BUILDER_ERROR_INVALID_TYPE_FUNCTION: TGtkBuilderError = 0;
-  GTK_BUILDER_ERROR_UNHANDLED_TAG: TGtkBuilderError = 1;
-  GTK_BUILDER_ERROR_MISSING_ATTRIBUTE: TGtkBuilderError = 2;
-  GTK_BUILDER_ERROR_INVALID_ATTRIBUTE: TGtkBuilderError = 3;
-  GTK_BUILDER_ERROR_INVALID_TAG: TGtkBuilderError = 4;
-  GTK_BUILDER_ERROR_MISSING_PROPERTY_VALUE: TGtkBuilderError = 5;
-  GTK_BUILDER_ERROR_INVALID_VALUE: TGtkBuilderError = 6;
-  GTK_BUILDER_ERROR_VERSION_MISMATCH: TGtkBuilderError = 7;
-  GTK_BUILDER_ERROR_DUPLICATE_ID: TGtkBuilderError = 8;
-
-type
-  TGtkPositionType = (
-  { GtkPositionType }
-  GTK_POS_LEFT = 0,
-  GTK_POS_RIGHT = 1,
-  GTK_POS_TOP = 2,
-  GTK_POS_BOTTOM = 3
-  );
-
-type
-  TGtkReliefStyle = Integer;
-const
-  { GtkReliefStyle }
-  GTK_RELIEF_NORMAL: TGtkReliefStyle = 0;
-  GTK_RELIEF_HALF: TGtkReliefStyle = 1;
-  GTK_RELIEF_NONE: TGtkReliefStyle = 2;
-
-type
-  TGtkButtonBoxStyle = Integer;
-const
-  { GtkButtonBoxStyle }
-  GTK_BUTTONBOX_SPREAD: TGtkButtonBoxStyle = 1;
-  GTK_BUTTONBOX_EDGE: TGtkButtonBoxStyle = 2;
-  GTK_BUTTONBOX_START: TGtkButtonBoxStyle = 3;
-  GTK_BUTTONBOX_END: TGtkButtonBoxStyle = 4;
-  GTK_BUTTONBOX_CENTER: TGtkButtonBoxStyle = 5;
-
-type
-  TGtkButtonsType = Integer;
-const
-  { GtkButtonsType }
-  GTK_BUTTONS_NONE: TGtkButtonsType = 0;
-  GTK_BUTTONS_OK: TGtkButtonsType = 1;
-  GTK_BUTTONS_CLOSE: TGtkButtonsType = 2;
-  GTK_BUTTONS_CANCEL: TGtkButtonsType = 3;
-  GTK_BUTTONS_YES_NO: TGtkButtonsType = 4;
-  GTK_BUTTONS_OK_CANCEL: TGtkButtonsType = 5;
-
-type
-  TGtkCalendarDisplayOptions = Integer;
-const
-  { GtkCalendarDisplayOptions }
-  GTK_CALENDAR_SHOW_HEADING: TGtkCalendarDisplayOptions = 1;
-  GTK_CALENDAR_SHOW_DAY_NAMES: TGtkCalendarDisplayOptions = 2;
-  GTK_CALENDAR_NO_MONTH_CHANGE: TGtkCalendarDisplayOptions = 4;
-  GTK_CALENDAR_SHOW_WEEK_NUMBERS: TGtkCalendarDisplayOptions = 8;
-  GTK_CALENDAR_SHOW_DETAILS: TGtkCalendarDisplayOptions = 32;
-
-
-type
-  TGtkTreeModelFlags = Integer;
-const
-  { GtkTreeModelFlags }
-  GTK_TREE_MODEL_ITERS_PERSIST: TGtkTreeModelFlags = 1;
-  GTK_TREE_MODEL_LIST_ONLY: TGtkTreeModelFlags = 2;
-
-type
-  TGtkSizeRequestMode = Integer;
-const
-  { GtkSizeRequestMode }
-  GTK_SIZE_REQUEST_HEIGHT_FOR_WIDTH: TGtkSizeRequestMode = 0;
-  GTK_SIZE_REQUEST_WIDTH_FOR_HEIGHT: TGtkSizeRequestMode = 1;
-  GTK_SIZE_REQUEST_CONSTANT_SIZE: TGtkSizeRequestMode = 2;
-
-type
-  TGtkCellRendererMode = Integer;
-const
-  { GtkCellRendererMode }
-  GTK_CELL_RENDERER_MODE_INERT: TGtkCellRendererMode = 0;
-  GTK_CELL_RENDERER_MODE_ACTIVATABLE: TGtkCellRendererMode = 1;
-  GTK_CELL_RENDERER_MODE_EDITABLE: TGtkCellRendererMode = 2;
-
-type
-  TGtkCellRendererAccelMode = Integer;
-const
-  { GtkCellRendererAccelMode }
-  GTK_CELL_RENDERER_ACCEL_MODE_GTK: TGtkCellRendererAccelMode = 0;
-  GTK_CELL_RENDERER_ACCEL_MODE_OTHER: TGtkCellRendererAccelMode = 1;
-
-type
-  TGtkIconSize = Integer;
-const
-  { GtkIconSize }
-  GTK_ICON_SIZE_INVALID: TGtkIconSize = 0;
-  GTK_ICON_SIZE_MENU: TGtkIconSize = 1;
-  GTK_ICON_SIZE_SMALL_TOOLBAR: TGtkIconSize = 2;
-  GTK_ICON_SIZE_LARGE_TOOLBAR: TGtkIconSize = 3;
-  GTK_ICON_SIZE_BUTTON: TGtkIconSize = 4;
-  GTK_ICON_SIZE_DND: TGtkIconSize = 5;
-  GTK_ICON_SIZE_DIALOG: TGtkIconSize = 6;
-
 
 type
   TGtkRegionFlags = Integer;
@@ -749,79 +1265,7 @@ const
   GTK_REGION_SORTED: TGtkRegionFlags = 32;
 
 type
-  TGtkCornerType = Integer;
-const
-  { GtkCornerType }
-  GTK_CORNER_TOP_LEFT: TGtkCornerType = 0;
-  GTK_CORNER_BOTTOM_LEFT: TGtkCornerType = 1;
-  GTK_CORNER_TOP_RIGHT: TGtkCornerType = 2;
-  GTK_CORNER_BOTTOM_RIGHT: TGtkCornerType = 3;
 
-type
-  TGtkCssProviderError = Integer;
-const
-  { GtkCssProviderError }
-  GTK_CSS_PROVIDER_ERROR_FAILED: TGtkCssProviderError = 0;
-  GTK_CSS_PROVIDER_ERROR_SYNTAX: TGtkCssProviderError = 1;
-  GTK_CSS_PROVIDER_ERROR_IMPORT: TGtkCssProviderError = 2;
-  GTK_CSS_PROVIDER_ERROR_NAME: TGtkCssProviderError = 3;
-  GTK_CSS_PROVIDER_ERROR_DEPRECATED: TGtkCssProviderError = 4;
-  GTK_CSS_PROVIDER_ERROR_UNKNOWN_VALUE: TGtkCssProviderError = 5;
-
-type
-  TGtkCssSectionType = Integer;
-const
-  { GtkCssSectionType }
-  GTK_CSS_SECTION_DOCUMENT: TGtkCssSectionType = 0;
-  GTK_CSS_SECTION_IMPORT: TGtkCssSectionType = 1;
-  GTK_CSS_SECTION_COLOR_DEFINITION: TGtkCssSectionType = 2;
-  GTK_CSS_SECTION_BINDING_SET: TGtkCssSectionType = 3;
-  GTK_CSS_SECTION_RULESET: TGtkCssSectionType = 4;
-  GTK_CSS_SECTION_SELECTOR: TGtkCssSectionType = 5;
-  GTK_CSS_SECTION_DECLARATION: TGtkCssSectionType = 6;
-  GTK_CSS_SECTION_VALUE: TGtkCssSectionType = 7;
-  GTK_CSS_SECTION_KEYFRAMES: TGtkCssSectionType = 8;
-
-type
-  TGtkDebugFlag = Integer;
-const
-  { GtkDebugFlag }
-  GTK_DEBUG_MISC: TGtkDebugFlag = 1;
-  GTK_DEBUG_PLUGSOCKET: TGtkDebugFlag = 2;
-  GTK_DEBUG_TEXT: TGtkDebugFlag = 4;
-  GTK_DEBUG_TREE: TGtkDebugFlag = 8;
-  GTK_DEBUG_UPDATES: TGtkDebugFlag = 16;
-  GTK_DEBUG_KEYBINDINGS: TGtkDebugFlag = 32;
-  GTK_DEBUG_MULTIHEAD: TGtkDebugFlag = 64;
-  GTK_DEBUG_MODULES: TGtkDebugFlag = 128;
-  GTK_DEBUG_GEOMETRY: TGtkDebugFlag = 256;
-  GTK_DEBUG_ICONTHEME: TGtkDebugFlag = 512;
-  GTK_DEBUG_PRINTING: TGtkDebugFlag = 1024;
-  GTK_DEBUG_BUILDER: TGtkDebugFlag = 2048;
-  GTK_DEBUG_SIZE_REQUEST: TGtkDebugFlag = 4096;
-  GTK_DEBUG_NO_CSS_CACHE: TGtkDebugFlag = 8192;
-
-type
-  TGtkDeleteType = Integer;
-const
-  { GtkDeleteType }
-  GTK_DELETE_CHARS: TGtkDeleteType = 0;
-  GTK_DELETE_WORD_ENDS: TGtkDeleteType = 1;
-  GTK_DELETE_WORDS: TGtkDeleteType = 2;
-  GTK_DELETE_DISPLAY_LINES: TGtkDeleteType = 3;
-  GTK_DELETE_DISPLAY_LINE_ENDS: TGtkDeleteType = 4;
-  GTK_DELETE_PARAGRAPH_ENDS: TGtkDeleteType = 5;
-  GTK_DELETE_PARAGRAPHS: TGtkDeleteType = 6;
-  GTK_DELETE_WHITESPACE: TGtkDeleteType = 7;
-
-type
-  TGtkEntryIconPosition = Integer;
-const
-  { GtkEntryIconPosition }
-  GTK_ENTRY_ICON_PRIMARY: TGtkEntryIconPosition = 0;
-  GTK_ENTRY_ICON_SECONDARY: TGtkEntryIconPosition = 1;
-
-type
   TGtkInputHints = Integer;
 const
   { GtkInputHints }
@@ -836,50 +1280,6 @@ const
   GTK_INPUT_HINT_INHIBIT_OSK: TGtkInputHints = 128;
 
 type
-  TGtkInputPurpose = (
-  { GtkInputPurpose }
-  GTK_INPUT_PURPOSE_FREE_FORM = 0,
-  GTK_INPUT_PURPOSE_ALPHA = 1,
-  GTK_INPUT_PURPOSE_DIGITS = 2,
-  GTK_INPUT_PURPOSE_NUMBER = 3,
-  GTK_INPUT_PURPOSE_PHONE = 4,
-  GTK_INPUT_PURPOSE_URL = 5,
-  GTK_INPUT_PURPOSE_EMAIL = 6,
-  GTK_INPUT_PURPOSE_NAME = 7,
-  GTK_INPUT_PURPOSE_PASSWORD = 8,
-  GTK_INPUT_PURPOSE_PIN = 9);
-
-type
-  TGtkImageType = Integer;
-const
-  { GtkImageType }
-  GTK_IMAGE_EMPTY: TGtkImageType = 0;
-  GTK_IMAGE_PIXBUF: TGtkImageType = 1;
-  GTK_IMAGE_STOCK: TGtkImageType = 2;
-  GTK_IMAGE_ICON_SET: TGtkImageType = 3;
-  GTK_IMAGE_ANIMATION: TGtkImageType = 4;
-  GTK_IMAGE_ICON_NAME: TGtkImageType = 5;
-  GTK_IMAGE_GICON: TGtkImageType = 6;
-
-type
-  TGtkExpanderStyle = Integer;
-const
-  { GtkExpanderStyle }
-  GTK_EXPANDER_COLLAPSED: TGtkExpanderStyle = 0;
-  GTK_EXPANDER_SEMI_COLLAPSED: TGtkExpanderStyle = 1;
-  GTK_EXPANDER_SEMI_EXPANDED: TGtkExpanderStyle = 2;
-  GTK_EXPANDER_EXPANDED: TGtkExpanderStyle = 3;
-
-type
-  TGtkFileChooserAction = Integer;
-const
-  { GtkFileChooserAction }
-  GTK_FILE_CHOOSER_ACTION_OPEN: TGtkFileChooserAction = 0;
-  GTK_FILE_CHOOSER_ACTION_SAVE: TGtkFileChooserAction = 1;
-  GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER: TGtkFileChooserAction = 2;
-  GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER: TGtkFileChooserAction = 3;
-
-type
   TGtkFileFilterFlags = Integer;
 const
   { GtkFileFilterFlags }
@@ -887,53 +1287,6 @@ const
   GTK_FILE_FILTER_URI: TGtkFileFilterFlags = 2;
   GTK_FILE_FILTER_DISPLAY_NAME: TGtkFileFilterFlags = 4;
   GTK_FILE_FILTER_MIME_TYPE: TGtkFileFilterFlags = 8;
-
-type
-  TGtkFileChooserConfirmation = Integer;
-const
-  { GtkFileChooserConfirmation }
-  GTK_FILE_CHOOSER_CONFIRMATION_CONFIRM: TGtkFileChooserConfirmation = 0;
-  GTK_FILE_CHOOSER_CONFIRMATION_ACCEPT_FILENAME: TGtkFileChooserConfirmation = 1;
-  GTK_FILE_CHOOSER_CONFIRMATION_SELECT_AGAIN: TGtkFileChooserConfirmation = 2;
-
-type
-  TGtkFileChooserError = Integer;
-const
-  { GtkFileChooserError }
-  GTK_FILE_CHOOSER_ERROR_NONEXISTENT: TGtkFileChooserError = 0;
-  GTK_FILE_CHOOSER_ERROR_BAD_FILENAME: TGtkFileChooserError = 1;
-  GTK_FILE_CHOOSER_ERROR_ALREADY_EXISTS: TGtkFileChooserError = 2;
-  GTK_FILE_CHOOSER_ERROR_INCOMPLETE_HOSTNAME: TGtkFileChooserError = 3;
-
-type
-  TGtkJunctionSides = Integer;
-const
-  { GtkJunctionSides }
-  GTK_JUNCTION_NONE: TGtkJunctionSides = 0;
-  GTK_JUNCTION_CORNER_TOPLEFT: TGtkJunctionSides = 1;
-  GTK_JUNCTION_CORNER_TOPRIGHT: TGtkJunctionSides = 2;
-  GTK_JUNCTION_CORNER_BOTTOMLEFT: TGtkJunctionSides = 4;
-  GTK_JUNCTION_CORNER_BOTTOMRIGHT: TGtkJunctionSides = 8;
-  GTK_JUNCTION_TOP: TGtkJunctionSides = 3;
-  GTK_JUNCTION_BOTTOM: TGtkJunctionSides = 12;
-  GTK_JUNCTION_LEFT: TGtkJunctionSides = 5;
-  GTK_JUNCTION_RIGHT: TGtkJunctionSides = 10;
-
-type
-  TGtkIMPreeditStyle = Integer;
-const
-  { GtkIMPreeditStyle }
-  GTK_IM_PREEDIT_NOTHING: TGtkIMPreeditStyle = 0;
-  GTK_IM_PREEDIT_CALLBACK: TGtkIMPreeditStyle = 1;
-  GTK_IM_PREEDIT_NONE: TGtkIMPreeditStyle = 2;
-
-type
-  TGtkIMStatusStyle = Integer;
-const
-  { GtkIMStatusStyle }
-  GTK_IM_STATUS_NOTHING: TGtkIMStatusStyle = 0;
-  GTK_IM_STATUS_CALLBACK: TGtkIMStatusStyle = 1;
-  GTK_IM_STATUS_NONE: TGtkIMStatusStyle = 2;
 
 type
   TGtkIconLookupFlags = Integer;
@@ -946,184 +1299,11 @@ const
   GTK_ICON_LOOKUP_FORCE_SIZE: TGtkIconLookupFlags = 16;
 
 type
-  TGtkIconThemeError = Integer;
-const
-  { GtkIconThemeError }
-  GTK_ICON_THEME_NOT_FOUND: TGtkIconThemeError = 0;
-  GTK_ICON_THEME_FAILED: TGtkIconThemeError = 1;
-
-type
-  TGtkScrollablePolicy = Integer;
-const
-  { GtkScrollablePolicy }
-  GTK_SCROLL_MINIMUM: TGtkScrollablePolicy = 0;
-  GTK_SCROLL_NATURAL: TGtkScrollablePolicy = 1;
-
-type
-  TGtkIconViewDropPosition = Integer;
-const
-  { GtkIconViewDropPosition }
-  GTK_ICON_VIEW_NO_DROP: TGtkIconViewDropPosition = 0;
-  GTK_ICON_VIEW_DROP_INTO: TGtkIconViewDropPosition = 1;
-  GTK_ICON_VIEW_DROP_LEFT: TGtkIconViewDropPosition = 2;
-  GTK_ICON_VIEW_DROP_RIGHT: TGtkIconViewDropPosition = 3;
-  GTK_ICON_VIEW_DROP_ABOVE: TGtkIconViewDropPosition = 4;
-  GTK_ICON_VIEW_DROP_BELOW: TGtkIconViewDropPosition = 5;
-
-type
-  TGtkMessageType = Integer;
-const
-  { GtkMessageType }
-  GTK_MESSAGE_INFO: TGtkMessageType = 0;
-  GTK_MESSAGE_WARNING: TGtkMessageType = 1;
-  GTK_MESSAGE_QUESTION: TGtkMessageType = 2;
-  GTK_MESSAGE_ERROR: TGtkMessageType = 3;
-  GTK_MESSAGE_OTHER: TGtkMessageType = 4;
-
-type
-  TGtkLevelBarMode = Integer;
-const
-  { GtkLevelBarMode }
-  GTK_LEVEL_BAR_MODE_CONTINUOUS: TGtkLevelBarMode = 0;
-  GTK_LEVEL_BAR_MODE_DISCRETE: TGtkLevelBarMode = 1;
-
-type
   TGtkSortType = Integer;
 const
   { GtkSortType }
   GTK_SORT_ASCENDING: TGtkSortType = 0;
   GTK_SORT_DESCENDING: TGtkSortType = 1;
-
-type
-  TGtkMenuDirectionType = Integer;
-const
-  { GtkMenuDirectionType }
-  GTK_MENU_DIR_PARENT: TGtkMenuDirectionType = 0;
-  GTK_MENU_DIR_CHILD: TGtkMenuDirectionType = 1;
-  GTK_MENU_DIR_NEXT: TGtkMenuDirectionType = 2;
-  GTK_MENU_DIR_PREV: TGtkMenuDirectionType = 3;
-
-type
-  TGtkNotebookTab = Integer;
-const
-  { GtkNotebookTab }
-  GTK_NOTEBOOK_TAB_FIRST: TGtkNotebookTab = 0;
-  GTK_NOTEBOOK_TAB_LAST: TGtkNotebookTab = 1;
-
-type
-  TGtkNumberUpLayout = Integer;
-const
-  { GtkNumberUpLayout }
-  GTK_NUMBER_UP_LAYOUT_LEFT_TO_RIGHT_TOP_TO_BOTTOM: TGtkNumberUpLayout = 0;
-  GTK_NUMBER_UP_LAYOUT_LEFT_TO_RIGHT_BOTTOM_TO_TOP: TGtkNumberUpLayout = 1;
-  GTK_NUMBER_UP_LAYOUT_RIGHT_TO_LEFT_TOP_TO_BOTTOM: TGtkNumberUpLayout = 2;
-  GTK_NUMBER_UP_LAYOUT_RIGHT_TO_LEFT_BOTTOM_TO_TOP: TGtkNumberUpLayout = 3;
-  GTK_NUMBER_UP_LAYOUT_TOP_TO_BOTTOM_LEFT_TO_RIGHT: TGtkNumberUpLayout = 4;
-  GTK_NUMBER_UP_LAYOUT_TOP_TO_BOTTOM_RIGHT_TO_LEFT: TGtkNumberUpLayout = 5;
-  GTK_NUMBER_UP_LAYOUT_BOTTOM_TO_TOP_LEFT_TO_RIGHT: TGtkNumberUpLayout = 6;
-  GTK_NUMBER_UP_LAYOUT_BOTTOM_TO_TOP_RIGHT_TO_LEFT: TGtkNumberUpLayout = 7;
-
-type
-  TGtkPageOrientation = Integer;
-const
-  { GtkPageOrientation }
-  GTK_PAGE_ORIENTATION_PORTRAIT: TGtkPageOrientation = 0;
-  GTK_PAGE_ORIENTATION_LANDSCAPE: TGtkPageOrientation = 1;
-  GTK_PAGE_ORIENTATION_REVERSE_PORTRAIT: TGtkPageOrientation = 2;
-  GTK_PAGE_ORIENTATION_REVERSE_LANDSCAPE: TGtkPageOrientation = 3;
-
-type
-  TGtkPageSet = Integer;
-const
-  { GtkPageSet }
-  GTK_PAGE_SET_ALL: TGtkPageSet = 0;
-  GTK_PAGE_SET_EVEN: TGtkPageSet = 1;
-  GTK_PAGE_SET_ODD: TGtkPageSet = 2;
-
-type
-  TGtkUnit = Integer;
-const
-  { GtkUnit }
-  GTK_UNIT_NONE: TGtkUnit = 0;
-  GTK_UNIT_POINTS: TGtkUnit = 1;
-  GTK_UNIT_INCH: TGtkUnit = 2;
-  GTK_UNIT_MM: TGtkUnit = 3;
-
-type
-  TGtkPrintDuplex = Integer;
-const
-  { GtkPrintDuplex }
-  GTK_PRINT_DUPLEX_SIMPLEX: TGtkPrintDuplex = 0;
-  GTK_PRINT_DUPLEX_HORIZONTAL: TGtkPrintDuplex = 1;
-  GTK_PRINT_DUPLEX_VERTICAL: TGtkPrintDuplex = 2;
-
-type
-  TGtkPrintError = Integer;
-const
-  { GtkPrintError }
-  GTK_PRINT_ERROR_GENERAL: TGtkPrintError = 0;
-  GTK_PRINT_ERROR_INTERNAL_ERROR: TGtkPrintError = 1;
-  GTK_PRINT_ERROR_NOMEM: TGtkPrintError = 2;
-  GTK_PRINT_ERROR_INVALID_FILE: TGtkPrintError = 3;
-
-type
-  TGtkPrintOperationAction = Integer;
-const
-  { GtkPrintOperationAction }
-  GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG: TGtkPrintOperationAction = 0;
-  GTK_PRINT_OPERATION_ACTION_PRINT: TGtkPrintOperationAction = 1;
-  GTK_PRINT_OPERATION_ACTION_PREVIEW: TGtkPrintOperationAction = 2;
-  GTK_PRINT_OPERATION_ACTION_EXPORT: TGtkPrintOperationAction = 3;
-
-type
-  TGtkPrintOperationResult = Integer;
-const
-  { GtkPrintOperationResult }
-  GTK_PRINT_OPERATION_RESULT_ERROR: TGtkPrintOperationResult = 0;
-  GTK_PRINT_OPERATION_RESULT_APPLY: TGtkPrintOperationResult = 1;
-  GTK_PRINT_OPERATION_RESULT_CANCEL: TGtkPrintOperationResult = 2;
-  GTK_PRINT_OPERATION_RESULT_IN_PROGRESS: TGtkPrintOperationResult = 3;
-
-type
-  TGtkPrintPages = Integer;
-const
-  { GtkPrintPages }
-  GTK_PRINT_PAGES_ALL: TGtkPrintPages = 0;
-  GTK_PRINT_PAGES_CURRENT: TGtkPrintPages = 1;
-  GTK_PRINT_PAGES_RANGES: TGtkPrintPages = 2;
-  GTK_PRINT_PAGES_SELECTION: TGtkPrintPages = 3;
-
-type
-  TGtkPrintQuality = Integer;
-const
-  { GtkPrintQuality }
-  GTK_PRINT_QUALITY_LOW: TGtkPrintQuality = 0;
-  GTK_PRINT_QUALITY_NORMAL: TGtkPrintQuality = 1;
-  GTK_PRINT_QUALITY_HIGH: TGtkPrintQuality = 2;
-  GTK_PRINT_QUALITY_DRAFT: TGtkPrintQuality = 3;
-
-type
-  TGtkPrintStatus = Integer;
-const
-  { GtkPrintStatus }
-  GTK_PRINT_STATUS_INITIAL: TGtkPrintStatus = 0;
-  GTK_PRINT_STATUS_PREPARING: TGtkPrintStatus = 1;
-  GTK_PRINT_STATUS_GENERATING_DATA: TGtkPrintStatus = 2;
-  GTK_PRINT_STATUS_SENDING_DATA: TGtkPrintStatus = 3;
-  GTK_PRINT_STATUS_PENDING: TGtkPrintStatus = 4;
-  GTK_PRINT_STATUS_PENDING_ISSUE: TGtkPrintStatus = 5;
-  GTK_PRINT_STATUS_PRINTING: TGtkPrintStatus = 6;
-  GTK_PRINT_STATUS_FINISHED: TGtkPrintStatus = 7;
-  GTK_PRINT_STATUS_FINISHED_ABORTED: TGtkPrintStatus = 8;
-
-type
-  TGtkRcFlags = Integer;
-const
-  { GtkRcFlags }
-  GTK_RC_FG: TGtkRcFlags = 1;
-  GTK_RC_BG: TGtkRcFlags = 2;
-  GTK_RC_TEXT: TGtkRcFlags = 4;
-  GTK_RC_BASE: TGtkRcFlags = 8;
 
 type
   TGtkRcTokenType = Integer;
@@ -1171,15 +1351,6 @@ const
   GTK_RC_TOKEN_LAST: TGtkRcTokenType = 309;
 
 type
-  TGtkRecentSortType = Integer;
-const
-  { GtkRecentSortType }
-  GTK_RECENT_SORT_NONE: TGtkRecentSortType = 0;
-  GTK_RECENT_SORT_MRU: TGtkRecentSortType = 1;
-  GTK_RECENT_SORT_LRU: TGtkRecentSortType = 2;
-  GTK_RECENT_SORT_CUSTOM: TGtkRecentSortType = 3;
-
-type
   TGtkRecentFilterFlags = Integer;
 const
   { GtkRecentFilterFlags }
@@ -1191,73 +1362,6 @@ const
   GTK_RECENT_FILTER_AGE: TGtkRecentFilterFlags = 32;
 
 type
-  TGtkRecentChooserError = Integer;
-const
-  { GtkRecentChooserError }
-  GTK_RECENT_CHOOSER_ERROR_NOT_FOUND: TGtkRecentChooserError = 0;
-  GTK_RECENT_CHOOSER_ERROR_INVALID_URI: TGtkRecentChooserError = 1;
-
-type
-  TGtkRecentManagerError = Integer;
-const
-  { GtkRecentManagerError }
-  GTK_RECENT_MANAGER_ERROR_NOT_FOUND: TGtkRecentManagerError = 0;
-  GTK_RECENT_MANAGER_ERROR_INVALID_URI: TGtkRecentManagerError = 1;
-  GTK_RECENT_MANAGER_ERROR_INVALID_ENCODING: TGtkRecentManagerError = 2;
-  GTK_RECENT_MANAGER_ERROR_NOT_REGISTERED: TGtkRecentManagerError = 3;
-  GTK_RECENT_MANAGER_ERROR_READ: TGtkRecentManagerError = 4;
-  GTK_RECENT_MANAGER_ERROR_WRITE: TGtkRecentManagerError = 5;
-  GTK_RECENT_MANAGER_ERROR_UNKNOWN: TGtkRecentManagerError = 6;
-
-type
-  TGtkScrollStep = Integer;
-const
-  { GtkScrollStep }
-  GTK_SCROLL_STEPS: TGtkScrollStep = 0;
-  GTK_SCROLL_PAGES: TGtkScrollStep = 1;
-  GTK_SCROLL_ENDS: TGtkScrollStep = 2;
-  GTK_SCROLL_HORIZONTAL_STEPS: TGtkScrollStep = 3;
-  GTK_SCROLL_HORIZONTAL_PAGES: TGtkScrollStep = 4;
-  GTK_SCROLL_HORIZONTAL_ENDS: TGtkScrollStep = 5;
-
-type
-  TGtkToolbarStyle = Integer;
-const
-  { GtkToolbarStyle }
-  GTK_TOOLBAR_ICONS: TGtkToolbarStyle = 0;
-  GTK_TOOLBAR_TEXT: TGtkToolbarStyle = 1;
-  GTK_TOOLBAR_BOTH: TGtkToolbarStyle = 2;
-  GTK_TOOLBAR_BOTH_HORIZ: TGtkToolbarStyle = 3;
-
-type
-  TGtkSizeGroupMode = Integer;
-const
-  { GtkSizeGroupMode }
-  GTK_SIZE_GROUP_NONE: TGtkSizeGroupMode = 0;
-  GTK_SIZE_GROUP_HORIZONTAL: TGtkSizeGroupMode = 1;
-  GTK_SIZE_GROUP_VERTICAL: TGtkSizeGroupMode = 2;
-  GTK_SIZE_GROUP_BOTH: TGtkSizeGroupMode = 3;
-
-type
-  TGtkSpinButtonUpdatePolicy = Integer;
-const
-  { GtkSpinButtonUpdatePolicy }
-  GTK_UPDATE_ALWAYS: TGtkSpinButtonUpdatePolicy = 0;
-  GTK_UPDATE_IF_VALID: TGtkSpinButtonUpdatePolicy = 1;
-
-type
-  TGtkSpinType = Integer;
-const
-  { GtkSpinType }
-  GTK_SPIN_STEP_FORWARD: TGtkSpinType = 0;
-  GTK_SPIN_STEP_BACKWARD: TGtkSpinType = 1;
-  GTK_SPIN_PAGE_FORWARD: TGtkSpinType = 2;
-  GTK_SPIN_PAGE_BACKWARD: TGtkSpinType = 3;
-  GTK_SPIN_HOME: TGtkSpinType = 4;
-  GTK_SPIN_END: TGtkSpinType = 5;
-  GTK_SPIN_USER_DEFINED: TGtkSpinType = 6;
-
-type
   TGtkTargetFlags = Integer;
 const
   { GtkTargetFlags }
@@ -1267,48 +1371,12 @@ const
   GTK_TARGET_OTHER_WIDGET: TGtkTargetFlags = 8;
 
 type
-  TGtkWrapMode = Integer;
-const
-  { GtkWrapMode }
-  GTK_WRAP_NONE: TGtkWrapMode = 0;
-  GTK_WRAP_CHAR: TGtkWrapMode = 1;
-  GTK_WRAP_WORD: TGtkWrapMode = 2;
-  GTK_WRAP_WORD_CHAR: TGtkWrapMode = 3;
-
-type
   TGtkTextSearchFlags = Integer;
 const
   { GtkTextSearchFlags }
   GTK_TEXT_SEARCH_VISIBLE_ONLY: TGtkTextSearchFlags = 1;
   GTK_TEXT_SEARCH_TEXT_ONLY: TGtkTextSearchFlags = 2;
   GTK_TEXT_SEARCH_CASE_INSENSITIVE: TGtkTextSearchFlags = 4;
-
-type
-  TGtkTextBufferTargetInfo = Integer;
-const
-  { GtkTextBufferTargetInfo }
-  GTK_TEXT_BUFFER_TARGET_INFO_BUFFER_CONTENTS: TGtkTextBufferTargetInfo = -1;
-  GTK_TEXT_BUFFER_TARGET_INFO_RICH_TEXT: TGtkTextBufferTargetInfo = -2;
-  GTK_TEXT_BUFFER_TARGET_INFO_TEXT: TGtkTextBufferTargetInfo = -3;
-
-type
-  TGtkTextWindowType = Integer;
-const
-  { GtkTextWindowType }
-  GTK_TEXT_WINDOW_PRIVATE: TGtkTextWindowType = 0;
-  GTK_TEXT_WINDOW_WIDGET: TGtkTextWindowType = 1;
-  GTK_TEXT_WINDOW_TEXT: TGtkTextWindowType = 2;
-  GTK_TEXT_WINDOW_LEFT: TGtkTextWindowType = 3;
-  GTK_TEXT_WINDOW_RIGHT: TGtkTextWindowType = 4;
-  GTK_TEXT_WINDOW_TOP: TGtkTextWindowType = 5;
-  GTK_TEXT_WINDOW_BOTTOM: TGtkTextWindowType = 6;
-
-type
-  TGtkToolPaletteDragTargets = Integer;
-const
-  { GtkToolPaletteDragTargets }
-  GTK_TOOL_PALETTE_DRAG_ITEMS: TGtkToolPaletteDragTargets = 1;
-  GTK_TOOL_PALETTE_DRAG_GROUPS: TGtkToolPaletteDragTargets = 2;
 
 type
   TGtkToolbarSpaceStyle = Integer;
@@ -1324,24 +1392,6 @@ const
   GTK_TREE_VIEW_COLUMN_GROW_ONLY: TGtkTreeViewColumnSizing = 0;
   GTK_TREE_VIEW_COLUMN_AUTOSIZE: TGtkTreeViewColumnSizing = 1;
   GTK_TREE_VIEW_COLUMN_FIXED: TGtkTreeViewColumnSizing = 2;
-
-type
-  TGtkTreeViewDropPosition = Integer;
-const
-  { GtkTreeViewDropPosition }
-  GTK_TREE_VIEW_DROP_BEFORE: TGtkTreeViewDropPosition = 0;
-  GTK_TREE_VIEW_DROP_AFTER: TGtkTreeViewDropPosition = 1;
-  GTK_TREE_VIEW_DROP_INTO_OR_BEFORE: TGtkTreeViewDropPosition = 2;
-  GTK_TREE_VIEW_DROP_INTO_OR_AFTER: TGtkTreeViewDropPosition = 3;
-
-type
-  TGtkTreeViewGridLines = Integer;
-const
-  { GtkTreeViewGridLines }
-  GTK_TREE_VIEW_GRID_LINES_NONE: TGtkTreeViewGridLines = 0;
-  GTK_TREE_VIEW_GRID_LINES_HORIZONTAL: TGtkTreeViewGridLines = 1;
-  GTK_TREE_VIEW_GRID_LINES_VERTICAL: TGtkTreeViewGridLines = 2;
-  GTK_TREE_VIEW_GRID_LINES_BOTH: TGtkTreeViewGridLines = 3;
 
 type
   TGtkUIManagerItemType = Integer;
@@ -3502,11 +3552,6 @@ type
     n_args: guint;
     args: PGtkBindingArg;
   end;
-
-
-
-  PPGtkPathType = ^PGtkPathType;
-  PGtkPathType = ^TGtkPathType;
 
   PPGtkPathPriorityType = ^PGtkPathPriorityType;
   PGtkPathPriorityType = ^TGtkPathPriorityType;
@@ -6681,12 +6726,6 @@ type
     _gtk_reserved3: procedure; cdecl;
     _gtk_reserved4: procedure; cdecl;
   end;
-
-  PPGtkIMPreeditStyle = ^PGtkIMPreeditStyle;
-  PGtkIMPreeditStyle = ^TGtkIMPreeditStyle;
-
-  PPGtkIMStatusStyle = ^PGtkIMStatusStyle;
-  PGtkIMStatusStyle = ^TGtkIMStatusStyle;
 
   PPGtkIconFactory = ^PGtkIconFactory;
   PGtkIconFactory = ^TGtkIconFactory;
