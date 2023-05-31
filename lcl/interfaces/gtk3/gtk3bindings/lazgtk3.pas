@@ -322,6 +322,24 @@ type
     GTK_DEST_DEFAULT_ALL = 7,
     TGtkDestDefaultsMaxValue = $7FFFFFFF
   );
+  TGtkStateFlags = (
+    TGtkStateFlagsMinValue = -$7FFFFFFF,
+    GTK_STATE_FLAG_NORMAL = 0,
+    GTK_STATE_FLAG_ACTIVE = 1,
+    GTK_STATE_FLAG_PRELIGHT = 2,
+    GTK_STATE_FLAG_SELECTED = 4,
+    GTK_STATE_FLAG_INSENSITIVE = 8,
+    GTK_STATE_FLAG_INCONSISTENT = 16,
+    GTK_STATE_FLAG_FOCUSED = 32,
+    GTK_STATE_FLAG_BACKDROP = 64,
+    GTK_STATE_FLAG_DIR_LTR = 128,
+    GTK_STATE_FLAG_DIR_RTL = 256,
+    GTK_STATE_FLAG_LINK = 512,
+    GTK_STATE_FLAG_VISITED = 1024,
+    GTK_STATE_FLAG_CHECKED = 2048,
+    GTK_STATE_FLAG_DROP_ACTIVE = 4096,
+    TGtkStateFlagsMaxValue = $7FFFFFFF
+  );
   TGtkResponseType = (
     TGtkResponseTypeMinValue = -$7FFFFFFF,
     GTK_RESPONSE_HELP = -11,
@@ -416,21 +434,7 @@ type
   );
 
 type
-  TGtkStateFlags = Integer;
-const
-  { GtkStateFlags }
-  GTK_STATE_FLAG_NORMAL: TGtkStateFlags = 0;
-  GTK_STATE_FLAG_ACTIVE: TGtkStateFlags = 1;
-  GTK_STATE_FLAG_PRELIGHT: TGtkStateFlags = 2;
-  GTK_STATE_FLAG_SELECTED: TGtkStateFlags = 4;
-  GTK_STATE_FLAG_INSENSITIVE: TGtkStateFlags = 8;
-  GTK_STATE_FLAG_INCONSISTENT: TGtkStateFlags = 16;
-  GTK_STATE_FLAG_FOCUSED: TGtkStateFlags = 32;
-  GTK_STATE_FLAG_BACKDROP: TGtkStateFlags = 64;
-  GTK_STATE_FLAG_DIR_LTR: TGtkStateFlags = 128;
-  GTK_STATE_FLAG_DIR_RTL: TGtkStateFlags = 256;
 
-type
   TGtkAlign = Integer;
 const
   { GtkAlign }

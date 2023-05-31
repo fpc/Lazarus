@@ -2364,13 +2364,13 @@ begin
       with FWidget^ do
       begin
         for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
-          override_color(i, @AColor);
+          override_color(TGtkStateFlags(1 shl (i - 1)), @AColor);
       end;
     end;
     with GetContainerWidget^ do
     begin
       for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
-        override_color(i, @AColor);
+        override_color(TGtkStateFlags(1 shl (i - 1)), @AColor);
     end;
   end;
 end;
@@ -2420,7 +2420,7 @@ begin
             ARgba.blue := FWidgetRGBA[i].B;
             ARgba.alpha := FWidgetRGBA[i].Alpha;
           end;
-          FWidget^.override_background_color(i, @ARgba);
+          FWidget^.override_background_color(TGtkStateFlags(1 shl (i - 1)), @ARgba);
         end;
       end;
     end;
@@ -2437,7 +2437,7 @@ begin
           ARgba.blue := FCentralWidgetRGBA[i].B;
           ARgba.alpha := FCentralWidgetRGBA[i].Alpha;
         end;
-        GetContainerWidget^.override_background_color(i, @ARgba);
+        GetContainerWidget^.override_background_color(TGtkStateFlags(1 shl (i - 1)), @ARgba);
       end;
     end;
   end;
@@ -2451,9 +2451,9 @@ begin
       begin
         for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
           if AValue = clDefault then
-            override_background_color(i, nil)
+            override_background_color(TGtkStateFlags(1 shl (i - 1)), nil)
           else
-            override_background_color(i, @AColor);
+            override_background_color(TGtkStateFlags(1 shl (i - 1)), @AColor);
       end;
     end;
     with GetContainerWidget^ do
@@ -2461,9 +2461,9 @@ begin
       for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
       begin
         if AValue = clDefault then
-          override_background_color(i, nil)
+          override_background_color(TGtkStateFlags(1 shl (i - 1)), nil)
         else
-          override_background_color(i, @AColor);
+          override_background_color(TGtkStateFlags(1 shl (i - 1)), @AColor);
       end;
     end;
   end;
@@ -2514,7 +2514,7 @@ begin
   if IsWidgetOK then
   begin
     AStyle := GetStyleContext;
-    AStyle^.get_background_color(GTK_STATE_NORMAL, @AGdkRGBA);
+    AStyle^.get_background_color(GTK_STATE_FLAG_NORMAL, @AGdkRGBA);
     Result := TGdkRGBAToTColor(AGdkRGBA);
   end;
 end;
@@ -2528,7 +2528,7 @@ begin
   if IsWidgetOK then
   begin
     AStyle := GetStyleContext;
-    AStyle^.get_background_color(GTK_STATE_NORMAL, @AColor);
+    AStyle^.get_background_color(GTK_STATE_FLAG_NORMAL, @AColor);
     Result := TGdkRGBAToTColor(AColor);
   end;
 end;
@@ -2691,7 +2691,7 @@ begin
 
   for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
   begin
-    FWidget^.get_style_context^.get_background_color(i, @ARgba);
+    FWidget^.get_style_context^.get_background_color(TGtkStateFlags(1 shl (i - 1)), @ARgba);
     with FWidgetRGBA[i] do
     begin
       R := ARgba.red;
@@ -2707,7 +2707,7 @@ begin
     g_signal_connect_data(FCentralWidget, 'event', TGCallback(@Gtk3WidgetEvent), Self, nil, G_CONNECT_DEFAULT);
     for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
     begin
-      FCentralWidget^.get_style_context^.get_background_color(i, @ARgba);
+      FCentralWidget^.get_style_context^.get_background_color(TGtkStateFlags(1 shl (i - 1)), @ARgba);
       with FCentralWidgetRGBA[i] do
       begin
         R := ARgba.red;
@@ -5163,7 +5163,7 @@ begin
 
   if Msg.Scrollcode = SB_THUMBTRACK then
   begin
-    if Widget^.get_state_flags = GTK_STATE_NORMAL then
+    if Widget^.get_state_flags = GTK_STATE_FLAG_NORMAL then
     begin
       Msg.ScrollCode := SB_THUMBPOSITION;
       DeliverMessage(AData.LCLObject, Msg);
