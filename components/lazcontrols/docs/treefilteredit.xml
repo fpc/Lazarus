@@ -83,6 +83,26 @@ defines an event handler used to determine whether a tree node can be used in
 a TTreeFilterEdit control. TFilterNodeEvent is the type used to implement the 
 OnFilterNode property in TTreeFilterEdit.
 </p>
+<p>
+TFilterNodeEvent can be used to determine whether a specific tree node is 
+visible (or matches a filter value) using criteria other than the text or data 
+for the TTreeNode instance.
+</p>
+<p>
+<var>ItemNode</var> is the <var>TTreeNode</var> instance examined in the 
+handler, and provides access to its properties and methods.
+</p>
+<p>
+<var>Done</var> is an output parameter which indicates whether the tree node 
+was examined in the handler routine. Set Done to <b>True</b> if the node was 
+used or examined in the handler. Set Done to <b>False</b> if the node was not 
+/ could not be handled in the routine.
+</p>
+<p>
+Set the return value to indicate whether ItemNode matched the filter value and 
+is visible in its filtered tree view control. Its value is significant when 
+Done is set to <b>True</b>.
+</p>
 </descr>
 <seealso>
 <link id="TTreeFilterEdit.OnFilterNode"/>
@@ -90,7 +110,7 @@ OnFilterNode property in TTreeFilterEdit.
 </element>
 <element name="TFilterNodeEvent.Result">
 <short>
-<b>True</b> if the specified tree node can be used.
+<b>True</b> if the specified tree node can be used for the Filter value.
 </short>
 </element>
 <element name="TFilterNodeEvent.ItemNode">
@@ -101,7 +121,8 @@ Tree node examined in the handler routine.
 <element name="TFilterNodeEvent.Done">
 <short>
 <b>True</b> if the node was handled in the routine. <b>False</b> if the node 
-was ignored in the handler.
+was ignored in the handler. The return value is significant when Done is set 
+to <b>True</b>.
 </short>
 </element>
 
@@ -325,7 +346,7 @@ Implements a filter edit control for an associated TTreeView control.
 <p>
 This control has 2 different modes of operation. One mode maintains and 
 filters sub-items of root-nodes in a tree. The other mode filters the whole 
-tree using the  TreeNode.Visible property for each of the nodes.
+tree using the TreeNode.Visible property for each of the nodes.
 </p>
 <p>
 <b>Mode 1</b>: Sub-branches under root nodes Items for each branch are 
@@ -334,7 +355,7 @@ maintained in a TTreeFilterBranch class instance.
 <p>
 <b>Mode 2</b>: A whole tree When no branches are defined (no calls made to 
 GetBranch), the TreeFilterEdit control filters the whole tree automatically. 
-It uses each TreeNode's Visible property to show/hide it.
+It uses the Visible property in the TTreeNode instances to show/hide it.
 </p>
 </descr>
 </element>
@@ -361,7 +382,14 @@ It uses each TreeNode's Visible property to show/hide it.
 Performs actions needed when the specified component is added to or removed 
 from the control.
 </short>
-<descr/>
+<descr>
+<p>
+<var>Notification</var> frees event handlers and other resources allocated for 
+the FilteredTreeview property when the TCustomTreeview component is removed 
+in the class instance. It also frees and <b>Nil</b>s resources allocated to 
+the internal TBranchList instance in the control.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TTreeFilterEdit.Notification.AComponent">
@@ -380,7 +408,12 @@ Operation for the specified component.
 Moves to and optionally selects the next node in the associated tree view 
 control.
 </short>
-<descr/>
+<descr>
+<p>
+Implements the abstract virtual method introduced in the 
+TCustomControlFilterEdit ancestor.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TTreeFilterEdit.MoveNext.ASelect">
@@ -395,7 +428,12 @@ control.
 Moves to and optionally selects the previous node in the associated tree view 
 control.
 </short>
-<descr/>
+<descr>
+<p>
+Implements the abstract virtual method introduced in the 
+TCustomControlFilterEdit ancestor.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TTreeFilterEdit.MovePrev.ASelect">
@@ -410,7 +448,12 @@ control.
 Moves the associated tree view control by one page in the upward direction, 
 and optionally selects the first node.
 </short>
-<descr/>
+<descr>
+<p>
+Implements the abstract virtual method introduced in the 
+TCustomControlFilterEdit ancestor.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TTreeFilterEdit.MovePageUp.ASelect">
@@ -425,7 +468,12 @@ control.
 Moves the associated tree view control by one page in the downward direction, 
 and optionally selects the first node.
 </short>
-<descr/>
+<descr>
+<p>
+Implements the abstract virtual method introduced in the 
+TCustomControlFilterEdit ancestor.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TTreeFilterEdit.MovePageDown.ASelect">
@@ -439,7 +487,12 @@ control.
 <short>
 Moves the tree view control to the first (or root) node in the tree.
 </short>
-<descr/>
+<descr>
+<p>
+Implements the abstract virtual method introduced in the 
+TCustomControlFilterEdit ancestor.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TTreeFilterEdit.MoveHome.ASelect">
@@ -453,7 +506,12 @@ control.
 <short>
 Moves the tree view control to the last node in the tree.
 </short>
-<descr/>
+<descr>
+<p>
+Implements the abstract virtual method introduced in the 
+TCustomControlFilterEdit ancestor.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TTreeFilterEdit.MoveEnd.ASelect">
@@ -465,10 +523,15 @@ control.
 
 <element name="TTreeFilterEdit.ReturnKeyHandled">
 <short>
-Indicates if a Return key in the Edit control was forwarded to the associated 
-tree view.
+Indicates if a Return key in the Edit control was forwarded to the OnKeyPress 
+event handler for the associated tree view.
 </short>
-<descr/>
+<descr>
+<p>
+Implements the abstract virtual method introduced in the 
+TCustomControlFilterEdit ancestor.
+</p>
+</descr>
 <seealso>
 <link id="TTreeFilterEdit.FilteredTreeview"/>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.EditKeyDown">TCustomControlFilterEdit.EditKeyDown</link>
@@ -482,10 +545,23 @@ tree view.
 
 <element name="TTreeFilterEdit.SortAndFilter">
 <short>
-Sorts and filters either branches or the whole tree depending on operation 
+Sorts and filters either branches or the whole tree depending on the operation 
 mode for the control.
 </short>
-<descr/>
+<descr>
+<p>
+<var>SortAndFilter</var> is an overridden method in <var>TTreeFilterEdit</var> 
+which implements the abstract virtual method introduced in the 
+TCustomControlFilterEdit ancestor. It ensures that the SortAndFilter method in 
+TTreeFilterBranch instances is called to sort and filter selected branches in 
+the control (when assigned). If the internal TBranchList has not been 
+assigned, the ApplyFilterCore method is called to filter the entire tree.
+</p>
+<p>
+SortAndFilter is called (from the ancestor class) when the value in Filter is 
+applied to the nodes in the tree.
+</p>
+</descr>
 <seealso>
 <link id="TTreeFilterEdit.GetCleanBranch"/>
 <link id="TTreeFilterEdit.GetExistingBranch"/>
@@ -724,21 +800,60 @@ tree nodes.
 <short>
 List of selected items in the FilteredTreeview control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>SelectionList</var> is a read-only <var>TStringList</var> property with 
+the list of selected items in the <var>FilteredTreeview</var> control. It is 
+used to save and restore selected item(s) when the Filter is (re)applied to 
+the items for the control.
+</p>
+<p>
+An existing value in SelectionList is cleared prior to saving a new tree node 
+in the StoreSelection method. The value in SelectionList is used in the 
+RestoreSelection method to locate the node and restore it to the Selected 
+property in FilteredTreeview. The current implementation does not handle 
+multiple selections in the property; a single selected tree node can be stored 
+or restored using the property.
+</p>
+</descr>
+<seealso>
+<link id="TTreeFilterEdit.StoreSelection"/>
+<link id="TTreeFilterEdit.RestoreSelection"/>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
+<link id="#lcl.comctrls.TCustomTreeView.Selected">TCustomTreeView.Selected</link>
+<link id="#rtl.classes.TStringList">TStringList</link>
+</seealso>
 </element>
 
 <element name="TTreeFilterEdit.ShowDirHierarchy">
 <short>
-When a filtered text is a directory name, it is split and shown as a tree 
+When filtered text is a directory name, it is split and shown as a tree 
 structure.
 </short>
 <descr>
 <p>
-This has effect only in the "sub-branches" mode. The "whole tree" mode uses 
-the existing tree nodes as is and only changes their visibility.
+<var>ShowDirHierarchy</var> is a <var>Boolean</var> property which determines 
+whether directories and / or files are displayed using a tree structure. It is 
+used when the SortAndFilter method is called to sort original data into the 
+sorted order used when applying the Filter value for the control.
+</p>
+<p>
+ShowDirHierarchy has effect only in the "sub-branches" mode. The "whole tree" 
+mode uses the existing tree nodes as is and only changes their visibility.
+</p>
+<p>
+Changing the value for the property causes the InvalidateFilter method to be 
+called. An Exception is raised if a TCustomTreeView instance has not been 
+assigned to the FilteredTreeView property.
 </p>
 </descr>
+<seealso>
+<link id="TTreeFilterEdit.FilteredTreeview"/>
+<link id="TTreeFilterEdit.SortAndFilter"/>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.FilterOptions">TCustomControlFilterEdit.FilterOptions</link>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.InvalidateFilter">TCustomControlFilterEdit.InvalidateFilter</link>
+</seealso>
 </element>
 
 <element name="TTreeFilterEdit.FilteredTreeview">
@@ -752,7 +867,7 @@ associated tree view for the filter control. FilteredTreeview is used to
 display the tree nodes which match the Filter for the control. Assigning a new 
 value to the property causes the InternalSetFilter method to be called to 
 update the Button for the control and apply the Filter to the tree nodes using 
-the value in Text and the OnFilterNodes event handler.
+the value in Text and the OnFilterNode and OnFilterItem event handlers.
 </p>
 </descr>
 <seealso/>
@@ -771,9 +886,37 @@ are found. This setting only affects the initial state.
 
 <element name="TTreeFilterEdit.OnGetImageIndex">
 <short>
-ImageIndex can be queried while filtering based on the node data.
+Gets the ordinal position for the image displayed for a node on the control.
 </short>
-<descr/>
+<descr>
+<p>
+<var>OnGetImageIndex</var> is a <var>TImageIndexEvent</var> property with the 
+event handler signalled to get the position for the image used for a tree node 
+displayed on the control. The event handler includes the following arguments:
+</p>
+<dl>
+<dt>Str</dt>
+<dd>
+Text for the tree node.
+</dd>
+<dt>Data</dt>
+<dd>
+Object instance with the data for the tree node.
+</dd>
+<dt>AIsEnabled</dt>
+<dd>
+Variable parameter which indicates whether the tree node is enabled on the 
+control. <b>True</b> when enabled, otherwise <b>False</b>.
+</dd>
+</dl>
+<p>
+OnGetImageIndex is signalled (when assigned) from the ApplyFilter method in 
+TTreeFilterBranch. The return value provides the value stored in the 
+ImageIndex property for the TTreeNode instance, and refers to the ordinal 
+position in the Images property for the control. -1 indicates that an image 
+(and its position) could not be determined using the specified argument values.
+</p>
+</descr>
 <seealso/>
 </element>
 
@@ -782,8 +925,36 @@ ImageIndex can be queried while filtering based on the node data.
 Event handler signalled to determine if a tree node matches the Filter for 
 the control.
 </short>
-<descr/>
+<descr>
+<p>
+<var>OnFilterNode</var> is a <var>TFilterNodeEvent</var> property with the 
+event handler signalled to determine whether a tree node matches the Filter 
+value for the control. The event handler is signalled (when assigned) when the 
+filter value is recursively applied to tree nodes to determine which are 
+visible in the FilteredTreeView. It allows user-specified criteria other than 
+the text or data for the node to be used to determine node visibility.
+</p>
+<p>
+OnFilterNode is signalled when the ApplyFilterCore method is executed, and 
+occurs after setting the value in Filter property or when the SortAndFilter 
+method is called. An application must implement and assign a handler using the 
+signature in TFilterNodeEvent to determine the visibility for a tree node and 
+its child nodes.
+</p>
+<p>
+OnFilterNode is signalled before the OnFilterItem event handler. The Done 
+output parameter indicates whether the node was processed in the event 
+handler. The return value indicates whether the node is visible (matches the 
+filter). If the Done argument is set to <b>False</b>, the OnFilterItem event 
+handler is signalled to check visibility for the node using its text and data. 
+If the Done argument is set to <b>True</b>, the OnFilterItem handler is not 
+signalled and the return value from the handler determines the visibility for 
+the node.
+</p>
+</descr>
 <seealso>
+<link id="TTreeFilterEdit.FilteredTreeview"/>
+<link id="TFilterNodeEvent"/>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.Filter">TCustomControlFilterEdit.Filter</link>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.DoFilterItem">TCustomControlFilterEdit.DoFilterItem</link>
 <link id="#lcl.editbtn.TCustomControlFilterEdit.OnFilterItemEx">TCustomControlFilterEdit.OnFilterItemEx</link>
@@ -792,23 +963,25 @@ the control.
 </element>
 
 <element name="TTFENodeData">
-<short/>
+<short>
+Base class used to represent a tree node and the branch where it is stored.
+</short>
 <descr>
-TreeFilterEditNodeData.
+<p>
+TreeFilterEditNodeData is the ancestor for the TFileNameItem type.
+</p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TTreeNode"/>
+<link id="TTreeFilterBranch"/>
+<link id="TFileNameItem"/>
+</seealso>
 </element>
-
 <element name="TTFENodeData.Node">
-<short/>
-<descr/>
-<seealso/>
+<short>Tree node for the class instance.</short>
 </element>
-
 <element name="TTFENodeData.Branch">
-<short/>
-<descr/>
-<seealso/>
+<short>Branch where the tree node is stored.</short>
 </element>
 
 <element name="TFileNameItem">
@@ -816,7 +989,9 @@ TreeFilterEditNodeData.
 Stores information about a file name and the tree node which represents it.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTFENodeData"/>
+</seealso>
 </element>
 <element name="TFileNameItem.Data">
 <short>
@@ -852,6 +1027,6 @@ Value assigned to the Data member.
 </element>
 
 </module>
-
+<!-- TreeFilterEdit -->
 </package>
 </fpdoc-descriptions>
