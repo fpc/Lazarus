@@ -5,12 +5,12 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-05-28 18:06+0300\n"
+"PO-Revision-Date: 2023-06-01 01:34+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 2.4.3\n"
 
 #: lazarusidestrconsts.dbgeventbreakaddressbreakpoint
 #, object-pascal-format
@@ -3650,6 +3650,18 @@ msgstr "Только файлы, принадлежащие проекту"
 msgid "Save in"
 msgstr "Сохранить в"
 
+#: lazarusidestrconsts.dlgscrollbarpasteolfixed
+msgid "Force 1024 columns minimum for horizontal scrollbar"
+msgstr "Задать минимум пространства по горизонтали в 1024 столбца"
+
+#: lazarusidestrconsts.dlgscrollbarpasteolnone
+msgid "Do not add any permanent space to horizontal scrollbar"
+msgstr "Не добавлять пространства по горизонтали"
+
+#: lazarusidestrconsts.dlgscrollbarpasteolpage
+msgid "Always add one page to horizontal scrollbar"
+msgstr "Всегда добавлять одну страницу к пространству по горизонтали"
+
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
 msgstr "Прокручивать на строку меньше"
@@ -3668,16 +3680,8 @@ msgid "Scroll past end of file"
 msgstr "Прокручивать за конец файла"
 
 #: lazarusidestrconsts.dlgscrollpastendline
-msgid "Always increase scroll range (large)"
-msgstr "Всегда увеличивать область прокрутки (намного)"
-
-#: lazarusidestrconsts.dlgscrollpastendlinecaret
-msgid "Auto increase/decrease scroll range"
-msgstr "Автоматически увеличивать/уменьшать область прокрутки"
-
-#: lazarusidestrconsts.dlgscrollpastendlinepage
-msgid "Always increase scroll range (one page)"
-msgstr "Всегда увеличивать область прокрутки (на одну страницу)"
+msgid "Allow Caret to move past the end of line"
+msgstr "Разрешать выход курсора за конец строки"
 
 #: lazarusidestrconsts.dlgseachdirectorynotfound
 #, object-pascal-format

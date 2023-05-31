@@ -3655,6 +3655,18 @@ msgstr "Vain tähän projektiin kuuluvat tiedostot."
 msgid "Save in"
 msgstr ""
 
+#: lazarusidestrconsts.dlgscrollbarpasteolfixed
+msgid "Force 1024 columns minimum for horizontal scrollbar"
+msgstr ""
+
+#: lazarusidestrconsts.dlgscrollbarpasteolnone
+msgid "Do not add any permanent space to horizontal scrollbar"
+msgstr ""
+
+#: lazarusidestrconsts.dlgscrollbarpasteolpage
+msgid "Always add one page to horizontal scrollbar"
+msgstr ""
+
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
 msgstr "Vieritä yksi vähemmän"
@@ -3675,16 +3687,8 @@ msgstr "Vieritä tiedostoa sen lopun yli"
 #: lazarusidestrconsts.dlgscrollpastendline
 #, fuzzy
 #| msgid "Allow caret to move past end of line"
-msgid "Always increase scroll range (large)"
+msgid "Allow Caret to move past the end of line"
 msgstr "Salli kursorin liikkua yli rivin lopun"
-
-#: lazarusidestrconsts.dlgscrollpastendlinecaret
-msgid "Auto increase/decrease scroll range"
-msgstr ""
-
-#: lazarusidestrconsts.dlgscrollpastendlinepage
-msgid "Always increase scroll range (one page)"
-msgstr ""
 
 #: lazarusidestrconsts.dlgseachdirectorynotfound
 #, object-pascal-format

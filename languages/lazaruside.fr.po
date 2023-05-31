@@ -3667,6 +3667,18 @@ msgstr "Seulement les fichiers de ce projet."
 msgid "Save in"
 msgstr "Enregistrer dans"
 
+#: lazarusidestrconsts.dlgscrollbarpasteolfixed
+msgid "Force 1024 columns minimum for horizontal scrollbar"
+msgstr ""
+
+#: lazarusidestrconsts.dlgscrollbarpasteolnone
+msgid "Do not add any permanent space to horizontal scrollbar"
+msgstr ""
+
+#: lazarusidestrconsts.dlgscrollbarpasteolpage
+msgid "Always add one page to horizontal scrollbar"
+msgstr ""
+
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
 msgstr "Faire défiler d'un de moins"
@@ -3687,16 +3699,8 @@ msgstr "Défilement après la fin du fichier"
 #: lazarusidestrconsts.dlgscrollpastendline
 #, fuzzy
 #| msgid "Allow caret to move past end of line"
-msgid "Always increase scroll range (large)"
+msgid "Allow Caret to move past the end of line"
 msgstr "Autoriser le curseur à franchir la fin de ligne"
-
-#: lazarusidestrconsts.dlgscrollpastendlinecaret
-msgid "Auto increase/decrease scroll range"
-msgstr ""
-
-#: lazarusidestrconsts.dlgscrollpastendlinepage
-msgid "Always increase scroll range (one page)"
-msgstr ""
 
 #: lazarusidestrconsts.dlgseachdirectorynotfound
 #, object-pascal-format
