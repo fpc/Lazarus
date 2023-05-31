@@ -101,6 +101,25 @@ begin
   CleanDirectoryDialog.Free;
 end;
 
+function AddComboTextToRecentList(cb: TCombobox; aMax: integer;
+  ListType: TRecentListType): boolean;
+var
+  List: TStringList;
+begin
+  List:=TStringList.Create;
+  try
+    List.Assign(cb.Items);
+    Result:=AddToRecentList(cb.Text,List,aMax,ListType);
+    if Result then
+    begin
+      cb.Items.Assign(List);
+      cb.ItemIndex:=0;
+    end;
+  finally
+    List.Free;
+  end;
+end;
+
 { TCleanDirectoryDialog }
 
 procedure TCleanDirectoryDialog.OkButtonClick(Sender: TObject);

@@ -33,8 +33,6 @@ procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStrings;
                          const Path: string; aMax: Integer); overload;
 function AddToRecentList(const s: string; List: TStrings; aMax: integer;
                          ListType: TRecentListType): boolean;
-function AddComboTextToRecentList(cb: TComboBox; aMax: integer;
-                                  ListType: TRecentListType): boolean;
 procedure RemoveFromRecentList(const s: string; List: TStrings;
                                ListType: TRecentListType);
 procedure CleanUpRecentList(List: TStrings; ListType: TRecentListType);
@@ -110,25 +108,6 @@ begin
   if aMax>0 then
     while List.Count>aMax do
       List.Delete(List.Count-1);
-end;
-
-function AddComboTextToRecentList(cb: TCombobox; aMax: integer;
-  ListType: TRecentListType): boolean;
-var
-  List: TStringList;
-begin
-  List:=TStringList.Create;
-  try
-    List.Assign(cb.Items);
-    Result:=AddToRecentList(cb.Text,List,aMax,ListType);
-    if Result then
-    begin
-      cb.Items.Assign(List);
-      cb.ItemIndex:=0;
-    end;
-  finally
-    List.Free;
-  end;
 end;
 
 procedure RemoveFromRecentList(const s: string; List: TStrings;
