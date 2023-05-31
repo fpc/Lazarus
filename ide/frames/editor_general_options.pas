@@ -44,8 +44,9 @@ type
   TEditorGeneralOptionsFrame = class(TAbstractIDEOptionsEditor)
     CaretScrollGroupDivider: TDividerBevel;
     CaretMoveClearsSelectionCheckBox: TCheckBox;
-    ScrollPastEndLineCheckBoxCaret: TCheckBox;
-    ScrollPastEndLineCheckBoxPage: TCheckBox;
+    rbExtraHScrollNone: TRadioButton;
+    rbExtraHScrollPage: TRadioButton;
+    rbExtraHScrollFixed: TRadioButton;
     SelectAllNoScrollCheckBox: TCheckBox;
     PersistentCursorNoBlinkCheckBox: TCheckBox;
     chkMultiCaretColumnMode: TCheckBox;
@@ -69,7 +70,7 @@ type
     PersistentBlockCheckBox: TCheckBox;
     HalfPageScrollCheckBox: TCheckBox;
     ScrollPastEndFileCheckBox: TCheckBox;
-    ScrollPastEndLineCheckBox: TCheckBox;
+    CaretPastEndLineCheckBox: TCheckBox;
     ScrollByOneLessCheckBox: TCheckBox;
     UndoAfterSaveCheckBox: TCheckBox;
     GroupUndoCheckBox: TCheckBox;
@@ -91,9 +92,7 @@ type
     procedure PersistentCursorNoBlinkCheckBoxChange(Sender: TObject);
     procedure ScrollByOneLessCheckBoxChange(Sender: TObject);
     procedure ScrollPastEndFileCheckBoxChange(Sender: TObject);
-    procedure ScrollPastEndLineCheckBoxCaretChange(Sender: TObject);
-    procedure ScrollPastEndLineCheckBoxChange(Sender: TObject);
-    procedure ScrollPastEndLineCheckBoxPageChange(Sender: TObject);
+    procedure CaretPastEndLineCheckBoxChange(Sender: TObject);
   private
     FDialog: TAbstractOptionsEditorDialog;
     FPasExtendedKeywordsMode: Boolean;
@@ -149,14 +148,17 @@ begin
   HalfPageScrollCheckBox.Caption := dlgHalfPageScroll;
   ScrollByOneLessCheckBox.Caption := dlgScrollByOneLess;
   ScrollPastEndFileCheckBox.Caption := dlgScrollPastEndFile;
-  ScrollPastEndLineCheckBox.Caption := dlgScrollPastEndLine;
-  ScrollPastEndLineCheckBoxPage.Caption := dlgScrollPastEndLinePage;
-  ScrollPastEndLineCheckBoxCaret.Caption := dlgScrollPastEndLineCaret;
   chkScrollHint.Caption := dlgScrollHint;
+
+  // caret past eol
+  CaretScrollGroupDivider.Caption := dlgCaretScrollGroupOptions;
+  CaretPastEndLineCheckBox.Caption := dlgScrollPastEndLine;
+  rbExtraHScrollNone.Caption := dlgScrollBarPastEOLNone;
+  rbExtraHScrollPage.Caption := dlgScrollBarPastEOLPage;
+  rbExtraHScrollFixed.Caption := dlgScrollBarPastEOLFixed;
 
   // caret + key navigation
   CaretGroupDivider.Caption := dlgCaretGroupOptions;
-  CaretScrollGroupDivider.Caption := dlgCaretScrollGroupOptions;
   KeepCursorXCheckBox.Caption := dlgKeepCursorX;
   PersistentCursorCheckBox.Caption := dlgPersistentCursor;
   PersistentCursorNoBlinkCheckBox.Caption := dlgPersistentCursorNoBlink;
@@ -197,10 +199,16 @@ begin
     HalfPageScrollCheckBox.Checked := eoHalfPageScroll in SynEditOptions;
     ScrollByOneLessCheckBox.Checked := eoScrollByOneLess in SynEditOptions;
     ScrollPastEndFileCheckBox.Checked := eoScrollPastEoF in SynEditOptions;
-    ScrollPastEndLineCheckBox.Checked := eoScrollPastEoL in SynEditOptions;
-    ScrollPastEndLineCheckBoxPage.Checked := eoScrollPastEolAddPage in SynEditOptions2;
-    ScrollPastEndLineCheckBoxCaret.Checked := eoScrollPastEolAutoCaret in SynEditOptions2;
     chkScrollHint.Checked := eoShowScrollHint in SynEditOptions;
+
+    // caret past eol
+    CaretPastEndLineCheckBox.Checked := eoScrollPastEoL in SynEditOptions;
+    rbExtraHScrollNone.Enabled := CaretPastEndLineCheckBox.Checked;
+    rbExtraHScrollPage.Enabled := CaretPastEndLineCheckBox.Checked;
+    rbExtraHScrollFixed.Enabled := CaretPastEndLineCheckBox.Checked;
+    rbExtraHScrollNone.Checked  := ScrollPastEolMode = optScrollNone;
+    rbExtraHScrollPage.Checked  := ScrollPastEolMode = optScrollPage;
+    rbExtraHScrollFixed.Checked := ScrollPastEolMode = optScrollFixed;
 
     // cursor
     KeepCursorXCheckBox.Checked := eoKeepCaretX in SynEditOptions;
@@ -265,10 +273,13 @@ begin
     UpdateOptionFromBool(HalfPageScrollCheckBox.Checked, eoHalfPageScroll);
     UpdateOptionFromBool(ScrollByOneLessCheckBox.Checked, eoScrollByOneLess);
     UpdateOptionFromBool(ScrollPastEndFileCheckBox.Checked, eoScrollPastEoF);
-    UpdateOptionFromBool(ScrollPastEndLineCheckBox.Checked, eoScrollPastEoL);
-    UpdateOptionFromBool(ScrollPastEndLineCheckBoxPage.Checked, eoScrollPastEolAddPage);
-    UpdateOptionFromBool(ScrollPastEndLineCheckBoxCaret.Checked, eoScrollPastEolAutoCaret);
     UpdateOptionFromBool(chkScrollHint.Checked, eoShowScrollHint);
+
+    // caret past eol
+    UpdateOptionFromBool(CaretPastEndLineCheckBox.Checked, eoScrollPastEoL);
+    if rbExtraHScrollNone.Checked then ScrollPastEolMode := optScrollNone;
+    if rbExtraHScrollPage.Checked then ScrollPastEolMode := optScrollPage;
+    if rbExtraHScrollFixed.Checked then ScrollPastEolMode := optScrollFixed;
 
     // cursor
     UpdateOptionFromBool(KeepCursorXCheckBox.Checked, eoKeepCaretX);
@@ -427,22 +438,16 @@ begin
   SetPreviewOption(ScrollPastEndFileCheckBox.Checked, eoScrollPastEoF);
 end;
 
-procedure TEditorGeneralOptionsFrame.ScrollPastEndLineCheckBoxCaretChange(
+procedure TEditorGeneralOptionsFrame.CaretPastEndLineCheckBoxChange(
   Sender: TObject);
 begin
-  SetPreviewOption(ScrollPastEndLineCheckBoxCaret.Checked, eoScrollPastEolAutoCaret);
-end;
+  SetPreviewOption(CaretPastEndLineCheckBox.Checked, eoScrollPastEolAutoCaret);
+  SetPreviewOption(CaretPastEndLineCheckBox.Checked and rbExtraHScrollPage.Checked, eoScrollPastEolAddPage);
+  SetPreviewOption(CaretPastEndLineCheckBox.Checked and rbExtraHScrollFixed.Checked, eoScrollPastEoL);
 
-procedure TEditorGeneralOptionsFrame.ScrollPastEndLineCheckBoxChange(
-  Sender: TObject);
-begin
-  SetPreviewOption(ScrollPastEndLineCheckBox.Checked, eoScrollPastEoL);
-end;
-
-procedure TEditorGeneralOptionsFrame.ScrollPastEndLineCheckBoxPageChange(
-  Sender: TObject);
-begin
-  SetPreviewOption(ScrollPastEndLineCheckBoxPage.Checked, eoScrollPastEolAddPage);
+  rbExtraHScrollNone.Enabled := CaretPastEndLineCheckBox.Checked;
+  rbExtraHScrollPage.Enabled := CaretPastEndLineCheckBox.Checked;
+  rbExtraHScrollFixed.Enabled := CaretPastEndLineCheckBox.Checked;
 end;
 
 function TEditorGeneralOptionsFrame.DefaultBookmarkImages: TCustomImageList;

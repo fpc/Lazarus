@@ -1393,6 +1393,8 @@ type
     property UseGlobalIDECommandList: Boolean read FUseGlobalIDECommandList write FUseGlobalIDECommandList;
   end;
 
+  TEditorOptsScrollPastEolMode = (optScrollFixed, optScrollPage, optScrollNone);
+
   { TEditorOptionsBase }
 
   TEditorOptionsBase = class(TIDEEditorOptions)
@@ -1455,6 +1457,7 @@ type
     // Scroll
     FScrollOnEditLeftOptions: TSynScrollOnEditLeftOptions;
     FScrollOnEditRightOptions: TSynScrollOnEditRightOptions;
+    FScrollPastEolMode: TEditorOptsScrollPastEolMode;
     procedure InitForRttiXmlConf;
   protected
     function GetTabPosition: TTabPosition; override;
@@ -1555,6 +1558,7 @@ type
       read FScrollOnEditLeftOptions write FScrollOnEditLeftOptions;
     property ScrollOnEditRightOptions: TSynScrollOnEditRightOptions
       read FScrollOnEditRightOptions write FScrollOnEditRightOptions;
+    property ScrollPastEolMode: TEditorOptsScrollPastEolMode read FScrollPastEolMode write FScrollPastEolMode default optScrollFixed;
   end;
 
   { TEditorOptionsDefaults }
@@ -4768,6 +4772,8 @@ begin
   FStringBreakEnabled := False;
   FStringBreakAppend  := ' +';
   FStringBreakPrefix  := '';
+
+  FScrollPastEolMode := optScrollFixed;
 end;
 
 function TEditorOptionsBase.GetTabPosition: TTabPosition;
@@ -4948,8 +4954,7 @@ begin
           SynEditOptName := 'OverwriteBlock';
         eoAutoHideCursor:
           SynEditOptName := 'AutoHideCursor';
-        eoCaretMoveEndsSelection, eoPersistentCaretStopBlink, eoNoScrollOnSelectRange,
-        eoScrollPastEolAddPage, eoScrollPastEolAutoCaret:
+        eoCaretMoveEndsSelection, eoPersistentCaretStopBlink, eoNoScrollOnSelectRange:
           WriteStr(SynEditOptName, SynEditOpt2);
         else
           SynEditOptName := '';
@@ -5165,8 +5170,7 @@ begin
           SynEditOptName := 'OverwriteBlock';
         eoAutoHideCursor:
           SynEditOptName := 'AutoHideCursor';
-        eoCaretMoveEndsSelection, eoPersistentCaretStopBlink, eoNoScrollOnSelectRange,
-        eoScrollPastEolAddPage, eoScrollPastEolAutoCaret:
+        eoCaretMoveEndsSelection, eoPersistentCaretStopBlink, eoNoScrollOnSelectRange:
           WriteStr(SynEditOptName, SynEditOpt2);
         else
           SynEditOptName := '';
@@ -5883,6 +5887,20 @@ begin
   try
     ASynEdit.Options := fSynEditOptions;
     ASynEdit.Options2 := fSynEditOptions2;
+
+    if eoScrollPastEol in fSynEditOptions then
+    case FScrollPastEolMode of
+      optScrollFixed: ASynEdit.Options2 := ASynEdit.Options2 + [eoScrollPastEolAutoCaret];
+      optScrollPage: begin
+          ASynEdit.Options  := ASynEdit.Options  - [eoScrollPastEol];
+          ASynEdit.Options2 := ASynEdit.Options2 + [eoScrollPastEolAddPage, eoScrollPastEolAutoCaret];
+        end;
+      optScrollNone: begin
+          ASynEdit.Options  := ASynEdit.Options  - [eoScrollPastEol];
+          ASynEdit.Options2 := ASynEdit.Options2 + [eoScrollPastEolAutoCaret];
+        end;
+    end;
+
     ASynEdit.BlockIndent := fBlockIndent;
     ASynEdit.BlockTabIndent := FBlockTabIndent;
     (ASynEdit.Beautifier as TSynBeautifier).IndentType := fBlockIndentType;

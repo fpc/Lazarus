@@ -80,17 +80,17 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     OnChange = ScrollPastEndFileCheckBoxChange
     TabOrder = 3
   end
-  object ScrollPastEndLineCheckBox: TCheckBox
+  object CaretPastEndLineCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = CaretScrollGroupDivider
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 19
     Top = 273
-    Width = 164
+    Width = 163
     BorderSpacing.Left = 6
-    Caption = 'ScrollPastEndLineCheckBox'
-    OnChange = ScrollPastEndLineCheckBoxChange
+    Caption = 'CaretPastEndLineCheckBox'
+    OnChange = CaretPastEndLineCheckBoxChange
     TabOrder = 11
   end
   object ScrollByOneLessCheckBox: TCheckBox
@@ -198,7 +198,7 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 19
-    Top = 403
+    Top = 422
     Width = 151
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
@@ -212,7 +212,7 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 218
     Height = 19
-    Top = 403
+    Top = 422
     Width = 151
     BorderSpacing.Top = 6
     Caption = 'OverwriteBlockCheckBox'
@@ -293,7 +293,7 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 15
-    Top = 382
+    Top = 401
     Width = 434
     Caption = 'BlockGroupDivider'
     Anchors = [akTop, akLeft, akRight]
@@ -318,7 +318,7 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 19
-    Top = 338
+    Top = 357
     Width = 181
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
@@ -330,7 +330,7 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Control = MultiCaretOnColumnSelection
     Left = 218
     Height = 19
-    Top = 338
+    Top = 357
     Width = 167
     Caption = 'chkMultiCaretColumnMode'
     TabOrder = 19
@@ -341,7 +341,7 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 19
-    Top = 357
+    Top = 376
     Width = 124
     BorderSpacing.Left = 6
     Caption = 'chkMultiCaretMode'
@@ -349,13 +349,13 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
   end
   object MultiCaretGroupDivider: TDividerBevel
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = ScrollPastEndLineCheckBoxCaret
+    AnchorSideTop.Control = rbExtraHScrollFixed
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 15
-    Top = 317
+    Top = 336
     Width = 434
     Caption = 'MultiCaretGroupDivider'
     Anchors = [akTop, akLeft, akRight]
@@ -369,7 +369,7 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 218
     Height = 19
-    Top = 357
+    Top = 376
     Width = 144
     Caption = 'chkMultiCaretDelSkipCr'
     TabOrder = 20
@@ -400,7 +400,7 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     TabOrder = 9
   end
   object SelectAllNoScrollCheckBox: TCheckBox
-    AnchorSideLeft.Control = ScrollPastEndLineCheckBox
+    AnchorSideLeft.Control = CaretPastEndLineCheckBox
     AnchorSideTop.Control = AlwaysVisibleCursorCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 6
@@ -410,30 +410,6 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     Caption = 'SelectAllNoScrollCheckBox'
     OnChange = CaretMoveClearsSelectionCheckBoxChange
     TabOrder = 23
-  end
-  object ScrollPastEndLineCheckBoxPage: TCheckBox
-    AnchorSideLeft.Control = CursorSkipsSelectionCheckBox
-    AnchorSideTop.Control = ScrollPastEndLineCheckBox
-    Left = 218
-    Height = 19
-    Top = 273
-    Width = 190
-    Caption = 'ScrollPastEndLineCheckBoxPage'
-    OnChange = ScrollPastEndLineCheckBoxPageChange
-    TabOrder = 24
-  end
-  object ScrollPastEndLineCheckBoxCaret: TCheckBox
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = ScrollPastEndLineCheckBox
-    AnchorSideTop.Side = asrBottom
-    Left = 6
-    Height = 19
-    Top = 292
-    Width = 192
-    BorderSpacing.Left = 6
-    Caption = 'ScrollPastEndLineCheckBoxCaret'
-    OnChange = ScrollPastEndLineCheckBoxCaretChange
-    TabOrder = 25
   end
   object CaretScrollGroupDivider: TDividerBevel
     AnchorSideLeft.Control = Owner
@@ -451,5 +427,40 @@ object EditorGeneralOptionsFrame: TEditorGeneralOptionsFrame
     BorderSpacing.Bottom = 6
     Font.Style = [fsBold]
     ParentFont = False
+  end
+  object rbExtraHScrollNone: TRadioButton
+    AnchorSideLeft.Control = CaretMoveClearsSelectionCheckBox
+    AnchorSideTop.Control = CaretPastEndLineCheckBox
+    Left = 218
+    Height = 19
+    Top = 273
+    Width = 122
+    Caption = 'rbExtraHScrollNone'
+    OnChange = CaretPastEndLineCheckBoxChange
+    TabOrder = 24
+  end
+  object rbExtraHScrollPage: TRadioButton
+    AnchorSideLeft.Control = rbExtraHScrollNone
+    AnchorSideTop.Control = rbExtraHScrollNone
+    AnchorSideTop.Side = asrBottom
+    Left = 218
+    Height = 19
+    Top = 292
+    Width = 119
+    Caption = 'rbExtraHScrollPage'
+    OnChange = CaretPastEndLineCheckBoxChange
+    TabOrder = 25
+  end
+  object rbExtraHScrollFixed: TRadioButton
+    AnchorSideLeft.Control = rbExtraHScrollPage
+    AnchorSideTop.Control = rbExtraHScrollPage
+    AnchorSideTop.Side = asrBottom
+    Left = 218
+    Height = 19
+    Top = 311
+    Width = 121
+    Caption = 'rbExtraHScrollFixed'
+    OnChange = CaretPastEndLineCheckBoxChange
+    TabOrder = 26
   end
 end

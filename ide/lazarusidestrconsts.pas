@@ -1645,9 +1645,10 @@ resourcestring
   dlgCursorSkipsTab = 'Caret skips tabs';
   dlgScrollByOneLess = 'Scroll by one less';
   dlgScrollPastEndFile = 'Scroll past end of file';
-  dlgScrollPastEndLine = 'Always increase scroll range (large)';
-  dlgScrollPastEndLinePage = 'Always increase scroll range (one page)';
-  dlgScrollPastEndLineCaret = 'Auto increase/decrease scroll range';
+  dlgScrollPastEndLine = 'Allow Caret to move past the end of line';
+  dlgScrollBarPastEOLNone = 'Do not add any permanent space to horizontal scrollbar';
+  dlgScrollBarPastEOLPage = 'Always add one page to horizontal scrollbar';
+  dlgScrollBarPastEOLFixed = 'Force 1024 columns minimun for horizontal scrollbar';
   dlgScrollHint = 'Show scroll hint';
   lisShowSpecialCharacters = 'Show special characters';
   dlgCloseButtonsNotebook = 'Show close buttons in notebook';
