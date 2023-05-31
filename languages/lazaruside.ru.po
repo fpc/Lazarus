@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-06-01 01:34+0300\n"
+"PO-Revision-Date: 2023-06-01 02:06+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -3651,15 +3651,15 @@ msgid "Save in"
 msgstr "Сохранить в"
 
 #: lazarusidestrconsts.dlgscrollbarpasteolfixed
-msgid "Force 1024 columns minimum for horizontal scrollbar"
+msgid "Force 1024 columns minimum for horizontal scroll range"
 msgstr "Задать минимум пространства по горизонтали в 1024 столбца"
 
 #: lazarusidestrconsts.dlgscrollbarpasteolnone
-msgid "Do not add any permanent space to horizontal scrollbar"
+msgid "Do not add any permanent space to horizontal scroll range"
 msgstr "Не добавлять пространства по горизонтали"
 
 #: lazarusidestrconsts.dlgscrollbarpasteolpage
-msgid "Always add one page to horizontal scrollbar"
+msgid "Always add one page to horizontal scroll range"
 msgstr "Всегда добавлять одну страницу к пространству по горизонтали"
 
 #: lazarusidestrconsts.dlgscrollbyoneless

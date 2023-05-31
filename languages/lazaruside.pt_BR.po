@@ -3660,15 +3660,15 @@ msgid "Save in"
 msgstr "Salvar em"
 
 #: lazarusidestrconsts.dlgscrollbarpasteolfixed
-msgid "Force 1024 columns minimum for horizontal scrollbar"
+msgid "Force 1024 columns minimum for horizontal scroll range"
 msgstr ""
 
 #: lazarusidestrconsts.dlgscrollbarpasteolnone
-msgid "Do not add any permanent space to horizontal scrollbar"
+msgid "Do not add any permanent space to horizontal scroll range"
 msgstr ""
 
 #: lazarusidestrconsts.dlgscrollbarpasteolpage
-msgid "Always add one page to horizontal scrollbar"
+msgid "Always add one page to horizontal scroll range"
 msgstr ""
 
 #: lazarusidestrconsts.dlgscrollbyoneless
