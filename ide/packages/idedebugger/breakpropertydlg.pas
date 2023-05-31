@@ -11,12 +11,14 @@ uses
   // LazUtils
   LazUTF8,
   // IdeIntf
-  IdeIntfStrConsts, IDEHelpIntf,
+  IdeIntfStrConsts, IDEHelpIntf, InputHistory,
   // DebuggerIntf
   DbgIntfDebuggerBase,
-  // IDE
+  // IdeConfig
+  EnvironmentOpts, RecentListProcs,
+  // IdeDebugger
   BreakPropertyDlgGroups, DebuggerDlg, Debugger, BaseDebugManager,
-  IdeDebuggerStringConstants, InputHistory, EnvironmentOpts, RecentListProcs;
+  IdeDebuggerStringConstants;
 
 type
 

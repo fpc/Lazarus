@@ -38,20 +38,21 @@ interface
 uses
   SysUtils, Classes, StrUtils,
   // LCL
-  Forms, ClipBrd, ComCtrls, ActnList, Menus,
+  Forms, ClipBrd, ComCtrls, ActnList, Menus, Controls,
+  laz.VirtualTrees,
   // LazUtils
   LazLoggerBase, LazStringUtils, LazUTF8,
   // IdeIntf
   IDEWindowIntf, IDEImagesIntf,
   // DebuggerIntf
-  DbgIntfDebuggerBase, laz.VirtualTrees, LazDebuggerIntf,
-  LazDebuggerIntfBaseTypes,
+  DbgIntfDebuggerBase,
+  // LazDebuggerIntf
+  LazDebuggerIntf, LazDebuggerIntfBaseTypes,
   // IDE Debugger
-  IdeDebuggerStringConstants, BaseDebugManager, EnvironmentOpts, Debugger,
+  IdeDebuggerStringConstants, BaseDebugManager, Debugger,
   DebuggerDlg, IdeDebuggerWatchResPrinter, IdeDebuggerUtils, DebuggerTreeView,
-  IdeDebuggerWatchResult, IdeDebuggerBase, DbgTreeViewWatchData,
-  {$ifdef Windows} ActiveX, {$else} laz.FakeActiveX, {$endif}
-  Controls;
+  IdeDebuggerWatchResult, IdeDebuggerBase, DbgTreeViewWatchData, EnvDebuggerOptions,
+  {$ifdef Windows}ActiveX{$else}laz.FakeActiveX{$endif};
 
 type
 
@@ -394,7 +395,7 @@ begin
     try
       Watch := DebugBoss.Watches.CurrentWatches.Add(S);
       Watch.Enabled := True;
-      if EnvironmentOptions.DebuggerAutoSetInstanceFromClass then
+      if EnvironmentDebugOpts.DebuggerAutoSetInstanceFromClass then
         Watch.EvaluateFlags := Watch.EvaluateFlags + [defClassAutoCast];
     finally
       DebugBoss.Watches.CurrentWatches.EndUpdate;

@@ -33,11 +33,9 @@ interface
 
 uses
   Classes, SysUtils, types,
-  // LCL
-  LCLProc, Forms, Controls,
   // LazUtils
   LazFileUtils, LazConfigStorage, Laz2_XMLCfg, LazUTF8,
-  // IdeIntf
+  // BuildIntf
   BaseIDEIntf, IDEExternToolIntf,
   // IdeConfig
   LazConf;
@@ -230,7 +228,7 @@ type
   function CompareFilterMsgType(FilterMsgType1, FilterMsgType2: Pointer): integer;
   function CompareLineAndFilterMsgType(MessageLine1, FilterMsgType1: Pointer): integer;
 
-function CreateNiceWindowPosition(Width, Height: integer): TRect;
+//function CreateNiceWindowPosition(Width, Height: integer): TRect;
 function NonModalIDEFormIDToEnum(const FormID: string): TNonModalIDEWindow;
 
 function GetLazIDEConfigStorage(const Filename: string; LoadFromDisk: Boolean
@@ -238,8 +236,7 @@ function GetLazIDEConfigStorage(const Filename: string; LoadFromDisk: Boolean
 
 
 implementation
-
-
+{
 function CreateNiceWindowPosition(Width, Height: integer): TRect;
 
   function FindFormAt(x,y: integer): TCustomForm;
@@ -299,7 +296,7 @@ begin
   Result.Right := x + Width;
   Result.Bottom := y + Height;
 end;
-
+}
 function NonModalIDEFormIDToEnum(const FormID: string): TNonModalIDEWindow;
 begin
   for Result:=Low(TNonModalIDEWindow) to High(TNonModalIDEWindow) do

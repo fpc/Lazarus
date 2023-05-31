@@ -52,7 +52,7 @@ uses
   PropEdits, PropEditUtils, ObjectInspector, FormEditingIntf, ComponentReg,
   UnitResources, IDEOptEditorIntf, IDEDialogs, ComponentEditors,
   // IDE
-  LazarusIDEStrConsts, EditorOptions, EnvironmentOpts, Project, MainIntf, PackageDefs,
+  LazarusIDEStrConsts, EditorOptions, EnvGuiOptions, Project, MainIntf, PackageDefs,
   // Designer
   CustomNonFormDesigner, NonControlDesigner, FrameDesigner, ControlSelection,
   JITForms, DesignerProcs;
@@ -897,7 +897,7 @@ begin
       LNonFormProxyDesignerClass := BaseFormEditor1.NonFormProxyDesignerForm[NonControlProxyDesignerFormId];
       Result := TNonFormProxyDesignerForm(LNonFormProxyDesignerClass.NewInstance);
       Result.Create(nil, TNonControlDesignerForm.Create(Result));
-      Result.Color := EnvironmentOptions.NonFormBackgroundColor;
+      Result.Color := EnvironmentGuiOpts.NonFormBackgroundColor;
     end;
     Result.Name:='_Designer_'+LookupRoot.Name;
     (Result as INonFormDesigner).LookupRoot := LookupRoot;
@@ -956,7 +956,7 @@ begin
   begin
     DesignerForm := GetDesignerForm(AComponent);
     if (DesignerForm <> nil) and (DesignerForm.Designer <> nil) and
-       EnvironmentOptions.ShowComponentCaptions then
+       EnvironmentGuiOpts.ShowComponentCaptions then
       DesignerForm.Invalidate;
   end;
 end;

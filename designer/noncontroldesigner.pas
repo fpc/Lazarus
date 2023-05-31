@@ -39,7 +39,7 @@ uses
   // IdeIntf
   FormEditingIntf,
   // IDE
-  CustomNonFormDesigner, EnvironmentOpts;
+  CustomNonFormDesigner, EnvGuiOptions;
   
 type
 
@@ -152,7 +152,7 @@ begin
   with Canvas do begin
     if LookupRoot is TDataModule then
     begin
-      Brush.Color:=EnvironmentOptions.NonFormBackgroundColor;
+      Brush.Color:=EnvironmentGuiOpts.NonFormBackgroundColor;
       ARect:=Rect(FrameWidth,FrameWidth,
           ClientWidth-FrameWidth,
           ClientHeight-FrameWidth);

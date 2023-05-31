@@ -5,8 +5,13 @@ unit EditorToolBarOptions;
 interface
 
 uses
-  Classes, SysUtils, ToolBarOptionsBase, Laz2_XMLCfg, LazConfigStorage,
-  LazLoggerBase, BaseIDEIntf;
+  Classes, SysUtils,
+  // LazUtils
+  Laz2_XMLCfg, LazConfigStorage, LazLoggerBase,
+  // BuildIntf
+  BaseIDEIntf,
+  // IdeConfig
+  ToolBarOptionsBase;
 
 type
 

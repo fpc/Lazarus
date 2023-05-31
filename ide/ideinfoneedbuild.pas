@@ -36,9 +36,9 @@ uses
   // LazUtils
   LazUtilities, LazUTF8,
   // IdeIntf
-  IDEWindowIntf, LazIDEIntf, ProjectIntf, PackageIntf,
+  IDEWindowIntf, LazIDEIntf, ProjectIntf, PackageIntf, InputHistory,
   // IDE
-  LazarusIDEStrConsts, PackageDefs, PackageSystem, Project, InputHistory,
+  LazarusIDEStrConsts, PackageDefs, PackageSystem, Project,
   EnvironmentOpts, IDEProcs, BuildManager;
 
 type

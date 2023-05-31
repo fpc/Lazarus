@@ -39,10 +39,19 @@ unit WatchPropertyDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, StdCtrls, Extctrls, ButtonPanel,
-  IDEHelpIntf, DbgIntfDebuggerBase, LazDebuggerIntf,
-  Debugger, IdeDebuggerOpts, BaseDebugManager, EnvironmentOpts,
-  IdeIntfStrConsts, IdeDebuggerStringConstants;
+  Classes, SysUtils,
+  // LCL
+  Forms, StdCtrls, Extctrls, ButtonPanel,
+  // IdeIntf
+  IDEHelpIntf, IdeIntfStrConsts,
+  // IdeConfig
+  //EnvironmentOpts,
+  // DebuggerIntf
+  DbgIntfDebuggerBase,
+  // LazDebuggerIntf
+  LazDebuggerIntf,
+  // IdeDebugger
+  Debugger, IdeDebuggerOpts, BaseDebugManager, IdeDebuggerStringConstants, EnvDebuggerOptions;
 
 type
 
@@ -137,7 +146,7 @@ end;
 
 procedure TWatchPropertyDlg.chkAllowFuncChange(Sender: TObject);
 begin
-  chkAllowFuncThreads.Enabled := EnvironmentOptions.DebuggerAllowFunctionCalls and
+  chkAllowFuncThreads.Enabled := EnvironmentDebugOpts.DebuggerAllowFunctionCalls and
     (dfEvalFunctionCalls in DebugBoss.DebuggerClass.SupportedFeatures) and
     (chkAllowFunc.Checked);
 end;
@@ -173,7 +182,7 @@ begin
     chkEnabled.Checked := True;
     txtExpression.Text := AWatchExpression;
     rgStyle.ItemIndex := 7;
-    chkUseInstanceClass.Checked := EnvironmentOptions.DebuggerAutoSetInstanceFromClass;
+    chkUseInstanceClass.Checked := EnvironmentDebugOpts.DebuggerAutoSetInstanceFromClass;
     txtRepCount.Text := '0';
   end
   else begin
@@ -189,9 +198,9 @@ begin
 
   lblDigits.Enabled := False;
   txtDigits.Enabled := False;
-  chkAllowFunc.Enabled := EnvironmentOptions.DebuggerAllowFunctionCalls and
+  chkAllowFunc.Enabled := EnvironmentDebugOpts.DebuggerAllowFunctionCalls and
     (dfEvalFunctionCalls in DebugBoss.DebuggerClass.SupportedFeatures);
-  chkAllowFuncThreads.Enabled := EnvironmentOptions.DebuggerAllowFunctionCalls and
+  chkAllowFuncThreads.Enabled := EnvironmentDebugOpts.DebuggerAllowFunctionCalls and
     (dfEvalFunctionCalls in DebugBoss.DebuggerClass.SupportedFeatures) and
     (chkAllowFunc.Checked);
 

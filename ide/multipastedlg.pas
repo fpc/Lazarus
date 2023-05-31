@@ -45,9 +45,9 @@ uses
   // SynEdit
   SynEdit,
   // IdeIntf
-  IDEHelpIntf,
+  IDEHelpIntf, InputHistory,
   // IDE
-  InputHistory, IDEProcs, LazarusIDEStrConsts, EnvironmentOpts, RecentListProcs;
+  IDEProcs, LazarusIDEStrConsts, EnvironmentOpts, RecentListProcs;
 
 const
   hlFormatPasteTxtBefore = 'FormatPasteTxtBefore';

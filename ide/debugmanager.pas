@@ -46,25 +46,29 @@ uses
   // LazUtils
   LazFileUtils, LazFileCache, LazLoggerBase, Laz2_XMLCfg, LazUTF8, LazTracer,
   LazMethodList,
-  // codetools
+  // Codetools
   CodeCache, CodeToolManager, PascalParserTool, CodeTree,
+  // BuildIntf
+  ProjectIntf, CompOptsIntf,
   // IDEIntf
-  IDEWindowIntf, SrcEditorIntf, MenuIntf, IDECommands, LazIDEIntf, ProjectIntf,
-  IdeIntfStrConsts, CompOptsIntf, IDEDialogs, ToolBarIntf,
+  IDEWindowIntf, SrcEditorIntf, MenuIntf, IDECommands, LazIDEIntf,
+  IdeIntfStrConsts, IDEDialogs, ToolBarIntf, InputHistory,
+  // DebuggerIntf
+  DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfMiscClasses, DbgIntfPseudoTerminal,
+  // LazDebuggerIntf
+  LazDebuggerIntf, LazDebuggerIntfBaseTypes,
   // IDEDebugger
-  IdeDebuggerStringConstants,
+  IdeDebuggerStringConstants, DebuggerDlg, WatchesDlg, BreakPointsdlg, BreakPropertyDlg,
+  LocalsDlg, WatchPropertyDlg, CallStackDlg, EvaluateDlg, RegistersDlg, AssemblerDlg,
+  DebugOutputForm, ExceptionDlg, InspectDlg, PseudoTerminalDlg, FeedbackDlg, ThreadDlg,
+  HistoryDlg, ProcessDebugger, IdeDebuggerBase, IdeDebuggerOpts, EnvDebuggerOptions,
+  IdeDebuggerBackendValueConv, Debugger, BaseDebugManager,
+  // IdeConfig
+  LazConf,
   // IDE
-  CompilerOptions, EnvironmentOpts, SourceEditor, ProjectDefs, Project,
-  InputHistory, LazConf, Debugger, LazarusIDEStrConsts, TransferMacros, MainBar,
-  MainIntf, MainBase, BaseBuildManager, SourceMarks, DebuggerDlg, Watchesdlg,
-  BreakPointsdlg, BreakPropertyDlg, LocalsDlg, WatchPropertyDlg, CallStackDlg,
-  EvaluateDlg, RegistersDlg, AssemblerDlg, DebugOutputForm, ExceptionDlg,
-  InspectDlg, DebugEventsForm, PseudoTerminalDlg, FeedbackDlg, ThreadDlg,
-  HistoryDlg, ProcessDebugger, IdeDebuggerBase, IdeDebuggerOpts,
-  IdeDebuggerBackendValueConv, DbgIntfBaseTypes, DbgIntfDebuggerBase,
-  DbgIntfMiscClasses, DbgIntfPseudoTerminal, LazDebuggerIntf,
-  LazDebuggerIntfBaseTypes, BaseDebugManager;
-
+  CompilerOptions, SourceEditor, ProjectDefs, Project,
+  LazarusIDEStrConsts, MainBar, MainIntf, MainBase, BaseBuildManager, SourceMarks,
+  DebugEventsForm, EnvGuiOptions;
 
 type
 
@@ -467,9 +471,9 @@ begin
     // store it internally, and copy it to the dialog, when the user opens it
     if FHiddenDebugEventsLog=nil
     then FHiddenDebugEventsLog := TStringList.Create;
-    if EnvironmentOptions.DebuggerEventLogCheckLineLimit
+    if EnvironmentDebugOpts.DebuggerEventLogCheckLineLimit
     then begin
-      while FHiddenDebugEventsLog.Count >= EnvironmentOptions.DebuggerEventLogLineLimit do
+      while FHiddenDebugEventsLog.Count >= EnvironmentDebugOpts.DebuggerEventLogLineLimit do
         FHiddenDebugEventsLog.Delete(0);
     end;
     Rec.Category := Ord(ACategory);
@@ -1251,7 +1255,7 @@ begin
         if (w <> nil)
         then begin
           w.Enabled := True;
-          if EnvironmentOptions.DebuggerAutoSetInstanceFromClass then
+          if EnvironmentDebugOpts.DebuggerAutoSetInstanceFromClass then
             w.EvaluateFlags := w.EvaluateFlags + [defClassAutoCast];
           ViewDebugDialog(ddtWatches, False);
           Exit;
@@ -1483,8 +1487,10 @@ begin
   if (FDebugger.State in [dsRun])
   then begin
     // hide IDE during run
-    if EnvironmentOptions.Desktop.HideIDEOnRun and (MainIDE.ToolStatus=itDebugger) and not FStepping
-    then MainIDE.HideIDE;
+    if EnvironmentGuiOpts.Desktop.HideIDEOnRun
+    and (MainIDE.ToolStatus=itDebugger) and not FStepping
+    then
+      MainIDE.HideIDE;
 
     if (FPrevShownWindow <> 0) and not FStepping then
     begin
@@ -1504,10 +1510,10 @@ begin
       if not FStepping then
       begin
         FPrevShownWindow := GetForegroundWindow;
-        if EnvironmentOptions.Desktop.HideIDEOnRun then
+        if EnvironmentGuiOpts.Desktop.HideIDEOnRun then
           MainIDE.UnhideIDE;
-        if not EnvironmentOptions.Desktop.SingleTaskBarButton and
-          not EnvironmentOptions.Desktop.HideIDEOnRun then
+        if not EnvironmentGuiOpts.Desktop.SingleTaskBarButton and
+          not EnvironmentGuiOpts.Desktop.HideIDEOnRun then
             Application.BringToFront;
       end;
     end;
@@ -1549,7 +1555,7 @@ begin
       then begin
         MainIDE.DoCallRunFinishedHandler;
         if not FDebugger.SkipStopMessage then begin
-          if (FDebugger.ExitCode <> 0) and EnvironmentOptions.DebuggerShowExitCodeMessage then begin
+          if (FDebugger.ExitCode <> 0) and EnvironmentDebugOpts.DebuggerShowExitCodeMessage then begin
             i := 4;
             if FDebugger.ExitCode > 65535 then
             i := 8;
@@ -1560,20 +1566,20 @@ begin
                                 mrYesToAll, lisDoNotShowThisMessageAgain], '');
             {$POP}
             if MsgResult=mrYesToAll then
-              EnvironmentOptions.DebuggerShowExitCodeMessage:=false;
+              EnvironmentDebugOpts.DebuggerShowExitCodeMessage:=false;
           end
           else
-          if EnvironmentOptions.DebuggerShowStopMessage
+          if EnvironmentDebugOpts.DebuggerShowStopMessage
           then begin
             MsgResult:=IDEQuestionDialog(lisExecutionStopped, lisExecutionStopped,
                 mtInformation, [mrOK, lisBtnOk,
                                 mrYesToAll, lisDoNotShowThisMessageAgain], '');
             if MsgResult=mrYesToAll then
-              EnvironmentOptions.DebuggerShowStopMessage:=false;
+              EnvironmentDebugOpts.DebuggerShowStopMessage:=false;
           end;
         end;
 
-        if EnvironmentOptions.DebuggerResetAfterRun or FDebugger.NeedReset then
+        if EnvironmentDebugOpts.DebuggerResetAfterRun or FDebugger.NeedReset then
           ResetDebugger
         else
           FDebugger.FileName := '';  // SetState(dsIdle) via ResetStateToIdle
@@ -1691,7 +1697,7 @@ begin
   then begin
     a := FAsmWindowShouldAutoClose or (FDialogs[ddtAssembler] = nil) or (not FDialogs[ddtAssembler].Visible);
     ViewDebugDialog(ddtAssembler);
-    FAsmWindowShouldAutoClose := a and EnvironmentOptions.DebuggerAutoCloseAsm;
+    FAsmWindowShouldAutoClose := a and EnvironmentDebugOpts.DebuggerAutoCloseAsm;
     exit;
   end;
   if (FDialogs[ddtAssembler] <> nil) and FAsmWindowShouldAutoClose then
@@ -2327,7 +2333,7 @@ end;
 procedure TDebugManager.EnvironmentOptsChanged;
 begin
   if FDebugger <> nil then begin
-    if EnvironmentOptions.DebuggerAllowFunctionCalls then
+    if EnvironmentDebugOpts.DebuggerAllowFunctionCalls then
       FDebugger.EnabledFeatures := FDebugger.EnabledFeatures + [dfEvalFunctionCalls]
     else
       FDebugger.EnabledFeatures := FDebugger.EnabledFeatures - [dfEvalFunctionCalls];
@@ -2677,7 +2683,7 @@ begin
       FDebugger.GetProperties.Assign(DbgCfg.DebuggerProperties);
 
     ClearDebugOutputLog;
-    if EnvironmentOptions.DebuggerEventLogClearOnRun then
+    if EnvironmentDebugOpts.DebuggerEventLogClearOnRun then
       ClearDebugEventsLog;
 
     //ensure to unset all evemts in SetDebugger()

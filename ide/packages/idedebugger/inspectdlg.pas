@@ -31,18 +31,20 @@ uses
   Classes, SysUtils, Math,
   // LCL
   LCLProc, LCLType, Grids, StdCtrls, Menus, Forms, Controls, Graphics, ComCtrls,
-  ExtCtrls, Buttons, Spin, Clipbrd, LMessages,
+  ExtCtrls, Buttons, Clipbrd, SpinEx, LMessages,
   // IdeIntf
-  IDEWindowIntf, IDEImagesIntf, ObjectInspector, PropEdits,
+  IDEWindowIntf, IDEImagesIntf, ObjectInspector, PropEdits, InputHistory,
+  // IdeConfig
+  EnvironmentOpts, RecentListProcs,
   // DebuggerIntf
-  DbgIntfDebuggerBase, DbgIntfBaseTypes, LazClasses, SpinEx, LazDebuggerIntf,
-  LazDebuggerIntfBaseTypes,
-  // IDE
-  BaseDebugManager, InputHistory, Debugger, IdeDebuggerWatchResPrinter,
-  IdeDebuggerWatchResult, IdeDebuggerWatchResUtils, IdeDebuggerBase,
-  ArrayNavigationFrame, IdeDebuggerOpts, IdeDebuggerBackendValueConv,
-  WatchInspectToolbar, DebuggerDlg, EnvironmentOpts, RecentListProcs,
-  IdeDebuggerStringConstants, IdeDebuggerUtils;
+  DbgIntfDebuggerBase, DbgIntfBaseTypes,
+  // LazDebuggerIntf
+  LazDebuggerIntf, LazDebuggerIntfBaseTypes,
+  // IdeDebugger
+  BaseDebugManager, Debugger, IdeDebuggerWatchResPrinter, IdeDebuggerWatchResult,
+  IdeDebuggerWatchResUtils, IdeDebuggerBase, ArrayNavigationFrame, IdeDebuggerOpts,
+  IdeDebuggerBackendValueConv, WatchInspectToolbar, DebuggerDlg,
+  IdeDebuggerStringConstants, IdeDebuggerUtils, EnvDebuggerOptions;
 
 type
 
@@ -1276,7 +1278,7 @@ begin
   FGridMethods.OnMouseDown := @DataGridMouseDown;
   FGridMethods.PopupMenu := PopupMenu1;
 
-  WatchInspectNav1.btnUseInstance.Down := EnvironmentOptions.DebuggerAutoSetInstanceFromClass;
+  WatchInspectNav1.btnUseInstance.Down := EnvironmentDebugOpts.DebuggerAutoSetInstanceFromClass;
 
   WatchInspectNav1.ColClassEnabled := False;
   WatchInspectNav1.ColTypeEnabled := False;
@@ -1310,7 +1312,6 @@ begin
   FCurrentResData := nil;
   FreeAndNil(FWatchPrinter);
   inherited Destroy;
-
 end;
 
 procedure TIDEInspectDlg.Execute(const AExpression: ansistring; AWatch: TWatch);
@@ -1486,7 +1487,7 @@ end;
 
 procedure TIDEInspectDlg.DoEnvOptChanged(Sender: TObject; Restore: boolean);
 begin
-  WatchInspectNav1.ShowCallFunction := EnvironmentOptions.DebuggerAllowFunctionCalls;
+  WatchInspectNav1.ShowCallFunction := EnvironmentDebugOpts.DebuggerAllowFunctionCalls;
   WatchInspectNav1.EdInspect.DropDownCount := EnvironmentOptions.DropDownCount;
 end;
 

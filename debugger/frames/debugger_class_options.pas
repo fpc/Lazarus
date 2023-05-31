@@ -34,11 +34,16 @@ uses
   DbgIntfDebuggerBase,
   // IdeIntf
   PropEdits, ObjectInspector, IDEOptionsIntf, IDEOptEditorIntf, IDEUtils,
-  IdeIntfStrConsts, GDBMIDebugger,
+  IdeIntfStrConsts, InputHistory,
+  // LazDebuggerGDBMI
+  GDBMIDebugger,
+  // IdeDebugger
+  Debugger, IdeDebuggerOpts, EnvDebuggerOptions,
+  // IdeConfig
+  EnvironmentOpts,
   // IDE
-  TransferMacros, LazarusIDEStrConsts, PathEditorDlg, IDEProcs, DialogProcs,
-  InputHistory, EnvironmentOpts, BaseDebugManager, Project, Debugger,
-  IdeDebuggerOpts;
+  TransferMacros, LazarusIDEStrConsts, PathEditorDlg, DialogProcs,
+  Project, EnvGuiOptions;
 
 type
 
@@ -444,7 +449,7 @@ begin
     end
     else begin
       lru := TStringList.Create;
-      lru.Assign(EnvironmentOptions.DebuggerFileHistory[SelectedDebuggerClass.ExePathsMruGroup.ClassName]);
+      lru.Assign(EnvironmentDebugOpts.DebuggerFileHistory[SelectedDebuggerClass.ExePathsMruGroup.ClassName]);
       FDebuggerFileHistory.AddObject(SelectedDebuggerClass.ExePathsMruGroup.ClassName, lru);
     end;
 
@@ -599,7 +604,7 @@ end;
 
 procedure TDebuggerClassOptionsFrame.HookGetCheckboxForBoolean(var Value: Boolean);
 begin
-  Value := EnvironmentOptions.ObjectInspectorOptions.CheckboxForBoolean;
+  Value := EnvironmentGuiOpts.ObjectInspectorOptions.CheckboxForBoolean;
 end;
 
 procedure TDebuggerClassOptionsFrame.DoModifiedDbgPropertiesCountChanged;
@@ -691,7 +696,7 @@ procedure TDebuggerClassOptionsFrame.ReadSettings(
 var
   i: Integer;
 begin
-  EnvironmentOptions.ObjectInspectorOptions.AssignTo(PropertyGrid);
+  EnvironmentGuiOpts.ObjectInspectorOptions.AssignTo(PropertyGrid);
 
   ClearDbgProperties;
   FDebuggerFileHistory.Clear;
@@ -725,7 +730,8 @@ var
 begin
   UpdateDebuggerPathHistory;
   for i := 0 to FDebuggerFileHistory.Count - 1 do
-    EnvironmentOptions.DebuggerFileHistory[FDebuggerFileHistory[i]].Assign(TStringList(FDebuggerFileHistory.Objects[i]));
+    EnvironmentDebugOpts.DebuggerFileHistory[FDebuggerFileHistory[i]].Assign(
+                                   TStringList(FDebuggerFileHistory.Objects[i]));
 
 //    DebuggerSearchPath := TrimSearchPath(txtAdditionalPath.Text,'');
 

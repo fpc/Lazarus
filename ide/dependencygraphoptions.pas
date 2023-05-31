@@ -6,9 +6,15 @@ unit DependencyGraphOptions;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ButtonPanel, StdCtrls,
-  ExtCtrls, Spin, LvlGraphCtrl, Laz_XMLCfg, math, LazarusIDEStrConsts,
-  EnvironmentOpts;
+  Classes, SysUtils, Math,
+  // LCL
+  Forms, Controls, Graphics, Dialogs, ButtonPanel, StdCtrls, ExtCtrls, Spin,
+  // LazControls
+  LvlGraphCtrl,
+  // IdeConfig
+  EnvironmentOpts,
+  // IDE
+  LazarusIDEStrConsts;
 
 type
 
@@ -33,8 +39,8 @@ type
     {$ENDIF}
   public
     constructor Create;
-    procedure ReadFromXml(AnXmlConf: TRttiXMLConfig; APath: String); override;
-    procedure WriteToXml(AnXmlConf: TRttiXMLConfig; APath: String); override;
+    procedure ReadFromXml(OnlyDesktop: boolean); override;
+    procedure WriteToXml(OnlyDesktop: boolean); override;
     procedure Assign(ASrc: TPersistent); override;
     procedure WriteToGraph(AValue: TLvlGraphControl);
     procedure ReadFromGraph(AValue: TLvlGraphControl);
@@ -426,23 +432,25 @@ begin
   FLimitLvlHeighRel := 1.5;
 end;
 
-procedure TLvlGraphOptions.ReadFromXml(AnXmlConf: TRttiXMLConfig; APath: String);
+procedure TLvlGraphOptions.ReadFromXml(OnlyDesktop: boolean);
 var
   Def: TLvlGraphOptions;
 begin
+  if OnlyDesktop then Exit;    // LvlGraph options are not part of desktop.
   Def := TLvlGraphOptions.Create;
-  AnXmlConf.ReadObject(APath, Self, Def);
+  XMLCfg.ReadObject(TopPath, Self, Def);
   Def.Free;
   if OnLoaded <> nil then
     OnLoaded(Self);
 end;
 
-procedure TLvlGraphOptions.WriteToXml(AnXmlConf: TRttiXMLConfig; APath: String);
+procedure TLvlGraphOptions.WriteToXml(OnlyDesktop: boolean);
 var
   Def: TLvlGraphOptions;
 begin
+  if OnlyDesktop then Exit;
   Def := TLvlGraphOptions.Create;
-  AnXmlConf.WriteObject(APath, Self, Def);
+  XMLCfg.WriteObject(TopPath, Self, Def);
   Def.Free;
 end;
 

@@ -44,7 +44,7 @@ uses
   FormEditingIntf, IDEImagesIntf, PropEdits, MenuIntf, ComponentReg, LazIDEIntf,
   TextTools,
   // IDE
-  LazarusIDEStrConsts, PackageDefs, IDEOptionDefs, EnvironmentOpts, Designer;
+  LazarusIDEStrConsts, PackageDefs, IDEOptionDefs, EnvGuiOptions, Designer;
 
 const
   ComponentListMenuRootName = 'ComponentList';
@@ -229,7 +229,7 @@ begin
 
   IDEImages.AssignImage(SelectionToolButton, 'tmouse');
   with SelectionToolButton do begin
-    ShowHint := EnvironmentOptions.ShowHintsForComponentPalette;
+    ShowHint := EnvironmentGuiOpts.ShowHintsForComponentPalette;
     Width := ComponentPaletteBtnWidth;
     BorderSpacing.Around := (FilterPanel.Height - ComponentPaletteImageHeight) div 2;
   end;
@@ -255,8 +255,8 @@ begin
     IDEComponentPalette.AddHandlerSelectionChanged(@SelectionWasChanged);
     IDEComponentPalette.AddHandlerUpdated(@UpdateComponents);
   end;
-  chbKeepOpen.Checked := EnvironmentOptions.ComponentListKeepOpen;
-  PageControl.PageIndex := EnvironmentOptions.ComponentListPageIndex;
+  chbKeepOpen.Checked := EnvironmentGuiOpts.ComponentListKeepOpen;
+  PageControl.PageIndex := EnvironmentGuiOpts.ComponentListPageIndex;
   PageControlChange(Nil);
 end;
 
@@ -311,8 +311,8 @@ begin
     FAddCompNewTop := 0;
     FAddCompNewParent := NewParent;
   end;
-  Inc(FAddCompNewLeft, EnvironmentOptions.GridSizeX);
-  Inc(FAddCompNewTop, EnvironmentOptions.GridSizeY);
+  Inc(FAddCompNewLeft, EnvironmentGuiOpts.GridSizeX);
+  Inc(FAddCompNewTop, EnvironmentGuiOpts.GridSizeY);
 
   // add component
   if ASaveSelection then
@@ -329,7 +329,7 @@ end;
 
 procedure TComponentListForm.chbKeepOpenChange(Sender: TObject);
 begin
-  EnvironmentOptions.ComponentListKeepOpen := chbKeepOpen.Checked;
+  EnvironmentGuiOpts.ComponentListKeepOpen := chbKeepOpen.Checked;
 end;
 
 procedure TComponentListForm.FormShow(Sender: TObject);
@@ -628,7 +628,7 @@ begin
          FActiveTree := InheritanceTree;
         end;
   end;
-  EnvironmentOptions.ComponentListPageIndex := PageControl.PageIndex;
+  EnvironmentGuiOpts.ComponentListPageIndex := PageControl.PageIndex;
   FActiveTree.BeginUpdate;
   tmDeselect.Enabled := True;
 end;

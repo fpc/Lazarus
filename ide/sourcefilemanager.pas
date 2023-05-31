@@ -49,17 +49,19 @@ uses
   NewItemIntf, ProjectIntf, PackageIntf, PackageDependencyIntf, IDEExternToolIntf,
   // IdeIntf
   IDEDialogs, PropEdits, IDEMsgIntf, LazIDEIntf, MenuIntf, IDEWindowIntf, FormEditingIntf,
-  IdeIntfStrConsts, ObjectInspector, SrcEditorIntf, EditorSyntaxHighlighterDef, UnitResources, ComponentReg,
+  IdeIntfStrConsts, ObjectInspector, SrcEditorIntf, EditorSyntaxHighlighterDef,
+  UnitResources, ComponentReg, InputHistory,
+  // IdeConfig
+  EnvironmentOpts, SearchPathProcs,
   // IDE
   IDEProcs, DialogProcs, IDEProtocol, LazarusIDEStrConsts, NewDialog,
   NewProjectDlg, MainBase, MainBar, MainIntf, Project, ProjectDefs,
   ProjectInspector, CompilerOptions, SourceSynEditor, SourceEditor,
-  EditorOptions, EnvironmentOpts, CustomFormEditor, ControlSelection,
+  EditorOptions, CustomFormEditor, ControlSelection,
   FormEditor, EmptyMethodsDlg, BaseDebugManager, TransferMacros, BuildManager,
   EditorMacroListViewer, FindRenameIdentifier, BuildModesManager, ViewUnit_Dlg,
-  InputHistory, CheckLFMDlg, etMessagesWnd, DebugManager, SearchPathProcs,
-  ConvCodeTool, BasePkgManager, PackageDefs, PackageSystem, Designer,
-  DesignerProcs;
+  CheckLFMDlg, etMessagesWnd, DebugManager, EnvGuiOptions,
+  ConvCodeTool, BasePkgManager, PackageDefs, PackageSystem, Designer, DesignerProcs;
 
 type
 
@@ -838,7 +840,7 @@ begin
        or ((ofProjectLoading in FFlags)
            and FNewUnitInfo.LoadedDesigner
            and (not Project1.AutoOpenDesignerFormsDisabled)
-           and EnvironmentOptions.AutoCreateFormsOnOpen))
+           and EnvironmentGuiOpts.AutoCreateFormsOnOpen))
     then begin
       // -> try to (re)load the lfm file
       //debugln(['TFileOpener.OpenResource Loading LFM for ',FNewUnitInfo.Filename,' LoadedDesigner=',FNewUnitInfo.LoadedDesigner]);
@@ -3817,7 +3819,7 @@ begin
 
     if ([ofDoNotLoadResource]*Flags=[])
     and ( (not Project1.AutoOpenDesignerFormsDisabled)
-           and EnvironmentOptions.AutoCreateFormsOnOpen
+           and EnvironmentGuiOpts.AutoCreateFormsOnOpen
            and (SourceEditorManager.ActiveEditor<>nil) )
     then begin
       // auto open form of active unit
@@ -6021,7 +6023,7 @@ begin
     end;
 
     // check installed packages
-    if EnvironmentOptions.CheckPackagesOnFormCreate and
+    if EnvironmentGuiOpts.CheckPackagesOnFormCreate and
        (AnUnitInfo.Component = nil) and
         AnUnitInfo.IsPartOfProject and
        (not (ofProjectLoading in OpenFlags)) then
@@ -6205,7 +6207,7 @@ begin
         if NewComponent is TCustomDesignControl then
         begin
           DsgControl := TCustomDesignControl(NewComponent);
-          if (Project1.Scaled or EnvironmentOptions.ForceDPIScalingInDesignTime)
+          if (Project1.Scaled or EnvironmentGuiOpts.ForceDPIScalingInDesignTime)
           and DsgControl.Scaled and (DsgControl.DesignTimePPI<>Screen.PixelsPerInch) then
           begin
             DsgControl.AutoAdjustLayout(lapAutoAdjustForDPI, DsgControl.DesignTimePPI, Screen.PixelsPerInch, 0, 0);

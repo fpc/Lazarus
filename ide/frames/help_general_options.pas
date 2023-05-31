@@ -10,8 +10,10 @@ uses
   Forms, Controls, StdCtrls, ExtCtrls, EditBtn,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, ObjectInspector, LazHelpIntf,
+  // IdeConfig
+  EnvironmentOpts,
   // IDE
-  HelpOptions, LazarusIDEStrConsts, EnvironmentOpts;
+  HelpOptions, LazarusIDEStrConsts, EnvGuiOptions;
 
 type
 
@@ -181,7 +183,7 @@ begin
   lblDatabases.Caption := lisHlpOptsDatabases;
   DataBasesPropsGroupBox.Caption := lisHlpOptsProperties;
 
-  with EnvironmentOptions.ObjectInspectorOptions do
+  with EnvironmentGuiOpts.ObjectInspectorOptions do
   begin
     AssignTo(ViewersPropertiesGrid);
     AssignTo(DatabasesPropertiesGrid);

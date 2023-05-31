@@ -45,10 +45,12 @@ uses
   Forms, Controls,
   // Codetools
   DefineTemplates, LinkScanner, CodeToolManager, TransferMacros,
+  // BuildIntf
+  IDEExternToolIntf,
   // IdeIntf
-  IDEExternToolIntf, IDEMsgIntf, LazIDEIntf,
+  IDEMsgIntf, LazIDEIntf,
   // IDE
-  IDECmdLine, LazarusIDEStrConsts, CompilerOptions, Project, EnvironmentOpts;
+  IDECmdLine, LazarusIDEStrConsts, CompilerOptions, Project, EnvGuiOptions;
 
 type
   TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean) of object;
@@ -346,7 +348,7 @@ begin
     if CompilerKind=pcPas2js then
       SubTool:=SubToolPas2js;
     FPCParser:=TFPCParser(Tool.AddParsers(SubTool));
-    FPCParser.ShowLinesCompiled:=EnvironmentOptions.MsgViewShowFPCMsgLinesCompiled;
+    FPCParser.ShowLinesCompiled:=EnvironmentGuiOpts.MsgViewShowFPCMsgLinesCompiled;
     FPCParser.HideHintsSenderNotUsed:=not AProject.CompilerOptions.ShowHintsForSenderNotUsed;
     FPCParser.HideHintsUnitNotUsedInMainSource:=not AProject.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc;
     if (not AProject.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc)

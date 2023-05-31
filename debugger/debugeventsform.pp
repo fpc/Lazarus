@@ -33,11 +33,19 @@ unit DebugEventsForm;
 interface
 
 uses
-  Classes, SysUtils, Controls, ComCtrls, ActnList,
-  BaseDebugManager, IDEWindowIntf,
-  StdActns, ClipBrd, Menus, Dialogs, LazFileUtils, Debugger, DebuggerDlg,
-  EnvironmentOpts, InputHistory, IdeDebuggerStringConstants,
-  IDEImagesIntf, LazIDEIntf, DbgIntfDebuggerBase, debugger_eventlog_options;
+  Classes, SysUtils,
+  // LCL
+  Controls, ComCtrls, ActnList, StdActns, ClipBrd, Menus, Dialogs,
+  // LazUtils
+  LazFileUtils,
+  // IdeIntf
+  IDEWindowIntf, IDEImagesIntf, LazIDEIntf, InputHistory,
+  // DebuggerIntf
+  DbgIntfDebuggerBase,
+  // IdeDebugger
+  BaseDebugManager, Debugger, DebuggerDlg, IdeDebuggerStringConstants, EnvDebuggerOptions,
+  // IDE
+  debugger_eventlog_options;
 
 type
   { TDbgEventsForm }
@@ -108,13 +116,13 @@ begin
 
   if cdsSelected in State then
   begin
-    Sender.Canvas.Brush.Color := EnvironmentOptions.DebuggerEventLogColors[TDBGEventType(Rec.EventType)].Foreground;
-    Sender.Canvas.Font.Color := EnvironmentOptions.DebuggerEventLogColors[TDBGEventType(Rec.EventType)].Background;
+    Sender.Canvas.Brush.Color := EnvironmentDebugOpts.DebuggerEventLogColors[TDBGEventType(Rec.EventType)].Foreground;
+    Sender.Canvas.Font.Color := EnvironmentDebugOpts.DebuggerEventLogColors[TDBGEventType(Rec.EventType)].Background;
   end
   else
   begin
-    Sender.Canvas.Brush.Color := EnvironmentOptions.DebuggerEventLogColors[TDBGEventType(Rec.EventType)].Background;
-    Sender.Canvas.Font.Color := EnvironmentOptions.DebuggerEventLogColors[TDBGEventType(Rec.EventType)].Foreground;
+    Sender.Canvas.Brush.Color := EnvironmentDebugOpts.DebuggerEventLogColors[TDBGEventType(Rec.EventType)].Background;
+    Sender.Canvas.Font.Color := EnvironmentDebugOpts.DebuggerEventLogColors[TDBGEventType(Rec.EventType)].Foreground;
   end;
 
   NodeRect := Node.DisplayRect(False);
@@ -129,19 +137,19 @@ end;
 function TDbgEventsForm.GetFilter: TDBGEventCategories;
 begin
   Result := [];
-  if EnvironmentOptions.DebuggerEventLogShowBreakpoint then
+  if EnvironmentDebugOpts.DebuggerEventLogShowBreakpoint then
     Include(Result, ecBreakpoint);
-  if EnvironmentOptions.DebuggerEventLogShowProcess then
+  if EnvironmentDebugOpts.DebuggerEventLogShowProcess then
     Include(Result, ecProcess);
-  if EnvironmentOptions.DebuggerEventLogShowThread then
+  if EnvironmentDebugOpts.DebuggerEventLogShowThread then
     Include(Result, ecThread);
-  if EnvironmentOptions.DebuggerEventLogShowModule then
+  if EnvironmentDebugOpts.DebuggerEventLogShowModule then
     Include(Result, ecModule);
-  if EnvironmentOptions.DebuggerEventLogShowOutput then
+  if EnvironmentDebugOpts.DebuggerEventLogShowOutput then
     Include(Result, ecOutput);
-  if EnvironmentOptions.DebuggerEventLogShowWindows then
+  if EnvironmentDebugOpts.DebuggerEventLogShowWindows then
     Include(Result, ecWindows);
-  if EnvironmentOptions.DebuggerEventLogShowDebugger then
+  if EnvironmentDebugOpts.DebuggerEventLogShowDebugger then
     Include(Result, ecDebugger);
 end;
 
@@ -292,11 +300,11 @@ var
   Item: TTreeNode;
   Rec: TDBGEventRec;
 begin
-  if EnvironmentOptions.DebuggerEventLogCheckLineLimit then
+  if EnvironmentDebugOpts.DebuggerEventLogCheckLineLimit then
   begin
     tvFilteredEvents.BeginUpdate;
     try
-      while tvFilteredEvents.Items.Count >= EnvironmentOptions.DebuggerEventLogLineLimit do
+      while tvFilteredEvents.Items.Count >= EnvironmentDebugOpts.DebuggerEventLogLineLimit do
         tvFilteredEvents.Items.Delete(tvFilteredEvents.Items[0]);
     finally
       tvFilteredEvents.EndUpdate;

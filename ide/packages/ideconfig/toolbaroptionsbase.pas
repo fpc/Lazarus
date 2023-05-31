@@ -5,7 +5,9 @@ unit ToolBarOptionsBase;
 interface
 
 uses
-  Classes, SysUtils, Laz2_XMLCfg;
+  Classes, SysUtils,
+  // LazUtils
+  Laz2_XMLCfg;
 
 const
   IDEToolBarConfigVersion = 1;  // File version in configuration.

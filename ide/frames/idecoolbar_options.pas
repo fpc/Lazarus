@@ -35,8 +35,10 @@ uses
   DividerBevel,
   // IDEIntf
   IdeIntfStrConsts, IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf,
+  // IdeConfig
+  EnvironmentOpts, CoolBarOptions,
   // IDE
-  LazarusIDEStrConsts, MainBar, EnvironmentOpts, IdeCoolbarData, CoolBarOptions;
+  LazarusIDEStrConsts, MainBar, IdeCoolbarData, EnvGuiOptions;
 
 type
 
@@ -161,9 +163,13 @@ end;
 
 procedure TIdeCoolbarOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
+  EnvOpt: TEnvironmentOptions;
+  EnvGui: TIDESubOptions;
   Opts: TIDECoolBarOptions;
 begin
-  Opts := (AOptions as TEnvironmentOptions).Desktop.IDECoolBarOptions;
+  EnvOpt := AOptions as TEnvironmentOptions;
+  EnvGui := EnvOpt.GetSubConfigObj(TEnvGuiOptions);
+  Opts := (EnvGui as TEnvGuiOptions).Desktop.IDECoolBarOptions;
   cbCoolBarVisible.Checked := Opts.Visible;
   FTempCoolBar.IsVisible := Opts.Visible;
 
@@ -185,7 +191,7 @@ begin
   cbBorderStyle.ItemIndex := Opts.BorderStyle;
   FTempCoolBar.Coolbar.BandBorderStyle := TBorderStyle(Opts.BorderStyle);
   EnableDisableGeneralButtons;
-  lblNoAutoSaveActiveDesktop.Visible := not EnvironmentOptions.AutoSaveActiveDesktop;
+  lblNoAutoSaveActiveDesktop.Visible := not TEnvGuiOptions(EnvGui).AutoSaveActiveDesktop;
 
   // ToDo: More tests?
   if Opts.ToolBars.Count = 0 then
@@ -199,9 +205,13 @@ end;
 
 procedure TIdeCoolbarOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
+  EnvOpt: TEnvironmentOptions;
+  EnvGui: TIDESubOptions;
   Opts: TIDECoolBarOptions;
 begin
-  Opts := (AOptions as TEnvironmentOptions).Desktop.IDECoolBarOptions;
+  EnvOpt := AOptions as TEnvironmentOptions;
+  EnvGui := EnvOpt.GetSubConfigObj(TEnvGuiOptions);
+  Opts := (EnvGui as TEnvGuiOptions).Desktop.IDECoolBarOptions;
   FTempCoolBar.CopyFromRealCoolbar(Coolbar);
   FTempCoolBar.CopyToOptions(Opts);
   Opts.Visible := cbCoolBarVisible.Checked;

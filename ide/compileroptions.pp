@@ -43,26 +43,29 @@ interface
 
 uses
   Classes, SysUtils, Laz_AVL_Tree,
+  {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
   // LCL
-  InterfaceBase, Forms, Controls,
+  InterfaceBase,
   // LazUtils
   FileUtil, LazFileUtils, LazUTF8, Laz2_XMLCfg, Laz2_DOM, LazUtilities, LazTracer,
   LazStringUtils,
   // CodeTools
   FileProcs, DefineTemplates, CodeToolsCfgScript, CodeToolManager,
   KeywordFuncLists, BasicCodeTools, LinkScanner,
+  // BuildIntf
+  ProjectIntf, MacroIntf, IDEExternToolIntf, CompOptsIntf, IDEOptionsIntf,
   // IDEIntf
-  ProjectIntf, MacroIntf, IDEExternToolIntf, SrcEditorIntf, CompOptsIntf,
-  IDEOptionsIntf,
+  SrcEditorIntf,
+  // IdeConfig
+  LazConf, EnvironmentOpts, SearchPathProcs, IdeXmlConfigProcs,
   // IDE
-  LazarusIDEStrConsts, IDEProcs, LazConf, TransferMacros, etFPCMsgParser,
-  IDECmdLine, ModeMatrixOpts, CompOptsModes, EnvironmentOpts, SearchPathProcs,
-  IdeXmlConfigProcs;
+  LazarusIDEStrConsts, IDEProcs, TransferMacros, etFPCMsgParser,
+  IDECmdLine, ModeMatrixOpts, CompOptsModes;
 
 const
   DefaultCompilerPath = '$(CompPath)';
-type
 
+type
   TCheckCompileOptionsMsgLvl = (
     ccomlHints,
     ccomlWarning,

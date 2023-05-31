@@ -69,11 +69,14 @@ uses
   IDEImagesIntf, SrcEditorIntf, LazIDEIntf, MenuIntf, NewItemIntf, PackageIntf,
   IDECommands, IDEWindowIntf, ProjectIntf, ToolBarIntf, ObjectInspector,
   PropEdits, IDEDialogs, IDEUtils, EditorSyntaxHighlighterDef, IdeIntfStrConsts,
+  InputHistory,
   // IDEDebugger
   IdeDebuggerStringConstants,
+  // IdeConfig
+  LazConf, EnvironmentOpts,
   // IDE
-  LazConf, LazarusIDEStrConsts, Project, EnvironmentOpts, InputHistory,
-  EditorOptions, CompilerOptions, SourceEditor, SourceSynEditor, FindInFilesDlg,
+  LazarusIDEStrConsts, EditorOptions, CompilerOptions, EnvGuiOptions,
+  Project, SourceEditor, SourceSynEditor, FindInFilesDlg,
   Splash, MainBar, MainIntf, Designer, Debugger, RunParamsOpts, FindInFilesWnd;
 
 type
@@ -550,7 +553,7 @@ var
 
 function FormMatchesCmd(aForm: TCustomForm; aCmd: TIDEMenuCommand): Boolean;
 begin
-  if EnvironmentOptions.Desktop.IDENameForDesignedFormList and IsFormDesign(aForm) then
+  if EnvironmentGuiOpts.Desktop.IDENameForDesignedFormList and IsFormDesign(aForm) then
     Result := aForm.Name = aCmd.Caption
   else
     Result := aForm.Caption = aCmd.Caption;
@@ -1530,7 +1533,7 @@ begin
       'TNonControlProxyDesignerForm':    // datamodule
           AMenuItem.Caption := AForm.Caption;
     else                                 // form
-      if EnvironmentOptions.Desktop.IDENameForDesignedFormList then
+      if EnvironmentGuiOpts.Desktop.IDENameForDesignedFormList then
         AMenuItem.Caption := AForm.Name+' - Designer'
       else
         AMenuItem.Caption := AForm.Caption+' - Designer';

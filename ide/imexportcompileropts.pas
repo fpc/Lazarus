@@ -38,10 +38,9 @@ uses
   // LazUtils
   FileUtil, LazFileUtils, Laz2_XMLCfg,
   // IdeIntf
-  IDEOptEditorIntf, IDEImagesIntf,
-  // IDE
-  IDEProcs, LazarusIDEStrConsts, InputHistory, Project, CompilerOptions,
-  RecentListProcs;
+  IDEOptEditorIntf, IDEImagesIntf, InputHistory,
+  // IdeConfig
+  IDEProcs, LazarusIDEStrConsts, Project, CompilerOptions, RecentListProcs;
 
 type
   { TImExportCompOptsDlg }

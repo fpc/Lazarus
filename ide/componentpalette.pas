@@ -40,15 +40,14 @@ interface
 uses
   Classes, SysUtils, Laz_AVL_Tree,
   // LCL
-  LCLProc, Controls, Forms, Graphics, ComCtrls, Buttons, Menus, ExtCtrls,
+  Controls, Forms, Graphics, ComCtrls, Buttons, Menus, ExtCtrls, ImgList,
   // LazUtils
-  LazFileUtils, LazFileCache, AvgLvlTree,
+  LazFileUtils, LazFileCache, LazLoggerBase, AvgLvlTree,
   // IdeIntf
   FormEditingIntf, LazIDEIntf, IDEImagesIntf, PropEdits, ComponentReg,
   // IDE
   ComponentPalette_Options,
-  MainBase, LazarusIDEStrConsts, DesignerProcs, PackageDefs, EnvironmentOpts,
-  ImgList;
+  MainBase, LazarusIDEStrConsts, DesignerProcs, PackageDefs, EnvGuiOptions;
 
 const
   CompPalSelectionToolBtnPrefix = 'PaletteSelectBtn';
@@ -421,7 +420,7 @@ begin
     GroupIndex:= 1;
     Down := True;
     Hint := lisSelectionTool;
-    ShowHint := EnvironmentOptions.ShowHintsForComponentPalette;
+    ShowHint := EnvironmentGuiOpts.ShowHintsForComponentPalette;
     SetBounds(0,0,aScrollBox.Scale96ToForm(ComponentPaletteBtnWidth),aScrollBox.Scale96ToForm(ComponentPaletteBtnHeight));
     Parent := aScrollBox;
   end;
@@ -457,7 +456,7 @@ begin
       Btn.OnMouseUp := @Pal.ComponentBtnMouseUp;
       Btn.OnDblClick := @Pal.ComponentBtnDblClick;
       Btn.OnMouseWheel := @Pal.OnPageMouseWheel;
-      Btn.ShowHint := EnvironmentOptions.ShowHintsForComponentPalette;
+      Btn.ShowHint := EnvironmentGuiOpts.ShowHintsForComponentPalette;
       Btn.Hint := CompCls.ClassName + sLineBreak +
         '(' + aComp.ComponentClass.UnitName+', '+aComp.PkgFile.LazPackage.Name + ')';
       Btn.PopupMenu:=Pal.PopupMenu;
@@ -830,7 +829,7 @@ end;
 
 constructor TComponentPalette.Create;
 begin
-  inherited Create(EnvironmentOptions.Desktop.ComponentPaletteOptions);
+  inherited Create(EnvironmentGuiOpts.Desktop.ComponentPaletteOptions);
   fComponentButtons:=TPointerToPointerTree.Create;
   AddHandlerComponentAdded(@ComponentWasAdded);
   AddHandlerSelectionChanged(@SelectionWasChanged);

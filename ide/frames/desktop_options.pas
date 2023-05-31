@@ -33,9 +33,12 @@ uses
   // LazControls
   DividerBevel,
   // IdeIntf
-  IdeIntfStrConsts, IDEOptionsIntf, IDEOptEditorIntf, IDEWindowIntf, IDEUtils, IDEDialogs,
+  IdeIntfStrConsts, IDEOptionsIntf, IDEOptEditorIntf, IDEWindowIntf,
+  IDEUtils, IDEDialogs, InputHistory,
+  // IdeConfig
+  EnvironmentOpts,
   // IDE
-  EnvironmentOpts, LazarusIDEStrConsts, IDETranslations, InputHistory;
+  LazarusIDEStrConsts, IDETranslations, EnvGuiOptions;
 
 type
 
@@ -169,11 +172,17 @@ begin
 end;
 
 procedure TDesktopOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
+var
+  EnvOpt: TEnvironmentOptions;
+  EnvGui: TIDESubOptions;
 begin
-  with AOptions as TEnvironmentOptions do
+  EnvOpt := AOptions as TEnvironmentOptions;
+  EnvGui := EnvOpt.GetSubConfigObj(TEnvGuiOptions);
+  //Assert(Assigned(EnvGui), 'TDesktopOptionsFrame.ReadSettings: EnvGui=Nil');
+  with EnvGui as TEnvGuiOptions do
   begin
     // language
-    LanguageComboBox.Text:=LangIDToCaption(LanguageID);
+    LanguageComboBox.Text:=LangIDToCaption(EnvOpt.LanguageID);
     //debugln('TEnvironmentOptionsDialog.ReadSettings LanguageComboBox.ItemIndex=',dbgs(LanguageComboBox.ItemIndex),' LanguageID="',LanguageID,'" LanguageComboBox.Text="',LanguageComboBox.Text,'"');
 
     // mouse action
@@ -196,24 +205,30 @@ begin
     end;
 
     // comboboxes
-    spDropDownCount.Value := DropDownCount;
+    spDropDownCount.Value := EnvOpt.DropDownCount;
 
     // check and auto save files
-    CheckDiskChangesWithLoadingCheckBox.Checked:=CheckDiskChangesWithLoading;
-    AskSavingOnlySessionCheckBox.Checked:=AskSaveSessionOnly;
-    AutoSaveEditorFilesCheckBox.Checked:=AutoSaveEditorFiles;
-    AutoSaveProjectCheckBox.Checked:=AutoSaveProject;
+    CheckDiskChangesWithLoadingCheckBox.Checked:=EnvOpt.CheckDiskChangesWithLoading;
+    AskSavingOnlySessionCheckBox.Checked:=EnvOpt.AskSaveSessionOnly;
+    AutoSaveEditorFilesCheckBox.Checked:=EnvOpt.AutoSaveEditorFiles;
+    AutoSaveProjectCheckBox.Checked:=EnvOpt.AutoSaveProject;
     SetComboBoxText(AutoSaveIntervalInSecsComboBox
-       ,IntToStr(AutoSaveIntervalInSecs),cstCaseInsensitive);
+       ,IntToStr(EnvOpt.AutoSaveIntervalInSecs),cstCaseInsensitive);
   end;
 end;
 
 procedure TDesktopOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
+var
+  EnvOpt: TEnvironmentOptions;
+  EnvGui: TIDESubOptions;
 begin
-  with AOptions as TEnvironmentOptions do
+  EnvOpt := AOptions as TEnvironmentOptions;
+  EnvGui := EnvOpt.GetSubConfigObj(TEnvGuiOptions);
+  //Assert(Assigned(EnvGui), 'TDesktopOptionsFrame.ReadSettings: EnvGui=Nil');
+  with EnvGui as TEnvGuiOptions do
   begin
     // language
-    LanguageID:=CaptionToLangID(LanguageComboBox.Text);
+    EnvOpt.LanguageID:=CaptionToLangID(LanguageComboBox.Text);
     //debugln('TEnvironmentOptionsDialog.WriteSettings A LanguageID="',LanguageID,'" LanguageComboBox.ItemIndex=',dbgs(LanguageComboBox.ItemIndex),' LanguageComboBox.Text=',LanguageComboBox.Text);
 
     // mouse action
@@ -240,15 +255,15 @@ begin
       ShowMenuGlyphs := sbgSystem;
 
     // check and auto save files
-    CheckDiskChangesWithLoading:=CheckDiskChangesWithLoadingCheckBox.Checked;
-    AskSaveSessionOnly:=AskSavingOnlySessionCheckBox.Checked;
-    AutoSaveEditorFiles:=AutoSaveEditorFilesCheckBox.Checked;
-    AutoSaveProject:=AutoSaveProjectCheckBox.Checked;
-    AutoSaveIntervalInSecs:=StrToIntDef(
-      AutoSaveIntervalInSecsComboBox.Text,AutoSaveIntervalInSecs);
+    EnvOpt.CheckDiskChangesWithLoading:=CheckDiskChangesWithLoadingCheckBox.Checked;
+    EnvOpt.AskSaveSessionOnly:=AskSavingOnlySessionCheckBox.Checked;
+    EnvOpt.AutoSaveEditorFiles:=AutoSaveEditorFilesCheckBox.Checked;
+    EnvOpt.AutoSaveProject:=AutoSaveProjectCheckBox.Checked;
+    EnvOpt.AutoSaveIntervalInSecs:=StrToIntDef(
+      AutoSaveIntervalInSecsComboBox.Text,EnvOpt.AutoSaveIntervalInSecs);
 
     // comboboxes
-    DropDownCount := spDropDownCount.Value;
+    EnvOpt.DropDownCount := spDropDownCount.Value;
   end;
 end;
 
@@ -271,7 +286,7 @@ begin
         AFilename:=SaveDialog.Filename;
         if ExtractFileExt(AFilename)='' then
           AFilename:=AFilename+'.lds';
-        AnEnvironmentOptions := TEnvironmentOptions.Create;
+        AnEnvironmentOptions := TEnvironmentOptions.Create(Application.ExeName);
         try
           AnEnvironmentOptions.Filename := AFilename;
           DoSaveSettings(AnEnvironmentOptions);
@@ -308,7 +323,7 @@ begin
            +'|'+dlgFilterAll+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
       if OpenDialog.Execute then
       begin
-        AnEnvironmentOptions := TEnvironmentOptions.Create;
+        AnEnvironmentOptions := TEnvironmentOptions.Create(Application.ExeName);
         try
           AnEnvironmentOptions.Filename := OpenDialog.Filename;
           AnEnvironmentOptions.Load(true);

@@ -48,16 +48,15 @@ uses
   BaseIDEIntf, IDEOptionsIntf, ProjectIntf, MacroIntf, PublishModuleIntf,
   IDEExternToolIntf, CompOptsIntf, MacroDefIntf,
   // IDEIntf
-  IDEDialogs, LazIDEIntf, IDEMsgIntf, SrcEditorIntf,
-  // IdeOptions
-  TransferMacrosIntf,
+  IDEDialogs, LazIDEIntf, IDEMsgIntf, SrcEditorIntf, InputHistory,
+  // IdeConfig
+  LazConf, EnvironmentOpts, ModeMatrixOpts, TransferMacrosIntf,
   // IDE
-  IDECmdLine, LazarusIDEStrConsts, DialogProcs, IDEProcs, InputHistory,
-  EditDefineTree, ProjectResources, MiscOptions, LazConf, EnvironmentOpts,
-  TransferMacros, CompilerOptions, ExtTools, etMakeMsgParser, etFPCMsgParser,
-  etPas2jsMsgParser, Compiler, FPCSrcScan, PackageDefs, PackageSystem, Project,
-  ProjectIcon, ModeMatrixOpts, BaseBuildManager, ApplicationBundle,
-  RunParamsOpts, IdeTransferMacros, SearchPathProcs;
+  IDECmdLine, LazarusIDEStrConsts, DialogProcs, IDEProcs,
+  EditDefineTree, ProjectResources, MiscOptions, CompilerOptions, TransferMacros,
+  ExtTools, etMakeMsgParser, etFPCMsgParser, etPas2jsMsgParser, Compiler,
+  FPCSrcScan, PackageDefs, PackageSystem, Project, ProjectIcon, BaseBuildManager,
+  ApplicationBundle, RunParamsOpts, IdeTransferMacros, SearchPathProcs;
   
 const
   cInvalidCompiler = 'InvalidCompiler';
@@ -372,9 +371,10 @@ end;
 
 constructor TBuildManager.Create(AOwner: TComponent);
 begin
-  EnvironmentOptions := TEnvironmentOptions.Create;
+  EnvironmentOptions := TEnvironmentOptions.Create(Application.ExeName);
   IDEEnvironmentOptions := EnvironmentOptions;
   EnvironmentOptions.IsGlobalMode:=@EnvironmentOptionsIsGlobalMode;
+
   DefaultCfgVars:=TCTCfgScriptVariables.Create;
   DefaultCfgVarsBuildMacroStamp:=CTInvalidChangeStamp;
   FFPCVerChangeStamp:=CTInvalidChangeStamp;
@@ -404,10 +404,10 @@ begin
   OnBackupFileInteractive:=nil;
 
   FreeAndNil(FFPCSrcScans);
-
   LazConfMacroFunc:=nil;
   FreeAndNil(InputHistories);
   FreeAndNil(DefaultCfgVars);
+  FreeAndNil(EnvironmentOptions);
 
   if SameMethod(TMethod(CodeToolBoss.OnRescanFPCDirectoryCache),
                 TMethod(@DoOnRescanFPCDirectoryCache)) then

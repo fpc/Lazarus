@@ -28,9 +28,9 @@ uses
   SynEditTypes, SynEdit,
   // IdeIntf
   MacroIntf, IDEWindowIntf, SrcEditorIntf, IDEHelpIntf, IDEDialogs,
-  IdeIntfStrConsts, ProjectGroupIntf,
+  IdeIntfStrConsts, ProjectGroupIntf, InputHistory,
   // IDE
-  LazarusIDEStrConsts, InputHistory, InputhistoryWithSearchOpt, EditorOptions, Project,
+  LazarusIDEStrConsts, InputhistoryWithSearchOpt, EditorOptions, Project,
   IDEProcs, SearchFrm, SearchResultView, EnvironmentOpts, SearchPathProcs;
 
 type

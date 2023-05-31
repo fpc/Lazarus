@@ -40,10 +40,11 @@ uses
   // LazUtils
   LazFileUtils, LazFileCache, laz2_DOM, LazStringUtils, AvgLvlTree,
   // IdeIntf
-  IdeIntfStrConsts, LazIDEIntf, IDEWindowIntf, SrcEditorIntf, PackageIntf, IDEDialogs,
+  IdeIntfStrConsts, LazIDEIntf, IDEWindowIntf, SrcEditorIntf, PackageIntf,
+  IDEDialogs, InputHistory,
   // IDE
   LazarusIDEStrConsts, IDEProcs, MiscOptions, DialogProcs,
-  InputHistory, SearchResultView, CodeHelp, TransferMacros;
+  SearchResultView, CodeHelp, TransferMacros;
 
 type
 

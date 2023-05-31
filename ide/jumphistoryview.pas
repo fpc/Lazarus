@@ -32,8 +32,10 @@ uses
   LazUTF8, LazStringUtils,
   // CodeTools
   CodeToolManager, CodeCache,
+  // IdeConfig
+  IDEOptionDefs,
   // IDE
-  IDEOptionDefs, EnvironmentOpts, LazarusIDEStrConsts, Project, ProjectDefs;
+  LazarusIDEStrConsts, Project, ProjectDefs, EnvGuiOptions;
 
 type
 
@@ -47,7 +49,6 @@ type
     procedure listHistoryKeyPress(Sender: TObject; var Key: char);
     procedure OnIdle(Sender : TObject; var {%H-}Done: Boolean);
   private
-    { private declarations }
     fOnSelectionChanged : TNotifyEvent;
     fProjectChangeStamp: integer;
     function GetSelectedIndex : Integer;
@@ -56,7 +57,6 @@ type
     procedure IndexChanged(Sender: TObject; {%H-}Index: Integer);
     procedure ListChanged(Sender: TObject; {%H-}Index: Integer);
   public
-    { public declarations }
     property SelectedIndex : Integer read GetSelectedIndex;
     property OnSelectionChanged: TNotifyEvent read fOnSelectionChanged
                                               write fOnSelectionChanged;
@@ -81,13 +81,13 @@ end;
 
 procedure TJumpHistoryViewWin.listHistoryClick(Sender : TObject);
 begin
-  if EnvironmentOptions.MsgViewDblClickJumps then exit;
+  if EnvironmentGuiOpts.MsgViewDblClickJumps then exit;
   if Assigned(fOnSelectionChanged) then fOnSelectionChanged(self);
 end;
 
 procedure TJumpHistoryViewWin.listHistoryDblClick(Sender : TObject);
 begin
-  if not EnvironmentOptions.MsgViewDblClickJumps then exit;
+  if not EnvironmentGuiOpts.MsgViewDblClickJumps then exit;
   if Assigned(fOnSelectionChanged) then fOnSelectionChanged(self);
 end;
 

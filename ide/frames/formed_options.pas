@@ -28,10 +28,14 @@ uses
   Classes, SysUtils,
   // LCL
   Graphics, Forms, StdCtrls, Dialogs, Spin, ColorBox,
+  // BuildIntf
+  IDEOptionsIntf,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf,
+  IDEOptEditorIntf,
+  // IdeConfig
+  EnvironmentOpts,
   // IDE
-  EnvironmentOpts, LazarusIDEStrConsts;
+  EnvGuiOptions, LazarusIDEStrConsts;
 
 type
   TDesignerColor = (
@@ -159,8 +163,14 @@ begin
 end;
 
 procedure TFormEditorOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
+var
+  EnvOpt: TEnvironmentOptions;
+  EnvGui: TIDESubOptions;
 begin
-  with AOptions as TEnvironmentOptions do
+  EnvOpt := AOptions as TEnvironmentOptions;
+  EnvGui := EnvOpt.GetSubConfigObj(TEnvGuiOptions);
+  //Assert(Assigned(EnvGui), 'TFormEditorOptionsFrame.ReadSettings: EnvGui=Nil');
+  with EnvGui as TEnvGuiOptions do
   begin
     // read colors
     ColorsListBox.Items.Objects[Ord(dcGrid)] := TObject(PtrInt(GridColor));
@@ -196,8 +206,13 @@ begin
 end;
 
 procedure TFormEditorOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
+var
+  EnvOpt: TEnvironmentOptions;
+  EnvGui: TIDESubOptions;
 begin
-  with AOptions as TEnvironmentOptions do
+  EnvOpt := AOptions as TEnvironmentOptions;
+  EnvGui := EnvOpt.GetSubConfigObj(TEnvGuiOptions);
+  with EnvGui as TEnvGuiOptions do
   begin
     // write colors
     GridColor := ColorsListBox.Colors[Ord(dcGrid)];

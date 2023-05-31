@@ -33,7 +33,7 @@ interface
 
 uses
   // RTL, FCL
-  Classes, SysUtils, contnrs,
+  Classes, SysUtils, Contnrs,
   // LCL
   Forms, Controls, StdCtrls, ComCtrls, Buttons, Graphics, Menus, Dialogs,
   ExtCtrls, ImgList, LCLType, LCLIntf,
@@ -47,15 +47,15 @@ uses
   ProjectIntf, PackageDependencyIntf, PackageIntf, PackageLinkIntf,
   IDEOptionsIntf, NewItemIntf,
   // IDEIntf
-  IDEImagesIntf, MenuIntf, LazIDEIntf, FormEditingIntf, IDEHelpIntf,
+  IDEImagesIntf, MenuIntf, LazIDEIntf, FormEditingIntf, IDEHelpIntf, InputHistory,
   IdeIntfStrConsts, IDEWindowIntf, IDEDialogs, ComponentReg, IDEOptEditorIntf,
+  // IdeConfig
+  EnvironmentOpts, SearchPathProcs,
   // IDE
-  MainBase, IDEProcs, DialogProcs, LazarusIDEStrConsts, IDEDefs,
-  CompilerOptions, EnvironmentOpts, InputHistory, SearchPathProcs,
+  MainBase, DialogProcs, LazarusIDEStrConsts, IDEDefs, CompilerOptions,
   PackageSystem, PackageDefs, AddToPackageDlg, AddPkgDependencyDlg,
-  AddFPMakeDependencyDlg, ProjPackChecks, PkgVirtualUnitEditor,
-  MissingPkgFilesDlg, CleanPkgDeps, ProjPackFilePropGui, ProjPackEditing,
-  BasePkgManager;
+  AddFPMakeDependencyDlg, ProjPackChecks, PkgVirtualUnitEditor, CleanPkgDeps,
+  MissingPkgFilesDlg, ProjPackFilePropGui, ProjPackEditing, BasePkgManager;
   
 const
   PackageEditorMenuRootName = 'PackageEditor';

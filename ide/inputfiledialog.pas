@@ -27,9 +27,9 @@ uses
   // LazUtils
   LazFileUtils, LazFileCache,
   // IdeIntf
-  IdeIntfStrConsts, IDEDialogs,
+  IdeIntfStrConsts, IDEDialogs, InputHistory,
   // IDE
-  LazarusIDEStrConsts, TransferMacros, InputHistory;
+  LazarusIDEStrConsts, TransferMacros;
 
 type
   TInputFileFlag = (iftDirectory, iftFilename, iftCmdLine,

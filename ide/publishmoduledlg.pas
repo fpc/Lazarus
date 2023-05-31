@@ -40,11 +40,12 @@ uses
   // BuildIntf
   ProjPackIntf, CompOptsIntf, PublishModuleIntf,
   // IdeIntf
-  IdeIntfStrConsts, IDEWindowIntf, IDEHelpIntf, IDEDialogs, IDEImagesIntf, LazIDEIntf,
+  IdeIntfStrConsts, IDEWindowIntf, IDEHelpIntf, IDEDialogs, IDEImagesIntf,
+  LazIDEIntf, InputHistory,
+  // IdeConfig
+  EnvironmentOpts, IDEOptionDefs, RecentListProcs,
   // IDE
-  ProjectDefs, Project, PackageDefs, IDEOptionDefs, InputHistory,
-  LazarusIDEStrConsts, IDEProcs, EnvironmentOpts, CompilerOptions,
-  RecentListProcs;
+  ProjectDefs, Project, PackageDefs, LazarusIDEStrConsts, CompilerOptions;
 
 type
   { TPublishModuleDialog }

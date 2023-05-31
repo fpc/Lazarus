@@ -36,11 +36,21 @@ unit CallStackDlg;
 interface
 
 uses
-  SysUtils, Classes, Math, Controls, Forms, LCLProc, LazLoggerBase,
-  IDEWindowIntf, ComCtrls, Debugger, DebuggerDlg, Menus,
-  ClipBrd, ExtCtrls, StdCtrls, ActnList, IDEImagesIntf, IDECommands,
-  DbgIntfDebuggerBase, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
-  EnvironmentOpts, IdeDebuggerStringConstants;
+  SysUtils, Classes, Math,
+  // LCL
+  Controls, Forms, LCLProc, ComCtrls, Menus, ClipBrd, ExtCtrls, StdCtrls, ActnList,
+  // LazUtils
+  LazLoggerBase,
+  // IdeIntf
+  IDEWindowIntf, IDEImagesIntf, IDECommands,
+  // IdeConfig
+  //EnvironmentOpts,
+  // DebuggerIntf
+  DbgIntfDebuggerBase,
+  // LazDebuggerIntf
+  LazDebuggerIntf, LazDebuggerIntfBaseTypes,
+  // IdeDebugger
+  Debugger, DebuggerDlg, IdeDebuggerStringConstants, EnvDebuggerOptions;
 
 type
 
@@ -629,7 +639,7 @@ begin
   if FViewCount = TMenuItem(Sender).Tag then Exit;
   FViewCount := TMenuItem(Sender).Tag;
   ViewLimit := FViewCount;
-  EnvironmentOptions.DebuggerConfig.DlgCallStackConfig.ViewCount := FViewCount;
+  EnvironmentDebugOpts.DebuggerConfig.DlgCallStackConfig.ViewCount := FViewCount;
   actViewLimit.Caption := TMenuItem(Sender).Caption;
 end;
 
@@ -800,7 +810,7 @@ begin
   actSetCurrent.Hint := lisCurrent;
   actCopyAll.Hint := lisCopyAll;
 
-  FViewCount := EnvironmentOptions.DebuggerConfig.DlgCallStackConfig.ViewCount;
+  FViewCount := EnvironmentDebugOpts.DebuggerConfig.DlgCallStackConfig.ViewCount;
   curPopLimit := nil;
   for i := 0 to mnuLimit.Items.Count-1 do
     if mnuLimit.Items[i].Tag = FViewCount then

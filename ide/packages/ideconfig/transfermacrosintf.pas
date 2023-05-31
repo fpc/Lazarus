@@ -5,7 +5,11 @@ unit TransferMacrosIntf;
 interface
 
 uses
-  Classes, SysUtils, MacroDefIntf, MacroIntf, FileProcs, CodeToolManager;
+  Classes, SysUtils,
+  // BuildIntf
+  MacroDefIntf, MacroIntf,
+  // CodeTools
+  FileProcs, CodeToolManager;
 
 type
 

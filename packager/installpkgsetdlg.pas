@@ -47,11 +47,14 @@ uses
   BasicCodeTools,
   // LazUtils
   LazFileUtils, Laz2_XMLCfg, LazUTF8,
+  // BuildIntf
+  PackageIntf, PackageLinkIntf, PackageDependencyIntf,
   // IdeIntf
-  IdeIntfStrConsts, PackageDependencyIntf, PackageIntf, IDEImagesIntf,
-  IDEHelpIntf, IDEDialogs, IDEWindowIntf, PackageLinkIntf,
+  IdeIntfStrConsts, IDEImagesIntf, IDEHelpIntf, IDEDialogs, IDEWindowIntf, InputHistory,
+  // IdeConfig
+  LazConf,
   // IDE
-  LazarusIDEStrConsts, InputHistory, LazConf, PackageDefs, PackageSystem, LPKCache, PackageLinks;
+  LazarusIDEStrConsts, PackageDefs, PackageSystem, LPKCache, PackageLinks;
 
 type
   TOnCheckInstallPackageList =

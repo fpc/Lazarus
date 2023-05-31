@@ -47,10 +47,9 @@ uses
   // CodeTools
   CodeToolManager, CodeToolsStructs, CodeCache,
   // IdeIntf
-  IdeIntfStrConsts, IDEWindowIntf, IDEHelpIntf, IDEDialogs,
+  IdeIntfStrConsts, IDEWindowIntf, IDEHelpIntf, IDEDialogs, InputHistory,
   // IDE
-  LazarusIDEStrConsts, EditorOptions, InputHistory, MiscOptions, IDEProcs,
-  RecentListProcs;
+  LazarusIDEStrConsts, EditorOptions, MiscOptions, IDEProcs, RecentListProcs;
 
 type
 

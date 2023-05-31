@@ -32,9 +32,10 @@ uses
   DbgIntfDebuggerBase,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf,
+  // IdeDebugger
+  Debugger, IdeDebuggerOpts, EnvDebuggerOptions,
   // IDE
-  Debugger, IdeDebuggerOpts, LazarusIDEStrConsts, EnvironmentOpts,
-  BaseDebugManager;
+  LazarusIDEStrConsts;
 
 type
   { TDebuggerEventLogOptionsFrame }
@@ -252,7 +253,7 @@ procedure TDebuggerEventLogOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptio
 var
   EventType: TDBGEventType;
 begin
-  with EnvironmentOptions do
+  with EnvironmentDebugOpts do
   begin
     chkClearLogOnRun.Checked := DebuggerEventLogClearOnRun;
     chkLimitLinecount.Checked := DebuggerEventLogCheckLineLimit;
@@ -280,7 +281,7 @@ procedure TDebuggerEventLogOptionsFrame.WriteSettings(AOptions: TAbstractIDEOpti
 var
   EventType: TDBGEventType;
 begin
-  with EnvironmentOptions do
+  with EnvironmentDebugOpts do
   begin
     DebuggerEventLogClearOnRun := chkClearLogOnRun.Checked;
     DebuggerEventLogCheckLineLimit := chkLimitLinecount.Checked;

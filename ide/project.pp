@@ -57,7 +57,7 @@ uses
   FPCAdds, LazUtilities, FileUtil, LazFileUtils, LazFileCache, LazMethodList,
   LazLoggerBase, FileReferenceList, LazUTF8, Laz2_XMLCfg, Maps, AvgLvlTree,
   // IDEIntf
-  PropEdits, UnitResources, EditorSyntaxHighlighterDef,
+  PropEdits, UnitResources, EditorSyntaxHighlighterDef, InputHistory,
   CompOptsIntf, ProjectIntf, MacroIntf, MacroDefIntf, SrcEditorIntf,
   IDEOptionsIntf, IDEOptEditorIntf, IDEDialogs, LazIDEIntf, PackageIntf,
   // DebuggerIntf
@@ -67,7 +67,7 @@ uses
   EnvironmentOpts, CompOptsModes, ProjectResources, LazConf, ProjectIcon,
   IDECmdLine, IDEProcs, CompilerOptions, RunParamsOpts, ModeMatrixOpts,
   TransferMacros, ProjectDefs, EditDefineTree, LazarusIDEStrConsts,
-  InputHistory, SearchPathProcs, IdeXmlConfigProcs, ProjPackCommon, PackageDefs,
+  SearchPathProcs, IdeXmlConfigProcs, ProjPackCommon, PackageDefs,
   PackageSystem;
 
 type

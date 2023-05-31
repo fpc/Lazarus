@@ -182,6 +182,10 @@
         <Filename Value="dbgtreeviewwatchdata.pas"/>
         <UnitName Value="DbgTreeViewWatchData"/>
       </Item>
+      <Item>
+        <Filename Value="envdebuggeroptions.pas"/>
+        <UnitName Value="EnvDebuggerOptions"/>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

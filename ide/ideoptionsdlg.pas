@@ -40,9 +40,11 @@ uses
   // IdeIntf
   IDEWindowIntf, IDEOptionsIntf, IDEOptEditorIntf, IDECommands, IDEHelpIntf,
   IdeIntfStrConsts, ProjectIntf,
+  // IdeConfig
+  EnvironmentOpts,
   // IDE
-  EnvironmentOpts, EditorOptions, BuildModesManager, BuildManager, Compiler_ModeMatrix,
-  Project, LazarusIDEStrConsts,
+  EditorOptions, EnvGuiOptions, Compiler_ModeMatrix, Project,
+  BuildModesManager, BuildManager, LazarusIDEStrConsts,
   // Packager
   PackageDefs;
 
@@ -353,7 +355,7 @@ begin
   if not Apply then
     Exit;
   // update TaskBarBehavior immediately
-  if EnvironmentOptions.Desktop.SingleTaskBarButton
+  if EnvironmentGuiOpts.Desktop.SingleTaskBarButton
     then Application.TaskBarBehavior := tbSingleButton
     else Application.TaskBarBehavior := tbDefault;
   // update DropDownCount property immediately

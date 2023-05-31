@@ -41,15 +41,21 @@ uses
   // LCL
   LCLType, Forms, Controls, ComCtrls, StdCtrls, Menus, Dialogs, ExtCtrls,
   Buttons,
+  // LazUtils
+  LazClasses,
   // IdeIntf
-  IDEWindowIntf, IDEImagesIntf,
+  IDEWindowIntf, IDEImagesIntf, InputHistory,
+  // IdeConfig
+  EnvironmentOpts, RecentListProcs,
   // DebuggerIntf
-  DbgIntfDebuggerBase, LazClasses, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
-  // IDE
-  BaseDebugManager, InputHistory, Debugger,
+  DbgIntfDebuggerBase,
+  // LazDebuggerIntf
+  LazDebuggerIntf, LazDebuggerIntfBaseTypes,
+  // IdeDebugger
+  BaseDebugManager, Debugger,
   IdeDebuggerWatchResPrinter, IdeDebuggerWatchResult, IdeDebuggerOpts,
   IdeDebuggerBackendValueConv, WatchInspectToolbar, DebuggerDlg,
-  IdeDebuggerStringConstants, IdeDebuggerBase, EnvironmentOpts, RecentListProcs;
+  IdeDebuggerStringConstants, IdeDebuggerBase, EnvDebuggerOptions;
 
 type
 
@@ -127,7 +133,7 @@ begin
   EdModify.Hint := drsNewValueToAssignToTheVari;
   Panel1.Enabled := False;
 
-  WatchInspectNav1.btnUseInstance.Down := EnvironmentOptions.DebuggerAutoSetInstanceFromClass;
+  WatchInspectNav1.btnUseInstance.Down := EnvironmentDebugOpts.DebuggerAutoSetInstanceFromClass;
 
   WatchInspectNav1.ShowInspectColumns := False;
   WatchInspectNav1.ShowArrayNav := False;
@@ -218,7 +224,7 @@ end;
 
 procedure TEvaluateDlg.DoEnvOptChanged(Sender: TObject; Restore: boolean);
 begin
-  WatchInspectNav1.ShowCallFunction := EnvironmentOptions.DebuggerAllowFunctionCalls;
+  WatchInspectNav1.ShowCallFunction := EnvironmentDebugOpts.DebuggerAllowFunctionCalls;
   WatchInspectNav1.EdInspect.DropDownCount := EnvironmentOptions.DropDownCount;
   EdModify.DropDownCount := EnvironmentOptions.DropDownCount;
 end;

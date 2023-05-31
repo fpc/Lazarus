@@ -32,8 +32,8 @@ unit InitialSetupProc;
 interface
 
 uses
-  // RTL + FCL + LCL
-  Classes, SysUtils, strutils, contnrs,
+  // RTL + FCL
+  Classes, SysUtils, StrUtils, Contnrs,
   // CodeTools
   DefineTemplates, CodeToolManager, FileProcs,
   // LazUtils

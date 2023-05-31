@@ -33,10 +33,14 @@ uses
   DividerBevel,
   // LazUtils
   FileUtil, Laz2_XMLCfg, ImgList,
+  // BuildIntf
+  IDEOptionsIntf,
   // IdeIntf
-  IdeIntfStrConsts, IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, FormEditingIntf, ComponentReg,
+  IdeIntfStrConsts, IDEOptEditorIntf, IDEImagesIntf, FormEditingIntf, ComponentReg,
+  // IdeConfig
+  EnvironmentOpts, IDEOptionDefs,
   // IDE
-  EnvironmentOpts, LazarusIDEStrConsts, IDEOptionDefs, PackageDefs;
+  LazarusIDEStrConsts, PackageDefs, EnvGuiOptions;
 
 type
 
@@ -197,9 +201,13 @@ end;
 
 procedure TCompPaletteOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
+  EnvOpt: TEnvironmentOptions;
+  EnvGui: TIDESubOptions;
   Opts: TCompPaletteOptions;
 begin
-  Opts := (AOptions as TEnvironmentOptions).Desktop.ComponentPaletteOptions;
+  EnvOpt := AOptions as TEnvironmentOptions;
+  EnvGui := EnvOpt.GetSubConfigObj(TEnvGuiOptions);
+  Opts := (EnvGui as TEnvGuiOptions).Desktop.ComponentPaletteOptions;
   fLocalOptions.Assign(Opts);
   fLocalUserOrder.Options := fLocalOptions;
   cbPaletteVisible.Checked := Opts.Visible;
@@ -218,9 +226,13 @@ end;
 
 procedure TCompPaletteOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
+  EnvOpt: TEnvironmentOptions;
+  EnvGui: TIDESubOptions;
   Opts: TCompPaletteOptions;
 begin
-  Opts := (AOptions as TEnvironmentOptions).Desktop.ComponentPaletteOptions;
+  EnvOpt := AOptions as TEnvironmentOptions;
+  EnvGui := EnvOpt.GetSubConfigObj(TEnvGuiOptions);
+  Opts := (EnvGui as TEnvGuiOptions).Desktop.ComponentPaletteOptions;
   Opts.Visible := cbPaletteVisible.Checked;
   MainIDEBar.DoSetViewComponentPalette(cbPaletteVisible.Checked);
   if not fConfigChanged then Exit;

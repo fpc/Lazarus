@@ -82,7 +82,7 @@ uses
   IDEIntf, ObjectInspector, PropEdits, PropEditUtils, EditorSyntaxHighlighterDef,
   IDECommands, IDEWindowIntf, ComponentReg, IDEDialogs, SrcEditorIntf, IDEMsgIntf,
   MenuIntf, LazIDEIntf, IDEOptEditorIntf, IDEImagesIntf, ComponentEditors,
-  IdeIntfStrConsts, ToolBarIntf, SelEdits,
+  IdeIntfStrConsts, ToolBarIntf, SelEdits, InputHistory,
   // protocol
   IDEProtocol,
   // compile
@@ -152,7 +152,7 @@ uses
   IdeOptionsDlg, EditDefineTree, EnvironmentOpts, TransferMacros, KeyMapping,
   IDETranslations, IDEProcs, ExtToolDialog, ExtToolEditDlg, JumpHistoryView,
   DesktopManager, DiskDiffsDialog, BuildLazDialog, BuildProfileManager,
-  BuildManager, CheckCompOptsForNewUnitDlg, MiscOptions, InputHistory,
+  BuildManager, CheckCompOptsForNewUnitDlg, MiscOptions,
   InputhistoryWithSearchOpt, UnitDependencies, IDEFPCInfo, IDEInfoDlg,
   IDEInfoNeedBuild, ProcessList, IdeDebuggerOpts, IdeDebuggerWatchResPrinter,
   IdeDebuggerWatchResult, InitialSetupDlgs, InitialSetupProc, NewDialog,
@@ -163,7 +163,7 @@ uses
   AboutFrm, CompatibilityRestrictions, RestrictionBrowser, ProjectWizardDlg,
   IDECmdLine, IDEGuiCmdLine, CodeExplOpts, EditorMacroListViewer,
   SourceFileManager, EditorToolbarStatic, IDEInstances, NotifyProcessEnd,
-  WordCompletion,
+  WordCompletion, EnvGuiOptions, EnvDebuggerOptions,
   // main ide
   MainBar, MainIntf, MainBase, SearchPathProcs;
 
@@ -688,8 +688,8 @@ type
     procedure DoViewAnchorEditor(State: TIWGetFormState = iwgfShowOnTop);
     procedure DoViewTabOrderEditor(State: TIWGetFormState = iwgfShowOnTop);
     // editor and environment options
-    procedure LoadDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
-    procedure SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
+    procedure LoadDesktopSettings(aOptions: TEnvGuiOptions);
+    procedure SaveDesktopSettings(aOptions: TEnvGuiOptions);
   protected
     procedure SetToolStatus(const AValue: TIDEToolStatus); override;
     procedure Notification(AComponent: TComponent;
@@ -1325,8 +1325,8 @@ begin
     end;
   end;
 
-  Application.ShowButtonGlyphs := EnvironmentOptions.ShowButtonGlyphs;
-  Application.ShowMenuGlyphs := EnvironmentOptions.ShowMenuGlyphs;
+  Application.ShowButtonGlyphs := EnvironmentGuiOpts.ShowButtonGlyphs;
+  Application.ShowMenuGlyphs := EnvironmentGuiOpts.ShowMenuGlyphs;
 
   OldVer:=EnvironmentOptions.OldLazarusVersion;
   NowVer:=GetLazarusVersionString;
@@ -1546,13 +1546,16 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create INHERITED');{$ENDIF}
 
   FWaitForClose := False;
-
   SetupDialogs;
 
   MainBuildBoss:=TBuildManager.Create(nil);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create BUILD MANAGER');{$ENDIF}
   // setup macros before loading options
   MainBuildBoss.SetupTransferMacros;
+  EnvironmentGuiOpts := TEnvGuiOptions.Create;
+  EnvironmentOptions.RegisterSubConfig(EnvironmentGuiOpts, '/');
+  EnvironmentDebugOpts := TEnvDebuggerOptions.Create;
+  EnvironmentOptions.RegisterSubConfig(EnvironmentDebugOpts, 'EnvironmentOptions/');
 
   // set flag to track if a local or user specific environment options configuration file existed
   FEnvOptsCfgExisted := FileExistsCached(EnvironmentOptions.GetDefaultConfigFilename);
@@ -1563,7 +1566,7 @@ begin
   LoadGlobalOptions;
   if Application.Terminated then exit;
 
-  if EnvironmentOptions.Desktop.SingleTaskBarButton then
+  if EnvironmentGuiOpts.Desktop.SingleTaskBarButton then
     Application.TaskBarBehavior := tbSingleButton;
 
   // setup code templates
@@ -1783,11 +1786,13 @@ begin
   FreeThenNil(MiscellaneousOptions);
   FreeThenNil(EditorOpts);
   IDECommandList := nil;
-  FreeThenNil(EnvironmentOptions);
   FreeThenNil(IDECommandScopes);
   // free control selection
   FreeThenNil(TheControlSelection);
-
+  EnvironmentOptions.UnRegisterSubConfig(EnvironmentDebugOpts);
+  EnvironmentOptions.UnRegisterSubConfig(EnvironmentGuiOpts);
+  FreeThenNil(EnvironmentDebugOpts);
+  FreeThenNil(EnvironmentGuiOpts);
   if ConsoleVerbosity>=0 then
     DebugLn('Hint: (lazarus) [TMainIDE.Destroy] B  -> inherited Destroy... ',ClassName);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy B ');{$ENDIF}
@@ -2502,7 +2507,7 @@ end;
 procedure TMainIDE.RestoreIDEWindows;
 begin
   DoCallNotifyHandler(lihtIDERestoreWindows);
-  EnvironmentOptions.Desktop.RestoreDesktop;
+  EnvironmentGuiOpts.Desktop.RestoreDesktop;
 end;
 
 procedure TMainIDE.FreeIDEWindows;
@@ -3791,8 +3796,8 @@ begin
     OnShowAnchorEditor:=@DesignerShowAnchorEditor;
     OnShowTabOrderEditor:=@DesignerShowTabOrderEditor;
     OnChangeParent:=@DesignerChangeParent;
-    ShowEditorHints:=EnvironmentOptions.ShowEditorHints;
-    ShowComponentCaptions:=EnvironmentOptions.ShowComponentCaptions;
+    ShowEditorHints:=EnvironmentGuiOpts.ShowEditorHints;
+    ShowComponentCaptions:=EnvironmentGuiOpts.ShowComponentCaptions;
   end;
   if AnUnitInfo<>nil then
     AnUnitInfo.LoadedDesigner:=true;
@@ -3817,8 +3822,8 @@ begin
         ADesigner:=TDesigner(CurDesignerForm.Designer);
         if ADesigner<>nil then
         begin
-          ADesigner.ShowEditorHints:=EnvironmentOptions.ShowEditorHints;
-          ADesigner.ShowComponentCaptions:=EnvironmentOptions.ShowComponentCaptions;
+          ADesigner.ShowEditorHints:=EnvironmentGuiOpts.ShowEditorHints;
+          ADesigner.ShowComponentCaptions:=EnvironmentGuiOpts.ShowComponentCaptions;
         end;
         CurDesignerForm.Invalidate;
       end;
@@ -3892,9 +3897,9 @@ begin
   if (MainIDEBar <> nil) and not IDEIsClosing and MainIDEBar.HandleAllocated then
   begin
     if (ToolStatus = itDebugger) then
-      EnvironmentOptions.EnableDebugDesktop
+      EnvironmentGuiOpts.EnableDebugDesktop
     else if (ToolStatus <> itExiting) then
-      EnvironmentOptions.DisableDebugDesktop;
+      EnvironmentGuiOpts.DisableDebugDesktop;
   end;
 end;
 
@@ -4978,26 +4983,24 @@ end;
 
 //------------------------------------------------------------------------------
 
-procedure TMainIDE.LoadDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
+procedure TMainIDE.LoadDesktopSettings(aOptions: TEnvGuiOptions);
 begin
   if ConsoleVerbosity>0 then
     DebugLn(['Hint: (lazarus) TMainIDE.LoadDesktopSettings']);
   if ObjectInspector1<>nil then
-    TheEnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
+    aOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
   if MessagesView<>nil then
     MessagesView.ApplyIDEOptions;
 end;
 
-procedure TMainIDE.SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
+procedure TMainIDE.SaveDesktopSettings(aOptions: TEnvGuiOptions);
 // Called also before reading EnvironmentOptions
 begin
   if ConsoleVerbosity>0 then
     DebugLn(['Hint: (lazarus) TMainIDE.SaveDesktopSettings']);
-
-  EnvironmentOptions.Desktop.ImportSettingsFromIDE(TheEnvironmentOptions);
-
+  EnvironmentGuiOpts.Desktop.ImportSettingsFromIDE(aOptions);
   if ObjectInspector1<>nil then
-    TheEnvironmentOptions.ObjectInspectorOptions.Assign(ObjectInspector1);
+    aOptions.ObjectInspectorOptions.Assign(ObjectInspector1);
 end;
 
 procedure TMainIDE.IDEOptionsLoader(Sender: TObject; AOptions: TAbstractIDEOptions);
@@ -5006,7 +5009,7 @@ begin
     DebugLn(['Hint: (lazarus) TMainIDE.OnLoadIDEOptions: ', AOptions.ClassName]);
   // ToDo: Figure out why this is not called with TEnvironmentOptions.
   if AOptions is TEnvironmentOptions then
-    LoadDesktopSettings(AOptions as TEnvironmentOptions);
+    LoadDesktopSettings(EnvironmentGuiOpts);
 end;
 
 procedure TMainIDE.IDEOptionsSaver(Sender: TObject; AOptions: TAbstractIDEOptions);
@@ -5015,7 +5018,7 @@ begin
     DebugLn(['Hint: (lazarus) TMainIDE.OnSaveIDEOptions: ', AOptions.ClassName]);
   // ToDo: Figure out why this is not called with TEnvironmentOptions.
   if AOptions is TEnvironmentOptions then
-    SaveDesktopSettings(AOptions as TEnvironmentOptions);
+    SaveDesktopSettings(EnvironmentGuiOpts);
 end;
 
 function TMainIDE.DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
@@ -5059,7 +5062,7 @@ end;
 procedure TMainIDE.EnvironmentOptionsBeforeRead(Sender: TObject);
 begin
   // update EnvironmentOptions (save current window positions)
-  SaveDesktopSettings(EnvironmentOptions);
+  SaveDesktopSettings(EnvironmentGuiOpts);
 end;
 
 procedure TMainIDE.EnvironmentOptionsBeforeWrite(Sender: TObject; Restore: boolean);
@@ -5122,12 +5125,12 @@ begin
   // update environment
   UpdateAndInvalidateDesigners;
   if ObjectInspector1<>nil then
-    EnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
+    EnvironmentGuiOpts.ObjectInspectorOptions.AssignTo(ObjectInspector1);
   MessagesView.ApplyIDEOptions;
   MainIDEBar.SetupHints;
-  Application.ShowButtonGlyphs := EnvironmentOptions.ShowButtonGlyphs;
-  Application.ShowMenuGlyphs := EnvironmentOptions.ShowMenuGlyphs;
-  if EnvironmentOptions.Desktop.SingleTaskBarButton then
+  Application.ShowButtonGlyphs := EnvironmentGuiOpts.ShowButtonGlyphs;
+  Application.ShowMenuGlyphs := EnvironmentGuiOpts.ShowMenuGlyphs;
+  if EnvironmentGuiOpts.Desktop.SingleTaskBarButton then
     Application.TaskBarBehavior := tbSingleButton
   else
     Application.TaskBarBehavior := tbDefault;
@@ -5306,7 +5309,7 @@ begin
   if Immediately then
   begin
     Exclude(FIdleIdeActions, iiaSaveEnvironment);
-    SaveDesktopSettings(EnvironmentOptions);
+    SaveDesktopSettings(EnvironmentGuiOpts);
     DebuggerOptions.Save; // before environment
     EnvironmentOptions.Save(false);
     EditorMacroListViewer.SaveGlobalInfo;
@@ -6855,7 +6858,7 @@ begin
   end;
 
   // show messages
-  IDEWindowCreators.ShowForm(MessagesView,EnvironmentOptions.MsgViewFocus);
+  IDEWindowCreators.ShowForm(MessagesView,EnvironmentGuiOpts.MsgViewFocus);
 
   // clear old error lines
   SourceEditorManager.ClearErrorLines;
@@ -7157,7 +7160,7 @@ begin
     // check sources
     DoCheckFilesOnDisk;
   end;
-  IDEWindowCreators.ShowForm(MessagesView,EnvironmentOptions.MsgViewFocus);
+  IDEWindowCreators.ShowForm(MessagesView,EnvironmentGuiOpts.MsgViewFocus);
   if ConsoleVerbosity>=0 then
     debugln(['Info: (lazarus) [TMainIDE.DoBuildProject] Success']);
   Result:=mrOk;
@@ -7532,7 +7535,7 @@ begin
     AddHandlerOnRunFinished(@RunFinished);
     Project1.RunParameterOptions.AssignEnvironmentTo(Process.Environment);
     try
-      if EnvironmentOptions.Desktop.HideIDEOnRun then
+      if EnvironmentGuiOpts.Desktop.HideIDEOnRun then
         HideIDE;
       TNotifyProcessEnd.Create(Process, @DoCallRunFinishedHandler);
       Process:=nil; // Process is freed by TNotifyProcessEnd
@@ -7578,7 +7581,7 @@ end;
 
 procedure TMainIDE.RunFinished(Sender: TObject);
 begin
-  if EnvironmentOptions.Desktop.HideIDEOnRun then
+  if EnvironmentGuiOpts.Desktop.HideIDEOnRun then
     UnhideIDE;
 end;
 
@@ -7663,10 +7666,10 @@ end;
 procedure TMainIDE.LayoutChangeHandler(Sender: TObject);
 begin
   MainIDEBar.RefreshCoolbar;
-  MainIDEBar.DoSetViewComponentPalette(EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible);
+  MainIDEBar.DoSetViewComponentPalette(EnvironmentGuiOpts.Desktop.ComponentPaletteOptions.Visible);
   // to be able to calculate IDE height correctly, the ComponentPalette
   // has to have some valid height if it is visible
-  if EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible
+  if EnvironmentGuiOpts.Desktop.ComponentPaletteOptions.Visible
   and Assigned(MainIDEBar.ComponentPageControl.ActivePage)
   and (MainIDEBar.ComponentPageControl.ActivePage.Width<=0) then
     MainIDEBar.DoSetMainIDEHeight(MainIDEBar.WindowState = wsMaximized, 55);
@@ -7858,7 +7861,7 @@ begin
   if DoAbortBuild(true)<>mrOK then exit;
 
   // show messages
-  IDEWindowCreators.ShowForm(MessagesView,EnvironmentOptions.MsgViewFocus);
+  IDEWindowCreators.ShowForm(MessagesView,EnvironmentGuiOpts.MsgViewFocus);
 
   // clear old error lines
   SourceEditorManager.ClearErrorLines;
@@ -8817,7 +8820,7 @@ procedure TMainIDE.UpdateCaption;
 
   function AddToCaption(const CurrentCaption, CaptAddition: string): String;
   begin
-    if EnvironmentOptions.Desktop.IDETitleStartsWithProject then
+    if EnvironmentGuiOpts.Desktop.IDETitleStartsWithProject then
       Result := CaptAddition + ' - ' + CurrentCaption
     else
       Result := CurrentCaption + ' - ' + CaptAddition;
@@ -8844,7 +8847,7 @@ begin
       ProjectName := Project1.GetTitleOrName;
       if ProjectName <> '' then
       begin
-        if EnvironmentOptions.Desktop.IDEProjectDirectoryInIdeTitle then
+        if EnvironmentGuiOpts.Desktop.IDEProjectDirectoryInIdeTitle then
         begin
           DirName := ExtractFileDir(Project1.ProjectInfoFile);
           if DirName <> '' then
@@ -8854,7 +8857,7 @@ begin
       else
         ProjectName := lisnewProject;
       NewTitle := AddToCaption(NewCaption, ProjectName);
-      if EnvironmentOptions.Desktop.IDETitleIncludesBuildMode
+      if EnvironmentGuiOpts.Desktop.IDETitleIncludesBuildMode
       and (Project1.BuildModes.Count > 1) then
         ProjectName:= ProjectName + ' - ' +Project1.ActiveBuildMode.GetCaption;
       NewCaption := AddToCaption(NewCaption, ProjectName);
@@ -11691,7 +11694,7 @@ begin
   {$ENDIF}
   DisplayState:= dsForm;
   LastFormActivated := (Sender as TDesigner).Form;
-  if EnvironmentOptions.FormTitleBarChangesObjectInspector
+  if EnvironmentGuiOpts.FormTitleBarChangesObjectInspector
   and (TheControlSelection.SelectionForm <> LastFormActivated) then
     TheControlSelection.AssignPersistent(LastFormActivated);
   {$IFDEF VerboseComponentPalette}
@@ -12400,7 +12403,7 @@ begin
     Interval:=50;                  // Info box can be updated with a short delay.
     OnTimer:=@OIChangedTimerTimer;
   end;
-  EnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
+  EnvironmentGuiOpts.ObjectInspectorOptions.AssignTo(ObjectInspector1);
 
   // connect to designers
   ObjectInspector1.PropertyEditorHook:=GlobalDesignHook;
@@ -12544,7 +12547,7 @@ var
   i: Integer;
   AForm: TCustomForm;
 begin
-  if EnvironmentOptions.Desktop.SingleTaskBarButton and MainIDEBar.ApplicationIsActivate
+  if EnvironmentGuiOpts.Desktop.SingleTaskBarButton and MainIDEBar.ApplicationIsActivate
   and (MainIDEBar.WindowState=wsNormal) then
   begin
     for i:=Screen.CustomFormCount-1 downto 0 do
@@ -12713,9 +12716,9 @@ begin
   if fOIActivateLastRow then
   begin
     fOIActivateLastRow := False;
-    if EnvironmentOptions.CreateComponentFocusNameProperty then
+    if EnvironmentGuiOpts.CreateComponentFocusNameProperty then
     begin
-      if (OI.ShowFavorites) and (EnvironmentOptions.SwitchToFavoritesOITab) then
+      if (OI.ShowFavorites) and (EnvironmentGuiOpts.SwitchToFavoritesOITab) then
         Grid := OI.FavoriteGrid
       else
         Grid := OI.PropertyGrid;
@@ -14074,5 +14077,6 @@ initialization
   ShowSplashScreen:=true;
   DebugLogger.ParamForEnabledLogGroups := '--debug-enable=';
   EnvironmentOpts.GroupEnvironmentI18NCaption := @dlgGroupEnvironment;
+
 end.
 

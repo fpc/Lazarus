@@ -5,7 +5,9 @@ unit SearchPathProcs;
 interface
 
 uses
-  Classes, SysUtils, LazFileUtils, LazFileCache, FileUtil;
+  Classes, SysUtils,
+  // LazUtils
+  LazFileUtils, LazFileCache, FileUtil;
 
 // search paths
 function TrimSearchPath(const SearchPath, BaseDirectory: string;

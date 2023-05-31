@@ -506,6 +506,7 @@
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CheckCompOptsForNewUnitDialog"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="CheckCompOptsForNewUnitDlg"/>
       </Unit>
       <Unit>
         <Filename Value="ideinfodlg.pas"/>
@@ -601,6 +602,7 @@
         <IsPartOfProject Value="True"/>
         <ComponentName Value="IDEInfoNeedBuildDlg"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="IDEInfoNeedBuild"/>
       </Unit>
       <Unit>
         <Filename Value="sourcefilemanager.pas"/>
@@ -805,6 +807,7 @@
         <Filename Value="makeresstrdlg.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="MakeResStrDlg"/>
       </Unit>
       <Unit>
         <Filename Value="ideprocs.pp"/>
@@ -886,6 +889,7 @@
         <Filename Value="buildfiledlg.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="BuildFileDlg"/>
       </Unit>
       <Unit>
         <Filename Value="showdeletingfilesdlg.pas"/>
@@ -915,6 +919,7 @@
         <Filename Value="codemacroselect.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="CodeMacroSelect"/>
       </Unit>
       <Unit>
         <Filename Value="projectinspector.pas"/>
@@ -950,6 +955,7 @@
         <Filename Value="findreplacedialog.pp"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="FindReplaceDialog"/>
       </Unit>
       <Unit>
         <Filename Value="idecontexthelpedit.pas"/>
@@ -971,6 +977,7 @@
         <Filename Value="codetoolsdefpreview.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="CodeToolsDefPreview"/>
       </Unit>
       <Unit>
         <Filename Value="newprojectdlg.pp"/>
@@ -1002,6 +1009,7 @@
         <Filename Value="newdialog.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="NewDialog"/>
       </Unit>
       <Unit>
         <Filename Value="transfermacros.pp"/>
@@ -1017,6 +1025,7 @@
       <Unit>
         <Filename Value="inputfiledialog.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="InputFileDialog"/>
       </Unit>
       <Unit>
         <Filename Value="buildprofilemanager.pas"/>
@@ -1195,6 +1204,7 @@
         <Filename Value="diffdialog.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="DiffDialog"/>
       </Unit>
       <Unit>
         <Filename Value="keymapschemedlg.pas"/>
@@ -1249,6 +1259,7 @@
         <Filename Value="cleandirdlg.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="CleanDirDlg"/>
       </Unit>
       <Unit>
         <Filename Value="searchresultview.pp"/>
@@ -1313,7 +1324,10 @@
       <Unit>
         <Filename Value="jumphistoryview.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="JumpHistoryViewWin"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="JumpHistoryView"/>
       </Unit>
       <Unit>
         <Filename Value="ideprotocol.pas"/>
@@ -1328,12 +1342,7 @@
         <Filename Value="findrenameidentifier.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="charactermapdlg.pas"/>
-        <IsPartOfProject Value="True"/>
-        <HasResources Value="True"/>
-        <UnitName Value="CharacterMapDlg"/>
+        <UnitName Value="FindRenameIdentifier"/>
       </Unit>
       <Unit>
         <Filename Value="idedefs.pas"/>
@@ -1359,6 +1368,7 @@
         <ComponentName Value="ImExportCompOptsDlg"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ImExportCompilerOpts"/>
       </Unit>
       <Unit>
         <Filename Value="initialsetupproc.pas"/>
@@ -1436,6 +1446,11 @@
         <Filename Value="../packager/pkgsysbasepkgs.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="PkgSysBasePkgs"/>
+      </Unit>
+      <Unit>
+        <Filename Value="envguioptions.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="EnvGuiOptions"/>
       </Unit>
     </Units>
   </ProjectOptions>

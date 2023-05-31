@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils, Math, Laz_AVL_Tree,
   // LCL
-  Forms, Controls, Graphics, Dialogs, ButtonPanel, Buttons, StdCtrls, ComCtrls, ExtCtrls,
+  Forms, Dialogs, ButtonPanel, StdCtrls, ComCtrls, ExtCtrls,
   // LazUtils
   LazFileUtils, LazUtilities, LazLoggerBase,
   // Codetools
@@ -40,10 +40,11 @@ uses
   // SynEdit
   SynEdit,
   // IdeIntf
-  IDEWindowIntf, IDEHelpIntf,
+  IDEWindowIntf, IDEHelpIntf, InputHistory,
+  // IdeConfig
+  RecentListProcs, EnvironmentOpts,
   // IDE
-  EditorOptions, LazarusIDEStrConsts, InputHistory, CodeToolsOptions, IDEProcs,
-  EnvironmentOpts, RecentListProcs;
+  LazarusIDEStrConsts, EditorOptions, CodeToolsOptions;
 
 type
   TCodeToolsDefinesNodeValues = class

@@ -57,7 +57,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLType, LCLIntf, Forms, Controls, Buttons, ComCtrls, Menus, Dialogs,
+  LCLType, LCLIntf, LResources, Forms, Controls, Buttons, ComCtrls, Menus, Dialogs,
   ExtCtrls, StdCtrls, Graphics,
   // LazControls
   TreeFilterEdit,
@@ -69,12 +69,14 @@ uses
   ProjectIntf, PackageIntf, PackageLinkIntf, PackageDependencyIntf,
   // IDEIntf
   IDEHelpIntf, IDECommands, IDEDialogs, IDEImagesIntf, LazIDEIntf, ToolBarIntf,
-  IdeIntfStrConsts, MenuIntf,
+  IdeIntfStrConsts, MenuIntf, InputHistory,
+  // IdeConfig
+  EnvironmentOpts, IDEOptionDefs,
   // IDE
-  LazarusIDEStrConsts, MainBase, MainBar, IDEProcs, DialogProcs, IDEOptionDefs, Project,
-  InputHistory, TransferMacros, EnvironmentOpts, BuildManager, BasePkgManager,
-  ProjPackChecks, ProjPackEditing, ProjPackFilePropGui, PackageDefs,
-  AddToProjectDlg, AddPkgDependencyDlg, AddFPMakeDependencyDlg, LResources;
+  LazarusIDEStrConsts, MainBase, MainBar, IDEProcs, DialogProcs, Project,
+  TransferMacros, BuildManager, AddToProjectDlg, EnvGuiOptions,
+  BasePkgManager, ProjPackChecks, ProjPackEditing, ProjPackFilePropGui, PackageDefs,
+  AddPkgDependencyDlg, AddFPMakeDependencyDlg;
 
 const
   ProjectInspectorMenuItemsRootName = 'ProjectInspectorItems';
@@ -1300,7 +1302,7 @@ end;
 
 procedure TProjectInspectorForm.OptionsChanged(Sender: TObject; Restore: boolean);
 begin
-  PropsGroupBox.Visible := EnvironmentOptions.Desktop.ProjectInspectorShowProps;
+  PropsGroupBox.Visible := EnvironmentGuiOpts.Desktop.ProjectInspectorShowProps;
   Splitter1.Visible := PropsGroupBox.Visible;
 end;
 

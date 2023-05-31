@@ -51,12 +51,14 @@ uses
   // LCL
   Controls, Forms, Buttons, StdCtrls, ComCtrls, Dialogs, ButtonPanel, ExtCtrls,
   // IdeIntf
-  IdeIntfStrConsts, BaseIDEIntf, IDEHelpIntf, ProjectIntf, IDEDialogs, IDEImagesIntf, MacroIntf,
+  IdeIntfStrConsts, BaseIDEIntf, IDEHelpIntf, ProjectIntf, IDEDialogs, InputHistory,
+  IDEImagesIntf, MacroIntf,
   // LazUtils
   LazFileUtils, LazFileCache, LazUTF8, Laz2_XMLCfg,
+  // IdeConfig
+  EnvironmentOpts, RecentListProcs,
   // IDE
-  IDEProcs, MiscOptions, SysVarUserOverrideDlg, InputHistory, LazarusIDEStrConsts,
-  EnvironmentOpts, RecentListProcs;
+  MiscOptions, SysVarUserOverrideDlg, LazarusIDEStrConsts;
 
 { The xml format version:
     When the format changes (new values, changed formats) we can distinguish old

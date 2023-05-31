@@ -66,12 +66,15 @@ uses
   CodeCache,
   // LazUtils
   LazMethodList,
+  // BuildIntf
+  ProjectIntf, CompOptsIntf,
   // IDEIntf
-  PropEdits, ObjectInspector, MenuIntf, SrcEditorIntf, ProjectIntf,
-  CompOptsIntf, LazIDEIntf, IDEWindowIntf,
+  PropEdits, ObjectInspector, MenuIntf, SrcEditorIntf, LazIDEIntf, IDEWindowIntf,
+  InputHistory,
+  // IdeConfig
+  LazConf,
   // IDE
-  LazConf, LazarusIDEStrConsts, Project, BuildLazDialog,
-  ProgressDlg, EnvironmentOpts, InputHistory, IDEDefs, PackageDefs;
+  LazarusIDEStrConsts, Project, BuildLazDialog, ProgressDlg, IDEDefs, PackageDefs;
 
 type
   // The IDE is at anytime in a specific state:

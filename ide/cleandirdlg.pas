@@ -36,10 +36,11 @@ uses
   // LazUtils
   FileUtil, LazFileUtils, Laz2_XMLCfg, LazStringUtils,
   // IdeIntf
-  IdeIntfStrConsts, IDEWindowIntf, IDEHelpIntf, IDEDialogs,
+  IdeIntfStrConsts, IDEWindowIntf, IDEHelpIntf, IDEDialogs, InputHistory,
+  // IdeConfig
+  RecentListProcs, LazConf, EnvironmentOpts,
   // IDE
-  IDEProcs, LazarusIDEStrConsts, LazConf, TransferMacros, InputHistory,
-  ShowDeletingFilesDlg, EnvironmentOpts, RecentListProcs;
+  LazarusIDEStrConsts, TransferMacros, ShowDeletingFilesDlg;
 
 type
 

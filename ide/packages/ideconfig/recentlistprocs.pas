@@ -5,7 +5,10 @@ unit RecentListProcs;
 interface
 
 uses
-  Classes, SysUtils, Laz2_XMLCfg, LazUTF8, LazFileUtils, StdCtrls,
+  Classes, SysUtils, Laz2_XMLCfg,
+  // LazUtils
+  LazUTF8, LazFileUtils,
+  // IdeConfig
   IdeXmlConfigProcs;
 
 // Recent item lists

@@ -5,7 +5,11 @@ unit CoolBarOptions;
 interface
 
 uses
-  SysUtils, fgl, ToolBarOptionsBase, Laz2_XMLCfg;
+  SysUtils, fgl,
+  // LazUtils
+  Laz2_XMLCfg,
+  // IdeConfig
+  ToolBarOptionsBase;
 
 type
 

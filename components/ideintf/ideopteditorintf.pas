@@ -167,6 +167,8 @@ function GetFreeIDEOptionsIndex(AGroupIndex: Integer; AStartIndex: Integer): Int
 function RegisterIDEOptionsGroup(AGroupIndex: Integer;
            AGroupClass: TAbstractIDEOptionsClass;
            FindFreeIndex: boolean = true): PIDEOptionsGroupRec;
+procedure RegisterOptionsGroupProc(AGroupIndex: Integer;
+           AGroupClass: TAbstractIDEOptionsClass);
 function RegisterIDEOptionsEditor(AGroupIndex: Integer;
            AEditorClass: TAbstractIDEOptionsEditorClass;
            AIndex: Integer; AParent: Integer = NoParent;
@@ -202,6 +204,13 @@ begin
   if FindFreeIndex then
     AGroupIndex:=GetFreeIDEOptionsGroupIndex(AGroupIndex);
   Result:=IDEEditorGroups.Add(AGroupIndex, AGroupClass);
+end;
+
+procedure RegisterOptionsGroupProc(AGroupIndex: Integer;
+  AGroupClass: TAbstractIDEOptionsClass);
+// Called from an event in IDEOptionsIntf (BuildIde).
+begin
+  RegisterIDEOptionsGroup(AGroupIndex, AGroupClass);
 end;
 
 function RegisterIDEOptionsEditor(AGroupIndex: Integer;
@@ -626,6 +635,7 @@ end;
 
 initialization
   FIDEEditorGroups := nil;
+  IDEOptionsIntf.OnRegisterGroup := @RegisterOptionsGroupProc;
 
 finalization
   FreeAndNil(FIDEEditorGroups);

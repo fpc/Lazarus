@@ -47,9 +47,9 @@ uses
   LazUTF8, FileUtil,
   // IdeIntf
   IDEWindowIntf, IDEImagesIntf, NewItemIntf, ProjectIntf,
-  IdeIntfStrConsts, LazIDEIntf, IDEHelpIntf, IDEDialogs,
+  IdeIntfStrConsts, LazIDEIntf, IDEHelpIntf, IDEDialogs, InputHistory,
   // IDE
-  InputHistory, LazarusIDEStrConsts, Project, MainIntf;
+  LazarusIDEStrConsts, Project, MainIntf;
 
 type
   { TNewLazIDEItemCategory }

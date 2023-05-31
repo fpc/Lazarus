@@ -32,9 +32,12 @@ uses
   FileUtil, LazFileUtils,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf,
+  // IdeConfig
+  SearchPathProcs, EnvironmentOpts,
+  // IdeDebugger
+  BaseDebugManager, IdeDebuggerOpts, EnvDebuggerOptions,
   // IDE
-  LazarusIDEStrConsts, PathEditorDlg, IDEProcs,
-  EnvironmentOpts, BaseDebugManager, IdeDebuggerOpts, SearchPathProcs;
+  LazarusIDEStrConsts, PathEditorDlg, IDEProcs;
 
 type
 
@@ -81,13 +84,16 @@ end;
 
 procedure TDebuggerGeneralOptionsFrame.FetchDebuggerGeneralOptions;
 begin
-  // IMPORTANT if more items are added the indexes must be updated here!
-  gcbDebuggerGeneralOptions.Checked[0] := EnvironmentOptions.DebuggerShowStopMessage;
-  gcbDebuggerGeneralOptions.Checked[1] := EnvironmentOptions.DebuggerShowExitCodeMessage;
-  gcbDebuggerGeneralOptions.Checked[2] := EnvironmentOptions.DebuggerResetAfterRun;
-  gcbDebuggerGeneralOptions.Checked[3] := EnvironmentOptions.DebuggerAutoCloseAsm;
-  gcbDebuggerGeneralOptions.Checked[4] := EnvironmentOptions.DebuggerAutoSetInstanceFromClass;
-  gcbDebuggerGeneralOptions.Checked[5] := EnvironmentOptions.DebuggerAllowFunctionCalls;
+  with EnvironmentDebugOpts do
+  begin
+    // IMPORTANT if more items are added the indexes must be updated here!
+    gcbDebuggerGeneralOptions.Checked[0] := DebuggerShowStopMessage;
+    gcbDebuggerGeneralOptions.Checked[1] := DebuggerShowExitCodeMessage;
+    gcbDebuggerGeneralOptions.Checked[2] := DebuggerResetAfterRun;
+    gcbDebuggerGeneralOptions.Checked[3] := DebuggerAutoCloseAsm;
+    gcbDebuggerGeneralOptions.Checked[4] := DebuggerAutoSetInstanceFromClass;
+    gcbDebuggerGeneralOptions.Checked[5] := DebuggerAllowFunctionCalls;
+  end;
   txtAdditionalPath.Text:=EnvironmentOptions.GetParsedDebuggerSearchPath;
 end;
 
@@ -125,9 +131,9 @@ end;
 
 procedure TDebuggerGeneralOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with EnvironmentOptions do
+  EnvironmentOptions.DebuggerSearchPath := TrimSearchPath(txtAdditionalPath.Text,'');
+  with EnvironmentDebugOpts do
   begin
-    DebuggerSearchPath := TrimSearchPath(txtAdditionalPath.Text,'');
     // IMPORTANT if more items are added the indexes must be updated here!
     DebuggerShowStopMessage          := gcbDebuggerGeneralOptions.Checked[0];
     DebuggerShowExitCodeMessage      := gcbDebuggerGeneralOptions.Checked[1];

@@ -75,23 +75,13 @@ Files in this package are for the main configuration of the IDE."/>
         <Filename Value="diffpatch.pas"/>
         <UnitName Value="DiffPatch"/>
       </Item>
-      <Item>
-        <Filename Value="inputhistory.pas"/>
-        <UnitName Value="InputHistory"/>
-      </Item>
     </Files>
     <RequiredPkgs>
-      <Item>
-        <PackageName Value="IDEIntf"/>
-      </Item>
       <Item>
         <PackageName Value="DebuggerIntf"/>
       </Item>
       <Item>
         <PackageName Value="BuildIntf"/>
-      </Item>
-      <Item>
-        <PackageName Value="LCLBase"/>
       </Item>
       <Item>
         <PackageName Value="LazUtils"/>

@@ -57,7 +57,7 @@ uses
   PackageDependencyIntf, PropEditUtils, PropEdits, UnitResources, IDEDialogs,
   // IDE
   {$IFDEF VerboseJITForms}DesignerProcs,{$ENDIF}
-  PackageDefs, Project, EnvironmentOpts;
+  PackageDefs, Project, EnvGuiOptions;
 
 type
   //----------------------------------------------------------------------------
@@ -1206,7 +1206,7 @@ begin
           Ancestor:=TComponent(Ancestors[i]);
         end;
         // scale to Owner's DesignTimePPI to get correct designed sizes - issue #36370
-        if (Project1.Scaled or EnvironmentOptions.ForceDPIScalingInDesignTime)
+        if (Project1.Scaled or EnvironmentGuiOpts.ForceDPIScalingInDesignTime)
         and Assigned(Component) and (Component is TCustomDesignControl) and (NewOwner is TCustomDesignControl) then
         begin
           DsgnComp := TCustomDesignControl(Component);

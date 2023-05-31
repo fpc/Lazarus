@@ -32,8 +32,10 @@ uses
   DividerBevel,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf,
+  // IdeConfig
+  EnvironmentOpts,
   // IDE
-  EnvironmentOpts, LazarusIDEStrConsts;
+  LazarusIDEStrConsts, EnvGuiOptions;
 
 type
   { TWindowOptionsFrame }
@@ -94,8 +96,13 @@ begin
 end;
 
 procedure TWindowOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
+var
+  EnvOpt: TEnvironmentOptions;
+  EnvGui: TIDESubOptions;
 begin
-  with (AOptions as TEnvironmentOptions).Desktop do
+  EnvOpt := AOptions as TEnvironmentOptions;
+  EnvGui := EnvOpt.GetSubConfigObj(TEnvGuiOptions);
+  with (EnvGui as TEnvGuiOptions).Desktop do
   begin
     // window minimizing and hiding
     SingleTaskBarButtonCheckBox.Checked := SingleTaskBarButton;
@@ -111,8 +118,13 @@ begin
 end;
 
 procedure TWindowOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
+var
+  EnvOpt: TEnvironmentOptions;
+  EnvGui: TIDESubOptions;
 begin
-  with (AOptions as TEnvironmentOptions).Desktop do
+  EnvOpt := AOptions as TEnvironmentOptions;
+  EnvGui := EnvOpt.GetSubConfigObj(TEnvGuiOptions);
+  with (EnvGui as TEnvGuiOptions).Desktop do
   begin
     // window minimizing
     SingleTaskBarButton := SingleTaskBarButtonCheckBox.Checked;

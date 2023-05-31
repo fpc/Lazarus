@@ -38,15 +38,27 @@ unit WatchesDlg;
 interface
 
 uses
-  Classes, Forms, Controls, math, sysutils, LazLoggerBase, LazUTF8, Clipbrd,
+  Classes, Forms, Controls, math, sysutils,
   {$ifdef Windows} ActiveX, {$else} laz.FakeActiveX, {$endif}
-  IDEWindowIntf, Menus, ComCtrls, ActnList, ExtCtrls, StdCtrls, LCLType,
-  LMessages, IDEImagesIntf, Debugger, DebuggerTreeView, IdeDebuggerBase,
-  DebuggerDlg, DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfMiscClasses,
-  SynEdit, laz.VirtualTrees, SpinEx, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
-  BaseDebugManager, EnvironmentOpts, IdeDebuggerWatchResult,
-  IdeDebuggerWatchResPrinter, ArrayNavigationFrame, IdeDebuggerUtils,
-  IdeIntfStrConsts, IdeDebuggerStringConstants, DbgTreeViewWatchData;
+  // LazUtils
+  LazLoggerBase, LazUTF8,
+  // LCL
+  Clipbrd, Menus, ComCtrls, ActnList, ExtCtrls, StdCtrls, LCLType, LMessages, SpinEx,
+  laz.VirtualTrees,
+  //SynEdit
+  SynEdit,
+  // IdeIntf
+  IDEWindowIntf, IDEImagesIntf, IdeIntfStrConsts,
+  // IdeConfig
+  //EnvironmentOpts,
+  // DebuggerIntf
+  DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfMiscClasses,
+  // LazDebuggerIntf
+  LazDebuggerIntf, LazDebuggerIntfBaseTypes,
+  // IdeDebugger
+  Debugger, DebuggerTreeView, IdeDebuggerBase, DebuggerDlg, BaseDebugManager,
+  IdeDebuggerWatchResult, IdeDebuggerWatchResPrinter, ArrayNavigationFrame, IdeDebuggerUtils,
+  IdeDebuggerStringConstants, DbgTreeViewWatchData, EnvDebuggerOptions;
 
 type
 
@@ -621,7 +633,7 @@ begin
       NewWatch := DebugBoss.Watches.CurrentWatches.Add(s);
       NewWatch.DisplayFormat := wdfDefault;
       NewWatch.Enabled       := True;
-      if EnvironmentOptions.DebuggerAutoSetInstanceFromClass then
+      if EnvironmentDebugOpts.DebuggerAutoSetInstanceFromClass then
         NewWatch.EvaluateFlags := [defClassAutoCast];
     finally
       DebugBoss.Watches.CurrentWatches.EndUpdate;
@@ -696,7 +708,7 @@ begin
         NewWatch := DebugBoss.Watches.CurrentWatches.Add(s);
         NewWatch.DisplayFormat := wdfDefault;
         NewWatch.Enabled       := True;
-        if EnvironmentOptions.DebuggerAutoSetInstanceFromClass then
+        if EnvironmentDebugOpts.DebuggerAutoSetInstanceFromClass then
           NewWatch.EvaluateFlags := [defClassAutoCast];
       finally
         DebugBoss.Watches.CurrentWatches.EndUpdate;

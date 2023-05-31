@@ -45,7 +45,7 @@ uses
   // IDEIntf
   PropEditUtils, ComponentEditors, FormEditingIntf,
   // IDE
-  EnvironmentOpts, DesignerProcs;
+  EnvGuiOptions, DesignerProcs;
 
 type
   TArrSize = array of array [0 .. 3] of integer;
@@ -1111,12 +1111,12 @@ end;
 
 function TControlSelection.GetRubberbandCreationColor: TColor;
 begin
-  Result:=EnvironmentOptions.RubberbandCreationColor;
+  Result:=EnvironmentGuiOpts.RubberbandCreationColor;
 end;
 
 function TControlSelection.GetRubberbandSelectionColor: TColor;
 begin
-  Result:=EnvironmentOptions.RubberbandSelectionColor;
+  Result:=EnvironmentGuiOpts.RubberbandSelectionColor;
 end;
 
 procedure TControlSelection.GrabberMove(Grabber: TGrabber; const OldRect,
@@ -1142,12 +1142,12 @@ end;
 
 function TControlSelection.GetGrabberColor: TColor;
 begin
-  Result:=EnvironmentOptions.GrabberColor;
+  Result:=EnvironmentGuiOpts.GrabberColor;
 end;
 
 function TControlSelection.GetMarkerColor: TColor;
 begin
-  Result:=EnvironmentOptions.MarkerColor;
+  Result:=EnvironmentGuiOpts.MarkerColor;
 end;
 
 procedure TControlSelection.SetCustomForm;
@@ -1458,13 +1458,13 @@ end;
 
 function TControlSelection.CleanGridSizeX: integer;
 begin
-  Result:=EnvironmentOptions.GridSizeX;
+  Result:=EnvironmentGuiOpts.GridSizeX;
   if Result<1 then Result:=1;
 end;
 
 function TControlSelection.CleanGridSizeY: integer;
 begin
-  Result:=EnvironmentOptions.GridSizeY;
+  Result:=EnvironmentGuiOpts.GridSizeY;
   if Result<1 then Result:=1;
 end;
 
@@ -1622,7 +1622,7 @@ var
   i, CurLeft, MaxDist, CurDist: integer;
   AComponent: TComponent;
 begin
-  if (not EnvironmentOptions.SnapToGuideLines) or (FLookupRoot=nil) then exit;
+  if (not EnvironmentGuiOpts.SnapToGuideLines) or (FLookupRoot=nil) then exit;
   // search in all not selected components
   MaxDist:=(CleanGridSizeX+1) div 2;
   for i:=0 to FLookupRoot.ComponentCount-1 do begin
@@ -1645,7 +1645,7 @@ var i, CurRight, MaxDist, CurDist: integer;
   R : TRect;
   AComponent: TComponent;
 begin
-  if (not EnvironmentOptions.SnapToGuideLines) or (FLookupRoot=nil) then exit;
+  if (not EnvironmentGuiOpts.SnapToGuideLines) or (FLookupRoot=nil) then exit;
   // search in all not selected components
   MaxDist:=(CleanGridSizeX+1) div 2;
   for i:=0 to FLookupRoot.ComponentCount-1 do begin
@@ -1670,7 +1670,7 @@ procedure TControlSelection.FindNearestTopGuideLine(var NearestInt: TNearestInt)
 var i, CurTop, MaxDist, CurDist: integer;
   AComponent: TComponent;
 begin
-  if (not EnvironmentOptions.SnapToGuideLines) or (FLookupRoot=nil) then exit;
+  if (not EnvironmentGuiOpts.SnapToGuideLines) or (FLookupRoot=nil) then exit;
   // search in all not selected components
   MaxDist:=(CleanGridSizeY+1) div 2;
   for i:=0 to FLookupRoot.ComponentCount-1 do begin
@@ -1693,7 +1693,7 @@ var i, CurBottom, MaxDist, CurDist: integer;
   R: TRect;
   AComponent: TComponent;
 begin
-  if (not EnvironmentOptions.SnapToGuideLines) or (FLookupRoot=nil) then exit;
+  if (not EnvironmentGuiOpts.SnapToGuideLines) or (FLookupRoot=nil) then exit;
   // search in all not selected components
   MaxDist:=(CleanGridSizeY+1) div 2;
   for i:=0 to FLookupRoot.ComponentCount-1 do begin
@@ -1843,7 +1843,7 @@ end;
 function TControlSelection.SnapGrabberMousePos(const CurMousePos: TPoint): TPoint;
 begin
   Result := CurMousePos;
-  if (not EnvironmentOptions.SnapToGrid) or (ActiveGrabber = nil) then exit;
+  if (not EnvironmentGuiOpts.SnapToGrid) or (ActiveGrabber = nil) then exit;
   if gpLeft in ActiveGrabber.Positions then
     Result.X := FindNearestSnapLeft(Result.X)
   else
@@ -2059,7 +2059,7 @@ var
   GridSizeX, NearestGridX: integer;
   GridRect: TRect;
 begin
-  if not EnvironmentOptions.SnapToGrid then exit;
+  if not EnvironmentGuiOpts.SnapToGrid then exit;
   GridRect:=GetFirstGridRect;
   GridSizeX:=CleanGridSizeX;
   NearestGridX := RoundToGrid(NearestInt.OldValue,GridRect.Left,GridSizeX);
@@ -2071,7 +2071,7 @@ var
   GridSizeY, NearestGridY: integer;
   GridRect: TRect;
 begin
-  if not EnvironmentOptions.SnapToGrid then exit;
+  if not EnvironmentGuiOpts.SnapToGrid then exit;
   GridRect:=GetFirstGridRect;
   GridSizeY:=CleanGridSizeY;
   NearestGridY := RoundToGrid(NearestInt.OldValue,GridRect.Top,GridSizeY);
@@ -2754,7 +2754,7 @@ var
       if MaxParentComponent<>nil then begin
         // check if component is a grand child
         CurParent:=AComponent.GetParentComponent;
-        if (not EnvironmentOptions.RubberbandSelectsGrandChilds)
+        if (not EnvironmentGuiOpts.RubberbandSelectsGrandChilds)
         and (CurParent<>MaxParentComponent) then exit;
         // check if component is a child (direct or grand)
         while (CurParent<>nil) and (CurParent<>MaxParentComponent) do
@@ -2778,7 +2778,7 @@ var
           // select only controls, that are children of MaxParentComponent
           if (not TWinControl(MaxParentComponent).IsParentOf(AControl)) then exit;
           // check if control is a grand child
-          if (not EnvironmentOptions.RubberbandSelectsGrandChilds)
+          if (not EnvironmentGuiOpts.RubberbandSelectsGrandChilds)
           and (AControl.Parent<>MaxParentComponent) then exit;
         end;
       end;
@@ -3357,16 +3357,16 @@ begin
   OldPenColor:=DC.Canvas.Pen.Color;
   // draw bottom guideline
   if LineExists[glBottom] then
-    DrawLine(Line[glBottom],EnvironmentOptions.GuideLineColorRightBottom);
+    DrawLine(Line[glBottom],EnvironmentGuiOpts.GuideLineColorRightBottom);
   // draw top guideline
   if LineExists[glTop] then
-    DrawLine(Line[glTop],EnvironmentOptions.GuideLineColorLeftTop);
+    DrawLine(Line[glTop],EnvironmentGuiOpts.GuideLineColorLeftTop);
   // draw right guideline
   if LineExists[glRight] then
-    DrawLine(Line[glRight],EnvironmentOptions.GuideLineColorRightBottom);
+    DrawLine(Line[glRight],EnvironmentGuiOpts.GuideLineColorRightBottom);
   // draw left guideline
   if LineExists[glLeft] then
-    DrawLine(Line[glLeft],EnvironmentOptions.GuideLineColorLeftTop);
+    DrawLine(Line[glLeft],EnvironmentGuiOpts.GuideLineColorLeftTop);
 
   for g:=Low(TGuideLineType) to High(TGuideLineType) do begin
     FGuideLinesCache[g].PaintedLineValid:=LineExists[g];

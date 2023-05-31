@@ -37,7 +37,9 @@ unit DiffPatch;
 interface
 
 uses
-  Classes, SysUtils, LazLoggerBase;
+  Classes, SysUtils,
+  // LazUtils
+  LazLoggerBase;
 
 type
   TTextDiffFlag = (

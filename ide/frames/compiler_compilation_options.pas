@@ -15,11 +15,12 @@ uses
   FileUtil, LazFileUtils, LazUTF8,
   // IDEIntf
   IDEOptionsIntf, IDEOptEditorIntf, CompOptsIntf, IDEExternToolIntf,
-  IDEDialogs, IDEUtils,
+  IDEDialogs, IDEUtils, InputHistory,
+  // IdeConfig
+  LazConf, EnvironmentOpts, RecentListProcs,
   // IDE
-  Project, CompilerOptions, PackageDefs, LazarusIDEStrConsts, EnvironmentOpts,
-  LazConf, IDEProcs, DialogProcs, InputHistory, InitialSetupProc,
-  RecentListProcs;
+  Project, CompilerOptions, PackageDefs, LazarusIDEStrConsts,
+  DialogProcs, InitialSetupProc;
 
 type
 

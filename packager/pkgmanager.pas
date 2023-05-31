@@ -61,17 +61,22 @@ uses
   NewItemIntf, CompOptsIntf, IDEExternToolIntf, MacroIntf,
   // IdeIntf
   IDECommands, MenuIntf, IDEWindowIntf, LazIDEIntf, IDEMsgIntf, SrcEditorIntf,
-  IdeIntfStrConsts, ComponentReg, ComponentEditors, PropEdits, IDEDialogs, UnitResources,
+  IdeIntfStrConsts, ComponentReg, ComponentEditors, PropEdits, IDEDialogs,
+  UnitResources, InputHistory,
+  // IdeConfig
+  EnvironmentOpts, IDEOptionDefs, ModeMatrixOpts, RecentListProcs,
+  SearchPathProcs,
+  // FCL registration
+  LazarusPackageIntf,
   // IDE
-  IDECmdLine, LazarusIDEStrConsts, IDEProcs, DialogProcs, IDEOptionDefs,
-  EnvironmentOpts, MiscOptions, InputHistory, Project, ProjPackEditing, PackageEditor,
-  AddToPackageDlg, PackageDefs, PackageLinks, PackageSystem, OpenInstalledPkgDlg,
-  PkgGraphExplorer, BrokenDependenciesDlg, CompilerOptions, IDETranslations,
-  TransferMacros, BuildLazDialog, NewDialog, FindInFilesDlg, ProjectInspector,
-  SourceEditor, ProjPackChecks, AddFileToAPackageDlg, LazarusPackageIntf,
+  IDECmdLine, LazarusIDEStrConsts, IDEProcs, DialogProcs, MiscOptions,
+  Project, ProjPackEditing, AddToPackageDlg, PackageDefs, PackageLinks, PackageSystem,
+  OpenInstalledPkgDlg, PkgGraphExplorer, BrokenDependenciesDlg, CompilerOptions,
+  IDETranslations, TransferMacros, BuildLazDialog, NewDialog, FindInFilesDlg,
+  ProjectInspector, PackageEditor, SourceEditor, ProjPackChecks, AddFileToAPackageDlg,
   PublishModuleDlg, PkgLinksDlg, InterPkgConflictFiles, InstallPkgSetDlg,
   ConfirmPkgListDlg, NewPkgComponentDlg, BaseBuildManager, BasePkgManager,
-  MainBar, MainIntf, MainBase, ModeMatrixOpts, RecentListProcs, SearchPathProcs;
+  MainBar, MainIntf, MainBase;
 
 type
 

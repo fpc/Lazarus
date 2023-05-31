@@ -38,10 +38,11 @@ uses
   FileUtil, LazFileUtils, LazUtilities, LazUTF8,
   // IDEIntf
   NewItemIntf, PackageIntf, FormEditingIntf, IDEWindowIntf, ComponentReg,
-  IDEDialogs,
+  IDEDialogs, InputHistory,
+  // IdeConfig
+  EnvironmentOpts,
   // IDE
-  LazarusIDEStrConsts, InputHistory, EnvironmentOpts,
-  PackageSystem, PackageDefs, ProjPackChecks;
+  LazarusIDEStrConsts, PackageSystem, PackageDefs, ProjPackChecks;
   
 type
 

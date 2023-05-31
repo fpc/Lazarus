@@ -36,9 +36,9 @@ uses
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf,
   // IdeConfig
-  EditorToolBarOptions,
+  EnvironmentOpts, EditorToolBarOptions,
   // IDE
-  LazarusIDEStrConsts, EnvironmentOpts, ToolbarConfig;
+  LazarusIDEStrConsts, EnvGuiOptions, ToolbarConfig;
 
 type
 
@@ -121,12 +121,16 @@ end;
 
 procedure TEditorToolbarOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
+  EnvOpt: TEnvironmentOptions;
+  EnvGui: TIDESubOptions;
   Opts: TEditorToolBarOptions;
 begin
-  Opts := (AOptions as TEnvironmentOptions).Desktop.EditorToolBarOptions;
+  EnvOpt := AOptions as TEnvironmentOptions;
+  EnvGui := EnvOpt.GetSubConfigObj(TEnvGuiOptions);
+  Opts := (EnvGui as TEnvGuiOptions).Desktop.EditorToolBarOptions;
   cbCoolBarVisible.Checked := Opts.Visible;
   cbPos.ItemIndex := IndexFromEnglish(Opts.Position);
-  lblNoAutoSaveActiveDesktop.Visible := not EnvironmentOptions.AutoSaveActiveDesktop;
+  lblNoAutoSaveActiveDesktop.Visible := not EnvironmentGuiOpts.AutoSaveActiveDesktop;
   // Disable controls when toolbar is hidden.
   cbPos.Enabled := Opts.Visible;
   bConfig.Enabled := Opts.Visible;
@@ -137,9 +141,13 @@ end;
 
 procedure TEditorToolbarOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
+  EnvOpt: TEnvironmentOptions;
+  EnvGui: TIDESubOptions;
   Opts: TEditorToolBarOptions;
 begin
-  Opts := (AOptions as TEnvironmentOptions).Desktop.EditorToolBarOptions;
+  EnvOpt := AOptions as TEnvironmentOptions;
+  EnvGui := EnvOpt.GetSubConfigObj(TEnvGuiOptions);
+  Opts := (EnvGui as TEnvGuiOptions).Desktop.EditorToolBarOptions;
   Opts.Assign(FLocalOptions);
 end;
 

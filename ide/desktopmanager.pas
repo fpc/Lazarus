@@ -6,14 +6,17 @@ interface
 
 uses
   Classes, SysUtils, Types,
-  LCLIntf, LCLType, LCLProc, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  // LCL
+  LCLIntf, LCLType, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, ButtonPanel, Menus, ComCtrls, ActnList, ExtCtrls,
   // LazUtils
-  Laz2_XMLCfg,
+  Laz2_XMLCfg, LazLoggerBase,
   // IdeIntf
-  IDEImagesIntf, ToolBarIntf, IDEWindowIntf, IDEDialogs,
+  IDEImagesIntf, ToolBarIntf, IDEWindowIntf, IDEDialogs, InputHistory,
+  // IdeConfig
+  EnvironmentOpts, IDEOptionDefs,
   // IDE
-  LazarusIDEStrConsts, EnvironmentOpts, IDEOptionDefs, InputHistory, MainIntf;
+  LazarusIDEStrConsts, MainIntf, EnvGuiOptions;
 
 type
 
@@ -118,18 +121,18 @@ begin
 
   theForm := TDesktopForm.Create(Nil);
   try
-    theForm.AutoSaveActiveDesktopCheckBox.Checked := EnvironmentOptions.AutoSaveActiveDesktop;
+    theForm.AutoSaveActiveDesktopCheckBox.Checked := EnvironmentGuiOpts.AutoSaveActiveDesktop;
 
     Result := theForm.ShowModal;
 
     xActiveDesktopChanged := theForm.FActiveDesktopChanged;
-    EnvironmentOptions.AutoSaveActiveDesktop := theForm.AutoSaveActiveDesktopCheckBox.Checked;
+    EnvironmentGuiOpts.AutoSaveActiveDesktop := theForm.AutoSaveActiveDesktopCheckBox.Checked;
   finally
     theForm.Free;
   end;
 
   if xActiveDesktopChanged then
-    EnvironmentOptions.UseDesktop(EnvironmentOptions.ActiveDesktop);
+    EnvironmentGuiOpts.UseDesktop(EnvironmentGuiOpts.ActiveDesktop);
 end;
 
 function SaveCurrentDesktop(const aDesktopName: string;
@@ -142,7 +145,7 @@ begin
   if aDesktopName = '' then
     Exit;
 
-  with EnvironmentOptions do
+  with EnvironmentGuiOpts do
   begin
     dskIndex := Desktops.IndexOf(aDesktopName);
     if (dskIndex >= 0) and
@@ -153,20 +156,20 @@ begin
 
     if (dskIndex >= 0) then//old desktop must be recreated (because of docked/undocked desktops!)
     begin
-      debugln(['TDesktopForm.SaveBitBtnClick: Deleting ', aDesktopName]);
+      debugln(['SaveCurrentDesktop: Deleting ', aDesktopName]);
       Desktops.Delete(dskIndex);
     end;
 
-    debugln(['TDesktopForm.SaveBitBtnClick: Creating ', aDesktopName]);
+    debugln(['SaveCurrentDesktop: Creating ', aDesktopName]);
     dsk := TDesktopOpt.Create(aDesktopName);
     if dskIndex < 0 then
       Desktops.Add(dsk)
     else
       Desktops.Insert(dskIndex, dsk);
-    debugln(['TDesktopForm.SaveBitBtnClick: Assign from active desktop to ', aDesktopName]);
+    debugln(['SaveCurrentDesktop: Assign from active desktop to ', aDesktopName]);
     if ObjectInspector1<>nil then
-      EnvironmentOptions.ObjectInspectorOptions.Assign(ObjectInspector1);
-    Desktop.ImportSettingsFromIDE(EnvironmentOptions);
+      ObjectInspectorOptions.Assign(ObjectInspector1);
+    Desktop.ImportSettingsFromIDE(EnvironmentGuiOpts);
     dsk.Assign(Desktop);
     ActiveDesktopName := aDesktopName;
     Result := True;
@@ -179,7 +182,7 @@ var
   xDsk: TCustomDesktopOpt;
 begin
   Result := False;
-  xDsk := EnvironmentOptions.Desktops.Find(aDesktopName);
+  xDsk := EnvironmentGuiOpts.Desktops.Find(aDesktopName);
   if not Assigned(xDsk) then
     Exit;
 
@@ -190,13 +193,15 @@ begin
     Exit;
   end;
 
-  if (EnvironmentOptions.DebugDesktopName = aDesktopName) or
-      (EnvironmentOptions.ActiveDesktopName = aDesktopName) then
-    EnvironmentOptions.DebugDesktopName := ''
+  if (EnvironmentGuiOpts.DebugDesktopName = aDesktopName) or
+      (EnvironmentGuiOpts.ActiveDesktopName = aDesktopName) then
+    EnvironmentGuiOpts.DebugDesktopName := ''
   else
-    EnvironmentOptions.DebugDesktopName := aDesktopName;
+    EnvironmentGuiOpts.DebugDesktopName := aDesktopName;
   Result := True;
 end;
+
+{ TShowDesktopsToolButton }
 
 procedure TShowDesktopsToolButton.ChangeDesktop(Sender: TObject);
 begin
@@ -213,7 +218,7 @@ begin
   if xDesktopName = '' then
     Exit;
 
-  xDesktop := EnvironmentOptions.Desktops.Find(xDesktopName);
+  xDesktop := EnvironmentGuiOpts.Desktops.Find(xDesktopName);
   if xDesktop = nil then
     Exit;
 
@@ -223,7 +228,7 @@ begin
     Exit;
   end;
 
-  EnvironmentOptions.UseDesktop(TDesktopOpt(xDesktop));
+  EnvironmentGuiOpts.UseDesktop(TDesktopOpt(xDesktop));
 end;
 
 procedure TShowDesktopsToolButton.DoOnAdded;
@@ -257,11 +262,11 @@ procedure TShowDesktopsToolButton.RefreshMenu;
     xItem.Caption := _Desktop.Name;
     xItem.OnClick := _OnClick;
     xItem.DesktopName := _Desktop.Name;
-    xItem.Checked := _Desktop.Name = EnvironmentOptions.ActiveDesktopName;
+    xItem.Checked := _Desktop.Name = EnvironmentGuiOpts.ActiveDesktopName;
     if not _Desktop.Compatible then
       xItem.ImageIndex := IDEImages.LoadImage('state_warning')
     else
-    if _Desktop.Name = EnvironmentOptions.DebugDesktopName then
+    if _Desktop.Name = EnvironmentGuiOpts.DebugDesktopName then
       xItem.ImageIndex := IDEImages.LoadImage('debugger');
   end;
 
@@ -288,9 +293,9 @@ begin
   xMIToggleDebug.ImageIndex := IDEImages.LoadImage('debugger');
 
   // Saved desktops
-  for i:=0 to EnvironmentOptions.Desktops.Count-1 do
+  for i:=0 to EnvironmentGuiOpts.Desktops.Count-1 do
   begin
-    xDesktop := EnvironmentOptions.Desktops[i];
+    xDesktop := EnvironmentGuiOpts.Desktops[i];
     _AddItem(xDesktop, xPM.Items, @ChangeDesktop, False);
     _AddItem(xDesktop, xMISaveAs, @SaveAsDesktop, True);
     _AddItem(xDesktop, xMIToggleDebug, @ToggleAsDebugDesktop, False);
@@ -334,7 +339,7 @@ end;
 
 procedure TShowDesktopsToolButton.SaveDesktop(Sender: TObject);
 begin
-  SaveCurrentDesktop(EnvironmentOptions.ActiveDesktopName, False);
+  SaveCurrentDesktop(EnvironmentGuiOpts.ActiveDesktopName, False);
 end;
 
 procedure TShowDesktopsToolButton.ToggleAsDebugDesktop(Sender: TObject);
@@ -409,7 +414,7 @@ var
   xIndex: Integer;
 begin
   RefreshList;
-  xIndex := DesktopListBox.Items.IndexOf(EnvironmentOptions.ActiveDesktopName);
+  xIndex := DesktopListBox.Items.IndexOf(EnvironmentGuiOpts.ActiveDesktopName);
   if xIndex >= 0 then
     DesktopListBox.ItemIndex := xIndex;
   AssociatedDebugDesktopComboBox.DropDownCount := EnvironmentOptions.DropDownCount;
@@ -434,9 +439,9 @@ begin
   // Saved desktops
   DesktopListBox.Items.BeginUpdate;
   try
-    for i:=0 to EnvironmentOptions.Desktops.Count-1 do
+    for i:=0 to EnvironmentGuiOpts.Desktops.Count-1 do
     begin
-      DskTop := EnvironmentOptions.Desktops[i];
+      DskTop := EnvironmentGuiOpts.Desktops[i];
       DesktopListBox.Items.AddObject(DskTop.Name, DskTop);
       if not DskTop.Compatible then
         HasNonCompatible := True;
@@ -478,9 +483,9 @@ begin
   then
     Exit;
 
-  with EnvironmentOptions do
-  begin
-    dskIndex := Desktops.IndexOf(xDesktopName);//delete old entry in list if new name is present
+  with EnvironmentGuiOpts do
+  begin                         //delete old entry in list if new name is present
+    dskIndex := Desktops.IndexOf(xDesktopName);
     if (dskIndex >= 0) then
     begin
       if (MessageDlg(Format(dlgOverwriteDesktop, [xDesktopName]), mtWarning, mbYesNo, 0) = mrYes) then
@@ -490,13 +495,13 @@ begin
     end;
 
     dskIndex := Desktops.IndexOf(xOldDesktopName);//rename
-    if Desktops[dskIndex].Name = EnvironmentOptions.ActiveDesktopName then
-      EnvironmentOptions.ActiveDesktopName := xDesktopName;
-    if Desktops[dskIndex].Name = EnvironmentOptions.DebugDesktopName then
-      EnvironmentOptions.DebugDesktopName := xDesktopName;
+    if Desktops[dskIndex].Name = ActiveDesktopName then
+      ActiveDesktopName := xDesktopName;
+    if Desktops[dskIndex].Name = DebugDesktopName then
+      DebugDesktopName := xDesktopName;
     Desktops[dskIndex].Name := xDesktopName;
-    RefreshList(xDesktopName);
   end;
+  RefreshList(xDesktopName);
 end;
 
 procedure TDesktopForm.AssociatedDebugDesktopComboBoxChange(Sender: TObject);
@@ -508,8 +513,8 @@ begin
 
   SelDesktop := DesktopListBox.Items.Objects[DesktopListBox.ItemIndex] as TDesktopOpt;
   SelDesktop.AssociatedDebugDesktopName := AssociatedDebugDesktopComboBox.Text;
-  if SelDesktop.Name = EnvironmentOptions.ActiveDesktopName then
-    EnvironmentOptions.Desktop.AssociatedDebugDesktopName := SelDesktop.AssociatedDebugDesktopName;
+  if SelDesktop.Name = EnvironmentGuiOpts.ActiveDesktopName then
+    EnvironmentGuiOpts.Desktop.AssociatedDebugDesktopName := SelDesktop.AssociatedDebugDesktopName;
 end;
 
 procedure TDesktopForm.DeleteActionClick(Sender: TObject);
@@ -522,11 +527,11 @@ begin
   dskName := DesktopListBox.Items[DesktopListBox.ItemIndex];
   if MessageDlg(Format(dlgReallyDeleteDesktop, [dskName]), mtConfirmation, mbYesNo, 0) <> mrYes then
     Exit;
-  dskIndex := EnvironmentOptions.Desktops.IndexOf(dskName);
+  dskIndex := EnvironmentGuiOpts.Desktops.IndexOf(dskName);
   if dskIndex >= 0 then
   begin
-    debugln(['TDesktopForm.SaveBitBtnClick: Deleting ', dskName]);
-    EnvironmentOptions.Desktops.Delete(dskIndex);
+    debugln(['TDesktopForm.DeleteActionClick: Deleting ', dskName]);
+    EnvironmentGuiOpts.Desktops.Delete(dskIndex);
     if DesktopListBox.ItemIndex+1 < DesktopListBox.Count then
       dskName := DesktopListBox.Items[DesktopListBox.ItemIndex+1]
     else if DesktopListBox.ItemIndex > 0 then
@@ -549,7 +554,7 @@ begin
   if xDesktopName = '' then
     Exit;
 
-  xDesktop := EnvironmentOptions.Desktops.Find(xDesktopName);
+  xDesktop := EnvironmentGuiOpts.Desktops.Find(xDesktopName);
   if xDesktop = nil then
     Exit;
 
@@ -663,18 +668,18 @@ begin
             xDesktopName := xXMLCfg.GetValue(xDesktopPath+'Name', '');
             xOldDesktopName := xDesktopName;
             xDesktopDockMaster := xXMLCfg.GetValue(xDesktopPath+'DockMaster', '');
-            if not EnvironmentOptions.DesktopCanBeLoaded(xDesktopDockMaster) then
+            if not EnvironmentGuiOpts.DesktopCanBeLoaded(xDesktopDockMaster) then
               Continue; //desktop not compatible
 
             //show a dialog to modify desktop name
-            if (EnvironmentOptions.Desktops.IndexOf(xDesktopName) >= 0) and
+            if (EnvironmentGuiOpts.Desktops.IndexOf(xDesktopName) >= 0) and
                not InputQuery(dlgDesktopName, dlgImportDesktopExists, xDesktopName)
             then
               Continue;
 
             if xDesktopName = '' then
               Continue;
-            xDsk := EnvironmentOptions.Desktops.Find(xDesktopName);
+            xDsk := EnvironmentGuiOpts.Desktops.Find(xDesktopName);
             if Assigned(xDsk) and
                (xOldDesktopName <> xDesktopName) and
                (MessageDlg(Format(dlgOverwriteDesktop, [xDesktopName]), mtWarning, mbYesNo, 0) <> mrYes)
@@ -682,12 +687,12 @@ begin
               Continue;
 
             if Assigned(xDsk) then //if desktop is to be rewritten, it has to be recreated
-              EnvironmentOptions.Desktops.Remove(xDsk);
+              EnvironmentGuiOpts.Desktops.Remove(xDsk);
 
             xDsk := TDesktopOpt.Create(xDesktopName, xDesktopDockMaster<>'');
-            EnvironmentOptions.Desktops.Add(xDsk);
+            EnvironmentGuiOpts.Desktops.Add(xDsk);
 
-            if xDsk.Name = EnvironmentOptions.ActiveDesktopName then
+            if xDsk.Name = EnvironmentGuiOpts.ActiveDesktopName then
               FActiveDesktopChanged := True;
             xDsk.SetConfig(xXMLCfg, xConfigStore);
             xDsk.Load(xDesktopPath);
@@ -724,14 +729,14 @@ var
 begin
   xIncPos := (Sender as TComponent).Tag;
   if (DesktopListBox.ItemIndex < 0) or
-     (DesktopListBox.ItemIndex >= EnvironmentOptions.Desktops.Count) or
+     (DesktopListBox.ItemIndex >= EnvironmentGuiOpts.Desktops.Count) or
      (DesktopListBox.ItemIndex+xIncPos < 0) or
-     (DesktopListBox.ItemIndex+xIncPos >= EnvironmentOptions.Desktops.Count)
+     (DesktopListBox.ItemIndex+xIncPos >= EnvironmentGuiOpts.Desktops.Count)
   then
     Exit; //index out of range
 
-  xOldName := EnvironmentOptions.Desktops[DesktopListBox.ItemIndex].Name;
-  EnvironmentOptions.Desktops.Move(DesktopListBox.ItemIndex, DesktopListBox.ItemIndex+xIncPos);
+  xOldName := EnvironmentGuiOpts.Desktops[DesktopListBox.ItemIndex].Name;
+  EnvironmentGuiOpts.Desktops.Move(DesktopListBox.ItemIndex, DesktopListBox.ItemIndex+xIncPos);
   RefreshList(xOldName);
 end;
 
@@ -748,9 +753,9 @@ begin
       Exit;
     AssociatedDebugDesktopComboBox.Items.AddObject(dlgPOIconDescNone, nil);
     // Saved desktops
-    for i:=0 to EnvironmentOptions.Desktops.Count-1 do
+    for i:=0 to EnvironmentGuiOpts.Desktops.Count-1 do
     begin
-      DskTop := EnvironmentOptions.Desktops[i];
+      DskTop := EnvironmentGuiOpts.Desktops[i];
       if DskTop.Compatible = SelectedDesktop.Compatible then
         AssociatedDebugDesktopComboBox.Items.AddObject(DskTop.Name, DskTop);
     end;
@@ -798,9 +803,9 @@ begin
 
   xLB.Canvas.TextStyle := NewTextStyle;
 
-  if Index < EnvironmentOptions.Desktops.Count then
+  if Index < EnvironmentGuiOpts.Desktops.Count then
   begin
-    xDesktop := EnvironmentOptions.Desktops[Index];
+    xDesktop := EnvironmentGuiOpts.Desktops[Index];
     xDesktopName := xDesktop.Name;
   end else
   begin
@@ -810,25 +815,30 @@ begin
   xInfo := '';
   xTextLeft := ARect.Left+ActionList1.Images.Width + 4;
   xIconLeft := ARect.Left+2;
-  if (xDesktopName <> '') and (EnvironmentOptions.ActiveDesktopName = xDesktopName) then
+  if (xDesktopName <> '') and (EnvironmentGuiOpts.ActiveDesktopName = xDesktopName) then
   begin
     if xInfo <> '' then
       xInfo := xInfo + ', ';
     xInfo := xInfo + dlgActiveDesktop;
     xLB.Canvas.Font.Style := xLB.Canvas.Font.Style + [fsBold];
-    ActionList1.Images.Draw(xLB.Canvas, xIconLeft, (ARect.Top+ARect.Bottom-ActionList1.Images.Height) div 2, SetActiveDesktopButton.ImageIndex, xDesktop.Compatible);//I don't see a problem painting the tick over the "run" icon...
+    //I don't see a problem painting the tick over the "run" icon...
+    ActionList1.Images.Draw(xLB.Canvas, xIconLeft,
+                        (ARect.Top+ARect.Bottom-ActionList1.Images.Height) div 2,
+                        SetActiveDesktopButton.ImageIndex, xDesktop.Compatible);
   end;
-  if (xDesktopName <> '') and (EnvironmentOptions.DebugDesktopName = xDesktopName) then
+  if (xDesktopName <> '') and (EnvironmentGuiOpts.DebugDesktopName = xDesktopName) then
   begin
     if xInfo <> '' then
       xInfo := xInfo + ', ';
     xInfo := xInfo + dlgDebugDesktop;
-    if (EnvironmentOptions.ActiveDesktopName = xDesktopName) then
+    if (EnvironmentGuiOpts.ActiveDesktopName = xDesktopName) then
     begin
       xTextLeft := xTextLeft + ActionList1.Images.Width;
       xIconLeft := xIconLeft + ActionList1.Images.Width;
     end;
-    ActionList1.Images.Draw(xLB.Canvas, xIconLeft, (ARect.Top+ARect.Bottom-ActionList1.Images.Height) div 2, SetDebugDesktopButton.ImageIndex, xDesktop.Compatible);
+    ActionList1.Images.Draw(xLB.Canvas, xIconLeft,
+                        (ARect.Top+ARect.Bottom-ActionList1.Images.Height) div 2,
+                        SetDebugDesktopButton.ImageIndex, xDesktop.Compatible);
   end;
   ARect.Left := xTextLeft;
   xText := xDesktopName;
@@ -838,7 +848,9 @@ begin
   if not xDesktop.Compatible then
     xLB.Canvas.Font.Color := LblGrayedInfo.Font.Color;
 
-  xLB.Canvas.TextRect(ARect, ARect.Left, (ARect.Top+ARect.Bottom-xLB.Canvas.TextHeight('Hg')) div 2, xText);
+  xLB.Canvas.TextRect(ARect, ARect.Left,
+                      (ARect.Top+ARect.Bottom-xLB.Canvas.TextHeight('Hg')) div 2,
+                      xText);
   xLB.Canvas.Brush.Style := OldBrushStyle;
   xLB.Canvas.TextStyle := OldTextStyle;
   xLB.Canvas.Font.Style := OldFontStyle;
@@ -855,23 +867,25 @@ var
   HasSel, IsActive, IsDebug: Boolean;
   CurName: String;
   SelDesktop: TCustomDesktopOpt;
+  i: Integer;
 begin
   HasSel := DesktopListBox.ItemIndex>=0;
   if HasSel then
   begin
     SelDesktop := DesktopListBox.Items.Objects[DesktopListBox.ItemIndex] as TCustomDesktopOpt;
     RefreshAssociatedDebugList(SelDesktop);
+    i := 0;
     if (SelDesktop.AssociatedDebugDesktopName<>'') then
     begin
-      AssociatedDebugDesktopComboBox.ItemIndex :=
-        AssociatedDebugDesktopComboBox.Items.IndexOfObject(EnvironmentOptions.Desktops.Find(SelDesktop.AssociatedDebugDesktopName));
-      if AssociatedDebugDesktopComboBox.ItemIndex<0 then
-        AssociatedDebugDesktopComboBox.ItemIndex := 0;
-    end else
-      AssociatedDebugDesktopComboBox.ItemIndex := 0;
+      i := AssociatedDebugDesktopComboBox.Items.IndexOfObject(
+        EnvironmentGuiOpts.Desktops.Find(SelDesktop.AssociatedDebugDesktopName));
+      if i<0 then
+        i := 0;
+    end;
+    AssociatedDebugDesktopComboBox.ItemIndex := i;
     CurName := DesktopListBox.Items[DesktopListBox.ItemIndex];
-    IsActive := CurName = EnvironmentOptions.ActiveDesktopName;
-    IsDebug := CurName = EnvironmentOptions.DebugDesktopName;
+    IsActive := CurName = EnvironmentGuiOpts.ActiveDesktopName;
+    IsDebug := CurName = EnvironmentGuiOpts.DebugDesktopName;
   end
   else begin
     IsActive := False;
@@ -897,9 +911,9 @@ var
   xDesktops: array of TCustomDesktopOpt;
   I: Integer;
 begin
-  SetLength(xDesktops{%H-}, EnvironmentOptions.Desktops.Count);
+  SetLength(xDesktops{%H-}, EnvironmentGuiOpts.Desktops.Count);
   for I := 0 to Length(xDesktops)-1 do
-    xDesktops[I] := EnvironmentOptions.Desktops[I];
+    xDesktops[I] := EnvironmentGuiOpts.Desktops[I];
   ExportDesktops(xDesktops);
 end;
 
@@ -920,7 +934,7 @@ begin
 
   if SaveCurrentDesktop(xDesktopName, xOldDesktopName <> xDesktopName{ask only if manually inserted}) then
   begin
-    if xDesktopName = EnvironmentOptions.ActiveDesktopName then
+    if xDesktopName = EnvironmentGuiOpts.ActiveDesktopName then
       FActiveDesktopChanged := True;
     RefreshList(xDesktopName);
   end;
@@ -929,17 +943,17 @@ end;
 procedure TDesktopForm.SetActiveDesktopActionClick(Sender: TObject);
 begin
   if (DesktopListBox.ItemIndex = -1) or
-     (EnvironmentOptions.ActiveDesktopName = DesktopListBox.Items[DesktopListBox.ItemIndex])
+     (EnvironmentGuiOpts.ActiveDesktopName = DesktopListBox.Items[DesktopListBox.ItemIndex])
   then
     Exit;
 
-  if not EnvironmentOptions.Desktops[DesktopListBox.ItemIndex].Compatible then
+  if not EnvironmentGuiOpts.Desktops[DesktopListBox.ItemIndex].Compatible then
   begin
     MessageDlg(dlgCannotUseDockedUndockedDesktop, mtError, [mbOK], 0);
     Exit;
   end;
 
-  EnvironmentOptions.ActiveDesktopName := DesktopListBox.Items[DesktopListBox.ItemIndex];
+  EnvironmentGuiOpts.ActiveDesktopName := DesktopListBox.Items[DesktopListBox.ItemIndex];
   FActiveDesktopChanged := True;
   RefreshList;
 end;

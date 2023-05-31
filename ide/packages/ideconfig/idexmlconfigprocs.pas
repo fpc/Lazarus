@@ -5,7 +5,9 @@ unit IdeXmlConfigProcs;
 interface
 
 uses
-  Classes, SysUtils, Laz2_XMLCfg, Laz_AVL_Tree, AvgLvlTree;
+  Classes, SysUtils, Laz_AVL_Tree,
+  // LazUtils
+  Laz2_XMLCfg, AvgLvlTree;
 
 procedure LoadStringList(XMLConfig: TXMLConfig; List: TStrings; const Path: string);
 procedure SaveStringList(XMLConfig: TXMLConfig; List: TStrings; const Path: string);

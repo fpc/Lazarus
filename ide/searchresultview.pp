@@ -46,9 +46,11 @@ uses
   // LazUtils
   LazUTF8, LazUtilities, LazFileUtils, LazLoggerBase, LazStringUtils,
   // IdeIntf
-  IDEImagesIntf, IDECommands,
+  IDEImagesIntf, IDECommands, InputHistory,
+  // IdeConfig
+  IDEOptionDefs,
   // IDE
-  IDEOptionDefs, LazarusIDEStrConsts, EnvironmentOpts, InputHistory, Project, MainIntf;
+  LazarusIDEStrConsts, Project, MainIntf, EnvGuiOptions;
 
 
 type
@@ -790,7 +792,7 @@ begin
   if Node=nil then exit;
   if x<Node.DisplayTextLeft then exit;
   //debugln(['TSearchResultsView.TreeViewMouseDown single=',([ssDouble,ssTriple,ssQuad]*Shift=[]),' Option=',EnvironmentOptions.MsgViewDblClickJumps]);
-  if EnvironmentOptions.MsgViewDblClickJumps then
+  if EnvironmentGuiOpts.MsgViewDblClickJumps then
   begin
     // double click jumps
     if not (ssDouble in Shift) then exit;

@@ -70,17 +70,20 @@ uses
   EditorSyntaxHighlighterDef, IdeIntfStrConsts,
   // DebuggerIntf
   DbgIntfDebuggerBase, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
+  // IdeDebugger
+  BaseDebugManager, Debugger, IdeDebuggerStringConstants,
+  // IdeConfig
+  EnvironmentOpts, IDEOptionDefs, TransferMacrosIntf,
   // IDE units
-  IDECmdLine, LazarusIDEStrConsts, EditorOptions,
-  EnvironmentOpts, WordCompletion, FindReplaceDialog, IDEProcs, IDEOptionDefs,
+  IDECmdLine, LazarusIDEStrConsts, EditorOptions, EnvGuiOptions,
+  WordCompletion, FindReplaceDialog, IDEProcs,
   IDEHelpManager, MacroPromptDlg, TransferMacros, CodeContextForm,
   SrcEditHintFrm, etMessagesWnd, etSrcEditMarks, CodeMacroPrompt,
   CodeTemplatesDlg, CodeToolsOptions, editor_general_options, SortSelectionDlg,
   EncloseSelectionDlg, EncloseIfDef, InvertAssignTool, SourceEditProcs,
   SourceMarks, SearchFrm, MultiPasteDlg, EditorMacroListViewer,
   EditorToolbarStatic, editortoolbar_options, InputhistoryWithSearchOpt,
-  FPDocHints, MainIntf, GotoFrm, BaseDebugManager, Debugger,
-  IdeDebuggerStringConstants, TransferMacrosIntf;
+  FPDocHints, MainIntf, GotoFrm;
 
 type
   TSourceNotebook = class;
@@ -2350,8 +2353,8 @@ end;
 
 procedure TSourceEditCompletion.CompletionFormResized(Sender: TObject);
 begin
-  EnvironmentOptions.Desktop.CompletionWindowWidth  := TheForm.Width;
-  EnvironmentOptions.Desktop.CompletionWindowHeight := TheForm.NbLinesInWindow;
+  EnvironmentGuiOpts.Desktop.CompletionWindowWidth  := TheForm.Width;
+  EnvironmentGuiOpts.Desktop.CompletionWindowHeight := TheForm.NbLinesInWindow;
 end;
 
 function TSourceEditCompletion.GetCompletionFormClass: TSynBaseCompletionFormClass;
@@ -3001,8 +3004,8 @@ begin
   OnPositionChanged:=@OnSynCompletionPositionChanged;
   ShortCut:=Menus.ShortCut(VK_UNKNOWN,[]);
   TheForm.ShowSizeDrag := True;
-  TheForm.Width := Max(50, EnvironmentOptions.Desktop.CompletionWindowWidth);
-  TheForm.NbLinesInWindow := Max(3, EnvironmentOptions.Desktop.CompletionWindowHeight);
+  TheForm.Width := Max(50, EnvironmentGuiOpts.Desktop.CompletionWindowWidth);
+  TheForm.NbLinesInWindow := Max(3, EnvironmentGuiOpts.Desktop.CompletionWindowHeight);
   TheForm.OnDragResized  := @CompletionFormResized;
 end;
 

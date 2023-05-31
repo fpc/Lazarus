@@ -43,10 +43,12 @@ uses
   // BuildIntf
   ProjectIntf, PackageIntf, CompOptsIntf, IDEExternToolIntf,
   // IDEIntf
-  IDEImagesIntf, MenuIntf, IDECommands, IDEDialogs, LazIDEIntf,
+  IDEImagesIntf, MenuIntf, IDECommands, IDEDialogs, LazIDEIntf, IdeIntfStrConsts,
+  // IdeConfig
+  EnvironmentOpts, IDEOptionDefs,
   // IDE
-  IdeIntfStrConsts, LazarusIDEStrConsts, EnvironmentOpts, HelpFPCMessages, etSrcEditMarks,
-  MsgWnd_Options, etQuickFixes, ExtTools, IDEOptionDefs, CompilerOptions;
+  LazarusIDEStrConsts, HelpFPCMessages, etSrcEditMarks,
+  MsgWnd_Options, etQuickFixes, ExtTools, CompilerOptions, EnvGuiOptions;
 
 const
   CustomViewCaption = '------------------------------';
@@ -1034,7 +1036,7 @@ end;
 // inline
 function TMessagesCtrl.Filters: TLMsgViewFilters;
 begin
-  Result:=EnvironmentOptions.MsgViewFilters;
+  Result:=EnvironmentGuiOpts.MsgViewFilters;
 end;
 
 // inline
@@ -2590,20 +2592,20 @@ var
 
 begin
   for u in TMessageLineUrgency do
-    UrgencyStyles[u].Color:=EnvironmentOptions.MsgColors[u];
-  BackgroundColor:=EnvironmentOptions.MsgViewColors[mwBackground];
-  AutoHeaderBackground:=EnvironmentOptions.MsgViewColors[mwAutoHeader];
-  HeaderBackground[lmvtsRunning]:=EnvironmentOptions.MsgViewColors[mwRunning];
-  HeaderBackground[lmvtsSuccess]:=EnvironmentOptions.MsgViewColors[mwSuccess];
-  HeaderBackground[lmvtsFailed]:=EnvironmentOptions.MsgViewColors[mwFailed];
-  TextColor:=EnvironmentOptions.MsgViewColors[mwTextColor];
+    UrgencyStyles[u].Color:=EnvironmentGuiOpts.MsgColors[u];
+  BackgroundColor:=EnvironmentGuiOpts.MsgViewColors[mwBackground];
+  AutoHeaderBackground:=EnvironmentGuiOpts.MsgViewColors[mwAutoHeader];
+  HeaderBackground[lmvtsRunning]:=EnvironmentGuiOpts.MsgViewColors[mwRunning];
+  HeaderBackground[lmvtsSuccess]:=EnvironmentGuiOpts.MsgViewColors[mwSuccess];
+  HeaderBackground[lmvtsFailed]:=EnvironmentGuiOpts.MsgViewColors[mwFailed];
+  TextColor:=EnvironmentGuiOpts.MsgViewColors[mwTextColor];
   NewOptions:=Options;
-  SetOption(mcoSingleClickOpensFile,not EnvironmentOptions.MsgViewDblClickJumps);
-  SetOption(mcoShowMsgIcons,EnvironmentOptions.ShowMessagesIcons);
-  SetOption(mcoShowTranslated,EnvironmentOptions.MsgViewShowTranslations);
-  SetOption(mcoAlwaysDrawFocused,EnvironmentOptions.MsgViewAlwaysDrawFocused);
+  SetOption(mcoSingleClickOpensFile,not EnvironmentGuiOpts.MsgViewDblClickJumps);
+  SetOption(mcoShowMsgIcons,EnvironmentGuiOpts.ShowMessagesIcons);
+  SetOption(mcoShowTranslated,EnvironmentGuiOpts.MsgViewShowTranslations);
+  SetOption(mcoAlwaysDrawFocused,EnvironmentGuiOpts.MsgViewAlwaysDrawFocused);
   Options:=NewOptions;
-  FilenameStyle:=EnvironmentOptions.MsgViewFilenameStyle;
+  FilenameStyle:=EnvironmentGuiOpts.MsgViewFilenameStyle;
 end;
 
 function TMessagesCtrl.IndexOfView(View: TLMsgWndView): integer;
@@ -3141,7 +3143,7 @@ begin
     MessagesCtrl.Options:=MessagesCtrl.Options-[mcoShowTranslated]
   else
     MessagesCtrl.Options:=MessagesCtrl.Options+[mcoShowTranslated];
-  EnvironmentOptions.MsgViewShowTranslations:=mcoShowTranslated in MessagesCtrl.Options;
+  EnvironmentGuiOpts.MsgViewShowTranslations:=mcoShowTranslated in MessagesCtrl.Options;
 end;
 
 procedure TMessagesFrame.RemoveFilterMsgTypeClick(Sender: TObject);
@@ -3159,7 +3161,7 @@ begin
     MessagesCtrl.Options:=MessagesCtrl.Options-[mcoWndStayOnTop]
   else
     MessagesCtrl.Options:=MessagesCtrl.Options+[mcoWndStayOnTop];
-  EnvironmentOptions.MsgViewStayOnTop:=mcoWndStayOnTop in MessagesCtrl.Options;
+  EnvironmentGuiOpts.MsgViewStayOnTop:=mcoWndStayOnTop in MessagesCtrl.Options;
 end;
 
 function TMessagesFrame.AllMessagesAsString(const OnlyShown: boolean): String;
@@ -3234,7 +3236,7 @@ begin
     MessagesCtrl.FilenameStyle:=mwfsRelative
   else if Sender=MsgFileStyleFullMenuItem then
     MessagesCtrl.FilenameStyle:=mwfsFull;
-  EnvironmentOptions.MsgViewFilenameStyle:=MessagesCtrl.FilenameStyle;
+  EnvironmentGuiOpts.MsgViewFilenameStyle:=MessagesCtrl.FilenameStyle;
 end;
 
 procedure TMessagesFrame.FindMenuItemClick(Sender: TObject);
@@ -3599,31 +3601,31 @@ begin
     Align:=alClient;
     Parent:=Self;
 
-    UrgencyStyles[mluNone].SetValues('?',ImgIDInfo,EnvironmentOptions.MsgColors[mluNone]);
+    UrgencyStyles[mluNone].SetValues('?',ImgIDInfo,EnvironmentGuiOpts.MsgColors[mluNone]);
     UrgencyStyles[mluProgress].SetValues(lisPDProgress, ImgIDInfo,
-      EnvironmentOptions.MsgColors[mluProgress]);
+      EnvironmentGuiOpts.MsgColors[mluProgress]);
     UrgencyStyles[mluDebug].SetValues(lisDebug, ImgIDInfo,
-      EnvironmentOptions.MsgColors[mluDebug]);
+      EnvironmentGuiOpts.MsgColors[mluDebug]);
     UrgencyStyles[mluVerbose3].SetValues(lisExtremelyVerbose, ImgIDInfo,
-      EnvironmentOptions.MsgColors[mluVerbose3]);
+      EnvironmentGuiOpts.MsgColors[mluVerbose3]);
     UrgencyStyles[mluVerbose2].SetValues(lisVeryVerbose, ImgIDInfo,
-      EnvironmentOptions.MsgColors[mluVerbose2]);
+      EnvironmentGuiOpts.MsgColors[mluVerbose2]);
     UrgencyStyles[mluVerbose].SetValues(lisVerbose, ImgIDInfo,
-      EnvironmentOptions.MsgColors[mluVerbose]);
+      EnvironmentGuiOpts.MsgColors[mluVerbose]);
     UrgencyStyles[mluHint].SetValues(lisHint, ImgIDHint,
-      EnvironmentOptions.MsgColors[mluHint]);
+      EnvironmentGuiOpts.MsgColors[mluHint]);
     UrgencyStyles[mluNote].SetValues(lisNote, ImgIDNote,
-      EnvironmentOptions.MsgColors[mluNote]);
+      EnvironmentGuiOpts.MsgColors[mluNote]);
     UrgencyStyles[mluWarning].SetValues(lisCCOWarningCaption, ImgIDWarning,
-      EnvironmentOptions.MsgColors[mluWarning]);
+      EnvironmentGuiOpts.MsgColors[mluWarning]);
     UrgencyStyles[mluImportant].SetValues(lisImportant, ImgIDInfo,
-      EnvironmentOptions.MsgColors[mluImportant]);
+      EnvironmentGuiOpts.MsgColors[mluImportant]);
     UrgencyStyles[mluError].SetValues(lisCCOErrorCaption, ImgIDError,
-      EnvironmentOptions.MsgColors[mluError]);
+      EnvironmentGuiOpts.MsgColors[mluError]);
     UrgencyStyles[mluFatal].SetValues(lisFatal, ImgIDFatal,
-      EnvironmentOptions.MsgColors[mluFatal]);
+      EnvironmentGuiOpts.MsgColors[mluFatal]);
     UrgencyStyles[mluPanic].SetValues(lisPanic, ImgIDFatal,
-      EnvironmentOptions.MsgColors[mluPanic]);
+      EnvironmentGuiOpts.MsgColors[mluPanic]);
     Images:=Self.FImages;
     PopupMenu:=MsgCtrlPopupMenu;
   end;

@@ -37,8 +37,10 @@ uses
   Forms, Controls, Graphics, Dialogs, StdCtrls, ColorBox, ExtCtrls, Spin, Buttons,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEExternToolIntf, IDEImagesIntf,
+  // IdeConfig
+  EnvironmentOpts,
   // IDE
-  LazarusIDEStrConsts, EnvironmentOpts, editor_general_options;
+  LazarusIDEStrConsts, editor_general_options, EnvGuiOptions;
 
 type
 
@@ -257,43 +259,53 @@ end;
 
 procedure TMsgWndOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
-  o: TEnvironmentOptions;
+  EnvOpt: TEnvironmentOptions;
+  EnvGui: TIDESubOptions;
   c: TMsgWndColor;
   u: TMessageLineUrgency;
 begin
-  o:=(AOptions as TEnvironmentOptions);
-  for c in TMsgWndColor do
-    MWColorListBox.Colors[ord(c)] := o.MsgViewColors[c];
-  for u in TMessageLineUrgency do
-    MsgColorListBox.Colors[ord(u)] := o.MsgColors[u];
-  MWShowIconsCheckBox.Checked := o.ShowMessagesIcons;
-  MWAlwaysDrawFocusedCheckBox.Checked := o.MsgViewAlwaysDrawFocused;
-  MWFocusCheckBox.Checked := o.MsgViewFocus;
-  MWMaxProcsSpinEdit.Value := o.MaxExtToolsInParallel;
-  MWShowFPCMsgLinesCompiledCheckBox.Checked := o.MsgViewShowFPCMsgLinesCompiled;
+  EnvOpt := AOptions as TEnvironmentOptions;
+  EnvGui := EnvOpt.GetSubConfigObj(TEnvGuiOptions);
+  Assert(Assigned(EnvGui), 'TMsgWndOptionsFrame.ReadSettings: EnvGui=Nil');
+  with EnvGui as TEnvGuiOptions do
+  begin
+    for c in TMsgWndColor do
+      MWColorListBox.Colors[ord(c)] := MsgViewColors[c];
+    for u in TMessageLineUrgency do
+      MsgColorListBox.Colors[ord(u)] := MsgColors[u];
+    MWShowIconsCheckBox.Checked := ShowMessagesIcons;
+    MWAlwaysDrawFocusedCheckBox.Checked := MsgViewAlwaysDrawFocused;
+    MWFocusCheckBox.Checked := MsgViewFocus;
+    MWShowFPCMsgLinesCompiledCheckBox.Checked := MsgViewShowFPCMsgLinesCompiled;
+  end;
+  MWMaxProcsSpinEdit.Value := EnvOpt.MaxExtToolsInParallel;
   fReady:=true;
 end;
 
 procedure TMsgWndOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
-  o: TEnvironmentOptions;
+  EnvOpt: TEnvironmentOptions;
+  EnvGui: TIDESubOptions;
   c: TMsgWndColor;
   u: TMessageLineUrgency;
 begin
-  o:=(AOptions as TEnvironmentOptions);
-  for c in TMsgWndColor do
-    o.MsgViewColors[c] := MWColorListBox.Colors[ord(c)];
-  for u in TMessageLineUrgency do
-    o.MsgColors[u] := MsgColorListBox.Colors[ord(u)];
-  o.ShowMessagesIcons := MWShowIconsCheckBox.Checked;
-  o.MsgViewAlwaysDrawFocused := MWAlwaysDrawFocusedCheckBox.Checked;
-  o.MsgViewFocus := MWFocusCheckBox.Checked;
-  o.MaxExtToolsInParallel := MWMaxProcsSpinEdit.Value;
-  o.MsgViewShowFPCMsgLinesCompiled := MWShowFPCMsgLinesCompiledCheckBox.Checked;
+  EnvOpt := AOptions as TEnvironmentOptions;
+  EnvGui := EnvOpt.GetSubConfigObj(TEnvGuiOptions);
+  with EnvGui as TEnvGuiOptions do
+  begin
+    for c in TMsgWndColor do
+      MsgViewColors[c] := MWColorListBox.Colors[ord(c)];
+    for u in TMessageLineUrgency do
+      MsgColors[u] := MsgColorListBox.Colors[ord(u)];
+    ShowMessagesIcons := MWShowIconsCheckBox.Checked;
+    MsgViewAlwaysDrawFocused := MWAlwaysDrawFocusedCheckBox.Checked;
+    MsgViewFocus := MWFocusCheckBox.Checked;
+    MsgViewShowFPCMsgLinesCompiled := MWShowFPCMsgLinesCompiledCheckBox.Checked;
+  end;
+  EnvOpt.MaxExtToolsInParallel := MWMaxProcsSpinEdit.Value;
 end;
 
-class function TMsgWndOptionsFrame.
-  SupportedOptionsClass: TAbstractIDEOptionsClass;
+class function TMsgWndOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
   Result := TEnvironmentOptions;
 end;

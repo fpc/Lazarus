@@ -31,10 +31,10 @@ uses
   LazConfigStorage, Laz2_XMLCfg,
   // IdeIntf
   BaseIDEIntf, IDEImagesIntf, SrcEditorIntf,
-  // IdeOptions
+  // IdeConfig
   EditorToolBarOptions,
   // IDE
-  EnvironmentOpts, LazarusIDEStrConsts, ToolbarConfig;
+  LazarusIDEStrConsts, ToolbarConfig, EnvGuiOptions;
 
 type
 
@@ -123,7 +123,7 @@ end;
 
 procedure TEditorToolbar.PostCopyOptions;
 begin
-  case EnvironmentOptions.Desktop.EditorToolBarOptions.Position of
+  case EnvironmentGuiOpts.Desktop.EditorToolBarOptions.Position of
     'Top': begin
       FToolBar.Align:= alTop;
       FToolBar.Height:= 26;
@@ -190,7 +190,7 @@ var
 begin
   ETB := TEditorToolbar.Create(Sender as TSourceEditorWindowInterface, Self);
   FToolBars.Add(ETB);
-  Opts := EnvironmentOptions.Desktop.EditorToolBarOptions;
+  Opts := EnvironmentGuiOpts.Desktop.EditorToolBarOptions;
   ETB.CopyFromOptions(Opts);
   ETB.FToolBar.Visible := Opts.Visible;
 end;
@@ -229,7 +229,7 @@ begin
   begin
     aBar := FToolBars[i];
     aBar.ClearToolbar;
-    Opts := EnvironmentOptions.Desktop.EditorToolBarOptions;
+    Opts := EnvironmentGuiOpts.Desktop.EditorToolBarOptions;
     aBar.CopyFromOptions(Opts);
     aBar.FToolBar.Visible := Opts.Visible;
   end;
