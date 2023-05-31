@@ -6761,6 +6761,7 @@ begin
        +';../components/synedit'
        +';../components/codetools'
        +';../components/lazcontrols'
+       +';../components/lazcontrols/design'
        +';../components/custom')
        +';'+SrcPath
     ,da_Define));
@@ -6791,6 +6792,8 @@ begin
        +LazarusSrcDir+'/debugger/frames;'
        +LazarusSrcDir+'/ide;'
        +LazarusSrcDir+'/ide/packages/ideconfig;'
+       +LazarusSrcDir+'/ide/packages/idedebugger;'
+       +LazarusSrcDir+'/ide/packages/idedebugger/frames;'
        +LazarusSrcDir+'/components/buildintf;'
        +LazarusSrcDir+'/components/ideintf;'
        +LazarusSrcDir+'/components/lazutils;'
@@ -6800,13 +6803,14 @@ begin
        +LazarusSrcDir+'/components/lazdebuggers/lazdebuggerintf;'
        +LazarusSrcDir+'/components/lazdebuggers/lazdebuggerfp;'
        +LazarusSrcDir+'/components/lazdebuggers/lazdebuggerfplldb;'
+       +LazarusSrcDir+'/components/lazcontrols;'
+       +LazarusSrcDir+'/components/lazcontrols/design;'
        +LazarusSrcDir+'/lcl;'
        +LazarusSrcDir+'/lcl/interfaces;'
        +LazarusSrcDir+'/lcl/interfaces/'+WidgetType+';')
        +SrcPath
     ,da_DefineRecurse));
   MainDir.AddChild(DirTempl);
-
 
   // <LazarusSrcDir>/converter
   DirTempl:=TDefineTemplate.Create('Converter',ctsDebuggerDirectory,
