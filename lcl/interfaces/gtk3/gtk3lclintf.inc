@@ -307,7 +307,7 @@ function TGtk3WidgetSet.RawImage_DescriptionFromBitmap(ABitmap: HBITMAP; out ADe
 // var
 //  GDIObject: PGDIObject absolute ABitmap;
 const
-  CairoImageFormatToDepth: array[cairo_format_t] of integer =
+  CairoImageFormatToDepth: array[CAIRO_FORMAT_INVALID..CAIRO_FORMAT_RGB30] of integer =
   (
     {CAIRO_FORMAT_INVALID}   -1,
     {CAIRO_FORMAT_ARGB32}    32,
