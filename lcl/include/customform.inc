@@ -3040,7 +3040,14 @@ begin
             if ModalResult<>0 then break;
           end;
 
-          Application.Idle(true);
+          try
+            Application.Idle(true);
+          except
+            if Application.CaptureExceptions then
+              Application.HandleException(Self)
+            else
+              raise;
+          end;
         until False;
 
         Result := ModalResult;
