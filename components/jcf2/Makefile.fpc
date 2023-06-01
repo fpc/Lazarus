@@ -2,14 +2,14 @@
 #
 #   Makefile.fpc for jcfbase 1.0
 #
-#   This file was generated on 25/05/2023
+#   This file was generated on 1-6-23
 
 [package]
 name=jcfbase
 version=1.0
 
 [compiler]
-unittargetdir=
+unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
 unitdir=Parse Parse/PreProcessor Process Process/Align Process/Capitalisation Process/Indent Process/Info Process/Obfuscate Process/Onceoffs Process/Returns Process/Spacing Process/Transform Process/Warnings ReadWrite Settings Settings/Streams Ui Utils IdePlugin/lazarus ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
 includedir=Include
 options= -MObjFPC -Scghi -O1 -g -gl -l -vewnhibq $(DBG_OPTIONS)
@@ -21,6 +21,8 @@ units=jcfbase.pas
 files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*$(RSTEXT)) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.lfm) \
+      $(wildcard $(COMPILER_UNITTARGETDIR)/*.res) \
       $(wildcard $(COMPILER_UNITTARGETDIR)/*.compiled) \
       $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 
@@ -58,3 +60,6 @@ compiled:
         $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/jcfbase.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) jcfbase$(PPUEXT) compiled
+
+distclean: clean
+        ${DELTREE} units/*

@@ -9,7 +9,7 @@
       <SearchPaths>
         <IncludeFiles Value="Include"/>
         <OtherUnitFiles Value="Parse;Parse\PreProcessor;Process;Process\Align;Process\Capitalisation;Process\Indent;Process\Info;Process\Obfuscate;Process\Onceoffs;Process\Returns;Process\Spacing;Process\Transform;Process\Warnings;ReadWrite;Settings;Settings\Streams;Ui;Utils;IdePlugin\lazarus"/>
-        <UnitOutputDirectory Value="$(PkgOutDir)"/>
+        <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
     <Description Value="Jedi code format base package"/>
