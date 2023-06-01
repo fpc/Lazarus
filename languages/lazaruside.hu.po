@@ -20410,6 +20410,10 @@ msgstr "Revízió:"
 msgid "Select an inherited entry"
 msgstr "Minden öröklött bejegyzés kijelölése"
 
+#: lazarusidestrconsts.rsshowpath
+msgid "Show path"
+msgstr ""
+
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"
 msgstr "Változatszámozás"

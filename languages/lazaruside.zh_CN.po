@@ -20446,6 +20446,10 @@ msgstr "修订版本:(&R)"
 msgid "Select an inherited entry"
 msgstr "选择一个继承的项目"
 
+#: lazarusidestrconsts.rsshowpath
+msgid "Show path"
+msgstr ""
+
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"
 msgstr "版本编号"

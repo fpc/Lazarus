@@ -20290,6 +20290,10 @@ msgstr "&Revisio:"
 msgid "Select an inherited entry"
 msgstr "Valitse periytyvä kohta"
 
+#: lazarusidestrconsts.rsshowpath
+msgid "Show path"
+msgstr ""
+
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"
 msgstr "Versionumerointi"

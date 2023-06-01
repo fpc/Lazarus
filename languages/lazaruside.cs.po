@@ -20489,6 +20489,10 @@ msgstr "&Revize:"
 msgid "Select an inherited entry"
 msgstr "Vybrat zděděnou položku"
 
+#: lazarusidestrconsts.rsshowpath
+msgid "Show path"
+msgstr ""
+
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"
 msgstr "Číslování verze"

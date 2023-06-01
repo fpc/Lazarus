@@ -21489,6 +21489,10 @@ msgstr "עידכון:"
 msgid "Select an inherited entry"
 msgstr "בחר ערך מורש"
 
+#: lazarusidestrconsts.rsshowpath
+msgid "Show path"
+msgstr ""
+
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"
 msgstr "מספור גרסאות"

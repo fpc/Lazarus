@@ -20627,6 +20627,10 @@ msgstr "&Revízia:"
 msgid "Select an inherited entry"
 msgstr "Vybrať zdedenú položku"
 
+#: lazarusidestrconsts.rsshowpath
+msgid "Show path"
+msgstr ""
+
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"
 msgstr "Číslovanie verzií"

@@ -20278,6 +20278,10 @@ msgstr "&Revizyon:"
 msgid "Select an inherited entry"
 msgstr "Devralınan bir girişi seçin"
 
+#: lazarusidestrconsts.rsshowpath
+msgid "Show path"
+msgstr ""
+
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"
 msgstr "Sürüm numarası"

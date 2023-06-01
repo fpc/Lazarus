@@ -20622,6 +20622,10 @@ msgstr "&Rewizja:"
 msgid "Select an inherited entry"
 msgstr "Inherited"
 
+#: lazarusidestrconsts.rsshowpath
+msgid "Show path"
+msgstr ""
+
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"
 msgstr "Numerowanie wersji"

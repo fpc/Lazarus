@@ -20689,6 +20689,10 @@ msgstr "&Poversijis:"
 msgid "Select an inherited entry"
 msgstr "Pažymėti paveldėtą įrašą"
 
+#: lazarusidestrconsts.rsshowpath
+msgid "Show path"
+msgstr ""
+
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"
 msgstr "Versijos numeracija"

@@ -20651,6 +20651,10 @@ msgstr "改訂(&R)"
 msgid "Select an inherited entry"
 msgstr "継承されたエントリを選択"
 
+#: lazarusidestrconsts.rsshowpath
+msgid "Show path"
+msgstr ""
+
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"
 msgstr "バージョン番号付け"

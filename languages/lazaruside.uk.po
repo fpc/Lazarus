@@ -20411,6 +20411,10 @@ msgstr "&Ревізія:"
 msgid "Select an inherited entry"
 msgstr "Виберіть успадкований елемент"
 
+#: lazarusidestrconsts.rsshowpath
+msgid "Show path"
+msgstr ""
+
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"
 msgstr "Нумерація версій"

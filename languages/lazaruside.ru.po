@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-06-01 02:06+0300\n"
+"PO-Revision-Date: 2023-06-02 01:47+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -20364,6 +20364,10 @@ msgstr "&Ревизия:"
 #: lazarusidestrconsts.rsselectaninheritedentry
 msgid "Select an inherited entry"
 msgstr "Выбрать унаследованный элемент"
+
+#: lazarusidestrconsts.rsshowpath
+msgid "Show path"
+msgstr "Показывать путь"
 
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"
