@@ -1880,7 +1880,7 @@ end;
 
 class function TFpLldbDebugger.Caption: String;
 begin
-  Result := 'LLDB debugger (with fpdebug) (Beta)';
+  Result := 'LLDB debugger (with fpdebug)';
 end;
 
 class function TFpLldbDebugger.ExeBaseName: String;
