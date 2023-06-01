@@ -72,7 +72,7 @@ uses
   // IDEDebugger
   IdeDebuggerStringConstants,
   // IDE
-  LazConf, LazarusIDEStrConsts, Project, EnvironmentOpts,
+  LazConf, LazarusIDEStrConsts, Project, EnvironmentOpts, InputHistory,
   EditorOptions, CompilerOptions, SourceEditor, SourceSynEditor, FindInFilesDlg,
   Splash, MainBar, MainIntf, Designer, Debugger, RunParamsOpts, FindInFilesWnd;
 
@@ -205,6 +205,7 @@ type
 
     procedure FindInFilesPerDialog(AProject: TProject); override;
     procedure FindInFiles(AProject: TProject; const FindText: string); override;
+    procedure FindInFiles(AProject: TProject; const FindText: string; AOptions: TLazFindInFileSearchOptions; AFileMask, ADir: string); override;
 
     procedure SelComponentPageButtonMouseDown(Sender: TObject;
       Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual; abstract;
@@ -1784,6 +1785,11 @@ end;
 procedure TMainIDEBase.FindInFiles(AProject: TProject; const FindText: string);
 begin
   FindInFilesDialog.FindInFiles(AProject, FindText);
+end;
+
+procedure TMainIDEBase.FindInFiles(AProject: TProject; const FindText: string; AOptions: TLazFindInFileSearchOptions; AFileMask, ADir: string);
+begin
+  FindInFilesDialog.FindInFiles(AProject, FindText, AOptions, AFileMask, ADir);
 end;
 
 { TRunToolButton }

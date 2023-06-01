@@ -27,7 +27,7 @@ object SearchResultsView: TSearchResultsView
     TabStop = True
     object PageToolBar: TToolBar
       AnchorSideLeft.Control = ControlBar1
-      Left = 1
+      Left = 0
       Height = 22
       Top = 2
       Width = 70
@@ -54,26 +54,27 @@ object SearchResultsView: TSearchResultsView
         ImageIndex = 0
         OnClick = SearchAgainButtonClick
       end
-      object ClosePageButton: TToolButton
+      object ShowPathButton: TToolButton
         Left = 47
         Top = 0
-        Caption = 'ClosePageButton'
-        ImageIndex = 1
-        OnClick = ClosePageButtonClick
+        Caption = 'ShowPathButton'
+        Down = True
+        OnClick = ShowPathButtonClick
+        Style = tbsCheck
       end
     end
     object SearchInListEdit: TTreeFilterEdit
       AnchorSideLeft.Control = PageToolBar
       AnchorSideLeft.Side = asrBottom
       AnchorSideRight.Control = CloseTabs
-      Left = 128
+      Left = 80
       Height = 23
       Top = 2
-      Width = 465
+      Width = 464
       ButtonWidth = 23
       Anchors = [akTop, akLeft, akRight, akBottom]
-      BorderSpacing.Left = 21
-      BorderSpacing.Right = 21
+      BorderSpacing.Left = 8
+      BorderSpacing.Right = 8
       BorderSpacing.Bottom = 1
       BorderSpacing.Around = 2
       AutoSize = False
@@ -84,12 +85,13 @@ object SearchResultsView: TSearchResultsView
       ExpandAllInitially = True
     end
     object CloseTabs: TToolBar
-      Left = 616
+      Left = 554
       Height = 22
       Top = 3
-      Width = 102
+      Width = 133
       Align = alNone
       Anchors = [akTop, akRight, akBottom]
+      AutoSize = True
       BorderSpacing.Around = 2
       EdgeBorders = []
       EdgeInner = esNone
@@ -98,30 +100,44 @@ object SearchResultsView: TSearchResultsView
       TabOrder = 2
       Wrapable = False
       object tbbCloseLeft: TToolButton
-        Left = 2
+        Left = 33
         Top = 0
         Action = actCloseLeft
       end
       object tbbCloseOthers: TToolButton
-        Left = 25
+        Left = 56
         Top = 0
         Action = actCloseOthers
       end
+      object ToolButton1: TToolButton
+        Left = 25
+        Height = 22
+        Top = 0
+        Caption = 'ToolButton1'
+        Style = tbsSeparator
+      end
       object tbbCloseRight: TToolButton
-        Left = 48
+        Left = 79
         Top = 0
         Action = actCloseRight
       end
       object ToolButton3: TToolButton
-        Left = 71
+        Left = 102
         Height = 22
         Top = 0
         Style = tbsSeparator
       end
       object tbbCloseAll: TToolButton
-        Left = 79
+        Left = 110
         Top = 0
         Action = actCloseAll
+      end
+      object ClosePageButton: TToolButton
+        Left = 2
+        Top = 0
+        Caption = 'ClosePageButton'
+        ImageIndex = 1
+        OnClick = ClosePageButtonClick
       end
     end
   end

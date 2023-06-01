@@ -71,7 +71,7 @@ uses
   CompOptsIntf, LazIDEIntf, IDEWindowIntf,
   // IDE
   LazConf, LazarusIDEStrConsts, Project, BuildLazDialog,
-  ProgressDlg, EnvironmentOpts, IDEDefs, PackageDefs;
+  ProgressDlg, EnvironmentOpts, InputHistory, IDEDefs, PackageDefs;
 
 type
   // The IDE is at anytime in a specific state:
@@ -197,6 +197,7 @@ type
 
     procedure FindInFilesPerDialog(AProject: TProject); virtual; abstract;
     procedure FindInFiles(AProject: TProject; const FindText: string); virtual; abstract;
+    procedure FindInFiles(AProject: TProject; const FindText: string; AOptions: TLazFindInFileSearchOptions; AFileMask, ADir: string); virtual; abstract;
 
     class function GetPrimaryConfigPath: String; override;
     class function GetSecondaryConfigPath: String; override;

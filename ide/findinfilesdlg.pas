@@ -87,6 +87,7 @@ type
     procedure InitFindText;
     procedure InitFromLazSearch(Sender: TObject);
     procedure FindInFiles(AProject: TProject; const AFindText: string);
+    procedure FindInFiles(AProject: TProject; const AFindText: string; AOptions: TLazFindInFileSearchOptions; AFileMask, ADir: string);
     function GetResolvedDirectories: string;
     function Execute: boolean;
     property LazProject: TProject read FProject write FProject;
@@ -504,6 +505,26 @@ begin
   FindText:= AFindText;
   if (FindText = '') and (InputHistories.FindHistory.Count > 0) then
     FindText := InputHistories.FindHistory[0];
+
+  // disable replace. Find in files is often called,
+  // but almost never to replace with the same parameters
+  Options := Options-[fifReplace,fifReplaceAll];
+  Execute;
+end;
+
+procedure TLazFindInFilesDialog.FindInFiles(AProject: TProject; const AFindText: string; AOptions: TLazFindInFileSearchOptions; AFileMask, ADir: string);
+begin
+  LazProject:=AProject;
+  LoadHistory;
+
+  // if there is no FindText, use the most recently used FindText
+  FindText:= AFindText;
+  if (FindText = '') and (InputHistories.FindHistory.Count > 0) then
+    FindText := InputHistories.FindHistory[0];
+
+  Options := AOptions;
+  DirectoriesComboBox.Text := ADir;
+  FileMaskComboBox.Text := AFileMask;
 
   // disable replace. Find in files is often called,
   // but almost never to replace with the same parameters

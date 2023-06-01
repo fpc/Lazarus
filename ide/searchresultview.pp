@@ -37,7 +37,7 @@ unit SearchResultView;
 interface
 
 uses
-  Classes, SysUtils, strutils, Laz_AVL_Tree,
+  Classes, SysUtils, Math, StrUtils, Laz_AVL_Tree,
   // LCL
   LCLProc, LCLType, LCLIntf, Forms, Controls, Graphics, ComCtrls, Menus, Clipbrd,
   ActnList, ExtCtrls, StdCtrls, Dialogs,
@@ -146,6 +146,7 @@ type
     actNextPage: TAction;
     actPrevPage: TAction;
     ActionList: TActionList;
+    ClosePageButton: TToolButton;
     ControlBar1: TPanel;
     MenuItem1: TMenuItem;
     mniCollapseAll: TMenuItem;
@@ -163,8 +164,9 @@ type
     CloseTabs: TToolBar;
     RefreshButton: TToolButton;
     SearchAgainButton: TToolButton;
-    ClosePageButton: TToolButton;
     SearchInListEdit: TTreeFilterEdit;
+    ShowPathButton: TToolButton;
+    ToolButton1: TToolButton;
     ToolButton3: TToolButton;
     tbbCloseAll: TToolButton;
     procedure actNextPageExecute(Sender: TObject);
@@ -173,6 +175,7 @@ type
     procedure SearchAgainButtonClick(Sender: TObject);
     procedure ClosePageButtonClick(Sender: TObject);
     procedure ResultsNoteBookResize(Sender: TObject);
+    procedure ShowPathButtonClick(Sender: TObject);
     procedure tbbCloseAllClick(Sender: TObject);
     procedure tbbCloseLeftClick(Sender: TObject);
     procedure tbbCloseOthersClick(Sender: TObject);
@@ -218,6 +221,7 @@ type
     function BeautifyPageName(const APageName: string): string;
     function GetPageIndex(const APageName: string): integer;
     function GetTreeView(APageIndex: integer): TLazSearchResultTV;
+    function GetCurrentTreeView: TLazSearchResultTV;
     procedure SetAsyncUpdateCloseButtons(const AValue: TSVCloseButtonsState);
     procedure SetItems(Index: Integer; Value: TStrings);
     function GetItems(Index: integer): TStrings;
@@ -333,6 +337,7 @@ begin
   SearchAgainButton.Hint:=rsNewSearchWithSameCriteria;
   ClosePageButton.Hint:=rsCloseCurrentPage;
   SearchInListEdit.Hint:=rsFilterTheListWithString;
+  ShowPathButton.Hint:=rsShowPath;
   { Close tabs buttons }
   actCloseLeft.Hint:=rsCloseLeft;
   actCloseRight.Hint:=rsCloseRight;
@@ -362,6 +367,7 @@ begin
   RefreshButton.ImageIndex     := IDEImages.LoadImage('laz_refresh');
   SearchAgainButton.ImageIndex := IDEImages.LoadImage('menu_new_search');
   ClosePageButton.ImageIndex   := IDEImages.LoadImage('menu_close');
+  ShowPathButton.ImageIndex    := IDEImages.LoadImage('da_directory');
   ActionList.Images := IDEImages.Images_16;
   actClosePage.ImageIndex := IDEImages.LoadImage('menu_close');
   { Close tabs buttons }
@@ -380,10 +386,27 @@ end;
 procedure TSearchResultsView.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if (Key = VK_ESCAPE) then
+  if (Key = VK_ESCAPE) and (Shift = []) then
   begin
     Key := VK_UNKNOWN;
     Close;
+  end;
+  if (Key = VK_F) and (Shift = [ssCtrl]) then
+  begin
+    Key := VK_UNKNOWN;
+    if SearchInListEdit.CanSetFocus then
+      SearchInListEdit.SetFocus;
+  end;
+  if (Key = VK_P) and (Shift = [ssCtrl]) then
+  begin
+    Key := VK_UNKNOWN;
+    ShowPathButton.Down := not ShowPathButton.Down;
+    ShowPathButtonClick(Sender);
+  end;
+  if (Key = VK_N) and (Shift = [ssCtrl]) then
+  begin
+    Key := VK_UNKNOWN;
+    SearchAgainButtonClick(Sender);
   end;
 end;
 
@@ -418,7 +441,7 @@ var
   CurrentTV: TLazSearchResultTV;
   Key: Char = '*';
 begin
-  CurrentTV := GetTreeView(ResultsNoteBook.PageIndex);
+  CurrentTV := GetCurrentTreeView;
   if Assigned(CurrentTV) then
     TreeViewKeyPress(CurrentTV, Key);
 end;
@@ -428,7 +451,7 @@ var
   CurrentTV: TLazSearchResultTV;
   Key: Char = '/';
 begin
-  CurrentTV := GetTreeView(ResultsNoteBook.PageIndex);
+  CurrentTV := GetCurrentTreeView;
   if Assigned(CurrentTV) then
     TreeViewKeyPress(CurrentTV, Key);
 end;
@@ -456,13 +479,14 @@ var
   CurrentTV: TLazSearchResultTV;
   SearchObj: TLazSearch;
 begin
-  CurrentTV:= GetTreeView(ResultsNoteBook.PageIndex);
+  CurrentTV:= GetCurrentTreeView;
   if not Assigned(CurrentTV) then
     MainIDEInterface.FindInFilesPerDialog(Project1)
   else begin
     SearchObj:= CurrentTV.SearchObject;
     OnSearchAgainClicked(SearchObj);
-    MainIDEInterface.FindInFiles(Project1, SearchObj.SearchString);
+    with SearchObj do
+      MainIDEInterface.FindInFiles(Project1, SearchString, SearchOptions, SearchMask, SearchDirectories);
   end;
 end;
 
@@ -487,6 +511,15 @@ begin
     AsyncUpdateCloseButtons:=svcbEnable
   else
     AsyncUpdateCloseButtons:=svcbDisable;
+end;
+
+procedure TSearchResultsView.ShowPathButtonClick(Sender: TObject);
+var
+  lTree: TLazSearchResultTV;
+begin
+  lTree := GetCurrentTreeView;
+  if lTree = nil then exit;
+  lTree.Invalidate;
 end;
 
 { Handling of tabs closure. Only tabs on pages at the level of active page in
@@ -585,7 +618,7 @@ begin
       else
         ShowHint:= False;
     end;//with
-end;//LazTVMousemove
+end;
 
 {Keep track of the mouse position over the treeview when the wheel is used}
 procedure TSearchResultsView.LazTVMouseWheel(Sender: TObject;
@@ -629,7 +662,7 @@ procedure TSearchResultsView.ResultsNoteBookPageChanged(Sender: TObject);
 var
   CurrentTV: TLazSearchResultTV;
 begin
-  CurrentTV := GetTreeView(ResultsNoteBook.PageIndex);
+  CurrentTV := GetCurrentTreeView;
   if Assigned(CurrentTV) and not (csDestroying in CurrentTV.ComponentState) then begin
     SearchInListEdit.FilteredTreeview := CurrentTV;
     SearchInListEdit.Filter := CurrentTV.SearchInListPhrases;
@@ -643,7 +676,7 @@ procedure TSearchResultsView.SearchInListChange (Sender: TObject );
 var
   CurrentTV: TLazSearchResultTV;
 begin
-  CurrentTV := GetTreeView(ResultsNoteBook.PageIndex);
+  CurrentTV := GetCurrentTreeView;
   if Assigned(CurrentTV) then
     CurrentTV.SearchInListPhrases := SearchInListEdit.Text;
 end;
@@ -798,7 +831,7 @@ procedure TSearchResultsView.ResultsNoteBookChanging(Sender: TObject;
 var
   CurrentTV: TLazSearchResultTV;
 begin
-  CurrentTV := GetTreeView(ResultsNoteBook.PageIndex);
+  CurrentTV := GetCurrentTreeView;
   FFocusTreeViewInOnChange := Assigned(CurrentTV) and CurrentTV.Focused;
 end;
 
@@ -865,7 +898,7 @@ var
   CurrentTV: TLazSearchResultTV;
   state: Boolean;
 begin
-  CurrentTV:= GetTreeView(ResultsNoteBook.PageIndex);
+  CurrentTV:= GetCurrentTreeView;
   state := Assigned(CurrentTV) and not CurrentTV.Updating;
   RefreshButton.Enabled := state;
   SearchAgainButton.Enabled := state;
@@ -1038,7 +1071,7 @@ begin
       SearchInListEdit.FilteredTreeview := NewTreeView;
     end;//with
   end;
-end;//AddResult
+end;
 
 procedure TSearchResultsView.LazTVShowHint(Sender: TObject; HintInfo: PHintInfo);
 var
@@ -1066,7 +1099,7 @@ begin
       end;//if
     end;//with
   end;//if
-end;//LazTVShowHint
+end;
 
 procedure TSearchResultsView.Loaded;
 begin
@@ -1098,79 +1131,125 @@ procedure TSearchResultsView.TreeViewAdvancedCustomDrawItem(
   Sender: TCustomTreeView; Node: TTreeNode; State: TCustomDrawState;
   Stage: TCustomDrawStage; var PaintImages, DefaultDraw: Boolean);
 var
-  CurPart: string;
-  TheTop: integer;
-  MatchObj: TObject;
-  MatchPos,FirstMatchPos: TLazSearchMatchPos;
-  TextEnd, DrawnTextLength: integer;
-  ARect: TRect;
-  TV: TLazSearchResultTV;
-begin
-  if Stage <> cdPostPaint then Exit;
+  lTree: TLazSearchResultTV;
+  lRect: TRect;
+  lMatch: TLazSearchMatchPos;
+  lPart, lRelPath: string;
+  lDrawnLength: integer;
+  lDigitWidth: integer;
+  lTextX: integer;
+  i: integer;
 
-  TV:=Sender as TLazSearchResultTV;
-  if [cdsSelected,cdsMarked] * State <> [] then
-    TV.Canvas.Font.Color := clHighlightText;
-
-  ARect:=Node.DisplayRect(true);
-  TV.Canvas.FillRect(ARect);
-
-  MatchObj := TLazSearchMatchPos(Node.Data);
-  if MatchObj is TLazSearchMatchPos then
-    MatchPos:= TLazSearchMatchPos(Node.Data)
-  else
-    MatchPos:= nil;
-
-  if Assigned(MatchPos) then
+  procedure DrawNextText(aText: string; aColor: TColor = clNone; aStyle: TFontStyles = []);
+  var
+    lOldColor: TColor;
   begin
-    FirstMatchPos:=MatchPos;
-    TheTop:= ARect.Top;
-    TextEnd:=ARect.Left;
-    DrawnTextLength:=0;
+    // store
+    lOldColor := lTree.Canvas.Font.Color;
+    // apply
+    if aColor <> clNone then
+      lTree.Canvas.Font.Color := aColor;
+    lTree.Canvas.Font.Style := aStyle;
+    lTree.Canvas.Brush.Style := bsClear;
+    // draw
+    lTree.Canvas.TextOut(lTextX, lRect.Top, aText);
+    inc(lTextX, lTree.Canvas.GetTextWidth(aText) + 1);
+    // restore
+    lTree.Canvas.Font.Color := lOldColor;
+    lTree.Canvas.Font.Style := [];
+    lTree.Canvas.Brush.Style := bsSolid;
+  end;
 
-    CurPart:=MatchPos.ShownFilename+' ('+IntToStr(MatchPos.FileStartPos.Y)
-        +':'+IntToStr(MatchPos.FileStartPos.X);
-    MatchPos:=MatchPos.NextInThisLine;
-    SetBkMode(TV.Canvas.Handle, TRANSPARENT);
-    while assigned(MatchPos) do begin
-      CurPart:=CurPart+','+IntToStr(MatchPos.FileStartPos.X);
-      MatchPos:=MatchPos.NextInThisLine;
-    end;
-    CurPart:=CurPart+') ';
-    TV.Canvas.TextOut(TextEnd, TheTop, CurPart);
-    TextEnd:= TextEnd + TV.Canvas.TextWidth(CurPart);
+begin
+  if Stage <> cdPostPaint then exit;
 
-    MatchPos:=FirstMatchPos;
-    while assigned(MatchPos) do begin
-      //debugln(['TSearchResultsView.TreeViewAdvancedCustomDrawItem MatchPos.TheText="',MatchPos.TheText,'" MatchPos.MatchStart=',MatchPos.MatchStart,' MatchPos.MatchLen=',MatchPos.MatchLen]);
+  if Sender is TLazSearchResultTV // it also check nil
+    then lTree := TLazSearchResultTV(Sender)
+    else exit;
+
+  // clear
+  lRect := Node.DisplayRect(true);
+  lTree.Canvas.FillRect(lRect);
+
+  if TObject(Node.Data) is TLazSearchMatchPos then
+  begin { search results }
+    lMatch := TLazSearchMatchPos(Node.Data);
+
+    // clear tree lines (optional)
+    lTree.Canvas.FillRect(Rect(lRect.Left - lRect.Height, lRect.Top, lRect.Right, lRect.Bottom));
+
+    // calculating the maximum width of a digit:
+    // not in monospace fonts, digits can have different widths
+    lDigitWidth := lTree.Canvas.GetTextWidth(':');
+    for i := 0 to 9 do
+      lDigitWidth := Max(lDigitWidth, lTree.Canvas.GetTextWidth(inttostr(i)));
+
+    lPart := inttostr(lMatch.FileStartPos.Y) + ':';
+    lTextX := lRect.Left + 6 * lDigitWidth - lTree.Canvas.GetTextWidth(lPart);
+    // draw line number ("99999: ")
+    DrawNextText(lPart, clGrayText);
+
+    lTextX := lRect.Left + 7 * lDigitWidth;
+    lDrawnLength := 0;
+    while assigned(lMatch) do
+    begin
+      //debugln(['TSearchResultsView.TreeViewAdvancedCustomDrawItem MatchPos.TheText="',lMatch.TheText,'" MatchPos.MatchStart=',lMatch.MatchStart,' MatchPos.MatchLen=',lMatch.MatchLen]);
       // draw normal text
-      CurPart:=copy(MatchPos.TheText, DrawnTextLength+1, MatchPos.MatchStart-1-DrawnTextLength);
-      CurPart:=Utf8EscapeControlChars(CurPart, emHexPascal);
-      DrawnTextLength:=MatchPos.MatchStart-1;
-      TV.Canvas.TextOut(TextEnd, TheTop, CurPart);
-      TextEnd:= TextEnd + TV.Canvas.TextWidth(CurPart);
-      // draw found text (matched)
-      CurPart:=ShortDotsLine(copy(MatchPos.TheText, DrawnTextLength+1, MatchPos.MatchLen));
-      DrawnTextLength:=DrawnTextLength+MatchPos.MatchLen;
-      TV.Canvas.Font.Style:= TV.Canvas.Font.Style + [fsBold];
-      TV.Canvas.TextOut(TextEnd, TheTop, CurPart);
-      TextEnd:= TextEnd + TV.Canvas.TextWidth(CurPart);
-      TV.Canvas.Font.Style:= TV.Canvas.Font.Style - [fsBold];
+      lPart := copy(lMatch.TheText, lDrawnLength + 1, lMatch.MatchStart - 1 - lDrawnLength);
+      lPart := Utf8EscapeControlChars(lPart, emHexPascal);
+      lDrawnLength := lMatch.MatchStart - 1;
 
-      if MatchPos.NextInThisLine=nil then begin
-        CurPart:=copy(MatchPos.TheText, DrawnTextLength+1, Length(MatchPos.TheText));
-        CurPart:=Utf8EscapeControlChars(CurPart, emHexPascal);
-        TV.Canvas.TextOut(TextEnd, TheTop, CurPart);
+      // draw normal text
+      DrawNextText(lPart);
+
+      lPart := ShortDotsLine(copy(lMatch.TheText, lDrawnLength + 1, lMatch.MatchLen));
+      lDrawnLength := lDrawnLength + lMatch.MatchLen;
+
+      // draw found text
+      if [cdsSelected,cdsMarked] * State <> []
+        then DrawNextText(lPart, clHighlightText)
+        else DrawNextText(lPart, clHighlight);
+
+      // remaining normal text
+      if lMatch.NextInThisLine = nil then
+      begin
+        lPart := copy(lMatch.TheText, lDrawnLength + 1, Length(lMatch.TheText));
+        lPart := Utf8EscapeControlChars(lPart, emHexPascal);
+        // draw normal text
+        DrawNextText(lPart);
       end;
-      MatchPos:=MatchPos.NextInThisLine;
+      lMatch := lMatch.NextInThisLine;
     end;
-  end
-  else begin
-    // this is usually the filename only
-    // draw it here too, so that the correct colors are used
-    TV.Canvas.TextOut(ARect.Left, ARect.Top, Node.Text);
-  end;//if
-end;//TreeViewDrawItem
+
+  end else begin { filename }
+    lTextX := lRect.Left;
+
+    // show path or file name
+    lRelPath := ExtractRelativePath(
+      IncludeTrailingPathDelimiter(lTree.SearchObject.SearchDirectories),
+      Node.Text
+    );
+    if ShowPathButton.Down then
+    begin
+      DrawNextText(lRelPath, clNone, [fsBold]);
+    end else begin
+      if [cdsSelected,cdsMarked] * State <> [] then
+      begin
+        DrawNextText(ExtractFileName(lRelPath), clNone, [fsBold]);
+        DrawNextText(' (' + lRelPath + ')', clHighlightText);
+      end else begin
+        DrawNextText(ExtractFileName(lRelPath), clNone, [fsBold]);
+      end;
+    end;
+
+    // show a warning that this is a backup folder
+    // strip path delimiter and filename, then check if last directory is 'backup'
+    lPart := ExcludeTrailingPathDelimiter(ExtractFilePath(lRelPath));
+    if CompareText('backup', ExtractFileNameOnly(lPart)) = 0 then
+      DrawNextText(' [BACKUP]', clRed);
+
+  end;
+end;
 
 {Returns the Position within the source file from a properly formated search result}
 function TSearchResultsView.GetSourcePositon: TPoint;
@@ -1182,7 +1261,7 @@ begin
   MatchPos:=GetSelectedMatchPos;
   if MatchPos=nil then exit;
   Result:=MatchPos.FileStartPos;
-end;//GetSourcePositon
+end;
 
 {Returns The file name portion of a properly formated search result}
 function TSearchResultsView.GetSourceFileName: string;
@@ -1194,47 +1273,43 @@ begin
     Result:=''
   else
     Result:=MatchPos.Filename;
-end;//GetSourceFileName
+end;
 
 {Returns the selected text in the currently active TreeView.}
 function TSearchResultsView.GetSelectedText: string;
 var
-  ThePage: TTabSheet;
-  TheTreeView: TLazSearchResultTV;
+  lPage: TTabSheet;
+  lTree: TLazSearchResultTV;
   i: integer;
 begin
-  result:= '';
-  i:= ResultsNoteBook.PageIndex;
-  if i > -1 then
-  begin
-    ThePage:= ResultsNoteBook.Pages[i];
-    if Assigned(ThePage) then
-    begin
-      TheTreeView:= GetTreeView(ThePage.PageIndex);
-      if Assigned(TheTreeView.Selected) then
-        Result:= TheTreeView.Selected.Text;
-    end;//if
-  end;//if
-end;//GetSelectedText
+  result := '';
+  i := ResultsNoteBook.PageIndex;
+  if i < 0 then exit;
+
+  lPage:= ResultsNoteBook.Pages[i];
+  if not assigned(lPage) then exit;
+
+  lTree := GetTreeView(lPage.PageIndex);
+  if Assigned(lTree.Selected) then
+    Result := lTree.Selected.Text;
+end;
 
 function TSearchResultsView.GetSelectedMatchPos: TLazSearchMatchPos;
 var
-  ThePage: TTabSheet;
-  TheTreeView: TLazSearchResultTV;
+  lPage: TTabSheet;
+  lTree: TLazSearchResultTV;
   i: integer;
 begin
-  Result:= nil;
-  i:= ResultsNoteBook.PageIndex;
-  if i > -1 then
-  begin
-    ThePage:= ResultsNoteBook.Pages[i];
-    if Assigned(ThePage) then
-    begin
-      TheTreeView:= GetTreeView(ThePage.PageIndex);
-      if Assigned(TheTreeView.Selected) then
-        Result := TLazSearchMatchPos(TheTreeView.Selected.Data);
-    end;
-  end;
+  result:= nil;
+  i := ResultsNoteBook.PageIndex;
+  if i < 0 then exit;
+
+  lPage := ResultsNoteBook.Pages[i];
+  if not Assigned(lPage) then exit;
+
+  lTree := GetTreeView(lPage.PageIndex);
+  if Assigned(lTree.Selected) then
+    Result := TLazSearchMatchPos(lTree.Selected.Data);
 end;
 
 function TSearchResultsView.GetPageIndex(const APageName: string): integer;
@@ -1242,44 +1317,39 @@ var
   Paren, i: integer;
   PN: String;
 begin
-  Result:= -1;
-  for i:= 0 to ResultsNoteBook.PageCount - 1 do
+  result := -1;
+  for i := 0 to ResultsNoteBook.PageCount - 1 do
   begin
-    PN:= ResultsNoteBook.Page[i].Caption;
-    Paren:= Pos(' (', PN);
-    if (Paren>0) and (PosEx(')', PN, Paren+2)>0) then
-      PN:= LeftStr(PN, Paren-1);
+    PN := ResultsNoteBook.Page[i].Caption;
+    Paren := Pos(' (', PN);
+    if (Paren > 0) and (PosEx(')', PN, Paren + 2) > 0) then
+      PN := LeftStr(PN, Paren-1);
     if PN = APageName then
-    begin
-      Result:= i;
-      break;
-    end;
+      exit(i);
   end;
 end;
 
-{Returns a the TreeView control from a Tab if both the page and the TreeView
- exist else returns nil}
+{Returns the TreeView control from a Tab if both the page and the TreeView exist,
+ else returns nil}
 function TSearchResultsView.GetTreeView(APageIndex: integer): TLazSearchResultTV;
 var
   i: integer;
-  ThePage: TTabSheet;
+  lPage: TTabSheet;
 begin
-  Result:= nil;
-  if (APageIndex > -1) and (APageIndex < ResultsNoteBook.PageCount) then
-  begin
-    ThePage:= ResultsNoteBook.Pages[APageIndex];
-    if Assigned(ThePage) then
-    begin
-      for i:= 0 to ThePage.ComponentCount - 1 do
-      begin
-        if ThePage.Components[i] is TLazSearchResultTV then
-        begin
-          Result:= TLazSearchResultTV(ThePage.Components[i]);
-          break;
-        end;
-      end;
-    end;
-  end;
+  result := nil;
+  if not InRange(APageIndex, 0, ResultsNoteBook.PageCount - 1) then exit;
+
+  lPage := ResultsNoteBook.Pages[APageIndex];
+  if not assigned(lPage) then exit;
+
+  for i:= 0 to lPage.ComponentCount - 1 do
+    if lPage.Components[i] is TLazSearchResultTV then
+      exit(TLazSearchResultTV(lPage.Components[i]));
+end;
+
+function TSearchResultsView.GetCurrentTreeView: TLazSearchResultTV;
+begin
+  result := GetTreeView(ResultsNoteBook.PageIndex);
 end;
 
 procedure TSearchResultsView.SetAsyncUpdateCloseButtons(const AValue: TSVCloseButtonsState);
@@ -1368,15 +1438,15 @@ end;//Create
 Destructor TLazSearchResultTV.Destroy;
 begin
   if Assigned(fSearchObject) then
-    FreeAndNil(fSearchObject);
+    FreeThenNil(fSearchObject);
   //if UpdateStrings is empty, the objects are stored in Items due to filtering
   //filtering clears UpdateStrings
   if (fUpdateStrings.Count = 0) then
     FreeObjectsTN(Items);
-  fFilenameToNode.Free;
+  FreeThenNil(fFilenameToNode);
   Assert(Assigned(fUpdateStrings), 'fUpdateStrings = Nil');
   FreeObjects(fUpdateStrings);
-  FreeAndNil(fUpdateStrings);
+  FreeThenNil(fUpdateStrings);
   inherited Destroy;
 end;//Destroy
 
@@ -1430,54 +1500,60 @@ var
   ShownText: String;
   FreeSrcList: Boolean;
 begin
-  if fUpdateCount>0 then exit;
+  if fUpdateCount > 0 then exit;
 
-  if fUpdating then begin
-    SrcList:=fUpdateStrings;
-    FreeSrcList:=false;
-  end else begin
-    SrcList:=ItemsAsStrings;
-    FreeSrcList:=true;
-  end;
+  FreeSrcList := not fUpdating;
+  if fUpdating
+    then SrcList := fUpdateStrings
+    else SrcList := ItemsAsStrings;
+
   try
     // find shared path (the path of all filenames, that is the same)
-    SharedPath:='';
-    for i:=0 to SrcList.Count-1 do begin
-      AnObject:=SrcList.Objects[i];
-      if AnObject is TLazSearchMatchPos then begin
-        MatchPos:=TLazSearchMatchPos(AnObject);
-        if i=0 then
-          SharedPath:=ExtractFilePath(MatchPos.Filename)
-        else if (SharedPath<>'') then begin
-          SharedLen:=0;
-          while (SharedLen<length(MatchPos.Filename))
-          and (SharedLen<length(SharedPath))
-          and (MatchPos.Filename[SharedLen+1]=SharedPath[SharedLen+1])
+    SharedPath := '';
+    for i := 0 to SrcList.Count - 1 do
+    begin
+      AnObject := SrcList.Objects[i];
+      if AnObject is TLazSearchMatchPos then
+      begin
+        MatchPos := TLazSearchMatchPos(AnObject);
+        if i = 0 then
+          SharedPath := ExtractFilePath(MatchPos.Filename)
+        else if SharedPath <> '' then
+        begin
+          SharedLen := 0;
+
+          while
+            (SharedLen < length(MatchPos.Filename)) and
+            (SharedLen < length(SharedPath)) and
+            (MatchPos.Filename[SharedLen + 1] = SharedPath[SharedLen + 1])
           do
             inc(SharedLen);
-          while (SharedLen>0) and (SharedPath[SharedLen]<>PathDelim) do
+
+          while (SharedLen > 0) and (SharedPath[SharedLen] <> PathDelim) do
             dec(SharedLen);
-          if SharedLen<>length(SharedPath) then
-            SharedPath:=copy(SharedPath,1,SharedLen);
+
+          if SharedLen <> length(SharedPath) then
+            SharedPath := copy(SharedPath, 1, SharedLen);
         end;
       end;
     end;
 
     // shorten shown paths
-    SharedLen:=length(SharedPath);
-    for i:=0 to SrcList.Count-1 do begin
-      AnObject:=SrcList.Objects[i];
-      if AnObject is TLazSearchMatchPos then begin
-        MatchPos:=TLazSearchMatchPos(AnObject);
-        MatchPos.ShownFilename:=copy(MatchPos.Filename,SharedLen+1,
-                                     length(MatchPos.Filename));
-        ShownText:=BeautifyLineAt(MatchPos);
-        SrcList[i]:=ShownText;
-        SrcList.Objects[i]:=MatchPos;
+    SharedLen := length(SharedPath);
+    for i := 0 to SrcList.Count - 1 do
+    begin
+      AnObject := SrcList.Objects[i];
+      if AnObject is TLazSearchMatchPos then
+      begin
+        MatchPos := TLazSearchMatchPos(AnObject);
+        MatchPos.ShownFilename := copy(MatchPos.Filename, SharedLen + 1, length(MatchPos.Filename));
+        ShownText := BeautifyLineAt(MatchPos);
+        SrcList[i] := ShownText;
+        SrcList.Objects[i] := MatchPos;
       end;
     end;
   finally
-    if FreeSrcList then SrcList.Free;
+    if FreeSrcList then FreeThenNil(SrcList);
   end;
 end;
 
@@ -1518,7 +1594,7 @@ end;
 
 destructor TLazSearchMatchPos.Destroy;
 begin
-  FreeAndNil(FNextInThisLine);
+  FreeThenNil(FNextInThisLine);
   inherited Destroy;
 end;
 
