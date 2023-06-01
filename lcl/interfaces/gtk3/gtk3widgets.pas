@@ -6332,7 +6332,7 @@ end;
 procedure TGtk3ListView.ColumnSetSortIndicator(const AIndex: Integer;
   const AColumn: TListColumn; const ASortIndicator: TSortIndicator);
 const
-  GtkOrder : array [ TSortIndicator] of TGtkSortType = (0, {GTK_SORT_ASCENDING}0, {GTK_SORT_DESCENDING}1);
+  GtkOrder : array [ TSortIndicator] of TGtkSortType = (GTK_SORT_ASCENDING {0}, GTK_SORT_ASCENDING {0}, GTK_SORT_DESCENDING {1});
 var
   AGtkColumn: PGtkTreeViewColumn;
 begin

@@ -907,6 +907,12 @@ type
     GTK_LEVEL_BAR_MODE_DISCRETE = 1,
     TGtkLevelBarModeMaxValue = $7FFFFFFF
   );
+  TGtkSortType = (
+    TGtkSortTypeMinValue = -$7FFFFFFF,
+    GTK_SORT_ASCENDING = 0,
+    GTK_SORT_DESCENDING = 1,
+    TGtkSortTypeMaxValue = $7FFFFFFF
+  );
   TGtkPackDirection = (
     TGtkPackDirectionMinValue = -$7FFFFFFF,
     GTK_PACK_DIRECTION_LTR = 0,
@@ -1304,13 +1310,6 @@ const
   GTK_ICON_LOOKUP_USE_BUILTIN: TGtkIconLookupFlags = 4;
   GTK_ICON_LOOKUP_GENERIC_FALLBACK: TGtkIconLookupFlags = 8;
   GTK_ICON_LOOKUP_FORCE_SIZE: TGtkIconLookupFlags = 16;
-
-type
-  TGtkSortType = Integer;
-const
-  { GtkSortType }
-  GTK_SORT_ASCENDING: TGtkSortType = 0;
-  GTK_SORT_DESCENDING: TGtkSortType = 1;
 
 type
   TGtkRcTokenType = Integer;
