@@ -210,7 +210,7 @@ function UTF16ToUTF8(const P: PWideChar; WideCnt: SizeUInt): AnsiString; overloa
 // locale
 procedure LazGetLanguageIDs(var Lang, FallbackLang: String);
 procedure LazGetShortLanguageID(var Lang: String);
-procedure LazGetTrimmedLanguageID(var Lang: String);
+procedure LazTrimLanguageID(var Lang: String);
 
 var
   FPUpChars: array[char] of char;
@@ -4071,7 +4071,7 @@ begin
 {$ELSE}
   GetLanguageIDs(Lang, FallbackLang);
 {$ENDIF}
-  LazGetTrimmedLanguageID(Lang);
+  LazTrimLanguageID(Lang);
 end;
 
 {
@@ -4097,7 +4097,7 @@ Language ID sometimes can be in a form of `ru_RU.utf8`, which will prevent
 loading files with language in a form of `.ru_RU.po`.
 This procedure trims this encoding.
 }
-procedure LazGetTrimmedLanguageID(var Lang: String);
+procedure LazTrimLanguageID(var Lang: String);
 var
   p: SizeInt;
 begin
