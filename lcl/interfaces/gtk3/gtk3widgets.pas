@@ -6241,8 +6241,8 @@ procedure TGtk3ListView.SetColumnAutoSize(AIndex: Integer;
   AColumn: TListColumn; AAutoSize: Boolean);
 const
   SizingMap: array[Boolean] of TGtkTreeViewColumnSizing = (
-    2 {GTK_TREE_VIEW_COLUMN_FIXED},
-    1 {GTK_TREE_VIEW_COLUMN_AUTOSIZE}
+    GTK_TREE_VIEW_COLUMN_FIXED {2},
+    GTK_TREE_VIEW_COLUMN_AUTOSIZE {1}
   );
 var
   AGtkColumn: PGtkTreeViewColumn;

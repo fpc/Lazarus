@@ -1220,6 +1220,13 @@ type
     GTK_TOOL_PALETTE_DRAG_GROUPS = 2,
     TGtkToolPaletteDragTargetsMaxValue = $7FFFFFFF
   );
+  TGtkTreeViewColumnSizing = (
+    TGtkTreeViewColumnSizingMinValue = -$7FFFFFFF,
+    GTK_TREE_VIEW_COLUMN_GROW_ONLY = 0,
+    GTK_TREE_VIEW_COLUMN_AUTOSIZE = 1,
+    GTK_TREE_VIEW_COLUMN_FIXED = 2,
+    TGtkTreeViewColumnSizingMaxValue = $7FFFFFFF
+  );
   TGtkTreeViewDropPosition = (
     TGtkTreeViewDropPositionMinValue = -$7FFFFFFF,
     GTK_TREE_VIEW_DROP_BEFORE = 0,
@@ -1384,14 +1391,6 @@ const
   { GtkToolbarSpaceStyle }
   GTK_TOOLBAR_SPACE_EMPTY: TGtkToolbarSpaceStyle = 0;
   GTK_TOOLBAR_SPACE_LINE: TGtkToolbarSpaceStyle = 1;
-
-type
-  TGtkTreeViewColumnSizing = Integer;
-const
-  { GtkTreeViewColumnSizing }
-  GTK_TREE_VIEW_COLUMN_GROW_ONLY: TGtkTreeViewColumnSizing = 0;
-  GTK_TREE_VIEW_COLUMN_AUTOSIZE: TGtkTreeViewColumnSizing = 1;
-  GTK_TREE_VIEW_COLUMN_FIXED: TGtkTreeViewColumnSizing = 2;
 
 type
   TGtkUIManagerItemType = Integer;
