@@ -4777,8 +4777,8 @@ type
   PGtkClipboardClearFunc = ^TGtkClipboardClearFunc;
   TGtkClipboardClearFunc = procedure(clipboard: PGtkClipboard; user_data_or_owner: gpointer); cdecl;
   TGtkClipboard = object(TGObject)
-    function get(selection: GdkAtom): PGtkClipboard; cdecl; inline; static;
-    function get_for_display(display: PGdkDisplay; selection: GdkAtom): PGtkClipboard; cdecl; inline; static;
+    function get(selection: PGdkAtom): PGtkClipboard; cdecl; inline; static;
+    function get_for_display(display: PGdkDisplay; selection: PGdkAtom): PGtkClipboard; cdecl; inline; static;
     procedure clear; cdecl; inline;
     function get_display: PGdkDisplay; cdecl; inline;
     function get_owner: PGObject; cdecl; inline;
@@ -11626,9 +11626,9 @@ function gtk_check_menu_item_new: PGtkCheckMenuItem; cdecl; external;
 function gtk_check_menu_item_new_with_label(label_: Pgchar): PGtkCheckMenuItem; cdecl; external;
 function gtk_check_menu_item_new_with_mnemonic(label_: Pgchar): PGtkCheckMenuItem; cdecl; external;
 function gtk_check_version(required_major: guint; required_minor: guint; required_micro: guint): Pgchar; cdecl; external;
-function gtk_clipboard_get(selection: GdkAtom): PGtkClipboard; cdecl; external;
+function gtk_clipboard_get(selection: PGdkAtom): PGtkClipboard; cdecl; external;
 function gtk_clipboard_get_display(clipboard: PGtkClipboard): PGdkDisplay; cdecl; external;
-function gtk_clipboard_get_for_display(display: PGdkDisplay; selection: GdkAtom): PGtkClipboard; cdecl; external;
+function gtk_clipboard_get_for_display(display: PGdkDisplay; selection: PGdkAtom): PGtkClipboard; cdecl; external;
 function gtk_clipboard_get_owner(clipboard: PGtkClipboard): PGObject; cdecl; external;
 function gtk_clipboard_get_type: TGType; cdecl; external;
 function gtk_clipboard_set_with_data(clipboard: PGtkClipboard; targets: PGtkTargetEntry; n_targets: guint; get_func: TGtkClipboardGetFunc; clear_func: TGtkClipboardClearFunc; user_data: gpointer): gboolean; cdecl; external;
@@ -20216,12 +20216,12 @@ begin
   LazGtk3.gtk_check_menu_item_toggled(@self);
 end;
 
-function TGtkClipboard.get(selection: GdkAtom): PGtkClipboard; cdecl;
+function TGtkClipboard.get(selection: PGdkAtom): PGtkClipboard; cdecl;
 begin
   Result := LazGtk3.gtk_clipboard_get(selection);
 end;
 
-function TGtkClipboard.get_for_display(display: PGdkDisplay; selection: GdkAtom): PGtkClipboard; cdecl;
+function TGtkClipboard.get_for_display(display: PGdkDisplay; selection: PGdkAtom): PGtkClipboard; cdecl;
 begin
   Result := LazGtk3.gtk_clipboard_get_for_display(display, selection);
 end;
