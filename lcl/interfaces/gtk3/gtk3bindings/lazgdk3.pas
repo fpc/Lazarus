@@ -2689,6 +2689,15 @@ type
   GDK_TOUCH_CANCEL = 40,
   GDK_EVENT_LAST = 41
   );
+  TGdkScrollDirection = (
+    TGdkScrollDirectionMinValue = -$7FFFFFFF,
+    GDK_SCROLL_UP = 0,
+    GDK_SCROLL_DOWN = 1,
+    GDK_SCROLL_LEFT = 2,
+    GDK_SCROLL_RIGHT = 3,
+    GDK_SCROLL_SMOOTH = 4,
+    TGdkScrollDirectionMaxValue = $7FFFFFFF
+  );
   TGdkVisualType = (
     TGdkVisualTypeMinValue = -$7FFFFFFF,
     GDK_VISUAL_STATIC_GRAY = 0,
@@ -2707,16 +2716,6 @@ const
   GDK_VISIBILITY_UNOBSCURED: TGdkVisibilityState = 0;
   GDK_VISIBILITY_PARTIAL: TGdkVisibilityState = 1;
   GDK_VISIBILITY_FULLY_OBSCURED: TGdkVisibilityState = 2;
-
-type
-  TGdkScrollDirection = Integer;
-const
-  { GdkScrollDirection }
-  GDK_SCROLL_UP: TGdkScrollDirection = 0;
-  GDK_SCROLL_DOWN: TGdkScrollDirection = 1;
-  GDK_SCROLL_LEFT: TGdkScrollDirection = 2;
-  GDK_SCROLL_RIGHT: TGdkScrollDirection = 3;
-  GDK_SCROLL_SMOOTH: TGdkScrollDirection = 4;
 
 type
   TGdkNotifyType = Integer;

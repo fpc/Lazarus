@@ -1616,10 +1616,10 @@ begin
   {$ENDIF}
   Result := False;
   case AEvent^.scroll.direction of
-    0, 1{GDK_SCROLL_UP,
-    GDK_SCROLL_DOWN}: Msg.Msg := LM_VSCROLL;
-    2, 3{GDK_SCROLL_LEFT,
-    GDK_SCROLL_RIGHT}: Msg.Msg := LM_HSCROLL;
+    GDK_SCROLL_UP, {0}
+    GDK_SCROLL_DOWN {1}: Msg.Msg := LM_VSCROLL;
+    GDK_SCROLL_LEFT, {2}
+    GDK_SCROLL_RIGHT {3}: Msg.Msg := LM_HSCROLL;
     else
       begin
         if AEvent^.scroll.direction = GDK_SCROLL_SMOOTH then
@@ -1697,8 +1697,8 @@ begin
   FillChar(MessE{%H-},SizeOf(MessE),0);
   MessE.Msg := LM_MOUSEWHEEL;
   case AEvent^.scroll.direction of
-    0 {GDK_SCROLL_UP}: MessE.WheelDelta := 120;
-    1 {GDK_SCROLL_DOWN}: MessE.WheelDelta := -120;
+    GDK_SCROLL_UP {0}: MessE.WheelDelta := 120;
+    GDK_SCROLL_DOWN {1}: MessE.WheelDelta := -120;
   else
     exit;
   end;
