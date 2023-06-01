@@ -20,125 +20,107 @@ const
   LazGdkPixbuf2_library = 'libgdk_pixbuf-2.0.so.0';
   {$endif}
 
-  GDK_PIXBUF_FEATURES_H = 1;
-  GDK_PIXBUF_MAGIC_NUMBER = 1197763408;
   GDK_PIXBUF_MAJOR = 2;
-  GDK_PIXBUF_MICRO = 2;
-  GDK_PIXBUF_MINOR = 28;
-  GDK_PIXBUF_VERSION = '2.28.2';
-  GDK_PIXDATA_HEADER_LENGTH = 24;
-
+  GDK_PIXBUF_MICRO = 11;
+  GDK_PIXBUF_MINOR = 42;
+  GDK_PIXBUF_VERSION = '2.42.11';
 type
-  TGdkColorspace = Integer;
-const
-  { GdkColorspace }
-  GDK_COLORSPACE_RGB: TGdkColorspace = 0;
-
-type
-  TGdkInterpType = Integer;
-const
-  { GdkInterpType }
-  GDK_INTERP_NEAREST: TGdkInterpType = 0;
-  GDK_INTERP_TILES: TGdkInterpType = 1;
-  GDK_INTERP_BILINEAR: TGdkInterpType = 2;
-  GDK_INTERP_HYPER: TGdkInterpType = 3;
-
-type
-  TGdkPixbufRotation = Integer;
-const
-  { GdkPixbufRotation }
-  GDK_PIXBUF_ROTATE_NONE: TGdkPixbufRotation = 0;
-  GDK_PIXBUF_ROTATE_COUNTERCLOCKWISE: TGdkPixbufRotation = 90;
-  GDK_PIXBUF_ROTATE_UPSIDEDOWN: TGdkPixbufRotation = 180;
-  GDK_PIXBUF_ROTATE_CLOCKWISE: TGdkPixbufRotation = 270;
-
-type
-  TGdkPixdataDumpType = Integer;
-const
-  { GdkPixdataDumpType }
-  GDK_PIXDATA_DUMP_PIXDATA_STREAM: TGdkPixdataDumpType = 0;
-  GDK_PIXDATA_DUMP_PIXDATA_STRUCT: TGdkPixdataDumpType = 1;
-  GDK_PIXDATA_DUMP_MACROS: TGdkPixdataDumpType = 2;
-  GDK_PIXDATA_DUMP_GTYPES: TGdkPixdataDumpType = 0;
-  GDK_PIXDATA_DUMP_CTYPES: TGdkPixdataDumpType = 256;
-  GDK_PIXDATA_DUMP_STATIC: TGdkPixdataDumpType = 512;
-  GDK_PIXDATA_DUMP_CONST: TGdkPixdataDumpType = 1024;
-  GDK_PIXDATA_DUMP_RLE_DECODER: TGdkPixdataDumpType = 65536;
-
-type
-  TGdkPixbufAlphaMode = Integer;
-const
-  { GdkPixbufAlphaMode }
-  GDK_PIXBUF_ALPHA_BILEVEL: TGdkPixbufAlphaMode = 0;
-  GDK_PIXBUF_ALPHA_FULL: TGdkPixbufAlphaMode = 1;
-
-type
-  TGdkPixbufError = Integer;
-const
-  { GdkPixbufError }
-  GDK_PIXBUF_ERROR_CORRUPT_IMAGE: TGdkPixbufError = 0;
-  GDK_PIXBUF_ERROR_INSUFFICIENT_MEMORY: TGdkPixbufError = 1;
-  GDK_PIXBUF_ERROR_BAD_OPTION: TGdkPixbufError = 2;
-  GDK_PIXBUF_ERROR_UNKNOWN_TYPE: TGdkPixbufError = 3;
-  GDK_PIXBUF_ERROR_UNSUPPORTED_OPERATION: TGdkPixbufError = 4;
-  GDK_PIXBUF_ERROR_FAILED: TGdkPixbufError = 5;
-
-type
-  TGdkPixdataType = Integer;
-const
-  { GdkPixdataType }
-  GDK_PIXDATA_COLOR_TYPE_RGB: TGdkPixdataType = 1;
-  GDK_PIXDATA_COLOR_TYPE_RGBA: TGdkPixdataType = 2;
-  GDK_PIXDATA_COLOR_TYPE_MASK: TGdkPixdataType = 255;
-  GDK_PIXDATA_SAMPLE_WIDTH_8: TGdkPixdataType = 65536;
-  GDK_PIXDATA_SAMPLE_WIDTH_MASK: TGdkPixdataType = 983040;
-  GDK_PIXDATA_ENCODING_RAW: TGdkPixdataType = 16777216;
-  GDK_PIXDATA_ENCODING_RLE: TGdkPixdataType = 33554432;
-  GDK_PIXDATA_ENCODING_MASK: TGdkPixdataType = 251658240;
+  TGdkColorspace = (
+    TGdkColorspaceMinValue = -$7FFFFFFF,
+    GDK_COLORSPACE_RGB = 0,
+    TGdkColorspaceMaxValue = $7FFFFFFF
+  );
+  TGdkInterpType = (
+    TGdkInterpTypeMinValue = -$7FFFFFFF,
+    GDK_INTERP_NEAREST = 0,
+    GDK_INTERP_TILES = 1,
+    GDK_INTERP_BILINEAR = 2,
+    GDK_INTERP_HYPER = 3,
+    TGdkInterpTypeMaxValue = $7FFFFFFF
+  );
+  TGdkPixbufRotation = (
+    TGdkPixbufRotationMinValue = -$7FFFFFFF,
+    GDK_PIXBUF_ROTATE_NONE = 0,
+    GDK_PIXBUF_ROTATE_COUNTERCLOCKWISE = 90,
+    GDK_PIXBUF_ROTATE_UPSIDEDOWN = 180,
+    GDK_PIXBUF_ROTATE_CLOCKWISE = 270,
+    TGdkPixbufRotationMaxValue = $7FFFFFFF
+  );
+  TGdkPixbufError = (
+    TGdkPixbufErrorMinValue = -$7FFFFFFF,
+    GDK_PIXBUF_ERROR_CORRUPT_IMAGE = 0,
+    GDK_PIXBUF_ERROR_INSUFFICIENT_MEMORY = 1,
+    GDK_PIXBUF_ERROR_BAD_OPTION = 2,
+    GDK_PIXBUF_ERROR_UNKNOWN_TYPE = 3,
+    GDK_PIXBUF_ERROR_UNSUPPORTED_OPERATION = 4,
+    GDK_PIXBUF_ERROR_FAILED = 5,
+    GDK_PIXBUF_ERROR_INCOMPLETE_ANIMATION = 6,
+    TGdkPixbufErrorMaxValue = $7FFFFFFF
+  );
+  TGdkPixbufFormatFlags = (
+    TGdkPixbufFormatFlagsMinValue = -$7FFFFFFF,
+    GDK_PIXBUF_FORMAT_WRITABLE = 1,
+    GDK_PIXBUF_FORMAT_SCALABLE = 2,
+    GDK_PIXBUF_FORMAT_THREADSAFE = 4,
+    TGdkPixbufFormatFlagsMaxValue = $7FFFFFFF
+  );
 type
 
+
+  { TGdkColorspace }
   PPGdkColorspace = ^PGdkColorspace;
   PGdkColorspace = ^TGdkColorspace;
 
+
+  { TGdkInterpType }
   PPGdkInterpType = ^PGdkInterpType;
   PGdkInterpType = ^TGdkInterpType;
 
+
+  { TGdkPixbuf }
   PPGdkPixbuf = ^PGdkPixbuf;
   PGdkPixbuf = ^TGdkPixbuf;
 
+
+  { TGdkPixbufDestroyNotify }
   PPGdkPixbufDestroyNotify = ^PGdkPixbufDestroyNotify;
   PGdkPixbufDestroyNotify = ^TGdkPixbufDestroyNotify;
   TGdkPixbufDestroyNotify = procedure(pixels: Pguint8; data: gpointer); cdecl;
 
-  PPGdkPixdata = ^PGdkPixdata;
-  PGdkPixdata = ^TGdkPixdata;
 
+  { TGdkPixbufFormat }
   PPGdkPixbufFormat = ^PGdkPixbufFormat;
   PGdkPixbufFormat = ^TGdkPixbufFormat;
 
+
+  { TGdkPixbufRotation }
   PPGdkPixbufRotation = ^PGdkPixbufRotation;
   PGdkPixbufRotation = ^TGdkPixbufRotation;
 
+
+  { TGdkPixbufSaveFunc }
   PPGdkPixbufSaveFunc = ^PGdkPixbufSaveFunc;
   PGdkPixbufSaveFunc = ^TGdkPixbufSaveFunc;
   TGdkPixbufSaveFunc = function(buf: Pgchar; count: gsize; error: PPGError; data: gpointer): gboolean; cdecl;
   TGdkPixbuf = object(TGObject)
     function new(colorspace: TGdkColorspace; has_alpha: gboolean; bits_per_sample: gint; width: gint; height: gint): PGdkPixbuf; cdecl; inline; static;
+    function new_from_bytes(data: PGBytes; colorspace: TGdkColorspace; has_alpha: gboolean; bits_per_sample: gint; width: gint; height: gint; rowstride: gint): PGdkPixbuf; cdecl; inline; static;
     function new_from_data(data: Pguint8; colorspace: TGdkColorspace; has_alpha: gboolean; bits_per_sample: gint; width: gint; height: gint; rowstride: gint; destroy_fn: TGdkPixbufDestroyNotify; destroy_fn_data: gpointer): PGdkPixbuf; cdecl; inline; static;
     function new_from_file(filename: Pgchar; error: PPGError): PGdkPixbuf; cdecl; inline; static;
     function new_from_file_at_scale(filename: Pgchar; width: gint; height: gint; preserve_aspect_ratio: gboolean; error: PPGError): PGdkPixbuf; cdecl; inline; static;
     function new_from_file_at_size(filename: Pgchar; width: gint; height: gint; error: PPGError): PGdkPixbuf; cdecl; inline; static;
-    function new_from_inline(data_length: gint; data: Pguint8; copy_pixels: gboolean; error: PPGError): PGdkPixbuf; cdecl; inline; static;
     function new_from_resource(resource_path: Pgchar; error: PPGError): PGdkPixbuf; cdecl; inline; static;
     function new_from_resource_at_scale(resource_path: Pgchar; width: gint; height: gint; preserve_aspect_ratio: gboolean; error: PPGError): PGdkPixbuf; cdecl; inline; static;
     function new_from_stream(stream: PGInputStream; cancellable: PGCancellable; error: PPGError): PGdkPixbuf; cdecl; inline; static;
     function new_from_stream_at_scale(stream: PGInputStream; width: gint; height: gint; preserve_aspect_ratio: gboolean; cancellable: PGCancellable; error: PPGError): PGdkPixbuf; cdecl; inline; static;
     function new_from_stream_finish(async_result: PGAsyncResult; error: PPGError): PGdkPixbuf; cdecl; inline; static;
     function new_from_xpm_data(data: PPgchar): PGdkPixbuf; cdecl; inline; static;
-    function from_pixdata(pixdata: PGdkPixdata; copy_pixels: gboolean; error: PPGError): PGdkPixbuf; cdecl; inline; static;
+    function calculate_rowstride(colorspace: TGdkColorspace; has_alpha: gboolean; bits_per_sample: gint; width: gint; height: gint): gint; cdecl; inline; static;
     function get_file_info(filename: Pgchar; width: Pgint; height: Pgint): PGdkPixbufFormat; cdecl; inline; static;
+    procedure get_file_info_async(filename: Pgchar; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline; static;
+    function get_file_info_finish(async_result: PGAsyncResult; width: Pgint; height: Pgint; error: PPGError): PGdkPixbufFormat; cdecl; inline; static;
     function get_formats: PGSList; cdecl; inline; static;
-    function gettext(msgid: Pgchar): Pgchar; cdecl; inline; static;
+    function init_modules(path: Pgchar; error: PPGError): gboolean; cdecl; inline; static;
     procedure new_from_stream_async(stream: PGInputStream; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline; static;
     procedure new_from_stream_at_scale_async(stream: PGInputStream; width: gint; height: gint; preserve_aspect_ratio: gboolean; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline; static;
     function save_to_stream_finish(async_result: PGAsyncResult; error: PPGError): gboolean; cdecl; inline; static;
@@ -149,6 +131,7 @@ type
     function composite_color_simple(dest_width: gint; dest_height: gint; interp_type: TGdkInterpType; overall_alpha: gint; check_size: gint; color1: guint32; color2: guint32): PGdkPixbuf; cdecl; inline;
     function copy: PGdkPixbuf; cdecl; inline;
     procedure copy_area(src_x: gint; src_y: gint; width: gint; height: gint; dest_pixbuf: PGdkPixbuf; dest_x: gint; dest_y: gint); cdecl; inline;
+    function copy_options(dest_pixbuf: PGdkPixbuf): gboolean; cdecl; inline;
     procedure fill(pixel: guint32); cdecl; inline;
     function flip(horizontal: gboolean): PGdkPixbuf; cdecl; inline;
     function get_bits_per_sample: gint; cdecl; inline;
@@ -158,11 +141,15 @@ type
     function get_height: gint; cdecl; inline;
     function get_n_channels: gint; cdecl; inline;
     function get_option(key: Pgchar): Pgchar; cdecl; inline;
+    function get_options: PGHashTable; cdecl; inline;
     function get_pixels: Pguint8; cdecl; inline;
     function get_pixels_with_length(length: Pguint): Pguint8; cdecl; inline;
     function get_rowstride: gint; cdecl; inline;
     function get_width: gint; cdecl; inline;
     function new_subpixbuf(src_x: gint; src_y: gint; width: gint; height: gint): PGdkPixbuf; cdecl; inline;
+    function read_pixel_bytes: PGBytes; cdecl; inline;
+    function read_pixels: Pguint8; cdecl; inline;
+    function remove_option(key: Pgchar): gboolean; cdecl; inline;
     function rotate_simple(angle: TGdkPixbufRotation): PGdkPixbuf; cdecl; inline;
     procedure saturate_and_pixelate(dest: PGdkPixbuf; saturation: gfloat; pixelate: gboolean); cdecl; inline;
     //function save(filename: Pgchar; type_: Pgchar; error: PPGError; args: array of const): gboolean; cdecl; inline;
@@ -172,35 +159,37 @@ type
     function save_to_callbackv(save_func: TGdkPixbufSaveFunc; user_data: gpointer; type_: Pgchar; option_keys: PPgchar; option_values: PPgchar; error: PPGError): gboolean; cdecl; inline;
     //function save_to_stream(stream: PGOutputStream; type_: Pgchar; cancellable: PGCancellable; error: PPGError; args: array of const): gboolean; cdecl; inline;
     //procedure save_to_stream_async(stream: PGOutputStream; type_: Pgchar; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer; args: array of const); cdecl; inline;
+    function save_to_streamv(stream: PGOutputStream; type_: Pgchar; option_keys: PPgchar; option_values: PPgchar; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; inline;
+    procedure save_to_streamv_async(stream: PGOutputStream; type_: Pgchar; option_keys: PPgchar; option_values: PPgchar; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
     function savev(filename: Pgchar; type_: Pgchar; option_keys: PPgchar; option_values: PPgchar; error: PPGError): gboolean; cdecl; inline;
     procedure scale(dest: PGdkPixbuf; dest_x: gint; dest_y: gint; dest_width: gint; dest_height: gint; offset_x: gdouble; offset_y: gdouble; scale_x: gdouble; scale_y: gdouble; interp_type: TGdkInterpType); cdecl; inline;
     function scale_simple(dest_width: gint; dest_height: gint; interp_type: TGdkInterpType): PGdkPixbuf; cdecl; inline;
+    function set_option(key: Pgchar; value: Pgchar): gboolean; cdecl; inline;
     property bits_per_sample: gint read get_bits_per_sample  { property is writeable but setter not declared } ;
     property colorspace: TGdkColorspace read get_colorspace  { property is writeable but setter not declared } ;
     property has_alpha: gboolean read get_has_alpha  { property is writeable but setter not declared } ;
     property height: gint read get_height  { property is writeable but setter not declared } ;
     property n_channels: gint read get_n_channels  { property is writeable but setter not declared } ;
+    //property pixel_bytes: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_pixel_bytes  { property is writeable but setter not declared } ;
     property pixels: Pguint8 read get_pixels  { property is writeable but setter not declared } ;
     property rowstride: gint read get_rowstride  { property is writeable but setter not declared } ;
     property width: gint read get_width  { property is writeable but setter not declared } ;
   end;
 
-  PPGdkPixdataDumpType = ^PGdkPixdataDumpType;
-  PGdkPixdataDumpType = ^TGdkPixdataDumpType;
-  TGdkPixdata = object
-    magic: guint32;
-    length: gint32;
-    pixdata_type: guint32;
-    rowstride: guint32;
-    width: guint32;
-    height: guint32;
-    pixel_data: guint8;
-    function deserialize(stream_length: guint; stream: Pguint8; error: PPGError): gboolean; cdecl; inline;
-    function from_pixbuf(pixbuf: PGdkPixbuf; use_rle: gboolean): gpointer; cdecl; inline;
-    function serialize(stream_length_p: Pguint): Pguint8; cdecl; inline;
-    function to_csource(name: Pgchar; dump_type: TGdkPixdataDumpType): PGString; cdecl; inline;
-  end;
+
+  { TGdkPixbufModulePattern }
+  PPGdkPixbufModulePattern = ^PGdkPixbufModulePattern;
+  PGdkPixbufModulePattern = ^TGdkPixbufModulePattern;
   TGdkPixbufFormat = object
+    name: Pgchar;
+    signature: PGdkPixbufModulePattern;
+    domain: Pgchar;
+    description: Pgchar;
+    mime_types: PPgchar;
+    extensions: PPgchar;
+    flags: guint32;
+    disabled: gboolean;
+    license: Pgchar;
     function copy: PGdkPixbufFormat; cdecl; inline;
     procedure free; cdecl; inline;
     function get_description: Pgchar; cdecl; inline;
@@ -209,17 +198,19 @@ type
     function get_mime_types: PPgchar; cdecl; inline;
     function get_name: Pgchar; cdecl; inline;
     function is_disabled: gboolean; cdecl; inline;
+    function is_save_option_supported(option_key: Pgchar): gboolean; cdecl; inline;
     function is_scalable: gboolean; cdecl; inline;
     function is_writable: gboolean; cdecl; inline;
     procedure set_disabled(disabled: gboolean); cdecl; inline;
   end;
 
-  PPGdkPixbufAlphaMode = ^PGdkPixbufAlphaMode;
-  PGdkPixbufAlphaMode = ^TGdkPixbufAlphaMode;
 
+  { TGdkPixbufAnimation }
   PPGdkPixbufAnimation = ^PGdkPixbufAnimation;
   PGdkPixbufAnimation = ^TGdkPixbufAnimation;
 
+
+  { TGdkPixbufAnimationIter }
   PPGdkPixbufAnimationIter = ^PGdkPixbufAnimationIter;
   PGdkPixbufAnimationIter = ^TGdkPixbufAnimationIter;
   TGdkPixbufAnimation = object(TGObject)
@@ -241,9 +232,50 @@ type
     function on_currently_loading_frame: gboolean; cdecl; inline;
   end;
 
+
+  { TGdkPixbufAnimationClass }
+  PPGdkPixbufAnimationClass = ^PGdkPixbufAnimationClass;
+  PGdkPixbufAnimationClass = ^TGdkPixbufAnimationClass;
+  TGdkPixbufAnimationClass = object
+    parent_class: TGObjectClass;
+    is_static_image: function(animation: PGdkPixbufAnimation): gboolean; cdecl;
+    get_static_image: function(animation: PGdkPixbufAnimation): PGdkPixbuf; cdecl;
+    get_size: procedure(animation: PGdkPixbufAnimation; width: Pgint; height: Pgint); cdecl;
+    get_iter: function(animation: PGdkPixbufAnimation; start_time: PGTimeVal): PGdkPixbufAnimationIter; cdecl;
+  end;
+
+
+  { TGdkPixbufAnimationIterClass }
+  PPGdkPixbufAnimationIterClass = ^PGdkPixbufAnimationIterClass;
+  PGdkPixbufAnimationIterClass = ^TGdkPixbufAnimationIterClass;
+  TGdkPixbufAnimationIterClass = object
+    parent_class: TGObjectClass;
+    get_delay_time: function(iter: PGdkPixbufAnimationIter): gint; cdecl;
+    get_pixbuf: function(iter: PGdkPixbufAnimationIter): PGdkPixbuf; cdecl;
+    on_currently_loading_frame: function(iter: PGdkPixbufAnimationIter): gboolean; cdecl;
+    advance: function(iter: PGdkPixbufAnimationIter; current_time: PGTimeVal): gboolean; cdecl;
+  end;
+
+
+  { TGdkPixbufError }
   PPGdkPixbufError = ^PGdkPixbufError;
   PGdkPixbufError = ^TGdkPixbufError;
 
+  TGdkPixbufModulePattern = record
+    prefix: Pgchar;
+    mask: Pgchar;
+    relevance: gint;
+  end;
+
+
+
+
+  { TGdkPixbufFormatFlags }
+  PPGdkPixbufFormatFlags = ^PGdkPixbufFormatFlags;
+  PGdkPixbufFormatFlags = ^TGdkPixbufFormatFlags;
+
+
+  { TGdkPixbufLoader }
   PPGdkPixbufLoader = ^PGdkPixbufLoader;
   PGdkPixbufLoader = ^TGdkPixbufLoader;
   TGdkPixbufLoader = object(TGObject)
@@ -257,8 +289,11 @@ type
     function get_pixbuf: PGdkPixbuf; cdecl; inline;
     procedure set_size(width: gint; height: gint); cdecl; inline;
     function write(buf: Pguint8; count: gsize; error: PPGError): gboolean; cdecl; inline;
+    function write_bytes(buffer: PGBytes; error: PPGError): gboolean; cdecl; inline;
   end;
 
+
+  { TGdkPixbufLoaderClass }
   PPGdkPixbufLoaderClass = ^PGdkPixbufLoaderClass;
   PGdkPixbufLoaderClass = ^TGdkPixbufLoaderClass;
   TGdkPixbufLoaderClass = object
@@ -268,7 +303,118 @@ type
     area_updated: procedure(loader: PGdkPixbufLoader; x: gint; y: gint; width: gint; height: gint); cdecl;
     closed: procedure(loader: PGdkPixbufLoader); cdecl;
   end;
+  TGdkPixbufModuleLoadFunc = function(f: Pgpointer; error: PPGError): PGdkPixbuf; cdecl;
+  TGdkPixbufModuleLoadXpmDataFunc = function(data: PPgchar): PGdkPixbuf; cdecl;
 
+
+  { TGdkPixbufModuleSizeFunc }
+  PPGdkPixbufModuleSizeFunc = ^PGdkPixbufModuleSizeFunc;
+  PGdkPixbufModuleSizeFunc = ^TGdkPixbufModuleSizeFunc;
+  TGdkPixbufModuleSizeFunc = procedure(width: Pgint; height: Pgint; user_data: gpointer); cdecl;
+
+
+  { TGdkPixbufModulePreparedFunc }
+  PPGdkPixbufModulePreparedFunc = ^PGdkPixbufModulePreparedFunc;
+  PGdkPixbufModulePreparedFunc = ^TGdkPixbufModulePreparedFunc;
+  TGdkPixbufModulePreparedFunc = procedure(pixbuf: PGdkPixbuf; anim: PGdkPixbufAnimation; user_data: gpointer); cdecl;
+
+
+  { TGdkPixbufModuleUpdatedFunc }
+  PPGdkPixbufModuleUpdatedFunc = ^PGdkPixbufModuleUpdatedFunc;
+  PGdkPixbufModuleUpdatedFunc = ^TGdkPixbufModuleUpdatedFunc;
+  TGdkPixbufModuleUpdatedFunc = procedure(pixbuf: PGdkPixbuf; x: gint; y: gint; width: gint; height: gint; user_data: gpointer); cdecl;
+  TGdkPixbufModuleBeginLoadFunc = function(size_func: TGdkPixbufModuleSizeFunc; prepared_func: TGdkPixbufModulePreparedFunc; updated_func: TGdkPixbufModuleUpdatedFunc; user_data: gpointer; error: PPGError): gpointer; cdecl;
+  TGdkPixbufModuleStopLoadFunc = function(context: gpointer; error: PPGError): gboolean; cdecl;
+  TGdkPixbufModuleIncrementLoadFunc = function(context: gpointer; buf: Pguint8; size: guint; error: PPGError): gboolean; cdecl;
+  TGdkPixbufModuleLoadAnimationFunc = function(f: Pgpointer; error: PPGError): PGdkPixbufAnimation; cdecl;
+  TGdkPixbufModuleSaveFunc = function(f: Pgpointer; pixbuf: PGdkPixbuf; param_keys: PPgchar; param_values: PPgchar; error: PPGError): gboolean; cdecl;
+  TGdkPixbufModuleSaveCallbackFunc = function(save_func: TGdkPixbufSaveFunc; user_data: gpointer; pixbuf: PGdkPixbuf; option_keys: PPgchar; option_values: PPgchar; error: PPGError): gboolean; cdecl;
+  TGdkPixbufModuleSaveOptionSupportedFunc = function(option_key: Pgchar): gboolean; cdecl;
+
+
+  { TGdkPixbufModule }
+  PPGdkPixbufModule = ^PGdkPixbufModule;
+  PGdkPixbufModule = ^TGdkPixbufModule;
+
+
+  { TGdkPixbufModuleLoadFunc }
+  PPGdkPixbufModuleLoadFunc = ^PGdkPixbufModuleLoadFunc;
+  PGdkPixbufModuleLoadFunc = ^TGdkPixbufModuleLoadFunc;
+
+
+  { TGdkPixbufModuleLoadXpmDataFunc }
+  PPGdkPixbufModuleLoadXpmDataFunc = ^PGdkPixbufModuleLoadXpmDataFunc;
+  PGdkPixbufModuleLoadXpmDataFunc = ^TGdkPixbufModuleLoadXpmDataFunc;
+
+
+  { TGdkPixbufModuleBeginLoadFunc }
+  PPGdkPixbufModuleBeginLoadFunc = ^PGdkPixbufModuleBeginLoadFunc;
+  PGdkPixbufModuleBeginLoadFunc = ^TGdkPixbufModuleBeginLoadFunc;
+
+
+  { TGdkPixbufModuleStopLoadFunc }
+  PPGdkPixbufModuleStopLoadFunc = ^PGdkPixbufModuleStopLoadFunc;
+  PGdkPixbufModuleStopLoadFunc = ^TGdkPixbufModuleStopLoadFunc;
+
+
+  { TGdkPixbufModuleIncrementLoadFunc }
+  PPGdkPixbufModuleIncrementLoadFunc = ^PGdkPixbufModuleIncrementLoadFunc;
+  PGdkPixbufModuleIncrementLoadFunc = ^TGdkPixbufModuleIncrementLoadFunc;
+
+
+  { TGdkPixbufModuleLoadAnimationFunc }
+  PPGdkPixbufModuleLoadAnimationFunc = ^PGdkPixbufModuleLoadAnimationFunc;
+  PGdkPixbufModuleLoadAnimationFunc = ^TGdkPixbufModuleLoadAnimationFunc;
+
+
+  { TGdkPixbufModuleSaveFunc }
+  PPGdkPixbufModuleSaveFunc = ^PGdkPixbufModuleSaveFunc;
+  PGdkPixbufModuleSaveFunc = ^TGdkPixbufModuleSaveFunc;
+
+
+  { TGdkPixbufModuleSaveCallbackFunc }
+  PPGdkPixbufModuleSaveCallbackFunc = ^PGdkPixbufModuleSaveCallbackFunc;
+  PGdkPixbufModuleSaveCallbackFunc = ^TGdkPixbufModuleSaveCallbackFunc;
+
+
+  { TGdkPixbufModuleSaveOptionSupportedFunc }
+  PPGdkPixbufModuleSaveOptionSupportedFunc = ^PGdkPixbufModuleSaveOptionSupportedFunc;
+  PGdkPixbufModuleSaveOptionSupportedFunc = ^TGdkPixbufModuleSaveOptionSupportedFunc;
+
+  TGdkPixbufModule = record
+    module_name: Pgchar;
+    module_path: Pgchar;
+    module: gpointer;
+    info: PGdkPixbufFormat;
+    load: TGdkPixbufModuleLoadFunc;
+    load_xpm_data: TGdkPixbufModuleLoadXpmDataFunc;
+    begin_load: TGdkPixbufModuleBeginLoadFunc;
+    stop_load: TGdkPixbufModuleStopLoadFunc;
+    load_increment: TGdkPixbufModuleIncrementLoadFunc;
+    load_animation: TGdkPixbufModuleLoadAnimationFunc;
+    save: TGdkPixbufModuleSaveFunc;
+    save_to_callback: TGdkPixbufModuleSaveCallbackFunc;
+    is_save_option_supported: TGdkPixbufModuleSaveOptionSupportedFunc;
+    _reserved1: procedure; cdecl;
+    _reserved2: procedure; cdecl;
+    _reserved3: procedure; cdecl;
+    _reserved4: procedure; cdecl;
+  end;
+
+
+  TGdkPixbufModuleFillInfoFunc = procedure(info: PGdkPixbufFormat); cdecl;
+  TGdkPixbufModuleFillVtableFunc = procedure(module: PGdkPixbufModule); cdecl;
+
+
+  { TGdkPixbufNonAnim }
+  PPGdkPixbufNonAnim = ^PGdkPixbufNonAnim;
+  PGdkPixbufNonAnim = ^TGdkPixbufNonAnim;
+  TGdkPixbufNonAnim = object(TGdkPixbufAnimation)
+    function new(pixbuf: PGdkPixbuf): PGdkPixbufNonAnim; cdecl; inline; static;
+  end;
+
+
+  { TGdkPixbufSimpleAnim }
   PPGdkPixbufSimpleAnim = ^PGdkPixbufSimpleAnim;
   PGdkPixbufSimpleAnim = ^TGdkPixbufSimpleAnim;
   TGdkPixbufSimpleAnim = object(TGdkPixbufAnimation)
@@ -279,18 +425,19 @@ type
     property loop: gboolean read get_loop write set_loop;
   end;
 
+
+  { TGdkPixbufSimpleAnimClass }
   PPGdkPixbufSimpleAnimClass = ^PGdkPixbufSimpleAnimClass;
   PGdkPixbufSimpleAnimClass = ^TGdkPixbufSimpleAnimClass;
   TGdkPixbufSimpleAnimClass = object
   end;
 
+
+  { TGdkPixbufSimpleAnimIter }
   PPGdkPixbufSimpleAnimIter = ^PGdkPixbufSimpleAnimIter;
   PGdkPixbufSimpleAnimIter = ^TGdkPixbufSimpleAnimIter;
   TGdkPixbufSimpleAnimIter = object(TGdkPixbufAnimationIter)
   end;
-
-  PPGdkPixdataType = ^PGdkPixdataType;
-  PGdkPixdataType = ^TGdkPixdataType;
 
 function gdk_pixbuf_add_alpha(pixbuf: PGdkPixbuf; substitute_color: gboolean; r: guint8; g: guint8; b: guint8): PGdkPixbuf; cdecl; external;
 function gdk_pixbuf_animation_get_height(animation: PGdkPixbufAnimation): gint; cdecl; external;
@@ -309,8 +456,10 @@ function gdk_pixbuf_animation_new_from_resource(resource_path: Pgchar; error: PP
 function gdk_pixbuf_animation_new_from_stream(stream: PGInputStream; cancellable: PGCancellable; error: PPGError): PGdkPixbufAnimation; cdecl; external;
 function gdk_pixbuf_animation_new_from_stream_finish(async_result: PGAsyncResult; error: PPGError): PGdkPixbufAnimation; cdecl; external;
 function gdk_pixbuf_apply_embedded_orientation(src: PGdkPixbuf): PGdkPixbuf; cdecl; external;
+function gdk_pixbuf_calculate_rowstride(colorspace: TGdkColorspace; has_alpha: gboolean; bits_per_sample: gint; width: gint; height: gint): gint; cdecl; external;
 function gdk_pixbuf_composite_color_simple(src: PGdkPixbuf; dest_width: gint; dest_height: gint; interp_type: TGdkInterpType; overall_alpha: gint; check_size: gint; color1: guint32; color2: guint32): PGdkPixbuf; cdecl; external;
 function gdk_pixbuf_copy(pixbuf: PGdkPixbuf): PGdkPixbuf; cdecl; external;
+function gdk_pixbuf_copy_options(src_pixbuf: PGdkPixbuf; dest_pixbuf: PGdkPixbuf): gboolean; cdecl; external;
 function gdk_pixbuf_error_quark: TGQuark; cdecl; external;
 function gdk_pixbuf_flip(src: PGdkPixbuf; horizontal: gboolean): PGdkPixbuf; cdecl; external;
 function gdk_pixbuf_format_copy(format: PGdkPixbufFormat): PGdkPixbufFormat; cdecl; external;
@@ -321,24 +470,26 @@ function gdk_pixbuf_format_get_mime_types(format: PGdkPixbufFormat): PPgchar; cd
 function gdk_pixbuf_format_get_name(format: PGdkPixbufFormat): Pgchar; cdecl; external;
 function gdk_pixbuf_format_get_type: TGType; cdecl; external;
 function gdk_pixbuf_format_is_disabled(format: PGdkPixbufFormat): gboolean; cdecl; external;
+function gdk_pixbuf_format_is_save_option_supported(format: PGdkPixbufFormat; option_key: Pgchar): gboolean; cdecl; external;
 function gdk_pixbuf_format_is_scalable(format: PGdkPixbufFormat): gboolean; cdecl; external;
 function gdk_pixbuf_format_is_writable(format: PGdkPixbufFormat): gboolean; cdecl; external;
-function gdk_pixbuf_from_pixdata(pixdata: PGdkPixdata; copy_pixels: gboolean; error: PPGError): PGdkPixbuf; cdecl; external;
 function gdk_pixbuf_get_bits_per_sample(pixbuf: PGdkPixbuf): gint; cdecl; external;
 function gdk_pixbuf_get_byte_length(pixbuf: PGdkPixbuf): gsize; cdecl; external;
 function gdk_pixbuf_get_colorspace(pixbuf: PGdkPixbuf): TGdkColorspace; cdecl; external;
 function gdk_pixbuf_get_file_info(filename: Pgchar; width: Pgint; height: Pgint): PGdkPixbufFormat; cdecl; external;
+function gdk_pixbuf_get_file_info_finish(async_result: PGAsyncResult; width: Pgint; height: Pgint; error: PPGError): PGdkPixbufFormat; cdecl; external;
 function gdk_pixbuf_get_formats: PGSList; cdecl; external;
 function gdk_pixbuf_get_has_alpha(pixbuf: PGdkPixbuf): gboolean; cdecl; external;
 function gdk_pixbuf_get_height(pixbuf: PGdkPixbuf): gint; cdecl; external;
 function gdk_pixbuf_get_n_channels(pixbuf: PGdkPixbuf): gint; cdecl; external;
 function gdk_pixbuf_get_option(pixbuf: PGdkPixbuf; key: Pgchar): Pgchar; cdecl; external;
+function gdk_pixbuf_get_options(pixbuf: PGdkPixbuf): PGHashTable; cdecl; external;
 function gdk_pixbuf_get_pixels(pixbuf: PGdkPixbuf): Pguint8; cdecl; external;
 function gdk_pixbuf_get_pixels_with_length(pixbuf: PGdkPixbuf; length: Pguint): Pguint8; cdecl; external;
 function gdk_pixbuf_get_rowstride(pixbuf: PGdkPixbuf): gint; cdecl; external;
 function gdk_pixbuf_get_type: TGType; cdecl; external;
 function gdk_pixbuf_get_width(pixbuf: PGdkPixbuf): gint; cdecl; external;
-//does not exist anymore. issue #31677 function gdk_pixbuf_gettext(msgid: Pgchar): Pgchar; cdecl; external;
+function gdk_pixbuf_init_modules(path: Pgchar; error: PPGError): gboolean; cdecl; external;
 function gdk_pixbuf_loader_close(loader: PGdkPixbufLoader; error: PPGError): gboolean; cdecl; external;
 function gdk_pixbuf_loader_get_animation(loader: PGdkPixbufLoader): PGdkPixbufAnimation; cdecl; external;
 function gdk_pixbuf_loader_get_format(loader: PGdkPixbufLoader): PGdkPixbufFormat; cdecl; external;
@@ -348,12 +499,13 @@ function gdk_pixbuf_loader_new: PGdkPixbufLoader; cdecl; external;
 function gdk_pixbuf_loader_new_with_mime_type(mime_type: Pgchar; error: PPGError): PGdkPixbufLoader; cdecl; external;
 function gdk_pixbuf_loader_new_with_type(image_type: Pgchar; error: PPGError): PGdkPixbufLoader; cdecl; external;
 function gdk_pixbuf_loader_write(loader: PGdkPixbufLoader; buf: Pguint8; count: gsize; error: PPGError): gboolean; cdecl; external;
+function gdk_pixbuf_loader_write_bytes(loader: PGdkPixbufLoader; buffer: PGBytes; error: PPGError): gboolean; cdecl; external;
 function gdk_pixbuf_new(colorspace: TGdkColorspace; has_alpha: gboolean; bits_per_sample: gint; width: gint; height: gint): PGdkPixbuf; cdecl; external;
+function gdk_pixbuf_new_from_bytes(data: PGBytes; colorspace: TGdkColorspace; has_alpha: gboolean; bits_per_sample: gint; width: gint; height: gint; rowstride: gint): PGdkPixbuf; cdecl; external;
 function gdk_pixbuf_new_from_data(data: Pguint8; colorspace: TGdkColorspace; has_alpha: gboolean; bits_per_sample: gint; width: gint; height: gint; rowstride: gint; destroy_fn: TGdkPixbufDestroyNotify; destroy_fn_data: gpointer): PGdkPixbuf; cdecl; external;
 function gdk_pixbuf_new_from_file(filename: Pgchar; error: PPGError): PGdkPixbuf; cdecl; external;
 function gdk_pixbuf_new_from_file_at_scale(filename: Pgchar; width: gint; height: gint; preserve_aspect_ratio: gboolean; error: PPGError): PGdkPixbuf; cdecl; external;
 function gdk_pixbuf_new_from_file_at_size(filename: Pgchar; width: gint; height: gint; error: PPGError): PGdkPixbuf; cdecl; external;
-function gdk_pixbuf_new_from_inline(data_length: gint; data: Pguint8; copy_pixels: gboolean; error: PPGError): PGdkPixbuf; cdecl; external;
 function gdk_pixbuf_new_from_resource(resource_path: Pgchar; error: PPGError): PGdkPixbuf; cdecl; external;
 function gdk_pixbuf_new_from_resource_at_scale(resource_path: Pgchar; width: gint; height: gint; preserve_aspect_ratio: gboolean; error: PPGError): PGdkPixbuf; cdecl; external;
 function gdk_pixbuf_new_from_stream(stream: PGInputStream; cancellable: PGCancellable; error: PPGError): PGdkPixbuf; cdecl; external;
@@ -361,6 +513,11 @@ function gdk_pixbuf_new_from_stream_at_scale(stream: PGInputStream; width: gint;
 function gdk_pixbuf_new_from_stream_finish(async_result: PGAsyncResult; error: PPGError): PGdkPixbuf; cdecl; external;
 function gdk_pixbuf_new_from_xpm_data(data: PPgchar): PGdkPixbuf; cdecl; external;
 function gdk_pixbuf_new_subpixbuf(src_pixbuf: PGdkPixbuf; src_x: gint; src_y: gint; width: gint; height: gint): PGdkPixbuf; cdecl; external;
+function gdk_pixbuf_non_anim_get_type: TGType; cdecl; external;
+function gdk_pixbuf_non_anim_new(pixbuf: PGdkPixbuf): PGdkPixbufNonAnim; cdecl; external;
+function gdk_pixbuf_read_pixel_bytes(pixbuf: PGdkPixbuf): PGBytes; cdecl; external;
+function gdk_pixbuf_read_pixels(pixbuf: PGdkPixbuf): Pguint8; cdecl; external;
+function gdk_pixbuf_remove_option(pixbuf: PGdkPixbuf; key: Pgchar): gboolean; cdecl; external;
 function gdk_pixbuf_rotate_simple(src: PGdkPixbuf; angle: TGdkPixbufRotation): PGdkPixbuf; cdecl; external;
 function gdk_pixbuf_save(pixbuf: PGdkPixbuf; filename: Pgchar; type_: Pgchar; error: PPGError; args: array of const): gboolean; cdecl; external;
 function gdk_pixbuf_save_to_buffer(pixbuf: PGdkPixbuf; buffer: PPgchar; buffer_size: Pgsize; type_: Pgchar; error: PPGError; args: array of const): gboolean; cdecl; external;
@@ -369,16 +526,14 @@ function gdk_pixbuf_save_to_callback(pixbuf: PGdkPixbuf; save_func: TGdkPixbufSa
 function gdk_pixbuf_save_to_callbackv(pixbuf: PGdkPixbuf; save_func: TGdkPixbufSaveFunc; user_data: gpointer; type_: Pgchar; option_keys: PPgchar; option_values: PPgchar; error: PPGError): gboolean; cdecl; external;
 function gdk_pixbuf_save_to_stream(pixbuf: PGdkPixbuf; stream: PGOutputStream; type_: Pgchar; cancellable: PGCancellable; error: PPGError; args: array of const): gboolean; cdecl; external;
 function gdk_pixbuf_save_to_stream_finish(async_result: PGAsyncResult; error: PPGError): gboolean; cdecl; external;
+function gdk_pixbuf_save_to_streamv(pixbuf: PGdkPixbuf; stream: PGOutputStream; type_: Pgchar; option_keys: PPgchar; option_values: PPgchar; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
 function gdk_pixbuf_savev(pixbuf: PGdkPixbuf; filename: Pgchar; type_: Pgchar; option_keys: PPgchar; option_values: PPgchar; error: PPGError): gboolean; cdecl; external;
 function gdk_pixbuf_scale_simple(src: PGdkPixbuf; dest_width: gint; dest_height: gint; interp_type: TGdkInterpType): PGdkPixbuf; cdecl; external;
+function gdk_pixbuf_set_option(pixbuf: PGdkPixbuf; key: Pgchar; value: Pgchar): gboolean; cdecl; external;
 function gdk_pixbuf_simple_anim_get_loop(animation: PGdkPixbufSimpleAnim): gboolean; cdecl; external;
 function gdk_pixbuf_simple_anim_get_type: TGType; cdecl; external;
 function gdk_pixbuf_simple_anim_iter_get_type: TGType; cdecl; external;
 function gdk_pixbuf_simple_anim_new(width: gint; height: gint; rate: gfloat): PGdkPixbufSimpleAnim; cdecl; external;
-function gdk_pixdata_deserialize(pixdata: PGdkPixdata; stream_length: guint; stream: Pguint8; error: PPGError): gboolean; cdecl; external;
-function gdk_pixdata_from_pixbuf(pixdata: PGdkPixdata; pixbuf: PGdkPixbuf; use_rle: gboolean): gpointer; cdecl; external;
-function gdk_pixdata_serialize(pixdata: PGdkPixdata; stream_length_p: Pguint): Pguint8; cdecl; external;
-function gdk_pixdata_to_csource(pixdata: PGdkPixdata; name: Pgchar; dump_type: TGdkPixdataDumpType): PGString; cdecl; external;
 procedure gdk_pixbuf_animation_new_from_stream_async(stream: PGInputStream; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure gdk_pixbuf_composite(src: PGdkPixbuf; dest: PGdkPixbuf; dest_x: gint; dest_y: gint; dest_width: gint; dest_height: gint; offset_x: gdouble; offset_y: gdouble; scale_x: gdouble; scale_y: gdouble; interp_type: TGdkInterpType; overall_alpha: gint); cdecl; external;
 procedure gdk_pixbuf_composite_color(src: PGdkPixbuf; dest: PGdkPixbuf; dest_x: gint; dest_y: gint; dest_width: gint; dest_height: gint; offset_x: gdouble; offset_y: gdouble; scale_x: gdouble; scale_y: gdouble; interp_type: TGdkInterpType; overall_alpha: gint; check_x: gint; check_y: gint; check_size: gint; color1: guint32; color2: guint32); cdecl; external;
@@ -386,11 +541,13 @@ procedure gdk_pixbuf_copy_area(src_pixbuf: PGdkPixbuf; src_x: gint; src_y: gint;
 procedure gdk_pixbuf_fill(pixbuf: PGdkPixbuf; pixel: guint32); cdecl; external;
 procedure gdk_pixbuf_format_free(format: PGdkPixbufFormat); cdecl; external;
 procedure gdk_pixbuf_format_set_disabled(format: PGdkPixbufFormat; disabled: gboolean); cdecl; external;
+procedure gdk_pixbuf_get_file_info_async(filename: Pgchar; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure gdk_pixbuf_loader_set_size(loader: PGdkPixbufLoader; width: gint; height: gint); cdecl; external;
 procedure gdk_pixbuf_new_from_stream_async(stream: PGInputStream; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure gdk_pixbuf_new_from_stream_at_scale_async(stream: PGInputStream; width: gint; height: gint; preserve_aspect_ratio: gboolean; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure gdk_pixbuf_saturate_and_pixelate(src: PGdkPixbuf; dest: PGdkPixbuf; saturation: gfloat; pixelate: gboolean); cdecl; external;
 procedure gdk_pixbuf_save_to_stream_async(pixbuf: PGdkPixbuf; stream: PGOutputStream; type_: Pgchar; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer; args: array of const); cdecl; external;
+procedure gdk_pixbuf_save_to_streamv_async(pixbuf: PGdkPixbuf; stream: PGOutputStream; type_: Pgchar; option_keys: PPgchar; option_values: PPgchar; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure gdk_pixbuf_scale(src: PGdkPixbuf; dest: PGdkPixbuf; dest_x: gint; dest_y: gint; dest_width: gint; dest_height: gint; offset_x: gdouble; offset_y: gdouble; scale_x: gdouble; scale_y: gdouble; interp_type: TGdkInterpType); cdecl; external;
 procedure gdk_pixbuf_simple_anim_add_frame(animation: PGdkPixbufSimpleAnim; pixbuf: PGdkPixbuf); cdecl; external;
 procedure gdk_pixbuf_simple_anim_set_loop(animation: PGdkPixbufSimpleAnim; loop: gboolean); cdecl; external;
@@ -398,6 +555,11 @@ implementation
 function TGdkPixbuf.new(colorspace: TGdkColorspace; has_alpha: gboolean; bits_per_sample: gint; width: gint; height: gint): PGdkPixbuf; cdecl;
 begin
   Result := LazGdkPixbuf2.gdk_pixbuf_new(colorspace, has_alpha, bits_per_sample, width, height);
+end;
+
+function TGdkPixbuf.new_from_bytes(data: PGBytes; colorspace: TGdkColorspace; has_alpha: gboolean; bits_per_sample: gint; width: gint; height: gint; rowstride: gint): PGdkPixbuf; cdecl;
+begin
+  Result := LazGdkPixbuf2.gdk_pixbuf_new_from_bytes(data, colorspace, has_alpha, bits_per_sample, width, height, rowstride);
 end;
 
 function TGdkPixbuf.new_from_data(data: Pguint8; colorspace: TGdkColorspace; has_alpha: gboolean; bits_per_sample: gint; width: gint; height: gint; rowstride: gint; destroy_fn: TGdkPixbufDestroyNotify; destroy_fn_data: gpointer): PGdkPixbuf; cdecl;
@@ -418,11 +580,6 @@ end;
 function TGdkPixbuf.new_from_file_at_size(filename: Pgchar; width: gint; height: gint; error: PPGError): PGdkPixbuf; cdecl;
 begin
   Result := LazGdkPixbuf2.gdk_pixbuf_new_from_file_at_size(filename, width, height, error);
-end;
-
-function TGdkPixbuf.new_from_inline(data_length: gint; data: Pguint8; copy_pixels: gboolean; error: PPGError): PGdkPixbuf; cdecl;
-begin
-  Result := LazGdkPixbuf2.gdk_pixbuf_new_from_inline(data_length, data, copy_pixels, error);
 end;
 
 function TGdkPixbuf.new_from_resource(resource_path: Pgchar; error: PPGError): PGdkPixbuf; cdecl;
@@ -455,9 +612,9 @@ begin
   Result := LazGdkPixbuf2.gdk_pixbuf_new_from_xpm_data(data);
 end;
 
-function TGdkPixbuf.from_pixdata(pixdata: PGdkPixdata; copy_pixels: gboolean; error: PPGError): PGdkPixbuf; cdecl;
+function TGdkPixbuf.calculate_rowstride(colorspace: TGdkColorspace; has_alpha: gboolean; bits_per_sample: gint; width: gint; height: gint): gint; cdecl;
 begin
-  Result := LazGdkPixbuf2.gdk_pixbuf_from_pixdata(pixdata, copy_pixels, error);
+  Result := LazGdkPixbuf2.gdk_pixbuf_calculate_rowstride(colorspace, has_alpha, bits_per_sample, width, height);
 end;
 
 function TGdkPixbuf.get_file_info(filename: Pgchar; width: Pgint; height: Pgint): PGdkPixbufFormat; cdecl;
@@ -465,14 +622,24 @@ begin
   Result := LazGdkPixbuf2.gdk_pixbuf_get_file_info(filename, width, height);
 end;
 
+procedure TGdkPixbuf.get_file_info_async(filename: Pgchar; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazGdkPixbuf2.gdk_pixbuf_get_file_info_async(filename, cancellable, callback, user_data);
+end;
+
+function TGdkPixbuf.get_file_info_finish(async_result: PGAsyncResult; width: Pgint; height: Pgint; error: PPGError): PGdkPixbufFormat; cdecl;
+begin
+  Result := LazGdkPixbuf2.gdk_pixbuf_get_file_info_finish(async_result, width, height, error);
+end;
+
 function TGdkPixbuf.get_formats: PGSList; cdecl;
 begin
   Result := LazGdkPixbuf2.gdk_pixbuf_get_formats();
 end;
 
-function TGdkPixbuf.gettext(msgid: Pgchar): Pgchar; cdecl;
+function TGdkPixbuf.init_modules(path: Pgchar; error: PPGError): gboolean; cdecl;
 begin
-  Result := nil; //issue #31677 LazGdkPixbuf2.gdk_pixbuf_gettext(msgid);
+  Result := LazGdkPixbuf2.gdk_pixbuf_init_modules(path, error);
 end;
 
 procedure TGdkPixbuf.new_from_stream_async(stream: PGInputStream; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
@@ -525,6 +692,11 @@ begin
   LazGdkPixbuf2.gdk_pixbuf_copy_area(@self, src_x, src_y, width, height, dest_pixbuf, dest_x, dest_y);
 end;
 
+function TGdkPixbuf.copy_options(dest_pixbuf: PGdkPixbuf): gboolean; cdecl;
+begin
+  Result := LazGdkPixbuf2.gdk_pixbuf_copy_options(@self, dest_pixbuf);
+end;
+
 procedure TGdkPixbuf.fill(pixel: guint32); cdecl;
 begin
   LazGdkPixbuf2.gdk_pixbuf_fill(@self, pixel);
@@ -570,6 +742,11 @@ begin
   Result := LazGdkPixbuf2.gdk_pixbuf_get_option(@self, key);
 end;
 
+function TGdkPixbuf.get_options: PGHashTable; cdecl;
+begin
+  Result := LazGdkPixbuf2.gdk_pixbuf_get_options(@self);
+end;
+
 function TGdkPixbuf.get_pixels: Pguint8; cdecl;
 begin
   Result := LazGdkPixbuf2.gdk_pixbuf_get_pixels(@self);
@@ -595,6 +772,21 @@ begin
   Result := LazGdkPixbuf2.gdk_pixbuf_new_subpixbuf(@self, src_x, src_y, width, height);
 end;
 
+function TGdkPixbuf.read_pixel_bytes: PGBytes; cdecl;
+begin
+  Result := LazGdkPixbuf2.gdk_pixbuf_read_pixel_bytes(@self);
+end;
+
+function TGdkPixbuf.read_pixels: Pguint8; cdecl;
+begin
+  Result := LazGdkPixbuf2.gdk_pixbuf_read_pixels(@self);
+end;
+
+function TGdkPixbuf.remove_option(key: Pgchar): gboolean; cdecl;
+begin
+  Result := LazGdkPixbuf2.gdk_pixbuf_remove_option(@self, key);
+end;
+
 function TGdkPixbuf.rotate_simple(angle: TGdkPixbufRotation): PGdkPixbuf; cdecl;
 begin
   Result := LazGdkPixbuf2.gdk_pixbuf_rotate_simple(@self, angle);
@@ -615,6 +807,16 @@ begin
   Result := LazGdkPixbuf2.gdk_pixbuf_save_to_callbackv(@self, save_func, user_data, type_, option_keys, option_values, error);
 end;
 
+function TGdkPixbuf.save_to_streamv(stream: PGOutputStream; type_: Pgchar; option_keys: PPgchar; option_values: PPgchar; cancellable: PGCancellable; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGdkPixbuf2.gdk_pixbuf_save_to_streamv(@self, stream, type_, option_keys, option_values, cancellable, error);
+end;
+
+procedure TGdkPixbuf.save_to_streamv_async(stream: PGOutputStream; type_: Pgchar; option_keys: PPgchar; option_values: PPgchar; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazGdkPixbuf2.gdk_pixbuf_save_to_streamv_async(@self, stream, type_, option_keys, option_values, cancellable, callback, user_data);
+end;
+
 function TGdkPixbuf.savev(filename: Pgchar; type_: Pgchar; option_keys: PPgchar; option_values: PPgchar; error: PPGError): gboolean; cdecl;
 begin
   Result := LazGdkPixbuf2.gdk_pixbuf_savev(@self, filename, type_, option_keys, option_values, error);
@@ -630,24 +832,9 @@ begin
   Result := LazGdkPixbuf2.gdk_pixbuf_scale_simple(@self, dest_width, dest_height, interp_type);
 end;
 
-function TGdkPixdata.deserialize(stream_length: guint; stream: Pguint8; error: PPGError): gboolean; cdecl;
+function TGdkPixbuf.set_option(key: Pgchar; value: Pgchar): gboolean; cdecl;
 begin
-  Result := LazGdkPixbuf2.gdk_pixdata_deserialize(@self, stream_length, stream, error);
-end;
-
-function TGdkPixdata.from_pixbuf(pixbuf: PGdkPixbuf; use_rle: gboolean): gpointer; cdecl;
-begin
-  Result := LazGdkPixbuf2.gdk_pixdata_from_pixbuf(@self, pixbuf, use_rle);
-end;
-
-function TGdkPixdata.serialize(stream_length_p: Pguint): Pguint8; cdecl;
-begin
-  Result := LazGdkPixbuf2.gdk_pixdata_serialize(@self, stream_length_p);
-end;
-
-function TGdkPixdata.to_csource(name: Pgchar; dump_type: TGdkPixdataDumpType): PGString; cdecl;
-begin
-  Result := LazGdkPixbuf2.gdk_pixdata_to_csource(@self, name, dump_type);
+  Result := LazGdkPixbuf2.gdk_pixbuf_set_option(@self, key, value);
 end;
 
 function TGdkPixbufFormat.copy: PGdkPixbufFormat; cdecl;
@@ -688,6 +875,11 @@ end;
 function TGdkPixbufFormat.is_disabled: gboolean; cdecl;
 begin
   Result := LazGdkPixbuf2.gdk_pixbuf_format_is_disabled(@self);
+end;
+
+function TGdkPixbufFormat.is_save_option_supported(option_key: Pgchar): gboolean; cdecl;
+begin
+  Result := LazGdkPixbuf2.gdk_pixbuf_format_is_save_option_supported(@self, option_key);
 end;
 
 function TGdkPixbufFormat.is_scalable: gboolean; cdecl;
@@ -818,6 +1010,16 @@ end;
 function TGdkPixbufLoader.write(buf: Pguint8; count: gsize; error: PPGError): gboolean; cdecl;
 begin
   Result := LazGdkPixbuf2.gdk_pixbuf_loader_write(@self, buf, count, error);
+end;
+
+function TGdkPixbufLoader.write_bytes(buffer: PGBytes; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGdkPixbuf2.gdk_pixbuf_loader_write_bytes(@self, buffer, error);
+end;
+
+function TGdkPixbufNonAnim.new(pixbuf: PGdkPixbuf): PGdkPixbufNonAnim; cdecl;
+begin
+  Result := LazGdkPixbuf2.gdk_pixbuf_non_anim_new(pixbuf);
 end;
 
 function TGdkPixbufSimpleAnim.new(width: gint; height: gint; rate: gfloat): PGdkPixbufSimpleAnim; cdecl;
