@@ -2689,6 +2689,16 @@ type
   GDK_TOUCH_CANCEL = 40,
   GDK_EVENT_LAST = 41
   );
+  TGdkVisualType = (
+    TGdkVisualTypeMinValue = -$7FFFFFFF,
+    GDK_VISUAL_STATIC_GRAY = 0,
+    GDK_VISUAL_GRAYSCALE = 1,
+    GDK_VISUAL_STATIC_COLOR = 2,
+    GDK_VISUAL_PSEUDO_COLOR = 3,
+    GDK_VISUAL_TRUE_COLOR = 4,
+    GDK_VISUAL_DIRECT_COLOR = 5,
+    TGdkVisualTypeMaxValue = $7FFFFFFF
+  );
 
 type
   TGdkVisibilityState = Integer;
@@ -2819,17 +2829,6 @@ const
   GDK_PROP_MODE_REPLACE: TGdkPropMode = 0;
   GDK_PROP_MODE_PREPEND: TGdkPropMode = 1;
   GDK_PROP_MODE_APPEND: TGdkPropMode = 2;
-
-type
-  TGdkVisualType = Integer;
-const
-  { GdkVisualType }
-  GDK_VISUAL_STATIC_GRAY: TGdkVisualType = 0;
-  GDK_VISUAL_GRAYSCALE: TGdkVisualType = 1;
-  GDK_VISUAL_STATIC_COLOR: TGdkVisualType = 2;
-  GDK_VISUAL_PSEUDO_COLOR: TGdkVisualType = 3;
-  GDK_VISUAL_TRUE_COLOR: TGdkVisualType = 4;
-  GDK_VISUAL_DIRECT_COLOR: TGdkVisualType = 5;
 
 type
   TGdkStatus = Integer;
