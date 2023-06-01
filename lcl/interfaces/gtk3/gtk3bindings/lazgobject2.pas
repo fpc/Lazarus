@@ -21,8 +21,7 @@ const
   {$endif}
 
   G_PARAM_MASK = 255;
-  G_PARAM_READWRITE = 0;
-  G_PARAM_STATIC_STRINGS = 0;
+  G_PARAM_STATIC_STRINGS = 224;
   G_PARAM_USER_SHIFT = 8;
   G_SIGNAL_FLAGS_MASK = 511;
   G_SIGNAL_MATCH_MASK = 63;
@@ -34,19 +33,17 @@ const
   G_TYPE_RESERVED_GLIB_FIRST = 22;
   G_TYPE_RESERVED_GLIB_LAST = 31;
   G_TYPE_RESERVED_USER_FIRST = 49;
-  G_VALUE_COLLECT_FORMAT_MAX_LENGTH = 8;
+  G_VALUE_INTERNED_STRING = 268435456;
   G_VALUE_NOCOPY_CONTENTS = 134217728;
-
 type
-  TGBindingFlags = Integer;
-const
-  { GBindingFlags }
-  G_BINDING_DEFAULT: TGBindingFlags = 0;
-  G_BINDING_BIDIRECTIONAL: TGBindingFlags = 1;
-  G_BINDING_SYNC_CREATE: TGBindingFlags = 2;
-  G_BINDING_INVERT_BOOLEAN: TGBindingFlags = 4;
-
-type
+  TGBindingFlags = (
+    TGBindingFlagsMinValue = -$7FFFFFFF,
+    G_BINDING_DEFAULT = 0,
+    G_BINDING_BIDIRECTIONAL = 1,
+    G_BINDING_SYNC_CREATE = 2,
+    G_BINDING_INVERT_BOOLEAN = 4,
+    TGBindingFlagsMaxValue = $7FFFFFFF
+  );
   TGConnectFlags = (
     TGConnectFlagsMinValue = -$7FFFFFFF,
     G_CONNECT_DEFAULT = 0,
@@ -54,159 +51,224 @@ type
     G_CONNECT_SWAPPED = 2,
     TGConnectFlagsMaxValue = $7FFFFFFF
   );
+  TGParamFlags = (
+    TGParamFlagsMinValue = -$7FFFFFFF,
+    G_PARAM_READABLE = 1,
+    G_PARAM_WRITABLE = 2,
+    G_PARAM_READWRITE = 3,
+    G_PARAM_CONSTRUCT = 4,
+    G_PARAM_CONSTRUCT_ONLY = 8,
+    G_PARAM_LAX_VALIDATION = 16,
+    G_PARAM_PRIVATE = 32,
+    G_PARAM_STATIC_NAME = 32,
+    G_PARAM_STATIC_NICK = 64,
+    G_PARAM_STATIC_BLURB = 128,
+    G_PARAM_EXPLICIT_NOTIFY = 1073741824,
+    G_PARAM_DEPRECATED = 2147483648,
+    TGParamFlagsMaxValue = $7FFFFFFF
+  );
+  TGSignalFlags = (
+    TGSignalFlagsMinValue = -$7FFFFFFF,
+    G_SIGNAL_RUN_FIRST = 1,
+    G_SIGNAL_RUN_LAST = 2,
+    G_SIGNAL_RUN_CLEANUP = 4,
+    G_SIGNAL_NO_RECURSE = 8,
+    G_SIGNAL_DETAILED = 16,
+    G_SIGNAL_ACTION = 32,
+    G_SIGNAL_NO_HOOKS = 64,
+    G_SIGNAL_MUST_COLLECT = 128,
+    G_SIGNAL_DEPRECATED = 256,
+    G_SIGNAL_ACCUMULATOR_FIRST_RUN = 131072,
+    TGSignalFlagsMaxValue = $7FFFFFFF
+  );
+  TGSignalMatchType = (
+    TGSignalMatchTypeMinValue = -$7FFFFFFF,
+    G_SIGNAL_MATCH_ID = 1,
+    G_SIGNAL_MATCH_DETAIL = 2,
+    G_SIGNAL_MATCH_CLOSURE = 4,
+    G_SIGNAL_MATCH_FUNC = 8,
+    G_SIGNAL_MATCH_DATA = 16,
+    G_SIGNAL_MATCH_UNBLOCKED = 32,
+    TGSignalMatchTypeMaxValue = $7FFFFFFF
+  );
+  TGTypeDebugFlags = (
+    TGTypeDebugFlagsMinValue = -$7FFFFFFF,
+    G_TYPE_DEBUG_NONE = 0,
+    G_TYPE_DEBUG_OBJECTS = 1,
+    G_TYPE_DEBUG_SIGNALS = 2,
+    G_TYPE_DEBUG_INSTANCE_COUNT = 4,
+    G_TYPE_DEBUG_MASK = 7,
+    TGTypeDebugFlagsMaxValue = $7FFFFFFF
+  );
+  TGTypeFlags = (
+    TGTypeFlagsMinValue = -$7FFFFFFF,
+    G_TYPE_FLAG_NONE = 0,
+    G_TYPE_FLAG_ABSTRACT = 16,
+    G_TYPE_FLAG_VALUE_ABSTRACT = 32,
+    G_TYPE_FLAG_FINAL = 64,
+    G_TYPE_FLAG_DEPRECATED = 128,
+    TGTypeFlagsMaxValue = $7FFFFFFF
+  );
+  TGTypeFundamentalFlags = (
+    TGTypeFundamentalFlagsMinValue = -$7FFFFFFF,
+    G_TYPE_FLAG_CLASSED = 1,
+    G_TYPE_FLAG_INSTANTIATABLE = 2,
+    G_TYPE_FLAG_DERIVABLE = 4,
+    G_TYPE_FLAG_DEEP_DERIVABLE = 8,
+    TGTypeFundamentalFlagsMaxValue = $7FFFFFFF
+  );
 type
-  TGParamFlags = DWord;
-const
-  { GParamFlags }
-  G_PARAM_READABLE: TGParamFlags = 1;
-  G_PARAM_WRITABLE: TGParamFlags = 2;
-  G_PARAM_CONSTRUCT: TGParamFlags = 4;
-  G_PARAM_CONSTRUCT_ONLY: TGParamFlags = 8;
-  G_PARAM_LAX_VALIDATION: TGParamFlags = 16;
-  G_PARAM_STATIC_NAME: TGParamFlags = 32;
-  G_PARAM_PRIVATE: TGParamFlags = 32;
-  G_PARAM_STATIC_NICK: TGParamFlags = 64;
-  G_PARAM_STATIC_BLURB: TGParamFlags = 128;
-  G_PARAM_DEPRECATED: TGParamFlags = 2147483648;
 
-type
-  TGSignalFlags = Integer;
-const
-  { GSignalFlags }
-  G_SIGNAL_RUN_FIRST: TGSignalFlags = 1;
-  G_SIGNAL_RUN_LAST: TGSignalFlags = 2;
-  G_SIGNAL_RUN_CLEANUP: TGSignalFlags = 4;
-  G_SIGNAL_NO_RECURSE: TGSignalFlags = 8;
-  G_SIGNAL_DETAILED: TGSignalFlags = 16;
-  G_SIGNAL_ACTION: TGSignalFlags = 32;
-  G_SIGNAL_NO_HOOKS: TGSignalFlags = 64;
-  G_SIGNAL_MUST_COLLECT: TGSignalFlags = 128;
-  G_SIGNAL_DEPRECATED: TGSignalFlags = 256;
 
-type
-  TGSignalMatchType = Integer;
-const
-  { GSignalMatchType }
-  G_SIGNAL_MATCH_ID: TGSignalMatchType = 1;
-  G_SIGNAL_MATCH_DETAIL: TGSignalMatchType = 2;
-  G_SIGNAL_MATCH_CLOSURE: TGSignalMatchType = 4;
-  G_SIGNAL_MATCH_FUNC: TGSignalMatchType = 8;
-  G_SIGNAL_MATCH_DATA: TGSignalMatchType = 16;
-  G_SIGNAL_MATCH_UNBLOCKED: TGSignalMatchType = 32;
-
-type
-  TGTypeDebugFlags = Integer;
-const
-  { GTypeDebugFlags }
-  G_TYPE_DEBUG_NONE: TGTypeDebugFlags = 0;
-  G_TYPE_DEBUG_OBJECTS: TGTypeDebugFlags = 1;
-  G_TYPE_DEBUG_SIGNALS: TGTypeDebugFlags = 2;
-  G_TYPE_DEBUG_MASK: TGTypeDebugFlags = 3;
-
-type
-  TGTypeFlags = Integer;
-const
-  { GTypeFlags }
-  G_TYPE_FLAG_ABSTRACT: TGTypeFlags = 16;
-  G_TYPE_FLAG_VALUE_ABSTRACT: TGTypeFlags = 32;
-
-type
-  TGTypeFundamentalFlags = Integer;
-const
-  { GTypeFundamentalFlags }
-  G_TYPE_FLAG_CLASSED: TGTypeFundamentalFlags = 1;
-  G_TYPE_FLAG_INSTANTIATABLE: TGTypeFundamentalFlags = 2;
-  G_TYPE_FLAG_DERIVABLE: TGTypeFundamentalFlags = 4;
-  G_TYPE_FLAG_DEEP_DERIVABLE: TGTypeFundamentalFlags = 8;
-type
-
+  { TGClosure }
   PPGClosure = ^PGClosure;
   PGClosure = ^TGClosure;
 
+
+  { TGParameter }
+  PPGParameter = ^PGParameter;
+  PGParameter = ^TGParameter;
+
+
+  { TGValue }
   PPPGValue = ^PPGValue;
   PPGValue = ^PGValue;
   PGValue = ^TGValue;
   TGClosureMarshal = procedure(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl;
 
+
+  { TGSignalCMarshaller }
   PPGSignalCMarshaller = ^PGSignalCMarshaller;
   PGSignalCMarshaller = ^TGSignalCMarshaller;
   TGSignalCMarshaller = TGClosureMarshal;
-  TGVaClosureMarshal = procedure(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl;
 
-  PPGSignalCVaMarshaller = ^PGSignalCVaMarshaller;
-  PGSignalCVaMarshaller = ^TGSignalCVaMarshaller;
-  TGSignalCVaMarshaller = TGVaClosureMarshal;
 
-  PPGType = ^PGType;
-  PGType = ^TGType;
-  TGType = gsize;
-  TGBaseFinalizeFunc = procedure(g_class: gpointer); cdecl;
-  TGBaseInitFunc = procedure(g_class: gpointer); cdecl;
-
-  PPGBindingFlags = ^PGBindingFlags;
-  PGBindingFlags = ^TGBindingFlags;
-
-  PPGBinding = ^PGBinding;
-  PGBinding = ^TGBinding;
-
-  PPGObject = ^PGObject;
-  PGObject = ^TGObject;
-
-  PPGParameter = ^PGParameter;
-  PGParameter = ^TGParameter;
-
-  PPGParamSpec = ^PGParamSpec;
-  PGParamSpec = ^TGParamSpec;
-
-  PPGToggleNotify = ^PGToggleNotify;
-  PGToggleNotify = ^TGToggleNotify;
-  TGToggleNotify = procedure(data: gpointer; object_: PGObject; is_last_ref: gboolean); cdecl;
-
-  PPGBindingTransformFunc = ^PGBindingTransformFunc;
-  PGBindingTransformFunc = ^TGBindingTransformFunc;
-  TGBindingTransformFunc = function(binding: PGBinding; source_value: PGValue; target_value: PGValue; user_data: gpointer): gboolean; cdecl;
-
-  PPGWeakNotify = ^PGWeakNotify;
-  PGWeakNotify = ^TGWeakNotify;
-  TGWeakNotify = procedure(data: gpointer; where_the_object_was: PGObject); cdecl;
-
+  { TGTypeInstance }
   PPGTypeInstance = ^PGTypeInstance;
   PGTypeInstance = ^TGTypeInstance;
 
+
+  { TGTypeClass }
   PPGTypeClass = ^PGTypeClass;
   PGTypeClass = ^TGTypeClass;
   TGTypeInstance = object
     g_class: PGTypeClass;
     function get_private(private_type: TGType): gpointer; cdecl; inline;
   end;
+  TGVaClosureMarshal = procedure(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl;
+
+
+  { TGSignalCVaMarshaller }
+  PPGSignalCVaMarshaller = ^PGSignalCVaMarshaller;
+  PGSignalCVaMarshaller = ^TGSignalCVaMarshaller;
+  TGSignalCVaMarshaller = TGVaClosureMarshal;
+
+
+  { TGType }
+  PPGType = ^PGType;
+  PGType = ^TGType;
+  TGType = gsize;
+  TGTypeClass = object
+    g_type: TGType;
+    function get_instance_private_offset: gint; cdecl; inline;
+    function get_private(private_type: TGType): gpointer; cdecl; inline;
+    function peek_parent: PGTypeClass; cdecl; inline;
+    procedure unref; cdecl; inline;
+    procedure unref_uncached; cdecl; inline;
+    procedure adjust_private_offset(g_class: gpointer; private_size_or_offset: Pgint); cdecl; inline; static;
+    function peek(type_: TGType): PGTypeClass; cdecl; inline; static;
+    function peek_static(type_: TGType): PGTypeClass; cdecl; inline; static;
+    function ref(type_: TGType): PGTypeClass; cdecl; inline; static;
+  end;
+  TGBaseFinalizeFunc = procedure(g_class: PGTypeClass); cdecl;
+  TGBaseInitFunc = procedure(g_class: PGTypeClass); cdecl;
+
+
+  { TGObject }
+  PPPGObject = ^PPGObject;
+  PPGObject = ^PGObject;
+  PGObject = ^TGObject;
+
+
+  { TGParamSpec }
+  PPGParamSpec = ^PGParamSpec;
+  PGParamSpec = ^TGParamSpec;
+
+
+  { TGTypeInterface }
+  PPGTypeInterface = ^PGTypeInterface;
+  PGTypeInterface = ^TGTypeInterface;
+
+
+  { TGTypePlugin }
+  PPGTypePlugin = ^PGTypePlugin;
+  PGTypePlugin = ^TGTypePlugin;
+  TGTypeInterface = object
+    g_type: TGType;
+    g_instance_type: TGType;
+    function peek_parent: PGTypeInterface; cdecl; inline;
+    procedure add_prerequisite(interface_type: TGType; prerequisite_type: TGType); cdecl; inline; static;
+    function get_plugin(instance_type: TGType; interface_type: TGType): PGTypePlugin; cdecl; inline; static;
+    function peek(instance_class: PGTypeClass; iface_type: TGType): PGTypeInterface; cdecl; inline; static;
+    function prerequisites(interface_type: TGType; n_prerequisites: Pguint): PGType; cdecl; inline; static;
+  end;
+
+
+  { TGToggleNotify }
+  PPGToggleNotify = ^PGToggleNotify;
+  PGToggleNotify = ^TGToggleNotify;
+  TGToggleNotify = procedure(data: gpointer; object_: PGObject; is_last_ref: gboolean); cdecl;
+
+
+  { TGBinding }
+  PPGBinding = ^PGBinding;
+  PGBinding = ^TGBinding;
+
+
+  { TGBindingFlags }
+  PPGBindingFlags = ^PGBindingFlags;
+  PGBindingFlags = ^TGBindingFlags;
+
+
+  { TGBindingTransformFunc }
+  PPGBindingTransformFunc = ^PGBindingTransformFunc;
+  PGBindingTransformFunc = ^TGBindingTransformFunc;
+  TGBindingTransformFunc = function(binding: PGBinding; from_value: PGValue; to_value: PGValue; user_data: gpointer): gboolean; cdecl;
+
+
+  { TGWeakNotify }
+  PPGWeakNotify = ^PGWeakNotify;
+  PGWeakNotify = ^TGWeakNotify;
+  TGWeakNotify = procedure(data: gpointer; where_the_object_was: PGObject); cdecl;
   TGObject = object
     g_type_instance: TGTypeInstance;
     ref_count: guint;
     qdata: PGData;
+    //function new(object_type: TGType; first_property_name: Pgchar; args: array of const): PGObject; cdecl; inline; static;
     //function new_valist(object_type: TGType; first_property_name: Pgchar; var_args: Tva_list): PGObject; cdecl; inline; static;
     function newv(object_type: TGType; n_parameters: guint; parameters: PGParameter): PGObject; cdecl; inline; static;
+    function new_with_properties(object_type: TGType; n_properties: guint; names: PPgchar; values: PGValue): PGObject; cdecl; inline; static;
     function compat_control(what: gsize; data: gpointer): gsize; cdecl; inline; static;
-    //function connect(object_: gpointer; signal_spec: Pgchar; args: array of const): gpointer; cdecl; inline; static;
-    //procedure disconnect(object_: gpointer; signal_spec: Pgchar; args: array of const); cdecl; inline; static;
-    //procedure get(object_: gpointer; first_property_name: Pgchar; args: array of const); cdecl; inline; static;
-    function interface_find_property(g_iface: gpointer; property_name: Pgchar): PGParamSpec; cdecl; inline; static;
-    procedure interface_install_property(g_iface: gpointer; pspec: PGParamSpec); cdecl; inline; static;
-    function interface_list_properties(g_iface: gpointer; n_properties_p: Pguint): PPGParamSpec; cdecl; inline; static;
-    //function new(object_type: TGType; first_property_name: Pgchar; args: array of const): gpointer; cdecl; inline; static;
-    //procedure set_(object_: gpointer; first_property_name: Pgchar; args: array of const); cdecl; inline; static;
+    function interface_find_property(g_iface: PGTypeInterface; property_name: Pgchar): PGParamSpec; cdecl; inline; static;
+    procedure interface_install_property(g_iface: PGTypeInterface; pspec: PGParamSpec); cdecl; inline; static;
+    function interface_list_properties(g_iface: PGTypeInterface; n_properties_p: Pguint): PPGParamSpec; cdecl; inline; static;
     procedure add_toggle_ref(notify: TGToggleNotify; data: gpointer); cdecl; inline;
     procedure add_weak_pointer(weak_pointer_location: Pgpointer); cdecl; inline;
     function bind_property(source_property: Pgchar; target: PGObject; target_property: Pgchar; flags: TGBindingFlags): PGBinding; cdecl; inline;
     function bind_property_full(source_property: Pgchar; target: PGObject; target_property: Pgchar; flags: TGBindingFlags; transform_to: TGBindingTransformFunc; transform_from: TGBindingTransformFunc; user_data: gpointer; notify: TGDestroyNotify): PGBinding; cdecl; inline;
     function bind_property_with_closures(source_property: Pgchar; target: PGObject; target_property: Pgchar; flags: TGBindingFlags; transform_to: PGClosure; transform_from: PGClosure): PGBinding; cdecl; inline;
+    //function connect(signal_spec: Pgchar; args: array of const): PGObject; cdecl; inline;
+    //procedure disconnect(signal_spec: Pgchar; args: array of const); cdecl; inline;
     function dup_data(key: Pgchar; dup_func: TGDuplicateFunc; user_data: gpointer): gpointer; cdecl; inline;
     function dup_qdata(quark: TGQuark; dup_func: TGDuplicateFunc; user_data: gpointer): gpointer; cdecl; inline;
     procedure force_floating; cdecl; inline;
     procedure freeze_notify; cdecl; inline;
+    //procedure get(first_property_name: Pgchar; args: array of const); cdecl; inline;
     function get_data(key: Pgchar): gpointer; cdecl; inline;
     procedure get_property(property_name: Pgchar; value: PGValue); cdecl; inline;
     function get_qdata(quark: TGQuark): gpointer; cdecl; inline;
     //procedure get_valist(first_property_name: Pgchar; var_args: Tva_list); cdecl; inline;
+    procedure getv(n_properties: guint; names: PPgchar; values: PGValue); cdecl; inline;
     function is_floating: gboolean; cdecl; inline;
     procedure notify(property_name: Pgchar); cdecl; inline;
     procedure notify_by_pspec(pspec: PGParamSpec); cdecl; inline;
@@ -217,12 +279,14 @@ type
     function replace_data(key: Pgchar; oldval: gpointer; newval: gpointer; destroy_: TGDestroyNotify; old_destroy: PGDestroyNotify): gboolean; cdecl; inline;
     function replace_qdata(quark: TGQuark; oldval: gpointer; newval: gpointer; destroy_: TGDestroyNotify; old_destroy: PGDestroyNotify): gboolean; cdecl; inline;
     procedure run_dispose; cdecl; inline;
+    //procedure set_(first_property_name: Pgchar; args: array of const); cdecl; inline;
     procedure set_data(key: Pgchar; data: gpointer); cdecl; inline;
     procedure set_data_full(key: Pgchar; data: gpointer; destroy_: TGDestroyNotify); cdecl; inline;
     procedure set_property(property_name: Pgchar; value: PGValue); cdecl; inline;
     procedure set_qdata(quark: TGQuark; data: gpointer); cdecl; inline;
     procedure set_qdata_full(quark: TGQuark; data: gpointer; destroy_: TGDestroyNotify); cdecl; inline;
     //procedure set_valist(first_property_name: Pgchar; var_args: Tva_list); cdecl; inline;
+    procedure setv(n_properties: guint; names: PPgchar; values: PGValue); cdecl; inline;
     function steal_data(key: Pgchar): gpointer; cdecl; inline;
     function steal_qdata(quark: TGQuark): gpointer; cdecl; inline;
     procedure thaw_notify; cdecl; inline;
@@ -233,21 +297,81 @@ type
   end;
   TGBinding = object(TGObject)
     function get_flags: TGBindingFlags; cdecl; inline;
-    function get_source: PGObject; cdecl; inline;
     function get_source_property: Pgchar; cdecl; inline;
-    function get_target: PGObject; cdecl; inline;
     function get_target_property: Pgchar; cdecl; inline;
+    procedure unbind; cdecl; inline;
     property flags: TGBindingFlags read get_flags  { property is writeable but setter not declared } ;
-    property source: PGObject read get_source  { property is writeable but setter not declared } ;
+    //property source: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_source  { property is writeable but setter not declared } ;
     property source_property: Pgchar read get_source_property  { property is writeable but setter not declared } ;
-    property target: PGObject read get_target  { property is writeable but setter not declared } ;
+    //property target: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_target  { property is writeable but setter not declared } ;
     property target_property: Pgchar read get_target_property  { property is writeable but setter not declared } ;
   end;
 
+
+  { TGBindingGroup }
+  PPGBindingGroup = ^PGBindingGroup;
+  PGBindingGroup = ^TGBindingGroup;
+  TGBindingGroup = object(TGObject)
+    //property source: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_source  { property is writeable but setter not declared } ;
+  end;
+
+
+  { TGClosureNotify }
+  PPGClosureNotify = ^PGClosureNotify;
+  PGClosureNotify = ^TGClosureNotify;
+  TGClosureNotify = procedure(data: gpointer; closure: PGClosure); cdecl;
+
+
+  { TGClosureMarshal }
+  PPGClosureMarshal = ^PGClosureMarshal;
+  PGClosureMarshal = ^TGClosureMarshal;
+  TGClosureBitfield0 = bitpacked record
+    ref_count: guint15 { changed from guint to accomodate 15 bitsize requirement };
+    meta_marshal_nouse: guint1 { changed from guint to accomodate 1 bitsize requirement };
+    n_guards: guint1 { changed from guint to accomodate 1 bitsize requirement };
+    n_fnotifiers: guint2 { changed from guint to accomodate 2 bitsize requirement };
+    n_inotifiers: guint8 { changed from guint to accomodate 8 bitsize requirement };
+    in_inotify: guint1 { changed from guint to accomodate 1 bitsize requirement };
+    floating: guint1 { changed from guint to accomodate 1 bitsize requirement };
+    derivative_flag: guint1 { changed from guint to accomodate 1 bitsize requirement };
+    in_marshal: guint1 { changed from guint to accomodate 1 bitsize requirement };
+    is_invalid: guint1 { changed from guint to accomodate 1 bitsize requirement };
+  end;
+
+
+
+  { TGClosureNotifyData }
+  PPGClosureNotifyData = ^PGClosureNotifyData;
+  PGClosureNotifyData = ^TGClosureNotifyData;
+  TGClosure = object
+    Bitfield0 : TGClosureBitfield0; { auto generated type }
+    marshal: procedure(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl;
+    data: gpointer;
+    notifiers: PGClosureNotifyData;
+    function new_object(sizeof_closure: guint; object_: PGObject): PGClosure; cdecl; inline; static;
+    function new_simple(sizeof_closure: guint; data: gpointer): PGClosure; cdecl; inline; static;
+    procedure add_finalize_notifier(notify_data: gpointer; notify_func: TGClosureNotify); cdecl; inline;
+    procedure add_invalidate_notifier(notify_data: gpointer; notify_func: TGClosureNotify); cdecl; inline;
+    procedure add_marshal_guards(pre_marshal_data: gpointer; pre_marshal_notify: TGClosureNotify; post_marshal_data: gpointer; post_marshal_notify: TGClosureNotify); cdecl; inline;
+    procedure invalidate; cdecl; inline;
+    procedure invoke(return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer); cdecl; inline;
+    function ref: PGClosure; cdecl; inline;
+    procedure remove_finalize_notifier(notify_data: gpointer; notify_func: TGClosureNotify); cdecl; inline;
+    procedure remove_invalidate_notifier(notify_data: gpointer; notify_func: TGClosureNotify); cdecl; inline;
+    procedure set_marshal(marshal: TGClosureMarshal); cdecl; inline;
+    procedure set_meta_marshal(marshal_data: gpointer; meta_marshal: TGClosureMarshal); cdecl; inline;
+    procedure sink; cdecl; inline;
+    procedure unref; cdecl; inline;
+  end;
+
+
+  { TGValueTransform }
   PPGValueTransform = ^PGValueTransform;
   PGValueTransform = ^TGValueTransform;
   TGValueTransform = procedure(src_value: PGValue; dest_value: PGValue); cdecl;
 
+
+  { T_Value__data__union }
   PP_Value__data__union = ^P_Value__data__union;
   P_Value__data__union = ^T_Value__data__union;
   T_Value__data__union = record
@@ -295,6 +419,7 @@ type
     function get_ulong: gulong; cdecl; inline;
     function get_variant: PGVariant; cdecl; inline;
     function init(g_type: TGType): PGValue; cdecl; inline;
+    procedure init_from_instance(instance: PGTypeInstance); cdecl; inline;
     function peek_pointer: gpointer; cdecl; inline;
     function reset: PGValue; cdecl; inline;
     procedure set_boolean(v_boolean: gboolean); cdecl; inline;
@@ -307,6 +432,7 @@ type
     procedure set_instance(instance: gpointer); cdecl; inline;
     procedure set_int(v_int: gint); cdecl; inline;
     procedure set_int64(v_int64: gint64); cdecl; inline;
+    procedure set_interned_string(v_string: Pgchar); cdecl; inline;
     procedure set_long(v_long: glong); cdecl; inline;
     procedure set_object(v_object: PGObject); cdecl; inline;
     procedure set_param(param: PGParamSpec); cdecl; inline;
@@ -334,112 +460,73 @@ type
   end;
   TGBoxedCopyFunc = function(boxed: gpointer): gpointer; cdecl;
   TGBoxedFreeFunc = procedure(boxed: gpointer); cdecl;
-
-  PPGClosureNotify = ^PGClosureNotify;
-  PGClosureNotify = ^TGClosureNotify;
-  TGClosureNotify = procedure(data: gpointer; closure: PGClosure); cdecl;
-
-  PPGClosureMarshal = ^PGClosureMarshal;
-  PGClosureMarshal = ^TGClosureMarshal;
-  TGClosureBitfield0 = bitpacked record
-    ref_count: guint15 { changed from guint to accomodate 15 bitsize requirement };
-    meta_marshal_nouse: guint1 { changed from guint to accomodate 1 bitsize requirement };
-    n_guards: guint1 { changed from guint to accomodate 1 bitsize requirement };
-    n_fnotifiers: guint2 { changed from guint to accomodate 2 bitsize requirement };
-    n_inotifiers: guint8 { changed from guint to accomodate 8 bitsize requirement };
-    in_inotify: guint1 { changed from guint to accomodate 1 bitsize requirement };
-    floating: guint1 { changed from guint to accomodate 1 bitsize requirement };
-    derivative_flag: guint1 { changed from guint to accomodate 1 bitsize requirement };
-    in_marshal: guint1 { changed from guint to accomodate 1 bitsize requirement };
-    is_invalid: guint1 { changed from guint to accomodate 1 bitsize requirement };
-  end;
-
-
-  PPGClosureNotifyData = ^PGClosureNotifyData;
-  PGClosureNotifyData = ^TGClosureNotifyData;
-  TGClosure = object
-    Bitfield0 : TGClosureBitfield0; { auto generated type }
-    marshal: procedure(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl;
-    data: gpointer;
-    notifiers: PGClosureNotifyData;
-    function new_object(sizeof_closure: guint; object_: PGObject): PGClosure; cdecl; inline; static;
-    function new_simple(sizeof_closure: guint; data: gpointer): PGClosure; cdecl; inline; static;
-    procedure add_finalize_notifier(notify_data: gpointer; notify_func: TGClosureNotify); cdecl; inline;
-    procedure add_invalidate_notifier(notify_data: gpointer; notify_func: TGClosureNotify); cdecl; inline;
-    procedure add_marshal_guards(pre_marshal_data: gpointer; pre_marshal_notify: TGClosureNotify; post_marshal_data: gpointer; post_marshal_notify: TGClosureNotify); cdecl; inline;
-    procedure invalidate; cdecl; inline;
-    procedure invoke(return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer); cdecl; inline;
-    function ref: PGClosure; cdecl; inline;
-    procedure remove_finalize_notifier(notify_data: gpointer; notify_func: TGClosureNotify); cdecl; inline;
-    procedure remove_invalidate_notifier(notify_data: gpointer; notify_func: TGClosureNotify); cdecl; inline;
-    procedure set_marshal(marshal: TGClosureMarshal); cdecl; inline;
-    procedure set_meta_marshal(marshal_data: gpointer; meta_marshal: TGClosureMarshal); cdecl; inline;
-    procedure sink; cdecl; inline;
-    procedure unref; cdecl; inline;
-  end;
   TGCallback = procedure; cdecl;
 
+
+  { TGCClosure }
   PPGCClosure = ^PGCClosure;
   PGCClosure = ^TGCClosure;
 
+
+  { TGCallback }
   PPGCallback = ^PGCallback;
   PGCallback = ^TGCallback;
   TGCClosure = object
     closure: TGClosure;
     callback: gpointer;
     procedure marshal_BOOLEAN__BOXED_BOXED(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; inline; static;
-    //procedure marshal_BOOLEAN__BOXED_BOXEDv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
+    //procedure marshal_BOOLEAN__BOXED_BOXEDv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
     procedure marshal_BOOLEAN__FLAGS(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; inline; static;
-    //procedure marshal_BOOLEAN__FLAGSv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
+    //procedure marshal_BOOLEAN__FLAGSv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
     procedure marshal_STRING__OBJECT_POINTER(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; inline; static;
-    //procedure marshal_STRING__OBJECT_POINTERv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
+    //procedure marshal_STRING__OBJECT_POINTERv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
     procedure marshal_VOID__BOOLEAN(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; inline; static;
-    //procedure marshal_VOID__BOOLEANv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
+    //procedure marshal_VOID__BOOLEANv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
     procedure marshal_VOID__BOXED(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; inline; static;
-    //procedure marshal_VOID__BOXEDv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
+    //procedure marshal_VOID__BOXEDv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
     procedure marshal_VOID__CHAR(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; inline; static;
-    //procedure marshal_VOID__CHARv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
+    //procedure marshal_VOID__CHARv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
     procedure marshal_VOID__DOUBLE(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; inline; static;
-    //procedure marshal_VOID__DOUBLEv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
+    //procedure marshal_VOID__DOUBLEv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
     procedure marshal_VOID__ENUM(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; inline; static;
-    //procedure marshal_VOID__ENUMv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
+    //procedure marshal_VOID__ENUMv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
     procedure marshal_VOID__FLAGS(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; inline; static;
-    //procedure marshal_VOID__FLAGSv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
+    //procedure marshal_VOID__FLAGSv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
     procedure marshal_VOID__FLOAT(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; inline; static;
-    //procedure marshal_VOID__FLOATv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
+    //procedure marshal_VOID__FLOATv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
     procedure marshal_VOID__INT(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; inline; static;
-    //procedure marshal_VOID__INTv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
+    //procedure marshal_VOID__INTv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
     procedure marshal_VOID__LONG(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; inline; static;
-    //procedure marshal_VOID__LONGv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
+    //procedure marshal_VOID__LONGv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
     procedure marshal_VOID__OBJECT(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; inline; static;
-    //procedure marshal_VOID__OBJECTv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
+    //procedure marshal_VOID__OBJECTv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
     procedure marshal_VOID__PARAM(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; inline; static;
-    //procedure marshal_VOID__PARAMv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
+    //procedure marshal_VOID__PARAMv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
     procedure marshal_VOID__POINTER(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; inline; static;
-    //procedure marshal_VOID__POINTERv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
+    //procedure marshal_VOID__POINTERv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
     procedure marshal_VOID__STRING(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; inline; static;
-    //procedure marshal_VOID__STRINGv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
+    //procedure marshal_VOID__STRINGv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
     procedure marshal_VOID__UCHAR(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; inline; static;
-    //procedure marshal_VOID__UCHARv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
+    //procedure marshal_VOID__UCHARv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
     procedure marshal_VOID__UINT(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; inline; static;
     procedure marshal_VOID__UINT_POINTER(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; inline; static;
-    //procedure marshal_VOID__UINT_POINTERv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
-    //procedure marshal_VOID__UINTv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
+    //procedure marshal_VOID__UINT_POINTERv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
+    //procedure marshal_VOID__UINTv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
     procedure marshal_VOID__ULONG(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; inline; static;
-    //procedure marshal_VOID__ULONGv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
+    //procedure marshal_VOID__ULONGv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
     procedure marshal_VOID__VARIANT(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; inline; static;
-    //procedure marshal_VOID__VARIANTv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
+    //procedure marshal_VOID__VARIANTv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
     procedure marshal_VOID__VOID(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; inline; static;
-    //procedure marshal_VOID__VOIDv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
+    //procedure marshal_VOID__VOIDv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
     procedure marshal_generic(closure: PGClosure; return_gvalue: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; inline; static;
-    //procedure marshal_generic_va(closure: PGClosure; return_value: PGValue; instance: gpointer; args_list: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
+    //procedure marshal_generic_va(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args_list: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; inline; static;
     function new(callback_func: TGCallback; user_data: gpointer; destroy_data: TGClosureNotify): PGClosure; cdecl; inline; static;
     function new_object(callback_func: TGCallback; object_: PGObject): PGClosure; cdecl; inline; static;
     function new_object_swap(callback_func: TGCallback; object_: PGObject): PGClosure; cdecl; inline; static;
     function new_swap(callback_func: TGCallback; user_data: gpointer; destroy_data: TGClosureNotify): PGClosure; cdecl; inline; static;
   end;
-  TGClassFinalizeFunc = procedure(g_class: gpointer; class_data: gpointer); cdecl;
-  TGClassInitFunc = procedure(g_class: gpointer; class_data: gpointer); cdecl;
+  TGClassFinalizeFunc = procedure(g_class: PGTypeClass; class_data: gpointer); cdecl;
+  TGClassInitFunc = procedure(g_class: PGTypeClass; class_data: gpointer); cdecl;
 
   TGClosureNotifyData = record
     data: gpointer;
@@ -448,20 +535,13 @@ type
 
 
 
+
+  { TGConnectFlags }
   PPGConnectFlags = ^PGConnectFlags;
   PGConnectFlags = ^TGConnectFlags;
-  TGTypeClass = object
-    g_type: TGType;
-    function get_private(private_type: TGType): gpointer; cdecl; inline;
-    function peek_parent: PGTypeClass; cdecl; inline;
-    procedure unref; cdecl; inline;
-    procedure unref_uncached; cdecl; inline;
-    procedure add_private(g_class: gpointer; private_size: gsize); cdecl; inline; static;
-    function peek(type_: TGType): PGTypeClass; cdecl; inline; static;
-    function peek_static(type_: TGType): PGTypeClass; cdecl; inline; static;
-    function ref(type_: TGType): PGTypeClass; cdecl; inline; static;
-  end;
 
+
+  { TGEnumValue }
   PPGEnumValue = ^PGEnumValue;
   PGEnumValue = ^TGEnumValue;
 
@@ -473,6 +553,8 @@ type
 
 
 
+
+  { TGEnumClass }
   PPGEnumClass = ^PGEnumClass;
   PGEnumClass = ^TGEnumClass;
 
@@ -486,6 +568,8 @@ type
 
 
 
+
+  { TGFlagsValue }
   PPGFlagsValue = ^PGFlagsValue;
   PGFlagsValue = ^TGFlagsValue;
 
@@ -497,6 +581,8 @@ type
 
 
 
+
+  { TGFlagsClass }
   PPGFlagsClass = ^PGFlagsClass;
   PGFlagsClass = ^TGFlagsClass;
 
@@ -509,11 +595,15 @@ type
 
 
 
+
+  { TGInitiallyUnowned }
   PPGInitiallyUnowned = ^PGInitiallyUnowned;
   PGInitiallyUnowned = ^TGInitiallyUnowned;
   TGInitiallyUnowned = object(TGObject)
   end;
 
+
+  { TGObjectConstructParam }
   PPGObjectConstructParam = ^PGObjectConstructParam;
   PGObjectConstructParam = ^TGObjectConstructParam;
 
@@ -524,6 +614,8 @@ type
 
 
 
+
+  { TGParamFlags }
   PPGParamFlags = ^PGParamFlags;
   PGParamFlags = ^TGParamFlags;
   TGParamSpec = object
@@ -537,9 +629,12 @@ type
     qdata: PGData;
     ref_count: guint;
     param_id: guint;
-    function internal(param_type: TGType; name: Pgchar; nick: Pgchar; blurb: Pgchar; flags: TGParamFlags): gpointer; cdecl; inline; static;
+    function internal(param_type: TGType; name: Pgchar; nick: Pgchar; blurb: Pgchar; flags: TGParamFlags): PGParamSpec; cdecl; inline; static;
+    function is_valid_name(name: Pgchar): gboolean; cdecl; inline; static;
     function get_blurb: Pgchar; cdecl; inline;
+    function get_default_value: PGValue; cdecl; inline;
     function get_name: Pgchar; cdecl; inline;
+    function get_name_quark: TGQuark; cdecl; inline;
     function get_nick: Pgchar; cdecl; inline;
     function get_qdata(quark: TGQuark): gpointer; cdecl; inline;
     function get_redirect_target: PGParamSpec; cdecl; inline;
@@ -552,6 +647,8 @@ type
     procedure unref; cdecl; inline;
   end;
 
+
+  { TGInitiallyUnownedClass }
   PPGInitiallyUnownedClass = ^PGInitiallyUnownedClass;
   PGInitiallyUnownedClass = ^TGInitiallyUnownedClass;
   TGInitiallyUnownedClass = object
@@ -566,18 +663,27 @@ type
     notify: procedure(object_: PGObject; pspec: PGParamSpec); cdecl;
     constructed: procedure(object_: PGObject); cdecl;
     flags: gsize;
-    pdummy: array [0..5] of gpointer;
+    n_construct_properties: gsize;
+    pspecs: gpointer;
+    n_pspecs: gsize;
+    pdummy: array [0..2] of gpointer;
   end;
-  TGInstanceInitFunc = procedure(instance: PGTypeInstance; g_class: gpointer); cdecl;
-  TGInterfaceFinalizeFunc = procedure(g_iface: gpointer; iface_data: gpointer); cdecl;
-  TGInterfaceInitFunc = procedure(g_iface: gpointer; iface_data: gpointer); cdecl;
+  TGInstanceInitFunc = procedure(instance: PGTypeInstance; g_class: PGTypeClass); cdecl;
+  TGInterfaceFinalizeFunc = procedure(g_iface: PGTypeInterface; iface_data: gpointer); cdecl;
+  TGInterfaceInitFunc = procedure(g_iface: PGTypeInterface; iface_data: gpointer); cdecl;
 
+
+  { TGInterfaceInfo }
   PPGInterfaceInfo = ^PGInterfaceInfo;
   PGInterfaceInfo = ^TGInterfaceInfo;
 
+
+  { TGInterfaceInitFunc }
   PPGInterfaceInitFunc = ^PGInterfaceInitFunc;
   PGInterfaceInitFunc = ^TGInterfaceInitFunc;
 
+
+  { TGInterfaceFinalizeFunc }
   PPGInterfaceFinalizeFunc = ^PGInterfaceFinalizeFunc;
   PGInterfaceFinalizeFunc = ^TGInterfaceFinalizeFunc;
 
@@ -589,6 +695,9 @@ type
 
 
 
+
+  { TGParameter }
+
   TGParameter = record
     name: Pgchar;
     value: TGValue;
@@ -596,6 +705,8 @@ type
 
 
 
+
+  { TGObjectClass }
   PPGObjectClass = ^PGObjectClass;
   PGObjectClass = ^TGObjectClass;
   TGObjectClass = object
@@ -610,7 +721,10 @@ type
     notify: procedure(object_: PGObject; pspec: PGParamSpec); cdecl;
     constructed: procedure(object_: PGObject); cdecl;
     flags: gsize;
-    pdummy: array [0..5] of gpointer;
+    n_construct_properties: gsize;
+    pspecs: gpointer;
+    n_pspecs: gsize;
+    pdummy: array [0..2] of gpointer;
     function find_property(property_name: Pgchar): PGParamSpec; cdecl; inline;
     procedure install_properties(n_pspecs: guint; pspecs: PPGParamSpec); cdecl; inline;
     procedure install_property(property_id: guint; pspec: PGParamSpec); cdecl; inline;
@@ -621,17 +735,23 @@ type
   TGObjectGetPropertyFunc = procedure(object_: PGObject; property_id: guint; value: PGValue; pspec: PGParamSpec); cdecl;
   TGObjectSetPropertyFunc = procedure(object_: PGObject; property_id: guint; value: PGValue; pspec: PGParamSpec); cdecl;
 
+
+  { TGParamSpecBoolean }
   PPGParamSpecBoolean = ^PGParamSpecBoolean;
   PGParamSpecBoolean = ^TGParamSpecBoolean;
   TGParamSpecBoolean = object(TGParamSpec)
     default_value: gboolean;
   end;
 
+
+  { TGParamSpecBoxed }
   PPGParamSpecBoxed = ^PGParamSpecBoxed;
   PGParamSpecBoxed = ^TGParamSpecBoxed;
   TGParamSpecBoxed = object(TGParamSpec)
   end;
 
+
+  { TGParamSpecChar }
   PPGParamSpecChar = ^PGParamSpecChar;
   PGParamSpecChar = ^TGParamSpecChar;
   TGParamSpecChar = object(TGParamSpec)
@@ -640,6 +760,8 @@ type
     default_value: gint8;
   end;
 
+
+  { TGParamSpecClass }
   PPGParamSpecClass = ^PGParamSpecClass;
   PGParamSpecClass = ^TGParamSpecClass;
   TGParamSpecClass = object
@@ -649,9 +771,12 @@ type
     value_set_default: procedure(pspec: PGParamSpec; value: PGValue); cdecl;
     value_validate: function(pspec: PGParamSpec; value: PGValue): gboolean; cdecl;
     values_cmp: function(pspec: PGParamSpec; value1: PGValue; value2: PGValue): gint; cdecl;
-    dummy: array [0..3] of gpointer;
+    value_is_valid: function(pspec: PGParamSpec; value: PGValue): gboolean; cdecl;
+    dummy: array [0..2] of gpointer;
   end;
 
+
+  { TGParamSpecDouble }
   PPGParamSpecDouble = ^PGParamSpecDouble;
   PGParamSpecDouble = ^TGParamSpecDouble;
   TGParamSpecDouble = object(TGParamSpec)
@@ -661,6 +786,8 @@ type
     epsilon: gdouble;
   end;
 
+
+  { TGParamSpecEnum }
   PPGParamSpecEnum = ^PGParamSpecEnum;
   PGParamSpecEnum = ^TGParamSpecEnum;
   TGParamSpecEnum = object(TGParamSpec)
@@ -668,6 +795,8 @@ type
     default_value: gint;
   end;
 
+
+  { TGParamSpecFlags }
   PPGParamSpecFlags = ^PGParamSpecFlags;
   PGParamSpecFlags = ^TGParamSpecFlags;
   TGParamSpecFlags = object(TGParamSpec)
@@ -675,6 +804,8 @@ type
     default_value: guint;
   end;
 
+
+  { TGParamSpecFloat }
   PPGParamSpecFloat = ^PGParamSpecFloat;
   PGParamSpecFloat = ^TGParamSpecFloat;
   TGParamSpecFloat = object(TGParamSpec)
@@ -684,12 +815,16 @@ type
     epsilon: gfloat;
   end;
 
+
+  { TGParamSpecGType }
   PPGParamSpecGType = ^PGParamSpecGType;
   PGParamSpecGType = ^TGParamSpecGType;
   TGParamSpecGType = object(TGParamSpec)
     is_a_type: TGType;
   end;
 
+
+  { TGParamSpecInt }
   PPGParamSpecInt = ^PGParamSpecInt;
   PGParamSpecInt = ^TGParamSpecInt;
   TGParamSpecInt = object(TGParamSpec)
@@ -698,6 +833,8 @@ type
     default_value: gint;
   end;
 
+
+  { TGParamSpecInt64 }
   PPGParamSpecInt64 = ^PGParamSpecInt64;
   PGParamSpecInt64 = ^TGParamSpecInt64;
   TGParamSpecInt64 = object(TGParamSpec)
@@ -706,6 +843,8 @@ type
     default_value: gint64;
   end;
 
+
+  { TGParamSpecLong }
   PPGParamSpecLong = ^PGParamSpecLong;
   PGParamSpecLong = ^TGParamSpecLong;
   TGParamSpecLong = object(TGParamSpec)
@@ -714,27 +853,37 @@ type
     default_value: glong;
   end;
 
+
+  { TGParamSpecObject }
   PPGParamSpecObject = ^PGParamSpecObject;
   PGParamSpecObject = ^TGParamSpecObject;
   TGParamSpecObject = object(TGParamSpec)
   end;
 
+
+  { TGParamSpecOverride }
   PPGParamSpecOverride = ^PGParamSpecOverride;
   PGParamSpecOverride = ^TGParamSpecOverride;
   TGParamSpecOverride = object(TGParamSpec)
     overridden: PGParamSpec;
   end;
 
+
+  { TGParamSpecParam }
   PPGParamSpecParam = ^PGParamSpecParam;
   PGParamSpecParam = ^TGParamSpecParam;
   TGParamSpecParam = object(TGParamSpec)
   end;
 
+
+  { TGParamSpecPointer }
   PPGParamSpecPointer = ^PGParamSpecPointer;
   PGParamSpecPointer = ^TGParamSpecPointer;
   TGParamSpecPointer = object(TGParamSpec)
   end;
 
+
+  { TGParamSpecPool }
   PPGParamSpecPool = ^PGParamSpecPool;
   PGParamSpecPool = ^TGParamSpecPool;
   TGParamSpecPool = object
@@ -746,6 +895,8 @@ type
     function new(type_prefixing: gboolean): PGParamSpecPool; cdecl; inline; static;
   end;
 
+
+  { TGParamSpecString }
   PPGParamSpecString = ^PGParamSpecString;
   PGParamSpecString = ^TGParamSpecString;
   TGParamSpecStringBitfield0 = bitpacked record
@@ -761,6 +912,8 @@ type
     Bitfield0 : TGParamSpecStringBitfield0; { auto generated type }
   end;
 
+
+  { TGParamSpecTypeInfo }
   PPGParamSpecTypeInfo = ^PGParamSpecTypeInfo;
   PGParamSpecTypeInfo = ^TGParamSpecTypeInfo;
 
@@ -777,6 +930,8 @@ type
 
 
 
+
+  { TGParamSpecUChar }
   PPGParamSpecUChar = ^PGParamSpecUChar;
   PGParamSpecUChar = ^TGParamSpecUChar;
   TGParamSpecUChar = object(TGParamSpec)
@@ -785,6 +940,8 @@ type
     default_value: guint8;
   end;
 
+
+  { TGParamSpecUInt }
   PPGParamSpecUInt = ^PGParamSpecUInt;
   PGParamSpecUInt = ^TGParamSpecUInt;
   TGParamSpecUInt = object(TGParamSpec)
@@ -793,6 +950,8 @@ type
     default_value: guint;
   end;
 
+
+  { TGParamSpecUInt64 }
   PPGParamSpecUInt64 = ^PGParamSpecUInt64;
   PGParamSpecUInt64 = ^TGParamSpecUInt64;
   TGParamSpecUInt64 = object(TGParamSpec)
@@ -801,6 +960,8 @@ type
     default_value: guint64;
   end;
 
+
+  { TGParamSpecULong }
   PPGParamSpecULong = ^PGParamSpecULong;
   PGParamSpecULong = ^TGParamSpecULong;
   TGParamSpecULong = object(TGParamSpec)
@@ -809,12 +970,16 @@ type
     default_value: gulong;
   end;
 
+
+  { TGParamSpecUnichar }
   PPGParamSpecUnichar = ^PGParamSpecUnichar;
   PGParamSpecUnichar = ^TGParamSpecUnichar;
   TGParamSpecUnichar = object(TGParamSpec)
     default_value: gunichar;
   end;
 
+
+  { TGParamSpecValueArray }
   PPGParamSpecValueArray = ^PGParamSpecValueArray;
   PGParamSpecValueArray = ^TGParamSpecValueArray;
   TGParamSpecValueArray = object(TGParamSpec)
@@ -822,6 +987,8 @@ type
     fixed_n_elements: guint;
   end;
 
+
+  { TGParamSpecVariant }
   PPGParamSpecVariant = ^PGParamSpecVariant;
   PGParamSpecVariant = ^TGParamSpecVariant;
   TGParamSpecVariant = object(TGParamSpec)
@@ -830,9 +997,13 @@ type
     padding: array [0..3] of gpointer;
   end;
 
+
+  { TGSignalInvocationHint }
   PPGSignalInvocationHint = ^PGSignalInvocationHint;
   PGSignalInvocationHint = ^TGSignalInvocationHint;
 
+
+  { TGSignalFlags }
   PPGSignalFlags = ^PGSignalFlags;
   PGSignalFlags = ^TGSignalFlags;
 
@@ -846,9 +1017,22 @@ type
   TGSignalAccumulator = function(ihint: PGSignalInvocationHint; return_accu: PGValue; handler_return: PGValue; data: gpointer): gboolean; cdecl;
   TGSignalEmissionHook = function(ihint: PGSignalInvocationHint; n_param_values: guint; param_values: PGValue; data: gpointer): gboolean; cdecl;
 
+
+  { TGSignalGroup }
+  PPGSignalGroup = ^PGSignalGroup;
+  PGSignalGroup = ^TGSignalGroup;
+  TGSignalGroup = object(TGObject)
+    //property target: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_target  { property is writeable but setter not declared } ;
+    //property target_type: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_target_type  { property is writeable but setter not declared } ;
+  end;
+
+
+  { TGSignalMatchType }
   PPGSignalMatchType = ^PGSignalMatchType;
   PGSignalMatchType = ^TGSignalMatchType;
 
+
+  { TGSignalQuery }
   PPGSignalQuery = ^PGSignalQuery;
   PGSignalQuery = ^TGSignalQuery;
 
@@ -863,27 +1047,34 @@ type
   end;
 
 
+
+
+  { TGTypeCValue }
+  PPGTypeCValue = ^PGTypeCValue;
+  PGTypeCValue = ^TGTypeCValue;
   TGTypeCValue = record
-    case longint of
-      0 : (v_int: gint);
-      1 : (v_long: glong);
-      2 : (v_int64: gint64);
-      3 : (v_double: gdouble);
-      4 : (v_pointer: gpointer);
   end;
 
 
   TGTypeClassCacheFunc = function(cache_data: gpointer; g_class: PGTypeClass): gboolean; cdecl;
 
+
+  { TGTypeDebugFlags }
   PPGTypeDebugFlags = ^PGTypeDebugFlags;
   PGTypeDebugFlags = ^TGTypeDebugFlags;
 
+
+  { TGTypeFlags }
   PPGTypeFlags = ^PGTypeFlags;
   PGTypeFlags = ^TGTypeFlags;
 
+
+  { TGTypeFundamentalFlags }
   PPGTypeFundamentalFlags = ^PGTypeFundamentalFlags;
   PGTypeFundamentalFlags = ^TGTypeFundamentalFlags;
 
+
+  { TGTypeFundamentalInfo }
   PPGTypeFundamentalInfo = ^PGTypeFundamentalInfo;
   PGTypeFundamentalInfo = ^TGTypeFundamentalInfo;
 
@@ -893,11 +1084,10 @@ type
 
 
 
+
+  { TGTypeValueTable }
   PPGTypeValueTable = ^PGTypeValueTable;
   PGTypeValueTable = ^TGTypeValueTable;
-
-  PPGTypeCValue = ^PGTypeCValue;
-  PGTypeCValue = ^TGTypeCValue;
   TGTypeValueTable = object
     value_init: procedure(value: PGValue); cdecl;
     value_free: procedure(value: PGValue); cdecl;
@@ -910,21 +1100,33 @@ type
     function peek(type_: TGType): PGTypeValueTable; cdecl; inline; static;
   end;
 
+
+  { TGTypeInfo }
   PPGTypeInfo = ^PGTypeInfo;
   PGTypeInfo = ^TGTypeInfo;
 
+
+  { TGBaseInitFunc }
   PPGBaseInitFunc = ^PGBaseInitFunc;
   PGBaseInitFunc = ^TGBaseInitFunc;
 
+
+  { TGBaseFinalizeFunc }
   PPGBaseFinalizeFunc = ^PGBaseFinalizeFunc;
   PGBaseFinalizeFunc = ^TGBaseFinalizeFunc;
 
+
+  { TGClassInitFunc }
   PPGClassInitFunc = ^PGClassInitFunc;
   PGClassInitFunc = ^TGClassInitFunc;
 
+
+  { TGClassFinalizeFunc }
   PPGClassFinalizeFunc = ^PGClassFinalizeFunc;
   PGClassFinalizeFunc = ^TGClassFinalizeFunc;
 
+
+  { TGInstanceInitFunc }
   PPGInstanceInitFunc = ^PGInstanceInitFunc;
   PGInstanceInitFunc = ^TGInstanceInitFunc;
 
@@ -942,29 +1144,16 @@ type
   end;
 
 
-
-  PPGTypeInterface = ^PGTypeInterface;
-  PGTypeInterface = ^TGTypeInterface;
-
-  PPGTypePlugin = ^PGTypePlugin;
-  PGTypePlugin = ^TGTypePlugin;
-  TGTypeInterface = object
-    g_type: TGType;
-    g_instance_type: TGType;
-    function peek_parent: PGTypeInterface; cdecl; inline;
-    procedure add_prerequisite(interface_type: TGType; prerequisite_type: TGType); cdecl; inline; static;
-    function get_plugin(instance_type: TGType; interface_type: TGType): PGTypePlugin; cdecl; inline; static;
-    function peek(instance_class: PGTypeClass; iface_type: TGType): PGTypeInterface; cdecl; inline; static;
-    function prerequisites(interface_type: TGType; n_prerequisites: Pguint): PGType; cdecl; inline; static;
-  end;
   TGTypePlugin = object
     procedure complete_interface_info(instance_type: TGType; interface_type: TGType; info: PGInterfaceInfo); cdecl; inline;
     procedure complete_type_info(g_type: TGType; info: PGTypeInfo; value_table: PGTypeValueTable); cdecl; inline;
     procedure unuse; cdecl; inline;
     procedure use; cdecl; inline;
   end;
-  TGTypeInterfaceCheckFunc = procedure(check_data: gpointer; g_iface: gpointer); cdecl;
+  TGTypeInterfaceCheckFunc = procedure(check_data: gpointer; g_iface: PGTypeInterface); cdecl;
 
+
+  { TGTypeModule }
   PPGTypeModule = ^PGTypeModule;
   PGTypeModule = ^TGTypeModule;
   TGTypeModule = object(TGObject)
@@ -981,6 +1170,8 @@ type
     function use: gboolean; cdecl; inline;
   end;
 
+
+  { TGTypeModuleClass }
   PPGTypeModuleClass = ^PGTypeModuleClass;
   PGTypeModuleClass = ^TGTypeModuleClass;
   TGTypeModuleClass = object
@@ -997,18 +1188,28 @@ type
   TGTypePluginCompleteTypeInfo = procedure(plugin: PGTypePlugin; g_type: TGType; info: PGTypeInfo; value_table: PGTypeValueTable); cdecl;
   TGTypePluginCompleteInterfaceInfo = procedure(plugin: PGTypePlugin; instance_type: TGType; interface_type: TGType; info: PGInterfaceInfo); cdecl;
 
+
+  { TGTypePluginClass }
   PPGTypePluginClass = ^PGTypePluginClass;
   PGTypePluginClass = ^TGTypePluginClass;
 
+
+  { TGTypePluginUse }
   PPGTypePluginUse = ^PGTypePluginUse;
   PGTypePluginUse = ^TGTypePluginUse;
 
+
+  { TGTypePluginUnuse }
   PPGTypePluginUnuse = ^PGTypePluginUnuse;
   PGTypePluginUnuse = ^TGTypePluginUnuse;
 
+
+  { TGTypePluginCompleteTypeInfo }
   PPGTypePluginCompleteTypeInfo = ^PGTypePluginCompleteTypeInfo;
   PGTypePluginCompleteTypeInfo = ^TGTypePluginCompleteTypeInfo;
 
+
+  { TGTypePluginCompleteInterfaceInfo }
   PPGTypePluginCompleteInterfaceInfo = ^PGTypePluginCompleteInterfaceInfo;
   PGTypePluginCompleteInterfaceInfo = ^TGTypePluginCompleteInterfaceInfo;
 
@@ -1022,6 +1223,8 @@ type
 
 
 
+
+  { TGTypeQuery }
   PPGTypeQuery = ^PGTypeQuery;
   PGTypeQuery = ^TGTypeQuery;
 
@@ -1034,6 +1237,8 @@ type
 
 
 
+
+  { TGValueArray }
   PPGValueArray = ^PGValueArray;
   PGValueArray = ^TGValueArray;
   TGValueArray = object
@@ -1042,8 +1247,15 @@ type
     n_prealloced: guint;
   end;
 
+
+  { TGWeakRef }
   PPGWeakRef = ^PGWeakRef;
   PGWeakRef = ^TGWeakRef;
+
+
+  { TGWeakRef_union_priv }
+  PPGWeakRef_union_priv = ^PGWeakRef_union_priv;
+  PGWeakRef_union_priv = ^TGWeakRef_union_priv;
   TGWeakRef_union_priv = record
     case longint of
       0 : (p: gpointer);
@@ -1054,16 +1266,15 @@ type
     priv: TGWeakRef_union_priv; //union extracted from object and named 'TGWeakRef_union_priv'
     procedure clear; cdecl; inline;
     function get: PGObject; cdecl; inline;
-    procedure init(object_: gpointer); cdecl; inline;
-    procedure set_(object_: gpointer); cdecl; inline;
+    procedure init(object_: PGObject); cdecl; inline;
+    procedure set_(object_: PGObject); cdecl; inline;
   end;
 
 function g_binding_get_flags(binding: PGBinding): TGBindingFlags; cdecl; external;
-function g_binding_get_source(binding: PGBinding): PGObject; cdecl; external;
 function g_binding_get_source_property(binding: PGBinding): Pgchar; cdecl; external;
-function g_binding_get_target(binding: PGBinding): PGObject; cdecl; external;
 function g_binding_get_target_property(binding: PGBinding): Pgchar; cdecl; external;
 function g_binding_get_type: TGType; cdecl; external;
+function g_binding_group_get_type: TGType; cdecl; external;
 function g_boxed_copy(boxed_type: TGType; src_boxed: Pgpointer): gpointer; cdecl; external;
 function g_boxed_type_register_static(name: Pgchar; boxed_copy: TGBoxedCopyFunc; boxed_free: TGBoxedFreeFunc): TGType; cdecl; external;
 function g_cclosure_new(callback_func: TGCallback; user_data: gpointer; destroy_data: TGClosureNotify): PGClosure; cdecl; external;
@@ -1078,10 +1289,12 @@ function g_enum_get_value(enum_class: PGEnumClass; value: gint): PGEnumValue; cd
 function g_enum_get_value_by_name(enum_class: PGEnumClass; name: Pgchar): PGEnumValue; cdecl; external;
 function g_enum_get_value_by_nick(enum_class: PGEnumClass; nick: Pgchar): PGEnumValue; cdecl; external;
 function g_enum_register_static(name: Pgchar; const_static_values: PGEnumValue): TGType; cdecl; external;
+function g_enum_to_string(g_enum_type: TGType; value: gint): Pgchar; cdecl; external;
 function g_flags_get_first_value(flags_class: PGFlagsClass; value: guint): PGFlagsValue; cdecl; external;
 function g_flags_get_value_by_name(flags_class: PGFlagsClass; name: Pgchar): PGFlagsValue; cdecl; external;
 function g_flags_get_value_by_nick(flags_class: PGFlagsClass; nick: Pgchar): PGFlagsValue; cdecl; external;
 function g_flags_register_static(name: Pgchar; const_static_values: PGFlagsValue): TGType; cdecl; external;
+function g_flags_to_string(flags_type: TGType; value: guint): Pgchar; cdecl; external;
 function g_gtype_get_type: TGType; cdecl; external;
 function g_initially_unowned_get_type: TGType; cdecl; external;
 function g_object_bind_property(source: PGObject; source_property: Pgchar; target: PGObject; target_property: Pgchar; flags: TGBindingFlags): PGBinding; cdecl; external;
@@ -1090,18 +1303,19 @@ function g_object_bind_property_with_closures(source: PGObject; source_property:
 function g_object_class_find_property(oclass: PGObjectClass; property_name: Pgchar): PGParamSpec; cdecl; external;
 function g_object_class_list_properties(oclass: PGObjectClass; n_properties: Pguint): PPGParamSpec; cdecl; external;
 function g_object_compat_control(what: gsize; data: gpointer): gsize; cdecl; external;
-function g_object_connect(object_: gpointer; signal_spec: Pgchar; args: array of const): gpointer; cdecl; external;
+function g_object_connect(object_: PGObject; signal_spec: Pgchar; args: array of const): PGObject; cdecl; external;
 function g_object_dup_data(object_: PGObject; key: Pgchar; dup_func: TGDuplicateFunc; user_data: gpointer): gpointer; cdecl; external;
 function g_object_dup_qdata(object_: PGObject; quark: TGQuark; dup_func: TGDuplicateFunc; user_data: gpointer): gpointer; cdecl; external;
 function g_object_get_data(object_: PGObject; key: Pgchar): gpointer; cdecl; external;
 function g_object_get_qdata(object_: PGObject; quark: TGQuark): gpointer; cdecl; external;
 function g_object_get_type: TGType; cdecl; external;
-function g_object_interface_find_property(g_iface: gpointer; property_name: Pgchar): PGParamSpec; cdecl; external;
-function g_object_interface_list_properties(g_iface: gpointer; n_properties_p: Pguint): PPGParamSpec; cdecl; external;
+function g_object_interface_find_property(g_iface: PGTypeInterface; property_name: Pgchar): PGParamSpec; cdecl; external;
+function g_object_interface_list_properties(g_iface: PGTypeInterface; n_properties_p: Pguint): PPGParamSpec; cdecl; external;
 function g_object_is_floating(object_: PGObject): gboolean; cdecl; external;
-function g_object_new(object_type: TGType; first_property_name: Pgchar; args: array of const): gpointer; cdecl; external;
+function g_object_new(object_type: TGType; first_property_name: Pgchar; args: array of const): PGObject; cdecl; external;
 function g_object_new_valist(object_type: TGType; first_property_name: Pgchar; var_args: Tva_list): PGObject; cdecl; external;
 function g_object_newv(object_type: TGType; n_parameters: guint; parameters: PGParameter): PGObject; cdecl; external;
+function g_object_new_with_properties(object_type: TGType; n_properties: guint; names: PPgchar; values: PGValue): PGObject; cdecl; external;
 function g_object_ref(object_: PGObject): PGObject; cdecl; external;
 function g_object_ref_sink(object_: PGObject): PGObject; cdecl; external;
 function g_object_replace_data(object_: PGObject; key: Pgchar; oldval: gpointer; newval: gpointer; destroy_: TGDestroyNotify; old_destroy: PGDestroyNotify): gboolean; cdecl; external;
@@ -1116,14 +1330,17 @@ function g_param_spec_enum(name: Pgchar; nick: Pgchar; blurb: Pgchar; enum_type:
 function g_param_spec_flags(name: Pgchar; nick: Pgchar; blurb: Pgchar; flags_type: TGType; default_value: guint; flags: TGParamFlags): PGParamSpec; cdecl; external;
 function g_param_spec_float(name: Pgchar; nick: Pgchar; blurb: Pgchar; minimum: gfloat; maximum: gfloat; default_value: gfloat; flags: TGParamFlags): PGParamSpec; cdecl; external;
 function g_param_spec_get_blurb(pspec: PGParamSpec): Pgchar; cdecl; external;
+function g_param_spec_get_default_value(pspec: PGParamSpec): PGValue; cdecl; external;
 function g_param_spec_get_name(pspec: PGParamSpec): Pgchar; cdecl; external;
+function g_param_spec_get_name_quark(pspec: PGParamSpec): TGQuark; cdecl; external;
 function g_param_spec_get_nick(pspec: PGParamSpec): Pgchar; cdecl; external;
 function g_param_spec_get_qdata(pspec: PGParamSpec; quark: TGQuark): gpointer; cdecl; external;
 function g_param_spec_get_redirect_target(pspec: PGParamSpec): PGParamSpec; cdecl; external;
 function g_param_spec_gtype(name: Pgchar; nick: Pgchar; blurb: Pgchar; is_a_type: TGType; flags: TGParamFlags): PGParamSpec; cdecl; external;
 function g_param_spec_int(name: Pgchar; nick: Pgchar; blurb: Pgchar; minimum: gint; maximum: gint; default_value: gint; flags: TGParamFlags): PGParamSpec; cdecl; external;
 function g_param_spec_int64(name: Pgchar; nick: Pgchar; blurb: Pgchar; minimum: gint64; maximum: gint64; default_value: gint64; flags: TGParamFlags): PGParamSpec; cdecl; external;
-function g_param_spec_internal(param_type: TGType; name: Pgchar; nick: Pgchar; blurb: Pgchar; flags: TGParamFlags): gpointer; cdecl; external;
+function g_param_spec_internal(param_type: TGType; name: Pgchar; nick: Pgchar; blurb: Pgchar; flags: TGParamFlags): PGParamSpec; cdecl; external;
+function g_param_spec_is_valid_name(name: Pgchar): gboolean; cdecl; external;
 function g_param_spec_long(name: Pgchar; nick: Pgchar; blurb: Pgchar; minimum: glong; maximum: glong; default_value: glong; flags: TGParamFlags): PGParamSpec; cdecl; external;
 function g_param_spec_object(name: Pgchar; nick: Pgchar; blurb: Pgchar; object_type: TGType; flags: TGParamFlags): PGParamSpec; cdecl; external;
 function g_param_spec_override(name: Pgchar; overridden: PGParamSpec): PGParamSpec; cdecl; external;
@@ -1147,23 +1364,26 @@ function g_param_spec_variant(name: Pgchar; nick: Pgchar; blurb: Pgchar; type_: 
 function g_param_type_register_static(name: Pgchar; pspec_info: PGParamSpecTypeInfo): TGType; cdecl; external;
 function g_param_value_convert(pspec: PGParamSpec; src_value: PGValue; dest_value: PGValue; strict_validation: gboolean): gboolean; cdecl; external;
 function g_param_value_defaults(pspec: PGParamSpec; value: PGValue): gboolean; cdecl; external;
+function g_param_value_is_valid(pspec: PGParamSpec; value: PGValue): gboolean; cdecl; external;
 function g_param_value_validate(pspec: PGParamSpec; value: PGValue): gboolean; cdecl; external;
 function g_param_values_cmp(pspec: PGParamSpec; value1: PGValue; value2: PGValue): gint; cdecl; external;
 function g_pointer_type_register_static(name: Pgchar): TGType; cdecl; external;
 function g_signal_accumulator_first_wins(ihint: PGSignalInvocationHint; return_accu: PGValue; handler_return: PGValue; dummy: gpointer): gboolean; cdecl; external;
 function g_signal_accumulator_true_handled(ihint: PGSignalInvocationHint; return_accu: PGValue; handler_return: PGValue; dummy: gpointer): gboolean; cdecl; external;
 function g_signal_add_emission_hook(signal_id: guint; detail: TGQuark; hook_func: TGSignalEmissionHook; hook_data: gpointer; data_destroy: TGDestroyNotify): gulong; cdecl; external;
-function g_signal_connect_closure(instance: gpointer; detailed_signal: Pgchar; closure: PGClosure; after: gboolean): gulong; cdecl; external;
-function g_signal_connect_closure_by_id(instance: gpointer; signal_id: guint; detail: TGQuark; closure: PGClosure; after: gboolean): gulong; cdecl; external;
-function g_signal_connect_data(instance: gpointer; detailed_signal: Pgchar; c_handler: TGCallback; data: gpointer; destroy_data: TGClosureNotify; connect_flags: TGConnectFlags): gulong; cdecl; external;
-function g_signal_connect_object(instance: gpointer; detailed_signal: Pgchar; c_handler: TGCallback; gobject: gpointer; connect_flags: TGConnectFlags): gulong; cdecl; external;
-function g_signal_get_invocation_hint(instance: gpointer): PGSignalInvocationHint; cdecl; external;
-function g_signal_handler_find(instance: gpointer; mask: TGSignalMatchType; signal_id: guint; detail: TGQuark; closure: PGClosure; func: gpointer; data: gpointer): gulong; cdecl; external;
-function g_signal_handler_is_connected(instance: gpointer; handler_id: gulong): gboolean; cdecl; external;
-function g_signal_handlers_block_matched(instance: gpointer; mask: TGSignalMatchType; signal_id: guint; detail: TGQuark; closure: PGClosure; func: gpointer; data: gpointer): guint; cdecl; external;
-function g_signal_handlers_disconnect_matched(instance: gpointer; mask: TGSignalMatchType; signal_id: guint; detail: TGQuark; closure: PGClosure; func: gpointer; data: gpointer): guint; cdecl; external;
-function g_signal_handlers_unblock_matched(instance: gpointer; mask: TGSignalMatchType; signal_id: guint; detail: TGQuark; closure: PGClosure; func: gpointer; data: gpointer): guint; cdecl; external;
-function g_signal_has_handler_pending(instance: gpointer; signal_id: guint; detail: TGQuark; may_be_blocked: gboolean): gboolean; cdecl; external;
+function g_signal_connect_closure(instance: PGObject; detailed_signal: Pgchar; closure: PGClosure; after: gboolean): gulong; cdecl; external;
+function g_signal_connect_closure_by_id(instance: PGObject; signal_id: guint; detail: TGQuark; closure: PGClosure; after: gboolean): gulong; cdecl; external;
+function g_signal_connect_data(instance: PGObject; detailed_signal: Pgchar; c_handler: TGCallback; data: gpointer; destroy_data: TGClosureNotify; connect_flags: TGConnectFlags): gulong; cdecl; external;
+function g_signal_connect_object(instance: PGTypeInstance; detailed_signal: Pgchar; c_handler: TGCallback; gobject: PGObject; connect_flags: TGConnectFlags): gulong; cdecl; external;
+function g_signal_get_invocation_hint(instance: PGObject): PGSignalInvocationHint; cdecl; external;
+function g_signal_group_get_type: TGType; cdecl; external;
+function g_signal_handler_find(instance: PGObject; mask: TGSignalMatchType; signal_id: guint; detail: TGQuark; closure: PGClosure; func: gpointer; data: gpointer): gulong; cdecl; external;
+function g_signal_handler_is_connected(instance: PGObject; handler_id: gulong): gboolean; cdecl; external;
+function g_signal_handlers_block_matched(instance: PGObject; mask: TGSignalMatchType; signal_id: guint; detail: TGQuark; closure: PGClosure; func: gpointer; data: gpointer): guint; cdecl; external;
+function g_signal_handlers_disconnect_matched(instance: PGObject; mask: TGSignalMatchType; signal_id: guint; detail: TGQuark; closure: PGClosure; func: gpointer; data: gpointer): guint; cdecl; external;
+function g_signal_handlers_unblock_matched(instance: PGObject; mask: TGSignalMatchType; signal_id: guint; detail: TGQuark; closure: PGClosure; func: gpointer; data: gpointer): guint; cdecl; external;
+function g_signal_has_handler_pending(instance: PGObject; signal_id: guint; detail: TGQuark; may_be_blocked: gboolean): gboolean; cdecl; external;
+function g_signal_is_valid_name(name: Pgchar): gboolean; cdecl; external;
 function g_signal_list_ids(itype: TGType; n_ids: Pguint): Pguint; cdecl; external;
 function g_signal_lookup(name: Pgchar; itype: TGType): guint; cdecl; external;
 function g_signal_name(signal_id: guint): Pgchar; cdecl; external;
@@ -1174,15 +1394,18 @@ function g_signal_newv(signal_name: Pgchar; itype: TGType; signal_flags: TGSigna
 function g_signal_parse_name(detailed_signal: Pgchar; itype: TGType; signal_id_p: Pguint; detail_p: PGQuark; force_detail_quark: gboolean): gboolean; cdecl; external;
 function g_signal_type_cclosure_new(itype: TGType; struct_offset: guint): PGClosure; cdecl; external;
 function g_strdup_value_contents(value: PGValue): Pgchar; cdecl; external;
+function g_type_add_instance_private(class_type: TGType; private_size: gsize): gint; cdecl; external;
 function g_type_check_class_cast(g_class: PGTypeClass; is_a_type: TGType): PGTypeClass; cdecl; external;
 function g_type_check_class_is_a(g_class: PGTypeClass; is_a_type: TGType): gboolean; cdecl; external;
 function g_type_check_instance(instance: PGTypeInstance): gboolean; cdecl; external;
 function g_type_check_instance_cast(instance: PGTypeInstance; iface_type: TGType): PGTypeInstance; cdecl; external;
 function g_type_check_instance_is_a(instance: PGTypeInstance; iface_type: TGType): gboolean; cdecl; external;
+function g_type_check_instance_is_fundamentally_a(instance: PGTypeInstance; fundamental_type: TGType): gboolean; cdecl; external;
 function g_type_check_is_value_type(type_: TGType): gboolean; cdecl; external;
 function g_type_check_value(value: PGValue): gboolean; cdecl; external;
 function g_type_check_value_holds(value: PGValue; type_: TGType): gboolean; cdecl; external;
 function g_type_children(type_: TGType; n_children: Pguint): PGType; cdecl; external;
+function g_type_class_get_instance_private_offset(g_class: PGTypeClass): gint; cdecl; external;
 function g_type_class_get_private(klass: PGTypeClass; private_type: TGType): gpointer; cdecl; external;
 function g_type_class_peek(type_: TGType): PGTypeClass; cdecl; external;
 function g_type_class_peek_parent(g_class: PGTypeClass): PGTypeClass; cdecl; external;
@@ -1195,6 +1418,7 @@ function g_type_depth(type_: TGType): guint; cdecl; external;
 function g_type_from_name(name: Pgchar): TGType; cdecl; external;
 function g_type_fundamental(type_id: TGType): TGType; cdecl; external;
 function g_type_fundamental_next: TGType; cdecl; external;
+function g_type_get_instance_count(type_: TGType): gint; cdecl; external;
 function g_type_get_plugin(type_: TGType): PGTypePlugin; cdecl; external;
 function g_type_get_qdata(type_: TGType; quark: TGQuark): gpointer; cdecl; external;
 function g_type_get_type_registration_serial: guint; cdecl; external;
@@ -1258,54 +1482,57 @@ function g_value_transform(src_value: PGValue; dest_value: PGValue): gboolean; c
 function g_value_type_compatible(src_type: TGType; dest_type: TGType): gboolean; cdecl; external;
 function g_value_type_transformable(src_type: TGType; dest_type: TGType): gboolean; cdecl; external;
 function g_weak_ref_get(weak_ref: PGWeakRef): PGObject; cdecl; external;
+procedure g_binding_group_bind(self: PGBindingGroup; source_property: Pgchar; target: PGObject; target_property: Pgchar; flags: TGBindingFlags); cdecl; external;
+procedure g_binding_unbind(binding: PGBinding); cdecl; external;
 procedure g_boxed_free(boxed_type: TGType; boxed: gpointer); cdecl; external;
 procedure g_cclosure_marshal_BOOLEAN__BOXED_BOXED(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; external;
-procedure g_cclosure_marshal_BOOLEAN__BOXED_BOXEDv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
+procedure g_cclosure_marshal_BOOLEAN__BOXED_BOXEDv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
 procedure g_cclosure_marshal_BOOLEAN__FLAGS(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; external;
-procedure g_cclosure_marshal_BOOLEAN__FLAGSv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
+procedure g_cclosure_marshal_BOOLEAN__FLAGSv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
 procedure g_cclosure_marshal_generic(closure: PGClosure; return_gvalue: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; external;
-procedure g_cclosure_marshal_generic_va(closure: PGClosure; return_value: PGValue; instance: gpointer; args_list: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
+procedure g_cclosure_marshal_generic_va(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args_list: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
 procedure g_cclosure_marshal_STRING__OBJECT_POINTER(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; external;
-procedure g_cclosure_marshal_STRING__OBJECT_POINTERv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
+procedure g_cclosure_marshal_STRING__OBJECT_POINTERv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
 procedure g_cclosure_marshal_VOID__BOOLEAN(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; external;
-procedure g_cclosure_marshal_VOID__BOOLEANv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
+procedure g_cclosure_marshal_VOID__BOOLEANv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
 procedure g_cclosure_marshal_VOID__BOXED(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; external;
-procedure g_cclosure_marshal_VOID__BOXEDv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
+procedure g_cclosure_marshal_VOID__BOXEDv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
 procedure g_cclosure_marshal_VOID__CHAR(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; external;
-procedure g_cclosure_marshal_VOID__CHARv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
+procedure g_cclosure_marshal_VOID__CHARv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
 procedure g_cclosure_marshal_VOID__DOUBLE(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; external;
-procedure g_cclosure_marshal_VOID__DOUBLEv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
+procedure g_cclosure_marshal_VOID__DOUBLEv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
 procedure g_cclosure_marshal_VOID__ENUM(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; external;
-procedure g_cclosure_marshal_VOID__ENUMv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
+procedure g_cclosure_marshal_VOID__ENUMv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
 procedure g_cclosure_marshal_VOID__FLAGS(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; external;
-procedure g_cclosure_marshal_VOID__FLAGSv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
+procedure g_cclosure_marshal_VOID__FLAGSv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
 procedure g_cclosure_marshal_VOID__FLOAT(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; external;
-procedure g_cclosure_marshal_VOID__FLOATv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
+procedure g_cclosure_marshal_VOID__FLOATv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
 procedure g_cclosure_marshal_VOID__INT(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; external;
-procedure g_cclosure_marshal_VOID__INTv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
+procedure g_cclosure_marshal_VOID__INTv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
 procedure g_cclosure_marshal_VOID__LONG(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; external;
-procedure g_cclosure_marshal_VOID__LONGv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
+procedure g_cclosure_marshal_VOID__LONGv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
 procedure g_cclosure_marshal_VOID__OBJECT(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; external;
-procedure g_cclosure_marshal_VOID__OBJECTv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
+procedure g_cclosure_marshal_VOID__OBJECTv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
 procedure g_cclosure_marshal_VOID__PARAM(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; external;
-procedure g_cclosure_marshal_VOID__PARAMv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
+procedure g_cclosure_marshal_VOID__PARAMv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
 procedure g_cclosure_marshal_VOID__POINTER(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; external;
-procedure g_cclosure_marshal_VOID__POINTERv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
+procedure g_cclosure_marshal_VOID__POINTERv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
 procedure g_cclosure_marshal_VOID__STRING(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; external;
-procedure g_cclosure_marshal_VOID__STRINGv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
+procedure g_cclosure_marshal_VOID__STRINGv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
 procedure g_cclosure_marshal_VOID__UCHAR(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; external;
-procedure g_cclosure_marshal_VOID__UCHARv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
+procedure g_cclosure_marshal_VOID__UCHARv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
 procedure g_cclosure_marshal_VOID__UINT(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; external;
 procedure g_cclosure_marshal_VOID__UINT_POINTER(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; external;
-procedure g_cclosure_marshal_VOID__UINT_POINTERv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
-procedure g_cclosure_marshal_VOID__UINTv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
+procedure g_cclosure_marshal_VOID__UINT_POINTERv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
+procedure g_cclosure_marshal_VOID__UINTv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
 procedure g_cclosure_marshal_VOID__ULONG(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; external;
-procedure g_cclosure_marshal_VOID__ULONGv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
+procedure g_cclosure_marshal_VOID__ULONGv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
 procedure g_cclosure_marshal_VOID__VARIANT(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; external;
-procedure g_cclosure_marshal_VOID__VARIANTv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
+procedure g_cclosure_marshal_VOID__VARIANTv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
 procedure g_cclosure_marshal_VOID__VOID(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl; external;
-procedure g_cclosure_marshal_VOID__VOIDv(closure: PGClosure; return_value: PGValue; instance: gpointer; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
+procedure g_cclosure_marshal_VOID__VOIDv(closure: PGClosure; return_value: PGValue; instance: PGTypeInstance; args: Tva_list; marshal_data: gpointer; n_params: gint; param_types: PGType); cdecl; external;
 procedure g_clear_object(object_ptr: PPGObject); cdecl; external;
+procedure g_clear_signal_handler(handler_id_ptr: Pgulong; instance: PGObject); cdecl; external;
 procedure g_closure_add_finalize_notifier(closure: PGClosure; notify_data: gpointer; notify_func: TGClosureNotify); cdecl; external;
 procedure g_closure_add_invalidate_notifier(closure: PGClosure; notify_data: gpointer; notify_func: TGClosureNotify); cdecl; external;
 procedure g_closure_add_marshal_guards(closure: PGClosure; pre_marshal_data: gpointer; pre_marshal_notify: TGClosureNotify; post_marshal_data: gpointer; post_marshal_notify: TGClosureNotify); cdecl; external;
@@ -1324,25 +1551,27 @@ procedure g_object_add_weak_pointer(object_: PGObject; weak_pointer_location: Pg
 procedure g_object_class_install_properties(oclass: PGObjectClass; n_pspecs: guint; pspecs: PPGParamSpec); cdecl; external;
 procedure g_object_class_install_property(oclass: PGObjectClass; property_id: guint; pspec: PGParamSpec); cdecl; external;
 procedure g_object_class_override_property(oclass: PGObjectClass; property_id: guint; name: Pgchar); cdecl; external;
-procedure g_object_disconnect(object_: gpointer; signal_spec: Pgchar; args: array of const); cdecl; external;
+procedure g_object_disconnect(object_: PGObject; signal_spec: Pgchar; args: array of const); cdecl; external;
 procedure g_object_force_floating(object_: PGObject); cdecl; external;
 procedure g_object_freeze_notify(object_: PGObject); cdecl; external;
-procedure g_object_get(object_: gpointer; first_property_name: Pgchar; args: array of const); cdecl; external;
+procedure g_object_get(object_: PGObject; first_property_name: Pgchar; args: array of const); cdecl; external;
 procedure g_object_get_property(object_: PGObject; property_name: Pgchar; value: PGValue); cdecl; external;
 procedure g_object_get_valist(object_: PGObject; first_property_name: Pgchar; var_args: Tva_list); cdecl; external;
-procedure g_object_interface_install_property(g_iface: gpointer; pspec: PGParamSpec); cdecl; external;
+procedure g_object_getv(object_: PGObject; n_properties: guint; names: PPgchar; values: PGValue); cdecl; external;
+procedure g_object_interface_install_property(g_iface: PGTypeInterface; pspec: PGParamSpec); cdecl; external;
 procedure g_object_notify(object_: PGObject; property_name: Pgchar); cdecl; external;
 procedure g_object_notify_by_pspec(object_: PGObject; pspec: PGParamSpec); cdecl; external;
 procedure g_object_remove_toggle_ref(object_: PGObject; notify: TGToggleNotify; data: gpointer); cdecl; external;
 procedure g_object_remove_weak_pointer(object_: PGObject; weak_pointer_location: Pgpointer); cdecl; external;
 procedure g_object_run_dispose(object_: PGObject); cdecl; external;
-procedure g_object_set(object_: gpointer; first_property_name: Pgchar; args: array of const); cdecl; external;
+procedure g_object_set(object_: PGObject; first_property_name: Pgchar; args: array of const); cdecl; external;
 procedure g_object_set_data(object_: PGObject; key: Pgchar; data: gpointer); cdecl; external;
 procedure g_object_set_data_full(object_: PGObject; key: Pgchar; data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
 procedure g_object_set_property(object_: PGObject; property_name: Pgchar; value: PGValue); cdecl; external;
 procedure g_object_set_qdata(object_: PGObject; quark: TGQuark; data: gpointer); cdecl; external;
 procedure g_object_set_qdata_full(object_: PGObject; quark: TGQuark; data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
 procedure g_object_set_valist(object_: PGObject; first_property_name: Pgchar; var_args: Tva_list); cdecl; external;
+procedure g_object_setv(object_: PGObject; n_properties: guint; names: PPgchar; values: PGValue); cdecl; external;
 procedure g_object_thaw_notify(object_: PGObject); cdecl; external;
 procedure g_object_unref(object_: PGObject); cdecl; external;
 procedure g_object_watch_closure(object_: PGObject; closure: PGClosure); cdecl; external;
@@ -1356,22 +1585,22 @@ procedure g_param_spec_sink(pspec: PGParamSpec); cdecl; external;
 procedure g_param_spec_unref(pspec: PGParamSpec); cdecl; external;
 procedure g_param_value_set_default(pspec: PGParamSpec; value: PGValue); cdecl; external;
 procedure g_signal_chain_from_overridden(instance_and_params: PGValue; return_value: PGValue); cdecl; external;
-procedure g_signal_chain_from_overridden_handler(instance: gpointer; args: array of const); cdecl; external;
-procedure g_signal_emit(instance: gpointer; signal_id: guint; detail: TGQuark; args: array of const); cdecl; external;
-procedure g_signal_emit_by_name(instance: gpointer; detailed_signal: Pgchar; args: array of const); cdecl; external;
-procedure g_signal_emit_valist(instance: gpointer; signal_id: guint; detail: TGQuark; var_args: Tva_list); cdecl; external;
+procedure g_signal_chain_from_overridden_handler(instance: PGTypeInstance; args: array of const); cdecl; external;
+procedure g_signal_emit(instance: PGObject; signal_id: guint; detail: TGQuark; args: array of const); cdecl; external;
+procedure g_signal_emit_by_name(instance: PGObject; detailed_signal: Pgchar; args: array of const); cdecl; external;
+procedure g_signal_emit_valist(instance: PGTypeInstance; signal_id: guint; detail: TGQuark; var_args: Tva_list); cdecl; external;
 procedure g_signal_emitv(instance_and_params: PGValue; signal_id: guint; detail: TGQuark; return_value: PGValue); cdecl; external;
-procedure g_signal_handler_block(instance: gpointer; handler_id: gulong); cdecl; external;
-procedure g_signal_handler_disconnect(instance: gpointer; handler_id: gulong); cdecl; external;
-procedure g_signal_handler_unblock(instance: gpointer; handler_id: gulong); cdecl; external;
-procedure g_signal_handlers_destroy(instance: gpointer); cdecl; external;
+procedure g_signal_handler_block(instance: PGObject; handler_id: gulong); cdecl; external;
+procedure g_signal_handler_disconnect(instance: PGObject; handler_id: gulong); cdecl; external;
+procedure g_signal_handler_unblock(instance: PGObject; handler_id: gulong); cdecl; external;
+procedure g_signal_handlers_destroy(instance: PGObject); cdecl; external;
 procedure g_signal_override_class_closure(signal_id: guint; instance_type: TGType; class_closure: PGClosure); cdecl; external;
 procedure g_signal_override_class_handler(signal_name: Pgchar; instance_type: TGType; class_handler: TGCallback); cdecl; external;
 procedure g_signal_query(signal_id: guint; query: PGSignalQuery); cdecl; external;
 procedure g_signal_remove_emission_hook(signal_id: guint; hook_id: gulong); cdecl; external;
 procedure g_signal_set_va_marshaller(signal_id: guint; instance_type: TGType; va_marshaller: TGSignalCVaMarshaller); cdecl; external;
-procedure g_signal_stop_emission(instance: gpointer; signal_id: guint; detail: TGQuark); cdecl; external;
-procedure g_signal_stop_emission_by_name(instance: gpointer; detailed_signal: Pgchar); cdecl; external;
+procedure g_signal_stop_emission(instance: PGObject; signal_id: guint; detail: TGQuark); cdecl; external;
+procedure g_signal_stop_emission_by_name(instance: PGObject; detailed_signal: Pgchar); cdecl; external;
 procedure g_source_set_closure(source: PGSource; closure: PGClosure); cdecl; external;
 procedure g_source_set_dummy_callback(source: PGSource); cdecl; external;
 procedure g_type_add_class_cache_func(cache_data: gpointer; cache_func: TGTypeClassCacheFunc); cdecl; external;
@@ -1379,14 +1608,13 @@ procedure g_type_add_class_private(class_type: TGType; private_size: gsize); cde
 procedure g_type_add_interface_check(check_data: gpointer; check_func: TGTypeInterfaceCheckFunc); cdecl; external;
 procedure g_type_add_interface_dynamic(instance_type: TGType; interface_type: TGType; plugin: PGTypePlugin); cdecl; external;
 procedure g_type_add_interface_static(instance_type: TGType; interface_type: TGType; info: PGInterfaceInfo); cdecl; external;
-procedure g_type_class_add_private(g_class: gpointer; private_size: gsize); cdecl; external;
+procedure g_type_class_adjust_private_offset(g_class: gpointer; private_size_or_offset: Pgint); cdecl; external;
 procedure g_type_class_unref(g_class: PGTypeClass); cdecl; external;
 procedure g_type_class_unref_uncached(g_class: PGTypeClass); cdecl; external;
 procedure g_type_default_interface_unref(g_iface: PGTypeInterface); cdecl; external;
 procedure g_type_ensure(type_: TGType); cdecl; external;
 procedure g_type_free_instance(instance: PGTypeInstance); cdecl; external;
 procedure g_type_init; cdecl; external;
-procedure g_type_init_with_debug_flags(debug_flags: TGTypeDebugFlags); cdecl; external;
 procedure g_type_interface_add_prerequisite(interface_type: TGType; prerequisite_type: TGType); cdecl; external;
 procedure g_type_module_add_interface(module: PGTypeModule; instance_type: TGType; interface_type: TGType; interface_info: PGInterfaceInfo); cdecl; external;
 procedure g_type_module_set_name(module: PGTypeModule; name: Pgchar); cdecl; external;
@@ -1400,6 +1628,7 @@ procedure g_type_remove_class_cache_func(cache_data: gpointer; cache_func: TGTyp
 procedure g_type_remove_interface_check(check_data: gpointer; check_func: TGTypeInterfaceCheckFunc); cdecl; external;
 procedure g_type_set_qdata(type_: TGType; quark: TGQuark; data: gpointer); cdecl; external;
 procedure g_value_copy(src_value: PGValue; dest_value: PGValue); cdecl; external;
+procedure g_value_init_from_instance(value: PGValue; instance: PGTypeInstance); cdecl; external;
 procedure g_value_register_transform_func(src_type: TGType; dest_type: TGType; transform_func: TGValueTransform); cdecl; external;
 procedure g_value_set_boolean(value: PGValue; v_boolean: gboolean); cdecl; external;
 procedure g_value_set_boxed(value: PGValue; v_boxed: Pgpointer); cdecl; external;
@@ -1411,6 +1640,7 @@ procedure g_value_set_gtype(value: PGValue; v_gtype: TGType); cdecl; external;
 procedure g_value_set_instance(value: PGValue; instance: gpointer); cdecl; external;
 procedure g_value_set_int(value: PGValue; v_int: gint); cdecl; external;
 procedure g_value_set_int64(value: PGValue; v_int64: gint64); cdecl; external;
+procedure g_value_set_interned_string(value: PGValue; v_string: Pgchar); cdecl; external;
 procedure g_value_set_long(value: PGValue; v_long: glong); cdecl; external;
 procedure g_value_set_object(value: PGValue; v_object: PGObject); cdecl; external;
 procedure g_value_set_param(value: PGValue; param: PGParamSpec); cdecl; external;
@@ -1431,12 +1661,67 @@ procedure g_value_take_string(value: PGValue; v_string: Pgchar); cdecl; external
 procedure g_value_take_variant(value: PGValue; variant: PGVariant); cdecl; external;
 procedure g_value_unset(value: PGValue); cdecl; external;
 procedure g_weak_ref_clear(weak_ref: PGWeakRef); cdecl; external;
-procedure g_weak_ref_init(weak_ref: PGWeakRef; object_: gpointer); cdecl; external;
-procedure g_weak_ref_set(weak_ref: PGWeakRef; object_: gpointer); cdecl; external;
+procedure g_weak_ref_init(weak_ref: PGWeakRef; object_: PGObject); cdecl; external;
+procedure g_weak_ref_set(weak_ref: PGWeakRef; object_: PGObject); cdecl; external;
 implementation
 function TGObject.newv(object_type: TGType; n_parameters: guint; parameters: PGParameter): PGObject; cdecl;
 begin
   Result := LazGObject2.g_object_newv(object_type, n_parameters, parameters);
+end;
+
+function TGTypeInstance.get_private(private_type: TGType): gpointer; cdecl;
+begin
+  Result := LazGObject2.g_type_instance_get_private(@self, private_type);
+end;
+
+function TGTypeClass.get_instance_private_offset: gint; cdecl;
+begin
+  Result := LazGObject2.g_type_class_get_instance_private_offset(@self);
+end;
+
+function TGTypeClass.get_private(private_type: TGType): gpointer; cdecl;
+begin
+  Result := LazGObject2.g_type_class_get_private(@self, private_type);
+end;
+
+function TGTypeClass.peek_parent: PGTypeClass; cdecl;
+begin
+  Result := LazGObject2.g_type_class_peek_parent(@self);
+end;
+
+procedure TGTypeClass.unref; cdecl;
+begin
+  LazGObject2.g_type_class_unref(@self);
+end;
+
+procedure TGTypeClass.unref_uncached; cdecl;
+begin
+  LazGObject2.g_type_class_unref_uncached(@self);
+end;
+
+procedure TGTypeClass.adjust_private_offset(g_class: gpointer; private_size_or_offset: Pgint); cdecl;
+begin
+  LazGObject2.g_type_class_adjust_private_offset(g_class, private_size_or_offset);
+end;
+
+function TGTypeClass.peek(type_: TGType): PGTypeClass; cdecl;
+begin
+  Result := LazGObject2.g_type_class_peek(type_);
+end;
+
+function TGTypeClass.peek_static(type_: TGType): PGTypeClass; cdecl;
+begin
+  Result := LazGObject2.g_type_class_peek_static(type_);
+end;
+
+function TGTypeClass.ref(type_: TGType): PGTypeClass; cdecl;
+begin
+  Result := LazGObject2.g_type_class_ref(type_);
+end;
+
+function TGObject.new_with_properties(object_type: TGType; n_properties: guint; names: PPgchar; values: PGValue): PGObject; cdecl;
+begin
+  Result := LazGObject2.g_object_new_with_properties(object_type, n_properties, names, values);
 end;
 
 function TGObject.compat_control(what: gsize; data: gpointer): gsize; cdecl;
@@ -1444,17 +1729,42 @@ begin
   Result := LazGObject2.g_object_compat_control(what, data);
 end;
 
-function TGObject.interface_find_property(g_iface: gpointer; property_name: Pgchar): PGParamSpec; cdecl;
+function TGTypeInterface.peek_parent: PGTypeInterface; cdecl;
+begin
+  Result := LazGObject2.g_type_interface_peek_parent(@self);
+end;
+
+procedure TGTypeInterface.add_prerequisite(interface_type: TGType; prerequisite_type: TGType); cdecl;
+begin
+  LazGObject2.g_type_interface_add_prerequisite(interface_type, prerequisite_type);
+end;
+
+function TGTypeInterface.get_plugin(instance_type: TGType; interface_type: TGType): PGTypePlugin; cdecl;
+begin
+  Result := LazGObject2.g_type_interface_get_plugin(instance_type, interface_type);
+end;
+
+function TGTypeInterface.peek(instance_class: PGTypeClass; iface_type: TGType): PGTypeInterface; cdecl;
+begin
+  Result := LazGObject2.g_type_interface_peek(instance_class, iface_type);
+end;
+
+function TGTypeInterface.prerequisites(interface_type: TGType; n_prerequisites: Pguint): PGType; cdecl;
+begin
+  Result := LazGObject2.g_type_interface_prerequisites(interface_type, n_prerequisites);
+end;
+
+function TGObject.interface_find_property(g_iface: PGTypeInterface; property_name: Pgchar): PGParamSpec; cdecl;
 begin
   Result := LazGObject2.g_object_interface_find_property(g_iface, property_name);
 end;
 
-procedure TGObject.interface_install_property(g_iface: gpointer; pspec: PGParamSpec); cdecl;
+procedure TGObject.interface_install_property(g_iface: PGTypeInterface; pspec: PGParamSpec); cdecl;
 begin
   LazGObject2.g_object_interface_install_property(g_iface, pspec);
 end;
 
-function TGObject.interface_list_properties(g_iface: gpointer; n_properties_p: Pguint): PPGParamSpec; cdecl;
+function TGObject.interface_list_properties(g_iface: PGTypeInterface; n_properties_p: Pguint): PPGParamSpec; cdecl;
 begin
   Result := LazGObject2.g_object_interface_list_properties(g_iface, n_properties_p);
 end;
@@ -1517,6 +1827,11 @@ end;
 function TGObject.get_qdata(quark: TGQuark): gpointer; cdecl;
 begin
   Result := LazGObject2.g_object_get_qdata(@self, quark);
+end;
+
+procedure TGObject.getv(n_properties: guint; names: PPgchar; values: PGValue); cdecl;
+begin
+  LazGObject2.g_object_getv(@self, n_properties, names, values);
 end;
 
 function TGObject.is_floating: gboolean; cdecl;
@@ -1594,6 +1909,11 @@ begin
   LazGObject2.g_object_set_qdata_full(@self, quark, data, destroy_);
 end;
 
+procedure TGObject.setv(n_properties: guint; names: PPgchar; values: PGValue); cdecl;
+begin
+  LazGObject2.g_object_setv(@self, n_properties, names, values);
+end;
+
 function TGObject.steal_data(key: Pgchar): gpointer; cdecl;
 begin
   Result := LazGObject2.g_object_steal_data(@self, key);
@@ -1629,19 +1949,9 @@ begin
   LazGObject2.g_object_weak_unref(@self, notify, data);
 end;
 
-function TGTypeInstance.get_private(private_type: TGType): gpointer; cdecl;
-begin
-  Result := LazGObject2.g_type_instance_get_private(@self, private_type);
-end;
-
 function TGBinding.get_flags: TGBindingFlags; cdecl;
 begin
   Result := LazGObject2.g_binding_get_flags(@self);
-end;
-
-function TGBinding.get_source: PGObject; cdecl;
-begin
-  Result := LazGObject2.g_binding_get_source(@self);
 end;
 
 function TGBinding.get_source_property: Pgchar; cdecl;
@@ -1649,14 +1959,84 @@ begin
   Result := LazGObject2.g_binding_get_source_property(@self);
 end;
 
-function TGBinding.get_target: PGObject; cdecl;
-begin
-  Result := LazGObject2.g_binding_get_target(@self);
-end;
-
 function TGBinding.get_target_property: Pgchar; cdecl;
 begin
   Result := LazGObject2.g_binding_get_target_property(@self);
+end;
+
+procedure TGBinding.unbind; cdecl;
+begin
+  LazGObject2.g_binding_unbind(@self);
+end;
+
+function TGClosure.new_object(sizeof_closure: guint; object_: PGObject): PGClosure; cdecl;
+begin
+  Result := LazGObject2.g_closure_new_object(sizeof_closure, object_);
+end;
+
+function TGClosure.new_simple(sizeof_closure: guint; data: gpointer): PGClosure; cdecl;
+begin
+  Result := LazGObject2.g_closure_new_simple(sizeof_closure, data);
+end;
+
+procedure TGClosure.add_finalize_notifier(notify_data: gpointer; notify_func: TGClosureNotify); cdecl;
+begin
+  LazGObject2.g_closure_add_finalize_notifier(@self, notify_data, notify_func);
+end;
+
+procedure TGClosure.add_invalidate_notifier(notify_data: gpointer; notify_func: TGClosureNotify); cdecl;
+begin
+  LazGObject2.g_closure_add_invalidate_notifier(@self, notify_data, notify_func);
+end;
+
+procedure TGClosure.add_marshal_guards(pre_marshal_data: gpointer; pre_marshal_notify: TGClosureNotify; post_marshal_data: gpointer; post_marshal_notify: TGClosureNotify); cdecl;
+begin
+  LazGObject2.g_closure_add_marshal_guards(@self, pre_marshal_data, pre_marshal_notify, post_marshal_data, post_marshal_notify);
+end;
+
+procedure TGClosure.invalidate; cdecl;
+begin
+  LazGObject2.g_closure_invalidate(@self);
+end;
+
+procedure TGClosure.invoke(return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer); cdecl;
+begin
+  LazGObject2.g_closure_invoke(@self, return_value, n_param_values, param_values, invocation_hint);
+end;
+
+function TGClosure.ref: PGClosure; cdecl;
+begin
+  Result := LazGObject2.g_closure_ref(@self);
+end;
+
+procedure TGClosure.remove_finalize_notifier(notify_data: gpointer; notify_func: TGClosureNotify); cdecl;
+begin
+  LazGObject2.g_closure_remove_finalize_notifier(@self, notify_data, notify_func);
+end;
+
+procedure TGClosure.remove_invalidate_notifier(notify_data: gpointer; notify_func: TGClosureNotify); cdecl;
+begin
+  LazGObject2.g_closure_remove_invalidate_notifier(@self, notify_data, notify_func);
+end;
+
+procedure TGClosure.set_marshal(marshal: TGClosureMarshal); cdecl;
+begin
+  LazGObject2.g_closure_set_marshal(@self, marshal);
+end;
+
+procedure TGClosure.set_meta_marshal(marshal_data: gpointer; meta_marshal: TGClosureMarshal); cdecl;
+begin
+  LazGObject2.g_closure_set_meta_marshal(@self, marshal_data, meta_marshal);
+end;
+
+procedure TGClosure.sink; cdecl;
+begin
+  LazGObject2.g_closure_sink(@self);
+end;
+
+procedure TGClosure.unref; cdecl;
+begin
+  LazGObject2.g_closure_unref(@self);
 end;
 
 procedure TGValue.copy(dest_value: PGValue); cdecl;
@@ -1799,6 +2179,11 @@ begin
   Result := LazGObject2.g_value_init(@self, g_type);
 end;
 
+procedure TGValue.init_from_instance(instance: PGTypeInstance); cdecl;
+begin
+  LazGObject2.g_value_init_from_instance(@self, instance);
+end;
+
 function TGValue.peek_pointer: gpointer; cdecl;
 begin
   Result := LazGObject2.g_value_peek_pointer(@self);
@@ -1857,6 +2242,11 @@ end;
 procedure TGValue.set_int64(v_int64: gint64); cdecl;
 begin
   LazGObject2.g_value_set_int64(@self, v_int64);
+end;
+
+procedure TGValue.set_interned_string(v_string: Pgchar); cdecl;
+begin
+  LazGObject2.g_value_set_interned_string(@self, v_string);
 end;
 
 procedure TGValue.set_long(v_long: glong); cdecl;
@@ -1977,76 +2367,6 @@ end;
 procedure TGValue.clear;
 begin
   fillchar(Self,sizeof(Self),0);
-end;
-
-function TGClosure.new_object(sizeof_closure: guint; object_: PGObject): PGClosure; cdecl;
-begin
-  Result := LazGObject2.g_closure_new_object(sizeof_closure, object_);
-end;
-
-function TGClosure.new_simple(sizeof_closure: guint; data: gpointer): PGClosure; cdecl;
-begin
-  Result := LazGObject2.g_closure_new_simple(sizeof_closure, data);
-end;
-
-procedure TGClosure.add_finalize_notifier(notify_data: gpointer; notify_func: TGClosureNotify); cdecl;
-begin
-  LazGObject2.g_closure_add_finalize_notifier(@self, notify_data, notify_func);
-end;
-
-procedure TGClosure.add_invalidate_notifier(notify_data: gpointer; notify_func: TGClosureNotify); cdecl;
-begin
-  LazGObject2.g_closure_add_invalidate_notifier(@self, notify_data, notify_func);
-end;
-
-procedure TGClosure.add_marshal_guards(pre_marshal_data: gpointer; pre_marshal_notify: TGClosureNotify; post_marshal_data: gpointer; post_marshal_notify: TGClosureNotify); cdecl;
-begin
-  LazGObject2.g_closure_add_marshal_guards(@self, pre_marshal_data, pre_marshal_notify, post_marshal_data, post_marshal_notify);
-end;
-
-procedure TGClosure.invalidate; cdecl;
-begin
-  LazGObject2.g_closure_invalidate(@self);
-end;
-
-procedure TGClosure.invoke(return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer); cdecl;
-begin
-  LazGObject2.g_closure_invoke(@self, return_value, n_param_values, param_values, invocation_hint);
-end;
-
-function TGClosure.ref: PGClosure; cdecl;
-begin
-  Result := LazGObject2.g_closure_ref(@self);
-end;
-
-procedure TGClosure.remove_finalize_notifier(notify_data: gpointer; notify_func: TGClosureNotify); cdecl;
-begin
-  LazGObject2.g_closure_remove_finalize_notifier(@self, notify_data, notify_func);
-end;
-
-procedure TGClosure.remove_invalidate_notifier(notify_data: gpointer; notify_func: TGClosureNotify); cdecl;
-begin
-  LazGObject2.g_closure_remove_invalidate_notifier(@self, notify_data, notify_func);
-end;
-
-procedure TGClosure.set_marshal(marshal: TGClosureMarshal); cdecl;
-begin
-  LazGObject2.g_closure_set_marshal(@self, marshal);
-end;
-
-procedure TGClosure.set_meta_marshal(marshal_data: gpointer; meta_marshal: TGClosureMarshal); cdecl;
-begin
-  LazGObject2.g_closure_set_meta_marshal(@self, marshal_data, meta_marshal);
-end;
-
-procedure TGClosure.sink; cdecl;
-begin
-  LazGObject2.g_closure_sink(@self);
-end;
-
-procedure TGClosure.unref; cdecl;
-begin
-  LazGObject2.g_closure_unref(@self);
 end;
 
 procedure TGCClosure.marshal_BOOLEAN__BOXED_BOXED(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl;
@@ -2184,49 +2504,14 @@ begin
   Result := LazGObject2.g_cclosure_new_swap(callback_func, user_data, destroy_data);
 end;
 
-function TGTypeClass.get_private(private_type: TGType): gpointer; cdecl;
-begin
-  Result := LazGObject2.g_type_class_get_private(@self, private_type);
-end;
-
-function TGTypeClass.peek_parent: PGTypeClass; cdecl;
-begin
-  Result := LazGObject2.g_type_class_peek_parent(@self);
-end;
-
-procedure TGTypeClass.unref; cdecl;
-begin
-  LazGObject2.g_type_class_unref(@self);
-end;
-
-procedure TGTypeClass.unref_uncached; cdecl;
-begin
-  LazGObject2.g_type_class_unref_uncached(@self);
-end;
-
-procedure TGTypeClass.add_private(g_class: gpointer; private_size: gsize); cdecl;
-begin
-  LazGObject2.g_type_class_add_private(g_class, private_size);
-end;
-
-function TGTypeClass.peek(type_: TGType): PGTypeClass; cdecl;
-begin
-  Result := LazGObject2.g_type_class_peek(type_);
-end;
-
-function TGTypeClass.peek_static(type_: TGType): PGTypeClass; cdecl;
-begin
-  Result := LazGObject2.g_type_class_peek_static(type_);
-end;
-
-function TGTypeClass.ref(type_: TGType): PGTypeClass; cdecl;
-begin
-  Result := LazGObject2.g_type_class_ref(type_);
-end;
-
-function TGParamSpec.internal(param_type: TGType; name: Pgchar; nick: Pgchar; blurb: Pgchar; flags: TGParamFlags): gpointer; cdecl;
+function TGParamSpec.internal(param_type: TGType; name: Pgchar; nick: Pgchar; blurb: Pgchar; flags: TGParamFlags): PGParamSpec; cdecl;
 begin
   Result := LazGObject2.g_param_spec_internal(param_type, name, nick, blurb, flags);
+end;
+
+function TGParamSpec.is_valid_name(name: Pgchar): gboolean; cdecl;
+begin
+  Result := LazGObject2.g_param_spec_is_valid_name(name);
 end;
 
 function TGParamSpec.get_blurb: Pgchar; cdecl;
@@ -2234,9 +2519,19 @@ begin
   Result := LazGObject2.g_param_spec_get_blurb(@self);
 end;
 
+function TGParamSpec.get_default_value: PGValue; cdecl;
+begin
+  Result := LazGObject2.g_param_spec_get_default_value(@self);
+end;
+
 function TGParamSpec.get_name: Pgchar; cdecl;
 begin
   Result := LazGObject2.g_param_spec_get_name(@self);
+end;
+
+function TGParamSpec.get_name_quark: TGQuark; cdecl;
+begin
+  Result := LazGObject2.g_param_spec_get_name_quark(@self);
 end;
 
 function TGParamSpec.get_nick: Pgchar; cdecl;
@@ -2349,31 +2644,6 @@ begin
   Result := LazGObject2.g_type_value_table_peek(type_);
 end;
 
-function TGTypeInterface.peek_parent: PGTypeInterface; cdecl;
-begin
-  Result := LazGObject2.g_type_interface_peek_parent(@self);
-end;
-
-procedure TGTypeInterface.add_prerequisite(interface_type: TGType; prerequisite_type: TGType); cdecl;
-begin
-  LazGObject2.g_type_interface_add_prerequisite(interface_type, prerequisite_type);
-end;
-
-function TGTypeInterface.get_plugin(instance_type: TGType; interface_type: TGType): PGTypePlugin; cdecl;
-begin
-  Result := LazGObject2.g_type_interface_get_plugin(instance_type, interface_type);
-end;
-
-function TGTypeInterface.peek(instance_class: PGTypeClass; iface_type: TGType): PGTypeInterface; cdecl;
-begin
-  Result := LazGObject2.g_type_interface_peek(instance_class, iface_type);
-end;
-
-function TGTypeInterface.prerequisites(interface_type: TGType; n_prerequisites: Pguint): PGType; cdecl;
-begin
-  Result := LazGObject2.g_type_interface_prerequisites(interface_type, n_prerequisites);
-end;
-
 procedure TGTypePlugin.complete_interface_info(instance_type: TGType; interface_type: TGType; info: PGInterfaceInfo); cdecl;
 begin
   LazGObject2.g_type_plugin_complete_interface_info(@self, instance_type, interface_type, info);
@@ -2439,12 +2709,12 @@ begin
   Result := LazGObject2.g_weak_ref_get(@self);
 end;
 
-procedure TGWeakRef.init(object_: gpointer); cdecl;
+procedure TGWeakRef.init(object_: PGObject); cdecl;
 begin
   LazGObject2.g_weak_ref_init(@self, object_);
 end;
 
-procedure TGWeakRef.set_(object_: gpointer); cdecl;
+procedure TGWeakRef.set_(object_: PGObject); cdecl;
 begin
   LazGObject2.g_weak_ref_set(@self, object_);
 end;
