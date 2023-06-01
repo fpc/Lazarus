@@ -63,9 +63,9 @@ function PANGO_IS_CAIRO_FONT_MAP(objekt : pointer) : boolean;
 
 function pango_cairo_font_map_get_type():GType;cdecl;external pangocairolib;
 function pango_cairo_font_map_new:PPangoFontMap;cdecl;external pangocairolib;
-function pango_cairo_font_map_new_for_font_type(fonttype:cairo_font_type_t):PPangoFontMap;cdecl;external pangocairolib;
+function pango_cairo_font_map_new_for_font_type(fonttype:Tcairo_font_type_t):PPangoFontMap;cdecl;external pangocairolib;
 function pango_cairo_font_map_get_default:PPangoFontMap;cdecl;external pangocairolib;
-function pango_cairo_font_map_get_font_type(fontmap:PPangoCairoFontMap):cairo_font_type_t;cdecl;external pangocairolib;
+function pango_cairo_font_map_get_font_type(fontmap:PPangoCairoFontMap):Tcairo_font_type_t;cdecl;external pangocairolib;
 procedure pango_cairo_font_map_set_resolution(fontmap:PPangoCairoFontMap; dpi:double);cdecl;external pangocairolib;
 function pango_cairo_font_map_get_resolution(fontmap:PPangoCairoFontMap):double;cdecl;external pangocairolib;
 
