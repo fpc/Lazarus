@@ -120,6 +120,10 @@ begin
 
   if Lang = '' then
     LazGetLanguageIDs(Lang, T);
+
+  //Trim encoding from Lang if it presents. E. g. Lang can be `ru_RU.utf8`.
+  if Lang <> '' then
+    LazGetTrimmedLanguageID(Lang);
 end;
 
 function FindLocaleFileName(LCExt, LangID, Dir, LocaleFileName: string; out FoundLang: string): string;
