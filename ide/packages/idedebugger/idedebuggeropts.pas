@@ -915,7 +915,6 @@ begin
     FDebuggerConfigList.LoadFromXml(XMLCfg, 'Debugger/Backends/');
   end
   else begin
-    debugln(['TDebuggerOptions.LoadDebuggerProperties importing OLD debugger backend config from environment-opts']);
     FDebuggerConfigList.LoadFromOldXml(EnvironmentOptions.XMLCfg, 'EnvironmentOptions/Debugger/', 'EnvironmentOptions/DebuggerFilename/Value');
   end;
 
