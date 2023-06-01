@@ -271,6 +271,10 @@
         <Filename Value="..\..\Ui\UI\fJcfErrorDisplay.pas"/>
         <UnitName Value="fJcfErrorDisplay"/>
       </Item>
+      <Item>
+        <Filename Value="jcfuiconsts.pas"/>
+        <UnitName Value="JcfUIConsts"/>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
