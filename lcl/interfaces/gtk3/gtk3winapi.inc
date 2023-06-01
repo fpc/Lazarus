@@ -1231,13 +1231,13 @@ var
     ALogFontA.lfItalic := Byte(FontStyle = PANGO_STYLE_ITALIC);
 
     // keep newer pango compat to LCL
-    if FontWeight = 380 {PANGO_WEIGHT_BOOK as of pango 1.24} then
+    if FontWeight = PANGO_WEIGHT_BOOK {380 as of pango 1.24} then
       FontWeight := PANGO_WEIGHT_NORMAL
     else
-    if FontWeight = 1000 {PANGO_WEIGHT_ULTRAHEAVY as of pango 1.24} then
+    if FontWeight = PANGO_WEIGHT_ULTRAHEAVY {1000 as of pango 1.24} then
       FontWeight := PANGO_WEIGHT_HEAVY;
 
-    ALogFontA.lfWeight := FontWeight;
+    ALogFontA.lfWeight := Integer(FontWeight);
 
     ALogFontA.lfHeight := pango_font_description_get_size(Font);
     if not pango_font_description_get_size_is_absolute(Font) then
@@ -2670,7 +2670,7 @@ begin
     if APangoWeight > PANGO_WEIGHT_HEAVY then
       APangoWeight := PANGO_WEIGHT_HEAVY;
 
-    TM.tmWeight := APangoWeight;
+    TM.tmWeight := Integer(APangoWeight);
 
     TM.tmFirstChar := 'a';
     TM.tmLastChar := 'z';
