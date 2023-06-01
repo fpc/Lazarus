@@ -676,53 +676,53 @@ end;
 function GdkModifierStateToLCL(AState: TGdkModifierType; const AIsKeyEvent: Boolean): PtrInt;
 begin
   Result := 0;
-  if AState and GDK_BUTTON1_MASK <> 0 then
+  if GDK_BUTTON1_MASK in AState  then
     Result := Result or MK_LBUTTON;
 
-  if AState and GDK_BUTTON2_MASK <> 0 then
+  if GDK_BUTTON2_MASK in AState  then
     Result := Result or MK_MBUTTON;
 
-  if AState and GDK_BUTTON3_MASK <> 0 then
+  if GDK_BUTTON3_MASK in AState  then
     Result := Result or MK_RBUTTON;
 
-  if AState and GDK_BUTTON4_MASK <> 0 then
+  if GDK_BUTTON4_MASK in AState  then
     Result := Result or MK_XBUTTON1;
 
-  if AState and GDK_BUTTON5_MASK <> 0 then
+  if GDK_BUTTON5_MASK in AState  then
     Result := Result or MK_XBUTTON2;
 
-  if AState and GDK_SHIFT_MASK <> 0 then
+  if GDK_SHIFT_MASK in AState  then
     Result := Result or MK_SHIFT;
 
-  if AState and GDK_CONTROL_MASK <> 0 then
+  if GDK_CONTROL_MASK in AState  then
     Result := Result or MK_CONTROL;
 end;
 
 function GdkModifierStateToShiftState(AState: TGdkModifierType): TShiftState;
 begin
   Result := [];
-  if AState and GDK_BUTTON1_MASK <> 0 then
+  if GDK_BUTTON1_MASK in AState  then
     Include(Result, ssLeft);
 
-  if AState and GDK_BUTTON2_MASK <> 0 then
+  if GDK_BUTTON2_MASK in AState  then
     Include(Result, ssRight);
 
-  if AState and GDK_BUTTON3_MASK <> 0 then
+  if GDK_BUTTON3_MASK in AState  then
     Include(Result, ssMiddle);
 
-  if AState and GDK_BUTTON4_MASK <> 0 then
+  if GDK_BUTTON4_MASK in AState  then
     Include(Result, ssExtra1);
 
-  if AState and GDK_BUTTON5_MASK <> 0 then
+  if GDK_BUTTON5_MASK in AState  then
     Include(Result, ssExtra2);
 
-  if AState and GDK_SHIFT_MASK <> 0 then
+  if GDK_SHIFT_MASK in AState  then
     Include(Result, ssShift);
 
-  if AState and GDK_CONTROL_MASK <> 0 then
+  if GDK_CONTROL_MASK in AState  then
     Include(Result, ssCtrl);
 
-  if AState and GDK_META_MASK <> 0 then
+  if GDK_META_MASK in AState  then
     Include(Result, ssAlt);
 end;
 
