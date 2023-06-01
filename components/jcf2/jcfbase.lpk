@@ -9,7 +9,7 @@
       <SearchPaths>
         <IncludeFiles Value="Include"/>
         <OtherUnitFiles Value="Parse;Parse\PreProcessor;Process;Process\Align;Process\Capitalisation;Process\Indent;Process\Info;Process\Obfuscate;Process\Onceoffs;Process\Returns;Process\Spacing;Process\Transform;Process\Warnings;ReadWrite;Settings;Settings\Streams;Ui;Utils;IdePlugin\lazarus"/>
-        <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
     <Description Value="Jedi code format base package"/>
@@ -471,7 +471,7 @@
       <Item114>
         <Filename Value="Settings\JcfSettings.pas"/>
         <UnitName Value="JcfSettings"/>
-      </Item114>	  
+      </Item114>
       <Item115>
         <Filename Value="Ui\jcfuitools.pas"/>
         <UnitName Value="JcfUiTools"/>

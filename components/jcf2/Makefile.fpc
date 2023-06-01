@@ -9,7 +9,7 @@ name=jcfbase
 version=1.0
 
 [compiler]
-unittargetdir=units/$(CPU_TARGET)-$(OS_TARGET)
+unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
 unitdir=Parse Parse/PreProcessor Process Process/Align Process/Capitalisation Process/Indent Process/Info Process/Obfuscate Process/Onceoffs Process/Returns Process/Spacing Process/Transform Process/Warnings ReadWrite Settings Settings/Streams Ui Utils IdePlugin/lazarus ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) .
 includedir=Include
 options= -MObjFPC -Scghi -O1 -g -gl -l -vewnhibq $(DBG_OPTIONS)
@@ -62,4 +62,4 @@ compiled:
 all: cleartarget $(COMPILER_UNITTARGETDIR) jcfbase$(PPUEXT) compiled
 
 distclean: clean
-        ${DELTREE} units/*
+        ${DELTREE} lib/*
