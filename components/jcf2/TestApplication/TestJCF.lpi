@@ -27,7 +27,7 @@
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir);..\Include"/>
-            <OtherUnitFiles Value="..\Parse;..\Utils;..\Settings;..\Process;..\Process\Returns;..\Process\Spacing;..\ReadWrite;..\Process\Indent;..\Process\Obfuscate;..\Process\Transform;..\Process\Warnings;..\Process\Capitalisation;..\Process\Info;..\Process\Align;..\Parse\UI;..\Parse\PreProcessor;..\Include;..\Settings\Streams;..;..\Ui;..\IdePlugin\lazarus"/>
+            <OtherUnitFiles Value="..\Parse;..\Utils;..\Utils\UI;..\Settings;..\Process;..\Process\Returns;..\Process\Spacing;..\ReadWrite;..\Process\Indent;..\Process\Obfuscate;..\Process\Transform;..\Process\Warnings;..\Process\Capitalisation;..\Process\Info;..\Process\Align;..\Parse\UI;..\Parse\PreProcessor;..\Include;..\Settings\Streams;..;..\Ui;..\IdePlugin\lazarus;..\Ui\UI"/>
             <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <Parsing>
@@ -68,7 +68,7 @@
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir);..\Include"/>
-            <OtherUnitFiles Value="..\Parse;..\Utils;..\Settings;..\Process;..\Process\Returns;..\Process\Spacing;..\ReadWrite;..\Process\Indent;..\Process\Obfuscate;..\Process\Transform;..\Process\Warnings;..\Process\Capitalisation;..\Process\Info;..\Process\Align;..\Parse\UI;..\Parse\PreProcessor;..\Include;..\Settings\Streams;..;..\Ui;..\IdePlugin\lazarus"/>
+            <OtherUnitFiles Value="..\Parse;..\Utils;..\Settings;..\Process;..\Process\Returns;..\Process\Spacing;..\ReadWrite;..\Process\Indent;..\Process\Obfuscate;..\Process\Transform;..\Process\Warnings;..\Process\Capitalisation;..\Process\Info;..\Process\Align;..\Parse\UI;..\Parse\PreProcessor;..\Include;..\Settings\Streams;..;..\Ui;..\IdePlugin\lazarus;..\Ui\UI"/>
             <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <CodeGeneration>
@@ -106,7 +106,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="99">
+    <Units Count="98">
       <Unit0>
         <Filename Value="TestJCF.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -504,15 +504,10 @@
         <IsPartOfProject Value="True"/>
       </Unit96>
       <Unit97>
-        <Filename Value="..\Ui\jcfuitoolsnogui.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="JcfUiToolsNoGUI"/>
-      </Unit97>
-      <Unit98>
-        <Filename Value="..\Ui\jcfuitoolsgui.pas"/>
+        <Filename Value="..\Ui\UI\jcfuitoolsgui.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="JcfUiToolsGUI"/>
-      </Unit98>
+      </Unit97>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -523,7 +518,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir);..\Include"/>
-      <OtherUnitFiles Value="..\Parse;..\Utils;..\Settings;..\Process;..\Process\Returns;..\Process\Spacing;..\ReadWrite;..\Process\Indent;..\Process\Obfuscate;..\Process\Transform;..\Process\Warnings;..\Process\Capitalisation;..\Process\Info;..\Process\Align;..\Parse\UI;..\Parse\PreProcessor;..\Include;..\Settings\Streams;..;..\Ui;..\IdePlugin\lazarus"/>
+      <OtherUnitFiles Value="..\Parse;..\Utils;..\Settings;..\Process;..\Process\Returns;..\Process\Spacing;..\ReadWrite;..\Process\Indent;..\Process\Obfuscate;..\Process\Transform;..\Process\Warnings;..\Process\Capitalisation;..\Process\Info;..\Process\Align;..\Parse\UI;..\Parse\PreProcessor;..\Include;..\Settings\Streams;..;..\Ui;..\IdePlugin\lazarus;..\Ui\UI"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>

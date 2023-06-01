@@ -433,16 +433,6 @@ msgstr "%s greta %s"
 msgid "Type: %s%s"
 msgstr "Tipas: %s%s"
 
-#: jcfuiconsts.liserrorwritingsettingsexception
-#, object-pascal-format
-msgid "Error writing settings file %s:%s%s"
-msgstr "Klaida įvyko įrašant nustatymų failą %s:%s%s"
-
-#: jcfuiconsts.liserrorwritingsettingsfilereadonly
-#, object-pascal-format
-msgid "Error writing settings file: %s is read only"
-msgstr "Įrašant nustatymų failą įvyko klaida: %s tik skaitymui"
-
 #: jcfuiconsts.lisfindreplaceenablefindandreplace
 msgid "Enable find and replace"
 msgstr "Įgalinti rask-keisk"
@@ -600,10 +590,6 @@ msgstr "&Kai kada, jei aptikta tinkama vieta lūžiui"
 #: jcfuiconsts.lislbusuallyunlessthereisnoacceptableplacetobreak
 msgid "&Usually, unless there is no acceptable place to break"
 msgstr "&Visada, išskyrus tada, kai neaptikta tinkama vieta lūžiui"
-
-#: jcfuiconsts.lisnosettingsfound
-msgid "No settings found"
-msgstr "Nuostatos nerastos"
 
 #: jcfuiconsts.lisobfsallcapitals
 msgid "ALL CAPITALS"
@@ -853,11 +839,6 @@ msgstr "Tabuliavimus keisti tarpo simboliais"
 #: jcfuiconsts.lisspacesvardeclarations
 msgid "&Var declarations"
 msgstr "&Kintamųjų apibrėžtys"
-
-#: jcfuiconsts.listhesettingsfiledoesnotexist
-#, object-pascal-format
-msgid "The settings file \"%s\" does not exist.%sThe formatter will work better if it is configured to use a valid settings file"
-msgstr "Nustatymų failas „%s“ neegzistuoja.%sFormatuotojas dirbs geriau, jei jam bus nurodytas tinkamas nustatymų failas."
 
 #: jcfuiconsts.listransformaddbeginandendtosinglestatements
 msgid "Add begin and end to single statements"

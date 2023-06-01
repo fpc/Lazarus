@@ -35,7 +35,7 @@ uses
   SetReplace, SetReturns, SetSpaces, SettingsTypes, SetTransform, SetUses, 
   SetWordList, RegistrySettings, SettingsStream, JcfRegistrySettings, 
   JcfSettings, JcfUiTools, IntList, JcfLog, JcfMiscFunctions, JcfStringUtils, 
-  JcfUnicodeFiles, JcfVersionConsts, JcfUIConsts;
+  JcfUnicodeFiles, JcfVersionConsts, jcfbaseConsts;
 
 implementation
 

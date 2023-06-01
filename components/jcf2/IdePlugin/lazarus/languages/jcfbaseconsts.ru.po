@@ -1,0 +1,32 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 2.4.3\n"
+
+#: jcfbaseconsts.liserrorwritingsettingsexception
+#, object-pascal-format
+msgid "Error writing settings file %s:%s%s"
+msgstr "Ошибка при записи файла параметров %s:%s%s"
+
+#: jcfbaseconsts.liserrorwritingsettingsfilereadonly
+#, object-pascal-format
+msgid "Error writing settings file: %s is read only"
+msgstr "Ошибка при записи файла параметров: %s доступен только для чтения"
+
+#: jcfbaseconsts.lisnosettingsfound
+msgid "No settings found"
+msgstr "Параметров не найдено"
+
+#: jcfbaseconsts.listhesettingsfiledoesnotexist
+#, object-pascal-format
+msgid "The settings file \"%s\" does not exist.%sThe formatter will work better if it is configured to use a valid settings file"
+msgstr "Файл параметров \"%s\" не существует.%sФорматирование будет работать лучше, если его настроить для использования корректного файла параметров"
+

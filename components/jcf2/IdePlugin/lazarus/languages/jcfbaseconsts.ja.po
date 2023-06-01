@@ -1,0 +1,32 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: jcfbaseconsts.ja\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Yuichiro Takahashi <yuichiro@pop07.odn.ne.jp>\n"
+"Language-Team: Japanese Lazarus ML\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
+"X-Generator: Poedit 1.5.7\n"
+
+#: jcfbaseconsts.liserrorwritingsettingsexception
+#, object-pascal-format
+msgid "Error writing settings file %s:%s%s"
+msgstr "設定ファイル %s の書き込みエラー：%s%s"
+
+#: jcfbaseconsts.liserrorwritingsettingsfilereadonly
+#, object-pascal-format
+msgid "Error writing settings file: %s is read only"
+msgstr "設定ファイル書き込みエラー：%s は読み取り専用です"
+
+#: jcfbaseconsts.lisnosettingsfound
+msgid "No settings found"
+msgstr "設定が見つかりません"
+
+#: jcfbaseconsts.listhesettingsfiledoesnotexist
+#, object-pascal-format
+msgid "The settings file \"%s\" does not exist.%sThe formatter will work better if it is configured to use a valid settings file"
+msgstr "設定ファイル \"%s\" が存在しません。%s適切な設定ファイルを使用するほうが、良い動作をするでしょう。"
+

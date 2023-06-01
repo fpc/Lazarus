@@ -1,0 +1,33 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: X-1.9\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Language-Team: \n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.7.1\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: jcfbaseconsts.liserrorwritingsettingsexception
+#, object-pascal-format
+msgid "Error writing settings file %s:%s%s"
+msgstr "错误写入设置文件%s:%s%s"
+
+#: jcfbaseconsts.liserrorwritingsettingsfilereadonly
+#, object-pascal-format
+msgid "Error writing settings file: %s is read only"
+msgstr "错误写入设置文件:%s是只读的"
+
+#: jcfbaseconsts.lisnosettingsfound
+msgid "No settings found"
+msgstr "没有设置找到"
+
+#: jcfbaseconsts.listhesettingsfiledoesnotexist
+#, object-pascal-format
+msgid "The settings file \"%s\" does not exist.%sThe formatter will work better if it is configured to use a valid settings file"
+msgstr ""
+

@@ -1,0 +1,33 @@
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2014-10-03 18:10+0100\n"
+"Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
+"Language-Team: PincoPallo Team\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.5.1\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+
+#: jcfbaseconsts.liserrorwritingsettingsexception
+#, object-pascal-format
+msgid "Error writing settings file %s:%s%s"
+msgstr "Errore nella scrittura del file delle impostazioni %s:%s%s"
+
+#: jcfbaseconsts.liserrorwritingsettingsfilereadonly
+#, object-pascal-format
+msgid "Error writing settings file: %s is read only"
+msgstr "Errore nella scrittura del file delle impostazioni: %s è a sola lettura"
+
+#: jcfbaseconsts.lisnosettingsfound
+msgid "No settings found"
+msgstr "Nessuna impostazione trovata"
+
+#: jcfbaseconsts.listhesettingsfiledoesnotexist
+#, object-pascal-format
+msgid "The settings file \"%s\" does not exist.%sThe formatter will work better if it is configured to use a valid settings file"
+msgstr "Il file impostazioni \"%s\" non esiste.%sIl formattatore funzionerà meglio se potrà usare un file impostazioni valido."
+

@@ -435,16 +435,6 @@ msgstr "%s близько %s"
 msgid "Type: %s%s"
 msgstr "Тип: %s%s"
 
-#: jcfuiconsts.liserrorwritingsettingsexception
-#, object-pascal-format
-msgid "Error writing settings file %s:%s%s"
-msgstr "Помилка запису файлу налаштувань %s:%s%s"
-
-#: jcfuiconsts.liserrorwritingsettingsfilereadonly
-#, object-pascal-format
-msgid "Error writing settings file: %s is read only"
-msgstr "Помилка запису файлу налаштувань: %s лише для читання"
-
 #: jcfuiconsts.lisfindreplaceenablefindandreplace
 msgid "Enable find and replace"
 msgstr "Ввімкнути пошук та заміну"
@@ -602,10 +592,6 @@ msgstr "&Іноді, якщо знайдено гарне місце розри�
 #: jcfuiconsts.lislbusuallyunlessthereisnoacceptableplacetobreak
 msgid "&Usually, unless there is no acceptable place to break"
 msgstr "&Зазвичай, якщо знайдено прийнятне місце розриву"
-
-#: jcfuiconsts.lisnosettingsfound
-msgid "No settings found"
-msgstr "Параметрів не знайдено"
 
 #: jcfuiconsts.lisobfsallcapitals
 msgid "ALL CAPITALS"
@@ -855,11 +841,6 @@ msgstr "Замінити ТАБи на пробіли"
 #: jcfuiconsts.lisspacesvardeclarations
 msgid "&Var declarations"
 msgstr "Ого&лошення Var"
-
-#: jcfuiconsts.listhesettingsfiledoesnotexist
-#, object-pascal-format
-msgid "The settings file \"%s\" does not exist.%sThe formatter will work better if it is configured to use a valid settings file"
-msgstr "Файл налаштувань \"%s\" не існує.%sФорматування буде працювати краще, якщо використовується коректний файл налаштувань"
 
 #: jcfuiconsts.listransformaddbeginandendtosinglestatements
 msgid "Add begin and end to single statements"

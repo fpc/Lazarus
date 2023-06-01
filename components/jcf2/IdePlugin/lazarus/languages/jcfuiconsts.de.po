@@ -432,16 +432,6 @@ msgstr "%s in der Nähe von %s"
 msgid "Type: %s%s"
 msgstr ""
 
-#: jcfuiconsts.liserrorwritingsettingsexception
-#, object-pascal-format
-msgid "Error writing settings file %s:%s%s"
-msgstr "Fehler beim Schreiben der Konfigurationsdatei %s:%s%s"
-
-#: jcfuiconsts.liserrorwritingsettingsfilereadonly
-#, object-pascal-format
-msgid "Error writing settings file: %s is read only"
-msgstr "Fehler beim Schreiben der Konfigurationsdatei: %s ist schreibgeschützt"
-
 #: jcfuiconsts.lisfindreplaceenablefindandreplace
 msgid "Enable find and replace"
 msgstr "Suchen und Ersetzen zulassen"
@@ -600,10 +590,6 @@ msgstr "Manchmal, wenn eine gute Stelle gefunden wurde"
 #: jcfuiconsts.lislbusuallyunlessthereisnoacceptableplacetobreak
 msgid "&Usually, unless there is no acceptable place to break"
 msgstr "Normalerweise, außer es wurde keine sinnvolle Stelle gefunden"
-
-#: jcfuiconsts.lisnosettingsfound
-msgid "No settings found"
-msgstr "Keine Voreinstellungen gefunden"
 
 #: jcfuiconsts.lisobfsallcapitals
 msgid "ALL CAPITALS"
@@ -855,11 +841,6 @@ msgstr "Tabulatoren in Leerzeichen"
 #: jcfuiconsts.lisspacesvardeclarations
 msgid "&Var declarations"
 msgstr "&Var-Deklarationen"
-
-#: jcfuiconsts.listhesettingsfiledoesnotexist
-#, object-pascal-format
-msgid "The settings file \"%s\" does not exist.%sThe formatter will work better if it is configured to use a valid settings file"
-msgstr "Die Konfigurationsdatei »%s« fehlt.%sDer Formatierer arbeitet mit einer gültigen Konfigurationsdatei besser."
 
 #: jcfuiconsts.listransformaddbeginandendtosinglestatements
 msgid "Add begin and end to single statements"

@@ -433,16 +433,6 @@ msgstr "%s a következőnél: %s"
 msgid "Type: %s%s"
 msgstr "Típus: %s%s"
 
-#: jcfuiconsts.liserrorwritingsettingsexception
-#, object-pascal-format
-msgid "Error writing settings file %s:%s%s"
-msgstr "Hiba a beállításfájl írásakor: %s:%s%s"
-
-#: jcfuiconsts.liserrorwritingsettingsfilereadonly
-#, object-pascal-format
-msgid "Error writing settings file: %s is read only"
-msgstr "Hiba a beállításfájl írásakor: a(z) %s csak olvasható"
-
 #: jcfuiconsts.lisfindreplaceenablefindandreplace
 msgid "Enable find and replace"
 msgstr "Keresés és csere engedélyezése"
@@ -601,10 +591,6 @@ msgstr "Néha, ha megfelelő a hely a sortöréshez"
 #: jcfuiconsts.lislbusuallyunlessthereisnoacceptableplacetobreak
 msgid "&Usually, unless there is no acceptable place to break"
 msgstr "Általában, kivéve ha nincs elfogadható hely a sortöréshez"
-
-#: jcfuiconsts.lisnosettingsfound
-msgid "No settings found"
-msgstr "Nem találhatók beállítások"
 
 #: jcfuiconsts.lisobfsallcapitals
 msgid "ALL CAPITALS"
@@ -854,11 +840,6 @@ msgstr "TAB-ok cseréje szóközökre"
 #: jcfuiconsts.lisspacesvardeclarations
 msgid "&Var declarations"
 msgstr "Változók deklarációi"
-
-#: jcfuiconsts.listhesettingsfiledoesnotexist
-#, object-pascal-format
-msgid "The settings file \"%s\" does not exist.%sThe formatter will work better if it is configured to use a valid settings file"
-msgstr "A(z) \"%s\" beállításfájl nem létezik.%sA formázó jobban működik ha meg van adva egy érvényes beállításfájl amit használhat"
 
 #: jcfuiconsts.listransformaddbeginandendtosinglestatements
 msgid "Add begin and end to single statements"

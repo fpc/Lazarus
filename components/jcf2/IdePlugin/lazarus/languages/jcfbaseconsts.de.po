@@ -1,0 +1,30 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: jcfbaseconsts.liserrorwritingsettingsexception
+#, object-pascal-format
+msgid "Error writing settings file %s:%s%s"
+msgstr "Fehler beim Schreiben der Konfigurationsdatei %s:%s%s"
+
+#: jcfbaseconsts.liserrorwritingsettingsfilereadonly
+#, object-pascal-format
+msgid "Error writing settings file: %s is read only"
+msgstr "Fehler beim Schreiben der Konfigurationsdatei: %s ist schreibgeschützt"
+
+#: jcfbaseconsts.lisnosettingsfound
+msgid "No settings found"
+msgstr "Keine Voreinstellungen gefunden"
+
+#: jcfbaseconsts.listhesettingsfiledoesnotexist
+#, object-pascal-format
+msgid "The settings file \"%s\" does not exist.%sThe formatter will work better if it is configured to use a valid settings file"
+msgstr "Die Konfigurationsdatei »%s« fehlt.%sDer Formatierer arbeitet mit einer gültigen Konfigurationsdatei besser."
+

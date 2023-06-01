@@ -433,16 +433,6 @@ msgstr "%s（%s の近辺）"
 msgid "Type: %s%s"
 msgstr "型名：%s%s"
 
-#: jcfuiconsts.liserrorwritingsettingsexception
-#, object-pascal-format
-msgid "Error writing settings file %s:%s%s"
-msgstr "設定ファイル %s の書き込みエラー：%s%s"
-
-#: jcfuiconsts.liserrorwritingsettingsfilereadonly
-#, object-pascal-format
-msgid "Error writing settings file: %s is read only"
-msgstr "設定ファイル書き込みエラー：%s は読み取り専用です"
-
 #: jcfuiconsts.lisfindreplaceenablefindandreplace
 msgid "Enable find and replace"
 msgstr "検索と置換を有効にする"
@@ -600,10 +590,6 @@ msgstr "改行にふさわしい所があったら行う(&S)"
 #: jcfuiconsts.lislbusuallyunlessthereisnoacceptableplacetobreak
 msgid "&Usually, unless there is no acceptable place to break"
 msgstr "改行できない所でない限りは行う(&U)"
-
-#: jcfuiconsts.lisnosettingsfound
-msgid "No settings found"
-msgstr "設定が見つかりません"
 
 #: jcfuiconsts.lisobfsallcapitals
 msgid "ALL CAPITALS"
@@ -853,11 +839,6 @@ msgstr "タブを空白に変換"
 #: jcfuiconsts.lisspacesvardeclarations
 msgid "&Var declarations"
 msgstr "変数宣言(&V)"
-
-#: jcfuiconsts.listhesettingsfiledoesnotexist
-#, object-pascal-format
-msgid "The settings file \"%s\" does not exist.%sThe formatter will work better if it is configured to use a valid settings file"
-msgstr "設定ファイル \"%s\" が存在しません。%s適切な設定ファイルを使用するほうが、良い動作をするでしょう。"
 
 #: jcfuiconsts.listransformaddbeginandendtosinglestatements
 msgid "Add begin and end to single statements"

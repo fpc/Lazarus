@@ -431,16 +431,6 @@ msgstr ""
 msgid "Type: %s%s"
 msgstr ""
 
-#: jcfuiconsts.liserrorwritingsettingsexception
-#, object-pascal-format
-msgid "Error writing settings file %s:%s%s"
-msgstr ""
-
-#: jcfuiconsts.liserrorwritingsettingsfilereadonly
-#, object-pascal-format
-msgid "Error writing settings file: %s is read only"
-msgstr ""
-
 #: jcfuiconsts.lisfindreplaceenablefindandreplace
 msgid "Enable find and replace"
 msgstr ""
@@ -595,10 +585,6 @@ msgstr ""
 
 #: jcfuiconsts.lislbusuallyunlessthereisnoacceptableplacetobreak
 msgid "&Usually, unless there is no acceptable place to break"
-msgstr ""
-
-#: jcfuiconsts.lisnosettingsfound
-msgid "No settings found"
 msgstr ""
 
 #: jcfuiconsts.lisobfsallcapitals
@@ -847,11 +833,6 @@ msgstr ""
 
 #: jcfuiconsts.lisspacesvardeclarations
 msgid "&Var declarations"
-msgstr ""
-
-#: jcfuiconsts.listhesettingsfiledoesnotexist
-#, object-pascal-format
-msgid "The settings file \"%s\" does not exist.%sThe formatter will work better if it is configured to use a valid settings file"
 msgstr ""
 
 #: jcfuiconsts.listransformaddbeginandendtosinglestatements

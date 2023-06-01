@@ -8,10 +8,10 @@ uses {$IFDEF UNIX}
   Interfaces, // this includes the LCL widgetset
   Forms, unit1, JcfSettings, BuildParseTree, PreProcessorExpressionParser,
   PreProcessorExpressionTokenise, PreProcessorExpressionTokens,
-  PreProcessorParseTree, fShowParseTree, Converter, JcfUiTools, JcfStringUtils,
-  SettingsStream, ReturnAfter, NoReturnBefore, RemoveReturnsBeforeEnd,
-  PropertyOnOneLine, NoReturnAfter, LongLineBreaker, BlockStyles,
-  RemoveBlankLinesAfterProcHeader, RemoveBlankLinesInVars,
+  PreProcessorParseTree, fShowParseTree, Converter, JcfUiTools, JcfUiToolsGUI,
+  JcfStringUtils, SettingsStream, ReturnAfter, NoReturnBefore,
+  RemoveReturnsBeforeEnd, PropertyOnOneLine, NoReturnAfter, LongLineBreaker,
+  BlockStyles, RemoveBlankLinesAfterProcHeader, RemoveBlankLinesInVars,
   RemoveConsecutiveReturns, RemoveReturnsAfter, RemoveReturnsAfterBegin,
   ReturnBefore, ReturnChars, ReturnsAfterFinalEnd, SingleSpaceBefore,
   NoSpaceAfter, NoSpaceBefore, MaxSpaces, SingleSpaceAfter, SpaceToTab,
@@ -32,7 +32,7 @@ uses {$IFDEF UNIX}
 
 begin
   RequireDerivedFormResource := True;
-  Application.Scaled:=True;
+  Application.Scaled := True;
   Application.Initialize;
   Application.CreateForm(TForm1, Form1);
   Application.Run;

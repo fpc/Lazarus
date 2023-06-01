@@ -8,7 +8,7 @@
       <PathDelim Value="\"/>
       <SearchPaths>
         <IncludeFiles Value="Include"/>
-        <OtherUnitFiles Value="Parse;Parse\PreProcessor;Process;Process\Align;Process\Capitalisation;Process\Indent;Process\Info;Process\Obfuscate;Process\Onceoffs;Process\Returns;Process\Spacing;Process\Transform;Process\Warnings;ReadWrite;Settings;Settings\Streams;Ui;Utils;IdePlugin\lazarus"/>
+        <OtherUnitFiles Value="Parse;Parse\PreProcessor;Process;Process\Align;Process\Capitalisation;Process\Indent;Process\Info;Process\Obfuscate;Process\Onceoffs;Process\Returns;Process\Spacing;Process\Transform;Process\Warnings;ReadWrite;Settings;Settings\Streams;Ui;Utils"/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
     </CompilerOptions>
@@ -505,8 +505,8 @@
         <UnitName Value="JcfVersionConsts"/>
       </Item122>
       <Item123>
-        <Filename Value="IdePlugin\lazarus\jcfuiconsts.pas"/>
-        <UnitName Value="JcfUIConsts"/>
+        <Filename Value="jcfbaseconsts.pas"/>
+        <UnitName Value="jcfbaseconsts"/>
       </Item123>
     </Files>
     <CompatibilityMode Value="True"/>

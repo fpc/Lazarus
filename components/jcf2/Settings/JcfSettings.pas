@@ -40,7 +40,8 @@ uses
   SetCaps, SetWordList, SetAlign, SetReplace, SetUses, SetPreProcessor,
   SettingsStream, SetTransform, SetAsm, JcfVersionConsts,
   JcfStringUtils, JcfSetBase, JcfRegistrySettings,
-  JcfUIConsts,
+  //JcfUIConsts,
+  jcfbaseConsts,
   JcfUiTools;
 
 type

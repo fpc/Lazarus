@@ -434,16 +434,6 @@ msgstr "%s vicino a %s"
 msgid "Type: %s%s"
 msgstr "Tipo: %s%s"
 
-#: jcfuiconsts.liserrorwritingsettingsexception
-#, object-pascal-format
-msgid "Error writing settings file %s:%s%s"
-msgstr "Errore nella scrittura del file delle impostazioni %s:%s%s"
-
-#: jcfuiconsts.liserrorwritingsettingsfilereadonly
-#, object-pascal-format
-msgid "Error writing settings file: %s is read only"
-msgstr "Errore nella scrittura del file delle impostazioni: %s è a sola lettura"
-
 #: jcfuiconsts.lisfindreplaceenablefindandreplace
 msgid "Enable find and replace"
 msgstr "Abilita trova e sostituisci"
@@ -601,10 +591,6 @@ msgstr "&A volte, se c'è un posto adatto per romperle"
 #: jcfuiconsts.lislbusuallyunlessthereisnoacceptableplacetobreak
 msgid "&Usually, unless there is no acceptable place to break"
 msgstr "&Normalmente, a meno che non sia inaccettabile"
-
-#: jcfuiconsts.lisnosettingsfound
-msgid "No settings found"
-msgstr "Nessuna impostazione trovata"
 
 #: jcfuiconsts.lisobfsallcapitals
 msgid "ALL CAPITALS"
@@ -854,11 +840,6 @@ msgstr "Trasforma tab in spazi"
 #: jcfuiconsts.lisspacesvardeclarations
 msgid "&Var declarations"
 msgstr "Dichiarazioni di &variabili"
-
-#: jcfuiconsts.listhesettingsfiledoesnotexist
-#, object-pascal-format
-msgid "The settings file \"%s\" does not exist.%sThe formatter will work better if it is configured to use a valid settings file"
-msgstr "Il file impostazioni \"%s\" non esiste.%sIl formattatore funzionerà meglio se potrà usare un file impostazioni valido."
 
 #: jcfuiconsts.listransformaddbeginandendtosinglestatements
 msgid "Add begin and end to single statements"

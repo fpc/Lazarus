@@ -15,12 +15,13 @@ resourcestring
   FORMAT_CATEGORY_IDECMD  = 'JEDI Code Format';
 
   //Settings caption and error messages
+  // moved to jcfbaseConsts.
   lisJCFFormatSettings = 'JCF Format Settings';
-  lisTheSettingsFileDoesNotExist = 'The settings file "%s" does not exist.%s'+
-    'The formatter will work better if it is configured to use a valid settings file';
-  lisErrorWritingSettingsFileReadOnly = 'Error writing settings file: %s is read only';
-  lisErrorWritingSettingsException = 'Error writing settings file %s:%s%s';
-  lisNoSettingsFound = 'No settings found';
+  //lisTheSettingsFileDoesNotExist = 'The settings file "%s" does not exist.%s'+
+  //  'The formatter will work better if it is configured to use a valid settings file';
+  //lisErrorWritingSettingsFileReadOnly = 'Error writing settings file: %s is read only';
+  //lisErrorWritingSettingsException = 'Error writing settings file %s:%s%s';
+  //lisNoSettingsFound = 'No settings found';
 
   //Format File settings tab
   lisFrFileConfirmFormat = 'Show confirmation dialog before format';

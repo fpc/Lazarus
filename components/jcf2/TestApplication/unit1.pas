@@ -1,5 +1,8 @@
 {   Quick and dirty app for testing and debugging porpouses.
 
+    WARNING: The compiler fpc.3.2.2 has some bugs detecting changes in units like
+    unit2 in ¡../path/to/unit2.pas'
+    so do a clean build.
 }
 
 unit Unit1;
@@ -57,7 +60,8 @@ implementation
 {$R *.lfm}
 
 { TForm1 }
-
+// In order to test the changes more easily I don't use the package jcfbase.lpk
+// and include here all needed dependencies.
 uses
   JcfStringUtils in '..\..\Utils\JcfStringUtils.pas',
   Converter in '..\..\ReadWrite\Converter.pas',
@@ -145,7 +149,7 @@ uses
   PreProcessorExpressionTokens in '..\..\Parse\PreProcessor\PreProcessorExpressionTokens.pas',
   PreProcessorExpressionParser in '..\..\Parse\PreProcessor\PreProcessorExpressionParser.pas',
   PreProcessorExpressionTokenise in '..\..\Parse\PreProcessor\PreProcessorExpressionTokenise.pas',
-  JcfHelp in '..\..\Utils\JcfHelp.pas',
+  JcfHelp in '..\..\Utils\UI\JcfHelp.pas',
   SettingsTypes in '..\..\Settings\SettingsTypes.pas',
   SetPreProcessor in '..\..\Settings\SetPreProcessor.pas',
   UnitNameCaps in '..\..\Process\Capitalisation\UnitNameCaps.pas',
@@ -174,7 +178,7 @@ uses
   IndentAsmParam in '..\..\Process\Indent\IndentAsmParam.pas',
   AsmKeywords in '..\..\Parse\AsmKeywords.pas',
   JcfUiTools in '..\..\Ui\jcfuitools.pas',
-  jcfUiToolsGui in '..\..\Ui\jcfuitoolsgui.pas';
+  jcfUiToolsGui in '..\..\Ui\UI\jcfuitoolsgui.pas';
 
 procedure TForm1.Button1Click(Sender: TObject);
 var
