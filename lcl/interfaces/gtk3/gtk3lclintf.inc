@@ -598,12 +598,12 @@ begin
   end else
   begin
     case Visual^.get_visual_type of
-      0 {GDK_VISUAL_STATIC_GRAY}:  ADesc.Format:=ricfGray;
-      1 {GDK_VISUAL_GRAYSCALE}:    ADesc.Format:=ricfGray;
-      2 {GDK_VISUAL_STATIC_COLOR}: ADesc.Format:=ricfGray; // this is not really gray, but an index in a color map, but colormaps are not supported yet, so use gray
-      3 {GDK_VISUAL_PSEUDO_COLOR}: ADesc.Format:=ricfGray;
-      4 {GDK_VISUAL_TRUE_COLOR}:   ADesc.Format:=ricfRGBA;
-      5 {GDK_VISUAL_DIRECT_COLOR}: ADesc.Format:=ricfRGBA;
+      GDK_VISUAL_STATIC_GRAY {0} :  ADesc.Format:=ricfGray;
+      GDK_VISUAL_GRAYSCALE {1} :    ADesc.Format:=ricfGray;
+      GDK_VISUAL_STATIC_COLOR {2} : ADesc.Format:=ricfGray; // this is not really gray, but an index in a color map, but colormaps are not supported yet, so use gray
+      GDK_VISUAL_PSEUDO_COLOR {3} : ADesc.Format:=ricfGray;
+      GDK_VISUAL_TRUE_COLOR {4} :   ADesc.Format:=ricfRGBA;
+      GDK_VISUAL_DIRECT_COLOR {5} : ADesc.Format:=ricfRGBA;
     else
       DebugLn('TGtk3WidgetSet.GetWindowRawImageDescription unknown Visual type ',
               dbgs(Integer(Visual^.get_visual_type)));

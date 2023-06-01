@@ -2689,6 +2689,25 @@ type
   GDK_TOUCH_CANCEL = 40,
   GDK_EVENT_LAST = 41
   );
+  TGdkScrollDirection = (
+    TGdkScrollDirectionMinValue = -$7FFFFFFF,
+    GDK_SCROLL_UP = 0,
+    GDK_SCROLL_DOWN = 1,
+    GDK_SCROLL_LEFT = 2,
+    GDK_SCROLL_RIGHT = 3,
+    GDK_SCROLL_SMOOTH = 4,
+    TGdkScrollDirectionMaxValue = $7FFFFFFF
+  );
+  TGdkVisualType = (
+    TGdkVisualTypeMinValue = -$7FFFFFFF,
+    GDK_VISUAL_STATIC_GRAY = 0,
+    GDK_VISUAL_GRAYSCALE = 1,
+    GDK_VISUAL_STATIC_COLOR = 2,
+    GDK_VISUAL_PSEUDO_COLOR = 3,
+    GDK_VISUAL_TRUE_COLOR = 4,
+    GDK_VISUAL_DIRECT_COLOR = 5,
+    TGdkVisualTypeMaxValue = $7FFFFFFF
+  );
 
 type
   TGdkVisibilityState = Integer;
@@ -2697,16 +2716,6 @@ const
   GDK_VISIBILITY_UNOBSCURED: TGdkVisibilityState = 0;
   GDK_VISIBILITY_PARTIAL: TGdkVisibilityState = 1;
   GDK_VISIBILITY_FULLY_OBSCURED: TGdkVisibilityState = 2;
-
-type
-  TGdkScrollDirection = Integer;
-const
-  { GdkScrollDirection }
-  GDK_SCROLL_UP: TGdkScrollDirection = 0;
-  GDK_SCROLL_DOWN: TGdkScrollDirection = 1;
-  GDK_SCROLL_LEFT: TGdkScrollDirection = 2;
-  GDK_SCROLL_RIGHT: TGdkScrollDirection = 3;
-  GDK_SCROLL_SMOOTH: TGdkScrollDirection = 4;
 
 type
   TGdkNotifyType = Integer;
@@ -2819,17 +2828,6 @@ const
   GDK_PROP_MODE_REPLACE: TGdkPropMode = 0;
   GDK_PROP_MODE_PREPEND: TGdkPropMode = 1;
   GDK_PROP_MODE_APPEND: TGdkPropMode = 2;
-
-type
-  TGdkVisualType = Integer;
-const
-  { GdkVisualType }
-  GDK_VISUAL_STATIC_GRAY: TGdkVisualType = 0;
-  GDK_VISUAL_GRAYSCALE: TGdkVisualType = 1;
-  GDK_VISUAL_STATIC_COLOR: TGdkVisualType = 2;
-  GDK_VISUAL_PSEUDO_COLOR: TGdkVisualType = 3;
-  GDK_VISUAL_TRUE_COLOR: TGdkVisualType = 4;
-  GDK_VISUAL_DIRECT_COLOR: TGdkVisualType = 5;
 
 type
   TGdkStatus = Integer;
