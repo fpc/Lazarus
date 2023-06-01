@@ -4670,6 +4670,7 @@ function GetWidgetClientRect(TheWidget: PGtkWidget): TRect;
 var
   Widget, ClientWidget: PGtkWidget;
   AChild: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
 
   procedure GetNoteBookClientRect(NBWidget: PGtkNotebook);
   var
@@ -4707,6 +4708,12 @@ begin
   Result := Rect(0, 0, 0, 0);
   Widget := TheWidget;
   ClientWidget := GetFixedWidget(Widget);
+
+  if FWidgetsWithResizeRequest.Contains(Widget) then begin
+    WidgetInfo := GetWidgetInfo(Widget);
+    if WidgetInfo <> nil then include(WidgetInfo^.Flags, wwiClientRectWhilePendingSize);
+  end;
+
   if (ClientWidget <> nil) then
     Widget := ClientWidget;
   if (Widget <> nil) then
@@ -6643,6 +6650,8 @@ var
   end;
     
   procedure UpdateLCLSize;
+  var
+    WidgetInfo: PWidgetInfo;
   begin
     LCLWidth:=LCLControl.Width;
     LCLHeight:=LCLControl.Height;
@@ -6651,6 +6660,11 @@ var
       WidthHeightChanged:=true;
       //DebugLn(['UpdateLCLSize InvalidateClientRectCache ',DbgSName(LCLControl)]);
       LCLControl.InvalidateClientRectCache(false);
+    end
+    else begin
+      WidgetInfo := GetWidgetInfo(aWidget);
+      if (WidgetInfo <> nil) and (wwiClientRectWhilePendingSize in WidgetInfo^.Flags) then
+        LCLControl.InvalidateClientRectCache(false);
     end;
   end;
 

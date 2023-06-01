@@ -2277,6 +2277,7 @@ procedure TGtk2WidgetSet.SendCachedLCLMessages;
     IsTopLevelWidget: boolean;
     TopologicalList: TFPList; // list of PGtkWidget;
     i: integer;
+    WidgetInfo: PWidgetInfo;
 
     procedure RaiseWidgetWithoutControl;
     begin
@@ -2322,6 +2323,8 @@ procedure TGtk2WidgetSet.SendCachedLCLMessages;
         SetWindowSizeAndPosition(PgtkWindow(Widget),TWinControl(LCLControl));
       end;
 
+      WidgetInfo := GetWidgetInfo(Widget);
+      if WidgetInfo <> nil then exclude(WidgetInfo^.Flags, wwiClientRectWhilePendingSize);
     end;
     TopologicalList.Free;
     FWidgetsWithResizeRequest.Clear;
