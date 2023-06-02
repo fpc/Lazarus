@@ -38,7 +38,7 @@ interface
 uses
   Classes, SysUtils, RegExpr,
   // LCL
-  LCLType, Graphics, Controls,
+  LCLType, Graphics, Controls, LCLIntf,
   // LazUtils
   LazFileUtils, LazStringUtils,
   // SynEdit
@@ -303,6 +303,7 @@ var
   HintModifier: TPascalHintModifier;
   HelperForNode: TCodeTreeNode;
 begin
+  SetBkMode(ACanvas.Handle, TRANSPARENT);
   if Colors<>nil then
   begin
     if ItemSelected then
