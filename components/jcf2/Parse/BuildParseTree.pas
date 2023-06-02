@@ -5534,6 +5534,13 @@ begin
   begin
     RecognisePossiblyAmpdIdentifier;
   end
+  {unnamed enumeration in variant record
+  rec1=record
+    case enum:(one, two, three) of
+    one:(F: Integer);
+  }
+  else if lc.TokenType = ttOpenBracket then
+    RecogniseEnumeratedType
   else
   begin
     { type can be prefixed with a unit name, e.g. Classes.TList;
