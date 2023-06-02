@@ -366,6 +366,13 @@ type
     GTK_WIN_POS_CENTER_ON_PARENT = 4,
     TGtkWindowPositionMaxValue = $7FFFFFFF
   );
+  TGtkDialogFlags = (
+    TGtkDialogFlagsMinValue = -$7FFFFFFF,
+    GTK_DIALOG_MODAL = 1,
+    GTK_DIALOG_DESTROY_WITH_PARENT = 2,
+    GTK_DIALOG_USE_HEADER_BAR = 4,
+    TGtkDialogFlagsMaxValue = $7FFFFFFF
+  );
   TGtkResponseType = (
     TGtkResponseTypeMinValue = -$7FFFFFFF,
     GTK_RESPONSE_HELP = -11,
@@ -481,6 +488,14 @@ type
     GTK_PACK_START = 0,
     GTK_PACK_END = 1,
     TGtkPackTypeMaxValue = $7FFFFFFF
+  );
+  TGtkApplicationInhibitFlags = (
+    TGtkApplicationInhibitFlagsMinValue = -$7FFFFFFF,
+    GTK_APPLICATION_INHIBIT_LOGOUT = 1,
+    GTK_APPLICATION_INHIBIT_SWITCH = 2,
+    GTK_APPLICATION_INHIBIT_SUSPEND = 4,
+    GTK_APPLICATION_INHIBIT_IDLE = 8,
+    TGtkApplicationInhibitFlagsMaxValue = $7FFFFFFF
   );
   TGtkArrowType = (
     TGtkArrowTypeMinValue = -$7FFFFFFF,
@@ -761,6 +776,22 @@ type
     GTK_ENTRY_ICON_SECONDARY = 1,
     TGtkEntryIconPositionMaxValue = $7FFFFFFF
   );
+  TGtkInputHints = (
+    TGtkInputHintsMinValue = -$7FFFFFFF,
+    GTK_INPUT_HINT_NONE = 0,
+    GTK_INPUT_HINT_SPELLCHECK = 1,
+    GTK_INPUT_HINT_NO_SPELLCHECK = 2,
+    GTK_INPUT_HINT_WORD_COMPLETION = 4,
+    GTK_INPUT_HINT_LOWERCASE = 8,
+    GTK_INPUT_HINT_UPPERCASE_CHARS = 16,
+    GTK_INPUT_HINT_UPPERCASE_WORDS = 32,
+    GTK_INPUT_HINT_UPPERCASE_SENTENCES = 64,
+    GTK_INPUT_HINT_INHIBIT_OSK = 128,
+    GTK_INPUT_HINT_VERTICAL_WRITING = 256,
+    GTK_INPUT_HINT_EMOJI = 512,
+    GTK_INPUT_HINT_NO_EMOJI = 1024,
+    TGtkInputHintsMaxValue = $7FFFFFFF
+  );
   TGtkInputPurpose = (
     TGtkInputPurposeMinValue = -$7FFFFFFF,
     GTK_INPUT_PURPOSE_FREE_FORM = 0,
@@ -796,6 +827,16 @@ type
     GTK_PHASE_TARGET = 3,
     TGtkPropagationPhaseMaxValue = $7FFFFFFF
   );
+  TGtkEventControllerScrollFlags = (
+    TGtkEventControllerScrollFlagsMinValue = -$7FFFFFFF,
+    GTK_EVENT_CONTROLLER_SCROLL_NONE = 0,
+    GTK_EVENT_CONTROLLER_SCROLL_VERTICAL = 1,
+    GTK_EVENT_CONTROLLER_SCROLL_HORIZONTAL = 2,
+    GTK_EVENT_CONTROLLER_SCROLL_BOTH_AXES = 3,
+    GTK_EVENT_CONTROLLER_SCROLL_DISCRETE = 4,
+    GTK_EVENT_CONTROLLER_SCROLL_KINETIC = 8,
+    TGtkEventControllerScrollFlagsMaxValue = $7FFFFFFF
+  );
   TGtkEventSequenceState = (
     TGtkEventSequenceStateMinValue = -$7FFFFFFF,
     GTK_EVENT_SEQUENCE_NONE = 0,
@@ -819,6 +860,14 @@ type
     GTK_FILE_CHOOSER_ACTION_CREATE_FOLDER = 3,
     TGtkFileChooserActionMaxValue = $7FFFFFFF
   );
+  TGtkFileFilterFlags = (
+    TGtkFileFilterFlagsMinValue = -$7FFFFFFF,
+    GTK_FILE_FILTER_FILENAME = 1,
+    GTK_FILE_FILTER_URI = 2,
+    GTK_FILE_FILTER_DISPLAY_NAME = 4,
+    GTK_FILE_FILTER_MIME_TYPE = 8,
+    TGtkFileFilterFlagsMaxValue = $7FFFFFFF
+  );
   TGtkFileChooserConfirmation = (
     TGtkFileChooserConfirmationMinValue = -$7FFFFFFF,
     GTK_FILE_CHOOSER_CONFIRMATION_CONFIRM = 0,
@@ -841,6 +890,15 @@ type
     GTK_SELECTION_BROWSE = 2,
     GTK_SELECTION_MULTIPLE = 3,
     TGtkSelectionModeMaxValue = $7FFFFFFF
+  );
+  TGtkFontChooserLevel = (
+    TGtkFontChooserLevelMinValue = -$7FFFFFFF,
+    GTK_FONT_CHOOSER_LEVEL_FAMILY = 0,
+    GTK_FONT_CHOOSER_LEVEL_STYLE = 1,
+    GTK_FONT_CHOOSER_LEVEL_SIZE = 2,
+    GTK_FONT_CHOOSER_LEVEL_VARIATIONS = 4,
+    GTK_FONT_CHOOSER_LEVEL_FEATURES = 8,
+    TGtkFontChooserLevelMaxValue = $7FFFFFFF
   );
   TGtkPanDirection = (
     TGtkPanDirectionMinValue = -$7FFFFFFF,
@@ -869,6 +927,19 @@ type
     GTK_STYLE_CONTEXT_PRINT_RECURSE = 1,
     GTK_STYLE_CONTEXT_PRINT_SHOW_STYLE = 2,
     TGtkStyleContextPrintFlagsMaxValue = $7FFFFFFF
+  );
+  TGtkIconLookupFlags = (
+    TGtkIconLookupFlagsMinValue = -$7FFFFFFF,
+    GTK_ICON_LOOKUP_NO_SVG = 1,
+    GTK_ICON_LOOKUP_FORCE_SVG = 2,
+    GTK_ICON_LOOKUP_USE_BUILTIN = 4,
+    GTK_ICON_LOOKUP_GENERIC_FALLBACK = 8,
+    GTK_ICON_LOOKUP_FORCE_SIZE = 16,
+    GTK_ICON_LOOKUP_FORCE_REGULAR = 32,
+    GTK_ICON_LOOKUP_FORCE_SYMBOLIC = 64,
+    GTK_ICON_LOOKUP_DIR_LTR = 128,
+    GTK_ICON_LOOKUP_DIR_RTL = 256,
+    TGtkIconLookupFlagsMaxValue = $7FFFFFFF
   );
   TGtkIconThemeError = (
     TGtkIconThemeErrorMinValue = -$7FFFFFFF,
@@ -1074,6 +1145,16 @@ type
     GTK_RECENT_SORT_CUSTOM = 3,
     TGtkRecentSortTypeMaxValue = $7FFFFFFF
   );
+  TGtkRecentFilterFlags = (
+    TGtkRecentFilterFlagsMinValue = -$7FFFFFFF,
+    GTK_RECENT_FILTER_URI = 1,
+    GTK_RECENT_FILTER_DISPLAY_NAME = 2,
+    GTK_RECENT_FILTER_MIME_TYPE = 4,
+    GTK_RECENT_FILTER_APPLICATION = 8,
+    GTK_RECENT_FILTER_GROUP = 16,
+    GTK_RECENT_FILTER_AGE = 32,
+    TGtkRecentFilterFlagsMaxValue = $7FFFFFFF
+  );
   TGtkRecentChooserError = (
     TGtkRecentChooserErrorMinValue = -$7FFFFFFF,
     GTK_RECENT_CHOOSER_ERROR_NOT_FOUND = 0,
@@ -1090,6 +1171,16 @@ type
     GTK_RECENT_MANAGER_ERROR_WRITE = 5,
     GTK_RECENT_MANAGER_ERROR_UNKNOWN = 6,
     TGtkRecentManagerErrorMaxValue = $7FFFFFFF
+  );
+  TGtkRegionFlags = (
+    TGtkRegionFlagsMinValue = -$7FFFFFFF,
+    GTK_REGION_EVEN = 1,
+    GTK_REGION_ODD = 2,
+    GTK_REGION_FIRST = 4,
+    GTK_REGION_LAST = 8,
+    GTK_REGION_ONLY = 16,
+    GTK_REGION_SORTED = 32,
+    TGtkRegionFlagsMaxValue = $7FFFFFFF
   );
   TGtkRevealerTransitionType = (
     TGtkRevealerTransitionTypeMinValue = -$7FFFFFFF,
@@ -1180,6 +1271,14 @@ type
     GTK_STACK_TRANSITION_TYPE_OVER_RIGHT_LEFT = 19,
     TGtkStackTransitionTypeMaxValue = $7FFFFFFF
   );
+  TGtkTargetFlags = (
+    TGtkTargetFlagsMinValue = -$7FFFFFFF,
+    GTK_TARGET_SAME_APP = 1,
+    GTK_TARGET_SAME_WIDGET = 2,
+    GTK_TARGET_OTHER_APP = 4,
+    GTK_TARGET_OTHER_WIDGET = 8,
+    TGtkTargetFlagsMaxValue = $7FFFFFFF
+  );
   TGtkWrapMode = (
     TGtkWrapModeMinValue = -$7FFFFFFF,
     GTK_WRAP_NONE = 0,
@@ -1187,6 +1286,13 @@ type
     GTK_WRAP_WORD = 2,
     GTK_WRAP_WORD_CHAR = 3,
     TGtkWrapModeMaxValue = $7FFFFFFF
+  );
+  TGtkTextSearchFlags = (
+    TGtkTextSearchFlagsMinValue = -$7FFFFFFF,
+    GTK_TEXT_SEARCH_VISIBLE_ONLY = 1,
+    GTK_TEXT_SEARCH_TEXT_ONLY = 2,
+    GTK_TEXT_SEARCH_CASE_INSENSITIVE = 4,
+    TGtkTextSearchFlagsMaxValue = $7FFFFFFF
   );
   TGtkTextBufferTargetInfo = (
     TGtkTextBufferTargetInfoMinValue = -$7FFFFFFF,
@@ -1251,65 +1357,10 @@ type
   );
 
 type
-  TGtkDialogFlags = Integer;
-const
-  { GtkDialogFlags }
-  GTK_DIALOG_MODAL: TGtkDialogFlags = 1;
-  GTK_DIALOG_DESTROY_WITH_PARENT: TGtkDialogFlags = 2;
-
-type
-  TGtkApplicationInhibitFlags = Integer;
-const
-  { GtkApplicationInhibitFlags }
-  GTK_APPLICATION_INHIBIT_LOGOUT: TGtkApplicationInhibitFlags = 1;
-  GTK_APPLICATION_INHIBIT_SWITCH: TGtkApplicationInhibitFlags = 2;
-  GTK_APPLICATION_INHIBIT_SUSPEND: TGtkApplicationInhibitFlags = 4;
-  GTK_APPLICATION_INHIBIT_IDLE: TGtkApplicationInhibitFlags = 8;
-
-type
-  TGtkRegionFlags = Integer;
-const
-  { GtkRegionFlags }
-  GTK_REGION_EVEN: TGtkRegionFlags = 1;
-  GTK_REGION_ODD: TGtkRegionFlags = 2;
-  GTK_REGION_FIRST: TGtkRegionFlags = 4;
-  GTK_REGION_LAST: TGtkRegionFlags = 8;
-  GTK_REGION_ONLY: TGtkRegionFlags = 16;
-  GTK_REGION_SORTED: TGtkRegionFlags = 32;
-
-type
-
-  TGtkInputHints = Integer;
-const
-  { GtkInputHints }
-  GTK_INPUT_HINT_NONE: TGtkInputHints = 0;
-  GTK_INPUT_HINT_SPELLCHECK: TGtkInputHints = 1;
-  GTK_INPUT_HINT_NO_SPELLCHECK: TGtkInputHints = 2;
-  GTK_INPUT_HINT_WORD_COMPLETION: TGtkInputHints = 4;
-  GTK_INPUT_HINT_LOWERCASE: TGtkInputHints = 8;
-  GTK_INPUT_HINT_UPPERCASE_CHARS: TGtkInputHints = 16;
-  GTK_INPUT_HINT_UPPERCASE_WORDS: TGtkInputHints = 32;
-  GTK_INPUT_HINT_UPPERCASE_SENTENCES: TGtkInputHints = 64;
-  GTK_INPUT_HINT_INHIBIT_OSK: TGtkInputHints = 128;
-
-type
-  TGtkFileFilterFlags = Integer;
-const
-  { GtkFileFilterFlags }
-  GTK_FILE_FILTER_FILENAME: TGtkFileFilterFlags = 1;
-  GTK_FILE_FILTER_URI: TGtkFileFilterFlags = 2;
-  GTK_FILE_FILTER_DISPLAY_NAME: TGtkFileFilterFlags = 4;
-  GTK_FILE_FILTER_MIME_TYPE: TGtkFileFilterFlags = 8;
-
-type
-  TGtkIconLookupFlags = Integer;
-const
-  { GtkIconLookupFlags }
-  GTK_ICON_LOOKUP_NO_SVG: TGtkIconLookupFlags = 1;
-  GTK_ICON_LOOKUP_FORCE_SVG: TGtkIconLookupFlags = 2;
-  GTK_ICON_LOOKUP_USE_BUILTIN: TGtkIconLookupFlags = 4;
-  GTK_ICON_LOOKUP_GENERIC_FALLBACK: TGtkIconLookupFlags = 8;
-  GTK_ICON_LOOKUP_FORCE_SIZE: TGtkIconLookupFlags = 16;
+  { TGtkAllocation }
+  PPGtkAllocation = ^PGtkAllocation;
+  PGtkAllocation = ^TGtkAllocation;
+  TGtkAllocation = TGdkRectangle;
 
 type
   TGtkRcTokenType = Integer;
@@ -1357,39 +1408,17 @@ const
   GTK_RC_TOKEN_LAST: TGtkRcTokenType = 309;
 
 type
-  TGtkRecentFilterFlags = Integer;
-const
-  { GtkRecentFilterFlags }
-  GTK_RECENT_FILTER_URI: TGtkRecentFilterFlags = 1;
-  GTK_RECENT_FILTER_DISPLAY_NAME: TGtkRecentFilterFlags = 2;
-  GTK_RECENT_FILTER_MIME_TYPE: TGtkRecentFilterFlags = 4;
-  GTK_RECENT_FILTER_APPLICATION: TGtkRecentFilterFlags = 8;
-  GTK_RECENT_FILTER_GROUP: TGtkRecentFilterFlags = 16;
-  GTK_RECENT_FILTER_AGE: TGtkRecentFilterFlags = 32;
-
-type
-  TGtkTargetFlags = Integer;
-const
-  { GtkTargetFlags }
-  GTK_TARGET_SAME_APP: TGtkTargetFlags = 1;
-  GTK_TARGET_SAME_WIDGET: TGtkTargetFlags = 2;
-  GTK_TARGET_OTHER_APP: TGtkTargetFlags = 4;
-  GTK_TARGET_OTHER_WIDGET: TGtkTargetFlags = 8;
-
-type
-  TGtkTextSearchFlags = Integer;
-const
-  { GtkTextSearchFlags }
-  GTK_TEXT_SEARCH_VISIBLE_ONLY: TGtkTextSearchFlags = 1;
-  GTK_TEXT_SEARCH_TEXT_ONLY: TGtkTextSearchFlags = 2;
-  GTK_TEXT_SEARCH_CASE_INSENSITIVE: TGtkTextSearchFlags = 4;
-
-type
   TGtkToolbarSpaceStyle = Integer;
 const
   { GtkToolbarSpaceStyle }
   GTK_TOOLBAR_SPACE_EMPTY: TGtkToolbarSpaceStyle = 0;
   GTK_TOOLBAR_SPACE_LINE: TGtkToolbarSpaceStyle = 1;
+
+type
+  { TGtkStock }
+  PPGtkStock = ^PGtkStock;
+  PGtkStock = ^TGtkStock;
+  TGtkStock = gchar;
 
 type
   TGtkUIManagerItemType = Integer;
@@ -1406,15 +1435,14 @@ const
   GTK_UI_MANAGER_SEPARATOR: TGtkUIManagerItemType = 128;
   GTK_UI_MANAGER_ACCELERATOR: TGtkUIManagerItemType = 256;
   GTK_UI_MANAGER_POPUP_WITH_ACCELS: TGtkUIManagerItemType = 512;
+
 type
-
-  PPGtkAllocation = ^PGtkAllocation;
-  PGtkAllocation = ^TGtkAllocation;
-  TGtkAllocation = TGdkRectangle;
-
+  { TGtkBuildable }
   PPGtkBuildable = ^PGtkBuildable;
   PGtkBuildable = ^TGtkBuildable;
 
+
+  { TGtkBuilder }
   PPGtkBuilder = ^PGtkBuilder;
   PGtkBuilder = ^TGtkBuilder;
   TGtkBuildable = object
@@ -1430,68 +1458,110 @@ type
     procedure set_name(name: Pgchar); cdecl; inline;
   end;
 
+
+  { TGtkWidget }
   PPGtkWidget = ^PGtkWidget;
   PGtkWidget = ^TGtkWidget;
 
+
+  { TGtkTextDirection }
   PPGtkTextDirection = ^PGtkTextDirection;
   PGtkTextDirection = ^TGtkTextDirection;
 
+
+  { TGtkAccelGroup }
   PPGtkAccelGroup = ^PGtkAccelGroup;
   PGtkAccelGroup = ^TGtkAccelGroup;
 
+
+  { TGtkAccelFlags }
   PPGtkAccelFlags = ^PGtkAccelFlags;
   PGtkAccelFlags = ^TGtkAccelFlags;
 
+
+  { TGtkTickCallback }
   PPGtkTickCallback = ^PGtkTickCallback;
   PGtkTickCallback = ^TGtkTickCallback;
   TGtkTickCallback = function(widget: PGtkWidget; frame_clock: PGdkFrameClock; user_data: gpointer): gboolean; cdecl;
 
+
+  { TGtkDirectionType }
   PPGtkDirectionType = ^PGtkDirectionType;
   PGtkDirectionType = ^TGtkDirectionType;
 
+
+  { TGtkOrientation }
   PPGtkOrientation = ^PGtkOrientation;
   PGtkOrientation = ^TGtkOrientation;
 
+
+  { TGtkTargetList }
   PPGtkTargetList = ^PGtkTargetList;
   PGtkTargetList = ^TGtkTargetList;
 
+
+  { TGtkDestDefaults }
   PPGtkDestDefaults = ^PGtkDestDefaults;
   PGtkDestDefaults = ^TGtkDestDefaults;
 
+
+  { TGtkTargetEntry }
   PPPGtkTargetEntry = ^PPGtkTargetEntry;
   PPGtkTargetEntry = ^PGtkTargetEntry;
   PGtkTargetEntry = ^TGtkTargetEntry;
 
+
+  { TGtkClipboard }
   PPGtkClipboard = ^PGtkClipboard;
   PGtkClipboard = ^TGtkClipboard;
 
+
+  { TGtkAlign }
   PPGtkAlign = ^PGtkAlign;
   PGtkAlign = ^TGtkAlign;
 
+
+  { TGtkWidgetPath }
   PPGtkWidgetPath = ^PGtkWidgetPath;
   PGtkWidgetPath = ^TGtkWidgetPath;
 
+
+  { TGtkRequisition }
   PPGtkRequisition = ^PGtkRequisition;
   PGtkRequisition = ^TGtkRequisition;
 
+
+  { TGtkSizeRequestMode }
   PPGtkSizeRequestMode = ^PGtkSizeRequestMode;
   PGtkSizeRequestMode = ^TGtkSizeRequestMode;
 
+
+  { TGtkSettings }
   PPGtkSettings = ^PGtkSettings;
   PGtkSettings = ^TGtkSettings;
 
+
+  { TGtkStateFlags }
   PPGtkStateFlags = ^PGtkStateFlags;
   PGtkStateFlags = ^TGtkStateFlags;
 
+
+  { TGtkStyleContext }
   PPGtkStyleContext = ^PGtkStyleContext;
   PGtkStyleContext = ^TGtkStyleContext;
 
+
+  { TGtkWindow }
   PPGtkWindow = ^PGtkWindow;
   PGtkWindow = ^TGtkWindow;
 
+  { TGtkStyle }
   PPGtkStyle = ^PGtkStyle;
   PGtkStyle = ^TGtkStyle;
 
+
+
+  { TGtkWidgetPrivate }
   PPGtkWidgetPrivate = ^PGtkWidgetPrivate;
   PGtkWidgetPrivate = ^TGtkWidgetPrivate;
   TGtkWidget = object(TGInitiallyUnowned)
