@@ -7026,23 +7026,44 @@ instance and its siblings.
 </element>
 
 <element name="TCustomForm.ShowModal">
-<short>Displays the form as a modal Dialog.</short>
+<short>Displays the form as a modal dialog.</short>
 <descr>
 <p>
 Shows the form in a modal state and waits until it is closed by the user or 
 by the program. Modal state means that neither the user nor the program can 
-switch to another form already made visible before calling 
-<var>ShowModal</var>.
+switch to or display another form before exiting the method.
 </p>
 <p>
-The form must have <var>Visible</var> set to <b>False</b> when calling 
-<var>ShowModal</var>. The call does <b>not</b> return until the form is 
-closed. The application switches to modal state until <var>ShowModal</var> 
-has completed.
+The form must be <var>Enabled</var> with its <var>Visible</var> property set 
+to <b>False</b> when calling ShowModal. It cannot have fsModal in its 
+FormState property, and it cannot be a MDI Child form. An 
+<var>EInvalidOperation</var> exception is raised if the form cannot be
+displayed as a modal form.
 </p>
 <p>
-<var>ShowModal</var> creates its own event loop using 
-<var>ProcessMessages</var>.
+ShowModal updates the Application instance by calling its ModalStarted method. 
+This maintains its internal members and signals any OnModalBegin event 
+handlers assigned for the application. The application switches to modal state 
+until ShowModal is completed. The ModalFinished method for the Application is 
+called prior to exit.
+</p>
+<p>
+ShowModal implements its own message processing loop. It calls 
+AppProcessMessages in the widgetset to process messages and events for the 
+form. If an exception occurs, it is caught in the processing loop. If 
+CaptureExceptions is enabled for the Application instance, its HandleException 
+is called. If CaptureExceptions is not enabled in the application, the 
+exception is re-raised.
+</p>
+<p>
+ShowModal sets the value in the ModalResult property to indicate the action 
+performed to close the modal form. mrNone indicates that the form has not been 
+(or should not be) closed. mrCancel indicates the the Cancel button was 
+pressed, the form was closed using a window decoration, or the application has 
+been Terminated.
+</p>
+<p>
+ShowModal uses the value from ModalResult as the return value for the method.
 </p>
 </descr>
 <errors>
@@ -7051,6 +7072,10 @@ Raises an <var>EInvalidOperation</var> exception if the form cannot be
 displayed as a modal form.
 </p>
 </errors>
+<version>
+Modified in LCL version 2.4.0 to allow the application to handle an exception 
+when its CaptureExceptions property is enabled.
+</version>
 <seealso/>
 </element>
 <element name="TCustomForm.ShowModal.Result">
