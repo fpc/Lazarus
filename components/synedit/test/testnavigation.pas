@@ -589,6 +589,7 @@ begin
   SynEdit.Options := [eoScrollPastEol];
 
   TestLeftRight('at EOL right',        5, 10, ecRight,  11, 9,   12,10);
+  TestLeftRight('after EOL right',   5, 99, ecRight, 100, 98,   101, 99,   False, False);
   TestLeftRight('at Max-left right',   5,199, ecRight, 200,198,   200,198,   False, False);
 
 

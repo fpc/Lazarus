@@ -4819,18 +4819,18 @@ begin
   if not HandleAllocated then // don't know chars in window yet
     exit(MaxInt);
 
-  Result := FTheLinesView.LengthOfLongestLine;
+  Result := FTheLinesView.LengthOfLongestLine + 1;
   if (eoScrollPastEolAddPage in Options2) then
-    Result := Result + CharsInWindow - 1;
+    Result := Result + CharsInWindow - 1 - FScreenCaret.ExtraLineChars;
   if (eoScrollPastEol in Options) and (Result < fMaxLeftChar) then
     Result := fMaxLeftChar;
   if (eoScrollPastEolAutoCaret in Options2) and (Result < FCaret.CharPos) then
     Result := FCaret.CharPos;
 
   if AIncludeCharsInWin then
-    Result := Result + 1 + FScreenCaret.ExtraLineChars
+    Result := Result + FScreenCaret.ExtraLineChars
   else
-    Result := Result - CharsInWindow + 1 + FScreenCaret.ExtraLineChars;
+    Result := Result - CharsInWindow + FScreenCaret.ExtraLineChars;
 
   if Result < 1 then Result := 1;
 end;
@@ -4844,9 +4844,9 @@ begin
 
   Result := FTheLinesView.LengthOfLongestLine + 1;
   if (eoScrollPastEolAddPage in Options2) then
-    Result := Result + CharsInWindow - 1;
+    Result := Result + CharsInWindow - 1 - FScreenCaret.ExtraLineChars;
   if (eoScrollPastEol in Options) and (Result < fMaxLeftChar + 1) then
-    Result := fMaxLeftChar + 1;
+    Result := fMaxLeftChar;
 
   if Result < 1 then Result := 1;
 end;
@@ -8416,9 +8416,13 @@ begin
   FOptions := Value;
   UpdateOptions;
 
-  if not (eoScrollPastEol in Options) then
+  if eoScrollPastEol in ChangedOptions then begin
+    Include(fStateFlags, sfScrollbarChanged);
     LeftChar := LeftChar;
-  if (eoScrollPastEol in Options) or (eoScrollPastEof in Options) then begin
+    if sfScrollbarChanged in fStateFlags then
+      UpdateScrollbars;
+  end;
+  if (eoScrollPastEof in ChangedOptions) then begin
     UpdateScrollBars;
     TopView := TopView;
   end;
@@ -8488,6 +8492,12 @@ begin
       UpdateCursor;
     if (eoPersistentCaretStopBlink in ChangedOptions) then
       UpdateScreenCaret;
+    if ChangedOptions * [eoScrollPastEolAddPage, eoScrollPastEolAutoCaret] <> [] then begin
+      Include(fStateFlags, sfScrollbarChanged);
+      LeftChar := LeftChar;
+      if sfScrollbarChanged in fStateFlags then
+        UpdateScrollbars;
+    end;
     StatusChanged([scOptions]);
   end;
 end;
