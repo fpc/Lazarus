@@ -2883,9 +2883,9 @@ specified value.
 </short>
 <descr>
 <p>
-The <var>Lang</var> argument can sometimes can be in the form 'ru_RU.utf8', 
-which will preventloading files with language in the form '.ru_RU.po'. This 
-procedure trims the encoding value from the argument.
+The <var>Lang</var> argument can sometimes be in the form 'ru_RU.utf8', 
+which will prevent loading a file with a language identifier in the form 
+'project1.ru_RU.po'. This procedure trims the encoding value from the argument.
 </p>
 </descr>
 <version>
