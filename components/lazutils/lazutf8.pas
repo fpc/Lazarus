@@ -4075,11 +4075,10 @@ begin
 end;
 
 {
-This routine will strip country information from the language ID
-making it more simple
+This routine will return current short language ID (without the country code).
 
 Ideally the resulting ID from here should conform to ISO 639-1
-or ISO 639-2, if the language has no code in ISO 639-1
+or ISO 639-2, if the language has no code in ISO 639-1.
 }
 procedure LazGetShortLanguageID(var Lang: String);
 var
@@ -4087,9 +4086,7 @@ var
 begin
   FallbackLang:='';
   LazGetLanguageIDs(Lang, FallbackLang);
-
-  // Simply making sure its length is at most 2 should be enough for most languages
-  if Length(Lang) > 2 then Lang := Lang[1] + Lang[2];
+  Lang:=FallbackLang;
 end;
 
 {
