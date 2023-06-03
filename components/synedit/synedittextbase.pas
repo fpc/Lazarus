@@ -98,6 +98,8 @@ type
   private
     FStorageMemList: Array of TSynManagedStorageMem;
     FClassList: Array of Pointer;
+    function GetChildCounts: Integer;
+    function GetChildren(Index: Integer): TSynManagedStorageMem;
     function GetStorageMems(Index: Pointer): TSynManagedStorageMem;
     procedure SetStorageMems(Index: Pointer; const AValue: TSynManagedStorageMem);
     procedure SetChildCapacities(const AValue: Integer);
@@ -110,7 +112,8 @@ type
     procedure CallInsertedLines(AIndex, ACount: Integer);
     procedure CallDeletedLines(AIndex, ACount: Integer);
     property ChildCapacities: Integer write SetChildCapacities;
-    property ChildCounts: Integer write SetChildCounts;
+    property ChildCounts: Integer read GetChildCounts write SetChildCounts;
+    property Children[Index: Integer]: TSynManagedStorageMem read GetChildren;
     property StorageMems[Index: Pointer]: TSynManagedStorageMem
              read GetStorageMems write SetStorageMems; default;
   end;
@@ -973,6 +976,17 @@ begin
     if FClassList[i] = Index then
       Result := FStorageMemList[i];
   end;
+end;
+
+function TSynManagedStorageMemList.GetChildCounts: Integer;
+begin
+  Result := Length(FStorageMemList);
+end;
+
+function TSynManagedStorageMemList.GetChildren(Index: Integer
+  ): TSynManagedStorageMem;
+begin
+  Result := FStorageMemList[Index];
 end;
 
 procedure TSynManagedStorageMemList.SetStorageMems(Index: Pointer;

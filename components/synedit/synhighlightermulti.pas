@@ -119,6 +119,7 @@ type
   public
     constructor Create(ALines: TSynEditStringsBase);
     destructor Destroy; override;
+    procedure Debug;
     procedure Clear; override;                                   // should not be called ever
     procedure Delete(Index: Integer); override;                  // should not be called ever
     procedure Insert(Index: Integer; const S: string); override; // should not be called ever
@@ -324,6 +325,7 @@ type
     function  GetTokenKind: integer; override;
     function  GetTokenPos: Integer; override; // 0-based
     procedure SetLine(const NewValue: string; LineNumber: Integer); override;
+    function UpdateRangeInfoAtLine(Index: Integer): Boolean; override;
     function  GetRange: Pointer; override;
     procedure SetRange(Value: Pointer); override;
     procedure ResetRange; override;
@@ -645,6 +647,33 @@ begin
   FreeAndNil(FRangeList);
 end;
 
+procedure TSynHLightMultiVirtualLines.Debug;
+var
+  i: Integer;
+begin
+  DebugLnEnter(SYNDEBUG_MULTIHL, ['>> Virtual-Lines: ', ptruint(self), ' LineCnt: ', Count, ' FirstChg: ',FFirstHLChangedLine, ' LastChg: ', FLastHLChangedLine ]);
+  for i := 0 to Count - 1 do
+    debugln(SYNDEBUG_MULTIHL, [i,' len=',length(self[i]),': ',self[i]]);
+
+  debugln(SYNDEBUG_MULTIHL, ['- RangeList: ChildCnt: ', FRangeList.ChildCounts]);
+  for i := 0 to FRangeList.ChildCounts - 1 do
+    debugln(SYNDEBUG_MULTIHL, ['   ', PtrUInt(FRangeList.Children[i]), ' Cnt: ', FRangeList.Children[i].Count ]);
+
+  if FScheme <> nil then
+    if FScheme.Highlighter <> nil then
+      debugln(SYNDEBUG_MULTIHL, ['- Scheme: ', PtrUInt(FScheme), ' ', FScheme.SchemeName, ' HL: ', DbgSName(FScheme.Highlighter), ' ', PtrUInt(FScheme.Highlighter), ' HL.Range: ', PtrUInt(FScheme.Highlighter.CurrentLines.Ranges[FScheme.Highlighter]) ])
+    else
+      debugln(SYNDEBUG_MULTIHL, ['- Scheme: ', PtrUInt(FScheme), ' ', FScheme.SchemeName, ' HL: ', DbgSName(FScheme.Highlighter), ' ', PtrUInt(FScheme.Highlighter) ])
+  else
+    debugln(SYNDEBUG_MULTIHL, ['- Scheme: ', PtrUInt(FScheme)]);
+
+  DebugLnEnter(SYNDEBUG_MULTIHL, ['- Sections: ', PtrUInt(FSectionList)]);
+  FSectionList.Debug;
+  DebugLnExit(SYNDEBUG_MULTIHL);
+
+  DebugLnExit(SYNDEBUG_MULTIHL);
+end;
+
 procedure TSynHLightMultiVirtualLines.PrepareRegionScan(AStartLineIdx: Integer);
 var
   p: PSynHLightMultiVirtualSection;
@@ -843,24 +872,23 @@ begin
   PrevEndVLine := -1;                           // Keep track of overlap, when next section starts on the same V-line as previous sectian ends
   if AIndex > p^.StartPos.y then begin
     // Real-lines starting in the middle of the Section
-    CountInSection := Min(AIndex + ACount, p^.EndPos.y + 1) - AIndex;
+    VLineCount := Min(AIndex + ACount, p^.EndPos.y + 1) - AIndex;
     FirstVLine := p^.VirtualLine + AIndex - p^.StartPos.y;
-    PrevEndVLine := p^.VirtualLine + p^.EndPos.y - p^.EndPos.y;
-    p^.EndPos.y := p^.EndPos.y - CountInSection;
+    PrevEndVLine := p^.VirtualLine + p^.EndPos.y - p^.StartPos.y;
+    p^.EndPos.y := p^.EndPos.y - VLineCount;
     inc(i);
     if i = FSectionList.Count then begin
       DelVLines;
       exit;
     end;
     p := FSectionList.PSections[i];
-    VLineCount := CountInSection;
   end;
   while p^.EndPos.y < AIndex + ACount do begin
     // Completly delete node (All Real lines deleted)
     VLineCount := VLineCount + p^.EndPos.y - p^.StartPos.y + 1;
     if PrevEndVLine = p^.VirtualLine then
       dec(VLineCount);
-    PrevEndVLine := p^.VirtualLine + p^.EndPos.y - p^.EndPos.y;
+    PrevEndVLine := p^.VirtualLine + p^.EndPos.y - p^.StartPos.y;
     FSectionList.Delete(i);
     if i = FSectionList.Count then begin
       DelVLines;
@@ -870,11 +898,11 @@ begin
   end;
   if AIndex + ACount > p^.StartPos.y then begin
     // Some real-lines at the start of section are deleted
+    if PrevEndVLine = p^.VirtualLine then
+      dec(VLineCount);
     p^.VirtualLine := p^.VirtualLine - VLineCount;
     CountInSection := ACount - (p^.StartPos.y - AIndex);
     VLineCount := VLineCount + CountInSection;
-    if PrevEndVLine = p^.VirtualLine then
-      dec(VLineCount);
     p^.StartPos.y := p^.StartPos.y - (ACount - CountInSection);
     p^.EndPos.y := p^.EndPos.y - ACount;
     assert(p^.EndPos.y >= p^.StartPos.y, 'TSynHLightMultiVirtualLines.RealLinesDeleted: p^.EndPos.y >= p^.StartPos.y');
@@ -1652,6 +1680,21 @@ begin
   Next;
 end;
 
+function TSynMultiSyn.UpdateRangeInfoAtLine(Index: Integer): Boolean;
+begin
+  Result := inherited UpdateRangeInfoAtLine(Index);
+  if not Result then begin
+    if FCurScheme <> nil then
+      Result := (FCurScheme.VirtualLines <> nil) and
+                (FCurScheme.VirtualLines.SectionList <> nil) and
+                (FCurScheme.VirtualLines.SectionList.IndexOfFirstSectionAtLineIdx(Index, -1, False) < 0)
+    else
+      Result := (DefaultVirtualLines <> nil) and
+                (DefaultVirtualLines.SectionList <> nil) and
+                (DefaultVirtualLines.SectionList.IndexOfFirstSectionAtLineIdx(Index, -1, False) < 0);
+  end;
+end;
+
 procedure TSynMultiSyn.SetRange(Value: Pointer);
 begin
   inherited;
@@ -1967,7 +2010,7 @@ begin
   end;
 end;
 
-procedure TSynHighlighterMultiScheme.SetHighlighter(const Value: TSynCustomHighLighter);
+procedure TSynHighlighterMultiScheme.SetHighlighter(const Value: TSynCustomHighlighter);
 var
   ParentHLighter: TSynMultiSyn;
 begin
