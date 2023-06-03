@@ -10,7 +10,7 @@
 }
 unit TAStyles;
 
-{$H+}
+{$MODE ObjFPC}{$H+}
 
 interface
 

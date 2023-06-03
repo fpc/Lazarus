@@ -11,7 +11,7 @@
 
 unit TAAxisSource;
 
-{$H+}
+{$MODE ObjFPC}{$H+}
 
 interface
 

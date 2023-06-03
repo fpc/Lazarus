@@ -11,7 +11,7 @@
 
 unit TAIntervalSources;
 
-{$H+}
+{$MODE ObjFPC}{$H+}
 
 interface
 

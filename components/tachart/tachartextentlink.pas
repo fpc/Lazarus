@@ -1,6 +1,6 @@
 unit TAChartExtentLink;
 
-{$H+}
+{$MODE ObjFPC}{$H+}
 {$WARN 6058 off : Call to subroutine "$1" marked as inline is not inlined}
 interface
 

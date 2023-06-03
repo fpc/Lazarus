@@ -18,10 +18,7 @@
 
 unit TAChartUtils;
 
-{$H+}
-{$IF FPC_FULLVERSION<20700}
-{$OPTIMIZATION NOSTACKFRAME}
-{$ENDIF}
+{$MODE ObjFPC}{$H+}
 
 interface
 

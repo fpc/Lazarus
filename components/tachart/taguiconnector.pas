@@ -10,7 +10,7 @@
 }
 unit TAGUIConnector;
 
-{$H+}
+{$MODE ObjFPC}{$H+}
 
 interface
 

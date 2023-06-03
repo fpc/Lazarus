@@ -1,6 +1,6 @@
 unit TAHtml;
 
-{$H+}
+{$MODE ObjFPC}{$H+}
 
 interface
 

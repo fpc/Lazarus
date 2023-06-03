@@ -112,15 +112,11 @@ end;
 
 procedure TForm1.CbBandedChange(Sender: TObject);
 begin
-  {$IF LCL_FullVersion >= 1090000}
   Chart1AreaSeries1.Banded := CbBanded.Checked;
   if Chart1AreaSeries1.Banded then
     UpdateStyles(Chart1AreaSeries1.ListSource.YCount-1)
   else
     UpdateStyles(Chart1AreaSeries1.ListSource.YCount);
-  {$ELSE}
-  ShowMessage('This functionality requires at least Lazarus version 1.9');
-  {$IFEND}
 end;
 
 procedure TForm1.CbCenteredChange(Sender: TObject);
@@ -276,12 +272,8 @@ begin
   ChartSourceArea2.YCount := 3;
   ChartSourceArea2.PointsNumber := N2;
 
-  {$IF LCL_FullVersion >= 1090000}
   Chart2AreaSeries1.Banded := true;
   Chart2AreaSeries2.Banded := true;
-  {$ELSE}
-  Label1.Show;
-  {$ENDIF}
 end;
 
 procedure TForm1.EdCountChange(Sender: TObject);
@@ -320,27 +312,12 @@ var
 begin
   ChartStyles1.Styles.Clear;
   for i := 1 to Count do
-    {$IF LCL_FullVersion >= 1090000}
     with ChartStyles1.Add do begin
-    {$ELSE}
-    with TChartStyle(ChartStyles1.Styles.Add) do begin
-    {$IFEND}
       Brush.Color := COLORS[i-1];
       Pen.Width := 3;
       Text := 'Curve ' + IntToStr(i);
     end;
 end;
 
-
-{
-  if CbStacked.Checked then begin
-    Chart1AreaSeries1.AxisIndexX := 0;
-    Chart1AreaSeries1.AxisIndexY := 1;
-  end else begin
-    Chart1AreaSeries1.AxisIndexX := 1;
-    Chart1AreaSeries1.AxisIndexY := 0;
-  end;
-end;
- }
 end.
 

@@ -10,7 +10,7 @@
 
 unit TANavigation;
 
-{$H+}
+{$MODE ObjFPC}{$H+}
 
 interface
 

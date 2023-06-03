@@ -9,7 +9,7 @@
 }
 unit TALegendPanel;
 
-{$H+}
+{$MODE ObjFPC}{$H+}
 
 interface
 

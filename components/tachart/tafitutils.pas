@@ -10,7 +10,7 @@
 }
 unit TAFitUtils;
 
-{$H+}
+{$MODE ObjFPC}{$H+}
 
 interface
 

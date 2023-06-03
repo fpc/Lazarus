@@ -9,7 +9,7 @@
 }
 unit TADataPointsEditor;
 
-{$H+}
+{$MODE ObjFPC}{$H+}
 
 interface
 

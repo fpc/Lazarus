@@ -11,7 +11,7 @@
 
 unit TARadialSeries;
 
-{$H+}
+{$MODE ObjFPC}{$H+}
 
 interface
 
@@ -180,11 +180,11 @@ type
     FAngleCache: array of TSinCos;
     function GraphPoint(AIndex, AYIndex: Integer): TDoublePoint;
     procedure PrepareAngleCache;
-    procedure PrepareGraphPoints(AYIndex: Integer);
   protected
     function GetLabelDataPoint(AIndex, AYIndex: Integer): TDoublePoint; override;
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     procedure SourceChanged(ASender: TObject); override;
+    procedure PrepareGraphPoints(AYIndex: Integer); virtual; reintroduce;
     procedure UpdateLabelDirectionReferenceLevel(AIndex, AYIndex: Integer;
       var ALevel: Double); override;
   public

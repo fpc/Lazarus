@@ -10,7 +10,7 @@
 }
 unit TAEnumerators;
 
-{$H+}
+{$MODE ObjFPC}{$H+}
 
 interface
 

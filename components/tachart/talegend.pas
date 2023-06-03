@@ -9,7 +9,7 @@
 }
 unit TALegend;
 
-{$H+}
+{$MODE ObjFPC}{$H+}
 
 interface
 

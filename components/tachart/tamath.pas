@@ -9,7 +9,7 @@
 }
 unit TAMath;
 
-{$H+}
+{$MODE ObjFPC}{$H+}
 
 interface
 

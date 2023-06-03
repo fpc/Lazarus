@@ -17,7 +17,7 @@
 }
 unit TASeriesEditor;
 
-{$H+}
+{$MODE ObjFPC}{$H+}
 
 interface
 

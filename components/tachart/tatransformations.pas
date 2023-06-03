@@ -12,7 +12,7 @@
 }
 unit TATransformations;
 
-{$H+}
+{$MODE ObjFPC}{$H+}
 
 interface
 

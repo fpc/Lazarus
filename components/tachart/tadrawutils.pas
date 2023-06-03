@@ -10,7 +10,7 @@
 
 unit TADrawUtils;
 
-{$H+}
+{$MODE ObjFPC}{$H+}
 
 interface
 

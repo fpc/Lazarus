@@ -21,7 +21,7 @@
 
 unit TAChartImageList;
 
-{$H+}
+{$MODE ObjFPC}{$H+}
 
 interface
 

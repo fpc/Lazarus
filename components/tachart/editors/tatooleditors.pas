@@ -11,7 +11,7 @@
 
 unit TAToolEditors;
 
-{$H+}
+{$MODE ObjFPC}{$H+}
 
 interface
 

@@ -12,7 +12,7 @@
 }
 unit TACustomFuncSeries;
 
-{$H+}
+{$MODE ObjFPC}{$H+}
 
 interface
 

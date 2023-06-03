@@ -9,7 +9,7 @@
 }
 unit TADrawerSVG;
 
-{$H+}
+{$MODE ObjFPC}{$H+}
 
 interface
 

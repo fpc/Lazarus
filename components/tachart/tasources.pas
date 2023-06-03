@@ -11,7 +11,7 @@
 
 unit TASources;
 
-{$H+}
+{$MODE ObjFPC}{$H+}
 
 interface
 

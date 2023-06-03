@@ -10,7 +10,7 @@
 }
 unit TATextElements;
 
-{$H+}
+{$MODE ObjFPC}{$H+}
 
 interface
 

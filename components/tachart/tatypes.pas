@@ -17,7 +17,7 @@
 }
 unit TATypes;
 
-{$H+}
+{$MODE ObjFPC}{$H+}
 
 interface
 

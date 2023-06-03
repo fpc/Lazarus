@@ -9,7 +9,7 @@
 }
 unit TADrawerFPCanvas;
 
-{$H+}
+{$MODE ObjFPC}{$H+}
 
 interface
 

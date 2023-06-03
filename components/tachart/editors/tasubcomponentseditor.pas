@@ -9,7 +9,7 @@
 }
 unit TASubcomponentsEditor;
 
-{$H+}
+{$MODE ObjFPC}{$H+}
 
 interface
 

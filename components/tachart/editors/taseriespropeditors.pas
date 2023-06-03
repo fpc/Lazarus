@@ -1,6 +1,6 @@
 unit TASeriesPropEditors;
 
-{$H+}
+{$MODE ObjFPC}{$H+}
 
 interface
 

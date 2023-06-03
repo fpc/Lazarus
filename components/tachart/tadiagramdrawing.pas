@@ -9,7 +9,7 @@
 }
 unit TADiagramDrawing;
 
-{$H+}
+{$MODE ObjFPC}{$H+}
 
 interface
 
