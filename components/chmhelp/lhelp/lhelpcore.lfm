@@ -51,8 +51,6 @@ object HelpForm: THelpForm
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnShow = FormShow
-  OnWindowStateChange = FormWindowStateChange
-  Position = poScreenCenter
   LCLVersion = '2.3.0.0'
   Visible = True
   object PageControl: TPageControl

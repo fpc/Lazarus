@@ -102,7 +102,6 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown ( Sender: TObject; var {%H-}Key: Word; {%H-}Shift: TShiftState) ;
     procedure FormShow(Sender: TObject);
-    procedure FormWindowStateChange(Sender: TObject);
     procedure MiActionsGoForwardClick ( Sender: TObject ) ;
     procedure MiHideClick ( Sender: TObject ) ;
     procedure MiActionsGoBackClick ( Sender: TObject ) ;
@@ -134,7 +133,6 @@ type
     fHasShowed: Boolean;
     fMustClose: boolean;
     fDefWinMax: Boolean;
-    fDefWinSize: TRect;
     fHide: boolean; //If yes, start with content hidden. Otherwise start normally
     fUpdateCount: Integer;
     fLastHiddenRequest: String;
@@ -549,18 +547,9 @@ begin
   RefreshState;
 end;
 
-procedure THelpForm.FormWindowStateChange(Sender: TObject);
-begin
-  if Windowstate = wsNormal then
-  begin
-    Left   := fDefWinSize.Left;
-    Top    := fDefWinSize.Top;
-    Width  := fDefWinSize.Width;
-    Height := fDefWinSize.Height;
-  end;
-end;
-
 procedure THelpForm.ApplyLayoutPreferencesOnce;
+var
+  fDefWinSize: TRect;
 begin
   if not Assigned(fConfig) then exit;
   if (not fHide) and (not fLayoutApplied) then
@@ -578,10 +567,7 @@ begin
     else
     begin
       Windowstate := wsNormal;
-      Left   := fDefWinSize.Left;
-      Top    := fDefWinSize.Top;
-      Width  := fDefWinSize.Width;
-      Height := fDefWinSize.Height;
+      SetBounds(fDefWinSize.Left, fDefWinSize.Top, fDefWinSize.Width, fDefWinSize.Height);
     end;
     // Keep track so we do not reapply initial settings as user may have
     // changed size etc in the meantime.
