@@ -20,7 +20,11 @@ const
   LazGio2_library = 'libgio-2.0.so.0';
   {$endif}
 
+  G_DBUS_METHOD_INVOCATION_HANDLED = true;
+  G_DBUS_METHOD_INVOCATION_UNHANDLED = false;
+  G_DEBUG_CONTROLLER_EXTENSION_POINT_NAME = 'gio-debug-controller';
   G_DESKTOP_APP_INFO_LOOKUP_EXTENSION_POINT_NAME = 'gio-desktop-app-info-lookup';
+  G_DRIVE_IDENTIFIER_KIND_UNIX_DEVICE = 'unix-device';
   G_FILE_ATTRIBUTE_ACCESS_CAN_DELETE = 'access::can-delete';
   G_FILE_ATTRIBUTE_ACCESS_CAN_EXECUTE = 'access::can-execute';
   G_FILE_ATTRIBUTE_ACCESS_CAN_READ = 'access::can-read';
@@ -28,10 +32,13 @@ const
   G_FILE_ATTRIBUTE_ACCESS_CAN_TRASH = 'access::can-trash';
   G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE = 'access::can-write';
   G_FILE_ATTRIBUTE_DOS_IS_ARCHIVE = 'dos::is-archive';
+  G_FILE_ATTRIBUTE_DOS_IS_MOUNTPOINT = 'dos::is-mountpoint';
   G_FILE_ATTRIBUTE_DOS_IS_SYSTEM = 'dos::is-system';
+  G_FILE_ATTRIBUTE_DOS_REPARSE_POINT_TAG = 'dos::reparse-point-tag';
   G_FILE_ATTRIBUTE_ETAG_VALUE = 'etag::value';
   G_FILE_ATTRIBUTE_FILESYSTEM_FREE = 'filesystem::free';
   G_FILE_ATTRIBUTE_FILESYSTEM_READONLY = 'filesystem::readonly';
+  G_FILE_ATTRIBUTE_FILESYSTEM_REMOTE = 'filesystem::remote';
   G_FILE_ATTRIBUTE_FILESYSTEM_SIZE = 'filesystem::size';
   G_FILE_ATTRIBUTE_FILESYSTEM_TYPE = 'filesystem::type';
   G_FILE_ATTRIBUTE_FILESYSTEM_USED = 'filesystem::used';
@@ -55,6 +62,7 @@ const
   G_FILE_ATTRIBUTE_OWNER_USER = 'owner::user';
   G_FILE_ATTRIBUTE_OWNER_USER_REAL = 'owner::user-real';
   G_FILE_ATTRIBUTE_PREVIEW_ICON = 'preview::icon';
+  G_FILE_ATTRIBUTE_RECENT_MODIFIED = 'recent::modified';
   G_FILE_ATTRIBUTE_SELINUX_CONTEXT = 'selinux::context';
   G_FILE_ATTRIBUTE_STANDARD_ALLOCATED_SIZE = 'standard::allocated-size';
   G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE = 'standard::content-type';
@@ -68,6 +76,7 @@ const
   G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN = 'standard::is-hidden';
   G_FILE_ATTRIBUTE_STANDARD_IS_SYMLINK = 'standard::is-symlink';
   G_FILE_ATTRIBUTE_STANDARD_IS_VIRTUAL = 'standard::is-virtual';
+  G_FILE_ATTRIBUTE_STANDARD_IS_VOLATILE = 'standard::is-volatile';
   G_FILE_ATTRIBUTE_STANDARD_NAME = 'standard::name';
   G_FILE_ATTRIBUTE_STANDARD_SIZE = 'standard::size';
   G_FILE_ATTRIBUTE_STANDARD_SORT_ORDER = 'standard::sort-order';
@@ -76,14 +85,31 @@ const
   G_FILE_ATTRIBUTE_STANDARD_TARGET_URI = 'standard::target-uri';
   G_FILE_ATTRIBUTE_STANDARD_TYPE = 'standard::type';
   G_FILE_ATTRIBUTE_THUMBNAILING_FAILED = 'thumbnail::failed';
+  G_FILE_ATTRIBUTE_THUMBNAILING_FAILED_LARGE = 'thumbnail::failed-large';
+  G_FILE_ATTRIBUTE_THUMBNAILING_FAILED_NORMAL = 'thumbnail::failed-normal';
+  G_FILE_ATTRIBUTE_THUMBNAILING_FAILED_XLARGE = 'thumbnail::failed-xlarge';
+  G_FILE_ATTRIBUTE_THUMBNAILING_FAILED_XXLARGE = 'thumbnail::failed-xxlarge';
+  G_FILE_ATTRIBUTE_THUMBNAIL_IS_VALID = 'thumbnail::is-valid';
+  G_FILE_ATTRIBUTE_THUMBNAIL_IS_VALID_LARGE = 'thumbnail::is-valid-large';
+  G_FILE_ATTRIBUTE_THUMBNAIL_IS_VALID_NORMAL = 'thumbnail::is-valid-normal';
+  G_FILE_ATTRIBUTE_THUMBNAIL_IS_VALID_XLARGE = 'thumbnail::is-valid-xlarge';
+  G_FILE_ATTRIBUTE_THUMBNAIL_IS_VALID_XXLARGE = 'thumbnail::is-valid-xxlarge';
   G_FILE_ATTRIBUTE_THUMBNAIL_PATH = 'thumbnail::path';
+  G_FILE_ATTRIBUTE_THUMBNAIL_PATH_LARGE = 'thumbnail::path-large';
+  G_FILE_ATTRIBUTE_THUMBNAIL_PATH_NORMAL = 'thumbnail::path-normal';
+  G_FILE_ATTRIBUTE_THUMBNAIL_PATH_XLARGE = 'thumbnail::path-xlarge';
+  G_FILE_ATTRIBUTE_THUMBNAIL_PATH_XXLARGE = 'thumbnail::path-xxlarge';
   G_FILE_ATTRIBUTE_TIME_ACCESS = 'time::access';
+  G_FILE_ATTRIBUTE_TIME_ACCESS_NSEC = 'time::access-nsec';
   G_FILE_ATTRIBUTE_TIME_ACCESS_USEC = 'time::access-usec';
   G_FILE_ATTRIBUTE_TIME_CHANGED = 'time::changed';
+  G_FILE_ATTRIBUTE_TIME_CHANGED_NSEC = 'time::changed-nsec';
   G_FILE_ATTRIBUTE_TIME_CHANGED_USEC = 'time::changed-usec';
   G_FILE_ATTRIBUTE_TIME_CREATED = 'time::created';
+  G_FILE_ATTRIBUTE_TIME_CREATED_NSEC = 'time::created-nsec';
   G_FILE_ATTRIBUTE_TIME_CREATED_USEC = 'time::created-usec';
   G_FILE_ATTRIBUTE_TIME_MODIFIED = 'time::modified';
+  G_FILE_ATTRIBUTE_TIME_MODIFIED_NSEC = 'time::modified-nsec';
   G_FILE_ATTRIBUTE_TIME_MODIFIED_USEC = 'time::modified-usec';
   G_FILE_ATTRIBUTE_TRASH_DELETION_DATE = 'trash::deletion-date';
   G_FILE_ATTRIBUTE_TRASH_ITEM_COUNT = 'trash::item-count';
@@ -98,16 +124,21 @@ const
   G_FILE_ATTRIBUTE_UNIX_NLINK = 'unix::nlink';
   G_FILE_ATTRIBUTE_UNIX_RDEV = 'unix::rdev';
   G_FILE_ATTRIBUTE_UNIX_UID = 'unix::uid';
+  G_MEMORY_MONITOR_EXTENSION_POINT_NAME = 'gio-memory-monitor';
   G_MENU_ATTRIBUTE_ACTION = 'action';
   G_MENU_ATTRIBUTE_ACTION_NAMESPACE = 'action-namespace';
+  G_MENU_ATTRIBUTE_ICON = 'icon';
   G_MENU_ATTRIBUTE_LABEL = 'label';
   G_MENU_ATTRIBUTE_TARGET = 'target';
+  G_MENU_EXPORTER_MAX_SECTION_SIZE = 1000;
   G_MENU_LINK_SECTION = 'section';
   G_MENU_LINK_SUBMENU = 'submenu';
   G_NATIVE_VOLUME_MONITOR_EXTENSION_POINT_NAME = 'gio-native-volume-monitor';
   G_NETWORK_MONITOR_EXTENSION_POINT_NAME = 'gio-network-monitor';
+  G_POWER_PROFILE_MONITOR_EXTENSION_POINT_NAME = 'gio-power-profile-monitor';
   G_PROXY_EXTENSION_POINT_NAME = 'gio-proxy';
   G_PROXY_RESOLVER_EXTENSION_POINT_NAME = 'gio-proxy-resolver';
+  G_SETTINGS_BACKEND_EXTENSION_POINT_NAME = 'gsettings-backend';
   G_TLS_BACKEND_EXTENSION_POINT_NAME = 'gio-tls-backend';
   G_TLS_DATABASE_PURPOSE_AUTHENTICATE_CLIENT = '1.3.6.1.5.5.7.3.2';
   G_TLS_DATABASE_PURPOSE_AUTHENTICATE_SERVER = '1.3.6.1.5.5.7.3.1';
@@ -119,704 +150,770 @@ const
   G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE = 'unix-device';
   G_VOLUME_IDENTIFIER_KIND_UUID = 'uuid';
   G_VOLUME_MONITOR_EXTENSION_POINT_NAME = 'gio-volume-monitor';
-
-type
-  TGAppInfoCreateFlags = Integer;
-const
-  { GAppInfoCreateFlags }
-  G_APP_INFO_CREATE_NONE: TGAppInfoCreateFlags = 0;
-  G_APP_INFO_CREATE_NEEDS_TERMINAL: TGAppInfoCreateFlags = 1;
-  G_APP_INFO_CREATE_SUPPORTS_URIS: TGAppInfoCreateFlags = 2;
-  G_APP_INFO_CREATE_SUPPORTS_STARTUP_NOTIFICATION: TGAppInfoCreateFlags = 4;
-
-type
-  TGApplicationFlags = Integer;
-const
-  { GApplicationFlags }
-  G_APPLICATION_FLAGS_NONE: TGApplicationFlags = 0;
-  G_APPLICATION_IS_SERVICE: TGApplicationFlags = 1;
-  G_APPLICATION_IS_LAUNCHER: TGApplicationFlags = 2;
-  G_APPLICATION_HANDLES_OPEN: TGApplicationFlags = 4;
-  G_APPLICATION_HANDLES_COMMAND_LINE: TGApplicationFlags = 8;
-  G_APPLICATION_SEND_ENVIRONMENT: TGApplicationFlags = 16;
-  G_APPLICATION_NON_UNIQUE: TGApplicationFlags = 32;
-
-type
-  TGDBusConnectionFlags = Integer;
-const
-  { GDBusConnectionFlags }
-  G_DBUS_CONNECTION_FLAGS_NONE: TGDBusConnectionFlags = 0;
-  G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT: TGDBusConnectionFlags = 1;
-  G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_SERVER: TGDBusConnectionFlags = 2;
-  G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_ALLOW_ANONYMOUS: TGDBusConnectionFlags = 4;
-  G_DBUS_CONNECTION_FLAGS_MESSAGE_BUS_CONNECTION: TGDBusConnectionFlags = 8;
-  G_DBUS_CONNECTION_FLAGS_DELAY_MESSAGE_PROCESSING: TGDBusConnectionFlags = 16;
-
-type
-  TGDBusCallFlags = Integer;
-const
-  { GDBusCallFlags }
-  G_DBUS_CALL_FLAGS_NONE: TGDBusCallFlags = 0;
-  G_DBUS_CALL_FLAGS_NO_AUTO_START: TGDBusCallFlags = 1;
-
-type
-  TGDBusCapabilityFlags = Integer;
-const
-  { GDBusCapabilityFlags }
-  G_DBUS_CAPABILITY_FLAGS_NONE: TGDBusCapabilityFlags = 0;
-  G_DBUS_CAPABILITY_FLAGS_UNIX_FD_PASSING: TGDBusCapabilityFlags = 1;
-
-type
-  TGDBusSubtreeFlags = Integer;
-const
-  { GDBusSubtreeFlags }
-  G_DBUS_SUBTREE_FLAGS_NONE: TGDBusSubtreeFlags = 0;
-  G_DBUS_SUBTREE_FLAGS_DISPATCH_TO_UNENUMERATED_NODES: TGDBusSubtreeFlags = 1;
-
-type
-  TGDBusSendMessageFlags = Integer;
-const
-  { GDBusSendMessageFlags }
-  G_DBUS_SEND_MESSAGE_FLAGS_NONE: TGDBusSendMessageFlags = 0;
-  G_DBUS_SEND_MESSAGE_FLAGS_PRESERVE_SERIAL: TGDBusSendMessageFlags = 1;
-
-type
-  TGDBusSignalFlags = Integer;
-const
-  { GDBusSignalFlags }
-  G_DBUS_SIGNAL_FLAGS_NONE: TGDBusSignalFlags = 0;
-  G_DBUS_SIGNAL_FLAGS_NO_MATCH_RULE: TGDBusSignalFlags = 1;
-
-type
-  TGFileCreateFlags = Integer;
-const
-  { GFileCreateFlags }
-  G_FILE_CREATE_NONE: TGFileCreateFlags = 0;
-  G_FILE_CREATE_PRIVATE: TGFileCreateFlags = 1;
-  G_FILE_CREATE_REPLACE_DESTINATION: TGFileCreateFlags = 2;
-
-type
-  TGFileCopyFlags = Integer;
-const
-  { GFileCopyFlags }
-  G_FILE_COPY_NONE: TGFileCopyFlags = 0;
-  G_FILE_COPY_OVERWRITE: TGFileCopyFlags = 1;
-  G_FILE_COPY_BACKUP: TGFileCopyFlags = 2;
-  G_FILE_COPY_NOFOLLOW_SYMLINKS: TGFileCopyFlags = 4;
-  G_FILE_COPY_ALL_METADATA: TGFileCopyFlags = 8;
-  G_FILE_COPY_NO_FALLBACK_FOR_MOVE: TGFileCopyFlags = 16;
-  G_FILE_COPY_TARGET_DEFAULT_PERMS: TGFileCopyFlags = 32;
-
-type
-  TGMountUnmountFlags = Integer;
-const
-  { GMountUnmountFlags }
-  G_MOUNT_UNMOUNT_NONE: TGMountUnmountFlags = 0;
-  G_MOUNT_UNMOUNT_FORCE: TGMountUnmountFlags = 1;
-
-type
-  TGFileQueryInfoFlags = Integer;
-const
-  { GFileQueryInfoFlags }
-  G_FILE_QUERY_INFO_NONE: TGFileQueryInfoFlags = 0;
-  G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS: TGFileQueryInfoFlags = 1;
-
-type
-  TGFileMonitorFlags = Integer;
-const
-  { GFileMonitorFlags }
-  G_FILE_MONITOR_NONE: TGFileMonitorFlags = 0;
-  G_FILE_MONITOR_WATCH_MOUNTS: TGFileMonitorFlags = 1;
-  G_FILE_MONITOR_SEND_MOVED: TGFileMonitorFlags = 2;
-  G_FILE_MONITOR_WATCH_HARD_LINKS: TGFileMonitorFlags = 4;
-
-type
-  TGMountMountFlags = Integer;
-const
-  { GMountMountFlags }
-  G_MOUNT_MOUNT_NONE: TGMountMountFlags = 0;
-
-type
-  TGFileAttributeType = Integer;
-const
-  { GFileAttributeType }
-  G_FILE_ATTRIBUTE_TYPE_INVALID: TGFileAttributeType = 0;
-  G_FILE_ATTRIBUTE_TYPE_STRING: TGFileAttributeType = 1;
-  G_FILE_ATTRIBUTE_TYPE_BYTE_STRING: TGFileAttributeType = 2;
-  G_FILE_ATTRIBUTE_TYPE_BOOLEAN: TGFileAttributeType = 3;
-  G_FILE_ATTRIBUTE_TYPE_UINT32: TGFileAttributeType = 4;
-  G_FILE_ATTRIBUTE_TYPE_INT32: TGFileAttributeType = 5;
-  G_FILE_ATTRIBUTE_TYPE_UINT64: TGFileAttributeType = 6;
-  G_FILE_ATTRIBUTE_TYPE_INT64: TGFileAttributeType = 7;
-  G_FILE_ATTRIBUTE_TYPE_OBJECT: TGFileAttributeType = 8;
-  G_FILE_ATTRIBUTE_TYPE_STRINGV: TGFileAttributeType = 9;
-
-type
-  TGDriveStartFlags = Integer;
-const
-  { GDriveStartFlags }
-  G_DRIVE_START_NONE: TGDriveStartFlags = 0;
-
-type
-  TGAskPasswordFlags = Integer;
-const
-  { GAskPasswordFlags }
-  G_ASK_PASSWORD_NEED_PASSWORD: TGAskPasswordFlags = 1;
-  G_ASK_PASSWORD_NEED_USERNAME: TGAskPasswordFlags = 2;
-  G_ASK_PASSWORD_NEED_DOMAIN: TGAskPasswordFlags = 4;
-  G_ASK_PASSWORD_SAVING_SUPPORTED: TGAskPasswordFlags = 8;
-  G_ASK_PASSWORD_ANONYMOUS_SUPPORTED: TGAskPasswordFlags = 16;
-
-type
-  TGOutputStreamSpliceFlags = Integer;
-const
-  { GOutputStreamSpliceFlags }
-  G_OUTPUT_STREAM_SPLICE_NONE: TGOutputStreamSpliceFlags = 0;
-  G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE: TGOutputStreamSpliceFlags = 1;
-  G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET: TGOutputStreamSpliceFlags = 2;
-
-type
-  TGBusNameOwnerFlags = Integer;
-const
-  { GBusNameOwnerFlags }
-  G_BUS_NAME_OWNER_FLAGS_NONE: TGBusNameOwnerFlags = 0;
-  G_BUS_NAME_OWNER_FLAGS_ALLOW_REPLACEMENT: TGBusNameOwnerFlags = 1;
-  G_BUS_NAME_OWNER_FLAGS_REPLACE: TGBusNameOwnerFlags = 2;
-
-type
-  TGBusNameWatcherFlags = Integer;
-const
-  { GBusNameWatcherFlags }
-  G_BUS_NAME_WATCHER_FLAGS_NONE: TGBusNameWatcherFlags = 0;
-  G_BUS_NAME_WATCHER_FLAGS_AUTO_START: TGBusNameWatcherFlags = 1;
-
-type
-  TGBusType = Integer;
-const
-  { GBusType }
-  G_BUS_TYPE_STARTER: TGBusType = -1;
-  G_BUS_TYPE_NONE: TGBusType = 0;
-  G_BUS_TYPE_SYSTEM: TGBusType = 1;
-  G_BUS_TYPE_SESSION: TGBusType = 2;
-
-type
-  TGConverterFlags = Integer;
-const
-  { GConverterFlags }
-  G_CONVERTER_NO_FLAGS: TGConverterFlags = 0;
-  G_CONVERTER_INPUT_AT_END: TGConverterFlags = 1;
-  G_CONVERTER_FLUSH: TGConverterFlags = 2;
-
-type
-  TGConverterResult = Integer;
-const
-  { GConverterResult }
-  G_CONVERTER_ERROR: TGConverterResult = 0;
-  G_CONVERTER_CONVERTED: TGConverterResult = 1;
-  G_CONVERTER_FINISHED: TGConverterResult = 2;
-  G_CONVERTER_FLUSHED: TGConverterResult = 3;
-
-type
-  TGCredentialsType = Integer;
-const
-  { GCredentialsType }
-  G_CREDENTIALS_TYPE_INVALID: TGCredentialsType = 0;
-  G_CREDENTIALS_TYPE_LINUX_UCRED: TGCredentialsType = 1;
-  G_CREDENTIALS_TYPE_FREEBSD_CMSGCRED: TGCredentialsType = 2;
-  G_CREDENTIALS_TYPE_OPENBSD_SOCKPEERCRED: TGCredentialsType = 3;
-
-type
-  TGIOStreamSpliceFlags = Integer;
-const
-  { GIOStreamSpliceFlags }
-  G_IO_STREAM_SPLICE_NONE: TGIOStreamSpliceFlags = 0;
-  G_IO_STREAM_SPLICE_CLOSE_STREAM1: TGIOStreamSpliceFlags = 1;
-  G_IO_STREAM_SPLICE_CLOSE_STREAM2: TGIOStreamSpliceFlags = 2;
-  G_IO_STREAM_SPLICE_WAIT_FOR_BOTH: TGIOStreamSpliceFlags = 4;
-
-type
-  TGDBusMessageFlags = Integer;
-const
-  { GDBusMessageFlags }
-  G_DBUS_MESSAGE_FLAGS_NONE: TGDBusMessageFlags = 0;
-  G_DBUS_MESSAGE_FLAGS_NO_REPLY_EXPECTED: TGDBusMessageFlags = 1;
-  G_DBUS_MESSAGE_FLAGS_NO_AUTO_START: TGDBusMessageFlags = 2;
-
-type
-  TGDBusMessageHeaderField = Integer;
-const
-  { GDBusMessageHeaderField }
-  G_DBUS_MESSAGE_HEADER_FIELD_INVALID: TGDBusMessageHeaderField = 0;
-  G_DBUS_MESSAGE_HEADER_FIELD_PATH: TGDBusMessageHeaderField = 1;
-  G_DBUS_MESSAGE_HEADER_FIELD_INTERFACE: TGDBusMessageHeaderField = 2;
-  G_DBUS_MESSAGE_HEADER_FIELD_MEMBER: TGDBusMessageHeaderField = 3;
-  G_DBUS_MESSAGE_HEADER_FIELD_ERROR_NAME: TGDBusMessageHeaderField = 4;
-  G_DBUS_MESSAGE_HEADER_FIELD_REPLY_SERIAL: TGDBusMessageHeaderField = 5;
-  G_DBUS_MESSAGE_HEADER_FIELD_DESTINATION: TGDBusMessageHeaderField = 6;
-  G_DBUS_MESSAGE_HEADER_FIELD_SENDER: TGDBusMessageHeaderField = 7;
-  G_DBUS_MESSAGE_HEADER_FIELD_SIGNATURE: TGDBusMessageHeaderField = 8;
-  G_DBUS_MESSAGE_HEADER_FIELD_NUM_UNIX_FDS: TGDBusMessageHeaderField = 9;
-
-type
-  TGDBusMessageByteOrder = Integer;
-const
-  { GDBusMessageByteOrder }
-  G_DBUS_MESSAGE_BYTE_ORDER_BIG_ENDIAN: TGDBusMessageByteOrder = 66;
-  G_DBUS_MESSAGE_BYTE_ORDER_LITTLE_ENDIAN: TGDBusMessageByteOrder = 108;
-
-type
-  TGDBusMessageType = Integer;
-const
-  { GDBusMessageType }
-  G_DBUS_MESSAGE_TYPE_INVALID: TGDBusMessageType = 0;
-  G_DBUS_MESSAGE_TYPE_METHOD_CALL: TGDBusMessageType = 1;
-  G_DBUS_MESSAGE_TYPE_METHOD_RETURN: TGDBusMessageType = 2;
-  G_DBUS_MESSAGE_TYPE_ERROR: TGDBusMessageType = 3;
-  G_DBUS_MESSAGE_TYPE_SIGNAL: TGDBusMessageType = 4;
-
-type
-  TGDBusError = Integer;
-const
-  { GDBusError }
-  G_DBUS_ERROR_FAILED: TGDBusError = 0;
-  G_DBUS_ERROR_NO_MEMORY: TGDBusError = 1;
-  G_DBUS_ERROR_SERVICE_UNKNOWN: TGDBusError = 2;
-  G_DBUS_ERROR_NAME_HAS_NO_OWNER: TGDBusError = 3;
-  G_DBUS_ERROR_NO_REPLY: TGDBusError = 4;
-  G_DBUS_ERROR_IO_ERROR: TGDBusError = 5;
-  G_DBUS_ERROR_BAD_ADDRESS: TGDBusError = 6;
-  G_DBUS_ERROR_NOT_SUPPORTED: TGDBusError = 7;
-  G_DBUS_ERROR_LIMITS_EXCEEDED: TGDBusError = 8;
-  G_DBUS_ERROR_ACCESS_DENIED: TGDBusError = 9;
-  G_DBUS_ERROR_AUTH_FAILED: TGDBusError = 10;
-  G_DBUS_ERROR_NO_SERVER: TGDBusError = 11;
-  G_DBUS_ERROR_TIMEOUT: TGDBusError = 12;
-  G_DBUS_ERROR_NO_NETWORK: TGDBusError = 13;
-  G_DBUS_ERROR_ADDRESS_IN_USE: TGDBusError = 14;
-  G_DBUS_ERROR_DISCONNECTED: TGDBusError = 15;
-  G_DBUS_ERROR_INVALID_ARGS: TGDBusError = 16;
-  G_DBUS_ERROR_FILE_NOT_FOUND: TGDBusError = 17;
-  G_DBUS_ERROR_FILE_EXISTS: TGDBusError = 18;
-  G_DBUS_ERROR_UNKNOWN_METHOD: TGDBusError = 19;
-  G_DBUS_ERROR_TIMED_OUT: TGDBusError = 20;
-  G_DBUS_ERROR_MATCH_RULE_NOT_FOUND: TGDBusError = 21;
-  G_DBUS_ERROR_MATCH_RULE_INVALID: TGDBusError = 22;
-  G_DBUS_ERROR_SPAWN_EXEC_FAILED: TGDBusError = 23;
-  G_DBUS_ERROR_SPAWN_FORK_FAILED: TGDBusError = 24;
-  G_DBUS_ERROR_SPAWN_CHILD_EXITED: TGDBusError = 25;
-  G_DBUS_ERROR_SPAWN_CHILD_SIGNALED: TGDBusError = 26;
-  G_DBUS_ERROR_SPAWN_FAILED: TGDBusError = 27;
-  G_DBUS_ERROR_SPAWN_SETUP_FAILED: TGDBusError = 28;
-  G_DBUS_ERROR_SPAWN_CONFIG_INVALID: TGDBusError = 29;
-  G_DBUS_ERROR_SPAWN_SERVICE_INVALID: TGDBusError = 30;
-  G_DBUS_ERROR_SPAWN_SERVICE_NOT_FOUND: TGDBusError = 31;
-  G_DBUS_ERROR_SPAWN_PERMISSIONS_INVALID: TGDBusError = 32;
-  G_DBUS_ERROR_SPAWN_FILE_INVALID: TGDBusError = 33;
-  G_DBUS_ERROR_SPAWN_NO_MEMORY: TGDBusError = 34;
-  G_DBUS_ERROR_UNIX_PROCESS_ID_UNKNOWN: TGDBusError = 35;
-  G_DBUS_ERROR_INVALID_SIGNATURE: TGDBusError = 36;
-  G_DBUS_ERROR_INVALID_FILE_CONTENT: TGDBusError = 37;
-  G_DBUS_ERROR_SELINUX_SECURITY_CONTEXT_UNKNOWN: TGDBusError = 38;
-  G_DBUS_ERROR_ADT_AUDIT_DATA_UNKNOWN: TGDBusError = 39;
-  G_DBUS_ERROR_OBJECT_PATH_IN_USE: TGDBusError = 40;
-
-type
-  TGDBusPropertyInfoFlags = Integer;
-const
-  { GDBusPropertyInfoFlags }
-  G_DBUS_PROPERTY_INFO_FLAGS_NONE: TGDBusPropertyInfoFlags = 0;
-  G_DBUS_PROPERTY_INFO_FLAGS_READABLE: TGDBusPropertyInfoFlags = 1;
-  G_DBUS_PROPERTY_INFO_FLAGS_WRITABLE: TGDBusPropertyInfoFlags = 2;
-
-type
-  TGDBusInterfaceSkeletonFlags = Integer;
-const
-  { GDBusInterfaceSkeletonFlags }
-  G_DBUS_INTERFACE_SKELETON_FLAGS_NONE: TGDBusInterfaceSkeletonFlags = 0;
-  G_DBUS_INTERFACE_SKELETON_FLAGS_HANDLE_METHOD_INVOCATIONS_IN_THREAD: TGDBusInterfaceSkeletonFlags = 1;
-
-type
-  TGDBusObjectManagerClientFlags = Integer;
-const
-  { GDBusObjectManagerClientFlags }
-  G_DBUS_OBJECT_MANAGER_CLIENT_FLAGS_NONE: TGDBusObjectManagerClientFlags = 0;
-  G_DBUS_OBJECT_MANAGER_CLIENT_FLAGS_DO_NOT_AUTO_START: TGDBusObjectManagerClientFlags = 1;
-
-type
-  TGDBusProxyFlags = Integer;
-const
-  { GDBusProxyFlags }
-  G_DBUS_PROXY_FLAGS_NONE: TGDBusProxyFlags = 0;
-  G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES: TGDBusProxyFlags = 1;
-  G_DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS: TGDBusProxyFlags = 2;
-  G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START: TGDBusProxyFlags = 4;
-  G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES: TGDBusProxyFlags = 8;
-
-type
-  TGDBusServerFlags = Integer;
-const
-  { GDBusServerFlags }
-  G_DBUS_SERVER_FLAGS_NONE: TGDBusServerFlags = 0;
-  G_DBUS_SERVER_FLAGS_RUN_IN_THREAD: TGDBusServerFlags = 1;
-  G_DBUS_SERVER_FLAGS_AUTHENTICATION_ALLOW_ANONYMOUS: TGDBusServerFlags = 2;
-
-type
-  TGDataStreamByteOrder = Integer;
-const
-  { GDataStreamByteOrder }
-  G_DATA_STREAM_BYTE_ORDER_BIG_ENDIAN: TGDataStreamByteOrder = 0;
-  G_DATA_STREAM_BYTE_ORDER_LITTLE_ENDIAN: TGDataStreamByteOrder = 1;
-  G_DATA_STREAM_BYTE_ORDER_HOST_ENDIAN: TGDataStreamByteOrder = 2;
-
-type
-  TGDataStreamNewlineType = Integer;
-const
-  { GDataStreamNewlineType }
-  G_DATA_STREAM_NEWLINE_TYPE_LF: TGDataStreamNewlineType = 0;
-  G_DATA_STREAM_NEWLINE_TYPE_CR: TGDataStreamNewlineType = 1;
-  G_DATA_STREAM_NEWLINE_TYPE_CR_LF: TGDataStreamNewlineType = 2;
-  G_DATA_STREAM_NEWLINE_TYPE_ANY: TGDataStreamNewlineType = 3;
-
-type
-  TGMountOperationResult = Integer;
-const
-  { GMountOperationResult }
-  G_MOUNT_OPERATION_HANDLED: TGMountOperationResult = 0;
-  G_MOUNT_OPERATION_ABORTED: TGMountOperationResult = 1;
-  G_MOUNT_OPERATION_UNHANDLED: TGMountOperationResult = 2;
-
-type
-  TGPasswordSave = Integer;
-const
-  { GPasswordSave }
-  G_PASSWORD_SAVE_NEVER: TGPasswordSave = 0;
-  G_PASSWORD_SAVE_FOR_SESSION: TGPasswordSave = 1;
-  G_PASSWORD_SAVE_PERMANENTLY: TGPasswordSave = 2;
-
-type
-  TGDriveStartStopType = Integer;
-const
-  { GDriveStartStopType }
-  G_DRIVE_START_STOP_TYPE_UNKNOWN: TGDriveStartStopType = 0;
-  G_DRIVE_START_STOP_TYPE_SHUTDOWN: TGDriveStartStopType = 1;
-  G_DRIVE_START_STOP_TYPE_NETWORK: TGDriveStartStopType = 2;
-  G_DRIVE_START_STOP_TYPE_MULTIDISK: TGDriveStartStopType = 3;
-  G_DRIVE_START_STOP_TYPE_PASSWORD: TGDriveStartStopType = 4;
-
-type
-  TGEmblemOrigin = Integer;
-const
-  { GEmblemOrigin }
-  G_EMBLEM_ORIGIN_UNKNOWN: TGEmblemOrigin = 0;
-  G_EMBLEM_ORIGIN_DEVICE: TGEmblemOrigin = 1;
-  G_EMBLEM_ORIGIN_LIVEMETADATA: TGEmblemOrigin = 2;
-  G_EMBLEM_ORIGIN_TAG: TGEmblemOrigin = 3;
-
-type
-  TGFileMonitorEvent = Integer;
-const
-  { GFileMonitorEvent }
-  G_FILE_MONITOR_EVENT_CHANGED: TGFileMonitorEvent = 0;
-  G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT: TGFileMonitorEvent = 1;
-  G_FILE_MONITOR_EVENT_DELETED: TGFileMonitorEvent = 2;
-  G_FILE_MONITOR_EVENT_CREATED: TGFileMonitorEvent = 3;
-  G_FILE_MONITOR_EVENT_ATTRIBUTE_CHANGED: TGFileMonitorEvent = 4;
-  G_FILE_MONITOR_EVENT_PRE_UNMOUNT: TGFileMonitorEvent = 5;
-  G_FILE_MONITOR_EVENT_UNMOUNTED: TGFileMonitorEvent = 6;
-  G_FILE_MONITOR_EVENT_MOVED: TGFileMonitorEvent = 7;
-
-type
-  TGFileAttributeStatus = Integer;
-const
-  { GFileAttributeStatus }
-  G_FILE_ATTRIBUTE_STATUS_UNSET: TGFileAttributeStatus = 0;
-  G_FILE_ATTRIBUTE_STATUS_SET: TGFileAttributeStatus = 1;
-  G_FILE_ATTRIBUTE_STATUS_ERROR_SETTING: TGFileAttributeStatus = 2;
-
-type
-  TGFileType = Integer;
-const
-  { GFileType }
-  G_FILE_TYPE_UNKNOWN: TGFileType = 0;
-  G_FILE_TYPE_REGULAR: TGFileType = 1;
-  G_FILE_TYPE_DIRECTORY: TGFileType = 2;
-  G_FILE_TYPE_SYMBOLIC_LINK: TGFileType = 3;
-  G_FILE_TYPE_SPECIAL: TGFileType = 4;
-  G_FILE_TYPE_SHORTCUT: TGFileType = 5;
-  G_FILE_TYPE_MOUNTABLE: TGFileType = 6;
-
-type
-  TGFileAttributeInfoFlags = Integer;
-const
-  { GFileAttributeInfoFlags }
-  G_FILE_ATTRIBUTE_INFO_NONE: TGFileAttributeInfoFlags = 0;
-  G_FILE_ATTRIBUTE_INFO_COPY_WITH_FILE: TGFileAttributeInfoFlags = 1;
-  G_FILE_ATTRIBUTE_INFO_COPY_WHEN_MOVED: TGFileAttributeInfoFlags = 2;
-
-type
-  TGFilesystemPreviewType = Integer;
-const
-  { GFilesystemPreviewType }
-  G_FILESYSTEM_PREVIEW_TYPE_IF_ALWAYS: TGFilesystemPreviewType = 0;
-  G_FILESYSTEM_PREVIEW_TYPE_IF_LOCAL: TGFilesystemPreviewType = 1;
-  G_FILESYSTEM_PREVIEW_TYPE_NEVER: TGFilesystemPreviewType = 2;
-
-type
-  TGIOErrorEnum = Integer;
-const
-  { GIOErrorEnum }
-  G_IO_ERROR_FAILED: TGIOErrorEnum = 0;
-  G_IO_ERROR_NOT_FOUND: TGIOErrorEnum = 1;
-  G_IO_ERROR_EXISTS: TGIOErrorEnum = 2;
-  G_IO_ERROR_IS_DIRECTORY: TGIOErrorEnum = 3;
-  G_IO_ERROR_NOT_DIRECTORY: TGIOErrorEnum = 4;
-  G_IO_ERROR_NOT_EMPTY: TGIOErrorEnum = 5;
-  G_IO_ERROR_NOT_REGULAR_FILE: TGIOErrorEnum = 6;
-  G_IO_ERROR_NOT_SYMBOLIC_LINK: TGIOErrorEnum = 7;
-  G_IO_ERROR_NOT_MOUNTABLE_FILE: TGIOErrorEnum = 8;
-  G_IO_ERROR_FILENAME_TOO_LONG: TGIOErrorEnum = 9;
-  G_IO_ERROR_INVALID_FILENAME: TGIOErrorEnum = 10;
-  G_IO_ERROR_TOO_MANY_LINKS: TGIOErrorEnum = 11;
-  G_IO_ERROR_NO_SPACE: TGIOErrorEnum = 12;
-  G_IO_ERROR_INVALID_ARGUMENT: TGIOErrorEnum = 13;
-  G_IO_ERROR_PERMISSION_DENIED: TGIOErrorEnum = 14;
-  G_IO_ERROR_NOT_SUPPORTED: TGIOErrorEnum = 15;
-  G_IO_ERROR_NOT_MOUNTED: TGIOErrorEnum = 16;
-  G_IO_ERROR_ALREADY_MOUNTED: TGIOErrorEnum = 17;
-  G_IO_ERROR_CLOSED: TGIOErrorEnum = 18;
-  G_IO_ERROR_CANCELLED: TGIOErrorEnum = 19;
-  G_IO_ERROR_PENDING: TGIOErrorEnum = 20;
-  G_IO_ERROR_READ_ONLY: TGIOErrorEnum = 21;
-  G_IO_ERROR_CANT_CREATE_BACKUP: TGIOErrorEnum = 22;
-  G_IO_ERROR_WRONG_ETAG: TGIOErrorEnum = 23;
-  G_IO_ERROR_TIMED_OUT: TGIOErrorEnum = 24;
-  G_IO_ERROR_WOULD_RECURSE: TGIOErrorEnum = 25;
-  G_IO_ERROR_BUSY: TGIOErrorEnum = 26;
-  G_IO_ERROR_WOULD_BLOCK: TGIOErrorEnum = 27;
-  G_IO_ERROR_HOST_NOT_FOUND: TGIOErrorEnum = 28;
-  G_IO_ERROR_WOULD_MERGE: TGIOErrorEnum = 29;
-  G_IO_ERROR_FAILED_HANDLED: TGIOErrorEnum = 30;
-  G_IO_ERROR_TOO_MANY_OPEN_FILES: TGIOErrorEnum = 31;
-  G_IO_ERROR_NOT_INITIALIZED: TGIOErrorEnum = 32;
-  G_IO_ERROR_ADDRESS_IN_USE: TGIOErrorEnum = 33;
-  G_IO_ERROR_PARTIAL_INPUT: TGIOErrorEnum = 34;
-  G_IO_ERROR_INVALID_DATA: TGIOErrorEnum = 35;
-  G_IO_ERROR_DBUS_ERROR: TGIOErrorEnum = 36;
-  G_IO_ERROR_HOST_UNREACHABLE: TGIOErrorEnum = 37;
-  G_IO_ERROR_NETWORK_UNREACHABLE: TGIOErrorEnum = 38;
-  G_IO_ERROR_CONNECTION_REFUSED: TGIOErrorEnum = 39;
-  G_IO_ERROR_PROXY_FAILED: TGIOErrorEnum = 40;
-  G_IO_ERROR_PROXY_AUTH_FAILED: TGIOErrorEnum = 41;
-  G_IO_ERROR_PROXY_NEED_AUTH: TGIOErrorEnum = 42;
-  G_IO_ERROR_PROXY_NOT_ALLOWED: TGIOErrorEnum = 43;
-  G_IO_ERROR_BROKEN_PIPE: TGIOErrorEnum = 44;
-
-type
-  TGIOModuleScopeFlags = Integer;
-const
-  { GIOModuleScopeFlags }
-  G_IO_MODULE_SCOPE_NONE: TGIOModuleScopeFlags = 0;
-  G_IO_MODULE_SCOPE_BLOCK_DUPLICATES: TGIOModuleScopeFlags = 1;
-
-type
-  TGSocketFamily = Integer;
-const
-  { GSocketFamily }
-  G_SOCKET_FAMILY_INVALID: TGSocketFamily = 0;
-  G_SOCKET_FAMILY_UNIX: TGSocketFamily = 1;
-  G_SOCKET_FAMILY_IPV4: TGSocketFamily = 2;
-  G_SOCKET_FAMILY_IPV6: TGSocketFamily = 10;
-
-type
-  TGResolverRecordType = Integer;
-const
-  { GResolverRecordType }
-  G_RESOLVER_RECORD_SRV: TGResolverRecordType = 1;
-  G_RESOLVER_RECORD_MX: TGResolverRecordType = 2;
-  G_RESOLVER_RECORD_TXT: TGResolverRecordType = 3;
-  G_RESOLVER_RECORD_SOA: TGResolverRecordType = 4;
-  G_RESOLVER_RECORD_NS: TGResolverRecordType = 5;
-
-type
-  TGResolverError = Integer;
-const
-  { GResolverError }
-  G_RESOLVER_ERROR_NOT_FOUND: TGResolverError = 0;
-  G_RESOLVER_ERROR_TEMPORARY_FAILURE: TGResolverError = 1;
-  G_RESOLVER_ERROR_INTERNAL: TGResolverError = 2;
-
-type
-  TGResourceLookupFlags = Integer;
-const
-  { GResourceLookupFlags }
-  G_RESOURCE_LOOKUP_FLAGS_NONE: TGResourceLookupFlags = 0;
-
 type
-  TGResourceError = Integer;
-const
-  { GResourceError }
-  G_RESOURCE_ERROR_NOT_FOUND: TGResourceError = 0;
-  G_RESOURCE_ERROR_INTERNAL: TGResourceError = 1;
-
-type
-  TGResourceFlags = Integer;
-const
-  { GResourceFlags }
-  G_RESOURCE_FLAGS_NONE: TGResourceFlags = 0;
-  G_RESOURCE_FLAGS_COMPRESSED: TGResourceFlags = 1;
-
-type
-  TGSettingsBindFlags = Integer;
-const
-  { GSettingsBindFlags }
-  G_SETTINGS_BIND_DEFAULT: TGSettingsBindFlags = 0;
-  G_SETTINGS_BIND_GET: TGSettingsBindFlags = 1;
-  G_SETTINGS_BIND_SET: TGSettingsBindFlags = 2;
-  G_SETTINGS_BIND_NO_SENSITIVITY: TGSettingsBindFlags = 4;
-  G_SETTINGS_BIND_GET_NO_CHANGES: TGSettingsBindFlags = 8;
-  G_SETTINGS_BIND_INVERT_BOOLEAN: TGSettingsBindFlags = 16;
-
-type
-  TGSocketType = Integer;
-const
-  { GSocketType }
-  G_SOCKET_TYPE_INVALID: TGSocketType = 0;
-  G_SOCKET_TYPE_STREAM: TGSocketType = 1;
-  G_SOCKET_TYPE_DATAGRAM: TGSocketType = 2;
-  G_SOCKET_TYPE_SEQPACKET: TGSocketType = 3;
-
-type
-  TGSocketProtocol = Integer;
-const
-  { GSocketProtocol }
-  G_SOCKET_PROTOCOL_UNKNOWN: TGSocketProtocol = -1;
-  G_SOCKET_PROTOCOL_DEFAULT: TGSocketProtocol = 0;
-  G_SOCKET_PROTOCOL_TCP: TGSocketProtocol = 6;
-  G_SOCKET_PROTOCOL_UDP: TGSocketProtocol = 17;
-  G_SOCKET_PROTOCOL_SCTP: TGSocketProtocol = 132;
-
-type
-  TGTlsCertificateFlags = Integer;
-const
-  { GTlsCertificateFlags }
-  G_TLS_CERTIFICATE_UNKNOWN_CA: TGTlsCertificateFlags = 1;
-  G_TLS_CERTIFICATE_BAD_IDENTITY: TGTlsCertificateFlags = 2;
-  G_TLS_CERTIFICATE_NOT_ACTIVATED: TGTlsCertificateFlags = 4;
-  G_TLS_CERTIFICATE_EXPIRED: TGTlsCertificateFlags = 8;
-  G_TLS_CERTIFICATE_REVOKED: TGTlsCertificateFlags = 16;
-  G_TLS_CERTIFICATE_INSECURE: TGTlsCertificateFlags = 32;
-  G_TLS_CERTIFICATE_GENERIC_ERROR: TGTlsCertificateFlags = 64;
-  G_TLS_CERTIFICATE_VALIDATE_ALL: TGTlsCertificateFlags = 127;
-
-type
-  TGSocketClientEvent = Integer;
-const
-  { GSocketClientEvent }
-  G_SOCKET_CLIENT_RESOLVING: TGSocketClientEvent = 0;
-  G_SOCKET_CLIENT_RESOLVED: TGSocketClientEvent = 1;
-  G_SOCKET_CLIENT_CONNECTING: TGSocketClientEvent = 2;
-  G_SOCKET_CLIENT_CONNECTED: TGSocketClientEvent = 3;
-  G_SOCKET_CLIENT_PROXY_NEGOTIATING: TGSocketClientEvent = 4;
-  G_SOCKET_CLIENT_PROXY_NEGOTIATED: TGSocketClientEvent = 5;
-  G_SOCKET_CLIENT_TLS_HANDSHAKING: TGSocketClientEvent = 6;
-  G_SOCKET_CLIENT_TLS_HANDSHAKED: TGSocketClientEvent = 7;
-  G_SOCKET_CLIENT_COMPLETE: TGSocketClientEvent = 8;
-
-type
-  TGSocketMsgFlags = Integer;
-const
-  { GSocketMsgFlags }
-  G_SOCKET_MSG_NONE: TGSocketMsgFlags = 0;
-  G_SOCKET_MSG_OOB: TGSocketMsgFlags = 1;
-  G_SOCKET_MSG_PEEK: TGSocketMsgFlags = 2;
-  G_SOCKET_MSG_DONTROUTE: TGSocketMsgFlags = 4;
-
-type
-  TGTestDBusFlags = Integer;
-const
-  { GTestDBusFlags }
-  G_TEST_DBUS_NONE: TGTestDBusFlags = 0;
-
-type
-  TGTlsAuthenticationMode = Integer;
-const
-  { GTlsAuthenticationMode }
-  G_TLS_AUTHENTICATION_NONE: TGTlsAuthenticationMode = 0;
-  G_TLS_AUTHENTICATION_REQUESTED: TGTlsAuthenticationMode = 1;
-  G_TLS_AUTHENTICATION_REQUIRED: TGTlsAuthenticationMode = 2;
-
-type
-  TGTlsDatabaseLookupFlags = Integer;
-const
-  { GTlsDatabaseLookupFlags }
-  G_TLS_DATABASE_LOOKUP_NONE: TGTlsDatabaseLookupFlags = 0;
-  G_TLS_DATABASE_LOOKUP_KEYPAIR: TGTlsDatabaseLookupFlags = 1;
-
-type
-  TGTlsDatabaseVerifyFlags = Integer;
-const
-  { GTlsDatabaseVerifyFlags }
-  G_TLS_DATABASE_VERIFY_NONE: TGTlsDatabaseVerifyFlags = 0;
-
-type
-  TGTlsRehandshakeMode = Integer;
-const
-  { GTlsRehandshakeMode }
-  G_TLS_REHANDSHAKE_NEVER: TGTlsRehandshakeMode = 0;
-  G_TLS_REHANDSHAKE_SAFELY: TGTlsRehandshakeMode = 1;
-  G_TLS_REHANDSHAKE_UNSAFELY: TGTlsRehandshakeMode = 2;
-
-type
-  TGTlsError = Integer;
-const
-  { GTlsError }
-  G_TLS_ERROR_UNAVAILABLE: TGTlsError = 0;
-  G_TLS_ERROR_MISC: TGTlsError = 1;
-  G_TLS_ERROR_BAD_CERTIFICATE: TGTlsError = 2;
-  G_TLS_ERROR_NOT_TLS: TGTlsError = 3;
-  G_TLS_ERROR_HANDSHAKE: TGTlsError = 4;
-  G_TLS_ERROR_CERTIFICATE_REQUIRED: TGTlsError = 5;
-  G_TLS_ERROR_EOF: TGTlsError = 6;
-
-type
-  TGTlsInteractionResult = Integer;
-const
-  { GTlsInteractionResult }
-  G_TLS_INTERACTION_UNHANDLED: TGTlsInteractionResult = 0;
-  G_TLS_INTERACTION_HANDLED: TGTlsInteractionResult = 1;
-  G_TLS_INTERACTION_FAILED: TGTlsInteractionResult = 2;
-
-type
-  TGTlsPasswordFlags = Integer;
-const
-  { GTlsPasswordFlags }
-  G_TLS_PASSWORD_NONE: TGTlsPasswordFlags = 0;
-  G_TLS_PASSWORD_RETRY: TGTlsPasswordFlags = 2;
-  G_TLS_PASSWORD_MANY_TRIES: TGTlsPasswordFlags = 4;
-  G_TLS_PASSWORD_FINAL_TRY: TGTlsPasswordFlags = 8;
-
-type
-  TGUnixSocketAddressType = Integer;
-const
-  { GUnixSocketAddressType }
-  G_UNIX_SOCKET_ADDRESS_INVALID: TGUnixSocketAddressType = 0;
-  G_UNIX_SOCKET_ADDRESS_ANONYMOUS: TGUnixSocketAddressType = 1;
-  G_UNIX_SOCKET_ADDRESS_PATH: TGUnixSocketAddressType = 2;
-  G_UNIX_SOCKET_ADDRESS_ABSTRACT: TGUnixSocketAddressType = 3;
-  G_UNIX_SOCKET_ADDRESS_ABSTRACT_PADDED: TGUnixSocketAddressType = 4;
-
-type
-  TGZlibCompressorFormat = Integer;
-const
-  { GZlibCompressorFormat }
-  G_ZLIB_COMPRESSOR_FORMAT_ZLIB: TGZlibCompressorFormat = 0;
-  G_ZLIB_COMPRESSOR_FORMAT_GZIP: TGZlibCompressorFormat = 1;
-  G_ZLIB_COMPRESSOR_FORMAT_RAW: TGZlibCompressorFormat = 2;
-type
-
+  TGAppInfoCreateFlags = (
+    TGAppInfoCreateFlagsMinValue = -$7FFFFFFF,
+    G_APP_INFO_CREATE_NONE = 0,
+    G_APP_INFO_CREATE_NEEDS_TERMINAL = 1,
+    G_APP_INFO_CREATE_SUPPORTS_URIS = 2,
+    G_APP_INFO_CREATE_SUPPORTS_STARTUP_NOTIFICATION = 4,
+    TGAppInfoCreateFlagsMaxValue = $7FFFFFFF
+  );
+  TGApplicationFlags = (
+    TGApplicationFlagsMinValue = -$7FFFFFFF,
+    G_APPLICATION_DEFAULT_FLAGS = 0,
+    G_APPLICATION_FLAGS_NONE = 0,
+    G_APPLICATION_IS_SERVICE = 1,
+    G_APPLICATION_IS_LAUNCHER = 2,
+    G_APPLICATION_HANDLES_OPEN = 4,
+    G_APPLICATION_HANDLES_COMMAND_LINE = 8,
+    G_APPLICATION_SEND_ENVIRONMENT = 16,
+    G_APPLICATION_NON_UNIQUE = 32,
+    G_APPLICATION_CAN_OVERRIDE_APP_ID = 64,
+    G_APPLICATION_ALLOW_REPLACEMENT = 128,
+    G_APPLICATION_REPLACE = 256,
+    TGApplicationFlagsMaxValue = $7FFFFFFF
+  );
+  TGDBusConnectionFlags = (
+    TGDBusConnectionFlagsMinValue = -$7FFFFFFF,
+    G_DBUS_CONNECTION_FLAGS_NONE = 0,
+    G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT = 1,
+    G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_SERVER = 2,
+    G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_ALLOW_ANONYMOUS = 4,
+    G_DBUS_CONNECTION_FLAGS_MESSAGE_BUS_CONNECTION = 8,
+    G_DBUS_CONNECTION_FLAGS_DELAY_MESSAGE_PROCESSING = 16,
+    G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_REQUIRE_SAME_USER = 32,
+    G_DBUS_CONNECTION_FLAGS_CROSS_NAMESPACE = 64,
+    TGDBusConnectionFlagsMaxValue = $7FFFFFFF
+  );
+  TGDBusCallFlags = (
+    TGDBusCallFlagsMinValue = -$7FFFFFFF,
+    G_DBUS_CALL_FLAGS_NONE = 0,
+    G_DBUS_CALL_FLAGS_NO_AUTO_START = 1,
+    G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION = 2,
+    TGDBusCallFlagsMaxValue = $7FFFFFFF
+  );
+  TGDBusCapabilityFlags = (
+    TGDBusCapabilityFlagsMinValue = -$7FFFFFFF,
+    G_DBUS_CAPABILITY_FLAGS_NONE = 0,
+    G_DBUS_CAPABILITY_FLAGS_UNIX_FD_PASSING = 1,
+    TGDBusCapabilityFlagsMaxValue = $7FFFFFFF
+  );
+  TGDBusSubtreeFlags = (
+    TGDBusSubtreeFlagsMinValue = -$7FFFFFFF,
+    G_DBUS_SUBTREE_FLAGS_NONE = 0,
+    G_DBUS_SUBTREE_FLAGS_DISPATCH_TO_UNENUMERATED_NODES = 1,
+    TGDBusSubtreeFlagsMaxValue = $7FFFFFFF
+  );
+  TGDBusSendMessageFlags = (
+    TGDBusSendMessageFlagsMinValue = -$7FFFFFFF,
+    G_DBUS_SEND_MESSAGE_FLAGS_NONE = 0,
+    G_DBUS_SEND_MESSAGE_FLAGS_PRESERVE_SERIAL = 1,
+    TGDBusSendMessageFlagsMaxValue = $7FFFFFFF
+  );
+  TGDBusSignalFlags = (
+    TGDBusSignalFlagsMinValue = -$7FFFFFFF,
+    G_DBUS_SIGNAL_FLAGS_NONE = 0,
+    G_DBUS_SIGNAL_FLAGS_NO_MATCH_RULE = 1,
+    G_DBUS_SIGNAL_FLAGS_MATCH_ARG0_NAMESPACE = 2,
+    G_DBUS_SIGNAL_FLAGS_MATCH_ARG0_PATH = 4,
+    TGDBusSignalFlagsMaxValue = $7FFFFFFF
+  );
+  TGFileCreateFlags = (
+    TGFileCreateFlagsMinValue = -$7FFFFFFF,
+    G_FILE_CREATE_NONE = 0,
+    G_FILE_CREATE_PRIVATE = 1,
+    G_FILE_CREATE_REPLACE_DESTINATION = 2,
+    TGFileCreateFlagsMaxValue = $7FFFFFFF
+  );
+  TGFileCopyFlags = (
+    TGFileCopyFlagsMinValue = -$7FFFFFFF,
+    G_FILE_COPY_NONE = 0,
+    G_FILE_COPY_OVERWRITE = 1,
+    G_FILE_COPY_BACKUP = 2,
+    G_FILE_COPY_NOFOLLOW_SYMLINKS = 4,
+    G_FILE_COPY_ALL_METADATA = 8,
+    G_FILE_COPY_NO_FALLBACK_FOR_MOVE = 16,
+    G_FILE_COPY_TARGET_DEFAULT_PERMS = 32,
+    TGFileCopyFlagsMaxValue = $7FFFFFFF
+  );
+  TGMountUnmountFlags = (
+    TGMountUnmountFlagsMinValue = -$7FFFFFFF,
+    G_MOUNT_UNMOUNT_NONE = 0,
+    G_MOUNT_UNMOUNT_FORCE = 1,
+    TGMountUnmountFlagsMaxValue = $7FFFFFFF
+  );
+  TGFileQueryInfoFlags = (
+    TGFileQueryInfoFlagsMinValue = -$7FFFFFFF,
+    G_FILE_QUERY_INFO_NONE = 0,
+    G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS = 1,
+    TGFileQueryInfoFlagsMaxValue = $7FFFFFFF
+  );
+  TGFileMeasureFlags = (
+    TGFileMeasureFlagsMinValue = -$7FFFFFFF,
+    G_FILE_MEASURE_NONE = 0,
+    G_FILE_MEASURE_REPORT_ANY_ERROR = 2,
+    G_FILE_MEASURE_APPARENT_SIZE = 4,
+    G_FILE_MEASURE_NO_XDEV = 8,
+    TGFileMeasureFlagsMaxValue = $7FFFFFFF
+  );
+  TGFileMonitorFlags = (
+    TGFileMonitorFlagsMinValue = -$7FFFFFFF,
+    G_FILE_MONITOR_NONE = 0,
+    G_FILE_MONITOR_WATCH_MOUNTS = 1,
+    G_FILE_MONITOR_SEND_MOVED = 2,
+    G_FILE_MONITOR_WATCH_HARD_LINKS = 4,
+    G_FILE_MONITOR_WATCH_MOVES = 8,
+    TGFileMonitorFlagsMaxValue = $7FFFFFFF
+  );
+  TGMountMountFlags = (
+    TGMountMountFlagsMinValue = -$7FFFFFFF,
+    G_MOUNT_MOUNT_NONE = 0,
+    TGMountMountFlagsMaxValue = $7FFFFFFF
+  );
+  TGFileAttributeType = (
+    TGFileAttributeTypeMinValue = -$7FFFFFFF,
+    G_FILE_ATTRIBUTE_TYPE_INVALID = 0,
+    G_FILE_ATTRIBUTE_TYPE_STRING = 1,
+    G_FILE_ATTRIBUTE_TYPE_BYTE_STRING = 2,
+    G_FILE_ATTRIBUTE_TYPE_BOOLEAN = 3,
+    G_FILE_ATTRIBUTE_TYPE_UINT32 = 4,
+    G_FILE_ATTRIBUTE_TYPE_INT32 = 5,
+    G_FILE_ATTRIBUTE_TYPE_UINT64 = 6,
+    G_FILE_ATTRIBUTE_TYPE_INT64 = 7,
+    G_FILE_ATTRIBUTE_TYPE_OBJECT = 8,
+    G_FILE_ATTRIBUTE_TYPE_STRINGV = 9,
+    TGFileAttributeTypeMaxValue = $7FFFFFFF
+  );
+  TGDriveStartFlags = (
+    TGDriveStartFlagsMinValue = -$7FFFFFFF,
+    G_DRIVE_START_NONE = 0,
+    TGDriveStartFlagsMaxValue = $7FFFFFFF
+  );
+  TGNotificationPriority = (
+    TGNotificationPriorityMinValue = -$7FFFFFFF,
+    G_NOTIFICATION_PRIORITY_NORMAL = 0,
+    G_NOTIFICATION_PRIORITY_LOW = 1,
+    G_NOTIFICATION_PRIORITY_HIGH = 2,
+    G_NOTIFICATION_PRIORITY_URGENT = 3,
+    TGNotificationPriorityMaxValue = $7FFFFFFF
+  );
+  TGAskPasswordFlags = (
+    TGAskPasswordFlagsMinValue = -$7FFFFFFF,
+    G_ASK_PASSWORD_NEED_PASSWORD = 1,
+    G_ASK_PASSWORD_NEED_USERNAME = 2,
+    G_ASK_PASSWORD_NEED_DOMAIN = 4,
+    G_ASK_PASSWORD_SAVING_SUPPORTED = 8,
+    G_ASK_PASSWORD_ANONYMOUS_SUPPORTED = 16,
+    G_ASK_PASSWORD_TCRYPT = 32,
+    TGAskPasswordFlagsMaxValue = $7FFFFFFF
+  );
+  TGOutputStreamSpliceFlags = (
+    TGOutputStreamSpliceFlagsMinValue = -$7FFFFFFF,
+    G_OUTPUT_STREAM_SPLICE_NONE = 0,
+    G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE = 1,
+    G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET = 2,
+    TGOutputStreamSpliceFlagsMaxValue = $7FFFFFFF
+  );
+  TGBusNameOwnerFlags = (
+    TGBusNameOwnerFlagsMinValue = -$7FFFFFFF,
+    G_BUS_NAME_OWNER_FLAGS_NONE = 0,
+    G_BUS_NAME_OWNER_FLAGS_ALLOW_REPLACEMENT = 1,
+    G_BUS_NAME_OWNER_FLAGS_REPLACE = 2,
+    G_BUS_NAME_OWNER_FLAGS_DO_NOT_QUEUE = 4,
+    TGBusNameOwnerFlagsMaxValue = $7FFFFFFF
+  );
+  TGBusNameWatcherFlags = (
+    TGBusNameWatcherFlagsMinValue = -$7FFFFFFF,
+    G_BUS_NAME_WATCHER_FLAGS_NONE = 0,
+    G_BUS_NAME_WATCHER_FLAGS_AUTO_START = 1,
+    TGBusNameWatcherFlagsMaxValue = $7FFFFFFF
+  );
+  TGBusType = (
+    TGBusTypeMinValue = -$7FFFFFFF,
+    G_BUS_TYPE_STARTER = -1,
+    G_BUS_TYPE_NONE = 0,
+    G_BUS_TYPE_SYSTEM = 1,
+    G_BUS_TYPE_SESSION = 2,
+    TGBusTypeMaxValue = $7FFFFFFF
+  );
+  TGConverterFlags = (
+    TGConverterFlagsMinValue = -$7FFFFFFF,
+    G_CONVERTER_NO_FLAGS = 0,
+    G_CONVERTER_INPUT_AT_END = 1,
+    G_CONVERTER_FLUSH = 2,
+    TGConverterFlagsMaxValue = $7FFFFFFF
+  );
+  TGConverterResult = (
+    TGConverterResultMinValue = -$7FFFFFFF,
+    G_CONVERTER_ERROR = 0,
+    G_CONVERTER_CONVERTED = 1,
+    G_CONVERTER_FINISHED = 2,
+    G_CONVERTER_FLUSHED = 3,
+    TGConverterResultMaxValue = $7FFFFFFF
+  );
+  TGCredentialsType = (
+    TGCredentialsTypeMinValue = -$7FFFFFFF,
+    G_CREDENTIALS_TYPE_INVALID = 0,
+    G_CREDENTIALS_TYPE_LINUX_UCRED = 1,
+    G_CREDENTIALS_TYPE_FREEBSD_CMSGCRED = 2,
+    G_CREDENTIALS_TYPE_OPENBSD_SOCKPEERCRED = 3,
+    G_CREDENTIALS_TYPE_SOLARIS_UCRED = 4,
+    G_CREDENTIALS_TYPE_NETBSD_UNPCBID = 5,
+    G_CREDENTIALS_TYPE_APPLE_XUCRED = 6,
+    G_CREDENTIALS_TYPE_WIN32_PID = 7,
+    TGCredentialsTypeMaxValue = $7FFFFFFF
+  );
+  TGIOStreamSpliceFlags = (
+    TGIOStreamSpliceFlagsMinValue = -$7FFFFFFF,
+    G_IO_STREAM_SPLICE_NONE = 0,
+    G_IO_STREAM_SPLICE_CLOSE_STREAM1 = 1,
+    G_IO_STREAM_SPLICE_CLOSE_STREAM2 = 2,
+    G_IO_STREAM_SPLICE_WAIT_FOR_BOTH = 4,
+    TGIOStreamSpliceFlagsMaxValue = $7FFFFFFF
+  );
+  TGDBusMessageFlags = (
+    TGDBusMessageFlagsMinValue = -$7FFFFFFF,
+    G_DBUS_MESSAGE_FLAGS_NONE = 0,
+    G_DBUS_MESSAGE_FLAGS_NO_REPLY_EXPECTED = 1,
+    G_DBUS_MESSAGE_FLAGS_NO_AUTO_START = 2,
+    G_DBUS_MESSAGE_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION = 4,
+    TGDBusMessageFlagsMaxValue = $7FFFFFFF
+  );
+  TGDBusMessageHeaderField = (
+    TGDBusMessageHeaderFieldMinValue = -$7FFFFFFF,
+    G_DBUS_MESSAGE_HEADER_FIELD_INVALID = 0,
+    G_DBUS_MESSAGE_HEADER_FIELD_PATH = 1,
+    G_DBUS_MESSAGE_HEADER_FIELD_INTERFACE = 2,
+    G_DBUS_MESSAGE_HEADER_FIELD_MEMBER = 3,
+    G_DBUS_MESSAGE_HEADER_FIELD_ERROR_NAME = 4,
+    G_DBUS_MESSAGE_HEADER_FIELD_REPLY_SERIAL = 5,
+    G_DBUS_MESSAGE_HEADER_FIELD_DESTINATION = 6,
+    G_DBUS_MESSAGE_HEADER_FIELD_SENDER = 7,
+    G_DBUS_MESSAGE_HEADER_FIELD_SIGNATURE = 8,
+    G_DBUS_MESSAGE_HEADER_FIELD_NUM_UNIX_FDS = 9,
+    TGDBusMessageHeaderFieldMaxValue = $7FFFFFFF
+  );
+  TGDBusMessageByteOrder = (
+    TGDBusMessageByteOrderMinValue = -$7FFFFFFF,
+    G_DBUS_MESSAGE_BYTE_ORDER_BIG_ENDIAN = 66,
+    G_DBUS_MESSAGE_BYTE_ORDER_LITTLE_ENDIAN = 108,
+    TGDBusMessageByteOrderMaxValue = $7FFFFFFF
+  );
+  TGDBusMessageType = (
+    TGDBusMessageTypeMinValue = -$7FFFFFFF,
+    G_DBUS_MESSAGE_TYPE_INVALID = 0,
+    G_DBUS_MESSAGE_TYPE_METHOD_CALL = 1,
+    G_DBUS_MESSAGE_TYPE_METHOD_RETURN = 2,
+    G_DBUS_MESSAGE_TYPE_ERROR = 3,
+    G_DBUS_MESSAGE_TYPE_SIGNAL = 4,
+    TGDBusMessageTypeMaxValue = $7FFFFFFF
+  );
+  TGDBusError = (
+    TGDBusErrorMinValue = -$7FFFFFFF,
+    G_DBUS_ERROR_FAILED = 0,
+    G_DBUS_ERROR_NO_MEMORY = 1,
+    G_DBUS_ERROR_SERVICE_UNKNOWN = 2,
+    G_DBUS_ERROR_NAME_HAS_NO_OWNER = 3,
+    G_DBUS_ERROR_NO_REPLY = 4,
+    G_DBUS_ERROR_IO_ERROR = 5,
+    G_DBUS_ERROR_BAD_ADDRESS = 6,
+    G_DBUS_ERROR_NOT_SUPPORTED = 7,
+    G_DBUS_ERROR_LIMITS_EXCEEDED = 8,
+    G_DBUS_ERROR_ACCESS_DENIED = 9,
+    G_DBUS_ERROR_AUTH_FAILED = 10,
+    G_DBUS_ERROR_NO_SERVER = 11,
+    G_DBUS_ERROR_TIMEOUT = 12,
+    G_DBUS_ERROR_NO_NETWORK = 13,
+    G_DBUS_ERROR_ADDRESS_IN_USE = 14,
+    G_DBUS_ERROR_DISCONNECTED = 15,
+    G_DBUS_ERROR_INVALID_ARGS = 16,
+    G_DBUS_ERROR_FILE_NOT_FOUND = 17,
+    G_DBUS_ERROR_FILE_EXISTS = 18,
+    G_DBUS_ERROR_UNKNOWN_METHOD = 19,
+    G_DBUS_ERROR_TIMED_OUT = 20,
+    G_DBUS_ERROR_MATCH_RULE_NOT_FOUND = 21,
+    G_DBUS_ERROR_MATCH_RULE_INVALID = 22,
+    G_DBUS_ERROR_SPAWN_EXEC_FAILED = 23,
+    G_DBUS_ERROR_SPAWN_FORK_FAILED = 24,
+    G_DBUS_ERROR_SPAWN_CHILD_EXITED = 25,
+    G_DBUS_ERROR_SPAWN_CHILD_SIGNALED = 26,
+    G_DBUS_ERROR_SPAWN_FAILED = 27,
+    G_DBUS_ERROR_SPAWN_SETUP_FAILED = 28,
+    G_DBUS_ERROR_SPAWN_CONFIG_INVALID = 29,
+    G_DBUS_ERROR_SPAWN_SERVICE_INVALID = 30,
+    G_DBUS_ERROR_SPAWN_SERVICE_NOT_FOUND = 31,
+    G_DBUS_ERROR_SPAWN_PERMISSIONS_INVALID = 32,
+    G_DBUS_ERROR_SPAWN_FILE_INVALID = 33,
+    G_DBUS_ERROR_SPAWN_NO_MEMORY = 34,
+    G_DBUS_ERROR_UNIX_PROCESS_ID_UNKNOWN = 35,
+    G_DBUS_ERROR_INVALID_SIGNATURE = 36,
+    G_DBUS_ERROR_INVALID_FILE_CONTENT = 37,
+    G_DBUS_ERROR_SELINUX_SECURITY_CONTEXT_UNKNOWN = 38,
+    G_DBUS_ERROR_ADT_AUDIT_DATA_UNKNOWN = 39,
+    G_DBUS_ERROR_OBJECT_PATH_IN_USE = 40,
+    G_DBUS_ERROR_UNKNOWN_OBJECT = 41,
+    G_DBUS_ERROR_UNKNOWN_INTERFACE = 42,
+    G_DBUS_ERROR_UNKNOWN_PROPERTY = 43,
+    G_DBUS_ERROR_PROPERTY_READ_ONLY = 44,
+    TGDBusErrorMaxValue = $7FFFFFFF
+  );
+  TGDBusPropertyInfoFlags = (
+    TGDBusPropertyInfoFlagsMinValue = -$7FFFFFFF,
+    G_DBUS_PROPERTY_INFO_FLAGS_NONE = 0,
+    G_DBUS_PROPERTY_INFO_FLAGS_READABLE = 1,
+    G_DBUS_PROPERTY_INFO_FLAGS_WRITABLE = 2,
+    TGDBusPropertyInfoFlagsMaxValue = $7FFFFFFF
+  );
+  TGDBusInterfaceSkeletonFlags = (
+    TGDBusInterfaceSkeletonFlagsMinValue = -$7FFFFFFF,
+    G_DBUS_INTERFACE_SKELETON_FLAGS_NONE = 0,
+    G_DBUS_INTERFACE_SKELETON_FLAGS_HANDLE_METHOD_INVOCATIONS_IN_THREAD = 1,
+    TGDBusInterfaceSkeletonFlagsMaxValue = $7FFFFFFF
+  );
+  TGDBusObjectManagerClientFlags = (
+    TGDBusObjectManagerClientFlagsMinValue = -$7FFFFFFF,
+    G_DBUS_OBJECT_MANAGER_CLIENT_FLAGS_NONE = 0,
+    G_DBUS_OBJECT_MANAGER_CLIENT_FLAGS_DO_NOT_AUTO_START = 1,
+    TGDBusObjectManagerClientFlagsMaxValue = $7FFFFFFF
+  );
+  TGDBusProxyFlags = (
+    TGDBusProxyFlagsMinValue = -$7FFFFFFF,
+    G_DBUS_PROXY_FLAGS_NONE = 0,
+    G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES = 1,
+    G_DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS = 2,
+    G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START = 4,
+    G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES = 8,
+    G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START_AT_CONSTRUCTION = 16,
+    G_DBUS_PROXY_FLAGS_NO_MATCH_RULE = 32,
+    TGDBusProxyFlagsMaxValue = $7FFFFFFF
+  );
+  TGDBusServerFlags = (
+    TGDBusServerFlagsMinValue = -$7FFFFFFF,
+    G_DBUS_SERVER_FLAGS_NONE = 0,
+    G_DBUS_SERVER_FLAGS_RUN_IN_THREAD = 1,
+    G_DBUS_SERVER_FLAGS_AUTHENTICATION_ALLOW_ANONYMOUS = 2,
+    G_DBUS_SERVER_FLAGS_AUTHENTICATION_REQUIRE_SAME_USER = 4,
+    TGDBusServerFlagsMaxValue = $7FFFFFFF
+  );
+  TGDataStreamByteOrder = (
+    TGDataStreamByteOrderMinValue = -$7FFFFFFF,
+    G_DATA_STREAM_BYTE_ORDER_BIG_ENDIAN = 0,
+    G_DATA_STREAM_BYTE_ORDER_LITTLE_ENDIAN = 1,
+    G_DATA_STREAM_BYTE_ORDER_HOST_ENDIAN = 2,
+    TGDataStreamByteOrderMaxValue = $7FFFFFFF
+  );
+  TGDataStreamNewlineType = (
+    TGDataStreamNewlineTypeMinValue = -$7FFFFFFF,
+    G_DATA_STREAM_NEWLINE_TYPE_LF = 0,
+    G_DATA_STREAM_NEWLINE_TYPE_CR = 1,
+    G_DATA_STREAM_NEWLINE_TYPE_CR_LF = 2,
+    G_DATA_STREAM_NEWLINE_TYPE_ANY = 3,
+    TGDataStreamNewlineTypeMaxValue = $7FFFFFFF
+  );
+  TGMountOperationResult = (
+    TGMountOperationResultMinValue = -$7FFFFFFF,
+    G_MOUNT_OPERATION_HANDLED = 0,
+    G_MOUNT_OPERATION_ABORTED = 1,
+    G_MOUNT_OPERATION_UNHANDLED = 2,
+    TGMountOperationResultMaxValue = $7FFFFFFF
+  );
+  TGPasswordSave = (
+    TGPasswordSaveMinValue = -$7FFFFFFF,
+    G_PASSWORD_SAVE_NEVER = 0,
+    G_PASSWORD_SAVE_FOR_SESSION = 1,
+    G_PASSWORD_SAVE_PERMANENTLY = 2,
+    TGPasswordSaveMaxValue = $7FFFFFFF
+  );
+  TGDriveStartStopType = (
+    TGDriveStartStopTypeMinValue = -$7FFFFFFF,
+    G_DRIVE_START_STOP_TYPE_UNKNOWN = 0,
+    G_DRIVE_START_STOP_TYPE_SHUTDOWN = 1,
+    G_DRIVE_START_STOP_TYPE_NETWORK = 2,
+    G_DRIVE_START_STOP_TYPE_MULTIDISK = 3,
+    G_DRIVE_START_STOP_TYPE_PASSWORD = 4,
+    TGDriveStartStopTypeMaxValue = $7FFFFFFF
+  );
+  TGTlsCertificateFlags = (
+    TGTlsCertificateFlagsMinValue = -$7FFFFFFF,
+    G_TLS_CERTIFICATE_NO_FLAGS = 0,
+    G_TLS_CERTIFICATE_UNKNOWN_CA = 1,
+    G_TLS_CERTIFICATE_BAD_IDENTITY = 2,
+    G_TLS_CERTIFICATE_NOT_ACTIVATED = 4,
+    G_TLS_CERTIFICATE_EXPIRED = 8,
+    G_TLS_CERTIFICATE_REVOKED = 16,
+    G_TLS_CERTIFICATE_INSECURE = 32,
+    G_TLS_CERTIFICATE_GENERIC_ERROR = 64,
+    G_TLS_CERTIFICATE_VALIDATE_ALL = 127,
+    TGTlsCertificateFlagsMaxValue = $7FFFFFFF
+  );
+  TGTlsChannelBindingType = (
+    TGTlsChannelBindingTypeMinValue = -$7FFFFFFF,
+    G_TLS_CHANNEL_BINDING_TLS_UNIQUE = 0,
+    G_TLS_CHANNEL_BINDING_TLS_SERVER_END_POINT = 1,
+    G_TLS_CHANNEL_BINDING_TLS_EXPORTER = 2,
+    TGTlsChannelBindingTypeMaxValue = $7FFFFFFF
+  );
+  TGTlsDatabaseLookupFlags = (
+    TGTlsDatabaseLookupFlagsMinValue = -$7FFFFFFF,
+    G_TLS_DATABASE_LOOKUP_NONE = 0,
+    G_TLS_DATABASE_LOOKUP_KEYPAIR = 1,
+    TGTlsDatabaseLookupFlagsMaxValue = $7FFFFFFF
+  );
+  TGTlsDatabaseVerifyFlags = (
+    TGTlsDatabaseVerifyFlagsMinValue = -$7FFFFFFF,
+    G_TLS_DATABASE_VERIFY_NONE = 0,
+    TGTlsDatabaseVerifyFlagsMaxValue = $7FFFFFFF
+  );
+  TGTlsCertificateRequestFlags = (
+    TGTlsCertificateRequestFlagsMinValue = -$7FFFFFFF,
+    G_TLS_CERTIFICATE_REQUEST_NONE = 0,
+    TGTlsCertificateRequestFlagsMaxValue = $7FFFFFFF
+  );
+  TGTlsProtocolVersion = (
+    TGTlsProtocolVersionMinValue = -$7FFFFFFF,
+    G_TLS_PROTOCOL_VERSION_UNKNOWN = 0,
+    G_TLS_PROTOCOL_VERSION_SSL_3_0 = 1,
+    G_TLS_PROTOCOL_VERSION_TLS_1_0 = 2,
+    G_TLS_PROTOCOL_VERSION_TLS_1_1 = 3,
+    G_TLS_PROTOCOL_VERSION_TLS_1_2 = 4,
+    G_TLS_PROTOCOL_VERSION_TLS_1_3 = 5,
+    G_TLS_PROTOCOL_VERSION_DTLS_1_0 = 201,
+    G_TLS_PROTOCOL_VERSION_DTLS_1_2 = 202,
+    TGTlsProtocolVersionMaxValue = $7FFFFFFF
+  );
+  TGTlsAuthenticationMode = (
+    TGTlsAuthenticationModeMinValue = -$7FFFFFFF,
+    G_TLS_AUTHENTICATION_NONE = 0,
+    G_TLS_AUTHENTICATION_REQUESTED = 1,
+    G_TLS_AUTHENTICATION_REQUIRED = 2,
+    TGTlsAuthenticationModeMaxValue = $7FFFFFFF
+  );
+  TGEmblemOrigin = (
+    TGEmblemOriginMinValue = -$7FFFFFFF,
+    G_EMBLEM_ORIGIN_UNKNOWN = 0,
+    G_EMBLEM_ORIGIN_DEVICE = 1,
+    G_EMBLEM_ORIGIN_LIVEMETADATA = 2,
+    G_EMBLEM_ORIGIN_TAG = 3,
+    TGEmblemOriginMaxValue = $7FFFFFFF
+  );
+  TGFileMonitorEvent = (
+    TGFileMonitorEventMinValue = -$7FFFFFFF,
+    G_FILE_MONITOR_EVENT_CHANGED = 0,
+    G_FILE_MONITOR_EVENT_CHANGES_DONE_HINT = 1,
+    G_FILE_MONITOR_EVENT_DELETED = 2,
+    G_FILE_MONITOR_EVENT_CREATED = 3,
+    G_FILE_MONITOR_EVENT_ATTRIBUTE_CHANGED = 4,
+    G_FILE_MONITOR_EVENT_PRE_UNMOUNT = 5,
+    G_FILE_MONITOR_EVENT_UNMOUNTED = 6,
+    G_FILE_MONITOR_EVENT_MOVED = 7,
+    G_FILE_MONITOR_EVENT_RENAMED = 8,
+    G_FILE_MONITOR_EVENT_MOVED_IN = 9,
+    G_FILE_MONITOR_EVENT_MOVED_OUT = 10,
+    TGFileMonitorEventMaxValue = $7FFFFFFF
+  );
+  TGFileAttributeStatus = (
+    TGFileAttributeStatusMinValue = -$7FFFFFFF,
+    G_FILE_ATTRIBUTE_STATUS_UNSET = 0,
+    G_FILE_ATTRIBUTE_STATUS_SET = 1,
+    G_FILE_ATTRIBUTE_STATUS_ERROR_SETTING = 2,
+    TGFileAttributeStatusMaxValue = $7FFFFFFF
+  );
+  TGFileType = (
+    TGFileTypeMinValue = -$7FFFFFFF,
+    G_FILE_TYPE_UNKNOWN = 0,
+    G_FILE_TYPE_REGULAR = 1,
+    G_FILE_TYPE_DIRECTORY = 2,
+    G_FILE_TYPE_SYMBOLIC_LINK = 3,
+    G_FILE_TYPE_SPECIAL = 4,
+    G_FILE_TYPE_SHORTCUT = 5,
+    G_FILE_TYPE_MOUNTABLE = 6,
+    TGFileTypeMaxValue = $7FFFFFFF
+  );
+  TGFileAttributeInfoFlags = (
+    TGFileAttributeInfoFlagsMinValue = -$7FFFFFFF,
+    G_FILE_ATTRIBUTE_INFO_NONE = 0,
+    G_FILE_ATTRIBUTE_INFO_COPY_WITH_FILE = 1,
+    G_FILE_ATTRIBUTE_INFO_COPY_WHEN_MOVED = 2,
+    TGFileAttributeInfoFlagsMaxValue = $7FFFFFFF
+  );
+  TGFilesystemPreviewType = (
+    TGFilesystemPreviewTypeMinValue = -$7FFFFFFF,
+    G_FILESYSTEM_PREVIEW_TYPE_IF_ALWAYS = 0,
+    G_FILESYSTEM_PREVIEW_TYPE_IF_LOCAL = 1,
+    G_FILESYSTEM_PREVIEW_TYPE_NEVER = 2,
+    TGFilesystemPreviewTypeMaxValue = $7FFFFFFF
+  );
+  TGIOErrorEnum = (
+    TGIOErrorEnumMinValue = -$7FFFFFFF,
+    G_IO_ERROR_FAILED = 0,
+    G_IO_ERROR_NOT_FOUND = 1,
+    G_IO_ERROR_EXISTS = 2,
+    G_IO_ERROR_IS_DIRECTORY = 3,
+    G_IO_ERROR_NOT_DIRECTORY = 4,
+    G_IO_ERROR_NOT_EMPTY = 5,
+    G_IO_ERROR_NOT_REGULAR_FILE = 6,
+    G_IO_ERROR_NOT_SYMBOLIC_LINK = 7,
+    G_IO_ERROR_NOT_MOUNTABLE_FILE = 8,
+    G_IO_ERROR_FILENAME_TOO_LONG = 9,
+    G_IO_ERROR_INVALID_FILENAME = 10,
+    G_IO_ERROR_TOO_MANY_LINKS = 11,
+    G_IO_ERROR_NO_SPACE = 12,
+    G_IO_ERROR_INVALID_ARGUMENT = 13,
+    G_IO_ERROR_PERMISSION_DENIED = 14,
+    G_IO_ERROR_NOT_SUPPORTED = 15,
+    G_IO_ERROR_NOT_MOUNTED = 16,
+    G_IO_ERROR_ALREADY_MOUNTED = 17,
+    G_IO_ERROR_CLOSED = 18,
+    G_IO_ERROR_CANCELLED = 19,
+    G_IO_ERROR_PENDING = 20,
+    G_IO_ERROR_READ_ONLY = 21,
+    G_IO_ERROR_CANT_CREATE_BACKUP = 22,
+    G_IO_ERROR_WRONG_ETAG = 23,
+    G_IO_ERROR_TIMED_OUT = 24,
+    G_IO_ERROR_WOULD_RECURSE = 25,
+    G_IO_ERROR_BUSY = 26,
+    G_IO_ERROR_WOULD_BLOCK = 27,
+    G_IO_ERROR_HOST_NOT_FOUND = 28,
+    G_IO_ERROR_WOULD_MERGE = 29,
+    G_IO_ERROR_FAILED_HANDLED = 30,
+    G_IO_ERROR_TOO_MANY_OPEN_FILES = 31,
+    G_IO_ERROR_NOT_INITIALIZED = 32,
+    G_IO_ERROR_ADDRESS_IN_USE = 33,
+    G_IO_ERROR_PARTIAL_INPUT = 34,
+    G_IO_ERROR_INVALID_DATA = 35,
+    G_IO_ERROR_DBUS_ERROR = 36,
+    G_IO_ERROR_HOST_UNREACHABLE = 37,
+    G_IO_ERROR_NETWORK_UNREACHABLE = 38,
+    G_IO_ERROR_CONNECTION_REFUSED = 39,
+    G_IO_ERROR_PROXY_FAILED = 40,
+    G_IO_ERROR_PROXY_AUTH_FAILED = 41,
+    G_IO_ERROR_PROXY_NEED_AUTH = 42,
+    G_IO_ERROR_PROXY_NOT_ALLOWED = 43,
+    G_IO_ERROR_CONNECTION_CLOSED = 44,
+    G_IO_ERROR_BROKEN_PIPE = 44,
+    G_IO_ERROR_NOT_CONNECTED = 45,
+    G_IO_ERROR_MESSAGE_TOO_LARGE = 46,
+    G_IO_ERROR_NO_SUCH_DEVICE = 47,
+    TGIOErrorEnumMaxValue = $7FFFFFFF
+  );
+  TGIOModuleScopeFlags = (
+    TGIOModuleScopeFlagsMinValue = -$7FFFFFFF,
+    G_IO_MODULE_SCOPE_NONE = 0,
+    G_IO_MODULE_SCOPE_BLOCK_DUPLICATES = 1,
+    TGIOModuleScopeFlagsMaxValue = $7FFFFFFF
+  );
+  TGSocketFamily = (
+    TGSocketFamilyMinValue = -$7FFFFFFF,
+    G_SOCKET_FAMILY_INVALID = 0,
+    G_SOCKET_FAMILY_UNIX = 1,
+    G_SOCKET_FAMILY_IPV4 = 2,
+    G_SOCKET_FAMILY_IPV6 = 10,
+    TGSocketFamilyMaxValue = $7FFFFFFF
+  );
+  TGMemoryMonitorWarningLevel = (
+    TGMemoryMonitorWarningLevelMinValue = -$7FFFFFFF,
+    G_MEMORY_MONITOR_WARNING_LEVEL_LOW = 50,
+    G_MEMORY_MONITOR_WARNING_LEVEL_MEDIUM = 100,
+    G_MEMORY_MONITOR_WARNING_LEVEL_CRITICAL = 255,
+    TGMemoryMonitorWarningLevelMaxValue = $7FFFFFFF
+  );
+  TGNetworkConnectivity = (
+    TGNetworkConnectivityMinValue = -$7FFFFFFF,
+    G_NETWORK_CONNECTIVITY_LOCAL = 1,
+    G_NETWORK_CONNECTIVITY_LIMITED = 2,
+    G_NETWORK_CONNECTIVITY_PORTAL = 3,
+    G_NETWORK_CONNECTIVITY_FULL = 4,
+    TGNetworkConnectivityMaxValue = $7FFFFFFF
+  );
+  TGPollableReturn = (
+    TGPollableReturnMinValue = -$7FFFFFFF,
+    G_POLLABLE_RETURN_WOULD_BLOCK = -27,
+    G_POLLABLE_RETURN_FAILED = 0,
+    G_POLLABLE_RETURN_OK = 1,
+    TGPollableReturnMaxValue = $7FFFFFFF
+  );
+  TGResolverNameLookupFlags = (
+    TGResolverNameLookupFlagsMinValue = -$7FFFFFFF,
+    G_RESOLVER_NAME_LOOKUP_FLAGS_DEFAULT = 0,
+    G_RESOLVER_NAME_LOOKUP_FLAGS_IPV4_ONLY = 1,
+    G_RESOLVER_NAME_LOOKUP_FLAGS_IPV6_ONLY = 2,
+    TGResolverNameLookupFlagsMaxValue = $7FFFFFFF
+  );
+  TGResolverRecordType = (
+    TGResolverRecordTypeMinValue = -$7FFFFFFF,
+    G_RESOLVER_RECORD_SRV = 1,
+    G_RESOLVER_RECORD_MX = 2,
+    G_RESOLVER_RECORD_TXT = 3,
+    G_RESOLVER_RECORD_SOA = 4,
+    G_RESOLVER_RECORD_NS = 5,
+    TGResolverRecordTypeMaxValue = $7FFFFFFF
+  );
+  TGResolverError = (
+    TGResolverErrorMinValue = -$7FFFFFFF,
+    G_RESOLVER_ERROR_NOT_FOUND = 0,
+    G_RESOLVER_ERROR_TEMPORARY_FAILURE = 1,
+    G_RESOLVER_ERROR_INTERNAL = 2,
+    TGResolverErrorMaxValue = $7FFFFFFF
+  );
+  TGResourceLookupFlags = (
+    TGResourceLookupFlagsMinValue = -$7FFFFFFF,
+    G_RESOURCE_LOOKUP_FLAGS_NONE = 0,
+    TGResourceLookupFlagsMaxValue = $7FFFFFFF
+  );
+  TGResourceError = (
+    TGResourceErrorMinValue = -$7FFFFFFF,
+    G_RESOURCE_ERROR_NOT_FOUND = 0,
+    G_RESOURCE_ERROR_INTERNAL = 1,
+    TGResourceErrorMaxValue = $7FFFFFFF
+  );
+  TGResourceFlags = (
+    TGResourceFlagsMinValue = -$7FFFFFFF,
+    G_RESOURCE_FLAGS_NONE = 0,
+    G_RESOURCE_FLAGS_COMPRESSED = 1,
+    TGResourceFlagsMaxValue = $7FFFFFFF
+  );
+  TGSettingsBindFlags = (
+    TGSettingsBindFlagsMinValue = -$7FFFFFFF,
+    G_SETTINGS_BIND_DEFAULT = 0,
+    G_SETTINGS_BIND_GET = 1,
+    G_SETTINGS_BIND_SET = 2,
+    G_SETTINGS_BIND_NO_SENSITIVITY = 4,
+    G_SETTINGS_BIND_GET_NO_CHANGES = 8,
+    G_SETTINGS_BIND_INVERT_BOOLEAN = 16,
+    TGSettingsBindFlagsMaxValue = $7FFFFFFF
+  );
+  TGSocketType = (
+    TGSocketTypeMinValue = -$7FFFFFFF,
+    G_SOCKET_TYPE_INVALID = 0,
+    G_SOCKET_TYPE_STREAM = 1,
+    G_SOCKET_TYPE_DATAGRAM = 2,
+    G_SOCKET_TYPE_SEQPACKET = 3,
+    TGSocketTypeMaxValue = $7FFFFFFF
+  );
+  TGSocketProtocol = (
+    TGSocketProtocolMinValue = -$7FFFFFFF,
+    G_SOCKET_PROTOCOL_UNKNOWN = -1,
+    G_SOCKET_PROTOCOL_DEFAULT = 0,
+    G_SOCKET_PROTOCOL_TCP = 6,
+    G_SOCKET_PROTOCOL_UDP = 17,
+    G_SOCKET_PROTOCOL_SCTP = 132,
+    TGSocketProtocolMaxValue = $7FFFFFFF
+  );
+  TGSocketClientEvent = (
+    TGSocketClientEventMinValue = -$7FFFFFFF,
+    G_SOCKET_CLIENT_RESOLVING = 0,
+    G_SOCKET_CLIENT_RESOLVED = 1,
+    G_SOCKET_CLIENT_CONNECTING = 2,
+    G_SOCKET_CLIENT_CONNECTED = 3,
+    G_SOCKET_CLIENT_PROXY_NEGOTIATING = 4,
+    G_SOCKET_CLIENT_PROXY_NEGOTIATED = 5,
+    G_SOCKET_CLIENT_TLS_HANDSHAKING = 6,
+    G_SOCKET_CLIENT_TLS_HANDSHAKED = 7,
+    G_SOCKET_CLIENT_COMPLETE = 8,
+    TGSocketClientEventMaxValue = $7FFFFFFF
+  );
+  TGSocketListenerEvent = (
+    TGSocketListenerEventMinValue = -$7FFFFFFF,
+    G_SOCKET_LISTENER_BINDING = 0,
+    G_SOCKET_LISTENER_BOUND = 1,
+    G_SOCKET_LISTENER_LISTENING = 2,
+    G_SOCKET_LISTENER_LISTENED = 3,
+    TGSocketListenerEventMaxValue = $7FFFFFFF
+  );
+  TGSocketMsgFlags = (
+    TGSocketMsgFlagsMinValue = -$7FFFFFFF,
+    G_SOCKET_MSG_NONE = 0,
+    G_SOCKET_MSG_OOB = 1,
+    G_SOCKET_MSG_PEEK = 2,
+    G_SOCKET_MSG_DONTROUTE = 4,
+    TGSocketMsgFlagsMaxValue = $7FFFFFFF
+  );
+  TGSubprocessFlags = (
+    TGSubprocessFlagsMinValue = -$7FFFFFFF,
+    G_SUBPROCESS_FLAGS_NONE = 0,
+    G_SUBPROCESS_FLAGS_STDIN_PIPE = 1,
+    G_SUBPROCESS_FLAGS_STDIN_INHERIT = 2,
+    G_SUBPROCESS_FLAGS_STDOUT_PIPE = 4,
+    G_SUBPROCESS_FLAGS_STDOUT_SILENCE = 8,
+    G_SUBPROCESS_FLAGS_STDERR_PIPE = 16,
+    G_SUBPROCESS_FLAGS_STDERR_SILENCE = 32,
+    G_SUBPROCESS_FLAGS_STDERR_MERGE = 64,
+    G_SUBPROCESS_FLAGS_INHERIT_FDS = 128,
+    G_SUBPROCESS_FLAGS_SEARCH_PATH_FROM_ENVP = 256,
+    TGSubprocessFlagsMaxValue = $7FFFFFFF
+  );
+  TGTestDBusFlags = (
+    TGTestDBusFlagsMinValue = -$7FFFFFFF,
+    G_TEST_DBUS_NONE = 0,
+    TGTestDBusFlagsMaxValue = $7FFFFFFF
+  );
+  TGTlsChannelBindingError = (
+    TGTlsChannelBindingErrorMinValue = -$7FFFFFFF,
+    G_TLS_CHANNEL_BINDING_ERROR_NOT_IMPLEMENTED = 0,
+    G_TLS_CHANNEL_BINDING_ERROR_INVALID_STATE = 1,
+    G_TLS_CHANNEL_BINDING_ERROR_NOT_AVAILABLE = 2,
+    G_TLS_CHANNEL_BINDING_ERROR_NOT_SUPPORTED = 3,
+    G_TLS_CHANNEL_BINDING_ERROR_GENERAL_ERROR = 4,
+    TGTlsChannelBindingErrorMaxValue = $7FFFFFFF
+  );
+  TGTlsError = (
+    TGTlsErrorMinValue = -$7FFFFFFF,
+    G_TLS_ERROR_UNAVAILABLE = 0,
+    G_TLS_ERROR_MISC = 1,
+    G_TLS_ERROR_BAD_CERTIFICATE = 2,
+    G_TLS_ERROR_NOT_TLS = 3,
+    G_TLS_ERROR_HANDSHAKE = 4,
+    G_TLS_ERROR_CERTIFICATE_REQUIRED = 5,
+    G_TLS_ERROR_EOF = 6,
+    G_TLS_ERROR_INAPPROPRIATE_FALLBACK = 7,
+    G_TLS_ERROR_BAD_CERTIFICATE_PASSWORD = 8,
+    TGTlsErrorMaxValue = $7FFFFFFF
+  );
+  TGTlsInteractionResult = (
+    TGTlsInteractionResultMinValue = -$7FFFFFFF,
+    G_TLS_INTERACTION_UNHANDLED = 0,
+    G_TLS_INTERACTION_HANDLED = 1,
+    G_TLS_INTERACTION_FAILED = 2,
+    TGTlsInteractionResultMaxValue = $7FFFFFFF
+  );
+  TGTlsPasswordFlags = (
+    TGTlsPasswordFlagsMinValue = -$7FFFFFFF,
+    G_TLS_PASSWORD_NONE = 0,
+    G_TLS_PASSWORD_RETRY = 2,
+    G_TLS_PASSWORD_MANY_TRIES = 4,
+    G_TLS_PASSWORD_FINAL_TRY = 8,
+    G_TLS_PASSWORD_PKCS11_USER = 16,
+    G_TLS_PASSWORD_PKCS11_SECURITY_OFFICER = 32,
+    G_TLS_PASSWORD_PKCS11_CONTEXT_SPECIFIC = 64,
+    TGTlsPasswordFlagsMaxValue = $7FFFFFFF
+  );
+  TGUnixSocketAddressType = (
+    TGUnixSocketAddressTypeMinValue = -$7FFFFFFF,
+    G_UNIX_SOCKET_ADDRESS_INVALID = 0,
+    G_UNIX_SOCKET_ADDRESS_ANONYMOUS = 1,
+    G_UNIX_SOCKET_ADDRESS_PATH = 2,
+    G_UNIX_SOCKET_ADDRESS_ABSTRACT = 3,
+    G_UNIX_SOCKET_ADDRESS_ABSTRACT_PADDED = 4,
+    TGUnixSocketAddressTypeMaxValue = $7FFFFFFF
+  );
+  TGZlibCompressorFormat = (
+    TGZlibCompressorFormatMinValue = -$7FFFFFFF,
+    G_ZLIB_COMPRESSOR_FORMAT_ZLIB = 0,
+    G_ZLIB_COMPRESSOR_FORMAT_GZIP = 1,
+    G_ZLIB_COMPRESSOR_FORMAT_RAW = 2,
+    TGZlibCompressorFormatMaxValue = $7FFFFFFF
+  );
+type
+
+
+  { TGAction }
   PPGAction = ^PGAction;
   PGAction = ^TGAction;
   TGAction = object
+    function name_is_valid(action_name: Pgchar): gboolean; cdecl; inline; static;
+    function parse_detailed_name(detailed_name: Pgchar; action_name: PPgchar; target_value: PPGVariant; error: PPGError): gboolean; cdecl; inline; static;
+    function print_detailed_name(action_name: Pgchar; target_value: PGVariant): Pgchar; cdecl; inline; static;
     procedure activate(parameter: PGVariant); cdecl; inline;
     procedure change_state(value: PGVariant); cdecl; inline;
     function get_enabled: gboolean; cdecl; inline;
@@ -832,6 +929,8 @@ type
     property state_type: PGVariantType read get_state_type ;
   end;
 
+
+  { TGSimpleAction }
   PPGSimpleAction = ^PGSimpleAction;
   PGSimpleAction = ^TGSimpleAction;
   TGSimpleAction = object(TGObject)
@@ -839,6 +938,7 @@ type
     function new_stateful(name: Pgchar; parameter_type: PGVariantType; state: PGVariant): PGSimpleAction; cdecl; inline; static;
     procedure set_enabled(enabled: gboolean); cdecl; inline;
     procedure set_state(value: PGVariant); cdecl; inline;
+    procedure set_state_hint(state_hint: PGVariant); cdecl; inline;
     //property enabled: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_enabled  { property is writeable but setter not declared } ;
     //property name: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_name  { property is writeable but setter not declared } ;
     //property parameter_type: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_parameter_type  { property is writeable but setter not declared } ;
@@ -846,6 +946,8 @@ type
     //property state_type: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_state_type ;
   end;
 
+
+  { TGActionEntry }
   PPGActionEntry = ^PGActionEntry;
   PGActionEntry = ^TGActionEntry;
 
@@ -860,6 +962,8 @@ type
 
 
 
+
+  { TGActionGroup }
   PPGActionGroup = ^PGActionGroup;
   PGActionGroup = ^TGActionGroup;
   TGActionGroup = object
@@ -883,6 +987,8 @@ type
     function query_action(action_name: Pgchar; enabled: Pgboolean; parameter_type: PPGVariantType; state_type: PPGVariantType; state_hint: PPGVariant; state: PPGVariant): gboolean; cdecl; inline;
   end;
 
+
+  { TGActionGroupInterface }
   PPGActionGroupInterface = ^PGActionGroupInterface;
   PGActionGroupInterface = ^TGActionGroupInterface;
   TGActionGroupInterface = object
@@ -903,6 +1009,8 @@ type
     query_action: function(action_group: PGActionGroup; action_name: Pgchar; enabled: Pgboolean; parameter_type: PPGVariantType; state_type: PPGVariantType; state_hint: PPGVariant; state: PPGVariant): gboolean; cdecl;
   end;
 
+
+  { TGActionInterface }
   PPGActionInterface = ^PGActionInterface;
   PGActionInterface = ^TGActionInterface;
   TGActionInterface = object
@@ -917,6 +1025,8 @@ type
     activate: procedure(action: PGAction; parameter: PGVariant); cdecl;
   end;
 
+
+  { TGActionMap }
   PPGActionMap = ^PGActionMap;
   PGActionMap = ^TGActionMap;
   TGActionMap = object
@@ -926,6 +1036,8 @@ type
     procedure remove_action(action_name: Pgchar); cdecl; inline;
   end;
 
+
+  { TGActionMapInterface }
   PPGActionMapInterface = ^PGActionMapInterface;
   PGActionMapInterface = ^TGActionMapInterface;
   TGActionMapInterface = object
@@ -935,15 +1047,39 @@ type
     remove_action: procedure(action_map: PGActionMap; action_name: Pgchar); cdecl;
   end;
 
+
+  { TGAppInfo }
   PPGAppInfo = ^PGAppInfo;
   PGAppInfo = ^TGAppInfo;
 
+
+  { TGAppInfoCreateFlags }
   PPGAppInfoCreateFlags = ^PGAppInfoCreateFlags;
   PGAppInfoCreateFlags = ^TGAppInfoCreateFlags;
 
+
+  { TGCancellable }
+  PPGCancellable = ^PGCancellable;
+  PGCancellable = ^TGCancellable;
+
+
+  { TGAsyncReadyCallback }
+  PPGAsyncReadyCallback = ^PGAsyncReadyCallback;
+  PGAsyncReadyCallback = ^TGAsyncReadyCallback;
+
+
+  { TGAsyncResult }
+  PPGAsyncResult = ^PGAsyncResult;
+  PGAsyncResult = ^TGAsyncResult;
+  TGAsyncReadyCallback = procedure(source_object: PGObject; res: PGAsyncResult; data: gpointer); cdecl;
+
+
+  { TGAppLaunchContext }
   PPGAppLaunchContext = ^PGAppLaunchContext;
   PGAppLaunchContext = ^TGAppLaunchContext;
 
+
+  { TGIcon }
   PPGIcon = ^PGIcon;
   PGIcon = ^TGIcon;
   TGAppInfo = object
@@ -954,7 +1090,9 @@ type
     function get_default_for_uri_scheme(uri_scheme: Pgchar): PGAppInfo; cdecl; inline; static;
     function get_fallback_for_type(content_type: Pgchar): PGList; cdecl; inline; static;
     function get_recommended_for_type(content_type: Pgchar): PGList; cdecl; inline; static;
-    function launch_default_for_uri(uri: Pgchar; launch_context: PGAppLaunchContext; error: PPGError): gboolean; cdecl; inline; static;
+    function launch_default_for_uri(uri: Pgchar; context: PGAppLaunchContext; error: PPGError): gboolean; cdecl; inline; static;
+    procedure launch_default_for_uri_async(uri: Pgchar; context: PGAppLaunchContext; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline; static;
+    function launch_default_for_uri_finish(result_: PGAsyncResult; error: PPGError): gboolean; cdecl; inline; static;
     procedure reset_type_associations(content_type: Pgchar); cdecl; inline; static;
     function add_supports_type(content_type: Pgchar; error: PPGError): gboolean; cdecl; inline;
     function can_delete: gboolean; cdecl; inline;
@@ -970,8 +1108,10 @@ type
     function get_id: Pgchar; cdecl; inline;
     function get_name: Pgchar; cdecl; inline;
     function get_supported_types: PPgchar; cdecl; inline;
-    function launch(files: PGList; launch_context: PGAppLaunchContext; error: PPGError): gboolean; cdecl; inline;
-    function launch_uris(uris: PGList; launch_context: PGAppLaunchContext; error: PPGError): gboolean; cdecl; inline;
+    function launch(files: PGList; context: PGAppLaunchContext; error: PPGError): gboolean; cdecl; inline;
+    function launch_uris(uris: PGList; context: PGAppLaunchContext; error: PPGError): gboolean; cdecl; inline;
+    procedure launch_uris_async(uris: PGList; context: PGAppLaunchContext; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function launch_uris_finish(result_: PGAsyncResult; error: PPGError): gboolean; cdecl; inline;
     function remove_supports_type(content_type: Pgchar; error: PPGError): gboolean; cdecl; inline;
     function set_as_default_for_extension(extension: Pgchar; error: PPGError): gboolean; cdecl; inline;
     function set_as_default_for_type(content_type: Pgchar; error: PPGError): gboolean; cdecl; inline;
@@ -981,6 +1121,36 @@ type
     function supports_uris: gboolean; cdecl; inline;
   end;
 
+
+  { TGCancellablePrivate }
+  PPGCancellablePrivate = ^PGCancellablePrivate;
+  PGCancellablePrivate = ^TGCancellablePrivate;
+  TGCancellable = object(TGObject)
+    priv: PGCancellablePrivate;
+    function new: PGCancellable; cdecl; inline; static;
+    function get_current: PGCancellable; cdecl; inline; static;
+    procedure cancel; cdecl; inline;
+    function connect(callback: TGCallback; data: gpointer; data_destroy_func: TGDestroyNotify): gulong; cdecl; inline;
+    procedure disconnect(handler_id: gulong); cdecl; inline;
+    function get_fd: gint; cdecl; inline;
+    function is_cancelled: gboolean; cdecl; inline;
+    function make_pollfd(pollfd: PGPollFD): gboolean; cdecl; inline;
+    procedure pop_current; cdecl; inline;
+    procedure push_current; cdecl; inline;
+    procedure release_fd; cdecl; inline;
+    procedure reset; cdecl; inline;
+    function set_error_if_cancelled(error: PPGError): gboolean; cdecl; inline;
+    function source_new: PGSource; cdecl; inline;
+  end;
+  TGAsyncResult = object
+    function get_source_object: PGObject; cdecl; inline;
+    function get_user_data: gpointer; cdecl; inline;
+    function is_tagged(source_tag: gpointer): gboolean; cdecl; inline;
+    function legacy_propagate_error(error: PPGError): gboolean; cdecl; inline;
+  end;
+
+
+  { TGAppLaunchContextPrivate }
   PPGAppLaunchContextPrivate = ^PGAppLaunchContextPrivate;
   PGAppLaunchContextPrivate = ^TGAppLaunchContextPrivate;
   TGAppLaunchContext = object(TGObject)
@@ -994,12 +1164,16 @@ type
     procedure unsetenv(variable: Pgchar); cdecl; inline;
   end;
   TGIcon = object
-    function hash(icon: Pgpointer): guint; cdecl; inline; static;
+    function deserialize(value: PGVariant): PGIcon; cdecl; inline; static;
     function new_for_string(str: Pgchar; error: PPGError): PGIcon; cdecl; inline; static;
     function equal(icon2: PGIcon): gboolean; cdecl; inline;
+    function hash: guint; cdecl; inline;
+    function serialize: PGVariant; cdecl; inline;
     function to_string: Pgchar; cdecl; inline;
   end;
 
+
+  { TGAppInfoIface }
   PPGAppInfoIface = ^PGAppInfoIface;
   PGAppInfoIface = ^TGAppInfoIface;
   TGAppInfoIface = object
@@ -1011,10 +1185,10 @@ type
     get_description: function(appinfo: PGAppInfo): Pgchar; cdecl;
     get_executable: function(appinfo: PGAppInfo): Pgchar; cdecl;
     get_icon: function(appinfo: PGAppInfo): PGIcon; cdecl;
-    launch: function(appinfo: PGAppInfo; files: PGList; launch_context: PGAppLaunchContext; error: PPGError): gboolean; cdecl;
+    launch: function(appinfo: PGAppInfo; files: PGList; context: PGAppLaunchContext; error: PPGError): gboolean; cdecl;
     supports_uris: function(appinfo: PGAppInfo): gboolean; cdecl;
     supports_files: function(appinfo: PGAppInfo): gboolean; cdecl;
-    launch_uris: function(appinfo: PGAppInfo; uris: PGList; launch_context: PGAppLaunchContext; error: PPGError): gboolean; cdecl;
+    launch_uris: function(appinfo: PGAppInfo; uris: PGList; context: PGAppLaunchContext; error: PPGError): gboolean; cdecl;
     should_show: function(appinfo: PGAppInfo): gboolean; cdecl;
     set_as_default_for_type: function(appinfo: PGAppInfo; content_type: Pgchar; error: PPGError): gboolean; cdecl;
     set_as_default_for_extension: function(appinfo: PGAppInfo; extension: Pgchar; error: PPGError): gboolean; cdecl;
@@ -1027,6 +1201,16 @@ type
     get_display_name: function(appinfo: PGAppInfo): Pgchar; cdecl;
     set_as_last_used_for_type: function(appinfo: PGAppInfo; content_type: Pgchar; error: PPGError): gboolean; cdecl;
     get_supported_types: function(appinfo: PGAppInfo): PPgchar; cdecl;
+    launch_uris_async: procedure(appinfo: PGAppInfo; uris: PGList; context: PGAppLaunchContext; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+    launch_uris_finish: function(appinfo: PGAppInfo; result_: PGAsyncResult; error: PPGError): gboolean; cdecl;
+  end;
+
+
+  { TGAppInfoMonitor }
+  PPGAppInfoMonitor = ^PGAppInfoMonitor;
+  PGAppInfoMonitor = ^TGAppInfoMonitor;
+  TGAppInfoMonitor = object(TGObject)
+    function get: PGAppInfoMonitor; cdecl; inline; static;
   end;
 
   TGAppLaunchContextPrivate = record
@@ -1034,6 +1218,8 @@ type
 
 
 
+
+  { TGAppLaunchContextClass }
   PPGAppLaunchContextClass = ^PGAppLaunchContextClass;
   PGAppLaunchContextClass = ^TGAppLaunchContextClass;
   TGAppLaunchContextClass = object
@@ -1042,27 +1228,39 @@ type
     get_startup_notify_id: function(context: PGAppLaunchContext; info: PGAppInfo; files: PGList): Pgchar; cdecl;
     launch_failed: procedure(context: PGAppLaunchContext; startup_notify_id: Pgchar); cdecl;
     launched: procedure(context: PGAppLaunchContext; info: PGAppInfo; platform_data: PGVariant); cdecl;
+    launch_started: procedure(context: PGAppLaunchContext; info: PGAppInfo; platform_data: PGVariant); cdecl;
     _g_reserved1: procedure; cdecl;
     _g_reserved2: procedure; cdecl;
     _g_reserved3: procedure; cdecl;
-    _g_reserved4: procedure; cdecl;
   end;
 
+
+  { TGApplication }
   PPGApplication = ^PGApplication;
   PGApplication = ^TGApplication;
 
+
+  { TGApplicationFlags }
   PPGApplicationFlags = ^PGApplicationFlags;
   PGApplicationFlags = ^TGApplicationFlags;
 
+
+  { TGDBusConnection }
   PPGDBusConnection = ^PGDBusConnection;
   PGDBusConnection = ^TGDBusConnection;
 
+
+  { TGFile }
   PPGFile = ^PGFile;
   PGFile = ^TGFile;
 
-  PPGCancellable = ^PGCancellable;
-  PGCancellable = ^TGCancellable;
 
+  { TGNotification }
+  PPGNotification = ^PGNotification;
+  PGNotification = ^TGNotification;
+
+
+  { TGApplicationPrivate }
   PPGApplicationPrivate = ^PGApplicationPrivate;
   PGApplicationPrivate = ^TGApplicationPrivate;
   TGApplication = object(TGObject)
@@ -1071,37 +1269,60 @@ type
     function get_default: PGApplication; cdecl; inline; static;
     function id_is_valid(application_id: Pgchar): gboolean; cdecl; inline; static;
     procedure activate; cdecl; inline;
+    procedure add_main_option(long_name: Pgchar; short_name: gchar; flags: TGOptionFlags; arg: TGOptionArg; description: Pgchar; arg_description: Pgchar); cdecl; inline;
+    procedure add_main_option_entries(entries: PGOptionEntry); cdecl; inline;
+    procedure add_option_group(group: PGOptionGroup); cdecl; inline;
+    procedure bind_busy_property(object_: PGObject; property_: Pgchar); cdecl; inline;
     function get_application_id: Pgchar; cdecl; inline;
     function get_dbus_connection: PGDBusConnection; cdecl; inline;
     function get_dbus_object_path: Pgchar; cdecl; inline;
     function get_flags: TGApplicationFlags; cdecl; inline;
     function get_inactivity_timeout: guint; cdecl; inline;
+    function get_is_busy: gboolean; cdecl; inline;
     function get_is_registered: gboolean; cdecl; inline;
     function get_is_remote: gboolean; cdecl; inline;
+    function get_resource_base_path: Pgchar; cdecl; inline;
     procedure hold; cdecl; inline;
+    procedure mark_busy; cdecl; inline;
     procedure open(files: PPGFile; n_files: gint; hint: Pgchar); cdecl; inline;
     procedure quit; cdecl; inline;
     function register(cancellable: PGCancellable; error: PPGError): gboolean; cdecl; inline;
     procedure release; cdecl; inline;
     function run(argc: gint; argv: PPgchar): gint; cdecl; inline;
+    procedure send_notification(id: Pgchar; notification: PGNotification); cdecl; inline;
     procedure set_application_id(application_id: Pgchar); cdecl; inline;
     procedure set_default; cdecl; inline;
     procedure set_flags(flags: TGApplicationFlags); cdecl; inline;
     procedure set_inactivity_timeout(inactivity_timeout: guint); cdecl; inline;
+    procedure set_option_context_description(description: Pgchar); cdecl; inline;
+    procedure set_option_context_parameter_string(parameter_string: Pgchar); cdecl; inline;
+    procedure set_option_context_summary(summary: Pgchar); cdecl; inline;
+    procedure set_resource_base_path(resource_path: Pgchar); cdecl; inline;
+    procedure unbind_busy_property(object_: PGObject; property_: Pgchar); cdecl; inline;
+    procedure unmark_busy; cdecl; inline;
+    procedure withdraw_notification(id: Pgchar); cdecl; inline;
     //property action_group: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_action_group  { property is writeable but setter not declared } ;
     property application_id: Pgchar read get_application_id write set_application_id;
     property flags: TGApplicationFlags read get_flags write set_flags;
     property inactivity_timeout: guint read get_inactivity_timeout write set_inactivity_timeout;
+    property is_busy: gboolean read get_is_busy ;
     property is_registered: gboolean read get_is_registered ;
     property is_remote: gboolean read get_is_remote ;
+    property resource_base_path: Pgchar read get_resource_base_path write set_resource_base_path;
   end;
 
+
+  { TGApplicationCommandLine }
   PPGApplicationCommandLine = ^PGApplicationCommandLine;
   PGApplicationCommandLine = ^TGApplicationCommandLine;
 
+
+  { TGInputStream }
   PPGInputStream = ^PGInputStream;
   PGInputStream = ^TGInputStream;
 
+
+  { TGApplicationCommandLinePrivate }
   PPGApplicationCommandLinePrivate = ^PGApplicationCommandLinePrivate;
   PGApplicationCommandLinePrivate = ^TGApplicationCommandLinePrivate;
   TGApplicationCommandLine = object(TGObject)
@@ -1112,6 +1333,7 @@ type
     function get_environ: PPgchar; cdecl; inline;
     function get_exit_status: gint; cdecl; inline;
     function get_is_remote: gboolean; cdecl; inline;
+    function get_options_dict: PGVariantDict; cdecl; inline;
     function get_platform_data: PGVariant; cdecl; inline;
     function get_stdin: PGInputStream; cdecl; inline;
     function getenv(name: Pgchar): Pgchar; cdecl; inline;
@@ -1120,65 +1342,93 @@ type
     procedure set_exit_status(exit_status: gint); cdecl; inline;
     //property arguments: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_arguments  { property is writeable but setter not declared } ;
     property is_remote: gboolean read get_is_remote ;
+    //property options: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_options  { property is writeable but setter not declared } ;
     property platform_data: PGVariant read get_platform_data  { property is writeable but setter not declared } ;
   end;
 
-  PPGAsyncResult = ^PGAsyncResult;
-  PGAsyncResult = ^TGAsyncResult;
 
+  { TGDBusConnectionFlags }
   PPGDBusConnectionFlags = ^PGDBusConnectionFlags;
   PGDBusConnectionFlags = ^TGDBusConnectionFlags;
 
+
+  { TGDBusAuthObserver }
   PPGDBusAuthObserver = ^PGDBusAuthObserver;
   PGDBusAuthObserver = ^TGDBusAuthObserver;
 
+
+  { TGIOStream }
   PPGIOStream = ^PGIOStream;
   PGIOStream = ^TGIOStream;
 
-  PPGAsyncReadyCallback = ^PGAsyncReadyCallback;
-  PGAsyncReadyCallback = ^TGAsyncReadyCallback;
-  TGAsyncReadyCallback = procedure(source_object: PGObject; res: PGAsyncResult; user_data: gpointer); cdecl;
 
+  { TGDBusMessageFilterFunction }
   PPGDBusMessageFilterFunction = ^PGDBusMessageFilterFunction;
   PGDBusMessageFilterFunction = ^TGDBusMessageFilterFunction;
 
+
+  { TGDBusMessage }
   PPGDBusMessage = ^PGDBusMessage;
   PGDBusMessage = ^TGDBusMessage;
   TGDBusMessageFilterFunction = function(connection: PGDBusConnection; message: PGDBusMessage; incoming: gboolean; user_data: gpointer): PGDBusMessage; cdecl;
 
+
+  { TGDBusCallFlags }
   PPGDBusCallFlags = ^PGDBusCallFlags;
   PGDBusCallFlags = ^TGDBusCallFlags;
 
+
+  { TGUnixFDList }
   PPGUnixFDList = ^PGUnixFDList;
   PGUnixFDList = ^TGUnixFDList;
 
+
+  { TGMenuModel }
   PPGMenuModel = ^PGMenuModel;
   PGMenuModel = ^TGMenuModel;
 
+
+  { TGDBusCapabilityFlags }
   PPGDBusCapabilityFlags = ^PGDBusCapabilityFlags;
   PGDBusCapabilityFlags = ^TGDBusCapabilityFlags;
 
+
+  { TGCredentials }
   PPGCredentials = ^PGCredentials;
   PGCredentials = ^TGCredentials;
 
+
+  { TGDBusInterfaceInfo }
   PPGDBusInterfaceInfo = ^PGDBusInterfaceInfo;
   PGDBusInterfaceInfo = ^TGDBusInterfaceInfo;
 
+
+  { TGDBusInterfaceVTable }
   PPGDBusInterfaceVTable = ^PGDBusInterfaceVTable;
   PGDBusInterfaceVTable = ^TGDBusInterfaceVTable;
 
+
+  { TGDBusSubtreeVTable }
   PPGDBusSubtreeVTable = ^PGDBusSubtreeVTable;
   PGDBusSubtreeVTable = ^TGDBusSubtreeVTable;
 
+
+  { TGDBusSubtreeFlags }
   PPGDBusSubtreeFlags = ^PGDBusSubtreeFlags;
   PGDBusSubtreeFlags = ^TGDBusSubtreeFlags;
 
+
+  { TGDBusSendMessageFlags }
   PPGDBusSendMessageFlags = ^PGDBusSendMessageFlags;
   PGDBusSendMessageFlags = ^TGDBusSendMessageFlags;
 
+
+  { TGDBusSignalFlags }
   PPGDBusSignalFlags = ^PGDBusSignalFlags;
   PGDBusSignalFlags = ^TGDBusSignalFlags;
 
+
+  { TGDBusSignalCallback }
   PPGDBusSignalCallback = ^PGDBusSignalCallback;
   PGDBusSignalCallback = ^TGDBusSignalCallback;
   TGDBusSignalCallback = procedure(connection: PGDBusConnection; sender_name: Pgchar; object_path: Pgchar; interface_name: Pgchar; signal_name: Pgchar; parameters: PGVariant; user_data: gpointer); cdecl;
@@ -1207,6 +1457,7 @@ type
     function flush_sync(cancellable: PGCancellable; error: PPGError): gboolean; cdecl; inline;
     function get_capabilities: TGDBusCapabilityFlags; cdecl; inline;
     function get_exit_on_close: gboolean; cdecl; inline;
+    function get_flags: TGDBusConnectionFlags; cdecl; inline;
     function get_guid: Pgchar; cdecl; inline;
     function get_last_serial: guint32; cdecl; inline;
     function get_peer_credentials: PGCredentials; cdecl; inline;
@@ -1214,6 +1465,7 @@ type
     function get_unique_name: Pgchar; cdecl; inline;
     function is_closed: gboolean; cdecl; inline;
     function register_object(object_path: Pgchar; interface_info: PGDBusInterfaceInfo; vtable: PGDBusInterfaceVTable; user_data: gpointer; user_data_free_func: TGDestroyNotify; error: PPGError): guint; cdecl; inline;
+    function register_object_with_closures(object_path: Pgchar; interface_info: PGDBusInterfaceInfo; method_call_closure: PGClosure; get_property_closure: PGClosure; set_property_closure: PGClosure; error: PPGError): guint; cdecl; inline;
     function register_subtree(object_path: Pgchar; vtable: PGDBusSubtreeVTable; flags: TGDBusSubtreeFlags; user_data: gpointer; user_data_free_func: TGDestroyNotify; error: PPGError): guint; cdecl; inline;
     procedure remove_filter(filter_id: guint); cdecl; inline;
     function send_message(message: PGDBusMessage; flags: TGDBusSendMessageFlags; out_serial: Pguint32; error: PPGError): gboolean; cdecl; inline;
@@ -1233,74 +1485,126 @@ type
     property capabilities: TGDBusCapabilityFlags read get_capabilities ;
     //property closed: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_closed ;
     property exit_on_close: gboolean read get_exit_on_close write set_exit_on_close;
-    //property flags: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_flags  { property is writeable but setter not declared } ;
+    property flags: TGDBusConnectionFlags read get_flags  { property is writeable but setter not declared } ;
     property guid: Pgchar read get_guid  { property is writeable but setter not declared } ;
     property stream: PGIOStream read get_stream  { property is writeable but setter not declared } ;
     property unique_name: Pgchar read get_unique_name ;
   end;
 
+
+  { TGFileIOStream }
   PPGFileIOStream = ^PGFileIOStream;
   PGFileIOStream = ^TGFileIOStream;
 
+
+  { TGFileOutputStream }
   PPGFileOutputStream = ^PGFileOutputStream;
   PGFileOutputStream = ^TGFileOutputStream;
 
+
+  { TGFileCreateFlags }
   PPGFileCreateFlags = ^PGFileCreateFlags;
   PGFileCreateFlags = ^TGFileCreateFlags;
 
+
+  { TGFileCopyFlags }
   PPGFileCopyFlags = ^PGFileCopyFlags;
   PGFileCopyFlags = ^TGFileCopyFlags;
 
+
+  { TGFileProgressCallback }
   PPGFileProgressCallback = ^PGFileProgressCallback;
   PGFileProgressCallback = ^TGFileProgressCallback;
-  TGFileProgressCallback = procedure(current_num_bytes: gint64; total_num_bytes: gint64; user_data: gpointer); cdecl;
+  TGFileProgressCallback = procedure(current_num_bytes: gint64; total_num_bytes: gint64; data: gpointer); cdecl;
 
+
+  { TGMountUnmountFlags }
   PPGMountUnmountFlags = ^PGMountUnmountFlags;
   PGMountUnmountFlags = ^TGMountUnmountFlags;
 
+
+  { TGMountOperation }
   PPGMountOperation = ^PGMountOperation;
   PGMountOperation = ^TGMountOperation;
 
+
+  { TGFileEnumerator }
   PPGFileEnumerator = ^PGFileEnumerator;
   PGFileEnumerator = ^TGFileEnumerator;
 
+
+  { TGFileQueryInfoFlags }
   PPGFileQueryInfoFlags = ^PGFileQueryInfoFlags;
   PGFileQueryInfoFlags = ^TGFileQueryInfoFlags;
 
+
+  { TGMount }
   PPGMount = ^PGMount;
   PGMount = ^TGMount;
 
+
+  { TGFileReadMoreCallback }
   PPGFileReadMoreCallback = ^PGFileReadMoreCallback;
   PGFileReadMoreCallback = ^TGFileReadMoreCallback;
   TGFileReadMoreCallback = function(file_contents: Pgchar; file_size: gint64; callback_data: gpointer): gboolean; cdecl;
 
+
+  { TGFileMeasureFlags }
+  PPGFileMeasureFlags = ^PGFileMeasureFlags;
+  PGFileMeasureFlags = ^TGFileMeasureFlags;
+
+
+  { TGFileMeasureProgressCallback }
+  PPGFileMeasureProgressCallback = ^PGFileMeasureProgressCallback;
+  PGFileMeasureProgressCallback = ^TGFileMeasureProgressCallback;
+  TGFileMeasureProgressCallback = procedure(reporting: gboolean; current_size: guint64; num_dirs: guint64; num_files: guint64; data: gpointer); cdecl;
+
+
+  { TGFileMonitor }
   PPGFileMonitor = ^PGFileMonitor;
   PGFileMonitor = ^TGFileMonitor;
 
+
+  { TGFileMonitorFlags }
   PPGFileMonitorFlags = ^PGFileMonitorFlags;
   PGFileMonitorFlags = ^TGFileMonitorFlags;
 
+
+  { TGMountMountFlags }
   PPGMountMountFlags = ^PGMountMountFlags;
   PGMountMountFlags = ^TGMountMountFlags;
 
+
+  { TGFileType }
   PPGFileType = ^PGFileType;
   PGFileType = ^TGFileType;
 
+
+  { TGFileInfo }
   PPGFileInfo = ^PGFileInfo;
   PGFileInfo = ^TGFileInfo;
 
+
+  { TGFileAttributeInfoList }
   PPGFileAttributeInfoList = ^PGFileAttributeInfoList;
   PGFileAttributeInfoList = ^TGFileAttributeInfoList;
 
+
+  { TGFileInputStream }
   PPGFileInputStream = ^PGFileInputStream;
   PGFileInputStream = ^TGFileInputStream;
 
+
+  { TGFileAttributeType }
   PPGFileAttributeType = ^PGFileAttributeType;
   PGFileAttributeType = ^TGFileAttributeType;
 
+
+  { TGDriveStartFlags }
   PPGDriveStartFlags = ^PGDriveStartFlags;
   PGDriveStartFlags = ^TGDriveStartFlags;
   TGFile = object
+    //function new_build_filename(first_element: Pgchar; args: array of const): PGFile; cdecl; inline; static;
     function new_for_commandline_arg(arg: Pgchar): PGFile; cdecl; inline; static;
     function new_for_commandline_arg_and_cwd(arg: Pgchar; cwd: Pgchar): PGFile; cdecl; inline; static;
     function new_for_path(path: Pgchar): PGFile; cdecl; inline; static;
@@ -1347,14 +1651,22 @@ type
     function has_uri_scheme(uri_scheme: Pgchar): gboolean; cdecl; inline;
     function hash: guint; cdecl; inline;
     function is_native: gboolean; cdecl; inline;
+    function load_bytes(cancellable: PGCancellable; etag_out: PPgchar; error: PPGError): PGBytes; cdecl; inline;
+    procedure load_bytes_async(cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function load_bytes_finish(result_: PGAsyncResult; etag_out: PPgchar; error: PPGError): PGBytes; cdecl; inline;
     function load_contents(cancellable: PGCancellable; contents: PPgchar; length: Pgsize; etag_out: PPgchar; error: PPGError): gboolean; cdecl; inline;
     procedure load_contents_async(cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
     function load_contents_finish(res: PGAsyncResult; contents: PPgchar; length: Pgsize; etag_out: PPgchar; error: PPGError): gboolean; cdecl; inline;
     procedure load_partial_contents_async(cancellable: PGCancellable; read_more_callback: TGFileReadMoreCallback; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
     function load_partial_contents_finish(res: PGAsyncResult; contents: PPgchar; length: Pgsize; etag_out: PPgchar; error: PPGError): gboolean; cdecl; inline;
     function make_directory(cancellable: PGCancellable; error: PPGError): gboolean; cdecl; inline;
+    procedure make_directory_async(io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function make_directory_finish(result_: PGAsyncResult; error: PPGError): gboolean; cdecl; inline;
     function make_directory_with_parents(cancellable: PGCancellable; error: PPGError): gboolean; cdecl; inline;
     function make_symbolic_link(symlink_value: Pgchar; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; inline;
+    function measure_disk_usage(flags: TGFileMeasureFlags; cancellable: PGCancellable; progress_callback: TGFileMeasureProgressCallback; progress_data: gpointer; disk_usage: Pguint64; num_dirs: Pguint64; num_files: Pguint64; error: PPGError): gboolean; cdecl; inline;
+    procedure measure_disk_usage_async(flags: TGFileMeasureFlags; io_priority: gint; cancellable: PGCancellable; progress_callback: TGFileMeasureProgressCallback; progress_data: gpointer; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function measure_disk_usage_finish(result_: PGAsyncResult; disk_usage: Pguint64; num_dirs: Pguint64; num_files: Pguint64; error: PPGError): gboolean; cdecl; inline;
     function monitor(flags: TGFileMonitorFlags; cancellable: PGCancellable; error: PPGError): PGFileMonitor; cdecl; inline;
     function monitor_directory(flags: TGFileMonitorFlags; cancellable: PGCancellable; error: PPGError): PGFileMonitor; cdecl; inline;
     function monitor_file(flags: TGFileMonitorFlags; cancellable: PGCancellable; error: PPGError): PGFileMonitor; cdecl; inline;
@@ -1366,9 +1678,12 @@ type
     function open_readwrite(cancellable: PGCancellable; error: PPGError): PGFileIOStream; cdecl; inline;
     procedure open_readwrite_async(io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
     function open_readwrite_finish(res: PGAsyncResult; error: PPGError): PGFileIOStream; cdecl; inline;
+    function peek_path: Pgchar; cdecl; inline;
     procedure poll_mountable(cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
     function poll_mountable_finish(result_: PGAsyncResult; error: PPGError): gboolean; cdecl; inline;
     function query_default_handler(cancellable: PGCancellable; error: PPGError): PGAppInfo; cdecl; inline;
+    procedure query_default_handler_async(io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function query_default_handler_finish(result_: PGAsyncResult; error: PPGError): PGAppInfo; cdecl; inline;
     function query_exists(cancellable: PGCancellable): gboolean; cdecl; inline;
     function query_file_type(flags: TGFileQueryInfoFlags; cancellable: PGCancellable): TGFileType; cdecl; inline;
     function query_filesystem_info(attributes: Pgchar; cancellable: PGCancellable; error: PPGError): PGFileInfo; cdecl; inline;
@@ -1386,6 +1701,7 @@ type
     procedure replace_async(etag: Pgchar; make_backup: gboolean; flags: TGFileCreateFlags; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
     function replace_contents(contents: Pgchar; length: gsize; etag: Pgchar; make_backup: gboolean; flags: TGFileCreateFlags; new_etag: PPgchar; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; inline;
     procedure replace_contents_async(contents: Pgchar; length: gsize; etag: Pgchar; make_backup: gboolean; flags: TGFileCreateFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    procedure replace_contents_bytes_async(contents: PGBytes; etag: Pgchar; make_backup: gboolean; flags: TGFileCreateFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
     function replace_contents_finish(res: PGAsyncResult; new_etag: PPgchar; error: PPGError): gboolean; cdecl; inline;
     function replace_finish(res: PGAsyncResult; error: PPGError): PGFileOutputStream; cdecl; inline;
     function replace_readwrite(etag: Pgchar; make_backup: gboolean; flags: TGFileCreateFlags; cancellable: PGCancellable; error: PPGError): PGFileIOStream; cdecl; inline;
@@ -1411,28 +1727,28 @@ type
     function stop_mountable_finish(result_: PGAsyncResult; error: PPGError): gboolean; cdecl; inline;
     function supports_thread_contexts: gboolean; cdecl; inline;
     function trash(cancellable: PGCancellable; error: PPGError): gboolean; cdecl; inline;
+    procedure trash_async(io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function trash_finish(result_: PGAsyncResult; error: PPGError): gboolean; cdecl; inline;
     procedure unmount_mountable_with_operation(flags: TGMountUnmountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
     function unmount_mountable_with_operation_finish(result_: PGAsyncResult; error: PPGError): gboolean; cdecl; inline;
   end;
 
-  PPGCancellablePrivate = ^PGCancellablePrivate;
-  PGCancellablePrivate = ^TGCancellablePrivate;
-  TGCancellable = object(TGObject)
-    priv: PGCancellablePrivate;
-    function new: PGCancellable; cdecl; inline; static;
-    function get_current: PGCancellable; cdecl; inline; static;
-    procedure cancel; cdecl; inline;
-    function connect(callback: TGCallback; data: gpointer; data_destroy_func: TGDestroyNotify): gulong; cdecl; inline;
-    procedure disconnect(handler_id: gulong); cdecl; inline;
-    function get_fd: gint; cdecl; inline;
-    function is_cancelled: gboolean; cdecl; inline;
-    function make_pollfd(pollfd: PGPollFD): gboolean; cdecl; inline;
-    procedure pop_current; cdecl; inline;
-    procedure push_current; cdecl; inline;
-    procedure release_fd; cdecl; inline;
-    procedure reset; cdecl; inline;
-    function set_error_if_cancelled(error: PPGError): gboolean; cdecl; inline;
-    function source_new: PGSource; cdecl; inline;
+
+  { TGNotificationPriority }
+  PPGNotificationPriority = ^PGNotificationPriority;
+  PGNotificationPriority = ^TGNotificationPriority;
+  TGNotification = object(TGObject)
+    function new(title: Pgchar): PGNotification; cdecl; inline; static;
+    procedure add_button(label_: Pgchar; detailed_action: Pgchar); cdecl; inline;
+    //procedure add_button_with_target(label_: Pgchar; action: Pgchar; target_format: Pgchar; args: array of const); cdecl; inline;
+    procedure add_button_with_target_value(label_: Pgchar; action: Pgchar; target: PGVariant); cdecl; inline;
+    procedure set_body(body: Pgchar); cdecl; inline;
+    procedure set_default_action(detailed_action: Pgchar); cdecl; inline;
+    //procedure set_default_action_and_target(action: Pgchar; target_format: Pgchar; args: array of const); cdecl; inline;
+    procedure set_default_action_and_target_value(action: Pgchar; target: PGVariant); cdecl; inline;
+    procedure set_icon(icon: PGIcon); cdecl; inline;
+    procedure set_priority(priority: TGNotificationPriority); cdecl; inline;
+    procedure set_title(title: Pgchar); cdecl; inline;
   end;
 
   TGApplicationPrivate = record
@@ -1440,6 +1756,8 @@ type
 
 
 
+
+  { TGApplicationClass }
   PPGApplicationClass = ^PGApplicationClass;
   PGApplicationClass = ^TGApplicationClass;
   TGApplicationClass = object
@@ -1457,9 +1775,13 @@ type
     shutdown: procedure(application: PGApplication); cdecl;
     dbus_register: function(application: PGApplication; connection: PGDBusConnection; object_path: Pgchar; error: PPGError): gboolean; cdecl;
     dbus_unregister: procedure(application: PGApplication; connection: PGDBusConnection; object_path: Pgchar); cdecl;
-    padding: array [0..8] of gpointer;
+    handle_local_options: function(application: PGApplication; options: PGVariantDict): gint; cdecl;
+    name_lost: function(application: PGApplication): gboolean; cdecl;
+    padding: array [0..6] of gpointer;
   end;
 
+
+  { TGInputStreamPrivate }
   PPGInputStreamPrivate = ^PGInputStreamPrivate;
   PGInputStreamPrivate = ^TGInputStreamPrivate;
   TGInputStream = object(TGObject)
@@ -1472,6 +1794,8 @@ type
     function is_closed: gboolean; cdecl; inline;
     function read(buffer: Pguint8; count: gsize; cancellable: PGCancellable; error: PPGError): gssize; cdecl; inline;
     function read_all(buffer: Pguint8; count: gsize; bytes_read: Pgsize; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; inline;
+    procedure read_all_async(buffer: Pguint8; count: gsize; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function read_all_finish(result_: PGAsyncResult; bytes_read: Pgsize; error: PPGError): gboolean; cdecl; inline;
     procedure read_async(buffer: Pguint8; count: gsize; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
     function read_bytes(count: gsize; cancellable: PGCancellable; error: PPGError): PGBytes; cdecl; inline;
     procedure read_bytes_async(count: gsize; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
@@ -1488,6 +1812,8 @@ type
 
 
 
+
+  { TGApplicationCommandLineClass }
   PPGApplicationCommandLineClass = ^PGApplicationCommandLineClass;
   PGApplicationCommandLineClass = ^TGApplicationCommandLineClass;
   TGApplicationCommandLineClass = object
@@ -1498,26 +1824,25 @@ type
     padding: array [0..10] of gpointer;
   end;
 
+
+  { TGAskPasswordFlags }
   PPGAskPasswordFlags = ^PGAskPasswordFlags;
   PGAskPasswordFlags = ^TGAskPasswordFlags;
 
+
+  { TGAsyncInitable }
   PPGAsyncInitable = ^PGAsyncInitable;
   PGAsyncInitable = ^TGAsyncInitable;
   TGAsyncInitable = object
     //procedure new_async(object_type: TGType; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer; first_property_name: Pgchar; args: array of const); cdecl; inline; static;
     //procedure new_valist_async(object_type: TGType; first_property_name: Pgchar; var_args: Tva_list; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline; static;
-    procedure newv_async(object_type: TGType; n_parameters: guint; parameters: PGParameter; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline; static;
     procedure init_async(io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
     function init_finish(res: PGAsyncResult; error: PPGError): gboolean; cdecl; inline;
     function new_finish(res: PGAsyncResult; error: PPGError): PGObject; cdecl; inline;
   end;
-  TGAsyncResult = object
-    function get_source_object: PGObject; cdecl; inline;
-    function get_user_data: gpointer; cdecl; inline;
-    function is_tagged(source_tag: gpointer): gboolean; cdecl; inline;
-    function legacy_propagate_error(error: PPGError): gboolean; cdecl; inline;
-  end;
 
+
+  { TGAsyncInitableIface }
   PPGAsyncInitableIface = ^PGAsyncInitableIface;
   PGAsyncInitableIface = ^TGAsyncInitableIface;
   TGAsyncInitableIface = object
@@ -1526,6 +1851,8 @@ type
     init_finish: function(initable: PGAsyncInitable; res: PGAsyncResult; error: PPGError): gboolean; cdecl;
   end;
 
+
+  { TGAsyncResultIface }
   PPGAsyncResultIface = ^PGAsyncResultIface;
   PGAsyncResultIface = ^TGAsyncResultIface;
   TGAsyncResultIface = object
@@ -1535,6 +1862,8 @@ type
     is_tagged: function(res: PGAsyncResult; source_tag: gpointer): gboolean; cdecl;
   end;
 
+
+  { TGSeekable }
   PPGSeekable = ^PGSeekable;
   PGSeekable = ^TGSeekable;
   TGSeekable = object
@@ -1545,9 +1874,13 @@ type
     function truncate(offset: gint64; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; inline;
   end;
 
+
+  { TGBufferedInputStream }
   PPGBufferedInputStream = ^PGBufferedInputStream;
   PGBufferedInputStream = ^TGBufferedInputStream;
 
+
+  { TGFilterInputStream }
   PPGFilterInputStream = ^PGFilterInputStream;
   PGFilterInputStream = ^TGFilterInputStream;
   TGFilterInputStream = object(TGInputStream)
@@ -1559,6 +1892,8 @@ type
     property close_base_stream: gboolean read get_close_base_stream write set_close_base_stream;
   end;
 
+
+  { TGBufferedInputStreamPrivate }
   PPGBufferedInputStreamPrivate = ^PGBufferedInputStreamPrivate;
   PGBufferedInputStreamPrivate = ^TGBufferedInputStreamPrivate;
   TGBufferedInputStream = object(TGFilterInputStream)
@@ -1582,9 +1917,13 @@ type
 
 
 
+
+  { TGFilterInputStreamClass }
   PPGFilterInputStreamClass = ^PGFilterInputStreamClass;
   PGFilterInputStreamClass = ^TGFilterInputStreamClass;
 
+
+  { TGInputStreamClass }
   PPGInputStreamClass = ^PGInputStreamClass;
   PGInputStreamClass = ^TGInputStreamClass;
   TGInputStreamClass = object
@@ -1611,6 +1950,8 @@ type
     _g_reserved3: procedure; cdecl;
   end;
 
+
+  { TGBufferedInputStreamClass }
   PPGBufferedInputStreamClass = ^PGBufferedInputStreamClass;
   PGBufferedInputStreamClass = ^TGBufferedInputStreamClass;
   TGBufferedInputStreamClass = object
@@ -1625,12 +1966,23 @@ type
     _g_reserved5: procedure; cdecl;
   end;
 
+
+  { TGOutputStream }
   PPGOutputStream = ^PGOutputStream;
   PGOutputStream = ^TGOutputStream;
 
+
+  { TGOutputStreamSpliceFlags }
   PPGOutputStreamSpliceFlags = ^PGOutputStreamSpliceFlags;
   PGOutputStreamSpliceFlags = ^TGOutputStreamSpliceFlags;
 
+
+  { TGOutputVector }
+  PPGOutputVector = ^PGOutputVector;
+  PGOutputVector = ^TGOutputVector;
+
+
+  { TGOutputStreamPrivate }
   PPGOutputStreamPrivate = ^PGOutputStreamPrivate;
   PGOutputStreamPrivate = ^TGOutputStreamPrivate;
   TGOutputStream = object(TGObject)
@@ -1645,22 +1997,36 @@ type
     function has_pending: gboolean; cdecl; inline;
     function is_closed: gboolean; cdecl; inline;
     function is_closing: gboolean; cdecl; inline;
+    //function printf(bytes_written: Pgsize; cancellable: PGCancellable; error: PPGError; format: Pgchar; args: array of const): gboolean; cdecl; inline;
     function set_pending(error: PPGError): gboolean; cdecl; inline;
     function splice(source: PGInputStream; flags: TGOutputStreamSpliceFlags; cancellable: PGCancellable; error: PPGError): gssize; cdecl; inline;
     procedure splice_async(source: PGInputStream; flags: TGOutputStreamSpliceFlags; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
     function splice_finish(result_: PGAsyncResult; error: PPGError): gssize; cdecl; inline;
+    //function vprintf(bytes_written: Pgsize; cancellable: PGCancellable; error: PPGError; format: Pgchar; args: Tva_list): gboolean; cdecl; inline;
     function write(buffer: Pguint8; count: gsize; cancellable: PGCancellable; error: PPGError): gssize; cdecl; inline;
     function write_all(buffer: Pguint8; count: gsize; bytes_written: Pgsize; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; inline;
+    procedure write_all_async(buffer: Pguint8; count: gsize; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function write_all_finish(result_: PGAsyncResult; bytes_written: Pgsize; error: PPGError): gboolean; cdecl; inline;
     procedure write_async(buffer: Pguint8; count: gsize; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
     function write_bytes(bytes: PGBytes; cancellable: PGCancellable; error: PPGError): gssize; cdecl; inline;
     procedure write_bytes_async(bytes: PGBytes; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
     function write_bytes_finish(result_: PGAsyncResult; error: PPGError): gssize; cdecl; inline;
     function write_finish(result_: PGAsyncResult; error: PPGError): gssize; cdecl; inline;
+    function writev(vectors: PGOutputVector; n_vectors: gsize; bytes_written: Pgsize; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; inline;
+    function writev_all(vectors: PGOutputVector; n_vectors: gsize; bytes_written: Pgsize; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; inline;
+    procedure writev_all_async(vectors: PGOutputVector; n_vectors: gsize; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function writev_all_finish(result_: PGAsyncResult; bytes_written: Pgsize; error: PPGError): gboolean; cdecl; inline;
+    procedure writev_async(vectors: PGOutputVector; n_vectors: gsize; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function writev_finish(result_: PGAsyncResult; bytes_written: Pgsize; error: PPGError): gboolean; cdecl; inline;
   end;
 
+
+  { TGBufferedOutputStream }
   PPGBufferedOutputStream = ^PGBufferedOutputStream;
   PGBufferedOutputStream = ^TGBufferedOutputStream;
 
+
+  { TGFilterOutputStream }
   PPGFilterOutputStream = ^PGFilterOutputStream;
   PGFilterOutputStream = ^TGFilterOutputStream;
   TGFilterOutputStream = object(TGOutputStream)
@@ -1672,6 +2038,8 @@ type
     property close_base_stream: gboolean read get_close_base_stream write set_close_base_stream;
   end;
 
+
+  { TGBufferedOutputStreamPrivate }
   PPGBufferedOutputStreamPrivate = ^PGBufferedOutputStreamPrivate;
   PGBufferedOutputStreamPrivate = ^TGBufferedOutputStreamPrivate;
   TGBufferedOutputStream = object(TGFilterOutputStream)
@@ -1691,9 +2059,13 @@ type
 
 
 
+
+  { TGFilterOutputStreamClass }
   PPGFilterOutputStreamClass = ^PGFilterOutputStreamClass;
   PGFilterOutputStreamClass = ^TGFilterOutputStreamClass;
 
+
+  { TGOutputStreamClass }
   PPGOutputStreamClass = ^PGOutputStreamClass;
   PGOutputStreamClass = ^TGOutputStreamClass;
   TGOutputStreamClass = object
@@ -1710,9 +2082,9 @@ type
     flush_finish: function(stream: PGOutputStream; result_: PGAsyncResult; error: PPGError): gboolean; cdecl;
     close_async: procedure(stream: PGOutputStream; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
     close_finish: function(stream: PGOutputStream; result_: PGAsyncResult; error: PPGError): gboolean; cdecl;
-    _g_reserved1: procedure; cdecl;
-    _g_reserved2: procedure; cdecl;
-    _g_reserved3: procedure; cdecl;
+    writev_fn: function(stream: PGOutputStream; vectors: PGOutputVector; n_vectors: gsize; bytes_written: Pgsize; cancellable: PGCancellable; error: PPGError): gboolean; cdecl;
+    writev_async: procedure(stream: PGOutputStream; vectors: PGOutputVector; n_vectors: gsize; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+    writev_finish: function(stream: PGOutputStream; result_: PGAsyncResult; bytes_written: Pgsize; error: PPGError): gboolean; cdecl;
     _g_reserved4: procedure; cdecl;
     _g_reserved5: procedure; cdecl;
     _g_reserved6: procedure; cdecl;
@@ -1726,6 +2098,8 @@ type
     _g_reserved3: procedure; cdecl;
   end;
 
+
+  { TGBufferedOutputStreamClass }
   PPGBufferedOutputStreamClass = ^PGBufferedOutputStreamClass;
   PGBufferedOutputStreamClass = ^TGBufferedOutputStreamClass;
   TGBufferedOutputStreamClass = object
@@ -1738,21 +2112,49 @@ type
   TGBusNameAppearedCallback = procedure(connection: PGDBusConnection; name: Pgchar; name_owner: Pgchar; user_data: gpointer); cdecl;
   TGBusNameLostCallback = procedure(connection: PGDBusConnection; name: Pgchar; user_data: gpointer); cdecl;
 
+
+  { TGBusNameOwnerFlags }
   PPGBusNameOwnerFlags = ^PGBusNameOwnerFlags;
   PGBusNameOwnerFlags = ^TGBusNameOwnerFlags;
   TGBusNameVanishedCallback = procedure(connection: PGDBusConnection; name: Pgchar; user_data: gpointer); cdecl;
 
+
+  { TGBusNameWatcherFlags }
   PPGBusNameWatcherFlags = ^PGBusNameWatcherFlags;
   PGBusNameWatcherFlags = ^TGBusNameWatcherFlags;
 
+
+  { TGBusType }
   PPGBusType = ^PGBusType;
   PGBusType = ^TGBusType;
+
+
+  { TGLoadableIcon }
+  PPGLoadableIcon = ^PGLoadableIcon;
+  PGLoadableIcon = ^TGLoadableIcon;
+  TGLoadableIcon = object
+    function load(size: gint; type_: PPgchar; cancellable: PGCancellable; error: PPGError): PGInputStream; cdecl; inline;
+    procedure load_async(size: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function load_finish(res: PGAsyncResult; type_: PPgchar; error: PPGError): PGInputStream; cdecl; inline;
+  end;
+
+
+  { TGBytesIcon }
+  PPGBytesIcon = ^PGBytesIcon;
+  PGBytesIcon = ^TGBytesIcon;
+  TGBytesIcon = object(TGObject)
+    function new(bytes: PGBytes): PGBytesIcon; cdecl; inline; static;
+    function get_bytes: PGBytes; cdecl; inline;
+    property bytes: PGBytes read get_bytes  { property is writeable but setter not declared } ;
+  end;
 
   TGCancellablePrivate = record
   end;
 
 
 
+
+  { TGCancellableClass }
   PPGCancellableClass = ^PGCancellableClass;
   PGCancellableClass = ^TGCancellableClass;
   TGCancellableClass = object
@@ -1764,30 +2166,39 @@ type
     _g_reserved4: procedure; cdecl;
     _g_reserved5: procedure; cdecl;
   end;
-  TGCancellableSourceFunc = function(cancellable: PGCancellable; user_data: gpointer): gboolean; cdecl;
+  TGCancellableSourceFunc = function(cancellable: PGCancellable; data: gpointer): gboolean; cdecl;
 
+
+  { TGConverter }
   PPGConverter = ^PGConverter;
   PGConverter = ^TGConverter;
 
+
+  { TGConverterResult }
   PPGConverterResult = ^PGConverterResult;
   PGConverterResult = ^TGConverterResult;
 
+
+  { TGConverterFlags }
   PPGConverterFlags = ^PGConverterFlags;
   PGConverterFlags = ^TGConverterFlags;
   TGConverter = object
-    function convert(inbuf: Pguint8; inbuf_size: gsize; outbuf: Pgpointer; outbuf_size: gsize; flags: TGConverterFlags; bytes_read: Pgsize; bytes_written: Pgsize; error: PPGError): TGConverterResult; cdecl; inline;
+    function convert(inbuf: Pguint8; inbuf_size: gsize; outbuf: Pguint8; outbuf_size: gsize; flags: TGConverterFlags; bytes_read: Pgsize; bytes_written: Pgsize; error: PPGError): TGConverterResult; cdecl; inline;
     procedure reset; cdecl; inline;
   end;
 
+
+  { TGInitable }
   PPGInitable = ^PGInitable;
   PGInitable = ^TGInitable;
   TGInitable = object
     //function new(object_type: TGType; cancellable: PGCancellable; error: PPGError; first_property_name: Pgchar; args: array of const): PGObject; cdecl; inline; static;
     //function new_valist(object_type: TGType; first_property_name: Pgchar; var_args: Tva_list; cancellable: PGCancellable; error: PPGError): PGObject; cdecl; inline; static;
-    function newv(object_type: TGType; n_parameters: guint; parameters: PGParameter; cancellable: PGCancellable; error: PPGError): PGObject; cdecl; inline; static;
     function init(cancellable: PGCancellable; error: PPGError): gboolean; cdecl; inline;
   end;
 
+
+  { TGCharsetConverter }
   PPGCharsetConverter = ^PGCharsetConverter;
   PGCharsetConverter = ^TGCharsetConverter;
   TGCharsetConverter = object(TGObject)
@@ -1800,32 +2211,42 @@ type
     property use_fallback: gboolean read get_use_fallback write set_use_fallback;
   end;
 
+
+  { TGCharsetConverterClass }
   PPGCharsetConverterClass = ^PGCharsetConverterClass;
   PGCharsetConverterClass = ^TGCharsetConverterClass;
   TGCharsetConverterClass = object
     parent_class: TGObjectClass;
   end;
 
+
+  { TGConverterIface }
   PPGConverterIface = ^PGConverterIface;
   PGConverterIface = ^TGConverterIface;
   TGConverterIface = object
     g_iface: TGTypeInterface;
-    convert: function(converter: PGConverter; inbuf: Pguint8; inbuf_size: gsize; outbuf: Pgpointer; outbuf_size: gsize; flags: TGConverterFlags; bytes_read: Pgsize; bytes_written: Pgsize; error: PPGError): TGConverterResult; cdecl;
+    convert: function(converter: PGConverter; inbuf: Pguint8; inbuf_size: gsize; outbuf: Pguint8; outbuf_size: gsize; flags: TGConverterFlags; bytes_read: Pgsize; bytes_written: Pgsize; error: PPGError): TGConverterResult; cdecl;
     reset: procedure(converter: PGConverter); cdecl;
   end;
 
+
+  { TGPollableInputStream }
   PPGPollableInputStream = ^PGPollableInputStream;
   PGPollableInputStream = ^TGPollableInputStream;
   TGPollableInputStream = object
     function can_poll: gboolean; cdecl; inline;
     function create_source(cancellable: PGCancellable): PGSource; cdecl; inline;
     function is_readable: gboolean; cdecl; inline;
-    function read_nonblocking(buffer: Pgpointer; count: gsize; cancellable: PGCancellable; error: PPGError): gssize; cdecl; inline;
+    function read_nonblocking(buffer: Pguint8; count: gsize; cancellable: PGCancellable; error: PPGError): gssize; cdecl; inline;
   end;
 
+
+  { TGConverterInputStream }
   PPGConverterInputStream = ^PGConverterInputStream;
   PGConverterInputStream = ^TGConverterInputStream;
 
+
+  { TGConverterInputStreamPrivate }
   PPGConverterInputStreamPrivate = ^PGConverterInputStreamPrivate;
   PGConverterInputStreamPrivate = ^TGConverterInputStreamPrivate;
   TGConverterInputStream = object(TGFilterInputStream)
@@ -1840,6 +2261,8 @@ type
 
 
 
+
+  { TGConverterInputStreamClass }
   PPGConverterInputStreamClass = ^PGConverterInputStreamClass;
   PGConverterInputStreamClass = ^TGConverterInputStreamClass;
   TGConverterInputStreamClass = object
@@ -1851,18 +2274,30 @@ type
     _g_reserved5: procedure; cdecl;
   end;
 
+
+  { TGPollableOutputStream }
   PPGPollableOutputStream = ^PGPollableOutputStream;
   PGPollableOutputStream = ^TGPollableOutputStream;
+
+
+  { TGPollableReturn }
+  PPGPollableReturn = ^PGPollableReturn;
+  PGPollableReturn = ^TGPollableReturn;
   TGPollableOutputStream = object
     function can_poll: gboolean; cdecl; inline;
     function create_source(cancellable: PGCancellable): PGSource; cdecl; inline;
     function is_writable: gboolean; cdecl; inline;
     function write_nonblocking(buffer: Pguint8; count: gsize; cancellable: PGCancellable; error: PPGError): gssize; cdecl; inline;
+    function writev_nonblocking(vectors: PGOutputVector; n_vectors: gsize; bytes_written: Pgsize; cancellable: PGCancellable; error: PPGError): TGPollableReturn; cdecl; inline;
   end;
 
+
+  { TGConverterOutputStream }
   PPGConverterOutputStream = ^PGConverterOutputStream;
   PGConverterOutputStream = ^TGConverterOutputStream;
 
+
+  { TGConverterOutputStreamPrivate }
   PPGConverterOutputStreamPrivate = ^PGConverterOutputStreamPrivate;
   PGConverterOutputStreamPrivate = ^TGConverterOutputStreamPrivate;
   TGConverterOutputStream = object(TGFilterOutputStream)
@@ -1877,6 +2312,8 @@ type
 
 
 
+
+  { TGConverterOutputStreamClass }
   PPGConverterOutputStreamClass = ^PGConverterOutputStreamClass;
   PGConverterOutputStreamClass = ^TGConverterOutputStreamClass;
   TGConverterOutputStreamClass = object
@@ -1888,6 +2325,8 @@ type
     _g_reserved5: procedure; cdecl;
   end;
 
+
+  { TGCredentialsType }
   PPGCredentialsType = ^PGCredentialsType;
   PGCredentialsType = ^TGCredentialsType;
   TGCredentials = object(TGObject)
@@ -1901,11 +2340,15 @@ type
     function to_string: Pgchar; cdecl; inline;
   end;
 
+
+  { TGCredentialsClass }
   PPGCredentialsClass = ^PGCredentialsClass;
   PGCredentialsClass = ^TGCredentialsClass;
   TGCredentialsClass = object
   end;
 
+
+  { TGRemoteActionGroup }
   PPGRemoteActionGroup = ^PGRemoteActionGroup;
   PGRemoteActionGroup = ^TGRemoteActionGroup;
   TGRemoteActionGroup = object
@@ -1913,31 +2356,37 @@ type
     procedure change_action_state_full(action_name: Pgchar; value: PGVariant; platform_data: PGVariant); cdecl; inline;
   end;
 
+
+  { TGDBusActionGroup }
   PPGDBusActionGroup = ^PGDBusActionGroup;
   PGDBusActionGroup = ^TGDBusActionGroup;
   TGDBusActionGroup = object(TGObject)
     function get(connection: PGDBusConnection; bus_name: Pgchar; object_path: Pgchar): PGDBusActionGroup; cdecl; inline; static;
   end;
 
+
+  { TGDBusAnnotationInfo }
   PPGDBusAnnotationInfo = ^PGDBusAnnotationInfo;
   PGDBusAnnotationInfo = ^TGDBusAnnotationInfo;
   TGDBusAnnotationInfo = object
     ref_count: gint;
     key: Pgchar;
     value: Pgchar;
-    annotations: PGDBusAnnotationInfo;
+    annotations: PPGDBusAnnotationInfo;
     function ref: PGDBusAnnotationInfo; cdecl; inline;
     procedure unref; cdecl; inline;
     function lookup(annotations: PPGDBusAnnotationInfo; name: Pgchar): Pgchar; cdecl; inline; static;
   end;
 
+
+  { TGDBusArgInfo }
   PPGDBusArgInfo = ^PGDBusArgInfo;
   PGDBusArgInfo = ^TGDBusArgInfo;
   TGDBusArgInfo = object
     ref_count: gint;
     name: Pgchar;
     signature: Pgchar;
-    annotations: PGDBusAnnotationInfo;
+    annotations: PPGDBusAnnotationInfo;
     function ref: PGDBusArgInfo; cdecl; inline;
     procedure unref; cdecl; inline;
   end;
@@ -1947,9 +2396,13 @@ type
     function authorize_authenticated_peer(stream: PGIOStream; credentials: PGCredentials): gboolean; cdecl; inline;
   end;
 
+
+  { TGIOStreamSpliceFlags }
   PPGIOStreamSpliceFlags = ^PGIOStreamSpliceFlags;
   PGIOStreamSpliceFlags = ^TGIOStreamSpliceFlags;
 
+
+  { TGIOStreamPrivate }
   PPGIOStreamPrivate = ^PGIOStreamPrivate;
   PGIOStreamPrivate = ^TGIOStreamPrivate;
   TGIOStream = object(TGObject)
@@ -1970,6 +2423,8 @@ type
     property output_stream: PGOutputStream read get_output_stream ;
   end;
 
+
+  { TGUnixFDListPrivate }
   PPGUnixFDListPrivate = ^PGUnixFDListPrivate;
   PGUnixFDListPrivate = ^TGUnixFDListPrivate;
   TGUnixFDList = object(TGObject)
@@ -1983,12 +2438,18 @@ type
     function steal_fds(length: Pgint): Pgint; cdecl; inline;
   end;
 
+
+  { TGMenuAttributeIter }
   PPGMenuAttributeIter = ^PGMenuAttributeIter;
   PGMenuAttributeIter = ^TGMenuAttributeIter;
 
+
+  { TGMenuLinkIter }
   PPGMenuLinkIter = ^PGMenuLinkIter;
   PGMenuLinkIter = ^TGMenuLinkIter;
 
+
+  { TGMenuModelPrivate }
   PPGMenuModelPrivate = ^PGMenuModelPrivate;
   PGMenuModelPrivate = ^TGMenuModelPrivate;
   TGMenuModel = object(TGObject)
@@ -2003,21 +2464,27 @@ type
     function iterate_item_links(item_index: gint): PGMenuLinkIter; cdecl; inline;
   end;
 
+
+  { TGDBusMethodInfo }
   PPGDBusMethodInfo = ^PGDBusMethodInfo;
   PGDBusMethodInfo = ^TGDBusMethodInfo;
 
+
+  { TGDBusPropertyInfo }
   PPGDBusPropertyInfo = ^PGDBusPropertyInfo;
   PGDBusPropertyInfo = ^TGDBusPropertyInfo;
 
+
+  { TGDBusSignalInfo }
   PPGDBusSignalInfo = ^PGDBusSignalInfo;
   PGDBusSignalInfo = ^TGDBusSignalInfo;
   TGDBusInterfaceInfo = object
     ref_count: gint;
     name: Pgchar;
-    methods: PGDBusMethodInfo;
-    signals: PGDBusSignalInfo;
-    properties: PGDBusPropertyInfo;
-    annotations: PGDBusAnnotationInfo;
+    methods: PPGDBusMethodInfo;
+    signals: PPGDBusSignalInfo;
+    properties: PPGDBusPropertyInfo;
+    annotations: PPGDBusAnnotationInfo;
     procedure cache_build; cdecl; inline;
     procedure cache_release; cdecl; inline;
     procedure generate_xml(indent: guint; string_builder: PGString); cdecl; inline;
@@ -2028,17 +2495,25 @@ type
     procedure unref; cdecl; inline;
   end;
 
+
+  { TGDBusInterfaceMethodCallFunc }
   PPGDBusInterfaceMethodCallFunc = ^PGDBusInterfaceMethodCallFunc;
   PGDBusInterfaceMethodCallFunc = ^TGDBusInterfaceMethodCallFunc;
 
+
+  { TGDBusMethodInvocation }
   PPGDBusMethodInvocation = ^PGDBusMethodInvocation;
   PGDBusMethodInvocation = ^TGDBusMethodInvocation;
   TGDBusInterfaceMethodCallFunc = procedure(connection: PGDBusConnection; sender: Pgchar; object_path: Pgchar; interface_name: Pgchar; method_name: Pgchar; parameters: PGVariant; invocation: PGDBusMethodInvocation; user_data: gpointer); cdecl;
 
+
+  { TGDBusInterfaceGetPropertyFunc }
   PPGDBusInterfaceGetPropertyFunc = ^PGDBusInterfaceGetPropertyFunc;
   PGDBusInterfaceGetPropertyFunc = ^TGDBusInterfaceGetPropertyFunc;
   TGDBusInterfaceGetPropertyFunc = function(connection: PGDBusConnection; sender: Pgchar; object_path: Pgchar; interface_name: Pgchar; property_name: Pgchar; error: PPGError; user_data: gpointer): PGVariant; cdecl;
 
+
+  { TGDBusInterfaceSetPropertyFunc }
   PPGDBusInterfaceSetPropertyFunc = ^PGDBusInterfaceSetPropertyFunc;
   PGDBusInterfaceSetPropertyFunc = ^TGDBusInterfaceSetPropertyFunc;
   TGDBusInterfaceSetPropertyFunc = function(connection: PGDBusConnection; sender: Pgchar; object_path: Pgchar; interface_name: Pgchar; property_name: Pgchar; value: PGVariant; error: PPGError; user_data: gpointer): gboolean; cdecl;
@@ -2052,14 +2527,20 @@ type
 
 
 
+
+  { TGDBusSubtreeEnumerateFunc }
   PPGDBusSubtreeEnumerateFunc = ^PGDBusSubtreeEnumerateFunc;
   PGDBusSubtreeEnumerateFunc = ^TGDBusSubtreeEnumerateFunc;
   TGDBusSubtreeEnumerateFunc = function(connection: PGDBusConnection; sender: Pgchar; object_path: Pgchar; user_data: gpointer): PPgchar; cdecl;
 
+
+  { TGDBusSubtreeIntrospectFunc }
   PPGDBusSubtreeIntrospectFunc = ^PGDBusSubtreeIntrospectFunc;
   PGDBusSubtreeIntrospectFunc = ^TGDBusSubtreeIntrospectFunc;
   TGDBusSubtreeIntrospectFunc = function(connection: PGDBusConnection; sender: Pgchar; object_path: Pgchar; node: Pgchar; user_data: gpointer): PPGDBusInterfaceInfo; cdecl;
 
+
+  { TGDBusSubtreeDispatchFunc }
   PPGDBusSubtreeDispatchFunc = ^PGDBusSubtreeDispatchFunc;
   PGDBusSubtreeDispatchFunc = ^TGDBusSubtreeDispatchFunc;
   TGDBusSubtreeDispatchFunc = function(connection: PGDBusConnection; sender: Pgchar; object_path: Pgchar; interface_name: Pgchar; node: Pgchar; out_user_data: Pgpointer; user_data: gpointer): PGDBusInterfaceVTable; cdecl;
@@ -2073,15 +2554,23 @@ type
 
 
 
+
+  { TGDBusMessageByteOrder }
   PPGDBusMessageByteOrder = ^PGDBusMessageByteOrder;
   PGDBusMessageByteOrder = ^TGDBusMessageByteOrder;
 
+
+  { TGDBusMessageFlags }
   PPGDBusMessageFlags = ^PGDBusMessageFlags;
   PGDBusMessageFlags = ^TGDBusMessageFlags;
 
+
+  { TGDBusMessageHeaderField }
   PPGDBusMessageHeaderField = ^PGDBusMessageHeaderField;
   PGDBusMessageHeaderField = ^TGDBusMessageHeaderField;
 
+
+  { TGDBusMessageType }
   PPGDBusMessageType = ^PGDBusMessageType;
   PGDBusMessageType = ^TGDBusMessageType;
   TGDBusMessage = object(TGObject)
@@ -2137,6 +2626,9 @@ type
     property locked: gboolean read get_locked ;
   end;
 
+
+  { TGDBusErrorEntry }
+  PPPGDBusErrorEntry = ^PPGDBusErrorEntry;
   PPGDBusErrorEntry = ^PGDBusErrorEntry;
   PGDBusErrorEntry = ^TGDBusErrorEntry;
 
@@ -2147,12 +2639,18 @@ type
 
 
 
+
+  { TGDBusError }
   PPGDBusError = ^PGDBusError;
   PGDBusError = ^TGDBusError;
 
+
+  { TGDBusObject }
   PPGDBusObject = ^PGDBusObject;
   PGDBusObject = ^TGDBusObject;
 
+
+  { TGDBusInterface }
   PPGDBusInterface = ^PGDBusInterface;
   PGDBusInterface = ^TGDBusInterface;
   TGDBusInterface = object
@@ -2169,6 +2667,8 @@ type
     function get_object_path: Pgchar; cdecl; inline;
   end;
 
+
+  { TGDBusInterfaceIface }
   PPGDBusInterfaceIface = ^PGDBusInterfaceIface;
   PGDBusInterfaceIface = ^TGDBusInterfaceIface;
   TGDBusInterfaceIface = object
@@ -2181,21 +2681,23 @@ type
   TGDBusMethodInfo = object
     ref_count: gint;
     name: Pgchar;
-    in_args: PGDBusArgInfo;
-    out_args: PGDBusArgInfo;
-    annotations: PGDBusAnnotationInfo;
+    in_args: PPGDBusArgInfo;
+    out_args: PPGDBusArgInfo;
+    annotations: PPGDBusAnnotationInfo;
     function ref: PGDBusMethodInfo; cdecl; inline;
     procedure unref; cdecl; inline;
   end;
   TGDBusSignalInfo = object
     ref_count: gint;
     name: Pgchar;
-    args: PGDBusArgInfo;
-    annotations: PGDBusAnnotationInfo;
+    args: PPGDBusArgInfo;
+    annotations: PPGDBusAnnotationInfo;
     function ref: PGDBusSignalInfo; cdecl; inline;
     procedure unref; cdecl; inline;
   end;
 
+
+  { TGDBusPropertyInfoFlags }
   PPGDBusPropertyInfoFlags = ^PGDBusPropertyInfoFlags;
   PGDBusPropertyInfoFlags = ^TGDBusPropertyInfoFlags;
   TGDBusPropertyInfo = object
@@ -2203,7 +2705,7 @@ type
     name: Pgchar;
     signature: Pgchar;
     flags: TGDBusPropertyInfoFlags;
-    annotations: PGDBusAnnotationInfo;
+    annotations: PPGDBusAnnotationInfo;
     function ref: PGDBusPropertyInfo; cdecl; inline;
     procedure unref; cdecl; inline;
   end;
@@ -2215,6 +2717,7 @@ type
     function get_method_name: Pgchar; cdecl; inline;
     function get_object_path: Pgchar; cdecl; inline;
     function get_parameters: PGVariant; cdecl; inline;
+    function get_property_info: PGDBusPropertyInfo; cdecl; inline;
     function get_sender: Pgchar; cdecl; inline;
     function get_user_data: gpointer; cdecl; inline;
     procedure return_dbus_error(error_name: Pgchar; error_message: Pgchar); cdecl; inline;
@@ -2227,12 +2730,18 @@ type
     procedure take_error(error: PGError); cdecl; inline;
   end;
 
+
+  { TGDBusInterfaceSkeleton }
   PPGDBusInterfaceSkeleton = ^PGDBusInterfaceSkeleton;
   PGDBusInterfaceSkeleton = ^TGDBusInterfaceSkeleton;
 
+
+  { TGDBusInterfaceSkeletonFlags }
   PPGDBusInterfaceSkeletonFlags = ^PGDBusInterfaceSkeletonFlags;
   PGDBusInterfaceSkeletonFlags = ^TGDBusInterfaceSkeletonFlags;
 
+
+  { TGDBusInterfaceSkeletonPrivate }
   PPGDBusInterfaceSkeletonPrivate = ^PGDBusInterfaceSkeletonPrivate;
   PGDBusInterfaceSkeletonPrivate = ^TGDBusInterfaceSkeletonPrivate;
   TGDBusInterfaceSkeleton = object(TGObject)
@@ -2258,6 +2767,8 @@ type
 
 
 
+
+  { TGDBusInterfaceSkeletonClass }
   PPGDBusInterfaceSkeletonClass = ^PGDBusInterfaceSkeletonClass;
   PGDBusInterfaceSkeletonClass = ^TGDBusInterfaceSkeletonClass;
   TGDBusInterfaceSkeletonClass = object
@@ -2271,20 +2782,24 @@ type
     signal_padding: array [0..7] of gpointer;
   end;
 
+
+  { TGDBusMenuModel }
   PPGDBusMenuModel = ^PGDBusMenuModel;
   PGDBusMenuModel = ^TGDBusMenuModel;
   TGDBusMenuModel = object(TGMenuModel)
     function get(connection: PGDBusConnection; bus_name: Pgchar; object_path: Pgchar): PGDBusMenuModel; cdecl; inline; static;
   end;
 
+
+  { TGDBusNodeInfo }
   PPGDBusNodeInfo = ^PGDBusNodeInfo;
   PGDBusNodeInfo = ^TGDBusNodeInfo;
   TGDBusNodeInfo = object
     ref_count: gint;
     path: Pgchar;
-    interfaces: PGDBusInterfaceInfo;
-    nodes: PGDBusNodeInfo;
-    annotations: PGDBusAnnotationInfo;
+    interfaces: PPGDBusInterfaceInfo;
+    nodes: PPGDBusNodeInfo;
+    annotations: PPGDBusAnnotationInfo;
     function new_for_xml(xml_data: Pgchar; error: PPGError): PGDBusNodeInfo; cdecl; inline; static;
     procedure generate_xml(indent: guint; string_builder: PGString); cdecl; inline;
     function lookup_interface(name: Pgchar): PGDBusInterfaceInfo; cdecl; inline;
@@ -2292,6 +2807,8 @@ type
     procedure unref; cdecl; inline;
   end;
 
+
+  { TGDBusObjectIface }
   PPGDBusObjectIface = ^PGDBusObjectIface;
   PGDBusObjectIface = ^TGDBusObjectIface;
   TGDBusObjectIface = object
@@ -2303,6 +2820,8 @@ type
     interface_removed: procedure(object_: PGDBusObject; interface_: PGDBusInterface); cdecl;
   end;
 
+
+  { TGDBusObjectManager }
   PPGDBusObjectManager = ^PGDBusObjectManager;
   PGDBusObjectManager = ^TGDBusObjectManager;
   TGDBusObjectManager = object
@@ -2316,16 +2835,24 @@ type
     function get_objects: PGList; cdecl; inline;
   end;
 
+
+  { TGDBusObjectManagerClient }
   PPGDBusObjectManagerClient = ^PGDBusObjectManagerClient;
   PGDBusObjectManagerClient = ^TGDBusObjectManagerClient;
 
+
+  { TGDBusObjectManagerClientFlags }
   PPGDBusObjectManagerClientFlags = ^PGDBusObjectManagerClientFlags;
   PGDBusObjectManagerClientFlags = ^TGDBusObjectManagerClientFlags;
 
+
+  { TGDBusProxyTypeFunc }
   PPGDBusProxyTypeFunc = ^PGDBusProxyTypeFunc;
   PGDBusProxyTypeFunc = ^TGDBusProxyTypeFunc;
-  TGDBusProxyTypeFunc = function(manager: PGDBusObjectManagerClient; object_path: Pgchar; interface_name: Pgchar; user_data: gpointer): TGType; cdecl;
+  TGDBusProxyTypeFunc = function(manager: PGDBusObjectManagerClient; object_path: Pgchar; interface_name: Pgchar; data: gpointer): TGType; cdecl;
 
+
+  { TGDBusObjectManagerClientPrivate }
   PPGDBusObjectManagerClientPrivate = ^PGDBusObjectManagerClientPrivate;
   PGDBusObjectManagerClientPrivate = ^TGDBusObjectManagerClientPrivate;
   TGDBusObjectManagerClient = object(TGObject)
@@ -2351,9 +2878,13 @@ type
     //property object_path: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_object_path  { property is writeable but setter not declared } ;
   end;
 
+
+  { TGDBusObjectProxy }
   PPGDBusObjectProxy = ^PGDBusObjectProxy;
   PGDBusObjectProxy = ^TGDBusObjectProxy;
 
+
+  { TGDBusObjectProxyPrivate }
   PPGDBusObjectProxyPrivate = ^PGDBusObjectProxyPrivate;
   PGDBusObjectProxyPrivate = ^TGDBusObjectProxyPrivate;
   TGDBusObjectProxy = object(TGObject)
@@ -2364,12 +2895,18 @@ type
     //property g_object_path: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_g_object_path  { property is writeable but setter not declared } ;
   end;
 
+
+  { TGDBusProxy }
   PPGDBusProxy = ^PGDBusProxy;
   PGDBusProxy = ^TGDBusProxy;
 
+
+  { TGDBusProxyFlags }
   PPGDBusProxyFlags = ^PGDBusProxyFlags;
   PGDBusProxyFlags = ^TGDBusProxyFlags;
 
+
+  { TGDBusProxyPrivate }
   PPGDBusProxyPrivate = ^PGDBusProxyPrivate;
   PGDBusProxyPrivate = ^TGDBusProxyPrivate;
   TGDBusProxy = object(TGObject)
@@ -2415,6 +2952,8 @@ type
 
 
 
+
+  { TGDBusObjectManagerClientClass }
   PPGDBusObjectManagerClientClass = ^PGDBusObjectManagerClientClass;
   PGDBusObjectManagerClientClass = ^TGDBusObjectManagerClientClass;
   TGDBusObjectManagerClientClass = object
@@ -2424,6 +2963,8 @@ type
     padding: array [0..7] of gpointer;
   end;
 
+
+  { TGDBusObjectManagerIface }
   PPGDBusObjectManagerIface = ^PGDBusObjectManagerIface;
   PGDBusObjectManagerIface = ^TGDBusObjectManagerIface;
   TGDBusObjectManagerIface = object
@@ -2438,12 +2979,18 @@ type
     interface_removed: procedure(manager: PGDBusObjectManager; object_: PGDBusObject; interface_: PGDBusInterface); cdecl;
   end;
 
+
+  { TGDBusObjectManagerServer }
   PPGDBusObjectManagerServer = ^PGDBusObjectManagerServer;
   PGDBusObjectManagerServer = ^TGDBusObjectManagerServer;
 
+
+  { TGDBusObjectSkeleton }
   PPGDBusObjectSkeleton = ^PGDBusObjectSkeleton;
   PGDBusObjectSkeleton = ^TGDBusObjectSkeleton;
 
+
+  { TGDBusObjectManagerServerPrivate }
   PPGDBusObjectManagerServerPrivate = ^PGDBusObjectManagerServerPrivate;
   PGDBusObjectManagerServerPrivate = ^TGDBusObjectManagerServerPrivate;
   TGDBusObjectManagerServer = object(TGObject)
@@ -2459,6 +3006,8 @@ type
     //property object_path: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_object_path  { property is writeable but setter not declared } ;
   end;
 
+
+  { TGDBusObjectSkeletonPrivate }
   PPGDBusObjectSkeletonPrivate = ^PGDBusObjectSkeletonPrivate;
   PGDBusObjectSkeletonPrivate = ^TGDBusObjectSkeletonPrivate;
   TGDBusObjectSkeleton = object(TGObject)
@@ -2477,6 +3026,8 @@ type
 
 
 
+
+  { TGDBusObjectManagerServerClass }
   PPGDBusObjectManagerServerClass = ^PGDBusObjectManagerServerClass;
   PGDBusObjectManagerServerClass = ^TGDBusObjectManagerServerClass;
   TGDBusObjectManagerServerClass = object
@@ -2489,6 +3040,8 @@ type
 
 
 
+
+  { TGDBusObjectProxyClass }
   PPGDBusObjectProxyClass = ^PGDBusObjectProxyClass;
   PGDBusObjectProxyClass = ^TGDBusObjectProxyClass;
   TGDBusObjectProxyClass = object
@@ -2501,6 +3054,8 @@ type
 
 
 
+
+  { TGDBusObjectSkeletonClass }
   PPGDBusObjectSkeletonClass = ^PGDBusObjectSkeletonClass;
   PGDBusObjectSkeletonClass = ^TGDBusObjectSkeletonClass;
   TGDBusObjectSkeletonClass = object
@@ -2514,6 +3069,8 @@ type
 
 
 
+
+  { TGDBusProxyClass }
   PPGDBusProxyClass = ^PGDBusProxyClass;
   PGDBusProxyClass = ^TGDBusProxyClass;
   TGDBusProxyClass = object
@@ -2523,9 +3080,13 @@ type
     padding: array [0..31] of gpointer;
   end;
 
+
+  { TGDBusServer }
   PPGDBusServer = ^PGDBusServer;
   PGDBusServer = ^TGDBusServer;
 
+
+  { TGDBusServerFlags }
   PPGDBusServerFlags = ^PGDBusServerFlags;
   PGDBusServerFlags = ^TGDBusServerFlags;
   TGDBusServer = object(TGObject)
@@ -2544,15 +3105,23 @@ type
     property guid: Pgchar read get_guid  { property is writeable but setter not declared } ;
   end;
 
+
+  { TGDataInputStream }
   PPGDataInputStream = ^PGDataInputStream;
   PGDataInputStream = ^TGDataInputStream;
 
+
+  { TGDataStreamByteOrder }
   PPGDataStreamByteOrder = ^PGDataStreamByteOrder;
   PGDataStreamByteOrder = ^TGDataStreamByteOrder;
 
+
+  { TGDataStreamNewlineType }
   PPGDataStreamNewlineType = ^PGDataStreamNewlineType;
   PGDataStreamNewlineType = ^TGDataStreamNewlineType;
 
+
+  { TGDataInputStreamPrivate }
   PPGDataInputStreamPrivate = ^PGDataInputStreamPrivate;
   PGDataInputStreamPrivate = ^TGDataInputStreamPrivate;
   TGDataInputStream = object(TGBufferedInputStream)
@@ -2572,9 +3141,6 @@ type
     function read_uint16(cancellable: PGCancellable; error: PPGError): guint16; cdecl; inline;
     function read_uint32(cancellable: PGCancellable; error: PPGError): guint32; cdecl; inline;
     function read_uint64(cancellable: PGCancellable; error: PPGError): guint64; cdecl; inline;
-    function read_until(stop_chars: Pgchar; length: Pgsize; cancellable: PGCancellable; error: PPGError): Pgchar; cdecl; inline;
-    procedure read_until_async(stop_chars: Pgchar; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
-    function read_until_finish(result_: PGAsyncResult; length: Pgsize; error: PPGError): Pgchar; cdecl; inline;
     function read_upto(stop_chars: Pgchar; stop_chars_len: gssize; length: Pgsize; cancellable: PGCancellable; error: PPGError): Pgchar; cdecl; inline;
     procedure read_upto_async(stop_chars: Pgchar; stop_chars_len: gssize; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
     function read_upto_finish(result_: PGAsyncResult; length: Pgsize; error: PPGError): Pgchar; cdecl; inline;
@@ -2589,6 +3155,8 @@ type
 
 
 
+
+  { TGDataInputStreamClass }
   PPGDataInputStreamClass = ^PGDataInputStreamClass;
   PGDataInputStreamClass = ^TGDataInputStreamClass;
   TGDataInputStreamClass = object
@@ -2600,9 +3168,13 @@ type
     _g_reserved5: procedure; cdecl;
   end;
 
+
+  { TGDataOutputStream }
   PPGDataOutputStream = ^PGDataOutputStream;
   PGDataOutputStream = ^TGDataOutputStream;
 
+
+  { TGDataOutputStreamPrivate }
   PPGDataOutputStreamPrivate = ^PGDataOutputStreamPrivate;
   PGDataOutputStreamPrivate = ^TGDataOutputStreamPrivate;
   TGDataOutputStream = object(TGFilterOutputStream)
@@ -2626,6 +3198,8 @@ type
 
 
 
+
+  { TGDataOutputStreamClass }
   PPGDataOutputStreamClass = ^PGDataOutputStreamClass;
   PGDataOutputStreamClass = ^TGDataOutputStreamClass;
   TGDataOutputStreamClass = object
@@ -2637,9 +3211,121 @@ type
     _g_reserved5: procedure; cdecl;
   end;
 
+
+  { TGDatagramBased }
+  PPGDatagramBased = ^PGDatagramBased;
+  PGDatagramBased = ^TGDatagramBased;
+
+
+  { TGInputMessage }
+  PPGInputMessage = ^PGInputMessage;
+  PGInputMessage = ^TGInputMessage;
+
+
+  { TGOutputMessage }
+  PPGOutputMessage = ^PGOutputMessage;
+  PGOutputMessage = ^TGOutputMessage;
+  TGDatagramBased = object
+    function condition_check(condition: TGIOCondition): TGIOCondition; cdecl; inline;
+    function condition_wait(condition: TGIOCondition; timeout: gint64; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; inline;
+    function create_source(condition: TGIOCondition; cancellable: PGCancellable): PGSource; cdecl; inline;
+    function receive_messages(messages: PGInputMessage; num_messages: guint; flags: gint; timeout: gint64; cancellable: PGCancellable; error: PPGError): gint; cdecl; inline;
+    function send_messages(messages: PGOutputMessage; num_messages: guint; flags: gint; timeout: gint64; cancellable: PGCancellable; error: PPGError): gint; cdecl; inline;
+  end;
+
+
+  { TGSocketAddress }
+  PPGSocketAddress = ^PGSocketAddress;
+  PGSocketAddress = ^TGSocketAddress;
+
+
+  { TGInputVector }
+  PPGInputVector = ^PGInputVector;
+  PGInputVector = ^TGInputVector;
+
+
+  { TGSocketControlMessage }
+  PPPGSocketControlMessage = ^PPGSocketControlMessage;
+  PPGSocketControlMessage = ^PGSocketControlMessage;
+  PGSocketControlMessage = ^TGSocketControlMessage;
+
+  TGInputMessage = record
+    address: PPGSocketAddress;
+    vectors: PGInputVector;
+    num_vectors: guint;
+    bytes_received: gsize;
+    flags: gint;
+    control_messages: PPPGSocketControlMessage;
+    num_control_messages: Pguint;
+  end;
+
+
+
+  TGOutputMessage = record
+    address: PGSocketAddress;
+    vectors: PGOutputVector;
+    num_vectors: guint;
+    bytes_sent: guint;
+    control_messages: PPGSocketControlMessage;
+    num_control_messages: guint;
+  end;
+
+
+
+
+  { TGDatagramBasedInterface }
+  PPGDatagramBasedInterface = ^PGDatagramBasedInterface;
+  PGDatagramBasedInterface = ^TGDatagramBasedInterface;
+  TGDatagramBasedInterface = object
+    g_iface: TGTypeInterface;
+    receive_messages: function(datagram_based: PGDatagramBased; messages: PGInputMessage; num_messages: guint; flags: gint; timeout: gint64; cancellable: PGCancellable; error: PPGError): gint; cdecl;
+    send_messages: function(datagram_based: PGDatagramBased; messages: PGOutputMessage; num_messages: guint; flags: gint; timeout: gint64; cancellable: PGCancellable; error: PPGError): gint; cdecl;
+    create_source: function(datagram_based: PGDatagramBased; condition: TGIOCondition; cancellable: PGCancellable): PGSource; cdecl;
+    condition_check: function(datagram_based: PGDatagramBased; condition: TGIOCondition): TGIOCondition; cdecl;
+    condition_wait: function(datagram_based: PGDatagramBased; condition: TGIOCondition; timeout: gint64; cancellable: PGCancellable; error: PPGError): gboolean; cdecl;
+  end;
+  TGDatagramBasedSourceFunc = function(datagram_based: PGDatagramBased; condition: TGIOCondition; data: gpointer): gboolean; cdecl;
+
+
+  { TGDebugController }
+  PPGDebugController = ^PGDebugController;
+  PGDebugController = ^TGDebugController;
+  TGDebugController = object
+  end;
+
+
+  { TGDebugControllerDBus }
+  PPGDebugControllerDBus = ^PGDebugControllerDBus;
+  PGDebugControllerDBus = ^TGDebugControllerDBus;
+  TGDebugControllerDBus = object(TGObject)
+    //property connection: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_connection  { property is writeable but setter not declared } ;
+  end;
+
+
+  { TGDebugControllerDBusClass }
+  PPGDebugControllerDBusClass = ^PGDebugControllerDBusClass;
+  PGDebugControllerDBusClass = ^TGDebugControllerDBusClass;
+  TGDebugControllerDBusClass = object
+    parent_class: TGObjectClass;
+    authorize: function(controller: PGDebugControllerDBus; invocation: PGDBusMethodInvocation): gboolean; cdecl;
+    padding: array [0..11] of gpointer;
+  end;
+
+
+  { TGDebugControllerInterface }
+  PPGDebugControllerInterface = ^PGDebugControllerInterface;
+  PGDebugControllerInterface = ^TGDebugControllerInterface;
+  TGDebugControllerInterface = object
+    g_iface: TGTypeInterface;
+  end;
+
+
+  { TGDesktopAppInfo }
   PPGDesktopAppInfo = ^PGDesktopAppInfo;
   PGDesktopAppInfo = ^TGDesktopAppInfo;
 
+
+  { TGDesktopAppLaunchCallback }
   PPGDesktopAppLaunchCallback = ^PGDesktopAppLaunchCallback;
   PGDesktopAppLaunchCallback = ^TGDesktopAppLaunchCallback;
   TGDesktopAppLaunchCallback = procedure(appinfo: PGDesktopAppInfo; pid: TGPid; user_data: gpointer); cdecl;
@@ -2647,33 +3333,46 @@ type
     function new(desktop_id: Pgchar): PGDesktopAppInfo; cdecl; inline; static;
     function new_from_filename(filename: Pgchar): PGDesktopAppInfo; cdecl; inline; static;
     function new_from_keyfile(key_file: PGKeyFile): PGDesktopAppInfo; cdecl; inline; static;
-    procedure set_desktop_env(desktop_env: Pgchar); cdecl; inline; static;
+    function get_implementations(interface_: Pgchar): PGList; cdecl; inline; static;
+    function search(search_string: Pgchar): PPPgchar; cdecl; inline; static;
+    function get_action_name(action_name: Pgchar): Pgchar; cdecl; inline;
     function get_boolean(key: Pgchar): gboolean; cdecl; inline;
     function get_categories: Pgchar; cdecl; inline;
     function get_filename: Pgchar; cdecl; inline;
     function get_generic_name: Pgchar; cdecl; inline;
     function get_is_hidden: gboolean; cdecl; inline;
     function get_keywords: PPgchar; cdecl; inline;
+    function get_locale_string(key: Pgchar): Pgchar; cdecl; inline;
     function get_nodisplay: gboolean; cdecl; inline;
     function get_show_in(desktop_env: Pgchar): gboolean; cdecl; inline;
     function get_startup_wm_class: Pgchar; cdecl; inline;
     function get_string(key: Pgchar): Pgchar; cdecl; inline;
+    function get_string_list(key: Pgchar; length: Pgsize): PPgchar; cdecl; inline;
     function has_key(key: Pgchar): gboolean; cdecl; inline;
+    procedure launch_action(action_name: Pgchar; launch_context: PGAppLaunchContext); cdecl; inline;
     function launch_uris_as_manager(uris: PGList; launch_context: PGAppLaunchContext; spawn_flags: TGSpawnFlags; user_setup: TGSpawnChildSetupFunc; user_setup_data: gpointer; pid_callback: TGDesktopAppLaunchCallback; pid_callback_data: gpointer; error: PPGError): gboolean; cdecl; inline;
+    function launch_uris_as_manager_with_fds(uris: PGList; launch_context: PGAppLaunchContext; spawn_flags: TGSpawnFlags; user_setup: TGSpawnChildSetupFunc; user_setup_data: gpointer; pid_callback: TGDesktopAppLaunchCallback; pid_callback_data: gpointer; stdin_fd: gint; stdout_fd: gint; stderr_fd: gint; error: PPGError): gboolean; cdecl; inline;
+    function list_actions: PPgchar; cdecl; inline;
     property filename: Pgchar read get_filename  { property is writeable but setter not declared } ;
   end;
 
+
+  { TGDesktopAppInfoClass }
   PPGDesktopAppInfoClass = ^PGDesktopAppInfoClass;
   PGDesktopAppInfoClass = ^TGDesktopAppInfoClass;
   TGDesktopAppInfoClass = object
     parent_class: TGObjectClass;
   end;
 
+
+  { TGDesktopAppInfoLookup }
   PPGDesktopAppInfoLookup = ^PGDesktopAppInfoLookup;
   PGDesktopAppInfoLookup = ^TGDesktopAppInfoLookup;
   TGDesktopAppInfoLookup = object
   end;
 
+
+  { TGDesktopAppInfoLookupIface }
   PPGDesktopAppInfoLookupIface = ^PGDesktopAppInfoLookupIface;
   PGDesktopAppInfoLookupIface = ^TGDesktopAppInfoLookupIface;
   TGDesktopAppInfoLookupIface = object
@@ -2681,9 +3380,13 @@ type
     get_default_for_uri_scheme: function(lookup: PGDesktopAppInfoLookup; uri_scheme: Pgchar): PGAppInfo; cdecl;
   end;
 
+
+  { TGDrive }
   PPGDrive = ^PGDrive;
   PGDrive = ^TGDrive;
 
+
+  { TGDriveStartStopType }
   PPGDriveStartStopType = ^PGDriveStartStopType;
   PGDriveStartStopType = ^TGDriveStartStopType;
   TGDrive = object
@@ -2710,6 +3413,7 @@ type
     function has_volumes: gboolean; cdecl; inline;
     function is_media_check_automatic: gboolean; cdecl; inline;
     function is_media_removable: gboolean; cdecl; inline;
+    function is_removable: gboolean; cdecl; inline;
     procedure poll_for_media(cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
     function poll_for_media_finish(result_: PGAsyncResult; error: PPGError): gboolean; cdecl; inline;
     procedure start(flags: TGDriveStartFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
@@ -2718,12 +3422,18 @@ type
     function stop_finish(result_: PGAsyncResult; error: PPGError): gboolean; cdecl; inline;
   end;
 
+
+  { TGPasswordSave }
   PPGPasswordSave = ^PGPasswordSave;
   PGPasswordSave = ^TGPasswordSave;
 
+
+  { TGMountOperationResult }
   PPGMountOperationResult = ^PGMountOperationResult;
   PGMountOperationResult = ^TGMountOperationResult;
 
+
+  { TGMountOperationPrivate }
   PPGMountOperationPrivate = ^PGMountOperationPrivate;
   PGMountOperationPrivate = ^TGMountOperationPrivate;
   TGMountOperation = object(TGObject)
@@ -2732,24 +3442,35 @@ type
     function get_anonymous: gboolean; cdecl; inline;
     function get_choice: gint; cdecl; inline;
     function get_domain: Pgchar; cdecl; inline;
+    function get_is_tcrypt_hidden_volume: gboolean; cdecl; inline;
+    function get_is_tcrypt_system_volume: gboolean; cdecl; inline;
     function get_password: Pgchar; cdecl; inline;
     function get_password_save: TGPasswordSave; cdecl; inline;
+    function get_pim: guint; cdecl; inline;
     function get_username: Pgchar; cdecl; inline;
     procedure reply(result_: TGMountOperationResult); cdecl; inline;
     procedure set_anonymous(anonymous: gboolean); cdecl; inline;
     procedure set_choice(choice: gint); cdecl; inline;
     procedure set_domain(domain: Pgchar); cdecl; inline;
+    procedure set_is_tcrypt_hidden_volume(hidden_volume: gboolean); cdecl; inline;
+    procedure set_is_tcrypt_system_volume(system_volume: gboolean); cdecl; inline;
     procedure set_password(password: Pgchar); cdecl; inline;
     procedure set_password_save(save: TGPasswordSave); cdecl; inline;
+    procedure set_pim(pim: guint); cdecl; inline;
     procedure set_username(username: Pgchar); cdecl; inline;
     property anonymous: gboolean read get_anonymous write set_anonymous;
     property choice: gint read get_choice write set_choice;
     property domain: Pgchar read get_domain write set_domain;
+    property is_tcrypt_hidden_volume: gboolean read get_is_tcrypt_hidden_volume write set_is_tcrypt_hidden_volume;
+    property is_tcrypt_system_volume: gboolean read get_is_tcrypt_system_volume write set_is_tcrypt_system_volume;
     property password: Pgchar read get_password write set_password;
     property password_save: TGPasswordSave read get_password_save write set_password_save;
+    property pim: guint read get_pim write set_pim;
     property username: Pgchar read get_username write set_username;
   end;
 
+
+  { TGDriveIface }
   PPGDriveIface = ^PGDriveIface;
   PGDriveIface = ^TGDriveIface;
   TGDriveIface = object
@@ -2785,11 +3506,258 @@ type
     eject_with_operation_finish: function(drive: PGDrive; result_: PGAsyncResult; error: PPGError): gboolean; cdecl;
     get_sort_key: function(drive: PGDrive): Pgchar; cdecl;
     get_symbolic_icon: function(drive: PGDrive): PGIcon; cdecl;
+    is_removable: function(drive: PGDrive): gboolean; cdecl;
   end;
 
+
+  { TGDtlsClientConnection }
+  PPGDtlsClientConnection = ^PGDtlsClientConnection;
+  PGDtlsClientConnection = ^TGDtlsClientConnection;
+
+
+  { TGSocketConnectable }
+  PPGSocketConnectable = ^PGSocketConnectable;
+  PGSocketConnectable = ^TGSocketConnectable;
+  TGDtlsClientConnection = object
+    function new(base_socket: PGDatagramBased; server_identity: PGSocketConnectable; error: PPGError): PGDtlsClientConnection; cdecl; inline; static;
+    function get_accepted_cas: PGList; cdecl; inline;
+    function get_server_identity: PGSocketConnectable; cdecl; inline;
+    procedure set_server_identity(identity: PGSocketConnectable); cdecl; inline;
+    property accepted_cas: PGList read get_accepted_cas ;
+    property server_identity: PGSocketConnectable read get_server_identity write set_server_identity;
+  end;
+
+
+  { TGSocketAddressEnumerator }
+  PPGSocketAddressEnumerator = ^PGSocketAddressEnumerator;
+  PGSocketAddressEnumerator = ^TGSocketAddressEnumerator;
+  TGSocketConnectable = object
+    function enumerate: PGSocketAddressEnumerator; cdecl; inline;
+    function proxy_enumerate: PGSocketAddressEnumerator; cdecl; inline;
+    function to_string: Pgchar; cdecl; inline;
+  end;
+
+
+  { TGTlsCertificateFlags }
+  PPGTlsCertificateFlags = ^PGTlsCertificateFlags;
+  PGTlsCertificateFlags = ^TGTlsCertificateFlags;
+
+
+  { TGDtlsClientConnectionInterface }
+  PPGDtlsClientConnectionInterface = ^PGDtlsClientConnectionInterface;
+  PGDtlsClientConnectionInterface = ^TGDtlsClientConnectionInterface;
+  TGDtlsClientConnectionInterface = object
+    g_iface: TGTypeInterface;
+  end;
+
+
+  { TGDtlsConnection }
+  PPGDtlsConnection = ^PGDtlsConnection;
+  PGDtlsConnection = ^TGDtlsConnection;
+
+
+  { TGTlsCertificate }
+  PPGTlsCertificate = ^PGTlsCertificate;
+  PGTlsCertificate = ^TGTlsCertificate;
+
+
+  { TGTlsChannelBindingType }
+  PPGTlsChannelBindingType = ^PGTlsChannelBindingType;
+  PGTlsChannelBindingType = ^TGTlsChannelBindingType;
+
+
+  { TGTlsDatabase }
+  PPGTlsDatabase = ^PGTlsDatabase;
+  PGTlsDatabase = ^TGTlsDatabase;
+
+
+  { TGTlsInteraction }
+  PPGTlsInteraction = ^PGTlsInteraction;
+  PGTlsInteraction = ^TGTlsInteraction;
+
+
+  { TGTlsProtocolVersion }
+  PPGTlsProtocolVersion = ^PGTlsProtocolVersion;
+  PGTlsProtocolVersion = ^TGTlsProtocolVersion;
+
+
+  { TGInetAddress }
+  PPGInetAddress = ^PGInetAddress;
+  PGInetAddress = ^TGInetAddress;
+
+
+  { TGTlsCertificatePrivate }
+  PPGTlsCertificatePrivate = ^PGTlsCertificatePrivate;
+  PGTlsCertificatePrivate = ^TGTlsCertificatePrivate;
+  TGTlsCertificate = object(TGObject)
+    priv: PGTlsCertificatePrivate;
+    function new_from_file(file_: Pgchar; error: PPGError): PGTlsCertificate; cdecl; inline; static;
+    function new_from_files(cert_file: Pgchar; key_file: Pgchar; error: PPGError): PGTlsCertificate; cdecl; inline; static;
+    function new_from_pem(data: Pgchar; length: gssize; error: PPGError): PGTlsCertificate; cdecl; inline; static;
+    function list_new_from_file(file_: Pgchar; error: PPGError): PGList; cdecl; inline; static;
+    function get_issuer: PGTlsCertificate; cdecl; inline;
+    function is_same(cert_two: PGTlsCertificate): gboolean; cdecl; inline;
+    function verify(identity: PGSocketConnectable; trusted_ca: PGTlsCertificate): TGTlsCertificateFlags; cdecl; inline;
+    //property certificate: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_certificate  { property is writeable but setter not declared } ;
+    //property certificate_pem: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_certificate_pem  { property is writeable but setter not declared } ;
+    property issuer: PGTlsCertificate read get_issuer  { property is writeable but setter not declared } ;
+    //property password: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_password  { property is writeable but setter not declared } ;
+    //property pkcs11_uri: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_pkcs11_uri  { property is writeable but setter not declared } ;
+    //property pkcs12_data: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_pkcs12_data  { property is writeable but setter not declared } ;
+    //property private_key: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_private_key  { property is writeable but setter not declared } ;
+    //property private_key_pem: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_private_key_pem  { property is writeable but setter not declared } ;
+    //property private_key_pkcs11_uri: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_private_key_pkcs11_uri  { property is writeable but setter not declared } ;
+  end;
+  TGDtlsConnection = object
+    accept_certificate: function(peer_cert: TGTlsCertificate; errors: TGTlsCertificateFlags): gboolean; cdecl;
+    function close(cancellable: PGCancellable; error: PPGError): gboolean; cdecl; inline;
+    procedure close_async(io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function close_finish(result_: PGAsyncResult; error: PPGError): gboolean; cdecl; inline;
+    function emit_accept_certificate(peer_cert: PGTlsCertificate; errors: TGTlsCertificateFlags): gboolean; cdecl; inline;
+    function get_certificate: PGTlsCertificate; cdecl; inline;
+    function get_channel_binding_data(type_: TGTlsChannelBindingType; data: Pguint8; error: PPGError): gboolean; cdecl; inline;
+    function get_database: PGTlsDatabase; cdecl; inline;
+    function get_interaction: PGTlsInteraction; cdecl; inline;
+    function get_negotiated_protocol: Pgchar; cdecl; inline;
+    function get_peer_certificate: PGTlsCertificate; cdecl; inline;
+    function get_peer_certificate_errors: TGTlsCertificateFlags; cdecl; inline;
+    function get_require_close_notify: gboolean; cdecl; inline;
+    function handshake(cancellable: PGCancellable; error: PPGError): gboolean; cdecl; inline;
+    procedure handshake_async(io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function handshake_finish(result_: PGAsyncResult; error: PPGError): gboolean; cdecl; inline;
+    procedure set_advertised_protocols(protocols: PPgchar); cdecl; inline;
+    procedure set_certificate(certificate: PGTlsCertificate); cdecl; inline;
+    procedure set_database(database: PGTlsDatabase); cdecl; inline;
+    procedure set_interaction(interaction: PGTlsInteraction); cdecl; inline;
+    procedure set_require_close_notify(require_close_notify: gboolean); cdecl; inline;
+    function shutdown(shutdown_read: gboolean; shutdown_write: gboolean; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; inline;
+    procedure shutdown_async(shutdown_read: gboolean; shutdown_write: gboolean; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function shutdown_finish(result_: PGAsyncResult; error: PPGError): gboolean; cdecl; inline;
+    //property advertised_protocols: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_advertised_protocols  { property is writeable but setter not declared } ;
+    //property base_socket: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_base_socket  { property is writeable but setter not declared } ;
+    property certificate: PGTlsCertificate read get_certificate write set_certificate;
+    property database: PGTlsDatabase read get_database write set_database;
+    property interaction: PGTlsInteraction read get_interaction write set_interaction;
+    property negotiated_protocol: Pgchar read get_negotiated_protocol ;
+    property peer_certificate: PGTlsCertificate read get_peer_certificate ;
+    property peer_certificate_errors: TGTlsCertificateFlags read get_peer_certificate_errors ;
+    property require_close_notify: gboolean read get_require_close_notify write set_require_close_notify;
+  end;
+
+
+  { TGTlsDatabaseLookupFlags }
+  PPGTlsDatabaseLookupFlags = ^PGTlsDatabaseLookupFlags;
+  PGTlsDatabaseLookupFlags = ^TGTlsDatabaseLookupFlags;
+
+
+  { TGTlsDatabaseVerifyFlags }
+  PPGTlsDatabaseVerifyFlags = ^PGTlsDatabaseVerifyFlags;
+  PGTlsDatabaseVerifyFlags = ^TGTlsDatabaseVerifyFlags;
+
+
+  { TGTlsDatabasePrivate }
+  PPGTlsDatabasePrivate = ^PGTlsDatabasePrivate;
+  PGTlsDatabasePrivate = ^TGTlsDatabasePrivate;
+  TGTlsDatabase = object(TGObject)
+    priv: PGTlsDatabasePrivate;
+    function create_certificate_handle(certificate: PGTlsCertificate): Pgchar; cdecl; inline;
+    function lookup_certificate_for_handle(handle: Pgchar; interaction: PGTlsInteraction; flags: TGTlsDatabaseLookupFlags; cancellable: PGCancellable; error: PPGError): PGTlsCertificate; cdecl; inline;
+    procedure lookup_certificate_for_handle_async(handle: Pgchar; interaction: PGTlsInteraction; flags: TGTlsDatabaseLookupFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function lookup_certificate_for_handle_finish(result_: PGAsyncResult; error: PPGError): PGTlsCertificate; cdecl; inline;
+    function lookup_certificate_issuer(certificate: PGTlsCertificate; interaction: PGTlsInteraction; flags: TGTlsDatabaseLookupFlags; cancellable: PGCancellable; error: PPGError): PGTlsCertificate; cdecl; inline;
+    procedure lookup_certificate_issuer_async(certificate: PGTlsCertificate; interaction: PGTlsInteraction; flags: TGTlsDatabaseLookupFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function lookup_certificate_issuer_finish(result_: PGAsyncResult; error: PPGError): PGTlsCertificate; cdecl; inline;
+    function lookup_certificates_issued_by(issuer_raw_dn: Pguint8; interaction: PGTlsInteraction; flags: TGTlsDatabaseLookupFlags; cancellable: PGCancellable; error: PPGError): PGList; cdecl; inline;
+    procedure lookup_certificates_issued_by_async(issuer_raw_dn: Pguint8; interaction: PGTlsInteraction; flags: TGTlsDatabaseLookupFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function lookup_certificates_issued_by_finish(result_: PGAsyncResult; error: PPGError): PGList; cdecl; inline;
+    function verify_chain(chain: PGTlsCertificate; purpose: Pgchar; identity: PGSocketConnectable; interaction: PGTlsInteraction; flags: TGTlsDatabaseVerifyFlags; cancellable: PGCancellable; error: PPGError): TGTlsCertificateFlags; cdecl; inline;
+    procedure verify_chain_async(chain: PGTlsCertificate; purpose: Pgchar; identity: PGSocketConnectable; interaction: PGTlsInteraction; flags: TGTlsDatabaseVerifyFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function verify_chain_finish(result_: PGAsyncResult; error: PPGError): TGTlsCertificateFlags; cdecl; inline;
+  end;
+
+
+  { TGTlsInteractionResult }
+  PPGTlsInteractionResult = ^PGTlsInteractionResult;
+  PGTlsInteractionResult = ^TGTlsInteractionResult;
+
+
+  { TGTlsPassword }
+  PPGTlsPassword = ^PGTlsPassword;
+  PGTlsPassword = ^TGTlsPassword;
+
+
+  { TGTlsConnection }
+  PPGTlsConnection = ^PGTlsConnection;
+  PGTlsConnection = ^TGTlsConnection;
+
+
+  { TGTlsCertificateRequestFlags }
+  PPGTlsCertificateRequestFlags = ^PGTlsCertificateRequestFlags;
+  PGTlsCertificateRequestFlags = ^TGTlsCertificateRequestFlags;
+
+
+  { TGTlsInteractionPrivate }
+  PPGTlsInteractionPrivate = ^PGTlsInteractionPrivate;
+  PGTlsInteractionPrivate = ^TGTlsInteractionPrivate;
+  TGTlsInteraction = object(TGObject)
+    priv: PGTlsInteractionPrivate;
+    function ask_password(password: PGTlsPassword; cancellable: PGCancellable; error: PPGError): TGTlsInteractionResult; cdecl; inline;
+    procedure ask_password_async(password: PGTlsPassword; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function ask_password_finish(result_: PGAsyncResult; error: PPGError): TGTlsInteractionResult; cdecl; inline;
+    function invoke_ask_password(password: PGTlsPassword; cancellable: PGCancellable; error: PPGError): TGTlsInteractionResult; cdecl; inline;
+    function invoke_request_certificate(connection: PGTlsConnection; flags: TGTlsCertificateRequestFlags; cancellable: PGCancellable; error: PPGError): TGTlsInteractionResult; cdecl; inline;
+    function request_certificate(connection: PGTlsConnection; flags: TGTlsCertificateRequestFlags; cancellable: PGCancellable; error: PPGError): TGTlsInteractionResult; cdecl; inline;
+    procedure request_certificate_async(connection: PGTlsConnection; flags: TGTlsCertificateRequestFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function request_certificate_finish(result_: PGAsyncResult; error: PPGError): TGTlsInteractionResult; cdecl; inline;
+  end;
+
+
+  { TGDtlsConnectionInterface }
+  PPGDtlsConnectionInterface = ^PGDtlsConnectionInterface;
+  PGDtlsConnectionInterface = ^TGDtlsConnectionInterface;
+  TGDtlsConnectionInterface = object
+    g_iface: TGTypeInterface;
+    accept_certificate: function(connection: PGDtlsConnection; peer_cert: PGTlsCertificate; errors: TGTlsCertificateFlags): gboolean; cdecl;
+    handshake: function(conn: PGDtlsConnection; cancellable: PGCancellable; error: PPGError): gboolean; cdecl;
+    handshake_async: procedure(conn: PGDtlsConnection; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+    handshake_finish: function(conn: PGDtlsConnection; result_: PGAsyncResult; error: PPGError): gboolean; cdecl;
+    shutdown: function(conn: PGDtlsConnection; shutdown_read: gboolean; shutdown_write: gboolean; cancellable: PGCancellable; error: PPGError): gboolean; cdecl;
+    shutdown_async: procedure(conn: PGDtlsConnection; shutdown_read: gboolean; shutdown_write: gboolean; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+    shutdown_finish: function(conn: PGDtlsConnection; result_: PGAsyncResult; error: PPGError): gboolean; cdecl;
+    set_advertised_protocols: procedure(conn: PGDtlsConnection; protocols: PPgchar); cdecl;
+    get_negotiated_protocol: function(conn: PGDtlsConnection): Pgchar; cdecl;
+    get_binding_data: function(conn: PGDtlsConnection; type_: TGTlsChannelBindingType; data: Pguint8; error: PPGError): gboolean; cdecl;
+  end;
+
+
+  { TGDtlsServerConnection }
+  PPGDtlsServerConnection = ^PGDtlsServerConnection;
+  PGDtlsServerConnection = ^TGDtlsServerConnection;
+  TGDtlsServerConnection = object
+    function new(base_socket: PGDatagramBased; certificate: PGTlsCertificate; error: PPGError): PGDtlsServerConnection; cdecl; inline; static;
+    //property authentication_mode: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_authentication_mode  { property is writeable but setter not declared } ;
+  end;
+
+
+  { TGTlsAuthenticationMode }
+  PPGTlsAuthenticationMode = ^PGTlsAuthenticationMode;
+  PGTlsAuthenticationMode = ^TGTlsAuthenticationMode;
+
+
+  { TGDtlsServerConnectionInterface }
+  PPGDtlsServerConnectionInterface = ^PGDtlsServerConnectionInterface;
+  PGDtlsServerConnectionInterface = ^TGDtlsServerConnectionInterface;
+  TGDtlsServerConnectionInterface = object
+    g_iface: TGTypeInterface;
+  end;
+
+
+  { TGEmblem }
   PPGEmblem = ^PGEmblem;
   PGEmblem = ^TGEmblem;
 
+
+  { TGEmblemOrigin }
   PPGEmblemOrigin = ^PGEmblemOrigin;
   PGEmblemOrigin = ^TGEmblemOrigin;
   TGEmblem = object(TGObject)
@@ -2801,14 +3769,20 @@ type
     property origin: TGEmblemOrigin read get_origin  { property is writeable but setter not declared } ;
   end;
 
+
+  { TGEmblemClass }
   PPGEmblemClass = ^PGEmblemClass;
   PGEmblemClass = ^TGEmblemClass;
   TGEmblemClass = object
   end;
 
+
+  { TGEmblemedIcon }
   PPGEmblemedIcon = ^PGEmblemedIcon;
   PGEmblemedIcon = ^TGEmblemedIcon;
 
+
+  { TGEmblemedIconPrivate }
   PPGEmblemedIconPrivate = ^PGEmblemedIconPrivate;
   PGEmblemedIconPrivate = ^TGEmblemedIconPrivate;
   TGEmblemedIcon = object(TGObject)
@@ -2826,12 +3800,16 @@ type
 
 
 
+
+  { TGEmblemedIconClass }
   PPGEmblemedIconClass = ^PGEmblemedIconClass;
   PGEmblemedIconClass = ^TGEmblemedIconClass;
   TGEmblemedIconClass = object
     parent_class: TGObjectClass;
   end;
 
+
+  { TGFileIOStreamPrivate }
   PPGFileIOStreamPrivate = ^PGFileIOStreamPrivate;
   PGFileIOStreamPrivate = ^TGFileIOStreamPrivate;
   TGFileIOStream = object(TGIOStream)
@@ -2842,6 +3820,8 @@ type
     function query_info_finish(result_: PGAsyncResult; error: PPGError): PGFileInfo; cdecl; inline;
   end;
 
+
+  { TGFileOutputStreamPrivate }
   PPGFileOutputStreamPrivate = ^PGFileOutputStreamPrivate;
   PGFileOutputStreamPrivate = ^TGFileOutputStreamPrivate;
   TGFileOutputStream = object(TGOutputStream)
@@ -2852,6 +3832,8 @@ type
     function query_info_finish(result_: PGAsyncResult; error: PPGError): PGFileInfo; cdecl; inline;
   end;
 
+
+  { TGFileEnumeratorPrivate }
   PPGFileEnumeratorPrivate = ^PGFileEnumeratorPrivate;
   PGFileEnumeratorPrivate = ^TGFileEnumeratorPrivate;
   TGFileEnumerator = object(TGObject)
@@ -2863,6 +3845,7 @@ type
     function get_container: PGFile; cdecl; inline;
     function has_pending: gboolean; cdecl; inline;
     function is_closed: gboolean; cdecl; inline;
+    function iterate(out_info: PPGFileInfo; out_child: PPGFile; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; inline;
     function next_file(cancellable: PGCancellable; error: PPGError): PGFileInfo; cdecl; inline;
     procedure next_files_async(num_files: gint; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
     function next_files_finish(result_: PGAsyncResult; error: PPGError): PGList; cdecl; inline;
@@ -2870,6 +3853,8 @@ type
     property container: PGFile read get_container  { property is writeable but setter not declared } ;
   end;
 
+
+  { TGVolume }
   PPGVolume = ^PGVolume;
   PGVolume = ^TGVolume;
   TGMount = object
@@ -2901,9 +3886,13 @@ type
     procedure unshadow; cdecl; inline;
   end;
 
+
+  { TGFileMonitorEvent }
   PPGFileMonitorEvent = ^PGFileMonitorEvent;
   PGFileMonitorEvent = ^TGFileMonitorEvent;
 
+
+  { TGFileMonitorPrivate }
   PPGFileMonitorPrivate = ^PGFileMonitorPrivate;
   PGFileMonitorPrivate = ^TGFileMonitorPrivate;
   TGFileMonitor = object(TGObject)
@@ -2916,9 +3905,13 @@ type
     //property rate_limit: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_rate_limit  { property is writeable but setter not declared } ;
   end;
 
+
+  { TGFileAttributeStatus }
   PPGFileAttributeStatus = ^PGFileAttributeStatus;
   PGFileAttributeStatus = ^TGFileAttributeStatus;
 
+
+  { TGFileAttributeMatcher }
   PPGFileAttributeMatcher = ^PGFileAttributeMatcher;
   PGFileAttributeMatcher = ^TGFileAttributeMatcher;
   TGFileInfo = object(TGObject)
@@ -2949,7 +3942,7 @@ type
     function get_is_backup: gboolean; cdecl; inline;
     function get_is_hidden: gboolean; cdecl; inline;
     function get_is_symlink: gboolean; cdecl; inline;
-    procedure get_modification_time(result_: PGTimeVal); cdecl; inline;
+    function get_modification_date_time: PGDateTime; cdecl; inline;
     function get_name: Pgchar; cdecl; inline;
     function get_size: gint64; cdecl; inline;
     function get_sort_order: gint32; cdecl; inline;
@@ -2978,7 +3971,7 @@ type
     procedure set_icon(icon: PGIcon); cdecl; inline;
     procedure set_is_hidden(is_hidden: gboolean); cdecl; inline;
     procedure set_is_symlink(is_symlink: gboolean); cdecl; inline;
-    procedure set_modification_time(mtime: PGTimeVal); cdecl; inline;
+    procedure set_modification_date_time(mtime: PGDateTime); cdecl; inline;
     procedure set_name(name: Pgchar); cdecl; inline;
     procedure set_size(size: gint64); cdecl; inline;
     procedure set_sort_order(sort_order: gint32); cdecl; inline;
@@ -2987,9 +3980,13 @@ type
     procedure unset_attribute_mask; cdecl; inline;
   end;
 
+
+  { TGFileAttributeInfoFlags }
   PPGFileAttributeInfoFlags = ^PGFileAttributeInfoFlags;
   PGFileAttributeInfoFlags = ^TGFileAttributeInfoFlags;
 
+
+  { TGFileAttributeInfo }
   PPGFileAttributeInfo = ^PGFileAttributeInfo;
   PGFileAttributeInfo = ^TGFileAttributeInfo;
   TGFileAttributeInfoList = object
@@ -3003,6 +4000,8 @@ type
     procedure unref; cdecl; inline;
   end;
 
+
+  { TGFileInputStreamPrivate }
   PPGFileInputStreamPrivate = ^PGFileInputStreamPrivate;
   PGFileInputStreamPrivate = ^TGFileInputStreamPrivate;
   TGFileInputStream = object(TGInputStream)
@@ -3031,12 +4030,16 @@ type
     procedure unref; cdecl; inline;
   end;
 
+
+  { TGFileDescriptorBased }
   PPGFileDescriptorBased = ^PGFileDescriptorBased;
   PGFileDescriptorBased = ^TGFileDescriptorBased;
   TGFileDescriptorBased = object
     function get_fd: gint; cdecl; inline;
   end;
 
+
+  { TGFileDescriptorBasedIface }
   PPGFileDescriptorBasedIface = ^PGFileDescriptorBasedIface;
   PGFileDescriptorBasedIface = ^TGFileDescriptorBasedIface;
   TGFileDescriptorBasedIface = object
@@ -3049,6 +4052,8 @@ type
 
 
 
+
+  { TGFileEnumeratorClass }
   PPGFileEnumeratorClass = ^PGFileEnumeratorClass;
   PGFileEnumeratorClass = ^TGFileEnumeratorClass;
   TGFileEnumeratorClass = object
@@ -3073,6 +4078,8 @@ type
 
 
 
+
+  { TGIOStreamClass }
   PPGIOStreamClass = ^PGIOStreamClass;
   PGIOStreamClass = ^TGIOStreamClass;
   TGIOStreamClass = object
@@ -3094,6 +4101,8 @@ type
     _g_reserved10: procedure; cdecl;
   end;
 
+
+  { TGFileIOStreamClass }
   PPGFileIOStreamClass = ^PGFileIOStreamClass;
   PGFileIOStreamClass = ^TGFileIOStreamClass;
   TGFileIOStreamClass = object
@@ -3114,14 +4123,8 @@ type
     _g_reserved5: procedure; cdecl;
   end;
 
-  PPGLoadableIcon = ^PGLoadableIcon;
-  PGLoadableIcon = ^TGLoadableIcon;
-  TGLoadableIcon = object
-    function load(size: gint; type_: PPgchar; cancellable: PGCancellable; error: PPGError): PGInputStream; cdecl; inline;
-    procedure load_async(size: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
-    function load_finish(res: PGAsyncResult; type_: PPgchar; error: PPGError): PGInputStream; cdecl; inline;
-  end;
 
+  { TGFileIcon }
   PPGFileIcon = ^PGFileIcon;
   PGFileIcon = ^TGFileIcon;
   TGFileIcon = object(TGObject)
@@ -3130,11 +4133,15 @@ type
     property file_: PGFile read get_file  { property is writeable but setter not declared } ;
   end;
 
+
+  { TGFileIconClass }
   PPGFileIconClass = ^PGFileIconClass;
   PGFileIconClass = ^TGFileIconClass;
   TGFileIconClass = object
   end;
 
+
+  { TGFileIface }
   PPGFileIface = ^PGFileIface;
   PGFileIface = ^TGFileIface;
   TGFileIface = object
@@ -3195,20 +4202,20 @@ type
     delete_file_async: procedure(file_: PGFile; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
     delete_file_finish: function(file_: PGFile; result_: PGAsyncResult; error: PPGError): gboolean; cdecl;
     trash: function(file_: PGFile; cancellable: PGCancellable; error: PPGError): gboolean; cdecl;
-    _trash_async: procedure; cdecl;
-    _trash_finish: procedure; cdecl;
+    trash_async: procedure(file_: PGFile; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+    trash_finish: function(file_: PGFile; result_: PGAsyncResult; error: PPGError): gboolean; cdecl;
     make_directory: function(file_: PGFile; cancellable: PGCancellable; error: PPGError): gboolean; cdecl;
-    _make_directory_async: procedure; cdecl;
-    _make_directory_finish: procedure; cdecl;
+    make_directory_async: procedure(file_: PGFile; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+    make_directory_finish: function(file_: PGFile; result_: PGAsyncResult; error: PPGError): gboolean; cdecl;
     make_symbolic_link: function(file_: PGFile; symlink_value: Pgchar; cancellable: PGCancellable; error: PPGError): gboolean; cdecl;
-    _make_symbolic_link_async: procedure; cdecl;
-    _make_symbolic_link_finish: procedure; cdecl;
+    make_symbolic_link_async: procedure(file_: PGFile; symlink_value: Pgchar; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+    make_symbolic_link_finish: function(file_: PGFile; result_: PGAsyncResult; error: PPGError): gboolean; cdecl;
     copy: function(source: PGFile; destination: PGFile; flags: TGFileCopyFlags; cancellable: PGCancellable; progress_callback: TGFileProgressCallback; progress_callback_data: gpointer; error: PPGError): gboolean; cdecl;
     copy_async: procedure(source: PGFile; destination: PGFile; flags: TGFileCopyFlags; io_priority: gint; cancellable: PGCancellable; progress_callback: TGFileProgressCallback; progress_callback_data: gpointer; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
     copy_finish: function(file_: PGFile; res: PGAsyncResult; error: PPGError): gboolean; cdecl;
     move: function(source: PGFile; destination: PGFile; flags: TGFileCopyFlags; cancellable: PGCancellable; progress_callback: TGFileProgressCallback; progress_callback_data: gpointer; error: PPGError): gboolean; cdecl;
-    _move_async: procedure; cdecl;
-    _move_finish: procedure; cdecl;
+    move_async: procedure(source: PGFile; destination: PGFile; flags: TGFileCopyFlags; io_priority: gint; cancellable: PGCancellable; progress_callback: TGFileProgressCallback; progress_callback_data: gpointer; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+    move_finish: function(file_: PGFile; result_: PGAsyncResult; error: PPGError): gboolean; cdecl;
     mount_mountable: procedure(file_: PGFile; flags: TGMountMountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
     mount_mountable_finish: function(file_: PGFile; result_: PGAsyncResult; error: PPGError): PGFile; cdecl;
     unmount_mountable: procedure(file_: PGFile; flags: TGMountUnmountFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
@@ -3239,8 +4246,13 @@ type
     eject_mountable_with_operation_finish: function(file_: PGFile; result_: PGAsyncResult; error: PPGError): gboolean; cdecl;
     poll_mountable: procedure(file_: PGFile; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
     poll_mountable_finish: function(file_: PGFile; result_: PGAsyncResult; error: PPGError): gboolean; cdecl;
+    measure_disk_usage: function(file_: PGFile; flags: TGFileMeasureFlags; cancellable: PGCancellable; progress_callback: TGFileMeasureProgressCallback; progress_data: gpointer; disk_usage: Pguint64; num_dirs: Pguint64; num_files: Pguint64; error: PPGError): gboolean; cdecl;
+    measure_disk_usage_async: procedure(file_: PGFile; flags: TGFileMeasureFlags; io_priority: gint; cancellable: PGCancellable; progress_callback: TGFileMeasureProgressCallback; progress_data: gpointer; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+    measure_disk_usage_finish: function(file_: PGFile; result_: PGAsyncResult; disk_usage: Pguint64; num_dirs: Pguint64; num_files: Pguint64; error: PPGError): gboolean; cdecl;
   end;
 
+
+  { TGFileInfoClass }
   PPGFileInfoClass = ^PGFileInfoClass;
   PGFileInfoClass = ^TGFileInfoClass;
   TGFileInfoClass = object
@@ -3251,6 +4263,8 @@ type
 
 
 
+
+  { TGFileInputStreamClass }
   PPGFileInputStreamClass = ^PGFileInputStreamClass;
   PGFileInputStreamClass = ^TGFileInputStreamClass;
   TGFileInputStreamClass = object
@@ -3273,6 +4287,8 @@ type
 
 
 
+
+  { TGFileMonitorClass }
   PPGFileMonitorClass = ^PGFileMonitorClass;
   PGFileMonitorClass = ^TGFileMonitorClass;
   TGFileMonitorClass = object
@@ -3291,6 +4307,8 @@ type
 
 
 
+
+  { TGFileOutputStreamClass }
   PPGFileOutputStreamClass = ^PGFileOutputStreamClass;
   PGFileOutputStreamClass = ^TGFileOutputStreamClass;
   TGFileOutputStreamClass = object
@@ -3311,6 +4329,8 @@ type
     _g_reserved5: procedure; cdecl;
   end;
 
+
+  { TGFilenameCompleter }
   PPGFilenameCompleter = ^PGFilenameCompleter;
   PGFilenameCompleter = ^TGFilenameCompleter;
   TGFilenameCompleter = object(TGObject)
@@ -3320,6 +4340,8 @@ type
     procedure set_dirs_only(dirs_only: gboolean); cdecl; inline;
   end;
 
+
+  { TGFilenameCompleterClass }
   PPGFilenameCompleterClass = ^PGFilenameCompleterClass;
   PGFilenameCompleterClass = ^TGFilenameCompleterClass;
   TGFilenameCompleterClass = object
@@ -3330,12 +4352,18 @@ type
     _g_reserved3: procedure; cdecl;
   end;
 
+
+  { TGFilesystemPreviewType }
   PPGFilesystemPreviewType = ^PGFilesystemPreviewType;
   PGFilesystemPreviewType = ^TGFilesystemPreviewType;
 
+
+  { TGIOErrorEnum }
   PPGIOErrorEnum = ^PGIOErrorEnum;
   PGIOErrorEnum = ^TGIOErrorEnum;
 
+
+  { TGIOExtension }
   PPGIOExtension = ^PGIOExtension;
   PGIOExtension = ^TGIOExtension;
   TGIOExtension = object
@@ -3345,6 +4373,8 @@ type
     function ref_class: PGTypeClass; cdecl; inline;
   end;
 
+
+  { TGIOExtensionPoint }
   PPGIOExtensionPoint = ^PGIOExtensionPoint;
   PGIOExtensionPoint = ^TGIOExtensionPoint;
   TGIOExtensionPoint = object
@@ -3357,20 +4387,28 @@ type
     function register(name: Pgchar): PGIOExtensionPoint; cdecl; inline; static;
   end;
 
+
+  { TGIOModule }
   PPGIOModule = ^PGIOModule;
   PGIOModule = ^TGIOModule;
   TGIOModule = object(TGTypeModule)
     function new(filename: Pgchar): PGIOModule; cdecl; inline; static;
   end;
 
+
+  { TGIOModuleClass }
   PPGIOModuleClass = ^PGIOModuleClass;
   PGIOModuleClass = ^TGIOModuleClass;
   TGIOModuleClass = object
   end;
 
+
+  { TGIOModuleScope }
   PPGIOModuleScope = ^PGIOModuleScope;
   PGIOModuleScope = ^TGIOModuleScope;
 
+
+  { TGIOModuleScopeFlags }
   PPGIOModuleScopeFlags = ^PGIOModuleScopeFlags;
   PGIOModuleScopeFlags = ^TGIOModuleScopeFlags;
   TGIOModuleScope = object
@@ -3379,17 +4417,21 @@ type
     function new(flags: TGIOModuleScopeFlags): PGIOModuleScope; cdecl; inline; static;
   end;
 
+
+  { TGIOSchedulerJob }
   PPGIOSchedulerJob = ^PGIOSchedulerJob;
   PGIOSchedulerJob = ^TGIOSchedulerJob;
   TGIOSchedulerJob = object
   end;
-  TGIOSchedulerJobFunc = function(job: PGIOSchedulerJob; cancellable: PGCancellable; user_data: gpointer): gboolean; cdecl;
+  TGIOSchedulerJobFunc = function(job: PGIOSchedulerJob; cancellable: PGCancellable; data: gpointer): gboolean; cdecl;
 
   TGIOStreamPrivate = record
   end;
 
 
 
+
+  { TGIOStreamAdapter }
   PPGIOStreamAdapter = ^PGIOStreamAdapter;
   PGIOStreamAdapter = ^TGIOStreamAdapter;
 
@@ -3398,22 +4440,26 @@ type
 
 
 
+
+  { TGIconIface }
   PPGIconIface = ^PGIconIface;
   PGIconIface = ^TGIconIface;
   TGIconIface = object
     g_iface: TGTypeInterface;
     hash: function(icon: PGIcon): guint; cdecl;
     equal: function(icon1: PGIcon; icon2: PGIcon): gboolean; cdecl;
-    to_tokens: function(icon: PGIcon; tokens: Pgpointer; out_version: Pgint): gboolean; cdecl;
+    to_tokens: function(icon: PGIcon; tokens: Pgchar; out_version: Pgint): gboolean; cdecl;
     from_tokens: function(tokens: PPgchar; num_tokens: gint; version: gint; error: PPGError): PGIcon; cdecl;
+    serialize: function(icon: PGIcon): PGVariant; cdecl;
   end;
 
-  PPGInetAddress = ^PGInetAddress;
-  PGInetAddress = ^TGInetAddress;
 
+  { TGSocketFamily }
   PPGSocketFamily = ^PGSocketFamily;
   PGSocketFamily = ^TGSocketFamily;
 
+
+  { TGInetAddressPrivate }
   PPGInetAddressPrivate = ^PGInetAddressPrivate;
   PGInetAddressPrivate = ^TGInetAddressPrivate;
   TGInetAddress = object(TGObject)
@@ -3456,6 +4502,8 @@ type
 
 
 
+
+  { TGInetAddressClass }
   PPGInetAddressClass = ^PGInetAddressClass;
   PGInetAddressClass = ^TGInetAddressClass;
   TGInetAddressClass = object
@@ -3464,9 +4512,13 @@ type
     to_bytes: function(address: PGInetAddress): Pguint8; cdecl;
   end;
 
+
+  { TGInetAddressMask }
   PPGInetAddressMask = ^PGInetAddressMask;
   PGInetAddressMask = ^TGInetAddressMask;
 
+
+  { TGInetAddressMaskPrivate }
   PPGInetAddressMaskPrivate = ^PGInetAddressMaskPrivate;
   PGInetAddressMaskPrivate = ^TGInetAddressMaskPrivate;
   TGInetAddressMask = object(TGObject)
@@ -3489,24 +4541,13 @@ type
 
 
 
+
+  { TGInetAddressMaskClass }
   PPGInetAddressMaskClass = ^PGInetAddressMaskClass;
   PGInetAddressMaskClass = ^TGInetAddressMaskClass;
   TGInetAddressMaskClass = object
     parent_class: TGObjectClass;
   end;
-
-  PPGSocketConnectable = ^PGSocketConnectable;
-  PGSocketConnectable = ^TGSocketConnectable;
-
-  PPGSocketAddressEnumerator = ^PGSocketAddressEnumerator;
-  PGSocketAddressEnumerator = ^TGSocketAddressEnumerator;
-  TGSocketConnectable = object
-    function enumerate: PGSocketAddressEnumerator; cdecl; inline;
-    function proxy_enumerate: PGSocketAddressEnumerator; cdecl; inline;
-  end;
-
-  PPGSocketAddress = ^PGSocketAddress;
-  PGSocketAddress = ^TGSocketAddress;
   TGSocketAddress = object(TGObject)
     function new_from_native(native: gpointer; len: gsize): PGSocketAddress; cdecl; inline; static;
     function get_family: TGSocketFamily; cdecl; inline;
@@ -3515,14 +4556,19 @@ type
     property family: TGSocketFamily read get_family ;
   end;
 
+
+  { TGInetSocketAddress }
   PPGInetSocketAddress = ^PGInetSocketAddress;
   PGInetSocketAddress = ^TGInetSocketAddress;
 
+
+  { TGInetSocketAddressPrivate }
   PPGInetSocketAddressPrivate = ^PGInetSocketAddressPrivate;
   PGInetSocketAddressPrivate = ^TGInetSocketAddressPrivate;
   TGInetSocketAddress = object(TGSocketAddress)
     priv: PGInetSocketAddressPrivate;
     function new(address: PGInetAddress; port: guint16): PGInetSocketAddress; cdecl; inline; static;
+    function new_from_string(address: Pgchar; port: guint): PGInetSocketAddress; cdecl; inline; static;
     function get_address: PGInetAddress; cdecl; inline;
     function get_flowinfo: guint32; cdecl; inline;
     function get_port: guint16; cdecl; inline;
@@ -3538,6 +4584,8 @@ type
 
 
 
+
+  { TGSocketAddressClass }
   PPGSocketAddressClass = ^PGSocketAddressClass;
   PGSocketAddressClass = ^TGSocketAddressClass;
   TGSocketAddressClass = object
@@ -3547,26 +4595,22 @@ type
     to_native: function(address: PGSocketAddress; dest: gpointer; destlen: gsize; error: PPGError): gboolean; cdecl;
   end;
 
+
+  { TGInetSocketAddressClass }
   PPGInetSocketAddressClass = ^PGInetSocketAddressClass;
   PGInetSocketAddressClass = ^TGInetSocketAddressClass;
   TGInetSocketAddressClass = object
     parent_class: TGSocketAddressClass;
   end;
 
+
+  { TGInitableIface }
   PPGInitableIface = ^PGInitableIface;
   PGInitableIface = ^TGInitableIface;
   TGInitableIface = object
     g_iface: TGTypeInterface;
     init: function(initable: PGInitable; cancellable: PGCancellable; error: PPGError): gboolean; cdecl;
   end;
-
-  TGInputStreamPrivate = record
-  end;
-
-
-
-  PPGInputVector = ^PGInputVector;
-  PGInputVector = ^TGInputVector;
 
   TGInputVector = record
     buffer: gpointer;
@@ -3575,6 +4619,77 @@ type
 
 
 
+
+  { TGSocketControlMessagePrivate }
+  PPGSocketControlMessagePrivate = ^PGSocketControlMessagePrivate;
+  PGSocketControlMessagePrivate = ^TGSocketControlMessagePrivate;
+  TGSocketControlMessage = object(TGObject)
+    priv: PGSocketControlMessagePrivate;
+    function deserialize(level: gint; type_: gint; size: gsize; data: guint8): PGSocketControlMessage; cdecl; inline; static;
+    function get_level: gint; cdecl; inline;
+    function get_msg_type: gint; cdecl; inline;
+    function get_size: gsize; cdecl; inline;
+    procedure serialize(data: gpointer); cdecl; inline;
+  end;
+
+  TGInputStreamPrivate = record
+  end;
+
+
+
+
+  { TGListModel }
+  PPGListModel = ^PGListModel;
+  PGListModel = ^TGListModel;
+  TGListModel = object
+    items_changed1: procedure(position: guint; removed: guint; added: guint); cdecl;
+    function get_item(position: guint): gpointer; cdecl; inline;
+    function get_item_type: TGType; cdecl; inline;
+    function get_n_items: guint; cdecl; inline;
+    function get_object(position: guint): PGObject; cdecl; inline;
+    procedure items_changed(position: guint; removed: guint; added: guint); cdecl; inline;
+  end;
+
+
+  { TGListModelInterface }
+  PPGListModelInterface = ^PGListModelInterface;
+  PGListModelInterface = ^TGListModelInterface;
+  TGListModelInterface = object
+    g_iface: TGTypeInterface;
+    get_item_type: function(list: PGListModel): TGType; cdecl;
+    get_n_items: function(list: PGListModel): guint; cdecl;
+    get_item: function(list: PGListModel; position: guint): PGObject; cdecl;
+  end;
+
+
+  { TGListStore }
+  PPGListStore = ^PGListStore;
+  PGListStore = ^TGListStore;
+  TGListStore = object(TGObject)
+    function new(item_type: TGType): PGListStore; cdecl; inline; static;
+    procedure append(item: PGObject); cdecl; inline;
+    function find(item: PGObject; position: Pguint): gboolean; cdecl; inline;
+    function find_with_equal_func(item: PGObject; equal_func: TGEqualFunc; position: Pguint): gboolean; cdecl; inline;
+    procedure insert(position: guint; item: PGObject); cdecl; inline;
+    function insert_sorted(item: PGObject; compare_func: TGCompareDataFunc; user_data: gpointer): guint; cdecl; inline;
+    procedure remove(position: guint); cdecl; inline;
+    procedure remove_all; cdecl; inline;
+    procedure sort(compare_func: TGCompareDataFunc; user_data: gpointer); cdecl; inline;
+    procedure splice(position: guint; n_removals: guint; additions: PGObject; n_additions: guint); cdecl; inline;
+    //property item_type: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_item_type  { property is writeable but setter not declared } ;
+    //property n_items: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_n_items ;
+  end;
+
+
+  { TGListStoreClass }
+  PPGListStoreClass = ^PGListStoreClass;
+  PGListStoreClass = ^TGListStoreClass;
+  TGListStoreClass = object
+    parent_class: TGObjectClass;
+  end;
+
+
+  { TGLoadableIconIface }
   PPGLoadableIconIface = ^PGLoadableIconIface;
   PGLoadableIconIface = ^TGLoadableIconIface;
   TGLoadableIconIface = object
@@ -3584,9 +4699,13 @@ type
     load_finish: function(icon: PGLoadableIcon; res: PGAsyncResult; type_: PPgchar; error: PPGError): PGInputStream; cdecl;
   end;
 
+
+  { TGMemoryInputStream }
   PPGMemoryInputStream = ^PGMemoryInputStream;
   PGMemoryInputStream = ^TGMemoryInputStream;
 
+
+  { TGMemoryInputStreamPrivate }
   PPGMemoryInputStreamPrivate = ^PGMemoryInputStreamPrivate;
   PGMemoryInputStreamPrivate = ^TGMemoryInputStreamPrivate;
   TGMemoryInputStream = object(TGInputStream)
@@ -3603,6 +4722,8 @@ type
 
 
 
+
+  { TGMemoryInputStreamClass }
   PPGMemoryInputStreamClass = ^PGMemoryInputStreamClass;
   PGMemoryInputStreamClass = ^TGMemoryInputStreamClass;
   TGMemoryInputStreamClass = object
@@ -3613,14 +4734,43 @@ type
     _g_reserved4: procedure; cdecl;
     _g_reserved5: procedure; cdecl;
   end;
+
+
+  { TGMemoryMonitor }
+  PPGMemoryMonitor = ^PGMemoryMonitor;
+  PGMemoryMonitor = ^TGMemoryMonitor;
+
+
+  { TGMemoryMonitorWarningLevel }
+  PPGMemoryMonitorWarningLevel = ^PGMemoryMonitorWarningLevel;
+  PGMemoryMonitorWarningLevel = ^TGMemoryMonitorWarningLevel;
+  TGMemoryMonitor = object
+    low_memory_warning: procedure(level: TGMemoryMonitorWarningLevel); cdecl;
+    function dup_default: PGMemoryMonitor; cdecl; inline; static;
+  end;
+
+
+  { TGMemoryMonitorInterface }
+  PPGMemoryMonitorInterface = ^PGMemoryMonitorInterface;
+  PGMemoryMonitorInterface = ^TGMemoryMonitorInterface;
+  TGMemoryMonitorInterface = object
+    g_iface: TGTypeInterface;
+    low_memory_warning: procedure(monitor: PGMemoryMonitor; level: TGMemoryMonitorWarningLevel); cdecl;
+  end;
   TGReallocFunc = function(data: gpointer; size: gsize): gpointer; cdecl;
 
+
+  { TGMemoryOutputStream }
   PPGMemoryOutputStream = ^PGMemoryOutputStream;
   PGMemoryOutputStream = ^TGMemoryOutputStream;
 
+
+  { TGReallocFunc }
   PPGReallocFunc = ^PGReallocFunc;
   PGReallocFunc = ^TGReallocFunc;
 
+
+  { TGMemoryOutputStreamPrivate }
   PPGMemoryOutputStreamPrivate = ^PGMemoryOutputStreamPrivate;
   PGMemoryOutputStreamPrivate = ^TGMemoryOutputStreamPrivate;
   TGMemoryOutputStream = object(TGOutputStream)
@@ -3644,6 +4794,8 @@ type
 
 
 
+
+  { TGMemoryOutputStreamClass }
   PPGMemoryOutputStreamClass = ^PGMemoryOutputStreamClass;
   PGMemoryOutputStreamClass = ^TGMemoryOutputStreamClass;
   TGMemoryOutputStreamClass = object
@@ -3655,9 +4807,13 @@ type
     _g_reserved5: procedure; cdecl;
   end;
 
+
+  { TGMenu }
   PPGMenu = ^PGMenu;
   PGMenu = ^TGMenu;
 
+
+  { TGMenuItem }
   PPGMenuItem = ^PGMenuItem;
   PGMenuItem = ^TGMenuItem;
   TGMenu = object(TGMenuModel)
@@ -3676,6 +4832,7 @@ type
     procedure prepend_section(label_: Pgchar; section: PGMenuModel); cdecl; inline;
     procedure prepend_submenu(label_: Pgchar; submenu: PGMenuModel); cdecl; inline;
     procedure remove(position: gint); cdecl; inline;
+    procedure remove_all; cdecl; inline;
   end;
   TGMenuItem = object(TGObject)
     function new(label_: Pgchar; detailed_action: Pgchar): PGMenuItem; cdecl; inline; static;
@@ -3690,12 +4847,15 @@ type
     //procedure set_attribute(attribute: Pgchar; format_string: Pgchar; args: array of const); cdecl; inline;
     procedure set_attribute_value(attribute: Pgchar; value: PGVariant); cdecl; inline;
     procedure set_detailed_action(detailed_action: Pgchar); cdecl; inline;
+    procedure set_icon(icon: PGIcon); cdecl; inline;
     procedure set_label(label_: Pgchar); cdecl; inline;
     procedure set_link(link: Pgchar; model: PGMenuModel); cdecl; inline;
     procedure set_section(section: PGMenuModel); cdecl; inline;
     procedure set_submenu(submenu: PGMenuModel); cdecl; inline;
   end;
 
+
+  { TGMenuAttributeIterPrivate }
   PPGMenuAttributeIterPrivate = ^PGMenuAttributeIterPrivate;
   PGMenuAttributeIterPrivate = ^TGMenuAttributeIterPrivate;
   TGMenuAttributeIter = object(TGObject)
@@ -3711,6 +4871,8 @@ type
 
 
 
+
+  { TGMenuAttributeIterClass }
   PPGMenuAttributeIterClass = ^PGMenuAttributeIterClass;
   PGMenuAttributeIterClass = ^TGMenuAttributeIterClass;
   TGMenuAttributeIterClass = object
@@ -3718,6 +4880,8 @@ type
     get_next: function(iter: PGMenuAttributeIter; out_name: PPgchar; value: PPGVariant): gboolean; cdecl;
   end;
 
+
+  { TGMenuLinkIterPrivate }
   PPGMenuLinkIterPrivate = ^PGMenuLinkIterPrivate;
   PGMenuLinkIterPrivate = ^TGMenuLinkIterPrivate;
   TGMenuLinkIter = object(TGObject)
@@ -3733,6 +4897,8 @@ type
 
 
 
+
+  { TGMenuLinkIterClass }
   PPGMenuLinkIterClass = ^PGMenuLinkIterClass;
   PGMenuLinkIterClass = ^TGMenuLinkIterClass;
   TGMenuLinkIterClass = object
@@ -3745,6 +4911,8 @@ type
 
 
 
+
+  { TGMenuModelClass }
   PPGMenuModelClass = ^PGMenuModelClass;
   PGMenuModelClass = ^TGMenuModelClass;
   TGMenuModelClass = object
@@ -3780,6 +4948,8 @@ type
     function should_automount: gboolean; cdecl; inline;
   end;
 
+
+  { TGMountIface }
   PPGMountIface = ^PGMountIface;
   PGMountIface = ^TGMountIface;
   TGMountIface = object
@@ -3818,15 +4988,17 @@ type
 
 
 
+
+  { TGMountOperationClass }
   PPGMountOperationClass = ^PGMountOperationClass;
   PGMountOperationClass = ^TGMountOperationClass;
   TGMountOperationClass = object
     parent_class: TGObjectClass;
     ask_password: procedure(op: PGMountOperation; message: Pgchar; default_user: Pgchar; default_domain: Pgchar; flags: TGAskPasswordFlags); cdecl;
-    ask_question: procedure(op: PGMountOperation; message: Pgchar; choices: Pgchar); cdecl;
+    ask_question: procedure(op: PGMountOperation; message: Pgchar; choices: PPgchar); cdecl;
     reply: procedure(op: PGMountOperation; result_: TGMountOperationResult); cdecl;
     aborted: procedure(op: PGMountOperation); cdecl;
-    show_processes: procedure(op: PGMountOperation; message: Pgchar; processes: Pgpointer; choices: Pgchar); cdecl;
+    show_processes: procedure(op: PGMountOperation; message: Pgchar; processes: PGPid; choices: PPgchar); cdecl;
     show_unmount_progress: procedure(op: PGMountOperation; message: Pgchar; time_left: gint64; bytes_left: gint64); cdecl;
     _g_reserved1: procedure; cdecl;
     _g_reserved2: procedure; cdecl;
@@ -3839,6 +5011,35 @@ type
     _g_reserved9: procedure; cdecl;
   end;
 
+
+  { TGNativeSocketAddressPrivate }
+  PPGNativeSocketAddressPrivate = ^PGNativeSocketAddressPrivate;
+  PGNativeSocketAddressPrivate = ^TGNativeSocketAddressPrivate;
+
+  TGNativeSocketAddressPrivate = record
+  end;
+
+
+
+
+  { TGNativeSocketAddress }
+  PPGNativeSocketAddress = ^PGNativeSocketAddress;
+  PGNativeSocketAddress = ^TGNativeSocketAddress;
+  TGNativeSocketAddress = object(TGSocketAddress)
+    priv: PGNativeSocketAddressPrivate;
+    function new(native: gpointer; len: gsize): PGNativeSocketAddress; cdecl; inline; static;
+  end;
+
+
+  { TGNativeSocketAddressClass }
+  PPGNativeSocketAddressClass = ^PGNativeSocketAddressClass;
+  PGNativeSocketAddressClass = ^TGNativeSocketAddressClass;
+  TGNativeSocketAddressClass = object
+    parent_class: TGSocketAddressClass;
+  end;
+
+
+  { TGVolumeMonitor }
   PPGVolumeMonitor = ^PGVolumeMonitor;
   PGVolumeMonitor = ^TGVolumeMonitor;
   TGVolumeMonitor = object(TGObject)
@@ -3851,11 +5052,15 @@ type
     function get_volumes: PGList; cdecl; inline;
   end;
 
+
+  { TGNativeVolumeMonitor }
   PPGNativeVolumeMonitor = ^PGNativeVolumeMonitor;
   PGNativeVolumeMonitor = ^TGNativeVolumeMonitor;
   TGNativeVolumeMonitor = object(TGVolumeMonitor)
   end;
 
+
+  { TGVolumeMonitorClass }
   PPGVolumeMonitorClass = ^PGVolumeMonitorClass;
   PGVolumeMonitorClass = ^TGVolumeMonitorClass;
   TGVolumeMonitorClass = object
@@ -3887,6 +5092,8 @@ type
     _g_reserved6: procedure; cdecl;
   end;
 
+
+  { TGNativeVolumeMonitorClass }
   PPGNativeVolumeMonitorClass = ^PGNativeVolumeMonitorClass;
   PGNativeVolumeMonitorClass = ^TGNativeVolumeMonitorClass;
   TGNativeVolumeMonitorClass = object
@@ -3894,16 +5101,21 @@ type
     get_mount_for_mount_path: function(mount_path: Pgchar; cancellable: PGCancellable): PGMount; cdecl;
   end;
 
+
+  { TGNetworkAddress }
   PPGNetworkAddress = ^PGNetworkAddress;
   PGNetworkAddress = ^TGNetworkAddress;
 
+
+  { TGNetworkAddressPrivate }
   PPGNetworkAddressPrivate = ^PGNetworkAddressPrivate;
   PGNetworkAddressPrivate = ^TGNetworkAddressPrivate;
   TGNetworkAddress = object(TGObject)
     priv: PGNetworkAddressPrivate;
     function new(hostname: Pgchar; port: guint16): PGNetworkAddress; cdecl; inline; static;
-    function parse(host_and_port: Pgchar; default_port: guint16; error: PPGError): PGSocketConnectable; cdecl; inline; static;
-    function parse_uri(uri: Pgchar; default_port: guint16; error: PPGError): PGSocketConnectable; cdecl; inline; static;
+    function new_loopback(port: guint16): PGNetworkAddress; cdecl; inline; static;
+    function parse(host_and_port: Pgchar; default_port: guint16; error: PPGError): PGNetworkAddress; cdecl; inline; static;
+    function parse_uri(uri: Pgchar; default_port: guint16; error: PPGError): PGNetworkAddress; cdecl; inline; static;
     function get_hostname: Pgchar; cdecl; inline;
     function get_port: guint16; cdecl; inline;
     function get_scheme: Pgchar; cdecl; inline;
@@ -3917,37 +5129,56 @@ type
 
 
 
+
+  { TGNetworkAddressClass }
   PPGNetworkAddressClass = ^PGNetworkAddressClass;
   PGNetworkAddressClass = ^TGNetworkAddressClass;
   TGNetworkAddressClass = object
     parent_class: TGObjectClass;
   end;
 
+
+  { TGNetworkConnectivity }
+  PPGNetworkConnectivity = ^PGNetworkConnectivity;
+  PGNetworkConnectivity = ^TGNetworkConnectivity;
+
+
+  { TGNetworkMonitor }
   PPGNetworkMonitor = ^PGNetworkMonitor;
   PGNetworkMonitor = ^TGNetworkMonitor;
   TGNetworkMonitor = object
-    network_changed: procedure(available: gboolean); cdecl;
+    network_changed: procedure(network_available: gboolean); cdecl;
     function get_default: PGNetworkMonitor; cdecl; inline; static;
     function can_reach(connectable: PGSocketConnectable; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; inline;
     procedure can_reach_async(connectable: PGSocketConnectable; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
     function can_reach_finish(result_: PGAsyncResult; error: PPGError): gboolean; cdecl; inline;
+    function get_connectivity: TGNetworkConnectivity; cdecl; inline;
     function get_network_available: gboolean; cdecl; inline;
+    function get_network_metered: gboolean; cdecl; inline;
+    property connectivity: TGNetworkConnectivity read get_connectivity ;
     property network_available: gboolean read get_network_available ;
+    property network_metered: gboolean read get_network_metered ;
   end;
 
+
+  { TGNetworkMonitorInterface }
   PPGNetworkMonitorInterface = ^PGNetworkMonitorInterface;
   PGNetworkMonitorInterface = ^TGNetworkMonitorInterface;
   TGNetworkMonitorInterface = object
     g_iface: TGTypeInterface;
-    network_changed: procedure(monitor: PGNetworkMonitor; available: gboolean); cdecl;
+    network_changed: procedure(monitor: PGNetworkMonitor; network_available: gboolean); cdecl;
     can_reach: function(monitor: PGNetworkMonitor; connectable: PGSocketConnectable; cancellable: PGCancellable; error: PPGError): gboolean; cdecl;
     can_reach_async: procedure(monitor: PGNetworkMonitor; connectable: PGSocketConnectable; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
     can_reach_finish: function(monitor: PGNetworkMonitor; result_: PGAsyncResult; error: PPGError): gboolean; cdecl;
   end;
 
+
+  { TGNetworkService }
   PPGNetworkService = ^PGNetworkService;
   PGNetworkService = ^TGNetworkService;
 
+
+  { TGNetworkServicePrivate }
   PPGNetworkServicePrivate = ^PGNetworkServicePrivate;
   PGNetworkServicePrivate = ^TGNetworkServicePrivate;
   TGNetworkService = object(TGObject)
@@ -3969,19 +5200,13 @@ type
 
 
 
+
+  { TGNetworkServiceClass }
   PPGNetworkServiceClass = ^PGNetworkServiceClass;
   PGNetworkServiceClass = ^TGNetworkServiceClass;
   TGNetworkServiceClass = object
     parent_class: TGObjectClass;
   end;
-
-  TGOutputStreamPrivate = record
-  end;
-
-
-
-  PPGOutputVector = ^PGOutputVector;
-  PGOutputVector = ^TGOutputVector;
 
   TGOutputVector = record
     buffer: Pgpointer;
@@ -3990,9 +5215,18 @@ type
 
 
 
+  TGOutputStreamPrivate = record
+  end;
+
+
+
+
+  { TGPermission }
   PPGPermission = ^PGPermission;
   PGPermission = ^TGPermission;
 
+
+  { TGPermissionPrivate }
   PPGPermissionPrivate = ^PGPermissionPrivate;
   PGPermissionPrivate = ^TGPermissionPrivate;
   TGPermission = object(TGObject)
@@ -4017,6 +5251,8 @@ type
 
 
 
+
+  { TGPermissionClass }
   PPGPermissionClass = ^PGPermissionClass;
   PGPermissionClass = ^TGPermissionClass;
   TGPermissionClass = object
@@ -4030,6 +5266,8 @@ type
     reserved: array [0..15] of gpointer;
   end;
 
+
+  { TGPollableInputStreamInterface }
   PPGPollableInputStreamInterface = ^PGPollableInputStreamInterface;
   PGPollableInputStreamInterface = ^TGPollableInputStreamInterface;
   TGPollableInputStreamInterface = object
@@ -4037,9 +5275,11 @@ type
     can_poll: function(stream: PGPollableInputStream): gboolean; cdecl;
     is_readable: function(stream: PGPollableInputStream): gboolean; cdecl;
     create_source: function(stream: PGPollableInputStream; cancellable: PGCancellable): PGSource; cdecl;
-    read_nonblocking: function(stream: PGPollableInputStream; buffer: Pgpointer; count: gsize; error: PPGError): gssize; cdecl;
+    read_nonblocking: function(stream: PGPollableInputStream; buffer: Pguint8; count: gsize; error: PPGError): gssize; cdecl;
   end;
 
+
+  { TGPollableOutputStreamInterface }
   PPGPollableOutputStreamInterface = ^PGPollableOutputStreamInterface;
   PGPollableOutputStreamInterface = ^TGPollableOutputStreamInterface;
   TGPollableOutputStreamInterface = object
@@ -4048,12 +5288,48 @@ type
     is_writable: function(stream: PGPollableOutputStream): gboolean; cdecl;
     create_source: function(stream: PGPollableOutputStream; cancellable: PGCancellable): PGSource; cdecl;
     write_nonblocking: function(stream: PGPollableOutputStream; buffer: Pguint8; count: gsize; error: PPGError): gssize; cdecl;
+    writev_nonblocking: function(stream: PGPollableOutputStream; vectors: PGOutputVector; n_vectors: gsize; bytes_written: Pgsize; error: PPGError): TGPollableReturn; cdecl;
   end;
-  TGPollableSourceFunc = function(pollable_stream: PGObject; user_data: gpointer): gboolean; cdecl;
+  TGPollableSourceFunc = function(pollable_stream: PGObject; data: gpointer): gboolean; cdecl;
 
+
+  { TGPowerProfileMonitor }
+  PPGPowerProfileMonitor = ^PGPowerProfileMonitor;
+  PGPowerProfileMonitor = ^TGPowerProfileMonitor;
+  TGPowerProfileMonitor = object
+  end;
+
+
+  { TGPowerProfileMonitorInterface }
+  PPGPowerProfileMonitorInterface = ^PGPowerProfileMonitorInterface;
+  PGPowerProfileMonitorInterface = ^TGPowerProfileMonitorInterface;
+  TGPowerProfileMonitorInterface = object
+    g_iface: TGTypeInterface;
+  end;
+
+
+  { TGPropertyAction }
+  PPGPropertyAction = ^PGPropertyAction;
+  PGPropertyAction = ^TGPropertyAction;
+  TGPropertyAction = object(TGObject)
+    function new(name: Pgchar; object_: PGObject; property_name: Pgchar): PGPropertyAction; cdecl; inline; static;
+    //property enabled: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_enabled ;
+    //property invert_boolean: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_invert_boolean  { property is writeable but setter not declared } ;
+    //property name: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_name  { property is writeable but setter not declared } ;
+    //property object_: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_object  { property is writeable but setter not declared } ;
+    //property parameter_type: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_parameter_type ;
+    //property property_name: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_property_name  { property is writeable but setter not declared } ;
+    //property state: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_state ;
+    //property state_type: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_state_type ;
+  end;
+
+
+  { TGProxy }
   PPGProxy = ^PGProxy;
   PGProxy = ^TGProxy;
 
+
+  { TGProxyAddress }
   PPGProxyAddress = ^PGProxyAddress;
   PGProxyAddress = ^TGProxyAddress;
   TGProxy = object
@@ -4064,6 +5340,8 @@ type
     function supports_hostname: gboolean; cdecl; inline;
   end;
 
+
+  { TGProxyAddressPrivate }
   PPGProxyAddressPrivate = ^PGProxyAddressPrivate;
   PGProxyAddressPrivate = ^TGProxyAddressPrivate;
   TGProxyAddress = object(TGInetSocketAddress)
@@ -4090,12 +5368,16 @@ type
 
 
 
+
+  { TGProxyAddressClass }
   PPGProxyAddressClass = ^PGProxyAddressClass;
   PGProxyAddressClass = ^TGProxyAddressClass;
   TGProxyAddressClass = object
     parent_class: TGInetSocketAddressClass;
   end;
 
+
+  { TGProxyResolver }
   PPGProxyResolver = ^PGProxyResolver;
   PGProxyResolver = ^TGProxyResolver;
   TGProxyResolver = object
@@ -4111,6 +5393,8 @@ type
     function next_finish(result_: PGAsyncResult; error: PPGError): PGSocketAddress; cdecl; inline;
   end;
 
+
+  { TGProxyAddressEnumeratorPrivate }
   PPGProxyAddressEnumeratorPrivate = ^PGProxyAddressEnumeratorPrivate;
   PGProxyAddressEnumeratorPrivate = ^TGProxyAddressEnumeratorPrivate;
 
@@ -4119,15 +5403,20 @@ type
 
 
 
+
+  { TGProxyAddressEnumerator }
   PPGProxyAddressEnumerator = ^PGProxyAddressEnumerator;
   PGProxyAddressEnumerator = ^TGProxyAddressEnumerator;
   TGProxyAddressEnumerator = object(TGSocketAddressEnumerator)
     priv: PGProxyAddressEnumeratorPrivate;
     //property connectable: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_connectable  { property is writeable but setter not declared } ;
+    //property default_port: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_default_port  { property is writeable but setter not declared } ;
     //property proxy_resolver: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_proxy_resolver  { property is writeable but setter not declared } ;
     //property uri: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_uri  { property is writeable but setter not declared } ;
   end;
 
+
+  { TGSocketAddressEnumeratorClass }
   PPGSocketAddressEnumeratorClass = ^PGSocketAddressEnumeratorClass;
   PGSocketAddressEnumeratorClass = ^TGSocketAddressEnumeratorClass;
   TGSocketAddressEnumeratorClass = object
@@ -4137,6 +5426,8 @@ type
     next_finish: function(enumerator: PGSocketAddressEnumerator; result_: PGAsyncResult; error: PPGError): PGSocketAddress; cdecl;
   end;
 
+
+  { TGProxyAddressEnumeratorClass }
   PPGProxyAddressEnumeratorClass = ^PGProxyAddressEnumeratorClass;
   PGProxyAddressEnumeratorClass = ^TGProxyAddressEnumeratorClass;
   TGProxyAddressEnumeratorClass = object
@@ -4150,6 +5441,8 @@ type
     _g_reserved7: procedure; cdecl;
   end;
 
+
+  { TGProxyInterface }
   PPGProxyInterface = ^PGProxyInterface;
   PGProxyInterface = ^TGProxyInterface;
   TGProxyInterface = object
@@ -4160,6 +5453,8 @@ type
     supports_hostname: function(proxy: PGProxy): gboolean; cdecl;
   end;
 
+
+  { TGProxyResolverInterface }
   PPGProxyResolverInterface = ^PGProxyResolverInterface;
   PGProxyResolverInterface = ^TGProxyResolverInterface;
   TGProxyResolverInterface = object
@@ -4170,6 +5465,8 @@ type
     lookup_finish: function(resolver: PGProxyResolver; result_: PGAsyncResult; error: PPGError): PPgchar; cdecl;
   end;
 
+
+  { TGRemoteActionGroupInterface }
   PPGRemoteActionGroupInterface = ^PGRemoteActionGroupInterface;
   PGRemoteActionGroupInterface = ^TGRemoteActionGroupInterface;
   TGRemoteActionGroupInterface = object
@@ -4178,12 +5475,23 @@ type
     change_action_state_full: procedure(remote: PGRemoteActionGroup; action_name: Pgchar; value: PGVariant; platform_data: PGVariant); cdecl;
   end;
 
+
+  { TGResolver }
   PPGResolver = ^PGResolver;
   PGResolver = ^TGResolver;
 
+
+  { TGResolverNameLookupFlags }
+  PPGResolverNameLookupFlags = ^PGResolverNameLookupFlags;
+  PGResolverNameLookupFlags = ^TGResolverNameLookupFlags;
+
+
+  { TGResolverRecordType }
   PPGResolverRecordType = ^PGResolverRecordType;
   PGResolverRecordType = ^TGResolverRecordType;
 
+
+  { TGResolverPrivate }
   PPGResolverPrivate = ^PGResolverPrivate;
   PGResolverPrivate = ^TGResolverPrivate;
   TGResolver = object(TGObject)
@@ -4197,6 +5505,9 @@ type
     function lookup_by_name(hostname: Pgchar; cancellable: PGCancellable; error: PPGError): PGList; cdecl; inline;
     procedure lookup_by_name_async(hostname: Pgchar; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
     function lookup_by_name_finish(result_: PGAsyncResult; error: PPGError): PGList; cdecl; inline;
+    function lookup_by_name_with_flags(hostname: Pgchar; flags: TGResolverNameLookupFlags; cancellable: PGCancellable; error: PPGError): PGList; cdecl; inline;
+    procedure lookup_by_name_with_flags_async(hostname: Pgchar; flags: TGResolverNameLookupFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function lookup_by_name_with_flags_finish(result_: PGAsyncResult; error: PPGError): PGList; cdecl; inline;
     function lookup_records(rrname: Pgchar; record_type: TGResolverRecordType; cancellable: PGCancellable; error: PPGError): PGList; cdecl; inline;
     procedure lookup_records_async(rrname: Pgchar; record_type: TGResolverRecordType; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
     function lookup_records_finish(result_: PGAsyncResult; error: PPGError): PGList; cdecl; inline;
@@ -4211,6 +5522,8 @@ type
 
 
 
+
+  { TGResolverClass }
   PPGResolverClass = ^PGResolverClass;
   PGResolverClass = ^TGResolverClass;
   TGResolverClass = object
@@ -4228,17 +5541,23 @@ type
     lookup_records: function(resolver: PGResolver; rrname: Pgchar; record_type: TGResolverRecordType; cancellable: PGCancellable; error: PPGError): PGList; cdecl;
     lookup_records_async: procedure(resolver: PGResolver; rrname: Pgchar; record_type: TGResolverRecordType; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
     lookup_records_finish: function(resolver: PGResolver; result_: PGAsyncResult; error: PPGError): PGList; cdecl;
-    _g_reserved4: procedure; cdecl;
-    _g_reserved5: procedure; cdecl;
-    _g_reserved6: procedure; cdecl;
+    lookup_by_name_with_flags_async: procedure(resolver: PGResolver; hostname: Pgchar; flags: TGResolverNameLookupFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+    lookup_by_name_with_flags_finish: function(resolver: PGResolver; result_: PGAsyncResult; error: PPGError): PGList; cdecl;
+    lookup_by_name_with_flags: function(resolver: PGResolver; hostname: Pgchar; flags: TGResolverNameLookupFlags; cancellable: PGCancellable; error: PPGError): PGList; cdecl;
   end;
 
+
+  { TGResolverError }
   PPGResolverError = ^PGResolverError;
   PGResolverError = ^TGResolverError;
 
+
+  { TGResource }
   PPGResource = ^PGResource;
   PGResource = ^TGResource;
 
+
+  { TGResourceLookupFlags }
   PPGResourceLookupFlags = ^PGResourceLookupFlags;
   PGResourceLookupFlags = ^TGResourceLookupFlags;
   TGResource = object
@@ -4254,12 +5573,18 @@ type
     function load(filename: Pgchar; error: PPGError): PGResource; cdecl; inline; static;
   end;
 
+
+  { TGResourceError }
   PPGResourceError = ^PGResourceError;
   PGResourceError = ^TGResourceError;
 
+
+  { TGResourceFlags }
   PPGResourceFlags = ^PGResourceFlags;
   PGResourceFlags = ^TGResourceFlags;
 
+
+  { TGSeekableIface }
   PPGSeekableIface = ^PGSeekableIface;
   PGSeekableIface = ^TGSeekableIface;
   TGSeekableIface = object
@@ -4271,30 +5596,46 @@ type
     truncate_fn: function(seekable: PGSeekable; offset: gint64; cancellable: PGCancellable; error: PPGError): gboolean; cdecl;
   end;
 
+
+  { TGSettings }
   PPGSettings = ^PGSettings;
   PGSettings = ^TGSettings;
 
+
+  { TGSettingsSchema }
   PPGSettingsSchema = ^PGSettingsSchema;
   PGSettingsSchema = ^TGSettingsSchema;
 
+
+  { TGSettingsBackend }
   PPGSettingsBackend = ^PGSettingsBackend;
   PGSettingsBackend = ^TGSettingsBackend;
 
+
+  { TGSettingsBindFlags }
   PPGSettingsBindFlags = ^PGSettingsBindFlags;
   PGSettingsBindFlags = ^TGSettingsBindFlags;
 
+
+  { TGSettingsBindGetMapping }
   PPGSettingsBindGetMapping = ^PGSettingsBindGetMapping;
   PGSettingsBindGetMapping = ^TGSettingsBindGetMapping;
   TGSettingsBindGetMapping = function(value: PGValue; variant: PGVariant; user_data: gpointer): gboolean; cdecl;
 
+
+  { TGSettingsBindSetMapping }
   PPGSettingsBindSetMapping = ^PGSettingsBindSetMapping;
   PGSettingsBindSetMapping = ^TGSettingsBindSetMapping;
   TGSettingsBindSetMapping = function(value: PGValue; expected_type: PGVariantType; user_data: gpointer): PGVariant; cdecl;
 
+
+  { TGSettingsGetMapping }
   PPGSettingsGetMapping = ^PGSettingsGetMapping;
   PGSettingsGetMapping = ^TGSettingsGetMapping;
   TGSettingsGetMapping = function(value: PGVariant; result_: Pgpointer; user_data: gpointer): gboolean; cdecl;
 
+
+  { TGSettingsPrivate }
   PPGSettingsPrivate = ^PGSettingsPrivate;
   PGSettingsPrivate = ^TGSettingsPrivate;
   TGSettings = object(TGObject)
@@ -4304,10 +5645,8 @@ type
     function new_with_backend(schema_id: Pgchar; backend: PGSettingsBackend): PGSettings; cdecl; inline; static;
     function new_with_backend_and_path(schema_id: Pgchar; backend: PGSettingsBackend; path: Pgchar): PGSettings; cdecl; inline; static;
     function new_with_path(schema_id: Pgchar; path: Pgchar): PGSettings; cdecl; inline; static;
-    function list_relocatable_schemas: PPgchar; cdecl; inline; static;
-    function list_schemas: PPgchar; cdecl; inline; static;
     procedure sync; cdecl; inline; static;
-    procedure unbind(object_: gpointer; property_: Pgchar); cdecl; inline; static;
+    procedure unbind(object_: PGObject; property_: Pgchar); cdecl; inline; static;
     procedure apply; cdecl; inline;
     procedure bind(key: Pgchar; object_: PGObject; property_: Pgchar; flags: TGSettingsBindFlags); cdecl; inline;
     procedure bind_with_mapping(key: Pgchar; object_: PGObject; property_: Pgchar; flags: TGSettingsBindFlags; get_mapping: TGSettingsBindGetMapping; set_mapping: TGSettingsBindSetMapping; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; inline;
@@ -4317,21 +5656,22 @@ type
     //procedure get(key: Pgchar; format: Pgchar; args: array of const); cdecl; inline;
     function get_boolean(key: Pgchar): gboolean; cdecl; inline;
     function get_child(name: Pgchar): PGSettings; cdecl; inline;
+    function get_default_value(key: Pgchar): PGVariant; cdecl; inline;
     function get_double(key: Pgchar): gdouble; cdecl; inline;
     function get_enum(key: Pgchar): gint; cdecl; inline;
     function get_flags(key: Pgchar): guint; cdecl; inline;
     function get_has_unapplied: gboolean; cdecl; inline;
     function get_int(key: Pgchar): gint; cdecl; inline;
+    function get_int64(key: Pgchar): gint64; cdecl; inline;
     function get_mapped(key: Pgchar; mapping: TGSettingsGetMapping; user_data: gpointer): gpointer; cdecl; inline;
-    function get_range(key: Pgchar): PGVariant; cdecl; inline;
     function get_string(key: Pgchar): Pgchar; cdecl; inline;
     function get_strv(key: Pgchar): PPgchar; cdecl; inline;
     function get_uint(key: Pgchar): guint; cdecl; inline;
+    function get_uint64(key: Pgchar): guint64; cdecl; inline;
+    function get_user_value(key: Pgchar): PGVariant; cdecl; inline;
     function get_value(key: Pgchar): PGVariant; cdecl; inline;
     function is_writable(name: Pgchar): gboolean; cdecl; inline;
     function list_children: PPgchar; cdecl; inline;
-    function list_keys: PPgchar; cdecl; inline;
-    function range_check(key: Pgchar; value: PGVariant): gboolean; cdecl; inline;
     procedure reset(key: Pgchar); cdecl; inline;
     procedure revert; cdecl; inline;
     //function set_(key: Pgchar; format: Pgchar; args: array of const): gboolean; cdecl; inline;
@@ -4340,35 +5680,82 @@ type
     function set_enum(key: Pgchar; value: gint): gboolean; cdecl; inline;
     function set_flags(key: Pgchar; value: guint): gboolean; cdecl; inline;
     function set_int(key: Pgchar; value: gint): gboolean; cdecl; inline;
+    function set_int64(key: Pgchar; value: gint64): gboolean; cdecl; inline;
     function set_string(key: Pgchar; value: Pgchar): gboolean; cdecl; inline;
     function set_strv(key: Pgchar; value: PPgchar): gboolean; cdecl; inline;
     function set_uint(key: Pgchar; value: guint): gboolean; cdecl; inline;
+    function set_uint64(key: Pgchar; value: guint64): gboolean; cdecl; inline;
     function set_value(key: Pgchar; value: PGVariant): gboolean; cdecl; inline;
     //property backend: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_backend  { property is writeable but setter not declared } ;
     //property delay_apply: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_delay_apply ;
     property has_unapplied: gboolean read get_has_unapplied ;
     //property path: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_path  { property is writeable but setter not declared } ;
-    //property schema: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_schema  { property is writeable but setter not declared } ;
     //property schema_id: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_schema_id  { property is writeable but setter not declared } ;
     //property settings_schema: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_settings_schema  { property is writeable but setter not declared } ;
   end;
+
+
+  { TGSettingsSchemaKey }
+  PPGSettingsSchemaKey = ^PGSettingsSchemaKey;
+  PGSettingsSchemaKey = ^TGSettingsSchemaKey;
   TGSettingsSchema = object
     function get_id: Pgchar; cdecl; inline;
+    function get_key(name: Pgchar): PGSettingsSchemaKey; cdecl; inline;
     function get_path: Pgchar; cdecl; inline;
+    function has_key(name: Pgchar): gboolean; cdecl; inline;
+    function list_children: PPgchar; cdecl; inline;
+    function list_keys: PPgchar; cdecl; inline;
     function ref: PGSettingsSchema; cdecl; inline;
     procedure unref; cdecl; inline;
   end;
 
-  TGSettingsBackend = record
+
+  { TGSettingsBackendPrivate }
+  PPGSettingsBackendPrivate = ^PGSettingsBackendPrivate;
+  PGSettingsBackendPrivate = ^TGSettingsBackendPrivate;
+  TGSettingsBackend = object(TGObject)
+    priv: PGSettingsBackendPrivate;
+    procedure flatten_tree(tree: PGTree; path: PPgchar; keys: PPPgchar; values: PPPGVariant); cdecl; inline; static;
+    function get_default: PGSettingsBackend; cdecl; inline; static;
+    procedure changed(key: Pgchar; origin_tag: gpointer); cdecl; inline;
+    procedure changed_tree(tree: PGTree; origin_tag: gpointer); cdecl; inline;
+    procedure keys_changed(path: Pgchar; items: PPgchar; origin_tag: gpointer); cdecl; inline;
+    procedure path_changed(path: Pgchar; origin_tag: gpointer); cdecl; inline;
+    procedure path_writable_changed(path: Pgchar); cdecl; inline;
+    procedure writable_changed(key: Pgchar); cdecl; inline;
   end;
-
-
 
   TGSettingsPrivate = record
   end;
 
 
 
+  TGSettingsBackendPrivate = record
+  end;
+
+
+
+
+  { TGSettingsBackendClass }
+  PPGSettingsBackendClass = ^PGSettingsBackendClass;
+  PGSettingsBackendClass = ^TGSettingsBackendClass;
+  TGSettingsBackendClass = object
+    parent_class: TGObjectClass;
+    read: function(backend: PGSettingsBackend; key: Pgchar; expected_type: PGVariantType; default_value: gboolean): PGVariant; cdecl;
+    get_writable: function(backend: PGSettingsBackend; key: Pgchar): gboolean; cdecl;
+    write: function(backend: PGSettingsBackend; key: Pgchar; value: PGVariant; origin_tag: gpointer): gboolean; cdecl;
+    write_tree: function(backend: PGSettingsBackend; tree: PGTree; origin_tag: gpointer): gboolean; cdecl;
+    reset: procedure(backend: PGSettingsBackend; key: Pgchar; origin_tag: gpointer); cdecl;
+    subscribe: procedure(backend: PGSettingsBackend; name: Pgchar); cdecl;
+    unsubscribe: procedure(backend: PGSettingsBackend; name: Pgchar); cdecl;
+    sync: procedure(backend: PGSettingsBackend); cdecl;
+    get_permission: function(backend: PGSettingsBackend; path: Pgchar): PGPermission; cdecl;
+    read_user_value: function(backend: PGSettingsBackend; key: Pgchar; expected_type: PGVariantType): PGVariant; cdecl;
+    padding: array [0..22] of gpointer;
+  end;
+
+
+  { TGSettingsClass }
   PPGSettingsClass = ^PGSettingsClass;
   PGSettingsClass = ^TGSettingsClass;
   TGSettingsClass = object
@@ -4379,29 +5766,43 @@ type
     change_event: function(settings: PGSettings; keys: PGQuark; n_keys: gint): gboolean; cdecl;
     padding: array [0..19] of gpointer;
   end;
+  TGSettingsSchemaKey = object
+    function get_default_value: PGVariant; cdecl; inline;
+    function get_description: Pgchar; cdecl; inline;
+    function get_name: Pgchar; cdecl; inline;
+    function get_range: PGVariant; cdecl; inline;
+    function get_summary: Pgchar; cdecl; inline;
+    function get_value_type: PGVariantType; cdecl; inline;
+    function range_check(value: PGVariant): gboolean; cdecl; inline;
+    function ref: PGSettingsSchemaKey; cdecl; inline;
+    procedure unref; cdecl; inline;
+  end;
 
+
+  { TGSettingsSchemaSource }
   PPGSettingsSchemaSource = ^PGSettingsSchemaSource;
   PGSettingsSchemaSource = ^TGSettingsSchemaSource;
   TGSettingsSchemaSource = object
     function new_from_directory(directory: Pgchar; parent: PGSettingsSchemaSource; trusted: gboolean; error: PPGError): PGSettingsSchemaSource; cdecl; inline; static;
+    procedure list_schemas(recursive: gboolean; non_relocatable: PPPgchar; relocatable: PPPgchar); cdecl; inline;
     function lookup(schema_id: Pgchar; recursive: gboolean): PGSettingsSchema; cdecl; inline;
     function ref: PGSettingsSchemaSource; cdecl; inline;
     procedure unref; cdecl; inline;
     function get_default: PGSettingsSchemaSource; cdecl; inline; static;
   end;
 
+
+  { TGSimpleActionGroup }
   PPGSimpleActionGroup = ^PGSimpleActionGroup;
   PGSimpleActionGroup = ^TGSimpleActionGroup;
 
+
+  { TGSimpleActionGroupPrivate }
   PPGSimpleActionGroupPrivate = ^PGSimpleActionGroupPrivate;
   PGSimpleActionGroupPrivate = ^TGSimpleActionGroupPrivate;
   TGSimpleActionGroup = object(TGObject)
     priv: PGSimpleActionGroupPrivate;
     function new: PGSimpleActionGroup; cdecl; inline; static;
-    procedure add_entries(entries: PGActionEntry; n_entries: gint; user_data: gpointer); cdecl; inline;
-    procedure insert(action: PGAction); cdecl; inline;
-    function lookup(action_name: Pgchar): PGAction; cdecl; inline;
-    procedure remove(action_name: Pgchar); cdecl; inline;
   end;
 
   TGSimpleActionGroupPrivate = record
@@ -4409,6 +5810,8 @@ type
 
 
 
+
+  { TGSimpleActionGroupClass }
   PPGSimpleActionGroupClass = ^PGSimpleActionGroupClass;
   PGSimpleActionGroupClass = ^TGSimpleActionGroupClass;
   TGSimpleActionGroupClass = object
@@ -4416,51 +5819,46 @@ type
     padding: array [0..11] of gpointer;
   end;
 
+
+  { TGSimpleAsyncResult }
   PPGSimpleAsyncResult = ^PGSimpleAsyncResult;
   PGSimpleAsyncResult = ^TGSimpleAsyncResult;
-
-  PPGSimpleAsyncThreadFunc = ^PGSimpleAsyncThreadFunc;
-  PGSimpleAsyncThreadFunc = ^TGSimpleAsyncThreadFunc;
-  TGSimpleAsyncThreadFunc = procedure(res: PGSimpleAsyncResult; object_: PGObject; cancellable: PGCancellable); cdecl;
   TGSimpleAsyncResult = object(TGObject)
-    function new(source_object: PGObject; callback: TGAsyncReadyCallback; user_data: gpointer; source_tag: gpointer): PGSimpleAsyncResult; cdecl; inline; static;
-    //function new_error(source_object: PGObject; callback: TGAsyncReadyCallback; user_data: gpointer; domain: TGQuark; code: gint; format: Pgchar; args: array of const): PGSimpleAsyncResult; cdecl; inline; static;
-    function new_from_error(source_object: PGObject; callback: TGAsyncReadyCallback; user_data: gpointer; error: PGError): PGSimpleAsyncResult; cdecl; inline; static;
-    function new_take_error(source_object: PGObject; callback: TGAsyncReadyCallback; user_data: gpointer; error: PGError): PGSimpleAsyncResult; cdecl; inline; static;
-    function is_valid(result_: PGAsyncResult; source: PGObject; source_tag: gpointer): gboolean; cdecl; inline; static;
-    procedure complete; cdecl; inline;
-    procedure complete_in_idle; cdecl; inline;
-    function get_op_res_gboolean: gboolean; cdecl; inline;
-    function get_op_res_gpointer: gpointer; cdecl; inline;
-    function get_op_res_gssize: gssize; cdecl; inline;
-    function get_source_tag: gpointer; cdecl; inline;
-    function propagate_error(error: PPGError): gboolean; cdecl; inline;
-    procedure run_in_thread(func: TGSimpleAsyncThreadFunc; io_priority: gint; cancellable: PGCancellable); cdecl; inline;
-    procedure set_check_cancellable(check_cancellable: PGCancellable); cdecl; inline;
-    //procedure set_error(domain: TGQuark; code: gint; format: Pgchar; args: array of const); cdecl; inline;
-    //procedure set_error_va(domain: TGQuark; code: gint; format: Pgchar; args: Tva_list); cdecl; inline;
-    procedure set_from_error(error: PGError); cdecl; inline;
-    procedure set_handle_cancellation(handle_cancellation: gboolean); cdecl; inline;
-    procedure set_op_res_gboolean(op_res: gboolean); cdecl; inline;
-    procedure set_op_res_gpointer(op_res: gpointer; destroy_op_res: TGDestroyNotify); cdecl; inline;
-    procedure set_op_res_gssize(op_res: gssize); cdecl; inline;
-    procedure take_error(error: PGError); cdecl; inline;
   end;
+  TGSimpleAsyncThreadFunc = procedure(res: PGSimpleAsyncResult; object_: PGObject; cancellable: PGCancellable); cdecl;
 
+
+  { TGSimpleAsyncResultClass }
   PPGSimpleAsyncResultClass = ^PGSimpleAsyncResultClass;
   PGSimpleAsyncResultClass = ^TGSimpleAsyncResultClass;
   TGSimpleAsyncResultClass = object
   end;
 
+
+  { TGSimpleIOStream }
+  PPGSimpleIOStream = ^PGSimpleIOStream;
+  PGSimpleIOStream = ^TGSimpleIOStream;
+  TGSimpleIOStream = object(TGIOStream)
+    function new(input_stream: PGInputStream; output_stream: PGOutputStream): PGSimpleIOStream; cdecl; inline; static;
+    //property input_stream1: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_input_stream  { property is writeable but setter not declared } ;
+    //property output_stream1: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_output_stream  { property is writeable but setter not declared } ;
+  end;
+
+
+  { TGSimplePermission }
   PPGSimplePermission = ^PGSimplePermission;
   PGSimplePermission = ^TGSimplePermission;
   TGSimplePermission = object(TGPermission)
     function new(allowed: gboolean): PGSimplePermission; cdecl; inline; static;
   end;
 
+
+  { TGSimpleProxyResolver }
   PPGSimpleProxyResolver = ^PGSimpleProxyResolver;
   PGSimpleProxyResolver = ^TGSimpleProxyResolver;
 
+
+  { TGSimpleProxyResolverPrivate }
   PPGSimpleProxyResolverPrivate = ^PGSimpleProxyResolverPrivate;
   PGSimpleProxyResolverPrivate = ^TGSimpleProxyResolverPrivate;
   TGSimpleProxyResolver = object(TGObject)
@@ -4478,6 +5876,8 @@ type
 
 
 
+
+  { TGSimpleProxyResolverClass }
   PPGSimpleProxyResolverClass = ^PGSimpleProxyResolverClass;
   PGSimpleProxyResolverClass = ^TGSimpleProxyResolverClass;
   TGSimpleProxyResolverClass = object
@@ -4489,22 +5889,28 @@ type
     _g_reserved5: procedure; cdecl;
   end;
 
+
+  { TGSocket }
   PPGSocket = ^PGSocket;
   PGSocket = ^TGSocket;
 
+
+  { TGSocketType }
   PPGSocketType = ^PGSocketType;
   PGSocketType = ^TGSocketType;
 
+
+  { TGSocketProtocol }
   PPGSocketProtocol = ^PGSocketProtocol;
   PGSocketProtocol = ^TGSocketProtocol;
 
+
+  { TGSocketConnection }
   PPGSocketConnection = ^PGSocketConnection;
   PGSocketConnection = ^TGSocketConnection;
 
-  PPPGSocketControlMessage = ^PPGSocketControlMessage;
-  PPGSocketControlMessage = ^PGSocketControlMessage;
-  PGSocketControlMessage = ^TGSocketControlMessage;
 
+  { TGSocketPrivate }
   PPGSocketPrivate = ^PGSocketPrivate;
   PGSocketPrivate = ^TGSocketPrivate;
   TGSocket = object(TGObject)
@@ -4516,7 +5922,7 @@ type
     function check_connect_result(error: PPGError): gboolean; cdecl; inline;
     function close(error: PPGError): gboolean; cdecl; inline;
     function condition_check(condition: TGIOCondition): TGIOCondition; cdecl; inline;
-    function condition_timed_wait(condition: TGIOCondition; timeout: gint64; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; inline;
+    function condition_timed_wait(condition: TGIOCondition; timeout_us: gint64; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; inline;
     function condition_wait(condition: TGIOCondition; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; inline;
     function connect(address: PGSocketAddress; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; inline;
     function connection_factory_create_connection: PGSocketConnection; cdecl; inline;
@@ -4541,14 +5947,19 @@ type
     function is_closed: gboolean; cdecl; inline;
     function is_connected: gboolean; cdecl; inline;
     function join_multicast_group(group: PGInetAddress; source_specific: gboolean; iface: Pgchar; error: PPGError): gboolean; cdecl; inline;
+    function join_multicast_group_ssm(group: PGInetAddress; source_specific: PGInetAddress; iface: Pgchar; error: PPGError): gboolean; cdecl; inline;
     function leave_multicast_group(group: PGInetAddress; source_specific: gboolean; iface: Pgchar; error: PPGError): gboolean; cdecl; inline;
+    function leave_multicast_group_ssm(group: PGInetAddress; source_specific: PGInetAddress; iface: Pgchar; error: PPGError): gboolean; cdecl; inline;
     function listen(error: PPGError): gboolean; cdecl; inline;
-    function receive(buffer: Pgchar; size: gsize; cancellable: PGCancellable; error: PPGError): gssize; cdecl; inline;
-    function receive_from(address: PPGSocketAddress; buffer: Pgchar; size: gsize; cancellable: PGCancellable; error: PPGError): gssize; cdecl; inline;
+    function receive(buffer: Pgchar; size: Pgsize; cancellable: PGCancellable; error: PPGError): gssize; cdecl; inline;
+    function receive_from(address: PPGSocketAddress; buffer: Pgchar; size: Pgsize; cancellable: PGCancellable; error: PPGError): gssize; cdecl; inline;
     function receive_message(address: PPGSocketAddress; vectors: PGInputVector; num_vectors: gint; messages: PPPGSocketControlMessage; num_messages: Pgint; flags: Pgint; cancellable: PGCancellable; error: PPGError): gssize; cdecl; inline;
-    function receive_with_blocking(buffer: Pgchar; size: gsize; blocking: gboolean; cancellable: PGCancellable; error: PPGError): gssize; cdecl; inline;
+    function receive_messages(messages: PGInputMessage; num_messages: guint; flags: gint; cancellable: PGCancellable; error: PPGError): gint; cdecl; inline;
+    function receive_with_blocking(buffer: Pgchar; size: Pgsize; blocking: gboolean; cancellable: PGCancellable; error: PPGError): gssize; cdecl; inline;
     function send(buffer: Pgchar; size: gsize; cancellable: PGCancellable; error: PPGError): gssize; cdecl; inline;
     function send_message(address: PGSocketAddress; vectors: PGOutputVector; num_vectors: gint; messages: PPGSocketControlMessage; num_messages: gint; flags: gint; cancellable: PGCancellable; error: PPGError): gssize; cdecl; inline;
+    function send_message_with_timeout(address: PGSocketAddress; vectors: PGOutputVector; num_vectors: gint; messages: PPGSocketControlMessage; num_messages: gint; flags: gint; timeout_us: gint64; bytes_written: Pgsize; cancellable: PGCancellable; error: PPGError): TGPollableReturn; cdecl; inline;
+    function send_messages(messages: PGOutputMessage; num_messages: guint; flags: gint; cancellable: PGCancellable; error: PPGError): gint; cdecl; inline;
     function send_to(address: PGSocketAddress; buffer: Pgchar; size: gsize; cancellable: PGCancellable; error: PPGError): gssize; cdecl; inline;
     function send_with_blocking(buffer: Pgchar; size: gsize; blocking: gboolean; cancellable: PGCancellable; error: PPGError): gssize; cdecl; inline;
     procedure set_blocking(blocking: gboolean); cdecl; inline;
@@ -4578,6 +5989,8 @@ type
     //property type_: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_type  { property is writeable but setter not declared } ;
   end;
 
+
+  { TGSocketConnectionPrivate }
   PPGSocketConnectionPrivate = ^PGSocketConnectionPrivate;
   PGSocketConnectionPrivate = ^TGSocketConnectionPrivate;
   TGSocketConnection = object(TGIOStream)
@@ -4594,22 +6007,13 @@ type
     property socket: PGSocket read get_socket  { property is writeable but setter not declared } ;
   end;
 
-  PPGSocketControlMessagePrivate = ^PGSocketControlMessagePrivate;
-  PGSocketControlMessagePrivate = ^TGSocketControlMessagePrivate;
-  TGSocketControlMessage = object(TGObject)
-    priv: PGSocketControlMessagePrivate;
-    function deserialize(level: gint; type_: gint; size: gsize; data: guint8): PGSocketControlMessage; cdecl; inline; static;
-    function get_level: gint; cdecl; inline;
-    function get_msg_type: gint; cdecl; inline;
-    function get_size: gsize; cdecl; inline;
-    procedure serialize(data: gpointer); cdecl; inline;
-  end;
-
   TGSocketPrivate = record
   end;
 
 
 
+
+  { TGSocketClass }
   PPGSocketClass = ^PGSocketClass;
   PGSocketClass = ^TGSocketClass;
   TGSocketClass = object
@@ -4626,12 +6030,13 @@ type
     _g_reserved10: procedure; cdecl;
   end;
 
+
+  { TGSocketClient }
   PPGSocketClient = ^PGSocketClient;
   PGSocketClient = ^TGSocketClient;
 
-  PPGTlsCertificateFlags = ^PGTlsCertificateFlags;
-  PGTlsCertificateFlags = ^TGTlsCertificateFlags;
 
+  { TGSocketClientPrivate }
   PPGSocketClientPrivate = ^PGSocketClientPrivate;
   PGSocketClientPrivate = ^TGSocketClientPrivate;
   TGSocketClient = object(TGObject)
@@ -4658,7 +6063,6 @@ type
     function get_socket_type: TGSocketType; cdecl; inline;
     function get_timeout: guint; cdecl; inline;
     function get_tls: gboolean; cdecl; inline;
-    function get_tls_validation_flags: TGTlsCertificateFlags; cdecl; inline;
     procedure set_enable_proxy(enable: gboolean); cdecl; inline;
     procedure set_family(family: TGSocketFamily); cdecl; inline;
     procedure set_local_address(address: PGSocketAddress); cdecl; inline;
@@ -4667,7 +6071,6 @@ type
     procedure set_socket_type(type_: TGSocketType); cdecl; inline;
     procedure set_timeout(timeout: guint); cdecl; inline;
     procedure set_tls(tls: gboolean); cdecl; inline;
-    procedure set_tls_validation_flags(flags: TGTlsCertificateFlags); cdecl; inline;
     property enable_proxy: gboolean read get_enable_proxy write set_enable_proxy;
     property family: TGSocketFamily read get_family write set_family;
     property local_address: PGSocketAddress read get_local_address write set_local_address;
@@ -4675,10 +6078,11 @@ type
     property proxy_resolver: PGProxyResolver read get_proxy_resolver write set_proxy_resolver;
     property timeout: guint read get_timeout write set_timeout;
     property tls: gboolean read get_tls write set_tls;
-    property tls_validation_flags: TGTlsCertificateFlags read get_tls_validation_flags write set_tls_validation_flags;
     //property type_: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_type  { property is writeable but setter not declared } ;
   end;
 
+
+  { TGSocketClientEvent }
   PPGSocketClientEvent = ^PGSocketClientEvent;
   PGSocketClientEvent = ^TGSocketClientEvent;
 
@@ -4687,6 +6091,8 @@ type
 
 
 
+
+  { TGSocketClientClass }
   PPGSocketClientClass = ^PGSocketClientClass;
   PGSocketClientClass = ^TGSocketClientClass;
   TGSocketClientClass = object
@@ -4698,12 +6104,15 @@ type
     _g_reserved4: procedure; cdecl;
   end;
 
+
+  { TGSocketConnectableIface }
   PPGSocketConnectableIface = ^PGSocketConnectableIface;
   PGSocketConnectableIface = ^TGSocketConnectableIface;
   TGSocketConnectableIface = object
     g_iface: TGTypeInterface;
     enumerate: function(connectable: PGSocketConnectable): PGSocketAddressEnumerator; cdecl;
     proxy_enumerate: function(connectable: PGSocketConnectable): PGSocketAddressEnumerator; cdecl;
+    to_string: function(connectable: PGSocketConnectable): Pgchar; cdecl;
   end;
 
   TGSocketConnectionPrivate = record
@@ -4711,6 +6120,8 @@ type
 
 
 
+
+  { TGSocketConnectionClass }
   PPGSocketConnectionClass = ^PGSocketConnectionClass;
   PGSocketConnectionClass = ^TGSocketConnectionClass;
   TGSocketConnectionClass = object
@@ -4728,6 +6139,8 @@ type
 
 
 
+
+  { TGSocketControlMessageClass }
   PPGSocketControlMessageClass = ^PGSocketControlMessageClass;
   PGSocketControlMessageClass = ^TGSocketControlMessageClass;
   TGSocketControlMessageClass = object
@@ -4744,9 +6157,13 @@ type
     _g_reserved5: procedure; cdecl;
   end;
 
+
+  { TGSocketListener }
   PPGSocketListener = ^PGSocketListener;
   PGSocketListener = ^TGSocketListener;
 
+
+  { TGSocketListenerPrivate }
   PPGSocketListenerPrivate = ^PGSocketListenerPrivate;
   PGSocketListenerPrivate = ^TGSocketListenerPrivate;
   TGSocketListener = object(TGObject)
@@ -4767,17 +6184,24 @@ type
     //property listen_backlog: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_listen_backlog  { property is writeable but setter not declared } ;
   end;
 
+
+  { TGSocketListenerEvent }
+  PPGSocketListenerEvent = ^PGSocketListenerEvent;
+  PGSocketListenerEvent = ^TGSocketListenerEvent;
+
   TGSocketListenerPrivate = record
   end;
 
 
 
+
+  { TGSocketListenerClass }
   PPGSocketListenerClass = ^PGSocketListenerClass;
   PGSocketListenerClass = ^TGSocketListenerClass;
   TGSocketListenerClass = object
     parent_class: TGObjectClass;
     changed: procedure(listener: PGSocketListener); cdecl;
-    _g_reserved1: procedure; cdecl;
+    event: procedure(listener: PGSocketListener; event: TGSocketListenerEvent; socket: PGSocket); cdecl;
     _g_reserved2: procedure; cdecl;
     _g_reserved3: procedure; cdecl;
     _g_reserved4: procedure; cdecl;
@@ -4785,12 +6209,18 @@ type
     _g_reserved6: procedure; cdecl;
   end;
 
+
+  { TGSocketMsgFlags }
   PPGSocketMsgFlags = ^PGSocketMsgFlags;
   PGSocketMsgFlags = ^TGSocketMsgFlags;
 
+
+  { TGSocketService }
   PPGSocketService = ^PGSocketService;
   PGSocketService = ^TGSocketService;
 
+
+  { TGSocketServicePrivate }
   PPGSocketServicePrivate = ^PGSocketServicePrivate;
   PGSocketServicePrivate = ^TGSocketServicePrivate;
   TGSocketService = object(TGSocketListener)
@@ -4799,6 +6229,7 @@ type
     function is_active: gboolean; cdecl; inline;
     procedure start; cdecl; inline;
     procedure stop; cdecl; inline;
+    //property active: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_active  { property is writeable but setter not declared } ;
   end;
 
   TGSocketServicePrivate = record
@@ -4806,6 +6237,8 @@ type
 
 
 
+
+  { TGSocketServiceClass }
   PPGSocketServiceClass = ^PGSocketServiceClass;
   PGSocketServiceClass = ^TGSocketServiceClass;
   TGSocketServiceClass = object
@@ -4818,8 +6251,10 @@ type
     _g_reserved5: procedure; cdecl;
     _g_reserved6: procedure; cdecl;
   end;
-  TGSocketSourceFunc = function(socket: PGSocket; condition: TGIOCondition; user_data: gpointer): gboolean; cdecl;
+  TGSocketSourceFunc = function(socket: PGSocket; condition: TGIOCondition; data: gpointer): gboolean; cdecl;
 
+
+  { TGSrvTarget }
   PPGSrvTarget = ^PGSrvTarget;
   PGSrvTarget = ^TGSrvTarget;
   TGSrvTarget = object
@@ -4833,6 +6268,8 @@ type
     function list_sort(targets: PGList): PGList; cdecl; inline; static;
   end;
 
+
+  { TGStaticResource }
   PPGStaticResource = ^PGStaticResource;
   PGStaticResource = ^TGStaticResource;
   TGStaticResource = object
@@ -4846,9 +6283,78 @@ type
     procedure init; cdecl; inline;
   end;
 
+
+  { TGSubprocess }
+  PPGSubprocess = ^PGSubprocess;
+  PGSubprocess = ^TGSubprocess;
+
+
+  { TGSubprocessFlags }
+  PPGSubprocessFlags = ^PGSubprocessFlags;
+  PGSubprocessFlags = ^TGSubprocessFlags;
+  TGSubprocess = object(TGObject)
+    //function new(flags: TGSubprocessFlags; error: PPGError; argv0: Pgchar; args: array of const): PGSubprocess; cdecl; inline; static;
+    function newv(argv: PPgchar; flags: TGSubprocessFlags; error: PPGError): PGSubprocess; cdecl; inline; static;
+    function communicate(stdin_buf: PGBytes; cancellable: PGCancellable; stdout_buf: PPGBytes; stderr_buf: PPGBytes; error: PPGError): gboolean; cdecl; inline;
+    procedure communicate_async(stdin_buf: PGBytes; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function communicate_finish(result_: PGAsyncResult; stdout_buf: PPGBytes; stderr_buf: PPGBytes; error: PPGError): gboolean; cdecl; inline;
+    function communicate_utf8(stdin_buf: Pgchar; cancellable: PGCancellable; stdout_buf: PPgchar; stderr_buf: PPgchar; error: PPGError): gboolean; cdecl; inline;
+    procedure communicate_utf8_async(stdin_buf: Pgchar; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function communicate_utf8_finish(result_: PGAsyncResult; stdout_buf: PPgchar; stderr_buf: PPgchar; error: PPGError): gboolean; cdecl; inline;
+    procedure force_exit; cdecl; inline;
+    function get_exit_status: gint; cdecl; inline;
+    function get_identifier: Pgchar; cdecl; inline;
+    function get_if_exited: gboolean; cdecl; inline;
+    function get_if_signaled: gboolean; cdecl; inline;
+    function get_status: gint; cdecl; inline;
+    function get_stderr_pipe: PGInputStream; cdecl; inline;
+    function get_stdin_pipe: PGOutputStream; cdecl; inline;
+    function get_stdout_pipe: PGInputStream; cdecl; inline;
+    function get_successful: gboolean; cdecl; inline;
+    function get_term_sig: gint; cdecl; inline;
+    procedure send_signal(signal_num: gint); cdecl; inline;
+    function wait(cancellable: PGCancellable; error: PPGError): gboolean; cdecl; inline;
+    procedure wait_async(cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function wait_check(cancellable: PGCancellable; error: PPGError): gboolean; cdecl; inline;
+    procedure wait_check_async(cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
+    function wait_check_finish(result_: PGAsyncResult; error: PPGError): gboolean; cdecl; inline;
+    function wait_finish(result_: PGAsyncResult; error: PPGError): gboolean; cdecl; inline;
+    //property argv: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_argv  { property is writeable but setter not declared } ;
+    //property flags: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_flags  { property is writeable but setter not declared } ;
+  end;
+
+
+  { TGSubprocessLauncher }
+  PPGSubprocessLauncher = ^PGSubprocessLauncher;
+  PGSubprocessLauncher = ^TGSubprocessLauncher;
+  TGSubprocessLauncher = object(TGObject)
+    function new(flags: TGSubprocessFlags): PGSubprocessLauncher; cdecl; inline; static;
+    function getenv(variable: Pgchar): Pgchar; cdecl; inline;
+    procedure set_child_setup(child_setup: TGSpawnChildSetupFunc; user_data: gpointer; destroy_notify: TGDestroyNotify); cdecl; inline;
+    procedure set_cwd(cwd: Pgchar); cdecl; inline;
+    procedure set_environ(env: PPgchar); cdecl; inline;
+    procedure set_flags(flags: TGSubprocessFlags); cdecl; inline;
+    procedure set_stderr_file_path(path: Pgchar); cdecl; inline;
+    procedure set_stdin_file_path(path: Pgchar); cdecl; inline;
+    procedure set_stdout_file_path(path: Pgchar); cdecl; inline;
+    procedure setenv(variable: Pgchar; value: Pgchar; overwrite: gboolean); cdecl; inline;
+    //function spawn(error: PPGError; argv0: Pgchar; args: array of const): PGSubprocess; cdecl; inline;
+    function spawnv(argv: PPgchar; error: PPGError): PGSubprocess; cdecl; inline;
+    procedure take_fd(source_fd: gint; target_fd: gint); cdecl; inline;
+    procedure take_stderr_fd(fd: gint); cdecl; inline;
+    procedure take_stdin_fd(fd: gint); cdecl; inline;
+    procedure take_stdout_fd(fd: gint); cdecl; inline;
+    procedure unsetenv(variable: Pgchar); cdecl; inline;
+    //property flags: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_flags  { property is writeable but setter not declared } ;
+  end;
+
+
+  { TGTask }
   PPGTask = ^PGTask;
   PGTask = ^TGTask;
 
+
+  { TGTaskThreadFunc }
   PPGTaskThreadFunc = ^PGTaskThreadFunc;
   PGTaskThreadFunc = ^TGTaskThreadFunc;
   TGTaskThreadFunc = procedure(task: PGTask; source_object: PGObject; task_data: gpointer; cancellable: PGCancellable); cdecl;
@@ -4860,7 +6366,9 @@ type
     procedure attach_source(source: PGSource; callback: TGSourceFunc); cdecl; inline;
     function get_cancellable: PGCancellable; cdecl; inline;
     function get_check_cancellable: gboolean; cdecl; inline;
+    function get_completed: gboolean; cdecl; inline;
     function get_context: PGMainContext; cdecl; inline;
+    function get_name: Pgchar; cdecl; inline;
     function get_priority: gint; cdecl; inline;
     function get_return_on_cancel: gboolean; cdecl; inline;
     function get_source_object: PGObject; cdecl; inline;
@@ -4870,29 +6378,40 @@ type
     function propagate_boolean(error: PPGError): gboolean; cdecl; inline;
     function propagate_int(error: PPGError): gssize; cdecl; inline;
     function propagate_pointer(error: PPGError): gpointer; cdecl; inline;
+    function propagate_value(value: PGValue; error: PPGError): gboolean; cdecl; inline;
     procedure return_boolean(result_: gboolean); cdecl; inline;
     procedure return_error(error: PGError); cdecl; inline;
     function return_error_if_cancelled: gboolean; cdecl; inline;
     procedure return_int(result_: gssize); cdecl; inline;
     //procedure return_new_error(domain: TGQuark; code: gint; format: Pgchar; args: array of const); cdecl; inline;
     procedure return_pointer(result_: gpointer; result_destroy: TGDestroyNotify); cdecl; inline;
+    procedure return_value(result_: PGValue); cdecl; inline;
     procedure run_in_thread(task_func: TGTaskThreadFunc); cdecl; inline;
     procedure run_in_thread_sync(task_func: TGTaskThreadFunc); cdecl; inline;
     procedure set_check_cancellable(check_cancellable: gboolean); cdecl; inline;
+    procedure set_name(name: Pgchar); cdecl; inline;
     procedure set_priority(priority: gint); cdecl; inline;
     function set_return_on_cancel(return_on_cancel: gboolean): gboolean; cdecl; inline;
     procedure set_source_tag(source_tag: gpointer); cdecl; inline;
+    //procedure set_static_name(name: Pgchar); cdecl; inline;
     procedure set_task_data(task_data: gpointer; task_data_destroy: TGDestroyNotify); cdecl; inline;
+    property completed: gboolean read get_completed ;
   end;
 
+
+  { TGTaskClass }
   PPGTaskClass = ^PGTaskClass;
   PGTaskClass = ^TGTaskClass;
   TGTaskClass = object
   end;
 
+
+  { TGTcpConnection }
   PPGTcpConnection = ^PGTcpConnection;
   PGTcpConnection = ^TGTcpConnection;
 
+
+  { TGTcpConnectionPrivate }
   PPGTcpConnectionPrivate = ^PGTcpConnectionPrivate;
   PGTcpConnectionPrivate = ^TGTcpConnectionPrivate;
   TGTcpConnection = object(TGSocketConnection)
@@ -4907,15 +6426,21 @@ type
 
 
 
+
+  { TGTcpConnectionClass }
   PPGTcpConnectionClass = ^PGTcpConnectionClass;
   PGTcpConnectionClass = ^TGTcpConnectionClass;
   TGTcpConnectionClass = object
     parent_class: TGSocketConnectionClass;
   end;
 
+
+  { TGTcpWrapperConnection }
   PPGTcpWrapperConnection = ^PGTcpWrapperConnection;
   PGTcpWrapperConnection = ^TGTcpWrapperConnection;
 
+
+  { TGTcpWrapperConnectionPrivate }
   PPGTcpWrapperConnectionPrivate = ^PGTcpWrapperConnectionPrivate;
   PGTcpWrapperConnectionPrivate = ^TGTcpWrapperConnectionPrivate;
   TGTcpWrapperConnection = object(TGTcpConnection)
@@ -4930,15 +6455,21 @@ type
 
 
 
+
+  { TGTcpWrapperConnectionClass }
   PPGTcpWrapperConnectionClass = ^PGTcpWrapperConnectionClass;
   PGTcpWrapperConnectionClass = ^TGTcpWrapperConnectionClass;
   TGTcpWrapperConnectionClass = object
     parent_class: TGTcpConnectionClass;
   end;
 
+
+  { TGTestDBus }
   PPGTestDBus = ^PGTestDBus;
   PGTestDBus = ^TGTestDBus;
 
+
+  { TGTestDBusFlags }
   PPGTestDBusFlags = ^PGTestDBusFlags;
   PGTestDBusFlags = ^TGTestDBusFlags;
   TGTestDBus = object(TGObject)
@@ -4953,6 +6484,8 @@ type
     property flags: TGTestDBusFlags read get_flags  { property is writeable but setter not declared } ;
   end;
 
+
+  { TGThemedIcon }
   PPGThemedIcon = ^PGThemedIcon;
   PGThemedIcon = ^TGThemedIcon;
   TGThemedIcon = object(TGObject)
@@ -4967,14 +6500,20 @@ type
     //property use_default_fallbacks: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_use_default_fallbacks  { property is writeable but setter not declared } ;
   end;
 
+
+  { TGThemedIconClass }
   PPGThemedIconClass = ^PGThemedIconClass;
   PGThemedIconClass = ^TGThemedIconClass;
   TGThemedIconClass = object
   end;
 
+
+  { TGThreadedSocketService }
   PPGThreadedSocketService = ^PGThreadedSocketService;
   PGThreadedSocketService = ^TGThreadedSocketService;
 
+
+  { TGThreadedSocketServicePrivate }
   PPGThreadedSocketServicePrivate = ^PGThreadedSocketServicePrivate;
   PGThreadedSocketServicePrivate = ^TGThreadedSocketServicePrivate;
   TGThreadedSocketService = object(TGSocketService)
@@ -4988,6 +6527,8 @@ type
 
 
 
+
+  { TGThreadedSocketServiceClass }
   PPGThreadedSocketServiceClass = ^PGThreadedSocketServiceClass;
   PGThreadedSocketServiceClass = ^TGThreadedSocketServiceClass;
   TGThreadedSocketServiceClass = object
@@ -5000,55 +6541,26 @@ type
     _g_reserved5: procedure; cdecl;
   end;
 
-  PPGTlsAuthenticationMode = ^PGTlsAuthenticationMode;
-  PGTlsAuthenticationMode = ^TGTlsAuthenticationMode;
 
+  { TGTlsBackend }
   PPGTlsBackend = ^PGTlsBackend;
   PGTlsBackend = ^TGTlsBackend;
-
-  PPGTlsDatabase = ^PGTlsDatabase;
-  PGTlsDatabase = ^TGTlsDatabase;
   TGTlsBackend = object
     function get_default: PGTlsBackend; cdecl; inline; static;
     function get_certificate_type: TGType; cdecl; inline;
     function get_client_connection_type: TGType; cdecl; inline;
     function get_default_database: PGTlsDatabase; cdecl; inline;
+    function get_dtls_client_connection_type: TGType; cdecl; inline;
+    function get_dtls_server_connection_type: TGType; cdecl; inline;
     function get_file_database_type: TGType; cdecl; inline;
     function get_server_connection_type: TGType; cdecl; inline;
+    procedure set_default_database(database: PGTlsDatabase); cdecl; inline;
+    function supports_dtls: gboolean; cdecl; inline;
     function supports_tls: gboolean; cdecl; inline;
   end;
 
-  PPGTlsCertificate = ^PGTlsCertificate;
-  PGTlsCertificate = ^TGTlsCertificate;
 
-  PPGTlsInteraction = ^PGTlsInteraction;
-  PGTlsInteraction = ^TGTlsInteraction;
-
-  PPGTlsDatabaseLookupFlags = ^PGTlsDatabaseLookupFlags;
-  PGTlsDatabaseLookupFlags = ^TGTlsDatabaseLookupFlags;
-
-  PPGTlsDatabaseVerifyFlags = ^PGTlsDatabaseVerifyFlags;
-  PGTlsDatabaseVerifyFlags = ^TGTlsDatabaseVerifyFlags;
-
-  PPGTlsDatabasePrivate = ^PGTlsDatabasePrivate;
-  PGTlsDatabasePrivate = ^TGTlsDatabasePrivate;
-  TGTlsDatabase = object(TGObject)
-    priv: PGTlsDatabasePrivate;
-    function create_certificate_handle(certificate: PGTlsCertificate): Pgchar; cdecl; inline;
-    function lookup_certificate_for_handle(handle: Pgchar; interaction: PGTlsInteraction; flags: TGTlsDatabaseLookupFlags; cancellable: PGCancellable; error: PPGError): PGTlsCertificate; cdecl; inline;
-    procedure lookup_certificate_for_handle_async(handle: Pgchar; interaction: PGTlsInteraction; flags: TGTlsDatabaseLookupFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
-    function lookup_certificate_for_handle_finish(result_: PGAsyncResult; error: PPGError): PGTlsCertificate; cdecl; inline;
-    function lookup_certificate_issuer(certificate: PGTlsCertificate; interaction: PGTlsInteraction; flags: TGTlsDatabaseLookupFlags; cancellable: PGCancellable; error: PPGError): PGTlsCertificate; cdecl; inline;
-    procedure lookup_certificate_issuer_async(certificate: PGTlsCertificate; interaction: PGTlsInteraction; flags: TGTlsDatabaseLookupFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
-    function lookup_certificate_issuer_finish(result_: PGAsyncResult; error: PPGError): PGTlsCertificate; cdecl; inline;
-    function lookup_certificates_issued_by(issuer_raw_dn: Pguint8; interaction: PGTlsInteraction; flags: TGTlsDatabaseLookupFlags; cancellable: PGCancellable; error: PPGError): PGList; cdecl; inline;
-    procedure lookup_certificates_issued_by_async(issuer_raw_dn: Pguint8; interaction: PGTlsInteraction; flags: TGTlsDatabaseLookupFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
-    function lookup_certificates_issued_by_finish(result_: PGAsyncResult; error: PPGError): PGList; cdecl; inline;
-    function verify_chain(chain: PGTlsCertificate; purpose: Pgchar; identity: PGSocketConnectable; interaction: PGTlsInteraction; flags: TGTlsDatabaseVerifyFlags; cancellable: PGCancellable; error: PPGError): TGTlsCertificateFlags; cdecl; inline;
-    procedure verify_chain_async(chain: PGTlsCertificate; purpose: Pgchar; identity: PGSocketConnectable; interaction: PGTlsInteraction; flags: TGTlsDatabaseVerifyFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
-    function verify_chain_finish(result_: PGAsyncResult; error: PPGError): TGTlsCertificateFlags; cdecl; inline;
-  end;
-
+  { TGTlsBackendInterface }
   PPGTlsBackendInterface = ^PGTlsBackendInterface;
   PGTlsBackendInterface = ^TGTlsBackendInterface;
   TGTlsBackendInterface = object
@@ -5059,24 +6571,9 @@ type
     get_server_connection_type: function: TGType; cdecl;
     get_file_database_type: function: TGType; cdecl;
     get_default_database: function(backend: PGTlsBackend): PGTlsDatabase; cdecl;
-  end;
-
-  PPGTlsCertificatePrivate = ^PGTlsCertificatePrivate;
-  PGTlsCertificatePrivate = ^TGTlsCertificatePrivate;
-  TGTlsCertificate = object(TGObject)
-    priv: PGTlsCertificatePrivate;
-    function new_from_file(file_: Pgchar; error: PPGError): PGTlsCertificate; cdecl; inline; static;
-    function new_from_files(cert_file: Pgchar; key_file: Pgchar; error: PPGError): PGTlsCertificate; cdecl; inline; static;
-    function new_from_pem(data: Pgchar; length: gssize; error: PPGError): PGTlsCertificate; cdecl; inline; static;
-    function list_new_from_file(file_: Pgchar; error: PPGError): PGList; cdecl; inline; static;
-    function get_issuer: PGTlsCertificate; cdecl; inline;
-    function is_same(cert_two: PGTlsCertificate): gboolean; cdecl; inline;
-    function verify(identity: PGSocketConnectable; trusted_ca: PGTlsCertificate): TGTlsCertificateFlags; cdecl; inline;
-    //property certificate: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_certificate  { property is writeable but setter not declared } ;
-    //property certificate_pem: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_certificate_pem  { property is writeable but setter not declared } ;
-    property issuer: PGTlsCertificate read get_issuer  { property is writeable but setter not declared } ;
-    //property private_key: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_private_key  { property is writeable but setter not declared } ;
-    //property private_key_pem: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_private_key_pem  { property is writeable but setter not declared } ;
+    supports_dtls: function(backend: PGTlsBackend): gboolean; cdecl;
+    get_dtls_client_connection_type: function: TGType; cdecl;
+    get_dtls_server_connection_type: function: TGType; cdecl;
   end;
 
   TGTlsCertificatePrivate = record
@@ -5084,6 +6581,8 @@ type
 
 
 
+
+  { TGTlsCertificateClass }
   PPGTlsCertificateClass = ^PGTlsCertificateClass;
   PGTlsCertificateClass = ^TGTlsCertificateClass;
   TGTlsCertificateClass = object
@@ -5092,80 +6591,66 @@ type
     padding: array [0..7] of gpointer;
   end;
 
+
+  { TGTlsChannelBindingError }
+  PPGTlsChannelBindingError = ^PGTlsChannelBindingError;
+  PGTlsChannelBindingError = ^TGTlsChannelBindingError;
+
+
+  { TGTlsClientConnection }
   PPGTlsClientConnection = ^PGTlsClientConnection;
   PGTlsClientConnection = ^TGTlsClientConnection;
   TGTlsClientConnection = object
     function new(base_io_stream: PGIOStream; server_identity: PGSocketConnectable; error: PPGError): PGTlsClientConnection; cdecl; inline; static;
+    procedure copy_session_state(source: PGTlsClientConnection); cdecl; inline;
     function get_accepted_cas: PGList; cdecl; inline;
     function get_server_identity: PGSocketConnectable; cdecl; inline;
-    function get_use_ssl3: gboolean; cdecl; inline;
-    function get_validation_flags: TGTlsCertificateFlags; cdecl; inline;
     procedure set_server_identity(identity: PGSocketConnectable); cdecl; inline;
-    procedure set_use_ssl3(use_ssl3: gboolean); cdecl; inline;
-    procedure set_validation_flags(flags: TGTlsCertificateFlags); cdecl; inline;
     property accepted_cas: PGList read get_accepted_cas ;
     property server_identity: PGSocketConnectable read get_server_identity write set_server_identity;
-    property use_ssl3: gboolean read get_use_ssl3 write set_use_ssl3;
-    property validation_flags: TGTlsCertificateFlags read get_validation_flags write set_validation_flags;
   end;
 
+
+  { TGTlsClientConnectionInterface }
   PPGTlsClientConnectionInterface = ^PGTlsClientConnectionInterface;
   PGTlsClientConnectionInterface = ^TGTlsClientConnectionInterface;
   TGTlsClientConnectionInterface = object
     g_iface: TGTypeInterface;
+    copy_session_state: procedure(conn: PGTlsClientConnection; source: PGTlsClientConnection); cdecl;
   end;
 
-  PPGTlsConnection = ^PGTlsConnection;
-  PGTlsConnection = ^TGTlsConnection;
 
-  PPGTlsRehandshakeMode = ^PGTlsRehandshakeMode;
-  PGTlsRehandshakeMode = ^TGTlsRehandshakeMode;
-
+  { TGTlsConnectionPrivate }
   PPGTlsConnectionPrivate = ^PGTlsConnectionPrivate;
   PGTlsConnectionPrivate = ^TGTlsConnectionPrivate;
   TGTlsConnection = object(TGIOStream)
     priv1: PGTlsConnectionPrivate;
     function emit_accept_certificate(peer_cert: PGTlsCertificate; errors: TGTlsCertificateFlags): gboolean; cdecl; inline;
     function get_certificate: PGTlsCertificate; cdecl; inline;
+    function get_channel_binding_data(type_: TGTlsChannelBindingType; data: Pguint8; error: PPGError): gboolean; cdecl; inline;
     function get_database: PGTlsDatabase; cdecl; inline;
     function get_interaction: PGTlsInteraction; cdecl; inline;
+    function get_negotiated_protocol: Pgchar; cdecl; inline;
     function get_peer_certificate: PGTlsCertificate; cdecl; inline;
     function get_peer_certificate_errors: TGTlsCertificateFlags; cdecl; inline;
-    function get_rehandshake_mode: TGTlsRehandshakeMode; cdecl; inline;
     function get_require_close_notify: gboolean; cdecl; inline;
     function handshake(cancellable: PGCancellable; error: PPGError): gboolean; cdecl; inline;
     procedure handshake_async(io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
     function handshake_finish(result_: PGAsyncResult; error: PPGError): gboolean; cdecl; inline;
+    procedure set_advertised_protocols(protocols: PPgchar); cdecl; inline;
     procedure set_certificate(certificate: PGTlsCertificate); cdecl; inline;
     procedure set_database(database: PGTlsDatabase); cdecl; inline;
     procedure set_interaction(interaction: PGTlsInteraction); cdecl; inline;
-    procedure set_rehandshake_mode(mode: TGTlsRehandshakeMode); cdecl; inline;
     procedure set_require_close_notify(require_close_notify: gboolean); cdecl; inline;
+    //property advertised_protocols: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_advertised_protocols  { property is writeable but setter not declared } ;
     //property base_io_stream: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_base_io_stream  { property is writeable but setter not declared } ;
     property certificate: PGTlsCertificate read get_certificate write set_certificate;
     property database: PGTlsDatabase read get_database write set_database;
     property interaction: PGTlsInteraction read get_interaction write set_interaction;
+    property negotiated_protocol: Pgchar read get_negotiated_protocol ;
     property peer_certificate: PGTlsCertificate read get_peer_certificate ;
     property peer_certificate_errors: TGTlsCertificateFlags read get_peer_certificate_errors ;
-    property rehandshake_mode: TGTlsRehandshakeMode read get_rehandshake_mode write set_rehandshake_mode;
     property require_close_notify: gboolean read get_require_close_notify write set_require_close_notify;
-    //property use_system_certdb: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_use_system_certdb  { property is writeable but setter not declared } ;
-  end;
-
-  PPGTlsInteractionResult = ^PGTlsInteractionResult;
-  PGTlsInteractionResult = ^TGTlsInteractionResult;
-
-  PPGTlsPassword = ^PGTlsPassword;
-  PGTlsPassword = ^TGTlsPassword;
-
-  PPGTlsInteractionPrivate = ^PGTlsInteractionPrivate;
-  PGTlsInteractionPrivate = ^TGTlsInteractionPrivate;
-  TGTlsInteraction = object(TGObject)
-    priv: PGTlsInteractionPrivate;
-    function ask_password(password: PGTlsPassword; cancellable: PGCancellable; error: PPGError): TGTlsInteractionResult; cdecl; inline;
-    procedure ask_password_async(password: PGTlsPassword; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; inline;
-    function ask_password_finish(result_: PGAsyncResult; error: PPGError): TGTlsInteractionResult; cdecl; inline;
-    function invoke_ask_password(password: PGTlsPassword; cancellable: PGCancellable; error: PPGError): TGTlsInteractionResult; cdecl; inline;
   end;
 
   TGTlsConnectionPrivate = record
@@ -5173,6 +6658,8 @@ type
 
 
 
+
+  { TGTlsConnectionClass }
   PPGTlsConnectionClass = ^PGTlsConnectionClass;
   PGTlsConnectionClass = ^TGTlsConnectionClass;
   TGTlsConnectionClass = object
@@ -5181,7 +6668,9 @@ type
     handshake: function(conn: PGTlsConnection; cancellable: PGCancellable; error: PPGError): gboolean; cdecl;
     handshake_async: procedure(conn: PGTlsConnection; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
     handshake_finish: function(conn: PGTlsConnection; result_: PGAsyncResult; error: PPGError): gboolean; cdecl;
-    padding: array [0..7] of gpointer;
+    get_binding_data: function(conn: PGTlsConnection; type_: TGTlsChannelBindingType; data: Pguint8; error: PPGError): gboolean; cdecl;
+    get_negotiated_protocol: function(conn: PGTlsConnection): Pgchar; cdecl;
+    padding: array [0..5] of gpointer;
   end;
 
   TGTlsDatabasePrivate = record
@@ -5189,6 +6678,8 @@ type
 
 
 
+
+  { TGTlsDatabaseClass }
   PPGTlsDatabaseClass = ^PGTlsDatabaseClass;
   PGTlsDatabaseClass = ^TGTlsDatabaseClass;
   TGTlsDatabaseClass = object
@@ -5209,9 +6700,13 @@ type
     padding: array [0..15] of gpointer;
   end;
 
+
+  { TGTlsError }
   PPGTlsError = ^PGTlsError;
   PGTlsError = ^TGTlsError;
 
+
+  { TGTlsFileDatabase }
   PPGTlsFileDatabase = ^PGTlsFileDatabase;
   PGTlsFileDatabase = ^TGTlsFileDatabase;
   TGTlsFileDatabase = object
@@ -5219,6 +6714,8 @@ type
     //property anchors: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_anchors  { property is writeable but setter not declared } ;
   end;
 
+
+  { TGTlsFileDatabaseInterface }
   PPGTlsFileDatabaseInterface = ^PGTlsFileDatabaseInterface;
   PGTlsFileDatabaseInterface = ^TGTlsFileDatabaseInterface;
   TGTlsFileDatabaseInterface = object
@@ -5226,9 +6723,13 @@ type
     padding: array [0..7] of gpointer;
   end;
 
+
+  { TGTlsPasswordFlags }
   PPGTlsPasswordFlags = ^PGTlsPasswordFlags;
   PGTlsPasswordFlags = ^TGTlsPasswordFlags;
 
+
+  { TGTlsPasswordPrivate }
   PPGTlsPasswordPrivate = ^PGTlsPasswordPrivate;
   PGTlsPasswordPrivate = ^TGTlsPasswordPrivate;
   TGTlsPassword = object(TGObject)
@@ -5253,6 +6754,8 @@ type
 
 
 
+
+  { TGTlsInteractionClass }
   PPGTlsInteractionClass = ^PGTlsInteractionClass;
   PGTlsInteractionClass = ^TGTlsInteractionClass;
   TGTlsInteractionClass = object
@@ -5260,7 +6763,10 @@ type
     ask_password: function(interaction: PGTlsInteraction; password: PGTlsPassword; cancellable: PGCancellable; error: PPGError): TGTlsInteractionResult; cdecl;
     ask_password_async: procedure(interaction: PGTlsInteraction; password: PGTlsPassword; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
     ask_password_finish: function(interaction: PGTlsInteraction; result_: PGAsyncResult; error: PPGError): TGTlsInteractionResult; cdecl;
-    padding: array [0..23] of gpointer;
+    request_certificate: function(interaction: PGTlsInteraction; connection: PGTlsConnection; flags: TGTlsCertificateRequestFlags; cancellable: PGCancellable; error: PPGError): TGTlsInteractionResult; cdecl;
+    request_certificate_async: procedure(interaction: PGTlsInteraction; connection: PGTlsConnection; flags: TGTlsCertificateRequestFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+    request_certificate_finish: function(interaction: PGTlsInteraction; result_: PGAsyncResult; error: PPGError): TGTlsInteractionResult; cdecl;
+    padding: array [0..20] of gpointer;
   end;
 
   TGTlsPasswordPrivate = record
@@ -5268,6 +6774,8 @@ type
 
 
 
+
+  { TGTlsPasswordClass }
   PPGTlsPasswordClass = ^PGTlsPasswordClass;
   PGTlsPasswordClass = ^TGTlsPasswordClass;
   TGTlsPasswordClass = object
@@ -5278,6 +6786,8 @@ type
     padding: array [0..3] of gpointer;
   end;
 
+
+  { TGTlsServerConnection }
   PPGTlsServerConnection = ^PGTlsServerConnection;
   PGTlsServerConnection = ^TGTlsServerConnection;
   TGTlsServerConnection = object
@@ -5285,15 +6795,21 @@ type
     //property authentication_mode: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_authentication_mode  { property is writeable but setter not declared } ;
   end;
 
+
+  { TGTlsServerConnectionInterface }
   PPGTlsServerConnectionInterface = ^PGTlsServerConnectionInterface;
   PGTlsServerConnectionInterface = ^TGTlsServerConnectionInterface;
   TGTlsServerConnectionInterface = object
     g_iface: TGTypeInterface;
   end;
 
+
+  { TGUnixConnection }
   PPGUnixConnection = ^PGUnixConnection;
   PGUnixConnection = ^TGUnixConnection;
 
+
+  { TGUnixConnectionPrivate }
   PPGUnixConnectionPrivate = ^PGUnixConnectionPrivate;
   PGUnixConnectionPrivate = ^TGUnixConnectionPrivate;
   TGUnixConnection = object(TGSocketConnection)
@@ -5313,15 +6829,21 @@ type
 
 
 
+
+  { TGUnixConnectionClass }
   PPGUnixConnectionClass = ^PGUnixConnectionClass;
   PGUnixConnectionClass = ^TGUnixConnectionClass;
   TGUnixConnectionClass = object
     parent_class: TGSocketConnectionClass;
   end;
 
+
+  { TGUnixCredentialsMessage }
   PPGUnixCredentialsMessage = ^PGUnixCredentialsMessage;
   PGUnixCredentialsMessage = ^TGUnixCredentialsMessage;
 
+
+  { TGUnixCredentialsMessagePrivate }
   PPGUnixCredentialsMessagePrivate = ^PGUnixCredentialsMessagePrivate;
   PGUnixCredentialsMessagePrivate = ^TGUnixCredentialsMessagePrivate;
   TGUnixCredentialsMessage = object(TGSocketControlMessage)
@@ -5338,6 +6860,8 @@ type
 
 
 
+
+  { TGUnixCredentialsMessageClass }
   PPGUnixCredentialsMessageClass = ^PGUnixCredentialsMessageClass;
   PGUnixCredentialsMessageClass = ^TGUnixCredentialsMessageClass;
   TGUnixCredentialsMessageClass = object
@@ -5351,6 +6875,8 @@ type
 
 
 
+
+  { TGUnixFDListClass }
   PPGUnixFDListClass = ^PGUnixFDListClass;
   PGUnixFDListClass = ^TGUnixFDListClass;
   TGUnixFDListClass = object
@@ -5362,9 +6888,13 @@ type
     _g_reserved5: procedure; cdecl;
   end;
 
+
+  { TGUnixFDMessage }
   PPGUnixFDMessage = ^PGUnixFDMessage;
   PGUnixFDMessage = ^TGUnixFDMessage;
 
+
+  { TGUnixFDMessagePrivate }
   PPGUnixFDMessagePrivate = ^PGUnixFDMessagePrivate;
   PGUnixFDMessagePrivate = ^TGUnixFDMessagePrivate;
   TGUnixFDMessage = object(TGSocketControlMessage)
@@ -5382,6 +6912,8 @@ type
 
 
 
+
+  { TGUnixFDMessageClass }
   PPGUnixFDMessageClass = ^PGUnixFDMessageClass;
   PGUnixFDMessageClass = ^TGUnixFDMessageClass;
   TGUnixFDMessageClass = object
@@ -5390,9 +6922,13 @@ type
     _g_reserved2: procedure; cdecl;
   end;
 
+
+  { TGUnixInputStream }
   PPGUnixInputStream = ^PGUnixInputStream;
   PGUnixInputStream = ^TGUnixInputStream;
 
+
+  { TGUnixInputStreamPrivate }
   PPGUnixInputStreamPrivate = ^PGUnixInputStreamPrivate;
   PGUnixInputStreamPrivate = ^TGUnixInputStreamPrivate;
   TGUnixInputStream = object(TGInputStream)
@@ -5410,6 +6946,8 @@ type
 
 
 
+
+  { TGUnixInputStreamClass }
   PPGUnixInputStreamClass = ^PGUnixInputStreamClass;
   PGUnixInputStreamClass = ^TGUnixInputStreamClass;
   TGUnixInputStreamClass = object
@@ -5421,30 +6959,35 @@ type
     _g_reserved5: procedure; cdecl;
   end;
 
+
+  { TGUnixMountEntry }
   PPGUnixMountEntry = ^PGUnixMountEntry;
   PGUnixMountEntry = ^TGUnixMountEntry;
-
-  TGUnixMountEntry = record
+  TGUnixMountEntry = object
   end;
 
 
-
+  { TGUnixMountMonitor }
   PPGUnixMountMonitor = ^PGUnixMountMonitor;
   PGUnixMountMonitor = ^TGUnixMountMonitor;
   TGUnixMountMonitor = object(TGObject)
-    function new: PGUnixMountMonitor; cdecl; inline; static;
-    procedure set_rate_limit(limit_msec: gint); cdecl; inline;
+    function get: PGUnixMountMonitor; cdecl; inline; static;
   end;
 
+
+  { TGUnixMountMonitorClass }
   PPGUnixMountMonitorClass = ^PGUnixMountMonitorClass;
   PGUnixMountMonitorClass = ^TGUnixMountMonitorClass;
   TGUnixMountMonitorClass = object
   end;
 
+
+  { TGUnixMountPoint }
   PPGUnixMountPoint = ^PGUnixMountPoint;
   PGUnixMountPoint = ^TGUnixMountPoint;
   TGUnixMountPoint = object
     function compare(mount2: PGUnixMountPoint): gint; cdecl; inline;
+    function copy: PGUnixMountPoint; cdecl; inline;
     procedure free; cdecl; inline;
     function get_device_path: Pgchar; cdecl; inline;
     function get_fs_type: Pgchar; cdecl; inline;
@@ -5457,11 +7000,16 @@ type
     function is_loopback: gboolean; cdecl; inline;
     function is_readonly: gboolean; cdecl; inline;
     function is_user_mountable: gboolean; cdecl; inline;
+    function at(mount_path: Pgchar; time_read: Pguint64): PGUnixMountPoint; cdecl; inline; static;
   end;
 
+
+  { TGUnixOutputStream }
   PPGUnixOutputStream = ^PGUnixOutputStream;
   PGUnixOutputStream = ^TGUnixOutputStream;
 
+
+  { TGUnixOutputStreamPrivate }
   PPGUnixOutputStreamPrivate = ^PGUnixOutputStreamPrivate;
   PGUnixOutputStreamPrivate = ^TGUnixOutputStreamPrivate;
   TGUnixOutputStream = object(TGOutputStream)
@@ -5479,6 +7027,8 @@ type
 
 
 
+
+  { TGUnixOutputStreamClass }
   PPGUnixOutputStreamClass = ^PGUnixOutputStreamClass;
   PGUnixOutputStreamClass = ^TGUnixOutputStreamClass;
   TGUnixOutputStreamClass = object
@@ -5490,12 +7040,18 @@ type
     _g_reserved5: procedure; cdecl;
   end;
 
+
+  { TGUnixSocketAddressType }
   PPGUnixSocketAddressType = ^PGUnixSocketAddressType;
   PGUnixSocketAddressType = ^TGUnixSocketAddressType;
 
+
+  { TGUnixSocketAddress }
   PPGUnixSocketAddress = ^PGUnixSocketAddress;
   PGUnixSocketAddress = ^TGUnixSocketAddress;
 
+
+  { TGUnixSocketAddressPrivate }
   PPGUnixSocketAddressPrivate = ^PGUnixSocketAddressPrivate;
   PGUnixSocketAddressPrivate = ^TGUnixSocketAddressPrivate;
   TGUnixSocketAddress = object(TGSocketAddress)
@@ -5506,7 +7062,6 @@ type
     function get_address_type: TGUnixSocketAddressType; cdecl; inline;
     function get_path: Pgchar; cdecl; inline;
     function get_path_len: gsize; cdecl; inline;
-    //property abstract: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_abstract  { property is writeable but setter not declared } ;
     property address_type: TGUnixSocketAddressType read get_address_type  { property is writeable but setter not declared } ;
     property path: Pgchar read get_path  { property is writeable but setter not declared } ;
     //property path_as_array: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_path_as_array  { property is writeable but setter not declared } ;
@@ -5517,14 +7072,24 @@ type
 
 
 
+
+  { TGUnixSocketAddressClass }
   PPGUnixSocketAddressClass = ^PGUnixSocketAddressClass;
   PGUnixSocketAddressClass = ^TGUnixSocketAddressClass;
   TGUnixSocketAddressClass = object
     parent_class: TGSocketAddressClass;
   end;
 
+
+  { TGVfs }
   PPGVfs = ^PGVfs;
   PGVfs = ^TGVfs;
+
+
+  { TGVfsFileLookupFunc }
+  PPGVfsFileLookupFunc = ^PGVfsFileLookupFunc;
+  PGVfsFileLookupFunc = ^TGVfsFileLookupFunc;
+  TGVfsFileLookupFunc = function(vfs: PGVfs; identifier: Pgchar; user_data: gpointer): PGFile; cdecl;
   TGVfs = object(TGObject)
     function get_default: PGVfs; cdecl; inline; static;
     function get_local: PGVfs; cdecl; inline; static;
@@ -5533,8 +7098,12 @@ type
     function get_supported_uri_schemes: PPgchar; cdecl; inline;
     function is_active: gboolean; cdecl; inline;
     function parse_name(parse_name: Pgchar): PGFile; cdecl; inline;
+    function register_uri_scheme(scheme: Pgchar; uri_func: TGVfsFileLookupFunc; uri_data: gpointer; uri_destroy: TGDestroyNotify; parse_name_func: TGVfsFileLookupFunc; parse_name_data: gpointer; parse_name_destroy: TGDestroyNotify): gboolean; cdecl; inline;
+    function unregister_uri_scheme(scheme: Pgchar): gboolean; cdecl; inline;
   end;
 
+
+  { TGVfsClass }
   PPGVfsClass = ^PGVfsClass;
   PGVfsClass = ^TGVfsClass;
   TGVfsClass = object
@@ -5549,15 +7118,17 @@ type
     local_file_set_attributes: function(vfs: PGVfs; filename: Pgchar; info: PGFileInfo; flags: TGFileQueryInfoFlags; cancellable: PGCancellable; error: PPGError): gboolean; cdecl;
     local_file_removed: procedure(vfs: PGVfs; filename: Pgchar); cdecl;
     local_file_moved: procedure(vfs: PGVfs; source: Pgchar; dest: Pgchar); cdecl;
+    deserialize_icon: function(vfs: PGVfs; value: PGVariant): PGIcon; cdecl;
     _g_reserved1: procedure; cdecl;
     _g_reserved2: procedure; cdecl;
     _g_reserved3: procedure; cdecl;
     _g_reserved4: procedure; cdecl;
     _g_reserved5: procedure; cdecl;
     _g_reserved6: procedure; cdecl;
-    _g_reserved7: procedure; cdecl;
   end;
 
+
+  { TGVolumeIface }
   PPGVolumeIface = ^PGVolumeIface;
   PGVolumeIface = ^TGVolumeIface;
   TGVolumeIface = object
@@ -5585,9 +7156,13 @@ type
     get_symbolic_icon: function(volume: PGVolume): PGIcon; cdecl;
   end;
 
+
+  { TGZlibCompressor }
   PPGZlibCompressor = ^PGZlibCompressor;
   PGZlibCompressor = ^TGZlibCompressor;
 
+
+  { TGZlibCompressorFormat }
   PPGZlibCompressorFormat = ^PGZlibCompressorFormat;
   PGZlibCompressorFormat = ^TGZlibCompressorFormat;
   TGZlibCompressor = object(TGObject)
@@ -5599,12 +7174,16 @@ type
     //property level: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_level  { property is writeable but setter not declared } ;
   end;
 
+
+  { TGZlibCompressorClass }
   PPGZlibCompressorClass = ^PGZlibCompressorClass;
   PGZlibCompressorClass = ^TGZlibCompressorClass;
   TGZlibCompressorClass = object
     parent_class: TGObjectClass;
   end;
 
+
+  { TGZlibDecompressor }
   PPGZlibDecompressor = ^PGZlibDecompressor;
   PGZlibDecompressor = ^TGZlibDecompressor;
   TGZlibDecompressor = object(TGObject)
@@ -5614,6 +7193,8 @@ type
     //property format: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_format  { property is writeable but setter not declared } ;
   end;
 
+
+  { TGZlibDecompressorClass }
   PPGZlibDecompressorClass = ^PGZlibDecompressorClass;
   PGZlibDecompressorClass = ^TGZlibDecompressorClass;
   TGZlibDecompressorClass = object
@@ -5638,6 +7219,9 @@ function g_action_group_list_actions(action_group: PGActionGroup): PPgchar; cdec
 function g_action_group_query_action(action_group: PGActionGroup; action_name: Pgchar; enabled: Pgboolean; parameter_type: PPGVariantType; state_type: PPGVariantType; state_hint: PPGVariant; state: PPGVariant): gboolean; cdecl; external;
 function g_action_map_get_type: TGType; cdecl; external;
 function g_action_map_lookup_action(action_map: PGActionMap; action_name: Pgchar): PGAction; cdecl; external;
+function g_action_name_is_valid(action_name: Pgchar): gboolean; cdecl; external;
+function g_action_parse_detailed_name(detailed_name: Pgchar; action_name: PPgchar; target_value: PPGVariant; error: PPGError): gboolean; cdecl; external;
+function g_action_print_detailed_name(action_name: Pgchar; target_value: PGVariant): Pgchar; cdecl; external;
 function g_app_info_add_supports_type(appinfo: PGAppInfo; content_type: Pgchar; error: PPGError): gboolean; cdecl; external;
 function g_app_info_can_delete(appinfo: PGAppInfo): gboolean; cdecl; external;
 function g_app_info_can_remove_supports_type(appinfo: PGAppInfo): gboolean; cdecl; external;
@@ -5660,9 +7244,13 @@ function g_app_info_get_name(appinfo: PGAppInfo): Pgchar; cdecl; external;
 function g_app_info_get_recommended_for_type(content_type: Pgchar): PGList; cdecl; external;
 function g_app_info_get_supported_types(appinfo: PGAppInfo): PPgchar; cdecl; external;
 function g_app_info_get_type: TGType; cdecl; external;
-function g_app_info_launch(appinfo: PGAppInfo; files: PGList; launch_context: PGAppLaunchContext; error: PPGError): gboolean; cdecl; external;
-function g_app_info_launch_default_for_uri(uri: Pgchar; launch_context: PGAppLaunchContext; error: PPGError): gboolean; cdecl; external;
-function g_app_info_launch_uris(appinfo: PGAppInfo; uris: PGList; launch_context: PGAppLaunchContext; error: PPGError): gboolean; cdecl; external;
+function g_app_info_launch(appinfo: PGAppInfo; files: PGList; context: PGAppLaunchContext; error: PPGError): gboolean; cdecl; external;
+function g_app_info_launch_default_for_uri(uri: Pgchar; context: PGAppLaunchContext; error: PPGError): gboolean; cdecl; external;
+function g_app_info_launch_default_for_uri_finish(result_: PGAsyncResult; error: PPGError): gboolean; cdecl; external;
+function g_app_info_launch_uris(appinfo: PGAppInfo; uris: PGList; context: PGAppLaunchContext; error: PPGError): gboolean; cdecl; external;
+function g_app_info_launch_uris_finish(appinfo: PGAppInfo; result_: PGAsyncResult; error: PPGError): gboolean; cdecl; external;
+function g_app_info_monitor_get: PGAppInfoMonitor; cdecl; external;
+function g_app_info_monitor_get_type: TGType; cdecl; external;
 function g_app_info_remove_supports_type(appinfo: PGAppInfo; content_type: Pgchar; error: PPGError): gboolean; cdecl; external;
 function g_app_info_set_as_default_for_extension(appinfo: PGAppInfo; extension: Pgchar; error: PPGError): gboolean; cdecl; external;
 function g_app_info_set_as_default_for_type(appinfo: PGAppInfo; content_type: Pgchar; error: PPGError): gboolean; cdecl; external;
@@ -5681,6 +7269,7 @@ function g_application_command_line_get_cwd(cmdline: PGApplicationCommandLine): 
 function g_application_command_line_get_environ(cmdline: PGApplicationCommandLine): PPgchar; cdecl; external;
 function g_application_command_line_get_exit_status(cmdline: PGApplicationCommandLine): gint; cdecl; external;
 function g_application_command_line_get_is_remote(cmdline: PGApplicationCommandLine): gboolean; cdecl; external;
+function g_application_command_line_get_options_dict(cmdline: PGApplicationCommandLine): PGVariantDict; cdecl; external;
 function g_application_command_line_get_platform_data(cmdline: PGApplicationCommandLine): PGVariant; cdecl; external;
 function g_application_command_line_get_stdin(cmdline: PGApplicationCommandLine): PGInputStream; cdecl; external;
 function g_application_command_line_get_type: TGType; cdecl; external;
@@ -5691,8 +7280,10 @@ function g_application_get_dbus_object_path(application: PGApplication): Pgchar;
 function g_application_get_default: PGApplication; cdecl; external;
 function g_application_get_flags(application: PGApplication): TGApplicationFlags; cdecl; external;
 function g_application_get_inactivity_timeout(application: PGApplication): guint; cdecl; external;
+function g_application_get_is_busy(application: PGApplication): gboolean; cdecl; external;
 function g_application_get_is_registered(application: PGApplication): gboolean; cdecl; external;
 function g_application_get_is_remote(application: PGApplication): gboolean; cdecl; external;
+function g_application_get_resource_base_path(application: PGApplication): Pgchar; cdecl; external;
 function g_application_get_type: TGType; cdecl; external;
 function g_application_id_is_valid(application_id: Pgchar): gboolean; cdecl; external;
 function g_application_new(application_id: Pgchar; flags: TGApplicationFlags): PGApplication; cdecl; external;
@@ -5731,6 +7322,9 @@ function g_bus_watch_name(bus_type: TGBusType; name: Pgchar; flags: TGBusNameWat
 function g_bus_watch_name_on_connection(connection: PGDBusConnection; name: Pgchar; flags: TGBusNameWatcherFlags; name_appeared_handler: TGBusNameAppearedCallback; name_vanished_handler: TGBusNameVanishedCallback; user_data: gpointer; user_data_free_func: TGDestroyNotify): guint; cdecl; external;
 function g_bus_watch_name_on_connection_with_closures(connection: PGDBusConnection; name: Pgchar; flags: TGBusNameWatcherFlags; name_appeared_closure: PGClosure; name_vanished_closure: PGClosure): guint; cdecl; external;
 function g_bus_watch_name_with_closures(bus_type: TGBusType; name: Pgchar; flags: TGBusNameWatcherFlags; name_appeared_closure: PGClosure; name_vanished_closure: PGClosure): guint; cdecl; external;
+function g_bytes_icon_get_bytes(icon: PGBytesIcon): PGBytes; cdecl; external;
+function g_bytes_icon_get_type: TGType; cdecl; external;
+function g_bytes_icon_new(bytes: PGBytes): PGBytesIcon; cdecl; external;
 function g_cancellable_connect(cancellable: PGCancellable; callback: TGCallback; data: gpointer; data_destroy_func: TGDestroyNotify): gulong; cdecl; external;
 function g_cancellable_get_current: PGCancellable; cdecl; external;
 function g_cancellable_get_fd(cancellable: PGCancellable): gint; cdecl; external;
@@ -5750,14 +7344,16 @@ function g_content_type_from_mime_type(mime_type: Pgchar): Pgchar; cdecl; extern
 function g_content_type_get_description(type_: Pgchar): Pgchar; cdecl; external;
 function g_content_type_get_generic_icon_name(type_: Pgchar): Pgchar; cdecl; external;
 function g_content_type_get_icon(type_: Pgchar): PGIcon; cdecl; external;
+function g_content_type_get_mime_dirs: PPgchar; cdecl; external;
 function g_content_type_get_mime_type(type_: Pgchar): Pgchar; cdecl; external;
 function g_content_type_get_symbolic_icon(type_: Pgchar): PGIcon; cdecl; external;
 function g_content_type_guess(filename: Pgchar; data: Pguint8; data_size: gsize; result_uncertain: Pgboolean): Pgchar; cdecl; external;
 function g_content_type_guess_for_tree(root: PGFile): PPgchar; cdecl; external;
 function g_content_type_is_a(type_: Pgchar; supertype: Pgchar): gboolean; cdecl; external;
+function g_content_type_is_mime_type(type_: Pgchar; mime_type: Pgchar): gboolean; cdecl; external;
 function g_content_type_is_unknown(type_: Pgchar): gboolean; cdecl; external;
 function g_content_types_get_registered: PGList; cdecl; external;
-function g_converter_convert(converter: PGConverter; inbuf: Pguint8; inbuf_size: gsize; outbuf: Pgpointer; outbuf_size: gsize; flags: TGConverterFlags; bytes_read: Pgsize; bytes_written: Pgsize; error: PPGError): TGConverterResult; cdecl; external;
+function g_converter_convert(converter: PGConverter; inbuf: Pguint8; inbuf_size: gsize; outbuf: Pguint8; outbuf_size: gsize; flags: TGConverterFlags; bytes_read: Pgsize; bytes_written: Pgsize; error: PPGError): TGConverterResult; cdecl; external;
 function g_converter_get_type: TGType; cdecl; external;
 function g_converter_input_stream_get_converter(converter_stream: PGConverterInputStream): PGConverter; cdecl; external;
 function g_converter_input_stream_get_type: TGType; cdecl; external;
@@ -5788,8 +7384,6 @@ function g_data_input_stream_read_line_utf8(stream: PGDataInputStream; length: P
 function g_data_input_stream_read_uint16(stream: PGDataInputStream; cancellable: PGCancellable; error: PPGError): guint16; cdecl; external;
 function g_data_input_stream_read_uint32(stream: PGDataInputStream; cancellable: PGCancellable; error: PPGError): guint32; cdecl; external;
 function g_data_input_stream_read_uint64(stream: PGDataInputStream; cancellable: PGCancellable; error: PPGError): guint64; cdecl; external;
-function g_data_input_stream_read_until(stream: PGDataInputStream; stop_chars: Pgchar; length: Pgsize; cancellable: PGCancellable; error: PPGError): Pgchar; cdecl; external;
-function g_data_input_stream_read_until_finish(stream: PGDataInputStream; result_: PGAsyncResult; length: Pgsize; error: PPGError): Pgchar; cdecl; external;
 function g_data_input_stream_read_upto(stream: PGDataInputStream; stop_chars: Pgchar; stop_chars_len: gssize; length: Pgsize; cancellable: PGCancellable; error: PPGError): Pgchar; cdecl; external;
 function g_data_input_stream_read_upto_finish(stream: PGDataInputStream; result_: PGAsyncResult; length: Pgsize; error: PPGError): Pgchar; cdecl; external;
 function g_data_output_stream_get_byte_order(stream: PGDataOutputStream): TGDataStreamByteOrder; cdecl; external;
@@ -5803,6 +7397,12 @@ function g_data_output_stream_put_string(stream: PGDataOutputStream; str: Pgchar
 function g_data_output_stream_put_uint16(stream: PGDataOutputStream; data: guint16; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
 function g_data_output_stream_put_uint32(stream: PGDataOutputStream; data: guint32; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
 function g_data_output_stream_put_uint64(stream: PGDataOutputStream; data: guint64; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
+function g_datagram_based_condition_check(datagram_based: PGDatagramBased; condition: TGIOCondition): TGIOCondition; cdecl; external;
+function g_datagram_based_condition_wait(datagram_based: PGDatagramBased; condition: TGIOCondition; timeout: gint64; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
+function g_datagram_based_create_source(datagram_based: PGDatagramBased; condition: TGIOCondition; cancellable: PGCancellable): PGSource; cdecl; external;
+function g_datagram_based_get_type: TGType; cdecl; external;
+function g_datagram_based_receive_messages(datagram_based: PGDatagramBased; messages: PGInputMessage; num_messages: guint; flags: gint; timeout: gint64; cancellable: PGCancellable; error: PPGError): gint; cdecl; external;
+function g_datagram_based_send_messages(datagram_based: PGDatagramBased; messages: PGOutputMessage; num_messages: guint; flags: gint; timeout: gint64; cancellable: PGCancellable; error: PPGError): gint; cdecl; external;
 function g_dbus_action_group_get(connection: PGDBusConnection; bus_name: Pgchar; object_path: Pgchar): PGDBusActionGroup; cdecl; external;
 function g_dbus_action_group_get_type: TGType; cdecl; external;
 function g_dbus_address_escape_value(string_: Pgchar): Pgchar; cdecl; external;
@@ -5832,6 +7432,7 @@ function g_dbus_connection_flush_finish(connection: PGDBusConnection; res: PGAsy
 function g_dbus_connection_flush_sync(connection: PGDBusConnection; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
 function g_dbus_connection_get_capabilities(connection: PGDBusConnection): TGDBusCapabilityFlags; cdecl; external;
 function g_dbus_connection_get_exit_on_close(connection: PGDBusConnection): gboolean; cdecl; external;
+function g_dbus_connection_get_flags(connection: PGDBusConnection): TGDBusConnectionFlags; cdecl; external;
 function g_dbus_connection_get_guid(connection: PGDBusConnection): Pgchar; cdecl; external;
 function g_dbus_connection_get_last_serial(connection: PGDBusConnection): guint32; cdecl; external;
 function g_dbus_connection_get_peer_credentials(connection: PGDBusConnection): PGCredentials; cdecl; external;
@@ -5844,6 +7445,7 @@ function g_dbus_connection_new_for_address_finish(res: PGAsyncResult; error: PPG
 function g_dbus_connection_new_for_address_sync(address: Pgchar; flags: TGDBusConnectionFlags; observer: PGDBusAuthObserver; cancellable: PGCancellable; error: PPGError): PGDBusConnection; cdecl; external;
 function g_dbus_connection_new_sync(stream: PGIOStream; guid: Pgchar; flags: TGDBusConnectionFlags; observer: PGDBusAuthObserver; cancellable: PGCancellable; error: PPGError): PGDBusConnection; cdecl; external;
 function g_dbus_connection_register_object(connection: PGDBusConnection; object_path: Pgchar; interface_info: PGDBusInterfaceInfo; vtable: PGDBusInterfaceVTable; user_data: gpointer; user_data_free_func: TGDestroyNotify; error: PPGError): guint; cdecl; external;
+function g_dbus_connection_register_object_with_closures(connection: PGDBusConnection; object_path: Pgchar; interface_info: PGDBusInterfaceInfo; method_call_closure: PGClosure; get_property_closure: PGClosure; set_property_closure: PGClosure; error: PPGError): guint; cdecl; external;
 function g_dbus_connection_register_subtree(connection: PGDBusConnection; object_path: Pgchar; vtable: PGDBusSubtreeVTable; flags: TGDBusSubtreeFlags; user_data: gpointer; user_data_free_func: TGDestroyNotify; error: PPGError): guint; cdecl; external;
 function g_dbus_connection_send_message(connection: PGDBusConnection; message: PGDBusMessage; flags: TGDBusSendMessageFlags; out_serial: Pguint32; error: PPGError): gboolean; cdecl; external;
 function g_dbus_connection_send_message_with_reply_finish(connection: PGDBusConnection; res: PGAsyncResult; error: PPGError): PGDBusMessage; cdecl; external;
@@ -5859,6 +7461,8 @@ function g_dbus_error_quark: TGQuark; cdecl; external;
 function g_dbus_error_register_error(error_domain: TGQuark; error_code: gint; dbus_error_name: Pgchar): gboolean; cdecl; external;
 function g_dbus_error_strip_remote_error(error: PGError): gboolean; cdecl; external;
 function g_dbus_error_unregister_error(error_domain: TGQuark; error_code: gint; dbus_error_name: Pgchar): gboolean; cdecl; external;
+function g_dbus_escape_object_path(s: Pgchar): Pgchar; cdecl; external;
+function g_dbus_escape_object_path_bytestring(bytes: Pguint8): Pgchar; cdecl; external;
 function g_dbus_generate_guid: Pgchar; cdecl; external;
 function g_dbus_gvalue_to_gvariant(gvalue: PGValue; type_: PGVariantType): PGVariant; cdecl; external;
 function g_dbus_interface_dup_object(interface_: PGDBusInterface): PGDBusObject; cdecl; external;
@@ -5881,6 +7485,7 @@ function g_dbus_interface_skeleton_get_type: TGType; cdecl; external;
 function g_dbus_interface_skeleton_get_vtable(interface_: PGDBusInterfaceSkeleton): PGDBusInterfaceVTable; cdecl; external;
 function g_dbus_interface_skeleton_has_connection(interface_: PGDBusInterfaceSkeleton; connection: PGDBusConnection): gboolean; cdecl; external;
 function g_dbus_is_address(string_: Pgchar): gboolean; cdecl; external;
+function g_dbus_is_error_name(string_: Pgchar): gboolean; cdecl; external;
 function g_dbus_is_guid(string_: Pgchar): gboolean; cdecl; external;
 function g_dbus_is_interface_name(string_: Pgchar): gboolean; cdecl; external;
 function g_dbus_is_member_name(string_: Pgchar): gboolean; cdecl; external;
@@ -5931,6 +7536,7 @@ function g_dbus_method_invocation_get_method_info(invocation: PGDBusMethodInvoca
 function g_dbus_method_invocation_get_method_name(invocation: PGDBusMethodInvocation): Pgchar; cdecl; external;
 function g_dbus_method_invocation_get_object_path(invocation: PGDBusMethodInvocation): Pgchar; cdecl; external;
 function g_dbus_method_invocation_get_parameters(invocation: PGDBusMethodInvocation): PGVariant; cdecl; external;
+function g_dbus_method_invocation_get_property_info(invocation: PGDBusMethodInvocation): PGDBusPropertyInfo; cdecl; external;
 function g_dbus_method_invocation_get_sender(invocation: PGDBusMethodInvocation): Pgchar; cdecl; external;
 function g_dbus_method_invocation_get_type: TGType; cdecl; external;
 function g_dbus_method_invocation_get_user_data(invocation: PGDBusMethodInvocation): gpointer; cdecl; external;
@@ -5995,23 +7601,33 @@ function g_dbus_server_is_active(server: PGDBusServer): gboolean; cdecl; externa
 function g_dbus_server_new_sync(address: Pgchar; flags: TGDBusServerFlags; guid: Pgchar; observer: PGDBusAuthObserver; cancellable: PGCancellable; error: PPGError): PGDBusServer; cdecl; external;
 function g_dbus_signal_info_get_type: TGType; cdecl; external;
 function g_dbus_signal_info_ref(info: PGDBusSignalInfo): PGDBusSignalInfo; cdecl; external;
+function g_dbus_unescape_object_path(s: Pgchar): Pguint8; cdecl; external;
+function g_debug_controller_dbus_get_type: TGType; cdecl; external;
+function g_debug_controller_get_type: TGType; cdecl; external;
+function g_desktop_app_info_get_action_name(info: PGDesktopAppInfo; action_name: Pgchar): Pgchar; cdecl; external;
 function g_desktop_app_info_get_boolean(info: PGDesktopAppInfo; key: Pgchar): gboolean; cdecl; external;
 function g_desktop_app_info_get_categories(info: PGDesktopAppInfo): Pgchar; cdecl; external;
 function g_desktop_app_info_get_filename(info: PGDesktopAppInfo): Pgchar; cdecl; external;
 function g_desktop_app_info_get_generic_name(info: PGDesktopAppInfo): Pgchar; cdecl; external;
+function g_desktop_app_info_get_implementations(interface_: Pgchar): PGList; cdecl; external;
 function g_desktop_app_info_get_is_hidden(info: PGDesktopAppInfo): gboolean; cdecl; external;
 function g_desktop_app_info_get_keywords(info: PGDesktopAppInfo): PPgchar; cdecl; external;
+function g_desktop_app_info_get_locale_string(info: PGDesktopAppInfo; key: Pgchar): Pgchar; cdecl; external;
 function g_desktop_app_info_get_nodisplay(info: PGDesktopAppInfo): gboolean; cdecl; external;
 function g_desktop_app_info_get_show_in(info: PGDesktopAppInfo; desktop_env: Pgchar): gboolean; cdecl; external;
 function g_desktop_app_info_get_startup_wm_class(info: PGDesktopAppInfo): Pgchar; cdecl; external;
 function g_desktop_app_info_get_string(info: PGDesktopAppInfo; key: Pgchar): Pgchar; cdecl; external;
+function g_desktop_app_info_get_string_list(info: PGDesktopAppInfo; key: Pgchar; length: Pgsize): PPgchar; cdecl; external;
 function g_desktop_app_info_get_type: TGType; cdecl; external;
 function g_desktop_app_info_has_key(info: PGDesktopAppInfo; key: Pgchar): gboolean; cdecl; external;
 function g_desktop_app_info_launch_uris_as_manager(appinfo: PGDesktopAppInfo; uris: PGList; launch_context: PGAppLaunchContext; spawn_flags: TGSpawnFlags; user_setup: TGSpawnChildSetupFunc; user_setup_data: gpointer; pid_callback: TGDesktopAppLaunchCallback; pid_callback_data: gpointer; error: PPGError): gboolean; cdecl; external;
+function g_desktop_app_info_launch_uris_as_manager_with_fds(appinfo: PGDesktopAppInfo; uris: PGList; launch_context: PGAppLaunchContext; spawn_flags: TGSpawnFlags; user_setup: TGSpawnChildSetupFunc; user_setup_data: gpointer; pid_callback: TGDesktopAppLaunchCallback; pid_callback_data: gpointer; stdin_fd: gint; stdout_fd: gint; stderr_fd: gint; error: PPGError): gboolean; cdecl; external;
+function g_desktop_app_info_list_actions(info: PGDesktopAppInfo): PPgchar; cdecl; external;
 function g_desktop_app_info_lookup_get_type: TGType; cdecl; external;
 function g_desktop_app_info_new(desktop_id: Pgchar): PGDesktopAppInfo; cdecl; external;
 function g_desktop_app_info_new_from_filename(filename: Pgchar): PGDesktopAppInfo; cdecl; external;
 function g_desktop_app_info_new_from_keyfile(key_file: PGKeyFile): PGDesktopAppInfo; cdecl; external;
+function g_desktop_app_info_search(search_string: Pgchar): PPPgchar; cdecl; external;
 function g_drive_can_eject(drive: PGDrive): gboolean; cdecl; external;
 function g_drive_can_poll_for_media(drive: PGDrive): gboolean; cdecl; external;
 function g_drive_can_start(drive: PGDrive): gboolean; cdecl; external;
@@ -6031,9 +7647,32 @@ function g_drive_has_media(drive: PGDrive): gboolean; cdecl; external;
 function g_drive_has_volumes(drive: PGDrive): gboolean; cdecl; external;
 function g_drive_is_media_check_automatic(drive: PGDrive): gboolean; cdecl; external;
 function g_drive_is_media_removable(drive: PGDrive): gboolean; cdecl; external;
+function g_drive_is_removable(drive: PGDrive): gboolean; cdecl; external;
 function g_drive_poll_for_media_finish(drive: PGDrive; result_: PGAsyncResult; error: PPGError): gboolean; cdecl; external;
 function g_drive_start_finish(drive: PGDrive; result_: PGAsyncResult; error: PPGError): gboolean; cdecl; external;
 function g_drive_stop_finish(drive: PGDrive; result_: PGAsyncResult; error: PPGError): gboolean; cdecl; external;
+function g_dtls_client_connection_get_accepted_cas(conn: PGDtlsClientConnection): PGList; cdecl; external;
+function g_dtls_client_connection_get_server_identity(conn: PGDtlsClientConnection): PGSocketConnectable; cdecl; external;
+function g_dtls_client_connection_get_type: TGType; cdecl; external;
+function g_dtls_client_connection_new(base_socket: PGDatagramBased; server_identity: PGSocketConnectable; error: PPGError): PGDtlsClientConnection; cdecl; external;
+function g_dtls_connection_close(conn: PGDtlsConnection; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
+function g_dtls_connection_close_finish(conn: PGDtlsConnection; result_: PGAsyncResult; error: PPGError): gboolean; cdecl; external;
+function g_dtls_connection_emit_accept_certificate(conn: PGDtlsConnection; peer_cert: PGTlsCertificate; errors: TGTlsCertificateFlags): gboolean; cdecl; external;
+function g_dtls_connection_get_certificate(conn: PGDtlsConnection): PGTlsCertificate; cdecl; external;
+function g_dtls_connection_get_channel_binding_data(conn: PGDtlsConnection; type_: TGTlsChannelBindingType; data: Pguint8; error: PPGError): gboolean; cdecl; external;
+function g_dtls_connection_get_database(conn: PGDtlsConnection): PGTlsDatabase; cdecl; external;
+function g_dtls_connection_get_interaction(conn: PGDtlsConnection): PGTlsInteraction; cdecl; external;
+function g_dtls_connection_get_negotiated_protocol(conn: PGDtlsConnection): Pgchar; cdecl; external;
+function g_dtls_connection_get_peer_certificate(conn: PGDtlsConnection): PGTlsCertificate; cdecl; external;
+function g_dtls_connection_get_peer_certificate_errors(conn: PGDtlsConnection): TGTlsCertificateFlags; cdecl; external;
+function g_dtls_connection_get_require_close_notify(conn: PGDtlsConnection): gboolean; cdecl; external;
+function g_dtls_connection_get_type: TGType; cdecl; external;
+function g_dtls_connection_handshake(conn: PGDtlsConnection; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
+function g_dtls_connection_handshake_finish(conn: PGDtlsConnection; result_: PGAsyncResult; error: PPGError): gboolean; cdecl; external;
+function g_dtls_connection_shutdown(conn: PGDtlsConnection; shutdown_read: gboolean; shutdown_write: gboolean; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
+function g_dtls_connection_shutdown_finish(conn: PGDtlsConnection; result_: PGAsyncResult; error: PPGError): gboolean; cdecl; external;
+function g_dtls_server_connection_get_type: TGType; cdecl; external;
+function g_dtls_server_connection_new(base_socket: PGDatagramBased; certificate: PGTlsCertificate; error: PPGError): PGDtlsServerConnection; cdecl; external;
 function g_emblem_get_icon(emblem: PGEmblem): PGIcon; cdecl; external;
 function g_emblem_get_origin(emblem: PGEmblem): TGEmblemOrigin; cdecl; external;
 function g_emblem_get_type: TGType; cdecl; external;
@@ -6081,6 +7720,7 @@ function g_file_enumerator_get_container(enumerator: PGFileEnumerator): PGFile; 
 function g_file_enumerator_get_type: TGType; cdecl; external;
 function g_file_enumerator_has_pending(enumerator: PGFileEnumerator): gboolean; cdecl; external;
 function g_file_enumerator_is_closed(enumerator: PGFileEnumerator): gboolean; cdecl; external;
+function g_file_enumerator_iterate(direnum: PGFileEnumerator; out_info: PPGFileInfo; out_child: PPGFile; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
 function g_file_enumerator_next_file(enumerator: PGFileEnumerator; cancellable: PGCancellable; error: PPGError): PGFileInfo; cdecl; external;
 function g_file_enumerator_next_files_finish(enumerator: PGFileEnumerator; result_: PGAsyncResult; error: PPGError): PGList; cdecl; external;
 function g_file_equal(file1: PGFile; file2: PGFile): gboolean; cdecl; external;
@@ -6127,6 +7767,7 @@ function g_file_info_get_icon(info: PGFileInfo): PGIcon; cdecl; external;
 function g_file_info_get_is_backup(info: PGFileInfo): gboolean; cdecl; external;
 function g_file_info_get_is_hidden(info: PGFileInfo): gboolean; cdecl; external;
 function g_file_info_get_is_symlink(info: PGFileInfo): gboolean; cdecl; external;
+function g_file_info_get_modification_date_time(info: PGFileInfo): PGDateTime; cdecl; external;
 function g_file_info_get_name(info: PGFileInfo): Pgchar; cdecl; external;
 function g_file_info_get_size(info: PGFileInfo): gint64; cdecl; external;
 function g_file_info_get_sort_order(info: PGFileInfo): gint32; cdecl; external;
@@ -6146,12 +7787,17 @@ function g_file_io_stream_get_type: TGType; cdecl; external;
 function g_file_io_stream_query_info(stream: PGFileIOStream; attributes: Pgchar; cancellable: PGCancellable; error: PPGError): PGFileInfo; cdecl; external;
 function g_file_io_stream_query_info_finish(stream: PGFileIOStream; result_: PGAsyncResult; error: PPGError): PGFileInfo; cdecl; external;
 function g_file_is_native(file_: PGFile): gboolean; cdecl; external;
+function g_file_load_bytes(file_: PGFile; cancellable: PGCancellable; etag_out: PPgchar; error: PPGError): PGBytes; cdecl; external;
+function g_file_load_bytes_finish(file_: PGFile; result_: PGAsyncResult; etag_out: PPgchar; error: PPGError): PGBytes; cdecl; external;
 function g_file_load_contents(file_: PGFile; cancellable: PGCancellable; contents: PPgchar; length: Pgsize; etag_out: PPgchar; error: PPGError): gboolean; cdecl; external;
 function g_file_load_contents_finish(file_: PGFile; res: PGAsyncResult; contents: PPgchar; length: Pgsize; etag_out: PPgchar; error: PPGError): gboolean; cdecl; external;
 function g_file_load_partial_contents_finish(file_: PGFile; res: PGAsyncResult; contents: PPgchar; length: Pgsize; etag_out: PPgchar; error: PPGError): gboolean; cdecl; external;
 function g_file_make_directory(file_: PGFile; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
+function g_file_make_directory_finish(file_: PGFile; result_: PGAsyncResult; error: PPGError): gboolean; cdecl; external;
 function g_file_make_directory_with_parents(file_: PGFile; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
 function g_file_make_symbolic_link(file_: PGFile; symlink_value: Pgchar; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
+function g_file_measure_disk_usage(file_: PGFile; flags: TGFileMeasureFlags; cancellable: PGCancellable; progress_callback: TGFileMeasureProgressCallback; progress_data: gpointer; disk_usage: Pguint64; num_dirs: Pguint64; num_files: Pguint64; error: PPGError): gboolean; cdecl; external;
+function g_file_measure_disk_usage_finish(file_: PGFile; result_: PGAsyncResult; disk_usage: Pguint64; num_dirs: Pguint64; num_files: Pguint64; error: PPGError): gboolean; cdecl; external;
 function g_file_monitor(file_: PGFile; flags: TGFileMonitorFlags; cancellable: PGCancellable; error: PPGError): PGFileMonitor; cdecl; external;
 function g_file_monitor_cancel(monitor: PGFileMonitor): gboolean; cdecl; external;
 function g_file_monitor_directory(file_: PGFile; flags: TGFileMonitorFlags; cancellable: PGCancellable; error: PPGError): PGFileMonitor; cdecl; external;
@@ -6161,6 +7807,7 @@ function g_file_monitor_is_cancelled(monitor: PGFileMonitor): gboolean; cdecl; e
 function g_file_mount_enclosing_volume_finish(location: PGFile; result_: PGAsyncResult; error: PPGError): gboolean; cdecl; external;
 function g_file_mount_mountable_finish(file_: PGFile; result_: PGAsyncResult; error: PPGError): PGFile; cdecl; external;
 function g_file_move(source: PGFile; destination: PGFile; flags: TGFileCopyFlags; cancellable: PGCancellable; progress_callback: TGFileProgressCallback; progress_callback_data: gpointer; error: PPGError): gboolean; cdecl; external;
+function g_file_new_build_filename(first_element: Pgchar; args: array of const): PGFile; cdecl; external;
 function g_file_new_for_commandline_arg(arg: Pgchar): PGFile; cdecl; external;
 function g_file_new_for_commandline_arg_and_cwd(arg: Pgchar; cwd: Pgchar): PGFile; cdecl; external;
 function g_file_new_for_path(path: Pgchar): PGFile; cdecl; external;
@@ -6173,8 +7820,10 @@ function g_file_output_stream_get_type: TGType; cdecl; external;
 function g_file_output_stream_query_info(stream: PGFileOutputStream; attributes: Pgchar; cancellable: PGCancellable; error: PPGError): PGFileInfo; cdecl; external;
 function g_file_output_stream_query_info_finish(stream: PGFileOutputStream; result_: PGAsyncResult; error: PPGError): PGFileInfo; cdecl; external;
 function g_file_parse_name(parse_name: Pgchar): PGFile; cdecl; external;
+function g_file_peek_path(file_: PGFile): Pgchar; cdecl; external;
 function g_file_poll_mountable_finish(file_: PGFile; result_: PGAsyncResult; error: PPGError): gboolean; cdecl; external;
 function g_file_query_default_handler(file_: PGFile; cancellable: PGCancellable; error: PPGError): PGAppInfo; cdecl; external;
+function g_file_query_default_handler_finish(file_: PGFile; result_: PGAsyncResult; error: PPGError): PGAppInfo; cdecl; external;
 function g_file_query_exists(file_: PGFile; cancellable: PGCancellable): gboolean; cdecl; external;
 function g_file_query_file_type(file_: PGFile; flags: TGFileQueryInfoFlags; cancellable: PGCancellable): TGFileType; cdecl; external;
 function g_file_query_filesystem_info(file_: PGFile; attributes: Pgchar; cancellable: PGCancellable; error: PPGError): PGFileInfo; cdecl; external;
@@ -6207,6 +7856,7 @@ function g_file_start_mountable_finish(file_: PGFile; result_: PGAsyncResult; er
 function g_file_stop_mountable_finish(file_: PGFile; result_: PGAsyncResult; error: PPGError): gboolean; cdecl; external;
 function g_file_supports_thread_contexts(file_: PGFile): gboolean; cdecl; external;
 function g_file_trash(file_: PGFile; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
+function g_file_trash_finish(file_: PGFile; result_: PGAsyncResult; error: PPGError): gboolean; cdecl; external;
 function g_file_unmount_mountable_with_operation_finish(file_: PGFile; result_: PGAsyncResult; error: PPGError): gboolean; cdecl; external;
 function g_filename_completer_get_completion_suffix(completer: PGFilenameCompleter; initial_text: Pgchar): Pgchar; cdecl; external;
 function g_filename_completer_get_completions(completer: PGFilenameCompleter; initial_text: Pgchar): PPgchar; cdecl; external;
@@ -6218,10 +7868,12 @@ function g_filter_input_stream_get_type: TGType; cdecl; external;
 function g_filter_output_stream_get_base_stream(stream: PGFilterOutputStream): PGOutputStream; cdecl; external;
 function g_filter_output_stream_get_close_base_stream(stream: PGFilterOutputStream): gboolean; cdecl; external;
 function g_filter_output_stream_get_type: TGType; cdecl; external;
+function g_icon_deserialize(value: PGVariant): PGIcon; cdecl; external;
 function g_icon_equal(icon1: PGIcon; icon2: PGIcon): gboolean; cdecl; external;
 function g_icon_get_type: TGType; cdecl; external;
-function g_icon_hash(icon: Pgpointer): guint; cdecl; external;
+function g_icon_hash(icon: PGIcon): guint; cdecl; external;
 function g_icon_new_for_string(str: Pgchar; error: PPGError): PGIcon; cdecl; external;
+function g_icon_serialize(icon: PGIcon): PGVariant; cdecl; external;
 function g_icon_to_string(icon: PGIcon): Pgchar; cdecl; external;
 function g_inet_address_equal(address: PGInetAddress; other_address: PGInetAddress): gboolean; cdecl; external;
 function g_inet_address_get_family(address: PGInetAddress): TGSocketFamily; cdecl; external;
@@ -6258,11 +7910,11 @@ function g_inet_socket_address_get_port(address: PGInetSocketAddress): guint16; 
 function g_inet_socket_address_get_scope_id(address: PGInetSocketAddress): guint32; cdecl; external;
 function g_inet_socket_address_get_type: TGType; cdecl; external;
 function g_inet_socket_address_new(address: PGInetAddress; port: guint16): PGInetSocketAddress; cdecl; external;
+function g_inet_socket_address_new_from_string(address: Pgchar; port: guint): PGInetSocketAddress; cdecl; external;
 function g_initable_get_type: TGType; cdecl; external;
 function g_initable_init(initable: PGInitable; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
 function g_initable_new(object_type: TGType; cancellable: PGCancellable; error: PPGError; first_property_name: Pgchar; args: array of const): PGObject; cdecl; external;
 function g_initable_new_valist(object_type: TGType; first_property_name: Pgchar; var_args: Tva_list; cancellable: PGCancellable; error: PPGError): PGObject; cdecl; external;
-function g_initable_newv(object_type: TGType; n_parameters: guint; parameters: PGParameter; cancellable: PGCancellable; error: PPGError): PGObject; cdecl; external;
 function g_input_stream_close(stream: PGInputStream; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
 function g_input_stream_close_finish(stream: PGInputStream; result_: PGAsyncResult; error: PPGError): gboolean; cdecl; external;
 function g_input_stream_get_type: TGType; cdecl; external;
@@ -6270,6 +7922,7 @@ function g_input_stream_has_pending(stream: PGInputStream): gboolean; cdecl; ext
 function g_input_stream_is_closed(stream: PGInputStream): gboolean; cdecl; external;
 function g_input_stream_read(stream: PGInputStream; buffer: Pguint8; count: gsize; cancellable: PGCancellable; error: PPGError): gssize; cdecl; external;
 function g_input_stream_read_all(stream: PGInputStream; buffer: Pguint8; count: gsize; bytes_read: Pgsize; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
+function g_input_stream_read_all_finish(stream: PGInputStream; result_: PGAsyncResult; bytes_read: Pgsize; error: PPGError): gboolean; cdecl; external;
 function g_input_stream_read_bytes(stream: PGInputStream; count: gsize; cancellable: PGCancellable; error: PPGError): PGBytes; cdecl; external;
 function g_input_stream_read_bytes_finish(stream: PGInputStream; result_: PGAsyncResult; error: PPGError): PGBytes; cdecl; external;
 function g_input_stream_read_finish(stream: PGInputStream; result_: PGAsyncResult; error: PPGError): gssize; cdecl; external;
@@ -6277,6 +7930,7 @@ function g_input_stream_set_pending(stream: PGInputStream; error: PPGError): gbo
 function g_input_stream_skip(stream: PGInputStream; count: gsize; cancellable: PGCancellable; error: PPGError): gssize; cdecl; external;
 function g_input_stream_skip_finish(stream: PGInputStream; result_: PGAsyncResult; error: PPGError): gssize; cdecl; external;
 function g_io_error_from_errno(err_no: gint): TGIOErrorEnum; cdecl; external;
+function g_io_error_from_file_error(file_error: TGFileError): TGIOErrorEnum; cdecl; external;
 function g_io_error_quark: TGQuark; cdecl; external;
 function g_io_extension_get_name(extension: PGIOExtension): Pgchar; cdecl; external;
 function g_io_extension_get_priority(extension: PGIOExtension): gint; cdecl; external;
@@ -6302,6 +7956,17 @@ function g_io_stream_has_pending(stream: PGIOStream): gboolean; cdecl; external;
 function g_io_stream_is_closed(stream: PGIOStream): gboolean; cdecl; external;
 function g_io_stream_set_pending(stream: PGIOStream; error: PPGError): gboolean; cdecl; external;
 function g_io_stream_splice_finish(result_: PGAsyncResult; error: PPGError): gboolean; cdecl; external;
+function g_keyfile_settings_backend_new(filename: Pgchar; root_path: Pgchar; root_group: Pgchar): PGSettingsBackend; cdecl; external;
+function g_list_model_get_item(list: PGListModel; position: guint): gpointer; cdecl; external;
+function g_list_model_get_item_type(list: PGListModel): TGType; cdecl; external;
+function g_list_model_get_n_items(list: PGListModel): guint; cdecl; external;
+function g_list_model_get_object(list: PGListModel; position: guint): PGObject; cdecl; external;
+function g_list_model_get_type: TGType; cdecl; external;
+function g_list_store_find(store: PGListStore; item: PGObject; position: Pguint): gboolean; cdecl; external;
+function g_list_store_find_with_equal_func(store: PGListStore; item: PGObject; equal_func: TGEqualFunc; position: Pguint): gboolean; cdecl; external;
+function g_list_store_get_type: TGType; cdecl; external;
+function g_list_store_insert_sorted(store: PGListStore; item: PGObject; compare_func: TGCompareDataFunc; user_data: gpointer): guint; cdecl; external;
+function g_list_store_new(item_type: TGType): PGListStore; cdecl; external;
 function g_loadable_icon_get_type: TGType; cdecl; external;
 function g_loadable_icon_load(icon: PGLoadableIcon; size: gint; type_: PPgchar; cancellable: PGCancellable; error: PPGError): PGInputStream; cdecl; external;
 function g_loadable_icon_load_finish(icon: PGLoadableIcon; res: PGAsyncResult; type_: PPgchar; error: PPGError): PGInputStream; cdecl; external;
@@ -6309,6 +7974,8 @@ function g_memory_input_stream_get_type: TGType; cdecl; external;
 function g_memory_input_stream_new: PGMemoryInputStream; cdecl; external;
 function g_memory_input_stream_new_from_bytes(bytes: PGBytes): PGMemoryInputStream; cdecl; external;
 function g_memory_input_stream_new_from_data(data: Pguint8; len: gssize; destroy_: TGDestroyNotify): PGMemoryInputStream; cdecl; external;
+function g_memory_monitor_dup_default: PGMemoryMonitor; cdecl; external;
+function g_memory_monitor_get_type: TGType; cdecl; external;
 function g_memory_output_stream_get_data(ostream: PGMemoryOutputStream): gpointer; cdecl; external;
 function g_memory_output_stream_get_data_size(ostream: PGMemoryOutputStream): gsize; cdecl; external;
 function g_memory_output_stream_get_size(ostream: PGMemoryOutputStream): gsize; cdecl; external;
@@ -6317,6 +7984,7 @@ function g_memory_output_stream_new(data: gpointer; size: gsize; realloc_functio
 function g_memory_output_stream_new_resizable: PGMemoryOutputStream; cdecl; external;
 function g_memory_output_stream_steal_as_bytes(ostream: PGMemoryOutputStream): PGBytes; cdecl; external;
 function g_memory_output_stream_steal_data(ostream: PGMemoryOutputStream): gpointer; cdecl; external;
+function g_memory_settings_backend_new: PGSettingsBackend; cdecl; external;
 function g_menu_attribute_iter_get_name(iter: PGMenuAttributeIter): Pgchar; cdecl; external;
 function g_menu_attribute_iter_get_next(iter: PGMenuAttributeIter; out_name: PPgchar; value: PPGVariant): gboolean; cdecl; external;
 function g_menu_attribute_iter_get_type: TGType; cdecl; external;
@@ -6364,25 +8032,33 @@ function g_mount_is_shadowed(mount: PGMount): gboolean; cdecl; external;
 function g_mount_operation_get_anonymous(op: PGMountOperation): gboolean; cdecl; external;
 function g_mount_operation_get_choice(op: PGMountOperation): gint; cdecl; external;
 function g_mount_operation_get_domain(op: PGMountOperation): Pgchar; cdecl; external;
+function g_mount_operation_get_is_tcrypt_hidden_volume(op: PGMountOperation): gboolean; cdecl; external;
+function g_mount_operation_get_is_tcrypt_system_volume(op: PGMountOperation): gboolean; cdecl; external;
 function g_mount_operation_get_password(op: PGMountOperation): Pgchar; cdecl; external;
 function g_mount_operation_get_password_save(op: PGMountOperation): TGPasswordSave; cdecl; external;
+function g_mount_operation_get_pim(op: PGMountOperation): guint; cdecl; external;
 function g_mount_operation_get_type: TGType; cdecl; external;
 function g_mount_operation_get_username(op: PGMountOperation): Pgchar; cdecl; external;
 function g_mount_operation_new: PGMountOperation; cdecl; external;
 function g_mount_remount_finish(mount: PGMount; result_: PGAsyncResult; error: PPGError): gboolean; cdecl; external;
 function g_mount_unmount_with_operation_finish(mount: PGMount; result_: PGAsyncResult; error: PPGError): gboolean; cdecl; external;
+function g_native_socket_address_get_type: TGType; cdecl; external;
+function g_native_socket_address_new(native: gpointer; len: gsize): PGNativeSocketAddress; cdecl; external;
 function g_native_volume_monitor_get_type: TGType; cdecl; external;
 function g_network_address_get_hostname(addr: PGNetworkAddress): Pgchar; cdecl; external;
 function g_network_address_get_port(addr: PGNetworkAddress): guint16; cdecl; external;
 function g_network_address_get_scheme(addr: PGNetworkAddress): Pgchar; cdecl; external;
 function g_network_address_get_type: TGType; cdecl; external;
 function g_network_address_new(hostname: Pgchar; port: guint16): PGNetworkAddress; cdecl; external;
-function g_network_address_parse(host_and_port: Pgchar; default_port: guint16; error: PPGError): PGSocketConnectable; cdecl; external;
-function g_network_address_parse_uri(uri: Pgchar; default_port: guint16; error: PPGError): PGSocketConnectable; cdecl; external;
+function g_network_address_new_loopback(port: guint16): PGNetworkAddress; cdecl; external;
+function g_network_address_parse(host_and_port: Pgchar; default_port: guint16; error: PPGError): PGNetworkAddress; cdecl; external;
+function g_network_address_parse_uri(uri: Pgchar; default_port: guint16; error: PPGError): PGNetworkAddress; cdecl; external;
 function g_network_monitor_can_reach(monitor: PGNetworkMonitor; connectable: PGSocketConnectable; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
 function g_network_monitor_can_reach_finish(monitor: PGNetworkMonitor; result_: PGAsyncResult; error: PPGError): gboolean; cdecl; external;
+function g_network_monitor_get_connectivity(monitor: PGNetworkMonitor): TGNetworkConnectivity; cdecl; external;
 function g_network_monitor_get_default: PGNetworkMonitor; cdecl; external;
 function g_network_monitor_get_network_available(monitor: PGNetworkMonitor): gboolean; cdecl; external;
+function g_network_monitor_get_network_metered(monitor: PGNetworkMonitor): gboolean; cdecl; external;
 function g_network_monitor_get_type: TGType; cdecl; external;
 function g_network_service_get_domain(srv: PGNetworkService): Pgchar; cdecl; external;
 function g_network_service_get_protocol(srv: PGNetworkService): Pgchar; cdecl; external;
@@ -6390,6 +8066,9 @@ function g_network_service_get_scheme(srv: PGNetworkService): Pgchar; cdecl; ext
 function g_network_service_get_service(srv: PGNetworkService): Pgchar; cdecl; external;
 function g_network_service_get_type: TGType; cdecl; external;
 function g_network_service_new(service: Pgchar; protocol: Pgchar; domain: Pgchar): PGNetworkService; cdecl; external;
+function g_notification_get_type: TGType; cdecl; external;
+function g_notification_new(title: Pgchar): PGNotification; cdecl; external;
+function g_null_settings_backend_new: PGSettingsBackend; cdecl; external;
 function g_output_stream_close(stream: PGOutputStream; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
 function g_output_stream_close_finish(stream: PGOutputStream; result_: PGAsyncResult; error: PPGError): gboolean; cdecl; external;
 function g_output_stream_flush(stream: PGOutputStream; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
@@ -6398,14 +8077,21 @@ function g_output_stream_get_type: TGType; cdecl; external;
 function g_output_stream_has_pending(stream: PGOutputStream): gboolean; cdecl; external;
 function g_output_stream_is_closed(stream: PGOutputStream): gboolean; cdecl; external;
 function g_output_stream_is_closing(stream: PGOutputStream): gboolean; cdecl; external;
+function g_output_stream_printf(stream: PGOutputStream; bytes_written: Pgsize; cancellable: PGCancellable; error: PPGError; format: Pgchar; args: array of const): gboolean; cdecl; external;
 function g_output_stream_set_pending(stream: PGOutputStream; error: PPGError): gboolean; cdecl; external;
 function g_output_stream_splice(stream: PGOutputStream; source: PGInputStream; flags: TGOutputStreamSpliceFlags; cancellable: PGCancellable; error: PPGError): gssize; cdecl; external;
 function g_output_stream_splice_finish(stream: PGOutputStream; result_: PGAsyncResult; error: PPGError): gssize; cdecl; external;
+function g_output_stream_vprintf(stream: PGOutputStream; bytes_written: Pgsize; cancellable: PGCancellable; error: PPGError; format: Pgchar; args: Tva_list): gboolean; cdecl; external;
 function g_output_stream_write(stream: PGOutputStream; buffer: Pguint8; count: gsize; cancellable: PGCancellable; error: PPGError): gssize; cdecl; external;
 function g_output_stream_write_all(stream: PGOutputStream; buffer: Pguint8; count: gsize; bytes_written: Pgsize; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
+function g_output_stream_write_all_finish(stream: PGOutputStream; result_: PGAsyncResult; bytes_written: Pgsize; error: PPGError): gboolean; cdecl; external;
 function g_output_stream_write_bytes(stream: PGOutputStream; bytes: PGBytes; cancellable: PGCancellable; error: PPGError): gssize; cdecl; external;
 function g_output_stream_write_bytes_finish(stream: PGOutputStream; result_: PGAsyncResult; error: PPGError): gssize; cdecl; external;
 function g_output_stream_write_finish(stream: PGOutputStream; result_: PGAsyncResult; error: PPGError): gssize; cdecl; external;
+function g_output_stream_writev(stream: PGOutputStream; vectors: PGOutputVector; n_vectors: gsize; bytes_written: Pgsize; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
+function g_output_stream_writev_all(stream: PGOutputStream; vectors: PGOutputVector; n_vectors: gsize; bytes_written: Pgsize; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
+function g_output_stream_writev_all_finish(stream: PGOutputStream; result_: PGAsyncResult; bytes_written: Pgsize; error: PPGError): gboolean; cdecl; external;
+function g_output_stream_writev_finish(stream: PGOutputStream; result_: PGAsyncResult; bytes_written: Pgsize; error: PPGError): gboolean; cdecl; external;
 function g_permission_acquire(permission: PGPermission; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
 function g_permission_acquire_finish(permission: PGPermission; result_: PGAsyncResult; error: PPGError): gboolean; cdecl; external;
 function g_permission_get_allowed(permission: PGPermission): gboolean; cdecl; external;
@@ -6418,17 +8104,21 @@ function g_pollable_input_stream_can_poll(stream: PGPollableInputStream): gboole
 function g_pollable_input_stream_create_source(stream: PGPollableInputStream; cancellable: PGCancellable): PGSource; cdecl; external;
 function g_pollable_input_stream_get_type: TGType; cdecl; external;
 function g_pollable_input_stream_is_readable(stream: PGPollableInputStream): gboolean; cdecl; external;
-function g_pollable_input_stream_read_nonblocking(stream: PGPollableInputStream; buffer: Pgpointer; count: gsize; cancellable: PGCancellable; error: PPGError): gssize; cdecl; external;
+function g_pollable_input_stream_read_nonblocking(stream: PGPollableInputStream; buffer: Pguint8; count: gsize; cancellable: PGCancellable; error: PPGError): gssize; cdecl; external;
 function g_pollable_output_stream_can_poll(stream: PGPollableOutputStream): gboolean; cdecl; external;
 function g_pollable_output_stream_create_source(stream: PGPollableOutputStream; cancellable: PGCancellable): PGSource; cdecl; external;
 function g_pollable_output_stream_get_type: TGType; cdecl; external;
 function g_pollable_output_stream_is_writable(stream: PGPollableOutputStream): gboolean; cdecl; external;
 function g_pollable_output_stream_write_nonblocking(stream: PGPollableOutputStream; buffer: Pguint8; count: gsize; cancellable: PGCancellable; error: PPGError): gssize; cdecl; external;
+function g_pollable_output_stream_writev_nonblocking(stream: PGPollableOutputStream; vectors: PGOutputVector; n_vectors: gsize; bytes_written: Pgsize; cancellable: PGCancellable; error: PPGError): TGPollableReturn; cdecl; external;
 function g_pollable_source_new(pollable_stream: PGObject): PGSource; cdecl; external;
 function g_pollable_source_new_full(pollable_stream: PGObject; child_source: PGSource; cancellable: PGCancellable): PGSource; cdecl; external;
-function g_pollable_stream_read(stream: PGInputStream; buffer: Pgpointer; count: gsize; blocking: gboolean; cancellable: PGCancellable; error: PPGError): gssize; cdecl; external;
+function g_pollable_stream_read(stream: PGInputStream; buffer: Pguint8; count: gsize; blocking: gboolean; cancellable: PGCancellable; error: PPGError): gssize; cdecl; external;
 function g_pollable_stream_write(stream: PGOutputStream; buffer: Pguint8; count: gsize; blocking: gboolean; cancellable: PGCancellable; error: PPGError): gssize; cdecl; external;
 function g_pollable_stream_write_all(stream: PGOutputStream; buffer: Pguint8; count: gsize; blocking: gboolean; bytes_written: Pgsize; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
+function g_power_profile_monitor_get_type: TGType; cdecl; external;
+function g_property_action_get_type: TGType; cdecl; external;
+function g_property_action_new(name: Pgchar; object_: PGObject; property_name: Pgchar): PGPropertyAction; cdecl; external;
 function g_proxy_address_enumerator_get_type: TGType; cdecl; external;
 function g_proxy_address_get_destination_hostname(proxy: PGProxyAddress): Pgchar; cdecl; external;
 function g_proxy_address_get_destination_port(proxy: PGProxyAddress): guint16; cdecl; external;
@@ -6457,6 +8147,8 @@ function g_resolver_lookup_by_address(resolver: PGResolver; address: PGInetAddre
 function g_resolver_lookup_by_address_finish(resolver: PGResolver; result_: PGAsyncResult; error: PPGError): Pgchar; cdecl; external;
 function g_resolver_lookup_by_name(resolver: PGResolver; hostname: Pgchar; cancellable: PGCancellable; error: PPGError): PGList; cdecl; external;
 function g_resolver_lookup_by_name_finish(resolver: PGResolver; result_: PGAsyncResult; error: PPGError): PGList; cdecl; external;
+function g_resolver_lookup_by_name_with_flags(resolver: PGResolver; hostname: Pgchar; flags: TGResolverNameLookupFlags; cancellable: PGCancellable; error: PPGError): PGList; cdecl; external;
+function g_resolver_lookup_by_name_with_flags_finish(resolver: PGResolver; result_: PGAsyncResult; error: PPGError): PGList; cdecl; external;
 function g_resolver_lookup_records(resolver: PGResolver; rrname: Pgchar; record_type: TGResolverRecordType; cancellable: PGCancellable; error: PPGError): PGList; cdecl; external;
 function g_resolver_lookup_records_finish(resolver: PGResolver; result_: PGAsyncResult; error: PPGError): PGList; cdecl; external;
 function g_resolver_lookup_service(resolver: PGResolver; service: Pgchar; protocol: Pgchar; domain: Pgchar; cancellable: PGCancellable; error: PPGError): PGList; cdecl; external;
@@ -6480,35 +8172,49 @@ function g_seekable_get_type: TGType; cdecl; external;
 function g_seekable_seek(seekable: PGSeekable; offset: gint64; type_: TGSeekType; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
 function g_seekable_tell(seekable: PGSeekable): gint64; cdecl; external;
 function g_seekable_truncate(seekable: PGSeekable; offset: gint64; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
+function g_settings_backend_get_default: PGSettingsBackend; cdecl; external;
+function g_settings_backend_get_type: TGType; cdecl; external;
 function g_settings_create_action(settings: PGSettings; key: Pgchar): PGAction; cdecl; external;
 function g_settings_get_boolean(settings: PGSettings; key: Pgchar): gboolean; cdecl; external;
 function g_settings_get_child(settings: PGSettings; name: Pgchar): PGSettings; cdecl; external;
+function g_settings_get_default_value(settings: PGSettings; key: Pgchar): PGVariant; cdecl; external;
 function g_settings_get_double(settings: PGSettings; key: Pgchar): gdouble; cdecl; external;
 function g_settings_get_enum(settings: PGSettings; key: Pgchar): gint; cdecl; external;
 function g_settings_get_flags(settings: PGSettings; key: Pgchar): guint; cdecl; external;
 function g_settings_get_has_unapplied(settings: PGSettings): gboolean; cdecl; external;
 function g_settings_get_int(settings: PGSettings; key: Pgchar): gint; cdecl; external;
+function g_settings_get_int64(settings: PGSettings; key: Pgchar): gint64; cdecl; external;
 function g_settings_get_mapped(settings: PGSettings; key: Pgchar; mapping: TGSettingsGetMapping; user_data: gpointer): gpointer; cdecl; external;
-function g_settings_get_range(settings: PGSettings; key: Pgchar): PGVariant; cdecl; external;
 function g_settings_get_string(settings: PGSettings; key: Pgchar): Pgchar; cdecl; external;
 function g_settings_get_strv(settings: PGSettings; key: Pgchar): PPgchar; cdecl; external;
 function g_settings_get_type: TGType; cdecl; external;
 function g_settings_get_uint(settings: PGSettings; key: Pgchar): guint; cdecl; external;
+function g_settings_get_uint64(settings: PGSettings; key: Pgchar): guint64; cdecl; external;
+function g_settings_get_user_value(settings: PGSettings; key: Pgchar): PGVariant; cdecl; external;
 function g_settings_get_value(settings: PGSettings; key: Pgchar): PGVariant; cdecl; external;
 function g_settings_is_writable(settings: PGSettings; name: Pgchar): gboolean; cdecl; external;
 function g_settings_list_children(settings: PGSettings): PPgchar; cdecl; external;
-function g_settings_list_keys(settings: PGSettings): PPgchar; cdecl; external;
-function g_settings_list_relocatable_schemas: PPgchar; cdecl; external;
-function g_settings_list_schemas: PPgchar; cdecl; external;
 function g_settings_new(schema_id: Pgchar): PGSettings; cdecl; external;
 function g_settings_new_full(schema: PGSettingsSchema; backend: PGSettingsBackend; path: Pgchar): PGSettings; cdecl; external;
 function g_settings_new_with_backend(schema_id: Pgchar; backend: PGSettingsBackend): PGSettings; cdecl; external;
 function g_settings_new_with_backend_and_path(schema_id: Pgchar; backend: PGSettingsBackend; path: Pgchar): PGSettings; cdecl; external;
 function g_settings_new_with_path(schema_id: Pgchar; path: Pgchar): PGSettings; cdecl; external;
-function g_settings_range_check(settings: PGSettings; key: Pgchar; value: PGVariant): gboolean; cdecl; external;
 function g_settings_schema_get_id(schema: PGSettingsSchema): Pgchar; cdecl; external;
+function g_settings_schema_get_key(schema: PGSettingsSchema; name: Pgchar): PGSettingsSchemaKey; cdecl; external;
 function g_settings_schema_get_path(schema: PGSettingsSchema): Pgchar; cdecl; external;
 function g_settings_schema_get_type: TGType; cdecl; external;
+function g_settings_schema_has_key(schema: PGSettingsSchema; name: Pgchar): gboolean; cdecl; external;
+function g_settings_schema_key_get_default_value(key: PGSettingsSchemaKey): PGVariant; cdecl; external;
+function g_settings_schema_key_get_description(key: PGSettingsSchemaKey): Pgchar; cdecl; external;
+function g_settings_schema_key_get_name(key: PGSettingsSchemaKey): Pgchar; cdecl; external;
+function g_settings_schema_key_get_range(key: PGSettingsSchemaKey): PGVariant; cdecl; external;
+function g_settings_schema_key_get_summary(key: PGSettingsSchemaKey): Pgchar; cdecl; external;
+function g_settings_schema_key_get_type: TGType; cdecl; external;
+function g_settings_schema_key_get_value_type(key: PGSettingsSchemaKey): PGVariantType; cdecl; external;
+function g_settings_schema_key_range_check(key: PGSettingsSchemaKey; value: PGVariant): gboolean; cdecl; external;
+function g_settings_schema_key_ref(key: PGSettingsSchemaKey): PGSettingsSchemaKey; cdecl; external;
+function g_settings_schema_list_children(schema: PGSettingsSchema): PPgchar; cdecl; external;
+function g_settings_schema_list_keys(schema: PGSettingsSchema): PPgchar; cdecl; external;
 function g_settings_schema_ref(schema: PGSettingsSchema): PGSettingsSchema; cdecl; external;
 function g_settings_schema_source_get_default: PGSettingsSchemaSource; cdecl; external;
 function g_settings_schema_source_get_type: TGType; cdecl; external;
@@ -6521,27 +8227,20 @@ function g_settings_set_double(settings: PGSettings; key: Pgchar; value: gdouble
 function g_settings_set_enum(settings: PGSettings; key: Pgchar; value: gint): gboolean; cdecl; external;
 function g_settings_set_flags(settings: PGSettings; key: Pgchar; value: guint): gboolean; cdecl; external;
 function g_settings_set_int(settings: PGSettings; key: Pgchar; value: gint): gboolean; cdecl; external;
+function g_settings_set_int64(settings: PGSettings; key: Pgchar; value: gint64): gboolean; cdecl; external;
 function g_settings_set_string(settings: PGSettings; key: Pgchar; value: Pgchar): gboolean; cdecl; external;
 function g_settings_set_strv(settings: PGSettings; key: Pgchar; value: PPgchar): gboolean; cdecl; external;
 function g_settings_set_uint(settings: PGSettings; key: Pgchar; value: guint): gboolean; cdecl; external;
+function g_settings_set_uint64(settings: PGSettings; key: Pgchar; value: guint64): gboolean; cdecl; external;
 function g_settings_set_value(settings: PGSettings; key: Pgchar; value: PGVariant): gboolean; cdecl; external;
 function g_simple_action_get_type: TGType; cdecl; external;
 function g_simple_action_group_get_type: TGType; cdecl; external;
-function g_simple_action_group_lookup(simple: PGSimpleActionGroup; action_name: Pgchar): PGAction; cdecl; external;
 function g_simple_action_group_new: PGSimpleActionGroup; cdecl; external;
 function g_simple_action_new(name: Pgchar; parameter_type: PGVariantType): PGSimpleAction; cdecl; external;
 function g_simple_action_new_stateful(name: Pgchar; parameter_type: PGVariantType; state: PGVariant): PGSimpleAction; cdecl; external;
-function g_simple_async_result_get_op_res_gboolean(simple: PGSimpleAsyncResult): gboolean; cdecl; external;
-function g_simple_async_result_get_op_res_gpointer(simple: PGSimpleAsyncResult): gpointer; cdecl; external;
-function g_simple_async_result_get_op_res_gssize(simple: PGSimpleAsyncResult): gssize; cdecl; external;
-function g_simple_async_result_get_source_tag(simple: PGSimpleAsyncResult): gpointer; cdecl; external;
 function g_simple_async_result_get_type: TGType; cdecl; external;
-function g_simple_async_result_is_valid(result_: PGAsyncResult; source: PGObject; source_tag: gpointer): gboolean; cdecl; external;
-function g_simple_async_result_new(source_object: PGObject; callback: TGAsyncReadyCallback; user_data: gpointer; source_tag: gpointer): PGSimpleAsyncResult; cdecl; external;
-function g_simple_async_result_new_error(source_object: PGObject; callback: TGAsyncReadyCallback; user_data: gpointer; domain: TGQuark; code: gint; format: Pgchar; args: array of const): PGSimpleAsyncResult; cdecl; external;
-function g_simple_async_result_new_from_error(source_object: PGObject; callback: TGAsyncReadyCallback; user_data: gpointer; error: PGError): PGSimpleAsyncResult; cdecl; external;
-function g_simple_async_result_new_take_error(source_object: PGObject; callback: TGAsyncReadyCallback; user_data: gpointer; error: PGError): PGSimpleAsyncResult; cdecl; external;
-function g_simple_async_result_propagate_error(simple: PGSimpleAsyncResult; error: PPGError): gboolean; cdecl; external;
+function g_simple_io_stream_get_type: TGType; cdecl; external;
+function g_simple_io_stream_new(input_stream: PGInputStream; output_stream: PGOutputStream): PGSimpleIOStream; cdecl; external;
 function g_simple_permission_get_type: TGType; cdecl; external;
 function g_simple_permission_new(allowed: gboolean): PGSimplePermission; cdecl; external;
 function g_simple_proxy_resolver_get_type: TGType; cdecl; external;
@@ -6573,17 +8272,17 @@ function g_socket_client_get_proxy_resolver(client: PGSocketClient): PGProxyReso
 function g_socket_client_get_socket_type(client: PGSocketClient): TGSocketType; cdecl; external;
 function g_socket_client_get_timeout(client: PGSocketClient): guint; cdecl; external;
 function g_socket_client_get_tls(client: PGSocketClient): gboolean; cdecl; external;
-function g_socket_client_get_tls_validation_flags(client: PGSocketClient): TGTlsCertificateFlags; cdecl; external;
 function g_socket_client_get_type: TGType; cdecl; external;
 function g_socket_client_new: PGSocketClient; cdecl; external;
 function g_socket_close(socket: PGSocket; error: PPGError): gboolean; cdecl; external;
 function g_socket_condition_check(socket: PGSocket; condition: TGIOCondition): TGIOCondition; cdecl; external;
-function g_socket_condition_timed_wait(socket: PGSocket; condition: TGIOCondition; timeout: gint64; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
+function g_socket_condition_timed_wait(socket: PGSocket; condition: TGIOCondition; timeout_us: gint64; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
 function g_socket_condition_wait(socket: PGSocket; condition: TGIOCondition; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
 function g_socket_connect(socket: PGSocket; address: PGSocketAddress; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
 function g_socket_connectable_enumerate(connectable: PGSocketConnectable): PGSocketAddressEnumerator; cdecl; external;
 function g_socket_connectable_get_type: TGType; cdecl; external;
 function g_socket_connectable_proxy_enumerate(connectable: PGSocketConnectable): PGSocketAddressEnumerator; cdecl; external;
+function g_socket_connectable_to_string(connectable: PGSocketConnectable): Pgchar; cdecl; external;
 function g_socket_connection_connect(connection: PGSocketConnection; address: PGSocketAddress; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
 function g_socket_connection_connect_finish(connection: PGSocketConnection; result_: PGAsyncResult; error: PPGError): gboolean; cdecl; external;
 function g_socket_connection_factory_create_connection(socket: PGSocket): PGSocketConnection; cdecl; external;
@@ -6620,7 +8319,9 @@ function g_socket_get_type: TGType; cdecl; external;
 function g_socket_is_closed(socket: PGSocket): gboolean; cdecl; external;
 function g_socket_is_connected(socket: PGSocket): gboolean; cdecl; external;
 function g_socket_join_multicast_group(socket: PGSocket; group: PGInetAddress; source_specific: gboolean; iface: Pgchar; error: PPGError): gboolean; cdecl; external;
+function g_socket_join_multicast_group_ssm(socket: PGSocket; group: PGInetAddress; source_specific: PGInetAddress; iface: Pgchar; error: PPGError): gboolean; cdecl; external;
 function g_socket_leave_multicast_group(socket: PGSocket; group: PGInetAddress; source_specific: gboolean; iface: Pgchar; error: PPGError): gboolean; cdecl; external;
+function g_socket_leave_multicast_group_ssm(socket: PGSocket; group: PGInetAddress; source_specific: PGInetAddress; iface: Pgchar; error: PPGError): gboolean; cdecl; external;
 function g_socket_listen(socket: PGSocket; error: PPGError): gboolean; cdecl; external;
 function g_socket_listener_accept(listener: PGSocketListener; source_object: PPGObject; cancellable: PGCancellable; error: PPGError): PGSocketConnection; cdecl; external;
 function g_socket_listener_accept_finish(listener: PGSocketListener; result_: PGAsyncResult; source_object: PPGObject; error: PPGError): PGSocketConnection; cdecl; external;
@@ -6634,12 +8335,15 @@ function g_socket_listener_get_type: TGType; cdecl; external;
 function g_socket_listener_new: PGSocketListener; cdecl; external;
 function g_socket_new(family: TGSocketFamily; type_: TGSocketType; protocol: TGSocketProtocol; error: PPGError): PGSocket; cdecl; external;
 function g_socket_new_from_fd(fd: gint; error: PPGError): PGSocket; cdecl; external;
-function g_socket_receive(socket: PGSocket; buffer: Pgchar; size: gsize; cancellable: PGCancellable; error: PPGError): gssize; cdecl; external;
-function g_socket_receive_from(socket: PGSocket; address: PPGSocketAddress; buffer: Pgchar; size: gsize; cancellable: PGCancellable; error: PPGError): gssize; cdecl; external;
+function g_socket_receive(socket: PGSocket; buffer: Pgchar; size: Pgsize; cancellable: PGCancellable; error: PPGError): gssize; cdecl; external;
+function g_socket_receive_from(socket: PGSocket; address: PPGSocketAddress; buffer: Pgchar; size: Pgsize; cancellable: PGCancellable; error: PPGError): gssize; cdecl; external;
 function g_socket_receive_message(socket: PGSocket; address: PPGSocketAddress; vectors: PGInputVector; num_vectors: gint; messages: PPPGSocketControlMessage; num_messages: Pgint; flags: Pgint; cancellable: PGCancellable; error: PPGError): gssize; cdecl; external;
-function g_socket_receive_with_blocking(socket: PGSocket; buffer: Pgchar; size: gsize; blocking: gboolean; cancellable: PGCancellable; error: PPGError): gssize; cdecl; external;
+function g_socket_receive_messages(socket: PGSocket; messages: PGInputMessage; num_messages: guint; flags: gint; cancellable: PGCancellable; error: PPGError): gint; cdecl; external;
+function g_socket_receive_with_blocking(socket: PGSocket; buffer: Pgchar; size: Pgsize; blocking: gboolean; cancellable: PGCancellable; error: PPGError): gssize; cdecl; external;
 function g_socket_send(socket: PGSocket; buffer: Pgchar; size: gsize; cancellable: PGCancellable; error: PPGError): gssize; cdecl; external;
 function g_socket_send_message(socket: PGSocket; address: PGSocketAddress; vectors: PGOutputVector; num_vectors: gint; messages: PPGSocketControlMessage; num_messages: gint; flags: gint; cancellable: PGCancellable; error: PPGError): gssize; cdecl; external;
+function g_socket_send_message_with_timeout(socket: PGSocket; address: PGSocketAddress; vectors: PGOutputVector; num_vectors: gint; messages: PPGSocketControlMessage; num_messages: gint; flags: gint; timeout_us: gint64; bytes_written: Pgsize; cancellable: PGCancellable; error: PPGError): TGPollableReturn; cdecl; external;
+function g_socket_send_messages(socket: PGSocket; messages: PGOutputMessage; num_messages: guint; flags: gint; cancellable: PGCancellable; error: PPGError): gint; cdecl; external;
 function g_socket_send_to(socket: PGSocket; address: PGSocketAddress; buffer: Pgchar; size: gsize; cancellable: PGCancellable; error: PPGError): gssize; cdecl; external;
 function g_socket_send_with_blocking(socket: PGSocket; buffer: Pgchar; size: gsize; blocking: gboolean; cancellable: PGCancellable; error: PPGError): gssize; cdecl; external;
 function g_socket_service_get_type: TGType; cdecl; external;
@@ -6657,9 +8361,37 @@ function g_srv_target_get_weight(target: PGSrvTarget): guint16; cdecl; external;
 function g_srv_target_list_sort(targets: PGList): PGList; cdecl; external;
 function g_srv_target_new(hostname: Pgchar; port: guint16; priority: guint16; weight: guint16): PGSrvTarget; cdecl; external;
 function g_static_resource_get_resource(static_resource: PGStaticResource): PGResource; cdecl; external;
+function g_subprocess_communicate(subprocess: PGSubprocess; stdin_buf: PGBytes; cancellable: PGCancellable; stdout_buf: PPGBytes; stderr_buf: PPGBytes; error: PPGError): gboolean; cdecl; external;
+function g_subprocess_communicate_finish(subprocess: PGSubprocess; result_: PGAsyncResult; stdout_buf: PPGBytes; stderr_buf: PPGBytes; error: PPGError): gboolean; cdecl; external;
+function g_subprocess_communicate_utf8(subprocess: PGSubprocess; stdin_buf: Pgchar; cancellable: PGCancellable; stdout_buf: PPgchar; stderr_buf: PPgchar; error: PPGError): gboolean; cdecl; external;
+function g_subprocess_communicate_utf8_finish(subprocess: PGSubprocess; result_: PGAsyncResult; stdout_buf: PPgchar; stderr_buf: PPgchar; error: PPGError): gboolean; cdecl; external;
+function g_subprocess_get_exit_status(subprocess: PGSubprocess): gint; cdecl; external;
+function g_subprocess_get_identifier(subprocess: PGSubprocess): Pgchar; cdecl; external;
+function g_subprocess_get_if_exited(subprocess: PGSubprocess): gboolean; cdecl; external;
+function g_subprocess_get_if_signaled(subprocess: PGSubprocess): gboolean; cdecl; external;
+function g_subprocess_get_status(subprocess: PGSubprocess): gint; cdecl; external;
+function g_subprocess_get_stderr_pipe(subprocess: PGSubprocess): PGInputStream; cdecl; external;
+function g_subprocess_get_stdin_pipe(subprocess: PGSubprocess): PGOutputStream; cdecl; external;
+function g_subprocess_get_stdout_pipe(subprocess: PGSubprocess): PGInputStream; cdecl; external;
+function g_subprocess_get_successful(subprocess: PGSubprocess): gboolean; cdecl; external;
+function g_subprocess_get_term_sig(subprocess: PGSubprocess): gint; cdecl; external;
+function g_subprocess_get_type: TGType; cdecl; external;
+function g_subprocess_launcher_get_type: TGType; cdecl; external;
+function g_subprocess_launcher_getenv(self: PGSubprocessLauncher; variable: Pgchar): Pgchar; cdecl; external;
+function g_subprocess_launcher_new(flags: TGSubprocessFlags): PGSubprocessLauncher; cdecl; external;
+function g_subprocess_launcher_spawn(self: PGSubprocessLauncher; error: PPGError; argv0: Pgchar; args: array of const): PGSubprocess; cdecl; external;
+function g_subprocess_launcher_spawnv(self: PGSubprocessLauncher; argv: PPgchar; error: PPGError): PGSubprocess; cdecl; external;
+function g_subprocess_new(flags: TGSubprocessFlags; error: PPGError; argv0: Pgchar; args: array of const): PGSubprocess; cdecl; external;
+function g_subprocess_newv(argv: PPgchar; flags: TGSubprocessFlags; error: PPGError): PGSubprocess; cdecl; external;
+function g_subprocess_wait(subprocess: PGSubprocess; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
+function g_subprocess_wait_check(subprocess: PGSubprocess; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
+function g_subprocess_wait_check_finish(subprocess: PGSubprocess; result_: PGAsyncResult; error: PPGError): gboolean; cdecl; external;
+function g_subprocess_wait_finish(subprocess: PGSubprocess; result_: PGAsyncResult; error: PPGError): gboolean; cdecl; external;
 function g_task_get_cancellable(task: PGTask): PGCancellable; cdecl; external;
 function g_task_get_check_cancellable(task: PGTask): gboolean; cdecl; external;
+function g_task_get_completed(task: PGTask): gboolean; cdecl; external;
 function g_task_get_context(task: PGTask): PGMainContext; cdecl; external;
+function g_task_get_name(task: PGTask): Pgchar; cdecl; external;
 function g_task_get_priority(task: PGTask): gint; cdecl; external;
 function g_task_get_return_on_cancel(task: PGTask): gboolean; cdecl; external;
 function g_task_get_source_object(task: PGTask): PGObject; cdecl; external;
@@ -6672,6 +8404,7 @@ function g_task_new(source_object: PGObject; cancellable: PGCancellable; callbac
 function g_task_propagate_boolean(task: PGTask; error: PPGError): gboolean; cdecl; external;
 function g_task_propagate_int(task: PGTask; error: PPGError): gssize; cdecl; external;
 function g_task_propagate_pointer(task: PGTask; error: PPGError): gpointer; cdecl; external;
+function g_task_propagate_value(task: PGTask; value: PGValue; error: PPGError): gboolean; cdecl; external;
 function g_task_return_error_if_cancelled(task: PGTask): gboolean; cdecl; external;
 function g_task_set_return_on_cancel(task: PGTask; return_on_cancel: gboolean): gboolean; cdecl; external;
 function g_tcp_connection_get_graceful_disconnect(connection: PGTcpConnection): gboolean; cdecl; external;
@@ -6694,11 +8427,17 @@ function g_tls_backend_get_certificate_type(backend: PGTlsBackend): TGType; cdec
 function g_tls_backend_get_client_connection_type(backend: PGTlsBackend): TGType; cdecl; external;
 function g_tls_backend_get_default: PGTlsBackend; cdecl; external;
 function g_tls_backend_get_default_database(backend: PGTlsBackend): PGTlsDatabase; cdecl; external;
+function g_tls_backend_get_dtls_client_connection_type(backend: PGTlsBackend): TGType; cdecl; external;
+function g_tls_backend_get_dtls_server_connection_type(backend: PGTlsBackend): TGType; cdecl; external;
 function g_tls_backend_get_file_database_type(backend: PGTlsBackend): TGType; cdecl; external;
 function g_tls_backend_get_server_connection_type(backend: PGTlsBackend): TGType; cdecl; external;
 function g_tls_backend_get_type: TGType; cdecl; external;
+function g_tls_backend_supports_dtls(backend: PGTlsBackend): gboolean; cdecl; external;
 function g_tls_backend_supports_tls(backend: PGTlsBackend): gboolean; cdecl; external;
+function g_tls_certificate_get_ip_addresses(cert: PGTlsCertificate): PGInetAddress; cdecl; external;
 function g_tls_certificate_get_issuer(cert: PGTlsCertificate): PGTlsCertificate; cdecl; external;
+function g_tls_certificate_get_not_valid_after(cert: PGTlsCertificate): PGDateTime; cdecl; external;
+function g_tls_certificate_get_not_valid_before(cert: PGTlsCertificate): PGDateTime; cdecl; external;
 function g_tls_certificate_get_type: TGType; cdecl; external;
 function g_tls_certificate_is_same(cert_one: PGTlsCertificate; cert_two: PGTlsCertificate): gboolean; cdecl; external;
 function g_tls_certificate_list_new_from_file(file_: Pgchar; error: PPGError): PGList; cdecl; external;
@@ -6706,19 +8445,19 @@ function g_tls_certificate_new_from_file(file_: Pgchar; error: PPGError): PGTlsC
 function g_tls_certificate_new_from_files(cert_file: Pgchar; key_file: Pgchar; error: PPGError): PGTlsCertificate; cdecl; external;
 function g_tls_certificate_new_from_pem(data: Pgchar; length: gssize; error: PPGError): PGTlsCertificate; cdecl; external;
 function g_tls_certificate_verify(cert: PGTlsCertificate; identity: PGSocketConnectable; trusted_ca: PGTlsCertificate): TGTlsCertificateFlags; cdecl; external;
+function g_tls_channel_binding_error_quark: TGQuark; cdecl; external;
 function g_tls_client_connection_get_accepted_cas(conn: PGTlsClientConnection): PGList; cdecl; external;
 function g_tls_client_connection_get_server_identity(conn: PGTlsClientConnection): PGSocketConnectable; cdecl; external;
 function g_tls_client_connection_get_type: TGType; cdecl; external;
-function g_tls_client_connection_get_use_ssl3(conn: PGTlsClientConnection): gboolean; cdecl; external;
-function g_tls_client_connection_get_validation_flags(conn: PGTlsClientConnection): TGTlsCertificateFlags; cdecl; external;
 function g_tls_client_connection_new(base_io_stream: PGIOStream; server_identity: PGSocketConnectable; error: PPGError): PGTlsClientConnection; cdecl; external;
 function g_tls_connection_emit_accept_certificate(conn: PGTlsConnection; peer_cert: PGTlsCertificate; errors: TGTlsCertificateFlags): gboolean; cdecl; external;
 function g_tls_connection_get_certificate(conn: PGTlsConnection): PGTlsCertificate; cdecl; external;
+function g_tls_connection_get_channel_binding_data(conn: PGTlsConnection; type_: TGTlsChannelBindingType; data: Pguint8; error: PPGError): gboolean; cdecl; external;
 function g_tls_connection_get_database(conn: PGTlsConnection): PGTlsDatabase; cdecl; external;
 function g_tls_connection_get_interaction(conn: PGTlsConnection): PGTlsInteraction; cdecl; external;
+function g_tls_connection_get_negotiated_protocol(conn: PGTlsConnection): Pgchar; cdecl; external;
 function g_tls_connection_get_peer_certificate(conn: PGTlsConnection): PGTlsCertificate; cdecl; external;
 function g_tls_connection_get_peer_certificate_errors(conn: PGTlsConnection): TGTlsCertificateFlags; cdecl; external;
-function g_tls_connection_get_rehandshake_mode(conn: PGTlsConnection): TGTlsRehandshakeMode; cdecl; external;
 function g_tls_connection_get_require_close_notify(conn: PGTlsConnection): gboolean; cdecl; external;
 function g_tls_connection_get_type: TGType; cdecl; external;
 function g_tls_connection_handshake(conn: PGTlsConnection; cancellable: PGCancellable; error: PPGError): gboolean; cdecl; external;
@@ -6740,6 +8479,9 @@ function g_tls_interaction_ask_password(interaction: PGTlsInteraction; password:
 function g_tls_interaction_ask_password_finish(interaction: PGTlsInteraction; result_: PGAsyncResult; error: PPGError): TGTlsInteractionResult; cdecl; external;
 function g_tls_interaction_get_type: TGType; cdecl; external;
 function g_tls_interaction_invoke_ask_password(interaction: PGTlsInteraction; password: PGTlsPassword; cancellable: PGCancellable; error: PPGError): TGTlsInteractionResult; cdecl; external;
+function g_tls_interaction_invoke_request_certificate(interaction: PGTlsInteraction; connection: PGTlsConnection; flags: TGTlsCertificateRequestFlags; cancellable: PGCancellable; error: PPGError): TGTlsInteractionResult; cdecl; external;
+function g_tls_interaction_request_certificate(interaction: PGTlsInteraction; connection: PGTlsConnection; flags: TGTlsCertificateRequestFlags; cancellable: PGCancellable; error: PPGError): TGTlsInteractionResult; cdecl; external;
+function g_tls_interaction_request_certificate_finish(interaction: PGTlsInteraction; result_: PGAsyncResult; error: PPGError): TGTlsInteractionResult; cdecl; external;
 function g_tls_password_get_description(password: PGTlsPassword): Pgchar; cdecl; external;
 function g_tls_password_get_flags(password: PGTlsPassword): TGTlsPasswordFlags; cdecl; external;
 function g_tls_password_get_type: TGType; cdecl; external;
@@ -6779,11 +8521,18 @@ function g_unix_input_stream_get_fd(stream: PGUnixInputStream): gint; cdecl; ext
 function g_unix_input_stream_get_type: TGType; cdecl; external;
 function g_unix_input_stream_new(fd: gint; close_fd: gboolean): PGUnixInputStream; cdecl; external;
 function g_unix_is_mount_path_system_internal(mount_path: Pgchar): gboolean; cdecl; external;
+function g_unix_is_system_device_path(device_path: Pgchar): gboolean; cdecl; external;
+function g_unix_is_system_fs_type(fs_type: Pgchar): gboolean; cdecl; external;
 function g_unix_mount_at(mount_path: Pgchar; time_read: Pguint64): PGUnixMountEntry; cdecl; external;
 function g_unix_mount_compare(mount1: PGUnixMountEntry; mount2: PGUnixMountEntry): gint; cdecl; external;
+function g_unix_mount_copy(mount_entry: PGUnixMountEntry): PGUnixMountEntry; cdecl; external;
+function g_unix_mount_entry_get_type: TGType; cdecl; external;
+function g_unix_mount_for(file_path: Pgchar; time_read: Pguint64): PGUnixMountEntry; cdecl; external;
 function g_unix_mount_get_device_path(mount_entry: PGUnixMountEntry): Pgchar; cdecl; external;
 function g_unix_mount_get_fs_type(mount_entry: PGUnixMountEntry): Pgchar; cdecl; external;
 function g_unix_mount_get_mount_path(mount_entry: PGUnixMountEntry): Pgchar; cdecl; external;
+function g_unix_mount_get_options(mount_entry: PGUnixMountEntry): Pgchar; cdecl; external;
+function g_unix_mount_get_root_path(mount_entry: PGUnixMountEntry): Pgchar; cdecl; external;
 function g_unix_mount_guess_can_eject(mount_entry: PGUnixMountEntry): gboolean; cdecl; external;
 function g_unix_mount_guess_icon(mount_entry: PGUnixMountEntry): PGIcon; cdecl; external;
 function g_unix_mount_guess_name(mount_entry: PGUnixMountEntry): Pgchar; cdecl; external;
@@ -6791,13 +8540,16 @@ function g_unix_mount_guess_should_display(mount_entry: PGUnixMountEntry): gbool
 function g_unix_mount_guess_symbolic_icon(mount_entry: PGUnixMountEntry): PGIcon; cdecl; external;
 function g_unix_mount_is_readonly(mount_entry: PGUnixMountEntry): gboolean; cdecl; external;
 function g_unix_mount_is_system_internal(mount_entry: PGUnixMountEntry): gboolean; cdecl; external;
+function g_unix_mount_monitor_get: PGUnixMountMonitor; cdecl; external;
 function g_unix_mount_monitor_get_type: TGType; cdecl; external;
-function g_unix_mount_monitor_new: PGUnixMountMonitor; cdecl; external;
+function g_unix_mount_point_at(mount_path: Pgchar; time_read: Pguint64): PGUnixMountPoint; cdecl; external;
 function g_unix_mount_point_compare(mount1: PGUnixMountPoint; mount2: PGUnixMountPoint): gint; cdecl; external;
+function g_unix_mount_point_copy(mount_point: PGUnixMountPoint): PGUnixMountPoint; cdecl; external;
 function g_unix_mount_point_get_device_path(mount_point: PGUnixMountPoint): Pgchar; cdecl; external;
 function g_unix_mount_point_get_fs_type(mount_point: PGUnixMountPoint): Pgchar; cdecl; external;
 function g_unix_mount_point_get_mount_path(mount_point: PGUnixMountPoint): Pgchar; cdecl; external;
 function g_unix_mount_point_get_options(mount_point: PGUnixMountPoint): Pgchar; cdecl; external;
+function g_unix_mount_point_get_type: TGType; cdecl; external;
 function g_unix_mount_point_guess_can_eject(mount_point: PGUnixMountPoint): gboolean; cdecl; external;
 function g_unix_mount_point_guess_icon(mount_point: PGUnixMountPoint): PGIcon; cdecl; external;
 function g_unix_mount_point_guess_name(mount_point: PGUnixMountPoint): Pgchar; cdecl; external;
@@ -6828,6 +8580,8 @@ function g_vfs_get_supported_uri_schemes(vfs: PGVfs): PPgchar; cdecl; external;
 function g_vfs_get_type: TGType; cdecl; external;
 function g_vfs_is_active(vfs: PGVfs): gboolean; cdecl; external;
 function g_vfs_parse_name(vfs: PGVfs; parse_name: Pgchar): PGFile; cdecl; external;
+function g_vfs_register_uri_scheme(vfs: PGVfs; scheme: Pgchar; uri_func: TGVfsFileLookupFunc; uri_data: gpointer; uri_destroy: TGDestroyNotify; parse_name_func: TGVfsFileLookupFunc; parse_name_data: gpointer; parse_name_destroy: TGDestroyNotify): gboolean; cdecl; external;
+function g_vfs_unregister_uri_scheme(vfs: PGVfs; scheme: Pgchar): gboolean; cdecl; external;
 function g_volume_can_eject(volume: PGVolume): gboolean; cdecl; external;
 function g_volume_can_mount(volume: PGVolume): gboolean; cdecl; external;
 function g_volume_eject_with_operation_finish(volume: PGVolume; result_: PGAsyncResult; error: PPGError): gboolean; cdecl; external;
@@ -6868,26 +8622,40 @@ procedure g_action_group_change_action_state(action_group: PGActionGroup; action
 procedure g_action_map_add_action(action_map: PGActionMap; action: PGAction); cdecl; external;
 procedure g_action_map_add_action_entries(action_map: PGActionMap; entries: PGActionEntry; n_entries: gint; user_data: gpointer); cdecl; external;
 procedure g_action_map_remove_action(action_map: PGActionMap; action_name: Pgchar); cdecl; external;
+procedure g_app_info_launch_default_for_uri_async(uri: Pgchar; context: PGAppLaunchContext; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
+procedure g_app_info_launch_uris_async(appinfo: PGAppInfo; uris: PGList; context: PGAppLaunchContext; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_app_info_reset_type_associations(content_type: Pgchar); cdecl; external;
 procedure g_app_launch_context_launch_failed(context: PGAppLaunchContext; startup_notify_id: Pgchar); cdecl; external;
 procedure g_app_launch_context_setenv(context: PGAppLaunchContext; variable: Pgchar; value: Pgchar); cdecl; external;
 procedure g_app_launch_context_unsetenv(context: PGAppLaunchContext; variable: Pgchar); cdecl; external;
 procedure g_application_activate(application: PGApplication); cdecl; external;
+procedure g_application_add_main_option(application: PGApplication; long_name: Pgchar; short_name: gchar; flags: TGOptionFlags; arg: TGOptionArg; description: Pgchar; arg_description: Pgchar); cdecl; external;
+procedure g_application_add_main_option_entries(application: PGApplication; entries: PGOptionEntry); cdecl; external;
+procedure g_application_add_option_group(application: PGApplication; group: PGOptionGroup); cdecl; external;
+procedure g_application_bind_busy_property(application: PGApplication; object_: PGObject; property_: Pgchar); cdecl; external;
 procedure g_application_command_line_print(cmdline: PGApplicationCommandLine; format: Pgchar; args: array of const); cdecl; external;
 procedure g_application_command_line_printerr(cmdline: PGApplicationCommandLine; format: Pgchar; args: array of const); cdecl; external;
 procedure g_application_command_line_set_exit_status(cmdline: PGApplicationCommandLine; exit_status: gint); cdecl; external;
 procedure g_application_hold(application: PGApplication); cdecl; external;
+procedure g_application_mark_busy(application: PGApplication); cdecl; external;
 procedure g_application_open(application: PGApplication; files: PPGFile; n_files: gint; hint: Pgchar); cdecl; external;
 procedure g_application_quit(application: PGApplication); cdecl; external;
 procedure g_application_release(application: PGApplication); cdecl; external;
+procedure g_application_send_notification(application: PGApplication; id: Pgchar; notification: PGNotification); cdecl; external;
 procedure g_application_set_application_id(application: PGApplication; application_id: Pgchar); cdecl; external;
 procedure g_application_set_default(application: PGApplication); cdecl; external;
 procedure g_application_set_flags(application: PGApplication; flags: TGApplicationFlags); cdecl; external;
 procedure g_application_set_inactivity_timeout(application: PGApplication; inactivity_timeout: guint); cdecl; external;
+procedure g_application_set_option_context_description(application: PGApplication; description: Pgchar); cdecl; external;
+procedure g_application_set_option_context_parameter_string(application: PGApplication; parameter_string: Pgchar); cdecl; external;
+procedure g_application_set_option_context_summary(application: PGApplication; summary: Pgchar); cdecl; external;
+procedure g_application_set_resource_base_path(application: PGApplication; resource_path: Pgchar); cdecl; external;
+procedure g_application_unbind_busy_property(application: PGApplication; object_: PGObject; property_: Pgchar); cdecl; external;
+procedure g_application_unmark_busy(application: PGApplication); cdecl; external;
+procedure g_application_withdraw_notification(application: PGApplication; id: Pgchar); cdecl; external;
 procedure g_async_initable_init_async(initable: PGAsyncInitable; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_async_initable_new_async(object_type: TGType; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer; first_property_name: Pgchar; args: array of const); cdecl; external;
 procedure g_async_initable_new_valist_async(object_type: TGType; first_property_name: Pgchar; var_args: Tva_list; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
-procedure g_async_initable_newv_async(object_type: TGType; n_parameters: guint; parameters: PGParameter; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_buffered_input_stream_fill_async(stream: PGBufferedInputStream; count: gssize; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_buffered_input_stream_set_buffer_size(stream: PGBufferedInputStream; size: gsize); cdecl; external;
 procedure g_buffered_output_stream_set_auto_grow(stream: PGBufferedOutputStream; auto_grow: gboolean); cdecl; external;
@@ -6902,10 +8670,10 @@ procedure g_cancellable_push_current(cancellable: PGCancellable); cdecl; externa
 procedure g_cancellable_release_fd(cancellable: PGCancellable); cdecl; external;
 procedure g_cancellable_reset(cancellable: PGCancellable); cdecl; external;
 procedure g_charset_converter_set_use_fallback(converter: PGCharsetConverter; use_fallback: gboolean); cdecl; external;
+procedure g_content_type_set_mime_dirs(dirs: PPgchar); cdecl; external;
 procedure g_converter_reset(converter: PGConverter); cdecl; external;
 procedure g_credentials_set_native(credentials: PGCredentials; native_type: TGCredentialsType; native: gpointer); cdecl; external;
 procedure g_data_input_stream_read_line_async(stream: PGDataInputStream; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
-procedure g_data_input_stream_read_until_async(stream: PGDataInputStream; stop_chars: Pgchar; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_data_input_stream_read_upto_async(stream: PGDataInputStream; stop_chars: Pgchar; stop_chars_len: gssize; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_data_input_stream_set_byte_order(stream: PGDataInputStream; order: TGDataStreamByteOrder); cdecl; external;
 procedure g_data_input_stream_set_newline_type(stream: PGDataInputStream; type_: TGDataStreamNewlineType); cdecl; external;
@@ -6988,11 +8756,20 @@ procedure g_dbus_proxy_set_interface_info(proxy: PGDBusProxy; info: PGDBusInterf
 procedure g_dbus_server_start(server: PGDBusServer); cdecl; external;
 procedure g_dbus_server_stop(server: PGDBusServer); cdecl; external;
 procedure g_dbus_signal_info_unref(info: PGDBusSignalInfo); cdecl; external;
-procedure g_desktop_app_info_set_desktop_env(desktop_env: Pgchar); cdecl; external;
+procedure g_desktop_app_info_launch_action(info: PGDesktopAppInfo; action_name: Pgchar; launch_context: PGAppLaunchContext); cdecl; external;
 procedure g_drive_eject_with_operation(drive: PGDrive; flags: TGMountUnmountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_drive_poll_for_media(drive: PGDrive; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_drive_start(drive: PGDrive; flags: TGDriveStartFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_drive_stop(drive: PGDrive; flags: TGMountUnmountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
+procedure g_dtls_client_connection_set_server_identity(conn: PGDtlsClientConnection; identity: PGSocketConnectable); cdecl; external;
+procedure g_dtls_connection_close_async(conn: PGDtlsConnection; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
+procedure g_dtls_connection_handshake_async(conn: PGDtlsConnection; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
+procedure g_dtls_connection_set_advertised_protocols(conn: PGDtlsConnection; protocols: PPgchar); cdecl; external;
+procedure g_dtls_connection_set_certificate(conn: PGDtlsConnection; certificate: PGTlsCertificate); cdecl; external;
+procedure g_dtls_connection_set_database(conn: PGDtlsConnection; database: PGTlsDatabase); cdecl; external;
+procedure g_dtls_connection_set_interaction(conn: PGDtlsConnection; interaction: PGTlsInteraction); cdecl; external;
+procedure g_dtls_connection_set_require_close_notify(conn: PGDtlsConnection; require_close_notify: gboolean); cdecl; external;
+procedure g_dtls_connection_shutdown_async(conn: PGDtlsConnection; shutdown_read: gboolean; shutdown_write: gboolean; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_emblemed_icon_add_emblem(emblemed: PGEmblemedIcon; emblem: PGEmblem); cdecl; external;
 procedure g_emblemed_icon_clear_emblems(emblemed: PGEmblemedIcon); cdecl; external;
 procedure g_file_append_to_async(file_: PGFile; flags: TGFileCreateFlags; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
@@ -7011,7 +8788,6 @@ procedure g_file_enumerator_set_pending(enumerator: PGFileEnumerator; pending: g
 procedure g_file_find_enclosing_mount_async(file_: PGFile; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_file_info_clear_status(info: PGFileInfo); cdecl; external;
 procedure g_file_info_copy_into(src_info: PGFileInfo; dest_info: PGFileInfo); cdecl; external;
-procedure g_file_info_get_modification_time(info: PGFileInfo; result_: PGTimeVal); cdecl; external;
 procedure g_file_info_remove_attribute(info: PGFileInfo; attribute: Pgchar); cdecl; external;
 procedure g_file_info_set_attribute(info: PGFileInfo; attribute: Pgchar; type_: TGFileAttributeType; value_p: gpointer); cdecl; external;
 procedure g_file_info_set_attribute_boolean(info: PGFileInfo; attribute: Pgchar; attr_value: gboolean); cdecl; external;
@@ -7031,7 +8807,7 @@ procedure g_file_info_set_file_type(info: PGFileInfo; type_: TGFileType); cdecl;
 procedure g_file_info_set_icon(info: PGFileInfo; icon: PGIcon); cdecl; external;
 procedure g_file_info_set_is_hidden(info: PGFileInfo; is_hidden: gboolean); cdecl; external;
 procedure g_file_info_set_is_symlink(info: PGFileInfo; is_symlink: gboolean); cdecl; external;
-procedure g_file_info_set_modification_time(info: PGFileInfo; mtime: PGTimeVal); cdecl; external;
+procedure g_file_info_set_modification_date_time(info: PGFileInfo; mtime: PGDateTime); cdecl; external;
 procedure g_file_info_set_name(info: PGFileInfo; name: Pgchar); cdecl; external;
 procedure g_file_info_set_size(info: PGFileInfo; size: gint64); cdecl; external;
 procedure g_file_info_set_sort_order(info: PGFileInfo; sort_order: gint32); cdecl; external;
@@ -7040,8 +8816,11 @@ procedure g_file_info_set_symlink_target(info: PGFileInfo; symlink_target: Pgcha
 procedure g_file_info_unset_attribute_mask(info: PGFileInfo); cdecl; external;
 procedure g_file_input_stream_query_info_async(stream: PGFileInputStream; attributes: Pgchar; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_file_io_stream_query_info_async(stream: PGFileIOStream; attributes: Pgchar; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
+procedure g_file_load_bytes_async(file_: PGFile; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_file_load_contents_async(file_: PGFile; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_file_load_partial_contents_async(file_: PGFile; cancellable: PGCancellable; read_more_callback: TGFileReadMoreCallback; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
+procedure g_file_make_directory_async(file_: PGFile; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
+procedure g_file_measure_disk_usage_async(file_: PGFile; flags: TGFileMeasureFlags; io_priority: gint; cancellable: PGCancellable; progress_callback: TGFileMeasureProgressCallback; progress_data: gpointer; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_file_monitor_emit_event(monitor: PGFileMonitor; child: PGFile; other_file: PGFile; event_type: TGFileMonitorEvent); cdecl; external;
 procedure g_file_monitor_set_rate_limit(monitor: PGFileMonitor; limit_msecs: gint); cdecl; external;
 procedure g_file_mount_enclosing_volume(location: PGFile; flags: TGMountMountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
@@ -7049,22 +8828,26 @@ procedure g_file_mount_mountable(file_: PGFile; flags: TGMountMountFlags; mount_
 procedure g_file_open_readwrite_async(file_: PGFile; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_file_output_stream_query_info_async(stream: PGFileOutputStream; attributes: Pgchar; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_file_poll_mountable(file_: PGFile; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
+procedure g_file_query_default_handler_async(file_: PGFile; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_file_query_filesystem_info_async(file_: PGFile; attributes: Pgchar; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_file_query_info_async(file_: PGFile; attributes: Pgchar; flags: TGFileQueryInfoFlags; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_file_read_async(file_: PGFile; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_file_replace_async(file_: PGFile; etag: Pgchar; make_backup: gboolean; flags: TGFileCreateFlags; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_file_replace_contents_async(file_: PGFile; contents: Pgchar; length: gsize; etag: Pgchar; make_backup: gboolean; flags: TGFileCreateFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
+procedure g_file_replace_contents_bytes_async(file_: PGFile; contents: PGBytes; etag: Pgchar; make_backup: gboolean; flags: TGFileCreateFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_file_replace_readwrite_async(file_: PGFile; etag: Pgchar; make_backup: gboolean; flags: TGFileCreateFlags; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_file_set_attributes_async(file_: PGFile; info: PGFileInfo; flags: TGFileQueryInfoFlags; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_file_set_display_name_async(file_: PGFile; display_name: Pgchar; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_file_start_mountable(file_: PGFile; flags: TGDriveStartFlags; start_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_file_stop_mountable(file_: PGFile; flags: TGMountUnmountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
+procedure g_file_trash_async(file_: PGFile; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_file_unmount_mountable_with_operation(file_: PGFile; flags: TGMountUnmountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_filename_completer_set_dirs_only(completer: PGFilenameCompleter; dirs_only: gboolean); cdecl; external;
 procedure g_filter_input_stream_set_close_base_stream(stream: PGFilterInputStream; close_base: gboolean); cdecl; external;
 procedure g_filter_output_stream_set_close_base_stream(stream: PGFilterOutputStream; close_base: gboolean); cdecl; external;
 procedure g_input_stream_clear_pending(stream: PGInputStream); cdecl; external;
 procedure g_input_stream_close_async(stream: PGInputStream; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
+procedure g_input_stream_read_all_async(stream: PGInputStream; buffer: Pguint8; count: gsize; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_input_stream_read_async(stream: PGInputStream; buffer: Pguint8; count: gsize; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_input_stream_read_bytes_async(stream: PGInputStream; count: gsize; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_input_stream_skip_async(stream: PGInputStream; count: gsize; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
@@ -7073,11 +8856,16 @@ procedure g_io_module_scope_block(scope: PGIOModuleScope; basename: Pgchar); cde
 procedure g_io_module_scope_free(scope: PGIOModuleScope); cdecl; external;
 procedure g_io_modules_scan_all_in_directory(dirname: Pgchar); cdecl; external;
 procedure g_io_modules_scan_all_in_directory_with_scope(dirname: Pgchar; scope: PGIOModuleScope); cdecl; external;
-procedure g_io_scheduler_cancel_all_jobs; cdecl; external;
-procedure g_io_scheduler_push_job(job_func: TGIOSchedulerJobFunc; user_data: gpointer; notify: TGDestroyNotify; io_priority: gint; cancellable: PGCancellable); cdecl; external;
 procedure g_io_stream_clear_pending(stream: PGIOStream); cdecl; external;
 procedure g_io_stream_close_async(stream: PGIOStream; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_io_stream_splice_async(stream1: PGIOStream; stream2: PGIOStream; flags: TGIOStreamSpliceFlags; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
+procedure g_list_model_items_changed(list: PGListModel; position: guint; removed: guint; added: guint); cdecl; external;
+procedure g_list_store_append(store: PGListStore; item: PGObject); cdecl; external;
+procedure g_list_store_insert(store: PGListStore; position: guint; item: PGObject); cdecl; external;
+procedure g_list_store_remove(store: PGListStore; position: guint); cdecl; external;
+procedure g_list_store_remove_all(store: PGListStore); cdecl; external;
+procedure g_list_store_sort(store: PGListStore; compare_func: TGCompareDataFunc; user_data: gpointer); cdecl; external;
+procedure g_list_store_splice(store: PGListStore; position: guint; n_removals: guint; additions: PGObject; n_additions: guint); cdecl; external;
 procedure g_loadable_icon_load_async(icon: PGLoadableIcon; size: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_memory_input_stream_add_bytes(stream: PGMemoryInputStream; bytes: PGBytes); cdecl; external;
 procedure g_memory_input_stream_add_data(stream: PGMemoryInputStream; data: Pguint8; len: gssize; destroy_: TGDestroyNotify); cdecl; external;
@@ -7095,6 +8883,7 @@ procedure g_menu_item_set_action_and_target_value(menu_item: PGMenuItem; action:
 procedure g_menu_item_set_attribute(menu_item: PGMenuItem; attribute: Pgchar; format_string: Pgchar; args: array of const); cdecl; external;
 procedure g_menu_item_set_attribute_value(menu_item: PGMenuItem; attribute: Pgchar; value: PGVariant); cdecl; external;
 procedure g_menu_item_set_detailed_action(menu_item: PGMenuItem; detailed_action: Pgchar); cdecl; external;
+procedure g_menu_item_set_icon(menu_item: PGMenuItem; icon: PGIcon); cdecl; external;
 procedure g_menu_item_set_label(menu_item: PGMenuItem; label_: Pgchar); cdecl; external;
 procedure g_menu_item_set_link(menu_item: PGMenuItem; link: Pgchar; model: PGMenuModel); cdecl; external;
 procedure g_menu_item_set_section(menu_item: PGMenuItem; section: PGMenuModel); cdecl; external;
@@ -7105,14 +8894,18 @@ procedure g_menu_prepend_item(menu: PGMenu; item: PGMenuItem); cdecl; external;
 procedure g_menu_prepend_section(menu: PGMenu; label_: Pgchar; section: PGMenuModel); cdecl; external;
 procedure g_menu_prepend_submenu(menu: PGMenu; label_: Pgchar; submenu: PGMenuModel); cdecl; external;
 procedure g_menu_remove(menu: PGMenu; position: gint); cdecl; external;
+procedure g_menu_remove_all(menu: PGMenu); cdecl; external;
 procedure g_mount_eject_with_operation(mount: PGMount; flags: TGMountUnmountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_mount_guess_content_type(mount: PGMount; force_rescan: gboolean; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_mount_operation_reply(op: PGMountOperation; result_: TGMountOperationResult); cdecl; external;
 procedure g_mount_operation_set_anonymous(op: PGMountOperation; anonymous: gboolean); cdecl; external;
 procedure g_mount_operation_set_choice(op: PGMountOperation; choice: gint); cdecl; external;
 procedure g_mount_operation_set_domain(op: PGMountOperation; domain: Pgchar); cdecl; external;
+procedure g_mount_operation_set_is_tcrypt_hidden_volume(op: PGMountOperation; hidden_volume: gboolean); cdecl; external;
+procedure g_mount_operation_set_is_tcrypt_system_volume(op: PGMountOperation; system_volume: gboolean); cdecl; external;
 procedure g_mount_operation_set_password(op: PGMountOperation; password: Pgchar); cdecl; external;
 procedure g_mount_operation_set_password_save(op: PGMountOperation; save: TGPasswordSave); cdecl; external;
+procedure g_mount_operation_set_pim(op: PGMountOperation; pim: guint); cdecl; external;
 procedure g_mount_operation_set_username(op: PGMountOperation; username: Pgchar); cdecl; external;
 procedure g_mount_remount(mount: PGMount; flags: TGMountMountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_mount_shadow(mount: PGMount); cdecl; external;
@@ -7121,12 +8914,25 @@ procedure g_mount_unshadow(mount: PGMount); cdecl; external;
 procedure g_network_monitor_can_reach_async(monitor: PGNetworkMonitor; connectable: PGSocketConnectable; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_network_service_set_scheme(srv: PGNetworkService; scheme: Pgchar); cdecl; external;
 procedure g_networking_init; cdecl; external;
+procedure g_notification_add_button(notification: PGNotification; label_: Pgchar; detailed_action: Pgchar); cdecl; external;
+procedure g_notification_add_button_with_target(notification: PGNotification; label_: Pgchar; action: Pgchar; target_format: Pgchar; args: array of const); cdecl; external;
+procedure g_notification_add_button_with_target_value(notification: PGNotification; label_: Pgchar; action: Pgchar; target: PGVariant); cdecl; external;
+procedure g_notification_set_body(notification: PGNotification; body: Pgchar); cdecl; external;
+procedure g_notification_set_default_action(notification: PGNotification; detailed_action: Pgchar); cdecl; external;
+procedure g_notification_set_default_action_and_target(notification: PGNotification; action: Pgchar; target_format: Pgchar; args: array of const); cdecl; external;
+procedure g_notification_set_default_action_and_target_value(notification: PGNotification; action: Pgchar; target: PGVariant); cdecl; external;
+procedure g_notification_set_icon(notification: PGNotification; icon: PGIcon); cdecl; external;
+procedure g_notification_set_priority(notification: PGNotification; priority: TGNotificationPriority); cdecl; external;
+procedure g_notification_set_title(notification: PGNotification; title: Pgchar); cdecl; external;
 procedure g_output_stream_clear_pending(stream: PGOutputStream); cdecl; external;
 procedure g_output_stream_close_async(stream: PGOutputStream; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_output_stream_flush_async(stream: PGOutputStream; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_output_stream_splice_async(stream: PGOutputStream; source: PGInputStream; flags: TGOutputStreamSpliceFlags; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
+procedure g_output_stream_write_all_async(stream: PGOutputStream; buffer: Pguint8; count: gsize; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_output_stream_write_async(stream: PGOutputStream; buffer: Pguint8; count: gsize; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_output_stream_write_bytes_async(stream: PGOutputStream; bytes: PGBytes; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
+procedure g_output_stream_writev_all_async(stream: PGOutputStream; vectors: PGOutputVector; n_vectors: gsize; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
+procedure g_output_stream_writev_async(stream: PGOutputStream; vectors: PGOutputVector; n_vectors: gsize; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_permission_acquire_async(permission: PGPermission; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_permission_impl_update(permission: PGPermission; allowed: gboolean; can_acquire: gboolean; can_release: gboolean); cdecl; external;
 procedure g_permission_release_async(permission: PGPermission; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
@@ -7138,6 +8944,7 @@ procedure g_resolver_free_addresses(addresses: PGList); cdecl; external;
 procedure g_resolver_free_targets(targets: PGList); cdecl; external;
 procedure g_resolver_lookup_by_address_async(resolver: PGResolver; address: PGInetAddress; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_resolver_lookup_by_name_async(resolver: PGResolver; hostname: Pgchar; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
+procedure g_resolver_lookup_by_name_with_flags_async(resolver: PGResolver; hostname: Pgchar; flags: TGResolverNameLookupFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_resolver_lookup_records_async(resolver: PGResolver; rrname: Pgchar; record_type: TGResolverRecordType; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_resolver_lookup_service_async(resolver: PGResolver; service: Pgchar; protocol: Pgchar; domain: Pgchar; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_resolver_set_default(resolver: PGResolver); cdecl; external;
@@ -7145,6 +8952,13 @@ procedure g_resource_unref(resource: PGResource); cdecl; external;
 procedure g_resources_register(resource: PGResource); cdecl; external;
 procedure g_resources_unregister(resource: PGResource); cdecl; external;
 procedure g_settings_apply(settings: PGSettings); cdecl; external;
+procedure g_settings_backend_changed(backend: PGSettingsBackend; key: Pgchar; origin_tag: gpointer); cdecl; external;
+procedure g_settings_backend_changed_tree(backend: PGSettingsBackend; tree: PGTree; origin_tag: gpointer); cdecl; external;
+procedure g_settings_backend_flatten_tree(tree: PGTree; path: PPgchar; keys: PPPgchar; values: PPPGVariant); cdecl; external;
+procedure g_settings_backend_keys_changed(backend: PGSettingsBackend; path: Pgchar; items: PPgchar; origin_tag: gpointer); cdecl; external;
+procedure g_settings_backend_path_changed(backend: PGSettingsBackend; path: Pgchar; origin_tag: gpointer); cdecl; external;
+procedure g_settings_backend_path_writable_changed(backend: PGSettingsBackend; path: Pgchar); cdecl; external;
+procedure g_settings_backend_writable_changed(backend: PGSettingsBackend; key: Pgchar); cdecl; external;
 procedure g_settings_bind(settings: PGSettings; key: Pgchar; object_: PGObject; property_: Pgchar; flags: TGSettingsBindFlags); cdecl; external;
 procedure g_settings_bind_with_mapping(settings: PGSettings; key: Pgchar; object_: PGObject; property_: Pgchar; flags: TGSettingsBindFlags; get_mapping: TGSettingsBindGetMapping; set_mapping: TGSettingsBindSetMapping; user_data: gpointer; destroy_: TGDestroyNotify); cdecl; external;
 procedure g_settings_bind_writable(settings: PGSettings; key: Pgchar; object_: PGObject; property_: Pgchar; inverted: gboolean); cdecl; external;
@@ -7152,30 +8966,15 @@ procedure g_settings_delay(settings: PGSettings); cdecl; external;
 procedure g_settings_get(settings: PGSettings; key: Pgchar; format: Pgchar; args: array of const); cdecl; external;
 procedure g_settings_reset(settings: PGSettings; key: Pgchar); cdecl; external;
 procedure g_settings_revert(settings: PGSettings); cdecl; external;
+procedure g_settings_schema_key_unref(key: PGSettingsSchemaKey); cdecl; external;
+procedure g_settings_schema_source_list_schemas(source: PGSettingsSchemaSource; recursive: gboolean; non_relocatable: PPPgchar; relocatable: PPPgchar); cdecl; external;
 procedure g_settings_schema_source_unref(source: PGSettingsSchemaSource); cdecl; external;
 procedure g_settings_schema_unref(schema: PGSettingsSchema); cdecl; external;
 procedure g_settings_sync; cdecl; external;
-procedure g_settings_unbind(object_: gpointer; property_: Pgchar); cdecl; external;
-procedure g_simple_action_group_add_entries(simple: PGSimpleActionGroup; entries: PGActionEntry; n_entries: gint; user_data: gpointer); cdecl; external;
-procedure g_simple_action_group_insert(simple: PGSimpleActionGroup; action: PGAction); cdecl; external;
-procedure g_simple_action_group_remove(simple: PGSimpleActionGroup; action_name: Pgchar); cdecl; external;
+procedure g_settings_unbind(object_: PGObject; property_: Pgchar); cdecl; external;
 procedure g_simple_action_set_enabled(simple: PGSimpleAction; enabled: gboolean); cdecl; external;
 procedure g_simple_action_set_state(simple: PGSimpleAction; value: PGVariant); cdecl; external;
-procedure g_simple_async_report_error_in_idle(object_: PGObject; callback: TGAsyncReadyCallback; user_data: gpointer; domain: TGQuark; code: gint; format: Pgchar; args: array of const); cdecl; external;
-procedure g_simple_async_report_gerror_in_idle(object_: PGObject; callback: TGAsyncReadyCallback; user_data: gpointer; error: PGError); cdecl; external;
-procedure g_simple_async_report_take_gerror_in_idle(object_: PGObject; callback: TGAsyncReadyCallback; user_data: gpointer; error: PGError); cdecl; external;
-procedure g_simple_async_result_complete(simple: PGSimpleAsyncResult); cdecl; external;
-procedure g_simple_async_result_complete_in_idle(simple: PGSimpleAsyncResult); cdecl; external;
-procedure g_simple_async_result_run_in_thread(simple: PGSimpleAsyncResult; func: TGSimpleAsyncThreadFunc; io_priority: gint; cancellable: PGCancellable); cdecl; external;
-procedure g_simple_async_result_set_check_cancellable(simple: PGSimpleAsyncResult; check_cancellable: PGCancellable); cdecl; external;
-procedure g_simple_async_result_set_error(simple: PGSimpleAsyncResult; domain: TGQuark; code: gint; format: Pgchar; args: array of const); cdecl; external;
-procedure g_simple_async_result_set_error_va(simple: PGSimpleAsyncResult; domain: TGQuark; code: gint; format: Pgchar; args: Tva_list); cdecl; external;
-procedure g_simple_async_result_set_from_error(simple: PGSimpleAsyncResult; error: PGError); cdecl; external;
-procedure g_simple_async_result_set_handle_cancellation(simple: PGSimpleAsyncResult; handle_cancellation: gboolean); cdecl; external;
-procedure g_simple_async_result_set_op_res_gboolean(simple: PGSimpleAsyncResult; op_res: gboolean); cdecl; external;
-procedure g_simple_async_result_set_op_res_gpointer(simple: PGSimpleAsyncResult; op_res: gpointer; destroy_op_res: TGDestroyNotify); cdecl; external;
-procedure g_simple_async_result_set_op_res_gssize(simple: PGSimpleAsyncResult; op_res: gssize); cdecl; external;
-procedure g_simple_async_result_take_error(simple: PGSimpleAsyncResult; error: PGError); cdecl; external;
+procedure g_simple_action_set_state_hint(simple: PGSimpleAction; state_hint: PGVariant); cdecl; external;
 procedure g_simple_proxy_resolver_set_default_proxy(resolver: PGSimpleProxyResolver; default_proxy: Pgchar); cdecl; external;
 procedure g_simple_proxy_resolver_set_ignore_hosts(resolver: PGSimpleProxyResolver; ignore_hosts: PPgchar); cdecl; external;
 procedure g_simple_proxy_resolver_set_uri_proxy(resolver: PGSimpleProxyResolver; uri_scheme: Pgchar; proxy: Pgchar); cdecl; external;
@@ -7193,7 +8992,6 @@ procedure g_socket_client_set_proxy_resolver(client: PGSocketClient; proxy_resol
 procedure g_socket_client_set_socket_type(client: PGSocketClient; type_: TGSocketType); cdecl; external;
 procedure g_socket_client_set_timeout(client: PGSocketClient; timeout: guint); cdecl; external;
 procedure g_socket_client_set_tls(client: PGSocketClient; tls: gboolean); cdecl; external;
-procedure g_socket_client_set_tls_validation_flags(client: PGSocketClient; flags: TGTlsCertificateFlags); cdecl; external;
 procedure g_socket_connection_connect_async(connection: PGSocketConnection; address: PGSocketAddress; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_socket_connection_factory_register_type(g_type: TGType; family: TGSocketFamily; type_: TGSocketType; protocol: gint); cdecl; external;
 procedure g_socket_control_message_serialize(message: PGSocketControlMessage; data: gpointer); cdecl; external;
@@ -7214,6 +9012,25 @@ procedure g_socket_set_ttl(socket: PGSocket; ttl: guint); cdecl; external;
 procedure g_srv_target_free(target: PGSrvTarget); cdecl; external;
 procedure g_static_resource_fini(static_resource: PGStaticResource); cdecl; external;
 procedure g_static_resource_init(static_resource: PGStaticResource); cdecl; external;
+procedure g_subprocess_communicate_async(subprocess: PGSubprocess; stdin_buf: PGBytes; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
+procedure g_subprocess_communicate_utf8_async(subprocess: PGSubprocess; stdin_buf: Pgchar; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
+procedure g_subprocess_force_exit(subprocess: PGSubprocess); cdecl; external;
+procedure g_subprocess_launcher_set_child_setup(self: PGSubprocessLauncher; child_setup: TGSpawnChildSetupFunc; user_data: gpointer; destroy_notify: TGDestroyNotify); cdecl; external;
+procedure g_subprocess_launcher_set_cwd(self: PGSubprocessLauncher; cwd: Pgchar); cdecl; external;
+procedure g_subprocess_launcher_set_environ(self: PGSubprocessLauncher; env: PPgchar); cdecl; external;
+procedure g_subprocess_launcher_set_flags(self: PGSubprocessLauncher; flags: TGSubprocessFlags); cdecl; external;
+procedure g_subprocess_launcher_set_stderr_file_path(self: PGSubprocessLauncher; path: Pgchar); cdecl; external;
+procedure g_subprocess_launcher_set_stdin_file_path(self: PGSubprocessLauncher; path: Pgchar); cdecl; external;
+procedure g_subprocess_launcher_set_stdout_file_path(self: PGSubprocessLauncher; path: Pgchar); cdecl; external;
+procedure g_subprocess_launcher_setenv(self: PGSubprocessLauncher; variable: Pgchar; value: Pgchar; overwrite: gboolean); cdecl; external;
+procedure g_subprocess_launcher_take_fd(self: PGSubprocessLauncher; source_fd: gint; target_fd: gint); cdecl; external;
+procedure g_subprocess_launcher_take_stderr_fd(self: PGSubprocessLauncher; fd: gint); cdecl; external;
+procedure g_subprocess_launcher_take_stdin_fd(self: PGSubprocessLauncher; fd: gint); cdecl; external;
+procedure g_subprocess_launcher_take_stdout_fd(self: PGSubprocessLauncher; fd: gint); cdecl; external;
+procedure g_subprocess_launcher_unsetenv(self: PGSubprocessLauncher; variable: Pgchar); cdecl; external;
+procedure g_subprocess_send_signal(subprocess: PGSubprocess; signal_num: gint); cdecl; external;
+procedure g_subprocess_wait_async(subprocess: PGSubprocess; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
+procedure g_subprocess_wait_check_async(subprocess: PGSubprocess; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_task_attach_source(task: PGTask; source: PGSource; callback: TGSourceFunc); cdecl; external;
 procedure g_task_report_error(source_object: PGObject; callback: TGAsyncReadyCallback; callback_data: gpointer; source_tag: gpointer; error: PGError); cdecl; external;
 procedure g_task_report_new_error(source_object: PGObject; callback: TGAsyncReadyCallback; callback_data: gpointer; source_tag: gpointer; domain: TGQuark; code: gint; format: Pgchar; args: array of const); cdecl; external;
@@ -7222,11 +9039,14 @@ procedure g_task_return_error(task: PGTask; error: PGError); cdecl; external;
 procedure g_task_return_int(task: PGTask; result_: gssize); cdecl; external;
 procedure g_task_return_new_error(task: PGTask; domain: TGQuark; code: gint; format: Pgchar; args: array of const); cdecl; external;
 procedure g_task_return_pointer(task: PGTask; result_: gpointer; result_destroy: TGDestroyNotify); cdecl; external;
+procedure g_task_return_value(task: PGTask; result_: PGValue); cdecl; external;
 procedure g_task_run_in_thread(task: PGTask; task_func: TGTaskThreadFunc); cdecl; external;
 procedure g_task_run_in_thread_sync(task: PGTask; task_func: TGTaskThreadFunc); cdecl; external;
 procedure g_task_set_check_cancellable(task: PGTask; check_cancellable: gboolean); cdecl; external;
+procedure g_task_set_name(task: PGTask; name: Pgchar); cdecl; external;
 procedure g_task_set_priority(task: PGTask; priority: gint); cdecl; external;
 procedure g_task_set_source_tag(task: PGTask; source_tag: gpointer); cdecl; external;
+//procedure g_task_set_static_name(task: PGTask; name: Pgchar); cdecl; external;
 procedure g_task_set_task_data(task: PGTask; task_data: gpointer; task_data_destroy: TGDestroyNotify); cdecl; external;
 procedure g_tcp_connection_set_graceful_disconnect(connection: PGTcpConnection; graceful_disconnect: gboolean); cdecl; external;
 procedure g_test_dbus_add_service_dir(self: PGTestDBus; path: Pgchar); cdecl; external;
@@ -7236,20 +9056,21 @@ procedure g_test_dbus_unset; cdecl; external;
 procedure g_test_dbus_up(self: PGTestDBus); cdecl; external;
 procedure g_themed_icon_append_name(icon: PGThemedIcon; iconname: Pgchar); cdecl; external;
 procedure g_themed_icon_prepend_name(icon: PGThemedIcon; iconname: Pgchar); cdecl; external;
+procedure g_tls_backend_set_default_database(backend: PGTlsBackend; database: PGTlsDatabase); cdecl; external;
+procedure g_tls_client_connection_copy_session_state(conn: PGTlsClientConnection; source: PGTlsClientConnection); cdecl; external;
 procedure g_tls_client_connection_set_server_identity(conn: PGTlsClientConnection; identity: PGSocketConnectable); cdecl; external;
-procedure g_tls_client_connection_set_use_ssl3(conn: PGTlsClientConnection; use_ssl3: gboolean); cdecl; external;
-procedure g_tls_client_connection_set_validation_flags(conn: PGTlsClientConnection; flags: TGTlsCertificateFlags); cdecl; external;
 procedure g_tls_connection_handshake_async(conn: PGTlsConnection; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
+procedure g_tls_connection_set_advertised_protocols(conn: PGTlsConnection; protocols: PPgchar); cdecl; external;
 procedure g_tls_connection_set_certificate(conn: PGTlsConnection; certificate: PGTlsCertificate); cdecl; external;
 procedure g_tls_connection_set_database(conn: PGTlsConnection; database: PGTlsDatabase); cdecl; external;
 procedure g_tls_connection_set_interaction(conn: PGTlsConnection; interaction: PGTlsInteraction); cdecl; external;
-procedure g_tls_connection_set_rehandshake_mode(conn: PGTlsConnection; mode: TGTlsRehandshakeMode); cdecl; external;
 procedure g_tls_connection_set_require_close_notify(conn: PGTlsConnection; require_close_notify: gboolean); cdecl; external;
 procedure g_tls_database_lookup_certificate_for_handle_async(self: PGTlsDatabase; handle: Pgchar; interaction: PGTlsInteraction; flags: TGTlsDatabaseLookupFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_tls_database_lookup_certificate_issuer_async(self: PGTlsDatabase; certificate: PGTlsCertificate; interaction: PGTlsInteraction; flags: TGTlsDatabaseLookupFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_tls_database_lookup_certificates_issued_by_async(self: PGTlsDatabase; issuer_raw_dn: Pguint8; interaction: PGTlsInteraction; flags: TGTlsDatabaseLookupFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_tls_database_verify_chain_async(self: PGTlsDatabase; chain: PGTlsCertificate; purpose: Pgchar; identity: PGSocketConnectable; interaction: PGTlsInteraction; flags: TGTlsDatabaseVerifyFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_tls_interaction_ask_password_async(interaction: PGTlsInteraction; password: PGTlsPassword; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
+procedure g_tls_interaction_request_certificate_async(interaction: PGTlsInteraction; connection: PGTlsConnection; flags: TGTlsCertificateRequestFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_tls_password_set_description(password: PGTlsPassword; description: Pgchar); cdecl; external;
 procedure g_tls_password_set_flags(password: PGTlsPassword; flags: TGTlsPasswordFlags); cdecl; external;
 procedure g_tls_password_set_value(password: PGTlsPassword; value: Pguint8; length: gssize); cdecl; external;
@@ -7259,13 +9080,27 @@ procedure g_unix_connection_receive_credentials_async(connection: PGUnixConnecti
 procedure g_unix_connection_send_credentials_async(connection: PGUnixConnection; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_unix_input_stream_set_close_fd(stream: PGUnixInputStream; close_fd: gboolean); cdecl; external;
 procedure g_unix_mount_free(mount_entry: PGUnixMountEntry); cdecl; external;
-procedure g_unix_mount_monitor_set_rate_limit(mount_monitor: PGUnixMountMonitor; limit_msec: gint); cdecl; external;
 procedure g_unix_mount_point_free(mount_point: PGUnixMountPoint); cdecl; external;
 procedure g_unix_output_stream_set_close_fd(stream: PGUnixOutputStream; close_fd: gboolean); cdecl; external;
 procedure g_volume_eject_with_operation(volume: PGVolume; flags: TGMountUnmountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_volume_mount(volume: PGVolume; flags: TGMountMountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl; external;
 procedure g_zlib_compressor_set_file_info(compressor: PGZlibCompressor; file_info: PGFileInfo); cdecl; external;
 implementation
+function TGAction.name_is_valid(action_name: Pgchar): gboolean; cdecl;
+begin
+  Result := LazGio2.g_action_name_is_valid(action_name);
+end;
+
+function TGAction.parse_detailed_name(detailed_name: Pgchar; action_name: PPgchar; target_value: PPGVariant; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_action_parse_detailed_name(detailed_name, action_name, target_value, error);
+end;
+
+function TGAction.print_detailed_name(action_name: Pgchar; target_value: PGVariant): Pgchar; cdecl;
+begin
+  Result := LazGio2.g_action_print_detailed_name(action_name, target_value);
+end;
+
 procedure TGAction.activate(parameter: PGVariant); cdecl;
 begin
   LazGio2.g_action_activate(@self, parameter);
@@ -7324,6 +9159,11 @@ end;
 procedure TGSimpleAction.set_state(value: PGVariant); cdecl;
 begin
   LazGio2.g_simple_action_set_state(@self, value);
+end;
+
+procedure TGSimpleAction.set_state_hint(state_hint: PGVariant); cdecl;
+begin
+  LazGio2.g_simple_action_set_state_hint(@self, state_hint);
 end;
 
 procedure TGActionGroup.action_added(action_name: Pgchar); cdecl;
@@ -7451,9 +9291,19 @@ begin
   Result := LazGio2.g_app_info_get_recommended_for_type(content_type);
 end;
 
-function TGAppInfo.launch_default_for_uri(uri: Pgchar; launch_context: PGAppLaunchContext; error: PPGError): gboolean; cdecl;
+function TGAppInfo.launch_default_for_uri(uri: Pgchar; context: PGAppLaunchContext; error: PPGError): gboolean; cdecl;
 begin
-  Result := LazGio2.g_app_info_launch_default_for_uri(uri, launch_context, error);
+  Result := LazGio2.g_app_info_launch_default_for_uri(uri, context, error);
+end;
+
+procedure TGAppInfo.launch_default_for_uri_async(uri: Pgchar; context: PGAppLaunchContext; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazGio2.g_app_info_launch_default_for_uri_async(uri, context, cancellable, callback, user_data);
+end;
+
+function TGAppInfo.launch_default_for_uri_finish(result_: PGAsyncResult; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_app_info_launch_default_for_uri_finish(result_, error);
 end;
 
 procedure TGAppInfo.reset_type_associations(content_type: Pgchar); cdecl;
@@ -7531,14 +9381,24 @@ begin
   Result := LazGio2.g_app_info_get_supported_types(@self);
 end;
 
-function TGAppInfo.launch(files: PGList; launch_context: PGAppLaunchContext; error: PPGError): gboolean; cdecl;
+function TGAppInfo.launch(files: PGList; context: PGAppLaunchContext; error: PPGError): gboolean; cdecl;
 begin
-  Result := LazGio2.g_app_info_launch(@self, files, launch_context, error);
+  Result := LazGio2.g_app_info_launch(@self, files, context, error);
 end;
 
-function TGAppInfo.launch_uris(uris: PGList; launch_context: PGAppLaunchContext; error: PPGError): gboolean; cdecl;
+function TGAppInfo.launch_uris(uris: PGList; context: PGAppLaunchContext; error: PPGError): gboolean; cdecl;
 begin
-  Result := LazGio2.g_app_info_launch_uris(@self, uris, launch_context, error);
+  Result := LazGio2.g_app_info_launch_uris(@self, uris, context, error);
+end;
+
+procedure TGAppInfo.launch_uris_async(uris: PGList; context: PGAppLaunchContext; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazGio2.g_app_info_launch_uris_async(@self, uris, context, cancellable, callback, user_data);
+end;
+
+function TGAppInfo.launch_uris_finish(result_: PGAsyncResult; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_app_info_launch_uris_finish(@self, result_, error);
 end;
 
 function TGAppInfo.remove_supports_type(content_type: Pgchar; error: PPGError): gboolean; cdecl;
@@ -7576,6 +9436,96 @@ begin
   Result := LazGio2.g_app_info_supports_uris(@self);
 end;
 
+function TGCancellable.new: PGCancellable; cdecl;
+begin
+  Result := LazGio2.g_cancellable_new();
+end;
+
+function TGCancellable.get_current: PGCancellable; cdecl;
+begin
+  Result := LazGio2.g_cancellable_get_current();
+end;
+
+procedure TGCancellable.cancel; cdecl;
+begin
+  LazGio2.g_cancellable_cancel(@self);
+end;
+
+function TGCancellable.connect(callback: TGCallback; data: gpointer; data_destroy_func: TGDestroyNotify): gulong; cdecl;
+begin
+  Result := LazGio2.g_cancellable_connect(@self, callback, data, data_destroy_func);
+end;
+
+procedure TGCancellable.disconnect(handler_id: gulong); cdecl;
+begin
+  LazGio2.g_cancellable_disconnect(@self, handler_id);
+end;
+
+function TGCancellable.get_fd: gint; cdecl;
+begin
+  Result := LazGio2.g_cancellable_get_fd(@self);
+end;
+
+function TGCancellable.is_cancelled: gboolean; cdecl;
+begin
+  Result := LazGio2.g_cancellable_is_cancelled(@self);
+end;
+
+function TGCancellable.make_pollfd(pollfd: PGPollFD): gboolean; cdecl;
+begin
+  Result := LazGio2.g_cancellable_make_pollfd(@self, pollfd);
+end;
+
+procedure TGCancellable.pop_current; cdecl;
+begin
+  LazGio2.g_cancellable_pop_current(@self);
+end;
+
+procedure TGCancellable.push_current; cdecl;
+begin
+  LazGio2.g_cancellable_push_current(@self);
+end;
+
+procedure TGCancellable.release_fd; cdecl;
+begin
+  LazGio2.g_cancellable_release_fd(@self);
+end;
+
+procedure TGCancellable.reset; cdecl;
+begin
+  LazGio2.g_cancellable_reset(@self);
+end;
+
+function TGCancellable.set_error_if_cancelled(error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_cancellable_set_error_if_cancelled(@self, error);
+end;
+
+function TGCancellable.source_new: PGSource; cdecl;
+begin
+  Result := LazGio2.g_cancellable_source_new(@self);
+end;
+
+function TGAsyncResult.get_source_object: PGObject; cdecl;
+begin
+  Result := LazGio2.g_async_result_get_source_object(@self);
+end;
+
+function TGAsyncResult.get_user_data: gpointer; cdecl;
+begin
+  Result := LazGio2.g_async_result_get_user_data(@self);
+end;
+
+function TGAsyncResult.is_tagged(source_tag: gpointer): gboolean; cdecl;
+begin
+  Result := LazGio2.g_async_result_is_tagged(@self, source_tag);
+end;
+
+function TGAsyncResult.legacy_propagate_error(error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_async_result_legacy_propagate_error(@self, error);
+end;
+
 function TGAppLaunchContext.new: PGAppLaunchContext; cdecl;
 begin
   Result := LazGio2.g_app_launch_context_new();
@@ -7611,9 +9561,9 @@ begin
   LazGio2.g_app_launch_context_unsetenv(@self, variable);
 end;
 
-function TGIcon.hash(icon: Pgpointer): guint; cdecl;
+function TGIcon.deserialize(value: PGVariant): PGIcon; cdecl;
 begin
-  Result := LazGio2.g_icon_hash(icon);
+  Result := LazGio2.g_icon_deserialize(value);
 end;
 
 function TGIcon.new_for_string(str: Pgchar; error: PPGError): PGIcon; cdecl;
@@ -7626,9 +9576,24 @@ begin
   Result := LazGio2.g_icon_equal(@self, icon2);
 end;
 
+function TGIcon.hash: guint; cdecl;
+begin
+  Result := LazGio2.g_icon_hash(@self);
+end;
+
+function TGIcon.serialize: PGVariant; cdecl;
+begin
+  Result := LazGio2.g_icon_serialize(@self);
+end;
+
 function TGIcon.to_string: Pgchar; cdecl;
 begin
   Result := LazGio2.g_icon_to_string(@self);
+end;
+
+function TGAppInfoMonitor.get: PGAppInfoMonitor; cdecl;
+begin
+  Result := LazGio2.g_app_info_monitor_get();
 end;
 
 function TGApplication.new(application_id: Pgchar; flags: TGApplicationFlags): PGApplication; cdecl;
@@ -7649,6 +9614,26 @@ end;
 procedure TGApplication.activate; cdecl;
 begin
   LazGio2.g_application_activate(@self);
+end;
+
+procedure TGApplication.add_main_option(long_name: Pgchar; short_name: gchar; flags: TGOptionFlags; arg: TGOptionArg; description: Pgchar; arg_description: Pgchar); cdecl;
+begin
+  LazGio2.g_application_add_main_option(@self, long_name, short_name, flags, arg, description, arg_description);
+end;
+
+procedure TGApplication.add_main_option_entries(entries: PGOptionEntry); cdecl;
+begin
+  LazGio2.g_application_add_main_option_entries(@self, entries);
+end;
+
+procedure TGApplication.add_option_group(group: PGOptionGroup); cdecl;
+begin
+  LazGio2.g_application_add_option_group(@self, group);
+end;
+
+procedure TGApplication.bind_busy_property(object_: PGObject; property_: Pgchar); cdecl;
+begin
+  LazGio2.g_application_bind_busy_property(@self, object_, property_);
 end;
 
 function TGApplication.get_application_id: Pgchar; cdecl;
@@ -7676,6 +9661,11 @@ begin
   Result := LazGio2.g_application_get_inactivity_timeout(@self);
 end;
 
+function TGApplication.get_is_busy: gboolean; cdecl;
+begin
+  Result := LazGio2.g_application_get_is_busy(@self);
+end;
+
 function TGApplication.get_is_registered: gboolean; cdecl;
 begin
   Result := LazGio2.g_application_get_is_registered(@self);
@@ -7686,9 +9676,19 @@ begin
   Result := LazGio2.g_application_get_is_remote(@self);
 end;
 
+function TGApplication.get_resource_base_path: Pgchar; cdecl;
+begin
+  Result := LazGio2.g_application_get_resource_base_path(@self);
+end;
+
 procedure TGApplication.hold; cdecl;
 begin
   LazGio2.g_application_hold(@self);
+end;
+
+procedure TGApplication.mark_busy; cdecl;
+begin
+  LazGio2.g_application_mark_busy(@self);
 end;
 
 procedure TGApplication.open(files: PPGFile; n_files: gint; hint: Pgchar); cdecl;
@@ -7716,6 +9716,11 @@ begin
   Result := LazGio2.g_application_run(@self, argc, argv);
 end;
 
+procedure TGApplication.send_notification(id: Pgchar; notification: PGNotification); cdecl;
+begin
+  LazGio2.g_application_send_notification(@self, id, notification);
+end;
+
 procedure TGApplication.set_application_id(application_id: Pgchar); cdecl;
 begin
   LazGio2.g_application_set_application_id(@self, application_id);
@@ -7734,6 +9739,41 @@ end;
 procedure TGApplication.set_inactivity_timeout(inactivity_timeout: guint); cdecl;
 begin
   LazGio2.g_application_set_inactivity_timeout(@self, inactivity_timeout);
+end;
+
+procedure TGApplication.set_option_context_description(description: Pgchar); cdecl;
+begin
+  LazGio2.g_application_set_option_context_description(@self, description);
+end;
+
+procedure TGApplication.set_option_context_parameter_string(parameter_string: Pgchar); cdecl;
+begin
+  LazGio2.g_application_set_option_context_parameter_string(@self, parameter_string);
+end;
+
+procedure TGApplication.set_option_context_summary(summary: Pgchar); cdecl;
+begin
+  LazGio2.g_application_set_option_context_summary(@self, summary);
+end;
+
+procedure TGApplication.set_resource_base_path(resource_path: Pgchar); cdecl;
+begin
+  LazGio2.g_application_set_resource_base_path(@self, resource_path);
+end;
+
+procedure TGApplication.unbind_busy_property(object_: PGObject; property_: Pgchar); cdecl;
+begin
+  LazGio2.g_application_unbind_busy_property(@self, object_, property_);
+end;
+
+procedure TGApplication.unmark_busy; cdecl;
+begin
+  LazGio2.g_application_unmark_busy(@self);
+end;
+
+procedure TGApplication.withdraw_notification(id: Pgchar); cdecl;
+begin
+  LazGio2.g_application_withdraw_notification(@self, id);
 end;
 
 function TGApplicationCommandLine.create_file_for_arg(arg: Pgchar): PGFile; cdecl;
@@ -7764,6 +9804,11 @@ end;
 function TGApplicationCommandLine.get_is_remote: gboolean; cdecl;
 begin
   Result := LazGio2.g_application_command_line_get_is_remote(@self);
+end;
+
+function TGApplicationCommandLine.get_options_dict: PGVariantDict; cdecl;
+begin
+  Result := LazGio2.g_application_command_line_get_options_dict(@self);
 end;
 
 function TGApplicationCommandLine.get_platform_data: PGVariant; cdecl;
@@ -7906,6 +9951,11 @@ begin
   Result := LazGio2.g_dbus_connection_get_exit_on_close(@self);
 end;
 
+function TGDBusConnection.get_flags: TGDBusConnectionFlags; cdecl;
+begin
+  Result := LazGio2.g_dbus_connection_get_flags(@self);
+end;
+
 function TGDBusConnection.get_guid: Pgchar; cdecl;
 begin
   Result := LazGio2.g_dbus_connection_get_guid(@self);
@@ -7939,6 +9989,11 @@ end;
 function TGDBusConnection.register_object(object_path: Pgchar; interface_info: PGDBusInterfaceInfo; vtable: PGDBusInterfaceVTable; user_data: gpointer; user_data_free_func: TGDestroyNotify; error: PPGError): guint; cdecl;
 begin
   Result := LazGio2.g_dbus_connection_register_object(@self, object_path, interface_info, vtable, user_data, user_data_free_func, error);
+end;
+
+function TGDBusConnection.register_object_with_closures(object_path: Pgchar; interface_info: PGDBusInterfaceInfo; method_call_closure: PGClosure; get_property_closure: PGClosure; set_property_closure: PGClosure; error: PPGError): guint; cdecl;
+begin
+  Result := LazGio2.g_dbus_connection_register_object_with_closures(@self, object_path, interface_info, method_call_closure, get_property_closure, set_property_closure, error);
 end;
 
 function TGDBusConnection.register_subtree(object_path: Pgchar; vtable: PGDBusSubtreeVTable; flags: TGDBusSubtreeFlags; user_data: gpointer; user_data_free_func: TGDestroyNotify; error: PPGError): guint; cdecl;
@@ -8241,6 +10296,21 @@ begin
   Result := LazGio2.g_file_is_native(@self);
 end;
 
+function TGFile.load_bytes(cancellable: PGCancellable; etag_out: PPgchar; error: PPGError): PGBytes; cdecl;
+begin
+  Result := LazGio2.g_file_load_bytes(@self, cancellable, etag_out, error);
+end;
+
+procedure TGFile.load_bytes_async(cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazGio2.g_file_load_bytes_async(@self, cancellable, callback, user_data);
+end;
+
+function TGFile.load_bytes_finish(result_: PGAsyncResult; etag_out: PPgchar; error: PPGError): PGBytes; cdecl;
+begin
+  Result := LazGio2.g_file_load_bytes_finish(@self, result_, etag_out, error);
+end;
+
 function TGFile.load_contents(cancellable: PGCancellable; contents: PPgchar; length: Pgsize; etag_out: PPgchar; error: PPGError): gboolean; cdecl;
 begin
   Result := LazGio2.g_file_load_contents(@self, cancellable, contents, length, etag_out, error);
@@ -8271,6 +10341,16 @@ begin
   Result := LazGio2.g_file_make_directory(@self, cancellable, error);
 end;
 
+procedure TGFile.make_directory_async(io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazGio2.g_file_make_directory_async(@self, io_priority, cancellable, callback, user_data);
+end;
+
+function TGFile.make_directory_finish(result_: PGAsyncResult; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_file_make_directory_finish(@self, result_, error);
+end;
+
 function TGFile.make_directory_with_parents(cancellable: PGCancellable; error: PPGError): gboolean; cdecl;
 begin
   Result := LazGio2.g_file_make_directory_with_parents(@self, cancellable, error);
@@ -8279,6 +10359,21 @@ end;
 function TGFile.make_symbolic_link(symlink_value: Pgchar; cancellable: PGCancellable; error: PPGError): gboolean; cdecl;
 begin
   Result := LazGio2.g_file_make_symbolic_link(@self, symlink_value, cancellable, error);
+end;
+
+function TGFile.measure_disk_usage(flags: TGFileMeasureFlags; cancellable: PGCancellable; progress_callback: TGFileMeasureProgressCallback; progress_data: gpointer; disk_usage: Pguint64; num_dirs: Pguint64; num_files: Pguint64; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_file_measure_disk_usage(@self, flags, cancellable, progress_callback, progress_data, disk_usage, num_dirs, num_files, error);
+end;
+
+procedure TGFile.measure_disk_usage_async(flags: TGFileMeasureFlags; io_priority: gint; cancellable: PGCancellable; progress_callback: TGFileMeasureProgressCallback; progress_data: gpointer; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazGio2.g_file_measure_disk_usage_async(@self, flags, io_priority, cancellable, progress_callback, progress_data, callback, user_data);
+end;
+
+function TGFile.measure_disk_usage_finish(result_: PGAsyncResult; disk_usage: Pguint64; num_dirs: Pguint64; num_files: Pguint64; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_file_measure_disk_usage_finish(@self, result_, disk_usage, num_dirs, num_files, error);
 end;
 
 function TGFile.monitor(flags: TGFileMonitorFlags; cancellable: PGCancellable; error: PPGError): PGFileMonitor; cdecl;
@@ -8336,6 +10431,11 @@ begin
   Result := LazGio2.g_file_open_readwrite_finish(@self, res, error);
 end;
 
+function TGFile.peek_path: Pgchar; cdecl;
+begin
+  Result := LazGio2.g_file_peek_path(@self);
+end;
+
 procedure TGFile.poll_mountable(cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
 begin
   LazGio2.g_file_poll_mountable(@self, cancellable, callback, user_data);
@@ -8349,6 +10449,16 @@ end;
 function TGFile.query_default_handler(cancellable: PGCancellable; error: PPGError): PGAppInfo; cdecl;
 begin
   Result := LazGio2.g_file_query_default_handler(@self, cancellable, error);
+end;
+
+procedure TGFile.query_default_handler_async(io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazGio2.g_file_query_default_handler_async(@self, io_priority, cancellable, callback, user_data);
+end;
+
+function TGFile.query_default_handler_finish(result_: PGAsyncResult; error: PPGError): PGAppInfo; cdecl;
+begin
+  Result := LazGio2.g_file_query_default_handler_finish(@self, result_, error);
 end;
 
 function TGFile.query_exists(cancellable: PGCancellable): gboolean; cdecl;
@@ -8434,6 +10544,11 @@ end;
 procedure TGFile.replace_contents_async(contents: Pgchar; length: gsize; etag: Pgchar; make_backup: gboolean; flags: TGFileCreateFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
 begin
   LazGio2.g_file_replace_contents_async(@self, contents, length, etag, make_backup, flags, cancellable, callback, user_data);
+end;
+
+procedure TGFile.replace_contents_bytes_async(contents: PGBytes; etag: Pgchar; make_backup: gboolean; flags: TGFileCreateFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazGio2.g_file_replace_contents_bytes_async(@self, contents, etag, make_backup, flags, cancellable, callback, user_data);
 end;
 
 function TGFile.replace_contents_finish(res: PGAsyncResult; new_etag: PPgchar; error: PPGError): gboolean; cdecl;
@@ -8561,6 +10676,16 @@ begin
   Result := LazGio2.g_file_trash(@self, cancellable, error);
 end;
 
+procedure TGFile.trash_async(io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazGio2.g_file_trash_async(@self, io_priority, cancellable, callback, user_data);
+end;
+
+function TGFile.trash_finish(result_: PGAsyncResult; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_file_trash_finish(@self, result_, error);
+end;
+
 procedure TGFile.unmount_mountable_with_operation(flags: TGMountUnmountFlags; mount_operation: PGMountOperation; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
 begin
   LazGio2.g_file_unmount_mountable_with_operation(@self, flags, mount_operation, cancellable, callback, user_data);
@@ -8571,74 +10696,49 @@ begin
   Result := LazGio2.g_file_unmount_mountable_with_operation_finish(@self, result_, error);
 end;
 
-function TGCancellable.new: PGCancellable; cdecl;
+function TGNotification.new(title: Pgchar): PGNotification; cdecl;
 begin
-  Result := LazGio2.g_cancellable_new();
+  Result := LazGio2.g_notification_new(title);
 end;
 
-function TGCancellable.get_current: PGCancellable; cdecl;
+procedure TGNotification.add_button(label_: Pgchar; detailed_action: Pgchar); cdecl;
 begin
-  Result := LazGio2.g_cancellable_get_current();
+  LazGio2.g_notification_add_button(@self, label_, detailed_action);
 end;
 
-procedure TGCancellable.cancel; cdecl;
+procedure TGNotification.add_button_with_target_value(label_: Pgchar; action: Pgchar; target: PGVariant); cdecl;
 begin
-  LazGio2.g_cancellable_cancel(@self);
+  LazGio2.g_notification_add_button_with_target_value(@self, label_, action, target);
 end;
 
-function TGCancellable.connect(callback: TGCallback; data: gpointer; data_destroy_func: TGDestroyNotify): gulong; cdecl;
+procedure TGNotification.set_body(body: Pgchar); cdecl;
 begin
-  Result := LazGio2.g_cancellable_connect(@self, callback, data, data_destroy_func);
+  LazGio2.g_notification_set_body(@self, body);
 end;
 
-procedure TGCancellable.disconnect(handler_id: gulong); cdecl;
+procedure TGNotification.set_default_action(detailed_action: Pgchar); cdecl;
 begin
-  LazGio2.g_cancellable_disconnect(@self, handler_id);
+  LazGio2.g_notification_set_default_action(@self, detailed_action);
 end;
 
-function TGCancellable.get_fd: gint; cdecl;
+procedure TGNotification.set_default_action_and_target_value(action: Pgchar; target: PGVariant); cdecl;
 begin
-  Result := LazGio2.g_cancellable_get_fd(@self);
+  LazGio2.g_notification_set_default_action_and_target_value(@self, action, target);
 end;
 
-function TGCancellable.is_cancelled: gboolean; cdecl;
+procedure TGNotification.set_icon(icon: PGIcon); cdecl;
 begin
-  Result := LazGio2.g_cancellable_is_cancelled(@self);
+  LazGio2.g_notification_set_icon(@self, icon);
 end;
 
-function TGCancellable.make_pollfd(pollfd: PGPollFD): gboolean; cdecl;
+procedure TGNotification.set_priority(priority: TGNotificationPriority); cdecl;
 begin
-  Result := LazGio2.g_cancellable_make_pollfd(@self, pollfd);
+  LazGio2.g_notification_set_priority(@self, priority);
 end;
 
-procedure TGCancellable.pop_current; cdecl;
+procedure TGNotification.set_title(title: Pgchar); cdecl;
 begin
-  LazGio2.g_cancellable_pop_current(@self);
-end;
-
-procedure TGCancellable.push_current; cdecl;
-begin
-  LazGio2.g_cancellable_push_current(@self);
-end;
-
-procedure TGCancellable.release_fd; cdecl;
-begin
-  LazGio2.g_cancellable_release_fd(@self);
-end;
-
-procedure TGCancellable.reset; cdecl;
-begin
-  LazGio2.g_cancellable_reset(@self);
-end;
-
-function TGCancellable.set_error_if_cancelled(error: PPGError): gboolean; cdecl;
-begin
-  Result := LazGio2.g_cancellable_set_error_if_cancelled(@self, error);
-end;
-
-function TGCancellable.source_new: PGSource; cdecl;
-begin
-  Result := LazGio2.g_cancellable_source_new(@self);
+  LazGio2.g_notification_set_title(@self, title);
 end;
 
 procedure TGInputStream.clear_pending; cdecl;
@@ -8679,6 +10779,16 @@ end;
 function TGInputStream.read_all(buffer: Pguint8; count: gsize; bytes_read: Pgsize; cancellable: PGCancellable; error: PPGError): gboolean; cdecl;
 begin
   Result := LazGio2.g_input_stream_read_all(@self, buffer, count, bytes_read, cancellable, error);
+end;
+
+procedure TGInputStream.read_all_async(buffer: Pguint8; count: gsize; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazGio2.g_input_stream_read_all_async(@self, buffer, count, io_priority, cancellable, callback, user_data);
+end;
+
+function TGInputStream.read_all_finish(result_: PGAsyncResult; bytes_read: Pgsize; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_input_stream_read_all_finish(@self, result_, bytes_read, error);
 end;
 
 procedure TGInputStream.read_async(buffer: Pguint8; count: gsize; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
@@ -8726,11 +10836,6 @@ begin
   Result := LazGio2.g_input_stream_skip_finish(@self, result_, error);
 end;
 
-procedure TGAsyncInitable.newv_async(object_type: TGType; n_parameters: guint; parameters: PGParameter; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
-begin
-  LazGio2.g_async_initable_newv_async(object_type, n_parameters, parameters, io_priority, cancellable, callback, user_data);
-end;
-
 procedure TGAsyncInitable.init_async(io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
 begin
   LazGio2.g_async_initable_init_async(@self, io_priority, cancellable, callback, user_data);
@@ -8744,26 +10849,6 @@ end;
 function TGAsyncInitable.new_finish(res: PGAsyncResult; error: PPGError): PGObject; cdecl;
 begin
   Result := LazGio2.g_async_initable_new_finish(@self, res, error);
-end;
-
-function TGAsyncResult.get_source_object: PGObject; cdecl;
-begin
-  Result := LazGio2.g_async_result_get_source_object(@self);
-end;
-
-function TGAsyncResult.get_user_data: gpointer; cdecl;
-begin
-  Result := LazGio2.g_async_result_get_user_data(@self);
-end;
-
-function TGAsyncResult.is_tagged(source_tag: gpointer): gboolean; cdecl;
-begin
-  Result := LazGio2.g_async_result_is_tagged(@self, source_tag);
-end;
-
-function TGAsyncResult.legacy_propagate_error(error: PPGError): gboolean; cdecl;
-begin
-  Result := LazGio2.g_async_result_legacy_propagate_error(@self, error);
 end;
 
 function TGSeekable.can_seek: gboolean; cdecl;
@@ -8941,6 +11026,16 @@ begin
   Result := LazGio2.g_output_stream_write_all(@self, buffer, count, bytes_written, cancellable, error);
 end;
 
+procedure TGOutputStream.write_all_async(buffer: Pguint8; count: gsize; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazGio2.g_output_stream_write_all_async(@self, buffer, count, io_priority, cancellable, callback, user_data);
+end;
+
+function TGOutputStream.write_all_finish(result_: PGAsyncResult; bytes_written: Pgsize; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_output_stream_write_all_finish(@self, result_, bytes_written, error);
+end;
+
 procedure TGOutputStream.write_async(buffer: Pguint8; count: gsize; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
 begin
   LazGio2.g_output_stream_write_async(@self, buffer, count, io_priority, cancellable, callback, user_data);
@@ -8964,6 +11059,36 @@ end;
 function TGOutputStream.write_finish(result_: PGAsyncResult; error: PPGError): gssize; cdecl;
 begin
   Result := LazGio2.g_output_stream_write_finish(@self, result_, error);
+end;
+
+function TGOutputStream.writev(vectors: PGOutputVector; n_vectors: gsize; bytes_written: Pgsize; cancellable: PGCancellable; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_output_stream_writev(@self, vectors, n_vectors, bytes_written, cancellable, error);
+end;
+
+function TGOutputStream.writev_all(vectors: PGOutputVector; n_vectors: gsize; bytes_written: Pgsize; cancellable: PGCancellable; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_output_stream_writev_all(@self, vectors, n_vectors, bytes_written, cancellable, error);
+end;
+
+procedure TGOutputStream.writev_all_async(vectors: PGOutputVector; n_vectors: gsize; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazGio2.g_output_stream_writev_all_async(@self, vectors, n_vectors, io_priority, cancellable, callback, user_data);
+end;
+
+function TGOutputStream.writev_all_finish(result_: PGAsyncResult; bytes_written: Pgsize; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_output_stream_writev_all_finish(@self, result_, bytes_written, error);
+end;
+
+procedure TGOutputStream.writev_async(vectors: PGOutputVector; n_vectors: gsize; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazGio2.g_output_stream_writev_async(@self, vectors, n_vectors, io_priority, cancellable, callback, user_data);
+end;
+
+function TGOutputStream.writev_finish(result_: PGAsyncResult; bytes_written: Pgsize; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_output_stream_writev_finish(@self, result_, bytes_written, error);
 end;
 
 function TGFilterOutputStream.get_base_stream: PGOutputStream; cdecl;
@@ -9011,7 +11136,32 @@ begin
   LazGio2.g_buffered_output_stream_set_buffer_size(@self, size);
 end;
 
-function TGConverter.convert(inbuf: Pguint8; inbuf_size: gsize; outbuf: Pgpointer; outbuf_size: gsize; flags: TGConverterFlags; bytes_read: Pgsize; bytes_written: Pgsize; error: PPGError): TGConverterResult; cdecl;
+function TGLoadableIcon.load(size: gint; type_: PPgchar; cancellable: PGCancellable; error: PPGError): PGInputStream; cdecl;
+begin
+  Result := LazGio2.g_loadable_icon_load(@self, size, type_, cancellable, error);
+end;
+
+procedure TGLoadableIcon.load_async(size: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazGio2.g_loadable_icon_load_async(@self, size, cancellable, callback, user_data);
+end;
+
+function TGLoadableIcon.load_finish(res: PGAsyncResult; type_: PPgchar; error: PPGError): PGInputStream; cdecl;
+begin
+  Result := LazGio2.g_loadable_icon_load_finish(@self, res, type_, error);
+end;
+
+function TGBytesIcon.new(bytes: PGBytes): PGBytesIcon; cdecl;
+begin
+  Result := LazGio2.g_bytes_icon_new(bytes);
+end;
+
+function TGBytesIcon.get_bytes: PGBytes; cdecl;
+begin
+  Result := LazGio2.g_bytes_icon_get_bytes(@self);
+end;
+
+function TGConverter.convert(inbuf: Pguint8; inbuf_size: gsize; outbuf: Pguint8; outbuf_size: gsize; flags: TGConverterFlags; bytes_read: Pgsize; bytes_written: Pgsize; error: PPGError): TGConverterResult; cdecl;
 begin
   Result := LazGio2.g_converter_convert(@self, inbuf, inbuf_size, outbuf, outbuf_size, flags, bytes_read, bytes_written, error);
 end;
@@ -9019,11 +11169,6 @@ end;
 procedure TGConverter.reset; cdecl;
 begin
   LazGio2.g_converter_reset(@self);
-end;
-
-function TGInitable.newv(object_type: TGType; n_parameters: guint; parameters: PGParameter; cancellable: PGCancellable; error: PPGError): PGObject; cdecl;
-begin
-  Result := LazGio2.g_initable_newv(object_type, n_parameters, parameters, cancellable, error);
 end;
 
 function TGInitable.init(cancellable: PGCancellable; error: PPGError): gboolean; cdecl;
@@ -9066,7 +11211,7 @@ begin
   Result := LazGio2.g_pollable_input_stream_is_readable(@self);
 end;
 
-function TGPollableInputStream.read_nonblocking(buffer: Pgpointer; count: gsize; cancellable: PGCancellable; error: PPGError): gssize; cdecl;
+function TGPollableInputStream.read_nonblocking(buffer: Pguint8; count: gsize; cancellable: PGCancellable; error: PPGError): gssize; cdecl;
 begin
   Result := LazGio2.g_pollable_input_stream_read_nonblocking(@self, buffer, count, cancellable, error);
 end;
@@ -9099,6 +11244,11 @@ end;
 function TGPollableOutputStream.write_nonblocking(buffer: Pguint8; count: gsize; cancellable: PGCancellable; error: PPGError): gssize; cdecl;
 begin
   Result := LazGio2.g_pollable_output_stream_write_nonblocking(@self, buffer, count, cancellable, error);
+end;
+
+function TGPollableOutputStream.writev_nonblocking(vectors: PGOutputVector; n_vectors: gsize; bytes_written: Pgsize; cancellable: PGCancellable; error: PPGError): TGPollableReturn; cdecl;
+begin
+  Result := LazGio2.g_pollable_output_stream_writev_nonblocking(@self, vectors, n_vectors, bytes_written, cancellable, error);
 end;
 
 function TGConverterOutputStream.new(base_stream: PGOutputStream; converter: PGConverter): PGConverterOutputStream; cdecl;
@@ -9706,6 +11856,11 @@ begin
   Result := LazGio2.g_dbus_method_invocation_get_parameters(@self);
 end;
 
+function TGDBusMethodInvocation.get_property_info: PGDBusPropertyInfo; cdecl;
+begin
+  Result := LazGio2.g_dbus_method_invocation_get_property_info(@self);
+end;
+
 function TGDBusMethodInvocation.get_sender: Pgchar; cdecl;
 begin
   Result := LazGio2.g_dbus_method_invocation_get_sender(@self);
@@ -10221,21 +12376,6 @@ begin
   Result := LazGio2.g_data_input_stream_read_uint64(@self, cancellable, error);
 end;
 
-function TGDataInputStream.read_until(stop_chars: Pgchar; length: Pgsize; cancellable: PGCancellable; error: PPGError): Pgchar; cdecl;
-begin
-  Result := LazGio2.g_data_input_stream_read_until(@self, stop_chars, length, cancellable, error);
-end;
-
-procedure TGDataInputStream.read_until_async(stop_chars: Pgchar; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
-begin
-  LazGio2.g_data_input_stream_read_until_async(@self, stop_chars, io_priority, cancellable, callback, user_data);
-end;
-
-function TGDataInputStream.read_until_finish(result_: PGAsyncResult; length: Pgsize; error: PPGError): Pgchar; cdecl;
-begin
-  Result := LazGio2.g_data_input_stream_read_until_finish(@self, result_, length, error);
-end;
-
 function TGDataInputStream.read_upto(stop_chars: Pgchar; stop_chars_len: gssize; length: Pgsize; cancellable: PGCancellable; error: PPGError): Pgchar; cdecl;
 begin
   Result := LazGio2.g_data_input_stream_read_upto(@self, stop_chars, stop_chars_len, length, cancellable, error);
@@ -10316,6 +12456,31 @@ begin
   LazGio2.g_data_output_stream_set_byte_order(@self, order);
 end;
 
+function TGDatagramBased.condition_check(condition: TGIOCondition): TGIOCondition; cdecl;
+begin
+  Result := LazGio2.g_datagram_based_condition_check(@self, condition);
+end;
+
+function TGDatagramBased.condition_wait(condition: TGIOCondition; timeout: gint64; cancellable: PGCancellable; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_datagram_based_condition_wait(@self, condition, timeout, cancellable, error);
+end;
+
+function TGDatagramBased.create_source(condition: TGIOCondition; cancellable: PGCancellable): PGSource; cdecl;
+begin
+  Result := LazGio2.g_datagram_based_create_source(@self, condition, cancellable);
+end;
+
+function TGDatagramBased.receive_messages(messages: PGInputMessage; num_messages: guint; flags: gint; timeout: gint64; cancellable: PGCancellable; error: PPGError): gint; cdecl;
+begin
+  Result := LazGio2.g_datagram_based_receive_messages(@self, messages, num_messages, flags, timeout, cancellable, error);
+end;
+
+function TGDatagramBased.send_messages(messages: PGOutputMessage; num_messages: guint; flags: gint; timeout: gint64; cancellable: PGCancellable; error: PPGError): gint; cdecl;
+begin
+  Result := LazGio2.g_datagram_based_send_messages(@self, messages, num_messages, flags, timeout, cancellable, error);
+end;
+
 function TGDesktopAppInfo.new(desktop_id: Pgchar): PGDesktopAppInfo; cdecl;
 begin
   Result := LazGio2.g_desktop_app_info_new(desktop_id);
@@ -10331,9 +12496,19 @@ begin
   Result := LazGio2.g_desktop_app_info_new_from_keyfile(key_file);
 end;
 
-procedure TGDesktopAppInfo.set_desktop_env(desktop_env: Pgchar); cdecl;
+function TGDesktopAppInfo.get_implementations(interface_: Pgchar): PGList; cdecl;
 begin
-  LazGio2.g_desktop_app_info_set_desktop_env(desktop_env);
+  Result := LazGio2.g_desktop_app_info_get_implementations(interface_);
+end;
+
+function TGDesktopAppInfo.search(search_string: Pgchar): PPPgchar; cdecl;
+begin
+  Result := LazGio2.g_desktop_app_info_search(search_string);
+end;
+
+function TGDesktopAppInfo.get_action_name(action_name: Pgchar): Pgchar; cdecl;
+begin
+  Result := LazGio2.g_desktop_app_info_get_action_name(@self, action_name);
 end;
 
 function TGDesktopAppInfo.get_boolean(key: Pgchar): gboolean; cdecl;
@@ -10366,6 +12541,11 @@ begin
   Result := LazGio2.g_desktop_app_info_get_keywords(@self);
 end;
 
+function TGDesktopAppInfo.get_locale_string(key: Pgchar): Pgchar; cdecl;
+begin
+  Result := LazGio2.g_desktop_app_info_get_locale_string(@self, key);
+end;
+
 function TGDesktopAppInfo.get_nodisplay: gboolean; cdecl;
 begin
   Result := LazGio2.g_desktop_app_info_get_nodisplay(@self);
@@ -10386,14 +12566,34 @@ begin
   Result := LazGio2.g_desktop_app_info_get_string(@self, key);
 end;
 
+function TGDesktopAppInfo.get_string_list(key: Pgchar; length: Pgsize): PPgchar; cdecl;
+begin
+  Result := LazGio2.g_desktop_app_info_get_string_list(@self, key, length);
+end;
+
 function TGDesktopAppInfo.has_key(key: Pgchar): gboolean; cdecl;
 begin
   Result := LazGio2.g_desktop_app_info_has_key(@self, key);
 end;
 
+procedure TGDesktopAppInfo.launch_action(action_name: Pgchar; launch_context: PGAppLaunchContext); cdecl;
+begin
+  LazGio2.g_desktop_app_info_launch_action(@self, action_name, launch_context);
+end;
+
 function TGDesktopAppInfo.launch_uris_as_manager(uris: PGList; launch_context: PGAppLaunchContext; spawn_flags: TGSpawnFlags; user_setup: TGSpawnChildSetupFunc; user_setup_data: gpointer; pid_callback: TGDesktopAppLaunchCallback; pid_callback_data: gpointer; error: PPGError): gboolean; cdecl;
 begin
   Result := LazGio2.g_desktop_app_info_launch_uris_as_manager(@self, uris, launch_context, spawn_flags, user_setup, user_setup_data, pid_callback, pid_callback_data, error);
+end;
+
+function TGDesktopAppInfo.launch_uris_as_manager_with_fds(uris: PGList; launch_context: PGAppLaunchContext; spawn_flags: TGSpawnFlags; user_setup: TGSpawnChildSetupFunc; user_setup_data: gpointer; pid_callback: TGDesktopAppLaunchCallback; pid_callback_data: gpointer; stdin_fd: gint; stdout_fd: gint; stderr_fd: gint; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_desktop_app_info_launch_uris_as_manager_with_fds(@self, uris, launch_context, spawn_flags, user_setup, user_setup_data, pid_callback, pid_callback_data, stdin_fd, stdout_fd, stderr_fd, error);
+end;
+
+function TGDesktopAppInfo.list_actions: PPgchar; cdecl;
+begin
+  Result := LazGio2.g_desktop_app_info_list_actions(@self);
 end;
 
 function TGDrive.can_eject: gboolean; cdecl;
@@ -10491,6 +12691,11 @@ begin
   Result := LazGio2.g_drive_is_media_removable(@self);
 end;
 
+function TGDrive.is_removable: gboolean; cdecl;
+begin
+  Result := LazGio2.g_drive_is_removable(@self);
+end;
+
 procedure TGDrive.poll_for_media(cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
 begin
   LazGio2.g_drive_poll_for_media(@self, cancellable, callback, user_data);
@@ -10541,6 +12746,16 @@ begin
   Result := LazGio2.g_mount_operation_get_domain(@self);
 end;
 
+function TGMountOperation.get_is_tcrypt_hidden_volume: gboolean; cdecl;
+begin
+  Result := LazGio2.g_mount_operation_get_is_tcrypt_hidden_volume(@self);
+end;
+
+function TGMountOperation.get_is_tcrypt_system_volume: gboolean; cdecl;
+begin
+  Result := LazGio2.g_mount_operation_get_is_tcrypt_system_volume(@self);
+end;
+
 function TGMountOperation.get_password: Pgchar; cdecl;
 begin
   Result := LazGio2.g_mount_operation_get_password(@self);
@@ -10549,6 +12764,11 @@ end;
 function TGMountOperation.get_password_save: TGPasswordSave; cdecl;
 begin
   Result := LazGio2.g_mount_operation_get_password_save(@self);
+end;
+
+function TGMountOperation.get_pim: guint; cdecl;
+begin
+  Result := LazGio2.g_mount_operation_get_pim(@self);
 end;
 
 function TGMountOperation.get_username: Pgchar; cdecl;
@@ -10576,6 +12796,16 @@ begin
   LazGio2.g_mount_operation_set_domain(@self, domain);
 end;
 
+procedure TGMountOperation.set_is_tcrypt_hidden_volume(hidden_volume: gboolean); cdecl;
+begin
+  LazGio2.g_mount_operation_set_is_tcrypt_hidden_volume(@self, hidden_volume);
+end;
+
+procedure TGMountOperation.set_is_tcrypt_system_volume(system_volume: gboolean); cdecl;
+begin
+  LazGio2.g_mount_operation_set_is_tcrypt_system_volume(@self, system_volume);
+end;
+
 procedure TGMountOperation.set_password(password: Pgchar); cdecl;
 begin
   LazGio2.g_mount_operation_set_password(@self, password);
@@ -10586,9 +12816,309 @@ begin
   LazGio2.g_mount_operation_set_password_save(@self, save);
 end;
 
+procedure TGMountOperation.set_pim(pim: guint); cdecl;
+begin
+  LazGio2.g_mount_operation_set_pim(@self, pim);
+end;
+
 procedure TGMountOperation.set_username(username: Pgchar); cdecl;
 begin
   LazGio2.g_mount_operation_set_username(@self, username);
+end;
+
+function TGDtlsClientConnection.new(base_socket: PGDatagramBased; server_identity: PGSocketConnectable; error: PPGError): PGDtlsClientConnection; cdecl;
+begin
+  Result := LazGio2.g_dtls_client_connection_new(base_socket, server_identity, error);
+end;
+
+function TGDtlsClientConnection.get_accepted_cas: PGList; cdecl;
+begin
+  Result := LazGio2.g_dtls_client_connection_get_accepted_cas(@self);
+end;
+
+function TGDtlsClientConnection.get_server_identity: PGSocketConnectable; cdecl;
+begin
+  Result := LazGio2.g_dtls_client_connection_get_server_identity(@self);
+end;
+
+procedure TGDtlsClientConnection.set_server_identity(identity: PGSocketConnectable); cdecl;
+begin
+  LazGio2.g_dtls_client_connection_set_server_identity(@self, identity);
+end;
+
+function TGSocketConnectable.enumerate: PGSocketAddressEnumerator; cdecl;
+begin
+  Result := LazGio2.g_socket_connectable_enumerate(@self);
+end;
+
+function TGSocketConnectable.proxy_enumerate: PGSocketAddressEnumerator; cdecl;
+begin
+  Result := LazGio2.g_socket_connectable_proxy_enumerate(@self);
+end;
+
+function TGSocketConnectable.to_string: Pgchar; cdecl;
+begin
+  Result := LazGio2.g_socket_connectable_to_string(@self);
+end;
+
+function TGDtlsConnection.close(cancellable: PGCancellable; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_dtls_connection_close(@self, cancellable, error);
+end;
+
+procedure TGDtlsConnection.close_async(io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazGio2.g_dtls_connection_close_async(@self, io_priority, cancellable, callback, user_data);
+end;
+
+function TGDtlsConnection.close_finish(result_: PGAsyncResult; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_dtls_connection_close_finish(@self, result_, error);
+end;
+
+function TGDtlsConnection.emit_accept_certificate(peer_cert: PGTlsCertificate; errors: TGTlsCertificateFlags): gboolean; cdecl;
+begin
+  Result := LazGio2.g_dtls_connection_emit_accept_certificate(@self, peer_cert, errors);
+end;
+
+function TGDtlsConnection.get_certificate: PGTlsCertificate; cdecl;
+begin
+  Result := LazGio2.g_dtls_connection_get_certificate(@self);
+end;
+
+function TGDtlsConnection.get_channel_binding_data(type_: TGTlsChannelBindingType; data: Pguint8; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_dtls_connection_get_channel_binding_data(@self, type_, data, error);
+end;
+
+function TGDtlsConnection.get_database: PGTlsDatabase; cdecl;
+begin
+  Result := LazGio2.g_dtls_connection_get_database(@self);
+end;
+
+function TGDtlsConnection.get_interaction: PGTlsInteraction; cdecl;
+begin
+  Result := LazGio2.g_dtls_connection_get_interaction(@self);
+end;
+
+function TGDtlsConnection.get_negotiated_protocol: Pgchar; cdecl;
+begin
+  Result := LazGio2.g_dtls_connection_get_negotiated_protocol(@self);
+end;
+
+function TGDtlsConnection.get_peer_certificate: PGTlsCertificate; cdecl;
+begin
+  Result := LazGio2.g_dtls_connection_get_peer_certificate(@self);
+end;
+
+function TGDtlsConnection.get_peer_certificate_errors: TGTlsCertificateFlags; cdecl;
+begin
+  Result := LazGio2.g_dtls_connection_get_peer_certificate_errors(@self);
+end;
+
+function TGDtlsConnection.get_require_close_notify: gboolean; cdecl;
+begin
+  Result := LazGio2.g_dtls_connection_get_require_close_notify(@self);
+end;
+
+function TGDtlsConnection.handshake(cancellable: PGCancellable; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_dtls_connection_handshake(@self, cancellable, error);
+end;
+
+procedure TGDtlsConnection.handshake_async(io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazGio2.g_dtls_connection_handshake_async(@self, io_priority, cancellable, callback, user_data);
+end;
+
+function TGDtlsConnection.handshake_finish(result_: PGAsyncResult; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_dtls_connection_handshake_finish(@self, result_, error);
+end;
+
+procedure TGDtlsConnection.set_advertised_protocols(protocols: PPgchar); cdecl;
+begin
+  LazGio2.g_dtls_connection_set_advertised_protocols(@self, protocols);
+end;
+
+procedure TGDtlsConnection.set_certificate(certificate: PGTlsCertificate); cdecl;
+begin
+  LazGio2.g_dtls_connection_set_certificate(@self, certificate);
+end;
+
+procedure TGDtlsConnection.set_database(database: PGTlsDatabase); cdecl;
+begin
+  LazGio2.g_dtls_connection_set_database(@self, database);
+end;
+
+procedure TGDtlsConnection.set_interaction(interaction: PGTlsInteraction); cdecl;
+begin
+  LazGio2.g_dtls_connection_set_interaction(@self, interaction);
+end;
+
+procedure TGDtlsConnection.set_require_close_notify(require_close_notify: gboolean); cdecl;
+begin
+  LazGio2.g_dtls_connection_set_require_close_notify(@self, require_close_notify);
+end;
+
+function TGDtlsConnection.shutdown(shutdown_read: gboolean; shutdown_write: gboolean; cancellable: PGCancellable; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_dtls_connection_shutdown(@self, shutdown_read, shutdown_write, cancellable, error);
+end;
+
+procedure TGDtlsConnection.shutdown_async(shutdown_read: gboolean; shutdown_write: gboolean; io_priority: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazGio2.g_dtls_connection_shutdown_async(@self, shutdown_read, shutdown_write, io_priority, cancellable, callback, user_data);
+end;
+
+function TGDtlsConnection.shutdown_finish(result_: PGAsyncResult; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_dtls_connection_shutdown_finish(@self, result_, error);
+end;
+
+function TGTlsCertificate.new_from_file(file_: Pgchar; error: PPGError): PGTlsCertificate; cdecl;
+begin
+  Result := LazGio2.g_tls_certificate_new_from_file(file_, error);
+end;
+
+function TGTlsCertificate.new_from_files(cert_file: Pgchar; key_file: Pgchar; error: PPGError): PGTlsCertificate; cdecl;
+begin
+  Result := LazGio2.g_tls_certificate_new_from_files(cert_file, key_file, error);
+end;
+
+function TGTlsCertificate.new_from_pem(data: Pgchar; length: gssize; error: PPGError): PGTlsCertificate; cdecl;
+begin
+  Result := LazGio2.g_tls_certificate_new_from_pem(data, length, error);
+end;
+
+function TGTlsCertificate.list_new_from_file(file_: Pgchar; error: PPGError): PGList; cdecl;
+begin
+  Result := LazGio2.g_tls_certificate_list_new_from_file(file_, error);
+end;
+
+function TGTlsCertificate.get_issuer: PGTlsCertificate; cdecl;
+begin
+  Result := LazGio2.g_tls_certificate_get_issuer(@self);
+end;
+
+function TGTlsCertificate.is_same(cert_two: PGTlsCertificate): gboolean; cdecl;
+begin
+  Result := LazGio2.g_tls_certificate_is_same(@self, cert_two);
+end;
+
+function TGTlsCertificate.verify(identity: PGSocketConnectable; trusted_ca: PGTlsCertificate): TGTlsCertificateFlags; cdecl;
+begin
+  Result := LazGio2.g_tls_certificate_verify(@self, identity, trusted_ca);
+end;
+
+function TGTlsDatabase.create_certificate_handle(certificate: PGTlsCertificate): Pgchar; cdecl;
+begin
+  Result := LazGio2.g_tls_database_create_certificate_handle(@self, certificate);
+end;
+
+function TGTlsDatabase.lookup_certificate_for_handle(handle: Pgchar; interaction: PGTlsInteraction; flags: TGTlsDatabaseLookupFlags; cancellable: PGCancellable; error: PPGError): PGTlsCertificate; cdecl;
+begin
+  Result := LazGio2.g_tls_database_lookup_certificate_for_handle(@self, handle, interaction, flags, cancellable, error);
+end;
+
+procedure TGTlsDatabase.lookup_certificate_for_handle_async(handle: Pgchar; interaction: PGTlsInteraction; flags: TGTlsDatabaseLookupFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazGio2.g_tls_database_lookup_certificate_for_handle_async(@self, handle, interaction, flags, cancellable, callback, user_data);
+end;
+
+function TGTlsDatabase.lookup_certificate_for_handle_finish(result_: PGAsyncResult; error: PPGError): PGTlsCertificate; cdecl;
+begin
+  Result := LazGio2.g_tls_database_lookup_certificate_for_handle_finish(@self, result_, error);
+end;
+
+function TGTlsDatabase.lookup_certificate_issuer(certificate: PGTlsCertificate; interaction: PGTlsInteraction; flags: TGTlsDatabaseLookupFlags; cancellable: PGCancellable; error: PPGError): PGTlsCertificate; cdecl;
+begin
+  Result := LazGio2.g_tls_database_lookup_certificate_issuer(@self, certificate, interaction, flags, cancellable, error);
+end;
+
+procedure TGTlsDatabase.lookup_certificate_issuer_async(certificate: PGTlsCertificate; interaction: PGTlsInteraction; flags: TGTlsDatabaseLookupFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazGio2.g_tls_database_lookup_certificate_issuer_async(@self, certificate, interaction, flags, cancellable, callback, user_data);
+end;
+
+function TGTlsDatabase.lookup_certificate_issuer_finish(result_: PGAsyncResult; error: PPGError): PGTlsCertificate; cdecl;
+begin
+  Result := LazGio2.g_tls_database_lookup_certificate_issuer_finish(@self, result_, error);
+end;
+
+function TGTlsDatabase.lookup_certificates_issued_by(issuer_raw_dn: Pguint8; interaction: PGTlsInteraction; flags: TGTlsDatabaseLookupFlags; cancellable: PGCancellable; error: PPGError): PGList; cdecl;
+begin
+  Result := LazGio2.g_tls_database_lookup_certificates_issued_by(@self, issuer_raw_dn, interaction, flags, cancellable, error);
+end;
+
+procedure TGTlsDatabase.lookup_certificates_issued_by_async(issuer_raw_dn: Pguint8; interaction: PGTlsInteraction; flags: TGTlsDatabaseLookupFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazGio2.g_tls_database_lookup_certificates_issued_by_async(@self, issuer_raw_dn, interaction, flags, cancellable, callback, user_data);
+end;
+
+function TGTlsDatabase.lookup_certificates_issued_by_finish(result_: PGAsyncResult; error: PPGError): PGList; cdecl;
+begin
+  Result := LazGio2.g_tls_database_lookup_certificates_issued_by_finish(@self, result_, error);
+end;
+
+function TGTlsDatabase.verify_chain(chain: PGTlsCertificate; purpose: Pgchar; identity: PGSocketConnectable; interaction: PGTlsInteraction; flags: TGTlsDatabaseVerifyFlags; cancellable: PGCancellable; error: PPGError): TGTlsCertificateFlags; cdecl;
+begin
+  Result := LazGio2.g_tls_database_verify_chain(@self, chain, purpose, identity, interaction, flags, cancellable, error);
+end;
+
+procedure TGTlsDatabase.verify_chain_async(chain: PGTlsCertificate; purpose: Pgchar; identity: PGSocketConnectable; interaction: PGTlsInteraction; flags: TGTlsDatabaseVerifyFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazGio2.g_tls_database_verify_chain_async(@self, chain, purpose, identity, interaction, flags, cancellable, callback, user_data);
+end;
+
+function TGTlsDatabase.verify_chain_finish(result_: PGAsyncResult; error: PPGError): TGTlsCertificateFlags; cdecl;
+begin
+  Result := LazGio2.g_tls_database_verify_chain_finish(@self, result_, error);
+end;
+
+function TGTlsInteraction.ask_password(password: PGTlsPassword; cancellable: PGCancellable; error: PPGError): TGTlsInteractionResult; cdecl;
+begin
+  Result := LazGio2.g_tls_interaction_ask_password(@self, password, cancellable, error);
+end;
+
+procedure TGTlsInteraction.ask_password_async(password: PGTlsPassword; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazGio2.g_tls_interaction_ask_password_async(@self, password, cancellable, callback, user_data);
+end;
+
+function TGTlsInteraction.ask_password_finish(result_: PGAsyncResult; error: PPGError): TGTlsInteractionResult; cdecl;
+begin
+  Result := LazGio2.g_tls_interaction_ask_password_finish(@self, result_, error);
+end;
+
+function TGTlsInteraction.invoke_ask_password(password: PGTlsPassword; cancellable: PGCancellable; error: PPGError): TGTlsInteractionResult; cdecl;
+begin
+  Result := LazGio2.g_tls_interaction_invoke_ask_password(@self, password, cancellable, error);
+end;
+
+function TGTlsInteraction.invoke_request_certificate(connection: PGTlsConnection; flags: TGTlsCertificateRequestFlags; cancellable: PGCancellable; error: PPGError): TGTlsInteractionResult; cdecl;
+begin
+  Result := LazGio2.g_tls_interaction_invoke_request_certificate(@self, connection, flags, cancellable, error);
+end;
+
+function TGTlsInteraction.request_certificate(connection: PGTlsConnection; flags: TGTlsCertificateRequestFlags; cancellable: PGCancellable; error: PPGError): TGTlsInteractionResult; cdecl;
+begin
+  Result := LazGio2.g_tls_interaction_request_certificate(@self, connection, flags, cancellable, error);
+end;
+
+procedure TGTlsInteraction.request_certificate_async(connection: PGTlsConnection; flags: TGTlsCertificateRequestFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazGio2.g_tls_interaction_request_certificate_async(@self, connection, flags, cancellable, callback, user_data);
+end;
+
+function TGTlsInteraction.request_certificate_finish(result_: PGAsyncResult; error: PPGError): TGTlsInteractionResult; cdecl;
+begin
+  Result := LazGio2.g_tls_interaction_request_certificate_finish(@self, result_, error);
+end;
+
+function TGDtlsServerConnection.new(base_socket: PGDatagramBased; certificate: PGTlsCertificate; error: PPGError): PGDtlsServerConnection; cdecl;
+begin
+  Result := LazGio2.g_dtls_server_connection_new(base_socket, certificate, error);
 end;
 
 function TGEmblem.new(icon: PGIcon): PGEmblem; cdecl;
@@ -10709,6 +13239,11 @@ end;
 function TGFileEnumerator.is_closed: gboolean; cdecl;
 begin
   Result := LazGio2.g_file_enumerator_is_closed(@self);
+end;
+
+function TGFileEnumerator.iterate(out_info: PPGFileInfo; out_child: PPGFile; cancellable: PGCancellable; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_file_enumerator_iterate(@self, out_info, out_child, cancellable, error);
 end;
 
 function TGFileEnumerator.next_file(cancellable: PGCancellable; error: PPGError): PGFileInfo; cdecl;
@@ -11001,9 +13536,9 @@ begin
   Result := LazGio2.g_file_info_get_is_symlink(@self);
 end;
 
-procedure TGFileInfo.get_modification_time(result_: PGTimeVal); cdecl;
+function TGFileInfo.get_modification_date_time: PGDateTime; cdecl;
 begin
-  LazGio2.g_file_info_get_modification_time(@self, result_);
+  Result := LazGio2.g_file_info_get_modification_date_time(@self);
 end;
 
 function TGFileInfo.get_name: Pgchar; cdecl;
@@ -11146,9 +13681,9 @@ begin
   LazGio2.g_file_info_set_is_symlink(@self, is_symlink);
 end;
 
-procedure TGFileInfo.set_modification_time(mtime: PGTimeVal); cdecl;
+procedure TGFileInfo.set_modification_date_time(mtime: PGDateTime); cdecl;
 begin
-  LazGio2.g_file_info_set_modification_time(@self, mtime);
+  LazGio2.g_file_info_set_modification_date_time(@self, mtime);
 end;
 
 procedure TGFileInfo.set_name(name: Pgchar); cdecl;
@@ -11274,21 +13809,6 @@ end;
 function TGFileDescriptorBased.get_fd: gint; cdecl;
 begin
   Result := LazGio2.g_file_descriptor_based_get_fd(@self);
-end;
-
-function TGLoadableIcon.load(size: gint; type_: PPgchar; cancellable: PGCancellable; error: PPGError): PGInputStream; cdecl;
-begin
-  Result := LazGio2.g_loadable_icon_load(@self, size, type_, cancellable, error);
-end;
-
-procedure TGLoadableIcon.load_async(size: gint; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
-begin
-  LazGio2.g_loadable_icon_load_async(@self, size, cancellable, callback, user_data);
-end;
-
-function TGLoadableIcon.load_finish(res: PGAsyncResult; type_: PPgchar; error: PPGError): PGInputStream; cdecl;
-begin
-  Result := LazGio2.g_loadable_icon_load_finish(@self, res, type_, error);
 end;
 
 function TGFileIcon.new(file_: PGFile): PGFileIcon; cdecl;
@@ -11531,16 +14051,6 @@ begin
   Result := LazGio2.g_inet_address_mask_to_string(@self);
 end;
 
-function TGSocketConnectable.enumerate: PGSocketAddressEnumerator; cdecl;
-begin
-  Result := LazGio2.g_socket_connectable_enumerate(@self);
-end;
-
-function TGSocketConnectable.proxy_enumerate: PGSocketAddressEnumerator; cdecl;
-begin
-  Result := LazGio2.g_socket_connectable_proxy_enumerate(@self);
-end;
-
 function TGSocketAddress.new_from_native(native: gpointer; len: gsize): PGSocketAddress; cdecl;
 begin
   Result := LazGio2.g_socket_address_new_from_native(native, len);
@@ -11566,6 +14076,11 @@ begin
   Result := LazGio2.g_inet_socket_address_new(address, port);
 end;
 
+function TGInetSocketAddress.new_from_string(address: Pgchar; port: guint): PGInetSocketAddress; cdecl;
+begin
+  Result := LazGio2.g_inet_socket_address_new_from_string(address, port);
+end;
+
 function TGInetSocketAddress.get_address: PGInetAddress; cdecl;
 begin
   Result := LazGio2.g_inet_socket_address_get_address(@self);
@@ -11584,6 +14099,106 @@ end;
 function TGInetSocketAddress.get_scope_id: guint32; cdecl;
 begin
   Result := LazGio2.g_inet_socket_address_get_scope_id(@self);
+end;
+
+function TGSocketControlMessage.deserialize(level: gint; type_: gint; size: gsize; data: guint8): PGSocketControlMessage; cdecl;
+begin
+  Result := LazGio2.g_socket_control_message_deserialize(level, type_, size, data);
+end;
+
+function TGSocketControlMessage.get_level: gint; cdecl;
+begin
+  Result := LazGio2.g_socket_control_message_get_level(@self);
+end;
+
+function TGSocketControlMessage.get_msg_type: gint; cdecl;
+begin
+  Result := LazGio2.g_socket_control_message_get_msg_type(@self);
+end;
+
+function TGSocketControlMessage.get_size: gsize; cdecl;
+begin
+  Result := LazGio2.g_socket_control_message_get_size(@self);
+end;
+
+procedure TGSocketControlMessage.serialize(data: gpointer); cdecl;
+begin
+  LazGio2.g_socket_control_message_serialize(@self, data);
+end;
+
+function TGListModel.get_item(position: guint): gpointer; cdecl;
+begin
+  Result := LazGio2.g_list_model_get_item(@self, position);
+end;
+
+function TGListModel.get_item_type: TGType; cdecl;
+begin
+  Result := LazGio2.g_list_model_get_item_type(@self);
+end;
+
+function TGListModel.get_n_items: guint; cdecl;
+begin
+  Result := LazGio2.g_list_model_get_n_items(@self);
+end;
+
+function TGListModel.get_object(position: guint): PGObject; cdecl;
+begin
+  Result := LazGio2.g_list_model_get_object(@self, position);
+end;
+
+procedure TGListModel.items_changed(position: guint; removed: guint; added: guint); cdecl;
+begin
+  LazGio2.g_list_model_items_changed(@self, position, removed, added);
+end;
+
+function TGListStore.new(item_type: TGType): PGListStore; cdecl;
+begin
+  Result := LazGio2.g_list_store_new(item_type);
+end;
+
+procedure TGListStore.append(item: PGObject); cdecl;
+begin
+  LazGio2.g_list_store_append(@self, item);
+end;
+
+function TGListStore.find(item: PGObject; position: Pguint): gboolean; cdecl;
+begin
+  Result := LazGio2.g_list_store_find(@self, item, position);
+end;
+
+function TGListStore.find_with_equal_func(item: PGObject; equal_func: TGEqualFunc; position: Pguint): gboolean; cdecl;
+begin
+  Result := LazGio2.g_list_store_find_with_equal_func(@self, item, equal_func, position);
+end;
+
+procedure TGListStore.insert(position: guint; item: PGObject); cdecl;
+begin
+  LazGio2.g_list_store_insert(@self, position, item);
+end;
+
+function TGListStore.insert_sorted(item: PGObject; compare_func: TGCompareDataFunc; user_data: gpointer): guint; cdecl;
+begin
+  Result := LazGio2.g_list_store_insert_sorted(@self, item, compare_func, user_data);
+end;
+
+procedure TGListStore.remove(position: guint); cdecl;
+begin
+  LazGio2.g_list_store_remove(@self, position);
+end;
+
+procedure TGListStore.remove_all; cdecl;
+begin
+  LazGio2.g_list_store_remove_all(@self);
+end;
+
+procedure TGListStore.sort(compare_func: TGCompareDataFunc; user_data: gpointer); cdecl;
+begin
+  LazGio2.g_list_store_sort(@self, compare_func, user_data);
+end;
+
+procedure TGListStore.splice(position: guint; n_removals: guint; additions: PGObject; n_additions: guint); cdecl;
+begin
+  LazGio2.g_list_store_splice(@self, position, n_removals, additions, n_additions);
 end;
 
 function TGMemoryInputStream.new: PGMemoryInputStream; cdecl;
@@ -11609,6 +14224,11 @@ end;
 procedure TGMemoryInputStream.add_data(data: Pguint8; len: gssize; destroy_: TGDestroyNotify); cdecl;
 begin
   LazGio2.g_memory_input_stream_add_data(@self, data, len, destroy_);
+end;
+
+function TGMemoryMonitor.dup_default: PGMemoryMonitor; cdecl;
+begin
+  Result := LazGio2.g_memory_monitor_dup_default();
 end;
 
 function TGMemoryOutputStream.new(data: gpointer; size: gsize; realloc_function: TGReallocFunc; destroy_function: TGDestroyNotify): PGMemoryOutputStream; cdecl;
@@ -11721,6 +14341,11 @@ begin
   LazGio2.g_menu_remove(@self, position);
 end;
 
+procedure TGMenu.remove_all; cdecl;
+begin
+  LazGio2.g_menu_remove_all(@self);
+end;
+
 function TGMenuItem.new(label_: Pgchar; detailed_action: Pgchar): PGMenuItem; cdecl;
 begin
   Result := LazGio2.g_menu_item_new(label_, detailed_action);
@@ -11764,6 +14389,11 @@ end;
 procedure TGMenuItem.set_detailed_action(detailed_action: Pgchar); cdecl;
 begin
   LazGio2.g_menu_item_set_detailed_action(@self, detailed_action);
+end;
+
+procedure TGMenuItem.set_icon(icon: PGIcon); cdecl;
+begin
+  LazGio2.g_menu_item_set_icon(@self, icon);
 end;
 
 procedure TGMenuItem.set_label(label_: Pgchar); cdecl;
@@ -11911,6 +14541,11 @@ begin
   Result := LazGio2.g_volume_should_automount(@self);
 end;
 
+function TGNativeSocketAddress.new(native: gpointer; len: gsize): PGNativeSocketAddress; cdecl;
+begin
+  Result := LazGio2.g_native_socket_address_new(native, len);
+end;
+
 function TGVolumeMonitor.get: PGVolumeMonitor; cdecl;
 begin
   Result := LazGio2.g_volume_monitor_get();
@@ -11946,12 +14581,17 @@ begin
   Result := LazGio2.g_network_address_new(hostname, port);
 end;
 
-function TGNetworkAddress.parse(host_and_port: Pgchar; default_port: guint16; error: PPGError): PGSocketConnectable; cdecl;
+function TGNetworkAddress.new_loopback(port: guint16): PGNetworkAddress; cdecl;
+begin
+  Result := LazGio2.g_network_address_new_loopback(port);
+end;
+
+function TGNetworkAddress.parse(host_and_port: Pgchar; default_port: guint16; error: PPGError): PGNetworkAddress; cdecl;
 begin
   Result := LazGio2.g_network_address_parse(host_and_port, default_port, error);
 end;
 
-function TGNetworkAddress.parse_uri(uri: Pgchar; default_port: guint16; error: PPGError): PGSocketConnectable; cdecl;
+function TGNetworkAddress.parse_uri(uri: Pgchar; default_port: guint16; error: PPGError): PGNetworkAddress; cdecl;
 begin
   Result := LazGio2.g_network_address_parse_uri(uri, default_port, error);
 end;
@@ -11991,9 +14631,19 @@ begin
   Result := LazGio2.g_network_monitor_can_reach_finish(@self, result_, error);
 end;
 
+function TGNetworkMonitor.get_connectivity: TGNetworkConnectivity; cdecl;
+begin
+  Result := LazGio2.g_network_monitor_get_connectivity(@self);
+end;
+
 function TGNetworkMonitor.get_network_available: gboolean; cdecl;
 begin
   Result := LazGio2.g_network_monitor_get_network_available(@self);
+end;
+
+function TGNetworkMonitor.get_network_metered: gboolean; cdecl;
+begin
+  Result := LazGio2.g_network_monitor_get_network_metered(@self);
 end;
 
 function TGNetworkService.new(service: Pgchar; protocol: Pgchar; domain: Pgchar): PGNetworkService; cdecl;
@@ -12074,6 +14724,11 @@ end;
 function TGPermission.release_finish(result_: PGAsyncResult; error: PPGError): gboolean; cdecl;
 begin
   Result := LazGio2.g_permission_release_finish(@self, result_, error);
+end;
+
+function TGPropertyAction.new(name: Pgchar; object_: PGObject; property_name: Pgchar): PGPropertyAction; cdecl;
+begin
+  Result := LazGio2.g_property_action_new(name, object_, property_name);
 end;
 
 function TGProxy.get_default_for_protocol(protocol: Pgchar): PGProxy; cdecl;
@@ -12226,6 +14881,21 @@ begin
   Result := LazGio2.g_resolver_lookup_by_name_finish(@self, result_, error);
 end;
 
+function TGResolver.lookup_by_name_with_flags(hostname: Pgchar; flags: TGResolverNameLookupFlags; cancellable: PGCancellable; error: PPGError): PGList; cdecl;
+begin
+  Result := LazGio2.g_resolver_lookup_by_name_with_flags(@self, hostname, flags, cancellable, error);
+end;
+
+procedure TGResolver.lookup_by_name_with_flags_async(hostname: Pgchar; flags: TGResolverNameLookupFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazGio2.g_resolver_lookup_by_name_with_flags_async(@self, hostname, flags, cancellable, callback, user_data);
+end;
+
+function TGResolver.lookup_by_name_with_flags_finish(result_: PGAsyncResult; error: PPGError): PGList; cdecl;
+begin
+  Result := LazGio2.g_resolver_lookup_by_name_with_flags_finish(@self, result_, error);
+end;
+
 function TGResolver.lookup_records(rrname: Pgchar; record_type: TGResolverRecordType; cancellable: PGCancellable; error: PPGError): PGList; cdecl;
 begin
   Result := LazGio2.g_resolver_lookup_records(@self, rrname, record_type, cancellable, error);
@@ -12336,22 +15006,12 @@ begin
   Result := LazGio2.g_settings_new_with_path(schema_id, path);
 end;
 
-function TGSettings.list_relocatable_schemas: PPgchar; cdecl;
-begin
-  Result := LazGio2.g_settings_list_relocatable_schemas();
-end;
-
-function TGSettings.list_schemas: PPgchar; cdecl;
-begin
-  Result := LazGio2.g_settings_list_schemas();
-end;
-
 procedure TGSettings.sync; cdecl;
 begin
   LazGio2.g_settings_sync();
 end;
 
-procedure TGSettings.unbind(object_: gpointer; property_: Pgchar); cdecl;
+procedure TGSettings.unbind(object_: PGObject; property_: Pgchar); cdecl;
 begin
   LazGio2.g_settings_unbind(object_, property_);
 end;
@@ -12396,6 +15056,11 @@ begin
   Result := LazGio2.g_settings_get_child(@self, name);
 end;
 
+function TGSettings.get_default_value(key: Pgchar): PGVariant; cdecl;
+begin
+  Result := LazGio2.g_settings_get_default_value(@self, key);
+end;
+
 function TGSettings.get_double(key: Pgchar): gdouble; cdecl;
 begin
   Result := LazGio2.g_settings_get_double(@self, key);
@@ -12421,14 +15086,14 @@ begin
   Result := LazGio2.g_settings_get_int(@self, key);
 end;
 
+function TGSettings.get_int64(key: Pgchar): gint64; cdecl;
+begin
+  Result := LazGio2.g_settings_get_int64(@self, key);
+end;
+
 function TGSettings.get_mapped(key: Pgchar; mapping: TGSettingsGetMapping; user_data: gpointer): gpointer; cdecl;
 begin
   Result := LazGio2.g_settings_get_mapped(@self, key, mapping, user_data);
-end;
-
-function TGSettings.get_range(key: Pgchar): PGVariant; cdecl;
-begin
-  Result := LazGio2.g_settings_get_range(@self, key);
 end;
 
 function TGSettings.get_string(key: Pgchar): Pgchar; cdecl;
@@ -12446,6 +15111,16 @@ begin
   Result := LazGio2.g_settings_get_uint(@self, key);
 end;
 
+function TGSettings.get_uint64(key: Pgchar): guint64; cdecl;
+begin
+  Result := LazGio2.g_settings_get_uint64(@self, key);
+end;
+
+function TGSettings.get_user_value(key: Pgchar): PGVariant; cdecl;
+begin
+  Result := LazGio2.g_settings_get_user_value(@self, key);
+end;
+
 function TGSettings.get_value(key: Pgchar): PGVariant; cdecl;
 begin
   Result := LazGio2.g_settings_get_value(@self, key);
@@ -12459,16 +15134,6 @@ end;
 function TGSettings.list_children: PPgchar; cdecl;
 begin
   Result := LazGio2.g_settings_list_children(@self);
-end;
-
-function TGSettings.list_keys: PPgchar; cdecl;
-begin
-  Result := LazGio2.g_settings_list_keys(@self);
-end;
-
-function TGSettings.range_check(key: Pgchar; value: PGVariant): gboolean; cdecl;
-begin
-  Result := LazGio2.g_settings_range_check(@self, key, value);
 end;
 
 procedure TGSettings.reset(key: Pgchar); cdecl;
@@ -12506,6 +15171,11 @@ begin
   Result := LazGio2.g_settings_set_int(@self, key, value);
 end;
 
+function TGSettings.set_int64(key: Pgchar; value: gint64): gboolean; cdecl;
+begin
+  Result := LazGio2.g_settings_set_int64(@self, key, value);
+end;
+
 function TGSettings.set_string(key: Pgchar; value: Pgchar): gboolean; cdecl;
 begin
   Result := LazGio2.g_settings_set_string(@self, key, value);
@@ -12521,6 +15191,11 @@ begin
   Result := LazGio2.g_settings_set_uint(@self, key, value);
 end;
 
+function TGSettings.set_uint64(key: Pgchar; value: guint64): gboolean; cdecl;
+begin
+  Result := LazGio2.g_settings_set_uint64(@self, key, value);
+end;
+
 function TGSettings.set_value(key: Pgchar; value: PGVariant): gboolean; cdecl;
 begin
   Result := LazGio2.g_settings_set_value(@self, key, value);
@@ -12531,9 +15206,29 @@ begin
   Result := LazGio2.g_settings_schema_get_id(@self);
 end;
 
+function TGSettingsSchema.get_key(name: Pgchar): PGSettingsSchemaKey; cdecl;
+begin
+  Result := LazGio2.g_settings_schema_get_key(@self, name);
+end;
+
 function TGSettingsSchema.get_path: Pgchar; cdecl;
 begin
   Result := LazGio2.g_settings_schema_get_path(@self);
+end;
+
+function TGSettingsSchema.has_key(name: Pgchar): gboolean; cdecl;
+begin
+  Result := LazGio2.g_settings_schema_has_key(@self, name);
+end;
+
+function TGSettingsSchema.list_children: PPgchar; cdecl;
+begin
+  Result := LazGio2.g_settings_schema_list_children(@self);
+end;
+
+function TGSettingsSchema.list_keys: PPgchar; cdecl;
+begin
+  Result := LazGio2.g_settings_schema_list_keys(@self);
 end;
 
 function TGSettingsSchema.ref: PGSettingsSchema; cdecl;
@@ -12546,9 +15241,99 @@ begin
   LazGio2.g_settings_schema_unref(@self);
 end;
 
+procedure TGSettingsBackend.flatten_tree(tree: PGTree; path: PPgchar; keys: PPPgchar; values: PPPGVariant); cdecl;
+begin
+  LazGio2.g_settings_backend_flatten_tree(tree, path, keys, values);
+end;
+
+function TGSettingsBackend.get_default: PGSettingsBackend; cdecl;
+begin
+  Result := LazGio2.g_settings_backend_get_default();
+end;
+
+procedure TGSettingsBackend.changed(key: Pgchar; origin_tag: gpointer); cdecl;
+begin
+  LazGio2.g_settings_backend_changed(@self, key, origin_tag);
+end;
+
+procedure TGSettingsBackend.changed_tree(tree: PGTree; origin_tag: gpointer); cdecl;
+begin
+  LazGio2.g_settings_backend_changed_tree(@self, tree, origin_tag);
+end;
+
+procedure TGSettingsBackend.keys_changed(path: Pgchar; items: PPgchar; origin_tag: gpointer); cdecl;
+begin
+  LazGio2.g_settings_backend_keys_changed(@self, path, items, origin_tag);
+end;
+
+procedure TGSettingsBackend.path_changed(path: Pgchar; origin_tag: gpointer); cdecl;
+begin
+  LazGio2.g_settings_backend_path_changed(@self, path, origin_tag);
+end;
+
+procedure TGSettingsBackend.path_writable_changed(path: Pgchar); cdecl;
+begin
+  LazGio2.g_settings_backend_path_writable_changed(@self, path);
+end;
+
+procedure TGSettingsBackend.writable_changed(key: Pgchar); cdecl;
+begin
+  LazGio2.g_settings_backend_writable_changed(@self, key);
+end;
+
+function TGSettingsSchemaKey.get_default_value: PGVariant; cdecl;
+begin
+  Result := LazGio2.g_settings_schema_key_get_default_value(@self);
+end;
+
+function TGSettingsSchemaKey.get_description: Pgchar; cdecl;
+begin
+  Result := LazGio2.g_settings_schema_key_get_description(@self);
+end;
+
+function TGSettingsSchemaKey.get_name: Pgchar; cdecl;
+begin
+  Result := LazGio2.g_settings_schema_key_get_name(@self);
+end;
+
+function TGSettingsSchemaKey.get_range: PGVariant; cdecl;
+begin
+  Result := LazGio2.g_settings_schema_key_get_range(@self);
+end;
+
+function TGSettingsSchemaKey.get_summary: Pgchar; cdecl;
+begin
+  Result := LazGio2.g_settings_schema_key_get_summary(@self);
+end;
+
+function TGSettingsSchemaKey.get_value_type: PGVariantType; cdecl;
+begin
+  Result := LazGio2.g_settings_schema_key_get_value_type(@self);
+end;
+
+function TGSettingsSchemaKey.range_check(value: PGVariant): gboolean; cdecl;
+begin
+  Result := LazGio2.g_settings_schema_key_range_check(@self, value);
+end;
+
+function TGSettingsSchemaKey.ref: PGSettingsSchemaKey; cdecl;
+begin
+  Result := LazGio2.g_settings_schema_key_ref(@self);
+end;
+
+procedure TGSettingsSchemaKey.unref; cdecl;
+begin
+  LazGio2.g_settings_schema_key_unref(@self);
+end;
+
 function TGSettingsSchemaSource.new_from_directory(directory: Pgchar; parent: PGSettingsSchemaSource; trusted: gboolean; error: PPGError): PGSettingsSchemaSource; cdecl;
 begin
   Result := LazGio2.g_settings_schema_source_new_from_directory(directory, parent, trusted, error);
+end;
+
+procedure TGSettingsSchemaSource.list_schemas(recursive: gboolean; non_relocatable: PPPgchar; relocatable: PPPgchar); cdecl;
+begin
+  LazGio2.g_settings_schema_source_list_schemas(@self, recursive, non_relocatable, relocatable);
 end;
 
 function TGSettingsSchemaSource.lookup(schema_id: Pgchar; recursive: gboolean): PGSettingsSchema; cdecl;
@@ -12576,119 +15361,9 @@ begin
   Result := LazGio2.g_simple_action_group_new();
 end;
 
-procedure TGSimpleActionGroup.add_entries(entries: PGActionEntry; n_entries: gint; user_data: gpointer); cdecl;
+function TGSimpleIOStream.new(input_stream: PGInputStream; output_stream: PGOutputStream): PGSimpleIOStream; cdecl;
 begin
-  LazGio2.g_simple_action_group_add_entries(@self, entries, n_entries, user_data);
-end;
-
-procedure TGSimpleActionGroup.insert(action: PGAction); cdecl;
-begin
-  LazGio2.g_simple_action_group_insert(@self, action);
-end;
-
-function TGSimpleActionGroup.lookup(action_name: Pgchar): PGAction; cdecl;
-begin
-  Result := LazGio2.g_simple_action_group_lookup(@self, action_name);
-end;
-
-procedure TGSimpleActionGroup.remove(action_name: Pgchar); cdecl;
-begin
-  LazGio2.g_simple_action_group_remove(@self, action_name);
-end;
-
-function TGSimpleAsyncResult.new(source_object: PGObject; callback: TGAsyncReadyCallback; user_data: gpointer; source_tag: gpointer): PGSimpleAsyncResult; cdecl;
-begin
-  Result := LazGio2.g_simple_async_result_new(source_object, callback, user_data, source_tag);
-end;
-
-function TGSimpleAsyncResult.new_from_error(source_object: PGObject; callback: TGAsyncReadyCallback; user_data: gpointer; error: PGError): PGSimpleAsyncResult; cdecl;
-begin
-  Result := LazGio2.g_simple_async_result_new_from_error(source_object, callback, user_data, error);
-end;
-
-function TGSimpleAsyncResult.new_take_error(source_object: PGObject; callback: TGAsyncReadyCallback; user_data: gpointer; error: PGError): PGSimpleAsyncResult; cdecl;
-begin
-  Result := LazGio2.g_simple_async_result_new_take_error(source_object, callback, user_data, error);
-end;
-
-function TGSimpleAsyncResult.is_valid(result_: PGAsyncResult; source: PGObject; source_tag: gpointer): gboolean; cdecl;
-begin
-  Result := LazGio2.g_simple_async_result_is_valid(result_, source, source_tag);
-end;
-
-procedure TGSimpleAsyncResult.complete; cdecl;
-begin
-  LazGio2.g_simple_async_result_complete(@self);
-end;
-
-procedure TGSimpleAsyncResult.complete_in_idle; cdecl;
-begin
-  LazGio2.g_simple_async_result_complete_in_idle(@self);
-end;
-
-function TGSimpleAsyncResult.get_op_res_gboolean: gboolean; cdecl;
-begin
-  Result := LazGio2.g_simple_async_result_get_op_res_gboolean(@self);
-end;
-
-function TGSimpleAsyncResult.get_op_res_gpointer: gpointer; cdecl;
-begin
-  Result := LazGio2.g_simple_async_result_get_op_res_gpointer(@self);
-end;
-
-function TGSimpleAsyncResult.get_op_res_gssize: gssize; cdecl;
-begin
-  Result := LazGio2.g_simple_async_result_get_op_res_gssize(@self);
-end;
-
-function TGSimpleAsyncResult.get_source_tag: gpointer; cdecl;
-begin
-  Result := LazGio2.g_simple_async_result_get_source_tag(@self);
-end;
-
-function TGSimpleAsyncResult.propagate_error(error: PPGError): gboolean; cdecl;
-begin
-  Result := LazGio2.g_simple_async_result_propagate_error(@self, error);
-end;
-
-procedure TGSimpleAsyncResult.run_in_thread(func: TGSimpleAsyncThreadFunc; io_priority: gint; cancellable: PGCancellable); cdecl;
-begin
-  LazGio2.g_simple_async_result_run_in_thread(@self, func, io_priority, cancellable);
-end;
-
-procedure TGSimpleAsyncResult.set_check_cancellable(check_cancellable: PGCancellable); cdecl;
-begin
-  LazGio2.g_simple_async_result_set_check_cancellable(@self, check_cancellable);
-end;
-
-procedure TGSimpleAsyncResult.set_from_error(error: PGError); cdecl;
-begin
-  LazGio2.g_simple_async_result_set_from_error(@self, error);
-end;
-
-procedure TGSimpleAsyncResult.set_handle_cancellation(handle_cancellation: gboolean); cdecl;
-begin
-  LazGio2.g_simple_async_result_set_handle_cancellation(@self, handle_cancellation);
-end;
-
-procedure TGSimpleAsyncResult.set_op_res_gboolean(op_res: gboolean); cdecl;
-begin
-  LazGio2.g_simple_async_result_set_op_res_gboolean(@self, op_res);
-end;
-
-procedure TGSimpleAsyncResult.set_op_res_gpointer(op_res: gpointer; destroy_op_res: TGDestroyNotify); cdecl;
-begin
-  LazGio2.g_simple_async_result_set_op_res_gpointer(@self, op_res, destroy_op_res);
-end;
-
-procedure TGSimpleAsyncResult.set_op_res_gssize(op_res: gssize); cdecl;
-begin
-  LazGio2.g_simple_async_result_set_op_res_gssize(@self, op_res);
-end;
-
-procedure TGSimpleAsyncResult.take_error(error: PGError); cdecl;
-begin
-  LazGio2.g_simple_async_result_take_error(@self, error);
+  Result := LazGio2.g_simple_io_stream_new(input_stream, output_stream);
 end;
 
 function TGSimplePermission.new(allowed: gboolean): PGSimplePermission; cdecl;
@@ -12751,9 +15426,9 @@ begin
   Result := LazGio2.g_socket_condition_check(@self, condition);
 end;
 
-function TGSocket.condition_timed_wait(condition: TGIOCondition; timeout: gint64; cancellable: PGCancellable; error: PPGError): gboolean; cdecl;
+function TGSocket.condition_timed_wait(condition: TGIOCondition; timeout_us: gint64; cancellable: PGCancellable; error: PPGError): gboolean; cdecl;
 begin
-  Result := LazGio2.g_socket_condition_timed_wait(@self, condition, timeout, cancellable, error);
+  Result := LazGio2.g_socket_condition_timed_wait(@self, condition, timeout_us, cancellable, error);
 end;
 
 function TGSocket.condition_wait(condition: TGIOCondition; cancellable: PGCancellable; error: PPGError): gboolean; cdecl;
@@ -12876,9 +15551,19 @@ begin
   Result := LazGio2.g_socket_join_multicast_group(@self, group, source_specific, iface, error);
 end;
 
+function TGSocket.join_multicast_group_ssm(group: PGInetAddress; source_specific: PGInetAddress; iface: Pgchar; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_socket_join_multicast_group_ssm(@self, group, source_specific, iface, error);
+end;
+
 function TGSocket.leave_multicast_group(group: PGInetAddress; source_specific: gboolean; iface: Pgchar; error: PPGError): gboolean; cdecl;
 begin
   Result := LazGio2.g_socket_leave_multicast_group(@self, group, source_specific, iface, error);
+end;
+
+function TGSocket.leave_multicast_group_ssm(group: PGInetAddress; source_specific: PGInetAddress; iface: Pgchar; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_socket_leave_multicast_group_ssm(@self, group, source_specific, iface, error);
 end;
 
 function TGSocket.listen(error: PPGError): gboolean; cdecl;
@@ -12886,12 +15571,12 @@ begin
   Result := LazGio2.g_socket_listen(@self, error);
 end;
 
-function TGSocket.receive(buffer: Pgchar; size: gsize; cancellable: PGCancellable; error: PPGError): gssize; cdecl;
+function TGSocket.receive(buffer: Pgchar; size: Pgsize; cancellable: PGCancellable; error: PPGError): gssize; cdecl;
 begin
   Result := LazGio2.g_socket_receive(@self, buffer, size, cancellable, error);
 end;
 
-function TGSocket.receive_from(address: PPGSocketAddress; buffer: Pgchar; size: gsize; cancellable: PGCancellable; error: PPGError): gssize; cdecl;
+function TGSocket.receive_from(address: PPGSocketAddress; buffer: Pgchar; size: Pgsize; cancellable: PGCancellable; error: PPGError): gssize; cdecl;
 begin
   Result := LazGio2.g_socket_receive_from(@self, address, buffer, size, cancellable, error);
 end;
@@ -12901,7 +15586,12 @@ begin
   Result := LazGio2.g_socket_receive_message(@self, address, vectors, num_vectors, messages, num_messages, flags, cancellable, error);
 end;
 
-function TGSocket.receive_with_blocking(buffer: Pgchar; size: gsize; blocking: gboolean; cancellable: PGCancellable; error: PPGError): gssize; cdecl;
+function TGSocket.receive_messages(messages: PGInputMessage; num_messages: guint; flags: gint; cancellable: PGCancellable; error: PPGError): gint; cdecl;
+begin
+  Result := LazGio2.g_socket_receive_messages(@self, messages, num_messages, flags, cancellable, error);
+end;
+
+function TGSocket.receive_with_blocking(buffer: Pgchar; size: Pgsize; blocking: gboolean; cancellable: PGCancellable; error: PPGError): gssize; cdecl;
 begin
   Result := LazGio2.g_socket_receive_with_blocking(@self, buffer, size, blocking, cancellable, error);
 end;
@@ -12914,6 +15604,16 @@ end;
 function TGSocket.send_message(address: PGSocketAddress; vectors: PGOutputVector; num_vectors: gint; messages: PPGSocketControlMessage; num_messages: gint; flags: gint; cancellable: PGCancellable; error: PPGError): gssize; cdecl;
 begin
   Result := LazGio2.g_socket_send_message(@self, address, vectors, num_vectors, messages, num_messages, flags, cancellable, error);
+end;
+
+function TGSocket.send_message_with_timeout(address: PGSocketAddress; vectors: PGOutputVector; num_vectors: gint; messages: PPGSocketControlMessage; num_messages: gint; flags: gint; timeout_us: gint64; bytes_written: Pgsize; cancellable: PGCancellable; error: PPGError): TGPollableReturn; cdecl;
+begin
+  Result := LazGio2.g_socket_send_message_with_timeout(@self, address, vectors, num_vectors, messages, num_messages, flags, timeout_us, bytes_written, cancellable, error);
+end;
+
+function TGSocket.send_messages(messages: PGOutputMessage; num_messages: guint; flags: gint; cancellable: PGCancellable; error: PPGError): gint; cdecl;
+begin
+  Result := LazGio2.g_socket_send_messages(@self, messages, num_messages, flags, cancellable, error);
 end;
 
 function TGSocket.send_to(address: PGSocketAddress; buffer: Pgchar; size: gsize; cancellable: PGCancellable; error: PPGError): gssize; cdecl;
@@ -13026,31 +15726,6 @@ begin
   Result := LazGio2.g_socket_connection_is_connected(@self);
 end;
 
-function TGSocketControlMessage.deserialize(level: gint; type_: gint; size: gsize; data: guint8): PGSocketControlMessage; cdecl;
-begin
-  Result := LazGio2.g_socket_control_message_deserialize(level, type_, size, data);
-end;
-
-function TGSocketControlMessage.get_level: gint; cdecl;
-begin
-  Result := LazGio2.g_socket_control_message_get_level(@self);
-end;
-
-function TGSocketControlMessage.get_msg_type: gint; cdecl;
-begin
-  Result := LazGio2.g_socket_control_message_get_msg_type(@self);
-end;
-
-function TGSocketControlMessage.get_size: gsize; cdecl;
-begin
-  Result := LazGio2.g_socket_control_message_get_size(@self);
-end;
-
-procedure TGSocketControlMessage.serialize(data: gpointer); cdecl;
-begin
-  LazGio2.g_socket_control_message_serialize(@self, data);
-end;
-
 function TGSocketClient.new: PGSocketClient; cdecl;
 begin
   Result := LazGio2.g_socket_client_new();
@@ -13161,11 +15836,6 @@ begin
   Result := LazGio2.g_socket_client_get_tls(@self);
 end;
 
-function TGSocketClient.get_tls_validation_flags: TGTlsCertificateFlags; cdecl;
-begin
-  Result := LazGio2.g_socket_client_get_tls_validation_flags(@self);
-end;
-
 procedure TGSocketClient.set_enable_proxy(enable: gboolean); cdecl;
 begin
   LazGio2.g_socket_client_set_enable_proxy(@self, enable);
@@ -13204,11 +15874,6 @@ end;
 procedure TGSocketClient.set_tls(tls: gboolean); cdecl;
 begin
   LazGio2.g_socket_client_set_tls(@self, tls);
-end;
-
-procedure TGSocketClient.set_tls_validation_flags(flags: TGTlsCertificateFlags); cdecl;
-begin
-  LazGio2.g_socket_client_set_tls_validation_flags(@self, flags);
 end;
 
 function TGSocketListener.new: PGSocketListener; cdecl;
@@ -13351,6 +16016,211 @@ begin
   LazGio2.g_static_resource_init(@self);
 end;
 
+function TGSubprocess.newv(argv: PPgchar; flags: TGSubprocessFlags; error: PPGError): PGSubprocess; cdecl;
+begin
+  Result := LazGio2.g_subprocess_newv(argv, flags, error);
+end;
+
+function TGSubprocess.communicate(stdin_buf: PGBytes; cancellable: PGCancellable; stdout_buf: PPGBytes; stderr_buf: PPGBytes; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_subprocess_communicate(@self, stdin_buf, cancellable, stdout_buf, stderr_buf, error);
+end;
+
+procedure TGSubprocess.communicate_async(stdin_buf: PGBytes; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazGio2.g_subprocess_communicate_async(@self, stdin_buf, cancellable, callback, user_data);
+end;
+
+function TGSubprocess.communicate_finish(result_: PGAsyncResult; stdout_buf: PPGBytes; stderr_buf: PPGBytes; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_subprocess_communicate_finish(@self, result_, stdout_buf, stderr_buf, error);
+end;
+
+function TGSubprocess.communicate_utf8(stdin_buf: Pgchar; cancellable: PGCancellable; stdout_buf: PPgchar; stderr_buf: PPgchar; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_subprocess_communicate_utf8(@self, stdin_buf, cancellable, stdout_buf, stderr_buf, error);
+end;
+
+procedure TGSubprocess.communicate_utf8_async(stdin_buf: Pgchar; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazGio2.g_subprocess_communicate_utf8_async(@self, stdin_buf, cancellable, callback, user_data);
+end;
+
+function TGSubprocess.communicate_utf8_finish(result_: PGAsyncResult; stdout_buf: PPgchar; stderr_buf: PPgchar; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_subprocess_communicate_utf8_finish(@self, result_, stdout_buf, stderr_buf, error);
+end;
+
+procedure TGSubprocess.force_exit; cdecl;
+begin
+  LazGio2.g_subprocess_force_exit(@self);
+end;
+
+function TGSubprocess.get_exit_status: gint; cdecl;
+begin
+  Result := LazGio2.g_subprocess_get_exit_status(@self);
+end;
+
+function TGSubprocess.get_identifier: Pgchar; cdecl;
+begin
+  Result := LazGio2.g_subprocess_get_identifier(@self);
+end;
+
+function TGSubprocess.get_if_exited: gboolean; cdecl;
+begin
+  Result := LazGio2.g_subprocess_get_if_exited(@self);
+end;
+
+function TGSubprocess.get_if_signaled: gboolean; cdecl;
+begin
+  Result := LazGio2.g_subprocess_get_if_signaled(@self);
+end;
+
+function TGSubprocess.get_status: gint; cdecl;
+begin
+  Result := LazGio2.g_subprocess_get_status(@self);
+end;
+
+function TGSubprocess.get_stderr_pipe: PGInputStream; cdecl;
+begin
+  Result := LazGio2.g_subprocess_get_stderr_pipe(@self);
+end;
+
+function TGSubprocess.get_stdin_pipe: PGOutputStream; cdecl;
+begin
+  Result := LazGio2.g_subprocess_get_stdin_pipe(@self);
+end;
+
+function TGSubprocess.get_stdout_pipe: PGInputStream; cdecl;
+begin
+  Result := LazGio2.g_subprocess_get_stdout_pipe(@self);
+end;
+
+function TGSubprocess.get_successful: gboolean; cdecl;
+begin
+  Result := LazGio2.g_subprocess_get_successful(@self);
+end;
+
+function TGSubprocess.get_term_sig: gint; cdecl;
+begin
+  Result := LazGio2.g_subprocess_get_term_sig(@self);
+end;
+
+procedure TGSubprocess.send_signal(signal_num: gint); cdecl;
+begin
+  LazGio2.g_subprocess_send_signal(@self, signal_num);
+end;
+
+function TGSubprocess.wait(cancellable: PGCancellable; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_subprocess_wait(@self, cancellable, error);
+end;
+
+procedure TGSubprocess.wait_async(cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazGio2.g_subprocess_wait_async(@self, cancellable, callback, user_data);
+end;
+
+function TGSubprocess.wait_check(cancellable: PGCancellable; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_subprocess_wait_check(@self, cancellable, error);
+end;
+
+procedure TGSubprocess.wait_check_async(cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
+begin
+  LazGio2.g_subprocess_wait_check_async(@self, cancellable, callback, user_data);
+end;
+
+function TGSubprocess.wait_check_finish(result_: PGAsyncResult; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_subprocess_wait_check_finish(@self, result_, error);
+end;
+
+function TGSubprocess.wait_finish(result_: PGAsyncResult; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_subprocess_wait_finish(@self, result_, error);
+end;
+
+function TGSubprocessLauncher.new(flags: TGSubprocessFlags): PGSubprocessLauncher; cdecl;
+begin
+  Result := LazGio2.g_subprocess_launcher_new(flags);
+end;
+
+function TGSubprocessLauncher.getenv(variable: Pgchar): Pgchar; cdecl;
+begin
+  Result := LazGio2.g_subprocess_launcher_getenv(@self, variable);
+end;
+
+procedure TGSubprocessLauncher.set_child_setup(child_setup: TGSpawnChildSetupFunc; user_data: gpointer; destroy_notify: TGDestroyNotify); cdecl;
+begin
+  LazGio2.g_subprocess_launcher_set_child_setup(@self, child_setup, user_data, destroy_notify);
+end;
+
+procedure TGSubprocessLauncher.set_cwd(cwd: Pgchar); cdecl;
+begin
+  LazGio2.g_subprocess_launcher_set_cwd(@self, cwd);
+end;
+
+procedure TGSubprocessLauncher.set_environ(env: PPgchar); cdecl;
+begin
+  LazGio2.g_subprocess_launcher_set_environ(@self, env);
+end;
+
+procedure TGSubprocessLauncher.set_flags(flags: TGSubprocessFlags); cdecl;
+begin
+  LazGio2.g_subprocess_launcher_set_flags(@self, flags);
+end;
+
+procedure TGSubprocessLauncher.set_stderr_file_path(path: Pgchar); cdecl;
+begin
+  LazGio2.g_subprocess_launcher_set_stderr_file_path(@self, path);
+end;
+
+procedure TGSubprocessLauncher.set_stdin_file_path(path: Pgchar); cdecl;
+begin
+  LazGio2.g_subprocess_launcher_set_stdin_file_path(@self, path);
+end;
+
+procedure TGSubprocessLauncher.set_stdout_file_path(path: Pgchar); cdecl;
+begin
+  LazGio2.g_subprocess_launcher_set_stdout_file_path(@self, path);
+end;
+
+procedure TGSubprocessLauncher.setenv(variable: Pgchar; value: Pgchar; overwrite: gboolean); cdecl;
+begin
+  LazGio2.g_subprocess_launcher_setenv(@self, variable, value, overwrite);
+end;
+
+function TGSubprocessLauncher.spawnv(argv: PPgchar; error: PPGError): PGSubprocess; cdecl;
+begin
+  Result := LazGio2.g_subprocess_launcher_spawnv(@self, argv, error);
+end;
+
+procedure TGSubprocessLauncher.take_fd(source_fd: gint; target_fd: gint); cdecl;
+begin
+  LazGio2.g_subprocess_launcher_take_fd(@self, source_fd, target_fd);
+end;
+
+procedure TGSubprocessLauncher.take_stderr_fd(fd: gint); cdecl;
+begin
+  LazGio2.g_subprocess_launcher_take_stderr_fd(@self, fd);
+end;
+
+procedure TGSubprocessLauncher.take_stdin_fd(fd: gint); cdecl;
+begin
+  LazGio2.g_subprocess_launcher_take_stdin_fd(@self, fd);
+end;
+
+procedure TGSubprocessLauncher.take_stdout_fd(fd: gint); cdecl;
+begin
+  LazGio2.g_subprocess_launcher_take_stdout_fd(@self, fd);
+end;
+
+procedure TGSubprocessLauncher.unsetenv(variable: Pgchar); cdecl;
+begin
+  LazGio2.g_subprocess_launcher_unsetenv(@self, variable);
+end;
+
 function TGTask.new(source_object: PGObject; cancellable: PGCancellable; callback: TGAsyncReadyCallback; callback_data: gpointer): PGTask; cdecl;
 begin
   Result := LazGio2.g_task_new(source_object, cancellable, callback, callback_data);
@@ -13381,9 +16251,19 @@ begin
   Result := LazGio2.g_task_get_check_cancellable(@self);
 end;
 
+function TGTask.get_completed: gboolean; cdecl;
+begin
+  Result := LazGio2.g_task_get_completed(@self);
+end;
+
 function TGTask.get_context: PGMainContext; cdecl;
 begin
   Result := LazGio2.g_task_get_context(@self);
+end;
+
+function TGTask.get_name: Pgchar; cdecl;
+begin
+  Result := LazGio2.g_task_get_name(@self);
 end;
 
 function TGTask.get_priority: gint; cdecl;
@@ -13431,6 +16311,11 @@ begin
   Result := LazGio2.g_task_propagate_pointer(@self, error);
 end;
 
+function TGTask.propagate_value(value: PGValue; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_task_propagate_value(@self, value, error);
+end;
+
 procedure TGTask.return_boolean(result_: gboolean); cdecl;
 begin
   LazGio2.g_task_return_boolean(@self, result_);
@@ -13456,6 +16341,11 @@ begin
   LazGio2.g_task_return_pointer(@self, result_, result_destroy);
 end;
 
+procedure TGTask.return_value(result_: PGValue); cdecl;
+begin
+  LazGio2.g_task_return_value(@self, result_);
+end;
+
 procedure TGTask.run_in_thread(task_func: TGTaskThreadFunc); cdecl;
 begin
   LazGio2.g_task_run_in_thread(@self, task_func);
@@ -13469,6 +16359,11 @@ end;
 procedure TGTask.set_check_cancellable(check_cancellable: gboolean); cdecl;
 begin
   LazGio2.g_task_set_check_cancellable(@self, check_cancellable);
+end;
+
+procedure TGTask.set_name(name: Pgchar); cdecl;
+begin
+  LazGio2.g_task_set_name(@self, name);
 end;
 
 procedure TGTask.set_priority(priority: gint); cdecl;
@@ -13485,6 +16380,11 @@ procedure TGTask.set_source_tag(source_tag: gpointer); cdecl;
 begin
   LazGio2.g_task_set_source_tag(@self, source_tag);
 end;
+
+//procedure TGTask.set_static_name(name: Pgchar); cdecl;
+//begin
+//  LazGio2.g_task_set_static_name(@self, name);
+//end;
 
 procedure TGTask.set_task_data(task_data: gpointer; task_data_destroy: TGDestroyNotify); cdecl;
 begin
@@ -13606,6 +16506,16 @@ begin
   Result := LazGio2.g_tls_backend_get_default_database(@self);
 end;
 
+function TGTlsBackend.get_dtls_client_connection_type: TGType; cdecl;
+begin
+  Result := LazGio2.g_tls_backend_get_dtls_client_connection_type(@self);
+end;
+
+function TGTlsBackend.get_dtls_server_connection_type: TGType; cdecl;
+begin
+  Result := LazGio2.g_tls_backend_get_dtls_server_connection_type(@self);
+end;
+
 function TGTlsBackend.get_file_database_type: TGType; cdecl;
 begin
   Result := LazGio2.g_tls_backend_get_file_database_type(@self);
@@ -13616,114 +16526,29 @@ begin
   Result := LazGio2.g_tls_backend_get_server_connection_type(@self);
 end;
 
+procedure TGTlsBackend.set_default_database(database: PGTlsDatabase); cdecl;
+begin
+  LazGio2.g_tls_backend_set_default_database(@self, database);
+end;
+
+function TGTlsBackend.supports_dtls: gboolean; cdecl;
+begin
+  Result := LazGio2.g_tls_backend_supports_dtls(@self);
+end;
+
 function TGTlsBackend.supports_tls: gboolean; cdecl;
 begin
   Result := LazGio2.g_tls_backend_supports_tls(@self);
 end;
 
-function TGTlsDatabase.create_certificate_handle(certificate: PGTlsCertificate): Pgchar; cdecl;
-begin
-  Result := LazGio2.g_tls_database_create_certificate_handle(@self, certificate);
-end;
-
-function TGTlsDatabase.lookup_certificate_for_handle(handle: Pgchar; interaction: PGTlsInteraction; flags: TGTlsDatabaseLookupFlags; cancellable: PGCancellable; error: PPGError): PGTlsCertificate; cdecl;
-begin
-  Result := LazGio2.g_tls_database_lookup_certificate_for_handle(@self, handle, interaction, flags, cancellable, error);
-end;
-
-procedure TGTlsDatabase.lookup_certificate_for_handle_async(handle: Pgchar; interaction: PGTlsInteraction; flags: TGTlsDatabaseLookupFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
-begin
-  LazGio2.g_tls_database_lookup_certificate_for_handle_async(@self, handle, interaction, flags, cancellable, callback, user_data);
-end;
-
-function TGTlsDatabase.lookup_certificate_for_handle_finish(result_: PGAsyncResult; error: PPGError): PGTlsCertificate; cdecl;
-begin
-  Result := LazGio2.g_tls_database_lookup_certificate_for_handle_finish(@self, result_, error);
-end;
-
-function TGTlsDatabase.lookup_certificate_issuer(certificate: PGTlsCertificate; interaction: PGTlsInteraction; flags: TGTlsDatabaseLookupFlags; cancellable: PGCancellable; error: PPGError): PGTlsCertificate; cdecl;
-begin
-  Result := LazGio2.g_tls_database_lookup_certificate_issuer(@self, certificate, interaction, flags, cancellable, error);
-end;
-
-procedure TGTlsDatabase.lookup_certificate_issuer_async(certificate: PGTlsCertificate; interaction: PGTlsInteraction; flags: TGTlsDatabaseLookupFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
-begin
-  LazGio2.g_tls_database_lookup_certificate_issuer_async(@self, certificate, interaction, flags, cancellable, callback, user_data);
-end;
-
-function TGTlsDatabase.lookup_certificate_issuer_finish(result_: PGAsyncResult; error: PPGError): PGTlsCertificate; cdecl;
-begin
-  Result := LazGio2.g_tls_database_lookup_certificate_issuer_finish(@self, result_, error);
-end;
-
-function TGTlsDatabase.lookup_certificates_issued_by(issuer_raw_dn: Pguint8; interaction: PGTlsInteraction; flags: TGTlsDatabaseLookupFlags; cancellable: PGCancellable; error: PPGError): PGList; cdecl;
-begin
-  Result := LazGio2.g_tls_database_lookup_certificates_issued_by(@self, issuer_raw_dn, interaction, flags, cancellable, error);
-end;
-
-procedure TGTlsDatabase.lookup_certificates_issued_by_async(issuer_raw_dn: Pguint8; interaction: PGTlsInteraction; flags: TGTlsDatabaseLookupFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
-begin
-  LazGio2.g_tls_database_lookup_certificates_issued_by_async(@self, issuer_raw_dn, interaction, flags, cancellable, callback, user_data);
-end;
-
-function TGTlsDatabase.lookup_certificates_issued_by_finish(result_: PGAsyncResult; error: PPGError): PGList; cdecl;
-begin
-  Result := LazGio2.g_tls_database_lookup_certificates_issued_by_finish(@self, result_, error);
-end;
-
-function TGTlsDatabase.verify_chain(chain: PGTlsCertificate; purpose: Pgchar; identity: PGSocketConnectable; interaction: PGTlsInteraction; flags: TGTlsDatabaseVerifyFlags; cancellable: PGCancellable; error: PPGError): TGTlsCertificateFlags; cdecl;
-begin
-  Result := LazGio2.g_tls_database_verify_chain(@self, chain, purpose, identity, interaction, flags, cancellable, error);
-end;
-
-procedure TGTlsDatabase.verify_chain_async(chain: PGTlsCertificate; purpose: Pgchar; identity: PGSocketConnectable; interaction: PGTlsInteraction; flags: TGTlsDatabaseVerifyFlags; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
-begin
-  LazGio2.g_tls_database_verify_chain_async(@self, chain, purpose, identity, interaction, flags, cancellable, callback, user_data);
-end;
-
-function TGTlsDatabase.verify_chain_finish(result_: PGAsyncResult; error: PPGError): TGTlsCertificateFlags; cdecl;
-begin
-  Result := LazGio2.g_tls_database_verify_chain_finish(@self, result_, error);
-end;
-
-function TGTlsCertificate.new_from_file(file_: Pgchar; error: PPGError): PGTlsCertificate; cdecl;
-begin
-  Result := LazGio2.g_tls_certificate_new_from_file(file_, error);
-end;
-
-function TGTlsCertificate.new_from_files(cert_file: Pgchar; key_file: Pgchar; error: PPGError): PGTlsCertificate; cdecl;
-begin
-  Result := LazGio2.g_tls_certificate_new_from_files(cert_file, key_file, error);
-end;
-
-function TGTlsCertificate.new_from_pem(data: Pgchar; length: gssize; error: PPGError): PGTlsCertificate; cdecl;
-begin
-  Result := LazGio2.g_tls_certificate_new_from_pem(data, length, error);
-end;
-
-function TGTlsCertificate.list_new_from_file(file_: Pgchar; error: PPGError): PGList; cdecl;
-begin
-  Result := LazGio2.g_tls_certificate_list_new_from_file(file_, error);
-end;
-
-function TGTlsCertificate.get_issuer: PGTlsCertificate; cdecl;
-begin
-  Result := LazGio2.g_tls_certificate_get_issuer(@self);
-end;
-
-function TGTlsCertificate.is_same(cert_two: PGTlsCertificate): gboolean; cdecl;
-begin
-  Result := LazGio2.g_tls_certificate_is_same(@self, cert_two);
-end;
-
-function TGTlsCertificate.verify(identity: PGSocketConnectable; trusted_ca: PGTlsCertificate): TGTlsCertificateFlags; cdecl;
-begin
-  Result := LazGio2.g_tls_certificate_verify(@self, identity, trusted_ca);
-end;
-
 function TGTlsClientConnection.new(base_io_stream: PGIOStream; server_identity: PGSocketConnectable; error: PPGError): PGTlsClientConnection; cdecl;
 begin
   Result := LazGio2.g_tls_client_connection_new(base_io_stream, server_identity, error);
+end;
+
+procedure TGTlsClientConnection.copy_session_state(source: PGTlsClientConnection); cdecl;
+begin
+  LazGio2.g_tls_client_connection_copy_session_state(@self, source);
 end;
 
 function TGTlsClientConnection.get_accepted_cas: PGList; cdecl;
@@ -13736,29 +16561,9 @@ begin
   Result := LazGio2.g_tls_client_connection_get_server_identity(@self);
 end;
 
-function TGTlsClientConnection.get_use_ssl3: gboolean; cdecl;
-begin
-  Result := LazGio2.g_tls_client_connection_get_use_ssl3(@self);
-end;
-
-function TGTlsClientConnection.get_validation_flags: TGTlsCertificateFlags; cdecl;
-begin
-  Result := LazGio2.g_tls_client_connection_get_validation_flags(@self);
-end;
-
 procedure TGTlsClientConnection.set_server_identity(identity: PGSocketConnectable); cdecl;
 begin
   LazGio2.g_tls_client_connection_set_server_identity(@self, identity);
-end;
-
-procedure TGTlsClientConnection.set_use_ssl3(use_ssl3: gboolean); cdecl;
-begin
-  LazGio2.g_tls_client_connection_set_use_ssl3(@self, use_ssl3);
-end;
-
-procedure TGTlsClientConnection.set_validation_flags(flags: TGTlsCertificateFlags); cdecl;
-begin
-  LazGio2.g_tls_client_connection_set_validation_flags(@self, flags);
 end;
 
 function TGTlsConnection.emit_accept_certificate(peer_cert: PGTlsCertificate; errors: TGTlsCertificateFlags): gboolean; cdecl;
@@ -13771,6 +16576,11 @@ begin
   Result := LazGio2.g_tls_connection_get_certificate(@self);
 end;
 
+function TGTlsConnection.get_channel_binding_data(type_: TGTlsChannelBindingType; data: Pguint8; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGio2.g_tls_connection_get_channel_binding_data(@self, type_, data, error);
+end;
+
 function TGTlsConnection.get_database: PGTlsDatabase; cdecl;
 begin
   Result := LazGio2.g_tls_connection_get_database(@self);
@@ -13781,6 +16591,11 @@ begin
   Result := LazGio2.g_tls_connection_get_interaction(@self);
 end;
 
+function TGTlsConnection.get_negotiated_protocol: Pgchar; cdecl;
+begin
+  Result := LazGio2.g_tls_connection_get_negotiated_protocol(@self);
+end;
+
 function TGTlsConnection.get_peer_certificate: PGTlsCertificate; cdecl;
 begin
   Result := LazGio2.g_tls_connection_get_peer_certificate(@self);
@@ -13789,11 +16604,6 @@ end;
 function TGTlsConnection.get_peer_certificate_errors: TGTlsCertificateFlags; cdecl;
 begin
   Result := LazGio2.g_tls_connection_get_peer_certificate_errors(@self);
-end;
-
-function TGTlsConnection.get_rehandshake_mode: TGTlsRehandshakeMode; cdecl;
-begin
-  Result := LazGio2.g_tls_connection_get_rehandshake_mode(@self);
 end;
 
 function TGTlsConnection.get_require_close_notify: gboolean; cdecl;
@@ -13816,6 +16626,11 @@ begin
   Result := LazGio2.g_tls_connection_handshake_finish(@self, result_, error);
 end;
 
+procedure TGTlsConnection.set_advertised_protocols(protocols: PPgchar); cdecl;
+begin
+  LazGio2.g_tls_connection_set_advertised_protocols(@self, protocols);
+end;
+
 procedure TGTlsConnection.set_certificate(certificate: PGTlsCertificate); cdecl;
 begin
   LazGio2.g_tls_connection_set_certificate(@self, certificate);
@@ -13831,34 +16646,9 @@ begin
   LazGio2.g_tls_connection_set_interaction(@self, interaction);
 end;
 
-procedure TGTlsConnection.set_rehandshake_mode(mode: TGTlsRehandshakeMode); cdecl;
-begin
-  LazGio2.g_tls_connection_set_rehandshake_mode(@self, mode);
-end;
-
 procedure TGTlsConnection.set_require_close_notify(require_close_notify: gboolean); cdecl;
 begin
   LazGio2.g_tls_connection_set_require_close_notify(@self, require_close_notify);
-end;
-
-function TGTlsInteraction.ask_password(password: PGTlsPassword; cancellable: PGCancellable; error: PPGError): TGTlsInteractionResult; cdecl;
-begin
-  Result := LazGio2.g_tls_interaction_ask_password(@self, password, cancellable, error);
-end;
-
-procedure TGTlsInteraction.ask_password_async(password: PGTlsPassword; cancellable: PGCancellable; callback: TGAsyncReadyCallback; user_data: gpointer); cdecl;
-begin
-  LazGio2.g_tls_interaction_ask_password_async(@self, password, cancellable, callback, user_data);
-end;
-
-function TGTlsInteraction.ask_password_finish(result_: PGAsyncResult; error: PPGError): TGTlsInteractionResult; cdecl;
-begin
-  Result := LazGio2.g_tls_interaction_ask_password_finish(@self, result_, error);
-end;
-
-function TGTlsInteraction.invoke_ask_password(password: PGTlsPassword; cancellable: PGCancellable; error: PPGError): TGTlsInteractionResult; cdecl;
-begin
-  Result := LazGio2.g_tls_interaction_invoke_ask_password(@self, password, cancellable, error);
 end;
 
 function TGTlsFileDatabase.new(anchors: Pgchar; error: PPGError): PGTlsFileDatabase; cdecl;
@@ -14026,19 +16816,19 @@ begin
   LazGio2.g_unix_input_stream_set_close_fd(@self, close_fd);
 end;
 
-function TGUnixMountMonitor.new: PGUnixMountMonitor; cdecl;
+function TGUnixMountMonitor.get: PGUnixMountMonitor; cdecl;
 begin
-  Result := LazGio2.g_unix_mount_monitor_new();
-end;
-
-procedure TGUnixMountMonitor.set_rate_limit(limit_msec: gint); cdecl;
-begin
-  LazGio2.g_unix_mount_monitor_set_rate_limit(@self, limit_msec);
+  Result := LazGio2.g_unix_mount_monitor_get();
 end;
 
 function TGUnixMountPoint.compare(mount2: PGUnixMountPoint): gint; cdecl;
 begin
   Result := LazGio2.g_unix_mount_point_compare(@self, mount2);
+end;
+
+function TGUnixMountPoint.copy: PGUnixMountPoint; cdecl;
+begin
+  Result := LazGio2.g_unix_mount_point_copy(@self);
 end;
 
 procedure TGUnixMountPoint.free; cdecl;
@@ -14099,6 +16889,11 @@ end;
 function TGUnixMountPoint.is_user_mountable: gboolean; cdecl;
 begin
   Result := LazGio2.g_unix_mount_point_is_user_mountable(@self);
+end;
+
+function TGUnixMountPoint.at(mount_path: Pgchar; time_read: Pguint64): PGUnixMountPoint; cdecl;
+begin
+  Result := LazGio2.g_unix_mount_point_at(mount_path, time_read);
 end;
 
 function TGUnixOutputStream.new(fd: gint; close_fd: gboolean): PGUnixOutputStream; cdecl;
@@ -14184,6 +16979,16 @@ end;
 function TGVfs.parse_name(parse_name: Pgchar): PGFile; cdecl;
 begin
   Result := LazGio2.g_vfs_parse_name(@self, parse_name);
+end;
+
+function TGVfs.register_uri_scheme(scheme: Pgchar; uri_func: TGVfsFileLookupFunc; uri_data: gpointer; uri_destroy: TGDestroyNotify; parse_name_func: TGVfsFileLookupFunc; parse_name_data: gpointer; parse_name_destroy: TGDestroyNotify): gboolean; cdecl;
+begin
+  Result := LazGio2.g_vfs_register_uri_scheme(@self, scheme, uri_func, uri_data, uri_destroy, parse_name_func, parse_name_data, parse_name_destroy);
+end;
+
+function TGVfs.unregister_uri_scheme(scheme: Pgchar): gboolean; cdecl;
+begin
+  Result := LazGio2.g_vfs_unregister_uri_scheme(@self, scheme);
 end;
 
 function TGZlibCompressor.new(format: TGZlibCompressorFormat; level: gint): PGZlibCompressor; cdecl;
