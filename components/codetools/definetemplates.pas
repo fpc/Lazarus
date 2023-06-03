@@ -1381,7 +1381,7 @@ end;
 function GatherFilesInFPCSources(Directory: string;
   const OnProgress: TDefinePoolProgress): TStringList;
 begin
-  Result:=GatherFiles(Directory,'{.*,CVS}',
+  Result:=GatherFiles(Directory,'{.*,CVS,backup,~*}',
                       '{*.pas,*.pp,*.p,*.inc,Makefile.fpc}',8,OnProgress);
 end;
 
@@ -11098,7 +11098,9 @@ begin
     Valid:=true;
     if (Valid<>OldValid)
     or ((Files=nil)<>(OldFiles=nil))
-    or ((Files<>nil) and (Files.Text<>OldFiles.Text)) then begin
+    or ((Files<>nil)
+        and (Files.Text<>OldFiles.Text))
+    then begin
       IncreaseChangeStamp;
       if CTConsoleVerbosity>0 then
         debugln(['Hint: [TFPCSourceCache.Update] ',Directory,' has changed.']);
