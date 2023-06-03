@@ -2862,15 +2862,24 @@ appends the country code to the value in Lang.
 </element>
 
 <element name="LazGetShortLanguageID">
-<short>Removes country information from a language ID.</short>
+<short>
+Returns the current short language ID (without the country code).
+</short>
 <descr>
 <p>
 <var>LazGetShortLanguageID</var> strips country information from the language 
 ID, making it simpler to use. Ideally the resulting ID should conform to ISO 
-639-1, or ISO 639-2 when the language code is not in ISO 639-1.
+639-1 (2-digit code like 'ru' or 'en'), or ISO 639-2 (3-digit code like 'rus' 
+or 'eng') when the language code is not in ISO 639-1.
+</p>
+<p>
+Calls LazGetLanguageIDs to lookup the language identifiers. It uses the 
+fallback language ID as the value for the Lang argument.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="LazGetLanguageIDs"/>
+</seealso>
 </element>
 <element name="LazGetShortLanguageID.Lang">
 <short>Language ID examined in the routine.</short>
