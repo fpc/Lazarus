@@ -1558,7 +1558,7 @@ type
       read FScrollOnEditLeftOptions write FScrollOnEditLeftOptions;
     property ScrollOnEditRightOptions: TSynScrollOnEditRightOptions
       read FScrollOnEditRightOptions write FScrollOnEditRightOptions;
-    property ScrollPastEolMode: TEditorOptsScrollPastEolMode read FScrollPastEolMode write FScrollPastEolMode default optScrollFixed;
+    property ScrollPastEolMode: TEditorOptsScrollPastEolMode read FScrollPastEolMode write FScrollPastEolMode default optScrollPage;
   end;
 
   { TEditorOptionsDefaults }
@@ -4773,7 +4773,7 @@ begin
   FStringBreakAppend  := ' +';
   FStringBreakPrefix  := '';
 
-  FScrollPastEolMode := optScrollFixed;
+  FScrollPastEolMode := optScrollPage;
 end;
 
 function TEditorOptionsBase.GetTabPosition: TTabPosition;
