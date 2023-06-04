@@ -1,5 +1,5 @@
 #******************************************************************************
-#  Copyright (c) 2005-2022 by Jan Van hijfte, Željan Rikalo
+#  Copyright (c) 2005-2023 by Jan Van hijfte, Željan Rikalo
 #  
 #  See the included file COPYING.TXT for details about the copyright.
 #
@@ -10,13 +10,13 @@
 
 
 
-# Binding Release Version 1.2.12 against Qt5 5.6 LTS release.
+# Binding Release Version 1.2.13 against Qt5 5.6 LTS release.
 # WebKit widgets are disabled until webenginewidgets are implemented.
 
-VERSION = 1.2.12
+VERSION = 1.2.13
 VER_MAJ = 1
 VER_MIN = 2
-VER_PAT = 12
+VER_PAT = 13
 win32:VERSION_PE_HEADER = 1.2
 
 QT += gui network printsupport
