@@ -794,7 +794,7 @@ type
     function GetScrolledWindow: PGtkScrolledWindow; override;
     function ShowState(nstate:integer):boolean; // winapi ShowWindow
     procedure UpdateWindowState; // LCL WindowState
-    class function decoration_flags(Aform: TCustomForm): longint;
+    class function decoration_flags(Aform: TCustomForm): TGdkWMDecoration;
   public
     procedure SetBounds(ALeft,ATop,AWidth,AHeight:integer);override;
     destructor Destroy; override;
@@ -1435,7 +1435,7 @@ var
   Msg: TLMSize;
   NewSize: TSize;
   ACtl: TGtk3Widget;
-  AState:integer;
+  AState: TGdkWindowState;
 begin
   if AWidget=nil then ;
   //TODO: Move to TGtk3Widget.GtkResizeEvent
@@ -1478,13 +1478,13 @@ begin
   if ACtl is TGtk3Window then
   begin
     AState := TGtk3Window(ACtl).getWindowState;
-    if AState and GDK_WINDOW_STATE_ICONIFIED<>0  then
+    if GDK_WINDOW_STATE_ICONIFIED in AState  then
       Msg.SizeType := SIZE_MINIMIZED
     else
-    if AState and GDK_WINDOW_STATE_MAXIMIZED<>0  then
+    if GDK_WINDOW_STATE_MAXIMIZED in AState  then
       Msg.SizeType := SIZE_MAXIMIZED
     else
-    if AState and GDK_WINDOW_STATE_FULLSCREEN<>0  then
+    if GDK_WINDOW_STATE_FULLSCREEN in AState  then
       Msg.SizeType := SIZE_FULLSCREEN;
 
   end;
@@ -1963,7 +1963,7 @@ begin
   if IsWidgetOk then
   begin
     if FWidget^.get_window <> nil then
-      Result := gdk_window_get_state(FWidget^.get_window) and GDK_WINDOW_STATE_ICONIFIED <> 0;
+      Result := GDK_WINDOW_STATE_ICONIFIED in gdk_window_get_state(FWidget^.get_window);
   end;
 end;
 
@@ -7412,7 +7412,7 @@ var
   Msg: TLMSize;
   AState: TGdkWindowState;
   //AScreen: PGdkScreen;
-  msk:integer;
+  msk: TGdkWindowState;
 begin
   Result := False;
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
@@ -7436,39 +7436,39 @@ begin
   msk:=AEvent^.window_state.changed_mask;
   AState:=AEvent^.window_state.new_window_state;
 
-  if msk and GDK_WINDOW_STATE_ICONIFIED<>0 then
+  if GDK_WINDOW_STATE_ICONIFIED in msk then
   begin
-    if AState and GDK_WINDOW_STATE_ICONIFIED<>0 then
+    if GDK_WINDOW_STATE_ICONIFIED in AState then
       Msg.SizeType := SIZE_MINIMIZED
   end else
-  if msk and GDK_WINDOW_STATE_MAXIMIZED<>0 then
+  if GDK_WINDOW_STATE_MAXIMIZED in msk then
   begin
-    if AState and GDK_WINDOW_STATE_MAXIMIZED<>0 then
+    if GDK_WINDOW_STATE_MAXIMIZED in AState then
       Msg.SizeType := SIZE_MAXIMIZED
   end else
-  if msk and GDK_WINDOW_STATE_FULLSCREEN<>0 then
+  if GDK_WINDOW_STATE_FULLSCREEN in msk then
   begin
-    if AState and GDK_WINDOW_STATE_FULLSCREEN<>0 then
+    if GDK_WINDOW_STATE_FULLSCREEN in AState then
       Msg.SizeType := SIZE_FULLSCREEN
   end else
-  if msk and GDK_WINDOW_STATE_FOCUSED<>0 then
+  if GDK_WINDOW_STATE_FOCUSED in msk then
   begin
-    if AState and GDK_WINDOW_STATE_FOCUSED<>0 then
+    if GDK_WINDOW_STATE_FOCUSED in AState then
       DebugLn('Focused')
     else
       DebugLn('Defocused');
     exit;
   end else
-  if msk and GDK_WINDOW_STATE_WITHDRAWN<>0 then
+  if GDK_WINDOW_STATE_WITHDRAWN in msk then
   begin
-    if AState and GDK_WINDOW_STATE_WITHDRAWN<>0 then
+    if GDK_WINDOW_STATE_WITHDRAWN in AState then
       DebugLn('Shown')
     else
       DebugLn('Hidden');
     exit;
   end else
   begin
-    DebugLn(format('other changes state=%.08x mask=%.08x',[AState,msk]));
+    //DebugLn(format('other changes state=%.08x mask=%.08x',[AState,msk]));
     exit;
   end;
 
@@ -7481,52 +7481,52 @@ begin
   // DeliverMessage(Msg);
 end;
 
-class function TGtk3Window.decoration_flags(Aform:TCustomForm):longint;
+class function TGtk3Window.decoration_flags(Aform: TCustomForm): TGdkWMDecoration;
 var
   icns:TBorderIcons;
   bs:TFormBorderStyle;
 begin
-  result:=0;
+  Result := [];
   icns:=AForm.BorderIcons;
   bs:=AForm.BorderStyle;
 
   case bs of
-  bsSingle: result:=result or GDK_DECOR_TITLE{GDK_DECOR_BORDER};
+  bsSingle: Include(Result, GDK_DECOR_TITLE{GDK_DECOR_BORDER});
   bsDialog:
-      result:=result or GDK_DECOR_BORDER or GDK_DECOR_TITLE;
+      Result += [GDK_DECOR_BORDER, GDK_DECOR_TITLE];
   bsSizeable:
     begin
       if biMaximize in icns then
-        result:=result or GDK_DECOR_MAXIMIZE;
+        Include(Result, GDK_DECOR_MAXIMIZE);
       if biMinimize in icns then
-        result:=result or GDK_DECOR_MINIMIZE;
-      Result:=result or GDK_DECOR_BORDER or GDK_DECOR_RESIZEH or GDK_DECOR_TITLE;
+        Include(Result, GDK_DECOR_MINIMIZE);
+      Result += [GDK_DECOR_BORDER, GDK_DECOR_RESIZEH, GDK_DECOR_TITLE];
     end;
   bsSizeToolWin:
-    Result:=result or GDK_DECOR_BORDER or GDK_DECOR_RESIZEH or GDK_DECOR_TITLE;
+    Result += [GDK_DECOR_BORDER, GDK_DECOR_RESIZEH, GDK_DECOR_TITLE];
   bsToolWindow:
-    Result:=result or GDK_DECOR_BORDER;
-  bsNone: result:=0;
+    Include(Result, GDK_DECOR_BORDER);
+  bsNone: Result := [];
   end;
 
-  if result and GDK_DECOR_TITLE <> 0 then
+  if GDK_DECOR_TITLE in Result then
   if biSystemMenu in icns then
-     result:=result or GDK_DECOR_MENU;
+     Include(Result, GDK_DECOR_MENU);
 end;
 
 function TGtk3Window.ShowState(nstate:integer):boolean; // winapi ShowWindow
 var
-  AState:integer;
+  AState: TGdkWindowState;
 begin
   case nstate of
   SW_SHOWNORMAL:
     begin
       AState:=fWidget^.window^.get_state;
-      if AState and GDK_WINDOW_STATE_ICONIFIED<>0 then
+      if GDK_WINDOW_STATE_ICONIFIED in AState then
         PgtkWindow(fWidget)^.deiconify
-      else if AState and GDK_WINDOW_STATE_MAXIMIZED<>0 then
+      else if GDK_WINDOW_STATE_MAXIMIZED in AState then
         PgtkWindow(fWidget)^.unmaximize
-      else if AState and GDK_WINDOW_STATE_FULLSCREEN<>0 then
+      else if GDK_WINDOW_STATE_FULLSCREEN in AState then
         PgtkWindow(fWidget)^.unfullscreen
       else
         PgtkWindow(fWidget)^.show;
@@ -7551,7 +7551,7 @@ end;
 function TGtk3Window.CreateWidget(const Params: TCreateParams): PGtkWidget;
 var
   AForm: TCustomForm;
-  decor:longint;
+  decor: TGdkWMDecoration;
 begin
   FIcon := nil;
   FScrollX := 0;
@@ -7568,7 +7568,7 @@ begin
     gtk_widget_realize(Result);
     decor:=decoration_flags(AForm);
     gdk_window_set_decorations(Result^.window, decor);
-    gtk_window_set_decorated(PGtkWindow(Result),(decor<>0));
+    gtk_window_set_decorated(PGtkWindow(Result),(decor <> []));
     if AForm.AlphaBlend then
       gtk_widget_set_opacity(Result, TForm(LCLObject).AlphaBlendValue/255);
 
@@ -7728,16 +7728,16 @@ begin
 
       if AFixedWidthHeight then
         PGtkWindow(Widget)^.set_geometry_hints(nil, @Geometry,
-          GDK_HINT_POS or GDK_HINT_MIN_SIZE or GDK_HINT_MAX_SIZE)
+          [GDK_HINT_POS, GDK_HINT_MIN_SIZE, GDK_HINT_MAX_SIZE])
       else
       begin
         if AForm.BorderStyle <> bsNone then
         begin
-          AHints := GDK_HINT_POS or GDK_HINT_BASE_SIZE;
+          AHints := [GDK_HINT_POS, GDK_HINT_BASE_SIZE];
           if (AForm.Constraints.MinHeight > 0) or (AForm.Constraints.MinWidth > 0) then
-            AHints := AHints or GDK_HINT_MIN_SIZE;
+            Include(AHints, GDK_HINT_MIN_SIZE);
           if (AForm.Constraints.MaxHeight > 0) or (AForm.Constraints.MaxWidth > 0) then
-            AHints := AHints or GDK_HINT_MAX_SIZE;
+            Include(AHints, GDK_HINT_MAX_SIZE);
 
           PGtkWindow(Widget)^.set_geometry_hints(nil, @Geometry, AHints);
         end;
@@ -7864,7 +7864,7 @@ end;
 
 function TGtk3Window.GetWindowState: TGdkWindowState;
 begin
-  Result := 0;
+  Result := [];
   if IsWidgetOK and (FWidget^.get_realized) then
     Result := FWidget^.window^.get_state;
 end;
