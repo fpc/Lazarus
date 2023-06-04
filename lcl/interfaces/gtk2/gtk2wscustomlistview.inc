@@ -1821,6 +1821,10 @@ begin
         gdk_pixbuf_unref(PGDKPixBuf(Widgets^.Images.Items[i]));
     FreeAndNil(Widgets^.Images);
   end;
+
+  if Widgets^.MainView <> nil then
+    g_object_set_data(Pointer(Widgets^.MainView), 'widgetinfo', nil);
+
   TWSWinControlClass(ClassParent).DestroyHandle(AWinControl);
 end;
 
