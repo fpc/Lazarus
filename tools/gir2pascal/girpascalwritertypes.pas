@@ -1130,9 +1130,42 @@ begin
 end;
 
 procedure TPascalUnit.HandleBitfield(AItem: TgirBitField);
+  function WriteSet(Name, TypeName: String; Value: Integer): String;
+  var
+   Comma: String[2];
+   n: Integer;
+  begin
+    WriteLn(Name, ' = ', Value);
+    Result := IndentText(Name + ' = [', 2, 0);
+    Comma := LineEnding;
+    for n := BsfDWord(Value) to BsrDword(Value) do begin
+     if Value and (1 << n) <> 0 then begin
+       if n + 1 < AItem.Members.Count then begin
+         Name := AItem.Members.Member[n + 1]^.CIdentifier;
+       end else begin
+         Name := TypeName + '(' + IntToStr(n) + ')';
+       end;
+       Result += Comma + IndentText(Name, 4, 0);
+       Comma := ',' + LineEnding;
+     end;
+    end;
+    if Comma[1] = ',' then begin
+      n := 2;
+      Result += LineEnding;
+    end else begin
+      n := 0;
+    end;
+    Result += IndentText(']; {' + IntToStr(Value) + ' = $' + IntToHex(Value) + '}', n);
+  end;
 var
   Section: TPDeclarationWithLines;
   TypeName: String;
+  Name: String;
+  Value: String;
+  UIntValue: Integer;
+  MSB: Integer;
+  i: Integer;
+  AddedConst: Boolean;
 begin
   if goEnumAsSet in FOptions then begin
     Include(FOptions, goEnumAsEnum);
@@ -1141,10 +1174,25 @@ begin
   if goEnumAsSet in FOptions then begin
     Section := WantEnumTypesSection;
     TypeName := AItem.TranslatedName;
+    Section.Lines.Add(IndentText(TypeName + ' = Set of ' + TypeName + 'Idx;', 2, 0));
+    AddedConst := False;
+    for i := 0 to AItem.Members.Count-1 do begin
+      Name := AItem.Members.Member[i]^.CIdentifier;
+      Value := AItem.Members.Member[i]^.Value;
+      UIntValue := UInt64(StrToInt(Value));
+      MSB := BsrQWord(UIntValue);
+      if UIntValue > 1 shl MSB then begin
+        if not AddedConst then begin
+          Section.Lines.Add('const');
+          AddedConst := True;
+        end;
+        Section.Lines.Add(WriteSet(Name, TypeName, UIntValue));
+      end;
+    end;
+    if AddedConst then begin
+      Section.Lines.Add('type');
+    end;
   end;
-  Section.Lines.Add(IndentText(TypeName + ' = Set of ' + TypeName + 'Idx;', 2, 0));
-  Section.Lines.Add('');
-
 end;
 
 procedure TPascalUnit.HandleRecord(AItem: TgirRecord);
