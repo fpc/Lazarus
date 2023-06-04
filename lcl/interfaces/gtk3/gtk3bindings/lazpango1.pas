@@ -21,339 +21,471 @@ const
   {$endif}
 
   PANGO_ANALYSIS_FLAG_CENTERED_BASELINE = 1;
+  PANGO_ANALYSIS_FLAG_IS_ELLIPSIS = 2;
+  PANGO_ANALYSIS_FLAG_NEED_HYPHEN = 4;
   PANGO_ATTR_INDEX_FROM_TEXT_BEGINNING = 0;
-  PANGO_ENGINE_TYPE_LANG = 'PangoEngineLang';
-  PANGO_ENGINE_TYPE_SHAPE = 'PangoEngineShape';
+  PANGO_ATTR_INDEX_TO_TEXT_END = 4294967295;
   PANGO_GLYPH_EMPTY = 268435455;
   PANGO_GLYPH_INVALID_INPUT = 4294967295;
   PANGO_GLYPH_UNKNOWN_FLAG = 268435456;
-  PANGO_RENDER_TYPE_NONE = 'PangoRenderNone';
   PANGO_SCALE = 1024;
-  PANGO_UNKNOWN_GLYPH_HEIGHT = 14;
-  PANGO_UNKNOWN_GLYPH_WIDTH = 10;
-
-  function PANGO_PIXELS(d:integer):integer;inline;
-
-
+  PANGO_VERSION_MAJOR = 1;
+  PANGO_VERSION_MICRO = 15;
+  PANGO_VERSION_MINOR = 50;
+  PANGO_VERSION_STRING_ = '1.50.15';
 type
-  TPangoAlignment = Integer;
-const
-  { PangoAlignment }
-  PANGO_ALIGN_LEFT: TPangoAlignment = 0;
-  PANGO_ALIGN_CENTER: TPangoAlignment = 1;
-  PANGO_ALIGN_RIGHT: TPangoAlignment = 2;
-
-type
-  TPangoScript = Integer;
-const
-  { PangoScript }
-  PANGO_SCRIPT_INVALID_CODE: TPangoScript = -1;
-  PANGO_SCRIPT_COMMON: TPangoScript = 0;
-  PANGO_SCRIPT_INHERITED: TPangoScript = 1;
-  PANGO_SCRIPT_ARABIC: TPangoScript = 2;
-  PANGO_SCRIPT_ARMENIAN: TPangoScript = 3;
-  PANGO_SCRIPT_BENGALI: TPangoScript = 4;
-  PANGO_SCRIPT_BOPOMOFO: TPangoScript = 5;
-  PANGO_SCRIPT_CHEROKEE: TPangoScript = 6;
-  PANGO_SCRIPT_COPTIC: TPangoScript = 7;
-  PANGO_SCRIPT_CYRILLIC: TPangoScript = 8;
-  PANGO_SCRIPT_DESERET: TPangoScript = 9;
-  PANGO_SCRIPT_DEVANAGARI: TPangoScript = 10;
-  PANGO_SCRIPT_ETHIOPIC: TPangoScript = 11;
-  PANGO_SCRIPT_GEORGIAN: TPangoScript = 12;
-  PANGO_SCRIPT_GOTHIC: TPangoScript = 13;
-  PANGO_SCRIPT_GREEK: TPangoScript = 14;
-  PANGO_SCRIPT_GUJARATI: TPangoScript = 15;
-  PANGO_SCRIPT_GURMUKHI: TPangoScript = 16;
-  PANGO_SCRIPT_HAN: TPangoScript = 17;
-  PANGO_SCRIPT_HANGUL: TPangoScript = 18;
-  PANGO_SCRIPT_HEBREW: TPangoScript = 19;
-  PANGO_SCRIPT_HIRAGANA: TPangoScript = 20;
-  PANGO_SCRIPT_KANNADA: TPangoScript = 21;
-  PANGO_SCRIPT_KATAKANA: TPangoScript = 22;
-  PANGO_SCRIPT_KHMER: TPangoScript = 23;
-  PANGO_SCRIPT_LAO: TPangoScript = 24;
-  PANGO_SCRIPT_LATIN: TPangoScript = 25;
-  PANGO_SCRIPT_MALAYALAM: TPangoScript = 26;
-  PANGO_SCRIPT_MONGOLIAN: TPangoScript = 27;
-  PANGO_SCRIPT_MYANMAR: TPangoScript = 28;
-  PANGO_SCRIPT_OGHAM: TPangoScript = 29;
-  PANGO_SCRIPT_OLD_ITALIC: TPangoScript = 30;
-  PANGO_SCRIPT_ORIYA: TPangoScript = 31;
-  PANGO_SCRIPT_RUNIC: TPangoScript = 32;
-  PANGO_SCRIPT_SINHALA: TPangoScript = 33;
-  PANGO_SCRIPT_SYRIAC: TPangoScript = 34;
-  PANGO_SCRIPT_TAMIL: TPangoScript = 35;
-  PANGO_SCRIPT_TELUGU: TPangoScript = 36;
-  PANGO_SCRIPT_THAANA: TPangoScript = 37;
-  PANGO_SCRIPT_THAI: TPangoScript = 38;
-  PANGO_SCRIPT_TIBETAN: TPangoScript = 39;
-  PANGO_SCRIPT_CANADIAN_ABORIGINAL: TPangoScript = 40;
-  PANGO_SCRIPT_YI: TPangoScript = 41;
-  PANGO_SCRIPT_TAGALOG: TPangoScript = 42;
-  PANGO_SCRIPT_HANUNOO: TPangoScript = 43;
-  PANGO_SCRIPT_BUHID: TPangoScript = 44;
-  PANGO_SCRIPT_TAGBANWA: TPangoScript = 45;
-  PANGO_SCRIPT_BRAILLE: TPangoScript = 46;
-  PANGO_SCRIPT_CYPRIOT: TPangoScript = 47;
-  PANGO_SCRIPT_LIMBU: TPangoScript = 48;
-  PANGO_SCRIPT_OSMANYA: TPangoScript = 49;
-  PANGO_SCRIPT_SHAVIAN: TPangoScript = 50;
-  PANGO_SCRIPT_LINEAR_B: TPangoScript = 51;
-  PANGO_SCRIPT_TAI_LE: TPangoScript = 52;
-  PANGO_SCRIPT_UGARITIC: TPangoScript = 53;
-  PANGO_SCRIPT_NEW_TAI_LUE: TPangoScript = 54;
-  PANGO_SCRIPT_BUGINESE: TPangoScript = 55;
-  PANGO_SCRIPT_GLAGOLITIC: TPangoScript = 56;
-  PANGO_SCRIPT_TIFINAGH: TPangoScript = 57;
-  PANGO_SCRIPT_SYLOTI_NAGRI: TPangoScript = 58;
-  PANGO_SCRIPT_OLD_PERSIAN: TPangoScript = 59;
-  PANGO_SCRIPT_KHAROSHTHI: TPangoScript = 60;
-  PANGO_SCRIPT_UNKNOWN: TPangoScript = 61;
-  PANGO_SCRIPT_BALINESE: TPangoScript = 62;
-  PANGO_SCRIPT_CUNEIFORM: TPangoScript = 63;
-  PANGO_SCRIPT_PHOENICIAN: TPangoScript = 64;
-  PANGO_SCRIPT_PHAGS_PA: TPangoScript = 65;
-  PANGO_SCRIPT_NKO: TPangoScript = 66;
-  PANGO_SCRIPT_KAYAH_LI: TPangoScript = 67;
-  PANGO_SCRIPT_LEPCHA: TPangoScript = 68;
-  PANGO_SCRIPT_REJANG: TPangoScript = 69;
-  PANGO_SCRIPT_SUNDANESE: TPangoScript = 70;
-  PANGO_SCRIPT_SAURASHTRA: TPangoScript = 71;
-  PANGO_SCRIPT_CHAM: TPangoScript = 72;
-  PANGO_SCRIPT_OL_CHIKI: TPangoScript = 73;
-  PANGO_SCRIPT_VAI: TPangoScript = 74;
-  PANGO_SCRIPT_CARIAN: TPangoScript = 75;
-  PANGO_SCRIPT_LYCIAN: TPangoScript = 76;
-  PANGO_SCRIPT_LYDIAN: TPangoScript = 77;
-  PANGO_SCRIPT_BATAK: TPangoScript = 78;
-  PANGO_SCRIPT_BRAHMI: TPangoScript = 79;
-  PANGO_SCRIPT_MANDAIC: TPangoScript = 80;
-  PANGO_SCRIPT_CHAKMA: TPangoScript = 81;
-  PANGO_SCRIPT_MEROITIC_CURSIVE: TPangoScript = 82;
-  PANGO_SCRIPT_MEROITIC_HIEROGLYPHS: TPangoScript = 83;
-  PANGO_SCRIPT_MIAO: TPangoScript = 84;
-  PANGO_SCRIPT_SHARADA: TPangoScript = 85;
-  PANGO_SCRIPT_SORA_SOMPENG: TPangoScript = 86;
-  PANGO_SCRIPT_TAKRI: TPangoScript = 87;
-
-type
+  TPangoAlignment = (
+    TPangoAlignmentMinValue = -$7FFFFFFF,
+    PANGO_ALIGN_LEFT = 0,
+    PANGO_ALIGN_CENTER = 1,
+    PANGO_ALIGN_RIGHT = 2,
+    TPangoAlignmentMaxValue = $7FFFFFFF
+  );
+  TPangoScript = (
+    TPangoScriptMinValue = -$7FFFFFFF,
+    PANGO_SCRIPT_INVALID_CODE = -1,
+    PANGO_SCRIPT_COMMON = 0,
+    PANGO_SCRIPT_INHERITED = 1,
+    PANGO_SCRIPT_ARABIC = 2,
+    PANGO_SCRIPT_ARMENIAN = 3,
+    PANGO_SCRIPT_BENGALI = 4,
+    PANGO_SCRIPT_BOPOMOFO = 5,
+    PANGO_SCRIPT_CHEROKEE = 6,
+    PANGO_SCRIPT_COPTIC = 7,
+    PANGO_SCRIPT_CYRILLIC = 8,
+    PANGO_SCRIPT_DESERET = 9,
+    PANGO_SCRIPT_DEVANAGARI = 10,
+    PANGO_SCRIPT_ETHIOPIC = 11,
+    PANGO_SCRIPT_GEORGIAN = 12,
+    PANGO_SCRIPT_GOTHIC = 13,
+    PANGO_SCRIPT_GREEK = 14,
+    PANGO_SCRIPT_GUJARATI = 15,
+    PANGO_SCRIPT_GURMUKHI = 16,
+    PANGO_SCRIPT_HAN = 17,
+    PANGO_SCRIPT_HANGUL = 18,
+    PANGO_SCRIPT_HEBREW = 19,
+    PANGO_SCRIPT_HIRAGANA = 20,
+    PANGO_SCRIPT_KANNADA = 21,
+    PANGO_SCRIPT_KATAKANA = 22,
+    PANGO_SCRIPT_KHMER = 23,
+    PANGO_SCRIPT_LAO = 24,
+    PANGO_SCRIPT_LATIN = 25,
+    PANGO_SCRIPT_MALAYALAM = 26,
+    PANGO_SCRIPT_MONGOLIAN = 27,
+    PANGO_SCRIPT_MYANMAR = 28,
+    PANGO_SCRIPT_OGHAM = 29,
+    PANGO_SCRIPT_OLD_ITALIC = 30,
+    PANGO_SCRIPT_ORIYA = 31,
+    PANGO_SCRIPT_RUNIC = 32,
+    PANGO_SCRIPT_SINHALA = 33,
+    PANGO_SCRIPT_SYRIAC = 34,
+    PANGO_SCRIPT_TAMIL = 35,
+    PANGO_SCRIPT_TELUGU = 36,
+    PANGO_SCRIPT_THAANA = 37,
+    PANGO_SCRIPT_THAI = 38,
+    PANGO_SCRIPT_TIBETAN = 39,
+    PANGO_SCRIPT_CANADIAN_ABORIGINAL = 40,
+    PANGO_SCRIPT_YI = 41,
+    PANGO_SCRIPT_TAGALOG = 42,
+    PANGO_SCRIPT_HANUNOO = 43,
+    PANGO_SCRIPT_BUHID = 44,
+    PANGO_SCRIPT_TAGBANWA = 45,
+    PANGO_SCRIPT_BRAILLE = 46,
+    PANGO_SCRIPT_CYPRIOT = 47,
+    PANGO_SCRIPT_LIMBU = 48,
+    PANGO_SCRIPT_OSMANYA = 49,
+    PANGO_SCRIPT_SHAVIAN = 50,
+    PANGO_SCRIPT_LINEAR_B = 51,
+    PANGO_SCRIPT_TAI_LE = 52,
+    PANGO_SCRIPT_UGARITIC = 53,
+    PANGO_SCRIPT_NEW_TAI_LUE = 54,
+    PANGO_SCRIPT_BUGINESE = 55,
+    PANGO_SCRIPT_GLAGOLITIC = 56,
+    PANGO_SCRIPT_TIFINAGH = 57,
+    PANGO_SCRIPT_SYLOTI_NAGRI = 58,
+    PANGO_SCRIPT_OLD_PERSIAN = 59,
+    PANGO_SCRIPT_KHAROSHTHI = 60,
+    PANGO_SCRIPT_UNKNOWN = 61,
+    PANGO_SCRIPT_BALINESE = 62,
+    PANGO_SCRIPT_CUNEIFORM = 63,
+    PANGO_SCRIPT_PHOENICIAN = 64,
+    PANGO_SCRIPT_PHAGS_PA = 65,
+    PANGO_SCRIPT_NKO = 66,
+    PANGO_SCRIPT_KAYAH_LI = 67,
+    PANGO_SCRIPT_LEPCHA = 68,
+    PANGO_SCRIPT_REJANG = 69,
+    PANGO_SCRIPT_SUNDANESE = 70,
+    PANGO_SCRIPT_SAURASHTRA = 71,
+    PANGO_SCRIPT_CHAM = 72,
+    PANGO_SCRIPT_OL_CHIKI = 73,
+    PANGO_SCRIPT_VAI = 74,
+    PANGO_SCRIPT_CARIAN = 75,
+    PANGO_SCRIPT_LYCIAN = 76,
+    PANGO_SCRIPT_LYDIAN = 77,
+    PANGO_SCRIPT_BATAK = 78,
+    PANGO_SCRIPT_BRAHMI = 79,
+    PANGO_SCRIPT_MANDAIC = 80,
+    PANGO_SCRIPT_CHAKMA = 81,
+    PANGO_SCRIPT_MEROITIC_CURSIVE = 82,
+    PANGO_SCRIPT_MEROITIC_HIEROGLYPHS = 83,
+    PANGO_SCRIPT_MIAO = 84,
+    PANGO_SCRIPT_SHARADA = 85,
+    PANGO_SCRIPT_SORA_SOMPENG = 86,
+    PANGO_SCRIPT_TAKRI = 87,
+    PANGO_SCRIPT_BASSA_VAH = 88,
+    PANGO_SCRIPT_CAUCASIAN_ALBANIAN = 89,
+    PANGO_SCRIPT_DUPLOYAN = 90,
+    PANGO_SCRIPT_ELBASAN = 91,
+    PANGO_SCRIPT_GRANTHA = 92,
+    PANGO_SCRIPT_KHOJKI = 93,
+    PANGO_SCRIPT_KHUDAWADI = 94,
+    PANGO_SCRIPT_LINEAR_A = 95,
+    PANGO_SCRIPT_MAHAJANI = 96,
+    PANGO_SCRIPT_MANICHAEAN = 97,
+    PANGO_SCRIPT_MENDE_KIKAKUI = 98,
+    PANGO_SCRIPT_MODI = 99,
+    PANGO_SCRIPT_MRO = 100,
+    PANGO_SCRIPT_NABATAEAN = 101,
+    PANGO_SCRIPT_OLD_NORTH_ARABIAN = 102,
+    PANGO_SCRIPT_OLD_PERMIC = 103,
+    PANGO_SCRIPT_PAHAWH_HMONG = 104,
+    PANGO_SCRIPT_PALMYRENE = 105,
+    PANGO_SCRIPT_PAU_CIN_HAU = 106,
+    PANGO_SCRIPT_PSALTER_PAHLAVI = 107,
+    PANGO_SCRIPT_SIDDHAM = 108,
+    PANGO_SCRIPT_TIRHUTA = 109,
+    PANGO_SCRIPT_WARANG_CITI = 110,
+    PANGO_SCRIPT_AHOM = 111,
+    PANGO_SCRIPT_ANATOLIAN_HIEROGLYPHS = 112,
+    PANGO_SCRIPT_HATRAN = 113,
+    PANGO_SCRIPT_MULTANI = 114,
+    PANGO_SCRIPT_OLD_HUNGARIAN = 115,
+    PANGO_SCRIPT_SIGNWRITING = 116,
+    TPangoScriptMaxValue = $7FFFFFFF
+  );
   TPangoAttrType = (
-  { PangoAttrType }
-  PANGO_ATTR_INVALID = 0,
-  PANGO_ATTR_LANGUAGE = 1,
-  PANGO_ATTR_FAMILY = 2,
-  PANGO_ATTR_STYLE = 3,
-  PANGO_ATTR_WEIGHT = 4,
-  PANGO_ATTR_VARIANT = 5,
-  PANGO_ATTR_STRETCH = 6,
-  PANGO_ATTR_SIZE = 7,
-  PANGO_ATTR_FONT_DESC = 8,
-  PANGO_ATTR_FOREGROUND = 9,
-  PANGO_ATTR_BACKGROUND = 10,
-  PANGO_ATTR_UNDERLINE = 11,
-  PANGO_ATTR_STRIKETHROUGH = 12,
-  PANGO_ATTR_RISE = 13,
-  PANGO_ATTR_SHAPE = 14,
-  PANGO_ATTR_SCALE = 15,
-  PANGO_ATTR_FALLBACK = 16,
-  PANGO_ATTR_LETTER_SPACING = 17,
-  PANGO_ATTR_UNDERLINE_COLOR = 18,
-  PANGO_ATTR_STRIKETHROUGH_COLOR = 19,
-  PANGO_ATTR_ABSOLUTE_SIZE = 20,
-  PANGO_ATTR_GRAVITY = 21,
-  PANGO_ATTR_GRAVITY_HINT = 22
+    TPangoAttrTypeMinValue = -$7FFFFFFF,
+    PANGO_ATTR_INVALID = 0,
+    PANGO_ATTR_LANGUAGE = 1,
+    PANGO_ATTR_FAMILY = 2,
+    PANGO_ATTR_STYLE = 3,
+    PANGO_ATTR_WEIGHT = 4,
+    PANGO_ATTR_VARIANT = 5,
+    PANGO_ATTR_STRETCH = 6,
+    PANGO_ATTR_SIZE = 7,
+    PANGO_ATTR_FONT_DESC = 8,
+    PANGO_ATTR_FOREGROUND = 9,
+    PANGO_ATTR_BACKGROUND = 10,
+    PANGO_ATTR_UNDERLINE = 11,
+    PANGO_ATTR_STRIKETHROUGH = 12,
+    PANGO_ATTR_RISE = 13,
+    PANGO_ATTR_SHAPE = 14,
+    PANGO_ATTR_SCALE = 15,
+    PANGO_ATTR_FALLBACK = 16,
+    PANGO_ATTR_LETTER_SPACING = 17,
+    PANGO_ATTR_UNDERLINE_COLOR = 18,
+    PANGO_ATTR_STRIKETHROUGH_COLOR = 19,
+    PANGO_ATTR_ABSOLUTE_SIZE = 20,
+    PANGO_ATTR_GRAVITY = 21,
+    PANGO_ATTR_GRAVITY_HINT = 22,
+    PANGO_ATTR_FONT_FEATURES = 23,
+    PANGO_ATTR_FOREGROUND_ALPHA = 24,
+    PANGO_ATTR_BACKGROUND_ALPHA = 25,
+    PANGO_ATTR_ALLOW_BREAKS = 26,
+    PANGO_ATTR_SHOW = 27,
+    PANGO_ATTR_INSERT_HYPHENS = 28,
+    PANGO_ATTR_OVERLINE = 29,
+    PANGO_ATTR_OVERLINE_COLOR = 30,
+    PANGO_ATTR_LINE_HEIGHT = 31,
+    PANGO_ATTR_ABSOLUTE_LINE_HEIGHT = 32,
+    PANGO_ATTR_TEXT_TRANSFORM = 33,
+    PANGO_ATTR_WORD = 34,
+    PANGO_ATTR_SENTENCE = 35,
+    PANGO_ATTR_BASELINE_SHIFT = 36,
+    PANGO_ATTR_FONT_SCALE = 37,
+    TPangoAttrTypeMaxValue = $7FFFFFFF
   );
 
-type
-  TPangoFontMask = Integer;
+//TODO: This is hand written just to give the direction we need to go.
+//TODO: We need to make git2pas generate similar code for bitfields.
+  TPangoFontMaskIdx = (
+    TPangoFontMaskIdxMinValue = 0,
+    PANGO_FONT_MASK_FAMILY = 0,
+    PANGO_FONT_MASK_STYLE = 1,
+    PANGO_FONT_MASK_VARIANT = 2,
+    PANGO_FONT_MASK_WEIGHT = 3,
+    PANGO_FONT_MASK_STRETCH = 4,
+    PANGO_FONT_MASK_SIZE = 5,
+    PANGO_FONT_MASK_GRAVITY = 6,
+    PANGO_FONT_MASK_VARIATIONS = 7,
+    TPangoFontMaskIdxMaxValue = 8
+  );
+  TPangoFontMask = Set of TPangoFontMaskIdx;
 const
-  { PangoFontMask }
-  PANGO_FONT_MASK_FAMILY: TPangoFontMask = 1;
-  PANGO_FONT_MASK_STYLE: TPangoFontMask = 2;
-  PANGO_FONT_MASK_VARIANT: TPangoFontMask = 4;
-  PANGO_FONT_MASK_WEIGHT: TPangoFontMask = 8;
-  PANGO_FONT_MASK_STRETCH: TPangoFontMask = 16;
-  PANGO_FONT_MASK_SIZE: TPangoFontMask = 32;
-  PANGO_FONT_MASK_GRAVITY: TPangoFontMask = 64;
+  PANGO_FONT_MASK_ALL = [TPangoFontMaskIdxMinValue..TPangoFontMaskIdxMaxValue];
 
 type
-  TPangoGravity = Integer;
-const
-  { PangoGravity }
-  PANGO_GRAVITY_SOUTH: TPangoGravity = 0;
-  PANGO_GRAVITY_EAST: TPangoGravity = 1;
-  PANGO_GRAVITY_NORTH: TPangoGravity = 2;
-  PANGO_GRAVITY_WEST: TPangoGravity = 3;
-  PANGO_GRAVITY_AUTO: TPangoGravity = 4;
-
+  TPangoGravity = (
+    TPangoGravityMinValue = -$7FFFFFFF,
+    PANGO_GRAVITY_SOUTH = 0,
+    PANGO_GRAVITY_EAST = 1,
+    PANGO_GRAVITY_NORTH = 2,
+    PANGO_GRAVITY_WEST = 3,
+    PANGO_GRAVITY_AUTO = 4,
+    TPangoGravityMaxValue = $7FFFFFFF
+  );
+  TPangoStretch = (
+    TPangoStretchMinValue = -$7FFFFFFF,
+    PANGO_STRETCH_ULTRA_CONDENSED = 0,
+    PANGO_STRETCH_EXTRA_CONDENSED = 1,
+    PANGO_STRETCH_CONDENSED = 2,
+    PANGO_STRETCH_SEMI_CONDENSED = 3,
+    PANGO_STRETCH_NORMAL = 4,
+    PANGO_STRETCH_SEMI_EXPANDED = 5,
+    PANGO_STRETCH_EXPANDED = 6,
+    PANGO_STRETCH_EXTRA_EXPANDED = 7,
+    PANGO_STRETCH_ULTRA_EXPANDED = 8,
+    TPangoStretchMaxValue = $7FFFFFFF
+  );
+  TPangoStyle = (
+    TPangoStyleMinValue = -$7FFFFFFF,
+    PANGO_STYLE_NORMAL = 0,
+    PANGO_STYLE_OBLIQUE = 1,
+    PANGO_STYLE_ITALIC = 2,
+    TPangoStyleMaxValue = $7FFFFFFF
+  );
+  TPangoVariant = (
+    TPangoVariantMinValue = -$7FFFFFFF,
+    PANGO_VARIANT_NORMAL = 0,
+    PANGO_VARIANT_SMALL_CAPS = 1,
+    PANGO_VARIANT_ALL_SMALL_CAPS = 2,
+    PANGO_VARIANT_PETITE_CAPS = 3,
+    PANGO_VARIANT_ALL_PETITE_CAPS = 4,
+    PANGO_VARIANT_UNICASE = 5,
+    PANGO_VARIANT_TITLE_CAPS = 6,
+    TPangoVariantMaxValue = $7FFFFFFF
+  );
+  TPangoWeight = (
+    TPangoWeightMinValue = -$7FFFFFFF,
+    PANGO_WEIGHT_THIN = 100,
+    PANGO_WEIGHT_ULTRALIGHT = 200,
+    PANGO_WEIGHT_LIGHT = 300,
+    PANGO_WEIGHT_SEMILIGHT = 350,
+    PANGO_WEIGHT_BOOK = 380,
+    PANGO_WEIGHT_NORMAL = 400,
+    PANGO_WEIGHT_MEDIUM = 500,
+    PANGO_WEIGHT_SEMIBOLD = 600,
+    PANGO_WEIGHT_BOLD = 700,
+    PANGO_WEIGHT_ULTRABOLD = 800,
+    PANGO_WEIGHT_HEAVY = 900,
+    PANGO_WEIGHT_ULTRAHEAVY = 1000,
+    TPangoWeightMaxValue = $7FFFFFFF
+  );
+  TPangoBaselineShift = (
+    TPangoBaselineShiftMinValue = -$7FFFFFFF,
+    PANGO_BASELINE_SHIFT_NONE = 0,
+    PANGO_BASELINE_SHIFT_SUPERSCRIPT = 1,
+    PANGO_BASELINE_SHIFT_SUBSCRIPT = 2,
+    TPangoBaselineShiftMaxValue = $7FFFFFFF
+  );
+  TPangoBidiType = (
+    TPangoBidiTypeMinValue = -$7FFFFFFF,
+    PANGO_BIDI_TYPE_L = 0,
+    PANGO_BIDI_TYPE_LRE = 1,
+    PANGO_BIDI_TYPE_LRO = 2,
+    PANGO_BIDI_TYPE_R = 3,
+    PANGO_BIDI_TYPE_AL = 4,
+    PANGO_BIDI_TYPE_RLE = 5,
+    PANGO_BIDI_TYPE_RLO = 6,
+    PANGO_BIDI_TYPE_PDF = 7,
+    PANGO_BIDI_TYPE_EN = 8,
+    PANGO_BIDI_TYPE_ES = 9,
+    PANGO_BIDI_TYPE_ET = 10,
+    PANGO_BIDI_TYPE_AN = 11,
+    PANGO_BIDI_TYPE_CS = 12,
+    PANGO_BIDI_TYPE_NSM = 13,
+    PANGO_BIDI_TYPE_BN = 14,
+    PANGO_BIDI_TYPE_B = 15,
+    PANGO_BIDI_TYPE_S = 16,
+    PANGO_BIDI_TYPE_WS = 17,
+    PANGO_BIDI_TYPE_ON = 18,
+    PANGO_BIDI_TYPE_LRI = 19,
+    PANGO_BIDI_TYPE_RLI = 20,
+    PANGO_BIDI_TYPE_FSI = 21,
+    PANGO_BIDI_TYPE_PDI = 22,
+    TPangoBidiTypeMaxValue = $7FFFFFFF
+  );
+  TPangoDirection = (
+    TPangoDirectionMinValue = -$7FFFFFFF,
+    PANGO_DIRECTION_LTR = 0,
+    PANGO_DIRECTION_RTL = 1,
+    PANGO_DIRECTION_TTB_LTR = 2,
+    PANGO_DIRECTION_TTB_RTL = 3,
+    PANGO_DIRECTION_WEAK_LTR = 4,
+    PANGO_DIRECTION_WEAK_RTL = 5,
+    PANGO_DIRECTION_NEUTRAL = 6,
+    TPangoDirectionMaxValue = $7FFFFFFF
+  );
+  TPangoGravityHint = (
+    TPangoGravityHintMinValue = -$7FFFFFFF,
+    PANGO_GRAVITY_HINT_NATURAL = 0,
+    PANGO_GRAVITY_HINT_STRONG = 1,
+    PANGO_GRAVITY_HINT_LINE = 2,
+    TPangoGravityHintMaxValue = $7FFFFFFF
+  );
+  TPangoCoverageLevel = (
+    TPangoCoverageLevelMinValue = -$7FFFFFFF,
+    PANGO_COVERAGE_NONE = 0,
+    PANGO_COVERAGE_FALLBACK = 1,
+    PANGO_COVERAGE_APPROXIMATE = 2,
+    PANGO_COVERAGE_EXACT = 3,
+    TPangoCoverageLevelMaxValue = $7FFFFFFF
+  );
+  TPangoEllipsizeMode = (
+    TPangoEllipsizeModeMinValue = -$7FFFFFFF,
+    PANGO_ELLIPSIZE_NONE = 0,
+    PANGO_ELLIPSIZE_START = 1,
+    PANGO_ELLIPSIZE_MIDDLE = 2,
+    PANGO_ELLIPSIZE_END = 3,
+    TPangoEllipsizeModeMaxValue = $7FFFFFFF
+  );
+  TPangoFontScale = (
+    TPangoFontScaleMinValue = -$7FFFFFFF,
+    PANGO_FONT_SCALE_NONE = 0,
+    PANGO_FONT_SCALE_SUPERSCRIPT = 1,
+    PANGO_FONT_SCALE_SUBSCRIPT = 2,
+    PANGO_FONT_SCALE_SMALL_CAPS = 3,
+    TPangoFontScaleMaxValue = $7FFFFFFF
+  );
+  TPangoLayoutDeserializeFlags = (
+    TPangoLayoutDeserializeFlagsMinValue = -$7FFFFFFF,
+    PANGO_LAYOUT_DESERIALIZE_DEFAULT = 0,
+    PANGO_LAYOUT_DESERIALIZE_CONTEXT = 1,
+    TPangoLayoutDeserializeFlagsMaxValue = $7FFFFFFF
+  );
+  TPangoLayoutSerializeFlags = (
+    TPangoLayoutSerializeFlagsMinValue = -$7FFFFFFF,
+    PANGO_LAYOUT_SERIALIZE_DEFAULT = 0,
+    PANGO_LAYOUT_SERIALIZE_CONTEXT = 1,
+    PANGO_LAYOUT_SERIALIZE_OUTPUT = 2,
+    TPangoLayoutSerializeFlagsMaxValue = $7FFFFFFF
+  );
+  TPangoWrapMode = (
+    TPangoWrapModeMinValue = -$7FFFFFFF,
+    PANGO_WRAP_WORD = 0,
+    PANGO_WRAP_CHAR = 1,
+    PANGO_WRAP_WORD_CHAR = 2,
+    TPangoWrapModeMaxValue = $7FFFFFFF
+  );
+  TPangoTabAlign = (
+    TPangoTabAlignMinValue = -$7FFFFFFF,
+    PANGO_TAB_LEFT = 0,
+    PANGO_TAB_RIGHT = 1,
+    PANGO_TAB_CENTER = 2,
+    PANGO_TAB_DECIMAL = 3,
+    TPangoTabAlignMaxValue = $7FFFFFFF
+  );
+  TPangoLayoutDeserializeError = (
+    TPangoLayoutDeserializeErrorMinValue = -$7FFFFFFF,
+    PANGO_LAYOUT_DESERIALIZE_INVALID = 0,
+    PANGO_LAYOUT_DESERIALIZE_INVALID_VALUE = 1,
+    PANGO_LAYOUT_DESERIALIZE_MISSING_VALUE = 2,
+    TPangoLayoutDeserializeErrorMaxValue = $7FFFFFFF
+  );
+  TPangoOverline = (
+    TPangoOverlineMinValue = -$7FFFFFFF,
+    PANGO_OVERLINE_NONE = 0,
+    PANGO_OVERLINE_SINGLE = 1,
+    TPangoOverlineMaxValue = $7FFFFFFF
+  );
+  TPangoRenderPart = (
+    TPangoRenderPartMinValue = -$7FFFFFFF,
+    PANGO_RENDER_PART_FOREGROUND = 0,
+    PANGO_RENDER_PART_BACKGROUND = 1,
+    PANGO_RENDER_PART_UNDERLINE = 2,
+    PANGO_RENDER_PART_STRIKETHROUGH = 3,
+    PANGO_RENDER_PART_OVERLINE = 4,
+    TPangoRenderPartMaxValue = $7FFFFFFF
+  );
+  TPangoUnderline = (
+    TPangoUnderlineMinValue = -$7FFFFFFF,
+    PANGO_UNDERLINE_NONE = 0,
+    PANGO_UNDERLINE_SINGLE = 1,
+    PANGO_UNDERLINE_DOUBLE = 2,
+    PANGO_UNDERLINE_LOW = 3,
+    PANGO_UNDERLINE_ERROR = 4,
+    PANGO_UNDERLINE_SINGLE_LINE = 5,
+    PANGO_UNDERLINE_DOUBLE_LINE = 6,
+    PANGO_UNDERLINE_ERROR_LINE = 7,
+    TPangoUnderlineMaxValue = $7FFFFFFF
+  );
+  TPangoShapeFlags = (
+    TPangoShapeFlagsMinValue = -$7FFFFFFF,
+    PANGO_SHAPE_NONE = 0,
+    PANGO_SHAPE_ROUND_POSITIONS = 1,
+    TPangoShapeFlagsMaxValue = $7FFFFFFF
+  );
+  TPangoShowFlags = (
+    TPangoShowFlagsMinValue = -$7FFFFFFF,
+    PANGO_SHOW_NONE = 0,
+    PANGO_SHOW_SPACES = 1,
+    PANGO_SHOW_LINE_BREAKS = 2,
+    PANGO_SHOW_IGNORABLES = 4,
+    TPangoShowFlagsMaxValue = $7FFFFFFF
+  );
+  TPangoTextTransform = (
+    TPangoTextTransformMinValue = -$7FFFFFFF,
+    PANGO_TEXT_TRANSFORM_NONE = 0,
+    PANGO_TEXT_TRANSFORM_LOWERCASE = 1,
+    PANGO_TEXT_TRANSFORM_UPPERCASE = 2,
+    PANGO_TEXT_TRANSFORM_CAPITALIZE = 3,
+    TPangoTextTransformMaxValue = $7FFFFFFF
+  );
 type
-  TPangoStretch = Integer;
-const
-  { PangoStretch }
-  PANGO_STRETCH_ULTRA_CONDENSED: TPangoStretch = 0;
-  PANGO_STRETCH_EXTRA_CONDENSED: TPangoStretch = 1;
-  PANGO_STRETCH_CONDENSED: TPangoStretch = 2;
-  PANGO_STRETCH_SEMI_CONDENSED: TPangoStretch = 3;
-  PANGO_STRETCH_NORMAL: TPangoStretch = 4;
-  PANGO_STRETCH_SEMI_EXPANDED: TPangoStretch = 5;
-  PANGO_STRETCH_EXPANDED: TPangoStretch = 6;
-  PANGO_STRETCH_EXTRA_EXPANDED: TPangoStretch = 7;
-  PANGO_STRETCH_ULTRA_EXPANDED: TPangoStretch = 8;
 
-type
-  TPangoStyle = Integer;
-const
-  { PangoStyle }
-  PANGO_STYLE_NORMAL: TPangoStyle = 0;
-  PANGO_STYLE_OBLIQUE: TPangoStyle = 1;
-  PANGO_STYLE_ITALIC: TPangoStyle = 2;
 
-type
-  TPangoVariant = Integer;
-const
-  { PangoVariant }
-  PANGO_VARIANT_NORMAL: TPangoVariant = 0;
-  PANGO_VARIANT_SMALL_CAPS: TPangoVariant = 1;
-
-type
-  TPangoWeight = Integer;
-const
-  { PangoWeight }
-  PANGO_WEIGHT_THIN: TPangoWeight = 100;
-  PANGO_WEIGHT_ULTRALIGHT: TPangoWeight = 200;
-  PANGO_WEIGHT_LIGHT: TPangoWeight = 300;
-  PANGO_WEIGHT_BOOK: TPangoWeight = 380;
-  PANGO_WEIGHT_NORMAL: TPangoWeight = 400;
-  PANGO_WEIGHT_MEDIUM: TPangoWeight = 500;
-  PANGO_WEIGHT_SEMIBOLD: TPangoWeight = 600;
-  PANGO_WEIGHT_BOLD: TPangoWeight = 700;
-  PANGO_WEIGHT_ULTRABOLD: TPangoWeight = 800;
-  PANGO_WEIGHT_HEAVY: TPangoWeight = 900;
-  PANGO_WEIGHT_ULTRAHEAVY: TPangoWeight = 1000;
-
-type
-  TPangoBidiType = Integer;
-const
-  { PangoBidiType }
-  PANGO_BIDI_TYPE_L: TPangoBidiType = 0;
-  PANGO_BIDI_TYPE_LRE: TPangoBidiType = 1;
-  PANGO_BIDI_TYPE_LRO: TPangoBidiType = 2;
-  PANGO_BIDI_TYPE_R: TPangoBidiType = 3;
-  PANGO_BIDI_TYPE_AL: TPangoBidiType = 4;
-  PANGO_BIDI_TYPE_RLE: TPangoBidiType = 5;
-  PANGO_BIDI_TYPE_RLO: TPangoBidiType = 6;
-  PANGO_BIDI_TYPE_PDF: TPangoBidiType = 7;
-  PANGO_BIDI_TYPE_EN: TPangoBidiType = 8;
-  PANGO_BIDI_TYPE_ES: TPangoBidiType = 9;
-  PANGO_BIDI_TYPE_ET: TPangoBidiType = 10;
-  PANGO_BIDI_TYPE_AN: TPangoBidiType = 11;
-  PANGO_BIDI_TYPE_CS: TPangoBidiType = 12;
-  PANGO_BIDI_TYPE_NSM: TPangoBidiType = 13;
-  PANGO_BIDI_TYPE_BN: TPangoBidiType = 14;
-  PANGO_BIDI_TYPE_B: TPangoBidiType = 15;
-  PANGO_BIDI_TYPE_S: TPangoBidiType = 16;
-  PANGO_BIDI_TYPE_WS: TPangoBidiType = 17;
-  PANGO_BIDI_TYPE_ON: TPangoBidiType = 18;
-
-type
-  TPangoDirection = Integer;
-const
-  { PangoDirection }
-  PANGO_DIRECTION_LTR: TPangoDirection = 0;
-  PANGO_DIRECTION_RTL: TPangoDirection = 1;
-  PANGO_DIRECTION_TTB_LTR: TPangoDirection = 2;
-  PANGO_DIRECTION_TTB_RTL: TPangoDirection = 3;
-  PANGO_DIRECTION_WEAK_LTR: TPangoDirection = 4;
-  PANGO_DIRECTION_WEAK_RTL: TPangoDirection = 5;
-  PANGO_DIRECTION_NEUTRAL: TPangoDirection = 6;
-
-type
-  TPangoGravityHint = Integer;
-const
-  { PangoGravityHint }
-  PANGO_GRAVITY_HINT_NATURAL: TPangoGravityHint = 0;
-  PANGO_GRAVITY_HINT_STRONG: TPangoGravityHint = 1;
-  PANGO_GRAVITY_HINT_LINE: TPangoGravityHint = 2;
-
-type
-  TPangoCoverageLevel = Integer;
-const
-  { PangoCoverageLevel }
-  PANGO_COVERAGE_NONE: TPangoCoverageLevel = 0;
-  PANGO_COVERAGE_FALLBACK: TPangoCoverageLevel = 1;
-  PANGO_COVERAGE_APPROXIMATE: TPangoCoverageLevel = 2;
-  PANGO_COVERAGE_EXACT: TPangoCoverageLevel = 3;
-
-type
-  TPangoEllipsizeMode = Integer;
-const
-  { PangoEllipsizeMode }
-  PANGO_ELLIPSIZE_NONE: TPangoEllipsizeMode = 0;
-  PANGO_ELLIPSIZE_START: TPangoEllipsizeMode = 1;
-  PANGO_ELLIPSIZE_MIDDLE: TPangoEllipsizeMode = 2;
-  PANGO_ELLIPSIZE_END: TPangoEllipsizeMode = 3;
-
-type
-  TPangoWrapMode = Integer;
-const
-  { PangoWrapMode }
-  PANGO_WRAP_WORD: TPangoWrapMode = 0;
-  PANGO_WRAP_CHAR: TPangoWrapMode = 1;
-  PANGO_WRAP_WORD_CHAR: TPangoWrapMode = 2;
-
-type
-  TPangoTabAlign = Integer;
-const
-  { PangoTabAlign }
-  PANGO_TAB_LEFT: TPangoTabAlign = 0;
-
-type
-  TPangoRenderPart = Integer;
-const
-  { PangoRenderPart }
-  PANGO_RENDER_PART_FOREGROUND: TPangoRenderPart = 0;
-  PANGO_RENDER_PART_BACKGROUND: TPangoRenderPart = 1;
-  PANGO_RENDER_PART_UNDERLINE: TPangoRenderPart = 2;
-  PANGO_RENDER_PART_STRIKETHROUGH: TPangoRenderPart = 3;
-
-type
-  TPangoUnderline = Integer;
-const
-  { PangoUnderline }
-  PANGO_UNDERLINE_NONE: TPangoUnderline = 0;
-  PANGO_UNDERLINE_SINGLE: TPangoUnderline = 1;
-  PANGO_UNDERLINE_DOUBLE: TPangoUnderline = 2;
-  PANGO_UNDERLINE_LOW: TPangoUnderline = 3;
-  PANGO_UNDERLINE_ERROR: TPangoUnderline = 4;
-type
-
+  { TPangoGlyph }
   PPPangoGlyph = ^PPangoGlyph;
   PPangoGlyph = ^TPangoGlyph;
   TPangoGlyph = guint32;
 
+
+  { TPangoGlyphUnit }
   PPPangoGlyphUnit = ^PPangoGlyphUnit;
   PPangoGlyphUnit = ^TPangoGlyphUnit;
   TPangoGlyphUnit = gint32;
 
+
+  { TPangoGlyphItem }
   PPPangoGlyphItem = ^PPangoGlyphItem;
   PPangoGlyphItem = ^TPangoGlyphItem;
 
+
+  { TPangoAttrList }
   PPPangoAttrList = ^PPangoAttrList;
   PPangoAttrList = ^TPangoAttrList;
 
+
+  { TPangoLogAttr }
   PPPPangoLogAttr = ^PPPangoLogAttr;
   PPPangoLogAttr = ^PPangoLogAttr;
   PPangoLogAttr = ^TPangoLogAttr;
 
+
+  { TPangoItem }
   PPPangoItem = ^PPangoItem;
   PPangoItem = ^TPangoItem;
 
+
+  { TPangoGlyphString }
   PPPangoGlyphString = ^PPangoGlyphString;
   PPangoGlyphString = ^TPangoGlyphString;
   TPangoGlyphItem = object
     item: PPangoItem;
     glyphs: PPangoGlyphString;
+    y_offset: gint;
+    start_x_offset: gint;
+    end_x_offset: gint;
     function apply_attrs(text: Pgchar; list: PPangoAttrList): PGSList; cdecl; inline;
     function copy: PPangoGlyphItem; cdecl; inline;
     procedure free; cdecl; inline;
@@ -362,60 +494,81 @@ type
     function split(text: Pgchar; split_index: gint): PPangoGlyphItem; cdecl; inline;
   end;
 
+
+  { TPangoLayoutRun }
   PPPangoLayoutRun = ^PPangoLayoutRun;
   PPangoLayoutRun = ^TPangoLayoutRun;
   TPangoLayoutRun = TPangoGlyphItem;
 
+
+  { TPangoAlignment }
   PPPangoAlignment = ^PPangoAlignment;
   PPangoAlignment = ^TPangoAlignment;
 
-  PPPangoEngineShape = ^PPangoEngineShape;
-  PPangoEngineShape = ^TPangoEngineShape;
 
-  TPangoEngineShape = record
-  end;
-
-
-
-  PPPangoEngineLang = ^PPangoEngineLang;
-  PPangoEngineLang = ^TPangoEngineLang;
-
-  TPangoEngineLang = record
-  end;
-
-
-
+  { TPangoFont }
   PPPangoFont = ^PPangoFont;
   PPangoFont = ^TPangoFont;
 
+
+  { TPangoFontDescription }
   PPPangoFontDescription = ^PPangoFontDescription;
   PPangoFontDescription = ^TPangoFontDescription;
 
-  PPPangoLanguage = ^PPangoLanguage;
-  PPangoLanguage = ^TPangoLanguage;
 
+  { TPangoContext }
+  PPPangoContext = ^PPangoContext;
+  PPangoContext = ^TPangoContext;
+
+
+  { TPangoCoverage }
   PPPangoCoverage = ^PPangoCoverage;
   PPangoCoverage = ^TPangoCoverage;
 
+
+  { TPangoLanguage }
+  PPPangoLanguage = ^PPangoLanguage;
+  PPangoLanguage = ^TPangoLanguage;
+
+
+  { TPangoFontFace }
+  PPPPangoFontFace = ^PPPangoFontFace;
+  PPPangoFontFace = ^PPangoFontFace;
+  PPangoFontFace = ^TPangoFontFace;
+
+
+  { TPangoFontMap }
   PPPangoFontMap = ^PPangoFontMap;
   PPangoFontMap = ^TPangoFontMap;
 
+
+  { TPangoRectangle }
   PPPangoRectangle = ^PPangoRectangle;
   PPangoRectangle = ^TPangoRectangle;
 
+
+  { TPangoFontMetrics }
   PPPangoFontMetrics = ^PPangoFontMetrics;
   PPangoFontMetrics = ^TPangoFontMetrics;
   TPangoFont = object(TGObject)
     procedure descriptions_free(descs: PPPangoFontDescription; n_descs: gint); cdecl; inline; static;
+    function deserialize(context: PPangoContext; bytes: PGBytes; error: PPGError): PPangoFont; cdecl; inline; static;
     function describe: PPangoFontDescription; cdecl; inline;
     function describe_with_absolute_size: PPangoFontDescription; cdecl; inline;
-    function find_shaper(language: PPangoLanguage; ch: guint32): PPangoEngineShape; cdecl; inline;
     function get_coverage(language: PPangoLanguage): PPangoCoverage; cdecl; inline;
+    function get_face: PPangoFontFace; cdecl; inline;
+    procedure get_features(features: Pgconstpointer; len: Pguint; num_features: Pguint); cdecl; inline;
     function get_font_map: PPangoFontMap; cdecl; inline;
     procedure get_glyph_extents(glyph: TPangoGlyph; ink_rect: PPangoRectangle; logical_rect: PPangoRectangle); cdecl; inline;
+    function get_hb_font: Phb_font_t; cdecl; inline;
+    function get_languages: PPPangoLanguage; cdecl; inline;
     function get_metrics(language: PPangoLanguage): PPangoFontMetrics; cdecl; inline;
+    function has_char(wc: gunichar): gboolean; cdecl; inline;
+    function serialize: PGBytes; cdecl; inline;
   end;
 
+
+  { TPangoScript }
   PPPangoScript = ^PPangoScript;
   PPangoScript = ^TPangoScript;
   TPangoLanguage = object
@@ -426,14 +579,17 @@ type
     function to_string: Pgchar; cdecl; inline;
     function from_string(language: Pgchar): PPangoLanguage; cdecl; inline; static;
     function get_default: PPangoLanguage; cdecl; inline; static;
+    function get_preferred: PPPangoLanguage; cdecl; inline; static;
   end;
 
+
+  { TPangoAnalysis }
   PPPangoAnalysis = ^PPangoAnalysis;
   PPangoAnalysis = ^TPangoAnalysis;
 
   TPangoAnalysis = record
-    shape_engine: PPangoEngineShape;
-    lang_engine: PPangoEngineLang;
+    shape_engine: gpointer;
+    lang_engine: gpointer;
     font: PPangoFont;
     level: guint8;
     gravity: guint8;
@@ -445,18 +601,78 @@ type
 
 
 
+
+  { TPangoAttrType }
   PPPangoAttrType = ^PPangoAttrType;
   PPangoAttrType = ^TPangoAttrType;
 
+
+  { TPangoAttribute }
   PPPangoAttribute = ^PPangoAttribute;
   PPangoAttribute = ^TPangoAttribute;
 
+
+  { TPangoAttrColor }
+  PPPangoAttrColor = ^PPangoAttrColor;
+  PPangoAttrColor = ^TPangoAttrColor;
+
+
+  { TPangoAttrFloat }
+  PPPangoAttrFloat = ^PPangoAttrFloat;
+  PPangoAttrFloat = ^TPangoAttrFloat;
+
+
+  { TPangoAttrFontDesc }
+  PPPangoAttrFontDesc = ^PPangoAttrFontDesc;
+  PPangoAttrFontDesc = ^TPangoAttrFontDesc;
+
+
+  { TPangoAttrFontFeatures }
+  PPPangoAttrFontFeatures = ^PPangoAttrFontFeatures;
+  PPangoAttrFontFeatures = ^TPangoAttrFontFeatures;
+
+
+  { TPangoAttrInt }
+  PPPangoAttrInt = ^PPangoAttrInt;
+  PPangoAttrInt = ^TPangoAttrInt;
+
+
+  { TPangoAttrLanguage }
+  PPPangoAttrLanguage = ^PPangoAttrLanguage;
+  PPangoAttrLanguage = ^TPangoAttrLanguage;
+
+
+  { TPangoAttrShape }
+  PPPangoAttrShape = ^PPangoAttrShape;
+  PPangoAttrShape = ^TPangoAttrShape;
+
+
+  { TPangoAttrSize }
+  PPPangoAttrSize = ^PPangoAttrSize;
+  PPangoAttrSize = ^TPangoAttrSize;
+
+
+  { TPangoAttrString }
+  PPPangoAttrString = ^PPangoAttrString;
+  PPangoAttrString = ^TPangoAttrString;
+
+
+  { TPangoAttrClass }
   PPPangoAttrClass = ^PPangoAttrClass;
   PPangoAttrClass = ^TPangoAttrClass;
   TPangoAttribute = object
     klass: PPangoAttrClass;
     start_index: guint;
     end_index: guint;
+    function as_color: PPangoAttrColor; cdecl; inline;
+    function as_float: PPangoAttrFloat; cdecl; inline;
+    function as_font_desc: PPangoAttrFontDesc; cdecl; inline;
+    function as_font_features: PPangoAttrFontFeatures; cdecl; inline;
+    function as_int: PPangoAttrInt; cdecl; inline;
+    function as_language: PPangoAttrLanguage; cdecl; inline;
+    function as_shape: PPangoAttrShape; cdecl; inline;
+    function as_size: PPangoAttrSize; cdecl; inline;
+    function as_string: PPangoAttrString; cdecl; inline;
     function copy: PPangoAttribute; cdecl; inline;
     procedure destroy_; cdecl; inline;
     function equal(attr2: PPangoAttribute): gboolean; cdecl; inline;
@@ -472,6 +688,8 @@ type
 
 
 
+
+  { TPangoColor }
   PPPangoColor = ^PPangoColor;
   PPangoColor = ^TPangoColor;
   TPangoColor = object
@@ -481,11 +699,9 @@ type
     function copy: PPangoColor; cdecl; inline;
     procedure free; cdecl; inline;
     function parse(spec: Pgchar): gboolean; cdecl; inline;
+    function parse_with_alpha(alpha: Pguint16; spec: Pgchar): gboolean; cdecl; inline;
     function to_string: Pgchar; cdecl; inline;
   end;
-
-  PPPangoAttrColor = ^PPangoAttrColor;
-  PPangoAttrColor = ^TPangoAttrColor;
 
   TPangoAttrColor = record
     attr: TPangoAttribute;
@@ -496,9 +712,6 @@ type
   TPangoAttrDataCopyFunc = function(user_data: Pgpointer): gpointer; cdecl;
   TPangoAttrFilterFunc = function(attribute: PPangoAttribute; user_data: gpointer): gboolean; cdecl;
 
-  PPPangoAttrFloat = ^PPangoAttrFloat;
-  PPangoAttrFloat = ^TPangoAttrFloat;
-
   TPangoAttrFloat = record
     attr: TPangoAttribute;
     value: gdouble;
@@ -506,21 +719,33 @@ type
 
 
 
+
+  { TPangoGravity }
   PPPangoGravity = ^PPangoGravity;
   PPangoGravity = ^TPangoGravity;
 
+
+  { TPangoFontMask }
   PPPangoFontMask = ^PPangoFontMask;
   PPangoFontMask = ^TPangoFontMask;
 
+
+  { TPangoStretch }
   PPPangoStretch = ^PPangoStretch;
   PPangoStretch = ^TPangoStretch;
 
+
+  { TPangoStyle }
   PPPangoStyle = ^PPangoStyle;
   PPangoStyle = ^TPangoStyle;
 
+
+  { TPangoVariant }
   PPPangoVariant = ^PPangoVariant;
   PPangoVariant = ^TPangoVariant;
 
+
+  { TPangoWeight }
   PPPangoWeight = ^PPangoWeight;
   PPangoWeight = ^TPangoWeight;
   TPangoFontDescription = object
@@ -538,6 +763,7 @@ type
     function get_stretch: TPangoStretch; cdecl; inline;
     function get_style: TPangoStyle; cdecl; inline;
     function get_variant: TPangoVariant; cdecl; inline;
+    function get_variations: Pgchar; cdecl; inline;
     function get_weight: TPangoWeight; cdecl; inline;
     function hash: guint; cdecl; inline;
     procedure merge(desc_to_merge: PPangoFontDescription; replace_existing: gboolean); cdecl; inline;
@@ -550,23 +776,24 @@ type
     procedure set_stretch(stretch: TPangoStretch); cdecl; inline;
     procedure set_style(style: TPangoStyle); cdecl; inline;
     procedure set_variant(variant: TPangoVariant); cdecl; inline;
+    procedure set_variations(variations: Pgchar); cdecl; inline;
+    procedure set_variations_static(variations: Pgchar); cdecl; inline;
     procedure set_weight(weight: TPangoWeight); cdecl; inline;
     function to_filename: Pgchar; cdecl; inline;
     function to_string: Pgchar; cdecl; inline;
     procedure unset_fields(to_unset: TPangoFontMask); cdecl; inline;
     function from_string(str: Pgchar): PPangoFontDescription; cdecl; inline; static;
   end;
-
-  PPPangoAttrFontDesc = ^PPangoAttrFontDesc;
-  PPangoAttrFontDesc = ^TPangoAttrFontDesc;
   TPangoAttrFontDesc = object
     attr: TPangoAttribute;
     desc: PPangoFontDescription;
     function new(desc: PPangoFontDescription): PPangoAttribute; cdecl; inline; static;
   end;
-
-  PPPangoAttrInt = ^PPangoAttrInt;
-  PPangoAttrInt = ^TPangoAttrInt;
+  TPangoAttrFontFeatures = object
+    attr: TPangoAttribute;
+    features: Pgchar;
+    function new(features: Pgchar): PPangoAttribute; cdecl; inline; static;
+  end;
 
   TPangoAttrInt = record
     attr: TPangoAttribute;
@@ -575,6 +802,8 @@ type
 
 
 
+
+  { TPangoAttrIterator }
   PPPangoAttrIterator = ^PPangoAttrIterator;
   PPangoAttrIterator = ^TPangoAttrIterator;
   TPangoAttrIterator = object
@@ -586,28 +815,32 @@ type
     function next: gboolean; cdecl; inline;
     procedure range(start: Pgint; end_: Pgint); cdecl; inline;
   end;
-
-  PPPangoAttrLanguage = ^PPangoAttrLanguage;
-  PPangoAttrLanguage = ^TPangoAttrLanguage;
   TPangoAttrLanguage = object
     attr: TPangoAttribute;
     value: PPangoLanguage;
     function new(language: PPangoLanguage): PPangoAttribute; cdecl; inline; static;
   end;
 
+
+  { TPangoAttrFilterFunc }
   PPPangoAttrFilterFunc = ^PPangoAttrFilterFunc;
   PPangoAttrFilterFunc = ^TPangoAttrFilterFunc;
   TPangoAttrList = object
     function new: PPangoAttrList; cdecl; inline; static;
     procedure change(attr: PPangoAttribute); cdecl; inline;
     function copy: PPangoAttrList; cdecl; inline;
+    function equal(other_list: PPangoAttrList): gboolean; cdecl; inline;
     function filter(func: TPangoAttrFilterFunc; data: gpointer): PPangoAttrList; cdecl; inline;
+    function get_attributes: PGSList; cdecl; inline;
     function get_iterator: PPangoAttrIterator; cdecl; inline;
     procedure insert(attr: PPangoAttribute); cdecl; inline;
     procedure insert_before(attr: PPangoAttribute); cdecl; inline;
     function ref: PPangoAttrList; cdecl; inline;
     procedure splice(other: PPangoAttrList; pos: gint; len: gint); cdecl; inline;
+    function to_string: Pgchar; cdecl; inline;
     procedure unref; cdecl; inline;
+    procedure update(pos: gint; remove: gint; add: gint); cdecl; inline;
+    function from_string(text: Pgchar): PPangoAttrList; cdecl; inline; static;
   end;
 
   TPangoRectangle = record
@@ -619,9 +852,8 @@ type
 
 
 
-  PPPangoAttrShape = ^PPangoAttrShape;
-  PPangoAttrShape = ^TPangoAttrShape;
 
+  { TPangoAttrDataCopyFunc }
   PPPangoAttrDataCopyFunc = ^PPangoAttrDataCopyFunc;
   PPangoAttrDataCopyFunc = ^TPangoAttrDataCopyFunc;
   TPangoAttrShape = object
@@ -634,9 +866,6 @@ type
     function new(ink_rect: PPangoRectangle; logical_rect: PPangoRectangle): PPangoAttribute; cdecl; inline; static;
     function new_with_data(ink_rect: PPangoRectangle; logical_rect: PPangoRectangle; data: gpointer; copy_func: TPangoAttrDataCopyFunc; destroy_func: TGDestroyNotify): PPangoAttribute; cdecl; inline; static;
   end;
-
-  PPPangoAttrSize = ^PPangoAttrSize;
-  PPangoAttrSize = ^TPangoAttrSize;
   TPangoAttrSizeBitfield0 = bitpacked record
     absolute: guint1 { changed from guint to accomodate 1 bitsize requirement };
   end;
@@ -649,9 +878,6 @@ type
     function new_absolute(size: gint): PPangoAttribute; cdecl; inline; static;
   end;
 
-  PPPangoAttrString = ^PPangoAttrString;
-  PPangoAttrString = ^TPangoAttrString;
-
   TPangoAttrString = record
     attr: TPangoAttribute;
     value: Pgchar;
@@ -659,25 +885,39 @@ type
 
 
 
+
+  { TPangoBaselineShift }
+  PPPangoBaselineShift = ^PPangoBaselineShift;
+  PPangoBaselineShift = ^TPangoBaselineShift;
+
+
+  { TPangoBidiType }
   PPPangoBidiType = ^PPangoBidiType;
   PPangoBidiType = ^TPangoBidiType;
 
-  PPPangoContext = ^PPangoContext;
-  PPangoContext = ^TPangoContext;
 
+  { TPangoDirection }
   PPPangoDirection = ^PPangoDirection;
   PPangoDirection = ^TPangoDirection;
 
+
+  { TPangoGravityHint }
   PPPangoGravityHint = ^PPangoGravityHint;
   PPangoGravityHint = ^TPangoGravityHint;
 
+
+  { TPangoMatrix }
   PPPangoMatrix = ^PPangoMatrix;
   PPangoMatrix = ^TPangoMatrix;
 
+
+  { TPangoFontFamily }
   PPPPangoFontFamily = ^PPPangoFontFamily;
   PPPangoFontFamily = ^PPangoFontFamily;
   PPangoFontFamily = ^TPangoFontFamily;
 
+
+  { TPangoFontset }
   PPPangoFontset = ^PPangoFontset;
   PPangoFontset = ^TPangoFontset;
   TPangoContext = object(TGObject)
@@ -692,6 +932,7 @@ type
     function get_language: PPangoLanguage; cdecl; inline;
     function get_matrix: PPangoMatrix; cdecl; inline;
     function get_metrics(desc: PPangoFontDescription; language: PPangoLanguage): PPangoFontMetrics; cdecl; inline;
+    function get_round_glyph_positions: gboolean; cdecl; inline;
     function get_serial: guint; cdecl; inline;
     procedure list_families(families: PPPPangoFontFamily; n_families: Pgint); cdecl; inline;
     function load_font(desc: PPangoFontDescription): PPangoFont; cdecl; inline;
@@ -703,14 +944,18 @@ type
     procedure set_gravity_hint(hint: TPangoGravityHint); cdecl; inline;
     procedure set_language(language: PPangoLanguage); cdecl; inline;
     procedure set_matrix(matrix: PPangoMatrix); cdecl; inline;
+    procedure set_round_glyph_positions(round_positions: gboolean); cdecl; inline;
   end;
   TPangoFontMap = object(TGObject)
     procedure changed; cdecl; inline;
     function create_context: PPangoContext; cdecl; inline;
+    function get_family(name: Pgchar): PPangoFontFamily; cdecl; inline;
     function get_serial: guint; cdecl; inline;
     procedure list_families(families: PPPPangoFontFamily; n_families: Pgint); cdecl; inline;
     function load_font(context: PPangoContext; desc: PPangoFontDescription): PPangoFont; cdecl; inline;
     function load_fontset(context: PPangoContext; desc: PPangoFontDescription; language: PPangoLanguage): PPangoFontset; cdecl; inline;
+    //property item_type: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_item_type ;
+    //property n_items: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_n_items ;
   end;
   TPangoMatrix = object
     xx: gdouble;
@@ -723,6 +968,8 @@ type
     function copy: PPangoMatrix; cdecl; inline;
     procedure free; cdecl; inline;
     function get_font_scale_factor: gdouble; cdecl; inline;
+    procedure get_font_scale_factors(xscale: Pgdouble; yscale: Pgdouble); cdecl; inline;
+    function get_slant_ratio: gdouble; cdecl; inline;
     procedure rotate(degrees: gdouble); cdecl; inline;
     procedure scale(scale_x: gdouble; scale_y: gdouble); cdecl; inline;
     procedure transform_distance(dx: Pgdouble; dy: Pgdouble); cdecl; inline;
@@ -732,10 +979,21 @@ type
     procedure translate(tx: gdouble; ty: gdouble); cdecl; inline;
   end;
   TPangoFontMetrics = object
+    ref_count: guint;
+    ascent: gint;
+    descent: gint;
+    height: gint;
+    approximate_char_width: gint;
+    approximate_digit_width: gint;
+    underline_position: gint;
+    underline_thickness: gint;
+    strikethrough_position: gint;
+    strikethrough_thickness: gint;
     function get_approximate_char_width: gint; cdecl; inline;
     function get_approximate_digit_width: gint; cdecl; inline;
     function get_ascent: gint; cdecl; inline;
     function get_descent: gint; cdecl; inline;
+    function get_height: gint; cdecl; inline;
     function get_strikethrough_position: gint; cdecl; inline;
     function get_strikethrough_thickness: gint; cdecl; inline;
     function get_underline_position: gint; cdecl; inline;
@@ -743,16 +1001,18 @@ type
     function ref: PPangoFontMetrics; cdecl; inline;
     procedure unref; cdecl; inline;
   end;
-
-  PPPPangoFontFace = ^PPPangoFontFace;
-  PPPangoFontFace = ^PPangoFontFace;
-  PPangoFontFace = ^TPangoFontFace;
   TPangoFontFamily = object(TGObject)
+    function get_face(name: Pgchar): PPangoFontFace; cdecl; inline;
     function get_name: Pgchar; cdecl; inline;
     function is_monospace: gboolean; cdecl; inline;
+    function is_variable: gboolean; cdecl; inline;
     procedure list_faces(faces: PPPPangoFontFace; n_faces: Pgint); cdecl; inline;
+    //property item_type: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_item_type ;
+    //property n_items: UNABLE_TO_FIND_TYPE_FOR_PROPERTY read get_n_items ;
   end;
 
+
+  { TPangoFontsetForeachFunc }
   PPPangoFontsetForeachFunc = ^PPangoFontsetForeachFunc;
   PPangoFontsetForeachFunc = ^TPangoFontsetForeachFunc;
   TPangoFontsetForeachFunc = function(fontset: PPangoFontset; font: PPangoFont; user_data: gpointer): gboolean; cdecl;
@@ -762,34 +1022,137 @@ type
     function get_metrics: PPangoFontMetrics; cdecl; inline;
   end;
 
+
+  { TPangoContextClass }
   PPPangoContextClass = ^PPangoContextClass;
   PPangoContextClass = ^TPangoContextClass;
   TPangoContextClass = object
   end;
 
+
+  { TPangoCoverageLevel }
   PPPangoCoverageLevel = ^PPangoCoverageLevel;
   PPangoCoverageLevel = ^TPangoCoverageLevel;
-  TPangoCoverage = object
+  TPangoCoverage = object(TGObject)
+    function new: PPangoCoverage; cdecl; inline; static;
     function copy: PPangoCoverage; cdecl; inline;
     function get(index_: gint): TPangoCoverageLevel; cdecl; inline;
-    procedure max(other: PPangoCoverage); cdecl; inline;
-    function ref: PPangoCoverage; cdecl; inline;
     procedure set_(index_: gint; level: TPangoCoverageLevel); cdecl; inline;
-    procedure to_bytes(bytes: PPguint8; n_bytes: Pgint); cdecl; inline;
-    procedure unref; cdecl; inline;
-    function from_bytes(bytes: Pguint8; n_bytes: gint): PPangoCoverage; cdecl; inline; static;
-    function new: PPangoCoverage; cdecl; inline; static;
   end;
 
+
+  { TPangoEllipsizeMode }
   PPPangoEllipsizeMode = ^PPangoEllipsizeMode;
   PPangoEllipsizeMode = ^TPangoEllipsizeMode;
   TPangoFontFace = object(TGObject)
     function describe: PPangoFontDescription; cdecl; inline;
     function get_face_name: Pgchar; cdecl; inline;
+    function get_family: PPangoFontFamily; cdecl; inline;
     function is_synthesized: gboolean; cdecl; inline;
     procedure list_sizes(sizes: PPgint; n_sizes: Pgint); cdecl; inline;
   end;
 
+
+  { TPangoFontClass }
+  PPPangoFontClass = ^PPangoFontClass;
+  PPangoFontClass = ^TPangoFontClass;
+  TPangoFontClass = object
+    parent_class: TGObjectClass;
+    describe: function(font: PPangoFont): PPangoFontDescription; cdecl;
+    get_coverage: function(font: PPangoFont; language: PPangoLanguage): PPangoCoverage; cdecl;
+    get_glyph_extents: procedure(font: PPangoFont; glyph: TPangoGlyph; ink_rect: PPangoRectangle; logical_rect: PPangoRectangle); cdecl;
+    get_metrics: function(font: PPangoFont; language: PPangoLanguage): PPangoFontMetrics; cdecl;
+    get_font_map: function(font: PPangoFont): PPangoFontMap; cdecl;
+    describe_absolute: function(font: PPangoFont): PPangoFontDescription; cdecl;
+    get_features: procedure(font: PPangoFont; features: Pgconstpointer; len: Pguint; num_features: Pguint); cdecl;
+    create_hb_font: function(font: PPangoFont): Phb_font_t; cdecl;
+  end;
+
+
+  { TPangoFontFaceClass }
+  PPPangoFontFaceClass = ^PPangoFontFaceClass;
+  PPangoFontFaceClass = ^TPangoFontFaceClass;
+  TPangoFontFaceClass = object
+    parent_class: TGObjectClass;
+    get_face_name: function(face: PPangoFontFace): Pgchar; cdecl;
+    describe: function(face: PPangoFontFace): PPangoFontDescription; cdecl;
+    list_sizes: procedure(face: PPangoFontFace; sizes: PPgint; n_sizes: Pgint); cdecl;
+    is_synthesized: function(face: PPangoFontFace): gboolean; cdecl;
+    get_family: function(face: PPangoFontFace): PPangoFontFamily; cdecl;
+    _pango_reserved3: procedure; cdecl;
+    _pango_reserved4: procedure; cdecl;
+  end;
+
+
+  { TPangoFontFamilyClass }
+  PPPangoFontFamilyClass = ^PPangoFontFamilyClass;
+  PPangoFontFamilyClass = ^TPangoFontFamilyClass;
+  TPangoFontFamilyClass = object
+    parent_class: TGObjectClass;
+    list_faces: procedure(family: PPangoFontFamily; faces: PPPPangoFontFace; n_faces: Pgint); cdecl;
+    get_name: function(family: PPangoFontFamily): Pgchar; cdecl;
+    is_monospace: function(family: PPangoFontFamily): gboolean; cdecl;
+    is_variable: function(family: PPangoFontFamily): gboolean; cdecl;
+    get_face: function(family: PPangoFontFamily; name: Pgchar): PPangoFontFace; cdecl;
+    _pango_reserved2: procedure; cdecl;
+  end;
+
+
+  { TPangoFontMapClass }
+  PPPangoFontMapClass = ^PPangoFontMapClass;
+  PPangoFontMapClass = ^TPangoFontMapClass;
+  TPangoFontMapClass = object
+    parent_class: TGObjectClass;
+    load_font: function(fontmap: PPangoFontMap; context: PPangoContext; desc: PPangoFontDescription): PPangoFont; cdecl;
+    list_families: procedure(fontmap: PPangoFontMap; families: PPPPangoFontFamily; n_families: Pgint); cdecl;
+    load_fontset: function(fontmap: PPangoFontMap; context: PPangoContext; desc: PPangoFontDescription; language: PPangoLanguage): PPangoFontset; cdecl;
+    shape_engine_type: Pgchar;
+    get_serial: function(fontmap: PPangoFontMap): guint; cdecl;
+    changed: procedure(fontmap: PPangoFontMap); cdecl;
+    get_family: function(fontmap: PPangoFontMap; name: Pgchar): PPangoFontFamily; cdecl;
+    get_face: function(fontmap: PPangoFontMap; font: PPangoFont): PPangoFontFace; cdecl;
+  end;
+
+
+  { TPangoFontScale }
+  PPPangoFontScale = ^PPangoFontScale;
+  PPangoFontScale = ^TPangoFontScale;
+
+
+  { TPangoFontsetClass }
+  PPPangoFontsetClass = ^PPangoFontsetClass;
+  PPangoFontsetClass = ^TPangoFontsetClass;
+  TPangoFontsetClass = object
+    parent_class: TGObjectClass;
+    get_font: function(fontset: PPangoFontset; wc: guint): PPangoFont; cdecl;
+    get_metrics: function(fontset: PPangoFontset): PPangoFontMetrics; cdecl;
+    get_language: function(fontset: PPangoFontset): PPangoLanguage; cdecl;
+    foreach: procedure(fontset: PPangoFontset; func: TPangoFontsetForeachFunc; data: gpointer); cdecl;
+    _pango_reserved1: procedure; cdecl;
+    _pango_reserved2: procedure; cdecl;
+    _pango_reserved3: procedure; cdecl;
+    _pango_reserved4: procedure; cdecl;
+  end;
+
+
+  { TPangoFontsetSimple }
+  PPPangoFontsetSimple = ^PPangoFontsetSimple;
+  PPangoFontsetSimple = ^TPangoFontsetSimple;
+  TPangoFontsetSimple = object(TPangoFontset)
+    function new(language: PPangoLanguage): PPangoFontsetSimple; cdecl; inline; static;
+    procedure append(font: PPangoFont); cdecl; inline;
+    function size: gint; cdecl; inline;
+  end;
+
+
+  { TPangoFontsetSimpleClass }
+  PPPangoFontsetSimpleClass = ^PPangoFontsetSimpleClass;
+  PPangoFontsetSimpleClass = ^TPangoFontsetSimpleClass;
+  TPangoFontsetSimpleClass = object
+  end;
+
+
+  { TPangoGlyphGeometry }
   PPPangoGlyphGeometry = ^PPangoGlyphGeometry;
   PPangoGlyphGeometry = ^TPangoGlyphGeometry;
 
@@ -801,19 +1164,19 @@ type
 
 
 
+
+  { TPangoGlyphVisAttr }
   PPPangoGlyphVisAttr = ^PPangoGlyphVisAttr;
   PPangoGlyphVisAttr = ^TPangoGlyphVisAttr;
-  TPangoGlyphVisAttrBitfield0 = bitpacked record
-    is_cluster_start: guint1 { changed from guint to accomodate 1 bitsize requirement };
-  end;
-
 
   TPangoGlyphVisAttr = record
-    Bitfield0 : TPangoGlyphVisAttrBitfield0; { auto generated type }
+    is_cluster_start: guint;
   end;
 
 
 
+
+  { TPangoGlyphInfo }
   PPPangoGlyphInfo = ^PPangoGlyphInfo;
   PPangoGlyphInfo = ^TPangoGlyphInfo;
 
@@ -830,6 +1193,7 @@ type
     num_chars: gint;
     analysis: TPangoAnalysis;
     function new: PPangoItem; cdecl; inline; static;
+    procedure apply_attrs(iter: PPangoAttrIterator); cdecl; inline;
     function copy: PPangoItem; cdecl; inline;
     procedure free; cdecl; inline;
     function split(split_index: gint; split_offset: gint): PPangoItem; cdecl; inline;
@@ -847,6 +1211,7 @@ type
     procedure get_logical_widths(text: Pgchar; length: gint; embedding_level: gint; logical_widths: Pgint); cdecl; inline;
     function get_width: gint; cdecl; inline;
     procedure index_to_x(text: Pgchar; length: gint; analysis: PPangoAnalysis; index_: gint; trailing: gboolean; x_pos: Pgint); cdecl; inline;
+    procedure index_to_x_full(text: Pgchar; length: gint; analysis: PPangoAnalysis; attrs: PPangoLogAttr; index_: gint; trailing: gboolean; x_pos: Pgint); cdecl; inline;
     procedure set_size(new_len: gint); cdecl; inline;
     procedure x_to_index(text: Pgchar; length: gint; analysis: PPangoAnalysis; x_pos: gint; index_: Pgint; trailing: Pgint); cdecl; inline;
   end;
@@ -864,6 +1229,9 @@ type
     backspace_deletes_character: guint1 { changed from guint to accomodate 1 bitsize requirement };
     is_expandable_space: guint1 { changed from guint to accomodate 1 bitsize requirement };
     is_word_boundary: guint1 { changed from guint to accomodate 1 bitsize requirement };
+    break_inserts_hyphen: guint1 { changed from guint to accomodate 1 bitsize requirement };
+    break_removes_preceding: guint1 { changed from guint to accomodate 1 bitsize requirement };
+    reserved: guint17 { changed from guint to accomodate 17 bitsize requirement };
   end;
 
 
@@ -873,6 +1241,8 @@ type
 
 
 
+
+  { TPangoGlyphItemIter }
   PPPangoGlyphItemIter = ^PPangoGlyphItemIter;
   PPangoGlyphItemIter = ^TPangoGlyphItemIter;
   TPangoGlyphItemIter = object
@@ -892,31 +1262,54 @@ type
     function prev_cluster: gboolean; cdecl; inline;
   end;
 
+
+  { TPangoLayout }
   PPPangoLayout = ^PPangoLayout;
   PPangoLayout = ^TPangoLayout;
 
+
+  { TPangoLayoutDeserializeFlags }
+  PPPangoLayoutDeserializeFlags = ^PPangoLayoutDeserializeFlags;
+  PPangoLayoutDeserializeFlags = ^TPangoLayoutDeserializeFlags;
+
+
+  { TPangoLayoutIter }
   PPPangoLayoutIter = ^PPangoLayoutIter;
   PPangoLayoutIter = ^TPangoLayoutIter;
 
+
+  { TPangoLayoutLine }
   PPPangoLayoutLine = ^PPangoLayoutLine;
   PPangoLayoutLine = ^TPangoLayoutLine;
 
+
+  { TPangoTabArray }
   PPPangoTabArray = ^PPangoTabArray;
   PPangoTabArray = ^TPangoTabArray;
 
+
+  { TPangoWrapMode }
   PPPangoWrapMode = ^PPangoWrapMode;
   PPangoWrapMode = ^TPangoWrapMode;
+
+
+  { TPangoLayoutSerializeFlags }
+  PPPangoLayoutSerializeFlags = ^PPangoLayoutSerializeFlags;
+  PPangoLayoutSerializeFlags = ^TPangoLayoutSerializeFlags;
   TPangoLayout = object(TGObject)
     function new(context: PPangoContext): PPangoLayout; cdecl; inline; static;
+    function deserialize(context: PPangoContext; bytes: PGBytes; flags: TPangoLayoutDeserializeFlags; error: PPGError): PPangoLayout; cdecl; inline; static;
     procedure context_changed; cdecl; inline;
     function copy: PPangoLayout; cdecl; inline;
     function get_alignment: TPangoAlignment; cdecl; inline;
     function get_attributes: PPangoAttrList; cdecl; inline;
     function get_auto_dir: gboolean; cdecl; inline;
     function get_baseline: gint; cdecl; inline;
+    procedure get_caret_pos(index_: gint; strong_pos: PPangoRectangle; weak_pos: PPangoRectangle); cdecl; inline;
     function get_character_count: gint; cdecl; inline;
     function get_context: PPangoContext; cdecl; inline;
     procedure get_cursor_pos(index_: gint; strong_pos: PPangoRectangle; weak_pos: PPangoRectangle); cdecl; inline;
+    function get_direction(index: gint): TPangoDirection; cdecl; inline;
     function get_ellipsize: TPangoEllipsizeMode; cdecl; inline;
     procedure get_extents(ink_rect: PPangoRectangle; logical_rect: PPangoRectangle); cdecl; inline;
     function get_font_description: PPangoFontDescription; cdecl; inline;
@@ -924,9 +1317,11 @@ type
     function get_indent: gint; cdecl; inline;
     function get_iter: PPangoLayoutIter; cdecl; inline;
     function get_justify: gboolean; cdecl; inline;
+    function get_justify_last_line: gboolean; cdecl; inline;
     function get_line(line: gint): PPangoLayoutLine; cdecl; inline;
     function get_line_count: gint; cdecl; inline;
     function get_line_readonly(line: gint): PPangoLayoutLine; cdecl; inline;
+    function get_line_spacing: gfloat; cdecl; inline;
     function get_lines: PGSList; cdecl; inline;
     function get_lines_readonly: PGSList; cdecl; inline;
     procedure get_log_attrs(attrs: PPPangoLogAttr; n_attrs: Pgint); cdecl; inline;
@@ -947,6 +1342,7 @@ type
     function is_ellipsized: gboolean; cdecl; inline;
     function is_wrapped: gboolean; cdecl; inline;
     procedure move_cursor_visually(strong: gboolean; old_index: gint; old_trailing: gint; direction: gint; new_index: Pgint; new_trailing: Pgint); cdecl; inline;
+    function serialize(flags: TPangoLayoutSerializeFlags): PGBytes; cdecl; inline;
     procedure set_alignment(alignment: TPangoAlignment); cdecl; inline;
     procedure set_attributes(attrs: PPangoAttrList); cdecl; inline;
     procedure set_auto_dir(auto_dir: gboolean); cdecl; inline;
@@ -955,6 +1351,8 @@ type
     procedure set_height(height: gint); cdecl; inline;
     procedure set_indent(indent: gint); cdecl; inline;
     procedure set_justify(justify: gboolean); cdecl; inline;
+    procedure set_justify_last_line(justify: gboolean); cdecl; inline;
+    procedure set_line_spacing(factor: gfloat); cdecl; inline;
     procedure set_markup(markup: Pgchar; length: gint); cdecl; inline;
     procedure set_markup_with_accel(markup: Pgchar; length: gint; accel_marker: gunichar; accel_char: Pgunichar); cdecl; inline;
     procedure set_single_paragraph_mode(setting: gboolean); cdecl; inline;
@@ -963,6 +1361,7 @@ type
     procedure set_text(text: Pgchar; length: gint); cdecl; inline;
     procedure set_width(width: gint); cdecl; inline;
     procedure set_wrap(wrap: TPangoWrapMode); cdecl; inline;
+    function write_to_file(flags: TPangoLayoutSerializeFlags; filename: Pgchar; error: PPGError): gboolean; cdecl; inline;
     function xy_to_index(x: gint; y: gint; index_: Pgint; trailing: Pgint): gboolean; cdecl; inline;
   end;
   TPangoLayoutIter = object
@@ -980,6 +1379,7 @@ type
     function get_line_readonly: PPangoLayoutLine; cdecl; inline;
     procedure get_line_yrange(y0_: Pgint; y1_: Pgint); cdecl; inline;
     function get_run: PPangoLayoutRun; cdecl; inline;
+    function get_run_baseline: gint; cdecl; inline;
     procedure get_run_extents(ink_rect: PPangoRectangle; logical_rect: PPangoRectangle); cdecl; inline;
     function get_run_readonly: PPangoLayoutRun; cdecl; inline;
     function next_char: gboolean; cdecl; inline;
@@ -988,7 +1388,7 @@ type
     function next_run: gboolean; cdecl; inline;
   end;
   TPangoLayoutLineBitfield0 = bitpacked record
-    is_paragraph_start: guint1 { changed from guint to accomodate 1 bitsize requirement };
+    is_paragraph_start1: guint1 { changed from guint to accomodate 1 bitsize requirement };
     resolved_dir: guint3 { changed from guint to accomodate 3 bitsize requirement };
   end;
 
@@ -999,14 +1399,21 @@ type
     runs: PGSList;
     Bitfield0 : TPangoLayoutLineBitfield0; { auto generated type }
     procedure get_extents(ink_rect: PPangoRectangle; logical_rect: PPangoRectangle); cdecl; inline;
+    procedure get_height(height: Pgint); cdecl; inline;
+    function get_length: gint; cdecl; inline;
     procedure get_pixel_extents(ink_rect: PPangoRectangle; logical_rect: PPangoRectangle); cdecl; inline;
+    function get_resolved_direction: TPangoDirection; cdecl; inline;
+    function get_start_index: gint; cdecl; inline;
     procedure get_x_ranges(start_index: gint; end_index: gint; ranges: PPgint; n_ranges: Pgint); cdecl; inline;
     procedure index_to_x(index_: gint; trailing: gboolean; x_pos: Pgint); cdecl; inline;
+    function is_paragraph_start: gboolean; cdecl; inline;
     function ref: PPangoLayoutLine; cdecl; inline;
     procedure unref; cdecl; inline;
     function x_to_index(x_pos: gint; index_: Pgint; trailing: Pgint): gboolean; cdecl; inline;
   end;
 
+
+  { TPangoTabAlign }
   PPPangoTabAlign = ^PPangoTabAlign;
   PPangoTabAlign = ^TPangoTabAlign;
   TPangoTabArray = object
@@ -1014,28 +1421,54 @@ type
     //function new_with_positions(size: gint; positions_in_pixels: gboolean; first_alignment: TPangoTabAlign; first_position: gint; args: array of const): PPangoTabArray; cdecl; inline; static;
     function copy: PPangoTabArray; cdecl; inline;
     procedure free; cdecl; inline;
+    function get_decimal_point(tab_index: gint): gunichar; cdecl; inline;
     function get_positions_in_pixels: gboolean; cdecl; inline;
     function get_size: gint; cdecl; inline;
     procedure get_tab(tab_index: gint; alignment: PPangoTabAlign; location: Pgint); cdecl; inline;
     procedure get_tabs(alignments: PPPangoTabAlign; locations: PPgint); cdecl; inline;
     procedure resize(new_size: gint); cdecl; inline;
+    procedure set_decimal_point(tab_index: gint; decimal_point: gunichar); cdecl; inline;
+    procedure set_positions_in_pixels(positions_in_pixels: gboolean); cdecl; inline;
     procedure set_tab(tab_index: gint; alignment: TPangoTabAlign; location: gint); cdecl; inline;
+    procedure sort; cdecl; inline;
+    function to_string: Pgchar; cdecl; inline;
+    function from_string(text: Pgchar): PPangoTabArray; cdecl; inline; static;
   end;
 
+
+  { TPangoLayoutClass }
   PPPangoLayoutClass = ^PPangoLayoutClass;
   PPangoLayoutClass = ^TPangoLayoutClass;
   TPangoLayoutClass = object
   end;
 
+
+  { TPangoLayoutDeserializeError }
+  PPPangoLayoutDeserializeError = ^PPangoLayoutDeserializeError;
+  PPangoLayoutDeserializeError = ^TPangoLayoutDeserializeError;
+
+
+  { TPangoOverline }
+  PPPangoOverline = ^PPangoOverline;
+  PPangoOverline = ^TPangoOverline;
+
+
+  { TPangoRenderPart }
   PPPangoRenderPart = ^PPangoRenderPart;
   PPangoRenderPart = ^TPangoRenderPart;
 
+
+  { TPangoRenderer }
   PPPangoRenderer = ^PPangoRenderer;
   PPangoRenderer = ^TPangoRenderer;
 
+
+  { TPangoUnderline }
   PPPangoUnderline = ^PPangoUnderline;
   PPangoUnderline = ^TPangoUnderline;
 
+
+  { TPangoRendererPrivate }
   PPPangoRendererPrivate = ^PPangoRendererPrivate;
   PPangoRendererPrivate = ^TPangoRendererPrivate;
   TPangoRenderer = object(TGObject)
@@ -1054,11 +1487,13 @@ type
     procedure draw_layout_line(line: PPangoLayoutLine; x: gint; y: gint); cdecl; inline;
     procedure draw_rectangle(part: TPangoRenderPart; x: gint; y: gint; width: gint; height: gint); cdecl; inline;
     procedure draw_trapezoid(part: TPangoRenderPart; y1_: gdouble; x11: gdouble; x21: gdouble; y2: gdouble; x12: gdouble; x22: gdouble); cdecl; inline;
+    function get_alpha(part: TPangoRenderPart): guint16; cdecl; inline;
     function get_color(part: TPangoRenderPart): PPangoColor; cdecl; inline;
     function get_layout: PPangoLayout; cdecl; inline;
     function get_layout_line: PPangoLayoutLine; cdecl; inline;
     function get_matrix: PPangoMatrix; cdecl; inline;
     procedure part_changed(part: TPangoRenderPart); cdecl; inline;
+    procedure set_alpha(part: TPangoRenderPart; alpha: guint16); cdecl; inline;
     procedure set_color(part: TPangoRenderPart; color: PPangoColor); cdecl; inline;
     procedure set_matrix(matrix: PPangoMatrix); cdecl; inline;
   end;
@@ -1068,6 +1503,8 @@ type
 
 
 
+
+  { TPangoRendererClass }
   PPPangoRendererClass = ^PPangoRendererClass;
   PPangoRendererClass = ^TPangoRendererClass;
   TPangoRendererClass = object
@@ -1088,66 +1525,105 @@ type
     _pango_reserved4: procedure; cdecl;
   end;
 
+
+  { TPangoScriptIter }
   PPPangoScriptIter = ^PPangoScriptIter;
   PPangoScriptIter = ^TPangoScriptIter;
   TPangoScriptIter = object
+    function new(text: Pgchar; length: gint): PPangoScriptIter; cdecl; inline; static;
     procedure free; cdecl; inline;
     procedure get_range(start: PPgchar; end_: PPgchar; script: PPangoScript); cdecl; inline;
     function next: gboolean; cdecl; inline;
-    function new(text: Pgchar; length: gint): PPangoScriptIter; cdecl; inline; static;
   end;
 
-  PP_PangoScriptForLang = ^P_PangoScriptForLang;
-  P_PangoScriptForLang = ^T_PangoScriptForLang;
-
-  T_PangoScriptForLang = record
-    lang: array [0..6] of gchar;
-    scripts: array [0..2] of TPangoScript;
-  end;
+  { TPangoShapeFlags }
+  PPPangoShapeFlags = ^PPangoShapeFlags;
+  PPangoShapeFlags = ^TPangoShapeFlags;
 
 
+  { TPangoShowFlags }
+  PPPangoShowFlags = ^PPangoShowFlags;
+  PPangoShowFlags = ^TPangoShowFlags;
 
+
+  { TPangoTextTransform }
+  PPPangoTextTransform = ^PPangoTextTransform;
+  PPangoTextTransform = ^TPangoTextTransform;
+
+function PANGO_PIXELS(d:integer):integer;inline;
+
+function pango_attr_allow_breaks_new(allow_breaks: gboolean): PPangoAttribute; cdecl; external;
+function pango_attr_background_alpha_new(alpha: guint16): PPangoAttribute; cdecl; external;
 function pango_attr_background_new(red: guint16; green: guint16; blue: guint16): PPangoAttribute; cdecl; external;
+function pango_attr_baseline_shift_new(shift: gint): PPangoAttribute; cdecl; external;
 function pango_attr_fallback_new(enable_fallback: gboolean): PPangoAttribute; cdecl; external;
 function pango_attr_family_new(family: Pgchar): PPangoAttribute; cdecl; external;
 function pango_attr_font_desc_new(desc: PPangoFontDescription): PPangoAttribute; cdecl; external;
+function pango_attr_font_features_new(features: Pgchar): PPangoAttribute; cdecl; external;
+function pango_attr_font_scale_new(scale: TPangoFontScale): PPangoAttribute; cdecl; external;
+function pango_attr_foreground_alpha_new(alpha: guint16): PPangoAttribute; cdecl; external;
 function pango_attr_foreground_new(red: guint16; green: guint16; blue: guint16): PPangoAttribute; cdecl; external;
 function pango_attr_gravity_hint_new(hint: TPangoGravityHint): PPangoAttribute; cdecl; external;
 function pango_attr_gravity_new(gravity: TPangoGravity): PPangoAttribute; cdecl; external;
+function pango_attr_insert_hyphens_new(insert_hyphens: gboolean): PPangoAttribute; cdecl; external;
 function pango_attr_iterator_copy(iterator: PPangoAttrIterator): PPangoAttrIterator; cdecl; external;
 function pango_attr_iterator_get(iterator: PPangoAttrIterator; type_: TPangoAttrType): PPangoAttribute; cdecl; external;
 function pango_attr_iterator_get_attrs(iterator: PPangoAttrIterator): PGSList; cdecl; external;
+function pango_attr_iterator_get_type: TGType; cdecl; external;
 function pango_attr_iterator_next(iterator: PPangoAttrIterator): gboolean; cdecl; external;
 function pango_attr_language_new(language: PPangoLanguage): PPangoAttribute; cdecl; external;
 function pango_attr_letter_spacing_new(letter_spacing: gint): PPangoAttribute; cdecl; external;
+function pango_attr_line_height_new(factor: gdouble): PPangoAttribute; cdecl; external;
+function pango_attr_line_height_new_absolute(height: gint): PPangoAttribute; cdecl; external;
 function pango_attr_list_copy(list: PPangoAttrList): PPangoAttrList; cdecl; external;
+function pango_attr_list_equal(list: PPangoAttrList; other_list: PPangoAttrList): gboolean; cdecl; external;
 function pango_attr_list_filter(list: PPangoAttrList; func: TPangoAttrFilterFunc; data: gpointer): PPangoAttrList; cdecl; external;
+function pango_attr_list_from_string(text: Pgchar): PPangoAttrList; cdecl; external;
+function pango_attr_list_get_attributes(list: PPangoAttrList): PGSList; cdecl; external;
 function pango_attr_list_get_iterator(list: PPangoAttrList): PPangoAttrIterator; cdecl; external;
 function pango_attr_list_get_type: TGType; cdecl; external;
 function pango_attr_list_new: PPangoAttrList; cdecl; external;
 function pango_attr_list_ref(list: PPangoAttrList): PPangoAttrList; cdecl; external;
+function pango_attr_list_to_string(list: PPangoAttrList): Pgchar; cdecl; external;
+function pango_attr_overline_color_new(red: guint16; green: guint16; blue: guint16): PPangoAttribute; cdecl; external;
+function pango_attr_overline_new(overline: TPangoOverline): PPangoAttribute; cdecl; external;
 function pango_attr_rise_new(rise: gint): PPangoAttribute; cdecl; external;
 function pango_attr_scale_new(scale_factor: gdouble): PPangoAttribute; cdecl; external;
+function pango_attr_sentence_new: PPangoAttribute; cdecl; external;
 function pango_attr_shape_new(ink_rect: PPangoRectangle; logical_rect: PPangoRectangle): PPangoAttribute; cdecl; external;
 function pango_attr_shape_new_with_data(ink_rect: PPangoRectangle; logical_rect: PPangoRectangle; data: gpointer; copy_func: TPangoAttrDataCopyFunc; destroy_func: TGDestroyNotify): PPangoAttribute; cdecl; external;
+function pango_attr_show_new(flags: TPangoShowFlags): PPangoAttribute; cdecl; external;
 function pango_attr_size_new(size: gint): PPangoAttribute; cdecl; external;
 function pango_attr_size_new_absolute(size: gint): PPangoAttribute; cdecl; external;
 function pango_attr_stretch_new(stretch: TPangoStretch): PPangoAttribute; cdecl; external;
 function pango_attr_strikethrough_color_new(red: guint16; green: guint16; blue: guint16): PPangoAttribute; cdecl; external;
 function pango_attr_strikethrough_new(strikethrough: gboolean): PPangoAttribute; cdecl; external;
 function pango_attr_style_new(style: TPangoStyle): PPangoAttribute; cdecl; external;
+function pango_attr_text_transform_new(transform: TPangoTextTransform): PPangoAttribute; cdecl; external;
 function pango_attr_type_get_name(type_: TPangoAttrType): Pgchar; cdecl; external;
 function pango_attr_type_register(name: Pgchar): TPangoAttrType; cdecl; external;
 function pango_attr_underline_color_new(red: guint16; green: guint16; blue: guint16): PPangoAttribute; cdecl; external;
 function pango_attr_underline_new(underline: TPangoUnderline): PPangoAttribute; cdecl; external;
 function pango_attr_variant_new(variant: TPangoVariant): PPangoAttribute; cdecl; external;
 function pango_attr_weight_new(weight: TPangoWeight): PPangoAttribute; cdecl; external;
+function pango_attr_word_new: PPangoAttribute; cdecl; external;
+function pango_attribute_as_color(attr: PPangoAttribute): PPangoAttrColor; cdecl; external;
+function pango_attribute_as_float(attr: PPangoAttribute): PPangoAttrFloat; cdecl; external;
+function pango_attribute_as_font_desc(attr: PPangoAttribute): PPangoAttrFontDesc; cdecl; external;
+function pango_attribute_as_font_features(attr: PPangoAttribute): PPangoAttrFontFeatures; cdecl; external;
+function pango_attribute_as_int(attr: PPangoAttribute): PPangoAttrInt; cdecl; external;
+function pango_attribute_as_language(attr: PPangoAttribute): PPangoAttrLanguage; cdecl; external;
+function pango_attribute_as_shape(attr: PPangoAttribute): PPangoAttrShape; cdecl; external;
+function pango_attribute_as_size(attr: PPangoAttribute): PPangoAttrSize; cdecl; external;
+function pango_attribute_as_string(attr: PPangoAttribute): PPangoAttrString; cdecl; external;
 function pango_attribute_copy(attr: PPangoAttribute): PPangoAttribute; cdecl; external;
 function pango_attribute_equal(attr1: PPangoAttribute; attr2: PPangoAttribute): gboolean; cdecl; external;
+function pango_attribute_get_type: TGType; cdecl; external;
 function pango_bidi_type_for_unichar(ch: gunichar): TPangoBidiType; cdecl; external;
 function pango_color_copy(src: PPangoColor): PPangoColor; cdecl; external;
 function pango_color_get_type: TGType; cdecl; external;
 function pango_color_parse(color: PPangoColor; spec: Pgchar): gboolean; cdecl; external;
+function pango_color_parse_with_alpha(color: PPangoColor; alpha: Pguint16; spec: Pgchar): gboolean; cdecl; external;
 function pango_color_to_string(color: PPangoColor): Pgchar; cdecl; external;
 function pango_context_get_base_dir(context: PPangoContext): TPangoDirection; cdecl; external;
 function pango_context_get_base_gravity(context: PPangoContext): TPangoGravity; cdecl; external;
@@ -1158,16 +1634,16 @@ function pango_context_get_gravity_hint(context: PPangoContext): TPangoGravityHi
 function pango_context_get_language(context: PPangoContext): PPangoLanguage; cdecl; external;
 function pango_context_get_matrix(context: PPangoContext): PPangoMatrix; cdecl; external;
 function pango_context_get_metrics(context: PPangoContext; desc: PPangoFontDescription; language: PPangoLanguage): PPangoFontMetrics; cdecl; external;
+function pango_context_get_round_glyph_positions(context: PPangoContext): gboolean; cdecl; external;
 function pango_context_get_serial(context: PPangoContext): guint; cdecl; external;
 function pango_context_get_type: TGType; cdecl; external;
 function pango_context_load_font(context: PPangoContext; desc: PPangoFontDescription): PPangoFont; cdecl; external;
 function pango_context_load_fontset(context: PPangoContext; desc: PPangoFontDescription; language: PPangoLanguage): PPangoFontset; cdecl; external;
 function pango_context_new: PPangoContext; cdecl; external;
 function pango_coverage_copy(coverage: PPangoCoverage): PPangoCoverage; cdecl; external;
-function pango_coverage_from_bytes(bytes: Pguint8; n_bytes: gint): PPangoCoverage; cdecl; external;
 function pango_coverage_get(coverage: PPangoCoverage; index_: gint): TPangoCoverageLevel; cdecl; external;
+function pango_coverage_get_type: TGType; cdecl; external;
 function pango_coverage_new: PPangoCoverage; cdecl; external;
-function pango_coverage_ref(coverage: PPangoCoverage): PPangoCoverage; cdecl; external;
 function pango_find_base_dir(text: Pgchar; length: gint): TPangoDirection; cdecl; external;
 function pango_font_describe(font: PPangoFont): PPangoFontDescription; cdecl; external;
 function pango_font_describe_with_absolute_size(font: PPangoFont): PPangoFontDescription; cdecl; external;
@@ -1185,24 +1661,33 @@ function pango_font_description_get_stretch(desc: PPangoFontDescription): TPango
 function pango_font_description_get_style(desc: PPangoFontDescription): TPangoStyle; cdecl; external;
 function pango_font_description_get_type: TGType; cdecl; external;
 function pango_font_description_get_variant(desc: PPangoFontDescription): TPangoVariant; cdecl; external;
+function pango_font_description_get_variations(desc: PPangoFontDescription): Pgchar; cdecl; external;
 function pango_font_description_get_weight(desc: PPangoFontDescription): TPangoWeight; cdecl; external;
 function pango_font_description_hash(desc: PPangoFontDescription): guint; cdecl; external;
 function pango_font_description_new: PPangoFontDescription; cdecl; external;
 function pango_font_description_to_filename(desc: PPangoFontDescription): Pgchar; cdecl; external;
 function pango_font_description_to_string(desc: PPangoFontDescription): Pgchar; cdecl; external;
+function pango_font_deserialize(context: PPangoContext; bytes: PGBytes; error: PPGError): PPangoFont; cdecl; external;
 function pango_font_face_describe(face: PPangoFontFace): PPangoFontDescription; cdecl; external;
 function pango_font_face_get_face_name(face: PPangoFontFace): Pgchar; cdecl; external;
+function pango_font_face_get_family(face: PPangoFontFace): PPangoFontFamily; cdecl; external;
 function pango_font_face_get_type: TGType; cdecl; external;
 function pango_font_face_is_synthesized(face: PPangoFontFace): gboolean; cdecl; external;
+function pango_font_family_get_face(family: PPangoFontFamily; name: Pgchar): PPangoFontFace; cdecl; external;
 function pango_font_family_get_name(family: PPangoFontFamily): Pgchar; cdecl; external;
 function pango_font_family_get_type: TGType; cdecl; external;
 function pango_font_family_is_monospace(family: PPangoFontFamily): gboolean; cdecl; external;
-function pango_font_find_shaper(font: PPangoFont; language: PPangoLanguage; ch: guint32): PPangoEngineShape; cdecl; external;
+function pango_font_family_is_variable(family: PPangoFontFamily): gboolean; cdecl; external;
 function pango_font_get_coverage(font: PPangoFont; language: PPangoLanguage): PPangoCoverage; cdecl; external;
+function pango_font_get_face(font: PPangoFont): PPangoFontFace; cdecl; external;
 function pango_font_get_font_map(font: PPangoFont): PPangoFontMap; cdecl; external;
+function pango_font_get_hb_font(font: PPangoFont): Phb_font_t; cdecl; external;
+function pango_font_get_languages(font: PPangoFont): PPPangoLanguage; cdecl; external;
 function pango_font_get_metrics(font: PPangoFont; language: PPangoLanguage): PPangoFontMetrics; cdecl; external;
 function pango_font_get_type: TGType; cdecl; external;
+function pango_font_has_char(font: PPangoFont; wc: gunichar): gboolean; cdecl; external;
 function pango_font_map_create_context(fontmap: PPangoFontMap): PPangoContext; cdecl; external;
+function pango_font_map_get_family(fontmap: PPangoFontMap; name: Pgchar): PPangoFontFamily; cdecl; external;
 function pango_font_map_get_serial(fontmap: PPangoFontMap): guint; cdecl; external;
 function pango_font_map_get_type: TGType; cdecl; external;
 function pango_font_map_load_font(fontmap: PPangoFontMap; context: PPangoContext; desc: PPangoFontDescription): PPangoFont; cdecl; external;
@@ -1211,16 +1696,20 @@ function pango_font_metrics_get_approximate_char_width(metrics: PPangoFontMetric
 function pango_font_metrics_get_approximate_digit_width(metrics: PPangoFontMetrics): gint; cdecl; external;
 function pango_font_metrics_get_ascent(metrics: PPangoFontMetrics): gint; cdecl; external;
 function pango_font_metrics_get_descent(metrics: PPangoFontMetrics): gint; cdecl; external;
+function pango_font_metrics_get_height(metrics: PPangoFontMetrics): gint; cdecl; external;
 function pango_font_metrics_get_strikethrough_position(metrics: PPangoFontMetrics): gint; cdecl; external;
 function pango_font_metrics_get_strikethrough_thickness(metrics: PPangoFontMetrics): gint; cdecl; external;
 function pango_font_metrics_get_type: TGType; cdecl; external;
 function pango_font_metrics_get_underline_position(metrics: PPangoFontMetrics): gint; cdecl; external;
 function pango_font_metrics_get_underline_thickness(metrics: PPangoFontMetrics): gint; cdecl; external;
 function pango_font_metrics_ref(metrics: PPangoFontMetrics): PPangoFontMetrics; cdecl; external;
+function pango_font_serialize(font: PPangoFont): PGBytes; cdecl; external;
 function pango_fontset_get_font(fontset: PPangoFontset; wc: guint): PPangoFont; cdecl; external;
 function pango_fontset_get_metrics(fontset: PPangoFontset): PPangoFontMetrics; cdecl; external;
 function pango_fontset_get_type: TGType; cdecl; external;
-function pango_get_mirror_char(ch: gunichar; mirrored_ch: Pgunichar): gboolean; cdecl; external;
+function pango_fontset_simple_get_type: TGType; cdecl; external;
+function pango_fontset_simple_new(language: PPangoLanguage): PPangoFontsetSimple; cdecl; external;
+function pango_fontset_simple_size(fontset: PPangoFontsetSimple): gint; cdecl; external;
 function pango_glyph_item_apply_attrs(glyph_item: PPangoGlyphItem; text: Pgchar; list: PPangoAttrList): PGSList; cdecl; external;
 function pango_glyph_item_copy(orig: PPangoGlyphItem): PPangoGlyphItem; cdecl; external;
 function pango_glyph_item_get_type: TGType; cdecl; external;
@@ -1248,6 +1737,7 @@ function pango_itemize(context: PPangoContext; text: Pgchar; start_index: gint; 
 function pango_itemize_with_base_dir(context: PPangoContext; base_dir: TPangoDirection; text: Pgchar; start_index: gint; length: gint; attrs: PPangoAttrList; cached_iter: PPangoAttrIterator): PGList; cdecl; external;
 function pango_language_from_string(language: Pgchar): PPangoLanguage; cdecl; external;
 function pango_language_get_default: PPangoLanguage; cdecl; external;
+function pango_language_get_preferred: PPPangoLanguage; cdecl; external;
 function pango_language_get_sample_string(language: PPangoLanguage): Pgchar; cdecl; external;
 function pango_language_get_scripts(language: PPangoLanguage; num_scripts: Pgint): PPangoScript; cdecl; external;
 function pango_language_get_type: TGType; cdecl; external;
@@ -1255,21 +1745,26 @@ function pango_language_includes_script(language: PPangoLanguage; script: TPango
 function pango_language_matches(language: PPangoLanguage; range_list: Pgchar): gboolean; cdecl; external;
 function pango_language_to_string(language: PPangoLanguage): Pgchar; cdecl; external;
 function pango_layout_copy(src: PPangoLayout): PPangoLayout; cdecl; external;
+function pango_layout_deserialize(context: PPangoContext; bytes: PGBytes; flags: TPangoLayoutDeserializeFlags; error: PPGError): PPangoLayout; cdecl; external;
+function pango_layout_deserialize_error_quark: TGQuark; cdecl; external;
 function pango_layout_get_alignment(layout: PPangoLayout): TPangoAlignment; cdecl; external;
 function pango_layout_get_attributes(layout: PPangoLayout): PPangoAttrList; cdecl; external;
 function pango_layout_get_auto_dir(layout: PPangoLayout): gboolean; cdecl; external;
 function pango_layout_get_baseline(layout: PPangoLayout): gint; cdecl; external;
 function pango_layout_get_character_count(layout: PPangoLayout): gint; cdecl; external;
 function pango_layout_get_context(layout: PPangoLayout): PPangoContext; cdecl; external;
+function pango_layout_get_direction(layout: PPangoLayout; index: gint): TPangoDirection; cdecl; external;
 function pango_layout_get_ellipsize(layout: PPangoLayout): TPangoEllipsizeMode; cdecl; external;
 function pango_layout_get_font_description(layout: PPangoLayout): PPangoFontDescription; cdecl; external;
 function pango_layout_get_height(layout: PPangoLayout): gint; cdecl; external;
 function pango_layout_get_indent(layout: PPangoLayout): gint; cdecl; external;
 function pango_layout_get_iter(layout: PPangoLayout): PPangoLayoutIter; cdecl; external;
 function pango_layout_get_justify(layout: PPangoLayout): gboolean; cdecl; external;
+function pango_layout_get_justify_last_line(layout: PPangoLayout): gboolean; cdecl; external;
 function pango_layout_get_line(layout: PPangoLayout; line: gint): PPangoLayoutLine; cdecl; external;
 function pango_layout_get_line_count(layout: PPangoLayout): gint; cdecl; external;
 function pango_layout_get_line_readonly(layout: PPangoLayout; line: gint): PPangoLayoutLine; cdecl; external;
+function pango_layout_get_line_spacing(layout: PPangoLayout): gfloat; cdecl; external;
 function pango_layout_get_lines(layout: PPangoLayout): PGSList; cdecl; external;
 function pango_layout_get_lines_readonly(layout: PPangoLayout): PGSList; cdecl; external;
 function pango_layout_get_log_attrs_readonly(layout: PPangoLayout; n_attrs: Pgint): PPangoLogAttr; cdecl; external;
@@ -1292,58 +1787,63 @@ function pango_layout_iter_get_layout(iter: PPangoLayoutIter): PPangoLayout; cde
 function pango_layout_iter_get_line(iter: PPangoLayoutIter): PPangoLayoutLine; cdecl; external;
 function pango_layout_iter_get_line_readonly(iter: PPangoLayoutIter): PPangoLayoutLine; cdecl; external;
 function pango_layout_iter_get_run(iter: PPangoLayoutIter): PPangoLayoutRun; cdecl; external;
+function pango_layout_iter_get_run_baseline(iter: PPangoLayoutIter): gint; cdecl; external;
 function pango_layout_iter_get_run_readonly(iter: PPangoLayoutIter): PPangoLayoutRun; cdecl; external;
 function pango_layout_iter_get_type: TGType; cdecl; external;
 function pango_layout_iter_next_char(iter: PPangoLayoutIter): gboolean; cdecl; external;
 function pango_layout_iter_next_cluster(iter: PPangoLayoutIter): gboolean; cdecl; external;
 function pango_layout_iter_next_line(iter: PPangoLayoutIter): gboolean; cdecl; external;
 function pango_layout_iter_next_run(iter: PPangoLayoutIter): gboolean; cdecl; external;
+function pango_layout_line_get_length(line: PPangoLayoutLine): gint; cdecl; external;
+function pango_layout_line_get_resolved_direction(line: PPangoLayoutLine): TPangoDirection; cdecl; external;
+function pango_layout_line_get_start_index(line: PPangoLayoutLine): gint; cdecl; external;
 function pango_layout_line_get_type: TGType; cdecl; external;
+function pango_layout_line_is_paragraph_start(line: PPangoLayoutLine): gboolean; cdecl; external;
 function pango_layout_line_ref(line: PPangoLayoutLine): PPangoLayoutLine; cdecl; external;
 function pango_layout_line_x_to_index(line: PPangoLayoutLine; x_pos: gint; index_: Pgint; trailing: Pgint): gboolean; cdecl; external;
 function pango_layout_new(context: PPangoContext): PPangoLayout; cdecl; external;
+function pango_layout_serialize(layout: PPangoLayout; flags: TPangoLayoutSerializeFlags): PGBytes; cdecl; external;
+function pango_layout_write_to_file(layout: PPangoLayout; flags: TPangoLayoutSerializeFlags; filename: Pgchar; error: PPGError): gboolean; cdecl; external;
 function pango_layout_xy_to_index(layout: PPangoLayout; x: gint; y: gint; index_: Pgint; trailing: Pgint): gboolean; cdecl; external;
 function pango_log2vis_get_embedding_levels(text: Pgchar; length: gint; pbase_dir: PPangoDirection): Pguint8; cdecl; external;
 function pango_markup_parser_finish(context: PGMarkupParseContext; attr_list: PPPangoAttrList; text: PPgchar; accel_char: Pgunichar; error: PPGError): gboolean; cdecl; external;
 function pango_markup_parser_new(accel_marker: gunichar): PGMarkupParseContext; cdecl; external;
 function pango_matrix_copy(matrix: PPangoMatrix): PPangoMatrix; cdecl; external;
 function pango_matrix_get_font_scale_factor(matrix: PPangoMatrix): gdouble; cdecl; external;
+function pango_matrix_get_slant_ratio(matrix: PPangoMatrix): gdouble; cdecl; external;
 function pango_matrix_get_type: TGType; cdecl; external;
-function pango_parse_enum(type_: TGType; str: Pgchar; value: Pgint; warn: gboolean; possible_values: PPgchar): gboolean; cdecl; external;
 function pango_parse_markup(markup_text: Pgchar; length: gint; accel_marker: gunichar; attr_list: PPPangoAttrList; text: PPgchar; accel_char: Pgunichar; error: PPGError): gboolean; cdecl; external;
 function pango_parse_stretch(str: Pgchar; stretch: PPangoStretch; warn: gboolean): gboolean; cdecl; external;
 function pango_parse_style(str: Pgchar; style: PPangoStyle; warn: gboolean): gboolean; cdecl; external;
 function pango_parse_variant(str: Pgchar; variant: PPangoVariant; warn: gboolean): gboolean; cdecl; external;
 function pango_parse_weight(str: Pgchar; weight: PPangoWeight; warn: gboolean): gboolean; cdecl; external;
-function pango_read_line(stream: Pgpointer; str: PGString): gint; cdecl; external;
+function pango_renderer_get_alpha(renderer: PPangoRenderer; part: TPangoRenderPart): guint16; cdecl; external;
 function pango_renderer_get_color(renderer: PPangoRenderer; part: TPangoRenderPart): PPangoColor; cdecl; external;
 function pango_renderer_get_layout(renderer: PPangoRenderer): PPangoLayout; cdecl; external;
 function pango_renderer_get_layout_line(renderer: PPangoRenderer): PPangoLayoutLine; cdecl; external;
 function pango_renderer_get_matrix(renderer: PPangoRenderer): PPangoMatrix; cdecl; external;
 function pango_renderer_get_type: TGType; cdecl; external;
-function pango_reorder_items(logical_items: PGList): PGList; cdecl; external;
-function pango_scan_int(pos: PPgchar; out_: Pgint): gboolean; cdecl; external;
-function pango_scan_string(pos: PPgchar; out_: PGString): gboolean; cdecl; external;
-function pango_scan_word(pos: PPgchar; out_: PGString): gboolean; cdecl; external;
-function pango_script_for_unichar(ch: gunichar): TPangoScript; cdecl; external;
+function pango_reorder_items(items: PGList): PGList; cdecl; external;
 function pango_script_get_sample_language(script: TPangoScript): PPangoLanguage; cdecl; external;
+function pango_script_iter_get_type: TGType; cdecl; external;
 function pango_script_iter_new(text: Pgchar; length: gint): PPangoScriptIter; cdecl; external;
 function pango_script_iter_next(iter: PPangoScriptIter): gboolean; cdecl; external;
-function pango_skip_space(pos: PPgchar): gboolean; cdecl; external;
-function pango_split_file_list(str: Pgchar): PPgchar; cdecl; external;
 function pango_tab_array_copy(src: PPangoTabArray): PPangoTabArray; cdecl; external;
+function pango_tab_array_from_string(text: Pgchar): PPangoTabArray; cdecl; external;
+function pango_tab_array_get_decimal_point(tab_array: PPangoTabArray; tab_index: gint): gunichar; cdecl; external;
 function pango_tab_array_get_positions_in_pixels(tab_array: PPangoTabArray): gboolean; cdecl; external;
 function pango_tab_array_get_size(tab_array: PPangoTabArray): gint; cdecl; external;
 function pango_tab_array_get_type: TGType; cdecl; external;
 function pango_tab_array_new(initial_size: gint; positions_in_pixels: gboolean): PPangoTabArray; cdecl; external;
 function pango_tab_array_new_with_positions(size: gint; positions_in_pixels: gboolean; first_alignment: TPangoTabAlign; first_position: gint; args: array of const): PPangoTabArray; cdecl; external;
-function pango_trim_string(str: Pgchar): Pgchar; cdecl; external;
+function pango_tab_array_to_string(tab_array: PPangoTabArray): Pgchar; cdecl; external;
 function pango_unichar_direction(ch: gunichar): TPangoDirection; cdecl; external;
 function pango_units_from_double(d: gdouble): gint; cdecl; external;
 function pango_units_to_double(i: gint): gdouble; cdecl; external;
 function pango_version: gint; cdecl; external;
 function pango_version_check(required_major: gint; required_minor: gint; required_micro: gint): Pgchar; cdecl; external;
 function pango_version_string: Pgchar; cdecl; external;
+procedure pango_attr_break(text: Pgchar; length: gint; attr_list: PPangoAttrList; offset: gint; attrs: PPangoLogAttr; attrs_len: gint); cdecl; external;
 procedure pango_attr_iterator_destroy(iterator: PPangoAttrIterator); cdecl; external;
 procedure pango_attr_iterator_get_font(iterator: PPangoAttrIterator; desc: PPangoFontDescription; language: PPPangoLanguage; extra_attrs: PPGSList); cdecl; external;
 procedure pango_attr_iterator_range(iterator: PPangoAttrIterator; start: Pgint; end_: Pgint); cdecl; external;
@@ -1352,9 +1852,9 @@ procedure pango_attr_list_insert(list: PPangoAttrList; attr: PPangoAttribute); c
 procedure pango_attr_list_insert_before(list: PPangoAttrList; attr: PPangoAttribute); cdecl; external;
 procedure pango_attr_list_splice(list: PPangoAttrList; other: PPangoAttrList; pos: gint; len: gint); cdecl; external;
 procedure pango_attr_list_unref(list: PPangoAttrList); cdecl; external;
+procedure pango_attr_list_update(list: PPangoAttrList; pos: gint; remove: gint; add: gint); cdecl; external;
 procedure pango_attribute_destroy(attr: PPangoAttribute); cdecl; external;
 procedure pango_attribute_init(attr: PPangoAttribute; klass: PPangoAttrClass); cdecl; external;
-procedure pango_break(text: Pgchar; length: gint; analysis: PPangoAnalysis; attrs: PPangoLogAttr; attrs_len: gint); cdecl; external;
 procedure pango_color_free(color: PPangoColor); cdecl; external;
 procedure pango_context_changed(context: PPangoContext); cdecl; external;
 procedure pango_context_list_families(context: PPangoContext; families: PPPPangoFontFamily; n_families: Pgint); cdecl; external;
@@ -1365,10 +1865,9 @@ procedure pango_context_set_font_map(context: PPangoContext; font_map: PPangoFon
 procedure pango_context_set_gravity_hint(context: PPangoContext; hint: TPangoGravityHint); cdecl; external;
 procedure pango_context_set_language(context: PPangoContext; language: PPangoLanguage); cdecl; external;
 procedure pango_context_set_matrix(context: PPangoContext; matrix: PPangoMatrix); cdecl; external;
-procedure pango_coverage_max(coverage: PPangoCoverage; other: PPangoCoverage); cdecl; external;
+procedure pango_context_set_round_glyph_positions(context: PPangoContext; round_positions: gboolean); cdecl; external;
 procedure pango_coverage_set(coverage: PPangoCoverage; index_: gint; level: TPangoCoverageLevel); cdecl; external;
-procedure pango_coverage_to_bytes(coverage: PPangoCoverage; bytes: PPguint8; n_bytes: Pgint); cdecl; external;
-procedure pango_coverage_unref(coverage: PPangoCoverage); cdecl; external;
+procedure pango_default_break(text: Pgchar; length: gint; analysis: PPangoAnalysis; attrs: PPangoLogAttr; attrs_len: gint); cdecl; external;
 procedure pango_extents_to_pixels(inclusive: PPangoRectangle; nearest: PPangoRectangle); cdecl; external;
 procedure pango_find_paragraph_boundary(text: Pgchar; length: gint; paragraph_delimiter_index: Pgint; next_paragraph_start: Pgint); cdecl; external;
 procedure pango_font_description_free(desc: PPangoFontDescription); cdecl; external;
@@ -1382,17 +1881,21 @@ procedure pango_font_description_set_size(desc: PPangoFontDescription; size: gin
 procedure pango_font_description_set_stretch(desc: PPangoFontDescription; stretch: TPangoStretch); cdecl; external;
 procedure pango_font_description_set_style(desc: PPangoFontDescription; style: TPangoStyle); cdecl; external;
 procedure pango_font_description_set_variant(desc: PPangoFontDescription; variant: TPangoVariant); cdecl; external;
+procedure pango_font_description_set_variations(desc: PPangoFontDescription; variations: Pgchar); cdecl; external;
+procedure pango_font_description_set_variations_static(desc: PPangoFontDescription; variations: Pgchar); cdecl; external;
 procedure pango_font_description_set_weight(desc: PPangoFontDescription; weight: TPangoWeight); cdecl; external;
 procedure pango_font_description_unset_fields(desc: PPangoFontDescription; to_unset: TPangoFontMask); cdecl; external;
 procedure pango_font_descriptions_free(descs: PPPangoFontDescription; n_descs: gint); cdecl; external;
 procedure pango_font_face_list_sizes(face: PPangoFontFace; sizes: PPgint; n_sizes: Pgint); cdecl; external;
 procedure pango_font_family_list_faces(family: PPangoFontFamily; faces: PPPPangoFontFace; n_faces: Pgint); cdecl; external;
+procedure pango_font_get_features(font: PPangoFont; features: Pgconstpointer; len: Pguint; num_features: Pguint); cdecl; external;
 procedure pango_font_get_glyph_extents(font: PPangoFont; glyph: TPangoGlyph; ink_rect: PPangoRectangle; logical_rect: PPangoRectangle); cdecl; external;
 procedure pango_font_map_changed(fontmap: PPangoFontMap); cdecl; external;
 procedure pango_font_map_list_families(fontmap: PPangoFontMap; families: PPPPangoFontFamily; n_families: Pgint); cdecl; external;
 procedure pango_font_metrics_unref(metrics: PPangoFontMetrics); cdecl; external;
 procedure pango_fontset_foreach(fontset: PPangoFontset; func: TPangoFontsetForeachFunc; data: gpointer); cdecl; external;
-procedure pango_get_log_attrs(text: Pgchar; length: gint; level: gint; language: PPangoLanguage; log_attrs: PPangoLogAttr; attrs_len: gint); cdecl; external;
+procedure pango_fontset_simple_append(fontset: PPangoFontsetSimple; font: PPangoFont); cdecl; external;
+procedure pango_get_log_attrs(text: Pgchar; length: gint; level: gint; language: PPangoLanguage; attrs: PPangoLogAttr; attrs_len: gint); cdecl; external;
 procedure pango_glyph_item_free(glyph_item: PPangoGlyphItem); cdecl; external;
 procedure pango_glyph_item_get_logical_widths(glyph_item: PPangoGlyphItem; text: Pgchar; logical_widths: Pgint); cdecl; external;
 procedure pango_glyph_item_iter_free(iter: PPangoGlyphItemIter); cdecl; external;
@@ -1402,10 +1905,13 @@ procedure pango_glyph_string_extents_range(glyphs: PPangoGlyphString; start: gin
 procedure pango_glyph_string_free(string_: PPangoGlyphString); cdecl; external;
 procedure pango_glyph_string_get_logical_widths(glyphs: PPangoGlyphString; text: Pgchar; length: gint; embedding_level: gint; logical_widths: Pgint); cdecl; external;
 procedure pango_glyph_string_index_to_x(glyphs: PPangoGlyphString; text: Pgchar; length: gint; analysis: PPangoAnalysis; index_: gint; trailing: gboolean; x_pos: Pgint); cdecl; external;
+procedure pango_glyph_string_index_to_x_full(glyphs: PPangoGlyphString; text: Pgchar; length: gint; analysis: PPangoAnalysis; attrs: PPangoLogAttr; index_: gint; trailing: gboolean; x_pos: Pgint); cdecl; external;
 procedure pango_glyph_string_set_size(string_: PPangoGlyphString; new_len: gint); cdecl; external;
 procedure pango_glyph_string_x_to_index(glyphs: PPangoGlyphString; text: Pgchar; length: gint; analysis: PPangoAnalysis; x_pos: gint; index_: Pgint; trailing: Pgint); cdecl; external;
+procedure pango_item_apply_attrs(item: PPangoItem; iter: PPangoAttrIterator); cdecl; external;
 procedure pango_item_free(item: PPangoItem); cdecl; external;
 procedure pango_layout_context_changed(layout: PPangoLayout); cdecl; external;
+procedure pango_layout_get_caret_pos(layout: PPangoLayout; index_: gint; strong_pos: PPangoRectangle; weak_pos: PPangoRectangle); cdecl; external;
 procedure pango_layout_get_cursor_pos(layout: PPangoLayout; index_: gint; strong_pos: PPangoRectangle; weak_pos: PPangoRectangle); cdecl; external;
 procedure pango_layout_get_extents(layout: PPangoLayout; ink_rect: PPangoRectangle; logical_rect: PPangoRectangle); cdecl; external;
 procedure pango_layout_get_log_attrs(layout: PPangoLayout; attrs: PPPangoLogAttr; n_attrs: Pgint); cdecl; external;
@@ -1422,6 +1928,7 @@ procedure pango_layout_iter_get_line_extents(iter: PPangoLayoutIter; ink_rect: P
 procedure pango_layout_iter_get_line_yrange(iter: PPangoLayoutIter; y0_: Pgint; y1_: Pgint); cdecl; external;
 procedure pango_layout_iter_get_run_extents(iter: PPangoLayoutIter; ink_rect: PPangoRectangle; logical_rect: PPangoRectangle); cdecl; external;
 procedure pango_layout_line_get_extents(line: PPangoLayoutLine; ink_rect: PPangoRectangle; logical_rect: PPangoRectangle); cdecl; external;
+procedure pango_layout_line_get_height(line: PPangoLayoutLine; height: Pgint); cdecl; external;
 procedure pango_layout_line_get_pixel_extents(layout_line: PPangoLayoutLine; ink_rect: PPangoRectangle; logical_rect: PPangoRectangle); cdecl; external;
 procedure pango_layout_line_get_x_ranges(line: PPangoLayoutLine; start_index: gint; end_index: gint; ranges: PPgint; n_ranges: Pgint); cdecl; external;
 procedure pango_layout_line_index_to_x(line: PPangoLayoutLine; index_: gint; trailing: gboolean; x_pos: Pgint); cdecl; external;
@@ -1435,6 +1942,8 @@ procedure pango_layout_set_font_description(layout: PPangoLayout; desc: PPangoFo
 procedure pango_layout_set_height(layout: PPangoLayout; height: gint); cdecl; external;
 procedure pango_layout_set_indent(layout: PPangoLayout; indent: gint); cdecl; external;
 procedure pango_layout_set_justify(layout: PPangoLayout; justify: gboolean); cdecl; external;
+procedure pango_layout_set_justify_last_line(layout: PPangoLayout; justify: gboolean); cdecl; external;
+procedure pango_layout_set_line_spacing(layout: PPangoLayout; factor: gfloat); cdecl; external;
 procedure pango_layout_set_markup(layout: PPangoLayout; markup: Pgchar; length: gint); cdecl; external;
 procedure pango_layout_set_markup_with_accel(layout: PPangoLayout; markup: Pgchar; length: gint; accel_marker: gunichar; accel_char: Pgunichar); cdecl; external;
 procedure pango_layout_set_single_paragraph_mode(layout: PPangoLayout; setting: gboolean); cdecl; external;
@@ -1445,6 +1954,7 @@ procedure pango_layout_set_width(layout: PPangoLayout; width: gint); cdecl; exte
 procedure pango_layout_set_wrap(layout: PPangoLayout; wrap: TPangoWrapMode); cdecl; external;
 procedure pango_matrix_concat(matrix: PPangoMatrix; new_matrix: PPangoMatrix); cdecl; external;
 procedure pango_matrix_free(matrix: PPangoMatrix); cdecl; external;
+procedure pango_matrix_get_font_scale_factors(matrix: PPangoMatrix; xscale: Pgdouble; yscale: Pgdouble); cdecl; external;
 procedure pango_matrix_rotate(matrix: PPangoMatrix; degrees: gdouble); cdecl; external;
 procedure pango_matrix_scale(matrix: PPangoMatrix; scale_x: gdouble; scale_y: gdouble); cdecl; external;
 procedure pango_matrix_transform_distance(matrix: PPangoMatrix; dx: Pgdouble; dy: Pgdouble); cdecl; external;
@@ -1464,17 +1974,24 @@ procedure pango_renderer_draw_layout_line(renderer: PPangoRenderer; line: PPango
 procedure pango_renderer_draw_rectangle(renderer: PPangoRenderer; part: TPangoRenderPart; x: gint; y: gint; width: gint; height: gint); cdecl; external;
 procedure pango_renderer_draw_trapezoid(renderer: PPangoRenderer; part: TPangoRenderPart; y1_: gdouble; x11: gdouble; x21: gdouble; y2: gdouble; x12: gdouble; x22: gdouble); cdecl; external;
 procedure pango_renderer_part_changed(renderer: PPangoRenderer; part: TPangoRenderPart); cdecl; external;
+procedure pango_renderer_set_alpha(renderer: PPangoRenderer; part: TPangoRenderPart; alpha: guint16); cdecl; external;
 procedure pango_renderer_set_color(renderer: PPangoRenderer; part: TPangoRenderPart; color: PPangoColor); cdecl; external;
 procedure pango_renderer_set_matrix(renderer: PPangoRenderer; matrix: PPangoMatrix); cdecl; external;
 procedure pango_script_iter_free(iter: PPangoScriptIter); cdecl; external;
 procedure pango_script_iter_get_range(iter: PPangoScriptIter; start: PPgchar; end_: PPgchar; script: PPangoScript); cdecl; external;
 procedure pango_shape(text: Pgchar; length: gint; analysis: PPangoAnalysis; glyphs: PPangoGlyphString); cdecl; external;
 procedure pango_shape_full(item_text: Pgchar; item_length: gint; paragraph_text: Pgchar; paragraph_length: gint; analysis: PPangoAnalysis; glyphs: PPangoGlyphString); cdecl; external;
+procedure pango_shape_item(item: PPangoItem; paragraph_text: Pgchar; paragraph_length: gint; log_attrs: PPangoLogAttr; glyphs: PPangoGlyphString; flags: TPangoShapeFlags); cdecl; external;
+procedure pango_shape_with_flags(item_text: Pgchar; item_length: gint; paragraph_text: Pgchar; paragraph_length: gint; analysis: PPangoAnalysis; glyphs: PPangoGlyphString; flags: TPangoShapeFlags); cdecl; external;
 procedure pango_tab_array_free(tab_array: PPangoTabArray); cdecl; external;
 procedure pango_tab_array_get_tab(tab_array: PPangoTabArray; tab_index: gint; alignment: PPangoTabAlign; location: Pgint); cdecl; external;
 procedure pango_tab_array_get_tabs(tab_array: PPangoTabArray; alignments: PPPangoTabAlign; locations: PPgint); cdecl; external;
 procedure pango_tab_array_resize(tab_array: PPangoTabArray; new_size: gint); cdecl; external;
+procedure pango_tab_array_set_decimal_point(tab_array: PPangoTabArray; tab_index: gint; decimal_point: gunichar); cdecl; external;
+procedure pango_tab_array_set_positions_in_pixels(tab_array: PPangoTabArray; positions_in_pixels: gboolean); cdecl; external;
 procedure pango_tab_array_set_tab(tab_array: PPangoTabArray; tab_index: gint; alignment: TPangoTabAlign; location: gint); cdecl; external;
+procedure pango_tab_array_sort(tab_array: PPangoTabArray); cdecl; external;
+procedure pango_tailor_break(text: Pgchar; length: gint; analysis: PPangoAnalysis; offset: gint; attrs: PPangoLogAttr; attrs_len: gint); cdecl; external;
 implementation
 
 function PANGO_PIXELS(d:integer):integer;
@@ -1517,6 +2034,11 @@ begin
   LazPango1.pango_font_descriptions_free(descs, n_descs);
 end;
 
+function TPangoFont.deserialize(context: PPangoContext; bytes: PGBytes; error: PPGError): PPangoFont; cdecl;
+begin
+  Result := nil; //LazPango1.pango_font_deserialize(context, bytes, error);
+end;
+
 function TPangoFont.describe: PPangoFontDescription; cdecl;
 begin
   Result := LazPango1.pango_font_describe(@self);
@@ -1527,14 +2049,19 @@ begin
   Result := LazPango1.pango_font_describe_with_absolute_size(@self);
 end;
 
-function TPangoFont.find_shaper(language: PPangoLanguage; ch: guint32): PPangoEngineShape; cdecl;
-begin
-  Result := LazPango1.pango_font_find_shaper(@self, language, ch);
-end;
-
 function TPangoFont.get_coverage(language: PPangoLanguage): PPangoCoverage; cdecl;
 begin
   Result := LazPango1.pango_font_get_coverage(@self, language);
+end;
+
+function TPangoFont.get_face: PPangoFontFace; cdecl;
+begin
+  Result := LazPango1.pango_font_get_face(@self);
+end;
+
+procedure TPangoFont.get_features(features: Pgconstpointer; len: Pguint; num_features: Pguint); cdecl;
+begin
+  LazPango1.pango_font_get_features(@self, features, len, num_features);
 end;
 
 function TPangoFont.get_font_map: PPangoFontMap; cdecl;
@@ -1547,9 +2074,29 @@ begin
   LazPango1.pango_font_get_glyph_extents(@self, glyph, ink_rect, logical_rect);
 end;
 
+function TPangoFont.get_hb_font: Phb_font_t; cdecl;
+begin
+  Result := LazPango1.pango_font_get_hb_font(@self);
+end;
+
+function TPangoFont.get_languages: PPPangoLanguage; cdecl;
+begin
+  Result := nil; //LazPango1.pango_font_get_languages(@self);
+end;
+
 function TPangoFont.get_metrics(language: PPangoLanguage): PPangoFontMetrics; cdecl;
 begin
   Result := LazPango1.pango_font_get_metrics(@self, language);
+end;
+
+function TPangoFont.has_char(wc: gunichar): gboolean; cdecl;
+begin
+  Result := LazPango1.pango_font_has_char(@self, wc);
+end;
+
+function TPangoFont.serialize: PGBytes; cdecl;
+begin
+  Result := nil; //LazPango1.pango_font_serialize(@self);
 end;
 
 function TPangoLanguage.get_sample_string: Pgchar; cdecl;
@@ -1587,6 +2134,56 @@ begin
   Result := LazPango1.pango_language_get_default();
 end;
 
+function TPangoLanguage.get_preferred: PPPangoLanguage; cdecl;
+begin
+  Result := nil; //LazPango1.pango_language_get_preferred();
+end;
+
+function TPangoAttribute.as_color: PPangoAttrColor; cdecl;
+begin
+  Result := nil; //LazPango1.pango_attribute_as_color(@self);
+end;
+
+function TPangoAttribute.as_float: PPangoAttrFloat; cdecl;
+begin
+  Result := nil; //LazPango1.pango_attribute_as_float(@self);
+end;
+
+function TPangoAttribute.as_font_desc: PPangoAttrFontDesc; cdecl;
+begin
+  Result := nil; //LazPango1.pango_attribute_as_font_desc(@self);
+end;
+
+function TPangoAttribute.as_font_features: PPangoAttrFontFeatures; cdecl;
+begin
+  Result := nil; //LazPango1.pango_attribute_as_font_features(@self);
+end;
+
+function TPangoAttribute.as_int: PPangoAttrInt; cdecl;
+begin
+  Result := nil; //LazPango1.pango_attribute_as_int(@self);
+end;
+
+function TPangoAttribute.as_language: PPangoAttrLanguage; cdecl;
+begin
+  Result := nil; //LazPango1.pango_attribute_as_language(@self);
+end;
+
+function TPangoAttribute.as_shape: PPangoAttrShape; cdecl;
+begin
+  Result := nil; //LazPango1.pango_attribute_as_shape(@self);
+end;
+
+function TPangoAttribute.as_size: PPangoAttrSize; cdecl;
+begin
+  Result := nil; //LazPango1.pango_attribute_as_size(@self);
+end;
+
+function TPangoAttribute.as_string: PPangoAttrString; cdecl;
+begin
+  Result := nil; //LazPango1.pango_attribute_as_string(@self);
+end;
+
 function TPangoAttribute.copy: PPangoAttribute; cdecl;
 begin
   Result := LazPango1.pango_attribute_copy(@self);
@@ -1620,6 +2217,11 @@ end;
 function TPangoColor.parse(spec: Pgchar): gboolean; cdecl;
 begin
   Result := LazPango1.pango_color_parse(@self, spec);
+end;
+
+function TPangoColor.parse_with_alpha(alpha: Pguint16; spec: Pgchar): gboolean; cdecl;
+begin
+  Result := LazPango1.pango_color_parse_with_alpha(@self, alpha, spec);
 end;
 
 function TPangoColor.to_string: Pgchar; cdecl;
@@ -1697,6 +2299,11 @@ begin
   Result := LazPango1.pango_font_description_get_variant(@self);
 end;
 
+function TPangoFontDescription.get_variations: Pgchar; cdecl;
+begin
+  Result := LazPango1.pango_font_description_get_variations(@self);
+end;
+
 function TPangoFontDescription.get_weight: TPangoWeight; cdecl;
 begin
   Result := LazPango1.pango_font_description_get_weight(@self);
@@ -1757,6 +2364,16 @@ begin
   LazPango1.pango_font_description_set_variant(@self, variant);
 end;
 
+procedure TPangoFontDescription.set_variations(variations: Pgchar); cdecl;
+begin
+  LazPango1.pango_font_description_set_variations(@self, variations);
+end;
+
+procedure TPangoFontDescription.set_variations_static(variations: Pgchar); cdecl;
+begin
+  LazPango1.pango_font_description_set_variations_static(@self, variations);
+end;
+
 procedure TPangoFontDescription.set_weight(weight: TPangoWeight); cdecl;
 begin
   LazPango1.pango_font_description_set_weight(@self, weight);
@@ -1785,6 +2402,11 @@ end;
 function TPangoAttrFontDesc.new(desc: PPangoFontDescription): PPangoAttribute; cdecl;
 begin
   Result := LazPango1.pango_attr_font_desc_new(desc);
+end;
+
+function TPangoAttrFontFeatures.new(features: Pgchar): PPangoAttribute; cdecl;
+begin
+  Result := LazPango1.pango_attr_font_features_new(features);
 end;
 
 function TPangoAttrIterator.copy: PPangoAttrIterator; cdecl;
@@ -1842,9 +2464,19 @@ begin
   Result := LazPango1.pango_attr_list_copy(@self);
 end;
 
+function TPangoAttrList.equal(other_list: PPangoAttrList): gboolean; cdecl;
+begin
+  Result := LazPango1.pango_attr_list_equal(@self, other_list);
+end;
+
 function TPangoAttrList.filter(func: TPangoAttrFilterFunc; data: gpointer): PPangoAttrList; cdecl;
 begin
   Result := LazPango1.pango_attr_list_filter(@self, func, data);
+end;
+
+function TPangoAttrList.get_attributes: PGSList; cdecl;
+begin
+  Result := LazPango1.pango_attr_list_get_attributes(@self);
 end;
 
 function TPangoAttrList.get_iterator: PPangoAttrIterator; cdecl;
@@ -1872,9 +2504,24 @@ begin
   LazPango1.pango_attr_list_splice(@self, other, pos, len);
 end;
 
+function TPangoAttrList.to_string: Pgchar; cdecl;
+begin
+  Result := nil; //LazPango1.pango_attr_list_to_string(@self);
+end;
+
 procedure TPangoAttrList.unref; cdecl;
 begin
   LazPango1.pango_attr_list_unref(@self);
+end;
+
+procedure TPangoAttrList.update(pos: gint; remove: gint; add: gint); cdecl;
+begin
+  LazPango1.pango_attr_list_update(@self, pos, remove, add);
+end;
+
+function TPangoAttrList.from_string(text: Pgchar): PPangoAttrList; cdecl;
+begin
+  Result := nil; //LazPango1.pango_attr_list_from_string(text);
 end;
 
 function TPangoAttrShape.new(ink_rect: PPangoRectangle; logical_rect: PPangoRectangle): PPangoAttribute; cdecl;
@@ -1952,6 +2599,11 @@ begin
   Result := LazPango1.pango_context_get_metrics(@self, desc, language);
 end;
 
+function TPangoContext.get_round_glyph_positions: gboolean; cdecl;
+begin
+  Result := LazPango1.pango_context_get_round_glyph_positions(@self);
+end;
+
 function TPangoContext.get_serial: guint; cdecl;
 begin
   Result := LazPango1.pango_context_get_serial(@self);
@@ -2007,6 +2659,11 @@ begin
   LazPango1.pango_context_set_matrix(@self, matrix);
 end;
 
+procedure TPangoContext.set_round_glyph_positions(round_positions: gboolean); cdecl;
+begin
+  LazPango1.pango_context_set_round_glyph_positions(@self, round_positions);
+end;
+
 procedure TPangoFontMap.changed; cdecl;
 begin
   LazPango1.pango_font_map_changed(@self);
@@ -2015,6 +2672,11 @@ end;
 function TPangoFontMap.create_context: PPangoContext; cdecl;
 begin
   Result := LazPango1.pango_font_map_create_context(@self);
+end;
+
+function TPangoFontMap.get_family(name: Pgchar): PPangoFontFamily; cdecl;
+begin
+  Result := LazPango1.pango_font_map_get_family(@self, name);
 end;
 
 function TPangoFontMap.get_serial: guint; cdecl;
@@ -2055,6 +2717,16 @@ end;
 function TPangoMatrix.get_font_scale_factor: gdouble; cdecl;
 begin
   Result := LazPango1.pango_matrix_get_font_scale_factor(@self);
+end;
+
+procedure TPangoMatrix.get_font_scale_factors(xscale: Pgdouble; yscale: Pgdouble); cdecl;
+begin
+  LazPango1.pango_matrix_get_font_scale_factors(@self, xscale, yscale);
+end;
+
+function TPangoMatrix.get_slant_ratio: gdouble; cdecl;
+begin
+  Result := 0; //LazPango1.pango_matrix_get_slant_ratio(@self);
 end;
 
 procedure TPangoMatrix.rotate(degrees: gdouble); cdecl;
@@ -2112,6 +2784,11 @@ begin
   Result := LazPango1.pango_font_metrics_get_descent(@self);
 end;
 
+function TPangoFontMetrics.get_height: gint; cdecl;
+begin
+  Result := LazPango1.pango_font_metrics_get_height(@self);
+end;
+
 function TPangoFontMetrics.get_strikethrough_position: gint; cdecl;
 begin
   Result := LazPango1.pango_font_metrics_get_strikethrough_position(@self);
@@ -2142,6 +2819,11 @@ begin
   LazPango1.pango_font_metrics_unref(@self);
 end;
 
+function TPangoFontFamily.get_face(name: Pgchar): PPangoFontFace; cdecl;
+begin
+  Result := LazPango1.pango_font_family_get_face(@self, name);
+end;
+
 function TPangoFontFamily.get_name: Pgchar; cdecl;
 begin
   Result := LazPango1.pango_font_family_get_name(@self);
@@ -2150,6 +2832,11 @@ end;
 function TPangoFontFamily.is_monospace: gboolean; cdecl;
 begin
   Result := LazPango1.pango_font_family_is_monospace(@self);
+end;
+
+function TPangoFontFamily.is_variable: gboolean; cdecl;
+begin
+  Result := LazPango1.pango_font_family_is_variable(@self);
 end;
 
 procedure TPangoFontFamily.list_faces(faces: PPPPangoFontFace; n_faces: Pgint); cdecl;
@@ -2172,6 +2859,11 @@ begin
   Result := LazPango1.pango_fontset_get_metrics(@self);
 end;
 
+function TPangoCoverage.new: PPangoCoverage; cdecl;
+begin
+  Result := LazPango1.pango_coverage_new();
+end;
+
 function TPangoCoverage.copy: PPangoCoverage; cdecl;
 begin
   Result := LazPango1.pango_coverage_copy(@self);
@@ -2182,39 +2874,9 @@ begin
   Result := LazPango1.pango_coverage_get(@self, index_);
 end;
 
-procedure TPangoCoverage.max(other: PPangoCoverage); cdecl;
-begin
-  LazPango1.pango_coverage_max(@self, other);
-end;
-
-function TPangoCoverage.ref: PPangoCoverage; cdecl;
-begin
-  Result := LazPango1.pango_coverage_ref(@self);
-end;
-
 procedure TPangoCoverage.set_(index_: gint; level: TPangoCoverageLevel); cdecl;
 begin
   LazPango1.pango_coverage_set(@self, index_, level);
-end;
-
-procedure TPangoCoverage.to_bytes(bytes: PPguint8; n_bytes: Pgint); cdecl;
-begin
-  LazPango1.pango_coverage_to_bytes(@self, bytes, n_bytes);
-end;
-
-procedure TPangoCoverage.unref; cdecl;
-begin
-  LazPango1.pango_coverage_unref(@self);
-end;
-
-function TPangoCoverage.from_bytes(bytes: Pguint8; n_bytes: gint): PPangoCoverage; cdecl;
-begin
-  Result := LazPango1.pango_coverage_from_bytes(bytes, n_bytes);
-end;
-
-function TPangoCoverage.new: PPangoCoverage; cdecl;
-begin
-  Result := LazPango1.pango_coverage_new();
 end;
 
 function TPangoFontFace.describe: PPangoFontDescription; cdecl;
@@ -2227,6 +2889,11 @@ begin
   Result := LazPango1.pango_font_face_get_face_name(@self);
 end;
 
+function TPangoFontFace.get_family: PPangoFontFamily; cdecl;
+begin
+  Result := LazPango1.pango_font_face_get_family(@self);
+end;
+
 function TPangoFontFace.is_synthesized: gboolean; cdecl;
 begin
   Result := LazPango1.pango_font_face_is_synthesized(@self);
@@ -2237,9 +2904,29 @@ begin
   LazPango1.pango_font_face_list_sizes(@self, sizes, n_sizes);
 end;
 
+function TPangoFontsetSimple.new(language: PPangoLanguage): PPangoFontsetSimple; cdecl;
+begin
+  Result := LazPango1.pango_fontset_simple_new(language);
+end;
+
+procedure TPangoFontsetSimple.append(font: PPangoFont); cdecl;
+begin
+  LazPango1.pango_fontset_simple_append(@self, font);
+end;
+
+function TPangoFontsetSimple.size: gint; cdecl;
+begin
+  Result := LazPango1.pango_fontset_simple_size(@self);
+end;
+
 function TPangoItem.new: PPangoItem; cdecl;
 begin
   Result := LazPango1.pango_item_new();
+end;
+
+procedure TPangoItem.apply_attrs(iter: PPangoAttrIterator); cdecl;
+begin
+  LazPango1.pango_item_apply_attrs(@self, iter);
 end;
 
 function TPangoItem.copy: PPangoItem; cdecl;
@@ -2297,6 +2984,11 @@ begin
   LazPango1.pango_glyph_string_index_to_x(@self, text, length, analysis, index_, trailing, x_pos);
 end;
 
+procedure TPangoGlyphString.index_to_x_full(text: Pgchar; length: gint; analysis: PPangoAnalysis; attrs: PPangoLogAttr; index_: gint; trailing: gboolean; x_pos: Pgint); cdecl;
+begin
+  //LazPango1.pango_glyph_string_index_to_x_full(@self, text, length, analysis, attrs, index_, trailing, x_pos);
+end;
+
 procedure TPangoGlyphString.set_size(new_len: gint); cdecl;
 begin
   LazPango1.pango_glyph_string_set_size(@self, new_len);
@@ -2342,6 +3034,11 @@ begin
   Result := LazPango1.pango_layout_new(context);
 end;
 
+function TPangoLayout.deserialize(context: PPangoContext; bytes: PGBytes; flags: TPangoLayoutDeserializeFlags; error: PPGError): PPangoLayout; cdecl;
+begin
+  Result := nil; //LazPango1.pango_layout_deserialize(context, bytes, flags, error);
+end;
+
 procedure TPangoLayout.context_changed; cdecl;
 begin
   LazPango1.pango_layout_context_changed(@self);
@@ -2372,6 +3069,11 @@ begin
   Result := LazPango1.pango_layout_get_baseline(@self);
 end;
 
+procedure TPangoLayout.get_caret_pos(index_: gint; strong_pos: PPangoRectangle; weak_pos: PPangoRectangle); cdecl;
+begin
+  //LazPango1.pango_layout_get_caret_pos(@self, index_, strong_pos, weak_pos);
+end;
+
 function TPangoLayout.get_character_count: gint; cdecl;
 begin
   Result := LazPango1.pango_layout_get_character_count(@self);
@@ -2385,6 +3087,11 @@ end;
 procedure TPangoLayout.get_cursor_pos(index_: gint; strong_pos: PPangoRectangle; weak_pos: PPangoRectangle); cdecl;
 begin
   LazPango1.pango_layout_get_cursor_pos(@self, index_, strong_pos, weak_pos);
+end;
+
+function TPangoLayout.get_direction(index: gint): TPangoDirection; cdecl;
+begin
+  Result := LazPango1.pango_layout_get_direction(@self, index);
 end;
 
 function TPangoLayout.get_ellipsize: TPangoEllipsizeMode; cdecl;
@@ -2422,6 +3129,11 @@ begin
   Result := LazPango1.pango_layout_get_justify(@self);
 end;
 
+function TPangoLayout.get_justify_last_line: gboolean; cdecl;
+begin
+  Result := False; //LazPango1.pango_layout_get_justify_last_line(@self);
+end;
+
 function TPangoLayout.get_line(line: gint): PPangoLayoutLine; cdecl;
 begin
   Result := LazPango1.pango_layout_get_line(@self, line);
@@ -2435,6 +3147,11 @@ end;
 function TPangoLayout.get_line_readonly(line: gint): PPangoLayoutLine; cdecl;
 begin
   Result := LazPango1.pango_layout_get_line_readonly(@self, line);
+end;
+
+function TPangoLayout.get_line_spacing: gfloat; cdecl;
+begin
+  Result := LazPango1.pango_layout_get_line_spacing(@self);
 end;
 
 function TPangoLayout.get_lines: PGSList; cdecl;
@@ -2537,6 +3254,11 @@ begin
   LazPango1.pango_layout_move_cursor_visually(@self, strong, old_index, old_trailing, direction, new_index, new_trailing);
 end;
 
+function TPangoLayout.serialize(flags: TPangoLayoutSerializeFlags): PGBytes; cdecl;
+begin
+  Result := nil; //LazPango1.pango_layout_serialize(@self, flags);
+end;
+
 procedure TPangoLayout.set_alignment(alignment: TPangoAlignment); cdecl;
 begin
   LazPango1.pango_layout_set_alignment(@self, alignment);
@@ -2577,6 +3299,16 @@ begin
   LazPango1.pango_layout_set_justify(@self, justify);
 end;
 
+procedure TPangoLayout.set_justify_last_line(justify: gboolean); cdecl;
+begin
+  //LazPango1.pango_layout_set_justify_last_line(@self, justify);
+end;
+
+procedure TPangoLayout.set_line_spacing(factor: gfloat); cdecl;
+begin
+  LazPango1.pango_layout_set_line_spacing(@self, factor);
+end;
+
 procedure TPangoLayout.set_markup(markup: Pgchar; length: gint); cdecl;
 begin
   LazPango1.pango_layout_set_markup(@self, markup, length);
@@ -2615,6 +3347,11 @@ end;
 procedure TPangoLayout.set_wrap(wrap: TPangoWrapMode); cdecl;
 begin
   LazPango1.pango_layout_set_wrap(@self, wrap);
+end;
+
+function TPangoLayout.write_to_file(flags: TPangoLayoutSerializeFlags; filename: Pgchar; error: PPGError): gboolean; cdecl;
+begin
+  Result := False; //LazPango1.pango_layout_write_to_file(@self, flags, filename, error);
 end;
 
 function TPangoLayout.xy_to_index(x: gint; y: gint; index_: Pgint; trailing: Pgint): gboolean; cdecl;
@@ -2692,6 +3429,11 @@ begin
   Result := LazPango1.pango_layout_iter_get_run(@self);
 end;
 
+function TPangoLayoutIter.get_run_baseline: gint; cdecl;
+begin
+  Result := 0; //LazPango1.pango_layout_iter_get_run_baseline(@self);
+end;
+
 procedure TPangoLayoutIter.get_run_extents(ink_rect: PPangoRectangle; logical_rect: PPangoRectangle); cdecl;
 begin
   LazPango1.pango_layout_iter_get_run_extents(@self, ink_rect, logical_rect);
@@ -2727,9 +3469,29 @@ begin
   LazPango1.pango_layout_line_get_extents(@self, ink_rect, logical_rect);
 end;
 
+procedure TPangoLayoutLine.get_height(height: Pgint); cdecl;
+begin
+  LazPango1.pango_layout_line_get_height(@self, height);
+end;
+
+function TPangoLayoutLine.get_length: gint; cdecl;
+begin
+  Result := 0; //LazPango1.pango_layout_line_get_length(@self);
+end;
+
 procedure TPangoLayoutLine.get_pixel_extents(ink_rect: PPangoRectangle; logical_rect: PPangoRectangle); cdecl;
 begin
   LazPango1.pango_layout_line_get_pixel_extents(@self, ink_rect, logical_rect);
+end;
+
+function TPangoLayoutLine.get_resolved_direction: TPangoDirection; cdecl;
+begin
+  Result := PANGO_DIRECTION_LTR; //LazPango1.pango_layout_line_get_resolved_direction(@self);
+end;
+
+function TPangoLayoutLine.get_start_index: gint; cdecl;
+begin
+  Result := 0; //LazPango1.pango_layout_line_get_start_index(@self);
 end;
 
 procedure TPangoLayoutLine.get_x_ranges(start_index: gint; end_index: gint; ranges: PPgint; n_ranges: Pgint); cdecl;
@@ -2740,6 +3502,11 @@ end;
 procedure TPangoLayoutLine.index_to_x(index_: gint; trailing: gboolean; x_pos: Pgint); cdecl;
 begin
   LazPango1.pango_layout_line_index_to_x(@self, index_, trailing, x_pos);
+end;
+
+function TPangoLayoutLine.is_paragraph_start: gboolean; cdecl;
+begin
+  Result := False; //LazPango1.pango_layout_line_is_paragraph_start(@self);
 end;
 
 function TPangoLayoutLine.ref: PPangoLayoutLine; cdecl;
@@ -2772,6 +3539,11 @@ begin
   LazPango1.pango_tab_array_free(@self);
 end;
 
+function TPangoTabArray.get_decimal_point(tab_index: gint): gunichar; cdecl;
+begin
+  Result := 0; //LazPango1.pango_tab_array_get_decimal_point(@self, tab_index);
+end;
+
 function TPangoTabArray.get_positions_in_pixels: gboolean; cdecl;
 begin
   Result := LazPango1.pango_tab_array_get_positions_in_pixels(@self);
@@ -2797,9 +3569,34 @@ begin
   LazPango1.pango_tab_array_resize(@self, new_size);
 end;
 
+procedure TPangoTabArray.set_decimal_point(tab_index: gint; decimal_point: gunichar); cdecl;
+begin
+  //LazPango1.pango_tab_array_set_decimal_point(@self, tab_index, decimal_point);
+end;
+
+procedure TPangoTabArray.set_positions_in_pixels(positions_in_pixels: gboolean); cdecl;
+begin
+  //LazPango1.pango_tab_array_set_positions_in_pixels(@self, positions_in_pixels);
+end;
+
 procedure TPangoTabArray.set_tab(tab_index: gint; alignment: TPangoTabAlign; location: gint); cdecl;
 begin
   LazPango1.pango_tab_array_set_tab(@self, tab_index, alignment, location);
+end;
+
+procedure TPangoTabArray.sort; cdecl;
+begin
+  //LazPango1.pango_tab_array_sort(@self);
+end;
+
+function TPangoTabArray.to_string: Pgchar; cdecl;
+begin
+  Result := nil; //LazPango1.pango_tab_array_to_string(@self);
+end;
+
+function TPangoTabArray.from_string(text: Pgchar): PPangoTabArray; cdecl;
+begin
+  Result := nil; //LazPango1.pango_tab_array_from_string(text);
 end;
 
 procedure TPangoRenderer.activate; cdecl;
@@ -2852,6 +3649,11 @@ begin
   LazPango1.pango_renderer_draw_trapezoid(@self, part, y1_, x11, x21, y2, x12, x22);
 end;
 
+function TPangoRenderer.get_alpha(part: TPangoRenderPart): guint16; cdecl;
+begin
+  Result := LazPango1.pango_renderer_get_alpha(@self, part);
+end;
+
 function TPangoRenderer.get_color(part: TPangoRenderPart): PPangoColor; cdecl;
 begin
   Result := LazPango1.pango_renderer_get_color(@self, part);
@@ -2877,6 +3679,11 @@ begin
   LazPango1.pango_renderer_part_changed(@self, part);
 end;
 
+procedure TPangoRenderer.set_alpha(part: TPangoRenderPart; alpha: guint16); cdecl;
+begin
+  LazPango1.pango_renderer_set_alpha(@self, part, alpha);
+end;
+
 procedure TPangoRenderer.set_color(part: TPangoRenderPart; color: PPangoColor); cdecl;
 begin
   LazPango1.pango_renderer_set_color(@self, part, color);
@@ -2885,6 +3692,11 @@ end;
 procedure TPangoRenderer.set_matrix(matrix: PPangoMatrix); cdecl;
 begin
   LazPango1.pango_renderer_set_matrix(@self, matrix);
+end;
+
+function TPangoScriptIter.new(text: Pgchar; length: gint): PPangoScriptIter; cdecl;
+begin
+  Result := LazPango1.pango_script_iter_new(text, length);
 end;
 
 procedure TPangoScriptIter.free; cdecl;
@@ -2900,11 +3712,6 @@ end;
 function TPangoScriptIter.next: gboolean; cdecl;
 begin
   Result := LazPango1.pango_script_iter_next(@self);
-end;
-
-function TPangoScriptIter.new(text: Pgchar; length: gint): PPangoScriptIter; cdecl;
-begin
-  Result := LazPango1.pango_script_iter_new(text, length);
 end;
 
 end.
