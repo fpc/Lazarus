@@ -32,8 +32,8 @@ begin
 
   gtk_widget_realize(Widget);
 
-  gdk_window_set_decorations(Widget^.window, TGdkWMDecoration(0));
-  gdk_window_set_functions(Widget^.window, TGdkWMFunction(Integer(GDK_FUNC_RESIZE) or Integer(GDK_FUNC_CLOSE)));
+  gdk_window_set_decorations(Widget^.window, []);
+  gdk_window_set_functions(Widget^.window, [GDK_FUNC_RESIZE, GDK_FUNC_CLOSE]);
   gtk_widget_set_opacity(Widget, 0.25);
 
   gtk_widget_show(Widget);

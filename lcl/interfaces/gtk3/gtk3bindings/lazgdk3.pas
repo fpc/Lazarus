@@ -2311,32 +2311,48 @@ const
   GDK_PARENT_RELATIVE = 1;
   GDK_PRIORITY_REDRAW = 120;
 type
-  TGdkAnchorHints = (
-    TGdkAnchorHintsMinValue = -$7FFFFFFF,
-    GDK_ANCHOR_FLIP_X = 1,
-    GDK_ANCHOR_FLIP_Y = 2,
-    GDK_ANCHOR_FLIP = 3,
-    GDK_ANCHOR_SLIDE_X = 4,
-    GDK_ANCHOR_SLIDE_Y = 8,
-    GDK_ANCHOR_SLIDE = 12,
-    GDK_ANCHOR_RESIZE_X = 16,
-    GDK_ANCHOR_RESIZE_Y = 32,
-    GDK_ANCHOR_RESIZE = 48,
-    TGdkAnchorHintsMaxValue = $7FFFFFFF
+  TGdkAnchorHintsIdx = (
+    TGdkAnchorHintsIdxMinValue = 0,
+    GDK_ANCHOR_FLIP_X = 0,
+    GDK_ANCHOR_FLIP_Y = 1,
+    GDK_ANCHOR_SLIDE_X = 2,
+    GDK_ANCHOR_SLIDE_Y = 3,
+    GDK_ANCHOR_RESIZE_X = 4,
+    GDK_ANCHOR_RESIZE_Y = 5,
+    TGdkAnchorHintsIdxMaxValue = 31
   );
-  TGdkAxisFlags = (
-    TGdkAxisFlagsMinValue = -$7FFFFFFF,
-    GDK_AXIS_FLAG_X = 2,
-    GDK_AXIS_FLAG_Y = 4,
-    GDK_AXIS_FLAG_PRESSURE = 8,
-    GDK_AXIS_FLAG_XTILT = 16,
-    GDK_AXIS_FLAG_YTILT = 32,
-    GDK_AXIS_FLAG_WHEEL = 64,
-    GDK_AXIS_FLAG_DISTANCE = 128,
-    GDK_AXIS_FLAG_ROTATION = 256,
-    GDK_AXIS_FLAG_SLIDER = 512,
-    TGdkAxisFlagsMaxValue = $7FFFFFFF
+  TGdkAnchorHints = Set of TGdkAnchorHintsIdx;
+const
+  GDK_ANCHOR_FLIP = [
+    GDK_ANCHOR_FLIP_X,
+    GDK_ANCHOR_FLIP_Y
+  ]; {3 = $00000003}
+
+  GDK_ANCHOR_SLIDE = [
+    GDK_ANCHOR_SLIDE_X,
+    GDK_ANCHOR_SLIDE_Y
+  ]; {12 = $0000000C}
+
+  GDK_ANCHOR_RESIZE = [
+    GDK_ANCHOR_RESIZE_X,
+    GDK_ANCHOR_RESIZE_Y
+  ]; {48 = $00000030}
+
+type
+  TGdkAxisFlagsIdx = (
+    TGdkAxisFlagsIdxMinValue = 0,
+    GDK_AXIS_FLAG_X = 1,
+    GDK_AXIS_FLAG_Y = 2,
+    GDK_AXIS_FLAG_PRESSURE = 3,
+    GDK_AXIS_FLAG_XTILT = 4,
+    GDK_AXIS_FLAG_YTILT = 5,
+    GDK_AXIS_FLAG_WHEEL = 6,
+    GDK_AXIS_FLAG_DISTANCE = 7,
+    GDK_AXIS_FLAG_ROTATION = 8,
+    GDK_AXIS_FLAG_SLIDER = 9,
+    TGdkAxisFlagsIdxMaxValue = 31
   );
+  TGdkAxisFlags = Set of TGdkAxisFlagsIdx;
   TGdkAxisUse = (
     TGdkAxisUseMinValue = -$7FFFFFFF,
     GDK_AXIS_IGNORE = 0,
@@ -2455,9 +2471,6 @@ type
     GDK_LAST_CURSOR = 153,
     TGdkCursorTypeMaxValue = $7FFFFFFF
   );
-
-//TODO: This is hand written just to give the direction we need to go.
-//TODO: We need to make git2pas generate similar code for bitfields.
   TGdkModifierTypeIdx = (
     TGdkModifierTypeIdxMinValue = 0,
     GDK_SHIFT_MASK = 0,
@@ -2495,8 +2508,25 @@ type
   );
   TGdkModifierType = Set of TGdkModifierTypeIdx;
 const
-  GDK_MODIFIER_MASK = 1543512063;
-  GDK_ALL_MODIFIERS_MASK = [TGdkModifierTypeIdxMinValue..TGdkModifierTypeIdxMaxValue];
+  GDK_MODIFIER_MASK = [
+    GDK_SHIFT_MASK,
+    GDK_LOCK_MASK,
+    GDK_CONTROL_MASK,
+    GDK_MOD1_MASK,
+    GDK_MOD2_MASK,
+    GDK_MOD3_MASK,
+    GDK_MOD4_MASK,
+    GDK_MOD5_MASK,
+    GDK_BUTTON1_MASK,
+    GDK_BUTTON2_MASK,
+    GDK_BUTTON3_MASK,
+    GDK_BUTTON4_MASK,
+    GDK_BUTTON5_MASK,
+    GDK_SUPER_MASK,
+    GDK_HYPER_MASK,
+    GDK_META_MASK,
+    GDK_RELEASE_MASK
+  ]; {1543512063 = $5C001FFF}
 
 type
   TGdkInputMode = (
@@ -2506,31 +2536,33 @@ type
     GDK_MODE_WINDOW = 2,
     TGdkInputModeMaxValue = $7FFFFFFF
   );
-  TGdkWindowAttributesType = (
-    TGdkWindowAttributesTypeMinValue = -$7FFFFFFF,
-    GDK_WA_TITLE = 2,
-    GDK_WA_X = 4,
-    GDK_WA_Y = 8,
-    GDK_WA_CURSOR = 16,
-    GDK_WA_VISUAL = 32,
-    GDK_WA_WMCLASS = 64,
-    GDK_WA_NOREDIR = 128,
-    GDK_WA_TYPE_HINT = 256,
-    TGdkWindowAttributesTypeMaxValue = $7FFFFFFF
+  TGdkWindowAttributesTypeIdx = (
+    TGdkWindowAttributesTypeIdxMinValue = 0,
+    GDK_WA_TITLE = 1,
+    GDK_WA_X = 2,
+    GDK_WA_Y = 3,
+    GDK_WA_CURSOR = 4,
+    GDK_WA_VISUAL = 5,
+    GDK_WA_WMCLASS = 6,
+    GDK_WA_NOREDIR = 7,
+    GDK_WA_TYPE_HINT = 8,
+    TGdkWindowAttributesTypeIdxMaxValue = 31
   );
-  TGdkWindowHints = type Integer;
-const
-  GDK_HINT_POS = TGdkWindowHints(1);
-  GDK_HINT_MIN_SIZE = TGdkWindowHints(2);
-  GDK_HINT_MAX_SIZE = TGdkWindowHints(4);
-  GDK_HINT_BASE_SIZE = TGdkWindowHints(8);
-  GDK_HINT_ASPECT = TGdkWindowHints(16);
-  GDK_HINT_RESIZE_INC = TGdkWindowHints(32);
-  GDK_HINT_WIN_GRAVITY = TGdkWindowHints(64);
-  GDK_HINT_USER_POS = TGdkWindowHints(128);
-  GDK_HINT_USER_SIZE = TGdkWindowHints(256);
-
-type
+  TGdkWindowAttributesType = Set of TGdkWindowAttributesTypeIdx;
+  TGdkWindowHintsIdx = (
+    TGdkWindowHintsIdxMinValue = 0,
+    GDK_HINT_POS = 0,
+    GDK_HINT_MIN_SIZE = 1,
+    GDK_HINT_MAX_SIZE = 2,
+    GDK_HINT_BASE_SIZE = 3,
+    GDK_HINT_ASPECT = 4,
+    GDK_HINT_RESIZE_INC = 5,
+    GDK_HINT_WIN_GRAVITY = 6,
+    GDK_HINT_USER_POS = 7,
+    GDK_HINT_USER_SIZE = 8,
+    TGdkWindowHintsIdxMaxValue = 31
+  );
+  TGdkWindowHints = Set of TGdkWindowHintsIdx;
   TGdkWindowEdge = (
     TGdkWindowEdgeMinValue = -$7FFFFFFF,
     GDK_WINDOW_EDGE_NORTH_WEST = 0,
@@ -2543,18 +2575,18 @@ type
     GDK_WINDOW_EDGE_SOUTH_EAST = 7,
     TGdkWindowEdgeMaxValue = $7FFFFFFF
   );
-  TGdkWMDecoration = type Integer;
-const
-  GDK_DECOR_ALL = TGdkWMDecoration(1);
-  GDK_DECOR_BORDER = TGdkWMDecoration(2);
-  GDK_DECOR_RESIZEH = TGdkWMDecoration(4);
-  GDK_DECOR_TITLE = TGdkWMDecoration(8);
-  GDK_DECOR_MENU = TGdkWMDecoration(16);
-  GDK_DECOR_MINIMIZE = TGdkWMDecoration(32);
-  GDK_DECOR_MAXIMIZE = TGdkWMDecoration(64);
-
-type
-
+  TGdkWMDecorationIdx = (
+    TGdkWMDecorationIdxMinValue = 0,
+    GDK_DECOR_ALL = 0,
+    GDK_DECOR_BORDER = 1,
+    GDK_DECOR_RESIZEH = 2,
+    GDK_DECOR_TITLE = 3,
+    GDK_DECOR_MENU = 4,
+    GDK_DECOR_MINIMIZE = 5,
+    GDK_DECOR_MAXIMIZE = 6,
+    TGdkWMDecorationIdxMaxValue = 31
+  );
+  TGdkWMDecoration = Set of TGdkWMDecorationIdx;
   TGdkEventMaskIdx = (
     TGdkEventMaskIdxMinValue = 0,
     GDK_EXPOSURE_MASK = 1,
@@ -2586,7 +2618,33 @@ type
   );
   TGdkEventMask = Set of TGdkEventMaskIdx;
 const
-  GDK_ALL_EVENTS_MASK = [TGdkEventMaskIdxMinValue..TGdkEventMaskIdxMaxValue];
+  GDK_ALL_EVENTS_MASK = [
+    GDK_EXPOSURE_MASK,
+    GDK_POINTER_MOTION_MASK,
+    GDK_POINTER_MOTION_HINT_MASK,
+    GDK_BUTTON_MOTION_MASK,
+    GDK_BUTTON1_MOTION_MASK,
+    GDK_BUTTON2_MOTION_MASK,
+    GDK_BUTTON3_MOTION_MASK,
+    GDK_BUTTON_PRESS_MASK,
+    GDK_BUTTON_RELEASE_MASK,
+    GDK_KEY_PRESS_MASK,
+    GDK_KEY_RELEASE_MASK,
+    GDK_ENTER_NOTIFY_MASK,
+    GDK_LEAVE_NOTIFY_MASK,
+    GDK_FOCUS_CHANGE_MASK,
+    GDK_STRUCTURE_MASK,
+    GDK_PROPERTY_CHANGE_MASK,
+    GDK_VISIBILITY_NOTIFY_MASK,
+    GDK_PROXIMITY_IN_MASK,
+    GDK_PROXIMITY_OUT_MASK,
+    GDK_SUBSTRUCTURE_MASK,
+    GDK_SCROLL_MASK,
+    GDK_TOUCH_MASK,
+    GDK_SMOOTH_SCROLL_MASK,
+    GDK_TOUCHPAD_GESTURE_MASK,
+    GDK_TABLET_PAD_MASK
+  ]; {67108862 = $03FFFFFE}
 
 type
   TGdkInputSource = (
@@ -2602,27 +2660,28 @@ type
     GDK_SOURCE_TABLET_PAD = 8,
     TGdkInputSourceMaxValue = $7FFFFFFF
   );
-  TGdkWindowState = type Integer;
-const
-  GDK_WINDOW_STATE_WITHDRAWN = TGdkWindowState(1);
-  GDK_WINDOW_STATE_ICONIFIED = TGdkWindowState(2);
-  GDK_WINDOW_STATE_MAXIMIZED = TGdkWindowState(4);
-  GDK_WINDOW_STATE_STICKY = TGdkWindowState(8);
-  GDK_WINDOW_STATE_FULLSCREEN = TGdkWindowState(16);
-  GDK_WINDOW_STATE_ABOVE = TGdkWindowState(32);
-  GDK_WINDOW_STATE_BELOW = TGdkWindowState(64);
-  GDK_WINDOW_STATE_FOCUSED = TGdkWindowState(128);
-  GDK_WINDOW_STATE_TILED = TGdkWindowState(256);
-  GDK_WINDOW_STATE_TOP_TILED = TGdkWindowState(512);
-  GDK_WINDOW_STATE_TOP_RESIZABLE = TGdkWindowState(1024);
-  GDK_WINDOW_STATE_RIGHT_TILED = TGdkWindowState(2048);
-  GDK_WINDOW_STATE_RIGHT_RESIZABLE = TGdkWindowState(4096);
-  GDK_WINDOW_STATE_BOTTOM_TILED = TGdkWindowState(8192);
-  GDK_WINDOW_STATE_BOTTOM_RESIZABLE = TGdkWindowState(16384);
-  GDK_WINDOW_STATE_LEFT_TILED = TGdkWindowState(32768);
-  GDK_WINDOW_STATE_LEFT_RESIZABLE = TGdkWindowState(65536);
-
-type
+  TGdkWindowStateIdx = (
+    TGdkWindowStateIdxMinValue = 0,
+    GDK_WINDOW_STATE_WITHDRAWN = 0,
+    GDK_WINDOW_STATE_ICONIFIED = 1,
+    GDK_WINDOW_STATE_MAXIMIZED = 2,
+    GDK_WINDOW_STATE_STICKY = 3,
+    GDK_WINDOW_STATE_FULLSCREEN = 4,
+    GDK_WINDOW_STATE_ABOVE = 5,
+    GDK_WINDOW_STATE_BELOW = 6,
+    GDK_WINDOW_STATE_FOCUSED = 7,
+    GDK_WINDOW_STATE_TILED = 8,
+    GDK_WINDOW_STATE_TOP_TILED = 9,
+    GDK_WINDOW_STATE_TOP_RESIZABLE = 10,
+    GDK_WINDOW_STATE_RIGHT_TILED = 11,
+    GDK_WINDOW_STATE_RIGHT_RESIZABLE = 12,
+    GDK_WINDOW_STATE_BOTTOM_TILED = 13,
+    GDK_WINDOW_STATE_BOTTOM_RESIZABLE = 14,
+    GDK_WINDOW_STATE_LEFT_TILED = 15,
+    GDK_WINDOW_STATE_LEFT_RESIZABLE = 16,
+    TGdkWindowStateIdxMaxValue = 31
+  );
+  TGdkWindowState = Set of TGdkWindowStateIdx;
   TGdkGravity = (
     TGdkGravityMinValue = -$7FFFFFFF,
     GDK_GRAVITY_NORTH_WEST = 1,
@@ -2643,16 +2702,17 @@ type
     GDK_FULLSCREEN_ON_ALL_MONITORS = 1,
     TGdkFullscreenModeMaxValue = $7FFFFFFF
   );
-  TGdkWMFunction = (
-    TGdkWMFunctionMinValue = -$7FFFFFFF,
-    GDK_FUNC_ALL = 1,
-    GDK_FUNC_RESIZE = 2,
-    GDK_FUNC_MOVE = 4,
-    GDK_FUNC_MINIMIZE = 8,
-    GDK_FUNC_MAXIMIZE = 16,
-    GDK_FUNC_CLOSE = 32,
-    TGdkWMFunctionMaxValue = $7FFFFFFF
+  TGdkWMFunctionIdx = (
+    TGdkWMFunctionIdxMinValue = 0,
+    GDK_FUNC_ALL = 0,
+    GDK_FUNC_RESIZE = 1,
+    GDK_FUNC_MOVE = 2,
+    GDK_FUNC_MINIMIZE = 3,
+    GDK_FUNC_MAXIMIZE = 4,
+    GDK_FUNC_CLOSE = 5,
+    TGdkWMFunctionIdxMaxValue = 31
   );
+  TGdkWMFunction = Set of TGdkWMFunctionIdx;
   TGdkWindowTypeHint = (
     TGdkWindowTypeHintMinValue = -$7FFFFFFF,
     GDK_WINDOW_TYPE_HINT_NORMAL = 0,
@@ -2678,17 +2738,32 @@ type
     GDK_DEVICE_TYPE_FLOATING = 2,
     TGdkDeviceTypeMaxValue = $7FFFFFFF
   );
-  TGdkSeatCapabilities = (
-    TGdkSeatCapabilitiesMinValue = -$7FFFFFFF,
-    GDK_SEAT_CAPABILITY_NONE = 0,
-    GDK_SEAT_CAPABILITY_POINTER = 1,
-    GDK_SEAT_CAPABILITY_TOUCH = 2,
-    GDK_SEAT_CAPABILITY_TABLET_STYLUS = 4,
-    GDK_SEAT_CAPABILITY_ALL_POINTING = 7,
-    GDK_SEAT_CAPABILITY_KEYBOARD = 8,
-    GDK_SEAT_CAPABILITY_ALL = 15,
-    TGdkSeatCapabilitiesMaxValue = $7FFFFFFF
+  TGdkSeatCapabilitiesIdx = (
+    TGdkSeatCapabilitiesIdxMinValue = 0,
+    GDK_SEAT_CAPABILITY_POINTER = 0,
+    GDK_SEAT_CAPABILITY_TOUCH = 1,
+    GDK_SEAT_CAPABILITY_TABLET_STYLUS = 2,
+    GDK_SEAT_CAPABILITY_KEYBOARD = 3,
+    TGdkSeatCapabilitiesIdxMaxValue = 31
   );
+  TGdkSeatCapabilities = Set of TGdkSeatCapabilitiesIdx;
+const
+  GDK_SEAT_CAPABILITY_NONE = []; {0 = $00000000}
+
+  GDK_SEAT_CAPABILITY_ALL_POINTING = [
+    GDK_SEAT_CAPABILITY_POINTER,
+    GDK_SEAT_CAPABILITY_TOUCH,
+    GDK_SEAT_CAPABILITY_TABLET_STYLUS
+  ]; {7 = $00000007}
+
+  GDK_SEAT_CAPABILITY_ALL = [
+    GDK_SEAT_CAPABILITY_POINTER,
+    GDK_SEAT_CAPABILITY_TOUCH,
+    GDK_SEAT_CAPABILITY_TABLET_STYLUS,
+    GDK_SEAT_CAPABILITY_KEYBOARD
+  ]; {15 = $0000000F}
+
+type
   TGdkGrabStatus = (
     TGdkGrabStatusMinValue = -$7FFFFFFF,
     GDK_GRAB_SUCCESS = 0,
@@ -2826,16 +2901,17 @@ type
     GDK_SETTING_ACTION_DELETED = 2,
     TGdkSettingActionMaxValue = $7FFFFFFF
   );
-  TGdkDragAction = (
-    TGdkDragActionMinValue = -$7FFFFFFF,
-    GDK_ACTION_DEFAULT = 1,
-    GDK_ACTION_COPY = 2,
-    GDK_ACTION_MOVE = 4,
-    GDK_ACTION_LINK = 8,
-    GDK_ACTION_PRIVATE = 16,
-    GDK_ACTION_ASK = 32,
-    TGdkDragActionMaxValue = $7FFFFFFF
+  TGdkDragActionIdx = (
+    TGdkDragActionIdxMinValue = 0,
+    GDK_ACTION_DEFAULT = 0,
+    GDK_ACTION_COPY = 1,
+    GDK_ACTION_MOVE = 2,
+    GDK_ACTION_LINK = 3,
+    GDK_ACTION_PRIVATE = 4,
+    GDK_ACTION_ASK = 5,
+    TGdkDragActionIdxMaxValue = 31
   );
+  TGdkDragAction = Set of TGdkDragActionIdx;
   TGdkDragCancelReason = (
     TGdkDragCancelReasonMinValue = -$7FFFFFFF,
     GDK_DRAG_CANCEL_NO_TARGET = 0,
@@ -2862,18 +2938,22 @@ type
     GDK_FILTER_REMOVE = 2,
     TGdkFilterReturnMaxValue = $7FFFFFFF
   );
-  TGdkFrameClockPhase = (
-    TGdkFrameClockPhaseMinValue = -$7FFFFFFF,
-    GDK_FRAME_CLOCK_PHASE_NONE = 0,
-    GDK_FRAME_CLOCK_PHASE_FLUSH_EVENTS = 1,
-    GDK_FRAME_CLOCK_PHASE_BEFORE_PAINT = 2,
-    GDK_FRAME_CLOCK_PHASE_UPDATE = 4,
-    GDK_FRAME_CLOCK_PHASE_LAYOUT = 8,
-    GDK_FRAME_CLOCK_PHASE_PAINT = 16,
-    GDK_FRAME_CLOCK_PHASE_RESUME_EVENTS = 32,
-    GDK_FRAME_CLOCK_PHASE_AFTER_PAINT = 64,
-    TGdkFrameClockPhaseMaxValue = $7FFFFFFF
+  TGdkFrameClockPhaseIdx = (
+    TGdkFrameClockPhaseIdxMinValue = 0,
+    GDK_FRAME_CLOCK_PHASE_FLUSH_EVENTS = 0,
+    GDK_FRAME_CLOCK_PHASE_BEFORE_PAINT = 1,
+    GDK_FRAME_CLOCK_PHASE_UPDATE = 2,
+    GDK_FRAME_CLOCK_PHASE_LAYOUT = 3,
+    GDK_FRAME_CLOCK_PHASE_PAINT = 4,
+    GDK_FRAME_CLOCK_PHASE_RESUME_EVENTS = 5,
+    GDK_FRAME_CLOCK_PHASE_AFTER_PAINT = 6,
+    TGdkFrameClockPhaseIdxMaxValue = 31
   );
+  TGdkFrameClockPhase = Set of TGdkFrameClockPhaseIdx;
+const
+  GDK_FRAME_CLOCK_PHASE_NONE = []; {0 = $00000000}
+
+type
   TGdkGLError = (
     TGdkGLErrorMinValue = -$7FFFFFFF,
     GDK_GL_ERROR_NOT_AVAILABLE = 0,
