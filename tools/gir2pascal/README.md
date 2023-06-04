@@ -1,17 +1,15 @@
-gir2pascal
-==========
+# gir2pas
 
-This is the [gir2pascal][] utility, a program to convert the
+The [gir2pas][] utility is a program to convert the
 GIR metadata format (= XML files) used by [GObject introspection][] into usable
 Pascal source code, suitable for generating corresponding language bindings.
 
-The original is part of the Lazarus Code and Component Repository ([lazarus-ccr][],
+It was originaly named [gir2pascal] maintained as part of the Lazarus Code and Component Repository ([lazarus-ccr][],
 [wiki article][wiki-ccr]), see `applications/gobject-introspection/`. Later it has
 received some maintenance by [n1tehawk][] and finally was imported from his
 repository into Lazarus source tree.
 
-License
--------
+# License
 
 This project builds upon the original Lazarus CCR version and is thus intended
 to follow the same licensing principles. For the `gobject-introspection` folder
