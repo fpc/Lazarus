@@ -1101,6 +1101,8 @@ begin
       Value := AItem.Members.Member[i]^.Value;
       if (goEnumAsSet in FOptions) and (AItem is TgirBitField) then begin
         UIntValue := UInt64(StrToInt(Value));
+        if UIntValue = 0 then
+          Continue;
         MSB := BsrQWord(UIntValue);
         if UIntValue > 1 shl MSB then
           Continue;
@@ -1134,28 +1136,31 @@ procedure TPascalUnit.HandleBitfield(AItem: TgirBitField);
   var
    Comma: String[2];
    n: Integer;
+   i: Integer;
+   StrValue: String;
   begin
     WriteLn(Name, ' = ', Value);
+    if Value = 0 then begin
+      Exit(IndentText(Name + ' = []; {0 = $00000000}', 2));
+    end;
     Result := IndentText(Name + ' = [', 2, 0);
     Comma := LineEnding;
     for n := BsfDWord(Value) to BsrDword(Value) do begin
-     if Value and (1 << n) <> 0 then begin
-       if n + 1 < AItem.Members.Count then begin
-         Name := AItem.Members.Member[n + 1]^.CIdentifier;
-       end else begin
-         Name := TypeName + '(' + IntToStr(n) + ')';
-       end;
-       Result += Comma + IndentText(Name, 4, 0);
-       Comma := ',' + LineEnding;
-     end;
+      if Value and (1 << n) <> 0 then begin
+        StrValue := IntToStr(1 << n);
+        Name := TypeName + 'Idx(' + IntToStr(n) + ')';
+        for i := 0 to AItem.Members.Count - 1 do begin
+          if StrValue = AItem.Members.Member[i]^.Value then begin
+            Name := AItem.Members.Member[i]^.CIdentifier;
+            Break;
+          end;
+        end;
+        Result += Comma + IndentText(Name, 4, 0);
+        Comma := ',' + LineEnding;
+      end;
     end;
-    if Comma[1] = ',' then begin
-      n := 2;
-      Result += LineEnding;
-    end else begin
-      n := 0;
-    end;
-    Result += IndentText(']; {' + IntToStr(Value) + ' = $' + IntToHex(Value) + '}', n);
+    Result += LineEnding;
+    Result += IndentText(']; {' + IntToStr(Value) + ' = $' + IntToHex(Value) + '}', 2);
   end;
 var
   Section: TPDeclarationWithLines;
