@@ -85,6 +85,8 @@ type
   published
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
 
+    class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
+
     class procedure AddPage(const ATabControl: TCustomTabControl; const AChild: TCustomPage; const AIndex: integer); override;
     class procedure MovePage(const ATabControl: TCustomTabControl; const AChild: TCustomPage; const NewIndex: integer); override;
     class procedure RemovePage(const ATabControl: TCustomTabControl; const AIndex: integer); override;
@@ -718,6 +720,15 @@ begin
     lControl.callback := TLCLTabControlCallback.Create(lControl, AWinControl);
     lControl.setDelegate(lControl);
   end;
+end;
+
+class procedure TCocoaWSCustomTabControl.SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer);
+begin
+  // because TCocoaWSCustomPage.SetBounds() is disabled
+  // all Pages should be invalidated in TCocoaWSCustomTabControl.SetBounds()
+  // see also: https://gitlab.com/freepascal.org/lazarus/lazarus/-/issues/40296
+  TCocoaWSWinControl.SetBounds( AWinControl, ALeft, ATop, AWidth, AHeight );
+  AWinControl.InvalidateClientRectCache(true);
 end;
 
 class procedure TCocoaWSCustomTabControl.AddPage(const ATabControl: TCustomTabControl; const AChild: TCustomPage; const AIndex: integer);
