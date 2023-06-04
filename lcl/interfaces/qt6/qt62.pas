@@ -2565,6 +2565,9 @@ function QTranslator_load(handle: QTranslatorH; filename: PWideString; directory
 function QTranslator_load(handle: QTranslatorH; locale: QLocaleH; filename: PWideString; prefix: PWideString = nil; directory: PWideString = nil; suffix: PWideString = nil): Boolean; cdecl; external Qt6PasLib name 'QTranslator_load2';
 function QTranslator_load(handle: QTranslatorH; data: PByte; len: Integer; directory: PWideString = nil): Boolean; cdecl; external Qt6PasLib name 'QTranslator_load3';
 
+type
+  QTimer_timeout_Event = procedure () of object cdecl;
+
 function QTimer_Create(parent: QObjectH = nil): QTimerH; cdecl; external Qt6PasLib name 'QTimer_Create';
 procedure QTimer_Destroy(handle: QTimerH); cdecl; external Qt6PasLib name 'QTimer_Destroy'; 
 function QTimer_isActive(handle: QTimerH): Boolean; cdecl; external Qt6PasLib name 'QTimer_isActive';
@@ -2578,13 +2581,12 @@ procedure QTimer_setSingleShot(handle: QTimerH; singleShot: Boolean); cdecl; ext
 function QTimer_isSingleShot(handle: QTimerH): Boolean; cdecl; external Qt6PasLib name 'QTimer_isSingleShot';
 procedure QTimer_singleShot(msec: Integer; receiver: QObjectH; member: PAnsiChar); cdecl; external Qt6PasLib name 'QTimer_singleShot';
 procedure QTimer_singleShot(msec: Integer; timerType: QtTimerType; receiver: QObjectH; member: PAnsiChar); cdecl; external Qt6PasLib name 'QTimer_singleShot2';
+procedure QTimer_singleShot(msec: Integer; timeoutEvent: QTimer_timeout_Event); cdecl; external Qt6PasLib name 'QTimer_singleShot3';
+procedure QTimer_singleShot(msec: Integer; context: QObjectH; timeoutEvent: QTimer_timeout_Event); cdecl; external Qt6PasLib name 'QTimer_singleShot4';
 procedure QTimer_start(handle: QTimerH; msec: Integer); cdecl; external Qt6PasLib name 'QTimer_start';
 procedure QTimer_start(handle: QTimerH); cdecl; external Qt6PasLib name 'QTimer_start2';
 procedure QTimer_stop(handle: QTimerH); cdecl; external Qt6PasLib name 'QTimer_stop';
 
-
-type
-  QTimer_timeout_Event = procedure () of object cdecl;
 
 
 function QAbstractEventDispatcher_instance(thread: QThreadH = nil): QAbstractEventDispatcherH; cdecl; external Qt6PasLib name 'QAbstractEventDispatcher_instance';
