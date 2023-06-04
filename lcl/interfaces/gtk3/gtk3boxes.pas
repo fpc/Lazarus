@@ -280,7 +280,7 @@ begin
       DialogResult := Buttons[i].ModalResult;
   end;
 
-  Dialog := gtk_message_dialog_new(nil, GTK_DIALOG_MODAL, GtkDialogType, Btns, nil , []);
+  Dialog := gtk_message_dialog_new(nil, [GTK_DIALOG_MODAL], GtkDialogType, Btns, nil , []);
 
   set_message_text(DialogMessage);
 
@@ -466,7 +466,7 @@ begin
       DefaultID := Buttons[X];
   end;
 
-  Dialog := gtk_message_dialog_new(nil, GTK_DIALOG_MODAL, GtkDialogType, Btns, nil , []);
+  Dialog := gtk_message_dialog_new(nil, [GTK_DIALOG_MODAL], GtkDialogType, Btns, nil , []);
 
   set_message_text(DialogMessage);
 
