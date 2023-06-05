@@ -644,6 +644,10 @@ Registers an finalization routine needed after the LCL has been finalized.
 <seealso/>
 </element>
 
+<!-- 
+
+Removed in 1475336c.
+
 <element name="OffsetRect">
 <short>
 Increments the Top, Left and Bottom, Right rectangle coordinates by the 
@@ -665,78 +669,7 @@ specified amounts.
 <short/>
 </element>
 
-<element name="MoveRect">
-<short>Moves the rectangle origin to the given coordinates.</short>
-<descr/>
-<seealso/>
-</element>
-<element name="MoveRect.ARect">
-<short/>
-</element>
-<element name="MoveRect.x">
-<short/>
-</element>
-<element name="MoveRect.y">
-<short/>
-</element>
-
-<element name="MoveRectToFit">
-<short>Adjusts an rectangle to fit entirely into another one.</short>
-<descr/>
-<seealso/>
-</element>
-<element name="MoveRectToFit.ARect">
-<short/>
-</element>
-<element name="MoveRectToFit.MaxRect">
-<short>The bounding rectangle.</short>
-</element>
-
-<element name="MakeMinMax">
-<short>Eventually swaps the variable contents,
-so that i1 is not higher than i2.
-</short>
-<descr/>
-<seealso/>
-</element>
-<element name="MakeMinMax.i1">
-<short>Receives the minimum value of both variables.</short>
-</element>
-<element name="MakeMinMax.i2">
-<short>Receives the maximum value of both variables.</short>
-</element>
-
-<element name="CalculateLeftTopWidthHeight">
-<short>
-Transposes coordinates to ensure Width and Height are positive Integer values.
-</short>
-<descr/>
-<seealso/>
-</element>
-<element name="CalculateLeftTopWidthHeight.X1">
-<short/>
-</element>
-<element name="CalculateLeftTopWidthHeight.Y1">
-<short/>
-</element>
-<element name="CalculateLeftTopWidthHeight.X2">
-<short/>
-</element>
-<element name="CalculateLeftTopWidthHeight.Y2">
-<short/>
-</element>
-<element name="CalculateLeftTopWidthHeight.Left">
-<short/>
-</element>
-<element name="CalculateLeftTopWidthHeight.Top">
-<short/>
-</element>
-<element name="CalculateLeftTopWidthHeight.Width">
-<short/>
-</element>
-<element name="CalculateLeftTopWidthHeight.Height">
-<short/>
-</element>
+-->
 
 <element name="DeleteAmpersands">
 <short>

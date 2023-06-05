@@ -44,11 +44,11 @@ RestoreDC use the Canvas.SaveHandleState and Canvas.RestoreHandleState.
 <element name="SysUtils"/>
 <element name="Types"/>
 <element name="LCLType"/>
-<element name="LCLProc"/>
 <element name="LMessages"/>
 <element name="LCLStrConsts"/>
 <element name="InterfaceBase"/>
 <element name="GraphType"/>
+<element name="GraphMath"/>
 <element name="FileUtil"/>
 <element name="LazFileUtils"/>
 <element name="UTF8Process"/>

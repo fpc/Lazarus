@@ -41,7 +41,6 @@ Mike Lischke (public@soft-gems.net, www.soft-gems.net).
 <element name="SysUtils"/>
 <element name="Types"/>
 <element name="Math"/>
-<element name="LCLProc"/>
 <element name="LCLType"/>
 <element name="Graphics"/>
 <element name="TmSchema"/>

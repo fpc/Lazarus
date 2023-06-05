@@ -63,6 +63,7 @@ component palette:
 <element name="LResources"/>
 <element name="LCLPlatformDef"/>
 <element name="GraphType"/>
+<element name="GraphMath"/>
 <element name="LazMethodList"/>
 <element name="LazLoggerBase"/>
 <element name="LazTracer"/>
