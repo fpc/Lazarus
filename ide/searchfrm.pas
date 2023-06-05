@@ -86,6 +86,7 @@ type
     fSearchActive: boolean;
     fSearchProject: boolean;
     fSearchProjectGroup: boolean;
+    fResultsPageIndex: integer;
     fAborting: boolean;
     fLastUpdateProgress: DWORD;
     fWasActive: boolean;
@@ -116,6 +117,7 @@ type
     property SearchFileList: TStringList read fSearchFileList
                                          write fSearchFileList;
     property ResultsList: TStrings read fResultsList write SetResultsList;
+    property ResultsPageIndex: integer read fResultsPageIndex write fResultsPageIndex;
     property SearchMask: string read fMask write fMask;
     property Pad: string read fPad write fPad;
     property ResultsWindow: TTabSheet read fResultsWindow write fResultsWindow;
@@ -700,6 +702,7 @@ begin
   fSearchProjectGroup:= false;
   fSearchOpen:= false;
   fSearchFiles:= false;
+  fResultsPageIndex:=-1;
   fWasActive:= false;
 end;
 
@@ -991,8 +994,11 @@ var
 begin
   Cnt:= 0;
   LazarusIDE.DoShowSearchResultsView(iwgfShow);
-  ListPage:=SearchResultsView.AddSearch(SearchText,SearchText,
-                            ReplaceText,SearchDirectories,SearchMask,SearchOptions);
+  if fResultsPageIndex >= 0 then
+    ListPage := SearchResultsView.GetResultsPage(fResultsPageIndex)
+  else
+    ListPage := SearchResultsView.AddSearch(SearchText, SearchText, ReplaceText,
+      SearchDirectories, SearchMask, SearchOptions);
   try
     (* BeginUpdate prevents ListPage from being closed,
       other pages can still be closed or inserted, so PageIndex can change *)
@@ -1009,7 +1015,7 @@ begin
                    [mbCancel]);
     end;
   finally
-    ListPage.Caption:= Format('%s (%d)',[ListPage.Caption,Cnt]);
+    ListPage.Caption:= Format('%s (%d)',[SearchText, Cnt]);
     SearchResultsView.EndUpdate(ListPage.PageIndex);
     // show, but bring to front only if Search Progress dialog was active
     if fWasActive then

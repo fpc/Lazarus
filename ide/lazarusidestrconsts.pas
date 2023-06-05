@@ -5447,9 +5447,12 @@ resourcestring
   rsFoundButNotListedHere = 'Found but not listed here: ';
   rsRefreshTheSearch = 'Refresh the search';
   rsNewSearchWithSameCriteria = 'New search with same criteria';
-  rsShowPath = 'Toggle show path modes (Ctrl+P)';
-  rsCloseCurrentPage = 'Close current page';
+  rsShowPathMode = 'Path display mode';
+  rsShowAbsPath = 'Absolute path';
+  rsShowRelPath = 'Relative path';
+  rsShowFileName = 'File name';
   rsFilterTheListWithString = 'Filter the lines in list with a string';
+  rsCloseCurrentPage = 'Close current page';
   rsCloseLeft = 'Close page(s) on the left';
   rsCloseRight = 'Close page(s) on the right';
   rsCloseOthers = 'Close other page(s)';

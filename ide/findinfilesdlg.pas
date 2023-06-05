@@ -72,6 +72,7 @@ type
     procedure SetSynOptions(NewOptions: TSynSearchOptions);
     procedure UpdateReplaceCheck;
     procedure UpdateDirectoryOptions;
+    procedure Execute(aResultsPage: integer = -1);
   public
     property Options: TLazFindInFileSearchOptions read GetOptions
                                                   write SetOptions;
@@ -83,13 +84,13 @@ type
     procedure LoadHistory;
     procedure SaveHistory;
     procedure FindInSearchPath(SearchPath: string);
-    procedure FindInFilesPerDialog(AProject: TProject);
+    procedure FindInFiles(aProject: TProject);
     procedure InitFindText;
-    procedure InitFromLazSearch(Sender: TObject);
-    procedure FindInFiles(AProject: TProject; const AFindText: string);
-    procedure FindInFiles(AProject: TProject; const AFindText: string; AOptions: TLazFindInFileSearchOptions; AFileMask, ADir: string);
+    procedure FindInFiles(aProject: TProject; const aFindText: string;
+      aDialog: boolean = true; aResultsPage: integer = -1);
+    procedure FindInFiles(aProject: TProject; const aFindText: string; aOptions: TLazFindInFileSearchOptions; aFileMask, aDir: string;
+      aDialog: boolean = true; aResultsPage: integer = -1);
     function GetResolvedDirectories: string;
-    function Execute: boolean;
     property LazProject: TProject read FProject write FProject;
   end;
 
@@ -456,10 +457,10 @@ begin
   Execute;
 end;
 
-procedure TLazFindInFilesDialog.FindInFilesPerDialog(AProject: TProject);
+procedure TLazFindInFilesDialog.FindInFiles(aProject: TProject);
 begin
   InitFindText;
-  FindInFiles(AProject, FindText);
+  FindInFiles(aProject, FindText);
 end;
 
 procedure TLazFindInFilesDialog.InitFindText;
@@ -485,51 +486,50 @@ begin
   FindText:=NewFindText;
 end;
 
-procedure TLazFindInFilesDialog.InitFromLazSearch(Sender: TObject);
-var
-  Dir: String;
+procedure TLazFindInFilesDialog.FindInFiles(aProject: TProject; const aFindText: string; aDialog: boolean = true; aResultsPage: integer = -1);
 begin
-  Dir:=AppendPathDelim(TrimFilename(TLazSearch(Sender).SearchDirectories));
-  if Dir<>'' then
-    DirectoriesComboBox.Text:= Dir;
-  Options:= TLazSearch(Sender).SearchOptions;
-  FileMaskComboBox.Text:= TLazSearch(Sender).SearchMask;
-end;
-
-procedure TLazFindInFilesDialog.FindInFiles(AProject: TProject; const AFindText: string);
-begin
-  LazProject:=AProject;
+  LazProject := aProject;
   LoadHistory;
 
   // if there is no FindText, use the most recently used FindText
-  FindText:= AFindText;
-  if (FindText = '') and (InputHistories.FindHistory.Count > 0) then
-    FindText := InputHistories.FindHistory[0];
+  if (aFindText = '') and (InputHistories.FindHistory.Count > 0)
+    then FindText := InputHistories.FindHistory[0]
+    else FindText := aFindText;
 
   // disable replace. Find in files is often called,
   // but almost never to replace with the same parameters
-  Options := Options-[fifReplace,fifReplaceAll];
-  Execute;
+  Options := Options - [fifReplace, fifReplaceAll];
+
+  if aDialog then
+    if ShowModal <> mrOk then
+      exit;
+
+  Execute(aResultsPage);
 end;
 
-procedure TLazFindInFilesDialog.FindInFiles(AProject: TProject; const AFindText: string; AOptions: TLazFindInFileSearchOptions; AFileMask, ADir: string);
+procedure TLazFindInFilesDialog.FindInFiles(aProject: TProject; const aFindText: string; aOptions: TLazFindInFileSearchOptions; aFileMask, aDir: string; aDialog: boolean = true; aResultsPage: integer = -1);
 begin
-  LazProject:=AProject;
+  LazProject := aProject;
   LoadHistory;
 
   // if there is no FindText, use the most recently used FindText
-  FindText:= AFindText;
-  if (FindText = '') and (InputHistories.FindHistory.Count > 0) then
-    FindText := InputHistories.FindHistory[0];
+  if (aFindText = '') and (InputHistories.FindHistory.Count > 0)
+    then FindText := InputHistories.FindHistory[0]
+    else FindText := aFindText;
 
-  Options := AOptions;
-  DirectoriesComboBox.Text := ADir;
-  FileMaskComboBox.Text := AFileMask;
+  Options := aOptions;
+  DirectoriesComboBox.Text := TrimFilename(aDir);
+  FileMaskComboBox.Text := aFileMask;
 
   // disable replace. Find in files is often called,
   // but almost never to replace with the same parameters
-  Options := Options-[fifReplace,fifReplaceAll];
-  Execute;
+  Options := Options - [fifReplace, fifReplaceAll];
+
+  if aDialog then
+    if ShowModal <> mrOk then
+      exit;
+
+  Execute(aResultsPage);
 end;
 
 function TLazFindInFilesDialog.GetResolvedDirectories: string;
@@ -539,54 +539,50 @@ begin
   Result:=TrimSearchPath(Result,GetBaseDirectory,true,true);
 end;
 
-function TLazFindInFilesDialog.Execute: boolean;
+procedure TLazFindInFilesDialog.Execute(aResultsPage: integer = -1);
 var
   SearchForm: TSearchProgressForm;
   Where: Integer;
 begin
-  if ShowModal=mrOk then
-  begin
-    Result:=true;
-    SaveHistory;
+  SaveHistory;
 
-    SearchForm:= TSearchProgressForm.Create(SearchResultsView);
-    with SearchForm do begin
-      SearchOptions     := self.Options;
-      SearchText        := self.FindText;
-      ReplaceText       := self.ReplaceText;
-      SearchMask        := self.FileMaskComboBox.Text;
-      SearchDirectories := self.GetResolvedDirectories;
-    end;
+  SearchForm := TSearchProgressForm.Create(SearchResultsView);
+  with SearchForm do begin
+    SearchOptions     := self.Options;
+    SearchText        := self.FindText;
+    ReplaceText       := self.ReplaceText;
+    SearchMask        := self.FileMaskComboBox.Text;
+    SearchDirectories := self.GetResolvedDirectories;
+    ResultsPageIndex  := aResultsPage;
+  end;
 
-    try
-      if FindText <> '' then
+  try
+    if FindText <> '' then
+    begin
+      Where:=WhereRadioGroup.ItemIndex;
+      if Where=ItemIndProject then
       begin
-        Where:=WhereRadioGroup.ItemIndex;
-        if Where=ItemIndProject then
-        begin
-          if LazProject=nil then
-            SearchForm.DoSearchProject(Project1)
-          else
-            SearchForm.DoSearchProject(LazProject);
-        end else if Where=ItemIndProjectGroup then
-        begin
-          SearchForm.SearchOptions:=SearchForm.SearchOptions-[fifIncludeSubDirs];
-          SearchForm.DoSearchProjectGroup;
-        end
-        else if Where=ItemIndOpenFiles then
-          SearchForm.DoSearchOpenFiles
-        else if Where=ItemIndDirectories then
-          SearchForm.DoSearchDirs
+        if LazProject=nil then
+          SearchForm.DoSearchProject(Project1)
         else
-          SearchForm.DoSearchActiveFile;
-      end;
-    finally
-      FreeAndNil(SearchForm);
+          SearchForm.DoSearchProject(LazProject);
+      end else if Where=ItemIndProjectGroup then
+      begin
+        SearchForm.SearchOptions:=SearchForm.SearchOptions-[fifIncludeSubDirs];
+        SearchForm.DoSearchProjectGroup;
+      end
+      else if Where=ItemIndOpenFiles then
+        SearchForm.DoSearchOpenFiles
+      else if Where=ItemIndDirectories then
+        SearchForm.DoSearchDirs
+      else
+        SearchForm.DoSearchActiveFile;
     end;
-  end else
-    Result:=false;
+  finally
+    FreeAndNil(SearchForm);
+  end;
 
-  FProject:=nil;
+  FProject := nil;
 end;
 
 end.

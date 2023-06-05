@@ -143,12 +143,13 @@ type
     actCloseOthers: TAction;
     actCloseRight: TAction;
     actCloseAll: TAction;
-    actNextPage: TAction;
-    actPrevPage: TAction;
     ActionList: TActionList;
     ClosePageButton: TToolButton;
     ControlBar1: TPanel;
     MenuItem1: TMenuItem;
+    mniPathAbsolute: TMenuItem;
+    mniPathRelative: TMenuItem;
+    mniPathFileName: TMenuItem;
     mniCollapseAll: TMenuItem;
     mniExpandAll: TMenuItem;
     mniCopySelected: TMenuItem;
@@ -156,6 +157,7 @@ type
     mniCopyItem: TMenuItem;
     pnlToolBars: TPanel;
     popList: TPopupMenu;
+    popShowPath: TPopupMenu;
     ResultsNoteBook: TExtendedNotebook;
     tbbCloseLeft: TToolButton;
     tbbCloseOthers: TToolButton;
@@ -167,21 +169,19 @@ type
     SearchInListEdit: TTreeFilterEdit;
     ShowPathButton: TToolButton;
     ToolButton1: TToolButton;
+    ToolButton2: TToolButton;
     ToolButton3: TToolButton;
     tbbCloseAll: TToolButton;
-    procedure actNextPageExecute(Sender: TObject);
-    procedure actPrevPageExecute(Sender: TObject);
     procedure RefreshButtonClick(Sender: TObject);
     procedure SearchAgainButtonClick(Sender: TObject);
     procedure ClosePageButtonClick(Sender: TObject);
     procedure ResultsNoteBookResize(Sender: TObject);
-    procedure ShowPathButtonClick(Sender: TObject);
+    procedure mniShowPathClick(Sender: TObject);
     procedure tbbCloseAllClick(Sender: TObject);
     procedure tbbCloseLeftClick(Sender: TObject);
     procedure tbbCloseOthersClick(Sender: TObject);
     procedure tbbCloseRightClick(Sender: TObject);
     procedure Form1Create(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure mniCopyAllClick(Sender: TObject);
     procedure mniCopyItemClick(Sender: TObject);
@@ -208,8 +208,7 @@ type
       Shift: TShiftState; X, Y: Integer);
   private
     type
-      TOnSide = (osLeft, osOthers, osRight);   { Handling of multi tab closure }
-      TFilePathShow = (fpsFull, fpsRelative, fpsNone); { Parts of path to show }
+      TOnSide = (osLeft, osOthers, osRight); { Handling of multi tab closure }
   private
     FAsyncUpdateCloseButtons: TSVCloseButtonsState;
     FMaxItems: integer;
@@ -219,7 +218,6 @@ type
     FOnSelectionChanged: TNotifyEvent;
     FMouseOverIndex: integer;
     FClosingTabs: boolean;
-    FFilePathShow: TFilePathShow; {~bk}
     function BeautifyPageName(const APageName: string): string;
     function GetPageIndex(const APageName: string): integer;
     function GetTreeView(APageIndex: integer): TLazSearchResultTV;
@@ -264,12 +262,12 @@ type
     property OnSelectionChanged: TNotifyEvent read fOnSelectionChanged
                                               write fOnSelectionChanged;
     property Items[Index: integer]: TStrings read GetItems write SetItems;
+    function GetResultsPage(aIndex: integer): TTabSheet;
   end;
 
 var
   SearchResultsView: TSearchResultsView = nil;
   OnSearchResultsViewSelectionChanged: TNotifyEvent = nil;
-  OnSearchAgainClicked: TNotifyEvent = nil;
 
 implementation
 
@@ -328,60 +326,69 @@ procedure TSearchResultsView.Form1Create(Sender: TObject);
 var
   CloseCommand: TIDECommand;
 begin
-  FMaxItems:=50000;
-  ResultsNoteBook.Options:= ResultsNoteBook.Options+[nboShowCloseButtons];
+  Name := NonModalIDEWindowNames[nmiwSearchResultsView];
+
+  FMaxItems := 50000;
+  ResultsNoteBook.Options := ResultsNoteBook.Options + [nboShowCloseButtons];
   ResultsNoteBook.Update;
-
-  Name:=NonModalIDEWindowNames[nmiwSearchResultsView];
-  Caption:=lisMenuViewSearchResults;
-
-  RefreshButton.Hint:=rsRefreshTheSearch;
-  SearchAgainButton.Hint:=rsNewSearchWithSameCriteria;
-  ClosePageButton.Hint:=rsCloseCurrentPage;
-  SearchInListEdit.Hint:=rsFilterTheListWithString;
-  ShowPathButton.Hint:=rsShowPath;
-  { Close tabs buttons }
-  actCloseLeft.Hint:=rsCloseLeft;
-  actCloseRight.Hint:=rsCloseRight;
-  actCloseOthers.Hint:=rsCloseOthers;
-  actCloseAll.Hint:=rsCloseAll;
 
   CloseCommand := IDECommandList.FindIDECommand(ecClose);
   if CloseCommand <> nil then
   begin
     if CloseCommand.AsShortCut <> 0 then
-      actClosePage.ShortCut:=CloseCommand.AsShortCut;
+      actClosePage.ShortCut := CloseCommand.AsShortCut;
+
     if (CloseCommand.ShortcutB.Key1 <> 0) and (CloseCommand.ShortcutB.Key2 = 0) then
-      actClosePage.SecondaryShortCuts.Append(ShortCutToText(
-        ShortCut(CloseCommand.ShortcutB.Key1, CloseCommand.ShortcutB.Shift1)));
+      actClosePage.SecondaryShortCuts.Append(
+        ShortCutToText(
+          ShortCut(CloseCommand.ShortcutB.Key1, CloseCommand.ShortcutB.Shift1)
+        )
+      );
   end;
+
   fOnSelectionChanged:= nil;
-  ShowHint:= True;
   fMouseOverIndex:= -1;
 
-  mniCopyItem.Caption := lisCopyItemToClipboard;
+  // hints
+  ShowHint:= True;
+
+  RefreshButton    .Hint := rsRefreshTheSearch;
+  SearchAgainButton.Hint := rsNewSearchWithSameCriteria;
+  ClosePageButton  .Hint := rsCloseCurrentPage;
+  SearchInListEdit .Hint := rsFilterTheListWithString;
+  ShowPathButton   .Hint := rsShowPathMode;
+  actCloseLeft     .Hint := rsCloseLeft;
+  actCloseRight    .Hint := rsCloseRight;
+  actCloseOthers   .Hint := rsCloseOthers;
+  actCloseAll      .Hint := rsCloseAll;
+
+  // caption
+  Caption := lisMenuViewSearchResults;
+
+  mniCopyItem    .Caption := lisCopyItemToClipboard;
   mniCopySelected.Caption := lisCopySelectedItemToClipboard;
-  mniCopyAll.Caption := lisCopyAllItemsToClipboard;
-  mniExpandAll.Caption := lisExpandAll;
-  mniCollapseAll.Caption := lisCollapseAll;
+  mniCopyAll     .Caption := lisCopyAllItemsToClipboard;
+  mniExpandAll   .Caption := lisExpandAll;
+  mniCollapseAll .Caption := lisCollapseAll;
+  mniPathAbsolute.Caption := rsShowAbsPath;
+  mniPathRelative.Caption := rsShowRelPath;
+  mniPathFileName.Caption := rsShowFileName;
 
+  // images lists
   PageToolBar.Images := IDEImages.Images_16;
-  RefreshButton.ImageIndex     := IDEImages.LoadImage('laz_refresh');
-  SearchAgainButton.ImageIndex := IDEImages.LoadImage('menu_new_search');
-  ClosePageButton.ImageIndex   := IDEImages.LoadImage('menu_close');
-  ShowPathButton.ImageIndex    := IDEImages.LoadImage('da_directory');
-  ActionList.Images := IDEImages.Images_16;
-  actClosePage.ImageIndex := IDEImages.LoadImage('menu_close');
-  { Close tabs buttons }
-  CloseTabs.Images := IDEImages.Images_16;
-  actCloseLeft.ImageIndex   := IDEImages.LoadImage('tab_close_L');
-  actCloseOthers.ImageIndex := IDEImages.LoadImage('tab_close_LR');
-  actCloseRight.ImageIndex  := IDEImages.LoadImage('tab_close_R');
-  actCloseAll.ImageIndex    := IDEImages.LoadImage('tab_close_All');
-end;
+  ActionList .Images := IDEImages.Images_16;
+  CloseTabs  .Images := IDEImages.Images_16;
 
-procedure TSearchResultsView.FormClose(Sender: TObject; var CloseAction: TCloseAction);
-begin
+  // images
+  RefreshButton    .ImageIndex := IDEImages.LoadImage('laz_refresh');
+  SearchAgainButton.ImageIndex := IDEImages.LoadImage('menu_new_search');
+  ClosePageButton  .ImageIndex := IDEImages.LoadImage('menu_close');
+  ShowPathButton   .ImageIndex := IDEImages.LoadImage('menu_search_openfile_atcursor');
+  actClosePage     .ImageIndex := IDEImages.LoadImage('menu_close');
+  actCloseLeft     .ImageIndex := IDEImages.LoadImage('tab_close_L');
+  actCloseOthers   .ImageIndex := IDEImages.LoadImage('tab_close_LR');
+  actCloseRight    .ImageIndex := IDEImages.LoadImage('tab_close_R');
+  actCloseAll      .ImageIndex := IDEImages.LoadImage('tab_close_All');
 
 end;
 
@@ -392,22 +399,45 @@ begin
   begin
     Key := VK_UNKNOWN;
     Close;
-  end;
-  if (Key = VK_F) and (Shift = [ssCtrl]) then
+  end
+  else if (Key = VK_F) and (Shift = [ssCtrl]) then
   begin
     Key := VK_UNKNOWN;
     if SearchInListEdit.CanSetFocus then
       SearchInListEdit.SetFocus;
-  end;
-  if (Key = VK_P) and (Shift = [ssCtrl]) then
+  end
+  else if (Key = VK_P) and (Shift = [ssCtrl]) then
   begin
     Key := VK_UNKNOWN;
-    ShowPathButtonClick(Sender);
-  end;
-  if (Key = VK_N) and (Shift = [ssCtrl]) then
+
+    if mniPathAbsolute.Checked then
+      mniPathRelative.Checked := true
+    else if mniPathRelative.Checked then
+      mniPathFileName.Checked := true
+    else
+      mniPathAbsolute.Checked := true;
+
+    mniShowPathClick(Sender);
+  end
+  else if (Key = VK_N) and (Shift = [ssCtrl]) then
   begin
     Key := VK_UNKNOWN;
     SearchAgainButtonClick(Sender);
+  end
+  else if (Key = VK_F5) and (Shift = []) then
+  begin
+    Key := VK_UNKNOWN;
+    RefreshButtonClick(Sender);
+  end
+  else if (Key = VK_TAB) and (Shift = [ssCtrl]) then
+  begin
+    Key := VK_UNKNOWN;
+    ResultsNoteBook.SelectNextPage(true);
+  end
+  else if (Key = VK_TAB) and (Shift = [ssShift, ssCtrl]) then
+  begin
+    Key := VK_UNKNOWN;
+    ResultsNoteBook.SelectNextPage(False);
   end;
 end;
 
@@ -471,22 +501,26 @@ begin
 end;
 
 procedure TSearchResultsView.RefreshButtonClick(Sender: TObject);
+var
+  lTree: TLazSearchResultTV;
+  lSearch: TLazSearch;
 begin
-  ShowMessage('ToDo: Refresh the search in current page.');
+  lTree := GetCurrentTreeView;
+  if lTree = nil then exit; // this also check ResultsNoteBook.PageIndex
+
+  with lTree.SearchObject do
+    MainIDEInterface.FindInFiles(Project1, SearchString, SearchOptions, SearchMask, SearchDirectories, false, ResultsNoteBook.PageIndex);
 end;
 
 procedure TSearchResultsView.SearchAgainButtonClick(Sender: TObject);
 var
-  CurrentTV: TLazSearchResultTV;
-  SearchObj: TLazSearch;
+  lTree: TLazSearchResultTV;
 begin
-  CurrentTV:= GetCurrentTreeView;
-  if not Assigned(CurrentTV) then
-    MainIDEInterface.FindInFilesPerDialog(Project1)
+  lTree := GetCurrentTreeView;
+  if lTree = nil then
+    MainIDEInterface.FindInFiles(Project1)
   else begin
-    SearchObj:= CurrentTV.SearchObject;
-    OnSearchAgainClicked(SearchObj);
-    with SearchObj do
+    with lTree.SearchObject do
       MainIDEInterface.FindInFiles(Project1, SearchString, SearchOptions, SearchMask, SearchDirectories);
   end;
 end;
@@ -494,16 +528,6 @@ end;
 procedure TSearchResultsView.ClosePageButtonClick(Sender: TObject);
 begin
   ClosePage(ResultsNoteBook.PageIndex);
-end;
-
-procedure TSearchResultsView.actNextPageExecute(Sender: TObject);
-begin
-  ResultsNoteBook.SelectNextPage(True);
-end;
-
-procedure TSearchResultsView.actPrevPageExecute(Sender: TObject);
-begin
-  ResultsNoteBook.SelectNextPage(False);
 end;
 
 procedure TSearchResultsView.ResultsNoteBookResize(Sender: TObject);
@@ -514,16 +538,10 @@ begin
     AsyncUpdateCloseButtons:=svcbDisable;
 end;
 
-procedure TSearchResultsView.ShowPathButtonClick(Sender: TObject);
+procedure TSearchResultsView.mniShowPathClick(Sender: TObject);
 var
   lTree: TLazSearchResultTV;
 begin
-  { Toggle thru the 3 states } {~bk}
-  if FFilePathShow = High(TFilePathShow) then
-    FFilePathShow := Low(TFilePathShow)
-  else
-    inc(FFilePathShow);
-  ShowPathButton.Down := False;
   lTree := GetCurrentTreeView;
   if lTree = nil then exit;
   lTree.Invalidate;
@@ -860,6 +878,13 @@ begin
     AsyncUpdateCloseButtons:=svcbEnable;
 end;
 
+function TSearchResultsView.GetResultsPage(aIndex: integer): TTabSheet;
+begin
+  if InRange(aIndex, 0, ResultsNoteBook.PageCount - 1)
+    then result := ResultsNoteBook.Pages[aIndex]
+    else result := nil;
+end;
+
 {Sets the Items from the treeview on the currently selected page in the TNoteBook}
 procedure TSearchResultsView.SetItems(Index: Integer; Value: TStrings);
 var
@@ -1194,10 +1219,9 @@ begin
     lPart := inttostr(lMatch.FileStartPos.Y) + ':';
     lTextX := lRect.Left + 6 * lDigitWidth - lTree.Canvas.GetTextWidth(lPart);
     // draw line number ("99999: ")
-    if [cdsSelected,cdsMarked] * State <> [] then
-      DrawNextText(lPart, clNone)          // Let the system determine contrast
-    else
-      DrawNextText(lPart, clGrayText);
+    if [cdsSelected, cdsMarked] * State <> []
+      then DrawNextText(lPart)
+      else DrawNextText(lPart, clGrayText);
 
     lTextX := lRect.Left + 7 * lDigitWidth;
     lDrawnLength := 0;
@@ -1231,36 +1255,34 @@ begin
       lMatch := lMatch.NextInThisLine;
     end;
 
-  end
-  else begin { filename }
+  end else begin { filename }
     lTextX := lRect.Left;
 
-    lRelPath := ExtractRelativePath(
-      IncludeTrailingPathDelimiter(lTree.SearchObject.SearchDirectories),
-      Node.Text
-    );
+    // get relative path (if needed)
+    if mniPathRelative.Checked or mniPathFileName.Checked then
+      lRelPath := ExtractRelativePath(
+        IncludeTrailingPathDelimiter(lTree.SearchObject.SearchDirectories),
+        Node.Text
+      );
 
-    // show path or file name
-    if FFilePathShow = fpsFull then    { <= 2.2.6 behavior }
-      DrawNextText(Node.Text, clNone, [fsBold])
-    else begin
-      if FFilePathShow = fpsRelative then
-        DrawNextText(lRelPath, clNone, [fsBold])
-      else begin
-       if [cdsSelected,cdsMarked] * State <> [] then begin
-         DrawNextText(ExtractFileName(lRelPath), clNone, [fsBold]);
-         DrawNextText(' (' + lRelPath + ')', clHighlightText);
-       end
-       else begin
-         DrawNextText(ExtractFileName(lRelPath), clNone, [fsBold]);
-       end;
-      end;
-    end;
+    if mniPathFileName.Checked then
+      // file name
+      DrawNextText(ExtractFileName(lRelPath), clNone, [fsBold])
+    else if mniPathRelative.Checked then
+      // relative path
+      DrawNextText(lRelPath, clNone, [fsBold])
+    else
+      // absolute path
+      DrawNextText(Node.Text, clNone, [fsBold]);
+
+    // also show relative path if row selected
+    if mniPathFileName.Checked then
+      if [cdsSelected,cdsMarked] * State <> [] then
+        DrawNextText(' (' + lRelPath + ')', clHighlightText);
 
     // show a warning that this is a backup folder
     // strip path delimiter and filename, then check if last directory is 'backup'
-    lPart := ExcludeTrailingPathDelimiter(ExtractFilePath(lRelPath));
-    if CompareText('backup', ExtractFileName(lPart)) = 0 then
+    if CompareText('backup', ExtractFileName(ExtractFileDir(Node.Text))) = 0 then
       DrawNextText(' [BACKUP]', clRed);
 
   end;
@@ -1364,7 +1386,9 @@ end;
 
 function TSearchResultsView.GetCurrentTreeView: TLazSearchResultTV;
 begin
-  result := GetTreeView(ResultsNoteBook.PageIndex);
+  if ResultsNoteBook.PageIndex < 0
+    then result := nil
+    else result := GetTreeView(ResultsNoteBook.PageIndex);
 end;
 
 procedure TSearchResultsView.SetAsyncUpdateCloseButtons(const AValue: TSVCloseButtonsState);

@@ -195,9 +195,11 @@ type
                         BlockTopLine, BlockBottomLine: integer;
                         Flags: TJumpToCodePosFlags = [jfFocusEditor]): TModalResult; virtual; abstract; overload;
 
-    procedure FindInFilesPerDialog(AProject: TProject); virtual; abstract;
-    procedure FindInFiles(AProject: TProject; const FindText: string); virtual; abstract;
-    procedure FindInFiles(AProject: TProject; const FindText: string; AOptions: TLazFindInFileSearchOptions; AFileMask, ADir: string); virtual; abstract;
+    procedure FindInFiles(aProject: TProject); virtual; abstract;
+    procedure FindInFiles(aProject: TProject; const aFindText: string;
+                          aDialog: boolean = true; aResultsPage: integer = -1); virtual; abstract;
+    procedure FindInFiles(aProject: TProject; const aFindText: string; aOptions: TLazFindInFileSearchOptions; aFileMask, aDir: string;
+                          aDialog: boolean = true; aResultsPage: integer = -1); virtual; abstract;
 
     class function GetPrimaryConfigPath: String; override;
     class function GetSecondaryConfigPath: String; override;

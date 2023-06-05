@@ -203,9 +203,9 @@ type
     procedure UpdateHighlighters(Immediately: boolean = false); override;
     procedure UpdateDefineTemplates;
 
-    procedure FindInFilesPerDialog(AProject: TProject); override;
-    procedure FindInFiles(AProject: TProject; const FindText: string); override;
-    procedure FindInFiles(AProject: TProject; const FindText: string; AOptions: TLazFindInFileSearchOptions; AFileMask, ADir: string); override;
+    procedure FindInFiles(AProject: TProject); override;
+    procedure FindInFiles(aProject: TProject; const aFindText: string; aDialog: boolean = true; aResultsPage: integer = -1); override;
+    procedure FindInFiles(aProject: TProject; const aFindText: string; aOptions: TLazFindInFileSearchOptions; aFileMask, aDir: string; aDialog: boolean = true; aResultsPage: integer = -1); override;
 
     procedure SelComponentPageButtonMouseDown(Sender: TObject;
       Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual; abstract;
@@ -1777,19 +1777,19 @@ begin
   Include(FIdleIdeActions, iiaUpdateDefineTemplates);
 end;
 
-procedure TMainIDEBase.FindInFilesPerDialog(AProject: TProject);
+procedure TMainIDEBase.FindInFiles(aProject: TProject);
 begin
-  FindInFilesDialog.FindInFilesPerDialog(AProject);
+  FindInFilesDialog.FindInFiles(aProject);
 end;
 
-procedure TMainIDEBase.FindInFiles(AProject: TProject; const FindText: string);
+procedure TMainIDEBase.FindInFiles(aProject: TProject; const aFindText: string; aDialog: boolean = true; aResultsPage: integer = -1);
 begin
-  FindInFilesDialog.FindInFiles(AProject, FindText);
+  FindInFilesDialog.FindInFiles(aProject, aFindText, aDialog, aResultsPage);
 end;
 
-procedure TMainIDEBase.FindInFiles(AProject: TProject; const FindText: string; AOptions: TLazFindInFileSearchOptions; AFileMask, ADir: string);
+procedure TMainIDEBase.FindInFiles(aProject: TProject; const aFindText: string; aOptions: TLazFindInFileSearchOptions; aFileMask, aDir: string; aDialog: boolean = true; aResultsPage: integer = -1);
 begin
-  FindInFilesDialog.FindInFiles(AProject, FindText, AOptions, AFileMask, ADir);
+  FindInFilesDialog.FindInFiles(aProject, aFindText, aOptions, aFileMask, aDir, aDialog, aResultsPage);
 end;
 
 { TRunToolButton }

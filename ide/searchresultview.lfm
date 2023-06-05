@@ -10,7 +10,6 @@ object SearchResultsView: TSearchResultsView
   Constraints.MinHeight = 100
   Constraints.MinWidth = 400
   KeyPreview = True
-  OnClose = FormClose
   OnCreate = Form1Create
   OnKeyDown = FormKeyDown
   LCLVersion = '2.3.0.0'
@@ -30,7 +29,7 @@ object SearchResultsView: TSearchResultsView
       Left = 0
       Height = 22
       Top = 2
-      Width = 70
+      Width = 88
       Align = alNone
       Anchors = [akTop, akLeft, akBottom]
       AutoSize = True
@@ -38,16 +37,15 @@ object SearchResultsView: TSearchResultsView
       EdgeOuter = esNone
       TabOrder = 0
       object RefreshButton: TToolButton
-        Left = 1
+        Left = 24
         Top = 0
         AutoSize = True
         Caption = 'RefreshButton'
         ImageIndex = 2
         OnClick = RefreshButtonClick
-        Visible = False
       end
       object SearchAgainButton: TToolButton
-        Left = 24
+        Left = 1
         Top = 0
         AutoSize = True
         Caption = 'SearchAgainButton'
@@ -55,20 +53,28 @@ object SearchResultsView: TSearchResultsView
         OnClick = SearchAgainButtonClick
       end
       object ShowPathButton: TToolButton
-        Left = 47
+        Left = 55
         Top = 0
         Caption = 'ShowPathButton'
-        OnClick = ShowPathButtonClick
+        DropdownMenu = popShowPath
+        Style = tbsButtonDrop
+      end
+      object ToolButton2: TToolButton
+        Left = 47
+        Height = 22
+        Top = 0
+        Caption = 'ToolButton2'
+        Style = tbsSeparator
       end
     end
     object SearchInListEdit: TTreeFilterEdit
       AnchorSideLeft.Control = PageToolBar
       AnchorSideLeft.Side = asrBottom
       AnchorSideRight.Control = CloseTabs
-      Left = 80
+      Left = 98
       Height = 23
       Top = 2
-      Width = 464
+      Width = 479
       ButtonWidth = 23
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Left = 8
@@ -83,7 +89,9 @@ object SearchResultsView: TSearchResultsView
       ExpandAllInitially = True
     end
     object CloseTabs: TToolBar
-      Left = 554
+      AnchorSideRight.Control = ControlBar1
+      AnchorSideRight.Side = asrBottom
+      Left = 587
       Height = 22
       Top = 3
       Width = 133
@@ -148,6 +156,7 @@ object SearchResultsView: TSearchResultsView
     MultiLine = True
     TabOrder = 0
     OnChange = ResultsNoteBookPageChanged
+    OnChanging = ResultsNoteBookChanging
     OnCloseTabClicked = ResultsNoteBookClosetabclicked
     OnMouseDown = ResultsNoteBookMouseDown
     OnResize = ResultsNoteBookResize
@@ -190,14 +199,6 @@ object SearchResultsView: TSearchResultsView
       OnExecute = ClosePageButtonClick
       ShortCut = 16499
     end
-    object actNextPage: TAction
-      OnExecute = actNextPageExecute
-      ShortCut = 16393
-    end
-    object actPrevPage: TAction
-      OnExecute = actPrevPageExecute
-      ShortCut = 24585
-    end
     object actCloseLeft: TAction
       ImageIndex = 5
       OnExecute = tbbCloseLeftClick
@@ -214,6 +215,29 @@ object SearchResultsView: TSearchResultsView
       ImageIndex = 8
       OnExecute = tbbCloseAllClick
       ShortCut = 24691
+    end
+  end
+  object popShowPath: TPopupMenu
+    Left = 80
+    Top = 120
+    object mniPathAbsolute: TMenuItem
+      AutoCheck = True
+      Caption = 'mniPathAbsolute'
+      RadioItem = True
+      OnClick = mniShowPathClick
+    end
+    object mniPathRelative: TMenuItem
+      AutoCheck = True
+      Caption = 'mniPathRelative'
+      Checked = True
+      RadioItem = True
+      OnClick = mniShowPathClick
+    end
+    object mniPathFileName: TMenuItem
+      AutoCheck = True
+      Caption = 'mniPathFileName'
+      RadioItem = True
+      OnClick = mniShowPathClick
     end
   end
 end
