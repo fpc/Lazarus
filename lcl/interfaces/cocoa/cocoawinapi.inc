@@ -1183,7 +1183,7 @@ begin
   if Result then
   begin
     ARect := NSObject(handle).lclClientFrame;
-    OffsetRect(ARect, -ARect.Left, -ARect.Top);
+    Types.OffsetRect(ARect, -ARect.Left, -ARect.Top);
   end;
 end;
 

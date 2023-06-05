@@ -27,7 +27,7 @@ interface
 
 uses
   // rtl+ftl
-  Types, Classes, SysUtils, Math, contnrs,
+  Types, Classes, SysUtils, Math, contnrs, GraphMath,
   // carbon bindings
   MacOSAll,
   // interfacebase

@@ -467,7 +467,7 @@ begin
       NSToLCLRect(window.frame, NSScreenZeroHeight, wfrm)
     else
       wfrm := NSRectToRect(frame);
-    OffsetRect(Result, -Result.Left+wfrm.Left, -Result.Top+wfrm.Top);
+    Types.OffsetRect(Result, -Result.Left+wfrm.Left, -Result.Top+wfrm.Top);
   end;
 end;
 

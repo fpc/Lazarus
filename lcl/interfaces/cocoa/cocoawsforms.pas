@@ -185,6 +185,7 @@ var
 implementation
 
 uses
+  GraphMath,
   CocoaInt;
 
 const
