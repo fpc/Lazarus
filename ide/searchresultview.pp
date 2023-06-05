@@ -1194,7 +1194,10 @@ begin
     lPart := inttostr(lMatch.FileStartPos.Y) + ':';
     lTextX := lRect.Left + 6 * lDigitWidth - lTree.Canvas.GetTextWidth(lPart);
     // draw line number ("99999: ")
-    DrawNextText(lPart, clGrayText);
+    if [cdsSelected,cdsMarked] * State <> [] then
+      DrawNextText(lPart, clNone)          // Let the system determine contrast
+    else
+      DrawNextText(lPart, clGrayText);
 
     lTextX := lRect.Left + 7 * lDigitWidth;
     lDrawnLength := 0;
@@ -1238,7 +1241,7 @@ begin
     );
 
     // show path or file name
-    if FFilePathShow = fpsFull then    { <= 2.2.6 }
+    if FFilePathShow = fpsFull then    { <= 2.2.6 behavior }
       DrawNextText(Node.Text, clNone, [fsBold])
     else begin
       if FFilePathShow = fpsRelative then
