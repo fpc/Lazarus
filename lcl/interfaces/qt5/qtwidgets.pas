@@ -2041,6 +2041,7 @@ implementation
 uses
   Buttons,
   math,
+  LazUtilities,
   qtCaret,
   qtproc,
   qtprivate,

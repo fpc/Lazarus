@@ -2045,6 +2045,7 @@ uses
   Buttons,
   math,
   qtCaret,
+  LazUtilities,
   qtproc,
   qtprivate,
   WSControls
