@@ -20394,6 +20394,7 @@ msgid "Delete all resources?"
 msgstr "Minden erőforrás törlése?"
 
 #: lazarusidestrconsts.rsresourcefilename
+msgctxt "lazarusidestrconsts.rsresourcefilename"
 msgid "File name"
 msgstr "Fájl neve"
 
@@ -20410,8 +20411,22 @@ msgstr "Revízió:"
 msgid "Select an inherited entry"
 msgstr "Minden öröklött bejegyzés kijelölése"
 
-#: lazarusidestrconsts.rsshowpath
-msgid "Show path"
+#: lazarusidestrconsts.rsshowabspath
+msgid "Absolute path"
+msgstr ""
+
+#: lazarusidestrconsts.rsshowfilename
+#, fuzzy
+msgctxt "lazarusidestrconsts.rsshowfilename"
+msgid "File name"
+msgstr "Fájl neve"
+
+#: lazarusidestrconsts.rsshowpathmode
+msgid "Path display mode"
+msgstr ""
+
+#: lazarusidestrconsts.rsshowrelpath
+msgid "Relative path"
 msgstr ""
 
 #: lazarusidestrconsts.rsversionnumbering

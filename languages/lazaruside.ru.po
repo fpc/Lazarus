@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-06-02 01:47+0300\n"
+"PO-Revision-Date: 2023-06-06 01:31+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -20349,6 +20349,7 @@ msgid "Delete all resources?"
 msgstr "Удалить все ресурсы?"
 
 #: lazarusidestrconsts.rsresourcefilename
+msgctxt "lazarusidestrconsts.rsresourcefilename"
 msgid "File name"
 msgstr "Имя файла"
 
@@ -20365,9 +20366,22 @@ msgstr "&Ревизия:"
 msgid "Select an inherited entry"
 msgstr "Выбрать унаследованный элемент"
 
-#: lazarusidestrconsts.rsshowpath
-msgid "Show path"
-msgstr "Показывать путь"
+#: lazarusidestrconsts.rsshowabspath
+msgid "Absolute path"
+msgstr "Абсолютный путь"
+
+#: lazarusidestrconsts.rsshowfilename
+msgctxt "lazarusidestrconsts.rsshowfilename"
+msgid "File name"
+msgstr "Имя файла"
+
+#: lazarusidestrconsts.rsshowpathmode
+msgid "Path display mode"
+msgstr "Режим отображения пути"
+
+#: lazarusidestrconsts.rsshowrelpath
+msgid "Relative path"
+msgstr "Относительный путь"
 
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"

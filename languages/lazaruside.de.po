@@ -20524,6 +20524,7 @@ msgid "Delete all resources?"
 msgstr "Alle Ressourcen löschen?"
 
 #: lazarusidestrconsts.rsresourcefilename
+msgctxt "lazarusidestrconsts.rsresourcefilename"
 msgid "File name"
 msgstr "Dateiname"
 
@@ -20540,8 +20541,22 @@ msgstr "&Revision:"
 msgid "Select an inherited entry"
 msgstr "Abgeleiteten Eintrag auswählen"
 
-#: lazarusidestrconsts.rsshowpath
-msgid "Show path"
+#: lazarusidestrconsts.rsshowabspath
+msgid "Absolute path"
+msgstr ""
+
+#: lazarusidestrconsts.rsshowfilename
+#, fuzzy
+msgctxt "lazarusidestrconsts.rsshowfilename"
+msgid "File name"
+msgstr "Dateiname"
+
+#: lazarusidestrconsts.rsshowpathmode
+msgid "Path display mode"
+msgstr ""
+
+#: lazarusidestrconsts.rsshowrelpath
+msgid "Relative path"
 msgstr ""
 
 #: lazarusidestrconsts.rsversionnumbering

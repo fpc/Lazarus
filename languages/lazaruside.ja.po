@@ -20635,6 +20635,7 @@ msgid "Delete all resources?"
 msgstr "すべてのリソースを削除しますか？"
 
 #: lazarusidestrconsts.rsresourcefilename
+msgctxt "lazarusidestrconsts.rsresourcefilename"
 msgid "File name"
 msgstr "ファイル名"
 
@@ -20651,8 +20652,22 @@ msgstr "改訂(&R)"
 msgid "Select an inherited entry"
 msgstr "継承されたエントリを選択"
 
-#: lazarusidestrconsts.rsshowpath
-msgid "Show path"
+#: lazarusidestrconsts.rsshowabspath
+msgid "Absolute path"
+msgstr ""
+
+#: lazarusidestrconsts.rsshowfilename
+#, fuzzy
+msgctxt "lazarusidestrconsts.rsshowfilename"
+msgid "File name"
+msgstr "ファイル名"
+
+#: lazarusidestrconsts.rsshowpathmode
+msgid "Path display mode"
+msgstr ""
+
+#: lazarusidestrconsts.rsshowrelpath
+msgid "Relative path"
 msgstr ""
 
 #: lazarusidestrconsts.rsversionnumbering
