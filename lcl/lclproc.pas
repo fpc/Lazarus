@@ -29,6 +29,7 @@ uses
   Classes, SysUtils, Math, Types, Laz_AVL_Tree,
   // LazUtils
   LazFileUtils, LazUtilities, LazMethodList, LazUTF8, LazLoggerBase, LazTracer,
+  GraphMath,
   // LCL
   LCLStrConsts, LCLType;
 
@@ -109,8 +110,14 @@ var
 
 function SendApplicationMessage(Msg: Cardinal; WParam: WParam; LParam: LParam):Longint;
 procedure OwnerFormDesignerModified(AComponent: TComponent);
+
 // Deprecated in version 2.3, 2023-06.
 procedure FreeThenNil(var obj); deprecated 'Use LazUtilities.FreeThenNil instead';
+procedure MoveRect(var ARect: TRect; x, y: Integer); deprecated 'Use GraphMath.MoveRect instead';
+procedure MoveRectToFit(var ARect: TRect; const MaxRect: TRect); deprecated 'Use GraphMath.MoveRectToFit instead';
+procedure MakeMinMax(var i1, i2: integer); deprecated 'Use GraphMath.MakeMinMax instead';
+procedure CalculateLeftTopWidthHeight(X1,Y1,X2,Y2: integer;
+  out Left,Top,Width,Height: integer); deprecated 'Use GraphMath.CalculateLeftTopWidthHeight instead';
 
 { the LCL interfaces finalization sections are called before the finalization
   sections of the LCL. Those parts, that should be finalized after the LCL, can
@@ -833,6 +840,27 @@ end;
 procedure FreeThenNil(var obj);
 begin
   LazUtilities.FreeThenNil(obj);
+end;
+
+procedure MoveRect(var ARect: TRect; x, y: Integer);
+begin
+  GraphMath.MoveRect(ARect, x, y);
+end;
+
+procedure MoveRectToFit(var ARect: TRect; const MaxRect: TRect);
+begin
+  GraphMath.MoveRectToFit(ARect, MaxRect);
+end;
+
+procedure MakeMinMax(var i1, i2: integer);
+begin
+  GraphMath.MakeMinMax(i1, i2);
+end;
+
+procedure CalculateLeftTopWidthHeight(X1, Y1, X2, Y2: integer;
+  out Left, Top, Width, Height: integer);
+begin
+  GraphMath.CalculateLeftTopWidthHeight(X1, Y1, X2, Y2, Left, Top, Width, Height);
 end;
 
 procedure RegisterInterfaceInitializationHandler(p: TProcedure);
