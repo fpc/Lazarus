@@ -290,6 +290,7 @@ begin
   end;
   r := AView.lclFrame;
   p := AView.superview;
+  p.setAutoresizingMask( NSViewWidthSizable or NSViewHeightSizable);
   Result := TCocoaManualScrollView.alloc.initWithFrame(NSNullRect);
   if Assigned(p) then p.addSubView(Result);
   Result.lclSetFrame(r);
