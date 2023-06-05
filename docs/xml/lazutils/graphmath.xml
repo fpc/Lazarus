@@ -352,6 +352,88 @@ RadialPoint.
 <short/>
 </element>
 
+
+<element name="CalculateLeftTopWidthHeight">
+<short>
+Calculates the values for the output variables in Left, Top, Width, and Height.
+</short>
+<descr>
+<p>
+<var>CalculateLeftTopWidthHeight</var> checks values in the X1, X2, Y1, and Y2 
+arguments and sets the values for the Left, Top, Width, and Height output 
+parameters accordingly.
+</p>
+<dl>
+<dt>Left</dt>
+<dd>
+Set to the smaller of the two values in X1 and X2.
+</dd>
+<dt>Width</dt>
+<dd>
+Set to the difference between the X1 and X2 values. The value will be a 
+positive integer value or zero (0).
+</dd>
+<dt>Top</dt>
+<dd>
+Set to the smaller of the two values in Y1 and Y2.
+</dd>
+<dt>Height</dt>
+<dd>
+Set to the difference between Y1 and Y2. The value will be a positive integer 
+value or zero (0).
+</dd>
+</dl>
+<p>
+Used in the implementation of the Rectangle and Ellipse routines for the GTK 
+widgetset.
+</p>
+</descr>
+<version>
+Added in LazUtils version 2.4.0.
+</version>
+<seealso/>
+</element>
+<element name="CalculateLeftTopWidthHeight.X1">
+<short>
+Horizontal coordinate examined in the routine.
+</short>
+</element>
+<element name="CalculateLeftTopWidthHeight.Y1">
+<short>
+Vertical coordinate examined in the routine.
+</short>
+</element>
+<element name="CalculateLeftTopWidthHeight.X2">
+<short>
+Horizontal coordinate examined in the routine.
+</short>
+</element>
+<element name="CalculateLeftTopWidthHeight.Y2">
+<short>
+Vertical coordinate examined in the routine.
+</short>
+</element>
+<element name="CalculateLeftTopWidthHeight.Left">
+<short>
+Returns the left coordinate for the specified values.
+</short>
+</element>
+<element name="CalculateLeftTopWidthHeight.Top">
+<short>
+Returns the top coordinate for the specified values.
+</short>
+</element>
+<element name="CalculateLeftTopWidthHeight.Width">
+<short>
+Returns the width for the specified horizontal coordinates.
+</short>
+</element>
+<element name="CalculateLeftTopWidthHeight.Height">
+<short>
+Returns the height for the specified vertical coordinates.
+</short>
+</element>
+
 <element name="Coords2Angles">
 <short>
 <var>Coords2Angles</var> - convert the coords for Start and End Radial-
@@ -520,6 +602,103 @@ o&apos;clock position.
 </element>
 <element name="LineEndPoint.Length">
 <short/>
+</element>
+
+<element name="MakeMinMax">
+<short>
+Ensures that the i1 argument is the smaller of the two Integer values.
+</short>
+<descr>
+<p>
+<var>MakeMinMax</var> swaps the values in i1 and i2 variable parameters when 
+i1 is larger than i2. No actions are performed in the routine if i1 is smaller 
+than i2, or the arguments have the same value.
+</p>
+</descr>
+<version>
+Added in LazUtils version 2.4.0.
+</version>
+<seealso/>
+</element>
+<element name="MakeMinMax.i1">
+<short>
+Integer value compared (and potentially updated) in the routine.
+</short>
+</element>
+<element name="MakeMinMax.i2">
+<short>
+Integer value compared (and potentially updated) in the routine.
+</short></element>
+
+<element name="MoveRect">
+<short>
+Moves the specified rectangle to the origin in the x and y arguments.
+</short>
+<descr>
+<p>
+<var>MoveRect</var> sets the Left and Top members in ARect to the values 
+specified in x and y (respectively). The Right and Bottom members in ARect are 
+updated to reflect the relative distance from the original Top and Left on 
+entry.
+</p>
+</descr>
+<version>
+Added in LazUtils version 2.4.0.
+</version>
+<seealso/>
+</element>
+<element name="MoveRect.ARect">
+<short>
+TRect instance updated in the routine.
+</short>
+</element>
+<element name="MoveRect.x">
+<short>
+New position for the Top coordinate in the rectangle.
+</short>
+</element>
+<element name="MoveRect.y">
+<short>
+New position for the Left coordinate in the rectangle.
+</short>
+</element>
+
+<element name="MoveRectToFit">
+<short>
+Moves and potentially resizes a rectangle to fit within the specified target 
+rectangle.
+</short>
+<descr>
+<p>
+<var>ARect</var> is the TRect instance repositioned in the routine. Values in 
+the Left, Right, Top, and Bottom members may be updated in the routine if the 
+rectangle is not located within the bounds for the target rectangle.
+</p>
+<p>
+<var>MaxRect</var> is the TRectangle instance where ARect is repositioned. It 
+also establishes the maximum size for ARect after it has been repositioned. If 
+aRect is larger than MaxRect, ARect is resized to fit with in the constraints 
+in MaxRect.
+</p>
+<p>
+MoveRectToFit is used in the implementation for the DoDock method in TControl.
+</p>
+</descr>
+<version>
+Added in LazUtils version 2.4.0.
+</version>
+<seealso/>
+</element>
+<element name="MoveRectToFit.ARect">
+<short>
+TRect instance moved and optionally resized in the routine.
+</short>
+</element>
+<element name="MoveRectToFit.MaxRect">
+<short>
+TRect instance where the rectangle is relocated. It also specifies the maximum 
+size for the relocated rectangle.
+</short>
 </element>
 
 <element name="PolyBezier2Polyline">
