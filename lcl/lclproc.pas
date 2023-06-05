@@ -109,6 +109,8 @@ var
 
 function SendApplicationMessage(Msg: Cardinal; WParam: WParam; LParam: LParam):Longint;
 procedure OwnerFormDesignerModified(AComponent: TComponent);
+// Deprecated in version 2.3, 2023-06.
+procedure FreeThenNil(var obj); deprecated 'Use LazUtilities.FreeThenNil instead';
 
 { the LCL interfaces finalization sections are called before the finalization
   sections of the LCL. Those parts, that should be finalized after the LCL, can
@@ -826,6 +828,11 @@ begin
     if OwnerFormDesignerModifiedProc<>nil then
       OwnerFormDesignerModifiedProc(AComponent);
   end;
+end;
+
+procedure FreeThenNil(var obj);
+begin
+  LazUtilities.FreeThenNil(obj);
 end;
 
 procedure RegisterInterfaceInitializationHandler(p: TProcedure);
