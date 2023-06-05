@@ -1475,7 +1475,10 @@ begin
       Result := S_OK;
     end
     else
+    begin
+      FDialog.UserChoice := mrNone;
       Result := S_FALSE;
+    end;
   end;
   {$ifdef DebugCommonDialogEvents}
   debugln('TFileDialogEvents.OnFileOk End');
