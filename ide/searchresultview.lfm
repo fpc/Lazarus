@@ -58,9 +58,7 @@ object SearchResultsView: TSearchResultsView
         Left = 47
         Top = 0
         Caption = 'ShowPathButton'
-        Down = True
         OnClick = ShowPathButtonClick
-        Style = tbsCheck
       end
     end
     object SearchInListEdit: TTreeFilterEdit

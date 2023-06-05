@@ -208,7 +208,8 @@ type
       Shift: TShiftState; X, Y: Integer);
   private
     type
-      TOnSide = (osLeft, osOthers, osRight); { Handling of multi tab closure }
+      TOnSide = (osLeft, osOthers, osRight);   { Handling of multi tab closure }
+      TFilePathShow = (fpsFull, fpsRelative, fpsNone); { Parts of path to show }
   private
     FAsyncUpdateCloseButtons: TSVCloseButtonsState;
     FMaxItems: integer;
@@ -218,6 +219,7 @@ type
     FOnSelectionChanged: TNotifyEvent;
     FMouseOverIndex: integer;
     FClosingTabs: boolean;
+    FFilePathShow: TFilePathShow; {~bk}
     function BeautifyPageName(const APageName: string): string;
     function GetPageIndex(const APageName: string): integer;
     function GetTreeView(APageIndex: integer): TLazSearchResultTV;
@@ -400,7 +402,6 @@ begin
   if (Key = VK_P) and (Shift = [ssCtrl]) then
   begin
     Key := VK_UNKNOWN;
-    ShowPathButton.Down := not ShowPathButton.Down;
     ShowPathButtonClick(Sender);
   end;
   if (Key = VK_N) and (Shift = [ssCtrl]) then
@@ -517,6 +518,12 @@ procedure TSearchResultsView.ShowPathButtonClick(Sender: TObject);
 var
   lTree: TLazSearchResultTV;
 begin
+  { Toggle thru the 3 states } {~bk}
+  if FFilePathShow = High(TFilePathShow) then
+    FFilePathShow := Low(TFilePathShow)
+  else
+    inc(FFilePathShow);
+  ShowPathButton.Down := False;
   lTree := GetCurrentTreeView;
   if lTree = nil then exit;
   lTree.Invalidate;
@@ -1207,8 +1214,8 @@ begin
 
       // draw found text
       if [cdsSelected,cdsMarked] * State <> []
-        then DrawNextText(lPart, clHighlightText)
-        else DrawNextText(lPart, clHighlight);
+        then DrawNextText(lPart, clHighlightText, [fsBold])
+        else DrawNextText(lPart, clHighlight, [fsBold]);
 
       // remaining normal text
       if lMatch.NextInThisLine = nil then
@@ -1221,31 +1228,36 @@ begin
       lMatch := lMatch.NextInThisLine;
     end;
 
-  end else begin { filename }
+  end
+  else begin { filename }
     lTextX := lRect.Left;
 
-    // show path or file name
     lRelPath := ExtractRelativePath(
       IncludeTrailingPathDelimiter(lTree.SearchObject.SearchDirectories),
       Node.Text
     );
-    if ShowPathButton.Down then
-    begin
-      DrawNextText(lRelPath, clNone, [fsBold]);
-    end else begin
-      if [cdsSelected,cdsMarked] * State <> [] then
-      begin
-        DrawNextText(ExtractFileName(lRelPath), clNone, [fsBold]);
-        DrawNextText(' (' + lRelPath + ')', clHighlightText);
-      end else begin
-        DrawNextText(ExtractFileName(lRelPath), clNone, [fsBold]);
+
+    // show path or file name
+    if FFilePathShow = fpsFull then    { <= 2.2.6 }
+      DrawNextText(Node.Text, clNone, [fsBold])
+    else begin
+      if FFilePathShow = fpsRelative then
+        DrawNextText(lRelPath, clNone, [fsBold])
+      else begin
+       if [cdsSelected,cdsMarked] * State <> [] then begin
+         DrawNextText(ExtractFileName(lRelPath), clNone, [fsBold]);
+         DrawNextText(' (' + lRelPath + ')', clHighlightText);
+       end
+       else begin
+         DrawNextText(ExtractFileName(lRelPath), clNone, [fsBold]);
+       end;
       end;
     end;
 
     // show a warning that this is a backup folder
     // strip path delimiter and filename, then check if last directory is 'backup'
     lPart := ExcludeTrailingPathDelimiter(ExtractFilePath(lRelPath));
-    if CompareText('backup', ExtractFileNameOnly(lPart)) = 0 then
+    if CompareText('backup', ExtractFileName(lPart)) = 0 then
       DrawNextText(' [BACKUP]', clRed);
 
   end;
