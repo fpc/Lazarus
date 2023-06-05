@@ -808,6 +808,7 @@ begin
   begin
     if AParams.WndParent <> 0 then
     begin
+      cnt.isembedded:= true;
       lDestView := NSObject(AParams.WndParent).lclContentView;
       lDestView.addSubView(cnt);
       //cnt.setAutoresizingMask(NSViewMaxXMargin or NSViewMinYMargin);
