@@ -2138,7 +2138,7 @@ begin
   Context:=w^.get_style_context;
   path:=w^.get_path;
   gtk_style_context_set_path (context, path);
-  gtk_style_context_set_state (context,(* gtk_widget_path_iter_get_state (path, -1)*) TGtkStateFlags(-1));
+  gtk_style_context_set_state(context,(* gtk_widget_path_iter_get_state (path, -1)*) [TGtkStateFlagsIdxMinValue..TGtkStateFlagsIdxMaxValue]);
 
   {GTK_STATE_FLAG_NORMAL: TGtkStateFlags = 0;
   GTK_STATE_FLAG_ACTIVE: TGtkStateFlags = 1;
@@ -2151,7 +2151,7 @@ begin
   GTK_STATE_FLAG_DIR_LTR: TGtkStateFlags = 128;
   GTK_STATE_FLAG_DIR_RTL: TGtkStateFlags = 256;
   }
-  gtk_style_context_set_state (context, TGtkStateFlags(Integer(GTK_STATE_FLAG_FOCUSED) or Integer(GTK_STATE_FLAG_PRELIGHT)));
+  gtk_style_context_set_state(context, [GTK_STATE_FLAG_FOCUSED, GTK_STATE_FLAG_PRELIGHT]);
 
   pw:=w;
   while Assigned(pw) do

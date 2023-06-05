@@ -3301,10 +3301,10 @@ begin
     AGdkRGBA.blue := AColor.blue / 65535.00;
     AGdkRGBA.green := AColor.red / 65535.00;}
     FWidget^.override_background_color(GTK_STATE_FLAG_NORMAL, @AGdkRGBA);
-    FWidget^.override_background_color(GTK_STATE_FLAG_ACTIVE, @AGdkRGBA);
-    FWidget^.override_background_color(GTK_STATE_FLAG_FOCUSED, @AGdkRGBA);
-    FWidget^.override_background_color(GTK_STATE_FLAG_PRELIGHT, @AGdkRGBA);
-    FWidget^.override_background_color(GTK_STATE_FLAG_SELECTED, @AGdkRGBA);
+    FWidget^.override_background_color([GTK_STATE_FLAG_ACTIVE], @AGdkRGBA);
+    FWidget^.override_background_color([GTK_STATE_FLAG_FOCUSED], @AGdkRGBA);
+    FWidget^.override_background_color([GTK_STATE_FLAG_PRELIGHT], @AGdkRGBA);
+    FWidget^.override_background_color([GTK_STATE_FLAG_SELECTED], @AGdkRGBA);
   end else
   begin
     //AColor := TColorToTGDKColor(AValue);
@@ -3342,10 +3342,10 @@ begin
   AGdkRGBA.blue := 0; // AColor.Blue / 65535.00;
   AGdkRGBA.green := 0; // AColor.green / 65535.00;
   Result^.override_background_color(GTK_STATE_FLAG_NORMAL, @AGdkRGBA);
-  Result^.override_background_color(GTK_STATE_FLAG_ACTIVE, @AGdkRGBA);
-  Result^.override_background_color(GTK_STATE_FLAG_FOCUSED, @AGdkRGBA);
-  Result^.override_background_color(GTK_STATE_FLAG_PRELIGHT, @AGdkRGBA);
-  Result^.override_background_color(GTK_STATE_FLAG_SELECTED, @AGdkRGBA);
+  Result^.override_background_color([GTK_STATE_FLAG_ACTIVE], @AGdkRGBA);
+  Result^.override_background_color([GTK_STATE_FLAG_FOCUSED], @AGdkRGBA);
+  Result^.override_background_color([GTK_STATE_FLAG_PRELIGHT], @AGdkRGBA);
+  Result^.override_background_color([GTK_STATE_FLAG_SELECTED], @AGdkRGBA);
 end;
 
 procedure TGtk3Panel.DoBeforeLCLPaint;
@@ -5171,7 +5171,7 @@ begin
       DeliverMessage(AData.LCLObject, Msg);
     end;
   end else
-    Widget^.set_state_flags(GTK_STATE_FLAG_ACTIVE, True);
+    Widget^.set_state_flags([GTK_STATE_FLAG_ACTIVE], True);
 
   if (AData.LCLObject is TScrollingWinControl) and
   ((Msg.ScrollCode=SB_LINEUP) or (Msg.ScrollCode=SB_LINEDOWN)) then
