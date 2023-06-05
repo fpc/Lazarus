@@ -1056,8 +1056,7 @@ begin
   begin
     Selection.RestoreBounds;
     Selection.ActiveGrabber := nil;
-    if Selection.RubberbandActive then
-      Selection.RubberbandActive := False;
+    Selection.RubberbandActive := False;
     LastMouseMovePos.X := -1;
     Exclude(FFlags, dfHasSized);
     MouseDownComponent := nil;
@@ -1077,10 +1076,14 @@ begin
   // if not component moving then select parent
   i := Selection.Count - 1;
   while (i >= 0) and
-        (Selection[i].ParentInSelection or
-         not Selection[i].IsTComponent or
-         (ParentComponent(TComponent(Selection[i].Persistent)) = nil)) do
+    (
+      Selection[i].ParentInSelection or
+      not Selection[i].IsTComponent or
+      (ParentComponent(TComponent(Selection[i].Persistent)) = nil)
+    )
+  do
     Dec(i);
+
   if i >= 0 then
     SelectOnlyThisComponent(ParentComponent(TComponent(Selection[i].Persistent)));
 end;
@@ -2040,7 +2043,7 @@ end;
 
 procedure TDesigner.HandlePopupMenu(Sender: TControl; var Message: TLMContextMenu);
 var
-  PopupPos: TPoint;
+  lPos: TPoint;
 begin
   //debugln(['TDesigner.HandlePopupMenu ',DbgSName(Sender),' ',Message.XPos,',',Message.YPos]);
   {$IFDEF EnableDesignerPopupRightClick}
@@ -2049,16 +2052,10 @@ begin
   begin
     PopupMenuComponentEditor := GetComponentEditorForSelection;
     BuildPopupMenu;
-    if Message.XPos >=0 then
-    begin
-      PopupPos := Point(Message.XPos,Message.YPos);
-      FDesignerPopupMenu.Popup(PopupPos.X, PopupPos.Y);
-    end else begin
-      with Selection do
-        PopupPos := Point(Left + Width, Top);
-      with Form.ClientToScreen(PopupPos) do
-        FDesignerPopupMenu.Popup(X, Y);
-    end;
+    if Message.XPos >= 0
+      then lPos := Point(Message.XPos,Message.YPos)
+      else lPos := Form.ClientToScreen(Point(Selection.Left + Selection.Width, Selection.Top));
+    FDesignerPopupMenu.Popup(lPos.X, lPos.Y);
   end;
   Message.Result := 1;
 end;
@@ -2301,6 +2298,7 @@ begin
           end else begin
             // remove from multiselection
             Selection.Delete(CompIndex);
+            Form.Invalidate; // redraw markers
           end;
         end else begin
           // no shift key (single selection or keeping multiselection)
@@ -2399,7 +2397,7 @@ var
   procedure RubberbandSelect;
   var
     MaxParentComponent: TComponent;
-    SelectionChanged, NewRubberSelection: boolean;
+    NewRubberSelection: boolean;
   begin
     if (ssShift in Shift)
     and (Selection.SelectionForm<>nil)
@@ -2424,13 +2422,11 @@ var
         MaxParentComponent:=MouseDownComponent;
     end else
       MaxParentComponent:=FLookupRoot;
-    SelectionChanged:=false;
-    Selection.SelectWithRubberBand(
-      FLookupRoot,Mediator,NewRubberSelection,ssShift in Shift,
-      SelectionChanged,MaxParentComponent);
+
+    Selection.SelectWithRubberBand(FLookupRoot, Mediator, NewRubberSelection,
+      ssShift in Shift, MaxParentComponent);
     if Selection.Count=0 then begin
       Selection.Add(FLookupRoot);
-      SelectionChanged:=true;
     end;
     Selection.RubberbandActive:=false;
     {$IFDEF VerboseDesigner}
@@ -2581,7 +2577,7 @@ begin
     Selection.EndUpdate;
     if EnvironmentOptions.RightClickSelects
     and (not Selection.IsSelected(MouseDownComponent))
-    and (Shift - [ssRight] = []) then begin
+    and (Shift = [ssRight]) then begin
       // select only the mouse down component
       Selection.AssignPersistent(MouseDownComponent);
     end;

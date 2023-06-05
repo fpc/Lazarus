@@ -309,10 +309,7 @@ var
   InvRect: TRect;
 begin
   InvRect:=ARect^;
-  dec(InvRect.Left,ExtraInvalidateFrame);
-  dec(InvRect.Top,ExtraInvalidateFrame);
-  inc(InvRect.Right,ExtraInvalidateFrame);
-  inc(InvRect.Bottom,ExtraInvalidateFrame);
+  InvRect.Inflate(ExtraInvalidateFrame, ExtraInvalidateFrame);
   InvalidateRect(aHandle,@InvRect,false);
 end;
 
