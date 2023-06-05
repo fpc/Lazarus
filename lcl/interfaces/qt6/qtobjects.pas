@@ -849,7 +849,7 @@ var
 implementation
 
 uses
-  Controls, qtproc, math;
+  Controls, LazUtilities, qtproc, math;
 
 const
   ClipbBoardTypeToQtClipboard: array[TClipboardType] of QClipboardMode =
