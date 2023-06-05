@@ -32,11 +32,11 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLType, LCLProc, Forms, Controls, StdCtrls, ExtCtrls, ButtonPanel, Dialogs, Graphics,
+  LCLType, Forms, Controls, StdCtrls, ExtCtrls, ButtonPanel, Dialogs, Graphics,
   // LazControls
   ListFilterEdit,
   // LazUtils
-  LazUTF8, LazFileUtils,
+  LazUTF8, LazFileUtils, LazUtilities,
   // Codetools
   FileProcs, LinkScanner, CodeCache, CodeTree, CodeToolManager, IdentCompletionTool,
   // BuildIntf

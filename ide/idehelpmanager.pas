@@ -35,10 +35,10 @@ uses
   // RTL + FCL
   Classes, SysUtils, Laz_AVL_Tree,
   // LCL
-  LCLProc, LCLIntf, LCLType, FileProcs, Forms, Controls, ComCtrls, StdCtrls,
+  LCLIntf, LCLType, FileProcs, Forms, Controls, ComCtrls, StdCtrls,
   Dialogs, Graphics, Buttons, ButtonPanel, LazHelpHTML, HelpIntfs,
   // LazUtils
-  LConvEncoding, LazFileUtils, HTML2TextRender,
+  LConvEncoding, LazUtilities, LazFileUtils, HTML2TextRender,
   // CodeTools
   BasicCodeTools, CodeToolManager, CodeCache, CustomCodeTool, CodeTree,
   PascalParserTool, FindDeclarationTool,

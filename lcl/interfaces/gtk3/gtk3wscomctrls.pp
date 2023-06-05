@@ -23,9 +23,13 @@ interface
 uses
   // libs
   LazGtk3, LazGdk3, LazGlib2,
-  // RTL, FCL, LCL
-  ComCtrls, Classes, LCLType, LMessages, Controls, Graphics, StdCtrls, Forms,
-  LCLProc, LCLIntf, ImgList, Math, Sysutils, ctypes, InterfaceBase,
+  // RTL, FCL
+  Types, Classes, Math, Sysutils, ctypes,
+  // LCL
+  LCLType, LMessages, Controls, Graphics, StdCtrls, ComCtrls, Forms,
+  ImgList, InterfaceBase,
+  // LazUtils
+  LazLoggerBase,
   // widgetset
   WSComCtrls, WSLCLClasses, WSControls, WSProc,
   Gtk3WSControls, Gtk3Int, gtk3widgets;

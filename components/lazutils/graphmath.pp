@@ -60,6 +60,9 @@ procedure BezierArcPoints(X, Y, Width, Height : Longint; Angle1, Angle2,
 
 function BezierMidPoint(const Bezier : TBezier) : TFloatPoint; inline;
 
+procedure CalculateLeftTopWidthHeight(X1,Y1,X2,Y2: integer;
+  out Left,Top,Width,Height: integer);
+
 procedure Coords2Angles(X, Y, Width, Height : Integer; SX, SY,
   EX, EY : Integer; var Angle1, Angle2 : Extended);
 
@@ -73,6 +76,11 @@ function EllipseRadialLength(const Rect : TRect; EccentricAngle : Extended) : Lo
 function FloatPoint(AX,AY : Extended): TFloatPoint; inline;
 
 function LineEndPoint(const StartPoint : TPoint; Angle, Length : Extended) : TPoint;
+
+procedure MakeMinMax(var i1, i2: integer);
+
+procedure MoveRect(var ARect: TRect; x, y: Integer);
+procedure MoveRectToFit(var ARect: TRect; const MaxRect: TRect);
 
 procedure PolyBezier2Polyline(Beziers: Array of TBezier;
   var Points : PPoint; var Count : Longint); Overload;
@@ -592,6 +600,31 @@ begin
   Result := (Bezier[0] + 3*Bezier[1] + 3*Bezier[2] + Bezier[3]) / 8;
 end;
 
+procedure CalculateLeftTopWidthHeight(X1, Y1, X2, Y2: integer;
+  out Left, Top, Width, Height: integer);
+begin
+  if X1 <= X2 then
+   begin
+    Left := X1;
+    Width := X2 - X1;
+  end
+  else
+  begin
+    Left := X2;
+    Width := X1 - X2;
+  end;
+  if Y1 <= Y2 then
+  begin
+    Top := Y1;
+    Height := Y2 - Y1;
+  end
+  else
+  begin
+    Top := Y2;
+    Height := Y1 - Y2;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method:   Coords2Angles
   Params:   x,y,width,height,sx,sy,ex,ey, angle1,angle2
@@ -794,6 +827,50 @@ begin
   Result.X := StartPoint.X + Round(Length*cosAngle);
 end;
 
+procedure MakeMinMax(var i1, i2: integer);
+var
+  h: Integer;
+begin
+  if i1>i2 then begin
+    h:=i1;
+    i1:=i2;
+    i2:=h;
+  end;
+end;
+
+procedure MoveRect(var ARect: TRect; x, y: Integer);
+begin
+  inc(ARect.Right,x-ARect.Left);
+  inc(ARect.Bottom,y-ARect.Top);
+  ARect.Left:=x;
+  ARect.Top:=y;
+end;
+
+procedure MoveRectToFit(var ARect: TRect; const MaxRect: TRect);
+// move ARect, so it fits into MaxRect
+// if MaxRect is too small, ARect is resized.
+begin
+  if ARect.Left<MaxRect.Left then begin
+    // move rectangle right
+    ARect.Right:=Min(ARect.Right+MaxRect.Left-ARect.Left,MaxRect.Right);
+    ARect.Left:=MaxRect.Left;
+  end;
+  if ARect.Top<MaxRect.Top then begin
+    // move rectangle down
+    ARect.Bottom:=Min(ARect.Bottom+MaxRect.Top-ARect.Top,MaxRect.Bottom);
+    ARect.Top:=MaxRect.Top;
+  end;
+  if ARect.Right>MaxRect.Right then begin
+    // move rectangle left
+    ARect.Left:=Max(ARect.Left-ARect.Right+MaxRect.Right,MaxRect.Left);
+    ARect.Right:=MaxRect.Right;
+  end;
+  if ARect.Bottom>MaxRect.Bottom then begin
+    // move rectangle left
+    ARect.Top:=Max(ARect.Top-ARect.Bottom+MaxRect.Bottom,MaxRect.Top);
+    ARect.Bottom:=MaxRect.Bottom;
+  end;
+end;
 
 {------------------------------------------------------------------------------
   Method:   PolyBezier2Polyline

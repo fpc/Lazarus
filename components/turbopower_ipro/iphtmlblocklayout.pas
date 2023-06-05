@@ -6,7 +6,10 @@ unit ipHtmlBlockLayout;
 interface
 
 uses
-  types, Classes, SysUtils, LCLPRoc, LCLIntf, Graphics,
+  Types, Classes, SysUtils,
+  // LCL
+  LCLIntf, Graphics,
+  // TurboPower_ipro
   IpUtils, IpHtmlTypes, IpHtmlProp, IpHtmlUtils, IpHtml, IpHtmlNodes;
 
 type

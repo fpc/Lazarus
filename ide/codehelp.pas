@@ -42,14 +42,14 @@ uses
   // RTL + FCL
   Classes, SysUtils, Laz_AVL_Tree,
   // LCL
-  LCLProc, Forms, Controls, Dialogs,
+  Forms, Controls, Dialogs,
   // CodeTools
   CodeAtom, CodeTree, CodeToolManager, FindDeclarationTool, BasicCodeTools,
   KeywordFuncLists, PascalParserTool, CodeCache, CacheCodeTools, CustomCodeTool,
   FileProcs, DefineTemplates,
   // LazUtils
   AvgLvlTree, FileUtil, LazFileUtils, LazUTF8, LazFileCache, LazMethodList,
-  LazLoggerBase, Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite,
+  LazUtilities, LazLoggerBase, LazTracer, Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite,
   // SynEdit
   SynHighlighterPas,
   // IDEIntf

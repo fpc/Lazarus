@@ -21,7 +21,11 @@ unit fpreportdesignobjectlist;
 interface
 
 uses
-  Classes, SysUtils, graphics, lclintf, fpreportlclexport, fpreport, controls;
+  Types, Classes, SysUtils,
+  // LCL
+  Graphics, Controls,
+  // fcl-report
+  fpreport, fpreportlclexport;
 
 Const
   clResizeHandleSingle = clBlack;  // Pen color to draw selection resize handle

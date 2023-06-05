@@ -15,9 +15,16 @@ interface
 {$I LR_Vers.inc}
 
 uses
-  Classes, SysUtils, LResources, LMessages, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, Buttons, StdCtrls, Menus, GraphType, LCLType, LCLProc, LCLIntf, LazUTF8,
-  LR_Const, PrintersDlgs;
+  Types, Classes, SysUtils,
+  // LCL
+  LCLType, LCLIntf, LResources, LMessages, Forms, Controls, Graphics, Dialogs,
+  ExtCtrls, Buttons, StdCtrls, Menus,
+  // LazUtils
+  LazUTF8,
+  // LazReport
+  LR_Const,
+  // Printers
+  PrintersDlgs;
 
 type
   TfrPreviewForm = class;

@@ -24,10 +24,10 @@ unit MenuTemplates;
 interface
 
 uses
-  Classes, SysUtils, types, fgl,
+  Classes, SysUtils, Types, fgl,
   // LCL
   Buttons, Controls, Dialogs, StdCtrls, ExtCtrls, Menus,
-  ComCtrls, Forms, Graphics, Themes, LCLType, LCLIntf, LCLProc,
+  ComCtrls, Forms, Graphics, Themes, LCLType, LCLProc,
   // LazUtils
   LazFileUtils, Laz2_XMLCfg,
   // IdeIntf

@@ -51,10 +51,10 @@ interface
 
 uses
   //MemCheck,
-  Types, contnrs,
-  LCLType, LCLProc, LCLIntf, LResources, LMessages, LCLMemManager,
-  LazStringUtils, LConvEncoding, LazUTF8, AvgLvlTree,
-  Messages, SysUtils, Classes, Graphics, TypInfo,
+  Types, contnrs, SysUtils, Classes, TypInfo,
+  // LCL
+  LCLType, LCLIntf, LResources, LMessages, Messages, LCLMemManager,
+  Graphics, Controls, StdCtrls, ExtCtrls, Buttons, Forms, ClipBrd, Dialogs,
   {$IFDEF UseGifImageUnit} //TODO all of this units not exists
     GifImage,
   {$ELSE}
@@ -69,8 +69,10 @@ uses
   {$IFDEF UsePNGGraphic}
     IpPNGImg,
   {$ENDIF}
-  Controls, StdCtrls, ExtCtrls, Buttons, Forms, ClipBrd, Dialogs,
-  IpConst, IpUtils, IpHtmlTypes, IpHtmlClasses, IpHtmlProp, IpMsg, 
+  // LazUtils
+  LazStringUtils, LConvEncoding, LazUTF8, LazLoggerBase, AvgLvlTree,
+  // TurboPower_ipro
+  IpConst, IpUtils, IpHtmlTypes, IpHtmlClasses, IpHtmlProp, IpMsg,
   IpCSS, IpHtmlUtils, IpHtmlTabList;
 
 type
@@ -1408,7 +1410,7 @@ uses
   {$IFDEF Html_Print}
   Printers, PrintersDlgs, IpHtmlPv,
   {$ENDIF}
-  ipHtmlNodes, ipHtmlParser, ipHtmlBlockLayout, ipHtmlTableLayout; 
+  ipHtmlNodes, ipHtmlParser;
 
 {$R *.res}
 

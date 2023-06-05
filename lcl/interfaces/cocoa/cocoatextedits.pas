@@ -1696,7 +1696,7 @@ begin
       //       (however, one should be careful and take layout offsets into account!)
       //       on the other hand, "cells" themselves are being deprecated...
       dr := lclFrame;
-      Types.OffsetRect(dr, -dr.Left, -dr.Top);
+      OffsetRect(dr, -dr.Left, -dr.Top);
       SubLayoutFromFrame( lclGetFrameToLayoutDelta, dr);
 
       // magic offsets are based on the macOS 10.13.6 visual style

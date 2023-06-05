@@ -52,9 +52,10 @@ uses
   {$IFDEF Darwin}MacOSAll, CocoaAll,{$ENDIF}
   Math, Classes, SysUtils, Types,
   // LCL
-  LCLType, LCLProc, LMessages, LCLStrConsts, InterfaceBase,
+  LCLType, LMessages, LCLStrConsts, InterfaceBase,
   // LazUtils
-  GraphType, FileUtil, LazFileUtils, UTF8Process, LazUTF8, LazSysUtils, Maps;
+  GraphType, GraphMath, FileUtil, LazFileUtils, UTF8Process, LazUTF8,
+  LazSysUtils, LazLoggerBase, Maps;
 
 {$ifdef Trace}
   {$ASSERTIONS ON}

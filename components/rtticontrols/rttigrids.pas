@@ -27,9 +27,9 @@ interface
 uses
   Classes, SysUtils, TypInfo,
   // LCL
-  LCLProc, LCLType, Controls, Grids,
+  LCLType, Controls, Grids,
   // LazUtils
-  LazLoggerBase, LazUTF8,
+  LazUtilities, LazLoggerBase, LazUTF8,
   // IdeIntf
   ObjectInspector, PropEdits,
   RTTICtrls;

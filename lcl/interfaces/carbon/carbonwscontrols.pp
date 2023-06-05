@@ -24,7 +24,7 @@ interface
 
 uses
   // libs
-  MacOSAll, Classes, SysUtils,
+  MacOSAll, Types, Classes, SysUtils,
   // LCL
   Forms, Controls, Graphics, LCLType, LCLProc, LCLIntf,
   // widgetset

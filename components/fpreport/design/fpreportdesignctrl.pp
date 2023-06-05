@@ -20,8 +20,11 @@ unit fpreportdesignctrl;
 interface
 
 uses
-  Classes, SysUtils, controls, fpreport, graphics, lmessages, fpreportlclexport, lcltype, menus,
-  fpreportdesignobjectlist, fpreportdrawruler, graphutil, ClipBrd, types;
+  Types, Classes, SysUtils,
+  // LCL
+  Controls, Graphics, LMessages, LCLType, Menus, GraphUtil, ClipBrd,
+  // fcl-report
+  fpreport, fpreportdesignobjectlist, fpreportdrawruler, fpreportlclexport;
 
 Const
   clGrid  = TColor($E0E0E0);      // Default color for guide grid

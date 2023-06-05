@@ -25,9 +25,9 @@ unit IDEImagesIntf;
 interface
 
 uses
-  Classes, SysUtils, Math,
+  Types, Classes, SysUtils, Math,
   // LCL
-  LCLProc, LCLType, LResources, ImgList, Controls, Graphics, Buttons;
+  LCLType, LResources, ImgList, Controls, Graphics, Buttons;
 
 type
 

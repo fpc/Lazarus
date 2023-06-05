@@ -5,8 +5,13 @@ unit ADLayoutViewer;
 interface
 
 uses
-  Classes, SysUtils, types, math, Controls, Graphics, ComCtrls, LCLType,
-  LMessages, LCLIntf, AnchorDockStorage, LazLoggerBase;
+  Types, Classes, SysUtils, Math,
+  // LCL
+  Controls, Graphics, ComCtrls, LCLType, LMessages, LCLIntf,
+  // LazUtils
+  LazLoggerBase,
+  // AnchorDocking
+  AnchorDockStorage;
 
 type
   TADLTVMonitor = class

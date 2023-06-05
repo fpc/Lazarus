@@ -24,9 +24,15 @@ unit RTTICtrls;
 interface
 
 uses
-  Classes, SysUtils, TypInfo, LResources, LCLProc, LCLType, LCLIntf, Forms,
+  Classes, SysUtils, TypInfo,
+  // LCL
+  LResources, LCLType, LCLIntf, Forms,
   Controls, Graphics, MaskEdit, Calendar, Spin, Dialogs, CheckLst, ComCtrls,
-  StdCtrls, Buttons, ExtCtrls, GraphPropEdits, PropEdits;
+  StdCtrls, Buttons, ExtCtrls,
+  // LazUtils
+  LazUtilities,
+  // IdeIntf
+  GraphPropEdits, PropEdits;
 
 type
   { TAliasStrings }

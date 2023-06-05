@@ -34,7 +34,7 @@ uses
   {$ENDIF}
   // Bindings - qt5 must come first to avoid type redefinition problems
   qt5,
-  // FPC
+  // RTL
   Classes, SysUtils, Math, Types,
   // LCL
   InterfaceBase, LCLPlatformDef, LCLProc, LCLType, LMessages,

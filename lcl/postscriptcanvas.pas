@@ -2909,24 +2909,24 @@ begin
       taRightJustify:
       begin
         Offset := ARect.Right - fRect.Right;
-        LCLIntf.OffsetRect(fRect, Offset, 0);
+        OffsetRect(fRect, Offset, 0);
       end;
       taCenter:
       begin
         Offset :=  (ARect.Right - fRect.Right) div 2;
-        LCLIntf.OffsetRect(fRect, offset, 0);
+        OffsetRect(fRect, offset, 0);
       end;
     end;
     case Style.Layout of
       tlCenter:
       begin
         Offset :=  ((ARect.Bottom - ARect.Top) - (fRect.Bottom - fRect.Top)) div 2;
-        LCLIntf.OffsetRect(fRect, 0, offset);
+        OffsetRect(fRect, 0, offset);
       end;
       tlBottom:
       begin
         Offset :=  ARect.Bottom - fRect.Bottom;
-        LCLIntf.OffsetRect(fRect, 0, offset);
+        OffsetRect(fRect, 0, offset);
       end;
     end;
   end;

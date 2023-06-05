@@ -17,7 +17,7 @@ unit IDEWindowIntf;
 interface
 
 uses
-  Math, Classes, SysUtils,
+  Types, Classes, SysUtils, Math,
   // LCL
   LCLIntf, LCLType, Forms, Controls,
   // LazUtils

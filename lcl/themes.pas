@@ -48,7 +48,7 @@ interface
 uses
   Classes, SysUtils, Types, Math,
   // LCL  -  Controls cannot be used here to prevent circular references
-  LCLProc, LCLType, Graphics, TmSchema,
+  LCLType, Graphics, TmSchema,
   // LazUtils
   GraphType;
   

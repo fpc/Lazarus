@@ -5,8 +5,10 @@ unit imgMain;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Grids,
-  ExtCtrls, StdCtrls, LMessages, Spin, ComCtrls;
+  Types, Classes, SysUtils,
+  LCLIntf, LMessages, Forms, Controls, Graphics, Dialogs, Grids, ExtCtrls,
+  StdCtrls, Spin, ComCtrls,
+  FileUtil;
 
 type
   { TImageData is stored in the list FImageList of the modified string grid and
@@ -93,9 +95,6 @@ var
 implementation
 
 {$R *.lfm}
-
-uses
-  Types, LCLIntf;
 
 const
   //JPEG_FILE = '../../../images/splash_source/cheetah.jpg';

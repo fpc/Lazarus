@@ -7,7 +7,7 @@ Unit AnchorDockStorage;
 interface
 
 uses
-  Classes, SysUtils, Math,
+  Types, Classes, SysUtils, Math,
   // LCL
   LCLProc, ExtCtrls, ComCtrls, Forms, Controls,
   // LazUtils

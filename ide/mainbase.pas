@@ -58,9 +58,9 @@ uses
   // RTL + FCL
   Classes, SysUtils, Types, Math,
   // LCL
-  LCLProc, Buttons, Menus, ComCtrls, Controls, Graphics, Dialogs, Forms, ImgList,
+  Buttons, Menus, ComCtrls, Controls, Graphics, Dialogs, Forms, ImgList,
   // LazUtils
-  LazFileUtils, LazUTF8,
+  LazUtilities, LazFileUtils, LazLoggerBase, LazTracer, LazUTF8,
   // Codetools
   CodeToolManager,
   // SynEdit

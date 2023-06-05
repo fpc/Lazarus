@@ -27,7 +27,7 @@ uses
   // LCL
   Graphics, LCLProc,
   // LazUtils
-  LazClasses, LazLoggerBase, LazMethodList,
+  LazUtilities, LazClasses, LazLoggerBase, LazMethodList,
   // SynEdit
   SynEditMiscClasses, SynHighlighterPas, SynEditMarkupHighAll,
   SynEditHighlighterFoldBase, SynEditFoldedView, LazSynEditText, SynEditMiscProcs,

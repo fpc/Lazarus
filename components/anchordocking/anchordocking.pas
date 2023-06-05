@@ -106,10 +106,13 @@ unit AnchorDocking;
 interface
 
 uses
-  Math, Classes, SysUtils, types, fgl,
-  LCLType, LCLIntf, LCLProc,
+  Types, Classes, SysUtils, Math, fgl,
+  // LCL
+  LCLType, LCLIntf,
   Controls, Forms, ExtCtrls, ComCtrls, Graphics, Themes, Menus, Buttons,
-  LazConfigStorage, Laz2_XMLCfg, LazFileCache, LazUTF8,
+  // LazUtils
+  LazLoggerBase, LazTracer, LazConfigStorage, Laz2_XMLCfg, LazFileCache, LazUTF8,
+  // AnchorDocking
   AnchorDockStr, AnchorDockStorage, AnchorDockPanel;
 
 {$IFDEF DebugDisableAutoSizing}

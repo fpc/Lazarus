@@ -6,9 +6,12 @@ unit IpHtmlNodes;
 interface
 
 uses
-  Classes, SysUtils, Graphics, GraphUtil, LCLIntf, LCLType, Types, 
+  Types, Classes, SysUtils,
+  // LCL
+  Graphics, GraphUtil, LCLIntf, LCLType,
   Controls, StdCtrls, ExtCtrls, Buttons, Dialogs,
-  IpConst, IpCSS, IpHtmlTypes, IpHtmlClasses, IpHtmlProp, 
+  // TurboPower_ipro
+  IpConst, IpCSS, IpHtmlTypes, IpHtmlClasses, IpHtmlProp,
   IpHtmlUtils, IpMsg, IpHtml;
 
 type

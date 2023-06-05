@@ -15,13 +15,14 @@ interface
 {$I LR_Vers.inc}
 
 uses
-  Classes, SysUtils, LResources,LMessages,Messages,
-  Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, Buttons, StdCtrls,Menus,comctrls,
-  
-  LR_Fpc,
-
-  GraphType,LCLType,LCLIntf;
+  Types, Classes, SysUtils,
+  // LCL
+  LCLType, LCLIntf, LResources, LMessages, Messages, Forms, Controls, Graphics,
+  Dialogs, ExtCtrls, Buttons, StdCtrls, Menus, ComCtrls,
+  // LazUtils
+  GraphType,
+  // LazReport
+  LR_Fpc;
 
 type
   TfrButtonState = (fbsUp, fbsDisabled, fbsDown, fbsExclusive, fbsInactive);

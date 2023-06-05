@@ -25,8 +25,10 @@ uses
   // Bindings
   qt5,
   qtobjects, qtwidgets, qtproc,
+  // RTL
+  SysUtils, Classes, Types,
   // LCL
-  SysUtils, Classes, types, Controls, LCLType, Forms,
+  Controls, LCLType, Forms,
   // Widgetset
   WSForms, WSProc, WSLCLClasses;
 

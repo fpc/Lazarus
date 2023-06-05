@@ -109,7 +109,6 @@ var
 
 function SendApplicationMessage(Msg: Cardinal; WParam: WParam; LParam: LParam):Longint;
 procedure OwnerFormDesignerModified(AComponent: TComponent);
-procedure FreeThenNil(var obj); inline;
 
 { the LCL interfaces finalization sections are called before the finalization
   sections of the LCL. Those parts, that should be finalized after the LCL, can
@@ -118,13 +117,6 @@ procedure RegisterInterfaceInitializationHandler(p: TProcedure);
 procedure CallInterfaceInitializationHandlers;
 procedure RegisterInterfaceFinalizationHandler(p: TProcedure);
 procedure CallInterfaceFinalizationHandlers;
-
-function OffsetRect(var ARect: TRect; dx, dy: Integer): Boolean;
-procedure MoveRect(var ARect: TRect; x, y: Integer);
-procedure MoveRectToFit(var ARect: TRect; const MaxRect: TRect);
-procedure MakeMinMax(var i1, i2: integer);
-procedure CalculateLeftTopWidthHeight(X1,Y1,X2,Y2: integer;
-  out Left,Top,Width,Height: integer);
 
 // Ampersands
 function DeleteAmpersands(var Str : String) : Integer;
@@ -836,23 +828,6 @@ begin
   end;
 end;
 
-function OffSetRect(var ARect: TRect; dx,dy: Integer): Boolean;
-Begin
-  with ARect do
-  begin
-    Left := Left + dx;
-    Right := Right + dx;
-    Top := Top + dy;
-    Bottom := Bottom + dy;
-  end;
-  Result := (ARect.Left >= 0) and (ARect.Top >= 0);
-end;
-
-procedure FreeThenNil(var obj);
-begin
-  LazUtilities.FreeThenNil(obj);
-end;
-
 procedure RegisterInterfaceInitializationHandler(p: TProcedure);
 begin
   InterfaceInitializationHandlers.Add(p);
@@ -877,76 +852,6 @@ var
 begin
   for i:=InterfaceFinalizationHandlers.Count-1 downto 0 do
     TProcedure(InterfaceFinalizationHandlers[i])();
-end;
-
-procedure MoveRect(var ARect: TRect; x, y: Integer);
-begin
-  inc(ARect.Right,x-ARect.Left);
-  inc(ARect.Bottom,y-ARect.Top);
-  ARect.Left:=x;
-  ARect.Top:=y;
-end;
-
-procedure MoveRectToFit(var ARect: TRect; const MaxRect: TRect);
-// move ARect, so it fits into MaxRect
-// if MaxRect is too small, ARect is resized.
-begin
-  if ARect.Left<MaxRect.Left then begin
-    // move rectangle right
-    ARect.Right:=Min(ARect.Right+MaxRect.Left-ARect.Left,MaxRect.Right);
-    ARect.Left:=MaxRect.Left;
-  end;
-  if ARect.Top<MaxRect.Top then begin
-    // move rectangle down
-    ARect.Bottom:=Min(ARect.Bottom+MaxRect.Top-ARect.Top,MaxRect.Bottom);
-    ARect.Top:=MaxRect.Top;
-  end;
-  if ARect.Right>MaxRect.Right then begin
-    // move rectangle left
-    ARect.Left:=Max(ARect.Left-ARect.Right+MaxRect.Right,MaxRect.Left);
-    ARect.Right:=MaxRect.Right;
-  end;
-  if ARect.Bottom>MaxRect.Bottom then begin
-    // move rectangle left
-    ARect.Top:=Max(ARect.Top-ARect.Bottom+MaxRect.Bottom,MaxRect.Top);
-    ARect.Bottom:=MaxRect.Bottom;
-  end;
-end;
-
-procedure MakeMinMax(var i1, i2: integer);
-var
-  h: Integer;
-begin
-  if i1>i2 then begin
-    h:=i1;
-    i1:=i2;
-    i2:=h;
-  end;
-end;
-
-procedure CalculateLeftTopWidthHeight(X1, Y1, X2, Y2: integer;
-  out Left, Top, Width, Height: integer);
-begin
-  if X1 <= X2 then 
-   begin
-    Left := X1;
-    Width := X2 - X1;
-  end 
-  else 
-  begin
-    Left := X2;
-    Width := X1 - X2;
-  end;
-  if Y1 <= Y2 then 
-  begin
-    Top := Y1;
-    Height := Y2 - Y1;
-  end 
-  else 
-  begin
-    Top := Y2;
-    Height := Y1 - Y2;
-  end;
 end;
 
 function CompareHandles(h1, h2: THandle): integer;

@@ -369,6 +369,7 @@
         <ComponentName Value="HelpSelectorDialog"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="IDEHelpManager"/>
       </Unit>
       <Unit>
         <Filename Value="../designer/askcompnamedlg.pas"/>
@@ -760,7 +761,9 @@
       <Unit>
         <Filename Value="unitdependencies.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="UnitDependenciesWindow"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="UnitDependencies"/>
       </Unit>
       <Unit>

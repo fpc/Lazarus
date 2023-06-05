@@ -5,8 +5,12 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, PrintersDlgs, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ExtCtrls, CairoPrinter;
+  Types, Classes, SysUtils,
+  // LCL
+  Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
+  // LazUtils
+  FileUtil,
+  PrintersDlgs, CairoPrinter;
 
 type
 

@@ -1517,20 +1517,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: OffSetRect
-  Params:   Rect: points to structure that moves.
-            dx  : amount to move the rect to left or right.  Must be negative to move to left.
-            dy  : amount to move the rect up or down.  Mmust be negative to move up.
-  Returns:  True if succesful
-
-  Moves the rectangle up or down, left or right.
- ------------------------------------------------------------------------------}
-function OffSetRect(var Rect: TRect; dx,dy: Integer): Boolean; inline;
-begin
-  Result:=LCLProc.OffsetRect(Rect,dx,dy);
-end;
-
-{------------------------------------------------------------------------------
   Function: PointtoSmallPoint
   Params:
   Returns:

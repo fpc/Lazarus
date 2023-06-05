@@ -18,7 +18,7 @@ uses
   {$if defined(UNIX) and not defined(OPENBSD)}
   CLocale,
   {$endif}
-  Classes, TypInfo, SysUtils, Math, StrUtils, DateUtils,
+  Types, Classes, TypInfo, SysUtils, Math, StrUtils, DateUtils,
   MaskUtils, Variants, DB, DOM, XMLWrite, XMLRead, XMLConf,
   // LCL
   LCLType, LCLIntf, Controls, Forms, Dialogs, Menus, Graphics, Printers,

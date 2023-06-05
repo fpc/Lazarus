@@ -469,7 +469,7 @@ begin
         ARect:=Rect(0,0,Width,Height);
       end;
     end else begin
-      LCLProc.MoveRectToFit(ARect, NewDockSite.GetLogicalClientRect);
+      MoveRectToFit(ARect, NewDockSite.GetLogicalClientRect);
       // consider Align to increase chance the width/height is kept
       case Align of
         alLeft: OffsetRect(ARect,-ARect.Left,0);

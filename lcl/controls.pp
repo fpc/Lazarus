@@ -50,7 +50,7 @@ uses
   LCLStrConsts, LCLType, LCLProc, Graphics, LMessages, LCLIntf, InterfaceBase,
   ImgList, PropertyStorage, Menus, ActnList, LCLClasses, LResources, LCLPlatformDef,
   // LazUtils
-  GraphType, LazMethodList, LazLoggerBase, LazTracer, LazUtilities;
+  GraphType, GraphMath, LazMethodList, LazLoggerBase, LazTracer, LazUtilities;
 
 {$I controlconsts.inc}
 

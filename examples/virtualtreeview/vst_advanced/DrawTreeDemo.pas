@@ -20,8 +20,10 @@ uses
   {$ifdef Windows}
   Windows,
   {$endif}
-  LCLIntf, delphicompat, LCLType, SysUtils, Classes, ComCtrls, Graphics, Controls, Forms, Dialogs,
-  Laz.VirtualTrees, StdCtrls, shlobjext, LResources;
+  Types, SysUtils, Classes,
+  LCLIntf, LCLType, LResources, ComCtrls, Graphics, Controls, Forms, Dialogs, StdCtrls,
+  Laz.VirtualTrees, shlobjext, delphicompat,
+  LazFileUtils;
 
 type
   TDrawTreeForm = class(TForm)
@@ -70,7 +72,7 @@ implementation
 {$R *.lfm}
 
 uses
-  LazFileUtils, States;
+  States;
 
 //----------------------------------------------------------------------------------------------------------------------
 

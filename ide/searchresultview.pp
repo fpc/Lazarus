@@ -39,12 +39,12 @@ interface
 uses
   Classes, SysUtils, Math, StrUtils, Laz_AVL_Tree,
   // LCL
-  LCLProc, LCLType, LCLIntf, Forms, Controls, Graphics, ComCtrls, Menus, Clipbrd,
+  LCLProc, LCLType, Forms, Controls, Graphics, ComCtrls, Menus, Clipbrd,
   ActnList, ExtCtrls, StdCtrls, Dialogs,
   // LazControls
   TreeFilterEdit, ExtendedNotebook,
   // LazUtils
-  LazUTF8, LazFileUtils, LazLoggerBase, LazStringUtils,
+  LazUTF8, LazUtilities, LazFileUtils, LazLoggerBase, LazStringUtils,
   // IdeIntf
   IDEImagesIntf, IDECommands,
   // IDE
