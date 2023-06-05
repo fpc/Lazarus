@@ -114,16 +114,8 @@ begin
         end;
     end;
 
-  //User can decide to override locale with LANG variable.
-  if Lang = '' then
-    Lang := GetEnvironmentVariableUTF8('LANG');
-
   if Lang = '' then
     LazGetLanguageIDs(Lang, T);
-
-  //Trim encoding from Lang if it presents. E. g. Lang can be `ru_RU.utf8`.
-  if Lang <> '' then
-    LazTrimLanguageID(Lang);
 end;
 
 function FindLocaleFileName(LCExt, LangID, Dir, LocaleFileName: string; out FoundLang: string): string;
