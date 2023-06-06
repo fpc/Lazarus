@@ -362,13 +362,13 @@ to be used. This is the location where the
 TranslateLCLResourceStrings calls the TranslateUnitResourceStringsEx routine 
 using the specified parameter values as arguments, and 'lclstrconsts' as the 
 base unit name for the translation. TranslateUnitResourceStringsEx resolves 
-the path, language, and file extension needed for the platform or operating 
-system and applies the translated values.
+the path, language identifier, and file extension needed for the platform or 
+operating system and applies the translated values.
 </p>
 <p>
 The return value contains the language identifier or locale code used in the 
 translation. It may contain an empty string (<b>''</b>) if a localization 
-file is not found for the language or an error occurs.            
+file is not found for the language or an error occurs.
 </p>
 </descr>
 <seealso>
