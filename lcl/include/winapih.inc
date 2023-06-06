@@ -336,6 +336,9 @@ function MakeWParam(l, h: Word): WPARAM; inline;
 function MakeLParam(l, h: Word): LPARAM; inline;
 function MakeLResult(l, h: Word): LRESULT; inline;
 
+// Deprecated in version 2.3, 2023-06.
+function OffsetRect(var Rect: TRect; dx,dy: Integer): Boolean; deprecated 'Use Types.OffsetRect instead';
+
 function PtInRect(const Rect : TRect; const Point : TPoint) : Boolean; inline;
 function PointToSmallPoint(const P : TPoint) : TSmallPoint; inline;
 function PointToSmallPointNoChecks(const P : TPoint) : TSmallPoint; inline;
