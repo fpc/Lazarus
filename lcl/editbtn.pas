@@ -232,7 +232,7 @@ type
     fIsFirstSetFormActivate: Boolean;
     fOnAfterFilter: TNotifyEvent;
     procedure ApplyFilter(Immediately: Boolean = False);
-    procedure SetFilter(const AValue: string);
+    procedure SetFilter(AValue: string);
     procedure SetFilterOptions(AValue: TFilterStringOptions);
     procedure SetSortData(AValue: Boolean);
     procedure SetIdleConnected(const AValue: Boolean);
@@ -1181,7 +1181,8 @@ begin
   InvalidateFilter;
 end;
 
-procedure TCustomControlFilterEdit.SetFilter(const AValue: string);
+procedure TCustomControlFilterEdit.SetFilter(AValue: string);
+// AValue parameter must not have const modifier. It causes a crash, see issue #40300.
 begin
   if Text=AValue then Exit;
   Text:=AValue;           // ActivateFilter will be called by EditChange handler.
