@@ -210,7 +210,6 @@ function UTF16ToUTF8(const P: PWideChar; WideCnt: SizeUInt): AnsiString; overloa
 // locale
 procedure LazGetLanguageIDs(var Lang, FallbackLang: String);
 procedure LazGetShortLanguageID(var Lang: String);
-procedure LazTrimLanguageID(var Lang: String);
 
 var
   FPUpChars: array[char] of char;
@@ -4064,6 +4063,8 @@ procedure LazGetLanguageIDs(var Lang, FallbackLang: String);
     end;
   end;
   {$ENDIF}
+var
+  p: SizeInt;
 begin
 {$IFDEF DARWIN}
   if not GetLanguage then
@@ -4071,7 +4072,12 @@ begin
 {$ELSE}
   GetLanguageIDs(Lang, FallbackLang);
 {$ENDIF}
-  LazTrimLanguageID(Lang);
+  //Language ID e. g. on Linux can be in a form of `ru_RU.utf8`, which will prevent
+  //loading files with name in a form of `project1.ru_RU.po`.
+  //Trim this trailing encoding.
+  p := Pos('.', Lang);
+  if p > 0 then
+    Lang := Copy(Lang, 1, p - 1);
 end;
 
 {
@@ -4087,20 +4093,6 @@ begin
   FallbackLang:='';
   LazGetLanguageIDs(Lang, FallbackLang);
   Lang:=FallbackLang;
-end;
-
-{
-Language ID sometimes can be in a form of `ru_RU.utf8`, which will prevent
-loading files with language in a form of `.ru_RU.po`.
-This procedure trims this encoding.
-}
-procedure LazTrimLanguageID(var Lang: String);
-var
-  p: SizeInt;
-begin
-  p := Pos('.', Lang);
-  if p > 0 then
-    Lang := Copy(Lang, 1, p - 1);
 end;
 
 procedure InitFPUpchars;
