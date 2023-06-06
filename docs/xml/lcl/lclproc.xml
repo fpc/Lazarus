@@ -649,32 +649,99 @@ Registers an finalization routine needed after the LCL has been finalized.
 <seealso/>
 </element>
 
-<!-- 
-
-Removed in 1475336c.
-
 <element name="OffsetRect">
 <short>
-Increments the Top, Left and Bottom, Right rectangle coordinates by the 
-specified amounts.
+Deprecated. Increments the Top, Left and Bottom, Right rectangle coordinates 
+by the specified amounts.
+</short>
+<descr>
+<p>
+Deprecated. Use the OffsetRect function in the RTL <file>types.pp</file> unit 
+instead.
+</p>
+</descr>
+<version>
+Deprecated in LCL version 2.4.0.
+</version>
+<seealso>
+<link id="#rtl.types.OffsetRect">RTL.Types.OffsetRect</link>
+</seealso>
+</element>
+<element name="OffsetRect.Result"/>
+<element name="OffsetRect.ARect"/>
+<element name="OffsetRect.dx"/>
+<element name="OffsetRect.dy"/>
+
+<element name="MoveRect">
+<short>
+Deprecated. Use GraphMath.MoveRect in the <file>LazUtils</file> package 
+instead.
 </short>
 <descr/>
-<seealso/>
+<version>
+Deprecated in LCL version 2.4.0.
+</version>
+<seealso>
+<link id="#lazutils.graphmath.MoveRect">LazUtils.GraphMath.MoveRect</link>
+</seealso>
 </element>
-<element name="OffsetRect.Result">
-<short><b>True</b> when the TopLeft coordinates are all positive.</short>
-</element>
-<element name="OffsetRect.ARect">
-<short/>
-</element>
-<element name="OffsetRect.dx">
-<short/>
-</element>
-<element name="OffsetRect.dy">
-<short/>
-</element>
+<element name="MoveRect.ARect"/>
+<element name="MoveRect.x"/>
+<element name="MoveRect.y"/>
 
--->
+<element name="MoveRectToFit">
+<short>
+Deprecated. Use GraphMath.MoveRectToFit in the <file>LazUtils</file> package 
+instead.
+</short>
+<descr/>
+<version>
+Deprecated in LCL version 2.4.0.
+</version>
+<seealso>
+<link id="#lazutils.graphmath.MoveRectToFit">LazUtils.GraphMath.MoveRectToFit</link>
+</seealso>
+</element>
+<element name="MoveRectToFit.ARect"/>
+<element name="MoveRectToFit.MaxRect"/>
+
+<element name="MakeMinMax">
+<short>
+Deprecated. Use GraphMath.MakeMinMax in the <file>LazUtils</file> package 
+instead.
+</short>
+<descr/>
+<version>
+Deprecated in LCL version 2.4.0.
+</version>
+<seealso>
+<link id="#lazutils.graphmath.MakeMinMax">LazUtils.GraphMath.MakeMinMax</link>
+</seealso>
+</element>
+<element name="MakeMinMax.i1"/>
+<element name="MakeMinMax.i2"/>
+
+<element name="CalculateLeftTopWidthHeight">
+<short>
+Deprecated. Use GraphMath.CalculateLeftTopWidthHeight in the 
+<file>LazUtils</file> package instead.
+</short>
+<descr/>
+<version>
+Deprecated in LCL version 2.4.0.
+</version>
+<seealso>
+<link id="#lazutils.graphmath.CalculateLeftTopWidthHeight">LazUtils.GraphMath.CalculateLeftTopWidthHeight</link>
+</seealso>
+</element>
+<element name="CalculateLeftTopWidthHeight.X1"/>
+<element name="CalculateLeftTopWidthHeight.Y1"/>
+<element name="CalculateLeftTopWidthHeight.X2"/>
+<element name="CalculateLeftTopWidthHeight.Y2"/>
+<element name="CalculateLeftTopWidthHeight.Left"/>
+<element name="CalculateLeftTopWidthHeight.Top"/>
+<element name="CalculateLeftTopWidthHeight.Width"/>
+<element name="CalculateLeftTopWidthHeight.Height"/>
 
 <element name="DeleteAmpersands">
 <short>
