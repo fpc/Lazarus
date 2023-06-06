@@ -13,12 +13,12 @@ uses
   // LazUtils
   FileUtil, LazFileUtils, LazStringUtils, LazClasses, LazLoggerBase,
   // IDEIntf
-  TextTools,
+  TextTools, IDEDialogs,
   // LeakView
   {$IFDEF LEAK_RESOLVE_USE_FPC}
   DbgInfoReader,
   {$ENDIF}
-  DbgIntfBaseTypes, FpDbgLoader, FpDbgDwarf, FpDbgInfo,
+  DbgIntfBaseTypes, FpDbgLoader, FpDbgDwarf, FpDbgInfo, Dialogs,
   LldbHelper;
 
 type
@@ -882,6 +882,7 @@ end;
 
 function THeapTrcInfo.ResolveLeakInfo(AFileName: string; Traces: TStackTraceList
   ): Boolean;
+{$IFnDEF LEAK_RESOLVE_USE_FPC}
 var
   DwarfInfo: TFpDwarfInfo;
   ImageLoaderList: TDbgImageLoaderList;
@@ -895,12 +896,19 @@ var
   var
     ImageLoader: TDbgImageLoader;
   begin
+    DwarfInfo := nil;
     ImageLoader := TDbgImageLoader.Create(AFileName);
+    if not ImageLoader.IsValid then begin
+      FreeAndNil(ImageLoader);
+      exit;
+    end;
+
     ImageLoaderList := TDbgImageLoaderList.Create(True);
     ImageLoader.AddToLoaderList(ImageLoaderList);
     DwarfInfo := TFpDwarfInfo.Create(ImageLoaderList, nil);
     DwarfInfo.LoadCompilationUnits;
   end;
+{$ENDIF}
 
 var
   trace: TStackTrace;
@@ -919,10 +927,12 @@ begin
     exit;
   {$ELSE}
   LoadDwarf;
+  if DwarfInfo = nil then begin
+    IDEMessageDialog('Error','Unable to load info from file.', mtError,[mbOK]);
+    exit;
+  end;
   {$ENDIF}
   BadAddresses := TStackLines.Create;
-  if DwarfInfo = nil then
-    exit;
   try
     for i := 0 to Traces.Count - 1 do begin
       trace := TStackTrace(Traces[i]);
