@@ -2839,19 +2839,30 @@ Unfinished source char has occurred
 <short>Gets the Language ID and a fallback value for the platform.</short>
 <descr>
 <p>
-<var>LazGetLanguageIDs</var> is a procedure used to get the primary language 
-ID and a fallback value. The values are returned in the <var>Lang</var> and 
-<var>FallbackLang</var> variable parameters.
+<var>LazGetLanguageIDs</var> is a procedure used to get the language 
+identifier and a fallback value. The values are returned in the 
+<var>Lang</var> and <var>FallbackLang</var> variable parameters.
 </p>
 <p>
 The implementation for the routine is platform or operating-system specific. 
 For the Darwin platform, localizations in the Main bundle are checked for 
 language and fallback values. For other platforms, the 
-<var>GetLanguageIDs</var> routine in the <file>GetText</file> unit is called 
+<var>GetLanguageIDs</var> routine in the <file>GetText</file> unit is called
 is called to get the default Language Code ID. The value in FallbackLang 
-appends the country code to the value in Lang.
+includes the country code appended to the value in Lang.
+</p>
+<p>
+On the Linux platform, the language identifier can be in the form 
+'ru_RU.utf8'. The encoding suffix can prevent loading of translations files in 
+the form 'project1.ru_RU.po'. To prevent this situation, the encoding suffix 
+is removed from the Lang argument value. It contains only the value prior to 
+the initial '.' character found in the language identifier.
 </p>
 </descr>
+<version>
+Modified in LazUtils version 2.4.0 to merge the functionality from the now 
+removed LazTrimLanguageID routine.
+</version>
 <seealso/>
 </element>
 <element name="LazGetLanguageIDs.Lang">
@@ -2883,32 +2894,6 @@ fallback language ID as the value for the Lang argument.
 </element>
 <element name="LazGetShortLanguageID.Lang">
 <short>Language ID examined in the routine.</short>
-</element>
-
-<element name="LazTrimLanguageID">
-<short>
-Returns the language identifier with an encoding suffix removed from the 
-specified value.
-</short>
-<descr>
-<p>
-The <var>Lang</var> argument can sometimes be in the form 'ru_RU.utf8', 
-which will prevent loading a file with a language identifier in the form 
-'project1.ru_RU.po'. This procedure trims the encoding value from the argument.
-</p>
-</descr>
-<version>
-Added in LazUtils version 2.4.0.
-</version>
-<seealso>
-<link id="#lcl.lcltranslator.TranslateUnitResourceStringsEx">TranslateUnitResourceStringsEx</link>
-</seealso>
-</element>
-<element name="LazTrimLanguageID.Lang">
-<short>
-Variable parameter with the language identifier examined and modified in the 
-routine.
-</short>
 </element>
 
 <element name="FPUpChars">
