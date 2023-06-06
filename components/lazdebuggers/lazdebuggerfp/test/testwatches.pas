@@ -3225,6 +3225,32 @@ begin
     t.Add('((^^^char(gvInstance1)^)+3)^[1]',     '((^^^char(gvInstance1)^)+3)^[1]',   weChar('T'));
     t.Add('((^^^char(gvInstance1)^)+3)[0][1]',   '((^^^char(gvInstance1)^)+3)[0][1]',   weChar('T'));
 
+    t.Add('TCastRecordB1(gvByte_2)', 'TCastRecordB1(gvByte_2)', weRecord([weCardinal(241, 'Byte', 12).N('b')], 'TCastRecordB1')  );
+    t.Add('TCastRecordB1(gcByte_2)', 'TCastRecordB1(gcByte_2)', weRecord([weCardinal(240, 'Byte', 12).N('b')], 'TCastRecordB1')  );
+    t.Add('TCastRecordB1($04)',      'TCastRecordB1($04)',      weRecord([weCardinal(  4, 'Byte', 12).N('b')], 'TCastRecordB1')  );
+
+    t.Add('TCastRecordB2(gvWord2)', 'TCastRecordB2(gvWord_2)', weRecord([weCardinal($DE, 'Byte', 1).N('b'), weCardinal($FF, 'Byte', 1).N('b2')], 'TCastRecordB2')    );
+    t.Add('TCastRecordB2(gcWord2)', 'TCastRecordB2(gcWord_2)', weRecord([weCardinal($DD, 'Byte', 1).N('b'), weCardinal($FF, 'Byte', 1).N('b2')], 'TCastRecordB2')    );
+    t.Add('TCastRecordB2($0405)',   'TCastRecordB2($0405)',    weRecord([weCardinal($05, 'Byte', 1).N('b'), weCardinal($04, 'Byte', 1).N('b2')], 'TCastRecordB2')    );
+
+    t.Add('TCastRecordW2(gvLongword_2)', 'TCastRecordW2(gvLongword_2)', weRecord([weCardinal($F516, 'Word', 2).N('w'), weCardinal($F5C6, 'Word', 2).N('w2')], 'TCastRecordW2')    );
+    t.Add('TCastRecordW2(gcLongword_2)', 'TCastRecordW2(gcLongword_2)', weRecord([weCardinal($F515, 'Word', 2).N('w'), weCardinal($F5C6, 'Word', 2).N('w2')], 'TCastRecordW2')    );
+    t.Add('TCastRecordW2($01020304)',    'TCastRecordW2($01020304)',    weRecord([weCardinal($0304, 'Word', 2).N('w'), weCardinal($0102, 'Word', 2).N('w2')], 'TCastRecordW2')    );
+    t.Add('TCastRecordW2(LongWord(gvLongword_2))', 'TCastRecordW2(LongWord(gvLongword_2))', weRecord([weCardinal($F516, 'Word', 2).N('w'), weCardinal($F5C6, 'Word', 2).N('w2')], 'TCastRecordW2')    );
+    t.Add('TCastRecordW2(LongWord(gcLongword_2))', 'TCastRecordW2(LongWord(gcLongword_2))', weRecord([weCardinal($F515, 'Word', 2).N('w'), weCardinal($F5C6, 'Word', 2).N('w2')], 'TCastRecordW2')    );
+    t.Add('TCastRecordW2(LongWord($01020304))', '   TCastRecordW2(LongWord($01020304))',    weRecord([weCardinal($0304, 'Word', 2).N('w'), weCardinal($0102, 'Word', 2).N('w2')], 'TCastRecordW2')    );
+
+    t.Add('TCastRecordL2(gvQword_2)', 'TCastRecordL2(gvQword_2)', weRecord([weCardinal($09D3FFFB, 'LongWord', 4).N('l'), weCardinal($D65DDBE5, 'LongWord', 4).N('l2')], 'TCastRecordL2')    );
+    t.Add('TCastRecordL2(gcQword_2)', 'TCastRecordL2(gcQword_2)', weRecord([weCardinal($09D3FFFA, 'LongWord', 4).N('l'), weCardinal($D65DDBE5, 'LongWord', 4).N('l2')], 'TCastRecordL2')    );
+    t.Add('TCastRecordL2($0102030405060708)', 'TCastRecordL2($0102030405060708)',    weRecord([weCardinal($05060708, 'LongWord', 4).N('l'), weCardinal($01020304, 'LongWord', 4).N('l2')], 'TCastRecordL2')    );
+
+    t.Add('TCastRecordW2(VarCastRecL1)', 'TCastRecordW2(VarCastRecL1)', weRecord([weCardinal(7, 'Word', 2).N('w'), weCardinal(0, 'Word', 2).N('w2')], 'TCastRecordW2')    );
+    t.Add('TCastRecordL1(VarCastRecW2)', 'TCastRecordL1(VarCastRecW2)', weRecord([weCardinal($00060005, 'LongWord', 4).N('l')], 'TCastRecordL1')    );
+
+    t.Add('TCastRecordQ2(VarCastRecL4)', 'TCastRecordQ2(VarCastRecL4)', weRecord([weCardinal($000000000B0000000A, 'QWord', 8).N('q'), weCardinal($000000000D0000000C, 'QWord', 8).N('q2')], 'TCastRecordQ2')    );
+    t.Add('TCastRecordL4(VarCastRecQ2)', 'TCastRecordL4(VarCastRecQ2)', weRecord([weCardinal($00120013, 'LongWord', 4).N('l'), weCardinal($00100011, 'LongWord', 4).N('l2'), weCardinal($00220023, 'LongWord', 4).N('l3'), weCardinal($00200021, 'LongWord', 4).N('l4')], 'TCastRecordL4')    );
+
+
     AddWatchesConv(t, 'glob const', 'gc', 000, 'A', tlConst);
     AddWatchesConv(t, 'glob var',   'gv', 001, 'B');
 
@@ -3237,6 +3263,8 @@ begin
     AddWatchesCast(t, 'glob var dyn array of [0]',   'gva', 005, 'K', tlArrayWrap, '[0]' );
     AddWatchesCast(t, 'glob var dyn array of [1]',   'gva', 006, 'L', tlArrayWrap, '[1]');
     AddWatchesCast(t, 'glob var pointer',            'gvp_', 001, 'B', tlPointer, '^'); // pointer
+
+
     t.EvaluateWatches;
     t.CheckResults;
 

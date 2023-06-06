@@ -68,6 +68,30 @@ type
     FList: PMyStringItemList;
   end;
 
+  TCastRecordB1 = packed record
+    b: Byte;
+  end;
+  TCastRecordB2 = packed record
+    b,b2: Byte;
+  end;
+  TCastRecordW1 = packed record
+    w: Word;
+  end;
+  TCastRecordW2 = packed record
+    w,w2: Word;
+  end;
+  TCastRecordL1 = packed record
+    l: LongWord;
+  end;
+  TCastRecordL2 = packed record
+    l,l2: LongWord;
+  end;
+  TCastRecordL4 = packed record
+    l,l2,l3,l4: LongWord;
+  end;
+  TCastRecordQ2 = packed record
+    q,q2: QWord;
+  end;
 
 var
   BreakDummy, BreakDummy2: PtrUInt;
@@ -90,6 +114,15 @@ var
   Short0: Shortstring;
   Short1: array [0..2] of String[10];
   ARef0, ARef1, ARef2, ARef3, ARef4: array of byte;
+
+  VarCastRecb1: TCastRecordB1;
+  VarCastRecb2: TCastRecordB2;
+  VarCastRecw1: TCastRecordW1;
+  VarCastRecw2: TCastRecordW2;
+  VarCastRecl1: TCastRecordL1;
+  VarCastRecl2: TCastRecordL2;
+  VarCastRecl4: TCastRecordL4;
+  VarCastRecq2: TCastRecordQ2;
 
 type
   TClass1 = class;
@@ -934,6 +967,22 @@ begin
   v_rec.variant2 := False;
   v_array[3] := 104;
   v_array[4] := True;
+
+  VarCastRecb1.b  := 1;
+  VarCastRecb2.b  := 2;
+  VarCastRecb2.b2 := 2;
+  VarCastRecw1.w  := 4;
+  VarCastRecw2.w  := 5;
+  VarCastRecw2.w2 := 6;
+  VarCastRecl1.l  := 7;
+  VarCastRecl2.l  := 8;
+  VarCastRecl2.l2 := 9;
+  VarCastRecl4.l  := 10;
+  VarCastRecl4.l2 := 11;
+  VarCastRecl4.l3 := 12;
+  VarCastRecl4.l4 := 13;
+  VarCastRecq2.q  := $0010001100120013;
+  VarCastRecq2.q2 := $0020002100220023;
 
   {$if FPC_FULLVERSION >= 30000}
   dummy1 := nil;

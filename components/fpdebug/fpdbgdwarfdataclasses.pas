@@ -2383,24 +2383,49 @@ begin
       DW_OP_plus: begin
           if not AssertMinCount(2) then exit;
           Entry  := FStack.Pop;
-          EntryP := FStack.Peek;
-          {$PUSH}{$R-}{$Q-}
-          //TODO: 32 bit overflow?
-          EntryP^.Address := Entry.Address+EntryP^.Address;
-          {$POP}
-          (* TargetMem may be a constant after deref. So if SelfMem is involved, keep it. *)
-          if (EntryP^.MType <> mlfSelfMem) and (Entry.MType in [mlfTargetMem, mlfSelfMem]) then
-            EntryP^.MType := Entry.MType;
+          if FStack.PeekKind = mlfConstantDeref then begin
+            EntryP := FStack.PeekForDeref;
+
+            if Entry.Address >= SizeOf(TDbgPtr) then // includes negative // SHL does not make sense, as it pretends there would be data
+              FStack.FError := fpErrLocationParser
+            else
+            {$PUSH}{$R-}{$Q-}
+            EntryP^.Address := EntryP^.Address shr (Entry.Address * 8);
+            {$POP}
+          end
+          else begin
+            EntryP := FStack.Peek;
+            {$PUSH}{$R-}{$Q-}
+            //TODO: 32 bit overflow?
+            EntryP^.Address := Entry.Address+EntryP^.Address;
+            {$POP}
+            (* TargetMem may be a constant after deref. So if SelfMem is involved, keep it. *)
+            if (EntryP^.MType <> mlfSelfMem) and (Entry.MType in [mlfTargetMem, mlfSelfMem]) then
+              EntryP^.MType := Entry.MType;
+          end;
         end;
       DW_OP_plus_uconst: begin
           if not AssertMinCount(1) then exit;
-          EntryP := FStack.Peek;
-          {$PUSH}{$R-}{$Q-}
-          EntryP^.Address := EntryP^.Address + ULEB128toOrdinal(CurData);
-          {$POP}
+          if FStack.PeekKind = mlfConstantDeref then begin
+            EntryP := FStack.PeekForDeref;
+            i :=  ULEB128toOrdinal(CurData);
+            if i >= SizeOf(TDbgPtr) then
+              EntryP^.Address := 0
+            else
+            {$PUSH}{$R-}{$Q-}
+            EntryP^.Address := EntryP^.Address shr (i * 8);
+            {$POP}
+          end
+          else begin
+            EntryP := FStack.Peek;
+            {$PUSH}{$R-}{$Q-}
+            EntryP^.Address := EntryP^.Address + ULEB128toOrdinal(CurData);
+            {$POP}
+          end;
         end;
       DW_OP_minus: begin
           if not AssertMinCount(2) then exit;
+          // TODO: small negative for mlfConstantDeref
           Entry  := FStack.Pop;
           EntryP := FStack.Peek;
           {$PUSH}{$R-}{$Q-}
@@ -2608,7 +2633,6 @@ begin
   if (FLastError = nil) and (FStack.FError = fpErrNoError) then begin
     if not AssertMinCount(1) then exit; // no value for result
     //TODO: If a caller expects it, it could accept mlfConstantDeref as result (but it would still need to deref it)
-    FStack.Peek(); // check that the result value is valid
     if FStack.FError <> fpErrNoError then
       SetError(FStack.FError);
   end;

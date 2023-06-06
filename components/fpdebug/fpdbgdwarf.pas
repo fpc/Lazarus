@@ -2017,7 +2017,7 @@ begin
       exit;
     fields := FTypeCastSourceValue.FieldFlags;
     if svfOrdinal in fields then
-      AnAddress := ConstLoc(FTypeCastSourceValue.AsCardinal)
+      AnAddress := ConstDerefLoc(FTypeCastSourceValue.AsCardinal)
     else
     if svfAddress in fields then
       AnAddress := FTypeCastSourceValue.Address;
@@ -3470,11 +3470,20 @@ begin
     else begin
       f := FTypeCastSourceValue.FieldFlags;
       // skRecord: ONLY  Valid if Source has Address
-      if (f * [{svfOrdinal, }svfAddress] = [svfAddress]) then begin
+      if (f * [svfOrdinal, svfAddress] <> []) then begin
         // skRecord: AND either ... if Source has same Size
         if (f * [svfSize, svfSizeOfPointer]) = [svfSize] then begin
-          Result := GetSize(TypeSize) and GetSizeFor(FTypeCastSourceValue, SrcSize);
-          Result := Result and (TypeSize = SrcSize)
+          Result := GetSize(TypeSize);
+          if Result then begin
+            if f * [svfAddress, svfDataAddress] = [] then begin
+              //Result := TypeSize <= AddressSize;
+              Result := TypeSize <= SizeOf(TDBGPtr);
+            end
+            else begin
+              Result := Result and GetSizeFor(FTypeCastSourceValue, SrcSize);
+              Result := Result and (TypeSize = SrcSize);
+            end;
+          end;
         end
         else
         // skRecord: AND either ... if Source has same Size (pointer size)
