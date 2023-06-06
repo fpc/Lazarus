@@ -4659,24 +4659,25 @@ Copies two words into a double word, usable as a message Result.
 </element>
 
 <element name="OffSetRect">
-<short>Move Left/Right by dx, Top/Bottom by dy. Return Top and Left are &gt;= 
-0.
+<short>
+Deprecated. Use the OffsetRect routine in the RTL <file>types.pp</file> unit 
+instead.
 </short>
-<descr/>
+<descr>
+<p>
+In the current LCL version, OffsetRect calls the routine in the RTL 
+<file>types.pp</file> unit.
+</p>
+</descr>
+<version>
+Deprecated in LCL version 2.4.0.
+</version>
 <seealso/>
 </element>
-<element name="OffSetRect.Result">
-<short><b>False</b> if resulting Top or Left are negative.</short>
-</element>
-<element name="OffSetRect.Rect">
-<short/>
-</element>
-<element name="OffSetRect.dx">
-<short/>
-</element>
-<element name="OffSetRect.dy">
-<short/>
-</element>
+<element name="OffSetRect.Result"/>
+<element name="OffSetRect.Rect"/>
+<element name="OffSetRect.dx"/>
+<element name="OffSetRect.dy"/>
 
 <element name="PtInRect">
 <short>Checks whether a Point is within a Rect.</short>
