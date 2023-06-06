@@ -40,6 +40,8 @@ type
 
     procedure AddTypeNameToResData(AnFpValue: TFpValue; AnResData: IDbgWatchDataIntf; ADeref: Boolean = False);
 
+    function TypeToResData(AnFpValue: TFpValue; AnResData: IDbgWatchDataIntf): Boolean;
+
     function PointerToResData(AnFpValue: TFpValue; AnResData: IDbgWatchDataIntf): Boolean;
     function NumToResData(AnFpValue: TFpValue; AnResData: IDbgWatchDataIntf): Boolean;
 
@@ -124,6 +126,18 @@ begin
      (TpName <> '')
   then
     AnResData.SetTypeName(TpName);
+end;
+
+function TFpWatchResultConvertor.TypeToResData(AnFpValue: TFpValue;
+  AnResData: IDbgWatchDataIntf): Boolean;
+var
+  APrintedValue: String;
+begin
+  if GetTypeAsDeclaration(APrintedValue, AnFpValue.DbgSymbol) then
+    AnResData.CreatePrePrinted('type '+APrintedValue)
+  else
+    AnResData.CreateError('Unknown type');
+  Result := True;
 end;
 
 function TFpWatchResultConvertor.PointerToResData(AnFpValue: TFpValue;
@@ -842,10 +856,10 @@ begin
     skClass,
     skInterface: Result := StructToResData(AnFpValue, AnResData);
 
-    skNone: ;
-    skType: ;
-    skInstance: ;
-    skUnit: ;
+    //skNone: ;
+    //skInstance: ;
+    //skUnit: ;
+    skType: Result := TypeToResData(AnFpValue, AnResData);
     skProcedure,
     skFunction,
     skProcedureRef,
@@ -858,8 +872,12 @@ begin
     skEnumValue: Result := EnumToResData(AnFpValue, AnResData);
     skSet:       Result := SetToResData(AnFpValue, AnResData);
     skArray:     Result := ArrayToResData(AnFpValue, AnResData);
-    skRegister: ;
-    skAddress: ;
+    //skRegister: ;
+    //skAddress: ;
+    else begin
+        AnResData.CreateError('Unknown data');
+        Result := True;
+      end;
   end;
   if Result then
     CheckError(AnFpValue, AnResData)
@@ -900,7 +918,7 @@ begin
     if (AnFpValue.Kind = skPointer) then
       FHasEmbeddedPointer := True
     else
-    if FHasEmbeddedPointer and (FLastValueKind <> skPointer) then
+    if FHasEmbeddedPointer and (FLastValueKind <> skPointer) then // TODO: create a value as marker // also arrays cannot store the absence of a value
       exit(True); // not an error
       // Allow only one level, after an embedded pointer (pointer nested in other data-type)
   end;
@@ -920,8 +938,10 @@ function TFpWatchResultConvertor.DoWritePointerWatchResultData(
   AnFpValue: TFpValue; AnResData: IDbgWatchDataIntf; AnAddr: TDbgPtr
   ): Boolean;
 begin
-  if FRecurseAddrList.IndexOf(AnAddr) >= 0 then
+  if FRecurseAddrList.IndexOf(AnAddr) >= 0 then begin
+    AnResData.CreateError('Recursive Value at '+HexStr(AnAddr, 16)); // TOOD: correct size // TODO: dedicated entry
     exit(True);
+  end;
   if AnAddr <> 0 then
     FRecurseAddrList.Add(AnAddr);
   Result := DoWriteWatchResultData(AnFpValue, AnResData);
