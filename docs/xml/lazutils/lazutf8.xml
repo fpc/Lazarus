@@ -2859,10 +2859,6 @@ is removed from the Lang argument value. It contains only the value prior to
 the initial '.' character found in the language identifier.
 </p>
 </descr>
-<version>
-Modified in LazUtils version 2.4.0 to merge the functionality from the now 
-removed LazTrimLanguageID routine.
-</version>
 <seealso/>
 </element>
 <element name="LazGetLanguageIDs.Lang">
