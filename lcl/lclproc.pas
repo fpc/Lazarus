@@ -113,6 +113,7 @@ procedure OwnerFormDesignerModified(AComponent: TComponent);
 
 // Deprecated in version 2.3, 2023-06.
 procedure FreeThenNil(var obj); deprecated 'Use LazUtilities.FreeThenNil instead';
+function OffsetRect(var Rect: TRect; DX, DY: Integer): Boolean; deprecated 'Use Types.OffsetRect instead';
 procedure MoveRect(var ARect: TRect; x, y: Integer); deprecated 'Use GraphMath.MoveRect instead';
 procedure MoveRectToFit(var ARect: TRect; const MaxRect: TRect); deprecated 'Use GraphMath.MoveRectToFit instead';
 procedure MakeMinMax(var i1, i2: integer); deprecated 'Use GraphMath.MakeMinMax instead';
@@ -840,6 +841,11 @@ end;
 procedure FreeThenNil(var obj);
 begin
   LazUtilities.FreeThenNil(obj);
+end;
+
+function OffsetRect(var Rect: TRect; DX, DY: Integer): Boolean;
+begin
+  Result := Types.OffsetRect(Rect, DX, DY);
 end;
 
 procedure MoveRect(var ARect: TRect; x, y: Integer);
