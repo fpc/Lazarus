@@ -1841,8 +1841,10 @@ No actions are performed in the method under the following conditions:
 <ul>
 <li>AControl has not been assigned (contains <b>Nil</b>).</li>
 <li>The control is not the Parent (or ancestor) for AControl.</li>
-<li>Neither horizontal nor vertical scroll bars are displayed for the 
-control.</li>
+<li>
+Neither horizontal nor vertical scroll bars are displayed for the 
+control.
+</li>
 </ul>
 <p>
 The origin for AControl relative to its <var>Parent</var> is determined by 
@@ -1858,7 +1860,7 @@ is visible in the client area for the scrolling window control.
 <link id="TScrollingWinControl.AlignControls"/>
 <link id="TControlScrollBar.Position"/>
 <link id="#lcl.controls.TControl.ClientToParent">TControl.ClientToParent</link>
-<link id="#lcl.lclintf.OffsetRect">OffsetRect</link>
+<link id="#rtl.types.OffsetRect">OffsetRect</link>
 </seealso>
 </element>
 <element name="TScrollingWinControl.ScrollInView.AControl">
