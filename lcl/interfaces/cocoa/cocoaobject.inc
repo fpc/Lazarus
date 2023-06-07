@@ -222,6 +222,8 @@ begin
 
   {$ifdef COCOALOOPNATIVE}
   NSApp.stop(nil);
+  {$else}
+  wakeupEventLoop;
   {$endif}
 end;
 
