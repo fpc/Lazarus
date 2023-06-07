@@ -1410,7 +1410,7 @@ uses
   {$IFDEF Html_Print}
   Printers, PrintersDlgs, IpHtmlPv,
   {$ENDIF}
-  ipHtmlNodes, ipHtmlParser;
+  ipHtmlNodes, ipHtmlParser, ipHtmlBlockLayout, ipHtmlTableLayout;
 
 {$R *.res}
 
