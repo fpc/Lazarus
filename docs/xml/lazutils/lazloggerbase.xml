@@ -2091,7 +2091,7 @@ Calls the <var>DumpExceptionBackTrace</var> method for the logger in the
 </seealso>
 </element>
 
-<element name="operator assign(plazloggerloggroup): tlazloggerlogenabled">
+<element name="assign(plazloggerloggroup):tlazloggerlogenabled">
 <short>
 Implements the Assign (':=') operator using a Pointer to a logger group for 
 the TLazLoggerLogEnabled type.
@@ -2100,7 +2100,7 @@ the TLazLoggerLogEnabled type.
 <seealso/>
 </element>
 
-<element name="operator assign(boolean): tlazloggerlogenabled">
+<element name="assign(boolean):tlazloggerlogenabled">
 <short>
 Implements the Assign (':=') operator using a Boolean argument for the 
 TLazLoggerLogEnabled type.
@@ -2109,7 +2109,7 @@ TLazLoggerLogEnabled type.
 <seealso/>
 </element>
 
-<element name="operator logicaland(tlazloggerlogenabled, tlazloggerlogenabled): tlazloggerlogenabled">
+<element name="logicaland(tlazloggerlogenabled,tlazloggerlogenabled):tlazloggerlogenabled">
 <short>
 Implements the logical And operator for TLazLoggerLogEnabled types.
 </short>
@@ -2117,7 +2117,7 @@ Implements the logical And operator for TLazLoggerLogEnabled types.
 <seealso/>
 </element>
 
-<element name="operator logicalor(tlazloggerlogenabled, tlazloggerlogenabled): tlazloggerlogenabled">
+<element name="logicalor(tlazloggerlogenabled, tlazloggerlogenabled):tlazloggerlogenabled">
 <short>
 Implements the logical Or operator for TLazLoggerLogEnabled types.
 </short>

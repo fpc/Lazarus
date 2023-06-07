@@ -448,7 +448,7 @@ MoveNext does not call the inherited method.
 </element>
 
 <!-- operator Visibility: default -->
-<element name="operator enumerator(string): tunicodecharacterenumerator">
+<element name="enumerator(string):tunicodecharacterenumerator">
 <short>
 Enumerator which combines diacritical marks.
 </short>
