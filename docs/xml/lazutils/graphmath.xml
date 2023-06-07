@@ -911,6 +911,243 @@ Use SplitBezier to split any 4-Point Bezier into two 4-Point Beziers: a
 <short/>
 </element>
 
+<element name="add(TFloatPoint,TFloatPoint):TFloatPoint">
+<short>
+Implements the Add operator (+) for values using the TFloatPoint type.
+</short>
+<descr>
+<p>
+Values for the X and Y members in the addends are summed and stored in the 
+corresponding members in the TFloatPoint result.
+</p>
+</descr>
+</element>
+
+<element name="add(TFloatPoint,Extended):TFloatPoint">
+<short>
+Implements the Add operator (+) for values using the TFloatPoint and Extended 
+types.
+</short>
+<descr>
+<p>
+The Extended value is added to both the X and Y members in the TFloatPoint 
+type and used in the result for the operator.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="add(Extended,TFloatPoint):TFloatPoint">
+<short>
+Implements the Add operator (+) for values using the Extended and TFloatPoint 
+types.
+</short>
+<descr>
+<p>
+The Extended value is added to both the X and Y members in the TFloatPoint 
+type and used in the result for the operator.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="add(TFloatPoint,TPoint):TFloatPoint">
+<short>
+Implements the Add operator (+) for values using the TFloatPoint and TPoint 
+types.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="add(TPoint,TFloatPoint):TFloatPoint">
+<short>
+Implements the Add operator (+) for values using the TPoint and TFloatPoint 
+types.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="subtract(TFloatPoint,Extended):TFloatPoint">
+<short>
+Implements the Subtract operator (-) for values using the TFloatPoint and 
+Extended types.
+</short>
+<descr>
+<p>
+The value in the Extended type is subtracted from both the X and Y members in 
+the TFloatPoint type and used in the result for the operator.
+</p>
+</descr>
+</element>
+
+<element name="subtract(TFloatPoint,TFloatPoint):TFloatPoint">
+<short>
+Implements the Subtract operator (-) for values using the TFloatPoint type.
+</short>
+<descr/>
+</element>
+
+<element name="subtract(TFloatPoint,TPoint):TFloatPoint">
+<short>
+Implements the Subtract operator (-) for values using the TFloatPoint and 
+TPoint types.
+</short>
+<descr/>
+</element>
+
+<element name="subtract(TPoint,TFloatPoint):TFloatPoint">
+<short>
+Implements the Subtract operator (-) for values using the TPoint and 
+TFloatPoint types.
+</short>
+<descr/>
+</element>
+
+<element name="multiply(TFloatPoint,TFloatPoint):TFloatPoint">
+<short>
+Implements the Multiply operator (*) for values using the TFloatPoint type.
+</short>
+<descr/>
+</element>
+
+<element name="multiply(TFloatPoint,Extended):TFloatPoint">
+<short>
+Implements the Multiply operator (*) for values using the TFloatPoint and 
+Extended types.
+</short>
+<descr>
+<p>
+The value in the Extended type is applied to both the X and Y members in the TFloatPoint type and used in the result for the operator.
+</p>  
+</descr>
+</element>
+
+<element name="multiply(Extended,TFloatPoint):TFloatPoint">
+<short>
+Implements the Multiply operator (*) for values using the Extended and 
+TFloatPoint types.
+</short>
+<descr>
+<p>
+The value in the Extended type is applied to both the X and Y members in the TFloatPoint type and used in the result for the operator.
+</p>  
+</descr>
+</element>
+
+<element name="multiply(TFloatPoint,TPoint):TFloatPoint">
+<short>
+Implements the Multiply operator (*) for values using the TFloatPoint and 
+TPoint types.
+</short>
+<descr/>
+</element>
+
+<element name="multiply(TPoint,TFloatPoint):TFloatPoint">
+<short>
+Implements the Multiply operator (*) for values using the TPoint and 
+TFloatPoint types.
+</short>
+<descr/>
+</element>
+
+<element name="divide(TFloatPoint,TFloatPoint):TFloatPoint">
+<short>
+Implements the Divide operator (/) for values using the TFloatPoint type.
+</short>
+<descr/>
+</element>
+
+<element name="divide(TFloatPoint,Extended):TFloatPoint">
+<short>
+Implements the Divide operator (/) for values using the TFloatPoint and 
+Extended types.
+</short>
+<descr>
+<p>
+The value in the Extended type is applied to both the X and Y members in the 
+TFloatPoint type and used in the result for the operator. No validation is 
+performed for the divisor in the operator.
+</p>
+</descr>
+</element>
+
+<element name="divide(TFloatPoint,TPoint):TFloatPoint">
+<short>
+Implements the Divide operator (/) for values using the TFloatPoint and 
+TPoint types.
+</short>
+<descr/>
+</element>
+
+<element name="divide(TPoint,TFloatPoint):TFloatPoint">
+<short>
+Implements the Divide operator (/) for values using the TPoint and 
+TFloatPoint types.
+</short>
+<descr/>
+</element>
+
+<element name="equal(TPoint,TPoint):Boolean">
+<short>
+Implements the Equal operator (=) to compare values using the TPoint type.
+</short>
+<descr>
+<p>
+The result is <b>True</b> when the X and Y members in the compared values are 
+the same.
+</p>
+</descr>
+</element>
+
+<element name="equal(TFloatPoint,TFloatPoint):Boolean">
+<short>
+Implements the Equal operator (=) to compare values using the TFloatPoint type.
+</short>
+<descr>
+<p>
+The result is <b>True</b> when the X and Y members in the compared values are 
+the same.
+</p>
+</descr>
+</element>
+
+<element name="equal(TRect,TRect):Boolean">
+<short>
+Implements the Equal operator (=) to compare values using the TRect type.
+</short>
+<descr>
+<p>
+The result is <b>True</b> when the Left, Top, Right, and Bottom members in the 
+compared values are the same.
+</p>
+</descr>
+</element>
+
+<element name="assign(TFloatPoint):TPoint">
+<short>
+Implements the Assign operator (=) to store a value using the TFloatPoint type 
+to a TPoint instance.
+</short>
+<descr>
+<p>
+<var>SimpleRoundTo</var> in the RTL <file>math.pp</file> unit is called to 
+round both the X and Y members to a Double value with 0 decimals in the 
+precision. The Double values are truncated and stored to the Longint types 
+used for the X and Y members in the result for the operator.
+</p>
+</descr>
+</element>
+
+<element name="assign(TPoint):TFloatPoint">
+<short>
+Implements the Assign operator (=) to store a value using the TPoint type to a 
+TFloatPoint instance.
+</short>
+<descr/>
+</element>
+
 <topic name="GraphMathOperators">
 <short>
 <b>GraphMath Operators</b>.
