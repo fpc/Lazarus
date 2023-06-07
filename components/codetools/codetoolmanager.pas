@@ -1463,14 +1463,18 @@ begin
 end;
 
 procedure TCodeToolManager.CreateScanner(Code: TCodeBuffer);
+var
+  Scanner: TLinkScanner;
 begin
   if FilenameHasSourceExt(Code.Filename) and (Code.Scanner=nil) then begin
     // create a scanner for the unit/program
-    Code.Scanner:=TLinkScanner.Create;
-    Code.Scanner.OnGetInitValues:=@DoOnScannerGetInitValues;
-    Code.Scanner.OnSetGlobalWriteLock:=@DoOnToolSetWriteLock;
-    Code.Scanner.OnGetGlobalChangeSteps:=@DoOnToolGetChangeSteps;
-    Code.Scanner.OnProgress:=@DoOnScannerProgress;
+    Scanner:=TLinkScanner.Create;
+    Code.Scanner:=Scanner;
+    Scanner.OnGetInitValues:=@DoOnScannerGetInitValues;
+    Scanner.OnSetGlobalWriteLock:=@DoOnToolSetWriteLock;
+    Scanner.OnGetGlobalChangeSteps:=@DoOnToolGetChangeSteps;
+    Scanner.OnProgress:=@DoOnScannerProgress;
+    Scanner.DirectoryCachePool:=DirectoryCachePool;
   end;
 end;
 

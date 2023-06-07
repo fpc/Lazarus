@@ -50,7 +50,7 @@ uses
   Classes, SysUtils, math, Laz_AVL_Tree,
   // CodeTools
   CodeToolsStrConsts, CodeToolMemManager, FileProcs, ExprEval, SourceLog,
-  KeywordFuncLists, BasicCodeTools,
+  KeywordFuncLists, BasicCodeTools, DirectoryCacher,
   // LazUtils
   LazFileUtils, LazUtilities, LazDbgLog;
 
@@ -640,6 +640,7 @@ type
     FDirectiveName: string;
     FDirectiveCleanPos: integer;
     FDirectivesStored: boolean;
+    FDirectoryCachePool: TCTDirectoryCachePool;
     FMacrosOn: boolean;
     FMissingIncludeFiles: TMissingIncludeFiles;
     FIncludeStack: TFPList; // list of TSourceLink
@@ -816,6 +817,7 @@ type
                                       out EndCode: Pointer): boolean;
     {$ENDIF}
     function GetHiddenUsedUnits: string; // comma separated
+    property DirectoryCachePool: TCTDirectoryCachePool read FDirectoryCachePool write FDirectoryCachePool;
 
     // global write lock
     procedure ActivateGlobalWriteLock;
@@ -4081,6 +4083,13 @@ var
   ExpFilename: string;
   HasPathDelims: Boolean;
 
+  procedure SetMissingIncludeFile;
+  begin
+    if MissingIncludeFile=nil then
+      MissingIncludeFile:=TMissingIncludeFile.Create(AFilename,'');
+    MissingIncludeFile.IncludePath:=IncludePath;
+  end;
+
   function SearchPath(const APath, RelFilename: string): boolean;
   begin
     Result:=false;
@@ -4094,48 +4103,30 @@ var
     NewCode:=LoadSourceCaseLoUp(ExpFilename);
     Result:=NewCode<>nil;
   end;
-  
-  procedure SetMissingIncludeFile;
-  begin
-    if MissingIncludeFile=nil then
-      MissingIncludeFile:=TMissingIncludeFile.Create(AFilename,'');
-    MissingIncludeFile.IncludePath:=IncludePath;
-  end;
 
   function SearchCasedInIncPath(const RelFilename: string): boolean;
+  var
+    IsVirtualUnit: Boolean;
   begin
-    if FilenameIsAbsolute(FMainSourceFilename) then begin
-      // main source has absolute filename
-      // search in directory of unit
-      ExpFilename:=ExtractFilePath(FMainSourceFilename)+RelFilename;
-      NewCode:=LoadSourceCaseLoUp(ExpFilename);
-      Result:=(NewCode<>nil);
-      if Result then exit;
-      // search in directory of source of include directive
-      if FilenameIsAbsolute(SrcFilename)
-      and (CompareFilenames(SrcFilename,FMainSourceFilename)<>0) then begin
-        ExpFilename:=ExtractFilePath(SrcFilename)+RelFilename;
-        NewCode:=LoadSourceCaseLoUp(ExpFilename);
-        Result:=(NewCode<>nil);
-        if Result then exit;
-      end;
-    end else begin
+    IsVirtualUnit:=not FilenameIsAbsolute(FMainSourceFilename);
+    if IsVirtualUnit then begin
       // main source is virtual -> allow virtual include file
       NewCode:=LoadSourceCaseLoUp(RelFilename,true);
       Result:=(NewCode<>nil);
       if Result then exit;
-    end;
-
-    // then search the include file in directories defines in fpc.cfg (by -Fi option)
-    if FindIncFileInCfgCache(AFilename,ExpFilename) then
-    begin
+    end else begin
+      // main source has absolute filename
+      // -> search in directory of unit
+      ExpFilename:=ExtractFilePath(FMainSourceFilename)+RelFilename;
       NewCode:=LoadSourceCaseLoUp(ExpFilename);
       Result:=(NewCode<>nil);
       if Result then exit;
     end;
 
-    // then search the include file in the include path
     if not HasPathDelims then begin
+      // file without path -> search in paths
+
+      // then search the include file in the include path
       if MissingIncludeFile=nil then
         IncludePath:=Values.Variables[ExternalMacroStart+'INCPATH']
       else
@@ -4163,7 +4154,26 @@ var
         Result:=SearchPath(CurPath,RelFilename);
         if Result then exit;
       end;
+
+      // then search the include file in directories defines in fpc.cfg (by -Fi option)
+      if (not IsVirtualUnit) and FindIncFileInCfgCache(AFilename,ExpFilename) then
+      begin
+        NewCode:=LoadSourceCaseLoUp(ExpFilename);
+        Result:=(NewCode<>nil);
+        if Result then exit;
+      end;
     end;
+
+    // search in directory of source of include directive
+    // Note: fpc 3.2.2 does not do that
+    if FilenameIsAbsolute(SrcFilename)
+    and (CompareFilenames(SrcFilename,FMainSourceFilename)<>0) then begin
+      ExpFilename:=ExtractFilePath(SrcFilename)+RelFilename;
+      NewCode:=LoadSourceCaseLoUp(ExpFilename);
+      Result:=(NewCode<>nil);
+      if Result then exit;
+    end;
+
     Result:=false;
   end;
 
@@ -4184,14 +4194,6 @@ begin
     NewCode:=nil;
     SetMissingIncludeFile;
     Result:=false;
-    exit;
-  end;
-
-  // if include filename is absolute then load it directly
-  if FilenameIsAbsolute(AFilename) then begin
-    NewCode:=LoadSourceCaseLoUp(AFilename);
-    Result:=(NewCode<>nil);
-    if not Result then SetMissingIncludeFile;
     exit;
   end;
 
