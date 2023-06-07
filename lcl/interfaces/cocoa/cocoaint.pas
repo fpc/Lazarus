@@ -296,6 +296,14 @@ uses
   CocoaCaret,
   CocoaThemes;
 
+procedure wakeupEventLoop;
+var
+  ev: NSevent;
+begin
+  ev := NSEvent.otherEventWithType_location_modifierFlags_timestamp_windowNumber_context_subtype_data1_data2(NSApplicationDefined, NSZeroPoint, 0, 0, 0, nil, 0, 0, 0);
+  NSApp.postEvent_atStart(ev, false);
+end;
+
 function CocoaScrollBarSetScrollInfo(bar: TCocoaScrollBar; const ScrollInfo: TScrollInfo): Integer;
 var
   pg  : Integer;
@@ -651,6 +659,10 @@ begin
   Result:=inherited nextEventMatchingMask_untilDate_inMode_dequeue(mask,
     expiration, mode, deqFlag);
   {$endif}
+
+  if Result.type_ = NSApplicationDefined then
+    Result:= nil;
+
   if not Assigned(Result) then
   begin
     {$ifdef COCOALOOPNATIVE}
@@ -875,6 +887,8 @@ begin
 
   ms.Free;
   Modals.Delete(Modals.Count-1);
+
+  wakeupEventLoop;
 end;
 
 function TCocoaWidgetSet.isTopModalWin(awin: NSWindow): Boolean;
