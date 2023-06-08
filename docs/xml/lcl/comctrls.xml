@@ -29003,13 +29003,34 @@ Expands the current tree node, and optionally all descendent nodes.
 </short>
 <descr>
 <p>
-Calls the ExpandItem method to implement the expansion and optional recursion.
+<var>Expand</var> calls the private ExpandItem method to perform the 
+expansion (and optional recursion) for child tree nodes. The private method 
+calls the BeginUpdate and EndUpdate methods in the TreeView control to reduce 
+the number of updates performed when the tree node(s) are expanded.
+</p>
+<p>
+The Expanded property for the node (and its child nodes when Recurse is 
+enabled) is set to <b>True</b> when a node is expanded on the TreeView 
+control. Use the OnExpanding event handler in the TreeView control to 
+examine an individual tree node before it is expanded.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TTreeNode.Expanded"/>
+<link id="TTreeNode.Collapse"/>
+<link id="TCustomTreeView.BeginUpdate"/>
+<link id="TCustomTreeView.EndUpdate"/>
+<link id="TCustomTreeView.OnExpanding"/>
+</seealso>
+<notes>
+<note>
+This topic mentions the private method because it has an impact on the calling 
+routine. Not sure this deserves a version admonition though.
+</note>
+</notes>
 </element>
 <element name="TTreeNode.Expand.Recurse">
-<short><b>True</b> to expand all descendent nodes.</short>
+<short><b>True</b> to expand all descendent nodes for the node.</short>
 </element>
 
 <element name="TTreeNode.ExpandParents">
@@ -29028,7 +29049,7 @@ Expands any tree node which is an ancestor of the current node.
 
 <element name="TTreeNode.MakeVisible">
 <short>
-Forces the node tree node to become visible.
+Forces the tree node to become visible.
 </short>
 <descr>
 <p>
@@ -36412,9 +36433,27 @@ Collapses all tree nodes on the tree view control.
 </short>
 <descr>
 <p>
-Visits all top-level tree nodes in the Items property and calls their 
-Collapse methods. Top-level nodes will still be visible, but are displayed in 
-the Collapsed state.
+FullCollapse is a method used to collapse all of the nodes on the tree view 
+control. It calls the BeginUpdate and EndUpdate methods to reduce the number 
+of updates performed for the control while the tree nodes are being collapsed.
+</p>
+<p>
+FullCollapse visits all top-level tree nodes in the Items property and calls 
+their Collapse methods. Recursion is enabled when Collapse is called, so 
+descendent tree nodes are also collapsed. Top-level nodes are still visible, 
+but are displayed in the Collapsed state.
+</p>
+<p>
+FullCollapse calls the GetFirstNode method in Items to locate the first tree 
+node collapsed in the method. The GetNextSibling method in the tree node is 
+called to determine the next tree node processed in the method.
+</p>
+<p>
+Use Collapse to display a specific tree node on the tree view control in the 
+collapsed state.
+</p>
+<p>
+Use FullExpand to expand all of the tree nodes on the tree view control.
 </p>
 </descr>
 <seealso>
@@ -36424,6 +36463,8 @@ the Collapsed state.
 <link id="TTreeNode.Collapse"/>
 <link id="TTreeNode.Expand"/>
 <link id="TTreeNode.Expanded"/>
+<link id="TTreeNode.GetNextSibling"/>
+<link id="TTreeNodes.GetFirstNode"/>
 </seealso>
 </element>
 
@@ -36433,12 +36474,37 @@ Expands all tree nodes on the tree view control.
 </short>
 <descr>
 <p>
-Visits all top-level tree nodes in Items and calls their Expand methods.
+FullExpand is a method used to expand all of the nodes on the tree view 
+control. It calls the BeginUpdate and EndUpdate methods to reduce the number 
+of updates performed for the control while the tree nodes are being expanded.
+</p>
+<p>
+FullExpand visits all top-level tree nodes in Items and calls their Expand 
+methods with recursion enabled. This causes the tree node and all of its 
+descendent nodes to be expanded.
+</p>
+<p>
+FullExpand calls the GetFirstNode method in Items to locate the first tree 
+node expanded in the method. The GetNextSibling method in the tree node is 
+called to determine the next tree node processed in the method.
+</p>
+<p>
+Use Expand to expand a specific tree node on the tree view control.
+</p>
+<p>
+Use FullCollapse to collapse all of the tree nodes on the tree view control.
 </p>
 </descr>
 <seealso>
-<link id="TTreeNode.Expand"/>
+<link id="TCustomTreeView.BeginUpdate"/>
+<link id="TCustomTreeView.EndUpdate"/>
+<link id="TCustomTreeView.FullCollapse"/>
+<link id="TCustomTreeView.Expand"/>
 <link id="TTreeNodes.GetFirstNode"/>
+<link id="TTreeNode.Expand"/>
+<link id="TTreeNode.Collapse"/>
+<link id="TTreeNode.Expanded"/>
+<link id="TTreeNode.GetNextSibling"/>
 </seealso>
 </element>
 
