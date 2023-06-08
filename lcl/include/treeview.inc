@@ -743,24 +743,32 @@ procedure TTreeNode.ExpandItem(ExpandIt, Recurse: Boolean);
 var
   ANode: TTreeNode;
 begin
-  if Recurse then begin
-    ExpandItem(ExpandIt, False);
-    ANode := GetFirstChild;
-    while ANode<>nil do begin
-      ANode.ExpandItem(ExpandIt, true);
-      ANode := ANode.FNextBrother;
+  if TreeView <> nil then
+    TreeView.BeginUpdate;
+  try
+    if Recurse then
+    begin
+      ExpandItem(ExpandIt, False);
+      ANode := GetFirstChild;
+      while ANode <> nil do
+      begin
+        ANode.ExpandItem(ExpandIt, true);
+        ANode := ANode.FNextBrother;
+      end;
+    end else begin
+      if TreeView <> nil then
+        Include(TreeView.FStates, tvsManualNotify);
+      try
+        if DoCanExpand(ExpandIt) then
+          DoExpand(ExpandIt);
+      finally
+        if TreeView <> nil then
+          Exclude(TreeView.FStates, tvsManualNotify);
+      end;
     end;
-  end
-  else begin
-    if TreeView<>nil then
-      Include(TreeView.FStates,tvsManualNotify);
-    try
-      if DoCanExpand(ExpandIt) then
-        DoExpand(ExpandIt);
-    finally
-      if TreeView<>nil then
-        Exclude(TreeView.FStates,tvsManualNotify);
-    end;
+  finally
+    if TreeView <> nil then
+      TreeView.EndUpdate;
   end;
 end;
 
@@ -4364,10 +4372,15 @@ procedure TCustomTreeView.FullExpand;
 var
   Node: TTreeNode;
 begin
-  Node := Items.GetFirstNode;
-  while Node <> nil do begin
-    Node.Expand(True);
-    Node := Node.GetNextSibling;
+  BeginUpdate;
+  try
+    Node := Items.GetFirstNode;
+    while Node <> nil do begin
+      Node.Expand(True);
+      Node := Node.GetNextSibling;
+    end;
+  finally
+    EndUpdate;
   end;
 end;
 
@@ -4375,10 +4388,15 @@ procedure TCustomTreeView.FullCollapse;
 var
   Node: TTreeNode;
 begin
-  Node := Items.GetFirstNode;
-  while Node <> nil do begin
-    Node.Collapse(True);
-    Node := Node.GetNextSibling;
+  BeginUpdate;
+  try
+    Node := Items.GetFirstNode;
+    while Node <> nil do begin
+      Node.Collapse(True);
+      Node := Node.GetNextSibling;
+    end;
+  finally
+    EndUpdate;
   end;
 end;
 
