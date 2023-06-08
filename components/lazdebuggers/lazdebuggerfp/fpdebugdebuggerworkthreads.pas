@@ -1124,6 +1124,7 @@ begin
   PrettyPrinter := nil;
   APasExpr := TFpPascalExpression.Create(AnExpression, FExpressionScope, True);
   APasExpr.IntrinsicPrefix := TFpDebugDebuggerProperties(FDebugger.GetProperties).IntrinsicPrefix;
+  APasExpr.AutoDeref := TFpDebugDebuggerProperties(FDebugger.GetProperties).AutoDeref;
   APasExpr.Parse;
   try
     if FAllowFunctions and (dfEvalFunctionCalls in FDebugger.EnabledFeatures) then

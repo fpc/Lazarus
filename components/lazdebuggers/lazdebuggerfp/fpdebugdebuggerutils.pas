@@ -105,6 +105,7 @@ type
 
   TFpDebugDebuggerProperties = class(TDebuggerProperties)
   private
+    FAutoDeref: Boolean;
     FConsoleTty: string;
     {$ifdef windows}
     FForceNewConsole: boolean;
@@ -131,6 +132,7 @@ type
     property MemLimits: TFpDebugDebuggerPropertiesMemLimits read FMemLimits write SetMemLimits;
     property HandleDebugBreakInstruction: TFpInt3DebugBreakOptions read FHandleDebugBreakInstruction write FHandleDebugBreakInstruction default [dboIgnoreAll];
     property IntrinsicPrefix: TFpIntrinsicPrefix read FIntrinsicPrefix write FIntrinsicPrefix default ipColon;
+    property AutoDeref: Boolean read FAutoDeref write FAutoDeref default False;
   end;
 
 
@@ -408,6 +410,7 @@ begin
   FMemLimits := TFpDebugDebuggerPropertiesMemLimits.Create;
   FHandleDebugBreakInstruction := [dboIgnoreAll];
   FIntrinsicPrefix := ipColon;
+  FAutoDeref := False;
 end;
 
 destructor TFpDebugDebuggerProperties.Destroy;
@@ -428,6 +431,7 @@ begin
     FMemLimits.Assign(TFpDebugDebuggerProperties(Source).MemLimits);
     FHandleDebugBreakInstruction:=TFpDebugDebuggerProperties(Source).FHandleDebugBreakInstruction;
     FIntrinsicPrefix:=TFpDebugDebuggerProperties(Source).FIntrinsicPrefix;
+    FAutoDeref:=TFpDebugDebuggerProperties(Source).FAutoDeref;
   end;
 end;
 

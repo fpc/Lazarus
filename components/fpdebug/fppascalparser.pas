@@ -69,6 +69,7 @@ type
 
   TFpPascalExpression = class
   private
+    FAutoDeref: Boolean;
     FError: TFpError;
     FContext: TFpDbgSymbolScope;
     FFixPCharIndexAccess: Boolean;
@@ -105,6 +106,7 @@ type
     // handle pchar as string (adjust index)
     property FixPCharIndexAccess: Boolean read FFixPCharIndexAccess write FFixPCharIndexAccess;
     property IntrinsicPrefix: TFpIntrinsicPrefix read FIntrinsicPrefix write FIntrinsicPrefix;
+    property AutoDeref: Boolean read FAutoDeref write FAutoDeref;
     // ResultValue
     // - May be a type, if expression is a type
     // - Only valid, as long as the expression is not destroyed
@@ -1488,7 +1490,7 @@ end;
 
 function TFpPascalExpressionPartBracketIndex.DoGetResultValue: TFpValue;
 var
-  TmpVal, TmpVal2, TmpIndex: TFpValue;
+  TmpVal, TmpVal2, TmpIndex, AutoDereVal: TFpValue;
   i: Integer;
   Offs, Len: Int64;
   ti: TFpSymbol;
@@ -1516,6 +1518,25 @@ begin
       TmpVal.ReleaseReference;
       exit;
     end;
+
+    if Expression.AutoDeref and (TmpVal.Kind = skPointer) and
+      (TmpVal.TypeInfo <> nil) and (TmpVal.TypeInfo.TypeInfo <> nil) and
+      (TmpVal.TypeInfo.TypeInfo.Kind in [skProcedure..skArray])
+    then begin
+      // Copy from TFpPascalExpressionPartOperatorDeRef.DoGetResultValue
+      if (svfDataAddress in TmpVal.FieldFlags) and (IsReadableLoc(TmpVal.DerefAddress)) and // TODO, what if Not readable addr
+         (TmpVal.TypeInfo <> nil) //and (TmpVal.TypeInfo.TypeInfo <> nil)
+      then begin
+        AutoDereVal := TmpVal.Member[0];
+        TmpVal.ReleaseReference;
+        TmpVal := AutoDereVal;
+      end;
+      if (TmpVal = nil) then begin
+        SetErrorWithPos(fpErrCannotDeref_p, [Items[0].GetText(MAX_ERR_EXPR_QUOTE_LEN)]);
+        exit;
+      end;
+    end;
+
     case TmpVal.Kind of
       skArray: begin
           if (svfInteger in TmpIndex.FieldFlags) then
@@ -4908,12 +4929,9 @@ end;
 
 function TFpPascalExpressionPartOperatorMemberOf.DoGetResultValue: TFpValue;
 var
-  tmp: TFpValue;
+  tmp, AutoDereVal: TFpValue;
   MemberName: String;
   MemberSym: TFpSymbol;
-  {$IFDEF FpDebugAutoDerefMember}
-  tmp2: TFpValue;
-  {$ENDIF}
 begin
   Result := nil;
   if Count <> 2 then exit;
@@ -4924,36 +4942,37 @@ begin
 
   MemberName := Items[1].GetText;
 
-  {$IFDEF FpDebugAutoDerefMember}
-  // Copy from TFpPascalExpressionPartOperatorDeRef.DoGetResultValue
-  tmp2 := nil;
-  if tmp.Kind = skPointer then begin
-    if (svfDataAddress in tmp.FieldFlags) and (IsReadableLoc(tmp.DerefAddress)) and // TODO, what if Not readable addr
-       (tmp.TypeInfo <> nil) //and (tmp.TypeInfo.TypeInfo <> nil)
-    then begin
-      tmp := tmp.Member[0];
-      tmp2 := tmp;
+  AutoDereVal := nil;
+  try
+    if Expression.AutoDeref then begin
+      // Copy from TFpPascalExpressionPartOperatorDeRef.DoGetResultValue
+      if tmp.Kind = skPointer then begin
+        if (svfDataAddress in tmp.FieldFlags) and (IsReadableLoc(tmp.DerefAddress)) and // TODO, what if Not readable addr
+           (tmp.TypeInfo <> nil) //and (tmp.TypeInfo.TypeInfo <> nil)
+        then begin
+          tmp := tmp.Member[0];
+          AutoDereVal := tmp;
+        end;
+        if (tmp = nil) then begin
+          SetErrorWithPos(fpErrCannotDeref_p, [Items[0].GetText(MAX_ERR_EXPR_QUOTE_LEN)]);
+          exit;
+        end;
+      end;
     end;
-    if (tmp = nil) then begin
-      SetErrorWithPos(MsgfpErrCannotDeref_p, [Items[0].GetText]); // TODO: better error
-      exit;
-    end;
-  end;
-  {$ENDIF}
 
-  if (tmp.Kind in [skClass, skRecord, skObject]) then begin
-    Result := tmp.MemberByName[MemberName];
-    if Result = nil then begin
-      SetError(fpErrNoMemberWithName, [MemberName]);
+    if (tmp.Kind in [skClass, skRecord, skObject]) then begin
+      Result := tmp.MemberByName[MemberName];
+      if Result = nil then begin
+        SetError(fpErrNoMemberWithName, [MemberName]);
+        exit;
+      end;
+      {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
+      Assert((Result.DbgSymbol=nil)or(Result.DbgSymbol.SymbolType=stValue), 'member is value');
       exit;
     end;
-    {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
-    Assert((Result.DbgSymbol=nil)or(Result.DbgSymbol.SymbolType=stValue), 'member is value');
-    exit;
+  finally
+    AutoDereVal.ReleaseReference;
   end;
-  {$IFDEF FpDebugAutoDerefMember}
-  tmp2.ReleaseReference;
-  {$ENDIF}
 
   if (tmp.Kind in [skType]) and
      (tmp.DbgSymbol <> nil) and (tmp.DbgSymbol.Kind in [skClass, skRecord, skObject])
