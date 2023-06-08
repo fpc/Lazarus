@@ -157,6 +157,8 @@ type
 
   TFpLldbDebuggerProperties = class(TLldbDebuggerProperties)
   private
+    FAutoDeref: Boolean;
+    FIntrinsicPrefix: TFpIntrinsicPrefix;
     FMemLimits: TFpLldbDebugDebuggerPropertiesMemLimits;
     procedure SetMemLimits(AValue: TFpLldbDebugDebuggerPropertiesMemLimits);
   public
@@ -165,6 +167,8 @@ type
     procedure Assign(Source: TPersistent); override;
   published
     property MemLimits: TFpLldbDebugDebuggerPropertiesMemLimits read FMemLimits write SetMemLimits;
+    property IntrinsicPrefix: TFpIntrinsicPrefix read FIntrinsicPrefix write FIntrinsicPrefix default ipColon;
+    property AutoDeref: Boolean read FAutoDeref write FAutoDeref default False;
   end;
 
   { TFpLldbDebugger }
@@ -444,6 +448,8 @@ constructor TFpLldbDebuggerProperties.Create;
 begin
   inherited Create;
   FMemLimits := TFpLldbDebugDebuggerPropertiesMemLimits.Create;
+  FIntrinsicPrefix := ipColon;
+  FAutoDeref := False;
 end;
 
 destructor TFpLldbDebuggerProperties.Destroy;
@@ -457,6 +463,8 @@ begin
   inherited Assign(Source);
   if Source is TFpLldbDebuggerProperties then begin
     FMemLimits.Assign(TFpLldbDebuggerProperties(Source).MemLimits);
+    FIntrinsicPrefix:=TFpLldbDebuggerProperties(Source).FIntrinsicPrefix;
+    FAutoDeref:=TFpLldbDebuggerProperties(Source).FAutoDeref;
   end;
 end;
 
@@ -1685,6 +1693,8 @@ begin
 
   LockUnLoadDwarf;
   PasExpr := TFpPascalExpression.Create(AExpression, Ctx);
+  PasExpr.IntrinsicPrefix := TFpLldbDebuggerProperties(GetProperties).IntrinsicPrefix;
+  PasExpr.AutoDeref := TFpLldbDebuggerProperties(GetProperties).AutoDeref;
   try
     if not IsWatchValueAlive then exit;
     if AWatchValue <> nil then
@@ -1729,6 +1739,8 @@ DebugLn(DBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
                 CNameAddr.Address := CNameAddr.Address + 1;
                 ctx.LocationContext.ReadMemory(CNameAddr, SizeVal(NameLen), @CastName[1]);
                 PasExpr2 := TFpPascalExpression.Create(CastName+'('+AExpression+')', Ctx);
+                PasExpr2.IntrinsicPrefix := TFpLldbDebuggerProperties(GetProperties).IntrinsicPrefix;
+                PasExpr2.AutoDeref := TFpLldbDebuggerProperties(GetProperties).AutoDeref;
                 PasExpr2.ResultValue;
                 if PasExpr2.Valid then begin
                   PasExpr.Free;
