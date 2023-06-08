@@ -1016,13 +1016,12 @@ begin
     end;
   finally
     ListPage.Caption:= Format('%s (%d)',[SearchText, Cnt]);
-    SearchResultsView.EndUpdate(ListPage.PageIndex);
     // show, but bring to front only if Search Progress dialog was active
-    if fWasActive then
-      State:=iwgfShowOnTop
-    else
-      State:=iwgfShow;
+    if fWasActive
+      then State := iwgfShowOnTop
+      else State := iwgfShow;
     LazarusIDE.DoShowSearchResultsView(State);
+    SearchResultsView.EndUpdate(ListPage.PageIndex);
   end;
 end;
 

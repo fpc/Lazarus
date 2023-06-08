@@ -22,7 +22,7 @@ object SearchResultsView: TSearchResultsView
     BevelOuter = bvNone
     ClientHeight = 26
     ClientWidth = 722
-    TabOrder = 1
+    TabOrder = 0
     TabStop = True
     object PageToolBar: TToolBar
       AnchorSideLeft.Control = ControlBar1
@@ -35,7 +35,7 @@ object SearchResultsView: TSearchResultsView
       AutoSize = True
       EdgeInner = esNone
       EdgeOuter = esNone
-      TabOrder = 0
+      TabOrder = 1
       object RefreshButton: TToolButton
         Left = 24
         Top = 0
@@ -84,7 +84,7 @@ object SearchResultsView: TSearchResultsView
       AutoSize = False
       NumGlyphs = 1
       MaxLength = 0
-      TabOrder = 1
+      TabOrder = 0
       OnChange = SearchInListChange
       ExpandAllInitially = True
     end
@@ -154,10 +154,10 @@ object SearchResultsView: TSearchResultsView
     Width = 722
     Align = alClient
     MultiLine = True
-    TabOrder = 0
+    TabOrder = 1
     OnChange = ResultsNoteBookPageChanged
     OnChanging = ResultsNoteBookChanging
-    OnCloseTabClicked = ResultsNoteBookClosetabclicked
+    OnCloseTabClicked = ResultsNoteBookCloseTabClick
     OnMouseDown = ResultsNoteBookMouseDown
     OnResize = ResultsNoteBookResize
     Options = [nboShowCloseButtons, nboMultiLine, nboDoChangeOnSetIndex]
@@ -197,6 +197,9 @@ object SearchResultsView: TSearchResultsView
     object actClosePage: TAction
       ImageIndex = 1
       OnExecute = ClosePageButtonClick
+      SecondaryShortCuts.Strings = (
+        'Ctrl+W'
+      )
       ShortCut = 16499
     end
     object actCloseLeft: TAction

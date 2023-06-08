@@ -430,8 +430,8 @@ resourcestring
   lisCopyItemToClipboard = 'Copy Item to Clipboard';
   lisCopySelectedItemToClipboard = 'Copy Selected Items to Clipboard';
   lisCopyAllItemsToClipboard = 'Copy All Items to Clipboard';
-  lisExpandAll = 'Expand All (*)';
-  lisCollapseAll = 'Collapse All (/)';
+  lisExpandAll = 'Expand All [Ctrl+Plus]';
+  lisCollapseAll = 'Collapse All [Ctrl+Minus]';
   lisEditHelp = 'Edit help';
   lisMenuViewSearchResults = 'Search Results';
   lisMenuViewAnchorEditor = 'Anchor Editor';
