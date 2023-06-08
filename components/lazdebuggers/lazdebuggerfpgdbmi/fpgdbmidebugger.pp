@@ -112,9 +112,26 @@ type
   public
     class function Caption: String; override;
   public
+    class function CreateProperties: TDebuggerProperties; override; // Creates debuggerproperties
+
     constructor Create(const AExternalDebugger: String); override;
     destructor Destroy; override;
   end;
+
+  { TFpGDBMIDebuggerProperties }
+
+  TFpGDBMIDebuggerProperties = class(TGDBMIDebuggerProperties)
+  private
+    FAutoDeref: Boolean;
+    FIntrinsicPrefix: TFpIntrinsicPrefix;
+  public
+    constructor Create; override;
+    procedure Assign(Source: TPersistent); override;
+  published
+    property IntrinsicPrefix: TFpIntrinsicPrefix read FIntrinsicPrefix write FIntrinsicPrefix default ipColon;
+    property AutoDeref: Boolean read FAutoDeref write FAutoDeref default False;
+  end;
+
 
 procedure Register;
 
@@ -1052,6 +1069,8 @@ begin
 
   LockUnLoadDwarf;
   PasExpr := TFpPascalExpression.Create(AExpression, Ctx);
+  PasExpr.IntrinsicPrefix := TFpGDBMIDebuggerProperties(GetProperties).IntrinsicPrefix;
+  PasExpr.AutoDeref := TFpGDBMIDebuggerProperties(GetProperties).AutoDeref;
   try
     if not IsWatchValueAlive then exit;
     if AWatchValue <> nil then
@@ -1088,6 +1107,8 @@ DebugLn(DBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
     then begin
       if ResValue.GetInstanceClassName(CastName) then begin
         PasExpr2 := TFpPascalExpression.Create(CastName+'('+AExpression+')', Ctx);
+        PasExpr2.IntrinsicPrefix := TFpGDBMIDebuggerProperties(GetProperties).IntrinsicPrefix;
+        PasExpr2.AutoDeref := TFpGDBMIDebuggerProperties(GetProperties).AutoDeref;
         PasExpr2.ResultValue;
         if PasExpr2.Valid then begin
           PasExpr.Free;
@@ -1195,6 +1216,11 @@ begin
   Result := 'GNU debugger (with fpdebug)';
 end;
 
+class function TFpGDBMIDebugger.CreateProperties: TDebuggerProperties;
+begin
+  Result := TFpGDBMIDebuggerProperties.Create;
+end;
+
 constructor TFpGDBMIDebugger.Create(const AExternalDebugger: String);
 begin
   FWatchEvalList := TList.Create;
@@ -1209,6 +1235,24 @@ begin
   ClearWatchEvalList;
   FWatchEvalList.Free;
   inherited Destroy;
+end;
+
+{ TFpGDBMIDebuggerProperties }
+
+constructor TFpGDBMIDebuggerProperties.Create;
+begin
+  inherited Create;
+  FIntrinsicPrefix := ipColon;
+  FAutoDeref := False;
+end;
+
+procedure TFpGDBMIDebuggerProperties.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TFpGDBMIDebuggerProperties then begin
+    FIntrinsicPrefix:=TFpGDBMIDebuggerProperties(Source).FIntrinsicPrefix;
+    FAutoDeref:=TFpGDBMIDebuggerProperties(Source).FAutoDeref;
+  end;
 end;
 
 procedure Register;
