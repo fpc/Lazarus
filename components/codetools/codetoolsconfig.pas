@@ -87,7 +87,6 @@ type
     FFPCOptions: string;
     FFPCPath: string;
     FFPCSrcDir: string;
-    FFPCUnitPath: string;
     FLazarusSrcDir: string;
     FLazarusSrcOptions: string;
     FLCLWidgetType: string;
@@ -101,7 +100,6 @@ type
     procedure SetFPCOptions(const AValue: string);
     procedure SetFPCPath(const AValue: string);
     procedure SetFPCSrcDir(const AValue: string);
-    procedure SetFPCUnitPath(const AValue: string);
     procedure SetLazarusSrcDir(const AValue: string);
     procedure SetLCLWidgetType(const AValue: string);
     procedure SetLazarusSrcOptions(const AValue: string);
@@ -131,7 +129,6 @@ type
     property TargetOS: string read FTargetOS write SetTargetOS;
     property TargetProcessor: string read FTargetProcessor write SetTargetProcessor;
     property TestPascalFile: string read FTestPascalFile write SetTestPascalFile; // points to an empty unit
-    property FPCUnitPath: string read FFPCUnitPath write SetFPCUnitPath;
     property PPUExt: string read FPPUExt write SetPPUExt;
     property SourceCaches: TFPCSourceCaches read FSourceCaches;
     property ConfigCaches: TPCTargetConfigCaches read FConfigCaches;
@@ -173,13 +170,6 @@ begin
   NewValue:=TrimAndExpandFilename(AValue);
   if FFPCSrcDir=NewValue then exit;
   FFPCSrcDir:=NewValue;
-  Modified:=true;
-end;
-
-procedure TCodeToolsOptions.SetFPCUnitPath(const AValue: string);
-begin
-  if FFPCUnitPath=AValue then exit;
-  FFPCUnitPath:=AValue;
   Modified:=true;
 end;
 
@@ -300,7 +290,6 @@ begin
   XMLConfig.SetDeleteValue(Path+'FPC/Options/Value',FPCOptions,'');
   XMLConfig.SetDeleteValue(Path+'FPC/CompilerPath/Value',FPCPath,'');
   XMLConfig.SetDeleteValue(Path+'FPC/SrcDir/Value',FPCSrcDir,'');
-  XMLConfig.SetDeleteValue(Path+'FPC/UnitPath/Value',FPCUnitPath,'');
   XMLConfig.SetDeleteValue(Path+'FPC/TargetOS/Value',TargetOS,'');
   XMLConfig.SetDeleteValue(Path+'FPC/TargetProcessor/Value',TargetProcessor,'');
   XMLConfig.SetDeleteValue(Path+'FPC/PPUExt/Value',PPUExt,'.ppu');
@@ -316,18 +305,10 @@ end;
 
 procedure TCodeToolsOptions.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
-var
-  i: Integer;
-  UnitPath: string;
 begin
   FPCOptions:=XMLConfig.GetValue(Path+'FPC/Options/Value','');
   FPCPath:=XMLConfig.GetValue(Path+'FPC/CompilerPath/Value','');
   FPCSrcDir:=XMLConfig.GetValue(Path+'FPC/SrcDir/Value','');
-  UnitPath:=XMLConfig.GetValue(Path+'FPC/UnitPath/Value','');
-  for i:=1 to length(UnitPath) do
-    if (UnitPath[i] in [#0..#8,#10..#31]) then
-      UnitPath[i]:=';';
-  FPCUnitPath:=UnitPath;
   TargetOS:=XMLConfig.GetValue(Path+'FPC/TargetOS/Value','');
   TargetProcessor:=XMLConfig.GetValue(Path+'FPC/TargetProcessor/Value','');
   PPUExt:=XMLConfig.GetValue(Path+'FPC/PPUExt/Value','.ppu');
