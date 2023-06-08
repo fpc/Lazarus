@@ -245,10 +245,10 @@ end;
 
 procedure ChangeItemCache(const AWidgets: PTVWidgets; const AItem: Integer; const AState: TTVItemState);
 begin
-  if Length(AWidgets^.ItemCache) < AItem then
-    SetLength(AWidgets^.ItemCache, AItem + 1000);
-  if AWidgets^.ItemCacheCount < AItem then
-    AWidgets^.ItemCacheCount:= AItem;
+  if Length(AWidgets^.ItemCache) <= AItem then
+    SetLength(AWidgets^.ItemCache, AItem + TVItemCachePart);
+  if AWidgets^.ItemCacheCount <= AItem then
+    AWidgets^.ItemCacheCount := AItem + 1;
   AWidgets^.ItemCache[AItem] := AState;
 end;
 
@@ -257,11 +257,15 @@ var
   i: Integer;
 begin
   for i := 0 to AWidgets^.ItemCacheCount -1 do
-    if AWidgets^.ItemCache[i] <> tvisUndefined then
+    if AWidgets^.ItemCache[i] = tvisSelected then
       BroadcastListSelection(AWidgetInfo^.LCLObject, {%H-}PtrUInt(AWidgets^.MainView),
-        i, AWidgets^.ItemCache[i] = tvisSelected);
-  if Length(AWidgets^.ItemCache) > 1000 then
-    SetLength(AWidgets^.ItemCache, 1000);
+        i, True);
+  for i := 0 to AWidgets^.ItemCacheCount -1 do
+    if AWidgets^.ItemCache[i] = tvisUnselected then
+      BroadcastListSelection(AWidgetInfo^.LCLObject, {%H-}PtrUInt(AWidgets^.MainView),
+        i, False);
+  if Length(AWidgets^.ItemCache) > TVItemCachePart then
+    SetLength(AWidgets^.ItemCache, TVItemCachePart);
   FillByte(AWidgets^.ItemCache[0], Length(AWidgets^.ItemCache), Ord(tvisUndefined));
   AWidgets^.ItemCacheCount := 0;
 end;
@@ -279,7 +283,13 @@ begin
   // DebugLn('Gtk2_ItemSelectionChanged');
   Widgets := PTVWidgets(WidgetInfo^.UserData);
 
-  if (widgets = nil) or (Length(Widgets^.ItemCache)=0) then
+  if Widgets = nil then
+    Exit;
+
+  if wwiInvalidEvent in Widgets^.WidgetInfo^.Flags then
+    exit;
+
+  if Length(Widgets^.ItemCache)=0 then
   begin
     // debugln(' Gtk2_ItemSelectionChanged  ItemCache=nil ',tComponent(widgetInfo^.lclObject).name);
     if IsOldGtk2 and (Widgets <> nil) then
@@ -313,7 +323,7 @@ begin
           if Path <> nil then
           begin
             Indices := gtk_tree_path_get_indices(Path)^;
-            ChangeItemCache(Widgets, Indices, tvisUndefined);
+            ChangeItemCache(Widgets, Indices, tvisUnselected);
           end;
         end;
         g_list_free(List);
@@ -341,15 +351,7 @@ begin
 
   // DebugLn('Gtk2_ItemSelectionChanged Trigger OnSelectItem ? ', dbgs(not (wwiInvalidEvent in Widgets^.WidgetInfo^.Flags)));
   // LCL sent selection !
-  if wwiInvalidEvent in Widgets^.WidgetInfo^.Flags then
-    exit;
 
-  for i := 0 to Widgets^.ItemCacheCount -1 do
-    if Widgets^.ItemCache[i] <> tvisUndefined then
-    begin
-      BroadcastListSelection(WidgetInfo^.LCLObject, {%H-}PtrUInt(Widgets^.MainView),
-        i, Widgets^.ItemCache[i] = tvisSelected);
-    end;
   BroadcastItemCache(Widgets,WidgetInfo);
 end;
 
@@ -396,12 +398,17 @@ begin
   // this function is called *before* the item is selected
   // The result should be True to allow the Item to change selection
   Result := True;
-
   Widgets := PTVWidgets(WidgetInfo^.UserData);
-  if Widgets^.ItemCache <> nil then
+  if wwiInvalidEvent in Widgets^.WidgetInfo^.Flags then
+    exit;
+  if Widgets <> nil then
   begin
     Indices := gtk_tree_path_get_indices(path)^;
     ChangeItemCache(Widgets, Indices, tvisSelected);
+    if path_is_currently_selected then
+      ChangeItemCache(Widgets, Indices, tvisSelected)
+    else
+      ChangeItemCache(Widgets, Indices, tvisUnselected);
   end;
 end;
 

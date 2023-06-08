@@ -34,11 +34,14 @@ uses
   Gtk2Def, Gtk2Globals, Gtk2Proc,
   // Gtk2Widgetset
   Gtk2WSControls, Gtk2Int;
-  
+
+const
+  TVItemCachePart = 1000;
+
 type
   // For simplified manipulation
   // Use GetCommonTreeViewWidgets(PGtkTreeView, var TTVWidgets)
-{$Z‑}
+
   TTVItemState = (tvisUndefined, tvisUnselected, tvisSelected);
   TTVItemStateDynArray = array of TTVItemState;
 
