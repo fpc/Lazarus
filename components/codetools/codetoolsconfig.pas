@@ -98,8 +98,6 @@ type
     FTargetOS: string;
     FTargetProcessor: string;
     FTestPascalFile: string;
-    FUnitLinkList: string;
-    FUnitLinkListValid: boolean;
     procedure SetFPCOptions(const AValue: string);
     procedure SetFPCPath(const AValue: string);
     procedure SetFPCSrcDir(const AValue: string);
@@ -113,8 +111,6 @@ type
     procedure SetTargetOS(const AValue: string);
     procedure SetTargetProcessor(const AValue: string);
     procedure SetTestPascalFile(const AValue: string);
-    procedure SetUnitLinkList(const AValue: string);
-    procedure SetUnitLinkListValid(const AValue: boolean);
   public
     constructor Create;
     destructor Destroy; override;
@@ -139,8 +135,6 @@ type
     property PPUExt: string read FPPUExt write SetPPUExt;
     property SourceCaches: TFPCSourceCaches read FSourceCaches;
     property ConfigCaches: TPCTargetConfigCaches read FConfigCaches;
-    property UnitLinkListValid: boolean read FUnitLinkListValid write SetUnitLinkListValid;
-    property UnitLinkList: string read FUnitLinkList write SetUnitLinkList;
 
     // Project
     property ProjectDir: string read FProjectDir write SetProjectDir;
@@ -169,7 +163,6 @@ begin
   NewValue:=TrimAndExpandFilename(AValue);
   if FFPCPath=NewValue then exit;
   FFPCPath:=NewValue;
-  FUnitLinkListValid:=false;
   Modified:=true;
 end;
 
@@ -180,7 +173,6 @@ begin
   NewValue:=TrimAndExpandFilename(AValue);
   if FFPCSrcDir=NewValue then exit;
   FFPCSrcDir:=NewValue;
-  FUnitLinkListValid:=false;
   Modified:=true;
 end;
 
@@ -188,7 +180,6 @@ procedure TCodeToolsOptions.SetFPCUnitPath(const AValue: string);
 begin
   if FFPCUnitPath=AValue then exit;
   FFPCUnitPath:=AValue;
-  FUnitLinkListValid:=false;
   Modified:=true;
 end;
 
@@ -240,7 +231,6 @@ procedure TCodeToolsOptions.SetTargetOS(const AValue: string);
 begin
   if FTargetOS=AValue then exit;
   FTargetOS:=AValue;
-  FUnitLinkListValid:=false;
   Modified:=true;
 end;
 
@@ -248,7 +238,6 @@ procedure TCodeToolsOptions.SetTargetProcessor(const AValue: string);
 begin
   if FTargetProcessor=AValue then exit;
   FTargetProcessor:=AValue;
-  FUnitLinkListValid:=false;
   Modified:=true;
 end;
 
@@ -256,20 +245,6 @@ procedure TCodeToolsOptions.SetTestPascalFile(const AValue: string);
 begin
   if FTestPascalFile=AValue then exit;
   FTestPascalFile:=AValue;
-  Modified:=true;
-end;
-
-procedure TCodeToolsOptions.SetUnitLinkList(const AValue: string);
-begin
-  if FUnitLinkList=AValue then exit;
-  FUnitLinkList:=AValue;
-  Modified:=true;
-end;
-
-procedure TCodeToolsOptions.SetUnitLinkListValid(const AValue: boolean);
-begin
-  if FUnitLinkListValid=AValue then exit;
-  FUnitLinkListValid:=AValue;
   Modified:=true;
 end;
 
@@ -330,8 +305,6 @@ begin
   XMLConfig.SetDeleteValue(Path+'FPC/TargetProcessor/Value',TargetProcessor,'');
   XMLConfig.SetDeleteValue(Path+'FPC/PPUExt/Value',PPUExt,'.ppu');
   XMLConfig.SetDeleteValue(Path+'FPC/TestPascalFile/Value',TestPascalFile,'');
-  XMLConfig.SetDeleteValue(Path+'FPC/UnitLinkList/Value',UnitLinkList,'');
-  XMLConfig.SetDeleteValue(Path+'FPC/UnitLinkList/Valid',UnitLinkListValid,false);
   XMLConfig.SetDeleteValue(Path+'Lazarus/SrcDir/Value',LazarusSrcDir,'');
   XMLConfig.SetDeleteValue(Path+'Lazarus/SrcDirOptions/Value',LazarusSrcOptions,'');
   XMLConfig.SetDeleteValue(Path+'Lazarus/LCLWidgetType/Value',LCLWidgetType,'');
@@ -359,9 +332,6 @@ begin
   TargetProcessor:=XMLConfig.GetValue(Path+'FPC/TargetProcessor/Value','');
   PPUExt:=XMLConfig.GetValue(Path+'FPC/PPUExt/Value','.ppu');
   TestPascalFile:=XMLConfig.GetValue(Path+'FPC/TestPascalFile/Value','');
-  UnitLinkList:=XMLConfig.GetValue(Path+'FPC/UnitLinkList/Value','');
-  // UnitLinkListValid must be set as last
-  UnitLinkListValid:=XMLConfig.GetValue(Path+'FPC/UnitLinkList/Valid',false);
   FConfigCaches.LoadFromXMLConfig(XMLConfig,Path+'FPCConfigCaches/');
   FSourceCaches.LoadFromXMLConfig(XMLConfig,Path+'FPCSrcDirCaches/');
 

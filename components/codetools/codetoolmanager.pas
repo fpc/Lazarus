@@ -1220,7 +1220,9 @@ begin
     // To not parse the FPC sources every time, the options are saved to a file.
     DebugLn(['TCodeToolManager.SimpleInit Config=',ConfigFilename]);
     if FileExistsUTF8(ConfigFilename) then
-      Options.LoadFromFile(ConfigFilename);
+      Options.LoadFromFile(ConfigFilename)
+    else
+      debugln('Scanning FPC sources may take a while ...');
     // use environment variables
     Options.InitWithEnvironmentVariables;
     // apply defaults
@@ -1230,8 +1232,6 @@ begin
       Options.LazarusSrcDir:=ExpandFileNameUTF8('~/pascal/lazarus');
     DebugLn(['TCodeToolManager.SimpleInit PP=',Options.FPCPath,' FPCDIR=',Options.FPCSrcDir,' LAZARUSDIR=',Options.LazarusSrcDir,' FPCTARGET=',Options.TargetOS]);
     // init the codetools
-    if not Options.UnitLinkListValid then
-      debugln('Scanning FPC sources may take a while ...');
     Init(Options);
 
     // save the options and the FPC unit links results.
