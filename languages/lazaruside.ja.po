@@ -7176,7 +7176,9 @@ msgid "Collapse"
 msgstr ""
 
 #: lazarusidestrconsts.liscollapseall
-msgid "Collapse All (/)"
+#, fuzzy
+#| msgid "Collapse All (/)"
+msgid "Collapse All [Ctrl+Minus]"
 msgstr "すべてを折り畳み (/)"
 
 #: lazarusidestrconsts.liscollapseall2
@@ -9626,7 +9628,9 @@ msgid "Expand"
 msgstr ""
 
 #: lazarusidestrconsts.lisexpandall
-msgid "Expand All (*)"
+#, fuzzy
+#| msgid "Expand All (*)"
+msgid "Expand All [Ctrl+Plus]"
 msgstr "すべて展開(*)"
 
 #: lazarusidestrconsts.lisexpandall2
