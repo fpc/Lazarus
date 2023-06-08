@@ -496,6 +496,28 @@ type
     function DoGetResultValue: TFpValue; override;
   end;
 
+  { TFpPascalExpressionPartOperatorBitShift }
+
+  TFpPascalExpressionPartOperatorBitShift = class(TFpPascalExpressionPartBinaryOperator)    // shr shl << >>
+  protected
+    procedure Init; override;
+    function CheckOperators(out AVal, AShift: QWord): boolean;
+  end;
+
+  { TFpPascalExpressionPartOperatorShr }
+
+  TFpPascalExpressionPartOperatorShr = class(TFpPascalExpressionPartOperatorBitShift)    // shr >>
+  protected
+    function DoGetResultValue: TFpValue; override;
+  end;
+
+  { TFpPascalExpressionPartOperatorShl }
+
+  TFpPascalExpressionPartOperatorShl = class(TFpPascalExpressionPartOperatorBitShift)    // shl <<
+  protected
+    function DoGetResultValue: TFpValue; override;
+  end;
+
   { TFpPascalExpressionPartOperatorOr }
 
   TFpPascalExpressionPartOperatorOr = class(TFpPascalExpressionPartBinaryOperator)    // OR XOR
@@ -586,6 +608,7 @@ const
   PRECEDENCE_UNARY_NOT  = 11;        // NOT a
   PRECEDENCE_MUL_DIV    = 12;        // a * b
   PRECEDENCE_AND        = 12;        // a AND b
+  PRECEDENCE_BIT_SHIFT  = 12;        // << >> shr shr
   PRECEDENCE_PLUS_MINUS = 13;        // a + b
   PRECEDENCE_OR         = 13;        // a OR b  // XOR
   PRECEDENCE_ARRAY_SLICE= 18;        // array[5..9] // array slice
@@ -2633,6 +2656,11 @@ var
               NewPart := TFpPascalExpressionPartOperatorOr.Create(Self, ootXor, CurPtr, TokenEndPtr-1);
           'N': if CheckToken('OT', CurPtr) then
               NewPart := TFpPascalExpressionPartOperatorUnaryNot.Create(Self, CurPtr, TokenEndPtr-1);
+          'S': if CheckToken('HL', CurPtr) then
+              NewPart := TFpPascalExpressionPartOperatorShl.Create(Self, CurPtr, TokenEndPtr-1)
+            else
+            if CheckToken('HR', CurPtr) then
+              NewPart := TFpPascalExpressionPartOperatorShr.Create(Self, CurPtr, TokenEndPtr-1);
         end;
       2: case chr(ord(CurPtr^) AND $DF) of
           'I': if CheckToken('N', CurPtr) then
@@ -2778,10 +2806,28 @@ var
 
   procedure HandleCompare;
   begin
-    if (CurPtr^ = '<') and (TokenEndPtr^ in ['>', '=']) then
-      inc(TokenEndPtr);
-    if (CurPtr^ = '>') and (TokenEndPtr^ in ['<', '=']) then
-      inc(TokenEndPtr);
+    if (CurPtr^ = '<') then begin
+      if (TokenEndPtr^ = '<') then begin
+        inc(TokenEndPtr);
+        AddPart(TFpPascalExpressionPartOperatorShl);
+        exit;
+      end;
+
+      if (TokenEndPtr^ in ['>', '=']) then
+        inc(TokenEndPtr);
+    end
+    else
+    if (CurPtr^ = '>') then begin
+      if (TokenEndPtr^ = '>') then begin
+        inc(TokenEndPtr);
+        AddPart(TFpPascalExpressionPartOperatorShr);
+        exit;
+      end;
+
+      if (TokenEndPtr^ in ['<', '=']) then
+        inc(TokenEndPtr);
+    end;
+
     AddPart(TFpPascalExpressionPartOperatorCompare);
   end;
 
@@ -4422,6 +4468,79 @@ begin
     skBoolean: if tmp2.Kind = skBoolean then
                  Result := TFpValueConstBool.Create(tmp1.AsBool AND tmp2.AsBool);
   end;
+  {$POP}
+
+ {$IFDEF WITH_REFCOUNT_DEBUG}if Result <> nil then Result.DbgRenameReference(nil, 'DoGetResultValue');{$ENDIF}
+end;
+
+{ TFpPascalExpressionPartOperatorBitShift }
+
+procedure TFpPascalExpressionPartOperatorBitShift.Init;
+begin
+  FPrecedence := PRECEDENCE_BIT_SHIFT;
+  inherited Init;
+end;
+
+function TFpPascalExpressionPartOperatorBitShift.CheckOperators(out AVal,
+  AShift: QWord): boolean;
+var
+  tmp1, tmp2: TFpValue;
+begin
+  Result := False;
+
+  if Count <> 2 then
+    exit;
+
+  tmp1 := Items[0].ResultValue;
+  tmp2 := Items[1].ResultValue;
+  if (tmp1 = nil) or (tmp2 = nil) then
+    exit;
+
+  if not (tmp1.Kind in [skInteger, skCardinal]) then begin
+    SetError(GetText + ' requires a numeric value as first operand');
+    exit;
+  end;
+
+  if not (tmp2.Kind in [skInteger, skCardinal]) then begin
+    SetError(GetText + ' requires a numeric value as second operand');
+    exit;
+  end;
+
+  AVal := tmp1.AsCardinal;
+  AShift := tmp2.AsCardinal;
+
+  Result := True;
+end;
+
+{ TFpPascalExpressionPartOperatorShr }
+
+function TFpPascalExpressionPartOperatorShr.DoGetResultValue: TFpValue;
+var
+  AVal, AShift: QWord;
+begin
+  Result := nil;
+  if not CheckOperators(AVal, AShift) then
+    exit;
+
+  {$PUSH}{$R-}{$Q-}
+  Result := TFpValueConstNumber.Create(AVal >> AShift, False)
+  {$POP}
+
+ {$IFDEF WITH_REFCOUNT_DEBUG}if Result <> nil then Result.DbgRenameReference(nil, 'DoGetResultValue');{$ENDIF}
+end;
+
+{ TFpPascalExpressionPartOperatorShl }
+
+function TFpPascalExpressionPartOperatorShl.DoGetResultValue: TFpValue;
+var
+  AVal, AShift: QWord;
+begin
+  Result := nil;
+  if not CheckOperators(AVal, AShift) then
+    exit;
+
+  {$PUSH}{$R-}{$Q-}
+  Result := TFpValueConstNumber.Create(AVal << AShift, False)
   {$POP}
 
  {$IFDEF WITH_REFCOUNT_DEBUG}if Result <> nil then Result.DbgRenameReference(nil, 'DoGetResultValue');{$ENDIF}
