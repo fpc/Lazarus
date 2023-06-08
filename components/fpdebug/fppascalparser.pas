@@ -1521,7 +1521,7 @@ begin
 
     if Expression.AutoDeref and (TmpVal.Kind = skPointer) and
       (TmpVal.TypeInfo <> nil) and (TmpVal.TypeInfo.TypeInfo <> nil) and
-      (TmpVal.TypeInfo.TypeInfo.Kind in [skProcedure..skArray])
+      (TmpVal.TypeInfo.TypeInfo.Kind in [skString, skAnsiString, skWideString, skArray])
     then begin
       // Copy from TFpPascalExpressionPartOperatorDeRef.DoGetResultValue
       if (svfDataAddress in TmpVal.FieldFlags) and (IsReadableLoc(TmpVal.DerefAddress)) and // TODO, what if Not readable addr
