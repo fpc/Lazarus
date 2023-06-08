@@ -717,6 +717,7 @@ begin
 
   APasExpr := TFpPascalExpression.Create(FExpression, ExpressionScope, True);
   APasExpr.IntrinsicPrefix := TFpDebugDebuggerProperties(FDebugger.GetProperties).IntrinsicPrefix;
+  APasExpr.AutoDeref := TFpDebugDebuggerProperties(FDebugger.GetProperties).AutoDeref;
   APasExpr.Parse;
   try
     APasExpr.ResultValue; // trigger full validation
@@ -1161,6 +1162,7 @@ begin
       if ResValue.GetInstanceClassName(CastName) then begin
         PasExpr2 := TFpPascalExpression.Create(CastName+'('+AnExpression+')', FExpressionScope, True);
         PasExpr2.IntrinsicPrefix := TFpDebugDebuggerProperties(FDebugger.GetProperties).IntrinsicPrefix;
+        PasExpr2.AutoDeref := TFpDebugDebuggerProperties(FDebugger.GetProperties).AutoDeref;
         PasExpr2.Parse;
         PasExpr2.ResultValue;
         if PasExpr2.Valid then begin
@@ -1401,6 +1403,7 @@ begin
       if CurContext <> nil then begin
         WatchPasExpr := TFpPascalExpression.Create(FWatchData, CurContext, True);
         WatchPasExpr.IntrinsicPrefix := TFpDebugDebuggerProperties(FDebugger.GetProperties).IntrinsicPrefix;
+        WatchPasExpr.AutoDeref := TFpDebugDebuggerProperties(FDebugger.GetProperties).AutoDeref;
         WatchPasExpr.Parse;
         R := WatchPasExpr.ResultValue; // Address and Size
         // TODO: Cache current value
