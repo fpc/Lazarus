@@ -1788,7 +1788,8 @@ begin
     // Replace the ScrollingInfo with our info
     WidgetInfo := GetWidgetInfo(ScrollWidget);
     OrigScrollingData := WidgetInfo^.UserData;
-    Widgets^.ScrollingData := OrigScrollingData^;
+    ScrollingData := OrigScrollingData^;
+    ItemCacheCount := 0;
 
     WidgetInfo^.UserData := Widgets;
   
@@ -1798,7 +1799,7 @@ begin
     gtk_widget_show_all(PGtkWidget(MainView));
     if not AWinControl.HandleObjectShouldBeVisible and not (csDesigning in AWinControl.ComponentState) then
       gtk_widget_hide(PGtkWidget(ScrollWidget));
-    SetListCallbacks(PGtkWidget(ScrollWidget), Widgets, Widgets^.WidgetInfo);
+    SetListCallbacks(PGtkWidget(ScrollWidget), Widgets, WidgetInfo);
   end;
 end;
 
