@@ -2061,7 +2061,7 @@ begin
       // special replace
       i:=0;
       while (i<Scanner.LinkCount) 
-      and (Scanner.Links[i].Code<>Pointer(ResourceCode)) do
+      and (Scanner.Links[i].Code<>ResourceCode) do
         inc(i);
       if i>=Scanner.LinkCount then exit;
       FromPos:=Scanner.Links[i].CleanedPos;

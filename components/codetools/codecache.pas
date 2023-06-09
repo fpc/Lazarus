@@ -160,9 +160,8 @@ type
     function FindIncludeLinkAVLNode(const IncludeFilename: string): TAVLTreeNode;
     function OnScannerCheckFileOnDisk(Code: pointer): boolean; // true if code changed
     function OnScannerGetFileName(Sender: TObject; Code: pointer): string;
-    function OnScannerGetSource(Sender: TObject; Code: pointer): TSourceLog;
     function OnScannerLoadSource(Sender: TObject; const AFilename: string;
-                                 OnlyIfExists: boolean): pointer;
+                                 OnlyIfExists: boolean): TSourceLog;
     procedure OnScannerDeleteSource(Sender: TObject; Code: Pointer;
                  Pos, Len: integer);
     procedure OnScannerGetSourceStatus(Sender: TObject; Code:Pointer;
@@ -880,7 +879,6 @@ var
 begin
   s:=Sender.Scanner;
   if s=nil then exit;
-  s.OnGetSource:=@Self.OnScannerGetSource;
   s.OnGetFileName:=@Self.OnScannerGetFileName;
   s.OnLoadSource:=@Self.OnScannerLoadSource;
   s.OnCheckFileOnDisk:=@Self.OnScannerCheckFileOnDisk;
@@ -906,18 +904,8 @@ begin
     raise Exception.Create('[TCodeCache.OnScannerGetFilename] Code=nil');
 end;
 
-function TCodeCache.OnScannerGetSource(Sender: TObject;
-  Code: pointer): TSourceLog;
-begin
-//DebugLn('[TCodeCache.OnScannerGetSource] A ',DbgS(Code),'/',Count);
-  if (Code<>nil) then
-    Result:=TSourceLog(Code)
-  else
-    raise Exception.Create('[TCodeCache.OnScannerGetFilename] Code=nil');
-end;
-
 function TCodeCache.OnScannerLoadSource(Sender: TObject;
-  const AFilename: string; OnlyIfExists: boolean): pointer;
+  const AFilename: string; OnlyIfExists: boolean): TSourceLog;
 begin
   if OnlyIfExists then begin
     Result:=FindFile(AFilename);

@@ -3595,8 +3595,8 @@ var
   var
     DirectiveName, Param: string;
     NewCode: TCodeBuffer;
+    NewSrcLog: TSourceLog;
     MissingIncludeFile: TMissingIncludeFile;
-    NewCodePtr: Pointer;
   begin
     Result:=false;
     // cursor in comment in parsed code
@@ -3625,10 +3625,10 @@ var
             FoundFilename:=ResolveDots(GetForcedPathDelims(Param));
             // search include file
             MissingIncludeFile:=nil;
-            if Scanner.SearchIncludeFile(FoundFilename,NewCodePtr,
+            if Scanner.SearchIncludeFile(FoundFilename,NewSrcLog,
               MissingIncludeFile)
             then
-              FoundFilename:=TCodeBuffer(NewCodePtr).Filename;
+              FoundFilename:=TCodeBuffer(NewSrcLog).Filename;
           end;
           exit;
         end;
