@@ -151,6 +151,8 @@ type
     procedure DoOnGatherUserIdentifiers(Sender: TIdentCompletionTool;
       const ContextFlags: TIdentifierListContextFlags);
     procedure DoOnRescanFPCDirectoryCache(Sender: TObject);
+    function DoOnScannerFindIncFileInFPCSrcDir(Sender: TLinkScanner;
+      const IncName: string; out ExpFilename: string): boolean;
     function GetBeautifier: TBeautifyCodeOptions; inline;
     function DoOnScannerGetInitValues(Scanner: TLinkScanner; Code: TSourceLog;
       out AChangeStep: integer): TExpressionEvaluator;
@@ -1474,6 +1476,7 @@ begin
     Scanner.OnSetGlobalWriteLock:=@DoOnToolSetWriteLock;
     Scanner.OnGetGlobalChangeSteps:=@DoOnToolGetChangeSteps;
     Scanner.OnProgress:=@DoOnScannerProgress;
+    Scanner.OnFindIncFileInFPCSrcDir:=@DoOnScannerFindIncFileInFPCSrcDir;
     Scanner.DirectoryCachePool:=DirectoryCachePool;
   end;
 end;
@@ -6048,6 +6051,26 @@ begin
     FOnRescanFPCDirectoryCache(Sender);
 end;
 
+function TCodeToolManager.DoOnScannerFindIncFileInFPCSrcDir(
+  Sender: TLinkScanner; const IncName: string; out ExpFilename: string
+  ): boolean;
+var
+  CfgCache: TPCTargetConfigCache;
+  UnitSet: TFPCUnitSetCache;
+  Dir: String;
+begin
+  Dir:=ExtractFilePath(Sender.MainFilename);
+  // search the include file in directories defines in fpc.cfg (by -Fi option)
+  UnitSet:=CodeToolBoss.GetUnitSetForDirectory(Dir);
+  if UnitSet<>nil then begin
+    CfgCache:=UnitSet.GetConfigCache(false);
+    Result:=Assigned(CfgCache) and Assigned(CfgCache.Includes)
+      and CfgCache.Includes.GetString(IncName,ExpFilename);
+  end
+  else
+    Result:=False;
+end;
+
 procedure TCodeToolManager.DoOnToolTreeChange(Tool: TCustomCodeTool;
   NodesDeleting: boolean);
 var
@@ -6762,26 +6785,9 @@ end;
 
 //-----------------------------------------------------------------------------
 
-function FindIncFileInCfgCache(const Name: string; out ExpFilename: string): boolean;
-var
-  CfgCache: TPCTargetConfigCache;
-  UnitSet: TFPCUnitSetCache;
-begin
-  // search the include file in directories defines in fpc.cfg (by -Fi option)
-  UnitSet:=CodeToolBoss.GetUnitSetForDirectory('');
-  if UnitSet<>nil then begin
-    CfgCache:=UnitSet.GetConfigCache(false);
-    Result:=Assigned(CfgCache) and Assigned(CfgCache.Includes)
-      and CfgCache.Includes.GetString(Name,ExpFilename);
-  end
-  else
-    Result:=False;
-end;
-
 initialization
   CodeToolBoss:=TCodeToolManager.Create;
   OnFindOwnerOfCodeTreeNode:=@GetOwnerForCodeTreeNode;
-  BasicCodeTools.FindIncFileInCfgCache:=@FindIncFileInCfgCache;
 
 
 finalization

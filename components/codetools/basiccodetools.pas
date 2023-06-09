@@ -277,10 +277,6 @@ function CompareUnitNameAndUnitFileInfo(UnitnamePAnsiString,
 function CompareNameSpaceAndNameSpaceInfo(NamespacePAnsiString,
                                         NamespaceInfo: Pointer): integer;
 
-// function filled by CodeToolManager to find inc files
-var
-  FindIncFileInCfgCache: function(const Name: string; out ExpFilename: string): boolean;
-
 //-----------------------------------------------------------------------------
 // functions / procedures
 

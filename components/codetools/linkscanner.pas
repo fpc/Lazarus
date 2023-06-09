@@ -89,6 +89,8 @@ type
   TOnSetWriteLock = procedure(Lock: boolean) of object;
   TLSOnGetGlobalChangeSteps = procedure(out SourcesChangeStep, FilesChangeStep: int64;
                                    out InitValuesChangeStep: integer) of object;
+  TLinkScannerProgress = function(Sender: TLinkScanner): boolean of object;
+  TOnFindIncFileInFPCSrc = function(Sender: TLinkScanner; const IncName: string; out ExpFilename: string): boolean of object;
 
   { TSourceLink is used to map between the codefiles and the cleaned source }
   TSourceLinkKind = (
@@ -526,8 +528,6 @@ type
   
   ELinkScannerErrors = class of ELinkScannerError;
   
-  TLinkScannerProgress = function(Sender: TLinkScanner): boolean of object;
-  
   ELinkScannerAbort = class(ELinkScannerError);
   ELinkScannerConsistency = class(ELinkScannerError);
 
@@ -643,6 +643,7 @@ type
     FMacrosOn: boolean;
     FMissingIncludeFiles: TMissingIncludeFiles;
     FIncludeStack: TFPList; // list of TSourceLink
+    FOnFindIncFileInFPCSrcDir: TOnFindIncFileInFPCSrc;
     FOnGetGlobalChangeSteps: TLSOnGetGlobalChangeSteps;
     FSkippingDirectives: TLSSkippingDirective;
     FSkipIfLevel: integer;
@@ -839,6 +840,7 @@ type
                                    read FOnGetInitValues write FOnGetInitValues;
     property OnIncludeCode: TOnIncludeCode read FOnIncludeCode write FOnIncludeCode;
     property OnProgress: TLinkScannerProgress read FOnProgress write FOnProgress;
+    property OnFindIncFileInFPCSrcDir: TOnFindIncFileInFPCSrc read FOnFindIncFileInFPCSrcDir write FOnFindIncFileInFPCSrcDir;
     property IgnoreMissingIncludeFiles: boolean read GetIgnoreMissingIncludeFiles
                                              write SetIgnoreMissingIncludeFiles;
     property InitialValues: TExpressionEvaluator read FInitValues write FInitValues;
@@ -4151,9 +4153,7 @@ var
     end;
 
     if not HasPathDelims then begin
-      // file without path -> search in paths
-
-      // then search the include file in the include path
+      // file without path -> search in inc paths
       if MissingIncludeFile=nil then
         IncludePath:=Values.Variables[ExternalMacroStart+'INCPATH']
       else
@@ -4183,8 +4183,7 @@ var
       end;
 
       // then search the include file in directories defines in fpc.cfg (by -Fi option)
-      // ToDo: only if SrcFilename in fpc source dir
-      if (not IsVirtualUnit) and FindIncFileInCfgCache(AFilename,ExpFilename) then
+      if (not IsVirtualUnit) and OnFindIncFileInFPCSrcDir(Self,AFilename,ExpFilename) then
       begin
         NewCode:=FOnLoadSource(Self,ExpFilename,true);
         Result:=(NewCode<>nil);
