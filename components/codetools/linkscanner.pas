@@ -805,7 +805,8 @@ type
     function IgnoreErrorAfterCleanedPos: integer;// before using this, check if valid!
     function IgnoreErrorAfterValid: boolean;
     function CleanPosIsAfterIgnorePos(CleanPos: integer): boolean;
-    function LoadSourceCaseLoUp(const AFilename: string; AllowVirtual: boolean = false): pointer;
+    function LoadSourceCaseLoUp(const AFilename: string; AllowVirtual: boolean = false): pointer; // returns a TCodeBuffer
+    function LoadIncludeFile(const AFilename: string; AllowVirtual: boolean = false): pointer; // returns a TCodeBuffer
     class function GetPascalCompiler(Evals: TExpressionEvaluator): TPascalCompiler;
 
     function SearchIncludeFile(AFilename: string; out NewCode: Pointer;
@@ -4038,7 +4039,7 @@ begin
   {$ENDIF}
   Result:=nil;
   Path:=ResolveDots(ExtractFilePath(AFilename));
-  if (not AllowVirtual) and (Path<>'') and (not FilenameIsAbsolute(Path)) then
+  if (not AllowVirtual) and not FilenameIsAbsolute(Path) then
     exit;
   FileNameOnly:=ExtractFilename(AFilename);
   Result:=FOnLoadSource(Self,Path+FileNameOnly,true);
@@ -4053,6 +4054,51 @@ begin
     Result:=FOnLoadSource(Self,Path+SecondaryFileNameOnly,true);
     if (Result<>nil) then exit;
   end;
+end;
+
+function TLinkScanner.LoadIncludeFile(const AFilename: string;
+  AllowVirtual: boolean): pointer;
+var
+  Path, FileNameOnly: string;
+  SecondaryFileName: String;
+
+  function Search(const ShortFilename: string; var r: Pointer): boolean;
+  begin
+    Result:=false;
+
+    r:=FOnLoadSource(Self,Path+ShortFilename,true);
+    if (r<>nil) then exit(true);
+    SecondaryFileName:=LowerCase(ShortFileName);
+    if (SecondaryFileName<>ShortFileName) then begin
+      r:=FOnLoadSource(Self,Path+SecondaryFileName,true);
+      if (r<>nil) then exit(true);
+    end;
+    SecondaryFileName:=UpperCaseStr(ShortFileName);
+    if (SecondaryFileName<>ShortFileName) then begin
+      r:=FOnLoadSource(Self,Path+SecondaryFileName,true);
+      if (r<>nil) then exit(true);
+    end;
+  end;
+
+begin
+  {$IFDEF VerboseIncludeSearch}
+  debugln(['TLinkScanner.LoadIncludeFile AFilename="',AFilename,'" AllowVirtual=',AllowVirtual]);
+  {$ENDIF}
+  Path:=ResolveDots(ExtractFilePath(AFilename));
+  if (not AllowVirtual) and not FilenameIsAbsolute(Path) then
+    exit(nil);
+  FileNameOnly:=ExtractFilename(AFilename);
+
+  if Search(FileNameOnly,Result) then exit;
+
+  if ExtractFileExt(FileNameOnly)='' then begin
+    // search with the default file extensions
+    if Search(FileNameOnly+'.inc',Result) then exit;
+    if Search(FileNameOnly+'.pp',Result) then exit;
+    if Search(FileNameOnly+'.pas',Result) then exit;
+  end;
+
+  Result:=nil;
 end;
 
 class function TLinkScanner.GetPascalCompiler(Evals: TExpressionEvaluator
@@ -4100,7 +4146,7 @@ var
     ExpFilename:=AppendPathDelim(APath)+RelFilename;
     if not FilenameIsAbsolute(ExpFilename) then
       ExpFilename:=ExtractFilePath(FMainSourceFilename)+ExpFilename;
-    NewCode:=LoadSourceCaseLoUp(ExpFilename);
+    NewCode:=LoadIncludeFile(ExpFilename);
     Result:=NewCode<>nil;
   end;
 
@@ -4111,14 +4157,14 @@ var
     IsVirtualUnit:=not FilenameIsAbsolute(FMainSourceFilename);
     if IsVirtualUnit then begin
       // main source is virtual -> allow virtual include file
-      NewCode:=LoadSourceCaseLoUp(RelFilename,true);
+      NewCode:=LoadIncludeFile(RelFilename,true);
       Result:=(NewCode<>nil);
       if Result then exit;
     end else begin
       // main source has absolute filename
       // -> search in directory of unit
       ExpFilename:=ExtractFilePath(FMainSourceFilename)+RelFilename;
-      NewCode:=LoadSourceCaseLoUp(ExpFilename);
+      NewCode:=LoadIncludeFile(ExpFilename);
       Result:=(NewCode<>nil);
       if Result then exit;
     end;
@@ -4156,9 +4202,10 @@ var
       end;
 
       // then search the include file in directories defines in fpc.cfg (by -Fi option)
+      // ToDo: only if SrcFilename in fpc source dir
       if (not IsVirtualUnit) and FindIncFileInCfgCache(AFilename,ExpFilename) then
       begin
-        NewCode:=LoadSourceCaseLoUp(ExpFilename);
+        NewCode:=FOnLoadSource(Self,ExpFilename,true);
         Result:=(NewCode<>nil);
         if Result then exit;
       end;
@@ -4169,7 +4216,7 @@ var
     if FilenameIsAbsolute(SrcFilename)
     and (CompareFilenames(SrcFilename,FMainSourceFilename)<>0) then begin
       ExpFilename:=ExtractFilePath(SrcFilename)+RelFilename;
-      NewCode:=LoadSourceCaseLoUp(ExpFilename);
+      NewCode:=LoadIncludeFile(ExpFilename);
       Result:=(NewCode<>nil);
       if Result then exit;
     end;
