@@ -158,15 +158,15 @@ type
     function FindIncludeLink(const IncludeFilename: string): string;
     function FindIncludeLinkNode(const IncludeFilename: string): TIncludedByLink;
     function FindIncludeLinkAVLNode(const IncludeFilename: string): TAVLTreeNode;
-    function OnScannerCheckFileOnDisk(Code: pointer): boolean; // true if code changed
-    function OnScannerGetFileName(Sender: TObject; Code: pointer): string;
+    function OnScannerCheckFileOnDisk(Code: TSourceLog): boolean; // true if code changed
+    function OnScannerGetFileName(Sender: TObject; Code: TSourceLog): string;
     function OnScannerLoadSource(Sender: TObject; const AFilename: string;
                                  OnlyIfExists: boolean): TSourceLog;
-    procedure OnScannerDeleteSource(Sender: TObject; Code: Pointer;
+    procedure OnScannerDeleteSource(Sender: TObject; Code: TSourceLog;
                  Pos, Len: integer);
-    procedure OnScannerGetSourceStatus(Sender: TObject; Code:Pointer;
+    procedure OnScannerGetSourceStatus(Sender: TObject; Code: TSourceLog;
                  var ReadOnly: boolean);
-    procedure OnScannerIncludeCode(ParentCode, IncludeCode: pointer);
+    procedure OnScannerIncludeCode(ParentCode, IncludeCode: TSourceLog);
     procedure UpdateIncludeLinks;
     procedure IncreaseChangeStep;
     procedure DecodeLoaded(Code: TCodeBuffer; const AFilename: string;
@@ -895,8 +895,8 @@ begin
     FItems.Add(Sender);
 end;
 
-function TCodeCache.OnScannerGetFileName(Sender: TObject;
-  Code: pointer): string;
+function TCodeCache.OnScannerGetFileName(Sender: TObject; Code: TSourceLog
+  ): string;
 begin
   if (Code<>nil) then
     Result:=TCodeBuffer(Code).Filename
@@ -919,7 +919,7 @@ begin
     OnScannerCheckFileOnDisk(Result);
 end;
 
-function TCodeCache.OnScannerCheckFileOnDisk(Code: pointer): boolean;
+function TCodeCache.OnScannerCheckFileOnDisk(Code: TSourceLog): boolean;
 var Buf: TCodeBuffer;
 begin
   Result:=false;
@@ -944,7 +944,7 @@ begin
   //if buf.IsDeleted then debugln(['TCodeCache.OnScannerCheckFileOnDisk ',Buf.Filename,' still deleted']);
 end;
 
-procedure TCodeCache.OnScannerIncludeCode(ParentCode, IncludeCode: pointer);
+procedure TCodeCache.OnScannerIncludeCode(ParentCode, IncludeCode: TSourceLog);
 var
   CodeBuffer: TCodeBuffer;
 begin
@@ -957,13 +957,13 @@ begin
   end;
 end;
 
-procedure TCodeCache.OnScannerGetSourceStatus(Sender: TObject; Code:Pointer;
-  var ReadOnly: boolean);
+procedure TCodeCache.OnScannerGetSourceStatus(Sender: TObject;
+  Code: TSourceLog; var ReadOnly: boolean);
 begin
   ReadOnly:=TCodeBuffer(Code).ReadOnly;
 end;
 
-procedure TCodeCache.OnScannerDeleteSource(Sender: TObject; Code: Pointer;
+procedure TCodeCache.OnScannerDeleteSource(Sender: TObject; Code: TSourceLog;
   Pos, Len: integer);
 begin
   TCodeBuffer(Code).Delete(Pos,Len);

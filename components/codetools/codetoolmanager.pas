@@ -52,7 +52,7 @@ uses
   PPUCodeTools, LFMTrees, DirectivesTree, CodeCompletionTemplater,
   PascalParserTool, CodeToolsConfig, CustomCodeTool, FindDeclarationTool,
   IdentCompletionTool, StdCodeTools, ResourceCodeTool, CodeToolsStructs,
-  CTUnitGraph, ExtractProcTool;
+  CTUnitGraph, ExtractProcTool, SourceLog;
 
 type
   TCodeToolManager = class;
@@ -152,7 +152,7 @@ type
       const ContextFlags: TIdentifierListContextFlags);
     procedure DoOnRescanFPCDirectoryCache(Sender: TObject);
     function GetBeautifier: TBeautifyCodeOptions; inline;
-    function DoOnScannerGetInitValues(Scanner: TLinkScanner; Code: Pointer;
+    function DoOnScannerGetInitValues(Scanner: TLinkScanner; Code: TSourceLog;
       out AChangeStep: integer): TExpressionEvaluator;
     procedure DoOnDefineTreeReadValue(Sender: TObject; const VariableName: string;
                                     var Value: string; var Handled: boolean);
@@ -6093,7 +6093,7 @@ begin
 end;
 
 function TCodeToolManager.DoOnScannerGetInitValues(Scanner: TLinkScanner;
-  Code: Pointer; out AChangeStep: integer): TExpressionEvaluator;
+  Code: TSourceLog; out AChangeStep: integer): TExpressionEvaluator;
 begin
   Result:=nil;
   AChangeStep:=DefineTree.ChangeStep;

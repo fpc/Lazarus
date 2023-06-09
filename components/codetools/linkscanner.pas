@@ -77,15 +77,15 @@ type
                  of object;
   TOnLoadSource = function(Sender: TObject; const AFilename: string;
                        OnlyIfExists: boolean): TSourceLog of object;
-  TOnGetSourceStatus = procedure(Sender: TObject; Code: Pointer;
+  TOnGetSourceStatus = procedure(Sender: TObject; Code: TSourceLog;
                  var ReadOnly: boolean) of object;
-  TOnDeleteSource = procedure(Sender: TObject; Code: Pointer; Pos, Len: integer)
+  TOnDeleteSource = procedure(Sender: TObject; Code: TSourceLog; Pos, Len: integer)
                     of object;
-  TOnGetFileName = function(Sender: TObject; Code: Pointer): string of object;
-  TOnCheckFileOnDisk = function(Code: Pointer): boolean of object;
-  TOnGetInitValues = function(Scanner: TLinkScanner; Code: Pointer;
+  TOnGetFileName = function(Sender: TObject; Code: TSourceLog): string of object;
+  TOnCheckFileOnDisk = function(Code: TSourceLog): boolean of object;
+  TOnGetInitValues = function(Scanner: TLinkScanner; Code: TSourceLog;
                        out ChangeStep: integer): TExpressionEvaluator of object;
-  TOnIncludeCode = procedure(ParentCode, IncludeCode: Pointer) of object;
+  TOnIncludeCode = procedure(ParentCode, IncludeCode: TSourceLog) of object;
   TOnSetWriteLock = procedure(Lock: boolean) of object;
   TLSOnGetGlobalChangeSteps = procedure(out SourcesChangeStep, FilesChangeStep: int64;
                                    out InitValuesChangeStep: integer) of object;
@@ -5044,7 +5044,7 @@ procedure TLinkScanner.DeleteRange(CleanStartPos,CleanEndPos: integer);
 }
 var
   LinkIndex, StartPos, Len, aLinkSize: integer;
-  ACode: Pointer;
+  ACode: TSourceLog;
 begin
   if CleanStartPos<1 then CleanStartPos:=1;
   if CleanEndPos>CleanedLen then CleanEndPos:=CleanedLen+1;
