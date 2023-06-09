@@ -404,7 +404,6 @@ begin
   if Widgets <> nil then
   begin
     Indices := gtk_tree_path_get_indices(path)^;
-    ChangeItemCache(Widgets, Indices, tvisSelected);
     if path_is_currently_selected then
       ChangeItemCache(Widgets, Indices, tvisSelected)
     else
