@@ -33,18 +33,21 @@ interface
 
 uses
   // RTL
-  Classes, SysUtils, strutils, math,
+  Classes, SysUtils, StrUtils, Math,
   // CodeTools
   KeywordFuncLists, CodeToolsFPCMsgs, CodeCache, FileProcs, CodeToolManager,
   DirectoryCacher, BasicCodeTools, DefineTemplates, SourceLog, LinkScanner,
   // LazUtils
-  LConvEncoding, LazUTF8, FileUtil, LazFileUtils, LazFileCache, LazUtilities,
-  AvgLvlTree,
+  LConvEncoding, LazUTF8, FileUtil, LazFileUtils, LazFileCache,
+  LazUtilities, AvgLvlTree,
+  // BuildIntf
+  IDEExternToolIntf, PackageIntf, ProjectIntf, MacroIntf,
   // IDEIntf
-  IDEExternToolIntf, PackageIntf, LazIDEIntf, ProjectIntf, MacroIntf, IDEUtils,
+  LazIDEIntf, IDEUtils,
+  // IdeConfig
+  EnvironmentOpts, LazConf,
   // IDE
-  IDECmdLine, LazarusIDEStrConsts, EnvironmentOpts, LazConf, TransferMacros,
-  etMakeMsgParser;
+  IDECmdLine, LazarusIDEStrConsts, TransferMacros, etMakeMsgParser;
 
 const
   FPCMsgIDCompiling = 3104;

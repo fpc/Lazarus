@@ -27,8 +27,6 @@ type
     cstFilename
     );
 
-TGetSkipCheckByKey = function(AKey: String): Boolean;
-
 function IndexInStringList(List: TStrings; Cmp: TCmpStrType; s: string): integer;
 procedure SetComboBoxText(AComboBox: TComboBox; const AText: String;
                           Cmp: TCmpStrType; MaxCount: integer = 1000);
@@ -46,14 +44,8 @@ function GetValidDirectory(const aFileDirStr: string;
 function GetValidDirectoryAndFilename(const aFileDirStr: string;
                                       out aoFileName : string): string;
 
-function GetSkipCheckByKey(AKey: String): Boolean;
-procedure SetSkipCheckByKeyProc(AProc: TGetSkipCheckByKey);
-
 
 implementation
-
-var
-  FGetSkipCheckByKeyProc: TGetSkipCheckByKey;
 
 function IndexInStringList(List: TStrings; Cmp: TCmpStrType; s: string): integer;
 var
@@ -177,18 +169,6 @@ begin
     aoFileName := Copy(lSWPD, Length(Result)+2, High(Integer))
   else
     aoFileName := lSWPD;
-end;
-
-function GetSkipCheckByKey(AKey: String): Boolean;
-begin
-  Result := FGetSkipCheckByKeyProc <> nil;
-  if Result then
-    Result := FGetSkipCheckByKeyProc(AKey);
-end;
-
-procedure SetSkipCheckByKeyProc(AProc: TGetSkipCheckByKey);
-begin
-  FGetSkipCheckByKeyProc := AProc;
 end;
 
 end.

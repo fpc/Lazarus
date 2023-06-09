@@ -52,9 +52,17 @@ interface
 *)
 
 uses
-  Classes, SysUtils, Controls, Forms, StdCtrls, Buttons, ButtonPanel,
-  LCLProc, LCLType, LazConf, LazFileUtils, Laz2_XMLCfg, LazFileCache,
-  IDEHelpIntf, IDEImagesIntf, IdeIntfStrConsts, LazarusIDEStrConsts, EnvironmentOpts;
+  Classes, SysUtils,
+  // LCL
+  Controls, Forms, StdCtrls, Buttons, ButtonPanel, LCLType,
+  // LazUtils
+  LazFileUtils, Laz2_XMLCfg, LazFileCache, LazLoggerBase,
+  // IdeIntf
+  IDEHelpIntf, IDEImagesIntf, IdeIntfStrConsts,
+  // IdeConfig
+  LazConf, EnvironmentOpts,
+  // IDE
+  LazarusIDEStrConsts;
 
 type
 

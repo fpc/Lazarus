@@ -14,9 +14,10 @@ uses
   ListFilterEdit,
   // CodeTools
   CodeToolsFPCMsgs,
+  // BuildIntf
+  IDEOptionsIntf, IDEExternToolIntf, CompOptsIntf,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf, IDEExternToolIntf, CompOptsIntf, IDEImagesIntf,
-  IDEDialogs,
+  IDEOptEditorIntf, IDEDialogs,
   // IDE
   CompilerOptions, LazarusIDEStrConsts, etFPCMsgParser;
 

@@ -5,8 +5,13 @@ unit IdeTransferMacros;
 interface
 
 uses
-  Classes, SysUtils, IDETranslations, EnvironmentOpts, TransferMacros,
-  LazarusIDEStrConsts, LazConf, MacroDefIntf;
+  Classes, SysUtils,
+  // BuildIntf
+  MacroDefIntf,
+  // IdeConfig
+  EnvironmentOpts, LazConf,
+  // IDE
+  LazarusIDEStrConsts, TransferMacros, IDETranslations;
 
 type
 

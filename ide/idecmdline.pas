@@ -40,8 +40,8 @@ interface
 uses 
   Classes, SysUtils,
   // LazUtils
-  FileUtil, LazFileUtils, LazStringUtils, LazUTF8, LazLogger, IDEUtils,
-  // IDE
+  FileUtil, LazFileUtils, LazStringUtils, LazUtilities, LazUTF8, LazLogger,
+  // IdeConfig
   LazConf;
 
 // Checks at startup that can be skipped

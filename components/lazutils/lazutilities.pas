@@ -15,6 +15,12 @@ interface
 uses
   Classes, SysUtils, TypInfo;
 
+type
+  TGetSkipCheckByKey = function(AKey: String): Boolean;
+
+function GetSkipCheckByKey(AKey: String): Boolean;
+procedure SetSkipCheckByKeyProc(AProc: TGetSkipCheckByKey);
+
 procedure FreeThenNil(var obj);
 function ComparePointers(p1, p2: Pointer): integer; inline;
 function CompareBoolean(b1, b2: boolean): integer;
@@ -38,6 +44,21 @@ var
   ConsoleVerbosity: integer = 0; // 0=normal, -1=quiet, 1=verbose, 2=very verbose
 
 implementation
+
+var
+  FGetSkipCheckByKeyProc: TGetSkipCheckByKey;
+
+function GetSkipCheckByKey(AKey: String): Boolean;
+begin
+  Result := FGetSkipCheckByKeyProc <> nil;
+  if Result then
+    Result := FGetSkipCheckByKeyProc(AKey);
+end;
+
+procedure SetSkipCheckByKeyProc(AProc: TGetSkipCheckByKey);
+begin
+  FGetSkipCheckByKeyProc := AProc;
+end;
 
 procedure FreeThenNil(var obj);
 begin

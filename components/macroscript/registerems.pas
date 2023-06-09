@@ -8,8 +8,10 @@ uses
   Classes, SysUtils,
   // LCL
   Dialogs,
+  // LazUtils
+  LazUtilities,
   // IdeIntf
-  SrcEditorIntf, IDEOptionsIntf, IDEOptEditorIntf, IDEUtils,
+  SrcEditorIntf, IDEOptionsIntf, IDEOptEditorIntf,
   // MacroScript
   EMScriptMacro, EMSSelfTest, EMSIdeOptions, EMSStrings;
 
