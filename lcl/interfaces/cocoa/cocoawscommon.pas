@@ -21,7 +21,7 @@ type
 
   TCursorHelper = class
   private
-    procedure CallSetCurrentControlCursor( data:IntPtr );
+    procedure DoSetCursorOnActive( data:IntPtr );
   public
     class procedure SetCursorOnActive;
     class procedure SetCurrentControlCursor;
@@ -360,17 +360,17 @@ end;
 
 { TCursorHelper }
 
-procedure TCursorHelper.CallSetCurrentControlCursor( data:IntPtr );
-begin
-  SetCurrentControlCursor;
-end;
-
-class procedure TCursorHelper.SetCursorOnActive;
+procedure TCursorHelper.DoSetCursorOnActive( data:IntPtr );
 begin
   if Screen.Cursor<>crDefault then
     SetScreenCursor
   else
-    Application.QueueAsyncCall( @CursorHelper.CallSetCurrentControlCursor, 0 );
+    SetCurrentControlCursor
+end;
+
+class procedure TCursorHelper.SetCursorOnActive;
+begin
+  Application.QueueAsyncCall( @CursorHelper.DoSetCursorOnActive, 0 );
 end;
 
 class procedure TCursorHelper.SetCurrentControlCursor;
