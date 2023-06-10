@@ -107,7 +107,6 @@ type
     procedure Draw(ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); virtual;
     procedure DrawBackground(ctx: NSGraphicsContext; const bounds, dirtyRect: NSRect); virtual;
     procedure DrawOverlay(ControlContext: NSGraphicsContext; const bounds, dirty: NSRect); virtual;
-    function ResetCursorRects: Boolean; virtual;
     procedure RemoveTarget; virtual;
 
     procedure InputClientInsertText(const utf8: string);
@@ -1520,34 +1519,6 @@ begin
     end;
   finally
     FreeAndNil(FContext);
-  end;
-end;
-
-function TLCLCommonCallback.ResetCursorRects: Boolean;
-var
-  ACursor: TCursor;
-  View: NSView;
-  cr:TCocoaCursor;
-begin
-  Result := False;
-  View := HandleFrame.lclContentView;
-  if View = nil then Exit;
-  if not Assigned(Target) then Exit;
-  if not (csDesigning in Target.ComponentState) then
-  begin
-    ACursor := Screen.RealCursor;
-    if ACursor = crDefault then
-    begin
-      // traverse visible child controls
-      ACursor := Target.Cursor;
-    end;
-    Result := ACursor <> crDefault;
-    if Result then
-    begin
-      cr:=TCocoaCursor(Screen.Cursors[ACursor]);
-      if assigned(cr) then
-      View.addCursorRect_cursor(View.visibleRect, cr.Cursor);
-    end;
   end;
 end;
 

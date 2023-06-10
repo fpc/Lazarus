@@ -89,7 +89,6 @@ type
     procedure mouseEntered(event: NSEvent); override;
     procedure mouseExited(event: NSEvent); override;
     procedure mouseMoved(event: NSEvent); override;
-    procedure resetCursorRects; override;
     // lcl overrides
     procedure lclSetFrame(const r: TRect); override;
     procedure lclCheckMixedAllowance; message 'lclCheckMixedAllowance';
@@ -418,12 +417,6 @@ procedure TCocoaButton.otherMouseUp(event: NSEvent);
 begin
   if not callback.MouseUpDownEvent(event) then
     inherited otherMouseUp(event);
-end;
-
-procedure TCocoaButton.resetCursorRects;
-begin
-  if not callback.resetCursorRects then
-    inherited resetCursorRects;
 end;
 
 procedure TCocoaButton.mouseDown(event: NSEvent);

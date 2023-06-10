@@ -232,7 +232,6 @@ type
     function GetImagePixelData(AImage: CGImageRef; out bitmapByteCount: PtrUInt): Pointer;
     class function Create32BitAlphaBitmap(ABitmap, AMask: TCocoaBitmap): TCocoaBitmap;
     property NSApp: TCocoaApplication read FNSApp;
-    property CurrentCursor: HCursor read FCurrentCursor write FCurrentCursor;
     property CaptureControl: HWND read FCaptureControl;
     // the winapi compatibility methods
     {$I cocoawinapih.inc}

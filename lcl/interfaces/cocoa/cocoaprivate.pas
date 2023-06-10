@@ -89,7 +89,6 @@ type
     procedure Draw(ctx: NSGraphicsContext; const bounds, dirty: NSRect);
     procedure DrawBackground(ctx: NSGraphicsContext; const bounds, dirty: NSRect);
     procedure DrawOverlay(ctx: NSGraphicsContext; const bounds, dirty: NSRect);
-    function ResetCursorRects: Boolean;
     procedure BecomeFirstResponder;
     procedure ResignFirstResponder;
     procedure DidBecomeKeyNotification;
@@ -230,8 +229,6 @@ type
     procedure scrollWheel(event: NSEvent); override;
     // nsview
     procedure setFrame(aframe: NSRect); override;
-    // other
-    procedure resetCursorRects; override;
     // value
     procedure setStringValue(avalue: NSString); override;
     function stringValue: NSString; override;
@@ -341,7 +338,6 @@ type
     function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
-    procedure resetCursorRects; override;
     function lclClientFrame: TRect; override;
     function lclContentView: NSView; override;
     function lclGetFrameToLayoutDelta: TRect; override;
@@ -360,7 +356,6 @@ type
     function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
-    procedure resetCursorRects; override;
     function lclGetFrameToLayoutDelta: TRect; override;
     procedure lclSetFrame(const r: TRect); override;
     // mouse
@@ -401,7 +396,6 @@ type
     function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
-    procedure resetCursorRects; override;
     //
     procedure SnapToInteger(AExtraFactor: Integer = 0); message 'SnapToInteger:';
     procedure sliderAction(sender: id); message 'sliderAction:';
@@ -587,12 +581,6 @@ end;
 procedure TCocoaGroupBox.lclClearCallback;
 begin
   callback := nil;
-end;
-
-procedure TCocoaGroupBox.resetCursorRects;
-begin
-  if not Assigned(callback) or not callback.resetCursorRects then
-    inherited resetCursorRects;
 end;
 
 { TCocoaCustomControl }
@@ -850,12 +838,6 @@ procedure TCocoaCustomControl.otherMouseDragged(event: NSEvent);
 begin
   if not Assigned(callback) or not callback.MouseMove(event) then
     inherited otherMouseDragged(event);
-end;
-
-procedure TCocoaCustomControl.resetCursorRects;
-begin
-  if not Assigned(callback) or not callback.resetCursorRects then
-    inherited resetCursorRects;
 end;
 
 
@@ -1626,12 +1608,6 @@ begin
   callback:=nil;
 end;
 
-procedure TCocoaProgressIndicator.resetCursorRects;
-begin
-  if not callback.resetCursorRects then
-    inherited resetCursorRects;
-end;
-
 function TCocoaProgressIndicator.lclGetFrameToLayoutDelta: TRect;
 begin
   case controlSize of
@@ -1795,12 +1771,6 @@ end;
 procedure TCocoaSlider.lclClearCallback;
 begin
   callback := nil;
-end;
-
-procedure TCocoaSlider.resetCursorRects;
-begin
-  if not callback.resetCursorRects then
-    inherited resetCursorRects;
 end;
 
 procedure TCocoaSlider.SnapToInteger(AExtraFactor: Integer);

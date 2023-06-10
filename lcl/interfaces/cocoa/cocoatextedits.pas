@@ -68,7 +68,6 @@ type
     function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
-    procedure resetCursorRects; override;
     // key
     procedure textDidChange(notification: NSNotification); override;
     function textView_shouldChangeTextInRange_replacementString (textView: NSTextView; affectedCharRange: NSRange; replacementString: NSString): ObjCBOOL; message 'textView:shouldChangeTextInRange:replacementString:';
@@ -93,7 +92,6 @@ type
     maxLength: Integer;
     callback: ICommonCallback;
     function acceptsFirstResponder: LCLObjCBoolean; override;
-    procedure resetCursorRects; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     // key
@@ -128,7 +126,6 @@ type
     function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
-    procedure resetCursorRects; override;
 
     procedure changeColor(sender: id); override;
     // keyboard
@@ -271,7 +268,6 @@ type
     procedure dealloc; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
-    procedure resetCursorRects; override;
     // NSComboBoxDelegateProtocol
     procedure comboBoxWillPopUp(notification: NSNotification); message 'comboBoxWillPopUp:';
     procedure comboBoxWillDismiss(notification: NSNotification); message 'comboBoxWillDismiss:';
@@ -338,7 +334,6 @@ type
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     function lclGetFrameToLayoutDelta: TRect; override;
-    procedure resetCursorRects; override;
     procedure comboboxAction(sender: id); message 'comboboxAction:';
     function stringValue: NSString; override;
     // drawing
@@ -421,7 +416,6 @@ type
     function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
-    procedure resetCursorRects; override;
     procedure lclSetVisible(AVisible: Boolean); override;
     procedure lclSetFrame(const r: TRect); override;
     // NSViewFix
@@ -969,15 +963,6 @@ begin
   callback := nil;
 end;
 
-procedure TCocoaTextField.resetCursorRects;
-begin
-  // this will not work well because
-  // cocoa replaced TextField and TextView cursors in
-  // mouseEntered, mouseMoved and CursorUpdate
-  if not callback.resetCursorRects then
-    inherited resetCursorRects;
-end;
-
 procedure TCocoaTextField.textDidChange(notification: NSNotification);
 begin
   if (maxLength>0) and Assigned(stringValue) and (stringValue.length > maxLength) then
@@ -1098,12 +1083,6 @@ end;
 procedure TCocoaTextView.lclClearCallback;
 begin
   callback := nil;
-end;
-
-procedure TCocoaTextView.resetCursorRects;
-begin
-  if not callback.resetCursorRects then
-    inherited resetCursorRects;
 end;
 
 procedure TCocoaTextView.doCommandBySelector(aSelector: SEL);
@@ -1240,12 +1219,6 @@ end;
 function TCocoaSecureTextField.acceptsFirstResponder: LCLObjCBoolean;
 begin
   Result := NSViewCanFocus(Self);
-end;
-
-procedure TCocoaSecureTextField.resetCursorRects;
-begin
-  if not callback.resetCursorRects then
-    inherited resetCursorRects;
 end;
 
 function TCocoaSecureTextField.lclGetCallback: ICommonCallback;
@@ -1466,12 +1439,6 @@ begin
   callback := nil;
 end;
 
-procedure TCocoaComboBox.resetCursorRects;
-begin
-  if not callback.resetCursorRects then
-    inherited resetCursorRects;
-end;
-
 procedure TCocoaComboBox.comboBoxWillPopUp(notification: NSNotification);
 begin
   callback.ComboBoxWillPopUp;
@@ -1634,12 +1601,6 @@ begin
     Result.Right := -3;
     Result.Bottom := -4;
   end;
-end;
-
-procedure TCocoaReadOnlyComboBox.resetCursorRects;
-begin
-  if not callback.resetCursorRects then
-    inherited resetCursorRects;
 end;
 
 procedure TCocoaReadOnlyComboBox.comboboxAction(sender: id);
@@ -2158,15 +2119,6 @@ end;
 procedure TCocoaSpinEdit.lclClearCallback;
 begin
   callback := nil;
-end;
-
-procedure TCocoaSpinEdit.resetCursorRects;
-begin
-  // this will not work well because
-  // cocoa replaced TextField and TextView cursors in
-  // mouseEntered, mouseMoved and CursorUpdate
-  if not callback.resetCursorRects then
-    inherited resetCursorRects;
 end;
 
 procedure TCocoaSpinEdit.lclSetVisible(AVisible: Boolean);
