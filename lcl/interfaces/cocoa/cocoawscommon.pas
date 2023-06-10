@@ -17,6 +17,14 @@ uses
   CocoaScrollers;
 
 type
+  { TCursorHelper }
+
+  TCursorHelper = class
+  public
+    class procedure SetScreenCursor;
+    class procedure SetScreenCursorWhenNotDefault;
+  end;
+
   { TLCLCommonCallback }
 
   TLCLCommonCallback = class(TObject, ICommonCallBack)
@@ -190,6 +198,9 @@ function NSObjectDebugStr(obj: NSObject): string;
 function CallbackDebugStr(cb: ICommonCallback): string;
 procedure DebugDumpParents(fromView: NSView);
 
+var
+  CursorHelper: TCursorHelper;
+
 implementation
 
 uses
@@ -340,6 +351,20 @@ begin
   AView.setHidden(false);
   {$endif}
   SetViewDefaults(Result);
+end;
+
+
+{ TCursorHelper }
+
+class procedure TCursorHelper.SetScreenCursor;
+begin
+  TCocoaCursor(Screen.Cursors[Screen.Cursor]).SetCursor;
+end;
+
+class procedure TCursorHelper.SetScreenCursorWhenNotDefault;
+begin
+  if Screen.Cursor<>crDefault then
+    SetScreenCursor;
 end;
 
 { TLCLCommonCallback }
@@ -1203,6 +1228,10 @@ begin
   NotifyApplicationUserInput(Target, Msg.Msg);
   Result := DeliverMessage(Msg) <> 0;
   if BlockCocoaMouseMove then Result := true;
+
+  // if Screen.Cursor set, LCL won't call TCocoaWSWinControl.SetCursor().
+  // we need to set the cursor ourselves
+  CursorHelper.SetScreenCursorWhenNotDefault;
 end;
 
 function TLCLCommonCallback.scrollWheel(Event: NSEvent): Boolean;
@@ -2055,6 +2084,12 @@ begin
     fromView := fromView.superView;
   end;
 end;
+
+initialization
+  CursorHelper:= TCursorHelper.Create;
+
+finalization
+  FreeAndNil(CursorHelper);
 
 end.
 
