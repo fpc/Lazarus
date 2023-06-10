@@ -1798,17 +1798,24 @@ end;
 
 class procedure TCocoaWSWinControl.SetCursor(const AWinControl: TWinControl;
   const ACursor: HCursor);
+var
+  control: TControl;
 begin
   //debugln('SetCursor '+AWinControl.name+' '+dbgs(ACursor));
-  if CocoaWidgetSet.CurrentCursor<>ACursor then
-  begin
-    CocoaWidgetSet.CurrentCursor:= ACursor;
 
-    if ACursor<>0 then
-      TCocoaCursor(ACursor).SetCursor
-    else
-      TCocoaCursor.SetDefaultCursor;
-  end;
+  // screen cursor has higher priority than control cursor.
+  if Screen.Cursor<>crDefault
+    then exit;
+
+  // control cursor only need be set when mouse in AWinControl.
+  // suppose there is a Button, which is to set a Cursor of a ListBox.
+  // without the code here, it will be set to the Cursor of the ListBox
+  // after clicking the Button.
+  control:= Application.GetControlAtMouse;
+  if control<>AWinControl then
+    exit;
+
+  TCocoaCursor(ACursor).SetCursor;
 end;
 
 type
