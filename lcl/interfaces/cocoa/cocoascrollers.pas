@@ -46,7 +46,6 @@ type
     function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
-    procedure resetCursorRects; override;
     function lclClientFrame: TRect; override;
     function lclContentView: NSView; override;
     procedure setDocumentView(aView: NSView); override;
@@ -113,7 +112,6 @@ type
     function acceptsFirstResponder: LCLObjCBoolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
-    procedure resetCursorRects; override;
     function lclPos: Integer; message 'lclPos';
     procedure lclSetPos(aPos: integer); message 'lclSetPos:';
     // mouse
@@ -807,12 +805,6 @@ begin
   callback := nil;
 end;
 
-procedure TCocoaScrollView.resetCursorRects;
-begin
-  if not Assigned(callback) or not callback.resetCursorRects then
-    inherited resetCursorRects;
-end;
-
 { TCocoaScrollBar }
 
 procedure TCocoaScrollBar.actionScrolling(sender: NSObject);
@@ -992,14 +984,6 @@ procedure TCocoaScrollBar.lclClearCallback;
 begin
   callback := nil;
 end;
-
-procedure TCocoaScrollBar.resetCursorRects;
-begin
-  if not Assigned(callback) or not callback.resetCursorRects then
-    inherited resetCursorRects;
-end;
-
-
 
 end.
 

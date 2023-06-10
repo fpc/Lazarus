@@ -94,7 +94,6 @@ type
 
     function initWithFrame(frameRect: NSRect): id; override;
     procedure dealloc; override;
-    procedure resetCursorRects; override;
 
     procedure drawRow_clipRect(row: NSInteger; clipRect: NSRect); override;
     procedure drawRect(dirtyRect: NSRect); override;
@@ -504,12 +503,6 @@ begin
   if Assigned(beforeSel) then beforeSel.release;
   if Assigned(smallimages) then smallimages.release; // all contents is released automatically
   inherited dealloc;
-end;
-
-procedure TCocoaTableListView.resetCursorRects;
-begin
-  if not callback.resetCursorRects then
-    inherited resetCursorRects;
 end;
 
 procedure TCocoaTableListView.drawRow_clipRect(row: NSInteger; clipRect: NSRect
