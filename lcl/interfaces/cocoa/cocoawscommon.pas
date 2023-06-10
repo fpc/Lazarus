@@ -12,7 +12,7 @@ uses
   CGGeometry, CocoaAll, cocoa_extra,
   Classes, Controls, SysUtils,
   //
-  WSControls, LCLType, LMessages, LCLProc, Graphics, Forms,
+  WSControls, LCLType, LMessages, LCLProc, LCLIntf, Graphics, Forms,
   CocoaPrivate, CocoaGDIObjects, CocoaCaret, CocoaUtils, LCLMessageGlue,
   CocoaScrollers;
 
@@ -20,7 +20,11 @@ type
   { TCursorHelper }
 
   TCursorHelper = class
+  private
+    procedure CallSetCurrentControlCursor( data:IntPtr );
   public
+    class procedure SetCursorOnActive;
+    class procedure SetCurrentControlCursor;
     class procedure SetScreenCursor;
     class procedure SetScreenCursorWhenNotDefault;
   end;
@@ -355,6 +359,30 @@ end;
 
 
 { TCursorHelper }
+
+procedure TCursorHelper.CallSetCurrentControlCursor( data:IntPtr );
+begin
+  SetCurrentControlCursor;
+end;
+
+class procedure TCursorHelper.SetCursorOnActive;
+begin
+  if Screen.Cursor<>crDefault then
+    SetScreenCursor
+  else
+    Application.QueueAsyncCall( @CursorHelper.CallSetCurrentControlCursor, 0 );
+end;
+
+class procedure TCursorHelper.SetCurrentControlCursor;
+var
+  P: TPoint;
+  control: TControl;
+begin
+  GetCursorPos(P);
+  control:= FindControlAtPosition(P, true);;
+  if Assigned(control) then
+    TCocoaCursor(Screen.Cursors[control.Cursor]).SetCursor;
+end;
 
 class procedure TCursorHelper.SetScreenCursor;
 begin

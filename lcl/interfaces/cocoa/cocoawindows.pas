@@ -27,7 +27,7 @@ uses
   Types, Classes, SysUtils,
   CGGeometry,
   // Libs
-  MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
+  MacOSAll, CocoaAll, CocoaUtils, CocoaWScommon,
   cocoa_extra, CocoaPrivate, CocoaTextEdits, CocoaScrollers,
   // LCL
   //Forms,
@@ -776,6 +776,8 @@ begin
     and Assigned(contentView)
     and (contentView.isKindOfClass(TCocoaWindowContent)) then
     self.makeFirstResponder( TCocoaWindowContent(contentView).documentView );
+
+  CursorHelper.SetCursorOnActive;
 end;
 
 procedure TCocoaWindow.windowDidResignKey(notification: NSNotification);
