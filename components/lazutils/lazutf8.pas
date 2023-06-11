@@ -217,9 +217,7 @@ var
 implementation
 
 uses
-  gettext
-{$IFDEF Darwin}, MacOSAll{$ENDIF}
-  ;
+  gettext;
 
 {$IFDEF WinCE}
 // CP_UTF8 is missing in the windows unit of the Windows CE RTL
@@ -4020,58 +4018,10 @@ begin
 end;
 
 procedure LazGetLanguageIDs(var Lang, FallbackLang: String);
-
-  {$IFDEF DARWIN}
-  function GetLanguage: boolean;
-  var
-    Ref: CFStringRef;
-    LangArray: CFMutableArrayRef;
-    StrSize: CFIndex;
-    StrRange: CFRange;
-    Locals: CFArrayRef;
-    Bundle: CFBundleRef;
-  begin
-    Result := false;
-    Bundle:=CFBundleGetMainBundle;
-    if Bundle=nil then exit;
-    Locals:=CFBundleCopyBundleLocalizations(Bundle);
-    if Locals=nil then exit;
-    LangArray := CFBundleCopyLocalizationsForPreferences(Locals, nil);
-    try
-      if CFArrayGetCount(LangArray) > 0 then
-      begin
-        Ref := CFArrayGetValueAtIndex(LangArray, 0);
-        StrRange.location := 0;
-        StrRange.length := CFStringGetLength(Ref);
-
-        StrSize:=0;
-        CFStringGetBytes(Ref, StrRange, kCFStringEncodingUTF8,
-          Ord('?'), False, nil, 0, StrSize);
-        SetLength(Lang, StrSize);
-
-        if StrSize > 0 then
-        begin
-          CFStringGetBytes(Ref, StrRange, kCFStringEncodingUTF8,
-            Ord('?'), False, @Lang[1], StrSize, StrSize);
-          Result:=true;
-          FallbackLang := Copy(Lang, 1, 2);
-        end;
-      end;
-    finally
-      CFRelease(LangArray);
-      CFRelease(Locals);
-    end;
-  end;
-  {$ENDIF}
 var
   p: SizeInt;
 begin
-{$IFDEF DARWIN}
-  if not GetLanguage then
-    GetLanguageIDs(Lang, FallbackLang);
-{$ELSE}
   GetLanguageIDs(Lang, FallbackLang);
-{$ENDIF}
   //Language ID e. g. on Linux can be in a form of `ru_RU.utf8`, which will prevent
   //loading files with name in a form of `project1.ru_RU.po`.
   //Trim this trailing encoding.
