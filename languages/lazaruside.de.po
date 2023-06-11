@@ -18891,35 +18891,6 @@ msgstr "Der Titel in der Taskbar zeigt z.B.: project1.lpi - Lazarus"
 msgid "Title (leave empty for default)"
 msgstr "Titel (für Voreinstellung leerlassen)"
 
-#: lazarusidestrconsts.listmfunctionappendpathdelimiter
-msgid "Function: append path delimiter"
-msgstr "Funktion: Pfadtrenner anhängen"
-
-#: lazarusidestrconsts.listmfunctionchomppathdelimiter
-msgid "Function: remove trailing path delimiter"
-msgstr "Funktion: Pfadtrenner entfernen"
-
-#: lazarusidestrconsts.listmfunctionextractfileextension
-msgid "Function: extract file extension"
-msgstr "Funktion: Dateiendung extrahieren"
-
-#: lazarusidestrconsts.listmfunctionextractfilenameextension
-msgid "Function: extract file name+extension"
-msgstr "Funktion: Dateinamen und Endung extrahieren"
-
-#: lazarusidestrconsts.listmfunctionextractfilenameonly
-msgid "Function: extract file name only"
-msgstr "Funktion: Dateinamen extrahieren"
-
-#: lazarusidestrconsts.listmfunctionextractfilepath
-msgid "Function: extract file path"
-msgstr "Funktion: Dateipfad extrahieren"
-
-#: lazarusidestrconsts.listmunknownmacro
-#, object-pascal-format
-msgid "(unknown macro: %s)"
-msgstr "(unbekanntes Makro: %s)"
-
 #: lazarusidestrconsts.listofpcpath
 msgid "Path:"
 msgstr "Pfad:"

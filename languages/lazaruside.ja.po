@@ -18999,35 +18999,6 @@ msgstr "タスクバーのタイトルはproject1.lpi - Lazarusなどと表示�
 msgid "Title (leave empty for default)"
 msgstr "タイトル（デフォルトの場合空欄にしておいて下さい）"
 
-#: lazarusidestrconsts.listmfunctionappendpathdelimiter
-msgid "Function: append path delimiter"
-msgstr "機能：パスの区切り記号を添える"
-
-#: lazarusidestrconsts.listmfunctionchomppathdelimiter
-msgid "Function: remove trailing path delimiter"
-msgstr "機能：終端のパスの区切り記号を削除"
-
-#: lazarusidestrconsts.listmfunctionextractfileextension
-msgid "Function: extract file extension"
-msgstr "機能：ファイルの拡張子を抽出"
-
-#: lazarusidestrconsts.listmfunctionextractfilenameextension
-msgid "Function: extract file name+extension"
-msgstr "機能：ファイルの名前と拡張子を抽出"
-
-#: lazarusidestrconsts.listmfunctionextractfilenameonly
-msgid "Function: extract file name only"
-msgstr "機能：ファイル名だけを抽出"
-
-#: lazarusidestrconsts.listmfunctionextractfilepath
-msgid "Function: extract file path"
-msgstr "機能：ファイルのパス（フォルダ名）を抽出"
-
-#: lazarusidestrconsts.listmunknownmacro
-#, object-pascal-format
-msgid "(unknown macro: %s)"
-msgstr "(不明マクロ: %S)"
-
 #: lazarusidestrconsts.listofpcpath
 msgid "Path:"
 msgstr "パス："

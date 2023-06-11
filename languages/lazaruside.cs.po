@@ -18854,35 +18854,6 @@ msgstr "Titulek v panelu úloh zobrazí například: projekt1.lpi - Lazarus"
 msgid "Title (leave empty for default)"
 msgstr "Název (nechejte prázdné pro výchozí)"
 
-#: lazarusidestrconsts.listmfunctionappendpathdelimiter
-msgid "Function: append path delimiter"
-msgstr "Funkce: připojit oddělovač cesty"
-
-#: lazarusidestrconsts.listmfunctionchomppathdelimiter
-msgid "Function: remove trailing path delimiter"
-msgstr "Funkce: odstranit oddělovač cesty na konci"
-
-#: lazarusidestrconsts.listmfunctionextractfileextension
-msgid "Function: extract file extension"
-msgstr "Funkce: vytáhnout příponu souboru"
-
-#: lazarusidestrconsts.listmfunctionextractfilenameextension
-msgid "Function: extract file name+extension"
-msgstr "Funkce: vytáhnout jméno souboru + příponu"
-
-#: lazarusidestrconsts.listmfunctionextractfilenameonly
-msgid "Function: extract file name only"
-msgstr "Funkce: vytáhnout pouze jméno souboru"
-
-#: lazarusidestrconsts.listmfunctionextractfilepath
-msgid "Function: extract file path"
-msgstr "Funkce: vytáhnout cestu"
-
-#: lazarusidestrconsts.listmunknownmacro
-#, object-pascal-format
-msgid "(unknown macro: %s)"
-msgstr "(neznámé makro: %s)"
-
 #: lazarusidestrconsts.listofpcpath
 msgid "Path:"
 msgstr "Cesta:"

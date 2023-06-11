@@ -18963,37 +18963,6 @@ msgstr ""
 msgid "Title (leave empty for default)"
 msgstr "Titulok (nechajte prázdne pre predvolený)"
 
-#: lazarusidestrconsts.listmfunctionappendpathdelimiter
-msgid "Function: append path delimiter"
-msgstr "Funkcia: pripojiť oddeľovač cesty"
-
-#: lazarusidestrconsts.listmfunctionchomppathdelimiter
-#, fuzzy
-#| msgid "Function: chomp path delimiter"
-msgid "Function: remove trailing path delimiter"
-msgstr "Funkcia: odstrániť oddeľovač cesty"
-
-#: lazarusidestrconsts.listmfunctionextractfileextension
-msgid "Function: extract file extension"
-msgstr "Funkcia: vybrať príponu súboru"
-
-#: lazarusidestrconsts.listmfunctionextractfilenameextension
-msgid "Function: extract file name+extension"
-msgstr "Funkcia: vybrať meno súboru + príponu"
-
-#: lazarusidestrconsts.listmfunctionextractfilenameonly
-msgid "Function: extract file name only"
-msgstr "Funkcia: vybrať len meno súboru"
-
-#: lazarusidestrconsts.listmfunctionextractfilepath
-msgid "Function: extract file path"
-msgstr "Funkcia: vybrať cestu súboru"
-
-#: lazarusidestrconsts.listmunknownmacro
-#, object-pascal-format
-msgid "(unknown macro: %s)"
-msgstr "(neznáme makro: %s)"
-
 #: lazarusidestrconsts.listofpcpath
 msgid "Path:"
 msgstr "Cesty:"

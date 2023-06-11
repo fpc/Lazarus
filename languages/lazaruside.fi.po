@@ -18657,35 +18657,6 @@ msgstr "Tehtäväpalkin otsikko näyttää esim: project1.lpi - Lazarus"
 msgid "Title (leave empty for default)"
 msgstr "Otsikko (oletusotsikko jos tyhjä)"
 
-#: lazarusidestrconsts.listmfunctionappendpathdelimiter
-msgid "Function: append path delimiter"
-msgstr "Funktio: lisää polkuerotin"
-
-#: lazarusidestrconsts.listmfunctionchomppathdelimiter
-msgid "Function: remove trailing path delimiter"
-msgstr "Funktio: poista polkuerotin lopusta"
-
-#: lazarusidestrconsts.listmfunctionextractfileextension
-msgid "Function: extract file extension"
-msgstr "Funktio: erota tiedoston pääte"
-
-#: lazarusidestrconsts.listmfunctionextractfilenameextension
-msgid "Function: extract file name+extension"
-msgstr "Funktio: erota tiedoston nimi ja pääte"
-
-#: lazarusidestrconsts.listmfunctionextractfilenameonly
-msgid "Function: extract file name only"
-msgstr "Funktio: erota pelkkä tiedoston nimi"
-
-#: lazarusidestrconsts.listmfunctionextractfilepath
-msgid "Function: extract file path"
-msgstr "Funktio: erota tiedoston polku"
-
-#: lazarusidestrconsts.listmunknownmacro
-#, object-pascal-format
-msgid "(unknown macro: %s)"
-msgstr "(tuntematon makro: %s)"
-
 #: lazarusidestrconsts.listofpcpath
 msgid "Path:"
 msgstr "Polku:"

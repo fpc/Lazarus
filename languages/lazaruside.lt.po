@@ -19039,35 +19039,6 @@ msgstr "Antraštė programų juostoje, pavyzdžiui, bus tokia: projektas1.lpi - 
 msgid "Title (leave empty for default)"
 msgstr "Antraštė (palikus tuščią - bus naudojama numatytoji)"
 
-#: lazarusidestrconsts.listmfunctionappendpathdelimiter
-msgid "Function: append path delimiter"
-msgstr "Funkcija: kelio gale pridėti kelio skirtuką"
-
-#: lazarusidestrconsts.listmfunctionchomppathdelimiter
-msgid "Function: remove trailing path delimiter"
-msgstr "Funkcija: pašalinti kelio gale esantį skirtuką"
-
-#: lazarusidestrconsts.listmfunctionextractfileextension
-msgid "Function: extract file extension"
-msgstr "Funkcija: ištraukti tik failo plėtinį"
-
-#: lazarusidestrconsts.listmfunctionextractfilenameextension
-msgid "Function: extract file name+extension"
-msgstr "Funkcija: ištraukti failo pavadinimą ir plėtinį"
-
-#: lazarusidestrconsts.listmfunctionextractfilenameonly
-msgid "Function: extract file name only"
-msgstr "Funkcija: ištraukti tik failo pavadinimą"
-
-#: lazarusidestrconsts.listmfunctionextractfilepath
-msgid "Function: extract file path"
-msgstr "Funkcija: ištraukti tik kelią"
-
-#: lazarusidestrconsts.listmunknownmacro
-#, object-pascal-format
-msgid "(unknown macro: %s)"
-msgstr "(nežinoma makrokomanda: %s)"
-
 #: lazarusidestrconsts.listofpcpath
 msgid "Path:"
 msgstr "Failas:"

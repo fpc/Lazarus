@@ -18770,35 +18770,6 @@ msgstr "Le titre de la barre des tâches montre par exemple : project1.lpi - Laz
 msgid "Title (leave empty for default)"
 msgstr "Titre (laisser vide pour la valeur par défaut)"
 
-#: lazarusidestrconsts.listmfunctionappendpathdelimiter
-msgid "Function: append path delimiter"
-msgstr "Fonction : ajouter un délimiteur de chemin"
-
-#: lazarusidestrconsts.listmfunctionchomppathdelimiter
-msgid "Function: remove trailing path delimiter"
-msgstr "Fonction : enlever le délimiteur de fin de chemin"
-
-#: lazarusidestrconsts.listmfunctionextractfileextension
-msgid "Function: extract file extension"
-msgstr "Fonction : extraire l'extension du fichier"
-
-#: lazarusidestrconsts.listmfunctionextractfilenameextension
-msgid "Function: extract file name+extension"
-msgstr "Fonction : extraire le nom et l'extension du fichier"
-
-#: lazarusidestrconsts.listmfunctionextractfilenameonly
-msgid "Function: extract file name only"
-msgstr "Fonction : extraire le nom de fichier seul"
-
-#: lazarusidestrconsts.listmfunctionextractfilepath
-msgid "Function: extract file path"
-msgstr "Fonction : extraire le chemin du fichier"
-
-#: lazarusidestrconsts.listmunknownmacro
-#, object-pascal-format
-msgid "(unknown macro: %s)"
-msgstr "(macro inconnue : %s)"
-
 #: lazarusidestrconsts.listofpcpath
 msgid "Path:"
 msgstr "Chemin :"

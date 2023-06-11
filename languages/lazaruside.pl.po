@@ -18971,35 +18971,6 @@ msgstr ""
 msgid "Title (leave empty for default)"
 msgstr "Tytuł (pozostaw puste to będzie domyślny)"
 
-#: lazarusidestrconsts.listmfunctionappendpathdelimiter
-msgid "Function: append path delimiter"
-msgstr "Funkcja: dołącz rozgranicznik ścieżki"
-
-#: lazarusidestrconsts.listmfunctionchomppathdelimiter
-msgid "Function: remove trailing path delimiter"
-msgstr "Funkcja: wytnij końcowy rozgranicznik ścieżki"
-
-#: lazarusidestrconsts.listmfunctionextractfileextension
-msgid "Function: extract file extension"
-msgstr "Funkcja: wyodrębnij rozszerzenie pliku"
-
-#: lazarusidestrconsts.listmfunctionextractfilenameextension
-msgid "Function: extract file name+extension"
-msgstr "Funkcja: wyodrębnij nazwę pliku + rozszerzenie"
-
-#: lazarusidestrconsts.listmfunctionextractfilenameonly
-msgid "Function: extract file name only"
-msgstr "Funkcja: wyodrębnij samą nazwę pliku"
-
-#: lazarusidestrconsts.listmfunctionextractfilepath
-msgid "Function: extract file path"
-msgstr "Funkcja: wyodrębnij ścieżkę pliku"
-
-#: lazarusidestrconsts.listmunknownmacro
-#, object-pascal-format
-msgid "(unknown macro: %s)"
-msgstr "(nieznane makro: %s)"
-
 #: lazarusidestrconsts.listofpcpath
 msgid "Path:"
 msgstr "Ścieżka:"

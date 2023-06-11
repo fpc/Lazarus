@@ -18777,35 +18777,6 @@ msgstr "A cím a tálcán így jelenik meg: project1.lpi - Lazarus"
 msgid "Title (leave empty for default)"
 msgstr "Cím (üres = alapértelmezett)"
 
-#: lazarusidestrconsts.listmfunctionappendpathdelimiter
-msgid "Function: append path delimiter"
-msgstr "Művelet: útvonal-elválasztó hozzáfűzése"
-
-#: lazarusidestrconsts.listmfunctionchomppathdelimiter
-msgid "Function: remove trailing path delimiter"
-msgstr "Művelet: bevezető útvonal-elválasztó törlése"
-
-#: lazarusidestrconsts.listmfunctionextractfileextension
-msgid "Function: extract file extension"
-msgstr "Művelet: fájlkiterjesztés kibontása"
-
-#: lazarusidestrconsts.listmfunctionextractfilenameextension
-msgid "Function: extract file name+extension"
-msgstr "Művelet: fájlnév+kiterjesztés kibontása"
-
-#: lazarusidestrconsts.listmfunctionextractfilenameonly
-msgid "Function: extract file name only"
-msgstr "Művelet: csak a fájlnév kibontása"
-
-#: lazarusidestrconsts.listmfunctionextractfilepath
-msgid "Function: extract file path"
-msgstr "Művelet: fájl elérési útjának kibontása"
-
-#: lazarusidestrconsts.listmunknownmacro
-#, object-pascal-format
-msgid "(unknown macro: %s)"
-msgstr "(ismeretlen makró: %s)"
-
 #: lazarusidestrconsts.listofpcpath
 msgid "Path:"
 msgstr "Útvonal:"

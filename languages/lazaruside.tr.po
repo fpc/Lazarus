@@ -18652,35 +18652,6 @@ msgstr "Görev çubuğundaki başlık, örneğin: project1.lpi - Lazarus"
 msgid "Title (leave empty for default)"
 msgstr "Başlık (varsayılan olarak boş bırakın)"
 
-#: lazarusidestrconsts.listmfunctionappendpathdelimiter
-msgid "Function: append path delimiter"
-msgstr "Fonksiyon: yol sınırlayıcı ekleme"
-
-#: lazarusidestrconsts.listmfunctionchomppathdelimiter
-msgid "Function: remove trailing path delimiter"
-msgstr "Fonksiyon: sondaki yol sınırlayıcı kaldır"
-
-#: lazarusidestrconsts.listmfunctionextractfileextension
-msgid "Function: extract file extension"
-msgstr "Fonksiyon: dosya uzantısını ayıklayın"
-
-#: lazarusidestrconsts.listmfunctionextractfilenameextension
-msgid "Function: extract file name+extension"
-msgstr "Fonksiyon: dosya adı + uzantısını ayıkla"
-
-#: lazarusidestrconsts.listmfunctionextractfilenameonly
-msgid "Function: extract file name only"
-msgstr "Fonksiyon: yalnızca dosya adını ayıkla"
-
-#: lazarusidestrconsts.listmfunctionextractfilepath
-msgid "Function: extract file path"
-msgstr "Fonksiyon: dosya yolunu ayıkla"
-
-#: lazarusidestrconsts.listmunknownmacro
-#, object-pascal-format
-msgid "(unknown macro: %s)"
-msgstr "(Bilinmeyen makro: %s)"
-
 #: lazarusidestrconsts.listofpcpath
 msgid "Path:"
 msgstr "Yol:"

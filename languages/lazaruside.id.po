@@ -19456,37 +19456,6 @@ msgstr ""
 msgid "Title (leave empty for default)"
 msgstr ""
 
-#: lazarusidestrconsts.listmfunctionappendpathdelimiter
-msgid "Function: append path delimiter"
-msgstr "Fungsi: tambah delimiter path"
-
-#: lazarusidestrconsts.listmfunctionchomppathdelimiter
-#, fuzzy
-#| msgid "Function: chomp path delimiter"
-msgid "Function: remove trailing path delimiter"
-msgstr "Fungsi: chomp delimiter path"
-
-#: lazarusidestrconsts.listmfunctionextractfileextension
-msgid "Function: extract file extension"
-msgstr "Fungsi: ekstrak ekstensi file"
-
-#: lazarusidestrconsts.listmfunctionextractfilenameextension
-msgid "Function: extract file name+extension"
-msgstr "Fungsi: ekstrak nama+ekstensi file"
-
-#: lazarusidestrconsts.listmfunctionextractfilenameonly
-msgid "Function: extract file name only"
-msgstr "Fungsi: ekstrak hanya nama file"
-
-#: lazarusidestrconsts.listmfunctionextractfilepath
-msgid "Function: extract file path"
-msgstr "Fungsi: ekstrak path file"
-
-#: lazarusidestrconsts.listmunknownmacro
-#, object-pascal-format
-msgid "(unknown macro: %s)"
-msgstr "(makro tidak dikenal: %s)"
-
 #: lazarusidestrconsts.listofpcpath
 msgid "Path:"
 msgstr "Path:"

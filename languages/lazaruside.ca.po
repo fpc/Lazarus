@@ -19231,37 +19231,6 @@ msgstr ""
 msgid "Title (leave empty for default)"
 msgstr ""
 
-#: lazarusidestrconsts.listmfunctionappendpathdelimiter
-msgid "Function: append path delimiter"
-msgstr "Funció: afegir el delimitador de la trajectòria"
-
-#: lazarusidestrconsts.listmfunctionchomppathdelimiter
-#, fuzzy
-#| msgid "Function: chomp path delimiter"
-msgid "Function: remove trailing path delimiter"
-msgstr "Funció: eliminar el delimitador de la trajectòria"
-
-#: lazarusidestrconsts.listmfunctionextractfileextension
-msgid "Function: extract file extension"
-msgstr "Funció: extreure l'extensió del fitxer"
-
-#: lazarusidestrconsts.listmfunctionextractfilenameextension
-msgid "Function: extract file name+extension"
-msgstr "Funció: extreure nom i extensió del fitxer"
-
-#: lazarusidestrconsts.listmfunctionextractfilenameonly
-msgid "Function: extract file name only"
-msgstr "Funció: extreure només el nom del fitxer"
-
-#: lazarusidestrconsts.listmfunctionextractfilepath
-msgid "Function: extract file path"
-msgstr "Funció: extreure la trajectòria del fitxer"
-
-#: lazarusidestrconsts.listmunknownmacro
-#, object-pascal-format
-msgid "(unknown macro: %s)"
-msgstr "(macroinstrucció desconeguda: %s)"
-
 #: lazarusidestrconsts.listofpcpath
 msgid "Path:"
 msgstr "Trajectòria:"

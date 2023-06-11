@@ -19786,37 +19786,6 @@ msgstr "הכותרת בסרגל המשימות מראה למשל: project1.lpi -
 msgid "Title (leave empty for default)"
 msgstr "כותרת (השאר ריק לברירת מחדל)"
 
-#: lazarusidestrconsts.listmfunctionappendpathdelimiter
-msgid "Function: append path delimiter"
-msgstr "פונקציה: הוסף את תוחם הנתיב"
-
-#: lazarusidestrconsts.listmfunctionchomppathdelimiter
-#, fuzzy
-#| msgid "Function: chomp path delimiter"
-msgid "Function: remove trailing path delimiter"
-msgstr "פונקציה: חתוך את תוחם הנתיב"
-
-#: lazarusidestrconsts.listmfunctionextractfileextension
-msgid "Function: extract file extension"
-msgstr "פונקציה: חלץ את סיומת הקובץ"
-
-#: lazarusidestrconsts.listmfunctionextractfilenameextension
-msgid "Function: extract file name+extension"
-msgstr "פונקציה: חלץ את שם וסיומת הקובץ"
-
-#: lazarusidestrconsts.listmfunctionextractfilenameonly
-msgid "Function: extract file name only"
-msgstr "פונקציה: חלץ את שם הקובץ בלבד"
-
-#: lazarusidestrconsts.listmfunctionextractfilepath
-msgid "Function: extract file path"
-msgstr "פונקציה: חלץ את נתיב הקובץ"
-
-#: lazarusidestrconsts.listmunknownmacro
-#, object-pascal-format, fuzzy, badformat
-msgid "(unknown macro: %s)"
-msgstr "(מאקרו לא מוכר: s%)"
-
 #: lazarusidestrconsts.listofpcpath
 msgid "Path:"
 msgstr "נתיב:"
