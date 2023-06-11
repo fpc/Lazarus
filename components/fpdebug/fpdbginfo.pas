@@ -104,11 +104,17 @@ type
   );
   TFpValueFieldFlags = set of TFpValueFieldFlag;
 
+  TFpValueFlag = (
+    vfVariant
+  );
+  TFpValueFlags = set of TFpValueFlag;
+
   { TFpValue }
 
   TFpValue = class(TRefCountedObject)
   private
     FEvalFlags: set of (efSizeDone, efSizeUnavail);
+    FFlags: TFpValueFlags;
     FLastError: TFpError;
     FSize: TFpDbgValueSize;
     procedure SetAsString(AStartIndex, ALen: Int64; AValue: AnsiString);
@@ -174,6 +180,7 @@ type
 
     // Kind: determines which types of value are available
     property Kind: TDbgSymbolKind read GetKind;
+    property Flags: TFpValueFlags read FFlags write FFlags;
     property FieldFlags: TFpValueFieldFlags read GetFieldFlags;
 
     property AsInteger: Int64 read GetAsInteger write SetAsInteger;

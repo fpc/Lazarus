@@ -924,6 +924,9 @@ begin
   end;
   FLastValueKind := AnFpValue.Kind;
   try
+    if vfVariant in AnFpValue.Flags then
+      AnResData := AnResData.CreateVariantValue;
+
     Result := DoValueToResData(AnFpValue, AnResData);
   finally
     if FRecursePointerCnt > 0 then

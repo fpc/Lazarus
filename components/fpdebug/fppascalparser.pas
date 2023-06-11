@@ -188,6 +188,7 @@ type
     function GetText(AMaxLen: Integer=0): String;
     function GetPos: Integer;
     function GetFullText(AMaxLen: Integer=0): String; virtual; // including children
+    function ReturnsVariant: boolean; virtual;
     property StartChar: PChar read FStartChar write SetStartChar;
     property EndChar: PChar read FEndChar write SetEndChar;
     property Parent: TFpPascalExpressionPartContainer read FParent write SetParent;
@@ -266,6 +267,7 @@ type
     constructor Create(AExpression: TFpPascalExpression; AStartChar: PChar;
       AnEndChar: PChar; AnIntrinsic: TFpIntrinsicFunc);
     destructor Destroy; override;
+    function ReturnsVariant: boolean; override;
   end;
 
   TFpPascalExpressionPartConstant = class(TFpPascalExpressionPartContainer)
@@ -354,6 +356,8 @@ type
     function MaybeHandlePrevPart(APrevPart: TFpPascalExpressionPart;
       var AResult: TFpPascalExpressionPart): Boolean; override;
     function HandleSeparator(ASeparatorType: TSeparatorType; var APart: TFpPascalExpressionPart): Boolean; override;
+  public
+    function ReturnsVariant: boolean; override;
   end;
 
 
@@ -567,6 +571,8 @@ type
   private
     FSlicePart: TFpPascalExpressionPartOperatorArraySlice;
     FInResetEvaluationForIndex: Boolean;
+    FHasVariantPart: Boolean;
+    FCheckedForVariantPart: Boolean;
   protected
     function DoGetResultValue: TFpValue; override;
     procedure ResetEvaluationForIndex;
@@ -590,6 +596,7 @@ type
     function DoGetResultValue: TFpValue; override;
     function StartValue: Int64;
     function EndValue: Int64;
+    procedure CheckForVariantExpressionParts;
   end;
 
 implementation
@@ -1998,6 +2005,21 @@ begin
   end;
 end;
 
+function TFpPascalExpressionPartBracketArgumentList.ReturnsVariant: boolean;
+var
+  Itm0: TFpPascalExpressionPart;
+begin
+  Result := inherited ReturnsVariant;
+  if Result then
+    exit;
+
+  Itm0 := Items[0];
+  if Itm0 = nil then
+    exit;
+
+  Result := Itm0.ReturnsVariant;
+end;
+
 { TFpPascalExpressionPartBracketSubExpression }
 
 function TFpPascalExpressionPartBracketSubExpression.HandleNextPartInBracket(APart: TFpPascalExpressionPart): TFpPascalExpressionPart;
@@ -2506,6 +2528,11 @@ destructor TFpPascalExpressionPartIntrinsic.Destroy;
 begin
   inherited Destroy;
   FChildClassCastType.ReleaseReference;
+end;
+
+function TFpPascalExpressionPartIntrinsic.ReturnsVariant: boolean;
+begin
+  Result := FIntrinsic = ifChildClass;
 end;
 
 { TFpPascalExpressionPartConstantNumber }
@@ -3262,6 +3289,11 @@ end;
 function TFpPascalExpressionPart.GetFullText(AMaxLen: Integer): String;
 begin
   Result := GetText(AMaxLen);
+end;
+
+function TFpPascalExpressionPart.ReturnsVariant: boolean;
+begin
+  Result := False;
 end;
 
 procedure TFpPascalExpressionPart.SetError(AMsg: String);
@@ -5146,21 +5178,17 @@ end;
 
 function TFpPasParserValueSlicedArray.GetMember(AIndex: Int64): TFpValue;
 begin
-  if SlicePart.FCurrentIndex = AIndex then begin
-    Result := FArraySlice.Items[0].ResultValue;
-    if Result <> nil then begin
-      Result.AddReference;
-      Result.Reset;
-    end;
-    exit;
+  if SlicePart.FCurrentIndex <> AIndex then begin
+    SlicePart.FCurrentIndex := AIndex;
+    FArraySlice.ResetEvaluationForIndex;
   end;
-
-  SlicePart.FCurrentIndex := AIndex;
-  FArraySlice.ResetEvaluationForIndex;
   Result := FArraySlice.Items[0].ResultValue;
+
   if Result <> nil then begin
     Result.AddReference;
     Result.Reset;
+    if FArraySlice.FHasVariantPart then
+      Result.Flags := Result.Flags + [vfVariant];
   end;
 end;
 
@@ -5220,6 +5248,11 @@ begin
         Result.AddReference;
       exit;
     end;
+  end;
+
+  if not FCheckedForVariantPart then begin
+    FSlicePart.CheckForVariantExpressionParts;
+    FCheckedForVariantPart := True;
   end;
 
   Result := TFpPasParserValueSlicedArray.Create(Self);
@@ -5296,6 +5329,23 @@ begin
   tmp := Items[1].ResultValue;
   if tmp <> nil then
     Result := tmp.AsInteger;
+end;
+
+procedure TFpPascalExpressionPartOperatorArraySlice.CheckForVariantExpressionParts;
+var
+  AHasVariantPart: Boolean;
+  APart: TFpPascalExpressionPartContainer;
+begin
+  AHasVariantPart := False;
+  APart := Parent;
+  while (APart <> nil) and not(APart is TFpPascalExpressionPartOperatorArraySliceController) do begin
+    if APart.ReturnsVariant then
+      AHasVariantPart := True;
+    APart := APart.Parent;
+  end;
+  // The most inner TFpPascalExpressionPartOperatorArraySliceController, even if not belonging to this slice
+  if APart is TFpPascalExpressionPartOperatorArraySliceController then
+    TFpPascalExpressionPartOperatorArraySliceController(APart).FHasVariantPart := AHasVariantPart;
 end;
 
 initialization
