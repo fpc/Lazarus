@@ -41,7 +41,7 @@ uses
   // Codetools
   SourceLog, LinkScanner, FileProcs, DirectoryCacher,
   // LazUtils
-  LazFileUtils, LazFileCache, Laz2_XMLCfg, LazDbgLog;
+  LazFileUtils, LazFileCache, Laz2_XMLCfg, LazDbgLog, LazConfigStorage;
 
 const
   IncludeLinksFileVersion = 2;

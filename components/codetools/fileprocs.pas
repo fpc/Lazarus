@@ -44,7 +44,8 @@ uses
   // CodeTools
   CodeToolsStrConsts,
   // LazUtils
-  LazUtilities, LazLoggerBase, LazFileCache, LazFileUtils, LazUTF8, LazStringUtils;
+  LazUtilities, LazLoggerBase, LazFileCache, LazFileUtils, LazUTF8,
+  LazStringUtils, LazConfigStorage;
 
 type
   TFPCStreamSeekType = int64;
@@ -141,10 +142,10 @@ const
     ('', '.inc', '.pp', '.pas');
 
 // store date locale independent, thread safe
-const DateAsCfgStrFormat='YYYYMMDD';
-const DateTimeAsCfgStrFormat='YYYY/MM/DD HH:NN:SS';
-function DateToCfgStr(const Date: TDateTime; const aFormat: string = DateAsCfgStrFormat): string;
-function CfgStrToDate(const s: string; out Date: TDateTime; const aFormat: string = DateAsCfgStrFormat): boolean;
+const DateAsCfgStrFormat=LazConfigStorage.DateAsCfgStrFormat;
+const DateTimeAsCfgStrFormat=LazConfigStorage.DateTimeAsCfgStrFormat;
+function DateToCfgStr(const Date: TDateTime; const aFormat: string = DateAsCfgStrFormat): string; deprecated 'use LazConfigStorage';
+function CfgStrToDate(const s: string; out Date: TDateTime; const aFormat: string = DateAsCfgStrFormat): boolean; deprecated 'use LazConfigStorage';
 
 procedure CTIncreaseChangeStamp(var ChangeStamp: integer); inline;
 procedure CTIncreaseChangeStamp64(var ChangeStamp: int64); inline;
@@ -262,6 +263,17 @@ implementation
 uses
   Unix;
 {$ENDIF}
+
+function DateToCfgStr(const Date: TDateTime; const aFormat: string): string;
+begin
+  Result:=LazConfigStorage.DateToCfgStr(Date,aFormat);
+end;
+
+function CfgStrToDate(const s: string; out Date: TDateTime;
+  const aFormat: string): boolean;
+begin
+  Result:=LazConfigStorage.CfgStrToDate(s,Date,aFormat);
+end;
 
 procedure CTIncreaseChangeStamp(var ChangeStamp: integer);
 begin
@@ -1424,108 +1436,6 @@ begin
     Next:=Tree.FindSuccessor(Result);
     if (Next<>nil) and (Tree.OnCompare(Result.Data,Next.Data)=0) then exit;
     Result:=Next;
-  end;
-end;
-
-function DateToCfgStr(const Date: TDateTime; const aFormat: string): string;
-var
-  NeedDate: Boolean;
-  NeedTime: Boolean;
-  Year: word;
-  Month: word;
-  Day: word;
-  Hour: word;
-  Minute: word;
-  Second: word;
-  MilliSecond: word;
-  p: Integer;
-  w: Word;
-  StartP: Integer;
-  s: String;
-  l: Integer;
-begin
-  Result:=aFormat;
-  NeedDate:=false;
-  NeedTime:=false;
-  for p:=1 to length(aFormat) do
-    case aFormat[p] of
-    'Y','M','D': NeedDate:=true;
-    'H','N','S','Z': NeedTime:=true;
-    end;
-  if NeedDate then
-    DecodeDate(Date,Year,Month,Day);
-  if NeedTime then
-    DecodeTime(Date,Hour,Minute,Second,MilliSecond);
-  p:=1;
-  while p<=length(aFormat) do begin
-    case aFormat[p] of
-    'Y': w:=Year;
-    'M': w:=Month;
-    'D': w:=Day;
-    'H': w:=Hour;
-    'N': w:=Minute;
-    'S': w:=Second;
-    'Z': w:=MilliSecond;
-    else
-      inc(p);
-      continue;
-    end;
-    StartP:=p;
-    repeat
-      inc(p);
-    until (p>length(aFormat)) or (aFormat[p]<>aFormat[p-1]);
-    l:=p-StartP;
-    s:=IntToStr(w);
-    if length(s)<l then
-      s:=StringOfChar('0',l-length(s))+s
-    else if length(s)>l then
-      raise Exception.Create('date format does not fit');
-    ReplaceSubstring(Result,StartP,l,s);
-    p:=StartP+length(s);
-  end;
-  //debugln('DateToCfgStr "',Result,'"');
-end;
-
-function CfgStrToDate(const s: string; out Date: TDateTime;
-  const aFormat: string): boolean;
-
-  procedure AddDecimal(var d: word; c: char); inline;
-  begin
-    d:=d*10+ord(c)-ord('0');
-  end;
-
-var
-  i: Integer;
-  Year, Month, Day, Hour, Minute, Second, MilliSecond: word;
-begin
-  //debugln('CfgStrToDate "',s,'"');
-  if length(s)<>length(aFormat) then begin
-    Date:=0.0;
-    exit(false);
-  end;
-  try
-    Year:=0;
-    Month:=0;
-    Day:=0;
-    Hour:=0;
-    Minute:=0;
-    Second:=0;
-    MilliSecond:=0;
-    for i:=1 to length(aFormat) do begin
-      case aFormat[i] of
-      'Y': AddDecimal(Year,s[i]);
-      'M': AddDecimal(Month,s[i]);
-      'D': AddDecimal(Day,s[i]);
-      'H': AddDecimal(Hour,s[i]);
-      'N': AddDecimal(Minute,s[i]);
-      'S': AddDecimal(Second,s[i]);
-      'Z': AddDecimal(MilliSecond,s[i]);
-      end;
-    end;
-    Date:=ComposeDateTime(EncodeDate(Year,Month,Day),EncodeTime(Hour,Minute,Second,MilliSecond));
-    Result:=true;
-  except
-    Result:=false;
   end;
 end;
 

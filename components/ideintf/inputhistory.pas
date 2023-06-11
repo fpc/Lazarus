@@ -42,8 +42,7 @@ uses
   Dialogs,
   // LazUtils
   LazFileCache, LazFileUtils, LazLoggerBase, LazUTF8, AvgLvlTree, Laz2_XMLCfg,
-  // Codetools
-  FileProcs,
+  LazConfigStorage,
   // IdeConfig
   DiffPatch, LazConf, RecentListProcs, IdeXmlConfigProcs,
   // IdeIntf

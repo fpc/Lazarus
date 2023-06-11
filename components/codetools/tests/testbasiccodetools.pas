@@ -28,7 +28,7 @@ interface
 uses
   fpcunit, testregistry, contnrs, Classes, SysUtils,
   // LazUtils
-  LazStringUtils,
+  LazStringUtils, LazConfigStorage,
   // CodeTools
   FileProcs, BasicCodeTools, DefineTemplates;
 

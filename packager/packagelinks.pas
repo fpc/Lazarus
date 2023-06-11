@@ -44,7 +44,7 @@ uses
   Forms,
   // LazUtils
   Laz2_XMLCfg, LazFileCache, LazFileUtils, FileUtil, LazUtilities, LazTracer,
-  AvgLvlTree,
+  AvgLvlTree, LazConfigStorage,
   // Codetools
   FileProcs, CodeToolManager,
   // BuildIntf

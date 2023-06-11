@@ -20,7 +20,7 @@ interface
 uses
   Classes, SysUtils, typinfo, Laz_AVL_Tree,
   // LazUtils
-  LazLoggerBase, AvgLvlTree;
+  LazLoggerBase, AvgLvlTree, LazStringUtils;
   
 type
   { TConfigStorage }
@@ -147,6 +147,12 @@ procedure LoadStringToStringTree(Config: TConfigStorage; const Path: string;
 procedure SaveStringToStringTree(Config: TConfigStorage; const Path: string;
                                  Tree: TStringToStringTree);
 
+// store date locale independent, thread safe
+const DateAsCfgStrFormat='YYYYMMDD';
+const DateTimeAsCfgStrFormat='YYYY/MM/DD HH:NN:SS';
+function DateToCfgStr(const Date: TDateTime; const aFormat: string = DateAsCfgStrFormat): string;
+function CfgStrToDate(const s: string; out Date: TDateTime; const aFormat: string = DateAsCfgStrFormat): boolean;
+
 function CompareConfigMemStorageNames(p1, p2: PChar): integer;
 function CompareConfigMemStorageNodes(Node1, Node2: Pointer): integer;
 function ComparePCharWithConfigMemStorageNode(aPChar, ANode: Pointer): integer;
@@ -190,6 +196,108 @@ begin
     Config.SetDeleteValue(SubPath+'Value',Item^.Value,'');
     Node:=Tree.Tree.FindSuccessor(Node);
     inc(i);
+  end;
+end;
+
+function DateToCfgStr(const Date: TDateTime; const aFormat: string): string;
+var
+  NeedDate: Boolean;
+  NeedTime: Boolean;
+  Year: word;
+  Month: word;
+  Day: word;
+  Hour: word;
+  Minute: word;
+  Second: word;
+  MilliSecond: word;
+  p: Integer;
+  w: Word;
+  StartP: Integer;
+  s: String;
+  l: Integer;
+begin
+  Result:=aFormat;
+  NeedDate:=false;
+  NeedTime:=false;
+  for p:=1 to length(aFormat) do
+    case aFormat[p] of
+    'Y','M','D': NeedDate:=true;
+    'H','N','S','Z': NeedTime:=true;
+    end;
+  if NeedDate then
+    DecodeDate(Date,Year,Month,Day);
+  if NeedTime then
+    DecodeTime(Date,Hour,Minute,Second,MilliSecond);
+  p:=1;
+  while p<=length(aFormat) do begin
+    case aFormat[p] of
+    'Y': w:=Year;
+    'M': w:=Month;
+    'D': w:=Day;
+    'H': w:=Hour;
+    'N': w:=Minute;
+    'S': w:=Second;
+    'Z': w:=MilliSecond;
+    else
+      inc(p);
+      continue;
+    end;
+    StartP:=p;
+    repeat
+      inc(p);
+    until (p>length(aFormat)) or (aFormat[p]<>aFormat[p-1]);
+    l:=p-StartP;
+    s:=IntToStr(w);
+    if length(s)<l then
+      s:=StringOfChar('0',l-length(s))+s
+    else if length(s)>l then
+      raise Exception.Create('date format does not fit');
+    ReplaceSubstring(Result,StartP,l,s);
+    p:=StartP+length(s);
+  end;
+  //debugln('DateToCfgStr "',Result,'"');
+end;
+
+function CfgStrToDate(const s: string; out Date: TDateTime;
+  const aFormat: string): boolean;
+
+  procedure AddDecimal(var d: word; c: char); inline;
+  begin
+    d:=d*10+ord(c)-ord('0');
+  end;
+
+var
+  i: Integer;
+  Year, Month, Day, Hour, Minute, Second, MilliSecond: word;
+begin
+  //debugln('CfgStrToDate "',s,'"');
+  if length(s)<>length(aFormat) then begin
+    Date:=0.0;
+    exit(false);
+  end;
+  try
+    Year:=0;
+    Month:=0;
+    Day:=0;
+    Hour:=0;
+    Minute:=0;
+    Second:=0;
+    MilliSecond:=0;
+    for i:=1 to length(aFormat) do begin
+      case aFormat[i] of
+      'Y': AddDecimal(Year,s[i]);
+      'M': AddDecimal(Month,s[i]);
+      'D': AddDecimal(Day,s[i]);
+      'H': AddDecimal(Hour,s[i]);
+      'N': AddDecimal(Minute,s[i]);
+      'S': AddDecimal(Second,s[i]);
+      'Z': AddDecimal(MilliSecond,s[i]);
+      end;
+    end;
+    Date:=ComposeDateTime(EncodeDate(Year,Month,Day),EncodeTime(Hour,Minute,Second,MilliSecond));
+    Result:=true;
+  except
+    Result:=false;
   end;
 end;
 
