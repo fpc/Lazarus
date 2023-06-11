@@ -44,7 +44,7 @@ uses
   CompOptsIntf, IDEOptionsIntf, PackageDependencyIntf,
   // IDE
   InitialSetupProc, ExtToolsConsole, CompilerOptions,
-  ApplicationBundle, TransferMacrosIntf, TransferMacros, EnvironmentOpts, IDETranslations,
+  ApplicationBundle, TransferMacros, EnvironmentOpts, IDETranslations,
   LazarusIDEStrConsts, IDECmdLine, MiscOptions, Project, LazConf, PackageDefs,
   PackageLinks, PackageSystem, InterPkgConflictFiles, BuildLazDialog,
   BuildProfileManager, BuildManager, BaseBuildManager, ModeMatrixOpts;
@@ -1448,7 +1448,7 @@ begin
   FreeThenNil(LazPackageLinks);
   FreeThenNil(TheCompiler);
   FreeAndNil(ExtToolConsole);
-  FreeThenNil(TransferMacrosIntf.GlobalMacroList);
+  FreeThenNil(GlobalMacroList);
   FreeThenNil(IDEMacros);
   FreeThenNil(MiscellaneousOptions);
   FreeThenNil(EnvironmentOptions);
