@@ -902,8 +902,6 @@ begin
   CompilerFilename:=TrimFilename(FXMLCfg.GetValue(
                         Path+'CompilerFilename/Value',CompilerFilename));
   LoadRecentList(FXMLCfg,FCompilerFileHistory,Path+'CompilerFilename/History/',rltFile);
-  if FCompilerFileHistory.Count=0 then
-    GetDefaultCompilerFilenames(FCompilerFileHistory);
   FPCSourceDirectory:=FXMLCfg.GetValue(Path+'FPCSourceDirectory/Value',FPCSourceDirectory);
   LoadRecentList(FXMLCfg,FFPCSourceDirHistory,Path+'FPCSourceDirectory/History/',rltFile);
   MakeFilename:=TrimFilename(FXMLCfg.GetValue(Path+'MakeFilename/Value',MakeFilename));

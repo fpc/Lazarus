@@ -51,11 +51,11 @@ uses
   LCLProc, Forms, Controls, LCLType, StdCtrls, ExtCtrls, Buttons, Dialogs,
   LCLPlatformDef, CheckLst, Menus, ComCtrls,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8, LazLoggerBase, LazFileCache,
-  // LazControls
-  DividerBevel,
+  FPCAdds, FileUtil, LazFileUtils, LazUTF8, LazLoggerBase, LazFileCache,
   // Codetools
   CodeToolManager, DefineTemplates,
+  // LazControls
+  DividerBevel,
   // IDEIntf
   IdeIntfStrConsts, LazIDEIntf, IDEMsgIntf, IDEHelpIntf, IDEImagesIntf, IDEWindowIntf,
   PackageIntf, IDEExternToolIntf, IDEDialogs, IDEUtils,
@@ -733,9 +733,9 @@ begin
   CodeToolBoss.CompilerDefinesCache.ConfigCaches.GetDefaultCompilerTarget(
     EnvironmentOptions.GetParsedCompilerFilename,'',fCompilerTargetOS,fCompilerTargetCPU);
   if fCompilerTargetOS='' then
-    fCompilerTargetOS:=GetCompiledTargetOS;
+    fCompilerTargetOS:=FPCAdds.GetCompiledTargetOS;
   if fCompilerTargetCPU='' then
-    fCompilerTargetCPU:=GetCompiledTargetCPU;
+    fCompilerTargetCPU:=FPCAdds.GetCompiledTargetCPU;
   fTargetOS:=fProfile.FPCTargetOS;
   fTargetCPU:=fProfile.FPCTargetCPU;
   TargetLCLPlatform:=LCLPlatformDirNames[fProfile.TargetPlatform];
@@ -758,14 +758,14 @@ begin
     // no user defined target directory
     // => find it automatically
     IsCrossCompiling:=false;
-    if (CompareText(fTargetOS,GetCompiledTargetOS)<>0)
-    or (CompareText(fTargetCPU,GetCompiledTargetCPU)<>0) then
+    if (CompareText(fTargetOS,FPCAdds.GetCompiledTargetOS)<>0)
+    or (CompareText(fTargetCPU,FPCAdds.GetCompiledTargetCPU)<>0) then
     begin
       IsCrossCompiling:=true;
-      if IfPairIs(fTargetCPU,GetCompiledTargetCPU,'i386','x86_64') then
+      if IfPairIs(fTargetCPU,FPCAdds.GetCompiledTargetCPU,'i386','x86_64') then
       begin
-        if (fTargetOS=GetCompiledTargetOS)
-        or IfPairIs(fTargetOS,GetCompiledTargetOS,'win32','win64') then
+        if (fTargetOS=FPCAdds.GetCompiledTargetOS)
+        or IfPairIs(fTargetOS,FPCAdds.GetCompiledTargetOS,'win32','win64') then
           IsCrossCompiling:=false; // a 32 or 64bit IDE is more a flavor than cross compiling
       end;
     end;

@@ -31,8 +31,6 @@ uses
   LCLIntf, LazConf, InterfaceBase, LCLPlatformDef, Clipbrd, LCLVersion,
   // LazUtils
   FPCAdds, LazFileUtils,
-  // Codetools
-  DefineTemplates,
   // IDE
   LazarusIDEStrConsts, EnvironmentOpts;
 

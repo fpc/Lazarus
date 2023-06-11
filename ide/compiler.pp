@@ -40,11 +40,11 @@ interface
 uses
   Classes, SysUtils, contnrs, strutils,
   // LazUtils
-  LazUTF8, LazFileUtils, LazUtilities, LazLoggerBase,
-  // LCL
-  Forms, Controls,
+  FPCAdds, LazUTF8, LazFileUtils, LazUtilities, LazLoggerBase,
   // Codetools
   DefineTemplates, LinkScanner, CodeToolManager, TransferMacros,
+  // LCL
+  Forms, Controls,
   // BuildIntf
   IDEExternToolIntf,
   // IdeIntf
@@ -324,10 +324,10 @@ begin
   if AProject.BuildModes.Count>1 then
     Title+=Format(lisMode, [AProject.ActiveBuildMode.Identifier]);
   TargetOS:=AProject.CompilerOptions.GetEffectiveTargetOS;
-  if TargetOS<>GetCompiledTargetOS then
+  if TargetOS<>FPCAdds.GetCompiledTargetOS then
     Title+=Format(lisOS, [TargetOS]);
   TargetCPU:=AProject.CompilerOptions.GetEffectiveTargetCPU;
-  if TargetCPU<>GetCompiledTargetCPU then
+  if TargetCPU<>FPCAdds.GetCompiledTargetCPU then
     Title+=Format(lisCPU, [TargetCPU]);
   TargetFilename:=AProject.CompilerOptions.CreateTargetFilename;
   if TargetFilename<>'' then

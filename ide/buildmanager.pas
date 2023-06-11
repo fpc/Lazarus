@@ -42,8 +42,8 @@ uses
   ExprEval, BasicCodeTools, CodeToolManager, DefineTemplates, CodeCache,
   FileProcs, CodeToolsCfgScript, LinkScanner,
   // LazUtils
-  LConvEncoding, FileUtil, LazFileUtils, LazFileCache, LazUTF8, Laz2_XMLCfg,
-  LazUtilities, LazStringUtils, LazMethodList,
+  FPCAdds, LConvEncoding, FileUtil, LazFileUtils, LazFileCache, LazUTF8,
+  Laz2_XMLCfg, LazUtilities, LazStringUtils, LazMethodList,
   // BuildIntf
   BaseIDEIntf, IDEOptionsIntf, ProjectIntf, MacroIntf, PublishModuleIntf,
   IDEExternToolIntf, CompOptsIntf, MacroDefIntf,
@@ -290,6 +290,11 @@ end;
 function CompareUnitNameAndUnitFile(UnitName: PChar; UnitFile: PUnitFile): integer;
 begin
   Result:=CompareIdentifierPtrs(Pointer(UnitName),Pointer(UnitFile^.FileUnitName));
+end;
+
+procedure OnCompilerParseStampIncreased;
+begin
+  CodeToolBoss.DefineTree.ClearCache;
 end;
 
 { TBuildManager }

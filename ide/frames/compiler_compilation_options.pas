@@ -291,6 +291,7 @@ var
   Options: TBaseCompilerOptions absolute AOptions;
   Syy: TCompileReasons;
   IsProj: Boolean;
+  CompFiles: TStringList;
 begin
   IsProj := Options is TProjectCompilerOptions;
   chkCreateMakefile.Checked := Options.CreateMakefileOnBuild;
@@ -313,12 +314,21 @@ begin
   ReadSettingsParsers(Options.ExecuteBefore,ExecBeforeParsersCheckListBox);
 
   // compiler path
-  with cobCompiler do begin
-    Items.BeginUpdate;
-    Items.Assign(EnvironmentOptions.CompilerFileHistory);
-    AddFilenameToList(Items,DefaultCompilerPath);
-    SetComboBoxText(cobCompiler,Options.CompilerPath,cstFilename);
-    Items.EndUpdate;
+  CompFiles:=TStringList.Create;
+  try
+    CompFiles.Assign(EnvironmentOptions.CompilerFileHistory);
+    if CompFiles.Count=0 then
+      GetDefaultCompilerFilenames(CompFiles);
+
+    with cobCompiler do begin
+      Items.BeginUpdate;
+      Items.Assign(CompFiles);
+      AddFilenameToList(Items,DefaultCompilerPath);
+      SetComboBoxText(cobCompiler,Options.CompilerPath,cstFilename);
+      Items.EndUpdate;
+    end;
+  finally
+    CompFiles.Free;
   end;
   if Options is TProjectCompilerOptions then
     with TProjectCompilerOptions(Options) do

@@ -61,21 +61,6 @@ begin
   end;
 end;
 
-function FindDefaultCompilerPath: string;
-begin
-  Result := SearchFileInPath(GetDefaultCompilerFilename,
-             format('%sfpc\%s\bin\%s',
-               [AppendPathDelim(ProgramDirectory), DefaultFPCVersion, DefaultFPCTarget]),
-             GetEnvironmentVariableUTF8('PATH'),';',
-             []);
-  if Result <> '' then exit;
-  Result := DefaultDrive + AppendPathDelim(ProgramDirectory) +
-    format('fpc\%s\bin\%s\%s',
-    [DefaultFPCVersion, DefaultFPCTarget, GetDefaultCompilerFilename]);
-  if FileExistsUTF8(Result) then exit;
-  Result := FindExecutableInList(@GetDefaultCompilerFilenames);
-end;
-
 function FindDefaultMakePath: string;
 begin
   Result := SearchFileInPath('make.exe',
@@ -104,14 +89,6 @@ begin
   Result := DefaultDrive + '\temp\';
   if DirPathExists(Result) then exit;
   Result := DefaultDrive + '\windows\temp\';
-end;
-
-procedure GetDefaultCompilerFilenames(List: TStrings);
-begin
-  List.Add(DefaultDrive + format('\fpc\%s\bin\%s\%s',
-    [DefaultFPCVersion, DefaultFPCTarget, GetDefaultCompilerFilename]));
-  List.Add(AppendPathDelim(ProgramDirectory) + format('fpc\%s\bin\%s\%s',
-    [DefaultFPCVersion, DefaultFPCTarget, GetDefaultCompilerFilename]));
 end;
 
 procedure GetDefaultMakeFilenames(List: TStrings);

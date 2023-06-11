@@ -47,7 +47,7 @@ uses
   // CodeTools
   FileProcs, CodeToolManager, DefineTemplates,
   // LazUtils
-  FileUtil, LazUTF8, LazFileUtils, LazFileCache, LazLoggerBase,
+  FPCAdds, FileUtil, LazUTF8, LazFileUtils, LazFileCache, LazLoggerBase,
   // IdeIntf
   IdeIntfStrConsts, MacroDefIntf, IDEDialogs, IDEImagesIntf, IDEUtils,
   // DebuggerIntf

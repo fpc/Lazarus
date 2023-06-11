@@ -62,14 +62,6 @@ var
   SecondaryConfigPath: string;
 
 {---------------------------------------------------------------------------
-  function FindDefaultCompilerPath: string;
- ---------------------------------------------------------------------------}
-function FindDefaultCompilerPath: string;
-begin
-  Result:=FindDefaultExecutablePath(GetDefaultCompilerFilename);
-end;
-
-{---------------------------------------------------------------------------
   function FindDefaultMakePath: string;
  ---------------------------------------------------------------------------}
 function FindDefaultMakePath: string;
@@ -94,13 +86,6 @@ end;
 function GetDefaultTestBuildDirectory: string;
 begin
   Result:='~/tmp/';
-end;
-
-procedure GetDefaultCompilerFilenames(List: TStrings);
-begin
-  AddFilenameToList(List,'/usr/local/bin/'+GetDefaultCompilerFilename);
-  AddFilenameToList(List,'/usr/bin/'+GetDefaultCompilerFilename);
-  AddFilenameToList(List,'/opt/fpc/'+GetDefaultCompilerFilename);
 end;
 
 procedure GetDefaultMakeFilenames(List: TStrings);

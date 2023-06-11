@@ -82,6 +82,9 @@ Files in this package are for the main configuration of the IDE."/>
     </Files>
     <RequiredPkgs>
       <Item>
+        <PackageName Value="CodeTools"/>
+      </Item>
+      <Item>
         <PackageName Value="DebuggerIntf"/>
       </Item>
       <Item>
@@ -89,9 +92,6 @@ Files in this package are for the main configuration of the IDE."/>
       </Item>
       <Item>
         <PackageName Value="LazUtils"/>
-      </Item>
-      <Item>
-        <PackageName Value="CodeTools"/>
       </Item>
       <Item>
         <PackageName Value="FCL"/>

@@ -105,6 +105,8 @@ function CheckFPCExeQuality(AFilename: string; out Note: string;
 function SearchFPCExeCandidates(StopIfFits: boolean;
   const TestSrcFilename: string): TSDFileInfoList;
 procedure SetupFPCExeFilename;
+function FindDefaultCompilerPath: string; // full path of GetDefaultCompilerFilename
+procedure GetDefaultCompilerFilenames(List: TStrings); // list of standard paths of compiler on various distributions
 
 // Pas2js compiler
 function CheckPas2jsQuality(AFilename: string; out Note: string;
@@ -579,6 +581,53 @@ begin
   finally
     List.Free;
   end;
+end;
+
+function FindDefaultCompilerPath: string;
+var
+  FileNames: TStringList;
+  i: Integer;
+begin
+  {$IFDEF MSWindows}
+  Result := SearchFileInPath(GetDefaultCompilerFilename,
+             format('%sfpc\%s\bin\%s',
+               [AppendPathDelim(ProgramDirectory), DefaultFPCVersion, DefaultFPCTarget]),
+             GetEnvironmentVariableUTF8('PATH'),';',
+             []);
+  if Result <> '' then exit;
+  Result := DefaultDrive + AppendPathDelim(ProgramDirectory) +
+    format('fpc\%s\bin\%s\%s',
+    [DefaultFPCVersion, DefaultFPCTarget, GetDefaultCompilerFilename]);
+  {$ELSE}
+  Result:=FindDefaultExecutablePath(GetDefaultCompilerFilename);
+  {$ENDIF}
+  if FileExistsUTF8(Result) then exit;
+
+  FileNames := TStringList.Create;
+  GetDefaultCompilerFilenames(FileNames);
+  try
+    for i := 0 to FileNames.Count -1 do begin
+      Result := FileNames[i];
+      if FileExistsUTF8(Result) then exit;
+    end;
+  finally
+    FileNames.Free;
+  end;
+  Result := '';
+end;
+
+procedure GetDefaultCompilerFilenames(List: TStrings);
+begin
+  {$IFDEF MSWindows}
+  List.Add(DefaultDrive + format('\fpc\%s\bin\%s\%s',
+    [DefaultFPCVersion, DefaultFPCTarget, GetDefaultCompilerFilename]));
+  List.Add(AppendPathDelim(ProgramDirectory) + format('fpc\%s\bin\%s\%s',
+    [DefaultFPCVersion, DefaultFPCTarget, GetDefaultCompilerFilename]));
+  {$ELSE}
+  AddFilenameToList(List,'/usr/local/bin/'+GetDefaultCompilerFilename);
+  AddFilenameToList(List,'/usr/bin/'+GetDefaultCompilerFilename);
+  AddFilenameToList(List,'/opt/fpc/'+GetDefaultCompilerFilename);
+  {$ENDIF}
 end;
 
 function ValueOfKey(const aLine, aKey: string; var aValue: string): boolean;

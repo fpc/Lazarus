@@ -23,12 +23,25 @@ type
   TCompareMemSize = PtrUInt;
   PHandle = ^THandle;
 
+function GetCompiledTargetOS: string;
+function GetCompiledTargetCPU: string;
+
 function StrToWord(const s: string): word;
 
 function AlignToPtr(const p: Pointer): Pointer; inline;
 function AlignToInt(const p: Pointer): Pointer; inline;
 
 implementation
+
+function GetCompiledTargetOS: string;
+begin
+  Result:=lowerCase({$I %FPCTARGETOS%});
+end;
+
+function GetCompiledTargetCPU: string;
+begin
+  Result:=lowerCase({$I %FPCTARGETCPU%});
+end;
 
 function StrToWord(const s: string): word;
 var

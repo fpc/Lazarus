@@ -48,9 +48,7 @@ interface
 uses
   SysUtils, Classes,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8, LazLoggerBase, LazUtilities,
-  // Codetools
-  DefineTemplates;
+  FPCAdds, FileUtil, LazFileUtils, LazUTF8, LazLoggerBase, LazUtilities;
 
 const
   LazarusVersionStr = {$I version.inc};
@@ -81,8 +79,6 @@ procedure GetDefaultTestBuildDirs(List: TStrings);
 function CreateCompilerTestPascalFilename: string;
 
 function FindDefaultExecutablePath(const Executable: string): string;
-procedure GetDefaultCompilerFilenames(List: TStrings); // list of standard paths of compiler on various distributions
-function FindDefaultCompilerPath: string; // full path of GetDefaultCompilerFilename
 function FindDefaultMakePath: string; // full path of "make"
 procedure GetDefaultMakeFilenames(List: TStrings); // list of standard paths of "make" on various distributions
 function GetDefaultFPCSrcDirectories: TStringList;
@@ -392,11 +388,17 @@ begin
   TargetOS:=LowerCase(TargetOS);
   Result:='';
   case TargetOS of
-  'browser','nodejs','electron','module': exit('');
+  'linux',
+  'freebsd',
+  'netbsd',
+  'openbsd',
+  'dragonfly',
+  'darwin',
+  'ios',
+  'solaris',
+  'haiku',
+  'android': Result:='lib';
   end;
-  SrcOS:=GetDefaultSrcOSForTargetOS(TargetOS);
-  if CompareText(SrcOS, 'unix') = 0 then
-    Result:='lib';
 end;
 
 function MakeStandardLibFilename(TargetOS, Filename: string): string;

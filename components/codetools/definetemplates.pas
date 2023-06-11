@@ -60,7 +60,7 @@ uses
   CodeToolsStructs, KeywordFuncLists, LinkScanner, FileProcs,
   // LazUtils
   LazStringUtils, LazFileUtils, FileUtil, LazFileCache,
-  LazUTF8, UTF8Process, LazDbgLog, AvgLvlTree, Laz2_XMLCfg;
+  LazUTF8, UTF8Process, LazDbgLog, AvgLvlTree, Laz2_XMLCfg, FPCAdds;
 
 const
   ExternalMacroStart = ExprEval.ExternalMacroStart;
@@ -1090,8 +1090,8 @@ function GetDefaultSrcCPUForTargetCPU(const TargetCPU: string): string;
 procedure SplitLazarusCPUOSWidgetCombo(const Combination: string;
   out CPU, OS, WidgetSet: string);
 function GetCompiledFPCVersion: integer;
-function GetCompiledTargetOS: string;
-function GetCompiledTargetCPU: string;
+function GetCompiledTargetOS: string; deprecated 'use FPCAdds';
+function GetCompiledTargetCPU: string; deprecated 'use FPCAdds';
 function GetDefaultCompilerFilename(const TargetCPU: string = ''; Cross: boolean = false): string;
 procedure GetTargetProcessors(const TargetCPU: string; aList: TStrings);
 function GetFPCTargetOS(TargetOS: string): string; // normalize
@@ -3717,12 +3717,12 @@ end;
 
 function GetCompiledTargetOS: string;
 begin
-  Result:=lowerCase({$I %FPCTARGETOS%});
+  Result:=FPCAdds.GetCompiledTargetOS;
 end;
 
 function GetCompiledTargetCPU: string;
 begin
-  Result:=lowerCase({$I %FPCTARGETCPU%});
+  Result:=FPCAdds.GetCompiledTargetCPU;
 end;
 
 function GetDefaultCompilerFilename(const TargetCPU: string;

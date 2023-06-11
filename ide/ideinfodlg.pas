@@ -30,7 +30,7 @@ unit IDEInfoDlg;
 interface
 
 uses
-  Classes, SysUtils, LazFileUtils, LazUTF8,
+  Classes, SysUtils, LazFileUtils, LazUTF8, FPCAdds,
   CodeToolManager, DefineTemplates, LinkScanner,
   Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls,
   LCLProc, ButtonPanel, LazHelpHTML, LazHelpIntf,
@@ -243,7 +243,7 @@ begin
   sl.Add('Lazarus version: '+GetLazarusVersionString);
   sl.Add('Lazarus revision: '+LazarusRevisionStr);
   sl.Add('Lazarus build date: '+{$I %date%});
-  sl.Add('Lazarus was compiled for '+GetCompiledTargetCPU+'-'+GetCompiledTargetOS);
+  sl.Add('Lazarus was compiled for '+FPCAdds.GetCompiledTargetCPU+'-'+FPCAdds.GetCompiledTargetOS);
   sl.Add('Lazarus was compiled with FPC '+{$I %FPCVERSION%});
   sl.Add('');
 end;

@@ -36,7 +36,7 @@ uses
   // CodeTools
   DefineTemplates, CodeToolManager, FileProcs,
   // LazUtils
-  LazFileUtils, LazUTF8,
+  FPCAdds, LazFileUtils, LazUTF8,
   // Other
   IDEWindowIntf, LazIDEIntf, BaseBuildManager,
   Project, EnvironmentOpts, LazarusIDEStrConsts, AboutFrm, TransferMacros;

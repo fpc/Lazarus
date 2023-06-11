@@ -360,6 +360,8 @@ begin
 end;
 
 procedure TFilesOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
+var
+  CompFiles: TStringList;
 begin
   with AOptions as TEnvironmentOptions do
   begin
@@ -373,15 +375,25 @@ begin
     // compiler filename
     FOldCompilerFilename:=CompilerFilename;
     FOldRealCompilerFilename:=GetParsedCompilerFilename;
-    with CompilerPathComboBox do
-    begin
-      Items.BeginUpdate;
-      Items.Assign(CompilerFileHistory);
-      AddFilenameToList(Items,FindDefaultCompilerPath);
-      AddFilenameToList(Items,FindDefaultExecutablePath('fpc'+GetExecutableExt));
-      Items.EndUpdate;
+
+    CompFiles:=TStringList.Create;
+    try
+      CompFiles.Assign(CompilerFileHistory);
+      if CompFiles.Count=0 then
+        GetDefaultCompilerFilenames(CompFiles);
+
+      with CompilerPathComboBox do
+      begin
+        Items.BeginUpdate;
+        Items.Assign(CompFiles);
+        AddFilenameToList(Items,FindDefaultCompilerPath);
+        AddFilenameToList(Items,FindDefaultExecutablePath('fpc'+GetExecutableExt));
+        Items.EndUpdate;
+      end;
+      SetComboBoxText(CompilerPathComboBox,CompilerFilename,cstFilename,MaxComboBoxCount);
+    finally
+      CompFiles.Free;
     end;
-    SetComboBoxText(CompilerPathComboBox,CompilerFilename,cstFilename,MaxComboBoxCount);
 
     // FPC src dir
     FOldFPCSourceDir:=FPCSourceDirectory;
