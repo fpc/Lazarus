@@ -34,7 +34,7 @@ uses
   // SynEdit
   SynEditTypes,
   // IDE
-  InputHistory, DiffPatch;
+  InputHistory;
 
 type
 
@@ -51,9 +51,6 @@ type
     SaveOptionsSelSpecific = [ssoEntireScope, ssoSelectedOnly];
     SaveOptions = SaveOptionsGeneral + SaveOptionsSelSpecific;
   private
-    FDiffFlags: TTextDiffFlags;
-    FDiffText2: string;
-    FDiffText2OnlySelection: boolean;
     FFindOptions: array[Boolean] of TSynSearchOptions; // array[SelAvail] - selection available
     function GetFindOptions(const ASelAvail: Boolean): TSynSearchOptions;
     procedure SetFindOptions(const ASelAvail: Boolean;
@@ -64,16 +61,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure Clear; override;
     property FindOptions[const ASelAvail: Boolean]: TSynSearchOptions read GetFindOptions write SetFindOptions;
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string); override;
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string); override;
-
-    // diff dialog
-    property DiffFlags: TTextDiffFlags read FDiffFlags write FDiffFlags;
-    property DiffText2: string read FDiffText2 write FDiffText2;
-    property DiffText2OnlySelection: boolean read FDiffText2OnlySelection
-                                             write FDiffText2OnlySelection;
   end;
 
 const
@@ -98,10 +86,6 @@ var
 
 implementation
 
-const
-  DefaultDiffFlags = [tdfIgnoreCase,tdfIgnoreEmptyLineChanges,
-                      tdfIgnoreLineEnds,tdfIgnoreTrailingSpaces];
-
 { TInputHistoriesWithSearchOpt }
 
 constructor TInputHistoriesWithSearchOpt.Create;
@@ -113,53 +97,6 @@ end;
 destructor TInputHistoriesWithSearchOpt.Destroy;
 begin
   inherited Destroy;
-end;
-
-procedure TInputHistoriesWithSearchOpt.Clear;
-begin
-  inherited Clear;
-  FDiffFlags:=DefaultDiffFlags;
-  FDiffText2:='';
-  FDiffText2OnlySelection:=false;
-end;
-
-procedure TInputHistoriesWithSearchOpt.LoadFromXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string);
-var
-  DiffFlag: TTextDiffFlag;
-begin
-  inherited LoadFromXMLConfig(XMLConfig, Path);
-
-  // diff dialog
-  FDiffFlags:=[];
-  for DiffFlag:=Low(TTextDiffFlag) to High(TTextDiffFlag) do begin
-    if XMLConfig.GetValue(
-      Path+'DiffDialog/Options/'+TextDiffFlagNames[DiffFlag],
-      DiffFlag in DefaultDiffFlags)
-    then
-      Include(FDiffFlags,DiffFlag);
-  end;
-  FDiffText2:=XMLConfig.GetValue(Path+'DiffDialog/Text2/Name','');
-  FDiffText2OnlySelection:=
-    XMLConfig.GetValue(Path+'DiffDialog/Text2/OnlySelection',false);
-end;
-
-procedure TInputHistoriesWithSearchOpt.SaveToXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string);
-var
-  DiffFlag: TTextDiffFlag;
-begin
-  inherited SaveToXMLConfig(XMLConfig, Path);
-
-  // diff dialog
-  for DiffFlag:=Low(TTextDiffFlag) to High(TTextDiffFlag) do begin
-    XMLConfig.SetDeleteValue(
-      Path+'DiffDialog/Options/'+TextDiffFlagNames[DiffFlag],
-      DiffFlag in DiffFlags,DiffFlag in DefaultDiffFlags);
-  end;
-  XMLConfig.SetDeleteValue(Path+'DiffDialog/Text2/Name',FDiffText2,'');
-  XMLConfig.SetDeleteValue(Path+'DiffDialog/Text2/OnlySelection',
-                           FDiffText2OnlySelection,false);
 end;
 
 function TInputHistoriesWithSearchOpt.GetFindOptions(
