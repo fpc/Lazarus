@@ -534,8 +534,8 @@ type
 
   TIdeWatchValue = class(TWatchValue, IWatchAbleResultIntf)
   private
-    function GetChildrenByNameAsArrayEntry(AName: Int64): TObject; // TIdeWatch;
-    function GetChildrenByNameAsField(AName, AClassName: String): TObject; // TIdeWatch;
+    function GetChildrenByNameAsArrayEntry(AName: Int64; DerefCount: Integer): TObject; // TIdeWatch;
+    function GetChildrenByNameAsField(AName, AClassName: String; DerefCount: Integer): TObject; // TIdeWatch;
     function GetWatch: TIdeWatch;
     function GetEnabled: Boolean;
   protected
@@ -566,8 +566,8 @@ type
 
     function MaybeCopyResult(ASourceWatch: TIdeWatch): boolean;
 
-    property ChildrenByNameAsField[AName, AClassName: String]: TObject read GetChildrenByNameAsField;
-    property ChildrenByNameAsArrayEntry[AName: Int64]: TObject read GetChildrenByNameAsArrayEntry;
+    property ChildrenByNameAsField[AName, AClassName: String; DerefCount: Integer]: TObject read GetChildrenByNameAsField;
+    property ChildrenByNameAsArrayEntry[AName: Int64; DerefCount: Integer]: TObject read GetChildrenByNameAsArrayEntry;
   end;
 
   TIdeTempWatchValue = class(TIdeWatchValue)
@@ -604,8 +604,8 @@ type
     FParentWatch: TIdeWatch;
 
     function GetChildWatch(ADispName, AnExpr: String): TIdeWatch;
-    function GetChildrenByNameAsArrayEntry(AName: Int64): TIdeWatch;
-    function GetChildrenByNameAsField(AName, AClassName: String): TIdeWatch;
+    function GetChildrenByNameAsArrayEntry(AName: Int64; DerefCount: Integer): TIdeWatch;
+    function GetChildrenByNameAsField(AName, AClassName: String; DerefCount: Integer): TIdeWatch;
     function GetTopParentWatch: TIdeWatch;
     function GetValue(const AThreadId: Integer; const AStackFrame: Integer): TIdeWatchValue;
     function GetAnyValidParentWatchValue(AThreadId: Integer; AStackFrame: Integer): TIdeWatchValue;
@@ -636,8 +636,8 @@ type
     procedure BeginChildUpdate;
     procedure EndChildUpdate;
     procedure LimitChildWatchCount(AMaxCnt: Integer; AKeepIndexEntriesBelow: Int64 = low(Int64));
-    property ChildrenByNameAsField[AName, AClassName: String]: TIdeWatch read GetChildrenByNameAsField;
-    property ChildrenByNameAsArrayEntry[AName: Int64]: TIdeWatch read GetChildrenByNameAsArrayEntry;
+    property ChildrenByNameAsField[AName, AClassName: String; DerefCount: Integer]: TIdeWatch read GetChildrenByNameAsField;
+    property ChildrenByNameAsArrayEntry[AName: Int64; DerefCount: Integer]: TIdeWatch read GetChildrenByNameAsArrayEntry;
     function HasAllValidParents(AThreadId: Integer; AStackFrame: Integer): boolean;
     property ParentWatch: TIdeWatch read FParentWatch;
     property TopParentWatch: TIdeWatch read GetTopParentWatch;
@@ -949,8 +949,8 @@ type
     function GetDisplayFormat: TWatchDisplayFormat;
     function GetTypeInfo: TDBGType; deprecated;
 
-    function GetChildrenByNameAsArrayEntry(AName: Int64): TObject;
-    function GetChildrenByNameAsField(AName, AClassName: String): TObject;
+    function GetChildrenByNameAsArrayEntry(AName: Int64; DerefCount: Integer): TObject;
+    function GetChildrenByNameAsField(AName, AClassName: String; DerefCount: Integer): TObject;
 
   protected
     function FindParentValue: TIdeLocalsValue; virtual;
@@ -4378,7 +4378,8 @@ begin
     Result := ddsEvaluating; // ddsWaitForParent;
 end;
 
-function TIdeWatchValue.GetChildrenByNameAsArrayEntry(AName: Int64): TObject;
+function TIdeWatchValue.GetChildrenByNameAsArrayEntry(AName: Int64;
+  DerefCount: Integer): TObject;
 begin
   Result := nil;
   if FWatch = nil then
@@ -4389,11 +4390,11 @@ begin
     exit;
   end;
 
-  Result := Watch.ChildrenByNameAsArrayEntry[AName];
+  Result := Watch.ChildrenByNameAsArrayEntry[AName, DerefCount];
 end;
 
-function TIdeWatchValue.GetChildrenByNameAsField(AName, AClassName: String
-  ): TObject;
+function TIdeWatchValue.GetChildrenByNameAsField(AName, AClassName: String;
+  DerefCount: Integer): TObject;
 begin
   Result := nil;
   if FWatch = nil then
@@ -4404,7 +4405,7 @@ begin
     exit;
   end;
 
-  Result := Watch.ChildrenByNameAsField[AName, AClassName];
+  Result := Watch.ChildrenByNameAsField[AName, AClassName, DerefCount];
 end;
 
 function TIdeWatchValue.GetWatch: TIdeWatch;
@@ -6807,23 +6808,24 @@ begin
   EndChildUpdate;
 end;
 
-function TIdeWatch.GetChildrenByNameAsArrayEntry(AName: Int64): TIdeWatch;
+function TIdeWatch.GetChildrenByNameAsArrayEntry(AName: Int64;
+  DerefCount: Integer): TIdeWatch;
 begin
-  Result := GetChildWatch(IntToStr(AName),
-    GetExpressionForArrayElement(Expression, AName)
+  Result := GetChildWatch(StringOfChar('^', DerefCount) + IntToStr(AName),
+    GetExpressionForArrayElement(Expression + StringOfChar('^', DerefCount), AName)
   );
 end;
 
-function TIdeWatch.GetChildrenByNameAsField(AName, AClassName: String
-  ): TIdeWatch;
+function TIdeWatch.GetChildrenByNameAsField(AName, AClassName: String;
+  DerefCount: Integer): TIdeWatch;
 var
   Expr: String;
 begin
-  Expr := Expression;
+  Expr := Expression + StringOfChar('^', DerefCount);
   if AClassName <> '' then
     Expr := AClassName + '(' + Expr + ')';
   Expr := Expr + '.' + AName;
-  Result := GetChildWatch(AName, Expr);
+  Result := GetChildWatch(StringOfChar('^', DerefCount) + AName, Expr);
 end;
 
 function TIdeWatch.CreateChildWatches: TIdeWatches;
@@ -7343,24 +7345,25 @@ begin
   Result := nil;
 end;
 
-function TIdeLocalsValue.GetChildrenByNameAsArrayEntry(AName: Int64): TObject;
+function TIdeLocalsValue.GetChildrenByNameAsArrayEntry(AName: Int64;
+  DerefCount: Integer): TObject;
 begin
-  Result := GetSubLocal(IntToStr(AName),
-    GetExpressionForArrayElement(Name, AName)
+  Result := GetSubLocal(StringOfChar('^', DerefCount) + IntToStr(AName),
+    GetExpressionForArrayElement(Name + StringOfChar('^', DerefCount), AName)
   );
 end;
 
-function TIdeLocalsValue.GetChildrenByNameAsField(AName, AClassName: String
-  ): TObject;
+function TIdeLocalsValue.GetChildrenByNameAsField(AName, AClassName: String;
+  DerefCount: Integer): TObject;
 var
   Expr: String;
 begin
-  Expr := Name;
+  Expr := Name + StringOfChar('^', DerefCount);
   // no defClassAutoCast for locals // if changed also update FindParentValue
   //if AClassName <> '' then
   //  Expr := AClassName + '(' + Expr + ')';
   Expr := Expr + '.' + AName;
-  Result := GetSubLocal(AName, Expr);
+  Result := GetSubLocal(StringOfChar('^', DerefCount) + AName, Expr);
 end;
 
 function TIdeLocalsValue.FindParentValue: TIdeLocalsValue;

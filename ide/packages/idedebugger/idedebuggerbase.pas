@@ -34,8 +34,8 @@ type
   end;
 
   IWatchAbleResultIntf = interface ['wdr']
-    function GetChildrenByNameAsArrayEntry(AName: Int64): TObject;
-    function GetChildrenByNameAsField(AName, AClassName: String): TObject;
+    function GetChildrenByNameAsArrayEntry(AName: Int64; DerefCount: Integer): TObject;
+    function GetChildrenByNameAsField(AName, AClassName: String; DerefCount: Integer): TObject;
 
     function GetEnabled: Boolean;
     function GetValidity: TDebuggerDataState;
@@ -44,8 +44,8 @@ type
     function GetValue: string;
     function GetResultData: TWatchResultData;
 
-    property ChildrenByNameAsField[AName, AClassName: String]: TObject read GetChildrenByNameAsField;
-    property ChildrenByNameAsArrayEntry[AName: Int64]: TObject read GetChildrenByNameAsArrayEntry;
+    property ChildrenByNameAsField[AName, AClassName: String; DerefCount: Integer]: TObject read GetChildrenByNameAsField;
+    property ChildrenByNameAsArrayEntry[AName: Int64; DerefCount: Integer]: TObject read GetChildrenByNameAsArrayEntry;
 
     property Enabled: Boolean read GetEnabled;
     property Validity: TDebuggerDataState read GetValidity;

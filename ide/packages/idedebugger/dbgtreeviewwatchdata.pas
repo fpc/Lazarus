@@ -155,6 +155,9 @@ begin
   end;
 
   ResData := AWatchAbleResult.ResultData;
+  while (ResData <> nil) and (ResData.ValueKind = rdkPointerVal) do
+    ResData := ResData.DerefData;
+
   if (ResData <> nil) and
      (ResData.FieldCount > 0) and
      (ResData.ValueKind <> rdkConvertRes)
@@ -180,7 +183,7 @@ procedure TDbgTreeViewWatchDataMgr.DoUpdateArraySubItems(AWatchAble: TObject;
   ChildCount: LongWord);
 var
   NewWatchAble: TObject;
-  i, TotalCount: Integer;
+  i, TotalCount, DerefCount: Integer;
   ResData: TWatchResultData;
   ExistingNode, nd: PVirtualNode;
   Nav: TArrayNavigationBar;
@@ -188,6 +191,11 @@ var
 begin
   ChildCount := 0;
   ResData := AWatchAbleResult.ResultData;
+  DerefCount := 0;
+  while (ResData <> nil) and (ResData.ValueKind = rdkPointerVal) do begin
+    ResData := ResData.DerefData;
+    inc(DerefCount);
+  end;
   if (ResData = nil) then
     exit;
 
@@ -226,7 +234,7 @@ begin
 
   Offs := Nav.Index;
   for i := 0 to ChildCount - 1 do begin
-    NewWatchAble := AWatchAbleResult.ChildrenByNameAsArrayEntry[Offs +  i];
+    NewWatchAble := AWatchAbleResult.ChildrenByNameAsArrayEntry[Offs +  i, DerefCount];
     if NewWatchAble = nil then begin
       dec(ChildCount);
       continue;
@@ -265,9 +273,18 @@ var
   AnchClass: String;
   NewWatchAble: TObject;
   ChildInfo: TWatchResultDataFieldInfo;
+  DerefCount: Integer;
 begin
   ChildCount := 0;
   ResData := AWatchAbleResult.ResultData;
+  DerefCount := 0;
+  while (ResData <> nil) and (ResData.ValueKind = rdkPointerVal) do begin
+    ResData := ResData.DerefData;
+    inc(DerefCount);
+  end;
+  if ResData = nil then
+    exit;
+
   ExistingNode := FTreeView.GetFirstChildNoInit(AVNode);
   if ExistingNode <> nil then
     FTreeView.NodeControl[ExistingNode].Free;
@@ -276,7 +293,7 @@ begin
   if ResData.StructType <> dstRecord then
     AnchClass := ResData.TypeName;
   for ChildInfo in ResData do begin
-    NewWatchAble := AWatchAbleResult.ChildrenByNameAsField[ChildInfo.FieldName, AnchClass];
+    NewWatchAble := AWatchAbleResult.ChildrenByNameAsField[ChildInfo.FieldName, AnchClass, DerefCount];
     if NewWatchAble = nil then begin
       continue;
     end;
@@ -318,9 +335,9 @@ begin
     AnchClass := TypInfo.TypeName;
     for i := 0 to TypInfo.Fields.Count-1 do begin
       if IsGdbmiArray then
-        NewWatchAble := AWatchAbleResult.ChildrenByNameAsArrayEntry[StrToInt64Def(TypInfo.Fields[i].Name, 0)]
+        NewWatchAble := AWatchAbleResult.ChildrenByNameAsArrayEntry[StrToInt64Def(TypInfo.Fields[i].Name, 0), 0]
       else
-        NewWatchAble := AWatchAbleResult.ChildrenByNameAsField[TypInfo.Fields[i].Name, AnchClass];
+        NewWatchAble := AWatchAbleResult.ChildrenByNameAsField[TypInfo.Fields[i].Name, AnchClass, 0];
       if NewWatchAble = nil then begin
         dec(ChildCount);
         continue;
@@ -422,6 +439,7 @@ procedure TDbgTreeViewWatchDataMgr.UpdateWatchData(AWatchAble: TObject;
   AnIgnoreNodeVisible: Boolean);
 var
   TypInfo: TDBGType;
+  ResData: TWatchResultData;
   HasChildren: Boolean;
   c: LongWord;
 begin
@@ -450,12 +468,15 @@ begin
      ((DebugBoss = nil) or (DebugBoss.State <> dsRun))
   then begin
     TypInfo := AWatchAbleResult.TypeInfo;
+    ResData := AWatchAbleResult.ResultData;
+    while (ResData <> nil) and (ResData.ValueKind = rdkPointerVal) do
+      ResData := ResData.DerefData;
     HasChildren := ( (TypInfo <> nil) and (TypInfo.Fields <> nil) and (TypInfo.Fields.Count > 0) ) or
-                   ( (AWatchAbleResult.ResultData <> nil) and
-                     ( ( (AWatchAbleResult.ResultData.FieldCount > 0) and (AWatchAbleResult.ResultData.ValueKind <> rdkConvertRes) )
+                   ( (ResData <> nil) and
+                     ( ( (ResData.FieldCount > 0) and (ResData.ValueKind <> rdkConvertRes) )
                        or
-                       //( (AWatchAbleResult.ResultData.ValueKind = rdkArray) and (AWatchAbleResult.ResultData.ArrayLength > 0) )
-                       (AWatchAbleResult.ResultData.ArrayLength > 0)
+                       //( (ResData.ValueKind = rdkArray) and (ResData.ArrayLength > 0) )
+                       (ResData.ArrayLength > 0)
                    ) );
     FTreeView.HasChildren[AVNode] := HasChildren;
 
