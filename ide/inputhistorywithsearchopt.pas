@@ -30,11 +30,11 @@ interface
 
 uses
   // LazUtils
-  Laz2_XMLCfg, LazFileUtils,
+  Laz2_XMLCfg,
   // SynEdit
   SynEditTypes,
   // IDE
-  LazConf, InputHistory, DiffPatch;
+  InputHistory, DiffPatch;
 
 type
 
@@ -65,8 +65,6 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear; override;
-    procedure SetLazarusDefaultFilename; override;
-
     property FindOptions[const ASelAvail: Boolean]: TSynSearchOptions read GetFindOptions write SetFindOptions;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string); override;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string); override;
@@ -101,7 +99,6 @@ var
 implementation
 
 const
-  DefaultHistoryFile = 'inputhistory.xml';
   DefaultDiffFlags = [tdfIgnoreCase,tdfIgnoreEmptyLineChanges,
                       tdfIgnoreLineEnds,tdfIgnoreTrailingSpaces];
 
@@ -124,16 +121,6 @@ begin
   FDiffFlags:=DefaultDiffFlags;
   FDiffText2:='';
   FDiffText2OnlySelection:=false;
-end;
-
-procedure TInputHistoriesWithSearchOpt.SetLazarusDefaultFilename;
-var
-  ConfFileName: string;
-begin
-  ConfFileName:=AppendPathDelim(GetPrimaryConfigPath)+DefaultHistoryFile;
-  CopySecondaryConfigFile(DefaultHistoryFile);
-  FFilename:=ConfFilename;
-  inherited SetLazarusDefaultFilename;
 end;
 
 procedure TInputHistoriesWithSearchOpt.LoadFromXMLConfig(XMLConfig: TXMLConfig;
