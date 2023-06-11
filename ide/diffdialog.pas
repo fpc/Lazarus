@@ -47,9 +47,10 @@ uses
   // SynEdit
   SynEdit, SynHighlighterDiff,
   // IdeIntf
-  IDEWindowIntf, IDEHelpIntf, IDEImagesIntf, InputHistory,
+  IDEWindowIntf, IDEHelpIntf, IDEImagesIntf,
   // IDE
-  LazarusIDEStrConsts, EditorOptions, DiffPatch, SourceEditor, EnvironmentOpts;
+  LazarusIDEStrConsts, EditorOptions, DiffPatch, SourceEditor,
+  InputhistoryWithSearchOpt, EnvironmentOpts;
 
 type
 
@@ -440,7 +441,7 @@ begin
   
   // get recent Text 2
   i:=0;
-  LastText2Name:=InputHistories.DiffText2;
+  LastText2Name:=InputHistoriesSO.DiffText2;
   if LastText2Name<>'' then
     i:=fAvailableFiles.IndexOfName(LastText2Name);
   if i<0 then i:=0;
@@ -448,7 +449,7 @@ begin
   fSelectedFile2.SetIndex(i);
   
   // set recent options
-  SetDiffOptions(InputHistories.DiffFlags);
+  SetDiffOptions(InputHistoriesSO.DiffFlags);
 
   // and action ...
   UpdateDiff;
@@ -481,13 +482,13 @@ end;
 
 procedure TDiffDlg.SaveSettings;
 begin
-  InputHistories.DiffFlags:=GetDiffOptions;
+  InputHistoriesSO.DiffFlags:=GetDiffOptions;
   if (fSelectedFile2<>nil) and (fSelectedFile2.fFile<>nil) then begin
-    InputHistories.DiffText2:=fSelectedFile2.fFile.Name;
-    InputHistories.DiffText2OnlySelection:=Text2OnlySelectionCheckBox.Checked;
+    InputHistoriesSO.DiffText2:=fSelectedFile2.fFile.Name;
+    InputHistoriesSO.DiffText2OnlySelection:=Text2OnlySelectionCheckBox.Checked;
   end else begin
-    InputHistories.DiffText2:='';
-    InputHistories.DiffText2OnlySelection:=false;
+    InputHistoriesSO.DiffText2:='';
+    InputHistoriesSO.DiffText2OnlySelection:=false;
   end;
   IDEDialogLayoutList.SaveLayout(Self);
 end;

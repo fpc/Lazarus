@@ -44,7 +44,7 @@ uses
   LazFileCache, LazFileUtils, LazLoggerBase, LazUTF8, AvgLvlTree, Laz2_XMLCfg,
   LazConfigStorage,
   // IdeConfig
-  LazConf, RecentListProcs, IdeXmlConfigProcs,
+  RecentListProcs, IdeXmlConfigProcs,
   // IdeIntf
   ProjectIntf, IDEDialogs;
 
@@ -162,8 +162,7 @@ type
     FCleanOutputFileMask: string;
     FCleanSourcesFileMask: string;
     FFileDialogSettings: TFileDialogSettings;
-    FFilename: string;
-  
+
     // Find- and replace-history
     FFindHistory: TStringList;
     FFindInFilesSearchOptions: TLazFindInFileSearchOptions;
@@ -187,6 +186,7 @@ type
     
     procedure SetFilename(const AValue: string);
   protected
+    FFilename: string;
     procedure LoadSearchOptions(XMLConfig: TXMLConfig; const Path: string); virtual; abstract;
     procedure SaveSearchOptions(XMLConfig: TXMLConfig; const Path: string); virtual; abstract;
   public
@@ -296,7 +296,6 @@ implementation
 
 
 const
-  DefaultHistoryFile = 'inputhistory.xml';
   InputHistoryVersion = 1;
 
 function CompareIHIgnoreItems(Item1, Item2: Pointer): integer;
@@ -508,12 +507,7 @@ begin
 end;
 
 procedure TInputHistories.SetLazarusDefaultFilename;
-var
-  ConfFileName: string;
 begin
-  ConfFileName:=AppendPathDelim(GetPrimaryConfigPath)+DefaultHistoryFile;
-  CopySecondaryConfigFile(DefaultHistoryFile);
-  FFilename:=ConfFilename;
 end;
 
 procedure TInputHistories.Load;
