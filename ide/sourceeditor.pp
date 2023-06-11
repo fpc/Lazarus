@@ -1791,7 +1791,6 @@ begin
           'Add Watch at Cursor', uemAddWatchPointAtCursor);
       SrcEditMenuInspect:=RegisterIDEMenuCommand(AParent,
           'Inspect...', uemInspect, nil, nil, nil, 'debugger_inspect');
-      SrcEditMenuInspect.Enabled:=False;
       SrcEditMenuStepToCursor:=RegisterIDEMenuCommand(AParent,
           'Run to cursor', lisMenuStepToCursor, nil, nil, nil, 'menu_step_cursor');
       SrcEditMenuRunToCursor:=RegisterIDEMenuCommand(AParent,

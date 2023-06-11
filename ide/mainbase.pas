@@ -1124,6 +1124,7 @@ begin
       CreateMenuItem(itmViewDebugWindows,itmViewWatches,'itmViewWatches',lisMenuViewWatches,'debugger_watches');
       CreateMenuItem(itmViewDebugWindows,itmViewBreakPoints,'itmViewBreakPoints',lisMenuViewBreakPoints,'debugger_breakpoints');
       CreateMenuItem(itmViewDebugWindows,itmViewLocals,'itmViewLocals',lisMenuViewLocalVariables);
+      CreateMenuItem(itmViewDebugWindows,itmRunMenuInspect,'itmRunMenuInspect',lisMenuInspect, 'debugger_inspect');
       if HasConsoleSupport then
         CreateMenuItem(itmViewDebugWindows,itmViewPseudoTerminal,'itmViewPseudoTerminal',lisMenuViewPseudoTerminal)
       else
@@ -1317,7 +1318,6 @@ begin
 
     CreateMenuSeparatorSection(mnuRun,itmRunDebugging,'itmRunDebugging');
     ParentMI:=itmRunDebugging;
-    CreateMenuItem(ParentMI,itmRunMenuInspect,'itmRunMenuInspect',lisMenuInspect, 'debugger_inspect', False);
     CreateMenuItem(ParentMI,itmRunMenuEvaluate,'itmRunMenuEvaluate',lisMenuEvaluate, 'debugger_modify', False);
     CreateMenuItem(ParentMI,itmRunMenuAddWatch,'itmRunMenuAddWatch',lisMenuAddWatch, '', False);
     CreateMenuSubSection(ParentMI,itmRunMenuAddBreakpoint,'itmRunMenuAddBreakpoint',lisMenuAddBreakpoint, '');

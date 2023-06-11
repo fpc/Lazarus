@@ -2295,9 +2295,6 @@ begin
     itmRunMenuEvaluate.Enabled        := CanRun and (dcEvaluate in AvailCommands);
     // Evaluate / modify
     SrcEditMenuEvaluateModify.Enabled := CanRun and (dcEvaluate in AvailCommands);
-    // Inspect
-    SrcEditMenuInspect.Enabled        := CanRun and (dcEvaluate in AvailCommands);
-    itmRunMenuInspect.Enabled         := CanRun and (dcEvaluate in AvailCommands);
     // Add watch
     itmRunMenuAddWatch.Enabled        := True; // always allow to add a watch
 

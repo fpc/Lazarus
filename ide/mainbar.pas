@@ -189,6 +189,7 @@ type
           itmViewWatches: TIDEMenuCommand;
           itmViewBreakpoints: TIDEMenuCommand;
           itmViewLocals: TIDEMenuCommand;
+          itmRunMenuInspect: TIDEMenuCommand;
           itmViewRegisters: TIDEMenuCommand;
           itmViewCallStack: TIDEMenuCommand;
           itmViewThreads: TIDEMenuCommand;
@@ -315,7 +316,6 @@ type
         itmRunMenuRunFile: TIDEMenuCommand;
         itmRunMenuConfigBuildFile: TIDEMenuCommand;
       //itmRunDebugging: TIDEMenuSection;
-        itmRunMenuInspect: TIDEMenuCommand;
         itmRunMenuEvaluate: TIDEMenuCommand;
         itmRunMenuAddWatch: TIDEMenuCommand;
         //itmRunMenuAddBreakpoint: TIDEMenuSection;
