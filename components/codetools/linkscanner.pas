@@ -4116,7 +4116,7 @@ var
   begin
     if MissingIncludeFile=nil then
       MissingIncludeFile:=TMissingIncludeFile.Create(AFilename,'');
-    MissingIncludeFile.IncludePath:=IncludePath;
+    MissingIncludeFile.IncludePath:=Values.Variables[ExternalMacroStart+'INCPATH'];
   end;
 
   function SearchPath(const APath, RelFilename: string): boolean;
@@ -4135,9 +4135,11 @@ var
 
   function Search(const RelFilename: string): boolean;
   var
-    IsVirtualUnit: Boolean;
+    IsVirtualUnit, AnyCase: Boolean;
+    Dir, IncFile: String;
   begin
-    IsVirtualUnit:=not FilenameIsAbsolute(FMainSourceFilename);
+    Dir:=ExtractFilePath(FMainSourceFilename);
+    IsVirtualUnit:=not FilenameIsAbsolute(Dir);
     if IsVirtualUnit then begin
       // main source is virtual -> allow virtual include file
       NewCode:=LoadIncludeFile(RelFilename,true);
@@ -4146,7 +4148,7 @@ var
     end else begin
       // main source has absolute filename
       // -> search in directory of unit
-      ExpFilename:=ExtractFilePath(FMainSourceFilename)+RelFilename;
+      ExpFilename:=Dir+RelFilename;
       NewCode:=LoadIncludeFile(ExpFilename);
       Result:=(NewCode<>nil);
       if Result then exit;
@@ -4154,32 +4156,14 @@ var
 
     if not HasPathDelims then begin
       // file without path -> search in inc paths
-      if MissingIncludeFile=nil then
-        IncludePath:=Values.Variables[ExternalMacroStart+'INCPATH']
-      else
-        IncludePath:=MissingIncludeFile.IncludePath;
 
-      {$IFDEF VerboseIncludeSearch}
-      DebugLn('TLinkScanner.SearchIncludeFile IncPath="',IncludePath,'"');
-      {$ENDIF}
-      PathStart:=1;
-      PathEnd:=PathStart;
-      while PathEnd<=length(IncludePath) do begin
-        if IncludePath[PathEnd]=';' then begin
-          if PathEnd>PathStart then begin
-            CurPath:=TrimFilename(copy(IncludePath,PathStart,PathEnd-PathStart));
-            Result:=SearchPath(CurPath,RelFilename);
-            if Result then exit;
-          end;
-          PathStart:=PathEnd+1;
-          PathEnd:=PathStart;
-        end else
-          inc(PathEnd);
-      end;
-      if PathEnd>PathStart then begin
-        CurPath:=TrimFilename(copy(IncludePath,PathStart,PathEnd-PathStart));
-        Result:=SearchPath(CurPath,RelFilename);
-        if Result then exit;
+      AnyCase:=Values.IsDefined('PAS2JS');
+
+      IncFile:=DirectoryCachePool.FindIncludeFileInDirectory(Dir,AFilename,AnyCase);
+      if IncFile<>'' then begin
+        NewCode:=FOnLoadSource(Self,ExpFilename,true);
+        Result:=(NewCode<>nil);
+        exit;
       end;
 
       // then search the include file in directories defines in fpc.cfg (by -Fi option)
@@ -4187,7 +4171,7 @@ var
       begin
         NewCode:=FOnLoadSource(Self,ExpFilename,true);
         Result:=(NewCode<>nil);
-        if Result then exit;
+        exit;
       end;
     end;
 
