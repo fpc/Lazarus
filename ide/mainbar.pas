@@ -512,7 +512,7 @@ begin
 end;
 
 function TMainIDEBar.CalcNonClientHeight: Integer;
-{$IF DEFINED(LCLGtk) OR DEFINED(LCLQt) OR DEFINED(LCLQt6)}
+{$IF DEFINED(LCLGtk) OR DEFINED(LCLQt)}
 var
   WindowRect, WindowClientRect: TRect;
 {$ENDIF}
@@ -533,7 +533,7 @@ begin
   if not Showing then
     Exit(0);
 
-  {$IF DEFINED(LCLGtk) OR DEFINED(LCLQt) OR DEFINED(LCLQt6)}
+  {$IF DEFINED(LCLGtk) OR DEFINED(LCLQt)}
   //Gtk + Qt
   //retrieve real main menu height because
   // - Gtk, Qt:  SM_CYMENU does not work
@@ -552,6 +552,7 @@ begin
   //Win32 tested - behaves correctly
   //Gtk2 tested - behaves correctly
   //Qt5 tested - behaves correctly
+  //Qt6 tested - behaves correctly
   Result := 0;
   {$ENDIF}
 end;
