@@ -38,7 +38,8 @@ interface
 
 uses
   // FCL
-  Classes, SysUtils, contnrs, typinfo, Laz_AVL_Tree,
+  Classes, SysUtils, Contnrs, TypInfo, Laz_AVL_Tree,
+  {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
   // LCL
   Forms, ImgList,
   // Codetools
@@ -46,7 +47,7 @@ uses
   CodeCache, CodeToolsCfgScript, CodeToolsStructs, BasicCodeTools,
   // LazUtils
   FileUtil, LazFileUtils, LazUtilities, LazFileCache, LazUTF8, FileReferenceList,
-  LazTracer, LazLoggerBase, UITypes, Laz2_XMLCfg, AvgLvlTree,
+  LazTracer, LazLoggerBase, Laz2_XMLCfg, AvgLvlTree,
   // BuildIntf
   MacroIntf, MacroDefIntf, IDEOptionsIntf, PublishModuleIntf,
   PackageDependencyIntf, PackageIntf, FppkgIntf,

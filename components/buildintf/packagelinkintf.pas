@@ -6,8 +6,9 @@ interface
 
 uses
   SysUtils, Classes,
+  {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
   // LazUtils
-  LazFileUtils, UITypes,
+  LazFileUtils,
   // BuildIntf
   PackageDependencyIntf, PackageIntf;
 

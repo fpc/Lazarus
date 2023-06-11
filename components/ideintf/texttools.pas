@@ -17,10 +17,9 @@ interface
 
 uses
   Classes, SysUtils,
+  {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
   // LCL
-  LCLType,
-  // LazUtils
-  UITypes;
+  LCLType;
 
   { Sorting }
 type

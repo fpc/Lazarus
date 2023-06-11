@@ -18,10 +18,11 @@ interface
 
 uses
   Classes,
+  {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
   // LCL
   Dialogs,
   // LazUtils
-  UITypes, LazFileCache,
+  LazFileCache,
   // BuildIntf
   LazMsgWorker;
 

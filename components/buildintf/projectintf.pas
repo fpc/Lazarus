@@ -17,8 +17,9 @@ interface
 
 uses
   Classes, SysUtils, Contnrs,
+  {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
   // LazUtils
-  FileUtil, LazFileUtils, LazFileCache, LazMethodList, UITypes, AvgLvlTree,
+  FileUtil, LazFileUtils, LazFileCache, LazMethodList, AvgLvlTree,
   // BuildIntf
   IDEOptionsIntf, NewItemIntf, ProjPackIntf, CompOptsIntf, BuildStrConsts;
 

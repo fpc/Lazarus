@@ -32,10 +32,11 @@ interface
 
 uses
   Classes, SysUtils,
+  {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
   // LCL
   Forms, Controls, Dialogs, StdCtrls, Grids, Menus, ComCtrls, ButtonPanel, LCLProc,
   // LazUtils
-  LazFileUtils, LazLoggerBase, UITypes,
+  LazFileUtils, LazLoggerBase,
   // IdeIntf
   IDEDialogs, CompOptsIntf, IDEOptionsIntf, LazIDEIntf, IDEImagesIntf,
   // IDE

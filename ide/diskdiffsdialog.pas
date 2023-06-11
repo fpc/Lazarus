@@ -30,12 +30,13 @@ interface
 uses
   // RTL + FCL
   Classes, SysUtils,
+  {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
   // LCL
   LCLProc, LCLType, Forms, StdCtrls, ExtCtrls, CheckLst, ButtonPanel, Buttons,
   // CodeTools
   FileProcs, CodeCache,
   // LazUtils
-  LazFileUtils, UITypes, LazFileCache,
+  LazFileUtils, LazFileCache,
   // IdeIntf
   IDEImagesIntf,
   // SynEdit

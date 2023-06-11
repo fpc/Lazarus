@@ -27,11 +27,10 @@ interface
 
 uses
   Classes, SysUtils,
+  {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
   // LCL
   LResources, LCLType, Forms, Controls, Graphics, Dialogs,
   StdCtrls, ExtCtrls, Spin, Grids, ActnList, Buttons, EditBtn,
-  // LazUtils
-  UITypes,
   // IdeIntf
   IDECommands, MenuIntf, LazIDEIntf, SrcEditorIntf;
 

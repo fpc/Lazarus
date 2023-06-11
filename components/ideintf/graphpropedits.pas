@@ -17,10 +17,11 @@ interface
 
 uses
   Types, Classes, TypInfo, SysUtils, Math,
+  {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
   // LCL
   LCLType, Forms, Graphics, Buttons, Menus, Dialogs, Grids, ImgList, EditBtn,
   // LazUtils
-  GraphType, LazFileUtils, UITypes,
+  GraphType, LazFileUtils,
   // IdeIntf
   PropEdits, GraphicPropEdit; // defines TGraphicPropertyEditorForm
 

@@ -16,9 +16,10 @@ unit PackageIntf;
 interface
 
 uses
-  Classes, SysUtils, contnrs,
+  Classes, SysUtils, Contnrs,
+  {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
   // LazUtils
-  LazConfigStorage, LazMethodList, LazLoggerBase, UITypes,
+  LazConfigStorage, LazMethodList, LazLoggerBase,
   // BuildIntf
   NewItemIntf, ProjPackIntf, PackageDependencyIntf, IDEOptionsIntf;
   

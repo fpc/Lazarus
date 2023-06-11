@@ -5,11 +5,12 @@ unit DBGridColumnsPropEditForm;
 interface
 
 uses
-  Classes, SysUtils, typinfo, db,
+  Classes, SysUtils, TypInfo, DB,
+  {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
   // LCL
   LCLType, Dialogs, Forms, ComCtrls, StdCtrls, ActnList, DBGrids,
   // LazUtils
-  UITypes, LazLoggerBase,
+  LazLoggerBase,
   // IdeIntf
   ObjInspStrConsts, IDEImagesIntf, PropEdits, PropEditUtils;
 

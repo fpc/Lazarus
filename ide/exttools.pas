@@ -36,9 +36,10 @@ interface
 uses
   // RTL + FCL
   Classes, SysUtils, math, process, Pipes, Laz_AVL_Tree,
+  {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
   // LazUtils
   FileUtil, LazFileUtils, LazUtilities, LazLoggerBase, UTF8Process, LazUTF8,
-  UITypes, AvgLvlTree,
+  AvgLvlTree,
   // BuildIntf
   IDEExternToolIntf, BaseIDEIntf, MacroIntf, LazMsgWorker,
   // IDE

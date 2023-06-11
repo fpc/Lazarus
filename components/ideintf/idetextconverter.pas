@@ -22,10 +22,11 @@ interface
 
 uses
   Classes, SysUtils, TypInfo,
+  {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
   // LCL
   LCLProc,
   // LazUtils
-  UITypes, FileUtil, LazFileUtils, LazUTF8, LazLoggerBase,
+  FileUtil, LazFileUtils, LazUTF8, LazLoggerBase,
   // IdeIntf
   SrcEditorIntf, PropEdits, ObjInspStrConsts;
   

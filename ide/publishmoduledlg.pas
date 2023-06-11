@@ -33,10 +33,11 @@ interface
 
 uses
   Classes, SysUtils, StrUtils, Zipper,
+  {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
   // LCL
   LCLType, Forms, StdCtrls, Dialogs, Buttons, ButtonPanel, LCLIntf,
   // LazUtils
-  FileUtil, LazFileUtils, LazStringUtils, LazLoggerBase, UITypes, LazUTF8,
+  FileUtil, LazFileUtils, LazStringUtils, LazLoggerBase, LazUTF8,
   // BuildIntf
   ProjPackIntf, CompOptsIntf, PublishModuleIntf,
   // IdeIntf

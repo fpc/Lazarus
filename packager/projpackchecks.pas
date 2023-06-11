@@ -6,10 +6,11 @@ interface
 
 uses
   Classes, SysUtils,
+  {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
   // LCL
   LCLProc, Forms, Dialogs,
   // LazUtils
-  FileUtil, LazFileUtils, UITypes,
+  FileUtil, LazFileUtils,
   // Codetools
   CodeToolManager, CodeCache,
   // BuildIntf
