@@ -365,7 +365,7 @@ begin
   if Screen.Cursor<>crDefault then
     SetScreenCursor
   else
-    SetCurrentControlCursor
+    SetCurrentControlCursor;
 end;
 
 class procedure TCursorHelper.SetCursorOnActive;
@@ -2017,7 +2017,7 @@ var
   handle : PtrInt;
 begin
   handle := SendSimpleMessage(control, LM_IM_COMPOSITION);
-  Result := TObject(handle) as ICocoaIMEControl
+  Result := TObject(handle) as ICocoaIMEControl;
 end;
 
 class function TCocoaWSCustomControl.CreateHandle(const AWinControl: TWinControl;
