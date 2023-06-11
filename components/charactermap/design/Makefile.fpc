@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for charactermap_ide_pkg 0.1
 #
-#   This file was generated on 15.01.2023
+#   This file was generated on 11-6-23
 
 [package]
 name=charactermap_ide_pkg
@@ -10,7 +10,7 @@ version=0.1
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
-unitdir=../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../buildintf/units/$(CPU_TARGET)-$(OS_TARGET) ../../codetools/units/$(CPU_TARGET)-$(OS_TARGET) ../../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../synedit/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../../ide/packages/ideconfig/lib/$(CPU_TARGET)-$(OS_TARGET) .
+unitdir=../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../buildintf/units/$(CPU_TARGET)-$(OS_TARGET) ../../codetools/units/$(CPU_TARGET)-$(OS_TARGET) ../../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../../ide/packages/ideconfig/lib/$(CPU_TARGET)-$(OS_TARGET) ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../synedit/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) .
 options= -MObjFPC -Scghi -O1 -g -gl -l -vewnhibq -dLCL -dLCL$(LCL_PLATFORM) $(DBG_OPTIONS)
 
 [target]
