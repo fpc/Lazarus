@@ -44,7 +44,7 @@ uses
   LazFileCache, LazFileUtils, LazLoggerBase, LazUTF8, AvgLvlTree, Laz2_XMLCfg,
   LazConfigStorage,
   // IdeConfig
-  DiffPatch, LazConf, RecentListProcs, IdeXmlConfigProcs,
+  LazConf, RecentListProcs, IdeXmlConfigProcs,
   // IdeIntf
   ProjectIntf, IDEDialogs;
 
@@ -161,9 +161,6 @@ type
   private
     FCleanOutputFileMask: string;
     FCleanSourcesFileMask: string;
-    FDiffFlags: TTextDiffFlags;
-    FDiffText2: string;
-    FDiffText2OnlySelection: boolean;
     FFileDialogSettings: TFileDialogSettings;
     FFilename: string;
   
@@ -195,12 +192,12 @@ type
   public
     constructor Create;
     destructor Destroy;  override;
-    procedure Clear;
-    procedure Load;
-    procedure Save;
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    procedure SetLazarusDefaultFilename;
+    procedure Clear; virtual;
+    procedure Load; virtual;
+    procedure Save; virtual;
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string); virtual;
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string); virtual;
+    procedure SetLazarusDefaultFilename; virtual;
 
     // Find- and replace-history
     function AddToFindHistory(const AFindStr: string): boolean;
@@ -241,11 +238,6 @@ type
     // various history lists
     property HistoryLists: THistoryLists read FHistoryLists;
     
-    // diff dialog
-    property DiffFlags: TTextDiffFlags read FDiffFlags write FDiffFlags;
-    property DiffText2: string read FDiffText2 write FDiffText2;
-    property DiffText2OnlySelection: boolean read FDiffText2OnlySelection
-                                             write FDiffText2OnlySelection;
     // new dialog
     property NewProjectType: string read FNewProjectType write FNewProjectType;
     property NewFileType: string read FNewFileType write FNewFileType;
@@ -292,7 +284,7 @@ const
     );
 
 var
-  InputHistories: TInputHistories = nil;
+  InputHistories: TInputHistories = nil; // set by IDE
 
 function CompareIHIgnoreItems(Item1, Item2: Pointer): integer;
 function CompareAnsiStringWithIHIgnoreItem(AString, Item: Pointer): integer;
@@ -306,8 +298,6 @@ implementation
 const
   DefaultHistoryFile = 'inputhistory.xml';
   InputHistoryVersion = 1;
-  DefaultDiffFlags = [tdfIgnoreCase,tdfIgnoreEmptyLineChanges,
-                      tdfIgnoreLineEnds,tdfIgnoreTrailingSpaces];
 
 function CompareIHIgnoreItems(Item1, Item2: Pointer): integer;
 var
@@ -392,9 +382,6 @@ begin
     Height:=0;
     InitialDir:='';
   end;
-  FDiffFlags:=DefaultDiffFlags;
-  FDiffText2:='';
-  FDiffText2OnlySelection:=false;
   FNewProjectType:='';
   FNewFileType:='';
   FLastConvertDelphiProject:='';
@@ -407,7 +394,6 @@ end;
 
 procedure TInputHistories.LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
 var
-  DiffFlag: TTextDiffFlag;
   FIFOption: TLazFindInFileSearchOption;
 begin
   // Find- and replace-history
@@ -444,18 +430,6 @@ begin
                                            DefaultProjectCleanSourcesFileMask);
   // history lists
   FHistoryLists.LoadFromXMLConfig(XMLConfig,Path+'HistoryLists/');
-  // diff dialog
-  FDiffFlags:=[];
-  for DiffFlag:=Low(TTextDiffFlag) to High(TTextDiffFlag) do begin
-    if XMLConfig.GetValue(
-      Path+'DiffDialog/Options/'+TextDiffFlagNames[DiffFlag],
-      DiffFlag in DefaultDiffFlags)
-    then
-      Include(FDiffFlags,DiffFlag);
-  end;
-  FDiffText2:=XMLConfig.GetValue(Path+'DiffDialog/Text2/Name','');
-  FDiffText2OnlySelection:=
-    XMLConfig.GetValue(Path+'DiffDialog/Text2/OnlySelection',false);
 
   // new items
   FNewProjectType:=XMLConfig.GetValue(Path+'New/Project/Type','');
@@ -477,7 +451,6 @@ end;
 
 procedure TInputHistories.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
 var
-  DiffFlag: TTextDiffFlag;
   FIFOption: TLazFindInFileSearchOption;
 begin
   // Find- and replace-history
@@ -512,15 +485,6 @@ begin
                                            DefaultProjectCleanSourcesFileMask);
   // history lists
   FHistoryLists.SaveToXMLConfig(XMLConfig,Path+'HistoryLists/',True);
-  // diff dialog
-  for DiffFlag:=Low(TTextDiffFlag) to High(TTextDiffFlag) do begin
-    XMLConfig.SetDeleteValue(
-      Path+'DiffDialog/Options/'+TextDiffFlagNames[DiffFlag],
-      DiffFlag in DiffFlags,DiffFlag in DefaultDiffFlags);
-  end;
-  XMLConfig.SetDeleteValue(Path+'DiffDialog/Text2/Name',FDiffText2,'');
-  XMLConfig.SetDeleteValue(Path+'DiffDialog/Text2/OnlySelection',
-                           FDiffText2OnlySelection,false);
 
   // new items
   XMLConfig.SetDeleteValue(Path+'New/Project/Type',FNewProjectType,'');
