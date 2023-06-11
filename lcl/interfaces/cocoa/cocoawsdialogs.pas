@@ -901,6 +901,7 @@ end;
 
 procedure TCocoaFilterComboBox.dealloc;
 begin
+  FreeAndNil(Filters);
   NSFilters.release;
   inherited dealloc;
 end;
