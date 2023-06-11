@@ -49,8 +49,6 @@ uses
   SynEdit,
   // IdeIntf
   IDEWindowIntf, IDEImagesIntf, IdeIntfStrConsts,
-  // IdeConfig
-  //EnvironmentOpts,
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfMiscClasses,
   // LazDebuggerIntf

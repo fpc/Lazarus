@@ -14,11 +14,14 @@ uses
   LazLoggerBase,
   // Codetools
   CodeToolManager, CodeCache,
+  //SynEdit
+  SynEdit,
   // IdeIntf
   IDEWindowIntf, IDECommands, IDEImagesIntf, SrcEditorIntf, IDEOptEditorIntf,
   IdeIntfStrConsts,
   // DebuggerIntf
-  DbgIntfDebuggerBase, SynEdit,
+  DbgIntfDebuggerBase,
+  // LazDebuggerIntf
   LazDebuggerIntfBaseTypes,
   // IDEDebugger
   DebuggerDlg, Debugger, BaseDebugManager, IdeDebuggerStringConstants;

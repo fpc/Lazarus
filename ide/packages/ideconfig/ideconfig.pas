@@ -8,9 +8,9 @@ unit IdeConfig;
 interface
 
 uses
-  SearchPathProcs, RecentListProcs, IdeXmlConfigProcs, LazConf, 
-  TransferMacrosIntf, IDEOptionDefs, ModeMatrixOpts, EditorToolBarOptions, 
-  ToolBarOptionsBase, CoolBarOptions, EnvironmentOpts, DiffPatch, 
+  SearchPathProcs, RecentListProcs, IdeXmlConfigProcs, LazConf, IDEOptionDefs, 
+  ModeMatrixOpts, EditorToolBarOptions, ToolBarOptionsBase, CoolBarOptions, 
+  EnvironmentOpts, DiffPatch, TransferMacros, IdeConfStrConsts, 
   LazarusPackageIntf;
 
 implementation

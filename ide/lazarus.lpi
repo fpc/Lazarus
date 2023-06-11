@@ -1012,11 +1012,6 @@
         <UnitName Value="NewDialog"/>
       </Unit>
       <Unit>
-        <Filename Value="transfermacros.pp"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="TransferMacros"/>
-      </Unit>
-      <Unit>
         <Filename Value="checkcompileropts.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>

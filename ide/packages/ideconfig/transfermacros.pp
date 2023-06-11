@@ -43,9 +43,7 @@ uses
   // BuildIntf
   MacroIntf, MacroDefIntf, BaseIDEIntf,
   // IdeConfig
-  TransferMacrosIntf, LazConf,
-  // IDE
-  LazarusIDEStrConsts;
+  LazConf, IdeConfStrConsts;
 
 const
   LazbuildMacrosFileName = 'lazbuildmacros.xml';
@@ -54,7 +52,7 @@ type
 
   { TTransferMacroList }
 
-  TTransferMacroList = class(TTransferMacroListIntf)
+  TTransferMacroList = class
   private
     fItems: TFPList;  // list of TTransferMacro
     FMarkUnhandledMacros: boolean;
@@ -63,8 +61,8 @@ type
     fBusy: TStringList; // current working Macros, used for circle detection
     procedure SetMarkUnhandledMacros(const AValue: boolean);
   protected
-    function GetItems(Index: integer): TTransferMacro; override;
-    procedure SetItems(Index: integer; NewMacro: TTransferMacro); override;
+    function GetItems(Index: integer): TTransferMacro;
+    procedure SetItems(Index: integer; NewMacro: TTransferMacro);
   protected
     function MF_Ext(const Filename:string; const {%H-}Data: PtrInt; var {%H-}Abort: boolean):string; virtual;
     function MF_Path(const Filename:string; const {%H-}Data: PtrInt; var {%H-}Abort: boolean):string; virtual;
@@ -79,27 +77,26 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    function Count: integer; override;
-    property Items[Index: integer]: TTransferMacro
-       read GetItems write SetItems; default;
-    procedure SetValue(const MacroName, NewValue: string); override;
-    procedure Clear; override;
-    procedure Delete(Index: integer); override;
-    procedure Add(NewMacro: TTransferMacro); override;
-    function FindByName(const MacroName: string): TTransferMacro; override;
+    function Count: integer;
+    property Items[Index: integer]: TTransferMacro read GetItems write SetItems; default;
+    procedure SetValue(const MacroName, NewValue: string);
+    procedure Clear;
+    procedure Delete(Index: integer);
+    procedure Add(NewMacro: TTransferMacro);
+    function FindByName(const MacroName: string): TTransferMacro;
     function SubstituteStr(var s: string; const Data: PtrInt = 0;
-      Depth: integer = 0): boolean; override;
+      Depth: integer = 0): boolean;
     procedure ExecuteMacro(const MacroName: string;
       var MacroParam: string; const Data: PtrInt; out Handled, Abort: boolean;
-      Depth: integer); override;
-    class function StrHasMacros(const s: string): boolean; override;
-    property OnSubstitution: TOnSubstitution
-       read fOnSubstitution write fOnSubstitution;
+      Depth: integer);
+    class function StrHasMacros(const s: string): boolean;
+    property OnSubstitution: TOnSubstitution read fOnSubstitution write fOnSubstitution;
     // error handling and loop detection
     property MarkUnhandledMacros: boolean read FMarkUnhandledMacros
                                           write SetMarkUnhandledMacros default true;
     property MaxUsePerMacro: integer read FMaxUsePerMacro write FMaxUsePerMacro default 3;
   end;
+  TTransferMacroListClass = class of TTransferMacroList;
 
   { TLazIDEMacros }
 
@@ -119,18 +116,14 @@ type
     procedure SaveLazbuildMacros; // called by IDE
   end;
 
-function GetGlobalMacroList: TTransferMacroList; inline;
-//procedure SetGlobalMacroList(AGlobalMacroList: TTransferMacroList);
-function GetCompilerParseStamp: integer; inline;
-procedure SetCompilerParseStamp(ACompilerParseStamp: integer); inline;
-
-property GlobalMacroList: TTransferMacroList read GetGlobalMacroList; // write SetGlobalMacroList;
-property CompilerParseStamp: integer read GetCompilerParseStamp write SetCompilerParseStamp;
-
 //type
 //  TCompilerParseStampIncreasedEvent = procedure of object;
 var
   //CompilerParseStampIncreased: TCompilerParseStampIncreasedEvent = nil;
+  GlobalMacroListClass: TTransferMacroListClass = TTransferMacroList;
+  GlobalMacroList: TTransferMacroList = nil;
+
+  CompilerParseStamp: integer = 0; // TimeStamp of base value for macros
   BuildMacroChangeStamp: integer = 0; // TimeStamp of base value for build macros
 
 procedure IncreaseCompilerParseStamp;
@@ -138,34 +131,20 @@ procedure IncreaseCompilerParseStamp;
 //  Automatically calls IncreaseCompilerParseStamp
 procedure IncreaseBuildMacroChangeStamp;
 
+
 implementation
 
 var
   IsIdentChar: array[char] of boolean;
 
-function GetGlobalMacroList: TTransferMacroList;
-begin
-  Result := TransferMacrosIntf.GlobalMacroList as TTransferMacroList;
-end;
-
-//procedure SetGlobalMacroList(AGlobalMacroList: TTransferMacroList);
-//begin
-//  TransferMacrosIntf.GlobalMacroList := AGlobalMacroList;
-//end;
-
-function GetCompilerParseStamp: integer;
-begin
-  Result := TransferMacrosIntf.CompilerParseStamp;
-end;
-
-procedure SetCompilerParseStamp(ACompilerParseStamp: integer);
-begin
-  TransferMacrosIntf.CompilerParseStamp := ACompilerParseStamp;
-end;
-
 procedure IncreaseCompilerParseStamp;
 begin
-  TransferMacrosIntf.IncreaseCompilerParseStamp;
+  if IDEMacros<>nil then
+    IDEMacros.IncreaseBaseStamp;
+  CTIncreaseChangeStamp(CompilerParseStamp);
+  CodeToolBoss.DefineTree.ClearCache;
+  //if Assigned(CompilerParseStampIncreased) then
+  //  CompilerParseStampIncreased();
 end;
 
 procedure IncreaseBuildMacroChangeStamp;
@@ -730,7 +709,6 @@ begin
 end;
 
 initialization
-  TransferMacrosIntf.GlobalMacroListClass := TTransferMacroList;
   InternalInit;
 
 end.

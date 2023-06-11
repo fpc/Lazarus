@@ -47,7 +47,7 @@ uses
   // BuildIntf
   ProjectIntf, IDEOptionsIntf, IDEExternToolIntf,
   // IdeConfig
-  IDEOptionDefs, RecentListProcs, SearchPathProcs, LazConf, TransferMacrosIntf,
+  IDEOptionDefs, RecentListProcs, SearchPathProcs, LazConf, TransferMacros,
   ModeMatrixOpts;
 
 const

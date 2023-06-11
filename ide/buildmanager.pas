@@ -50,10 +50,10 @@ uses
   // IDEIntf
   IDEDialogs, LazIDEIntf, IDEMsgIntf, SrcEditorIntf, InputHistory,
   // IdeConfig
-  LazConf, EnvironmentOpts, ModeMatrixOpts, TransferMacrosIntf,
+  LazConf, EnvironmentOpts, ModeMatrixOpts, TransferMacros, IdeConfStrConsts,
   // IDE
   IDECmdLine, LazarusIDEStrConsts, DialogProcs, IDEProcs,
-  EditDefineTree, ProjectResources, MiscOptions, CompilerOptions, TransferMacros,
+  EditDefineTree, ProjectResources, MiscOptions, CompilerOptions,
   ExtTools, etMakeMsgParser, etFPCMsgParser, etPas2jsMsgParser, Compiler,
   FPCSrcScan, PackageDefs, PackageSystem, Project, ProjectIcon, BaseBuildManager,
   ApplicationBundle, RunParamsOpts, IdeTransferMacros, SearchPathProcs;
@@ -420,7 +420,7 @@ end;
 procedure TBuildManager.SetupTransferMacros;
 begin
   LazConfMacroFunc:=@BMLazConfMacroFunction;
-  TransferMacrosIntf.GlobalMacroList:=TTransferMacroList.Create;
+  GlobalMacroList:=TTransferMacroList.Create;
   GlobalMacroList.OnSubstitution:=@OnMacroSubstitution;
   IDEMacros:=TLazIDEMacros.Create;
   CompilerOptions.OnParseString:=@OnSubstituteCompilerOption;

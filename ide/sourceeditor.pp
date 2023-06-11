@@ -73,11 +73,11 @@ uses
   // IdeDebugger
   BaseDebugManager, Debugger, IdeDebuggerStringConstants,
   // IdeConfig
-  EnvironmentOpts, IDEOptionDefs, TransferMacrosIntf,
+  EnvironmentOpts, IDEOptionDefs, TransferMacros,
   // IDE units
   IDECmdLine, LazarusIDEStrConsts, EditorOptions, EnvGuiOptions,
   WordCompletion, FindReplaceDialog, IDEProcs,
-  IDEHelpManager, MacroPromptDlg, TransferMacros, CodeContextForm,
+  IDEHelpManager, MacroPromptDlg, CodeContextForm,
   SrcEditHintFrm, etMessagesWnd, etSrcEditMarks, CodeMacroPrompt,
   CodeTemplatesDlg, CodeToolsOptions, editor_general_options, SortSelectionDlg,
   EncloseSelectionDlg, EncloseIfDef, InvertAssignTool, SourceEditProcs,
@@ -1181,7 +1181,7 @@ type
     function MacroFuncSaveAll(const {%H-}s:string; const {%H-}Data: PtrInt;
                               var Abort: boolean): string;
   public
-    procedure InitMacros(AMacroList: TTransferMacroListIntf);
+    procedure InitMacros(AMacroList: TTransferMacroList);
     procedure SetupShortCuts;
 
     function FindUniquePageName(FileName:string; IgnoreEditor: TSourceEditor):string;
@@ -10851,7 +10851,7 @@ begin
   Abort:=LazarusIDE.DoSaveAll([sfCheckAmbiguousFiles,sfSaveNonProjectFiles])<>mrOk;
 end;
 
-procedure TSourceEditorManager.InitMacros(AMacroList: TTransferMacroListIntf);
+procedure TSourceEditorManager.InitMacros(AMacroList: TTransferMacroList);
 begin
   AMacroList.Add(TTransferMacro.Create('Col','',
                  lisCursorColumnInCurrentEditor,@MacroFuncCol,[]));

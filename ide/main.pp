@@ -114,7 +114,7 @@ uses
   // converter
   ChgEncodingDlg, ConvertDelphi, MissingPropertiesDlg, LazXMLForms,
   // IdeConfig
-  IdeConfig,
+  IdeConfig, LazConf, EnvironmentOpts, TransferMacros,
   // environment option frames
   editor_general_options, componentpalette_options, formed_options, OI_options,
   MsgWnd_Options, Files_Options, Desktop_Options, window_options, IdeStartup_Options,
@@ -146,10 +146,10 @@ uses
   package_usage_options, package_description_options, package_integration_options,
   package_provides_options, package_i18n_options,
   // rest of the ide
-  TransferMacrosIntf, IdeDebuggerStringConstants,
-  Splash, IDEDefs, LazarusIDEStrConsts, LazConf, SearchResultView,
+  IdeDebuggerStringConstants,
+  Splash, IDEDefs, LazarusIDEStrConsts, SearchResultView,
   CodeTemplatesDlg, CodeBrowser, FindUnitDlg, InspectChksumChangedDlg,
-  IdeOptionsDlg, EditDefineTree, EnvironmentOpts, TransferMacros, KeyMapping,
+  IdeOptionsDlg, EditDefineTree, KeyMapping,
   IDETranslations, IDEProcs, ExtToolDialog, ExtToolEditDlg, JumpHistoryView,
   DesktopManager, DiskDiffsDialog, BuildLazDialog, BuildProfileManager,
   BuildManager, CheckCompOptsForNewUnitDlg, MiscOptions,
@@ -1772,7 +1772,7 @@ begin
   FreeThenNil(TheCompiler);
   FreeThenNil(HiddenWindowsOnRun);
   FreeThenNil(FLastActivatedWindows);
-  FreeThenNil(TransferMacrosIntf.GlobalMacroList);
+  FreeThenNil(GlobalMacroList);
   FreeThenNil(IDEMacros);
   FreeThenNil(IDECodeMacros);
   FreeThenNil(LazProjectFileDescriptors);
@@ -2297,7 +2297,7 @@ begin
   MainIDEBar.itmFindDeclaration.OnClick:=@mnuSearchFindDeclaration;
   MainIDEBar.itmOpenFileAtCursor.OnClick:=@mnuOpenFileAtCursorClicked;
 
-  SourceEditorManager.InitMacros(TransferMacrosIntf.GlobalMacroList);
+  SourceEditorManager.InitMacros(GlobalMacroList);
   EditorMacroListViewer.OnKeyMapReloaded := @SourceEditorManager.ReloadEditorOptions;
 end;
 

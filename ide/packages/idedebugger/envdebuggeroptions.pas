@@ -19,7 +19,7 @@ uses
   // DebuggerIntf
   DbgIntfDebuggerBase,
   // IdeConfig
-  EnvironmentOpts, IDEOptionDefs, RecentListProcs, SearchPathProcs, LazConf, TransferMacrosIntf,
+  EnvironmentOpts, IDEOptionDefs, RecentListProcs, SearchPathProcs, LazConf, TransferMacros,
   ModeMatrixOpts, CoolBarOptions, EditorToolBarOptions;
 
 type
