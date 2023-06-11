@@ -3,7 +3,7 @@
 
    fpmake.pp for IDEIntf 1.0
 
-   This file was generated on 22.07.2020
+   This file was generated on 11.06.2023
 }
 
 {$ifndef ALLPACKAGES} 
@@ -34,6 +34,7 @@ begin
 
     P.Flags.Add('LazarusDsgnPkg');
 
+    D := P.Dependencies.Add('ideconfig');
     D := P.Dependencies.Add('buildintf');
     D := P.Dependencies.Add('lazcontrols');
     P.Options.Add('-MObjFPC');
@@ -103,6 +104,8 @@ begin
     t.Dependencies.AddUnit('bufdatasetdsgn');
     t.Dependencies.AddUnit('selectdatasetdlg');
     t.Dependencies.AddUnit('seledits');
+    t.Dependencies.AddUnit('ideintfstrconsts');
+    t.Dependencies.AddUnit('inputhistory');
 
     T:=P.Targets.AddUnit('actionseditor.pas');
     T:=P.Targets.AddUnit('actionseditorstd.pas');
@@ -159,6 +162,8 @@ begin
     T:=P.Targets.AddUnit('bufdatasetdsgn.pas');
     T:=P.Targets.AddUnit('selectdatasetdlg.pas');
     T:=P.Targets.AddUnit('seledits.pas');
+    T:=P.Targets.AddUnit('ideintfstrconsts.pas');
+    T:=P.Targets.AddUnit('inputhistory.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.Sources.AddSrc('IDEIntf.compiled');
