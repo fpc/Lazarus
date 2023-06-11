@@ -37,6 +37,8 @@ uses
   LCLPlatformDef, Forms,
   // Codetools
   CodeCache, CodeToolManager, DefineTemplates, FileProcs,
+  // IdeIntf
+  IDEOptEditorIntf, // Initialize RegisterOptionsGroup event
   // BuildIntf
   BaseIDEIntf, MacroIntf, PackageIntf, LazMsgWorker, ProjectIntf, IDEExternToolIntf,
   CompOptsIntf, IDEOptionsIntf, PackageDependencyIntf,
