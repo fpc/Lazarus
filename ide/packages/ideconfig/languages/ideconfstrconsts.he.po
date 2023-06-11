@@ -1,0 +1,38 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ideconfstrconsts.listmfunctionappendpathdelimiter
+msgid "Function: append path delimiter"
+msgstr "פונקציה: הוסף את תוחם הנתיב"
+
+#: ideconfstrconsts.listmfunctionchomppathdelimiter
+#, fuzzy
+#| msgid "Function: chomp path delimiter"
+msgid "Function: remove trailing path delimiter"
+msgstr "פונקציה: חתוך את תוחם הנתיב"
+
+#: ideconfstrconsts.listmfunctionextractfileextension
+msgid "Function: extract file extension"
+msgstr "פונקציה: חלץ את סיומת הקובץ"
+
+#: ideconfstrconsts.listmfunctionextractfilenameextension
+msgid "Function: extract file name+extension"
+msgstr "פונקציה: חלץ את שם וסיומת הקובץ"
+
+#: ideconfstrconsts.listmfunctionextractfilenameonly
+msgid "Function: extract file name only"
+msgstr "פונקציה: חלץ את שם הקובץ בלבד"
+
+#: ideconfstrconsts.listmfunctionextractfilepath
+msgid "Function: extract file path"
+msgstr "פונקציה: חלץ את נתיב הקובץ"
+
+#: ideconfstrconsts.listmunknownmacro
+#, object-pascal-format, fuzzy, badformat
+msgid "(unknown macro: %s)"
+msgstr "(מאקרו לא מוכר: s%)"
+

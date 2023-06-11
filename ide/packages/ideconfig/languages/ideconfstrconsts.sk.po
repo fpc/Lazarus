@@ -1,0 +1,38 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ideconfstrconsts.listmfunctionappendpathdelimiter
+msgid "Function: append path delimiter"
+msgstr "Funkcia: pripojiť oddeľovač cesty"
+
+#: ideconfstrconsts.listmfunctionchomppathdelimiter
+#, fuzzy
+#| msgid "Function: chomp path delimiter"
+msgid "Function: remove trailing path delimiter"
+msgstr "Funkcia: odstrániť oddeľovač cesty"
+
+#: ideconfstrconsts.listmfunctionextractfileextension
+msgid "Function: extract file extension"
+msgstr "Funkcia: vybrať príponu súboru"
+
+#: ideconfstrconsts.listmfunctionextractfilenameextension
+msgid "Function: extract file name+extension"
+msgstr "Funkcia: vybrať meno súboru + príponu"
+
+#: ideconfstrconsts.listmfunctionextractfilenameonly
+msgid "Function: extract file name only"
+msgstr "Funkcia: vybrať len meno súboru"
+
+#: ideconfstrconsts.listmfunctionextractfilepath
+msgid "Function: extract file path"
+msgstr "Funkcia: vybrať cestu súboru"
+
+#: ideconfstrconsts.listmunknownmacro
+#, object-pascal-format
+msgid "(unknown macro: %s)"
+msgstr "(neznáme makro: %s)"
+

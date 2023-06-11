@@ -80,6 +80,10 @@ Files in this package are for the main configuration of the IDE."/>
         <UnitName Value="IdeConfStrConsts"/>
       </Item>
     </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
     <RequiredPkgs>
       <Item>
         <PackageName Value="CodeTools"/>

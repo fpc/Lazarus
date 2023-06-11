@@ -1,0 +1,38 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ideconfstrconsts.listmfunctionappendpathdelimiter
+msgid "Function: append path delimiter"
+msgstr "Funció: afegir el delimitador de la trajectòria"
+
+#: ideconfstrconsts.listmfunctionchomppathdelimiter
+#, fuzzy
+#| msgid "Function: chomp path delimiter"
+msgid "Function: remove trailing path delimiter"
+msgstr "Funció: eliminar el delimitador de la trajectòria"
+
+#: ideconfstrconsts.listmfunctionextractfileextension
+msgid "Function: extract file extension"
+msgstr "Funció: extreure l'extensió del fitxer"
+
+#: ideconfstrconsts.listmfunctionextractfilenameextension
+msgid "Function: extract file name+extension"
+msgstr "Funció: extreure nom i extensió del fitxer"
+
+#: ideconfstrconsts.listmfunctionextractfilenameonly
+msgid "Function: extract file name only"
+msgstr "Funció: extreure només el nom del fitxer"
+
+#: ideconfstrconsts.listmfunctionextractfilepath
+msgid "Function: extract file path"
+msgstr "Funció: extreure la trajectòria del fitxer"
+
+#: ideconfstrconsts.listmunknownmacro
+#, object-pascal-format
+msgid "(unknown macro: %s)"
+msgstr "(macroinstrucció desconeguda: %s)"
+
