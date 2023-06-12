@@ -22,6 +22,46 @@ and LCL.
 <element name="SysUtils"/>
 <element name="TypInfo"/>
 
+<!-- TODO: Added in e3691f68. -->
+<element name="TGetSkipCheckByKey">
+<short/>
+<descr/>
+<version>
+Added in LazUtils version 2.4.0.
+</version>
+<seealso/>
+<notes><note>???</note></notes>
+</element>
+
+<!-- TODO: Added in e3691f68. -->
+<element name="GetSkipCheckByKey">
+<short/>
+<descr/>
+<version>
+Added in LazUtils version 2.4.0.
+</version>
+<seealso/>
+</element>
+<element name="GetSkipCheckByKey.Result">
+<short/>
+</element>
+<element name="GetSkipCheckByKey.AKey">
+<short/>
+</element>
+
+<!-- TODO: Added in e3691f68. -->
+<element name="SetSkipCheckByKeyProc">
+<short/>
+<descr/>
+<version>
+Added in LazUtils version 2.4.0.
+</version>
+<seealso/>
+</element>
+<element name="SetSkipCheckByKeyProc.AProc">
+<short/>
+</element>
+
 <element name="FreeThenNil">
 <short>
 Ensures that the specified object instance is freed and set to Nil.
