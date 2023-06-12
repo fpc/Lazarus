@@ -499,6 +499,11 @@ end;
 function GetLanguageID: TLanguageID;
   {$IFDEF Windows}
   procedure GetLanguage;
+  {$IFDEF Wince}
+  const
+    LOCALE_SISO639LANGNAME = $59;
+    LOCALE_SISO3166CTRYNAME = $5A;
+  {$ENDIF}
   var
     UserLCID: LCID;
 
