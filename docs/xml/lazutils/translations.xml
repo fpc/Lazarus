@@ -37,41 +37,33 @@ Initial authors: Mattias Gaertner, Bart Broersma, Giuliano Colla
   end;
 </code>
 <p>
-<b>Example 2</b>: Load the current language file using the GetLanguageIDs 
-function of the gettext unit in the project lpr file:
+<b>Example 2</b>: Load the current language file using the GetLanguageID 
+function:
 </p>
 <code>
-    uses
-      ...
-      Translations, LCLProc;
+uses
+ ...
+ Translations;
 
-    procedure TranslateLCL;
-    var
-      PODirectory, Lang, FallbackLang: String;
-    begin
-      PODirectory := '/path/to/lazarus/lcl/languages/';
-      Lang := '';
-      FallbackLang:='';
-      LCLGetLanguageIDs(Lang, FallbackLang); // in unit LCLProc
-      Translations.TranslateUnitResourceStrings('LCLStrConsts',
-        PODirectory+'lclstrconsts.%s.po', Lang, FallbackLang);
-    end;
-
-    begin
-      TranslateLCL;
-      Application.Initialize;
-      Application.CreateForm(TForm1, Form1);
-      Application.Run;
-    end.
+  procedure TranslateLCL;
+  var
+    PODirectory: String;
+    LangID: TLanguageID;  
+  begin
+    PODirectory:='/path/to/lazarus/lcl/languages/';
+    LangID := GetLanguageID;
+    Translations.TranslateUnitResourceStrings('LCLStrConsts',
+      PODirectory+'lclstrconsts.%s.po', LangID.LanguageID, 
+      LangID.LanguageCode);
+  end;
+  ...
+begin
+  TranslateLCL;
+  Application.Initialize;
+  Application.CreateForm(TForm1, Form1);
+  Application.Run;
+end.
 </code>
-<p>
-<b>Note for Mac OS X</b>:
-</p>
-<p>
-The supported language IDs should be added into the application bundle 
-property list to CFBundleLocalizations key, see 
-<file>lazarus.app/Contents/Info.plist</file> for an example.
-</p>
 </descr>
 
 <!-- unresolved references -->
@@ -87,6 +79,40 @@ property list to CFBundleLocalizations key, see
 <element name="LazLoggerBase"/>
 <element name="AvgLvlTree"/>
 <element name="StringHashList"/>
+
+<element name="TLanguageID">
+<short>
+Record type used to return languiage and country codes/identifiers for a 
+locale.
+</short>
+<descr>
+<p>
+TLanguageID is the type returned from the GetLanguageID function.
+</p>
+</descr>
+<version>
+Added in LazUtils version 2.4.0.
+</version>
+<seealso>
+<link id="GetLanguageID"/>
+</seealso>
+</element>
+<element name="TLanguageID.LanguageID">
+<short>
+Language ID is the combined values for the LanguageCode and CountryCode 
+members. For example: 'en_US'.
+</short>
+</element>
+<element name="TLanguageID.LanguageCode">
+<short>
+ISO 639-1 or 639-2 language code. For example: 'en' or 'eng'.
+</short>
+</element>
+<element name="TLanguageID.CountryCode">
+<short>
+ISO 3166 country code. For example: 'US' or 'USA'.
+</short>
+</element>
 
 <element name="TStringsType">
 <short>
@@ -109,6 +135,54 @@ Determines the inner method called to process values passed in the argument.
 </element>
 <element name="TStringsType.stRsj">
 <short>FPC resource string table in JSON format (since FPC 2.7.1).</short>
+</element>
+
+<element name="GetLanguageID">
+<short>
+Gets a record with the language code and country code for the current system 
+locale.
+</short>
+<descr>
+<p>
+<var>GetLanguageID</var> is a <var>TLanguageID</var> function which returns a 
+record with language code (in ISO 639-1 or ISO 639-2) and country code (in ISO 
+3166) for the current system locale. The implementation is based on 
+GetLanguageIDs procedure from the GetText unit, but is rewritten to have the 
+following properties:
+</p>
+<ol>
+<li>
+Language and country codes are returned in ISO formats on Windows.
+</li>
+<li>
+Unix locale identifier is properly parsed and language/country codes are 
+properly extracted.
+</li>
+<li>
+Don't assume that language code is always two-letter (ISO 639-1), it can have 
+bigger length (e. g. three letters, like in ISO 639-2).
+</li>
+<li>
+Return locale ID in a record type. This will allow to return additional fields in backwards-compatible manner. Currently it contains language ID, language code and country code.
+</li>
+</ol>
+<p>
+GetLanguageID is used in the implement of routines in the lcltranslator.pas 
+unit, in the Lazarus IDE, and the Lazarus Data Desktop package.
+</p>
+</descr>
+<version>
+Added in LazUtils version 2.4.0.
+</version>
+<seealso>
+<link id="TLanguageID"/>
+</seealso>
+</element>
+<element name="GetLanguageID.Result">
+<short>
+TLanguageID instance with the language identifier and country code for the 
+current locale.
+</short>
 </element>
 
 <element name="TTranslateUnitResult">
