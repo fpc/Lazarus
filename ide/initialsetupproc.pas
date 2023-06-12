@@ -139,6 +139,12 @@ function GetValueFromIDEConfig(OptionFilename, Path: string): string;
 
 implementation
 
+{$IFDEF MSWindows}
+var
+  DefaultFPCVersion: string;
+  DefaultFPCTarget: string;
+{$ENDIF}
+
 function CheckLazarusDirectoryQuality(ADirectory: string;
   out Note: string): TSDFilenameQuality;
 
@@ -1147,6 +1153,12 @@ begin
   else
     Result:=Nil;
 end;
+
+initialization
+{$IFDEF MSWindows}
+  DefaultFPCTarget:= GetCompiledTargetCPU + '-' + GetCompiledTargetOS;
+  DefaultFPCVersion:= {$I %FPCVERSION%};
+{$ENDIF}
 
 end.
 
