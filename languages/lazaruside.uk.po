@@ -1,17 +1,17 @@
 # Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2016, 2017.
-# admin <lxlalexlxl@ukr.net>, 2017, 2018, 2019, 2020, 2021.
+# admin <lxlalexlxl@ukr.net>, 2017, 2018, 2019, 2020, 2021, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2021-06-08 00:54+0300\n"
+"PO-Revision-Date: 2023-06-12 14:19+0300\n"
 "Last-Translator: lxlalexlxl <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 19.12.3\n"
+"X-Generator: Lokalize 21.12.3\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: lazarusidestrconsts.dbgeventbreakaddressbreakpoint
@@ -844,14 +844,12 @@ msgid "Block indent (tabs)"
 msgstr "Відступ блока (таби)"
 
 #: lazarusidestrconsts.dlgborderspacecanbesetinanchoreditor
-#, fuzzy
-#| msgid "Border space can be set in Anchor editor. A red line is shown if spacing > 0."
 msgid "Border space can be set in Anchor editor. A colored line is shown if spacing > 0."
-msgstr "Зазор можна встановити у редакторі прив'язок. Якщо зазор > 0, виводиться червона лінія."
+msgstr "Проміжок можна задати в редакторі якорів. Якщо проміжок > 0, виводиться кольорова лінія."
 
 #: lazarusidestrconsts.dlgborderspacingcolor
 msgid "BorderSpacing frame"
-msgstr ""
+msgstr "Рамка BorderSpacing"
 
 #: lazarusidestrconsts.dlgbrackethighlight
 msgid "Bracket highlight"
@@ -866,27 +864,21 @@ msgid "You cannot use docked desktop in undocked environment and vice versa."
 msgstr "Неможливо використати стільницю зі стикуванням в оточенні без стикування, і навпаки."
 
 #: lazarusidestrconsts.dlgcaretbackcolor
-#, fuzzy
-#| msgid "Multi/2nd (NotXor)"
 msgid "Secondary carets (multi-caret mode)"
-msgstr "Декілька/2-й (NotXor)"
+msgstr "Вторинні курсори (режим декількох курсорів)"
 
 #: lazarusidestrconsts.dlgcaretcolor
-#, fuzzy
-#| msgid "Caret"
 msgctxt "lazarusidestrconsts.dlgcaretcolor"
 msgid "Caret (Text-Cursor)"
-msgstr "Курсор"
+msgstr "Каретка (текстовий курсор)"
 
 #: lazarusidestrconsts.dlgcaretcolorinfo
 msgid "The caret color depends on the colors of text and background under the caret. Each pixel's RGB are bitwise inverted and XOR'ed with the chosen color's RGB."
-msgstr ""
+msgstr "Колір курсору залежить від кольорів тексту та тла під курсором. RGB кожного пікселя порозрядно інвертується та виконується XOR з RGB вибраного кольору."
 
 #: lazarusidestrconsts.dlgcaretforecolor
-#, fuzzy
-#| msgid "Color (NotXor)"
 msgid "Main or primary caret"
-msgstr "Колір (NotXor)"
+msgstr "Головний або первинний курсор"
 
 #: lazarusidestrconsts.dlgcaretgroupoptions
 msgid "Caret (Text Cursor)"
@@ -894,7 +886,7 @@ msgstr "Каретка (текстовий курсор)"
 
 #: lazarusidestrconsts.dlgcaretscrollgroupoptions
 msgid "Caret (Text Cursor) past end of line"
-msgstr ""
+msgstr "Переміщення курсору (в тексті) за кінець рядка"
 
 #: lazarusidestrconsts.dlgcasesensitive
 msgctxt "lazarusidestrconsts.dlgcasesensitive"
@@ -1300,22 +1292,16 @@ msgid "Automatic"
 msgstr "Автоматично"
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf2
-#, fuzzy
-#| msgid "Dwarf2"
 msgid "Dwarf 2"
-msgstr "Dwarf2"
+msgstr "Dwarf 2"
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf2set
-#, fuzzy
-#| msgid "Dwarf with sets"
 msgid "Dwarf 2 with sets"
-msgstr "Dwarf з наборами"
+msgstr "Dwarf 2 зі множинами"
 
 #: lazarusidestrconsts.dlgcosymboltypedwarf3
-#, fuzzy
-#| msgid "Dwarf3 (beta)"
 msgid "Dwarf 3 (beta)"
-msgstr "Dwarf3 (бета)"
+msgstr "Dwarf 3 (бета)"
 
 #: lazarusidestrconsts.dlgcosymboltypestabs
 msgid "Stabs"
@@ -1391,7 +1377,7 @@ msgstr "Типовий шрифт редактора"
 
 #: lazarusidestrconsts.dlgdefaulttabfont
 msgid "Default tab font"
-msgstr ""
+msgstr "Типовий шрифт назви вкладки"
 
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
@@ -2350,7 +2336,7 @@ msgstr "Включити ідентифікатори, що містять пр�
 
 #: lazarusidestrconsts.dlgincludekeywordstoidentcompl
 msgid "Include all keywords and operators"
-msgstr ""
+msgstr "Включити всі ключові слова та оператири"
 
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
@@ -3157,8 +3143,6 @@ msgid "No Highlight"
 msgstr "Без підсвічування"
 
 #: lazarusidestrconsts.dlgnonformbackgroundcolor
-#, fuzzy
-#| msgid "Other Designer background color (e. g. TDataModule)"
 msgid "Other Designer background (e. g. TDataModule)"
 msgstr "Інший колір тла Дизайнера (наприклад, TDataModule)"
 
@@ -3326,7 +3310,7 @@ msgstr "&Очистити значок"
 
 #: lazarusidestrconsts.dlgpocreateappbundle
 msgid "Create Application Bundle"
-msgstr "Створити пакет застосунків"
+msgstr "Створити теку застосунку (Application Bundle)"
 
 #: lazarusidestrconsts.dlgpodebugger
 msgctxt "lazarusidestrconsts.dlgpodebugger"
@@ -3393,7 +3377,7 @@ msgstr "(немає)"
 
 #: lazarusidestrconsts.dlgpointertypecheck
 msgid "@<pointer> returns a typed pointer"
-msgstr ""
+msgstr "@<pointer> повертає типізований вказівник"
 
 #: lazarusidestrconsts.dlgpoloadicon
 msgid "&Load Icon"
@@ -3434,7 +3418,7 @@ msgstr "Доступ UI (uiAccess)"
 
 #: lazarusidestrconsts.dlgpouseappbundle
 msgid "Use Application Bundle for running and debugging"
-msgstr "Використовувати пакет застосунків для запуску і зневадження"
+msgstr "Використовувати для запуску та зневадження теку застосунку (Application Bundle)"
 
 #: lazarusidestrconsts.dlgpouselclscaling
 msgid "Use LCL scaling (Hi-DPI)"
@@ -3492,7 +3476,7 @@ msgstr "При старті відкрити останній проєкт і п
 
 #: lazarusidestrconsts.dlgqshowborderspacing
 msgid "Show border spacing"
-msgstr "Показувати ширину бордюру"
+msgstr "Показувати проміжок"
 
 #: lazarusidestrconsts.dlgqshowgrid
 msgid "Show grid"
@@ -3626,7 +3610,7 @@ msgstr "Параметри виконання"
 
 #: lazarusidestrconsts.dlgrunwithdebug
 msgid "Run uses the debugger (disable for release-mode)"
-msgstr ""
+msgstr "Запускати у зневаджувачі (вимкніть у режимі збирання Release)"
 
 #: lazarusidestrconsts.dlgsavecurrentdesktop
 msgid "Save current desktop"
@@ -3670,15 +3654,15 @@ msgstr "Зберегти в"
 
 #: lazarusidestrconsts.dlgscrollbarpasteolfixed
 msgid "Force 1024 columns minimum for horizontal scroll range"
-msgstr ""
+msgstr "Задати мінімум простору по горизонталі 1024 стовпці"
 
 #: lazarusidestrconsts.dlgscrollbarpasteolnone
 msgid "Do not add any permanent space to horizontal scroll range"
-msgstr ""
+msgstr "Не додавати простору по горизонталі"
 
 #: lazarusidestrconsts.dlgscrollbarpasteolpage
 msgid "Always add one page to horizontal scroll range"
-msgstr ""
+msgstr "Завжди додавати одну сторінку до простору по горизонталі."
 
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
@@ -3698,10 +3682,8 @@ msgid "Scroll past end of file"
 msgstr "Прокрутити до кінця файлу"
 
 #: lazarusidestrconsts.dlgscrollpastendline
-#, fuzzy
-#| msgid "Allow caret to move past end of line"
 msgid "Allow Caret to move past the end of line"
-msgstr "Дозволити курсору рухатися після кінця рядка"
+msgstr "Дозволити рух курсора після кінця рядка"
 
 #: lazarusidestrconsts.dlgseachdirectorynotfound
 #, object-pascal-format
@@ -4193,39 +4175,39 @@ msgstr "Писати логотип FPC"
 
 #: lazarusidestrconsts.drsignoringprojectdebuggersettings
 msgid " (Ignoring project settings below)"
-msgstr ""
+msgstr " (параметри проєкту нижче нехтуються)"
 
 #: lazarusidestrconsts.drsstoreconverterconfiginses
 msgid "Store converter config in session"
-msgstr ""
+msgstr "Зберігати параметри перетворення в сеансі роботи"
 
 #: lazarusidestrconsts.drsstoreprojectdebuggerconfi
 msgid "Store project debugger configs in session"
-msgstr ""
+msgstr "Зберігати параметри зневаджувача проєкту в сеансі роботи"
 
 #: lazarusidestrconsts.drsthedebuggerbackendselecti
 msgid "The \"Debugger Backend\" selection from the dropdown (list of IDE debugger backends) is always stored in the session. The project specific backends (below) are by default stored in the LPI."
-msgstr ""
+msgstr "Вибраний зі списку (рушіїв зневадження ІСР) рушій зневадження завжди зберігається в сеансі роботи.  Рушії зневадження проєкту (нижче) типово зберігаються в LPI."
 
 #: lazarusidestrconsts.drsthisonlyaffectsthelistofc
 msgid "This only affects the list of converters below. The options setting which list to use are always stored in the session."
-msgstr ""
+msgstr "Стосується лише списку елементів перетворення нижче. Параметри, що задають список, завжди зберігаються в сеансі роботи."
 
 #: lazarusidestrconsts.drsusetheidegloballistofconv
 msgid "Use the IDE-Global list of converters"
-msgstr ""
+msgstr "Використовувати список елементів перетворення ІСР"
 
 #: lazarusidestrconsts.drsusetheprojectlistofconver
 msgid "Use the project list of converters"
-msgstr ""
+msgstr "Використовувати список елементів перетворення проєкту"
 
 #: lazarusidestrconsts.drsusingidedefaultdebuggerse
 msgid "Using IDE default debugger settings"
-msgstr ""
+msgstr "Використовуються параметри зневаджувача, типові для ІСР"
 
 #: lazarusidestrconsts.drsusingselectedidedebuggers
 msgid "Using selected IDE debugger settings"
-msgstr ""
+msgstr "Використовуються параметри вибраного зневаджувача ІСР"
 
 #: lazarusidestrconsts.fdinvalidmultiselectiontext
 msgid "Multiselected components must be of a single form."
@@ -4310,109 +4292,108 @@ msgstr "На обох сторонах"
 
 #: lazarusidestrconsts.initdlgdebugchangepath
 msgid "Change path"
-msgstr ""
+msgstr "Змінити шлях"
 
 #: lazarusidestrconsts.initdlgdebugclassnoteerrornotconfigured
 msgid "Error: The backend is not configured."
-msgstr ""
+msgstr "Помилка: рушій зневадження не налаштовано"
 
 #: lazarusidestrconsts.initdlgdebugclassnoteerrornotconfiguredmissingpackage
 msgid "(The configured backend's package is not installed.)"
-msgstr ""
+msgstr "(Сконфігурований пакунок рушія не встановлено.)"
 
 #: lazarusidestrconsts.initdlgdebugclassnoteerrornotsupported
 msgid "Error: Your current config uses a backend that is not supported on your OS/Arch."
-msgstr ""
+msgstr "Помилка: поточна конфігурація використовує рушій зневадження, не підтримуваний вашою ОС/архітектурою."
 
 #: lazarusidestrconsts.initdlgdebugclassnotehintnotrecommended
 msgid "Hint: The backend type is OK, but not the recommended type."
-msgstr ""
+msgstr "Підказка: вибраний тип рушія зневадження коректний, але не є рекомендованим."
 
 #: lazarusidestrconsts.initdlgdebugcreateanewrecommendedback
 msgid "Create a new recommended backend"
-msgstr ""
+msgstr "Створити новий рекомендований рушій зневадження"
 
 #: lazarusidestrconsts.initdlgdebugexternalexepathdisplay
 msgid "The selected backend uses the external executable:"
-msgstr ""
+msgstr "Вибраний рушій використовує зовнішній виконуваний файл:"
 
 #: lazarusidestrconsts.initdlgdebugexternalexepathprompt
 #, object-pascal-format
 msgid "The selected backend requires an external executable: \"%s\""
-msgstr ""
+msgstr "Вибраному рушію потрібен зовнішній виконуваний файл: \"%s\""
 
 #: lazarusidestrconsts.initdlgdebugheaderdefaultforyourosarchiss
 #, object-pascal-format
 msgid "Default for your OS/Arch is: \"%s\"."
-msgstr ""
+msgstr "Типовим для вашої ОС/архітектури є: \"%s\"."
 
 #: lazarusidestrconsts.initdlgdebugignore
-#, fuzzy
 msgctxt "lazarusidestrconsts.initdlgdebugignore"
 msgid "Ignore"
 msgstr "Знехтувати"
 
 #: lazarusidestrconsts.initdlgdebugkeepbackend
 msgid "Keep backend"
-msgstr ""
+msgstr "Зберегти вибір рушія"
 
 #: lazarusidestrconsts.initdlgdebugpathnoteerrorexeisdirectory
 msgid "Error: External executable is a directory, not a file."
-msgstr ""
+msgstr "Помилка: зовнішній виконуваний файл насправді є каталогом."
 
 #: lazarusidestrconsts.initdlgdebugpathnoteerrorexenotfound
 msgid "Error: External executable not found."
-msgstr ""
+msgstr "Помилка: зовнішнього виконуваного файлу не знайдено."
 
 #: lazarusidestrconsts.initdlgdebugpathnoteerrorexenotrunnable
 msgid "Error: External file is not executable."
-msgstr ""
+msgstr "Помилка: зовнішній файл не є виконуваним."
 
 #: lazarusidestrconsts.initdlgdebugpathnoteerrornodefaultfound
 msgid "Error: No default for external executable found."
-msgstr ""
+msgstr "Помилка: не знайдено типового варіанту для зовнішнього виконуваного файлу."
 
 #: lazarusidestrconsts.initdlgdebugpathnoteerrornoexespecified
 msgid "Error: No external executable specified."
-msgstr ""
+msgstr "Помилка: не задано зовнішнього виконуваного файлу."
 
 #: lazarusidestrconsts.initdlgdebugpopupinformation
 #, object-pascal-format
 msgid "A backend provides OS and architecture specific implementations for the debugger.%0:sDefault for your OS/Arch is: \"%1:s\".%0:s%0:sOther backends are provided for special tasks (e.g. cross debugging on some platforms) or as generic alternatives.%0:sThe debugger can have different features, depending on the backend.%0:s%0:sSome backends require an external exe (such as gdb or lldb). This exe may be part of your OS (Linux/Mac), or be provided by the Lazarus installer (Windows).%0:s%0:sIf you have just upgraded your installation, you may have to rebuild the IDE before your previously configured backend can be used (if you used a 3rd-party or optional backend). In that case you may choose \"Ignore\"."
-msgstr ""
+msgstr "Рушії зневадження надають реалізації зневаджувача для конкретних архітектур та ОС.%0:sТипове значення для вашої архітектури/ОС: \\\"%1:s\\\".%0:s%0:sІнші рушії зневадження постачаються для конкретних цілей (наприклад, крос-зневадження на деяких платформах), або як стандартна альтернатива.%0:sЗалежно від рушія, зневаджувач може мати різні можливості.%0:s%0:sДеякі рушії потребують зовнішнього файлу (такого, як gdb або lldb). Цей виконуваний файл може бути частиною вашої ОС (Linux/Mac) або постачатися в дистрибутиві Lazarus (Windows).%0:s%0:sПри оновленні Lazarus може знадобитися перезібрати IDE, щоб продовжувати використовувати свій рушій зневадження (якщо використовувався сторонній або додатковий рушій). У такуому разі виберіть \\\"Пропустити\\\"."
 
 #: lazarusidestrconsts.initdlgdebugselectanexistingbackend
 msgid "Select an existing backend"
-msgstr ""
+msgstr "Виберіть наявний рушій"
 
 #: lazarusidestrconsts.initdlgdebugstatemissingpackagefooter
 msgid "Note: There are more backend configurations available, but their packages (LPK) are not installed. You may want to rebuild the IDE with the packages installed. After the rebuild, the debugger backend can be changed in the menu: Tools -> Options."
-msgstr ""
+msgstr "Примітка: Додаткові параметри рушія доступні, але пакунки (LPK) не встановлено. Може знадобитися встановити їх і перезібрати ІСР. Після цього рушій зневадження можна буде змінити в меню: Інструменти -> Параметри."
 
 #: lazarusidestrconsts.initdlgdebugstatemissingpackagerebuild
 #, object-pascal-format
 msgid "If you decide to rebuild the IDE first and install missing packages, then select \"Ignore\" for now.%0:sAfter the rebuild, the debugger backend can be changed in the menu: Tools -> Options."
-msgstr ""
+msgstr "Якщо ви вирішите встановити відсутні пакунки і перезібрати ІСР, виберіть \\\"Пропустити\\\".%0:sПісля перезбирання рущій зневадження можна буде змінити в меню: Інструменти -> Параметри."
 
 #: lazarusidestrconsts.initdlgdebugstatemissingpackages
 msgid "There may be packages (LPK) missing from your IDE installation. You may need to rebuild the IDE and install them, before making changes to the setup."
-msgstr ""
+msgstr "Можливо, в ІСР не встановлено деякі пакунки (LPK). Може знадобитися встановити їх і перезібрати ІСР перед налаштуванням."
 
 #: lazarusidestrconsts.initdlgdebugstaterecommendedfoundinlist
 msgid "There is a backend of recommended type in the list of existing debuggers. You may pick this instead of creating a new backend."
-msgstr ""
+msgstr "У списку наявних зневаджувачів є рушій рекомендованого типу. Ви можете вибрати його замість створення нового рушія."
 
 #: lazarusidestrconsts.initdlgdebugstaterecommendednotinlist
 msgid "There is no backend of recommended type in the list of existing debuggers. Consider creating a new backend."
-msgstr ""
+msgstr "У списку наявних зневаджувачів немає рушія рекомендованого типу. Подумайте про створення нового рушія."
 
 #: lazarusidestrconsts.initdlgdebugstatesetupok
 msgid "Setup is OK."
-msgstr ""
+msgstr "Параметри правильні."
 
 #: lazarusidestrconsts.initdlgdebugstateupdatebackend
 msgid "You are using an older backend. This may give you not the best debugging experience. Consider upgrading to the recommended backend."
-msgstr ""
+msgstr "Ви використовуєте старіший рушій. Це може знизити зручність зневадження. Розгляньте можливість оновлення до рекомендованого рушія."
 
 #: lazarusidestrconsts.lis0no1drawdividerlinesonlyfortoplevel2drawlinesforfi
 msgid "0 = no, 1 = draw divider lines only for top level, 2 = draw lines for first two levels, ..."
@@ -5304,7 +5285,7 @@ msgstr "Нестандартні значення жирним"
 
 #: lazarusidestrconsts.lisborderspace
 msgid "Border space"
-msgstr "Простір межі"
+msgstr "Проміжок"
 
 #: lazarusidestrconsts.lisbottom
 msgctxt "lazarusidestrconsts.lisbottom"
@@ -5337,7 +5318,7 @@ msgstr "Відшукайте і виберітиь компілятор (нап�
 
 #: lazarusidestrconsts.lisbtnapply
 msgid "&Apply"
-msgstr ""
+msgstr "&Застосувати"
 
 #: lazarusidestrconsts.lisbtnclose
 msgctxt "lazarusidestrconsts.lisbtnclose"
@@ -6342,7 +6323,7 @@ msgstr "Очистити теку?"
 
 #: lazarusidestrconsts.lisclearfilter
 msgid "Clear filter"
-msgstr ""
+msgstr "Очистити фільтр"
 
 #: lazarusidestrconsts.lisclearthefilterforoptions
 msgid "Clear the filter for options"
@@ -6681,10 +6662,8 @@ msgid "Create Defines for Free Pascal Compiler"
 msgstr "Створити визначення для компілятора Free Pascal"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforfreepascalsvnsources
-#, fuzzy
-#| msgid "Create Defines for Free Pascal SVN Sources"
 msgid "Create Defines for Free Pascal Git Sources"
-msgstr "Створити визначення для текстів програми Free Pascal SVN"
+msgstr "Створити визначення для сирців Free Pascal Git"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforproject
 #, object-pascal-format
@@ -6739,10 +6718,8 @@ msgid "Exit without Save"
 msgstr "Вихід без збереження"
 
 #: lazarusidestrconsts.liscodetoolsdefsfpcsvnsourcedirectory
-#, fuzzy
-#| msgid "FPC SVN source directory"
 msgid "FPC Git source directory"
-msgstr "Тека програм FPC SVN"
+msgstr "Тека сирців FPC Git"
 
 #: lazarusidestrconsts.liscodetoolsdefsif
 msgid "If"
@@ -6806,10 +6783,8 @@ msgid "Insert Free Pascal Project Template"
 msgstr "Вставити шаблон проєкту Free Pascal"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertfreepascalsvnsource
-#, fuzzy
-#| msgid "Insert Free Pascal SVN Source Template"
 msgid "Insert Free Pascal Git Source Template"
-msgstr "Вставте шаблон Free Pascal SVN"
+msgstr "Вставити шаблон сирців Free Pascal Git"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertkylix3compilertemp
 msgid "Insert Kylix 3 Compiler Template"
@@ -6921,20 +6896,16 @@ msgid "Selected Node:"
 msgstr "Вибраний вузол:"
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalcvssourcedirectory
-#, fuzzy
-#| msgid "The Free Pascal SVN source directory. Not required. This will improve find declaration and debugging."
 msgid "The Free Pascal Git source directory. Not required. This will improve find declaration and debugging."
-msgstr "Тека сирців Free Pascal SVN. Не обов'язково. Це покращить пошук оголошень при зневаджуванні."
+msgstr "Тека сирців Free Pascal Git. Не обов'язково. Це покращить пошук оголошень при зневаджуванні."
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalprojectdirectory
 msgid "The Free Pascal project directory."
 msgstr "Тека проєкту Free Pascal."
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalsvnsourcedir
-#, fuzzy
-#| msgid "The Free Pascal SVN source directory."
 msgid "The Free Pascal Git source directory."
-msgstr "Тека текстів Free Pascal SVN."
+msgstr "Тека сирців Free Pascal Git."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforexample
 #, object-pascal-format
@@ -6942,10 +6913,8 @@ msgid "The path to the Free Pascal compiler.%s For example %s/usr/bin/%s -n%s or
 msgstr "Шлях до компілятора Free Pascal.%s Наприклад, %s/usr/bin%s -n%s або %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthisproject
-#, fuzzy
-#| msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
 msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC Git source below. Used to autocreate macros."
-msgstr "Шлях до компілятора проєкту Free Pascal. Потрібно лише, якщо Ви встановлюєте нижче програму FPC SVN. Використовується для автостворювання макросів."
+msgstr "Шлях до компілятора Free Pascal для цього проєкту. Потрібно лише, якщо нижче зазначено сирці FPC Git. Використовується для автостворювання макросів."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthissourceusedtoa
 #, object-pascal-format
@@ -7063,17 +7032,15 @@ msgstr "Виконати перед"
 
 #: lazarusidestrconsts.liscollapse
 msgid "Collapse"
-msgstr ""
+msgstr "Згорнути"
 
 #: lazarusidestrconsts.liscollapseall
-#, fuzzy
-#| msgid "Collapse All (/)"
 msgid "Collapse All [Ctrl+Minus]"
-msgstr "Згорнути все (/)"
+msgstr "Згорнути все [Ctrl+мінус]"
 
 #: lazarusidestrconsts.liscollapseall2
 msgid "Collapse All"
-msgstr ""
+msgstr "Згорнути все"
 
 #: lazarusidestrconsts.liscollapseallclasses
 msgid "Collapse all classes"
@@ -8015,7 +7982,7 @@ msgstr ", ЦП: %s"
 
 #: lazarusidestrconsts.liscreateandedit
 msgid "Create and edit"
-msgstr ""
+msgstr "Створити і змінити"
 
 #: lazarusidestrconsts.liscreateaprojectfirst
 msgid "Create a project first!"
@@ -8265,10 +8232,9 @@ msgid "Debugger"
 msgstr "Зневаджувач"
 
 #: lazarusidestrconsts.lisdebuggererrorooopsthedebuggerenteredtheerrorstate
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
+#, object-pascal-format
 msgid "The debugger encountered an internal error.%0:s%0:sSave your work.%0:sYou may then hit \"Stop\", or \"Reset debugger\" to terminate the debug session."
-msgstr "Помилка зневаджувача%sОпа! Зневаджувач знаходиться в неробочому стані%sЗбережіть роботу!%sНатисніть Стоп і сподівайтесь на краще!"
+msgstr "Трапилась внутрішня помилка зневаджувача.%0:s%0:sЗбережіть свою роботу.%0:sНатисніть Стоп або Скинути зневаджувач, щоб припинити сеанс зневадження."
 
 #: lazarusidestrconsts.lisdebuggerinvalid
 msgid "Debugger invalid"
@@ -8293,7 +8259,7 @@ msgstr "Додатковий пошуковий шлях"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmallowfunctioncalls
 msgid "BETA: Allow function calls in watches (if supported by backend)"
-msgstr "БЕТА: Дозволити виклики функцій у спостереженнях (якщо це підтримується бек-ендом)"
+msgstr "БЕТА: Дозволити виклики функцій у спостереженнях (якщо рушій це підтримує)"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmautocloseasm
 msgid "Automatically close the assembler window, after source not found"
@@ -8305,7 +8271,7 @@ msgstr "Автоматично встановлювати \"використов
 
 #: lazarusidestrconsts.lisdebugoptionsfrmbackend
 msgid "Debugger backend"
-msgstr "Бек-енд зневаджувача"
+msgstr "Рушій зневаджувача"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmbreakpoint
 msgid "Breakpoint"
@@ -8322,7 +8288,7 @@ msgstr "Зневаджувач"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggerbackend
 msgid "Debugger Backend:"
-msgstr "Бек-енд зневаджувача:"
+msgstr "Рушій зневаджувача:"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmdebuggergeneraloptions
 msgid "Debugger general options"
@@ -8342,7 +8308,7 @@ msgstr "Змінити тип"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmeditclasswarn
 msgid "Changing the type for the current debugger backend. Use \"Add\" or \"Copy\" to create a new backend with a new type."
-msgstr "Зміна типу для поточного бек-енду зневаджувача. Використовуйте \"Додати\" або \"Копіювати\", щоб створити новий бек-енд із новим типом."
+msgstr "Зміна типу для поточного рушія зневаджувача. Використовуйте \"Додати\" або \"Копіювати\", щоб створити новий рушій із новим типом."
 
 #: lazarusidestrconsts.lisdebugoptionsfrmenterexceptionname
 msgid "Enter the name of the exception"
@@ -8426,7 +8392,7 @@ msgstr "Нитка"
 #: lazarusidestrconsts.lisdebugoptionsfrmunknowndebuggerbacke
 #, object-pascal-format
 msgid "Unknown Debugger backend \"%s\""
-msgstr "Невідомий бек-енд зневаджувача \"%s\""
+msgstr "Невідомий рушій зневаджувача \"%s\""
 
 #: lazarusidestrconsts.lisdebugoptionsfrmuseeventlogcolors
 msgid "Use event log colors"
@@ -8438,7 +8404,7 @@ msgstr "-- Використати типовий зневаджувач ІСР -
 
 #: lazarusidestrconsts.lisdebugoptionsfrmuseprojectdebugger
 msgid "-- Use project Debugger --"
-msgstr ""
+msgstr "-- Використати зневаджувач проєкту --"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmwindows
 msgid "Windows"
@@ -8853,7 +8819,7 @@ msgstr "Кількість розкривних списків"
 
 #: lazarusidestrconsts.lisdropdowncounthint
 msgid "Used for all ComboBoxes in IDE dialogs"
-msgstr ""
+msgstr "Використовується для всіх розкривних списків у діалогах ІСР"
 
 #: lazarusidestrconsts.lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
@@ -9461,7 +9427,7 @@ msgstr "Відкрити перший вибраний"
 
 #: lazarusidestrconsts.lisexclude
 msgid "Exclude"
-msgstr ""
+msgstr "Виключити"
 
 #: lazarusidestrconsts.lisexcludedatruntime
 #, object-pascal-format
@@ -9507,17 +9473,15 @@ msgstr "Код завершення %s"
 
 #: lazarusidestrconsts.lisexpand
 msgid "Expand"
-msgstr ""
+msgstr "Розгорнути"
 
 #: lazarusidestrconsts.lisexpandall
-#, fuzzy
-#| msgid "Expand All (*)"
 msgid "Expand All [Ctrl+Plus]"
-msgstr "Розгорнути все (*)"
+msgstr "Розгорнути все [Ctrl+плюс]"
 
 #: lazarusidestrconsts.lisexpandall2
 msgid "Expand All"
-msgstr ""
+msgstr "Розгорнути все"
 
 #: lazarusidestrconsts.lisexpandallclasses
 msgid "Expand all classes"
@@ -9639,7 +9603,7 @@ msgstr "Не вдалось додати неунікальні ресурси (
 #: lazarusidestrconsts.lisfailedtocreateapplicationbundlefor
 #, object-pascal-format
 msgid "Failed to create Application Bundle for \"%s\""
-msgstr "Не вдалось створити пакет застосунків для \"%s\""
+msgstr "Не вдалось створити теку застосунку (Application Bundle) для \"%s\""
 
 #: lazarusidestrconsts.lisfailedtoloadfoldstat
 msgid "Failed to load fold state"
@@ -10664,7 +10628,7 @@ msgstr "Важливо"
 #: lazarusidestrconsts.lisimported
 #, object-pascal-format
 msgid "%s (imported)"
-msgstr ""
+msgstr "%s (імпортовано)"
 
 #: lazarusidestrconsts.lisimportenvironmentoptions
 msgctxt "lazarusidestrconsts.lisimportenvironmentoptions"
@@ -10718,7 +10682,7 @@ msgstr "Шляхи до файлів для включення"
 
 #: lazarusidestrconsts.lisincluderecursive
 msgid "Include, recursive"
-msgstr ""
+msgstr "Включити, рекурсивно"
 
 #: lazarusidestrconsts.lisincludesubdirectories
 msgid "Include subdirectories"
@@ -10777,7 +10741,7 @@ msgstr "Успадкований компонент проєкту"
 
 #: lazarusidestrconsts.lisinitialchecks
 msgid "Initial Checks"
-msgstr ""
+msgstr "Початкові перевірки"
 
 #: lazarusidestrconsts.lisinitializelocalvariable
 msgid "Initialize Local Variable"
@@ -11724,7 +11688,7 @@ msgstr "Тека Lazarus"
 #: lazarusidestrconsts.lislazarusdirhint
 #, object-pascal-format
 msgid "Lazarus sources. This path is relative to primary config directory (%s)."
-msgstr ""
+msgstr "Сирці Lazarus. Шлях вказується відносно первинного каталогу налаштування (%s)."
 
 #: lazarusidestrconsts.lislazarusdiroverride
 msgid "directory to be used as a basedirectory"
@@ -12024,10 +11988,8 @@ msgid "library path"
 msgstr "шлях до бібліотек"
 
 #: lazarusidestrconsts.lislibraryprogramdescriptor
-#, fuzzy
-#| msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under MacOS X)."
 msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under macOS)."
-msgstr "Спільна бібліотека Free Pascal (.dll під Windows, .so під Linux, .dylib під MacOS X)."
+msgstr "Спільна бібліотека Free Pascal (.dll під Windows, .so під Linux, .dylib під macOS)."
 
 #: lazarusidestrconsts.lislink
 msgid "Link:"
@@ -12366,10 +12328,8 @@ msgid "Convert Delphi Unit to Lazarus Unit ..."
 msgstr "Перетворення модуля Delphi в модуль Lazarus ..."
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
-#, fuzzy
-#| msgid "Convert Binary DFM to Text LFM + Check Syntax ..."
 msgid "Convert Binary DFM to LFM ..."
-msgstr "Перетворити двійковий DFM в текстовий LFM + перевірка синтаксису ..."
+msgstr "Перетворити двійковий DFM на текстовий LFM ..."
 
 #: lazarusidestrconsts.lismenuconvertencoding
 msgid "Convert Encoding of Projects/Packages ..."
@@ -13206,11 +13166,9 @@ msgid "Lowercase Selection"
 msgstr "Вибір в нижньому регістрі"
 
 #: lazarusidestrconsts.lismenumacrolistview
-#, fuzzy
-#| msgid "Editor Macros ..."
 msgctxt "lazarusidestrconsts.lismenumacrolistview"
 msgid "Editor Macros"
-msgstr "Макрос редактора ..."
+msgstr "Макрос редактора"
 
 #: lazarusidestrconsts.lismenumakeresourcestring
 msgid "Make Resource String ..."
@@ -13387,7 +13345,7 @@ msgstr "Переглянути теку сирців FPC"
 
 #: lazarusidestrconsts.lismenuresetdebugger
 msgid "Reset Debugger"
-msgstr "Скидання зневаджувача"
+msgstr "Скинути зневаджувач"
 
 #: lazarusidestrconsts.lismenurevert
 msgid "Revert"
@@ -13413,7 +13371,7 @@ msgstr "Виконати до курсора"
 
 #: lazarusidestrconsts.lismenurunwithdebugging
 msgid "Run with Debugging"
-msgstr ""
+msgstr "Виконати без зневадження"
 
 #: lazarusidestrconsts.lismenurunwithoutdebugging
 msgid "Run without Debugging"
@@ -13726,21 +13684,17 @@ msgid "2) Search for units. Found paths are added to project settings."
 msgstr "2) Шукати модулі. Знайдені шляхи додати до параметрів проєкту."
 
 #: lazarusidestrconsts.lismissingunitsinfo3
-#, fuzzy
-#| msgid "3) Abort now, install packages or fix paths and try again."
 msgid "3) Leave these units in uses sections as they are."
-msgstr "3) Перервати зараз, встановити пакунки або виправити шляхи і спробувати знов."
+msgstr "3) Залишити ці модулі в розділах uses без змін."
 
 #: lazarusidestrconsts.lismissingunitssearch
 msgid "Search Unit Path"
 msgstr "Шлях пошуку модуля"
 
 #: lazarusidestrconsts.lismissingunitsskip
-#, fuzzy
-#| msgid "Skip this Unit"
 msgctxt "lazarusidestrconsts.lismissingunitsskip"
 msgid "Skip"
-msgstr "Пропустити цей модуль"
+msgstr "Пропустити"
 
 #: lazarusidestrconsts.lismitnotice
 msgid ""
@@ -14358,7 +14312,7 @@ msgstr "Не вдалось знайти %s у %s у рядку %s, у стов�
 
 #: lazarusidestrconsts.lisnothingtodo
 msgid "Nothing to do"
-msgstr ""
+msgstr "Немає що виконувати"
 
 #: lazarusidestrconsts.lisnotimplemented
 msgid "Not implemented"
@@ -14613,7 +14567,7 @@ msgstr "Відкрити пакунок %s"
 
 #: lazarusidestrconsts.lisopenpackage3
 msgid "Open Package"
-msgstr ""
+msgstr "Відкрити пакунок"
 
 #: lazarusidestrconsts.lisopenpackagefile
 msgid "Open Package File"
@@ -16513,7 +16467,7 @@ msgstr "Виявлено info-файл проєкту"
 
 #: lazarusidestrconsts.lisprojectinspectorshowprops
 msgid "Show properties pane in Project Inspector"
-msgstr ""
+msgstr "Показати панель властивостей в Інспекторі проєкту"
 
 #: lazarusidestrconsts.lisprojectisrunnable
 msgid "Project is runnable"
@@ -16783,7 +16737,7 @@ msgstr "Переглянути &приклади проєктів"
 
 #: lazarusidestrconsts.lisquickcheckfppkgconfigurationatstart
 msgid "Quick check Fppkg configuration at start"
-msgstr ""
+msgstr "Швидка перевірка налаштувань Fppkg під час запуску"
 
 #: lazarusidestrconsts.lisquickfixerror
 msgid "QuickFix error"
@@ -17107,7 +17061,7 @@ msgstr "Обертання не вдалося"
 
 #: lazarusidestrconsts.lisrevision
 msgid "Revision: "
-msgstr ""
+msgstr "Ревізія:"
 
 #: lazarusidestrconsts.lisright
 msgctxt "lazarusidestrconsts.lisright"
@@ -17739,7 +17693,7 @@ msgstr "Пропустити завантаження останнього пр�
 
 #: lazarusidestrconsts.lisskipstartupchecks
 msgid "Skip selected checks at startup."
-msgstr ""
+msgstr "Пропустити вибрані перевірки під час запуску."
 
 #: lazarusidestrconsts.lisskipthesewarnings
 msgid "Skip these warnings"
@@ -18111,7 +18065,7 @@ msgstr "Перевірити URL"
 #: lazarusidestrconsts.listheapplicationbundlewascreatedfor
 #, object-pascal-format
 msgid "The Application Bundle was created for \"%s\""
-msgstr "Пакет застосунків був створений для \"%s\""
+msgstr "Створено теку застосунку (Application Bundle) для \"%s\""
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
 #, object-pascal-format
@@ -18302,9 +18256,9 @@ msgid "The key %s is already assigned to %s%s.%s%sRemove the old assignment and 
 msgstr "Клавішу %s вже призначено для %s%s.%s%sВидалити старе призначення і призначити клавішу для нової функції %s?"
 
 #: lazarusidestrconsts.listhelaunchingapplicationbundledoesnotexists
-#, object-pascal-format, fuzzy, badformat
+#, object-pascal-format
 msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%sSee Project -> Project Options -> Application for settings."
-msgstr "Необхідний для виконання пакет програм %s%sне існує або не є виконуваним файлом.%sВи хочете створити такий?%s%Для налаштування дивіться Проєкт -> Параметри проєкту -> Застосунок."
+msgstr "Необхідна для виконання тека застосунку (Application Bundle) %s%sне існує або не є виконуваною%sБажаєте створити її?%sДля налаштування див. Проєкт -> Параметри проєкту -> Застосунок."
 
 #: lazarusidestrconsts.listhelaunchingapplicationdoesnotexistsorisnotexecuta
 #, object-pascal-format
@@ -18446,24 +18400,24 @@ msgstr "Опції компілятора проєкту і директиви �
 
 #: lazarusidestrconsts.listheprojectdoesnotusedwarf_taskdlg_caption
 msgid "Running your application with debugger"
-msgstr ""
+msgstr "Запуск застосунку за допомогою зневаджувача"
 
 #: lazarusidestrconsts.listheprojectdoesnotusedwarf_taskdlg_footer
 msgid "This choice can be later changed in Project -> Project Options -> Compiler Options -> Debugging."
-msgstr ""
+msgstr "Пізніше цей вибір можна змінити в Проєкт -> Параметри проєкту -> Параметри компілятора -> Зневадження."
 
 #: lazarusidestrconsts.listheprojectdoesnotusedwarf_taskdlg_nodebugbtn_caption
 msgid "Run with no debugger"
-msgstr ""
+msgstr "Запустити без зневаджувача"
 
 #: lazarusidestrconsts.listheprojectdoesnotusedwarf_taskdlg_textexplain
 #, object-pascal-format
 msgid "\"%s\" can only run your application when it was compiled with a suitable Debug Information enabled."
-msgstr ""
+msgstr "\"%s\" може запускати вашу програму, лише якщо її скомпільовано з увімкненою відповідною зневаджувальною інформацією."
 
 #: lazarusidestrconsts.listheprojectdoesnotusedwarf_taskdlg_title
 msgid "Choose Debug Information format"
-msgstr ""
+msgstr "Виберіть формат зневаджувальної інформації"
 
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
 #, object-pascal-format
@@ -18473,7 +18427,7 @@ msgstr "Проєкт не використовує інтерфейси моду
 #: lazarusidestrconsts.listheprojecthasnocompilecommandseepr
 #, object-pascal-format
 msgid "The project has no compile command.%sSee Project -> Project Options -> Compiler Options -> Compiler Commands"
-msgstr ""
+msgstr "Проєкт не має команди компіляції.%sДив. Проєкт -> Параметри проєкту -> Параметри компілятора -> Команди компілятора"
 
 #: lazarusidestrconsts.listheprojecthasnomainsourcefile
 msgid "The project has no main source file."
@@ -18598,7 +18552,7 @@ msgstr "У теці з %s немає fpc.exe. Зазвичай виконува�
 #: lazarusidestrconsts.listhereisnofreepascalcompileregfpcorppccpuconfigured
 #, object-pascal-format
 msgid "There is no Free Pascal Compiler (e. g. fpc%0:s or ppc<cpu>%0:s) configured in the project options. CodeTools will not work properly.%1:s%1:sError message:%1:s%2:s"
-msgstr ""
+msgstr "У параметрах проєкту немає компілятора Free Pascal (наприклад, fpc%0:s або ppc<cpu>%0:s). CodeTools не працюватиме належним чином.%1:s%1:sПовідомлення про помилку:%1:s%2:s"
 
 #: lazarusidestrconsts.listheremustbeatleastonebuildmode
 msgid "There must be at least one build mode."
@@ -19558,7 +19512,7 @@ msgstr "модуль %s не знайдено у новому розташува
 #: lazarusidestrconsts.lisunitnotfoundinfile
 #, object-pascal-format
 msgid "A unit not found in file %s"
-msgstr ""
+msgstr "Не знайдено модуля у файлі %s"
 
 #: lazarusidestrconsts.lisunitoutputdirectory
 msgid "Unit Output directory"
@@ -19580,7 +19534,7 @@ msgstr "модуль %s потребує пакунка %s"
 #: lazarusidestrconsts.lisunitsnotfoundinfile
 #, object-pascal-format
 msgid "Units not found in file %s"
-msgstr ""
+msgstr "Не знайдено модулів у файлі %s"
 
 #: lazarusidestrconsts.lisunusedunitsof
 #, object-pascal-format
@@ -20247,7 +20201,7 @@ msgstr "Китайська"
 
 #: lazarusidestrconsts.rslanguagecorsican
 msgid "Corsican"
-msgstr ""
+msgstr "Корсиканська"
 
 #: lazarusidestrconsts.rslanguageczech
 msgid "Czech"
@@ -20389,21 +20343,20 @@ msgstr "Виберіть успадкований елемент"
 
 #: lazarusidestrconsts.rsshowabspath
 msgid "Absolute path"
-msgstr ""
+msgstr "Абсолютний шлях"
 
 #: lazarusidestrconsts.rsshowfilename
-#, fuzzy
 msgctxt "lazarusidestrconsts.rsshowfilename"
 msgid "File name"
 msgstr "Назва файлу"
 
 #: lazarusidestrconsts.rsshowpathmode
 msgid "Path display mode"
-msgstr ""
+msgstr "Режим показу шляху"
 
 #: lazarusidestrconsts.rsshowrelpath
 msgid "Relative path"
-msgstr ""
+msgstr "Відносний шлях"
 
 #: lazarusidestrconsts.rsversionnumbering
 msgid "Version numbering"
@@ -21316,7 +21269,7 @@ msgstr "параметри запуску"
 
 #: lazarusidestrconsts.srkmecrunwithdebugging
 msgid "run with debugging"
-msgstr ""
+msgstr "виконати зі зневадженням"
 
 #: lazarusidestrconsts.srkmecrunwithoutdebugging
 msgid "run without debugging"

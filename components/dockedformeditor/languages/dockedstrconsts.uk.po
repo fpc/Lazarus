@@ -1,191 +1,190 @@
+# lxlalexlxl <lxlalexlxl@ukr.net>, 2023.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
-"Language-Team: \n"
+"PO-Revision-Date: 2023-06-11 11:25+0300\n"
+"Last-Translator: lxlalexlxl <lxlalexlxl@ukr.net>\n"
+"Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 1.7.7\n"
+"X-Generator: Lokalize 21.12.3\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: dockedstrconsts.sallowsizingcaption
 msgid "Allow size changing"
-msgstr ""
+msgstr "Дозволити змінювання розмірів"
 
 #: dockedstrconsts.sallowsizinghint
 msgid "Grips can change size in Anchor Editor"
-msgstr ""
+msgstr "Змінювати розмір \"ручками\" в редакторі якорів"
 
 #: dockedstrconsts.sanchorbottomcolorcaption
 msgid "Bottom Anchor"
-msgstr ""
+msgstr "Нижній якір"
 
 #: dockedstrconsts.sanchorcontrolbordercaption
 msgid "Border Around Control"
-msgstr ""
+msgstr "Рамка навколо елемента керування"
 
 #: dockedstrconsts.sanchorcontrolcolorcaption
 msgid "Control Background"
-msgstr ""
+msgstr "Тло елемента керування"
 
 #: dockedstrconsts.sanchorleftcolorcaption
 msgid "Left Anchor"
-msgstr ""
+msgstr "Лівий якір"
 
 #: dockedstrconsts.sanchorrightcolorcaption
 msgid "Right Anchor"
-msgstr ""
+msgstr "Правий якір"
 
 #: dockedstrconsts.sanchors
 msgid "Anchors"
-msgstr ""
+msgstr "Якорі"
 
 #: dockedstrconsts.sanchortabvisiblecaption
 msgid "Show Anchors Tab"
-msgstr ""
+msgstr "Показати вкладку Якорі"
 
 #: dockedstrconsts.sanchortabvisiblehint
 msgid "Show Anchor Editor"
-msgstr ""
+msgstr "Показати редактор якорів"
 
 #: dockedstrconsts.sanchortargetcolorcaption
 msgid "Anchor Target"
-msgstr ""
+msgstr "Ціль якоря"
 
 #: dockedstrconsts.sanchortopcolorcaption
 msgid "Top Anchor"
-msgstr ""
+msgstr "Верхній якір"
 
 #: dockedstrconsts.sargumentoutofrange
 msgctxt "dockedstrconsts.sargumentoutofrange"
 msgid "Argument out of range."
-msgstr ""
+msgstr "Аргумент поза діапазоном."
 
 #: dockedstrconsts.sattachcontrol
 msgid "Attach Control"
-msgstr ""
+msgstr "Приєднати елемент керування"
 
 #: dockedstrconsts.sattachpoint
 msgid "Attach Control Sides"
-msgstr ""
+msgstr "Приєднати боки елемента керування"
 
 #: dockedstrconsts.sattachside
 msgid "Attach Control Side"
-msgstr ""
+msgstr "Приєднати бік елемента керування"
 
 #: dockedstrconsts.scaptiondockedformeditor
 msgid "Docked Form Editor"
-msgstr ""
+msgstr "Редактор стиковуваних форм"
 
 #: dockedstrconsts.scapturedistancecaption
 msgid "Capture Distance"
-msgstr ""
+msgstr "Відстань захоплення"
 
 #: dockedstrconsts.scapturedistancehint
 msgid "Minimal distance to capture a control with mouse"
-msgstr ""
+msgstr "Найменша відстань для захоплення елемента керування мишею"
 
 #: dockedstrconsts.scirculardependency
 msgid "This will create a circular dependency."
-msgstr ""
+msgstr "Це створить циклічну залежність."
 
 #: dockedstrconsts.scode
-#, fuzzy
 msgctxt "dockedstrconsts.scode"
 msgid "Code"
 msgstr "Код"
 
 #: dockedstrconsts.scolorscaption
 msgid "Colors"
-msgstr ""
+msgstr "Кольори"
 
 #: dockedstrconsts.sdesigner
-#, fuzzy
-#| msgid "Designer"
 msgctxt "dockedstrconsts.sdesigner"
 msgid "Form"
-msgstr "Дизайнер"
+msgstr "Форма"
 
 #: dockedstrconsts.sdetachcontrol
 msgid "Detach Control"
-msgstr ""
+msgstr "Від'єднати елемент керування"
 
 #: dockedstrconsts.sdetachpoint
 msgid "Detach Control Sides"
-msgstr ""
+msgstr "Від'єднати боки елемента керування"
 
 #: dockedstrconsts.sdetachside
 msgid "Detach Control Side"
-msgstr ""
+msgstr "Від'єднати бік елемента керування"
 
 #: dockedstrconsts.sforcerefreshingcaption
 msgid "Force Refreshing At Sizing"
-msgstr ""
+msgstr "Примусове оновлення при зміні розміру"
 
 #: dockedstrconsts.sforcerefreshinghint
 msgid "Force refreshing form when user is sizing it"
-msgstr ""
+msgstr "Примусове оновлення форми, коли користувач змінює її розміри"
 
 #: dockedstrconsts.smouseborderfactorcaption
 msgid "Mouse cursor factor for BorderSpacing property"
-msgstr ""
+msgstr "Коефіцієнт вказівника миші для властивості BorderSpacing"
 
 #: dockedstrconsts.smouseborderfactorhint
 msgid "Mouse cursor factor is used to set small values of BorderSpacing property more precisely"
-msgstr ""
+msgstr "Коефіцієнт дії вказівника миші для точнішого  встановлення малих значень властивості BorderSpacing"
 
 #: dockedstrconsts.sresizercolorcaption
 msgid "Resizer Color"
-msgstr ""
+msgstr "Колір смуг змінення розміру"
 
 #: dockedstrconsts.sresizercolorhint
 msgid "Color of resizer bars"
-msgstr ""
+msgstr "Колір смуг змінення розміру"
 
 #: dockedstrconsts.stabpositionbottom
 msgid "Bottom"
-msgstr ""
+msgstr "Внизу"
 
 #: dockedstrconsts.stabpositioncaption
 msgid "Tab Position"
-msgstr ""
+msgstr "Положення вкладок"
 
 #: dockedstrconsts.stabpositionhint
 msgid "Position of Code, Form, Anchors tabs"
-msgstr ""
+msgstr "Розташування вкладок Код, Форма, Якорі"
 
 #: dockedstrconsts.stabpositionleft
 msgid "Left"
-msgstr ""
+msgstr "Ліворуч"
 
 #: dockedstrconsts.stabpositionright
 msgid "Right"
-msgstr ""
+msgstr "Праворуч"
 
 #: dockedstrconsts.stabpositiontop
 msgid "Top"
-msgstr ""
+msgstr "Вгорі"
 
 #: dockedstrconsts.streataligncaption
 msgid "Automatically treat Align properties"
-msgstr ""
+msgstr "Автоматично замінити властивості Align"
 
 #: dockedstrconsts.streatalignhint
 msgid "Automatically replace Align properties with appropriate Anchors"
-msgstr ""
+msgstr "Автоматично замінювати властивість Align відповідними якорями"
 
 #: dockedstrconsts.streatbordercaption
 msgid "Automatically treat BorderSpacing properties"
-msgstr ""
+msgstr "Автоматично замінити властивості BorderSpacing"
 
 #: dockedstrconsts.streatborderhint
 msgid "Automatically replace BorderSpacing.Around properties of controls and adapt BorderSpacing.Left/Right/Top/Bottom if needed"
-msgstr ""
+msgstr "Автоматично замінювати властивість елементів керування BorderSpacing.Around і, за потреби, налаштовувати BorderSpacing.Left/Right/Top/Bottom"
 
 #: dockedstrconsts.swarningcaption
 msgid "Warning"
-msgstr ""
+msgstr "Попередження"
 

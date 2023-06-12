@@ -1,9 +1,17 @@
+# lxlalexlxl <lxlalexlxl@ukr.net>, 2023.
 msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
+"Last-Translator: lxlalexlxl <lxlalexlxl@ukr.net>\n"
+"PO-Revision-Date: 2023-06-08 18:53+0300\n"
+"Project-Id-Version: \n"
+"Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
+"Language: uk\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Lokalize 21.12.3\n"
 
 #: idedebuggerstringconstants.dbgbreakgroupdlgcaption
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
@@ -24,110 +32,97 @@ msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%
 msgstr "Деякі групи в списку ввімкнення/вимкнення не існують.%0:sСтворити їх?%0:s%0:s%1:s"
 
 #: idedebuggerstringconstants.dbgdispformatbinary
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatbinary"
 msgid "Binary"
 msgstr "Двійковий"
 
 #: idedebuggerstringconstants.dbgdispformatcharacter
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatcharacter"
 msgid "Character"
 msgstr "Символ"
 
 #: idedebuggerstringconstants.dbgdispformatdecimal
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatdecimal"
 msgid "Decimal"
-msgstr "Десяткове"
+msgstr "Десятковий"
 
 #: idedebuggerstringconstants.dbgdispformatdefault
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatdefault"
 msgid "Default"
 msgstr "Типово"
 
 #: idedebuggerstringconstants.dbgdispformatfloatingpoin
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatfloatingpoin"
 msgid "Floating Point"
-msgstr "Рухома кома"
+msgstr "З рухомою комою"
 
 #: idedebuggerstringconstants.dbgdispformathexadecimal
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformathexadecimal"
 msgid "Hexadecimal"
-msgstr "Шістнадцяткове"
+msgstr "Шістнадцятковий"
 
 #: idedebuggerstringconstants.dbgdispformatmemorydump
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatmemorydump"
 msgid "Memory Dump"
 msgstr "Дамп пам'яті"
 
 #: idedebuggerstringconstants.dbgdispformatpointer
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatpointer"
 msgid "Pointer"
 msgstr "Вказівник"
 
 #: idedebuggerstringconstants.dbgdispformatrecordstruct
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatrecordstruct"
 msgid "Record/Structure"
-msgstr "Запис/Структура"
+msgstr "Запис/структура"
 
 #: idedebuggerstringconstants.dbgdispformatstring
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatstring"
 msgid "String"
-msgstr "Рядок"
+msgstr "Рядковий"
 
 #: idedebuggerstringconstants.dbgdispformatunsigned
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dbgdispformatunsigned"
 msgid "Unsigned"
-msgstr "Непідписаний"
+msgstr "Беззнаковий"
 
 #: idedebuggerstringconstants.dlgbackconvoptaction
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dlgbackconvoptaction"
 msgid "Action"
 msgstr "Дія"
 
 #: idedebuggerstringconstants.dlgbackconvoptaddnew
 msgid "Add"
-msgstr ""
+msgstr "Додати"
 
 #: idedebuggerstringconstants.dlgbackconvoptdebugoptions
 msgid "Backend Converter"
-msgstr ""
+msgstr "Конвертер бекенду"
 
 #: idedebuggerstringconstants.dlgbackconvoptmatchtypesbyname
 msgid "Match types by name"
-msgstr ""
+msgstr "Шукати відповідність за назвою"
 
 #: idedebuggerstringconstants.dlgbackconvoptname
-#, fuzzy
 msgctxt "idedebuggerstringconstants.dlgbackconvoptname"
 msgid "Name"
 msgstr "Назва"
 
 #: idedebuggerstringconstants.dlgbackconvoptremove
 msgid "Remove"
-msgstr ""
+msgstr "Вилучити"
 
 #: idedebuggerstringconstants.dlgbackendconvoptdebugconverter
 msgid "Backend Converter:"
-msgstr ""
+msgstr "Конвертер бекенду:"
 
 #: idedebuggerstringconstants.dlgbackendconvoptdefault
 msgid "- Default -"
-msgstr ""
+msgstr "- Типово -"
 
 #: idedebuggerstringconstants.dlgbackendconvoptdisabled
 msgid "- Disabled -"
-msgstr ""
+msgstr "- Вимкнено -"
 
 #: idedebuggerstringconstants.dlgenvtype
 msgctxt "lazarusidestrconsts.dlgenvtype"
@@ -146,28 +141,28 @@ msgstr "Файли XML"
 
 #: idedebuggerstringconstants.dlgidedbgdebugger
 msgid "Debugger"
-msgstr ""
+msgstr "Зневаджувач"
 
 #: idedebuggerstringconstants.dlgidedbgentername
 msgid "Enter name"
-msgstr ""
+msgstr "Введіть назву"
 
 #: idedebuggerstringconstants.dlgidedbgnewitem
 msgid "New Item"
-msgstr ""
+msgstr "Новий елемент"
 
 #: idedebuggerstringconstants.dlginspectamountofitemstoshow
 msgid "Amount of items to show"
-msgstr ""
+msgstr "Кількість елементів для показу"
 
 #: idedebuggerstringconstants.dlginspectboundsdd
 #, object-pascal-format
 msgid "Bounds: %d .. %d"
-msgstr ""
+msgstr "Межі: %d .. %d"
 
 #: idedebuggerstringconstants.dlginspectindexoffirstitemtoshow
 msgid "Index of first item to show"
-msgstr ""
+msgstr "Індекс першого елемента для показу"
 
 #: idedebuggerstringconstants.dlgunitdeprefresh
 msgctxt "lazarusidestrconsts.dlgunitdeprefresh"
@@ -181,17 +176,16 @@ msgstr "Значення"
 
 #: idedebuggerstringconstants.dlgvaluedataaddr
 msgid "Data-Address"
-msgstr ""
+msgstr "Дані-адреса"
 
 #: idedebuggerstringconstants.drsaddwatch
-#, fuzzy
 msgctxt "idedebuggerstringconstants.drsaddwatch"
 msgid "Add watch"
 msgstr "Додати спостереження"
 
 #: idedebuggerstringconstants.drsappendresultatbottomofhis
 msgid "Append result at bottom of history"
-msgstr ""
+msgstr "Додати результат внизу історії"
 
 #: idedebuggerstringconstants.drsbreakpointcolwidthaction
 msgid "Action column"
@@ -220,7 +214,7 @@ msgstr "Графа числа проходів"
 
 #: idedebuggerstringconstants.drscolwidthaddr
 msgid "Address column"
-msgstr ""
+msgstr "Стовпець адреси"
 
 #: idedebuggerstringconstants.drscolwidthbrkpointimg
 msgid "Break indication column"
@@ -261,24 +255,22 @@ msgstr "Графа значення"
 
 #: idedebuggerstringconstants.drsdebugconverter
 msgid "Converter"
-msgstr ""
+msgstr "Конвертер"
 
 #: idedebuggerstringconstants.drsdisableenableupdatesforth
-#, fuzzy
 msgctxt "idedebuggerstringconstants.drsdisableenableupdatesforth"
 msgid "Disable/Enable updates for the entire window"
-msgstr "Вимкнення/Ввімкнення оновлень всього вікна"
+msgstr "Вимкнути/увімкнути оновлення всього вікна"
 
 #: idedebuggerstringconstants.drsenterexpression
 msgid "Enter Expression"
-msgstr ""
+msgstr "Введіть вираз"
 
 #: idedebuggerstringconstants.drsevaluate
 msgid "Evaluate"
-msgstr ""
+msgstr "Оцінити"
 
 #: idedebuggerstringconstants.drshistory
-#, fuzzy
 msgctxt "idedebuggerstringconstants.drshistory"
 msgid "History"
 msgstr "Історія"
@@ -297,11 +289,11 @@ msgstr "Графа часу"
 
 #: idedebuggerstringconstants.drsinsertresultattopofhistor
 msgid "Insert result at top of history"
-msgstr ""
+msgstr "Додати результат вгорі історії"
 
 #: idedebuggerstringconstants.drsinspect
 msgid "Inspect"
-msgstr ""
+msgstr "Оглянути"
 
 #: idedebuggerstringconstants.drsinspectcolwidthdataclass
 msgid "Data class column"
@@ -346,49 +338,46 @@ msgstr "Дов=%d: "
 
 #: idedebuggerstringconstants.drsnewvalue
 msgid "New Value"
-msgstr ""
+msgstr "Нове значення"
 
 #: idedebuggerstringconstants.drsnewvaluetoassigntothevari
 msgid "New value to assign to the variable in the debugged process (use Shift-Enter to confirm)"
-msgstr ""
+msgstr "Нове значення для присвоєння змінній у зневаджуваному процесі (використовуйте Shift-Enter для підтвердження)"
 
 #: idedebuggerstringconstants.drsnodebugconverter
 msgid "No Converter"
-msgstr ""
+msgstr "Без конвертера"
 
 #: idedebuggerstringconstants.drsnohistorykept
 msgid "No history kept"
-msgstr ""
+msgstr "Історія не зберігається"
 
 #: idedebuggerstringconstants.drsrunallthreadswhileevaluat
 msgid "Run all threads while evaluating"
-msgstr ""
+msgstr "Запустити всі потоки під час оцінювання"
 
 #: idedebuggerstringconstants.drssuspend
 msgid "Suspend"
-msgstr ""
+msgstr "Призупинити"
 
 #: idedebuggerstringconstants.drsusefunctioncalls
-#, fuzzy
 msgctxt "idedebuggerstringconstants.drsusefunctioncalls"
 msgid "Function"
 msgstr "Функція"
 
 #: idedebuggerstringconstants.drsusefunctioncallshint
 msgid "Allow function calls"
-msgstr ""
+msgstr "Дозволити виклики функцій"
 
 #: idedebuggerstringconstants.drsuseinstanceclass
-#, fuzzy
 msgctxt "idedebuggerstringconstants.drsuseinstanceclass"
 msgid "Instance"
 msgstr "Примірник"
 
 #: idedebuggerstringconstants.drsuseinstanceclasshint
-#, fuzzy
 msgctxt "idedebuggerstringconstants.drsuseinstanceclasshint"
 msgid "Use Instance class type"
-msgstr "Викор. тип екземпляра класу"
+msgstr "Використати тип екземпляра класу"
 
 #: idedebuggerstringconstants.drsuseinstanceclasstype
 msgctxt "idedebuggerstringconstants.drsuseinstanceclasstype"
@@ -402,7 +391,7 @@ msgstr "Панель огляду"
 
 #: idedebuggerstringconstants.dsrevalusedebugconverter
 msgid "Use Backend Converter"
-msgstr ""
+msgstr "Використовувати конвертер бекенду"
 
 #: idedebuggerstringconstants.histdlgbtnclearhint
 msgid "Clear all snapshots"
@@ -422,7 +411,7 @@ msgstr "Ввімкнути/Вимкнути автоматичні знімки"
 
 #: idedebuggerstringconstants.histdlgbtnremovehint
 msgid "Remove selected entry"
-msgstr "Видалити вибраний елемент"
+msgstr "Видалити вибраний запис"
 
 #: idedebuggerstringconstants.histdlgbtnshowhisthint
 msgid "View history"
@@ -507,13 +496,11 @@ msgstr "Помилка"
 
 #: idedebuggerstringconstants.lisclear
 msgid "Clear"
-msgstr ""
+msgstr "Очистити"
 
 #: idedebuggerstringconstants.liscoladdress
-#, fuzzy
-#| msgid "Address"
 msgid "Function Address"
-msgstr "Адреса"
+msgstr "Адреса функції"
 
 #: idedebuggerstringconstants.liscolclass
 msgid "Class"
@@ -521,7 +508,7 @@ msgstr "Клас"
 
 #: idedebuggerstringconstants.liscolinstance
 msgid "Object Instance"
-msgstr ""
+msgstr "Примірник об'єкта"
 
 #: idedebuggerstringconstants.liscolreturns
 msgid "Returns"
@@ -606,7 +593,7 @@ msgstr "Ввімкнути все"
 
 #: idedebuggerstringconstants.lisdbgasmcopyaddresstoclipboard
 msgid "Copy address to Clipboard"
-msgstr ""
+msgstr "Копіювати адресу в буфер обміну"
 
 #: idedebuggerstringconstants.lisdbgasmcopytoclipboard
 msgid "Copy to Clipboard"
@@ -737,14 +724,13 @@ msgid "Disable Groups"
 msgstr "Вимкнути групи"
 
 #: idedebuggerstringconstants.lisdisassassembler
-#, fuzzy
 msgctxt "idedebuggerstringconstants.lisdisassassembler"
 msgid "Assembler"
 msgstr "Асемблер"
 
 #: idedebuggerstringconstants.lisdisassgotoaddredittexthint
 msgid "($address)"
-msgstr ""
+msgstr "($адреса)"
 
 #: idedebuggerstringconstants.lisdisassgotoaddress
 msgctxt "idedebuggerstringconstants.lisdisassgotoaddress"
@@ -940,15 +926,15 @@ msgstr "Властивості"
 
 #: idedebuggerstringconstants.lisinspectshowcolclass
 msgid "Show class column"
-msgstr ""
+msgstr "Показати стовпець класу"
 
 #: idedebuggerstringconstants.lisinspectshowcoltype
 msgid "Show type column"
-msgstr ""
+msgstr "Показати стовпець типу"
 
 #: idedebuggerstringconstants.lisinspectshowcolvisibility
 msgid "Show visibility column"
-msgstr ""
+msgstr "Показати стовпець видимості"
 
 #: idedebuggerstringconstants.lisinspectunavailableerror
 #, object-pascal-format
@@ -996,17 +982,15 @@ msgstr "Локальні змінні"
 
 #: idedebuggerstringconstants.lislocalsdlgcopyaddr
 msgid "Copy &Data-Address"
-msgstr ""
+msgstr "Копіювати &дані-адресу"
 
 #: idedebuggerstringconstants.lislocalsdlgcopyall
-#, fuzzy
-#| msgid "Copy &all"
 msgid "Copy &all entries"
-msgstr "Копіювати &всі"
+msgstr "Копіювати &всі записи"
 
 #: idedebuggerstringconstants.lislocalsdlgcopyentry
 msgid "Copy entire entry"
-msgstr ""
+msgstr "Копіювати цілий запис"
 
 #: idedebuggerstringconstants.lislocalsdlgcopyname
 msgid "&Copy Name"
@@ -1021,10 +1005,8 @@ msgid "Copy &RAW Value"
 msgstr "Копіювати &сирі значення"
 
 #: idedebuggerstringconstants.lislocalsdlgcopyvalue
-#, fuzzy
-#| msgid "C&opy Value"
 msgid "C&opy Value (quoted)"
-msgstr "Ко&піювати значення"
+msgstr "Ко&піювати значення (у лапках)"
 
 #: idedebuggerstringconstants.lislocalsnotevaluated
 msgid "Locals not evaluated"
@@ -1178,7 +1160,6 @@ msgid "&Source Breakpoint ..."
 msgstr "Точка зупинки &джерела ..."
 
 #: idedebuggerstringconstants.lissrcline
-#, fuzzy
 msgctxt "idedebuggerstringconstants.lissrcline"
 msgid "Line"
 msgstr "Рядок"
@@ -1236,7 +1217,6 @@ msgid "State"
 msgstr "Стан"
 
 #: idedebuggerstringconstants.lisvalue
-#, fuzzy
 msgctxt "idedebuggerstringconstants.lisvalue"
 msgid "Value"
 msgstr "Значення"
@@ -1351,7 +1331,7 @@ msgstr "Десятковий"
 #: idedebuggerstringconstants.regdlgdefault
 msgctxt "idedebuggerstringconstants.regdlgdefault"
 msgid "Default"
-msgstr ""
+msgstr "Типово"
 
 #: idedebuggerstringconstants.regdlgdisplaytypeforselectedregisters
 msgid "Display type for selected Registers"

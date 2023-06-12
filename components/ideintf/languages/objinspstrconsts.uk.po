@@ -1,10 +1,10 @@
 # Olexandr Pylypchuk <pilipchukap@rambler.ru>, 2016, 2017.
-# admin <lxlalexlxl@ukr.net>, 2017, 2018, 2019, 2020.
+# admin <lxlalexlxl@ukr.net>, 2017, 2018, 2019, 2020, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2020-06-10 20:56+0200\n"
+"PO-Revision-Date: 2023-06-11 12:16+0300\n"
 "Last-Translator: lxlalexlxl <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "Language: uk\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Lokalize 2.0\n"
+"X-Generator: Lokalize 21.12.3\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -174,10 +174,8 @@ msgid "Cancel"
 msgstr "Скасувати"
 
 #: objinspstrconsts.fescheckdset
-#, fuzzy
-#| msgid "Check dataset settings"
 msgid "Check dataset settings."
-msgstr "Перевірити параметри набору даних"
+msgstr "Перевірити параметри набору даних."
 
 #: objinspstrconsts.fesdata
 msgid "&Data"
@@ -193,6 +191,8 @@ msgid ""
 "Error message:\n"
 "%s"
 msgstr ""
+"Повідомлення про помилку:\n"
+"%s"
 
 #: objinspstrconsts.fesfetitle
 msgid "Edit Fields ..."
@@ -241,16 +241,12 @@ msgid "&Name:"
 msgstr "&Назва:"
 
 #: objinspstrconsts.fesnofields
-#, fuzzy
-#| msgid "It was not possible to get the dataset field's list"
 msgid "It was not possible to get the dataset fields list."
-msgstr "Неможливо отримати список полів набору даних"
+msgstr "Неможливо отримати список полів набору даних."
 
 #: objinspstrconsts.fesnofieldsnote
-#, fuzzy
-#| msgid "Field's list is not available, can't check for duplicates"
 msgid "Fields list is not available, can't check for duplicates."
-msgstr "Список полів недоступний, неможливо перевірити наявність дублікатів"
+msgstr "Список полів недоступний, неможливо перевірити наявність дублікатів."
 
 #: objinspstrconsts.fesokbtn
 msgctxt "objinspstrconsts.fesokbtn"
@@ -635,7 +631,7 @@ msgstr "Несумісний метод"
 #: objinspstrconsts.oisinfinitynotsupported
 msgctxt "objinspstrconsts.oisinfinitynotsupported"
 msgid "Setting a floating point property to positive or negative Infinity at design time is not supported"
-msgstr ""
+msgstr "Встановлення властивості з рухомою комою на додатну або від'ємну нескінченність під час розробки не підтримується"
 
 #: objinspstrconsts.oisinputmask
 msgid "Input Mask:"
@@ -723,7 +719,7 @@ msgstr "Перемістити поле вгору"
 
 #: objinspstrconsts.oisnannotsupported
 msgid "Setting a floating point property to NaN at design time is not supported"
-msgstr ""
+msgstr "Встановлення властивості з рухомою комою на NaN під час розробки не підтримується"
 
 #: objinspstrconsts.oisnew
 msgid "&New"
@@ -1293,7 +1289,7 @@ msgstr "Значення:"
 
 #: objinspstrconsts.oisvalueoutofrange
 msgid "Property value out of range."
-msgstr ""
+msgstr "Значення властивості поза діапазоном."
 
 #: objinspstrconsts.oisvariant
 msgid "Variant"
@@ -1602,37 +1598,37 @@ msgstr "Очистити"
 #: objinspstrconsts.sccssgedtcolrowinfo
 #, object-pascal-format
 msgid "(%d columns, %d rows)"
-msgstr ""
+msgstr "(%d стовпців, %d рядків)"
 
 #: objinspstrconsts.sccssgedtdelcol
 msgid "Delete column"
-msgstr ""
+msgstr "Видалити стовпець"
 
 #: objinspstrconsts.sccssgedtdelcolno
 #, object-pascal-format
 msgid "Delete column #%d?"
-msgstr ""
+msgstr "Видалити стовпець #%d?"
 
 #: objinspstrconsts.sccssgedtdelrow
 msgid "Delete row"
-msgstr ""
+msgstr "Видалити рядок"
 
 #: objinspstrconsts.sccssgedtdelrowno
 #, object-pascal-format
 msgid "Delete row #%d?"
-msgstr ""
+msgstr "Видалити рядок #%d?"
 
 #: objinspstrconsts.sccssgedteditcoltitle
 msgid "Edit column title"
-msgstr ""
+msgstr "Видалити заголовок стовпця"
 
 #: objinspstrconsts.sccssgedteditfixedcoltitle
 msgid "Edit fixed column title"
-msgstr ""
+msgstr "Змінити заголовок фіксованого стовпця"
 
 #: objinspstrconsts.sccssgedteditrowheader
 msgid "Edit row header"
-msgstr ""
+msgstr "Змінити заголовок рядка"
 
 #: objinspstrconsts.sccssgedtgrp
 msgid "String Grid"
@@ -1640,21 +1636,19 @@ msgstr "String Grid"
 
 #: objinspstrconsts.sccssgedtinscol
 msgid "Insert column"
-msgstr ""
+msgstr "Вставити стовпець"
 
 #: objinspstrconsts.sccssgedtinsrow
 msgid "Insert row"
-msgstr ""
+msgstr "Вставити рядок"
 
 #: objinspstrconsts.sccssgedtload
 msgid "Load ..."
 msgstr "Завантажити ..."
 
 #: objinspstrconsts.sccssgedtmoverowscols
-#, fuzzy
-#| msgid "Move Rows/Cols"
 msgid "Move rows/columns"
-msgstr "Перемістити рядки/колонки"
+msgstr "Перемістити рядки/стовпці"
 
 #: objinspstrconsts.sccssgedtopendialog
 msgctxt "objinspstrconsts.sccssgedtopendialog"
@@ -1673,7 +1667,7 @@ msgstr "Зберегти"
 
 #: objinspstrconsts.sccssgedttitle
 msgid "Title"
-msgstr ""
+msgstr "Заголовок"
 
 #: objinspstrconsts.sccstredt
 msgctxt "objinspstrconsts.sccstredt"

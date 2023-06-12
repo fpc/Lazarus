@@ -1,23 +1,21 @@
-# Olexandr Pylypchuk <lxlalexlxl@ukr.net>, 2019, 2020.
+# Olexandr Pylypchuk <lxlalexlxl@ukr.net>, 2019, 2020, 2023.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2020-06-10 21:04+0200\n"
+"PO-Revision-Date: 2023-06-08 22:25+0300\n"
 "Last-Translator: lxlalexlxl <lxlalexlxl@ukr.net>\n"
 "Language-Team: Ukrainian <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: uk\n"
-"X-Generator: Lokalize 2.0\n"
+"X-Generator: Lokalize 21.12.3\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: sqldbstrconst.lrsgeneratesqlstatements
-#, fuzzy
-#| msgid "Edit/Generate SQL statements"
 msgid "Edit/Generate SQL Statements"
-msgstr "Змінити/Згенерувати вирази SQL"
+msgstr "Змінити/Створити інструкції SQL"
 
 #: sqldbstrconst.lrssqldatasetopen
 #, object-pascal-format
@@ -107,12 +105,12 @@ msgstr "Зберегти код SQL ..."
 #: sqldbstrconst.ssqlbrackets
 msgctxt "sqldbstrconst.ssqlbrackets"
 msgid "Brackets"
-msgstr ""
+msgstr "Дужки"
 
 #: sqldbstrconst.ssqldelimitersforfieldtablenames
 msgctxt "sqldbstrconst.ssqldelimitersforfieldtablenames"
 msgid "Delimiters for field/table names"
-msgstr ""
+msgstr "Розділювачі для назв полів/таблиць"
 
 #: sqldbstrconst.ssqlerror
 msgid "Probable SQL error"
@@ -121,21 +119,21 @@ msgstr "Можливо, помилка SQL"
 #: sqldbstrconst.ssqlfullyqualifiedfields
 msgctxt "sqldbstrconst.ssqlfullyqualifiedfields"
 msgid "Fully qualified fields"
-msgstr ""
+msgstr "Повністю кваліфіковані поля"
 
 #: sqldbstrconst.ssqlgenerated
 msgid "SQL statements successfully generated."
-msgstr ""
+msgstr "Інструкції SQL успішно створено."
 
 #: sqldbstrconst.ssqlgeneratesql
 msgctxt "sqldbstrconst.ssqlgeneratesql"
 msgid "Generate SQL"
-msgstr ""
+msgstr "Створити SQL"
 
 #: sqldbstrconst.ssqlindent
 msgctxt "sqldbstrconst.ssqlindent"
 msgid "Indent"
-msgstr ""
+msgstr "Відступ"
 
 #: sqldbstrconst.ssqlite3databases
 msgid "SQLite3 databases"
@@ -144,21 +142,21 @@ msgstr "Бази даних SQLite3"
 #: sqldbstrconst.ssqlkeyfields
 msgctxt "sqldbstrconst.ssqlkeyfields"
 msgid "Key fields"
-msgstr ""
+msgstr "Ключові поля"
 
 #: sqldbstrconst.ssqllinelength
 msgctxt "sqldbstrconst.ssqllinelength"
 msgid "Line length"
-msgstr ""
+msgstr "Довжина рядка"
 
 #: sqldbstrconst.ssqlnosqlgenerated
 msgctxt "sqldbstrconst.ssqlnosqlgenerated"
 msgid "No SQL statements were generated. Do you really want to close?"
-msgstr ""
+msgstr "Інструкції SQL не створено. Справді закрити?"
 
 #: sqldbstrconst.ssqlnotable
 msgid "No table is selected for generation of SQL statements."
-msgstr ""
+msgstr "Для створення інструкцій SQL не вибрано жодної таблиці."
 
 #: sqldbstrconst.ssqlok
 msgid "Quick SQL check OK"
@@ -167,12 +165,12 @@ msgstr "Швидка перевірка SQL: без помилок"
 #: sqldbstrconst.ssqlonefieldperline
 msgctxt "sqldbstrconst.ssqlonefieldperline"
 msgid "One field per line"
-msgstr ""
+msgstr "Одне поле на рядок"
 
 #: sqldbstrconst.ssqlquotechar
 msgctxt "sqldbstrconst.ssqlquotechar"
 msgid "Quote character"
-msgstr ""
+msgstr "Символ лапки"
 
 #: sqldbstrconst.ssqlscript
 msgid "SQL Script file"
@@ -185,12 +183,12 @@ msgstr "Створити новий файл сценарію SQL"
 #: sqldbstrconst.ssqlselectupdateinsertfields
 msgctxt "sqldbstrconst.ssqlselectupdateinsertfields"
 msgid "\"Select\"/\"Update\"/\"Insert\" fields"
-msgstr ""
+msgstr "Поля «Вибрати»/«Оновити»/«Вставити»."
 
 #: sqldbstrconst.ssqlshowsystemtables
 msgctxt "sqldbstrconst.ssqlshowsystemtables"
 msgid "Show system tables"
-msgstr ""
+msgstr "Показати системні таблиці"
 
 #: sqldbstrconst.ssqlsource
 msgid "Insert your SQL statements here"
@@ -217,15 +215,15 @@ msgstr "Код SQL"
 #: sqldbstrconst.ssqltable
 msgctxt "sqldbstrconst.ssqltable"
 msgid "Table"
-msgstr ""
+msgstr "Таблиця"
 
 #: sqldbstrconst.ssqltablesandfields
 msgctxt "sqldbstrconst.ssqltablesandfields"
 msgid "Tables and Fields"
-msgstr ""
+msgstr "Таблиці та поля"
 
 #: sqldbstrconst.ssqluppercasekeywords
 msgctxt "sqldbstrconst.ssqluppercasekeywords"
 msgid "Uppercase keywords"
-msgstr ""
+msgstr "Ключові слова у верхньому регістрі"
 
