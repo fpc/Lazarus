@@ -536,12 +536,9 @@ function GetLanguageID: TLanguageID;
     begin
       EnvVarContents := GetEnvironmentVariable('LC_MESSAGES');
       if Length(EnvVarContents) = 0 then
-      begin
         EnvVarContents := GetEnvironmentVariable('LANG');
-        if Length(EnvVarContents) = 0 then
-          exit;   // no language defined via environment variables
-      end;
     end;
+    // Even empty EnvVarContents is processed in order to return normalized ID
     Result := GetLanguageIDFromLocaleName(EnvVarContents);
   end;
   {$ENDIF}
