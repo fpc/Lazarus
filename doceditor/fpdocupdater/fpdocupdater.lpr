@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms,
-  MainUnit, UnitMove, UnitSummary;
+  MainUnit, UnitMove, UnitSummary, FPDocFiles;
 
 begin
   Application.Initialize;

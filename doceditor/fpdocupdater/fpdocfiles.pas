@@ -27,8 +27,9 @@ unit FPDocFiles;
 interface
 
 uses
-  Classes, SysUtils, Contnrs, FileUtil, DOM, XMLWrite, XMLRead,
-  LazUtf8;
+  Classes, SysUtils, Contnrs,
+  // LazUtils
+  FileUtil, DOM, XMLWrite, XMLRead, LazUtf8, LazLoggerBase;
   
 type
   TFPDocInfo = record
@@ -297,8 +298,6 @@ const
   function DbgS(const AInfo: TFPDocInfo): String; overload;
 
 implementation
-
-uses LCLProc;
 
 function DbgS(const AInfo: TFPDocInfo): String;
 begin

@@ -27,10 +27,13 @@ unit MainUnit;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
-  FPDocFiles, StdCtrls, ComCtrls, FileUtil, ExtCtrls,
-  LCLIntf, LCLType, LCLProc, Process, UTF8Process, EditBtn, Laz_XMLCfg,
-  LazUtf8, LazFileUtils;
+  Classes, SysUtils, Process,
+  // LCL
+  Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, ExtCtrls, EditBtn,
+  LResources, LCLIntf, LCLType,
+  // LazUtils
+  UTF8Process, Laz_XMLCfg, LazUtf8, FileUtil, LazFileUtils, LazLoggerBase,
+  FPDocFiles;
 
 type
 
