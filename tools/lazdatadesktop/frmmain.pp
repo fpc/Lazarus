@@ -1868,6 +1868,7 @@ const
   ext      = '.%s.po';
 var
   LangID1, LangID2, basedir, olddir: String;
+  LangID: TLanguageID;
 begin
   olddir := GetCurrentDir;
   //
@@ -1877,7 +1878,11 @@ begin
   LangID1 := Application.GetOptionValue('language');
   LangID2 := '';
   if Trim(LangId1) = '' then
-    LazGetLanguageIDs(LangID1,LangID2);
+  begin
+    LangID := GetLanguageID;
+    LangID1 := LangID.LanguageID;
+    LangID2 := LangID.LanguageCode;
+  end;
   TranslateUnitResourceStrings('sdb_consts',basedir+
                'components/dbexport/languages/sdb_consts'+ext, LangID1,LangID2);
   TranslateUnitResourceStrings('ldd_consts',basedir+
