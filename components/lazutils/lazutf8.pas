@@ -208,8 +208,8 @@ function UTF16ToUTF8(const S: UnicodeString): AnsiString; overload; inline;
 function UTF16ToUTF8(const P: PWideChar; WideCnt: SizeUInt): AnsiString; overload;
 
 // locale
-procedure LazGetLanguageIDs(var Lang, FallbackLang: String);
-procedure LazGetShortLanguageID(var Lang: String);
+procedure LazGetLanguageIDs(var Lang, FallbackLang: String); deprecated 'Use GetLanguageID function from Translations unit instead'; // Lazarus 2.3.0
+procedure LazGetShortLanguageID(var Lang: String); deprecated 'Use GetLanguageID function from Translations unit instead'; // Lazarus 2.3.0
 
 var
   FPUpChars: array[char] of char;
@@ -217,7 +217,7 @@ var
 implementation
 
 uses
-  gettext;
+  Translations;
 
 {$IFDEF WinCE}
 // CP_UTF8 is missing in the windows unit of the Windows CE RTL
@@ -4019,15 +4019,11 @@ end;
 
 procedure LazGetLanguageIDs(var Lang, FallbackLang: String);
 var
-  p: SizeInt;
+  LangID: TLanguageID;
 begin
-  GetLanguageIDs(Lang, FallbackLang);
-  //Language ID e. g. on Linux can be in a form of `ru_RU.utf8`, which will prevent
-  //loading files with name in a form of `project1.ru_RU.po`.
-  //Trim this trailing encoding.
-  p := Pos('.', Lang);
-  if p > 0 then
-    Lang := Copy(Lang, 1, p - 1);
+  LangID := GetLanguageID;
+  Lang := LangID.LanguageID;
+  FallbackLang := LangID.LanguageCode;
 end;
 
 {
@@ -4038,11 +4034,10 @@ or ISO 639-2, if the language has no code in ISO 639-1.
 }
 procedure LazGetShortLanguageID(var Lang: String);
 var
-  FallbackLang: String;
+  LangID: TLanguageID;
 begin
-  FallbackLang:='';
-  LazGetLanguageIDs(Lang, FallbackLang);
-  Lang:=FallbackLang;
+  LangID := GetLanguageID;
+  Lang:=LangID.LanguageCode;
 end;
 
 procedure InitFPUpchars;
