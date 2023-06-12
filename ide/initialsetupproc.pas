@@ -143,6 +143,7 @@ implementation
 var
   DefaultFPCVersion: string;
   DefaultFPCTarget: string;
+  DefaultDrive: string;
 {$ENDIF}
 
 function CheckLazarusDirectoryQuality(ADirectory: string;
@@ -1158,6 +1159,7 @@ initialization
 {$IFDEF MSWindows}
   DefaultFPCTarget:= GetCompiledTargetCPU + '-' + GetCompiledTargetOS;
   DefaultFPCVersion:= {$I %FPCVERSION%};
+  DefaultDrive := ExtractFileDrive(ProgramDirectory);
 {$ENDIF}
 
 end.
