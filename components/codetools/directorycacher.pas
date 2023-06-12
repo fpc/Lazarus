@@ -1114,11 +1114,12 @@ end;
 function TCTDirectoryCache.FindIncludeFile(const IncFilename: string;
   AnyCase: boolean): string;
 var
-  Files, CurFilename, IncExt, CurExt: PChar;
+  Files, CurFilename, IncExtP, CurExtP: PChar;
   Starts: PInteger;
-  l, r, m, first, cmp: Integer;
+  l, r, m, first, cmp, Best: Integer;
   AUnitName: String;
-  ExtFits: Boolean;
+  Fits: Boolean;
+  Ext, BestExt: TCTPascalIncExtType;
 begin
   Result:='';
   {$IFDEF DebugDirCacheFindIncFile}
@@ -1142,10 +1143,10 @@ begin
     l:=length(IncFilename);
     while (l>0) and (IncFilename[l]<>'.') do dec(l);
     if l>0 then begin
-      IncExt:=@IncFilename[l];
+      IncExtP:=@IncFilename[l];
       AUnitName:=LeftStr(IncFilename,l-1);
     end else begin
-      IncExt:=nil;
+      IncExtP:=nil;
       AUnitName:=IncFilename;
     end;
     // binary search the lowest filename matching the AUnitName
@@ -1173,6 +1174,8 @@ begin
     m:=first;
 
     // -> now find a filename with correct case and extension
+    Best:=-1;
+    BestExt:=high(TCTPascalIncExtType);
     while m<FListing.Count do begin
       CurFilename:=@Files[Starts[m]+DirListNameOffset];
       // check if filename has the right AUnitName prefix
@@ -1181,23 +1184,27 @@ begin
         break;
 
       // check if the filename fits
-      CurExt:=CurFilename+length(AUnitname);
+      CurExtP:=CurFilename+length(AUnitname);
       {$IFDEF DebugDirCacheFindIncFile}
       //if (CompareText(AUnitName,DebugUnitName)=0) and (System.Pos(DebugDirPart,directory)>0) then
         DebugLn('TCTDirectoryCache.FindIncludeFile NEXT "',CurFilename,'" ExtStart=',dbgstr(CurExt^));
       {$ENDIF}
-      ExtFits:=false;
-      if IncExt=nil then begin
-        // include file without extension -> search without and default extension
-        if (CurExt^=#0)
-            or IsPascalIncExt(IncExt) then
-          ExtFits:=true;
-      end else begin
+      Fits:=false;
+      if IncExtP<>nil then begin
         // include file with extension
-        if ComparePCharCaseInsensitiveA(CurExt,IncExt)=0 then
-          ExtFits:=true;
+        if ComparePCharCaseInsensitiveA(CurExtP,IncExtP)=0 then
+          Fits:=true;
+      end else begin
+        // include file without extension -> search without and default extension
+        if (CurExtP^=#0) then begin
+          Fits:=true;
+          Ext:=pietNone;
+        end else begin
+          Ext:=IsPascalIncExt(IncExtP);
+          Fits:=Ext>pietNone;
+        end;
       end;
-      if ExtFits then begin
+      if Fits then begin
         // the extension fits -> check case
         Result:=CurFilename;
         {$IFDEF DebugDirCacheFindIncFile}
@@ -1205,21 +1212,37 @@ begin
           DebugLn('TCTDirectoryCache.FindIncludeFile CHECKING CASE "',CurFilename,'"');
         {$ENDIF}
         if AnyCase then begin
-          exit;
         end else begin
           // check case platform dependent
           {$IFDEF CaseInsensitiveFilenames}
-          exit;
           {$ELSE}
-          if (LeftStr(Result,length(AUnitName))=AUnitName)
-          or (Result=lowercase(Result))
-          or (Result=uppercase(Result)) then
-            exit;
+          if (LeftStr(Result,length(AUnitName))<>AUnitName)
+              and (Result<>lowercase(Result))
+              and (Result<>uppercase(Result)) then
+            Fits:=false;
           {$ENDIF}
+        end;
+        if Fits then begin
+          if IncExtP<>nil then begin
+            // include file with extension -> found
+            exit;
+          end else begin
+            // include file without extension -> search best extension
+            if (Best<0) or (BestExt>Ext) then begin
+              Best:=m;
+              BestExt:=Ext;
+            end;
+          end;
         end;
       end;
       inc(m);
     end;
+    if Best>=0 then begin
+      CurFilename:=@Files[Starts[Best]+DirListNameOffset];
+      Result:=CurFilename;
+      exit;
+    end;
+
     {$IFDEF DebugDirCacheFindIncFile}
     if m<FListing.Count then
       //if (CompareText(AUnitName,DebugUnitName)=0) and (System.Pos(DebugDirPart,directory)>0) then
@@ -1741,11 +1764,13 @@ end;
 function TCTStarDirectoryCache.FindIncludeFile(const IncFilename: string;
   AnyCase: boolean): string;
 var
-  Files, CurFilename, IncExt, CurExt: PChar;
+  Files, CurFilename, IncExtP, CurExtP: PChar;
   Starts: PInteger;
-  l, r, m, first, cmp: TListingPosition;
+  l, r, m, first, cmp, DirIndex: TListingPosition;
   AUnitName: String;
-  ExtFits: Boolean;
+  Fits: Boolean;
+  Ext, BestExt: TCTPascalIncExtType;
+  BestDirIndex, Best: Integer;
 begin
   Result:='';
   {$IFDEF DebugDirCacheFindIncFile}
@@ -1761,10 +1786,10 @@ begin
   l:=length(IncFilename);
   while (l>0) and (IncFilename[l]<>'.') do dec(l);
   if l>0 then begin
-    IncExt:=@IncFilename[l];
+    IncExtP:=@IncFilename[l];
     AUnitName:=LeftStr(IncFilename,l-1);
   end else begin
-    IncExt:=nil;
+    IncExtP:=nil;
     AUnitName:=IncFilename;
   end;
 
@@ -1791,6 +1816,9 @@ begin
   if first<0 then exit;
   m:=first;
   // -> now find a filename with correct case and extension
+  Best:=-1;
+  BestDirIndex:=-1;
+  BestExt:=high(TCTPascalIncExtType);
   while m<FListing.Count do begin
     CurFilename:=@Files[Starts[m]+SizeOf(TListingHeader)];
     // check if filename has the right AUnitName prefix
@@ -1799,23 +1827,27 @@ begin
       break;
 
     // check if the filename fits
-    CurExt:=CurFilename+length(AUnitname);
+    CurExtP:=CurFilename+length(AUnitname);
     {$IFDEF DebugDirCacheFindIncFile}
     //if (CompareText(AUnitName,DebugUnitName)=0) and (System.Pos(DebugDirPart,directory)>0) then
       DebugLn('TCTDirectoryCache.FindIncludeFile NEXT "',CurFilename,'" ExtStart=',dbgstr(CurExt^));
     {$ENDIF}
-    ExtFits:=false;
-    if IncExt=nil then begin
-      // include file without extension -> search without and default extension
-      if (CurExt^=#0)
-          or IsPascalIncExt(IncExt) then
-        ExtFits:=true;
-    end else begin
+    Fits:=false;
+    if IncExtP<>nil then begin
       // include file with extension
-      if ComparePCharCaseInsensitiveA(CurExt,IncExt)=0 then
-        ExtFits:=true;
+      if ComparePCharCaseInsensitiveA(CurExtP,IncExtP)=0 then
+        Fits:=true;
+    end else begin
+      // include file without extension -> search without and default extension
+      if (CurExtP^=#0) then begin
+        Fits:=true;
+        Ext:=pietNone;
+      end else begin
+        Ext:=IsPascalIncExt(IncExtP);
+        Fits:=Ext>pietNone;
+      end;
     end;
-    if ExtFits then begin
+    if Fits then begin
       // the extension fits -> check case
       Result:=CurFilename;
       {$IFDEF DebugDirCacheFindIncFile}
@@ -1823,20 +1855,41 @@ begin
         DebugLn('TCTDirectoryCache.FindIncludeFile CHECKING CASE "',CurFilename,'"');
       {$ENDIF}
       if AnyCase then begin
-        exit;
       end else begin
         // check case platform dependent
         {$IFDEF CaseInsensitiveFilenames}
-        exit;
         {$ELSE}
-        if (LeftStr(Result,length(AUnitName))=AUnitName)
-        or (Result=lowercase(Result))
-        or (Result=uppercase(Result)) then
-          exit;
+        if (LeftStr(Result,length(AUnitName))<>AUnitName)
+            and (Result<>lowercase(Result))
+            and (Result<>uppercase(Result)) then
+          Fits:=false;
         {$ENDIF}
+      end;
+      if Fits then begin
+        if IncExtP<>nil then begin
+          // include file with extension -> found
+          Result:=FListing.GetSubDirFilename(m);
+          exit;
+        end else begin
+          // include file without extension
+          //   the first in inc path wins
+          //   filename.inc is better than filename.pas
+          DirIndex:=FListing.GetSubDirIndex(m);
+          if (Best<0)
+              or (BestDirIndex>DirIndex)
+              or ((BestDirIndex=DirIndex) and (BestExt>Ext)) then
+          begin
+            Best:=m;
+            BestExt:=Ext;
+          end;
+        end;
       end;
     end;
     inc(m);
+  end;
+  if Best>=0 then begin
+    Result:=FListing.GetSubDirFilename(Best);
+    exit;
   end;
   {$IFDEF DebugDirCacheFindUnitSource}
   if m<FListing.Count then

@@ -2363,7 +2363,7 @@ begin
   if TargetOS='' then
     TargetOS:=Config.TargetOS;
   if TargetOS='' then
-    TargetOS:=GetCompiledTargetOS;
+    TargetOS:=FPCAdds.GetCompiledTargetOS;
   NewDefTempl:=TDefineTemplate.Create('Define TargetOS',
     ctsDefaultFPCTargetOperatingSystem,
     ExternalMacroStart+'TargetOS',TargetOS,da_DefineRecurse);
@@ -2387,7 +2387,7 @@ begin
   if TargetCPU='' then
     TargetCPU:=Config.TargetCPU;
   if TargetCPU='' then
-    TargetCPU:=GetCompiledTargetCPU;
+    TargetCPU:=FPCAdds.GetCompiledTargetCPU;
   NewDefTempl:=TDefineTemplate.Create('Define TargetCPU',
     ctsDefaultFPCTargetProcessor,
     TargetCPUMacroName,TargetCPU,
@@ -9508,9 +9508,9 @@ var
   SrcCPU: String;
 begin
   if TargetOS='' then
-    TargetOS:=GetCompiledTargetOS;
+    TargetOS:=FPCAdds.GetCompiledTargetOS;
   if TargetCPU='' then
-    TargetCPU:=GetCompiledTargetCPU;
+    TargetCPU:=FPCAdds.GetCompiledTargetCPU;
   Result:=TargetOS+','+TargetCPU;
   SrcOS:=GetDefaultSrcOSForTargetOS(TargetOS);
   SrcOS2:=GetDefaultSrcOS2ForTargetOS(TargetOS);
@@ -10415,10 +10415,10 @@ begin
       end else begin
         RealTargetOS:=TargetOS;
         if RealTargetOS='' then
-          RealTargetOS:=GetCompiledTargetOS;
+          RealTargetOS:=FPCAdds.GetCompiledTargetOS;
         RealTargetCPU:=TargetCPU;
         if RealTargetCPU='' then
-          RealTargetCPU:=GetCompiledTargetCPU;
+          RealTargetCPU:=FPCAdds.GetCompiledTargetCPU;
       end;
 
       if FullVersion<>'' then begin
@@ -10557,7 +10557,7 @@ begin
   Result:='';
   if Kind<>pcFPC then exit;
 
-  CompiledTargetCPU:=GetCompiledTargetCPU;
+  CompiledTargetCPU:=FPCAdds.GetCompiledTargetCPU;
   if aTargetCPU='' then
     aTargetCPU:=CompiledTargetCPU;
   Cross:=not SameText(aTargetCPU,CompiledTargetCPU);

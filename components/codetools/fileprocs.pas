@@ -105,6 +105,16 @@ function CompareAnsiStringFilenames(Data1, Data2: Pointer): integer;
 function CompareFilenameOnly(Filename: PChar; FilenameLen: integer;
    NameOnly: PChar; NameOnlyLen: integer; CaseSensitive: boolean = false): integer;
 
+type
+  TCTPascalExtType = (petNone, petPAS, petPP, petP);
+  TCTPascalIncExtType = (pietNone, pietINC, pietPP, pietPAS);
+
+const
+  CTPascalExtension: array[TCTPascalExtType] of string =
+    ('', '.pas', '.pp', '.p');
+  CTPascalIncExtension: array[TCTPascalIncExtType] of string =
+    ('', '.inc', '.pp', '.pas');
+
 // searching .pas, .pp, .p
 function FilenameIsPascalUnit(const Filename: string;
                               CaseSensitive: boolean = false): boolean;
@@ -116,7 +126,7 @@ function SearchPascalUnitInDir(const AnUnitName, BaseDirectory: string;
                                SearchCase: TCTSearchFileCase): string;
 function SearchPascalUnitInPath(const AnUnitName, BasePath, SearchPath,
                       Delimiter: string; SearchCase: TCTSearchFileCase): string;
-function IsPascalIncExt(FileExt: PChar; CaseSensitive: boolean = false): boolean;
+function IsPascalIncExt(FileExt: PChar; CaseSensitive: boolean = false): TCTPascalIncExtType;
 
 // searching .ppu
 function SearchPascalFileInDir(const ShortFilename, BaseDirectory: string;
@@ -130,16 +140,6 @@ function ExtractFPCParameter(const CmdLine: string; StartPos: integer): string;
 function FindNextFPCParameter(const CmdLine, BeginsWith: string; var Position: integer): integer;
 function GetLastFPCParameter(const CmdLine, BeginsWith: string; CutBegins: boolean = true): string;
 function GetFPCParameterSrcFile(const CmdLine: string): string;
-
-type
-  TCTPascalExtType = (petNone, petPAS, petPP, petP);
-  TCTPascalIncExtType = (pietNone, pietINC, pietPP, pietPAS);
-
-const
-  CTPascalExtension: array[TCTPascalExtType] of string =
-    ('', '.pas', '.pp', '.p');
-  CTPascalIncExtension: array[TCTPascalIncExtType] of string =
-    ('', '.inc', '.pp', '.pas');
 
 // store date locale independent, thread safe
 const DateAsCfgStrFormat=LazConfigStorage.DateAsCfgStrFormat;
@@ -798,7 +798,8 @@ begin
   Result:='';
 end;
 
-function IsPascalIncExt(FileExt: PChar; CaseSensitive: boolean): boolean;
+function IsPascalIncExt(FileExt: PChar; CaseSensitive: boolean
+  ): TCTPascalIncExtType;
 // check if asciiz FileExt is a CTPascalIncExtension
 var
   ExtLen: Integer;
@@ -806,7 +807,7 @@ var
   e: TCTPascalIncExtType;
   f: PChar;
 begin
-  Result:=false;
+  Result:=pietNone;
   if (FileExt=nil) then exit;
   ExtLen:=strlen(FileExt);
   if ExtLen=0 then exit;
@@ -828,7 +829,7 @@ begin
       end;
     end;
     if p^=#0 then
-      exit(true);
+      exit(e);
   end;
 end;
 
