@@ -44,7 +44,7 @@ uses
   {$ENDIF}
   SynEditMouseCmds,
   // RTL + FCL
-  Classes, SysUtils, StrUtils, Types, Contnrs, Math, RegExpr, Laz_AVL_Tree,
+  Classes, SysUtils, StrUtils, Types, Contnrs, Math, fgl, RegExpr, Laz_AVL_Tree,
   // LCL
   Controls, Forms, ComCtrls, StdCtrls, Graphics, Dialogs, Extctrls, Menus,
   LCLProc, LCLType, LCLIntf, ClipBrd, HelpIntfs, Messages, LMessages,
@@ -620,6 +620,43 @@ type
 
   TBrowseEditorTabHistoryDialog = class;
 
+  { TSourceEditorStatusPanel }
+
+  TSourceEditorStatusPanel = class(TSourceEditorStatusPanelInterface)
+  private
+    FPanel: TStatusPanel;
+    FSrcNotebook: TSourceNotebook;
+    FVisible: Boolean;
+    FWidth: integer;
+
+    procedure SetRealWidth(AWidth: integer);
+  protected
+    function GetAlignment: TAlignment; override;
+    function GetBevel: TStatusPanelBevel; override;
+    function GetBidiMode: TBiDiMode; override;
+    function GetHeight: integer; override;
+    function GetScreenBounds: TRect;override;
+    function GetText: string; override;
+    function GetVisible: boolean; override;
+    function GetWidth: integer; override;
+    procedure SetAlignment(AValue: TAlignment); override;
+    procedure SetBevel(AValue: TStatusPanelBevel); override;
+    procedure SetBidiMode(AValue: TBiDiMode); override;
+    procedure SetText(AValue: string); override;
+    procedure SetOnDrawPanel(AValue: TDrawSourceEditPanelEvent); override;
+    procedure SetVisible(AValue: boolean); override;
+  public
+    destructor Destroy; override;
+    function RequestWidth(AWidth: Integer): Integer; override;
+  end;
+
+  { TSourceEditorStatusPanelList }
+
+  TSourceEditorStatusPanelList = class(specialize TFPGObjectList<TSourceEditorStatusPanel>)
+  public
+    function GetItemForPanel(APanel: TStatusPanel): TSourceEditorStatusPanel;
+  end;
+
   { TSourceNotebook }
 
   TSourceNotebook = class(TSourceEditorWindowInterface)
@@ -635,6 +672,7 @@ type
     procedure FindOverloadsMenuItemClick(Sender: TObject);
     procedure FormMouseUp(Sender: TObject; {%H-}Button: TMouseButton;
       {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
+    procedure FormResize(Sender: TObject);
     procedure GoToLineMenuItemClick(Sender: TObject);
     procedure HighlighterClicked(Sender: TObject);
     procedure InsertCharacter(const C: TUTF8Char);
@@ -671,8 +709,10 @@ type
     FIsClosing: Boolean;
     FSrcEditsSortedForFilenames: TAvlTree; // TSourceEditorInterface sorted for Filename
     TabPopUpMenu, SrcPopUpMenu, DbgPopUpMenu: TPopupMenu;
+    FStatusPanels: TSourceEditorStatusPanelList;
     procedure ApplyPageIndex;
     procedure ExecuteEditorItemClick(Sender: TObject);
+    procedure CalculateStatusBarSizes;
   public
     procedure DeleteBreakpointClicked(Sender: TObject);
     procedure ToggleBreakpointClicked(Sender: TObject);
@@ -752,6 +792,11 @@ type
     procedure DoShow; override;
     procedure DoHide; override;
     function GetWindowID: Integer; override;
+
+    function GetStatusPanel(AnOwner: TClass; AnIdx: integer
+      ): TSourceEditorStatusPanelInterface; override;
+    function GetStatusPanelTagged(AnOwner: TClass; ATag: PtrUInt; AnIdx: integer
+      ): TSourceEditorStatusPanelInterface; override;
   protected
     function GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; override;
     function GetBaseCaption: String; override;
@@ -873,6 +918,9 @@ type
     procedure MoveEditor(OldPageIndex, NewWindowIndex, NewPageIndex: integer);
 
     procedure UpdateStatusBar;
+    function AddStatusPanel(AnOwner: TClass; ATag: PtrUInt = 0): TSourceEditorStatusPanelInterface; override;
+    function StatusPanelCount(AnOwner: TClass): integer; override;
+    function StatusPanelTaggedCount(AnOwner: TClass; ATag: PtrUInt): integer; override;
     procedure ClearExecutionLines;
     procedure ClearExecutionMarks;
 
@@ -6538,6 +6586,144 @@ begin
   EditorComponent.CommandProcessor(TSynEditorCommand(EditorCommand),' ',nil);
 end;
 
+{ TSourceEditorStatusPanel }
+
+function TSourceEditorStatusPanel.GetAlignment: TAlignment;
+begin
+  Result := FPanel.Alignment;
+end;
+
+function TSourceEditorStatusPanel.GetBevel: TStatusPanelBevel;
+begin
+  Result := FPanel.Bevel;
+end;
+
+function TSourceEditorStatusPanel.GetBidiMode: TBiDiMode;
+begin
+  Result := FPanel.BidiMode;
+end;
+
+function TSourceEditorStatusPanel.GetHeight: integer;
+begin
+  Result := FPanel.StatusBar.ClientHeight;
+end;
+
+function TSourceEditorStatusPanel.GetScreenBounds: TRect;
+var
+  b: TRect;
+  i: Integer;
+begin
+  b.Top := FPanel.StatusBar.ClientRect.Top;
+  b.Bottom := FPanel.StatusBar.ClientRect.Bottom;
+  b.Left := 0;
+  for i := 0 to FPanel.Index - 1 do
+    b.Left := b.Left + FPanel.StatusBar.Panels[i].Width;
+  b.Right := b.Left + FPanel.Width;
+  Result := FSrcNotebook.StatusBar.ClientToScreen(b);
+end;
+
+function TSourceEditorStatusPanel.GetText: string;
+begin
+  Result := FPanel.Text;
+end;
+
+function TSourceEditorStatusPanel.GetVisible: boolean;
+begin
+  Result := FVisible;
+end;
+
+function TSourceEditorStatusPanel.GetWidth: integer;
+begin
+  Result := FPanel.Width;
+end;
+
+procedure TSourceEditorStatusPanel.SetAlignment(AValue: TAlignment);
+begin
+  FPanel.Alignment := AValue;
+end;
+
+procedure TSourceEditorStatusPanel.SetBevel(AValue: TStatusPanelBevel);
+begin
+  FPanel.Bevel := AValue;
+end;
+
+procedure TSourceEditorStatusPanel.SetBidiMode(AValue: TBiDiMode);
+begin
+  FPanel.BidiMode := AValue;
+end;
+
+procedure TSourceEditorStatusPanel.SetText(AValue: string);
+begin
+  FPanel.Text := AValue;
+end;
+
+procedure TSourceEditorStatusPanel.SetOnDrawPanel(
+  AValue: TDrawSourceEditPanelEvent);
+begin
+  inherited SetOnDrawPanel(AValue);
+  if AValue = nil then
+    FPanel.Style := psText
+  else
+    FPanel.Style := psOwnerDraw;
+end;
+
+procedure TSourceEditorStatusPanel.SetVisible(AValue: boolean);
+begin
+  if FVisible = AValue then
+    exit;
+
+  FVisible := AValue;
+  FSrcNotebook.CalculateStatusBarSizes;
+end;
+
+destructor TSourceEditorStatusPanel.Destroy;
+begin
+  if (FSrcNotebook <> nil) and (FSrcNotebook.FStatusPanels <> nil) then
+    FSrcNotebook.FStatusPanels.Remove(Self);
+  if OnDestroy <> nil then
+    OnDestroy(Self);
+  inherited Destroy;
+end;
+
+function TSourceEditorStatusPanel.RequestWidth(AWidth: Integer): Integer;
+begin
+  if (not FVisible) or (AWidth = FPanel.Width) then begin
+    FWidth := AWidth;
+    exit;
+  end;
+
+  FWidth := AWidth;
+  FSrcNotebook.CalculateStatusBarSizes;
+  Result := FPanel.Width;
+end;
+
+procedure TSourceEditorStatusPanel.SetRealWidth(AWidth: integer);
+begin
+  assert(FVisible or (AWidth = 0), 'TSourceEditorStatusPanel.SetRealWidth: FVisible or (AWidth = 0)');
+  if (FPanel.Width = AWidth) then
+    exit;
+
+  FPanel.Width := AWidth;
+  if OnResize <> nil then
+    OnResize(Self);
+end;
+
+{ TSourceEditorStatusPanelList }
+
+function TSourceEditorStatusPanelList.GetItemForPanel(APanel: TStatusPanel
+  ): TSourceEditorStatusPanel;
+var
+  i: Integer;
+begin
+  i := Count - 1;
+  while (i >= 0) do begin
+    Result := Items[i];
+    if Result.FPanel = APanel then
+      exit;
+  end;
+  Result := nil;
+end;
+
 {------------------------------------------------------------------------}
                       { TSourceNotebook }
 
@@ -6595,6 +6781,8 @@ begin
   FUpdateTabAndPageTimer.Interval := 500;
   FUpdateTabAndPageTimer.OnTimer := @UpdateTabsAndPageTimeReached;
 
+  FStatusPanels := TSourceEditorStatusPanelList.Create(True);
+
   CreateNotebook;
 
   Application.AddOnDeactivateHandler(@OnApplicationDeactivate);
@@ -6630,6 +6818,7 @@ begin
   Application.RemoveOnDeactivateHandler(@OnApplicationDeactivate);
   Application.RemoveOnMinimizeHandler(@OnApplicationDeactivate);
   FreeAndNil(FNotebook);
+  FreeAndNil(FStatusPanels); // first NIL, so items don't remove themself
 
   inherited Destroy;
   DebugLnExit(SRCED_CLOSE, ['TSourceNotebook.Destroy ']);
@@ -7212,6 +7401,37 @@ end;
 function TSourceNotebook.GetWindowID: Integer;
 begin
   Result := FWindowID;
+end;
+
+function TSourceNotebook.GetStatusPanel(AnOwner: TClass; AnIdx: integer
+  ): TSourceEditorStatusPanelInterface;
+var
+  i: Integer;
+begin
+  Result := nil;
+  for i := 0 to FStatusPanels.Count - 1 do
+    if (FStatusPanels[i].Owner = AnOwner)
+    then begin
+      if AnIdx = 0 then
+        exit(FStatusPanels[i]);
+      dec(AnIdx);
+    end;
+end;
+
+function TSourceNotebook.GetStatusPanelTagged(AnOwner: TClass; ATag: PtrUInt;
+  AnIdx: integer): TSourceEditorStatusPanelInterface;
+var
+  i: Integer;
+begin
+  Result := nil;
+  for i := 0 to FStatusPanels.Count - 1 do
+    if (FStatusPanels[i].Owner = AnOwner) and
+       (FStatusPanels[i].Tag = ATag)
+    then begin
+      if AnIdx = 0 then
+        exit(FStatusPanels[i]);
+      dec(AnIdx);
+    end;
 end;
 
 procedure TSourceNotebook.SetPageIndex(AValue: Integer);
@@ -8218,41 +8438,74 @@ end;
 procedure TSourceNotebook.StatusBarClick(Sender: TObject);
 var
   P: TPoint;
+  i: Integer;
+  pnl: TSourceEditorStatusPanel;
 begin
   P := StatusBar.ScreenToClient(Mouse.CursorPos);
-  if StatusBar.GetPanelIndexAt(P.X, P.Y) = 1  then
+  i := StatusBar.GetPanelIndexAt(P.X, P.Y);
+  if i = 1  then
     EditorMacroForRecording.Stop;
+
+  if i >= 0 then begin
+    pnl := FStatusPanels.GetItemForPanel(StatusBar.Panels[i]);
+    if (pnl <> nil) and (pnl.OnClick <> nil) then
+      pnl.OnClick(Self);
+  end;
 end;
 
 procedure TSourceNotebook.StatusBarDblClick(Sender: TObject);
 var
   P: TPoint;
+  i: Integer;
+  pnl: TSourceEditorStatusPanel;
 begin
   P := StatusBar.ScreenToClient(Mouse.CursorPos);
+  i := StatusBar.GetPanelIndexAt(P.X, P.Y);
   case StatusBar.GetPanelIndexAt(P.X, P.Y) of  // Based on panel:
     0: GoToLineMenuItemClick(Nil);    // Show "Goto Line" dialog.
     4: OpenFolderMenuItemClick(Nil);  // Show system file manager on file's folder.
+    else
+      if i >= 0 then begin
+        pnl := FStatusPanels.GetItemForPanel(StatusBar.Panels[i]);
+        if (pnl <> nil) and (pnl.OnDoubleClick <> nil) then
+          pnl.OnDoubleClick(Self);
+      end;
   end;
 end;
 
 procedure TSourceNotebook.StatusBarContextPopup(Sender: TObject; MousePos: TPoint;
   var Handled: Boolean);
 var
-  Pnl: Integer;
+  i: Integer;
+  pnl: TSourceEditorStatusPanel;
 begin
-  Pnl := StatusBar.GetPanelIndexAt(MousePos.X, MousePos.Y);
-  GoToLineMenuItem.Visible := Pnl=0;
-  OpenFolderMenuItem.Visible := Pnl=4;
-  if Pnl in [0, 4] then
-    StatusPopUpMenu.PopUp;
+  i := StatusBar.GetPanelIndexAt(MousePos.X, MousePos.Y);
+  GoToLineMenuItem.Visible := i=0;
+  OpenFolderMenuItem.Visible := i=4;
+  if i in [0, 4] then
+    StatusPopUpMenu.PopUp
+  else
+  if i >= 0 then begin
+    pnl := FStatusPanels.GetItemForPanel(StatusBar.Panels[i]);
+    if (pnl <> nil) and (pnl.OnContextPopup <> nil) then
+      pnl.OnContextPopup(Self, MousePos, Handled);
+  end;
 end;
 
 procedure TSourceNotebook.StatusBarDrawPanel(AStatusBar: TStatusBar; APanel: TStatusPanel;
   const ARect: TRect);
+var
+  pnl: TSourceEditorStatusPanel;
 begin
   if APanel = StatusBar.Panels[1] then begin
     IDEImages.Images_16.ResolutionForControl[16, AStatusBar]
       .Draw(StatusBar.Canvas, ARect.Left,  ARect.Top, FStopBtnIdx);
+  end
+  else
+  begin
+    pnl := FStatusPanels.GetItemForPanel(APanel);
+    if (pnl <> nil) and (pnl.OnDrawPanel <> nil) then
+      pnl.OnDrawPanel(pnl, StatusBar.Canvas, ARect);
   end;
 end;
 
@@ -8467,6 +8720,11 @@ begin
   Cursor:=crDefault;
 end;
 
+procedure TSourceNotebook.FormResize(Sender: TObject);
+begin
+  CalculateStatusBarSizes;
+end;
+
 // Two Popup menu handlers:
 procedure TSourceNotebook.GoToLineMenuItemClick(Sender: TObject);
 begin
@@ -8488,6 +8746,30 @@ begin
   Editor := TSourceEditor((sender as TIDEMenuCommand).UserTag);
   SourceEditorManager.ActiveEditor :=Editor;
   SourceEditorManager.ShowActiveWindowOnTop(True);
+end;
+
+procedure TSourceNotebook.CalculateStatusBarSizes;
+var
+  i, W: Integer;
+  p: TSourceEditorStatusPanel;
+begin
+  StatusBar.BeginUpdate;
+  try
+    for i := 0 to FStatusPanels.Count - 1 do begin
+      p :=  FStatusPanels[i];
+      if p.FVisible then
+        p.SetRealWidth(p.FWidth)
+      else
+        p.SetRealWidth(0);
+    end;
+    W := 0;
+    for i := 0 to StatusBar.Panels.Count - 1 do
+      if i <> 4 then
+        w := w + StatusBar.Panels[i].Width;
+    StatusBar.Panels[4].Width := Max(150, StatusBar.Width - W);
+  finally
+    StatusBar.EndUpdate;
+  end;
 end;
 
 procedure TSourceNotebook.ApplyPageIndex;
@@ -8759,6 +9041,46 @@ begin
 
   CheckCurrentCodeBufferChanged;
 End;
+
+function TSourceNotebook.AddStatusPanel(AnOwner: TClass; ATag: PtrUInt
+  ): TSourceEditorStatusPanelInterface;
+var
+  R: TSourceEditorStatusPanel;
+begin
+  R := TSourceEditorStatusPanel.Create(AnOwner, ATag);
+  Result := R;
+
+  R.FSrcNotebook := Self;
+  R.FPanel := StatusBar.Panels.Add;
+  R.FPanel.Width := 0;
+  R.Visible := False;
+
+  FStatusPanels.Add(R);
+end;
+
+function TSourceNotebook.StatusPanelCount(AnOwner: TClass): integer;
+var
+  i: Integer;
+begin
+  Result := 0;
+  for i := 0 to FStatusPanels.Count - 1 do
+    if (FStatusPanels[i].Owner = AnOwner)
+    then
+      inc(Result);
+end;
+
+function TSourceNotebook.StatusPanelTaggedCount(AnOwner: TClass; ATag: PtrUInt
+  ): integer;
+var
+  i: Integer;
+begin
+  Result := 0;
+  for i := 0 to FStatusPanels.Count - 1 do
+    if (FStatusPanels[i].Owner = AnOwner) and
+       (FStatusPanels[i].Tag = ATag)
+    then
+      inc(Result);
+end;
 
 function TSourceNotebook.FindPageWithEditor(ASourceEditor: TSourceEditor): integer;
 var

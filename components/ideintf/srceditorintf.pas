@@ -16,7 +16,7 @@ interface
 uses
   Classes,
   // LCL
-  LCLType, Forms, Controls, Graphics,
+  LCLType, Forms, Controls, Graphics, ComCtrls,
   // LazUtils
   Laz2_XMLCfg, LazStringUtils,
   // BuildIntf
@@ -224,6 +224,64 @@ type
                          {%H-}ItemSelected: boolean; {%H-}Index: integer): TPoint; virtual;
   end;
 
+  TSourceEditorStatusPanelInterface = class;
+
+  TDrawSourceEditPanelEvent = procedure(APanel: TSourceEditorStatusPanelInterface;
+    ACanvas: TCanvas; const Rect: TRect) of object;
+
+  { TSourceEditorStatusPanelInterface }
+
+  TSourceEditorStatusPanelInterface = class
+  private
+    FOnClick: TNotifyEvent;
+    FOnContextPopup: TContextPopupEvent;
+    FOnDoubleClick: TNotifyEvent;
+    FOnDrawPanel: TDrawSourceEditPanelEvent;
+    FOwner: TClass;
+    FTag: PtrUInt;
+    FOnDestroy: TNotifyEvent;
+    FOnResize: TNotifyEvent;
+
+  protected
+    function GetAlignment: TAlignment; virtual; abstract;
+    function GetBevel: TStatusPanelBevel; virtual; abstract;
+    function GetBidiMode: TBiDiMode; virtual; abstract;
+    function GetHeight: integer; virtual; abstract;
+    function GetScreenBounds: TRect;virtual; abstract;
+    function GetText: string; virtual; abstract;
+    function GetVisible: boolean; virtual; abstract;
+    function GetWidth: integer; virtual; abstract;
+    procedure SetAlignment(AValue: TAlignment); virtual; abstract;
+    procedure SetBevel(AValue: TStatusPanelBevel); virtual; abstract;
+    procedure SetBidiMode(AValue: TBiDiMode); virtual; abstract;
+    procedure SetText(AValue: string); virtual; abstract;
+    procedure SetOnDrawPanel(AValue: TDrawSourceEditPanelEvent); virtual;
+    procedure SetVisible(AValue: boolean); virtual; abstract;
+  public
+    constructor Create(AnOwner: TClass; ATag: PtrUInt);
+
+    property Owner: TClass read FOwner;
+    property Tag: PtrUInt read FTag;
+
+    property Alignment: TAlignment read GetAlignment write SetAlignment;
+    property Bevel: TStatusPanelBevel read GetBevel write SetBevel;
+    property BidiMode: TBiDiMode read GetBidiMode write SetBidiMode;
+    property Text: string read GetText write SetText;
+    property Visible: boolean read GetVisible write SetVisible;
+
+    function RequestWidth(AWidth: Integer): Integer; virtual; abstract;
+    property Height: integer read GetHeight;
+    property Width: integer read GetWidth;
+    property ScreenBounds: TRect read GetScreenBounds;
+
+    property OnDestroy: TNotifyEvent read FOnDestroy write FOnDestroy;
+    property OnResize: TNotifyEvent read FOnResize write FOnResize;
+    property OnClick: TNotifyEvent read FOnClick write FOnClick;
+    property OnDoubleClick: TNotifyEvent read FOnDoubleClick write FOnDoubleClick;
+    property OnContextPopup: TContextPopupEvent read FOnContextPopup write FOnContextPopup;
+    property OnDrawPanel: TDrawSourceEditPanelEvent read FOnDrawPanel write SetOnDrawPanel; // change draw mode
+  end;
+
   { TSourceEditorWindowInterface }
 
   TSourceEditorWindowInterface = class(TForm)
@@ -236,6 +294,9 @@ type
     procedure SetActiveEditor(const AValue: TSourceEditorInterface); virtual; abstract;
     procedure SetBaseCaption(AValue: String); virtual; abstract;
     function GetWindowID: Integer; virtual; abstract;
+
+    function GetStatusPanel(AnOwner: TClass; AnIdx: integer): TSourceEditorStatusPanelInterface; virtual; abstract;
+    function GetStatusPanelTagged(AnOwner: TClass; ATag: PtrUInt; AnIdx: integer): TSourceEditorStatusPanelInterface; virtual; abstract;
   public
     procedure IncUpdateLock; virtual; abstract;
     procedure DecUpdateLock; virtual; abstract;
@@ -251,6 +312,12 @@ type
     procedure AddUpdateEditorPageCaptionHandler(AEvent: TNotifyEvent; const AsLast: Boolean = True); virtual; abstract;
     procedure RemoveUpdateEditorPageCaptionHandler(AEvent: TNotifyEvent); virtual; abstract;
     property BaseCaption: String read GetBaseCaption write SetBaseCaption;
+
+    function AddStatusPanel(AnOwner: TClass; ATag: PtrUInt = 0): TSourceEditorStatusPanelInterface; virtual; abstract;
+    function StatusPanelCount(AnOwner: TClass): integer; virtual; abstract;
+    function StatusPanelTaggedCount(AnOwner: TClass; ATag: PtrUInt): integer; virtual; abstract;
+    property StatusPanel[AnOwner: TClass; AnIdx: integer]: TSourceEditorStatusPanelInterface read GetStatusPanel;
+    property StatusPanelTagged[AnOwner: TClass; ATag: PtrUInt; AnIdx: integer]: TSourceEditorStatusPanelInterface read GetStatusPanelTagged;
   end;
 
   TSemChangeReason = (
@@ -892,6 +959,23 @@ function TSourceEditorCompletionPlugin.MeasureItem(const AKey: string;
 begin
   // this is called if HasCustomPaint returns true
   Result:=Point(0,0);
+end;
+
+{ TSourceEditorStatusPanelInterface }
+
+procedure TSourceEditorStatusPanelInterface.SetOnDrawPanel(
+  AValue: TDrawSourceEditPanelEvent);
+begin
+  if FOnDrawPanel = AValue then Exit;
+  FOnDrawPanel := AValue;
+end;
+
+constructor TSourceEditorStatusPanelInterface.Create(AnOwner: TClass;
+  ATag: PtrUInt);
+begin
+  FOwner := AnOwner;
+  FTag := ATag;
+  inherited Create;
 end;
 
 { TSourceMarkling }
