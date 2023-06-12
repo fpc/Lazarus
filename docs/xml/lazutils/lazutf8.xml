@@ -2837,64 +2837,39 @@ Unfinished source char has occurred
 
 <element name="LazGetLanguageIDs">
 <short>
-Gets the Language ID and a fallback value for the platform.
+Deprecated. Use the GetLanguageID function from the 
+<file>translations.pas</file> unit instead.
 </short>
-<descr>
-<p>
-<var>LazGetLanguageIDs</var> is a procedure used to get the language 
-identifier and a fallback value. The values are returned in the 
-<var>Lang</var> and <var>FallbackLang</var> variable parameters.
-</p>
-<p>
-LazGetLanguageIDs calls the <var>GetLanguageIDs</var> routine in the 
-<file>GetText</file> unit to get the default Language Code ID. If the return 
-value in Lang includes country or encoding information, it is removed. On the 
-Linux platform, the language identifier can be in the form 'ru_RU.utf8'. The 
-encoding suffix can prevent loading of translations files in the form 
-'project1.ru_RU.po'. To prevent this situation, the encoding suffix is removed 
-from the Lang argument value. It contains only the text prior to the initial 
-'.' character found in the language identifier.
-</p>
-<p>
-LazGetLanguageIDs is called during execution of routines in the 
-<file>lcltranslator.pas</file> unit in the LCL, like 
-TranslateUnitResourceStringsEx and SetDefaultLang.
-</p>
-</descr>
+<descr/>
+<version>
+Deprecated in LazUtils version 2.3.0.
+</version>
 <seealso>
-<link id="#lcl.lcltranslator.TranslateUnitResourceStringsEx">TranslateUnitResourceStringsEx</link>
-<link id="#lcl.lcltranslator.SetDefaultLang">SetDefaultLang</link>
+<link id="#lazutils.translations.GetLanguageID"/>
 </seealso>
 </element>
 <element name="LazGetLanguageIDs.Lang">
-<short>Language code for the platform.</short>
+<short/>
 </element>
 <element name="LazGetLanguageIDs.FallbackLang">
-<short>Fallback language code for the platform.</short>
+<short/>
 </element>
 
 <element name="LazGetShortLanguageID">
 <short>
-Returns the current short language ID (without the country code).
+Deprecated. Use the GetLanguageID function from the 
+<file>translations.pas</file> unit instead.
 </short>
-<descr>
-<p>
-<var>LazGetShortLanguageID</var> strips country information from the language 
-ID, making it simpler to use. Ideally the resulting ID should conform to ISO 
-639-1 (2-digit code like 'ru' or 'en'), or ISO 639-2 (3-digit code like 'rus' 
-or 'eng') when the language code is not in ISO 639-1.
-</p>
-<p>
-Calls LazGetLanguageIDs to lookup the language identifiers. It uses the 
-fallback language ID as the value for the Lang argument.
-</p>
-</descr>
+<descr/>
+<version>
+Deprecated in LazUtils version 2.3.0.
+</version>
 <seealso>
-<link id="LazGetLanguageIDs"/>
+<link id="#lazutils.translations.GetLanguageID"/>
 </seealso>
 </element>
 <element name="LazGetShortLanguageID.Lang">
-<short>Language ID examined in the routine.</short>
+<short/>
 </element>
 
 <element name="FPUpChars">
