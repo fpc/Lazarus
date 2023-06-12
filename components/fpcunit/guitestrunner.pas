@@ -33,7 +33,7 @@ uses
   Classes, SysUtils, LazFileUtils, LazUTF8, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, ComCtrls, ActnList, Menus, Clipbrd, StdCtrls, LCLProc,
   IniFiles, testdecorator, xmltestreport,
-  fpcunit, testregistry, SynEdit, SynHighlighterXML, gettext, Translations;
+  fpcunit, testregistry, SynEdit, SynHighlighterXML, Translations;
 
 type
   TGuiTestRunnerHandlerType = (
@@ -1161,15 +1161,12 @@ end;
 
 procedure TranslateResStrings;
 var
-  Lang, FallbackLang, S: String;
+  S: String;
+  LangID: TLanguageID;
 begin
-  Lang:='';
-  FallbackLang:='';
-  GetLanguageIDs(Lang, FallbackLang); // in unit gettext
+  LangID := GetLanguageID;
   S := AppendPathDelim(AppendPathDelim(ExtractFileDir(ParamStr(0))) + 'languages');
-  if FallbackLang = 'pt' then
-     Lang := 'pb';
-  TranslateUnitResourceStrings('guitestrunner', S + 'guitestrunner.%s.po', Lang, FallbackLang);
+  TranslateUnitResourceStrings('guitestrunner', S + 'guitestrunner.%s.po', LangID.LanguageID, LangID.LanguageCode);
 end;
 
 initialization
