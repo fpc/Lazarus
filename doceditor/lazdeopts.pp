@@ -50,7 +50,7 @@ Procedure SaveOptions;
 Function  GetOptionFileName : String;
 
 Implementation
-uses gettext, translations;
+uses translations;
 
 const
   DefFilename         = 'fpde.ini';
@@ -140,13 +140,12 @@ end;
 
 procedure TranslateResStrings;
 var
-  Lang, FallbackLang, S: String;
+  S: String;
+  LangID: TLanguageID;
 begin
-  FallbackLang:='';
-  Lang:='';
-  GetLanguageIDs(Lang,FallbackLang); // in unit gettext
+  LangID := GetLanguageID;
   S:=AppendPathDelim(AppendPathDelim(ExtractFileDir(ParamStr(0))) + 'languages');
-  TranslateUnitResourceStrings('LazDEMsg',S+'lazde.%s.po', Lang,FallbackLang);
+  TranslateUnitResourceStrings('LazDEMsg', S+'lazde.%s.po', LangID.LanguageID, LangID.LanguageCode);
 end;
 
 Initialization
