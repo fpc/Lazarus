@@ -92,9 +92,8 @@ type
 var
   DefaultLang: String = '';
 
-procedure FindLang(var Lang: string);
+function FindLang(var Lang: string): TLanguageID;
 var
-  LangID: TLanguageID;
   CurParam: string;
   i: integer;
 begin
@@ -117,14 +116,16 @@ begin
 
   if Lang = '' then
   begin
-    LangID := GetLanguageID;
-    Lang := LangID.LanguageID;
-  end;
+    Result := GetLanguageID;
+    Lang := Result.LanguageID;
+  end
+  else
+    Result := GetLanguageIDFromLocaleName(Lang);
 end;
 
 function FindLocaleFileName(LCExt, LangID, Dir, LocaleFileName: string; out FoundLang: string): string;
 var
-  LangShortID: string;
+  LangData: TLanguageID;
   AppDir, LCFileName, FullLCFileName: string;
 
   function GetLCFileName: string;
@@ -137,7 +138,7 @@ var
 
 begin
   Result := '';
-  FindLang(LangID);
+  LangData := FindLang(LangID);
 
   FoundLang := LangID;
 
@@ -188,33 +189,32 @@ begin
     if FileExistsUTF8(Result) then
       exit;
     {$ENDIF}
-    //Let us search for short id files
-    LangShortID := copy(LangID, 1, 2);
-    FoundLang := LangShortID;
+    //Let us search for files with short language code (without country code)
+    FoundLang := LangData.LanguageCode;
 
     if Dir<>'' then
     begin
-      Result := Dir + LangShortID + DirectorySeparator + LCFileName;
+      Result := Dir + LangData.LanguageCode + DirectorySeparator + LCFileName;
       if FileExistsUTF8(Result) then
         exit;
     end;
 
     //At first, check all was checked
-    Result := AppDir + LangShortID + DirectorySeparator + LCFileName;
+    Result := AppDir + LangData.LanguageCode + DirectorySeparator + LCFileName;
     if FileExistsUTF8(Result) then
       exit;
 
     Result := AppDir + 'languages' + DirectorySeparator +
-      LangShortID + DirectorySeparator + LCFileName;
+      LangData.LanguageCode + DirectorySeparator + LCFileName;
     if FileExistsUTF8(Result) then
       exit;
 
     Result := AppDir + 'locale' + DirectorySeparator
-      + LangShortID + DirectorySeparator + LCFileName;
+      + LangData.LanguageCode + DirectorySeparator + LCFileName;
     if FileExistsUTF8(Result) then
       exit;
 
-    Result := AppDir + 'locale' + DirectorySeparator + LangShortID +
+    Result := AppDir + 'locale' + DirectorySeparator + LangData.LanguageCode +
       DirectorySeparator + 'LC_MESSAGES' + DirectorySeparator + LCFileName;
     if FileExistsUTF8(Result) then
       exit;
@@ -240,13 +240,13 @@ begin
       exit;
 
     {$IFDEF UNIX}
-    Result := '/usr/share/locale/' + LangShortID + '/LC_MESSAGES/' +
+    Result := '/usr/share/locale/' + LangData.LanguageCode + '/LC_MESSAGES/' +
       LCFileName;
     if FileExistsUTF8(Result) then
       exit;
     {$ENDIF}
 
-    FullLCFileName := ChangeFileExt(GetLCFileName, '.' + LangShortID) + LCExt;
+    FullLCFileName := ChangeFileExt(GetLCFileName, '.' + LangData.LanguageCode) + LCExt;
 
     if Dir<>'' then
     begin
@@ -556,7 +556,7 @@ end;
 
 function SetDefaultLang(Lang: string; Dir: string = ''; LocaleFileName: string = ''; ForceUpdate: boolean = true): string;
 { Arguments:
-  Lang - language (e.g. 'ru', 'de'); empty argument is default language.
+  Lang - language (e.g. 'ru', 'de', 'zh_CN'); empty argument is default language.
   Dir - custom translation files subdirectory (e.g. 'mylng'); empty argument means searching only in predefined subdirectories.
   LocaleFileName - custom translation file name; empty argument means that the name is the same as the one of executable.
   ForceUpdate - true means forcing immediate interface update. Only should be set to false when the procedure is
