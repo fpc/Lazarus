@@ -236,7 +236,7 @@ var
 begin
   Result:= mrCancel;
 
-  SetLength(Str, 2);
+  SetLength(Str{%H-}, 2);
   Str[0]:= AToken;
   Str[1]:= AComment;
 
@@ -258,7 +258,7 @@ begin
   Result:= mrCancel;
   if (AIndex<0) or (AIndex>=ASynAutoComplete.Completions.Count) then exit;
 
-  SetLength(Str, 2);
+  SetLength(Str{%H-}, 2);
   Str[0]:= ASynAutoComplete.Completions[AIndex];
   Str[1]:= ASynAutoComplete.CompletionComments[AIndex];
 
@@ -625,7 +625,7 @@ function CodeMacroPrevWord(const Parameter: string;
   if macro to delete words in the beginning of the line
 }
 var
-  Line,s: String;
+  Line: String;
   p: TPoint;
   CodeXYPos: TCodeXYPosition;
   re : TRegExpr;

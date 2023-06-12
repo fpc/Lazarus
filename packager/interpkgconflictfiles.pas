@@ -32,11 +32,10 @@
       - clean build
       - error cant find include file
       unit_f_cant_find_ppu=10022_F_Can't find unit $1 used by $2
-      unit_u_ppu_invalid_header=10007_U_PPU Invalid Header (no PPU at the begin)
-      unit_f_cant_compile_unit=10021_F_Can't compile unit $1, no sources available
-      unit_f_cant_find_ppu=10022_F_Can't find unit $1 used by $2
       unit_w_unit_name_error=10023_W_Unit $1 was not found but $2 exists
       unit_f_unit_name_error=10024_F_Unit $1 searched but $2 found
+      unit_u_ppu_invalid_header=10007_U_PPU Invalid Header (no PPU at the begin)
+      unit_f_cant_compile_unit=10021_F_Can't compile unit $1, no sources available
       unit_u_recompile_crc_change=10028_U_Recompiling $1, checksum changed for $2
       unit_u_recompile_source_found_alone=10029_U_Recompiling $1, source found only
       unit_u_recompile_staticlib_is_older=10030_U_Recompiling unit, static lib is older than ppufile
@@ -61,7 +60,7 @@ uses
   // CodeTools
   BasicCodeTools, DefineTemplates, CodeToolManager, FileProcs,
   // LazUtils
-  LazFileUtils, LazFileCache, LazTracer,
+  FPCAdds, LazFileUtils, LazFileCache, LazTracer,
   // IDEIntf
   ProjectIntf, CompOptsIntf, IDEWindowIntf, LazIDEIntf, IDEMsgIntf, IDEExternToolIntf,
   // IDE

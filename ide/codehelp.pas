@@ -1341,7 +1341,7 @@ begin
     ms:=TMemoryStream.Create;
     WriteXMLFile(Doc,ms,[xwfPreserveWhiteSpace]);
     ms.Position:=0;
-    SetLength(s,ms.Size);
+    SetLength(s{%H-},ms.Size);
     if s<>'' then
       ms.Read(s[1],length(s));
     // copy to codebuffer
@@ -1507,7 +1507,7 @@ begin
     ms:=TMemoryStream.Create;
     WriteXMLFile(ADocFile.Doc,ms,[xwfPreserveWhiteSpace]);
     ms.Position:=0;
-    SetLength(s,ms.Size);
+    SetLength(s{%H-},ms.Size);
     if s<>'' then
       ms.Read(s[1],length(s));
   finally

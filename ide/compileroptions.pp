@@ -48,7 +48,7 @@ uses
   InterfaceBase,
   // LazUtils
   FileUtil, LazFileUtils, LazUTF8, Laz2_XMLCfg, Laz2_DOM, LazUtilities, LazTracer,
-  LazStringUtils,
+  LazStringUtils, FPCAdds,
   // CodeTools
   FileProcs, DefineTemplates, CodeToolsCfgScript, CodeToolManager,
   KeywordFuncLists, BasicCodeTools, LinkScanner,
@@ -1053,13 +1053,13 @@ begin
     begin
       VarName:=GetCTCSVariableAsString(Value);
       if CompareIdentifiers(PChar(VarName),'OS')=0 then
-        SetCTCSVariableAsString(Value,GetCompiledTargetOS)
+        SetCTCSVariableAsString(Value,FPCAdds.GetCompiledTargetOS)
       else if CompareIdentifiers(PChar(VarName),'CPU')=0 then
-        SetCTCSVariableAsString(Value,GetCompiledTargetCPU)
+        SetCTCSVariableAsString(Value,FPCAdds.GetCompiledTargetCPU)
       else if CompareIdentifiers(PChar(VarName),'SrcOS')=0 then
-        SetCTCSVariableAsString(Value,GetDefaultSrcOSForTargetOS(GetCompiledTargetOS))
+        SetCTCSVariableAsString(Value,GetDefaultSrcOSForTargetOS(FPCAdds.GetCompiledTargetOS))
       else if CompareIdentifiers(PChar(VarName),'SrcOS2')=0 then
-        SetCTCSVariableAsString(Value,GetDefaultSrcOS2ForTargetOS(GetCompiledTargetOS))
+        SetCTCSVariableAsString(Value,GetDefaultSrcOS2ForTargetOS(FPCAdds.GetCompiledTargetOS))
       else if CompareIdentifiers(PChar(VarName),'LCLWidgetType')=0 then
         SetCTCSVariableAsString(Value,GetLCLWidgetTypeName)
       else
@@ -1970,7 +1970,7 @@ begin
     PathName := ExtractFilePath(AFilename);
     //debugln ( 'Filename is ',FileName, ' in PrependDefaultType' );
     CurTargetOS:=TargetOS;
-    if CurTargetOS='' then CurTargetOS:=GetCompiledTargetOS;
+    if CurTargetOS='' then CurTargetOS:=FPCAdds.GetCompiledTargetOS;
     aSrcOS:=GetDefaultSrcOSForTargetOS(CurTargetOS);
     if CompareText(aSrcOS, 'unix') = 0 then
       AFilename:=PathName+Prefix+UTF8LowerCase(FileName)
@@ -2153,7 +2153,7 @@ begin
     end;
   end;
   if Result='' then
-    Result:=GetCompiledTargetOS;
+    Result:=FPCAdds.GetCompiledTargetOS;
 end;
 
 function TBaseCompilerOptions.GetEffectiveTargetCPU: string;
@@ -2176,7 +2176,7 @@ begin
     end;
   end;
   if Result='' then
-    Result:=GetCompiledTargetCPU;
+    Result:=FPCAdds.GetCompiledTargetCPU;
 end;
 
 function TBaseCompilerOptions.GetEffectiveLCLWidgetType: string;

@@ -50,7 +50,7 @@ uses
   Forms, Controls, Dialogs, LCLProc,
   // LazUtils
   FileUtil, LazFileCache, LazLoggerBase, LazUtilities, LazFileUtils, LazUTF8,
-  Laz2_XMLCfg, Laz2_XMLRead, LazStringUtils, AvgLvlTree,
+  Laz2_XMLCfg, Laz2_XMLRead, LazStringUtils, AvgLvlTree, FPCAdds,
   // codetools
   FileProcs, DefineTemplates, CodeToolManager, CodeCache, DirectoryCacher,
   BasicCodeTools, NonPascalCodeTools, SourceChanger,
@@ -643,7 +643,7 @@ begin
         continue;
       'C':
         if (StartPos+2<=length(CompParams)) and (CompParams[StartPos+2]='g')
-        and TargetNeedsFPCOptionCG(GetCompiledTargetOS,GetCompiledTargetCPU)
+        and TargetNeedsFPCOptionCG(FPCAdds.GetCompiledTargetOS,FPCAdds.GetCompiledTargetCPU)
         then begin
           // the -Cg parameter is added automatically on Linux, but not in the
           // Makefile.compiled, because that is platform independent.

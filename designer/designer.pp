@@ -3240,7 +3240,7 @@ begin
       P := TWinControlAccess(AWinControl).GetClientScrollOffset;
       R := AWinControl.ClientRect;
       R.BottomRight := R.BottomRight + Point(GridSizeX, GridSizeY);
-      OffsetRect(R, RoundToMultiple(P.X, GridSizeX), RoundToMultiple(P.Y, GridSizeY));
+      Types.OffsetRect(R, RoundToMultiple(P.X, GridSizeX), RoundToMultiple(P.Y, GridSizeY));
       DrawGrid(ADDC.Canvas.Handle, R, GridSizeX, GridSizeY);
     end;
     
@@ -3571,7 +3571,7 @@ begin
       FDDC.Canvas.SaveHandleState;
       OwnerRect := TControl(AComponent).ClientRect;
       Diff := GetParentFormRelativeClientOrigin(AComponent);
-      OffsetRect(OwnerRect, Diff.X, Diff.Y);
+      Types.OffsetRect(OwnerRect, Diff.X, Diff.Y);
       with OwnerRect do
         RGN := CreateRectRGN(Left, Top, Right, Bottom);
       SelectClipRGN(FDDC.DC, RGN);

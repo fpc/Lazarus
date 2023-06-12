@@ -572,7 +572,6 @@ var
   n: Integer;
   Locals: TIDELocals;
   Snap: TSnapshot;
-  s: String;
   LVal: TIdeLocalsValue;
   VNode, VN2: PVirtualNode;
 begin
@@ -802,7 +801,6 @@ end;
 
 procedure TLocalsDlg.ClearTree(OnlyClearNodeData: boolean);
 var
-  LVal: TLocalsValue;
   VNode: PVirtualNode;
 begin
   for VNode in vtLocals.NoInitNodes do begin
