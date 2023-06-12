@@ -188,6 +188,7 @@ var
     // if you don't use UTF-8, install a proper widestring manager and set this
     // to false.
 
+function GetLanguageIDFromLocaleName(LocaleName: string): TLanguageID;
 function GetLanguageID: TLanguageID;
 
 function GetPOFilenameParts(const Filename: string; out AUnitName, Language: string): boolean;
@@ -440,6 +441,61 @@ begin
   end;
 end;
 
+procedure NormalizeLanguageID(var LangID: TLanguageID);
+begin
+  // Normalization rules:
+  // 1. LanguageCode cannot be empty. In this case fill ID with default value (en_US).
+  // 2. CountryCode can be empty if LanguageCode is not empty.
+  // 3. LangID is a combination of LanguageCode and non-empty CountryCode.
+  if LangID.LanguageCode = '' then
+  begin
+    LangID.LanguageCode := 'en';
+    LangID.CountryCode := 'US';
+  end;
+  LangID.LanguageID := LangID.LanguageCode;
+  if LangID.CountryCode <> '' then
+    LangID.LanguageID := LangID.LanguageID + '_' + LangID.CountryCode;
+end;
+
+function GetLanguageIDFromLocaleName(LocaleName: string): TLanguageID;
+var
+  i, CurItemStart, CurItemLength: SizeInt;
+  FinishedParsing, IsDelimiter: boolean;
+  CurItemType: string;
+begin
+  //Parse locale identifier. For reference its full syntax:
+  //Current:            `language[_territory[.codeset]][@modifier]`
+  //Possible in future: `language[_territory][.codeset][@modifier]`
+  Result := Default(TLanguageID);
+  i := 1;
+  CurItemStart := 1;
+  CurItemType := 'L';  // Language is the first item in locale identifier
+  FinishedParsing := false;
+  while (i <= Length(LocaleName)) and (not FinishedParsing) do
+  begin
+    IsDelimiter := LocaleName[i] in ['_', '.', '@'];
+    if IsDelimiter or (i = Length(LocaleName)) then
+    begin
+      CurItemLength := i - CurItemStart;
+      // If the last string char is not delimiter, it belongs to current item, so adjust its length
+      if not IsDelimiter then
+        inc(CurItemLength);
+      case CurItemType of
+        'L': Result.LanguageCode := Copy(LocaleName, CurItemStart, CurItemLength);
+        '_': Result.CountryCode := Copy(LocaleName, CurItemStart, CurItemLength);
+        '.': ; // We don't need codeset currently
+      end;
+      CurItemType := LocaleName[i];
+      // We don't use modifier currently, but know that it is the last in locale identifier
+      if CurItemType = '@' then
+        FinishedParsing := true;
+      CurItemStart := i + 1;
+    end;
+    inc(i);
+  end;
+  NormalizeLanguageID(Result);
+end;
+
 function GetLanguageID: TLanguageID;
   {$IFDEF Windows}
   procedure GetLanguage;
@@ -467,13 +523,13 @@ function GetLanguageID: TLanguageID;
 
     RetrieveLocaleInfo(LOCALE_SISO639LANGNAME, Result.LanguageCode);
     RetrieveLocaleInfo(LOCALE_SISO3166CTRYNAME, Result.CountryCode);
+
+    NormalizeLanguageID(Result);
   end;
   {$ELSE}
   procedure GetLanguage;
   var
-    i, CurItemStart, CurItemLength: SizeInt;
-    FinishedParsing, IsDelimiter: boolean;
-    CurItemType, EnvVarContents: string;
+    EnvVarContents: string;
   begin
     EnvVarContents := GetEnvironmentVariable('LC_ALL');
     if Length(EnvVarContents) = 0 then
@@ -486,51 +542,13 @@ function GetLanguageID: TLanguageID;
           exit;   // no language defined via environment variables
       end;
     end;
-
-    //Parse locale identifier. For reference its full syntax:
-    //Current:            `language[_territory[.codeset]][@modifier]`
-    //Possible in future: `language[_territory][.codeset][@modifier]`
-    i := 1;
-    CurItemStart := 1;
-    CurItemType := 'L';  // Language is the first item in locale identifier
-    FinishedParsing := false;
-    while (i <= Length(EnvVarContents)) and (not FinishedParsing) do
-    begin
-      IsDelimiter := EnvVarContents[i] in ['_', '.', '@'];
-      if IsDelimiter or (i = Length(EnvVarContents)) then
-      begin
-        CurItemLength := i - CurItemStart;
-        // If the last string char is not delimiter, it belongs to current item, so adjust its length
-        if not IsDelimiter then
-          inc(CurItemLength);
-        case CurItemType of
-          'L': Result.LanguageCode := Copy(EnvVarContents, CurItemStart, CurItemLength);
-          '_': Result.CountryCode := Copy(EnvVarContents, CurItemStart, CurItemLength);
-          '.': ; // We don't need codeset currently
-        end;
-        CurItemType := EnvVarContents[i];
-        // We don't use modifier currently, but know that it is the last in locale identifier
-        if CurItemType = '@' then
-          FinishedParsing := true;
-        CurItemStart := i + 1;
-      end;
-      inc(i);
-    end;
+    Result := GetLanguageIDFromLocaleName(EnvVarContents);
   end;
   {$ENDIF}
 
 begin
   Result := Default(TLanguageID);
   GetLanguage;
-
-  if Result.LanguageCode = '' then
-  begin
-    Result.LanguageCode := 'en';
-    Result.CountryCode := 'US';
-  end;
-  Result.LanguageID := Result.LanguageCode;
-  if Result.CountryCode <> '' then
-    Result.LanguageID := Result.LanguageID + '_' + Result.CountryCode;
 end;
 
 function GetPOFilenameParts(const Filename: string; out AUnitName, Language: string): boolean;
