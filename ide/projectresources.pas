@@ -37,12 +37,11 @@ unit ProjectResources;
 interface
 
 uses
-  // RTL + LCL
   Classes, SysUtils, resource, reswriter, fgl, Laz_AVL_Tree,
   // LCL
-  Controls, LCLProc, LResources,
+  Controls, LResources,
   // LazUtils
-  LazFileUtils, Laz2_XMLCfg,
+  LazFileUtils, Laz2_XMLCfg, LazLoggerBase,
   // Codetools
   KeywordFuncLists, BasicCodeTools, CodeToolManager, CodeCache,
   // IdeIntf

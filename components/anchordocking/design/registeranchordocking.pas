@@ -38,9 +38,9 @@ interface
 uses
   Math, Classes, SysUtils,
   // LCL
-  LCLProc, Forms, Controls, Dialogs, StdCtrls,
+  Forms, Controls, Dialogs, StdCtrls,
   // LazUtils
-  LazFileCache, LazFileUtils,
+  LazFileCache, LazFileUtils, LazLoggerBase,
   // IdeIntf
   LCLIntf, IDEWindowIntf, IDEOptionsIntf, IDEOptEditorIntf, LazIDEIntf,
   // AnchorDocking

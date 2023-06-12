@@ -26,7 +26,7 @@ unit SynEditMarkupSelection;
 interface
 
 uses
-  Classes, SysUtils, Graphics, Controls, LCLProc,
+  Classes, SysUtils, Graphics, Controls,
   SynEditMarkup, SynEditMiscClasses, SynEditPointClasses, SynEditTypes;
 
 type

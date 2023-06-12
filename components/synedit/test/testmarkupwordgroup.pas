@@ -5,7 +5,7 @@ unit TestMarkupwordGroup;
 interface
 
 uses
-  Classes, SysUtils, testregistry, TestBase, TestHighlightPas, Forms, LCLProc,
+  Classes, SysUtils, testregistry, TestBase, TestHighlightPas, Forms,
   SynEdit, SynHighlighterPas, SynEditMarkupWordGroup;
 
 type

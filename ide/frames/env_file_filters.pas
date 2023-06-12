@@ -9,7 +9,7 @@ uses
   // LazUtils
   LazFileUtils, LazConfigStorage,
   // LCL
-  LCLProc, LCLType, LResources, Grids, Dialogs, Controls, StdCtrls, Menus,
+  LCLType, LResources, Grids, Dialogs, Controls, StdCtrls, Menus,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, BaseIDEIntf, IDEDialogs,
   // IDE

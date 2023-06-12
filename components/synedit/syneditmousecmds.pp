@@ -37,7 +37,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLProc, Controls, Dialogs, Menus,
+  Controls, Dialogs, Menus,
   // LazUtils
   LazMethodList,
   // SynEdit

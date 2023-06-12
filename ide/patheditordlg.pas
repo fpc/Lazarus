@@ -23,7 +23,7 @@ interface
 uses
   Classes, SysUtils, types,
   // LCL
-  LCLType, LCLProc, Forms, Controls, Buttons, StdCtrls, Dialogs, Menus, Graphics,
+  LCLType, Forms, Controls, Buttons, StdCtrls, Dialogs, Menus, Graphics,
   ButtonPanel, Clipbrd,
   // LazUtils
   FileUtil, LazFileUtils, LazStringUtils, LazFileCache, LazUTF8,
@@ -31,8 +31,10 @@ uses
   ShortPathEdit,
   // IdeIntf
   IdeIntfStrConsts, MacroIntf, IDEImagesIntf, IDEUtils,
+  // IdeConfig
+  TransferMacros,
   // IDE
-  TransferMacros, GenericListSelect, LazarusIDEStrConsts;
+  GenericListSelect, LazarusIDEStrConsts;
 
 type
 

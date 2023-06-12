@@ -28,8 +28,10 @@ uses
   LazFileUtils, LazFileCache,
   // IdeIntf
   IdeIntfStrConsts, IDEDialogs, InputHistory,
+  // IdeConfig
+  TransferMacros,
   // IDE
-  LazarusIDEStrConsts, TransferMacros;
+  LazarusIDEStrConsts;
 
 type
   TInputFileFlag = (iftDirectory, iftFilename, iftCmdLine,

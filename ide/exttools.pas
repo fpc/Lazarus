@@ -42,8 +42,10 @@ uses
   AvgLvlTree,
   // BuildIntf
   IDEExternToolIntf, BaseIDEIntf, MacroIntf, LazMsgWorker,
+  // IdeConfig
+  TransferMacros,
   // IDE
-  IDECmdLine, TransferMacros, LazarusIDEStrConsts;
+  IDECmdLine, LazarusIDEStrConsts;
 
 type
   TLMVToolState = (

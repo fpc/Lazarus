@@ -32,7 +32,7 @@ unit HelpIntfs;
 interface
 
 uses
-  Classes, SysUtils, LCLProc;
+  Classes, SysUtils;
   
 type
   // All help-specific errors should be thrown as this type.

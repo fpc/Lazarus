@@ -29,9 +29,9 @@ unit Calendar;
 interface
 
 uses
-  {$IFDEF VerboseCalenderSetDate}LCLProc,{$ENDIF}
-  Types, SysUtils, Classes, LCLType, LCLStrConsts, lMessages, Controls, LResources,
-  Math;
+  Types, SysUtils, Classes, Math,
+  {$IFDEF VerboseCalenderSetDate}LazLoggerBase,{$ENDIF}
+  LCLType, LCLStrConsts, lMessages, Controls, LResources;
 
 type
   TDisplaySetting = (

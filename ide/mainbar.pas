@@ -40,7 +40,7 @@ uses
 {$ENDIF}
   Classes, SysUtils, Math,
   // LCL
-  Forms, Controls, Menus, ComCtrls, ExtCtrls, LMessages, LCLIntf, LCLType, LCLProc,
+  Forms, Controls, Menus, ComCtrls, ExtCtrls, LMessages,
   // LazUtils
   LazFileCache,
   // IDEIntf

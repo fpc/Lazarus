@@ -65,14 +65,14 @@ uses
   UnitResources, InputHistory,
   // IdeConfig
   EnvironmentOpts, IDEOptionDefs, ModeMatrixOpts, RecentListProcs,
-  SearchPathProcs,
+  SearchPathProcs, TransferMacros,
   // FCL registration
   LazarusPackageIntf,
   // IDE
   IDECmdLine, LazarusIDEStrConsts, IDEProcs, DialogProcs, MiscOptions,
   Project, ProjPackEditing, AddToPackageDlg, PackageDefs, PackageLinks, PackageSystem,
   OpenInstalledPkgDlg, PkgGraphExplorer, BrokenDependenciesDlg, CompilerOptions,
-  IDETranslations, TransferMacros, BuildLazDialog, NewDialog, FindInFilesDlg,
+  IDETranslations, BuildLazDialog, NewDialog, FindInFilesDlg,
   ProjectInspector, PackageEditor, SourceEditor, ProjPackChecks, AddFileToAPackageDlg,
   PublishModuleDlg, PkgLinksDlg, InterPkgConflictFiles, InstallPkgSetDlg,
   ConfirmPkgListDlg, NewPkgComponentDlg, BaseBuildManager, BasePkgManager,

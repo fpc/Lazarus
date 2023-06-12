@@ -48,7 +48,7 @@ uses
   {$IFDEF Windows}
   Windows,
   {$ENDIF}
-  LCLProc, Forms, Controls, LCLType, StdCtrls, ExtCtrls, Buttons, Dialogs,
+  Forms, Controls, StdCtrls, ExtCtrls, Buttons, Dialogs,
   LCLPlatformDef, CheckLst, Menus, ComCtrls,
   // LazUtils
   FPCAdds, FileUtil, LazFileUtils, LazUTF8, LazLoggerBase, LazFileCache,
@@ -59,9 +59,10 @@ uses
   // IDEIntf
   IdeIntfStrConsts, LazIDEIntf, IDEMsgIntf, IDEHelpIntf, IDEImagesIntf, IDEWindowIntf,
   PackageIntf, IDEExternToolIntf, IDEDialogs, IDEUtils,
+  // IdeConfig
+  EnvironmentOpts, LazConf, TransferMacros,
   // IDE
-  LazarusIDEStrConsts, TransferMacros, LazConf, DialogProcs,
-  MainBar, EnvironmentOpts,
+  LazarusIDEStrConsts, DialogProcs, MainBar,
   ApplicationBundle, ModeMatrixOpts, CompilerOptions, BuildProfileManager,
   GenericListEditor, GenericCheckList, PackageSystem, PackageDefs;
 

@@ -23,7 +23,8 @@ unit ImageListCache;
 interface
 
 uses
-  Classes, SysUtils, Graphics, ImgList, LCLProc, Forms;
+  Classes, SysUtils,
+  Graphics, ImgList, Forms;
 
 type
   // interface that cache user should have to listen for cache changes

@@ -8,7 +8,7 @@ interface
 uses
   Classes, SysUtils, FpDbgInfo, FpdMemoryTools, FpDbgCallContextInfo,
   FpPascalBuilder, FpErrorMessages, FpDbgClasses, FpDbgUtil, DbgIntfBaseTypes,
-  LazClasses, LCLProc, Forms, StdCtrls, Controls, StrUtils, FpDebugDebuggerBase,
+  LazClasses, Forms, StdCtrls, Controls, StrUtils, FpDebugDebuggerBase,
   FpDebugStringConstants, LazDebuggerValueConverter, LazDebuggerIntfBaseTypes,
   LazDebuggerIntf;
 

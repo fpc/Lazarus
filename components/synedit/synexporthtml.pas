@@ -45,9 +45,9 @@ unit SynExportHTML;
 interface
 
 uses
-  Classes,
+  Classes, SysUtils,
   LCLIntf, LCLType, Graphics, ClipBrd,
-  SynEditHighlighter, SynEditExport, LCLProc, LazUtf8, SysUtils, SynEditStrConst;
+  SynEditHighlighter, SynEditExport, LazUtf8, SynEditStrConst;
 
 type
   THTMLFontSize = (fs01, fs02, fs03, fs04, fs05, fs06, fs07, fsDefault);        //eb 2000-10-12

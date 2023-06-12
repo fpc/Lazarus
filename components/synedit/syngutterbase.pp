@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, math,
   // LCL
-  LCLProc, Graphics, Controls, Menus, LCLIntf, LCLType,
+  Graphics, Controls, Menus, LCLIntf, LCLType,
   // LazUtils
   LazMethodList,
   // SynEdit

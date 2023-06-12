@@ -39,10 +39,10 @@ unit W32VersionInfo;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Controls, Forms, FileUtil, TypInfo, laz2_DOM,
-  Laz2_XMLCfg, CodeToolManager, LazConf, IDEProcs, ProjectIntf, CompOptsIntf,
-  ProjectResourcesIntf, resource, versionresource, versiontypes, versionconsts,
-  TransferMacros;
+  Classes, SysUtils, TypInfo, versionresource, versiontypes, versionconsts,
+  Laz2_DOM, Laz2_XMLCfg, LazLoggerBase,
+  LazConf, TransferMacros,
+  CompOptsIntf, ProjectResourcesIntf;
 
 type
 

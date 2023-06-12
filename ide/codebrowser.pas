@@ -47,9 +47,9 @@ interface
 
 uses
   // RTL + FCL
-  Classes, SysUtils, types, Laz_AVL_Tree,
+  Classes, SysUtils, Types, Laz_AVL_Tree,
   // LCL
-  LCLProc, Forms, Controls, Graphics, Dialogs, Clipbrd, StdCtrls,
+  Forms, Controls, Graphics, Dialogs, Clipbrd, StdCtrls,
   ExtCtrls, ComCtrls, Buttons, Menus, HelpIntfs,
   // CodeTools
   BasicCodeTools, DefineTemplates, CodeTree, CodeCache, CodeToolManager,

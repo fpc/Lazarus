@@ -9,9 +9,9 @@ uses
   // BuildIntf
   MacroDefIntf,
   // IdeConfig
-  EnvironmentOpts, LazConf,
+  EnvironmentOpts, LazConf, TransferMacros,
   // IDE
-  LazarusIDEStrConsts, TransferMacros, IDETranslations;
+  LazarusIDEStrConsts, IDETranslations;
 
 type
 

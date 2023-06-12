@@ -5,9 +5,10 @@ unit fppkg_initializeoptionsfrm;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, EditBtn,
-  ButtonPanel,
-  fpTemplate,
+  Classes, SysUtils, fpTemplate,
+  Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, EditBtn, ButtonPanel,
+  // LazUtils
+  LazFileUtils,
   // IDEIntf
   IDEOptionsIntf,
   // fppkg

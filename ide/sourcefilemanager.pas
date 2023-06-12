@@ -52,13 +52,13 @@ uses
   IdeIntfStrConsts, ObjectInspector, SrcEditorIntf, EditorSyntaxHighlighterDef,
   UnitResources, ComponentReg, InputHistory,
   // IdeConfig
-  EnvironmentOpts, SearchPathProcs,
+  EnvironmentOpts, SearchPathProcs, TransferMacros,
   // IDE
   IDEProcs, DialogProcs, IDEProtocol, LazarusIDEStrConsts, NewDialog,
   NewProjectDlg, MainBase, MainBar, MainIntf, Project, ProjectDefs,
   ProjectInspector, CompilerOptions, SourceSynEditor, SourceEditor,
   EditorOptions, CustomFormEditor, ControlSelection,
-  FormEditor, EmptyMethodsDlg, BaseDebugManager, TransferMacros, BuildManager,
+  FormEditor, EmptyMethodsDlg, BaseDebugManager, BuildManager,
   EditorMacroListViewer, FindRenameIdentifier, BuildModesManager, ViewUnit_Dlg,
   CheckLFMDlg, etMessagesWnd, DebugManager, EnvGuiOptions,
   ConvCodeTool, BasePkgManager, PackageDefs, PackageSystem, Designer, DesignerProcs;

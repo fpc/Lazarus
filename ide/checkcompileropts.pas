@@ -42,9 +42,11 @@ uses
   // IDEIntf
   ProjectIntf, MacroIntf, IDEExternToolIntf, LazIDEIntf, IDEDialogs,
   PackageIntf, IDEMsgIntf,
+  // IdeConfig
+  TransferMacros, SearchPathProcs,
   // IDE
   Project, PackageSystem, IDEProcs, LazarusIDEStrConsts, PackageDefs,
-  CompilerOptions, TransferMacros, SearchPathProcs;
+  CompilerOptions;
 
 type
   TCompilerOptionsTest = (

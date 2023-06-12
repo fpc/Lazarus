@@ -51,7 +51,7 @@ unit SynHighlighterMulti;
 interface
 
 uses
-  Classes, Graphics, SysUtils, LCLProc, math, RegExpr,
+  Classes, Graphics, SysUtils, Math, RegExpr,
   SynEditStrConst, SynEditTypes, SynEditTextBase,
   SynEditHighlighter,
   {$IFDEF SynDebugMultiHL}LazLoggerBase{$ELSE}LazLoggerDummy{$ENDIF}, LazUTF8

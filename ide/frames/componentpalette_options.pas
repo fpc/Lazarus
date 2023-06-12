@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLProc, LCLType, Forms, Controls, StdCtrls, ComCtrls, ExtCtrls,
+  LCLType, Forms, Controls, StdCtrls, ComCtrls, ExtCtrls,
   Dialogs, Buttons, Menus, Graphics,
   // LazControls
   DividerBevel,
@@ -36,7 +36,7 @@ uses
   // BuildIntf
   IDEOptionsIntf,
   // IdeIntf
-  IdeIntfStrConsts, IDEOptEditorIntf, IDEImagesIntf, FormEditingIntf, ComponentReg,
+  IdeIntfStrConsts, IDEOptEditorIntf, IDEImagesIntf, ComponentReg,
   // IdeConfig
   EnvironmentOpts, IDEOptionDefs,
   // IDE

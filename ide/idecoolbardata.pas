@@ -35,7 +35,7 @@ interface
 uses
   Classes, SysUtils, fgl,
   // LCL
-  LCLProc, ComCtrls, Controls, Graphics, Dialogs, ToolWin,
+  ComCtrls, Controls, Graphics, Dialogs, ToolWin,
   // IdeIntf
   IDEImagesIntf,
   // IdeConfig

@@ -27,7 +27,9 @@ unit LCLMessageGlue;
 interface
 
 uses
-  Classes, Forms, LCLClasses, LCLProc, Controls, Messages, LMessages, LCLType;
+  Classes,
+  LazLoggerBase,
+  Forms, LCLClasses, Controls, LMessages, LCLType;
 
 function DeliverMessage(const Target: TObject; var AMessage): PtrInt;
 function SendSimpleMessage(const Target: TControl; Msg: Cardinal): PtrInt;

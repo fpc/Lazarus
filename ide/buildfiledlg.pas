@@ -9,17 +9,17 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLProc, LCLType, Forms, Controls, Graphics, ComCtrls, Dialogs, StdCtrls, ButtonPanel,
+  LCLType, Forms, Controls, Graphics, ComCtrls, Dialogs, StdCtrls, ButtonPanel,
   // LazUtils
-  LazFileUtils, LazStringUtils,
+  LazFileUtils, LazStringUtils, LazTracer,
   // CodeTools
   BasicCodeTools,
   // IdeIntf
   IdeIntfStrConsts, IDEHelpIntf, MacroDefIntf, LazIDEIntf, IDEUtils, InputHistory,
   // IdeConfig
-  EnvironmentOpts,
+  EnvironmentOpts, TransferMacros,
   // IDE
-  LazarusIDEStrConsts, TransferMacros;
+  LazarusIDEStrConsts;
 
 type
 

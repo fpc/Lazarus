@@ -32,17 +32,19 @@ uses
   Classes, SysUtils,
   {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
   // LCL
-  LCLProc, LCLType, Forms, StdCtrls, ExtCtrls, CheckLst, ButtonPanel, Buttons,
+  Forms, StdCtrls, ExtCtrls, CheckLst, ButtonPanel, Buttons,
   // CodeTools
-  FileProcs, CodeCache,
+  CodeCache,
   // LazUtils
-  LazFileUtils, LazFileCache,
+  LazFileUtils, LazFileCache, LazLoggerBase,
   // IdeIntf
   IDEImagesIntf,
   // SynEdit
   SynEdit, SynHighlighterDiff,
+  // IdeConfig
+  EnvironmentOpts,
   // IDE
-  Project, PackageDefs, DiffPatch, LazarusIDEStrConsts, EnvironmentOpts, EditorOptions;
+  Project, PackageDefs, DiffPatch, LazarusIDEStrConsts, EditorOptions;
 
 type
   PDiffItem = ^TDiffItem;

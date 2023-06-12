@@ -34,16 +34,17 @@ uses
   Classes, SysUtils,
   {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
   // LCL
-  Forms, Controls, Dialogs, StdCtrls, Grids, Menus, ComCtrls, ButtonPanel, LCLProc,
+  Forms, Dialogs, StdCtrls, Grids, Menus, ComCtrls, ButtonPanel,
   // LazUtils
   LazFileUtils, LazLoggerBase,
   // IdeIntf
   IDEDialogs, CompOptsIntf, IDEOptionsIntf, LazIDEIntf, IDEImagesIntf,
+  // IdeConfig
+  EnvironmentOpts, TransferMacros, SearchPathProcs,
   // IDE
   MainBase, MainBar, BasePkgManager, PackageDefs, Project, CompilerOptions,
-  EnvironmentOpts, TransferMacros, BaseBuildManager, Compiler_ModeMatrix,
-  BuildModeDiffDlg, GenericCheckList, IDEProcs, LazarusIDEStrConsts,
-  SearchPathProcs;
+  BaseBuildManager, Compiler_ModeMatrix, BuildModeDiffDlg, GenericCheckList,
+  LazarusIDEStrConsts;
 
 type
 

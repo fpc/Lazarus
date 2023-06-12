@@ -54,9 +54,10 @@ uses
   DbgIntfDebuggerBase,
   // LazDebuggerGdbmi
   GDBMIDebugger,
+  // IdeConfig
+  LazConf, EnvironmentOpts, TransferMacros,
   // IDE
-  TransferMacros, LazarusIDEStrConsts, LazConf, EnvironmentOpts, AboutFrm,
-  IDETranslations, BaseBuildManager, InitialSetupProc,
+  LazarusIDEStrConsts, AboutFrm, IDETranslations, BaseBuildManager, InitialSetupProc,
   GenerateFppkgConfigurationDlg, IDEProcs, InitialSetupDlgDebuggerFrame,
   IdeDebuggerOpts;
   

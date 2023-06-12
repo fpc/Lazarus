@@ -27,11 +27,11 @@ interface
 uses
   sysutils, math,
   // LCL
-  LCLProc, StdCtrls, ExtCtrls, Classes, Forms, ComCtrls,
+  StdCtrls, ExtCtrls, Classes, Forms, ComCtrls,
   // LazControls
   DividerBevel,
   // SynEdit
-  SynEdit, SynEditTypes,
+  SynEditTypes,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf,
   // IDE

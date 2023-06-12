@@ -23,9 +23,10 @@ unit SVNLogForm;
 interface
 
 uses
-  Classes, SysUtils, Forms, Dialogs, Controls, FileUtil, LazFileUtils,
-  ComCtrls, StdCtrls, ButtonPanel, ExtCtrls, Spin, DOM,
-  Menus, LCLProc, LazIDEIntf, fgl;
+  Classes, SysUtils, fgl, DOM,
+  LazFileUtils, LazLoggerBase,
+  Forms, Dialogs, Controls, ComCtrls, StdCtrls, ButtonPanel, ExtCtrls, Spin, Menus,
+  LazIDEIntf;
 
 type
   TActionItem = record

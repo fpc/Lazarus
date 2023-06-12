@@ -39,14 +39,14 @@ interface
 uses
   Classes, SysUtils, contnrs, Laz_AVL_Tree,
   // LCL
-  LCLType, LCLProc, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons,
+  LCLType, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons,
   ExtCtrls, ComCtrls, ImgList,
   // LazControls
   TreeFilterEdit,
   // Codetools
   BasicCodeTools,
   // LazUtils
-  LazFileUtils, Laz2_XMLCfg, LazUTF8,
+  LazFileUtils, Laz2_XMLCfg, LazUTF8, LazLoggerBase,
   // BuildIntf
   PackageIntf, PackageLinkIntf, PackageDependencyIntf,
   // IdeIntf

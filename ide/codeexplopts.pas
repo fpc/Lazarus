@@ -37,11 +37,11 @@ uses
   // RTL + FCL
   Classes, SysUtils, Laz_AVL_Tree,
   // LCL
-  LCLProc, Forms, Controls, Graphics, Dialogs, Buttons,
+  Forms, Controls, Graphics, Dialogs, Buttons,
   // CodeTools
-  BasicCodeTools, FileProcs,
+  BasicCodeTools,
   // LazUtils
-  AvgLvlTree, Laz2_XMLCfg, LazFileUtils, LazFileCache,
+  AvgLvlTree, Laz2_XMLCfg, LazFileUtils, LazFileCache, LazLoggerBase,
   // IDEIntf
   IDEOptionsIntf, IDEOptEditorIntf,
   // IDE

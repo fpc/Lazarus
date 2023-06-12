@@ -5,7 +5,7 @@ unit SynGutterMarks;
 interface
 
 uses
-  Classes, SysUtils, Graphics, LCLType, LCLIntf, LCLProc, Controls, ImgList,
+  Classes, SysUtils, Graphics, LCLType, LCLIntf, Controls, ImgList,
   SynGutterBase, SynEditMiscClasses, SynEditMarks, LazSynEditText,
   SynEditMiscProcs;
 

@@ -24,7 +24,9 @@ unit LCLClasses;
 interface
 
 uses
-  Classes, WSLCLClasses, WSReferences, LCLType, LCLProc;
+  Classes,
+  LazLoggerBase,
+  WSLCLClasses, WSReferences, LCLType;
 
 type
 

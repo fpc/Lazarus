@@ -34,7 +34,7 @@ interface
 uses
   SysUtils, Classes, Registry, IniFiles,
   // LCL
-  LCLProc, LCLIntf, LCLType, Graphics,
+  LCLType, Graphics,
   // LazUtils
   LazUTF8, LazMethodList,
   // SynEdit

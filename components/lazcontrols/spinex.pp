@@ -74,7 +74,7 @@ interface
 uses
   Classes, SysUtils, Math,
   // LCL
-  LCLType, LCLProc, Controls, ClipBrd, ComCtrls, GroupedEdit, LResources;
+  LCLType, Controls, ClipBrd, ComCtrls, GroupedEdit, LResources;
 
 
 {.$define debugspinex}

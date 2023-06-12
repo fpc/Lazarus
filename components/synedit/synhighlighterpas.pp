@@ -51,8 +51,7 @@ unit SynHighlighterPas;
 interface
 
 uses
-  SysUtils, LCLProc,
-  Classes, Registry, Graphics, SynEditHighlighterFoldBase, SynEditMiscProcs,
+  SysUtils, Classes, Registry, Graphics, SynEditHighlighterFoldBase, SynEditMiscProcs,
   SynEditTypes, SynEditHighlighter, SynEditTextBase, SynEditStrConst, SynEditMiscClasses;
 
 type

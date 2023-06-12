@@ -38,8 +38,11 @@ unit CompOptsModes;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, ExprEval,
-  IDEProcs, ProjectIntf;
+  Classes, SysUtils,
+  ExprEval,
+  LazLoggerBase,
+  ProjectIntf,
+  IDEProcs;
 
 type
 

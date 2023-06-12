@@ -39,10 +39,10 @@ interface
 uses
   Classes, SysUtils, fgl,
   // LCL
-  LCLProc, LCLIntf, Dialogs, Forms, Controls, StdCtrls, ExtCtrls, Graphics,
+  LCLIntf, Dialogs, Forms, Controls, StdCtrls, ExtCtrls, Graphics,
   ButtonPanel, LazHelpHTML,
   // LazUtils
-  LazConfigStorage, LazFileUtils, LazFileCache, LazUTF8,
+  LazConfigStorage, LazFileUtils, LazFileCache, LazUTF8, LazLoggerBase,
   // CodeTools
   FileProcs, CodeToolsFPCMsgs, CodeToolManager, CodeCache, DefineTemplates,
   // IdeIntf

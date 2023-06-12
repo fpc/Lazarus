@@ -47,7 +47,7 @@ unit SynEditTextBuffer;
 interface
 
 uses
-  Classes, SysUtils, Graphics, LCLProc, LCLIntf, LCLType,
+  Classes, SysUtils, Graphics, LCLProc,
   SynEditTypes, LazSynEditText, SynEditTextBase, SynEditMiscProcs, SynEditMiscClasses,
   SynEditHighlighter;
 

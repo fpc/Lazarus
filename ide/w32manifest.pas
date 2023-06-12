@@ -37,9 +37,11 @@ unit W32Manifest;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Laz2_XMLCfg, LCLProc, Controls, Forms,
-  CodeToolManager, LazConf, LResources,
-  ProjectResourcesIntf, resource;
+  SysUtils, resource,
+  Laz2_XMLCfg,
+  Controls, LResources,
+  LazConf,
+  ProjectResourcesIntf;
 
 const
   DefaultXPManifestTextName = 'CompanyName.ProductName.AppName';

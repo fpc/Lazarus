@@ -49,8 +49,9 @@ unit SynEditMarkupFoldColoring;
 interface
 
 uses
-  Classes, SysUtils, Graphics, SynEditMarkup, SynEditMiscClasses, Controls,
-  LCLProc, LCLType, SynEditHighlighter,
+  Classes, SysUtils, Graphics, Controls,
+  SynEditMarkup, SynEditMiscClasses,
+  SynEditHighlighter,
   SynEditHighlighterFoldBase, LazSynEditText, SynEditTextBase, SynEditTypes,
   {$IFDEF WithSynMarkupFoldColorDebugGutter}SynGutterBase, SynTextDrawer,{$ENDIF}
   SynEditMiscProcs,

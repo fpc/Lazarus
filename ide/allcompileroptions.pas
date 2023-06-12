@@ -28,9 +28,14 @@ unit AllCompilerOptions;
 interface
 
 uses
-  Classes, SysUtils, math, contnrs,
+  Classes, SysUtils, Math, Contnrs,
+  // LCL
   Forms, Controls, StdCtrls, Buttons, ButtonPanel, EditBtn, ExtCtrls,
-  LCLProc, LazUTF8, Compiler, IDEImagesIntf, LazarusIDEStrConsts;
+  // LazUtils
+  LazUTF8, LazLoggerBase,
+  // IdeIntf
+  IDEImagesIntf,
+  Compiler, LazarusIDEStrConsts;
 
 type
 

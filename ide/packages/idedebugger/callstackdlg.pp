@@ -38,7 +38,7 @@ interface
 uses
   SysUtils, Classes, Math,
   // LCL
-  Controls, Forms, LCLProc, ComCtrls, Menus, ClipBrd, ExtCtrls, StdCtrls, ActnList,
+  Controls, Forms, ComCtrls, Menus, ClipBrd, ExtCtrls, StdCtrls, ActnList,
   // LazUtils
   LazLoggerBase,
   // IdeIntf

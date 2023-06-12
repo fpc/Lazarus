@@ -33,8 +33,9 @@ unit AbstractsMethodsDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
-  CheckLst, StdCtrls, ExtCtrls, Buttons,
+  Classes, SysUtils,
+  Forms, Controls, Graphics, Dialogs, CheckLst, StdCtrls, ExtCtrls, Buttons,
+  LazLoggerBase,
   CodeTree, PascalParserTool, CodeCache, CodeToolManager,
   LazIDEIntf, SrcEditorIntf, IDEDialogs,
   IdeIntfStrConsts, LazarusIDEStrConsts;

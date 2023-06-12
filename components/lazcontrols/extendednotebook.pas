@@ -26,7 +26,7 @@ uses
   Classes, sysutils, math,
   // LCL
   LCLIntf, LCLType, LMessages, Controls, ComCtrls
-  {$IFDEF ExtNBookDebug} , LCLProc {$ENDIF};
+  {$IFDEF ExtNBookDebug} , LazLoggerBase {$ENDIF};
 
 type
 

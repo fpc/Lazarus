@@ -26,7 +26,7 @@ unit SynEditMarkupSpecialChar;
 interface
 
 uses
-  Classes, SysUtils, Graphics, Controls, LCLProc,
+  Classes, SysUtils, Graphics, Controls,
   SynEditMarkup, SynEditTypes, SynEditMiscClasses;
 
 type

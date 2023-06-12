@@ -23,8 +23,9 @@ unit SVNClasses;
 interface
 
 uses
-  Classes, SysUtils, ComCtrls, FileUtil, UTF8Process, LCLProc, Controls,
-  XMLRead, DOM, Process, StdCtrls, Forms, fgl;
+  Classes, SysUtils, XMLRead, DOM, Process, fgl,
+  FileUtil, UTF8Process, LazLoggerBase,
+  ComCtrls, Controls, StdCtrls, Forms;
 
 resourcestring
   rsAction = 'Action';

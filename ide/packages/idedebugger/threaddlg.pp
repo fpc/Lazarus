@@ -5,7 +5,7 @@ unit ThreadDlg;
 interface
 
 uses
-  Classes, SysUtils, ComCtrls, LCLProc, LazLoggerBase, Debugger, DebuggerDlg,
+  Classes, SysUtils, ComCtrls, LazLoggerBase, Debugger, DebuggerDlg,
   Forms, IDEWindowIntf, BaseDebugManager,
   IDEImagesIntf, DbgIntfDebuggerBase, LazDebuggerIntfBaseTypes, IdeDebuggerStringConstants;
 

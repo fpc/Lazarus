@@ -35,10 +35,10 @@ unit LHelpCore;
 interface
 
 uses
-  Classes, SysUtils, SimpleIPC, Laz2_XMLCfg,
+  Classes, SysUtils, Types, SimpleIPC, Laz2_XMLCfg,
   // LCL
-  Forms, Controls, Graphics, Dialogs, Buttons, ComCtrls, ExtCtrls, Menus, StdCtrls, Types,
-  LCLProc, LCLType, LCLIntf, DefaultTranslator,
+  Forms, Controls, Graphics, Dialogs, ComCtrls, ExtCtrls, Menus, StdCtrls,
+  LCLType, LCLIntf, DefaultTranslator,
   // LazUtils
   LazFileUtils, LazUTF8, LazLoggerBase,
   // ChmHelp

@@ -56,9 +56,11 @@ uses
   CodeToolManager, DefineTemplates,
   // IdeIntf
   IdeIntfStrConsts, IDEWindowIntf, IDEImagesIntf, IDEDialogs,
+  // IdeConfig
+  LazConf, TransferMacros,
   // IDE
-  LazarusIDEStrConsts, CodeToolsOptions, CodeToolsDefPreview, TransferMacros,
-  EditorOptions, InputFileDialog, LazConf, IDEProcs, EditDefineTree, CompilerOptions;
+  LazarusIDEStrConsts, CodeToolsOptions, CodeToolsDefPreview,
+  EditorOptions, InputFileDialog, IDEProcs, EditDefineTree, CompilerOptions;
 
 type
 

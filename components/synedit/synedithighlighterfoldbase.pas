@@ -58,10 +58,8 @@ interface
 
 uses
   SysUtils, Classes, math, Laz_AVL_Tree,
-  // LCL
-  LCLProc,
   // LazUtils
-  LazClasses, LazLoggerBase,
+  LazClasses, LazLoggerBase, LazTracer,
   // SynEdit
   SynEditHighlighter, SynEditTypes, LazSynEditText;
 

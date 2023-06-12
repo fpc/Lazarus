@@ -30,9 +30,12 @@ unit FPDocHints;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, StdCtrls,
+  Classes, SysUtils,
+  Forms, Controls, StdCtrls,
+  LazLoggerBase,
   CodeToolManager, CodeCache, IdentCompletionTool, CodeTree,
-  IDEHelpIntf, SrcEditorIntf, SrcEditHintFrm, CodeHelp;
+  IDEHelpIntf, SrcEditorIntf,
+  SrcEditHintFrm, CodeHelp;
 
 type
   { TFPDocHintProvider }

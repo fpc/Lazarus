@@ -20,7 +20,8 @@ unit CustomTimer;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLStrConsts, LCLType, InterfaceBase, CustApp;
+  Classes, SysUtils,
+  LCLStrConsts, InterfaceBase, CustApp;
 
 type
 

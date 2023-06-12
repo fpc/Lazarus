@@ -41,7 +41,9 @@ interface
 uses
   SysUtils, Laz_AVL_Tree,
   // LCL
-  LCLProc, Forms, Controls, StdCtrls, ExtCtrls, ButtonPanel,
+  Forms, Controls, StdCtrls, ExtCtrls, ButtonPanel,
+  // LazUtils
+  LazLoggerBase,
   // Codetools
   BasicCodeTools,
   // SynEdit

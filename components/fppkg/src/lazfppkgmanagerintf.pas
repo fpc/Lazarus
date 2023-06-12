@@ -32,7 +32,8 @@ unit lazfppkgmanagerintf;
 interface
 
 uses
-  LCLtype, LResources, LCLProc,
+  LCLtype, LResources,
+  LazUtilities,
   fppkg_mainfrm, fppkg_const;
 
 procedure Register;

@@ -30,7 +30,9 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLProc, ExtCtrls, Buttons, Controls, StdCtrls,
+  ExtCtrls, Buttons, Controls, StdCtrls,
+  // LazUtils
+  LazLoggerBase,
   // LazControls
   DividerBevel,
   // IdeIntf

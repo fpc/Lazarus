@@ -5,7 +5,7 @@ unit TestHighlightPas;
 interface
 
 uses
-  Classes, SysUtils, testregistry, TestBase, Forms, LCLProc,
+  Classes, SysUtils, testregistry, TestBase, Forms, LazLoggerBase,
   TestHighlightFoldBase, SynEdit, SynEditTypes, SynHighlighterPas,
   SynEditHighlighterFoldBase, SynEditHighlighter;
 

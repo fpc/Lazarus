@@ -23,8 +23,10 @@ unit SVNUpdateForm;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, UTF8Process, LResources, Forms, Controls,
-  Graphics, Dialogs, ComCtrls, ButtonPanel, Process, Buttons, Menus, LCLProc,
+  Classes, SysUtils,
+  FileUtil, UTF8Process, LazLoggerBase,
+  LResources, Forms, Controls,
+  Graphics, Dialogs, ComCtrls, ButtonPanel, Process, Buttons, Menus,
   IDEImagesIntf;
 
 type

@@ -42,10 +42,10 @@ uses
   // codetools
   FileProcs, CodeCache, CodeToolManager, CTXMLFixFragment,
   // IDEIntf
-  IDEWindowIntf, ProjectIntf, LazIDEIntf, IDEHelpIntf, Menus,
+  IDEWindowIntf, LazIDEIntf, Menus,
   SrcEditorIntf, IDEDialogs, LazFileUtils, IDEImagesIntf,
   // IDE
-  IDEOptionDefs, EnvironmentOpts, PackageSystem, LazarusIDEStrConsts,
+  IDEOptionDefs, EnvironmentOpts, LazarusIDEStrConsts,
   FPDocSelectInherited, FPDocSelectLink, CodeHelp;
 
 type

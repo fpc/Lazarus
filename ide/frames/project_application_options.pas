@@ -9,8 +9,7 @@ uses
   // LazUtils
   FileUtil,
   // LCL
-  LCLProc, LCLType, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, Buttons,
-  ComCtrls, ExtDlgs,
+  LCLType, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, Buttons, ComCtrls, ExtDlgs,
   // LazControls
   DividerBevel,
   // IdeIntf

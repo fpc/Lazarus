@@ -38,10 +38,8 @@ uses
   // RTL + LCL
   Classes, SysUtils,
   resource, bitmapresource, groupresource, groupiconresource, groupcursorresource,
-  // LCL
-  LCLProc,
   // LazUtils
-  FileProcs, LazFileUtils, LazUTF8, Laz2_XMLCfg,
+  LazFileUtils, LazUTF8, Laz2_XMLCfg, LazLoggerBase,
   // IdeIntf
   ProjectResourcesIntf, IDEMsgIntf, MacroIntf, IDEExternToolIntf,
   // IDE

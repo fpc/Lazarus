@@ -43,11 +43,13 @@ uses
   // LazUtils
   FPCAdds, LazUTF8, LazFileUtils, LazUtilities, LazLoggerBase,
   // Codetools
-  DefineTemplates, LinkScanner, CodeToolManager, TransferMacros,
+  DefineTemplates, LinkScanner, CodeToolManager,
   // BuildIntf
   IDEExternToolIntf,
   // IdeIntf
   IDEMsgIntf, LazIDEIntf,
+  // IdeConfig
+  TransferMacros,
   // IDE
   IDECmdLine, LazarusIDEStrConsts, CompilerOptions, Project;
 

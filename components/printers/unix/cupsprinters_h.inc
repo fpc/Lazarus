@@ -53,7 +53,9 @@
 {$ENDIF}
 
 uses
-  Classes, SysUtils, LCLProc, PostScriptCanvas, Printers, Dialogs, Controls,
+  Classes, SysUtils,
+  LazLoggerBase,
+  PostScriptCanvas, Printers, Dialogs,
   CUPSDyn
   {$IFDEF UseCairo}
   ,CairoCanvas

@@ -36,9 +36,9 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  Forms, LCLProc, LCLPlatformDef,
+  Forms, LCLPlatformDef,
   // LazUtils
-  Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite, StringHashList,
+  Laz2_DOM, Laz2_XMLRead, Laz2_XMLWrite, StringHashList, LazLoggerBase,
   // IdeIntf
   OIFavoriteProperties, PackageIntf, ComponentReg,
   // IDE

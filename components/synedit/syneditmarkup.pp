@@ -26,8 +26,8 @@ unit SynEditMarkup;
 interface
 
 uses
-  Classes, SysUtils, Graphics, SynEditTypes, LazSynEditText, SynEditPointClasses,
-  SynEditMiscClasses, Controls, SynEditHighlighter, SynEditMiscProcs, LCLProc;
+  Classes, SysUtils, Graphics, Controls, LazLoggerBase, SynEditTypes,
+  LazSynEditText, SynEditPointClasses, SynEditMiscClasses, SynEditHighlighter;
 
 type
   TLazSynDisplayRtlInfo = record

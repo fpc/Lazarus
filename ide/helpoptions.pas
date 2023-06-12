@@ -36,14 +36,12 @@ interface
 
 uses
   Classes, SysUtils,
-  // LCL
-  LCLProc,
   // LazUtils
-  LazFileUtils, Laz2_XMLCfg, LazFileCache,
+  LazFileUtils, Laz2_XMLCfg, LazFileCache, LazLoggerBase,
   // IdeIntf
   IdeIntfStrConsts, LazHelpIntf, IDEOptionsIntf, IDEOptEditorIntf, MacroIntf,
-  // IDE
-  LazarusIDEStrConsts, IDEOptionDefs, LazConf;
+  // IdeConfig
+  IDEOptionDefs, LazConf;
 
 type
   { THelpOptions }

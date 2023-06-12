@@ -26,11 +26,9 @@ interface
 uses
   SysUtils, Classes, fgl,
   // LCL
-  ComCtrls, Controls, LCLProc, Menus,
-  // LazUtils
-  LazConfigStorage, Laz2_XMLCfg,
+  ComCtrls, Controls, Menus,
   // IdeIntf
-  BaseIDEIntf, IDEImagesIntf, SrcEditorIntf,
+  IDEImagesIntf, SrcEditorIntf,
   // IdeConfig
   EditorToolBarOptions,
   // IDE

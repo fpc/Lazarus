@@ -40,10 +40,9 @@ uses
   // IdeDebugger
   Debugger, IdeDebuggerOpts, EnvDebuggerOptions,
   // IdeConfig
-  EnvironmentOpts,
+  EnvironmentOpts, TransferMacros,
   // IDE
-  TransferMacros, LazarusIDEStrConsts, PathEditorDlg, DialogProcs,
-  Project, EnvGuiOptions;
+  LazarusIDEStrConsts, PathEditorDlg, DialogProcs, Project, EnvGuiOptions;
 
 type
 

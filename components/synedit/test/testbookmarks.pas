@@ -7,7 +7,7 @@ unit TestBookMarks;
 interface
 
 uses
-  Classes, SysUtils, testregistry, TestBase, LCLProc,
+  Classes, SysUtils, testregistry, TestBase,
   SynEdit, SynEditMarks, SynEditKeyCmds;
 
 type

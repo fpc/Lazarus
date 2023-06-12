@@ -31,11 +31,13 @@ unit CheckCompOptsForNewUnitDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, ExtCtrls, ButtonPanel,
-  CodeToolManager, BasicCodeTools, DefineTemplates,
-  CompOptsIntf, ProjectIntf, IDEDialogs,
-  InputHistory, TransferMacros, Project, IdeIntfStrConsts, LazarusIDEStrConsts;
+  SysUtils,
+  Forms, Controls, Dialogs, StdCtrls, ButtonPanel,
+  BasicCodeTools, DefineTemplates,
+  CompOptsIntf,
+  IDEDialogs, InputHistory, IdeIntfStrConsts,
+  TransferMacros,
+  Project, LazarusIDEStrConsts;
 
 type
 

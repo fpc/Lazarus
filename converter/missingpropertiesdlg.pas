@@ -33,10 +33,10 @@ interface
 
 uses
   // FCL+LCL
-  Classes, SysUtils, contnrs,
-  LCLProc, Forms, Controls, Grids, LResources, Dialogs, Buttons, StdCtrls, ExtCtrls,
+  Classes, SysUtils, Contnrs,
+  Forms, Controls, Grids, LResources, Dialogs, Buttons, StdCtrls, ExtCtrls,
   // LazUtils
-  LazFileUtils, LazUTF8, AvgLvlTree,
+  LazFileUtils, LazUTF8, LazLoggerBase, AvgLvlTree,
   // components
   SynHighlighterLFM, SynEdit, SynEditMiscClasses,
   // codetools

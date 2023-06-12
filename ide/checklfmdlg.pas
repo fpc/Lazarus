@@ -34,9 +34,9 @@ uses
   // FCL
   Classes, SysUtils, Math, TypInfo, contnrs,
   // LCL
-  LCLProc, LResources, Forms, Controls, Dialogs, Buttons, StdCtrls, ExtCtrls,
+  LResources, Forms, Controls, Dialogs, Buttons, StdCtrls, ExtCtrls,
   // LazUtils
-  LazStringUtils, AvgLvlTree,
+  LazStringUtils, LazLoggerBase, LazTracer, AvgLvlTree,
   // CodeTools
   BasicCodeTools, CodeCache, CodeToolManager, LFMTrees,
   // SynEdit

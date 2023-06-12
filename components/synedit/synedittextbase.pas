@@ -38,8 +38,6 @@ interface
 
 uses
   Classes, SysUtils,
-  // LCL
-  LCLProc,
   // LazUtils
   LazMethodList,
   // SynEdit

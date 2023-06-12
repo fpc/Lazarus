@@ -42,8 +42,10 @@ uses
   FileProcs,
   // BuildIntf
   PackageIntf,
+  // IdeConfig
+  TransferMacros, LazConf,
   // IDE
-  TransferMacros, LazConf, LazarusIDEStrConsts;
+  LazarusIDEStrConsts;
 
 const
   SBuildMethod: array[TBuildMethod] of string = (

@@ -31,14 +31,17 @@ unit IDEContextHelpEdit;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
-  Buttons, ButtonPanel, StdCtrls, ComCtrls,
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls, Graphics, Dialogs, Buttons, ButtonPanel, StdCtrls, ComCtrls, ExtCtrls,
+  // LazUtils
+  LazLoggerBase,
   // codetools
   CodeToolManager, CodeCache,
   // IDEIntf
   PropEdits, LazIDEIntf, IDEWindowIntf, IDEDialogs,
   // IDE
-  IDEWindowHelp, LazarusIDEStrConsts, ExtCtrls;
+  IDEWindowHelp, LazarusIDEStrConsts;
 
 type
 

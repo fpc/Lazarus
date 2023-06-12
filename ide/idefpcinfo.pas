@@ -37,9 +37,12 @@ uses
   DefineTemplates, CodeToolManager, FileProcs,
   // LazUtils
   FPCAdds, LazFileUtils, LazUTF8,
+  // IdeIntf
+  IDEWindowIntf, LazIDEIntf,
+  // IdeConfig
+  EnvironmentOpts, TransferMacros,
   // Other
-  IDEWindowIntf, LazIDEIntf, BaseBuildManager,
-  Project, EnvironmentOpts, LazarusIDEStrConsts, AboutFrm, TransferMacros;
+  BaseBuildManager, Project, LazarusIDEStrConsts, AboutFrm;
 
 type
 

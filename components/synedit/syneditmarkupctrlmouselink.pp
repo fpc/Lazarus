@@ -26,8 +26,8 @@ unit SynEditMarkupCtrlMouseLink;
 interface
 
 uses
-  Classes, SysUtils, Graphics, SynEditMarkup, SynEditMiscClasses,
-  SynEditMouseCmds, LazSynEditText, SynEditTypes, Controls, LCLProc;
+  Classes, SysUtils, Graphics, Controls, SynEditMarkup, SynEditMiscClasses,
+  SynEditMouseCmds, LazSynEditText, SynEditTypes;
 
 type
 

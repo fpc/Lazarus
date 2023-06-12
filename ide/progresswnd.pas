@@ -32,8 +32,10 @@ unit ProgressWnd;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics, Dialogs,
-  ComCtrls, StdCtrls, ExtCtrls, LazIDEIntf, LazarusIDEStrConsts;
+  Classes, SysUtils,
+  Forms, Controls, Graphics, Dialogs, ComCtrls, StdCtrls, ExtCtrls,
+  LazLoggerBase,
+  LazIDEIntf, LazarusIDEStrConsts;
 
 type
   TIDEProgressWindow = class;

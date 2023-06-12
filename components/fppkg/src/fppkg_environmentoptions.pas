@@ -42,7 +42,7 @@ uses
   LazIDEIntf,
   LazFileCache,
   LazFileUtils,
-  LCLProc,
+  LazLoggerBase,
   XMLConf,
   StdCtrls,
   ExtCtrls,

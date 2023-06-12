@@ -29,7 +29,7 @@ interface
 uses
   SysUtils, Classes, Controls, Graphics, Menus, LCLIntf, SynGutterBase,
   SynEditMiscProcs, SynEditFoldedView, SynEditMouseCmds,
-  SynEditHighlighterFoldBase, LCLProc, LCLType, ImgList, Forms;
+  SynEditHighlighterFoldBase, LCLType, ImgList, Forms;
 
 type
 

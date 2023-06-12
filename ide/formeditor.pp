@@ -33,8 +33,10 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLProc, Controls, Forms,
+  Controls, Forms,
   RegisterLCL,  // register LCLBase
+  // LazUtils
+  LazLoggerBase,
   // LazControls
   LazControls,
   // IdeIntf

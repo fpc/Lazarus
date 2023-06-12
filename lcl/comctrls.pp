@@ -29,13 +29,13 @@ unit ComCtrls;
 interface
 
 uses
-  SysUtils, Types, Classes, Math, Laz_AVL_Tree, IntegerList,
+  SysUtils, Types, Classes, Math, Laz_AVL_Tree,
   // LCL
   LCLStrConsts, LResources, LCLIntf, LCLType, LCLProc, LMessages, WSLCLClasses,
   WSReferences, Graphics, ImgList, ActnList, Themes, Menus,
   Controls, Forms, StdCtrls, ExtCtrls, ToolWin, Buttons,
   // LazUtils
-  GraphType, LazUTF8, LazLoggerBase, LazUtilities;
+  GraphType, LazUTF8, LazLoggerBase, LazUtilities, IntegerList;
 
 type
   THitTest = (htAbove, htBelow, htNowhere, htOnItem, htOnButton, htOnIcon,

@@ -35,11 +35,12 @@ uses
   // RTL + FCL
   Classes, SysUtils, contnrs, IniFiles,
   // LCL
-  LCLProc, Forms, Controls, Dialogs,
+  Forms, Controls, Dialogs,
   // CodeTools
-  CodeToolManager, DefineTemplates, CodeCache, LinkScanner, FileProcs,
+  CodeToolManager, DefineTemplates, CodeCache, LinkScanner,
   // LazUtils
-  LConvEncoding, FileUtil, LazFileUtils, LazUTF8, LazStringUtils, AvgLvlTree,
+  LConvEncoding, FileUtil, LazFileUtils, LazUTF8, LazStringUtils, LazLoggerBase,
+  AvgLvlTree,
   // IDEIntf
   ComponentReg, IDEDialogs, LazIDEIntf, PackageIntf, ProjectIntf,
   IDEExternToolIntf, IDEOptEditorIntf,

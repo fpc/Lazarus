@@ -28,11 +28,11 @@ interface
 
 uses
   // LCL + FCL
-  SysUtils, LCLProc, Controls, StdCtrls, Forms, Buttons, ComCtrls,
+  SysUtils, Controls, StdCtrls, Forms, Buttons, ComCtrls,
   // CodeTools
-  CodeToolsDefPreview, CodeToolManager, FileProcs,
+  CodeToolsDefPreview, CodeToolManager,
   // LazUtils
-  LazFileUtils,
+  LazFileUtils, LazLoggerBase,
   // IDE
   LazarusIDEStrConsts;
 

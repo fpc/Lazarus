@@ -30,8 +30,8 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LResources, Forms, Controls, Graphics, Dialogs, ComCtrls, ExtCtrls, StdCtrls,
-  LCLProc, LCLType, ButtonPanel, Printers,
+  Forms, Controls, Graphics, Dialogs, ComCtrls, ExtCtrls, StdCtrls,
+  ButtonPanel, Printers,
   // Printers
   OSPrinters, CupsLCL, CupsDyn, Printer4LazStrConst;
 

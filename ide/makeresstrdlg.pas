@@ -41,7 +41,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLProc, Forms, Controls, StdCtrls, Dialogs, ExtCtrls, ButtonPanel,
+  Forms, Controls, StdCtrls, Dialogs, ExtCtrls, ButtonPanel,
   // SynEdit
   SynHighlighterPas, SynEdit,
   // CodeTools

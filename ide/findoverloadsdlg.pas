@@ -39,7 +39,9 @@ interface
 uses
   Classes, SysUtils, Laz_AVL_Tree,
   // LCL
-  LCLProc, LazFileUtils, Forms, Controls, StdCtrls, ButtonPanel, ComCtrls,
+  Forms, Controls, StdCtrls, ButtonPanel, ComCtrls,
+  // LazUtils
+  LazFileUtils, LazLoggerBase,
   // codetools
   FindDeclarationTool, PascalParserTool, CodeTree, CodeCache, CodeToolManager,
   FindOverloads,

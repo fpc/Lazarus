@@ -41,7 +41,6 @@ interface
 
 uses
   Classes, SysUtils, StrUtils,
-  LCLProc,
   LazStringUtils,
   SynEditMiscClasses, SynEditMiscProcs, LazSynEditText, SynEditPointClasses,
   SynEditKeyCmds, SynEditTypes;

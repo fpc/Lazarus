@@ -39,7 +39,7 @@ interface
 uses
   Types, Classes, SysUtils, Math, FPCanvas,
   // LCL
-  LCLIntf, LCLType, LCLProc, Controls, Forms, Graphics, Menus, ComCtrls,
+  LCLIntf, LCLProc, Controls, Forms, Graphics, Menus, ComCtrls,
   // LazUtils
   GraphType, GraphMath,
   // IDEIntf

@@ -49,7 +49,8 @@ uses
   {$ENDIF}
   Classes, SysUtils,
   // LCL
-  Controls, LCLProc, LCLType, Graphics, Menus, ImgList,
+  Controls, LCLType, Graphics, Menus, ImgList,
+  LazLoggerBase,
   // synedit
   SynEdit, SynEditMiscClasses, SynGutter, SynGutterBase, SynEditMarks,
   SynEditTypes, SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks,

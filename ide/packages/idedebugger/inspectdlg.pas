@@ -30,10 +30,10 @@ interface
 uses
   Classes, SysUtils, Math,
   // LCL
-  LCLProc, LCLType, Grids, StdCtrls, Menus, Forms, Controls, Graphics, ComCtrls,
-  ExtCtrls, Buttons, Clipbrd, SpinEx, LMessages,
+  LCLType, Grids, StdCtrls, Menus, Forms, Controls, Graphics, ComCtrls,
+  ExtCtrls, Buttons, Clipbrd, LMessages,
   // IdeIntf
-  IDEWindowIntf, IDEImagesIntf, ObjectInspector, PropEdits, InputHistory,
+  IDEWindowIntf, ObjectInspector, PropEdits, InputHistory,
   // IdeConfig
   EnvironmentOpts, RecentListProcs,
   // DebuggerIntf
@@ -42,8 +42,8 @@ uses
   LazDebuggerIntf, LazDebuggerIntfBaseTypes,
   // IdeDebugger
   BaseDebugManager, Debugger, IdeDebuggerWatchResPrinter, IdeDebuggerWatchResult,
-  IdeDebuggerWatchResUtils, IdeDebuggerBase, ArrayNavigationFrame, IdeDebuggerOpts,
-  IdeDebuggerBackendValueConv, WatchInspectToolbar, DebuggerDlg,
+  IdeDebuggerWatchResUtils, IdeDebuggerBase, ArrayNavigationFrame,
+  WatchInspectToolbar, DebuggerDlg,
   IdeDebuggerStringConstants, IdeDebuggerUtils, EnvDebuggerOptions;
 
 type

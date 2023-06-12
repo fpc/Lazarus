@@ -55,8 +55,10 @@ unit MaskEdit;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, StdCtrls, LMessages, Clipbrd, LCLType, LCLProc, LCLStrConsts, LazUtf8;
+  Classes, SysUtils,
+  LResources, LMessages, LCLType, LCLStrConsts,
+  Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, Clipbrd,
+  LazUtf8;
 
 const
   { Mask Type

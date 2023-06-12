@@ -7,12 +7,14 @@ interface
 uses
   Classes, Controls, sysutils, types, typinfo, math, FPCanvas,
   // LCL
-  LCLProc, LCLType, LCLIntf, Forms, StdCtrls, ExtCtrls, Graphics, GraphUtil,
+  LCLIntf, Forms, StdCtrls, ExtCtrls, Graphics, GraphUtil,
   ColorBox, Dialogs, Menus, Spin,
   // SynEdit
   SynEditTypes, SynTextDrawer,
+  // IdeConfig
+  EnvironmentOpts,
   // IDE
-  EditorOptions, SourceMarks, LazarusIDEStrConsts, EnvironmentOpts;
+  EditorOptions, SourceMarks, LazarusIDEStrConsts;
 
 type
 

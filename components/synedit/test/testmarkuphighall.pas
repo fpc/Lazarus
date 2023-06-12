@@ -5,8 +5,8 @@ unit TestMarkupHighAll;
 interface
 
 uses
-  Classes, SysUtils, testregistry, TestBase, LCLProc, Controls,
-  Graphics, SynEdit, SynEditMarkupHighAll;
+  Classes, SysUtils, testregistry, TestBase, Controls, Graphics, LazLoggerBase,
+  SynEdit, SynEditMarkupHighAll;
 
 type
 

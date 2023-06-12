@@ -59,9 +59,10 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, typinfo,
+  Classes, TypInfo,
+  {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
   // LCL
-  LCLType, Buttons, Controls, Graphics, Dialogs, Forms, LCLProc,
+  Forms,
   // Codetools
   CodeCache,
   // LazUtils
@@ -69,8 +70,7 @@ uses
   // BuildIntf
   ProjectIntf, CompOptsIntf,
   // IDEIntf
-  PropEdits, ObjectInspector, MenuIntf, SrcEditorIntf, LazIDEIntf, IDEWindowIntf,
-  InputHistory,
+  ObjectInspector, MenuIntf, SrcEditorIntf, LazIDEIntf, IDEWindowIntf, InputHistory,
   // IdeConfig
   LazConf,
   // IDE

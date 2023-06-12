@@ -14,8 +14,8 @@ interface
 
 uses
   Classes, SysUtils,
+  {$ifdef DebugCUPS}LazLoggerBase,{$endif}
   // LCL
-  {$ifdef DebugCUPS}LCLProc,{$endif}
   StdCtrls, Printers,
   // Printers
   OsPrinters, CupsDyn, Printer4LazStrConst;

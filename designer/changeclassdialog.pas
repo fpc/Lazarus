@@ -37,7 +37,9 @@ interface
 uses
   Classes, SysUtils, AvgLvlTree,
   // LCL
-  LCLProc, LCLType, LResources, Forms, Controls, Dialogs, StdCtrls, ButtonPanel,
+  LCLType, Forms, Controls, Dialogs, StdCtrls, ButtonPanel,
+  // LazUtils
+  LazLoggerBase,
   // Codetools
   LFMTrees, CodeCache, CodeToolManager,
   // IdeIntf

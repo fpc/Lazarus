@@ -22,11 +22,11 @@ unit ShellCtrls;
 interface
 
 uses
-  Classes, SysUtils, Math, Laz_AVL_Tree,
+  Classes, SysUtils, Types, Math, Laz_AVL_Tree,
   // LCL
-  Forms, Graphics, ComCtrls, LCLProc, LCLType, LCLStrConsts, Types,
+  Forms, Graphics, ComCtrls, LCLStrConsts,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8, Masks;
+  LazFileUtils, Masks;
 
 {$if defined(Windows) or defined(darwin) or defined(HASAMIGA))}
 {$define CaseInsensitiveFilenames}

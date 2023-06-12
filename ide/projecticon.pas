@@ -37,11 +37,9 @@ uses
   // RTL + LCL
   Classes, SysUtils, resource, groupiconresource,
   // LCL
-  LCLProc, Graphics,
+  Graphics,
   // LazUtils
-  FileUtil, LazFileUtils, LazFileCache, Laz2_XMLCfg,
-  // Codetools
-  FileProcs,
+  LazFileUtils, LazFileCache, Laz2_XMLCfg, LazLoggerBase,
   // IdeIntf
   ProjectResourcesIntf;
    

@@ -37,15 +37,15 @@ interface
 uses
   Classes, SysUtils,
   // LazUtils
-  LazFileUtils, Laz2_XMLCfg, LazUTF8, LazFileCache, LazStringUtils,
-  // LCL
-  LCLProc, LCLType,
+  LazFileUtils, Laz2_XMLCfg, LazUTF8, LazFileCache, LazStringUtils, LazLoggerBase,
   // CodeTools
   CodeToolManager, DefineTemplates, SourceChanger,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, MacroIntf,
+  // LazConfig
+  LazConf,
   // IDE
-  LazConf, LazarusIDEStrConsts;
+  LazarusIDEStrConsts;
 
 const
   DefaultIndentationFilename = 'laz_indentation.pas'; // in directory GetPrimaryConfigPath

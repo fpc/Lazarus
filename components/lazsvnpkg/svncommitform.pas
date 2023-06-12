@@ -5,8 +5,9 @@ unit SVNCommitForm;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  ButtonPanel, StdCtrls, Process, LCLProc;
+  Classes, SysUtils, Process,
+  FileUtil,
+  LResources, Forms, Controls, Graphics, Dialogs, ButtonPanel, StdCtrls;
 
 type
 

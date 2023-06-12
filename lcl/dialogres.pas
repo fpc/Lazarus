@@ -5,7 +5,8 @@ unit DialogRes;
 interface
 
 uses
-  LCLType, Graphics, Themes, Controls, ImgList, InterfaceBase, LCLIntf, LCLProc, SysUtils, Classes;
+  SysUtils, Classes,
+  LCLType, Graphics, Themes, Controls, ImgList, InterfaceBase, LCLIntf, LCLProc;
 
 type
   TDialogImage = idDialogWarning..idDialogShield;

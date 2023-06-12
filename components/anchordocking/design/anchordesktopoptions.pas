@@ -9,9 +9,9 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLProc, Forms, Controls, LCLType, LResources,
+  Forms, Controls, LResources,
   // LazUtils
-  LazFileUtils, LazConfigStorage, Laz2_XMLCfg, LazUTF8,
+  LazFileUtils, LazConfigStorage, LazLoggerBase, Laz2_XMLCfg, LazUTF8,
   // IdeIntf
   IDEOptionsIntf, LazIDEIntf, BaseIDEIntf,
   // AnchorDocking

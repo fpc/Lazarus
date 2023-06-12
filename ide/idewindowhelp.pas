@@ -32,9 +32,9 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLProc, Controls, Dialogs, HelpIntfs,
+  Controls, Dialogs, HelpIntfs,
   // LazUtils
-  LazFileUtils, LazConfigStorage,
+  LazFileUtils, LazConfigStorage, LazLoggerBase,
   // IdeIntf
   IDEDialogs,
   // IDE

@@ -71,10 +71,10 @@ uses
   IDEHelpIntf, IDECommands, IDEDialogs, IDEImagesIntf, LazIDEIntf, ToolBarIntf,
   IdeIntfStrConsts, MenuIntf, InputHistory,
   // IdeConfig
-  EnvironmentOpts, IDEOptionDefs,
+  EnvironmentOpts, IDEOptionDefs, TransferMacros,
   // IDE
   LazarusIDEStrConsts, MainBase, MainBar, IDEProcs, DialogProcs, Project,
-  TransferMacros, BuildManager, AddToProjectDlg, EnvGuiOptions,
+  BuildManager, AddToProjectDlg, EnvGuiOptions,
   BasePkgManager, ProjPackChecks, ProjPackEditing, ProjPackFilePropGui, PackageDefs,
   AddPkgDependencyDlg, AddFPMakeDependencyDlg;
 

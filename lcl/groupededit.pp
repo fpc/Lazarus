@@ -42,9 +42,9 @@ unit GroupedEdit;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, LCLStrConsts, Types, LCLType, LMessages,
-  Graphics, Controls, Forms, LazFileUtils, Dialogs, StdCtrls, Buttons, Menus,
-  MaskEdit;
+  Classes, SysUtils, Types,
+  LResources, LCLStrConsts, LCLType, LMessages, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Buttons, Menus, MaskEdit;
 
 type
 

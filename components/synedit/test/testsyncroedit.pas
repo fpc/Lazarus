@@ -5,7 +5,7 @@ unit TestSyncroEdit;
 interface
 
 uses
-  Classes, SysUtils, math, testregistry, LCLProc, LCLType, Forms, TestBase,
+  Classes, SysUtils, Math, testregistry, LCLType, LazLoggerBase, Forms, TestBase,
   SynEdit, SynPluginSyncroEdit, SynEditKeyCmds, SynPluginTemplateEdit,
   SynPluginSyncronizedEditBase, SynEditTypes;
 

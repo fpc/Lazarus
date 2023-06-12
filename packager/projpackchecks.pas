@@ -8,9 +8,9 @@ uses
   Classes, SysUtils,
   {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
   // LCL
-  LCLProc, Forms, Dialogs,
+  Forms, Dialogs,
   // LazUtils
-  FileUtil, LazFileUtils,
+  FileUtil, LazLoggerBase, LazFileUtils,
   // Codetools
   CodeToolManager, CodeCache,
   // BuildIntf

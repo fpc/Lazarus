@@ -63,12 +63,13 @@ uses
   // DebuggerIntf
   DbgIntfDebuggerBase,
   {$IFnDEF LCLNOGUI} IdeDebuggerOpts, IdeDebuggerBackendValueConv, Debugger,{$EndIf}
+  // IdeConfig
+  EnvironmentOpts, LazConf, TransferMacros, SearchPathProcs, IdeXmlConfigProcs,
   // IDE
-  EnvironmentOpts, CompOptsModes, ProjectResources, LazConf, ProjectIcon,
+  CompOptsModes, ProjectResources, ProjectIcon,
   IDECmdLine, IDEProcs, CompilerOptions, RunParamsOpts, ModeMatrixOpts,
-  TransferMacros, ProjectDefs, EditDefineTree, LazarusIDEStrConsts,
-  SearchPathProcs, IdeXmlConfigProcs, ProjPackCommon, PackageDefs,
-  PackageSystem;
+  ProjectDefs, EditDefineTree, LazarusIDEStrConsts,
+  ProjPackCommon, PackageDefs, PackageSystem;
 
 type
   TUnitInfo = class;

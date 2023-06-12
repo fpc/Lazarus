@@ -22,7 +22,6 @@
     TFPImageCanvas versions, making the interface smoother for its users
 
   Dont use anything from the LCL here as this unit should be kept strictly independent
-  only LCLProc for DebugLn is allowed, but only during debuging
 }
 unit LazCanvas;
 
@@ -43,7 +42,7 @@ uses
   // LCL
   IntfGraphics, LazRegions
   {$if defined(lazcanvas_debug) or defined(lazcanvas_profiling)}
-  , LazSysUtils, LCLProc
+  , LazSysUtils, LazLoggerBase
   {$endif}
   ;
 

@@ -39,8 +39,8 @@ interface
 uses
   Classes, SysUtils, Types,
   // LCL
-  LResources, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons, ExtCtrls,
-  Spin, ComCtrls, LCLType, LCLPlatformDef, InterfaceBase, Printers, LCLProc,
+  Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons, ExtCtrls,
+  Spin, ComCtrls, LCLType, LCLPlatformDef, InterfaceBase, Printers,
   // Printers
   Printer4LazStrConst, OsPrinters, CUPSDyn;
 

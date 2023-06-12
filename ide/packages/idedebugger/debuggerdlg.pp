@@ -39,9 +39,9 @@ interface
 uses
   Classes,
   // LCL
-  Forms, Controls, LCLProc,
+  Forms, Controls,
   // LazUtils
-  LazFileUtils, LazLoggerBase,
+  LazFileUtils, LazLoggerBase, LazTracer,
   // IdeIntf
   IDEImagesIntf, IDECommands,
   // DebuggerIntf

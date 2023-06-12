@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLProc, LCLType, StdCtrls, Controls, ExtCtrls, Graphics, ComCtrls, Spin,
+  LCLType, StdCtrls, Controls, Graphics, ComCtrls, Spin,
   // LazControls
   DividerBevel,
   // SynEdit

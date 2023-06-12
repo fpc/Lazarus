@@ -14,10 +14,10 @@ unit customdrawnextras;
 interface
 
 uses
-  Classes, SysUtils, Graphics, Controls, LCLType, LCLIntf, IntfGraphics,
-  Math, types, contnrs, componenteditors, LMessages, Messages,
-  LCLProc, PropEdits, ExtCtrls, ImgList, Forms, Menus, LResources,
+  Classes, SysUtils, Math, Types, Contnrs,
+  Graphics, Controls, ExtCtrls, ImgList, Forms, Menus, LCLType,
   customdrawncontrols,
+  componenteditors, PropEdits,
   // fpimage
   fpcanvas, fpimgcanv, fpimage
   {$ifdef CUSTOMDRAWN_USE_FREETYPE}

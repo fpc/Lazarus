@@ -32,9 +32,9 @@ interface
 
 uses
   // LCL
-  LCLProc, StdCtrls, ExtCtrls, Spin,
+  StdCtrls, ExtCtrls, Spin,
   // SynEdit
-  SynEdit, SynEditTextTrimmer, SynEditTypes,
+  SynEditTextTrimmer, SynEditTypes,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, DividerBevel,
   // IDE

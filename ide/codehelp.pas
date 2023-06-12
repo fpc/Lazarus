@@ -55,9 +55,11 @@ uses
   // IDEIntf
   IDECommands, IDEMsgIntf, MacroIntf, PackageIntf, LazHelpIntf, ProjectIntf,
   IDEDialogs, IDEHelpIntf, LazIDEIntf, IDEExternToolIntf,
+  // IdeConfig
+  EnvironmentOpts, TransferMacros,
   // IDE
-  EditorOptions, LazarusIDEStrConsts, IDEProcs, PackageDefs, EnvironmentOpts,
-  TransferMacros, PackageSystem, DialogProcs, KeyMapping, SearchPathProcs;
+  EditorOptions, LazarusIDEStrConsts, IDEProcs, PackageDefs, PackageSystem,
+  DialogProcs, KeyMapping, SearchPathProcs;
 
 const
   IDEProjectName = 'Lazarus';

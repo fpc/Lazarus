@@ -24,7 +24,8 @@ unit Spin;
 interface
 
 uses
-  Types, Classes, Controls, SysUtils, LCLType, LCLProc, StdCtrls, Math;
+  Types, Classes, SysUtils, Math,
+  Controls, LCLType, StdCtrls;
 
 type
   { TCustomFloatSpinEdit }

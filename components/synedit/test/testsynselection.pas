@@ -19,7 +19,7 @@ interface
 uses
   Classes, SysUtils, testregistry, TestBase, Forms,
   SynEdit, SynEditTypes, SynEditTextTrimmer, SynEditKeyCmds,
-  LCLType, LCLProc;
+  LCLType, LazLoggerBase;
 
 type
 

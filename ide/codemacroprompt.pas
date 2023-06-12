@@ -31,10 +31,12 @@ unit CodeMacroPrompt;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
+  Classes, SysUtils,
+  Forms, Controls, Graphics, Dialogs,
+  LazUTF8, LazLoggerBase,
   BasicCodeTools, CodeToolManager,
   SynEditAutoComplete, SynPluginTemplateEdit, SynPluginSyncronizedEditBase, SynEdit, SynEditTypes,
-  LazIDEIntf, SrcEditorIntf, LazUTF8;
+  LazIDEIntf, SrcEditorIntf;
 
 type
   TCodeMacroPromptDlg = class(TForm)

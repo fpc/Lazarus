@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  Graphics, Dialogs, StdCtrls, Spin, LCLType, Controls, LCLProc,
+  Graphics, Dialogs, StdCtrls, Spin, LCLType, Controls,
   // SynEdit
   SynEdit, SynEditMouseCmds, SynGutterLineNumber, SynGutterLineOverview, SynGutter, SynEditTypes,
   // IdeIntf

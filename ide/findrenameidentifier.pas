@@ -33,18 +33,19 @@ uses
   // RTL + FCL
   Classes, SysUtils, Laz_AVL_Tree,
   // LCL
-  LCLProc, Forms, Controls, Dialogs, StdCtrls, ExtCtrls, ComCtrls, ButtonPanel,
-  LclIntf,
+  Forms, Controls, Dialogs, StdCtrls, ExtCtrls, ComCtrls, ButtonPanel, LclIntf,
   // CodeTools
-  FileProcs, CTUnitGraph, CodeTree, CodeCache, CodeToolManager, BasicCodeTools,
+  CTUnitGraph, CodeTree, CodeCache, CodeToolManager, BasicCodeTools,
   // LazUtils
-  LazFileUtils, LazFileCache, laz2_DOM, LazStringUtils, AvgLvlTree,
+  LazFileUtils, LazFileCache, laz2_DOM, LazStringUtils, AvgLvlTree, LazLoggerBase,
   // IdeIntf
   IdeIntfStrConsts, LazIDEIntf, IDEWindowIntf, SrcEditorIntf, PackageIntf,
   IDEDialogs, InputHistory,
+  // LazConfig
+  TransferMacros,
   // IDE
   LazarusIDEStrConsts, IDEProcs, MiscOptions, DialogProcs,
-  SearchResultView, CodeHelp, TransferMacros;
+  SearchResultView, CodeHelp;
 
 type
 

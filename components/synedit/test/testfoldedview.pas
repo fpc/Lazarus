@@ -12,7 +12,7 @@ interface
 
 uses
   Classes, SysUtils, math, testregistry, TestBase, TestHighlightPas, Forms,
-  LCLProc, SynEdit, SynHighlighterPas, SynEditFoldedView,
+  LazLoggerBase, SynEdit, SynHighlighterPas, SynEditFoldedView,
   SynEditHighlighterFoldBase, SynGutterCodeFolding, SynEditKeyCmds,
   SynEditTypes, SynEditMiscProcs;
 

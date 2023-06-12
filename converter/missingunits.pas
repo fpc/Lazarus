@@ -34,10 +34,7 @@ uses
   // FCL
   Classes, SysUtils,
   // LCL
-  LCLProc, LResources, Forms, Controls, Graphics, Dialogs, Buttons, StdCtrls,
-  CheckLst, Menus, ExtCtrls,
-  // LazUtils
-  FileUtil,
+  Forms, Controls, Graphics, Dialogs, Buttons, StdCtrls, CheckLst, Menus, ExtCtrls,
   // CodeTools
   DefineTemplates,
   // IdeIntf

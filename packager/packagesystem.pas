@@ -61,11 +61,12 @@ uses
   IDEDialogs, IDEMsgIntf, LazIDEIntf,
   // Package registration
   LazarusPackageIntf,
+  // IdeConfig
+  EnvironmentOpts, LazConf, TransferMacros,
   // IDE
-  LazarusIDEStrConsts, IDECmdLine, EnvironmentOpts, IDEProcs, LazConf,
-  TransferMacros, DialogProcs, IDETranslations, CompilerOptions,
-  SearchPathProcs, PackageLinks, PackageDefs, ComponentReg, FppkgHelper,
-  PkgSysBasePkgs;
+  LazarusIDEStrConsts, IDECmdLine, IDEProcs, DialogProcs, IDETranslations,
+  CompilerOptions, SearchPathProcs, PackageLinks, PackageDefs, ComponentReg,
+  FppkgHelper, PkgSysBasePkgs;
 
 const
   MakefileCompileVersion = 2;

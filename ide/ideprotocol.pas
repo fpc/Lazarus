@@ -33,13 +33,11 @@ interface
 
 uses
   Classes, SysUtils,
-  // LCL
-  LCLProc,
   // LazUtils
-  LazConfigStorage, LazFileUtils,
+  LazConfigStorage, LazFileUtils, LazLoggerBase,
   // IdeIntf
   BaseIDEIntf,
-  // IDE
+  // IdeConfig
   LazConf;
 
 const

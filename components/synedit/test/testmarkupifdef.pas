@@ -5,7 +5,7 @@ unit TestMarkupIfDef;
 interface
 
 uses
-  Classes, SysUtils, testregistry, TestBase, TestHighlightFoldBase, LCLProc,
+  Classes, SysUtils, testregistry, TestBase, TestHighlightFoldBase, LazLoggerBase,
   SynEdit, SynEditMarkupIfDef, SynHighlighterPas, SynEditHighlighterFoldBase,
   SynEditMiscClasses, SynEditFoldedView;
 

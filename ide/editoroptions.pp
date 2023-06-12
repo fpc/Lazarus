@@ -42,9 +42,9 @@ uses
   // RTL, FCL
   Classes, SysUtils, typinfo, resource,
   // LCL
-  Graphics, LCLProc, LResources, Forms, Dialogs, ComCtrls, LCLType, Controls,
+  Graphics, LResources, Forms, Dialogs, ComCtrls, LCLType, Controls,
   // LazUtils
-  FileUtil, LazFileUtils, LazUTF8, LazClasses, Laz2_XMLCfg, LazStringUtils,
+  FileUtil, LazFileUtils, LazUTF8, LazClasses, Laz2_XMLCfg, LazStringUtils, LazLoggerBase,
   // Synedit
   SynEdit, SynEditAutoComplete, SynEditKeyCmds, SynEditTypes,
   SynEditMiscClasses, SynBeautifier, SynEditTextTrimmer, SynEditMouseCmds,

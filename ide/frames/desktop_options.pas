@@ -27,9 +27,9 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  Forms, StdCtrls, Dialogs, LCLProc, ExtCtrls, Spin,
+  Forms, StdCtrls, Dialogs, ExtCtrls, Spin,
   // LazUtils
-  FileUtil, LazUTF8,
+  FileUtil, LazUTF8, LazLoggerBase,
   // LazControls
   DividerBevel,
   // IdeIntf

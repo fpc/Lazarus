@@ -46,10 +46,10 @@ interface
 uses
   Classes, SysUtils, Types, Character,
   // LCL
-  LCLProc, LCLIntf, LCLType, LMessages, Graphics, Forms,
+  LCLIntf, LCLType, LMessages, Graphics, Forms,
   Controls, StdCtrls, ExtCtrls, Menus, Themes,
   // LazUtils
-  LazUTF8,
+  LazUTF8, LazLoggerBase,
   // SynEdit
   SynEditMiscProcs, SynEditKeyCmds, SynEdit, SynEditTypes, SynEditPlugins;
 

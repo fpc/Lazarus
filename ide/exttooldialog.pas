@@ -38,14 +38,11 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, LCLType, LCLProc, Controls, Forms,
-  Buttons, StdCtrls, ComCtrls, Dialogs, ExtCtrls, ButtonPanel, Menus,
-  FileProcs, FileUtil,
-  IDEExternToolIntf, IDEImagesIntf, IDEDialogs, IDEHelpIntf, IDECommands,
-  ProjectIntf,
-  EnvironmentOpts,
-  ExtToolEditDlg, KeyMapping, TransferMacros, IDEProcs, LazFileUtils,
-  CompilerOptions,
+  Classes, SysUtils,
+  Controls, Forms, StdCtrls, ComCtrls, Dialogs, ButtonPanel, Menus,
+  FileUtil,
+  IDEImagesIntf, IDEDialogs, IDEHelpIntf, IDECommands,
+  ExtToolEditDlg, TransferMacros,
   IdeIntfStrConsts, LazarusIDEStrConsts, IDEOptionDefs, EditorOptions;
 
 const

@@ -40,10 +40,11 @@ uses
   // Codetools
   DefineTemplates,
   // IdeIntf
-  IDEImagesIntf, IDEHelpIntf, IDEDialogs,
+  IdeIntfStrConsts, IDEImagesIntf, IDEHelpIntf, IDEDialogs,
+  // IdeConfig
+  EnvironmentOpts, TransferMacros, IdeXmlConfigProcs,
   // IDE
-  LazarusIDEStrConsts, IdeIntfStrConsts, IDEProcs, TransferMacros, EnvironmentOpts,
-  IdeXmlConfigProcs;
+  LazarusIDEStrConsts, IDEProcs;
 
 type
 

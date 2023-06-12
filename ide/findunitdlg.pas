@@ -34,8 +34,11 @@ unit FindUnitDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, ExtCtrls,
-  StdCtrls, ComCtrls, LazFileUtils, Laz2_XMLCfg, LazFileCache,
+  Classes, SysUtils,
+  // LCL
+  Forms, Controls, ExtCtrls, StdCtrls, ComCtrls,
+  // LazUtils
+  LazFileUtils, Laz2_XMLCfg, LazFileCache, LazLoggerBase,
   // codetools
   CodeToolsStrConsts, CodeCache, CodeToolManager,
   // IDEIntf

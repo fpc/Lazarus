@@ -5,10 +5,13 @@ unit EditorFileManager;
 interface
 
 uses
-  Classes, sysutils, Forms, Controls, CheckLst, ButtonPanel, StdCtrls, Buttons,
-  ExtCtrls, Menus, LCLProc, LCLType, IDEImagesIntf, LazIDEIntf, IDEHelpIntf,
-  SrcEditorIntf, IDEWindowIntf, SourceEditor, LazarusIDEStrConsts,
-  ListFilterEdit, IDEOptionDefs;
+  Classes, sysutils,
+  Forms, Controls, CheckLst, ButtonPanel, StdCtrls, Buttons, ExtCtrls, Menus, LCLType,
+  LazLoggerBase,
+  ListFilterEdit,
+  IDEImagesIntf, LazIDEIntf, IDEHelpIntf, SrcEditorIntf, IDEWindowIntf,
+  IDEOptionDefs,
+  SourceEditor, LazarusIDEStrConsts;
 
 type
 

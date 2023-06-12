@@ -32,15 +32,15 @@ interface
 uses
   Classes, SysUtils, RegExpr,
   // LCL
-  LCLProc, Forms, Controls, Graphics, Dialogs, StdCtrls, ButtonPanel,
+  Forms, Controls, Graphics, Dialogs, StdCtrls, ButtonPanel,
   // LazUtils
-  FileUtil, LazFileUtils, Laz2_XMLCfg, LazStringUtils,
+  FileUtil, LazFileUtils, Laz2_XMLCfg, LazStringUtils, LazLoggerBase,
   // IdeIntf
   IdeIntfStrConsts, IDEWindowIntf, IDEHelpIntf, IDEDialogs, InputHistory,
   // IdeConfig
-  RecentListProcs, LazConf, EnvironmentOpts,
+  RecentListProcs, LazConf, EnvironmentOpts, TransferMacros,
   // IDE
-  LazarusIDEStrConsts, TransferMacros, ShowDeletingFilesDlg;
+  LazarusIDEStrConsts, ShowDeletingFilesDlg;
 
 type
 

@@ -37,16 +37,17 @@ interface
 
 uses
   Classes, SysUtils,
+  {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
   // LCL
-  LCLProc, LResources, Forms, Controls, Dialogs, ComCtrls,
+  LResources, Dialogs, ComCtrls,
   // LazUtils
-  FileUtil, LazFileUtils, LazFileCache, Laz2_XMLCfg,
+  FileUtil, LazFileUtils, LazFileCache, Laz2_XMLCfg, LazLoggerBase,
   // CodeTools
-  FileProcs, CodeToolsConfig, CodeCache, CodeToolManager,
+  CodeToolsConfig, CodeCache, CodeToolManager,
   // IdeIntf
   LazIDEIntf, IDEDialogs,
   // IDE
-  IDEProcs, LazarusIDEStrConsts;
+  LazarusIDEStrConsts;
 
 type
   // load buffer flags

@@ -50,8 +50,10 @@ uses
   FileProcs,
   // IdeIntf
   IdeIntfStrConsts, IDEExternToolIntf, IDEHelpIntf, PropEdits, IDEDialogs, IDECommands, IDEUtils,
+  // IdeConfig
+  TransferMacros, EnvironmentOpts,
   // IDE
-  TransferMacros, LazarusIDEStrConsts, EnvironmentOpts, KeyMapping;
+  LazarusIDEStrConsts, KeyMapping;
 
 const
   ExternalToolOptionsVersion = 3;

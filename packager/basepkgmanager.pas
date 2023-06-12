@@ -43,9 +43,13 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  TypInfo, Classes, SysUtils, Forms, LazFileUtils, LCLProc, ComCtrls,
-  LazIDEIntf, PackageIntf, MenuIntf,
-  IdeIntfStrConsts, LazarusIDEStrConsts, EnvironmentOpts,
+  TypInfo, Classes, SysUtils,
+  LazFileUtils, LazLoggerBase,
+  Forms, ComCtrls,
+  PackageIntf,
+  LazIDEIntf, MenuIntf, IdeIntfStrConsts,
+  EnvironmentOpts,
+  LazarusIDEStrConsts,
   CompilerOptions, PackageDefs, PackageSystem, Project;
 
 type

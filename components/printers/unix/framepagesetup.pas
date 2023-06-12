@@ -15,8 +15,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLIntf, LCLProc, LResources, Controls, Graphics, Forms, ExtCtrls, StdCtrls,
-  Spin, Printers,
+  Graphics, Forms, ExtCtrls, StdCtrls, Spin, Printers,
   // Printers
   CupsLCL, Printer4LazStrConst;
 

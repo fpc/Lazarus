@@ -17,8 +17,7 @@ interface
 uses
   Classes, SysUtils, Types, Math,
   // LCL
-  Controls, StdCtrls, Graphics, ActnList, Forms,
-  LCLIntf, LMessages, LCLProc, LCLType, Themes,
+  Controls, StdCtrls, Graphics, ActnList, Forms, LCLIntf, LMessages, LCLType, Themes,
   // LazUtils
   LazMethodList;
 

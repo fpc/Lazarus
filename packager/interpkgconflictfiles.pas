@@ -63,9 +63,11 @@ uses
   FPCAdds, LazFileUtils, LazFileCache, LazTracer,
   // IDEIntf
   ProjectIntf, CompOptsIntf, IDEWindowIntf, LazIDEIntf, IDEMsgIntf, IDEExternToolIntf,
+  // IdeConfig
+  EnvironmentOpts, TransferMacros,
   // IDE
-  CompilerOptions, EnvironmentOpts, IDEProcs, DialogProcs, LazarusIDEStrConsts,
-  TransferMacros, SearchPathProcs, PackageDefs, PackageSystem;
+  CompilerOptions, IDEProcs, DialogProcs, LazarusIDEStrConsts,
+  SearchPathProcs, PackageDefs, PackageSystem;
 
 type
   TPGInterPkgOwnerInfo = class

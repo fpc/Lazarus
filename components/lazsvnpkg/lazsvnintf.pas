@@ -23,7 +23,9 @@ unit LazSVNIntf;
 interface
 
 uses
-  SysUtils, LCLtype, LResources, LCLProc;
+  SysUtils,
+  LazLoggerBase,
+  LCLtype, LResources;
 
 procedure ProcSVNLog(Sender: TObject);
 procedure ProcSVNCommit(Sender: TObject);

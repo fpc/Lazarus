@@ -25,12 +25,11 @@ unit editor_color_options;
 interface
 
 uses
-  Classes, Controls, math, types, typinfo, sysutils,
+  Classes, Controls, Math, Types, typinfo, sysutils,
   // LazUtils
-  Laz2_XMLCfg, LazFileUtils, LazUTF8,
+  Laz2_XMLCfg, LazFileUtils, LazUTF8, LazLoggerBase,
   // LCL
-  LCLProc, LCLType, LCLIntf, StdCtrls, ExtCtrls, Graphics, ComCtrls, Dialogs,
-  Menus, Buttons,
+  LCLType, LCLIntf, StdCtrls, ExtCtrls, Graphics, ComCtrls, Dialogs, Menus,
   // LazControls
   DividerBevel,
   // SynEdit

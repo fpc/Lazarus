@@ -5,7 +5,7 @@ unit TestHighlightMulti;
 interface
 
 uses
-  Classes, SysUtils, math, LCLProc, testregistry, TestBase, Forms, SynEditHighlighter,
+  Classes, SysUtils, Math, testregistry, TestBase, Forms, SynEditHighlighter,
   SynHighlighterMulti, SynHighlighterLFM, SynHighlighterXML, SynHighlighterPas, SynEditKeyCmds,
   LazSynEditText, SynEditTextBuffer, SynEditTypes, LazLoggerBase;
 

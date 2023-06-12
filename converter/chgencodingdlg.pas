@@ -33,7 +33,7 @@ uses
   // RTL + FCL
   Classes, SysUtils, RegExpr, Laz_AVL_Tree,
   // LCL
-  LCLProc, Forms, Controls, ExtCtrls, StdCtrls, ComCtrls, Buttons,
+  Forms, Controls, ExtCtrls, StdCtrls, ComCtrls, Buttons,
   // CodeTools
   CodeCache, CodeToolManager, FileProcs,
   // LazUtils

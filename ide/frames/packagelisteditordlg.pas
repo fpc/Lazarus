@@ -23,7 +23,7 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLType, LCLProc, Forms, Controls, Buttons, StdCtrls, Dialogs, Menus, Graphics,
+  LCLType, Forms, Controls, Buttons, StdCtrls, Dialogs, Menus, Graphics,
   ButtonPanel, Clipbrd, Grids,
   // LazUtils
   FileUtil, LazFileUtils, LazStringUtils, LazFileCache, LazUTF8,

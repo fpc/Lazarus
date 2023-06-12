@@ -18,9 +18,9 @@ uses
   // RTL, FCL
   Classes, SysUtils, XMLConf, DOM, XMLRead, XMLWrite,
   // LCL
-  LCLProc, Forms,
+  Forms,
   // LazUtils
-  LazConfigStorage, LazUTF8;
+  LazConfigStorage, LazUTF8, LazLoggerBase;
 
 type
   { TPropStorageXMLConfig }

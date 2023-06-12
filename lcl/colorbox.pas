@@ -21,7 +21,7 @@ interface
 
 uses
   LResources, SysUtils, Types, Classes,
-  LCLProc, LCLType, LCLStrConsts, Graphics, Controls, Forms, Dialogs, StdCtrls,
+  LCLType, LCLStrConsts, Graphics, Controls, Forms, Dialogs, StdCtrls,
   LazStringUtils;
 
 const

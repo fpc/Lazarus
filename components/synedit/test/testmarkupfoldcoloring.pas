@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, math, testregistry, TestBase, TestHighlightPas, Forms,
-  LCLProc, LCLType, SynEdit, SynHighlighterPas, SynEditMarkupFoldColoring,
+  LCLType, SynEdit, SynHighlighterPas, SynEditMarkupFoldColoring,
   SynEditMiscClasses, SynEditMarkup, SynEditHighlighterFoldBase;
 
 type

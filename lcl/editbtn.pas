@@ -30,10 +30,11 @@ unit EditBtn;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, LCLStrConsts, Types, LCLType,
-  LMessages, Graphics, Controls, Forms, LazFileUtils, LazUTF8, Dialogs,
-  StdCtrls, Buttons, Calendar, ExtDlgs, GroupedEdit, CalendarPopup, MaskEdit,
-  Menus, StrUtils, DateUtils, TimePopup, CalcForm, ImgList, Math;
+  Classes, SysUtils, Types, Math, StrUtils, DateUtils,
+  LazFileUtils, LazUTF8,
+  LResources, LCLStrConsts, LCLType, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Buttons, Calendar, ExtDlgs, GroupedEdit, CalendarPopup,
+  MaskEdit, Menus, TimePopup, CalcForm, ImgList;
 
 const
   NullDate: TDateTime = 29584650.5 {appr 10 x MaxDateTime};

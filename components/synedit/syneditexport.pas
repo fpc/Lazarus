@@ -48,10 +48,9 @@ unit SynEditExport;
 interface
 
 uses
-  Classes,
-  SysUtils,
+  Classes, SysUtils,
   SynEditHighlighter, SynEditTextBase, SynEditTextBuffer,
-  FileUtil, LazUTF8, FPCAdds, LCLType, LCLProc,
+  FileUtil, LazUTF8, FPCAdds, LCLType,
   Graphics, Clipbrd,
   SynEditMiscProcs, SynEditStrConst;
 

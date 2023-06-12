@@ -26,7 +26,7 @@ unit SynEditTextTabExpander;
 interface
 
 uses
-  LCLProc, Classes, SysUtils, math, LazSynEditText, SynEditTextBase;
+  Classes, SysUtils, Math, LazSynEditText, SynEditTextBase;
 
 type
 

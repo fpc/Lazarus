@@ -31,8 +31,8 @@ unit SrcEditHintFrm;
 interface
 
 uses
-  Classes, Math, SysUtils, LCLProc, LCLType, LCLIntf, Forms, Controls, Graphics,
-  ExtCtrls,
+  Classes, Math, SysUtils,
+  LCLType, LCLIntf, Forms, Controls, Graphics, ExtCtrls,
   SynEdit, SynEditKeyCmds,
   SrcEditorIntf;
   

@@ -30,10 +30,11 @@ unit IDEInfoDlg;
 interface
 
 uses
-  Classes, SysUtils, LazFileUtils, LazUTF8, FPCAdds,
+  Classes, SysUtils,
+  LazFileUtils, LazUTF8, FPCAdds, LazLoggerBase,
   CodeToolManager, DefineTemplates, LinkScanner,
   Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls,
-  LCLProc, ButtonPanel, LazHelpHTML, LazHelpIntf,
+  ButtonPanel, LazHelpHTML, LazHelpIntf,
   IDEHelpIntf, IDEWindowIntf, LazIDEIntf, IDEExternToolIntf,
   EnvironmentOpts, AboutFrm, LazConf, LazarusIDEStrConsts, Project,
   SourceEditor, InitialSetupProc, PackageSystem, PackageDefs;

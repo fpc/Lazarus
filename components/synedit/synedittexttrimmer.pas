@@ -27,7 +27,6 @@ unit SynEditTextTrimmer;
 interface
 
 uses
-LCLProc,
   Classes, SysUtils, LazSynEditText, SynEditTextBase, SynEditTypes, SynEditHighlighter,
   SynEditPointClasses, SynEditMiscProcs;
 
