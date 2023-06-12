@@ -94,7 +94,8 @@ var
 
 procedure FindLang(var Lang: string);
 var
-  T, CurParam: string;
+  LangID: TLanguageID;
+  CurParam: string;
   i: integer;
 begin
   if Lang = '' then
@@ -115,7 +116,10 @@ begin
     end;
 
   if Lang = '' then
-    LazGetLanguageIDs(Lang, T);
+  begin
+    LangID := GetLanguageID;
+    Lang := LangID.LanguageID;
+  end;
 end;
 
 function FindLocaleFileName(LCExt, LangID, Dir, LocaleFileName: string; out FoundLang: string): string;
