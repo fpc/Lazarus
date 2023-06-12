@@ -604,7 +604,7 @@ value.
 <p>
 <var>UTF8CodepointToUnicode</var> is a <var>Cardinal</var> function used to 
 convert a UTF-8-encoded character to its representation as a unique Unicode 
-U+XXXX hexadecimal character value. For example:  The letter 'A' (Decimal 65) 
+U+XXXX hexadecimal character value. For example: The letter 'A' (Decimal 65) 
 is expressed in Unicode as U+0041.
 </p>
 <p>
@@ -2478,7 +2478,7 @@ String with a value used in the comparison.
 
 <element name="TConvertResult">
 <short>
-Indicates the result from UTF-8 &lt;-&gt; UTF-16  conversions.
+Indicates the result from UTF-8 &lt;-&gt; UTF-16 conversions.
 </short>
 <descr>
 <p>
@@ -2836,7 +2836,9 @@ Unfinished source char has occurred
 </element>
 
 <element name="LazGetLanguageIDs">
-<short>Gets the Language ID and a fallback value for the platform.</short>
+<short>
+Gets the Language ID and a fallback value for the platform.
+</short>
 <descr>
 <p>
 <var>LazGetLanguageIDs</var> is a procedure used to get the language 
@@ -2844,22 +2846,25 @@ identifier and a fallback value. The values are returned in the
 <var>Lang</var> and <var>FallbackLang</var> variable parameters.
 </p>
 <p>
-The implementation for the routine is platform or operating-system specific. 
-For the Darwin platform, localizations in the Main bundle are checked for 
-language and fallback values. For other platforms, the 
-<var>GetLanguageIDs</var> routine in the <file>GetText</file> unit is called
-is called to get the default Language Code ID. The value in FallbackLang 
-includes the country code appended to the value in Lang.
+LazGetLanguageIDs calls the <var>GetLanguageIDs</var> routine in the 
+<file>GetText</file> unit to get the default Language Code ID. If the return 
+value in Lang includes country or encoding information, it is removed. On the 
+Linux platform, the language identifier can be in the form 'ru_RU.utf8'. The 
+encoding suffix can prevent loading of translations files in the form 
+'project1.ru_RU.po'. To prevent this situation, the encoding suffix is removed 
+from the Lang argument value. It contains only the text prior to the initial 
+'.' character found in the language identifier.
 </p>
 <p>
-On the Linux platform, the language identifier can be in the form 
-'ru_RU.utf8'. The encoding suffix can prevent loading of translations files in 
-the form 'project1.ru_RU.po'. To prevent this situation, the encoding suffix 
-is removed from the Lang argument value. It contains only the value prior to 
-the initial '.' character found in the language identifier.
+LazGetLanguageIDs is called during execution of routines in the 
+<file>lcltranslator.pas</file> unit in the LCL, like 
+TranslateUnitResourceStringsEx and SetDefaultLang.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="#lcl.lcltranslator.TranslateUnitResourceStringsEx">TranslateUnitResourceStringsEx</link>
+<link id="#lcl.lcltranslator.SetDefaultLang">SetDefaultLang</link>
+</seealso>
 </element>
 <element name="LazGetLanguageIDs.Lang">
 <short>Language code for the platform.</short>
