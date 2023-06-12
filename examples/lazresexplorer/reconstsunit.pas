@@ -4,7 +4,7 @@ unit reConstsUnit;
 
 interface
 
-uses gettext, translations, LCLPlatformDef, InterfaceBase;
+uses Translations, LCLPlatformDef, InterfaceBase;
 
 resourcestring
   sResourceExplorer = 'Resource explorer';
@@ -58,10 +58,10 @@ end;
 
 procedure TranslateResStrings;
 var
-  Lang, FallbackLang: String;
+  LangID: TLanguageID;
 begin
-  GetLanguageIDs(Lang,FallbackLang); // in unit gettext
-  TranslateUnitResourceStrings('reConstsUnit','languages'+DirectorySeparator+'resexplorer.%s.po', Lang,FallbackLang);
+  LangID := GetLanguageID;
+  TranslateUnitResourceStrings('reConstsUnit','languages'+DirectorySeparator+'resexplorer.%s.po', LangID.LanguageID, LangID.LanguageCode);
 end;
 
 initialization
