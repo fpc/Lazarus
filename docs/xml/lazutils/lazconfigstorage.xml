@@ -26,6 +26,7 @@ Author: Mattias Gaertner
 <element name="Laz_AVL_Tree"/>
 <element name="LazLoggerBase"/>
 <element name="AvgLvlTree"/>
+<element name="LazStringUtils"/>
 
 <element name="TConfigStorage">
 <short>
@@ -867,6 +868,67 @@ String map where the names and values for configuration items stored in the rout
 <short/>
 </element>
 <element name="SaveStringToStringTree.Tree">
+<short/>
+</element>
+
+<!-- TODO: Added in 67c1c587. -->
+<element name="DateAsCfgStrFormat">
+<short/>
+<descr/>
+<version>
+Added in LazUtils version 2.4.0.
+</version>
+<seealso/>
+</element>
+
+<!-- TODO: Added in 67c1c587. -->
+<element name="DateTimeAsCfgStrFormat">
+<short/>
+<descr/>
+<version>
+Added in LazUtils version 2.4.0.
+</version>
+<seealso/>
+</element>
+
+<!-- TODO: Added in 67c1c587. -->
+<element name="DateToCfgStr">
+<short/>
+<descr/>
+<version>
+Added in LazUtils version 2.4.0.
+</version>
+<seealso/>
+</element>
+<element name="DateToCfgStr.Result">
+<short/>
+</element>
+<element name="DateToCfgStr.Date">
+<short/>
+</element>
+<element name="DateToCfgStr.AFormat">
+<short/>
+</element>
+
+<!-- TODO: Added in 67c1c587. -->
+<element name="CfgStrToDate">
+<short/>
+<descr/>
+<version>
+Added in LazUtils version 2.4.0.
+</version>
+<seealso/>
+</element>
+<element name="CfgStrToDate.Result">
+<short/>
+</element>
+<element name="CfgStrToDate.s">
+<short/>
+</element>
+<element name="CfgStrToDate.Date">
+<short/>
+</element>
+<element name="CfgStrToDate.AFormat">
 <short/>
 </element>
 
