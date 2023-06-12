@@ -4107,8 +4107,7 @@ end;
 function TLinkScanner.SearchIncludeFile(AFilename: string; out
   NewCode: TSourceLog; var MissingIncludeFile: TMissingIncludeFile): boolean;
 var
-  PathStart, PathEnd: integer;
-  IncludePath, CurPath: string;
+  IncludePath: string;
   ExpFilename: string;
   HasPathDelims: Boolean;
 
@@ -4135,8 +4134,9 @@ var
 
   function Search(const RelFilename: string): boolean;
   var
-    IsVirtualUnit, AnyCase: Boolean;
-    Dir, IncFile: String;
+    IsVirtualUnit: Boolean;
+    Dir, CurPath: String;
+    PathStart, PathEnd: integer;
   begin
     Dir:=ExtractFilePath(FMainSourceFilename);
     IsVirtualUnit:=not FilenameIsAbsolute(Dir);
@@ -4157,13 +4157,32 @@ var
     if not HasPathDelims then begin
       // file without path -> search in inc paths
 
-      AnyCase:=Values.IsDefined('PAS2JS');
+      if MissingIncludeFile=nil then
+        IncludePath:=Values.Variables[ExternalMacroStart+'INCPATH']
+      else
+        IncludePath:=MissingIncludeFile.IncludePath;
 
-      IncFile:=DirectoryCachePool.FindIncludeFileInDirectory(Dir,AFilename,AnyCase);
-      if IncFile<>'' then begin
-        NewCode:=FOnLoadSource(Self,ExpFilename,true);
-        Result:=(NewCode<>nil);
-        exit;
+      {$IFDEF VerboseIncludeSearch}
+      DebugLn('TLinkScanner.SearchIncludeFile IncPath="',IncludePath,'"');
+      {$ENDIF}
+      PathStart:=1;
+      PathEnd:=PathStart;
+      while PathEnd<=length(IncludePath) do begin
+        if IncludePath[PathEnd]=';' then begin
+          if PathEnd>PathStart then begin
+            CurPath:=TrimFilename(copy(IncludePath,PathStart,PathEnd-PathStart));
+            Result:=SearchPath(CurPath,RelFilename);
+            if Result then exit;
+          end;
+          PathStart:=PathEnd+1;
+          PathEnd:=PathStart;
+        end else
+          inc(PathEnd);
+      end;
+      if PathEnd>PathStart then begin
+        CurPath:=TrimFilename(copy(IncludePath,PathStart,PathEnd-PathStart));
+        Result:=SearchPath(CurPath,RelFilename);
+        if Result then exit;
       end;
 
       // then search the include file in directories defines in fpc.cfg (by -Fi option)

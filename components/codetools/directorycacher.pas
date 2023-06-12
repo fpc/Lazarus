@@ -52,7 +52,7 @@ uses
 { $DEFINE ShowTriedFiles}
 { $DEFINE ShowTriedUnits}
 { $DEFINE DebugDirCacheFindUnitSource}
-{$DEFINE DebugDirCacheFindIncFile}
+{ $DEFINE DebugDirCacheFindIncFile}
 
 {$ifdef Windows}
 {$define CaseInsensitiveFilenames}
