@@ -2087,7 +2087,7 @@ begin
     PackageType:=lptDesignTime;
     Installed:=pitStatic;
     CompilerOptions.UnitOutputDirectory:='';
-    Translated:=SystemLanguageID1;
+    Translated:=SystemLanguageID.LanguageID;
 
     // add unit paths
     UsageOptions.UnitPath:='$(PkgOutDir)';

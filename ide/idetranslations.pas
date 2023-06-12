@@ -98,7 +98,7 @@ procedure UpdateTranslatedPoFile(const BasePOFile: TPOFile; TranslatedFilename: 
 
 var
   LazarusTranslations: TLazarusTranslations = nil; // see CollectTranslations
-  SystemLanguageID1, SystemLanguageID2: string;
+  SystemLanguageID: TLanguageID;
 
 implementation
 
@@ -500,8 +500,8 @@ begin
   if LazarusTranslations=nil then
     CollectTranslations(LazarusDir);
   if CustomLang='' then begin
-    Lang:=SystemLanguageID1;
-    FallbackLang:=SystemLanguageID2;
+    Lang:=SystemLanguageID.LanguageID;
+    FallbackLang:=SystemLanguageID.LanguageCode;
   end else begin
     Lang:=CustomLang;
     FallbackLang:='';
@@ -569,7 +569,7 @@ end;
 
 initialization
   LazarusTranslations:=nil;
-  LazGetLanguageIDs(SystemLanguageID1,SystemLanguageID2);
+  SystemLanguageID:=GetLanguageID;
 
 finalization
   FreeAndNil(LazarusTranslations);

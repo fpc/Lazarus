@@ -3167,8 +3167,8 @@ begin
 
   Language:=EnvironmentOptions.LanguageID;
   if Language='' then begin
-    Lang:=SystemLanguageID1;
-    FallbackLang:=SystemLanguageID2;
+    Lang:=SystemLanguageID.LanguageID;
+    FallbackLang:=SystemLanguageID.LanguageCode;
   end else begin
     Lang:=Language;
     FallbackLang:='';
