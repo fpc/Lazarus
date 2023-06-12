@@ -28168,60 +28168,87 @@ procedure.
 
 <element name="TTreeNode.DefaultTreeViewSort">
 <short>
-<var>DefaultTreeViewSort</var> - returns result of string comparison between 
-names of Node1 and Node2
+Default routine used to returns a numeric value with the sort order for the 
+specified tree nodes.
 </short>
 <descr>
 <p>
-<var>DefaultTreeViewSort</var> - returns result of string comparison between 
-names of Node1 and Node2.
+<var>DefaultTreeViewSort</var> is the default routine used to compare tree 
+nodes to determine their sort order. DefaultTreeViewSort is used in the 
+CustomSort method when a another comparison routine has not been specified in 
+the argument for the method. It is passed as an argument to the Sort routine 
+in the implementation section for the unit.
 </p>
 <p>
-<var>DefaultTreeViewSort</var> compares the text of two TreeNodes and returns 
-the following result:
+DefaultTreeViewSort checks for an assigned OnCompare event handler in the 
+TreeView control for the nodes. When assigned, it is signalled to compare the 
+specified nodes to determine the return value for the method. If TreeView or 
+its OnCompare handler have not been assigned, the text for the nodes in Node1 
+and Node2 are compared to get the return value. The return values contains 
+the following:
 </p>
 <dl>
 <dt>&lt; 0</dt>
-<dd>if <var>Node1.Text&lt;Node2.Text</var>.</dd>
+<dd>
+Node1.Text occurs before Node2.Text in the sort order.
+</dd>
 <dt>0</dt>
-<dd>if <var>Node1.Text=Node2.Text</var>.</dd>
+<dd>
+Node1.Text and Node2.Text have the same value in the sort order.
+</dd>
 <dt>&gt; 0</dt>
-<dd>if <var>Node1.Text&gt;Node2.Text</var>.</dd>
+<dd>
+Node1.Text occurs after Node2.Text in the sort order.
+</dd>
 </dl>
 <p>
-The comparison takes into account ANSI characters, i.e. it takes care of 
-strange accented characters. Contrary to AnsiCompareText, the comparison is 
-case sensitive.
+On UNIX-like platforms, the CompareStr routine is called to compare the values 
+for the Text in the nodes. The comparison is case-sensitive. All other 
+platforms call the AnsiCompareStr routine to compare the Text values. 
+AnsiCompareStr handles ANSI characters which include accented characters. The 
+comparison is case-sensitive.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TTreeNode.CustomSort"/>
+<link id="TTreeNodeCompare"/>
+<link id="TCustomTreeview.OnCompare"/>
+</seealso>
 </element>
 <element name="TTreeNode.DefaultTreeViewSort.Result">
-<short/>
+<short>
+Numeric value with the relative sort order for the compared nodes.
+</short>
 </element>
 <element name="TTreeNode.DefaultTreeViewSort.Node1">
-<short/>
+<short>
+Tree node compared in the method.
+</short>
 </element>
 <element name="TTreeNode.DefaultTreeViewSort.Node2">
-<short/>
+<short>
+Tree node compared in the method.
+</short>
 </element>
 
 <element name="TTreeNode.DisplayExpandSignLeft">
 <short>
-<var>DisplayExpandSignLeft</var> - returns the position of the left edge of 
-the expand / collapse indicator.
+Returns the position for the left edge of the expand / collapse indicator.
 </short>
 <descr/>
 <seealso/>
 </element>
 <element name="TTreeNode.DisplayExpandSignLeft.Result">
-<short/>
+<short>
+Horizontal coordinate where the left edge of the expand / collapse indicator 
+is located.
+</short>
 </element>
 
 <element name="TTreeNode.DisplayExpandSignRect">
 <short>
-<var>DisplayExpandSignRect</var> - returns the coordinates of the rectangle 
-within which the expand sign are displayed.
+Returns the coordinates for the rectangle within which the expand / collapse 
+indicator is displayed.
 </short>
 <descr/>
 <seealso/>
@@ -28234,8 +28261,8 @@ Rectangle with the display area for the expand / collapse indicator.
 
 <element name="TTreeNode.DisplayExpandSignRight">
 <short>
-<var>DisplayExpandSignRight</var> - returns the position of the right edge of 
-the expand sign (i.e. takes into account the width of the icon etc).
+Returns the position for the right edge of the expand / collapse indicator 
+(accounting for the width of the icon, etc.).
 </short>
 <descr/>
 <seealso/>
@@ -28248,65 +28275,179 @@ Rectangle with the display area for the expand / collapse indicator.
 
 <element name="TTreeNode.DisplayIconLeft">
 <short>
-<var>DisplayIconLeft</var> - returns the position of the actual icon for the 
-expand sign (usually 1 pixel greater than <var>DisplayExpandSignLeft</var>).
+Returns the horizontal position for the left edge of the icon displayed for 
+the tree node.
 </short>
-<descr/>
+<descr>
+<p>
+The return value accounts for the state icon displayed when StateImages have 
+been assigned in the TreeView control and StateImageIndex is a valid position 
+in the image list. The return value is adjusted for the scaled width for the 
+state image and the default item spacing used on the TreeView control.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TTreeNode.DisplayIconLeft.Result">
-<short/>
+<short>
+Horizontal coordinate where the left edge of the icon for the node is 
+displayed.
+</short>
 </element>
 
 <element name="TTreeNode.DisplayRect">
 <short>
-<var>DisplayRect</var> - returns the coordinates of the rectangle containing 
-the current entry; if <var>TextOnly</var> is <b>True</b>, returns the 
-coordinates for the text.
+Returns the rectangle where the tree node is displayed on its TreeView control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>DisplayRect</var> returns the coordinates for rectangle containing 
+the content for the tree node. The Left, Top, Right, and Bottom members in the 
+return value are adjusted for the BorderWidth used on the TreeView control for 
+the node.
+</p>
+<p>
+When <var>TextOnly</var> is set to <b>True</b>, the return value contains the 
+coordinates where the text for the node is located on the TreeView control. 
+The Left and Right members in the rectangle are set to the values returned 
+from the DisplayTextLeft and DisplayTextRight methods.
+</p>
+<p>
+The return value contains an empty rectangle (with all members set to 0) if 
+TreeView has not been assigned for the node.
+</p>
+<p>
+DisplayRect is called from methods that include:
+</p>
+<ul>
+<li>TCustomTreeview.DoPaintNode</li>
+<li>TCustomTreeview.GetInsertMarkAt</li>
+</ul>
+</descr>
+<seealso>
+<link id="TTreeNode.TreeView"/>
+<link id="TCustomTreeView.DoPaintNode"/>
+<link id="TCustomTreeView.GetInsertMarkAt"/>
+<link id="#rtl.classes.TRect">TRect</link>
+</seealso>
 </element>
 <element name="TTreeNode.DisplayRect.Result">
-<short/>
+<short>
+TRect instance where the tree node is displayed on its tree view control.
+</short>
 </element>
 <element name="TTreeNode.DisplayRect.TextOnly">
-<short/>
+<short>
+Set to <b>True</b> if the rectangle should contain the display area for its 
+Text only.
+</short>
 </element>
 
 <element name="TTreeNode.DisplayStateIconLeft">
 <short>
-<var>DisplayStateIconLeft</var> - returns the position of the State Icon.
+Returns the horizontal position for the left edge of the State icon on the 
+tree node.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+The return value is set to the return value from the DisplayExpandSignRight 
+method.
+</p>
+</descr>
+<seealso>
+<link id="TTreeNode.DisplayExpandSignRight"/>
+</seealso>
 </element>
 <element name="TTreeNode.DisplayStateIconLeft.Result">
-<short/>
+<short>
+Horizontal position for the left edge of the State icon on the tree node.
+</short>
 </element>
 
 <element name="TTreeNode.DisplayTextLeft">
 <short>
-<var>DisplayTextLeft</var> - returns the position of the left edge of the 
-text.
+Returns the position for the left edge of the text on the tree node.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>DisplayTextLeft</var> is a method used to determine the horizontal 
+coordinate where the Text for the tree node is displayed. If a TCustomTreeview 
+instance has not been assigned in the tree node, the return value contains the 
+result from the DisplayIconLeft method.
+</p>
+<p>
+Values from the Images and GetImageSize in the TreeView control are used (when 
+assigned) to adjust the left edge for the Text display area. If an image 
+position has been assigned in ImageIndex or SelectedIndex, the left edge is 
+increased by the image size and the default item spacing on the TreeView
+control.
+</p>
+<p>
+DisplayTextLeft is used in TTreeNode methods like DisplayRect and 
+DisplayTextRight. It is also used in TCustomTreeView methods including 
+BeginEditing, GetHitTestInfoAt, and MouseDown.
+</p>
+</descr>
+<seealso>
+<link id="TTreeNode.Text"/>
+<link id="TTreeNode.DisplayIconLeft"/>
+<link id="TTreeNode.ImageIndex"/>
+<link id="TTreeNode.SelectedIndex"/>
+<link id="TTreeNode.TreeView"/>
+<link id="TTreeNode.DisplayRect"/>
+<link id="TTreeNode.DisplayTextRight"/>
+<link id="TCustomTreeView.Images"/>
+<link id="TCustomTreeView.GetImageSize"/>
+<link id="TCustomTreeView.BeginEditing"/>
+<link id="TCustomTreeView.GetHitTestInfoAt"/>
+<link id="TCustomTreeView.MouseDown"/>
+</seealso>
 </element>
 <element name="TTreeNode.DisplayTextLeft.Result">
-<short/>
+<short>
+Horizontal coordinate where the Text for the tree node is located.
+</short>
 </element>
 
 <element name="TTreeNode.DisplayTextRight">
 <short>
-<var>DisplayTextRight</var> - returns the position of the right edge of the 
-text.
+Returns the horizontal position for the right edge of the Text on the tree 
+node.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>DisplayTextRight</var> is a method used to determine the horizontal 
+coordinate for the right-hand edge of the Text displayed for the tree node. If 
+a TCustomTreeview instance has not been assigned in the tree node, the return 
+value contains the result from the DisplayTextLeft method. Otherwise, the 
+position is calculated using the left-hand edge for the Text, the width 
+returned from the TextWidth method in the control Canvas, and padding derived 
+from the Indent used on the TreeView control.
+</p>
+<p>
+DisplayTextRight is used in the DisplayRect method in TTreeNode. It is also 
+used in TCustomTreeView methods including GetNodeAt, GetNodeWithExpandSignAt, 
+GetHitTestInfoAt, and MouseDown.
+</p>
+</descr>
+<seealso>
+<link id="TTreeNode.Text"/>
+<link id="TTreeNode.TreeView"/>
+<link id="TTreeNode.DisplayTextLeft"/>
+<link id="TTreeNode.DisplayRect"/>
+<link id="TCustomTreeView.Indent"/>
+<link id="TCustomTreeView.GetNodeAt"/>
+<link id="TCustomTreeView.GetNodeWithExpandSignAt"/>
+<link id="TCustomTreeView.GetHitTestInfoAt"/>
+<link id="TCustomTreeView.MouseDown"/>
+<link id="#lcl.controls.TCustomControl.Canvas">TCustomControl.Canvas</link>
+<link id="#lcl.graphics.TCanvas.TextWidth">TCanvas.TextWidth</link>
+</seealso>
 </element>
 <element name="TTreeNode.DisplayTextRight.Result">
-<short/>
+<short>
+Horizontal coordinate where the Text for the tree node ends.
+</short>
 </element>
 
 <element name="TTreeNode.EditText">
@@ -28425,7 +28566,7 @@ first (or only) node at the current Level.
 <p>
 When a <var>Parent</var> node has been assigned, its <var>GetFirstChild</var> 
 method is used to get the return value. Otherwise, the internal linked list 
-for the sub-tree is used to get the previous tree node as the return value.
+for the subtree is used to get the previous tree node as the return value.
 </p>
 </descr>
 <seealso>
@@ -28487,11 +28628,13 @@ Gets the value for the Handle property.
 <descr>
 <p>
 GetHandle is a THandle function used to get the value for the Handle 
-property. It is the Handle allocated for the associated TreeView control.
+property. It is the Handle allocated for the associated TreeView control, or 
+zero (0) if the TreeView property has not been assigned for the node.
 </p>
 </descr>
 <seealso>
 <link id="TTreeNode.Handle"/>
+<link id="TTreeNode.TreeView"/>
 </seealso>
 </element>
 <element name="TTreeNode.GetHandle.Result">
@@ -28500,35 +28643,56 @@ property. It is the Handle allocated for the associated TreeView control.
 
 <element name="TTreeNode.GetLastChild">
 <short>
-Gets the last node that is a top-level child node in the subtree.
+Gets the last tree node that is a top-level child node in Items.
 </short>
 <descr/>
 <seealso/>
 </element>
 <element name="TTreeNode.GetLastChild.Result">
-<short>TTreeNode instance that is the list node in Items.</short>
+<short>
+TTreeNode instance that is the list node in Items, or <b>Nil</b> if no child 
+nodes are found.
+</short>
 </element>
 
 <element name="TTreeNode.GetLastSibling">
 <short>
 Gets the last node at the same level as the current node.
 </short>
-<descr/>
+<descr>
+<p>
+If Parent has been assigned, the return value is set to the last child node in 
+the Items for the Parent node. If the node is a top-level node (where Parent 
+is unassigned), the value from GetNextSibling is used. The return value is 
+<b>Nil</b> if a sibling node is not found for the current tree node.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TTreeNode.GetLastSibling.Result">
-<short/>
+<short>
+Last TTreeNode instance at the same level as the current node, or <b>Nil</b> 
+if a sibling node is not found.
+</short>
 </element>
 
 <element name="TTreeNode.GetLastSubChild">
 <short>
-<var>GetLastSubChild</var> - returns the last sub-child node of this parent.
+Returns the last child node or its last descendent node.
 </short>
-<descr/>
+<descr>
+<p>
+This provides access to the tree node at the deepest level for the node 
+subtree.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TTreeNode.GetLastSubChild.Result">
-<short/>
+<short>
+TTreeNode for the last child or its last descendent, or <b>Nil</b> when child 
+nodes are not found in Items.
+</short>
 </element>
 
 <element name="TTreeNode.GetLastVisibleChild">
@@ -28540,106 +28704,198 @@ Gets the last child node in Items with its Visible property set to
 <seealso/>
 </element>
 <element name="TTreeNode.GetLastVisibleChild.Result">
-<short/>
+<short>
+Last visible node in Items, or <b>Nil</b> when child nodes are not found or 
+visible.
+</short>
 </element>
 
 <element name="TTreeNode.GetLastVisibleEnabledChild">
 <short>
-Gets the last child for the current node which is visible and enabled.
+Gets the last child for the current node which is both visible and enabled.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTreeNode.GetLastChild"/>
+<link id="TTreeNode.GetPrevVisibleEnabled"/>
+<link id="TTreeNode.States"/>
+<link id="TNodeStates"/>
+</seealso>
 </element>
 <element name="TTreeNode.GetLastVisibleEnabledChild.Result">
-<short/>
+<short>
+Last child tree node with the required settings, or <b>Nil</b> when a visible 
+and enabled child node is not found.
+</short>
 </element>
 
 <element name="TTreeNode.GetNext">
 <short>
-Gets the next node in the tree.
+Gets the next node in the tree hierarchy.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Calls GetFirstChild to begin the search for the next tree node in the 
+hierarchy. If a child node is not found, the GetNextSkipChildren method is 
+called to locate the next sibling node in the tree.
+</p>
+</descr>
+<seealso>
+<link id="TTreeNode.GetFirstChild"/>
+<link id="TTreeNode.GetNextSkipChildren"/>
+</seealso>
 </element>
 <element name="TTreeNode.GetNext.Result">
-<short/>
+<short>
+TTreeNode that is a child or sibling of the current node, or <b>Nil</b> when 
+neither condition is satisfied.
+</short>
 </element>
 
 <element name="TTreeNode.GetNextChild">
 <short>
-<var>GetNextChild</var> - returns the next child node of the parent specified 
-by <var>AValue</var>.
+Returns the next child node for the parent node specified in <var>AValue</var>.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Calls GetNextSibling to get the return value for the method. Returns 
+<b>Nil</b> if AValue has not been assigned.
+</p>
+</descr>
+<seealso>
+<link id="TTreeNode.GetNextSibling"/>
+</seealso>
 </element>
 <element name="TTreeNode.GetNextChild.Result">
-<short/>
+<short>
+TTreeNode which is the first child node in the specified parent, or <b>Nil</b> 
+when a node is not assigned to AValue.
+</short>
 </element>
 <element name="TTreeNode.GetNextChild.AValue">
-<short/>
+<short>
+Tree node examined to locate its first child node.
+</short>
 </element>
 
 <element name="TTreeNode.GetNextExpanded">
 <short>
-<var>GetNextExpanded</var> - returns the next expanded node.
+Returns the next expanded node in the tree node hierarchy.
 </short>
-<descr/>
+<descr>
+<p>
+Calls GetFirstVisibleChild to start the search for the next expanded tree 
+node. If the node is assigned and its Expanded property is set to <b>True</b>, 
+it is used as the return value for the method. If a child node is not found, 
+the Parent node is searched for a visible sibling node. The return value is 
+<b>Nil</b> if neither condition is satisfied.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TTreeNode.GetNextExpanded.Result">
-<short/>
+<short>
+Tree node which is the next expanded child or sibling for the node, or 
+<b>Nil</b> when a visible and expanded node is not not found.
+</short>
 </element>
 
 <element name="TTreeNode.GetNextExpandedEnabled">
 <short>
-Gets the next child or sibling node that is expanded and enabled.
+Gets the next child or sibling tree node that is both expanded and enabled.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTreeNode.Expanded"/>
+<link id="TTreeNode.Enabled"/>
+<link id="TTreeNode.GetFirstVisibleEnabledChild"/>
+<link id="TTreeNode.GetNextVisibleEnabledSibling"/>
+<link id="TTreeNode.Parent"/>
+</seealso>
 </element>
 <element name="TTreeNode.GetNextExpandedEnabled.Result">
-<short/>
+<short>
+TTreeNode instance that satisfies the condition, or <b>Nil</b> when a node is 
+not found.
+</short>
 </element>
 
 <element name="TTreeNode.GetNextMultiSelected">
 <short>
-<var>GetNextMultiSelected</var> - returns the next node in a multi-selection.
+Returns the next tree node which is included in a multi-selected range of 
+nodes.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+The internal members with the values for GetPrevMultiSelected and 
+GetNextMultiSelected are updated when the value in the MultiSelected property 
+is changed for the node.
+</p>
+</descr>
+<seealso>
+<link id="TTreeNode.MultiSelected"/>
+<link id="TTreeNode.Selected"/>
+<link id="TTreeNodes.GetSelections"/>
+<link id="TCustomTreeView.Selections"/>
+<link id="TCustomTreeView.SelectionVisible"/>
+</seealso>
 </element>
 <element name="TTreeNode.GetNextMultiSelected.Result">
-<short/>
+<short>
+Next tree node in the list of multi-selected nodes, or <b>Nil</b> when 
+multi-selections are not present or enabled in the tree view control for the 
+node(s).
+</short>
 </element>
 
 <element name="TTreeNode.GetNextSibling">
 <short>
-<var>GetNextSibling</var> - returns the next node in the same level as the 
-current node.
+Returns the next node in the tree hierarchy at the same level as the current 
+node.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+The internal member with the return value for the method is updated when the 
+MoveTo method is called for the tree node. This occurs when the value in Index 
+is modified. It is also updated when methods in TTreeNode are called to add or 
+insert a tree node into the node list.
+</p>
+</descr>
+<seealso>
+<link id="TTreeNode.Index"/>
+<link id="TTreeNode.MoveTo"/>
+<link id="TTreeNodes.InternalAddObject"/>
+<link id="TTreeNodes.AddNode"/>
+<link id="TTreeNodes.AddObject"/>
+<link id="TTreeNodes.Insert"/>
+<link id="TTreeNodes.InsertObject"/>
+</seealso>
 </element>
 <element name="TTreeNode.GetNextSibling.Result">
-<short/>
+<short>
+TTreeNode instance which is the next node at the same level as the current node, or <b>Nil</b> if no other nodes are stored at the same level in the 
+Parent.
+</short>
 </element>
 
 <element name="TTreeNode.GetNextSkipChildren">
 <short>
-Gets the next sibling node for the current tree node, or <b>Nil</b> when a 
-sibling does not exist.
+Gets the next sibling for the current tree node, or <b>Nil</b> when a sibling 
+node does not exist.
 </short>
 <descr/>
 <seealso/>
 </element>
 <element name="TTreeNode.GetNextSkipChildren.Result">
-<short/>
+<short>
+TTreeNode instance which is the next sibling for the current node, or Nil if a 
+sibling node does not exist.
+</short>
 </element>
 
 <element name="TTreeNode.GetNextVisible">
 <short>
-Gets the next visible node.
+Gets the next visible node child or sibling for the current node.
 </short>
 <descr>
 <p>
@@ -28661,7 +28917,7 @@ preceding logic, or when none of the ancestor nodes are visible and expanded.
 </element>
 <element name="TTreeNode.GetNextVisible.Result">
 <short>
-Next node in the tree node navigation order, or <b>Nil</b>.
+Next visible node in the tree node navigation order, or <b>Nil</b>.
 </short>
 </element>
 
@@ -28681,23 +28937,60 @@ Child or sibling tree node, or <b>Nil</b> when not enabled and visible.
 
 <element name="TTreeNode.GetNextVisibleSibling">
 <short>
-Gets the next visible node at the same level in the tree.
+Gets the next visible node at the same level in the node tree.
 </short>
 <descr>
+<p>
+<var>GetNextVisibleSibling</var> is a <var>TTreeNode</var> function used to 
+locate the next sibling node that has its Visible property enabled. A sibling 
+node is one which exists at the same Level as the current node in the node 
+hierarchy; in other words, it is one of the child nodes in the Parent for the 
+current node.
+</p>
+<p>
+GetNextVisibleSibling calls GetNextSibling to start the search for a visible 
+sibling node. The node is used in the return value when its Visible property 
+is set to <b>True</b>. The return value is <b>Nil</b> if there are no sibling 
+nodes after the current node, or a visible sibling node was not found.
+</p>
+<p>
+GetNextVisibleSibling is used in TTreeNode methods like BottomExpanded, 
+GetNextVisible, GetNextExpanded, and GetFirstVisibleChild. It is also called 
+from methods like TTreeNodes.MultiSelect and TCustomTreeview.DoPaintNode when 
+a tree node is selected or drawn on the TreeView control.
+</p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TTreeNode.Visible"/>
+<link id="TTreeNode.Parent"/>
+<link id="TTreeNode.GetNextSibling"/>
+<link id="TTreeNode.BottomExpanded"/>
+<link id="TTreeNode.GetNextVisible"/>
+<link id="TTreeNode.GetNextExpanded"/>
+<link id="TTreeNode.GetFirstVisibleChild"/>
+<link id="TTreeNodes.MultiSelect"/>
+<link id="TCustomTreeView.DoPaintNode"/>
+</seealso>
 </element>
 <element name="TTreeNode.GetNextVisibleSibling.Result">
-<short/>
+<short>
+Next visible sibling node in the tree hierarchy, or <b>Nil</b> when a sibling 
+node is not found.
+</short>
 </element>
 
 <element name="TTreeNode.GetNextVisibleEnabledSibling">
-<short>Gets the next sibling node that is visible and enabled.</short>
+<short>
+Gets the next sibling node that is both visible and enabled.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TTreeNode.GetNextVisibleEnabledSibling.Result">
-<short/>
+<short>
+Next visible and enabled sibling node in the tree hierarchy, or <b>Nil</b> 
+when a sibling node is not found.
+</short>
 </element>
 
 <element name="TTreeNode.GetParentNodeOfAbsoluteLevel">
@@ -28717,7 +29010,7 @@ this absolute level.
 
 <element name="TTreeNode.GetPrev">
 <short>
-Gets the previous node in the tree.
+Gets the previous node in the tree hierarchy.
 </short>
 <descr/>
 <seealso/>
@@ -28874,14 +29167,46 @@ Modified in LCL version 2.4 to use the PathDelimiter in TCustomTreeView.
 <short>
 Returns <b>True</b> if the specified node is a parent for the current node.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>HasAsParent</var> is <var>Boolean</var> function which indicates whether 
+the tree node specified in <var>AValue</var> is an ancestor of the current 
+tree node.
+</p>
+<p>
+The return value is <b>True</b> if AValue is the Parent node for the current 
+class instance. Preceding Parent nodes in the hierarchy are also searched if 
+needed by calling their HasAsParent method, and the return value is set to 
+<b>True</b> if any one of them is the node in AValue.
+</p>
+<p>
+The return value is set to <b>False</b> when a node is encountered and its 
+Parent node has not been assigned.
+</p>
+<p>
+Strangely enough, the method also returns <b>True</b> if AValue is unassigned 
+(<b>Nil</b>).
+</p>
+<p>
+HasAsParent is called from the MoveTo method and used to enable or disable 
+change event handlers in the TreeView control when a node is relocated in the 
+node hierarchy.
+</p>
+</descr>
+<seealso>
+<link id="TTreeNode.Parent"/>
+</seealso>
 </element>
 <element name="TTreeNode.HasAsParent.Result">
-<short/>
+<short>
+<b>True</b> if the specified node is ancestor of the current tree node (also 
+when the ancestor node is not specified).
+</short>
 </element>
 <element name="TTreeNode.HasAsParent.AValue">
-<short/>
+<short>
+Parent node to locate in the ancestor nodes for the class instance.
+</short>
 </element>
 
 <element name="TTreeNode.IndexOf">
@@ -28910,14 +29235,32 @@ Ordinal position for the specified child node, or -1 when not a child node.
 
 <element name="TTreeNode.IndexOfText">
 <short>
-<var>IndexOfText</var> - returns the index of the node containing the 
-specified Text string.
+Returns the ordinal position for the last child node containing the specified 
+Text.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>IndexOfText</var> searches the child nodes in Items to locate a node with 
+the text specified in the NodeText argument. A case-sensitive comparison is 
+performed using the equality operator (=). The child nodes are searched in 
+reverse order, and the return value represent the last node in Items with the 
+specified value. The return value is -1 if a node is not found in Items with 
+the specified value.
+</p>
+<p>
+IndexOfText is a convenience method; it is not used in the implementation of 
+TTreeNode, TTreeNodes, or TCustomTreeView.
+</p>
+</descr>
+<seealso>
+<link id="TTreeNode.Text"/>
+</seealso>
 </element>
 <element name="TTreeNode.IndexOfText.Result">
-<short/>
+<short>
+Ordinal position for the last child node containing the specified node Text, 
+or -1 when not found in the child nodes.
+</short>
 </element>
 <element name="TTreeNode.IndexOfText.NodeText">
 <short/>
@@ -28925,11 +29268,36 @@ specified Text string.
 
 <element name="TTreeNode.Assign">
 <short>
-<var>Assign</var> - if <var>Source</var> is of correct type, copies details 
-directly, otherwise calls inherited <var>Assign</var> which probably raises 
-an exception.
+Implements object persistence for the TTreeNode type.
 </short>
-<descr/>
+<descr>
+<p>
+<var>Assign</var> is an overridden method in <var>TTreeNode</var> used to 
+implement object persistence for the type. Assign ensures that property values 
+in Source are copied to the current class instance when it is derived from 
+TTreeNode. Properties copied from Source include:
+</p>
+<ul>
+<li>Text</li>
+<li>Data</li>
+<li>ImageIndex</li>
+<li>SelectedIndex</li>
+<li>OverlayIndex</li>
+<li>Height</li>
+<li>Focused</li>
+<li>Cut</li>
+<li>HasChildren</li>
+</ul>
+<p>
+The node cache in the TTreeNodes owner is cleared prior to copying values from 
+Source (when assigned).
+</p>
+<p>
+If Source is not a TTreeNode instance, the inherited method is called to 
+complete the assignment or raise an EConvertError exception if Source is 
+unassigned.
+</p>
+</descr>
 <seealso>
 <link id="#rtl.classes.TPersistent.Assign">TPersistent.Assign</link>
 </seealso>
@@ -28943,7 +29311,27 @@ an exception.
 Collapses the current tree node, and optionally collapses any descendent 
 nodes.
 </short>
-<descr/>
+<descr>
+<p>
+<var>Collapse</var> calls the BeginUpdate and EndUpdate methods in the 
+TreeView control (when assigned) to reduce the number of updates performed 
+while one or more of the tree nodes are displayed in the collapsed state.
+</p>
+<p>
+<var>Recurse</var> indicates whether child and all descendent nodes are also 
+collapsed in the method. The default value is <b>False</b>, and causes only 
+the current node instance to be displayed in the collapsed state. When set to 
+<b>True</b>, child nodes are visited and recursively collapsed. 
+</p>
+<p>
+After completion of the method, the affected nodes will have their Expanded 
+properties set to <b>False</b> and their States flags are updated accordingly.
+</p>
+<p>
+Use Expand to reverse the collapse process. Use ExpandParents to expand all 
+ancestor tree nodes for the current node.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TTreeNode.Collapse.Recurse">
@@ -28954,11 +29342,103 @@ nodes.
 
 <element name="TTreeNode.ConsistencyCheck">
 <short>
-<var>ConsistencyCheck</var> - makes sure all references to and from the node 
-are consistent.
+Ensures that node references to or from the current tree node are valid and 
+consistent.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>ConsistencyCheck</var> validates properties in the tree node to ensure 
+that the node is in a valid state for its TTreeNodes container and the 
+TreeView control where the node is displayed.
+</p>
+<p>
+ConsistencyCheck can raise a catchable debugger exception if any of the values 
+are not consistent or valid. For instance:
+</p>
+<ul>
+<li>
+The capacity in Items has a negative value.
+</li>
+<li>
+The capacity in Items is smaller than the number of stored child nodes.
+</li>
+<li>
+The number of nodes in Items is a negative value.
+</li>
+<li>
+Items has been assigned but the capacity is zero (0) or a negative value.</li>
+<li>
+The Height for the node is a negative value.
+</li>
+<li>
+The Top for the node is a negative value.
+</li>
+<li>
+The Parent node is assigned, but does contain the current node in its Items 
+container.
+</li>
+<li>
+The node has pointers to a previous or next sibling node which does have a 
+complimentary pointer to the node.
+</li>
+<li>
+The node has a pointer to a previous or successive node in a multi-selection, 
+but that node does have have the complimentary pointer to the original node.
+</li>
+<li>
+The MultiSelected property is enabled for the node, but it does not appear in 
+the multi-selection list for the TreeView control.
+</li>
+<li>
+The Selected property is enabled for the node, but MultiSelected is not 
+enabled and the TreeView has multi-selections enabled in its Options.
+</li>
+<li>
+Items contains a child node with a Nil (or unassigned) value.
+</li>
+<li>
+Items has a child node which does not have the current node as its Parent.
+</li>
+<li>
+There are circular references between the current node, its Parent, or its 
+previous or next sibling nodes.
+</li>
+<li>
+The first child node has an invalid pointer to a previous sibling node.
+</li>
+<li>
+A child node which is not the first child node does not have a pointer to the 
+previous sibling or points to the wrong tree node.
+</li>
+<li>
+A child node which is not the last child node does not have a pointer to the 
+previous sibling or points to the wrong tree node.
+</li>
+<li>
+A child node which is the last node in Items has an invalid pointer to a next 
+sibling node.
+</li>
+<li>
+A child node has an Index value which does not match its actual position in 
+Items.
+</li>
+</ul>
+<p>
+The ConsistencyCheck method is called recursively for child nodes as well.
+</p>
+<p>
+These exception represent an extraordinary condition.
+</p>
+<p>
+ConsistencyCheck is called from the implementation of the ConsistencyCheck 
+method in TTreeNodes, and occurs when the TreeView instance calls its 
+ConsistencyCheck method.
+</p>
+</descr>
+<seealso>
+<link id="TTreeNodes.ConsistencyCheck"/>
+<link id="TCustomTreeView.ConsistencyCheck"/>
+</seealso>
 </element>
 
 <element name="TTreeNode.Delete">
@@ -28967,7 +29447,7 @@ Frees the current tree node when the Deleting property is not <b>True</b>.
 </short>
 <descr>
 <p>
-Delete is a method used to remove the tree node from the TTreeNodes 
+<var>Delete</var> is a method used to remove the tree node from its TTreeNodes 
 container. Delete calls Free to destroy the object instance if the Deleting 
 property is not set to <b>True</b>. No actions are performed when Deleting is 
 <b>True</b>.
@@ -28980,21 +29460,52 @@ property is not set to <b>True</b>. No actions are performed when Deleting is
 
 <element name="TTreeNode.DeleteChildren">
 <short>
-<var>DeleteChildren</var> - remove the descendent Nodes in the tree structure.
+Removes all child nodes and descendants in the tree structure.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>DeleteChildren</var> clears the node cache in the TTreeNodes owner prior 
+to removing any child nodes in Items. It calls the Collapse method with 
+recursion to set the child nodes and their descendent nodes to the collapsed 
+state. The HasChildren property is set to <b>False</b> to update the States 
+flag values in the node and cause the TreeView control to be redrawn.
+</p>
+</descr>
+<seealso>
+<link id="TTreeNode.States"/>
+<link id="TTreeNode.Collapse"/>
+<link id="TTreeNode.HasChildren"/>
+</seealso>
 </element>
 
 <element name="TTreeNode.EndEdit">
 <short>
 Ends editing of the tree node in the associated tree view control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>EndEdit</var> calls the EndEditing method in TreeView control to apply 
+the new value in the control Editor to the Text for the node. Cancel indicates 
+whether the modified text value for the node should be discarded. When set to 
+<b>False</b>, the modified value is stored in the Text property for the node. 
+The OnEdited event handler in TreeView is signalled (when assigned) and 
+Invalidate is called to cause the control to be redrawn.
+</p>
+<p>
+No actions are performed in the method if TreeView has not been assigned for 
+the node.
+</p>
+</descr>
+<seealso>
+<link id="TTreeNode.Text"/>  
+<link id="TCustomTreeView.EndEditing"/>
+<link id="TCustomTreeView.OnEdited"/>
+</seealso>
 </element>
 <element name="TTreeNode.EndEdit.Cancel">
-<short><b>True</b> if the edited value for Text is discarded.</short>
+<short>
+<b>True</b> if the edited value for Text is discarded.
+</short>
 </element>
 
 <element name="TTreeNode.Expand">
@@ -29030,15 +29541,30 @@ routine. Not sure this deserves a version admonition though.
 </notes>
 </element>
 <element name="TTreeNode.Expand.Recurse">
-<short><b>True</b> to expand all descendent nodes for the node.</short>
+<short>
+<b>True</b> to expand all descendent nodes for the node.
+</short>
 </element>
 
 <element name="TTreeNode.ExpandParents">
 <short>
-Expands any tree node which is an ancestor of the current node.
+Expands all tree nodes which are an ancestor of the current node.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>ExpandParents</var> visits each tree node which is used as the 
+<var>Parent</var> for a node, and sets its Expanded property to <b>True</b>.
+</p>
+<p>
+ExpandParents is called from methods like MakeVisible and EnsureNodeIsVisible in TCustomTreeView.
+</p>
+</descr>
+<seealso>
+<link id="TTreeNode.Parent"/>
+<link id="TTreeNode.Expanded"/>
+<link id="TTreeNode.MakeVisible"/>
+<link id="TCustomTreeView.EnsureNodeIsVisible"/>
+</seealso>
 </element>
 
 <element name="TTreeNode.FreeAllNodeData">
@@ -29053,8 +29579,8 @@ Forces the tree node to become visible.
 </short>
 <descr>
 <p>
-Calls the EnsureNodeIsVisible method in the associated TreeView (when 
-assigned). Otherwise, calls the ExpandParents method.
+It calls the EnsureNodeIsVisible method in the associated TreeView (when 
+assigned). Otherwise, it calls the ExpandParents method.
 </p>
 </descr>
 <seealso/>
@@ -29062,8 +29588,8 @@ assigned). Otherwise, calls the ExpandParents method.
 
 <element name="TTreeNode.MoveTo">
 <short>
-<var>MoveTo</var> - method for relocating a node to the specified 
-<var>Destination</var> using the specified mode of attachment.
+Relocates a node to the specified <var>Destination</var> node using the 
+specified mode of attachment.
 </short>
 <descr>
 <p>
@@ -29091,15 +29617,20 @@ Definition of the modes of attachment:
 <seealso/>
 </element>
 <element name="TTreeNode.MoveTo.Destination">
-<short/>
+<short>
+Tree node which provides the location where the current is moved using the specified attachment mode.
+</short>
 </element>
 <element name="TTreeNode.MoveTo.Mode">
-<short/>
+<short>
+Specifies where the node is stored relative to the destination node.
+</short>
 </element>
 
 <element name="TTreeNode.MultiSelectGroup">
 <short>
-<var>MultiSelectGroup</var> - method for multi-selecting a group of nodes.
+Adds the group of nodes between a selected node and the current node to a 
+multi-selection range.
 </short>
 <descr/>
 <seealso/>
@@ -29110,8 +29641,28 @@ Definition of the modes of attachment:
 Redraws the associated TreeView control if an update is not already in 
 progress.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>Update</var> calls the Invalidate method in the TreeView control for the 
+node and causes the tree view control (and the node) to be redrawn. No actions 
+are performed in the method if TreeView has not been assigned, or if the 
+TTreeNodes container is already performing an update.
+</p>
+<p>
+Update is called is called when a new value has been assigned to the Text, 
+Height, or NodeEffect properties in the node.
+</p>
+</descr>
+<seealso>
+<link id="TTreeNode.Text"/>
+<link id="TTreeNode.Height"/>
+<link id="TTreeNode.NodeEffect"/>
+<link id="TTreeNode.TreeView"/>
+<link id="TTreeNodes.BeginUpdate"/>
+<link id="TTreeNodes.EndUpdate"/>
+<link id="TCustomTreeView.Invalidate"/>
+<link id="TCustomTreeView.OnNodeChanged"/>
+</seealso>
 </element>
 
 <element name="TTreeNode.WriteDebugReport">
@@ -29136,23 +29687,54 @@ debugger output.
 
 <element name="TTreeNode.AbsoluteIndex">
 <short>
-<var>AbsoluteIndex</var> - the absolute index of the current node, i.e. 
-without taking into account the level of ancestry.
+The absolute ordinal position for the node, regardless of its level or 
+ancestry, in the tree node hierarchy. 
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>AbsoluteIndex</var> is a read-only <var>Integer</var> property which 
+contains the absolute ordinal position for the tree node, regardless of its 
+parent or level, in the hierarchy of tree nodes. For example:
+</p>
+<ul>
+<li>
+The first node in the tree hierarchy has the absolute index position 0.
+</li>
+<li>
+The first child nodes (in Items) has an index position which is 1 larger than 
+the AbsoluteIndex for its Parent node.
+</li>
+<li>
+The next sibling node has an absolute index position which is incremented by 1 
+plus the SubTreeCount value from its sibling.
+</li>
+</ul>
+</descr>
+<seealso>
+<link id="TTreeNode.Parent"/>
+<link id="TTreeNode.SubtreeCount"/>
+<link id="TTreeNode.Level"/>
+<link id="TTreeNode.Index"/>
+<link id="TTreeNode.Items"/>
+<link id="TTreeNode.GetNextSibling"/>
+<link id="TTreeNode.GetPrevSibling"/>
+<link id="TTreeNode.GetFirstChild"/>
+</seealso>
 </element>
 
 <element name="TTreeNode.Count">
 <short>
-The number of nodes where the current node is the parent node.
+The number of nodes which have the current node as the Parent node.
 </short>
 <descr>
 <p>
 Contains the same value as the Count property in Items.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="TTreeNode.Items"/>
+<link id="TTreeNode.Parent"/>
+</seealso>
 </element>
 
 <element name="TTreeNode.Cut">
@@ -29179,7 +29761,7 @@ Pointer to the custom data for the node.
 <p>
 Data is a Pointer property with a pointer to the custom data for the node. 
 Data can contain any arbitrary data type, and must be cast to the correct 
-types when used in an application.
+type when used in an application.
 </p>
 <p>
 Setting a new value for the property causes the associated TreeView (when 
@@ -29521,11 +30103,22 @@ starting at the current node.
 
 <element name="TTreeNode.MultiSelected">
 <short>
-<b>True</b> if more than one node has been selected simultaneously (e.g. using 
-the Shift or Ctrl key while selecting).
+Indicates whether the node is one of several nodes selected simultaneously 
+(e.g. using the Shift or Ctrl key while selecting on a tree view control).
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTreeNode.Selected"/>
+<link id="TTreeNodes.MultiSelect"/>
+<link id="TTreeNodes.ClearMultiSelection"/>
+<link id="TTreeNodes.SelectionCount"/>
+<link id="TCustomTreeView.MultiSelect"/>
+<link id="TCustomTreeView.Select"/>
+<link id="TCustomTreeView.Selections"/>
+<link id="TCustomTreeView.MultiSelectStyle"/>
+<link id="TCustomTreeView.Options"/>
+<link id="TCustomTreeView.OnSelectionChanged"/>
+</seealso>
 </element>
 
 <element name="TTreeNode.NodeEffect">
