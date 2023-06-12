@@ -515,6 +515,9 @@ begin
   // Affected captions are in `View`->`Debug`, `Run`->`Add breakpoint`, `SE popup`->`Debug`.
   TranslateUnitResourceStrings('IdeDebuggerStringConstants',
     Dir+'ide/packages/idedebugger/languages/idedebuggerstringconstants'+Ext,Lang,FallbackLang);
+  // IDEConfig package (needed to enable translations e. g. of Ext() macro caption in `Run` -> `Configure Build+Run File`)
+  TranslateUnitResourceStrings('IdeConfStrConsts',
+    Dir+'ide/packages/ideconfig/languages/ideconfstrconsts'+Ext,Lang,FallbackLang);
   // IDEIntf common strings (needed to load translation earlier, when menu captions are initialized).
   // Affected captions are in `Messages popup`->`Copy`, `Messages popup`->`Help`.
   TranslateUnitResourceStrings('IdeIntfStrConsts',
