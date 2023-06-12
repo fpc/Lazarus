@@ -172,7 +172,7 @@ var
 
 implementation
 
-uses gettext,translations, lazutf8;
+uses translations, lazutf8;
 
 {$R *.lfm}
 
@@ -615,14 +615,14 @@ end;
 
 procedure TranslateResStrings;
 var
-  Lang, FallbackLang: String;
+  LangID: TLanguageID;
 begin
-  GetLanguageIDs(Lang,FallbackLang); // in unit gettext
-  TranslateUnitResourceStrings('LCLStrConsts','../../../../lcl/languages/lclstrconsts.%s.po', Lang,FallbackLang);
-  TranslateUnitResourceStrings('Lr_const','../../source/languages/lr_const.%s.po', Lang,FallbackLang);
-  TranslateUnitResourceStrings('lr_add_function_const','../../source/addons/addfunction/languages/lr_add_function_const.%s.po'
-     ,Lang,FallbackLang);
-  SetDefaultLang(Lang, '', '', false); // needed to translate strings extracted from forms
+  LangID := GetLanguageID;
+  TranslateUnitResourceStrings('LCLStrConsts','../../../../lcl/languages/lclstrconsts.%s.po', LangID.LanguageID, LangID.LanguageCode);
+  TranslateUnitResourceStrings('Lr_const','../../source/languages/lr_const.%s.po', LangID.LanguageID, LangID.LanguageCode);
+  TranslateUnitResourceStrings('lr_add_function_const','../../source/addons/addfunction/languages/lr_add_function_const.%s.po',
+    LangID.LanguageID, LangID.LanguageCode);
+  SetDefaultLang('', '', '', false); // needed to translate strings extracted from forms
 end;
 
 initialization
