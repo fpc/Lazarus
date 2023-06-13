@@ -114,17 +114,18 @@ begin
   begin
     // visual effects
     //Items.Add(dlgShowGutterHints);  // unimplemented
-    Items.Add(lisShowSpecialCharacters);
+    Items.Add(lisShowSpecialCharacters);      // 0
     // spaces
-    Items.Add(dlgTrimTrailingSpaces);
+    Items.Add(dlgTrimTrailingSpaces);         // 1
     // copying
-    Items.Add(dlgFindTextatCursor);
-    Items.Add(dlgCopyWordAtCursorOnCopyNone);
-    Items.Add(dlgCopyPasteKeepFolds);
-    {$IFDEF WinIME}
-    Items.Add(dlgUseMinimumIme);
+    Items.Add(dlgFindTextatCursor);           // 2
+    Items.Add(dlgCopyWordAtCursorOnCopyNone); // 3
+    Items.Add(dlgCopyPasteKeepFolds);         // 4
+    Items.Add(dlgEditExportBackColor);        // 5
+
+    {$IFDEF WinIME} // Keep last, or all subsequnt indexes will depend on it
+    Items.Add(dlgUseMinimumIme);              // 6
     {$ENDIF}
-    Items.Add(dlgEditExportBackColor);
   end;
   EditorTrimSpaceTypeComboBox.Items.Add(dlgTrimSpaceTypeLeaveLine);
   EditorTrimSpaceTypeComboBox.Items.Add(dlgTrimSpaceTypeEditLine);
@@ -158,10 +159,10 @@ begin
       Checked[2] := FindTextAtCursor;
       Checked[3] := CopyWordAtCursorOnCopyNone;
       Checked[4] := eoFoldedCopyPaste in SynEditOptions2;
+      Checked[5] := ExportHtmlWithBackground;
       {$IFDEF WinIME}
-      Checked[5] := UseMinimumIme;
+      Checked[6] := UseMinimumIme;
       {$ENDIF}
-      Checked[6] := ExportHtmlWithBackground;
 
       with ScrollOnEditLeftOptions do begin
         edLeftDist.Value   := KeepBorderDistance;
@@ -205,10 +206,10 @@ begin
     else
       SynEditOptions2 := SynEditOptions2 - [eoFoldedCopyPaste];
     TrimSpaceType := TSynEditStringTrimmingType(EditorTrimSpaceTypeComboBox.ItemIndex);
+    ExportHtmlWithBackground := EditorOptionsGroupBox.Checked[5];
     {$IFDEF WinIME}
-    UseMinimumIme := EditorOptionsGroupBox.Checked[5];
+    UseMinimumIme := EditorOptionsGroupBox.Checked[6];
     {$ENDIF}
-    ExportHtmlWithBackground := EditorOptionsGroupBox.Checked[6];
 
       with ScrollOnEditLeftOptions do begin
         KeepBorderDistance := edLeftDist.Value;
