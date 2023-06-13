@@ -5,11 +5,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2021-04-21 00:55+0300\n"
+"PO-Revision-Date: 2023-06-13 19:54+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.2.4\n"
 
 #: syneditstrconst.scannotpause
 msgid "Can only pause when recording"
@@ -293,15 +293,15 @@ msgstr "Исходный файл Diff"
 
 #: syneditstrconst.syns_attrpasdockey
 msgid "PasDoc Keyword"
-msgstr ""
+msgstr "Ключевое слово PasDoc"
 
 #: syneditstrconst.syns_attrpasdocsymbol
 msgid "PasDoc Symbol"
-msgstr ""
+msgstr "Символ PasDoc"
 
 #: syneditstrconst.syns_attrpasdocunknown
 msgid "PasDoc Unknown"
-msgstr ""
+msgstr "Неизвестный элемент PasDoc"
 
 #: syneditstrconst.syns_attrplsql
 msgid "Reserved word (PL/SQL)"
