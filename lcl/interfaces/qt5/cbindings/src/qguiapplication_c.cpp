@@ -35,6 +35,11 @@ void QGuiApplication_applicationDisplayName(PWideString retval)
 	copyQStringToPWideString(t_retval, retval);
 }
 
+Qt::ApplicationState QGuiApplication_applicationState()
+{
+  return (Qt::ApplicationState) QGuiApplication::applicationState();
+}
+
 void QGuiApplication_allWindows(PPtrIntArray retval)
 {
 	QWindowList t_retval;

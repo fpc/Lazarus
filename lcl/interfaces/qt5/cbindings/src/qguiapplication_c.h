@@ -19,6 +19,7 @@ C_EXPORT QGuiApplicationH QGuiApplication_Create(int* argc, char** argv, int Ano
 C_EXPORT void QGuiApplication_Destroy(QGuiApplicationH handle);
 C_EXPORT void QGuiApplication_setApplicationDisplayName(PWideString name);
 C_EXPORT void QGuiApplication_applicationDisplayName(PWideString retval);
+C_EXPORT Qt::ApplicationState QGuiApplication_applicationState();
 C_EXPORT void QGuiApplication_allWindows(PPtrIntArray retval);
 C_EXPORT void QGuiApplication_topLevelWindows(PPtrIntArray retval);
 C_EXPORT QWindowH QGuiApplication_topLevelAt(const QPointH pos);

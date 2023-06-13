@@ -5506,6 +5506,7 @@ function QGuiApplication_Create(argc: PInteger; argv: PPAnsiChar; AnonParam3: In
 procedure QGuiApplication_Destroy(handle: QGuiApplicationH); cdecl; external Qt5PasLib name 'QGuiApplication_Destroy'; 
 procedure QGuiApplication_setApplicationDisplayName(name: PWideString); cdecl; external Qt5PasLib name 'QGuiApplication_setApplicationDisplayName';
 procedure QGuiApplication_applicationDisplayName(retval: PWideString); cdecl; external Qt5PasLib name 'QGuiApplication_applicationDisplayName';
+function QGuiApplication_applicationState(): QtApplicationState; cdecl; external Qt5PasLib name 'QGuiApplication_applicationState';
 procedure QGuiApplication_allWindows(retval: PPtrIntArray); cdecl; external Qt5PasLib name 'QGuiApplication_allWindows';
 procedure QGuiApplication_topLevelWindows(retval: PPtrIntArray); cdecl; external Qt5PasLib name 'QGuiApplication_topLevelWindows';
 function QGuiApplication_topLevelAt(pos: PQtPoint): QWindowH; cdecl; external Qt5PasLib name 'QGuiApplication_topLevelAt';
