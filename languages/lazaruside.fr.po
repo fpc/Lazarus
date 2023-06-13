@@ -1635,6 +1635,10 @@ msgstr "Si aucun onglet déverrouillé n'est trouvé, cette option va ouvrir un 
 msgid "Italic"
 msgstr "Italique"
 
+#: lazarusidestrconsts.dlgeditexportbackcolor
+msgid "Use Background color in HTML export"
+msgstr ""
+
 #: lazarusidestrconsts.dlgeditorfontsize
 msgid "Editor font size"
 msgstr "Taille de la police de l'éditeur"

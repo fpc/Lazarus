@@ -1624,6 +1624,10 @@ msgstr "Jos ei-lukittua välilehteä ei löydy, tämä valinta avaa uuden välil
 msgid "Italic"
 msgstr "Kursivoitu"
 
+#: lazarusidestrconsts.dlgeditexportbackcolor
+msgid "Use Background color in HTML export"
+msgstr ""
+
 #: lazarusidestrconsts.dlgeditorfontsize
 msgid "Editor font size"
 msgstr "Editorin kirjasinkoko"

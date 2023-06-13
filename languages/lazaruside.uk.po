@@ -1622,6 +1622,10 @@ msgstr "Якщо не знайдено незаблокованої вкладк
 msgid "Italic"
 msgstr "Курсив"
 
+#: lazarusidestrconsts.dlgeditexportbackcolor
+msgid "Use Background color in HTML export"
+msgstr ""
+
 #: lazarusidestrconsts.dlgeditorfontsize
 msgid "Editor font size"
 msgstr "Розмір шрифту редактора"

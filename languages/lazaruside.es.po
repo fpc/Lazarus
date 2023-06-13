@@ -1679,6 +1679,10 @@ msgstr "Si no se encuentra ninguna pestaña bloqueada esta opción abrirá una p
 msgid "Italic"
 msgstr "Cursiva"
 
+#: lazarusidestrconsts.dlgeditexportbackcolor
+msgid "Use Background color in HTML export"
+msgstr ""
+
 #: lazarusidestrconsts.dlgeditorfontsize
 msgid "Editor font size"
 msgstr "Tamaño fuente del editor"

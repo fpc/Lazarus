@@ -1674,6 +1674,10 @@ msgstr "Se non ci sono tab sbloccati, questa opzione aprirà un nuovo tab in una
 msgid "Italic"
 msgstr "Corsivo"
 
+#: lazarusidestrconsts.dlgeditexportbackcolor
+msgid "Use Background color in HTML export"
+msgstr ""
+
 #: lazarusidestrconsts.dlgeditorfontsize
 msgid "Editor font size"
 msgstr "Dimensione carattere"

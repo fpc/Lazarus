@@ -1675,6 +1675,10 @@ msgstr "Šia parinktimi, neradus atrakintos kortelės, egzistuojančiame (it tik
 msgid "Italic"
 msgstr "Kursyvas"
 
+#: lazarusidestrconsts.dlgeditexportbackcolor
+msgid "Use Background color in HTML export"
+msgstr ""
+
 #: lazarusidestrconsts.dlgeditorfontsize
 msgid "Editor font size"
 msgstr "Šrifto dydis rengyklėje"

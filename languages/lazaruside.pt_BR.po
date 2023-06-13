@@ -1627,6 +1627,10 @@ msgstr "Se nenhuma aba desbloqueada for encontrada, então esta opção irá abr
 msgid "Italic"
 msgstr "Itálico"
 
+#: lazarusidestrconsts.dlgeditexportbackcolor
+msgid "Use Background color in HTML export"
+msgstr ""
+
 #: lazarusidestrconsts.dlgeditorfontsize
 msgid "Editor font size"
 msgstr "Tamanho da fonte do editor"

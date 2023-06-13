@@ -1643,6 +1643,10 @@ msgstr ""
 msgid "Italic"
 msgstr "斜体"
 
+#: lazarusidestrconsts.dlgeditexportbackcolor
+msgid "Use Background color in HTML export"
+msgstr ""
+
 #: lazarusidestrconsts.dlgeditorfontsize
 msgid "Editor font size"
 msgstr "编辑器字体大小"

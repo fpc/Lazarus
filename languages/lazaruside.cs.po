@@ -1645,6 +1645,10 @@ msgstr "Pokud není nalezena odemčená záložka, pak tato volba otevře novou 
 msgid "Italic"
 msgstr "Kurzíva"
 
+#: lazarusidestrconsts.dlgeditexportbackcolor
+msgid "Use Background color in HTML export"
+msgstr ""
+
 #: lazarusidestrconsts.dlgeditorfontsize
 msgid "Editor font size"
 msgstr "Velikost fontu editoru"

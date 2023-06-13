@@ -1616,6 +1616,10 @@ msgstr "Kilidi açılmış bir sekme bulunmazsa, bu seçenek varolan (ve yalnız
 msgid "Italic"
 msgstr "İtalik"
 
+#: lazarusidestrconsts.dlgeditexportbackcolor
+msgid "Use Background color in HTML export"
+msgstr ""
+
 #: lazarusidestrconsts.dlgeditorfontsize
 msgid "Editor font size"
 msgstr "Editör yazıtipi boyutu"

@@ -1657,6 +1657,10 @@ msgstr "Diese Option öffnet einen neuen Reiter in einem vorhandenen Fenster, fa
 msgid "Italic"
 msgstr "Kursiv"
 
+#: lazarusidestrconsts.dlgeditexportbackcolor
+msgid "Use Background color in HTML export"
+msgstr ""
+
 #: lazarusidestrconsts.dlgeditorfontsize
 msgid "Editor font size"
 msgstr "Editor-Zeichengröße"

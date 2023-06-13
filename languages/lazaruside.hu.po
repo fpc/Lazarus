@@ -1633,6 +1633,10 @@ msgstr "Ha nem található zárolatlan fül akkor ezen beállítással egy új f
 msgid "Italic"
 msgstr "Dőlt"
 
+#: lazarusidestrconsts.dlgeditexportbackcolor
+msgid "Use Background color in HTML export"
+msgstr ""
+
 #: lazarusidestrconsts.dlgeditorfontsize
 msgid "Editor font size"
 msgstr "Szerkesztő betűmérete"
