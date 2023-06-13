@@ -124,6 +124,7 @@ begin
     {$IFDEF WinIME}
     Items.Add(dlgUseMinimumIme);
     {$ENDIF}
+    Items.Add(dlgEditExportBackColor);
   end;
   EditorTrimSpaceTypeComboBox.Items.Add(dlgTrimSpaceTypeLeaveLine);
   EditorTrimSpaceTypeComboBox.Items.Add(dlgTrimSpaceTypeEditLine);
@@ -160,6 +161,7 @@ begin
       {$IFDEF WinIME}
       Checked[5] := UseMinimumIme;
       {$ENDIF}
+      Checked[6] := ExportHtmlWithBackground;
 
       with ScrollOnEditLeftOptions do begin
         edLeftDist.Value   := KeepBorderDistance;
@@ -206,6 +208,7 @@ begin
     {$IFDEF WinIME}
     UseMinimumIme := EditorOptionsGroupBox.Checked[5];
     {$ENDIF}
+    ExportHtmlWithBackground := EditorOptionsGroupBox.Checked[6];
 
       with ScrollOnEditLeftOptions do begin
         KeepBorderDistance := edLeftDist.Value;

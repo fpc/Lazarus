@@ -1892,6 +1892,7 @@ resourcestring
   dlgTrimSpaceTypePosOnly = 'Position Only';
   dlgCopyPasteKeepFolds = 'Copy/Paste with fold info';
   dlgUseMinimumIme = 'IME handled by System';
+  dlgEditExportBackColor = 'Use Background color in HTML export';
   dlgUndoLimit = 'Undo limit';
   dlgTabWidths = 'Tab widths';
   dlgMarginGutter = 'Margin and gutter';

@@ -1406,6 +1406,7 @@ type
     {$IFDEF WinIME}
     FUseMinimumIme: Boolean;
     {$ENDIF}
+    fExportHtmlWithBackground: Boolean;
     // General options
     fMultiLineTab: Boolean;
     fTabPosition: TTabPosition;
@@ -1423,6 +1424,7 @@ type
     fMultiCaretDefaultMode: TSynPluginMultiCaretDefaultMode;
     fMultiCaretDeleteSkipLineBreak: Boolean;
     fMultiCaretDefaultColumnSelectMode: TSynPluginMultiCaretDefaultMode;
+
     // Highlighter Pas
     fPasExtendedKeywordsMode: Boolean;
     fPasStringKeywordMode: TSynPasStringMode;
@@ -1480,6 +1482,8 @@ type
     {$IFDEF WinIME}
     property UseMinimumIme: Boolean read FUseMinimumIme write FUseMinimumIme default False;
     {$ENDIF}
+    property ExportHtmlWithBackground: Boolean
+      read fExportHtmlWithBackground write fExportHtmlWithBackground default False;
     // Display
     property ShowOverviewGutter: boolean
       read fShowOverviewGutter write fShowOverviewGutter default True;
@@ -4716,6 +4720,7 @@ begin
   fMultiCaretDefaultMode := mcmMoveAllCarets;
   fMultiCaretDefaultColumnSelectMode := mcmCancelOnCaretMove;
   fMultiCaretDeleteSkipLineBreak := False;
+  fExportHtmlWithBackground := False;
   // Display options
   fShowOverviewGutter := True;
   fTopInfoView := True;
