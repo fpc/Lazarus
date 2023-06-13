@@ -59,6 +59,7 @@ type
     // general
     procedure GatherIDEVersion(sl: TStrings);
     procedure GatherParameters(sl: TStrings);
+    procedure GatherSystemLanguageInfo(sl: TStrings);
     procedure GatherEnvironmentVars(sl: TStrings);
     procedure GatherGlobalOptions(sl: TStrings);
     // modified
@@ -86,6 +87,9 @@ function ShowIDEInfo: TModalResult;
 
 
 implementation
+
+uses
+  Translations;
 
 function ShowIDEInfo: TModalResult;
 var
@@ -258,6 +262,18 @@ begin
   sl.add('Parameters:');
   for i:=0 to Paramcount do
     sl.Add(ParamStrUTF8(i));
+  sl.Add('');
+end;
+
+procedure TIDEInfoDialog.GatherSystemLanguageInfo(sl: TStrings);
+var
+  LangID: TLanguageID;
+begin
+  LangID:=GetLanguageID;
+  sl.Add('System preferred language:');
+  sl.Add('Language ID: '''+LangID.LanguageID+'''');
+  sl.Add('Language code: '''+LangID.LanguageCode+'''');
+  sl.Add('Country code: '''+LangID.CountryCode+'''');
   sl.Add('');
 end;
 
@@ -464,6 +480,7 @@ begin
     GatherIDEVersion(sl);
     GatherGlobalOptions(sl);
     GatherParameters(sl);
+    GatherSystemLanguageInfo(sl);
     GatherEnvironmentVars(sl);
     GeneralMemo.Lines.Assign(sl);
   finally
