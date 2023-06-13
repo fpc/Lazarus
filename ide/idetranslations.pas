@@ -32,7 +32,7 @@ unit IDETranslations;
 interface
 
 uses
-  Classes, SysUtils, GetText,
+  Classes, SysUtils,
   // LazUtils
   LazFileUtils, LazFileCache, LazUTF8, Translations,
   // Codetools

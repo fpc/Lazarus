@@ -46,7 +46,6 @@ uses
   {$ELSE}
   UITypes
   {$ENDIF}
-  {$ifndef wince},gettext{$endif}// remove ifdefs when gettext is fixed and a new fpc is released
   ;
 
 type
