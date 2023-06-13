@@ -82,7 +82,7 @@ end.
 
 <element name="TLanguageID">
 <short>
-Record type used to return languiage and country codes/identifiers for a 
+Record type used to return language and country codes/identifiers for a 
 locale.
 </short>
 <descr>
@@ -155,20 +155,23 @@ following properties:
 Language and country codes are returned in ISO formats on Windows.
 </li>
 <li>
-Unix locale identifier is properly parsed and language/country codes are 
+A Unix locale identifier is properly parsed and language/country codes are 
 properly extracted.
 </li>
 <li>
-Don't assume that language code is always two-letter (ISO 639-1), it can have 
-bigger length (e. g. three letters, like in ISO 639-2).
+Don't assume that language code is always two-letters (ISO 639-1), it can have 
+a bigger length (e. g. three letters, like in ISO 639-2).
 </li>
 <li>
-Return locale ID in a record type. This will allow to return additional fields in backwards-compatible manner. Currently it contains language ID, language code and country code.
+Returns the locale information in a record type. This allows additional fields 
+in a backwards-compatible manner. Currently it contains language ID, language 
+code and country code.
 </li>
 </ol>
 <p>
-GetLanguageID is used in the implement of routines in the lcltranslator.pas 
-unit, in the Lazarus IDE, and the Lazarus Data Desktop package.
+GetLanguageID is used in the implementation of routines in the 
+<file>lcltranslator.pas</file> unit, and can be called by other components 
+and classes which use the localization feature.
 </p>
 </descr>
 <version>
