@@ -6678,10 +6678,14 @@ end;
 
 destructor TSourceEditorStatusPanel.Destroy;
 begin
-  if (FSrcNotebook <> nil) and (FSrcNotebook.FStatusPanels <> nil) then
-    FSrcNotebook.FStatusPanels.Remove(Self);
   if OnDestroy <> nil then
     OnDestroy(Self);
+  if (FSrcNotebook <> nil) and (FSrcNotebook.FStatusPanels <> nil) then begin
+    FSrcNotebook.FStatusPanels.FreeObjects := False;
+    FSrcNotebook.FStatusPanels.Remove(Self);
+    FSrcNotebook.FStatusPanels.FreeObjects := True;
+    FreeAndNil(FPanel);
+  end;
   inherited Destroy;
 end;
 
