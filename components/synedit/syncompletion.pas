@@ -2066,42 +2066,62 @@ end;
 
 procedure TSynAutoComplete.Execute(token: string; aEditor: TCustomSynEdit);
 var
-  Temp: string;
-  i, j, prevspace: integer;
-  StartOfBlock: tpoint;
+  LeadSpaces, NewText, Temp: string;
+  TkIdx, j, FirstIdx: integer;
+  StartOfBlock, p1, p2, p3: tpoint;
+  DelPos: SizeInt;
 begin
 //Writeln('[TSynAutoComplete.Execute] Token is "',Token,'"');
-  i := AutoCompleteList.IndexOf(token);
-  if i <> -1 then begin
-    for j := 1 to length(token) do
-      aEditor.CommandProcessor(ecDeleteLastChar, ' ', nil);
-    inc(i);
+  TkIdx := AutoCompleteList.IndexOf(token);
+  if TkIdx <> -1 then begin
+    // Get the start of the token that will be replaced
+    p1 := aEditor.LogicalCaretXY;
+    p1.X := p1.X - Length(token);
+
+    // Get the spaces prefix for new lines
+    aEditor.CommandProcessor(ecLineBreak, ' ', nil);
+    LeadSpaces := '';
+    p2 := aEditor.LogicalCaretXY;
+    if p2.X > 1 then begin
+      p3 := p2;
+      p3.x := 1;
+      LeadSpaces := aEditor.TextBetweenPoints[p3, p2];
+    end;
+
+    inc(TkIdx);
+    FirstIdx := TkIdx;
+    DelPos := -1;
     StartOfBlock := Point(-1, -1);
-    PrevSpace := 0;
-    while (i < AutoCompleteList.Count) and
-      (length(AutoCompleteList[i]) > 0) and
-      (AutoCompleteList[i][1] = '=') do begin
-      for j := 0 to PrevSpace - 1 do
-        aEditor.CommandProcessor(ecDeleteLastChar, ' ', nil);
-      Temp := AutoCompleteList[i];
-      PrevSpace := 0;
-      while (length(temp) >= PrevSpace + 2) and (temp[PrevSpace + 2] <= ' ') do
-        inc(PrevSpace);
-      for j := 2 to length(Temp) do begin
-        aEditor.CommandProcessor(ecChar, Temp[j], nil);
-        if Temp[j] = '|' then
-          StartOfBlock := aEditor.CaretXY
+    NewText := '';
+    while (TkIdx < AutoCompleteList.Count) and
+          (length(AutoCompleteList[TkIdx]) > 0) and
+          (AutoCompleteList[TkIdx][1] = '=')
+    do begin
+      if TkIdx > FirstIdx then
+        NewText := NewText + LineEnding + LeadSpaces;
+
+      Temp := AutoCompleteList[TkIdx];
+      delete(Temp, 1, 1);
+
+      j := Pos('|', Temp);
+      if j > 0 then begin
+        DelPos := Length(NewText) + j;
+        if FirstIdx = TkIdx then
+          StartOfBlock := Point(p1.X + j - 1, p1.Y + TkIdx - FirstIdx)
+        else
+          StartOfBlock := Point(p2.X + j - 1, p1.Y + TkIdx - FirstIdx);
       end;
-      inc(i);
-      if (i < AutoCompleteList.Count) and
-        (length(AutoCompleteList[i]) > 0) and
-        (AutoCompleteList[i][1] = '=') then
-        aEditor.CommandProcessor(ecLineBreak, ' ', nil);
+
+      NewText := NewText + Temp;
+      inc(TkIdx);
     end;
-    if (StartOfBlock.x <> -1) and (StartOfBlock.y <> -1) then begin
+
+    if DelPos > 0 then
+      Delete(NewText, DelPos, 1);
+    aEditor.TextBetweenPointsEx[p1, p2, scamEnd] := NewText;
+
+    if (StartOfBlock.x <> -1) and (StartOfBlock.y <> -1) then
       aEditor.CaretXY := StartOfBlock;
-      aEditor.CommandProcessor(ecDeleteLastChar, ' ', nil);
-    end;
   end;
 end;
 
