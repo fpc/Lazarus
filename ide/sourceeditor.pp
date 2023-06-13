@@ -4895,10 +4895,10 @@ begin
     Html.ExportAsText := True;
     Html.Highlighter := FEditor.Highlighter;
     Html.Title := PageName;
-    Html.Font.Assign(FEditor.Font);
     Html.UseBackground := EditorOpts.ExportHtmlWithBackground;
     if EditorOpts.ExportHtmlWithBackground then begin
       Html.Color := FEditor.Color;
+      Html.Font.Assign(FEditor.Font);
     end;
     Html.ExportAll(FEditor.Lines);
     Html.SaveToFile(AFileName);
