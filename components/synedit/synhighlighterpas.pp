@@ -329,10 +329,11 @@ type
     fAsmStart: Boolean;
     FExtendedKeywordsMode: Boolean;
     FNestedComments: boolean;
-    FUsePasDoc, FIsPasDocKey, FIsPasDocSym, FIsInSlash: Boolean;
+    FUsePasDoc, FIsPasDocKey, FIsPasUnknown, FIsPasDocSym, FIsInSlash: Boolean;
     FPasDocWordList: TStringList;
     fPasDocKeyWordAttri: TSynHighlighterAttributesModifier;
     fPasDocSymbolAttri: TSynHighlighterAttributesModifier;
+    fPasDocUnknownAttr: TSynHighlighterAttributesModifier;
     FProcedureHeaderNameAttr: TSynHighlighterAttributesModifier;
     FCurProcedureHeaderNameAttr: TSynSelectedColorMergeResult;
     FStartCodeFoldBlockLevel: integer; // TODO: rename FStartNestedFoldBlockLevel
@@ -657,6 +658,7 @@ type
 
     property PasDocKeyWord: TSynHighlighterAttributesModifier read fPasDocKeyWordAttri write fPasDocKeyWordAttri;
     property PasDocSymbol: TSynHighlighterAttributesModifier read fPasDocSymbolAttri write fPasDocSymbolAttri;
+    property PasDocUnknown: TSynHighlighterAttributesModifier read fPasDocUnknownAttr write fPasDocUnknownAttr;
   end;
 
   { TSynFreePascalSyn }
@@ -1035,7 +1037,8 @@ end;
 procedure TSynPasSyn.PasDocAttrChanged(Sender: TObject);
 begin
   FUsePasDoc := fPasDocKeyWordAttri.IsEnabled or
-                fPasDocSymbolAttri.IsEnabled;
+                fPasDocSymbolAttri.IsEnabled or
+                fPasDocUnknownAttr.IsEnabled;
   DefHighlightChange(Sender);
 end;
 
@@ -2981,6 +2984,9 @@ begin
   fPasDocSymbolAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrPasDocSymbol, SYNS_XML_AttrPasDocSymbol);
   fPasDocSymbolAttri.Clear;
   AddAttribute(fPasDocSymbolAttri);
+  fPasDocUnknownAttr := TSynHighlighterAttributesModifier.Create(@SYNS_AttrPasDocUnknown, SYNS_XML_AttrPasDocUnknown);
+  fPasDocUnknownAttr.Clear;
+  AddAttribute(fPasDocUnknownAttr);
   FCurPasDocAttri := TSynSelectedColorMergeResult.Create(@SYNS_AttrCaseLabel, SYNS_XML_AttrCaseLabel);
   FPasDocWordList := TStringList.Create;
 
@@ -2988,6 +2994,7 @@ begin
   SetAttributesOnChange(@DefHighlightChange);
   fPasDocKeyWordAttri.OnChange := @PasDocAttrChanged;
   fPasDocSymbolAttri.OnChange := @PasDocAttrChanged;
+  fPasDocUnknownAttr.OnChange := @PasDocAttrChanged;
 
   InitIdent;
   MakeMethodTables;
@@ -3101,8 +3108,8 @@ begin
 
   if fLine[Run] in ['(', ')', '-'] then begin
     inc(Run);
-    FIsPasDocSym := not APeekOnly;
-    Result := True;
+    Result := fPasDocSymbolAttri.IsEnabled;
+    FIsPasDocSym := Result and not APeekOnly;
     if APeekOnly then
       Run := r;
     exit;
@@ -3112,16 +3119,21 @@ begin
   while fLine[Run] in ['A'..'Z', 'a'..'z'] do
     inc(Run);
   if p = Run then begin
-    if APeekOnly then
-      Run := r;
+    Run := r;
     exit;
   end;
 
   SetLength(s, Run - p);
   move(fLine[p], s[1], Run - p);
-  Result := FPasDocWordList.IndexOf(LowerCase(s)) >= 0;
-  FIsPasDocKey := Result and not APeekOnly;
-  if APeekOnly then
+  if FPasDocWordList.IndexOf(LowerCase(s)) >= 0 then begin
+    Result := fPasDocKeyWordAttri.IsEnabled;
+    FIsPasDocKey := Result and not APeekOnly;
+  end
+  else begin
+    Result := fPasDocUnknownAttr.IsEnabled;
+    FIsPasUnknown := Result and not APeekOnly;
+  end;
+  if APeekOnly or not Result then
     Run := r;
 end;
 
@@ -3163,10 +3175,14 @@ begin
         p:=Run;
       end;
     '@': begin
+        if fLine[p+1] = '@' then
+          inc(p)
+        else
         if FUsePasDoc and not(rsIDEDirective in fRange) then begin
           Run := p;
           if CheckPasDoc(True) then
             exit;
+          inc(p)
         end;
       end;
     end;
@@ -3601,8 +3617,14 @@ begin
       StartPascalCodeFoldBlock(cfbtNestedComment);
       Inc(Run,2);
     end else
-    if FUsePasDoc and (fLine[Run] = '@') and CheckPasDoc(True) then
-      exit
+    if FUsePasDoc and (fLine[Run] = '@') then begin
+      if fLine[Run+1] = '@' then
+          inc(Run, 2)
+      else
+      if CheckPasDoc(True) then
+        exit;
+      Inc(Run);
+    end
     else
       Inc(Run);
   until (Run>=fLineLen) or (fLine[Run] in [#0, #10, #13]);
@@ -3753,8 +3775,14 @@ begin
     inc(Run, 2);
     FIsInSlash := True;
     while not(fLine[Run] in [#0, #10, #13]) do
-      if FUsePasDoc and (fLine[Run] = '@') and CheckPasDoc(True) then
-        exit
+      if FUsePasDoc and (fLine[Run] = '@') then begin
+        if fLine[Run+1] = '@' then
+          inc(Run, 2)
+        else
+        if CheckPasDoc(True) then
+          exit;
+        Inc(Run);
+      end
       else
         Inc(Run);
   end else begin
@@ -3777,8 +3805,14 @@ begin
     // Continue fold block
     fTokenID := tkComment;
     while not(fLine[Run] in [#0, #10, #13]) do
-      if FUsePasDoc and (fLine[Run] = '@') and CheckPasDoc(True) then
-        exit
+      if FUsePasDoc and (fLine[Run] = '@') then begin
+        if fLine[Run+1] = '@' then
+          inc(Run, 2)
+        else
+        if CheckPasDoc(True) then
+          exit;
+        Inc(Run);
+      end
       else
         Inc(Run);
     exit;
@@ -3889,6 +3923,7 @@ begin
   fAsmStart := False;
   FIsPasDocKey := False;
   FIsPasDocSym := False;
+  FIsPasUnknown := False;
   FTokenIsCaseLabel := False;
   fTokenPos := Run;
   if Run>=fLineLen then begin
@@ -4063,6 +4098,12 @@ begin
   if FIsPasDocSym then begin
     FCurPasDocAttri.Assign(Result);
     FCurPasDocAttri.Merge(fPasDocSymbolAttri);
+    Result := FCurPasDocAttri;
+  end
+  else
+  if FIsPasUnknown then begin
+    FCurPasDocAttri.Assign(Result);
+    FCurPasDocAttri.Merge(fPasDocUnknownAttr);
     Result := FCurPasDocAttri;
   end;
 

@@ -300,6 +300,10 @@ msgstr ""
 msgid "PasDoc Symbol"
 msgstr ""
 
+#: syneditstrconst.syns_attrpasdocunknown
+msgid "PasDoc Unknown"
+msgstr ""
+
 #: syneditstrconst.syns_attrplsql
 msgid "Reserved word (PL/SQL)"
 msgstr "保留字(PL/SQL)"
