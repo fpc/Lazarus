@@ -329,6 +329,10 @@ type
     fAsmStart: Boolean;
     FExtendedKeywordsMode: Boolean;
     FNestedComments: boolean;
+    FUsePasDoc, FIsPasDocKey, FIsPasDocSym, FIsInSlash: Boolean;
+    FPasDocWordList: TStringList;
+    fPasDocKeyWordAttri: TSynHighlighterAttributesModifier;
+    fPasDocSymbolAttri: TSynHighlighterAttributesModifier;
     FProcedureHeaderNameAttr: TSynHighlighterAttributesModifier;
     FCurProcedureHeaderNameAttr: TSynSelectedColorMergeResult;
     FStartCodeFoldBlockLevel: integer; // TODO: rename FStartNestedFoldBlockLevel
@@ -365,6 +369,7 @@ type
     fSpaceAttri: TSynHighlighterAttributes;
     FCaseLabelAttri: TSynHighlighterAttributesModifier;
     FCurCaseLabelAttri: TSynSelectedColorMergeResult;
+    FCurPasDocAttri: TSynSelectedColorMergeResult;
     fDirectiveAttri: TSynHighlighterAttributes;
     FCompilerMode: TPascalCompilerMode;
     fD4syntax: boolean;
@@ -372,6 +377,7 @@ type
     FDividerDrawConfig: Array [TSynPasDividerDrawLocation] of TSynDividerDrawConfig;
 
     function GetPasCodeFoldRange: TSynPasSynRange;
+    procedure PasDocAttrChanged(Sender: TObject);
     procedure SetCompilerMode(const AValue: TPascalCompilerMode);
     procedure SetExtendedKeywordsMode(const AValue: Boolean);
     procedure SetNestedComments(const ANestedComments: boolean);
@@ -478,6 +484,7 @@ type
     procedure MakeMethodTables;
     procedure AddressOpProc;
     procedure AsciiCharProc;
+    function  CheckPasDoc(APeekOnly: Boolean = False): boolean;
     procedure AnsiProc;
     procedure BorProc;
     procedure BraceOpenProc;
@@ -647,6 +654,9 @@ type
              read FStringKeywordMode write SetStringKeywordMode default spsmDefault;
     property StringMultilineMode: TSynPasMultilineStringModes
              read FStringMultilineMode write SetStringMultilineMode;
+
+    property PasDocKeyWord: TSynHighlighterAttributesModifier read fPasDocKeyWordAttri write fPasDocKeyWordAttri;
+    property PasDocSymbol: TSynHighlighterAttributesModifier read fPasDocSymbolAttri write fPasDocSymbolAttri;
   end;
 
   { TSynFreePascalSyn }
@@ -696,6 +706,60 @@ const
     'raise',
     'threadvar',
     'try'
+  );
+
+  RESERVED_PASDOC: array [1..51] of String = ( // all lowercase
+    'abstract',
+    'anchor',
+    'author',
+    'bold',
+    'br',
+    'cell',
+    'classname',
+    'code',
+    'created',
+    'cvs',
+    'definitionlist',
+    'deprecated',
+    'exclude',
+    'false',
+    'html',
+    'image',
+    'include',
+    'includecode',
+    'inherited',
+    'inheritedclass',
+    'italic',
+    'item',
+    'itemlabel',
+    'itemsetnumber',
+    'itemspacing',
+    'lastmod',
+    'latex',
+    'link',
+    'longcode',
+    'member',
+    'name',
+    'nil',
+    'noautolink',
+    'noautolinkhere',
+    'orderedlist',
+    'param',
+    'preformatted',
+    'raises',
+    'return',
+    'returns',
+    'row',
+    'rowhead',
+    'section',
+    'seealso',
+    'shorttitle',
+    'table',
+    'tableofcontents',
+    'title',
+    'true',
+    'unorderedlist',
+    'value'
   );
 
   RESERVED_WORDS_FPC: array [1..5] of String = (
@@ -846,6 +910,11 @@ begin
   fIdentFuncTable[181] := @Func181;
   fIdentFuncTable[191] := @Func191;
   fIdentFuncTable[220] := @Func220;
+
+  FPasDocWordList.Clear;
+  for i := low(RESERVED_PASDOC) to high(RESERVED_PASDOC) do
+    FPasDocWordList.Add(RESERVED_PASDOC[i]);
+  FPasDocWordList.Sorted := True;
 end;
 
 function TSynPasSyn.KeyHash: Integer;
@@ -961,6 +1030,13 @@ end;
 function TSynPasSyn.GetPasCodeFoldRange: TSynPasSynRange;
 begin
   Result := TSynPasSynRange(CodeFoldRange);
+end;
+
+procedure TSynPasSyn.PasDocAttrChanged(Sender: TObject);
+begin
+  FUsePasDoc := fPasDocKeyWordAttri.IsEnabled or
+                fPasDocSymbolAttri.IsEnabled;
+  DefHighlightChange(Sender);
 end;
 
 function TSynPasSyn.Func15: TtkTokenKind;
@@ -2898,8 +2974,20 @@ begin
   fDirectiveAttri := TSynHighlighterAttributes.Create(@SYNS_AttrDirective, SYNS_XML_AttrDirective);
   fDirectiveAttri.Style:= [fsItalic];
   AddAttribute(fDirectiveAttri);
+
+  fPasDocKeyWordAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrPasDocKey, SYNS_XML_AttrPasDocKey);
+  fPasDocKeyWordAttri.Clear;
+  AddAttribute(fPasDocKeyWordAttri);
+  fPasDocSymbolAttri := TSynHighlighterAttributesModifier.Create(@SYNS_AttrPasDocSymbol, SYNS_XML_AttrPasDocSymbol);
+  fPasDocSymbolAttri.Clear;
+  AddAttribute(fPasDocSymbolAttri);
+  FCurPasDocAttri := TSynSelectedColorMergeResult.Create(@SYNS_AttrCaseLabel, SYNS_XML_AttrCaseLabel);
+  FPasDocWordList := TStringList.Create;
+
   CompilerMode:=pcmDelphi;
   SetAttributesOnChange(@DefHighlightChange);
+  fPasDocKeyWordAttri.OnChange := @PasDocAttrChanged;
+  fPasDocSymbolAttri.OnChange := @PasDocAttrChanged;
 
   InitIdent;
   MakeMethodTables;
@@ -2914,6 +3002,8 @@ begin
   FreeAndNil(FCurCaseLabelAttri);
   FreeAndNil(FCurIDEDirectiveAttri);
   FreeAndNil(FCurProcedureHeaderNameAttr);
+  FreeAndNil(FCurPasDocAttri);
+  FreeAndNil(FPasDocWordList);
   inherited Destroy;
 end;
 
@@ -2937,6 +3027,7 @@ begin
   fLineLen:=length(fLineStr);
   fLine:=PChar(Pointer(fLineStr));
   Run := 0;
+  FIsInSlash := False;
   Inherited SetLine(NewValue,LineNumber);
   PasCodeFoldRange.LastLineCodeFoldLevelFix := 0;
   PasCodeFoldRange.PasFoldFixLevel := 0;
@@ -2999,6 +3090,41 @@ begin
   end;
 end;
 
+function TSynPasSyn.CheckPasDoc(APeekOnly: Boolean): boolean;
+var
+  p, r: LongInt;
+  s: string;
+begin
+  Result := False;
+  r := Run;
+  inc(Run); // the @
+
+  if fLine[Run] in ['(', ')', '-'] then begin
+    inc(Run);
+    FIsPasDocSym := not APeekOnly;
+    Result := True;
+    if APeekOnly then
+      Run := r;
+    exit;
+  end;
+
+  p := Run;
+  while fLine[Run] in ['A'..'Z', 'a'..'z'] do
+    inc(Run);
+  if p = Run then begin
+    if APeekOnly then
+      Run := r;
+    exit;
+  end;
+
+  SetLength(s, Run - p);
+  move(fLine[p], s[1], Run - p);
+  Result := FPasDocWordList.IndexOf(LowerCase(s)) >= 0;
+  FIsPasDocKey := Result and not APeekOnly;
+  if APeekOnly then
+    Run := r;
+end;
+
 procedure TSynPasSyn.BorProc;
 var
   p: LongInt;
@@ -3007,6 +3133,12 @@ begin
   fTokenID := tkComment;
   if rsIDEDirective in fRange then
     fTokenID := tkIDEDirective;
+
+  if FUsePasDoc and not(rsIDEDirective in fRange) and (fLine[Run] = '@') then begin
+    if CheckPasDoc then
+      exit;
+  end;
+
   repeat
     case fLine[p] of
     #0,#10,#13: break;
@@ -3029,6 +3161,13 @@ begin
         Run:=p;
         StartPascalCodeFoldBlock(cfbtNestedComment);
         p:=Run;
+      end;
+    '@': begin
+        if FUsePasDoc and not(rsIDEDirective in fRange) then begin
+          Run := p;
+          if CheckPasDoc(True) then
+            exit;
+        end;
       end;
     end;
     Inc(p);
@@ -3248,6 +3387,8 @@ begin
       StartPascalCodeFoldBlock(cfbtBorCommand);
       inc(Run);
     end;
+    if FUsePasDoc and (fLine[Run] = '@') and CheckPasDoc(True) then
+      exit;
     BorProc;
   end;
 end;
@@ -3433,6 +3574,11 @@ end;
 procedure TSynPasSyn.AnsiProc;
 begin
   fTokenID := tkComment;
+  if FUsePasDoc and (fLine[Run] = '@') then begin
+    if CheckPasDoc then
+      exit;
+  end;
+
   repeat
     if fLine[Run]=#0 then
       break
@@ -3455,6 +3601,9 @@ begin
       StartPascalCodeFoldBlock(cfbtNestedComment);
       Inc(Run,2);
     end else
+    if FUsePasDoc and (fLine[Run] = '@') and CheckPasDoc(True) then
+      exit
+    else
       Inc(Run);
   until (Run>=fLineLen) or (fLine[Run] in [#0, #10, #13]);
 end;
@@ -3478,6 +3627,8 @@ begin
         StartPascalCodeFoldBlock(cfbtAnsiComment);
         Inc(Run, 2);
         if not (fLine[Run] in [#0, #10, #13]) then begin
+          if FUsePasDoc and (fLine[Run] = '@') and CheckPasDoc(True) then
+            exit;
           AnsiProc;
         end;
       end;
@@ -3600,8 +3751,12 @@ begin
         StartPascalCodeFoldBlock(cfbtSlashComment);
     end;
     inc(Run, 2);
+    FIsInSlash := True;
     while not(fLine[Run] in [#0, #10, #13]) do
-      Inc(Run);
+      if FUsePasDoc and (fLine[Run] = '@') and CheckPasDoc(True) then
+        exit
+      else
+        Inc(Run);
   end else begin
     Inc(Run);
     fTokenID := tkSymbol;
@@ -3612,11 +3767,20 @@ end;
 
 procedure TSynPasSyn.SlashContinueProc;
 begin
-  if (fLine[Run] = '/') and (fLine[Run + 1] = '/') then begin
+  if FIsInSlash and (fLine[Run] = '@') then begin
+    if CheckPasDoc then
+      exit;
+  end;
+
+  if FIsInSlash or ((fLine[Run] = '/') and (fLine[Run + 1] = '/')) then begin
+    FIsInSlash := True;
     // Continue fold block
     fTokenID := tkComment;
     while not(fLine[Run] in [#0, #10, #13]) do
-      Inc(Run);
+      if FUsePasDoc and (fLine[Run] = '@') and CheckPasDoc(True) then
+        exit
+      else
+        Inc(Run);
     exit;
   end;
 
@@ -3723,8 +3887,10 @@ var
   IsAtCaseLabel: Boolean;
 begin
   fAsmStart := False;
+  FIsPasDocKey := False;
+  FIsPasDocSym := False;
+  FTokenIsCaseLabel := False;
   fTokenPos := Run;
-    FTokenIsCaseLabel := False;
   if Run>=fLineLen then begin
     NullProc;
     exit;
@@ -3886,6 +4052,18 @@ begin
     FCurCaseLabelAttri.Assign(Result);
     FCurCaseLabelAttri.Merge(FCaseLabelAttri);
     Result := FCurCaseLabelAttri;
+  end;
+
+  if FIsPasDocKey then begin
+    FCurPasDocAttri.Assign(Result);
+    FCurPasDocAttri.Merge(fPasDocKeyWordAttri);
+    Result := FCurPasDocAttri;
+  end
+  else
+  if FIsPasDocSym then begin
+    FCurPasDocAttri.Assign(Result);
+    FCurPasDocAttri.Merge(fPasDocSymbolAttri);
+    Result := FCurPasDocAttri;
   end;
 
   if (tid in [tkIdentifier, tkSymbol]) and

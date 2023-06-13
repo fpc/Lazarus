@@ -292,6 +292,14 @@ msgstr "Operatorius"
 msgid "Diff Original File"
 msgstr "Skirtumų originalo failas"
 
+#: syneditstrconst.syns_attrpasdockey
+msgid "PasDoc Keyword"
+msgstr ""
+
+#: syneditstrconst.syns_attrpasdocsymbol
+msgid "PasDoc Symbol"
+msgstr ""
+
 #: syneditstrconst.syns_attrplsql
 msgid "Reserved word (PL/SQL)"
 msgstr "Rezervuotas žodis (PL/SQL)"

@@ -292,6 +292,14 @@ msgstr "操作符"
 msgid "Diff Original File"
 msgstr "比较原始文件"
 
+#: syneditstrconst.syns_attrpasdockey
+msgid "PasDoc Keyword"
+msgstr ""
+
+#: syneditstrconst.syns_attrpasdocsymbol
+msgid "PasDoc Symbol"
+msgstr ""
+
 #: syneditstrconst.syns_attrplsql
 msgid "Reserved word (PL/SQL)"
 msgstr "保留字(PL/SQL)"

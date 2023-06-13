@@ -291,6 +291,14 @@ msgstr "Operátor"
 msgid "Diff Original File"
 msgstr "Porovnat původní soubor"
 
+#: syneditstrconst.syns_attrpasdockey
+msgid "PasDoc Keyword"
+msgstr ""
+
+#: syneditstrconst.syns_attrpasdocsymbol
+msgid "PasDoc Symbol"
+msgstr ""
+
 #: syneditstrconst.syns_attrplsql
 msgid "Reserved word (PL/SQL)"
 msgstr "Vyhrazené slovo (PL/SQL)"

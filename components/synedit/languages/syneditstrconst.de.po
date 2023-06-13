@@ -293,6 +293,14 @@ msgstr "Operator"
 msgid "Diff Original File"
 msgstr "Ursprüngliches Diff-Datei"
 
+#: syneditstrconst.syns_attrpasdockey
+msgid "PasDoc Keyword"
+msgstr ""
+
+#: syneditstrconst.syns_attrpasdocsymbol
+msgid "PasDoc Symbol"
+msgstr ""
+
 #: syneditstrconst.syns_attrplsql
 msgid "Reserved word (PL/SQL)"
 msgstr "Reserviertes Wort (PL/SQL)"

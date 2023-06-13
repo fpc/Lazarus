@@ -128,6 +128,8 @@ resourcestring
   SYNS_AttrSymbol               =  'Symbol';
   SYNS_AttrProcedureHeaderName  =  'Procedure header name';
   SYNS_AttrCaseLabel            =  'Case label';
+  SYNS_AttrPasDocKey            =  'PasDoc Keyword';
+  SYNS_AttrPasDocSymbol         =  'PasDoc Symbol';
   SYNS_AttrSyntaxError          =  'SyntaxError';
   SYNS_AttrSystem               =  'System functions and variables';
   SYNS_AttrSystemValue          =  'System value';
@@ -246,6 +248,8 @@ const
   SYNS_XML_AttrSymbol               =  'Symbol';
   SYNS_XML_AttrProcedureHeaderName  =  'Procedure header name';
   SYNS_XML_AttrCaseLabel            =  'Case label';
+  SYNS_XML_AttrPasDocKey            =  'PasDoc-Keyword';
+  SYNS_XML_AttrPasDocSymbol         =  'PasDoc-Symbol';
   SYNS_XML_AttrSyntaxError          =  'SyntaxError';
   SYNS_XML_AttrSystem               =  'System functions and variables';
   SYNS_XML_AttrSystemValue          =  'System value';
