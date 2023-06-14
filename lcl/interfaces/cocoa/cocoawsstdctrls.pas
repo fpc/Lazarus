@@ -2094,9 +2094,15 @@ end;
 
 class procedure TCocoaWSCustomComboBox.SetText(const AWinControl: TWinControl;
   const AText: String);
+var
+  cmb: NSControl;
 begin
   if (AWinControl.HandleAllocated) then
-    ControlSetTextWithChangeEvent(NSControl(AWinControl.Handle), AText);
+  begin
+    cmb:= NSControl(AWinControl.Handle);
+    cmb.setStringValue(NSString.string_);
+    ControlSetTextWithChangeEvent(cmb, AText);
+  end;
 end;
 
 class procedure TCocoaWSCustomComboBox.SetTextHint(
