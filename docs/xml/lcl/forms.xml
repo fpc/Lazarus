@@ -72,7 +72,6 @@ classes used in the <var>Application</var> and <var>Screen</var> singletons.
 <element name="GraphType"/>
 <element name="UITypes"/>
 <element name="System.UITypes"/>
-<element name="gettext"/>
 
 <element name="TProcedure">
 <short>Type used for a procedure that takes no arguments.</short>
