@@ -76,6 +76,7 @@ type
   TCocoaWSCustomComboBox = class(TWSCustomComboBox)
   public
     class function getNSText(const ACustomComboBox: TCustomComboBox): NSText;
+    class function GetObjectItemIndex(const AObject: TObject): integer;
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
@@ -1931,6 +1932,14 @@ begin
     Result:= txt.selectedRange.length;
 end;
 
+class function TCocoaWSCustomComboBox.GetObjectItemIndex(const AObject: TObject): integer;
+begin
+  if AObject is TCustomComboBox then
+    Result:= GetItemIndex( TCustomComboBox(AObject) )
+  else
+    Result:= -1;
+end;
+
 class procedure TCocoaWSCustomComboBox.SetSelStart(
   const ACustomComboBox: TCustomComboBox; NewStart: integer);
 var
@@ -1973,7 +1982,7 @@ begin
   if ComboBoxStyleIsReadOnly(ACustomComboBox.Style) then
     idx := TCocoaReadOnlyComboBox(ACustomComboBox.Handle).indexOfSelectedItem
   else
-    idx := TCocoaComboBox(ACustomComboBox.Handle).indexOfSelectedItem;
+    idx := ACustomComboBox.MatchListItem(ACustomComboBox.Text);
   if idx = NSNotFound then
     Result := -1
   else
