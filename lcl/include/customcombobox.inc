@@ -33,6 +33,8 @@ begin
   if (FItems<>NewStrings) and (FItems<>nil) then
   begin
     NewStrings.Assign(FItems);
+    if NewStrings is TStringList then
+      TStringList(NewStrings).Sorted:= self.Sorted;
     FItems.Free;
   end;
   // and use the interface based list
