@@ -189,42 +189,100 @@ current locale.
 </element>
 
 <element name="TTranslateUnitResult">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Represents the return value for the TranslateUnitResourceStrings function.
+</short>
+<descr>
+<p>
+<var>TTranslateUnitResult</var> is an enumeration type with values that can be 
+returned from the overloaded TranslateUnitResourceStrings function.
+</p>
+</descr>
+<seealso>
+<link id="TranslateUnitResourceStrings"/>
+</seealso>
 </element>
 <element name="TTranslateUnitResult.turOK">
-<short/>
+<short>
+Resources were successfully translated.
+</short>
 </element>
 <element name="TTranslateUnitResult.turNoLang">
-<short/>
+<short>
+The language identifier was omitted or a .po file for the language was not 
+found .
+</short>
 </element>
 <element name="TTranslateUnitResult.turNoFBLang">
-<short/>
+<short>
+The fallback language identifier was omitted or a .po file for the language 
+was not found.
+</short>
 </element>
 <element name="TTranslateUnitResult.turEmptyParam">
-<short/>
+<short>
+The unit file name or the base file name argument was not specified.
+</short>
 </element>
 
 <element name="TTranslationStatistics">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Represents translation statistics calculated for the key/value pairs in a .po translation file.
+</short>
+<descr>
+<p>
+<var>TTranslationStatistics</var> is the type used to implement the statistics 
+property in <var>TPOFile</var>. It contains information about the key/value 
+pairs in the .po (Portable Object) file such as: successful translations, 
+untranslated item count, and number of entries with the "fuzzy" keyword for 
+unverified translations.
+</p>
+</descr>
+<seealso>
+<link id="TPOFile.Statistics"/>
+</seealso>
 </element>
 <element name="TTranslationStatistics.Translated">
-<short/>
+<short>
+Number of keys with a valid localized value.
+</short>
 </element>
 <element name="TTranslationStatistics.Untranslated">
-<short/>
+<short>
+Number of keys with no localized value.
+</short>
 </element>
 <element name="TTranslationStatistics.Fuzzy">
-<short/>
+<short>
+Number of keys with the "fuzzy" keyword indicating an unverified localized 
+value.
+</short>
 </element>
 
 <element name="TPOFileItem">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Represents a single key/value pair in a .po file which maps a string to its 
+translated value.
+</short>
+<descr>
+<p>
+<var>TPOFileItem</var> is a class used to represent a key/value pair defined 
+in a .po (Portable Object) file. It provides members, properties, and methods 
+used to process, store, and maintain a single translation defined in a .po 
+file.
+</p>
+<p>
+TPOFileItem is the type used for the POItems property in TPOFile. It is also 
+passed as an argument or used as the return value for methods in TPOFile.
+</p>
+</descr>
+<seealso>
+<link id="TPOFile.POItems"/>
+<link id="TPOFile.ReadPOText"/>
+<link id="TPOFile.FillItem"/>
+<link id="TPOFile.UpdateItem"/>
+<link id="TPOFile.Remove"/>
+</seealso>
 </element>
 
 <!-- private -->
@@ -233,78 +291,206 @@ current locale.
 
 <!-- public -->
 <element name="TPOFileItem.Tag">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Arbitrary value which can be used to identify the translation entry.
+</short>
+<descr>
+<p>
+<var>Tag</var> is a public <var>Integer</var> member which contains an 
+arbitrary value used to locate or maintain the translation entry. Tag is used 
+in TPOFile methods like UntagAll and RemoveTaggedItems, and in the 
+UpdatePOFile routine.
+</p>
+</descr>
+<seealso>
+<link id="TPOFile.Tag"/>
+<link id="TPOFile.UntagAll"/>
+<link id="TPOFile.RemoveTaggedItems"/>
+<link id="UpdatePOFile"/>
+</seealso>
 </element>
 
 <element name="TPOFileItem.LineNr">
-<short/>
+<short>
+Line number in a .po file where the first line for the translation entry was 
+found.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPOFile.ReadPOText"/>
+</seealso>
 </element>
 
 <element name="TPOFileItem.Comments">
-<short/>
-<descr/>
+<short>
+Contains the comments with the notes for translators, flag values, et. al. for 
+the translation entry.
+</short>
+<descr>
+<p>
+<var>Comments</var> is a public <var>String</var> member which contains the 
+comment lines which occur at the start of the translation entry. It is an 
+empty string ('') if no comments were found prior to the key/value pair in 
+Original and Translation. If multiple comment lines (starting with the '#' 
+character) are found, and line ending sequence is added at the end of each 
+comment.
+</p>
+<p>
+The value in Comments is detected when the ReadPOText method in TPOFile is 
+called to process the the contents of a .po file, and stored when the FillItem 
+method in TPOFile is called.
+</p>
+<p>
+A comment line starts with the # character and relates to the first 
+entry after the comment. Comment types and uses are defined as follows:
+</p>
+<dl>
+<dt>'# '</dt>
+<dd>
+Contains a note for translators. Normally, this is the only comment that is
+manually written.
+</dd>
+<dt>'#.''</dt>
+<dd>
+Comment was extracted from the source code with the Gettext tool.
+</dd>
+<dt>'#:''</dt>
+<dd>
+Contains a reference to the source code with the message ids translated using 
+the file. A Colon (':') is used as a delimiter between distinct values in the 
+reference. For instance: '#: lazarusidestrconsts:lisdonotshowsplashscreen:224'.
+</dd>
+<dt>#, fuzzy, object-pascal-format, no-object-pascal-format, badformat</dt>
+<dd>
+<p>
+Flag values from the translator or the Gettext tool. Unlike other comments, 
+these lines may be handled or applied in the application. The comma-delimited 
+list of flags may be used to apply the translation based on the comment type.
+</p>
+<p>
+"fuzzy" is inserted by a translator when the translated value might not be a 
+correct translation. When verified, the "fuzzy" attribute can be removed in 
+the .po file. A translation with the "fuzzy" flag is not applied in the 
+application.
+</p>
+<p>
+"badformat" indicates the message ID or translated value has an invalid 
+format. A translation with the "badformat" flag is not applied in the 
+application.
+</p>
+<p>
+"object-pascal-format" and "no-object-pascal-format"indicate that the message 
+ID or translated value does or does not use the format for the Object Pascal 
+language. These are generated by automated PO processing tools.
+</p>
+</dd>
+<dt>#|</dt>
+<dd>
+Represents the previous (older) msgid, msgstr, or msgctxt value for the 
+message ID which follows the comment.
+</dd>
+</dl>
+</descr>
 <seealso/>
 </element>
 
 <element name="TPOFileItem.IdentifierLow">
-<short/>
+<short>
+Lowercase variant of the message identifier or untranslated value.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPOFileItem.Original"/>
+<link id="TPOFileItem.Translation"/>
+</seealso>
 </element>
 
 <element name="TPOFileItem.Original">
-<short/>
+<short>
+Original untranslated value prior to localization using the value in 
+Translation.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPOFileItem.IdentifierLow"/>
+<link id="TPOFileItem.Translation"/>
+</seealso>
 </element>
 
 <element name="TPOFileItem.Translation">
-<short/>
+<short>
+Translated or localized value for the message identifier.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TPOFileItem.Flags">
-<short/>
+<short>
+Comma-delimited list of Flag names found in the comments for the translation 
+entry.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TPOFileItem.PreviousID">
-<short/>
+<short>
+Prior message ID used for the value in Original.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TPOFileItem.Context">
-<short/>
-<descr/>
+<short>
+Contains the msgctxt (message context) for the key/value pair.
+</short>
+<descr>
+<p>
+<var>Context</var> provides a context used differentiate identifiers with the 
+same untranslated value. Please note that an empty context string ("") and an 
+absent msgctxt line do not mean the same thing.
+</p>
+</descr>
 <seealso/>
 </element>
 
 <element name="TPOFileItem.Duplicate">
-<short/>
+<short>
+Indicates if the key/value pair is a duplicate of a previous entry.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TPOFileItem.Create">
-<short/>
-<descr/>
+<short>
+Constructor for the class instance.
+</short>
+<descr>
+<p>
+<var>Create</var> stores the values passed as arguments to the method to the 
+members in the class instance. It also initializes internal members used in 
+the class instance.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TPOFileItem.Create.TheIdentifierLow">
-<short/>
+<short>
+Lowercase value for the message identifier (msgid).
+</short>
 </element>
 <element name="TPOFileItem.Create.TheOriginal">
-<short/>
+<short>
+The original untranslated value for the message identifier.
+</short>
 </element>
 <element name="TPOFileItem.Create.TheTranslated">
-<short/>
+<short>
+Translated value (msgstr) for the message identifier.
+</short>
 </element>
 
 <element name="TPOFileItem.ModifyFlag">
@@ -332,22 +518,70 @@ missing flag value to be added.
 </element>
 
 <element name="TPOFileItem.InitialFuzzyState">
-<short/>
-<descr/>
+<short>
+Indicates whether the translation entry is marked with the "fuzzy" state comment.
+</short>
+<descr>
+<p>
+<var>InitialFuzzyState</var> is a read-only <var>Boolean</var> property which 
+indicates if the key/value pair was marked with the "fuzzy" comment in the .po 
+file. The default value for the property is <b>False</b>. It is used when 
+generating translation statistics when the .po file is processed.
+</p>
+</descr>
 <seealso/>
 </element>
 
 <element name="TPOFileItem.VirtualTranslation">
-<short/>
-<descr/>
+<short>
+Indicates whether the translation is included in statistics generated when a 
+.po file is processed and applied.
+</short>
+<descr>
+<p>
+<var>VirtualTranslation</var> is a read-only Boolean property which indicates 
+whether the translation entry had an actual value in its identifier and 
+translated value. The default value for the property is <b>False</b>. 
+<b>True</b> indicates that both msgid and msgstr were empty, per the 
+convention used for a .po file header. Translations entries which are virtual 
+are not included in the translation statistics.
+</p>
+</descr>
 <seealso/>
 </element>
 
 <element name="TPOFile">
-<short/>
-<descr/>
-<errors></errors>
-<seealso/>
+<short>
+Class used to represent a .po file with translation entries for a single 
+target language.
+</short>
+<descr>
+<p>
+<var>TPOFile</var> is a class which provides access to a file with translation 
+entries used to localize a source file to the language or locale defined in a 
+.po (Portable Object) file. .po files are part of the GNU gettext tool set 
+used to produce and update translation files. Information about the .po file 
+format can be found at:
+</p>
+<p>
+<url href="https://www.gnu.org/software/gettext/manual/html_node/PO-Files.html">The Format of PO Files</url>
+</p>
+<p>
+TPOFile provides properties and methods used to load and save translation 
+entries using a file, stream, or resource. The Header property contains the 
+header information for the .po file, and may contain information about: the 
+MIME version and content transfer encoding, target language, plural forms, and 
+generation tools. Use the POItems property to access the translation entries 
+defined in the .po file.
+</p>
+<p>
+TPOFile also provides Statistics about the translations applied to a source 
+file when the Translate method is called.
+</p>
+</descr>
+<seealso>
+<link id="TPOFileItem"/>
+</seealso>
 </element>
 
 <!-- private -->
@@ -358,115 +592,231 @@ missing flag value to be added.
 
 <!-- protected -->
 <element name="TPOFile.FItems">
-<short/>
+<short>
+Member with the list of TPOFileItem instances in POItems.
+</short>
 </element>
 
 <element name="TPOFile.FIdentifierLowToItem">
-<short/>
+<short>
+Member with the lowercase identifier to TPOFileItem mapping.
+</short>
 </element>
 
 <element name="TPOFile.FOriginalToItem">
-<short/>
+<short>
+Member with the original value to TPOFileItem mapping.
+</short>
 </element>
 
 <element name="TPOFile.FCharSet">
-<short/>
+<short>
+Member with the value for the CharSet property. 
+</short>
 </element>
 
 <element name="TPOFile.FHeader">
-<short/>
+<short>
+Member with the value for the Header property.
+</short>
 </element>
 
 <element name="TPOFile.FAllEntries">
-<short/>
+<short>
+Member with the scope for the translations applied from the .po file.
+</short>
 </element>
 
 <element name="TPOFile.FTag">
-<short/>
+<short>
+Member with the value for the Tag property.
+</short>
 </element>
 
 <element name="TPOFile.FModified">
-<short/>
+<short>
+Member with the value for the Modified property.
+</short>
 </element>
 
 <element name="TPOFile.FHelperList">
-<short/>
+<short>
+Member with the string list used to convert the .po file in the SaveToStrings 
+method.
+</short>
 </element>
 
 <element name="TPOFile.FPoName">
-<short/>
+<short>
+Member with the value for the POName and PORename properties.
+</short>
 </element>
 
 <element name="TPOFile.Remove">
-<short/>
+<short>
+Gets the translation entry at the specified ordinal position in POItems and 
+removes it from the list.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TPOFile.Remove.Index">
-<short/>
+<short>
+Ordinal position in POItems for the translation entry removed in the method.
+</short>
 </element>
 <element name="TPOFile.Remove.Result">
-<short/>
+<short>
+TPOFileItem removed from the list.
+</short>
 </element>
 
 <element name="TPOFile.GetCount">
-<short/>
+<short>
+Gets the value for the Count property.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPOFile.Count"/>
+<link id="TPOFile.POItems"/>
+</seealso>
 </element>
 <element name="TPOFile.GetCount.Result">
-<short/>
+<short>
+Value for the Count property.
+</short>
 </element>
 
 <element name="TPOFile.SetCharSet">
-<short/>
-<descr/>
+<short>
+Updates the value in the CharSet property.
+</short>
+<descr>
+<p>
+<var>SetCharSet</var> ensures that <var>CharSet</var> contains 'UTF-8' when an 
+empty value ('') is passed in the <var>AValue</var> argument. Please note that 
+SetCharSet is <b>not</b> the write access specifier for the CharSet property; 
+CharSet is defined as read-only.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TPOFile.SetCharSet.AValue">
-<short/>
+<short>
+New value for the CharSet property.
+</short>
 </element>
 
 <element name="TPOFile.GetPoItem">
-<short/>
+<short>
+Gets the value for the indexed POItems property.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPOFile.POItems"/>
+</seealso>
 </element>
 <element name="TPOFile.GetPoItem.Result">
-<short/>
+<short>
+Value for the indexed POItems property.
+</short>
 </element>
 <element name="TPOFile.GetPoItem.Index">
-<short/>
+<short>
+Ordinal position for the TPOFileItem instance used as the property value.
+</short>
 </element>
 
 <element name="TPOFile.ReadPOText">
-<short/>
-<descr/>
+<short>
+Reads the content for the .po file from the specified source.
+</short>
+<descr>
+<p>
+<var>ReadPOText</var> is an overloaded method used to load translation entries 
+from the specified source into the class instance. The overloaded variants 
+allow the .po content to be loaded from a TStream instance or a String.
+</p>
+<p>
+The TStream-based variant stores the content starting at the current stream 
+position to a String value. The String-based variant is called examine and 
+process the values. The stream position is not reset before or after reading 
+values from the stream.
+</p>
+<p>
+The String-based variant reads lines of text from the Txt argument and 
+performs actions to create and populate the POItems in the class instance. 
+It accounts for both the header in the .po file and the comment lines which 
+occur prior to a translation entry. Values for message Identifiers (msgid), 
+translations (msgstr), and Contexts (msgctxt) are handled in the method. If 
+the file header indicates that a content encoding other than UTF-8 is used in 
+the .po file, its content is transcoded by calling ConvertEncoding.
+</p>
+<p>
+Use SavetoStrings or SaveToFile to store updated values in the class instance.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TPOFile.ReadPOText.AStream">
-<short/>
+<short>
+TStream instance with the translation entries for the .po file.
+</short>
 </element>
-<!-- params for the overload -->
 <element name="TPOFile.ReadPOText.Txt">
-<short/>
+<short>
+String with the translation entries for the .po file.
+</short>
 </element>
 
 <element name="TPOFile.Create">
 <short>
 Constructor for the class instance.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>Create</var> is the overloaded constructor for the class instance. The 
+overloaded variants allow the class to be created and populated from a 
+TStream, a .po file, or uninitialized for use with an internal resource.
+</p>
+<p>
+Create allocates resources needed in the class instance, and sets the default 
+values for its members.
+</p>
+<p>
+For the variant with the AFilename argument, a TFileStream instance is created 
+for use in the overloaded Create method. The CreateHeader method is called if 
+a value has not been assigned to the Header property.
+</p>
+<p>
+The stream-based variant is used to load values from the TStream argument. The 
+ReadPOText method is called to load, process, and apply the translation 
+entries found in the .po file.
+</p>
+</descr>
+<seealso>
+<link id="TPOFile.POName"/>
+<link id="TPOFile.Header"/>
+<link id="TPOFile.POItems"/>
+<link id="TPOFile.ReadPOText"/>
+<link id="TPOFileItem"/>
+</seealso>
 </element>
 <element name="TPOFile.Create.Full">
-<short/>
+<short>
+Use <b>False</b> when loading from an internal resource. Default is 
+<b>True</b>.
+</short>
 </element>
 <element name="TPOFile.Create.AFilename">
-<short/>
+<short>
+Name for the .po file loaded into the class instance.
+</short>
 </element>
 <element name="TPOFile.Create.AStream">
-<short/>
+<short>
+TStream instance with the translation entries loaded in the method.
+</short>
 </element>
 
 <element name="TPOFile.Destroy">
@@ -478,54 +828,165 @@ Destructor for the class instance.
 </element>
 
 <element name="TPOFile.Translate">
-<short/>
-<descr/>
-<errors></errors>
+<short>
+Retrieves the translation entry for the specified identifier and returns the 
+translated value.
+</short>
+<descr>
+<p>
+<var>Translate</var> is a method used to retrieve the translation entry for a 
+given identifier, and return the translated value for the 
+<var>TPOFileItem</var>.
+</p>
+<p>
+<var>Identifier</var> contains the msgid for the translation entry.
+</p>
+<p>
+<var>OriginalValue</var> contains the untranslated value for the Identifier.
+</p>
+<p>
+A translation is loaded only when it exists, and does not include 'fuzzy' or 
+'badformat' in its flag values. This is done to mimic gettext behavior and to 
+avoid crashes related to formatting argument mismatches.
+</p>
+<p>
+The return value contains the Translation property for the TPOFileItem when 
+found. When not found, the value in the Original property is used. If the 
+translated value is an empty string (''), the untranslated value in 
+OriginalValue is used as the return value for the method.
+</p>
+<p>
+Translate is called from the implementation routine used in the 
+TranslateUnitResourceStrings routine.
+</p>
+</descr>
+<errors>
+Raises an exception with the message 'TPOFile.Translate Inconsistency' if a 
+translation is not found (or created) for the Identifier, or the flags for the 
+translation include 'fuzzy' or 'badformat'.
+</errors>
 <seealso/>
 </element>
 <element name="TPOFile.Translate.Result">
-<short/>
+<short>
+Translated value for the identifier, or the original value if a translation 
+cannot be located or used.
+</short>
 </element>
 <element name="TPOFile.Translate.Identifier">
-<short/>
+<short>
+Identifier (msgid) for the translation entry used in the method.
+</short>
 </element>
 <element name="TPOFile.Translate.OriginalValue">
-<short/>
+<short>
+Original untranslated value for the specified Identifier.
+</short>
 </element>
 
 <element name="TPOFile.CharSet">
-<short/>
-<descr/>
+<short>
+Character set used for the contents of the .po file.
+</short>
+<descr>
+<p>
+<var>CharSet</var> is a read-only <var>String</var> property which contains 
+the character set encoding used in the .po file or stream. Its value is 
+captured from the 'content-type' header included in the .po file. If omitted 
+in the .po file, the value 'UTF-8' is used. When CharSet is set to a value 
+other than 'UTF-8', the ConvertEncoding routine is called to transcode the 
+content in the .po file to UTF-8.
+</p>
+<p>
+Use SetCharSet to manually override the character set used for the translation 
+entries in the class instance.
+</p>
+</descr>
 <seealso/>
 </element>
 
 <element name="TPOFile.Report">
-<short/>
-<descr/>
-<errors></errors>
+<short>
+Generates output with the values in the Header and the translation entries in 
+the .po file.
+</short>
+<descr>
+<p>
+<var>Report</var> is an overloaded method in <var>TPOFile</var> used to 
+generate output with the values from the Header and the POItems translation 
+entries for the .po file. The overloaded variants allow the output to be sent 
+to the DebugLn routine or stored in a TStrings instance.
+</p>
+<p>
+Use <var>DisplayHeader</var> to control whether values in the Header section 
+of the .po file are included the output for the report.
+</p>
+<p>
+Use <var>StartIndex</var> and <var>StopIndex</var> to specify a range of 
+translation entries found in POItems in the output for the report.
+</p>
+<p>
+The variant with the <var>Log</var> parameter allows the output to be stored 
+in the TString instance passed in the argument.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TPOFile.Report.StartIndex">
-<short/>
+<short>
+Ordinal position for the first translation entry included in the output.
+</short>
 </element>
 <element name="TPOFile.Report.StopIndex">
-<short/>
+<short>
+Ordinal position for the last translation entry included in the output.
+</short>
 </element>
 <element name="TPOFile.Report.DisplayHeader">
-<short/>
+<short>
+<b>True</b> to display values found the Header for the .po file.
+</short>
 </element>
 <element name="TPOFile.Report.Log">
-<short/>
+<short>
+TStrings instance where the output for the report is stored.
+</short>
 </element>
 
 <element name="TPOFile.CreateHeader">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Ensures that a TPOFileItem instance is allocated for the Header property 
+(when not already assigned).
+</short>
+<descr>
+<p>
+<var>CreateHeader</var> sets the value for the Translation property in Header 
+to the default content type for the .po file: 
+</p>
+<code>
+'Content-Type: text/plain; charset=UTF-8'.
+</code>
+<p>
+CreateHeader is called from the file-based variant of the Create constructor, 
+and from the SaveToStrings method when Header has not been assigned.
+</p>
+</descr>
+<seealso>
+<link id="TPOFile.Header"/>
+<link id="TPOFile.CharSet"/>
+<link id="TPOFile.Create"/>
+<link id="TPOFile.SaveToStrings"/>
+<link id="TPOFileItem.Translation"/>
+<link id="TPOFileItem.Comments"/>
+</seealso>
 </element>
 
+<!-- HERE -->
 <element name="TPOFile.UpdateStrings">
-<short/>
+<short>
+Adds or updates translation entries in POItems for the values specified in 
+InputLines.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -537,7 +998,9 @@ Destructor for the class instance.
 </element>
 
 <element name="TPOFile.SaveToStrings">
-<short/>
+<short>
+Stores values from Header and the sorted POItems to the specified string list.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -546,7 +1009,9 @@ Destructor for the class instance.
 </element>
 
 <element name="TPOFile.SaveToFile">
-<short/>
+<short>
+Stores values from Header and the sorted POItems to the specified file name.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -555,7 +1020,9 @@ Destructor for the class instance.
 </element>
 
 <element name="TPOFile.UpdateItem">
-<short/>
+<short>
+Adds or updates a translation entry which has the specified identifier.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -573,7 +1040,9 @@ Destructor for the class instance.
 </element>
 
 <element name="TPOFile.FillItem">
-<short/>
+<short>
+Stores argument values to the specified translation entry.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -606,7 +1075,9 @@ Destructor for the class instance.
 </element>
 
 <element name="TPOFile.UpdateTranslation">
-<short/>
+<short>
+Updates or removes translation entries in the .po file using the content in the specified .po file.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -615,22 +1086,33 @@ Destructor for the class instance.
 </element>
 
 <element name="TPOFile.UntagAll">
-<short/>
+<short>
+Resets the value in the Tag property for all of the translation entries in 
+Items.  
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TPOFile.RemoveTaggedItems">
-<short/>
+<short>
+Removes translation entries in POItems with the specified value in their Tag 
+property.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TPOFile.RemoveTaggedItems.aTag">
-<short/>
+<short>
+Arbitrary numeric value for the tagged translations removed in the method.
+</short>
 </element>
 
 <element name="TPOFile.RemoveIdentifier">
-<short/>
+<short>
+Removes a translation entry in POItems with the specified value in its 
+identifier (msgid).
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -639,7 +1121,10 @@ Destructor for the class instance.
 </element>
 
 <element name="TPOFile.RemoveOriginal">
-<short/>
+<short>
+Removes a translation entry in POItems with has the specified value as its 
+Original untranslated value.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -648,7 +1133,10 @@ Destructor for the class instance.
 </element>
 
 <element name="TPOFile.RemoveIdentifiers">
-<short/>
+<short>
+Removes translation entries from POItems which have the identifiers (msgids) 
+in the specified string list.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -657,7 +1145,10 @@ Destructor for the class instance.
 </element>
 
 <element name="TPOFile.RemoveOriginals">
-<short/>
+<short>
+Removes translation entries from POItems which have the original untranslated 
+values in the specified string list.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -666,117 +1157,276 @@ Destructor for the class instance.
 </element>
 
 <element name="TPOFile.Tag">
-<short/>
+<short>
+Arbitrary value used to identify the .po file and its associated translation 
+entries.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPOFile.RemoveTaggedItems"/>
+<link id="TPOFile.UntagAll"/>
+<link id="UpdatePOFile"/>
+<link id="UpdatePOFileTranslations"/>
+</seealso>
 </element>
 
 <element name="TPOFile.Modified">
-<short/>
+<short>
+Indicates whether values in the class instance have been modified since they 
+were loaded from a .po file or stream.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TPOFile.Items">
-<short/>
+<short>
+Provides access to the TFPList instance where translation entries are stored.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TPOFile.PoName">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Name for the .po file loaded into the class instance.
+</short>
+<descr>
+<p>
+<var>POName</var> is a read-only <var>String</var> property with the name for 
+the .po file loaded into the class instance. The property value is assigned in 
+the Create constructor using the AFilename argument value passed to the method.
+</p>
+</descr>
+<seealso>
+<link id="TPOFile.Create"/>
+<link id="TPOFile.PORename"/>
+</seealso>
 </element>
 
 <element name="TPOFile.PoRename">
-<short/>
+<short>
+Name for the .po file loaded into the class instance.
+</short>
 <descr/>
+<notes><note>???</note></notes>
 <seealso/>
 </element>
 
 <element name="TPOFile.Statistics">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Provides access to statistics for the translation entries in the .po file.
+</short>
+<descr>
+<p>
+<var>Statistics</var> is a read-only <var>TTranslationStatistics</var> 
+property with information about the translation entries in the POItems 
+property. The statistics reflect the number of entries with a translated 
+value, without a translated value (blank), and those which cannot be used due 
+to use of "fuzzy" or "badformat" flags in the translation.
+</p>
+<p>
+An internal flag is maintained to indicate whether the statistics have already 
+been calculated by reading the value for the property. They must be 
+recalculated when the flag is reset after calling the InvalidateStatistics 
+method; this occurs in both the Create constructor and the UpdateTranslation 
+method.
+</p>
+</descr>
+<seealso>
+<link id="TPOFile.InvalidateStatistics"/>
+<link id="TPOFile.Create"/>
+<link id="TPOFile.POItems"/>
+<link id="TTranslationStatistics"/>
+</seealso>
 </element>
 
 <element name="TPOFile.InvalidateStatistics">
-<short/>
+<short>
+Resets the internal flag which indicates that translation statistics has been 
+calculated for the entries in POItems.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPOFile.Statistics"/>
+<link id="TPOFile.POItems"/>
+<link id="TTranslationStatistics"/>
+</seealso>
 </element>
 
 <element name="TPOFile.FindPoItem">
-<short/>
+<short>
+Gets the translation entry with the specified identifier value.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPOFileItem.IdentifierLow"/>
+</seealso>
 </element>
 <element name="TPOFile.FindPoItem.Result">
-<short/>
+<short>
+TPOFileItem with the specified Identifier value, or <b>Nil</b> when not found.
+</short>
 </element>
 <element name="TPOFile.FindPoItem.Identifier">
-<short/>
+<short>
+Identifier (msgid) for the translation entry located in the method. The value 
+is converted to lowercase and used to find the matching translation entry.
+</short>
 </element>
 
 <element name="TPOFile.OriginalToItem">
-<short/>
+<short>
+Gets the translation entry which has the specified original (untranslated) 
+value.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPOFileItem"/>
+<link id="TPOFileItem.Original"/>
+</seealso>
 </element>
 <element name="TPOFile.OriginalToItem.Result">
-<short/>
+<short>
+TPOFileItem with the specified Original value, or <b>Nil</b> when not found.
+</short>
 </element>
 <element name="TPOFile.OriginalToItem.Data">
-<short/>
+<short>
+Untranslated value for the entry located in the method.
+</short>
 </element>
 
 <element name="TPOFile.PoItems">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Provides indexed access to the translation entries in the class instance.
+</short>
+<descr>
+<p>
+<var>POItems</var> is an indexed <var>TPOFileItem</var> property which allows 
+access to the translation entries in the class by their ordinal position. 
+Index values must be in the range <b>0..Count-1</b>.
+</p>
+<p>
+Values in POItems are created when the ReadPOText method is called to load the 
+content of a .po file or stream into the class instance.
+</p>
+</descr>
+<seealso>
+<link id="TPOFileItem"/>
+</seealso>
 </element>
 <element name="TPOFile.PoItems.Index">
-<short/>
+<short>
+Ordinal position for the translation entry in the property value.
+</short>
 </element>
 
 <element name="TPOFile.Count">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Number of translation entries in the POItems for the class instance.
+</short>
+<descr>
+<p>
+<var>Count</var> is a read-only <var>Integer</var> property which contains the 
+number of translation entries found in the class. It contains the value from 
+the Count property in the list used to store the POItems instances in the 
+class.
+</p>
+</descr>
+<seealso>
+<link id="TPOFile.POItems"/>
+</seealso>
 </element>
 
 <element name="TPOFile.Header">
-<short/>
-<descr/>
+<short>
+Contains values for the header section in a .po file.
+</short>
+<descr>
+<p>
+<var>Header</var> is a read-only <var>TPOFileItem</var> property which 
+contains values read from the header section in the .po file. The header 
+section is the first entry in a PO file that has empty string for its message 
+Identifier (msgid). It contains meta-information about the content in the 
+file, and also how a plural (a line with Plural-Forms) needs to be handled for 
+that language.
+</p>
+<p>
+The Translation property in Header is used to store the metadata found in the 
+header section for the .po file. For example:
+</p>
+<code>
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: ztrans-tool\n"
+"Last-Translator: Wiley Coyote\n"
+"Language-Team: acmecorpllc.com\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: de\n"
+</code>
+<p>
+Use of a header section is optional in the .po file. TPOFile includes the 
+CreateHeader method to ensure that the Header property is allocated - even 
+when the values are not present in the content for the .po file.
+</p>
+</descr>
 <seealso/>
 </element>
 
 <element name="EPOFileError">
-<short/>
+<short>
+Exception type raised when an error occurs in the UpdatePOFile or 
+UpdatePOFileTranslations routines.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="EPOFileError.ResFileName">
-<short/>
+<short>
+Resource name where the exception was detected.
+</short>
 </element>
 <element name="EPOFileError.POFileName">
-<short/>
+<short>
+Name for the .po file where the exception occurred.
+</short>
 </element>
 
 <element name="SystemCharSetIsUTF8">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Indicates whether the default system character is UTF-8 for the platform.
+</short>
+<descr>
+<p>
+The LCL interfaces expect UTF-8 as the default character encoding. If you do 
+not use UTF-8, install a proper widestring manager and set this variable to 
+<b>False</b>. The default value for the variable is <b>True</b>.
+</p>
+<p>
+Used in the UTF8ToSystemCharSet routine. When set to <b>False</b>, the 
+UTF8ToSys routine is called to transcode a native UTF-8 string value to the 
+system character set.
+</p>
+</descr>
+<seealso>
+<link id="UTF8ToSystemCharSet"/>
+</seealso>
 </element>
 
 <element name="GetPOFilenameParts">
-<short/>
+<short>
+Gets the unit name and language used in the specified Filename.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="GetPOFilenameParts.Result">
-<short/>
+<short>
+<b>True</b> if the .po file exists and the unit name and language were 
+extracted in the method.
+</short>
 </element>
 <element name="GetPOFilenameParts.Filename">
 <short/>
@@ -789,7 +1439,10 @@ Destructor for the class instance.
 </element>
 
 <element name="FindAllTranslatedPoFiles">
-<short/>
+<short>
+Returns a string list with the fully-qualified path to .po files for the same 
+unit as the specified file name.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -801,7 +1454,9 @@ Destructor for the class instance.
 </element>
 
 <element name="TranslateUnitResourceStrings">
-<short/>
+<short>
+Translates resource strings for one unit.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -828,7 +1483,9 @@ Destructor for the class instance.
 </element>
 
 <element name="TranslateResourceStrings">
-<short/>
+<short>
+Translates all resource strings using the specified .po or .pot file.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -852,7 +1509,10 @@ Destructor for the class instance.
 </element>
 
 <element name="UTF8ToSystemCharSet">
-<short/>
+<short>
+Converts the specified UTF-8-encoded string to the character set for the 
+system locale.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -867,6 +1527,7 @@ Destructor for the class instance.
 <short/>
 <descr/>
 <seealso/>
+<notes><note>???</note></notes>
 </element>
 <element name="UpdatePoFile.Result">
 <short/>
@@ -879,7 +1540,10 @@ Destructor for the class instance.
 </element>
 
 <element name="UpdatePoFileTranslations">
-<short/>
+<short>
+Updates all .po translation files found in the path for the specified .pot 
+file.
+</short>
 <descr/>
 <errors></errors>
 <seealso/>
@@ -892,25 +1556,34 @@ Destructor for the class instance.
 </element>
 
 <element name="sFuzzyFlag">
-<short/>
+<short>
+Value used for the "fuzzy" flag in a translation entry.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="sBadFormatFlag">
-<short/>
+<short>
+Value used for the "badformat" flag in a translation entry.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="sFormatFlag">
-<short/>
+<short>
+Value used for the language-specific "format" flag in a translation entry.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="sNoFormatFlag">
-<short/>
+<short>
+Value used for a language-specific "format" flag is not used in a translation 
+entry.
+</short>
 <descr/>
 <seealso/>
 </element>
