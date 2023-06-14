@@ -101,8 +101,6 @@ begin
     D := T.Dependencies.AddUnit('LazUnicode');
     D := T.Dependencies.AddUnit('LazUTF16');
     D := T.Dependencies.AddUnit('LazUTF8');
-    D := T.Dependencies.AddUnit('LazUTF8Classes');
-    D := T.Dependencies.AddUnit('LazUTF8SysUtils');
     D := T.Dependencies.AddUnit('LazUtilities');
     D := T.Dependencies.AddInclude('lazutils_defines.inc');
     D := T.Dependencies.AddUnit('LazUtilsStrConsts');
@@ -172,8 +170,6 @@ begin
     T := P.Targets.AddImplicitUnit('lazunicode.pas');
     T := P.Targets.AddImplicitUnit('lazutf16.pas');
     T := P.Targets.AddImplicitUnit('lazutf8.pas');
-    T := P.Targets.AddImplicitUnit('lazutf8classes.pas');
-    T := P.Targets.AddImplicitUnit('lazutf8sysutils.pas');
     T := P.Targets.AddImplicitUnit('lazutilities.pas');
     T := P.Targets.AddImplicitUnit('lazutilsstrconsts.pas');
     T := P.Targets.AddImplicitUnit('lazversion.pas');

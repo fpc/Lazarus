@@ -226,7 +226,6 @@ type
   protected
     class procedure WSRegisterClass; override;
     procedure ResolveLinks; virtual;
-    procedure DereferenceLinks; virtual; deprecated 'override ResolveLinks instead' {Laz 1.9};
     function CheckFile(var AFilename: string): Boolean; virtual;
     function CheckFileMustExist(const AFileName: string): Boolean; virtual;
     function CheckAllFiles: Boolean; virtual;

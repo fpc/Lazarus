@@ -191,21 +191,6 @@ begin
           and (CompareFilenames(ExpDir,LeftStr(ExpFile,p))=0);
 end;
 
-function ExtractFileNameWithoutExt(const AFilename: string): string;
-begin
-  Result:=LazFileUtils.ExtractFileNameWithoutExt(AFilename);
-end;
-
-function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string;
-begin
-  Result:=LazFileUtils.CreateAbsoluteSearchPath(SearchPath, BaseDirectory);
-end;
-
-function CreateAbsolutePath(const Filename, BaseDirectory: string): string;
-begin
-  Result:=LazFileUtils.CreateAbsolutePath(Filename, BaseDirectory);
-end;
-
 function CopyFile(const SrcFilename, DestFilename: string;
   Flags: TCopyFileFlags; ExceptionOnError: Boolean): boolean;
 var

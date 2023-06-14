@@ -11,16 +11,16 @@ uses
   AvgLvlTree, CodepagesAsian, CodepagesCommon, CompWriterPas, DynamicArray, 
   DynHashArray, DynQueue, ExtendedStrings, FileReferenceList, FileUtil, 
   FPCAdds, GraphMath, GraphType, HTML2TextRender, IntegerList, Laz2_DOM, 
-  Laz2_XMLCfg, laz2_XMLRead, laz2_xmlutils, laz2_XMLWrite, laz2_xpath, 
+  Laz2_XMLCfg, Laz2_XMLRead, Laz2_XMLUtils, Laz2_XMLWrite, Laz2_XPath, 
   Laz_AVL_Tree, Laz_DOM, Laz_XMLCfg, Laz_XMLRead, Laz_XMLStreaming, 
   Laz_XMLWrite, LazClasses, lazCollections, LazConfigStorage, LazDbgLog, 
-  lazfglhash, LazFileCache, LazFileUtils, LazLinkedList, LazListClasses, 
+  LazFglHash, LazFileCache, LazFileUtils, LazLinkedList, LazListClasses, 
   LazLogger, LazLoggerBase, LazLoggerDummy, LazLoggerProfiling, LazMethodList, 
   LazPasReadUtil, LazStringUtils, LazSysUtils, LazTracer, LazUnicode, 
-  LazUTF16, LazUTF8, LazUTF8Classes, LazUTF8SysUtils, LazUtilities, 
-  LazUtilsStrConsts, LazVersion, LConvEncoding, lcsvutils, LookupStringList, 
-  Maps, Masks, ObjectLists, StringHashList, TextStrings, Translations, 
-  UITypes, UTF8Process, LazarusPackageIntf;
+  LazUTF16, LazUTF8, LazUtilities, LazUtilsStrConsts, LazVersion, 
+  LConvEncoding, LCSVUtils, LookupStringList, Maps, Masks, ObjectLists, 
+  StringHashList, TextStrings, Translations, UITypes, UTF8Process, 
+  LazarusPackageIntf;
 
 implementation
 

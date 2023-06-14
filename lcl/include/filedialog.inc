@@ -254,11 +254,6 @@ begin
         Files[i]:=GetPhysicalFilename(Files[i],pfeOriginal);
 end;
 
-procedure TOpenDialog.DereferenceLinks;
-begin
-  ResolveLinks;
-end;
-
 function PromptForFileName(var AFileName: string;
                            const AFilter: string = '';
                            const ADefaultExt: string = '';
@@ -436,15 +431,8 @@ end;
 function TOpenDialog.DoExecute: boolean;
 begin
   Result:=inherited DoExecute;
-  if not (ofNoResolveLinks in Options) then begin
-    Assert(TMethod(@Self.DereferenceLinks).Code = Pointer(@TOpenDialog.DereferenceLinks),
-           'TOpenDialog.DoExecute: DereferenceLinks mismatch.');
-    //if TMethod(@Self.DereferenceLinks).Code <> Pointer(@TOpenDialog.DereferenceLinks)
-    //then begin
-    //  DereferenceLinks{%H-}; // call for compatibility
-    //end else
+  if not (ofNoResolveLinks in Options) then
     ResolveLinks;
-  end;
   if not (ofNoChangeDir in Options) then begin
     if (ExtractFilePath(Filename)<>'') then
       InitialDir:=ExtractFilePath(Filename)

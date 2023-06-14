@@ -363,7 +363,6 @@ type
     function GetValue: ansistring; virtual;
     function GetHint({%H-}HintType: TPropEditHint; {%H-}x, {%H-}y: integer): string; virtual;
     function HasDefaultValue: Boolean;
-    function HasStoredFunction: Boolean; deprecated; // a stored function is always present, so returns true
     function GetDefaultValue: ansistring; virtual;
     function CallStoredFunction: Boolean; virtual;
     function GetVisualValue: ansistring; virtual;
@@ -1454,7 +1453,6 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     GetPrivateDirectory: AnsiString;
-    constructor Create; overload; deprecated 'Use Create(TComponent) instead';
     destructor Destroy; override;
 
     // lookup root
@@ -3128,11 +3126,6 @@ var
 begin
   APropInfo:=FPropList^[0].PropInfo;
   Result := APropInfo^.Default<>NoDefaultValue;
-end;
-
-function TPropertyEditor.HasStoredFunction: Boolean;
-begin
-  Result := True;
 end;
 
 function TPropertyEditor.GetUnicodeStrValue: UnicodeString;
@@ -7549,11 +7542,6 @@ begin
   inherited Notification(AComponent, Operation);
   if (Operation=opRemove) and (AComponent=FLookupRoot) then
     LookupRoot:=nil;
-end;
-
-constructor TPropertyEditorHook.Create;
-begin
-  Create(nil);
 end;
 
 destructor TPropertyEditorHook.Destroy;

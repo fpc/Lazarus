@@ -228,7 +228,6 @@ type
     IdentifierHistory: TIdentifierHistoryList;
     Positions: TCodeXYPositions;
     Indenter: TFullyAutomaticBeautifier;
-    property FPCDefinesCache: TCompilerDefinesCache read CompilerDefinesCache; deprecated 'use CompilerDefinesCache'; // 1.9
     property Beautifier: TBeautifyCodeOptions read GetBeautifier;
 
     constructor Create;
@@ -381,7 +380,6 @@ type
                                         UseCache: boolean = true): string;// value of macro #FPCUnitPath
     procedure GetFPCVersionForDirectory(const Directory: string;
                                  out FPCVersion, FPCRelease, FPCPatch: integer);
-    function GetPCVersionForDirectory(const Directory: string): integer; deprecated 'use below'; // 2.0.1
     function GetPCVersionForDirectory(const Directory: string; out Kind: TPascalCompiler): integer;
     function GetNamespacesForDirectory(const Directory: string;
                           UseCache: boolean = true): string;// value of macro #Namespaces
@@ -724,21 +722,12 @@ type
     function AddUnitToMainUsesSection(Code: TCodeBuffer;
           const NewUnitName, NewUnitInFile: string;
           const Flags: TAddUsesFlags = []): boolean; overload;
-    function AddUnitToMainUsesSection(Code: TCodeBuffer;
-          const NewUnitName, NewUnitInFile: string;
-          AsLast: boolean; CheckSpecialUnits: boolean = true): boolean; overload; deprecated;
     function AddUnitToMainUsesSectionIfNeeded(Code: TCodeBuffer;
-          const NewUnitName, NewUnitInFile: string;
-          const Flags: TAddUsesFlags = []): boolean;
-    function AddUnitToMainUsesSectionIfNeeded(Code: TCodeBuffer;
-          const NewUnitName, NewUnitInFile: string;
-          AsLast: boolean; CheckSpecialUnits: boolean = true): boolean; overload; deprecated;
-    function AddUnitToImplementationUsesSection(Code: TCodeBuffer;
           const NewUnitName, NewUnitInFile: string;
           const Flags: TAddUsesFlags = []): boolean;
     function AddUnitToImplementationUsesSection(Code: TCodeBuffer;
           const NewUnitName, NewUnitInFile: string;
-          AsLast: boolean; CheckSpecialUnits: boolean = true): boolean; overload; deprecated;
+          const Flags: TAddUsesFlags = []): boolean;
     function RemoveUnitFromAllUsesSections(Code: TCodeBuffer;
           const AnUnitName: string): boolean;
     function FindUsedUnitFiles(Code: TCodeBuffer; var MainUsesSection: TStrings
@@ -1733,15 +1722,6 @@ begin
   FPCVersion:=FPCFullVersion div 10000;
   FPCRelease:=(FPCFullVersion div 100) mod 100;
   FPCPatch:=FPCFullVersion mod 100;
-end;
-
-function TCodeToolManager.GetPCVersionForDirectory(const Directory: string
-  ): integer;
-var
-  Kind: TPascalCompiler;
-begin
-  Result:=GetPCVersionForDirectory(Directory,Kind);
-  if Kind=pcFPC then ;
 end;
 
 function TCodeToolManager.GetPCVersionForDirectory(const Directory: string; out
@@ -5179,18 +5159,6 @@ begin
   end;
 end;
 
-function TCodeToolManager.AddUnitToMainUsesSection(Code: TCodeBuffer;
-  const NewUnitName, NewUnitInFile: string; AsLast: boolean;
-  CheckSpecialUnits: boolean = true): boolean;
-var
-  Flags: TAddUsesFlags;
-begin
-  Flags:=[];
-  if AsLast then Include(Flags,aufLast);
-  if not CheckSpecialUnits then Include(Flags,aufNotCheckSpecialUnit);
-  Result:=AddUnitToMainUsesSection(Code,NewUnitName,NewUnitInFile,Flags);
-end;
-
 function TCodeToolManager.AddUnitToMainUsesSectionIfNeeded(Code: TCodeBuffer;
   const NewUnitName, NewUnitInFile: string; const Flags: TAddUsesFlags
   ): boolean;
@@ -5211,18 +5179,6 @@ begin
   end;
 end;
 
-function TCodeToolManager.AddUnitToMainUsesSectionIfNeeded(Code: TCodeBuffer;
-  const NewUnitName, NewUnitInFile: string; AsLast: boolean;
-  CheckSpecialUnits: boolean): boolean;
-var
-  Flags: TAddUsesFlags;
-begin
-  Flags:=[];
-  if AsLast then Include(Flags,aufLast);
-  if not CheckSpecialUnits then Include(Flags,aufNotCheckSpecialUnit);
-  Result:=AddUnitToMainUsesSectionIfNeeded(Code,NewUnitName,NewUnitInFile,Flags);
-end;
-
 function TCodeToolManager.AddUnitToImplementationUsesSection(Code: TCodeBuffer;
   const NewUnitName, NewUnitInFile: string; const Flags: TAddUsesFlags
   ): boolean;
@@ -5239,18 +5195,6 @@ begin
   except
     on e: Exception do Result:=HandleException(e);
   end;
-end;
-
-function TCodeToolManager.AddUnitToImplementationUsesSection(Code: TCodeBuffer;
-  const NewUnitName, NewUnitInFile: string; AsLast: boolean;
-  CheckSpecialUnits: boolean): boolean;
-var
-  Flags: TAddUsesFlags;
-begin
-  Flags:=[];
-  if AsLast then Include(Flags,aufLast);
-  if not CheckSpecialUnits then Include(Flags,aufNotCheckSpecialUnit);
-  Result:=AddUnitToImplementationUsesSection(Code,NewUnitName,NewUnitInFile,Flags);
 end;
 
 function TCodeToolManager.RemoveUnitFromAllUsesSections(Code: TCodeBuffer;

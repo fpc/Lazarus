@@ -65,10 +65,6 @@ function FilenameHasPascalExt(const Filename: string): boolean;
 function FileIsInPath(const Filename, Path: string): boolean;
 function FileIsInDirectory(const Filename, Directory: string): boolean;
 
-function ExtractFileNameWithoutExt(const AFilename: string): string; deprecated 'Use the function from unit LazFileUtils';
-function CreateAbsoluteSearchPath(const SearchPath, BaseDirectory: string): string; deprecated 'Use the function from unit LazFileUtils';
-function CreateAbsolutePath(const Filename, BaseDirectory: string): string; deprecated 'Use the function from unit LazFileUtils';
-
 function GetAllFilesMask: string; inline;
 function GetExeExt: string; inline;
 function ReadFileToString(const Filename: string): string;

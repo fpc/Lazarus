@@ -125,7 +125,6 @@ type
   protected
     procedure DoInit; virtual;
     procedure DoFinish; virtual;
-    procedure DoFinsh; deprecated 'Use DoFinish'; // Deprecated in 2.1 / 30.04.2020 / Remove in 2.3
 
     procedure IncreaseIndent; overload; virtual;
     procedure DecreaseIndent; overload; virtual;
@@ -730,13 +729,7 @@ begin
   //
 end;
 
-procedure TLazLogger.DoFinsh;
-begin
-  DoFinish;
-end;
-
-procedure TLazLogger.DoDebuglnStack(const s: string; AGroup: PLazLoggerLogGroup
-  );
+procedure TLazLogger.DoDebuglnStack(const s: string; AGroup: PLazLoggerLogGroup);
 begin
   //
 end;

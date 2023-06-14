@@ -120,19 +120,19 @@
       </Item>
       <Item>
         <Filename Value="laz2_xmlread.pas"/>
-        <UnitName Value="laz2_XMLRead"/>
+        <UnitName Value="Laz2_XMLRead"/>
       </Item>
       <Item>
         <Filename Value="laz2_xmlutils.pas"/>
-        <UnitName Value="laz2_xmlutils"/>
+        <UnitName Value="Laz2_XMLUtils"/>
       </Item>
       <Item>
         <Filename Value="laz2_xmlwrite.pas"/>
-        <UnitName Value="laz2_XMLWrite"/>
+        <UnitName Value="Laz2_XMLWrite"/>
       </Item>
       <Item>
         <Filename Value="laz2_xpath.pas"/>
-        <UnitName Value="laz2_xpath"/>
+        <UnitName Value="Laz2_XPath"/>
       </Item>
       <Item>
         <Filename Value="laz_avl_tree.pp"/>
@@ -247,14 +247,6 @@
         <UnitName Value="LazUTF8"/>
       </Item>
       <Item>
-        <Filename Value="lazutf8classes.pas"/>
-        <UnitName Value="LazUTF8Classes"/>
-      </Item>
-      <Item>
-        <Filename Value="lazutf8sysutils.pas"/>
-        <UnitName Value="LazUTF8SysUtils"/>
-      </Item>
-      <Item>
         <Filename Value="lazutilities.pas"/>
         <UnitName Value="LazUtilities"/>
       </Item>
@@ -276,7 +268,7 @@
       </Item>
       <Item>
         <Filename Value="lcsvutils.pas"/>
-        <UnitName Value="lcsvutils"/>
+        <UnitName Value="LCSVUtils"/>
       </Item>
       <Item>
         <Filename Value="lookupstringlist.pas"/>

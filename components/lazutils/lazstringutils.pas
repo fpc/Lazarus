@@ -49,7 +49,6 @@ function LineEndingCount(const Txt: string; var LengthOfLastLine: integer): inte
 function ChangeLineEndings(const s, NewLineEnding: string): string;
 function LineBreaksToSystemLineBreaks(const s: string): string;
 function LineBreaksToDelimiter(const s: string; Delimiter: char): string;
-function ConvertLineEndings(const s: string): string; inline; deprecated 'use LineBreaksToSystemLineBreaks instead';
 
 // Conversions
 function TabsToSpaces(const s: string; TabWidth: integer; UseUTF8: boolean): string;
@@ -314,11 +313,6 @@ begin
       inc(p);
     end;
   end;
-end;
-
-function ConvertLineEndings(const s: string): string;
-begin
-  Result:=LineBreaksToSystemLineBreaks(s);
 end;
 
 function TabsToSpaces(const s: string; TabWidth: integer; UseUTF8: boolean): string;
