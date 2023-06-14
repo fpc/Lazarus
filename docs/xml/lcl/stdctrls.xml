@@ -2017,7 +2017,11 @@ InitializeWnd calls the inherited method on entry.
 <p>
 InitializeWnd gets the string values for list items stored in the widgetset 
 class instance (when present), and applies them to the <var>Items</var> 
-property. Other property values are forwarded <b>to</b> the widgetset class 
+property. The <var>Sorted</var> property in the control is applied to the list 
+items provided by the widget.
+</p>
+<p>
+Other property values are forwarded <b>to</b> the widgetset class 
 instance, including:
 </p>
 <ul>
@@ -2724,6 +2728,7 @@ string ('') when the control handle is not available.
 <short>Caption for the control, or an empty string.</short>
 </element>
 
+<!-- TODO: Modified in 6d9db64d. -->
 <element name="TCustomComboBox.RealSetText">
 <short>
 Updates ItemIndex when the new value for the control is updated.
@@ -2732,9 +2737,11 @@ Updates ItemIndex when the new value for the control is updated.
 <p>
 <var>RealSetText</var> is an overridden method in <var>TCustomComboBox</var>. 
 It ensures that <var>ItemIndex</var> is updated with the ordinal position in 
-<var>Items</var> where the <var>AValue</var> argument is found. If there are 
-no values stored in Items, ItemIndex is set to <b>-1</b>. A visible emulated 
-<var>TextHint</var> is hidden when AValue is not an empty string ('').
+<var>Items</var> where the <var>AValue</var> argument is found. MatchListItem 
+is called to get the position for AValue using the case sensitivity and search 
+order settings in the AutoCompleteText. If there are no values stored in 
+Items, ItemIndex is set to <b>-1</b>. A visible emulated <var>TextHint</var> 
+is hidden when AValue is not an empty string ('').
 </p>
 <p>
 The inherited method is called prior to exit. This causes the widgetset class 
@@ -2746,6 +2753,9 @@ message is performed for the control.
 <seealso>
 <link id="TCustomComboBox.ItemIndex"/>
 <link id="TCustomComboBox.Items"/>
+<link id="TCustomComboBox.MatchListItem"/>
+<link id="TCustomComboBox.AutoCompleteText"/>
+<link id="TCustomComboBox.RealGetText"/>
 <link id="TCustomComboBox.RealGetText"/>
 <link id="#lcl.controls.TWinControl.RealSetText">TWinControl.RealSetText</link>
 <link id="#lcl.controls.TWinControl.RealGetText">TWinControl.RealGetText</link>
@@ -3406,6 +3416,61 @@ calls the <var>AddObject</var> method in Items to store the values in
 </element>
 <element name="TCustomComboBox.AddItem.AnObject">
 <short>The associated object, can be <b>Nil</b>.</short>
+</element>
+
+<!-- TODO: Added in 6d9db64d. -->
+<element name="TCustomComboBox.MatchListItem">
+<short>
+Gets the position for the specified value in Items using the AutoCompleteText 
+settings for the control.
+</short>
+<descr>
+<p>
+<var>MatchListItem</var> is an <var>Integer</var> function used to get the 
+ordinal position in Items where the value in <var>AValue</var> is stored.
+</p>
+<p>
+MatchListItem uses the <var>TComboBoxAutoCompleteText</var> settings in 
+<var>AutoCompleteText</var> to locate the position for the specified value. If 
+cbactSearchCaseSensitive  is included in AutoCompleteText, a case-sensitive 
+search is used to locate the value. Otherwise, AValue is converted to 
+uppercase and a case-insensitive search is performed in Items.
+</p>
+<p>
+The search direction in Items is determined using the cbactSearchAscending 
+value in  AutoCompleteText. When present, the search starts at the first value 
+in Items (position 0) and continues until a match is found or all Items have 
+been checked. When omitted, the search starts at the last value in Items 
+(Count-1) and continues until a match is found or all Items have been checked.
+</p>
+<p>
+The return value is -1 if Items does not contain any entries (Count=0), if 
+AValue is an empty string (''), or AValue is not found in Items using the 
+AutoCompleteText settings.
+</p>
+<p>
+MatchListItem is called from the RealSetText method when the edit text for the 
+control has been changed.
+</p>
+</descr>
+<version>
+Added in LCL version 2.4.0.
+</version>
+<seealso>
+<link id="TCustomComboBox.RealSetText"/>
+<link id="TCustomComboBox.Items"/>
+<link id="TCustomComboBox.AutoCompleteText"/>
+</seealso>
+</element>
+<element name="TCustomComboBox.MatchListItem.Result">
+<short>
+Ordinal position in Items for the specified value, or -1 when not found.
+</short>
+</element>
+<element name="TCustomComboBox.MatchListItem.AValue">
+<short>
+Value to locate in the Items for the control.
+</short>
 </element>
 
 <element name="TCustomComboBox.AddHistoryItem">
