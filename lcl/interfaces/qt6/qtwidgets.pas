@@ -16250,6 +16250,10 @@ begin
 end;
 
 function TQtMenu.actionHandle: QActionH;
+{$IFDEF DARWIN}
+var
+  S: string;
+{$ENDIF}
 begin
   if FActionHandle = nil then
   begin
@@ -16259,6 +16263,12 @@ begin
       FActionEventFilter := nil;
     end;
     FActionHandle := QMenu_menuAction(QMenuH(Widget));
+    {$IFDEF DARWIN}
+    S := FMenuItem.Caption;
+    {$warning must find better way to map about role}
+    if S.StartsWith('about',True) then
+      QAction_setMenuRole(FActionHandle, QActionAboutRole);
+    {$ENDIF}
     FActionEventFilter := QObject_hook_create(FActionHandle);
     QObject_hook_hook_events(FActionEventFilter, @ActionEventFilter);
   end;
@@ -16414,6 +16424,9 @@ var
   Shift: TShiftState;
   QtK1, QtK2: integer;
   KeySequence: QKeySequenceH;
+  {$IFDEF DARWIN}
+  APrefs, AQuit: QKeySequenceH;
+  {$ENDIF}
 begin
   QtK1 := 0;
   QtK2 := 0;
@@ -16430,6 +16443,20 @@ begin
   // there is no need in destroying QKeySequnce
   KeySequence := QKeySequence_create(QtK1, QtK2);
   QAction_setShortcut(ActionHandle, KeySequence);
+  {$IFDEF DARWIN}
+  APrefs := QKeySequence_Create(QKeySequencePreferences);
+  AQuit := QKeySequence_Create(QKeySequenceQuit);
+  if QKeySequence_matches(KeySequence, APrefs) = QKeySequenceExactMatch then
+    QAction_setMenuRole(FActionHandle, QActionPreferencesRole)
+  else
+  if QKeySequence_matches(KeySequence, AQuit) = QKeySequenceExactMatch then
+    QAction_setMenuRole(FActionHandle, QActionQuitRole)
+  else
+    if QAction_menuRole(FActionHandle) = QActionTextHeuristicRole then
+      QAction_setMenuRole(FActionHandle, QActionNoRole);
+  QKeySequence_Destroy(APrefs);
+  QKeySequence_Destroy(AQuit);
+  {$ENDIF}
   QKeySequence_destroy(KeySequence);
 end;
 
@@ -20171,7 +20198,7 @@ var
   QResult: Int64;
 begin
   Result := mrCancel;
-  {$IFDEF QTDIALOGS_USES_QT_LOOP}
+  {$IF DEFINED(QTDIALOGS_USES_QT_LOOP) OR DEFINED(DARWIN)}
   QDialog_exec(QMessageBoxH(Widget));
   {$ELSE}
   QMessageBox_setWindowModality(QMessageBoxH(Widget), QtApplicationModal);
