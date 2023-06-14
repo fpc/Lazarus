@@ -456,10 +456,53 @@ begin
   I := ItemIndex;
   if (I < 0) or (I >= FItems.Count) or (FItems[I] <> AValue) then
     if not (csLoading in ComponentState) then
-      ItemIndex := FItems.IndexOf(AValue);
+      ItemIndex := MatchListItem(AValue);
   if AValue<>'' then
     HideEmulatedTextHint;
   inherited;
+end;
+
+function TCustomComboBox.MatchListItem(const AValue: TCaption): Integer;
+  function match(matchText:String; itemText:String; caseSensitive:Boolean): Boolean;
+  begin
+    if caseSensitive then
+      itemText := UTF8UpperCase(itemText);
+    Result:= (matchText=itemText);
+  end;
+var
+  matchText: String;
+  caseSensitive: Boolean;
+  i: Integer;
+begin
+  Result:= -1;
+  if AValue='' then Exit;
+  if FItems.Count=0 then Exit;
+  caseSensitive:= cbactSearchCaseSensitive in AutoCompleteText;
+  if caseSensitive then
+    matchText:= AValue
+  else
+    matchText := UTF8UpperCase(AValue);
+  if cbactSearchAscending in AutoCompleteText then
+  begin
+    for i := 0 to FItems.Count - 1 do
+    begin
+      if match(matchText, FItems[i], caseSensitive) then
+      begin
+        Result:= i;
+        break;
+      end;
+    end;
+  end else
+  begin
+    for i := FItems.Count - 1 downto 0 do
+    begin
+      if match(matchText, FItems[i], caseSensitive) then
+      begin
+        Result:= i;
+        break;
+      end;
+    end;
+  end;
 end;
 
 procedure TCustomComboBox.SetArrowKeysTraverseList(Value : Boolean);

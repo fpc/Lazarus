@@ -409,6 +409,7 @@ type
     destructor Destroy; override;
     procedure IntfGetItems;
     procedure AddItem(const Item: String; AnObject: TObject); virtual;
+    function  MatchListItem(const AValue: TCaption): Integer;
     procedure AddHistoryItem(const Item: string; MaxHistoryCount: integer;
                              SetAsText, CaseSensitive: boolean);
     procedure AddHistoryItem(const Item: string; AnObject: TObject;
