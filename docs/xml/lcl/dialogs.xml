@@ -1447,24 +1447,10 @@ property.
 </descr>
 <seealso>
 <link id="TOpenDialog.DoExecute"/>
-<link id="TOpenDialog.DereferenceLinks"/>
 <link id="TOpenDialog.Options"/>
 <link id="TFileDialog.Filename"/>
 <link id="TFileDialog.Files"/>
 <link id="TOpenOption"/>
-</seealso>
-</element>
-
-<element name="TOpenDialog.DereferenceLinks">
-<short>Resolves referential links.</short>
-<descr>
-<p>
-Deprecated since LCL version 1.9. Use or override the ResolveLinks method 
-instead.
-</p>
-</descr>
-<seealso>
-<link id="TOpenDialog.ResolveLinks"/>
 </seealso>
 </element>
 

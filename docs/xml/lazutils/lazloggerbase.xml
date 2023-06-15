@@ -616,11 +616,6 @@ class to perform the actions needed for the logger type.
 </element>
 
 <!-- procedure Visibility: protected -->
-<element name="TLazLogger.DoFinsh">
-<short>Deprecated. Use DoFinish instead.</short>
-</element>
-
-<!-- procedure Visibility: protected -->
 <element name="TLazLogger.IncreaseIndent">
 <short>Increases the nesting level for the logger.</short>
 <descr>

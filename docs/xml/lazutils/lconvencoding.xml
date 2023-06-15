@@ -1370,22 +1370,6 @@ translation array in ArrayKOI8RToUTF8.
 <short>String with the value in the KOI8R encoding.</short>
 </element>
 
-<element name="KOI8ToUTF8">
-<short>
-Deprecated in Lazarus 2.2.0. Use KOI8RToUTF8 instead.
-</short>
-<descr>
-<p>
-Deprecated in Lazarus 2.2.0. Use KOI8RToUTF8 instead.
-</p>
-</descr>
-<seealso>
-<link id="KOI8RToUTF8"/>
-</seealso>
-</element>
-<element name="KOI8ToUTF8.Result"/>
-<element name="KOI8ToUTF8.s"/>
-
 <element name="MacintoshToUTF8">
 <short>
 Converts a value encoded using the the Macintosh Code Page to UTF-8.

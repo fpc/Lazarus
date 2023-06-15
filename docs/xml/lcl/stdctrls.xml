@@ -1638,7 +1638,6 @@ platforms, including Windows and macOS Carbon. It is best to set AutoSize to
 <element name="TCustomComboBox.FCharCase"/>
 <element name="TCustomComboBox.FDropDownCount"/>
 <element name="TCustomComboBox.FDroppedDown"/>
-<element name="TCustomComboBox.FDroppingDown"/>
 <element name="TCustomComboBox.FEditingDone"/>
 <element name="TCustomComboBox.FEmulatedTextHintStatus"/>
 <element name="TCustomComboBox.FItemHeight"/>
@@ -3650,12 +3649,6 @@ cause the drop-down list to be displayed when Style is set to csDropDownList.
 <link id="TCustomComboBox.KeyDown"/>
 <link id="TComboBoxStyle"/>
 </seealso>
-</element>
-
-<element name="TCustomComboBox.DroppingDown">
-<short>Deprecated.</short>
-<descr>Deprecated. Will be removed in Lazarus 2.2.</descr>
-<seealso/>
 </element>
 
 <element name="TCustomComboBox.SelectAll">

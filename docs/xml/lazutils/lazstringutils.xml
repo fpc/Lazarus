@@ -370,22 +370,6 @@ Converts CR or LF characters in a string to the specified delimiter character.
 <short>Delimiter character used in place of CR, LF characters.</short>
 </element>
 
-<element name="ConvertLineEndings">
-<short>Deprecated.</short>
-<descr>
-<remark>Deprecated. Use LineBreaksToSystemLineBreaks instead.</remark>
-</descr>
-<seealso>
-<link id="LineBreaksToSystemLineBreaks"/>
-</seealso>
-</element>
-<element name="ConvertLineEndings.Result">
-<short>Value after converting the line endings.</short>
-</element>
-<element name="ConvertLineEndings.s">
-<short>Value with line endings to convert in the routine.</short>
-</element>
-
 <element name="TabsToSpaces">
 <short>
 Converts all Tab characters in a string to the specified number of space 

@@ -557,7 +557,6 @@ perform the update to user interface elements.
 <link id="TPOTranslator"/>
 <link id="TDefaultTranslator"/>
 <link id="TUpdateTranslator"/>
-<link id="GetDefaultLang"/>
 </seealso>
 </element>
 <element name="SetDefaultLang.Lang">
@@ -587,20 +586,6 @@ Indicates if the UI should be updated immediately.
 Language code used for the translation, or an empty string when a language 
 code is not available or an error occurs.
 </short>
-</element>
-
-<element name="GetDefaultLang">
-<short>Deprecated.</short>
-<descr>
-<p>
-Deprecated. Use the result from the SetDefaultLang function instead.
-</p>
-</descr>
-<version>Deprecated in LCL version 2.1.0.</version>
-<seealso><link id="SetDefaultLang"/></seealso>
-</element>
-<element name="GetDefaultLang.Result">
-<short>Default language code currently in use.</short>
 </element>
 
 </module>

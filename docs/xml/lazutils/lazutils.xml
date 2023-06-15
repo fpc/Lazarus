@@ -54,7 +54,6 @@ This unit contains code in the initialization section to register the
 <element name="LazUnicode"/>
 <element name="LazUTF16"/>
 <element name="LazUTF8"/>
-<element name="LazUTF8Classes"/>
 <element name="LazSysUtils"/>
 <element name="LazUtilities"/>
 <element name="LazUtilsStrConsts"/>
@@ -77,7 +76,6 @@ This unit contains code in the initialization section to register the
 <element name="GraphType"/>
 <element name="LazTracer"/>
 <element name="LazStringUtils"/>
-<element name="LazUTF8SysUtils"/>
 <element name="ObjectLists"/>
 <element name="CodepagesAsian"/>
 <element name="CodepagesCommon"/>
