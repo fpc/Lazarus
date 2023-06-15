@@ -16,6 +16,11 @@ Provides a platform-independent widgetset class and helper functions.
 define a platform-independent widgetset class (<var>TWidgetSet</var>) and 
 helper functions.
 </p>
+<remark>
+Modified in LCL version 2.4.0 to assign the GetLCLWidgetTypeName routine in 
+this unit to the OnLCLWidgetTypeName function variable in 
+<file>lazversion.pas</file> during unit initialization.
+</remark>
 <p>
 <file>interfacebase.pp</file> is part of the Lazarus Component Library 
 (<b>LCL</b>).
@@ -40,6 +45,7 @@ helper functions.
 <element name="LazLoggerBase"/>
 <element name="GraphType"/>
 <element name="GraphMath"/>
+<element name="LazVersion"/>
 
 <element name="PEventHandler">
 <short>Pointer to an event handler routine.</short>

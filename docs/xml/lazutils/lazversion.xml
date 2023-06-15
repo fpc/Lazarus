@@ -21,6 +21,22 @@ numbers in the <file>lclversion.pas</file> unit.
 </p>
 </descr>
 
+<element name="TLCLWidgetTypeNameEvent">
+<short>
+Type used for the OnLCLWidgetTypeName function variable.
+</short>
+<descr>
+
+Used in the GetLCLWidgetTypeName routine to get the name for the widgetset on the current platform.
+
+</descr>
+<seealso>
+<link id="OnLCLWidgetTypeName"/>
+<link id="GetLCLWidgetTypeName"/>
+</seealso>
+</element>
+
+
 <element name="laz_major">
 <short>Major version number for the Lazarus IDE.</short>
 <descr>
@@ -87,6 +103,53 @@ For the Lazarus version number 2.3.0.42, the value in laz_version is
 <version>
 Added in revision 57504, and available since Lazarus 1.8.4.
 </version>
+</element>
+
+
+<element name="OnLCLWidgetTypeName">
+<short>
+Variable which contains the handler routine signalled to get the name for the 
+current LCL widgetset.
+</short>
+<descr>
+<p>
+The value for the variable is assigned in the initialization section for the 
+<file>interfacebase.pp</file> unit. It is set to the GetLCLWidgetTypeName 
+routine in that unit. Please note that the GetLCLWidgetTypeName routine exists 
+in both units; this one calls the other.
+</p>
+</descr>
+<seealso>
+<link id="TLCLWidgetTypeNameEvent"/>
+<link id="lcl.interfacebase.GetLCLWidgetTypeName">InterfaceBase.GetLCLWidgetTypeName</link>
+</seealso>
+</element>
+
+<element name="GetLCLWidgetTypeName">
+<short>
+Routine called to get the type name for the widgetset class used on the 
+platform.
+</short>
+<descr>
+<p>
+<var>GetLCLWidgetTypeName</var> signals the <var>OnLCLWidgetTypeName</var> 
+event handler (when assigned) to get the type name for the widgetset. The 
+return value contains the String from LCLPlatformDirNames that represents the 
+TLCLPlatform for the widgetset. If OnLCLWidgetTypeName has not been assigned, 
+the return value is an empty string ('').
+</p>
+</descr>
+<seealso>
+<link id="TLCLWidgetTypeNameEvent"/>
+<link id="#lcl.interfacebase.GetLCLWidgetTypeName">InterfaceBase.GetLCLWidgetTypeName</link>
+<link id="#lcl.lclplatformdef.LCLPlatformDirNames">LCLPlatformDirNames</link>
+<link id="#lcl.lclplatformdef.TLCLPlatform">TLCLPlatform</link>
+</seealso>
+</element>
+<element name="GetLCLWidgetTypeName.Result">
+<short>
+String representation for the widgetset class used for the platform.
+</short>
 </element>
 
 </module>

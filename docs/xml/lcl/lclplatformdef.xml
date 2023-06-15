@@ -214,13 +214,14 @@ Descriptive name for the requested widgetset directory.
 <short>Gets the value in the BuildLCLWidgetType variable.</short>
 <descr>
 <p>
-Used in the <var>lazbuild</var> utility to get the target widgetset used for 
- the various platform defines.
+Used by the GetDefaultLCLWidgetType routine (in <file>interfacebase.pp</file>) 
+to get the type and name for the target widgetset.
 </p>
 </descr>
 <seealso>
 <link id="BuildLCLWidgetType"/>
 <link id="TLCLPlatform"/>
+<link id="#lcl.interfacebase.GetDefaultLCLWidgetType">InterfaceBase.GetDefaultLCLWidgetType</link>
 </seealso>
 </element>
 <element name="GetBuildLCLWidgetType.Result">
