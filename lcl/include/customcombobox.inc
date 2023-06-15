@@ -465,7 +465,7 @@ end;
 function TCustomComboBox.MatchListItem(const AValue: TCaption): Integer;
   function match(matchText:String; itemText:String; caseSensitive:Boolean): Boolean;
   begin
-    if caseSensitive then
+    if not caseSensitive then
       itemText := UTF8UpperCase(itemText);
     Result:= (matchText=itemText);
   end;
