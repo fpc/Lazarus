@@ -21,7 +21,11 @@ type
 
   TCursorHelper = class
   private
+    _lastCursor: NSCursor;
+  private
     procedure DoSetCursorOnActive( data:IntPtr );
+  public
+    procedure SetNewCursor( newCursor:TCocoaCursor );
   public
     class procedure SetCursorOnActive;
     class procedure SetCurrentControlCursor;
@@ -368,8 +372,21 @@ begin
     SetCurrentControlCursor;
 end;
 
+procedure TCursorHelper.SetNewCursor( newCursor:TCocoaCursor );
+var
+  currentCursor: NSCursor;
+begin
+  currentCursor:= NSCursor.currentCursor;
+  if (_lastCursor=nil) or (currentCursor=NSCursor.arrowCursor) or (currentCursor=_lastCursor) then
+  begin
+    newCursor.SetCursor;
+    _lastCursor:= newCursor.Cursor;
+  end;
+end;
+
 class procedure TCursorHelper.SetCursorOnActive;
 begin
+  CursorHelper._lastCursor:= nil;
   Application.QueueAsyncCall( @CursorHelper.DoSetCursorOnActive, 0 );
 end;
 
@@ -1843,7 +1860,7 @@ begin
   if control<>AWinControl then
     exit;
 
-  TCocoaCursor(ACursor).SetCursor;
+  CursorHelper.SetNewCursor( TCocoaCursor(ACursor) );
 end;
 
 type
