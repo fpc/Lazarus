@@ -31,7 +31,7 @@ uses
   // LCL
   LCLProc, LCLType, LMessages, LCLPlatformDef, IntfGraphics, Themes,
   // LazUtils
-  LazUTF8, IntegerList, LazUtilities, LazLoggerBase, GraphType, GraphMath;
+  LazUTF8, IntegerList, LazUtilities, LazLoggerBase, GraphType, GraphMath, LazVersion;
 
 type
   PEventHandler = type Pointer;
@@ -217,12 +217,6 @@ var
 
 implementation
 
-{function GetDefaultLCLWidgetType: TLCLPlatform;
-begin
-  Assert(Assigned(WidgetSet), 'GetDefaultLCLWidgetType: WidgetSet is not assigned.');
-  if WidgetSet.LCLPlatform<>lpNoGUI then
-    Result:=WidgetSet.LCLPlatform
-end; }
 function GetDefaultLCLWidgetType: TLCLPlatform;
 begin
   if (WidgetSet<>nil) and (WidgetSet.LCLPlatform<>lpNoGUI) then
@@ -344,5 +338,8 @@ end;
 {$I interfacebase.inc}
 {$I intfbasewinapi.inc}
 {$I intfbaselcl.inc}
+
+initialization
+  LazVersion.OnLCLWidgetTypeName := @GetLCLWidgetTypeName;
 
 end.

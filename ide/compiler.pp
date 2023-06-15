@@ -38,13 +38,12 @@ unit Compiler;
 interface
 
 uses
-  Classes, SysUtils, contnrs, strutils,
+  Classes, SysUtils, Contnrs, StrUtils,
+  {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
   // LazUtils
   FPCAdds, LazUTF8, LazFileUtils, LazUtilities, LazLoggerBase,
   // Codetools
   DefineTemplates, LinkScanner, CodeToolManager, TransferMacros,
-  // LCL
-  Forms, Controls,
   // BuildIntf
   IDEExternToolIntf,
   // IdeIntf

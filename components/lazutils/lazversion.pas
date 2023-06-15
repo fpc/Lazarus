@@ -19,6 +19,9 @@ unit LazVersion;
 
 interface
 
+type
+  TLCLWidgetTypeNameEvent = function(): string;
+
 const
   laz_major = 2;
   laz_minor = 3;
@@ -27,7 +30,20 @@ const
   laz_fullversion = ((laz_major *  100 + laz_minor) * 100 + laz_release) * 100 + laz_patch;
   laz_version = '2.3.0.0';
 
+var
+  OnLCLWidgetTypeName: TLCLWidgetTypeNameEvent;  // Set by LCL
+
+function GetLCLWidgetTypeName: string;
+
 implementation
+
+function GetLCLWidgetTypeName: string;
+begin
+  if Assigned(OnLCLWidgetTypeName) then
+    Result := OnLCLWidgetTypeName()
+  else
+    Result := '';
+end;
 
 end.
 

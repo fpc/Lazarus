@@ -44,11 +44,9 @@ interface
 uses
   Classes, SysUtils, Laz_AVL_Tree,
   {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
-  // LCL
-  InterfaceBase,
   // LazUtils
   FileUtil, LazFileUtils, LazUTF8, Laz2_XMLCfg, Laz2_DOM, LazUtilities, LazTracer,
-  LazStringUtils, FPCAdds,
+  LazStringUtils, FPCAdds, LazVersion,
   // CodeTools
   FileProcs, DefineTemplates, CodeToolsCfgScript, CodeToolManager,
   KeywordFuncLists, BasicCodeTools, LinkScanner,
@@ -57,10 +55,9 @@ uses
   // IDEIntf
   SrcEditorIntf,
   // IdeConfig
-  LazConf, EnvironmentOpts, SearchPathProcs, IdeXmlConfigProcs,
+  LazConf, EnvironmentOpts, SearchPathProcs, IdeXmlConfigProcs, TransferMacros,
   // IDE
-  LazarusIDEStrConsts, IDEProcs, TransferMacros, etFPCMsgParser,
-  IDECmdLine, ModeMatrixOpts, CompOptsModes;
+  LazarusIDEStrConsts, IDEProcs, etFPCMsgParser, ModeMatrixOpts, CompOptsModes;
 
 const
   DefaultCompilerPath = '$(CompPath)';

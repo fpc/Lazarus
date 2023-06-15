@@ -78,8 +78,7 @@ const
     'MUI'
     );
 
-var
-  // set by lazbuild.lpr and used by GetDefaultLCLWidgetType
+  // Used by GetDefaultLCLWidgetType
   BuildLCLWidgetType: TLCLPlatform =
     {$IFDEF MSWindows}{$DEFINE WidgetSetDefined}
     lpWin32;
