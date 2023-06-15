@@ -3734,6 +3734,10 @@ type
     procedure MoveToPrevNode(ASelect: Boolean = False);
     procedure MovePageDown(ASelect: Boolean = False);
     procedure MovePageUp(ASelect: Boolean = False);
+    procedure MoveLeft(ASelect: Boolean = False);
+    procedure MoveRight(ASelect: Boolean = False);
+    procedure MoveExpand(ASelect: Boolean = False);
+    procedure MoveCollapse(ASelect: Boolean = False);
     procedure MoveHome(ASelect: Boolean = False);
     procedure MoveEnd(ASelect: Boolean = False);
   public

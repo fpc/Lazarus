@@ -4435,96 +4435,72 @@ procedure TCustomTreeView.KeyDown(var Key: Word; Shift: TShiftState);
 const
   EditKey = VK_F2;
   EditKeyShift = [];
-var
-  lNode: TTreeNode;
 begin
   inherited KeyDown(Key, Shift);
 
+  if (Key = EditKey) and (Shift = EditKeyShift) and (not ReadOnly) then
+  begin
+    BeginEditing(Selected);
+    Key:=VK_UNKNOWN;
+  end;
+
+  if (Shift <> []) and (Shift <> [ssShift]) then exit;
+
   case Key of
+    VK_DOWN:
+      begin
+        MoveToNextNode(AllowMultiSelectWithShift(Shift));
+        Key:=VK_UNKNOWN;
+      end;
+    VK_UP:
+      begin
+        MoveToPrevNode(AllowMultiSelectWithShift(Shift));
+        Key:=VK_UNKNOWN;
+      end;
 
-  VK_DOWN:
-  begin
-    MoveToNextNode(AllowMultiSelectWithShift(Shift));
-    Key:=VK_UNKNOWN;
-  end;
+    VK_HOME:
+      begin
+        MoveHome(AllowMultiSelectWithShift(Shift));
+        Key:=VK_UNKNOWN;
+      end;
+    VK_END:
+      begin
+        MoveEnd(AllowMultiSelectWithShift(Shift));
+        Key:=VK_UNKNOWN;
+      end;
 
-  VK_UP:
-  begin
-    MoveToPrevNode(AllowMultiSelectWithShift(Shift));
-    Key:=VK_UNKNOWN;
-  end;
+    VK_PRIOR: // Page Up
+      begin
+        MovePageUp(AllowMultiSelectWithShift(Shift));
+        Key:=VK_UNKNOWN;
+      end;
+    VK_NEXT: // Page Down
+      begin
+        MovePageDown(AllowMultiSelectWithShift(Shift));
+        Key:=VK_UNKNOWN;
+      end;
 
-  VK_HOME:
-  begin
-    MoveHome(AllowMultiSelectWithShift(Shift));
-    Key:=VK_UNKNOWN;
-  end;
-
-  VK_END:
-  begin
-    MoveEnd(AllowMultiSelectWithShift(Shift));
-    Key:=VK_UNKNOWN;
-  end;
-
-  VK_PRIOR: // Page Up
-  begin
-    MovePageUp(AllowMultiSelectWithShift(Shift));
-    Key:=VK_UNKNOWN;
-  end;
-
-  VK_NEXT: // Page Down
-  begin
-    MovePageDown(AllowMultiSelectWithShift(Shift));
-    Key:=VK_UNKNOWN;
-  end;
-
-  else
-    if not (Key in [VK_LEFT,VK_RIGHT,VK_ADD,VK_SUBTRACT]) then
-      Exit;
-
-    if (tvoAllowMultiSelect in FOptions) and AllowMultiSelectWithShift(Shift) then
-      lNode := FTreeNodes.FLastMultiSelected
-    else
-      lNode := Selected;
-
-    case Key of
     VK_LEFT:
-    if lNode <> nil then
-    begin
-      if lNode.Expanded then
-        lNode.Expanded := False
-      else
-      if lNode.Parent <> nil then
-        lNode := lNode.Parent;
-      Key:=VK_UNKNOWN;
-    end;
-
+      begin
+        MoveLeft(AllowMultiSelectWithShift(Shift));
+        Key:=VK_UNKNOWN;
+      end;
     VK_RIGHT:
-    if lNode <> nil then
-    begin
-      if lNode.Expanded then
-        lNode := lNode.GetNextExpanded
-      else
-        lNode.Expanded := True;
-      Key:=VK_UNKNOWN;
-    end;
+      begin
+        MoveRight(AllowMultiSelectWithShift(Shift));
+        Key:=VK_UNKNOWN;
+      end;
 
-    VK_ADD:
-    if lNode <> nil then
-      lNode.Expanded := True;
-
-    VK_SUBTRACT:
-    if lNode <> nil then
-      lNode.Expanded := False;
-
-    else
-      if (Key=EditKey) and (Shift=EditKeyShift) and (not ReadOnly) then
-        BeginEditing(Selected);
-      lNode := nil; { No change in selection }
-    end;
-
-    if lNode <> nil then
-      MoveSelection(lNode, AllowMultiSelectWithShift(Shift));
+    VK_ADD: // NumPlus
+      begin
+        MoveExpand(AllowMultiSelectWithShift(Shift));
+        Key:=VK_UNKNOWN;
+      end;
+    VK_SUBTRACT: // NumMinus
+      begin
+        MoveCollapse(AllowMultiSelectWithShift(Shift));
+        Key:=VK_UNKNOWN;
+      end;
   end;
 end;
 
@@ -6172,6 +6148,81 @@ begin
   end;
   if lNode <> nil then
     MoveSelection(lNode, ASelect);
+end;
+
+procedure TCustomTreeView.MoveLeft(ASelect: Boolean);
+var
+  lNode: TTreeNode;
+begin
+  if (tvoAllowMultiSelect in FOptions) and ASelect then
+    lNode := FTreeNodes.FLastMultiSelected
+  else
+    lNode := Selected;
+
+  if lNode <> nil then
+  begin
+    if lNode.Expanded then
+      lNode.Expanded := False
+    else
+    if lNode.Parent <> nil then
+      lNode := lNode.Parent;
+  end;
+
+  if lNode <> nil then
+    MoveSelection(lNode, ASelect);
+end;
+
+procedure TCustomTreeView.MoveRight(ASelect: Boolean);
+var
+  lNode: TTreeNode;
+begin
+  if (tvoAllowMultiSelect in FOptions) and ASelect then
+    lNode := FTreeNodes.FLastMultiSelected
+  else
+    lNode := Selected;
+
+  if lNode <> nil then
+  begin
+    if lNode.Expanded then
+      lNode := lNode.GetNextExpanded
+    else
+      lNode.Expanded := True;
+  end;
+
+  if lNode <> nil then
+    MoveSelection(lNode, ASelect);
+end;
+
+procedure TCustomTreeView.MoveExpand(ASelect: Boolean);
+var
+  lNode: TTreeNode;
+begin
+  if (tvoAllowMultiSelect in FOptions) and ASelect then
+    lNode := FTreeNodes.FLastMultiSelected
+  else
+    lNode := Selected;
+
+  if lNode <> nil then
+  begin
+    lNode.Expanded := True;
+    MoveSelection(lNode, ASelect);
+  end;
+end;
+
+procedure TCustomTreeView.MoveCollapse(ASelect: Boolean);
+var
+  lNode: TTreeNode;
+begin
+  if (tvoAllowMultiSelect in FOptions) and ASelect then
+    lNode := FTreeNodes.FLastMultiSelected
+  else
+    lNode := Selected;
+
+  if lNode <> nil then
+  begin
+    lNode.Expanded := False;
+    MoveSelection(lNode, ASelect);
+  end;
 end;
 
 procedure TCustomTreeView.MoveSelection(ANewNode: TTreeNode; ASelect: Boolean);

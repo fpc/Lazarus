@@ -94,6 +94,7 @@ type
     procedure MoveHome(ASelect: Boolean = False); override;
     procedure MoveEnd(ASelect: Boolean = False); override;
     function ReturnKeyHandled: Boolean; override;
+    procedure EditKeyDown(var Key: Word; Shift: TShiftState); override;
     procedure SortAndFilter; override;
     procedure ApplyFilterCore; override;
     function GetDefaultGlyphName: string; override;
@@ -683,6 +684,45 @@ begin
   Result:=Assigned(fFilteredTreeview.OnKeyPress);
   if Result then
     fFilteredTreeview.OnKeyPress(fFilteredTreeview, Key);
+end;
+
+procedure TTreeFilterEdit.EditKeyDown(var Key: Word; Shift: TShiftState);
+  //
+  function AllowMultiSelectWithShift: Boolean;
+  begin
+    Result := (ssShift in Shift) and (msShiftSelect in fFilteredTreeview.MultiSelectStyle);
+  end;
+  //
+begin
+  if fFilteredTreeview <> nil then
+  begin
+    // current node
+    if (Key = VK_LEFT) and (Shift = [ssAlt]) then
+    begin
+      fFilteredTreeview.MoveLeft(AllowMultiSelectWithShift);
+      Key := 0;
+    end
+    else if (Key = VK_RIGHT) and (Shift = [ssAlt]) then
+    begin
+      fFilteredTreeview.MoveRight(AllowMultiSelectWithShift);
+      Key := 0;
+    end
+
+    // full tree
+    else if (Key = VK_LEFT) and (Shift = [ssShift, ssAlt]) then
+    begin
+      fFilteredTreeview.FullCollapse;
+      Key := 0;
+    end
+    else if (Key = VK_RIGHT) and (Shift = [ssShift, ssAlt]) then
+    begin
+      fFilteredTreeview.FullExpand;
+      Key := 0;
+    end
+  end;
+
+  if Key <> 0 then
+    inherited EditKeyDown(Key, Shift);
 end;
 
 end.
