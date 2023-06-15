@@ -17,10 +17,12 @@ unit TATools;
 interface
 
 uses
+  // LCL
+  LCLIntf, LCLType,  // must be before Types
+  // RTL, FCL
   Classes, SysUtils, Types, Math, FPCanvas,
   // LCL
   Controls, CustomTimer, {GraphMath,} Forms, LCLPlatformDef, InterfaceBase,
-  LCLType, LCLIntf,
   // TAChart
   TAChartUtils, TADrawUtils, TAChartAxis, TALegend, TACustomSeries, TAGraph,
   TATypes, TATextElements;

@@ -50,10 +50,11 @@ unit IpHtml;
 interface
 
 uses
-  //MemCheck,
+  // LCL
+  LCLType, LCLIntf,
   Types, contnrs, SysUtils, Classes, TypInfo,
   // LCL
-  LCLType, LCLIntf, LResources, LMessages, Messages, LCLMemManager,
+  LResources, LMessages, Messages, LCLMemManager,
   Graphics, Controls, StdCtrls, ExtCtrls, Buttons, Forms, ClipBrd, Dialogs,
   {$IFDEF UseGifImageUnit} //TODO all of this units not exists
     GifImage,

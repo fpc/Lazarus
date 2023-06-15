@@ -78,7 +78,7 @@ var
   i: Integer;
   j, n: Integer;
   x1, y1, x2, y2: Integer;
-  pts: TPointsArray;
+  pts: TPointsArray = nil;
   ACanvas: TCanvas absolute ARenderInfo.Canvas;
   coordX, coordY: Integer;
   curSegment: TPathSegment;

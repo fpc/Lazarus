@@ -6,9 +6,12 @@ unit ipHtmlBlockLayout;
 interface
 
 uses
+  // LCL
+  LCLIntf,  // Must be before Types
+  // RTL, FCL
   Types, Classes, SysUtils,
   // LCL
-  LCLIntf, Graphics,
+  Graphics,
   // TurboPower_ipro
   IpUtils, IpHtmlTypes, IpHtmlProp, IpHtmlUtils, IpHtml, IpHtmlNodes;
 

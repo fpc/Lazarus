@@ -19,6 +19,9 @@
         </Debugging>
       </Linking>
       <Other>
+        <CompilerMessages>
+          <IgnoredMessages idx6058="True"/>
+        </CompilerMessages>
         <CustomOptions Value="-dCHECK_VALID_SCALING"/>
         <OtherDefines Count="1">
           <Define0 Value="CHECK_VALID_SCALING"/>
