@@ -84,12 +84,8 @@ function SetDefaultLang(Lang: string; Dir: string = ''; LocaleFileName: string =
 
 implementation
 
-
 type
   TPersistentAccess = class(TPersistent);
-
-var
-  DefaultLang: String = '';
 
 function FindLang(var Lang: string): TLanguageID;
 var
@@ -591,8 +587,6 @@ begin
     Result := '';
     lcfn := '';
   end;
-
-  DefaultLang := Result;
 
   if lcfn<>'' then
     TranslateLCLResourceStrings(Lang, lcfn);
