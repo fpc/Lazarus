@@ -543,6 +543,66 @@ TCustomControlFilterEdit ancestor.
 </short>
 </element>
 
+<element name="TTreeFilterEdit.EditKeyDown">
+<short>
+Implements the OnKeyDown event handler for the Edit on the control.
+</short>
+<descr>
+<p>
+<var>EditKeyDown</var> is an overridden method in <var>TTreeFilterEdit</var>. 
+It extends the inherited method to ensure that key strokes in the Edit for the 
+control are applied (when needed) to its FilteredTreeview control.
+</p>
+<p>
+When FilteredTreeview has been assigned in the control, the following values 
+in Key and Shift are handled:
+</p>
+<dl>
+<dt>Alt+Left, Alt+Right</dt>
+<dd>
+Moves the selection in the associated tree view. Extends the selected cells in 
+the associated tree view when the option is enabled in the MultiSelectionStyle 
+for the tree view control.
+</dd>
+<dt>Shift+Alt+Left</dt>
+<dd>
+Collapses all of the tree nodes in the FilteredTreeview control.
+</dd>
+<dt>Shift+Alt+Right</dt>
+<dd>
+Expands all of the tree nodes in the FilteredTreeview control.
+</dd>
+</dl>
+<p>
+The value in Key is set to 0 if it was forward handled using methods in the 
+tree view control.
+</p>
+<p>
+If Key has a value that is not handled in the method, or FilteredTreeview is 
+unassigned, the inherited method is called to handle the key combination for 
+the control.
+</p>
+</descr>
+<version>
+Added in LazControls version 2.4.0.
+</version>
+<seealso>
+<link id="TTreeFilterEdit.FilteredTreeview"/>
+<link id="#lcl.editbtn.TCustomControlFilterEdit.EditKeyDown">TCustomControlFilterEdit.EditKeyDown</link>
+<link id="#lcl.editbtn.TCustomEditBtn.Edit">TCustomEditBtn.Edit</link>
+</seealso>
+</element>
+<element name="TTreeFilterEdit.EditKeyDown.Key">
+<short>
+Virtual key code examined and handled in the method.
+</short>
+</element>
+<element name="TTreeFilterEdit.EditKeyDown.Shift">
+<short>
+Ctrl, Alt, or Shift modifiers for the key code.
+</short>
+</element>
+
 <element name="TTreeFilterEdit.SortAndFilter">
 <short>
 Sorts and filters either branches or the whole tree depending on the operation 
