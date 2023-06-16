@@ -40,10 +40,10 @@ type
 
   TPropertyEditLink = class(TInterfacedObject, IVTEditLink)
   private
-    FEdit: TWinControl;        // One of the property editor classes.
-    FTree: TVirtualStringTree; // A back reference to the tree calling.
-    FNode: PVirtualNode;       // The node being edited.
-    FColumn: Integer;          // The column of the node being edited.
+    FEdit: TWinControl;           // One of the property editor classes.
+    FTree: TLazVirtualStringTree; // A back reference to the tree calling.
+    FNode: PVirtualNode;          // The node being edited.
+    FColumn: Integer;             // The column of the node being edited.
   protected
     procedure EditExit(Sender: TObject);
     procedure EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -216,7 +216,7 @@ begin
 end;
 
 type
-  TVirtualStringTreeAccess = class(TVirtualStringTree);
+  TVirtualStringTreeAccess = class(TLazVirtualStringTree);
 
 procedure TPropertyEditLink.EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 var
@@ -411,7 +411,7 @@ var
 
 begin
   Result := True;
-  FTree := Tree as TVirtualStringTree;
+  FTree := Tree as TLazVirtualStringTree;
   FNode := Node;
   FColumn := Column;
 
@@ -593,7 +593,7 @@ var
   TempText: String;
 begin
   Result := True;
-  FTree := Tree as TVirtualStringTree;
+  FTree := Tree as TLazVirtualStringTree;
   FNode := Node;
   FColumn := Column;
 

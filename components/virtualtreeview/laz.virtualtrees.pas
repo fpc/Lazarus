@@ -4160,8 +4160,7 @@ uses
   TypInfo,                 // for migration stuff
   ActnList,
   StdActns,                // for standard action support
-  GraphType,
-  LCLProc
+  GraphType
   {$ifdef EnableAccessible}
   ,laz.VTAccessibilityFactory
   {$endif};  // accessibility helper class
@@ -5009,7 +5008,7 @@ var
   I, W: Integer;
   Buffer,
   Line: String;
-  Words: array of String;
+  Words: array of String = nil;
   R: TRect;
 
 begin
@@ -7916,7 +7915,7 @@ procedure TVirtualTreeColumn.LoadFromStream(const Stream: TStream; Version: Inte
 
 var
   Dummy: Integer;
-  S: String;
+  S: String = '';
 
 begin
   with Stream do
@@ -9154,6 +9153,7 @@ var
   I, Counter: Integer;
 
 begin
+  Result := nil;
   SetLength(Result, Count);
   Counter := 0;
 
@@ -11705,7 +11705,7 @@ procedure TVTHeader.LoadFromStream(const Stream: TStream);
 var
   Dummy,
   Version: Integer;
-  S: AnsiString;
+  S: AnsiString = '';
   OldOptions: TVTHeaderOptions;
 
 begin
@@ -11808,8 +11808,8 @@ var
   Rest,
   MaxDelta,
   Difference: Integer;
-  Constraints,
-  Widths: array of Integer;
+  Constraints: array of Integer = nil;
+  Widths: array of Integer = nil;
   BonusPixel: Boolean;
 
   //--------------- local functions -------------------------------------------
@@ -24761,7 +24761,7 @@ var
   var
     Theme: HTHEME;
   begin
-    Theme := OpenThemeData(Application.Handle, 'Explorer::ItemsView');
+    Theme := OpenThemeData(Application.{%H-}Handle, 'Explorer::ItemsView');
     if not (toFullRowSelect in FOptions.FSelectionOptions) or (toGridExtensions in FOptions.FMiscOptions) then
       DrawThemeBackground(Theme, PaintInfo.Canvas.Handle, LVP_LISTDETAIL, State, InnerRect, nil)
     else
@@ -24777,7 +24777,7 @@ begin
   {$ifdef Windows}
   if tsUseExplorerTheme in FStates then
   begin
-    Theme := OpenThemeData(Application.Handle, 'Explorer::TreeView');
+    Theme := OpenThemeData(Application.{%H-}Handle, 'Explorer::TreeView');
     RowRect := Rect(0, PaintInfo.CellRect.Top, FRangeX, PaintInfo.CellRect.Bottom);
     if (Header.Columns.Count = 0) and (toFullRowSelect in TreeOptions.SelectionOptions) then
       RowRect.Right := Max(ClientWidth, RowRect.Right);
@@ -29835,6 +29835,7 @@ var
   Counter: Cardinal;
 
 begin
+  Result := nil;
   SetLength(Result, FSelectionCount);
   if FSelectionCount > 0 then
   begin
@@ -34528,7 +34529,7 @@ var
   Alignment: TAlignment;
   PaintInfo: TVTPaintInfo;
   Dummy: TColumnIndex;
-  LineImage: TLineImage;
+  LineImage: TLineImage = nil;
 begin
   if Length(S) = 0 then
     S := Text[Node, Column];

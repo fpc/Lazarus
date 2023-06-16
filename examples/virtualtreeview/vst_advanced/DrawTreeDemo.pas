@@ -382,7 +382,7 @@ begin
           pf32bit:
             Data.Properties := Data.Properties + ', 16M+ colors';
         end;
-        if Cardinal(Data.Image.Height) + 4 > TVirtualDrawTree(Sender).DefaultNodeHeight then
+        if Cardinal(Data.Image.Height) + 4 > TLazVirtualDrawTree(Sender).DefaultNodeHeight then
             Sender.NodeHeight[Node] := Data.Image.Height + 4;
       except
         Data.Image.Free;
@@ -430,7 +430,7 @@ var
   R: TRect;
 
 begin   
-  with Sender as TVirtualDrawTree, PaintInfo do
+  with Sender as TLazVirtualDrawTree, PaintInfo do
   begin
     Data := Sender.GetNodeData(Node);
     if (Column = FocusedColumn) and (Node = FocusedNode) then
@@ -494,7 +494,7 @@ var
   AMargin: Integer;
 
 begin
-  with Sender as TVirtualDrawTree do
+  with Sender as TLazVirtualDrawTree do
     AMargin := TextMargin;
 
   begin
@@ -563,7 +563,7 @@ begin
 
       // finally sort node
       if ChildCount > 0 then
-        Sender.Sort(Node, 0, TVirtualStringTree(Sender).Header.SortDirection, False);
+        Sender.Sort(Node, 0, TLazVirtualStringTree(Sender).Header.SortDirection, False);
     finally
       FindCloseUTF8(SR);
       Screen.Cursor := crDefault;
