@@ -29497,7 +29497,7 @@ the node.
 </p>
 </descr>
 <seealso>
-<link id="TTreeNode.Text"/>  
+<link id="TTreeNode.Text"/>
 <link id="TCustomTreeView.EndEditing"/>
 <link id="TCustomTreeView.OnEdited"/>
 </seealso>
@@ -34312,19 +34312,22 @@ Expands the current node (when needed), or moves to the next expanded node in
 the tree.
 </dd>
 <dt>VK_ADD (NumPad Plus)</dt>
-<dd>Expands the current node.</dd>
+<dd>
+Expands the current node. Shift includes the node in a multi-selection range 
+when enabled in Options.
+</dd>
 <dt>VK_SUBTRACT (NumPad Minus)</dt>
-<dd>Collapses the current node.</dd>
+<dd>
+Collapses the current node. Shift removes the node from a multi-selection 
+range when enabled in Options.
+</dd>
 <dt>VK_F2</dt>
-<dd>Calls BeginEditing for the Selected node if the control is not 
-ReadOnly.</dd>
+<dd>
+Calls BeginEditing for the Selected node if the control is not ReadOnly.
+</dd>
 </dl>
 <p>
 If the key event is handled in the method, Key is set to VK_UNKNOWN.
-</p>
-<p>
-Calls MoveSelection if the key event changes the Selected tree node (or 
-Selections) in the control.
 </p>
 </descr>
 <seealso>
@@ -37582,6 +37585,171 @@ Moves the selection to the previous display page for the control.
 </element>
 <element name="TCustomTreeView.MovePageUp.ASelect">
 <short><b>True</b> if the node becomes selected in the control.</short>
+</element>
+
+<element name="TCustomTreeView.MoveLeft">
+<short>
+Changes the selected tree node on the control.
+</short>
+<descr>
+<p>
+<var>MoveLeft</var> is a method used to change the selected tree node on the 
+control by moving towards the left (or upwards) in the node hierarchy. The 
+action normally results in the Parent node becoming the selected tree node.
+</p>
+<p>
+The behavior in MoveLeft is influenced by the settings in the Options 
+property and the value in the ASelect argument.
+</p>
+<p>
+ASelect indicates whether the new node becomes a Selected node on the tree 
+view control (when <b>True</b>) or simply has the focus rectangle (when 
+<b>False</b>).
+</p>
+<p>
+If multi-selections are enabled in Options (using tvoAllowMultiSelect), the 
+movement starts from the last node in the multi-selection range. Otherwise the 
+Selected node is used to start the movement.
+</p>
+<p>
+Prior to changing the active node, an Expanded node is collapsed (when 
+assigned). If the Parent node has been assigned, it becomes the target for the 
+movement. The MoveSelection method is called to change to the specified node 
+and set its Selected (or MultiSelected) attributes to the value in ASelect.
+</p>
+<p>
+MoveLeft is used in the KeyDown method for the control.
+</p>
+</descr>
+<version>
+Added in LCL version 2.4.0.
+</version>
+<seealso>
+<link id="TCustomTreeView.MoveSelection"/>
+<link id="TCustomTreeView.Options"/>
+<link id="TCustomTreeView.Selected"/>
+<link id="TCustomTreeView.Selections"/>
+<link id="TCustomTreeView.SelectionCount"/>
+<link id="TCustomTreeView.GetLastMultiSelected"/>
+<link id="TCustomTreeView.KeyDown"/>
+<link id="TTreeNode.Selected"/>
+<link id="TTreeNode.MultiSelected"/>
+<link id="TTreeViewOption"/>
+<link id="TTreeViewOptions"/>
+</seealso>
+</element>
+<element name="TCustomTreeView.MoveLeft.ASelect">
+<short>
+<b>True</b> if the new tree node is selected, <b>False</b> if it has the focus 
+rectangle.
+</short>
+</element>
+
+<element name="TCustomTreeView.MoveRight">
+<short>
+Changes the selected tree node on the control.
+</short>
+<descr>
+<p>
+<var>MoveRight</var> is a method used to change the selected tree node on the 
+control by moving towards the right (or downwards) in the node hierarchy. The 
+action normally results in the next expanded sibling or child node becoming 
+the selected tree node.
+</p>
+<p>
+The behavior in MoveRight is influenced by the settings in the Options 
+property and the value in the ASelect argument.
+</p>
+<p>
+ASelect indicates whether the new node becomes a Selected node on the tree 
+view control (when <b>True</b>) or simply has the focus rectangle (when 
+<b>False</b>).
+</p>
+<p>
+If multi-selections are enabled in Options (using tvoAllowMultiSelect), the 
+movement starts from the last node in the multi-selection range. Otherwise the 
+Selected node is used to start the movement.
+</p>
+<p>
+Prior to changing the active node, the node must be in the Expanded state. 
+When not enabled, Expanded is set to <b>True</b> but the Selected node does 
+not change. If Expanded is already enabled, the GetNextExpanded method is 
+called to get the target node for the movement. The MoveSelection method is 
+called to change to the specified node and set its Selected (or MultiSelected) 
+attributes to the value in ASelect.
+</p>
+<p>
+MoveRight is used in the KeyDown method for the control.
+</p>
+</descr>
+<version>
+Added in LCL version 2.4.0.
+</version>
+<seealso>
+<link id="TCustomTreeView.MoveSelection"/>
+<link id="TCustomTreeView.Options"/>
+<link id="TCustomTreeView.Selected"/>
+<link id="TCustomTreeView.Selections"/>
+<link id="TCustomTreeView.SelectionCount"/>
+<link id="TCustomTreeView.GetNextExpanded"/>
+<link id="TCustomTreeView.KeyDown"/>
+<link id="TTreeNode.Expanded"/>
+<link id="TTreeNode.Selected"/>
+<link id="TTreeNode.MultiSelected"/>
+<link id="TTreeViewOption"/>
+<link id="TTreeViewOptions"/>
+</seealso>
+</element>
+<element name="TCustomTreeView.MoveRight.ASelect">
+<short>
+<b>True</b> if the new tree node is selected, <b>False</b> if it has the focus 
+rectangle.
+</short>
+</element>
+
+<element name="TCustomTreeView.MoveExpand">
+<short>
+Expands the selected tree node and optionally extends a multi-selection range 
+to include the node.
+</short>
+<descr>
+<p>
+MoveExpand is called from the KeyDown method when the VK_ADD (NumPad Plus) key 
+is pressed.
+</p>
+</descr>
+<version>
+Added in LCL version 2.4.0.
+</version>
+<seealso/>
+</element>
+<element name="TCustomTreeView.MoveExpand.ASelect">
+<short>
+<b>True</b> if the expanded tree node is selected, <b>False</b> if it has the 
+focus rectangle.
+</short>
+</element>
+
+<element name="TCustomTreeView.MoveCollapse">
+<short>
+Collapses the selected tree node and optionally removes it from a 
+multi-selection range.
+</short>
+<descr>
+<p>
+MoveCollapse is called from the KeyDown method when the VK_SUBTRACT (NumPad 
+Minus) key is pressed.
+</p>
+</descr><version>
+Added in LCL version 2.4.0.
+</version>
+<seealso/>
+</element>
+<element name="TCustomTreeView.MoveCollapse.ASelect">
+<short>
+<b>True</b> if the collapsed tree node is selected, <b>False</b> if it has the 
+focus rectangle.
+</short>
 </element>
 
 <element name="TCustomTreeView.MoveHome">
