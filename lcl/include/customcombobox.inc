@@ -644,7 +644,7 @@ begin
   //SelectAll when hitting return key for AutoSelect feature
   if (Key = VK_RETURN) then
   begin
-    if ((cbactEnabled in FAutoCompleteText) and Style.HasEditBox) then
+    if AutoComplete and Style.HasEditBox then
     begin
       // Only happens with alpha-numeric keys and return key and editable Style
       SelectAll;
@@ -656,7 +656,7 @@ begin
     end;
   end
   else
-  if ((cbactEnabled in FAutoCompleteText) and Style.HasEditBox) then
+  if AutoComplete and Style.HasEditBox then
   begin
     //Only happens with alpha-numeric keys and return key and editable Style
     //DebugLn(['TCustomComboBox.KeyUp ',Key,' ',IsEditableTextKey(Key)]);
@@ -842,7 +842,7 @@ end;
 
 procedure TCustomComboBox.SetAutoComplete(const AValue: boolean);
 begin
-  if (cbactEnabled in FAutoCompleteText)=AValue then exit;
+  if AutoComplete=AValue then exit;
   if AValue then
     AutoCompleteText := AutoCompleteText + [cbactEnabled]
   else
