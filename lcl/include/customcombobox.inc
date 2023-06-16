@@ -463,30 +463,31 @@ begin
 end;
 
 function TCustomComboBox.MatchListItem(const AValue: TCaption): Integer;
-  function match(matchText:String; itemText:String; caseSensitive:Boolean): Boolean;
+var
+  matchText: String;
+  caseSensitive: Boolean;
+  i: Integer;
+
+  function match( itemText:String): Boolean;
   begin
     if not caseSensitive then
       itemText := UTF8UpperCase(itemText);
     Result:= (matchText=itemText);
   end;
-var
-  matchText: String;
-  caseSensitive: Boolean;
-  i: Integer;
 begin
   Result:= -1;
   if AValue='' then Exit;
   if FItems.Count=0 then Exit;
-  caseSensitive:= cbactSearchCaseSensitive in AutoCompleteText;
+  caseSensitive:= cbactSearchCaseSensitive in FAutoCompleteText;
   if caseSensitive then
     matchText:= AValue
   else
     matchText := UTF8UpperCase(AValue);
-  if cbactSearchAscending in AutoCompleteText then
+  if cbactSearchAscending in FAutoCompleteText then
   begin
     for i := 0 to FItems.Count - 1 do
     begin
-      if match(matchText, FItems[i], caseSensitive) then
+      if match(FItems[i]) then
       begin
         Result:= i;
         break;
@@ -496,7 +497,7 @@ begin
   begin
     for i := FItems.Count - 1 downto 0 do
     begin
-      if match(matchText, FItems[i], caseSensitive) then
+      if match(FItems[i]) then
       begin
         Result:= i;
         break;
