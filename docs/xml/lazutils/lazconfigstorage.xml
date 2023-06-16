@@ -871,9 +871,10 @@ String map where the names and values for configuration items stored in the rout
 <short/>
 </element>
 
-<!-- TODO: Added in 67c1c587. -->
 <element name="DateAsCfgStrFormat">
-<short/>
+<short>
+Default locale-independent format used for date values in DateToCfgStr.
+</short>
 <descr/>
 <version>
 Added in LazUtils version 2.4.0.
@@ -881,9 +882,10 @@ Added in LazUtils version 2.4.0.
 <seealso/>
 </element>
 
-<!-- TODO: Added in 67c1c587. -->
 <element name="DateTimeAsCfgStrFormat">
-<short/>
+<short>
+Default locale-independent format used for date/time values.
+</short>
 <descr/>
 <version>
 Added in LazUtils version 2.4.0.
@@ -891,9 +893,10 @@ Added in LazUtils version 2.4.0.
 <seealso/>
 </element>
 
-<!-- TODO: Added in 67c1c587. -->
 <element name="DateToCfgStr">
-<short/>
+<short>
+Returns a string representation for TDateTime value using the specified format.
+</short>
 <descr/>
 <version>
 Added in LazUtils version 2.4.0.
@@ -901,18 +904,28 @@ Added in LazUtils version 2.4.0.
 <seealso/>
 </element>
 <element name="DateToCfgStr.Result">
-<short/>
+<short>
+String with the date and/or time represented using the specified format.
+</short>
 </element>
 <element name="DateToCfgStr.Date">
-<short/>
+<short>
+TDateTime value converted in the routine.
+</short>
 </element>
 <element name="DateToCfgStr.AFormat">
-<short/>
+<short>
+Format for the date/time value. Default value is defined in the 
+DateAsCfgStrFormat constant and represents the date part of the specified 
+value.
+</short>
 </element>
 
-<!-- TODO: Added in 67c1c587. -->
 <element name="CfgStrToDate">
-<short/>
+<short>
+Converts a string with a date/time value using the specified format to the 
+TDateTime output value.
+</short>
 <descr/>
 <version>
 Added in LazUtils version 2.4.0.
@@ -920,16 +933,26 @@ Added in LazUtils version 2.4.0.
 <seealso/>
 </element>
 <element name="CfgStrToDate.Result">
-<short/>
+<short>
+<b>True</b> if the string was successfully converted to a TDateTIme value in 
+the routine.
+</short>
 </element>
 <element name="CfgStrToDate.s">
-<short/>
+<short>
+String with the date and/or time value converted in the routine.
+</short>
 </element>
 <element name="CfgStrToDate.Date">
-<short/>
+<short>
+Returns the TDateTime value for the specified string, or an empty TDateTime 
+value (0.0) when the routine returns <b>False</b>.
+</short>
 </element>
 <element name="CfgStrToDate.AFormat">
-<short/>
+<short>
+Format used for the date/time value passed in the s argument.
+</short>
 </element>
 
 <element name="CompareConfigMemStorageNames">
