@@ -2727,7 +2727,6 @@ string ('') when the control handle is not available.
 <short>Caption for the control, or an empty string.</short>
 </element>
 
-<!-- TODO: Modified in 6d9db64d. -->
 <element name="TCustomComboBox.RealSetText">
 <short>
 Updates ItemIndex when the new value for the control is updated.
@@ -3417,7 +3416,6 @@ calls the <var>AddObject</var> method in Items to store the values in
 <short>The associated object, can be <b>Nil</b>.</short>
 </element>
 
-<!-- TODO: Added in 6d9db64d. -->
 <element name="TCustomComboBox.MatchListItem">
 <short>
 Gets the position for the specified value in Items using the AutoCompleteText 
