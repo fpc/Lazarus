@@ -1172,9 +1172,6 @@ var
   i: Integer;
   AddedConst: Boolean;
 begin
-  if goEnumAsSet in FOptions then begin
-    Include(FOptions, goEnumAsEnum);
-  end;
   HandleEnum(AItem);
   if goEnumAsSet in FOptions then begin
     Section := WantEnumTypesSection;

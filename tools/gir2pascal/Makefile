@@ -20,9 +20,10 @@ OPTIONS=\
 OBJ=*.o *.or *.ppu *.rsj
 
 gir2pas:gir2pascal.lpr $(SOURCES)
+	mkdir -p ${UNITS_DIR}
 	fpc $(OPTIONS) $< -o$@
 
 clean:
-	${RM} gir2pas ${UNITS_DIR} $(OBJ)
+	${RM} -r gir2pas ${UNITS_DIR} $(OBJ)
 
 .PHONY: clean
