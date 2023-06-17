@@ -2315,7 +2315,7 @@ begin
   end else
     cairo_line_to(pcr,X+PixelOffset, Y+PixelOffset);
 
-  cairo_stroke(pcr);
+  cairo_stroke_preserve(pcr);
   Result := True;
 end;
 
