@@ -720,6 +720,7 @@ end;
 
 procedure TLCLComboboxCallback.ComboBoxSelectionDidChange;
 begin
+  writeln( TComboBox(self.GetCallbackObject).DroppedDown );
   SendSimpleMessage(Target, LM_SELCHANGE);
 end;
 
@@ -1894,21 +1895,13 @@ end;
 class function TCocoaWSCustomComboBox.GetDroppedDown(
   const ACustomComboBox: TCustomComboBox): Boolean;
 var
-  cb  : ICommonCallback;
-  obj : TObject;
+  comboBox: TCocoaComboBox;
 begin
   Result:=false;
   if (not Assigned(ACustomComboBox)) or (not ACustomComboBox.HandleAllocated) then
     Exit;
-
-  cb := NSView(ACustomComboBox.Handle).lclGetCallback;
-  if Assigned(cb) then
-  begin
-    obj := cb.GetCallbackObject;
-    if (obj is TLCLComboboxCallback) then
-      Result := TLCLComboboxCallback(obj).isShowPopup;
-  end;
-
+  comboBox:= TCocoaComboBox(ACustomComboBox.Handle);
+  Result:= comboBox.isDown;
 end;
 
 class procedure TCocoaWSCustomComboBox.SetDroppedDown(const ACustomComboBox: TCustomComboBox; ADroppedDown: Boolean);
