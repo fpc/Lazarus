@@ -20,11 +20,11 @@ const
   LazAtk1_library = 'libatk-1.0.so.0';
   {$endif}
 
-  ATK_BINARY_AGE = 24810;
+  ATK_BINARY_AGE = 24610;
   ATK_INTERFACE_AGE = 1;
   ATK_MAJOR_VERSION = 2;
   ATK_MICRO_VERSION = 0;
-  ATK_MINOR_VERSION = 48;
+  ATK_MINOR_VERSION = 46;
   ATK_VERSION_MIN_REQUIRED = 2;
 type
   TAtkCoordType = (
@@ -216,11 +216,12 @@ type
     ATK_ROLE_LAST_DEFINED = 128,
     TAtkRoleMaxValue = $7FFFFFFF
   );
-  TAtkHyperlinkStateFlags = (
-    TAtkHyperlinkStateFlagsMinValue = -$7FFFFFFF,
-    ATK_HYPERLINK_IS_INLINE_ = 1,
-    TAtkHyperlinkStateFlagsMaxValue = $7FFFFFFF
+  TAtkHyperlinkStateFlagsIdx = (
+    TAtkHyperlinkStateFlagsIdxMinValue = 0,
+    ATK_HYPERLINK_IS_INLINE_ = 0,
+    TAtkHyperlinkStateFlagsIdxMaxValue = 31
   );
+  TAtkHyperlinkStateFlags = Set of TAtkHyperlinkStateFlagsIdx;
   TAtkKeyEventType = (
     TAtkKeyEventTypeMinValue = -$7FFFFFFF,
     ATK_KEY_EVENT_PRESS = 0,

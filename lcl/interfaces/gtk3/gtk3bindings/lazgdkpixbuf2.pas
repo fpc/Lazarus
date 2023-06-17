@@ -21,9 +21,9 @@ const
   {$endif}
 
   GDK_PIXBUF_MAJOR = 2;
-  GDK_PIXBUF_MICRO = 11;
+  GDK_PIXBUF_MICRO = 10;
   GDK_PIXBUF_MINOR = 42;
-  GDK_PIXBUF_VERSION = '2.42.11';
+  GDK_PIXBUF_VERSION = '2.42.10';
 type
   TGdkColorspace = (
     TGdkColorspaceMinValue = -$7FFFFFFF,
@@ -57,13 +57,14 @@ type
     GDK_PIXBUF_ERROR_INCOMPLETE_ANIMATION = 6,
     TGdkPixbufErrorMaxValue = $7FFFFFFF
   );
-  TGdkPixbufFormatFlags = (
-    TGdkPixbufFormatFlagsMinValue = -$7FFFFFFF,
-    GDK_PIXBUF_FORMAT_WRITABLE = 1,
-    GDK_PIXBUF_FORMAT_SCALABLE = 2,
-    GDK_PIXBUF_FORMAT_THREADSAFE = 4,
-    TGdkPixbufFormatFlagsMaxValue = $7FFFFFFF
+  TGdkPixbufFormatFlagsIdx = (
+    TGdkPixbufFormatFlagsIdxMinValue = 0,
+    GDK_PIXBUF_FORMAT_WRITABLE = 0,
+    GDK_PIXBUF_FORMAT_SCALABLE = 1,
+    GDK_PIXBUF_FORMAT_THREADSAFE = 2,
+    TGdkPixbufFormatFlagsIdxMaxValue = 31
   );
+  TGdkPixbufFormatFlags = Set of TGdkPixbufFormatFlagsIdx;
 type
 
 
@@ -384,7 +385,7 @@ type
   TGdkPixbufModule = record
     module_name: Pgchar;
     module_path: Pgchar;
-    module: gpointer;
+    module: PGModule;
     info: PGdkPixbufFormat;
     load: TGdkPixbufModuleLoadFunc;
     load_xpm_data: TGdkPixbufModuleLoadXpmDataFunc;

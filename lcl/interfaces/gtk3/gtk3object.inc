@@ -97,7 +97,7 @@ begin
   if not IsLibrary then
   begin
   AId := 'org.lcl.thread_' + dbgHex({%H-}PtrUInt(AGtkThread));
-  FGtk3Application := TGtkApplication.new(PgChar(AId), G_APPLICATION_NON_UNIQUE);
+  FGtk3Application := TGtkApplication.new(PgChar(AId), [G_APPLICATION_NON_UNIQUE]);
   // FGtk3Application^.set_application_id(PgChar(AId));
   FGtk3Application^.register(nil, nil);
   end;
@@ -237,7 +237,7 @@ begin
   WakeMainThread := @PrepareSynchronize;
   assignpipe(threadsync_pipein, threadsync_pipeout);
   threadsync_giochannel := g_io_channel_unix_new(threadsync_pipein);
-  g_io_add_watch(threadsync_giochannel, G_IO_IN, @threadsync_iocallback, Self);
+  g_io_add_watch(threadsync_giochannel, [G_IO_IN], @threadsync_iocallback, Self);
 end;
 
 procedure TGtk3WidgetSet.ProcessChildSignal;

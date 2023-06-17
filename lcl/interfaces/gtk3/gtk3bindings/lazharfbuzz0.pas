@@ -16,15 +16,14 @@ uses
 
 const
   {$ifdef MsWindows}
-  LazHarfBuzz0_library = 'libharfbuzz.so.dll';
+  LazHarfBuzz0_library = 'libharfbuzz-gobject.so.dll';
   {$else}
-  LazHarfBuzz0_library = 'libharfbuzz.so.0';
+  LazHarfBuzz0_library = 'libharfbuzz-gobject.so.0';
   {$endif}
 
   HB_AAT_LAYOUT_NO_SELECTOR_INDEX = 65535;
   HB_BUFFER_REPLACEMENT_CODEPOINT_DEFAULT = 65533;
   HB_FEATURE_GLOBAL_START = 0;
-  HB_FONT_NO_VAR_NAMED_INSTANCE = 4294967295;
   HB_LANGUAGE_INVALID = 0;
   HB_MAP_VALUE_INVALID = 4294967295;
   HB_OT_LAYOUT_DEFAULT_LANGUAGE_INDEX = 65535;
@@ -37,10 +36,10 @@ const
   HB_SET_VALUE_INVALID = 4294967295;
   HB_UNICODE_MAX = 1114111;
   HB_UNICODE_MAX_DECOMPOSITION_LEN = 19;
-  HB_VERSION_MAJOR = 7;
+  HB_VERSION_MAJOR = 6;
   HB_VERSION_MICRO = 0;
-  HB_VERSION_MINOR = 1;
-  HB_VERSION_STRING_ = '7.1.0';
+  HB_VERSION_MINOR = 0;
+  HB_VERSION_STRING = '6.0.0';
 type
   Thb_aat_layout_feature_selector_t = (
     Thb_aat_layout_feature_selector_tMinValue = -$7FFFFFFF,
@@ -371,33 +370,51 @@ type
     HB_BUFFER_SERIALIZE_FORMAT_TEXT = 1413830740,
     Thb_buffer_serialize_format_tMaxValue = $7FFFFFFF
   );
-  Thb_buffer_diff_flags_t = (
-    Thb_buffer_diff_flags_tMinValue = -$7FFFFFFF,
-    HB_BUFFER_DIFF_FLAG_EQUAL = 0,
-    HB_BUFFER_DIFF_FLAG_CONTENT_TYPE_MISMATCH = 1,
-    HB_BUFFER_DIFF_FLAG_LENGTH_MISMATCH = 2,
-    HB_BUFFER_DIFF_FLAG_NOTDEF_PRESENT = 4,
-    HB_BUFFER_DIFF_FLAG_DOTTED_CIRCLE_PRESENT = 8,
-    HB_BUFFER_DIFF_FLAG_CODEPOINT_MISMATCH = 16,
-    HB_BUFFER_DIFF_FLAG_CLUSTER_MISMATCH = 32,
-    HB_BUFFER_DIFF_FLAG_GLYPH_FLAGS_MISMATCH = 64,
-    HB_BUFFER_DIFF_FLAG_POSITION_MISMATCH = 128,
-    Thb_buffer_diff_flags_tMaxValue = $7FFFFFFF
+  Thb_buffer_diff_flags_tIdx = (
+    Thb_buffer_diff_flags_tIdxMinValue = 0,
+    HB_BUFFER_DIFF_FLAG_CONTENT_TYPE_MISMATCH = 0,
+    HB_BUFFER_DIFF_FLAG_LENGTH_MISMATCH = 1,
+    HB_BUFFER_DIFF_FLAG_NOTDEF_PRESENT = 2,
+    HB_BUFFER_DIFF_FLAG_DOTTED_CIRCLE_PRESENT = 3,
+    HB_BUFFER_DIFF_FLAG_CODEPOINT_MISMATCH = 4,
+    HB_BUFFER_DIFF_FLAG_CLUSTER_MISMATCH = 5,
+    HB_BUFFER_DIFF_FLAG_GLYPH_FLAGS_MISMATCH = 6,
+    HB_BUFFER_DIFF_FLAG_POSITION_MISMATCH = 7,
+    Thb_buffer_diff_flags_tIdxMaxValue = 31
   );
-  Thb_buffer_flags_t = (
-    Thb_buffer_flags_tMinValue = -$7FFFFFFF,
-    HB_BUFFER_FLAG_DEFAULT = 0,
-    HB_BUFFER_FLAG_BOT = 1,
-    HB_BUFFER_FLAG_EOT = 2,
-    HB_BUFFER_FLAG_PRESERVE_DEFAULT_IGNORABLES = 4,
-    HB_BUFFER_FLAG_REMOVE_DEFAULT_IGNORABLES = 8,
-    HB_BUFFER_FLAG_DO_NOT_INSERT_DOTTED_CIRCLE = 16,
-    HB_BUFFER_FLAG_VERIFY = 32,
-    HB_BUFFER_FLAG_PRODUCE_UNSAFE_TO_CONCAT = 64,
-    HB_BUFFER_FLAG_PRODUCE_SAFE_TO_INSERT_TATWEEL = 128,
-    HB_BUFFER_FLAG_DEFINED = 255,
-    Thb_buffer_flags_tMaxValue = $7FFFFFFF
+  Thb_buffer_diff_flags_t = Set of Thb_buffer_diff_flags_tIdx;
+const
+  HB_BUFFER_DIFF_FLAG_EQUAL = []; {0 = $00000000}
+
+type
+  Thb_buffer_flags_tIdx = (
+    Thb_buffer_flags_tIdxMinValue = 0,
+    HB_BUFFER_FLAG_BOT = 0,
+    HB_BUFFER_FLAG_EOT = 1,
+    HB_BUFFER_FLAG_PRESERVE_DEFAULT_IGNORABLES = 2,
+    HB_BUFFER_FLAG_REMOVE_DEFAULT_IGNORABLES = 3,
+    HB_BUFFER_FLAG_DO_NOT_INSERT_DOTTED_CIRCLE = 4,
+    HB_BUFFER_FLAG_VERIFY = 5,
+    HB_BUFFER_FLAG_PRODUCE_UNSAFE_TO_CONCAT = 6,
+    HB_BUFFER_FLAG_PRODUCE_SAFE_TO_INSERT_TATWEEL = 7,
+    Thb_buffer_flags_tIdxMaxValue = 31
   );
+  Thb_buffer_flags_t = Set of Thb_buffer_flags_tIdx;
+const
+  HB_BUFFER_FLAG_DEFAULT = []; {0 = $00000000}
+
+  HB_BUFFER_FLAG_DEFINED = [
+    HB_BUFFER_FLAG_BOT,
+    HB_BUFFER_FLAG_EOT,
+    HB_BUFFER_FLAG_PRESERVE_DEFAULT_IGNORABLES,
+    HB_BUFFER_FLAG_REMOVE_DEFAULT_IGNORABLES,
+    HB_BUFFER_FLAG_DO_NOT_INSERT_DOTTED_CIRCLE,
+    HB_BUFFER_FLAG_VERIFY,
+    HB_BUFFER_FLAG_PRODUCE_UNSAFE_TO_CONCAT,
+    HB_BUFFER_FLAG_PRODUCE_SAFE_TO_INSERT_TATWEEL
+  ]; {255 = $000000FF}
+
+type
   Thb_direction_t = (
     Thb_direction_tMinValue = -$7FFFFFFF,
     HB_DIRECTION_INVALID = 0,
@@ -577,40 +594,57 @@ type
     HB_SCRIPT_UNKNOWN = 1517976186,
     Thb_script_tMaxValue = $7FFFFFFF
   );
-  Thb_buffer_serialize_flags_t = (
-    Thb_buffer_serialize_flags_tMinValue = -$7FFFFFFF,
-    HB_BUFFER_SERIALIZE_FLAG_DEFAULT = 0,
-    HB_BUFFER_SERIALIZE_FLAG_NO_CLUSTERS = 1,
-    HB_BUFFER_SERIALIZE_FLAG_NO_POSITIONS = 2,
-    HB_BUFFER_SERIALIZE_FLAG_NO_GLYPH_NAMES = 4,
-    HB_BUFFER_SERIALIZE_FLAG_GLYPH_EXTENTS = 8,
-    HB_BUFFER_SERIALIZE_FLAG_GLYPH_FLAGS = 16,
-    HB_BUFFER_SERIALIZE_FLAG_NO_ADVANCES = 32,
-    HB_BUFFER_SERIALIZE_FLAG_DEFINED = 63,
-    Thb_buffer_serialize_flags_tMaxValue = $7FFFFFFF
+  Thb_buffer_serialize_flags_tIdx = (
+    Thb_buffer_serialize_flags_tIdxMinValue = 0,
+    HB_BUFFER_SERIALIZE_FLAG_NO_CLUSTERS = 0,
+    HB_BUFFER_SERIALIZE_FLAG_NO_POSITIONS = 1,
+    HB_BUFFER_SERIALIZE_FLAG_NO_GLYPH_NAMES = 2,
+    HB_BUFFER_SERIALIZE_FLAG_GLYPH_EXTENTS = 3,
+    HB_BUFFER_SERIALIZE_FLAG_GLYPH_FLAGS = 4,
+    HB_BUFFER_SERIALIZE_FLAG_NO_ADVANCES = 5,
+    Thb_buffer_serialize_flags_tIdxMaxValue = 31
   );
-  Thb_paint_extend_t = (
-    Thb_paint_extend_tMinValue = -$7FFFFFFF,
-    HB_PAINT_EXTEND_PAD = 0,
-    HB_PAINT_EXTEND_REPEAT = 1,
-    HB_PAINT_EXTEND_REFLECT = 2,
-    Thb_paint_extend_tMaxValue = $7FFFFFFF
+  Thb_buffer_serialize_flags_t = Set of Thb_buffer_serialize_flags_tIdx;
+const
+  HB_BUFFER_SERIALIZE_FLAG_DEFAULT = []; {0 = $00000000}
+
+  HB_BUFFER_SERIALIZE_FLAG_DEFINED = [
+    HB_BUFFER_SERIALIZE_FLAG_NO_CLUSTERS,
+    HB_BUFFER_SERIALIZE_FLAG_NO_POSITIONS,
+    HB_BUFFER_SERIALIZE_FLAG_NO_GLYPH_NAMES,
+    HB_BUFFER_SERIALIZE_FLAG_GLYPH_EXTENTS,
+    HB_BUFFER_SERIALIZE_FLAG_GLYPH_FLAGS,
+    HB_BUFFER_SERIALIZE_FLAG_NO_ADVANCES
+  ]; {63 = $0000003F}
+
+type
+  Thb_glyph_flags_tIdx = (
+    Thb_glyph_flags_tIdxMinValue = 0,
+    HB_GLYPH_FLAG_UNSAFE_TO_BREAK = 0,
+    HB_GLYPH_FLAG_UNSAFE_TO_CONCAT = 1,
+    HB_GLYPH_FLAG_SAFE_TO_INSERT_TATWEEL = 2,
+    Thb_glyph_flags_tIdxMaxValue = 31
   );
-  Thb_glyph_flags_t = (
-    Thb_glyph_flags_tMinValue = -$7FFFFFFF,
-    HB_GLYPH_FLAG_UNSAFE_TO_BREAK = 1,
-    HB_GLYPH_FLAG_UNSAFE_TO_CONCAT = 2,
-    HB_GLYPH_FLAG_SAFE_TO_INSERT_TATWEEL = 4,
-    HB_GLYPH_FLAG_DEFINED = 7,
-    Thb_glyph_flags_tMaxValue = $7FFFFFFF
+  Thb_glyph_flags_t = Set of Thb_glyph_flags_tIdx;
+const
+  HB_GLYPH_FLAG_DEFINED = [
+    HB_GLYPH_FLAG_UNSAFE_TO_BREAK,
+    HB_GLYPH_FLAG_UNSAFE_TO_CONCAT,
+    HB_GLYPH_FLAG_SAFE_TO_INSERT_TATWEEL
+  ]; {7 = $00000007}
+
+type
+  Thb_ot_color_palette_flags_tIdx = (
+    Thb_ot_color_palette_flags_tIdxMinValue = 0,
+    HB_OT_COLOR_PALETTE_FLAG_USABLE_WITH_LIGHT_BACKGROUND = 0,
+    HB_OT_COLOR_PALETTE_FLAG_USABLE_WITH_DARK_BACKGROUND = 1,
+    Thb_ot_color_palette_flags_tIdxMaxValue = 31
   );
-  Thb_ot_color_palette_flags_t = (
-    Thb_ot_color_palette_flags_tMinValue = -$7FFFFFFF,
-    HB_OT_COLOR_PALETTE_FLAG_DEFAULT = 0,
-    HB_OT_COLOR_PALETTE_FLAG_USABLE_WITH_LIGHT_BACKGROUND = 1,
-    HB_OT_COLOR_PALETTE_FLAG_USABLE_WITH_DARK_BACKGROUND = 2,
-    Thb_ot_color_palette_flags_tMaxValue = $7FFFFFFF
-  );
+  Thb_ot_color_palette_flags_t = Set of Thb_ot_color_palette_flags_tIdx;
+const
+  HB_OT_COLOR_PALETTE_FLAG_DEFAULT = []; {0 = $00000000}
+
+type
   Thb_ot_layout_baseline_tag_t = (
     Thb_ot_layout_baseline_tag_tMinValue = -$7FFFFFFF,
     HB_OT_LAYOUT_BASELINE_TAG_IDEO_FACE_CENTRAL = 1231251043,
@@ -693,11 +727,12 @@ type
     HB_OT_MATH_CONSTANT_RADICAL_DEGREE_BOTTOM_RAISE_PERCENT = 55,
     Thb_ot_math_constant_tMaxValue = $7FFFFFFF
   );
-  Thb_ot_math_glyph_part_flags_t = (
-    Thb_ot_math_glyph_part_flags_tMinValue = -$7FFFFFFF,
-    HB_OT_MATH_GLYPH_PART_FLAG_EXTENDER = 1,
-    Thb_ot_math_glyph_part_flags_tMaxValue = $7FFFFFFF
+  Thb_ot_math_glyph_part_flags_tIdx = (
+    Thb_ot_math_glyph_part_flags_tIdxMinValue = 0,
+    HB_OT_MATH_GLYPH_PART_FLAG_EXTENDER = 0,
+    Thb_ot_math_glyph_part_flags_tIdxMaxValue = 31
   );
+  Thb_ot_math_glyph_part_flags_t = Set of Thb_ot_math_glyph_part_flags_tIdx;
   Thb_ot_math_kern_t = (
     Thb_ot_math_kern_tMinValue = -$7FFFFFFF,
     HB_OT_MATH_KERN_TOP_RIGHT = 0,
@@ -744,73 +779,12 @@ type
     HB_OT_METRICS_TAG_X_HEIGHT = 2020108148,
     Thb_ot_metrics_tag_tMaxValue = $7FFFFFFF
   );
-  Thb_ot_name_id_predefined_t = (
-    Thb_ot_name_id_predefined_tMinValue = -$7FFFFFFF,
-    HB_OT_NAME_ID_COPYRIGHT = 0,
-    HB_OT_NAME_ID_FONT_FAMILY = 1,
-    HB_OT_NAME_ID_FONT_SUBFAMILY = 2,
-    HB_OT_NAME_ID_UNIQUE_ID = 3,
-    HB_OT_NAME_ID_FULL_NAME = 4,
-    HB_OT_NAME_ID_VERSION_STRING = 5,
-    HB_OT_NAME_ID_POSTSCRIPT_NAME = 6,
-    HB_OT_NAME_ID_TRADEMARK = 7,
-    HB_OT_NAME_ID_MANUFACTURER = 8,
-    HB_OT_NAME_ID_DESIGNER = 9,
-    HB_OT_NAME_ID_DESCRIPTION = 10,
-    HB_OT_NAME_ID_VENDOR_URL = 11,
-    HB_OT_NAME_ID_DESIGNER_URL = 12,
-    HB_OT_NAME_ID_LICENSE = 13,
-    HB_OT_NAME_ID_LICENSE_URL = 14,
-    HB_OT_NAME_ID_TYPOGRAPHIC_FAMILY = 16,
-    HB_OT_NAME_ID_TYPOGRAPHIC_SUBFAMILY = 17,
-    HB_OT_NAME_ID_MAC_FULL_NAME = 18,
-    HB_OT_NAME_ID_SAMPLE_TEXT = 19,
-    HB_OT_NAME_ID_CID_FINDFONT_NAME = 20,
-    HB_OT_NAME_ID_WWS_FAMILY = 21,
-    HB_OT_NAME_ID_WWS_SUBFAMILY = 22,
-    HB_OT_NAME_ID_LIGHT_BACKGROUND = 23,
-    HB_OT_NAME_ID_DARK_BACKGROUND = 24,
-    HB_OT_NAME_ID_VARIATIONS_PS_PREFIX = 25,
-    HB_OT_NAME_ID_INVALID = 65535,
-    Thb_ot_name_id_predefined_tMaxValue = $7FFFFFFF
+  Thb_ot_var_axis_flags_tIdx = (
+    Thb_ot_var_axis_flags_tIdxMinValue = 0,
+    HB_OT_VAR_AXIS_FLAG_HIDDEN = 0,
+    Thb_ot_var_axis_flags_tIdxMaxValue = 31
   );
-  Thb_ot_var_axis_flags_t = (
-    Thb_ot_var_axis_flags_tMinValue = -$7FFFFFFF,
-    HB_OT_VAR_AXIS_FLAG_HIDDEN = 1,
-    Thb_ot_var_axis_flags_tMaxValue = $7FFFFFFF
-  );
-  Thb_paint_composite_mode_t = (
-    Thb_paint_composite_mode_tMinValue = -$7FFFFFFF,
-    HB_PAINT_COMPOSITE_MODE_CLEAR = 0,
-    HB_PAINT_COMPOSITE_MODE_SRC = 1,
-    HB_PAINT_COMPOSITE_MODE_DEST = 2,
-    HB_PAINT_COMPOSITE_MODE_SRC_OVER = 3,
-    HB_PAINT_COMPOSITE_MODE_DEST_OVER = 4,
-    HB_PAINT_COMPOSITE_MODE_SRC_IN = 5,
-    HB_PAINT_COMPOSITE_MODE_DEST_IN = 6,
-    HB_PAINT_COMPOSITE_MODE_SRC_OUT = 7,
-    HB_PAINT_COMPOSITE_MODE_DEST_OUT = 8,
-    HB_PAINT_COMPOSITE_MODE_SRC_ATOP = 9,
-    HB_PAINT_COMPOSITE_MODE_DEST_ATOP = 10,
-    HB_PAINT_COMPOSITE_MODE_XOR = 11,
-    HB_PAINT_COMPOSITE_MODE_PLUS = 12,
-    HB_PAINT_COMPOSITE_MODE_SCREEN = 13,
-    HB_PAINT_COMPOSITE_MODE_OVERLAY = 14,
-    HB_PAINT_COMPOSITE_MODE_DARKEN = 15,
-    HB_PAINT_COMPOSITE_MODE_LIGHTEN = 16,
-    HB_PAINT_COMPOSITE_MODE_COLOR_DODGE = 17,
-    HB_PAINT_COMPOSITE_MODE_COLOR_BURN = 18,
-    HB_PAINT_COMPOSITE_MODE_HARD_LIGHT = 19,
-    HB_PAINT_COMPOSITE_MODE_SOFT_LIGHT = 20,
-    HB_PAINT_COMPOSITE_MODE_DIFFERENCE = 21,
-    HB_PAINT_COMPOSITE_MODE_EXCLUSION = 22,
-    HB_PAINT_COMPOSITE_MODE_MULTIPLY = 23,
-    HB_PAINT_COMPOSITE_MODE_HSL_HUE = 24,
-    HB_PAINT_COMPOSITE_MODE_HSL_SATURATION = 25,
-    HB_PAINT_COMPOSITE_MODE_HSL_COLOR = 26,
-    HB_PAINT_COMPOSITE_MODE_HSL_LUMINOSITY = 27,
-    Thb_paint_composite_mode_tMaxValue = $7FFFFFFF
-  );
+  Thb_ot_var_axis_flags_t = Set of Thb_ot_var_axis_flags_tIdx;
   Thb_style_tag_t = (
     Thb_style_tag_tMinValue = -$7FFFFFFF,
     HB_STYLE_TAG_SLANT_RATIO = 1399615092,
@@ -1210,54 +1184,6 @@ type
   Phb_buffer_serialize_flags_t = ^Thb_buffer_serialize_flags_t;
 
 
-  { Thb_color_line_t }
-  PPhb_color_line_t = ^Phb_color_line_t;
-  Phb_color_line_t = ^Thb_color_line_t;
-
-
-  { Thb_color_line_get_color_stops_func_t }
-  PPhb_color_line_get_color_stops_func_t = ^Phb_color_line_get_color_stops_func_t;
-  Phb_color_line_get_color_stops_func_t = ^Thb_color_line_get_color_stops_func_t;
-
-
-  { Thb_color_stop_t }
-  PPPhb_color_stop_t = ^PPhb_color_stop_t;
-  PPhb_color_stop_t = ^Phb_color_stop_t;
-  Phb_color_stop_t = ^Thb_color_stop_t;
-  Thb_color_line_get_color_stops_func_t = function(color_line: Phb_color_line_t; color_line_data: Pgpointer; start: guint; count: Pguint; color_stops: Phb_color_stop_t; user_data: Pgpointer): guint; cdecl;
-
-
-  { Thb_color_line_get_extend_func_t }
-  PPhb_color_line_get_extend_func_t = ^Phb_color_line_get_extend_func_t;
-  Phb_color_line_get_extend_func_t = ^Thb_color_line_get_extend_func_t;
-
-
-  { Thb_paint_extend_t }
-  PPhb_paint_extend_t = ^Phb_paint_extend_t;
-  Phb_paint_extend_t = ^Thb_paint_extend_t;
-  Thb_color_line_get_extend_func_t = function(color_line: Phb_color_line_t; color_line_data: Pgpointer; user_data: Pgpointer): Thb_paint_extend_t; cdecl;
-  Thb_color_line_t = object
-    data: Pgpointer;
-    get_color_stops: Thb_color_line_get_color_stops_func_t;
-    get_color_stops_user_data: Pgpointer;
-    get_extend: Thb_color_line_get_extend_func_t;
-    get_extend_user_data: Pgpointer;
-    reserved0: Pgpointer;
-    reserved1: Pgpointer;
-    reserved2: Pgpointer;
-    reserved3: Pgpointer;
-    reserved5: Pgpointer;
-    reserved6: Pgpointer;
-    reserved7: Pgpointer;
-    reserved8: Pgpointer;
-  end;
-  Thb_color_stop_t = object
-    offset: gfloat;
-    is_foreground: Thb_bool_t;
-    color: Thb_color_t;
-  end;
-
-
   { Thb_draw_funcs_t }
   PPhb_draw_funcs_t = ^Phb_draw_funcs_t;
   Phb_draw_funcs_t = ^Thb_draw_funcs_t;
@@ -1285,7 +1211,8 @@ type
   end;
 
 
-  Thb_draw_state_t = object
+
+  Thb_draw_state_t = record
     path_open: Thb_bool_t;
     path_start_x: gfloat;
     path_start_y: gfloat;
@@ -1299,18 +1226,13 @@ type
     reserved6: Thb_var_num_t;
     reserved7: Thb_var_num_t;
   end;
+
+
   Thb_draw_close_path_func_t = procedure(dfuncs: Phb_draw_funcs_t; draw_data: Pgpointer; st: Phb_draw_state_t; user_data: Pgpointer); cdecl;
   Thb_draw_cubic_to_func_t = procedure(dfuncs: Phb_draw_funcs_t; draw_data: Pgpointer; st: Phb_draw_state_t; control1_x: gfloat; control1_y: gfloat; control2_x: gfloat; control2_y: gfloat; to_x: gfloat; to_y: gfloat; user_data: Pgpointer); cdecl;
   Thb_draw_line_to_func_t = procedure(dfuncs: Phb_draw_funcs_t; draw_data: Pgpointer; st: Phb_draw_state_t; to_x: gfloat; to_y: gfloat; user_data: Pgpointer); cdecl;
   Thb_draw_move_to_func_t = procedure(dfuncs: Phb_draw_funcs_t; draw_data: Pgpointer; st: Phb_draw_state_t; to_x: gfloat; to_y: gfloat; user_data: Pgpointer); cdecl;
   Thb_draw_quadratic_to_func_t = procedure(dfuncs: Phb_draw_funcs_t; draw_data: Pgpointer; st: Phb_draw_state_t; control_x: gfloat; control_y: gfloat; to_x: gfloat; to_y: gfloat; user_data: Pgpointer); cdecl;
-
-
-  { Thb_map_t }
-  PPhb_map_t = ^Phb_map_t;
-  Phb_map_t = ^Thb_map_t;
-  Thb_map_t = object
-  end;
 
 
   { Thb_set_t }
@@ -1332,7 +1254,6 @@ type
     end_: guint;
     procedure _string(buf: Pgchar; size: Pguint); cdecl; inline;
   end;
-  Thb_font_draw_glyph_func_t = procedure(font: Phb_font_t; font_data: Pgpointer; glyph: Thb_codepoint_t; draw_funcs: Phb_draw_funcs_t; draw_data: Pgpointer; user_data: Pgpointer); cdecl;
 
   Thb_font_extents_t = record
     ascender: Thb_position_t;
@@ -1366,14 +1287,9 @@ type
   Thb_font_get_glyph_extents_func_t = function(font: Phb_font_t; font_data: Pgpointer; glyph: Thb_codepoint_t; extents: Phb_glyph_extents_t; user_data: Pgpointer): Thb_bool_t; cdecl;
   Thb_font_get_glyph_from_name_func_t = function(font: Phb_font_t; font_data: Pgpointer; name: Pgchar; len: gint; glyph: Phb_codepoint_t; user_data: Pgpointer): Thb_bool_t; cdecl;
   Thb_font_get_glyph_name_func_t = function(font: Phb_font_t; font_data: Pgpointer; glyph: Thb_codepoint_t; name: Pgchar; size: Pguint; user_data: Pgpointer): Thb_bool_t; cdecl;
+  Thb_font_get_glyph_shape_func_t = procedure(font: Phb_font_t; font_data: Pgpointer; glyph: Thb_codepoint_t; draw_funcs: Phb_draw_funcs_t; draw_data: Pgpointer; user_data: Pgpointer); cdecl;
   Thb_font_get_nominal_glyph_func_t = function(font: Phb_font_t; font_data: Pgpointer; unicode: Thb_codepoint_t; glyph: Phb_codepoint_t; user_data: Pgpointer): Thb_bool_t; cdecl;
   Thb_font_get_nominal_glyphs_func_t = function(font: Phb_font_t; font_data: Pgpointer; count: guint; first_unicode: Phb_codepoint_t; unicode_stride: guint; first_glyph: Phb_codepoint_t; glyph_stride: guint; user_data: Pgpointer): guint; cdecl;
-
-
-  { Thb_paint_funcs_t }
-  PPhb_paint_funcs_t = ^Phb_paint_funcs_t;
-  Phb_paint_funcs_t = ^Thb_paint_funcs_t;
-  Thb_font_paint_glyph_func_t = procedure(font: Phb_font_t; font_data: Pgpointer; glyph: Thb_codepoint_t; paint_funcs: Phb_paint_funcs_t; paint_data: Pgpointer; palette_index: guint; foreground: Thb_color_t; user_data: Pgpointer); cdecl;
   Thb_font_get_variation_glyph_func_t = function(font: Phb_font_t; font_data: Pgpointer; unicode: Thb_codepoint_t; variation_selector: Thb_codepoint_t; glyph: Phb_codepoint_t; user_data: Pgpointer): Thb_bool_t; cdecl;
 
   Thb_glyph_extents_t = record
@@ -1384,8 +1300,6 @@ type
   end;
 
 
-  Thb_paint_funcs_t = object
-  end;
 
 
   { Thb_variation_t }
@@ -1401,6 +1315,27 @@ type
   { Thb_glyph_flags_t }
   PPhb_glyph_flags_t = ^Phb_glyph_flags_t;
   Phb_glyph_flags_t = ^Thb_glyph_flags_t;
+
+  { gr_face* }
+  Tgr_face = record
+    { opaque type }
+    Unknown: Pointer;
+  end;
+
+
+  { gr_font* }
+  Tgr_font = record
+    { opaque type }
+    Unknown: Pointer;
+  end;
+
+
+
+  { Thb_map_t }
+  PPhb_map_t = ^Phb_map_t;
+  Phb_map_t = ^Thb_map_t;
+  Thb_map_t = object
+  end;
 
 
   { Thb_ot_color_layer_t }
@@ -1505,11 +1440,6 @@ type
 
 
 
-  { Thb_ot_name_id_predefined_t }
-  PPhb_ot_name_id_predefined_t = ^Phb_ot_name_id_predefined_t;
-  Phb_ot_name_id_predefined_t = ^Thb_ot_name_id_predefined_t;
-
-
   { Thb_shape_plan_t }
   PPhb_shape_plan_t = ^Phb_shape_plan_t;
   Phb_shape_plan_t = ^Thb_shape_plan_t;
@@ -1525,7 +1455,8 @@ type
   { Thb_ot_var_axis_info_t }
   PPhb_ot_var_axis_info_t = ^Phb_ot_var_axis_info_t;
   Phb_ot_var_axis_info_t = ^Thb_ot_var_axis_info_t;
-  Thb_ot_var_axis_info_t = object
+
+  Thb_ot_var_axis_info_t = record
     axis_index: guint;
     tag: Thb_tag_t;
     name_id: Thb_ot_name_id_t;
@@ -1535,6 +1466,8 @@ type
     max_value: gfloat;
     reserved: guint;
   end;
+
+
 
 
   { Thb_ot_var_axis_t }
@@ -1550,24 +1483,6 @@ type
   end;
 
 
-  Thb_paint_color_func_t = procedure(funcs: Phb_paint_funcs_t; paint_data: Pgpointer; is_foreground: Thb_bool_t; color: Thb_color_t; user_data: Pgpointer); cdecl;
-
-
-  { Thb_paint_composite_mode_t }
-  PPhb_paint_composite_mode_t = ^Phb_paint_composite_mode_t;
-  Phb_paint_composite_mode_t = ^Thb_paint_composite_mode_t;
-  Thb_paint_custom_palette_color_func_t = function(funcs: Phb_paint_funcs_t; paint_data: Pgpointer; color_index: guint; color: Phb_color_t; user_data: Pgpointer): Thb_bool_t; cdecl;
-  Thb_paint_image_func_t = function(funcs: Phb_paint_funcs_t; paint_data: Pgpointer; image: Phb_blob_t; width: guint; height: guint; format: Thb_tag_t; slant: gfloat; extents: Phb_glyph_extents_t; user_data: Pgpointer): Thb_bool_t; cdecl;
-  Thb_paint_linear_gradient_func_t = procedure(funcs: Phb_paint_funcs_t; paint_data: Pgpointer; color_line: Phb_color_line_t; x0: gfloat; y0: gfloat; x1: gfloat; y1: gfloat; x2: gfloat; y2: gfloat; user_data: Pgpointer); cdecl;
-  Thb_paint_pop_clip_func_t = procedure(funcs: Phb_paint_funcs_t; paint_data: Pgpointer; user_data: Pgpointer); cdecl;
-  Thb_paint_pop_group_func_t = procedure(funcs: Phb_paint_funcs_t; paint_data: Pgpointer; mode: Thb_paint_composite_mode_t; user_data: Pgpointer); cdecl;
-  Thb_paint_pop_transform_func_t = procedure(funcs: Phb_paint_funcs_t; paint_data: Pgpointer; user_data: Pgpointer); cdecl;
-  Thb_paint_push_clip_glyph_func_t = procedure(funcs: Phb_paint_funcs_t; paint_data: Pgpointer; glyph: Thb_codepoint_t; font: Phb_font_t; user_data: Pgpointer); cdecl;
-  Thb_paint_push_clip_rectangle_func_t = procedure(funcs: Phb_paint_funcs_t; paint_data: Pgpointer; xmin: gfloat; ymin: gfloat; xmax: gfloat; ymax: gfloat; user_data: Pgpointer); cdecl;
-  Thb_paint_push_group_func_t = procedure(funcs: Phb_paint_funcs_t; paint_data: Pgpointer; user_data: Pgpointer); cdecl;
-  Thb_paint_push_transform_func_t = procedure(funcs: Phb_paint_funcs_t; paint_data: Pgpointer; xx: gfloat; yx: gfloat; xy: gfloat; yy: gfloat; dx: gfloat; dy: gfloat; user_data: Pgpointer); cdecl;
-  Thb_paint_radial_gradient_func_t = procedure(funcs: Phb_paint_funcs_t; paint_data: Pgpointer; color_line: Phb_color_line_t; x0: gfloat; y0: gfloat; r0: gfloat; x1: gfloat; y1: gfloat; r1: gfloat; user_data: Pgpointer); cdecl;
-  Thb_paint_sweep_gradient_func_t = procedure(funcs: Phb_paint_funcs_t; paint_data: Pgpointer; color_line: Phb_color_line_t; x0: gfloat; y0: gfloat; start_angle: gfloat; end_angle: gfloat; user_data: Pgpointer); cdecl;
 
 
   { Thb_style_tag_t }
@@ -1592,501 +1507,447 @@ type
   Thb_unicode_mirroring_func_t = function(ufuncs: Phb_unicode_funcs_t; unicode: Thb_codepoint_t; user_data: Pgpointer): Thb_codepoint_t; cdecl;
   Thb_unicode_script_func_t = function(ufuncs: Phb_unicode_funcs_t; unicode: Thb_codepoint_t; user_data: Pgpointer): Thb_script_t; cdecl;
 
-function hb_aat_layout_feature_type_get_name_id(face: Phb_face_t; feature_type: Thb_aat_layout_feature_type_t): Thb_ot_name_id_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_aat_layout_feature_type_get_name_id' {$endif};
-function hb_aat_layout_feature_type_get_selector_infos(face: Phb_face_t; feature_type: Thb_aat_layout_feature_type_t; start_offset: guint; selector_count: Pguint; selectors: Phb_aat_layout_feature_selector_info_t; default_index: Pguint): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_aat_layout_feature_type_get_selector_infos' {$endif};
-function hb_aat_layout_get_feature_types(face: Phb_face_t; start_offset: guint; feature_count: Pguint; features: Phb_aat_layout_feature_type_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_aat_layout_get_feature_types' {$endif};
-function hb_aat_layout_has_positioning(face: Phb_face_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_aat_layout_has_positioning' {$endif};
-function hb_aat_layout_has_substitution(face: Phb_face_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_aat_layout_has_substitution' {$endif};
-function hb_aat_layout_has_tracking(face: Phb_face_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_aat_layout_has_tracking' {$endif};
-function hb_blob_copy_writable_or_fail(blob: Phb_blob_t): Phb_blob_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_blob_copy_writable_or_fail' {$endif};
-function hb_blob_create(data: Pgchar; length: guint; mode: Thb_memory_mode_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t): Phb_blob_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_blob_create' {$endif};
-function hb_blob_create_from_file(file_name: Pgchar): Phb_blob_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_blob_create_from_file' {$endif};
-function hb_blob_create_from_file_or_fail(file_name: Pgchar): Phb_blob_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_blob_create_from_file_or_fail' {$endif};
-function hb_blob_create_or_fail(data: Pgchar; length: guint; mode: Thb_memory_mode_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t): Phb_blob_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_blob_create_or_fail' {$endif};
-function hb_blob_create_sub_blob(parent: Phb_blob_t; offset: guint; length: guint): Phb_blob_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_blob_create_sub_blob' {$endif};
-function hb_blob_get_data(blob: Phb_blob_t; length: Pguint): Pgchar; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_blob_get_data' {$endif};
-function hb_blob_get_data_writable(blob: Phb_blob_t; length: Pguint): Pgchar; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_blob_get_data_writable' {$endif};
-function hb_blob_get_empty: Phb_blob_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_blob_get_empty' {$endif};
-function hb_blob_get_length(blob: Phb_blob_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_blob_get_length' {$endif};
-function hb_blob_get_user_data(blob: Phb_blob_t; key: Phb_user_data_key_t): Pgpointer; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_blob_get_user_data' {$endif};
-function hb_blob_is_immutable(blob: Phb_blob_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_blob_is_immutable' {$endif};
-function hb_blob_reference(blob: Phb_blob_t): Phb_blob_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_blob_reference' {$endif};
-function hb_blob_set_user_data(blob: Phb_blob_t; key: Phb_user_data_key_t; data: Pgpointer; destroy_: Thb_destroy_func_t; replace: Thb_bool_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_blob_set_user_data' {$endif};
-function hb_buffer_allocation_successful(buffer: Phb_buffer_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_allocation_successful' {$endif};
-function hb_buffer_create: Phb_buffer_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_create' {$endif};
-function hb_buffer_create_similar(src: Phb_buffer_t): Phb_buffer_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_create_similar' {$endif};
-function hb_buffer_deserialize_glyphs(buffer: Phb_buffer_t; buf: Pgchar; buf_len: gint; end_ptr: PPgchar; font: Phb_font_t; format: Thb_buffer_serialize_format_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_deserialize_glyphs' {$endif};
-function hb_buffer_deserialize_unicode(buffer: Phb_buffer_t; buf: Pgchar; buf_len: gint; end_ptr: PPgchar; format: Thb_buffer_serialize_format_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_deserialize_unicode' {$endif};
-function hb_buffer_diff(buffer: Phb_buffer_t; reference: Phb_buffer_t; dottedcircle_glyph: Thb_codepoint_t; position_fuzz: guint): Thb_buffer_diff_flags_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_diff' {$endif};
-function hb_buffer_get_cluster_level(buffer: Phb_buffer_t): Thb_buffer_cluster_level_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_get_cluster_level' {$endif};
-function hb_buffer_get_content_type(buffer: Phb_buffer_t): Thb_buffer_content_type_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_get_content_type' {$endif};
-function hb_buffer_get_direction(buffer: Phb_buffer_t): Thb_direction_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_get_direction' {$endif};
-function hb_buffer_get_empty: Phb_buffer_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_get_empty' {$endif};
-function hb_buffer_get_flags(buffer: Phb_buffer_t): Thb_buffer_flags_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_get_flags' {$endif};
-function hb_buffer_get_glyph_infos(buffer: Phb_buffer_t; length: Pguint): Phb_glyph_info_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_get_glyph_infos' {$endif};
-function hb_buffer_get_glyph_positions(buffer: Phb_buffer_t; length: Pguint): Phb_glyph_position_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_get_glyph_positions' {$endif};
-function hb_buffer_get_invisible_glyph(buffer: Phb_buffer_t): Thb_codepoint_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_get_invisible_glyph' {$endif};
-function hb_buffer_get_language(buffer: Phb_buffer_t): Thb_language_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_get_language' {$endif};
-function hb_buffer_get_length(buffer: Phb_buffer_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_get_length' {$endif};
-function hb_buffer_get_not_found_glyph(buffer: Phb_buffer_t): Thb_codepoint_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_get_not_found_glyph' {$endif};
-function hb_buffer_get_replacement_codepoint(buffer: Phb_buffer_t): Thb_codepoint_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_get_replacement_codepoint' {$endif};
-function hb_buffer_get_script(buffer: Phb_buffer_t): Thb_script_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_get_script' {$endif};
-function hb_buffer_get_unicode_funcs(buffer: Phb_buffer_t): Phb_unicode_funcs_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_get_unicode_funcs' {$endif};
-function hb_buffer_get_user_data(buffer: Phb_buffer_t; key: Phb_user_data_key_t): Pgpointer; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_get_user_data' {$endif};
-function hb_buffer_has_positions(buffer: Phb_buffer_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_has_positions' {$endif};
-function hb_buffer_pre_allocate(buffer: Phb_buffer_t; size: guint): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_pre_allocate' {$endif};
-function hb_buffer_reference(buffer: Phb_buffer_t): Phb_buffer_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_reference' {$endif};
-function hb_buffer_serialize(buffer: Phb_buffer_t; start: guint; end_: guint; buf: Pgchar; buf_size: Pguint; buf_consumed: Pguint; font: Phb_font_t; format: Thb_buffer_serialize_format_t; flags: Thb_buffer_serialize_flags_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_serialize' {$endif};
-function hb_buffer_serialize_format_from_string(str: Pgchar; len: gint): Thb_buffer_serialize_format_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_serialize_format_from_string' {$endif};
-function hb_buffer_serialize_format_to_string(format: Thb_buffer_serialize_format_t): Pgchar; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_serialize_format_to_string' {$endif};
-function hb_buffer_serialize_glyphs(buffer: Phb_buffer_t; start: guint; end_: guint; buf: Pgchar; buf_size: Pguint; buf_consumed: Pguint; font: Phb_font_t; format: Thb_buffer_serialize_format_t; flags: Thb_buffer_serialize_flags_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_serialize_glyphs' {$endif};
-function hb_buffer_serialize_list_formats: PPgchar; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_serialize_list_formats' {$endif};
-function hb_buffer_serialize_unicode(buffer: Phb_buffer_t; start: guint; end_: guint; buf: Pgchar; buf_size: Pguint; buf_consumed: Pguint; format: Thb_buffer_serialize_format_t; flags: Thb_buffer_serialize_flags_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_serialize_unicode' {$endif};
-function hb_buffer_set_length(buffer: Phb_buffer_t; length: guint): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_set_length' {$endif};
-function hb_buffer_set_user_data(buffer: Phb_buffer_t; key: Phb_user_data_key_t; data: Pgpointer; destroy_: Thb_destroy_func_t; replace: Thb_bool_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_set_user_data' {$endif};
-function hb_color_get_alpha(color: Thb_color_t): guint8; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_color_get_alpha' {$endif};
-function hb_color_get_blue(color: Thb_color_t): guint8; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_color_get_blue' {$endif};
-function hb_color_get_green(color: Thb_color_t): guint8; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_color_get_green' {$endif};
-function hb_color_get_red(color: Thb_color_t): guint8; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_color_get_red' {$endif};
-function hb_color_line_get_color_stops(color_line: Phb_color_line_t; start: guint; count: Pguint; color_stops: Phb_color_stop_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_color_line_get_color_stops' {$endif};
-function hb_color_line_get_extend(color_line: Phb_color_line_t): Thb_paint_extend_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_color_line_get_extend' {$endif};
-function hb_direction_from_string(str: Pgchar; len: gint): Thb_direction_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_direction_from_string' {$endif};
-function hb_direction_to_string(direction: Thb_direction_t): Pgchar; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_direction_to_string' {$endif};
-function hb_draw_funcs_create: Phb_draw_funcs_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_draw_funcs_create' {$endif};
-function hb_draw_funcs_get_empty: Phb_draw_funcs_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_draw_funcs_get_empty' {$endif};
-function hb_draw_funcs_get_user_data(dfuncs: Phb_draw_funcs_t; key: Phb_user_data_key_t): Pgpointer; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_draw_funcs_get_user_data' {$endif};
-function hb_draw_funcs_is_immutable(dfuncs: Phb_draw_funcs_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_draw_funcs_is_immutable' {$endif};
-function hb_draw_funcs_reference(dfuncs: Phb_draw_funcs_t): Phb_draw_funcs_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_draw_funcs_reference' {$endif};
-function hb_draw_funcs_set_user_data(dfuncs: Phb_draw_funcs_t; key: Phb_user_data_key_t; data: Pgpointer; destroy_: Thb_destroy_func_t; replace: Thb_bool_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_draw_funcs_set_user_data' {$endif};
-function hb_face_builder_add_table(face: Phb_face_t; tag: Thb_tag_t; blob: Phb_blob_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_face_builder_add_table' {$endif};
-function hb_face_builder_create: Phb_face_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_face_builder_create' {$endif};
-function hb_face_count(blob: Phb_blob_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_face_count' {$endif};
-function hb_face_create(blob: Phb_blob_t; index: guint): Phb_face_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_face_create' {$endif};
-function hb_face_create_for_tables(reference_table_func: Thb_reference_table_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t): Phb_face_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_face_create_for_tables' {$endif};
-function hb_face_get_empty: Phb_face_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_face_get_empty' {$endif};
-function hb_face_get_glyph_count(face: Phb_face_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_face_get_glyph_count' {$endif};
-function hb_face_get_index(face: Phb_face_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_face_get_index' {$endif};
-function hb_face_get_table_tags(face: Phb_face_t; start_offset: guint; table_count: Pguint; table_tags: Phb_tag_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_face_get_table_tags' {$endif};
-function hb_face_get_upem(face: Phb_face_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_face_get_upem' {$endif};
-function hb_face_get_user_data(face: Phb_face_t; key: Phb_user_data_key_t): Pgpointer; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_face_get_user_data' {$endif};
-function hb_face_is_immutable(face: Phb_face_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_face_is_immutable' {$endif};
-function hb_face_reference(face: Phb_face_t): Phb_face_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_face_reference' {$endif};
-function hb_face_reference_blob(face: Phb_face_t): Phb_blob_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_face_reference_blob' {$endif};
-function hb_face_reference_table(face: Phb_face_t; tag: Thb_tag_t): Phb_blob_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_face_reference_table' {$endif};
-function hb_face_set_user_data(face: Phb_face_t; key: Phb_user_data_key_t; data: Pgpointer; destroy_: Thb_destroy_func_t; replace: Thb_bool_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_face_set_user_data' {$endif};
-function hb_feature_from_string(str: Pgchar; len: gint; feature: Phb_feature_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_feature_from_string' {$endif};
-function hb_font_create(face: Phb_face_t): Phb_font_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_create' {$endif};
-function hb_font_create_sub_font(parent: Phb_font_t): Phb_font_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_create_sub_font' {$endif};
-function hb_font_funcs_create: Phb_font_funcs_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_funcs_create' {$endif};
-function hb_font_funcs_get_empty: Phb_font_funcs_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_funcs_get_empty' {$endif};
-function hb_font_funcs_get_user_data(ffuncs: Phb_font_funcs_t; key: Phb_user_data_key_t): Pgpointer; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_funcs_get_user_data' {$endif};
-function hb_font_funcs_is_immutable(ffuncs: Phb_font_funcs_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_funcs_is_immutable' {$endif};
-function hb_font_funcs_reference(ffuncs: Phb_font_funcs_t): Phb_font_funcs_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_funcs_reference' {$endif};
-function hb_font_funcs_set_user_data(ffuncs: Phb_font_funcs_t; key: Phb_user_data_key_t; data: Pgpointer; destroy_: Thb_destroy_func_t; replace: Thb_bool_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_funcs_set_user_data' {$endif};
-function hb_font_get_empty: Phb_font_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_empty' {$endif};
-function hb_font_get_face(font: Phb_font_t): Phb_face_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_face' {$endif};
-function hb_font_get_glyph(font: Phb_font_t; unicode: Thb_codepoint_t; variation_selector: Thb_codepoint_t; glyph: Phb_codepoint_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_glyph' {$endif};
-function hb_font_get_glyph_contour_point(font: Phb_font_t; glyph: Thb_codepoint_t; point_index: guint; x: Phb_position_t; y: Phb_position_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_glyph_contour_point' {$endif};
-function hb_font_get_glyph_contour_point_for_origin(font: Phb_font_t; glyph: Thb_codepoint_t; point_index: guint; direction: Thb_direction_t; x: Phb_position_t; y: Phb_position_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_glyph_contour_point_for_origin' {$endif};
-function hb_font_get_glyph_extents(font: Phb_font_t; glyph: Thb_codepoint_t; extents: Phb_glyph_extents_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_glyph_extents' {$endif};
-function hb_font_get_glyph_extents_for_origin(font: Phb_font_t; glyph: Thb_codepoint_t; direction: Thb_direction_t; extents: Phb_glyph_extents_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_glyph_extents_for_origin' {$endif};
-function hb_font_get_glyph_from_name(font: Phb_font_t; name: Pgchar; len: gint; glyph: Phb_codepoint_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_glyph_from_name' {$endif};
-function hb_font_get_glyph_h_advance(font: Phb_font_t; glyph: Thb_codepoint_t): Thb_position_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_glyph_h_advance' {$endif};
-function hb_font_get_glyph_h_kerning(font: Phb_font_t; left_glyph: Thb_codepoint_t; right_glyph: Thb_codepoint_t): Thb_position_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_glyph_h_kerning' {$endif};
-function hb_font_get_glyph_h_origin(font: Phb_font_t; glyph: Thb_codepoint_t; x: Phb_position_t; y: Phb_position_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_glyph_h_origin' {$endif};
-function hb_font_get_glyph_name(font: Phb_font_t; glyph: Thb_codepoint_t; name: Pgchar; size: Pguint): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_glyph_name' {$endif};
-function hb_font_get_glyph_v_advance(font: Phb_font_t; glyph: Thb_codepoint_t): Thb_position_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_glyph_v_advance' {$endif};
-function hb_font_get_glyph_v_origin(font: Phb_font_t; glyph: Thb_codepoint_t; x: Phb_position_t; y: Phb_position_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_glyph_v_origin' {$endif};
-function hb_font_get_h_extents(font: Phb_font_t; extents: Phb_font_extents_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_h_extents' {$endif};
-function hb_font_get_nominal_glyph(font: Phb_font_t; unicode: Thb_codepoint_t; glyph: Phb_codepoint_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_nominal_glyph' {$endif};
-function hb_font_get_nominal_glyphs(font: Phb_font_t; count: guint; first_unicode: Phb_codepoint_t; unicode_stride: guint; first_glyph: Phb_codepoint_t; glyph_stride: guint): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_nominal_glyphs' {$endif};
-function hb_font_get_parent(font: Phb_font_t): Phb_font_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_parent' {$endif};
-function hb_font_get_ptem(font: Phb_font_t): gfloat; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_ptem' {$endif};
-function hb_font_get_serial(font: Phb_font_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_serial' {$endif};
-function hb_font_get_synthetic_slant(font: Phb_font_t): gfloat; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_synthetic_slant' {$endif};
-function hb_font_get_user_data(font: Phb_font_t; key: Phb_user_data_key_t): Pgpointer; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_user_data' {$endif};
-function hb_font_get_v_extents(font: Phb_font_t; extents: Phb_font_extents_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_v_extents' {$endif};
-function hb_font_get_var_coords_design(font: Phb_font_t; length: Pguint): Pgfloat; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_var_coords_design' {$endif};
-function hb_font_get_var_coords_normalized(font: Phb_font_t; length: Pguint): Pgint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_var_coords_normalized' {$endif};
-function hb_font_get_var_named_instance(font: Phb_font_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_var_named_instance' {$endif};
-function hb_font_get_variation_glyph(font: Phb_font_t; unicode: Thb_codepoint_t; variation_selector: Thb_codepoint_t; glyph: Phb_codepoint_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_variation_glyph' {$endif};
-function hb_font_glyph_from_string(font: Phb_font_t; s: Pgchar; len: gint; glyph: Phb_codepoint_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_glyph_from_string' {$endif};
-function hb_font_is_immutable(font: Phb_font_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_is_immutable' {$endif};
-function hb_font_reference(font: Phb_font_t): Phb_font_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_reference' {$endif};
-function hb_font_set_user_data(font: Phb_font_t; key: Phb_user_data_key_t; data: Pgpointer; destroy_: Thb_destroy_func_t; replace: Thb_bool_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_set_user_data' {$endif};
-function hb_ft_font_get_load_flags(font: Phb_font_t): gint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ft_font_get_load_flags' {$endif};
-function hb_ft_hb_font_changed(font: Phb_font_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ft_hb_font_changed' {$endif};
-function hb_glib_blob_create(gbytes: PGBytes): Phb_blob_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_glib_blob_create' {$endif};
-function hb_glib_get_unicode_funcs: Phb_unicode_funcs_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_glib_get_unicode_funcs' {$endif};
-function hb_glib_script_from_script(script: Thb_script_t): TGUnicodeScript; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_glib_script_from_script' {$endif};
-function hb_glib_script_to_script(script: TGUnicodeScript): Thb_script_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_glib_script_to_script' {$endif};
-function hb_glyph_info_get_glyph_flags(info: Phb_glyph_info_t): Thb_glyph_flags_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_glyph_info_get_glyph_flags' {$endif};
-function hb_gobject_blob_get_type: TGType; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_gobject_blob_get_type' {$endif};
-function hb_gobject_buffer_get_type: TGType; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_gobject_buffer_get_type' {$endif};
-function hb_gobject_color_line_get_type: TGType; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_gobject_color_line_get_type' {$endif};
-function hb_gobject_color_stop_get_type: TGType; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_gobject_color_stop_get_type' {$endif};
-function hb_gobject_draw_funcs_get_type: TGType; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_gobject_draw_funcs_get_type' {$endif};
-function hb_gobject_draw_state_get_type: TGType; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_gobject_draw_state_get_type' {$endif};
-function hb_gobject_face_get_type: TGType; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_gobject_face_get_type' {$endif};
-function hb_gobject_feature_get_type: TGType; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_gobject_feature_get_type' {$endif};
-function hb_gobject_font_funcs_get_type: TGType; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_gobject_font_funcs_get_type' {$endif};
-function hb_gobject_font_get_type: TGType; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_gobject_font_get_type' {$endif};
-function hb_gobject_glyph_info_get_type: TGType; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_gobject_glyph_info_get_type' {$endif};
-function hb_gobject_glyph_position_get_type: TGType; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_gobject_glyph_position_get_type' {$endif};
-function hb_gobject_map_get_type: TGType; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_gobject_map_get_type' {$endif};
-function hb_gobject_ot_math_glyph_part_get_type: TGType; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_gobject_ot_math_glyph_part_get_type' {$endif};
-function hb_gobject_ot_math_glyph_variant_get_type: TGType; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_gobject_ot_math_glyph_variant_get_type' {$endif};
-function hb_gobject_ot_var_axis_info_get_type: TGType; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_gobject_ot_var_axis_info_get_type' {$endif};
-function hb_gobject_paint_funcs_get_type: TGType; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_gobject_paint_funcs_get_type' {$endif};
-function hb_gobject_segment_properties_get_type: TGType; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_gobject_segment_properties_get_type' {$endif};
-function hb_gobject_set_get_type: TGType; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_gobject_set_get_type' {$endif};
-function hb_gobject_shape_plan_get_type: TGType; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_gobject_shape_plan_get_type' {$endif};
-function hb_gobject_unicode_funcs_get_type: TGType; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_gobject_unicode_funcs_get_type' {$endif};
-function hb_gobject_user_data_key_get_type: TGType; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_gobject_user_data_key_get_type' {$endif};
-function hb_language_from_string(str: Pgchar; len: gint): Thb_language_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_language_from_string' {$endif};
-function hb_language_get_default: Thb_language_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_language_get_default' {$endif};
-function hb_language_matches(language: Thb_language_t; specific: Thb_language_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_language_matches' {$endif};
-function hb_language_to_string(language: Thb_language_t): Pgchar; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_language_to_string' {$endif};
-function hb_map_allocation_successful(map: Phb_map_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_map_allocation_successful' {$endif};
-function hb_map_copy(map: Phb_map_t): Phb_map_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_map_copy' {$endif};
-function hb_map_create: Phb_map_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_map_create' {$endif};
-function hb_map_get(map: Phb_map_t; key: Thb_codepoint_t): Thb_codepoint_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_map_get' {$endif};
-function hb_map_get_empty: Phb_map_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_map_get_empty' {$endif};
-function hb_map_get_population(map: Phb_map_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_map_get_population' {$endif};
-function hb_map_get_user_data(map: Phb_map_t; key: Phb_user_data_key_t): Pgpointer; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_map_get_user_data' {$endif};
-function hb_map_has(map: Phb_map_t; key: Thb_codepoint_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_map_has' {$endif};
-function hb_map_hash(map: Phb_map_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_map_hash' {$endif};
-function hb_map_is_empty(map: Phb_map_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_map_is_empty' {$endif};
-function hb_map_is_equal(map: Phb_map_t; other: Phb_map_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_map_is_equal' {$endif};
-function hb_map_next(map: Phb_map_t; idx: Pgint; key: Phb_codepoint_t; value: Phb_codepoint_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_map_next' {$endif};
-function hb_map_reference(map: Phb_map_t): Phb_map_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_map_reference' {$endif};
-function hb_map_set_user_data(map: Phb_map_t; key: Phb_user_data_key_t; data: Pgpointer; destroy_: Thb_destroy_func_t; replace: Thb_bool_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_map_set_user_data' {$endif};
-function hb_ot_color_glyph_get_layers(face: Phb_face_t; glyph: Thb_codepoint_t; start_offset: guint; layer_count: Pguint; layers: Phb_ot_color_layer_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_color_glyph_get_layers' {$endif};
-function hb_ot_color_glyph_has_paint(face: Phb_face_t; glyph: Thb_codepoint_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_color_glyph_has_paint' {$endif};
-function hb_ot_color_glyph_reference_png(font: Phb_font_t; glyph: Thb_codepoint_t): Phb_blob_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_color_glyph_reference_png' {$endif};
-function hb_ot_color_glyph_reference_svg(face: Phb_face_t; glyph: Thb_codepoint_t): Phb_blob_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_color_glyph_reference_svg' {$endif};
-function hb_ot_color_has_layers(face: Phb_face_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_color_has_layers' {$endif};
-function hb_ot_color_has_paint(face: Phb_face_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_color_has_paint' {$endif};
-function hb_ot_color_has_palettes(face: Phb_face_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_color_has_palettes' {$endif};
-function hb_ot_color_has_png(face: Phb_face_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_color_has_png' {$endif};
-function hb_ot_color_has_svg(face: Phb_face_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_color_has_svg' {$endif};
-function hb_ot_color_palette_color_get_name_id(face: Phb_face_t; color_index: guint): Thb_ot_name_id_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_color_palette_color_get_name_id' {$endif};
-function hb_ot_color_palette_get_colors(face: Phb_face_t; palette_index: guint; start_offset: guint; color_count: Pguint; colors: Phb_color_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_color_palette_get_colors' {$endif};
-function hb_ot_color_palette_get_count(face: Phb_face_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_color_palette_get_count' {$endif};
-function hb_ot_color_palette_get_flags(face: Phb_face_t; palette_index: guint): Thb_ot_color_palette_flags_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_color_palette_get_flags' {$endif};
-function hb_ot_color_palette_get_name_id(face: Phb_face_t; palette_index: guint): Thb_ot_name_id_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_color_palette_get_name_id' {$endif};
-function hb_ot_layout_feature_get_characters(face: Phb_face_t; table_tag: Thb_tag_t; feature_index: guint; start_offset: guint; char_count: Pguint; characters: Phb_codepoint_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_feature_get_characters' {$endif};
-function hb_ot_layout_feature_get_lookups(face: Phb_face_t; table_tag: Thb_tag_t; feature_index: guint; start_offset: guint; lookup_count: Pguint; lookup_indexes: Pguint): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_feature_get_lookups' {$endif};
-function hb_ot_layout_feature_get_name_ids(face: Phb_face_t; table_tag: Thb_tag_t; feature_index: guint; label_id: Phb_ot_name_id_t; tooltip_id: Phb_ot_name_id_t; sample_id: Phb_ot_name_id_t; num_named_parameters: Pguint; first_param_id: Phb_ot_name_id_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_feature_get_name_ids' {$endif};
-function hb_ot_layout_feature_with_variations_get_lookups(face: Phb_face_t; table_tag: Thb_tag_t; feature_index: guint; variations_index: guint; start_offset: guint; lookup_count: Pguint; lookup_indexes: Pguint): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_feature_with_variations_get_lookups' {$endif};
-function hb_ot_layout_get_attach_points(face: Phb_face_t; glyph: Thb_codepoint_t; start_offset: guint; point_count: Pguint; point_array: Pguint): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_get_attach_points' {$endif};
-function hb_ot_layout_get_baseline(font: Phb_font_t; baseline_tag: Thb_ot_layout_baseline_tag_t; direction: Thb_direction_t; script_tag: Thb_tag_t; language_tag: Thb_tag_t; coord: Phb_position_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_get_baseline' {$endif};
-function hb_ot_layout_get_glyph_class(face: Phb_face_t; glyph: Thb_codepoint_t): Thb_ot_layout_glyph_class_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_get_glyph_class' {$endif};
-function hb_ot_layout_get_horizontal_baseline_tag_for_script(script: Thb_script_t): Thb_ot_layout_baseline_tag_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_get_horizontal_baseline_tag_for_script' {$endif};
-function hb_ot_layout_get_ligature_carets(font: Phb_font_t; direction: Thb_direction_t; glyph: Thb_codepoint_t; start_offset: guint; caret_count: Pguint; caret_array: Phb_position_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_get_ligature_carets' {$endif};
-function hb_ot_layout_get_size_params(face: Phb_face_t; design_size: Pguint; subfamily_id: Pguint; subfamily_name_id: Phb_ot_name_id_t; range_start: Pguint; range_end: Pguint): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_get_size_params' {$endif};
-function hb_ot_layout_has_glyph_classes(face: Phb_face_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_has_glyph_classes' {$endif};
-function hb_ot_layout_has_positioning(face: Phb_face_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_has_positioning' {$endif};
-function hb_ot_layout_has_substitution(face: Phb_face_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_has_substitution' {$endif};
-function hb_ot_layout_language_find_feature(face: Phb_face_t; table_tag: Thb_tag_t; script_index: guint; language_index: guint; feature_tag: Thb_tag_t; feature_index: Pguint): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_language_find_feature' {$endif};
-function hb_ot_layout_language_get_feature_indexes(face: Phb_face_t; table_tag: Thb_tag_t; script_index: guint; language_index: guint; start_offset: guint; feature_count: Pguint; feature_indexes: Pguint): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_language_get_feature_indexes' {$endif};
-function hb_ot_layout_language_get_feature_tags(face: Phb_face_t; table_tag: Thb_tag_t; script_index: guint; language_index: guint; start_offset: guint; feature_count: Pguint; feature_tags: Phb_tag_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_language_get_feature_tags' {$endif};
-function hb_ot_layout_language_get_required_feature(face: Phb_face_t; table_tag: Thb_tag_t; script_index: guint; language_index: guint; feature_index: Pguint; feature_tag: Phb_tag_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_language_get_required_feature' {$endif};
-function hb_ot_layout_language_get_required_feature_index(face: Phb_face_t; table_tag: Thb_tag_t; script_index: guint; language_index: guint; feature_index: Pguint): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_language_get_required_feature_index' {$endif};
-function hb_ot_layout_lookup_get_glyph_alternates(face: Phb_face_t; lookup_index: guint; glyph: Thb_codepoint_t; start_offset: guint; alternate_count: Pguint; alternate_glyphs: Phb_codepoint_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_lookup_get_glyph_alternates' {$endif};
-function hb_ot_layout_lookup_get_optical_bound(font: Phb_font_t; lookup_index: guint; direction: Thb_direction_t; glyph: Thb_codepoint_t): Thb_position_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_lookup_get_optical_bound' {$endif};
-function hb_ot_layout_lookup_would_substitute(face: Phb_face_t; lookup_index: guint; glyphs: Phb_codepoint_t; glyphs_length: guint; zero_context: Thb_bool_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_lookup_would_substitute' {$endif};
-function hb_ot_layout_script_get_language_tags(face: Phb_face_t; table_tag: Thb_tag_t; script_index: guint; start_offset: guint; language_count: Pguint; language_tags: Phb_tag_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_script_get_language_tags' {$endif};
-function hb_ot_layout_script_select_language(face: Phb_face_t; table_tag: Thb_tag_t; script_index: guint; language_count: guint; language_tags: Phb_tag_t; language_index: Pguint): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_script_select_language' {$endif};
-function hb_ot_layout_script_select_language2(face: Phb_face_t; table_tag: Thb_tag_t; script_index: guint; language_count: guint; language_tags: Phb_tag_t; language_index: Pguint; chosen_language: Phb_tag_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_script_select_language2' {$endif};
-function hb_ot_layout_table_choose_script(face: Phb_face_t; table_tag: Thb_tag_t; script_tags: Phb_tag_t; script_index: Pguint; chosen_script: Phb_tag_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_table_choose_script' {$endif};
-function hb_ot_layout_table_find_feature_variations(face: Phb_face_t; table_tag: Thb_tag_t; coords: Pgint; num_coords: guint; variations_index: Pguint): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_table_find_feature_variations' {$endif};
-function hb_ot_layout_table_find_script(face: Phb_face_t; table_tag: Thb_tag_t; script_tag: Thb_tag_t; script_index: Pguint): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_table_find_script' {$endif};
-function hb_ot_layout_table_get_feature_tags(face: Phb_face_t; table_tag: Thb_tag_t; start_offset: guint; feature_count: Pguint; feature_tags: Phb_tag_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_table_get_feature_tags' {$endif};
-function hb_ot_layout_table_get_lookup_count(face: Phb_face_t; table_tag: Thb_tag_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_table_get_lookup_count' {$endif};
-function hb_ot_layout_table_get_script_tags(face: Phb_face_t; table_tag: Thb_tag_t; start_offset: guint; script_count: Pguint; script_tags: Phb_tag_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_table_get_script_tags' {$endif};
-function hb_ot_layout_table_select_script(face: Phb_face_t; table_tag: Thb_tag_t; script_count: guint; script_tags: Phb_tag_t; script_index: Pguint; chosen_script: Phb_tag_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_table_select_script' {$endif};
-function hb_ot_math_get_constant(font: Phb_font_t; constant: Thb_ot_math_constant_t): Thb_position_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_math_get_constant' {$endif};
-function hb_ot_math_get_glyph_assembly(font: Phb_font_t; glyph: Thb_codepoint_t; direction: Thb_direction_t; start_offset: guint; parts_count: Pguint; parts: Phb_ot_math_glyph_part_t; italics_correction: Phb_position_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_math_get_glyph_assembly' {$endif};
-function hb_ot_math_get_glyph_italics_correction(font: Phb_font_t; glyph: Thb_codepoint_t): Thb_position_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_math_get_glyph_italics_correction' {$endif};
-function hb_ot_math_get_glyph_kerning(font: Phb_font_t; glyph: Thb_codepoint_t; kern: Thb_ot_math_kern_t; correction_height: Thb_position_t): Thb_position_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_math_get_glyph_kerning' {$endif};
-function hb_ot_math_get_glyph_kernings(font: Phb_font_t; glyph: Thb_codepoint_t; kern: Thb_ot_math_kern_t; start_offset: guint; entries_count: Pguint; kern_entries: Phb_ot_math_kern_entry_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_math_get_glyph_kernings' {$endif};
-function hb_ot_math_get_glyph_top_accent_attachment(font: Phb_font_t; glyph: Thb_codepoint_t): Thb_position_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_math_get_glyph_top_accent_attachment' {$endif};
-function hb_ot_math_get_glyph_variants(font: Phb_font_t; glyph: Thb_codepoint_t; direction: Thb_direction_t; start_offset: guint; variants_count: Pguint; variants: Phb_ot_math_glyph_variant_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_math_get_glyph_variants' {$endif};
-function hb_ot_math_get_min_connector_overlap(font: Phb_font_t; direction: Thb_direction_t): Thb_position_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_math_get_min_connector_overlap' {$endif};
-function hb_ot_math_has_data(face: Phb_face_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_math_has_data' {$endif};
-function hb_ot_math_is_glyph_extended_shape(face: Phb_face_t; glyph: Thb_codepoint_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_math_is_glyph_extended_shape' {$endif};
-function hb_ot_meta_get_entry_tags(face: Phb_face_t; start_offset: guint; entries_count: Pguint; entries: Phb_ot_meta_tag_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_meta_get_entry_tags' {$endif};
-function hb_ot_meta_reference_entry(face: Phb_face_t; meta_tag: Thb_ot_meta_tag_t): Phb_blob_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_meta_reference_entry' {$endif};
-function hb_ot_metrics_get_position(font: Phb_font_t; metrics_tag: Thb_ot_metrics_tag_t; position: Phb_position_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_metrics_get_position' {$endif};
-function hb_ot_metrics_get_variation(font: Phb_font_t; metrics_tag: Thb_ot_metrics_tag_t): gfloat; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_metrics_get_variation' {$endif};
-function hb_ot_metrics_get_x_variation(font: Phb_font_t; metrics_tag: Thb_ot_metrics_tag_t): Thb_position_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_metrics_get_x_variation' {$endif};
-function hb_ot_metrics_get_y_variation(font: Phb_font_t; metrics_tag: Thb_ot_metrics_tag_t): Thb_position_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_metrics_get_y_variation' {$endif};
-function hb_ot_name_get_utf16(face: Phb_face_t; name_id: Thb_ot_name_id_t; language: Thb_language_t; text_size: Pguint; text: Pguint16): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_name_get_utf16' {$endif};
-function hb_ot_name_get_utf32(face: Phb_face_t; name_id: Thb_ot_name_id_t; language: Thb_language_t; text_size: Pguint; text: Pguint32): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_name_get_utf32' {$endif};
-function hb_ot_name_get_utf8(face: Phb_face_t; name_id: Thb_ot_name_id_t; language: Thb_language_t; text_size: Pguint; text: Pgchar): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_name_get_utf8' {$endif};
-function hb_ot_name_list_names(face: Phb_face_t; num_entries: Pguint): Phb_ot_name_entry_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_name_list_names' {$endif};
-function hb_ot_tag_to_language(tag: Thb_tag_t): Thb_language_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_tag_to_language' {$endif};
-function hb_ot_tag_to_script(tag: Thb_tag_t): Thb_script_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_tag_to_script' {$endif};
-function hb_ot_var_find_axis_info(face: Phb_face_t; axis_tag: Thb_tag_t; axis_info: Phb_ot_var_axis_info_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_var_find_axis_info' {$endif};
-function hb_ot_var_get_axis_count(face: Phb_face_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_var_get_axis_count' {$endif};
-function hb_ot_var_get_axis_infos(face: Phb_face_t; start_offset: guint; axes_count: Pguint; axes_array: Phb_ot_var_axis_info_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_var_get_axis_infos' {$endif};
-function hb_ot_var_get_named_instance_count(face: Phb_face_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_var_get_named_instance_count' {$endif};
-function hb_ot_var_has_data(face: Phb_face_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_var_has_data' {$endif};
-function hb_ot_var_named_instance_get_design_coords(face: Phb_face_t; instance_index: guint; coords_length: Pguint; coords: Pgfloat): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_var_named_instance_get_design_coords' {$endif};
-function hb_ot_var_named_instance_get_postscript_name_id(face: Phb_face_t; instance_index: guint): Thb_ot_name_id_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_var_named_instance_get_postscript_name_id' {$endif};
-function hb_ot_var_named_instance_get_subfamily_name_id(face: Phb_face_t; instance_index: guint): Thb_ot_name_id_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_var_named_instance_get_subfamily_name_id' {$endif};
-function hb_paint_custom_palette_color(funcs: Phb_paint_funcs_t; paint_data: Pgpointer; color_index: guint; color: Phb_color_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_custom_palette_color' {$endif};
-function hb_paint_funcs_create: Phb_paint_funcs_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_funcs_create' {$endif};
-function hb_paint_funcs_get_empty: Phb_paint_funcs_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_funcs_get_empty' {$endif};
-function hb_paint_funcs_get_user_data(funcs: Phb_paint_funcs_t; key: Phb_user_data_key_t): Pgpointer; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_funcs_get_user_data' {$endif};
-function hb_paint_funcs_is_immutable(funcs: Phb_paint_funcs_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_funcs_is_immutable' {$endif};
-function hb_paint_funcs_reference(funcs: Phb_paint_funcs_t): Phb_paint_funcs_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_funcs_reference' {$endif};
-function hb_paint_funcs_set_user_data(funcs: Phb_paint_funcs_t; key: Phb_user_data_key_t; data: Pgpointer; destroy_: Thb_destroy_func_t; replace: Thb_bool_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_funcs_set_user_data' {$endif};
-function hb_script_from_iso15924_tag(tag: Thb_tag_t): Thb_script_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_script_from_iso15924_tag' {$endif};
-function hb_script_from_string(str: Pgchar; len: gint): Thb_script_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_script_from_string' {$endif};
-function hb_script_get_horizontal_direction(script: Thb_script_t): Thb_direction_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_script_get_horizontal_direction' {$endif};
-function hb_script_to_iso15924_tag(script: Thb_script_t): Thb_tag_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_script_to_iso15924_tag' {$endif};
-function hb_segment_properties_equal(a: Phb_segment_properties_t; b: Phb_segment_properties_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_segment_properties_equal' {$endif};
-function hb_segment_properties_hash(p: Phb_segment_properties_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_segment_properties_hash' {$endif};
-function hb_set_allocation_successful(set_: Phb_set_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_allocation_successful' {$endif};
-function hb_set_copy(set_: Phb_set_t): Phb_set_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_copy' {$endif};
-function hb_set_create: Phb_set_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_create' {$endif};
-function hb_set_get_empty: Phb_set_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_get_empty' {$endif};
-function hb_set_get_max(set_: Phb_set_t): Thb_codepoint_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_get_max' {$endif};
-function hb_set_get_min(set_: Phb_set_t): Thb_codepoint_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_get_min' {$endif};
-function hb_set_get_population(set_: Phb_set_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_get_population' {$endif};
-function hb_set_get_user_data(set_: Phb_set_t; key: Phb_user_data_key_t): Pgpointer; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_get_user_data' {$endif};
-function hb_set_has(set_: Phb_set_t; codepoint: Thb_codepoint_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_has' {$endif};
-function hb_set_hash(set_: Phb_set_t): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_hash' {$endif};
-function hb_set_is_empty(set_: Phb_set_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_is_empty' {$endif};
-function hb_set_is_equal(set_: Phb_set_t; other: Phb_set_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_is_equal' {$endif};
-function hb_set_is_inverted(set_: Phb_set_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_is_inverted' {$endif};
-function hb_set_is_subset(set_: Phb_set_t; larger_set: Phb_set_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_is_subset' {$endif};
-function hb_set_next(set_: Phb_set_t; codepoint: Phb_codepoint_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_next' {$endif};
-function hb_set_next_many(set_: Phb_set_t; codepoint: Thb_codepoint_t; out_: Phb_codepoint_t; size: guint): guint; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_next_many' {$endif};
-function hb_set_next_range(set_: Phb_set_t; first: Phb_codepoint_t; last: Phb_codepoint_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_next_range' {$endif};
-function hb_set_previous(set_: Phb_set_t; codepoint: Phb_codepoint_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_previous' {$endif};
-function hb_set_previous_range(set_: Phb_set_t; first: Phb_codepoint_t; last: Phb_codepoint_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_previous_range' {$endif};
-function hb_set_reference(set_: Phb_set_t): Phb_set_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_reference' {$endif};
-function hb_set_set_user_data(set_: Phb_set_t; key: Phb_user_data_key_t; data: Pgpointer; destroy_: Thb_destroy_func_t; replace: Thb_bool_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_set_user_data' {$endif};
-function hb_shape_full(font: Phb_font_t; buffer: Phb_buffer_t; features: Phb_feature_t; num_features: guint; shaper_list: PPgchar): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_shape_full' {$endif};
-function hb_shape_justify(font: Phb_font_t; buffer: Phb_buffer_t; features: Phb_feature_t; num_features: guint; shaper_list: PPgchar; min_target_advance: gfloat; max_target_advance: gfloat; advance: Pgfloat; var_tag: Phb_tag_t; var_value: Pgfloat): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_shape_justify' {$endif};
-function hb_shape_list_shapers: PPgchar; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_shape_list_shapers' {$endif};
-function hb_shape_plan_create(face: Phb_face_t; props: Phb_segment_properties_t; user_features: Phb_feature_t; num_user_features: guint; shaper_list: PPgchar): Phb_shape_plan_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_shape_plan_create' {$endif};
-function hb_shape_plan_create2(face: Phb_face_t; props: Phb_segment_properties_t; user_features: Phb_feature_t; num_user_features: guint; coords: Pgint; num_coords: guint; shaper_list: PPgchar): Phb_shape_plan_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_shape_plan_create2' {$endif};
-function hb_shape_plan_create_cached(face: Phb_face_t; props: Phb_segment_properties_t; user_features: Phb_feature_t; num_user_features: guint; shaper_list: PPgchar): Phb_shape_plan_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_shape_plan_create_cached' {$endif};
-function hb_shape_plan_create_cached2(face: Phb_face_t; props: Phb_segment_properties_t; user_features: Phb_feature_t; num_user_features: guint; coords: Pgint; num_coords: guint; shaper_list: PPgchar): Phb_shape_plan_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_shape_plan_create_cached2' {$endif};
-function hb_shape_plan_execute(shape_plan: Phb_shape_plan_t; font: Phb_font_t; buffer: Phb_buffer_t; features: Phb_feature_t; num_features: guint): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_shape_plan_execute' {$endif};
-function hb_shape_plan_get_empty: Phb_shape_plan_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_shape_plan_get_empty' {$endif};
-function hb_shape_plan_get_shaper(shape_plan: Phb_shape_plan_t): Pgchar; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_shape_plan_get_shaper' {$endif};
-function hb_shape_plan_get_user_data(shape_plan: Phb_shape_plan_t; key: Phb_user_data_key_t): Pgpointer; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_shape_plan_get_user_data' {$endif};
-function hb_shape_plan_reference(shape_plan: Phb_shape_plan_t): Phb_shape_plan_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_shape_plan_reference' {$endif};
-function hb_shape_plan_set_user_data(shape_plan: Phb_shape_plan_t; key: Phb_user_data_key_t; data: Pgpointer; destroy_: Thb_destroy_func_t; replace: Thb_bool_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_shape_plan_set_user_data' {$endif};
-function hb_style_get_value(font: Phb_font_t; style_tag: Thb_style_tag_t): gfloat; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_style_get_value' {$endif};
-function hb_tag_from_string(str: Pgchar; len: gint): Thb_tag_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_tag_from_string' {$endif};
-function hb_unicode_combining_class(ufuncs: Phb_unicode_funcs_t; unicode: Thb_codepoint_t): Thb_unicode_combining_class_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_unicode_combining_class' {$endif};
-function hb_unicode_compose(ufuncs: Phb_unicode_funcs_t; a: Thb_codepoint_t; b: Thb_codepoint_t; ab: Phb_codepoint_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_unicode_compose' {$endif};
-function hb_unicode_decompose(ufuncs: Phb_unicode_funcs_t; ab: Thb_codepoint_t; a: Phb_codepoint_t; b: Phb_codepoint_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_unicode_decompose' {$endif};
-function hb_unicode_funcs_create(parent: Phb_unicode_funcs_t): Phb_unicode_funcs_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_unicode_funcs_create' {$endif};
-function hb_unicode_funcs_get_default: Phb_unicode_funcs_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_unicode_funcs_get_default' {$endif};
-function hb_unicode_funcs_get_empty: Phb_unicode_funcs_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_unicode_funcs_get_empty' {$endif};
-function hb_unicode_funcs_get_parent(ufuncs: Phb_unicode_funcs_t): Phb_unicode_funcs_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_unicode_funcs_get_parent' {$endif};
-function hb_unicode_funcs_get_user_data(ufuncs: Phb_unicode_funcs_t; key: Phb_user_data_key_t): Pgpointer; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_unicode_funcs_get_user_data' {$endif};
-function hb_unicode_funcs_is_immutable(ufuncs: Phb_unicode_funcs_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_unicode_funcs_is_immutable' {$endif};
-function hb_unicode_funcs_reference(ufuncs: Phb_unicode_funcs_t): Phb_unicode_funcs_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_unicode_funcs_reference' {$endif};
-function hb_unicode_funcs_set_user_data(ufuncs: Phb_unicode_funcs_t; key: Phb_user_data_key_t; data: Pgpointer; destroy_: Thb_destroy_func_t; replace: Thb_bool_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_unicode_funcs_set_user_data' {$endif};
-function hb_unicode_general_category(ufuncs: Phb_unicode_funcs_t; unicode: Thb_codepoint_t): Thb_unicode_general_category_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_unicode_general_category' {$endif};
-function hb_unicode_mirroring(ufuncs: Phb_unicode_funcs_t; unicode: Thb_codepoint_t): Thb_codepoint_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_unicode_mirroring' {$endif};
-function hb_unicode_script(ufuncs: Phb_unicode_funcs_t; unicode: Thb_codepoint_t): Thb_script_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_unicode_script' {$endif};
-function hb_variation_from_string(str: Pgchar; len: gint; variation: Phb_variation_t): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_variation_from_string' {$endif};
-function hb_version_atleast(major: guint; minor: guint; micro: guint): Thb_bool_t; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_version_atleast' {$endif};
-function hb_version_string: Pgchar; cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_version_string' {$endif};
-procedure hb_blob_destroy(blob: Phb_blob_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_blob_destroy' {$endif};
-procedure hb_blob_make_immutable(blob: Phb_blob_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_blob_make_immutable' {$endif};
-procedure hb_buffer_add(buffer: Phb_buffer_t; codepoint: Thb_codepoint_t; cluster: guint); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_add' {$endif};
-procedure hb_buffer_add_codepoints(buffer: Phb_buffer_t; text: Phb_codepoint_t; text_length: gint; item_offset: guint; item_length: gint); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_add_codepoints' {$endif};
-procedure hb_buffer_add_latin1(buffer: Phb_buffer_t; text: Pguint8; text_length: gint; item_offset: guint; item_length: gint); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_add_latin1' {$endif};
-procedure hb_buffer_add_utf16(buffer: Phb_buffer_t; text: Pguint16; text_length: gint; item_offset: guint; item_length: gint); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_add_utf16' {$endif};
-procedure hb_buffer_add_utf32(buffer: Phb_buffer_t; text: Pguint32; text_length: gint; item_offset: guint; item_length: gint); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_add_utf32' {$endif};
-procedure hb_buffer_add_utf8(buffer: Phb_buffer_t; text: Pgchar; text_length: gint; item_offset: guint; item_length: gint); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_add_utf8' {$endif};
-procedure hb_buffer_append(buffer: Phb_buffer_t; source: Phb_buffer_t; start: guint; end_: guint); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_append' {$endif};
-procedure hb_buffer_clear_contents(buffer: Phb_buffer_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_clear_contents' {$endif};
-procedure hb_buffer_destroy(buffer: Phb_buffer_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_destroy' {$endif};
-procedure hb_buffer_get_segment_properties(buffer: Phb_buffer_t; props: Phb_segment_properties_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_get_segment_properties' {$endif};
-procedure hb_buffer_guess_segment_properties(buffer: Phb_buffer_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_guess_segment_properties' {$endif};
-procedure hb_buffer_normalize_glyphs(buffer: Phb_buffer_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_normalize_glyphs' {$endif};
-procedure hb_buffer_reset(buffer: Phb_buffer_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_reset' {$endif};
-procedure hb_buffer_reverse(buffer: Phb_buffer_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_reverse' {$endif};
-procedure hb_buffer_reverse_clusters(buffer: Phb_buffer_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_reverse_clusters' {$endif};
-procedure hb_buffer_reverse_range(buffer: Phb_buffer_t; start: guint; end_: guint); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_reverse_range' {$endif};
-procedure hb_buffer_set_cluster_level(buffer: Phb_buffer_t; cluster_level: Thb_buffer_cluster_level_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_set_cluster_level' {$endif};
-procedure hb_buffer_set_content_type(buffer: Phb_buffer_t; content_type: Thb_buffer_content_type_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_set_content_type' {$endif};
-procedure hb_buffer_set_direction(buffer: Phb_buffer_t; direction: Thb_direction_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_set_direction' {$endif};
-procedure hb_buffer_set_flags(buffer: Phb_buffer_t; flags: Thb_buffer_flags_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_set_flags' {$endif};
-procedure hb_buffer_set_invisible_glyph(buffer: Phb_buffer_t; invisible: Thb_codepoint_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_set_invisible_glyph' {$endif};
-procedure hb_buffer_set_language(buffer: Phb_buffer_t; language: Thb_language_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_set_language' {$endif};
-procedure hb_buffer_set_message_func(buffer: Phb_buffer_t; func: Thb_buffer_message_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_set_message_func' {$endif};
-procedure hb_buffer_set_not_found_glyph(buffer: Phb_buffer_t; not_found: Thb_codepoint_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_set_not_found_glyph' {$endif};
-procedure hb_buffer_set_replacement_codepoint(buffer: Phb_buffer_t; replacement: Thb_codepoint_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_set_replacement_codepoint' {$endif};
-procedure hb_buffer_set_script(buffer: Phb_buffer_t; script: Thb_script_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_set_script' {$endif};
-procedure hb_buffer_set_segment_properties(buffer: Phb_buffer_t; props: Phb_segment_properties_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_set_segment_properties' {$endif};
-procedure hb_buffer_set_unicode_funcs(buffer: Phb_buffer_t; unicode_funcs: Phb_unicode_funcs_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_buffer_set_unicode_funcs' {$endif};
-procedure hb_draw_close_path(dfuncs: Phb_draw_funcs_t; draw_data: Pgpointer; st: Phb_draw_state_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_draw_close_path' {$endif};
-procedure hb_draw_cubic_to(dfuncs: Phb_draw_funcs_t; draw_data: Pgpointer; st: Phb_draw_state_t; control1_x: gfloat; control1_y: gfloat; control2_x: gfloat; control2_y: gfloat; to_x: gfloat; to_y: gfloat); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_draw_cubic_to' {$endif};
-procedure hb_draw_funcs_destroy(dfuncs: Phb_draw_funcs_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_draw_funcs_destroy' {$endif};
-procedure hb_draw_funcs_make_immutable(dfuncs: Phb_draw_funcs_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_draw_funcs_make_immutable' {$endif};
-procedure hb_draw_funcs_set_close_path_func(dfuncs: Phb_draw_funcs_t; func: Thb_draw_close_path_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_draw_funcs_set_close_path_func' {$endif};
-procedure hb_draw_funcs_set_cubic_to_func(dfuncs: Phb_draw_funcs_t; func: Thb_draw_cubic_to_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_draw_funcs_set_cubic_to_func' {$endif};
-procedure hb_draw_funcs_set_line_to_func(dfuncs: Phb_draw_funcs_t; func: Thb_draw_line_to_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_draw_funcs_set_line_to_func' {$endif};
-procedure hb_draw_funcs_set_move_to_func(dfuncs: Phb_draw_funcs_t; func: Thb_draw_move_to_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_draw_funcs_set_move_to_func' {$endif};
-procedure hb_draw_funcs_set_quadratic_to_func(dfuncs: Phb_draw_funcs_t; func: Thb_draw_quadratic_to_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_draw_funcs_set_quadratic_to_func' {$endif};
-procedure hb_draw_line_to(dfuncs: Phb_draw_funcs_t; draw_data: Pgpointer; st: Phb_draw_state_t; to_x: gfloat; to_y: gfloat); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_draw_line_to' {$endif};
-procedure hb_draw_move_to(dfuncs: Phb_draw_funcs_t; draw_data: Pgpointer; st: Phb_draw_state_t; to_x: gfloat; to_y: gfloat); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_draw_move_to' {$endif};
-procedure hb_draw_quadratic_to(dfuncs: Phb_draw_funcs_t; draw_data: Pgpointer; st: Phb_draw_state_t; control_x: gfloat; control_y: gfloat; to_x: gfloat; to_y: gfloat); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_draw_quadratic_to' {$endif};
-procedure hb_face_builder_sort_tables(face: Phb_face_t; tags: Phb_tag_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_face_builder_sort_tables' {$endif};
-procedure hb_face_collect_nominal_glyph_mapping(face: Phb_face_t; mapping: Phb_map_t; unicodes: Phb_set_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_face_collect_nominal_glyph_mapping' {$endif};
-procedure hb_face_collect_unicodes(face: Phb_face_t; out_: Phb_set_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_face_collect_unicodes' {$endif};
-procedure hb_face_collect_variation_selectors(face: Phb_face_t; out_: Phb_set_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_face_collect_variation_selectors' {$endif};
-procedure hb_face_collect_variation_unicodes(face: Phb_face_t; variation_selector: Thb_codepoint_t; out_: Phb_set_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_face_collect_variation_unicodes' {$endif};
-procedure hb_face_destroy(face: Phb_face_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_face_destroy' {$endif};
-procedure hb_face_make_immutable(face: Phb_face_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_face_make_immutable' {$endif};
-procedure hb_face_set_glyph_count(face: Phb_face_t; glyph_count: guint); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_face_set_glyph_count' {$endif};
-procedure hb_face_set_index(face: Phb_face_t; index: guint); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_face_set_index' {$endif};
-procedure hb_face_set_upem(face: Phb_face_t; upem: guint); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_face_set_upem' {$endif};
-procedure hb_feature_to_string(feature: Phb_feature_t; buf: Pgchar; size: Pguint); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_feature_to_string' {$endif};
-procedure hb_font_add_glyph_origin_for_direction(font: Phb_font_t; glyph: Thb_codepoint_t; direction: Thb_direction_t; x: Phb_position_t; y: Phb_position_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_add_glyph_origin_for_direction' {$endif};
-procedure hb_font_changed(font: Phb_font_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_changed' {$endif};
-procedure hb_font_destroy(font: Phb_font_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_destroy' {$endif};
-procedure hb_font_draw_glyph(font: Phb_font_t; glyph: Thb_codepoint_t; dfuncs: Phb_draw_funcs_t; draw_data: Pgpointer); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_draw_glyph' {$endif};
-procedure hb_font_funcs_destroy(ffuncs: Phb_font_funcs_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_funcs_destroy' {$endif};
-procedure hb_font_funcs_make_immutable(ffuncs: Phb_font_funcs_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_funcs_make_immutable' {$endif};
-procedure hb_font_funcs_set_draw_glyph_func(ffuncs: Phb_font_funcs_t; func: Thb_font_draw_glyph_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_funcs_set_draw_glyph_func' {$endif};
-procedure hb_font_funcs_set_font_h_extents_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_font_h_extents_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_funcs_set_font_h_extents_func' {$endif};
-procedure hb_font_funcs_set_font_v_extents_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_font_v_extents_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_funcs_set_font_v_extents_func' {$endif};
-procedure hb_font_funcs_set_glyph_contour_point_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_glyph_contour_point_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_funcs_set_glyph_contour_point_func' {$endif};
-procedure hb_font_funcs_set_glyph_extents_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_glyph_extents_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_funcs_set_glyph_extents_func' {$endif};
-procedure hb_font_funcs_set_glyph_from_name_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_glyph_from_name_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_funcs_set_glyph_from_name_func' {$endif};
-procedure hb_font_funcs_set_glyph_h_advance_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_glyph_h_advance_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_funcs_set_glyph_h_advance_func' {$endif};
-procedure hb_font_funcs_set_glyph_h_advances_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_glyph_h_advances_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_funcs_set_glyph_h_advances_func' {$endif};
-procedure hb_font_funcs_set_glyph_h_kerning_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_glyph_h_kerning_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_funcs_set_glyph_h_kerning_func' {$endif};
-procedure hb_font_funcs_set_glyph_h_origin_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_glyph_h_origin_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_funcs_set_glyph_h_origin_func' {$endif};
-procedure hb_font_funcs_set_glyph_name_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_glyph_name_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_funcs_set_glyph_name_func' {$endif};
-procedure hb_font_funcs_set_glyph_v_advance_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_glyph_v_advance_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_funcs_set_glyph_v_advance_func' {$endif};
-procedure hb_font_funcs_set_glyph_v_advances_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_glyph_v_advances_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_funcs_set_glyph_v_advances_func' {$endif};
-procedure hb_font_funcs_set_glyph_v_origin_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_glyph_v_origin_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_funcs_set_glyph_v_origin_func' {$endif};
-procedure hb_font_funcs_set_nominal_glyph_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_nominal_glyph_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_funcs_set_nominal_glyph_func' {$endif};
-procedure hb_font_funcs_set_nominal_glyphs_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_nominal_glyphs_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_funcs_set_nominal_glyphs_func' {$endif};
-procedure hb_font_funcs_set_paint_glyph_func(ffuncs: Phb_font_funcs_t; func: Thb_font_paint_glyph_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_funcs_set_paint_glyph_func' {$endif};
-procedure hb_font_funcs_set_variation_glyph_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_variation_glyph_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_funcs_set_variation_glyph_func' {$endif};
-procedure hb_font_get_extents_for_direction(font: Phb_font_t; direction: Thb_direction_t; extents: Phb_font_extents_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_extents_for_direction' {$endif};
-procedure hb_font_get_glyph_advance_for_direction(font: Phb_font_t; glyph: Thb_codepoint_t; direction: Thb_direction_t; x: Phb_position_t; y: Phb_position_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_glyph_advance_for_direction' {$endif};
-procedure hb_font_get_glyph_advances_for_direction(font: Phb_font_t; direction: Thb_direction_t; count: guint; first_glyph: Phb_codepoint_t; glyph_stride: guint; first_advance: Phb_position_t; advance_stride: Pguint); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_glyph_advances_for_direction' {$endif};
-procedure hb_font_get_glyph_h_advances(font: Phb_font_t; count: guint; first_glyph: Phb_codepoint_t; glyph_stride: guint; first_advance: Phb_position_t; advance_stride: guint); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_glyph_h_advances' {$endif};
-procedure hb_font_get_glyph_kerning_for_direction(font: Phb_font_t; first_glyph: Thb_codepoint_t; second_glyph: Thb_codepoint_t; direction: Thb_direction_t; x: Phb_position_t; y: Phb_position_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_glyph_kerning_for_direction' {$endif};
-procedure hb_font_get_glyph_origin_for_direction(font: Phb_font_t; glyph: Thb_codepoint_t; direction: Thb_direction_t; x: Phb_position_t; y: Phb_position_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_glyph_origin_for_direction' {$endif};
-procedure hb_font_get_glyph_v_advances(font: Phb_font_t; count: guint; first_glyph: Phb_codepoint_t; glyph_stride: guint; first_advance: Phb_position_t; advance_stride: Pguint); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_glyph_v_advances' {$endif};
-procedure hb_font_get_ppem(font: Phb_font_t; x_ppem: Pguint; y_ppem: Pguint); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_ppem' {$endif};
-procedure hb_font_get_scale(font: Phb_font_t; x_scale: Pgint; y_scale: Pgint); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_scale' {$endif};
-procedure hb_font_get_synthetic_bold(font: Phb_font_t; x_embolden: Pgfloat; y_embolden: Pgfloat; in_place: Phb_bool_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_get_synthetic_bold' {$endif};
-procedure hb_font_glyph_to_string(font: Phb_font_t; glyph: Thb_codepoint_t; s: Pgchar; size: Pguint); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_glyph_to_string' {$endif};
-procedure hb_font_make_immutable(font: Phb_font_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_make_immutable' {$endif};
-procedure hb_font_paint_glyph(font: Phb_font_t; glyph: Thb_codepoint_t; pfuncs: Phb_paint_funcs_t; paint_data: Pgpointer; palette_index: guint; foreground: Thb_color_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_paint_glyph' {$endif};
-procedure hb_font_set_face(font: Phb_font_t; face: Phb_face_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_set_face' {$endif};
-procedure hb_font_set_funcs(font: Phb_font_t; klass: Phb_font_funcs_t; font_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_set_funcs' {$endif};
-procedure hb_font_set_funcs_data(font: Phb_font_t; font_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_set_funcs_data' {$endif};
-procedure hb_font_set_parent(font: Phb_font_t; parent: Phb_font_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_set_parent' {$endif};
-procedure hb_font_set_ppem(font: Phb_font_t; x_ppem: guint; y_ppem: guint); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_set_ppem' {$endif};
-procedure hb_font_set_ptem(font: Phb_font_t; ptem: gfloat); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_set_ptem' {$endif};
-procedure hb_font_set_scale(font: Phb_font_t; x_scale: gint; y_scale: gint); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_set_scale' {$endif};
-procedure hb_font_set_synthetic_bold(font: Phb_font_t; x_embolden: gfloat; y_embolden: gfloat; in_place: Thb_bool_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_set_synthetic_bold' {$endif};
-procedure hb_font_set_synthetic_slant(font: Phb_font_t; slant: gfloat); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_set_synthetic_slant' {$endif};
-procedure hb_font_set_var_coords_design(font: Phb_font_t; coords: Pgfloat; coords_length: guint); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_set_var_coords_design' {$endif};
-procedure hb_font_set_var_coords_normalized(font: Phb_font_t; coords: Pgint; coords_length: guint); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_set_var_coords_normalized' {$endif};
-procedure hb_font_set_var_named_instance(font: Phb_font_t; instance_index: guint); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_set_var_named_instance' {$endif};
-procedure hb_font_set_variation(font: Phb_font_t; tag: Thb_tag_t; value: gfloat); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_set_variation' {$endif};
-procedure hb_font_set_variations(font: Phb_font_t; variations: Phb_variation_t; variations_length: guint); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_set_variations' {$endif};
-procedure hb_font_subtract_glyph_origin_for_direction(font: Phb_font_t; glyph: Thb_codepoint_t; direction: Thb_direction_t; x: Phb_position_t; y: Phb_position_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_font_subtract_glyph_origin_for_direction' {$endif};
-procedure hb_ft_font_changed(font: Phb_font_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ft_font_changed' {$endif};
-procedure hb_ft_font_set_funcs(font: Phb_font_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ft_font_set_funcs' {$endif};
-procedure hb_ft_font_set_load_flags(font: Phb_font_t; load_flags: gint); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ft_font_set_load_flags' {$endif};
-procedure hb_ft_font_unlock_face(font: Phb_font_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ft_font_unlock_face' {$endif};
-procedure hb_map_clear(map: Phb_map_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_map_clear' {$endif};
-procedure hb_map_del(map: Phb_map_t; key: Thb_codepoint_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_map_del' {$endif};
-procedure hb_map_destroy(map: Phb_map_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_map_destroy' {$endif};
-procedure hb_map_keys(map: Phb_map_t; keys: Phb_set_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_map_keys' {$endif};
-procedure hb_map_set(map: Phb_map_t; key: Thb_codepoint_t; value: Thb_codepoint_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_map_set' {$endif};
-procedure hb_map_update(map: Phb_map_t; other: Phb_map_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_map_update' {$endif};
-procedure hb_map_values(map: Phb_map_t; values: Phb_set_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_map_values' {$endif};
-procedure hb_ot_font_set_funcs(font: Phb_font_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_font_set_funcs' {$endif};
-procedure hb_ot_layout_collect_features(face: Phb_face_t; table_tag: Thb_tag_t; scripts: Phb_tag_t; languages: Phb_tag_t; features: Phb_tag_t; feature_indexes: Phb_set_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_collect_features' {$endif};
-procedure hb_ot_layout_collect_lookups(face: Phb_face_t; table_tag: Thb_tag_t; scripts: Phb_tag_t; languages: Phb_tag_t; features: Phb_tag_t; lookup_indexes: Phb_set_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_collect_lookups' {$endif};
-procedure hb_ot_layout_get_baseline_with_fallback(font: Phb_font_t; baseline_tag: Thb_ot_layout_baseline_tag_t; direction: Thb_direction_t; script_tag: Thb_tag_t; language_tag: Thb_tag_t; coord: Phb_position_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_get_baseline_with_fallback' {$endif};
-procedure hb_ot_layout_get_glyphs_in_class(face: Phb_face_t; klass: Thb_ot_layout_glyph_class_t; glyphs: Phb_set_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_get_glyphs_in_class' {$endif};
-procedure hb_ot_layout_lookup_collect_glyphs(face: Phb_face_t; table_tag: Thb_tag_t; lookup_index: guint; glyphs_before: Phb_set_t; glyphs_input: Phb_set_t; glyphs_after: Phb_set_t; glyphs_output: Phb_set_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_lookup_collect_glyphs' {$endif};
-procedure hb_ot_layout_lookup_substitute_closure(face: Phb_face_t; lookup_index: guint; glyphs: Phb_set_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_lookup_substitute_closure' {$endif};
-procedure hb_ot_layout_lookups_substitute_closure(face: Phb_face_t; lookups: Phb_set_t; glyphs: Phb_set_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_layout_lookups_substitute_closure' {$endif};
-procedure hb_ot_metrics_get_position_with_fallback(font: Phb_font_t; metrics_tag: Thb_ot_metrics_tag_t; position: Phb_position_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_metrics_get_position_with_fallback' {$endif};
-procedure hb_ot_shape_glyphs_closure(font: Phb_font_t; buffer: Phb_buffer_t; features: Phb_feature_t; num_features: guint; glyphs: Phb_set_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_shape_glyphs_closure' {$endif};
-procedure hb_ot_shape_plan_collect_lookups(shape_plan: Phb_shape_plan_t; table_tag: Thb_tag_t; lookup_indexes: Phb_set_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_shape_plan_collect_lookups' {$endif};
-procedure hb_ot_tags_from_script_and_language(script: Thb_script_t; language: Thb_language_t; script_count: Pguint; script_tags: Phb_tag_t; language_count: Pguint; language_tags: Phb_tag_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_tags_from_script_and_language' {$endif};
-procedure hb_ot_tags_to_script_and_language(script_tag: Thb_tag_t; language_tag: Thb_tag_t; script: Phb_script_t; language: Phb_language_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_tags_to_script_and_language' {$endif};
-procedure hb_ot_var_normalize_coords(face: Phb_face_t; coords_length: guint; design_coords: Pgfloat; normalized_coords: Pgint); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_var_normalize_coords' {$endif};
-procedure hb_ot_var_normalize_variations(face: Phb_face_t; variations: Phb_variation_t; variations_length: guint; coords: Pgint; coords_length: Pguint); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_ot_var_normalize_variations' {$endif};
-procedure hb_paint_color(funcs: Phb_paint_funcs_t; paint_data: Pgpointer; is_foreground: Thb_bool_t; color: Thb_color_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_color' {$endif};
-procedure hb_paint_funcs_destroy(funcs: Phb_paint_funcs_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_funcs_destroy' {$endif};
-procedure hb_paint_funcs_make_immutable(funcs: Phb_paint_funcs_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_funcs_make_immutable' {$endif};
-procedure hb_paint_funcs_set_color_func(funcs: Phb_paint_funcs_t; func: Thb_paint_color_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_funcs_set_color_func' {$endif};
-procedure hb_paint_funcs_set_custom_palette_color_func(funcs: Phb_paint_funcs_t; func: Thb_paint_custom_palette_color_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_funcs_set_custom_palette_color_func' {$endif};
-procedure hb_paint_funcs_set_image_func(funcs: Phb_paint_funcs_t; func: Thb_paint_image_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_funcs_set_image_func' {$endif};
-procedure hb_paint_funcs_set_linear_gradient_func(funcs: Phb_paint_funcs_t; func: Thb_paint_linear_gradient_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_funcs_set_linear_gradient_func' {$endif};
-procedure hb_paint_funcs_set_pop_clip_func(funcs: Phb_paint_funcs_t; func: Thb_paint_pop_clip_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_funcs_set_pop_clip_func' {$endif};
-procedure hb_paint_funcs_set_pop_group_func(funcs: Phb_paint_funcs_t; func: Thb_paint_pop_group_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_funcs_set_pop_group_func' {$endif};
-procedure hb_paint_funcs_set_pop_transform_func(funcs: Phb_paint_funcs_t; func: Thb_paint_pop_transform_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_funcs_set_pop_transform_func' {$endif};
-procedure hb_paint_funcs_set_push_clip_glyph_func(funcs: Phb_paint_funcs_t; func: Thb_paint_push_clip_glyph_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_funcs_set_push_clip_glyph_func' {$endif};
-procedure hb_paint_funcs_set_push_clip_rectangle_func(funcs: Phb_paint_funcs_t; func: Thb_paint_push_clip_rectangle_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_funcs_set_push_clip_rectangle_func' {$endif};
-procedure hb_paint_funcs_set_push_group_func(funcs: Phb_paint_funcs_t; func: Thb_paint_push_group_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_funcs_set_push_group_func' {$endif};
-procedure hb_paint_funcs_set_push_transform_func(funcs: Phb_paint_funcs_t; func: Thb_paint_push_transform_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_funcs_set_push_transform_func' {$endif};
-procedure hb_paint_funcs_set_radial_gradient_func(funcs: Phb_paint_funcs_t; func: Thb_paint_radial_gradient_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_funcs_set_radial_gradient_func' {$endif};
-procedure hb_paint_funcs_set_sweep_gradient_func(funcs: Phb_paint_funcs_t; func: Thb_paint_sweep_gradient_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_funcs_set_sweep_gradient_func' {$endif};
-procedure hb_paint_image(funcs: Phb_paint_funcs_t; paint_data: Pgpointer; image: Phb_blob_t; width: guint; height: guint; format: Thb_tag_t; slant: gfloat; extents: Phb_glyph_extents_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_image' {$endif};
-procedure hb_paint_linear_gradient(funcs: Phb_paint_funcs_t; paint_data: Pgpointer; color_line: Phb_color_line_t; x0: gfloat; y0: gfloat; x1: gfloat; y1: gfloat; x2: gfloat; y2: gfloat); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_linear_gradient' {$endif};
-procedure hb_paint_pop_clip(funcs: Phb_paint_funcs_t; paint_data: Pgpointer); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_pop_clip' {$endif};
-procedure hb_paint_pop_group(funcs: Phb_paint_funcs_t; paint_data: Pgpointer; mode: Thb_paint_composite_mode_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_pop_group' {$endif};
-procedure hb_paint_pop_transform(funcs: Phb_paint_funcs_t; paint_data: Pgpointer); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_pop_transform' {$endif};
-procedure hb_paint_push_clip_glyph(funcs: Phb_paint_funcs_t; paint_data: Pgpointer; glyph: Thb_codepoint_t; font: Phb_font_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_push_clip_glyph' {$endif};
-procedure hb_paint_push_clip_rectangle(funcs: Phb_paint_funcs_t; paint_data: Pgpointer; xmin: gfloat; ymin: gfloat; xmax: gfloat; ymax: gfloat); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_push_clip_rectangle' {$endif};
-procedure hb_paint_push_group(funcs: Phb_paint_funcs_t; paint_data: Pgpointer); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_push_group' {$endif};
-procedure hb_paint_push_transform(funcs: Phb_paint_funcs_t; paint_data: Pgpointer; xx: gfloat; yx: gfloat; xy: gfloat; yy: gfloat; dx: gfloat; dy: gfloat); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_push_transform' {$endif};
-procedure hb_paint_radial_gradient(funcs: Phb_paint_funcs_t; paint_data: Pgpointer; color_line: Phb_color_line_t; x0: gfloat; y0: gfloat; r0: gfloat; x1: gfloat; y1: gfloat; r1: gfloat); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_radial_gradient' {$endif};
-procedure hb_paint_sweep_gradient(funcs: Phb_paint_funcs_t; paint_data: Pgpointer; color_line: Phb_color_line_t; x0: gfloat; y0: gfloat; start_angle: gfloat; end_angle: gfloat); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_paint_sweep_gradient' {$endif};
-procedure hb_segment_properties_overlay(p: Phb_segment_properties_t; src: Phb_segment_properties_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_segment_properties_overlay' {$endif};
-procedure hb_set_add(set_: Phb_set_t; codepoint: Thb_codepoint_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_add' {$endif};
-procedure hb_set_add_range(set_: Phb_set_t; first: Thb_codepoint_t; last: Thb_codepoint_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_add_range' {$endif};
-procedure hb_set_add_sorted_array(set_: Phb_set_t; sorted_codepoints: Phb_codepoint_t; num_codepoints: guint); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_add_sorted_array' {$endif};
-procedure hb_set_clear(set_: Phb_set_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_clear' {$endif};
-procedure hb_set_del(set_: Phb_set_t; codepoint: Thb_codepoint_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_del' {$endif};
-procedure hb_set_del_range(set_: Phb_set_t; first: Thb_codepoint_t; last: Thb_codepoint_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_del_range' {$endif};
-procedure hb_set_destroy(set_: Phb_set_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_destroy' {$endif};
-procedure hb_set_intersect(set_: Phb_set_t; other: Phb_set_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_intersect' {$endif};
-procedure hb_set_invert(set_: Phb_set_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_invert' {$endif};
-procedure hb_set_set(set_: Phb_set_t; other: Phb_set_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_set' {$endif};
-procedure hb_set_subtract(set_: Phb_set_t; other: Phb_set_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_subtract' {$endif};
-procedure hb_set_symmetric_difference(set_: Phb_set_t; other: Phb_set_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_symmetric_difference' {$endif};
-procedure hb_set_union(set_: Phb_set_t; other: Phb_set_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_set_union' {$endif};
-procedure hb_shape(font: Phb_font_t; buffer: Phb_buffer_t; features: Phb_feature_t; num_features: guint); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_shape' {$endif};
-procedure hb_shape_plan_destroy(shape_plan: Phb_shape_plan_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_shape_plan_destroy' {$endif};
-procedure hb_tag_to_string(tag: Thb_tag_t; buf: Pgchar); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_tag_to_string' {$endif};
-procedure hb_unicode_funcs_destroy(ufuncs: Phb_unicode_funcs_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_unicode_funcs_destroy' {$endif};
-procedure hb_unicode_funcs_make_immutable(ufuncs: Phb_unicode_funcs_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_unicode_funcs_make_immutable' {$endif};
-procedure hb_unicode_funcs_set_combining_class_func(ufuncs: Phb_unicode_funcs_t; func: Thb_unicode_combining_class_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_unicode_funcs_set_combining_class_func' {$endif};
-procedure hb_unicode_funcs_set_compose_func(ufuncs: Phb_unicode_funcs_t; func: Thb_unicode_compose_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_unicode_funcs_set_compose_func' {$endif};
-procedure hb_unicode_funcs_set_decompose_func(ufuncs: Phb_unicode_funcs_t; func: Thb_unicode_decompose_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_unicode_funcs_set_decompose_func' {$endif};
-procedure hb_unicode_funcs_set_general_category_func(ufuncs: Phb_unicode_funcs_t; func: Thb_unicode_general_category_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_unicode_funcs_set_general_category_func' {$endif};
-procedure hb_unicode_funcs_set_mirroring_func(ufuncs: Phb_unicode_funcs_t; func: Thb_unicode_mirroring_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_unicode_funcs_set_mirroring_func' {$endif};
-procedure hb_unicode_funcs_set_script_func(ufuncs: Phb_unicode_funcs_t; func: Thb_unicode_script_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_unicode_funcs_set_script_func' {$endif};
-procedure hb_variation_to_string(variation: Phb_variation_t; buf: Pgchar; size: Pguint); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_variation_to_string' {$endif};
-procedure hb_version(major: Pguint; minor: Pguint; micro: Pguint); cdecl; external {$ifdef MsWindows} LazHarfBuzz0_library name 'hb_version' {$endif};
+function hb_aat_layout_feature_type_get_name_id(face: Phb_face_t; feature_type: Thb_aat_layout_feature_type_t): Thb_ot_name_id_t; cdecl; external;
+function hb_aat_layout_feature_type_get_selector_infos(face: Phb_face_t; feature_type: Thb_aat_layout_feature_type_t; start_offset: guint; selector_count: Pguint; selectors: Phb_aat_layout_feature_selector_info_t; default_index: Pguint): guint; cdecl; external;
+function hb_aat_layout_get_feature_types(face: Phb_face_t; start_offset: guint; feature_count: Pguint; features: Phb_aat_layout_feature_type_t): guint; cdecl; external;
+function hb_aat_layout_has_positioning(face: Phb_face_t): Thb_bool_t; cdecl; external;
+function hb_aat_layout_has_substitution(face: Phb_face_t): Thb_bool_t; cdecl; external;
+function hb_aat_layout_has_tracking(face: Phb_face_t): Thb_bool_t; cdecl; external;
+function hb_blob_copy_writable_or_fail(blob: Phb_blob_t): Phb_blob_t; cdecl; external;
+function hb_blob_create(data: Pgchar; length: guint; mode: Thb_memory_mode_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t): Phb_blob_t; cdecl; external;
+function hb_blob_create_from_file(file_name: Pgchar): Phb_blob_t; cdecl; external;
+function hb_blob_create_from_file_or_fail(file_name: Pgchar): Phb_blob_t; cdecl; external;
+function hb_blob_create_or_fail(data: Pgchar; length: guint; mode: Thb_memory_mode_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t): Phb_blob_t; cdecl; external;
+function hb_blob_create_sub_blob(parent: Phb_blob_t; offset: guint; length: guint): Phb_blob_t; cdecl; external;
+function hb_blob_get_data(blob: Phb_blob_t; length: Pguint): Pgchar; cdecl; external;
+function hb_blob_get_data_writable(blob: Phb_blob_t; length: Pguint): Pgchar; cdecl; external;
+function hb_blob_get_empty: Phb_blob_t; cdecl; external;
+function hb_blob_get_length(blob: Phb_blob_t): guint; cdecl; external;
+function hb_blob_get_user_data(blob: Phb_blob_t; key: Phb_user_data_key_t): Pgpointer; cdecl; external;
+function hb_blob_is_immutable(blob: Phb_blob_t): Thb_bool_t; cdecl; external;
+function hb_blob_reference(blob: Phb_blob_t): Phb_blob_t; cdecl; external;
+function hb_blob_set_user_data(blob: Phb_blob_t; key: Phb_user_data_key_t; data: Pgpointer; destroy_: Thb_destroy_func_t; replace: Thb_bool_t): Thb_bool_t; cdecl; external;
+function hb_buffer_allocation_successful(buffer: Phb_buffer_t): Thb_bool_t; cdecl; external;
+function hb_buffer_create: Phb_buffer_t; cdecl; external;
+function hb_buffer_create_similar(src: Phb_buffer_t): Phb_buffer_t; cdecl; external;
+function hb_buffer_deserialize_glyphs(buffer: Phb_buffer_t; buf: Pgchar; buf_len: gint; end_ptr: PPgchar; font: Phb_font_t; format: Thb_buffer_serialize_format_t): Thb_bool_t; cdecl; external;
+function hb_buffer_deserialize_unicode(buffer: Phb_buffer_t; buf: Pgchar; buf_len: gint; end_ptr: PPgchar; format: Thb_buffer_serialize_format_t): Thb_bool_t; cdecl; external;
+function hb_buffer_diff(buffer: Phb_buffer_t; reference: Phb_buffer_t; dottedcircle_glyph: Thb_codepoint_t; position_fuzz: guint): Thb_buffer_diff_flags_t; cdecl; external;
+function hb_buffer_get_cluster_level(buffer: Phb_buffer_t): Thb_buffer_cluster_level_t; cdecl; external;
+function hb_buffer_get_content_type(buffer: Phb_buffer_t): Thb_buffer_content_type_t; cdecl; external;
+function hb_buffer_get_direction(buffer: Phb_buffer_t): Thb_direction_t; cdecl; external;
+function hb_buffer_get_empty: Phb_buffer_t; cdecl; external;
+function hb_buffer_get_flags(buffer: Phb_buffer_t): Thb_buffer_flags_t; cdecl; external;
+function hb_buffer_get_glyph_infos(buffer: Phb_buffer_t; length: Pguint): Phb_glyph_info_t; cdecl; external;
+function hb_buffer_get_glyph_positions(buffer: Phb_buffer_t; length: Pguint): Phb_glyph_position_t; cdecl; external;
+function hb_buffer_get_invisible_glyph(buffer: Phb_buffer_t): Thb_codepoint_t; cdecl; external;
+function hb_buffer_get_language(buffer: Phb_buffer_t): Thb_language_t; cdecl; external;
+function hb_buffer_get_length(buffer: Phb_buffer_t): guint; cdecl; external;
+function hb_buffer_get_not_found_glyph(buffer: Phb_buffer_t): Thb_codepoint_t; cdecl; external;
+function hb_buffer_get_replacement_codepoint(buffer: Phb_buffer_t): Thb_codepoint_t; cdecl; external;
+function hb_buffer_get_script(buffer: Phb_buffer_t): Thb_script_t; cdecl; external;
+function hb_buffer_get_unicode_funcs(buffer: Phb_buffer_t): Phb_unicode_funcs_t; cdecl; external;
+function hb_buffer_get_user_data(buffer: Phb_buffer_t; key: Phb_user_data_key_t): Pgpointer; cdecl; external;
+function hb_buffer_has_positions(buffer: Phb_buffer_t): Thb_bool_t; cdecl; external;
+function hb_buffer_pre_allocate(buffer: Phb_buffer_t; size: guint): Thb_bool_t; cdecl; external;
+function hb_buffer_reference(buffer: Phb_buffer_t): Phb_buffer_t; cdecl; external;
+function hb_buffer_serialize(buffer: Phb_buffer_t; start: guint; end_: guint; buf: Pgchar; buf_size: Pguint; buf_consumed: Pguint; font: Phb_font_t; format: Thb_buffer_serialize_format_t; flags: Thb_buffer_serialize_flags_t): guint; cdecl; external;
+function hb_buffer_serialize_format_from_string(str: Pgchar; len: gint): Thb_buffer_serialize_format_t; cdecl; external;
+function hb_buffer_serialize_format_to_string(format: Thb_buffer_serialize_format_t): Pgchar; cdecl; external;
+function hb_buffer_serialize_glyphs(buffer: Phb_buffer_t; start: guint; end_: guint; buf: Pgchar; buf_size: Pguint; buf_consumed: Pguint; font: Phb_font_t; format: Thb_buffer_serialize_format_t; flags: Thb_buffer_serialize_flags_t): guint; cdecl; external;
+function hb_buffer_serialize_list_formats: PPgchar; cdecl; external;
+function hb_buffer_serialize_unicode(buffer: Phb_buffer_t; start: guint; end_: guint; buf: Pgchar; buf_size: Pguint; buf_consumed: Pguint; format: Thb_buffer_serialize_format_t; flags: Thb_buffer_serialize_flags_t): guint; cdecl; external;
+function hb_buffer_set_length(buffer: Phb_buffer_t; length: guint): Thb_bool_t; cdecl; external;
+function hb_buffer_set_user_data(buffer: Phb_buffer_t; key: Phb_user_data_key_t; data: Pgpointer; destroy_: Thb_destroy_func_t; replace: Thb_bool_t): Thb_bool_t; cdecl; external;
+function hb_color_get_alpha(color: Thb_color_t): guint8; cdecl; external;
+function hb_color_get_blue(color: Thb_color_t): guint8; cdecl; external;
+function hb_color_get_green(color: Thb_color_t): guint8; cdecl; external;
+function hb_color_get_red(color: Thb_color_t): guint8; cdecl; external;
+function hb_direction_from_string(str: Pgchar; len: gint): Thb_direction_t; cdecl; external;
+function hb_direction_to_string(direction: Thb_direction_t): Pgchar; cdecl; external;
+function hb_draw_funcs_create: Phb_draw_funcs_t; cdecl; external;
+function hb_draw_funcs_is_immutable(dfuncs: Phb_draw_funcs_t): Thb_bool_t; cdecl; external;
+function hb_draw_funcs_reference(dfuncs: Phb_draw_funcs_t): Phb_draw_funcs_t; cdecl; external;
+function hb_face_builder_add_table(face: Phb_face_t; tag: Thb_tag_t; blob: Phb_blob_t): Thb_bool_t; cdecl; external;
+function hb_face_builder_create: Phb_face_t; cdecl; external;
+function hb_face_count(blob: Phb_blob_t): guint; cdecl; external;
+function hb_face_create(blob: Phb_blob_t; index: guint): Phb_face_t; cdecl; external;
+function hb_face_create_for_tables(reference_table_func: Thb_reference_table_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t): Phb_face_t; cdecl; external;
+function hb_face_get_empty: Phb_face_t; cdecl; external;
+function hb_face_get_glyph_count(face: Phb_face_t): guint; cdecl; external;
+function hb_face_get_index(face: Phb_face_t): guint; cdecl; external;
+function hb_face_get_table_tags(face: Phb_face_t; start_offset: guint; table_count: Pguint; table_tags: Phb_tag_t): guint; cdecl; external;
+function hb_face_get_upem(face: Phb_face_t): guint; cdecl; external;
+function hb_face_get_user_data(face: Phb_face_t; key: Phb_user_data_key_t): Pgpointer; cdecl; external;
+function hb_face_is_immutable(face: Phb_face_t): Thb_bool_t; cdecl; external;
+function hb_face_reference(face: Phb_face_t): Phb_face_t; cdecl; external;
+function hb_face_reference_blob(face: Phb_face_t): Phb_blob_t; cdecl; external;
+function hb_face_reference_table(face: Phb_face_t; tag: Thb_tag_t): Phb_blob_t; cdecl; external;
+function hb_face_set_user_data(face: Phb_face_t; key: Phb_user_data_key_t; data: Pgpointer; destroy_: Thb_destroy_func_t; replace: Thb_bool_t): Thb_bool_t; cdecl; external;
+function hb_feature_from_string(str: Pgchar; len: gint; feature: Phb_feature_t): Thb_bool_t; cdecl; external;
+function hb_font_create(face: Phb_face_t): Phb_font_t; cdecl; external;
+function hb_font_create_sub_font(parent: Phb_font_t): Phb_font_t; cdecl; external;
+function hb_font_funcs_create: Phb_font_funcs_t; cdecl; external;
+function hb_font_funcs_get_empty: Phb_font_funcs_t; cdecl; external;
+function hb_font_funcs_get_user_data(ffuncs: Phb_font_funcs_t; key: Phb_user_data_key_t): Pgpointer; cdecl; external;
+function hb_font_funcs_is_immutable(ffuncs: Phb_font_funcs_t): Thb_bool_t; cdecl; external;
+function hb_font_funcs_reference(ffuncs: Phb_font_funcs_t): Phb_font_funcs_t; cdecl; external;
+function hb_font_funcs_set_user_data(ffuncs: Phb_font_funcs_t; key: Phb_user_data_key_t; data: Pgpointer; destroy_: Thb_destroy_func_t; replace: Thb_bool_t): Thb_bool_t; cdecl; external;
+function hb_font_get_empty: Phb_font_t; cdecl; external;
+function hb_font_get_face(font: Phb_font_t): Phb_face_t; cdecl; external;
+function hb_font_get_glyph(font: Phb_font_t; unicode: Thb_codepoint_t; variation_selector: Thb_codepoint_t; glyph: Phb_codepoint_t): Thb_bool_t; cdecl; external;
+function hb_font_get_glyph_contour_point(font: Phb_font_t; glyph: Thb_codepoint_t; point_index: guint; x: Phb_position_t; y: Phb_position_t): Thb_bool_t; cdecl; external;
+function hb_font_get_glyph_contour_point_for_origin(font: Phb_font_t; glyph: Thb_codepoint_t; point_index: guint; direction: Thb_direction_t; x: Phb_position_t; y: Phb_position_t): Thb_bool_t; cdecl; external;
+function hb_font_get_glyph_extents(font: Phb_font_t; glyph: Thb_codepoint_t; extents: Phb_glyph_extents_t): Thb_bool_t; cdecl; external;
+function hb_font_get_glyph_extents_for_origin(font: Phb_font_t; glyph: Thb_codepoint_t; direction: Thb_direction_t; extents: Phb_glyph_extents_t): Thb_bool_t; cdecl; external;
+function hb_font_get_glyph_from_name(font: Phb_font_t; name: Pgchar; len: gint; glyph: Phb_codepoint_t): Thb_bool_t; cdecl; external;
+function hb_font_get_glyph_h_advance(font: Phb_font_t; glyph: Thb_codepoint_t): Thb_position_t; cdecl; external;
+function hb_font_get_glyph_h_kerning(font: Phb_font_t; left_glyph: Thb_codepoint_t; right_glyph: Thb_codepoint_t): Thb_position_t; cdecl; external;
+function hb_font_get_glyph_h_origin(font: Phb_font_t; glyph: Thb_codepoint_t; x: Phb_position_t; y: Phb_position_t): Thb_bool_t; cdecl; external;
+function hb_font_get_glyph_name(font: Phb_font_t; glyph: Thb_codepoint_t; name: Pgchar; size: Pguint): Thb_bool_t; cdecl; external;
+function hb_font_get_glyph_v_advance(font: Phb_font_t; glyph: Thb_codepoint_t): Thb_position_t; cdecl; external;
+function hb_font_get_glyph_v_origin(font: Phb_font_t; glyph: Thb_codepoint_t; x: Phb_position_t; y: Phb_position_t): Thb_bool_t; cdecl; external;
+function hb_font_get_h_extents(font: Phb_font_t; extents: Phb_font_extents_t): Thb_bool_t; cdecl; external;
+function hb_font_get_nominal_glyph(font: Phb_font_t; unicode: Thb_codepoint_t; glyph: Phb_codepoint_t): Thb_bool_t; cdecl; external;
+function hb_font_get_nominal_glyphs(font: Phb_font_t; count: guint; first_unicode: Phb_codepoint_t; unicode_stride: guint; first_glyph: Phb_codepoint_t; glyph_stride: guint): guint; cdecl; external;
+function hb_font_get_parent(font: Phb_font_t): Phb_font_t; cdecl; external;
+function hb_font_get_ptem(font: Phb_font_t): gfloat; cdecl; external;
+function hb_font_get_serial(font: Phb_font_t): guint; cdecl; external;
+function hb_font_get_synthetic_slant(font: Phb_font_t): gfloat; cdecl; external;
+function hb_font_get_user_data(font: Phb_font_t; key: Phb_user_data_key_t): Pgpointer; cdecl; external;
+function hb_font_get_v_extents(font: Phb_font_t; extents: Phb_font_extents_t): Thb_bool_t; cdecl; external;
+function hb_font_get_var_coords_design(font: Phb_font_t; length: Pguint): Pgfloat; cdecl; external;
+function hb_font_get_var_coords_normalized(font: Phb_font_t; length: Pguint): Pgint; cdecl; external;
+function hb_font_get_variation_glyph(font: Phb_font_t; unicode: Thb_codepoint_t; variation_selector: Thb_codepoint_t; glyph: Phb_codepoint_t): Thb_bool_t; cdecl; external;
+function hb_font_glyph_from_string(font: Phb_font_t; s: Pgchar; len: gint; glyph: Phb_codepoint_t): Thb_bool_t; cdecl; external;
+function hb_font_is_immutable(font: Phb_font_t): Thb_bool_t; cdecl; external;
+function hb_font_reference(font: Phb_font_t): Phb_font_t; cdecl; external;
+function hb_font_set_user_data(font: Phb_font_t; key: Phb_user_data_key_t; data: Pgpointer; destroy_: Thb_destroy_func_t; replace: Thb_bool_t): Thb_bool_t; cdecl; external;
+function hb_ft_face_create(ft_face: TFT_Face; destroy_: Thb_destroy_func_t): Phb_face_t; cdecl; external;
+function hb_ft_face_create_cached(ft_face: TFT_Face): Phb_face_t; cdecl; external;
+function hb_ft_face_create_referenced(ft_face: TFT_Face): Phb_face_t; cdecl; external;
+function hb_ft_font_create(ft_face: TFT_Face; destroy_: Thb_destroy_func_t): Phb_font_t; cdecl; external;
+function hb_ft_font_create_referenced(ft_face: TFT_Face): Phb_font_t; cdecl; external;
+function hb_ft_font_get_face(font: Phb_font_t): TFT_Face; cdecl; external;
+function hb_ft_font_get_load_flags(font: Phb_font_t): gint; cdecl; external;
+function hb_ft_font_lock_face(font: Phb_font_t): TFT_Face; cdecl; external;
+function hb_ft_hb_font_changed(font: Phb_font_t): Thb_bool_t; cdecl; external;
+function hb_glib_blob_create(gbytes: PGBytes): Phb_blob_t; cdecl; external;
+function hb_glib_get_unicode_funcs: Phb_unicode_funcs_t; cdecl; external;
+function hb_glib_script_from_script(script: Thb_script_t): TGUnicodeScript; cdecl; external;
+function hb_glib_script_to_script(script: TGUnicodeScript): Thb_script_t; cdecl; external;
+function hb_glyph_info_get_glyph_flags(info: Phb_glyph_info_t): Thb_glyph_flags_t; cdecl; external;
+function hb_gobject_blob_get_type: TGType; cdecl; external;
+function hb_gobject_buffer_get_type: TGType; cdecl; external;
+function hb_gobject_draw_funcs_get_type: TGType; cdecl; external;
+function hb_gobject_face_get_type: TGType; cdecl; external;
+function hb_gobject_feature_get_type: TGType; cdecl; external;
+function hb_gobject_font_funcs_get_type: TGType; cdecl; external;
+function hb_gobject_font_get_type: TGType; cdecl; external;
+function hb_gobject_glyph_info_get_type: TGType; cdecl; external;
+function hb_gobject_glyph_position_get_type: TGType; cdecl; external;
+function hb_gobject_map_get_type: TGType; cdecl; external;
+function hb_gobject_ot_math_glyph_part_get_type: TGType; cdecl; external;
+function hb_gobject_ot_math_glyph_variant_get_type: TGType; cdecl; external;
+function hb_gobject_segment_properties_get_type: TGType; cdecl; external;
+function hb_gobject_set_get_type: TGType; cdecl; external;
+function hb_gobject_shape_plan_get_type: TGType; cdecl; external;
+function hb_gobject_unicode_funcs_get_type: TGType; cdecl; external;
+function hb_gobject_user_data_key_get_type: TGType; cdecl; external;
+function hb_language_from_string(str: Pgchar; len: gint): Thb_language_t; cdecl; external;
+function hb_language_get_default: Thb_language_t; cdecl; external;
+function hb_language_matches(language: Thb_language_t; specific: Thb_language_t): Thb_bool_t; cdecl; external;
+function hb_language_to_string(language: Thb_language_t): Pgchar; cdecl; external;
+function hb_map_allocation_successful(map: Phb_map_t): Thb_bool_t; cdecl; external;
+function hb_map_copy(map: Phb_map_t): Phb_map_t; cdecl; external;
+function hb_map_create: Phb_map_t; cdecl; external;
+function hb_map_get(map: Phb_map_t; key: Thb_codepoint_t): Thb_codepoint_t; cdecl; external;
+function hb_map_get_empty: Phb_map_t; cdecl; external;
+function hb_map_get_population(map: Phb_map_t): guint; cdecl; external;
+function hb_map_get_user_data(map: Phb_map_t; key: Phb_user_data_key_t): Pgpointer; cdecl; external;
+function hb_map_has(map: Phb_map_t; key: Thb_codepoint_t): Thb_bool_t; cdecl; external;
+function hb_map_hash(map: Phb_map_t): guint; cdecl; external;
+function hb_map_is_empty(map: Phb_map_t): Thb_bool_t; cdecl; external;
+function hb_map_is_equal(map: Phb_map_t; other: Phb_map_t): Thb_bool_t; cdecl; external;
+function hb_map_reference(map: Phb_map_t): Phb_map_t; cdecl; external;
+function hb_map_set_user_data(map: Phb_map_t; key: Phb_user_data_key_t; data: Pgpointer; destroy_: Thb_destroy_func_t; replace: Thb_bool_t): Thb_bool_t; cdecl; external;
+function hb_ot_color_glyph_get_layers(face: Phb_face_t; glyph: Thb_codepoint_t; start_offset: guint; layer_count: Pguint; layers: Phb_ot_color_layer_t): guint; cdecl; external;
+function hb_ot_color_glyph_reference_png(font: Phb_font_t; glyph: Thb_codepoint_t): Phb_blob_t; cdecl; external;
+function hb_ot_color_glyph_reference_svg(face: Phb_face_t; glyph: Thb_codepoint_t): Phb_blob_t; cdecl; external;
+function hb_ot_color_has_layers(face: Phb_face_t): Thb_bool_t; cdecl; external;
+function hb_ot_color_has_palettes(face: Phb_face_t): Thb_bool_t; cdecl; external;
+function hb_ot_color_has_png(face: Phb_face_t): Thb_bool_t; cdecl; external;
+function hb_ot_color_has_svg(face: Phb_face_t): Thb_bool_t; cdecl; external;
+function hb_ot_color_palette_color_get_name_id(face: Phb_face_t; color_index: guint): Thb_ot_name_id_t; cdecl; external;
+function hb_ot_color_palette_get_colors(face: Phb_face_t; palette_index: guint; start_offset: guint; color_count: Pguint; colors: Phb_color_t): guint; cdecl; external;
+function hb_ot_color_palette_get_count(face: Phb_face_t): guint; cdecl; external;
+function hb_ot_color_palette_get_flags(face: Phb_face_t; palette_index: guint): Thb_ot_color_palette_flags_t; cdecl; external;
+function hb_ot_color_palette_get_name_id(face: Phb_face_t; palette_index: guint): Thb_ot_name_id_t; cdecl; external;
+function hb_ot_layout_feature_get_characters(face: Phb_face_t; table_tag: Thb_tag_t; feature_index: guint; start_offset: guint; char_count: Pguint; characters: Phb_codepoint_t): guint; cdecl; external;
+function hb_ot_layout_feature_get_lookups(face: Phb_face_t; table_tag: Thb_tag_t; feature_index: guint; start_offset: guint; lookup_count: Pguint; lookup_indexes: Pguint): guint; cdecl; external;
+function hb_ot_layout_feature_get_name_ids(face: Phb_face_t; table_tag: Thb_tag_t; feature_index: guint; label_id: Phb_ot_name_id_t; tooltip_id: Phb_ot_name_id_t; sample_id: Phb_ot_name_id_t; num_named_parameters: Pguint; first_param_id: Phb_ot_name_id_t): Thb_bool_t; cdecl; external;
+function hb_ot_layout_feature_with_variations_get_lookups(face: Phb_face_t; table_tag: Thb_tag_t; feature_index: guint; variations_index: guint; start_offset: guint; lookup_count: Pguint; lookup_indexes: Pguint): guint; cdecl; external;
+function hb_ot_layout_get_attach_points(face: Phb_face_t; glyph: Thb_codepoint_t; start_offset: guint; point_count: Pguint; point_array: Pguint): guint; cdecl; external;
+function hb_ot_layout_get_baseline(font: Phb_font_t; baseline_tag: Thb_ot_layout_baseline_tag_t; direction: Thb_direction_t; script_tag: Thb_tag_t; language_tag: Thb_tag_t; coord: Phb_position_t): Thb_bool_t; cdecl; external;
+function hb_ot_layout_get_glyph_class(face: Phb_face_t; glyph: Thb_codepoint_t): Thb_ot_layout_glyph_class_t; cdecl; external;
+function hb_ot_layout_get_horizontal_baseline_tag_for_script(script: Thb_script_t): Thb_ot_layout_baseline_tag_t; cdecl; external;
+function hb_ot_layout_get_ligature_carets(font: Phb_font_t; direction: Thb_direction_t; glyph: Thb_codepoint_t; start_offset: guint; caret_count: Pguint; caret_array: Phb_position_t): guint; cdecl; external;
+function hb_ot_layout_get_size_params(face: Phb_face_t; design_size: Pguint; subfamily_id: Pguint; subfamily_name_id: Phb_ot_name_id_t; range_start: Pguint; range_end: Pguint): Thb_bool_t; cdecl; external;
+function hb_ot_layout_has_glyph_classes(face: Phb_face_t): Thb_bool_t; cdecl; external;
+function hb_ot_layout_has_positioning(face: Phb_face_t): Thb_bool_t; cdecl; external;
+function hb_ot_layout_has_substitution(face: Phb_face_t): Thb_bool_t; cdecl; external;
+function hb_ot_layout_language_find_feature(face: Phb_face_t; table_tag: Thb_tag_t; script_index: guint; language_index: guint; feature_tag: Thb_tag_t; feature_index: Pguint): Thb_bool_t; cdecl; external;
+function hb_ot_layout_language_get_feature_indexes(face: Phb_face_t; table_tag: Thb_tag_t; script_index: guint; language_index: guint; start_offset: guint; feature_count: Pguint; feature_indexes: Pguint): guint; cdecl; external;
+function hb_ot_layout_language_get_feature_tags(face: Phb_face_t; table_tag: Thb_tag_t; script_index: guint; language_index: guint; start_offset: guint; feature_count: Pguint; feature_tags: Phb_tag_t): guint; cdecl; external;
+function hb_ot_layout_language_get_required_feature(face: Phb_face_t; table_tag: Thb_tag_t; script_index: guint; language_index: guint; feature_index: Pguint; feature_tag: Phb_tag_t): Thb_bool_t; cdecl; external;
+function hb_ot_layout_language_get_required_feature_index(face: Phb_face_t; table_tag: Thb_tag_t; script_index: guint; language_index: guint; feature_index: Pguint): Thb_bool_t; cdecl; external;
+function hb_ot_layout_lookup_get_glyph_alternates(face: Phb_face_t; lookup_index: guint; glyph: Thb_codepoint_t; start_offset: guint; alternate_count: Pguint; alternate_glyphs: Phb_codepoint_t): guint; cdecl; external;
+function hb_ot_layout_lookup_get_optical_bound(font: Phb_font_t; lookup_index: guint; direction: Thb_direction_t; glyph: Thb_codepoint_t): Thb_position_t; cdecl; external;
+function hb_ot_layout_lookup_would_substitute(face: Phb_face_t; lookup_index: guint; glyphs: Phb_codepoint_t; glyphs_length: guint; zero_context: Thb_bool_t): Thb_bool_t; cdecl; external;
+function hb_ot_layout_script_get_language_tags(face: Phb_face_t; table_tag: Thb_tag_t; script_index: guint; start_offset: guint; language_count: Pguint; language_tags: Phb_tag_t): guint; cdecl; external;
+function hb_ot_layout_script_select_language(face: Phb_face_t; table_tag: Thb_tag_t; script_index: guint; language_count: guint; language_tags: Phb_tag_t; language_index: Pguint): Thb_bool_t; cdecl; external;
+function hb_ot_layout_table_choose_script(face: Phb_face_t; table_tag: Thb_tag_t; script_tags: Phb_tag_t; script_index: Pguint; chosen_script: Phb_tag_t): Thb_bool_t; cdecl; external;
+function hb_ot_layout_table_find_feature_variations(face: Phb_face_t; table_tag: Thb_tag_t; coords: Pgint; num_coords: guint; variations_index: Pguint): Thb_bool_t; cdecl; external;
+function hb_ot_layout_table_find_script(face: Phb_face_t; table_tag: Thb_tag_t; script_tag: Thb_tag_t; script_index: Pguint): Thb_bool_t; cdecl; external;
+function hb_ot_layout_table_get_feature_tags(face: Phb_face_t; table_tag: Thb_tag_t; start_offset: guint; feature_count: Pguint; feature_tags: Phb_tag_t): guint; cdecl; external;
+function hb_ot_layout_table_get_lookup_count(face: Phb_face_t; table_tag: Thb_tag_t): guint; cdecl; external;
+function hb_ot_layout_table_get_script_tags(face: Phb_face_t; table_tag: Thb_tag_t; start_offset: guint; script_count: Pguint; script_tags: Phb_tag_t): guint; cdecl; external;
+function hb_ot_layout_table_select_script(face: Phb_face_t; table_tag: Thb_tag_t; script_count: guint; script_tags: Phb_tag_t; script_index: Pguint; chosen_script: Phb_tag_t): Thb_bool_t; cdecl; external;
+function hb_ot_math_get_constant(font: Phb_font_t; constant: Thb_ot_math_constant_t): Thb_position_t; cdecl; external;
+function hb_ot_math_get_glyph_assembly(font: Phb_font_t; glyph: Thb_codepoint_t; direction: Thb_direction_t; start_offset: guint; parts_count: Pguint; parts: Phb_ot_math_glyph_part_t; italics_correction: Phb_position_t): guint; cdecl; external;
+function hb_ot_math_get_glyph_italics_correction(font: Phb_font_t; glyph: Thb_codepoint_t): Thb_position_t; cdecl; external;
+function hb_ot_math_get_glyph_kerning(font: Phb_font_t; glyph: Thb_codepoint_t; kern: Thb_ot_math_kern_t; correction_height: Thb_position_t): Thb_position_t; cdecl; external;
+function hb_ot_math_get_glyph_kernings(font: Phb_font_t; glyph: Thb_codepoint_t; kern: Thb_ot_math_kern_t; start_offset: guint; entries_count: Pguint; kern_entries: Phb_ot_math_kern_entry_t): guint; cdecl; external;
+function hb_ot_math_get_glyph_top_accent_attachment(font: Phb_font_t; glyph: Thb_codepoint_t): Thb_position_t; cdecl; external;
+function hb_ot_math_get_glyph_variants(font: Phb_font_t; glyph: Thb_codepoint_t; direction: Thb_direction_t; start_offset: guint; variants_count: Pguint; variants: Phb_ot_math_glyph_variant_t): guint; cdecl; external;
+function hb_ot_math_get_min_connector_overlap(font: Phb_font_t; direction: Thb_direction_t): Thb_position_t; cdecl; external;
+function hb_ot_math_has_data(face: Phb_face_t): Thb_bool_t; cdecl; external;
+function hb_ot_math_is_glyph_extended_shape(face: Phb_face_t; glyph: Thb_codepoint_t): Thb_bool_t; cdecl; external;
+function hb_ot_meta_get_entry_tags(face: Phb_face_t; start_offset: guint; entries_count: Pguint; entries: Phb_ot_meta_tag_t): guint; cdecl; external;
+function hb_ot_meta_reference_entry(face: Phb_face_t; meta_tag: Thb_ot_meta_tag_t): Phb_blob_t; cdecl; external;
+function hb_ot_metrics_get_position(font: Phb_font_t; metrics_tag: Thb_ot_metrics_tag_t; position: Phb_position_t): Thb_bool_t; cdecl; external;
+function hb_ot_metrics_get_variation(font: Phb_font_t; metrics_tag: Thb_ot_metrics_tag_t): gfloat; cdecl; external;
+function hb_ot_metrics_get_x_variation(font: Phb_font_t; metrics_tag: Thb_ot_metrics_tag_t): Thb_position_t; cdecl; external;
+function hb_ot_metrics_get_y_variation(font: Phb_font_t; metrics_tag: Thb_ot_metrics_tag_t): Thb_position_t; cdecl; external;
+function hb_ot_name_get_utf16(face: Phb_face_t; name_id: Thb_ot_name_id_t; language: Thb_language_t; text_size: Pguint; text: Pguint16): guint; cdecl; external;
+function hb_ot_name_get_utf32(face: Phb_face_t; name_id: Thb_ot_name_id_t; language: Thb_language_t; text_size: Pguint; text: Pguint32): guint; cdecl; external;
+function hb_ot_name_get_utf8(face: Phb_face_t; name_id: Thb_ot_name_id_t; language: Thb_language_t; text_size: Pguint; text: Pgchar): guint; cdecl; external;
+function hb_ot_name_list_names(face: Phb_face_t; num_entries: Pguint): Phb_ot_name_entry_t; cdecl; external;
+function hb_ot_tag_from_language(language: Thb_language_t): Thb_tag_t; cdecl; external;
+function hb_ot_tag_to_language(tag: Thb_tag_t): Thb_language_t; cdecl; external;
+function hb_ot_tag_to_script(tag: Thb_tag_t): Thb_script_t; cdecl; external;
+function hb_ot_var_find_axis_info(face: Phb_face_t; axis_tag: Thb_tag_t; axis_info: Phb_ot_var_axis_info_t): Thb_bool_t; cdecl; external;
+function hb_ot_var_get_axis_count(face: Phb_face_t): guint; cdecl; external;
+function hb_ot_var_get_axis_infos(face: Phb_face_t; start_offset: guint; axes_count: Pguint; axes_array: Phb_ot_var_axis_info_t): guint; cdecl; external;
+function hb_ot_var_get_named_instance_count(face: Phb_face_t): guint; cdecl; external;
+function hb_ot_var_has_data(face: Phb_face_t): Thb_bool_t; cdecl; external;
+function hb_ot_var_named_instance_get_design_coords(face: Phb_face_t; instance_index: guint; coords_length: Pguint; coords: Pgfloat): guint; cdecl; external;
+function hb_ot_var_named_instance_get_postscript_name_id(face: Phb_face_t; instance_index: guint): Thb_ot_name_id_t; cdecl; external;
+function hb_ot_var_named_instance_get_subfamily_name_id(face: Phb_face_t; instance_index: guint): Thb_ot_name_id_t; cdecl; external;
+function hb_script_from_iso15924_tag(tag: Thb_tag_t): Thb_script_t; cdecl; external;
+function hb_script_from_string(str: Pgchar; len: gint): Thb_script_t; cdecl; external;
+function hb_script_get_horizontal_direction(script: Thb_script_t): Thb_direction_t; cdecl; external;
+function hb_script_to_iso15924_tag(script: Thb_script_t): Thb_tag_t; cdecl; external;
+function hb_segment_properties_equal(a: Phb_segment_properties_t; b: Phb_segment_properties_t): Thb_bool_t; cdecl; external;
+function hb_segment_properties_hash(p: Phb_segment_properties_t): guint; cdecl; external;
+function hb_set_allocation_successful(set_: Phb_set_t): Thb_bool_t; cdecl; external;
+function hb_set_copy(set_: Phb_set_t): Phb_set_t; cdecl; external;
+function hb_set_create: Phb_set_t; cdecl; external;
+function hb_set_get_empty: Phb_set_t; cdecl; external;
+function hb_set_get_max(set_: Phb_set_t): Thb_codepoint_t; cdecl; external;
+function hb_set_get_min(set_: Phb_set_t): Thb_codepoint_t; cdecl; external;
+function hb_set_get_population(set_: Phb_set_t): guint; cdecl; external;
+function hb_set_get_user_data(set_: Phb_set_t; key: Phb_user_data_key_t): Pgpointer; cdecl; external;
+function hb_set_has(set_: Phb_set_t; codepoint: Thb_codepoint_t): Thb_bool_t; cdecl; external;
+function hb_set_hash(set_: Phb_set_t): guint; cdecl; external;
+function hb_set_is_empty(set_: Phb_set_t): Thb_bool_t; cdecl; external;
+function hb_set_is_equal(set_: Phb_set_t; other: Phb_set_t): Thb_bool_t; cdecl; external;
+function hb_set_is_subset(set_: Phb_set_t; larger_set: Phb_set_t): Thb_bool_t; cdecl; external;
+function hb_set_next(set_: Phb_set_t; codepoint: Phb_codepoint_t): Thb_bool_t; cdecl; external;
+function hb_set_next_many(set_: Phb_set_t; codepoint: Thb_codepoint_t; out_: Phb_codepoint_t; size: guint): guint; cdecl; external;
+function hb_set_next_range(set_: Phb_set_t; first: Phb_codepoint_t; last: Phb_codepoint_t): Thb_bool_t; cdecl; external;
+function hb_set_previous(set_: Phb_set_t; codepoint: Phb_codepoint_t): Thb_bool_t; cdecl; external;
+function hb_set_previous_range(set_: Phb_set_t; first: Phb_codepoint_t; last: Phb_codepoint_t): Thb_bool_t; cdecl; external;
+function hb_set_reference(set_: Phb_set_t): Phb_set_t; cdecl; external;
+function hb_set_set_user_data(set_: Phb_set_t; key: Phb_user_data_key_t; data: Pgpointer; destroy_: Thb_destroy_func_t; replace: Thb_bool_t): Thb_bool_t; cdecl; external;
+function hb_shape_full(font: Phb_font_t; buffer: Phb_buffer_t; features: Phb_feature_t; num_features: guint; shaper_list: PPgchar): Thb_bool_t; cdecl; external;
+function hb_shape_list_shapers: PPgchar; cdecl; external;
+function hb_shape_plan_create(face: Phb_face_t; props: Phb_segment_properties_t; user_features: Phb_feature_t; num_user_features: guint; shaper_list: PPgchar): Phb_shape_plan_t; cdecl; external;
+function hb_shape_plan_create2(face: Phb_face_t; props: Phb_segment_properties_t; user_features: Phb_feature_t; num_user_features: guint; coords: Pgint; num_coords: guint; shaper_list: PPgchar): Phb_shape_plan_t; cdecl; external;
+function hb_shape_plan_create_cached(face: Phb_face_t; props: Phb_segment_properties_t; user_features: Phb_feature_t; num_user_features: guint; shaper_list: PPgchar): Phb_shape_plan_t; cdecl; external;
+function hb_shape_plan_create_cached2(face: Phb_face_t; props: Phb_segment_properties_t; user_features: Phb_feature_t; num_user_features: guint; coords: Pgint; num_coords: guint; shaper_list: PPgchar): Phb_shape_plan_t; cdecl; external;
+function hb_shape_plan_execute(shape_plan: Phb_shape_plan_t; font: Phb_font_t; buffer: Phb_buffer_t; features: Phb_feature_t; num_features: guint): Thb_bool_t; cdecl; external;
+function hb_shape_plan_get_empty: Phb_shape_plan_t; cdecl; external;
+function hb_shape_plan_get_shaper(shape_plan: Phb_shape_plan_t): Pgchar; cdecl; external;
+function hb_shape_plan_get_user_data(shape_plan: Phb_shape_plan_t; key: Phb_user_data_key_t): Pgpointer; cdecl; external;
+function hb_shape_plan_reference(shape_plan: Phb_shape_plan_t): Phb_shape_plan_t; cdecl; external;
+function hb_shape_plan_set_user_data(shape_plan: Phb_shape_plan_t; key: Phb_user_data_key_t; data: Pgpointer; destroy_: Thb_destroy_func_t; replace: Thb_bool_t): Thb_bool_t; cdecl; external;
+function hb_style_get_value(font: Phb_font_t; style_tag: Thb_style_tag_t): gfloat; cdecl; external;
+function hb_tag_from_string(str: Pgchar; len: gint): Thb_tag_t; cdecl; external;
+function hb_unicode_combining_class(ufuncs: Phb_unicode_funcs_t; unicode: Thb_codepoint_t): Thb_unicode_combining_class_t; cdecl; external;
+function hb_unicode_compose(ufuncs: Phb_unicode_funcs_t; a: Thb_codepoint_t; b: Thb_codepoint_t; ab: Phb_codepoint_t): Thb_bool_t; cdecl; external;
+function hb_unicode_decompose(ufuncs: Phb_unicode_funcs_t; ab: Thb_codepoint_t; a: Phb_codepoint_t; b: Phb_codepoint_t): Thb_bool_t; cdecl; external;
+function hb_unicode_funcs_create(parent: Phb_unicode_funcs_t): Phb_unicode_funcs_t; cdecl; external;
+function hb_unicode_funcs_get_default: Phb_unicode_funcs_t; cdecl; external;
+function hb_unicode_funcs_get_empty: Phb_unicode_funcs_t; cdecl; external;
+function hb_unicode_funcs_get_parent(ufuncs: Phb_unicode_funcs_t): Phb_unicode_funcs_t; cdecl; external;
+function hb_unicode_funcs_get_user_data(ufuncs: Phb_unicode_funcs_t; key: Phb_user_data_key_t): Pgpointer; cdecl; external;
+function hb_unicode_funcs_is_immutable(ufuncs: Phb_unicode_funcs_t): Thb_bool_t; cdecl; external;
+function hb_unicode_funcs_reference(ufuncs: Phb_unicode_funcs_t): Phb_unicode_funcs_t; cdecl; external;
+function hb_unicode_funcs_set_user_data(ufuncs: Phb_unicode_funcs_t; key: Phb_user_data_key_t; data: Pgpointer; destroy_: Thb_destroy_func_t; replace: Thb_bool_t): Thb_bool_t; cdecl; external;
+function hb_unicode_general_category(ufuncs: Phb_unicode_funcs_t; unicode: Thb_codepoint_t): Thb_unicode_general_category_t; cdecl; external;
+function hb_unicode_mirroring(ufuncs: Phb_unicode_funcs_t; unicode: Thb_codepoint_t): Thb_codepoint_t; cdecl; external;
+function hb_unicode_script(ufuncs: Phb_unicode_funcs_t; unicode: Thb_codepoint_t): Thb_script_t; cdecl; external;
+function hb_variation_from_string(str: Pgchar; len: gint; variation: Phb_variation_t): Thb_bool_t; cdecl; external;
+procedure hb_blob_destroy(blob: Phb_blob_t); cdecl; external;
+procedure hb_blob_make_immutable(blob: Phb_blob_t); cdecl; external;
+procedure hb_buffer_add(buffer: Phb_buffer_t; codepoint: Thb_codepoint_t; cluster: guint); cdecl; external;
+procedure hb_buffer_add_codepoints(buffer: Phb_buffer_t; text: Phb_codepoint_t; text_length: gint; item_offset: guint; item_length: gint); cdecl; external;
+procedure hb_buffer_add_latin1(buffer: Phb_buffer_t; text: Pguint8; text_length: gint; item_offset: guint; item_length: gint); cdecl; external;
+procedure hb_buffer_add_utf16(buffer: Phb_buffer_t; text: Pguint16; text_length: gint; item_offset: guint; item_length: gint); cdecl; external;
+procedure hb_buffer_add_utf32(buffer: Phb_buffer_t; text: Pguint32; text_length: gint; item_offset: guint; item_length: gint); cdecl; external;
+procedure hb_buffer_add_utf8(buffer: Phb_buffer_t; text: Pgchar; text_length: gint; item_offset: guint; item_length: gint); cdecl; external;
+procedure hb_buffer_append(buffer: Phb_buffer_t; source: Phb_buffer_t; start: guint; end_: guint); cdecl; external;
+procedure hb_buffer_clear_contents(buffer: Phb_buffer_t); cdecl; external;
+procedure hb_buffer_destroy(buffer: Phb_buffer_t); cdecl; external;
+procedure hb_buffer_get_segment_properties(buffer: Phb_buffer_t; props: Phb_segment_properties_t); cdecl; external;
+procedure hb_buffer_guess_segment_properties(buffer: Phb_buffer_t); cdecl; external;
+procedure hb_buffer_normalize_glyphs(buffer: Phb_buffer_t); cdecl; external;
+procedure hb_buffer_reset(buffer: Phb_buffer_t); cdecl; external;
+procedure hb_buffer_reverse(buffer: Phb_buffer_t); cdecl; external;
+procedure hb_buffer_reverse_clusters(buffer: Phb_buffer_t); cdecl; external;
+procedure hb_buffer_reverse_range(buffer: Phb_buffer_t; start: guint; end_: guint); cdecl; external;
+procedure hb_buffer_set_cluster_level(buffer: Phb_buffer_t; cluster_level: Thb_buffer_cluster_level_t); cdecl; external;
+procedure hb_buffer_set_content_type(buffer: Phb_buffer_t; content_type: Thb_buffer_content_type_t); cdecl; external;
+procedure hb_buffer_set_direction(buffer: Phb_buffer_t; direction: Thb_direction_t); cdecl; external;
+procedure hb_buffer_set_flags(buffer: Phb_buffer_t; flags: Thb_buffer_flags_t); cdecl; external;
+procedure hb_buffer_set_invisible_glyph(buffer: Phb_buffer_t; invisible: Thb_codepoint_t); cdecl; external;
+procedure hb_buffer_set_language(buffer: Phb_buffer_t; language: Thb_language_t); cdecl; external;
+procedure hb_buffer_set_message_func(buffer: Phb_buffer_t; func: Thb_buffer_message_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external;
+procedure hb_buffer_set_not_found_glyph(buffer: Phb_buffer_t; not_found: Thb_codepoint_t); cdecl; external;
+procedure hb_buffer_set_replacement_codepoint(buffer: Phb_buffer_t; replacement: Thb_codepoint_t); cdecl; external;
+procedure hb_buffer_set_script(buffer: Phb_buffer_t; script: Thb_script_t); cdecl; external;
+procedure hb_buffer_set_segment_properties(buffer: Phb_buffer_t; props: Phb_segment_properties_t); cdecl; external;
+procedure hb_buffer_set_unicode_funcs(buffer: Phb_buffer_t; unicode_funcs: Phb_unicode_funcs_t); cdecl; external;
+procedure hb_draw_close_path(dfuncs: Phb_draw_funcs_t; draw_data: Pgpointer; st: Phb_draw_state_t); cdecl; external;
+procedure hb_draw_cubic_to(dfuncs: Phb_draw_funcs_t; draw_data: Pgpointer; st: Phb_draw_state_t; control1_x: gfloat; control1_y: gfloat; control2_x: gfloat; control2_y: gfloat; to_x: gfloat; to_y: gfloat); cdecl; external;
+procedure hb_draw_funcs_destroy(dfuncs: Phb_draw_funcs_t); cdecl; external;
+procedure hb_draw_funcs_make_immutable(dfuncs: Phb_draw_funcs_t); cdecl; external;
+procedure hb_draw_funcs_set_close_path_func(dfuncs: Phb_draw_funcs_t; func: Thb_draw_close_path_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external;
+procedure hb_draw_funcs_set_cubic_to_func(dfuncs: Phb_draw_funcs_t; func: Thb_draw_cubic_to_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external;
+procedure hb_draw_funcs_set_line_to_func(dfuncs: Phb_draw_funcs_t; func: Thb_draw_line_to_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external;
+procedure hb_draw_funcs_set_move_to_func(dfuncs: Phb_draw_funcs_t; func: Thb_draw_move_to_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external;
+procedure hb_draw_funcs_set_quadratic_to_func(dfuncs: Phb_draw_funcs_t; func: Thb_draw_quadratic_to_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external;
+procedure hb_draw_line_to(dfuncs: Phb_draw_funcs_t; draw_data: Pgpointer; st: Phb_draw_state_t; to_x: gfloat; to_y: gfloat); cdecl; external;
+procedure hb_draw_move_to(dfuncs: Phb_draw_funcs_t; draw_data: Pgpointer; st: Phb_draw_state_t; to_x: gfloat; to_y: gfloat); cdecl; external;
+procedure hb_draw_quadratic_to(dfuncs: Phb_draw_funcs_t; draw_data: Pgpointer; st: Phb_draw_state_t; control_x: gfloat; control_y: gfloat; to_x: gfloat; to_y: gfloat); cdecl; external;
+procedure hb_face_builder_sort_tables(face: Phb_face_t; tags: Phb_tag_t); cdecl; external;
+procedure hb_face_collect_unicodes(face: Phb_face_t; out_: Phb_set_t); cdecl; external;
+procedure hb_face_collect_variation_selectors(face: Phb_face_t; out_: Phb_set_t); cdecl; external;
+procedure hb_face_collect_variation_unicodes(face: Phb_face_t; variation_selector: Thb_codepoint_t; out_: Phb_set_t); cdecl; external;
+procedure hb_face_destroy(face: Phb_face_t); cdecl; external;
+procedure hb_face_make_immutable(face: Phb_face_t); cdecl; external;
+procedure hb_face_set_glyph_count(face: Phb_face_t; glyph_count: guint); cdecl; external;
+procedure hb_face_set_index(face: Phb_face_t; index: guint); cdecl; external;
+procedure hb_face_set_upem(face: Phb_face_t; upem: guint); cdecl; external;
+procedure hb_feature_to_string(feature: Phb_feature_t; buf: Pgchar; size: Pguint); cdecl; external;
+procedure hb_font_add_glyph_origin_for_direction(font: Phb_font_t; glyph: Thb_codepoint_t; direction: Thb_direction_t; x: Phb_position_t; y: Phb_position_t); cdecl; external;
+procedure hb_font_changed(font: Phb_font_t); cdecl; external;
+procedure hb_font_destroy(font: Phb_font_t); cdecl; external;
+procedure hb_font_funcs_destroy(ffuncs: Phb_font_funcs_t); cdecl; external;
+procedure hb_font_funcs_make_immutable(ffuncs: Phb_font_funcs_t); cdecl; external;
+procedure hb_font_funcs_set_font_h_extents_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_font_h_extents_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external;
+procedure hb_font_funcs_set_font_v_extents_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_font_v_extents_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external;
+procedure hb_font_funcs_set_glyph_contour_point_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_glyph_contour_point_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external;
+procedure hb_font_funcs_set_glyph_extents_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_glyph_extents_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external;
+procedure hb_font_funcs_set_glyph_from_name_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_glyph_from_name_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external;
+procedure hb_font_funcs_set_glyph_h_advance_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_glyph_h_advance_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external;
+procedure hb_font_funcs_set_glyph_h_advances_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_glyph_h_advances_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external;
+procedure hb_font_funcs_set_glyph_h_kerning_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_glyph_h_kerning_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external;
+procedure hb_font_funcs_set_glyph_h_origin_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_glyph_h_origin_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external;
+procedure hb_font_funcs_set_glyph_name_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_glyph_name_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external;
+procedure hb_font_funcs_set_glyph_shape_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_glyph_shape_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external;
+procedure hb_font_funcs_set_glyph_v_advance_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_glyph_v_advance_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external;
+procedure hb_font_funcs_set_glyph_v_advances_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_glyph_v_advances_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external;
+procedure hb_font_funcs_set_glyph_v_origin_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_glyph_v_origin_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external;
+procedure hb_font_funcs_set_nominal_glyph_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_nominal_glyph_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external;
+procedure hb_font_funcs_set_nominal_glyphs_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_nominal_glyphs_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external;
+procedure hb_font_funcs_set_variation_glyph_func(ffuncs: Phb_font_funcs_t; func: Thb_font_get_variation_glyph_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external;
+procedure hb_font_get_extents_for_direction(font: Phb_font_t; direction: Thb_direction_t; extents: Phb_font_extents_t); cdecl; external;
+procedure hb_font_get_glyph_advance_for_direction(font: Phb_font_t; glyph: Thb_codepoint_t; direction: Thb_direction_t; x: Phb_position_t; y: Phb_position_t); cdecl; external;
+procedure hb_font_get_glyph_advances_for_direction(font: Phb_font_t; direction: Thb_direction_t; count: guint; first_glyph: Phb_codepoint_t; glyph_stride: guint; first_advance: Phb_position_t; advance_stride: Pguint); cdecl; external;
+procedure hb_font_get_glyph_h_advances(font: Phb_font_t; count: guint; first_glyph: Phb_codepoint_t; glyph_stride: guint; first_advance: Phb_position_t; advance_stride: guint); cdecl; external;
+procedure hb_font_get_glyph_kerning_for_direction(font: Phb_font_t; first_glyph: Thb_codepoint_t; second_glyph: Thb_codepoint_t; direction: Thb_direction_t; x: Phb_position_t; y: Phb_position_t); cdecl; external;
+procedure hb_font_get_glyph_origin_for_direction(font: Phb_font_t; glyph: Thb_codepoint_t; direction: Thb_direction_t; x: Phb_position_t; y: Phb_position_t); cdecl; external;
+procedure hb_font_get_glyph_shape(font: Phb_font_t; glyph: Thb_codepoint_t; dfuncs: Phb_draw_funcs_t; draw_data: Pgpointer); cdecl; external;
+procedure hb_font_get_glyph_v_advances(font: Phb_font_t; count: guint; first_glyph: Phb_codepoint_t; glyph_stride: guint; first_advance: Phb_position_t; advance_stride: Pguint); cdecl; external;
+procedure hb_font_get_ppem(font: Phb_font_t; x_ppem: Pguint; y_ppem: Pguint); cdecl; external;
+procedure hb_font_get_scale(font: Phb_font_t; x_scale: Pgint; y_scale: Pgint); cdecl; external;
+procedure hb_font_glyph_to_string(font: Phb_font_t; glyph: Thb_codepoint_t; s: Pgchar; size: Pguint); cdecl; external;
+procedure hb_font_make_immutable(font: Phb_font_t); cdecl; external;
+procedure hb_font_set_face(font: Phb_font_t; face: Phb_face_t); cdecl; external;
+procedure hb_font_set_funcs(font: Phb_font_t; klass: Phb_font_funcs_t; font_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external;
+procedure hb_font_set_funcs_data(font: Phb_font_t; font_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external;
+procedure hb_font_set_parent(font: Phb_font_t; parent: Phb_font_t); cdecl; external;
+procedure hb_font_set_ppem(font: Phb_font_t; x_ppem: guint; y_ppem: guint); cdecl; external;
+procedure hb_font_set_ptem(font: Phb_font_t; ptem: gfloat); cdecl; external;
+procedure hb_font_set_scale(font: Phb_font_t; x_scale: gint; y_scale: gint); cdecl; external;
+procedure hb_font_set_synthetic_slant(font: Phb_font_t; slant: gfloat); cdecl; external;
+procedure hb_font_set_var_coords_design(font: Phb_font_t; coords: Pgfloat; coords_length: guint); cdecl; external;
+procedure hb_font_set_var_coords_normalized(font: Phb_font_t; coords: Pgint; coords_length: guint); cdecl; external;
+procedure hb_font_set_var_named_instance(font: Phb_font_t; instance_index: guint); cdecl; external;
+procedure hb_font_set_variations(font: Phb_font_t; variations: Phb_variation_t; variations_length: guint); cdecl; external;
+procedure hb_font_subtract_glyph_origin_for_direction(font: Phb_font_t; glyph: Thb_codepoint_t; direction: Thb_direction_t; x: Phb_position_t; y: Phb_position_t); cdecl; external;
+procedure hb_ft_font_changed(font: Phb_font_t); cdecl; external;
+procedure hb_ft_font_set_funcs(font: Phb_font_t); cdecl; external;
+procedure hb_ft_font_set_load_flags(font: Phb_font_t; load_flags: gint); cdecl; external;
+procedure hb_ft_font_unlock_face(font: Phb_font_t); cdecl; external;
+procedure hb_map_clear(map: Phb_map_t); cdecl; external;
+procedure hb_map_del(map: Phb_map_t; key: Thb_codepoint_t); cdecl; external;
+procedure hb_map_destroy(map: Phb_map_t); cdecl; external;
+procedure hb_map_set(map: Phb_map_t; key: Thb_codepoint_t; value: Thb_codepoint_t); cdecl; external;
+procedure hb_ot_font_set_funcs(font: Phb_font_t); cdecl; external;
+procedure hb_ot_layout_collect_features(face: Phb_face_t; table_tag: Thb_tag_t; scripts: Phb_tag_t; languages: Phb_tag_t; features: Phb_tag_t; feature_indexes: Phb_set_t); cdecl; external;
+procedure hb_ot_layout_collect_lookups(face: Phb_face_t; table_tag: Thb_tag_t; scripts: Phb_tag_t; languages: Phb_tag_t; features: Phb_tag_t; lookup_indexes: Phb_set_t); cdecl; external;
+procedure hb_ot_layout_get_baseline_with_fallback(font: Phb_font_t; baseline_tag: Thb_ot_layout_baseline_tag_t; direction: Thb_direction_t; script_tag: Thb_tag_t; language_tag: Thb_tag_t; coord: Phb_position_t); cdecl; external;
+procedure hb_ot_layout_get_glyphs_in_class(face: Phb_face_t; klass: Thb_ot_layout_glyph_class_t; glyphs: Phb_set_t); cdecl; external;
+procedure hb_ot_layout_lookup_collect_glyphs(face: Phb_face_t; table_tag: Thb_tag_t; lookup_index: guint; glyphs_before: Phb_set_t; glyphs_input: Phb_set_t; glyphs_after: Phb_set_t; glyphs_output: Phb_set_t); cdecl; external;
+procedure hb_ot_layout_lookup_substitute_closure(face: Phb_face_t; lookup_index: guint; glyphs: Phb_set_t); cdecl; external;
+procedure hb_ot_layout_lookups_substitute_closure(face: Phb_face_t; lookups: Phb_set_t; glyphs: Phb_set_t); cdecl; external;
+procedure hb_ot_metrics_get_position_with_fallback(font: Phb_font_t; metrics_tag: Thb_ot_metrics_tag_t; position: Phb_position_t); cdecl; external;
+procedure hb_ot_shape_glyphs_closure(font: Phb_font_t; buffer: Phb_buffer_t; features: Phb_feature_t; num_features: guint; glyphs: Phb_set_t); cdecl; external;
+procedure hb_ot_shape_plan_collect_lookups(shape_plan: Phb_shape_plan_t; table_tag: Thb_tag_t; lookup_indexes: Phb_set_t); cdecl; external;
+procedure hb_ot_tags_from_script(script: Thb_script_t; script_tag_1: Phb_tag_t; script_tag_2: Phb_tag_t); cdecl; external;
+procedure hb_ot_tags_from_script_and_language(script: Thb_script_t; language: Thb_language_t; script_count: Pguint; script_tags: Phb_tag_t; language_count: Pguint; language_tags: Phb_tag_t); cdecl; external;
+procedure hb_ot_tags_to_script_and_language(script_tag: Thb_tag_t; language_tag: Thb_tag_t; script: Phb_script_t; language: Phb_language_t); cdecl; external;
+procedure hb_ot_var_normalize_coords(face: Phb_face_t; coords_length: guint; design_coords: Pgfloat; normalized_coords: Pgint); cdecl; external;
+procedure hb_ot_var_normalize_variations(face: Phb_face_t; variations: Phb_variation_t; variations_length: guint; coords: Pgint; coords_length: Pguint); cdecl; external;
+procedure hb_segment_properties_overlay(p: Phb_segment_properties_t; src: Phb_segment_properties_t); cdecl; external;
+procedure hb_set_add(set_: Phb_set_t; codepoint: Thb_codepoint_t); cdecl; external;
+procedure hb_set_add_range(set_: Phb_set_t; first: Thb_codepoint_t; last: Thb_codepoint_t); cdecl; external;
+procedure hb_set_add_sorted_array(set_: Phb_set_t; sorted_codepoints: Phb_codepoint_t; num_codepoints: guint); cdecl; external;
+procedure hb_set_clear(set_: Phb_set_t); cdecl; external;
+procedure hb_set_del(set_: Phb_set_t; codepoint: Thb_codepoint_t); cdecl; external;
+procedure hb_set_del_range(set_: Phb_set_t; first: Thb_codepoint_t; last: Thb_codepoint_t); cdecl; external;
+procedure hb_set_destroy(set_: Phb_set_t); cdecl; external;
+procedure hb_set_intersect(set_: Phb_set_t; other: Phb_set_t); cdecl; external;
+procedure hb_set_invert(set_: Phb_set_t); cdecl; external;
+procedure hb_set_set(set_: Phb_set_t; other: Phb_set_t); cdecl; external;
+procedure hb_set_subtract(set_: Phb_set_t; other: Phb_set_t); cdecl; external;
+procedure hb_set_symmetric_difference(set_: Phb_set_t; other: Phb_set_t); cdecl; external;
+procedure hb_set_union(set_: Phb_set_t; other: Phb_set_t); cdecl; external;
+procedure hb_shape(font: Phb_font_t; buffer: Phb_buffer_t; features: Phb_feature_t; num_features: guint); cdecl; external;
+procedure hb_shape_plan_destroy(shape_plan: Phb_shape_plan_t); cdecl; external;
+procedure hb_tag_to_string(tag: Thb_tag_t; buf: Pgchar); cdecl; external;
+procedure hb_unicode_funcs_destroy(ufuncs: Phb_unicode_funcs_t); cdecl; external;
+procedure hb_unicode_funcs_make_immutable(ufuncs: Phb_unicode_funcs_t); cdecl; external;
+procedure hb_unicode_funcs_set_combining_class_func(ufuncs: Phb_unicode_funcs_t; func: Thb_unicode_combining_class_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external;
+procedure hb_unicode_funcs_set_compose_func(ufuncs: Phb_unicode_funcs_t; func: Thb_unicode_compose_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external;
+procedure hb_unicode_funcs_set_decompose_func(ufuncs: Phb_unicode_funcs_t; func: Thb_unicode_decompose_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external;
+procedure hb_unicode_funcs_set_general_category_func(ufuncs: Phb_unicode_funcs_t; func: Thb_unicode_general_category_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external;
+procedure hb_unicode_funcs_set_mirroring_func(ufuncs: Phb_unicode_funcs_t; func: Thb_unicode_mirroring_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external;
+procedure hb_unicode_funcs_set_script_func(ufuncs: Phb_unicode_funcs_t; func: Thb_unicode_script_func_t; user_data: Pgpointer; destroy_: Thb_destroy_func_t); cdecl; external;
+procedure hb_variation_to_string(variation: Phb_variation_t; buf: Pgchar; size: Pguint); cdecl; external;
 implementation
 function Thb_language_t._string: Pgchar; cdecl;
 begin

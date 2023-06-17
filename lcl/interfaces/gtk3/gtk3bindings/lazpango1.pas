@@ -30,9 +30,9 @@ const
   PANGO_GLYPH_UNKNOWN_FLAG = 268435456;
   PANGO_SCALE = 1024;
   PANGO_VERSION_MAJOR = 1;
-  PANGO_VERSION_MICRO = 15;
+  PANGO_VERSION_MICRO = 12;
   PANGO_VERSION_MINOR = 50;
-  PANGO_VERSION_STRING_ = '1.50.15';
+  PANGO_VERSION_STRING_ = '1.50.12';
 type
   TPangoAlignment = (
     TPangoAlignmentMinValue = -$7FFFFFFF,
@@ -205,9 +205,6 @@ type
     PANGO_ATTR_FONT_SCALE = 37,
     TPangoAttrTypeMaxValue = $7FFFFFFF
   );
-
-//TODO: This is hand written just to give the direction we need to go.
-//TODO: We need to make git2pas generate similar code for bitfields.
   TPangoFontMaskIdx = (
     TPangoFontMaskIdxMinValue = 0,
     PANGO_FONT_MASK_FAMILY = 0,
@@ -218,13 +215,9 @@ type
     PANGO_FONT_MASK_SIZE = 5,
     PANGO_FONT_MASK_GRAVITY = 6,
     PANGO_FONT_MASK_VARIATIONS = 7,
-    TPangoFontMaskIdxMaxValue = 8
+    TPangoFontMaskIdxMaxValue = 31
   );
   TPangoFontMask = Set of TPangoFontMaskIdx;
-const
-  PANGO_FONT_MASK_ALL = [TPangoFontMaskIdxMinValue..TPangoFontMaskIdxMaxValue];
-
-type
   TPangoGravity = (
     TPangoGravityMinValue = -$7FFFFFFF,
     PANGO_GRAVITY_SOUTH = 0,
@@ -357,19 +350,27 @@ type
     PANGO_FONT_SCALE_SMALL_CAPS = 3,
     TPangoFontScaleMaxValue = $7FFFFFFF
   );
-  TPangoLayoutDeserializeFlags = (
-    TPangoLayoutDeserializeFlagsMinValue = -$7FFFFFFF,
-    PANGO_LAYOUT_DESERIALIZE_DEFAULT = 0,
-    PANGO_LAYOUT_DESERIALIZE_CONTEXT = 1,
-    TPangoLayoutDeserializeFlagsMaxValue = $7FFFFFFF
+  TPangoLayoutDeserializeFlagsIdx = (
+    TPangoLayoutDeserializeFlagsIdxMinValue = 0,
+    PANGO_LAYOUT_DESERIALIZE_CONTEXT = 0,
+    TPangoLayoutDeserializeFlagsIdxMaxValue = 31
   );
-  TPangoLayoutSerializeFlags = (
-    TPangoLayoutSerializeFlagsMinValue = -$7FFFFFFF,
-    PANGO_LAYOUT_SERIALIZE_DEFAULT = 0,
-    PANGO_LAYOUT_SERIALIZE_CONTEXT = 1,
-    PANGO_LAYOUT_SERIALIZE_OUTPUT = 2,
-    TPangoLayoutSerializeFlagsMaxValue = $7FFFFFFF
+  TPangoLayoutDeserializeFlags = Set of TPangoLayoutDeserializeFlagsIdx;
+const
+  PANGO_LAYOUT_DESERIALIZE_DEFAULT = []; {0 = $00000000}
+
+type
+  TPangoLayoutSerializeFlagsIdx = (
+    TPangoLayoutSerializeFlagsIdxMinValue = 0,
+    PANGO_LAYOUT_SERIALIZE_CONTEXT = 0,
+    PANGO_LAYOUT_SERIALIZE_OUTPUT = 1,
+    TPangoLayoutSerializeFlagsIdxMaxValue = 31
   );
+  TPangoLayoutSerializeFlags = Set of TPangoLayoutSerializeFlagsIdx;
+const
+  PANGO_LAYOUT_SERIALIZE_DEFAULT = []; {0 = $00000000}
+
+type
   TPangoWrapMode = (
     TPangoWrapModeMinValue = -$7FFFFFFF,
     PANGO_WRAP_WORD = 0,
@@ -419,20 +420,28 @@ type
     PANGO_UNDERLINE_ERROR_LINE = 7,
     TPangoUnderlineMaxValue = $7FFFFFFF
   );
-  TPangoShapeFlags = (
-    TPangoShapeFlagsMinValue = -$7FFFFFFF,
-    PANGO_SHAPE_NONE = 0,
-    PANGO_SHAPE_ROUND_POSITIONS = 1,
-    TPangoShapeFlagsMaxValue = $7FFFFFFF
+  TPangoShapeFlagsIdx = (
+    TPangoShapeFlagsIdxMinValue = 0,
+    PANGO_SHAPE_ROUND_POSITIONS = 0,
+    TPangoShapeFlagsIdxMaxValue = 31
   );
-  TPangoShowFlags = (
-    TPangoShowFlagsMinValue = -$7FFFFFFF,
-    PANGO_SHOW_NONE = 0,
-    PANGO_SHOW_SPACES = 1,
-    PANGO_SHOW_LINE_BREAKS = 2,
-    PANGO_SHOW_IGNORABLES = 4,
-    TPangoShowFlagsMaxValue = $7FFFFFFF
+  TPangoShapeFlags = Set of TPangoShapeFlagsIdx;
+const
+  PANGO_SHAPE_NONE = []; {0 = $00000000}
+
+type
+  TPangoShowFlagsIdx = (
+    TPangoShowFlagsIdxMinValue = 0,
+    PANGO_SHOW_SPACES = 0,
+    PANGO_SHOW_LINE_BREAKS = 1,
+    PANGO_SHOW_IGNORABLES = 2,
+    TPangoShowFlagsIdxMaxValue = 31
   );
+  TPangoShowFlags = Set of TPangoShowFlagsIdx;
+const
+  PANGO_SHOW_NONE = []; {0 = $00000000}
+
+type
   TPangoTextTransform = (
     TPangoTextTransformMinValue = -$7FFFFFFF,
     PANGO_TEXT_TRANSFORM_NONE = 0,
@@ -1168,9 +1177,14 @@ type
   { TPangoGlyphVisAttr }
   PPPangoGlyphVisAttr = ^PPangoGlyphVisAttr;
   PPangoGlyphVisAttr = ^TPangoGlyphVisAttr;
+  TPangoGlyphVisAttrBitfield0 = bitpacked record
+    is_cluster_start: guint1 { changed from guint to accomodate 1 bitsize requirement };
+    is_color: guint1 { changed from guint to accomodate 1 bitsize requirement };
+  end;
+
 
   TPangoGlyphVisAttr = record
-    is_cluster_start: guint;
+    Bitfield0 : TPangoGlyphVisAttrBitfield0; { auto generated type }
   end;
 
 
@@ -1535,6 +1549,7 @@ type
     procedure get_range(start: PPgchar; end_: PPgchar; script: PPangoScript); cdecl; inline;
     function next: gboolean; cdecl; inline;
   end;
+
 
   { TPangoShapeFlags }
   PPPangoShapeFlags = ^PPangoShapeFlags;
