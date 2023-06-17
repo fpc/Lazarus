@@ -15035,7 +15035,7 @@ control.
 </element>
 
 <element name="TCustomGrid.OffsetToColRow">
-<short>Moves to a column or row located at the specified offset.</short>
+<short>Determines the index of a column or row for a the specified offset.</short>
 <descr/>
 <seealso/>
 <version>
@@ -15056,17 +15056,21 @@ offset.
 </element>
 <element name="TCustomGrid.OffsetToColRow.Physical">
 <short>
-<b>True</b> for a physical offset, <b>False</b> for a logical offset.
+<b>True</b> for a physical offset (i.e. relative to the scrolled grid), 
+<b>False</b> for a logical offset (i.e. relative to the unscrolled grid).
 </short>
 </element>
 <element name="TCustomGrid.OffsetToColRow.Offset">
-<short>Offset in pixels for the column or row.</short>
+<short>Distance of the location to be tested (in pixels) from the left edge of 
+the grid (in case of IsCol=<b>true</b>) or the top edge of the grid (in case of IsCol=<b>false</b>).</short>
 </element>
 <element name="TCustomGrid.OffsetToColRow.Index">
-<short>Index position for the column or row in the specified offset.</short>
+<short>Index of the column or row at the specified offset.</short>
 </element>
 <element name="TCustomGrid.OffsetToColRow.Rest">
-<short>Remaining pixels stating at the value in Index.</short>
+<short>Remaining pixels between the Offset value and the left edge of the column 
+(in case of IsCol=<b>true</b>) or the top edge of the row (in case of IsCol=<b>false</b>) 
+identified by Index.</short>
 </element>
 
 <element name="TCustomGrid.Paint">
