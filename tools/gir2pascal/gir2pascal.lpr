@@ -352,6 +352,9 @@ begin
       Terminate;
     end;
     Include(FOptions, EnumImpl);
+    if goEnumAsSet in FOptions then begin
+      Include(FOptions, goEnumAsEnum);
+    end;
   end;
 
   VerifyOptions;
