@@ -36,87 +36,117 @@ const
   G_VALUE_INTERNED_STRING = 268435456;
   G_VALUE_NOCOPY_CONTENTS = 134217728;
 type
-  TGBindingFlags = (
-    TGBindingFlagsMinValue = -$7FFFFFFF,
-    G_BINDING_DEFAULT = 0,
-    G_BINDING_BIDIRECTIONAL = 1,
-    G_BINDING_SYNC_CREATE = 2,
-    G_BINDING_INVERT_BOOLEAN = 4,
-    TGBindingFlagsMaxValue = $7FFFFFFF
+  TGBindingFlagsIdx = (
+    TGBindingFlagsIdxMinValue = 0,
+    G_BINDING_BIDIRECTIONAL = 0,
+    G_BINDING_SYNC_CREATE = 1,
+    G_BINDING_INVERT_BOOLEAN = 2,
+    TGBindingFlagsIdxMaxValue = 31
   );
-  TGConnectFlags = (
-    TGConnectFlagsMinValue = -$7FFFFFFF,
-    G_CONNECT_DEFAULT = 0,
-    G_CONNECT_AFTER = 1,
-    G_CONNECT_SWAPPED = 2,
-    TGConnectFlagsMaxValue = $7FFFFFFF
+  TGBindingFlags = Set of TGBindingFlagsIdx;
+const
+  G_BINDING_DEFAULT = []; {0 = $00000000}
+
+type
+  TGConnectFlagsIdx = (
+    TGConnectFlagsIdxMinValue = 0,
+    G_CONNECT_AFTER = 0,
+    G_CONNECT_SWAPPED = 1,
+    TGConnectFlagsIdxMaxValue = 31
   );
-  TGParamFlags = (
-    TGParamFlagsMinValue = -$7FFFFFFF,
-    G_PARAM_READABLE = 1,
-    G_PARAM_WRITABLE = 2,
-    G_PARAM_READWRITE = 3,
-    G_PARAM_CONSTRUCT = 4,
-    G_PARAM_CONSTRUCT_ONLY = 8,
-    G_PARAM_LAX_VALIDATION = 16,
-    G_PARAM_PRIVATE = 32,
-    G_PARAM_STATIC_NAME = 32,
-    G_PARAM_STATIC_NICK = 64,
-    G_PARAM_STATIC_BLURB = 128,
-    G_PARAM_EXPLICIT_NOTIFY = 1073741824,
-    G_PARAM_DEPRECATED = 2147483648,
-    TGParamFlagsMaxValue = $7FFFFFFF
+  TGConnectFlags = Set of TGConnectFlagsIdx;
+const
+  G_CONNECT_DEFAULT = []; {0 = $00000000}
+
+type
+  TGParamFlagsIdx = (
+    TGParamFlagsIdxMinValue = 0,
+    G_PARAM_READABLE = 0,
+    G_PARAM_WRITABLE = 1,
+    G_PARAM_CONSTRUCT = 2,
+    G_PARAM_CONSTRUCT_ONLY = 3,
+    G_PARAM_LAX_VALIDATION = 4,
+    G_PARAM_PRIVATE = 5,
+    G_PARAM_STATIC_NAME = 5,
+    G_PARAM_STATIC_NICK = 6,
+    G_PARAM_STATIC_BLURB = 7,
+    G_PARAM_EXPLICIT_NOTIFY = 30,
+    G_PARAM_DEPRECATED = 63,
+    TGParamFlagsIdxMaxValue = 31
   );
-  TGSignalFlags = (
-    TGSignalFlagsMinValue = -$7FFFFFFF,
-    G_SIGNAL_RUN_FIRST = 1,
-    G_SIGNAL_RUN_LAST = 2,
-    G_SIGNAL_RUN_CLEANUP = 4,
-    G_SIGNAL_NO_RECURSE = 8,
-    G_SIGNAL_DETAILED = 16,
-    G_SIGNAL_ACTION = 32,
-    G_SIGNAL_NO_HOOKS = 64,
-    G_SIGNAL_MUST_COLLECT = 128,
-    G_SIGNAL_DEPRECATED = 256,
-    G_SIGNAL_ACCUMULATOR_FIRST_RUN = 131072,
-    TGSignalFlagsMaxValue = $7FFFFFFF
+  TGParamFlags = Set of TGParamFlagsIdx;
+const
+  G_PARAM_READWRITE = [
+    G_PARAM_READABLE,
+    G_PARAM_WRITABLE
+  ]; {3 = $00000003}
+
+type
+  TGSignalFlagsIdx = (
+    TGSignalFlagsIdxMinValue = 0,
+    G_SIGNAL_RUN_FIRST = 0,
+    G_SIGNAL_RUN_LAST = 1,
+    G_SIGNAL_RUN_CLEANUP = 2,
+    G_SIGNAL_NO_RECURSE = 3,
+    G_SIGNAL_DETAILED = 4,
+    G_SIGNAL_ACTION = 5,
+    G_SIGNAL_NO_HOOKS = 6,
+    G_SIGNAL_MUST_COLLECT = 7,
+    G_SIGNAL_DEPRECATED = 8,
+    G_SIGNAL_ACCUMULATOR_FIRST_RUN = 17,
+    TGSignalFlagsIdxMaxValue = 31
   );
-  TGSignalMatchType = (
-    TGSignalMatchTypeMinValue = -$7FFFFFFF,
-    G_SIGNAL_MATCH_ID = 1,
-    G_SIGNAL_MATCH_DETAIL = 2,
-    G_SIGNAL_MATCH_CLOSURE = 4,
-    G_SIGNAL_MATCH_FUNC = 8,
-    G_SIGNAL_MATCH_DATA = 16,
-    G_SIGNAL_MATCH_UNBLOCKED = 32,
-    TGSignalMatchTypeMaxValue = $7FFFFFFF
+  TGSignalFlags = Set of TGSignalFlagsIdx;
+  TGSignalMatchTypeIdx = (
+    TGSignalMatchTypeIdxMinValue = 0,
+    G_SIGNAL_MATCH_ID = 0,
+    G_SIGNAL_MATCH_DETAIL = 1,
+    G_SIGNAL_MATCH_CLOSURE = 2,
+    G_SIGNAL_MATCH_FUNC = 3,
+    G_SIGNAL_MATCH_DATA = 4,
+    G_SIGNAL_MATCH_UNBLOCKED = 5,
+    TGSignalMatchTypeIdxMaxValue = 31
   );
-  TGTypeDebugFlags = (
-    TGTypeDebugFlagsMinValue = -$7FFFFFFF,
-    G_TYPE_DEBUG_NONE = 0,
-    G_TYPE_DEBUG_OBJECTS = 1,
-    G_TYPE_DEBUG_SIGNALS = 2,
-    G_TYPE_DEBUG_INSTANCE_COUNT = 4,
-    G_TYPE_DEBUG_MASK = 7,
-    TGTypeDebugFlagsMaxValue = $7FFFFFFF
+  TGSignalMatchType = Set of TGSignalMatchTypeIdx;
+  TGTypeDebugFlagsIdx = (
+    TGTypeDebugFlagsIdxMinValue = 0,
+    G_TYPE_DEBUG_OBJECTS = 0,
+    G_TYPE_DEBUG_SIGNALS = 1,
+    G_TYPE_DEBUG_INSTANCE_COUNT = 2,
+    TGTypeDebugFlagsIdxMaxValue = 31
   );
-  TGTypeFlags = (
-    TGTypeFlagsMinValue = -$7FFFFFFF,
-    G_TYPE_FLAG_NONE = 0,
-    G_TYPE_FLAG_ABSTRACT = 16,
-    G_TYPE_FLAG_VALUE_ABSTRACT = 32,
-    G_TYPE_FLAG_FINAL = 64,
-    G_TYPE_FLAG_DEPRECATED = 128,
-    TGTypeFlagsMaxValue = $7FFFFFFF
+  TGTypeDebugFlags = Set of TGTypeDebugFlagsIdx;
+const
+  G_TYPE_DEBUG_NONE = []; {0 = $00000000}
+
+  G_TYPE_DEBUG_MASK = [
+    G_TYPE_DEBUG_OBJECTS,
+    G_TYPE_DEBUG_SIGNALS,
+    G_TYPE_DEBUG_INSTANCE_COUNT
+  ]; {7 = $00000007}
+
+type
+  TGTypeFlagsIdx = (
+    TGTypeFlagsIdxMinValue = 0,
+    G_TYPE_FLAG_ABSTRACT = 4,
+    G_TYPE_FLAG_VALUE_ABSTRACT = 5,
+    G_TYPE_FLAG_FINAL = 6,
+    TGTypeFlagsIdxMaxValue = 31
   );
-  TGTypeFundamentalFlags = (
-    TGTypeFundamentalFlagsMinValue = -$7FFFFFFF,
-    G_TYPE_FLAG_CLASSED = 1,
-    G_TYPE_FLAG_INSTANTIATABLE = 2,
-    G_TYPE_FLAG_DERIVABLE = 4,
-    G_TYPE_FLAG_DEEP_DERIVABLE = 8,
-    TGTypeFundamentalFlagsMaxValue = $7FFFFFFF
+  TGTypeFlags = Set of TGTypeFlagsIdx;
+const
+  G_TYPE_FLAG_NONE = []; {0 = $00000000}
+
+type
+  TGTypeFundamentalFlagsIdx = (
+    TGTypeFundamentalFlagsIdxMinValue = 0,
+    G_TYPE_FLAG_CLASSED = 0,
+    G_TYPE_FLAG_INSTANTIATABLE = 1,
+    G_TYPE_FLAG_DERIVABLE = 2,
+    G_TYPE_FLAG_DEEP_DERIVABLE = 3,
+    TGTypeFundamentalFlagsIdxMaxValue = 31
   );
+  TGTypeFundamentalFlags = Set of TGTypeFundamentalFlagsIdx;
 type
 
 
@@ -134,7 +164,7 @@ type
   PPPGValue = ^PPGValue;
   PPGValue = ^PGValue;
   PGValue = ^TGValue;
-  TGClosureMarshal = procedure(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; marshal_data: gpointer); cdecl;
+  TGClosureMarshal = procedure(closure: PGClosure; return_value: PGValue; n_param_values: guint; param_values: PGValue; invocation_hint: gpointer; user_data: gpointer); cdecl;
 
 
   { TGSignalCMarshaller }
@@ -1014,8 +1044,8 @@ type
   end;
 
 
-  TGSignalAccumulator = function(ihint: PGSignalInvocationHint; return_accu: PGValue; handler_return: PGValue; data: gpointer): gboolean; cdecl;
-  TGSignalEmissionHook = function(ihint: PGSignalInvocationHint; n_param_values: guint; param_values: PGValue; data: gpointer): gboolean; cdecl;
+  TGSignalAccumulator = function(ihint: PGSignalInvocationHint; return_accu: PGValue; handler_return: PGValue; user_data: gpointer): gboolean; cdecl;
+  TGSignalEmissionHook = function(ihint: PGSignalInvocationHint; n_param_values: guint; param_values: PGValue; user_data: gpointer): gboolean; cdecl;
 
 
   { TGSignalGroup }

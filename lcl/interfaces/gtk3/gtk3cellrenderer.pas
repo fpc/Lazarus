@@ -647,7 +647,7 @@ begin
   begin
     crType := g_type_from_name(CR_NAME);
     if crType = 0 then
-      crType := g_type_register_static(gtk_cell_renderer_text_get_type,'LCLIntfCellRenderer',@crInfo, TGTypeFlags(0));
+      crType := g_type_register_static(gtk_cell_renderer_text_get_type,'LCLIntfCellRenderer',@crInfo, G_TYPE_FLAG_NONE);
   end;
   Result := crType;
 end;
