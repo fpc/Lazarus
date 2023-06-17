@@ -94,6 +94,7 @@ type
     class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
     class procedure SetReadOnly(const ACustomComboBox: TCustomComboBox; NewReadOnly: boolean); override;
     class procedure SetDropDownCount(const ACustomComboBox: TCustomComboBox; NewCount: Integer); override;
+    class procedure SetDroppedDown(const ACustomComboBox: TCustomComboBox; ADroppedDown: Boolean); override;
 
     class function  GetItems(const ACustomComboBox: TCustomComboBox): TStrings; override;
     class procedure FreeItems(var AItems: TStrings); override;
@@ -1909,6 +1910,18 @@ begin
   end;
 
 end;
+
+class procedure TCocoaWSCustomComboBox.SetDroppedDown(const ACustomComboBox: TCustomComboBox; ADroppedDown: Boolean);
+var
+  comboBox: TCocoaComboBox;
+begin
+  if (not Assigned(ACustomComboBox)) or (not ACustomComboBox.HandleAllocated) then
+    Exit;
+  if not ADroppedDown then exit;
+  comboBox:= TCocoaComboBox(ACustomComboBox.Handle);
+  comboBox.cell.performSelector_withObject_afterDelay( ObjCSelector('moveDown:'), nil, 0 );
+end;
+
 
 class function TCocoaWSCustomComboBox.GetSelStart(
   const ACustomComboBox: TCustomComboBox): integer;
