@@ -67,8 +67,11 @@ function LBackingScaleFactor(Handle: HWND): single;
 var
   glarea: TGtk3GLArea absolute Handle;
 begin
-  // todo(ryan): get the correct screen for the handle!
-  result := TGdkScreen.get_default^.get_monitor_scale_factor(0);
+  if Assigned(glarea) then begin
+    Result := glarea.GetWindow^.get_scale_factor;
+  end else begin
+    Result := 1;
+  end;
 end;
 
 procedure LOpenGLViewport(Handle: HWND; Left, Top, Width, Height: integer);
