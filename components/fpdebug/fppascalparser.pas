@@ -620,9 +620,9 @@ const
   PRECEDENCE_BIT_SHIFT  = 12;        // << >> shr shr
   PRECEDENCE_PLUS_MINUS = 13;        // a + b
   PRECEDENCE_OR         = 13;        // a OR b  // XOR
-  PRECEDENCE_ARRAY_SLICE= 18;        // array[5..9] // array slice
   PRECEDENCE_IN         = 19;        // enum IN set // officially the same as PRECEDENCE_COMPARE
   PRECEDENCE_COMPARE    = 20;        // a <> b // a=b
+  PRECEDENCE_ARRAY_SLICE= 30;        // array[5..9] // array slice
 
 type
 
@@ -2595,8 +2595,10 @@ end;
 
 function TFpPascalExpressionPartConstantText.DoGetResultValue: TFpValue;
 begin
-  //s := GetText;
-  Result := TFpValueConstString.Create(FValue);
+  if Length(FValue) = 1 then
+    Result := TFpValueConstChar.Create(FValue[1])
+  else
+    Result := TFpValueConstString.Create(FValue);
   {$IFDEF WITH_REFCOUNT_DEBUG}Result.DbgRenameReference(nil, 'DoGetResultValue'){$ENDIF};
 end;
 
@@ -2978,7 +2980,6 @@ var
     end;
     if not FValid then
       exit;
-    // If Length(str) = 1 then // char
     AddPart(TFpPascalExpressionPartConstantText);
     TFpPascalExpressionPartConstantText(NewPart).FValue := str;
   end;

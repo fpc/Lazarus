@@ -3461,12 +3461,12 @@ begin
     t.Add('Const-Expr: ansistring ', '''abc''''DE''',    weAnsiStr('abcDE')).IgnKind;
     t.Add('Const-Expr: ansistring ', '''abc''#32''DE''',    weAnsiStr('abc DE')).IgnKind;
     t.Add('Const-Expr: ansistring ', '#32''abc''',    weAnsiStr(' abc')).IgnKind;
-    t.Add('Const-Expr: ansistring ', '#49',    weAnsiStr('1')).IgnKind;
     t.Add('Const-Expr: ansistring ', '#49#50',    weAnsiStr('12')).IgnKind;
     t.Add('Const-Expr: ansistring ', '#$30#$31',    weAnsiStr('01')).IgnKind;
     t.Add('Const-Expr: ansistring ', '#&61#&62',    weAnsiStr('12')).IgnKind;
-    t.Add('Const-Expr: ansistring ', '#%110001',    weAnsiStr('1')).IgnKind;
-    t.Add('Const-Expr: ansistring ', '#%00110001',    weAnsiStr('1')).IgnKind;
+    t.Add('Const-Expr: ansistring ', '#49',    weChar('1')).IgnKind;
+    t.Add('Const-Expr: ansistring ', '#%110001',    weChar('1')).IgnKind;
+    t.Add('Const-Expr: ansistring ', '#%00110001',    weChar('1')).IgnKind;
 
     t.Add('Const-Expr: ansistring ', '''a',    weAnsiStr('1')).IgnKind^.AddFlag(ehExpectError);
     t.Add('Const-Expr: ansistring ', '''',    weAnsiStr('1')).IgnKind^.AddFlag(ehExpectError);
