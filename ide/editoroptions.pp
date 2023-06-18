@@ -6574,9 +6574,15 @@ begin
   else
     FormatVersion := 6;
   FFormatVersion := FormatVersion;
-  TmpPath := TmpPath + 'Scheme' + StrToValidXMLName(Name) + '/';
 
-  if (aOldPath <> '') and (FormatVersion > 1) then begin
+  TmpPath := TmpPath + 'Scheme' + StrToValidXMLName(Name) + '/';
+  if not aXMLConfig.HasChildPaths(TmpPath) then begin
+    // nothing to be loaded // FormatVersion is wrong
+    FormatVersion := 6;
+  end;
+
+  if (aOldPath <> '') and (FormatVersion > 1) and aXMLConfig.HasChildPaths(TmpPath)
+  then begin
     // convert some old data (loading user settings only):
     // aOldPath should be 'EditorOptions/Display/'
     if aXMLConfig.GetValue(aOldPath + 'RightMarginColor', '') <> '' then
