@@ -323,10 +323,6 @@
         <Filename Value="ideintfstrconsts.pas"/>
         <UnitName Value="IdeIntfStrConsts"/>
       </Item>
-      <Item>
-        <Filename Value="inputhistory.pas"/>
-        <UnitName Value="InputHistory"/>
-      </Item>
     </Files>
     <LazDoc Paths="docs"/>
     <i18n>
@@ -334,9 +330,6 @@
       <OutDir Value="languages"/>
     </i18n>
     <RequiredPkgs>
-      <Item>
-        <PackageName Value="IdeConfig"/>
-      </Item>
       <Item>
         <PackageName Value="BuildIntf"/>
       </Item>
