@@ -509,17 +509,17 @@ type
     height: cint;
   end;
 
-function cairo_gobject_context_get_type: csize_t { TGType }; cdecl; external;
-function cairo_gobject_device_get_type: csize_t { TGType }; cdecl; external;
-function cairo_gobject_font_face_get_type: csize_t { TGType }; cdecl; external;
-function cairo_gobject_font_options_get_type: csize_t { TGType }; cdecl; external;
-function cairo_gobject_pattern_get_type: csize_t { TGType }; cdecl; external;
-function cairo_gobject_rectangle_get_type: csize_t { TGType }; cdecl; external;
-function cairo_gobject_rectangle_int_get_type: csize_t { TGType }; cdecl; external;
-function cairo_gobject_region_get_type: csize_t { TGType }; cdecl; external;
-function cairo_gobject_scaled_font_get_type: csize_t { TGType }; cdecl; external;
-function cairo_gobject_surface_get_type: csize_t { TGType }; cdecl; external;
-procedure cairo_image_surface_create; cdecl; external;
+function cairo_gobject_context_get_type: csize_t { TGType }; cdecl; external Lazcairo1_library name 'cairo_gobject_context_get_type';
+function cairo_gobject_device_get_type: csize_t { TGType }; cdecl; external Lazcairo1_library name 'cairo_gobject_device_get_type';
+function cairo_gobject_font_face_get_type: csize_t { TGType }; cdecl; external Lazcairo1_library name 'cairo_gobject_font_face_get_type';
+function cairo_gobject_font_options_get_type: csize_t { TGType }; cdecl; external Lazcairo1_library name 'cairo_gobject_font_options_get_type';
+function cairo_gobject_pattern_get_type: csize_t { TGType }; cdecl; external Lazcairo1_library name 'cairo_gobject_pattern_get_type';
+function cairo_gobject_rectangle_get_type: csize_t { TGType }; cdecl; external Lazcairo1_library name 'cairo_gobject_rectangle_get_type';
+function cairo_gobject_rectangle_int_get_type: csize_t { TGType }; cdecl; external Lazcairo1_library name 'cairo_gobject_rectangle_int_get_type';
+function cairo_gobject_region_get_type: csize_t { TGType }; cdecl; external Lazcairo1_library name 'cairo_gobject_region_get_type';
+function cairo_gobject_scaled_font_get_type: csize_t { TGType }; cdecl; external Lazcairo1_library name 'cairo_gobject_scaled_font_get_type';
+function cairo_gobject_surface_get_type: csize_t { TGType }; cdecl; external Lazcairo1_library name 'cairo_gobject_surface_get_type';
+procedure cairo_image_surface_create; cdecl; external Lazcairo1_library name 'cairo_image_surface_create';
 
 
 function cairo_version: LongInt; cdecl; external LIB_CAIRO;

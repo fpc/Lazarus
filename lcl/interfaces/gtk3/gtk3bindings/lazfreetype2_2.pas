@@ -57,6 +57,6 @@ type
   PFT_Int32 = ^TFT_Int32;
   TFT_Int32 = cint32;
 
-procedure FT_Library_Version; cdecl; external;
+procedure FT_Library_Version; cdecl; external Lazfreetype2_2_library name 'FT_Library_Version';
 implementation
 end.
