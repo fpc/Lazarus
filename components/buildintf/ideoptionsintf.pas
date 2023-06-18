@@ -281,9 +281,8 @@ implementation
 procedure RegisterOptionsGroup(AGroupIndex: Integer; AGroupClass: TAbstractIDEOptionsClass);
 // Like function RegisterIDEOptionsGroup in IDEOptEditorIntf (IdeIntf) but does not return anything.
 begin
-  if OnRegisterGroup=Nil then
-    raise Exception.Create('RegisterOptionsGroup: OnRegisterGroup=Nil');
-  OnRegisterGroup(AGroupIndex, AGroupClass);
+  if Assigned(OnRegisterGroup) then
+    OnRegisterGroup(AGroupIndex, AGroupClass);
 end;
 
 { TIDEEnvironmentOptions }
