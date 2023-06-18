@@ -23,7 +23,7 @@ unit girCTypesMapping;
 interface
 
 const
-  CTypesMax = 34;
+  CTypesMax = 35;
 var
 
   TypesPascalCTypes: array [0..CTypesMax-1] of string =
@@ -50,6 +50,7 @@ var
        'byte',
        'Boolean32',
        'PtrInt',
+       'cint32',
        'csize_t',
        'gpointer',
        'cfloat',
@@ -88,6 +89,7 @@ var
        'guchar',
        'gboolean',
        'gssize',
+       'int32',
        'size_t' ,
        'gconstpointer',
        'gfloat',

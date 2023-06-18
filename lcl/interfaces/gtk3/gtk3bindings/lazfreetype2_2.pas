@@ -55,7 +55,7 @@ type
   { TFT_Int32 }
   PPFT_Int32 = ^PFT_Int32;
   PFT_Int32 = ^TFT_Int32;
-  TFT_Int32 = int32;
+  TFT_Int32 = cint32;
 
 procedure FT_Library_Version; cdecl; external;
 implementation
