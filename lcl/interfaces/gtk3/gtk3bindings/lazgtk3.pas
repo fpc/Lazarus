@@ -20,7 +20,7 @@ const
   LazGtk3_library = 'libgtk-3.so.0';
   {$endif}
 
-  GTK_BINARY_AGE = 2438;
+  GTK_BINARY_AGE = 2437;
   GTK_INPUT_ERROR = -1;
   GTK_INTERFACE_AGE = 32;
   GTK_LEVEL_BAR_OFFSET_FULL = 'full';
@@ -28,7 +28,7 @@ const
   GTK_LEVEL_BAR_OFFSET_LOW = 'low';
   GTK_MAJOR_VERSION = 3;
   GTK_MAX_COMPOSE_LEN = 7;
-  GTK_MICRO_VERSION = 38;
+  GTK_MICRO_VERSION = 37;
   GTK_MINOR_VERSION = 24;
   GTK_PAPER_NAME_A3 = 'iso_a3';
   GTK_PAPER_NAME_A4 = 'iso_a4';
@@ -282,7 +282,6 @@ const
   GTK_TEXT_VIEW_PRIORITY_VALIDATE = 125;
   GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID = -1;
   GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID = -2;
-
 type
   TGtkTextDirection = (
     TGtkTextDirectionMinValue = -$7FFFFFFF,
@@ -291,7 +290,6 @@ type
     GTK_TEXT_DIR_RTL = 2,
     TGtkTextDirectionMaxValue = $7FFFFFFF
   );
-type
   TGtkAccelFlagsIdx = (
     TGtkAccelFlagsIdxMinValue = 0,
     GTK_ACCEL_VISIBLE = 0,

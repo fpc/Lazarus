@@ -23,12 +23,10 @@ const
 
   G_ANALYZER_ANALYZING = 1;
   G_ASCII_DTOSTR_BUF_SIZE = 39;
-  G_ATOMIC_REF_COUNT_INIT_ = 1;
   G_BIG_ENDIAN = 4321;
   G_CSET_A_2_Z = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   G_CSET_DIGITS = '0123456789';
   G_CSET_a_2_z_ = 'abcdefghijklmnopqrstuvwxyz';
-  G_C_STD_VERSION = 199000;
   G_DATALIST_FLAGS_MASK = 3;
   G_DATE_BAD_DAY = 0;
   G_DATE_BAD_JULIAN = 0;
@@ -103,12 +101,12 @@ const
   G_MAXUINT32 = 4294967295;
   G_MAXUINT64 = 18446744073709551615;
   G_MAXUINT8 = 255;
-  GLIB_MICRO_VERSION = 0;
+  GLIB_MICRO_VERSION = 4;
   G_MININT16 = -32768;
   G_MININT32 = -2147483648;
   G_MININT64 = -9223372036854775808;
   G_MININT8 = -128;
-  GLIB_MINOR_VERSION = 77;
+  GLIB_MINOR_VERSION = 74;
   G_MODULE_SUFFIX = 'so';
   G_OPTION_REMAINING = '';
   G_PDP_ENDIAN = 3412;
@@ -122,7 +120,6 @@ const
   G_PRIORITY_HIGH = -100;
   G_PRIORITY_HIGH_IDLE = 100;
   G_PRIORITY_LOW = 300;
-  G_REF_COUNT_INIT_ = -1;
   G_SEARCHPATH_SEPARATOR = 58;
   G_SEARCHPATH_SEPARATOR_S = ':';
   GLIB_SIZEOF_LONG = 8;
@@ -154,21 +151,22 @@ const
   G_WIN32_MSG_HANDLE = 19981206;
   g_macro__has_attribute___noreturn__ = 0;
 type
-  TGAsciiType = (
-    TGAsciiTypeMinValue = -$7FFFFFFF,
-    G_ASCII_ALNUM = 1,
-    G_ASCII_ALPHA = 2,
-    G_ASCII_CNTRL = 4,
-    G_ASCII_DIGIT = 8,
-    G_ASCII_GRAPH = 16,
-    G_ASCII_LOWER = 32,
-    G_ASCII_PRINT = 64,
-    G_ASCII_PUNCT = 128,
-    G_ASCII_SPACE = 256,
-    G_ASCII_UPPER = 512,
-    G_ASCII_XDIGIT = 1024,
-    TGAsciiTypeMaxValue = $7FFFFFFF
+  TGAsciiTypeIdx = (
+    TGAsciiTypeIdxMinValue = 0,
+    G_ASCII_ALNUM = 0,
+    G_ASCII_ALPHA = 1,
+    G_ASCII_CNTRL = 2,
+    G_ASCII_DIGIT = 3,
+    G_ASCII_GRAPH = 4,
+    G_ASCII_LOWER = 5,
+    G_ASCII_PRINT = 6,
+    G_ASCII_PUNCT = 7,
+    G_ASCII_SPACE = 8,
+    G_ASCII_UPPER = 9,
+    G_ASCII_XDIGIT = 10,
+    TGAsciiTypeIdxMaxValue = 31
   );
+  TGAsciiType = Set of TGAsciiTypeIdx;
   TGBookmarkFileError = (
     TGBookmarkFileErrorMinValue = -$7FFFFFFF,
     G_BOOKMARK_FILE_ERROR_INVALID_URI = 0,
@@ -286,40 +284,58 @@ type
     G_FILE_ERROR_FAILED = 24,
     TGFileErrorMaxValue = $7FFFFFFF
   );
-  TGFileSetContentsFlags = (
-    TGFileSetContentsFlagsMinValue = -$7FFFFFFF,
-    G_FILE_SET_CONTENTS_NONE = 0,
-    G_FILE_SET_CONTENTS_CONSISTENT = 1,
-    G_FILE_SET_CONTENTS_DURABLE = 2,
-    G_FILE_SET_CONTENTS_ONLY_EXISTING = 4,
-    TGFileSetContentsFlagsMaxValue = $7FFFFFFF
+  TGFileSetContentsFlagsIdx = (
+    TGFileSetContentsFlagsIdxMinValue = 0,
+    G_FILE_SET_CONTENTS_CONSISTENT = 0,
+    G_FILE_SET_CONTENTS_DURABLE = 1,
+    G_FILE_SET_CONTENTS_ONLY_EXISTING = 2,
+    TGFileSetContentsFlagsIdxMaxValue = 31
   );
-  TGFileTest = (
-    TGFileTestMinValue = -$7FFFFFFF,
-    G_FILE_TEST_IS_REGULAR = 1,
-    G_FILE_TEST_IS_SYMLINK = 2,
-    G_FILE_TEST_IS_DIR = 4,
-    G_FILE_TEST_IS_EXECUTABLE = 8,
-    G_FILE_TEST_EXISTS = 16,
-    TGFileTestMaxValue = $7FFFFFFF
+  TGFileSetContentsFlags = Set of TGFileSetContentsFlagsIdx;
+const
+  G_FILE_SET_CONTENTS_NONE = []; {0 = $00000000}
+
+type
+  TGFileTestIdx = (
+    TGFileTestIdxMinValue = 0,
+    G_FILE_TEST_IS_REGULAR = 0,
+    G_FILE_TEST_IS_SYMLINK = 1,
+    G_FILE_TEST_IS_DIR = 2,
+    G_FILE_TEST_IS_EXECUTABLE = 3,
+    G_FILE_TEST_EXISTS = 4,
+    TGFileTestIdxMaxValue = 31
   );
-  TGFormatSizeFlags = (
-    TGFormatSizeFlagsMinValue = -$7FFFFFFF,
-    G_FORMAT_SIZE_DEFAULT = 0,
-    G_FORMAT_SIZE_LONG_FORMAT = 1,
-    G_FORMAT_SIZE_IEC_UNITS = 2,
-    G_FORMAT_SIZE_BITS = 4,
-    G_FORMAT_SIZE_ONLY_VALUE = 8,
-    G_FORMAT_SIZE_ONLY_UNIT = 16,
-    TGFormatSizeFlagsMaxValue = $7FFFFFFF
+  TGFileTest = Set of TGFileTestIdx;
+  TGFormatSizeFlagsIdx = (
+    TGFormatSizeFlagsIdxMinValue = 0,
+    G_FORMAT_SIZE_LONG_FORMAT = 0,
+    G_FORMAT_SIZE_IEC_UNITS = 1,
+    G_FORMAT_SIZE_BITS = 2,
+    G_FORMAT_SIZE_ONLY_VALUE = 3,
+    G_FORMAT_SIZE_ONLY_UNIT = 4,
+    TGFormatSizeFlagsIdxMaxValue = 31
   );
-  TGHookFlagMask = (
-    TGHookFlagMaskMinValue = -$7FFFFFFF,
-    G_HOOK_FLAG_ACTIVE = 1,
-    G_HOOK_FLAG_IN_CALL = 2,
-    G_HOOK_FLAG_MASK = 15,
-    TGHookFlagMaskMaxValue = $7FFFFFFF
+  TGFormatSizeFlags = Set of TGFormatSizeFlagsIdx;
+const
+  G_FORMAT_SIZE_DEFAULT = []; {0 = $00000000}
+
+type
+  TGHookFlagMaskIdx = (
+    TGHookFlagMaskIdxMinValue = 0,
+    G_HOOK_FLAG_ACTIVE = 0,
+    G_HOOK_FLAG_IN_CALL = 1,
+    TGHookFlagMaskIdxMaxValue = 31
   );
+  TGHookFlagMask = Set of TGHookFlagMaskIdx;
+const
+  G_HOOK_FLAG_MASK = [
+    G_HOOK_FLAG_ACTIVE,
+    G_HOOK_FLAG_IN_CALL,
+    TGHookFlagMaskIdx(2),
+    TGHookFlagMaskIdx(3)
+  ]; {15 = $0000000F}
+
+type
   TGSeekType = (
     TGSeekTypeMinValue = -$7FFFFFFF,
     G_SEEK_CUR = 0,
@@ -327,30 +343,53 @@ type
     G_SEEK_END = 2,
     TGSeekTypeMaxValue = $7FFFFFFF
   );
-  TGIOCondition = (
-    TGIOConditionMinValue = -$7FFFFFFF,
-    G_IO_IN = 1,
-    G_IO_PRI = 2,
-    G_IO_OUT = 4,
-    G_IO_ERR = 8,
-    G_IO_HUP = 16,
-    G_IO_NVAL = 32,
-    TGIOConditionMaxValue = $7FFFFFFF
+  TGIOConditionIdx = (
+    TGIOConditionIdxMinValue = 0,
+    G_IO_IN = 0,
+    G_IO_PRI = 1,
+    G_IO_OUT = 2,
+    G_IO_ERR = 3,
+    G_IO_HUP = 4,
+    G_IO_NVAL = 5,
+    TGIOConditionIdxMaxValue = 31
   );
-  TGIOFlags = (
-    TGIOFlagsMinValue = -$7FFFFFFF,
-    G_IO_FLAG_NONE = 0,
-    G_IO_FLAG_APPEND = 1,
-    G_IO_FLAG_NONBLOCK = 2,
-    G_IO_FLAG_SET_MASK = 3,
-    G_IO_FLAG_IS_READABLE = 4,
-    G_IO_FLAG_IS_WRITEABLE = 8,
-    G_IO_FLAG_IS_WRITABLE = 8,
-    G_IO_FLAG_IS_SEEKABLE = 16,
-    G_IO_FLAG_GET_MASK = 31,
-    G_IO_FLAG_MASK = 31,
-    TGIOFlagsMaxValue = $7FFFFFFF
+  TGIOCondition = Set of TGIOConditionIdx;
+  TGIOFlagsIdx = (
+    TGIOFlagsIdxMinValue = 0,
+    G_IO_FLAG_APPEND = 0,
+    G_IO_FLAG_NONBLOCK = 1,
+    G_IO_FLAG_IS_READABLE = 2,
+    G_IO_FLAG_IS_WRITEABLE = 3,
+    G_IO_FLAG_IS_WRITABLE = 3,
+    G_IO_FLAG_IS_SEEKABLE = 4,
+    TGIOFlagsIdxMaxValue = 31
   );
+  TGIOFlags = Set of TGIOFlagsIdx;
+const
+  G_IO_FLAG_NONE = []; {0 = $00000000}
+
+  G_IO_FLAG_SET_MASK = [
+    G_IO_FLAG_APPEND,
+    G_IO_FLAG_NONBLOCK
+  ]; {3 = $00000003}
+
+  G_IO_FLAG_GET_MASK = [
+    G_IO_FLAG_APPEND,
+    G_IO_FLAG_NONBLOCK,
+    G_IO_FLAG_IS_READABLE,
+    G_IO_FLAG_IS_WRITEABLE,
+    G_IO_FLAG_IS_SEEKABLE
+  ]; {31 = $0000001F}
+
+  G_IO_FLAG_MASK = [
+    G_IO_FLAG_APPEND,
+    G_IO_FLAG_NONBLOCK,
+    G_IO_FLAG_IS_READABLE,
+    G_IO_FLAG_IS_WRITEABLE,
+    G_IO_FLAG_IS_SEEKABLE
+  ]; {31 = $0000001F}
+
+type
   TGIOStatus = (
     TGIOStatusMinValue = -$7FFFFFFF,
     G_IO_STATUS_ERROR = 0,
@@ -380,13 +419,17 @@ type
     G_IO_CHANNEL_ERROR_FAILED = 8,
     TGIOChannelErrorMaxValue = $7FFFFFFF
   );
-  TGKeyFileFlags = (
-    TGKeyFileFlagsMinValue = -$7FFFFFFF,
-    G_KEY_FILE_NONE = 0,
-    G_KEY_FILE_KEEP_COMMENTS = 1,
-    G_KEY_FILE_KEEP_TRANSLATIONS = 2,
-    TGKeyFileFlagsMaxValue = $7FFFFFFF
+  TGKeyFileFlagsIdx = (
+    TGKeyFileFlagsIdxMinValue = 0,
+    G_KEY_FILE_KEEP_COMMENTS = 0,
+    G_KEY_FILE_KEEP_TRANSLATIONS = 1,
+    TGKeyFileFlagsIdxMaxValue = 31
   );
+  TGKeyFileFlags = Set of TGKeyFileFlagsIdx;
+const
+  G_KEY_FILE_NONE = []; {0 = $00000000}
+
+type
   TGKeyFileError = (
     TGKeyFileErrorMinValue = -$7FFFFFFF,
     G_KEY_FILE_ERROR_UNKNOWN_ENCODING = 0,
@@ -397,41 +440,88 @@ type
     G_KEY_FILE_ERROR_INVALID_VALUE = 5,
     TGKeyFileErrorMaxValue = $7FFFFFFF
   );
-  TGLogLevelFlags = (
-    TGLogLevelFlagsMinValue = -$7FFFFFFF,
-    G_LOG_LEVEL_MASK = -4,
-    G_LOG_FLAG_RECURSION = 1,
-    G_LOG_FLAG_FATAL = 2,
-    G_LOG_LEVEL_ERROR = 4,
-    G_LOG_LEVEL_CRITICAL = 8,
-    G_LOG_LEVEL_WARNING = 16,
-    G_LOG_LEVEL_MESSAGE = 32,
-    G_LOG_LEVEL_INFO = 64,
-    G_LOG_LEVEL_DEBUG = 128,
-    TGLogLevelFlagsMaxValue = $7FFFFFFF
+  TGLogLevelFlagsIdx = (
+    TGLogLevelFlagsIdxMinValue = 0,
+    G_LOG_FLAG_RECURSION = 0,
+    G_LOG_FLAG_FATAL = 1,
+    G_LOG_LEVEL_ERROR = 2,
+    G_LOG_LEVEL_CRITICAL = 3,
+    G_LOG_LEVEL_WARNING = 4,
+    G_LOG_LEVEL_MESSAGE = 5,
+    G_LOG_LEVEL_INFO = 6,
+    G_LOG_LEVEL_DEBUG = 7,
+    TGLogLevelFlagsIdxMaxValue = 31
   );
+  TGLogLevelFlags = Set of TGLogLevelFlagsIdx;
+const
+  G_LOG_LEVEL_MASK = [
+    G_LOG_LEVEL_ERROR,
+    G_LOG_LEVEL_CRITICAL,
+    G_LOG_LEVEL_WARNING,
+    G_LOG_LEVEL_MESSAGE,
+    G_LOG_LEVEL_INFO,
+    G_LOG_LEVEL_DEBUG,
+    TGLogLevelFlagsIdx(8),
+    TGLogLevelFlagsIdx(9),
+    TGLogLevelFlagsIdx(10),
+    TGLogLevelFlagsIdx(11),
+    TGLogLevelFlagsIdx(12),
+    TGLogLevelFlagsIdx(13),
+    TGLogLevelFlagsIdx(14),
+    TGLogLevelFlagsIdx(15),
+    TGLogLevelFlagsIdx(16),
+    TGLogLevelFlagsIdx(17),
+    TGLogLevelFlagsIdx(18),
+    TGLogLevelFlagsIdx(19),
+    TGLogLevelFlagsIdx(20),
+    TGLogLevelFlagsIdx(21),
+    TGLogLevelFlagsIdx(22),
+    TGLogLevelFlagsIdx(23),
+    TGLogLevelFlagsIdx(24),
+    TGLogLevelFlagsIdx(25),
+    TGLogLevelFlagsIdx(26),
+    TGLogLevelFlagsIdx(27),
+    TGLogLevelFlagsIdx(28),
+    TGLogLevelFlagsIdx(29),
+    TGLogLevelFlagsIdx(30),
+    TGLogLevelFlagsIdx(31)
+  ]; {-4 = $FFFFFFFC}
+
+type
   TGLogWriterOutput = (
     TGLogWriterOutputMinValue = -$7FFFFFFF,
     G_LOG_WRITER_UNHANDLED = 0,
     G_LOG_WRITER_HANDLED = 1,
     TGLogWriterOutputMaxValue = $7FFFFFFF
   );
-  TGMainContextFlags = (
-    TGMainContextFlagsMinValue = -$7FFFFFFF,
-    G_MAIN_CONTEXT_FLAGS_NONE = 0,
-    G_MAIN_CONTEXT_FLAGS_OWNERLESS_POLLING = 1,
-    TGMainContextFlagsMaxValue = $7FFFFFFF
+  TGMainContextFlagsIdx = (
+    TGMainContextFlagsIdxMinValue = 0,
+    G_MAIN_CONTEXT_FLAGS_OWNERLESS_POLLING = 0,
+    TGMainContextFlagsIdxMaxValue = 31
   );
-  TGMarkupCollectType = (
-    TGMarkupCollectTypeMinValue = -$7FFFFFFF,
-    G_MARKUP_COLLECT_INVALID = 0,
-    G_MARKUP_COLLECT_STRING = 1,
-    G_MARKUP_COLLECT_STRDUP = 2,
-    G_MARKUP_COLLECT_BOOLEAN = 3,
-    G_MARKUP_COLLECT_TRISTATE = 4,
-    G_MARKUP_COLLECT_OPTIONAL = 65536,
-    TGMarkupCollectTypeMaxValue = $7FFFFFFF
+  TGMainContextFlags = Set of TGMainContextFlagsIdx;
+const
+  G_MAIN_CONTEXT_FLAGS_NONE = []; {0 = $00000000}
+
+type
+  TGMarkupCollectTypeIdx = (
+    TGMarkupCollectTypeIdxMinValue = 0,
+    G_MARKUP_COLLECT_STRING = 0,
+    G_MARKUP_COLLECT_STRDUP = 1,
+    G_MARKUP_COLLECT_TRISTATE = 2,
+    G_MARKUP_COLLECT_OPTIONAL = 16,
+    TGMarkupCollectTypeIdxMaxValue = 31
   );
+  TGMarkupCollectType = Set of TGMarkupCollectTypeIdx;
+const
+  G_MARKUP_COLLECT_INVALID = []; {0 = $00000000}
+
+  G_MARKUP_COLLECT_BOOLEAN = [
+    G_MARKUP_COLLECT_STRING,
+    G_MARKUP_COLLECT_STRDUP
+  ]; {3 = $00000003}
+
+type
   TGMarkupError = (
     TGMarkupErrorMinValue = -$7FFFFFFF,
     G_MARKUP_ERROR_BAD_UTF8 = 0,
@@ -443,68 +533,107 @@ type
     G_MARKUP_ERROR_MISSING_ATTRIBUTE = 6,
     TGMarkupErrorMaxValue = $7FFFFFFF
   );
-  TGMarkupParseFlags = (
-    TGMarkupParseFlagsMinValue = -$7FFFFFFF,
-    G_MARKUP_DEFAULT_FLAGS = 0,
-    G_MARKUP_DO_NOT_USE_THIS_UNSUPPORTED_FLAG = 1,
-    G_MARKUP_TREAT_CDATA_AS_TEXT = 2,
-    G_MARKUP_PREFIX_ERROR_POSITION = 4,
-    G_MARKUP_IGNORE_QUALIFIED = 8,
-    TGMarkupParseFlagsMaxValue = $7FFFFFFF
+  TGMarkupParseFlagsIdx = (
+    TGMarkupParseFlagsIdxMinValue = 0,
+    G_MARKUP_DO_NOT_USE_THIS_UNSUPPORTED_FLAG = 0,
+    G_MARKUP_TREAT_CDATA_AS_TEXT = 1,
+    G_MARKUP_PREFIX_ERROR_POSITION = 2,
+    G_MARKUP_IGNORE_QUALIFIED = 3,
+    TGMarkupParseFlagsIdxMaxValue = 31
   );
-  TGRegexCompileFlags = (
-    TGRegexCompileFlagsMinValue = -$7FFFFFFF,
-    G_REGEX_DEFAULT = 0,
-    G_REGEX_CASELESS = 1,
-    G_REGEX_MULTILINE = 2,
-    G_REGEX_DOTALL = 4,
-    G_REGEX_EXTENDED = 8,
-    G_REGEX_ANCHORED = 16,
-    G_REGEX_DOLLAR_ENDONLY = 32,
-    G_REGEX_UNGREEDY = 512,
-    G_REGEX_RAW = 2048,
-    G_REGEX_NO_AUTO_CAPTURE = 4096,
-    G_REGEX_OPTIMIZE = 8192,
-    G_REGEX_FIRSTLINE = 262144,
-    G_REGEX_DUPNAMES = 524288,
-    G_REGEX_NEWLINE_CR = 1048576,
-    G_REGEX_NEWLINE_LF = 2097152,
-    G_REGEX_NEWLINE_CRLF = 3145728,
-    G_REGEX_NEWLINE_ANYCRLF = 5242880,
-    G_REGEX_BSR_ANYCRLF = 8388608,
-    G_REGEX_JAVASCRIPT_COMPAT = 33554432,
-    TGRegexCompileFlagsMaxValue = $7FFFFFFF
+  TGMarkupParseFlags = Set of TGMarkupParseFlagsIdx;
+const
+  G_MARKUP_DEFAULT_FLAGS = []; {0 = $00000000}
+
+type
+  TGRegexCompileFlagsIdx = (
+    TGRegexCompileFlagsIdxMinValue = 0,
+    G_REGEX_CASELESS = 0,
+    G_REGEX_MULTILINE = 1,
+    G_REGEX_DOTALL = 2,
+    G_REGEX_EXTENDED = 3,
+    G_REGEX_ANCHORED = 4,
+    G_REGEX_DOLLAR_ENDONLY = 5,
+    G_REGEX_UNGREEDY = 9,
+    G_REGEX_RAW = 11,
+    G_REGEX_NO_AUTO_CAPTURE = 12,
+    G_REGEX_OPTIMIZE = 13,
+    G_REGEX_FIRSTLINE = 18,
+    G_REGEX_DUPNAMES = 19,
+    G_REGEX_NEWLINE_CR = 20,
+    G_REGEX_NEWLINE_LF = 21,
+    G_REGEX_BSR_ANYCRLF = 23,
+    G_REGEX_JAVASCRIPT_COMPAT = 25,
+    TGRegexCompileFlagsIdxMaxValue = 31
   );
-  TGRegexMatchFlags = (
-    TGRegexMatchFlagsMinValue = -$7FFFFFFF,
-    G_REGEX_MATCH_DEFAULT = 0,
-    G_REGEX_MATCH_ANCHORED = 16,
-    G_REGEX_MATCH_NOTBOL = 128,
-    G_REGEX_MATCH_NOTEOL = 256,
-    G_REGEX_MATCH_NOTEMPTY = 1024,
-    G_REGEX_MATCH_PARTIAL_SOFT = 32768,
-    G_REGEX_MATCH_PARTIAL = 32768,
-    G_REGEX_MATCH_NEWLINE_CR = 1048576,
-    G_REGEX_MATCH_NEWLINE_LF = 2097152,
-    G_REGEX_MATCH_NEWLINE_CRLF = 3145728,
-    G_REGEX_MATCH_NEWLINE_ANY = 4194304,
-    G_REGEX_MATCH_NEWLINE_ANYCRLF = 5242880,
-    G_REGEX_MATCH_BSR_ANYCRLF = 8388608,
-    G_REGEX_MATCH_BSR_ANY = 16777216,
-    G_REGEX_MATCH_PARTIAL_HARD = 134217728,
-    G_REGEX_MATCH_NOTEMPTY_ATSTART = 268435456,
-    TGRegexMatchFlagsMaxValue = $7FFFFFFF
+  TGRegexCompileFlags = Set of TGRegexCompileFlagsIdx;
+const
+  G_REGEX_DEFAULT = []; {0 = $00000000}
+
+  G_REGEX_NEWLINE_CRLF = [
+    G_REGEX_NEWLINE_CR,
+    G_REGEX_NEWLINE_LF
+  ]; {3145728 = $00300000}
+
+  G_REGEX_NEWLINE_ANYCRLF = [
+    G_REGEX_NEWLINE_CR,
+    TGRegexCompileFlagsIdx(22)
+  ]; {5242880 = $00500000}
+
+type
+  TGRegexMatchFlagsIdx = (
+    TGRegexMatchFlagsIdxMinValue = 0,
+    G_REGEX_MATCH_ANCHORED = 4,
+    G_REGEX_MATCH_NOTBOL = 7,
+    G_REGEX_MATCH_NOTEOL = 8,
+    G_REGEX_MATCH_NOTEMPTY = 10,
+    G_REGEX_MATCH_PARTIAL_SOFT = 15,
+    G_REGEX_MATCH_PARTIAL = 15,
+    G_REGEX_MATCH_NEWLINE_CR = 20,
+    G_REGEX_MATCH_NEWLINE_LF = 21,
+    G_REGEX_MATCH_NEWLINE_ANY = 22,
+    G_REGEX_MATCH_BSR_ANYCRLF = 23,
+    G_REGEX_MATCH_BSR_ANY = 24,
+    G_REGEX_MATCH_PARTIAL_HARD = 27,
+    G_REGEX_MATCH_NOTEMPTY_ATSTART = 28,
+    TGRegexMatchFlagsIdxMaxValue = 31
   );
-  TGTraverseFlags = (
-    TGTraverseFlagsMinValue = -$7FFFFFFF,
-    G_TRAVERSE_LEAFS = 1,
-    G_TRAVERSE_LEAVES = 1,
-    G_TRAVERSE_NON_LEAFS = 2,
-    G_TRAVERSE_NON_LEAVES = 2,
-    G_TRAVERSE_ALL = 3,
-    G_TRAVERSE_MASK = 3,
-    TGTraverseFlagsMaxValue = $7FFFFFFF
+  TGRegexMatchFlags = Set of TGRegexMatchFlagsIdx;
+const
+  G_REGEX_MATCH_DEFAULT = []; {0 = $00000000}
+
+  G_REGEX_MATCH_NEWLINE_CRLF = [
+    G_REGEX_MATCH_NEWLINE_CR,
+    G_REGEX_MATCH_NEWLINE_LF
+  ]; {3145728 = $00300000}
+
+  G_REGEX_MATCH_NEWLINE_ANYCRLF = [
+    G_REGEX_MATCH_NEWLINE_CR,
+    G_REGEX_MATCH_NEWLINE_ANY
+  ]; {5242880 = $00500000}
+
+type
+  TGTraverseFlagsIdx = (
+    TGTraverseFlagsIdxMinValue = 0,
+    G_TRAVERSE_LEAFS = 0,
+    G_TRAVERSE_LEAVES = 0,
+    G_TRAVERSE_NON_LEAFS = 1,
+    G_TRAVERSE_NON_LEAVES = 1,
+    TGTraverseFlagsIdxMaxValue = 31
   );
+  TGTraverseFlags = Set of TGTraverseFlagsIdx;
+const
+  G_TRAVERSE_ALL = [
+    G_TRAVERSE_LEAFS,
+    G_TRAVERSE_NON_LEAFS
+  ]; {3 = $00000003}
+
+  G_TRAVERSE_MASK = [
+    G_TRAVERSE_LEAFS,
+    G_TRAVERSE_NON_LEAFS
+  ]; {3 = $00000003}
+
+type
   TGTraverseType = (
     TGTraverseTypeMinValue = -$7FFFFFFF,
     G_IN_ORDER = 0,
@@ -558,18 +687,22 @@ type
     G_OPTION_ERROR_FAILED = 2,
     TGOptionErrorMaxValue = $7FFFFFFF
   );
-  TGOptionFlags = (
-    TGOptionFlagsMinValue = -$7FFFFFFF,
-    G_OPTION_FLAG_NONE = 0,
-    G_OPTION_FLAG_HIDDEN = 1,
-    G_OPTION_FLAG_IN_MAIN = 2,
-    G_OPTION_FLAG_REVERSE = 4,
-    G_OPTION_FLAG_NO_ARG = 8,
-    G_OPTION_FLAG_FILENAME = 16,
-    G_OPTION_FLAG_OPTIONAL_ARG = 32,
-    G_OPTION_FLAG_NOALIAS = 64,
-    TGOptionFlagsMaxValue = $7FFFFFFF
+  TGOptionFlagsIdx = (
+    TGOptionFlagsIdxMinValue = 0,
+    G_OPTION_FLAG_HIDDEN = 0,
+    G_OPTION_FLAG_IN_MAIN = 1,
+    G_OPTION_FLAG_REVERSE = 2,
+    G_OPTION_FLAG_NO_ARG = 3,
+    G_OPTION_FLAG_FILENAME = 4,
+    G_OPTION_FLAG_OPTIONAL_ARG = 5,
+    G_OPTION_FLAG_NOALIAS = 6,
+    TGOptionFlagsIdxMaxValue = 31
   );
+  TGOptionFlags = Set of TGOptionFlagsIdx;
+const
+  G_OPTION_FLAG_NONE = []; {0 = $00000000}
+
+type
   TGRegexError = (
     TGRegexErrorMinValue = -$7FFFFFFF,
     G_REGEX_ERROR_COMPILE = 0,
@@ -700,23 +833,27 @@ type
     G_SPAWN_ERROR_FAILED = 19,
     TGSpawnErrorMaxValue = $7FFFFFFF
   );
-  TGSpawnFlags = (
-    TGSpawnFlagsMinValue = -$7FFFFFFF,
-    G_SPAWN_DEFAULT = 0,
-    G_SPAWN_LEAVE_DESCRIPTORS_OPEN = 1,
-    G_SPAWN_DO_NOT_REAP_CHILD = 2,
-    G_SPAWN_SEARCH_PATH = 4,
-    G_SPAWN_STDOUT_TO_DEV_NULL = 8,
-    G_SPAWN_STDERR_TO_DEV_NULL = 16,
-    G_SPAWN_CHILD_INHERITS_STDIN = 32,
-    G_SPAWN_FILE_AND_ARGV_ZERO = 64,
-    G_SPAWN_SEARCH_PATH_FROM_ENVP = 128,
-    G_SPAWN_CLOEXEC_PIPES = 256,
-    G_SPAWN_CHILD_INHERITS_STDOUT = 512,
-    G_SPAWN_CHILD_INHERITS_STDERR = 1024,
-    G_SPAWN_STDIN_FROM_DEV_NULL = 2048,
-    TGSpawnFlagsMaxValue = $7FFFFFFF
+  TGSpawnFlagsIdx = (
+    TGSpawnFlagsIdxMinValue = 0,
+    G_SPAWN_LEAVE_DESCRIPTORS_OPEN = 0,
+    G_SPAWN_DO_NOT_REAP_CHILD = 1,
+    G_SPAWN_SEARCH_PATH = 2,
+    G_SPAWN_STDOUT_TO_DEV_NULL = 3,
+    G_SPAWN_STDERR_TO_DEV_NULL = 4,
+    G_SPAWN_CHILD_INHERITS_STDIN = 5,
+    G_SPAWN_FILE_AND_ARGV_ZERO = 6,
+    G_SPAWN_SEARCH_PATH_FROM_ENVP = 7,
+    G_SPAWN_CLOEXEC_PIPES = 8,
+    G_SPAWN_CHILD_INHERITS_STDOUT = 9,
+    G_SPAWN_CHILD_INHERITS_STDERR = 10,
+    G_SPAWN_STDIN_FROM_DEV_NULL = 11,
+    TGSpawnFlagsIdxMaxValue = 31
   );
+  TGSpawnFlags = Set of TGSpawnFlagsIdx;
+const
+  G_SPAWN_DEFAULT = []; {0 = $00000000}
+
+type
   TGTestFileType = (
     TGTestFileTypeMinValue = -$7FFFFFFF,
     G_TEST_DIST = 0,
@@ -747,22 +884,30 @@ type
     G_TEST_RUN_INCOMPLETE = 3,
     TGTestResultMaxValue = $7FFFFFFF
   );
-  TGTestSubprocessFlags = (
-    TGTestSubprocessFlagsMinValue = -$7FFFFFFF,
-    G_TEST_SUBPROCESS_DEFAULT = 0,
-    G_TEST_SUBPROCESS_INHERIT_STDIN = 1,
-    G_TEST_SUBPROCESS_INHERIT_STDOUT = 2,
-    G_TEST_SUBPROCESS_INHERIT_STDERR = 4,
-    TGTestSubprocessFlagsMaxValue = $7FFFFFFF
+  TGTestSubprocessFlagsIdx = (
+    TGTestSubprocessFlagsIdxMinValue = 0,
+    G_TEST_SUBPROCESS_INHERIT_STDIN = 0,
+    G_TEST_SUBPROCESS_INHERIT_STDOUT = 1,
+    G_TEST_SUBPROCESS_INHERIT_STDERR = 2,
+    TGTestSubprocessFlagsIdxMaxValue = 31
   );
-  TGTestTrapFlags = (
-    TGTestTrapFlagsMinValue = -$7FFFFFFF,
-    G_TEST_TRAP_DEFAULT = 0,
-    G_TEST_TRAP_SILENCE_STDOUT = 128,
-    G_TEST_TRAP_SILENCE_STDERR = 256,
-    G_TEST_TRAP_INHERIT_STDIN = 512,
-    TGTestTrapFlagsMaxValue = $7FFFFFFF
+  TGTestSubprocessFlags = Set of TGTestSubprocessFlagsIdx;
+const
+  G_TEST_SUBPROCESS_DEFAULT = []; {0 = $00000000}
+
+type
+  TGTestTrapFlagsIdx = (
+    TGTestTrapFlagsIdxMinValue = 0,
+    G_TEST_TRAP_SILENCE_STDOUT = 7,
+    G_TEST_TRAP_SILENCE_STDERR = 8,
+    G_TEST_TRAP_INHERIT_STDIN = 9,
+    TGTestTrapFlagsIdxMaxValue = 31
   );
+  TGTestTrapFlags = Set of TGTestTrapFlagsIdx;
+const
+  G_TEST_TRAP_DEFAULT = []; {0 = $00000000}
+
+type
   TGThreadError = (
     TGThreadErrorMinValue = -$7FFFFFFF,
     G_THREAD_ERROR_AGAIN = 0,
@@ -1020,38 +1165,50 @@ type
     G_UNICODE_SPACE_SEPARATOR = 29,
     TGUnicodeTypeMaxValue = $7FFFFFFF
   );
-  TGUriFlags = (
-    TGUriFlagsMinValue = -$7FFFFFFF,
-    G_URI_FLAGS_NONE = 0,
-    G_URI_FLAGS_PARSE_RELAXED = 1,
-    G_URI_FLAGS_HAS_PASSWORD = 2,
-    G_URI_FLAGS_HAS_AUTH_PARAMS = 4,
-    G_URI_FLAGS_ENCODED = 8,
-    G_URI_FLAGS_NON_DNS = 16,
-    G_URI_FLAGS_ENCODED_QUERY = 32,
-    G_URI_FLAGS_ENCODED_PATH = 64,
-    G_URI_FLAGS_ENCODED_FRAGMENT = 128,
-    G_URI_FLAGS_SCHEME_NORMALIZE = 256,
-    TGUriFlagsMaxValue = $7FFFFFFF
+  TGUriFlagsIdx = (
+    TGUriFlagsIdxMinValue = 0,
+    G_URI_FLAGS_PARSE_RELAXED = 0,
+    G_URI_FLAGS_HAS_PASSWORD = 1,
+    G_URI_FLAGS_HAS_AUTH_PARAMS = 2,
+    G_URI_FLAGS_ENCODED = 3,
+    G_URI_FLAGS_NON_DNS = 4,
+    G_URI_FLAGS_ENCODED_QUERY = 5,
+    G_URI_FLAGS_ENCODED_PATH = 6,
+    G_URI_FLAGS_ENCODED_FRAGMENT = 7,
+    G_URI_FLAGS_SCHEME_NORMALIZE = 8,
+    TGUriFlagsIdxMaxValue = 31
   );
-  TGUriHideFlags = (
-    TGUriHideFlagsMinValue = -$7FFFFFFF,
-    G_URI_HIDE_NONE = 0,
-    G_URI_HIDE_USERINFO = 1,
-    G_URI_HIDE_PASSWORD = 2,
-    G_URI_HIDE_AUTH_PARAMS = 4,
-    G_URI_HIDE_QUERY = 8,
-    G_URI_HIDE_FRAGMENT = 16,
-    TGUriHideFlagsMaxValue = $7FFFFFFF
+  TGUriFlags = Set of TGUriFlagsIdx;
+const
+  G_URI_FLAGS_NONE = []; {0 = $00000000}
+
+type
+  TGUriHideFlagsIdx = (
+    TGUriHideFlagsIdxMinValue = 0,
+    G_URI_HIDE_USERINFO = 0,
+    G_URI_HIDE_PASSWORD = 1,
+    G_URI_HIDE_AUTH_PARAMS = 2,
+    G_URI_HIDE_QUERY = 3,
+    G_URI_HIDE_FRAGMENT = 4,
+    TGUriHideFlagsIdxMaxValue = 31
   );
-  TGUriParamsFlags = (
-    TGUriParamsFlagsMinValue = -$7FFFFFFF,
-    G_URI_PARAMS_NONE = 0,
-    G_URI_PARAMS_CASE_INSENSITIVE = 1,
-    G_URI_PARAMS_WWW_FORM = 2,
-    G_URI_PARAMS_PARSE_RELAXED = 4,
-    TGUriParamsFlagsMaxValue = $7FFFFFFF
+  TGUriHideFlags = Set of TGUriHideFlagsIdx;
+const
+  G_URI_HIDE_NONE = []; {0 = $00000000}
+
+type
+  TGUriParamsFlagsIdx = (
+    TGUriParamsFlagsIdxMinValue = 0,
+    G_URI_PARAMS_CASE_INSENSITIVE = 0,
+    G_URI_PARAMS_WWW_FORM = 1,
+    G_URI_PARAMS_PARSE_RELAXED = 2,
+    TGUriParamsFlagsIdxMaxValue = 31
   );
+  TGUriParamsFlags = Set of TGUriParamsFlagsIdx;
+const
+  G_URI_PARAMS_NONE = []; {0 = $00000000}
+
+type
   TGUriError = (
     TGUriErrorMinValue = -$7FFFFFFF,
     G_URI_ERROR_FAILED = 0,
@@ -1815,7 +1972,7 @@ type
   { TGConvertError }
   PPGConvertError = ^PGConvertError;
   PGConvertError = ^TGConvertError;
-  TGCopyFunc = function(src: Pgpointer; data: gpointer): gpointer; cdecl;
+  TGCopyFunc = function(src: Pgpointer; user_data: gpointer): gpointer; cdecl;
 
 
   { TGData }
@@ -2175,7 +2332,7 @@ type
   { TGHookFindFunc }
   PPGHookFindFunc = ^PGHookFindFunc;
   PGHookFindFunc = ^TGHookFindFunc;
-  TGHookFindFunc = function(hook: PGHook; data: gpointer): gboolean; cdecl;
+  TGHookFindFunc = function(hook: PGHook; user_data: gpointer): gboolean; cdecl;
 
 
   { TGHookCompareFunc }
@@ -2214,13 +2371,13 @@ type
   { TGHookMarshaller }
   PPGHookMarshaller = ^PGHookMarshaller;
   PGHookMarshaller = ^TGHookMarshaller;
-  TGHookMarshaller = procedure(hook: PGHook; marshal_data: gpointer); cdecl;
+  TGHookMarshaller = procedure(hook: PGHook; user_data: gpointer); cdecl;
 
 
   { TGHookCheckMarshaller }
   PPGHookCheckMarshaller = ^PGHookCheckMarshaller;
   PGHookCheckMarshaller = ^TGHookCheckMarshaller;
-  TGHookCheckMarshaller = function(hook: PGHook; marshal_data: gpointer): gboolean; cdecl;
+  TGHookCheckMarshaller = function(hook: PGHook; user_data: gpointer): gboolean; cdecl;
   TGHookListBitfield0 = bitpacked record
     hook_size: guint16 { changed from guint to accomodate 16 bitsize requirement };
     is_setup: guint1 { changed from guint to accomodate 1 bitsize requirement };
@@ -2421,7 +2578,7 @@ type
   { TGIOError }
   PPGIOError = ^PGIOError;
   PGIOError = ^TGIOError;
-  TGIOFunc = function(source: PGIOChannel; condition: TGIOCondition; data: gpointer): gboolean; cdecl;
+  TGIOFunc = function(source: PGIOChannel; condition: TGIOCondition; user_data: gpointer): gboolean; cdecl;
 
 
   { TGSourceFuncs }
@@ -2879,7 +3036,7 @@ type
   { TGNodeForeachFunc }
   PPGNodeForeachFunc = ^PGNodeForeachFunc;
   PGNodeForeachFunc = ^TGNodeForeachFunc;
-  TGNodeForeachFunc = procedure(node: PGNode; data: gpointer); cdecl;
+  TGNodeForeachFunc = procedure(node: PGNode; user_data: gpointer); cdecl;
 
 
   { TGTraverseType }
@@ -2890,7 +3047,7 @@ type
   { TGNodeTraverseFunc }
   PPGNodeTraverseFunc = ^PGNodeTraverseFunc;
   PGNodeTraverseFunc = ^TGNodeTraverseFunc;
-  TGNodeTraverseFunc = function(node: PGNode; data: gpointer): gboolean; cdecl;
+  TGNodeTraverseFunc = function(node: PGNode; user_data: gpointer): gboolean; cdecl;
   TGNode = object
     data: gpointer;
     next: PGNode;
@@ -2949,7 +3106,7 @@ type
   { TGThreadFunc }
   PPGThreadFunc = ^PGThreadFunc;
   PGThreadFunc = ^TGThreadFunc;
-  TGThreadFunc = function(data: gpointer): gpointer; cdecl;
+  TGThreadFunc = function(user_data: gpointer): gpointer; cdecl;
   TGOnce = object
     status: TGOnceStatus;
     retval: gpointer;
@@ -2962,7 +3119,7 @@ type
   { TGOptionArg }
   PPGOptionArg = ^PGOptionArg;
   PGOptionArg = ^TGOptionArg;
-  TGOptionArgFunc = function(option_name: Pgchar; value: Pgchar; data: gpointer; error: PPGError): gboolean; cdecl;
+  TGOptionArgFunc = function(option_name: Pgchar; value: Pgchar; user_data: gpointer; error: PPGError): gboolean; cdecl;
 
 
   { TGOptionContext }
@@ -2983,7 +3140,7 @@ type
   { TGTranslateFunc }
   PPGTranslateFunc = ^PGTranslateFunc;
   PGTranslateFunc = ^TGTranslateFunc;
-  TGTranslateFunc = function(str: Pgchar; data: gpointer): Pgchar; cdecl;
+  TGTranslateFunc = function(str: Pgchar; user_data: gpointer): Pgchar; cdecl;
   TGOptionContext = object
     procedure add_group(group: PGOptionGroup); cdecl; inline;
     procedure add_main_entries(entries: PGOptionEntry; translation_domain: Pgchar); cdecl; inline;
@@ -3012,13 +3169,13 @@ type
   { TGOptionErrorFunc }
   PPGOptionErrorFunc = ^PGOptionErrorFunc;
   PGOptionErrorFunc = ^TGOptionErrorFunc;
-  TGOptionErrorFunc = procedure(context: PGOptionContext; group: PGOptionGroup; data: gpointer; error: PPGError); cdecl;
+  TGOptionErrorFunc = procedure(context: PGOptionContext; group: PGOptionGroup; user_data: gpointer; error: PPGError); cdecl;
 
 
   { TGOptionParseFunc }
   PPGOptionParseFunc = ^PGOptionParseFunc;
   PGOptionParseFunc = ^TGOptionParseFunc;
-  TGOptionParseFunc = function(context: PGOptionContext; group: PGOptionGroup; data: gpointer; error: PPGError): gboolean; cdecl;
+  TGOptionParseFunc = function(context: PGOptionContext; group: PGOptionGroup; user_data: gpointer; error: PPGError): gboolean; cdecl;
   TGOptionGroup = object
     function new(name: Pgchar; description: Pgchar; help_description: Pgchar; user_data: gpointer; destroy_: TGDestroyNotify): PGOptionGroup; cdecl; inline; static;
     procedure add_entries(entries: PGOptionEntry); cdecl; inline;
@@ -3452,7 +3609,7 @@ type
 
 
   TGSourceOnceFunc = procedure(user_data: gpointer); cdecl;
-  TGSpawnChildSetupFunc = procedure(data: gpointer); cdecl;
+  TGSpawnChildSetupFunc = procedure(user_data: gpointer); cdecl;
 
 
   { TGSpawnError }
@@ -3649,7 +3806,7 @@ type
   TGTrashStack = object
     next: PGTrashStack;
   end;
-  TGTraverseFunc = function(key: gpointer; value: gpointer; data: gpointer): gboolean; cdecl;
+  TGTraverseFunc = function(key: gpointer; value: gpointer; user_data: gpointer): gboolean; cdecl;
 
 
   { TGTreeNode }
@@ -3657,7 +3814,7 @@ type
   PGTreeNode = ^TGTreeNode;
   TGTreeNode = object
   end;
-  TGTraverseNodeFunc = function(node: PGTreeNode; data: gpointer): gboolean; cdecl;
+  TGTraverseNodeFunc = function(node: PGTreeNode; user_data: gpointer): gboolean; cdecl;
 
 
   { TGTree }
@@ -3946,7 +4103,7 @@ type
   end;
 
   TGVariantIter = object
-    x: array [0..15] of Tguintptr;
+    x: array [0..15] of gsize;
     function copy: PGVariantIter; cdecl; inline;
     procedure free; cdecl; inline;
     function init(value: PGVariant): gsize; cdecl; inline;
@@ -3971,11 +4128,11 @@ type
         s : record
           partial_magic: gsize;
           type_: PGVariantType;
-          y: array [0..13] of Tguintptr;
+          y: array [0..13] of gsize;
         end;
 
 );
-      1 : (x: array [0..15] of Tguintptr);
+      1 : (x: array [0..15] of gsize);
   end;
 
 
@@ -4009,11 +4166,11 @@ type
         s : record
           asv: PGVariant;
           partial_magic: gsize;
-          y: array [0..13] of Tguintptr;
+          y: array [0..13] of gsize;
         end;
 
 );
-      1 : (x: array [0..15] of Tguintptr);
+      1 : (x: array [0..15] of gsize);
   end;
 
 

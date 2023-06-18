@@ -21,13 +21,20 @@ const
   {$endif}
 
 type
-  TGModuleFlags = (
-    TGModuleFlagsMinValue = -$7FFFFFFF,
-    G_MODULE_BIND_LAZY = 1,
-    G_MODULE_BIND_LOCAL = 2,
-    G_MODULE_BIND_MASK = 3,
-    TGModuleFlagsMaxValue = $7FFFFFFF
+  TGModuleFlagsIdx = (
+    TGModuleFlagsIdxMinValue = 0,
+    G_MODULE_BIND_LAZY = 0,
+    G_MODULE_BIND_LOCAL = 1,
+    TGModuleFlagsIdxMaxValue = 31
   );
+  TGModuleFlags = Set of TGModuleFlagsIdx;
+const
+  G_MODULE_BIND_MASK = [
+    G_MODULE_BIND_LAZY,
+    G_MODULE_BIND_LOCAL
+  ]; {3 = $00000003}
+
+type
   TGModuleError = (
     TGModuleErrorMinValue = -$7FFFFFFF,
     G_MODULE_ERROR_FAILED = 0,

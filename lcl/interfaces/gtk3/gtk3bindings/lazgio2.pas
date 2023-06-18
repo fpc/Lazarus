@@ -85,20 +85,8 @@ const
   G_FILE_ATTRIBUTE_STANDARD_TARGET_URI = 'standard::target-uri';
   G_FILE_ATTRIBUTE_STANDARD_TYPE = 'standard::type';
   G_FILE_ATTRIBUTE_THUMBNAILING_FAILED = 'thumbnail::failed';
-  G_FILE_ATTRIBUTE_THUMBNAILING_FAILED_LARGE = 'thumbnail::failed-large';
-  G_FILE_ATTRIBUTE_THUMBNAILING_FAILED_NORMAL = 'thumbnail::failed-normal';
-  G_FILE_ATTRIBUTE_THUMBNAILING_FAILED_XLARGE = 'thumbnail::failed-xlarge';
-  G_FILE_ATTRIBUTE_THUMBNAILING_FAILED_XXLARGE = 'thumbnail::failed-xxlarge';
   G_FILE_ATTRIBUTE_THUMBNAIL_IS_VALID = 'thumbnail::is-valid';
-  G_FILE_ATTRIBUTE_THUMBNAIL_IS_VALID_LARGE = 'thumbnail::is-valid-large';
-  G_FILE_ATTRIBUTE_THUMBNAIL_IS_VALID_NORMAL = 'thumbnail::is-valid-normal';
-  G_FILE_ATTRIBUTE_THUMBNAIL_IS_VALID_XLARGE = 'thumbnail::is-valid-xlarge';
-  G_FILE_ATTRIBUTE_THUMBNAIL_IS_VALID_XXLARGE = 'thumbnail::is-valid-xxlarge';
   G_FILE_ATTRIBUTE_THUMBNAIL_PATH = 'thumbnail::path';
-  G_FILE_ATTRIBUTE_THUMBNAIL_PATH_LARGE = 'thumbnail::path-large';
-  G_FILE_ATTRIBUTE_THUMBNAIL_PATH_NORMAL = 'thumbnail::path-normal';
-  G_FILE_ATTRIBUTE_THUMBNAIL_PATH_XLARGE = 'thumbnail::path-xlarge';
-  G_FILE_ATTRIBUTE_THUMBNAIL_PATH_XXLARGE = 'thumbnail::path-xxlarge';
   G_FILE_ATTRIBUTE_TIME_ACCESS = 'time::access';
   G_FILE_ATTRIBUTE_TIME_ACCESS_NSEC = 'time::access-nsec';
   G_FILE_ATTRIBUTE_TIME_ACCESS_USEC = 'time::access-usec';
@@ -130,7 +118,6 @@ const
   G_MENU_ATTRIBUTE_ICON = 'icon';
   G_MENU_ATTRIBUTE_LABEL = 'label';
   G_MENU_ATTRIBUTE_TARGET = 'target';
-  G_MENU_EXPORTER_MAX_SECTION_SIZE = 1000;
   G_MENU_LINK_SECTION = 'section';
   G_MENU_LINK_SUBMENU = 'submenu';
   G_NATIVE_VOLUME_MONITOR_EXTENSION_POINT_NAME = 'gio-native-volume-monitor';
@@ -151,126 +138,187 @@ const
   G_VOLUME_IDENTIFIER_KIND_UUID = 'uuid';
   G_VOLUME_MONITOR_EXTENSION_POINT_NAME = 'gio-volume-monitor';
 type
-  TGAppInfoCreateFlags = (
-    TGAppInfoCreateFlagsMinValue = -$7FFFFFFF,
-    G_APP_INFO_CREATE_NONE = 0,
-    G_APP_INFO_CREATE_NEEDS_TERMINAL = 1,
-    G_APP_INFO_CREATE_SUPPORTS_URIS = 2,
-    G_APP_INFO_CREATE_SUPPORTS_STARTUP_NOTIFICATION = 4,
-    TGAppInfoCreateFlagsMaxValue = $7FFFFFFF
+  TGAppInfoCreateFlagsIdx = (
+    TGAppInfoCreateFlagsIdxMinValue = 0,
+    G_APP_INFO_CREATE_NEEDS_TERMINAL = 0,
+    G_APP_INFO_CREATE_SUPPORTS_URIS = 1,
+    G_APP_INFO_CREATE_SUPPORTS_STARTUP_NOTIFICATION = 2,
+    TGAppInfoCreateFlagsIdxMaxValue = 31
   );
-  TGApplicationFlags = (
-    TGApplicationFlagsMinValue = -$7FFFFFFF,
-    G_APPLICATION_DEFAULT_FLAGS = 0,
-    G_APPLICATION_FLAGS_NONE = 0,
-    G_APPLICATION_IS_SERVICE = 1,
-    G_APPLICATION_IS_LAUNCHER = 2,
-    G_APPLICATION_HANDLES_OPEN = 4,
-    G_APPLICATION_HANDLES_COMMAND_LINE = 8,
-    G_APPLICATION_SEND_ENVIRONMENT = 16,
-    G_APPLICATION_NON_UNIQUE = 32,
-    G_APPLICATION_CAN_OVERRIDE_APP_ID = 64,
-    G_APPLICATION_ALLOW_REPLACEMENT = 128,
-    G_APPLICATION_REPLACE = 256,
-    TGApplicationFlagsMaxValue = $7FFFFFFF
+  TGAppInfoCreateFlags = Set of TGAppInfoCreateFlagsIdx;
+const
+  G_APP_INFO_CREATE_NONE = []; {0 = $00000000}
+
+type
+  TGApplicationFlagsIdx = (
+    TGApplicationFlagsIdxMinValue = 0,
+    G_APPLICATION_IS_SERVICE = 0,
+    G_APPLICATION_IS_LAUNCHER = 1,
+    G_APPLICATION_HANDLES_OPEN = 2,
+    G_APPLICATION_HANDLES_COMMAND_LINE = 3,
+    G_APPLICATION_SEND_ENVIRONMENT = 4,
+    G_APPLICATION_NON_UNIQUE = 5,
+    G_APPLICATION_CAN_OVERRIDE_APP_ID = 6,
+    G_APPLICATION_ALLOW_REPLACEMENT = 7,
+    G_APPLICATION_REPLACE = 8,
+    TGApplicationFlagsIdxMaxValue = 31
   );
-  TGDBusConnectionFlags = (
-    TGDBusConnectionFlagsMinValue = -$7FFFFFFF,
-    G_DBUS_CONNECTION_FLAGS_NONE = 0,
-    G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT = 1,
-    G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_SERVER = 2,
-    G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_ALLOW_ANONYMOUS = 4,
-    G_DBUS_CONNECTION_FLAGS_MESSAGE_BUS_CONNECTION = 8,
-    G_DBUS_CONNECTION_FLAGS_DELAY_MESSAGE_PROCESSING = 16,
-    G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_REQUIRE_SAME_USER = 32,
-    G_DBUS_CONNECTION_FLAGS_CROSS_NAMESPACE = 64,
-    TGDBusConnectionFlagsMaxValue = $7FFFFFFF
+  TGApplicationFlags = Set of TGApplicationFlagsIdx;
+const
+  G_APPLICATION_DEFAULT_FLAGS = []; {0 = $00000000}
+
+  G_APPLICATION_FLAGS_NONE = []; {0 = $00000000}
+
+type
+  TGDBusConnectionFlagsIdx = (
+    TGDBusConnectionFlagsIdxMinValue = 0,
+    G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT = 0,
+    G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_SERVER = 1,
+    G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_ALLOW_ANONYMOUS = 2,
+    G_DBUS_CONNECTION_FLAGS_MESSAGE_BUS_CONNECTION = 3,
+    G_DBUS_CONNECTION_FLAGS_DELAY_MESSAGE_PROCESSING = 4,
+    G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_REQUIRE_SAME_USER = 5,
+    G_DBUS_CONNECTION_FLAGS_CROSS_NAMESPACE = 6,
+    TGDBusConnectionFlagsIdxMaxValue = 31
   );
-  TGDBusCallFlags = (
-    TGDBusCallFlagsMinValue = -$7FFFFFFF,
-    G_DBUS_CALL_FLAGS_NONE = 0,
-    G_DBUS_CALL_FLAGS_NO_AUTO_START = 1,
-    G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION = 2,
-    TGDBusCallFlagsMaxValue = $7FFFFFFF
+  TGDBusConnectionFlags = Set of TGDBusConnectionFlagsIdx;
+const
+  G_DBUS_CONNECTION_FLAGS_NONE = []; {0 = $00000000}
+
+type
+  TGDBusCallFlagsIdx = (
+    TGDBusCallFlagsIdxMinValue = 0,
+    G_DBUS_CALL_FLAGS_NO_AUTO_START = 0,
+    G_DBUS_CALL_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION = 1,
+    TGDBusCallFlagsIdxMaxValue = 31
   );
-  TGDBusCapabilityFlags = (
-    TGDBusCapabilityFlagsMinValue = -$7FFFFFFF,
-    G_DBUS_CAPABILITY_FLAGS_NONE = 0,
-    G_DBUS_CAPABILITY_FLAGS_UNIX_FD_PASSING = 1,
-    TGDBusCapabilityFlagsMaxValue = $7FFFFFFF
+  TGDBusCallFlags = Set of TGDBusCallFlagsIdx;
+const
+  G_DBUS_CALL_FLAGS_NONE = []; {0 = $00000000}
+
+type
+  TGDBusCapabilityFlagsIdx = (
+    TGDBusCapabilityFlagsIdxMinValue = 0,
+    G_DBUS_CAPABILITY_FLAGS_UNIX_FD_PASSING = 0,
+    TGDBusCapabilityFlagsIdxMaxValue = 31
   );
-  TGDBusSubtreeFlags = (
-    TGDBusSubtreeFlagsMinValue = -$7FFFFFFF,
-    G_DBUS_SUBTREE_FLAGS_NONE = 0,
-    G_DBUS_SUBTREE_FLAGS_DISPATCH_TO_UNENUMERATED_NODES = 1,
-    TGDBusSubtreeFlagsMaxValue = $7FFFFFFF
+  TGDBusCapabilityFlags = Set of TGDBusCapabilityFlagsIdx;
+const
+  G_DBUS_CAPABILITY_FLAGS_NONE = []; {0 = $00000000}
+
+type
+  TGDBusSubtreeFlagsIdx = (
+    TGDBusSubtreeFlagsIdxMinValue = 0,
+    G_DBUS_SUBTREE_FLAGS_DISPATCH_TO_UNENUMERATED_NODES = 0,
+    TGDBusSubtreeFlagsIdxMaxValue = 31
   );
-  TGDBusSendMessageFlags = (
-    TGDBusSendMessageFlagsMinValue = -$7FFFFFFF,
-    G_DBUS_SEND_MESSAGE_FLAGS_NONE = 0,
-    G_DBUS_SEND_MESSAGE_FLAGS_PRESERVE_SERIAL = 1,
-    TGDBusSendMessageFlagsMaxValue = $7FFFFFFF
+  TGDBusSubtreeFlags = Set of TGDBusSubtreeFlagsIdx;
+const
+  G_DBUS_SUBTREE_FLAGS_NONE = []; {0 = $00000000}
+
+type
+  TGDBusSendMessageFlagsIdx = (
+    TGDBusSendMessageFlagsIdxMinValue = 0,
+    G_DBUS_SEND_MESSAGE_FLAGS_PRESERVE_SERIAL = 0,
+    TGDBusSendMessageFlagsIdxMaxValue = 31
   );
-  TGDBusSignalFlags = (
-    TGDBusSignalFlagsMinValue = -$7FFFFFFF,
-    G_DBUS_SIGNAL_FLAGS_NONE = 0,
-    G_DBUS_SIGNAL_FLAGS_NO_MATCH_RULE = 1,
-    G_DBUS_SIGNAL_FLAGS_MATCH_ARG0_NAMESPACE = 2,
-    G_DBUS_SIGNAL_FLAGS_MATCH_ARG0_PATH = 4,
-    TGDBusSignalFlagsMaxValue = $7FFFFFFF
+  TGDBusSendMessageFlags = Set of TGDBusSendMessageFlagsIdx;
+const
+  G_DBUS_SEND_MESSAGE_FLAGS_NONE = []; {0 = $00000000}
+
+type
+  TGDBusSignalFlagsIdx = (
+    TGDBusSignalFlagsIdxMinValue = 0,
+    G_DBUS_SIGNAL_FLAGS_NO_MATCH_RULE = 0,
+    G_DBUS_SIGNAL_FLAGS_MATCH_ARG0_NAMESPACE = 1,
+    G_DBUS_SIGNAL_FLAGS_MATCH_ARG0_PATH = 2,
+    TGDBusSignalFlagsIdxMaxValue = 31
   );
-  TGFileCreateFlags = (
-    TGFileCreateFlagsMinValue = -$7FFFFFFF,
-    G_FILE_CREATE_NONE = 0,
-    G_FILE_CREATE_PRIVATE = 1,
-    G_FILE_CREATE_REPLACE_DESTINATION = 2,
-    TGFileCreateFlagsMaxValue = $7FFFFFFF
+  TGDBusSignalFlags = Set of TGDBusSignalFlagsIdx;
+const
+  G_DBUS_SIGNAL_FLAGS_NONE = []; {0 = $00000000}
+
+type
+  TGFileCreateFlagsIdx = (
+    TGFileCreateFlagsIdxMinValue = 0,
+    G_FILE_CREATE_PRIVATE = 0,
+    G_FILE_CREATE_REPLACE_DESTINATION = 1,
+    TGFileCreateFlagsIdxMaxValue = 31
   );
-  TGFileCopyFlags = (
-    TGFileCopyFlagsMinValue = -$7FFFFFFF,
-    G_FILE_COPY_NONE = 0,
-    G_FILE_COPY_OVERWRITE = 1,
-    G_FILE_COPY_BACKUP = 2,
-    G_FILE_COPY_NOFOLLOW_SYMLINKS = 4,
-    G_FILE_COPY_ALL_METADATA = 8,
-    G_FILE_COPY_NO_FALLBACK_FOR_MOVE = 16,
-    G_FILE_COPY_TARGET_DEFAULT_PERMS = 32,
-    TGFileCopyFlagsMaxValue = $7FFFFFFF
+  TGFileCreateFlags = Set of TGFileCreateFlagsIdx;
+const
+  G_FILE_CREATE_NONE = []; {0 = $00000000}
+
+type
+  TGFileCopyFlagsIdx = (
+    TGFileCopyFlagsIdxMinValue = 0,
+    G_FILE_COPY_OVERWRITE = 0,
+    G_FILE_COPY_BACKUP = 1,
+    G_FILE_COPY_NOFOLLOW_SYMLINKS = 2,
+    G_FILE_COPY_ALL_METADATA = 3,
+    G_FILE_COPY_NO_FALLBACK_FOR_MOVE = 4,
+    G_FILE_COPY_TARGET_DEFAULT_PERMS = 5,
+    TGFileCopyFlagsIdxMaxValue = 31
   );
-  TGMountUnmountFlags = (
-    TGMountUnmountFlagsMinValue = -$7FFFFFFF,
-    G_MOUNT_UNMOUNT_NONE = 0,
-    G_MOUNT_UNMOUNT_FORCE = 1,
-    TGMountUnmountFlagsMaxValue = $7FFFFFFF
+  TGFileCopyFlags = Set of TGFileCopyFlagsIdx;
+const
+  G_FILE_COPY_NONE = []; {0 = $00000000}
+
+type
+  TGMountUnmountFlagsIdx = (
+    TGMountUnmountFlagsIdxMinValue = 0,
+    G_MOUNT_UNMOUNT_FORCE = 0,
+    TGMountUnmountFlagsIdxMaxValue = 31
   );
-  TGFileQueryInfoFlags = (
-    TGFileQueryInfoFlagsMinValue = -$7FFFFFFF,
-    G_FILE_QUERY_INFO_NONE = 0,
-    G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS = 1,
-    TGFileQueryInfoFlagsMaxValue = $7FFFFFFF
+  TGMountUnmountFlags = Set of TGMountUnmountFlagsIdx;
+const
+  G_MOUNT_UNMOUNT_NONE = []; {0 = $00000000}
+
+type
+  TGFileQueryInfoFlagsIdx = (
+    TGFileQueryInfoFlagsIdxMinValue = 0,
+    G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS = 0,
+    TGFileQueryInfoFlagsIdxMaxValue = 31
   );
-  TGFileMeasureFlags = (
-    TGFileMeasureFlagsMinValue = -$7FFFFFFF,
-    G_FILE_MEASURE_NONE = 0,
-    G_FILE_MEASURE_REPORT_ANY_ERROR = 2,
-    G_FILE_MEASURE_APPARENT_SIZE = 4,
-    G_FILE_MEASURE_NO_XDEV = 8,
-    TGFileMeasureFlagsMaxValue = $7FFFFFFF
+  TGFileQueryInfoFlags = Set of TGFileQueryInfoFlagsIdx;
+const
+  G_FILE_QUERY_INFO_NONE = []; {0 = $00000000}
+
+type
+  TGFileMeasureFlagsIdx = (
+    TGFileMeasureFlagsIdxMinValue = 0,
+    G_FILE_MEASURE_REPORT_ANY_ERROR = 1,
+    G_FILE_MEASURE_APPARENT_SIZE = 2,
+    G_FILE_MEASURE_NO_XDEV = 3,
+    TGFileMeasureFlagsIdxMaxValue = 31
   );
-  TGFileMonitorFlags = (
-    TGFileMonitorFlagsMinValue = -$7FFFFFFF,
-    G_FILE_MONITOR_NONE = 0,
-    G_FILE_MONITOR_WATCH_MOUNTS = 1,
-    G_FILE_MONITOR_SEND_MOVED = 2,
-    G_FILE_MONITOR_WATCH_HARD_LINKS = 4,
-    G_FILE_MONITOR_WATCH_MOVES = 8,
-    TGFileMonitorFlagsMaxValue = $7FFFFFFF
+  TGFileMeasureFlags = Set of TGFileMeasureFlagsIdx;
+const
+  G_FILE_MEASURE_NONE = []; {0 = $00000000}
+
+type
+  TGFileMonitorFlagsIdx = (
+    TGFileMonitorFlagsIdxMinValue = 0,
+    G_FILE_MONITOR_WATCH_MOUNTS = 0,
+    G_FILE_MONITOR_SEND_MOVED = 1,
+    G_FILE_MONITOR_WATCH_HARD_LINKS = 2,
+    G_FILE_MONITOR_WATCH_MOVES = 3,
+    TGFileMonitorFlagsIdxMaxValue = 31
   );
-  TGMountMountFlags = (
-    TGMountMountFlagsMinValue = -$7FFFFFFF,
-    G_MOUNT_MOUNT_NONE = 0,
-    TGMountMountFlagsMaxValue = $7FFFFFFF
+  TGFileMonitorFlags = Set of TGFileMonitorFlagsIdx;
+const
+  G_FILE_MONITOR_NONE = []; {0 = $00000000}
+
+type
+  TGMountMountFlagsIdx = (
+    TGMountMountFlagsIdxMinValue = 0,
+    TGMountMountFlagsIdxMaxValue = 31
   );
+  TGMountMountFlags = Set of TGMountMountFlagsIdx;
+const
+  G_MOUNT_MOUNT_NONE = []; {0 = $00000000}
+
+type
   TGFileAttributeType = (
     TGFileAttributeTypeMinValue = -$7FFFFFFF,
     G_FILE_ATTRIBUTE_TYPE_INVALID = 0,
@@ -285,11 +333,15 @@ type
     G_FILE_ATTRIBUTE_TYPE_STRINGV = 9,
     TGFileAttributeTypeMaxValue = $7FFFFFFF
   );
-  TGDriveStartFlags = (
-    TGDriveStartFlagsMinValue = -$7FFFFFFF,
-    G_DRIVE_START_NONE = 0,
-    TGDriveStartFlagsMaxValue = $7FFFFFFF
+  TGDriveStartFlagsIdx = (
+    TGDriveStartFlagsIdxMinValue = 0,
+    TGDriveStartFlagsIdxMaxValue = 31
   );
+  TGDriveStartFlags = Set of TGDriveStartFlagsIdx;
+const
+  G_DRIVE_START_NONE = []; {0 = $00000000}
+
+type
   TGNotificationPriority = (
     TGNotificationPriorityMinValue = -$7FFFFFFF,
     G_NOTIFICATION_PRIORITY_NORMAL = 0,
@@ -298,37 +350,50 @@ type
     G_NOTIFICATION_PRIORITY_URGENT = 3,
     TGNotificationPriorityMaxValue = $7FFFFFFF
   );
-  TGAskPasswordFlags = (
-    TGAskPasswordFlagsMinValue = -$7FFFFFFF,
-    G_ASK_PASSWORD_NEED_PASSWORD = 1,
-    G_ASK_PASSWORD_NEED_USERNAME = 2,
-    G_ASK_PASSWORD_NEED_DOMAIN = 4,
-    G_ASK_PASSWORD_SAVING_SUPPORTED = 8,
-    G_ASK_PASSWORD_ANONYMOUS_SUPPORTED = 16,
-    G_ASK_PASSWORD_TCRYPT = 32,
-    TGAskPasswordFlagsMaxValue = $7FFFFFFF
+  TGAskPasswordFlagsIdx = (
+    TGAskPasswordFlagsIdxMinValue = 0,
+    G_ASK_PASSWORD_NEED_PASSWORD = 0,
+    G_ASK_PASSWORD_NEED_USERNAME = 1,
+    G_ASK_PASSWORD_NEED_DOMAIN = 2,
+    G_ASK_PASSWORD_SAVING_SUPPORTED = 3,
+    G_ASK_PASSWORD_ANONYMOUS_SUPPORTED = 4,
+    G_ASK_PASSWORD_TCRYPT = 5,
+    TGAskPasswordFlagsIdxMaxValue = 31
   );
-  TGOutputStreamSpliceFlags = (
-    TGOutputStreamSpliceFlagsMinValue = -$7FFFFFFF,
-    G_OUTPUT_STREAM_SPLICE_NONE = 0,
-    G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE = 1,
-    G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET = 2,
-    TGOutputStreamSpliceFlagsMaxValue = $7FFFFFFF
+  TGAskPasswordFlags = Set of TGAskPasswordFlagsIdx;
+  TGOutputStreamSpliceFlagsIdx = (
+    TGOutputStreamSpliceFlagsIdxMinValue = 0,
+    G_OUTPUT_STREAM_SPLICE_CLOSE_SOURCE = 0,
+    G_OUTPUT_STREAM_SPLICE_CLOSE_TARGET = 1,
+    TGOutputStreamSpliceFlagsIdxMaxValue = 31
   );
-  TGBusNameOwnerFlags = (
-    TGBusNameOwnerFlagsMinValue = -$7FFFFFFF,
-    G_BUS_NAME_OWNER_FLAGS_NONE = 0,
-    G_BUS_NAME_OWNER_FLAGS_ALLOW_REPLACEMENT = 1,
-    G_BUS_NAME_OWNER_FLAGS_REPLACE = 2,
-    G_BUS_NAME_OWNER_FLAGS_DO_NOT_QUEUE = 4,
-    TGBusNameOwnerFlagsMaxValue = $7FFFFFFF
+  TGOutputStreamSpliceFlags = Set of TGOutputStreamSpliceFlagsIdx;
+const
+  G_OUTPUT_STREAM_SPLICE_NONE = []; {0 = $00000000}
+
+type
+  TGBusNameOwnerFlagsIdx = (
+    TGBusNameOwnerFlagsIdxMinValue = 0,
+    G_BUS_NAME_OWNER_FLAGS_ALLOW_REPLACEMENT = 0,
+    G_BUS_NAME_OWNER_FLAGS_REPLACE = 1,
+    G_BUS_NAME_OWNER_FLAGS_DO_NOT_QUEUE = 2,
+    TGBusNameOwnerFlagsIdxMaxValue = 31
   );
-  TGBusNameWatcherFlags = (
-    TGBusNameWatcherFlagsMinValue = -$7FFFFFFF,
-    G_BUS_NAME_WATCHER_FLAGS_NONE = 0,
-    G_BUS_NAME_WATCHER_FLAGS_AUTO_START = 1,
-    TGBusNameWatcherFlagsMaxValue = $7FFFFFFF
+  TGBusNameOwnerFlags = Set of TGBusNameOwnerFlagsIdx;
+const
+  G_BUS_NAME_OWNER_FLAGS_NONE = []; {0 = $00000000}
+
+type
+  TGBusNameWatcherFlagsIdx = (
+    TGBusNameWatcherFlagsIdxMinValue = 0,
+    G_BUS_NAME_WATCHER_FLAGS_AUTO_START = 0,
+    TGBusNameWatcherFlagsIdxMaxValue = 31
   );
+  TGBusNameWatcherFlags = Set of TGBusNameWatcherFlagsIdx;
+const
+  G_BUS_NAME_WATCHER_FLAGS_NONE = []; {0 = $00000000}
+
+type
   TGBusType = (
     TGBusTypeMinValue = -$7FFFFFFF,
     G_BUS_TYPE_STARTER = -1,
@@ -337,13 +402,17 @@ type
     G_BUS_TYPE_SESSION = 2,
     TGBusTypeMaxValue = $7FFFFFFF
   );
-  TGConverterFlags = (
-    TGConverterFlagsMinValue = -$7FFFFFFF,
-    G_CONVERTER_NO_FLAGS = 0,
-    G_CONVERTER_INPUT_AT_END = 1,
-    G_CONVERTER_FLUSH = 2,
-    TGConverterFlagsMaxValue = $7FFFFFFF
+  TGConverterFlagsIdx = (
+    TGConverterFlagsIdxMinValue = 0,
+    G_CONVERTER_INPUT_AT_END = 0,
+    G_CONVERTER_FLUSH = 1,
+    TGConverterFlagsIdxMaxValue = 31
   );
+  TGConverterFlags = Set of TGConverterFlagsIdx;
+const
+  G_CONVERTER_NO_FLAGS = []; {0 = $00000000}
+
+type
   TGConverterResult = (
     TGConverterResultMinValue = -$7FFFFFFF,
     G_CONVERTER_ERROR = 0,
@@ -364,22 +433,30 @@ type
     G_CREDENTIALS_TYPE_WIN32_PID = 7,
     TGCredentialsTypeMaxValue = $7FFFFFFF
   );
-  TGIOStreamSpliceFlags = (
-    TGIOStreamSpliceFlagsMinValue = -$7FFFFFFF,
-    G_IO_STREAM_SPLICE_NONE = 0,
-    G_IO_STREAM_SPLICE_CLOSE_STREAM1 = 1,
-    G_IO_STREAM_SPLICE_CLOSE_STREAM2 = 2,
-    G_IO_STREAM_SPLICE_WAIT_FOR_BOTH = 4,
-    TGIOStreamSpliceFlagsMaxValue = $7FFFFFFF
+  TGIOStreamSpliceFlagsIdx = (
+    TGIOStreamSpliceFlagsIdxMinValue = 0,
+    G_IO_STREAM_SPLICE_CLOSE_STREAM1 = 0,
+    G_IO_STREAM_SPLICE_CLOSE_STREAM2 = 1,
+    G_IO_STREAM_SPLICE_WAIT_FOR_BOTH = 2,
+    TGIOStreamSpliceFlagsIdxMaxValue = 31
   );
-  TGDBusMessageFlags = (
-    TGDBusMessageFlagsMinValue = -$7FFFFFFF,
-    G_DBUS_MESSAGE_FLAGS_NONE = 0,
-    G_DBUS_MESSAGE_FLAGS_NO_REPLY_EXPECTED = 1,
-    G_DBUS_MESSAGE_FLAGS_NO_AUTO_START = 2,
-    G_DBUS_MESSAGE_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION = 4,
-    TGDBusMessageFlagsMaxValue = $7FFFFFFF
+  TGIOStreamSpliceFlags = Set of TGIOStreamSpliceFlagsIdx;
+const
+  G_IO_STREAM_SPLICE_NONE = []; {0 = $00000000}
+
+type
+  TGDBusMessageFlagsIdx = (
+    TGDBusMessageFlagsIdxMinValue = 0,
+    G_DBUS_MESSAGE_FLAGS_NO_REPLY_EXPECTED = 0,
+    G_DBUS_MESSAGE_FLAGS_NO_AUTO_START = 1,
+    G_DBUS_MESSAGE_FLAGS_ALLOW_INTERACTIVE_AUTHORIZATION = 2,
+    TGDBusMessageFlagsIdxMaxValue = 31
   );
+  TGDBusMessageFlags = Set of TGDBusMessageFlagsIdx;
+const
+  G_DBUS_MESSAGE_FLAGS_NONE = []; {0 = $00000000}
+
+type
   TGDBusMessageHeaderField = (
     TGDBusMessageHeaderFieldMinValue = -$7FFFFFFF,
     G_DBUS_MESSAGE_HEADER_FIELD_INVALID = 0,
@@ -458,44 +535,64 @@ type
     G_DBUS_ERROR_PROPERTY_READ_ONLY = 44,
     TGDBusErrorMaxValue = $7FFFFFFF
   );
-  TGDBusPropertyInfoFlags = (
-    TGDBusPropertyInfoFlagsMinValue = -$7FFFFFFF,
-    G_DBUS_PROPERTY_INFO_FLAGS_NONE = 0,
-    G_DBUS_PROPERTY_INFO_FLAGS_READABLE = 1,
-    G_DBUS_PROPERTY_INFO_FLAGS_WRITABLE = 2,
-    TGDBusPropertyInfoFlagsMaxValue = $7FFFFFFF
+  TGDBusPropertyInfoFlagsIdx = (
+    TGDBusPropertyInfoFlagsIdxMinValue = 0,
+    G_DBUS_PROPERTY_INFO_FLAGS_READABLE = 0,
+    G_DBUS_PROPERTY_INFO_FLAGS_WRITABLE = 1,
+    TGDBusPropertyInfoFlagsIdxMaxValue = 31
   );
-  TGDBusInterfaceSkeletonFlags = (
-    TGDBusInterfaceSkeletonFlagsMinValue = -$7FFFFFFF,
-    G_DBUS_INTERFACE_SKELETON_FLAGS_NONE = 0,
-    G_DBUS_INTERFACE_SKELETON_FLAGS_HANDLE_METHOD_INVOCATIONS_IN_THREAD = 1,
-    TGDBusInterfaceSkeletonFlagsMaxValue = $7FFFFFFF
+  TGDBusPropertyInfoFlags = Set of TGDBusPropertyInfoFlagsIdx;
+const
+  G_DBUS_PROPERTY_INFO_FLAGS_NONE = []; {0 = $00000000}
+
+type
+  TGDBusInterfaceSkeletonFlagsIdx = (
+    TGDBusInterfaceSkeletonFlagsIdxMinValue = 0,
+    G_DBUS_INTERFACE_SKELETON_FLAGS_HANDLE_METHOD_INVOCATIONS_IN_THREAD = 0,
+    TGDBusInterfaceSkeletonFlagsIdxMaxValue = 31
   );
-  TGDBusObjectManagerClientFlags = (
-    TGDBusObjectManagerClientFlagsMinValue = -$7FFFFFFF,
-    G_DBUS_OBJECT_MANAGER_CLIENT_FLAGS_NONE = 0,
-    G_DBUS_OBJECT_MANAGER_CLIENT_FLAGS_DO_NOT_AUTO_START = 1,
-    TGDBusObjectManagerClientFlagsMaxValue = $7FFFFFFF
+  TGDBusInterfaceSkeletonFlags = Set of TGDBusInterfaceSkeletonFlagsIdx;
+const
+  G_DBUS_INTERFACE_SKELETON_FLAGS_NONE = []; {0 = $00000000}
+
+type
+  TGDBusObjectManagerClientFlagsIdx = (
+    TGDBusObjectManagerClientFlagsIdxMinValue = 0,
+    G_DBUS_OBJECT_MANAGER_CLIENT_FLAGS_DO_NOT_AUTO_START = 0,
+    TGDBusObjectManagerClientFlagsIdxMaxValue = 31
   );
-  TGDBusProxyFlags = (
-    TGDBusProxyFlagsMinValue = -$7FFFFFFF,
-    G_DBUS_PROXY_FLAGS_NONE = 0,
-    G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES = 1,
-    G_DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS = 2,
-    G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START = 4,
-    G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES = 8,
-    G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START_AT_CONSTRUCTION = 16,
-    G_DBUS_PROXY_FLAGS_NO_MATCH_RULE = 32,
-    TGDBusProxyFlagsMaxValue = $7FFFFFFF
+  TGDBusObjectManagerClientFlags = Set of TGDBusObjectManagerClientFlagsIdx;
+const
+  G_DBUS_OBJECT_MANAGER_CLIENT_FLAGS_NONE = []; {0 = $00000000}
+
+type
+  TGDBusProxyFlagsIdx = (
+    TGDBusProxyFlagsIdxMinValue = 0,
+    G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES = 0,
+    G_DBUS_PROXY_FLAGS_DO_NOT_CONNECT_SIGNALS = 1,
+    G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START = 2,
+    G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES = 3,
+    G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START_AT_CONSTRUCTION = 4,
+    G_DBUS_PROXY_FLAGS_NO_MATCH_RULE = 5,
+    TGDBusProxyFlagsIdxMaxValue = 31
   );
-  TGDBusServerFlags = (
-    TGDBusServerFlagsMinValue = -$7FFFFFFF,
-    G_DBUS_SERVER_FLAGS_NONE = 0,
-    G_DBUS_SERVER_FLAGS_RUN_IN_THREAD = 1,
-    G_DBUS_SERVER_FLAGS_AUTHENTICATION_ALLOW_ANONYMOUS = 2,
-    G_DBUS_SERVER_FLAGS_AUTHENTICATION_REQUIRE_SAME_USER = 4,
-    TGDBusServerFlagsMaxValue = $7FFFFFFF
+  TGDBusProxyFlags = Set of TGDBusProxyFlagsIdx;
+const
+  G_DBUS_PROXY_FLAGS_NONE = []; {0 = $00000000}
+
+type
+  TGDBusServerFlagsIdx = (
+    TGDBusServerFlagsIdxMinValue = 0,
+    G_DBUS_SERVER_FLAGS_RUN_IN_THREAD = 0,
+    G_DBUS_SERVER_FLAGS_AUTHENTICATION_ALLOW_ANONYMOUS = 1,
+    G_DBUS_SERVER_FLAGS_AUTHENTICATION_REQUIRE_SAME_USER = 2,
+    TGDBusServerFlagsIdxMaxValue = 31
   );
+  TGDBusServerFlags = Set of TGDBusServerFlagsIdx;
+const
+  G_DBUS_SERVER_FLAGS_NONE = []; {0 = $00000000}
+
+type
   TGDataStreamByteOrder = (
     TGDataStreamByteOrderMinValue = -$7FFFFFFF,
     G_DATA_STREAM_BYTE_ORDER_BIG_ENDIAN = 0,
@@ -534,19 +631,32 @@ type
     G_DRIVE_START_STOP_TYPE_PASSWORD = 4,
     TGDriveStartStopTypeMaxValue = $7FFFFFFF
   );
-  TGTlsCertificateFlags = (
-    TGTlsCertificateFlagsMinValue = -$7FFFFFFF,
-    G_TLS_CERTIFICATE_NO_FLAGS = 0,
-    G_TLS_CERTIFICATE_UNKNOWN_CA = 1,
-    G_TLS_CERTIFICATE_BAD_IDENTITY = 2,
-    G_TLS_CERTIFICATE_NOT_ACTIVATED = 4,
-    G_TLS_CERTIFICATE_EXPIRED = 8,
-    G_TLS_CERTIFICATE_REVOKED = 16,
-    G_TLS_CERTIFICATE_INSECURE = 32,
-    G_TLS_CERTIFICATE_GENERIC_ERROR = 64,
-    G_TLS_CERTIFICATE_VALIDATE_ALL = 127,
-    TGTlsCertificateFlagsMaxValue = $7FFFFFFF
+  TGTlsCertificateFlagsIdx = (
+    TGTlsCertificateFlagsIdxMinValue = 0,
+    G_TLS_CERTIFICATE_UNKNOWN_CA = 0,
+    G_TLS_CERTIFICATE_BAD_IDENTITY = 1,
+    G_TLS_CERTIFICATE_NOT_ACTIVATED = 2,
+    G_TLS_CERTIFICATE_EXPIRED = 3,
+    G_TLS_CERTIFICATE_REVOKED = 4,
+    G_TLS_CERTIFICATE_INSECURE = 5,
+    G_TLS_CERTIFICATE_GENERIC_ERROR = 6,
+    TGTlsCertificateFlagsIdxMaxValue = 31
   );
+  TGTlsCertificateFlags = Set of TGTlsCertificateFlagsIdx;
+const
+  G_TLS_CERTIFICATE_NO_FLAGS = []; {0 = $00000000}
+
+  G_TLS_CERTIFICATE_VALIDATE_ALL = [
+    G_TLS_CERTIFICATE_UNKNOWN_CA,
+    G_TLS_CERTIFICATE_BAD_IDENTITY,
+    G_TLS_CERTIFICATE_NOT_ACTIVATED,
+    G_TLS_CERTIFICATE_EXPIRED,
+    G_TLS_CERTIFICATE_REVOKED,
+    G_TLS_CERTIFICATE_INSECURE,
+    G_TLS_CERTIFICATE_GENERIC_ERROR
+  ]; {127 = $0000007F}
+
+type
   TGTlsChannelBindingType = (
     TGTlsChannelBindingTypeMinValue = -$7FFFFFFF,
     G_TLS_CHANNEL_BINDING_TLS_UNIQUE = 0,
@@ -560,11 +670,15 @@ type
     G_TLS_DATABASE_LOOKUP_KEYPAIR = 1,
     TGTlsDatabaseLookupFlagsMaxValue = $7FFFFFFF
   );
-  TGTlsDatabaseVerifyFlags = (
-    TGTlsDatabaseVerifyFlagsMinValue = -$7FFFFFFF,
-    G_TLS_DATABASE_VERIFY_NONE = 0,
-    TGTlsDatabaseVerifyFlagsMaxValue = $7FFFFFFF
+  TGTlsDatabaseVerifyFlagsIdx = (
+    TGTlsDatabaseVerifyFlagsIdxMinValue = 0,
+    TGTlsDatabaseVerifyFlagsIdxMaxValue = 31
   );
+  TGTlsDatabaseVerifyFlags = Set of TGTlsDatabaseVerifyFlagsIdx;
+const
+  G_TLS_DATABASE_VERIFY_NONE = []; {0 = $00000000}
+
+type
   TGTlsCertificateRequestFlags = (
     TGTlsCertificateRequestFlagsMinValue = -$7FFFFFFF,
     G_TLS_CERTIFICATE_REQUEST_NONE = 0,
@@ -630,13 +744,17 @@ type
     G_FILE_TYPE_MOUNTABLE = 6,
     TGFileTypeMaxValue = $7FFFFFFF
   );
-  TGFileAttributeInfoFlags = (
-    TGFileAttributeInfoFlagsMinValue = -$7FFFFFFF,
-    G_FILE_ATTRIBUTE_INFO_NONE = 0,
-    G_FILE_ATTRIBUTE_INFO_COPY_WITH_FILE = 1,
-    G_FILE_ATTRIBUTE_INFO_COPY_WHEN_MOVED = 2,
-    TGFileAttributeInfoFlagsMaxValue = $7FFFFFFF
+  TGFileAttributeInfoFlagsIdx = (
+    TGFileAttributeInfoFlagsIdxMinValue = 0,
+    G_FILE_ATTRIBUTE_INFO_COPY_WITH_FILE = 0,
+    G_FILE_ATTRIBUTE_INFO_COPY_WHEN_MOVED = 1,
+    TGFileAttributeInfoFlagsIdxMaxValue = 31
   );
+  TGFileAttributeInfoFlags = Set of TGFileAttributeInfoFlagsIdx;
+const
+  G_FILE_ATTRIBUTE_INFO_NONE = []; {0 = $00000000}
+
+type
   TGFilesystemPreviewType = (
     TGFilesystemPreviewTypeMinValue = -$7FFFFFFF,
     G_FILESYSTEM_PREVIEW_TYPE_IF_ALWAYS = 0,
@@ -733,13 +851,17 @@ type
     G_POLLABLE_RETURN_OK = 1,
     TGPollableReturnMaxValue = $7FFFFFFF
   );
-  TGResolverNameLookupFlags = (
-    TGResolverNameLookupFlagsMinValue = -$7FFFFFFF,
-    G_RESOLVER_NAME_LOOKUP_FLAGS_DEFAULT = 0,
-    G_RESOLVER_NAME_LOOKUP_FLAGS_IPV4_ONLY = 1,
-    G_RESOLVER_NAME_LOOKUP_FLAGS_IPV6_ONLY = 2,
-    TGResolverNameLookupFlagsMaxValue = $7FFFFFFF
+  TGResolverNameLookupFlagsIdx = (
+    TGResolverNameLookupFlagsIdxMinValue = 0,
+    G_RESOLVER_NAME_LOOKUP_FLAGS_IPV4_ONLY = 0,
+    G_RESOLVER_NAME_LOOKUP_FLAGS_IPV6_ONLY = 1,
+    TGResolverNameLookupFlagsIdxMaxValue = 31
   );
+  TGResolverNameLookupFlags = Set of TGResolverNameLookupFlagsIdx;
+const
+  G_RESOLVER_NAME_LOOKUP_FLAGS_DEFAULT = []; {0 = $00000000}
+
+type
   TGResolverRecordType = (
     TGResolverRecordTypeMinValue = -$7FFFFFFF,
     G_RESOLVER_RECORD_SRV = 1,
@@ -756,33 +878,45 @@ type
     G_RESOLVER_ERROR_INTERNAL = 2,
     TGResolverErrorMaxValue = $7FFFFFFF
   );
-  TGResourceLookupFlags = (
-    TGResourceLookupFlagsMinValue = -$7FFFFFFF,
-    G_RESOURCE_LOOKUP_FLAGS_NONE = 0,
-    TGResourceLookupFlagsMaxValue = $7FFFFFFF
+  TGResourceLookupFlagsIdx = (
+    TGResourceLookupFlagsIdxMinValue = 0,
+    TGResourceLookupFlagsIdxMaxValue = 31
   );
+  TGResourceLookupFlags = Set of TGResourceLookupFlagsIdx;
+const
+  G_RESOURCE_LOOKUP_FLAGS_NONE = []; {0 = $00000000}
+
+type
   TGResourceError = (
     TGResourceErrorMinValue = -$7FFFFFFF,
     G_RESOURCE_ERROR_NOT_FOUND = 0,
     G_RESOURCE_ERROR_INTERNAL = 1,
     TGResourceErrorMaxValue = $7FFFFFFF
   );
-  TGResourceFlags = (
-    TGResourceFlagsMinValue = -$7FFFFFFF,
-    G_RESOURCE_FLAGS_NONE = 0,
-    G_RESOURCE_FLAGS_COMPRESSED = 1,
-    TGResourceFlagsMaxValue = $7FFFFFFF
+  TGResourceFlagsIdx = (
+    TGResourceFlagsIdxMinValue = 0,
+    G_RESOURCE_FLAGS_COMPRESSED = 0,
+    TGResourceFlagsIdxMaxValue = 31
   );
-  TGSettingsBindFlags = (
-    TGSettingsBindFlagsMinValue = -$7FFFFFFF,
-    G_SETTINGS_BIND_DEFAULT = 0,
-    G_SETTINGS_BIND_GET = 1,
-    G_SETTINGS_BIND_SET = 2,
-    G_SETTINGS_BIND_NO_SENSITIVITY = 4,
-    G_SETTINGS_BIND_GET_NO_CHANGES = 8,
-    G_SETTINGS_BIND_INVERT_BOOLEAN = 16,
-    TGSettingsBindFlagsMaxValue = $7FFFFFFF
+  TGResourceFlags = Set of TGResourceFlagsIdx;
+const
+  G_RESOURCE_FLAGS_NONE = []; {0 = $00000000}
+
+type
+  TGSettingsBindFlagsIdx = (
+    TGSettingsBindFlagsIdxMinValue = 0,
+    G_SETTINGS_BIND_GET = 0,
+    G_SETTINGS_BIND_SET = 1,
+    G_SETTINGS_BIND_NO_SENSITIVITY = 2,
+    G_SETTINGS_BIND_GET_NO_CHANGES = 3,
+    G_SETTINGS_BIND_INVERT_BOOLEAN = 4,
+    TGSettingsBindFlagsIdxMaxValue = 31
   );
+  TGSettingsBindFlags = Set of TGSettingsBindFlagsIdx;
+const
+  G_SETTINGS_BIND_DEFAULT = []; {0 = $00000000}
+
+type
   TGSocketType = (
     TGSocketTypeMinValue = -$7FFFFFFF,
     G_SOCKET_TYPE_INVALID = 0,
@@ -821,33 +955,45 @@ type
     G_SOCKET_LISTENER_LISTENED = 3,
     TGSocketListenerEventMaxValue = $7FFFFFFF
   );
-  TGSocketMsgFlags = (
-    TGSocketMsgFlagsMinValue = -$7FFFFFFF,
-    G_SOCKET_MSG_NONE = 0,
-    G_SOCKET_MSG_OOB = 1,
-    G_SOCKET_MSG_PEEK = 2,
-    G_SOCKET_MSG_DONTROUTE = 4,
-    TGSocketMsgFlagsMaxValue = $7FFFFFFF
+  TGSocketMsgFlagsIdx = (
+    TGSocketMsgFlagsIdxMinValue = 0,
+    G_SOCKET_MSG_OOB = 0,
+    G_SOCKET_MSG_PEEK = 1,
+    G_SOCKET_MSG_DONTROUTE = 2,
+    TGSocketMsgFlagsIdxMaxValue = 31
   );
-  TGSubprocessFlags = (
-    TGSubprocessFlagsMinValue = -$7FFFFFFF,
-    G_SUBPROCESS_FLAGS_NONE = 0,
-    G_SUBPROCESS_FLAGS_STDIN_PIPE = 1,
-    G_SUBPROCESS_FLAGS_STDIN_INHERIT = 2,
-    G_SUBPROCESS_FLAGS_STDOUT_PIPE = 4,
-    G_SUBPROCESS_FLAGS_STDOUT_SILENCE = 8,
-    G_SUBPROCESS_FLAGS_STDERR_PIPE = 16,
-    G_SUBPROCESS_FLAGS_STDERR_SILENCE = 32,
-    G_SUBPROCESS_FLAGS_STDERR_MERGE = 64,
-    G_SUBPROCESS_FLAGS_INHERIT_FDS = 128,
-    G_SUBPROCESS_FLAGS_SEARCH_PATH_FROM_ENVP = 256,
-    TGSubprocessFlagsMaxValue = $7FFFFFFF
+  TGSocketMsgFlags = Set of TGSocketMsgFlagsIdx;
+const
+  G_SOCKET_MSG_NONE = []; {0 = $00000000}
+
+type
+  TGSubprocessFlagsIdx = (
+    TGSubprocessFlagsIdxMinValue = 0,
+    G_SUBPROCESS_FLAGS_STDIN_PIPE = 0,
+    G_SUBPROCESS_FLAGS_STDIN_INHERIT = 1,
+    G_SUBPROCESS_FLAGS_STDOUT_PIPE = 2,
+    G_SUBPROCESS_FLAGS_STDOUT_SILENCE = 3,
+    G_SUBPROCESS_FLAGS_STDERR_PIPE = 4,
+    G_SUBPROCESS_FLAGS_STDERR_SILENCE = 5,
+    G_SUBPROCESS_FLAGS_STDERR_MERGE = 6,
+    G_SUBPROCESS_FLAGS_INHERIT_FDS = 7,
+    G_SUBPROCESS_FLAGS_SEARCH_PATH_FROM_ENVP = 8,
+    TGSubprocessFlagsIdxMaxValue = 31
   );
-  TGTestDBusFlags = (
-    TGTestDBusFlagsMinValue = -$7FFFFFFF,
-    G_TEST_DBUS_NONE = 0,
-    TGTestDBusFlagsMaxValue = $7FFFFFFF
+  TGSubprocessFlags = Set of TGSubprocessFlagsIdx;
+const
+  G_SUBPROCESS_FLAGS_NONE = []; {0 = $00000000}
+
+type
+  TGTestDBusFlagsIdx = (
+    TGTestDBusFlagsIdxMinValue = 0,
+    TGTestDBusFlagsIdxMaxValue = 31
   );
+  TGTestDBusFlags = Set of TGTestDBusFlagsIdx;
+const
+  G_TEST_DBUS_NONE = []; {0 = $00000000}
+
+type
   TGTlsChannelBindingError = (
     TGTlsChannelBindingErrorMinValue = -$7FFFFFFF,
     G_TLS_CHANNEL_BINDING_ERROR_NOT_IMPLEMENTED = 0,
@@ -877,17 +1023,21 @@ type
     G_TLS_INTERACTION_FAILED = 2,
     TGTlsInteractionResultMaxValue = $7FFFFFFF
   );
-  TGTlsPasswordFlags = (
-    TGTlsPasswordFlagsMinValue = -$7FFFFFFF,
-    G_TLS_PASSWORD_NONE = 0,
-    G_TLS_PASSWORD_RETRY = 2,
-    G_TLS_PASSWORD_MANY_TRIES = 4,
-    G_TLS_PASSWORD_FINAL_TRY = 8,
-    G_TLS_PASSWORD_PKCS11_USER = 16,
-    G_TLS_PASSWORD_PKCS11_SECURITY_OFFICER = 32,
-    G_TLS_PASSWORD_PKCS11_CONTEXT_SPECIFIC = 64,
-    TGTlsPasswordFlagsMaxValue = $7FFFFFFF
+  TGTlsPasswordFlagsIdx = (
+    TGTlsPasswordFlagsIdxMinValue = 0,
+    G_TLS_PASSWORD_RETRY = 1,
+    G_TLS_PASSWORD_MANY_TRIES = 2,
+    G_TLS_PASSWORD_FINAL_TRY = 3,
+    G_TLS_PASSWORD_PKCS11_USER = 4,
+    G_TLS_PASSWORD_PKCS11_SECURITY_OFFICER = 5,
+    G_TLS_PASSWORD_PKCS11_CONTEXT_SPECIFIC = 6,
+    TGTlsPasswordFlagsIdxMaxValue = 31
   );
+  TGTlsPasswordFlags = Set of TGTlsPasswordFlagsIdx;
+const
+  G_TLS_PASSWORD_NONE = []; {0 = $00000000}
+
+type
   TGUnixSocketAddressType = (
     TGUnixSocketAddressTypeMinValue = -$7FFFFFFF,
     G_UNIX_SOCKET_ADDRESS_INVALID = 0,
@@ -1071,7 +1221,7 @@ type
   { TGAsyncResult }
   PPGAsyncResult = ^PGAsyncResult;
   PGAsyncResult = ^TGAsyncResult;
-  TGAsyncReadyCallback = procedure(source_object: PGObject; res: PGAsyncResult; data: gpointer); cdecl;
+  TGAsyncReadyCallback = procedure(source_object: PGObject; res: PGAsyncResult; user_data: gpointer); cdecl;
 
 
   { TGAppLaunchContext }
@@ -1515,7 +1665,7 @@ type
   { TGFileProgressCallback }
   PPGFileProgressCallback = ^PGFileProgressCallback;
   PGFileProgressCallback = ^TGFileProgressCallback;
-  TGFileProgressCallback = procedure(current_num_bytes: gint64; total_num_bytes: gint64; data: gpointer); cdecl;
+  TGFileProgressCallback = procedure(current_num_bytes: gint64; total_num_bytes: gint64; user_data: gpointer); cdecl;
 
 
   { TGMountUnmountFlags }
@@ -1546,7 +1696,7 @@ type
   { TGFileReadMoreCallback }
   PPGFileReadMoreCallback = ^PGFileReadMoreCallback;
   PGFileReadMoreCallback = ^TGFileReadMoreCallback;
-  TGFileReadMoreCallback = function(file_contents: Pgchar; file_size: gint64; callback_data: gpointer): gboolean; cdecl;
+  TGFileReadMoreCallback = function(file_contents: Pgchar; file_size: gint64; user_data: gpointer): gboolean; cdecl;
 
 
   { TGFileMeasureFlags }
@@ -1557,7 +1707,7 @@ type
   { TGFileMeasureProgressCallback }
   PPGFileMeasureProgressCallback = ^PGFileMeasureProgressCallback;
   PGFileMeasureProgressCallback = ^TGFileMeasureProgressCallback;
-  TGFileMeasureProgressCallback = procedure(reporting: gboolean; current_size: guint64; num_dirs: guint64; num_files: guint64; data: gpointer); cdecl;
+  TGFileMeasureProgressCallback = procedure(reporting: gboolean; current_size: guint64; num_dirs: guint64; num_files: guint64; user_data: gpointer); cdecl;
 
 
   { TGFileMonitor }
@@ -2166,7 +2316,7 @@ type
     _g_reserved4: procedure; cdecl;
     _g_reserved5: procedure; cdecl;
   end;
-  TGCancellableSourceFunc = function(cancellable: PGCancellable; data: gpointer): gboolean; cdecl;
+  TGCancellableSourceFunc = function(cancellable: PGCancellable; user_data: gpointer): gboolean; cdecl;
 
 
   { TGConverter }
@@ -2849,7 +2999,7 @@ type
   { TGDBusProxyTypeFunc }
   PPGDBusProxyTypeFunc = ^PGDBusProxyTypeFunc;
   PGDBusProxyTypeFunc = ^TGDBusProxyTypeFunc;
-  TGDBusProxyTypeFunc = function(manager: PGDBusObjectManagerClient; object_path: Pgchar; interface_name: Pgchar; data: gpointer): TGType; cdecl;
+  TGDBusProxyTypeFunc = function(manager: PGDBusObjectManagerClient; object_path: Pgchar; interface_name: Pgchar; user_data: gpointer): TGType; cdecl;
 
 
   { TGDBusObjectManagerClientPrivate }
@@ -3284,7 +3434,7 @@ type
     condition_check: function(datagram_based: PGDatagramBased; condition: TGIOCondition): TGIOCondition; cdecl;
     condition_wait: function(datagram_based: PGDatagramBased; condition: TGIOCondition; timeout: gint64; cancellable: PGCancellable; error: PPGError): gboolean; cdecl;
   end;
-  TGDatagramBasedSourceFunc = function(datagram_based: PGDatagramBased; condition: TGIOCondition; data: gpointer): gboolean; cdecl;
+  TGDatagramBasedSourceFunc = function(datagram_based: PGDatagramBased; condition: TGIOCondition; user_data: gpointer): gboolean; cdecl;
 
 
   { TGDebugController }
@@ -4423,7 +4573,7 @@ type
   PGIOSchedulerJob = ^TGIOSchedulerJob;
   TGIOSchedulerJob = object
   end;
-  TGIOSchedulerJobFunc = function(job: PGIOSchedulerJob; cancellable: PGCancellable; data: gpointer): gboolean; cdecl;
+  TGIOSchedulerJobFunc = function(job: PGIOSchedulerJob; cancellable: PGCancellable; user_data: gpointer): gboolean; cdecl;
 
   TGIOStreamPrivate = record
   end;
@@ -4448,7 +4598,7 @@ type
     g_iface: TGTypeInterface;
     hash: function(icon: PGIcon): guint; cdecl;
     equal: function(icon1: PGIcon; icon2: PGIcon): gboolean; cdecl;
-    to_tokens: function(icon: PGIcon; tokens: Pgchar; out_version: Pgint): gboolean; cdecl;
+    to_tokens: function(icon: PGIcon; tokens: Pgpointer; out_version: Pgint): gboolean; cdecl;
     from_tokens: function(tokens: PPgchar; num_tokens: gint; version: gint; error: PPGError): PGIcon; cdecl;
     serialize: function(icon: PGIcon): PGVariant; cdecl;
   end;
@@ -5290,7 +5440,7 @@ type
     write_nonblocking: function(stream: PGPollableOutputStream; buffer: Pguint8; count: gsize; error: PPGError): gssize; cdecl;
     writev_nonblocking: function(stream: PGPollableOutputStream; vectors: PGOutputVector; n_vectors: gsize; bytes_written: Pgsize; error: PPGError): TGPollableReturn; cdecl;
   end;
-  TGPollableSourceFunc = function(pollable_stream: PGObject; data: gpointer): gboolean; cdecl;
+  TGPollableSourceFunc = function(pollable_stream: PGObject; user_data: gpointer): gboolean; cdecl;
 
 
   { TGPowerProfileMonitor }
@@ -6251,7 +6401,7 @@ type
     _g_reserved5: procedure; cdecl;
     _g_reserved6: procedure; cdecl;
   end;
-  TGSocketSourceFunc = function(socket: PGSocket; condition: TGIOCondition; data: gpointer): gboolean; cdecl;
+  TGSocketSourceFunc = function(socket: PGSocket; condition: TGIOCondition; user_data: gpointer): gboolean; cdecl;
 
 
   { TGSrvTarget }
@@ -7871,7 +8021,7 @@ function g_filter_output_stream_get_type: TGType; cdecl; external;
 function g_icon_deserialize(value: PGVariant): PGIcon; cdecl; external;
 function g_icon_equal(icon1: PGIcon; icon2: PGIcon): gboolean; cdecl; external;
 function g_icon_get_type: TGType; cdecl; external;
-function g_icon_hash(icon: PGIcon): guint; cdecl; external;
+function g_icon_hash(icon: Pgpointer): guint; cdecl; external;
 function g_icon_new_for_string(str: Pgchar; error: PPGError): PGIcon; cdecl; external;
 function g_icon_serialize(icon: PGIcon): PGVariant; cdecl; external;
 function g_icon_to_string(icon: PGIcon): Pgchar; cdecl; external;
