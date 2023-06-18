@@ -196,7 +196,7 @@ function TGtk3WidgetSet.RawImage_CreateBitmaps(const ARawImage: TRawImage; out
 var
   Desc: TRawImageDescription absolute ARawImage.Description;
   NewData: PByte;
-  ImageFormat: cairo_format_t;
+  ImageFormat: Tcairo_format_t;
   ARowStride: PtrUInt;
   x,y:integer;
   src,dst,SrcRowPtr,DstRowPtr:pbyte;

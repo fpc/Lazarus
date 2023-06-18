@@ -159,12 +159,12 @@ type
     FData: PByte;
     FDataOwner: Boolean;
     FHandle: PGdkPixbuf;
-    FFormat : cairo_format_t;
+    FFormat : Tcairo_format_t;
   public
     constructor Create; override;
     constructor Create(vHandle: PGdkPixbuf); overload;
-    constructor Create(AData: PByte; width: Integer; height: Integer; format: cairo_format_t; const ADataOwner: Boolean = False); overload;
-    constructor Create(AData: PByte; width: Integer; height: Integer; bytesPerLine: Integer; format: cairo_format_t; const ADataOwner: Boolean = False); overload;
+    constructor Create(AData: PByte; width: Integer; height: Integer; format: Tcairo_format_t; const ADataOwner: Boolean = False); overload;
+    constructor Create(AData: PByte; width: Integer; height: Integer; bytesPerLine: Integer; format: Tcairo_format_t; const ADataOwner: Boolean = False); overload;
     function Select(ACtx:TGtk3DeviceContext):TGtk3ContextObject;override;
     function Get(szbuf:integer;pbuf:pointer):integer;override;
     destructor Destroy; override;
@@ -177,7 +177,7 @@ type
     function bits: PByte;
     function numBytes: LongWord;
     function bytesPerLine: Integer;
-    property Format: cairo_format_t read FFormat;
+    property Format: Tcairo_format_t read FFormat;
     property Handle: PGdkPixbuf read FHandle;
   end;
 
@@ -573,7 +573,7 @@ var
   ASurface: pcairo_surface_t;
   cr:Pcairo_t;
   w,h:integer;
-  save_matrix:cairo_matrix_t;
+  save_matrix: Tcairo_matrix_t;
 begin
   inherited Create;
   FHandle := nil;
@@ -909,7 +909,7 @@ begin
 end;
 
 constructor TGtk3Image.Create(AData: PByte; width: Integer; height: Integer;
-  format: cairo_format_t; const ADataOwner: Boolean);
+  format: Tcairo_format_t; const ADataOwner: Boolean);
 var
   ASurface: Pcairo_surface_t;
   w,h: Integer;
@@ -957,7 +957,7 @@ begin
 end;
 
 constructor TGtk3Image.Create(AData: PByte; width: Integer; height: Integer;
-  bytesPerLine: Integer; format: cairo_format_t; const ADataOwner: Boolean);
+  bytesPerLine: Integer; format: Tcairo_format_t; const ADataOwner: Boolean);
 var
   ASurface: Pcairo_surface_t;
   w, h: Integer;
@@ -1377,7 +1377,7 @@ procedure TGtk3DeviceContext.ApplyPen;
     cairo_set_dash(pcr, @d, High(d)+1, 0);
   end;
 var
-  cap: cairo_line_cap_t;
+  cap: Tcairo_line_cap_t;
   w: Double;
 begin
   SetSourceColor(FCurrentPen.Color);
@@ -1603,7 +1603,7 @@ end;
 
 procedure TGtk3DeviceContext.CreateObjects;
 var
-  Matrix:cairo_matrix_t;
+  Matrix: Tcairo_matrix_t;
 begin
   FBkMode := TRANSPARENT;
   FCurrentImage := nil;
@@ -1737,7 +1737,7 @@ end;
 
 procedure TGtk3DeviceContext.drawEllipse(x, y, w, h: Integer; AFill, ABorder: Boolean);
 var
-  save_matrix:cairo_matrix_t;
+  save_matrix: Tcairo_matrix_t;
 begin
   cairo_save(pcr);
   try
@@ -1776,7 +1776,7 @@ procedure TGtk3DeviceContext.drawSurface(targetRect: PRect;
   Surface: Pcairo_surface_t; sourceRect: PRect; mask: PGdkPixBuf;
   maskRect: PRect);
 var
-  M: cairo_matrix_t;
+  M: Tcairo_matrix_t;
 begin
   {$IFDEF VerboseGtk3DeviceContext}
   DebugLn('TGtk3DeviceContext.DrawSurface ');
@@ -1828,7 +1828,7 @@ end;
 procedure TGtk3DeviceContext.drawImage1(targetRect: PRect; image: PGdkPixBuf;
   sourceRect: PRect; mask: PGdkPixBuf; maskRect: PRect);
 var
-  M: cairo_matrix_t;
+  M: Tcairo_matrix_t;
 begin
   {$IFDEF VerboseGtk3DeviceContext}
   DebugLn('TGtk3DeviceContext.DrawImage ');
@@ -1910,7 +1910,7 @@ begin
     if AFill then
     begin
       ApplyBrush;
-      cairo_set_fill_rule(pcr, cairo_fill_rule_t(FillRule));
+      cairo_set_fill_rule(pcr, Tcairo_fill_rule_t(FillRule));
       cairo_fill_preserve(pcr);
     end;
 
@@ -2406,7 +2406,7 @@ end;
 
 procedure TGtk3DeviceContext.set_antialiasing(aamode: boolean);
 const
-   caa:array[boolean] of cairo_antialias_t = (CAIRO_ANTIALIAS_NONE,CAIRO_ANTIALIAS_DEFAULT);
+   caa:array[boolean] of Tcairo_antialias_t = (CAIRO_ANTIALIAS_NONE,CAIRO_ANTIALIAS_DEFAULT);
 begin
   cairo_set_antialias(pcr, caa[aamode]);
 end;

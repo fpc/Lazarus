@@ -66,8 +66,6 @@ type
     CAIRO_STATUS_JBIG2_GLOBAL_MISSING = 38,
     Tcairo_status_tMaxValue = $7FFFFFFF
   );
-  cairo_status_t = Tcairo_status_t;
-
   Tcairo_content_t = (
     Tcairo_content_tMinValue = -$7FFFFFFF,
     CAIRO_CONTENT_COLOR = 4096,
@@ -75,8 +73,6 @@ type
     CAIRO_CONTENT_COLOR_ALPHA = 12288,
     Tcairo_content_tMaxValue = $7FFFFFFF
   );
-  cairo_content_t = Tcairo_content_t;
-
   Tcairo_operator_t = (
     Tcairo_operator_tMinValue = -$7FFFFFFF,
     CAIRO_OPERATOR_CLEAR = 0,
@@ -110,8 +106,6 @@ type
     CAIRO_OPERATOR_HSL_LUMINOSITY = 28,
     Tcairo_operator_tMaxValue = $7FFFFFFF
   );
-  cairo_operator_t = Tcairo_operator_t;
-
   Tcairo_antialias_t = (
     Tcairo_antialias_tMinValue = -$7FFFFFFF,
     CAIRO_ANTIALIAS_DEFAULT = 0,
@@ -123,16 +117,12 @@ type
     CAIRO_ANTIALIAS_BEST = 6,
     Tcairo_antialias_tMaxValue = $7FFFFFFF
   );
-  cairo_antialias_t = Tcairo_antialias_t;
-
   Tcairo_fill_rule_t = (
     Tcairo_fill_rule_tMinValue = -$7FFFFFFF,
     CAIRO_FILL_RULE_WINDING = 0,
     CAIRO_FILL_RULE_EVEN_ODD = 1,
     Tcairo_fill_rule_tMaxValue = $7FFFFFFF
   );
-  cairo_fill_rule_t = Tcairo_fill_rule_t;
-
   Tcairo_line_cap_t = (
     Tcairo_line_cap_tMinValue = -$7FFFFFFF,
     CAIRO_LINE_CAP_BUTT = 0,
@@ -140,8 +130,6 @@ type
     CAIRO_LINE_CAP_SQUARE = 2,
     Tcairo_line_cap_tMaxValue = $7FFFFFFF
   );
-  cairo_line_cap_t = Tcairo_line_cap_t;
-
   Tcairo_line_join_t = (
     Tcairo_line_join_tMinValue = -$7FFFFFFF,
     CAIRO_LINE_JOIN_MITER = 0,
@@ -149,8 +137,6 @@ type
     CAIRO_LINE_JOIN_BEVEL = 2,
     Tcairo_line_join_tMaxValue = $7FFFFFFF
   );
-  cairo_line_join_t = Tcairo_line_join_t;
-
   Tcairo_text_cluster_flags_t = (
     Tcairo_text_cluster_flags_tMinValue = -$7FFFFFFF,
     CAIRO_TEXT_CLUSTER_FLAG_BACKWARD = 1,
@@ -163,16 +149,12 @@ type
     CAIRO_FONT_SLANT_OBLIQUE = 2,
     Tcairo_font_slant_tMaxValue = $7FFFFFFF
   );
-  cairo_font_slant_t = Tcairo_font_slant_t;
-
   Tcairo_font_weight_t = (
     Tcairo_font_weight_tMinValue = -$7FFFFFFF,
     CAIRO_FONT_WEIGHT_NORMAL = 0,
     CAIRO_FONT_WEIGHT_BOLD = 1,
     Tcairo_font_weight_tMaxValue = $7FFFFFFF
   );
-  cairo_font_weight_t = Tcairo_font_weight_t;
-
   Tcairo_subpixel_order_t = (
     Tcairo_subpixel_order_tMinValue = -$7FFFFFFF,
     CAIRO_SUBPIXEL_ORDER_DEFAULT = 0,
@@ -182,8 +164,6 @@ type
     CAIRO_SUBPIXEL_ORDER_VBGR = 4,
     Tcairo_subpixel_order_tMaxValue = $7FFFFFFF
   );
-  cairo_subpixel_order_t = Tcairo_subpixel_order_t;
-
   Tcairo_hint_style_t = (
     Tcairo_hint_style_tMinValue = -$7FFFFFFF,
     CAIRO_HINT_STYLE_DEFAULT = 0,
@@ -193,8 +173,6 @@ type
     CAIRO_HINT_STYLE_FULL = 4,
     Tcairo_hint_style_tMaxValue = $7FFFFFFF
   );
-  cairo_hint_style_t = Tcairo_hint_style_t;
-
   Tcairo_hint_metrics_t = (
     Tcairo_hint_metrics_tMinValue = -$7FFFFFFF,
     CAIRO_HINT_METRICS_DEFAULT = 0,
@@ -202,8 +180,6 @@ type
     CAIRO_HINT_METRICS_ON = 2,
     Tcairo_hint_metrics_tMaxValue = $7FFFFFFF
   );
-  cairo_hint_metrics_t = Tcairo_hint_metrics_t;
-
   Tcairo_font_type_t = (
     Tcairo_font_type_tMinValue = -$7FFFFFFF,
     CAIRO_FONT_TYPE_TOY = 0,
@@ -213,8 +189,6 @@ type
     CAIRO_FONT_TYPE_USER = 4,
     Tcairo_font_type_tMaxValue = $7FFFFFFF
   );
-  cairo_font_type_t = Tcairo_font_type_t;
-
   Tcairo_path_data_type_t = (
     Tcairo_path_data_type_tMinValue = -$7FFFFFFF,
     CAIRO_PATH_MOVE_TO = 0,
@@ -236,8 +210,6 @@ type
     CAIRO_DEVICE_TYPE_WIN32 = 7,
     Tcairo_device_type_tMaxValue = $7FFFFFFF
   );
-  cairo_device_type_t = Tcairo_device_type_t;
-
   Tcairo_surface_type_t = (
     Tcairo_surface_type_tMinValue = -$7FFFFFFF,
     CAIRO_SURFACE_TYPE_IMAGE = 0,
@@ -267,8 +239,6 @@ type
     CAIRO_SURFACE_TYPE_COGL = 24,
     Tcairo_surface_type_tMaxValue = $7FFFFFFF
   );
-  cairo_surface_type_t = Tcairo_surface_type_t;
-
   Tcairo_format_t = (
     Tcairo_format_tMinValue = -$7FFFFFFF,
     CAIRO_FORMAT_INVALID = -1,
@@ -280,8 +250,6 @@ type
     CAIRO_FORMAT_RGB30 = 5,
     Tcairo_format_tMaxValue = $7FFFFFFF
   );
-  cairo_format_t = Tcairo_format_t;
-
   Tcairo_pattern_type_t = (
     Tcairo_pattern_type_tMinValue = -$7FFFFFFF,
     CAIRO_PATTERN_TYPE_SOLID = 0,
@@ -292,8 +260,6 @@ type
     CAIRO_PATTERN_TYPE_RASTER_SOURCE = 5,
     Tcairo_pattern_type_tMaxValue = $7FFFFFFF
   );
-  cairo_pattern_type_t = Tcairo_pattern_type_t;
-
   Tcairo_extend_t = (
     Tcairo_extend_tMinValue = -$7FFFFFFF,
     CAIRO_EXTEND_NONE = 0,
@@ -302,8 +268,6 @@ type
     CAIRO_EXTEND_PAD = 3,
     Tcairo_extend_tMaxValue = $7FFFFFFF
   );
-  cairo_extend_t = Tcairo_extend_t;
-
   Tcairo_filter_t = (
     Tcairo_filter_tMinValue = -$7FFFFFFF,
     CAIRO_FILTER_FAST = 0,
@@ -314,8 +278,6 @@ type
     CAIRO_FILTER_GAUSSIAN = 5,
     Tcairo_filter_tMaxValue = $7FFFFFFF
   );
-  cairo_filter_t = Tcairo_filter_t;
-
   Tcairo_region_overlap_t = (
     Tcairo_region_overlap_tMinValue = -$7FFFFFFF,
     CAIRO_REGION_OVERLAP_IN = 0,
@@ -323,7 +285,6 @@ type
     CAIRO_REGION_OVERLAP_PART = 2,
     Tcairo_region_overlap_tMaxValue = $7FFFFFFF
   );
-  cairo_region_overlap_t = Tcairo_region_overlap_t;
 type
 
 
@@ -360,7 +321,7 @@ type
     x0 : Double;
     y0 : Double;
   end;
-  cairo_matrix_t = Tcairo_matrix_t;
+
 
 
 
@@ -573,27 +534,27 @@ function  cairo_reference(cr: Pcairo_t): Pcairo_t; cdecl; external LIB_CAIRO;
 procedure cairo_destroy(cr: Pcairo_t); cdecl; external;
 function  cairo_get_reference_count(cr: Pcairo_t): LongWord; cdecl; external LIB_CAIRO;
 //function  cairo_get_user_data(cr: Pcairo_t; key: Pcairo_user_data_key_t): pointer; cdecl; external LIB_CAIRO;
-//function  cairo_set_user_data(cr:  PCairo_t; key:  Pcairo_user_data_key_t; user_data:  Pointer; destroy:  cairo_destroy_func_t):  cairo_status_t; cdecl; external LIB_CAIRO;
+//function  cairo_set_user_data(cr:  PCairo_t; key:  Pcairo_user_data_key_t; user_data:  Pointer; destroy: Tcairo_destroy_func_t): Tcairo_status_t; cdecl; external LIB_CAIRO;
 procedure cairo_save(cr: Pcairo_t); cdecl; external LIB_CAIRO;
 procedure cairo_restore(cr: Pcairo_t); cdecl; external LIB_CAIRO;
 procedure cairo_push_group (cr:  PCairo_t); cdecl; external LIB_CAIRO;
-procedure cairo_push_group_with_content (cr:  PCairo_t; content:  cairo_content_t); cdecl; external LIB_CAIRO;
+procedure cairo_push_group_with_content (cr:  PCairo_t; content: Tcairo_content_t); cdecl; external LIB_CAIRO;
 function  cairo_pop_group (cr:  PCairo_t):  Pcairo_pattern_t; cdecl; external LIB_CAIRO;
 procedure cairo_pop_group_to_source (cr:  PCairo_t); cdecl; external LIB_CAIRO;
 
 (* Modify state *)
 
-procedure cairo_set_operator(cr: Pcairo_t; op: cairo_operator_t); cdecl; external LIB_CAIRO;
+procedure cairo_set_operator(cr: Pcairo_t; op: Tcairo_operator_t); cdecl; external LIB_CAIRO;
 procedure cairo_set_source(cr: Pcairo_t; source: Pcairo_pattern_t); cdecl; external LIB_CAIRO;
 procedure cairo_set_source_rgb(cr: Pcairo_t; red, green, blue: Double); cdecl; external LIB_CAIRO;
 procedure cairo_set_source_rgba(cr: Pcairo_t; red, green, blue, alpha: Double); cdecl; external LIB_CAIRO;
 procedure cairo_set_source_surface(cr: Pcairo_t; surface: Pcairo_surface_t; x, y: Double); cdecl; external LIB_CAIRO;
 procedure cairo_set_tolerance(cr: Pcairo_t; tolerance: Double); cdecl; external LIB_CAIRO;
-procedure cairo_set_antialias(cr: Pcairo_t; antialias: cairo_antialias_t); cdecl; external LIB_CAIRO;
-procedure cairo_set_fill_rule(cr: Pcairo_t; fill_rule: cairo_fill_rule_t); cdecl; external LIB_CAIRO;
+procedure cairo_set_antialias(cr: Pcairo_t; antialias: Tcairo_antialias_t); cdecl; external LIB_CAIRO;
+procedure cairo_set_fill_rule(cr: Pcairo_t; fill_rule: Tcairo_fill_rule_t); cdecl; external LIB_CAIRO;
 procedure cairo_set_line_width(cr: Pcairo_t; width: Double); cdecl; external LIB_CAIRO;
-procedure cairo_set_line_cap(cr: Pcairo_t; line_cap: cairo_line_cap_t); cdecl; external LIB_CAIRO;
-procedure cairo_set_line_join(cr: Pcairo_t; line_join: cairo_line_join_t); cdecl; external LIB_CAIRO;
+procedure cairo_set_line_cap(cr: Pcairo_t; line_cap: Tcairo_line_cap_t); cdecl; external LIB_CAIRO;
+procedure cairo_set_line_join(cr: Pcairo_t; line_join: Tcairo_line_join_t); cdecl; external LIB_CAIRO;
 procedure cairo_set_dash(cr: Pcairo_t; dashes: PDouble; num_dashes: LongInt; offset: Double); cdecl; external LIB_CAIRO;
 procedure cairo_set_miter_limit(cr: Pcairo_t; limit: Double); cdecl; external LIB_CAIRO;
 procedure cairo_translate(cr: Pcairo_t; tx, ty: Double); cdecl; external LIB_CAIRO;
@@ -637,8 +598,8 @@ procedure cairo_show_page(cr: Pcairo_t); cdecl; external LIB_CAIRO;
 
 (* Insideness testing *)
 
-//function  cairo_in_stroke(cr: Pcairo_t; x, y: Double): cairo_bool_t; cdecl; external LIB_CAIRO;
-//function  cairo_in_fill(cr: Pcairo_t; x, y: Double): cairo_bool_t; cdecl; external LIB_CAIRO;
+//function  cairo_in_stroke(cr: Pcairo_t; x, y: Double): Tcairo_bool_t; cdecl; external LIB_CAIRO;
+//function  cairo_in_fill(cr: Pcairo_t; x, y: Double): Tcairo_bool_t; cdecl; external LIB_CAIRO;
 
 (* Rectangular extents *)
 
@@ -659,23 +620,23 @@ procedure cairo_clip_extents(cr: Pcairo_t; x1, y1, x2, y2:  PDouble); cdecl; ext
 function  cairo_font_options_create: Pcairo_font_options_t; cdecl; external LIB_CAIRO;
 function  cairo_font_options_copy(original: Pcairo_font_options_t): Pcairo_font_options_t; cdecl; external LIB_CAIRO;
 procedure cairo_font_options_destroy(options: Pcairo_font_options_t); cdecl; external LIB_CAIRO;
-function  cairo_font_options_status(options: Pcairo_font_options_t): cairo_status_t; cdecl; external LIB_CAIRO;
+function  cairo_font_options_status(options: Pcairo_font_options_t): Tcairo_status_t; cdecl; external LIB_CAIRO;
 procedure cairo_font_options_merge(options, other: Pcairo_font_options_t); cdecl; external LIB_CAIRO;
-//function  cairo_font_options_equal(options, other: Pcairo_font_options_t): cairo_bool_t; cdecl; external LIB_CAIRO;
+//function  cairo_font_options_equal(options, other: Pcairo_font_options_t): Tcairo_bool_t; cdecl; external LIB_CAIRO;
 function  cairo_font_options_hash(options: Pcairo_font_options_t): LongWord; cdecl; external LIB_CAIRO;
-procedure cairo_font_options_set_antialias(options: Pcairo_font_options_t; antialias: cairo_antialias_t); cdecl; external LIB_CAIRO;
-function  cairo_font_options_get_antialias(options: Pcairo_font_options_t): cairo_antialias_t; cdecl; external LIB_CAIRO;
-procedure cairo_font_options_set_subpixel_order(options: Pcairo_font_options_t; subpixel_order: cairo_subpixel_order_t); cdecl; external LIB_CAIRO;
-function  cairo_font_options_get_subpixel_order(options: Pcairo_font_options_t): cairo_subpixel_order_t; cdecl; external LIB_CAIRO;
-procedure cairo_font_options_set_hint_style(options: Pcairo_font_options_t; hint_style: cairo_hint_style_t); cdecl; external LIB_CAIRO;
-function  cairo_font_options_get_hint_style(options: Pcairo_font_options_t): cairo_hint_style_t; cdecl; external LIB_CAIRO;
-procedure cairo_font_options_set_hint_metrics(options: Pcairo_font_options_t; hint_metrics: cairo_hint_metrics_t); cdecl; external LIB_CAIRO;
-function  cairo_font_options_get_hint_metrics(options: Pcairo_font_options_t): cairo_hint_metrics_t; cdecl; external LIB_CAIRO;
+procedure cairo_font_options_set_antialias(options: Pcairo_font_options_t; antialias: Tcairo_antialias_t); cdecl; external LIB_CAIRO;
+function  cairo_font_options_get_antialias(options: Pcairo_font_options_t): Tcairo_antialias_t; cdecl; external LIB_CAIRO;
+procedure cairo_font_options_set_subpixel_order(options: Pcairo_font_options_t; subpixel_order: Tcairo_subpixel_order_t); cdecl; external LIB_CAIRO;
+function  cairo_font_options_get_subpixel_order(options: Pcairo_font_options_t): Tcairo_subpixel_order_t; cdecl; external LIB_CAIRO;
+procedure cairo_font_options_set_hint_style(options: Pcairo_font_options_t; hint_style: Tcairo_hint_style_t); cdecl; external LIB_CAIRO;
+function  cairo_font_options_get_hint_style(options: Pcairo_font_options_t): Tcairo_hint_style_t; cdecl; external LIB_CAIRO;
+procedure cairo_font_options_set_hint_metrics(options: Pcairo_font_options_t; hint_metrics: Tcairo_hint_metrics_t); cdecl; external LIB_CAIRO;
+function  cairo_font_options_get_hint_metrics(options: Pcairo_font_options_t): Tcairo_hint_metrics_t; cdecl; external LIB_CAIRO;
 
 (* This interface is for dealing with text as text, not caring about the
    font object inside the the cairo_t. *)
 
-procedure cairo_select_font_face(cr: Pcairo_t; family: Pchar; slant: cairo_font_slant_t; weight: cairo_font_weight_t); cdecl; external LIB_CAIRO;
+procedure cairo_select_font_face(cr: Pcairo_t; family: Pchar; slant: Tcairo_font_slant_t; weight: Tcairo_font_weight_t); cdecl; external LIB_CAIRO;
 procedure cairo_set_font_size(cr: Pcairo_t; size: Double); cdecl; external LIB_CAIRO;
 procedure cairo_set_font_matrix(cr: Pcairo_t; matrix: Pcairo_matrix_t); cdecl; external LIB_CAIRO;
 procedure cairo_get_font_matrix(cr: Pcairo_t; matrix: Pcairo_matrix_t); cdecl; external LIB_CAIRO;
@@ -698,10 +659,10 @@ procedure cairo_text_path(cr: Pcairo_t; utf8: Pchar); cdecl; external LIB_CAIRO;
 function  cairo_font_face_reference(font_face: Pcairo_font_face_t): Pcairo_font_face_t; cdecl; external LIB_CAIRO;
 procedure cairo_font_face_destroy(font_face: Pcairo_font_face_t); cdecl; external LIB_CAIRO;
 function  cairo_font_face_get_reference_count (font_face: Pcairo_font_face_t):  LongWord; cdecl; external LIB_CAIRO;
-function  cairo_font_face_status(font_face: Pcairo_font_face_t): cairo_status_t; cdecl; external LIB_CAIRO;
-function  cairo_font_face_get_type(font_face: Pcairo_font_face_t): cairo_font_type_t; cdecl; external LIB_CAIRO;
+function  cairo_font_face_status(font_face: Pcairo_font_face_t): Tcairo_status_t; cdecl; external LIB_CAIRO;
+function  cairo_font_face_get_type(font_face: Pcairo_font_face_t): Tcairo_font_type_t; cdecl; external LIB_CAIRO;
 //function  cairo_font_face_get_user_data(font_face: Pcairo_font_face_t; key: Pcairo_user_data_key_t): pointer; cdecl; external LIB_CAIRO;
-//function  cairo_font_face_set_user_data(font_face: Pcairo_font_face_t; key: Pcairo_user_data_key_t; user_data: pointer; destroy: cairo_destroy_func_t): cairo_status_t; cdecl; external LIB_CAIRO;
+//function  cairo_font_face_set_user_data(font_face: Pcairo_font_face_t; key: Pcairo_user_data_key_t; user_data: pointer; destroy: Tcairo_destroy_func_t): Tcairo_status_t; cdecl; external LIB_CAIRO;
 
 (* Portable interface to general font features *)
 
@@ -709,10 +670,10 @@ function  cairo_scaled_font_create(font_face: Pcairo_font_face_t; font_matrix: P
 function  cairo_scaled_font_reference(scaled_font: Pcairo_scaled_font_t): Pcairo_scaled_font_t; cdecl; external LIB_CAIRO;
 procedure cairo_scaled_font_destroy(scaled_font: Pcairo_scaled_font_t); cdecl; external LIB_CAIRO;
 function  cairo_scaled_font_get_reference_count (scaled_font: Pcairo_scaled_font_t): LongWord; cdecl; external LIB_CAIRO;
-function  cairo_scaled_font_status(scaled_font: Pcairo_scaled_font_t): cairo_status_t; cdecl; external LIB_CAIRO;
-function  cairo_scaled_font_get_type(scaled_font: Pcairo_scaled_font_t): cairo_font_type_t; cdecl; external LIB_CAIRO;
+function  cairo_scaled_font_status(scaled_font: Pcairo_scaled_font_t): Tcairo_status_t; cdecl; external LIB_CAIRO;
+function  cairo_scaled_font_get_type(scaled_font: Pcairo_scaled_font_t): Tcairo_font_type_t; cdecl; external LIB_CAIRO;
 //function  cairo_scaled_font_get_user_data (scaled_font: Pcairo_scaled_font_t; key: Pcairo_user_data_key_t): Pointer; cdecl; external LIB_CAIRO;
-//function  cairo_scaled_font_set_user_data (scaled_font: Pcairo_scaled_font_t; key: Pcairo_user_data_key_t; user_data: Pointer; destroy: cairo_destroy_func_t): cairo_status_t; cdecl; external LIB_CAIRO;
+//function  cairo_scaled_font_set_user_data (scaled_font: Pcairo_scaled_font_t; key: Pcairo_user_data_key_t; user_data: Pointer; destroy: Tcairo_destroy_func_t): Tcairo_status_t; cdecl; external LIB_CAIRO;
 //procedure cairo_scaled_font_extents(scaled_font: Pcairo_scaled_font_t; extents: Pcairo_font_extents_t); cdecl; external LIB_CAIRO;
 //procedure cairo_scaled_font_text_extents(scaled_font: Pcairo_scaled_font_t; utf8: PChar; extents: Pcairo_text_extents_t); cdecl; external LIB_CAIRO;
 //procedure cairo_scaled_font_glyph_extents(scaled_font: Pcairo_scaled_font_t; glyphs: Pcairo_glyph_t; num_glyphs: LongInt; extents: Pcairo_text_extents_t); cdecl; external LIB_CAIRO;
@@ -723,15 +684,15 @@ procedure cairo_scaled_font_get_font_options (scaled_font: Pcairo_scaled_font_t;
 
 (* Query functions *)
 
-function  cairo_get_operator(cr: Pcairo_t): cairo_operator_t; cdecl; external LIB_CAIRO;
+function  cairo_get_operator(cr: Pcairo_t): Tcairo_operator_t; cdecl; external LIB_CAIRO;
 function  cairo_get_source(cr: Pcairo_t): Pcairo_pattern_t; cdecl; external LIB_CAIRO;
 function  cairo_get_tolerance(cr: Pcairo_t): Double; cdecl; external LIB_CAIRO;
-function  cairo_get_antialias(cr: Pcairo_t): cairo_antialias_t; cdecl; external LIB_CAIRO;
+function  cairo_get_antialias(cr: Pcairo_t): Tcairo_antialias_t; cdecl; external LIB_CAIRO;
 procedure cairo_get_current_point(cr: Pcairo_t; x, y: PDouble); cdecl; external LIB_CAIRO;
-function  cairo_get_fill_rule(cr: Pcairo_t): cairo_fill_rule_t; cdecl; external LIB_CAIRO;
+function  cairo_get_fill_rule(cr: Pcairo_t): Tcairo_fill_rule_t; cdecl; external LIB_CAIRO;
 function  cairo_get_line_width(cr: Pcairo_t): Double; cdecl; external LIB_CAIRO;
-function  cairo_get_line_cap(cr: Pcairo_t): cairo_line_cap_t; cdecl; external LIB_CAIRO;
-function  cairo_get_line_join(cr: Pcairo_t): cairo_line_join_t; cdecl; external LIB_CAIRO;
+function  cairo_get_line_cap(cr: Pcairo_t): Tcairo_line_cap_t; cdecl; external LIB_CAIRO;
+function  cairo_get_line_join(cr: Pcairo_t): Tcairo_line_join_t; cdecl; external LIB_CAIRO;
 function  cairo_get_miter_limit(cr: Pcairo_t): Double; cdecl; external LIB_CAIRO;
 function  cairo_get_dash_count(cr: Pcairo_t): LongInt; cdecl; external LIB_CAIRO;
 procedure cairo_get_dash(cr: Pcairo_t; dashes, offset: PDouble); cdecl; external LIB_CAIRO;
@@ -746,24 +707,24 @@ procedure cairo_path_destroy(path: Pcairo_path_t); cdecl; external LIB_CAIRO;
 
 (* Error status queries *)
 
-function  cairo_status(cr: Pcairo_t): cairo_status_t; cdecl; external LIB_CAIRO;
-function  cairo_status_to_string(status: cairo_status_t): Pchar; cdecl; external LIB_CAIRO;
+function  cairo_status(cr: Pcairo_t): Tcairo_status_t; cdecl; external LIB_CAIRO;
+function  cairo_status_to_string(status: Tcairo_status_t): Pchar; cdecl; external LIB_CAIRO;
 
 (* Surface manipulation *)
 
-function cairo_surface_create_similar(other: Pcairo_surface_t; content: cairo_content_t; width, height: LongInt): Pcairo_surface_t; cdecl; external LIB_CAIRO;
+function cairo_surface_create_similar(other: Pcairo_surface_t; content: Tcairo_content_t; width, height: LongInt): Pcairo_surface_t; cdecl; external LIB_CAIRO;
 function cairo_surface_create_for_rectangle(other: Pcairo_surface_t; x, y, width, height: double): Pcairo_surface_t; cdecl; external LIB_CAIRO;
 function  cairo_surface_reference(surface: Pcairo_surface_t): Pcairo_surface_t; cdecl; external LIB_CAIRO;
 procedure cairo_surface_finish(surface: Pcairo_surface_t); cdecl; external LIB_CAIRO;
 procedure cairo_surface_destroy(surface: Pcairo_surface_t); cdecl; external LIB_CAIRO;
 function  cairo_surface_get_reference_count(surface: Pcairo_surface_t): LongWord; cdecl; external LIB_CAIRO;
-function  cairo_surface_status(surface: Pcairo_surface_t): cairo_status_t; cdecl; external LIB_CAIRO;
-function  cairo_surface_get_type(surface: Pcairo_surface_t): cairo_surface_type_t; cdecl; external LIB_CAIRO;
-function  cairo_surface_get_content(surface: Pcairo_surface_t): cairo_content_t; cdecl; external LIB_CAIRO;
-function  cairo_surface_write_to_png(surface: Pcairo_surface_t; filename: Pchar): cairo_status_t; cdecl; external LIB_CAIRO;
-//function  cairo_surface_write_to_png_stream(surface: Pcairo_surface_t; write_func: cairo_write_func_t; closure: pointer): cairo_status_t; cdecl; external LIB_CAIRO;
+function  cairo_surface_status(surface: Pcairo_surface_t): Tcairo_status_t; cdecl; external LIB_CAIRO;
+function  cairo_surface_get_type(surface: Pcairo_surface_t): Tcairo_surface_type_t; cdecl; external LIB_CAIRO;
+function  cairo_surface_get_content(surface: Pcairo_surface_t): Tcairo_content_t; cdecl; external LIB_CAIRO;
+function  cairo_surface_write_to_png(surface: Pcairo_surface_t; filename: Pchar): Tcairo_status_t; cdecl; external LIB_CAIRO;
+//function  cairo_surface_write_to_png_stream(surface: Pcairo_surface_t; write_func: Tcairo_write_func_t; closure: pointer): Tcairo_status_t; cdecl; external LIB_CAIRO;
 //function  cairo_surface_get_user_data(surface: Pcairo_surface_t; key: Pcairo_user_data_key_t): pointer; cdecl; external LIB_CAIRO;
-//function  cairo_surface_set_user_data(surface: Pcairo_surface_t; key: Pcairo_user_data_key_t; user_data: pointer; destroy: cairo_destroy_func_t): cairo_status_t; cdecl; external LIB_CAIRO;
+//function  cairo_surface_set_user_data(surface: Pcairo_surface_t; key: Pcairo_user_data_key_t; user_data: pointer; destroy: Tcairo_destroy_func_t): Tcairo_status_t; cdecl; external LIB_CAIRO;
 procedure cairo_surface_get_font_options(surface: Pcairo_surface_t; options: Pcairo_font_options_t); cdecl; external LIB_CAIRO;
 procedure cairo_surface_flush(surface: Pcairo_surface_t); cdecl; external LIB_CAIRO;
 procedure cairo_surface_mark_dirty(surface: Pcairo_surface_t); cdecl; external LIB_CAIRO;
@@ -774,20 +735,20 @@ procedure cairo_surface_set_fallback_resolution(surface: Pcairo_surface_t; x_pix
 function cairo_surface_get_device(surface: Pcairo_surface_t): Pcairo_device_t; cdecl; external LIB_CAIRO;
 
 {* cairo device *}
-function cairo_device_get_type(device: PCairo_device_t): cairo_device_type_t; cdecl; external LIB_CAIRO;
+function cairo_device_get_type(device: PCairo_device_t): Tcairo_device_type_t; cdecl; external LIB_CAIRO;
 
 (* Image-surface functions *)
 
-function  cairo_format_stride_for_width(format: cairo_format_t; width : LongInt): LongInt; cdecl; external LIB_CAIRO;
-function  cairo_image_surface_create(format: cairo_format_t; width, height: LongInt): Pcairo_surface_t; cdecl; external LIB_CAIRO;
-function  cairo_image_surface_create_for_data(data: Pbyte; format: cairo_format_t; width, height, stride: LongInt): Pcairo_surface_t; cdecl; external LIB_CAIRO;
+function  cairo_format_stride_for_width(format: Tcairo_format_t; width : LongInt): LongInt; cdecl; external LIB_CAIRO;
+function  cairo_image_surface_create(format: Tcairo_format_t; width, height: LongInt): Pcairo_surface_t; cdecl; external LIB_CAIRO;
+function  cairo_image_surface_create_for_data(data: Pbyte; format: Tcairo_format_t; width, height, stride: LongInt): Pcairo_surface_t; cdecl; external LIB_CAIRO;
 function  cairo_image_surface_get_data(surface: Pcairo_surface_t): PChar; cdecl; external LIB_CAIRO;
-function  cairo_image_surface_get_format(surface: Pcairo_surface_t): cairo_format_t; cdecl; external LIB_CAIRO;
+function  cairo_image_surface_get_format(surface: Pcairo_surface_t): Tcairo_format_t; cdecl; external LIB_CAIRO;
 function  cairo_image_surface_get_width(surface: Pcairo_surface_t): LongInt; cdecl; external LIB_CAIRO;
 function  cairo_image_surface_get_height(surface: Pcairo_surface_t): LongInt; cdecl; external LIB_CAIRO;
 function  cairo_image_surface_get_stride(surface: Pcairo_surface_t): LongInt; cdecl; external LIB_CAIRO;
 function  cairo_image_surface_create_from_png(filename: Pchar): Pcairo_surface_t; cdecl; external LIB_CAIRO;
-//function  cairo_image_surface_create_from_png_stream(read_func: cairo_read_func_t; closure: pointer): Pcairo_surface_t; cdecl; external LIB_CAIRO;
+//function  cairo_image_surface_create_from_png_stream(read_func: Tcairo_read_func_t; closure: pointer): Pcairo_surface_t; cdecl; external LIB_CAIRO;
 
 (* Pattern creation functions *)
 
@@ -799,24 +760,24 @@ function  cairo_pattern_create_radial(cx0, cy0, radius0, cx1, cy1, radius1: Doub
 function  cairo_pattern_reference(pattern: Pcairo_pattern_t): Pcairo_pattern_t; cdecl; external LIB_CAIRO;
 procedure cairo_pattern_destroy(pattern: Pcairo_pattern_t); cdecl; external LIB_CAIRO;
 function  cairo_pattern_get_reference_count (pattern: Pcairo_pattern_t): LongWord; cdecl; external LIB_CAIRO;
-function  cairo_pattern_status(pattern: Pcairo_pattern_t): cairo_status_t; cdecl; external LIB_CAIRO;
+function  cairo_pattern_status(pattern: Pcairo_pattern_t): Tcairo_status_t; cdecl; external LIB_CAIRO;
 //function  cairo_pattern_get_user_data (pattern: Pcairo_pattern_t; key: Pcairo_user_data_key_t): Pointer; cdecl; external LIB_CAIRO;
-//function  cairo_pattern_set_user_data (pattern: Pcairo_pattern_t; key: Pcairo_user_data_key_t; user_data: Pointer; destroy: cairo_destroy_func_t): cairo_status_t; cdecl; external LIB_CAIRO;
-function  cairo_pattern_get_type(pattern: Pcairo_pattern_t): cairo_pattern_type_t; cdecl; external LIB_CAIRO;
+//function  cairo_pattern_set_user_data (pattern: Pcairo_pattern_t; key: Pcairo_user_data_key_t; user_data: Pointer; destroy: Tcairo_destroy_func_t): Tcairo_status_t; cdecl; external LIB_CAIRO;
+function  cairo_pattern_get_type(pattern: Pcairo_pattern_t): Tcairo_pattern_type_t; cdecl; external LIB_CAIRO;
 procedure cairo_pattern_add_color_stop_rgb(pattern: Pcairo_pattern_t; offset, red, green, blue: Double); cdecl; external LIB_CAIRO;
 procedure cairo_pattern_add_color_stop_rgba(pattern: Pcairo_pattern_t; offset, red, green, blue, alpha: Double); cdecl; external LIB_CAIRO;
 procedure cairo_pattern_set_matrix(pattern: Pcairo_pattern_t; matrix: Pcairo_matrix_t); cdecl; external LIB_CAIRO;
 procedure cairo_pattern_get_matrix(pattern: Pcairo_pattern_t; matrix: Pcairo_matrix_t); cdecl; external LIB_CAIRO;
-procedure cairo_pattern_set_extend(pattern: Pcairo_pattern_t; extend: cairo_extend_t); cdecl; external LIB_CAIRO;
-function  cairo_pattern_get_extend(pattern: Pcairo_pattern_t): cairo_extend_t; cdecl; external LIB_CAIRO;
-procedure cairo_pattern_set_filter(pattern: Pcairo_pattern_t; filter: cairo_filter_t); cdecl; external LIB_CAIRO;
-function  cairo_pattern_get_filter(pattern: Pcairo_pattern_t): cairo_filter_t; cdecl; external LIB_CAIRO;
-function  cairo_pattern_get_rgba (pattern: Pcairo_pattern_t; red, green, blue, alpha: PDouble): cairo_status_t; cdecl; external LIB_CAIRO;
-function  cairo_pattern_get_surface (pattern: Pcairo_pattern_t; surface: PPcairo_surface_t): cairo_status_t; cdecl; external LIB_CAIRO;
-function  cairo_pattern_get_color_stop_rgba(pattern: Pcairo_pattern_t; index: LongInt; offset, red, green, blue, alpha: PDouble):cairo_status_t; cdecl; external LIB_CAIRO;
-function  cairo_pattern_get_color_stop_count(pattern: Pcairo_pattern_t; count: PLongInt):cairo_status_t; cdecl; external LIB_CAIRO;
-function  cairo_pattern_get_linear_points (pattern: Pcairo_pattern_t; x0, y0, x1, y1: PDouble): cairo_status_t; cdecl; external LIB_CAIRO;
-function  cairo_pattern_get_radial_circles (pattern: Pcairo_pattern_t; x0, y0, r0, x1, y1, r1:PDouble): cairo_status_t; cdecl; external LIB_CAIRO;
+procedure cairo_pattern_set_extend(pattern: Pcairo_pattern_t; extend: Tcairo_extend_t); cdecl; external LIB_CAIRO;
+function  cairo_pattern_get_extend(pattern: Pcairo_pattern_t): Tcairo_extend_t; cdecl; external LIB_CAIRO;
+procedure cairo_pattern_set_filter(pattern: Pcairo_pattern_t; filter: Tcairo_filter_t); cdecl; external LIB_CAIRO;
+function  cairo_pattern_get_filter(pattern: Pcairo_pattern_t): Tcairo_filter_t; cdecl; external LIB_CAIRO;
+function  cairo_pattern_get_rgba (pattern: Pcairo_pattern_t; red, green, blue, alpha: PDouble): Tcairo_status_t; cdecl; external LIB_CAIRO;
+function  cairo_pattern_get_surface (pattern: Pcairo_pattern_t; surface: PPcairo_surface_t): Tcairo_status_t; cdecl; external LIB_CAIRO;
+function  cairo_pattern_get_color_stop_rgba(pattern: Pcairo_pattern_t; index: LongInt; offset, red, green, blue, alpha: PDouble): Tcairo_status_t; cdecl; external LIB_CAIRO;
+function  cairo_pattern_get_color_stop_count(pattern: Pcairo_pattern_t; count: PLongInt): Tcairo_status_t; cdecl; external LIB_CAIRO;
+function  cairo_pattern_get_linear_points (pattern: Pcairo_pattern_t; x0, y0, x1, y1: PDouble): Tcairo_status_t; cdecl; external LIB_CAIRO;
+function  cairo_pattern_get_radial_circles (pattern: Pcairo_pattern_t; x0, y0, r0, x1, y1, r1:PDouble): Tcairo_status_t; cdecl; external LIB_CAIRO;
 
 (* Matrix functions *)
 
@@ -828,7 +789,7 @@ procedure cairo_matrix_init_rotate(matrix: Pcairo_matrix_t; radians: Double); cd
 procedure cairo_matrix_translate(matrix: Pcairo_matrix_t; tx, ty: Double); cdecl; external LIB_CAIRO;
 procedure cairo_matrix_scale(matrix: Pcairo_matrix_t; sx, sy: Double); cdecl; external LIB_CAIRO;
 procedure cairo_matrix_rotate(matrix: Pcairo_matrix_t; radians: Double); cdecl; external LIB_CAIRO;
-function  cairo_matrix_invert(matrix: Pcairo_matrix_t): cairo_status_t; cdecl; external LIB_CAIRO;
+function  cairo_matrix_invert(matrix: Pcairo_matrix_t): Tcairo_status_t; cdecl; external LIB_CAIRO;
 procedure cairo_matrix_multiply(result, a, b: Pcairo_matrix_t); cdecl; external LIB_CAIRO;
 procedure cairo_matrix_transform_distance(matrix: Pcairo_matrix_t; dx, dy: PDouble); cdecl; external LIB_CAIRO;
 procedure cairo_matrix_transform_point(matrix: Pcairo_matrix_t; x, y: PDouble); cdecl; external LIB_CAIRO;
@@ -836,13 +797,13 @@ procedure cairo_matrix_transform_point(matrix: Pcairo_matrix_t; x, y: PDouble); 
 (* PDF functions *)
 
 function  cairo_pdf_surface_create(filename: PChar; width_in_points, height_in_points: Double): Pcairo_surface_t; cdecl; external LIB_CAIRO;
-//function  cairo_pdf_surface_create_for_stream(write_func: cairo_write_func_t; closure: Pointer; width_in_points, height_in_points: Double): Pcairo_surface_t; cdecl; external LIB_CAIRO;
+//function  cairo_pdf_surface_create_for_stream(write_func: Tcairo_write_func_t; closure: Pointer; width_in_points, height_in_points: Double): Pcairo_surface_t; cdecl; external LIB_CAIRO;
 procedure cairo_pdf_surface_set_size(surface: Pcairo_surface_t; width_in_points, height_in_points: Double); cdecl; external LIB_CAIRO;
 
 (* PS functions *)
 
 function  cairo_ps_surface_create(filename: PChar; width_in_points, height_in_points: Double): Pcairo_surface_t; cdecl; external LIB_CAIRO;
-//function  cairo_ps_surface_create_for_stream(write_func: cairo_write_func_t; closure: Pointer; width_in_points, height_in_points: Double): Pcairo_surface_t; cdecl; external LIB_CAIRO;
+//function  cairo_ps_surface_create_for_stream(write_func: Tcairo_write_func_t; closure: Pointer; width_in_points, height_in_points: Double): Pcairo_surface_t; cdecl; external LIB_CAIRO;
 procedure cairo_ps_surface_set_size(surface: Pcairo_surface_t; width_in_points, height_in_points: Double); cdecl; external LIB_CAIRO;
 procedure cairo_ps_surface_dsc_comment(surface: Pcairo_surface_t; comment: PChar); cdecl; external LIB_CAIRO;
 procedure cairo_ps_surface_dsc_begin_setup(surface: Pcairo_surface_t); cdecl; external LIB_CAIRO;
@@ -851,11 +812,11 @@ procedure cairo_ps_surface_dsc_begin_page_setup(surface: Pcairo_surface_t); cdec
 (* SVG functions *)
 
 function  cairo_svg_surface_create(filename: PChar; width_in_points, height_in_points: Double): Pcairo_surface_t; cdecl; external LIB_CAIRO;
-//function  cairo_svg_surface_create_for_stream(write_func: cairo_write_func_t; closure: Pointer; width_in_points, height_in_points: Double): Pcairo_surface_t; cdecl; external LIB_CAIRO;
-//procedure cairo_svg_surface_restrict_to_version(surface: Pcairo_surface_t; version: cairo_svg_version_t); cdecl; external LIB_CAIRO;
+//function  cairo_svg_surface_create_for_stream(write_func: Tcairo_write_func_t; closure: Pointer; width_in_points, height_in_points: Double): Pcairo_surface_t; cdecl; external LIB_CAIRO;
+//procedure cairo_svg_surface_restrict_to_version(surface: Pcairo_surface_t; version: Tcairo_svg_version_t); cdecl; external LIB_CAIRO;
 
 //procedure cairo_svg_get_versions(versions: ppcairo_svg_version_t;num_versions:pcint);cdecl; external LIB_CAIRO;
-//function  cairo_svg_version_to_string(version: cairo_svg_version_t): PChar; cdecl; external LIB_CAIRO;
+//function  cairo_svg_version_to_string(version: Tcairo_svg_version_t): PChar; cdecl; external LIB_CAIRO;
 
 
 (* Functions to be used while debugging (not intended for use in production code) *)
@@ -870,25 +831,25 @@ function cairo_region_create_rectangles(const ARect: PPcairo_rectangle_int_t; AC
 function cairo_region_copy(ARegion: Pcairo_region_t): Pcairo_region_t; cdecl; external LIB_CAIRO;
 function cairo_region_reference(ARegion: Pcairo_region_t): Pcairo_region_t; cdecl; external LIB_CAIRO;
 procedure cairo_region_destroy(ARegion: Pcairo_region_t); cdecl; external LIB_CAIRO;
-function cairo_region_status(ARegion: Pcairo_region_t): cairo_status_t; cdecl;  external LIB_CAIRO;
+function cairo_region_status(ARegion: Pcairo_region_t): Tcairo_status_t; cdecl;  external LIB_CAIRO;
 procedure cairo_region_get_extents(ARegion: Pcairo_region_t; AOutRect: Pcairo_rectangle_int_t); cdecl; external LIB_CAIRO;
 function cairo_region_num_rectangles(ARegion: Pcairo_region_t): cint; cdecl;  external LIB_CAIRO;
 procedure cairo_region_get_rectangle(ARegion: Pcairo_region_t; nth: cint; AOutRect: Pcairo_rectangle_int_t); cdecl; external LIB_CAIRO;
 function cairo_region_is_empty(ARegion: Pcairo_region_t): boolean; cdecl;  external LIB_CAIRO;
 function cairo_region_contains_point(ARegion: Pcairo_region_t; x,y: cint): boolean; cdecl;  external LIB_CAIRO;
-function cairo_region_contains_rectangle(ARegion: Pcairo_region_t; ARect: Pcairo_rectangle_int_t): cairo_region_overlap_t; cdecl; external LIB_CAIRO;
+function cairo_region_contains_rectangle(ARegion: Pcairo_region_t; ARect: Pcairo_rectangle_int_t): Tcairo_region_overlap_t; cdecl; external LIB_CAIRO;
 
 // ops
 function cairo_region_equal(ARegion1: Pcairo_region_t; ARegion2: Pcairo_region_t): boolean; cdecl; external LIB_CAIRO;
 procedure cairo_region_translate(ADestRegion: Pcairo_region_t; dx: integer; dy: integer); cdecl; external LIB_CAIRO;
-function cairo_region_intersect(ADestRegion: Pcairo_region_t; ASrcRegion: Pcairo_region_t): cairo_status_t; cdecl; external LIB_CAIRO;
-function cairo_region_intersect_rectangle(ADestRegion: Pcairo_region_t; ASrcRect: Pcairo_rectangle_int_t): cairo_status_t; cdecl; external LIB_CAIRO;
-function cairo_region_subtract(ADestRegion: Pcairo_region_t; ASrcRegion: Pcairo_region_t): cairo_status_t; cdecl; external LIB_CAIRO;
-function cairo_region_subtract_rectangle(ADestRegion: Pcairo_region_t; ASrcRect: Pcairo_rectangle_int_t): cairo_status_t; cdecl; external LIB_CAIRO;
-function cairo_region_union(ADestRegion: Pcairo_region_t; ASrcRegion: Pcairo_region_t): cairo_status_t; cdecl; external LIB_CAIRO;
-function cairo_region_union_rectangle(ADestRegion: Pcairo_region_t; ASrcRect: Pcairo_rectangle_int_t): cairo_status_t; cdecl; external LIB_CAIRO;
-function cairo_region_xor(ADestRegion: Pcairo_region_t; ASrcRegion: Pcairo_region_t): cairo_status_t; cdecl; external LIB_CAIRO;
-function cairo_region_xor_rectangle(ADestRegion: Pcairo_region_t; ASrcRect: Pcairo_rectangle_int_t): cairo_status_t; cdecl; external LIB_CAIRO;
+function cairo_region_intersect(ADestRegion: Pcairo_region_t; ASrcRegion: Pcairo_region_t): Tcairo_status_t; cdecl; external LIB_CAIRO;
+function cairo_region_intersect_rectangle(ADestRegion: Pcairo_region_t; ASrcRect: Pcairo_rectangle_int_t): Tcairo_status_t; cdecl; external LIB_CAIRO;
+function cairo_region_subtract(ADestRegion: Pcairo_region_t; ASrcRegion: Pcairo_region_t): Tcairo_status_t; cdecl; external LIB_CAIRO;
+function cairo_region_subtract_rectangle(ADestRegion: Pcairo_region_t; ASrcRect: Pcairo_rectangle_int_t): Tcairo_status_t; cdecl; external LIB_CAIRO;
+function cairo_region_union(ADestRegion: Pcairo_region_t; ASrcRegion: Pcairo_region_t): Tcairo_status_t; cdecl; external LIB_CAIRO;
+function cairo_region_union_rectangle(ADestRegion: Pcairo_region_t; ASrcRect: Pcairo_rectangle_int_t): Tcairo_status_t; cdecl; external LIB_CAIRO;
+function cairo_region_xor(ADestRegion: Pcairo_region_t; ASrcRegion: Pcairo_region_t): Tcairo_status_t; cdecl; external LIB_CAIRO;
+function cairo_region_xor_rectangle(ADestRegion: Pcairo_region_t; ASrcRect: Pcairo_rectangle_int_t): Tcairo_status_t; cdecl; external LIB_CAIRO;
 
 
 implementation

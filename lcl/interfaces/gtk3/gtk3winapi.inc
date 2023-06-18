@@ -193,7 +193,7 @@ function TGtk3WidgetSet.CombineRgn(Dest, Src1, Src2: HRGN;
 var
   RDest,RSrc1,RSrc2: Pcairo_region_t;
   ARegion: Pcairo_region_t;
-  AStatus: cairo_status_t;
+  AStatus: Tcairo_status_t;
   ACairoRect: Tcairo_rectangle_int_t;
 begin
   {$IFDEF VerboseGtk3DeviceContext}
@@ -263,7 +263,7 @@ end;
 function TGtk3WidgetSet.CreateBitmap(Width, Height: Integer; Planes,
   BitCount: Longint; BitmapBits: Pointer): HBITMAP;
 var
-  Format: cairo_format_t;
+  Format: Tcairo_format_t;
   NewBits: PByte;
   NewBitsSize: PtrUInt;
   ARowStride, RSS: Integer;
@@ -343,7 +343,7 @@ function TGtk3WidgetSet.CreateCompatibleBitmap(DC: HDC; Width, Height: Integer
   ): HBITMAP;
 var
   Gtk3DC: TGtk3DeviceContext;
-  Format: cairo_format_t = CAIRO_FORMAT_ARGB32;
+  Format: Tcairo_format_t = CAIRO_FORMAT_ARGB32;
   ADepth: Integer;
   AVisual: PGdkVisual;
   ABpp: gint;
@@ -1625,8 +1625,8 @@ begin
   cairo_save(cr);
   try
     cairo_set_line_width(cr, 1);
-    cairo_set_line_cap(cr, cairo_line_cap_t.CAIRO_LINE_CAP_ROUND);
-    cairo_set_line_join(cr, cairo_line_join_t.CAIRO_LINE_JOIN_ROUND);
+    cairo_set_line_cap(cr, Tcairo_line_cap_t.CAIRO_LINE_CAP_ROUND);
+    cairo_set_line_join(cr, Tcairo_line_join_t.CAIRO_LINE_JOIN_ROUND);
 
     for i := 1 to FrameWidth do
     begin
@@ -2720,7 +2720,7 @@ end;
 
 function TGtk3WidgetSet.GetWindowOrgEx(dc: hdc; P: PPoint): Integer;
 var
-  Matrix: cairo_matrix_t;
+  Matrix: Tcairo_matrix_t;
   dx, dy: Double;
   OrigX, OrigY: LongInt;
 begin
@@ -2904,7 +2904,7 @@ end;
 
 function TGtk3WidgetSet.LPtoDP(DC: HDC; var Points; Count: Integer): BOOL;
 var
-  //Matrix: cairo_matrix_t;
+  //Matrix: Tcairo_matrix_t;
   cr: PCairo_t;
   P: PPoint;
   dx, dy: Double;
@@ -3775,7 +3775,7 @@ end;
 function TGtk3WidgetSet.SetWindowOrgEx(dc: hdc; NewX, NewY: Integer;
   OldPoint: PPoint): Boolean;
 var
-  Matrix: cairo_matrix_t;
+  Matrix: Tcairo_matrix_t;
   //dx, dy: Double;
 begin
   Result := False; // inherited SetWindowOrgEx(dc, NewX, NewY, OldPoint);
