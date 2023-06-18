@@ -806,7 +806,11 @@ begin
       BaseType := TGirBaseType(NameSpace.Types.Items[i]);
       if BaseType.InheritsFrom(TgirFuzzyType) and (FuzzyType.ResolvedType = nil) then
       begin
-        CTypesType := LookupGTypeToCType(FuzzyType.CType);
+        if FuzzyType.CType = '' then begin
+          CTypesType := LookupGTypeToCType(FuzzyType.Name);
+        end else begin
+          CTypesType := LookupGTypeToCType(FuzzyType.CType);
+        end;
         if CTypesType <> '' then
         begin
           FuzzyType.TranslatedName:= CTypesType;
