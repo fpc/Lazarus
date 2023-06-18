@@ -9701,7 +9701,7 @@ var
           if not IsEnd then
             AliasType:=Nil;
           ExprType:=FindExpressionTypeOfPredefinedIdentifier(CurAtom.StartPos,
-                                                             Params,AliasType)
+                                                             Params,AliasType);
           {$IFDEF CheckNodeTool}
           if ExprType.Desc=xtContext then
             ExprType.Context.Tool.CheckNodeTool(ExprType.Context.Node);

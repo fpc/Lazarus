@@ -4577,7 +4577,7 @@ begin
     exit;
 
   {$PUSH}{$R-}{$Q-}
-  Result := TFpValueConstNumber.Create(AVal >> AShift, False)
+  Result := TFpValueConstNumber.Create(AVal >> AShift, False);
   {$POP}
 
  {$IFDEF WITH_REFCOUNT_DEBUG}if Result <> nil then Result.DbgRenameReference(nil, 'DoGetResultValue');{$ENDIF}
@@ -4594,7 +4594,7 @@ begin
     exit;
 
   {$PUSH}{$R-}{$Q-}
-  Result := TFpValueConstNumber.Create(AVal << AShift, False)
+  Result := TFpValueConstNumber.Create(AVal << AShift, False);
   {$POP}
 
  {$IFDEF WITH_REFCOUNT_DEBUG}if Result <> nil then Result.DbgRenameReference(nil, 'DoGetResultValue');{$ENDIF}
