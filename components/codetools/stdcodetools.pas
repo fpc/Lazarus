@@ -5339,6 +5339,8 @@ begin
           ReadBackTilBlockEnd(true);
           if CursorOnStart then exit(true);
         end;
+        if CurPos.StartPos <= 1 then // Issue #40326
+          break;
         ReadPriorAtom;
       until CurPos.StartPos<MinPos;
     end;
