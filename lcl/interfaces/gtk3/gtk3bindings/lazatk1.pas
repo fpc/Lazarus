@@ -1109,6 +1109,7 @@ type
   TAtkPlug = object(TAtkObject)
     function new: PAtkPlug; cdecl; inline; static;
     function get_id: Pgchar; cdecl; inline;
+    procedure set_child(child: PAtkObject); cdecl; inline;
   end;
 
 
@@ -1649,6 +1650,7 @@ procedure atk_object_set_description(accessible: PAtkObject; description: Pgchar
 procedure atk_object_set_name(accessible: PAtkObject; name: Pgchar); cdecl; external;
 procedure atk_object_set_parent(accessible: PAtkObject; parent: PAtkObject); cdecl; external;
 procedure atk_object_set_role(accessible: PAtkObject; role: TAtkRole); cdecl; external;
+procedure atk_plug_set_child(plug: PAtkPlug; child: PAtkObject); cdecl; external;
 procedure atk_range_free(range: PAtkRange); cdecl; external;
 procedure atk_registry_set_factory_type(registry: PAtkRegistry; type_: TGType; factory_type: TGType); cdecl; external;
 procedure atk_relation_add_target(relation: PAtkRelation; target: PAtkObject); cdecl; external;
@@ -2495,6 +2497,11 @@ end;
 function TAtkPlug.get_id: Pgchar; cdecl;
 begin
   Result := LazAtk1.atk_plug_get_id(@self);
+end;
+
+procedure TAtkPlug.set_child(child: PAtkObject); cdecl;
+begin
+  LazAtk1.atk_plug_set_child(@self, child);
 end;
 
 function TAtkRange.new(lower_limit: gdouble; upper_limit: gdouble; description: Pgchar): PAtkRange; cdecl;

@@ -254,7 +254,7 @@ begin
     AddOption(['d', 'deprecated'], False, 'Include fields and methods marked as deprecated.');
     AddOption(['t', 'test'], False ,'Creates a test program per unit to verify struct sizes.');
     AddOption(['P', 'unit-prefix'], True, 'Set a prefix to be added to each unitname.');
-    AddOption(['M', 'max-version'], True, 'Do not include symbols introduced after <max-version>. Can be used multiple times. i.e "-M gtk-3.12 -M glib-2.23"');
+    AddOption(['M', 'max-version'], True, 'Do not include symbols introduced after <max-version>. Can be used multiple times. i.e "-M gtk-3.12 -M glib-2.23"', True);
     AddOption(['k', 'keep-deprecated-version'], True, 'Include deprecated symbols that are >= to $version. Uses the same format as --max-version. Has no effect if --deprecated is defined');
     AddOption(['e', 'declare-enums-as'], True, 'Declare C enums as either IntConst, TypedIntConst, IntAliasConst, Enum or Set');
   end;

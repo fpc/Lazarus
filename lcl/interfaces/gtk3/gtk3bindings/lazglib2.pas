@@ -494,16 +494,6 @@ type
     G_LOG_WRITER_HANDLED = 1,
     TGLogWriterOutputMaxValue = $7FFFFFFF
   );
-  TGMainContextFlagsIdx = (
-    TGMainContextFlagsIdxMinValue = 0,
-    G_MAIN_CONTEXT_FLAGS_OWNERLESS_POLLING = 0,
-    TGMainContextFlagsIdxMaxValue = 31
-  );
-  TGMainContextFlags = Set of TGMainContextFlagsIdx;
-const
-  G_MAIN_CONTEXT_FLAGS_NONE = []; {0 = $00000000}
-
-type
   TGMarkupCollectTypeIdx = (
     TGMarkupCollectTypeIdxMinValue = 0,
     G_MARKUP_COLLECT_STRING = 0,
@@ -1650,8 +1640,6 @@ type
     function get_element_size(array_: Pgpointer): guint; cdecl; inline; static;
     function insert_vals(array_: Pgpointer; index_: guint; data: Pgpointer; len: guint): Pgpointer; cdecl; inline; static;
     function new(zero_terminated: gboolean; clear_: gboolean; element_size: guint): Pgpointer; cdecl; inline; static;
-    //function new_take(data: gpointer; len: gsize; clear: gboolean; element_size: gsize): Pgpointer; cdecl; inline; static;
-    //function new_take_zero_terminated(data: gpointer; clear: gboolean; element_size: gsize): Pgpointer; cdecl; inline; static;
     function prepend_vals(array_: Pgpointer; data: Pgpointer; len: guint): Pgpointer; cdecl; inline; static;
     function ref(array_: Pgpointer): Pgpointer; cdecl; inline; static;
     function remove_index(array_: Pgpointer; index_: guint): Pgpointer; cdecl; inline; static;
@@ -1717,21 +1705,21 @@ type
   PGBookmarkFile = ^TGBookmarkFile;
 
 
-  { TGDateTime }
-  PPGDateTime = ^PGDateTime;
-  PGDateTime = ^TGDateTime;
-
-
   { TGError }
   PPGError = ^PGError;
   PGError = ^TGError;
+
+
+  { TGDateTime }
+  PPGDateTime = ^PGDateTime;
+  PGDateTime = ^TGDateTime;
   TGBookmarkFile = object
-    function new: PGBookmarkFile; cdecl; inline; static;
     procedure add_application(uri: Pgchar; name: Pgchar; exec: Pgchar); cdecl; inline;
     procedure add_group(uri: Pgchar; group: Pgchar); cdecl; inline;
-    //function copy: PGBookmarkFile; cdecl; inline;
     procedure free; cdecl; inline;
+    function get_added(uri: Pgchar; error: PPGError): glong; cdecl; inline; deprecated 'Use g_bookmark_file_get_added_date_time() instead, as    `time_t` is deprecated due to the year 2038 problem.';
     function get_added_date_time(uri: Pgchar; error: PPGError): PGDateTime; cdecl; inline;
+    function get_app_info(uri: Pgchar; name: Pgchar; exec: PPgchar; count: Pguint; stamp: Pglong; error: PPGError): gboolean; cdecl; inline; deprecated 'Use g_bookmark_file_get_application_info() instead, as    `time_t` is deprecated due to the year 2038 problem.';
     function get_application_info(uri: Pgchar; name: Pgchar; exec: PPgchar; count: Pguint; stamp: PPGDateTime; error: PPGError): gboolean; cdecl; inline;
     function get_applications(uri: Pgchar; length: Pgsize; error: PPGError): PPgchar; cdecl; inline;
     function get_description(uri: Pgchar; error: PPGError): Pgchar; cdecl; inline;
@@ -1739,10 +1727,12 @@ type
     function get_icon(uri: Pgchar; href: PPgchar; mime_type: PPgchar; error: PPGError): gboolean; cdecl; inline;
     function get_is_private(uri: Pgchar; error: PPGError): gboolean; cdecl; inline;
     function get_mime_type(uri: Pgchar; error: PPGError): Pgchar; cdecl; inline;
+    function get_modified(uri: Pgchar; error: PPGError): glong; cdecl; inline; deprecated 'Use g_bookmark_file_get_modified_date_time() instead, as    `time_t` is deprecated due to the year 2038 problem.';
     function get_modified_date_time(uri: Pgchar; error: PPGError): PGDateTime; cdecl; inline;
     function get_size: gint; cdecl; inline;
     function get_title(uri: Pgchar; error: PPGError): Pgchar; cdecl; inline;
     function get_uris(length: Pgsize): PPgchar; cdecl; inline;
+    function get_visited(uri: Pgchar; error: PPGError): glong; cdecl; inline; deprecated 'Use g_bookmark_file_get_visited_date_time() instead, as    `time_t` is deprecated due to the year 2038 problem.';
     function get_visited_date_time(uri: Pgchar; error: PPGError): PGDateTime; cdecl; inline;
     function has_application(uri: Pgchar; name: Pgchar; error: PPGError): gboolean; cdecl; inline;
     function has_group(uri: Pgchar; group: Pgchar; error: PPGError): gboolean; cdecl; inline;
@@ -1754,19 +1744,24 @@ type
     function remove_application(uri: Pgchar; name: Pgchar; error: PPGError): gboolean; cdecl; inline;
     function remove_group(uri: Pgchar; group: Pgchar; error: PPGError): gboolean; cdecl; inline;
     function remove_item(uri: Pgchar; error: PPGError): gboolean; cdecl; inline;
+    procedure set_added(uri: Pgchar; added: glong); cdecl; inline; deprecated 'Use g_bookmark_file_set_added_date_time() instead, as    `time_t` is deprecated due to the year 2038 problem.';
     procedure set_added_date_time(uri: Pgchar; added: PGDateTime); cdecl; inline;
+    function set_app_info(uri: Pgchar; name: Pgchar; exec: Pgchar; count: gint; stamp: glong; error: PPGError): gboolean; cdecl; inline; deprecated 'Use g_bookmark_file_set_application_info() instead, as    `time_t` is deprecated due to the year 2038 problem.';
     function set_application_info(uri: Pgchar; name: Pgchar; exec: Pgchar; count: gint; stamp: PGDateTime; error: PPGError): gboolean; cdecl; inline;
     procedure set_description(uri: Pgchar; description: Pgchar); cdecl; inline;
     procedure set_groups(uri: Pgchar; groups: PPgchar; length: gsize); cdecl; inline;
     procedure set_icon(uri: Pgchar; href: Pgchar; mime_type: Pgchar); cdecl; inline;
     procedure set_is_private(uri: Pgchar; is_private: gboolean); cdecl; inline;
     procedure set_mime_type(uri: Pgchar; mime_type: Pgchar); cdecl; inline;
+    procedure set_modified(uri: Pgchar; modified: glong); cdecl; inline; deprecated 'Use g_bookmark_file_set_modified_date_time() instead, as    `time_t` is deprecated due to the year 2038 problem.';
     procedure set_modified_date_time(uri: Pgchar; modified: PGDateTime); cdecl; inline;
     procedure set_title(uri: Pgchar; title: Pgchar); cdecl; inline;
+    procedure set_visited(uri: Pgchar; visited: glong); cdecl; inline; deprecated 'Use g_bookmark_file_set_visited_date_time() instead, as    `time_t` is deprecated due to the year 2038 problem.';
     procedure set_visited_date_time(uri: Pgchar; visited: PGDateTime); cdecl; inline;
     function to_data(length: Pgsize; error: PPGError): Pgchar; cdecl; inline;
     function to_file(filename: Pgchar; error: PPGError): gboolean; cdecl; inline;
     function error_quark: TGQuark; cdecl; inline; static;
+    function new: PGBookmarkFile; cdecl; inline; static;
   end;
 
 
@@ -1779,24 +1774,6 @@ type
     Unknown: Pointer;
   end;
 
-
-
-  { TGErrorInitFunc }
-  PPGErrorInitFunc = ^PGErrorInitFunc;
-  PGErrorInitFunc = ^TGErrorInitFunc;
-  TGErrorInitFunc = procedure(error: PGError); cdecl;
-
-
-  { TGErrorCopyFunc }
-  PPGErrorCopyFunc = ^PGErrorCopyFunc;
-  PGErrorCopyFunc = ^TGErrorCopyFunc;
-  TGErrorCopyFunc = procedure(src_error: PGError; dest_error: PGError); cdecl;
-
-
-  { TGErrorClearFunc }
-  PPGErrorClearFunc = ^PGErrorClearFunc;
-  PGErrorClearFunc = ^TGErrorClearFunc;
-  TGErrorClearFunc = procedure(error: PGError); cdecl;
   TGError = object
     domain: TGQuark;
     code: gint;
@@ -2069,6 +2046,7 @@ type
   PPGTimeType = ^PGTimeType;
   PGTimeType = ^TGTimeType;
   TGTimeZone = object
+    function new(identifier: Pgchar): PGTimeZone; cdecl; inline; static; deprecated 'Use g_time_zone_new_identifier() instead, as it provides     error reporting. Change your code to handle a potentially %NULL return     value.';
     function new_local: PGTimeZone; cdecl; inline; static;
     function new_offset(seconds: gint32): PGTimeZone; cdecl; inline; static;
     function new_utc: PGTimeZone; cdecl; inline; static;
@@ -2127,7 +2105,6 @@ type
 
   TGDuplicateFunc = function(data: gpointer; user_data: gpointer): gpointer; cdecl;
   TGEqualFunc = function(a: Pgpointer; b: Pgpointer): gboolean; cdecl;
-  TGEqualFuncFull = function(a: Pgpointer; b: Pgpointer; user_data: gpointer): gboolean; cdecl;
 
 
   { TGErrorType }
@@ -2217,9 +2194,7 @@ type
     function foreach_steal(hash_table: PGHashTable; func: TGHRFunc; user_data: gpointer): guint; cdecl; inline; static;
     function get_keys(hash_table: PGHashTable): PGList; cdecl; inline; static;
     function get_keys_as_array(hash_table: PGHashTable; length: Pguint): Pgpointer; cdecl; inline; static;
-    //function get_keys_as_ptr_array(hash_table: PGHashTable): Pgpointer; cdecl; inline; static;
     function get_values(hash_table: PGHashTable): PGList; cdecl; inline; static;
-    //function get_values_as_ptr_array(hash_table: PGHashTable): Pgpointer; cdecl; inline; static;
     function insert(hash_table: PGHashTable; key: gpointer; value: gpointer): gboolean; cdecl; inline; static;
     function lookup(hash_table: PGHashTable; key: Pgpointer): gpointer; cdecl; inline; static;
     function lookup_extended(hash_table: PGHashTable; lookup_key: Pgpointer; orig_key: Pgpointer; value: Pgpointer): gboolean; cdecl; inline; static;
@@ -2232,8 +2207,6 @@ type
     function size(hash_table: PGHashTable): guint; cdecl; inline; static;
     function steal(hash_table: PGHashTable; key: Pgpointer): gboolean; cdecl; inline; static;
     procedure steal_all(hash_table: PGHashTable); cdecl; inline; static;
-    //function steal_all_keys(hash_table: PGHashTable): Pgpointer; cdecl; inline; static;
-    //function steal_all_values(hash_table: PGHashTable): Pgpointer; cdecl; inline; static;
     function steal_extended(hash_table: PGHashTable; lookup_key: Pgpointer; stolen_key: Pgpointer; stolen_value: Pgpointer): gboolean; cdecl; inline; static;
     procedure unref(hash_table: PGHashTable); cdecl; inline; static;
   end;
@@ -2493,7 +2466,6 @@ type
     function equal(v2: PGString): gboolean; cdecl; inline;
     function erase(pos: gssize; len: gssize): PGString; cdecl; inline;
     function free(free_segment: gboolean): Pgchar; cdecl; inline;
-    //function free_and_steal: Pgchar; cdecl; inline;
     function free_to_bytes: PGBytes; cdecl; inline;
     function hash: guint; cdecl; inline;
     function insert(pos: gssize; val: Pgchar): PGString; cdecl; inline;
@@ -2762,11 +2734,6 @@ type
   PPGLogWriterOutput = ^PGLogWriterOutput;
   PGLogWriterOutput = ^TGLogWriterOutput;
   TGLogWriterFunc = function(log_level: TGLogLevelFlags; fields: PGLogField; n_fields: gsize; user_data: gpointer): TGLogWriterOutput; cdecl;
-
-
-  { TGMainContextFlags }
-  PPGMainContextFlags = ^PGMainContextFlags;
-  PGMainContextFlags = ^TGMainContextFlags;
 
 
   { TGPollFunc }
@@ -3210,29 +3177,6 @@ type
   PGOptionFlags = ^TGOptionFlags;
 
 
-  { TGPathBuf }
-  PPGPathBuf = ^PGPathBuf;
-  PGPathBuf = ^TGPathBuf;
-  TGPathBuf = object
-    dummy: array [0..7] of gpointer;
-    //procedure clear; cdecl; inline;
-    //function clear_to_path: Pgchar; cdecl; inline;
-    //function copy: PGPathBuf; cdecl; inline;
-    //procedure free; cdecl; inline;
-    //function free_to_path: Pgchar; cdecl; inline;
-    //function init: PGPathBuf; cdecl; inline;
-    //function init_from_path(path: Pgchar): PGPathBuf; cdecl; inline;
-    //function pop: gboolean; cdecl; inline;
-    //function push(path: Pgchar): PGPathBuf; cdecl; inline;
-    //function set_extension(extension: Pgchar): gboolean; cdecl; inline;
-    //function set_filename(file_name: Pgchar): gboolean; cdecl; inline;
-    //function to_path: Pgchar; cdecl; inline;
-    //function equal(v1: Pgpointer; v2: Pgpointer): gboolean; cdecl; inline; static;
-    //function new: PGPathBuf; cdecl; inline; static;
-    //function new_from_path(path: Pgchar): PGPathBuf; cdecl; inline; static;
-  end;
-
-
   { TGPatternSpec }
   PPGPatternSpec = ^PGPatternSpec;
   PGPatternSpec = ^TGPatternSpec;
@@ -3273,11 +3217,7 @@ type
     function free(array_: Pgpointer; free_seg: gboolean): Pgpointer; cdecl; inline; static;
     procedure insert(array_: Pgpointer; index_: gint; data: gpointer); cdecl; inline; static;
     function new: Pgpointer; cdecl; inline; static;
-    //function new_from_array(data: Pgpointer; len: gsize; copy_func: TGCopyFunc; copy_func_user_data: gpointer; element_free_func: TGDestroyNotify): Pgpointer; cdecl; inline; static;
-    //function new_from_null_terminated_array(data: Pgpointer; copy_func: TGCopyFunc; copy_func_user_data: gpointer; element_free_func: TGDestroyNotify): Pgpointer; cdecl; inline; static;
     function new_full(reserved_size: guint; element_free_func: TGDestroyNotify): Pgpointer; cdecl; inline; static;
-    //function new_take(data: Pgpointer; len: gsize; element_free_func: TGDestroyNotify): Pgpointer; cdecl; inline; static;
-    //function new_take_null_terminated(data: Pgpointer; element_free_func: TGDestroyNotify): Pgpointer; cdecl; inline; static;
     function new_with_free_func(element_free_func: TGDestroyNotify): Pgpointer; cdecl; inline; static;
     function ref(array_: Pgpointer): Pgpointer; cdecl; inline; static;
     function remove(array_: Pgpointer; data: gpointer): gboolean; cdecl; inline; static;
@@ -3289,8 +3229,6 @@ type
     procedure set_size(array_: Pgpointer; length: gint); cdecl; inline; static;
     function sized_new(reserved_size: guint): Pgpointer; cdecl; inline; static;
     procedure sort(array_: Pgpointer; compare_func: TGCompareFunc); cdecl; inline; static;
-    //procedure sort_values(array_: Pgpointer; compare_func: TGCompareFunc); cdecl; inline; static;
-    //procedure sort_values_with_data(array_: Pgpointer; compare_func: TGCompareDataFunc; user_data: gpointer); cdecl; inline; static;
     procedure sort_with_data(array_: Pgpointer; compare_func: TGCompareDataFunc; user_data: gpointer); cdecl; inline; static;
     function steal(array_: Pgpointer; len: Pgsize): Pgpointer; cdecl; inline; static;
     function steal_index(array_: Pgpointer; index_: guint): gpointer; cdecl; inline; static;
@@ -3552,7 +3490,7 @@ type
   { TGSequenceIterCompareFunc }
   PPGSequenceIterCompareFunc = ^PGSequenceIterCompareFunc;
   PGSequenceIterCompareFunc = ^TGSequenceIterCompareFunc;
-  TGSequenceIterCompareFunc = function(a: PGSequenceIter; b: PGSequenceIter; data: gpointer): gint; cdecl;
+  TGSequenceIterCompareFunc = function(a: PGSequenceIter; b: PGSequenceIter; user_data: gpointer): gint; cdecl;
   TGSequence = object
     function append(data: gpointer): PGSequenceIter; cdecl; inline;
     procedure foreach(func: TGFunc; user_data: gpointer); cdecl; inline;
@@ -3608,7 +3546,6 @@ type
   end;
 
 
-  TGSourceOnceFunc = procedure(user_data: gpointer); cdecl;
   TGSpawnChildSetupFunc = procedure(user_data: gpointer); cdecl;
 
 
@@ -3642,13 +3579,6 @@ type
     function insert_const(string_: Pgchar): Pgchar; cdecl; inline;
     function insert_len(string_: Pgchar; len: gssize): Pgchar; cdecl; inline;
     function new(size: gsize): PGStringChunk; cdecl; inline; static;
-  end;
-
-
-  { TGStrvBuilder }
-  PPGStrvBuilder = ^PGStrvBuilder;
-  PGStrvBuilder = ^TGStrvBuilder;
-  TGStrvBuilder = object
   end;
 
 
@@ -3809,14 +3739,6 @@ type
   TGTraverseFunc = function(key: gpointer; value: gpointer; user_data: gpointer): gboolean; cdecl;
 
 
-  { TGTreeNode }
-  PPGTreeNode = ^PGTreeNode;
-  PGTreeNode = ^TGTreeNode;
-  TGTreeNode = object
-  end;
-  TGTraverseNodeFunc = function(node: PGTreeNode; user_data: gpointer): gboolean; cdecl;
-
-
   { TGTree }
   PPGTree = ^PGTree;
   PGTree = ^TGTree;
@@ -3825,11 +3747,6 @@ type
   { TGTraverseFunc }
   PPGTraverseFunc = ^PGTraverseFunc;
   PGTraverseFunc = ^TGTraverseFunc;
-
-
-  { TGTraverseNodeFunc }
-  PPGTraverseNodeFunc = ^PGTraverseNodeFunc;
-  PGTraverseNodeFunc = ^TGTraverseNodeFunc;
   TGTree = object
     function new(key_compare_func: TGCompareFunc): PGTree; cdecl; inline; static;
     function new_full(key_compare_func: TGCompareDataFunc; key_compare_data: gpointer; key_destroy_func: TGDestroyNotify; value_destroy_func: TGDestroyNotify): PGTree; cdecl; inline; static;
@@ -4091,17 +4008,6 @@ type
     function string_is_valid(type_string: Pgchar): gboolean; cdecl; inline; static;
     function string_scan(string_: Pgchar; limit: Pgchar; endptr: PPgchar): gboolean; cdecl; inline; static;
   end;
-
-
-  { Tguintptr }
-  Pguintptr = ^Tguintptr;
-
-  { guintptr }
-  Tguintptr = record
-    { opaque type }
-    Unknown: Pointer;
-  end;
-
   TGVariantIter = object
     x: array [0..15] of gsize;
     function copy: PGVariantIter; cdecl; inline;
@@ -4197,8 +4103,6 @@ type
   TGVoidFunc = procedure; cdecl;
 
 function g_access(filename: Pgchar; mode: gint): gint; cdecl; external;
-function g_aligned_alloc(n_blocks: gsize; n_block_bytes: gsize; alignment: gsize): gpointer; cdecl; external;
-function g_aligned_alloc0(n_blocks: gsize; n_block_bytes: gsize; alignment: gsize): gpointer; cdecl; external;
 function g_array_append_vals(array_: Pgpointer; data: Pgpointer; len: guint): Pgpointer; cdecl; external;
 function g_array_binary_search(array_: Pgpointer; target: Pgpointer; compare_func: TGCompareFunc; out_match_index: Pguint): gboolean; cdecl; external;
 function g_array_copy(array_: Pgpointer): Pgpointer; cdecl; external;
@@ -4207,8 +4111,6 @@ function g_array_get_element_size(array_: Pgpointer): guint; cdecl; external;
 function g_array_get_type: TGType; cdecl; external;
 function g_array_insert_vals(array_: Pgpointer; index_: guint; data: Pgpointer; len: guint): Pgpointer; cdecl; external;
 function g_array_new(zero_terminated: gboolean; clear_: gboolean; element_size: guint): Pgpointer; cdecl; external;
-//function g_array_new_take(data: gpointer; len: gsize; clear: gboolean; element_size: gsize): Pgpointer; cdecl; external;
-//function g_array_new_take_zero_terminated(data: gpointer; clear: gboolean; element_size: gsize): Pgpointer; cdecl; external;
 function g_array_prepend_vals(array_: Pgpointer; data: Pgpointer; len: guint): Pgpointer; cdecl; external;
 function g_array_ref(array_: Pgpointer): Pgpointer; cdecl; external;
 function g_array_remove_index(array_: Pgpointer; index_: guint): Pgpointer; cdecl; external;
@@ -4248,17 +4150,13 @@ function g_async_queue_try_pop_unlocked(queue: PGAsyncQueue): gpointer; cdecl; e
 function g_atomic_int_add(atomic: Pgint; val: gint): gint; cdecl; external;
 function g_atomic_int_and(atomic: Pguint; val: guint): guint; cdecl; external;
 function g_atomic_int_compare_and_exchange(atomic: Pgint; oldval: gint; newval: gint): gboolean; cdecl; external;
-function g_atomic_int_compare_and_exchange_full(atomic: Pgint; oldval: gint; newval: gint; preval: Pgint): gboolean; cdecl; external;
 function g_atomic_int_dec_and_test(atomic: Pgint): gboolean; cdecl; external;
-function g_atomic_int_exchange(atomic: Pgint; newval: gint): gint; cdecl; external;
 function g_atomic_int_get(atomic: Pgint): gint; cdecl; external;
 function g_atomic_int_or(atomic: Pguint; val: guint): guint; cdecl; external;
 function g_atomic_int_xor(atomic: Pguint; val: guint): guint; cdecl; external;
 function g_atomic_pointer_add(atomic: Pgpointer; val: gssize): gssize; cdecl; external;
 function g_atomic_pointer_and(atomic: Pgpointer; val: gsize): gsize; cdecl; external;
 function g_atomic_pointer_compare_and_exchange(atomic: Pgpointer; oldval: gpointer; newval: gpointer): gboolean; cdecl; external;
-function g_atomic_pointer_compare_and_exchange_full(atomic: Pgpointer; oldval: gpointer; newval: gpointer; preval: Pgpointer): gboolean; cdecl; external;
-function g_atomic_pointer_exchange(atomic: Pgpointer; newval: gpointer): gpointer; cdecl; external;
 function g_atomic_pointer_get(atomic: Pgpointer): gpointer; cdecl; external;
 function g_atomic_pointer_or(atomic: Pgpointer; val: gsize): gsize; cdecl; external;
 function g_atomic_pointer_xor(atomic: Pgpointer; val: gsize): gsize; cdecl; external;
@@ -4279,9 +4177,10 @@ function g_bit_nth_lsf(mask: gulong; nth_bit: gint): gint; cdecl; external;
 function g_bit_nth_msf(mask: gulong; nth_bit: gint): gint; cdecl; external;
 function g_bit_storage(number: gulong): guint; cdecl; external;
 function g_bit_trylock(address: Pgint; lock_bit: gint): gboolean; cdecl; external;
-//function g_bookmark_file_copy(bookmark: PGBookmarkFile): PGBookmarkFile; cdecl; external;
 function g_bookmark_file_error_quark: TGQuark; cdecl; external;
+function g_bookmark_file_get_added(bookmark: PGBookmarkFile; uri: Pgchar; error: PPGError): glong; cdecl; external; deprecated 'Use g_bookmark_file_get_added_date_time() instead, as    `time_t` is deprecated due to the year 2038 problem.';
 function g_bookmark_file_get_added_date_time(bookmark: PGBookmarkFile; uri: Pgchar; error: PPGError): PGDateTime; cdecl; external;
+function g_bookmark_file_get_app_info(bookmark: PGBookmarkFile; uri: Pgchar; name: Pgchar; exec: PPgchar; count: Pguint; stamp: Pglong; error: PPGError): gboolean; cdecl; external; deprecated 'Use g_bookmark_file_get_application_info() instead, as    `time_t` is deprecated due to the year 2038 problem.';
 function g_bookmark_file_get_application_info(bookmark: PGBookmarkFile; uri: Pgchar; name: Pgchar; exec: PPgchar; count: Pguint; stamp: PPGDateTime; error: PPGError): gboolean; cdecl; external;
 function g_bookmark_file_get_applications(bookmark: PGBookmarkFile; uri: Pgchar; length: Pgsize; error: PPGError): PPgchar; cdecl; external;
 function g_bookmark_file_get_description(bookmark: PGBookmarkFile; uri: Pgchar; error: PPGError): Pgchar; cdecl; external;
@@ -4289,11 +4188,12 @@ function g_bookmark_file_get_groups(bookmark: PGBookmarkFile; uri: Pgchar; lengt
 function g_bookmark_file_get_icon(bookmark: PGBookmarkFile; uri: Pgchar; href: PPgchar; mime_type: PPgchar; error: PPGError): gboolean; cdecl; external;
 function g_bookmark_file_get_is_private(bookmark: PGBookmarkFile; uri: Pgchar; error: PPGError): gboolean; cdecl; external;
 function g_bookmark_file_get_mime_type(bookmark: PGBookmarkFile; uri: Pgchar; error: PPGError): Pgchar; cdecl; external;
+function g_bookmark_file_get_modified(bookmark: PGBookmarkFile; uri: Pgchar; error: PPGError): glong; cdecl; external; deprecated 'Use g_bookmark_file_get_modified_date_time() instead, as    `time_t` is deprecated due to the year 2038 problem.';
 function g_bookmark_file_get_modified_date_time(bookmark: PGBookmarkFile; uri: Pgchar; error: PPGError): PGDateTime; cdecl; external;
 function g_bookmark_file_get_size(bookmark: PGBookmarkFile): gint; cdecl; external;
 function g_bookmark_file_get_title(bookmark: PGBookmarkFile; uri: Pgchar; error: PPGError): Pgchar; cdecl; external;
-function g_bookmark_file_get_type: TGType; cdecl; external;
 function g_bookmark_file_get_uris(bookmark: PGBookmarkFile; length: Pgsize): PPgchar; cdecl; external;
+function g_bookmark_file_get_visited(bookmark: PGBookmarkFile; uri: Pgchar; error: PPGError): glong; cdecl; external; deprecated 'Use g_bookmark_file_get_visited_date_time() instead, as    `time_t` is deprecated due to the year 2038 problem.';
 function g_bookmark_file_get_visited_date_time(bookmark: PGBookmarkFile; uri: Pgchar; error: PPGError): PGDateTime; cdecl; external;
 function g_bookmark_file_has_application(bookmark: PGBookmarkFile; uri: Pgchar; name: Pgchar; error: PPGError): gboolean; cdecl; external;
 function g_bookmark_file_has_group(bookmark: PGBookmarkFile; uri: Pgchar; group: Pgchar; error: PPGError): gboolean; cdecl; external;
@@ -4306,6 +4206,7 @@ function g_bookmark_file_new: PGBookmarkFile; cdecl; external;
 function g_bookmark_file_remove_application(bookmark: PGBookmarkFile; uri: Pgchar; name: Pgchar; error: PPGError): gboolean; cdecl; external;
 function g_bookmark_file_remove_group(bookmark: PGBookmarkFile; uri: Pgchar; group: Pgchar; error: PPGError): gboolean; cdecl; external;
 function g_bookmark_file_remove_item(bookmark: PGBookmarkFile; uri: Pgchar; error: PPGError): gboolean; cdecl; external;
+function g_bookmark_file_set_app_info(bookmark: PGBookmarkFile; uri: Pgchar; name: Pgchar; exec: Pgchar; count: gint; stamp: glong; error: PPGError): gboolean; cdecl; external; deprecated 'Use g_bookmark_file_set_application_info() instead, as    `time_t` is deprecated due to the year 2038 problem.';
 function g_bookmark_file_set_application_info(bookmark: PGBookmarkFile; uri: Pgchar; name: Pgchar; exec: Pgchar; count: gint; stamp: PGDateTime; error: PPGError): gboolean; cdecl; external;
 function g_bookmark_file_to_data(bookmark: PGBookmarkFile; length: Pgsize; error: PPGError): Pgchar; cdecl; external;
 function g_bookmark_file_to_file(bookmark: PGBookmarkFile; filename: Pgchar; error: PPGError): gboolean; cdecl; external;
@@ -4514,7 +4415,6 @@ function g_get_user_data_dir: Pgchar; cdecl; external;
 function g_get_user_name: Pgchar; cdecl; external;
 function g_get_user_runtime_dir: Pgchar; cdecl; external;
 function g_get_user_special_dir(directory: TGUserDirectory): Pgchar; cdecl; external;
-function g_get_user_state_dir: Pgchar; cdecl; external;
 function g_getenv(variable: Pgchar): Pgchar; cdecl; external;
 function g_gstring_get_type: TGType; cdecl; external;
 function g_hash_table_add(hash_table: PGHashTable; key: gpointer): gboolean; cdecl; external;
@@ -4524,10 +4424,8 @@ function g_hash_table_foreach_remove(hash_table: PGHashTable; func: TGHRFunc; us
 function g_hash_table_foreach_steal(hash_table: PGHashTable; func: TGHRFunc; user_data: gpointer): guint; cdecl; external;
 function g_hash_table_get_keys(hash_table: PGHashTable): PGList; cdecl; external;
 function g_hash_table_get_keys_as_array(hash_table: PGHashTable; length: Pguint): Pgpointer; cdecl; external;
-//function g_hash_table_get_keys_as_ptr_array(hash_table: PGHashTable): Pgpointer; cdecl; external;
 function g_hash_table_get_type: TGType; cdecl; external;
 function g_hash_table_get_values(hash_table: PGHashTable): PGList; cdecl; external;
-//function g_hash_table_get_values_as_ptr_array(hash_table: PGHashTable): Pgpointer; cdecl; external;
 function g_hash_table_insert(hash_table: PGHashTable; key: gpointer; value: gpointer): gboolean; cdecl; external;
 function g_hash_table_iter_get_hash_table(iter: PGHashTableIter): PGHashTable; cdecl; external;
 function g_hash_table_iter_next(iter: PGHashTableIter; key: Pgpointer; value: Pgpointer): gboolean; cdecl; external;
@@ -4540,8 +4438,6 @@ function g_hash_table_remove(hash_table: PGHashTable; key: Pgpointer): gboolean;
 function g_hash_table_replace(hash_table: PGHashTable; key: gpointer; value: gpointer): gboolean; cdecl; external;
 function g_hash_table_size(hash_table: PGHashTable): guint; cdecl; external;
 function g_hash_table_steal(hash_table: PGHashTable; key: Pgpointer): gboolean; cdecl; external;
-//function g_hash_table_steal_all_keys(hash_table: PGHashTable): Pgpointer; cdecl; external;
-//function g_hash_table_steal_all_values(hash_table: PGHashTable): Pgpointer; cdecl; external;
 function g_hash_table_steal_extended(hash_table: PGHashTable; lookup_key: Pgpointer; stolen_key: Pgpointer; stolen_value: Pgpointer): gboolean; cdecl; external;
 function g_hmac_copy(hmac: PGHmac): PGHmac; cdecl; external;
 function g_hmac_get_string(hmac: PGHmac): Pgchar; cdecl; external;
@@ -4568,7 +4464,6 @@ function g_iconv_close(converter: TGIConv): gint; cdecl; external;
 function g_iconv_open(to_codeset: Pgchar; from_codeset: Pgchar): TGIConv; cdecl; external;
 function g_idle_add(function_: TGSourceFunc; data: gpointer): guint; cdecl; external;
 function g_idle_add_full(priority: gint; function_: TGSourceFunc; data: gpointer; notify: TGDestroyNotify): guint; cdecl; external;
-function g_idle_add_once(function_: TGSourceOnceFunc; data: gpointer): guint; cdecl; external;
 function g_idle_remove_by_data(data: gpointer): gboolean; cdecl; external;
 function g_idle_source_new: PGSource; cdecl; external;
 function g_int64_equal(v1: Pgpointer; v2: Pgpointer): gboolean; cdecl; external;
@@ -4672,14 +4567,12 @@ function g_list_sort_with_data(list: PGList; compare_func: TGCompareDataFunc; us
 function g_listenv: PPgchar; cdecl; external;
 function g_locale_from_utf8(utf8string: Pgchar; len: gssize; bytes_read: Pgsize; bytes_written: Pgsize; error: PPGError): Pgchar; cdecl; external;
 function g_locale_to_utf8(opsysstring: Pgchar; len: gssize; bytes_read: Pgsize; bytes_written: Pgsize; error: PPGError): Pgchar; cdecl; external;
-function g_log_get_debug_enabled: gboolean; cdecl; external;
 function g_log_set_always_fatal(fatal_mask: TGLogLevelFlags): TGLogLevelFlags; cdecl; external;
 function g_log_set_default_handler(log_func: TGLogFunc; user_data: gpointer): TGLogFunc; cdecl; external;
 function g_log_set_fatal_mask(log_domain: Pgchar; fatal_mask: TGLogLevelFlags): TGLogLevelFlags; cdecl; external;
 function g_log_set_handler(log_domain: Pgchar; log_levels: TGLogLevelFlags; log_func: TGLogFunc; user_data: gpointer): guint; cdecl; external;
 function g_log_set_handler_full(log_domain: Pgchar; log_levels: TGLogLevelFlags; log_func: TGLogFunc; user_data: gpointer; destroy_: TGDestroyNotify): guint; cdecl; external;
 function g_log_writer_default(log_level: TGLogLevelFlags; fields: PGLogField; n_fields: gsize; user_data: gpointer): TGLogWriterOutput; cdecl; external;
-function g_log_writer_default_would_drop(log_level: TGLogLevelFlags; log_domain: Pgchar): gboolean; cdecl; external;
 function g_log_writer_format_fields(log_level: TGLogLevelFlags; fields: PGLogField; n_fields: gsize; use_color: gboolean): Pgchar; cdecl; external;
 function g_log_writer_is_journald(output_fd: gint): gboolean; cdecl; external;
 function g_log_writer_journald(log_level: TGLogLevelFlags; fields: PGLogField; n_fields: gsize; user_data: gpointer): TGLogWriterOutput; cdecl; external;
@@ -4748,7 +4641,7 @@ function g_match_info_is_partial_match(match_info: PGMatchInfo): gboolean; cdecl
 function g_match_info_matches(match_info: PGMatchInfo): gboolean; cdecl; external;
 function g_match_info_next(match_info: PGMatchInfo; error: PPGError): gboolean; cdecl; external;
 function g_match_info_ref(match_info: PGMatchInfo): PGMatchInfo; cdecl; external;
-function g_memdup2(mem: Pgpointer; byte_size: gsize): gpointer; cdecl; external;
+function g_memdup(mem: Pgpointer; byte_size: guint): gpointer; cdecl; external;
 function g_mkdir_with_parents(pathname: Pgchar; mode: gint): gint; cdecl; external;
 function g_mkdtemp(tmpl: Pgchar): Pgchar; cdecl; external;
 function g_mkdtemp_full(tmpl: Pgchar; mode: gint): Pgchar; cdecl; external;
@@ -4794,24 +4687,13 @@ function g_option_group_get_type: TGType; cdecl; external;
 function g_option_group_new(name: Pgchar; description: Pgchar; help_description: Pgchar; user_data: gpointer; destroy_: TGDestroyNotify): PGOptionGroup; cdecl; external;
 function g_option_group_ref(group: PGOptionGroup): PGOptionGroup; cdecl; external;
 function g_parse_debug_string(string_: Pgchar; keys: PGDebugKey; nkeys: guint): guint; cdecl; external;
-//function g_path_buf_clear_to_path(buf: PGPathBuf): Pgchar; cdecl; external;
-//function g_path_buf_copy(buf: PGPathBuf): PGPathBuf; cdecl; external;
-//function g_path_buf_equal(v1: Pgpointer; v2: Pgpointer): gboolean; cdecl; external;
-//function g_path_buf_free_to_path(buf: PGPathBuf): Pgchar; cdecl; external;
-//function g_path_buf_init(buf: PGPathBuf): PGPathBuf; cdecl; external;
-//function g_path_buf_init_from_path(buf: PGPathBuf; path: Pgchar): PGPathBuf; cdecl; external;
-//function g_path_buf_new: PGPathBuf; cdecl; external;
-//function g_path_buf_new_from_path(path: Pgchar): PGPathBuf; cdecl; external;
-////function g_path_buf_pop(buf: PGPathBuf): gboolean; cdecl; external;
-//function g_path_buf_push(buf: PGPathBuf; path: Pgchar): PGPathBuf; cdecl; external;
-//function g_path_buf_set_extension(buf: PGPathBuf; extension: Pgchar): gboolean; cdecl; external;
-//function g_path_buf_set_filename(buf: PGPathBuf; file_name: Pgchar): gboolean; cdecl; external;
-//function g_path_buf_to_path(buf: PGPathBuf): Pgchar; cdecl; external;
-//function g_path_get_basename(file_name: Pgchar): Pgchar; cdecl; external;
-//function g_path_get_dirname(file_name: Pgchar): Pgchar; cdecl; external;
-//function g_path_is_absolute(file_name: Pgchar): gboolean; cdecl; external;
-//function g_path_skip_root(file_name: Pgchar): Pgchar; cdecl; external;
+function g_path_get_basename(file_name: Pgchar): Pgchar; cdecl; external;
+function g_path_get_dirname(file_name: Pgchar): Pgchar; cdecl; external;
+function g_path_is_absolute(file_name: Pgchar): gboolean; cdecl; external;
+function g_path_skip_root(file_name: Pgchar): Pgchar; cdecl; external;
+function g_pattern_match(pspec: PGPatternSpec; string_length: guint; string_: Pgchar; string_reversed: Pgchar): gboolean; cdecl; external;
 function g_pattern_match_simple(pattern: Pgchar; string_: Pgchar): gboolean; cdecl; external;
+function g_pattern_match_string(pspec: PGPatternSpec; string_: Pgchar): gboolean; cdecl; external;
 function g_pattern_spec_equal(pspec1: PGPatternSpec; pspec2: PGPatternSpec): gboolean; cdecl; external;
 function g_pattern_spec_get_type: TGType; cdecl; external;
 function g_pattern_spec_new(pattern: Pgchar): PGPatternSpec; cdecl; external;
@@ -4827,11 +4709,7 @@ function g_ptr_array_find_with_equal_func(haystack: Pgpointer; needle: Pgpointer
 function g_ptr_array_free(array_: Pgpointer; free_seg: gboolean): Pgpointer; cdecl; external;
 function g_ptr_array_get_type: TGType; cdecl; external;
 function g_ptr_array_new: Pgpointer; cdecl; external;
-//function g_ptr_array_new_from_array(data: Pgpointer; len: gsize; copy_func: TGCopyFunc; copy_func_user_data: gpointer; element_free_func: TGDestroyNotify): Pgpointer; cdecl; external;
-//function g_ptr_array_new_from_null_terminated_array(data: Pgpointer; copy_func: TGCopyFunc; copy_func_user_data: gpointer; element_free_func: TGDestroyNotify): Pgpointer; cdecl; external;
 function g_ptr_array_new_full(reserved_size: guint; element_free_func: TGDestroyNotify): Pgpointer; cdecl; external;
-//function g_ptr_array_new_take(data: Pgpointer; len: gsize; element_free_func: TGDestroyNotify): Pgpointer; cdecl; external;
-//function g_ptr_array_new_take_null_terminated(data: Pgpointer; element_free_func: TGDestroyNotify): Pgpointer; cdecl; external;
 function g_ptr_array_new_with_free_func(element_free_func: TGDestroyNotify): Pgpointer; cdecl; external;
 function g_ptr_array_ref(array_: Pgpointer): Pgpointer; cdecl; external;
 function g_ptr_array_remove(array_: Pgpointer; data: gpointer): gboolean; cdecl; external;
@@ -5020,8 +4898,7 @@ function g_spaced_primes_closest(num: guint): guint; cdecl; external;
 function g_spawn_async(working_directory: Pgchar; argv: PPgchar; envp: PPgchar; flags: TGSpawnFlags; child_setup: TGSpawnChildSetupFunc; user_data: gpointer; child_pid: PGPid; error: PPGError): gboolean; cdecl; external;
 function g_spawn_async_with_fds(working_directory: Pgchar; argv: PPgchar; envp: PPgchar; flags: TGSpawnFlags; child_setup: TGSpawnChildSetupFunc; user_data: gpointer; child_pid: PGPid; stdin_fd: gint; stdout_fd: gint; stderr_fd: gint; error: PPGError): gboolean; cdecl; external;
 function g_spawn_async_with_pipes(working_directory: Pgchar; argv: PPgchar; envp: PPgchar; flags: TGSpawnFlags; child_setup: TGSpawnChildSetupFunc; user_data: gpointer; child_pid: PGPid; standard_input: Pgint; standard_output: Pgint; standard_error: Pgint; error: PPGError): gboolean; cdecl; external;
-function g_spawn_async_with_pipes_and_fds(working_directory: Pgchar; argv: PPgchar; envp: PPgchar; flags: TGSpawnFlags; child_setup: TGSpawnChildSetupFunc; user_data: gpointer; stdin_fd: gint; stdout_fd: gint; stderr_fd: gint; source_fds: Pgint; target_fds: Pgint; n_fds: gsize; child_pid_out: PGPid; stdin_pipe_out: Pgint; stdout_pipe_out: Pgint; stderr_pipe_out: Pgint; error: PPGError): gboolean; cdecl; external;
-function g_spawn_check_wait_status(wait_status: gint; error: PPGError): gboolean; cdecl; external;
+function g_spawn_check_exit_status(wait_status: gint; error: PPGError): gboolean; cdecl; external;
 function g_spawn_command_line_async(command_line: Pgchar; error: PPGError): gboolean; cdecl; external;
 function g_spawn_command_line_sync(command_line: Pgchar; standard_output: PPgchar; standard_error: PPgchar; wait_status: Pgint; error: PPGError): gboolean; cdecl; external;
 function g_spawn_error_quark: TGQuark; cdecl; external;
@@ -5065,7 +4942,6 @@ function g_string_chunk_new(size: gsize): PGStringChunk; cdecl; external;
 function g_string_equal(v: PGString; v2: PGString): gboolean; cdecl; external;
 function g_string_erase(string_: PGString; pos: gssize; len: gssize): PGString; cdecl; external;
 function g_string_free(string_: PGString; free_segment: gboolean): Pgchar; cdecl; external;
-//function g_string_free_and_steal(string_: PGString): Pgchar; cdecl; external;
 function g_string_free_to_bytes(string_: PGString): PGBytes; cdecl; external;
 function g_string_hash(str: PGString): guint; cdecl; external;
 function g_string_insert(string_: PGString; pos: gssize; val: Pgchar): PGString; cdecl; external;
@@ -5080,7 +4956,6 @@ function g_string_prepend(string_: PGString; val: Pgchar): PGString; cdecl; exte
 function g_string_prepend_c(string_: PGString; c: gchar): PGString; cdecl; external;
 function g_string_prepend_len(string_: PGString; val: Pgchar; len: gssize): PGString; cdecl; external;
 function g_string_prepend_unichar(string_: PGString; wc: gunichar): PGString; cdecl; external;
-function g_string_replace(string_: PGString; find: Pgchar; replace: Pgchar; limit: guint): guint; cdecl; external;
 function g_string_set_size(string_: PGString; len: gsize): PGString; cdecl; external;
 function g_string_sized_new(dfl_size: gsize): PGString; cdecl; external;
 function g_string_truncate(string_: PGString; len: gsize): PGString; cdecl; external;
@@ -5109,7 +4984,6 @@ function g_test_create_suite(suite_name: Pgchar): PGTestSuite; cdecl; external;
 function g_test_failed: gboolean; cdecl; external;
 function g_test_get_dir(file_type: TGTestFileType): Pgchar; cdecl; external;
 function g_test_get_filename(file_type: TGTestFileType; first_path: Pgchar; args: array of const): Pgchar; cdecl; external;
-function g_test_get_path: Pgchar; cdecl; external;
 function g_test_get_root: PGTestSuite; cdecl; external;
 function g_test_log_buffer_new: PGTestLogBuffer; cdecl; external;
 function g_test_log_buffer_pop(tbuffer: PGTestLogBuffer): PGTestLogMsg; cdecl; external;
@@ -5149,13 +5023,13 @@ function g_time_zone_get_identifier(tz: PGTimeZone): Pgchar; cdecl; external;
 function g_time_zone_get_offset(tz: PGTimeZone; interval: gint): gint32; cdecl; external;
 function g_time_zone_get_type: TGType; cdecl; external;
 function g_time_zone_is_dst(tz: PGTimeZone; interval: gint): gboolean; cdecl; external;
+function g_time_zone_new(identifier: Pgchar): PGTimeZone; cdecl; external; deprecated 'Use g_time_zone_new_identifier() instead, as it provides     error reporting. Change your code to handle a potentially %NULL return     value.';
 function g_time_zone_new_local: PGTimeZone; cdecl; external;
 function g_time_zone_new_offset(seconds: gint32): PGTimeZone; cdecl; external;
 function g_time_zone_new_utc: PGTimeZone; cdecl; external;
 function g_time_zone_ref(tz: PGTimeZone): PGTimeZone; cdecl; external;
 function g_timeout_add(interval: guint; function_: TGSourceFunc; data: gpointer): guint; cdecl; external;
 function g_timeout_add_full(priority: gint; interval: guint; function_: TGSourceFunc; data: gpointer; notify: TGDestroyNotify): guint; cdecl; external;
-function g_timeout_add_once(interval: guint; function_: TGSourceOnceFunc; data: gpointer): guint; cdecl; external;
 function g_timeout_add_seconds(interval: guint; function_: TGSourceFunc; data: gpointer): guint; cdecl; external;
 function g_timeout_add_seconds_full(priority: gint; interval: guint; function_: TGSourceFunc; data: gpointer; notify: TGDestroyNotify): guint; cdecl; external;
 function g_timeout_source_new(interval: guint): PGSource; cdecl; external;
@@ -5436,8 +5310,6 @@ function g_vprintf(format: Pgchar; args: Tva_list): gint; cdecl; external;
 function g_vsnprintf(string_: Pgchar; n: gulong; format: Pgchar; args: Tva_list): gint; cdecl; external;
 function g_vsprintf(string_: Pgchar; format: Pgchar; args: Tva_list): gint; cdecl; external;
 function glib_check_version(required_major: guint; required_minor: guint; required_micro: guint): Pgchar; cdecl; external;
-procedure g_aligned_free(mem: gpointer); cdecl; external;
-procedure g_aligned_free_sized(mem: gpointer; alignment: gsize; size: gsize); cdecl; external;
 procedure g_array_set_clear_func(array_: Pgpointer; clear_func: TGDestroyNotify); cdecl; external;
 procedure g_array_sort(array_: Pgpointer; compare_func: TGCompareFunc); cdecl; external;
 procedure g_array_sort_with_data(array_: Pgpointer; compare_func: TGCompareDataFunc; user_data: gpointer); cdecl; external;
@@ -5472,14 +5344,17 @@ procedure g_bit_unlock(address: Pgint; lock_bit: gint); cdecl; external;
 procedure g_bookmark_file_add_application(bookmark: PGBookmarkFile; uri: Pgchar; name: Pgchar; exec: Pgchar); cdecl; external;
 procedure g_bookmark_file_add_group(bookmark: PGBookmarkFile; uri: Pgchar; group: Pgchar); cdecl; external;
 procedure g_bookmark_file_free(bookmark: PGBookmarkFile); cdecl; external;
+procedure g_bookmark_file_set_added(bookmark: PGBookmarkFile; uri: Pgchar; added: glong); cdecl; external; deprecated 'Use g_bookmark_file_set_added_date_time() instead, as    `time_t` is deprecated due to the year 2038 problem.';
 procedure g_bookmark_file_set_added_date_time(bookmark: PGBookmarkFile; uri: Pgchar; added: PGDateTime); cdecl; external;
 procedure g_bookmark_file_set_description(bookmark: PGBookmarkFile; uri: Pgchar; description: Pgchar); cdecl; external;
 procedure g_bookmark_file_set_groups(bookmark: PGBookmarkFile; uri: Pgchar; groups: PPgchar; length: gsize); cdecl; external;
 procedure g_bookmark_file_set_icon(bookmark: PGBookmarkFile; uri: Pgchar; href: Pgchar; mime_type: Pgchar); cdecl; external;
 procedure g_bookmark_file_set_is_private(bookmark: PGBookmarkFile; uri: Pgchar; is_private: gboolean); cdecl; external;
 procedure g_bookmark_file_set_mime_type(bookmark: PGBookmarkFile; uri: Pgchar; mime_type: Pgchar); cdecl; external;
+procedure g_bookmark_file_set_modified(bookmark: PGBookmarkFile; uri: Pgchar; modified: glong); cdecl; external; deprecated 'Use g_bookmark_file_set_modified_date_time() instead, as    `time_t` is deprecated due to the year 2038 problem.';
 procedure g_bookmark_file_set_modified_date_time(bookmark: PGBookmarkFile; uri: Pgchar; modified: PGDateTime); cdecl; external;
 procedure g_bookmark_file_set_title(bookmark: PGBookmarkFile; uri: Pgchar; title: Pgchar); cdecl; external;
+procedure g_bookmark_file_set_visited(bookmark: PGBookmarkFile; uri: Pgchar; visited: glong); cdecl; external; deprecated 'Use g_bookmark_file_set_visited_date_time() instead, as    `time_t` is deprecated due to the year 2038 problem.';
 procedure g_bookmark_file_set_visited_date_time(bookmark: PGBookmarkFile; uri: Pgchar; visited: PGDateTime); cdecl; external;
 procedure g_byte_array_sort(array_: Pguint8; compare_func: TGCompareFunc); cdecl; external;
 procedure g_byte_array_sort_with_data(array_: Pguint8; compare_func: TGCompareDataFunc; user_data: gpointer); cdecl; external;
@@ -5501,7 +5376,6 @@ procedure g_cond_signal(cond: PGCond); cdecl; external;
 procedure g_cond_wait(cond: PGCond; mutex: PGMutex); cdecl; external;
 procedure g_datalist_clear(datalist: PPGData); cdecl; external;
 procedure g_datalist_foreach(datalist: PPGData; func: TGDataForeachFunc; user_data: gpointer); cdecl; external;
-procedure g_datalist_id_remove_multiple(datalist: PPGData; keys: PGQuark; n_keys: gsize); cdecl; external;
 procedure g_datalist_id_set_data_full(datalist: PPGData; key_id: TGQuark; data: gpointer; destroy_func: TGDestroyNotify); cdecl; external;
 procedure g_datalist_init(datalist: PPGData); cdecl; external;
 procedure g_datalist_set_flags(datalist: PPGData; flags: guint); cdecl; external;
@@ -5533,7 +5407,6 @@ procedure g_dir_close(dir: PGDir); cdecl; external;
 procedure g_dir_rewind(dir: PGDir); cdecl; external;
 procedure g_error_free(error: PGError); cdecl; external;
 procedure g_free(mem: gpointer); cdecl; external;
-procedure g_free_sized(mem: gpointer; size: gsize); cdecl; external;
 procedure g_hash_table_destroy(hash_table: PGHashTable); cdecl; external;
 procedure g_hash_table_foreach(hash_table: PGHashTable; func: TGHFunc; user_data: gpointer); cdecl; external;
 procedure g_hash_table_iter_init(iter: PGHashTableIter; hash_table: PGHashTable); cdecl; external;
@@ -5587,13 +5460,11 @@ procedure g_list_free_full(list: PGList; free_func: TGDestroyNotify); cdecl; ext
 procedure g_log(log_domain: Pgchar; log_level: TGLogLevelFlags; format: Pgchar; args: array of const); cdecl; external;
 procedure g_log_default_handler(log_domain: Pgchar; log_level: TGLogLevelFlags; message: Pgchar; unused_data: gpointer); cdecl; external;
 procedure g_log_remove_handler(log_domain: Pgchar; handler_id: guint); cdecl; external;
-procedure g_log_set_debug_enabled(enabled: gboolean); cdecl; external;
 procedure g_log_set_writer_func(func: TGLogWriterFunc; user_data: gpointer; user_data_free: TGDestroyNotify); cdecl; external;
 procedure g_log_structured(log_domain: Pgchar; log_level: TGLogLevelFlags; args: array of const); cdecl; external;
 procedure g_log_structured_array(log_level: TGLogLevelFlags; fields: PGLogField; n_fields: gsize); cdecl; external;
 procedure g_log_structured_standard(log_domain: Pgchar; log_level: TGLogLevelFlags; file_: Pgchar; line: Pgchar; func: Pgchar; message_format: Pgchar; args: array of const); cdecl; external;
 procedure g_log_variant(log_domain: Pgchar; log_level: TGLogLevelFlags; fields: PGVariant); cdecl; external;
-procedure g_log_writer_default_set_use_stderr(use_stderr: gboolean); cdecl; external;
 procedure g_logv(log_domain: Pgchar; log_level: TGLogLevelFlags; format: Pgchar; args: Tva_list); cdecl; external;
 procedure g_main_context_add_poll(context: PGMainContext; fd: PGPollFD; priority: gint); cdecl; external;
 procedure g_main_context_dispatch(context: PGMainContext); cdecl; external;
@@ -5646,13 +5517,10 @@ procedure g_option_group_set_parse_hooks(group: PGOptionGroup; pre_parse_func: T
 procedure g_option_group_set_translate_func(group: PGOptionGroup; func: TGTranslateFunc; data: gpointer; destroy_notify: TGDestroyNotify); cdecl; external;
 procedure g_option_group_set_translation_domain(group: PGOptionGroup; domain: Pgchar); cdecl; external;
 procedure g_option_group_unref(group: PGOptionGroup); cdecl; external;
-//procedure g_path_buf_clear(buf: PGPathBuf); cdecl; external;
-//procedure g_path_buf_free(buf: PGPathBuf); cdecl; external;
 procedure g_pattern_spec_free(pspec: PGPatternSpec); cdecl; external;
 procedure g_pointer_bit_lock(address: Pgpointer; lock_bit: gint); cdecl; external;
 procedure g_pointer_bit_unlock(address: Pgpointer; lock_bit: gint); cdecl; external;
 procedure g_prefix_error(err: PPGError; format: Pgchar; args: array of const); cdecl; external;
-procedure g_prefix_error_literal(err: PPGError; prefix: Pgchar); cdecl; external;
 procedure g_print(format: Pgchar; args: array of const); cdecl; external;
 procedure g_printerr(format: Pgchar; args: array of const); cdecl; external;
 procedure g_private_replace(key: PGPrivate; value: gpointer); cdecl; external;
@@ -5667,8 +5535,6 @@ procedure g_ptr_array_insert(array_: Pgpointer; index_: gint; data: gpointer); c
 procedure g_ptr_array_set_free_func(array_: Pgpointer; element_free_func: TGDestroyNotify); cdecl; external;
 procedure g_ptr_array_set_size(array_: Pgpointer; length: gint); cdecl; external;
 procedure g_ptr_array_sort(array_: Pgpointer; compare_func: TGCompareFunc); cdecl; external;
-//procedure g_ptr_array_sort_values(array_: Pgpointer; compare_func: TGCompareFunc); cdecl; external;
-//procedure g_ptr_array_sort_values_with_data(array_: Pgpointer; compare_func: TGCompareDataFunc; user_data: gpointer); cdecl; external;
 procedure g_ptr_array_sort_with_data(array_: Pgpointer; compare_func: TGCompareDataFunc; user_data: gpointer); cdecl; external;
 procedure g_ptr_array_unref(array_: Pgpointer); cdecl; external;
 procedure g_qsort_with_data(pbase: Pgpointer; total_elems: gint; size: gsize; compare_func: TGCompareDataFunc; user_data: gpointer); cdecl; external;
@@ -5774,7 +5640,6 @@ procedure g_string_chunk_clear(chunk: PGStringChunk); cdecl; external;
 procedure g_string_chunk_free(chunk: PGStringChunk); cdecl; external;
 procedure g_string_printf(string_: PGString; format: Pgchar; args: array of const); cdecl; external;
 procedure g_string_vprintf(string_: PGString; format: Pgchar; args: Tva_list); cdecl; external;
-procedure g_strv_builder_add_many(builder: PGStrvBuilder; args: array of const); cdecl; external;
 procedure g_test_add_data_func(testpath: Pgchar; test_data: Pgpointer; test_func: TGTestDataFunc); cdecl; external;
 procedure g_test_add_data_func_full(testpath: Pgchar; test_data: gpointer; test_func: TGTestDataFunc; data_free_func: TGDestroyNotify); cdecl; external;
 procedure g_test_add_func(testpath: Pgchar; test_func: TGTestFunc); cdecl; external;
@@ -5784,9 +5649,7 @@ procedure g_test_bug(bug_uri_snippet: Pgchar); cdecl; external;
 procedure g_test_bug_base(uri_pattern: Pgchar); cdecl; external;
 procedure g_test_expect_message(log_domain: Pgchar; log_level: TGLogLevelFlags; pattern: Pgchar); cdecl; external;
 procedure g_test_fail; cdecl; external;
-procedure g_test_fail_printf(format: Pgchar; args: array of const); cdecl; external;
 procedure g_test_incomplete(msg: Pgchar); cdecl; external;
-procedure g_test_incomplete_printf(format: Pgchar; args: array of const); cdecl; external;
 procedure g_test_init(argc: Pgint; argv: PPPgchar; args: array of const); cdecl; external;
 procedure g_test_log_buffer_free(tbuffer: PGTestLogBuffer); cdecl; external;
 procedure g_test_log_buffer_push(tbuffer: PGTestLogBuffer; n_bytes: guint; bytes: Pguint8); cdecl; external;
@@ -5799,7 +5662,6 @@ procedure g_test_queue_destroy(destroy_func: TGDestroyNotify; destroy_data: gpoi
 procedure g_test_queue_free(gfree_pointer: gpointer); cdecl; external;
 procedure g_test_set_nonfatal_assertions; cdecl; external;
 procedure g_test_skip(msg: Pgchar); cdecl; external;
-procedure g_test_skip_printf(format: Pgchar; args: array of const); cdecl; external;
 procedure g_test_suite_add(suite: PGTestSuite; test_case: PGTestCase); cdecl; external;
 procedure g_test_suite_add_suite(suite: PGTestSuite; nestedsuite: PGTestSuite); cdecl; external;
 procedure g_test_summary(summary: Pgchar); cdecl; external;
@@ -5886,16 +5748,6 @@ function TGArray.new(zero_terminated: gboolean; clear_: gboolean; element_size: 
 begin
   Result := LazGLib2.g_array_new(zero_terminated, clear_, element_size);
 end;
-
-//function TGArray.new_take(data: gpointer; len: gsize; clear: gboolean; element_size: gsize): Pgpointer; cdecl;
-//begin
-//  Result := LazGLib2.g_array_new_take(data, len, clear, element_size);
-//end;
-
-//function TGArray.new_take_zero_terminated(data: gpointer; clear: gboolean; element_size: gsize): Pgpointer; cdecl;
-//begin
-//  Result := LazGLib2.g_array_new_take_zero_terminated(data, clear, element_size);
-//end;
 
 function TGArray.prepend_vals(array_: Pgpointer; data: Pgpointer; len: guint): Pgpointer; cdecl;
 begin
@@ -6077,11 +5929,6 @@ begin
   Result := LazGLib2.g_async_queue_new_full(item_free_func);
 end;
 
-function TGBookmarkFile.new: PGBookmarkFile; cdecl;
-begin
-  Result := LazGLib2.g_bookmark_file_new();
-end;
-
 procedure TGBookmarkFile.add_application(uri: Pgchar; name: Pgchar; exec: Pgchar); cdecl;
 begin
   LazGLib2.g_bookmark_file_add_application(@self, uri, name, exec);
@@ -6092,19 +5939,24 @@ begin
   LazGLib2.g_bookmark_file_add_group(@self, uri, group);
 end;
 
-//function TGBookmarkFile.copy: PGBookmarkFile; cdecl;
-//begin
-//  Result := LazGLib2.g_bookmark_file_copy(@self);
-//end;
-
 procedure TGBookmarkFile.free; cdecl;
 begin
   LazGLib2.g_bookmark_file_free(@self);
 end;
 
+function TGBookmarkFile.get_added(uri: Pgchar; error: PPGError): glong; cdecl;
+begin
+  Result := LazGLib2.g_bookmark_file_get_added(@self, uri, error);
+end;
+
 function TGBookmarkFile.get_added_date_time(uri: Pgchar; error: PPGError): PGDateTime; cdecl;
 begin
   Result := LazGLib2.g_bookmark_file_get_added_date_time(@self, uri, error);
+end;
+
+function TGBookmarkFile.get_app_info(uri: Pgchar; name: Pgchar; exec: PPgchar; count: Pguint; stamp: Pglong; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGLib2.g_bookmark_file_get_app_info(@self, uri, name, exec, count, stamp, error);
 end;
 
 function TGBookmarkFile.get_application_info(uri: Pgchar; name: Pgchar; exec: PPgchar; count: Pguint; stamp: PPGDateTime; error: PPGError): gboolean; cdecl;
@@ -6142,6 +5994,11 @@ begin
   Result := LazGLib2.g_bookmark_file_get_mime_type(@self, uri, error);
 end;
 
+function TGBookmarkFile.get_modified(uri: Pgchar; error: PPGError): glong; cdecl;
+begin
+  Result := LazGLib2.g_bookmark_file_get_modified(@self, uri, error);
+end;
+
 function TGBookmarkFile.get_modified_date_time(uri: Pgchar; error: PPGError): PGDateTime; cdecl;
 begin
   Result := LazGLib2.g_bookmark_file_get_modified_date_time(@self, uri, error);
@@ -6160,6 +6017,11 @@ end;
 function TGBookmarkFile.get_uris(length: Pgsize): PPgchar; cdecl;
 begin
   Result := LazGLib2.g_bookmark_file_get_uris(@self, length);
+end;
+
+function TGBookmarkFile.get_visited(uri: Pgchar; error: PPGError): glong; cdecl;
+begin
+  Result := LazGLib2.g_bookmark_file_get_visited(@self, uri, error);
 end;
 
 function TGBookmarkFile.get_visited_date_time(uri: Pgchar; error: PPGError): PGDateTime; cdecl;
@@ -6217,9 +6079,19 @@ begin
   Result := LazGLib2.g_bookmark_file_remove_item(@self, uri, error);
 end;
 
+procedure TGBookmarkFile.set_added(uri: Pgchar; added: glong); cdecl;
+begin
+  LazGLib2.g_bookmark_file_set_added(@self, uri, added);
+end;
+
 procedure TGBookmarkFile.set_added_date_time(uri: Pgchar; added: PGDateTime); cdecl;
 begin
   LazGLib2.g_bookmark_file_set_added_date_time(@self, uri, added);
+end;
+
+function TGBookmarkFile.set_app_info(uri: Pgchar; name: Pgchar; exec: Pgchar; count: gint; stamp: glong; error: PPGError): gboolean; cdecl;
+begin
+  Result := LazGLib2.g_bookmark_file_set_app_info(@self, uri, name, exec, count, stamp, error);
 end;
 
 function TGBookmarkFile.set_application_info(uri: Pgchar; name: Pgchar; exec: Pgchar; count: gint; stamp: PGDateTime; error: PPGError): gboolean; cdecl;
@@ -6252,6 +6124,11 @@ begin
   LazGLib2.g_bookmark_file_set_mime_type(@self, uri, mime_type);
 end;
 
+procedure TGBookmarkFile.set_modified(uri: Pgchar; modified: glong); cdecl;
+begin
+  LazGLib2.g_bookmark_file_set_modified(@self, uri, modified);
+end;
+
 procedure TGBookmarkFile.set_modified_date_time(uri: Pgchar; modified: PGDateTime); cdecl;
 begin
   LazGLib2.g_bookmark_file_set_modified_date_time(@self, uri, modified);
@@ -6260,6 +6137,11 @@ end;
 procedure TGBookmarkFile.set_title(uri: Pgchar; title: Pgchar); cdecl;
 begin
   LazGLib2.g_bookmark_file_set_title(@self, uri, title);
+end;
+
+procedure TGBookmarkFile.set_visited(uri: Pgchar; visited: glong); cdecl;
+begin
+  LazGLib2.g_bookmark_file_set_visited(@self, uri, visited);
 end;
 
 procedure TGBookmarkFile.set_visited_date_time(uri: Pgchar; visited: PGDateTime); cdecl;
@@ -6280,6 +6162,11 @@ end;
 function TGBookmarkFile.error_quark: TGQuark; cdecl;
 begin
   Result := LazGLib2.g_bookmark_file_error_quark();
+end;
+
+function TGBookmarkFile.new: PGBookmarkFile; cdecl;
+begin
+  Result := LazGLib2.g_bookmark_file_new();
 end;
 
 function TGError.new_literal(domain: TGQuark; code: gint; message: Pgchar): PGError; cdecl;
@@ -6992,6 +6879,11 @@ begin
   Result := LazGLib2.g_date_valid_year(year);
 end;
 
+function TGTimeZone.new(identifier: Pgchar): PGTimeZone; cdecl;
+begin
+  Result := LazGLib2.g_time_zone_new(identifier);
+end;
+
 function TGTimeZone.new_local: PGTimeZone; cdecl;
 begin
   Result := LazGLib2.g_time_zone_new_local();
@@ -7117,20 +7009,10 @@ begin
   Result := LazGLib2.g_hash_table_get_keys_as_array(hash_table, length);
 end;
 
-//function TGHashTable.get_keys_as_ptr_array(hash_table: PGHashTable): Pgpointer; cdecl;
-//begin
-//  Result := LazGLib2.g_hash_table_get_keys_as_ptr_array(hash_table);
-//end;
-
 function TGHashTable.get_values(hash_table: PGHashTable): PGList; cdecl;
 begin
   Result := LazGLib2.g_hash_table_get_values(hash_table);
 end;
-
-//function TGHashTable.get_values_as_ptr_array(hash_table: PGHashTable): Pgpointer; cdecl;
-//begin
-//  Result := LazGLib2.g_hash_table_get_values_as_ptr_array(hash_table);
-//end;
 
 function TGHashTable.insert(hash_table: PGHashTable; key: gpointer; value: gpointer): gboolean; cdecl;
 begin
@@ -7191,16 +7073,6 @@ procedure TGHashTable.steal_all(hash_table: PGHashTable); cdecl;
 begin
   LazGLib2.g_hash_table_steal_all(hash_table);
 end;
-
-//function TGHashTable.steal_all_keys(hash_table: PGHashTable): Pgpointer; cdecl;
-//begin
-//  Result := LazGLib2.g_hash_table_steal_all_keys(hash_table);
-//end;
-
-//function TGHashTable.steal_all_values(hash_table: PGHashTable): Pgpointer; cdecl;
-//begin
-//  Result := LazGLib2.g_hash_table_steal_all_values(hash_table);
-//end;
 
 function TGHashTable.steal_extended(hash_table: PGHashTable; lookup_key: Pgpointer; stolen_key: Pgpointer; stolen_value: Pgpointer): gboolean; cdecl;
 begin
@@ -7636,11 +7508,6 @@ function TGString.free(free_segment: gboolean): Pgchar; cdecl;
 begin
   Result := LazGLib2.g_string_free(@self, free_segment);
 end;
-
-//function TGString.free_and_steal: Pgchar; cdecl;
-//begin
-//  Result := LazGLib2.g_string_free_and_steal(@self);
-//end;
 
 function TGString.free_to_bytes: PGBytes; cdecl;
 begin
@@ -9187,81 +9054,6 @@ begin
   LazGLib2.g_option_group_unref(@self);
 end;
 
-//procedure TGPathBuf.clear; cdecl;
-//begin
-//  LazGLib2.g_path_buf_clear(@self);
-//end;
-
-//function TGPathBuf.clear_to_path: Pgchar; cdecl;
-//begin
-//  Result := LazGLib2.g_path_buf_clear_to_path(@self);
-//end;
-
-//function TGPathBuf.copy: PGPathBuf; cdecl;
-//begin
-//  Result := LazGLib2.g_path_buf_copy(@self);
-//end;
-
-//procedure TGPathBuf.free; cdecl;
-//begin
-//  LazGLib2.g_path_buf_free(@self);
-//end;
-
-//function TGPathBuf.free_to_path: Pgchar; cdecl;
-//begin
-//  Result := LazGLib2.g_path_buf_free_to_path(@self);
-//end;
-
-//function TGPathBuf.init: PGPathBuf; cdecl;
-//begin
-//  Result := LazGLib2.g_path_buf_init(@self);
-//end;
-
-//function TGPathBuf.init_from_path(path: Pgchar): PGPathBuf; cdecl;
-//begin
-//  Result := LazGLib2.g_path_buf_init_from_path(@self, path);
-//end;
-
-//function TGPathBuf.pop: gboolean; cdecl;
-//begin
-//  Result := LazGLib2.g_path_buf_pop(@self);
-//end;
-
-//function TGPathBuf.push(path: Pgchar): PGPathBuf; cdecl;
-//begin
-//  Result := LazGLib2.g_path_buf_push(@self, path);
-//end;
-
-//function TGPathBuf.set_extension(extension: Pgchar): gboolean; cdecl;
-//begin
-//  Result := LazGLib2.g_path_buf_set_extension(@self, extension);
-//end;
-
-//function TGPathBuf.set_filename(file_name: Pgchar): gboolean; cdecl;
-//begin
-//  Result := LazGLib2.g_path_buf_set_filename(@self, file_name);
-//end;
-
-//function TGPathBuf.to_path: Pgchar; cdecl;
-//begin
-//  Result := LazGLib2.g_path_buf_to_path(@self);
-//end;
-
-//function TGPathBuf.equal(v1: Pgpointer; v2: Pgpointer): gboolean; cdecl;
-//begin
-//  Result := LazGLib2.g_path_buf_equal(v1, v2);
-//end;
-
-//function TGPathBuf.new: PGPathBuf; cdecl;
-//begin
-//  Result := LazGLib2.g_path_buf_new();
-//end;
-
-//function TGPathBuf.new_from_path(path: Pgchar): PGPathBuf; cdecl;
-//begin
-//  Result := LazGLib2.g_path_buf_new_from_path(path);
-//end;
-
 function TGPatternSpec.new(pattern: Pgchar): PGPatternSpec; cdecl;
 begin
   Result := LazGLib2.g_pattern_spec_new(pattern);
@@ -9342,30 +9134,10 @@ begin
   Result := LazGLib2.g_ptr_array_new();
 end;
 
-//function TGPtrArray.new_from_array(data: Pgpointer; len: gsize; copy_func: TGCopyFunc; copy_func_user_data: gpointer; element_free_func: TGDestroyNotify): Pgpointer; cdecl;
-//begin
-//  Result := LazGLib2.g_ptr_array_new_from_array(data, len, copy_func, copy_func_user_data, element_free_func);
-//end;
-
-//function TGPtrArray.new_from_null_terminated_array(data: Pgpointer; copy_func: TGCopyFunc; copy_func_user_data: gpointer; element_free_func: TGDestroyNotify): Pgpointer; cdecl;
-//begin
-//  Result := LazGLib2.g_ptr_array_new_from_null_terminated_array(data, copy_func, copy_func_user_data, element_free_func);
-//end;
-
 function TGPtrArray.new_full(reserved_size: guint; element_free_func: TGDestroyNotify): Pgpointer; cdecl;
 begin
   Result := LazGLib2.g_ptr_array_new_full(reserved_size, element_free_func);
 end;
-
-//function TGPtrArray.new_take(data: Pgpointer; len: gsize; element_free_func: TGDestroyNotify): Pgpointer; cdecl;
-//begin
-//  Result := LazGLib2.g_ptr_array_new_take(data, len, element_free_func);
-//end;
-
-//function TGPtrArray.new_take_null_terminated(data: Pgpointer; element_free_func: TGDestroyNotify): Pgpointer; cdecl;
-//begin
-//  Result := LazGLib2.g_ptr_array_new_take_null_terminated(data, element_free_func);
-//end;
 
 function TGPtrArray.new_with_free_func(element_free_func: TGDestroyNotify): Pgpointer; cdecl;
 begin
@@ -9421,16 +9193,6 @@ procedure TGPtrArray.sort(array_: Pgpointer; compare_func: TGCompareFunc); cdecl
 begin
   LazGLib2.g_ptr_array_sort(array_, compare_func);
 end;
-
-//procedure TGPtrArray.sort_values(array_: Pgpointer; compare_func: TGCompareFunc); cdecl;
-//begin
-//  LazGLib2.g_ptr_array_sort_values(array_, compare_func);
-//end;
-
-//procedure TGPtrArray.sort_values_with_data(array_: Pgpointer; compare_func: TGCompareDataFunc; user_data: gpointer); cdecl;
-//begin
-//  LazGLib2.g_ptr_array_sort_values_with_data(array_, compare_func, user_data);
-//end;
 
 procedure TGPtrArray.sort_with_data(array_: Pgpointer; compare_func: TGCompareDataFunc; user_data: gpointer); cdecl;
 begin

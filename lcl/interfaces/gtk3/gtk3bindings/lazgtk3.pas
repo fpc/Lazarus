@@ -391,21 +391,6 @@ type
     TGtkDialogFlagsIdxMaxValue = 31
   );
   TGtkDialogFlags = Set of TGtkDialogFlagsIdx;
-  TGtkResponseType = (
-    TGtkResponseTypeMinValue = -$7FFFFFFF,
-    GTK_RESPONSE_HELP = -11,
-    GTK_RESPONSE_APPLY = -10,
-    GTK_RESPONSE_NO = -9,
-    GTK_RESPONSE_YES = -8,
-    GTK_RESPONSE_CLOSE = -7,
-    GTK_RESPONSE_CANCEL = -6,
-    GTK_RESPONSE_OK = -5,
-    GTK_RESPONSE_DELETE_EVENT = -4,
-    GTK_RESPONSE_ACCEPT = -3,
-    GTK_RESPONSE_REJECT = -2,
-    GTK_RESPONSE_NONE = -1,
-    TGtkResponseTypeMaxValue = $7FFFFFFF
-  );
   TGtkLicense = (
     TGtkLicenseMinValue = -$7FFFFFFF,
     GTK_LICENSE_UNKNOWN = 0,
@@ -475,17 +460,6 @@ type
     GTK_MOVEMENT_BUFFER_ENDS = 8,
     GTK_MOVEMENT_HORIZONTAL_PAGES = 9,
     TGtkMovementStepMaxValue = $7FFFFFFF
-  );
-  TGtkIconSize = (
-    TGtkIconSizeMinValue = -$7FFFFFFF,
-    GTK_ICON_SIZE_INVALID = 0,
-    GTK_ICON_SIZE_MENU = 1,
-    GTK_ICON_SIZE_SMALL_TOOLBAR = 2,
-    GTK_ICON_SIZE_LARGE_TOOLBAR = 3,
-    GTK_ICON_SIZE_BUTTON = 4,
-    GTK_ICON_SIZE_DND = 5,
-    GTK_ICON_SIZE_DIALOG = 6,
-    TGtkIconSizeMaxValue = $7FFFFFFF
   );
   TGtkSensitivityType = (
     TGtkSensitivityTypeMinValue = -$7FFFFFFF,
@@ -691,6 +665,17 @@ type
     GTK_CELL_RENDERER_ACCEL_MODE_GTK = 0,
     GTK_CELL_RENDERER_ACCEL_MODE_OTHER = 1,
     TGtkCellRendererAccelModeMaxValue = $7FFFFFFF
+  );
+  TGtkIconSize = (
+    TGtkIconSizeMinValue = -$7FFFFFFF,
+    GTK_ICON_SIZE_INVALID = 0,
+    GTK_ICON_SIZE_MENU = 1,
+    GTK_ICON_SIZE_SMALL_TOOLBAR = 2,
+    GTK_ICON_SIZE_LARGE_TOOLBAR = 3,
+    GTK_ICON_SIZE_BUTTON = 4,
+    GTK_ICON_SIZE_DND = 5,
+    GTK_ICON_SIZE_DIALOG = 6,
+    TGtkIconSizeMaxValue = $7FFFFFFF
   );
   TGtkScrollType = (
     TGtkScrollTypeMinValue = -$7FFFFFFF,
@@ -1247,6 +1232,21 @@ type
     TGtkRegionFlagsIdxMaxValue = 31
   );
   TGtkRegionFlags = Set of TGtkRegionFlagsIdx;
+  TGtkResponseType = (
+    TGtkResponseTypeMinValue = -$7FFFFFFF,
+    GTK_RESPONSE_HELP = -11,
+    GTK_RESPONSE_APPLY = -10,
+    GTK_RESPONSE_NO = -9,
+    GTK_RESPONSE_YES = -8,
+    GTK_RESPONSE_CLOSE = -7,
+    GTK_RESPONSE_CANCEL = -6,
+    GTK_RESPONSE_OK = -5,
+    GTK_RESPONSE_DELETE_EVENT = -4,
+    GTK_RESPONSE_ACCEPT = -3,
+    GTK_RESPONSE_REJECT = -2,
+    GTK_RESPONSE_NONE = -1,
+    TGtkResponseTypeMaxValue = $7FFFFFFF
+  );
   TGtkRevealerTransitionType = (
     TGtkRevealerTransitionTypeMinValue = -$7FFFFFFF,
     GTK_REVEALER_TRANSITION_TYPE_NONE = 0,
@@ -1423,88 +1423,21 @@ type
     GTK_TREE_VIEW_GRID_LINES_BOTH = 3,
     TGtkTreeViewGridLinesMaxValue = $7FFFFFFF
   );
-
 type
+
+
   { TGtkAllocation }
   PPGtkAllocation = ^PGtkAllocation;
   PGtkAllocation = ^TGtkAllocation;
   TGtkAllocation = TGdkRectangle;
 
-type
-  TGtkRcTokenType = Integer;
-const
-  { GtkRcTokenType }
-  GTK_RC_TOKEN_INVALID: TGtkRcTokenType = 270;
-  GTK_RC_TOKEN_INCLUDE: TGtkRcTokenType = 271;
-  GTK_RC_TOKEN_NORMAL: TGtkRcTokenType = 272;
-  GTK_RC_TOKEN_ACTIVE: TGtkRcTokenType = 273;
-  GTK_RC_TOKEN_PRELIGHT: TGtkRcTokenType = 274;
-  GTK_RC_TOKEN_SELECTED: TGtkRcTokenType = 275;
-  GTK_RC_TOKEN_INSENSITIVE: TGtkRcTokenType = 276;
-  GTK_RC_TOKEN_FG: TGtkRcTokenType = 277;
-  GTK_RC_TOKEN_BG: TGtkRcTokenType = 278;
-  GTK_RC_TOKEN_TEXT: TGtkRcTokenType = 279;
-  GTK_RC_TOKEN_BASE: TGtkRcTokenType = 280;
-  GTK_RC_TOKEN_XTHICKNESS: TGtkRcTokenType = 281;
-  GTK_RC_TOKEN_YTHICKNESS: TGtkRcTokenType = 282;
-  GTK_RC_TOKEN_FONT: TGtkRcTokenType = 283;
-  GTK_RC_TOKEN_FONTSET: TGtkRcTokenType = 284;
-  GTK_RC_TOKEN_FONT_NAME: TGtkRcTokenType = 285;
-  GTK_RC_TOKEN_BG_PIXMAP: TGtkRcTokenType = 286;
-  GTK_RC_TOKEN_PIXMAP_PATH: TGtkRcTokenType = 287;
-  GTK_RC_TOKEN_STYLE: TGtkRcTokenType = 288;
-  GTK_RC_TOKEN_BINDING: TGtkRcTokenType = 289;
-  GTK_RC_TOKEN_BIND: TGtkRcTokenType = 290;
-  GTK_RC_TOKEN_WIDGET: TGtkRcTokenType = 291;
-  GTK_RC_TOKEN_WIDGET_CLASS: TGtkRcTokenType = 292;
-  GTK_RC_TOKEN_CLASS: TGtkRcTokenType = 293;
-  GTK_RC_TOKEN_LOWEST: TGtkRcTokenType = 294;
-  GTK_RC_TOKEN_GTK: TGtkRcTokenType = 295;
-  GTK_RC_TOKEN_APPLICATION: TGtkRcTokenType = 296;
-  GTK_RC_TOKEN_THEME: TGtkRcTokenType = 297;
-  GTK_RC_TOKEN_RC: TGtkRcTokenType = 298;
-  GTK_RC_TOKEN_HIGHEST: TGtkRcTokenType = 299;
-  GTK_RC_TOKEN_ENGINE: TGtkRcTokenType = 300;
-  GTK_RC_TOKEN_MODULE_PATH: TGtkRcTokenType = 301;
-  GTK_RC_TOKEN_IM_MODULE_PATH: TGtkRcTokenType = 302;
-  GTK_RC_TOKEN_IM_MODULE_FILE: TGtkRcTokenType = 303;
-  GTK_RC_TOKEN_STOCK: TGtkRcTokenType = 304;
-  GTK_RC_TOKEN_LTR: TGtkRcTokenType = 305;
-  GTK_RC_TOKEN_RTL: TGtkRcTokenType = 306;
-  GTK_RC_TOKEN_COLOR: TGtkRcTokenType = 307;
-  GTK_RC_TOKEN_UNBIND: TGtkRcTokenType = 308;
-  GTK_RC_TOKEN_LAST: TGtkRcTokenType = 309;
 
-type
-  TGtkToolbarSpaceStyle = Integer;
-const
-  { GtkToolbarSpaceStyle }
-  GTK_TOOLBAR_SPACE_EMPTY: TGtkToolbarSpaceStyle = 0;
-  GTK_TOOLBAR_SPACE_LINE: TGtkToolbarSpaceStyle = 1;
-
-type
   { TGtkStock }
   PPGtkStock = ^PGtkStock;
   PGtkStock = ^TGtkStock;
   TGtkStock = gchar;
 
-type
-  TGtkUIManagerItemType = Integer;
-const
-  { GtkUIManagerItemType }
-  GTK_UI_MANAGER_AUTO: TGtkUIManagerItemType = 0;
-  GTK_UI_MANAGER_MENUBAR: TGtkUIManagerItemType = 1;
-  GTK_UI_MANAGER_MENU: TGtkUIManagerItemType = 2;
-  GTK_UI_MANAGER_TOOLBAR: TGtkUIManagerItemType = 4;
-  GTK_UI_MANAGER_PLACEHOLDER: TGtkUIManagerItemType = 8;
-  GTK_UI_MANAGER_POPUP: TGtkUIManagerItemType = 16;
-  GTK_UI_MANAGER_MENUITEM: TGtkUIManagerItemType = 32;
-  GTK_UI_MANAGER_TOOLITEM: TGtkUIManagerItemType = 64;
-  GTK_UI_MANAGER_SEPARATOR: TGtkUIManagerItemType = 128;
-  GTK_UI_MANAGER_ACCELERATOR: TGtkUIManagerItemType = 256;
-  GTK_UI_MANAGER_POPUP_WITH_ACCELS: TGtkUIManagerItemType = 512;
 
-type
   { TGtkBuildable }
   PPGtkBuildable = ^PGtkBuildable;
   PGtkBuildable = ^TGtkBuildable;
