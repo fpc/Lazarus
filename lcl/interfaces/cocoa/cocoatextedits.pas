@@ -1442,12 +1442,14 @@ end;
 
 procedure TCocoaComboBox.comboBoxWillPopUp(notification: NSNotification);
 begin
+  self.setCompletes( TCocoaWSCustomComboBox.GetObjectAutoComplete(lclGetTarget) );
   callback.ComboBoxWillPopUp;
   isDown:=true;
 end;
 
 procedure TCocoaComboBox.comboBoxWillDismiss(notification: NSNotification);
 begin
+  self.setCompletes(false);
   callback.ComboBoxWillDismiss;
   isDown:=false;
 end;

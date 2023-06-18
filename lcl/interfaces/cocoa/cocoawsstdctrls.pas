@@ -77,6 +77,7 @@ type
   public
     class function getNSText(const ACustomComboBox: TCustomComboBox): NSText;
     class function GetObjectItemIndex(const AObject: TObject): integer;
+    class function GetObjectAutoComplete(const AObject: TObject): boolean;
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
@@ -720,7 +721,6 @@ end;
 
 procedure TLCLComboboxCallback.ComboBoxSelectionDidChange;
 begin
-  writeln( TComboBox(self.GetCallbackObject).DroppedDown );
   SendSimpleMessage(Target, LM_SELCHANGE);
 end;
 
@@ -1944,6 +1944,14 @@ begin
     Result:= GetItemIndex( TCustomComboBox(AObject) )
   else
     Result:= -1;
+end;
+
+class function TCocoaWSCustomComboBox.GetObjectAutoComplete(const AObject: TObject): boolean;
+begin
+  if AObject is TCustomComboBox then
+    Result:= TCustomComboBox(AObject).AutoComplete
+  else
+    Result:= false;
 end;
 
 class procedure TCocoaWSCustomComboBox.SetSelStart(
