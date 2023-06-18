@@ -121,7 +121,6 @@ in both units; this one calls the other.
 </descr>
 <seealso>
 <link id="TLCLWidgetTypeNameEvent"/>
-<link id="lcl.interfacebase.GetLCLWidgetTypeName">InterfaceBase.GetLCLWidgetTypeName</link>
 </seealso>
 </element>
 

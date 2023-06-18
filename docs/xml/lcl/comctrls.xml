@@ -37691,9 +37691,9 @@ Added in LCL version 2.4.0.
 <link id="TCustomTreeView.Selected"/>
 <link id="TCustomTreeView.Selections"/>
 <link id="TCustomTreeView.SelectionCount"/>
-<link id="TCustomTreeView.GetNextExpanded"/>
 <link id="TCustomTreeView.KeyDown"/>
 <link id="TTreeNode.Expanded"/>
+<link id="TTreeNode.GetNextExpanded"/>
 <link id="TTreeNode.Selected"/>
 <link id="TTreeNode.MultiSelected"/>
 <link id="TTreeViewOption"/>
