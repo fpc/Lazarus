@@ -38,6 +38,8 @@ uses
   Classes, SysUtils,
   // LazUtils
   LazFileUtils, Laz2_XMLCfg, LazUTF8, LazFileCache, LazStringUtils, LazLoggerBase,
+  // LCL
+  LCLType,
   // CodeTools
   CodeToolManager, DefineTemplates, SourceChanger,
   // IdeIntf

@@ -135,7 +135,7 @@ implementation
 
 uses
 {$i uses.inc}
-  maps, LazUTF8, LCLMessageGlue, Controls
+  maps, LazUTF8, LCLProc, LCLMessageGlue, Controls
   {$ifdef DEBUG_DELPHICOMPAT}
   ,multiloglcl, filechannel
   {$endif}

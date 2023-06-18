@@ -26,7 +26,7 @@ uses
   // LCL
   Forms, Graphics, ComCtrls, LCLStrConsts,
   // LazUtils
-  LazFileUtils, Masks;
+  LazFileUtils, LazUTF8, Masks;
 
 {$if defined(Windows) or defined(darwin) or defined(HASAMIGA))}
 {$define CaseInsensitiveFilenames}

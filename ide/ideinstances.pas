@@ -43,7 +43,7 @@ uses
   {$ELSE}
   LazAdvancedIPC,
   {$ENDIF}
-  Controls, Dialogs, ExtCtrls, LCLType,
+  Controls, Dialogs, ExtCtrls, LCLIntf, LCLType,
   LazFileUtils, FileUtil, Laz2_XMLRead, Laz2_XMLWrite, Laz2_DOM, LazUTF8,
   UTF8Process, LazLoggerBase,
   LazarusIDEStrConsts, IDECmdLine, LazConf;
