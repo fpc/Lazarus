@@ -198,6 +198,6 @@ type
 
 
 
-procedure XOpenDisplay; cdecl; external;
+procedure XOpenDisplay; cdecl; external Lazxlib2_library name 'XOpenDisplay';
 implementation
 end.
