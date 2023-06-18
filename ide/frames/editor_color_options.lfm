@@ -60,7 +60,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       end
       object ToolButton3: TToolButton
         Left = 107
-        Height = 22
+        Height = 8
         Top = 0
         Caption = 'ToolButton3'
         Style = tbsSeparator
@@ -125,6 +125,10 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       inherited MarkupFoldColorUseDefaultCheckBox: TCheckBox
         AnchorSideLeft.Control = SynColorAttrEditor1
       end
+      inherited lblInfo: TLabel
+        AnchorSideLeft.Control = SynColorAttrEditor1
+        AnchorSideRight.Control = SynColorAttrEditor1
+      end
     end
     object PriorityEditor: TPanel
       AnchorSideLeft.Control = pnlElementAttributes
@@ -173,6 +177,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
           ShowButtons = False
           ShowLines = False
           ShowRoot = False
+          ShowSeparators = False
           SortType = stData
           TabOrder = 0
           OnAdvancedCustomDrawItem = ColorElementTreeAdvancedCustomDrawItem
@@ -255,6 +260,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
           ShowButtons = False
           ShowLines = False
           ShowRoot = False
+          ShowSeparators = False
           SortType = stData
           TabOrder = 0
           OnAdvancedCustomDrawItem = ColorElementTreeAdvancedCustomDrawItem
@@ -337,6 +343,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
           ShowButtons = False
           ShowLines = False
           ShowRoot = False
+          ShowSeparators = False
           SortType = stData
           TabOrder = 0
           OnAdvancedCustomDrawItem = ColorElementTreeAdvancedCustomDrawItem
@@ -419,6 +426,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
           ShowButtons = False
           ShowLines = False
           ShowRoot = False
+          ShowSeparators = False
           SortType = stData
           TabOrder = 0
           OnAdvancedCustomDrawItem = ColorElementTreeAdvancedCustomDrawItem
@@ -569,6 +577,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       ScrollBars = ssAutoBoth
       ShowButtons = False
       ShowRoot = False
+      ShowSeparators = False
       TabOrder = 0
       OnAdvancedCustomDrawItem = ColorElementTreeAdvancedCustomDrawItem
       OnChange = ColorElementTreeChange
@@ -601,7 +610,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       TabStop = False
       OnMouseUp = ColorPreviewMouseUp
       BookMarkOptions.Xoffset = 30
-      Gutter.Width = 59
+      Gutter.Width = 61
       Gutter.MouseActions = <      
         item
           ClickCount = ccAny
@@ -1041,7 +1050,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
           MouseActions = <>
         end
         object TSynGutterLineNumber
-          Width = 19
+          Width = 21
           MouseActions = <>
           MarkupInfo.Background = clBtnFace
           MarkupInfo.Foreground = clNone
@@ -1143,7 +1152,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
     end
     object ToolButton2: TToolButton
       Left = 24
-      Height = 22
+      Height = 5
       Top = 0
       Caption = 'ToolButton2'
       Style = tbsDivider
@@ -1182,7 +1191,7 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
     end
     object ToolButton5: TToolButton
       Left = 234
-      Height = 22
+      Height = 5
       Top = 0
       Caption = 'ToolButton5'
       Style = tbsDivider
@@ -1202,15 +1211,15 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
     DefaultExt = '.xml'
     Filter = 'xml|*.xml'
     Options = [ofOverwritePrompt, ofPathMustExist, ofEnableSizing, ofViewDetail]
-    left = 568
-    top = 56
+    Left = 568
+    Top = 56
   end
   object LanguageMenu: TPopupMenu
-    left = 568
-    top = 104
+    Left = 568
+    Top = 104
   end
   object ColorSchemeMenu: TPopupMenu
-    left = 568
-    top = 160
+    Left = 568
+    Top = 160
   end
 end

@@ -1155,7 +1155,7 @@ begin
 
   // Create Groups
   if not FIsEditingDefaults then
-    ColorElementTree.Items.Add(nil, FCurrentHighlighter.LanguageName)
+    ColorElementTree.Items.Add(nil, FCurrentHighlighter.LanguageName + ' ')
   else
     ColorElementTree.Items.Add(nil, AdditionalHighlightGroupNames[agnDefault]);
   for j := low(TAhaGroupName) to high(TAhaGroupName) do
@@ -1175,11 +1175,14 @@ begin
               ParentName := AdditionalHighlightGroupNames[agnDefault]
             else
               ParentName := FCurrentHighlighter.LanguageName;
+            ParentNode := ColorElementTree.Items.GetFirstNode;
           end;
         else
-          ParentName := AdditionalHighlightGroupNames[Attr.Group];
+          begin
+            ParentName := AdditionalHighlightGroupNames[Attr.Group];
+            ParentNode := ColorElementTree.Items.FindTopLvlNode(ParentName);
+          end;
       end;
-      ParentNode := ColorElementTree.Items.FindTopLvlNode(ParentName);
       if ParentNode = nil then
         ParentNode := ColorElementTree.Items.Add(nil, ParentName);
       NewNode :=  ColorElementTree.Items.AddChild(ParentNode, COLOR_NODE_PREFIX + Attr.Caption^);

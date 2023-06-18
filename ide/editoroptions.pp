@@ -399,6 +399,28 @@ type
     property  ColorSchemeGroupAtPos[Index: Integer]: TColorScheme read GetColorSchemeGroupAtPos;
   end;
 
+  { TIDESynTextSyn }
+
+  TIDESynTextSyn = class(TSynCustomHighlighter)
+  private
+    FLineText: String;
+//    fTextAttri: TSynHighlighterAttributes;
+    FPos: Integer;
+  protected
+    procedure SetLine(const NewValue: String; LineNumber: Integer); override;
+    function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;      override;
+  public
+    class function GetLanguageName: string; override;
+
+    constructor Create(AOwner: TComponent); override;
+    function GetEol: Boolean; override;
+    function GetToken: string; override;
+    procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
+    function GetTokenAttribute: TSynHighlighterAttributes; override;
+    function GetTokenPos: Integer; override;
+    procedure Next; override;
+  end;
+
 type
 
   TEditorOptionsDividerInfo = record
@@ -695,7 +717,7 @@ const
 
   LazSyntaxHighlighterClasses: array[TLazSyntaxHighlighter] of
     TCustomSynClass =
-    (nil, nil, TIDESynFreePasSyn, TIDESynPasSyn, TSynLFMSyn, TSynXMLSyn,
+    (nil, TIDESynTextSyn, TIDESynFreePasSyn, TIDESynPasSyn, TSynLFMSyn, TSynXMLSyn,
     TSynHTMLSyn, TSynCPPSyn, TSynPerlSyn, TSynJavaSyn, TSynUNIXShellScriptSyn,
     TSynPythonSyn, TSynPHPSyn, TSynSQLSyn,TSynCssSyn, TSynJScriptSyn, TSynDiffSyn,
     TSynBatSyn, TSynIniSyn, TSynPoSyn, TSynPikeSyn);
@@ -3405,6 +3427,23 @@ begin
   end;
   Add(NewInfo);
 
+  // create info for text
+  NewInfo := TEditOptLanguageInfo.Create;
+  NewInfo.TheType := lshText;
+  NewInfo.DefaultCommentType := DefaultCommentTypes[NewInfo.TheType];
+  NewInfo.SynClass := LazSyntaxHighlighterClasses[NewInfo.TheType];
+  NewInfo.SetBothFilextensions('txt');
+  NewInfo.SampleSource := 'Text in the source editor.'+#13#10+
+                          'Example line 2'+#13#10+
+                          'Example line 3'+#13#10+
+                          'Example line 4'+#13#10;
+  with NewInfo do
+  begin
+    AddAttrSampleLines[ahaTextBlock] := 12;
+    MappedAttributes := TStringList.Create;
+    CaretXY := Point(1,1);
+  end;
+  Add(NewInfo);
 end;
 
 destructor TEditOptLangList.Destroy;
@@ -5804,11 +5843,20 @@ end;
 procedure TEditorOptions.SetMarkupColors(aSynEd: TSynEdit);
 var
   Scheme: TColorSchemeLanguage;
+  TmpHl: TIDESynTextSyn;
 begin
   // Find current color scheme for default colors
   if (aSynEd.Highlighter = nil) then begin
-    aSynEd.Color := clWhite;
-    aSynEd.Font.Color := clBlack;
+    TmpHl := TIDESynTextSyn.Create(nil);
+    Scheme := GetColorSchemeLanguage(TmpHl);
+    if Assigned(Scheme) then begin
+      Scheme.ApplyTo(aSynEd);
+    end
+    else begin
+      aSynEd.Color := clWhite;
+      aSynEd.Font.Color := clBlack;
+    end;
+    TmpHl.Free;
     exit;
   end;
   // get current colorscheme:
@@ -6113,7 +6161,9 @@ end;
 
 function TEditorOptions.CreateSyn(LazSynHilighter: TLazSyntaxHighlighter): TSrcIDEHighlighter;
 begin
-  if LazSyntaxHighlighterClasses[LazSynHilighter] <> Nil then
+  if (LazSyntaxHighlighterClasses[LazSynHilighter] <> Nil) and
+     not (LazSyntaxHighlighterClasses[LazSynHilighter] = TIDESynTextSyn)
+  then
   begin
     Result := LazSyntaxHighlighterClasses[LazSynHilighter].Create(Nil);
     GetHighlighterSettings(Result);
@@ -7190,6 +7240,64 @@ begin
   finally
     AList.EndUpdate;
   end;
+end;
+
+{ TIDESynTextSyn }
+
+procedure TIDESynTextSyn.SetLine(const NewValue: String; LineNumber: Integer);
+begin
+  inherited SetLine(NewValue, LineNumber);
+  FLineText := NewValue;
+  FPos := 0;
+end;
+
+function TIDESynTextSyn.GetDefaultAttribute(Index: integer
+  ): TSynHighlighterAttributes;
+begin
+  Result := nil;
+end;
+
+class function TIDESynTextSyn.GetLanguageName: string;
+begin
+  Result := 'Plain Text';
+end;
+
+constructor TIDESynTextSyn.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  fDefaultFilter := '';
+end;
+
+function TIDESynTextSyn.GetEol: Boolean;
+begin
+  Result := FPos > 0;
+end;
+
+function TIDESynTextSyn.GetToken: string;
+begin
+  Result := FLineText;
+end;
+
+procedure TIDESynTextSyn.GetTokenEx(out TokenStart: PChar; out
+  TokenLength: integer);
+begin
+  TokenStart := PChar(FLineText);
+  TokenLength := Length(FLineText);
+end;
+
+function TIDESynTextSyn.GetTokenAttribute: TSynHighlighterAttributes;
+begin
+  Result := nil;
+end;
+
+function TIDESynTextSyn.GetTokenPos: Integer;
+begin
+  Result := 0;
+end;
+
+procedure TIDESynTextSyn.Next;
+begin
+  inc(FPos);
 end;
 
 { TQuickStringlist }
