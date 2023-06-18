@@ -39,7 +39,7 @@ interface
 uses
   Classes, SysUtils,
   // LazUtils
-  LazMethodList,
+  LazMethodList, LazLoggerBase,
   // SynEdit
   SynEditMiscProcs, SynEditKeyCmds;
 

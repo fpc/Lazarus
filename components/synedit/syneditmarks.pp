@@ -12,7 +12,7 @@ interface
 
 uses
   Classes, Controls, SysUtils, Math, SynEditMiscClasses, LazSynEditText,
-  ImgList;
+  LazLoggerBase, ImgList;
 
 type
 
