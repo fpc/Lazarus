@@ -106,23 +106,6 @@ type
   TAbstractIDEEnvironmentOptions = class(TAbstractIDEOptions);
   TAbstractIDEHelpOptions = class(TAbstractIDEEnvironmentOptions);
 
-  TExtraEnvOptions = class
-  private
-
-  end;
-
-  { TExtraEnvOptionList }
-
-  TExtraEnvOptionList = class
-  private
-    FList: TFPList;
-    function GetItems(Index: integer): TExtraEnvOptions;
-  public
-    constructor Create;
-    destructor Destroy; override;
-    property Items[Index: integer]: TExtraEnvOptions read GetItems;
-  end;
-
   TOnLoadIDEOptions = procedure(Sender: TObject; AOptions: TAbstractIDEOptions) of object;
   TOnSaveIDEOptions = procedure(Sender: TObject; AOptions: TAbstractIDEOptions) of object;
 
@@ -133,7 +116,6 @@ type
 
   TIDEEnvironmentOptions = class(TAbstractIDEEnvironmentOptions)
   private
-    fExtraOptionList: TExtraEnvOptionList;
     fRecentHandlers: array[TIDERecentHandler] of TMethodList;
     procedure DoCallRecentHandlers(AHandler: TIDERecentHandler;
       const AFileName: string; var AAllow: Boolean);
@@ -163,18 +145,11 @@ type
     procedure RemoveHandlerAddToRecentProjectFiles(Handler: TOnAddToRecent);
     procedure AddHandlerAddToRecentPackageFiles(Handler: TOnAddToRecent; const AsFirst: boolean = true); // AsFirst means: first to call
     procedure RemoveHandlerAddToRecentPackageFiles(Handler: TOnAddToRecent);
-
-    procedure RegisterExtraOptions(AExtraOptions: TExtraEnvOptions);
   end;
-
-  RegisterOptionsGroupEvent = procedure(AGroupIndex: Integer; AGroupClass: TAbstractIDEOptionsClass);
-
-  procedure RegisterOptionsGroup(AGroupIndex: Integer; AGroupClass: TAbstractIDEOptionsClass);
 
 var
   IDEEnvironmentOptions: TIDEEnvironmentOptions;
   HasGUI: boolean = true; // lazbuild sets this to false
-  OnRegisterGroup: RegisterOptionsGroupEvent;
 
 const
   // predefined environment options groups
@@ -278,13 +253,6 @@ const
 
 implementation
 
-procedure RegisterOptionsGroup(AGroupIndex: Integer; AGroupClass: TAbstractIDEOptionsClass);
-// Like function RegisterIDEOptionsGroup in IDEOptEditorIntf (IdeIntf) but does not return anything.
-begin
-  if Assigned(OnRegisterGroup) then
-    OnRegisterGroup(AGroupIndex, AGroupClass);
-end;
-
 { TIDEEnvironmentOptions }
 
 constructor TIDEEnvironmentOptions.Create;
@@ -292,7 +260,6 @@ var
   I: TIDERecentHandler;
 begin
   inherited Create;
-  fExtraOptionList := TExtraEnvOptionList.Create;
   for I := Low(fRecentHandlers) to High(fRecentHandlers) do
     fRecentHandlers[I] := TMethodList.Create;
 end;
@@ -303,7 +270,6 @@ var
 begin
   for I := Low(fRecentHandlers) to High(fRecentHandlers) do
     fRecentHandlers[I].Free;
-  fExtraOptionList.Free;
   inherited Destroy;
 end;
 
@@ -372,11 +338,6 @@ procedure TIDEEnvironmentOptions.RemoveHandlerAddToRecentProjectFiles(
   Handler: TOnAddToRecent);
 begin
   fRecentHandlers[irhProjectFiles].Remove(TMethod(Handler));
-end;
-
-procedure TIDEEnvironmentOptions.RegisterExtraOptions(AExtraOptions: TExtraEnvOptions);
-begin
-  fExtraOptionList.FList.Add(AExtraOptions);
 end;
 
 { TAbstractDesktopDockingOpt }
@@ -503,24 +464,6 @@ end;
 procedure TAbstractIDEOptions.RemoveHandlerDestroy(const Handler: TNotifyEvent);
 begin
   fHandlers[iohDestroy].Remove(TMethod(Handler));
-end;
-
-{ TExtraEnvOptionList }
-
-constructor TExtraEnvOptionList.Create;
-begin
-  FList:=TFPList.Create;
-end;
-
-destructor TExtraEnvOptionList.Destroy;
-begin
-  FList.Free;
-  inherited Destroy;
-end;
-
-function TExtraEnvOptionList.GetItems(Index: integer): TExtraEnvOptions;
-begin
-  Result:=TExtraEnvOptions(FList[Index]);
 end;
 
 end.

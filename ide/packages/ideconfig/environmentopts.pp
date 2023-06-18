@@ -1714,8 +1714,5 @@ begin
   SetParseValue(eopFppkgConfigFile,UTF8Trim(AValue));
 end;
 
-initialization
-  //RegisterIDEOptionsGroup(GroupEnvironment, TEnvironmentOptions);
-  RegisterOptionsGroup(GroupEnvironment, TEnvironmentOptions);
 end.
 

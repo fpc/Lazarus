@@ -46,6 +46,7 @@ uses
   Controls, Dialogs, ExtCtrls, LCLIntf, LCLType,
   LazFileUtils, FileUtil, Laz2_XMLRead, Laz2_XMLWrite, Laz2_DOM, LazUTF8,
   UTF8Process, LazLoggerBase,
+  EnvironmentOpts, IDEOptionsIntf, IDEOptEditorIntf,
   LazarusIDEStrConsts, IDECmdLine, LazConf;
 
 type
@@ -992,6 +993,8 @@ begin
 end;
 
 initialization
+  // Editor group for EnvironmentOptions must be registered early.
+  RegisterIDEOptionsGroup(GroupEnvironment, TEnvironmentOptions);
   FLazIDEInstances := TIDEInstances.Create(nil);
   FLazIDEInstances.InitIDEInstances;
 

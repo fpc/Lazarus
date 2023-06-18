@@ -57,7 +57,7 @@ uses
   Interfaces,
   IDEInstances,//keep IDEInstances up so that it will be initialized soon
   Forms, LazUtilities, LazLoggerBase,
-  IDEOptEditorIntf, IDEOptionsIntf,
+  IDEOptionsIntf,
   LazConf, IDEGuiCmdLine,
   Splash,
   Main,
