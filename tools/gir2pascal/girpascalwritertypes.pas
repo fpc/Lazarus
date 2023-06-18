@@ -873,11 +873,11 @@ end;
 
 function TPascalUnit.cExternal(const cName: String = ''): String;
 begin
-  Result := ' external {$ifdef MsWindows} ' + UnitName + '_library';
+  Result := ' external ' + UnitName + '_library';
   if cName <> '' then begin
     Result += ' name ''' + cName + '''';
   end;
-  Result += ' {$endif};';
+  Result += ';';
 end;
 
 function TPascalUnit.WantTypeSection: TPDeclarationType;
