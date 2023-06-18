@@ -327,11 +327,17 @@ var
   procedure ClearCharsetEncodings;
   procedure CreateDefaultCharsetEncodings;
 
+function PANGO_PIXELS(d:integer):integer; inline;
 function GetStyleWidget(aStyle: TLazGtkStyle): PGtkWidget;
 procedure ReleaseAllStyles;
 
 implementation
 uses LCLProc;
+
+function PANGO_PIXELS(d:integer):integer;
+begin
+  Result:=((d + 512) shr 10);
+end;
 
 function TGdkRGBAToTColor(const value: TGdkRGBA): TColor;
 begin
@@ -569,6 +575,10 @@ function Gtk3TranslateScrollStyle(const SS: TScrollStyle): TGtkScrollStyle;
 	end;
   end;
 begin
+  with Result do begin
+    Horizontal := GTK_POLICY_AUTOMATIC;
+	Vertical := GTK_POLICY_AUTOMATIC;
+  end;
   case SS of
     ssAutoBoth: return(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
     ssAutoHorizontal: return(GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
