@@ -20033,7 +20033,9 @@ msgid "Close all pages"
 msgstr "Tüm sayfaları kapat"
 
 #: lazarusidestrconsts.rsclosecurrentpage
-msgid "Close current page"
+#, fuzzy
+#| msgid "Close current page"
+msgid "Close current page (Ctrl+F4)∥(Ctrl+W)"
 msgstr "Geçerli sayfayı kapat"
 
 #: lazarusidestrconsts.rscloseleft
@@ -20061,7 +20063,9 @@ msgid "Enable i18n"
 msgstr "I18n aktif"
 
 #: lazarusidestrconsts.rsfilterthelistwithstring
-msgid "Filter the lines in list with a string"
+#, fuzzy
+#| msgid "Filter the lines in list with a string"
+msgid "Filter the lines in list with a string (Ctrl+F)"
 msgstr "Listedeki satırları bir string ile filtreleme"
 
 #: lazarusidestrconsts.rsfoundbutnotlistedhere
@@ -20217,7 +20221,9 @@ msgid "Mi&nor version:"
 msgstr "Küçü&k sürüm:"
 
 #: lazarusidestrconsts.rsnewsearchwithsamecriteria
-msgid "New search with same criteria"
+#, fuzzy
+#| msgid "New search with same criteria"
+msgid "New search with same criteria (Ctrl+N)"
 msgstr "Aynı kriterlere sahip yeni arama"
 
 #: lazarusidestrconsts.rsotherinfo
@@ -20229,7 +20235,9 @@ msgid "PO Output Directory:"
 msgstr "PO Çıktı klasörü:"
 
 #: lazarusidestrconsts.rsrefreshthesearch
-msgid "Refresh the search"
+#, fuzzy
+#| msgid "Refresh the search"
+msgid "Refresh the search (F5)"
 msgstr "Aramayı yenile"
 
 #: lazarusidestrconsts.rsresource
@@ -20269,7 +20277,7 @@ msgid "File name"
 msgstr "Dosya adı"
 
 #: lazarusidestrconsts.rsshowpathmode
-msgid "Path display mode"
+msgid "Path display mode (Ctrl+P)"
 msgstr ""
 
 #: lazarusidestrconsts.rsshowrelpath

@@ -20158,7 +20158,9 @@ msgid "Close all pages"
 msgstr "Fermer tous les onglets"
 
 #: lazarusidestrconsts.rsclosecurrentpage
-msgid "Close current page"
+#, fuzzy
+#| msgid "Close current page"
+msgid "Close current page (Ctrl+F4)∥(Ctrl+W)"
 msgstr "Fermer l'onglet actif"
 
 #: lazarusidestrconsts.rscloseleft
@@ -20186,7 +20188,9 @@ msgid "Enable i18n"
 msgstr "Activer i18n"
 
 #: lazarusidestrconsts.rsfilterthelistwithstring
-msgid "Filter the lines in list with a string"
+#, fuzzy
+#| msgid "Filter the lines in list with a string"
+msgid "Filter the lines in list with a string (Ctrl+F)"
 msgstr "Filtrer les lignes dans la liste avec une chaîne de caractères"
 
 #: lazarusidestrconsts.rsfoundbutnotlistedhere
@@ -20342,7 +20346,9 @@ msgid "Mi&nor version:"
 msgstr "Version mi&neure :"
 
 #: lazarusidestrconsts.rsnewsearchwithsamecriteria
-msgid "New search with same criteria"
+#, fuzzy
+#| msgid "New search with same criteria"
+msgid "New search with same criteria (Ctrl+N)"
 msgstr "Nouvelle recherche avec les mêmes critères"
 
 #: lazarusidestrconsts.rsotherinfo
@@ -20354,7 +20360,9 @@ msgid "PO Output Directory:"
 msgstr "Répertoire de sortie PO :"
 
 #: lazarusidestrconsts.rsrefreshthesearch
-msgid "Refresh the search"
+#, fuzzy
+#| msgid "Refresh the search"
+msgid "Refresh the search (F5)"
 msgstr "Rafraîchir la recherche"
 
 #: lazarusidestrconsts.rsresource
@@ -20394,7 +20402,7 @@ msgid "File name"
 msgstr "Nom de fichier"
 
 #: lazarusidestrconsts.rsshowpathmode
-msgid "Path display mode"
+msgid "Path display mode (Ctrl+P)"
 msgstr ""
 
 #: lazarusidestrconsts.rsshowrelpath

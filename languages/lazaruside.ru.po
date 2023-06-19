@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-06-13 19:47+0300\n"
+"PO-Revision-Date: 2023-06-19 16:26+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -20116,8 +20116,8 @@ msgid "Close all pages"
 msgstr "Закрыть все вкладки"
 
 #: lazarusidestrconsts.rsclosecurrentpage
-msgid "Close current page"
-msgstr "Закрыть текущую вкладку"
+msgid "Close current page (Ctrl+F4)∥(Ctrl+W)"
+msgstr "Закрыть текущую вкладку (Ctrl+F4)∥(Ctrl+W)"
 
 #: lazarusidestrconsts.rscloseleft
 msgid "Close page(s) on the left"
@@ -20144,8 +20144,8 @@ msgid "Enable i18n"
 msgstr "Включить i18n"
 
 #: lazarusidestrconsts.rsfilterthelistwithstring
-msgid "Filter the lines in list with a string"
-msgstr "Отфильтровывайте значения списка при помощи строки"
+msgid "Filter the lines in list with a string (Ctrl+F)"
+msgstr "Отфильтровать значения списка при помощи строки (Ctrl+F)"
 
 #: lazarusidestrconsts.rsfoundbutnotlistedhere
 msgid "Found but not listed here: "
@@ -20300,8 +20300,8 @@ msgid "Mi&nor version:"
 msgstr "&Младшая:"
 
 #: lazarusidestrconsts.rsnewsearchwithsamecriteria
-msgid "New search with same criteria"
-msgstr "Новый поиск по тем же условиям"
+msgid "New search with same criteria (Ctrl+N)"
+msgstr "Новый поиск по тем же условиям (Ctrl+N)"
 
 #: lazarusidestrconsts.rsotherinfo
 msgid "Other info"
@@ -20312,8 +20312,8 @@ msgid "PO Output Directory:"
 msgstr "Каталог вывода файлов PO:"
 
 #: lazarusidestrconsts.rsrefreshthesearch
-msgid "Refresh the search"
-msgstr "Обновить результаты поиска"
+msgid "Refresh the search (F5)"
+msgstr "Обновить результаты поиска (F5)"
 
 #: lazarusidestrconsts.rsresource
 msgid "Resource"
@@ -20351,8 +20351,8 @@ msgid "File name"
 msgstr "Имя файла"
 
 #: lazarusidestrconsts.rsshowpathmode
-msgid "Path display mode"
-msgstr "Режим отображения пути"
+msgid "Path display mode (Ctrl+P)"
+msgstr "Режим отображения пути (Ctrl+P)"
 
 #: lazarusidestrconsts.rsshowrelpath
 msgid "Relative path"

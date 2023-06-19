@@ -20404,7 +20404,9 @@ msgid "Close all pages"
 msgstr ""
 
 #: lazarusidestrconsts.rsclosecurrentpage
-msgid "Close current page"
+#, fuzzy
+#| msgid "Close current page"
+msgid "Close current page (Ctrl+F4)∥(Ctrl+W)"
 msgstr "現在のページを閉じる"
 
 #: lazarusidestrconsts.rscloseleft
@@ -20432,7 +20434,9 @@ msgid "Enable i18n"
 msgstr "国際化を有効にする"
 
 #: lazarusidestrconsts.rsfilterthelistwithstring
-msgid "Filter the lines in list with a string"
+#, fuzzy
+#| msgid "Filter the lines in list with a string"
+msgid "Filter the lines in list with a string (Ctrl+F)"
 msgstr "リスト内の行を文字列で選別"
 
 #: lazarusidestrconsts.rsfoundbutnotlistedhere
@@ -20590,7 +20594,7 @@ msgid "Mi&nor version:"
 msgstr "マイナーバージョン(&n)"
 
 #: lazarusidestrconsts.rsnewsearchwithsamecriteria
-msgid "New search with same criteria"
+msgid "New search with same criteria (Ctrl+N)"
 msgstr ""
 
 #: lazarusidestrconsts.rsotherinfo
@@ -20602,7 +20606,7 @@ msgid "PO Output Directory:"
 msgstr "PO出力ディレクトリ"
 
 #: lazarusidestrconsts.rsrefreshthesearch
-msgid "Refresh the search"
+msgid "Refresh the search (F5)"
 msgstr ""
 
 #: lazarusidestrconsts.rsresource
@@ -20642,7 +20646,7 @@ msgid "File name"
 msgstr "ファイル名"
 
 #: lazarusidestrconsts.rsshowpathmode
-msgid "Path display mode"
+msgid "Path display mode (Ctrl+P)"
 msgstr ""
 
 #: lazarusidestrconsts.rsshowrelpath

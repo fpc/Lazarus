@@ -20120,7 +20120,9 @@ msgid "Close all pages"
 msgstr "Закрити всі сторінки"
 
 #: lazarusidestrconsts.rsclosecurrentpage
-msgid "Close current page"
+#, fuzzy
+#| msgid "Close current page"
+msgid "Close current page (Ctrl+F4)∥(Ctrl+W)"
 msgstr "Закрити поточну сторінку"
 
 #: lazarusidestrconsts.rscloseleft
@@ -20148,7 +20150,9 @@ msgid "Enable i18n"
 msgstr "Ввімкнути i18n"
 
 #: lazarusidestrconsts.rsfilterthelistwithstring
-msgid "Filter the lines in list with a string"
+#, fuzzy
+#| msgid "Filter the lines in list with a string"
+msgid "Filter the lines in list with a string (Ctrl+F)"
 msgstr "Фільрувати рядки в списку з текстом"
 
 #: lazarusidestrconsts.rsfoundbutnotlistedhere
@@ -20304,7 +20308,9 @@ msgid "Mi&nor version:"
 msgstr "&Другорядна версія:"
 
 #: lazarusidestrconsts.rsnewsearchwithsamecriteria
-msgid "New search with same criteria"
+#, fuzzy
+#| msgid "New search with same criteria"
+msgid "New search with same criteria (Ctrl+N)"
 msgstr "Новий пошук з тими самими критеріями"
 
 #: lazarusidestrconsts.rsotherinfo
@@ -20316,7 +20322,9 @@ msgid "PO Output Directory:"
 msgstr "Результуюча тека PO:"
 
 #: lazarusidestrconsts.rsrefreshthesearch
-msgid "Refresh the search"
+#, fuzzy
+#| msgid "Refresh the search"
+msgid "Refresh the search (F5)"
 msgstr "Оновити пошук"
 
 #: lazarusidestrconsts.rsresource
@@ -20355,7 +20363,9 @@ msgid "File name"
 msgstr "Назва файлу"
 
 #: lazarusidestrconsts.rsshowpathmode
-msgid "Path display mode"
+#, fuzzy
+#| msgid "Path display mode"
+msgid "Path display mode (Ctrl+P)"
 msgstr "Режим показу шляху"
 
 #: lazarusidestrconsts.rsshowrelpath

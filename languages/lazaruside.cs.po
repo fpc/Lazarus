@@ -20244,7 +20244,9 @@ msgid "Close all pages"
 msgstr ""
 
 #: lazarusidestrconsts.rsclosecurrentpage
-msgid "Close current page"
+#, fuzzy
+#| msgid "Close current page"
+msgid "Close current page (Ctrl+F4)∥(Ctrl+W)"
 msgstr "Zavřít aktuální stránku"
 
 #: lazarusidestrconsts.rscloseleft
@@ -20272,7 +20274,9 @@ msgid "Enable i18n"
 msgstr "Povolit i18n"
 
 #: lazarusidestrconsts.rsfilterthelistwithstring
-msgid "Filter the lines in list with a string"
+#, fuzzy
+#| msgid "Filter the lines in list with a string"
+msgid "Filter the lines in list with a string (Ctrl+F)"
 msgstr "Filtrovat řádky v seznamu s řetězcem"
 
 #: lazarusidestrconsts.rsfoundbutnotlistedhere
@@ -20428,7 +20432,7 @@ msgid "Mi&nor version:"
 msgstr "Ve&dlejší verze:"
 
 #: lazarusidestrconsts.rsnewsearchwithsamecriteria
-msgid "New search with same criteria"
+msgid "New search with same criteria (Ctrl+N)"
 msgstr ""
 
 #: lazarusidestrconsts.rsotherinfo
@@ -20440,7 +20444,7 @@ msgid "PO Output Directory:"
 msgstr "Výstupní adresář pro PO:"
 
 #: lazarusidestrconsts.rsrefreshthesearch
-msgid "Refresh the search"
+msgid "Refresh the search (F5)"
 msgstr ""
 
 #: lazarusidestrconsts.rsresource
@@ -20480,7 +20484,7 @@ msgid "File name"
 msgstr "Jméno souboru"
 
 #: lazarusidestrconsts.rsshowpathmode
-msgid "Path display mode"
+msgid "Path display mode (Ctrl+P)"
 msgstr ""
 
 #: lazarusidestrconsts.rsshowrelpath

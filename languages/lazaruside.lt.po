@@ -20442,7 +20442,9 @@ msgid "Close all pages"
 msgstr ""
 
 #: lazarusidestrconsts.rsclosecurrentpage
-msgid "Close current page"
+#, fuzzy
+#| msgid "Close current page"
+msgid "Close current page (Ctrl+F4)∥(Ctrl+W)"
 msgstr "Užverti veikiamąjį lapą"
 
 #: lazarusidestrconsts.rscloseleft
@@ -20470,7 +20472,9 @@ msgid "Enable i18n"
 msgstr "Įgalinti internacionalizaciją"
 
 #: lazarusidestrconsts.rsfilterthelistwithstring
-msgid "Filter the lines in list with a string"
+#, fuzzy
+#| msgid "Filter the lines in list with a string"
+msgid "Filter the lines in list with a string (Ctrl+F)"
 msgstr "Sąrašą filtruoti naudojant tekstą"
 
 #: lazarusidestrconsts.rsfoundbutnotlistedhere
@@ -20628,7 +20632,7 @@ msgid "Mi&nor version:"
 msgstr "&Mažoji laida:"
 
 #: lazarusidestrconsts.rsnewsearchwithsamecriteria
-msgid "New search with same criteria"
+msgid "New search with same criteria (Ctrl+N)"
 msgstr ""
 
 #: lazarusidestrconsts.rsotherinfo
@@ -20640,7 +20644,7 @@ msgid "PO Output Directory:"
 msgstr "PO išvesties aplankas:"
 
 #: lazarusidestrconsts.rsrefreshthesearch
-msgid "Refresh the search"
+msgid "Refresh the search (F5)"
 msgstr ""
 
 #: lazarusidestrconsts.rsresource
@@ -20680,7 +20684,7 @@ msgid "File name"
 msgstr "Failo pavadinimas"
 
 #: lazarusidestrconsts.rsshowpathmode
-msgid "Path display mode"
+msgid "Path display mode (Ctrl+P)"
 msgstr ""
 
 #: lazarusidestrconsts.rsshowrelpath

@@ -20195,7 +20195,9 @@ msgid "Close all pages"
 msgstr "关闭所有页面"
 
 #: lazarusidestrconsts.rsclosecurrentpage
-msgid "Close current page"
+#, fuzzy
+#| msgid "Close current page"
+msgid "Close current page (Ctrl+F4)∥(Ctrl+W)"
 msgstr "关闭当前页"
 
 #: lazarusidestrconsts.rscloseleft
@@ -20226,7 +20228,8 @@ msgstr "启用i18n(国际化)"
 
 #: lazarusidestrconsts.rsfilterthelistwithstring
 #, fuzzy
-msgid "Filter the lines in list with a string"
+#| msgid "Filter the lines in list with a string"
+msgid "Filter the lines in list with a string (Ctrl+F)"
 msgstr "过滤可用选项列表"
 
 #: lazarusidestrconsts.rsfoundbutnotlistedhere
@@ -20384,7 +20387,8 @@ msgstr "次要版本:(&n)"
 
 #: lazarusidestrconsts.rsnewsearchwithsamecriteria
 #, fuzzy
-msgid "New search with same criteria"
+#| msgid "New search with same criteria"
+msgid "New search with same criteria (Ctrl+N)"
 msgstr "开始一个新的搜索"
 
 #: lazarusidestrconsts.rsotherinfo
@@ -20397,7 +20401,8 @@ msgstr "PO输出目录:"
 
 #: lazarusidestrconsts.rsrefreshthesearch
 #, fuzzy
-msgid "Refresh the search"
+#| msgid "Refresh the search"
+msgid "Refresh the search (F5)"
 msgstr "刷新(&R)"
 
 #: lazarusidestrconsts.rsresource
@@ -20437,7 +20442,7 @@ msgid "File name"
 msgstr "文件名"
 
 #: lazarusidestrconsts.rsshowpathmode
-msgid "Path display mode"
+msgid "Path display mode (Ctrl+P)"
 msgstr ""
 
 #: lazarusidestrconsts.rsshowrelpath
