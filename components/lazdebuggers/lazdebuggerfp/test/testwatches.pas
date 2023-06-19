@@ -3436,6 +3436,10 @@ begin
     RunToPause(BrkPrg);
 
     t.Clear;
+    // test mem leaks // json content
+    t.Add('json ', '''[1,2]''',     weAnsiStr('[1,2]','')).IgnTypeName.IgnKind;
+    t.Add('json ', '''[1,2,}]''',     weAnsiStr('[1,2,}]','')).IgnTypeName.IgnKind;
+
     // Constant values
     t.Add('Const-Expr: 107', '107',     weCardinal(107));
     t.Add('Const-Expr: $10', '$10',     weInteger(16));

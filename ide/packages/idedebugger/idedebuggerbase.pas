@@ -409,7 +409,7 @@ begin
       end;
 
       if FResultDataContent = rdcNotSpecial then
-        FResultDataSpecialised := nil;
+        FreeAndNil(FResultDataSpecialised);
     end;
   end;
 
