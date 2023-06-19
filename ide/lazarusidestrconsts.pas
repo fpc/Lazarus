@@ -5437,14 +5437,14 @@ resourcestring
 
   // View Search Results dialog
   rsFoundButNotListedHere = 'Found but not listed here: ';
-  rsRefreshTheSearch = 'Refresh the search';
-  rsNewSearchWithSameCriteria = 'New search with same criteria';
-  rsShowPathMode = 'Path display mode';
+  rsRefreshTheSearch = 'Refresh the search (F5)';
+  rsNewSearchWithSameCriteria = 'New search with same criteria (Ctrl+N)';
+  rsShowPathMode = 'Path display mode (Ctrl+P)';
   rsShowAbsPath = 'Absolute path';
   rsShowRelPath = 'Relative path';
   rsShowFileName = 'File name';
-  rsFilterTheListWithString = 'Filter the lines in list with a string';
-  rsCloseCurrentPage = 'Close current page';
+  rsFilterTheListWithString = 'Filter the lines in list with a string (Ctrl+F)';
+  rsCloseCurrentPage = 'Close current page (Ctrl+F4)∥(Ctrl+W)';
   rsCloseLeft = 'Close page(s) on the left';
   rsCloseRight = 'Close page(s) on the right';
   rsCloseOthers = 'Close other page(s)';

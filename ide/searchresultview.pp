@@ -87,6 +87,7 @@ type
     fSearchOptions: TLazFindInFileSearchOptions;
     fSearchDirectories: string;
     fSearchMask: string;
+    ftabEllipsed: boolean;
   public
     property SearchString: string read fSearchString write fSearchString;
     property ReplaceText: string read FReplaceText write FReplaceText;
@@ -95,6 +96,7 @@ type
     property SearchDirectories: string read fSearchDirectories
                                      write fSearchDirectories;
     property SearchMask: string read fSearchMask write fSearchMask;
+    property TabEllipsed: boolean read ftabEllipsed write ftabEllipsed;
   end;
 
   { TLazSearchResultTV }
@@ -176,6 +178,8 @@ type
     ToolButton3: TToolButton;
     tbbCloseAll: TToolButton;
     procedure RefreshButtonClick(Sender: TObject);
+    procedure ResultsNoteBookMouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Integer);
     procedure SearchAgainButtonClick(Sender: TObject);
     procedure ClosePageButtonClick(Sender: TObject);
     procedure ResultsNoteBookResize(Sender: TObject);
@@ -219,8 +223,9 @@ type
     FOnSelectionChanged: TNotifyEvent;
     FMouseOverIndex: integer;
     FClosingTabs: boolean;
+    FNoteBookTab: integer;
     function IsBackup(const aFullFilePath: string): boolean;
-    function BeautifyPageName(const APageName: string): string;
+    function BeautifyPageName(const APageName: string; out aoTabEllipsed : boolean): string;
     function GetPageIndex(const APageName: string): integer;
     function GetTreeView(APageIndex: integer): TLazSearchResultTV;
     function GetCurrentTree: TLazSearchResultTV;
@@ -234,6 +239,7 @@ type
     procedure ClosePageBegin;
     procedure ClosePageEnd;
     procedure DoAsyncUpdateCloseButtons(Data: PtrInt);
+    procedure NoteBookShowHint(Sender: TObject; {%H-}HintInfo: PHintInfo);
   protected
     procedure Loaded; override;
     procedure ActivateControl(aWinControl: TWinControl);
@@ -265,6 +271,7 @@ type
                                               write fOnSelectionChanged;
     property Items[Index: integer]: TStrings read GetItems write SetItems;
     function GetResultsPage(aIndex: integer): TTabSheet;
+    procedure SetPageFoundCount(aPage: TTabSheet; aCnt: integer);
   end;
 
 var
@@ -272,6 +279,9 @@ var
   OnSearchResultsViewSelectionChanged: TNotifyEvent = nil;
 
 implementation
+
+uses
+  LCLIntf;
 
 {$R *.lfm}
 
@@ -357,6 +367,11 @@ begin
   // hints
   ShowHint:= True;
 
+  // Notebook
+  FNoteBookTab := -1;
+  ResultsNoteBook.OnMouseMove := @ResultsNoteBookMouseMove;
+  ResultsNoteBook.OnShowHint := @NoteBookShowHint;
+
   RefreshButton    .Hint := rsRefreshTheSearch;
   SearchAgainButton.Hint := rsNewSearchWithSameCriteria;
   ClosePageButton  .Hint := rsCloseCurrentPage;
@@ -394,104 +409,91 @@ begin
   actCloseOthers   .ImageIndex := IDEImages.LoadImage('tab_close_LR');
   actCloseRight    .ImageIndex := IDEImages.LoadImage('tab_close_R');
   actCloseAll      .ImageIndex := IDEImages.LoadImage('tab_close_All');
-
 end;
 
 procedure TSearchResultsView.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
   lTree: TLazSearchResultTV;
+  lChar: string;
 begin
-  // select
-  if (Key = VK_RETURN) and (Shift = []) then
-  begin
-    Key := 0;
-    if assigned(FOnSelectionChanged) then
-      FOnSelectionChanged(self);
-  end else
+  // WriteLn(Key:3, ' ', DbgsVKCode(Key), ' ', ShiftAsStr(Shift));
+  { Do not process the key down of key combination themselves }
+  if Key in [0, VK_CONTROL, VK_SHIFT, VK_LCL_ALT, VK_LCL_LALT, VK_LCL_RALT] then
+    Exit;
 
-  // close
-  if (Key = VK_ESCAPE) and (Shift = []) then
-  begin
-    Key := 0;
-    Close;
-  end else
+  { Process simple keys }
+  if Shift = [] then begin
+   repeat
+      case Key of
+        VK_RETURN:   // select
+          if assigned(FOnSelectionChanged) then
+            FOnSelectionChanged(self);
+        VK_ESCAPE:   // close
+          Close;
+        VK_F5:       // refresh
+          RefreshButtonClick(Sender);
+        else         // another key
+          Break;
+      end;
+      Key := 0;
+      Exit;
+    until True;
+  end;
 
-  // line scroll
-  if (Key = VK_DOWN) and (Shift = [ssCtrl]) then
-  begin
-    Key := 0;
-    lTree := GetCurrentTree;
-    if lTree <> nil then
-      lTree.ScrolledTop := lTree.ScrolledTop + lTree.DefaultItemHeight;
-  end else
-  if (Key = VK_UP) and (Shift = [ssCtrl]) then
-  begin
-    Key := 0;
-    lTree := GetCurrentTree;
-    if lTree <> nil then
-      lTree.ScrolledTop := lTree.ScrolledTop - lTree.DefaultItemHeight;
-  end else
+  { Process [ssCtrl] + Key }
+  if Shift = [ssCtrl] then begin
+    repeat
+      case Key of
+        VK_DOWN: begin  // line scroll
+          lTree := GetCurrentTree;
+          if lTree <> nil then
+            lTree.ScrolledTop := lTree.ScrolledTop + lTree.DefaultItemHeight;
+        end;
+        VK_UP: begin  // line scroll
+          lTree := GetCurrentTree;
+          if lTree <> nil then
+            lTree.ScrolledTop := lTree.ScrolledTop - lTree.DefaultItemHeight;
+        end;
+        VK_LCL_MINUS: // full expand/collapse
+          mniCollapseAllClick(Sender);
+        VK_LCL_EQUAL:
+          mniExpandAllClick(Sender);
+        VK_P:  // toggle path display mode
+          begin
+            if mniPathAbsolute.Checked then
+              mniPathRelative.Checked := True
+            else if mniPathRelative.Checked then
+              mniPathFileName.Checked := True
+            else
+              mniPathAbsolute.Checked := True;
+            mniShowPathClick(Sender);
+          end;
+        VK_F: // attempt focusing filter field
+          if SearchInListEdit.CanSetFocus then
+            SearchInListEdit.SetFocus;
+        VK_N:    // new search
+          SearchAgainButtonClick(Sender);
+        else         // another key
+          break;
+      end;
+      Key := 0;
+      Exit;
+    until True;
+  end;
 
-  // full expand/collapse
-  if (Key = VK_LCL_MINUS) and (Shift = [ssCtrl]) then
-  begin
-    Key := 0;
-    mniCollapseAllClick(Sender);
-  end else
-  if (Key = VK_LCL_EQUAL) and (Shift = [ssCtrl]) then
-  begin
-    Key := 0;
-    mniExpandAllClick(Sender);
-  end else
-
-  // set focus in filter
-  if (Key = VK_F) and (Shift = [ssCtrl]) then
-  begin
-    Key := 0;
-    if SearchInListEdit.CanSetFocus then
-      SearchInListEdit.SetFocus;
-  end else
-
-  // toggle path display mode
-  if (Key = VK_P) and (Shift = [ssCtrl]) then
-  begin
-    Key := 0;
-
-    if mniPathAbsolute.Checked then
-      mniPathRelative.Checked := true
-    else if mniPathRelative.Checked then
-      mniPathFileName.Checked := true
-    else
-      mniPathAbsolute.Checked := true;
-
-    mniShowPathClick(Sender);
-  end else
-
-  // new search
-  if (Key = VK_N) and (Shift = [ssCtrl]) then
-  begin
-    Key := 0;
-    SearchAgainButtonClick(Sender);
-  end else
-
-  // refresh
-  if (Key = VK_F5) and (Shift = []) then
-  begin
-    Key := 0;
-    RefreshButtonClick(Sender);
-  end else
-
-  // next tab
-  if (Key = VK_TAB) and (Shift = [ssCtrl]) then
-  begin
-    Key := 0;
-    ResultsNoteBook.SelectNextPage(true);
-  end else
-  if (Key = VK_TAB) and (Shift = [ssShift, ssCtrl]) then
-  begin
-    Key := 0;
-    ResultsNoteBook.SelectNextPage(false);
+  { process next tab }
+  if (Key = VK_TAB) then begin
+    repeat
+      if Shift = [ssCtrl] then
+        ResultsNoteBook.SelectNextPage(True)
+      else if Shift = [ssShift, ssCtrl] then
+        ResultsNoteBook.SelectNextPage(False)
+      else
+        break;
+      Key := 0;
+      Exit;
+    until True;
   end;
 end;
 
@@ -527,27 +529,35 @@ end;
 procedure TSearchResultsView.mniExpandAllClick(Sender: TObject);
 var
   lTree: TLazSearchResultTV;
+  lOldCursor : TCursor;
 begin
   lTree := GetCurrentTree;
   if lTree = nil then exit;
   // expand
+  lOldCursor := Screen.Cursor;
+  Screen.Cursor := crHourGlass;
   lTree.FullExpand;
+  Screen.Cursor := lOldCursor;
 end;
 
 procedure TSearchResultsView.mniCollapseAllClick(Sender: TObject);
 var
   lTree: TLazSearchResultTV;
   lNode: TTreeNode;
+  lOldCursor : TCursor;
 begin
   lTree := GetCurrentTree;
   if lTree = nil then exit;
   // collapse
+  lOldCursor := Screen.Cursor;
+  Screen.Cursor := crHourGlass;
   lTree.FullCollapse;
   // selection
   lTree.ClearSelection;
   lNode := lTree.Items.GetFirstVisibleNode;
   if lNode <> nil then
     lNode.Selected := true;
+  Screen.Cursor := lOldCursor;
 end;
 
 procedure TSearchResultsView.ResultsNoteBookMouseDown(
@@ -615,6 +625,23 @@ begin
   end;
 end;
 
+procedure TSearchResultsView.ResultsNoteBookMouseMove(Sender: TObject;
+  Shift: TShiftState; X, Y: Integer);
+var
+  p: TPoint;
+  lPageIx: integer;
+begin
+  if Sender = ResultsNoteBook then begin
+    with ResultsNoteBook do begin
+      lPageIx := IndexOfTabAt(Point(x, y));
+      if lPageIx <> FNoteBookTab then begin
+        FNoteBookTab := lPageIx;
+        Application.CancelHint;
+      end;
+    end;
+  end;
+end;
+
 procedure TSearchResultsView.SearchAgainButtonClick(Sender: TObject);
 var
   lTree: TLazSearchResultTV;
@@ -635,9 +662,10 @@ end;
 
 procedure TSearchResultsView.ResultsNoteBookResize(Sender: TObject);
 begin
-  if ResultsNoteBook.PageCount > 0
-    then AsyncUpdateCloseButtons := svcbEnable
-    else AsyncUpdateCloseButtons := svcbDisable;
+  if ResultsNoteBook.PageCount > 0 then
+    AsyncUpdateCloseButtons := svcbEnable
+  else
+    AsyncUpdateCloseButtons := svcbDisable;
 end;
 
 procedure TSearchResultsView.mniShowPathClick(Sender: TObject);
@@ -724,7 +752,7 @@ begin
   end;
 end;
 
-{Keeps track of the Index of the Item the mouse is over, Sets ShowHint to true
+{Keeps track of the Index of the Item the mouse is over, Sets Show to true
 if the Item length is longer than the TreeView client width.}
 procedure TSearchResultsView.LazTVMousemove(Sender: TObject; Shift: TShiftState;
                                             X, Y: Integer);
@@ -737,13 +765,10 @@ begin
       Node := GetNodeAt(X, Y);
       if Assigned(Node) then
         fMouseOverIndex:=Node.Index
-      else
+      else begin
         fMouseOverIndex:=-1;
-      if (fMouseOverIndex > -1) and (fMouseOverIndex < Items.Count)
-      and (Canvas.TextWidth(Items[fMouseOverIndex].Text) > Width) then
-        ShowHint:= True
-      else
-        ShowHint:= False;
+        Application.CancelHint;
+      end;
     end;//with
 end;
 
@@ -810,13 +835,17 @@ begin
   result := 0 = CompareText('backup', ExtractFileName(ExtractFileDir(aFullFilePath)));
 end;
 
-function TSearchResultsView.BeautifyPageName(const APageName: string): string;
+function TSearchResultsView.BeautifyPageName(const APageName: string; out
+  aoTabEllipsed: boolean): string;
 const
   MaxPageName = 25;
 begin
+  aoTabEllipsed:= False;
   Result:=Utf8EscapeControlChars(APageName, emHexPascal);
-  if UTF8Length(Result)>MaxPageName then
+  if UTF8Length(Result)>MaxPageName then begin
     Result:=UTF8Copy(Result,1,MaxPageName-5)+'...';
+    aoTabEllipsed:= True;
+  end;
 end;
 
 procedure TSearchResultsView.AddMatch(const APageIndex: integer;
@@ -970,9 +999,15 @@ end;
 
 function TSearchResultsView.GetResultsPage(aIndex: integer): TTabSheet;
 begin
-  if InRange(aIndex, 0, ResultsNoteBook.PageCount - 1)
-    then result := ResultsNoteBook.Pages[aIndex]
-    else result := nil;
+  if InRange(aIndex, 0, ResultsNoteBook.PageCount - 1) then
+    Result := ResultsNoteBook.Pages[aIndex]
+  else
+    Result := nil;
+end;
+
+procedure TSearchResultsView.SetPageFoundCount(aPage: TTabSheet; aCnt: integer);
+begin
+  aPage.Caption := aPage.Caption + Format(' (%d)',[aCnt]);
 end;
 
 {Sets the Items from the treeview on the currently selected page in the TNoteBook}
@@ -1114,6 +1149,78 @@ begin
   lPageList.Free;
 end;
 
+procedure TSearchResultsView.NoteBookShowHint(Sender: TObject; HintInfo: PHintInfo);
+
+  function GetHintString: string;
+  var
+    lThisTV: TLazSearchResultTV = nil;
+    function SearchOption: string;
+    const
+      cFifPlacesNoDir =
+        [fifSearchProject, fifSearchProjectGroup, fifSearchOpen, fifSearchActive];
+    begin
+      Result := '';
+      with lThisTV.SearchObject do begin
+        if fifSearchProject in SearchOptions then
+          Result := lisFindFilesearchAllFilesInProject
+        else if fifSearchProjectGroup in SearchOptions then
+          Result := lisFindFilesSearchInProjectGroup
+        else if fifSearchOpen in SearchOptions then
+          Result := lisFindFilesearchAllOpenFiles
+        else if fifSearchActive in SearchOptions then
+          Result := lisFindFilesearchInActiveFile
+        else if fifSearchDirectories in SearchOptions then
+          Result := ' ' + SearchDirectories + ' '
+        else
+          Result := '!!! ERROR !!!';
+        if (SearchOptions * cFifPlacesNoDir) <> [] then begin
+          Result := '* ' + Result + ' *';
+          Result := StringReplace(Result,'&','',[rfReplaceAll, rfIgnoreCase]);
+        end;
+      end;
+    end;
+
+  const
+    cFifReplaces = [fifReplace, fifReplaceAll];
+  var
+    lReplaces: boolean;
+  begin
+    lThisTV := GetTreeView(FNoteBookTab);
+    with lThisTV.SearchObject do begin
+      Result := '';
+      lReplaces := (SearchOptions * cFifReplaces) <> [];
+      if TabEllipsed or lReplaces then begin
+        Result := SearchString + EndOfLine;
+        if lReplaces then
+          Result := Result + '-> ' + EndOfLine + ReplaceText + EndOfLine;
+        Result := Result + EndOfLine;
+      end;
+      Result := Result + SearchOption;
+    end;
+  end;
+
+var
+  p: TPoint;
+  r: TRect;
+  h: integer;
+begin
+  if Sender = ResultsNoteBook then
+    with ResultsNoteBook do begin
+      p := HintInfo^.CursorPos;
+      FNoteBookTab := IndexOfTabAt(p.X, p.Y);
+      if FNoteBookTab >= 0 then begin
+        r := ResultsNoteBook.TabRect(FNoteBookTab);
+        h := SearchInListEdit.Height; // Pick DPI independent value
+        if p.X > r.Right - 2 * h then
+          p.X := r.Right - 2 * h;
+        HintInfo^.HintStr := GetHintString;
+        HintInfo^.HintPos := ClientToScreen(Point(p.x, r.Bottom - (h div 10)));
+      end
+      else
+        Application.CancelHint;
+    end;
+end;
+
 procedure TSearchResultsView.ResultsNoteBookCloseTabClick(Sender: TObject);
 begin
   if Sender is TTabSheet then
@@ -1132,15 +1239,15 @@ function TSearchResultsView.AddSearch(
   ): TTabSheet;
 var
   lNewTree: TLazSearchResultTV;
+  lTabEllipsed: boolean;
 begin
   result := nil;
   if ResultsNoteBook = nil then
     exit;
-
   with ResultsNoteBook do
   begin
     FFocusTreeViewInEndUpdate := (ActivePage = nil) and SearchInListEdit.IsParentOf(ActivePage);
-    FWorkedSearchText := BeautifyPageName(aResultsName);
+    FWorkedSearchText := BeautifyPageName(aResultsName, lTabEllipsed);
     PageIndex := TCustomTabControl(ResultsNoteBook).Pages.Add(FWorkedSearchText);
 
     lNewTree := TLazSearchResultTV.Create(Page[PageIndex]);
@@ -1149,7 +1256,7 @@ begin
       Parent := Page[PageIndex];
       BorderSpacing.Around := 0;
       Align := alClient;
-      ShowHint := true;
+      ShowHint := False; // true; ~bk apparently OnShowHint messes up with ShowHint True
       RowSelect := true;
       ShowLines := false;
       Options := Options + [tvoAllowMultiselect] - [tvoThemedDraw];
@@ -1170,6 +1277,7 @@ begin
       lNewTree.SearchObject.SearchDirectories := aDirectories;
       lNewTree.SearchObject.SearchMask := aFileMask;
       lNewTree.SearchObject.SearchOptions := aOptions;
+      lNewTree.SearchObject.TabEllipsed := lTabEllipsed;
     end;
     lNewTree.Skipped := 0;
 
@@ -1182,27 +1290,31 @@ end;
 procedure TSearchResultsView.LazTVShowHint(Sender: TObject; HintInfo: PHintInfo);
 var
   MatchPos: TLazSearchMatchPos;
-  HintStr: string;
+  lThisTV: TLazSearchResultTV;
 begin
   if Sender is TLazSearchResultTV then
   begin
-    With Sender as TLazSearchResultTV do
+    lThisTV := Sender as TLazSearchResultTV;
+    With lThisTV do
     begin
-      if (fMouseOverIndex >= 0) and (fMouseOverIndex < Items.Count) then
-      begin
+      { (Canvas.TextWidth(Items[fMouseOverIndex].Text) > Width) then}
+      if (fMouseOverIndex >= 0) and (fMouseOverIndex < Items.Count)
+        and (Canvas.TextWidth(Items[fMouseOverIndex].Text) > Width)
+      then begin
         if Assigned(Items[fMouseOverIndex].Data) then
           MatchPos:= TLazSearchMatchPos(Items[fMouseOverIndex].Data)
         else
           MatchPos:= nil;
         if MatchPos<>nil then
-          HintStr:=MatchPos.Filename
+          HintInfo^.HintStr := MatchPos.Filename
                    +' ('+IntToStr(MatchPos.FileStartPos.Y)
                    +','+IntToStr(MatchPos.FileStartPos.X)+')'
                    +' '+MatchPos.TheText
         else
-          HintStr:=Items[fMouseOverIndex].Text;
-        Hint:= HintStr;
-      end;//if
+          HintInfo^.HintStr := Items[fMouseOverIndex].Text;
+      end //if
+      else
+        Application.CancelHint;
     end;//with
   end;//if
 end;
@@ -1265,17 +1377,21 @@ var
     lTree.Canvas.Font.Style := [];
     lTree.Canvas.Brush.Style := bsSolid;
   end;
-
+var
+  lOldBkMode : integer;
 begin
   if Stage <> cdPostPaint then exit;
 
-  if Sender is TLazSearchResultTV // it also check nil
-    then lTree := TLazSearchResultTV(Sender)
-    else exit;
+  if Sender is TLazSearchResultTV then // it also check nil
+    lTree := TLazSearchResultTV(Sender)
+  else
+    exit;
 
   // clear
   lRect := Node.DisplayRect(true);
   lTree.Canvas.FillRect(lRect);
+  // transparent paint for very near bold text
+  lOldBkMode := SetBkMode(lTree.Canvas.Handle, TRANSPARENT);
 
   if TObject(Node.Data) is TLazSearchMatchPos then
   begin { search results }
@@ -1290,9 +1406,10 @@ begin
     lPart := inttostr(lMatch.FileStartPos.Y) + ':';
     lTextX := lRect.Left + 6 * lDigitWidth - lTree.Canvas.GetTextWidth(lPart);
     // draw line number ("99999: ")
-    if [cdsSelected, cdsMarked] * State <> []
-      then DrawNextText(lPart)
-      else DrawNextText(lPart, clGrayText);
+    if [cdsSelected, cdsMarked] * State <> [] then
+      DrawNextText(lPart)
+    else
+      DrawNextText(lPart, clGrayText);
 
     lTextX := lRect.Left + 7 * lDigitWidth;
     lDrawnLength := 0;
@@ -1311,9 +1428,10 @@ begin
       lDrawnLength := lDrawnLength + lMatch.MatchLen;
 
       // draw found text
-      if [cdsSelected,cdsMarked] * State <> []
-        then DrawNextText(lPart, clHighlightText, [fsBold])
-        else DrawNextText(lPart, clHighlight, [fsBold]);
+      if [cdsSelected, cdsMarked] * State <> [] then
+        DrawNextText(lPart, clHighlightText, [fsBold])
+      else
+        DrawNextText(lPart, clHighlight, [fsBold]);
 
       // remaining normal text
       if lMatch.NextInThisLine = nil then
@@ -1357,6 +1475,7 @@ begin
       DrawNextText(' [BACKUP]', clRed);
 
   end;
+  SetBkMode(lTree.Canvas.Handle, lOldBkMode); // restore
 end;
 
 {Returns the Position within the source file from a properly formated search result}
@@ -1457,9 +1576,10 @@ end;
 
 function TSearchResultsView.GetCurrentTree: TLazSearchResultTV;
 begin
-  if ResultsNoteBook.PageIndex < 0
-    then result := nil
-    else result := GetTreeView(ResultsNoteBook.PageIndex);
+  if ResultsNoteBook.PageIndex < 0 then
+    Result := nil
+  else
+    Result := GetTreeView(ResultsNoteBook.PageIndex);
 end;
 
 procedure TSearchResultsView.SetAsyncUpdateCloseButtons(const AValue: TSVCloseButtonsState);
@@ -1613,9 +1733,10 @@ begin
   if fUpdateCount > 0 then exit;
 
   FreeSrcList := not fUpdating;
-  if fUpdating
-    then SrcList := fUpdateStrings
-    else SrcList := ItemsAsStrings;
+  if fUpdating then
+    SrcList := fUpdateStrings
+  else
+    SrcList := ItemsAsStrings;
 
   try
     // find shared path (the path of all filenames, that is the same)

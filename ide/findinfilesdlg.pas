@@ -542,7 +542,9 @@ var
   SearchForm: TSearchProgressForm;
   Where: Integer;
 begin
-  SaveHistory;
+  { Only then in manual dialog data entry }
+  if aResultsPage < 0 then
+    SaveHistory;
 
   SearchForm := TSearchProgressForm.Create(SearchResultsView);
   with SearchForm do begin
