@@ -376,7 +376,7 @@ end;
 
 constructor TBuildManager.Create(AOwner: TComponent);
 begin
-  EnvironmentOptions := TEnvironmentOptions.Create(Application.ExeName);
+  EnvironmentOptions := TEnvironmentOptions.Create;
   IDEEnvironmentOptions := EnvironmentOptions;
   EnvironmentOptions.IsGlobalMode:=@EnvironmentOptionsIsGlobalMode;
 

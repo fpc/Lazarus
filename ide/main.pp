@@ -1248,8 +1248,9 @@ begin
     CreateConfig;
     Load(false);
   end;
+  AddDefaultRecentProjects;            // Add some initial recent projects.
 
-  // read language and lazarusdir paramters, needed for translation
+  // read language and lazarusdir parameters, needed for translation
   if Application.HasOption('language') then
   begin
     debugln('Hint: (lazarus) [TMainIDE.LoadGlobalOptions] overriding language with command line: ',

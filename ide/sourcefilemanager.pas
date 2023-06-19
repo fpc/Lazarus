@@ -32,7 +32,7 @@ unit SourceFileManager;
 interface
 
 uses
-  Classes, SysUtils, typinfo, math, fpjson, Laz_AVL_Tree,
+  Classes, SysUtils, TypInfo, Math, fpjson, Laz_AVL_Tree,
   // LCL
   Controls, Forms, Dialogs, LCLIntf, LCLType, LclStrConsts,
   LResources, LCLMemManager,
@@ -52,7 +52,7 @@ uses
   IdeIntfStrConsts, ObjectInspector, SrcEditorIntf, EditorSyntaxHighlighterDef,
   UnitResources, ComponentReg, InputHistory,
   // IdeConfig
-  EnvironmentOpts, SearchPathProcs, TransferMacros,
+  EnvironmentOpts, SearchPathProcs, TransferMacros, RecentListProcs,
   // IDE
   IDEProcs, DialogProcs, IDEProtocol, LazarusIDEStrConsts, NewDialog,
   NewProjectDlg, MainBase, MainBar, MainIntf, Project, ProjectDefs,
@@ -223,6 +223,7 @@ function FindSourceFileImpl(const AFilename, BaseDirectory: string;
 function FindUnitsOfOwnerImpl(TheOwner: TObject; Flags: TFindUnitsOfOwnerFlags): TStrings;
 // project
 function AddActiveUnitToProject: TModalResult;
+procedure AddDefaultRecentProjects;
 function AddUnitToProject(const AEditor: TSourceEditorInterface): TModalResult;
 function RemoveFromProjectDialog: TModalResult;
 function InitNewProject(ProjectDesc: TProjectDescriptor): TModalResult;
@@ -1771,6 +1772,35 @@ end;
 function AddActiveUnitToProject: TModalResult;
 begin
   Result := AddUnitToProject(nil);
+end;
+
+procedure AddRecentProject(aProjPath, aProjFile: string);
+// Add a project to the list of recent projects if the project has write access.
+// The check can be removed when the IDE allows compiling read-only projects.
+var
+  WholeFilePath: String;
+begin
+  aProjPath := SwitchPathDelims(aProjPath, True);
+  WholeFilePath := ExtractFilePath(Application.ExeName) + aProjPath + aProjFile;
+  if FileIsWritable(aProjPath) and FileIsWritable(WholeFilePath) then
+    with EnvironmentOptions do
+      AddToRecentList(WholeFilePath, RecentProjectFiles, MaxRecentProjectFiles, rltFile);
+end;
+
+procedure AddDefaultRecentProjects;
+begin
+  // Add some example projects to an empty project list.
+  with EnvironmentOptions do
+    if (RecentProjectFiles.Count=0) and not AlreadyPopulatedRecentFiles then
+    begin
+      DebugLn('AddDefaultRecentProjects: Adding default projects');
+      AddRecentProject('examples/jpeg/',          'jpegexample.lpi');
+      AddRecentProject('examples/sprites/',       'spriteexample.lpi');
+      AddRecentProject('examples/openglcontrol/', 'openglcontrol_demo.lpi');
+      AddRecentProject('examples/imagelist/',     'project1.lpi');
+      AddRecentProject('examples/',               'hello.lpi');
+      AlreadyPopulatedRecentFiles := True;
+    end;
 end;
 
 function AddUnitToProject(const AEditor: TSourceEditorInterface): TModalResult;

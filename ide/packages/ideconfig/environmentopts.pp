@@ -247,7 +247,6 @@ type
 
   TEnvironmentOptions = class(TIDEEnvironmentOptions)
   private
-    FExePath: string;  // ExtractFilePath(Application.ExeName)
     FFppkgCheck: boolean;
     fRegisteredSubConfig: TObjectList;
     // config file
@@ -307,7 +306,7 @@ type
     FNewProjectTemplateAtStart: string;
     FMultipleInstances: TIDEMultipleInstancesOption;
     // Prevent repopulating Recent project files menu with example projects if it was already cleared up.
-    FAlreadyPopulatedRecentFiles : Boolean;
+    FAlreadyPopulatedRecentFiles: Boolean;
     //other recent settings
     FLastEventMethodCCResult: TCodeCreationDlgResult;
     FLastVariableCCResult: TCodeCreationDlgResult;
@@ -371,7 +370,7 @@ type
     function SubConfigCount: integer;
     property SubConfig[Index: Integer]: TIDESubOptions read GetSubConfig;
   public
-    constructor Create(AExeName: string);
+    constructor Create;
     destructor Destroy; override;
     procedure Load(OnlyDesktop: boolean);
     procedure Save(OnlyDesktop: boolean);
@@ -477,8 +476,8 @@ type
                                                write FNewProjectTemplateAtStart;
     property MultipleInstances: TIDEMultipleInstancesOption read FMultipleInstances
                                                            write FMultipleInstances;
-    property FileDialogFilter: string read FFileDialogFilter write FFileDialogFilter;
-
+    property AlreadyPopulatedRecentFiles: Boolean read FAlreadyPopulatedRecentFiles
+                                                 write FAlreadyPopulatedRecentFiles;
     // other recent settings
     property LastEventMethodCCResult: TCodeCreationDlgResult
       read FLastEventMethodCCResult write FLastEventMethodCCResult;
@@ -516,8 +515,9 @@ type
     // comboboxes
     property DropDownCount: Integer read FDropDownCount write FDropDownCount;
     // default template for each 'new item' category: Name=Path, Value=TemplateName
-    property NewUnitTemplate: string read FNewUnitTemplate write FNewUnitTemplate;
     property NewFormTemplate: string read FNewFormTemplate write FNewFormTemplate;
+    property NewUnitTemplate: string read FNewUnitTemplate write FNewUnitTemplate;
+    property FileDialogFilter: string read FFileDialogFilter write FFileDialogFilter;
   end;
 
 var
@@ -658,12 +658,11 @@ end;
 
 { TEnvironmentOptions }
 
-constructor TEnvironmentOptions.Create(AExeName: string);
+constructor TEnvironmentOptions.Create;
 var
   o: TEnvOptParseType;
 begin
   inherited Create;
-  FExePath := ExtractFilePath(AExeName);
   fRegisteredSubConfig := TObjectList.Create(False);
   for o:=low(FParseValues) to high(FParseValues) do
     FParseValues[o].ParseStamp:=CTInvalidChangeStamp;
@@ -943,18 +942,6 @@ end;
 
 procedure TEnvironmentOptions.Load(OnlyDesktop: boolean);
 
-  procedure AddRecentProjectInitial(aProjPath, aProjFile: string);
-  // Add a project to the list of recent projects if the project has write access.
-  // The check can be removed when the IDE allows compiling read-only projects.
-  var
-    WholeFilePath: String;
-  begin
-    aProjPath:=SwitchPathDelims(aProjPath, True);
-    WholeFilePath:=FExePath + aProjPath + aProjFile;
-    if FileIsWritable(aProjPath) and FileIsWritable(WholeFilePath) then
-      AddToRecentList(WholeFilePath,FRecentProjectFiles,FMaxRecentProjectFiles,rltFile);
-  end;
-
   procedure LoadPascalFileExt(const Path: string);
   begin
     fPascalFileExtension:=PascalExtToType(FXMLCfg.GetValue(
@@ -971,7 +958,7 @@ procedure TEnvironmentOptions.Load(OnlyDesktop: boolean);
     CCResult.Location:=CreateCodeLocationNameToLocation(FXMLCfg.GetValue(
       Path+'/Location',CreateCodeLocationNames[cclLocal]));
   end;
-  
+
 var
   Path, CurPath: String;
   i: Integer;
@@ -1051,16 +1038,6 @@ begin
 
     FUseUnitDlgOptions.AllUnits:=FXMLCfg.GetValue(Path+'Recent/UseUnitDlg/AllUnits',False);
     FUseUnitDlgOptions.AddToImplementation:=FXMLCfg.GetValue(Path+'Recent/UseUnitDlg/AddToImplementation',False);
-
-    // Add example projects to an empty project list if examples have write access
-    if (FRecentProjectFiles.count=0) and (not FAlreadyPopulatedRecentFiles) then begin
-      AddRecentProjectInitial('examples/jpeg/',          'jpegexample.lpi');
-      AddRecentProjectInitial('examples/sprites/',       'spriteexample.lpi');
-      AddRecentProjectInitial('examples/openglcontrol/', 'openglcontrol_demo.lpi');
-      AddRecentProjectInitial('examples/imagelist/',     'project1.lpi');
-      AddRecentProjectInitial('examples/',               'hello.lpi');
-      FAlreadyPopulatedRecentFiles := True;
-    end;
 
     // external tools
     if Assigned(fExternalUserTools) then

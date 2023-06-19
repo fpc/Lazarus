@@ -286,7 +286,7 @@ begin
         AFilename:=SaveDialog.Filename;
         if ExtractFileExt(AFilename)='' then
           AFilename:=AFilename+'.lds';
-        AnEnvironmentOptions := TEnvironmentOptions.Create(Application.ExeName);
+        AnEnvironmentOptions := TEnvironmentOptions.Create;
         try
           AnEnvironmentOptions.Filename := AFilename;
           DoSaveSettings(AnEnvironmentOptions);
@@ -323,7 +323,7 @@ begin
            +'|'+dlgFilterAll+' ('+GetAllFilesMask+')|' + GetAllFilesMask;
       if OpenDialog.Execute then
       begin
-        AnEnvironmentOptions := TEnvironmentOptions.Create(Application.ExeName);
+        AnEnvironmentOptions := TEnvironmentOptions.Create;
         try
           AnEnvironmentOptions.Filename := OpenDialog.Filename;
           AnEnvironmentOptions.Load(true);
