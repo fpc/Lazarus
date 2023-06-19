@@ -73,6 +73,7 @@ const
   ForceNewInstanceOpt='--force-new-instance';
   SkipLastProjectOpt='--skip-last-project';
   DebugLogOpt='--debug-log=';
+  DebugLogCloseLogOpt='--debug-close-log';
   DebugLogOptEnable='--debug-enable=';
   LanguageOpt='--language=';
   LazarusDirOpt ='--lazarusdir=';
@@ -475,7 +476,9 @@ begin
   for i:= 1 to ParamsAndCfgCount do
   begin
     if ParamIsOptionPlusValue(i, DebugLogOpt, AValue) then
-      LazLogger.DebugLogger.LogName := AValue;
+      LazLogger.DebugLogger.LogName := AValue
+    else if ParamIsOption(i, DebugLogCloseLogOpt) then
+      LazLogger.DebugLogger.CloseLogFileBetweenWrites := true;
   end;
 end;
 
