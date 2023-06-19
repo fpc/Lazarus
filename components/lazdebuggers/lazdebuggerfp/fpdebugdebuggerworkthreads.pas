@@ -791,7 +791,7 @@ var
   TempSymbol, StringSymbol: TFpSymbol;
   ExprParamVal: TFpValue;
   ProcAddress: TFpDbgMemLocation;
-  FunctionResultDataSize: TFpDbgValueSize;
+  FunctionResultDataSize, ChrSize: TFpDbgValueSize;
 
   SelfTypeSym: TFpSymbol;
   ParameterSymbolArr: array of record
@@ -933,7 +933,16 @@ begin
           end;
           // Handle string/char - literals, constants, expression-results
           if (rk in [skString, skAnsiString, skChar]) and (ExprParamVal.FieldFlags * [svfAddress, svfDataAddress] = []) and
-             (TempSymbol.Kind in [skString, skAnsiString])
+             ( (TempSymbol.Kind in [skString, skAnsiString]) or
+               ((TempSymbol.Kind in [skPointer]) and (TempSymbol.TypeInfo <> nil) and
+                (TempSymbol.TypeInfo.TypeInfo <> nil) and
+                (TempSymbol.TypeInfo.TypeInfo.Kind=skChar) and
+                (TempSymbol.TypeInfo.TypeInfo.ReadSize(nil, ChrSize)) and
+                (SizeToFullBytes(ChrSize) = 1)  // pchar
+                // TODO: if value is variable, then pass existing address
+                // TODO: if value is variable: Char then give error
+               )
+             )
           then begin
             StringAnsiDecRefAddress := FDebugger.GetCached_FPC_ANSISTR_DECR_REF;
             StringAnsiSetLenAddress := FDebugger.GetCached_FPC_ANSISTR_SETLENGTH;
@@ -950,7 +959,16 @@ begin
           else
           // Handle wide-string/char - literals, constants, expression-results
           if (rk in [skWideString, skString, skAnsiString, skChar]) and (ExprParamVal.FieldFlags * [svfAddress, svfDataAddress] = []) and
-             (TempSymbol.Kind in [skWideString])
+             ( (TempSymbol.Kind in [skWideString]) or
+               ((TempSymbol.Kind in [skPointer]) and (TempSymbol.TypeInfo <> nil) and
+                (TempSymbol.TypeInfo.TypeInfo <> nil) and
+                (TempSymbol.TypeInfo.TypeInfo.Kind=skChar) and
+                (TempSymbol.TypeInfo.TypeInfo.ReadSize(nil, ChrSize)) and
+                (SizeToFullBytes(ChrSize) = 2)  // pchar
+                // TODO: if value is variable, then pass existing address
+                // TODO: if value is variable: Char then give error
+               )
+             )
           then begin
             StringWideDecRefAddress := FDebugger.GetCached_FPC_WIDESTR_DECR_REF;
             StringWideSetLenAddress := FDebugger.GetCached_FPC_WIDESTR_SETLENGTH;
@@ -966,7 +984,7 @@ begin
           end
           else
           if (TempSymbol.Kind <> rk) and
-             ( (TempSymbol.Kind in [skInteger, skCardinal]) <> (rk in [skInteger, skCardinal]) )
+             not ( (TempSymbol.Kind in [skInteger, skCardinal]) and (rk in [skInteger, skCardinal]) )
           then begin
             DebugLn(FPDBG_FUNCCALL or DBG_WARNINGS, 'Error kind mismatch for arg %d : %s <> %s', [FoundIdx, dbgs(TempSymbol.Kind), dbgs(rk)]);
             AnError := CreateError(fpErrAnyError, ['wrong type for parameter']);
