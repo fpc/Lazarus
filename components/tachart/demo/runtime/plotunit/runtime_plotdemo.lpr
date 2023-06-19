@@ -1,4 +1,4 @@
-program project1;
+program runtime_plotdemo;
 
 {$mode objfpc}{$H+}
 
@@ -7,15 +7,15 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, Unit1, tachartlazaruspkg
+  Forms, main, tachartlazaruspkg, uplot
   { you can add units after this };
 
 {$R *.res}
 
 begin
-  RequireDerivedFormResource := True;
+  RequireDerivedFormResource:=True;
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TMainForm, MainForm);
   Application.Run;
 end.
 

@@ -1,4 +1,4 @@
-program project1;
+program runtime_chartstyles_demo;
 
 {$mode objfpc}{$H+}
 

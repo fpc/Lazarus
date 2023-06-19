@@ -1,4 +1,4 @@
-program plotdemo;
+program runtime_dualaxes_demo;
 
 {$mode objfpc}{$H+}
 
@@ -7,15 +7,15 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, main, tachartlazaruspkg, uplot
+  Forms, Unit1, tachartlazaruspkg
   { you can add units after this };
 
 {$R *.res}
 
 begin
-  RequireDerivedFormResource:=True;
+  RequireDerivedFormResource := True;
   Application.Initialize;
-  Application.CreateForm(TMainForm, MainForm);
+  Application.CreateForm(TForm1, Form1);
   Application.Run;
 end.
 

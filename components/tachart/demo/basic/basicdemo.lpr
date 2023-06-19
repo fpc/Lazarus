@@ -1,4 +1,4 @@
-program project1;
+program basicdemo;
 
 {$mode objfpc}{$H+}
 
@@ -7,13 +7,13 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, Unit1, tachartlazaruspkg
-  { you can add units after this };
+  Forms
+  { add your units here }, unit1, TAChartLazarusPkg;
 
 {$R *.res}
 
 begin
-  RequireDerivedFormResource:=True;
+  Application.Title:='TChart basic demo';
   Application.Initialize;
   Application.CreateForm(TForm1, Form1);
   Application.Run;
