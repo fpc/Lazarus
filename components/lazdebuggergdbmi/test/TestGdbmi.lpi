@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="11"/>
+    <Version Value="12"/>
     <PathDelim Value="\"/>
     <General>
+      <Flags>
+        <CompatibilityMode Value="True"/>
+      </Flags>
       <SessionStorage Value="InProjectDir"/>
-      <MainUnit Value="0"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
     </General>
@@ -121,7 +123,7 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="5">
+    <Exceptions Count="7">
       <Item1>
         <Name Value="EAbort"/>
       </Item1>
@@ -137,6 +139,12 @@
       <Item5>
         <Name Value="EAssertionFailedError"/>
       </Item5>
+      <Item6>
+        <Name Value="EJSONParser"/>
+      </Item6>
+      <Item7>
+        <Name Value="EScannerError"/>
+      </Item7>
     </Exceptions>
   </Debugging>
 </CONFIG>
