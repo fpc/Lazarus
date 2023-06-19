@@ -313,6 +313,9 @@ type
     procedure DefineProperties(Filer: TFiler); override;
     procedure SetWidthHeight(NewWidth, NewHeight: integer);
     procedure ClearOverlays;
+    procedure MarkAsChanged;
+    procedure DoAfterUpdateStarted; virtual;
+    procedure DoBeforeUpdateEnded; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     constructor CreateSize(AWidth, AHeight: Integer);

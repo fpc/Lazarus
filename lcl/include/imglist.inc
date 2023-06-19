@@ -1532,6 +1532,7 @@ end;
 procedure TCustomImageList.BeginUpdate;
 begin
   inc(FUpdateCount);
+  if FUpdateCount = 1 then DoAfterUpdateStarted;
 end;
 
 {------------------------------------------------------------------------------
@@ -1792,6 +1793,7 @@ procedure TCustomImageList.EndUpdate;
 begin
   if FUpdateCount<=0 then
     RaiseGDBException('');
+  if FUpdateCount = 1 then DoBeforeUpdateEnded;
   dec(FUpdateCount);
   Change;
 end;
@@ -2002,6 +2004,21 @@ begin
   for I := Low(TOverlay) to High(TOverlay) do
     FOverlays[I] := -1;
   FHasOverlays := false;
+end;
+
+procedure TCustomImageList.MarkAsChanged;
+begin
+  FChanged := true;
+end;
+
+procedure TCustomImageList.DoAfterUpdateStarted;
+begin
+  //
+end;
+
+procedure TCustomImageList.DoBeforeUpdateEnded;
+begin
+  //
 end;
 
 procedure TCustomImageList.CreateDefaultResolution;
