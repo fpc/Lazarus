@@ -596,28 +596,20 @@ begin
   Changed(ncStateIndex);
 end;
 
-function TTreeNode.ParentsExpandedVisible: Boolean;
+function TTreeNode.ParentsExpandedVisible(aEnabledOnly: boolean = false): Boolean;
 var
-  ANode: TTreeNode;
+  lNode: TTreeNode;
+  lStates: TNodeStates;
 begin
-  ANode:=Parent;
-  while ANode<>nil do begin
-    if not ANode.HasStates([nsExpanded,nsVisible]) then
-      exit(false);
-    ANode:=ANode.Parent;
-  end;
-  Result:=true;
-end;
+  if aEnabledOnly
+    then lStates := [nsExpanded,nsVisible,nsEnabled]
+    else lStates := [nsExpanded,nsVisible];
 
-function TTreeNode.ParentsExpandedVisibleEnabled: Boolean;
-var
-  ANode: TTreeNode;
-begin
-  ANode:=Parent;
-  while ANode<>nil do begin
-    if not ANode.HasStates([nsExpanded,nsVisible,nsEnabled]) then
+  lNode:=Parent;
+  while lNode<>nil do begin
+    if not lNode.HasStates(lStates) then
       exit(false);
-    ANode:=ANode.Parent;
+    lNode:=lNode.Parent;
   end;
   Result:=true;
 end;
@@ -979,138 +971,101 @@ begin
   Result := FPrevBrother;
 end;
 
-function TTreeNode.GetNextVisible: TTreeNode;
+function TTreeNode.GetNextVisible(aEnabledOnly: boolean = false): TTreeNode;
 var
-  Child1: TTreeNode;
+  lFirstChild: TTreeNode;
+  lStates: TNodeStates;
 begin
-  Child1:=GetFirstVisibleChild;
-  if (Child1<>nil) and HasStates([nsExpanded,nsVisible]) then
-    Result:=Child1
+  if aEnabledOnly
+    then lStates := [nsExpanded,nsVisible,nsEnabled]
+    else lStates := [nsExpanded,nsVisible];
+
+  lFirstChild:=GetFirstVisibleChild(aEnabledOnly);
+  if (lFirstChild<>nil) and HasStates(lStates) then
+    Result:=lFirstChild
   else begin
     Result:=Self;
-    while (Result<>nil) and (Result.GetNextVisibleSibling=nil) do
+    while (Result<>nil) and (Result.GetNextVisibleSibling(aEnabledOnly)=nil) do
       Result:=Result.Parent;
     if Result<>nil then
-      Result:=Result.GetNextVisibleSibling;
+      Result:=Result.GetNextVisibleSibling(aEnabledOnly);
   end;
-  if (Result<>nil) and not (Result.Visible and ParentsExpandedVisible) then
-    Result:=nil;
+
+  if Result <> nil then
+    if (not Result.HasStates(lStates-[nsExpanded])) or
+       (not ParentsExpandedVisible(aEnabledOnly)) then
+      Result := nil;
 end;
 
-function TTreeNode.GetNextVisibleEnabled: TTreeNode;
+function TTreeNode.GetNextVisibleSibling(aEnabledOnly: boolean = false): TTreeNode;
 var
-  Child1: TTreeNode;
+  lStates: TNodeStates;
 begin
-  Child1:=GetFirstVisibleEnabledChild;
-  if (Child1<>nil) and HasStates([nsExpanded,nsVisible,nsEnabled]) then
-    Result:=Child1
-  else begin
-    Result:=Self;
-    while (Result<>nil) and (Result.GetNextVisibleEnabledSibling=nil) do
-      Result:=Result.Parent;
-    if Result<>nil then
-      Result:=Result.GetNextVisibleEnabledSibling;
-  end;
-  if (Result<>nil) and
-  not (Result.HasStates([nsVisible,nsEnabled]) and ParentsExpandedVisibleEnabled) then
-    Result:=nil;
-end;
+  if aEnabledOnly
+    then lStates := [nsVisible,nsEnabled]
+    else lStates := [nsVisible];
 
-function TTreeNode.GetNextVisibleSibling: TTreeNode;
-begin
   Result := Self;
   repeat
     Result := Result.GetNextSibling;
-  until (Result=nil) or Result.Visible;
+  until (Result=nil) or Result.HasStates(lStates);
 end;
 
-function TTreeNode.GetNextVisibleEnabledSibling: TTreeNode;
-begin
-  Result := Self;
-  repeat
-    Result := Result.GetNextSibling;
-  until (Result=nil) or Result.HasStates([nsVisible,nsEnabled]);
-end;
-
-function TTreeNode.GetPrevVisible: TTreeNode;
+function TTreeNode.GetPrevVisible(aEnabledOnly: boolean = false): TTreeNode;
 var
-  ANode: TTreeNode;
+  lNode: TTreeNode;
+  lStates: TNodeStates;
 begin
-  Result:=GetPrevVisibleSibling;
+  if aEnabledOnly
+    then lStates := [nsExpanded,nsVisible,nsEnabled]
+    else lStates := [nsExpanded,nsVisible];
+
+  Result:=GetPrevVisibleSibling(aEnabledOnly);
   if Result <> nil then begin
-    while Result.HasStates([nsExpanded,nsVisible]) do begin
-      ANode:=Result.GetLastVisibleChild;
-      if ANode=nil then break;
-      Result:=ANode;
+    while Result.HasStates(lStates) do begin
+      lNode:=Result.GetLastVisibleChild(aEnabledOnly);
+      if lNode=nil then break;
+      Result:=lNode;
     end;
   end
   else
     Result := Parent;
-  if (Result<>nil) and not (Result.Visible and ParentsExpandedVisible) then
-    Result:=nil;
+
+  if Result <> nil then
+    if (not Result.HasStates(lStates-[nsExpanded])) or
+       (not ParentsExpandedVisible(aEnabledOnly)) then
+      Result := nil;
 end;
 
-function TTreeNode.GetPrevVisibleEnabled: TTreeNode;
+function TTreeNode.GetPrevVisibleSibling(aEnabledOnly: boolean = false): TTreeNode;
 var
-  ANode: TTreeNode;
+  lStates: TNodeStates;
 begin
-  Result:=GetPrevVisibleEnabledSibling;
-  if Result <> nil then begin
-    while Result.HasStates([nsExpanded,nsVisible,nsEnabled]) do begin
-      ANode:=Result.GetLastVisibleEnabledChild;
-      if ANode=nil then break;
-      Result:=ANode;
-    end;
-  end
-  else
-    Result := Parent;
-  if (Result<>nil) and
-  not (Result.HasStates([nsVisible,nsEnabled]) and ParentsExpandedVisibleEnabled) then
-    Result:=nil;
-end;
+  if aEnabledOnly
+    then lStates := [nsVisible,nsEnabled]
+    else lStates := [nsVisible];
 
-function TTreeNode.GetPrevVisibleSibling: TTreeNode;
-begin
   Result := Self;
   repeat
     Result := Result.GetPrevSibling;
-  until (Result=nil) or Result.Visible;
+  until (Result=nil) or Result.HasStates(lStates);
 end;
 
-function TTreeNode.GetPrevVisibleEnabledSibling: TTreeNode;
-begin
-  Result := Self;
-  repeat
-    Result := Result.GetPrevSibling;
-  until (Result=nil) or Result.HasStates([nsVisible,nsEnabled]);
-end;
-
-function TTreeNode.GetPrevExpanded: TTreeNode;
+function TTreeNode.GetPrevExpanded(aEnabledOnly: boolean = false): TTreeNode;
 var
-  ANode: TTreeNode;
+  lNode: TTreeNode;
+  lStates: TNodeStates;
 begin
-  Result:=GetPrevVisibleSibling;
-  if Result <> nil then begin
-    while Result.HasStates([nsExpanded,nsVisible]) do begin
-      ANode:=Result.GetLastVisibleChild;
-      if ANode=nil then break;
-      Result:=ANode;
-    end;
-  end
-  else
-    Result:=Parent;
-end;
+  if aEnabledOnly
+    then lStates := [nsExpanded,nsVisible,nsEnabled]
+    else lStates := [nsExpanded,nsVisible];
 
-function TTreeNode.GetPrevExpandedEnabled: TTreeNode;
-var
-  ANode: TTreeNode;
-begin
-  Result:=GetPrevVisibleEnabledSibling;
+  Result:=GetPrevVisibleSibling(aEnabledOnly);
   if Result <> nil then begin
-    while Result.HasStates([nsExpanded,nsVisible,nsEnabled]) do begin
-      ANode:=Result.GetLastVisibleEnabledChild;
-      if ANode=nil then break;
-      Result:=ANode;
+    while Result.HasStates(lStates) do begin
+      lNode:=Result.GetLastVisibleChild(aEnabledOnly);
+      if lNode=nil then break;
+      Result:=lNode;
     end;
   end
   else
@@ -1125,35 +1080,19 @@ begin
     Result := nil;
 end;
 
-function TTreeNode.GetNextExpanded: TTreeNode;
+function TTreeNode.GetNextExpanded(aEnabledOnly: boolean = false): TTreeNode;
 var
-  ANode: TTreeNode;
+  lNode: TTreeNode;
 begin
-  ANode := GetFirstVisibleChild;
-  if Expanded and (ANode<>nil) then
-    Result:=ANode
+  lNode := GetFirstVisibleChild(aEnabledOnly);
+  if Expanded and (lNode<>nil) then
+    Result:=lNode
   else begin
     Result:=Self;
-    while (Result<>nil) and (Result.GetNextVisibleSibling=nil) do
+    while (Result<>nil) and (Result.GetNextVisibleSibling(aEnabledOnly)=nil) do
       Result:=Result.Parent;
     if Result<>nil then
-      Result:=Result.GetNextVisibleSibling;
-  end;
-end;
-
-function TTreeNode.GetNextExpandedEnabled: TTreeNode;
-var
-  ANode: TTreeNode;
-begin
-  ANode := GetFirstVisibleEnabledChild;
-  if Expanded and (ANode<>nil) then
-    Result:=ANode
-  else begin
-    Result:=Self;
-    while (Result<>nil) and (Result.GetNextVisibleEnabledSibling=nil) do
-      Result:=Result.Parent;
-    if Result<>nil then
-      Result:=Result.GetNextVisibleEnabledSibling;
+      Result:=Result.GetNextVisibleSibling(aEnabledOnly);
   end;
 end;
 
@@ -1194,18 +1133,17 @@ begin
   end;
 end;
 
-function TTreeNode.GetFirstVisibleChild: TTreeNode;
+function TTreeNode.GetFirstVisibleChild(aEnabledOnly: boolean = false): TTreeNode;
+var
+  lStates: TNodeStates;
 begin
-  Result := GetFirstChild;
-  if (Result<>nil) and (not Result.Visible) then
-    Result := Result.GetNextVisibleSibling;
-end;
+  if aEnabledOnly
+    then lStates := [nsVisible,nsEnabled]
+    else lStates := [nsVisible];
 
-function TTreeNode.GetFirstVisibleEnabledChild: TTreeNode;
-begin
   Result := GetFirstChild;
-  if (Result<>nil) and not Result.HasStates([nsVisible,nsEnabled]) then
-    Result := Result.GetNextVisibleEnabledSibling;
+  if (Result<>nil) and (not Result.HasStates(lStates)) then
+    Result := Result.GetNextVisibleSibling(aEnabledOnly);
 end;
 
 function TTreeNode.GetLastSibling: TTreeNode;
@@ -1227,23 +1165,18 @@ begin
     Result := nil;
 end;
 
-function TTreeNode.GetLastVisibleChild: TTreeNode;
+function TTreeNode.GetLastVisibleChild(aEnabledOnly: boolean = false): TTreeNode;
+var
+  lStates: TNodeStates;
 begin
-  Result := GetLastChild;
-  if Assigned(Result) and not Result.Visible then begin
-    Result := Result.GetPrevVisible;
-    if Result = Self then                      // No visible nodes found.
-      Result := Nil;
-  end;
-end;
+  if aEnabledOnly
+    then lStates := [nsVisible,nsEnabled]
+    else lStates := [nsVisible];
 
-function TTreeNode.GetLastVisibleEnabledChild: TTreeNode;
-begin
   Result := GetLastChild;
-  if Assigned(Result) and not Result.HasStates([nsVisible,nsEnabled]) then
-  begin
-    Result := Result.GetPrevVisibleEnabled;
-    if Result = Self then                      // No visible enabled nodes found.
+  if Assigned(Result) and (not Result.HasStates(lStates)) then begin
+    Result := Result.GetPrevVisible(aEnabledOnly);
+    if Result = Self then
       Result := Nil;
   end;
 end;
@@ -6107,7 +6040,7 @@ begin
     I := Pred(ClientHeight div DefaultItemHeight);
     while (I > 0) do
     begin
-      NextNode := lNode.GetNextExpandedEnabled;
+      NextNode := lNode.GetNextExpanded(true);
       if NextNode <> nil then
       begin
         lNode := NextNode;
@@ -6137,7 +6070,7 @@ begin
     I := Pred(ClientHeight div DefaultItemHeight);
     while (I > 0) do
     begin
-      PrevNode := lNode.GetPrevExpandedEnabled;
+      PrevNode := lNode.GetPrevExpanded(true);
       if PrevNode <> nil then
       begin
         lNode := PrevNode;
@@ -6848,7 +6781,7 @@ begin
   else
     ANode := Selected;
   if ANode <> nil then
-    ANode := ANode.GetNextVisibleEnabled
+    ANode := ANode.GetNextVisible(true)
   else
     ANode := FTreeNodes.GetFirstVisibleEnabledNode;
   if ANode <> nil then
@@ -6864,7 +6797,7 @@ begin
   else
     ANode := Selected;
   if ANode <> nil then
-    ANode := ANode.GetPrevVisibleEnabled
+    ANode := ANode.GetPrevVisible(true)
   else
     ANode := Items.GetFirstVisibleEnabledNode;
   if ANode <> nil then
