@@ -202,6 +202,8 @@ type
     function GetCurrentDebuggerClass: TDebuggerClass; override;    (* TODO: workaround for http://bugs.freepascal.org/view.php?id=21834   *)
     function AttachDebugger: TModalResult;
     procedure CallWatchesInvalidatedHandlers(Sender: TObject);
+    function GetAvailableCommands: TDBGCommands;
+    function CanRunDebugger: Boolean;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -2232,36 +2234,19 @@ procedure TDebugManager.UpdateButtonsAndMenuItems;
 var
   DebuggerIsValid: boolean;
   CanRun: Boolean;
-  SrcEdit: TSourceEditorInterface;
-  AnUnitInfo: TUnitInfo;
   AvailCommands: TDBGCommands;
   CurState: TDBGState;
 begin
   if (MainIDE=nil) or (MainIDE.ToolStatus = itExiting) then exit;
 
-  if FDebugger <> nil then begin
-    AvailCommands := FDebugger.Commands;
+  CurState := dsStop;
+  if FDebugger <> nil then
     CurState := FDebugger.State;
-    if CurState = dsError then begin
-      CurState := dsStop;
-      AvailCommands := GetDebuggerClass.SupportedCommandsFor(dsStop);
-    end;
-  end
-  else begin
-    AvailCommands := GetDebuggerClass.SupportedCommandsFor(dsStop);
-    CurState := dsStop;
-  end;
+  AvailCommands := GetAvailableCommands;
   DebuggerIsValid:=(MainIDE.ToolStatus in [itNone, itDebugger]);
-  MainIDE.GetCurrentUnitInfo(SrcEdit,AnUnitInfo);
+  CanRun := CanRunDebugger;
   with MainIDEBar do begin
     // For 'run' and 'step' bypass 'idle', so we can set the filename later
-    CanRun:=false;
-    if (Project1<>nil) and DebuggerIsValid then
-      CanRun:=( (AnUnitInfo<>nil) and (AnUnitInfo.RunFileIfActive) ) or
-              ( ((Project1.CompilerOptions.ExecutableType=cetProgram) or
-                 ((Project1.RunParameterOptions.GetActiveMode<>nil) and (Project1.RunParameterOptions.GetActiveMode.HostApplicationFilename<>'')))
-               and (pfRunnable in Project1.Flags)
-              );
     // Run
     itmRunMenuRun.Enabled                 := (CanRun and (dcRun in AvailCommands)) or
                                              ((Project1<>nil) and Project1.CompilerOptions.RunWithoutDebug);
@@ -2934,28 +2919,42 @@ begin
 end;
 
 procedure TDebugManager.ProcessCommand(Command: word; var Handled: boolean);
+var
+  AvailCommands: TDBGCommands;
+  CanRun: Boolean;
 begin
   //debugln('TDebugManager.ProcessCommand ',dbgs(Command));
   Handled := True;
+
+  CanRun := CanRunDebugger;
+  AvailCommands := GetAvailableCommands;
   case Command of
     ecPause:             DoPauseProject;
-    ecStepInto:          DoStepIntoProject;
-    ecStepOver:          DoStepOverProject;
-    ecStepIntoInstr:     DoStepIntoInstrProject;
-    ecStepOverInstr:     DoStepOverInstrProject;
-    ecStepIntoContext:   begin
+    ecStepInto:          if CanRun and (dcStepInto in AvailCommands) then DoStepIntoProject;
+    ecStepOver:          if CanRun and (dcStepOver in AvailCommands) then DoStepOverProject;
+    ecStepIntoInstr:     if CanRun and (dcStepIntoInstr in AvailCommands) then DoStepIntoInstrProject;
+    ecStepOverInstr:     if CanRun and (dcStepOverInstr in AvailCommands) then DoStepOverInstrProject;
+    ecStepIntoContext:   if CanRun then begin
                            if (FDialogs[ddtAssembler] <> nil) and FDialogs[ddtAssembler].Active
-                           then DoStepIntoInstrProject
-                           else DoStepIntoProject;
+                           then begin
+                             if dcStepIntoInstr in AvailCommands then DoStepIntoInstrProject;
+                           end
+                           else begin
+                             if dcStepInto in AvailCommands then DoStepIntoProject;
+                           end;
                          end;
-    ecStepOverContext:   begin
+    ecStepOverContext:   if CanRun then begin
                            if (FDialogs[ddtAssembler] <> nil) and FDialogs[ddtAssembler].Active
-                           then DoStepOverInstrProject
-                           else DoStepOverProject;
+                           then begin
+                             if dcStepOverInstr in AvailCommands then DoStepOverInstrProject;
+                           end
+                           else begin
+                             if dcStepOver in AvailCommands then DoStepOverProject;
+                           end;
                          end;
-    ecStepOut:           DoStepOutProject;
-    ecStepToCursor:      DoStepToCursor;
-    ecRunToCursor:       DoRunToCursor;
+    ecStepOut:           if CanRun and (dcStepOut in AvailCommands) then DoStepOutProject;
+    ecStepToCursor:      if CanRun and (dcStepTo  in AvailCommands) then DoStepToCursor;
+    ecRunToCursor:       if CanRun and (dcRunTo   in AvailCommands) then DoRunToCursor;
     ecStopProgram:       DoStopProject;
     ecResetDebugger:     ResetDebugger;
     ecToggleCallStack:   DoToggleCallStack;
@@ -3383,6 +3382,44 @@ end;
 procedure TDebugManager.CallWatchesInvalidatedHandlers(Sender: TObject);
 begin
   FWatchesInvalidatedNotificationList.CallNotifyEvents(Self);
+end;
+
+function TDebugManager.GetAvailableCommands: TDBGCommands;
+var
+  CurState: TDBGState;
+begin
+  Result := [];
+  if FDebugger <> nil then begin
+    Result := FDebugger.Commands;
+    CurState := FDebugger.State;
+    if CurState = dsError then begin
+      CurState := dsStop;
+      Result := GetDebuggerClass.SupportedCommandsFor(dsStop);
+    end;
+  end
+  else begin
+    Result := GetDebuggerClass.SupportedCommandsFor(dsStop);
+    CurState := dsStop;
+  end;
+end;
+
+function TDebugManager.CanRunDebugger: Boolean;
+var
+  DebuggerIsValid: Boolean;
+  SrcEdit: TSourceEditorInterface;
+  AnUnitInfo: TUnitInfo;
+begin
+  DebuggerIsValid:=(MainIDE.ToolStatus in [itNone, itDebugger]);
+  // For 'run' and 'step' bypass 'idle', so we can set the filename later
+  Result:=false;
+  if (Project1<>nil) and DebuggerIsValid then begin
+    MainIDE.GetCurrentUnitInfo(SrcEdit,AnUnitInfo);
+    Result:=( (AnUnitInfo<>nil) and (AnUnitInfo.RunFileIfActive) ) or
+            ( ((Project1.CompilerOptions.ExecutableType=cetProgram) or
+               ((Project1.RunParameterOptions.GetActiveMode<>nil) and (Project1.RunParameterOptions.GetActiveMode.HostApplicationFilename<>'')))
+             and (pfRunnable in Project1.Flags)
+            );
+  end;
 end;
 
 function TDebugManager.ShowBreakPointProperties(const ABreakpoint: TIDEBreakPoint): TModalresult;

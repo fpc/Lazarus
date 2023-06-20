@@ -4713,7 +4713,7 @@ end;
 function TFpDebugDebugger.GetCommands: TDBGCommands;
 begin
   Result := inherited GetCommands;
-  if State = dsStop then
+  if State in [dsStop, dsIdle] then
     Result := Result - [dcStepInto, dcStepOver, dcStepOut, dcStepIntoInstr, dcStepOverInstr];
 end;
 
