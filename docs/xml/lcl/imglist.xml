@@ -1843,7 +1843,7 @@ resolution is not found using the specified image width.
 <p>
 <var>Index</var> is an output parameter used to store the ordinal position of 
 the image resolution that uses the specified image width. Index contains the 
-closest  (but larger) resolution when the return value is <b>False</b>.
+closest (but larger) resolution when the return value is <b>False</b>.
 </p>
 </descr>
 </element>
@@ -3295,6 +3295,121 @@ ClearOverlays is used in the implementation of the <var>Clear</var> and
 </seealso>
 </element>
 
+<element name="TCustomImageList.MarkAsChanged">
+<short>
+Sets the value in the internal Changed flag to <b>True</b>.
+</short>
+<descr>
+<p>
+<var>MarkAsChanged</var> allows an application to set the value for the 
+internal member which tracks whether the image list has been modified. When 
+enabled, the Change method performs change notifications for subscribers and 
+signals the OnChange event handler (when assigned) when the EndUpdate method 
+is called.
+</p>
+<p>
+MarkAsChanged sets the value for the internal member to <b>True</b>. This 
+update normally occurs in methods like Clear, Delete, Move, ReadData, 
+ReadAdvData, and when the value in BkColor is changed. MarkAsChanged allows 
+descendent classes to set the flag value from any methods added to the class 
+or from application code.
+</p>
+</descr>
+<version>
+Added in LCL version 2.4.0.
+</version>
+<seealso>
+<link id="TCustomImageList.BeginUpdate"/>
+<link id="TCustomImageList.EndUpdate"/>
+<link id="TCustomImageList.BkColor"/>
+<link id="TCustomImageList.Change"/>
+<link id="TCustomImageList.Clear"/>
+<link id="TCustomImageList.Delete"/>
+<link id="TCustomImageList.Move"/>
+<link id="TCustomImageList.OnChange"/>
+<link id="TCustomImageList.ReadAdvData"/>
+<link id="TCustomImageList.ReadData"/>
+<link id="TChangeLink.Change"/>
+<link id="TChangeLink.OnChange"/>
+</seealso>
+</element>
+
+<element name="TCustomImageList.DoAfterUpdateStarted">
+<short>
+Performs actions needed after the BeginUpdate method is started.
+</short>
+<descr>
+<p>
+<var>DoAfterUpdateStarted</var> is a virtual method in 
+<var>TCustomImageList</var> called from the BeginUpdate method after the 
+internal update counter has been incremented. It is called when the first 
+update becomes active for the image list (the update counter is 1). Subsequent 
+calls to BeginUpdate do not call the DoAfterUpdateStarted method until the 
+update count returns to 1.
+</p>
+<p>
+DoAfterUpdateStarted has an empty implementation in TCustomImageList, but can 
+be overridden in descendent classes to perform any actions needed in the 
+derived class.
+</p>
+<p>
+Use DoBeforeUpdateEnded to perform actions needed in the EndUpdate method 
+prior to decrementing the update counter and calling the Change method.
+</p>
+<p>
+Use MarkAsChanged to set the internal flag which tracks modifications to the 
+image list.
+</p>
+</descr>
+<version>
+Added in LCL version 2.4.0.
+</version>
+<seealso>
+<link id="TCustomImageList.BeginUpdate"/>
+<link id="TCustomImageList.EndUpdate"/>
+<link id="TCustomImageList.DoBeforeUpdateEnded"/>
+<link id="TCustomImageList.MarkAsChanged"/>
+</seealso>
+</element>
+
+<element name="TCustomImageList.DoBeforeUpdateEnded">
+<short>
+Performs actions needed before the EndUpdate method is completed.
+</short>
+<descr>
+<p>
+<var>DoBeforeUpdateEnded</var> is a virtual method in 
+<var>TCustomImageList</var> called from the EndUpdate method. It is called 
+when the first update for the image list is completed (the update counter is 
+1). Subsequent calls to BeginUpdate do not call the DoAfterUpdateStarted 
+method until the update count returns to 1. It occurs immediately before the 
+update counter is decremented and the Change method is called.
+</p>
+<p>
+DoBeforeUpdateEnded has an empty implementation in TCustomImageList, but can 
+be overridden in descendent classes to perform any actions needed in the 
+derived class.
+</p>
+<p>
+Use DoAfterUpdateStarted to perform actions needed in the BeginUpdate method 
+after the update counter has been incremented.
+</p>
+<p>
+Use MarkAsChanged to set the internal flag which tracks modifications to the 
+image list.
+</p>
+</descr>
+<version>
+Added in LCL version 2.4.0.
+</version>
+<seealso>
+<link id="TCustomImageList.BeginUpdate"/>
+<link id="TCustomImageList.EndUpdate"/>
+<link id="TCustomImageList.DoAfterUpdateStarted"/>
+<link id="TCustomImageList.MarkAsChanged"/>
+</seealso>
+</element>
+
 <element name="TCustomImageList.Create">
 <short>
 Constructor for the class instance.
@@ -3824,30 +3939,44 @@ identical content.
 
 <element name="TCustomImageList.BeginUpdate">
 <short>
-Starts an update to the image list, and blocks execution of the OnChange 
+Starts an update to the image list, and controls execution of the OnChange 
 event.
 </short>
 <descr>
 <p>
-Use <var>BeginUpdate</var> when an update to the image list is started to 
-block execution of the OnChange event handler.
+Call <var>BeginUpdate</var> when an update to the image list is started to 
+control execution of the OnChange event handler in Change.
 </p>
 <p>
 <var>BeginUpdate</var> is used, along with <var>EndUpdate</var>, to speed up 
-the insertion of images in an image list. Every call to BeginUpdate must be 
-matched by a call to EndUpdate; i. e. update operations can be nested.
+the insertion or modification of images in an image list. Every call to 
+BeginUpdate must be matched by a call to EndUpdate; i. e. update operations 
+can be nested.
 </p>
 <p>
 BeginUpdate increments an internal counter in the class instance each time 
-the method is called. EndUpdate decrements the internal counter when called. 
-When the counter contains a positive non-zero value, the OnChange event 
-handler is not executed when the image list is changed.
+the method is called. The DoAfterUpdateStarted method is called to perform any 
+actions needed in the image list when an update is started. It is called when 
+the internal counter is set to 1; subsequent calls to BeginUpdate do not call 
+DoAfterUpdateStarted until the update count has returned to 1.
+</p>
+<p>
+EndUpdate is used to perform action needed when an update is completed and to 
+decrement the internal update counter. When the counter contains a positive 
+non-zero value, the OnChange event handler is not executed when the image list 
+is changed.
 </p>
 </descr>
+<version>
+Modified in LCL version 2.4.0 to call the DoAfterUpdateStarted method.
+</version>
 <seealso>
 <link id="TCustomImageList.EndUpdate"/>
 <link id="TCustomImageList.OnChange"/>
 <link id="TCustomImageList.Change"/>
+<link id="TCustomImageList.MarkAsChanged"/>
+<link id="TCustomImageList.DoAfterUpdateStarted"/>
+<link id="TCustomImageList.DoBeforeUpdateEnded"/>
 </seealso>
 </element>
 
@@ -3864,7 +3993,7 @@ updates by blocking execution of the <var>OnChange</var> event handler.
 <p>
 BeginUpdate increments an internal counter in the class instance each time 
 the method is called. EndUpdate decrements the internal counter when called. 
-When the counter contains a positive non-zero value, the OnChange event 
+If the modified counter contains a positive non-zero value, the OnChange event 
 handler is not executed when the image list is changed. When the counter 
 reaches zero (<b>0</b>), the Change method is called to perform OnChange 
 notifications.
@@ -3875,11 +4004,24 @@ method would cause the internal counter to contain a negative value, the
 <var>RaiseGDBException</var> method is called to raise an exception for the 
 condition.
 </p>
+<p>
+EndUpdate calls the DoBeforeUpdateEnded method to perform any actions needed 
+when the internal update counter is set to 1. The value in the internal 
+counter is decremented, and the Change method is called prior to exit. Change 
+notifications and the OnChange event handler occur when there are no other 
+nested BeginUpdate calls active.
+</p>
 </descr>
+<version>
+Modified in LCL version 2.4.0 to call the DoBeforeUpdateEnded method.
+</version>
 <seealso>
 <link id="TCustomImageList.BeginUpdate"/>
 <link id="TCustomImageList.Change"/>
 <link id="TCustomImageList.OnChange"/>
+<link id="TCustomImageList.DoBeforeUpdateEnded"/>
+<link id="TCustomImageList.DoAfterUpdateStarted"/>
+<link id="TCustomImageList.MarkAsChanged"/>
 </seealso>
 </element>
 
