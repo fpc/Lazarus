@@ -85,3 +85,6 @@ tsynvbsyn_200.png
 tsynxmlsyn.png
 tsynxmlsyn_150.png
 tsynxmlsyn_200.png
+tsynpopupmenu.png
+tsynpopupmenu_150.png
+tsynpopupmenu_200.png

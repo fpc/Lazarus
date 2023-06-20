@@ -43,7 +43,7 @@ uses
   SynHighlighterCss, SynHighlighterPHP, SynHighlighterTeX, SynHighlighterSQL,
   SynHighlighterPython, SynHighlighterVB, SynHighlighterAny, SynHighlighterDiff,
   SynHighlighterBat, SynHighlighterIni, SynHighlighterPo,
-  SynPluginSyncroEdit,
+  SynPluginSyncroEdit, SynPopupMenu,
   SynPropertyEditObjectList, SynDesignStringConstants, SynHighlighterJScript,
   LazarusPackageIntf, LResources, PropEdits, ComponentEditors;
 
@@ -86,6 +86,11 @@ begin
   {$Else}
   RegisterNoIcon([TSynMemo]);
   {$EndIF}
+end;
+
+procedure RegisterSynPopupMenu;
+begin
+  RegisterComponents('SynEdit',[TSynPopupMenu]);
 end;
 
 procedure RegisterSynHighlighterPas;
@@ -233,6 +238,7 @@ begin
   RegisterSynMacroRecorder;
   RegisterSynExportHTML;
   RegisterSynSyncroEdit;
+  RegisterSynPopupMenu;
 
   RegisterSynHighlighterPas;;
   RegisterSynHighlighterCPP;

@@ -32,10 +32,9 @@ uses
   SynHighlighterIni, SynEditMarkupSpecialChar, SynEditTextDoubleWidthChars, 
   SynEditTextSystemCharWidth, SynEditMarkupIfDef, SynPluginMultiCaret, 
   synhighlighterpike, SynEditMarkupFoldColoring, SynEditViewedLineMap, 
-  SynEditWrappedView, SynBeautifierPascal, LazSynIMMBase, LazarusPackageIntf;
+  SynEditWrappedView, SynBeautifierPascal, LazSynIMMBase, SynPopupMenu, LazarusPackageIntf;
 
 implementation
-
 procedure Register;
 begin
   RegisterUnit('SynEdit', @SynEdit.Register);
