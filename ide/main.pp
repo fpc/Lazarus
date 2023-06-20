@@ -10567,7 +10567,6 @@ begin
     // create a search result page
     //debugln(['ShowIdentifierReferences ',DbgSName(SearchResultsView)]);
     SearchPageIndex:=SearchResultsView.AddSearch(
-      'Ref: '+ExtractFileName(UsedUnitFilename),
       UsedUnitFilename,
       '',
       ExtractFilePath(UsedUnitFilename),
@@ -10597,7 +10596,7 @@ begin
 
     OldSearchPageIndex:=SearchPageIndex;
     SearchPageIndex:=nil;
-    SearchResultsView.EndUpdate(OldSearchPageIndex.PageIndex);
+    SearchResultsView.EndUpdate(OldSearchPageIndex.PageIndex, 'Ref: '+ExtractFileName(UsedUnitFilename));
     IDEWindowCreators.ShowForm(SearchResultsView,true);
 
   finally

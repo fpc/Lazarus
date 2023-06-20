@@ -582,7 +582,6 @@ begin
     // create a search result page
     //debugln(['ShowIdentifierReferences ',DbgSName(SearchResultsView)]);
     SearchPageIndex:=SearchResultsView.AddSearch(
-      'Ref: '+Identifier,
       Identifier,
       '',
       ExtractFilePath(DeclarationCode.Filename),
@@ -596,11 +595,11 @@ begin
                    TreeOfPCodeXYPosition,true,SearchPageIndex.PageIndex);
     OldSearchPageIndex:=SearchPageIndex;
     SearchPageIndex:=nil;
-    SearchResultsView.EndUpdate(OldSearchPageIndex.PageIndex);
+    SearchResultsView.EndUpdate(OldSearchPageIndex.PageIndex, 'Ref: '+Identifier);
     IDEWindowCreators.ShowForm(SearchResultsView,true);
   finally
     if SearchPageIndex <> nil then
-      SearchResultsView.EndUpdate(SearchPageIndex.PageIndex);
+      SearchResultsView.EndUpdate(SearchPageIndex.PageIndex, 'Ref: '+Identifier);
   end;
 end;
 

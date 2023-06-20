@@ -246,8 +246,7 @@ type
     procedure UpdateShowing; override;
     property AsyncUpdateCloseButtons: TSVCloseButtonsState read FAsyncUpdateCloseButtons write SetAsyncUpdateCloseButtons;
   public
-    function AddSearch(const aResultsName: string;
-                       const aSearchText: string;
+    function AddSearch(const aSearchText: string;
                        const aReplaceText: string;
                        const aDirectories: string;
                        const aFileMask: string;
@@ -261,7 +260,7 @@ type
                        const TheText: string;
                        const MatchStart: integer; const MatchLen: integer);
     procedure BeginUpdate(APageIndex: integer);
-    procedure EndUpdate(APageIndex: integer);
+    procedure EndUpdate(APageIndex: integer; APageName: string = '');
     procedure Parse_Search_Phrases(var slPhrases: TStrings);
     procedure ClosePage(PageIndex: integer);
 
@@ -271,7 +270,6 @@ type
                                               write fOnSelectionChanged;
     property Items[Index: integer]: TStrings read GetItems write SetItems;
     function GetResultsPage(aIndex: integer): TTabSheet;
-    procedure SetPageFoundCount(aPage: TTabSheet; aCnt: integer);
   end;
 
 var
@@ -588,12 +586,16 @@ begin
   TCustomTreeView(lTree).BeginUpdate; // TCustomTreeView, but not TLazSearchResultTV!
   try
     lNode := lTree.Selected;
-    lNodeText := lNode.Text;
-    lOldScroll.X := lTree.ScrolledLeft;
-    lOldScroll.Y := lTree.ScrolledTop;
-    lTree.MoveEnd;
-    lNode.MakeVisible;
-    lDeltaScrollY := lTree.ScrolledTop - lOldScroll.Y;
+    lNodeText := '';
+    if lNode <> nil then
+    begin
+      lNodeText := lNode.Text;
+      lOldScroll.X := lTree.ScrolledLeft;
+      lOldScroll.Y := lTree.ScrolledTop;
+      lTree.MoveEnd;
+      lNode.MakeVisible;
+      lDeltaScrollY := lTree.ScrolledTop - lOldScroll.Y;
+    end;
   finally
     lTree.ScrolledTop := lOldScroll.Y; // go back while searching
     TCustomTreeView(lTree).EndUpdate;
@@ -915,10 +917,12 @@ begin
   UpdateToolbar;
 end;
 
-procedure TSearchResultsView.EndUpdate(APageIndex: integer);
+procedure TSearchResultsView.EndUpdate(APageIndex: integer; APageName: string = '');
 var
   lTree: TLazSearchResultTV;
   lNode: TTreeNode;
+  lPage: TTabSheet;
+  lEllipsed: boolean;
 begin
   lTree := GetTreeView(APageIndex);
   if assigned(lTree) then
@@ -938,6 +942,17 @@ begin
     if lNode <> nil then
       lNode.Selected := true;
   end;
+
+  // Page name
+  lPage := GetResultsPage(APageIndex); // this also check APageIndex range
+  if (lPage <> nil) and (APageName <> '') then
+  begin
+    lPage.Caption := BeautifyPageName(APageName, lEllipsed);
+  end;
+
+  // Count
+  lPage.Caption := lPage.Caption + ' (' + inttostr(lTree.Items.Count - lTree.Items.TopLvlCount) + ')';
+
   UpdateToolbar;
   if FFocusTreeViewInEndUpdate and assigned(lTree) then
     ActivateControl(lTree)
@@ -1003,11 +1018,6 @@ begin
     Result := ResultsNoteBook.Pages[aIndex]
   else
     Result := nil;
-end;
-
-procedure TSearchResultsView.SetPageFoundCount(aPage: TTabSheet; aCnt: integer);
-begin
-  aPage.Caption := aPage.Caption + Format(' (%d)',[aCnt]);
 end;
 
 {Sets the Items from the treeview on the currently selected page in the TNoteBook}
@@ -1230,7 +1240,6 @@ end;
 { Add Result will create a tab in the Results view window with an new
   treeview or focus an existing TreeView and update it's searchoptions.}
 function TSearchResultsView.AddSearch(
-  const aResultsName: string;
   const aSearchText: string;
   const aReplaceText: string;
   const aDirectories: string;
@@ -1247,7 +1256,7 @@ begin
   with ResultsNoteBook do
   begin
     FFocusTreeViewInEndUpdate := (ActivePage = nil) and SearchInListEdit.IsParentOf(ActivePage);
-    FWorkedSearchText := BeautifyPageName(aResultsName, lTabEllipsed);
+    FWorkedSearchText := BeautifyPageName(aSearchText, lTabEllipsed); // default page name
     PageIndex := TCustomTabControl(ResultsNoteBook).Pages.Add(FWorkedSearchText);
 
     lNewTree := TLazSearchResultTV.Create(Page[PageIndex]);
@@ -1564,9 +1573,7 @@ var
   lPage: TTabSheet;
 begin
   result := nil;
-  if not InRange(APageIndex, 0, ResultsNoteBook.PageCount - 1) then exit;
-
-  lPage := ResultsNoteBook.Pages[APageIndex];
+  lPage := GetResultsPage(APageIndex); // this also check APageIndex range
   if not assigned(lPage) then exit;
 
   for i:= 0 to lPage.ComponentCount - 1 do

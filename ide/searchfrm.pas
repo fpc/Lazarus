@@ -989,15 +989,13 @@ end;
 procedure TSearchProgressForm.DoSearchAndAddToSearchResults;
 var
   ListPage: TTabSheet;
-  Cnt: integer;
   State: TIWGetFormState;
 begin
-  Cnt:= 0;
   LazarusIDE.DoShowSearchResultsView(iwgfShow);
   if fResultsPageIndex >= 0 then
     ListPage := SearchResultsView.GetResultsPage(fResultsPageIndex)
   else
-    ListPage := SearchResultsView.AddSearch(SearchText, SearchText, ReplaceText,
+    ListPage := SearchResultsView.AddSearch(SearchText, ReplaceText,
       SearchDirectories, SearchMask, SearchOptions);
   try
     (* BeginUpdate prevents ListPage from being closed,
@@ -1008,21 +1006,20 @@ begin
     ResultsWindow:= ListPage;
     try
       Show; // floating window, not dockable
-      Cnt:= DoSearch;
+      DoSearch;
     except
       on E: ERegExpr do
         IDEMessageDialog(lisUEErrorInRegularExpression, E.Message,mtError,
                    [mbCancel]);
     end;
   finally
-    SearchResultsView.SetPageFoundCount(ListPage, Cnt);
     // show, but bring to front only if Search Progress dialog was active
     if fWasActive then
       State := iwgfShowOnTop
     else
       State := iwgfShow;
     LazarusIDE.DoShowSearchResultsView(State);
-    SearchResultsView.EndUpdate(ListPage.PageIndex);
+    SearchResultsView.EndUpdate(ListPage.PageIndex, SearchText);
   end;
 end;
 
