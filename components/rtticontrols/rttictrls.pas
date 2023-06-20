@@ -170,8 +170,7 @@ Type
     function GetSetElementValue(const AliasName: string): boolean;
     procedure SetSetElementValue(const AliasName: string; NewValue: boolean);
     function GetIndexOfSetElement(const AliasName: string): integer;
-    function GetSetTypeData(out CompData: PTypeInfo;
-                            out TypeData: PTypeData): boolean;
+    function GetSetTypeData(out CompData: PTypeInfo; out TypeData: PTypeData): boolean;
   public
     property AliasValues: TAliasStrings read FAliasValues;
     property CanModify: boolean read GetCanModify;
@@ -1443,8 +1442,7 @@ Type
   end;
 
 
-function GetPropertyLinkOfComponent(AComponent: TComponent
-  ): TCustomPropertyLink;
+function GetPropertyLinkOfComponent(AComponent: TComponent): TCustomPropertyLink;
 procedure SaveActivePropertyLink(AForm: TCustomForm);
 procedure CreateEnumAliasValues(EnumType: PTypeInfo; List: TStrings;
   AStringArray: PString);
@@ -1583,8 +1581,7 @@ begin
   InvalidateEditor;
 end;
 
-procedure TCustomPropertyLink.SetOptions(
-  const NewOptions: TPropertyLinkOptions);
+procedure TCustomPropertyLink.SetOptions(const NewOptions: TPropertyLinkOptions);
 var
   ChangedOptions: TPropertyLinkOptions;
 begin
@@ -2051,8 +2048,7 @@ begin
   end;
 end;
 
-function TCustomPropertyLink.GetSetElementValue(const AliasName: string
-  ): boolean;
+function TCustomPropertyLink.GetSetElementValue(const AliasName: string): boolean;
 var
   CompData: PTypeInfo;
   TypeData: PTypeData;
@@ -2090,8 +2086,7 @@ begin
   end;
 end;
 
-function TCustomPropertyLink.GetIndexOfSetElement(const AliasName: string
-  ): integer;
+function TCustomPropertyLink.GetIndexOfSetElement(const AliasName: string): integer;
 var
   CompData: PTypeInfo;
   TypeData: PTypeData;
@@ -2143,8 +2138,7 @@ begin
   FPropEdits.Add(Prop);
 end;
 
-function TPropertyNamePropertyEditor.TestEditor(const Prop: TPropertyEditor
-  ): boolean;
+function TPropertyNamePropertyEditor.TestEditor(const Prop: TPropertyEditor): boolean;
 var
   i: Integer;
   CurPersistent: TPersistent;
@@ -2265,8 +2259,7 @@ end;
 
 { TPropLinkAliasPropertyEditor }
 
-function TPropLinkAliasPropertyEditor.CreateDlg(s: TStrings
-  ): TStringsPropEditorDlg;
+function TPropLinkAliasPropertyEditor.CreateDlg(s: TStrings): TStringsPropEditorDlg;
 begin
   if s=nil then ;
   Result:=TAliasStringsPropEditorDlg.Create(Application);
@@ -2306,11 +2299,13 @@ constructor TTICustomEdit.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FLink:=TPropertyLink.Create(Self);
-  FLink.Filter:=[{tkUnknown,}tkInteger,tkChar,tkEnumeration,
-                 tkFloat,{tkSet,tkMethod,}tkSString,tkLString,tkAString,
-                 tkWString,tkVariant,{tkArray,tkRecord,tkInterface,}
-                 {tkClass,tkObject,}tkWChar,tkBool,tkInt64,
-                 tkQWord{,tkDynArray,tkInterfaceRaw}];
+  FLink.Filter:=[{tkUnknown,}tkInteger,tkChar,tkEnumeration,tkFloat,
+                 {tkSet,tkMethod,}tkSString,tkLString,tkAString,
+                 tkWString,tkVariant,{tkArray,tkRecord,tkInterface,
+                 tkClass,tkObject,}tkWChar,tkBool,tkInt64,tkQWord,
+                 {tkDynArray,tkInterfaceRaw,tkProcVar,}tkUString,tkUChar
+                 {tkHelper,tkFile,tkClassRef,tkPointer}];
+
   FLink.OnLoadFromProperty:=@LinkLoadFromProperty;
   FLink.OnSaveToProperty:=@LinkSaveToProperty;
 end;
@@ -2459,11 +2454,12 @@ constructor TTICustomComboBox.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FLink:=TPropertyLink.Create(Self);
-  FLink.Filter:=[{tkUnknown,}tkInteger,tkChar,tkEnumeration,
-                 tkFloat,{tkSet,}tkMethod,tkSString,tkLString,tkAString,
+  FLink.Filter:=[{tkUnknown,}tkInteger,tkChar,tkEnumeration,tkFloat,
+                 {tkSet,}tkMethod,tkSString,tkLString,tkAString,
                  tkWString,tkVariant,{tkArray,tkRecord,tkInterface,}
-                 tkClass,tkObject,tkWChar,tkBool,tkInt64,
-                 tkQWord{,tkDynArray,tkInterfaceRaw}];
+                 tkClass,tkObject,tkWChar,tkBool,tkInt64,tkQWord,
+                 {tkDynArray,tkInterfaceRaw,}tkProcVar,tkUString,tkUChar,
+                 tkHelper,tkFile,tkClassRef,tkPointer];
   FLink.OnLoadFromProperty:=@LinkLoadFromProperty;
   FLink.OnSaveToProperty:=@LinkSaveToProperty;
   FLink.OnEditorChanged:=@LinkEditorChanged;
@@ -2548,11 +2544,12 @@ begin
   FLinkValueFalse:='False';
   FLinkValueTrue:='True';
   FLink:=TPropertyLink.Create(Self);
-  FLink.Filter:=[{tkUnknown,}tkInteger{,tkChar},tkEnumeration,
-                 {tkFloat,}tkSet,{tkMethod,}tkSString,tkLString,tkAString,
-                 tkWString,tkVariant,{tkArray,tkRecord,tkInterface,}
-                 {tkClass,tkObject,}tkWChar,tkBool,tkInt64,
-                 tkQWord{,tkDynArray,tkInterfaceRaw}];
+  FLink.Filter:=[{tkUnknown,}tkInteger,{tkChar,}tkEnumeration,{tkFloat,}
+                 tkSet,{tkMethod,}tkSString,tkLString,tkAString,
+                 tkWString,tkVariant,{tkArray,tkRecord,tkInterface,
+                 tkClass,tkObject,}tkWChar,tkBool,tkInt64,tkQWord,
+                 {tkDynArray,tkInterfaceRaw,tkProcVar,}tkUString,tkUChar
+                 {tkHelper,tkFile,tkClassRef,tkPointer}];
   FLink.OnLoadFromProperty:=@LinkLoadFromProperty;
   FLink.OnSaveToProperty:=@LinkSaveToProperty;
   FLink.OnEditorChanged:=@LinkEditorChanged;
@@ -2609,11 +2606,12 @@ constructor TTICustomLabel.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FLink:=TPropertyLink.Create(Self);
-  FLink.Filter:=[{tkUnknown,}tkInteger,tkChar,tkEnumeration,
-                 tkFloat,{tkSet,tkMethod,}tkSString,tkLString,tkAString,
-                 tkWString,tkVariant,{tkArray,tkRecord,tkInterface,}
-                 {tkClass,tkObject,}tkWChar,tkBool,tkInt64,
-                 tkQWord{,tkDynArray,tkInterfaceRaw}];
+  FLink.Filter:=[{tkUnknown,}tkInteger,tkChar,tkEnumeration,tkFloat,
+                 {tkSet,tkMethod,}tkSString,tkLString,tkAString,
+                 tkWString,tkVariant,{tkArray,tkRecord,tkInterface,
+                 tkClass,tkObject,}tkWChar,tkBool,tkInt64,tkQWord,
+                 {tkDynArray,tkInterfaceRaw,tkProcVar,}tkUString,tkUChar
+                 {tkHelper,tkFile,tkClassRef,tkPointer}];
   FLink.OnLoadFromProperty:=@LinkLoadFromProperty;
 end;
 
@@ -2648,11 +2646,12 @@ constructor TTICustomGroupbox.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FLink:=TPropertyLink.Create(Self);
-  FLink.Filter:=[{tkUnknown,}tkInteger,tkChar,tkEnumeration,
-                 tkFloat,{tkSet,tkMethod,}tkSString,tkLString,tkAString,
-                 tkWString,tkVariant,{tkArray,tkRecord,tkInterface,}
-                 {tkClass,tkObject,}tkWChar,tkBool,tkInt64,
-                 tkQWord{,tkDynArray,tkInterfaceRaw}];
+  FLink.Filter:=[{tkUnknown,}tkInteger,tkChar,tkEnumeration,tkFloat,
+                 {tkSet,tkMethod,}tkSString,tkLString,tkAString,
+                 tkWString,tkVariant,{tkArray,tkRecord,tkInterface,
+                 tkClass,tkObject,}tkWChar,tkBool,tkInt64,tkQWord,
+                 {tkDynArray,tkInterfaceRaw,tkProcVar,}tkUString,tkUChar
+                 {tkHelper,tkFile,tkClassRef,tkPointer}];
   FLink.OnLoadFromProperty:=@LinkLoadFromProperty;
 end;
 
@@ -2702,11 +2701,12 @@ constructor TTICustomRadioGroup.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FLink:=TPropertyLink.Create(Self);
-  FLink.Filter:=[{tkUnknown,}tkInteger,{tkChar,}tkEnumeration,
-                 {tkFloat,tkSet,tkMethod,}tkSString,tkLString,tkAString,
-                 tkWString,{tkVariant,tkArray,tkRecord,tkInterface,}
-                 {tkClass,tkObject,tkWChar,}tkBool{,tkInt64,}
-                 {tkQWord,tkDynArray,tkInterfaceRaw}];
+  FLink.Filter:=[{tkUnknown,}tkInteger,{tkChar,}tkEnumeration,{tkFloat,}
+                 {tkSet,tkMethod,}tkSString,tkLString,tkAString,
+                 tkWString,{tkVariant,tkArray,tkRecord,tkInterface,
+                 tkClass,tkObject,tkWChar,}tkBool,{tkInt64,tkQWord,
+                 tkDynArray,tkInterfaceRaw,tkProcVar,}tkUString{,tkUChar,
+                 tkHelper,tkFile,tkClassRef,tkPointer}];
   FLink.OnLoadFromProperty:=@LinkLoadFromProperty;
   FLink.OnSaveToProperty:=@LinkSaveToProperty;
   FLink.CollectValues:=true;
@@ -2770,11 +2770,12 @@ constructor TTICustomCheckGroup.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FLink:=TPropertyLink.Create(Self);
-  FLink.Filter:=[{tkUnknown,tkInteger,tkChar,tkEnumeration,}
-                 {tkFloat,}tkSet{,tkMethod,tkSString,tkLString,tkAString,}
-                 {tkWString,tkVariant,tkArray,tkRecord,tkInterface,}
-                 {tkClass,tkObject,tkWChar,tkBool,tkInt64,}
-                 {tkQWord,tkDynArray,tkInterfaceRaw}];
+  FLink.Filter:=[{tkUnknown,tkInteger,tkChar,tkEnumeration,tkFloat,}
+                 tkSet{,tkMethod,tkSString,tkLString,tkAString,
+                 tkWString,tkVariant,tkArray,tkRecord,tkInterface,
+                 tkClass,tkObject,tkWChar,tkBool,tkInt64,tkQWord,
+                 tkDynArray,tkInterfaceRaw,tkProcVar,tkUString,tkUChar,
+                 tkHelper,tkFile,tkClassRef,tkPointer}];
   FLink.OnLoadFromProperty:=@LinkLoadFromProperty;
   FLink.OnSaveToProperty:=@LinkSaveToProperty;
   FLink.CollectValues:=true;
@@ -2855,11 +2856,12 @@ constructor TTICustomMemo.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FLink:=TPropertyLink.Create(Self);
-  FLink.Filter:=[{tkUnknown,tkInteger,tkChar,tkEnumeration,}
-                 {tkFloat,tkSet,tkMethod,}tkSString,tkLString,tkAString,
+  FLink.Filter:=[{tkUnknown,tkInteger,tkChar,tkEnumeration,tkFloat,
+                 tkSet,tkMethod,}tkSString,tkLString,tkAString,
                  tkWString,{tkVariant,tkArray,tkRecord,tkInterface,}
-                 tkClass{,tkObject,tkWChar,tkBool,tkInt64,}
-                 {tkQWord,tkDynArray,tkInterfaceRaw}];
+                 tkClass,{tkObject,tkWChar,tkBool,tkInt64,tkQWord,
+                 tkDynArray,tkInterfaceRaw,tkProcVar,}tkUString{,tkUChar,
+                 tkHelper,tkFile,tkClassRef,tkPointer}];
   FLink.OnLoadFromProperty:=@LinkLoadFromProperty;
   FLink.OnSaveToProperty:=@LinkSaveToProperty;
   FLink.OnTestEditor:=@LinkTestEditor;
@@ -2922,11 +2924,12 @@ constructor TTICustomCalendar.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FLink:=TPropertyLink.Create(Self);
-  FLink.Filter:=[{tkUnknown,tkInteger,tkChar,tkEnumeration,}
-                 tkFloat,{tkSet,tkMethod,}tkSString,tkLString,tkAString,
-                 tkWString{,tkVariant,tkArray,tkRecord,tkInterface,}
-                 {tkClass,tkObject,tkWChar,tkBool,tkInt64,}
-                 {tkQWord,tkDynArray,tkInterfaceRaw}];
+  FLink.Filter:=[{tkUnknown,tkInteger,tkChar,tkEnumeration,}tkFloat,
+                 {tkSet,tkMethod,}tkSString,tkLString,tkAString,
+                 tkWString,{tkVariant,tkArray,tkRecord,tkInterface,
+                 tkClass,tkObject,tkWChar,tkBool,tkInt64,tkQWord,
+                 tkDynArray,tkInterfaceRaw,tkProcVar,}tkUString{,tkUChar,
+                 tkHelper,tkFile,tkClassRef,tkPointer}];
   FLink.OnLoadFromProperty:=@LinkLoadFromProperty;
   FLink.OnSaveToProperty:=@LinkSaveToProperty;
   FLink.OnTestEditor:=@LinkTestEditor;
@@ -3050,11 +3053,12 @@ begin
   inherited Create(TheOwner);
   FUseRTTIMinMax:=true;
   FLink:=TPropertyLink.Create(Self);
-  FLink.Filter:=[{tkUnknown,}tkInteger,{tkChar,tkEnumeration,}
-                 tkFloat,{tkSet,tkMethod,}tkSString,tkLString,tkAString,
-                 tkWString{,tkVariant,tkArray,tkRecord,tkInterface,}
-                 {tkClass,tkObject,tkWChar,tkBool},tkInt64,
-                 tkQWord{,tkDynArray,tkInterfaceRaw}];
+  FLink.Filter:=[{tkUnknown,}tkInteger,{tkChar,tkEnumeration,}tkFloat,
+                 {tkSet,tkMethod,}tkSString,tkLString,tkAString,
+                 tkWString,{tkVariant,tkArray,tkRecord,tkInterface,
+                 tkClass,tkObject,tkWChar,tkBool,}tkInt64,tkQWord,
+                 {tkDynArray,tkInterfaceRaw,tkProcVar,}tkUString{,tkUChar,
+                 tkHelper,tkFile,tkClassRef,tkPointer}];
   FLink.OnLoadFromProperty:=@LinkLoadFromProperty;
   FLink.OnSaveToProperty:=@LinkSaveToProperty;
   FLink.OnEditorChanged:=@LinkEditorChanged;
@@ -3178,11 +3182,12 @@ begin
   inherited Create(TheOwner);
   FUseRTTIMinMax:=true;
   FLink:=TPropertyLink.Create(Self);
-  FLink.Filter:=[{tkUnknown,}tkInteger,{tkChar,tkEnumeration,}
-                 tkFloat,{tkSet,tkMethod,}tkSString,tkLString,tkAString,
-                 tkWString{,tkVariant,tkArray,tkRecord,tkInterface,}
-                 {tkClass,tkObject,tkWChar,tkBool},tkInt64,
-                 tkQWord{,tkDynArray,tkInterfaceRaw}];
+  FLink.Filter:=[{tkUnknown,}tkInteger,{tkChar,tkEnumeration,}tkFloat,
+                 {tkSet,tkMethod,}tkSString,tkLString,tkAString,
+                 tkWString,{tkVariant,tkArray,tkRecord,tkInterface,
+                 tkClass,tkObject,tkWChar,tkBool,}tkInt64,tkQWord,
+                 {tkDynArray,tkInterfaceRaw,tkProcVar,}tkUString{,tkUChar,
+                 tkHelper,tkFile,tkClassRef,tkPointer}];
   FLink.OnLoadFromProperty:=@LinkLoadFromProperty;
   FLink.OnSaveToProperty:=@LinkSaveToProperty;
   FLink.OnEditorChanged:=@LinkEditorChanged;
@@ -3242,11 +3247,12 @@ constructor TTICustomImage.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FLink:=TPropertyLink.Create(Self);
-  FLink.Filter:=[{tkUnknown,tkInteger,tkChar,tkEnumeration,}
-                 {tkFloat,tkSet,tkMethod,tkSString,tkLString,tkAString,}
-                 {tkWString,tkVariant,tkArray,tkRecord,tkInterface,}
-                 tkClass{,tkObject,tkWChar,tkBool,tkInt64,}
-                 {tkQWord,tkDynArray,tkInterfaceRaw}];
+  FLink.Filter:=[{tkUnknown,tkInteger,tkChar,tkEnumeration,tkFloat,
+                 tkSet,tkMethod,tkSString,tkLString,tkAString,
+                 tkWString,tkVariant,tkArray,tkRecord,tkInterface,}
+                 tkClass{,tkObject,tkWChar,tkBool,tkInt64,tkQWord,
+                 tkDynArray,tkInterfaceRaw,tkProcVar,tkUString,tkUChar,
+                 tkHelper,tkFile,tkClassRef,tkPointer}];
   FLink.OnLoadFromProperty:=@LinkLoadFromProperty;
   FLink.OnTestEditor:=@LinkTestEditor;
 end;
@@ -3343,11 +3349,12 @@ begin
   inherited Create(TheOwner);
   FUseRTTIMinMax:=true;
   FLink:=TPropertyLink.Create(Self);
-  FLink.Filter:=[{tkUnknown,}tkInteger,{tkChar,tkEnumeration,}
-                 tkFloat,{tkSet,tkMethod,}tkSString,tkLString,tkAString,
-                 tkWString{,tkVariant,tkArray,tkRecord,tkInterface,}
-                 {tkClass,tkObject,tkWChar,tkBool,tkInt64,}
-                 {tkQWord,tkDynArray,tkInterfaceRaw}];
+  FLink.Filter:=[{tkUnknown,}tkInteger,{tkChar,tkEnumeration,}tkFloat,
+                 {tkSet,tkMethod,}tkSString,tkLString,tkAString,
+                 tkWString,{tkVariant,tkArray,tkRecord,tkInterface,
+                 tkClass,tkObject,tkWChar,tkBool,tkInt64,tkQWord,
+                 tkDynArray,tkInterfaceRaw,tkProcVar,}tkUString{,tkUChar,
+                 tkHelper,tkFile,tkClassRef,tkPointer}];
   FLink.OnLoadFromProperty:=@LinkLoadFromProperty;
   FLink.OnSaveToProperty:=@LinkSaveToProperty;
   FLink.OnEditorChanged:=@LinkEditorChanged;
@@ -3397,11 +3404,12 @@ constructor TTICustomMaskEdit.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FLink:=TPropertyLink.Create(Self);
-  FLink.Filter:=[{tkUnknown,}tkInteger,tkChar,tkEnumeration,
-                 tkFloat,{tkSet,tkMethod,}tkSString,tkLString,tkAString,
-                 tkWString,tkVariant,{tkArray,tkRecord,tkInterface,}
-                 {tkClass,tkObject,}tkWChar,tkBool,tkInt64,
-                 tkQWord{,tkDynArray,tkInterfaceRaw}];
+  FLink.Filter:=[{tkUnknown,}tkInteger,tkChar,tkEnumeration,tkFloat,
+                 {tkSet,tkMethod,}tkSString,tkLString,tkAString,
+                 tkWString,tkVariant,{tkArray,tkRecord,tkInterface,
+                 tkClass,tkObject,}tkWChar,tkBool,tkInt64,tkQWord,
+                 {tkDynArray,tkInterfaceRaw,tkProcVar,}tkUString,tkUChar
+                 {tkHelper,tkFile,tkClassRef,tkPointer}];
   FLink.OnLoadFromProperty:=@LinkLoadFromProperty;
   FLink.OnSaveToProperty:=@LinkSaveToProperty;
 end;
@@ -3498,11 +3506,12 @@ constructor TTICustomCheckListBox.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FLink:=TPropertyLink.Create(Self);
-  FLink.Filter:=[{tkUnknown,tkInteger,tkChar,tkEnumeration,}
-                 {tkFloat,}tkSet{,tkMethod,tkSString,tkLString,tkAString,}
-                 {tkWString,tkVariant,tkArray,tkRecord,tkInterface,}
-                 {tkClass,tkObject,tkWChar,tkBool,tkInt64,}
-                 {tkQWord,tkDynArray,tkInterfaceRaw}];
+  FLink.Filter:=[{tkUnknown,tkInteger,tkChar,tkEnumeration,tkFloat,}
+                 tkSet{,tkMethod,tkSString,tkLString,tkAString,
+                 tkWString,tkVariant,tkArray,tkRecord,tkInterface,
+                 tkClass,tkObject,tkWChar,tkBool,tkInt64,tkQWord,
+                 tkDynArray,tkInterfaceRaw,tkProcVar,tkUString,tkUChar,
+                 tkHelper,tkFile,tkClassRef,tkPointer}];
   FLink.OnLoadFromProperty:=@LinkLoadFromProperty;
   FLink.OnSaveToProperty:=@LinkSaveToProperty;
   FLink.CollectValues:=true;
@@ -3618,11 +3627,13 @@ constructor TTICustomListBox.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FLink:=TPropertyLink.Create(Self);
-  FLink.Filter:=[tkUnknown,tkInteger,tkChar,tkEnumeration,
-                 tkFloat,tkSet,tkMethod,tkSString,tkLString,tkAString,
+  FLink.Filter:=AllTypeKinds;
+{                [tkUnknown,tkInteger,tkChar,tkEnumeration,tkFloat,
+                 tkSet,tkMethod,tkSString,tkLString,tkAString,
                  tkWString,tkVariant,tkArray,tkRecord,tkInterface,
-                 tkClass,tkObject,tkWChar,tkBool,tkInt64,
-                 tkQWord,tkDynArray,tkInterfaceRaw];
+                 tkClass,tkObject,tkWChar,tkBool,tkInt64,tkQWord,
+                 tkDynArray,tkInterfaceRaw,tkProcVar,tkUString,tkUChar,
+                 tkHelper,tkFile,tkClassRef,tkPointer];  }
   FLink.OnLoadFromProperty:=@LinkLoadFromProperty;
   FLink.OnSaveToProperty:=@LinkSaveToProperty;
   FLink.CollectValues:=true;
@@ -3702,11 +3713,12 @@ constructor TTICustomColorButton.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FLink:=TPropertyLink.Create(Self);
-  FLink.Filter:=[{tkUnknown,}tkInteger{,tkChar,tkEnumeration,
-                 tkFloat,tkSet,tkMethod,tkSString,tkLString,tkAString,
+  FLink.Filter:=[{tkUnknown,}tkInteger{,tkChar,tkEnumeration,tkFloat,
+                 tkSet,tkMethod,tkSString,tkLString,tkAString,
                  tkWString,tkVariant,tkArray,tkRecord,tkInterface,
-                 tkClass,tkObject,tkWChar,tkBool,tkInt64,
-                 tkQWord,tkDynArray,tkInterfaceRaw}];
+                 tkClass,tkObject,tkWChar,tkBool,tkInt64,tkQWord,
+                 tkDynArray,tkInterfaceRaw,tkProcVar,tkUString,tkUChar,
+                 tkHelper,tkFile,tkClassRef,tkPointer}];
   FLink.OnLoadFromProperty:=@LinkLoadFromProperty;
   FLink.OnSaveToProperty:=@LinkSaveToProperty;
   FLink.OnTestEditor:=@LinkTestEditor;
@@ -4018,11 +4030,12 @@ begin
   inherited Create(TheOwner);
   FUseRTTIMinMax:=true;
   FLink:=TPropertyLink.Create(Self);
-  FLink.Filter:=[{tkUnknown,}tkInteger,{tkChar,tkEnumeration,}
-                 tkFloat,{tkSet,tkMethod,}tkSString,tkLString,tkAString,
-                 tkWString{,tkVariant,tkArray,tkRecord,tkInterface,}
-                 {tkClass,tkObject,tkWChar,tkBool,tkInt64,}
-                 {tkQWord,tkDynArray,tkInterfaceRaw}];
+  FLink.Filter:=[{tkUnknown,}tkInteger,{tkChar,tkEnumeration,}tkFloat,
+                 {tkSet,tkMethod,}tkSString,tkLString,tkAString,
+                 tkWString,{tkVariant,tkArray,tkRecord,tkInterface,
+                 tkClass,tkObject,tkWChar,tkBool,tkInt64,tkQWord,
+                 tkDynArray,tkInterfaceRaw,tkProcVar,}tkUString{,tkUChar,
+                 tkHelper,tkFile,tkClassRef,tkPointer}];
   FLink.OnLoadFromProperty:=@LinkLoadFromProperty;
   FLink.OnSaveToProperty:=@LinkSaveToProperty;
   FLink.OnEditorChanged:=@LinkEditorChanged;
