@@ -3876,6 +3876,23 @@ end;
 procedure TFpDebugDebugger.FDbgControllerCreateProcessEvent(var continue: boolean);
 var
   addr: TDBGPtrArray;
+
+  procedure CheckForSym(s: string);
+  var
+    Sym: TFpSymbol;
+    l: integer;
+  begin
+    Sym := FDbgController.CurrentProcess.SymbolTableInfo.FindProcSymbol(s);
+    if Sym <> nil then begin
+      l := Length(addr);
+      if IsTargetNotNil(Sym.Address) then begin
+        SetLength(addr, l+1);
+        addr[l] := Sym.Address.Address;
+      end;
+      Sym.ReleaseReference;
+    end;
+  end;
+
 begin
   // This will trigger setting the breakpoints,
   // may also trigger the evaluation of the callstack or disassembler.
@@ -3895,6 +3912,23 @@ begin
         addr:=nil;
         if FDbgController.CurrentProcess.DbgInfo.GetLineAddresses(FStartuRunToFile, FStartuRunToLine, addr, fsNext)
         then begin
+          &continue := true;
+          FDbgController.InitializeCommand(TDbgControllerRunToCmd.Create(FDbgController, addr));
+        end;
+      end;
+      if not &continue then
+        EnterPause(GetLocation);
+    end;
+    dcStepInto, dcStepOver: begin
+      &continue := False;
+      if FDbgController.CurrentProcess.SymbolTableInfo <> nil then begin
+        addr:=nil;
+        CheckForSym('PASCALMAIN');
+        CheckForSym('MAIN');
+        CheckForSym('$MAIN');
+        CheckForSym('_MAIN');
+        CheckForSym('MAIN_WRAPPER');
+        if Length(addr) > 0 then begin
           &continue := true;
           FDbgController.InitializeCommand(TDbgControllerRunToCmd.Create(FDbgController, addr));
         end;
@@ -4714,7 +4748,7 @@ function TFpDebugDebugger.GetCommands: TDBGCommands;
 begin
   Result := inherited GetCommands;
   if State in [dsStop, dsIdle] then
-    Result := Result - [dcStepInto, dcStepOver, dcStepOut, dcStepIntoInstr, dcStepOverInstr];
+    Result := Result - [dcStepOut, dcStepIntoInstr, dcStepOverInstr];
 end;
 
 procedure TFpDebugDebugger.LockCommandProcessing;
@@ -4744,7 +4778,7 @@ class function TFpDebugDebugger.SupportedCommandsFor(AState: TDBGState
 begin
   Result := inherited SupportedCommandsFor(AState);
   if AState = dsStop then
-    Result := Result - [dcStepInto, dcStepOver, dcStepOut, dcStepIntoInstr, dcStepOverInstr];
+    Result := Result - [dcStepOut, dcStepIntoInstr, dcStepOverInstr];
 end;
 
 class function TFpDebugDebugger.SupportedFeatures: TDBGFeatures;
