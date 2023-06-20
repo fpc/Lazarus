@@ -153,6 +153,10 @@ type
     function Equals(Other: TSynEditMouseAction; IgnoreCmd: Boolean = False): Boolean; reintroduce;
   published
     property Shift: TShiftState read FShift write SetShift                      default [];
+    (* ShiftMask:
+       Only ShiftStates that are SET in the mask will be compared with "Shift"
+       States not set in the ShiftMask will be ignored.
+    *)
     property ShiftMask: TShiftState read FShiftMask write SetShiftMask          default [];
     property Button: TSynMouseButton read FButton write SetButton               default mbXLeft;
     property ClickCount: TSynMAClickCount read FClickCount write SetClickCount  default ccSingle;

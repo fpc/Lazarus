@@ -356,6 +356,9 @@ type
     property Shift: TShiftState read FShift write SetShift;
     property Shift2: TShiftState read FShift2 write SetShift2;
     // Modifier keys, that should be ignored
+    (* ShiftMask:
+       ShiftStates that are SET in the mask will be ignored, and NOT compared with "Shift"
+    *)
     property ShiftMask: TShiftState read FShiftMask write FShiftMask;
     property ShiftMask2: TShiftState read FShiftMask2 write FShiftMask2;
   published
