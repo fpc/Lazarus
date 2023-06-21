@@ -20,9 +20,8 @@ unit CustomTimer;
 interface
 
 uses
-  Classes, SysUtils,
-  LCLStrConsts, InterfaceBase, CustApp;
-
+  Classes, SysUtils, LCLProc, LCLStrConsts, LCLType, InterfaceBase, CustApp;
+// Restored previous LCLType dependency for THandle
 type
 
   { TCustomTimer }
