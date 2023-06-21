@@ -119,6 +119,7 @@ begin
   cbShowModified.Caption:=lisShowOnlyModified;
   cbUseComments.Caption:=lisUseCommentsInCustomOptions;
   FEffectiveFilter:=#1; // Set an impossible value first, makes sure options are filtered.
+  ButtonPanel1.ShowBevel := False;
   FRenderedOnce := False;
   IdleConnected := True;
 end;
@@ -233,15 +234,30 @@ begin
 end;
 
 procedure TfrmAllCompilerOptions.RenderAndFilterOptions;
-const
-  LeftEdit = 120;
-  LeftDescrEdit = 250;
-  LeftDescrBoolean = 140;
-  LeftDescrGroup = 110;
 var
   Opt: TCompilerOpt;
   yLoc: Integer;
   Container: TCustomControl;
+
+  { Calculated Heights and Left positions considering Runtime PPI }
+  lEditHeight: integer;      // Edit + Dropdown lists
+  lCbHeight: integer;        // Checkboxes and labels
+  lLeftMargin,               // Leftmost position  of text
+  lIndentPixs,               // Nb of pixels to multiply by Indentation to
+                             // place left text
+  lLeftDescrGroup: integer;  // Nb of pixels where comments sould start
+
+  { Replace TCompilerOpt.CalcLeft to repsect screen PPI scaling }
+  function CalcLeft(aRefCntrl: TControl; aOpt: TCompilerOpt) : integer;
+  begin
+    if (aRefCntrl is TEdit) or (aRefCntrl is TComboBox) then
+      Result := aRefCntrl.Left + aRefCntrl.Width + lLeftMargin
+    else begin
+      Result := Container.Canvas.GetTextWidth(aOpt.Option) + aRefCntrl.Left + lCbHeight;
+      if Result < lLeftDescrGroup then
+        Result := lLeftDescrGroup;
+    end;
+  end;
 
   function MakeOptionCntrl(aCntrlClass: TControlClass; aCaption: string;
     aTopOffs: integer=0): TControl;
@@ -250,7 +266,8 @@ var
     Result := aCntrlClass.Create(Nil);
     Result.Parent := Container;
     Result.Top := yLoc+aTopOffs;
-    Result.Left := Opt.Indentation*4;
+    Result.Left := Opt.Indentation * lIndentPixs;
+    Result.Height := lCbHeight;
     Result.Caption := aCaption;
     Result.Tag := Opt.Id;
     FGeneratedControls.Add(Result);
@@ -263,8 +280,9 @@ var
     Result.Parent := Container;
     Result.AnchorSide[akTop].Control := aLbl;
     Result.AnchorSide[akTop].Side := asrCenter;
-    Result.Left := LeftEdit;        // Now use Left instead of anchors
-    Result.Width := 125;
+    Result.Left := lLeftDescrGroup;       // Now use Left instead of anchors
+    Result.Width := 20 * lLeftMargin;
+    Result.Height := lEditHeight;
     Result.Anchors := [akLeft,akTop];
     Result.Tag := Opt.Id;
     FGeneratedControls.Add(Result);
@@ -280,7 +298,8 @@ var
     Lbl.Caption := Opt.Description;
     Lbl.AnchorSide[akTop].Control := aCntrl;
     Lbl.AnchorSide[akTop].Side := asrCenter;
-    Lbl.Left := aLeft;              // Now use Left instead of anchors
+    Lbl.Height := lCbHeight;
+    Lbl.Left := aLeft;
     Lbl.Anchors := [akLeft,akTop];
     Lbl.OnMouseWheel := @sbMouseWheel;
     FGeneratedControls.Add(Lbl);
@@ -299,7 +318,7 @@ var
         oeGroup, oeSet: begin                   // Label for group or set
           Cntrl := MakeOptionCntrl(TLabel, Opt.Option+Opt.Suffix);
           TLabel(Cntrl).OnMouseWheel := @sbMouseWheel;
-          MakeDescrLabel(Cntrl, Opt.CalcLeft(LeftDescrGroup, 7));
+          MakeDescrLabel(Cntrl, CalcLeft(Cntrl,Opt));
         end;
         oeBoolean: begin                        // CheckBox
           Cntrl := MakeOptionCntrl(TCheckBox, Opt.Option);
@@ -307,7 +326,7 @@ var
           TCheckBox(Cntrl).Checked := Opt.Value<>'';
           TCheckBox(Cntrl).OnMouseWheel := @sbMouseWheel;
           Cntrl.OnClick := @CheckBoxClick;
-          MakeDescrLabel(Cntrl, Opt.CalcLeft(LeftDescrBoolean, 11));
+          MakeDescrLabel(Cntrl, CalcLeft(Cntrl, Opt));
         end;
         oeSetElem: begin                        // Sub-item for set, CheckBox
           Cntrl := MakeOptionCntrl(TCheckBox, Opt.Option+Opt.Description);
@@ -317,18 +336,18 @@ var
           Cntrl.OnClick := @CheckBoxClick;
         end;
         oeNumber, oeText, oeSetNumber: begin    // Edit
-          Lbl := MakeOptionCntrl(TLabel, Opt.Option+Opt.Suffix, 3);
+          Lbl := MakeOptionCntrl(TLabel, Opt.Option+Opt.Suffix, lIndentPixs {3});
           TLabel(Lbl).OnMouseWheel := @sbMouseWheel;
           Cntrl := MakeEditCntrl(Lbl, TEdit);
           if Opt.EditKind <> oeText then
-            TEdit(Cntrl).Width := 80;
+            TEdit(Cntrl).Width := 16 * lLeftMargin ;
           TEdit(Cntrl).Text := Opt.Value;
           TEdit(Cntrl).OnChange := @EditChange;
           TEdit(Cntrl).OnMouseWheel := @sbMouseWheel;
-          MakeDescrLabel(Cntrl, LeftDescrEdit);
+          MakeDescrLabel(Cntrl, CalcLeft(Cntrl, nil));
         end;
         oeList: begin                           // ComboBox
-          Lbl := MakeOptionCntrl(TLabel, Opt.Option+Opt.Suffix, 3);
+          Lbl := MakeOptionCntrl(TLabel, Opt.Option+Opt.Suffix, lIndentPixs {3});
           TLabel(Lbl).OnMouseWheel := @sbMouseWheel;
           Cntrl := MakeEditCntrl(Lbl, TComboBox);
           cb := TComboBox(Cntrl);
@@ -337,7 +356,7 @@ var
             cb.Items.Assign(Opt.Choices);
           cb.Text := Opt.Value;
           cb.OnChange := @ComboChange;
-          MakeDescrLabel(Cntrl, LeftDescrEdit);
+          MakeDescrLabel(Cntrl, CalcLeft(Cntrl, nil));
         end
         else
           raise Exception.Create('TCompilerOptsRenderer.Render: Unknown EditKind.');
@@ -347,6 +366,17 @@ var
         RenderOneLevel(TCompilerOptGroup(Opt));  // Show other levels recursively
     end;
   end;
+       
+  { determine dimensions using height of existing controls }
+  procedure PickupLeftsAndHeights;
+  begin
+    lCbHeight := cbShowModified.Height;
+    lEditHeight := edOptionsFilter.Height;
+
+    lLeftMargin := lEditHeight div 4;
+    lIndentPixs := lEditHeight div 8;
+    lLeftDescrGroup := lLeftMargin * 16;
+  end;
 
 begin
   if (FEffectiveFilter = edOptionsFilter.Text)
@@ -354,6 +384,7 @@ begin
   Container := sbAllOptions;
   Container.Perform(CM_PARENTFONTCHANGED, 0, 0);
   Container.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TfrmAllCompilerOptions.RenderAndFilterOptions'){$ENDIF};
+  PickupLeftsAndHeights;
   try
     // First filter and set Visible flag.
     FOptionsReader.FilterOptions(UTF8LowerCase(edOptionsFilter.Text),

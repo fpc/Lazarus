@@ -53,10 +53,9 @@ object frmAllCompilerOptions: TfrmAllCompilerOptions
     ClientWidth = 622
     TabOrder = 2
     object edOptionsFilter: TEdit
-      AnchorSideTop.Side = asrBottom
       Left = 3
       Height = 24
-      Top = 3
+      Top = 6
       Width = 98
       OnChange = edOptionsFilterChange
       ParentShowHint = False
@@ -67,6 +66,7 @@ object frmAllCompilerOptions: TfrmAllCompilerOptions
       AnchorSideLeft.Control = edOptionsFilter
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = edOptionsFilter
+      AnchorSideTop.Side = asrCenter
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
       Left = 101
