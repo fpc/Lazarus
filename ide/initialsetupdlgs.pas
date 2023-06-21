@@ -758,19 +758,13 @@ begin
     lDirPath := EnvironmentOptions.GetParsedValue(eopLazarusDirectory, aPathFileName);
   lCurDirName := CleanAndExpandFilename(ExcludeTrailingBackSlash(lDirPath));
   lDirPath := GetValidDirectoryAndFilename(lCurDirName, {out} lDirName);
-  { ~bk
-  if lDirName = '' then begin
-     lDirName := ExtractFileName(lDirPath);
-     lDirPath := ExtractFilePath(lDirPath);
-  end;
-  }
   lDirPath := ExcludeTrailingBackSlash(lDirPath);
   DirDlg := TSelectDirectoryDialog.Create(nil);
   try
     DirDlg.Title := aTitle;
     DirDlg.InitialDir := lDirPath;
     DirDlg.FileName := lDirName;
-    DirDlg.Options := DirDlg.Options + [ofPathMustExist]; // ~bk, ofFileMustExist];
+    DirDlg.Options := DirDlg.Options + [ofExtensionDifferent, ofPathMustExist];
     if DirDlg.Execute then begin
       lDirName := CleanAndExpandFilename(DirDlg.FileName);
       if UpperCase(lCurDirName)<>UpperCase(lDirName) then

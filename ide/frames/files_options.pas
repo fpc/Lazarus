@@ -198,12 +198,12 @@ var
   OpenDialog: TSelectDirectoryDialog;
   lDirText : string;
   lExpandedName: string;
-  lDirName, lDirNameF: string;
+  lDirName, loDirNameF: string;
 begin
   OpenDialog := TSelectDirectoryDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
-    OpenDialog.Options := OpenDialog.Options+[ofPathMustExist];
+    OpenDialog.Options := OpenDialog.Options+[ofExtensionDifferent, ofPathMustExist];
     // set title
     if Sender = LazarusDirButton then begin
       OpenDialog.Title := lisChooseLazarusSourceDirectory;
@@ -226,16 +226,10 @@ begin
       lDirName := EnvironmentOptions.GetParsedValue(eopLazarusDirectory, lDirText);
 
     lExpandedName := CleanAndExpandDirectory(lDirName);
-    lDirName := GetValidDirectoryAndFilename(lDirName, lDirNameF);
-    {
-    if lDirNameF = '' then begin
-      lDirName := ExtractFilePath(lDirName);
-      lDirNameF := ExtractFileName(lDirName);
-    end;
-    }
+    lDirName := GetValidDirectoryAndFilename(lDirName, loDirNameF);
 
     OpenDialog.InitialDir := IncludeTrailingBackslash(lDirName);
-    OpenDialog.FileName := lDirNameF;
+    OpenDialog.FileName := loDirNameF;
 
     if OpenDialog.Execute then begin
       lDirName := CleanAndExpandDirectory(OpenDialog.Filename);
