@@ -5,7 +5,7 @@ unit SynPopupMenu;
 interface
 
 uses
-  Classes, SysUtils, Menus, SynEdit;
+  Classes, SysUtils, Menus, SynEdit, SynEditStrConst;
 
 type
   TSynDefaultPopupMenu = (dpmDisabled, dpmBefore, dpmAfter);
@@ -30,15 +30,6 @@ implementation
 type
   TMenuEntry = (meNone, meUndo, meRedo, meCut, meCopy, mePaste,
                 meDelete, meSelectAll);
-
-resourcestring
-  SYNS_Undo = '&Undo';
-  SYNS_Redo = '&Redo';
-  SYNS_Cut = 'C&ut';
-  SYNS_Copy = '&Copy';
-  SYNS_Paste = '&Paste';
-  SYNS_Delete = '&Delete';
-  SYNS_SelectAll = 'Select &all';
 
 { TSynPopupMenu }
 

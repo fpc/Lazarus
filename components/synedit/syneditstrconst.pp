@@ -401,6 +401,16 @@ resourcestring
   sCannotPlay = 'Cannot playback macro when recording';
   sCannotPause = 'Can only pause when recording';
   sCannotResume = 'Can only resume when paused';
+
+  //SynPopupMenu
+  SYNS_Undo = '&Undo';
+  SYNS_Redo = '&Redo';
+  SYNS_Cut = 'C&ut';
+  SYNS_Copy = '&Copy';
+  SYNS_Paste = '&Paste';
+  SYNS_Delete = '&Delete';
+  SYNS_SelectAll = 'Select &all';
+
 implementation
 
 end.
