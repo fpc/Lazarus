@@ -104,7 +104,7 @@ type
           
     class procedure ConstraintsChange(const AWinControl: TWinControl); override;
     class function  CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+      const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure DefaultWndHandler(const AWinControl: TWinControl; var AMessage); override;
     class procedure Invalidate(const AWinControl: TWinControl); override;
@@ -120,7 +120,7 @@ type
   TGtk3WSCustomControl = class(TGtk3WSWinControl)
   published
     class function CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+      const AParams: TCreateParams): TLCLHandle; override;
   end;
 
 
@@ -145,7 +145,7 @@ begin
 end;
 
 class function TGtk3WSWinControl.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
   // For now default to the old creation routines
   {$IFDEF GTK3DEBUGCORE}
@@ -553,12 +553,12 @@ end;
 { TGtk3WSCustomControl }
 
 class function TGtk3WSCustomControl.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   Gtk3CustomControl: TGtk3CustomControl;
 begin
   Gtk3CustomControl := TGtk3CustomControl.Create(AWinControl, AParams);
-  Result := TLCLIntfHandle(Gtk3CustomControl);
+  Result := TLCLHandle(Gtk3CustomControl);
 end;
 
 

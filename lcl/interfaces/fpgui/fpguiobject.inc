@@ -138,7 +138,7 @@ end;
 
   Creates a new timer and sets the callback event.
  ------------------------------------------------------------------------------}
-function TFpGuiWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle;
+function TFpGuiWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): TLCLHandle;
 var
   Timer: TFPGUITimer;
 begin
@@ -154,7 +154,7 @@ end;
 
   Destroys a timer.
  ------------------------------------------------------------------------------}
-function TFpGuiWidgetSet.DestroyTimer(TimerHandle: THandle): boolean;
+function TFpGuiWidgetSet.DestroyTimer(TimerHandle: TLCLHandle): boolean;
 var
   Timer: TFPGUITimer absolute TimerHandle;
 begin

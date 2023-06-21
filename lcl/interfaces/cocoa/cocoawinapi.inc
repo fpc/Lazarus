@@ -1771,7 +1771,7 @@ begin
     Result := False;
 end;
 
-function TCocoaWidgetSet.GetStockObject(Value: Integer): THandle;
+function TCocoaWidgetSet.GetStockObject(Value: Integer): TLCLHandle;
 begin
   Result := 0;
 

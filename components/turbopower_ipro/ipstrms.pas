@@ -42,8 +42,6 @@ interface
 
 uses
   SysUtils, Classes,
-  // LCL
-  LCLType,
   // LazUtils
   FPCAdds, LazFileUtils, IntegerList,
   IpUtils,
@@ -1550,7 +1548,7 @@ begin
   inherited Create;
   dfsMakeTempFile(aPath);
 
-  FHandle := THandle(FileOpen(FFileName, fmShareDenyNone + fmOpenReadWrite));
+  FHandle := FileOpen(FFileName, fmShareDenyNone + fmOpenReadWrite);
   if (Handle = IpFileOpenFailed) then
     RaiseLastOSError;
 end;
@@ -1615,7 +1613,7 @@ begin
   {open up the same file, but with its new name}
   FFileName := NewFullName;
   try
-    FHandle := THandle(FileOpen(FFileName, fmShareDenyNone + fmOpenRead));
+    FHandle := FileOpen(FFileName, fmShareDenyNone + fmOpenRead);
   except
     { do nothing }
   end;
@@ -1639,7 +1637,7 @@ begin
   {open up the same file, but with its new name}
   FFileName := aNewName;
   try
-    FHandle := THandle(FileOpen(FFileName, fmShareDenyNone + fmOpenRead));
+    FHandle := FileOpen(FFileName, fmShareDenyNone + fmOpenRead);
   except
     { do nothing }
   end;

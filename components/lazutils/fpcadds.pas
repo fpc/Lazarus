@@ -21,7 +21,6 @@ type
   TStreamSeekType = int64;
   TMemStreamSeekType = PtrInt;
   TCompareMemSize = PtrUInt;
-  PHandle = ^THandle;
 
 function GetCompiledTargetOS: string;
 function GetCompiledTargetCPU: string;

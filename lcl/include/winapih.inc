@@ -55,7 +55,7 @@ function CreateDIBitmap(DC: HDC; var InfoHeader: TBitmapInfoHeader;
   dwUsage: DWORD; InitBits: PChar; var InitInfo: TBitmapInfo;
   wUsage: UINT): HBITMAP; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateDIBSection(DC: HDC; const BitmapInfo: tagBitmapInfo; Usage: UINT;
-  var Bits: Pointer; SectionHandle: THandle; Offset: DWORD): HBITMAP; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+  var Bits: Pointer; SectionHandle: TLCLHandle; Offset: DWORD): HBITMAP; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateEllipticRgn(X1, Y1, X2, Y2: Integer): HRGN; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function CreateEllipticRgnIndirect --> independent
 //function CreateFont --> independent
@@ -142,7 +142,7 @@ function GetROP2(DC: HDC): integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetScrollInfo(Handle: HWND; SBStyle: Integer; var ScrollInfo: TScrollInfo): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function GetScrollPos --> independent
 //function GetScrollRange --> independent
-function GetStockObject(Value: Integer): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function GetStockObject(Value: Integer): TLCLHandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetSysColor(nIndex: Integer): DWORD; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetSysColorBrush(nIndex: Integer): HBrush; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetSystemPaletteEntries(DC: HDC; StartIndex, NumEntries: UINT;
@@ -186,9 +186,9 @@ function IsZoomed(handle: HWND): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF
 
 procedure LeaveCriticalSection(var CritSection: TCriticalSection); {$IFDEF IF_BASE_MEMBER}virtual;{$ELSE}overload;{$ENDIF}
 function LineTo(DC: HDC; X, Y: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function LoadBitmap(hInstance: THandle; lpBitmapName: PChar): HBitmap; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function LoadCursor(hInstance: THandle; lpCursorName: PChar): HCursor; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function LoadIcon(hInstance: THandle; lpIconName: PChar): HIcon; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function LoadBitmap(hInstance: TLCLHandle; lpBitmapName: PChar): HBitmap; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function LoadCursor(hInstance: TLCLHandle; lpCursorName: PChar): HCursor; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function LoadIcon(hInstance: TLCLHandle; lpIconName: PChar): HIcon; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function LPtoDP(DC: HDC; var Points; Count: Integer): BOOL; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 //function MakeLong --> independent
@@ -223,7 +223,7 @@ function RectVisible(DC: HDC; const ARect: TRect): Boolean; {$IFDEF IF_BASE_MEMB
 function RedrawWindow(Wnd: HWND; lprcUpdate: PRECT; hrgnUpdate: HRGN; flags: UINT): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ReleaseCapture : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ReleaseDC(hWnd: HWND; DC: HDC): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function RemoveProp(Handle: hwnd; Str: PChar): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function RemoveProp(Handle: HWND; Str: PChar): TLCLHandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 

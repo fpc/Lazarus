@@ -55,7 +55,7 @@ type
   private
   protected
   published
-    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;
@@ -66,7 +66,7 @@ type
   private
   protected
   published
-    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;
 
@@ -86,7 +86,7 @@ type
 
   TMuiWSSelectDirectoryDialog = class(TWSSelectDirectoryDialog)
   published
-    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;
 
@@ -94,7 +94,7 @@ type
 
   TMuiWSColorDialog = class(TWSColorDialog)
   published
-    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;
 
@@ -108,7 +108,7 @@ type
 
   TMuiWSFontDialog = class(TWSFontDialog)
   published
-    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;
 
@@ -125,7 +125,7 @@ implementation
 
   Dummy handle creator. On Qt we don´t need a Handle for common dialogs
  ------------------------------------------------------------------------------}
-class function TMuiWSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
+class function TMuiWSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle;
 begin
   Result := 0;
 end;
@@ -150,12 +150,12 @@ end;
 
 { TMuiWSFileDialog }
 
-class function TMuiWSFileDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
+class function TMuiWSFileDialog.CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle;
 var
   FileDialog: PFileRequester;
 begin
   FileDialog := PFileRequester(AllocFileRequest());
-  Result := THandle(FileDialog);
+  Result := TLCLHandle(FileDialog);
 end;
 
 //procedure IntuiMsgFunc(iMsg: PIntuiMessage; Req: PFileRequester); cdecl;
@@ -293,7 +293,7 @@ end;
 
 { TMuiWSSelectDirectoryDialog }
 
-class function TMuiWSSelectDirectoryDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
+class function TMuiWSSelectDirectoryDialog.CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle;
 begin
   Result := 1;
 end;
@@ -309,7 +309,7 @@ end;
 
 { TMuiWSColorDialog }
 
-class function TMuiWSColorDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
+class function TMuiWSColorDialog.CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle;
 begin
   Result := 1;
 end;
@@ -439,12 +439,12 @@ end;
 { TMuiWSFontDialog }
 
 class function TMuiWSFontDialog.CreateHandle(const ACommonDialog: TCommonDialog
-  ): THandle;
+  ): TLCLHandle;
 var
   MuiDialog: PFontRequester;
 begin
   MuiDialog := PFontRequester(AllocAslRequest(ASL_FontRequest, nil));
-  Result := THandle(MuiDialog);
+  Result := TLCLHandle(MuiDialog);
 end;
 
 {------------------------------------------------------------------------------

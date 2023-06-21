@@ -42,7 +42,7 @@ type
 
   TCocoaWSScrollBar = class(TWSScrollBar)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure SetKind(const AScrollBar: TCustomScrollBar; const AIsHorizontal: Boolean); override;
     class procedure SetParams(const AScrollBar: TCustomScrollBar); override;
   end;
@@ -51,7 +51,7 @@ type
 
   TCocoaWSCustomGroupBox = class(TWSCustomGroupBox)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
@@ -92,7 +92,7 @@ type
     class function GetObjectItemIndex(const AObject: TObject): integer;
     class function GetObjectAutoComplete(const AObject: TObject): boolean;
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
 
     class function GetDroppedDown(const ACustomComboBox: TCustomComboBox): Boolean; override;
@@ -130,7 +130,7 @@ type
   published
     class procedure DragStart(const ACustomListBox: TCustomListBox); override;
 
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; override;
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; override;
@@ -155,7 +155,7 @@ type
   public
     class function GetTextField(AWinControl: TWinControl): TCocoaTextField;
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
 
     // WSControl functions
     class procedure SetColor(const AWinControl: TWinControl); override;
@@ -211,7 +211,7 @@ type
     class function GetTextView(AWinControl: TWinControl): TCocoaTextView;
     class function GetScrollView(AWinControl: TWinControl): TCocoaScrollView;
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
 
     // WSControl functions
     class procedure SetColor(const AWinControl: TWinControl); override;
@@ -278,7 +278,7 @@ type
 
   TCocoaWSButton = class(TWSButton)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
     class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
@@ -298,7 +298,7 @@ type
 
   TCocoaWSCustomCheckBox = class(TWSCustomCheckBox)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class function RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
     //
@@ -312,7 +312,7 @@ type
 
   TCocoaWSToggleBox = class(TWSToggleBox)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TLCLRadioButtonCallback }
@@ -326,7 +326,7 @@ type
 
   TCocoaWSRadioButton = class(TWSRadioButton)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
   end;
 
@@ -336,7 +336,7 @@ type
   private
   protected
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
 //    class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;
   end;
 
@@ -796,7 +796,7 @@ end;
   Creates new button control in Cocoa interface with the specified parameters
  ------------------------------------------------------------------------------}
 class function TCocoaWSButton.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   btn: TCocoaButton;
 begin
@@ -804,7 +804,7 @@ begin
   btn.smallHeight := PUSHBTN_SMALL_HEIGHT;
   btn.miniHeight := PUSHBTN_MINI_HEIGHT;
   btn.adjustFontToControlSize:=true;
-  Result := TLCLIntfHandle(btn);
+  Result := TLCLHandle(btn);
 end;
 
 {------------------------------------------------------------------------------
@@ -869,7 +869,7 @@ end;
   Creates new check box in Cocoa interface with the specified parameters
  ------------------------------------------------------------------------------}
 class function TCocoaWSCustomCheckBox.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   btn: TCocoaButton;
   cb: IButtonCallback;
@@ -884,7 +884,7 @@ begin
     NSButton(btn).setAllowsMixedState(true);
     {$endif}
     ;
-  Result := TLCLIntfHandle(btn);
+  Result := TLCLHandle(btn);
 end;
 
 {------------------------------------------------------------------------------
@@ -962,12 +962,12 @@ end;
 { TCocoaWSRadioButton }
 
 class function TCocoaWSRadioButton.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   btn: TCocoaButton;
 begin
   btn := AllocButton(AWinControl, TLCLRadioButtonCallback, AParams, 0, NSRadioButton);
-  Result := TLCLIntfHandle(btn);
+  Result := TLCLHandle(btn);
 end;
 
 class procedure TCocoaWSRadioButton.SetState(
@@ -985,7 +985,7 @@ end;
 { TCocoaWSCustomStaticText }
 
 class function TCocoaWSCustomStaticText.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   field: NSTextField;
 begin
@@ -1001,7 +1001,7 @@ begin
   field.setEditable(False);
   field.setSelectable(False);
   {$endif}
-  Result:=TLCLIntfHandle(field);
+  Result:=TLCLHandle(field);
 end;
 
 { TCocoaWSCustomEdit }
@@ -1022,7 +1022,7 @@ begin
   Result := TCocoaTextField(AWinControl.Handle);
 end;
 
-class function TCocoaWSCustomEdit.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function TCocoaWSCustomEdit.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   field : NSTextField;
   cell  : NSTextFieldCell;
@@ -1040,7 +1040,7 @@ begin
   TextFieldSetBorderStyle(field, TCustomEdit(AWinControl).BorderStyle);
   UpdateFocusRing(field, TCustomEdit(AWinControl).BorderStyle);
 
-  Result:=TLCLIntfHandle(field);
+  Result:=TLCLHandle(field);
 end;
 
 class procedure TCocoaWSCustomEdit.SetColor(const AWinControl: TWinControl);
@@ -1543,7 +1543,7 @@ begin
 end;
 
 class function TCocoaWSCustomMemo.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams):TLCLIntfHandle;
+  const AParams: TCreateParams):TLCLHandle;
 var
   txt: TCocoaTextView;
   ns: NSString;
@@ -1620,7 +1620,7 @@ begin
   txt.wantReturns := TCustomMemo(AWinControl).WantReturns;
   txt.callback.SetTabSuppress(not TCustomMemo(AWinControl).WantTabs);
   txt.release;
-  Result := TLCLIntfHandle(scr);
+  Result := TLCLHandle(scr);
 end;
 
 class procedure TCocoaWSCustomMemo.SetColor(const AWinControl: TWinControl);
@@ -1870,7 +1870,7 @@ begin
 end;
 
 class function TCocoaWSCustomComboBox.CreateHandle(const AWinControl:TWinControl;
-  const AParams:TCreateParams):TLCLIntfHandle;
+  const AParams:TCreateParams):TLCLHandle;
 var
   cmb: TCocoaComboBox;
   rocmb: TCocoaReadOnlyComboBox;
@@ -1885,7 +1885,7 @@ begin
     rocmb.setAction(objcselector('comboboxAction:'));
     rocmb.selectItemAtIndex(rocmb.lastSelectedItemIndex);
     rocmb.callback:=TLCLComboboxCallback.Create(rocmb, AWinControl);
-    Result:=TLCLIntfHandle(rocmb);
+    Result:=TLCLHandle(rocmb);
     rocmb.isOwnerDrawn := ComboBoxIsOwnerDrawn(TCustomComboBox(AWinControl).Style);
     rocmb.isOwnerMeasure := ComboBoxIsVariable(TCustomComboBox(AWinControl).Style);
   end
@@ -1906,7 +1906,7 @@ begin
     // also, Win32 doesn't suppot borderstyle for TComboBox at all.
     // to be tested and considered
     //ComboBoxSetBorderStyle(cmb, TCustomComboBoxAccess(AWinControl).BorderStyle);
-    Result:=TLCLIntfHandle(cmb);
+    Result:=TLCLHandle(cmb);
   end;
   //todo: 26 pixels is the height of 'normal' combobox. The value is taken from the Interface Builder!
   //      use the correct way to set the size constraints
@@ -2180,7 +2180,7 @@ end;
 { TCocoaWSToggleBox }
 
 class function TCocoaWSToggleBox.CreateHandle(const AWinControl:TWinControl;
-  const AParams:TCreateParams):TLCLIntfHandle;
+  const AParams:TCreateParams):TLCLHandle;
 var
   btn: NSButton;
   cl: NSButtonCell;
@@ -2188,13 +2188,13 @@ begin
   btn := AllocButton(AWinControl, TLCLCheckBoxCallback, AParams, CocoaToggleBezel, CocoaToggleType);
   cl := NSButtonCell(NSButton(btn).cell);
   cl.setShowsStateBy(cl.showsStateBy or NSContentsCellMask);
-  Result := TLCLIntfHandle(btn);
+  Result := TLCLHandle(btn);
 end;
 
 { TCocoaWSScrollBar }
 
 class function TCocoaWSScrollBar.CreateHandle(const AWinControl:TWinControl;
-  const AParams:TCreateParams):TLCLIntfHandle;
+  const AParams:TCreateParams):TLCLHandle;
 var
   scr : TCocoaScrollBar;
   prm : TCreateParams;
@@ -2227,7 +2227,7 @@ begin
   if scr.largeInc=0 then scr.largeInc:=1;
   if scr.smallInc=0 then scr.smallInc:=1;
 
-  Result:=TLCLIntfHandle(scr);
+  Result:=TLCLHandle(scr);
 
   scr.lclSetFrame( Bounds(AParams.X, AParams.Y, AParams.Width, AParams.Height));
 end;
@@ -2260,7 +2260,7 @@ end;
 { TCocoaWSCustomGroupBox }
 
 class function TCocoaWSCustomGroupBox.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   box: TCocoaGroupBox;
   cap: NSString;
@@ -2285,7 +2285,7 @@ begin
     lGroupBoxContents.autorelease;
     box.setContentView(lGroupBoxContents);
   end;
-  Result := TLCLIntfHandle(box);
+  Result := TLCLHandle(box);
 end;
 
 class function TCocoaWSCustomGroupBox.GetText(const AWinControl: TWinControl; var AText: String): Boolean;
@@ -2361,7 +2361,7 @@ begin
 end;
 
 class function TCocoaWSCustomListBox.CreateHandle(const AWinControl:TWinControl;
-  const AParams:TCreateParams):TLCLIntfHandle;
+  const AParams:TCreateParams):TLCLHandle;
 var
   list    : TCocoaTableListView;
   scroll  : TCocoaScrollView;
@@ -2406,7 +2406,7 @@ begin
   ScrollViewSetBorderStyle(scroll, lclListBox.BorderStyle);
   UpdateFocusRing(list, lclListBox.BorderStyle);
 
-  Result := TLCLIntfHandle(scroll);
+  Result := TLCLHandle(scroll);
 end;
 
 class function TCocoaWSCustomListBox.GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer;

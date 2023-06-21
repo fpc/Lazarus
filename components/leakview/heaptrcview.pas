@@ -358,7 +358,7 @@ begin
   if not Assigned(nd) then Exit;
   if nd.Parent = nil then Exit;
 
-  idx := Integer({%H-}PtrInt(nd.Data));
+  idx := Integer({%H-}PtrUInt(nd.Data));
   trace := TStackTrace(nd.Parent.Data);
   if not Assigned(trace) or (idx >= trace.Count) then Exit;
 

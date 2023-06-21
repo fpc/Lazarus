@@ -156,7 +156,7 @@ type
   TCocoaWSWinControl = class(TWSWinControl)
   published
     class function CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+      const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class function GetCanvasScaleFactor(const AControl: TControl): Double; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
@@ -181,7 +181,7 @@ type
   TCocoaWSCustomControl = class(TWSCustomControl)
   published
     class function CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+      const AParams: TCreateParams): TLCLHandle; override;
     class procedure SetBorderStyle(const AWinControl: TWinControl;
       const ABorderStyle: TBorderStyle); override;
   end;
@@ -1100,7 +1100,7 @@ begin
     NSRightMouseDown,
     NSOtherMouseDown:
     begin
-      Msg.Msg := CheckMouseButtonDownUp(TLCLIntfHandle(Owner),FTarget,LastMouse,
+      Msg.Msg := CheckMouseButtonDownUp(TLCLHandle(Owner),FTarget,LastMouse,
         FTarget.ClientToScreen(Point(Msg.XPos, Msg.YPos)),MButton+1,True);
 
       case LastMouse.ClickCount of
@@ -1125,7 +1125,7 @@ begin
     NSRightMouseUp,
     NSOtherMouseUp:
     begin
-      Msg.Msg := CheckMouseButtonDownUp(TLCLIntfHandle(Owner),FTarget,LastMouse,
+      Msg.Msg := CheckMouseButtonDownUp(TLCLHandle(Owner),FTarget,LastMouse,
         FTarget.ClientToScreen(Point(Msg.XPos, Msg.YPos)),MButton+1,False);
       case LastMouse.ClickCount of
         2: Msg.Keys := msg.Keys or MK_DOUBLECLICK;
@@ -1664,7 +1664,7 @@ end;
 { TCocoaWSWinControl }
 
 class function TCocoaWSWinControl.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
   Result := TCocoaWSCustomControl.CreateHandle(AWinControl, AParams);
 end;
@@ -2038,7 +2038,7 @@ begin
 end;
 
 class function TCocoaWSCustomControl.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   ctrl : TCocoaCustomControl;
   sl   : TCocoaManualScrollView;
@@ -2076,7 +2076,7 @@ begin
 
   ScrollViewSetBorderStyle(hs, TCustomControl(AWinControl).BorderStyle );
 
-  Result := TLCLIntfHandle(hs);
+  Result := TLCLHandle(hs);
 end;
 
 class procedure TCocoaWSCustomControl.SetBorderStyle(

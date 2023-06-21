@@ -609,7 +609,7 @@ begin
   Result := FReference;
 end;
 
-function TCustomImageListResolution.GetReferenceHandle: THandle;
+function TCustomImageListResolution.GetReferenceHandle: TLCLHandle;
 begin
   Result := FReference.Handle;
 end;
@@ -1388,7 +1388,8 @@ begin
   Bmp.Free;
 end;
 
-function TCustomImageList.AddResourceName(Instance: THandle; const ResourceName: string; MaskColor: TColor): integer;
+function TCustomImageList.AddResourceName(Instance: TLCLHandle; const ResourceName: string;
+  MaskColor: TColor): integer;
 var
   Grp: TGraphic;
   Bmp: TCustomBitmap absolute Grp;

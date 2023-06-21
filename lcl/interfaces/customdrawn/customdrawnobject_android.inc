@@ -1131,7 +1131,7 @@ begin
   DebugLn(':<ShowListViewDialog END');
 end;
 
-function TCDWidgetSet.GetAppHandle: THandle;
+function TCDWidgetSet.GetAppHandle: TLCLHandle;
 begin
   Result := 0;
 end;
@@ -1425,14 +1425,14 @@ end;
   Design: A timer which calls TimerCallBackProc, is created.
     The TimerCallBackProc calls the TimerFunc.
  ------------------------------------------------------------------------------}
-function TCDWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc) : THandle;
+function TCDWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc) : TLCLHandle;
 var
   lTimer: TCDTimer;
   lTimerObject, lGlobalTimerObject: JObject;
 begin
   lTimer := TCDTimer.Create;
 
-  Result := THandle(lTimer);
+  Result := TLCLHandle(lTimer);
 
   lTimer.Interval := Interval;
   lTimer.TimerFunc := TimerFunc;
@@ -1459,7 +1459,7 @@ end;
   Params: TimerHandle
   Returns:
  ------------------------------------------------------------------------------}
-function TCDWidgetSet.DestroyTimer(TimerHandle: THandle) : boolean;
+function TCDWidgetSet.DestroyTimer(TimerHandle: TLCLHandle) : boolean;
 var
   lTimer: TCDTimer;
 begin

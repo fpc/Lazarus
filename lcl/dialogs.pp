@@ -86,7 +86,7 @@ type
   TCommonDialog = class(TLCLComponent)
   private
     FAttachTo: TCustomForm;
-    FHandle : THandle;
+    FHandle : TLCLHandle;
     FHeight: Integer;
     FOnDialogResult: TDialogResultEvent;
     FWidth: Integer;
@@ -100,7 +100,7 @@ type
     FDoCloseCalled: Boolean;
     FClosing: Boolean;
     FWSEventCapabilities :TCDWSEventCapabilities;
-    procedure SetHandle(const AValue: THandle);
+    procedure SetHandle(const AValue: TLCLHandle);
     function IsTitleStored: Boolean;
   protected
     class procedure WSRegisterClass; override;
@@ -117,7 +117,7 @@ type
     FCompStyle : LongInt;
     constructor Create(TheOwner: TComponent); override;
     function Execute: Boolean; virtual;
-    property Handle: THandle read FHandle write SetHandle;
+    property Handle: TLCLHandle read FHandle write SetHandle;
     property UserChoice: Integer read FUserChoice write FUserChoice;
     procedure Close; virtual;
     procedure DoShow; virtual;

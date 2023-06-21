@@ -39,7 +39,7 @@ type
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
     class procedure SetSizes(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
-    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
   end;
@@ -50,7 +50,7 @@ type
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
-    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
   end;
 
   { TGtkWSOpenDialog }
@@ -61,7 +61,7 @@ type
     class procedure CreateOpenDialogHistory(OpenDialog: TOpenDialog; SelWidget: PGtkWidget); virtual;
     class procedure CreatePreviewDialogControl(PreviewDialog: TPreviewFileDialog; SelWidget: PGtkWidget); virtual;
   published
-    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
   end;
 
   { TGtkWSSaveDialog }
@@ -82,7 +82,7 @@ type
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
-    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
   end;
 
   { TGtkWSColorButton }
@@ -97,7 +97,7 @@ type
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
-    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
   end;
 
 // forward declarations
@@ -840,7 +840,7 @@ begin
     gtk_window_set_default_size(PGtkWindow(AGtkWidget), NewWidth, NewHeight);
 end;
 
-class function TGtkWSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
+class function TGtkWSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle;
 begin
   Result := 0;
 end;
@@ -863,13 +863,13 @@ begin
     'clicked', gtk_signal_func(@gtkDialogCancelclickedCB), AWidgetInfo^.LCLObject);
 end;
 
-class function TGtkWSColorDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
+class function TGtkWSColorDialog.CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle;
 var
   Widget: PGtkWidget;
   WidgetInfo: PWidgetInfo;
 begin
   Widget := gtk_color_selection_dialog_new(PChar(ACommonDialog.Title));
-  Result := THandle(PtrUInt(Widget));
+  Result := TLCLHandle(Widget);
   WidgetInfo := CreateWidgetInfo(Widget);
   WidgetInfo^.LCLObject := ACommonDialog;
   TGtkWSCommonDialog.SetSizes(Widget, WidgetInfo);
@@ -898,7 +898,7 @@ begin
   {$ENDIF}
 end;
 
-class function TGtkWSFileDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
+class function TGtkWSFileDialog.CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle;
 var
   Widget: PGtkWidget;
   WidgetInfo: PWidgetInfo;
@@ -906,7 +906,7 @@ begin
   // for: csFileDialog, csOpenFileDialog, csSaveFileDialog, csSelectDirectoryDialog, csPreviewFileDialog
   Widget := gtk_file_selection_new(PChar(ACommonDialog.Title));
 
-  Result := THandle(PtrUInt(Widget));
+  Result := TLCLHandle(Widget);
   WidgetInfo := CreateWidgetInfo(Widget);
   WidgetInfo^.LCLObject := ACommonDialog;
   TGtkWSCommonDialog.SetSizes(Widget, WidgetInfo);
@@ -1126,7 +1126,7 @@ begin
   gtk_object_set_data(PGtkObject(SelWidget), 'LCLHistoryList', HistoryList);
 end;
 
-class function TGtkWSOpenDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
+class function TGtkWSOpenDialog.CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle;
 var
   SelWidget: PGtkWidget;
   OpenDialog: TOpenDialog absolute ACommonDialog;
@@ -1234,7 +1234,7 @@ begin
     'clicked', gtk_signal_func(@gtkDialogApplyclickedCB), AWidgetInfo^.LCLObject);
 end;
 
-class function TGtkWSFontDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
+class function TGtkWSFontDialog.CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle;
 {$IFDEF GTK1}
 const
   FixedFilter: array [0..2] of PChar = ( 'c', 'm', nil );
@@ -1308,7 +1308,7 @@ begin
                                        nil, nil, nil, nil, SpacingFilter, nil);
   {$ENDIF}
 
-  Result := THandle(PtrUInt(Widget));
+  Result := TLCLHandle(Widget);
   WidgetInfo := CreateWidgetInfo(Widget);
   WidgetInfo^.LCLObject := ACommonDialog;
   TGtkWSCommonDialog.SetSizes(Widget, WidgetInfo);

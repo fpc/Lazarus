@@ -196,7 +196,6 @@ type
     destructor Destroy; override;
     function FindPictureFormatID: TClipboardFormat;
     function FindFormatID(const FormatName: string): TClipboardFormat;
-    //function GetAsHandle(Format: integer): THandle;
     function GetAsHtml(ExtractFragmentOnly: Boolean): String;
     function GetComponent(Owner, Parent: TComponent): TComponent;
     procedure GetComponent(var RootComponent: TComponent;
@@ -216,7 +215,6 @@ type
     function HasFormatName(const FormatName: string): Boolean;
     function HasPictureFormat: boolean;
     procedure Open;
-    //procedure SetAsHandle(Format: integer; Value: THandle);
     procedure SetAsHtml(Html: String);
     procedure SetAsHtml(Html: String; const PlainText: String);
     function SetComponent(Component: TComponent): Boolean;

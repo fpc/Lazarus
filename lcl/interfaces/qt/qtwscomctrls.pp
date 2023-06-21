@@ -40,7 +40,7 @@ type
     class procedure UpdateTabFontColor(APage: TCustomPage; AFont: TFont);
   published
     class function CreateHandle(const AWinControl: TWinControl;
-          const AParams: TCreateParams): TLCLIntfHandle; override;
+          const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
@@ -51,7 +51,7 @@ type
   TQtWSCustomTabControl = class(TWSCustomTabControl)
   published
     class function  CreateHandle(const AWinControl: TWinControl;
-          const AParams: TCreateParams): TLCLIntfHandle; override;
+          const AParams: TCreateParams): TLCLHandle; override;
     class function GetDefaultClientRect(const AWinControl: TWinControl;
              const {%H-}aLeft, {%H-}aTop, aWidth, aHeight: integer; var aClientRect: TRect
              ): boolean; override;
@@ -85,7 +85,7 @@ type
     class procedure ClearPanels(const Widget: TQtStatusBar);
     class procedure RecreatePanels(const AStatusBar: TStatusBar; const Widget: TQtStatusBar);
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
@@ -115,7 +115,7 @@ type
       out AImgListRes: TScaledImageListResolution);
   published
     class function CreateHandle(const AWinControl: TWinControl;
-     const AParams: TCreateParams): TLCLIntfHandle; override;
+     const AParams: TCreateParams): TLCLHandle; override;
     class procedure ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); override;
     class procedure ColumnInsert(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn); override;
     class function  ColumnGetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn): Integer; override;
@@ -217,7 +217,7 @@ type
     class procedure SetRangeStyle(AProgressBar: TQtProgressBar;
       AStyle: TProgressBarStyle; AMin, AMax: Integer; const AIsDesign: Boolean);
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure ApplyChanges(const AProgressBar: TCustomProgressBar); override;
     class procedure SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer); override;
     class procedure SetStyle(const AProgressBar: TCustomProgressBar; const NewStyle: TProgressBarStyle); override;
@@ -245,14 +245,14 @@ type
 
   TQtWSToolBar = class(TWSToolBar)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TQtWSTrackBar }
 
   TQtWSTrackBar = class(TWSTrackBar)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); override;
     class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); override;
@@ -306,7 +306,7 @@ const
 
 { TQtWSToolBar }
 
-class function TQtWSToolBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function TQtWSToolBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   QtToolBar: TQtCustomControl;
 begin
@@ -319,19 +319,19 @@ begin
   QtToolBar.viewportNeeded;
   QtToolBar.setFocusPolicy(QtTabFocus);
   QtToolBar.AttachEvents;
-  Result := TLCLIntfHandle(QtToolBar);
+  Result := TLCLHandle(QtToolBar);
 end;
 
 { TQtWSTrackBar }
 
-class function TQtWSTrackBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function TQtWSTrackBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   QtTrackBar: TQtTrackBar;
 begin
   QtTrackBar := TQtTrackBar.Create(AWinControl, AParams);
   QtTrackBar.AttachEvents;
 
-  Result := TLCLIntfHandle(QtTrackBar);
+  Result := TLCLHandle(QtTrackBar);
 end;
 
 function TrackBarReversed(const ATrackBar: TCustomTrackBar;
@@ -463,13 +463,13 @@ begin
     AProgressBar.setRange(0, Integer(AIsDesign));
 end;
 
-class function TQtWSProgressBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function TQtWSProgressBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   QtProgressBar: TQtProgressBar;
 begin
   QtProgressBar := TQtProgressBar.Create(AWinControl, AParams);
   QtProgressBar.AttachEvents;
-  Result := TLCLIntfHandle(QtProgressBar);
+  Result := TLCLHandle(QtProgressBar);
 end;
 
 class procedure TQtWSProgressBar.ApplyChanges(const AProgressBar: TCustomProgressBar);
@@ -596,7 +596,7 @@ begin
   end;
 end;
 
-class function TQtWSStatusBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function TQtWSStatusBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   QtStatusBar: TQtStatusBar;
 begin
@@ -610,7 +610,7 @@ begin
 
   // Return handle
 
-  Result := TLCLIntfHandle(QtStatusBar);
+  Result := TLCLHandle(QtStatusBar);
 end;
 
 class procedure TQtWSStatusBar.DestroyHandle(const AWinControl: TWinControl);
@@ -709,7 +709,7 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class function TQtWSCustomListView.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   QtTreeWidget: TQtTreeWidget;
   QtListWidget: TQtListWidget;
@@ -743,7 +743,7 @@ begin
     QtListWidget.Checkable := TCustomListView(AWinControl).Checkboxes;
     QtListWidget.OwnerDrawn := ALV.IsCustomDrawn(dtControl, cdPrePaint);
     QtListWidget.AttachEvents;
-    Result := TLCLIntfHandle(QtListWidget);
+    Result := TLCLHandle(QtListWidget);
   end else
   begin
     QtTreeWidget := TQtTreeWidget.Create(AWinControl, AParams);
@@ -754,7 +754,7 @@ begin
     QTreeView_setItemsExpandable(QTreeViewH(QtTreeWidget.Widget), False);
     QtTreeWidget.setRootIsDecorated(False);
     QtTreeWidget.AttachEvents;
-    Result := TLCLIntfHandle(QtTreeWidget);
+    Result := TLCLHandle(QtTreeWidget);
   end;
 end;
 

@@ -39,7 +39,7 @@ type
   TWinCEWSCustomImageListResolution = class(TWSCustomImageListResolution)
   private
   protected
-    class procedure AddData(AListHandle: TLCLIntfHandle; ACount, AReplaceIndex, AWidth, AHeight: Integer; AData: PRGBAQuad);
+    class procedure AddData(AListHandle: TLCLHandle; ACount, AReplaceIndex, AWidth, AHeight: Integer; AData: PRGBAQuad);
   published
     class procedure Clear(AList: TCustomImageListResolution); override;
     class function CreateReference(AList: TCustomImageListResolution; ACount, AGrow, AWidth,
@@ -93,7 +93,7 @@ begin
   ReleaseDC(0, DC);
 end;
 
-class procedure TWinCEWSCustomImageListResolution.AddData(AListHandle: TLCLIntfHandle; ACount, AReplaceIndex, AWidth, AHeight: Integer; AData: PRGBAQuad);
+class procedure TWinCEWSCustomImageListResolution.AddData(AListHandle: TLCLHandle; ACount, AReplaceIndex, AWidth, AHeight: Integer; AData: PRGBAQuad);
 
   procedure DoAdd;
   var

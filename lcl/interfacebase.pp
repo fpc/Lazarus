@@ -29,7 +29,7 @@ interface
 uses
   Types, Classes, SysUtils, Math, FPImage,
   // LCL
-  LCLProc, LCLType, LMessages, LCLPlatformDef, IntfGraphics, Themes,
+  LCLProc, LCLType, LMessages, LCLPlatformDef, IntfGraphics, Themes, WSReferences,
   // LazUtils
   LazUTF8, IntegerList, LazUtilities, LazLoggerBase, GraphType, GraphMath, LazVersion;
 
@@ -126,8 +126,8 @@ type
     FThemeServices: TThemeServices;
     procedure PassCmdLineOptions; virtual;
     function CreateThemeServices: TThemeServices; virtual;
-    function GetAppHandle: THandle; virtual;
-    procedure SetAppHandle(const AValue: THandle); virtual;
+    function GetAppHandle: TLCLHandle; virtual;
+    procedure SetAppHandle(const AValue: TLCLHandle); virtual;
   public
     constructor Create; virtual;
     procedure BeforeDestruction;override;
@@ -161,9 +161,9 @@ type
     function  IsHelpKey(Key: Word; Shift: TShiftState): Boolean; virtual;
 
     // create and destroy
-    function CreateTimer(Interval: integer; TimerProc: TWSTimerProc): THandle; virtual; abstract;
-    function DestroyTimer(TimerHandle: THandle): boolean; virtual; abstract;
-    property AppHandle: THandle read GetAppHandle write SetAppHandle; platform;
+    function CreateTimer(Interval: integer; TimerProc: TWSTimerProc): TLCLHandle; virtual; abstract;
+    function DestroyTimer(TimerHandle: TLCLHandle): boolean; virtual; abstract;
+    property AppHandle: TLCLHandle read GetAppHandle write SetAppHandle; platform;
 
     {$DEFINE IF_BASE_MEMBER}
     {$I winapih.inc}
@@ -200,9 +200,9 @@ type
     X, Y : Longint) : Longint;
   TQuestionDialogFunction = function(const aCaption, aMsg: string;
     DlgType: LongInt; Buttons: TDialogButtons; HelpCtx: Longint): LongInt;
-  TLoadBitmapFunction = function(hInstance: THandle; lpBitmapName: PChar): HBitmap;
-  TLoadCursorFunction = function(hInstance: THandle; lpCursorName: PChar): HCursor;
-  TLoadIconFunction= function(hInstance: THandle; lpIconName: PChar): HIcon;
+  TLoadBitmapFunction = function(hInstance: TLCLHandle; lpBitmapName: PChar): HBitmap;
+  TLoadCursorFunction = function(hInstance: TLCLHandle; lpCursorName: PChar): HCursor;
+  TLoadIconFunction = function(hInstance: TLCLHandle; lpIconName: PChar): HIcon;
 
 var
   InputDialogFunction: TInputDialogFunction = nil;

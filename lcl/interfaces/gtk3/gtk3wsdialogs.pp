@@ -41,7 +41,7 @@ type
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: TGtk3Dialog); virtual;
     class procedure SetSizes(const AGtkWidget: PGtkWidget; const AWidgetInfo: TGtk3Dialog); virtual;
   published
-    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
   end;
@@ -52,7 +52,7 @@ type
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: TGtk3Dialog); virtual;
   published
-    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
   end;
 
   { TGtk3WSOpenDialog }
@@ -66,7 +66,7 @@ type
     class procedure CreatePreviewDialogControl(PreviewDialog: TPreviewFileDialog;
       Chooser: PGtkFileChooser); virtual;
   published
-    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
   end;
 
   { TGtk3WSSaveDialog }
@@ -86,7 +86,7 @@ type
   TGtk3WSColorDialog = class(TWSColorDialog)
   protected
   published
-    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
   end;
 
   { TGtk3WSColorButton }
@@ -100,7 +100,7 @@ type
   TGtk3WSFontDialog = class(TWSFontDialog)
   protected
   published
-    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
   end;
 
 // forward declarations
@@ -1242,7 +1242,7 @@ end;
 
   requires: gtk+ 2.6
 }
-class function TGtk3WSOpenDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
+class function TGtk3WSOpenDialog.CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle;
 var
   OpenDialog: TOpenDialog absolute ACommonDialog;
   HelpButton: PGtkWidget;
@@ -1254,7 +1254,7 @@ var
   //FileDetailLabel: PGtkWidget;
 begin
   Dlg := TGtk3FileDialog.Create(ACommonDialog);
-  Result := THandle(Dlg);
+  Result := TLCLHandle(Dlg);
   Chooser := PGtkFileChooser(Dlg.Widget);
   TGtk3WSFileDialog.SetCallbacks(Dlg.Widget, Dlg);
 
@@ -1345,7 +1345,7 @@ end;
   Creates a new TFile/Open/SaveDialog
 }
 class function TGtk3WSFileDialog.CreateHandle(const ACommonDialog: TCommonDialog
-  ): THandle;
+  ): TLCLHandle;
 var
   FileDialog: TFileDialog absolute ACommonDialog;
   Action: TGtkFileChooserAction;
@@ -1373,7 +1373,7 @@ begin
 
   if Button1<>'' then ;
 
-  Result := THandle(TGtk3FileDialog.Create(ACommonDialog));
+  Result := TLCLHandle(TGtk3FileDialog.Create(ACommonDialog));
   // AFileDialog := PGtkFileChooserDialog(ADialog.Widget);
   // AFileDialog^.set_title(PChar(FileDialog.Title));
   // AFileDialog^.set_r
@@ -1397,7 +1397,7 @@ begin
   then
     gtk_file_chooser_set_current_name(Widget, Pgchar(FileDialog.FileName));
 
-  Result := THandle({%H-}PtrUInt(Widget));
+  Result := {%H-}TLCLHandle(Widget);
   WidgetInfo := CreateWidgetInfo(Widget);
   WidgetInfo^.LCLObject := ACommonDialog;
   TGtk3WSCommonDialog.SetSizes(Widget, WidgetInfo);
@@ -1511,7 +1511,7 @@ begin
 end;
 
 class function TGtk3WSCommonDialog.CreateHandle(
-  const ACommonDialog: TCommonDialog): THandle;
+  const ACommonDialog: TCommonDialog): TLCLHandle;
 begin
   Result := 0;
 end;
@@ -1562,16 +1562,16 @@ end;
 { TGtk3WSColorDialog }
 
 class function TGtk3WSColorDialog.CreateHandle(
-  const ACommonDialog: TCommonDialog): THandle;
+  const ACommonDialog: TCommonDialog): TLCLHandle;
 begin
-  Result:=THandle(TGtk3newColorSelectionDialog.Create(ACommonDialog));
+  Result:=TLCLHandle(TGtk3newColorSelectionDialog.Create(ACommonDialog));
 end;
 
 { TGtk3WSFontDialog }
 
-class function TGtk3WSFontDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
+class function TGtk3WSFontDialog.CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle;
 begin
-  Result:=THandle(TGtk3FontSelectionDialog.Create(ACommonDialog));
+  Result:=TLCLHandle(TGtk3FontSelectionDialog.Create(ACommonDialog));
 end;
 
 end.

@@ -41,7 +41,7 @@ interface
 uses
   Types, Classes, SysUtils,
   // LCL
-  LCLType, LCLIntf, GraphType, Buttons, Messages, Graphics, Controls, Forms,
+  LCLIntf, GraphType, Buttons, Messages, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, Spin,
   // TurboPower_ipro
   IpHtml, IpConst, IpHtmlTypes;

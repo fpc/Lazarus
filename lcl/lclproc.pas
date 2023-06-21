@@ -133,7 +133,7 @@ function DeleteAmpersands(var Str : String) : Integer;
 function RemoveAmpersands(const ASource: String): String;
 function RemoveAmpersands(Src: PChar; var LineLength: Longint): PChar;
 
-function CompareHandles(h1, h2: THandle): integer;
+function CompareHandles(h1, h2: TLCLHandle): integer;
 function CompareRect(R1, R2: PRect): Boolean;
 function ComparePoints(const p1, p2: TPoint): integer;
 function CompareCaret(const FirstCaret, SecondCaret: TPoint): integer;
@@ -895,7 +895,7 @@ begin
     TProcedure(InterfaceFinalizationHandlers[i])();
 end;
 
-function CompareHandles(h1, h2: THandle): integer;
+function CompareHandles(h1, h2: TLCLHandle): integer;
 begin
   if h1>h2 then
     Result:=1

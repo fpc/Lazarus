@@ -8,7 +8,8 @@
 interface
 
 uses
-  {$ifdef Windows} Windows, {$endif} Classes, SysUtils, LCLType, Types;
+  {$ifdef Windows} Windows, {$endif} Classes, SysUtils, Types,
+  LCLType;
 
 const
   TYMED_HGLOBAL = 1;
@@ -59,12 +60,11 @@ type
   _ULARGE_INTEGER = ULARGE_INTEGER;
 
 
-  HANDLE = System.THandle;
-  HWND = HANDLE;
+  //HANDLE = System.THandle;
+  //HWND = HANDLE;
   //HRESULT = System.HResult;
-
-  HBITMAP = HANDLE;
-  HENHMETAFILE = HANDLE;
+  //HBITMAP = THandle;
+  HENHMETAFILE = TLCLHandle;
 
   //activex types
 

@@ -183,7 +183,7 @@ begin
   end;
 end;
 
-function ScrollWindow(hWnd:THandle; XAmount, YAmount:longint;lpRect:PRECT; lpClipRect:PRECT):Boolean;
+function ScrollWindow(hWnd:TLCLHandle; XAmount, YAmount:longint;lpRect:PRECT; lpClipRect:PRECT):Boolean;
 begin
   //gtk implementation does nothing if lpRect and lpClipRect are not nil
   Result := LCLIntf.ScrollWindowEx(hWnd, XAmount, YAmount, nil, nil, 0, nil, SW_INVALIDATE);
@@ -217,7 +217,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    function Add(hWnd: THandle; ID: UINT_PTR; NotifyFunc: TTimerNotify; WinControl: TControl):PTimerRecord;
+    function Add(hWnd: TLCLHandle; ID: UINT_PTR; NotifyFunc: TTimerNotify; WinControl: TControl):PTimerRecord;
     function GetTimerInfo(Handle: hWnd; idEvent:UINT_PTR; out TimerInfo: TTimerRecord):Boolean;
     function GetTimerInfoPtr(Handle: hWnd; idEvent:UINT_PTR): PTimerRecord;
   end;
@@ -244,7 +244,7 @@ begin
   inherited Destroy;
 end;
 
-function TTimerList.Add(hWnd: THandle; ID: UINT_PTR; NotifyFunc: TTimerNotify; WinControl: TControl):PTimerRecord;
+function TTimerList.Add(hWnd: TLCLHandle; ID: UINT_PTR; NotifyFunc: TTimerNotify; WinControl: TControl):PTimerRecord;
 var
   AID: QWord;
   ATimerRec: TTimerRecord;
@@ -300,7 +300,7 @@ begin
   end;
 end;
 
-function SetTimer(hWnd:THandle; nIDEvent:UINT_PTR; uElapse:LongWord; lpTimerFunc:TTimerNotify):UINT_PTR;
+function SetTimer(hWnd:TLCLHandle; nIDEvent:UINT_PTR; uElapse:LongWord; lpTimerFunc:TTimerNotify):UINT_PTR;
 var
   TimerInfo: PTimerRecord;
   Control: TControl;
@@ -317,7 +317,7 @@ begin
   //DebugLn('SetTimer HWnd: %d ID: %d TimerHandle: %d',[hWnd,nIDEvent,TimerInfo^.TimerHandle]);
 end;
 
-function KillTimer(hWnd:THandle; nIDEvent: UINT_PTR):Boolean;
+function KillTimer(hWnd:TLCLHandle; nIDEvent: UINT_PTR):Boolean;
 var
   TimerInfo: PTimerRecord;
 begin

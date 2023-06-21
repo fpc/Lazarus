@@ -211,7 +211,7 @@ begin
   TryCount := 0;
   While TryCount <> 3 Do Begin
     SrcHandle := FileOpenUTF8(SrcFilename, fmOpenRead or fmShareDenyWrite);
-    if THandle(SrcHandle)=feInvalidHandle then Begin
+    if SrcHandle = feInvalidHandle then Begin
       Inc(TryCount);
       Sleep(10);
     End
@@ -229,7 +229,7 @@ begin
   end;
   try
     DestHandle := FileCreateUTF8(DestFileName);
-    if (THandle(DestHandle)=feInvalidHandle) then
+    if DestHandle = feInvalidHandle then
     begin
       if ExceptionOnError then
         raise EFCreateError.CreateFmt({SFCreateError}'Unable to create file "%s"',[DestFileName])
@@ -361,7 +361,7 @@ begin
     Setlength(s, FileSize(Filename));
     if s='' then exit;
     SrcHandle := FileOpenUTF8(Filename, fmOpenRead or fmShareDenyWrite);
-    if THandle(SrcHandle)=feInvalidHandle then
+    if SrcHandle = feInvalidHandle then
       exit;
     try
       ReadCount:=FileRead(SrcHandle,s[1],length(s));

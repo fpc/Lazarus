@@ -40,7 +40,7 @@ type
   TQtWSCustomCheckListBox = class(TWSCustomCheckListBox)
   published
     class function CreateHandle(const AWinControl: TWinControl;
-     const AParams: TCreateParams): TLCLIntfHandle; override;
+     const AParams: TCreateParams): TLCLHandle; override;
     class function GetItemEnabled(const ACheckListBox: TCustomCheckListBox;
       const AIndex: integer): Boolean; override;
     class function GetState(const ACheckListBox: TCustomCheckListBox;
@@ -72,7 +72,7 @@ const
 
 class function TQtWSCustomCheckListBox.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams
-  ): TLCLIntfHandle;
+  ): TLCLHandle;
 var
   QtListWidget: TQtCheckListBox;
   SelMode: QAbstractItemViewSelectionMode;
@@ -99,7 +99,7 @@ begin
 
   QtListWidget.OwnerDrawn := TCheckListBox(AWinControl).Style in [lbOwnerDrawFixed, lbOwnerDrawVariable];
 
-  Result := TLCLIntfHandle(QtListWidget);
+  Result := TLCLHandle(QtListWidget);
 end;
 
 class function TQtWSCustomCheckListBox.GetItemEnabled(

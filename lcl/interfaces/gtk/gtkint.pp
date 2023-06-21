@@ -291,8 +291,8 @@ type
                              ConvertAmpersandsToUnderScores: Boolean) : PChar;
 
     // create and destroy
-    function CreateTimer(Interval: integer; TimerProc: TWSTimerProc) : THandle; override;
-    function DestroyTimer(TimerHandle: THandle) : boolean; override;
+    function CreateTimer(Interval: integer; TimerProc: TWSTimerProc) : TLCLHandle; override;
+    function DestroyTimer(TimerHandle: TLCLHandle) : boolean; override;
     procedure DestroyLCLComponent(Sender: TObject);virtual;
 
     // for gtk controls not part of the LCL:

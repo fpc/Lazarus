@@ -34,7 +34,7 @@ type
   TWinCEWSCustomGrid = class(TWSCustomGrid)
   published
     class function CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+      const AParams: TCreateParams): TLCLHandle; override;
 //    class procedure SendCharToEditor(AEditor:TWinControl; Ch: TUTF8Char); override;
   end;
 
@@ -49,7 +49,7 @@ implementation
 // http://bugs.freepascal.org/view.php?id=16576
 // http://social.msdn.microsoft.com/forums/en-US/vssmartdevicesnative/thread/af5813e7-236e-4a06-bda9-945d6f88e3c4/
 class function TWinCEWSCustomGrid.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   Params: TCreateWindowExParams;
 begin

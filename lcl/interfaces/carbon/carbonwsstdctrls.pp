@@ -40,7 +40,7 @@ type
 
   TCarbonWSScrollBar = class(TWSScrollBar)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure SetParams(const AScrollBar: TCustomScrollBar); override;
   end;
 
@@ -48,7 +48,7 @@ type
 
   TCarbonWSCustomGroupBox = class(TWSCustomGroupBox)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TCarbonWSGroupBox }
@@ -61,7 +61,7 @@ type
 
   TCarbonWSCustomComboBox = class(TWSCustomComboBox)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class function  GetSelStart(const ACustomComboBox: TCustomComboBox): integer; override;
     class function  GetSelLength(const ACustomComboBox: TCustomComboBox): integer; override;
     class function  GetItemIndex(const ACustomComboBox: TCustomComboBox): integer; override;
@@ -90,7 +90,7 @@ type
 
   TCarbonWSCustomListBox = class(TWSCustomListBox)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; override;
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; override;
@@ -120,7 +120,7 @@ type
 
   TCarbonWSCustomEdit = class(TWSCustomEdit)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class function GetCanUndo(const ACustomEdit: TCustomEdit): Boolean; override;
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
@@ -144,7 +144,7 @@ type
 
   TCarbonWSCustomMemo = class(TWSCustomMemo)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
 
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
@@ -189,7 +189,7 @@ type
 
   TCarbonWSButton = class(TWSButton)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure SetDefault(const AButton: TCustomButton; {%H-}ADefault: Boolean); override;
   end;
 
@@ -199,7 +199,7 @@ type
   public
     class procedure UpdateValue(Sender: TObject; OldValue: Integer; var ANewValue: Integer);
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
   end;
@@ -214,21 +214,21 @@ type
 
   TCarbonWSToggleBox = class(TWSToggleBox)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TCarbonWSRadioButton }
 
   TCarbonWSRadioButton = class(TWSRadioButton)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TCarbonWSCustomStaticText }
 
   TCarbonWSCustomStaticText = class(TWSCustomStaticText)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); override;
   end;
 
@@ -255,9 +255,9 @@ uses
   Creates new scroll bar in Carbon interface with the specified parameters
  ------------------------------------------------------------------------------}
 class function TCarbonWSScrollBar.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
-  Result := TLCLIntfHandle(TCarbonScrollBar.Create(AWinControl, AParams));
+  Result := TLCLHandle(TCarbonScrollBar.Create(AWinControl, AParams));
 end;
 
 {------------------------------------------------------------------------------
@@ -285,9 +285,9 @@ end;
   Creates new group box in Carbon interface with the specified parameters
  ------------------------------------------------------------------------------}
 class function TCarbonWSCustomGroupBox.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
-  Result := TLCLIntfHandle(TCarbonGroupBox.Create(AWinControl, AParams));
+  Result := TLCLHandle(TCarbonGroupBox.Create(AWinControl, AParams));
   TCarbonGroupBox(Result).SetColor(AWinControl.Color);
 end;
 
@@ -302,11 +302,11 @@ end;
   Creates new combo box in Carbon interface with the specified parameters
  ------------------------------------------------------------------------------}
 class function TCarbonWSCustomComboBox.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   sz : TPoint;
 begin
-  Result := TLCLIntfHandle(TCarbonComboBox.Create(AWinControl, AParams));
+  Result := TLCLHandle(TCarbonComboBox.Create(AWinControl, AParams));
   sz:=TCarbonComboBox(Result).GetPreferredSize;
   AWinControl.Constraints.SetInterfaceConstraints(0,0,0, sz.Y);
 end;
@@ -516,9 +516,9 @@ end;
   Creates new list box in Carbon interface with the specified parameters
  ------------------------------------------------------------------------------}
 class function TCarbonWSCustomListBox.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
-  Result := TLCLIntfHandle(TCarbonListBox.Create(AWinControl, AParams));
+  Result := TLCLHandle(TCarbonListBox.Create(AWinControl, AParams));
 end;
 
 {------------------------------------------------------------------------------
@@ -760,9 +760,9 @@ end;
   Creates new edit in Carbon interface with the specified parameters
  ------------------------------------------------------------------------------}
 class function TCarbonWSCustomEdit.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
-  Result := TLCLIntfHandle(TCarbonEdit.Create(AWinControl, AParams));
+  Result := TLCLHandle(TCarbonEdit.Create(AWinControl, AParams));
 end;
 
 class function TCarbonWSCustomEdit.GetCanUndo(const ACustomEdit: TCustomEdit
@@ -949,14 +949,14 @@ end;
   Creates new memo in Carbon interface with the specified parameters
  ------------------------------------------------------------------------------}
 class function TCarbonWSCustomMemo.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   Memo  : TCarbonMemo;
 begin
   Memo:=TCarbonMemo.Create(AWinControl, AParams);
   Memo.SetWordWrap(TCustomMemo(AWinControl).WordWrap);
   Memo.SetBorderVisible(TCustomMemo(AWinControl).BorderStyle=bsSingle);
-  Result := TLCLIntfHandle(Memo);
+  Result := TLCLHandle(Memo);
 end;
 
 {------------------------------------------------------------------------------
@@ -1064,10 +1064,10 @@ end;
   Creates new button control in Carbon interface with the specified parameters
  ------------------------------------------------------------------------------}
 class function TCarbonWSButton.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
   // create the Carbon button widget
-  Result := TLCLIntfHandle(TCarbonButton.Create(AWinControl, AParams));
+  Result := TLCLHandle(TCarbonButton.Create(AWinControl, AParams));
 end;
 
 {------------------------------------------------------------------------------
@@ -1121,13 +1121,13 @@ end;
   Creates new check box in Carbon interface with the specified parameters
  ------------------------------------------------------------------------------}
 class function TCarbonWSCustomCheckBox.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   cb : TCarbonCheckBox;
 begin
   cb:=TCarbonCheckBox.Create(AWinControl, AParams);
   cb.UpdateValue:=@UpdateValue;
-  Result := TLCLIntfHandle(cb);
+  Result := TLCLHandle(cb);
 end;
 
 {------------------------------------------------------------------------------
@@ -1181,9 +1181,9 @@ end;
   parameters
  ------------------------------------------------------------------------------}
 class function TCarbonWSToggleBox.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
-  Result := TLCLIntfHandle(TCarbonToggleBox.Create(AWinControl, AParams));
+  Result := TLCLHandle(TCarbonToggleBox.Create(AWinControl, AParams));
 end;
 
 { TCarbonWSRadioButton }
@@ -1197,9 +1197,9 @@ end;
   Creates new radio button in Carbon interface with the specified parameters
  ------------------------------------------------------------------------------}
 class function TCarbonWSRadioButton.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 begin
-  Result := TLCLIntfHandle(TCarbonRadioButton.Create(AWinControl, AParams));
+  Result := TLCLHandle(TCarbonRadioButton.Create(AWinControl, AParams));
 end;
 
 { TCarbonWSCustomStaticText }
@@ -1213,9 +1213,9 @@ end;
   Creates new static text in Carbon interface with the specified parameters
  ------------------------------------------------------------------------------}
 class function TCarbonWSCustomStaticText.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
-  Result := TLCLIntfHandle(TCarbonStaticText.Create(AWinControl, AParams));
+  Result := TLCLHandle(TCarbonStaticText.Create(AWinControl, AParams));
 end;
 
 {------------------------------------------------------------------------------

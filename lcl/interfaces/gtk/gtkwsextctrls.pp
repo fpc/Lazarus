@@ -130,7 +130,7 @@ type
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure SetColor(const AWinControl: TWinControl); override;
   end;
 
@@ -167,7 +167,7 @@ begin
 end;
 
 class function TGtkWSCustomPanel.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   Widget: PGtkWidget;
   WidgetInfo: PWidgetInfo;
@@ -178,7 +178,7 @@ begin
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
   {$ENDIF}
 
-  Result := THandle(PtrUInt(Widget));
+  Result := TLCLHandle(Widget);
   if Result = 0 then Exit;
 
   WidgetInfo := GetWidgetInfo(Widget); // Widget info already created in CreateAPIWidget

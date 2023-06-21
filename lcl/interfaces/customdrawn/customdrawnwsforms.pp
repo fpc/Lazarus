@@ -128,10 +128,10 @@ type
     class function StartComposing(const Event: TXKeyEvent): TKeySym;
     class function X11KeyToLCLKey(AX11Key: TKeySym): Word;
     {$endif}
-    class function  DoCreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+    class function  DoCreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
     class procedure DoShowHide(const AWinControl: TWinControl);
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
 
     class procedure SetBounds(const AWinControl: TWinControl;
@@ -171,7 +171,7 @@ type
 
   TCDWSHintWindow = class(TWSHintWindow)
   published
-//    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+//    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TCDWSScreen }

@@ -152,7 +152,7 @@ const
     MouseButton := GetCarbonMouseButton(AEvent);
     MousePoint := GetMousePoint;
 
-    Msg^.Msg := CheckMouseButtonDownUp(TLCLIntfHandle(Widget), Widget.LCLObject, LastMouse,
+    Msg^.Msg := CheckMouseButtonDownUp(TLCLHandle(Widget), Widget.LCLObject, LastMouse,
       Widget.LCLObject.ClientToScreen(MousePoint), MouseButton, True);
     //debugln('HandleMouseDownEvent CliCount=',dbgs(ClickCount),' MouseButton=',dbgs(MouseButton),' Pos=',dbgs(MousePoint));
 
@@ -186,7 +186,7 @@ const
     MouseButton := GetCarbonMouseButton(AEvent);
     MousePoint := GetMousePoint;
     
-    Msg^.Msg := CheckMouseButtonDownUp(TLCLIntfHandle(Widget), Widget.LCLObject, LastMouse,
+    Msg^.Msg := CheckMouseButtonDownUp(TLCLHandle(Widget), Widget.LCLObject, LastMouse,
       Widget.LCLObject.ClientToScreen(MousePoint), MouseButton, False);
 
     Msg^.XPos := MousePoint.X;
@@ -297,7 +297,7 @@ begin
   if Widget = nil then Exit;
 
   LCLObj := Widget.LCLObject;
-  CheckTransparentWindow(TLCLIntfHandle(Widget), LCLObj);
+  CheckTransparentWindow(TLCLHandle(Widget), LCLObj);
   if (Widget=nil) or (LCLObj=nil) then
     Exit;
 

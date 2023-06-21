@@ -18,9 +18,9 @@
 
 { TCDWidgetSet }
 
-function TCDWidgetSet.GetAppHandle: THandle;
+function TCDWidgetSet.GetAppHandle: TLCLHandle;
 begin
-  Result := THandle(NSApp);
+  Result := TLCLHandle(NSApp);
 end;
 
 {------------------------------------------------------------------------------
@@ -268,7 +268,7 @@ begin
 
 end;
 
-function TCDWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle;
+function TCDWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): TLCLHandle;
 var
   timer : NSTimer;
   user  : TCDTimerObject;
@@ -287,10 +287,10 @@ begin
   {released (twice) on timer invalidation}
   user.release;
 
-  Result:=THandle(timer);
+  Result:=TLCLHandle(timer);
 end;
 
-function TCDWidgetSet.DestroyTimer(TimerHandle: THandle): boolean;
+function TCDWidgetSet.DestroyTimer(TimerHandle: TLCLHandle): boolean;
 var
   obj : NSObject;
 begin

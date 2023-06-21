@@ -1937,7 +1937,7 @@ end;
 
   Retrieves a handle to one of the predefined stock objects
  ------------------------------------------------------------------------------}
-function TCarbonWidgetSet.GetStockObject(Value: Integer): THandle;
+function TCarbonWidgetSet.GetStockObject(Value: Integer): TLCLHandle;
 begin
   Result := 0;
 
@@ -3097,7 +3097,7 @@ end;
   Removes the an existing entry from the property list of the
   specified window
  ------------------------------------------------------------------------------}
-function TCarbonWidgetSet.RemoveProp(Handle: hwnd; Str: PChar): THandle;
+function TCarbonWidgetSet.RemoveProp(Handle: hwnd; Str: PChar): TLCLHandle;
 begin
   Result := 0;
 
@@ -3108,7 +3108,7 @@ begin
   
   if not CheckWidget(Handle, 'RemoveProp') then Exit;
 
-  Result := {%H-}THandle(TCarbonWidget(Handle).Properties[Str]);
+  Result := {%H-}TLCLHandle(TCarbonWidget(Handle).Properties[Str]);
   TCarbonWidget(Handle).Properties[Str] := nil;
 end;
 

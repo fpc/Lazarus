@@ -40,7 +40,7 @@ type
 
   TCDWSCommonDialog = class(TWSCommonDialog)
   published
-{    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+{    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;}
   end;
@@ -49,7 +49,7 @@ type
 
   TCDWSFileDialog = class(TWSFileDialog)
   published
-{    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+{    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;}
   end;
 
@@ -69,7 +69,7 @@ type
 
   TCDWSSelectDirectoryDialog = class(TWSSelectDirectoryDialog)
   published
-{    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+{    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;}
   end;
 
@@ -77,7 +77,7 @@ type
 
   TCDWSColorDialog = class(TWSColorDialog)
   published
-{    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+{    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;}
   end;
 
@@ -91,7 +91,7 @@ type
 
   TCDWSFontDialog = class(TWSFontDialog)
   published
-{    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+{    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;}
   end;
 

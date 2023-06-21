@@ -4,7 +4,7 @@
 
 // For non-mobile forms, so no implementation in LCL-CustomDrawn-Android
 class function TCDWSCustomForm.DoCreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
 end;
 
@@ -20,7 +20,7 @@ end;
   Creates a Windows CE Form, initializes it according to it´s properties and shows it
  ------------------------------------------------------------------------------}
 class function TCDWSCustomForm.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   AForm: TCustomForm absolute AWinControl;
 begin
@@ -29,7 +29,7 @@ begin
     [PtrInt(AWinControl), AWinControl.Name, AWinControl.ClassName]));
   {$endif}
 
-  Result := TLCLIntfhandle(AddNewForm(TCustomForm(AWinControl)));
+  Result := TLCLHandle(AddNewForm(TCustomForm(AWinControl)));
 
   {$ifdef VerboseCDForms}
   DebugLn(Format(':<[TCDWSCustomForm.CreateHandle] Result=%x',

@@ -41,7 +41,7 @@ type
 
   TWin32WSCustomImageListResolution = class(TWSCustomImageListResolution)
   protected
-    class procedure AddData(AListHandle: TLCLIntfHandle;
+    class procedure AddData(AListHandle: TLCLHandle;
       ACount, AReplaceIndex, AWidth, AHeight: Integer; AData: PRGBAQuad);
   published
     class procedure Clear(AList: TCustomImageListResolution); override;
@@ -103,7 +103,7 @@ begin
   ReleaseDC(0, DC);
 end;
 
-class procedure TWin32WSCustomImageListResolution.AddData(AListHandle: TLCLIntfHandle;
+class procedure TWin32WSCustomImageListResolution.AddData(AListHandle: TLCLHandle;
   ACount, AReplaceIndex, AWidth, AHeight: Integer; AData: PRGBAQuad);
 
   procedure DoAddAlpha;

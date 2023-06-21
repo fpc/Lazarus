@@ -53,7 +53,7 @@ type
   TGtk3WSScrollingWinControl = class(TWSScrollingWinControl)
   published
     class function CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+      const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TWSScrollBox }
@@ -81,7 +81,7 @@ type
   TGtk3WSCustomForm = class(TWSCustomForm)
   published
     class function  CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+      const AParams: TCreateParams): TLCLHandle; override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
 
@@ -127,7 +127,7 @@ type
   TGtk3WSHintWindow = class(TGtk3WSCustomForm)
   published
     class function  CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+      const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TWSScreen }
@@ -149,15 +149,15 @@ uses SysUtils, gtk3procs;
 { TGtk3WSScrollingWinControl }
 
 class function TGtk3WSScrollingWinControl.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 begin
-  Result := TLCLIntfHandle(TGtk3ScrollingWinControl.Create(AWinControl, AParams));
+  Result := TLCLHandle(TGtk3ScrollingWinControl.Create(AWinControl, AParams));
 end;
 
 { TGtk3WSCustomForm }
 
 class function TGtk3WSCustomForm.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   AWindow: TGtk3Window;
   AWinPtr: PGtkWindow;
@@ -184,7 +184,7 @@ begin
   AWinPtr^.set_allocation(@ARect);
   Gtk3WidgetSet.AddWindow(AWinPtr);
 
-  Result := TLCLIntfHandle(AWindow);
+  Result := TLCLHandle(AWindow);
 
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WSCustomForm.CreateHandle handle ',dbgs(Result));
@@ -440,9 +440,9 @@ end;
 { TGtk3WSHintWindow }
 
 class function TGtk3WSHintWindow.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
-  Result := TLCLIntfHandle(TGtk3HintWindow.Create(AWinControl, AParams));
+  Result := TLCLHandle(TGtk3HintWindow.Create(AWinControl, AParams));
 end;
 
 end.

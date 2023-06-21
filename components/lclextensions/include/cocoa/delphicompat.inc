@@ -73,12 +73,12 @@ begin
   end;
 end;
 
-function KillTimer(hWnd: THandle; nIDEvent: UINT_PTR):Boolean;
+function KillTimer(hWnd: TLCLHandle; nIDEvent: UINT_PTR):Boolean;
 begin
   Result := LCLIntf.KillTimer(hWnd, nIDEvent);
 end;
 
-function SetTimer(hWnd: THandle; nIDEvent: UINT_PTR; uElapse: LongWord; lpTimerFunc: TTimerNotify): UINT_PTR;
+function SetTimer(hWnd: TLCLHandle; nIDEvent: UINT_PTR; uElapse: LongWord; lpTimerFunc: TTimerNotify): UINT_PTR;
 begin
   Result := LCLIntf.SetTimer(hWnd, nIDEvent, uElapse, nil{lpTimerFunc});
 end;

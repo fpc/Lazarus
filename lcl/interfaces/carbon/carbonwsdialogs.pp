@@ -420,7 +420,7 @@ begin
 
     try
       // Display dialog
-      FileDialog.Handle := THandle(PtrUInt(DialogRef));
+      FileDialog.Handle := TLCLHandle(DialogRef);
       if OSError(NavDialogRun(DialogRef), Self, SShowModal, 'NavDialogRun') then Exit;
       
       if NavDialogGetUserAction(DialogRef) <> kNavUserActionCancel then // User OK?

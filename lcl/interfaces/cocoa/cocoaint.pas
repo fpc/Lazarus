@@ -167,7 +167,7 @@ type
       EscapeResult: Longint): Longint; override;
     function MessageBox(HWnd: HWND; lpText, lpCaption: PChar;
       uType: Cardinal): Integer; override;
-    function GetAppHandle: THandle; override;
+    function GetAppHandle: TLCLHandle; override;
     function CreateThemeServices: TThemeServices; override;
 
     procedure SendCheckSynchronizeMessage;
@@ -206,8 +206,8 @@ type
 
     function  GetLCLCapability(ACapability: TLCLCapability): PtrUInt; override;
 
-    function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle; override;
-    function DestroyTimer(TimerHandle: THandle): boolean; override;
+    function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): TLCLHandle; override;
+    function DestroyTimer(TimerHandle: TLCLHandle): boolean; override;
 
     procedure InitStockItems;
     procedure FreeStockItems;

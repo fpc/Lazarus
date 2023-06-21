@@ -90,7 +90,7 @@ begin
   Result:=FHandle<>0;
 end;
 
-procedure TCommonDialog.SetHandle(const AValue: THandle);
+procedure TCommonDialog.SetHandle(const AValue: TLCLHandle);
 begin
   FHandle:=AValue;
 end;

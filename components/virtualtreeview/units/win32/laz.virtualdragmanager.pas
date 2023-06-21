@@ -5,7 +5,8 @@ unit laz.VirtualDragManager;
 interface
 
 uses
-  Windows, ActiveX, Classes, SysUtils;
+  Windows, ActiveX, Classes, SysUtils,
+  LCLType;
 
 const
   // Drag image helpers for Windows 2000 and up.
@@ -122,7 +123,7 @@ type
     function EqualFormatEtc(FormatEtc1, FormatEtc2: TFormatEtc): Boolean;
     function FindFormatEtc(TestFormatEtc: TFormatEtc; const FormatEtcArray: TFormatEtcArray): integer;
     function FindInternalStgMedium(Format: TClipFormat): PStgMedium;
-    function HGlobalClone(HGlobal: THandle): THandle;
+    function HGlobalClone(HGlobal: TLCLHandle): TLCLHandle;
     function RenderInternalOLEData(const FormatEtcIn: TFormatEtc; var Medium: TStgMedium; var OLEResult: HResult): Boolean;
     function StgMediumIncRef(const InStgMedium: TStgMedium; var OutStgMedium: TStgMedium;
       CopyInMedium: Boolean; DataObject: IDataObject): HRESULT;
@@ -608,7 +609,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TVTDataObject.HGlobalClone(HGlobal: THandle): THandle;
+function TVTDataObject.HGlobalClone(HGlobal: TLCLHandle): TLCLHandle;
 
 // Returns a global memory block that is a copy of the passed memory block.
 

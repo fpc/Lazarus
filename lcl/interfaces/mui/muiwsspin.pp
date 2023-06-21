@@ -47,7 +47,7 @@ type
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; ReadOnly: boolean); override;
 
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
   end;
 
 implementation
@@ -121,7 +121,7 @@ end;
 
 class function TMUIWSCustomFloatSpinEdit.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams
-  ): TLCLIntfHandle;
+  ): TLCLHandle;
 var
   MuiEdit: TMuiSpinEdit;
   Tags: TATagList;
@@ -148,7 +148,7 @@ begin
     MuiEdit.Parent := TMuiObject(AWinControl.Parent.Handle);
   end;
   //
-  Result := TLCLIntfHandle(MuiEdit);
+  Result := TLCLHandle(MuiEdit);
   //
 end;
 

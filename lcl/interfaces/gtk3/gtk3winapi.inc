@@ -2486,7 +2486,7 @@ begin
   Result := True;
 end;
 
-function TGtk3WidgetSet.GetStockObject(Value: Integer): THandle;
+function TGtk3WidgetSet.GetStockObject(Value: Integer): TLCLHandle;
 begin
   Result := 0;
 
@@ -3304,7 +3304,7 @@ begin
   end;
 end;
 
-function TGtk3WidgetSet.RemoveProp(Handle: hwnd; Str: PChar): THandle;
+function TGtk3WidgetSet.RemoveProp(Handle: hwnd; Str: PChar): TLCLHandle;
 begin
   Result := 0;
   if Handle = 0 then

@@ -4587,7 +4587,7 @@ begin
   Node.LineIndex := LineIndex;
   Node.LogXStart := Run;
   Node.LogXEnd := Run + fStringLen;
-  Node.FoldType := Pointer({%H-}PtrInt(ABlockType)); //Pointer(PtrUInt(PasBlockType));
+  Node.FoldType := ABlockType;
   Node.FoldTypeCompatible := Pointer(PtrUInt(PascalFoldTypeCompatibility[PasBlockType]));
   Node.FoldAction := aActions;
   case PasBlockType of

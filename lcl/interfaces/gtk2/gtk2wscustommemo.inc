@@ -114,7 +114,7 @@ begin
 end;
 
 class function TGtk2WSCustomMemo.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   Widget,
   TempWidget: PGtkWidget;
@@ -122,7 +122,7 @@ var
   SS:TPoint;
 begin
   Widget := gtk_scrolled_window_new(nil, nil);
-  Result := TLCLIntfHandle({%H-}PtrUInt(Widget));
+  Result := TLCLHandle({%H-}PtrUInt(Widget));
   if Result = 0 then Exit;
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(Widget,dbgsName(AWinControl));

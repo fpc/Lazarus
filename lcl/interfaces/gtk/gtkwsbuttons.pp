@@ -54,7 +54,7 @@ type
     class procedure UpdateMargin(const AInfo: PBitBtnWidgetInfo; const ALayout: TButtonLayout; const AMargin: Integer);
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TButtonGlyph); override;
     class procedure SetLayout(const ABitBtn: TCustomBitBtn; const AValue: TButtonLayout); override;
     class procedure SetMargin(const ABitBtn: TCustomBitBtn; const AValue: Integer); override;
@@ -114,7 +114,7 @@ end;
  right, so the invisible is always in position 3. 
 }
 class function TGtkWSBitBtn.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   BitBtn: TCustomBitBtn;
   WidgetInfo: PWidgetInfo;
@@ -123,7 +123,7 @@ var
 begin
   BitBtn := AWinControl as TCustomBitBtn;
 
-  Result := TLCLIntfHandle(PtrUInt(gtk_button_new));
+  Result := TLCLHandle(PtrUInt(gtk_button_new));
   if Result = 0 then Exit;
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(Pointer(Result),dbgsName(AWinControl));

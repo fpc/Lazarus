@@ -177,7 +177,7 @@ type
   end;
   
 
-function GetWidgetWithWindow(const AHandle: THandle): PGtkWidget;
+function GetWidgetWithWindow(const AHandle: TLCLHandle): PGtkWidget;
 procedure SetWindowCursor(AWindow: PGdkWindow; ACursor: HCursor; ARecursive: Boolean);
 procedure SetCursorForWindowsWithInfo(AWindow: PGdkWindow; AInfo: PWidgetInfo);
 
@@ -189,7 +189,7 @@ uses
 
 // Helper functions
 
-function GetWidgetWithWindow(const AHandle: THandle): PGtkWidget;
+function GetWidgetWithWindow(const AHandle: TLCLHandle): PGtkWidget;
 var
   Children: PGList;
 begin

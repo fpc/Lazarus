@@ -74,16 +74,18 @@ type
   //timer
   TTimerNotify = procedure (TimerId: PtrUInt) of object;
 
-function BeginDeferWindowPos({%H-}nNumWindows: LongInt):THandle;
+function BeginDeferWindowPos({%H-}nNumWindows: LongInt): TLCLHandle;
 function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean;
 
 function CF_UNICODETEXT: TClipboardFormat;
-function CopyImage({%H-}hImage: THandle; {%H-}uType:LongWord; {%H-}cxDesired, {%H-}cyDesired: LongInt; {%H-}fuFlags:LongWord):THandle;
+function CopyImage({%H-}hImage: TLCLHandle; {%H-}uType:LongWord; {%H-}cxDesired,
+    {%H-}cyDesired: LongInt; {%H-}fuFlags:LongWord): TLCLHandle;
 
-function DeferWindowPos({%H-}hWinPosInfo, {%H-}hWnd, {%H-}hWndInsertAfter:THandle; {%H-}x, {%H-}y, {%H-}cx, {%H-}cy:longint; {%H-}uFlags:LongWord):THandle;
+function DeferWindowPos({%H-}hWinPosInfo, {%H-}hWnd, {%H-}hWndInsertAfter: TLCLHandle;
+    {%H-}x, {%H-}y, {%H-}cx, {%H-}cy:longint; {%H-}uFlags:LongWord): TLCLHandle;
 function DrawTextW(hDC: HDC; lpString: PWideChar; nCount: Integer; var lpRect: TRect; uFormat: LongWord): Integer;
 
-function EndDeferWindowPos({%H-}hWinPosInfo:THandle):Boolean;
+function EndDeferWindowPos({%H-}hWinPosInfo: TLCLHandle): Boolean;
 function ExtTextOutW(DC: HDC; X, Y: Integer; Options: LongInt; Rect: PRect;
   Str: PWideChar; Count: LongInt; Dx: PInteger): Boolean;
 
@@ -91,11 +93,11 @@ function GdiFlush: Boolean;
 function GetACP:LongWord;
 function GetBkColor(DC:HDC):COLORREF;
 function GetCurrentObject(hdc: HDC; uObjectType: UINT): HGDIOBJ;
-function GetDCEx({%H-}hWnd:THandle; {%H-}hrgnClip:HRGN; {%H-}flags:DWORD):HDC;
+function GetDCEx({%H-}hWnd: TLCLHandle; {%H-}hrgnClip: HRGN; {%H-}flags: DWORD): HDC;
 function GetDoubleClickTime: UINT;
-function GetKeyboardLayout({%H-}dwLayout:DWORD):THandle;
-function GetKeyboardState({%H-}lpKeyState:PBYTE):BOOLEAN;
-function GetLocaleInfo({%H-}Locale, {%H-}LCType:LongWord; {%H-}lpLCData:PChar; {%H-}cchData:longint):longint;
+function GetKeyboardLayout({%H-}dwLayout: DWORD): TLCLHandle;
+function GetKeyboardState({%H-}lpKeyState: PBYTE): BOOLEAN;
+function GetLocaleInfo({%H-}Locale, {%H-}LCType: LongWord; {%H-}lpLCData: PChar; {%H-}cchData: longint): longint;
 function GetRandomRgn({%H-}DC: HDC; {%H-}Rgn: HRGN; {%H-}iNum: Integer): Integer; stdcall;
 function GetTextAlign({%H-}hDC:HDC): LongWord;
 function GetTextExtentExPoint(DC: HDC; Str: PChar;
@@ -105,24 +107,24 @@ function GetTextExtentExPointW(DC: HDC; Str: PWideChar; Count, MaxWidth: Integer
   MaxCount, PartialWidths: PInteger; var Size: TSize): BOOL;
 function GetTextExtentPoint32W(DC: HDC; Str: PWideChar; Count: Integer; out Size: TSize): Boolean;
 function GetTextExtentPointW(DC: HDC; Str: PWideChar; Count: Integer; out Size: TSize): Boolean;
-function GetWindowDC({%H-}hWnd:THandle):HDC;
+function GetWindowDC({%H-}hWnd: TLCLHandle): HDC;
 
 function ImageList_DragShowNolock({%H-}fShow: Boolean): Boolean;
-function InvertRect(DC: HDC; const lprc: TRECT): Boolean;
+function InvertRect(DC: HDC; const lprc: TRect): Boolean;
 
-function KillTimer(hWnd:THandle; nIDEvent:UINT_PTR):Boolean;
+function KillTimer(hWnd: TLCLHandle; nIDEvent: UINT_PTR): Boolean;
 
 function MapWindowPoints(hWndFrom, hWndTo: HWND; var lpPoints; cPoints: UINT): Integer;
 function MultiByteToWideChar({%H-}CodePage, {%H-}dwFlags:DWORD; {%H-}lpMultiByteStr:PChar; {%H-}cchMultiByte:longint; {%H-}lpWideCharStr:PWideChar;{%H-}cchWideChar:longint):longint;
 
 function OffsetRgn({%H-}hrgn:HRGN; {%H-}nxOffset, {%H-}nYOffset:longint):longint;
 
-function RedrawWindow(hWnd:THandle; lprcUpdate:PRECT; {%H-}hrgnUpdate:HRGN; flags:LongWord): Boolean;
+function RedrawWindow(hWnd: TLCLHandle; lprcUpdate: PRECT; {%H-}hrgnUpdate: HRGN; flags: LongWord): Boolean;
 
 function ScrollDC({%H-}DC:HDC; {%H-}dx:longint; {%H-}dy:longint; var {%H-}lprcScroll:TRECT; var {%H-}lprcClip:TRECT;{%H-}hrgnUpdate:HRGN; {%H-}lprcUpdate:PRECT):Boolean;
-function ScrollWindow(hWnd:THandle; XAmount, YAmount:longint;{%H-}lpRect:PRECT; {%H-}lpClipRect:PRECT):Boolean;
-function SetBrushOrgEx({%H-}DC:HDC; {%H-}nXOrg, {%H-}nYOrg:longint; {%H-}lppt:PPOINT):Boolean;
-function SetTimer(hWnd:THandle; nIDEvent:UINT_PTR; uElapse:LongWord; lpTimerFunc:TTimerNotify):UINT_PTR;
+function ScrollWindow(hWnd: TLCLHandle; XAmount, YAmount: longint;{%H-}lpRect: PRECT; {%H-}lpClipRect: PRECT): Boolean;
+function SetBrushOrgEx({%H-}DC:HDC; {%H-}nXOrg, {%H-}nYOrg:longint; {%H-}lppt:PPOINT): Boolean;
+function SetTimer(hWnd: TLCLHandle; nIDEvent: UINT_PTR; uElapse: LongWord; lpTimerFunc: TTimerNotify): UINT_PTR;
 function SubtractRect(var {%H-}lprcDst: TRect; const {%H-}lprcSrc1, {%H-}lprcSrc2: TRect): Boolean;
 
 function TextOutW(DC: HDC; X,Y : Integer; Str : PWideChar; Count: Integer) : Boolean;
@@ -135,7 +137,7 @@ implementation
 
 uses
 {$i uses.inc}
-  maps, LazUTF8, LCLProc, LCLMessageGlue, Controls
+  Maps, LazUTF8, LCLMessageGlue, Controls
   {$ifdef DEBUG_DELPHICOMPAT}
   ,multiloglcl, filechannel
   {$endif}

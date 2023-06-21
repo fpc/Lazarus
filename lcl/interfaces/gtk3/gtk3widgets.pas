@@ -1850,7 +1850,7 @@ begin
   end;
 
   FCairoContext := AContext;
-  Msg.DC := BeginPaint(THandle(Self), AStruct);
+  Msg.DC := BeginPaint(HWND(Self), AStruct);
   FContext := Msg.DC;
 
   Msg.PaintStruct^.rcPaint := PaintData.ClipRect^;
@@ -1866,7 +1866,7 @@ begin
       //Dispose(PaintData.ClipRect);
       Fillchar(FPaintData, SizeOf(FPaintData), 0);
       FContext := 0;
-      EndPaint(THandle(Self), AStruct);
+      EndPaint(HWND(Self), AStruct);
       //Dispose(AStruct);
     end;
   except

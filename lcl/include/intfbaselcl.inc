@@ -20,19 +20,19 @@
 }
 //##apiwiz##sps##   // Do not remove
 
-function TWidgetSet.AddEventHandler(AHandle: THandle; AFlags: dword; 
+function TWidgetSet.AddEventHandler(AHandle: TLCLHandle; AFlags: dword;
   AEventHandler: TWaitHandleEvent; AData: PtrInt): PEventHandler;
 begin
   Result := nil;
 end;
 
-function TWidgetSet.AddProcessEventHandler(AHandle: THandle; 
+function TWidgetSet.AddProcessEventHandler(AHandle: TLCLHandle;
   AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler;
 begin
   Result := nil;
 end;
 
-function TWidgetSet.AddPipeEventHandler(AHandle: THandle; 
+function TWidgetSet.AddPipeEventHandler(AHandle: TLCLHandle;
   AEventHandler: TPipeEvent; AData: PtrInt): PPipeEventHandler;
 begin
   Result := nil;

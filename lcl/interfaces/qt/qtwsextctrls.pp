@@ -91,7 +91,7 @@ type
   TQtWSCustomRadioGroup = class(TWSCustomRadioGroup)
   published
     class function  CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+      const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TQtWSRadioGroup }
@@ -105,7 +105,7 @@ type
   TQtWSCustomCheckGroup = class(TWSCustomCheckGroup)
   published
     class function  CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+      const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TQtWSCheckGroup }
@@ -131,7 +131,7 @@ type
   TQtWSCustomPanel = class(TWSCustomPanel)
   published
     class function CreateHandle(const AWinControl: TWinControl;
-          const AParams: TCreateParams): TLCLIntfHandle; override;
+          const AParams: TCreateParams): TLCLHandle; override;
     class function GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor; override;
   end;
 
@@ -166,7 +166,7 @@ uses qtsystemtrayicon;
   Allocates memory and resources for the control and shows it
  ------------------------------------------------------------------------------}
 class function TQtWSCustomPanel.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   QtFrame: TQtFrame;
 begin
@@ -177,7 +177,7 @@ begin
   QtFrame.setFrameShape(TBorderStyleToQtFrameShapeMap[TCustomPanel(AWinControl).BorderStyle]);
   
   // Return the Handle
-  Result := TLCLIntfHandle(QtFrame);
+  Result := TLCLHandle(QtFrame);
 end;
 
 class function TQtWSCustomPanel.GetDefaultColor(const AControl: TControl;
@@ -202,7 +202,7 @@ end;
  ------------------------------------------------------------------------------}
 
 class function TQtWSCustomRadioGroup.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   QtGroupBox: TQtGroupBox;
   Str: WideString;
@@ -215,7 +215,7 @@ begin
 
   QtGroupBox.AttachEvents;
 
-  Result := TLCLIntfHandle(QtGroupBox);
+  Result := TLCLHandle(QtGroupBox);
 end;
 
 { TQtWSCustomCheckGroup }
@@ -228,7 +228,7 @@ end;
   Allocates memory and resources for the control and shows it
  ------------------------------------------------------------------------------}
 class function TQtWSCustomCheckGroup.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   QtGroupBox: TQtGroupBox;
   Str: WideString;
@@ -241,7 +241,7 @@ begin
 
   QtGroupBox.AttachEvents;
 
-  Result := TLCLIntfHandle(QtGroupBox);
+  Result := TLCLHandle(QtGroupBox);
 end;
 
 { TQtWSCustomTrayIcon }

@@ -96,7 +96,7 @@ type
   protected
   public
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure ApplyChanges(const AProgressBar: TCustomProgressBar); override;
     class procedure SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer); override;
@@ -168,9 +168,9 @@ uses
 { TFpGuiWSProgressBar }
 
 class function TFpGuiWSProgressBar.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
-  Result := TLCLIntfHandle(TFPGUIPrivateProgressBar.Create(AWinControl, AParams));
+  Result := TLCLHandle(TFPGUIPrivateProgressBar.Create(AWinControl, AParams));
 end;
 
 class procedure TFpGuiWSProgressBar.DestroyHandle(const AWinControl: TWinControl);
@@ -199,7 +199,7 @@ end;
 class function TFpGuiWSCustomNotebook.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
 begin
-  Result := TLCLIntfHandle(TFPGUIPrivatePageControl.Create(AWinControl, AParams));
+  Result := TLCLHandle(TFPGUIPrivatePageControl.Create(AWinControl, AParams));
 end;
 
 class procedure TFpGuiWSCustomNotebook.DestroyHandle(

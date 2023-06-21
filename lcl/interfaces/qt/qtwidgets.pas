@@ -3670,7 +3670,7 @@ begin
       ((MButton and QtMidButton) = 0))
   then
     Msg.Keys := Msg.Keys or QtButtonsToLCLButtons(MButton);
-  Msg.Msg := CheckMouseButtonDownUp(TLCLIntfHandle(Self), LCLObject, LastMouse, LazPos, LazButton,
+  Msg.Msg := CheckMouseButtonDownUp(TLCLHandle(Self), LCLObject, LastMouse, LazPos, LazButton,
     QEvent_type(Event) in [QEventMouseButtonPress, QEventMouseButtonDblClick]);
   case LastMouse.ClickCount of
     2: Msg.Keys := Msg.Keys or MK_DOUBLECLICK;
@@ -4005,7 +4005,7 @@ begin
     Msg.State := [ssAlt] + Msg.State;
 
   LastMouse.WinControl := LCLObject;
-  LastMouse.WinHandle := TLCLIntfHandle(Self);
+  LastMouse.WinHandle := TLCLHandle(Self);
   LastMouse.MousePos := Point(MousePos.X, MousePos.Y);
 
   Msg.X := SmallInt(MousePos.X);
@@ -4211,7 +4211,7 @@ begin
       QPaintEvent_Rect(QPaintEventH(Event), ClipRect);
     end;
 
-    Msg.DC := BeginPaint(THandle(Self), AStruct^);
+    Msg.DC := BeginPaint(HWND(Self), AStruct^);
     FContext := Msg.DC;
     
     Msg.PaintStruct^.rcPaint := PaintData.ClipRect^;
@@ -4237,7 +4237,7 @@ begin
         Dispose(PaintData.ClipRect);
         Fillchar(FPaintData, SizeOf(FPaintData), 0);
         FContext := 0;
-        EndPaint(THandle(Self), AStruct^);
+        EndPaint(HWND(Self), AStruct^);
         Dispose(AStruct);
       end;
     except
@@ -4454,7 +4454,7 @@ begin
   Data.cbSize := SizeOf(Data);
   Data.iContextType := HELPINFO_WINDOW;
   Data.iCtrlId := 0;
-  Data.hItemHandle := THandle(Sender);
+  Data.hItemHandle := TLCLHandle(Sender);
   Data.dwContextId := 0;
   with QHelpEvent_globalPos(QHelpEventH(Event))^ do
     Data.MousePos := Point(X, Y);
@@ -11209,7 +11209,7 @@ begin
     QPaintEvent_Rect(QPaintEventH(Event), ClipRect);
   end;
 
-  Msg.DC := BeginPaint(THandle(Self), AStruct^);
+  Msg.DC := BeginPaint(HWND(Self), AStruct^);
   FContext := Msg.DC;
 
   Msg.PaintStruct^.rcPaint := PaintData.ClipRect^;
@@ -11278,7 +11278,7 @@ begin
     Dispose(PaintData.ClipRect);
     Fillchar(FPaintData, SizeOf(FPaintData), 0);
     FContext := 0;
-    EndPaint(THandle(Self), AStruct^);
+    EndPaint(HWND(Self), AStruct^);
     Dispose(AStruct);
   end;
 end;
@@ -16585,7 +16585,7 @@ begin
     end;
 
     ItemStruct^.itemID := UINT(ID);
-    ItemStruct^._hDC := BeginPaint(THandle(Self), AStruct);
+    ItemStruct^._hDC := BeginPaint(HWND(Self), AStruct);
     FContext := ItemStruct^._hDC;
     ItemStruct^.rcItem := PaintData.ClipRect^;
     ItemStruct^.hwndItem := HWND(Self);
@@ -16605,7 +16605,7 @@ begin
         Dispose(PaintData.ClipRect);
         Fillchar(FPaintData, SizeOf(FPaintData), 0);
         FContext := 0;
-        EndPaint(THandle(Self), AStruct);
+        EndPaint(HWND(Self), AStruct);
         Dispose(ItemStruct);
       end;
     except
@@ -19367,7 +19367,7 @@ begin
       QPaintEvent_Rect(QPaintEventH(Event), ClipRect);
     end;
 
-    Msg.DC := BeginPaint(THandle(Self), AStruct^);
+    Msg.DC := BeginPaint(HWND(Self), AStruct^);
     FDesignContext := Msg.DC;
 
     Msg.PaintStruct^.rcPaint := PaintData.ClipRect^;
@@ -19387,7 +19387,7 @@ begin
         Dispose(PaintData.ClipRect);
         Fillchar(FPaintData, SizeOf(FPaintData), 0);
         FDesignContext := 0;
-        EndPaint(THandle(Self), AStruct^);
+        EndPaint(HWND(Self), AStruct^);
         Dispose(AStruct);
       end;
     except

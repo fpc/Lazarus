@@ -64,7 +64,7 @@ type
   TCocoaWSCustomSplitter = class(TWSCustomSplitter)
   published
     class function CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+      const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TCocoaWSSplitter }
@@ -220,7 +220,7 @@ begin
 end;
 
 class function TCocoaWSCustomSplitter.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   ctrl : TCocoaSplitterOwnerControl;
   sl   : TCocoaManualScrollView;
@@ -240,7 +240,7 @@ begin
   sl.callback := ctrl.callback;
   lcl.HandleFrame:=sl;
 
-  Result := TLCLIntfHandle(sl);
+  Result := TLCLHandle(sl);
 end;
 
 end.

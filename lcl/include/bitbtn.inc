@@ -67,7 +67,7 @@ begin
   inherited Click;
 end;
 
-procedure TCustomBitBtn.LoadGlyphFromResourceName(Instance: THandle; const AName: String);
+procedure TCustomBitBtn.LoadGlyphFromResourceName(Instance: TLCLHandle; const AName: String);
 begin
   Buttons.LoadGlyphFromResourceName(FButtonGlyph, Instance, AName);
 end;

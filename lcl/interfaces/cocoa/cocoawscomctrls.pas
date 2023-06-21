@@ -35,7 +35,7 @@ type
 
   TCocoaWSStatusBar = class(TWSStatusBar)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure Update(const AStatusBar: TStatusBar); override;
@@ -65,7 +65,7 @@ type
   public
     class function  GetCocoaTabPageFromHandle(AHandle: HWND): TCocoaTabPage;
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
     class procedure SetProperties(const ACustomPage: TCustomPage; ACocoaControl: NSTabViewItem);
@@ -83,7 +83,7 @@ type
   public
     class function  GetCocoaTabControlHandle(ATabControl: TCustomTabControl): TCocoaTabControl;
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
 
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
 
@@ -148,7 +148,7 @@ type
     class function CheckColumnParams(out ATableControl: TCocoaTableListView;
       out ANSColumn: NSTableColumn; const ALV: TCustomListView; const AIndex: Integer; ASecondIndex: Integer = -1): Boolean;
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
     // Column
     class procedure ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); override;
@@ -216,7 +216,7 @@ type
 
   TCocoaWSProgressBar = class(TWSProgressBar)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure ApplyChanges(const AProgressBar: TCustomProgressBar); override;
     class procedure SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer); override;
     class procedure SetStyle(const AProgressBar: TCustomProgressBar; const NewStyle: TProgressBarStyle); override;
@@ -226,7 +226,7 @@ type
 
   TCocoaWSCustomUpDown = class(TWSCustomUpDown)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure SetIncrement(const AUpDown: TCustomUpDown; AValue: Double); override;
     class procedure SetMaxPosition(const AUpDown: TCustomUpDown; AValue: Double); override;
     class procedure SetMinPosition(const AUpDown: TCustomUpDown; AValue: Double); override;
@@ -250,14 +250,14 @@ type
 
   TCarbonWSToolBar = class(TWSToolBar)
   published
-    //class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    //class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TCocoaWSTrackBar }
 
   TCocoaWSTrackBar = class(TWSTrackBar)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); override;
     class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const {%H-}NewPosition: integer); override;
@@ -323,7 +323,7 @@ end;
 { TCocoaWSCustomUpDown }
 
 class function TCocoaWSCustomUpDown.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   lResult: TCocoaStepper;
 begin
@@ -337,7 +337,7 @@ begin
     lResult.setAction(objcselector('stepperAction:'));
 
   end;
-  Result := TLCLIntfHandle(lResult);
+  Result := TLCLHandle(lResult);
 end;
 
 class procedure TCocoaWSCustomUpDown.SetMinPosition(
@@ -481,7 +481,7 @@ end;
 { TCocoaWSStatusBar }
 
 class function TCocoaWSStatusBar.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   lResult: TCocoaStatusBar;
   cell   : NSButtonCell;
@@ -490,7 +490,7 @@ begin
   Result := 0;
   lResult := TCocoaStatusBar.alloc.lclInitWithCreateParams(AParams);
   if not Assigned(lResult) then Exit;
-  Result := TLCLIntfHandle(lResult);
+  Result := TLCLHandle(lResult);
 
   cb := TStatusBarCallback.Create(lResult, AWinControl);
   lResult.callback := cb;
@@ -552,7 +552,7 @@ begin
   Result := lHandle.tabPage;
 end;
 
-class function TCocoaWSCustomPage.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function TCocoaWSCustomPage.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   lControl: TCocoaTabPage;
   tv: TCocoaTabPageView;
@@ -562,7 +562,7 @@ begin
   WriteLn('[TCocoaWSCustomPage.CreateHandle]');
   {$ENDIF}
   lControl := TCocoaTabPage.alloc().init();
-  Result := TLCLIntfHandle(lControl);
+  Result := TLCLHandle(lControl);
   if Result <> 0 then
   begin
     //lControl.callback := TLCLCommonCallback.Create(lControl, AWinControl);
@@ -585,7 +585,7 @@ begin
     lControl.callback := tv.callback;
     lControl.setView(tv);
 
-    Result := TLCLIntfHandle(tv);
+    Result := TLCLHandle(tv);
   end;
 end;
 
@@ -703,7 +703,7 @@ begin
   Result := TCocoaTabControl(ATabControl.Handle);
 end;
 
-class function TCocoaWSCustomTabControl.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function TCocoaWSCustomTabControl.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   lControl: TCocoaTabControl;
   lTabControl: TCustomTabControl = nil;
@@ -714,7 +714,7 @@ begin
   lTabStyle := LCLTabPosToNSTabStyle(lTabControl.ShowTabs, lTabControl.BorderWidth, lTabControl.TabPosition);
   lControl.setTabViewType(lTabStyle);
   lControl.lclEnabled := AWinControl.Enabled;
-  Result := TLCLIntfHandle(lControl);
+  Result := TLCLHandle(lControl);
   if Result <> 0 then
   begin
     lControl.callback := TLCLTabControlCallback.Create(lControl, AWinControl);
@@ -1004,7 +1004,7 @@ begin
   end;
 end;
 
-class function TCocoaWSCustomListView.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function TCocoaWSCustomListView.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   lCocoaLV: TCocoaListView;
   lTableLV: TCocoaTableListView;
@@ -1016,7 +1016,7 @@ begin
   WriteLn('[TCocoaWSCustomListView.CreateHandle] AWinControl='+IntToStr(PtrInt(AWinControl)));
   {$ENDIF}
   lCocoaLV := TCocoaListView.alloc.lclInitWithCreateParams(AParams);
-  Result := TLCLIntfHandle(lCocoaLV);
+  Result := TLCLHandle(lCocoaLV);
   if Result <> 0 then
   begin
     ns := GetNSRect(0, 0, AParams.Width, AParams.Height);
@@ -1726,7 +1726,7 @@ end;
 { TCocoaWSProgressBar }
 
 class function TCocoaWSProgressBar.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   lResult: TCocoaProgressIndicator;
 begin
@@ -1738,7 +1738,7 @@ begin
     //small constrol size looks like carbon
     //lResult.setControlSize(NSSmallControlSize);
   end;
-  Result := TLCLIntfHandle(lResult);
+  Result := TLCLHandle(lResult);
 end;
 
 class procedure TCocoaWSProgressBar.ApplyChanges(
@@ -2069,7 +2069,7 @@ end;
   Creates new track bar with the specified parameters
  ------------------------------------------------------------------------------}
 class function TCocoaWSTrackBar.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   lResult: TCocoaSlider;
 begin
@@ -2080,7 +2080,7 @@ begin
     lResult.setTarget(lResult);
     lResult.setAction(objcselector('sliderAction:'));
   end;
-  Result := TLCLIntfHandle(lResult);
+  Result := TLCLHandle(lResult);
 end;
 
 {------------------------------------------------------------------------------

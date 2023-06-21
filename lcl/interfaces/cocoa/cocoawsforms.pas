@@ -73,7 +73,7 @@ type
   private
   protected
   public
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
   end;
 
@@ -113,7 +113,7 @@ type
     class function GetWindowContentFromHandle(const ACustomForm: TCustomForm): TCocoaWindowContent;
   published
     class function AllocWindowHandle: TCocoaWindow; virtual;
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
 
     class function GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
@@ -155,7 +155,7 @@ type
   protected
   public
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
   end;
 
@@ -241,7 +241,7 @@ end;
 { TCocoaWSHintWindow }
 
 class function TCocoaWSHintWindow.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   win: TCocoaPanel;
   cnt: TCocoaWindowContent;
@@ -309,7 +309,7 @@ begin
   win.setContentView(cnt);
   doc.release;
 
-  Result := TLCLIntfHandle(cnt);
+  Result := TLCLHandle(cnt);
 end;
 
 class procedure TCocoaWSHintWindow.SetText(const AWinControl: TWinControl;
@@ -533,7 +533,7 @@ end;
 
 { TCocoaWSScrollingWinControl}
 
-class function  TCocoaWSScrollingWinControl.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function  TCocoaWSScrollingWinControl.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   scrollcon: TCocoaScrollView;
   docview: TCocoaCustomControl;
@@ -554,7 +554,7 @@ begin
   scrollcon.callback := lcl;
   scrollcon.setDocumentView(docview);
   ScrollViewSetBorderStyle(scrollcon, TScrollingWinControl(AWincontrol).BorderStyle);
-  Result := TLCLIntfHandle(scrollcon);
+  Result := TLCLHandle(scrollcon);
 end;
 
 class procedure TCocoaWSScrollingWinControl.SetBorderStyle(
@@ -702,7 +702,7 @@ begin
 end;
 
 class function TCocoaWSCustomForm.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   Form: TCustomForm absolute AWinControl;
   win: TCocoaWindow;
@@ -840,7 +840,7 @@ begin
   end;
   doc.release;
 
-  Result := TLCLIntfHandle(cnt);
+  Result := TLCLHandle(cnt);
 end;
 
 class procedure TCocoaWSCustomForm.DestroyHandle(const AWinControl: TWinControl

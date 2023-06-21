@@ -41,7 +41,7 @@ type
   private
   protected
   published
-    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
   end;
@@ -52,7 +52,7 @@ type
   private
   protected
   published
-    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
   end;
 
   { TFpGuiWSOpenDialog }
@@ -61,7 +61,7 @@ type
   private
   protected
   published
-    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
   end;
 
   { TFpGuiWSSaveDialog }
@@ -70,7 +70,7 @@ type
   private
   protected
   published
-    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
   end;
 
   { TFpGuiWSSelectDirectoryDialog }
@@ -88,7 +88,7 @@ type
   protected
   public
   published
-    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
   end;
 
   { TFpGuiWSColorButton }
@@ -105,7 +105,7 @@ type
   private
   protected
   published
-    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
   end;
 
 
@@ -114,17 +114,17 @@ implementation
 { TFpGuiWSColorDialog }
 
 class function TFpGuiWSColorDialog.CreateHandle(
-  const ACommonDialog: TCommonDialog): THandle;
+  const ACommonDialog: TCommonDialog): TLCLHandle;
 begin
-  Result := TLCLIntfHandle(TFPGUIPrivateColorDialog.Create(ACommonDialog));
+  Result := TLCLHandle(TFPGUIPrivateColorDialog.Create(ACommonDialog));
 end;
 
 { TFpGuiWSCommonDialog }
 
 class function TFpGuiWSCommonDialog.CreateHandle(
-  const ACommonDialog: TCommonDialog): THandle;
+  const ACommonDialog: TCommonDialog): TLCLHandle;
 begin
-  Result := TLCLIntfHandle(TFPGUIPrivateCommonDialog.Create(ACommonDialog));
+  Result := TLCLHandle(TFPGUIPrivateCommonDialog.Create(ACommonDialog));
 end;
 
 class procedure TFpGuiWSCommonDialog.ShowModal(
@@ -145,33 +145,33 @@ end;
 { TFpGuiWSFileDialog }
 
 class function TFpGuiWSFileDialog.CreateHandle(
-  const ACommonDialog: TCommonDialog): THandle;
+  const ACommonDialog: TCommonDialog): TLCLHandle;
 begin
-  Result := TLCLIntfHandle(TFPGUIPrivateFileDialog.Create(ACommonDialog));
+  Result := TLCLHandle(TFPGUIPrivateFileDialog.Create(ACommonDialog));
 end;
 
 { TFpGuiWSOpenDialog }
 
 class function TFpGuiWSOpenDialog.CreateHandle(
-  const ACommonDialog: TCommonDialog): THandle;
+  const ACommonDialog: TCommonDialog): TLCLHandle;
 begin
-  Result := TLCLIntfHandle(TFPGUIPrivateOpenDialog.Create(ACommonDialog));
+  Result := TLCLHandle(TFPGUIPrivateOpenDialog.Create(ACommonDialog));
 end;
 
 { TFpGuiWSSaveDialog }
 
 class function TFpGuiWSSaveDialog.CreateHandle(
-  const ACommonDialog: TCommonDialog): THandle;
+  const ACommonDialog: TCommonDialog): TLCLHandle;
 begin
-  Result := TLCLIntfHandle(TFPGUIPrivateSaveDialog.Create(ACommonDialog));
+  Result := TLCLHandle(TFPGUIPrivateSaveDialog.Create(ACommonDialog));
 end;
 
 { TFpGuiWSFontDialog }
 
 class function TFpGuiWSFontDialog.CreateHandle(
-  const ACommonDialog: TCommonDialog): THandle;
+  const ACommonDialog: TCommonDialog): TLCLHandle;
 begin
-  Result := TLCLIntfHandle(TFPGUIPrivateFontDialog.Create(ACommonDialog));
+  Result := TLCLHandle(TFPGUIPrivateFontDialog.Create(ACommonDialog));
 end;
 
 initialization

@@ -225,7 +225,7 @@ begin
   View.callback:=TLCLCommonCallback.Create(View, AWinControl);
   LSetWantsBestResolutionOpenGLSurface(AMacRetinaMode, HWND(View));
   //View.setPixelFormat(PixFmt);
-  Result:=TLCLIntfHandle(View);
+  Result:=TLCLHandle(View);
 end;
 
 procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);

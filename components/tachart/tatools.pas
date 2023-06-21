@@ -22,7 +22,7 @@ uses
   // RTL, FCL
   Classes, SysUtils, Types, Math, FPCanvas,
   // LCL
-  Controls, CustomTimer, {GraphMath,} Forms, LCLPlatformDef, InterfaceBase,
+  Controls, CustomTimer, Forms, LCLPlatformDef, InterfaceBase,
   // TAChart
   TAChartUtils, TADrawUtils, TAChartAxis, TALegend, TACustomSeries, TAGraph,
   TATypes, TATextElements;

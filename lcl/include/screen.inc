@@ -560,7 +560,7 @@ begin
     Result := UpdatedMonitor(MonitorHandle, MonitorDefault, 'TScreen.MonitorFromRect');
 end;
 
-function TScreen.MonitorFromWindow(const Handle: THandle;
+function TScreen.MonitorFromWindow(const Handle: TLCLHandle;
   MonitorDefault: TMonitorDefaultTo): TMonitor;
 var
   MonitorHandle: HMONITOR;

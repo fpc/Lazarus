@@ -207,7 +207,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure Click; override;
-    procedure LoadGlyphFromResourceName(Instance: THandle; const AName: String);
+    procedure LoadGlyphFromResourceName(Instance: TLCLHandle; const AName: String);
     procedure LoadGlyphFromLazarusResource(const AName: String);
     procedure LoadGlyphFromStock(idButton: Integer); // not DPI-aware, uses widgetset themed icons if available
     procedure LoadGlyphFromResource(idButton: TButtonImage); // DPI-aware
@@ -407,7 +407,7 @@ type
     destructor Destroy; override;
     function FindDownButton: TCustomSpeedButton;
     procedure Click; override; // make Click public
-    procedure LoadGlyphFromResourceName(Instance: THandle; const AName: String);
+    procedure LoadGlyphFromResourceName(Instance: TLCLHandle; const AName: String);
     procedure LoadGlyphFromLazarusResource(const AName: String);
   public
     property Alignment: TAlignment read FAlignment write SetAlignment default taCenter;
@@ -518,7 +518,7 @@ var
   GetDefaultBitBtnGlyph: TGetDefaultBitBtnGlyph = nil;
 
 function GetLCLDefaultBtnGlyph(Kind: TBitBtnKind): TGraphic;
-procedure LoadGlyphFromResourceName(AGlyph: TButtonGlyph; Instance: THandle; const AName: String);
+procedure LoadGlyphFromResourceName(AGlyph: TButtonGlyph; Instance: TLCLHandle; const AName: String);
 procedure LoadGlyphFromLazarusResource(AGlyph: TButtonGlyph; const AName: String);
 procedure LoadGlyphFromStock(AGlyph: TButtonGlyph; idButton: Integer);
 procedure LoadGlyphFromResource(AGlyph: TButtonGlyph; idButton: Integer); // DPI-aware
@@ -586,7 +586,7 @@ begin
   Result := GetDefaultGlyph(BitBtnResNames[idButton], ScalePercent);
 end;
 
-procedure LoadGlyphFromResourceName(AGlyph: TButtonGlyph; Instance: THandle; const AName: String);
+procedure LoadGlyphFromResourceName(AGlyph: TButtonGlyph; Instance: TLCLHandle; const AName: String);
 var
   C: TCustomBitmap;
 begin

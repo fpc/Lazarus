@@ -134,7 +134,7 @@ function GetROP2(DC: HDC): Integer; override;
 function GetScrollBarSize(Handle: HWND; BarKind: Integer): integer; override;
 function GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean; override;
 function GetScrollInfo(Handle: HWND; SBStyle: Integer; var ScrollInfo: TScrollInfo): Boolean; override;
-function GetStockObject(Value: Integer): THandle; override;
+function GetStockObject(Value: Integer): TLCLHandle; override;
 function GetSysColor(nIndex: Integer): DWORD; override;
 function GetSysColorBrush(nIndex: Integer): HBrush; override;
 function GetSystemMetrics(nIndex: Integer): Integer;  override;
@@ -186,7 +186,7 @@ function RectVisible(dc : hdc; const ARect: TRect) : Boolean; override;
 function RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer): Boolean; override;
 function ReleaseCapture : Boolean; override;
 function ReleaseDC({%H-}hWnd: HWND; DC: HDC): Integer; override;
-function RemoveProp(Handle: hwnd; Str: PChar): THandle; override;
+function RemoveProp(Handle: HWND; Str: PChar): TLCLHandle; override;
 function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; override;
 function RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean;  override;
 

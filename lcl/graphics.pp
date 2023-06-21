@@ -848,8 +848,8 @@ type
     procedure LoadFromStream(Stream: TStream); virtual; abstract;
     procedure LoadFromMimeStream(AStream: TStream; const AMimeType: string); virtual;
     procedure LoadFromLazarusResource(const ResName: String); virtual;
-    procedure LoadFromResourceName(Instance: THandle; const ResName: String); virtual;
-    procedure LoadFromResourceID(Instance: THandle; ResID: PtrInt); virtual;
+    procedure LoadFromResourceName(Instance: TLCLHandle; const ResName: String); virtual;
+    procedure LoadFromResourceID(Instance: TLCLHandle; ResID: PtrInt); virtual;
     procedure LoadFromClipboardFormat(FormatID: TClipboardFormat); virtual;
     procedure LoadFromClipboardFormatID(ClipboardType: TClipboardType;
       FormatID: TClipboardFormat); virtual;
@@ -929,8 +929,8 @@ type
     procedure LoadFromClipboardFormat(FormatID: TClipboardFormat);
     procedure LoadFromClipboardFormatID(ClipboardType: TClipboardType; FormatID: TClipboardFormat);
     procedure LoadFromFile(const Filename: string);
-    procedure LoadFromResourceName(Instance: THandle; const ResName: String);
-    procedure LoadFromResourceName(Instance: THandle; const ResName: String; AClass: TGraphicClass);
+    procedure LoadFromResourceName(Instance: TLCLHandle; const ResName: String);
+    procedure LoadFromResourceName(Instance: TLCLHandle; const ResName: String; AClass: TGraphicClass);
     procedure LoadFromLazarusResource(const AName: string);
     procedure LoadFromStream(Stream: TStream);
     procedure LoadFromStreamWithFileExt(Stream: TStream; const FileExt: string);
@@ -1222,12 +1222,12 @@ type
 
   TSharedRasterImage = class(TSharedImage)
   private
-    FHandle: THandle; // generic type, can be HBITMAP or HICON or ....
+    FHandle: TLCLHandle; // generic type, can be HBITMAP or HICON or ....
     FBitmapCanvas: TCanvas; // current canvas selected into
     FSaveStream: TMemoryStream;
   protected
     procedure FreeHandle; override;
-    function ReleaseHandle: THandle; virtual;
+    function ReleaseHandle: TLCLHandle; virtual;
     function IsEmpty: boolean; virtual;
   public
     constructor Create; virtual;
@@ -1267,7 +1267,7 @@ type
     function  CreateDefaultBitmapHandle(const ADesc: TRawImageDescription): HBITMAP; virtual;
     procedure Draw(DestCanvas: TCanvas; const DestRect: TRect); override;
     function GetEmpty: Boolean; override;
-    function GetHandle: THandle;
+    function GetHandle: TLCLHandle;
     function GetBitmapHandle: HBITMAP; virtual; abstract;
     function GetMasked: Boolean; virtual;
     function GetMaskHandle: HBITMAP; virtual; abstract;
@@ -1297,7 +1297,7 @@ type
     procedure ReadData(Stream: TStream); override;
     procedure ReadStream(AStream: TMemoryStream; ASize: Longint); virtual; abstract; // loads imagedata into rawimage, this method shouldn't call changed().
     procedure SetSize(AWidth, AHeight: integer); virtual; abstract;
-    procedure SetHandle(AValue: THandle); virtual;
+    procedure SetHandle(AValue: TLCLHandle); virtual;
     procedure SetHeight(AHeight: Integer); override;
     procedure SetWidth(AWidth: Integer); override;
     procedure SetTransparentMode(AValue: TTransparentMode);
@@ -1413,7 +1413,7 @@ type
     function InternalReleaseMaskHandle: HBITMAP; override;
     function InternalReleasePalette: HPALETTE; override;
     procedure RawimageNeeded(ADescOnly: Boolean);
-    procedure SetHandle(AValue: THandle); override;
+    procedure SetHandle(AValue: TLCLHandle); override;
     procedure SetPixelFormat(AValue: TPixelFormat); override;
     procedure UnshareImage(CopyContent: boolean); override;
     function  UpdateHandles(ABitmap, AMask: HBITMAP): Boolean; override;
@@ -1548,7 +1548,7 @@ type
     FImages: TFPList;
   protected
     procedure FreeHandle; override;
-    procedure UpdateFromHandle(NewHandle: THandle); virtual;
+    procedure UpdateFromHandle(NewHandle: TLCLHandle); virtual;
     function IsEmpty: boolean; override;
     function GetImage(const AIndex: Integer): TIconImage;
   public
@@ -1647,7 +1647,7 @@ type
     procedure SetTransparent(Value: Boolean); override;
     procedure UnshareImage(CopyContent: boolean); override;
     procedure UpdateCurrentView;
-    procedure SetHandle(AValue: THandle); override;
+    procedure SetHandle(AValue: TLCLHandle); override;
     function UpdateHandle(AValue: HICON): Boolean; virtual;
     function  UpdateHandles(ABitmap, AMask: HBITMAP): Boolean; override;
     procedure WriteStream(AStream: TMemoryStream); override;
@@ -1664,9 +1664,9 @@ type
     procedure SetSize(AWidth, AHeight: integer); override;
     class function GetFileExtensions: string; override;
     function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
-    procedure LoadFromResourceName(Instance: THandle; const ResName: String); override;
-    procedure LoadFromResourceID(Instance: THandle; ResID: PtrInt); override;
-    procedure LoadFromResourceHandle(Instance: THandle; ResHandle: TFPResourceHandle); virtual;
+    procedure LoadFromResourceName(Instance: TLCLHandle; const ResName: String); override;
+    procedure LoadFromResourceID(Instance: TLCLHandle; ResID: PtrInt); override;
+    procedure LoadFromResourceHandle(Instance: TLCLHandle; ResHandle: TFPResourceHandle); virtual;
     function BitmapHandleAllocated: boolean; override;
     function MaskHandleAllocated: boolean; override;
     function PaletteAllocated: boolean; override;
@@ -1689,7 +1689,7 @@ type
     class function GetTypeID: Word; override;
     procedure HandleNeeded; override;
   public
-    procedure LoadFromResourceHandle(Instance: THandle; ResHandle: TFPResourceHandle); override;
+    procedure LoadFromResourceHandle(Instance: TLCLHandle; ResHandle: TFPResourceHandle); override;
     function ReleaseHandle: HICON;
     function GetResourceType: TResourceType; override;
     property Handle: HICON read GetIconHandle write SetIconHandle;
@@ -1773,7 +1773,7 @@ type
   public
     class function GetFileExtensions: string; override;
     function GetResourceType: TResourceType; override;
-    procedure LoadFromResourceHandle(Instance: THandle; ResHandle: TFPResourceHandle); override;
+    procedure LoadFromResourceHandle(Instance: TLCLHandle; ResHandle: TFPResourceHandle); override;
     function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
     function ReleaseHandle: HCURSOR;
     procedure SetCenterHotSpot;
@@ -2000,8 +2000,8 @@ function LoadBitmapFromLazarusResource(const ResourceName: String): TBitmap; dep
 function LoadBitmapFromLazarusResourceHandle(Handle: TLResource): TBitmap; deprecated;
 
 // technically a bitmap is created and not loaded
-function CreateGraphicFromResourceName(Instance: THandle; const ResName: String): TGraphic;
-function CreateBitmapFromResourceName(Instance: THandle; const ResName: String): TCustomBitmap;
+function CreateGraphicFromResourceName(Instance: TLCLHandle; const ResName: String): TGraphic;
+function CreateBitmapFromResourceName(Instance: TLCLHandle; const ResName: String): TCustomBitmap;
 function CreateBitmapFromLazarusResource(const AName: String): TCustomBitmap;
 function CreateBitmapFromLazarusResource(const AName: String; AMinimumClass: TCustomBitmapClass): TCustomBitmap;
 function CreateBitmapFromLazarusResource(AHandle: TLResource): TCustomBitmap;
@@ -2116,7 +2116,7 @@ begin
   end;
 end;
 
-function LocalLoadBitmap(hInstance: THandle; lpBitmapName: PChar): HBitmap;
+function LocalLoadBitmap(hInstance: TLCLHandle; lpBitmapName: PChar): HBitmap;
 var
   Bmp: TBitmap;
 begin
@@ -2131,7 +2131,7 @@ begin
   end;
 end;
 
-function LocalLoadCursor(hInstance: THandle; lpCursorName: PChar): HCursor;
+function LocalLoadCursor(hInstance: TLCLHandle; lpCursorName: PChar): HCursor;
 var
   Cur: TCursorImage;
 begin
@@ -2146,7 +2146,7 @@ begin
   end;
 end;
 
-function LocalLoadIcon(hInstance: THandle; lpIconName: PChar): HIcon;
+function LocalLoadIcon(hInstance: TLCLHandle; lpIconName: PChar): HIcon;
 var
   Ico: TIcon;
 begin
@@ -2766,7 +2766,7 @@ end;
 {$ENDIF}
 {$I patternbitmap.inc}
 
-function CreateGraphicFromResourceName(Instance: THandle; const ResName: String): TGraphic;
+function CreateGraphicFromResourceName(Instance: TLCLHandle; const ResName: String): TGraphic;
 var
   ResHandle: TFPResourceHandle;
 begin
@@ -2789,7 +2789,7 @@ begin
     Result := CreateBitmapFromResourceName(Instance, ResName)
 end;
 
-function CreateBitmapFromResourceName(Instance: THandle; const ResName: String): TCustomBitmap;
+function CreateBitmapFromResourceName(Instance: TLCLHandle; const ResName: String): TCustomBitmap;
 var
   ResHandle: TFPResourceHandle;
   Stream: TResourceStream;

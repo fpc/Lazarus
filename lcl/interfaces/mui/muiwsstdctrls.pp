@@ -43,7 +43,7 @@ type
   protected
   public
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure SetKind(const AScrollBar: TCustomScrollBar; const AIsHorizontal: Boolean); override;
     class procedure SetParams(const AScrollBar: TCustomScrollBar); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
@@ -56,7 +56,7 @@ type
   protected
   published
     class function  CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+      const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
   end;
 
@@ -75,7 +75,7 @@ type
   protected
   published
     class function  CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+      const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
 
     class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
@@ -103,7 +103,7 @@ type
   protected
   published
     class function  CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+      const AParams: TCreateParams): TLCLHandle; override;
     class function  GetStrings(const ACustomListBox: TCustomListBox
                             ): TStrings; override;
     class procedure FreeStrings(var AStrings: TStrings); override;
@@ -126,7 +126,7 @@ type
   protected
   published
     class function CreateHandle(const AWinControl: TWinControl;
-          const AParams: TCreateParams): TLCLIntfHandle; override;
+          const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
@@ -142,7 +142,7 @@ type
   protected
   published
     class function CreateHandle(const AWinControl: TWinControl;
-          const AParams: TCreateParams): TLCLIntfHandle; override;
+          const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
 {    class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
     class procedure SetAlignment(const ACustomMemo: TCustomMemo; const AAlignment: TAlignment); override;}
@@ -183,7 +183,7 @@ type
   protected
   published
     class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure Invalidate(const AWinControl: TWinControl); override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
@@ -197,7 +197,7 @@ type
   protected
   published
     class function  CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+      const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
 
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
@@ -225,7 +225,7 @@ type
   public
   published
     class function  CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+      const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
   end;
 
@@ -236,7 +236,7 @@ type
   protected
   published
     class function  CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+      const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
   end;
 
@@ -247,7 +247,7 @@ type
   protected
   published
     class function  CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+      const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
@@ -269,7 +269,7 @@ uses
   MuiStringsUnit, forms;
 
 
-class function TMUIWSScrollBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function TMUIWSScrollBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   MUIScrollbar: TMUIScrollbar;
   TagList: TATagList;
@@ -300,7 +300,7 @@ begin
     MUIScrollbar.Parent := TMuiObject(AWinControl.Parent.Handle);
   end;
   //
-  Result := TLCLIntfHandle(MUIScrollbar);
+  Result := TLCLHandle(MUIScrollbar);
 end;
 
 class procedure TMUIWSScrollBar.SetKind(const AScrollBar: TCustomScrollBar; const AIsHorizontal: Boolean);
@@ -338,7 +338,7 @@ end;
 { TMUIWSCustomStaticText }
 
 class function TMUIWSCustomStaticText.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   MuiLabel: TMuiText;
   TagList: TATagList;
@@ -362,7 +362,7 @@ begin
     MuiLabel.Parent := TMuiObject(AWinControl.Parent.Handle);
   end;
   //
-  Result := TLCLIntfHandle(MuiLabel);
+  Result := TLCLHandle(MuiLabel);
   //
 end;
 
@@ -401,7 +401,7 @@ end;
   Allocates memory and resources for the control and shows it
  ------------------------------------------------------------------------------}
 class function TMUIWSCustomComboBox.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   MuiCycle: TMuiCycle;
 begin
@@ -421,7 +421,7 @@ begin
     MuiCycle.Parent := TMuiObject(AWinControl.Parent.Handle);
   end;
   //
-  Result := TLCLIntfHandle(MuiCycle);
+  Result := TLCLHandle(MuiCycle);
   //
 end;
 
@@ -524,7 +524,7 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class function TMUIWSCustomEdit.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   MuiEdit: TMuiStringEdit;
   Tags: TATagList;
@@ -568,7 +568,7 @@ begin
     MuiEdit.Parent := TMuiObject(AWinControl.Parent.Handle);
   end;
   //
-  Result := TLCLIntfHandle(MuiEdit);
+  Result := TLCLHandle(MuiEdit);
   //
 end;
 
@@ -660,7 +660,7 @@ end;
   Allocates memory and resources for the control and shows it
  ------------------------------------------------------------------------------}
 class function TMUIWSButton.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 
 var
   MuiButton: TMuiButton;
@@ -683,7 +683,7 @@ begin
     MuiButton.Parent := TMuiObject(AWinControl.Parent.Handle);
   end;
   //
-  Result := TLCLIntfHandle(MuiButton);
+  Result := TLCLHandle(MuiButton);
   //
 end;
 
@@ -749,7 +749,7 @@ end;
 
 class function TMUIWSCustomCheckBox.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams
-  ): TLCLIntfHandle;
+  ): TLCLHandle;
 var
   MuiCheckMark : TMuiCheckMark;
   Params: TAParamList;
@@ -772,7 +772,7 @@ begin
     MuiCheckMark.Parent := TMuiCheckMark(AWinControl.Parent.Handle);
   end;
   //
-  Result := TLCLIntfHandle(MuiCheckMark);
+  Result := TLCLHandle(MuiCheckMark);
 end;
 
 class procedure TMUIWSCustomCheckBox.DestroyHandle(
@@ -786,7 +786,7 @@ end;
 { TMUIWSRadioButton }
 
 class function TMUIWSRadioButton.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   MUIRadioButton : TMuiRadioButton;
   Params: TAParamList;
@@ -809,7 +809,7 @@ begin
     MUIRadioButton.Parent := TMUIRadioButton(AWinControl.Parent.Handle);
   end;
   //
-  Result := TLCLIntfHandle(MUIRadioButton);
+  Result := TLCLHandle(MUIRadioButton);
 end;
 
 class procedure TMUIWSRadioButton.DestroyHandle(const AWinControl: TWinControl);
@@ -819,7 +819,7 @@ begin
   AWinControl.Handle := 0;
 end;
 
-class function TMUIWSToggleBox.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function TMUIWSToggleBox.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   MUIToggleButton : TMuiToggleButton;
   Params: TAParamList;
@@ -841,7 +841,7 @@ begin
     MUIToggleButton.Parent := TMUIToggleButton(AWinControl.Parent.Handle);
   end;
   //
-  Result := TLCLIntfHandle(MUIToggleButton);
+  Result := TLCLHandle(MUIToggleButton);
 end;
 
 class procedure TMUIWSToggleBox.DestroyHandle(const AWinControl: TWinControl);
@@ -853,7 +853,7 @@ end;
 { TMUIWSCustomMemo }
 
 class function TMUIWSCustomMemo.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   MuiTEdit: TMuiTextEdit;
   TagList: TATagList;
@@ -875,7 +875,7 @@ begin
     MuiTEdit.Parent := TMuiObject(AWinControl.Parent.Handle);
   end;
   //
-  Result := TLCLIntfHandle(MuiTEdit);
+  Result := TLCLHandle(MuiTEdit);
   //
 end;
 
@@ -913,7 +913,7 @@ end;
 { TMUIWSListBox }
 
 class function TMUIWSCustomListBox.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   MuiList: TMuiListView;
   TagList: TATagList;
@@ -935,7 +935,7 @@ begin
     MuiList.Parent := TMuiObject(AWinControl.Parent.Handle);
   end;
   //
-  Result := TLCLIntfHandle(MuiList);
+  Result := TLCLHandle(MuiList);
   //
 end;
 
@@ -966,7 +966,7 @@ end;
 
 class function TMUIWSCustomGroupBox.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams
-  ): TLCLIntfHandle;
+  ): TLCLHandle;
 var
   MuiArea: TMUIGroupBox;
   Tags: TATagList;
@@ -997,7 +997,7 @@ begin
     MuiArea.Parent := TMuiObject(AWinControl.Parent.Handle);
   end;
   //
-  Result := TLCLIntfHandle(MUIArea);
+  Result := TLCLHandle(MUIArea);
   //
 end;
 

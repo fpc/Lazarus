@@ -31,9 +31,9 @@ unit CairoCanvas;
 interface
 
 uses
-  Types, SysUtils, Classes, LCLType, LCLProc, Graphics, math,
+  Types, SysUtils, Classes, Math,
   // LCL
-  Printers,
+  Printers, LCLType, LCLProc, Graphics,
   // LazUtils
   GraphMath,
   //CairoCanvas

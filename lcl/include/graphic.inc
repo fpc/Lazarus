@@ -144,7 +144,7 @@ begin
     raise EInvalidGraphic.Create(ClassName+': Unsupported MimeType: ' + AMimeType);
 end;
 
-procedure TGraphic.LoadFromResourceID(Instance: THandle; ResID: PtrInt);
+procedure TGraphic.LoadFromResourceID(Instance: TLCLHandle; ResID: PtrInt);
 var
   Stream: TResourceStream;
   ResType: TResourceType;
@@ -160,7 +160,7 @@ begin
   end;
 end;
 
-procedure TGraphic.LoadFromResourceName(Instance: THandle; const ResName: String);
+procedure TGraphic.LoadFromResourceName(Instance: TLCLHandle; const ResName: String);
 var
   Stream: TResourceStream;
   ResType: TResourceType;

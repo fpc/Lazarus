@@ -31,9 +31,9 @@
  ******************************************************************************}
 //##apiwiz##sps##    // Do not remove
 
-function AddEventHandler(AHandle: THandle; AFlags: dword; AEventHandler: TWaitHandleEvent; AData: PtrInt): PEventHandler; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function AddProcessEventHandler(AHandle: THandle; AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function AddPipeEventHandler(AHandle: THandle; AEventHandler: TPipeEvent; AData: PtrInt): PPipeEventHandler; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function AddEventHandler(AHandle: TLCLHandle; AFlags: dword; AEventHandler: TWaitHandleEvent; AData: PtrInt): PEventHandler; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function AddProcessEventHandler(AHandle: TLCLHandle; AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function AddPipeEventHandler(AHandle: TLCLHandle; AEventHandler: TPipeEvent; AData: PtrInt): PPipeEventHandler; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function AllocateHWnd(Method: TLCLWndMethod): HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function AskUser(const DialogCaption, DialogMessage: string; DialogType: LongInt; Buttons: TDialogButtons; HelpCtx: Longint): LongInt; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 

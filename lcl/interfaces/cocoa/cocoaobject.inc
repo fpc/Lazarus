@@ -311,7 +311,7 @@ begin
   end;
 end;
 
-function TCocoaWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle;
+function TCocoaWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): TLCLHandle;
 var
   timer : NSTimer;
   user  : TCocoaTimerObject;
@@ -333,10 +333,10 @@ begin
   {released (twice) on timer invalidation}
   user.release;
 
-  Result:=THandle(timer);
+  Result:=TLCLHandle(timer);
 end;
 
-function TCocoaWidgetSet.DestroyTimer(TimerHandle: THandle): boolean;
+function TCocoaWidgetSet.DestroyTimer(TimerHandle: TLCLHandle): boolean;
 var
   obj : NSObject;
 begin
@@ -445,9 +445,9 @@ end;
   Method:  TCocoaWidgetSet.GetAppHandle
   Returns: Returns NSApp object, created via NSApplication.sharedApplication
  ------------------------------------------------------------------------------}
-function TCocoaWidgetSet.GetAppHandle: THandle;
+function TCocoaWidgetSet.GetAppHandle: TLCLHandle;
 begin
-  Result:=THandle(NSApp);
+  Result:=TLCLHandle(NSApp);
 end;
 
 function TCocoaWidgetSet.CreateThemeServices: TThemeServices;

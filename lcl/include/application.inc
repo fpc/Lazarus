@@ -239,7 +239,7 @@ Begin
   Result := ParamStrUTF8(0);
 end;
 
-function TApplication.GetHandle: THandle;
+function TApplication.GetHandle: TLCLHandle;
 begin
   Result := WidgetSet.AppHandle;
 end;
@@ -590,7 +590,7 @@ begin
   FFlags := Flags - [AppNoExceptionMessages] + AValue*[AppNoExceptionMessages];
 end;
 
-procedure TApplication.SetHandle(const AHandle: THandle);
+procedure TApplication.SetHandle(const AHandle: TLCLHandle);
 begin
   WidgetSet.AppHandle := AHandle;
 end;

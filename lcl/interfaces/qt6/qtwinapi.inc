@@ -3603,7 +3603,7 @@ begin
   end;
 end;
 
-function TQtWidgetSet.GetStockObject(Value: Integer): THandle;
+function TQtWidgetSet.GetStockObject(Value: Integer): TLCLHandle;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace:> [WinAPI GetStockObject] Value: ', Value);
@@ -5597,7 +5597,7 @@ begin
     {$ENDIF}
   end;
   {$ifdef VerboseQtWinAPI}
-  WriteLn('[WinAPI ReleaseCapture] Capture = ', THandle(w));
+  WriteLn('[WinAPI ReleaseCapture] Capture = ', TLCLHandle(w));
   {$endif}
 end;
 

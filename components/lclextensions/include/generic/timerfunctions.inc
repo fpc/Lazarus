@@ -1,8 +1,8 @@
 
-function KillTimer(hWnd:THandle; nIDEvent: LongWord):Boolean;
+function KillTimer(hWnd: TLCLHandle; nIDEvent: LongWord): Boolean;
 begin
 end;
 
-function SetTimer(hWnd:THandle; nIDEvent:LongWord; uElapse:LongWord; lpTimerFunc:TTimerNotify): LongWord;
+function SetTimer(hWnd: TLCLHandle; nIDEvent: LongWord; uElapse: LongWord; lpTimerFunc: TTimerNotify): LongWord;
 begin
 end;

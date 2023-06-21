@@ -112,7 +112,7 @@ var
   hnj_hyphen_hyphenate: Thnj_hyphen_hyphenate;
   hnj_hyphen_hyphenate2: Thnj_hyphen_hyphenate2;
   HypLibLoaded: boolean = False;
-  HypLibHandle: THandle;
+  HypLibHandle: TLibHandle;
 
 function LoadLibHyphen(LibraryName: string): boolean;
 

@@ -3404,7 +3404,7 @@ begin
   end;
 end;*)
 
-function TCDWidgetSet.GetStockObject(Value: Integer): THandle;
+function TCDWidgetSet.GetStockObject(Value: Integer): TLCLHandle;
 begin
   {$ifdef VerboseCDWinAPI}
     DebugLn(Format('Trace:> [WinAPI GetStockObject] Value: %d', [Value]));
@@ -3414,31 +3414,31 @@ begin
 
   case Value of
     BLACK_BRUSH:         // Black brush.
-      Result := THandle(FStockBlackBrush);
+      Result := TLCLHandle(FStockBlackBrush);
     DKGRAY_BRUSH:        // Dark gray brush.
-      Result := THandle(FStockDKGrayBrush);
+      Result := TLCLHandle(FStockDKGrayBrush);
     GRAY_BRUSH:          // Gray brush.
-      Result := THandle(FStockGrayBrush);
+      Result := TLCLHandle(FStockGrayBrush);
     LTGRAY_BRUSH:        // Light gray brush.
-      Result := THandle(FStockLtGrayBrush);
+      Result := TLCLHandle(FStockLtGrayBrush);
     NULL_BRUSH:          // Null brush (equivalent to HOLLOW_BRUSH).
-      Result := THandle(FStockNullBrush);
+      Result := TLCLHandle(FStockNullBrush);
     WHITE_BRUSH:         // White brush.
-      Result := THandle(FStockWhiteBrush);
+      Result := TLCLHandle(FStockWhiteBrush);
 
     BLACK_PEN:           // Black pen.
-      Result := THandle(FStockBlackPen);
+      Result := TLCLHandle(FStockBlackPen);
     NULL_PEN:            // Null pen.
-      Result := THandle(FStockNullPen);
+      Result := TLCLHandle(FStockNullPen);
     WHITE_PEN:           // White pen.
-      Result := THandle(FStockWhitePen);
+      Result := TLCLHandle(FStockWhitePen);
 
     {System font. By default, Windows uses the system font to draw menus,
      dialog box controls, and text. In Windows versions 3.0 and later,
      the system font is a proportionally spaced font; earlier versions of
      Windows used a monospace system font.}
     DEFAULT_GUI_FONT, SYSTEM_FONT:
-      Result := THandle(FDefaultGUIFont);
+      Result := TLCLHandle(FDefaultGUIFont);
 
   {$ifdef VerboseCDWinAPI}
   else
@@ -4993,7 +4993,7 @@ begin
     {$ENDIF}
   end;
   {$ifdef VerboseQtWinAPI}
-  WriteLn('[WinAPI ReleaseCapture] Capture = ', THandle(w));
+  WriteLn('[WinAPI ReleaseCapture] Capture = ', TLCLHandle(w));
   {$endif}
 end;
 

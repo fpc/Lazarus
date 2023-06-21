@@ -194,7 +194,7 @@ end;
 {$endif}
 
 class function TCDWSCustomForm.DoCreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
 end;
 
@@ -210,7 +210,7 @@ end;
   Creates a Windows CE Form, initializes it according to it´s properties and shows it
  ------------------------------------------------------------------------------}
 class function TCDWSCustomForm.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   lForm: TCustomForm absolute AWinControl;
   SystemMenu: HMenu;

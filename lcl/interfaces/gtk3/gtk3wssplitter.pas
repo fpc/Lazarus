@@ -27,14 +27,14 @@ type
 
   TGtk3WSPairSplitterSide = class(TWSPairSplitterSide)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TGtk3WSCustomPairSplitter }
 
   TGtk3WSCustomPairSplitter = class(TWSCustomPairSplitter)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class function AddSide(ASplitter: TCustomPairSplitter; ASide: TPairSplitterSide; Side: integer): Boolean; override;
     class function RemoveSide(ASplitter: TCustomPairSplitter; ASide: TPairSplitterSide; Side: integer): Boolean; override;
     class function SetPosition(ASplitter: TCustomPairSplitter; var NewPosition: integer): Boolean; override;
@@ -50,9 +50,9 @@ uses
 { TGtk3WSPairSplitterSide }
 
 class function TGtk3WSPairSplitterSide.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 begin
-  Result:=TLclIntfHandle(TGtk3Window.Create(AWinControl, AParams));
+  Result:=TLCLHandle(TGtk3Window.Create(AWinControl, AParams));
 end;
 
 { TGtk3WSSplitter }
@@ -61,9 +61,9 @@ end;
 { TGtk3WSCustomPairSplitter }
 
 class function TGtk3WSCustomPairSplitter.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 begin
-  Result:=TLclIntfHandle(TGtk3Paned.Create(AWinControl, AParams));
+  Result:=TLCLHandle(TGtk3Paned.Create(AWinControl, AParams));
 end;
 
 class function TGtk3WSCustomPairSplitter.AddSide(ASplitter: TCustomPairSplitter;

@@ -27,11 +27,11 @@
 procedure SocketNotifierRead_cb(aSocket: Integer); cdecl; // internal callback, don't use!
 procedure SocketNotifierWrite_cb(aSocket: Integer); cdecl; // internal callback, don't use!
 procedure SocketNotifierError_cb(aSocket: Integer); cdecl; // internal callback, don't use!
-function AddEventHandler(AHandle: THandle; AFlags: dword;
+function AddEventHandler(AHandle: TLCLHandle; AFlags: dword;
   AEventHandler: TWaitHandleEvent; AData: PtrInt): PEventHandler; override;
-function AddPipeEventHandler(AHandle: THandle;
+function AddPipeEventHandler(AHandle: TLCLHandle;
   AEventHandler: TPipeEvent; AData: PtrInt): PPipeEventHandler; override;
-function AddProcessEventHandler(AHandle: THandle;
+function AddProcessEventHandler(AHandle: TLCLHandle;
   AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler; override;
 function AskUser(const DialogCaption, DialogMessage: string; DialogType:
    LongInt; Buttons: TDialogButtons; HelpCtx: Longint): LongInt; override;

@@ -5234,12 +5234,12 @@ begin
     if Assigned(fOnDropFiles) then begin
       FilesList := TStringList.Create;
       try
-        iNumberDropped := DragQueryFile(THandle(Msg.wParam), Cardinal(-1),
+        iNumberDropped := DragQueryFile(TLCLHandle(Msg.wParam), Cardinal(-1),
           nil, 0);
-        DragQueryPoint(THandle(Msg.wParam), Point);
+        DragQueryPoint(TLCLHandle(Msg.wParam), Point);
 
         for i := 0 to iNumberDropped - 1 do begin
-          DragQueryFile(THandle(Msg.wParam), i, szPathName,
+          DragQueryFile(TLCLHandle(Msg.wParam), i, szPathName,
             SizeOf(szPathName));
           FilesList.Add(szPathName);
         end;
@@ -5250,7 +5250,7 @@ begin
     end;
   finally
     Msg.Result := 0;
-    DragFinish(THandle(Msg.wParam));
+    DragFinish(TLCLHandle(Msg.wParam));
   end;}
 end;
 

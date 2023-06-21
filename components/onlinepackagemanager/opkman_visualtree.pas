@@ -20,7 +20,7 @@
 
  Author: Balázs Székely
  Abstract:
-   Implementation of the visual tree, which displays the package sructure
+   Implementation of the visual tree, which displays the package structure
    downloaded from the remote repository.
 }
 unit opkman_visualtree;

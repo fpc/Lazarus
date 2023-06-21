@@ -80,7 +80,7 @@ type
 
   PProcessEvent = ^TProcessEvent;
   TProcessEvent = record
-    Handle: THandle;
+    Handle: TLCLHandle;
     Handler: PEventHandler;
     UserData: PtrInt;
     OnEvent: TChildExitEvent;

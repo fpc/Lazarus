@@ -1336,7 +1336,7 @@ var
   ShiftState: TShiftState;
   MappedXY: TPoint;
 begin
-  CheckTransparentWindow({%H-}TLCLIntfHandle(widget), AWinControl);
+  CheckTransparentWindow({%H-}TLCLHandle(widget), AWinControl);
   if (widget=nil) or (AWinControl=nil) then
     Exit;
 
@@ -1970,7 +1970,7 @@ var
       (csDesigning in AWinControl.ComponentState) then
         exit;
 
-    MessI.Msg := CheckMouseButtonDownUp({%H-}TLCLIntfHandle(widget), AWinControl,
+    MessI.Msg := CheckMouseButtonDownUp({%H-}TLCLHandle(widget), AWinControl,
                                         LastMouse, EventXY, MouseButton, True);
     MessI.Keys := MessI.Keys or BtnKey;
     if BtnKey in [MK_XBUTTON1, MK_XBUTTON2] then
@@ -1996,7 +1996,7 @@ begin
   and (gtk_tree_view_get_bin_window(PGtkTreeView(widget)) <> Event^.window) then
     Exit;
 
-  CheckTransparentWindow({%H-}TLCLIntfHandle(widget), AWinControl);
+  CheckTransparentWindow({%H-}TLCLHandle(widget), AWinControl);
   if (widget=nil) or (AWinControl=nil) then
     Exit;
 
@@ -2210,7 +2210,7 @@ var
 
   function CheckMouseButtonUp(MouseButton: longint; BtnShiftState: TShiftStateEnum): boolean;
   begin
-    MessI.Msg := CheckMouseButtonDownUp({%H-}TLCLIntfHandle(widget),
+    MessI.Msg := CheckMouseButtonDownUp({%H-}TLCLHandle(widget),
                            AWinControl, LastMouse, EventXY, MouseButton, False);
     Include(ShiftState, BtnShiftState);
     Result := True;
@@ -2218,7 +2218,7 @@ var
 
 begin
   Result := False;
-  CheckTransparentWindow({%H-}TLCLIntfHandle(widget), AWinControl);
+  CheckTransparentWindow({%H-}TLCLHandle(widget), AWinControl);
   if (widget=nil) or (AWinControl=nil) then
     Exit;
   EventXY := Point(TruncToInt(Event^.X), TruncToInt(Event^.Y));
@@ -2417,7 +2417,7 @@ begin
   Result := False;
 
   AWinControl:=TWinControl(Data);
-  CheckTransparentWindow({%H-}TLCLIntfHandle(widget), AWinControl);
+  CheckTransparentWindow({%H-}TLCLHandle(widget), AWinControl);
   if (widget=nil) or (AWinControl=nil) then
     Exit;
   EventXY:=Point(TruncToInt(Event^.X),TruncToInt(Event^.Y));
@@ -3187,7 +3187,7 @@ begin
         //debugln(['Gtk2RangeUbuntuScrollCB duplicate message => skip']);
         exit;
       end;
-      g_object_set_data(PGObject(Adjustment), odnScrollBarLastPos, {%H-}gpointer(Pos));
+      g_object_set_data(PGObject(Adjustment), odnScrollBarLastPos, gpointer(PtrUInt(Pos)));
 
       //DebugLn('Gtk2RangeUbuntuScrollCB A Adjustment^.Value=',dbgs(Adjustment^.Value),' SmallPos=',dbgs(SmallPos));
       ScrollBar := HWND({%H-}PtrUInt(Scroll));

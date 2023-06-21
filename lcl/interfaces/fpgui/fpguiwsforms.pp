@@ -37,7 +37,7 @@ type
   protected
   published
     class function CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+      const AParams: TCreateParams): TLCLHandle; override;
     class procedure SetColor(const AWinControl: TWinControl); override;
   end;
 
@@ -73,7 +73,7 @@ type
   published
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
 
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
@@ -127,7 +127,7 @@ implementation
 { TFpGuiWSScrollingWinControl }
 
 class function TFpGuiWSScrollingWinControl.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   FPForm: TFPGUIPrivateScrollingWinControl;
 begin
@@ -136,7 +136,7 @@ begin
   {$endif}
 
   FPForm := TFPGUIPrivateScrollingWinControl.Create(AWinControl, AParams);
-  Result := TLCLIntfHandle(FPForm);
+  Result := TLCLHandle(FPForm);
 end;
 
 class procedure TFpGuiWSScrollingWinControl.SetColor(
@@ -159,7 +159,7 @@ end;
   Allocates memory and resources for the control and shows it
  ------------------------------------------------------------------------------}
 class function TFpGuiWSCustomForm.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   FPForm: TFPGUIPrivateWindow;
 begin
@@ -173,7 +173,7 @@ begin
   { This fixes the AV error when trying to use TLabel components }
   TfpgForm(FPForm.Widget).Show;
 
-  Result := TLCLIntfHandle(FPForm);
+  Result := TLCLHandle(FPForm);
 end;
 
 {------------------------------------------------------------------------------

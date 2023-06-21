@@ -59,9 +59,9 @@ type
     destructor Destroy; override;
 
     // create and destroy
-    function CreateTimer({%H-}Interval: integer; {%H-}TimerFunc: TWSTimerProc) : THandle; override;
-    function DestroyTimer({%H-}TimerHandle: THandle) : boolean; override;
-    procedure DestroyLCLComponent(Sender: TObject);virtual;
+    function CreateTimer({%H-}Interval: integer; {%H-}TimerFunc: TWSTimerProc) : TLCLHandle; override;
+    function DestroyTimer({%H-}TimerHandle: TLCLHandle) : boolean; override;
+    procedure DestroyLCLComponent(Sender: TObject); virtual;
   public
   end;
 
@@ -148,12 +148,12 @@ begin
 end;
 
 function TNoGUIWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc
-  ): THandle;
+  ): TLCLHandle;
 begin
   Result:=0;
 end;
 
-function TNoGUIWidgetSet.DestroyTimer(TimerHandle: THandle): boolean;
+function TNoGUIWidgetSet.DestroyTimer(TimerHandle: TLCLHandle): boolean;
 begin
   Result:=false;
 end;

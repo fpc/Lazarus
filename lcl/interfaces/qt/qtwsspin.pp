@@ -44,7 +44,7 @@ type
       const ACustomFloatSpinEdit: TCustomFloatSpinEdit);
   published
     class function  CreateHandle(const AWinControl: TWinControl;
-          const AParams: TCreateParams): TLCLIntfHandle; override;
+          const AParams: TCreateParams): TLCLHandle; override;
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
 
     class function GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Double; override;
@@ -104,7 +104,7 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class function TQtWSCustomFloatSpinEdit.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   QtSpinBox: TQtAbstractSpinBox;
 begin
@@ -120,7 +120,7 @@ begin
 
   QtSpinBox.AttachEvents;
   
-  Result := TLCLIntfHandle(QtSpinBox);
+  Result := TLCLHandle(QtSpinBox);
 end;
 
 class function  TQtWSCustomFloatSpinEdit.GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Double;

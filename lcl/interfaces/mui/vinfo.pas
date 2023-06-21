@@ -20,7 +20,7 @@ type
     constructor Create;
     destructor Destroy; override;
 
-    procedure Load(Instance: THandle);
+    procedure Load(Instance: TFPResourceHMODULE);
     property FixedInfo: TVersionFixedInfo read GetFixedInfo;
     property StringFileInfo: TVersionStringFileInfo read GetStringFileInfo;
     property VarFileInfo: TVersionVarFileInfo read GetVarFileInfo;
@@ -57,7 +57,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TVersionInfo.Load(Instance: THandle);
+procedure TVersionInfo.Load(Instance: TFPResourceHMODULE);
 var
   Stream: TResourceStream;
 begin

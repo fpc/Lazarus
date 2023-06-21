@@ -34,7 +34,7 @@ type
 
   TCocoaWSCustomFloatSpinEdit = class(TWSCustomFloatSpinEdit)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class function  GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Double; override;
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
@@ -59,12 +59,12 @@ end;
   Creates new spin edit in Carbon interface with the specified parameters
  ------------------------------------------------------------------------------}
 class function TCocoaWSCustomFloatSpinEdit.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   lSpin: TCocoaSpinEdit;
 begin
   lSpin := TCocoaSpinEdit.alloc.lclInitWithCreateParams(AParams);
-  Result := TLCLIntfHandle(lSpin);
+  Result := TLCLHandle(lSpin);
   if Result = 0 then Exit;
   lSpin.decimalPlaces := -1;
   lSpin.lclCreateSubcontrols(AParams);

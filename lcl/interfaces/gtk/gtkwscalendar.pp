@@ -44,7 +44,7 @@ type
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
     class function GetCalendar(const ACalendar: TCustomCalendar): PGtkCalendar; inline;
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
 
     class function  GetDateTime(const ACalendar: TCustomCalendar): TDateTime; override;
     class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); override;
@@ -73,7 +73,7 @@ end;
 
 class function TGtkWSCustomCalendar.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams
-  ): TLCLIntfHandle;
+  ): TLCLHandle;
 var
   FrameWidget, CalendarWidget: PGtkWidget;
   WidgetInfo: PWidgetInfo;
@@ -84,7 +84,7 @@ begin
   gtk_container_add(PGtkContainer(FrameWidget), CalendarWidget);
   gtk_widget_show_all(FrameWidget);
 
-  Result := TLCLIntfHandle(PtrUInt(FrameWidget));
+  Result := TLCLHandle(PtrUInt(FrameWidget));
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(FrameWidget, dbgsName(AWinControl));
   {$ENDIF}

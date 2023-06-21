@@ -55,7 +55,7 @@ type
   protected
   published
     class function  CreateHandle(const AWinControl: TWinControl;
-          const AParams: TCreateParams): TLCLIntfHandle; override;
+          const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure Invalidate(const AWinControl: TWinControl); override;
     class function  GetClientRect(const AWincontrol: TWinControl;
@@ -124,13 +124,13 @@ uses
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class function TFpGuiWSWinControl.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
   {$ifdef VerboseFPGUIIntf}
     WriteLn(Self.ClassName,'.CreateHandle ',AWinControl.Name);
   {$endif}
 
-  Result := TLCLIntfHandle(TFPGUIPrivateWidget.Create(AWinControl, AParams));
+  Result := TLCLHandle(TFPGUIPrivateWidget.Create(AWinControl, AParams));
 end;
 
 {------------------------------------------------------------------------------

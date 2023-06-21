@@ -69,12 +69,12 @@ type
   private
     FReferencePtr: PWSReference;
     FCreating: Boolean; // Set if we are creating the handle
-    function  GetHandle: THandle;
+    function  GetHandle: TLCLHandle;
     function  GetReferenceAllocated: Boolean;
   protected
     procedure CreateParams(var AParams: TCreateParams); virtual;
     procedure DestroyReference;
-    function  GetReferenceHandle: THandle; virtual; abstract;
+    function  GetReferenceHandle: TLCLHandle; virtual; abstract;
     procedure ReferenceCreated; virtual;    // gets called after the Handle is created
     procedure ReferenceDestroying; virtual; // gets called before the Handle is destroyed
     procedure ReferenceNeeded;
@@ -212,7 +212,7 @@ begin
   end;
 end;
 
-function TLCLReferenceComponent.GetHandle: THandle;
+function TLCLReferenceComponent.GetHandle: TLCLHandle;
 begin
   ReferenceNeeded;
   Result := GetReferenceHandle;

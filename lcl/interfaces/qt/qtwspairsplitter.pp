@@ -40,7 +40,7 @@ type
   TQtWSPairSplitterSide = class(TWSPairSplitterSide)
   published
     class function  CreateHandle(const AWinControl: TWinControl;
-          const AParams: TCreateParams): TLCLIntfHandle; override;
+          const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TQtWSCustomPairSplitter }
@@ -55,7 +55,7 @@ implementation
 
 class function TQtWSPairSplitterSide.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams
-  ): TLCLIntfHandle;
+  ): TLCLHandle;
 var
   QtWidget: TQtWidget;
 begin
@@ -67,7 +67,7 @@ begin
 
   QtWidget.AttachEvents;
 
-  Result := TLCLIntfHandle(QtWidget);
+  Result := TLCLHandle(QtWidget);
 
   {$ifdef VerboseQt}
     WriteLn('< TQtWSPairSplitterSide.CreateHandle for ',dbgsname(AWinControl),' Result: ', dbgHex(Result));

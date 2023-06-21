@@ -61,7 +61,7 @@ type
 
     class procedure AddControl(const AControl: TControl); override;
     class function  CreateHandle(const AWinControl: TWinControl;
-          const AParams: TCreateParams): TLCLIntfHandle; override;
+          const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure Invalidate(const AWinControl: TWinControl); override;
     class function  GetClientRect(const AWincontrol: TWinControl;
@@ -105,7 +105,7 @@ type
   public
   published
     class function  CreateHandle(const AWinControl: TWinControl;
-          const AParams: TCreateParams): TLCLIntfHandle; override;
+          const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
   end;
 
@@ -136,7 +136,7 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class function TMuiWSWinControl.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   MuiPanel: TMuiArea;
   TagList: TATagList;
@@ -161,7 +161,7 @@ begin
     MuiPanel.Parent := TMuiObject(AWinControl.Parent.Handle);
   end;
   //
-  Result := TLCLIntfHandle(MuiPanel);
+  Result := TLCLHandle(MuiPanel);
 end;
 
 {------------------------------------------------------------------------------
@@ -390,7 +390,7 @@ begin
 //  FPPrivateWidget.Font:=AFont;
 end; *)
 
-class function  TMuiWSCustomControl.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function  TMuiWSCustomControl.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 begin
   writeln('create Custom Control');
   Result := 0;

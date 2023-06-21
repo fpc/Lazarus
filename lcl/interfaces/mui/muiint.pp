@@ -66,7 +66,7 @@ type
   protected
     ThisAppDiskIcon: Pointer;
     function CreateThemeServices: TThemeServices; override;
-    function GetAppHandle: THandle; override;
+    function GetAppHandle: TLCLHandle; override;
   public
     procedure PassCmdLineOptions; override;
   public
@@ -110,8 +110,8 @@ type
     procedure DebugOutLNEvent(Sender: TObject;s: string; var Handled: Boolean);
 
     // create and destroy
-    function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc) : THandle; override;
-    function DestroyTimer(TimerHandle: THandle) : boolean; override;
+    function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc) : TLCLHandle; override;
+    function DestroyTimer(TimerHandle: TLCLHandle) : boolean; override;
     procedure DestroyLCLComponent(Sender: TObject);virtual;
 
     {$I muiwinapih.inc}
@@ -131,9 +131,9 @@ uses
 
 { TMUIWidgetSet }
 
-function TMUIWidgetSet.GetAppHandle: THandle;
+function TMUIWidgetSet.GetAppHandle: TLCLHandle;
 begin
-  Result := THandle(MUIApp);
+  Result := TLCLHandle(MUIApp);
 end;
 
 procedure TMUIWidgetSet.PassCmdLineOptions;
@@ -700,7 +700,7 @@ begin
   inherited Destroy;
 end;
 
-function TMUIWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle;
+function TMUIWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): TLCLHandle;
 begin
   Result := 0;
   if Assigned(MUIApp) then
@@ -709,7 +709,7 @@ begin
   end;
 end;
 
-function TMUIWidgetSet.DestroyTimer(TimerHandle: THandle): boolean;
+function TMUIWidgetSet.DestroyTimer(TimerHandle: TLCLHandle): boolean;
 begin
   Result:=false;
   if Assigned(MUIApp) then

@@ -35,7 +35,7 @@ begin
   FHandle := 0;
 end;
 
-function TSharedRasterImage.ReleaseHandle: THandle;
+function TSharedRasterImage.ReleaseHandle: TLCLHandle;
 // simply return the current handle and set to 0 without freeing handles
 begin
   Result := FHandle;

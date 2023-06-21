@@ -56,7 +56,7 @@ type
     class procedure UpdateMargin(const ABitBtn: TCustomBitBtn; const AAlignWidget: PGtkAlignment; const AMargin: Integer);
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TButtonGlyph); override;
     class procedure SetLayout(const ABitBtn: TCustomBitBtn; const {%H-}AValue: TButtonLayout); override;
     class procedure SetMargin(const ABitBtn: TCustomBitBtn; const AValue: Integer); override;
@@ -185,14 +185,14 @@ begin
 end;
 
 class function TGtk2WSBitBtn.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   BitBtn: TCustomBitBtn absolute AWinControl;
   WidgetInfo: PWidgetInfo;
   BitBtnInfo: PBitBtnWidgetInfo;
   Allocation: TGTKAllocation;
 begin
-  Result := TLCLIntfHandle({%H-}PtrUInt(gtk_button_new));
+  Result := TLCLHandle({%H-}PtrUInt(gtk_button_new));
   if Result = 0 then Exit;
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(Pointer(Result),DbgSName(AWinControl));

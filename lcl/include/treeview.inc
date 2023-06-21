@@ -361,7 +361,7 @@ begin
   inherited Destroy;
 end;
 
-function TTreeNode.GetHandle: THandle;
+function TTreeNode.GetHandle: TLCLHandle;
 begin
   if TreeView<>nil then
     Result := TreeView.Handle
@@ -2012,7 +2012,7 @@ begin
   SelectedIndex := Info^.SelectedIndex;
   StateIndex := Info^.StateIndex;
   OverlayIndex := Info^.OverlayIndex;
-  Data := {%H-}Pointer(Info^.Data);
+  Data := Pointer(PtrUInt(Info^.Data));
   if Owner<>nil then begin
     ItemCount := Info^.Count;
     for I := 0 to ItemCount - 1 do
@@ -2202,7 +2202,7 @@ begin
   Result := FOwner;
 end;
 
-function TTreeNodes.GetHandle: THandle;
+function TTreeNodes.GetHandle: TLCLHandle;
 begin
   if Owner<>nil then
     Result:=Owner.Handle

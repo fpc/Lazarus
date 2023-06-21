@@ -1254,7 +1254,7 @@ type
       MonitorDefault: TMonitorDefaultTo = mdNearest): TMonitor;
     function MonitorFromRect(const Rect: TRect;
       MonitorDefault: TMonitorDefaultTo = mdNearest): TMonitor;
-    function MonitorFromWindow(const Handle: THandle;
+    function MonitorFromWindow(const Handle: TLCLHandle;
       MonitorDefault: TMonitorDefaultTo = mdNearest): TMonitor;
 
     procedure BeginTempCursor(const aCursor: TCursor);
@@ -1528,7 +1528,7 @@ type
     function GetActive: Boolean;
     function GetCurrentHelpFile: string;
     function GetExename: string;
-    function GetHandle: THandle;
+    function GetHandle: TLCLHandle;
     function GetMainFormHandle: HWND;
     function GetTitle: string;
     procedure FreeIconHandles;
@@ -1543,7 +1543,7 @@ type
     procedure UpdateMouseControl(NewMouseControl: TControl);
     procedure UpdateMouseHint(CurrentControl: TControl);
     procedure SetCaptureExceptions(const AValue: Boolean);
-    procedure SetHandle(const AHandle: THandle);
+    procedure SetHandle(const AHandle: TLCLHandle);
     procedure SetHint(const AValue: string);
     procedure SetHintColor(const AValue: TColor);
     procedure SetIcon(AValue: TIcon);
@@ -1713,7 +1713,7 @@ type
                                                write FFindGlobalComponentEnabled;
     property Flags: TApplicationFlags read FFlags write SetFlags;
     //property HelpSystem : IHelpSystem read FHelpSystem;
-    property Handle: THandle read GetHandle write SetHandle; platform;
+    property Handle: TLCLHandle read GetHandle write SetHandle; platform;
     property Hint: string read FHint write SetHint;
     property HintColor: TColor read FHintColor write SetHintColor;
     property HintHidePause: Integer read FHintHidePause write FHintHidePause;

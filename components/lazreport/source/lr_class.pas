@@ -9242,7 +9242,7 @@ var
   i: Integer;
   sx, sy: Double;
   v, IsPrinting: Boolean;
-  h: THandle;
+  h: TLCLHandle;
   oldRgn, pageRgn: HRGN;
 begin
   IsPrinting := Printer.Printing and (Canvas is TPrinterCanvas);

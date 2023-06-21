@@ -250,8 +250,8 @@ type
     procedure UpdateTransientWindows;
     procedure SendCachedLCLMessages; override;
 
-    function CreateTimer(Interval: integer; TimerProc: TWSTimerProc) : THandle; override;
-    function DestroyTimer(TimerHandle: THandle) : boolean; override;
+    function CreateTimer(Interval: integer; TimerProc: TWSTimerProc) : TLCLHandle; override;
+    function DestroyTimer(TimerHandle: TLCLHandle) : boolean; override;
     procedure DestroyLCLComponent(Sender: TObject);
     // notebook
 
@@ -272,7 +272,7 @@ type
     procedure Gtk2Destroy;
 
   protected
-    function GetAppHandle: THandle; override;
+    function GetAppHandle: TLCLHandle; override;
   public
     constructor Create; override;
     destructor Destroy; override;

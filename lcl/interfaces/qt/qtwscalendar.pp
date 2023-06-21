@@ -37,7 +37,7 @@ type
 
   TQtWSCustomCalendar = class(TWSCustomCalendar)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class function GetDateTime(const ACalendar: TCustomCalendar): TDateTime; override;
     class function HitTest(const ACalendar: TCustomCalendar; const APoint: TPoint): TCalendarPart; override;
     class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); override;
@@ -52,7 +52,7 @@ implementation
 
 { TQtWSCustomCalendar }
 
-class function TQtWSCustomCalendar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function TQtWSCustomCalendar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   QtCalendar: TQtCalendar;
 begin
@@ -60,7 +60,7 @@ begin
 
   QtCalendar.AttachEvents;
 
-  Result := TLCLIntfHandle(QtCalendar);
+  Result := TLCLHandle(QtCalendar);
 end;
 
 class function TQtWSCustomCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;

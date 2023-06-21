@@ -70,7 +70,7 @@ begin
     wheh^.user_callback(wheh^.udata, EVE_IO_ERROR);
 end;
 
-function TQtWidgetSet.AddEventHandler(AHandle: THandle; AFlags: dword;
+function TQtWidgetSet.AddEventHandler(AHandle: TLCLHandle; AFlags: dword;
   AEventHandler: TWaitHandleEvent; AData: PtrInt): PEventHandler;
 {
   QSocketNotifier requires 1 notifier per event type
@@ -133,14 +133,14 @@ begin
   FSocketEventMap.Add(AHandle, Result);
 end;
 
-function TQtWidgetSet.AddPipeEventHandler(AHandle: THandle;
+function TQtWidgetSet.AddPipeEventHandler(AHandle: TLCLHandle;
   AEventHandler: TPipeEvent; AData: PtrInt): PPipeEventHandler;
 begin
   // todo
   Result := nil;
 end;
 
-function TQtWidgetSet.AddProcessEventHandler(AHandle: THandle;
+function TQtWidgetSet.AddProcessEventHandler(AHandle: TLCLHandle;
   AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler;
 begin
   // todo

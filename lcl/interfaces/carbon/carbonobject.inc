@@ -1557,7 +1557,7 @@ end;
 
   Creates new timer with specified interval and callback function
  ------------------------------------------------------------------------------}
-function TCarbonWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle;
+function TCarbonWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): TLCLHandle;
 var
   Timer: EventLoopTimerRef;
 begin
@@ -1574,7 +1574,7 @@ begin
       'CreateTimer', 'InstallEventLoopTimer') then Exit;
       
     FTimerMap.Add(Timer, TimerFunc);
-    Result := {%H-}THandle(Timer)
+    Result := {%H-}TLCLHandle(Timer)
   end;
   
   {$IFDEF VerboseTimer}
@@ -1589,7 +1589,7 @@ end;
 
   Destroys specified timer
  ------------------------------------------------------------------------------}
-function TCarbonWidgetSet.DestroyTimer(TimerHandle: THandle): boolean;
+function TCarbonWidgetSet.DestroyTimer(TimerHandle: TLCLHandle): boolean;
 begin
   {$IFDEF VerboseTimer}
     DebugLn('TCarbonWidgetSet.DestroyTimer Handle: ' + DbgS(TimerHandle));

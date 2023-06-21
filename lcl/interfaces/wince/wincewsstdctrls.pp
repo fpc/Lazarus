@@ -240,7 +240,7 @@ type
 
   TWinCEWSButton = class(TWSButton)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
 //    class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
 //    class procedure SetShortcut(const AButton: TCustomButton; const ShortCutK1, ShortCutK2: TShortcut); override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
@@ -1260,7 +1260,7 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class function TWinCEWSButton.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   Params: TCreateWindowExParams;
   PreferredWidth: integer;

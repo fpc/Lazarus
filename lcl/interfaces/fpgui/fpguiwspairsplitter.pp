@@ -43,7 +43,7 @@ type
   public
   published
     class function CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+      const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TFpGuiWSCustomPairSplitter }
@@ -59,7 +59,7 @@ implementation
 { TFpGuiWSPairSplitterSide }
 
 class function TFpGuiWSPairSplitterSide.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   lCustomPanel: TFPGUIPrivateCustomPanel;
 begin
@@ -69,7 +69,7 @@ begin
 
   lCustomPanel := TFPGUIPrivateCustomPanel.Create(AWinControl, AParams);
   lCustomPanel.Panel.Style:=bsFlat;
-  Result := TLCLIntfHandle(lCustomPanel);
+  Result := TLCLHandle(lCustomPanel);
 end;
 
 initialization

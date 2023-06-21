@@ -38,7 +38,7 @@ type
 
   TCarbonWSCustomCalendar = class(TWSCustomCalendar)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class function GetDateTime(const ACalendar: TCustomCalendar): TDateTime; override;
     class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); override;
     class function HitTest(const ACalendar: TCustomCalendar; const APoint: TPoint): TCalendarPart; override;
@@ -52,9 +52,9 @@ implementation
 { TCarbonWSCustomCalendar }
 
 class function TCarbonWSCustomCalendar.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
-  Result := TLCLIntfHandle(TCarbonCalendar.Create(AWinControl, AParams));
+  Result := TLCLHandle(TCarbonCalendar.Create(AWinControl, AParams));
 end;
 
 class function TCarbonWSCustomCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;

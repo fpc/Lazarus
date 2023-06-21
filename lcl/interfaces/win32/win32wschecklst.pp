@@ -39,7 +39,7 @@ type
   TWin32WSCustomCheckListBox = class(TWSCustomCheckListBox)
   published
     class function CreateHandle(const AWinControl: TWinControl;
-       const AParams: TCreateParams): TLCLIntfHandle; override;
+       const AParams: TCreateParams): TLCLHandle; override;
     class procedure DefaultWndHandler(const AWinControl: TWinControl;
        var AMessage); override;
     class function GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
@@ -152,7 +152,7 @@ begin
 end;
 
 class function TWin32WSCustomCheckListBox.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   Params: TCreateWindowExParams;
 begin

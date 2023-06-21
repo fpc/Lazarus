@@ -712,7 +712,7 @@ begin
 end;
 
 function TGtk3WidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc
-  ): THandle;
+  ): TLCLHandle;
 var
   TimerInfo: PGtkITimerinfo;
 begin
@@ -738,7 +738,7 @@ begin
   end;
 end;
 
-function TGtk3WidgetSet.DestroyTimer(TimerHandle: THandle): boolean;
+function TGtk3WidgetSet.DestroyTimer(TimerHandle: TLCLHandle): boolean;
 var
   n: integer;
   TimerInfo: PGtkITimerinfo;

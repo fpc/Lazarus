@@ -40,7 +40,7 @@ type
     class procedure InjectCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
     class function  CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+      const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure SetKind(const AScrollBar: TCustomScrollBar; const AIsHorizontal: Boolean); override;
     class procedure SetParams(const AScrollBar: TCustomScrollBar); override;
@@ -52,7 +52,7 @@ type
   TCDWSCustomGroupBox = class(TWSCustomGroupBox) // Receives direct rendering, so no control injection
   published
     class function  CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+      const AParams: TCreateParams): TLCLHandle; override;
 {    class function GetDefaultClientRect(const AWinControl: TWinControl;
              const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect
              ): boolean; override;}
@@ -116,7 +116,7 @@ type
   TCDWSCustomListBox = class(TWSCustomListBox)
   published
 {    class function  CreateHandle(const AWinControl: TWinControl;
-     const AParams: TCreateParams): TLCLIntfHandle; override;
+     const AParams: TCreateParams): TLCLHandle; override;
     class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; override;
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; override;
@@ -252,7 +252,7 @@ type
   public
     class procedure InjectCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
 //    class procedure SetDefault(const AButton: TCustomButton; ADefault: Boolean); override;
 //    class procedure SetShortcut(const AButton: TCustomButton; const ShortCutK1, ShortCutK2: TShortcut); override;
@@ -268,7 +268,7 @@ type
     class procedure InjectCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
     class function  CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+      const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
 
@@ -291,7 +291,7 @@ type
   TCDWSToggleBox = class(TWSToggleBox)
   published
 {    class function  CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+      const AParams: TCreateParams): TLCLHandle; override;
 
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; const ShortCutK1, ShortCutK2: TShortCut); override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
@@ -307,7 +307,7 @@ type
     class procedure InjectCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
     class function  CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+      const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
 
@@ -325,7 +325,7 @@ type
     class procedure InjectCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
     class function  CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+      const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
 
@@ -422,7 +422,7 @@ begin
 end;
 
 class function TCDWSScrollBar.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   lCDWinControl: TCDWinControl;
 begin
@@ -546,7 +546,7 @@ end;
   Allocates memory and resources for the control and shows it
  ------------------------------------------------------------------------------}
 class function TCDWSCustomGroupBox.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   lCDWinControl: TCDWinControl;
 begin
@@ -599,7 +599,7 @@ end;
   Allocates memory and resources for the control and shows it
  ------------------------------------------------------------------------------}
 class function TCDWSCustomComboBox.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   QtComboBox: TQtComboBox;
   ItemIndex: Integer;
@@ -624,7 +624,7 @@ begin
   QtComboBox.OwnerDrawn := (AParams.Style and CBS_OWNERDRAWFIXED <> 0) or
     (AParams.Style and CBS_OWNERDRAWVARIABLE <> 0);
 
-  Result := TLCLIntfHandle(QtComboBox);
+  Result := TLCLHandle(QtComboBox);
 end;
 
 class function TCDWSCustomComboBox.GetDroppedDown(
@@ -928,7 +928,7 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-class function TCDWSCustomListBox.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function TCDWSCustomListBox.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   QtListWidget: TQtListWidget;
   SelMode: QAbstractItemViewSelectionMode;
@@ -958,7 +958,7 @@ begin
 
   QtListWidget.OwnerDrawn := TCustomListBox(AWinControl).Style in [lbOwnerDrawFixed, lbOwnerDrawVariable];
 
-  Result := TLCLIntfHandle(QtListWidget);
+  Result := TLCLHandle(QtListWidget);
 end;
 
 class function TCDWSCustomListBox.GetIndexAtXY(
@@ -1229,7 +1229,7 @@ begin
 
   QtTextEdit.AttachEvents;
 
-  Result := TLCLIntfHandle(QtTextEdit);
+  Result := TLCLHandle(QtTextEdit);
 end;
 
 {------------------------------------------------------------------------------
@@ -1595,7 +1595,7 @@ end;
   Returns: Nothing
  ------------------------------------------------------------------------------}
 class function TCDWSCustomStaticText.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   lCDWinControl: TCDWinControl;
 begin
@@ -1667,7 +1667,7 @@ end;
   Allocates memory and resources for the control and shows it
  ------------------------------------------------------------------------------}
 class function TCDWSButton.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   lCDWinControl: TCDWinControl;
 begin
@@ -1756,7 +1756,7 @@ end;
 
   Allocates memory and resources for the control and shows it
  ------------------------------------------------------------------------------}
-class function TCDWSCustomCheckBox.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function TCDWSCustomCheckBox.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   lCDWinControl: TCDWinControl;
 begin
@@ -1828,7 +1828,7 @@ end;
   Allocates memory and resources for the control and shows it
  ------------------------------------------------------------------------------}
 class function TCDWSRadioButton.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   lCDWinControl: TCDWinControl;
 begin
@@ -1976,7 +1976,7 @@ end;
 
   Allocates memory and resources for the control and shows it
  ------------------------------------------------------------------------------}
-class function TCDWSToggleBox.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function TCDWSToggleBox.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   QtToggleBox: TQtToggleBox;
 begin
@@ -1984,7 +1984,7 @@ begin
   QtToggleBox.setCheckable(True);
   QtToggleBox.AttachEvents;
   
-  Result := TLCLIntfHandle(QtToggleBox);
+  Result := TLCLHandle(QtToggleBox);
 end;*)
 
 end.

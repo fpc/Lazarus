@@ -38,7 +38,7 @@ type
 
   TCarbonWSScrollingWinControl = class(TWSScrollingWinControl)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TCarbonWSScrollBox }
@@ -63,7 +63,7 @@ type
   TCarbonWSCustomFormClass = class of TCarbonWSCustomForm;
   TCarbonWSCustomForm = class(TWSCustomForm)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
 
     class procedure CloseModal(const ACustomForm: TCustomForm); override;
     class procedure ShowModal(const ACustomForm: TCustomForm); override;
@@ -90,7 +90,7 @@ type
 
   TCarbonWSHintWindow = class(TWSHintWindow)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TCarbonWSScreen }
@@ -124,9 +124,9 @@ uses
   parameters
  ------------------------------------------------------------------------------}
 class function TCarbonWSScrollingWinControl.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
-  Result := TLCLIntfHandle(TCarbonScrollingWinControl.Create(AWinControl, AParams));
+  Result := TLCLHandle(TCarbonScrollingWinControl.Create(AWinControl, AParams));
 end;
 
 { TCarbonWSCustomForm }
@@ -140,12 +140,12 @@ end;
   Creates new window in Carbon interface with the specified parameters
  ------------------------------------------------------------------------------}
 class function TCarbonWSCustomForm.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
   if IsFormDesign(AWinControl) then
-    Result := TLCLIntfHandle(TCarbonDesignWindow.Create(AWinControl, AParams))
+    Result := TLCLHandle(TCarbonDesignWindow.Create(AWinControl, AParams))
   else
-    Result := TLCLIntfHandle(TCarbonWindow.Create(AWinControl, AParams));
+    Result := TLCLHandle(TCarbonWindow.Create(AWinControl, AParams));
 end;
 
 {------------------------------------------------------------------------------
@@ -347,9 +347,9 @@ end;
   Creates new hint window in Carbon interface with the specified parameters
  ------------------------------------------------------------------------------}
 class function TCarbonWSHintWindow.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
-  Result := TLCLIntfHandle(TCarbonHintWindow.Create(AWinControl, AParams));
+  Result := TLCLHandle(TCarbonHintWindow.Create(AWinControl, AParams));
 end;
 
 end.

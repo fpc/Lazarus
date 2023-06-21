@@ -167,7 +167,7 @@ begin
   end;
 end;
 
-function ScrollWindow(hWnd:THandle; XAmount, YAmount:longint;lpRect:PRECT; lpClipRect:PRECT):Boolean;
+function ScrollWindow(hWnd: TLCLHandle; XAmount, YAmount: longint; lpRect: PRECT; lpClipRect: PRECT): Boolean;
 begin
   //gtk implementation does nothing if lpRect and lpClipRect are not nil
   Result := LCLIntf.ScrollWindowEx(hWnd, XAmount, YAmount, nil, nil, 0, nil, SW_INVALIDATE);
@@ -187,7 +187,7 @@ end;
 type
 
   TTimerID = record
-    hWnd: THandle;
+    hWnd: TLCLHandle;
     nIDEvent: UINT_PTR;
   end;
 
@@ -198,10 +198,10 @@ type
     FControl: TControl;
     FNotify: TTimerNotify;
     FId: UINT_PTR;
-    FHandle: THandle;
+    FHandle: TLCLHandle;
     FTimerHandle: guint;
   public
-    constructor Create(hWnd: THandle; nIDEvent: UINT_PTR; NotifyFunc: TTimerNotify);
+    constructor Create(hWnd: TLCLHandle; nIDEvent: UINT_PTR; NotifyFunc: TTimerNotify);
     procedure Start(Interval: LongWord);
     procedure Stop;
   end;
@@ -214,9 +214,9 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure Delete(hWnd: THandle; nIDEvent: UINT_PTR);
-    function Find(hWnd: THandle; nIDEvent: UINT_PTR): TGtk2Timer;
-    function Get(hWnd: THandle; nIDEvent: UINT_PTR; NotifyFunc: TTimerNotify): TGtk2Timer;
+    procedure Delete(hWnd: TLCLHandle; nIDEvent: UINT_PTR);
+    function Find(hWnd: TLCLHandle; nIDEvent: UINT_PTR): TGtk2Timer;
+    function Get(hWnd: TLCLHandle; nIDEvent: UINT_PTR; NotifyFunc: TTimerNotify): TGtk2Timer;
   end;
 
 var
@@ -251,7 +251,7 @@ end;
 
 { TGtk2TimerInfo }
 
-constructor TGtk2Timer.Create(hWnd: THandle; nIDEvent: UINT_PTR;
+constructor TGtk2Timer.Create(hWnd: TLCLHandle; nIDEvent: UINT_PTR;
   NotifyFunc: TTimerNotify);
 begin
   //todo: make a custom GetLCLObject
@@ -310,7 +310,7 @@ begin
   FMap.Destroy;
 end;
 
-procedure TTimerList.Delete(hWnd: THandle; nIDEvent: UINT_PTR);
+procedure TTimerList.Delete(hWnd: TLCLHandle; nIDEvent: UINT_PTR);
 var
   TimerID: TTimerID;
 begin
@@ -319,7 +319,7 @@ begin
   FMap.Delete(TimerID);
 end;
 
-function TTimerList.Get(hWnd: THandle; nIDEvent: UINT_PTR; NotifyFunc: TTimerNotify): TGtk2Timer;
+function TTimerList.Get(hWnd: TLCLHandle; nIDEvent: UINT_PTR; NotifyFunc: TTimerNotify): TGtk2Timer;
 var
   TimerID: TTimerID;
 begin
@@ -347,7 +347,7 @@ begin
   end;
 end;
 
-function TTimerList.Find(hWnd: THandle; nIDEvent: UINT_PTR): TGtk2Timer;
+function TTimerList.Find(hWnd: TLCLHandle; nIDEvent: UINT_PTR): TGtk2Timer;
 var
   DataPtr: ^TGtk2Timer;
   TimerID: TTimerID;
@@ -361,7 +361,7 @@ begin
     Result := DataPtr^;
 end;
 
-function SetTimer(hWnd: THandle; nIDEvent: UINT_PTR; uElapse: LongWord; lpTimerFunc: TTimerNotify): UINT_PTR;
+function SetTimer(hWnd: TLCLHandle; nIDEvent: UINT_PTR; uElapse: LongWord; lpTimerFunc: TTimerNotify): UINT_PTR;
 var
   Timer: TGtk2Timer;
 begin
@@ -378,7 +378,7 @@ begin
   //DebugLn('SetTimer HWnd: %d ID: %d TimerHandle: %d',[hWnd,nIDEvent,Timer.FTimerHandle]);
 end;
 
-function KillTimer(hWnd:THandle; nIDEvent: UINT_PTR): Boolean;
+function KillTimer(hWnd: TLCLHandle; nIDEvent: UINT_PTR): Boolean;
 var
   Timer: TGtk2Timer;
 begin

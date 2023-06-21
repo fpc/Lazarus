@@ -30,7 +30,8 @@ end;
 {$endif}
 
 {$ifndef HAS_REDRAWWINDOW}
-function RedrawWindow(hWnd:THandle; lprcUpdate:PRECT; hrgnUpdate:HRGN; flags:LongWord):BOOLEAN;
+function RedrawWindow(hWnd: TLCLHandle; lprcUpdate: PRECT; hrgnUpdate: HRGN;
+  flags: LongWord): Boolean;
 begin
   //todo: see if there's a better way of doing this
   Result := LCLIntf.InvalidateRect(hWnd, lprcUpdate, (RDW_ERASE and flags) > 0);

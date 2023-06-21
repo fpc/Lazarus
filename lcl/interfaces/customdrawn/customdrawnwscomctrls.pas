@@ -37,7 +37,7 @@ type
   TCDWSCustomPage = class(TWSCustomPage)
   published
     class function CreateHandle(const AWinControl: TWinControl;
-          const AParams: TCreateParams): TLCLIntfHandle; override;
+          const AParams: TCreateParams): TLCLHandle; override;
 //    class procedure UpdateProperties(const ACustomPage: TCustomPage); override;}
   end;
 
@@ -48,7 +48,7 @@ type
     class procedure InjectCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
     class function  CreateHandle(const AWinControl: TWinControl;
-          const AParams: TCreateParams): TLCLIntfHandle; override;
+          const AParams: TCreateParams): TLCLHandle; override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
 
     class procedure AddPage(const ATabControl: TCustomTabControl;
@@ -73,7 +73,7 @@ type
 
   TCDWSStatusBar = class(TWSStatusBar)
   published
-{    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+{    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
@@ -98,7 +98,7 @@ type
   TCDWSCustomListView = class(TWSCustomListView)
   published
 {    class function CreateHandle(const AWinControl: TWinControl;
-     const AParams: TCreateParams): TLCLIntfHandle; override;
+     const AParams: TCreateParams): TLCLHandle; override;
     class procedure ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); override;
     class procedure ColumnInsert(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn); override;
     class function  ColumnGetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn): Integer; override;
@@ -192,7 +192,7 @@ type
   public
     class procedure InjectCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
     class procedure ApplyChanges(const AProgressBar: TCustomProgressBar); override;
     class procedure SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer); override;
@@ -221,7 +221,7 @@ type
 
   TCDWSToolBar = class(TWSToolBar)
   published
-//    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+//    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TCDWSTrackBar }
@@ -230,7 +230,7 @@ type
   public
     class procedure InjectCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
     class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); override;
     class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
@@ -257,7 +257,7 @@ implementation
 
 // Return the handle of the page installed in the TCDPageControl instead of creating a new one
 class function TCDWSCustomPage.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   lPageControlHandle: TCDWinControl;
 begin
@@ -288,7 +288,7 @@ begin
 end;
 
 class function TCDWSCustomTabControl.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   lCDWinControl: TCDWinControl;
 begin
@@ -397,7 +397,7 @@ end;
 
 (*{ TCDWSToolBar }
 
-class function TCDWSToolBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function TCDWSToolBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   QtToolBar: TQtCustomControl;
 begin
@@ -410,7 +410,7 @@ begin
   QtToolBar.viewportNeeded;
   QtToolBar.setFocusPolicy(QtTabFocus);
   QtToolBar.AttachEvents;
-  Result := TLCLIntfHandle(QtToolBar);
+  Result := TLCLHandle(QtToolBar);
 end;*)
 
 { TCDWSTrackBar }
@@ -424,7 +424,7 @@ begin
   {$ifdef VerboseCDInjectedControlNames}ACDControlField.Name := 'CustomDrawnInternal_' + AWinControl.Name;{$endif}
 end;
 
-class function TCDWSTrackBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function TCDWSTrackBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   lCDWinControl: TCDWinControl;
 begin
@@ -564,7 +564,7 @@ begin
   {$ifdef VerboseCDInjectedControlNames}ACDControlField.Name := 'CustomDrawnInternal_' + AWinControl.Name;{$endif}
 end;
 
-class function TCDWSProgressBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function TCDWSProgressBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   lCDWinControl: TCDWinControl;
 begin
@@ -726,7 +726,7 @@ begin
   end;
 end;
 
-class function TCDWSStatusBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function TCDWSStatusBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   QtStatusBar: TQtStatusBar;
 begin
@@ -740,7 +740,7 @@ begin
 
   // Return handle
 
-  Result := TLCLIntfHandle(QtStatusBar);
+  Result := TLCLHandle(QtStatusBar);
 end;
 
 class procedure TCDWSStatusBar.DestroyHandle(const AWinControl: TWinControl);
@@ -835,7 +835,7 @@ begin
 end;
 
 class function TCDWSCustomListView.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   QtTreeWidget: TQtTreeWidget;
   QtListWidget: TQtListWidget;
@@ -866,7 +866,7 @@ begin
 
     QtListWidget.Checkable := TCustomListView(AWinControl).Checkboxes;
     QtListWidget.AttachEvents;
-    Result := TLCLIntfHandle(QtListWidget);
+    Result := TLCLHandle(QtListWidget);
   end else
   begin
     QtTreeWidget := TQtTreeWidget.Create(AWinControl, AParams);
@@ -874,7 +874,7 @@ begin
     QtTreeWidget.setStretchLastSection(False);
     QtTreeWidget.setRootIsDecorated(False);
     QtTreeWidget.AttachEvents;
-    Result := TLCLIntfHandle(QtTreeWidget);
+    Result := TLCLHandle(QtTreeWidget);
   end;
 end;
 

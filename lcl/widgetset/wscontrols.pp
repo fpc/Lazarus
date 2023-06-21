@@ -132,7 +132,7 @@ type
           
     class procedure ConstraintsChange(const AWinControl: TWinControl); virtual;
     class function  CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; virtual;
+      const AParams: TCreateParams): TLCLHandle; virtual;
     class procedure DestroyHandle(const AWinControl: TWinControl); virtual;
     class procedure DefaultWndHandler(const AWinControl: TWinControl; var AMessage); virtual;
     class procedure Invalidate(const AWinControl: TWinControl); virtual;
@@ -261,7 +261,7 @@ begin
 end;
 
 class function TWSWinControl.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
   // For now default to the old creation routines
   Result := 0;

@@ -829,7 +829,7 @@ begin
   else
     PS^.rcPaint := GtkPaintMsg.Data.Rect;
 
-  Result.DC := BeginPaint(THandle({%H-}PtrUInt(Widget)), PS^);
+  Result.DC := BeginPaint({%H-}HWND(Widget), PS^);
   Result.PaintStruct := PS;
   Result.Result := 0;
   if FreeGtkPaintMsg then
@@ -850,7 +850,7 @@ begin
         DC := TGtkDeviceContext(Msg^.WParam)
       else
         DC := TGtkDeviceContext(PS^.hdc);
-      EndPaint(THandle({%H-}PtrUInt(DC.Widget)), PS^);
+      EndPaint({%H-}HWND(DC.Widget), PS^);
       Dispose(PS);
       Msg^.LParam:=0;
       Msg^.WParam:=0;
@@ -880,7 +880,7 @@ begin
         DC := TGtkDeviceContext(Msg^.WParam)
       else
         DC := TGtkDeviceContext(PS^.hdc);
-      EndPaint(THandle({%H-}PtrUInt(DC.Widget)), PS^);
+      EndPaint({%H-}HWND(DC.Widget), PS^);
       Dispose(PS);
       Msg^.LParam:=0;
       Msg^.WParam:=0;
@@ -6235,7 +6235,7 @@ begin
 
   ItemStruct^.itemID := ItemID;
   PS.rcPaint := ItemStruct^.rcItem;
-  ItemStruct^._hDC := BeginPaint(THandle({%H-}PtrUInt(Widget)), PS);
+  ItemStruct^._hDC := BeginPaint({%H-}HWND(Widget), PS);
   Msg.Ctl := TStatusBar(Data).Handle;
   Msg.DrawItemStruct := ItemStruct;
   Msg.Msg := LM_DRAWITEM;
@@ -6244,7 +6244,7 @@ begin
     Result := not CallBackDefaultReturn;
   finally
     PS.hdc := ItemStruct^._hDC;
-    EndPaint(THandle({%H-}PtrUInt(TGtkDeviceContext(PS.hdc).Widget)), PS);
+    EndPaint({%H-}HWND(TGtkDeviceContext(PS.hdc).Widget), PS);
     Dispose(ItemStruct);
   end;
 end;

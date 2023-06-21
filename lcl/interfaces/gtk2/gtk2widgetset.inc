@@ -150,7 +150,7 @@ begin
     Info.cbSize := SizeOf(Info);
     Info.iContextType := HELPINFO_WINDOW;
     Info.iCtrlId := 0;
-    Info.hItemHandle := {%H-}THandle(widget);
+    Info.hItemHandle := {%H-}TLCLHandle(widget);
     Info.dwContextId := 0;
     gdk_display_get_pointer(gdk_display_get_default(), nil, @Info.MousePos.X, @Info.MousePos.Y, nil);
     Application.HelpCommand(0, {%H-}PtrInt(@Info));
@@ -1221,7 +1221,7 @@ begin
   {$ENDIF}
 end;
 
-function TGtk2WidgetSet.GetAppHandle: THandle;
+function TGtk2WidgetSet.GetAppHandle: TLCLHandle;
 begin
   {$ifdef windows}
   Result := GetWin32AppHandle;
@@ -2809,7 +2809,7 @@ end;
   Design: A callback to the TTimer class is implemented.
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.CreateTimer(Interval: integer;
-  TimerProc: TWSTimerProc) : THandle;
+  TimerProc: TWSTimerProc) : TLCLHandle;
 var
   TimerInfo: PGtkITimerinfo;
 begin
@@ -2842,7 +2842,7 @@ end;
   WARNING: There seems to be a bug in gtk-1.2.x which breaks gtk_timeout_remove
            thus we can't dispose PGtkITimerinfo here (s.a. gtkTimerCB).
  ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.DestroyTimer(TimerHandle: THandle) : boolean;
+function TGtk2WidgetSet.DestroyTimer(TimerHandle: TLCLHandle) : boolean;
 var
   n : integer;
   TimerInfo : PGtkITimerinfo;

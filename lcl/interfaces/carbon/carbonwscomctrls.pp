@@ -37,7 +37,7 @@ type
 
   TCarbonWSStatusBar = class(TWSStatusBar)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure Update(const AStatusBar: TStatusBar); override;
@@ -54,7 +54,7 @@ type
 
   TCarbonWSCustomPage = class(TWSCustomPage)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
   end;
 
@@ -62,7 +62,7 @@ type
 
   TCarbonWSCustomNotebook = class(TWSCustomTabControl)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
 
     class procedure AddPage(const ATabControl: TCustomTabControl; const AChild: TCustomPage; const AIndex: integer); override;
     class procedure MovePage(const ATabControl: TCustomTabControl; const AChild: TCustomPage; const NewIndex: integer); override;
@@ -87,7 +87,7 @@ type
 
   TCarbonWSCustomListView = class(TWSCustomListView)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     // Column
     class procedure ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); override;
     class function  ColumnGetWidth(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AColumn: TListColumn): Integer; override;
@@ -158,7 +158,7 @@ type
 
   TCarbonWSProgressBar = class(TWSProgressBar)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure ApplyChanges(const AProgressBar: TCustomProgressBar); override;
     class procedure SetPosition(const AProgressBar: TCustomProgressBar; const {%H-}NewPosition: integer); override;
     class procedure SetStyle(const AProgressBar: TCustomProgressBar; const AStyle: TProgressBarStyle); override;
@@ -186,14 +186,14 @@ type
 
   TCarbonWSToolBar = class(TWSToolBar)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TCarbonWSTrackBar }
 
   TCarbonWSTrackBar = class(TWSTrackBar)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); override;
     class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const {%H-}NewPosition: integer); override;
@@ -220,9 +220,9 @@ uses
 { TCarbonWSToolBar }
 
 class function TCarbonWSToolBar.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
-  Result := TLCLIntfHandle(TCarbonToolBar.Create(AWinControl, AParams));
+  Result := TLCLHandle(TCarbonToolBar.Create(AWinControl, AParams));
   // TCarbonCustomControl(Result).
 end;
 
@@ -237,9 +237,9 @@ end;
   Creates new status bar in Carbon interface with the specified parameters
  ------------------------------------------------------------------------------}
 class function TCarbonWSStatusBar.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
-  Result := TLCLIntfHandle(TCarbonStatusBar.Create(AWinControl, AParams));
+  Result := TLCLHandle(TCarbonStatusBar.Create(AWinControl, AParams));
 end;
 
 {------------------------------------------------------------------------------
@@ -296,9 +296,9 @@ end;
   Creates new custom page in Carbon interface with the specified parameters
  ------------------------------------------------------------------------------}
 class function TCarbonWSCustomPage.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
-  Result := TLCLIntfHandle(TCarbonTab.Create(AWinControl, AParams));
+  Result := TLCLHandle(TCarbonTab.Create(AWinControl, AParams));
 end;
 
 {------------------------------------------------------------------------------
@@ -325,14 +325,14 @@ end;
   Creates new custom notebook in Carbon interface with the specified parameters
  ------------------------------------------------------------------------------}
 class function TCarbonWSCustomNotebook.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
   if AWinControl is TTabControl then
   begin
-    Result := TLCLIntfHandle(TCarbonCustomControl.Create(AWinControl, AParams));
+    Result := TLCLHandle(TCarbonCustomControl.Create(AWinControl, AParams));
     TCarbonCustomControl(Result).CarbonWidgetFlag := cwdTTabControl;
   end else
-    Result := TLCLIntfHandle(TCarbonTabsControl.Create(AWinControl, AParams));
+    Result := TLCLHandle(TCarbonTabsControl.Create(AWinControl, AParams));
 end;
 
 {------------------------------------------------------------------------------
@@ -460,12 +460,12 @@ end;
   Creates new list view in Carbon interface with the specified parameters
  ------------------------------------------------------------------------------}
 class function TCarbonWSCustomListView.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   clv : TCarbonListView;
 begin
   clv:=TCarbonListView.Create(AWinControl, AParams);
-  Result := TLCLIntfHandle(clv);
+  Result := TLCLHandle(clv);
   if Assigned(clv) then
     clv.SetSelectionMode(True, TListView(AWinControl).MultiSelect);
 end;
@@ -833,9 +833,9 @@ end;
   Creates new progress bar in Carbon interface with the specified parameters
  ------------------------------------------------------------------------------}
 class function TCarbonWSProgressBar.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 begin
-  Result := TLCLIntfHandle(TCarbonProgressBar.Create(AWinControl, AParams));
+  Result := TLCLHandle(TCarbonProgressBar.Create(AWinControl, AParams));
 end;
 
 {------------------------------------------------------------------------------
@@ -884,9 +884,9 @@ end;
   Creates new track bar in Carbon interface with the specified parameters
  ------------------------------------------------------------------------------}
 class function TCarbonWSTrackBar.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
-  Result := TLCLIntfHandle(TCarbonTrackBar.Create(AWinControl, AParams));
+  Result := TLCLHandle(TCarbonTrackBar.Create(AWinControl, AParams));
 end;
 
 {------------------------------------------------------------------------------

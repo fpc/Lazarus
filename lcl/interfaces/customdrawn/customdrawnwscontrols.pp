@@ -90,7 +90,7 @@ type
 
 {    class function  CanFocus(const AWinControl: TWinControl): Boolean; override;
     class function  CreateHandle(const AWinControl: TWinControl;
-          const AParams: TCreateParams): TLCLIntfHandle; override;
+          const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure Invalidate(const AWinControl: TWinControl); override;
     class procedure AddControl(const AControl: TControl); override;
@@ -134,7 +134,7 @@ type
   TCDWSCustomControl = class(TWSCustomControl)
   published
 //    class function CreateHandle(const AWinControl: TWinControl;
-//          const AParams: TCreateParams): TLCLIntfHandle; override;
+//          const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TCDWSImageList }

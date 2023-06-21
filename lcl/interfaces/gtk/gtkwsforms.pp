@@ -39,7 +39,7 @@ type
   protected
     class procedure  SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure SetColor(const AWinControl: TWinControl); override;
   end;
 
@@ -67,7 +67,7 @@ type
   protected
     class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class function GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor; override;
 
     class procedure SetAllowDropFiles(const AForm: TCustomForm; AValue: Boolean); override;
@@ -95,7 +95,7 @@ type
   protected
     class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TGtkWSScreen }
@@ -136,7 +136,7 @@ end;
 
 class function TGtkWSScrollingWinControl.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams
-  ): TLCLIntfHandle;
+  ): TLCLHandle;
 var
   Scrolled: PGtkScrolledWindow;
   Frame: PGtkFrame;
@@ -179,7 +179,7 @@ begin
   SetFixedWidget(Frame, Layout);
   SetMainWidget(Frame, Layout);
   
-  Result := TLCLIntfHandle(PtrUInt(Frame));
+  Result := TLCLHandle(PtrUInt(Frame));
   Set_RC_Name(AWinControl, PGtkWidget(Frame));
   SetCallBacks(PGtkWidget(Frame), WidgetInfo);
 end;
@@ -332,7 +332,7 @@ begin
 end;
 
 class function TGtkWSCustomForm.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   WidgetInfo: PWidgetInfo;
   p: pointer;          // ptr to the newly created GtkWidget
@@ -437,7 +437,7 @@ begin
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(P, dbgsName(AWinControl));
   {$ENDIF}
-  Result := TLCLIntfHandle(PtrUInt(P));
+  Result := TLCLHandle(PtrUInt(P));
   Set_RC_Name(AWinControl, P);
   SetCallbacks(P, WidgetInfo);
 end;
@@ -560,7 +560,7 @@ begin
 end;
 
 class function TGtkWSHintWindow.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   TempWidget : PGTKWidget;       // pointer to gtk-widget (local use when neccessary)
   p          : pointer;          // ptr to the newly created GtkWidget
@@ -602,7 +602,7 @@ begin
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(P,dbgsName(AWinControl));
   {$ENDIF}
-  Result := TLCLIntfHandle(PtrUInt(P));
+  Result := TLCLHandle(PtrUInt(P));
   Set_RC_Name(AWinControl, P);
   SetCallbacks(P, WidgetInfo);
 end;

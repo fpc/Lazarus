@@ -529,7 +529,7 @@ begin
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AMenu));
   {$ENDIF}
-  Result := THandle({%H-}PtrUInt(Widget));
+  Result := {%H-}HMENU(Widget);
   WidgetInfo := CreateWidgetInfo(Widget);
   WidgetInfo^.LCLObject := AMenu;
   // no callbacks for main menu

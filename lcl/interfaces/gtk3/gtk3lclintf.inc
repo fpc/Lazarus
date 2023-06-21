@@ -1149,7 +1149,6 @@ begin
   finally
     fact.Free;
   end;
-
 end;
 
 
@@ -1190,7 +1189,7 @@ begin
   Result := true;
 end;
 
-function TGtk3WidgetSet.AddEventHandler(AHandle: THandle; AFlags: dword;
+function TGtk3WidgetSet.AddEventHandler(AHandle: TLCLHandle; AFlags: dword;
   AEventHandler: TWaitHandleEvent; AData: PtrInt): PEventHandler;
 //var
   //giochannel: pgiochannel;
@@ -1268,7 +1267,7 @@ type
     OnEvent: TPipeEvent;
   end;
 
-function TGtk3WidgetSet.AddPipeEventHandler(AHandle: THandle;
+function TGtk3WidgetSet.AddPipeEventHandler(AHandle: TLCLHandle;
   AEventHandler: TPipeEvent; AData: PtrInt): PPipeEventHandler;
 var
   lPipeEventInfo: PPipeEventInfo;
@@ -1311,7 +1310,7 @@ end;
 *)
 
 {$ifdef UNIX}
-function TGtk3WidgetSet.AddProcessEventHandler(AHandle: THandle;
+function TGtk3WidgetSet.AddProcessEventHandler(AHandle: TLCLHandle;
   AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler;
 // var
 //  lHandler: PChildSignalEventHandler;

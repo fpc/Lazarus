@@ -119,7 +119,7 @@ var
   glarea: PGtkGLArea;
 begin
   NewWidget := TGtk3GLArea.Create(AWinControl, AParams);
-  result := TLCLIntfHandle(NewWidget);
+  result := TLCLHandle(NewWidget);
   glarea := PGtkGLArea(NewWidget.Widget);
 
   g_signal_connect(glarea, 'render', TGCallback(@on_render), NewWidget);

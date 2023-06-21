@@ -43,7 +43,7 @@ type
   protected
   public
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer;
                         WithThemeSpace: Boolean); override;
@@ -60,7 +60,7 @@ type
   protected
   public
   published
-    {class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    {class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer;
                         WithThemeSpace: Boolean); override;
@@ -77,7 +77,7 @@ uses
   dos, mui;
 
 
-class function TMUIWSBitBtn.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function TMUIWSBitBtn.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   MuiButton: TMuiBitBtn;
   Tags: TATagList;
@@ -105,7 +105,7 @@ begin
     MuiButton.Parent := TMuiObject(AWinControl.Parent.Handle);
   end;
   //
-  Result := TLCLIntfHandle(MuiButton);
+  Result := TLCLHandle(MuiButton);
 end;
 
 class procedure TMUIWSBitBtn.GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
@@ -160,7 +160,7 @@ end;
 
 (*
 
-class function TMUIWSSpeedButton.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function TMUIWSSpeedButton.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   MuiButton: TMuiBitBtn;
   TagList: TTagsList;
@@ -187,7 +187,7 @@ begin
     MuiButton.Parent := TMuiObject(AWinControl.Parent.Handle);
   end;
   //
-  Result := TLCLIntfHandle(MuiButton);
+  Result := TLCLHandle(MuiButton);
 end;
 
 class procedure TMUIWSSpeedButton.GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);

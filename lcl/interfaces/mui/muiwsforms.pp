@@ -75,7 +75,7 @@ type
   published
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
 
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
 
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
@@ -135,7 +135,7 @@ implementation
   Allocates memory and resources for the control and shows it
  ------------------------------------------------------------------------------}
 class function TMUIWSCustomForm.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   MUIForm: TMuiWindow;
   TagList: TATagList;
@@ -184,7 +184,7 @@ begin
     PasObject := AWinControl;
     Caption := TCustomForm(AWinControl).Caption;
   end;
-  Result := TLCLIntfHandle(MuiForm);
+  Result := TLCLHandle(MuiForm);
 end;
 
 {------------------------------------------------------------------------------

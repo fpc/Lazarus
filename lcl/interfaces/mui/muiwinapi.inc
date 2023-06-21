@@ -712,7 +712,7 @@ begin
         end;
       end;
     end;
-    Result := THandle(PrivateWidget.MuiCanvas);
+    Result := HDC(PrivateWidget.MuiCanvas);
   end else
     Result := CreateCompatibleDC(0);
 end;

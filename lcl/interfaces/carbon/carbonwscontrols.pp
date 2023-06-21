@@ -64,7 +64,7 @@ type
   TCarbonWSWinControlClass = class of TCarbonWSWincontrol;
   TCarbonWSWinControl = class(TWSWinControl)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
 
     class function  CanFocus(const AWincontrol: TWinControl): Boolean; override;
 
@@ -98,7 +98,7 @@ type
 
   TCarbonWSCustomControl = class(TWSCustomControl)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TCarbonWSImageList }
@@ -415,11 +415,11 @@ end;
   Creates new win control in Carbon interface with the specified parameters
  ------------------------------------------------------------------------------}
 class function TCarbonWSWinControl.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
   DebugLn('Warning: Using Carbon custom control instead of not implemented win control!');
     
-  Result := TLCLIntfHandle(TCarbonCustomControl.Create(AWinControl, AParams));
+  Result := TLCLHandle(TCarbonCustomControl.Create(AWinControl, AParams));
 end;
 
 class function TCarbonWSWinControl.CanFocus(const AWincontrol: TWinControl): Boolean;
@@ -521,9 +521,9 @@ end;
   Creates new custom control in Carbon interface with the specified parameters
  ------------------------------------------------------------------------------}
 class function TCarbonWSCustomControl.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
-  Result := TLCLIntfHandle(TCarbonCustomControl.Create(AWinControl, AParams));
+  Result := TLCLHandle(TCarbonCustomControl.Create(AWinControl, AParams));
 end;
 
 end.

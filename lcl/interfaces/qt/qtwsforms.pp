@@ -49,7 +49,7 @@ type
 
   TQtWSCustomFrame = class(TWSCustomFrame)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure ScrollBy(const AWinControl: TWinControl; DeltaX, DeltaY: integer); override;
   end;
 
@@ -73,7 +73,7 @@ type
              const {%H-}aLeft, {%H-}aTop, aWidth, aHeight: integer; var aClientRect: TRect
              ): boolean; override;
     class function  CanFocus(const AWinControl: TWinControl): Boolean; override;
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
 
     class procedure CloseModal(const ACustomForm: TCustomForm); override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
@@ -113,7 +113,7 @@ type
 
   TQtWSHintWindow = class(TWSHintWindow)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
@@ -139,7 +139,7 @@ uses qtint, LCLIntf
 { TQtWSCustomFrame }
 
 class function TQtWSCustomFrame.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   QtFrame: TQtMainWindow;
 begin
@@ -154,7 +154,7 @@ begin
     QtFrame.ScrollArea.AttachEvents;
   {$ENDIF}
   QtFrame.MenuBar.AttachEvents;
-  Result := TLCLIntfHandle(QtFrame);
+  Result := TLCLHandle(QtFrame);
 end;
 
 class procedure TQtWSCustomFrame.ScrollBy(const AWinControl: TWinControl;
@@ -181,7 +181,7 @@ end;
   Creates a Qt Form and initializes it according to it's properties
  ------------------------------------------------------------------------------}
 class function TQtWSCustomForm.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   QtMainWindow: TQtMainWindow;
   Str: WideString;
@@ -274,7 +274,7 @@ begin
   end;
 
   // Return the handle
-  Result := TLCLIntfHandle(QtMainWindow);
+  Result := TLCLHandle(QtMainWindow);
 end;
 
 {------------------------------------------------------------------------------
@@ -1053,14 +1053,14 @@ end;
 
 { TQtWSHintWindow }
 
-class function TQtWSHintWindow.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function TQtWSHintWindow.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   QtMainWindow: TQtMainWindow;
 begin
   QtMainWindow := TQtHintWindow.Create(AWinControl, AParams);
   // Sets Various Events
   QtMainWindow.AttachEvents;
-  Result := TLCLIntfHandle(QtMainWindow);
+  Result := TLCLHandle(QtMainWindow);
 end;
 
 class procedure TQtWSHintWindow.ShowHide(const AWinControl: TWinControl);

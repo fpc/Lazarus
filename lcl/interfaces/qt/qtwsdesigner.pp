@@ -52,7 +52,7 @@ type
 
   TQtWsCustomRubberBand = class(TWsCustomRubberBand)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure SetShape(ARubberBand: TCustomRubberBand; AShape: TRubberBandShape); override;
   end;
 
@@ -68,7 +68,7 @@ const
 
 class function TQtWsCustomRubberBand.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams
-  ): TLCLIntfHandle;
+  ): TLCLHandle;
 var
   QtRubberBand: TQtRubberBand;
 begin
@@ -76,7 +76,7 @@ begin
   QtRubberBand.AttachEvents;
   QtRubberBand.setShape(RubberBandShapeMap[TCustomRubberBand(AWinControl).Shape]);
 
-  Result := TLCLIntfHandle(QtRubberBand);
+  Result := TLCLHandle(QtRubberBand);
 end;
 
 class procedure TQtWsCustomRubberBand.SetShape(ARubberBand: TCustomRubberBand;

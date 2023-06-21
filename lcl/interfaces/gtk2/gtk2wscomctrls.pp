@@ -68,7 +68,7 @@ type
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
     class function  CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+      const AParams: TCreateParams): TLCLHandle; override;
     class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
     class procedure SetBounds(const {%H-}AWinControl: TWinControl; const {%H-}ALeft, {%H-}ATop, {%H-}AWidth, {%H-}AHeight: Integer); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
@@ -114,7 +114,7 @@ type
   protected
     class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure Update(const AStatusBar: TStatusBar); override;
@@ -231,7 +231,7 @@ type
     class procedure UpdateProgressBarText(const AProgressBar: TCustomProgressBar); virtual;
     class procedure InternalSetStyle(AProgressBar: PGtkProgressBar; AStyle: TProgressBarStyle);
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure ApplyChanges(const AProgressBar: TCustomProgressBar); override;
     class procedure SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer); override;
     class procedure SetStyle(const AProgressBar: TCustomProgressBar; const NewStyle: TProgressBarStyle); override;
@@ -261,7 +261,7 @@ type
   protected
     class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TGtk2WSTrackBar }
@@ -270,7 +270,7 @@ type
   protected
     class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); override;
     class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); override;
@@ -329,7 +329,7 @@ begin
 end;
 
 class function TGtk2WSTrackBar.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   Adjustment: PGtkAdjustment;
   Widget: PGtkWidget;
@@ -347,7 +347,7 @@ begin
     gtk_range_set_inverted(PGtkRange(Widget), Reversed);
     gtk_scale_set_digits(PGtkScale(Widget), 0);
   end;
-  Result := TLCLIntfHandle({%H-}PtrUInt(Widget));
+  Result := TLCLHandle({%H-}PtrUInt(Widget));
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
   {$ENDIF}
@@ -511,13 +511,13 @@ begin
 end;
 
 class function TGtk2WSProgressBar.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   Widget: PGtkWidget;
   WidgetInfo: PWidgetInfo;
 begin
   Widget := gtk_progress_bar_new;
-  Result := TLCLIntfHandle({%H-}PtrUInt(Widget));
+  Result := TLCLHandle({%H-}PtrUInt(Widget));
   WidgetInfo := CreateWidgetInfo({%H-}Pointer(Result), AWinControl, AParams);
   Set_RC_Name(AWinControl, Widget);
 
@@ -601,7 +601,7 @@ begin
 end;
 
 class function TGtk2WSStatusBar.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   EventBox, HBox: PGtkWidget;
   WidgetInfo: PWidgetInfo;
@@ -611,7 +611,7 @@ begin
   gtk_container_add(PGtkContainer(EventBox), HBox);
   gtk_widget_show(HBox);
   UpdateStatusBarPanels(AWinControl, HBox);
-  Result := TLCLIntfHandle({%H-}PtrUInt(EventBox));
+  Result := TLCLHandle({%H-}PtrUInt(EventBox));
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(EventBox, dbgsName(AWinControl));
   {$ENDIF}
@@ -693,7 +693,7 @@ begin
 end;
 
 class function TGtk2WSToolBar.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   Widget, ClientWidget: PGtkWidget;
   WidgetInfo: PWidgetInfo;
@@ -703,7 +703,7 @@ begin
   ClientWidget := CreateFixedClientWidget;
   gtk_container_add(GTK_CONTAINER(Widget), ClientWidget);
 
-  Result := TLCLIntfHandle({%H-}PtrUInt(Widget));
+  Result := TLCLHandle({%H-}PtrUInt(Widget));
   WidgetInfo := CreateWidgetInfo(Widget, AWinControl, AParams);
 
   {$IFDEF DebugLCLComponents}

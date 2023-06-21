@@ -28,7 +28,7 @@ begin
 end;
 
 class function TGtkWSCustomPage.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   Widget: PGtkWidget;
   WidgetInfo: PWidgetInfo;
@@ -37,7 +37,7 @@ begin
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
   {$ENDIF}
-  Result := TLCLIntfHandle(PtrUInt(Widget));
+  Result := TLCLHandle(PtrUInt(Widget));
   
   WidgetInfo := GetWidgetInfo(Widget);
   WidgetInfo^.LCLObject := AWinControl;
@@ -176,7 +176,7 @@ begin
 end;
 
 class function TGtkWSCustomTabControl.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   AWidget: PGtkNotebook;
   WidgetInfo: PWidgetInfo;
@@ -196,7 +196,7 @@ begin
     GTKWidgetSet.AddDummyNotebookPage(AWidget);
 
   gtk_notebook_set_tab_pos(AWidget, GtkPositionTypeMap[TCustomTabControl(AWinControl).TabPosition]);
-  Result := TLCLIntfHandle(PtrUInt(AWidget));
+  Result := TLCLHandle(PtrUInt(AWidget));
   Set_RC_Name(AWinControl, PGtkWidget(AWidget));
   SetCallBacks(PGtkWidget(AWidget), WidgetInfo);
 end;

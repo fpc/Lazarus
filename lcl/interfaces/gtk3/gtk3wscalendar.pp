@@ -38,7 +38,7 @@ type
   TGtk3WSCustomCalendar = class(TWSCustomCalendar)
   protected
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class function GetDateTime(const ACalendar: TCustomCalendar): TDateTime; override;
     class function HitTest(const ACalendar: TCustomCalendar; const APoint: TPoint): TCalendarPart; override;
     class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); override;
@@ -111,7 +111,7 @@ end;
 
 class function TGtk3WSCustomCalendar.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams
-  ): TLCLIntfHandle;
+  ): TLCLHandle;
 (*
 var
   FrameWidget, CalendarWidget: PGtkWidget;
@@ -120,7 +120,7 @@ var
   Requisition: TGtkRequisition;
   *)
 begin
-  Result := TLCLIntfHandle(TGtk3Calendar.Create(AWinControl, AParams));
+  Result := TLCLHandle(TGtk3Calendar.Create(AWinControl, AParams));
   (*
   FrameWidget := gtk_frame_new(nil);
   CalendarWidget := gtk_calendar_new();
@@ -129,7 +129,7 @@ begin
   // if we don't request it - we have a SIGFPE sometimes
   gtk_widget_size_request(CalendarWidget, @Requisition);
 
-  Result := TLCLIntfHandle({%H-}PtrUInt(FrameWidget));
+  Result := TLCLHandle({%H-}PtrUInt(FrameWidget));
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(FrameWidget, dbgsName(AWinControl));
   {$ENDIF}

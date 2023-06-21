@@ -102,8 +102,10 @@ end;
 {$ifdef linux}
 
 function EnumerateProcesses(AList: TRunningProcessInfoList): boolean;
+var
+  Pid: System.THandle;
 
-  function GetProcName(Pid: THandle): String;
+  function GetProcName: String;
   var
     S: TStream;
     Sz: Integer;
@@ -121,7 +123,6 @@ function EnumerateProcesses(AList: TRunningProcessInfoList): boolean;
 var
   Rec: TSearchRec;
   ProcName: String;
-  Pid: THandle;
   Code: Integer;
   item: TRunningProcessInfo;
 begin
@@ -136,7 +137,7 @@ begin
       Val(Rec.Name, Pid, Code);
       if (Code = 0) then
       begin
-        ProcName := GetProcName(Pid);
+        ProcName := GetProcName;
         item := TRunningProcessInfo.Create(Pid, ProcName);
         AList.Add(item);
       end;

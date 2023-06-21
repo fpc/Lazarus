@@ -39,7 +39,7 @@ type
   TGtk3WSPreviewFileControl = class(TWSPreviewFileControl)
   published
     class function  CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+      const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TGtk3WSPreviewFileDialog }
@@ -90,12 +90,12 @@ implementation
 { TGtk3WSPreviewFileControl }
 
 class function TGtk3WSPreviewFileControl.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   Gtk3CustomControl: TGtk3CustomControl;
 begin
   Gtk3CustomControl := TGtk3CustomControl.Create(AWinControl, AParams);
-  Result := TLCLIntfHandle(Gtk3CustomControl);
+  Result := TLCLHandle(Gtk3CustomControl);
 end;
 
 end.

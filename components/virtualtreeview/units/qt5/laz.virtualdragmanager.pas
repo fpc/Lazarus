@@ -6,7 +6,8 @@ unit laz.VirtualDragManager;
 interface
 
 uses
-  Classes, SysUtils, Types;
+  Classes, SysUtils, Types,
+  LCLType;
 
 const
   // Drag image helpers for Windows 2000 and up.
@@ -18,9 +19,9 @@ const
   SID_IDropTargetHelper = '{4657278B-411B-11D2-839A-00C04FD918D0}';
   SID_IDragSourceHelper = '{DE5BF786-477A-11D2-839D-00C04FD918D0}';
   SID_IDropTarget = '{00000122-0000-0000-C000-000000000046}';
-  
+
   //Bridge to ActiveX constants
-  
+
   TYMED_HGLOBAL = 1;
   TYMED_ISTREAM = 4;
   DVASPECT_CONTENT = 1;
@@ -31,7 +32,7 @@ const
   DROPEFFECT_NONE = 0;
   DROPEFFECT_SCROLL = dword($80000000);
   DATADIR_GET = 1;
-  
+
 type
   //types from win unit
   Long = LongInt;
@@ -41,9 +42,9 @@ type
   LONGLONG  = int64;
   LPDWORD = ^DWORD;
   LPVOID  = pointer;
-       
+
   TCOLORREF = cardinal;
-       
+
   TIID = TGUID;
   
   LARGE_INTEGER = record
@@ -66,28 +67,20 @@ type
   end;
   PULARGE_INTEGER = ^ULARGE_INTEGER;
   _ULARGE_INTEGER = ULARGE_INTEGER;
-     
-  
-  HANDLE = System.THandle;
-  HWND = HANDLE;
-  //HRESULT = System.HResult;
-  
-  HBITMAP = HANDLE;
-  HENHMETAFILE = HANDLE;
-  
+
+
   //activex types
-  
 
   IMoniker            = Interface;
-   
+
   WINOLEAPI = HResult;
   TLCID = DWORD;
-  
+
   OleChar             = WChar;
   LPOLESTR            = ^OLECHAR;
   HMetaFilePict       = Pointer;
-  
-  
+
+
   tagBIND_OPTS                 = Record
                                   cvStruct,          //  sizeof(BIND_OPTS)
                                   grfFlags,
@@ -385,7 +378,7 @@ type
     function EqualFormatEtc(FormatEtc1, FormatEtc2: TFormatEtc): Boolean;
     function FindFormatEtc(TestFormatEtc: TFormatEtc; const FormatEtcArray: TFormatEtcArray): integer;
     function FindInternalStgMedium(Format: TClipFormat): PStgMedium;
-    function HGlobalClone(HGlobal: THandle): THandle;
+    function HGlobalClone(HGlobal: TLCLHandle): TLCLHandle;
     function RenderInternalOLEData(const FormatEtcIn: TFormatEtc; var Medium: TStgMedium; var OLEResult: HResult): Boolean;
     function StgMediumIncRef(const InStgMedium: TStgMedium; var OutStgMedium: TStgMedium;
       CopyInMedium: Boolean; DataObject: IDataObject): HRESULT;
@@ -1010,7 +1003,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TVTDataObject.HGlobalClone(HGlobal: THandle): THandle;
+function TVTDataObject.HGlobalClone(HGlobal: TLCLHandle): TLCLHandle;
 
 // Returns a global memory block that is a copy of the passed memory block.
 

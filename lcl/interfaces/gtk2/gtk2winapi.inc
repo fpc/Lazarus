@@ -5551,7 +5551,7 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.GetStockObject(Value: Integer): THandle;
+function TGtk2WidgetSet.GetStockObject(Value: Integer): TLCLHandle;
 begin
   Result := 0;
   case Value of
@@ -7553,7 +7553,7 @@ end;
   Returns: The handle of the property (0=failure)
 
  ------------------------------------------------------------------------------}
-function TGtk2WidgetSet.RemoveProp(Handle: hwnd; Str: PChar): THandle;
+function TGtk2WidgetSet.RemoveProp(Handle: HWND; Str: PChar): TLCLHandle;
 begin
   g_object_set_data({%H-}PGObject(handle), Str, nil);
   Result := 1;

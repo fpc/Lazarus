@@ -28,7 +28,7 @@ const
 type
   TCocoaWSCustomCalendar = class(TWSCustomCalendar)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class function GetDateTime(const ACalendar: TCustomCalendar): TDateTime; override;
     class procedure SetDateTime(const ACalendar: TCustomCalendar; const ADateTime: TDateTime); override;
     class function HitTest(const ACalendar: TCustomCalendar; const APoint: TPoint): TCalendarPart; override;
@@ -82,7 +82,7 @@ begin
   end;
 end;
 
-class function TCocoaWSCustomCalendar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function TCocoaWSCustomCalendar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   dp: TCocoaDatePicker;
   Params: TCreateParams;
@@ -93,10 +93,10 @@ begin
 
   if Assigned(dp) then
   begin
-    NSDatePickerCell(TLCLIntfHandle(dp)).setDatePickerStyle(NSDatePickerStyle_ClockCal);
+    NSDatePickerCell(TLCLHandle(dp)).setDatePickerStyle(NSDatePickerStyle_ClockCal);
   end;
 
-  Result:= TLCLIntfHandle(dp);
+  Result:= TLCLHandle(dp);
 end;
 
 class function  TCocoaWSCustomCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;

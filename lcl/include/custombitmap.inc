@@ -456,7 +456,7 @@ begin
   end;
 end;
 
-procedure TCustomBitmap.SetHandle(AValue: THandle);
+procedure TCustomBitmap.SetHandle(AValue: TLCLHandle);
 begin
   // for TCustomBitmap BitmapHandle = Handle
   BitmapHandle := AValue;

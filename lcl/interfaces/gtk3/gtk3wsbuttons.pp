@@ -50,7 +50,7 @@ type
 
   TGtk3WSBitBtn = class(TWSBitBtn)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer;
                         WithThemeSpace: Boolean); override;
@@ -78,7 +78,7 @@ uses
 { TGtk3WSCustomBitBtn }
 
 class function TGtk3WSBitBtn.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   ABitBtn: TGtk3Button;
   ARect: TGdkRectangle;
@@ -97,7 +97,7 @@ begin
 
   ABitBtn.Widget^.set_allocation(@ARect);}
 
-  Result := TLCLIntfHandle(ABitBtn);
+  Result := TLCLHandle(ABitBtn);
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WSBitBtn.CreateHandle Handle=',dbgs(Result));
   {$ENDIF}

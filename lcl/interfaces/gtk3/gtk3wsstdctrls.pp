@@ -48,7 +48,7 @@ type
 
   TGtk3WSScrollBar = class(TWSScrollBar)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure SetParams(const AScrollBar: TCustomScrollBar); override;
     class procedure SetKind(const AScrollBar: TCustomScrollBar; const AIsHorizontal: Boolean); override;
   end;
@@ -58,7 +58,7 @@ type
 
   TGtk3WSCustomGroupBox = class(TWSCustomGroupBox)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer;
                         WithThemeSpace: Boolean); override;
@@ -74,7 +74,7 @@ type
 
   TGtk3WSCustomComboBox = class(TWSCustomComboBox)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
 
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer;
@@ -114,7 +114,7 @@ type
 
   TGtk3WSCustomListBox = class(TWSCustomListBox)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class function GetIndexAtXY(const ACustomListBox: TCustomListBox; X, Y: integer): integer; override;
     class function GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class function GetItemRect(const ACustomListBox: TCustomListBox; Index: integer; var ARect: TRect): boolean; override;
@@ -148,7 +148,7 @@ type
 
   TGtk3WSCustomEdit = class(TWSCustomEdit)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer;
                         WithThemeSpace: Boolean); override;
@@ -182,7 +182,7 @@ type
 
   TGtk3WSCustomMemo = class(TWSCustomMemo)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer;
                         WithThemeSpace: Boolean); override;
@@ -228,7 +228,7 @@ type
 
   TGtk3WSCustomStaticText = class(TWSCustomStaticText)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer;
                         WithThemeSpace: Boolean); override;
@@ -254,7 +254,7 @@ type
 
   TGtk3WSButton = class(TWSButton)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer;
                         WithThemeSpace: Boolean); override;
@@ -267,7 +267,7 @@ type
 
   TGtk3WSCustomCheckBox = class(TWSCustomCheckBox)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer;
                         WithThemeSpace: Boolean); override;
@@ -281,7 +281,7 @@ type
 
   TGtk3WSCheckBox = class(TGtk3WSCustomCheckBox)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TWSToggleBox }
@@ -290,14 +290,14 @@ type
 
   TGtk3WSToggleBox = class(TGtk3WSCustomCheckBox)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TGtk3WSRadioButton }
 
   TGtk3WSRadioButton = class(TGtk3WSCustomCheckBox)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
   end;
 
 implementation
@@ -308,12 +308,12 @@ uses
 { TGtk3WSCustomGroupBox }
 
 class function TGtk3WSCustomGroupBox.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   AGroupBox: TGtk3GroupBox;
 begin
   AGroupBox := TGtk3GroupBox.Create(AWinControl, AParams);
-  Result := TLCLIntfHandle(AGroupBox);
+  Result := TLCLHandle(AGroupBox);
 end;
 
 class procedure TGtk3WSCustomGroupBox.GetPreferredSize(
@@ -328,45 +328,45 @@ end;
 { TGtk3WSRadioButton }
 
 class function TGtk3WSRadioButton.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   ARadioButton: TGtk3RadioButton;
 begin
   ARadioButton := TGtk3RadioButton.Create(AWinControl, AParams);
-  Result := TLCLIntfHandle(ARadioButton);
+  Result := TLCLHandle(ARadioButton);
 end;
 
 { TGtk3WSToggleBox }
 
 class function TGtk3WSToggleBox.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   AToggleBox: TGtk3ToggleButton;
 begin
   AToggleBox := TGtk3ToggleButton.Create(AWinControl, AParams);
-  Result := TLCLIntfHandle(AToggleBox);
+  Result := TLCLHandle(AToggleBox);
 end;
 
 { TGtk3WSCheckBox }
 
 class function TGtk3WSCheckBox.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   ACheckBox: TGtk3CheckBox;
 begin
   ACheckBox := TGtk3CheckBox.Create(AWinControl, AParams);
-  Result := TLCLIntfHandle(ACheckBox);
+  Result := TLCLHandle(ACheckBox);
 end;
 
 { TGtk3WSScrollBar }
 
 class function TGtk3WSScrollBar.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   AGtkScrollbar: TGtk3ScrollBar;
 begin
   AGtkScrollBar := TGtk3ScrollBar.Create(AWinControl, AParams);
-  Result:= TLCLIntfHandle(AGtkScrollBar);
+  Result:= TLCLHandle(AGtkScrollBar);
 end;
 
 class procedure TGtk3WSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);
@@ -389,14 +389,14 @@ end;
 { TGtk3WSCustomListBox }
 
 class function TGtk3WSCustomListBox.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   AListBox: TGtk3ListBox;
 begin
   AListBox := TGtk3ListBox.Create(AWinControl, AParams);
   AListBox.BorderStyle := TCustomListBox(AWinControl).BorderStyle;
   AListBox.MultiSelect := TCustomListBox(AWinControl).MultiSelect;
-  Result := TLCLIntfHandle(AListBox);
+  Result := TLCLHandle(AListBox);
 end;
 
 class function TGtk3WSCustomListBox.GetIndexAtXY(
@@ -525,7 +525,7 @@ end;
 { TGtk3WSCustomComboBox }
 
 class function TGtk3WSCustomComboBox.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   AGtkCombo: TGtk3ComboBox;
 begin
@@ -533,7 +533,7 @@ begin
   DebugLn('TGtk3WSCustomComboBox.CreateHandle');
   {$ENDIF}
   AGtkCombo := TGtk3ComboBox.Create(AWinControl, AParams);
-  Result := TLCLIntfHandle(AGtkCombo);
+  Result := TLCLHandle(AGtkCombo);
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WSCustomComboBox.CreateHandle Handle=',dbgs(Result));
   {$ENDIF}
@@ -669,12 +669,12 @@ end;
 { TGtk3WSCustomEdit }
 
 class function TGtk3WSCustomEdit.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   AGtkEntry: TGtk3Entry;
 begin
   AGtkEntry := TGtk3Entry.Create(AWinControl, AParams);
-  Result := TLCLIntfHandle(AGtkEntry);
+  Result := TLCLHandle(AGtkEntry);
 end;
 
 class procedure TGtk3WSCustomEdit.GetPreferredSize(
@@ -843,13 +843,13 @@ end;
 { TGtk3WSCustomMemo }
 
 class function TGtk3WSCustomMemo.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   AGtkMemo: TGtk3Memo;
 begin
   AGtkMemo := TGtk3Memo.Create(AWinControl, AParams);
   AGtkMemo.BorderStyle := TCustomMemo(AWinControl).BorderStyle;
-  Result := TLCLIntfHandle(AGtkMemo);
+  Result := TLCLHandle(AGtkMemo);
 end;
 
 class procedure TGtk3WSCustomMemo.GetPreferredSize(
@@ -990,12 +990,12 @@ end;
 { TGtk3WSCustomStaticText }
 
 class function TGtk3WSCustomStaticText.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   AStaticText: TGtk3StaticText;
 begin
   AStaticText := TGtk3StaticText.Create(AWinControl, AParams);
-  Result := TLCLIntfHandle(AStaticText);
+  Result := TLCLHandle(AStaticText);
 end;
 
 class procedure TGtk3WSCustomStaticText.GetPreferredSize(
@@ -1026,7 +1026,7 @@ end;
 { TGtk3WSButton }
 
 class function TGtk3WSButton.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   AButton: TGtk3Button;
 begin
@@ -1034,7 +1034,7 @@ begin
   DebugLn('TGtk3WSButton.CreateHandle');
   {$ENDIF}
   AButton := TGtk3Button.Create(AWinControl, AParams);
-  Result := TLCLIntfHandle(AButton);
+  Result := TLCLHandle(AButton);
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WSButton.CreateHandle Handle=',dbgs(Result));
   {$ENDIF}
@@ -1064,13 +1064,13 @@ end;
 { TGtk3WSCustomCheckBox }
 
 class function TGtk3WSCustomCheckBox.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   ACheckBox: TGtk3CheckBox;
 begin
   ACheckBox := TGtk3CheckBox.Create(AWinControl, AParams);
 
-  Result := TLCLIntfHandle(ACheckBox);
+  Result := TLCLHandle(ACheckBox);
 end;
 
 class procedure TGtk3WSCustomCheckBox.GetPreferredSize(

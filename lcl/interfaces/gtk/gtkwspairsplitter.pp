@@ -37,7 +37,7 @@ type
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
   end;
   
   { TGtkWSCustomPairSplitter }
@@ -46,7 +46,7 @@ type
   protected
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
 
     class function AddSide(ASplitter: TCustomPairSplitter; ASide: TPairSplitterSide; Side: integer): Boolean; override;
     class function SetPosition(ASplitter: TCustomPairSplitter; var NewPosition: integer): Boolean; override;
@@ -67,7 +67,7 @@ end;
 
 class function TGtkWSCustomPairSplitter.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams
-  ): TLCLIntfHandle;
+  ): TLCLHandle;
 var
   Widget: PGtkWidget;
   WidgetInfo: PWidgetInfo;
@@ -81,7 +81,7 @@ begin
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
   {$ENDIF}
-  Result := TLCLIntfHandle(PtrUInt(Widget));
+  Result := TLCLHandle(PtrUInt(Widget));
 
   WidgetInfo := CreateWidgetInfo(Widget, AWinControl, AParams);
 
@@ -142,7 +142,7 @@ end;
 
 class function TGtkWSPairSplitterSide.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams
-  ): TLCLIntfHandle;
+  ): TLCLHandle;
 var
   Widget: PGtkWidget;
   WidgetInfo: PWidgetInfo;
@@ -151,7 +151,7 @@ begin
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
   {$ENDIF}
-  Result := TLCLIntfHandle(PtrUInt(Widget));
+  Result := TLCLHandle(PtrUInt(Widget));
 
   WidgetInfo := GetWidgetInfo(Widget);
   WidgetInfo^.LCLObject := AWinControl;

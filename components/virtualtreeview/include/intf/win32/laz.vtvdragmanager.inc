@@ -193,7 +193,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TVTDataObject.HGlobalClone(HGlobal: THandle): THandle;
+function TVTDataObject.HGlobalClone(HGlobal: TLCLHandle): TLCLHandle;
 
 // Returns a global memory block that is a copy of the passed memory block.
 

@@ -107,7 +107,7 @@ type
     Wnd: HWND;
     IDEvent: UINT_PTR;
     TimerProc: TTimerProc;
-    Handle: THandle;
+    Handle: TLCLHandle;
   end;
 
 var

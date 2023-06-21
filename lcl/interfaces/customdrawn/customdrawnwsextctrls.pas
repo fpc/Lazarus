@@ -98,7 +98,7 @@ type
   TCDWSCustomRadioGroup = class(TWSCustomRadioGroup)
   published
 {    class function  CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;}
+      const AParams: TCreateParams): TLCLHandle; override;}
   end;
 
   { TCDWSRadioGroup }
@@ -112,7 +112,7 @@ type
   TCDWSCustomCheckGroup = class(TWSCustomCheckGroup)
   published
 {    class function  CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;}
+      const AParams: TCreateParams): TLCLHandle; override;}
   end;
 
   { TCDWSCheckGroup }
@@ -139,7 +139,7 @@ type
   // TPanel draws itself, so there is no need to inject a sub-control
   published
     class function CreateHandle(const AWinControl: TWinControl;
-          const AParams: TCreateParams): TLCLIntfHandle; override;
+          const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TCDWSPanel }
@@ -172,7 +172,7 @@ implementation
  ------------------------------------------------------------------------------}
 
 class function TCDWSCustomRadioGroup.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   QtGroupBox: TQtGroupBox;
   Str: WideString;
@@ -185,7 +185,7 @@ begin
 
   QtGroupBox.AttachEvents;
 
-  Result := TLCLIntfHandle(QtGroupBox);
+  Result := TLCLHandle(QtGroupBox);
 end;
 
 { TCDWSCustomCheckGroup }
@@ -198,7 +198,7 @@ end;
   Allocates memory and resources for the control and shows it
  ------------------------------------------------------------------------------}
 class function TCDWSCustomCheckGroup.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   QtGroupBox: TQtGroupBox;
   Str: WideString;
@@ -211,7 +211,7 @@ begin
 
   QtGroupBox.AttachEvents;
 
-  Result := TLCLIntfHandle(QtGroupBox);
+  Result := TLCLHandle(QtGroupBox);
 end;          *)
 
 { TCDWSCustomPanel }
@@ -224,7 +224,7 @@ end;          *)
   Allocates memory and resources for the control and shows it
  ------------------------------------------------------------------------------}
 class function TCDWSCustomPanel.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   lCDWinControl: TCDWinControl;
 begin

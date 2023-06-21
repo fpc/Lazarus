@@ -233,7 +233,7 @@ type
     DefaultFont: TFPCustomFont;
     DefaultFontAndroidSize: Integer;
     // Mobile emulator and mobile mode
-    MobileMainForm: TLCLIntfHandle;
+    MobileMainForm: TLCLHandle;
     // For unusual implementations of DebugLn/DebugOut
     procedure AccumulatingDebugOut(ASender: TObject; AStr: string; var AHandled: Boolean;
       Target: TLazLoggerWriteTarget; Data: Pointer);
@@ -242,8 +242,8 @@ type
   //
   protected
     function CreateThemeServices: TThemeServices; override;
-    function GetAppHandle: THandle; override; //BackendSpecific
-    //procedure SetAppHandle(const AValue: THandle); override;
+    function GetAppHandle: TLCLHandle; override; //BackendSpecific
+    //procedure SetAppHandle(const AValue: TLCLHandle); override;
     //
     procedure BackendCreate;
     procedure BackendDestroy;
@@ -294,8 +294,8 @@ type
     procedure SetDesigning(AComponent: TComponent); override;
 
     // create and destroy
-    function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle; override;
-    function DestroyTimer(TimerHandle: THandle): boolean; override;
+    function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): TLCLHandle; override;
+    function DestroyTimer(TimerHandle: TLCLHandle): boolean; override;
 
     {$I customdrawnwinapih.inc}
     {$I customdrawnlclintfh.inc}

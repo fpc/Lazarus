@@ -642,7 +642,7 @@ Type
     else
       H:=FileOpen(AFileName,Mode);
 
-    If (THandle(H)=feInvalidHandle) then
+    If (H=feInvalidHandle) then
       If Mode=fmcreate then
         raise EFCreateError.createfmt(SFCreateError,[AFileName])
       else

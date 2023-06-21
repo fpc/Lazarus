@@ -3,7 +3,7 @@
 { TCDWSCustomForm }
 
 class function TCDWSCustomForm.DoCreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   win : TCocoaForm;
   winhandle: TCocoaWindow;
@@ -40,7 +40,7 @@ begin
 
   winhandle.CocoaForm := win;
   winhandle.ClientArea := cnt;
-  Result := TLCLIntfHandle(winhandle);
+  Result := TLCLHandle(winhandle);
 end;
 
 class procedure TCDWSCustomForm.DoShowHide(const AWinControl: TWinControl);
@@ -65,11 +65,11 @@ end;
   Creates new window in Cocoa interface with the specified parameters
  ------------------------------------------------------------------------------}
 class function TCDWSCustomForm.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
   if LCLIntf.IsMobilePlatform() then
   begin
-    Result := TLCLIntfhandle(AddNewForm(TCustomForm(AWinControl)));
+    Result := TLCLHandle(AddNewForm(TCustomForm(AWinControl)));
     if AWinControl = Application.MainForm then
       CDWidgetset.MobileMainForm := DoCreateHandle(AWinControl, AParams);
   end

@@ -814,6 +814,9 @@ type
   end;
 
   // This data object is used in two different places. One is for clipboard operations and the other while dragging.
+
+  { TVTDataObject }
+
   TVTDataObject = class(TInterfacedObject, IDataObject)
   private
     FOwner: TBaseVirtualTree;          // The tree which provides clipboard or drag data.
@@ -826,7 +829,7 @@ type
     function EqualFormatEtc(FormatEtc1, FormatEtc2: TFormatEtc): Boolean;
     function FindFormatEtc(TestFormatEtc: TFormatEtc; const FormatEtcArray: TFormatEtcArray): integer;
     function FindInternalStgMedium(Format: TClipFormat): PStgMedium;
-    function HGlobalClone(HGlobal: THandle): THandle;
+    function HGlobalClone(HGlobal: TLCLHandle): TLCLHandle;
     function RenderInternalOLEData(const FormatEtcIn: TFormatEtc; var Medium: TStgMedium; var OLEResult: HResult): Boolean;
     function StgMediumIncRef(const InStgMedium: TStgMedium; var OutStgMedium: TStgMedium;
       CopyInMedium: Boolean; DataObject: IDataObject): HRESULT;
@@ -5494,7 +5497,7 @@ procedure InitializeGlobalStructures;
 // initialization of stuff global to the unit
 
 var
-  TheInstance: THandle;
+  TheInstance: TLCLHandle;
 
 begin
   Initialized := True;
@@ -14168,7 +14171,7 @@ end;
 procedure TBaseVirtualTree.LoadPanningCursors;
 
 var
-  TheInstance: THandle;
+  TheInstance: TLCLHandle;
 
 begin
   TheInstance := HINSTANCE;
@@ -20840,7 +20843,7 @@ function TBaseVirtualTree.DoSetOffsetXY(Value: TPoint; Options: TScrollUpdateOpt
 var
   DeltaX: Integer;
   DeltaY: Integer;
-  DWPStructure: THandle;//HDWP;
+  DWPStructure: TLCLHandle;//HDWP;
   I: Integer;
   P: TPoint;
   R: TRect;
@@ -33295,7 +33298,7 @@ procedure TVTEdit.AutoAdjustSize;
 var
   DC: HDC;
   Size: TSize;
-  LastFont: THandle;
+  LastFont: TLCLHandle;
 
 begin
   if not (vsMultiline in FLink.FNode.States) and not (toGridExtensions in FLink.FTree.FOptions.FMiscOptions{see issue #252}) then

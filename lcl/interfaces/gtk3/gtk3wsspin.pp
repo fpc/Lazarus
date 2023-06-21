@@ -32,7 +32,7 @@ type
 
   TGtk3WSCustomFloatSpinEdit = class(TWSCustomFloatSpinEdit)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer;
                         WithThemeSpace: Boolean); override;
@@ -52,12 +52,12 @@ implementation
 { TGtk3WSCustomFloatSpinEdit }
 
 class function TGtk3WSCustomFloatSpinEdit.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   ASpin: TGtk3SpinEdit;
 begin
   ASpin := TGtk3SpinEdit.Create(AWinControl, AParams);
-  Result := TLCLIntfHandle(ASpin);
+  Result := TLCLHandle(ASpin);
 end;
 
 class procedure TGtk3WSCustomFloatSpinEdit.GetPreferredSize(

@@ -353,7 +353,7 @@ begin
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
   {$ENDIF}
 
-  Result := THandle(PtrUInt(Widget));
+  Result := HWND(Widget);
   if Result = 0 then Exit;
 
   WidgetInfo := GetWidgetInfo(Widget); // Widget info already created in CreateAPIWidget
@@ -907,7 +907,7 @@ begin
   DebugGtkWidgets.MarkCreated(Widget,dbgsName(AWinControl));
   {$ENDIF}
 
-  Result := THandle(PtrUInt(Widget));
+  Result := HWND(Widget);
   if Result = 0 then Exit;
 
   gtk_widget_show(Widget);

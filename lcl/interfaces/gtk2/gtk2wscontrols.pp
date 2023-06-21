@@ -25,6 +25,8 @@ uses
   // RTL
   Classes, SysUtils,
   Gtk2, Gdk2, Glib2, gdk2pixbuf,
+  // LazUtils
+  LazLoggerBase,
   // LCL
 ////////////////////////////////////////////////////
 // I M P O R T A N T                                
@@ -32,12 +34,10 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Controls, ComCtrls,
-////////////////////////////////////////////////////
-  Graphics,
+  Controls, ComCtrls, Graphics, LMessages, Forms, LCLType,
 
   Gtk2Globals, Gtk2Def,
-  Gtk2Proc, LCLType, LCLProc,
+  Gtk2Proc,
   WSControls, WSProc, Gtk2WinapiWindow;
   
 
@@ -151,10 +151,9 @@ var
 implementation
 
 uses
-  Gtk2Int, LMessages, Gtk2WSPrivate, Forms;
+  Gtk2Int, Gtk2WSPrivate;
 
 { TGtk2WSWinControl }
-
 
 class function TGtk2WSWinControl.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
@@ -170,7 +169,7 @@ begin
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
   {$ENDIF}
 
-  Result := THandle({%H-}PtrUInt(Widget));
+  Result := {%H-}HWND(Widget);
   if Result = 0 then Exit;
 
   WidgetInfo := GetWidgetInfo(Widget); // Widget info already created in CreateAPIWidget
@@ -1159,7 +1158,7 @@ begin
   if V < High(Msg.SmallPos)
   then Msg.SmallPos := V
   else Msg.SmallPos := High(Msg.SmallPos);
-  Msg.ScrollBar := HWND({%H-}PtrUInt(ScrollingData^.HScroll));
+  Msg.ScrollBar := {%H-}HWND(ScrollingData^.HScroll);
 
   Result := (DeliverMessage(AInfo^.LCLObject, Msg) <> 0) xor CallBackDefaultReturn;
 end;
@@ -1221,7 +1220,7 @@ begin
   if V < High(Msg.SmallPos)
   then Msg.SmallPos := V
   else Msg.SmallPos := High(Msg.SmallPos);
-  Msg.ScrollBar := HWND({%H-}PtrUInt(ScrollingData^.HScroll));
+  Msg.ScrollBar := {%H-}HWND(ScrollingData^.HScroll);
 
   Result := (DeliverMessage(AInfo^.LCLObject, Msg) <> 0) xor CallBackDefaultReturn;
 end;
@@ -1239,7 +1238,7 @@ begin
   DebugGtkWidgets.MarkCreated(Widget,dbgsName(AWinControl));
   {$ENDIF}
 
-  Result := THandle({%H-}PtrUInt(Widget));
+  Result := {%H-}HWND(Widget);
   if Result = 0 then Exit;
 
   gtk_widget_show(Widget);

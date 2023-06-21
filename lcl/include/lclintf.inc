@@ -26,19 +26,19 @@
  ******************************************************************************}
 //##apiwiz##sps##   // Do not remove
 
-function AddEventHandler(AHandle: THandle; AFlags: dword; 
+function AddEventHandler(AHandle: TLCLHandle; AFlags: dword;
   AEventHandler: TWaitHandleEvent; AData: PtrInt): PEventHandler;
 begin
   Result := WidgetSet.AddEventHandler(AHandle, AFlags, AEventHandler, AData);
 end;
 
-function AddPipeEventHandler(AHandle: THandle; AEventHandler: TPipeEvent; 
+function AddPipeEventHandler(AHandle: TLCLHandle; AEventHandler: TPipeEvent;
   AData: PtrInt): PPipeEventHandler;
 begin
   Result:=WidgetSet.AddPipeEventHandler(AHandle, AEventHandler, AData);
 end;
 
-function AddProcessEventHandler(AHandle: THandle; AEventHandler: TChildExitEvent; 
+function AddProcessEventHandler(AHandle: TLCLHandle; AEventHandler: TChildExitEvent;
   AData: PtrInt): PProcessEventHandler;
 begin
   Result:=WidgetSet.AddProcessEventHandler(AHandle, AEventHandler, AData);

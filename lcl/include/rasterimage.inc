@@ -672,7 +672,7 @@ begin
   else SetHandles(AValue, 0);
 end;
 
-procedure TRasterImage.SetHandle(AValue: THandle);
+procedure TRasterImage.SetHandle(AValue: TLCLHandle);
 begin
   if FSharedImage.FHandle = AValue then Exit;
   FreeCanvasContext;
@@ -826,7 +826,7 @@ begin
   Result := FSharedImage.IsEmpty;
 end;
 
-function TRasterImage.GetHandle: THandle;
+function TRasterImage.GetHandle: TLCLHandle;
 begin
   HandleNeeded;
   Result := FSharedImage.FHandle;

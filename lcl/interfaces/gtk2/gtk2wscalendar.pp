@@ -41,7 +41,7 @@ type
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
     class function GetCalendar(const ACalendar: TCustomCalendar): PGtkCalendar; //inline;
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class function GetDateTime(const ACalendar: TCustomCalendar): TDateTime; override;
     class function HitTest(const ACalendar: TCustomCalendar; const APoint: TPoint): TCalendarPart; override;
@@ -127,7 +127,7 @@ end;
 
 class function TGtk2WSCustomCalendar.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams
-  ): TLCLIntfHandle;
+  ): TLCLHandle;
 var
   FrameWidget, CalendarWidget: PGtkWidget;
   WidgetInfo: PWidgetInfo;
@@ -141,7 +141,7 @@ begin
   // if we don't request it - we have a SIGFPE sometimes
   gtk_widget_size_request(CalendarWidget, @Requisition);
 
-  Result := TLCLIntfHandle({%H-}PtrUInt(FrameWidget));
+  Result := TLCLHandle({%H-}PtrUInt(FrameWidget));
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(FrameWidget, dbgsName(AWinControl));
   {$ENDIF}

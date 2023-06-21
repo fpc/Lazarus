@@ -162,13 +162,13 @@ end;
 
   Creates a new timer and sets the callback event.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle;
+function TQtWidgetSet.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): TLCLHandle;
 var
   QtTimer: TQtTimer;
 begin
   QtTimer := TQtTimer.CreateTimer(Interval, TimerFunc, App);
   
-  Result := THandle(QtTimer);
+  Result := TLCLHandle(QtTimer);
 end;
 
 {------------------------------------------------------------------------------
@@ -178,7 +178,7 @@ end;
 
   Destroys a timer.
  ------------------------------------------------------------------------------}
-function TQtWidgetSet.DestroyTimer(TimerHandle: THandle): boolean;
+function TQtWidgetSet.DestroyTimer(TimerHandle: TLCLHandle): boolean;
 begin
   TQtTimer(TimerHandle).Free;
   

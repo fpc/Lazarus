@@ -40,7 +40,7 @@ uses
 ////////////////////////////////////////////////////
   LCLType, Dialogs,
 ////////////////////////////////////////////////////
-  WSLCLClasses, WSControls, WSFactory;
+  WSLCLClasses, WSReferences, WSControls, WSFactory;
 
 type
   { TWSCommonDialog }
@@ -50,7 +50,7 @@ type
   public class var
     WSCommonDialog_WSClass: TWSCommonDialogClass;
   published
-    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; virtual;
+    class function  CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; virtual;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); virtual;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); virtual;
     class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; virtual;
@@ -96,7 +96,7 @@ type
 
   TWSFontDialog = class(TWSCommonDialog)
   published
-    class function  CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function  CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
     class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
@@ -118,7 +118,7 @@ implementation
 uses
   LResources;
 
-class function  TWSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
+class function  TWSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle;
 begin
   Result := 0;
 end;
@@ -139,7 +139,7 @@ end;
 
 { TWSFontDialog }
 
-class function TWSFontDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
+class function TWSFontDialog.CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle;
 begin
   if WSCommonDialog_WSClass = nil then
     WSCommonDialog_WSClass := TWSCommonDialogClass(FindWSComponentClass(TCommonDialog));

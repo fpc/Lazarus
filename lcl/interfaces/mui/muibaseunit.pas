@@ -188,7 +188,7 @@ type
     Func: TWSTimerProc;
     StartTime: Int64;
     InterVal: Int64;
-    Handle: THandle;
+    Handle: TLCLHandle;
     function CheckTimer: Boolean;
   end;
 
@@ -224,8 +224,8 @@ type
     function NewInput(Signals: PLongword): longword;
     procedure ProcessMessages;
     procedure WaitMessages;
-    function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle;
-    function DestroyTimer(TimerHandle: THandle): boolean;
+    function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): TLCLHandle;
+    function DestroyTimer(TimerHandle: TLCLHandle): boolean;
     procedure AddInvalidatedObject(AObj: TMUIObject);
     procedure RemInvalidatedObject(AObj: TMUIObject);
     procedure RedrawList;
@@ -461,7 +461,7 @@ begin
   begin
     new(PS);
     FillChar(PS^, SizeOf(TPaintStruct), 0);
-    PS^.hdc := THandle(Pointer(FMuiCanvas));
+    PS^.hdc := TLCLHandle(Pointer(FMuiCanvas));
     PS^.rcPaint := FMuiCanvas.DrawRect;
     //writeln(self.classname, ' Send paintmessage to ', pasobject.classname);
     MUIApp.InsidePaint := True;
@@ -1106,7 +1106,7 @@ begin
 end;
 
 function TMuiApplication.CreateTimer(Interval: integer; TimerFunc: TWSTimerProc
-  ): THandle;
+  ): TLCLHandle;
 var
   NewTimer: TMUITimer;
 begin
@@ -1114,12 +1114,12 @@ begin
   NewTimer.StartTime := GetLCLTime;
   NewTimer.Interval := Interval;
   NewTimer.Func := TimerFunc;
-  NewTimer.Handle := THandle(NewTimer);
+  NewTimer.Handle := TLCLHandle(NewTimer);
   FTimers.Add(NewTimer);
   Result := NewTimer.Handle;
 end;
 
-function TMuiApplication.DestroyTimer(TimerHandle: THandle): boolean;
+function TMuiApplication.DestroyTimer(TimerHandle: TLCLHandle): boolean;
 begin
   Result := True;
   if TimerHandle <> 0 then

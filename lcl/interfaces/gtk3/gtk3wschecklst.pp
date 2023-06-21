@@ -41,7 +41,7 @@ type
 
   TGtk3WSCustomCheckListBox = class(TWSCustomCheckListBox)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class function GetItemEnabled(const ACheckListBox: TCustomCheckListBox;
       const AIndex: integer): Boolean; override;
     class function GetState(const ACheckListBox: TCustomCheckListBox;
@@ -61,10 +61,10 @@ uses
 { TGtk3WSCheckListBox }
 
 class function TGtk3WSCustomCheckListBox.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 begin
   // DebugLn('>TGtk3WSCustomCheckListBox.CreateHandle');
-  Result := TLCLIntfHandle(TGtk3CheckListBox.Create(AWinControl, AParams));
+  Result := TLCLHandle(TGtk3CheckListBox.Create(AWinControl, AParams));
   // DebugLn('<TGtk3WSCustomCheckListBox.CreateHandle: Result=',dbgHex(Result));
 end;
 

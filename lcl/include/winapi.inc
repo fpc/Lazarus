@@ -83,10 +83,10 @@ begin
 end;
 
 function CreateDIBSection(DC: HDC; const BitmapInfo: tagBitmapInfo; Usage: UINT;
-  var Bits: Pointer; SectionHandle: THandle; Offset: DWORD): HBITMAP;
+  var Bits: Pointer; SectionHandle: TLCLHandle; Offset: DWORD): HBITMAP;
 begin
-  Result := WidgetSet.CreateDIBSection(DC,BitmapInfo,Usage,
-                                             Bits,SectionHandle,Offset);
+  Result := WidgetSet.CreateDIBSection(DC, BitmapInfo, Usage,
+                                       Bits, SectionHandle, Offset);
 end;
 
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH;
@@ -480,7 +480,7 @@ begin
   Result := WidgetSet.GetScrollInfo(Handle, SBStyle, ScrollInfo);
 end;
 
-function GetStockObject(Value : Integer): THandle;
+function GetStockObject(Value: Integer): TLCLHandle;
 begin
   Result := WidgetSet.GetStockObject(Value);
 end;
@@ -676,17 +676,17 @@ begin
   Result := WidgetSet.LineTo(DC, X, Y);
 end;
 
-function LoadBitmap(hInstance: THandle; lpBitmapName: PChar): HBitmap;
+function LoadBitmap(hInstance: TLCLHandle; lpBitmapName: PChar): HBitmap;
 begin
   Result := Widgetset.LoadBitmap(hInstance, lpBitmapName);
 end;
 
-function LoadCursor(hInstance: THandle; lpCursorName: PChar): HCursor;
+function LoadCursor(hInstance: TLCLHandle; lpCursorName: PChar): HCursor;
 begin
   Result := Widgetset.LoadCursor(hInstance, lpCursorName);
 end;
 
-function LoadIcon(hInstance: THandle; lpIconName: PChar): HIcon;
+function LoadIcon(hInstance: TLCLHandle; lpIconName: PChar): HIcon;
 begin
   Result := Widgetset.LoadIcon(hInstance, lpIconName);
 end;
@@ -815,7 +815,7 @@ begin
   Result := WidgetSet.ReleaseDC(hWnd, DC);
 end;
 
-function RemoveProp(Handle: hwnd; Str: PChar): THandle;
+function RemoveProp(Handle: HWND; Str: PChar): TLCLHandle;
 begin
   Result := WidgetSet.RemoveProp(Handle, Str);
 end;

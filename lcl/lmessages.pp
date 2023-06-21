@@ -26,7 +26,7 @@ interface
 uses
   Classes, SysUtils, Types,
   // LCL
-  LCLType,
+  LCLType, WSReferences,
   // LazUtils
   GraphType
   {$ifdef WINDOWS}
@@ -485,8 +485,8 @@ type
 
   PWindowPos = ^TWindowPos;
   tagWINDOWPOS = record
-    hwnd: THANDLE; //hwnd: hwnd doesnt compile on the next line
-    hwndInsertAfter: THANDLE;
+    hwnd: TLCLHandle;
+    hwndInsertAfter: TLCLHandle;
     x: Integer;
     y: Integer;
     cx: Integer;
@@ -660,7 +660,7 @@ type
   TLMXButtonUp = TLMMouse;
 
   TLastMouseInfo = record
-    WinHandle: THandle;
+    WinHandle: TLCLHandle;
     WinControl: TObject; // can be nil in special cases
     MousePos: TPoint;
     Time: QWord;

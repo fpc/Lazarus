@@ -3086,7 +3086,7 @@ type
     function GetFirstChild: TTreeNode;
     function GetFirstSibling: TTreeNode;
     function GetFirstVisibleChild(aEnabledOnly: boolean = false): TTreeNode;
-    function GetHandle: THandle;
+    function GetHandle: TLCLHandle;
     function GetLastChild: TTreeNode;
     function GetLastSibling: TTreeNode;
     function GetLastSubChild: TTreeNode;
@@ -3133,7 +3133,7 @@ type
     property DropTarget: Boolean read GetDropTarget write SetDropTarget;
     property Expanded: Boolean read GetExpanded write SetExpanded;
     property Focused: Boolean read GetFocused write SetFocused;
-    property Handle: THandle read GetHandle;
+    property Handle: TLCLHandle read GetHandle;
     property HasChildren: Boolean read GetHasChildren write SetHasChildren;
     property Height: integer read GetHeight write SetHeight;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
@@ -3199,7 +3199,7 @@ type
     FUpdateCount: Integer;
     fNewNodeToBeAdded: TTreeNode;
     procedure ClearCache;
-    function GetHandle: THandle;
+    function GetHandle: TLCLHandle;
     function GetNodeFromIndex(Index: Integer): TTreeNode;
     function GetSelectionCount: Cardinal;
     function GetTopLvlItems(Index: integer): TTreeNode;

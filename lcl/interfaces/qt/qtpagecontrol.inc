@@ -28,7 +28,7 @@ const
   Allocates memory and resources for the control and shows it
  ------------------------------------------------------------------------------}
 class function TQtWSCustomPage.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   QtPage: TQtPage;
 begin
@@ -40,7 +40,7 @@ begin
   QtPage.AttachEvents;
 
   // Returns the Handle
-  Result := TLCLIntfHandle(QtPage);
+  Result := TLCLHandle(QtPage);
 
   {$ifdef VerboseQt}
     WriteLn('Trace:< [TQtWSCustomPage.CreateHandle] Result: ', IntToStr(Result));
@@ -157,7 +157,7 @@ end;
 
   Allocates memory and resources for the control and shows it
  ------------------------------------------------------------------------------}
-class function TQtWSCustomTabControl.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function TQtWSCustomTabControl.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   QtTabWidget: TQtTabWidget;
   QtTTabCtl: TQtWidget;
@@ -170,7 +170,7 @@ begin
     QtTTabCtl := TQtWidget.Create(AWinControl, AParams);
     QtTTabCtl.ChildOfComplexWidget := ccwTTabControl;
     QtTTabCtl.AttachEvents;
-    Result := TLCLIntfHandle(QtTTabCtl);
+    Result := TLCLHandle(QtTTabCtl);
   end else
   begin
     QtTabWidget := TQtTabWidget.Create(AWinControl, AParams);
@@ -180,7 +180,7 @@ begin
     QTabWidget_setElideMode(QTabWidgetH(QtTabWidget.Widget), QtElideNone);
     {$ENDIF}
     QtTabWidget.AttachEvents;
-    Result := TLCLIntfHandle(QtTabWidget);
+    Result := TLCLHandle(QtTabWidget);
   end;
 end;
 

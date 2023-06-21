@@ -52,7 +52,7 @@ type
   TGtk3WSCustomSplitter = class(TWSCustomSplitter)
   published
     class function CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+      const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TGtk3WSSplitter }
@@ -125,7 +125,7 @@ type
 
   TGtk3WSCustomPanel = class(TWSCustomPanel)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
   end;
 
@@ -153,18 +153,18 @@ uses
 { TGtk3WSCustomSplitter }
 
 class function TGtk3WSCustomSplitter.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   ASplitter: TGtk3Splitter;
 begin
   ASplitter := TGtk3Splitter.Create(AWinControl, AParams);
-  Result := TLCLIntfHandle(ASplitter);
+  Result := TLCLHandle(ASplitter);
 end;
 
 { TGtk3WSCustomPanel }
 
 class function TGtk3WSCustomPanel.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   APanel: TGtk3Panel;
 begin
@@ -173,7 +173,7 @@ begin
   APanel.BorderStyle := TCustomControl(AWinControl).BorderStyle;
   APanel.Text := AWinControl.Caption;
 
-  Result := TLCLIntfHandle(APanel);
+  Result := TLCLHandle(APanel);
 end;
 
 class procedure TGtk3WSCustomPanel.SetBorderStyle(

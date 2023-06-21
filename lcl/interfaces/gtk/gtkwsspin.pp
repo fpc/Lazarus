@@ -49,7 +49,7 @@ type
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
 
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
   end;
 
 function GetGtkSpinEntry(Spin: PGtkSpinButton): PGtkEntry;
@@ -159,7 +159,7 @@ end;
 
 class function TGtkWSCustomFloatSpinEdit.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams
-  ): TLCLIntfHandle;
+  ): TLCLHandle;
 var
   Adjustment: PGtkAdjustment;
   Widget: PGtkWidget;
@@ -171,7 +171,7 @@ begin
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
   {$ENDIF}
-  Result := TLCLIntfHandle(PtrUInt(Widget));
+  Result := TLCLHandle(PtrUInt(Widget));
   WidgetInfo := CreateWidgetInfo(Widget, AWinControl, AParams);
   Set_RC_Name(AWinControl, Widget);
   SetCallbacks(Widget, WidgetInfo);

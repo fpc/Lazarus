@@ -2746,8 +2746,8 @@ procedure GetCursorValues(Proc: TGetStrProc);
 function CursorToIdent(Cursor: Longint; var Ident: string): Boolean; inline;
 function IdentToCursor(const Ident: string; var Cursor: Longint): Boolean; inline;
 
-procedure CheckTransparentWindow(var Handle: THandle; var AWinControl: TWinControl);
-function CheckMouseButtonDownUp(const AWinHandle: THandle; const AWinControl: TWinControl;
+procedure CheckTransparentWindow(var Handle: TLCLHandle; var AWinControl: TWinControl);
+function CheckMouseButtonDownUp(const AWinHandle: TLCLHandle; const AWinControl: TWinControl;
   var LastMouse: TLastMouseInfo; const AMousePos: TPoint; const AButton: Byte;
   const AMouseDown: Boolean): Cardinal;
 
@@ -3117,7 +3117,7 @@ begin
   MoveWindowOrgEx(DC,X,Y);
 end;
 
-procedure CheckTransparentWindow(var Handle: THandle; var AWinControl: TWinControl);
+procedure CheckTransparentWindow(var Handle: TLCLHandle; var AWinControl: TWinControl);
 var
   NewFrm: TCustomForm;
   I: Integer;
@@ -3169,7 +3169,7 @@ begin
   end;
 end;
 
-function CheckMouseButtonDownUp(const AWinHandle: THandle;
+function CheckMouseButtonDownUp(const AWinHandle: TLCLHandle;
   const AWinControl: TWinControl; var LastMouse: TLastMouseInfo;
   const AMousePos: TPoint; const AButton: Byte; const AMouseDown: Boolean
   ): Cardinal;

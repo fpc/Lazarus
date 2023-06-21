@@ -21,11 +21,11 @@
 
 //##apiwiz##sps##   // Do not remove
 
-{function AddEventHandler(AHandle: THandle; AFlags: dword;
+{function AddEventHandler(AHandle: TLCLHandle; AFlags: dword;
   AEventHandler: TWaitHandleEvent; AData: PtrInt): PEventHandler; override;
-function AddPipeEventHandler(AHandle: THandle;
+function AddPipeEventHandler(AHandle: TLCLHandle;
   AEventHandler: TPipeEvent; AData: PtrInt): PPipeEventHandler; override;
-function AddProcessEventHandler(AHandle: THandle;
+function AddProcessEventHandler(AHandle: TLCLHandle;
   AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler; override;
 function AllocateHWnd(Method: TLCLWndMethod): HWND; override;
 }

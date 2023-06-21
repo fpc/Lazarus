@@ -39,7 +39,7 @@ type
   private
     class function  LCLGlyphPosToCocoa(ALayout: TButtonLayout): NSCellImagePosition;
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     //
     class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
     //
@@ -81,12 +81,12 @@ end;
   specified parameters
  ------------------------------------------------------------------------------}
 class function TCocoaWSBitBtn.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   btn: NSButton;
 begin
   btn := AllocButton(AWinControl, TLCLButtonCallBack, AParams, NSRegularSquareBezelStyle, NSMomentaryPushInButton);
-  Result := TLCLIntfHandle(btn);
+  Result := TLCLHandle(btn);
 end;
 
 class procedure TCocoaWSBitBtn.GetPreferredSize(const AWinControl: TWinControl;

@@ -847,7 +847,7 @@ begin
   Result := true;
 end;
 
-function TGtkWidgetSet.AddEventHandler(AHandle: THandle; AFlags: dword;
+function TGtkWidgetSet.AddEventHandler(AHandle: TLCLHandle; AFlags: dword;
   AEventHandler: TWaitHandleEvent; AData: PtrInt): PEventHandler;
 var
   giochannel: pgiochannel;
@@ -910,7 +910,7 @@ type
     OnEvent: TPipeEvent;
   end;
 
-function TGtkWidgetSet.AddPipeEventHandler(AHandle: THandle;
+function TGtkWidgetSet.AddPipeEventHandler(AHandle: TLCLHandle;
   AEventHandler: TPipeEvent; AData: PtrInt): PPipeEventHandler;
 var
   lPipeEventInfo: PPipeEventInfo;
@@ -951,7 +951,7 @@ begin
 end;
 
 {$ifdef UNIX}
-function TGtkWidgetSet.AddProcessEventHandler(AHandle: THandle;
+function TGtkWidgetSet.AddProcessEventHandler(AHandle: TLCLHandle;
   AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler;
 var
   lHandler: PChildSignalEventHandler;
@@ -986,7 +986,7 @@ end;
 {$else}
 {$IFDEF VerboseGtkToDos}{$warning TGtkWidgetSet.RemoveProcessEventHandler and TGtkWidgetSet.AddProcessEventHandler not implemented on this OS}{$ENDIF}
 //PChildSignalEventHandler is only defined on unix
-function TGtkWidgetSet.AddProcessEventHandler(AHandle: THandle;
+function TGtkWidgetSet.AddProcessEventHandler(AHandle: TLCLHandle;
   AEventHandler: TChildExitEvent; AData: PtrInt): PProcessEventHandler;
 begin
   Result := nil;

@@ -20,8 +20,10 @@ unit CustomTimer;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLStrConsts, LCLType, InterfaceBase, CustApp;
-// Restored previous LCLType dependency for THandle
+  Classes, SysUtils, CustApp,
+  // LCL
+  LCLStrConsts, LCLType, InterfaceBase;
+
 type
 
   { TCustomTimer }
@@ -31,7 +33,7 @@ type
     FInterval     : Cardinal;
     FOnStartTimer: TNotifyEvent;
     FOnStopTimer: TNotifyEvent;
-    FTimerHandle  : THandle;
+    FTimerHandle  : TLCLHandle;
     FOnTimer      : TNotifyEvent;
     FEnabled      : Boolean;
     procedure Timer;
@@ -57,7 +59,7 @@ type
 implementation
 
 const
-  cIdNoTimer = THandle(-1);        { timer ID for an invalid timer }
+  cIdNoTimer = TLCLHandle(-1);        { timer ID for an invalid timer }
 
 {------------------------------------------------------------------------------
   Method: TCustomTimer.Create

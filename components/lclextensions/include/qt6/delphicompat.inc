@@ -80,7 +80,7 @@ begin
   end;
 end;
 
-function GetWindowDC(hWnd:THandle): HDC;
+function GetWindowDC(hWnd:TLCLHandle): HDC;
 begin
   Result := LCLIntf.GetDC(hWnd);
 end;
@@ -113,12 +113,12 @@ begin
   Result := Region.GetRegionType;
 end;
 
-function RedrawWindow(hWnd:THandle; lprcUpdate:PRECT; hrgnUpdate:HRGN; flags:LongWord):BOOLEAN;
+function RedrawWindow(hWnd:TLCLHandle; lprcUpdate:PRECT; hrgnUpdate:HRGN; flags:LongWord):BOOLEAN;
 begin
   Result := LCLIntf.RedrawWindow(hWnd, lprcUpdate, hrgnUpdate, flags);
 end;
 
-function ScrollWindow(hWnd:THandle; XAmount, YAmount:longint;lpRect:PRECT; lpClipRect:PRECT): Boolean;
+function ScrollWindow(hWnd:TLCLHandle; XAmount, YAmount:longint;lpRect:PRECT; lpClipRect:PRECT): Boolean;
 begin
   Result := False;
   if hWnd = 0 then
@@ -145,7 +145,7 @@ end;
 type
 
   TTimerID = record
-    hWnd: THandle;
+    hWnd: TLCLHandle;
     nIDEvent: UINT_PTR;
   end;
 
@@ -157,11 +157,11 @@ type
     FWidgetHook: QObject_hookH;
     FCallbackFunc: TTimerNotify;
     FID: UINT_PTR;
-    FHandle: THandle;
+    FHandle: TLCLHandle;
     FControl: TWinControl;
     FAppObject: QObjectH;
   public
-    constructor Create(hWnd: THandle; nIDEvent: UINT_PTR; TimerFunc: TTimerNotify);
+    constructor Create(hWnd: TLCLHandle; nIDEvent: UINT_PTR; TimerFunc: TTimerNotify);
     destructor Destroy; override;
     procedure AttachEvents; override;
     procedure DetachEvents; override;
@@ -182,9 +182,9 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure Delete(hWnd: THandle; nIDEvent: UINT_PTR);
-    function Find(hWnd: THandle; nIDEvent: UINT_PTR): TQtTimerEx;
-    function Get(hWnd: THandle; nIDEvent: UINT_PTR; NotifyFunc: TTimerNotify): TQtTimerEx;
+    procedure Delete(hWnd: TLCLHandle; nIDEvent: UINT_PTR);
+    function Find(hWnd: TLCLHandle; nIDEvent: UINT_PTR): TQtTimerEx;
+    function Get(hWnd: TLCLHandle; nIDEvent: UINT_PTR; NotifyFunc: TTimerNotify): TQtTimerEx;
   end;
 
 var
@@ -192,7 +192,7 @@ var
 
 { TQtTimerEx }
 
-constructor TQtTimerEx.Create(hWnd: THandle; nIDEvent: UINT_PTR; TimerFunc: TTimerNotify);
+constructor TQtTimerEx.Create(hWnd: TLCLHandle; nIDEvent: UINT_PTR; TimerFunc: TTimerNotify);
 var
   AName: WideString;
 begin
@@ -280,7 +280,7 @@ begin
   QTimer_stop(QTimerH(TheObject));
 end;
   
-function KillTimer(hWnd: THandle; nIDEvent: UINT_PTR): Boolean;
+function KillTimer(hWnd: TLCLHandle; nIDEvent: UINT_PTR): Boolean;
 var
   TimerObject: TQtTimerEx;
 begin
@@ -293,7 +293,7 @@ begin
   end;
 end;
 
-function SetTimer(hWnd: THandle; nIDEvent: UINT_PTR; uElapse: LongWord; lpTimerFunc: TTimerNotify): UINT_PTR;
+function SetTimer(hWnd: TLCLHandle; nIDEvent: UINT_PTR; uElapse: LongWord; lpTimerFunc: TTimerNotify): UINT_PTR;
 var
   TimerObject: TQtTimerEx;
 begin
@@ -310,7 +310,7 @@ begin
   //DebugLn('SetTimer HWnd: %d ID: %d TimerObject: %d',[hWnd, nIDEvent, PtrInt(TimerObject)]);
 end;
 
-function TTimerList.Get(hWnd: THandle; nIDEvent: UINT_PTR; NotifyFunc: TTimerNotify): TQtTimerEx;
+function TTimerList.Get(hWnd: TLCLHandle; nIDEvent: UINT_PTR; NotifyFunc: TTimerNotify): TQtTimerEx;
 var
   AID: TTimerID;
 begin
@@ -362,7 +362,7 @@ begin
   FMap.Destroy;
 end;
 
-procedure TTimerList.Delete(hWnd: THandle; nIDEvent: UINT_PTR);
+procedure TTimerList.Delete(hWnd: TLCLHandle; nIDEvent: UINT_PTR);
 var
   TimerID: TTimerID;
 begin
@@ -371,7 +371,7 @@ begin
   FMap.Delete(TimerID);
 end;
 
-function TTimerList.Find(hWnd: THandle; nIDEvent: UINT_PTR): TQtTimerEx;
+function TTimerList.Find(hWnd: TLCLHandle; nIDEvent: UINT_PTR): TQtTimerEx;
 var
   DataPtr: ^TQtTimerEx;
   TimerID: TTimerID;

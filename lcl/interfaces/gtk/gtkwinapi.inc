@@ -5735,7 +5735,7 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TGtkWidgetSet.GetStockObject(Value: Integer): THandle;
+function TGtkWidgetSet.GetStockObject(Value: Integer): TLCLHandle;
 begin
   //DebugLn(Format('Trace:> [TGtkWidgetSet.GetStockObject] %d', [Value]));
   Result := 0;
@@ -7915,7 +7915,7 @@ end;
   Returns: The handle of the property (0=failure)
 
  ------------------------------------------------------------------------------}
-function TGtkWidgetSet.RemoveProp(Handle: hwnd; Str: PChar): THandle;
+function TGtkWidgetSet.RemoveProp(Handle: hwnd; Str: PChar): TLCLHandle;
 begin
   gtk_object_remove_data(pGTKObject(handle), Str);
   Result := 1;

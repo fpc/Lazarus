@@ -306,7 +306,7 @@ begin
     gtk_notebook_popup_enable(AWidget);
 
   gtk_notebook_set_tab_pos(AWidget, GtkPositionTypeMap[TCustomTabControl(AWinControl).TabPosition]);
-  Result := HWND(TLCLIntfHandle({%H-}PtrUInt(AWidget)));
+  Result := HWND(TLCLHandle({%H-}PtrUInt(AWidget)));
   Set_RC_Name(AWinControl, PGtkWidget(AWidget));
   SetCallBacks(PGtkWidget(AWidget), WidgetInfo);
 end;
@@ -623,7 +623,7 @@ begin
 end;
 
 class function TGtk2WSCustomPage.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   Widget: PGtkWidget;
   WidgetInfo: PWidgetInfo;
@@ -632,7 +632,7 @@ begin
   {$IFDEF DebugLCLComponents}
   DebugGtkWidgets.MarkCreated(Widget, dbgsName(AWinControl));
   {$ENDIF}
-  Result := TLCLIntfHandle({%H-}PtrUInt(Widget));
+  Result := TLCLHandle({%H-}PtrUInt(Widget));
 
   WidgetInfo := GetWidgetInfo(Widget);
   WidgetInfo^.LCLObject := AWinControl;

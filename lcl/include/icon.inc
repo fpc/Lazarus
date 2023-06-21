@@ -115,7 +115,7 @@ begin
   FHandle := 0;
 end;
 
-procedure TSharedIcon.UpdateFromHandle(NewHandle: THandle);
+procedure TSharedIcon.UpdateFromHandle(NewHandle: TLCLHandle);
 var
   Info: TIconInfo;
 begin
@@ -672,7 +672,8 @@ begin
   end;
 end;
 
-procedure TCustomIcon.LoadFromResourceName(Instance: THandle; const ResName: String);
+procedure TCustomIcon.LoadFromResourceName(Instance: TLCLHandle;
+  const ResName: String);
 var
   ResType: TResourceType;
   ResHandle: TFPResourceHandle;
@@ -686,7 +687,7 @@ begin
   LoadFromResourceHandle(Instance, ResHandle);
 end;
 
-procedure TCustomIcon.LoadFromResourceID(Instance: THandle; ResID: PtrInt);
+procedure TCustomIcon.LoadFromResourceID(Instance: TLCLHandle; ResID: PtrInt);
 var
   ResType: TResourceType;
   ResHandle: TFPResourceHandle;
@@ -700,7 +701,8 @@ begin
   LoadFromResourceHandle(Instance, ResHandle);
 end;
 
-procedure TCustomIcon.LoadFromResourceHandle(Instance: THandle; ResHandle: TFPResourceHandle);
+procedure TCustomIcon.LoadFromResourceHandle(Instance: TLCLHandle;
+  ResHandle: TFPResourceHandle);
 begin
 end;
 
@@ -1093,7 +1095,7 @@ begin
   Changed(Self);
 end;
 
-procedure TCustomIcon.SetHandle(AValue: THandle);
+procedure TCustomIcon.SetHandle(AValue: TLCLHandle);
 begin
   if FSharedImage.FHandle <> AValue
   then begin
@@ -1386,7 +1388,8 @@ begin
   FSharedImage.FHandle := WidgetSet.CreateIconIndirect(@IconInfo);
 end;
 
-procedure TIcon.LoadFromResourceHandle(Instance: THandle; ResHandle: TFPResourceHandle);
+procedure TIcon.LoadFromResourceHandle(Instance: TLCLHandle;
+  ResHandle: TFPResourceHandle);
 var
   GlobalHandle: TFPResourceHGlobal;
   Dir: PNewHeader;

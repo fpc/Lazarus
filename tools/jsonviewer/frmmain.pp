@@ -25,8 +25,11 @@ unit frmmain;
 interface
 
 uses
-  Classes, SysUtils, fpJSON, jsonscanner, JSONParser, frarest, ExtCtrls,
-  Forms, Controls, Dialogs, ActnList, Menus, ComCtrls, IniPropStorage, PropertyStorage,
+  Classes, SysUtils, TypInfo, fpJSON, jsonscanner, JSONParser,
+  frarest,
+  ExtCtrls, LCLType, clipbrd,
+  Forms, Controls, Dialogs, ActnList, Menus, ComCtrls,
+  IniPropStorage, PropertyStorage,
   DefaultTranslator, SynEdit, SynHighlighterJScript;
 
 type
@@ -312,8 +315,7 @@ var
 implementation
 
 uses
-  typinfo,  {$IF FPC_FULLVERSION>=30004} frmcreatecode, {$endif}
-msgjsonviewer, lcltype, frmNewBoolean, frmNewINteger, frmNewString, clipbrd;
+  frmcreatecode, msgjsonviewer, frmNewBoolean, frmNewINteger, frmNewString;
 
 {$R *.lfm}
 Const

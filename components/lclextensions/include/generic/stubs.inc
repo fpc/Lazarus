@@ -1,23 +1,25 @@
 
-function BeginDeferWindowPos(nNumWindows:longint):THandle;
+function BeginDeferWindowPos(nNumWindows: LongInt): TLCLHandle;
 begin
   Result := 0;
   {$ifdef DEBUG_DELPHICOMPAT} Logger.SendCallStack('Dummy WinAPI Implementation'); {$endif}
 end;
 
-function CopyImage(hImage:THANDLE; uType:LongWord; cxDesired, cyDesired: LongInt; fuFlags:LongWord):THandle;
+function CopyImage(hImage: TLCLHandle; uType: LongWord; cxDesired,
+  cyDesired: LongInt; fuFlags: LongWord): TLCLHandle;
 begin
   Result := 0;
   {$ifdef DEBUG_DELPHICOMPAT} Logger.SendCallStack('Dummy WinAPI Implementation'); {$endif}
 end;
 
-function DeferWindowPos(hWinPosInfo, hWnd, hWndInsertAfter:THandle; x, y, cx, cy:longint; uFlags:LongWord):THandle;
+function DeferWindowPos(hWinPosInfo, hWnd, hWndInsertAfter:TLCLHandle;
+  x, y, cx, cy:longint; uFlags:LongWord): TLCLHandle;
 begin
   Result := 0;
   {$ifdef DEBUG_DELPHICOMPAT} Logger.SendCallStack('Dummy WinAPI Implementation'); {$endif}
 end;
 
-function EndDeferWindowPos(hWinPosInfo:THandle):Boolean;
+function EndDeferWindowPos(hWinPosInfo: TLCLHandle): Boolean;
 begin
   Result := False;
   {$ifdef DEBUG_DELPHICOMPAT} Logger.SendCallStack('Dummy WinAPI Implementation'); {$endif}
@@ -51,25 +53,25 @@ begin
 end;
 {$endif}
 
-function GetDCEx(hWnd:THandle; hrgnClip:HRGN; flags:DWORD):HDC;
+function GetDCEx(hWnd: TLCLHandle; hrgnClip: HRGN; flags: DWORD): HDC;
 begin
   Result := 0;
   {$ifdef DEBUG_DELPHICOMPAT} Logger.SendCallStack('Dummy WinAPI Implementation'); {$endif}
 end;
 
-function GetKeyboardLayout(dwLayout:DWORD):THandle;
+function GetKeyboardLayout(dwLayout: DWORD): TLCLHandle;
 begin
   Result := 0;
   {$ifdef DEBUG_DELPHICOMPAT} Logger.SendCallStack('Dummy WinAPI Implementation'); {$endif}
 end;
 
-function GetKeyboardState(lpKeyState: System.PByte):BOOLEAN;
+function GetKeyboardState(lpKeyState: PBYTE): BOOLEAN;
 begin
   Result := False;
   {$ifdef DEBUG_DELPHICOMPAT} Logger.SendCallStack('Dummy WinAPI Implementation'); {$endif}
 end;
 
-function GetLocaleInfo(Locale, LCType:LongWord; lpLCData:PChar; cchData:longint):longint;
+function GetLocaleInfo(Locale, LCType: LongWord; lpLCData: PChar; cchData: longint): longint;
 begin
   Result := 0;
   {$ifdef DEBUG_DELPHICOMPAT} Logger.SendCallStack('Dummy WinAPI Implementation'); {$endif}
@@ -100,7 +102,7 @@ end;
 {$endif}
 
 {$ifndef HAS_GETWINDOWDC}
-function GetWindowDC(hWnd:THandle):HDC;
+function GetWindowDC(hWnd:TLCLHandle):HDC;
 begin
   Result := 0;
   {$ifdef DEBUG_DELPHICOMPAT} Logger.SendCallStack('Dummy WinAPI Implementation'); {$endif}
@@ -142,7 +144,7 @@ begin
 end;
 
 {$ifndef HAS_SCROLLWINDOW}
-function ScrollWindow(hWnd:THandle; XAmount, YAmount:longint;lpRect:PRECT; lpClipRect:PRECT):Boolean;
+function ScrollWindow(hWnd:TLCLHandle; XAmount, YAmount:longint;lpRect:PRECT; lpClipRect:PRECT):Boolean;
 begin
   Result := False;
   {$ifdef DEBUG_DELPHICOMPAT} Logger.SendCallStack('Dummy WinAPI Implementation'); {$endif}
@@ -163,7 +165,8 @@ begin
   {$ifdef DEBUG_DELPHICOMPAT} Logger.SendCallStack('Dummy WinAPI Implementation'); {$endif}
 end;
 
-function ToAscii(uVirtKey, uScanCode:LongWord; lpKeyState: System.PByte; lpChar: System.PWord; uFlags:LongWord):longint;
+function ToAscii(uVirtKey, uScanCode: LongWord; lpKeyState: PByte;
+  lpChar: PWord; uFlags: LongWord): LongInt;
 begin
   Result := 0;
   {$ifdef DEBUG_DELPHICOMPAT} Logger.SendCallStack('Dummy WinAPI Implementation'); {$endif}

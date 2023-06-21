@@ -117,7 +117,7 @@ function GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint; override;
 function GetScrollBarSize(Handle: HWND; BarKind: Integer): integer; override;
 function GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean; override;
 function GetScrollInfo(Handle: HWND; SBStyle: Integer; var ScrollInfo: TScrollInfo): Boolean; override;
-function GetStockObject(Value: Integer): THandle; override;
+function GetStockObject(Value: Integer): TLCLHandle; override;
 function GetSysColor(NIndex: Integer): DWORD; override;
 function GetSystemMetrics(NIndex: Integer): Integer;  override;
 function GetTextColor(DC: HDC) : TColorRef; Override;
@@ -169,7 +169,7 @@ function RectVisible(DC: HDC; const ARect: TRect) : Boolean; override;
 function RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer): Boolean; override;
 function ReleaseCapture : Boolean; override;
 function ReleaseDC({%H-}HWnd: HWND; DC: HDC): Integer; override;
-function RemoveProp(Handle: hwnd; Str: PChar): THandle; override;
+function RemoveProp(Handle: hwnd; Str: PChar): TLCLHandle; override;
 function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; override;
 function RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean;  override;
 

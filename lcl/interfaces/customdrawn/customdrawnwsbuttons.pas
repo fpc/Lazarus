@@ -40,7 +40,7 @@ type
     class procedure InjectCDControl(const AWinControl: TWinControl; var ACDControlField: TCDControl);
   published
     class function  CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+      const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
     class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TButtonGlyph); override;
@@ -68,7 +68,7 @@ begin
 end;
 
 class function TCDWSBitBtn.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   lCDWinControl: TCDWinControl;
 begin

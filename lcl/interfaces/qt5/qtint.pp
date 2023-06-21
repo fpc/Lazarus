@@ -164,8 +164,8 @@ type
     procedure SetDesigning(AComponent: TComponent); override;
 
     // create and destroy
-    function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): THandle; override;
-    function DestroyTimer(TimerHandle: THandle): boolean; override;
+    function CreateTimer(Interval: integer; TimerFunc: TWSTimerProc): TLCLHandle; override;
+    function DestroyTimer(TimerHandle: TLCLHandle): boolean; override;
 
     // device contexts
     function IsValidDC(const DC: HDC): Boolean; virtual;

@@ -88,7 +88,7 @@ type
   private
   protected
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure Update(const AStatusBar: TStatusBar); override;
@@ -142,7 +142,7 @@ type
   protected
   public
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure ApplyChanges(const AProgressBar: TCustomProgressBar); override;
     class procedure SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer); override;
@@ -185,7 +185,7 @@ type
 
   TMUIWSTrackBar = class(TWSTrackBar)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); override;
     class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); override;
@@ -295,7 +295,7 @@ end;
 
 { TmuiWSStatusBar }
 
-class function  TmuiWSStatusBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function  TmuiWSStatusBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   MUIText: TMUIText;
   TagList: TATagList;
@@ -315,7 +315,7 @@ begin
   begin
     MUIText.Parent := TMuiObject(AWinControl.Parent.Handle);
   end;
-  Result := TLCLIntfHandle(MUIText);
+  Result := TLCLHandle(MUIText);
 end;
 
 class procedure TmuiWSStatusBar.PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer);
@@ -376,7 +376,7 @@ begin
   begin
     ListView.Parent := TMuiObject(AWinControl.Parent.Handle);
   end;
-  Result := TLCLIntfHandle(ListView);
+  Result := TLCLHandle(ListView);
 end;
 
 class procedure TmuiWSCustomListView.ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const {%H-}AItem: TListItem; const {%H-}ASubIndex: Integer; const {%H-}AText: String);
@@ -387,7 +387,7 @@ end;
 { TmuiWSProgressBar }
 
 class function TmuiWSProgressBar.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   TagList: TATagList;
   Gauge: TMUIGauge;
@@ -424,7 +424,7 @@ begin
     begin
       MUIBusy.Parent := TMuiObject(AWinControl.Parent.Handle);
     end;
-    Result := TLCLIntfHandle(MUIBusy);
+    Result := TLCLHandle(MUIBusy);
   end else
   begin
     TagList.AddTags([
@@ -447,7 +447,7 @@ begin
     begin
       Gauge.Parent := TMuiObject(AWinControl.Parent.Handle);
     end;
-    Result := TLCLIntfHandle(Gauge);
+    Result := TLCLHandle(Gauge);
   end;
 
 end;
@@ -494,7 +494,7 @@ begin
   end;
 end;
 
-class function TMUIWSTrackBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+class function TMUIWSTrackBar.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   MUISlider: TMUISlider;
   TagList: TATagList;
@@ -527,7 +527,7 @@ begin
   begin
     MUISlider.Parent := TMuiObject(AWinControl.Parent.Handle);
   end;
-  Result := TLCLIntfHandle(MUISlider);
+  Result := TLCLHandle(MUISlider);
 end;
 
 class procedure TMUIWSTrackBar.ApplyChanges(const ATrackBar: TCustomTrackBar);

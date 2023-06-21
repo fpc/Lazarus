@@ -37,7 +37,7 @@ type
   TCarbonWSCustomCheckListBox = class(TWSCustomCheckListBox)
   published
     class function  CreateHandle(const AWinControl: TWinControl;
-                    const AParams: TCreateParams): TLCLIntfHandle; override;
+                    const AParams: TCreateParams): TLCLHandle; override;
     class function  GetState(const ACheckListBox: TCustomCheckListBox;
       const AIndex: integer): TCheckBoxState; override;
     class procedure SetState(const ACheckListBox: TCustomCheckListBox;
@@ -59,9 +59,9 @@ implementation
  ------------------------------------------------------------------------------}
 class function TCarbonWSCustomCheckListBox.CreateHandle(
   const AWinControl: TWinControl; const AParams: TCreateParams
-  ): TLCLIntfHandle;
+  ): TLCLHandle;
 begin
-  Result := TLCLIntfHandle(TCarbonCheckListBox.Create(AWinControl, AParams));
+  Result := TLCLHandle(TCarbonCheckListBox.Create(AWinControl, AParams));
 end;
 
 {------------------------------------------------------------------------------

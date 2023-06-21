@@ -2522,7 +2522,7 @@ begin
 end;
 
 class function TCDWSCustomForm.DoCreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
 end;
 
@@ -2538,7 +2538,7 @@ end;
   Creates a Windows CE Form, initializes it according to it´s properties and shows it
  ------------------------------------------------------------------------------}
 class function TCDWSCustomForm.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 const
   WindowHints: TXWMHints = (
     flags: InputHint or StateHint or WindowGroupHint;
@@ -2669,7 +2669,7 @@ begin
   lWindowInfo.Colormap := XDefaultColormap(CDWidgetSet.FDisplay, XDefaultScreen(CDWidgetSet.FDisplay));
   lWindowInfo.ColorDepth := lWindowInfo.Attr.depth;
   CreateX11Canvas(lWindowInfo);
-  Result := TLCLIntfHandle(lWindowInfo);
+  Result := TLCLHandle(lWindowInfo);
 
   {$ifdef CD_X11_NewNativePaint}
   CDWidgetSet.XWindowList.AddObject('New',TObject(lWindowInfo));

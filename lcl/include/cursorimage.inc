@@ -55,7 +55,7 @@ begin
   Result := RT_GROUP_CURSOR;
 end;
 
-procedure TCursorImage.LoadFromResourceHandle(Instance: THandle; ResHandle: TFPResourceHandle);
+procedure TCursorImage.LoadFromResourceHandle(Instance: TLCLHandle; ResHandle: TFPResourceHandle);
 var
   GlobalHandle: TFPResourceHGlobal;
   Dir: PNewHeader;

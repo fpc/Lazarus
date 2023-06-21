@@ -63,7 +63,7 @@ type
   PPWaitHandleEventHandler = ^PWaitHandleEventHandler;
   PWaitHandleEventHandler = ^TWaitHandleEventHandler;
   TWaitHandleEventHandler = record
-    Handle: THandle;
+    Handle: TLCLHandle;
     GIOChannel: pgiochannel;
     GSourceID: guint;
     UserData: PtrInt;

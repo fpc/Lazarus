@@ -559,7 +559,7 @@ begin
   end;
 end;
 
-procedure TPicture.LoadFromResourceName(Instance: THandle; const ResName: String);
+procedure TPicture.LoadFromResourceName(Instance: TLCLHandle; const ResName: String);
 var
   NewGraphic: TGraphic;
 begin
@@ -570,7 +570,7 @@ begin
   Changed(Self);
 end;
 
-procedure TPicture.LoadFromResourceName(Instance: THandle;
+procedure TPicture.LoadFromResourceName(Instance: TLCLHandle;
   const ResName: String; AClass: TGraphicClass);
 var
   NewGraphic: TGraphic;

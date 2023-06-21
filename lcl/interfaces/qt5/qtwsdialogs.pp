@@ -39,7 +39,7 @@ type
   protected
     class function GetDialogParent(const ACommonDialog: TCommonDialog): QWidgetH;
   published
-    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
     class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;
@@ -53,7 +53,7 @@ type
       var ASelectedFilter: WideString): WideString;
     class procedure UpdateProperties(const AFileDialog: TFileDialog; QtFileDialog: TQtFileDialog);
   published
-    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;
 
@@ -61,7 +61,7 @@ type
 
   TQtWSOpenDialog = class(TWSOpenDialog)
   published
-    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
     class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
   end;
 
@@ -78,7 +78,7 @@ type
   protected
     class procedure UpdateProperties(const AFileDialog: TSelectDirectoryDialog; QtFileDialog: TQtFileDialog);
   published
-    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
     class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
   end;
@@ -87,7 +87,7 @@ type
 
   TQtWSColorDialog = class(TWSColorDialog)
   published
-    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
     class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
   end;
@@ -102,7 +102,7 @@ type
 
   TQtWSFontDialog = class(TWSFontDialog)
   published
-    class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class function CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle; override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
     class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
   end;
@@ -160,9 +160,9 @@ end;
 
   Dummy handle creator. On Qt we don't need a Handle for common dialogs
  ------------------------------------------------------------------------------}
-class function TQtWSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
+class function TQtWSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle;
 begin
-  Result := THandle(TQtDialog.Create(ACommonDialog, GetDialogParent(ACommonDialog)));
+  Result := TLCLHandle(TQtDialog.Create(ACommonDialog, GetDialogParent(ACommonDialog)));
   TQtDialog(Result).AttachEvents;
 end;
 
@@ -373,7 +373,7 @@ begin
   {$endif}
 end;
 
-class function TQtWSFileDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
+class function TQtWSFileDialog.CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle;
 var
   FileDialog: TQtFileDialog;
 begin
@@ -387,7 +387,7 @@ begin
 
   FileDialog.AttachEvents;
   
-  Result := THandle(FileDialog);
+  Result := TLCLHandle(FileDialog);
 end;
 
 {------------------------------------------------------------------------------
@@ -647,7 +647,7 @@ end;
 { TQtWSOpenDialog }
 
 class function TQtWSOpenDialog.CreateHandle(const ACommonDialog: TCommonDialog
-  ): THandle;
+  ): TLCLHandle;
 var
   FileDialog: TQtFilePreviewDialog;
 begin
@@ -664,7 +664,7 @@ begin
     {$endif}
     FileDialog.AttachEvents;
 
-    Result := THandle(FileDialog);
+    Result := TLCLHandle(FileDialog);
   end else
     Result := TQtWSFileDialog.CreateHandle(ACommonDialog);
 end;
@@ -719,7 +719,7 @@ begin
   {$endif}
 end;
 
-class function TQtWSSelectDirectoryDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
+class function TQtWSSelectDirectoryDialog.CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle;
 var
   FileDialog: TQtFileDialog;
 begin
@@ -738,7 +738,7 @@ begin
 
   FileDialog.AttachEvents;
 
-  Result := THandle(FileDialog);
+  Result := TLCLHandle(FileDialog);
 end;
 
 {------------------------------------------------------------------------------
@@ -841,7 +841,7 @@ end;
 
 { TQtWSColorDialog }
 
-class function TQtWSColorDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
+class function TQtWSColorDialog.CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle;
 begin
   Result := 0;
 end;
@@ -928,7 +928,7 @@ end;
 { TQtWSFontDialog }
 
 class function TQtWSFontDialog.CreateHandle(const ACommonDialog: TCommonDialog
-  ): THandle;
+  ): TLCLHandle;
 begin
   Result := 0;
 end;

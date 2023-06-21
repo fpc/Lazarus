@@ -36,14 +36,14 @@ type
 
   TCarbonWSPairSplitterSide = class(TWSPairSplitterSide)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TCarbonWSCustomPairSplitter }
 
   TCarbonWSCustomPairSplitter = class(TWSCustomPairSplitter)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
   end;
 
 
@@ -64,9 +64,9 @@ uses
   parameters
  ------------------------------------------------------------------------------}
 class function TCarbonWSPairSplitterSide.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
-  Result := TLCLIntfHandle(TCarbonCustomControl.Create(AWinControl, AParams));;
+  Result := TLCLHandle(TCarbonCustomControl.Create(AWinControl, AParams));;
 end;
 
 { TCarbonWSCustomPairSplitter }
@@ -80,9 +80,9 @@ end;
   Creates new pair splitter in Carbon interface with the specified parameters
  ------------------------------------------------------------------------------}
 class function TCarbonWSCustomPairSplitter.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
-  Result := TLCLIntfHandle(TCarbonCustomControl.Create(AWinControl, AParams));;
+  Result := TLCLHandle(TCarbonCustomControl.Create(AWinControl, AParams));;
 end;
 
 end.

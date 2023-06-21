@@ -38,7 +38,7 @@ type
 
   TCarbonWSBitBtn = class(TWSBitBtn)
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TButtonGlyph); override;
     class procedure SetLayout(const ABitBtn: TCustomBitBtn; const AValue: TButtonLayout); override;
   end;
@@ -67,9 +67,9 @@ uses
   specified parameters
  ------------------------------------------------------------------------------}
 class function TCarbonWSBitBtn.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
-  Result := TLCLIntfHandle(TCarbonBitBtn.Create(AWinControl, AParams));
+  Result := TLCLHandle(TCarbonBitBtn.Create(AWinControl, AParams));
 end;
 
 {------------------------------------------------------------------------------

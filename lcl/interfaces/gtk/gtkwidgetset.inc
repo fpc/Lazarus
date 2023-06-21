@@ -1575,7 +1575,7 @@ end;
   Design: A callback to the TTimer class is implemented.
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.CreateTimer(Interval: integer;
-  TimerProc: TWSTimerProc) : THandle;
+  TimerProc: TWSTimerProc) : TLCLHandle;
 var
   TimerInfo: PGtkITimerinfo;
 begin
@@ -1608,7 +1608,7 @@ end;
   WARNING: There seems to be a bug in gtk-1.2.x which breaks gtk_timeout_remove
            thus we can't dispose PGtkITimerinfo here (s.a. gtkTimerCB).
  ------------------------------------------------------------------------------}
-function TGtkWidgetSet.DestroyTimer(TimerHandle: THandle) : boolean;
+function TGtkWidgetSet.DestroyTimer(TimerHandle: TLCLHandle) : boolean;
 var
   n : integer;
   TimerInfo : PGtkITimerinfo;

@@ -7,7 +7,7 @@ interface
 uses
   Classes,
   SysUtils,
-  LCLIntf,
+  LCLIntf, WSReferences,
   pkghandler,
   pkgoptions,
   pkgglobals,
@@ -24,13 +24,13 @@ type
   private
     FParaPackages: TStrings;
     FParaAction: string;
-    FReturnHandle: THandle;
-
+    FReturnHandle: TLCLHandle;
     FFPpkg: TpkgFPpkg;
   protected
     procedure Execute; override;
   public
-    constructor Create(ParaAction: string; ParaPackages: TStrings; Description: string; ReturnHandle: THandle);
+    constructor Create(ParaAction: string; ParaPackages: TStrings; Description: string;
+                       ReturnHandle: TLCLHandle);
     destructor Destroy; override;
   end;
 
@@ -43,7 +43,6 @@ procedure TFppkgWorkerThread.Execute;
 var
   OldCurrDir: string;
   i: integer;
-  s: string;
 begin
   pkghandler.ClearExecutedAction;
 
@@ -90,11 +89,11 @@ begin
 end;
 
 constructor TFppkgWorkerThread.Create(ParaAction: string; ParaPackages: TStrings;
-  Description: string; ReturnHandle: THandle);
+  Description: string; ReturnHandle: TLCLHandle);
 begin
   FParaPackages := TStringList.Create;
   FParaPackages.Assign(ParaPackages);
-  FParaAction :=  ParaAction;
+  FParaAction := ParaAction;
   FReturnHandle := ReturnHandle;
   inherited Create(False);
 end;

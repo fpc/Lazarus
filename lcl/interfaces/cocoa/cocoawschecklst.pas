@@ -67,7 +67,7 @@ type
 
   TCocoaWSCustomCheckListBox = class(TWSCustomCheckListBox)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class function GetState(const ACheckListBox: TCustomCheckListBox; const AIndex: integer): TCheckBoxState; override;
     class procedure SetState(const ACheckListBox: TCustomCheckListBox; const AIndex: integer; const AState: TCheckBoxState); override;
   end;
@@ -209,7 +209,7 @@ end;
   Creates new check list box in Cocoa interface with the specified parameters
  ------------------------------------------------------------------------------}
 class function TCocoaWSCustomCheckListBox.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   list: TCocoaTableListView;
   scroll: TCocoaScrollView;
@@ -245,7 +245,7 @@ begin
   ScrollViewSetBorderStyle(scroll, TCustomCheckListBox(AWinControl).BorderStyle);
   UpdateFocusRing(list, TCustomCheckListBox(AWinControl).BorderStyle);
 
-  Result := TLCLIntfHandle(scroll);
+  Result := TLCLHandle(scroll);
 end;
 
 {------------------------------------------------------------------------------

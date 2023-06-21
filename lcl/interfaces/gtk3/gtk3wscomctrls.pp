@@ -40,7 +40,7 @@ type
   TGtk3WSCustomPage = class(TWSCustomPage)
   published
     class function CreateHandle(const AWinControl: TWinControl;
-      const AParams: TCreateParams): TLCLIntfHandle; override;
+      const AParams: TCreateParams): TLCLHandle; override;
     class procedure UpdateProperties(const ACustomPage: TCustomPage); override;
     class procedure SetBounds(const {%H-}AWinControl: TWinControl; const {%H-}ALeft, {%H-}ATop, {%H-}AWidth, {%H-}AHeight: Integer); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
@@ -55,7 +55,7 @@ type
   TGtk3WSCustomTabControl = class(TWSCustomTabControl)
   published
     class function CreateHandle(const AWinControl: TWinControl;
-                                const AParams: TCreateParams): TLCLIntfHandle; override;
+                                const AParams: TCreateParams): TLCLHandle; override;
     (*
     class function GetDefaultClientRect(const AWinControl: TWinControl;
             const {%H-}aLeft, {%H-}aTop, aWidth, aHeight: integer; var aClientRect: TRect
@@ -83,7 +83,7 @@ type
 
   TGtk3WSStatusBar = class(TWSStatusBar)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
     class procedure Update(const AStatusBar: TStatusBar); override;
@@ -145,7 +145,7 @@ type
     class procedure ItemUpdate(const ALV: TCustomListView; const {%H-}AIndex: Integer; const {%H-}AItem: TListItem); override;
 
     // lv
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     // class procedure DestroyHandle(const AWinControl: TWinControl); override;
 
     class procedure BeginUpdate(const ALV: TCustomListView); override;
@@ -190,7 +190,7 @@ type
 
   TGtk3WSProgressBar = class(TWSProgressBar)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure ApplyChanges(const AProgressBar: TCustomProgressBar); override;
     class procedure SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer); override;
     class procedure SetStyle(const AProgressBar: TCustomProgressBar; const NewStyle: TProgressBarStyle); override;
@@ -218,14 +218,14 @@ type
 
   TGtk3WSToolBar = class(TWSToolBar)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
   end;
 
   { TGtk3WSTrackBar }
 
   TGtk3WSTrackBar = class(TWSTrackBar)
   published
-    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); override;
     class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
     class procedure SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer); override;
@@ -251,13 +251,13 @@ uses gtk3procs;
 { TGtk3WSTrackBar }
 
 class function TGtk3WSTrackBar.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   ATrack: TGtk3TrackBar;
   APt: TPoint;
 begin
   ATrack := TGtk3TrackBar.Create(AWinControl, AParams);
-  Result := TLCLIntfHandle(ATrack);
+  Result := TLCLHandle(ATrack);
 end;
 
 class procedure TGtk3WSTrackBar.ApplyChanges(const ATrackBar: TCustomTrackBar);
@@ -312,23 +312,23 @@ end;
 { TGtk3WSToolBar }
 
 class function TGtk3WSToolBar.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   AToolBar: TGtk3ToolBar;
 begin
   AToolBar := TGtk3ToolBar.Create(AWinControl, AParams);
-  Result := TLCLIntfHandle(AToolBar);
+  Result := TLCLHandle(AToolBar);
 end;
 
 { TGtk3WSProgressBar }
 
 class function TGtk3WSProgressBar.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   AProgress: TGtk3ProgressBar;
 begin
   AProgress := TGtk3ProgressBar.Create(AWinControl, AParams);
-  Result := TLCLIntfHandle(AProgress);
+  Result := TLCLHandle(AProgress);
 end;
 
 class procedure TGtk3WSProgressBar.ApplyChanges(
@@ -369,13 +369,13 @@ end;
 { TGtk3WSCustomListView }
 
 class function TGtk3WSCustomListView.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   AListView: TGtk3ListView;
 begin
   // DebugLn('TGtk3WSCustomListView.CreateHandle');
   AListView := TGtk3ListView.Create(AWinControl, AParams);
-  Result := TLCLIntfHandle(AListView);
+  Result := TLCLHandle(AListView);
 end;
 (*
 class procedure TGtk3WSCustomListView.DestroyHandle(
@@ -1018,12 +1018,12 @@ end;
 { TGtk3WSStatusBar }
 
 class function TGtk3WSStatusBar.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 var
   AStatusBar: TGtk3StatusBar;
 begin
   AStatusBar := TGtk3StatusBar.Create(AWinControl, AParams);
-  Result := TLCLIntfHandle(AStatusBar);
+  Result := TLCLHandle(AStatusBar);
 end;
 
 class procedure TGtk3WSStatusBar.PanelUpdate(const AStatusBar: TStatusBar;
@@ -1060,12 +1060,12 @@ end;
 { TGtk3WSCustomTabControl }
 
 class function TGtk3WSCustomTabControl.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 begin
   if AWinControl is TTabControl then
-    Result := TLCLIntfHandle(TGtk3CustomControl.Create(AWinControl, AParams))
+    Result := TLCLHandle(TGtk3CustomControl.Create(AWinControl, AParams))
   else
-    Result := TLCLIntfHandle(TGtk3NoteBook.Create(AWinControl, AParams));
+    Result := TLCLHandle(TGtk3NoteBook.Create(AWinControl, AParams));
 end;
 
 (*
@@ -1287,9 +1287,9 @@ end;
 { TGtk3WSCustomPage }
 
 class function TGtk3WSCustomPage.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): TLCLIntfHandle;
+  const AParams: TCreateParams): TLCLHandle;
 begin
-  Result := TLCLIntfHandle(TGtk3Page.Create(AWinControl, AParams));
+  Result := TLCLHandle(TGtk3Page.Create(AWinControl, AParams));
 end;
 
 class procedure TGtk3WSCustomPage.UpdateProperties(

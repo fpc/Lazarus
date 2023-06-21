@@ -45,7 +45,7 @@ type
   private
     class procedure SetCallbacks(const AGtkWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
   published
-    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle; override;
     class function GetItemEnabled(const ACheckListBox: TCustomCheckListBox;
       const AIndex: integer): Boolean; override;
     class function GetState(const ACheckListBox: TCustomCheckListBox;
@@ -157,7 +157,7 @@ begin
 end;
 
 class function TGtk2WSCustomCheckListBox.CreateHandle(
-  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle;
+  const AWinControl: TWinControl; const AParams: TCreateParams): TLCLHandle;
 var
   TreeViewWidget: PGtkWidget;
   p: PGtkWidget;                 // ptr to the newly created GtkWidget
