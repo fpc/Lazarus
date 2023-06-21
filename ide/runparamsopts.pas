@@ -52,7 +52,7 @@ uses
   Controls, Forms, Buttons, StdCtrls, ComCtrls, Dialogs, ButtonPanel, ExtCtrls,
   // IdeIntf
   IdeIntfStrConsts, BaseIDEIntf, IDEHelpIntf, ProjectIntf, IDEDialogs, InputHistory,
-  IDEImagesIntf, MacroIntf,
+  IDEImagesIntf, IDEWindowIntf, MacroIntf,
   // LazUtils
   LazFileUtils, LazFileCache, LazUTF8, Laz2_XMLCfg,
   // IdeConfig
@@ -948,6 +948,7 @@ procedure TRunParamsOptsDlg.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   MiscellaneousOptions.ShowCompOptMultiLine:=PreviewMultilineCheckBox.Checked;
+  IDEDialogLayoutList.SaveLayout(Self);
 end;
 
 procedure TRunParamsOptsDlg.FormCreate(Sender: TObject);
@@ -957,6 +958,9 @@ begin
   CmdLineParametersComboBox.DropDownCount := EnvironmentOptions.DropDownCount;
   UseLaunchingApplicationComboBox.DropDownCount := EnvironmentOptions.DropDownCount;
   WorkingDirectoryComboBox.DropDownCount := EnvironmentOptions.DropDownCount;
+
+  AutoSize:=IDEDialogLayoutList.Find(Self,false)=nil;
+  IDEDialogLayoutList.ApplyLayout(Self);
 end;
 
 procedure TRunParamsOptsDlg.HelpButtonClick(Sender: TObject);
