@@ -1555,8 +1555,8 @@ begin
     FTopInfoDisplay.LineMapCount := ListCnt;
 
     if ListCnt <> TSourceLazSynSurfaceManager(FPaintArea).TopLineCount then begin
-      TopLine := t;
       TSourceLazSynSurfaceManager(FPaintArea).TopLineCount := ListCnt;
+      TopLine := t;
       SizeOrFontChanged(FALSE);
       Invalidate; // TODO: move to PaintArea
     end;
