@@ -3422,9 +3422,13 @@ var
   NewClassifications :TFoldNodeClassifications;
 begin
   if fLinesInWindow < 0 then exit;
-  if (fLockCount > 0) and
-     ((not FInTopLineChanged) or (fvfNeedCalcMaps in FFlags)) // TODO: Scan now, to avoid invalidate later
+  if ( (fLockCount > 0) and
+       ((not FInTopLineChanged) or (fvfNeedCalcMaps in FFlags)) // TODO: Scan now, to avoid invalidate later
+     ) or
+     ( (HighLighter <> nil) and HighLighter.NeedScan )
+     // TODO: HighLighter.CurrentRanges.NeedsReScanStartIndex < "last line in windows"
   then begin
+    assert(fLockCount > 0, 'TSynEditFoldedView.CalculateMaps: fLockCount > 0');
     Include(FFlags, fvfNeedCalcMaps);
     exit;
   end;
