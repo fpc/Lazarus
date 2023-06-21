@@ -4298,6 +4298,11 @@ msgstr ""
 msgid "Create a new recommended backend"
 msgstr ""
 
+#: lazarusidestrconsts.initdlgdebugcurrent
+msgctxt "lazarusidestrconsts.initdlgdebugcurrent"
+msgid "Current"
+msgstr ""
+
 #: lazarusidestrconsts.initdlgdebugexternalexepathdisplay
 msgid "The selected backend uses the external executable:"
 msgstr ""
@@ -4319,6 +4324,11 @@ msgstr ""
 
 #: lazarusidestrconsts.initdlgdebugkeepbackend
 msgid "Keep backend"
+msgstr ""
+
+#: lazarusidestrconsts.initdlgdebugnew
+msgctxt "lazarusidestrconsts.initdlgdebugnew"
+msgid "New"
 msgstr ""
 
 #: lazarusidestrconsts.initdlgdebugpathnoteerrorexeisdirectory
@@ -4376,7 +4386,7 @@ msgid "Setup is OK."
 msgstr ""
 
 #: lazarusidestrconsts.initdlgdebugstateupdatebackend
-msgid "You are using an older backend. This may give you not the best debugging experience. Consider upgrading to the recommended backend."
+msgid "You are using an older backend. This may not give you the best debugging experience. Consider upgrading to the recommended backend."
 msgstr ""
 
 #: lazarusidestrconsts.lis0no1drawdividerlinesonlyfortoplevel2drawlinesforfi

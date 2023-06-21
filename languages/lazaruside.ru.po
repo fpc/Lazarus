@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-06-19 16:26+0300\n"
+"PO-Revision-Date: 2023-06-21 16:19+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -4316,6 +4316,11 @@ msgstr "Подсказка: выбранный тип механизма отл�
 msgid "Create a new recommended backend"
 msgstr "Создать новый рекомендуемый механизм отладки"
 
+#: lazarusidestrconsts.initdlgdebugcurrent
+msgctxt "lazarusidestrconsts.initdlgdebugcurrent"
+msgid "Current"
+msgstr "Текущий"
+
 #: lazarusidestrconsts.initdlgdebugexternalexepathdisplay
 msgid "The selected backend uses the external executable:"
 msgstr "Выбранный механизм отладки использует внешний исполнимый файл:"
@@ -4338,6 +4343,11 @@ msgstr "Пропустить"
 #: lazarusidestrconsts.initdlgdebugkeepbackend
 msgid "Keep backend"
 msgstr "Сохранить выбор механизма отладки"
+
+#: lazarusidestrconsts.initdlgdebugnew
+msgctxt "lazarusidestrconsts.initdlgdebugnew"
+msgid "New"
+msgstr "Новый"
 
 #: lazarusidestrconsts.initdlgdebugpathnoteerrorexeisdirectory
 msgid "Error: External executable is a directory, not a file."
@@ -4394,7 +4404,7 @@ msgid "Setup is OK."
 msgstr "Параметры верны."
 
 #: lazarusidestrconsts.initdlgdebugstateupdatebackend
-msgid "You are using an older backend. This may give you not the best debugging experience. Consider upgrading to the recommended backend."
+msgid "You are using an older backend. This may not give you the best debugging experience. Consider upgrading to the recommended backend."
 msgstr "Используется более старый механизм отладки. Это может уменьшить комфортность процесса отладки. Следует использовать рекомендуемый механизм отладки."
 
 #: lazarusidestrconsts.lis0no1drawdividerlinesonlyfortoplevel2drawlinesforfi

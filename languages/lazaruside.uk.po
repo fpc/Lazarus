@@ -4318,6 +4318,12 @@ msgstr "Підказка: вибраний тип рушія зневаджен�
 msgid "Create a new recommended backend"
 msgstr "Створити новий рекомендований рушій зневадження"
 
+#: lazarusidestrconsts.initdlgdebugcurrent
+#, fuzzy
+msgctxt "lazarusidestrconsts.initdlgdebugcurrent"
+msgid "Current"
+msgstr "Поточний"
+
 #: lazarusidestrconsts.initdlgdebugexternalexepathdisplay
 msgid "The selected backend uses the external executable:"
 msgstr "Вибраний рушій використовує зовнішній виконуваний файл:"
@@ -4340,6 +4346,12 @@ msgstr "Знехтувати"
 #: lazarusidestrconsts.initdlgdebugkeepbackend
 msgid "Keep backend"
 msgstr "Зберегти вибір рушія"
+
+#: lazarusidestrconsts.initdlgdebugnew
+#, fuzzy
+msgctxt "lazarusidestrconsts.initdlgdebugnew"
+msgid "New"
+msgstr "Новий"
 
 #: lazarusidestrconsts.initdlgdebugpathnoteerrorexeisdirectory
 msgid "Error: External executable is a directory, not a file."
@@ -4396,7 +4408,9 @@ msgid "Setup is OK."
 msgstr "Параметри правильні."
 
 #: lazarusidestrconsts.initdlgdebugstateupdatebackend
-msgid "You are using an older backend. This may give you not the best debugging experience. Consider upgrading to the recommended backend."
+#, fuzzy
+#| msgid "You are using an older backend. This may give you not the best debugging experience. Consider upgrading to the recommended backend."
+msgid "You are using an older backend. This may not give you the best debugging experience. Consider upgrading to the recommended backend."
 msgstr "Ви використовуєте старіший рушій. Це може знизити зручність зневадження. Розгляньте можливість оновлення до рекомендованого рушія."
 
 #: lazarusidestrconsts.lis0no1drawdividerlinesonlyfortoplevel2drawlinesforfi
