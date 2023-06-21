@@ -713,8 +713,10 @@ begin
       Param:=TFPCParamValue(ParsedParams[i]);
       if fpfValueChanged in Param.Flags then begin
         Msg:='';
-        if Param.Kind in [fpkBoolean,fpkValue] then
-          Msg:=Format(lisPassingCompilerOptionTwiceWithDifferentValues, [Param.Name])
+        if Param.Kind in [fpkBoolean,fpkValue] then begin
+          if Param.Name<>'M' then  // Many -M options are allowed.
+            Msg:=Format(lisPassingCompilerOptionTwiceWithDifferentValues, [Param.Name]);
+        end
         else if Param.Kind=fpkDefine then
           Msg:=Format(lisPassingCompilerDefineTwiceWithDifferentValues, [Param.Name]);
         if Msg='' then continue;
