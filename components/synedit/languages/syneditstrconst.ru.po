@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-06-13 19:54+0300\n"
+"PO-Revision-Date: 2023-06-21 16:36+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Language: ru\n"
@@ -463,6 +463,18 @@ msgstr "Переменная"
 msgid "Whitespace"
 msgstr "Пробел"
 
+#: syneditstrconst.syns_copy
+msgid "&Copy"
+msgstr "&Копировать"
+
+#: syneditstrconst.syns_cut
+msgid "C&ut"
+msgstr "&Вырезать"
+
+#: syneditstrconst.syns_delete
+msgid "&Delete"
+msgstr "&Удалить"
+
 #: syneditstrconst.syns_duplicateshortcutmsg
 #, object-pascal-format
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
@@ -716,10 +728,18 @@ msgstr "Файлы Visual Basic (*.bas)|*.bas"
 msgid "XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
 msgstr "Документ XML (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
 
+#: syneditstrconst.syns_paste
+msgid "&Paste"
+msgstr "В&ставить"
+
 #: syneditstrconst.syns_previewscrollinfofmt
 #, object-pascal-format
 msgid "Page: %d"
 msgstr "Страница: %d"
+
+#: syneditstrconst.syns_redo
+msgid "&Redo"
+msgstr "Ве&рнуть"
 
 #: syneditstrconst.syns_scrollinfofmt
 #, object-pascal-format
@@ -731,9 +751,17 @@ msgstr "%d - %d"
 msgid "Top Line: %d"
 msgstr "Верхняя строка: %d"
 
+#: syneditstrconst.syns_selectall
+msgid "Select &all"
+msgstr "В&ыделить всё"
+
 #: syneditstrconst.syns_shortcutnone
 msgid "<none>"
 msgstr "<нет>"
+
+#: syneditstrconst.syns_undo
+msgid "&Undo"
+msgstr "&Отменить"
 
 #: syneditstrconst.syns_untitled
 msgid "Untitled"

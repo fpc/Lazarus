@@ -465,6 +465,18 @@ msgstr "Variable"
 msgid "Whitespace"
 msgstr "Trenn-/Leerzeichen"
 
+#: syneditstrconst.syns_copy
+msgid "&Copy"
+msgstr ""
+
+#: syneditstrconst.syns_cut
+msgid "C&ut"
+msgstr ""
+
+#: syneditstrconst.syns_delete
+msgid "&Delete"
+msgstr ""
+
 #: syneditstrconst.syns_duplicateshortcutmsg
 #, object-pascal-format
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
@@ -722,10 +734,18 @@ msgstr "Visual-Basic-Quelltexte (*.bas)|*.bas"
 msgid "XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
 msgstr "XML-Dokumente (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
 
+#: syneditstrconst.syns_paste
+msgid "&Paste"
+msgstr ""
+
 #: syneditstrconst.syns_previewscrollinfofmt
 #, object-pascal-format
 msgid "Page: %d"
 msgstr "Seite: %d"
+
+#: syneditstrconst.syns_redo
+msgid "&Redo"
+msgstr ""
 
 #: syneditstrconst.syns_scrollinfofmt
 #, object-pascal-format
@@ -737,9 +757,17 @@ msgstr "%d - %d"
 msgid "Top Line: %d"
 msgstr "Oberste Zeile: %d"
 
+#: syneditstrconst.syns_selectall
+msgid "Select &all"
+msgstr ""
+
 #: syneditstrconst.syns_shortcutnone
 msgid "<none>"
 msgstr "<keine>"
+
+#: syneditstrconst.syns_undo
+msgid "&Undo"
+msgstr ""
 
 #: syneditstrconst.syns_untitled
 msgid "Untitled"
