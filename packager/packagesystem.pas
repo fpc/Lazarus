@@ -1051,27 +1051,38 @@ end;
 
 function TLazPackageGraph.OutputDirectoryIsWritable(APackage: TLazPackage;
   Directory: string; Verbose: boolean): boolean;
+var
+  CurDir: String;
 begin
   Result:=false;
   //debugln(['TLazPackageGraph.OutputDirectoryIsWritable ',Directory]);
   if not FilenameIsAbsolute(Directory) then
     exit;
   Directory:=ChompPathDelim(Directory);
-  if not DirPathExistsCached(Directory) then begin
-    // the directory does not exist => try creating it
-    if not ForceDirectoriesUTF8(Directory) then begin
-      if Verbose then begin
-        IDEMessageDialog(lisPkgMangUnableToCreateDirectory,
-          Format(lisPkgMangUnableToCreateOutputDirectoryForPackage,
-                 [Directory, LineEnding, APackage.IDAsString]),
-          mtError,[mbCancel]);
-      end;
-      debugln(['Error: (lazarus) unable to create package output directory "',Directory,'" of package "',APackage.IDAsString,'"']);
-      exit;
-    end;
-    Result:=true;
-  end else
+  if DirPathExistsCached(Directory) then begin
+    // the directory exist => check writable
     Result:=DirectoryIsWritableCached(Directory);
+    exit;
+  end;
+  // the directory does not exist => check parent directory for writable
+  CurDir:=Directory;
+  repeat
+    CurDir:=ChompPathDelim(ExtractFilePath(CurDir));
+  until (CurDir='') or (CurDir=Directory) or DirPathExistsCached(CurDir);
+  if not DirectoryIsWritableCached(CurDir) then
+    exit(false);
+  // the directory does not exist, and its parent is writable => try creating it
+  if not ForceDirectoriesUTF8(Directory) then begin
+    if Verbose then begin
+      IDEMessageDialog(lisPkgMangUnableToCreateDirectory,
+        Format(lisPkgMangUnableToCreateOutputDirectoryForPackage,
+               [Directory, LineEnding, APackage.IDAsString]),
+        mtError,[mbCancel]);
+    end;
+    debugln(['Error: (lazarus) unable to create package output directory "',Directory,'" of package "',APackage.IDAsString,'"']);
+    exit;
+  end;
+  Result:=true;
 end;
 
 function TLazPackageGraph.GetPackageCompilerParams(APackage: TLazPackage
