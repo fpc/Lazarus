@@ -3380,10 +3380,10 @@ Performs actions needed before the EndUpdate method is completed.
 <p>
 <var>DoBeforeUpdateEnded</var> is a virtual method in 
 <var>TCustomImageList</var> called from the EndUpdate method. It is called 
-when the first update for the image list is completed (the update counter is 
-1). Subsequent calls to BeginUpdate do not call the DoAfterUpdateStarted 
-method until the update count returns to 1. It occurs immediately before the 
-update counter is decremented and the Change method is called.
+when the first update batch corresponding to the initial BeginUpdate call for 
+the image list is completed (i.e. when the update counter is 1). It occurs 
+immediately before the update counter is decremented and the Change method is 
+called.
 </p>
 <p>
 DoBeforeUpdateEnded has an empty implementation in TCustomImageList, but can 
