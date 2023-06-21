@@ -27877,9 +27877,7 @@ Lazarus Wiki</url>
 
 <element name="TTreeNode.ParentsExpandedVisible"/>
 <element name="TTreeNode.ParentsExpandedVisible.Result"/>
-<element name="TTreeNode.ParentsExpandedVisibleEnabled"/>
-<element name="TTreeNode.ParentsExpandedVisibleEnabled.Result"/>
-
+<element name="TTreeNode.ParentsExpandedVisible.AEnabledOnly"/>
 <element name="TTreeNode.BindToMultiSelected"/>
 <element name="TTreeNode.CompareCount"/>
 <element name="TTreeNode.CompareCount.Result"/>
@@ -28586,7 +28584,9 @@ Gets the tree node that is the first visible child node in the subtree.
 <descr>
 <p>
 <var>GetFirstVisibleChild</var> is a <var>TTreeNode</var> function used to 
-get the tree node that is the first visible child node in the subtree.
+get the tree node that is the first visible child node in the subtree. The 
+AEnabledOnly argument indicates whether the selected node must also be 
+Enabled. If AEnabledOnly is <b>False</b>, the Enabled property is not examined.
 </p>
 <p>
 GetFirstVisibleChild calls <var>GetFirstChild</var> to retrieve the first 
@@ -28604,21 +28604,31 @@ Use <var>GetLastVisibleChild</var> to retrieve the last visible child node in
 Items.
 </p>
 </descr>
-<seealso/>
+<version>
+Modified in LCL version 2.4.0. Refactored to include the AEnabledOnly argument.
+</version>
+<seealso>
+<link id="TTreeNode.Items"/>
+<link id="TTreeNode.Visible"/>
+<link id="TTreeNode.Enabled"/>
+<link id="TTreeNode.GetFirstChild"/>
+<link id="TTreeNode.GetNextVisibleSibling"/>
+<link id="TTreeNode.GetLastVisibleChild"/>
+<link id="TNodeState"/>
+<link id="TNodeStates"/>
+</seealso>
 </element>
 <element name="TTreeNode.GetFirstVisibleChild.Result">
-<short/>
-</element>
-
-<element name="TTreeNode.GetFirstVisibleEnabledChild">
 <short>
-Gets the first child node or next sibling node which is visible and enabled.
+First matching visible child node for the current node, or <b>Nil</b> when 
+there are no child nodes.
 </short>
-<descr/>
-<seealso/>
 </element>
-<element name="TTreeNode.GetFirstVisibleEnabledChild.Result">
-<short/>
+<element name="TTreeNode.GetFirstVisibleChild.AEnabledOnly">
+<short>
+<b>True</b> if the visible child node must also be Enabled. <b>False</b> if 
+Enabled is not examined in the method.
+</short>
 </element>
 
 <element name="TTreeNode.GetHandle">
@@ -28697,11 +28707,42 @@ nodes are not found in Items.
 
 <element name="TTreeNode.GetLastVisibleChild">
 <short>
-Gets the last child node in Items with its Visible property set to 
+Gets the last child node in the subtree with its Visible property set to 
 <b>True</b>.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>GetLastVisibleChild</var> is a TTreeNode method used to get the last 
+child or descendent node for the current node with its Visible property set to 
+<b>True</b>. The AEnabledOnly indicates whether the last child must also have 
+its Enabled property set to <b>True</b>. When AEnabledOnly is <b>False</b>, 
+the Enabled state for the node is not examined in the method.
+</p>
+<p>
+GetLastVisibleChild performs a recursive search which starts at the last child 
+node in Items, and continues to each of the last child nodes in the subtree. 
+GetLastChild is called to retrieve the first tree node examined in the method. 
+The search is continued by calling GetLastSubChild until a tree node with the 
+required states (Visible and optionally Enabled) is located.
+</p>
+<p>
+The return value is <b>Nil</b> if the recursive search for a last child node 
+does not find a tree node with the required states, or the current node does 
+not have child nodes.
+</p>
+</descr>
+<version>
+Modified in LCL version 2.4.0. Refactored to include the AEnabledOnly argument.
+</version>
+<seealso>
+<link id="TTreeNode.Items"/>
+<link id="TTreeNode.Visible"/>
+<link id="TTreeNode.Enabled"/>
+<link id="TTreeNode.GetLastChild"/>
+<link id="TTreeNode.GetLastSubChild"/>
+<link id="TNodeState"/>
+<link id="TNodeStates"/>
+</seealso>
 </element>
 <element name="TTreeNode.GetLastVisibleChild.Result">
 <short>
@@ -28709,23 +28750,10 @@ Last visible node in Items, or <b>Nil</b> when child nodes are not found or
 visible.
 </short>
 </element>
-
-<element name="TTreeNode.GetLastVisibleEnabledChild">
+<element name="TTreeNode.GetLastVisibleChild.AEnabledOnly">
 <short>
-Gets the last child for the current node which is both visible and enabled.
-</short>
-<descr/>
-<seealso>
-<link id="TTreeNode.GetLastChild"/>
-<link id="TTreeNode.GetPrevVisibleEnabled"/>
-<link id="TTreeNode.States"/>
-<link id="TNodeStates"/>
-</seealso>
-</element>
-<element name="TTreeNode.GetLastVisibleEnabledChild.Result">
-<short>
-Last child tree node with the required settings, or <b>Nil</b> when a visible 
-and enabled child node is not found.
+<b>True</b> if the visible child node must also be Enabled. <b>False</b> if 
+Enabled is not examined.
 </short>
 </element>
 
@@ -28780,17 +28808,30 @@ Tree node examined to locate its first child node.
 
 <element name="TTreeNode.GetNextExpanded">
 <short>
-Returns the next expanded node in the tree node hierarchy.
+Returns the next expanded tree node in the node hierarchy.
 </short>
 <descr>
 <p>
-Calls GetFirstVisibleChild to start the search for the next expanded tree 
-node. If the node is assigned and its Expanded property is set to <b>True</b>, 
-it is used as the return value for the method. If a child node is not found, 
-the Parent node is searched for a visible sibling node. The return value is 
-<b>Nil</b> if neither condition is satisfied.
+<var>GetNextExpanded</var> calls GetFirstVisibleChild to start the search for 
+the next expanded tree node. The <var>AEnabledOnly</var> argument indicates 
+whether the next node must also be in the Enabled state. When set to 
+<b>False</b>, the Enabled state is not examined in the method.
+</p>
+<p>
+If the node is assigned and its Expanded property is set to <b>True</b>, and 
+matches the AEnabledOnly argument, it is used as the return value for the 
+method. Otherwise, the GetNextVisibleSibling method is called to get a 
+sibling node with the required states.
+</p>
+<p>
+If a tree node is not found, the Parent node is searched for a visible sibling 
+node. The return value is <b>Nil</b> if a tree node with the required states 
+is not found.
 </p>
 </descr>
+<version>
+Modified in LCL version 2.4.0. Refactored to include the AEnabledOnly argument.
+</version>
 <seealso/>
 </element>
 <element name="TTreeNode.GetNextExpanded.Result">
@@ -28799,24 +28840,10 @@ Tree node which is the next expanded child or sibling for the node, or
 <b>Nil</b> when a visible and expanded node is not not found.
 </short>
 </element>
-
-<element name="TTreeNode.GetNextExpandedEnabled">
+<element name="TTreeNode.GetNextExpanded.AEnabledOnly">
 <short>
-Gets the next child or sibling tree node that is both expanded and enabled.
-</short>
-<descr/>
-<seealso>
-<link id="TTreeNode.Expanded"/>
-<link id="TTreeNode.Enabled"/>
-<link id="TTreeNode.GetFirstVisibleEnabledChild"/>
-<link id="TTreeNode.GetNextVisibleEnabledSibling"/>
-<link id="TTreeNode.Parent"/>
-</seealso>
-</element>
-<element name="TTreeNode.GetNextExpandedEnabled.Result">
-<short>
-TTreeNode instance that satisfies the condition, or <b>Nil</b> when a node is 
-not found.
+<b>True</b> if the next node must also be Enabled. <b>False</b> if Enabled is 
+not examined.
 </short>
 </element>
 
@@ -28873,7 +28900,8 @@ insert a tree node into the node list.
 </element>
 <element name="TTreeNode.GetNextSibling.Result">
 <short>
-TTreeNode instance which is the next node at the same level as the current node, or <b>Nil</b> if no other nodes are stored at the same level in the 
+TTreeNode instance which is the next node at the same level as the current 
+node, or <b>Nil</b> if no other nodes are stored at the same level in the 
 Parent.
 </short>
 </element>
@@ -28900,17 +28928,20 @@ Gets the next visible node child or sibling for the current node.
 <descr>
 <p>
 <var>GetNextVisible</var> is a <var>TTreeNode</var> function used to get the 
-next visible node for the current tree node.
+next visible node for the current tree node. The node in the return value must 
+be both visible and expanded. When AEnabledOnly is set to <b>True</b>, the 
+node must also have its Enabled property set to <b>True</b>.
 </p>
 <p>
-If the current tree node is <var>Expanded</var> and <var>Visible</var>, the 
-next node is the first visible child node. Otherwise, the next visible 
-sibling node is used as the next node. If a sibling node does not exist, the 
-<var>Parent</var> is searched for a visible sibling (next visible ancestor?).
+GetNextVisible checks for visible and expanded child nodes first. If a child 
+node is not found, the next visible and expanded sibling nodes are checked. If 
+neither of those searches finds a node, the return value is set to the Parent 
+node.
 </p>
 <p>
-The return value is <b>Nil</b> if a visible node is not found using the 
-preceding logic, or when none of the ancestor nodes are visible and expanded.
+The return value is <b>Nil</b> if a visible and expanded node is not found 
+using the preceding logic, or when none of the ancestor nodes are visible and 
+expanded.
 </p>
 </descr>
 <seealso/>
@@ -28920,18 +28951,10 @@ preceding logic, or when none of the ancestor nodes are visible and expanded.
 Next visible node in the tree node navigation order, or <b>Nil</b>.
 </short>
 </element>
-
-<element name="TTreeNode.GetNextVisibleEnabled">
+<element name="TTreeNode.GetNextVisible.AEnabledOnly">
 <short>
-Gets the next child or sibling for the current node that is visible and 
-enabled.
-</short>
-<descr/>
-<seealso/>
-</element>
-<element name="TTreeNode.GetNextVisibleEnabled.Result">
-<short>
-Child or sibling tree node, or <b>Nil</b> when not enabled and visible.
+<b>True</b> if the next node must also be Enabled. <b>False</b> if Enabled is 
+not examined.
 </short>
 </element>
 
@@ -28942,16 +28965,21 @@ Gets the next visible node at the same level in the node tree.
 <descr>
 <p>
 <var>GetNextVisibleSibling</var> is a <var>TTreeNode</var> function used to 
-locate the next sibling node that has its Visible property enabled. A sibling 
-node is one which exists at the same Level as the current node in the node 
-hierarchy; in other words, it is one of the child nodes in the Parent for the 
-current node.
+locate the next sibling node that has its Visible and Expanded properties 
+enabled. A sibling node is one which exists at the same Level as the current 
+node in the node hierarchy; in other words, it is one of the child nodes in 
+the Parent for the current node.
+</p>
+<p>
+AEnabledOnly indicates whether the node in the return value must also have its 
+Enabled property set. The default value (<b>False</b>) indicates that the 
+Enabled property for the node is not examined.
 </p>
 <p>
 GetNextVisibleSibling calls GetNextSibling to start the search for a visible 
-sibling node. The node is used in the return value when its Visible property 
-is set to <b>True</b>. The return value is <b>Nil</b> if there are no sibling 
-nodes after the current node, or a visible sibling node was not found.
+sibling node with the required node states. The return value is <b>Nil</b> if 
+there are no sibling nodes after the current node, or a sibling node with the 
+required node states was not found.
 </p>
 <p>
 GetNextVisibleSibling is used in TTreeNode methods like BottomExpanded, 
@@ -28960,6 +28988,9 @@ from methods like TTreeNodes.MultiSelect and TCustomTreeview.DoPaintNode when
 a tree node is selected or drawn on the TreeView control.
 </p>
 </descr>
+<version>
+Modified in LCL version 2.4.0. Refactored to include the AEnabledOnly argument.
+</version>
 <seealso>
 <link id="TTreeNode.Visible"/>
 <link id="TTreeNode.Parent"/>
@@ -28978,18 +29009,10 @@ Next visible sibling node in the tree hierarchy, or <b>Nil</b> when a sibling
 node is not found.
 </short>
 </element>
-
-<element name="TTreeNode.GetNextVisibleEnabledSibling">
+<element name="TTreeNode.GetNextVisibleSibling.AEnabledOnly">
 <short>
-Gets the next sibling node that is both visible and enabled.
-</short>
-<descr/>
-<seealso/>
-</element>
-<element name="TTreeNode.GetNextVisibleEnabledSibling.Result">
-<short>
-Next visible and enabled sibling node in the tree hierarchy, or <b>Nil</b> 
-when a sibling node is not found.
+<b>True</b> if the sibling node must also be enabled. <b>False</b> if Enabled 
+is not examined.
 </short>
 </element>
 
@@ -29037,13 +29060,47 @@ Node which is the previous sibling for the specified child, or <b>Nil</b>.
 
 <element name="TTreeNode.GetPrevExpanded">
 <short>
-<var>GetPrevExpanded</var> - returns the previous expanded node.
+Returns the previous expanded tree node in the node hierarchy.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>GetPrevExpanded</var> is a <var>TTreeNode</var> function used to get the 
+previous expanded node in the tree node hierarchy. The node used in the return 
+value must have both Visible and Expanded in its node states. The 
+<var>AEnabledOnly</var> argument indicates whether the node must also have its 
+Enabled property set to <b>True</b>. If AEnabledOnly is <b>False</b>, the 
+Enabled state is not examined in the method.
+</p>
+<p>
+GetPrevExpanded calls GetPrevVisibleSibling to find a node with the required 
+states. When found, its GetLastVisibleChild is called to find the last child 
+node (or descendant) with the required states. The return value contains the 
+sibling node or a child node found when found. If a previous sibling node does 
+not exist, the return value is set to the Parent for the current node.
+</p>
+</descr>
+<version>
+Modified in LCL version 2.4.0. Refactored to include the AEnabledOnly argument.
+</version>
+<seealso>
+<link id="TTreeNode.Expanded"/>
+<link id="TTreeNode.Visible"/>
+<link id="TTreeNode.Enabled"/>
+<link id="TTreeNode.Parent"/>
+<link id="TTreeNode.GetPrevVisibleSibling"/>
+<link id="TTreeNode.GetLastVisibleChild"/>
+</seealso>
 </element>
 <element name="TTreeNode.GetPrevExpanded.Result">
-<short/>
+<short>
+Previous expanded sibling node (or one of its descendants) in the node hierarchy.
+</short>
+</element>
+<element name="TTreeNode.GetPrevExpanded.AEnabledOnly">
+<short>
+<b>True</b> if the previous node must be Enabled. <b>False</b> if the Enabled 
+state is not examined in a candidate node.
+</short>
 </element>
 
 <element name="TTreeNode.GetPrevExpandedEnabled">
@@ -29083,46 +29140,83 @@ the current node.
 
 <element name="TTreeNode.GetPrevVisible">
 <short>
-<var>GetPrevVisible</var> - returns the previous visible (not hidden) node.
+Returns the previous visible (not hidden) tree node in the node hierarchy.
 </short>
-<descr/>
+<descr>
+<p>
+<var>GetPrevVisible</var> is a <var>TTreeNode</var> method used to get the 
+next tree node in the node hierarchy with the node states required in the 
+method. The tree node in the return value must have its Expanded and Visible 
+properties enabled. The AEnabledOnly argument indicates whether the node must 
+also have its Enabled property set to <b>True</b>. When AEnabledOnly is set to 
+<b>False</b>, the Enabled property for the node is not examined in the method.
+</p>
+<p>
+GetPrevVisible calls GetPrevVisibleSibling to locate a previous sibling node 
+with the required states. When found, its GetLastVisibleChild method is called 
+to get the return value. When not found, the Parent node is searched for a 
+child node with the required states.
+</p>
+<p>
+The return value is <b>Nil</b> if a previous tree node with the required 
+states is not found.
+</p>
+</descr>
+<version>
+Modified in LCL version 2.4.0. Refactored to include the AEnabledOnly argument.
+</version>
 <seealso/>
 </element>
 <element name="TTreeNode.GetPrevVisible.Result">
-<short/>
-</element>
-
-<element name="TTreeNode.GetPrevVisibleEnabled">
 <short>
-Gets the tree node in a previous sibling that is visible and enabled.
+Next tree node in the node hierarchy with the requires states, or <b>Nil</b> 
+when a node is not found with the required states.
 </short>
-<descr/>
-<seealso/>
 </element>
-<element name="TTreeNode.GetPrevVisibleEnabled.Result">
-<short/>
+<element name="TTreeNode.GetPrevVisible.AEnabledOnly">
+<short>
+<b>True</b> if the previous node must also be Enabled. <b>False</b> if Enabled 
+is not examined in the method.
+</short>
 </element>
 
 <element name="TTreeNode.GetPrevVisibleSibling">
 <short>
 Gets the previous visible sibling tree node for the current node.
 </short>
-<descr/>
+<descr>
+<p>
+<var>GetPrevVisibleSibling</var> is a <var>TTreeNode</var> function used to 
+get a previous sibling tree node which has its Visible property enabled. The 
+<var>AEnabledOnly</var> argument indicates whether the node must also have its 
+Enabled property set to <b>True</b>. When AEnabledOnly is <b>False</b>, the 
+Enabled property for the candidate node is not examined in the method.
+</p>
+<p>
+GetPrevVisibleSibling calls the GetPrevSibling method for the current node to 
+get the previous sibling.
+</p>
+<p>
+The return value contains the first matching tree node with the required 
+states, or <b>Nil</b> if a matching node is not found before all of the 
+sibling nodes have been examined.
+</p>
+</descr>
+<version>
+Modified in LCL version 2.4.0. Refactored to include the AEnabledOnly argument.
+</version>
 <seealso/>
 </element>
 <element name="TTreeNode.GetPrevVisibleSibling.Result">
-<short/>
-</element>
-
-<element name="TTreeNode.GetPrevVisibleEnabledSibling">
-<short>Gets the previous sibling node which is visible and enabled.</short>
-<descr/>
-<seealso/>
-</element>
-<element name="TTreeNode.GetPrevVisibleEnabledSibling.Result">
 <short>
-The located tree node, or <b>Nil</b> if none of the sibling nodes are both 
-visible and enabled.
+Previous sibling node with the required states, or <b>Nil</b> when a tree node 
+is not found.
+</short>
+</element>
+<element name="TTreeNode.GetPrevVisibleSibling.AEnabledOnly">
+<short>
+<b>True</b> if the previous sibling node must also be Enabled, or <b>False</b> 
+if Enabled is not examined in the method.
 </short>
 </element>
 
@@ -37572,7 +37666,7 @@ Moves the selection to the next display page for the control.
 </element>
 <element name="TCustomTreeView.MovePageDown.ASelect">
 <short>
-<b>True</b> if the node becomes selected in the control.
+<b>True</b> if the selected node on the control is moved in the method.
 </short>
 </element>
 
@@ -37584,7 +37678,7 @@ Moves the selection to the previous display page for the control.
 <seealso/>
 </element>
 <element name="TCustomTreeView.MovePageUp.ASelect">
-<short><b>True</b> if the node becomes selected in the control.</short>
+<b>True</b> if the selected node on the control is moved in the method.
 </element>
 
 <element name="TCustomTreeView.MoveLeft">
