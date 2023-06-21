@@ -6453,7 +6453,7 @@ resourcestring
     +'from your IDE installation. You may need to rebuild the IDE and install '
     +'them, before making changes to the setup.';
   InitDlgDebugStateUpdateBackend = 'You are using an older backend. This may'
-    +' give you not the best debugging experience. Consider upgrading to '
+    +' not give you the best debugging experience. Consider upgrading to '
     +'the recommended backend.';
   InitDlgDebugStateRecommendedNotInList = 'There is no backend of '
     +'recommended type in the list of existing debuggers. Consider creating a '
