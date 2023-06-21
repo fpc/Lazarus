@@ -41,6 +41,9 @@ uses
   Classes, SysUtils, Math,
   // LCL
   Forms, Controls, Menus, ComCtrls, ExtCtrls, LMessages,
+{$IF DEFINED(LCLGtk) OR DEFINED(LCLQt)}
+  LCLIntf,
+{$ENDIF}
   // LazUtils
   LazFileCache,
   // IDEIntf
