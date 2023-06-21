@@ -281,7 +281,7 @@ end;
 
 procedure TIDEInspectDlg.InspectResDataSet;
 begin
-  InspectEnum;
+  InspectResDataEnum;
 end;
 
 procedure TIDEInspectDlg.InspectResDataArray;
