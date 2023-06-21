@@ -477,7 +477,7 @@ fill and a border drawn in the Rectangle method.
 <element name="TLazCanvas.DoPolygonFill">
 <short>
 Implements a polygon fill algorithm not present in fcl-image prior to FPC 
-version 3.3.1.
+version 3.2.3.
 </short>
 <descr>
 <p>
@@ -486,7 +486,7 @@ algorithm is explained
 <url href="http://alienryderflex.com/polygon_fill/">here</url>.
 </p>
 <p>
-DoPolygonFill is defined when using FPC versions prior to 3.3.1. In FPC 3.3.1, 
+DoPolygonFill is defined when using FPC versions prior to 3.2.3. In FPC 3.2.3, 
 the method already exists in the TFPPixelCanvas ancestor and is not needed in 
 TLazCanvas.
 </p>
