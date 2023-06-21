@@ -68,7 +68,7 @@
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir);..\Include"/>
-            <OtherUnitFiles Value="..\Parse;..\Utils;..\Settings;..\Process;..\Process\Returns;..\Process\Spacing;..\ReadWrite;..\Process\Indent;..\Process\Obfuscate;..\Process\Transform;..\Process\Warnings;..\Process\Capitalisation;..\Process\Info;..\Process\Align;..\Parse\UI;..\Parse\PreProcessor;..\Include;..\Settings\Streams;..;..\Ui;..\IdePlugin\lazarus;..\Ui\UI"/>
+            <OtherUnitFiles Value="..\Parse;..\Utils;..\Utils\UI;..\Settings;..\Process;..\Process\Returns;..\Process\Spacing;..\ReadWrite;..\Process\Indent;..\Process\Obfuscate;..\Process\Transform;..\Process\Warnings;..\Process\Capitalisation;..\Process\Info;..\Process\Align;..\Parse\UI;..\Parse\PreProcessor;..\Include;..\Settings\Streams;..;..\Ui;..\IdePlugin\lazarus;..\Ui\UI"/>
             <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <CodeGeneration>
@@ -518,7 +518,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir);..\Include"/>
-      <OtherUnitFiles Value="..\Parse;..\Utils;..\Settings;..\Process;..\Process\Returns;..\Process\Spacing;..\ReadWrite;..\Process\Indent;..\Process\Obfuscate;..\Process\Transform;..\Process\Warnings;..\Process\Capitalisation;..\Process\Info;..\Process\Align;..\Parse\UI;..\Parse\PreProcessor;..\Include;..\Settings\Streams;..;..\Ui;..\IdePlugin\lazarus;..\Ui\UI"/>
+      <OtherUnitFiles Value="..\Parse;..\Utils;..\Utils\UI;..\Settings;..\Process;..\Process\Returns;..\Process\Spacing;..\ReadWrite;..\Process\Indent;..\Process\Obfuscate;..\Process\Transform;..\Process\Warnings;..\Process\Capitalisation;..\Process\Info;..\Process\Align;..\Parse\UI;..\Parse\PreProcessor;..\Include;..\Settings\Streams;..;..\Ui;..\IdePlugin\lazarus;..\Ui\UI"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
