@@ -20,10 +20,13 @@ object InitDebuggerFrame: TInitDebuggerFrame
     AnchorSideRight.Control = SpeedButton1
     Left = 6
     Height = 15
-    Top = 6
+    Top = 2
     Width = 388
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Around = 6
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 2
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 3
     Caption = 'lbAboutDebugger'
     WordWrap = True
   end
@@ -35,7 +38,7 @@ object InitDebuggerFrame: TInitDebuggerFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 19
-    Top = 27
+    Top = 20
     Width = 417
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
@@ -52,14 +55,14 @@ object InitDebuggerFrame: TInitDebuggerFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 19
-    Top = 46
+    Top = 39
     Width = 417
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
     Caption = 'rbChangePath'
     OnChange = rbKeepChange
-    TabOrder = 6
+    TabOrder = 5
   end
   object rbChange: TRadioButton
     AnchorSideLeft.Control = Owner
@@ -69,7 +72,7 @@ object InitDebuggerFrame: TInitDebuggerFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 19
-    Top = 65
+    Top = 58
     Width = 417
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
@@ -86,7 +89,7 @@ object InitDebuggerFrame: TInitDebuggerFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 19
-    Top = 84
+    Top = 77
     Width = 417
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
@@ -103,7 +106,7 @@ object InitDebuggerFrame: TInitDebuggerFrame
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 19
-    Top = 103
+    Top = 96
     Width = 417
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
@@ -112,183 +115,202 @@ object InitDebuggerFrame: TInitDebuggerFrame
     OnChange = rbKeepChange
     TabOrder = 4
   end
-  object cmbDebuggerName: TComboBox
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = rbIgnore
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 16
-    Height = 23
-    Top = 128
-    Width = 407
-    Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Left = 16
-    BorderSpacing.Top = 6
-    BorderSpacing.Right = 6
-    BorderSpacing.Bottom = 6
-    ItemHeight = 15
-    OnChange = rbKeepChange
-    Style = csDropDownList
-    TabOrder = 7
-  end
-  object edDebuggerName: TEdit
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = cmbDebuggerName
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 16
-    Height = 23
-    Top = 157
-    Width = 407
-    Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Left = 16
-    BorderSpacing.Top = 6
-    BorderSpacing.Right = 6
-    BorderSpacing.Bottom = 6
-    Color = clForm
-    ParentFont = False
-    ReadOnly = True
-    TabOrder = 8
-    Text = 'edDebuggerName'
-  end
-  object pnlDbgPath: TPanel
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = edDebuggerName
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 6
-    Height = 93
-    Top = 186
-    Width = 417
-    Anchors = [akTop, akLeft, akRight]
-    AutoSize = True
-    BorderSpacing.Left = 6
-    BorderSpacing.Right = 6
-    BevelOuter = bvNone
-    ClientHeight = 93
-    ClientWidth = 417
-    TabOrder = 5
-    object lbDebuggerPath: TLabel
-      AnchorSideLeft.Control = pnlDbgPath
-      AnchorSideTop.Control = pnlDbgPath
-      AnchorSideRight.Control = pnlDbgPath
-      AnchorSideRight.Side = asrBottom
-      Left = 0
-      Height = 15
-      Top = 0
-      Width = 417
-      Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Bottom = 4
-      Caption = 'lbDebuggerPath'
-      WordWrap = True
-    end
-    object PnlSelectDbgPath: TPanel
-      AnchorSideLeft.Control = pnlDbgPath
-      AnchorSideTop.Control = lbDebuggerPath
-      AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = pnlDbgPath
-      AnchorSideRight.Side = asrBottom
-      Left = 10
-      Height = 25
-      Top = 19
-      Width = 407
-      Anchors = [akTop, akLeft, akRight]
-      AutoSize = True
-      BorderSpacing.Left = 10
-      BevelOuter = bvNone
-      ClientHeight = 25
-      ClientWidth = 407
-      TabOrder = 0
-      object cmbDebuggerPath: TComboBox
-        AnchorSideLeft.Control = PnlSelectDbgPath
-        AnchorSideTop.Control = PnlSelectDbgPath
-        AnchorSideRight.Control = btnBrowse
-        Left = 0
-        Height = 23
-        Top = 0
-        Width = 326
-        Anchors = [akTop, akLeft, akRight]
-        ItemHeight = 15
-        OnChange = rbKeepChange
-        ParentFont = False
-        TabOrder = 0
-      end
-      object btnBrowse: TButton
-        AnchorSideTop.Control = PnlSelectDbgPath
-        AnchorSideRight.Control = PnlSelectDbgPath
-        AnchorSideRight.Side = asrBottom
-        Left = 332
-        Height = 25
-        Top = 0
-        Width = 75
-        Anchors = [akTop, akRight]
-        BorderSpacing.Left = 6
-        Caption = 'btnBrowse'
-        Constraints.MaxHeight = 25
-        OnClick = btnBrowseClick
-        TabOrder = 1
-      end
-    end
-    object edDebuggerPath: TEdit
-      AnchorSideLeft.Control = pnlDbgPath
-      AnchorSideTop.Control = PnlSelectDbgPath
-      AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = pnlDbgPath
-      AnchorSideRight.Side = asrBottom
-      Left = 10
-      Height = 23
-      Top = 44
-      Width = 407
-      Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Left = 10
-      Color = clForm
-      ParentFont = False
-      ReadOnly = True
-      TabOrder = 1
-      Text = 'edDebuggerPath'
-    end
-    object edDebuggerPathResolved: TEdit
-      AnchorSideLeft.Control = pnlDbgPath
-      AnchorSideTop.Control = edDebuggerPath
-      AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = pnlDbgPath
-      AnchorSideRight.Side = asrBottom
-      Left = 10
-      Height = 23
-      Top = 70
-      Width = 407
-      Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Left = 10
-      BorderSpacing.Top = 3
-      Color = clForm
-      Font.Color = clHighlight
-      Font.Style = [fsItalic]
-      ParentFont = False
-      ReadOnly = True
-      TabOrder = 2
-      Text = 'edDebuggerPathResolved'
-    end
-  end
   object edDebuggerNotes: TMemo
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = pnlDbgPath
+    AnchorSideTop.Control = GroupBox1
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 90
-    Top = 285
+    Top = 284
     Width = 417
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Around = 6
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 1
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 2
     Constraints.MinHeight = 90
     ParentFont = False
     ReadOnly = True
     ScrollBars = ssAutoVertical
     TabOrder = 0
+  end
+  object GroupBox1: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = rbIgnore
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 166
+    Top = 117
+    Width = 417
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 2
+    BorderSpacing.Right = 6
+    Caption = '-'
+    ClientHeight = 146
+    ClientWidth = 413
+    TabOrder = 6
+    object cmbDebuggerName: TComboBox
+      AnchorSideLeft.Control = GroupBox1
+      AnchorSideTop.Control = GroupBox1
+      AnchorSideRight.Control = GroupBox1
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 23
+      Top = 0
+      Width = 401
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 2
+      ItemHeight = 15
+      OnChange = rbKeepChange
+      Style = csDropDownList
+      TabOrder = 0
+    end
+    object edDebuggerName: TEdit
+      AnchorSideLeft.Control = GroupBox1
+      AnchorSideTop.Control = cmbDebuggerName
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = GroupBox1
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 23
+      Top = 25
+      Width = 401
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 2
+      Color = clForm
+      ParentFont = False
+      ReadOnly = True
+      TabOrder = 1
+      Text = 'edDebuggerName'
+    end
+    object pnlDbgPath: TPanel
+      AnchorSideLeft.Control = GroupBox1
+      AnchorSideTop.Control = edDebuggerName
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = GroupBox1
+      AnchorSideRight.Side = asrBottom
+      Left = 6
+      Height = 93
+      Top = 51
+      Width = 401
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 3
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 2
+      BevelOuter = bvNone
+      ClientHeight = 93
+      ClientWidth = 401
+      TabOrder = 2
+      object lbDebuggerPath: TLabel
+        AnchorSideLeft.Control = pnlDbgPath
+        AnchorSideTop.Control = pnlDbgPath
+        AnchorSideRight.Control = pnlDbgPath
+        AnchorSideRight.Side = asrBottom
+        Left = 0
+        Height = 15
+        Top = 0
+        Width = 401
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Bottom = 4
+        Caption = 'lbDebuggerPath'
+        WordWrap = True
+      end
+      object PnlSelectDbgPath: TPanel
+        AnchorSideLeft.Control = pnlDbgPath
+        AnchorSideTop.Control = lbDebuggerPath
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = pnlDbgPath
+        AnchorSideRight.Side = asrBottom
+        Left = 0
+        Height = 25
+        Top = 19
+        Width = 401
+        Anchors = [akTop, akLeft, akRight]
+        AutoSize = True
+        BevelOuter = bvNone
+        ClientHeight = 25
+        ClientWidth = 401
+        TabOrder = 0
+        object cmbDebuggerPath: TComboBox
+          AnchorSideLeft.Control = PnlSelectDbgPath
+          AnchorSideTop.Control = PnlSelectDbgPath
+          AnchorSideRight.Control = btnBrowse
+          Left = 0
+          Height = 23
+          Top = 0
+          Width = 320
+          Anchors = [akTop, akLeft, akRight]
+          ItemHeight = 15
+          OnChange = rbKeepChange
+          ParentFont = False
+          TabOrder = 0
+        end
+        object btnBrowse: TButton
+          AnchorSideTop.Control = PnlSelectDbgPath
+          AnchorSideRight.Control = PnlSelectDbgPath
+          AnchorSideRight.Side = asrBottom
+          Left = 326
+          Height = 25
+          Top = 0
+          Width = 75
+          Anchors = [akTop, akRight]
+          BorderSpacing.Left = 6
+          Caption = 'btnBrowse'
+          Constraints.MaxHeight = 25
+          OnClick = btnBrowseClick
+          TabOrder = 1
+        end
+      end
+      object edDebuggerPath: TEdit
+        AnchorSideLeft.Control = pnlDbgPath
+        AnchorSideTop.Control = PnlSelectDbgPath
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = pnlDbgPath
+        AnchorSideRight.Side = asrBottom
+        Left = 0
+        Height = 23
+        Top = 44
+        Width = 401
+        Anchors = [akTop, akLeft, akRight]
+        Color = clForm
+        ParentFont = False
+        ReadOnly = True
+        TabOrder = 1
+        Text = 'edDebuggerPath'
+      end
+      object edDebuggerPathResolved: TEdit
+        AnchorSideLeft.Control = pnlDbgPath
+        AnchorSideTop.Control = edDebuggerPath
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = pnlDbgPath
+        AnchorSideRight.Side = asrBottom
+        Left = 0
+        Height = 23
+        Top = 70
+        Width = 401
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 3
+        Color = clForm
+        Font.Color = clHighlight
+        Font.Style = [fsItalic]
+        ParentFont = False
+        ReadOnly = True
+        TabOrder = 2
+        Text = 'edDebuggerPathResolved'
+      end
+    end
   end
   object SpeedButton1: TSpeedButton
     AnchorSideTop.Control = Owner
@@ -296,10 +318,10 @@ object InitDebuggerFrame: TInitDebuggerFrame
     AnchorSideRight.Side = asrBottom
     Left = 400
     Height = 22
-    Top = 6
+    Top = 1
     Width = 23
     Anchors = [akTop, akRight]
-    BorderSpacing.Top = 6
+    BorderSpacing.Top = 1
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
     Flat = True

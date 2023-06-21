@@ -6446,6 +6446,9 @@ resourcestring
   InitDlgDebugCreateANewRecommendedBack = 'Create a new recommended backend';
   InitDlgDebugSelectAnExistingBackend = 'Select an existing backend';
   InitDlgDebugIgnore = 'Ignore';
+  InitDlgDebugCurrent = 'Current';
+  InitDlgDebugNew = 'New';
+
   InitDlgDebugStateMissingPackages = 'There may be packages (LPK) missing '
     +'from your IDE installation. You may need to rebuild the IDE and install '
     +'them, before making changes to the setup.';

@@ -28,6 +28,7 @@ type
     edDebuggerName: TEdit;
     edDebuggerPath: TEdit;
     edDebuggerPathResolved: TEdit;
+    GroupBox1: TGroupBox;
     lbAboutDebugger: TLabel;
     lbDebuggerPath: TLabel;
     pnlDbgPath: TPanel;
@@ -330,6 +331,7 @@ begin
     edDebuggerName.Caption := '';
   cmbDebuggerName.Visible := False;
   edDebuggerName.Visible := True;
+  GroupBox1.Caption := InitDlgDebugCurrent;
 end;
 
 procedure TInitDebuggerFrame.ShowRecommentedDbgClass;
@@ -337,12 +339,14 @@ begin
   edDebuggerName.Caption := RecommendedClass.Caption;
   cmbDebuggerName.Visible := False;
   edDebuggerName.Visible := True;
+  GroupBox1.Caption := InitDlgDebugNew;
 end;
 
 procedure TInitDebuggerFrame.ShowSelectedDbgClass;
 begin
   cmbDebuggerName.Visible := True;
   edDebuggerName.Visible := False;
+  GroupBox1.Caption := InitDlgDebugNew;
 end;
 
 procedure TInitDebuggerFrame.HideDebuggerPath;
