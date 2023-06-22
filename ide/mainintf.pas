@@ -201,7 +201,8 @@ type
     procedure FindInFiles(aProject: TProject); virtual; abstract;
     procedure FindInFiles(aProject: TProject; const aFindText: string;
                           aDialog: boolean = true; aResultsPage: integer = -1); virtual; abstract;
-    procedure FindInFiles(aProject: TProject; const aFindText: string; aOptions: TLazFindInFileSearchOptions; aFileMask, aDir: string;
+    procedure FindInFiles(aProject: TProject; const aFindText: string;
+                          aOptions: TLazFindInFileSearchOptions; aFileMask, aDir: string;
                           aDialog: boolean = true; aResultsPage: integer = -1); virtual; abstract;
 
     class function GetPrimaryConfigPath: String; override;

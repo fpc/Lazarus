@@ -207,8 +207,11 @@ type
     procedure UpdateDefineTemplates;
 
     procedure FindInFiles(AProject: TProject); override;
-    procedure FindInFiles(aProject: TProject; const aFindText: string; aDialog: boolean = true; aResultsPage: integer = -1); override;
-    procedure FindInFiles(aProject: TProject; const aFindText: string; aOptions: TLazFindInFileSearchOptions; aFileMask, aDir: string; aDialog: boolean = true; aResultsPage: integer = -1); override;
+    procedure FindInFiles(aProject: TProject; const aFindText: string;
+      aDialog: boolean = true; aResultsPage: integer = -1); override;
+    procedure FindInFiles(aProject: TProject; const aFindText: string;
+      aOptions: TLazFindInFileSearchOptions; aFileMask, aDir: string;
+      aDialog: boolean = true; aResultsPage: integer = -1); override;
 
     procedure SelComponentPageButtonMouseDown(Sender: TObject;
       Button: TMouseButton; Shift: TShiftState; X, Y: Integer); virtual; abstract;
@@ -1785,12 +1788,17 @@ begin
   FindInFilesDialog.FindInFiles(aProject);
 end;
 
-procedure TMainIDEBase.FindInFiles(aProject: TProject; const aFindText: string; aDialog: boolean = true; aResultsPage: integer = -1);
+procedure TMainIDEBase.FindInFiles(
+  aProject: TProject; const aFindText: string;
+  aDialog: boolean = true; aResultsPage: integer = -1);
 begin
   FindInFilesDialog.FindInFiles(aProject, aFindText, aDialog, aResultsPage);
 end;
 
-procedure TMainIDEBase.FindInFiles(aProject: TProject; const aFindText: string; aOptions: TLazFindInFileSearchOptions; aFileMask, aDir: string; aDialog: boolean = true; aResultsPage: integer = -1);
+procedure TMainIDEBase.FindInFiles(
+  aProject: TProject; const aFindText: string;
+  aOptions: TLazFindInFileSearchOptions; aFileMask, aDir: string;
+  aDialog: boolean = true; aResultsPage: integer = -1);
 begin
   FindInFilesDialog.FindInFiles(aProject, aFindText, aOptions, aFileMask, aDir, aDialog, aResultsPage);
 end;

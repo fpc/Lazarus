@@ -40,7 +40,7 @@ uses
   Classes, SysUtils, Math, StrUtils, Laz_AVL_Tree,
   // LCL
   LCLProc, LCLType, Forms, Controls, Graphics, ComCtrls, Menus, Clipbrd,
-  ActnList, ExtCtrls, StdCtrls, Dialogs,
+  ActnList, ExtCtrls, StdCtrls, Dialogs, LCLIntf,
   // LazControls
   TreeFilterEdit, ExtendedNotebook,
   // LazUtils
@@ -178,7 +178,7 @@ type
     ToolButton3: TToolButton;
     tbbCloseAll: TToolButton;
     procedure RefreshButtonClick(Sender: TObject);
-    procedure ResultsNoteBookMouseMove(Sender: TObject; Shift: TShiftState; X,
+    procedure ResultsNoteBookMouseMove(Sender: TObject; {%H-}Shift: TShiftState; X,
       Y: Integer);
     procedure SearchAgainButtonClick(Sender: TObject);
     procedure ClosePageButtonClick(Sender: TObject);
@@ -219,7 +219,6 @@ type
     FMaxItems: integer;
     FFocusTreeViewInOnChange: Boolean;
     FFocusTreeViewInEndUpdate: Boolean;
-    FWorkedSearchText: string;
     FOnSelectionChanged: TNotifyEvent;
     FMouseOverIndex: integer;
     FClosingTabs: boolean;
@@ -238,7 +237,7 @@ type
     procedure ClosePageOnSides(aOnSide : TOnSide);
     procedure ClosePageBegin;
     procedure ClosePageEnd;
-    procedure DoAsyncUpdateCloseButtons(Data: PtrInt);
+    procedure DoAsyncUpdateCloseButtons({%H-}Data: PtrInt);
     procedure NoteBookShowHint(Sender: TObject; {%H-}HintInfo: PHintInfo);
   protected
     procedure Loaded; override;
@@ -265,7 +264,6 @@ type
     procedure ClosePage(PageIndex: integer);
 
     property MaxItems: integer read FMaxItems write SetMaxItems;
-    property WorkedSearchText: string read FWorkedSearchText;
     property OnSelectionChanged: TNotifyEvent read fOnSelectionChanged
                                               write fOnSelectionChanged;
     property Items[Index: integer]: TStrings read GetItems write SetItems;
@@ -277,9 +275,6 @@ var
   OnSearchResultsViewSelectionChanged: TNotifyEvent = nil;
 
 implementation
-
-uses
-  LCLIntf;
 
 {$R *.lfm}
 
@@ -413,85 +408,97 @@ procedure TSearchResultsView.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
   lTree: TLazSearchResultTV;
-  lChar: string;
 begin
-  // WriteLn(Key:3, ' ', DbgsVKCode(Key), ' ', ShiftAsStr(Shift));
-  { Do not process the key down of key combination themselves }
-  if Key in [0, VK_CONTROL, VK_SHIFT, VK_LCL_ALT, VK_LCL_LALT, VK_LCL_RALT] then
-    Exit;
+  // select
+  if (Key = VK_RETURN) and (Shift = []) then
+  begin
+    Key := 0;
+    if assigned(FOnSelectionChanged) then
+      FOnSelectionChanged(self);
+  end
 
-  { Process simple keys }
-  if Shift = [] then begin
-   repeat
-      case Key of
-        VK_RETURN:   // select
-          if assigned(FOnSelectionChanged) then
-            FOnSelectionChanged(self);
-        VK_ESCAPE:   // close
-          Close;
-        VK_F5:       // refresh
-          RefreshButtonClick(Sender);
-        else         // another key
-          Break;
-      end;
-      Key := 0;
-      Exit;
-    until True;
-  end;
+  // close
+  else if (Key = VK_ESCAPE) and (Shift = []) then
+  begin
+    Key := 0;
+    Close;
+  end
 
-  { Process [ssCtrl] + Key }
-  if Shift = [ssCtrl] then begin
-    repeat
-      case Key of
-        VK_DOWN: begin  // line scroll
-          lTree := GetCurrentTree;
-          if lTree <> nil then
-            lTree.ScrolledTop := lTree.ScrolledTop + lTree.DefaultItemHeight;
-        end;
-        VK_UP: begin  // line scroll
-          lTree := GetCurrentTree;
-          if lTree <> nil then
-            lTree.ScrolledTop := lTree.ScrolledTop - lTree.DefaultItemHeight;
-        end;
-        VK_LCL_MINUS: // full expand/collapse
-          mniCollapseAllClick(Sender);
-        VK_LCL_EQUAL:
-          mniExpandAllClick(Sender);
-        VK_P:  // toggle path display mode
-          begin
-            if mniPathAbsolute.Checked then
-              mniPathRelative.Checked := True
-            else if mniPathRelative.Checked then
-              mniPathFileName.Checked := True
-            else
-              mniPathAbsolute.Checked := True;
-            mniShowPathClick(Sender);
-          end;
-        VK_F: // attempt focusing filter field
-          if SearchInListEdit.CanSetFocus then
-            SearchInListEdit.SetFocus;
-        VK_N:    // new search
-          SearchAgainButtonClick(Sender);
-        else         // another key
-          break;
-      end;
-      Key := 0;
-      Exit;
-    until True;
-  end;
+  // line scroll
+  else if (Key = VK_DOWN) and (Shift = [ssCtrl]) then
+  begin
+    Key := 0;
+    lTree := GetCurrentTree;
+    if lTree <> nil then
+      lTree.ScrolledTop := lTree.ScrolledTop + lTree.DefaultItemHeight;
+  end
+  else if (Key = VK_UP) and (Shift = [ssCtrl]) then
+  begin
+    Key := 0;
+    lTree := GetCurrentTree;
+    if lTree <> nil then
+      lTree.ScrolledTop := lTree.ScrolledTop - lTree.DefaultItemHeight;
+  end
 
-  { process next tab }
-  if (Key = VK_TAB) then begin
-    repeat
-      if Shift = [ssCtrl] then
-        ResultsNoteBook.SelectNextPage(True)
-      else if Shift = [ssShift, ssCtrl] then
-        ResultsNoteBook.SelectNextPage(False)
-      else
-        break;
-      Key := 0;
-      Exit;
-    until True;
+  // full expand/collapse
+  else if (Key = VK_LEFT) and (Shift = [ssAlt, ssShift]) then
+  begin
+    Key := 0;
+    mniCollapseAllClick(Sender);
+  end
+  else if (Key = VK_RIGHT) and (Shift = [ssAlt, ssShift]) then
+  begin
+    Key := 0;
+    mniExpandAllClick(Sender);
+  end
+
+  // set focus in filter
+  else if (Key = VK_F) and (Shift = [ssCtrl]) then
+  begin
+    Key := 0;
+    if SearchInListEdit.CanSetFocus then
+      SearchInListEdit.SetFocus;
+  end
+
+  // toggle path display mode
+  else if (Key = VK_P) and (Shift = [ssCtrl]) then
+  begin
+    Key := 0;
+
+    if mniPathAbsolute.Checked then
+      mniPathRelative.Checked := true
+    else if mniPathRelative.Checked then
+      mniPathFileName.Checked := true
+    else
+      mniPathAbsolute.Checked := true;
+
+    mniShowPathClick(Sender);
+  end
+
+  // new search
+  else if (Key = VK_N) and (Shift = [ssCtrl]) then
+  begin
+    Key := 0;
+    SearchAgainButtonClick(Sender);
+  end
+
+  // refresh
+  else if (Key = VK_F5) and (Shift = []) then
+  begin
+    Key := 0;
+    RefreshButtonClick(Sender);
+  end
+
+  // next tab
+  else if (Key = VK_TAB) and (Shift = [ssCtrl]) then
+  begin
+    Key := 0;
+    ResultsNoteBook.SelectNextPage(true);
+  end
+  else if (Key = VK_TAB) and (Shift = [ssShift, ssCtrl]) then
+  begin
+    Key := 0;
+    ResultsNoteBook.SelectNextPage(false);
   end;
 end;
 
@@ -630,7 +637,6 @@ end;
 procedure TSearchResultsView.ResultsNoteBookMouseMove(Sender: TObject;
   Shift: TShiftState; X, Y: Integer);
 var
-  p: TPoint;
   lPageIx: integer;
 begin
   if Sender = ResultsNoteBook then begin
@@ -1249,6 +1255,7 @@ function TSearchResultsView.AddSearch(
 var
   lNewTree: TLazSearchResultTV;
   lTabEllipsed: boolean;
+  lTabCaption: String;
 begin
   result := nil;
   if ResultsNoteBook = nil then
@@ -1256,8 +1263,8 @@ begin
   with ResultsNoteBook do
   begin
     FFocusTreeViewInEndUpdate := (ActivePage = nil) and SearchInListEdit.IsParentOf(ActivePage);
-    FWorkedSearchText := BeautifyPageName(aSearchText, lTabEllipsed); // default page name
-    PageIndex := TCustomTabControl(ResultsNoteBook).Pages.Add(FWorkedSearchText);
+    lTabCaption := BeautifyPageName(aSearchText, lTabEllipsed); // default page name
+    PageIndex := TCustomTabControl(ResultsNoteBook).Pages.Add(lTabCaption);
 
     lNewTree := TLazSearchResultTV.Create(Page[PageIndex]);
     with lNewTree do

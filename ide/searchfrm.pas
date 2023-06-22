@@ -504,7 +504,7 @@ var
                       ReplacedText[ReplacedTextLength],GapLength);
           inc(ReplacedTextLength,GapLength);
         end;
-        SetLength(NewText,ReplacedTextLength);
+        SetLength(NewText{%H-},ReplacedTextLength);
         if NewText<>'' then
           System.Move(ReplacedText[0],NewText[1],length(NewText));
         if (TheFileName<>'') then begin

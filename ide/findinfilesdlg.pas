@@ -86,7 +86,8 @@ type
     procedure InitFindText;
     procedure FindInFiles(aProject: TProject; const aFindText: string;
       aDialog: boolean = true; aResultsPage: integer = -1);
-    procedure FindInFiles(aProject: TProject; const aFindText: string; aOptions: TLazFindInFileSearchOptions; aFileMask, aDir: string;
+    procedure FindInFiles(aProject: TProject; const aFindText: string;
+      aOptions: TLazFindInFileSearchOptions; aFileMask, aDir: string;
       aDialog: boolean = true; aResultsPage: integer = -1);
     function GetResolvedDirectories: string;
     property LazProject: TProject read FProject write FProject;
@@ -484,7 +485,9 @@ begin
   FindText:=NewFindText;
 end;
 
-procedure TLazFindInFilesDialog.FindInFiles(aProject: TProject; const aFindText: string; aDialog: boolean = true; aResultsPage: integer = -1);
+procedure TLazFindInFilesDialog.FindInFiles(
+  aProject: TProject; const aFindText: string;
+  aDialog: boolean = true; aResultsPage: integer = -1);
 begin
   LazProject := aProject;
   LoadHistory;
@@ -505,7 +508,10 @@ begin
   Execute(aResultsPage);
 end;
 
-procedure TLazFindInFilesDialog.FindInFiles(aProject: TProject; const aFindText: string; aOptions: TLazFindInFileSearchOptions; aFileMask, aDir: string; aDialog: boolean = true; aResultsPage: integer = -1);
+procedure TLazFindInFilesDialog.FindInFiles(
+  aProject: TProject; const aFindText: string;
+  aOptions: TLazFindInFileSearchOptions; aFileMask, aDir: string;
+  aDialog: boolean = true; aResultsPage: integer = -1);
 begin
   LazProject := aProject;
   LoadHistory;
