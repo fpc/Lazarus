@@ -38,33 +38,8 @@ implementation
 {$R *.lfm}
 
 uses
-  LCLIntf, LCLType,
+  LCLIntf, LCLType, Math,
   TAChartUtils;
-
-var
-  GaussDevAvail: Boolean = false;
-  GaussDev: Double = 0.0;
-
-// Create a random number with normal distribution, mean value 0, standard
-// deviation 1. See Numerical Recipes.
-function RndNormal: Double;
-var
-  fac, r, v1, v2: Double;
-begin
-  if GaussDevAvail then
-    Result := GaussDev
-  else begin
-    repeat
-      v1 := 2.0 * Random - 1.0;
-      v2 := 2.0 * Random - 1.0;
-      r := Sqr(v1) + Sqr(v2);
-    until (r > 0.0) and (r < 1.0);
-    fac := Sqrt(-2.0 * Ln(r) / r);
-    GaussDev := v1 * fac;
-    Result := v2 * fac;
-  end;
-  GaussDevAvail := not GaussDevAvail;
-end;
 
 var
   VData: array of record X, Y: Double; Color: TColor; end;
@@ -82,7 +57,7 @@ begin
   for i := 0 to High(VData) do
     with VData[i] do begin
       X := Random(1000);
-      Y := Abs(RndNormal);
+      Y := Abs(RandG(0.0, 1.0));
       Color := COLORS[Trunc(X / 1000 * Length(COLORS)) + 1];
     end;
   UserDefinedChartSource1.PointsNumber := Round(seCount.Value);

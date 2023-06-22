@@ -107,31 +107,6 @@ uses
 
 {$R *.lfm}
 
-var
-  GaussDevAvail: Boolean = false;
-  GaussDev: Double = 0.0;
-
-// Create a random number with normal distribution, mean value 0, standard
-// deviation 1. See Numerical Recipes.
-function RndNormal: Double;
-var
-  fac, r, v1, v2: Double;
-begin
-  if GaussDevAvail then
-    Result := GaussDev
-  else begin
-    repeat
-      v1 := 2.0 * Random - 1.0;
-      v2 := 2.0 * Random - 1.0;
-      r := Sqr(v1) + Sqr(v2);
-    until (r > 0.0) and (r < 1.0);
-    fac := Sqrt(-2.0 * Ln(r) / r);
-    GaussDev := v1 * fac;
-    Result := v2 * fac;
-  end;
-  GaussDevAvail := not GaussDevAvail;
-end;
-
 function MyFunc(AX: Double): Double;
 begin
   Result := Power(10, AX) + 3;
@@ -207,7 +182,7 @@ begin
     for i := 1 to edDataCount.Value do
       case rgRandDistr.ItemIndex of
         0: s.Add(Random, 0);
-        1: s.Add(RndNormal, 0);
+        1: s.Add(RandG(0.0, 1.0), 0);
       end;
     s.Sorted := true;
     // Calculate cumulative probability from index in sorted list.
