@@ -1,4 +1,4 @@
-FROM debian:bullseye-backports
+FROM debian:12-slim
 ARG FPC_STABLE_VER
 ARG FPC_OLDSTABLE_VER
 ARG FPC_FIXES_VER

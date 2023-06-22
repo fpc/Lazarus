@@ -4,7 +4,7 @@ variables:
   FPC_FIXES_VER: 3.2.3
   FPC_MAIN_VER: 3.3.1
 
-  IMAGE_TAG: $CI_REGISTRY_IMAGE/debian11-x86-64:latest
+  IMAGE_TAG: $CI_REGISTRY_IMAGE/debian-x86-64:latest
   QT5PAS_SRC: lcl/interfaces/qt5/cbindings
   QT6PAS_SRC: lcl/interfaces/qt6/cbindings
 
