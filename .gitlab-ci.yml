@@ -10,6 +10,7 @@ variables:
 
 workflow:  # these rules enable pipeline for merge requests and try to avoid duplicate pipelines
   rules:
+#    - when: never  # uncomment this line to disable pipeline (useful for service needs)
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
       when: never
@@ -26,7 +27,6 @@ stages:  # List of stages for jobs, and their order of execution
 
 .runscheduled:  # this hidden job defines a rule, which, if referenced by job, enables it to always run in scheduled pipeline
   rules:
-#    - when: manual  # uncomment this line to switch all jobs in the pipeline to manual mode (useful for service needs)
     - if: $CI_PIPELINE_SOURCE == "schedule"
 
 .manualjob:  # this hidden job defines a rule, which, if referenced by job, allows it to be skipped without errors
@@ -93,9 +93,6 @@ update-qt5pas-bindings:  # build and cache Qt5 Pascal bindings
     key: qt5pas-cache-$CI_COMMIT_REF_SLUG
     paths:
       - $QT5PAS_SRC/
-  rules:
-    - !reference [.runscheduled, rules]
-    - !reference [.onsuccessjob, rules]
 
 update-qt6pas-bindings:  # build and cache Qt6 Pascal bindings
   stage: prepcaches
@@ -108,9 +105,6 @@ update-qt6pas-bindings:  # build and cache Qt6 Pascal bindings
     key: qt6pas-cache-$CI_COMMIT_REF_SLUG
     paths:
       - $QT6PAS_SRC/
-  rules:
-    - !reference [.runscheduled, rules]
-    - !reference [.onsuccessjob, rules]
 
 .useqt5cache:  # this hidden job defines cache configuration used by Qt5 IDE building jobs
   script:
@@ -292,7 +286,7 @@ x86_64-win64-stable:
       - docs/chm/
       - docs/html/lcl/lcl/
       - docs/html/lazutils/lazutils/
-    expire_in: 1 week  
+    expire_in: 1 week
 
 docs-fpdoc-main:
   extends: .docs-build
