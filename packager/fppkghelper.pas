@@ -9,6 +9,7 @@ uses
   SysUtils,
   {$IF FPC_FULLVERSION>30100}
   pkgFppkg,
+  fpmkunit,
   fprepos,
   LazarusIDEStrConsts,
   {$ENDIF}
@@ -70,6 +71,9 @@ begin
   FPpkg := TpkgFPpkg.Create(nil);
   try
     try
+      if not Assigned(Defaults) then
+        Defaults := TBasicDefaults.Create;
+
       FPpkg.InitializeGlobalOptions(FOverrideConfigurationFilename);
       FPpkg.InitializeCompilerOptions;
 
