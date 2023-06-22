@@ -113,6 +113,7 @@ procedure TTestBaseHighlighterPas.EnableFolds(AEnbledTypes: TPascalCodeFoldBlock
 var
   i: TPascalCodeFoldBlockType;
 begin
+  PasHighLighter.BeginUpdate;
   for i := low(TPascalCodeFoldBlockType) to high(TPascalCodeFoldBlockType) do begin
     PasHighLighter.FoldConfig[ord(i)].Enabled := i in AEnbledTypes;
     if (i in ANoFoldTypes) then
@@ -125,6 +126,7 @@ begin
     PasHighLighter.FoldConfig[ord(i)].Modes := PasHighLighter.FoldConfig[ord(i)].Modes +
       PasHighLighter.FoldConfig[ord(i)].SupportedModes * [fmMarkup];
   end;
+  PasHighLighter.EndUpdate;
 end;
 
 procedure TTestBaseHighlighterPas.DebugFoldInfo(ALineIdx: Integer;

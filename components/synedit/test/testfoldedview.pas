@@ -50,6 +50,7 @@ type
     function TestText10: TStringArray;
     function TestText11: TStringArray;
     function TestText12: TStringArray;
+    function TestText13: TStringArray;
     function TestTextHide(ALen: Integer): TStringArray;
     function TestTextHide2(ALen: Integer): TStringArray;
     function TestTextHide3: TStringArray;
@@ -85,6 +86,9 @@ type
       LogXStart, LogXEnd,  FoldLvlStart, FoldLvlEnd,  NestLvlStart, NestLvlEnd: Integer;
       FoldType: integer;  FoldTypeCompatible: integer; FoldGroup: Integer;
       FoldAction: TSynFoldActions);
+    procedure CheckFoldTypes(AName: String; AStartLine: Integer;
+      AnExpIncluded: Array of TSynEditFoldLineCapabilities;
+      AnExpExcluded: Array of TSynEditFoldLineCapabilities);
     Procedure CheckNodeLines(AList: TLazSynEditNestedFoldsList; ALines: array of integer);
     Procedure CheckNodeEndLines(AList: TLazSynEditNestedFoldsList; ALines: array of integer);
     procedure InitList(const AName: String; AList: TLazSynEditNestedFoldsList;
@@ -99,6 +103,7 @@ type
     procedure TestFoldProvider;
     procedure TestNestedFoldsList;
     procedure TestNestedFoldsListCache;
+    procedure TestFoldTypeForGutter;
   end;
 
 implementation
@@ -577,6 +582,24 @@ begin
   Result[15] := '';
   Result[16] := '';
   Result[17] := '';
+end;
+
+function TTestFoldedView.TestText13: TStringArray;
+begin
+  SetLength(Result, 12);
+  Result[0] := 'program Foo;';
+  Result[1] := '';
+  Result[2] := '{$IFDEF x}';
+  Result[3] := '';
+  Result[4] := '{$ENDIF}';
+  Result[5] := '';
+  Result[6] := 'procedure a;';
+  Result[7] := 'begin';
+  Result[8] := '';
+  Result[9] := 'end;';
+  Result[10]:= '';
+  Result[11]:= '';
+
 end;
 
 function TTestFoldedView.TestTextHide(ALen: Integer): TStringArray;
@@ -2047,10 +2070,10 @@ begin
 
 end;
 
-Procedure TTestFoldedView.CheckNode(nd: TSynFoldNodeInfo; ALine: TLineIdx; AColumn: integer;
-  LogXStart, LogXEnd,  FoldLvlStart, FoldLvlEnd,  NestLvlStart, NestLvlEnd: Integer;
-  FoldType: integer;  FoldTypeCompatible: integer; FoldGroup: Integer;
-  FoldAction: TSynFoldActions);
+procedure TTestFoldedView.CheckNode(nd: TSynFoldNodeInfo; ALine: TLineIdx;
+  AColumn: integer; LogXStart, LogXEnd, FoldLvlStart, FoldLvlEnd, NestLvlStart,
+  NestLvlEnd: Integer; FoldType: integer; FoldTypeCompatible: integer;
+  FoldGroup: Integer; FoldAction: TSynFoldActions);
 begin
   CheckPasFoldNodeInfo('', nd, ALine, AColumn, LogXStart, LogXEnd, FoldLvlStart,
     FoldLvlEnd, NestLvlStart, NestLvlEnd,
@@ -2058,7 +2081,33 @@ begin
     FoldGroup, FoldAction);
 end;
 
-Procedure TTestFoldedView.CheckNodeLines(AList: TLazSynEditNestedFoldsList; ALines: array of integer);
+procedure TTestFoldedView.CheckFoldTypes(AName: String; AStartLine: Integer;
+  AnExpIncluded: array of TSynEditFoldLineCapabilities;
+  AnExpExcluded: array of TSynEditFoldLineCapabilities);
+var
+  f: TSynEditFoldLineCapabilities;
+  j: TSynEditFoldLineCapability;
+  i: Integer;
+begin
+  for i := 0 to max(Length(AnExpIncluded), Length(AnExpExcluded)) - 1 do begin
+    f := FoldedView.FoldType[AStartLine + i];
+    if i < Length(AnExpIncluded) then begin
+      for j in AnExpIncluded[i] do
+        AssertTrue(format('%20s Idx=%d (Line=%d): Has %s included',
+          [AName, i, AStartLine+i, dbgs(j)]
+          ), j in f);
+    end;
+    if i < Length(AnExpExcluded) then begin
+      for j in AnExpExcluded[i] do
+        AssertTrue(format('%20s Idx=%d (Line=%d): Does NOT have %s included',
+          [AName, i, AStartLine+i, dbgs(j)]
+          ), not (j in f));
+    end;
+  end;
+end;
+
+procedure TTestFoldedView.CheckNodeLines(AList: TLazSynEditNestedFoldsList;
+  ALines: array of integer);
 var
   i: Integer;
 begin
@@ -2066,7 +2115,8 @@ begin
     AssertEquals(BaseTestName+ ' Node line=' + IntToStr(i), ALines[i], AList.NodeLine[i]);
 end;
 
-Procedure TTestFoldedView.CheckNodeEndLines(AList: TLazSynEditNestedFoldsList; ALines: array of integer);
+procedure TTestFoldedView.CheckNodeEndLines(AList: TLazSynEditNestedFoldsList;
+  ALines: array of integer);
 var
   i: Integer;
 begin
@@ -2676,6 +2726,180 @@ begin
   TheList.HLNode[TheList.Count-3];
 
   PopBaseName;
+end;
+
+procedure TTestFoldedView.TestFoldTypeForGutter;
+const AllCap = [low(TSynEditFoldLineCapability)..high(TSynEditFoldLineCapability)] - [cfNone];
+begin
+  ReCreateEdit;
+
+  SetLines(TestText3);
+  EnableFolds([cfbtTopBeginEnd,cfbtBeginEnd,cfbtIfDef], [], []);
+
+  CheckFoldTypes('begin/ifdef',0,
+    [ [], // Program
+      [cfFoldStart], // IFDEF
+      [cfFoldBody],
+      [cfFoldEnd],  // Endif
+      [cfFoldStart],  // begin
+      [cfFoldBody],   // region
+      [cfFoldBody],
+      [cfFoldBody],   // endregion
+      [cfFoldBody],
+      [cfFoldBody],
+      [cfFoldEnd], // end
+      []
+    ],
+    [ AllCap,
+      AllCap - [cfFoldStart], // IFDEF
+      AllCap - [cfFoldBody],
+      AllCap - [cfFoldEnd, cfFoldBody],  // Endif
+      AllCap - [cfFoldStart],  // begin
+      AllCap - [cfFoldBody, cfFoldStart, cfFoldEnd],
+      AllCap - [cfFoldBody, cfFoldStart, cfFoldEnd],
+      AllCap - [cfFoldBody, cfFoldStart, cfFoldEnd],
+      AllCap - [cfFoldBody, cfFoldStart, cfFoldEnd],
+      AllCap - [cfFoldBody, cfFoldStart, cfFoldEnd],
+      AllCap - [cfFoldEnd, cfFoldBody] // end
+    ]
+  );
+
+
+  EnableFolds([cfbtTopBeginEnd,cfbtBeginEnd], [], []);
+  CheckFoldTypes('begin/ NO ifdef',0,
+    [ [], // Program
+      [], // IFDEF
+      [],
+      [],  // Endif
+      [cfFoldStart],  // begin
+      [cfFoldBody],   // region
+      [cfFoldBody],
+      [cfFoldBody],   // endregion
+      [cfFoldBody],
+      [cfFoldBody],
+      [cfFoldEnd], // end
+      []
+    ],
+    [ AllCap,
+      AllCap, // IFDEF
+      AllCap,
+      AllCap,  // Endif
+      AllCap - [cfFoldStart],  // begin
+      AllCap - [cfFoldBody, cfFoldStart, cfFoldEnd],
+      AllCap - [cfFoldBody, cfFoldStart, cfFoldEnd],
+      AllCap - [cfFoldBody, cfFoldStart, cfFoldEnd],
+      AllCap - [cfFoldBody, cfFoldStart, cfFoldEnd],
+      AllCap - [cfFoldBody, cfFoldStart, cfFoldEnd],
+      AllCap - [cfFoldEnd, cfFoldBody] // end
+    ]
+  );
+
+
+  SetLines(TestText13);
+  EnableFolds([], [], []);
+  CheckFoldTypes('TestText13  NONE',0,
+    [ [], // Program
+      [],
+      [], // IFDEF
+      [],
+      [],
+      [],
+      []
+    ],
+    [ AllCap,
+      AllCap,
+      AllCap,
+      AllCap,
+      AllCap,
+      AllCap,
+      AllCap,
+      AllCap
+    ]
+  );
+
+  SetLines(TestText13);
+  EnableFolds([cfbtTopBeginEnd], [], []);
+  CheckFoldTypes('TestText13  NONE',0,
+    [ [], // Program
+      [],
+      [], // IFDEF
+      [],
+      [], // Endif
+      [],
+      [], // procedure
+      [cfFoldStart], // begin
+      [cfFoldBody],
+      [cfFoldBody,cfFoldEnd], // end
+      []
+    ],
+    [ AllCap, // Program
+      AllCap,
+      AllCap, // IFDEF
+      AllCap,
+      AllCap, // Endif
+      AllCap,
+      AllCap, // procedure
+      AllCap - [cfFoldStart], // begin
+      AllCap - [cfFoldBody],
+      AllCap - [cfFoldBody,cfFoldEnd], // end
+      AllCap
+    ]
+  );
+
+  SetLines(TestText13);
+  EnableFolds([cfbtIfDef], [], []);
+  CheckFoldTypes('TestText13  NONE',0,
+    [ [],// Program
+      [],
+      [cfFoldStart], // IFDEF
+      [cfFoldBody],
+      [cfFoldBody,cfFoldEnd],
+      [],
+      [],
+      [],
+      []
+    ],
+    [ AllCap,
+      AllCap,
+      AllCap - [cfFoldStart],
+      AllCap - [cfFoldBody],
+      AllCap - [cfFoldBody,cfFoldEnd],
+      AllCap,
+      AllCap,
+      AllCap
+    ]
+  );
+
+  SetLines(TestText13);
+  EnableFolds([cfbtTopBeginEnd, cfbtIfDef], [], []);
+  CheckFoldTypes('TestText13  NONE',0,
+    [ [], // Program
+      [],
+      [cfFoldStart], // IFDEF
+      [cfFoldBody],
+      [cfFoldBody,cfFoldEnd],
+      [],
+      [], // procedure
+      [cfFoldStart], // begin
+      [cfFoldBody],
+      [cfFoldBody,cfFoldEnd], // end
+      []
+    ],
+    [ AllCap, // Program
+      AllCap,
+      AllCap - [cfFoldStart],
+      AllCap - [cfFoldBody],
+      AllCap - [cfFoldBody,cfFoldEnd],
+      AllCap,
+      AllCap, // procedure
+      AllCap - [cfFoldStart], // begin
+      AllCap - [cfFoldBody],
+      AllCap - [cfFoldBody,cfFoldEnd], // end
+      AllCap
+    ]
+  );
+
+
 end;
 
 initialization

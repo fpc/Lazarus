@@ -556,6 +556,7 @@ type
   end;
 
 function dbgs(AClassification: TFoldNodeClassification): String; overload;
+function dbgs(AFoldLineCapability: TSynEditFoldLineCapability): String; overload;
 
 implementation
 
@@ -4605,6 +4606,11 @@ end;
 function dbgs(AClassification: TFoldNodeClassification): String;
 begin
   WriteStr(Result{%H-}, AClassification);
+end;
+
+function dbgs(AFoldLineCapability: TSynEditFoldLineCapability): String;
+begin
+  WriteStr(Result{%H-}, AFoldLineCapability);
 end;
 
 {$IFDEF SynDebug}

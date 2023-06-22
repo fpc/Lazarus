@@ -4220,13 +4220,13 @@ var
 begin
   Assert(CurrentRanges <> nil, 'TSynCustomFoldHighlighter.FoldBlockEndLevel requires CurrentRanges');
   Result := 0;
+  if (ALineIndex < 0) or (ALineIndex >= CurrentLines.Count - 1) then
+    exit;
+
   inf.EndLevelIfDef := 0;
   inf.MinLevelIfDef := 0;
   inf.EndLevelRegion := 0;
   inf.MinLevelRegion := 0;
-  if (ALineIndex < 0) or (ALineIndex >= CurrentLines.Count - 1) then
-    exit;
-
   if AFilter.FoldGroup  in [0, FOLDGROUP_REGION, FOLDGROUP_IFDEF] then
     inf := TSynHighlighterPasRangeList(CurrentRanges).PasRangeInfo[ALineIndex];
 
@@ -4250,7 +4250,9 @@ begin
 
   if AFilter.FoldGroup  in [0, FOLDGROUP_REGION] then begin
     // All or REGION
-    if FFoldConfig[ord(cfbtRegion)].Enabled or
+    if (  FFoldConfig[ord(cfbtRegion)].Enabled and
+          (FFoldConfig[ord(cfbtRegion)].Modes * [fmFold, fmHide] <> [])
+       ) or
        (sfbIncludeDisabled in AFilter.Flags)
     then
       Result := Result + inf.EndLevelRegion;
@@ -4258,7 +4260,9 @@ begin
 
   if AFilter.FoldGroup  in [0, FOLDGROUP_IFDEF] then begin
     // All or IFDEF
-    if FFoldConfig[ord(cfbtIfDef)].Enabled or
+    if ( FFoldConfig[ord(cfbtIfDef)].Enabled and
+         (FFoldConfig[ord(cfbtIfDef)].Modes * [fmFold, fmHide] <> [])
+       ) or
        (sfbIncludeDisabled in AFilter.Flags)
     then
       Result := Result + inf.EndLevelIfDef;
@@ -4273,13 +4277,13 @@ var
 begin
   Assert(CurrentRanges <> nil, 'TSynCustomFoldHighlighter.FoldBlockMinLevel requires CurrentRanges');
   Result := 0;
+  if (ALineIndex < 0) or (ALineIndex >= CurrentLines.Count - 1) then
+    exit;
+
   inf.EndLevelIfDef := 0;
   inf.MinLevelIfDef := 0;
   inf.EndLevelRegion := 0;
   inf.MinLevelRegion := 0;
-  if (ALineIndex < 0) or (ALineIndex >= CurrentLines.Count - 1) then
-    exit;
-
   if AFilter.FoldGroup  in [0, FOLDGROUP_REGION, FOLDGROUP_IFDEF] then
     inf := TSynHighlighterPasRangeList(CurrentRanges).PasRangeInfo[ALineIndex];
 
@@ -4309,12 +4313,22 @@ begin
 
   if AFilter.FoldGroup  in [0, FOLDGROUP_REGION] then begin
     // All or REGION
-    Result := Result + inf.MinLevelRegion;
+    if (  FFoldConfig[ord(cfbtRegion)].Enabled and
+          (FFoldConfig[ord(cfbtRegion)].Modes * [fmFold, fmHide] <> [])
+       ) or
+       (sfbIncludeDisabled in AFilter.Flags)
+    then
+      Result := Result + inf.MinLevelRegion;
   end;
 
   if AFilter.FoldGroup  in [0, FOLDGROUP_IFDEF] then begin
     // All or IFDEF
-    Result := Result + inf.MinLevelIfDef;
+    if ( FFoldConfig[ord(cfbtIfDef)].Enabled and
+         (FFoldConfig[ord(cfbtIfDef)].Modes * [fmFold, fmHide] <> [])
+       ) or
+       (sfbIncludeDisabled in AFilter.Flags)
+    then
+      Result := Result + inf.MinLevelIfDef;
   end;
 end;
 
