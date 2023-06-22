@@ -1327,6 +1327,8 @@ begin
 end;
 
 function TSynPasSyn.Func37: TtkTokenKind;
+var
+  tbf: TPascalCodeFoldBlockType;
 begin
   if KeyComp('Begin') then begin
     // if we are in an include file, we may not know the state
@@ -1336,9 +1338,17 @@ begin
     if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
       EndPascalCodeFoldBlockLastLine;
     Result := tkKey;
-    if TopPascalCodeFoldBlockType in [cfbtProcedure]
-    then StartPascalCodeFoldBlock(cfbtTopBeginEnd)
-    else StartPascalCodeFoldBlock(cfbtBeginEnd);
+    tbf := TopPascalCodeFoldBlockType;
+    if tbf in [cfbtProcedure]
+    then StartPascalCodeFoldBlock(cfbtTopBeginEnd, True)
+    else StartPascalCodeFoldBlock(cfbtBeginEnd, tbf in [
+      cfbtProgram, cfbtUnit, cfbtUnitSection, cfbtPackage,
+      cfbtTopBeginEnd, cfbtBeginEnd,
+      cfbtTry, cfbtExcept, cfbtAsm,
+      cfbtCase, cfbtCaseElse,
+      // TODO: cfbtIfThen..cfbtWithDo => only if they are nested in one of the above
+      cfbtIfThen, cfbtIfElse, cfbtForDo, cfbtWhileDo, cfbtWithDo
+    ]);
     //debugln('TSynPasSyn.Func37 BEGIN ',dbgs(ord(TopPascalCodeFoldBlockType)),' LineNumber=',dbgs(fLineNumber),' ',dbgs(MinimumNestFoldBlockLevel),' ',dbgs(CurrentCodeFoldBlockLevel));
   end else
   if FExtendedKeywordsMode and KeyComp('Break') then
