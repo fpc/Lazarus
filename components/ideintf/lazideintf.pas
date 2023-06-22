@@ -454,6 +454,7 @@ type
 
     // search results
     procedure DoShowSearchResultsView(State: TIWGetFormState = iwgfShowOnTop); virtual; abstract;
+    procedure DoJumpToNextSearchResult(DirectionDown: boolean); virtual; abstract;
 
     // designer
     function GetDesignerForProjectEditor(AEditor: TSourceEditorInterface;

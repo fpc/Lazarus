@@ -254,6 +254,7 @@ type
     function GetSourceFileName: string;
     function GetSelectedText: string;
     function GetSelectedMatchPos: TLazSearchMatchPos;
+    function SelectNextMatchPos(DirectionDown: boolean): boolean;
     procedure AddMatch(const APageIndex: integer;
                        const Filename: string; const StartPos, EndPos: TPoint;
                        const TheText: string;
@@ -1553,6 +1554,68 @@ begin
   lTree := GetTreeView(lPage.PageIndex);
   if Assigned(lTree.Selected) then
     Result := TLazSearchMatchPos(lTree.Selected.Data);
+end;
+
+function TSearchResultsView.SelectNextMatchPos(DirectionDown: boolean): boolean;
+var
+  lPage: TTabSheet;
+  lTree: TLazSearchResultTV;
+  i: integer;
+  lSelNode, lNextNode: TTreeNode;
+begin
+  result:= false;
+  i := ResultsNoteBook.PageIndex;
+  if i < 0 then exit;
+
+  lPage := ResultsNoteBook.Pages[i];
+  if not Assigned(lPage) then exit;
+
+  lTree := GetTreeView(lPage.PageIndex);
+  lSelNode := lTree.Selected;
+  if not Assigned(lSelNode) then Exit;
+
+  if Assigned(lSelNode.Data) then begin
+    // file pos node
+    if DirectionDown then
+      lNextNode := lSelNode.GetNextSibling
+    else
+      lNextNode := lSelNode.GetPrevSibling;
+
+    if not Assigned(lNextNode) then begin
+      // if no more siblings, find first/last child of parent's sibling
+      if DirectionDown then begin
+        lNextNode := lSelNode.Parent;
+        if Assigned(lNextNode) then begin
+          lNextNode := lNextNode.GetNextSibling;
+          if Assigned(lNextNode) then
+            lNextNode := lNextNode.GetFirstChild;
+        end;
+      end
+      else begin
+        lNextNode := lSelNode.Parent;
+        if Assigned(lNextNode) then begin
+          lNextNode := lNextNode.GetPrevSibling;
+          if Assigned(lNextNode) then
+            lNextNode := lNextNode.GetLastChild;
+        end;
+      end;
+    end;
+  end
+  else begin
+    // file node - need to use first child or last child of prev sibling
+    if DirectionDown then
+      lNextNode := lSelNode.GetFirstChild
+    else begin
+      lNextNode := lSelNode.GetPrevSibling;
+      if Assigned(lNextNode) then
+        lNextNode := lNextNode.GetLastChild;
+    end;
+  end;
+
+  if Assigned(lNextNode) then begin
+    lTree.Select(lNextNode);
+    result := true;
+  end;
 end;
 
 function TSearchResultsView.GetPageIndex(const APageName: string): integer;

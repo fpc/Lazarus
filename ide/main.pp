@@ -970,6 +970,7 @@ type
     // search results
     function DoJumpToSearchResult(FocusEditor: boolean): boolean;
     procedure DoShowSearchResultsView(State: TIWGetFormState = iwgfShowOnTop); override;
+    procedure DoJumpToNextSearchResult(DirectionDown: boolean); override;
 
     // form editor and designer
     procedure DoShowDesignerFormOfCurrentSrc(AComponentPaletteClassSelected: Boolean); override;
@@ -9462,6 +9463,13 @@ begin
     SearchResultsView.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.DoShowSearchResultsView'){$ENDIF};
   if State>=iwgfShow then
     IDEWindowCreators.ShowForm(SearchresultsView,State=iwgfShowOnTop);
+end;
+
+procedure TMainIDE.DoJumpToNextSearchResult(DirectionDown: boolean);
+begin
+  if SearchresultsView=Nil then Exit;
+  if SearchresultsView.SelectNextMatchPos(DirectionDown) then
+    DoJumpToSearchResult(true);
 end;
 
 function TMainIDE.GetTestBuildDirectory: string;
