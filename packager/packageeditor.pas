@@ -1159,6 +1159,7 @@ var
   IL: TCustomImageList;
   II: TImageIndex;
   Res: TScaledImageListResolution;
+  l25PPIScaled: integer;
 begin
   //DebugLn('TPackageEditorForm.RegisteredListBoxDrawItem START');
   if LazPackage=nil then exit;
@@ -1177,16 +1178,17 @@ begin
       Canvas.FillRect(ARect);
       IL:=CurComponent.Images;
       II:=CurComponent.ImageIndex;
+      l25PPIScaled:=ARect.Bottom - ARect.Top;
       //DebugLn('TPackageEditorForm.RegisteredListBoxDrawItem ',DbgSName(CurIcon),' ',CurComponent.ComponentClass.ClassName);
       if (IL<>nil) and (II>=0) then begin
         Res := IL.ResolutionForControl[0, Self];
         IconWidth:=Res.Width;
         IconHeight:=Res.Height;
         Res.Draw(Canvas,
-                 ARect.Left+(25-IconWidth) div 2,
+                 ARect.Left+(l25PPIScaled-IconWidth) div 2,
                  ARect.Top+(ARect.Bottom-ARect.Top-IconHeight) div 2, II);
       end;
-      Canvas.TextOut(ARect.Left+25,
+      Canvas.TextOut(ARect.Left+l25PPIScaled,
                      ARect.Top+(ARect.Bottom-ARect.Top-TxtH) div 2, CurStr);
     end;
   end;
@@ -2200,6 +2202,8 @@ begin
     //  FPropGui.UpdateApplyDependencyButton(true);
     if pefNeedUpdateStatusBar in fFlags then
       UpdateStatusBar(true);
+    with FPropGui.CallRegisterProcCheckBox do // adjust top of groupbox now.
+      FPropGui.RegisteredPluginsGroupBox.Top  := ScaleDesignToForm(Height);
     IdleConnected:=false;
   finally
     ItemsTreeView.EndUpdate;

@@ -239,7 +239,8 @@ begin
     RegisteredPluginsGroupBox.Parent := fOwner;
     RegisteredPluginsGroupBox.Left := 3;
     RegisteredPluginsGroupBox.Height := 165;
-    RegisteredPluginsGroupBox.Top := 27;
+    RegisteredPluginsGroupBox.Top := 27; // Too early to set final top according
+                                         // to screen PPI
     RegisteredPluginsGroupBox.Width := 452;
     RegisteredPluginsGroupBox.Align := alBottom;
     RegisteredPluginsGroupBox.Anchors := [akTop, akLeft, akRight, akBottom];
