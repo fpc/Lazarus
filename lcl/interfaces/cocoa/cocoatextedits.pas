@@ -1413,7 +1413,10 @@ begin
     if idx<0 then
       Result := NSNotFound
     else
+    begin
+      TComboBoxAsyncHelper.ResetTextIfNecessary(lclGetTarget, string_.UTF8String);
       Result := idx;
+    end;
   end;
 end;
 

@@ -57,6 +57,19 @@ type
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
   end;
 
+  { TComboBoxAsyncHelper }
+
+  TComboBoxAsyncHelper = class
+  private
+    cmb: TCustomComboBox;
+    newText: String;
+    procedure AsyncResetText(Data:PtrInt);
+  public
+    constructor Create(ACmb:TCustomComboBox; ANewText:String);
+  public
+    class procedure ResetTextIfNecessary(AObject:TObject; ANewText:String);
+  end;
+
   { TLCLComboboxCallback }
 
   TLCLComboboxCallback = class(TLCLCommonCallback, IComboBoxCallback)
@@ -703,6 +716,32 @@ end;
 procedure TLCLCheckBoxCallback.GetAllowMixedState(var allowed: Boolean);
 begin
   allowed := TCustomCheckBox(Target).AllowGrayed;
+end;
+
+{ TComboBoxAsyncHelper }
+
+constructor TComboBoxAsyncHelper.Create(ACmb:TCustomComboBox; ANewText:String);
+begin
+  cmb:= ACmb;
+  newText:= ANewText;
+end;
+
+procedure TComboBoxAsyncHelper.AsyncResetText(Data:PtrInt);
+begin
+  TCocoaWSCustomComboBox.SetText(cmb, newText);
+  cmb.SelStart:= UTF8Length(newText);
+  cmb.SelLength:= 0;
+  Free;
+end;
+
+class procedure TComboBoxAsyncHelper.ResetTextIfNecessary(AObject:TObject; ANewText:String);
+var
+  helper: TComboBoxAsyncHelper;
+  ACmb: TCustomComboBox absolute AObject;
+begin
+  if not (cbactRetainPrefixCase in ACmb.AutoCompleteText) then exit;
+  helper:= TComboBoxAsyncHelper.Create(ACmb, ANewText);
+  Application.QueueAsyncCall(@helper.AsyncResetText, 0);
 end;
 
 { TLCLComboboxCallback }
