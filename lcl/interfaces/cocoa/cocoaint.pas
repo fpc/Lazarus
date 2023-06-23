@@ -295,11 +295,20 @@ uses
   CocoaCaret,
   CocoaThemes;
 
+const
+  // Lack of documentation, provisional definition
+  LazarusApplicationDefinedSubtypeWakeup = 13579;
+
 procedure wakeupEventLoop;
 var
   ev: NSevent;
 begin
-  ev := NSEvent.otherEventWithType_location_modifierFlags_timestamp_windowNumber_context_subtype_data1_data2(NSApplicationDefined, NSZeroPoint, 0, 0, 0, nil, 0, 0, 0);
+  ev := NSEvent.otherEventWithType_location_modifierFlags_timestamp_windowNumber_context_subtype_data1_data2(
+          NSApplicationDefined,
+          NSZeroPoint,
+          0, 0, 0, nil,
+          LazarusApplicationDefinedSubtypeWakeup,
+          0, 0);
   NSApp.postEvent_atStart(ev, false);
 end;
 
@@ -659,7 +668,7 @@ begin
     expiration, mode, deqFlag);
   {$endif}
 
-  if Result.type_ = NSApplicationDefined then
+  if (Result.type_=NSApplicationDefined) and (Result.subtype=LazarusApplicationDefinedSubtypeWakeup) then
     Result:= nil;
 
   if not Assigned(Result) then
