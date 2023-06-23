@@ -296,7 +296,7 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
   end
   object SelectDirectoryDialog: TSelectDirectoryDialog
     FilterIndex = 0
-    Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
+    Options = [ofExtensionDifferent,ofFileMustExist,ofEnableSizing,ofViewDetail]
     Left = 180
     Top = 70
   end

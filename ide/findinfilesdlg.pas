@@ -160,6 +160,7 @@ begin
   else
     SelectDirectoryDialog.InitialDir := GetBaseDirectory;
 
+  SelectDirectoryDialog.FileName:='';
   if SelectDirectoryDialog.Execute then
     DirectoriesComboBox.Text := AppendPathDelim(TrimFilename(SelectDirectoryDialog.FileName));
   StoreIDEFileDialog(SelectDirectoryDialog);
