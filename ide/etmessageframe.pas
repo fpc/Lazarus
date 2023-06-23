@@ -70,6 +70,7 @@ type
     procedure SetFilter(AValue: TLMsgViewFilter);
     procedure OnMarksFixed(ListOfTMessageLine: TFPList); // (main thread) called after mlfFixed was added to these messages
     procedure CallOnChangedInMainThread({%H-}Data: PtrInt); // (main thread)
+    function AsHintString(const aHintLastLine: integer): string;
   protected
     procedure SetToolState(AValue: TLMVToolState); override;
     procedure FetchAllPending; override; // (main thread)
@@ -174,6 +175,8 @@ type
     fHasHeaderHint: boolean;
     fUrgencyStyles: array[TMessageLineUrgency] of TMsgCtrlUrgencyStyle;
     FAutoHeaderBackground: TColor;
+    FHintLastLine: integer;
+    FHintLastView: TLMsgWndView;
     procedure CreateSourceMark(MsgLine: TMessageLine; aSynEdit: TSynEdit);
     procedure CreateSourceMarks(View: TLMsgWndView; StartLineNumber: Integer);
     function GetActiveFilter: TLMsgViewFilter; inline;
@@ -182,6 +185,7 @@ type
     function GetUrgencyStyles(Urgency: TMessageLineUrgency): TMsgCtrlUrgencyStyle;
     function GetViews(Index: integer): TLMsgWndView;
     procedure OnViewChanged(Sender: TObject); // (main thread)
+    procedure MsgCtrlMouseMove(Sender: TObject; {%H-}Shift: TShiftState; {%H-}X,Y: Integer);
     procedure MsgUpdateTimerTimer(Sender: TObject);
     procedure SetActiveFilter(AValue: TLMsgViewFilter); inline;
     procedure SetBackgroundColor(AValue: TColor);
@@ -210,6 +214,7 @@ type
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure OnFilterChanged(Sender: TObject);
     function GetPageScroll: integer;
+    function Updating: boolean;
   protected
     FViews: TFPList;// list of TMessagesViewMap
     FStates: TMsgCtrlStates;
@@ -224,10 +229,8 @@ type
     procedure UpdateScrollBar(InvalidateScrollMax: boolean);
     procedure CreateWnd; override;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
-    //procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure DoOnShowHint(HintInfo: PHintInfo); override;
     procedure DoAllViewsStopped;
   public
     constructor Create(AOwner: TComponent); override;
@@ -292,6 +295,7 @@ type
     function OpenSelection: boolean;
     procedure CreateMarksForFile(aSynEdit: TSynEdit; aFilename: string; DeleteOld: boolean);
     function ApplySrcChanges(Changes: TETSingleSrcChanges): boolean; // true if something changed
+    procedure MsgCtrlShowHint(Sender: TObject; {%H-}HintInfo: PHintInfo);
   public
     // properties
     property AutoHeaderBackground: TColor read FAutoHeaderBackground write SetAutoHeaderBackground default MsgWndDefAutoHeaderBackground;
@@ -459,6 +463,9 @@ var
 procedure RegisterStandardMessagesViewMenuItems;
 
 implementation
+
+const
+  cNotALineHint=low(integer);
 
 procedure RegisterStandardMessagesViewMenuItems;
 var
@@ -748,6 +755,31 @@ begin
   if csDestroying in ComponentState then exit;
   if Assigned(OnChanged) then
     OnChanged(Self);
+end;
+
+function TLMsgWndView.AsHintString(const aHintLastLine: integer): string;
+var
+  MsgLine: TMessageLine;
+  s: string;
+begin
+  Result:='';
+  if Assigned(Self) then
+    begin
+  MsgLine := nil;
+  if aHintLastLine<0 then
+    Result := Control.GetHeaderText(Self)
+  else if aHintLastLine<Self.Lines.Count then
+    MsgLine := Lines[aHintLastLine]
+  else
+    MsgLine := ProgressLine;
+  if MsgLine<>nil then begin
+    Result := Control.GetLineText(MsgLine);
+    s:= ExternalToolList.GetMsgHint(MsgLine.SubTool, MsgLine.MsgID);
+    if s<>'' then
+      Result += LineEnding+LineEnding + s;
+  end;
+
+    end;
 end;
 
 procedure TLMsgWndView.QueueAsyncOnChanged;
@@ -1446,6 +1478,11 @@ begin
   {$ENDIF}
 end;
 
+function TMessagesCtrl.Updating: boolean;
+begin
+  Result := fUpdateLock > 0;
+end;
+
 function TMessagesCtrl.GetSelectedLine: integer;
 // Return the first selected line number.
 begin
@@ -1731,13 +1768,26 @@ begin
   inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
   UpdateScrollBar(true);
 end;
-{
-procedure TMessagesCtrl.MouseMove(Shift: TShiftState; X, Y: Integer);
+
+procedure TMessagesCtrl.MsgCtrlMouseMove(Sender: TObject; Shift: TShiftState;
+  X, Y: Integer);
+var
+  lLineFound: boolean;
+  loLine: integer;
 begin
-  inherited MouseMove(Shift, X, Y);
-  //Application.HideHint;
+  lLineFound := GetLineAt(Y,{out}FHintLastView, loLine);
+  if lLineFound then begin
+    if loLine<>FHintLastLine then
+      Application.CancelHint;
+    FHintLastLine := loLine;
+  end
+  else begin
+    if FHintLastLine>cNotALineHint then
+      Application.CancelHint;
+    FHintLastLine := cNotALineHint;
+  end;
 end;
-}
+
 procedure TMessagesCtrl.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
@@ -1779,7 +1829,6 @@ begin
   inherited KeyDown(Key, Shift);
 
   case Key of
-
   VK_DOWN:
     begin
       SelectNextShown(+1);
@@ -1815,36 +1864,12 @@ begin
       SelectNextShown(Max(1,ClientHeight div ItemHeight));
       Key:=VK_UNKNOWN;
     end;
-  end;
-end;
-
-procedure TMessagesCtrl.DoOnShowHint(HintInfo: PHintInfo);
-var
-  View: TLMsgWndView;
-  Line: integer;
-  MsgLine: TMessageLine;
-  s: String;
-begin
-  if GetLineAt(HintInfo^.CursorPos.Y,View,Line) then begin
-    MsgLine:=nil;
-    s:='';
-    if Line<0 then
-      s:=GetHeaderText(View)
-    else if Line<View.Lines.Count then begin
-      MsgLine:=View.Lines[Line];
-    end else begin
-      MsgLine:=View.ProgressLine;
+  VK_C:    // Ctrl+'C' -> copy HintData to clipboard
+    if (Shift = [ssCtrl]) and Assigned(FHintLastView) then begin
+      ClipBoard.AsText := FHintLastView.AsHintString(Self.FHintLastLine);
+      Key := VK_UNKNOWN;
     end;
-    if MsgLine<>nil then begin
-      s:=GetLineText(MsgLine);
-      s+=LineEnding+LineEnding;
-      s+=ExternalToolList.GetMsgHint(MsgLine.SubTool,MsgLine.MsgID);
-    end;
-    HintInfo^.HintStr:=s;
-    HintInfo^.ReshowTimeout:=0;
-    HintInfo^.HideTimeout:=5000;
   end;
-  inherited DoOnShowHint(HintInfo);
 end;
 
 procedure TMessagesCtrl.DoAllViewsStopped;
@@ -2527,6 +2552,7 @@ begin
   FUpdateTimer.OnTimer:=@MsgUpdateTimerTimer;
   FItemHeight:=20;
   FSelectedView:=nil;
+  FHintLastLine:=cNotALineHint;
   BorderWidth:=0;
   fBackgroundColor:=MsgWndDefBackgroundColor;
   FHeaderBackground[lmvtsRunning]:=MsgWndDefHeaderBackgroundRunning;
@@ -2540,7 +2566,9 @@ begin
   FImageChangeLink.OnChange:=@ImageListChange;
   for u:=Low(TMessageLineUrgency) to high(TMessageLineUrgency) do
     fUrgencyStyles[u]:=TMsgCtrlUrgencyStyle.Create(Self,u);
-  ShowHint:=true;
+  ShowHint:= True;
+  OnMouseMove:=@MsgCtrlMouseMove;
+  OnShowHint:=@MsgCtrlShowHint;
 end;
 
 destructor TMessagesCtrl.Destroy;
@@ -2752,6 +2780,22 @@ begin
       Result:=true;
   if Result then
     Invalidate;
+end;
+
+procedure TMessagesCtrl.MsgCtrlShowHint(Sender: TObject; HintInfo: PHintInfo);
+begin
+  if Updating then
+    exit;
+  { No selected 'view' or not specified line }
+  if not Assigned(FHintLastView) or (FHintLastLine = cNotALineHint) then begin
+    Application.CancelHint;
+    Exit;
+  end;
+  with HintInfo^ do begin
+    HintStr := FHintLastView.AsHintString(Self.FHintLastLine);
+    ReshowTimeout := 0;
+    HideTimeout := 5000;
+  end;
 end;
 
 { TMessagesFrame }
