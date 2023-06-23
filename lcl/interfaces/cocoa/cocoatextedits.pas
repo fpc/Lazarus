@@ -1402,19 +1402,25 @@ function TCocoaComboBox.comboBox_indexOfItemWithStringValue(
   aComboBox: NSComboBox; string_: NSString): NSUInteger;
 var
   idx : integer;
+  lclString: String;
+  lclCmb : TObject;
 begin
   idx := indexOfSelectedItem;
-  if (idx>=0) and (idx<list.Count) and (list[idx]=string_.UTF8String) then
+  lclString := string_.UTF8String;
+  lclCmb := lclGetTarget;
+  if (idx>=0) and (idx<list.Count) and (list[idx]=lclString) then
     // this is used for the case of the same items in the combobox
     Result:=idx
   else
   begin
-    idx := TCocoaWSCustomComboBox.GetObjectItemIndex(aComboBox.lclGetTarget);
+    idx := TCocoaWSCustomComboBox.GetObjectItemIndex(lclCmb);
     if idx<0 then
       Result := NSNotFound
     else
     begin
-      TComboBoxAsyncHelper.ResetTextIfNecessary(lclGetTarget, string_.UTF8String);
+      // ComboBox.Text will be set to the List Item value after comboBox_indexOfItemWithStringValue()
+      // so if cbactRetainPrefixCase set, ComboBox.Text should be reset Async
+      TComboBoxAsyncHelper.ResetTextIfNecessary(lclCmb, lclString);
       Result := idx;
     end;
   end;
