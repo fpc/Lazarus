@@ -214,7 +214,6 @@ type
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure OnFilterChanged(Sender: TObject);
     function GetPageScroll: integer;
-    function Updating: boolean;
   protected
     FViews: TFPList;// list of TMessagesViewMap
     FStates: TMsgCtrlStates;
@@ -762,24 +761,21 @@ var
   MsgLine: TMessageLine;
   s: string;
 begin
-  Result:='';
-  if Assigned(Self) then
-    begin
+  Result := '';
+  if Self=nil then Exit;
   MsgLine := nil;
   if aHintLastLine<0 then
     Result := Control.GetHeaderText(Self)
-  else if aHintLastLine<Self.Lines.Count then
+  else if aHintLastLine < Lines.Count then
     MsgLine := Lines[aHintLastLine]
   else
     MsgLine := ProgressLine;
   if MsgLine<>nil then begin
     Result := Control.GetLineText(MsgLine);
-    s:= ExternalToolList.GetMsgHint(MsgLine.SubTool, MsgLine.MsgID);
+    s := ExternalToolList.GetMsgHint(MsgLine.SubTool, MsgLine.MsgID);
     if s<>'' then
       Result += LineEnding+LineEnding + s;
   end;
-
-    end;
 end;
 
 procedure TLMsgWndView.QueueAsyncOnChanged;
@@ -827,8 +823,7 @@ begin
   Result:=GetShownLineCount(true,true)>0;
 end;
 
-function TLMsgWndView.GetShownLineCount(WithHeader, WithProgressLine: boolean
-  ): integer;
+function TLMsgWndView.GetShownLineCount(WithHeader, WithProgressLine: boolean): integer;
 begin
   Result:=Lines.Count;
   // the header is only shown if there SummaryMsg<>'' or ProgressLine.Msg<>'' or Lines.Count>0
@@ -1476,11 +1471,6 @@ begin
   {$ELSE}
   Result:=ClientHeight - ItemHeight;
   {$ENDIF}
-end;
-
-function TMessagesCtrl.Updating: boolean;
-begin
-  Result := fUpdateLock > 0;
 end;
 
 function TMessagesCtrl.GetSelectedLine: integer;
@@ -2784,7 +2774,7 @@ end;
 
 procedure TMessagesCtrl.MsgCtrlShowHint(Sender: TObject; HintInfo: PHintInfo);
 begin
-  if Updating then
+  if fUpdateLock > 0 then
     exit;
   { No selected 'view' or not specified line }
   if not Assigned(FHintLastView) or (FHintLastLine = cNotALineHint) then begin
