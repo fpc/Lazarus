@@ -3949,6 +3949,11 @@ begin
     SPI_GETWORKAREA: begin
       pdisp:=TGdkDisplay.get_default;
       pmon:=pdisp^.get_primary_monitor();
+      if not Assigned(pmon) then begin
+        if pdisp^.get_n_monitors = 0 then
+          Exit(False);
+        pmon := pdisp^.get_monitor(0);
+      end;
       pmon^.get_workarea(@wa);
       pr:=PRect(pvParam);
       pr^.Left:=wa.x;
