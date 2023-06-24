@@ -577,12 +577,18 @@ end;
 
 procedure TLazProjectDelphiOptions.SetADO(AValue: String);
 begin
-  CustomData[pKeyAdditionalOptions]:=aValue
+  if AValue<>'' then
+    CustomData[pKeyAdditionalOptions]:=aValue
+  else
+    CustomData.Remove(pKeyAdditionalOptions);
 end;
 
 procedure TLazProjectDelphiOptions.SetDCF(AValue: Boolean);
 begin
-  CustomData[pKeyGenConfigFile]:=IntToStr(Ord(aValue));
+  if AValue then
+    CustomData[pKeyGenConfigFile]:=IntToStr(Ord(aValue))
+  else
+    CustomData.Remove(pKeyGenConfigFile);
 end;
 
 
