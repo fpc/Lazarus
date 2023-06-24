@@ -5,6 +5,7 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
   Width = 537
   ClientHeight = 415
   ClientWidth = 537
+  ParentFont = False
   TabOrder = 0
   Visible = False
   DesignLeft = 514
@@ -17,7 +18,7 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     Left = 0
     Height = 19
     Top = 179
-    Width = 162
+    Width = 160
     Caption = 'ICAddSemicolonCheckBox'
     TabOrder = 7
   end
@@ -29,7 +30,7 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     Left = 0
     Height = 19
     Top = 198
-    Width = 188
+    Width = 186
     Caption = 'ICAddAssignOperatorCheckBox'
     TabOrder = 8
   end
@@ -41,7 +42,7 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     Left = 0
     Height = 19
     Top = 25
-    Width = 186
+    Width = 184
     Caption = 'ICAutoInvokeOnTypeCheckBox'
     TabOrder = 0
   end
@@ -53,7 +54,7 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     Left = 0
     Height = 19
     Top = 105
-    Width = 188
+    Width = 186
     Caption = 'ICAutoStartAfterPointCheckBox'
     TabOrder = 4
   end
@@ -65,7 +66,7 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     Left = 0
     Height = 19
     Top = 236
-    Width = 230
+    Width = 228
     Caption = 'ICAutoAddParameterBracketsCheckBox'
     TabOrder = 10
   end
@@ -77,7 +78,7 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     Left = 0
     Height = 19
     Top = 143
-    Width = 138
+    Width = 136
     Caption = 'ICShowHelpCheckBox'
     ParentShowHint = False
     ShowHint = True
@@ -90,8 +91,8 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 19
-    Top = 445
-    Width = 125
+    Top = 489
+    Width = 123
     Caption = 'ICReplaceCheckBox'
     ParentShowHint = False
     ShowHint = True
@@ -105,33 +106,21 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     Left = 0
     Height = 19
     Top = 217
-    Width = 121
+    Width = 119
     Caption = 'ICAddDoCheckBox'
     TabOrder = 9
   end
   object ICSortForHistoryCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = ICSortDividerBevel
+    AnchorSideTop.Control = ICSortOrderRadioGroup
     AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 19
-    Top = 272
-    Width = 160
+    Top = 313
+    Width = 158
     Caption = 'ICSortForHistoryCheckBox'
-    TabOrder = 11
-  end
-  object ICSortForScopeCheckBox: TCheckBox
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = ICSortForHistoryCheckBox
-    AnchorSideTop.Side = asrBottom
-    Left = 0
-    Height = 19
-    Top = 291
-    Width = 154
-    Caption = 'ICSortForScopeCheckBox'
     ParentShowHint = False
-    ShowHint = True
-    TabOrder = 12
+    TabOrder = 11
   end
   object ICOpenDividerBevel: TDividerBevel
     AnchorSideLeft.Control = Owner
@@ -186,7 +175,7 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 15
-    Top = 430
+    Top = 474
     Width = 537
     Caption = 'ICMiscDividerBevel'
     Anchors = [akTop, akLeft, akRight]
@@ -201,8 +190,8 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 19
-    Top = 464
-    Width = 151
+    Top = 508
+    Width = 149
     Caption = 'ICJumpToErrorCheckBox'
     ParentShowHint = False
     ShowHint = True
@@ -216,7 +205,7 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     Left = 20
     Height = 19
     Top = 124
-    Width = 135
+    Width = 133
     BorderSpacing.Left = 20
     Caption = 'ICAutoUseSingleIdent'
     ParentShowHint = False
@@ -229,8 +218,8 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 19
-    Top = 327
-    Width = 157
+    Top = 350
+    Width = 155
     Caption = 'ICContainsFilterCheckBox'
     TabOrder = 19
   end
@@ -242,7 +231,7 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 15
-    Top = 394
+    Top = 438
     Width = 537
     Caption = 'ICAppearanceDividerBevel'
     Anchors = [akTop, akLeft, akRight]
@@ -256,24 +245,24 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 19
-    Top = 409
-    Width = 224
+    Top = 453
+    Width = 222
     Caption = 'ICUseIconsInCompletionBoxCheckBox'
     TabOrder = 16
   end
   object ICContentDividerBevel: TDividerBevel
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = ICSortForScopeCheckBox
+    AnchorSideTop.Control = ICSortForHistoryCheckBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 15
-    Top = 312
+    Top = 335
     Width = 537
     Caption = 'ICContentDividerBevel'
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Top = 2
+    BorderSpacing.Top = 3
     Font.Style = [fsBold]
     ParentFont = False
   end
@@ -282,7 +271,7 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideTop.Side = asrCenter
     Left = 0
     Height = 15
-    Top = 352
+    Top = 375
     Width = 112
     Caption = 'ICIncludeWordsLabel'
     ParentColor = False
@@ -294,7 +283,7 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideTop.Side = asrBottom
     Left = 117
     Height = 23
-    Top = 348
+    Top = 371
     Width = 200
     BorderSpacing.Left = 5
     BorderSpacing.Top = 2
@@ -308,20 +297,20 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 19
-    Top = 382
-    Width = 167
+    Top = 396
+    Width = 172
     BorderSpacing.Top = 2
     Caption = 'ICIncludeKeywordsCheckBox'
     TabOrder = 14
-  end  
+  end
   object ICIncludeCodeTemplatesCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = ICIncludeKeywordsCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 19
-    Top = 373
-    Width = 205
+    Top = 417
+    Width = 203
     BorderSpacing.Top = 2
     Caption = 'ICIncludeCodeTemplatesCheckBox'
     TabOrder = 15
@@ -334,7 +323,7 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     Left = 20
     Height = 19
     Top = 44
-    Width = 147
+    Width = 145
     BorderSpacing.Left = 20
     Caption = 'ICAutoOnTypeUseTimer'
     ParentShowHint = False
@@ -349,7 +338,7 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     Left = 20
     Height = 19
     Top = 63
-    Width = 172
+    Width = 170
     BorderSpacing.Left = 20
     Caption = 'ICAutoOnTypeOnlyWordEnd'
     ParentShowHint = False
@@ -382,5 +371,40 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     MinValue = 1
     TabOrder = 3
     Value = 2
+  end
+  object ICSortOrderRadioGroup: TRadioGroup
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ICSortDividerBevel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 39
+    Top = 274
+    Width = 537
+    Anchors = [akTop, akLeft, akRight]
+    AutoFill = True
+    AutoSize = True
+    BorderSpacing.Top = 2
+    Caption = 'ICSortOrderRadioGroup'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 3
+    ClientHeight = 19
+    ClientWidth = 533
+    Columns = 3
+    ItemIndex = 0
+    Items.Strings = (
+      'Alphabetic (Scoped)'
+      'Alphabetic'
+      'Declaration'
+    )
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 12
   end
 end

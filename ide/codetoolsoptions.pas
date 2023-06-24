@@ -41,7 +41,7 @@ uses
   // LCL
   LCLType,
   // CodeTools
-  CodeToolManager, DefineTemplates, SourceChanger,
+  CodeToolManager, DefineTemplates, SourceChanger, IdentCompletionTool,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, MacroIntf,
   // LazConfig
@@ -79,7 +79,7 @@ type
     FAdjustTopLineDueToComment: boolean;
     FAvoidUnnecessaryJumps: boolean;
     FIdentComplSortForHistory: boolean;
-    FIdentComplSortForScope: boolean;
+    FIdentComplSortMethod: TIdentComplSortMethod;
     FJumpSingleLinePos: integer;
     FJumpCodeBlockPos: integer;
     FCursorBeyondEOL: boolean;
@@ -290,8 +290,8 @@ type
                                          write FIdentComplShowHelp;
     property IdentComplSortForHistory: boolean read FIdentComplSortForHistory
                                              write FIdentComplSortForHistory;
-    property IdentComplSortForScope: boolean read FIdentComplSortForScope
-                                             write FIdentComplSortForScope;
+    property IdentComplSortMethod: TIdentComplSortMethod read FIdentComplSortMethod
+                                             write FIdentComplSortMethod;
 
     // indentation
     property IndentOnLineBreak: boolean read FIndentOnLineBreak
@@ -621,8 +621,15 @@ begin
       'CodeToolsOptions/IdentifierCompletion/ShowHelp',false);
     FIdentComplSortForHistory:=XMLConfig.GetValue(
       'CodeToolsOptions/IdentifierCompletion/SortForHistory',true);
-    FIdentComplSortForScope:=XMLConfig.GetValue(
-      'CodeToolsOptions/IdentifierCompletion/SortForScope',true);
+
+    FIdentComplSortMethod := icsAlphabetic;
+    if XMLConfig.GetValue(
+      'CodeToolsOptions/IdentifierCompletion/SortForScope',true)
+    then
+      FIdentComplSortMethod := icsScopedAlphabetic;
+    XMLConfig.GetValue(
+      'CodeToolsOptions/IdentifierCompletion/SortForMethod',
+      Int64(ord(FIdentComplSortMethod)), FIdentComplSortMethod, TypeInfo(TIdentComplSortMethod));
 
     // indentation
     FIndentOnLineBreak :=
@@ -808,8 +815,9 @@ begin
       FIdentComplShowHelp,false);
     XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/SortForHistory',
       FIdentComplSortForHistory,true);
-    XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/SortForScope',
-      FIdentComplSortForScope,true);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/SortForMethod',
+      FIdentComplSortMethod, int64(ord(icsScopedAlphabetic)), TypeInfo(TIdentComplSortMethod));
+    XMLConfig.DeleteValue('CodeToolsOptions/IdentifierCompletion/SortForScope');
 
     // indentation
     XMLConfig.SetDeleteValue('CodeToolsOptions/Indentation/OnLineBreak/Enabled'
@@ -959,7 +967,8 @@ begin
     FIdentComplJumpToError:=CodeToolsOpts.FIdentComplJumpToError;
     FIdentComplShowHelp:=CodeToolsOpts.FIdentComplShowHelp;
     FIdentComplSortForHistory:=CodeToolsOpts.FIdentComplSortForHistory;
-    FIdentComplSortForScope:=CodeToolsOpts.FIdentComplSortForScope;
+    FIdentComplSortMethod:=CodeToolsOpts.FIdentComplSortMethod;
+
   end
   else
     Clear;
@@ -1032,7 +1041,7 @@ begin
   FIdentComplJumpToError:=true;
   FIdentComplShowHelp:=false;
   FIdentComplSortForHistory:=true;
-  FIdentComplSortForScope:=true;
+  FIdentComplSortMethod:=icsScopedAlphabetic;
 
   // indentation
   FIndentOnLineBreak:=true;
@@ -1124,7 +1133,7 @@ begin
     and (FIdentComplJumpToError=CodeToolsOpts.FIdentComplJumpToError)
     and (FIdentComplShowHelp=CodeToolsOpts.FIdentComplShowHelp)
     and (FIdentComplSortForHistory=CodeToolsOpts.FIdentComplSortForHistory)
-    and (FIdentComplSortForScope=CodeToolsOpts.FIdentComplSortForScope)
+    and (FIdentComplSortMethod=CodeToolsOpts.FIdentComplSortMethod)
    ;
 end;
 
@@ -1197,7 +1206,7 @@ begin
 
     // Identifier Completion - - - - - - - - - - - - - - - - - - - - - - - - - -
     Boss.IdentifierList.SortForHistory:=IdentComplSortForHistory;
-    Boss.IdentifierList.SortForScope:=IdentComplSortForScope;
+    Boss.IdentifierList.SortMethodForCompletion:=IdentComplSortMethod;
 
     // Code Templates- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     aFilename:=CodeCompletionTemplateFileName;

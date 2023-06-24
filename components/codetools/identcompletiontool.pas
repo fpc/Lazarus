@@ -224,6 +224,8 @@ type
     );
   TIdentifierListContextFlags = set of TIdentifierListContextFlag;
 
+  TIdentComplSortMethod = (icsScopedAlphabetic, icsAlphabetic, icsScopedDeclaration);
+
   TOnGatherUserIdentifiersToFilteredList = procedure(Sender: TIdentifierList;
     FilteredList: TFPList; PriorityCount: Integer) of object;
   
@@ -235,7 +237,7 @@ type
     FContextFlags: TIdentifierListContextFlags;
     FOnGatherUserIdentifiersToFilteredList: TOnGatherUserIdentifiersToFilteredList;
     FSortForHistory: boolean;
-    FSortForScope: boolean;
+    FSortMethodForCompletion: TIdentComplSortMethod;
     FStartAtom: TAtomPosition;
     FStartAtomBehind: TAtomPosition;
     FStartAtomInFront: TAtomPosition;
@@ -255,7 +257,7 @@ type
     function CompareIdentListItems({%H-}Tree: TAvlTree; Data1, Data2: Pointer): integer;
     procedure SetHistory(const AValue: TIdentifierHistoryList);
     procedure SetSortForHistory(AValue: boolean);
-    procedure SetSortForScope(AValue: boolean);
+    procedure SetSortMethodForCompletion(AValue: TIdentComplSortMethod);
     procedure UpdateFilteredList;
     function GetFilteredItems(Index: integer): TIdentifierListItem;
     procedure SetPrefix(const AValue: string);
@@ -286,7 +288,9 @@ type
     property History: TIdentifierHistoryList read FHistory write SetHistory;
     property Prefix: string read FPrefix write SetPrefix;
     property SortForHistory: boolean read FSortForHistory write SetSortForHistory;
-    property SortForScope: boolean read FSortForScope write SetSortForScope;
+    property SortMethodForCompletion: TIdentComplSortMethod read FSortMethodForCompletion
+                                             write SetSortMethodForCompletion;
+
     property StartAtom: TAtomPosition read FStartAtom write FStartAtom;
     property StartAtomInFront: TAtomPosition
       read FStartAtomInFront write FStartAtomInFront; // in front of variable, not only of identifier
@@ -582,7 +586,8 @@ var
   Item1: TIdentifierListItem absolute Data1;
   Item2: TIdentifierListItem absolute Data2;
 begin
-  if SortForScope then begin
+
+  if SortMethodForCompletion in [icsScopedAlphabetic, icsScopedDeclaration] then begin
     // first sort for Compatibility  (lower is better)
     if ord(Item1.Compatibility)<ord(Item2.Compatibility) then begin
       Result:=-1;
@@ -604,7 +609,7 @@ begin
     end;
   end;
 
-  if SortForScope then begin
+  if SortMethodForCompletion in [icsScopedAlphabetic, icsScopedDeclaration] then begin
     // then sort for Level (i.e. scope, lower is better)
     if Item1.Level<Item2.Level then begin
       Result:=-1;
@@ -615,12 +620,43 @@ begin
     end;
   end;
 
-  // then sort alpabetically (lower is better)
+  if SortMethodForCompletion = icsScopedDeclaration then begin
+    if (Item1.Node<>nil) and (Item2.Node<>nil) then
+    begin
+      if Item1.Node.StartPos<Item2.Node.StartPos then
+      begin
+        Result:=-1;
+        exit;
+      end else
+      if Item1.Node.StartPos>Item2.Node.StartPos then
+      begin
+        Result:=1;
+        exit;
+      end;
+    end
+    else
+    if (Item1.Node<>nil) xor (Item2.Node<>nil) then begin // One node without source pos
+      if (Item1.Node<>nil) then
+        Result := 1
+      else
+        Result := -1;
+      exit;
+    end;
+  end;
+
   Result:=CompareIdentifierPtrs(Pointer(Item2.Identifier),Pointer(Item1.Identifier));
   if Result<>0 then exit;
 
   // then sort for ParamList (lower is better)
   Result:=Item2.CompareParamList(Item1);
+end;
+
+procedure TIdentifierList.SetSortMethodForCompletion(
+  AValue: TIdentComplSortMethod);
+begin
+  if FSortMethodForCompletion = AValue then Exit;
+  FSortMethodForCompletion := AValue;
+  Clear;
 end;
 
 procedure TIdentifierList.SetPrefix(const AValue: string);
@@ -698,13 +734,6 @@ begin
   Clear;
 end;
 
-procedure TIdentifierList.SetSortForScope(AValue: boolean);
-begin
-  if FSortForScope=AValue then Exit;
-  FSortForScope:=AValue;
-  Clear;
-end;
-
 function TIdentifierList.GetFilteredItems(Index: integer): TIdentifierListItem;
 begin
   UpdateFilteredList;
@@ -722,7 +751,7 @@ begin
   FIdentSearchItem:=TIdentifierListSearchItem.Create;
   FCreatedIdentifiers:=TFPList.Create;
   FSortForHistory:=true;
-  FSortForScope:=true;
+  FSortMethodForCompletion:=icsScopedAlphabetic;
 end;
 
 destructor TIdentifierList.Destroy;

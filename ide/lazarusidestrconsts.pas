@@ -5773,10 +5773,13 @@ resourcestring
   lisBestViewedByInstallingAHTMLControlLikeTurbopowerip = 'Best viewed by '
     +'installing a HTML control like turbopoweriprodsgn';
   lisShowRecentlyUsedIdentifiersAtTop = 'Show recently used identifiers at top';
-  lisSortForScope = 'Sort for scope';
-  lisForExampleShowAtTopTheLocalVariablesThenTheMembers = 'For example show at'
-    +' top the local variables, then the members of current class, then of the'
+  lisForExampleShowAtTopTheLocalVariablesThenTheMembers = '"Scoped" sorting will show'
+    +' local variables on top, then the members of current class, then of the'
     +' ancestors, then the current unit, then of used units';
+  lisSortOrderTitle = 'Order by';
+  lisSortOrderDefinition = 'Definition (Scoped)';
+  lisSortOrderSopedAlphabetic = 'Alphabetic (Scoped)';
+  lisSortOrderAlphabetic = 'Alphabetic';
   lisShowEmptyUnitsPackages = 'Show empty units/packages';
   lisUsePackageInProject = 'Use package %s in project';
   lisUsePackageInProject2 = 'Use package in project';
