@@ -75,6 +75,20 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     ShowHint = True
     TabOrder = 3
   end
+  object MainUnitHasScaledStatementCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = MainUnitHasTitleStatementCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 0
+    Height = 19
+    Top = 100
+    Width = 229
+    BorderSpacing.Top = 6
+    Caption = 'MainUnitHasScaledStatementCheckBox'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 4
+  end
   object RunnableCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Bevel1
@@ -87,6 +101,20 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     ParentShowHint = False
     ShowHint = True
     TabOrder = 5
+  end
+  object UseDesignTimePkgsCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = RunnableCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 0
+    Height = 19
+    Top = 156
+    Width = 179
+    BorderSpacing.Top = 6
+    Caption = 'UseDesignTimePkgsCheckBox'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 6
   end
   object AlwaysBuildCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
@@ -102,23 +130,37 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     ShowHint = True
     TabOrder = 7
   end
-  object LRSInOutputDirCheckBox: TCheckBox
+  object CompatibilityModeCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = AlwaysBuildCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 19
     Top = 206
+    Width = 175
+    BorderSpacing.Top = 6
+    Caption = 'CompatibilityModeCheckBox'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 8
+  end
+  object LRSInOutputDirCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = CompatibilityModeCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 0
+    Top = 231
+    Height = 19
     Width = 154
     BorderSpacing.Top = 6
     Caption = 'LRSInOutputDirCheckBox'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 8
+    TabOrder = 9
   end
   object ResourceGroupBox: TGroupBox
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = CompatibilityModeCheckBox
+    AnchorSideTop.Control = LRSInOutputDirCheckBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
@@ -163,20 +205,6 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
       TabStop = True
     end
   end
-  object UseDesignTimePkgsCheckBox: TCheckBox
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = RunnableCheckBox
-    AnchorSideTop.Side = asrBottom
-    Left = 0
-    Height = 19
-    Top = 156
-    Width = 179
-    BorderSpacing.Top = 6
-    Caption = 'UseDesignTimePkgsCheckBox'
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 6
-  end
   object PathDelimLabel: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = PathDelimComboBox
@@ -216,33 +244,5 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     ItemHeight = 15
     TabOrder = 11
     Text = 'PathDelimComboBox'
-  end
-  object MainUnitHasScaledStatementCheckBox: TCheckBox
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = MainUnitHasTitleStatementCheckBox
-    AnchorSideTop.Side = asrBottom
-    Left = 0
-    Height = 19
-    Top = 100
-    Width = 229
-    BorderSpacing.Top = 6
-    Caption = 'MainUnitHasScaledStatementCheckBox'
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 4
-  end
-  object CompatibilityModeCheckBox: TCheckBox
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = LRSInOutputDirCheckBox
-    AnchorSideTop.Side = asrBottom
-    Left = 0
-    Height = 19
-    Top = 231
-    Width = 175
-    BorderSpacing.Top = 6
-    Caption = 'CompatibilityModeCheckBox'
-    ParentShowHint = False
-    ShowHint = True
-    TabOrder = 9
   end
 end
