@@ -681,6 +681,8 @@ begin
   {Calculate the text's bounding rect}
   CalcTextRect;
 
+  Result:=theRect.Height;
+
   {If just calculating rect, finish up here}
   If CalcRect then begin
     Rect:=theRect;
@@ -766,8 +768,6 @@ begin
 
   {Restore device-context}
   RestoreDC(DC, TDC);
-
-  Result := 1;
 end;
 
 function TWidgetSet.DPtoLP(DC: HDC; var Points; Count: Integer): BOOL;
