@@ -814,6 +814,7 @@ type
 
   TGtk3HintWindow = class(TGtk3Window)
   private
+    procedure InitializeWidget; override;
   protected
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
   end;
@@ -7894,6 +7895,20 @@ begin
 
   PGtkWindow(Result)^.set_can_focus(false);
 
+end;
+
+procedure TGtk3HintWindow.InitializeWidget;
+var
+  ParentWidget: TGtk3Widget;
+begin
+  inherited;
+  with LCLObject as THintWindow do begin
+    if Assigned(HintData) then begin
+      ParentWidget := TGtk3Widget(HintData);
+      FWidget^.realize;
+      GetWindow^.set_transient_for(ParentWidget.GetWindow);
+    end;
+  end;
 end;
 
 { TGtk3Dialog }
