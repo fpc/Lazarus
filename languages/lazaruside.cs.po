@@ -10029,7 +10029,9 @@ msgid "Force renaming"
 msgstr "Vynutit přejmenování"
 
 #: lazarusidestrconsts.lisforexampleshowattopthelocalvariablesthenthemembers
-msgid "For example show at top the local variables, then the members of current class, then of the ancestors, then the current unit, then of used units"
+#, fuzzy
+#| msgid "For example show at top the local variables, then the members of current class, then of the ancestors, then the current unit, then of used units"
+msgid "\"Scoped\" sorting will show local variables on top, then the members of current class, then of the ancestors, then the current unit, then of used units"
 msgstr "Například ukázat nahoře místní proměnné, když členové aktuální třídy, když předci, když aktuální jednotky, když použité jednotky"
 
 #: lazarusidestrconsts.lisform
@@ -17853,13 +17855,26 @@ msgstr "Odpovídá"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Omlouváme se, tento typ ještě nebyl implementován"
 
-#: lazarusidestrconsts.lissortforscope
-msgid "Sort for scope"
-msgstr "Řadit pro rozsah"
-
 #: lazarusidestrconsts.lissorting
 msgid "Sorting"
 msgstr "Řazení"
+
+#: lazarusidestrconsts.lissortorderalphabetic
+msgid "Alphabetic"
+msgstr ""
+
+#: lazarusidestrconsts.lissortorderdefinition
+msgid "Definition (Scoped)"
+msgstr ""
+
+#: lazarusidestrconsts.lissortorderscopedalphabetic
+msgctxt "lazarusidestrconsts.lissortorderscopedalphabetic"
+msgid "Alphabetic (Scoped)"
+msgstr ""
+
+#: lazarusidestrconsts.lissortordertitle
+msgid "Order by"
+msgstr ""
 
 #: lazarusidestrconsts.lissortselascending
 msgid "Ascending"

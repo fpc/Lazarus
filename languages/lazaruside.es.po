@@ -10175,7 +10175,9 @@ msgid "Force renaming"
 msgstr "Forzar renombrado"
 
 #: lazarusidestrconsts.lisforexampleshowattopthelocalvariablesthenthemembers
-msgid "For example show at top the local variables, then the members of current class, then of the ancestors, then the current unit, then of used units"
+#, fuzzy
+#| msgid "For example show at top the local variables, then the members of current class, then of the ancestors, then the current unit, then of used units"
+msgid "\"Scoped\" sorting will show local variables on top, then the members of current class, then of the ancestors, then the current unit, then of used units"
 msgstr "Por ejemplo mostrar arriba del todo las variables locales, a continuación los miembros de la clase actual, después los ancestros, la unidad actual, finalmente las unidades en uso"
 
 #: lazarusidestrconsts.lisform
@@ -18181,13 +18183,26 @@ msgstr "Coincidencias"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Lo siento, este tipo no está todavía implementado"
 
-#: lazarusidestrconsts.lissortforscope
-msgid "Sort for scope"
-msgstr "Ordenar para el campo de acción"
-
 #: lazarusidestrconsts.lissorting
 msgid "Sorting"
 msgstr "Ordenando"
+
+#: lazarusidestrconsts.lissortorderalphabetic
+msgid "Alphabetic"
+msgstr ""
+
+#: lazarusidestrconsts.lissortorderdefinition
+msgid "Definition (Scoped)"
+msgstr ""
+
+#: lazarusidestrconsts.lissortorderscopedalphabetic
+msgctxt "lazarusidestrconsts.lissortorderscopedalphabetic"
+msgid "Alphabetic (Scoped)"
+msgstr ""
+
+#: lazarusidestrconsts.lissortordertitle
+msgid "Order by"
+msgstr ""
 
 #: lazarusidestrconsts.lissortselascending
 msgid "Ascending"

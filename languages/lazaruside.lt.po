@@ -10108,7 +10108,9 @@ msgid "Force renaming"
 msgstr "Vistiek pervadinti"
 
 #: lazarusidestrconsts.lisforexampleshowattopthelocalvariablesthenthemembers
-msgid "For example show at top the local variables, then the members of current class, then of the ancestors, then the current unit, then of used units"
+#, fuzzy
+#| msgid "For example show at top the local variables, then the members of current class, then of the ancestors, then the current unit, then of used units"
+msgid "\"Scoped\" sorting will show local variables on top, then the members of current class, then of the ancestors, then the current unit, then of used units"
 msgstr "Pavyzdžeiui: viršuje rodyti vietinius kintamuosius, tada dabartinės klasės elementus, po to protėvius, tada dabartinį modulį, po to naudojamus modulius"
 
 #: lazarusidestrconsts.lisform
@@ -18029,13 +18031,26 @@ msgstr "Atitikmenys"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Deja, šis tipas dar neįgyvendintas"
 
-#: lazarusidestrconsts.lissortforscope
-msgid "Sort for scope"
-msgstr "Rūšiuoti pagal sritį"
-
 #: lazarusidestrconsts.lissorting
 msgid "Sorting"
 msgstr "Rūšiuojama"
+
+#: lazarusidestrconsts.lissortorderalphabetic
+msgid "Alphabetic"
+msgstr ""
+
+#: lazarusidestrconsts.lissortorderdefinition
+msgid "Definition (Scoped)"
+msgstr ""
+
+#: lazarusidestrconsts.lissortorderscopedalphabetic
+msgctxt "lazarusidestrconsts.lissortorderscopedalphabetic"
+msgid "Alphabetic (Scoped)"
+msgstr ""
+
+#: lazarusidestrconsts.lissortordertitle
+msgid "Order by"
+msgstr ""
 
 #: lazarusidestrconsts.lissortselascending
 msgid "Ascending"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-06-21 16:19+0300\n"
+"PO-Revision-Date: 2023-06-24 16:48+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -9941,8 +9941,8 @@ msgid "Force renaming"
 msgstr "Переименовать принудительно"
 
 #: lazarusidestrconsts.lisforexampleshowattopthelocalvariablesthenthemembers
-msgid "For example show at top the local variables, then the members of current class, then of the ancestors, then the current unit, then of used units"
-msgstr "Например, выводить сверху локальные переменные, затем элементы текущего класса, его предков, текущего и используемых модулей"
+msgid "\"Scoped\" sorting will show local variables on top, then the members of current class, then of the ancestors, then the current unit, then of used units"
+msgstr "Сортировка \"в области действия\" выведет сверху локальные переменные, затем элементы текущего класса, его предков, текущего и используемых модулей"
 
 #: lazarusidestrconsts.lisform
 msgid "Form"
@@ -17725,13 +17725,26 @@ msgstr "Совпадения"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Извините, этот тип ещё не реализован"
 
-#: lazarusidestrconsts.lissortforscope
-msgid "Sort for scope"
-msgstr "Сортировать по области действия"
-
 #: lazarusidestrconsts.lissorting
 msgid "Sorting"
 msgstr "Сортировка"
+
+#: lazarusidestrconsts.lissortorderalphabetic
+msgid "Alphabetic"
+msgstr "По алфавиту"
+
+#: lazarusidestrconsts.lissortorderdefinition
+msgid "Definition (Scoped)"
+msgstr "По объявлению (в области действия)"
+
+#: lazarusidestrconsts.lissortorderscopedalphabetic
+msgctxt "lazarusidestrconsts.lissortorderscopedalphabetic"
+msgid "Alphabetic (Scoped)"
+msgstr "По алфавиту (в области действия)"
+
+#: lazarusidestrconsts.lissortordertitle
+msgid "Order by"
+msgstr "Упорядочивать"
 
 #: lazarusidestrconsts.lissortselascending
 msgid "Ascending"
