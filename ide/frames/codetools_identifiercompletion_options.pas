@@ -112,8 +112,8 @@ begin
   ICSortDividerBevel.Caption:=lisSorting;
   ICSortForHistoryCheckBox.Caption:=lisShowRecentlyUsedIdentifiersAtTop;
   ICSortOrderRadioGroup.Hint:=lisForExampleShowAtTopTheLocalVariablesThenTheMembers;
-  ICSortOrderRadioGroup.Caption:=' '+lisSortOrderTitle+' ';
-  ICSortOrderRadioGroup.Items[0]:= lisSortOrderSopedAlphabetic;
+  ICSortOrderRadioGroup.Caption:=lisSortOrderTitle;
+  ICSortOrderRadioGroup.Items[0]:= lisSortOrderScopedAlphabetic;
   ICSortOrderRadioGroup.Items[1]:= lisSortOrderAlphabetic;
   ICSortOrderRadioGroup.Items[2]:= lisSortOrderDefinition;
   ICContentDividerBevel.Caption:=lisContents;

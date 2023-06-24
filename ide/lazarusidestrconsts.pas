@@ -5778,7 +5778,7 @@ resourcestring
     +' ancestors, then the current unit, then of used units';
   lisSortOrderTitle = 'Order by';
   lisSortOrderDefinition = 'Definition (Scoped)';
-  lisSortOrderSopedAlphabetic = 'Alphabetic (Scoped)';
+  lisSortOrderScopedAlphabetic = 'Alphabetic (Scoped)';
   lisSortOrderAlphabetic = 'Alphabetic';
   lisShowEmptyUnitsPackages = 'Show empty units/packages';
   lisUsePackageInProject = 'Use package %s in project';
