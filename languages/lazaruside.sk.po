@@ -4014,8 +4014,10 @@ msgid "Text-Style"
 msgstr ""
 
 #: lazarusidestrconsts.dlgtexttofind
+#, fuzzy
+#| msgid "&Text to find"
 msgctxt "lazarusidestrconsts.dlgtexttofind"
-msgid "&Text to find"
+msgid "Search s&tring"
 msgstr "Nájsť &text"
 
 #: lazarusidestrconsts.dlgthiselementusescolor
@@ -9994,27 +9996,37 @@ msgid "&Multiline pattern"
 msgstr "&Viacriadkový vzor"
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
-msgid "search all files in &project"
+#, fuzzy
+#| msgid "search all files in &project"
+msgid "all files in &project"
 msgstr "prehľadávať všetky súbory v &projekte"
 
 #: lazarusidestrconsts.lisfindfilesearchallopenfiles
-msgid "search all &open files"
+#, fuzzy
+#| msgid "search all &open files"
+msgid "all &open files"
 msgstr "prehľadávať všetky &otvorené súbory"
 
 #: lazarusidestrconsts.lisfindfilesearchinactivefile
-msgid "search in &active file"
+#, fuzzy
+#| msgid "search in &active file"
+msgid "&active file"
 msgstr "hľadať v &aktívnom súbore"
 
 #: lazarusidestrconsts.lisfindfilesearchindirectories
-msgid "search in &directories"
+#, fuzzy
+#| msgid "search in &directories"
+msgid "&directories"
 msgstr "prehľadávať a&dresáre"
 
 #: lazarusidestrconsts.lisfindfilessearchinprojectgroup
-msgid "search in project &group"
+msgid "project &group"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfilewhere
-msgid "Where"
+#, fuzzy
+#| msgid "Where"
+msgid "Search location"
 msgstr "Kde"
 
 #: lazarusidestrconsts.lisfindkeycombination
@@ -18633,6 +18645,11 @@ msgstr ""
 msgid "The package %s is not a design time package. It cannot be installed in the IDE."
 msgstr ""
 
+#: lazarusidestrconsts.listhepackageisusedby
+#, object-pascal-format
+msgid "The package \"%s\" is used by"
+msgstr ""
+
 #: lazarusidestrconsts.listhepathofmakeisnotcorrect
 #, object-pascal-format
 msgid "The path of \"make\" is not correct: \"%s\""
@@ -19737,6 +19754,10 @@ msgstr "Vrátiť"
 msgid "Uninstall %s"
 msgstr "Odinštalovať %s"
 
+#: lazarusidestrconsts.lisuninstallfail
+msgid "Uninstall failed"
+msgstr ""
+
 #: lazarusidestrconsts.lisuninstallimpossible
 msgid "Uninstall impossible"
 msgstr ""
@@ -19744,6 +19765,10 @@ msgstr ""
 #: lazarusidestrconsts.lisuninstallselection
 msgid "Uninstall selection"
 msgstr "Odinštalovať výber"
+
+#: lazarusidestrconsts.lisuninstallthemtoo
+msgid "Uninstall them too"
+msgstr ""
 
 #: lazarusidestrconsts.lisunit
 msgctxt "lazarusidestrconsts.lisunit"

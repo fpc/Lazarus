@@ -4007,8 +4007,10 @@ msgid "Text-Style"
 msgstr "Szövegstílus"
 
 #: lazarusidestrconsts.dlgtexttofind
+#, fuzzy
+#| msgid "&Text to find"
 msgctxt "lazarusidestrconsts.dlgtexttofind"
-msgid "&Text to find"
+msgid "Search s&tring"
 msgstr "Keresendő szöveg"
 
 #: lazarusidestrconsts.dlgthiselementusescolor
@@ -9930,27 +9932,39 @@ msgid "&Multiline pattern"
 msgstr "Többsoros kitöltés"
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
-msgid "search all files in &project"
+#, fuzzy
+#| msgid "search all files in &project"
+msgid "all files in &project"
 msgstr "keresés a &projekt minden fájljában"
 
 #: lazarusidestrconsts.lisfindfilesearchallopenfiles
-msgid "search all &open files"
+#, fuzzy
+#| msgid "search all &open files"
+msgid "all &open files"
 msgstr "keresés minden megnyit&ott fájlban"
 
 #: lazarusidestrconsts.lisfindfilesearchinactivefile
-msgid "search in &active file"
+#, fuzzy
+#| msgid "search in &active file"
+msgid "&active file"
 msgstr "keresés az aktív fájlban"
 
 #: lazarusidestrconsts.lisfindfilesearchindirectories
-msgid "search in &directories"
+#, fuzzy
+#| msgid "search in &directories"
+msgid "&directories"
 msgstr "keresés könyvtárakban"
 
 #: lazarusidestrconsts.lisfindfilessearchinprojectgroup
-msgid "search in project &group"
+#, fuzzy
+#| msgid "search in project &group"
+msgid "project &group"
 msgstr "keresés a projektcsoportban"
 
 #: lazarusidestrconsts.lisfindfilewhere
-msgid "Where"
+#, fuzzy
+#| msgid "Where"
+msgid "Search location"
 msgstr "Hely"
 
 #: lazarusidestrconsts.lisfindkeycombination
@@ -18460,6 +18474,11 @@ msgstr "A(z) %s csomag már szerepel a listában"
 msgid "The package %s is not a design time package. It cannot be installed in the IDE."
 msgstr "A(z) %s csomag nem tervezési csomag. Nem telepíthető az IDE-be."
 
+#: lazarusidestrconsts.listhepackageisusedby
+#, object-pascal-format
+msgid "The package \"%s\" is used by"
+msgstr ""
+
 #: lazarusidestrconsts.listhepathofmakeisnotcorrect
 #, object-pascal-format
 msgid "The path of \"make\" is not correct: \"%s\""
@@ -19531,6 +19550,10 @@ msgstr "Visszavonás"
 msgid "Uninstall %s"
 msgstr "%s eltávolítása"
 
+#: lazarusidestrconsts.lisuninstallfail
+msgid "Uninstall failed"
+msgstr ""
+
 #: lazarusidestrconsts.lisuninstallimpossible
 msgid "Uninstall impossible"
 msgstr "Az eltvolítás nem lehetséges"
@@ -19538,6 +19561,10 @@ msgstr "Az eltvolítás nem lehetséges"
 #: lazarusidestrconsts.lisuninstallselection
 msgid "Uninstall selection"
 msgstr "Kijelölés eltávolítása"
+
+#: lazarusidestrconsts.lisuninstallthemtoo
+msgid "Uninstall them too"
+msgstr ""
 
 #: lazarusidestrconsts.lisunit
 msgctxt "lazarusidestrconsts.lisunit"

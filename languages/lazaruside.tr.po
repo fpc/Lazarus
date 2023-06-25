@@ -3961,7 +3961,9 @@ msgid "Text-Style"
 msgstr "Yazı Stili"
 
 #: lazarusidestrconsts.dlgtexttofind
-msgid "&Text to find"
+#, fuzzy
+#| msgid "&Text to find"
+msgid "Search s&tring"
 msgstr "&Bulunacak metin"
 
 #: lazarusidestrconsts.dlgthiselementusescolor
@@ -9869,27 +9871,39 @@ msgid "&Multiline pattern"
 msgstr "&Çok satırlı desen"
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
-msgid "search all files in &project"
+#, fuzzy
+#| msgid "search all files in &project"
+msgid "all files in &project"
 msgstr "projedeki tüm dosyalarda ara"
 
 #: lazarusidestrconsts.lisfindfilesearchallopenfiles
-msgid "search all &open files"
+#, fuzzy
+#| msgid "search all &open files"
+msgid "all &open files"
 msgstr "tüm açı&k dosyalarda ara"
 
 #: lazarusidestrconsts.lisfindfilesearchinactivefile
-msgid "search in &active file"
+#, fuzzy
+#| msgid "search in &active file"
+msgid "&active file"
 msgstr "aktif dosya için&de ara"
 
 #: lazarusidestrconsts.lisfindfilesearchindirectories
-msgid "search in &directories"
+#, fuzzy
+#| msgid "search in &directories"
+msgid "&directories"
 msgstr "dizinlerde &ara"
 
 #: lazarusidestrconsts.lisfindfilessearchinprojectgroup
-msgid "search in project &group"
+#, fuzzy
+#| msgid "search in project &group"
+msgid "project &group"
 msgstr "p&roje grubunda ara"
 
 #: lazarusidestrconsts.lisfindfilewhere
-msgid "Where"
+#, fuzzy
+#| msgid "Where"
+msgid "Search location"
 msgstr "Nerede"
 
 #: lazarusidestrconsts.lisfindkeycombination
@@ -18338,6 +18352,11 @@ msgstr "%s paketi zaten listede"
 msgid "The package %s is not a design time package. It cannot be installed in the IDE."
 msgstr "%s paketi bir tasarım zamanı paketi değil, IDE'ye kurulamıyor."
 
+#: lazarusidestrconsts.listhepackageisusedby
+#, object-pascal-format
+msgid "The package \"%s\" is used by"
+msgstr ""
+
 #: lazarusidestrconsts.listhepathofmakeisnotcorrect
 #, object-pascal-format
 msgid "The path of \"make\" is not correct: \"%s\""
@@ -19406,6 +19425,10 @@ msgstr "Geri"
 msgid "Uninstall %s"
 msgstr "%s kaldırıldı"
 
+#: lazarusidestrconsts.lisuninstallfail
+msgid "Uninstall failed"
+msgstr ""
+
 #: lazarusidestrconsts.lisuninstallimpossible
 msgid "Uninstall impossible"
 msgstr "Kaldırmak imkansız"
@@ -19413,6 +19436,10 @@ msgstr "Kaldırmak imkansız"
 #: lazarusidestrconsts.lisuninstallselection
 msgid "Uninstall selection"
 msgstr "Seçimi kaldır"
+
+#: lazarusidestrconsts.lisuninstallthemtoo
+msgid "Uninstall them too"
+msgstr ""
 
 #: lazarusidestrconsts.lisunit
 msgctxt "lazarusidestrconsts.lisunit"

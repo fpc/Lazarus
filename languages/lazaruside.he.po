@@ -4224,7 +4224,7 @@ msgstr ""
 #, fuzzy
 #| msgid "&Text to Find"
 msgctxt "lazarusidestrconsts.dlgtexttofind"
-msgid "&Text to find"
+msgid "Search s&tring"
 msgstr "טקסט לחיפוש"
 
 #: lazarusidestrconsts.dlgthiselementusescolor
@@ -10379,27 +10379,35 @@ msgid "&Multiline pattern"
 msgstr "דפוס רב שורות"
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
-msgid "search all files in &project"
+#, fuzzy
+#| msgid "search all files in &project"
+msgid "all files in &project"
 msgstr "חפש את כל הקבצים בפרוי&יקט"
 
 #: lazarusidestrconsts.lisfindfilesearchallopenfiles
-msgid "search all &open files"
+#, fuzzy
+#| msgid "search all &open files"
+msgid "all &open files"
 msgstr "חפש את כל הקבצים הפתוחים&"
 
 #: lazarusidestrconsts.lisfindfilesearchinactivefile
-msgid "search in &active file"
+msgid "&active file"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfilesearchindirectories
-msgid "search in &directories"
+#, fuzzy
+#| msgid "search in &directories"
+msgid "&directories"
 msgstr "חפש בס&פריות"
 
 #: lazarusidestrconsts.lisfindfilessearchinprojectgroup
-msgid "search in project &group"
+msgid "project &group"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfilewhere
-msgid "Where"
+#, fuzzy
+#| msgid "Where"
+msgid "Search location"
 msgstr "מיקום"
 
 #: lazarusidestrconsts.lisfindkeycombination
@@ -19447,6 +19455,11 @@ msgstr ""
 msgid "The package %s is not a design time package. It cannot be installed in the IDE."
 msgstr ""
 
+#: lazarusidestrconsts.listhepackageisusedby
+#, object-pascal-format
+msgid "The package \"%s\" is used by"
+msgstr ""
+
 #: lazarusidestrconsts.listhepathofmakeisnotcorrect
 #, object-pascal-format
 msgid "The path of \"make\" is not correct: \"%s\""
@@ -20573,6 +20586,10 @@ msgstr "בטל פעולה"
 msgid "Uninstall %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisuninstallfail
+msgid "Uninstall failed"
+msgstr ""
+
 #: lazarusidestrconsts.lisuninstallimpossible
 msgid "Uninstall impossible"
 msgstr "אי אפשר להסיר את ההתקנה"
@@ -20580,6 +20597,10 @@ msgstr "אי אפשר להסיר את ההתקנה"
 #: lazarusidestrconsts.lisuninstallselection
 msgid "Uninstall selection"
 msgstr "הסר את התקנת הבחירה"
+
+#: lazarusidestrconsts.lisuninstallthemtoo
+msgid "Uninstall them too"
+msgstr ""
 
 #: lazarusidestrconsts.lisunit
 #, fuzzy

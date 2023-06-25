@@ -3999,7 +3999,9 @@ msgid "Text-Style"
 msgstr ""
 
 #: lazarusidestrconsts.dlgtexttofind
-msgid "&Text to find"
+#, fuzzy
+#| msgid "&Text to find"
+msgid "Search s&tring"
 msgstr "&Etsittävä"
 
 #: lazarusidestrconsts.dlgthiselementusescolor
@@ -9901,27 +9903,37 @@ msgid "&Multiline pattern"
 msgstr "&Monirivinen"
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
-msgid "search all files in &project"
+#, fuzzy
+#| msgid "search all files in &project"
+msgid "all files in &project"
 msgstr "etsi &projektin kaikista tiedostoista"
 
 #: lazarusidestrconsts.lisfindfilesearchallopenfiles
-msgid "search all &open files"
+#, fuzzy
+#| msgid "search all &open files"
+msgid "all &open files"
 msgstr "etsi kaikista &avoinna olevista tiedostoista"
 
 #: lazarusidestrconsts.lisfindfilesearchinactivefile
-msgid "search in &active file"
+#, fuzzy
+#| msgid "search in &active file"
+msgid "&active file"
 msgstr "etsi &aktiivisesta tiedostosta"
 
 #: lazarusidestrconsts.lisfindfilesearchindirectories
-msgid "search in &directories"
+#, fuzzy
+#| msgid "search in &directories"
+msgid "&directories"
 msgstr "etsi &kansioista"
 
 #: lazarusidestrconsts.lisfindfilessearchinprojectgroup
-msgid "search in project &group"
+msgid "project &group"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfilewhere
-msgid "Where"
+#, fuzzy
+#| msgid "Where"
+msgid "Search location"
 msgstr "Mistä"
 
 #: lazarusidestrconsts.lisfindkeycombination
@@ -18340,6 +18352,11 @@ msgstr "Paketti %s on jo luettelossa"
 msgid "The package %s is not a design time package. It cannot be installed in the IDE."
 msgstr "Paketti %s ei ole suunnittelupaketti. Sitä ei voi asentaa IDE:een."
 
+#: lazarusidestrconsts.listhepackageisusedby
+#, object-pascal-format
+msgid "The package \"%s\" is used by"
+msgstr ""
+
 #: lazarusidestrconsts.listhepathofmakeisnotcorrect
 #, object-pascal-format
 msgid "The path of \"make\" is not correct: \"%s\""
@@ -19410,6 +19427,10 @@ msgstr "Kumoa"
 msgid "Uninstall %s"
 msgstr "Poista %s:n asennus"
 
+#: lazarusidestrconsts.lisuninstallfail
+msgid "Uninstall failed"
+msgstr ""
+
 #: lazarusidestrconsts.lisuninstallimpossible
 msgid "Uninstall impossible"
 msgstr "Asennuksen poisto on mahdotonta"
@@ -19417,6 +19438,10 @@ msgstr "Asennuksen poisto on mahdotonta"
 #: lazarusidestrconsts.lisuninstallselection
 msgid "Uninstall selection"
 msgstr "Poista asennuksesta"
+
+#: lazarusidestrconsts.lisuninstallthemtoo
+msgid "Uninstall them too"
+msgstr ""
 
 #: lazarusidestrconsts.lisunit
 msgctxt "lazarusidestrconsts.lisunit"

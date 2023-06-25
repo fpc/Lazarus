@@ -3990,7 +3990,7 @@ msgstr ""
 #, fuzzy
 #| msgid "&Text to Find"
 msgctxt "lazarusidestrconsts.dlgtexttofind"
-msgid "&Text to find"
+msgid "Search s&tring"
 msgstr "&Teks of te vind"
 
 #: lazarusidestrconsts.dlgthiselementusescolor
@@ -9909,27 +9909,29 @@ msgid "&Multiline pattern"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
-msgid "search all files in &project"
+msgid "all files in &project"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfilesearchallopenfiles
-msgid "search all &open files"
+msgid "all &open files"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfilesearchinactivefile
-msgid "search in &active file"
+msgid "&active file"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfilesearchindirectories
-msgid "search in &directories"
+msgid "&directories"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfilessearchinprojectgroup
-msgid "search in project &group"
+msgid "project &group"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfilewhere
-msgid "Where"
+#, fuzzy
+#| msgid "Where"
+msgid "Search location"
 msgstr "Waar"
 
 #: lazarusidestrconsts.lisfindkeycombination
@@ -18426,6 +18428,11 @@ msgstr ""
 msgid "The package %s is not a design time package. It cannot be installed in the IDE."
 msgstr ""
 
+#: lazarusidestrconsts.listhepackageisusedby
+#, object-pascal-format
+msgid "The package \"%s\" is used by"
+msgstr ""
+
 #: lazarusidestrconsts.listhepathofmakeisnotcorrect
 #, object-pascal-format
 msgid "The path of \"make\" is not correct: \"%s\""
@@ -19497,12 +19504,20 @@ msgstr "Ontdoen"
 msgid "Uninstall %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisuninstallfail
+msgid "Uninstall failed"
+msgstr ""
+
 #: lazarusidestrconsts.lisuninstallimpossible
 msgid "Uninstall impossible"
 msgstr ""
 
 #: lazarusidestrconsts.lisuninstallselection
 msgid "Uninstall selection"
+msgstr ""
+
+#: lazarusidestrconsts.lisuninstallthemtoo
+msgid "Uninstall them too"
 msgstr ""
 
 #: lazarusidestrconsts.lisunit

@@ -4028,8 +4028,10 @@ msgid "Text-Style"
 msgstr "文本样式"
 
 #: lazarusidestrconsts.dlgtexttofind
+#, fuzzy
+#| msgid "&Text to find"
 msgctxt "lazarusidestrconsts.dlgtexttofind"
-msgid "&Text to find"
+msgid "Search s&tring"
 msgstr "查找文本(&T)"
 
 #: lazarusidestrconsts.dlgthiselementusescolor
@@ -9957,28 +9959,39 @@ msgid "&Multiline pattern"
 msgstr "多线路的模式(pattern)(&M)"
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
-msgid "search all files in &project"
+#, fuzzy
+#| msgid "search all files in &project"
+msgid "all files in &project"
 msgstr "搜索所有文件在工程(&p)"
 
 #: lazarusidestrconsts.lisfindfilesearchallopenfiles
-msgid "search all &open files"
+#, fuzzy
+#| msgid "search all &open files"
+msgid "all &open files"
 msgstr "搜索所有打开的文件(&o)"
 
 #: lazarusidestrconsts.lisfindfilesearchinactivefile
-msgid "search in &active file"
+#, fuzzy
+#| msgid "search in &active file"
+msgid "&active file"
 msgstr "在活动文件中搜索(&a)"
 
 #: lazarusidestrconsts.lisfindfilesearchindirectories
-msgid "search in &directories"
+#, fuzzy
+#| msgid "search in &directories"
+msgid "&directories"
 msgstr "在目录(&d)中搜索"
 
 #: lazarusidestrconsts.lisfindfilessearchinprojectgroup
 #, fuzzy
-msgid "search in project &group"
+#| msgid "search in project &group"
+msgid "project &group"
 msgstr "打开最近工程组"
 
 #: lazarusidestrconsts.lisfindfilewhere
-msgid "Where"
+#, fuzzy
+#| msgid "Where"
+msgid "Search location"
 msgstr "哪里"
 
 #: lazarusidestrconsts.lisfindkeycombination
@@ -18464,6 +18477,11 @@ msgstr "该软件包%s已经在列表"
 msgid "The package %s is not a design time package. It cannot be installed in the IDE."
 msgstr "软件包%s不是一个设计时软件包.它不能被安装在IDE中."
 
+#: lazarusidestrconsts.listhepackageisusedby
+#, object-pascal-format
+msgid "The package \"%s\" is used by"
+msgstr ""
+
 #: lazarusidestrconsts.listhepathofmakeisnotcorrect
 #, object-pascal-format
 msgid "The path of \"make\" is not correct: \"%s\""
@@ -19543,6 +19561,10 @@ msgstr "撤销"
 msgid "Uninstall %s"
 msgstr "卸载%s"
 
+#: lazarusidestrconsts.lisuninstallfail
+msgid "Uninstall failed"
+msgstr ""
+
 #: lazarusidestrconsts.lisuninstallimpossible
 msgid "Uninstall impossible"
 msgstr "卸载不可能(Uninstall impossible)"
@@ -19550,6 +19572,10 @@ msgstr "卸载不可能(Uninstall impossible)"
 #: lazarusidestrconsts.lisuninstallselection
 msgid "Uninstall selection"
 msgstr "卸载选择"
+
+#: lazarusidestrconsts.lisuninstallthemtoo
+msgid "Uninstall them too"
+msgstr ""
 
 #: lazarusidestrconsts.lisunit
 msgctxt "lazarusidestrconsts.lisunit"

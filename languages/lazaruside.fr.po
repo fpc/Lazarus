@@ -4009,8 +4009,10 @@ msgid "Text-Style"
 msgstr "Style de texte"
 
 #: lazarusidestrconsts.dlgtexttofind
+#, fuzzy
+#| msgid "&Text to find"
 msgctxt "lazarusidestrconsts.dlgtexttofind"
-msgid "&Text to find"
+msgid "Search s&tring"
 msgstr "&Texte à chercher"
 
 #: lazarusidestrconsts.dlgthiselementusescolor
@@ -9919,27 +9921,39 @@ msgid "&Multiline pattern"
 msgstr "&Structure en lignes multiples"
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
-msgid "search all files in &project"
+#, fuzzy
+#| msgid "search all files in &project"
+msgid "all files in &project"
 msgstr "chercher tous les fichiers du &projet"
 
 #: lazarusidestrconsts.lisfindfilesearchallopenfiles
-msgid "search all &open files"
+#, fuzzy
+#| msgid "search all &open files"
+msgid "all &open files"
 msgstr "chercher tous les fichiers &ouverts"
 
 #: lazarusidestrconsts.lisfindfilesearchinactivefile
-msgid "search in &active file"
+#, fuzzy
+#| msgid "search in &active file"
+msgid "&active file"
 msgstr "chercher dans le fichier &actif"
 
 #: lazarusidestrconsts.lisfindfilesearchindirectories
-msgid "search in &directories"
+#, fuzzy
+#| msgid "search in &directories"
+msgid "&directories"
 msgstr "chercher dans les &répertoires"
 
 #: lazarusidestrconsts.lisfindfilessearchinprojectgroup
-msgid "search in project &group"
+#, fuzzy
+#| msgid "search in project &group"
+msgid "project &group"
 msgstr "recherche dans le &groupe de projets"
 
 #: lazarusidestrconsts.lisfindfilewhere
-msgid "Where"
+#, fuzzy
+#| msgid "Where"
+msgid "Search location"
 msgstr "Emplacements"
 
 #: lazarusidestrconsts.lisfindkeycombination
@@ -18453,6 +18467,11 @@ msgstr "Le paquet %s est déjà dans la liste"
 msgid "The package %s is not a design time package. It cannot be installed in the IDE."
 msgstr "Le paquet %s n'est pas un paquet de conception. Il ne peut pas être installé dans l'EDI."
 
+#: lazarusidestrconsts.listhepackageisusedby
+#, object-pascal-format
+msgid "The package \"%s\" is used by"
+msgstr ""
+
 #: lazarusidestrconsts.listhepathofmakeisnotcorrect
 #, object-pascal-format
 msgid "The path of \"make\" is not correct: \"%s\""
@@ -19524,6 +19543,10 @@ msgstr "Défaire"
 msgid "Uninstall %s"
 msgstr "Désinstaller %s"
 
+#: lazarusidestrconsts.lisuninstallfail
+msgid "Uninstall failed"
+msgstr ""
+
 #: lazarusidestrconsts.lisuninstallimpossible
 msgid "Uninstall impossible"
 msgstr "Désinstallation impossible"
@@ -19531,6 +19554,10 @@ msgstr "Désinstallation impossible"
 #: lazarusidestrconsts.lisuninstallselection
 msgid "Uninstall selection"
 msgstr "Désinstaller la sélection"
+
+#: lazarusidestrconsts.lisuninstallthemtoo
+msgid "Uninstall them too"
+msgstr ""
 
 #: lazarusidestrconsts.lisunit
 msgctxt "lazarusidestrconsts.lisunit"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-06-24 16:48+0300\n"
+"PO-Revision-Date: 2023-06-25 16:04+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -3991,8 +3991,8 @@ msgstr "Начертание"
 
 #: lazarusidestrconsts.dlgtexttofind
 msgctxt "lazarusidestrconsts.dlgtexttofind"
-msgid "&Text to find"
-msgstr "Н&айти текст"
+msgid "Search s&tring"
+msgstr "Строка &поиска"
 
 #: lazarusidestrconsts.dlgthiselementusescolor
 msgid "The element uses (and edits) the schemes:"
@@ -9889,28 +9889,28 @@ msgid "&Multiline pattern"
 msgstr "Многострочный &шаблон"
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
-msgid "search all files in &project"
-msgstr "искать во всех &файлах проекта"
+msgid "all files in &project"
+msgstr "все &файлы проекта"
 
 #: lazarusidestrconsts.lisfindfilesearchallopenfiles
-msgid "search all &open files"
-msgstr "искать во всех &открытых файлах"
+msgid "all &open files"
+msgstr "все &открытые файлы"
 
 #: lazarusidestrconsts.lisfindfilesearchinactivefile
-msgid "search in &active file"
-msgstr "искать в теку&щем файле"
+msgid "&active file"
+msgstr "теку&щий файл"
 
 #: lazarusidestrconsts.lisfindfilesearchindirectories
-msgid "search in &directories"
-msgstr "искать в &каталогах"
+msgid "&directories"
+msgstr "&каталоги"
 
 #: lazarusidestrconsts.lisfindfilessearchinprojectgroup
-msgid "search in project &group"
-msgstr "искать в &группе проектов"
+msgid "project &group"
+msgstr "&группа проектов"
 
 #: lazarusidestrconsts.lisfindfilewhere
-msgid "Where"
-msgstr "Где"
+msgid "Search location"
+msgstr "Область поиска"
 
 #: lazarusidestrconsts.lisfindkeycombination
 msgid "Find key combination"
@@ -18407,6 +18407,11 @@ msgstr "Пакет %s уже имеется в списке"
 msgid "The package %s is not a design time package. It cannot be installed in the IDE."
 msgstr "Пакет %s не является пакетом времени разработки. Он не может быть установлен в IDE."
 
+#: lazarusidestrconsts.listhepackageisusedby
+#, object-pascal-format
+msgid "The package \"%s\" is used by"
+msgstr "Пакет \"%s\" используется в"
+
 #: lazarusidestrconsts.listhepathofmakeisnotcorrect
 #, object-pascal-format
 msgid "The path of \"make\" is not correct: \"%s\""
@@ -19478,6 +19483,10 @@ msgstr "Отменить"
 msgid "Uninstall %s"
 msgstr "Удалить %s"
 
+#: lazarusidestrconsts.lisuninstallfail
+msgid "Uninstall failed"
+msgstr "Ошибка при удалении"
+
 #: lazarusidestrconsts.lisuninstallimpossible
 msgid "Uninstall impossible"
 msgstr "Удаление невозможно"
@@ -19485,6 +19494,10 @@ msgstr "Удаление невозможно"
 #: lazarusidestrconsts.lisuninstallselection
 msgid "Uninstall selection"
 msgstr "Удалить выбранное"
+
+#: lazarusidestrconsts.lisuninstallthemtoo
+msgid "Uninstall them too"
+msgstr "Удалить их тоже"
 
 #: lazarusidestrconsts.lisunit
 msgctxt "lazarusidestrconsts.lisunit"

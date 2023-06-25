@@ -4146,8 +4146,10 @@ msgid "Text-Style"
 msgstr "Estilo-Texto"
 
 #: lazarusidestrconsts.dlgtexttofind
+#, fuzzy
+#| msgid "&Text to find"
 msgctxt "lazarusidestrconsts.dlgtexttofind"
-msgid "&Text to find"
+msgid "Search s&tring"
 msgstr "&Texto a buscar"
 
 #: lazarusidestrconsts.dlgthiselementusescolor
@@ -10123,27 +10125,37 @@ msgid "&Multiline pattern"
 msgstr "Patrón &Multilínea"
 
 #: lazarusidestrconsts.lisfindfilesearchallfilesinproject
-msgid "search all files in &project"
+#, fuzzy
+#| msgid "search all files in &project"
+msgid "all files in &project"
 msgstr "buscar todos los archivos del &proyecto"
 
 #: lazarusidestrconsts.lisfindfilesearchallopenfiles
-msgid "search all &open files"
+#, fuzzy
+#| msgid "search all &open files"
+msgid "all &open files"
 msgstr "Buscar en t&odos los archivos abiertos"
 
 #: lazarusidestrconsts.lisfindfilesearchinactivefile
-msgid "search in &active file"
+#, fuzzy
+#| msgid "search in &active file"
+msgid "&active file"
 msgstr "buscar en archivo &activo"
 
 #: lazarusidestrconsts.lisfindfilesearchindirectories
-msgid "search in &directories"
+#, fuzzy
+#| msgid "search in &directories"
+msgid "&directories"
 msgstr "buscar en &directorios"
 
 #: lazarusidestrconsts.lisfindfilessearchinprojectgroup
-msgid "search in project &group"
+msgid "project &group"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfilewhere
-msgid "Where"
+#, fuzzy
+#| msgid "Where"
+msgid "Search location"
 msgstr "Donde"
 
 #: lazarusidestrconsts.lisfindkeycombination
@@ -18874,6 +18886,11 @@ msgstr "El paquete %s esta actualmente en la lista"
 msgid "The package %s is not a design time package. It cannot be installed in the IDE."
 msgstr "El paquete %s no es un paquete en tiempo de diseño. Este no podra ser instalado en el IDE"
 
+#: lazarusidestrconsts.listhepackageisusedby
+#, object-pascal-format
+msgid "The package \"%s\" is used by"
+msgstr ""
+
 #: lazarusidestrconsts.listhepathofmakeisnotcorrect
 #, object-pascal-format
 msgid "The path of \"make\" is not correct: \"%s\""
@@ -19948,6 +19965,10 @@ msgstr "Deshacer"
 msgid "Uninstall %s"
 msgstr "Desinstalar %s"
 
+#: lazarusidestrconsts.lisuninstallfail
+msgid "Uninstall failed"
+msgstr ""
+
 #: lazarusidestrconsts.lisuninstallimpossible
 msgid "Uninstall impossible"
 msgstr "Desinstalación imposible"
@@ -19955,6 +19976,10 @@ msgstr "Desinstalación imposible"
 #: lazarusidestrconsts.lisuninstallselection
 msgid "Uninstall selection"
 msgstr "Desinstalar selección"
+
+#: lazarusidestrconsts.lisuninstallthemtoo
+msgid "Uninstall them too"
+msgstr ""
 
 #: lazarusidestrconsts.lisunit
 msgctxt "lazarusidestrconsts.lisunit"
