@@ -17,6 +17,20 @@ Values in the unit are used as the basis for corresponding LCL version
 numbers in the <file>lclversion.pas</file> unit.
 </p>
 <p>
+<b>Please note that version numbers used for Lazarus, and the LCL and LazUtils 
+libraries were changed starting with version 3.0.</b> The release part of the 
+version number is no longer used. Only the major and minor values are 
+significant. The release number will always be 0 (zero) starting with version 
+3.0.
+</p>
+<p>
+In addition, odd minor version numbers no longer indicate that it is a 
+development (or trunk) version. Minor version numbers will be incremented with 
+each subsequent release or fixes branch: 3.0, 3.1, 3.2, ad ininitum. 
+Development versions are always represented as minor version number 99; i.e. 
+3.99 is the development branch for the version 3.X family.
+</p>
+<p>
 <file>lazversion.pas</file> is part of the <file>lazutils</file> package.
 </p>
 </descr>
@@ -26,9 +40,10 @@ numbers in the <file>lclversion.pas</file> unit.
 Type used for the OnLCLWidgetTypeName function variable.
 </short>
 <descr>
-
-Used in the GetLCLWidgetTypeName routine to get the name for the widgetset on the current platform.
-
+<p>
+Used in the GetLCLWidgetTypeName routine to get the name for the widgetset on 
+the current platform.
+</p>
 </descr>
 <seealso>
 <link id="OnLCLWidgetTypeName"/>
@@ -40,7 +55,9 @@ Used in the GetLCLWidgetTypeName routine to get the name for the widgetset on th
 <element name="laz_major">
 <short>Major version number for the Lazarus IDE.</short>
 <descr>
+<p>
 For the Lazarus version number 2.3.0.42, the value in laz_major is 2.
+</p>
 </descr>
 <seealso/>
 <version>
@@ -51,41 +68,74 @@ Added in revision 57504, and available since Lazarus 1.8.4.
 <element name="laz_minor">
 <short>Minor version number for the Lazarus IDE.</short>
 <descr>
+<p>
 For the Lazarus version number 2.3.0.42, the value in laz_minor is 3.
+</p>
+<p>
+<b>Please note:</b> Starting with Lazarus version 3.0, laz_minor is 
+incremented by 1 for each new release or fixes branch. For example: 3.0, 3.1, 
+3.2, ad infinitum. In addition, odd minor version numbers no longer indicate 
+that they are a development (or trunk) version. The development branch is 
+always represented as minor version number 99; i.e. 3.99 is the development 
+branch for the 3.X family.
+</p>
 </descr>
 <seealso/>
 <version>
+<p>
 Added in revision 57504, and available since Lazarus 1.8.4.
+</p>
+<p>
+Usage context modified in Lazarus version 3.0.
+</p>
 </version>
 </element>
 
 <element name="laz_release">
 <short>Release number for the Lazarus IDE.</short>
 <descr>
+<p>
 For the Lazarus version number 2.3.0.42, the value in laz_release is 0.
+</p>
+<p>
+<b>Please note:</b> Starting with Lazarus 3.0, the release number is no longer 
+used and will always contain 0 (zero). Releases are represented using the 
+major and minor version numbers: 3.0, 3.1, 3.2, ad infinitum.
+</p>
 </descr>
 <seealso/>
 <version>
+<p>
 Added in revision 57504, and available since Lazarus 1.8.4.
+</p>
+<p>
+No longer maintained starting with Lazarus 3.0.
+</p>
 </version>
 </element>
 
 <element name="laz_patch">
 <short>Patch level for the Lazarus IDE.</short>
 <descr>
+<p>
 For the Lazarus version number 2.3.0.42, the value in laz_patch is 42.
+</p>
 </descr>
 <seealso/>
 <version>
+<p>
 Added in revision 57504, and available since Lazarus 1.8.4.
+</p>
 </version>
 </element>
 
 <element name="laz_fullversion">
 <short>Numeric version number for the Lazarus IDE.</short>
 <descr>
+<p>
 For the Lazarus version number 2.3.0.42, the value in laz_fullversion is 
 2030042.
+</p>
 </descr>
 <seealso/>
 <version>
@@ -96,8 +146,10 @@ Added in revision 57504, and available since Lazarus 1.8.4.
 <element name="laz_version">
 <short>String with the full version number for the Lazarus IDE.</short>
 <descr>
-For the Lazarus version number 2.3.0.42, the value in laz_version is 
-'2.3.0.42'.
+<p>
+For the Lazarus version number 3.0.0.3, the value in laz_version is 
+'3.0.0.3'.
+</p>
 </descr>
 <seealso/>
 <version>

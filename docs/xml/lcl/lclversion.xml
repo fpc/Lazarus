@@ -7,10 +7,10 @@ LCLVersion
 ====================================================================
 -->
 <module name="LCLVersion">
-<short>Contains the version number constants of the LCL.</short>
+<short>Contains the version number constants for the LCL.</short>
 <descr>
 <p>
-<file>lclversion.pas</file> contains the version number constants of the LCL.
+<file>lclversion.pas</file> contains the version number constants for the LCL.
 They can be used at run-time to determine the LCL version, so LCL application
 writers and component writers can offer different functionality or workarounds
 for bugs and take the LCL version into account while choosing their algorithms
@@ -55,6 +55,13 @@ contains the first number (2).
 Given a version string like 2.2.4, the lcl_minor constant
 contains the second number (2).
 </p>
+<p>
+<b>Please note:</b> Starting with LCL version 3.0, lcl_minor is incremented by 
+1 for each new release. For example: 3.0, 3.1, 3.2, ad infinitum. In addition, 
+odd minor version numbers no longer indicate that they are a development (or 
+trunk) version. The development branch is always represented as minor version 
+number 99; i.e. 3.99 is the development branch for the 3.X family.
+</p>
 </descr>
 <seealso>lcl_version</seealso>
 </element>
@@ -65,6 +72,11 @@ contains the second number (2).
 <p>
 Given a version string like 2.2.4, the lcl_release constant
 contains the third number (4).
+</p>
+<p>
+<b>Please note:</b> Starting with LCL 3.0, the release number is no longer 
+used and will always contain 0 (zero). Releases are represented using the 
+major and minor version numbers: 3.0, 3.1, 3.2, ad infinitum.
 </p>
 </descr>
 <seealso>lcl_version</seealso>
@@ -84,7 +96,7 @@ the version string is 2.2.4, then lcl_patch is 0.
 
 <element name="lcl_version">
 <short>LCL version string.</short>
-<descr>Contains the LCL version string, e.g. 2.2.4.</descr>
+<descr>Contains the LCL version string, e.g. 3.0.0.3</descr>
 <seealso/>
 </element>
 
