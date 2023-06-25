@@ -3389,7 +3389,7 @@ edge on a monitor, and value(s) in WindowPos were changed.
 No actions are performed in the method if SnapToMonitor is not enabled in the 
 Opts argument. In this case, the return value is <b>False</b>.
 </p>
-</descr>  
+</descr>
 <seealso/>
 </element>
 <element name="TWindowMagnetManager.SnapToMonitor.Result">
@@ -6448,7 +6448,7 @@ Calls Screen.AddForm to register the form instance on the current
 screen.
 </li>
 <li>
-Allocates resources for the SnapOptions property.  
+Allocates resources for the SnapOptions property.
 </li>
 </ul>
 </descr>
@@ -9494,6 +9494,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
 </element>
 
 <element name="THintWindow.FHideInterval"/>
+<element name="THintWindow.FHintControl"/>
 
 <element name="THintWindow.AdjustBoundsForMonitor">
 <short>Adjusts HintRect to fit on the current monitor.</short>
@@ -10051,6 +10052,28 @@ Pointer to data used to formulate text displayed in the hint window.
 </short>
 <descr/>
 <seealso/>
+</element>
+
+<element name="THintWindow.HintControl">
+<short>
+Windowed control which is the parent for the hint window.
+</short>
+<descr>
+<p>
+<var>HintControl</var> is an experimental <var>TControl</var> property which 
+contains a reference to the windowed control to which the hint window is 
+attached. Its value is assigned in the TApplication.ShowHintWindow method to 
+the HintControl property provided by the Application. The value is used in the 
+GTK3 widgetset to provide a handle that identifies the parent widget; hence, 
+its experimental designation.
+</p>
+</descr>
+<version>
+Added in LCL version 3.0.
+</version>
+<seealso>
+<link id="TApplication.ShowHintWindow"/>
+</seealso>
 </element>
 
 <element name="THintWindow.AutoHide">
