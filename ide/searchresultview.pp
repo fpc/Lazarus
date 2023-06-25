@@ -403,6 +403,15 @@ begin
   actCloseOthers   .ImageIndex := IDEImages.LoadImage('tab_close_LR');
   actCloseRight    .ImageIndex := IDEImages.LoadImage('tab_close_R');
   actCloseAll      .ImageIndex := IDEImages.LoadImage('tab_close_All');
+
+  // load path style
+  mniPathRelative.Checked := true; // default
+  case EnvironmentGuiOpts.SearchResultViewPathStyle of
+    mwfsShort   : mniPathAbsolute.Checked := true;
+    mwfsRelative: mniPathRelative.Checked := true;
+    mwfsFull    : mniPathFileName.Checked := true;
+  end;
+  mniShowPathClick(Sender);
 end;
 
 procedure TSearchResultsView.FormKeyDown(Sender: TObject; var Key: Word;
@@ -461,18 +470,27 @@ begin
       SearchInListEdit.SetFocus;
   end
 
-  // toggle path display mode
+  // toggle path display style
   else if (Key = VK_P) and (Shift = [ssCtrl]) then
   begin
     Key := 0;
 
+    // change path style and store in config
     if mniPathAbsolute.Checked then
-      mniPathRelative.Checked := true
+    begin
+      mniPathRelative.Checked := true;
+      EnvironmentGuiOpts.SearchResultViewPathStyle := mwfsRelative;
+    end
     else if mniPathRelative.Checked then
-      mniPathFileName.Checked := true
+    begin
+      mniPathFileName.Checked := true;
+      EnvironmentGuiOpts.SearchResultViewPathStyle := mwfsShort;
+    end
     else
+    begin
       mniPathAbsolute.Checked := true;
-
+      EnvironmentGuiOpts.SearchResultViewPathStyle := mwfsFull;
+    end;
     mniShowPathClick(Sender);
   end
 
@@ -587,6 +605,7 @@ var
   lOldScroll: TPoint;
   lDeltaScrollY: integer;
 begin
+  if not RefreshButton.Enabled then exit;
   lTree := GetCurrentTree;
   if lTree = nil then exit; // this also check ResultsNoteBook.PageIndex
 
@@ -655,6 +674,7 @@ procedure TSearchResultsView.SearchAgainButtonClick(Sender: TObject);
 var
   lTree: TLazSearchResultTV;
 begin
+  if not SearchAgainButton.Enabled then exit;
   lTree := GetCurrentTree;
   if lTree = nil then
     MainIDEInterface.FindInFiles(Project1)
@@ -1069,16 +1089,19 @@ end;
 
 procedure TSearchResultsView.UpdateToolbar;
 var
-  CurrentTV: TLazSearchResultTV;
-  state: Boolean;
+  lTree: TLazSearchResultTV;
+  lEnabled, lRenameIdResults: Boolean;
 begin
-  CurrentTV := GetCurrentTree;
-  state := Assigned(CurrentTV) and not CurrentTV.Updating;
-  RefreshButton.Enabled := state;
-  SearchAgainButton.Enabled := state;
-  ClosePageButton.Enabled := state;
-  SearchInListEdit.Enabled := state;
-  if state then
+  lTree := GetCurrentTree;
+  lEnabled       := Assigned(lTree) and (not lTree.Updating);
+  lRenameIdResults := Assigned(lTree) and
+    (lTree.SearchObject.SearchOptions - [fifReplace, fifReplaceAll] = []);
+
+  RefreshButton    .Enabled := lEnabled and (not lRenameIdResults);
+  SearchAgainButton.Enabled := lEnabled and (not lRenameIdResults);
+  ClosePageButton  .Enabled := lEnabled;
+  SearchInListEdit .Enabled := lEnabled;
+  if lEnabled then
     AsyncUpdateCloseButtons:=svcbEnable;
 end;
 
@@ -1167,75 +1190,73 @@ begin
 end;
 
 procedure TSearchResultsView.NoteBookShowHint(Sender: TObject; HintInfo: PHintInfo);
-
-  function GetHintString: string;
-  var
-    lThisTV: TLazSearchResultTV = nil;
-    function SearchOption: string;
-    const
-      cFifPlacesNoDir =
-        [fifSearchProject, fifSearchProjectGroup, fifSearchOpen, fifSearchActive];
-    begin
-      Result := '';
-      with lThisTV.SearchObject do begin
-        if fifSearchProject in SearchOptions then
-          Result := lisFindFilesearchAllFilesInProject
-        else if fifSearchProjectGroup in SearchOptions then
-          Result := lisFindFilesSearchInProjectGroup
-        else if fifSearchOpen in SearchOptions then
-          Result := lisFindFilesearchAllOpenFiles
-        else if fifSearchActive in SearchOptions then
-          Result := lisFindFilesearchInActiveFile
-        else if fifSearchDirectories in SearchOptions then
-          Result := ' ' + SearchDirectories + ' '
-        else
-          Result := '!!! ERROR !!!';
-        if (SearchOptions * cFifPlacesNoDir) <> [] then begin
-          Result := '* ' + Result + ' *';
-          Result := StringReplace(Result,'&','',[rfReplaceAll, rfIgnoreCase]);
-        end;
-      end;
-    end;
-
-  const
-    cFifReplaces = [fifReplace, fifReplaceAll];
-  var
-    lReplaces: boolean;
-  begin
-    lThisTV := GetTreeView(FNoteBookTab);
-    with lThisTV.SearchObject do begin
-      Result := '';
-      lReplaces := (SearchOptions * cFifReplaces) <> [];
-      if TabEllipsed or lReplaces then begin
-        Result := SearchString + EndOfLine;
-        if lReplaces then
-          Result := Result + '-> ' + EndOfLine + ReplaceText + EndOfLine;
-        Result := Result + EndOfLine;
-      end;
-      Result := Result + SearchOption;
-    end;
-  end;
-
+const
+  cFifPlaces = [fifSearchDirectories, fifSearchProject, fifSearchProjectGroup, fifSearchOpen, fifSearchActive];
 var
+  lTree: TLazSearchResultTV;
   p: TPoint;
   r: TRect;
   h: integer;
-begin
-  if Sender = ResultsNoteBook then
-    with ResultsNoteBook do begin
-      p := HintInfo^.CursorPos;
-      FNoteBookTab := IndexOfTabAt(p.X, p.Y);
-      if FNoteBookTab >= 0 then begin
-        r := ResultsNoteBook.TabRect(FNoteBookTab);
-        h := SearchInListEdit.Height; // Pick DPI independent value
-        if p.X > r.Right - 2 * h then
-          p.X := r.Right - 2 * h;
-        HintInfo^.HintStr := GetHintString;
-        HintInfo^.HintPos := ClientToScreen(Point(p.x, r.Bottom - (h div 10)));
-      end
+  //
+  function PlaceIs(aOption: TLazFindInFileSearchOption): boolean;
+  begin
+    result := lTree.SearchObject.SearchOptions * cFifPlaces = [aOption];
+  end;
+  //
+  function GetHintString: string;
+  var
+    lReplace: boolean;
+  begin
+    result := '';
+    lReplace := lTree.SearchObject.SearchOptions * [fifReplace, fifReplaceAll] <> [];
+
+    { Line 1. Place }
+    if lTree.SearchObject.SearchOptions * cFifPlaces = [] then
+    begin
+      { find or rename identifier }
+      result := lisFRIFindOrRenameIdentifier;
+    end else begin
+      { find or replace string }
+      if      PlaceIs(fifSearchProject)      then result :=  RemoveAmpersands(lisFindFilesearchAllFilesInProject)
+      else if PlaceIs(fifSearchProjectGroup) then result := RemoveAmpersands(lisFindFilesSearchInProjectGroup)
+      else if PlaceIs(fifSearchOpen)         then result := RemoveAmpersands(lisFindFilesearchAllOpenFiles)
+      else if PlaceIs(fifSearchActive)       then result := RemoveAmpersands(lisFindFilesearchInActiveFile)
+      else if PlaceIs(fifSearchDirectories)  then result := '"' + lTree.SearchObject.SearchDirectories + '"'
       else
-        Application.CancelHint;
+        debugln('TSearchResultsView.NoteBookShowHint: An invalid combination of TLazFindInFileSearchOptions flags');
+
+      result := lisFindFileWhere + ': ' + result;
     end;
+
+    { Line 2. Search string }
+    if lTree.SearchObject.TabEllipsed or lReplace then
+      Result := Result + EndOfLine + RemoveAmpersands(dlgTextToFind) + ': "' + lTree.SearchObject.SearchString + '"';
+
+    { Line 3. Replace string }
+    if lReplace then
+      Result := Result + EndOfLine + RemoveAmpersands(dlgReplaceWith) + ': "' + lTree.SearchObject.ReplaceText + '"'
+  end;
+  //
+begin
+  if Sender <> ResultsNoteBook then
+    exit;
+
+  p := HintInfo^.CursorPos;
+  FNoteBookTab := ResultsNoteBook.IndexOfTabAt(p.X, p.Y);
+  if FNoteBookTab >= 0 then
+  begin
+    lTree := GetTreeView(FNoteBookTab);
+    if lTree = nil then exit;
+    if lTree.SearchObject = nil then exit;
+
+    r := ResultsNoteBook.TabRect(FNoteBookTab);
+    h := SearchInListEdit.Height; // Pick DPI independent value
+    if p.X > r.Right - 2 * h then
+      p.X := r.Right - 2 * h;
+    HintInfo^.HintStr := GetHintString;
+    HintInfo^.HintPos := ResultsNoteBook.ClientToScreen(Point(p.x, r.Bottom - (h div 10)));
+  end else
+    Application.CancelHint;
 end;
 
 procedure TSearchResultsView.ResultsNoteBookCloseTabClick(Sender: TObject);
@@ -1471,20 +1492,25 @@ begin
         Node.Text
       );
 
-    if mniPathFileName.Checked then
-      // file name
-      DrawNextText(ExtractFileName(lRelPath), clNone, [fsBold])
-    else if mniPathRelative.Checked then
-      // relative path
-      DrawNextText(lRelPath, clNone, [fsBold])
-    else
+    if fifSearchDirectories in lTree.SearchObject.SearchOptions then
+    begin
+      if mniPathFileName.Checked then
+        // file name
+        DrawNextText(ExtractFileName(lRelPath), clNone, [fsBold])
+      else if mniPathRelative.Checked then
+        // relative path
+        DrawNextText(lRelPath, clNone, [fsBold])
+      else
+        // absolute path
+        DrawNextText(Node.Text, clNone, [fsBold]);
+
+      // also show relative path if row selected
+      if mniPathFileName.Checked then
+        if [cdsSelected,cdsMarked] * State <> [] then
+          DrawNextText(' (' + lRelPath + ')', clHighlightText);
+    end else
       // absolute path
       DrawNextText(Node.Text, clNone, [fsBold]);
-
-    // also show relative path if row selected
-    if mniPathFileName.Checked then
-      if [cdsSelected,cdsMarked] * State <> [] then
-        DrawNextText(' (' + lRelPath + ')', clHighlightText);
 
     // show a warning that this is a backup folder
     // strip path delimiter and filename, then check if last directory is 'backup'

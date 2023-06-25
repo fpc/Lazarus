@@ -112,7 +112,9 @@ function GatherUnitReferences(Files: TStringList;
   var TreeOfPCodeXYPosition: TAVLTree): TModalResult;
 function ShowIdentifierReferences(
   DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
-  TreeOfPCodeXYPosition: TAVLTree): TModalResult;
+  TreeOfPCodeXYPosition: TAVLTree;
+  Identifier: string;
+  RenameTo: string = ''): TModalResult;
 procedure AddReferencesToResultView(DeclarationCode: TCodeBuffer;
   const DeclarationCaretXY: TPoint;
   TreeOfPCodeXYPosition: TAVLTree; ClearItems: boolean; SearchPageIndex: integer);
@@ -416,14 +418,14 @@ begin
       end;
       if Options.RenameShowResult then
         Result:=ShowIdentifierReferences(DeclCode,
-          DeclarationCaretXY,PascalReferences);
+          DeclarationCaretXY,PascalReferences,Identifier,Options.RenameTo);
     end;
 
     // show result
     Result:=mrOk;
     if (not Options.Rename) or (not SetRenameActive) then begin
       Result:=ShowIdentifierReferences(DeclCode,
-        DeclarationCaretXY,PascalReferences);
+        DeclarationCaretXY,PascalReferences,Identifier);
       if Result<>mrOk then exit;
     end;
 
@@ -566,27 +568,31 @@ end;
 
 function ShowIdentifierReferences(
   DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
-  TreeOfPCodeXYPosition: TAVLTree): TModalResult;
-var
+  TreeOfPCodeXYPosition: TAVLTree;
   Identifier: string;
+  RenameTo: string): TModalResult;
+var
   OldSearchPageIndex: TTabSheet;
   SearchPageIndex: TTabSheet;
+  lOptions: TLazFindInFileSearchOptions;
 begin
   Result:=mrCancel;
   LazarusIDE.DoShowSearchResultsView(iwgfShow);
   SearchPageIndex:=nil;
   try
-    // show result
-    CodeToolBoss.GetIdentifierAt(DeclarationCode,
-      DeclarationCaretXY.X,DeclarationCaretXY.Y,Identifier);
     // create a search result page
     //debugln(['ShowIdentifierReferences ',DbgSName(SearchResultsView)]);
+    if RenameTo = '' then
+      lOptions := []
+    else
+      lOptions := [fifReplace];
+
     SearchPageIndex:=SearchResultsView.AddSearch(
       Identifier,
-      '',
+      RenameTo,
       ExtractFilePath(DeclarationCode.Filename),
       '*.pas;*.pp;*.p;*.inc',
-      [fifWholeWord,fifSearchDirectories]);
+      lOptions);
     if SearchPageIndex = nil then exit;
 
     // list results
