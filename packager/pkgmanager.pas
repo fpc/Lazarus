@@ -163,8 +163,6 @@ type
     procedure GetDependencyOwnerDirectory(Dependency: TPkgDependency;
                                           out Directory: string);
     procedure PackageFileLoaded(Sender: TObject);
-    procedure CheckInstallPackageListHandler(PkgIDList: TObjectList;
-                                     RemoveConflicts: boolean; out Ok: boolean);
     function DoBeforeCompilePackages(aPkgList: TFPList): TModalResult;
     function LoadDependencyList(FirstDependency: TPkgDependency;
                                 Quiet: boolean): TModalResult;
@@ -349,9 +347,9 @@ type
     function DoInstallPackage(APackage: TLazPackage): TModalResult;
     function DoUninstallPackage(APackage: TLazPackage;
                    Flags: TPkgUninstallFlags; ShowAbort: boolean): TModalResult;
-    function CheckInstallPackageList(PkgIDList: TObjectList;
-                          Flags: TPkgInstallInIDEFlags = []
-                          ): boolean; override;
+    function CheckInstallPackageList(InstallPkgIDList: TObjectList;
+      UninstallPkgIDList: TObjectList = nil; Flags: TPkgInstallInIDEFlags = []
+      ): boolean; override;
     function InstallPackages(PkgIdList: TObjectList;
                              Flags: TPkgInstallInIDEFlags = []): TModalResult; override;
     function UninstallPackage(APackage: TIDEPackage; ShowAbort: boolean): TModalResult; override;
@@ -467,7 +465,7 @@ begin
   PkgIDList:=nil;
   try
     if ShowEditInstallPkgsDialog(PackageGraph.FirstInstallDependency,
-      @CheckInstallPackageListHandler,PkgIDList,RebuildIDE)<>mrOk
+      PkgIDList,RebuildIDE)<>mrOk
     then exit;
 
     Flags:=[piiifSkipChecks,piiifClear];
@@ -524,19 +522,6 @@ end;
 procedure TPkgManager.PackageFileLoaded(Sender: TObject);
 begin
   DoCallNotifyHandler(pihtPackageFileLoaded,Sender);
-end;
-
-procedure TPkgManager.CheckInstallPackageListHandler(PkgIDList: TObjectList;
-  RemoveConflicts: boolean; out Ok: boolean);
-var
-  Flags: TPkgInstallInIDEFlags;
-begin
-  Flags:=[];
-  if RemoveConflicts then
-    Include(Flags,piiifRemoveConflicts);
-  Ok:=CheckInstallPackageList(PkgIDList,Flags);
-  if Ok then
-    SaveAutoInstallDependencies;
 end;
 
 function TPkgManager.DoBeforeCompilePackages(aPkgList: TFPList): TModalResult;
@@ -5731,8 +5716,8 @@ begin
   Result := DoUninstallPackage(TLazPackage(APackage), [puifDoNotConfirm, puifDoNotBuildIDE], ShowAbort);
 end;
 
-function TPkgManager.CheckInstallPackageList(PkgIDList: TObjectList;
-  Flags: TPkgInstallInIDEFlags): boolean;
+function TPkgManager.CheckInstallPackageList(InstallPkgIDList: TObjectList;
+  UninstallPkgIDList: TObjectList; Flags: TPkgInstallInIDEFlags): boolean;
 var
   NewFirstAutoInstallDependency: TPkgDependency;
 
@@ -5745,27 +5730,30 @@ var
     PkgName := ADependency.PackageName; // DeleteDependencyInList destroys ADependency -> don't use it anymore!
     DeleteDependencyInList(ADependency,NewFirstAutoInstallDependency,pddRequires);
     if piiifRemoveConflicts in Flags then
-      for i:=PkgIDList.Count-1 downto 0 do begin
-        PkgID:=TLazPackageID(PkgIDList[i]);
+      for i:=InstallPkgIDList.Count-1 downto 0 do begin
+        PkgID:=TLazPackageID(InstallPkgIDList[i]);
         if SysUtils.CompareText(PkgID.Name,PkgName)=0 then
-          PkgIDList.Delete(i); // PkgID is automatically destroyed
+          InstallPkgIDList.Delete(i); // PkgID is automatically destroyed
       end;
   end;
 
 var
-  PkgList: TFPList;
-  i: Integer;
+  PkgList, PkgPath, Dependencies: TFPList;
+  i, j: Integer;
   APackage: TLazPackage;
   ADependency: TPkgDependency;
   NextDependency: TPkgDependency;
   SaveFlags: TPkgSaveFlags;
   ConflictDep: TPkgDependency;
+  PkgID: TLazPackageID;
+  s: String;
 begin
   Result:=false;
   PkgList:=nil;
+  Dependencies:=TFPList.Create;
   try
-    // create new auto install dependency PkgIDList
-    ListPkgIDToDependencyList(PkgIDList,NewFirstAutoInstallDependency,
+    // create new auto install dependency InstallPkgIDList
+    ListPkgIDToDependencyList(InstallPkgIDList,NewFirstAutoInstallDependency,
                               pddRequires,Self,true);
 
     // load all required packages
@@ -5826,10 +5814,52 @@ begin
       end;
     end;
 
+    if UninstallPkgIDList<>nil then
+    begin
+      // check uninstall dependencies
+      for i:=0 to UninstallPkgIDList.Count-1 do
+      begin
+        PkgID:=TLazPackageID(UninstallPkgIDList[i]);
+        APackage:=PackageGraph.FindPackageWithID(PkgID);
+        if APackage=nil then continue;
+        if PkgList.IndexOf(APackage)<0 then continue;
+        // this uninstall package is needed by the install packages
+        // -> search which ones
+        Dependencies.Clear;
+        s:='';
+        ADependency:=NewFirstAutoInstallDependency;
+        while ADependency<>nil do begin
+          PkgPath:=PackageGraph.FindPath(ADependency.RequiredPackage,nil,APackage.Name);
+          if PkgPath<>nil then
+          begin
+            PkgPath.Free;
+            s:=s+ADependency.PackageName+sLineBreak;
+            Dependencies.Add(ADependency);
+          end;
+          ADependency:=ADependency.NextRequiresDependency;
+        end;
+        if s='' then continue;
+        case IDEQuestionDialog(lisUninstallFail,
+           Format(lisThePackageIsUsedBy, [APackage.IDAsString])+sLineBreak +s,
+           mtConfirmation, [mrYes, lisUninstallThemToo, mrIgnore, mrCancel]
+           ) of
+        mrYes:
+          begin
+            for j:=0 to Dependencies.Count-1 do
+              DeleteDependency(TPkgDependency(Dependencies[j]));
+          end;
+        mrIgnore: ;
+        else
+          exit(false);
+        end;
+      end;
+    end;
+
     Result:=true;
   finally
     FreeDependencyList(NewFirstAutoInstallDependency,pddRequires);
     PkgList.Free;
+    Dependencies.Free;
   end;
 end;
 
@@ -5935,7 +5965,7 @@ begin
 
     if not (piiifSkipChecks in Flags) then
     begin
-      if not CheckInstallPackageList(PkgIDList,Flags*[piiifQuiet,piiifRemoveConflicts]) then
+      if not CheckInstallPackageList(PkgIDList,nil,Flags*[piiifQuiet,piiifRemoveConflicts]) then
         exit(mrCancel);
     end;
 

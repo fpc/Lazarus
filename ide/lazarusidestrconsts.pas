@@ -1611,6 +1611,9 @@ resourcestring
   dlgDelTemplate = 'Delete template ';
   dlgChsCodeTempl = 'Choose code template file (*.dci)';
   lisPkgMgrNew = 'new';
+  lisUninstallFail = 'Uninstall fail';
+  lisThePackageIsUsedBy = 'The package "%s" is used by';
+  lisUninstallThemToo = 'Uninstall them too';
   lisPkgMgrRemove = 'remove';
   lisPkgMgrKeep = 'keep';
   lisConfirmNewPackageSetForTheIDE = 'Confirm new package set for the IDE';

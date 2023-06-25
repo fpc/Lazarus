@@ -342,7 +342,8 @@ type
                               ShowAbort: boolean): TModalResult; virtual; abstract;
 
     // install
-    function CheckInstallPackageList(PkgIDList: TObjectList;
+    function CheckInstallPackageList(InstallPkgIDList: TObjectList;
+                 UninstallPkgIDList: TObjectList = nil;
                  Flags: TPkgInstallInIDEFlags = []): boolean; virtual; abstract;
     function InstallPackages(PkgIdList: TObjectList;
                   Flags: TPkgInstallInIDEFlags = []): TModalResult; virtual; abstract;

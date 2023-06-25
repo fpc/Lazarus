@@ -57,8 +57,6 @@ uses
   LazarusIDEStrConsts, PackageDefs, PackageSystem, LPKCache, PackageLinks;
 
 type
-  TOnCheckInstallPackageList =
-    procedure(PkgIDs: TObjectList; RemoveConflicts: boolean; out Ok: boolean) of object;
 
   { TInstallPkgSetDialog }
 
@@ -118,7 +116,6 @@ type
     FIdleConnected: boolean;
     FNewInstalledPackages: TObjectList; // list of TLazPackageID (not TLazPackage)
     FOldInstalledPackages: TPkgDependency;
-    FOnCheckInstallPackageList: TOnCheckInstallPackageList;
     FRebuildIDE: boolean;
     FSelectedPkgState: TLPKInfoState;
     FSelectedPkgID: string;
@@ -166,13 +163,10 @@ type
                                                   write SetOldInstalledPackages;
     property NewInstalledPackages: TObjectList read FNewInstalledPackages; // list of TLazPackageID
     property RebuildIDE: boolean read FRebuildIDE write FRebuildIDE;
-    property OnCheckInstallPackageList: TOnCheckInstallPackageList
-               read FOnCheckInstallPackageList write FOnCheckInstallPackageList;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
   end;
 
 function ShowEditInstallPkgsDialog(OldInstalledPackages: TPkgDependency;
-  CheckInstallPackageList: TOnCheckInstallPackageList;
   var NewInstalledPackages: TObjectList; // list of TLazPackageID (must be freed)
   var RebuildIDE: boolean): TModalResult;
 
@@ -193,9 +187,7 @@ begin
 end;
 
 function ShowEditInstallPkgsDialog(OldInstalledPackages: TPkgDependency;
-  CheckInstallPackageList: TOnCheckInstallPackageList;
-  var NewInstalledPackages: TObjectList; // list of TLazPackageID
-  var RebuildIDE: boolean): TModalResult;
+  var NewInstalledPackages: TObjectList; var RebuildIDE: boolean): TModalResult;
 var
   InstallPkgSetDialog: TInstallPkgSetDialog;
 begin
@@ -204,7 +196,6 @@ begin
   try
     InstallPkgSetDialog.OldInstalledPackages:=OldInstalledPackages;
     InstallPkgSetDialog.UpdateButtonStates;
-    InstallPkgSetDialog.OnCheckInstallPackageList:=CheckInstallPackageList;
     Result:=InstallPkgSetDialog.ShowModal;
     NewInstalledPackages:=InstallPkgSetDialog.GetNewInstalledPackages;
     RebuildIDE:=InstallPkgSetDialog.RebuildIDE;
@@ -594,7 +585,6 @@ begin
     Result := PackageLink;
 end;
 
-
 procedure TInstallPkgSetDialog.UpdateAvailablePackages(Immediately: boolean);
 var
   ANode: TAvlTreeNode;
@@ -725,8 +715,36 @@ begin
 end;
 
 function TInstallPkgSetDialog.CheckSelection: boolean;
+var
+  UninstallPkgs: TObjectList; // list of TLazPackageID
+  Dependency: TPkgDependency;
+  OldPackageID: TLazPackageID;
 begin
-  OnCheckInstallPackageList(FNewInstalledPackages,true,Result);
+  UninstallPkgs:=TObjectList.Create(true);
+  try
+    Dependency:=OldInstalledPackages;
+    while Dependency<>nil do begin
+      OldPackageID:=TLazPackageID.Create;
+      if (Dependency.LoadPackageResult=lprSuccess)
+      and (Dependency.RequiredPackage<>nil) then begin
+        OldPackageID.AssignID(Dependency.RequiredPackage);
+      end else begin
+        OldPackageID.Name:=Dependency.PackageName;
+      end;
+
+      if NewInstalledPackagesContains(OldPackageID) then
+        OldPackageID.Free
+      else
+        UninstallPkgs.Add(OldPackageID);
+
+      Dependency:=Dependency.NextRequiresDependency;
+    end;
+
+    Result:=PackageEditingInterface.CheckInstallPackageList(
+                    FNewInstalledPackages,UninstallPkgs,[piiifRemoveConflicts]);
+  finally
+    UninstallPkgs.Free;
+  end;
 end;
 
 procedure TInstallPkgSetDialog.UpdateButtonStates;
@@ -1172,7 +1190,7 @@ var
   i, j: Integer;
   NewSelectedIndex, LastNonSelectedIndex: Integer;
   DelPackageID, PackID: TLazPackageID;
-  Deletions: TObjectList;
+  Deletions: TObjectList; // list of TLazPackageID
   DeletedPkgNames: TStringList;
   TVNode: TTreeNode;
   PkgName: String;
