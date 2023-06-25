@@ -850,7 +850,7 @@ begin
         Visible := False;
         Caption := '';
         AutoHide := False;
-        HintData := Pointer((FHintControl as TWinControl).Handle);
+        HintControl := FHintControl;
       end;
     end;
 
