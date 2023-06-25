@@ -7903,8 +7903,8 @@ var
 begin
   inherited;
   with LCLObject as THintWindow do begin
-    if Assigned(HintData) then begin
-      ParentWidget := TGtk3Widget(HintData);
+    if HintControl is TWinControl then with HintControl as TWinControl do begin
+      ParentWidget := TGtk3Widget(Handle);
       FWidget^.realize;
       GetWindow^.set_transient_for(ParentWidget.GetWindow);
     end;

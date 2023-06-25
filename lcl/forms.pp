@@ -991,6 +991,7 @@ type
     FAutoHide: Boolean;
     FAutoHideTimer: TCustomTimer;
     FHideInterval: Integer;
+    FHintCtrl: TControl;
     procedure AdjustBoundsForMonitor(KeepWidth: Boolean = True;
       KeepHeight: Boolean = True);
     function GetDrawTextFlags: Cardinal;
@@ -1040,6 +1041,7 @@ type
     property HintRect: TRect read FHintRect write FHintRect;
     property HintRectAdjust: TRect read FHintRect write SetHintRectAdjust;
     property HintData: Pointer read FHintData write FHintData;
+    property HintControl: TControl read FHintCtrl write FHintCtrl; experimental;
     property AutoHide: Boolean read FAutoHide write SetAutoHide;
     property BiDiMode;
     property HideInterval: Integer read FHideInterval write SetHideInterval;
