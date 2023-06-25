@@ -349,7 +349,7 @@ FPCFPMAKE=$(FPC)
 endif
 endif
 override PACKAGE_NAME=lazmouseandkeyinput
-override PACKAGE_VERSION=0.1
+override PACKAGE_VERSION=0.9
 ifndef LCL_PLATFORM
 ifeq ($(OS_TARGET),win32)
 LCL_PLATFORM=win32
