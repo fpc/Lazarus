@@ -193,6 +193,8 @@ begin
       HideHint;
       FHintControl := Info.Control;
       FHintRect := FHintControl.BoundsRect;
+    end else begin
+      Exit;
     end;
     case FHintTimerType of
       ahttNone, ahttHideHint:
