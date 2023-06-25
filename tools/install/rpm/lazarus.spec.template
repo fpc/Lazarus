@@ -22,6 +22,11 @@ Requires(postun): desktop-file-utils
 %define _source_payload w9.bzdio
 %define _binary_payload w9.bzdio
 
+AutoProv: no
+%undefine __find_provides
+AutoReq: no
+%undefine __find_requires
+
 %description
 Lazarus is a free and open source Rapid Application Development tool for
 the FreePascal compiler using the Lazarus component library - LCL. The LCL

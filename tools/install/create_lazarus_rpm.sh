@@ -97,7 +97,7 @@ cat rpm/lazarus.spec.template | \
   sed -e "s/LAZVERSION/$LazVersion/g" \
       -e "s/LAZRELEASE/$LazRelease/g" \
       -e "s/LAZSOURCE/$Src/g" \
-      -e "s/FPCBUILDVERSION/2.6.1/g" \
+      -e "s/FPCBUILDVERSION/$FPCRPMVersion/g" \
       -e "s/FPCVERSION/$FPCRPMVersion/g" \
       -e "s/FPCSRCVERSION/$FPCSRCRPMVersion/g" \
   > $SpecFile
