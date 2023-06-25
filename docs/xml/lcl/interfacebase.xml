@@ -17,7 +17,7 @@ define a platform-independent widgetset class (<var>TWidgetSet</var>) and
 helper functions.
 </p>
 <remark>
-Modified in LCL version 2.4.0 to assign the GetLCLWidgetTypeName routine in 
+Modified in LCL version 3.0 to assign the GetLCLWidgetTypeName routine in 
 this unit to the OnLCLWidgetTypeName function variable in 
 <file>lazversion.pas</file> during unit initialization.
 </remark>

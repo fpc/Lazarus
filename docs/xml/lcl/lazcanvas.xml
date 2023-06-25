@@ -464,7 +464,7 @@ call the inherited method.
 </p>
 </descr>
 <vesion>
-Modified in LCL version 2.4.0 to decrease the bottom and right edges of the 
+Modified in LCL version 3.0 to decrease the bottom and right edges of the 
 rectangle by a single pixel. This fixes a difference between the rectangle 
 fill and a border drawn in the Rectangle method.
 </vesion>
@@ -1088,7 +1088,7 @@ brush color to the canvas pixels in an either opaque or semi-transparent way.
 </p>
 </descr>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso/>
 </element>

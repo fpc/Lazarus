@@ -601,7 +601,7 @@ the <file>lazutils</file> package.
 </p>
 </descr>
 <version>
-Deprecated in LCL version 2.4.0. Use the FreeThenNil routine in the 
+Deprecated in LCL version 3.0. Use the FreeThenNil routine in the 
 <file>LazUtilities.pas</file> unit from the <file>LazUtils</file> package 
 instead.
 </version>
@@ -661,7 +661,7 @@ instead.
 </p>
 </descr>
 <version>
-Deprecated in LCL version 2.4.0.
+Deprecated in LCL version 3.0.
 </version>
 <seealso>
 <link id="#rtl.types.OffsetRect">RTL.Types.OffsetRect</link>
@@ -679,7 +679,7 @@ instead.
 </short>
 <descr/>
 <version>
-Deprecated in LCL version 2.4.0.
+Deprecated in LCL version 3.0.
 </version>
 <seealso>
 <link id="#lazutils.graphmath.MoveRect">LazUtils.GraphMath.MoveRect</link>
@@ -696,7 +696,7 @@ instead.
 </short>
 <descr/>
 <version>
-Deprecated in LCL version 2.4.0.
+Deprecated in LCL version 3.0.
 </version>
 <seealso>
 <link id="#lazutils.graphmath.MoveRectToFit">LazUtils.GraphMath.MoveRectToFit</link>
@@ -712,7 +712,7 @@ instead.
 </short>
 <descr/>
 <version>
-Deprecated in LCL version 2.4.0.
+Deprecated in LCL version 3.0.
 </version>
 <seealso>
 <link id="#lazutils.graphmath.MakeMinMax">LazUtils.GraphMath.MakeMinMax</link>
@@ -728,7 +728,7 @@ Deprecated. Use GraphMath.CalculateLeftTopWidthHeight in the
 </short>
 <descr/>
 <version>
-Deprecated in LCL version 2.4.0.
+Deprecated in LCL version 3.0.
 </version>
 <seealso>
 <link id="#lazutils.graphmath.CalculateLeftTopWidthHeight">LazUtils.GraphMath.CalculateLeftTopWidthHeight</link>

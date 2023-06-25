@@ -3353,7 +3353,7 @@ occurs when a scaled form (and its controls) are displayed in an application.
 </p>
 </descr>
 <version>
-Modified in LCL version 2.4.0 to apply scaling factors to TabWidth and TabHeight.
+Modified in LCL version 3.0 to apply scaling factors to TabWidth and TabHeight.
 </version>
 <seealso>
 <link id="TCustomTabControl.Images"/>
@@ -4980,7 +4980,7 @@ Use TabWidth to set the width for the tabs on the control.
 </p>
 </descr>
 <version>
-Modified in LCL version 2.4.0 to use a storage specifier for the property 
+Modified in LCL version 3.0 to use a storage specifier for the property 
 value in LCL component streaming.
 </version>
 <seealso>
@@ -5040,7 +5040,7 @@ Use TabHeight to set the height for the tabs on the control.
 </p>
 </descr>
 <version>
-Modified in LCL version 2.4.0 to use a storage specifier for the property 
+Modified in LCL version 3.0 to use a storage specifier for the property 
 value in LCL component streaming.
 </version>
 <seealso>
@@ -7881,7 +7881,7 @@ custom drawing operations on the control.
 </p>
 </descr>
 <version>
-Added in LCL version 2.4.0 for the Windows platform.
+Added in LCL version 3.0 for the Windows platform.
 </version>
 <seealso>
 <link id="TTabControl.Paint"/>
@@ -14957,7 +14957,7 @@ list item when OwnerData is enabled.
 </p>
 </descr>
 <version>
-Modified in LCL 2.4 to provide support for caching hints in the widgetset 
+Modified in LCL 3.0 to provide support for caching hints in the widgetset 
 class on the Windows platform.
 </version>
 <seealso>
@@ -21786,7 +21786,7 @@ when mouse messages are handled for the control.
 </p>
 </descr>
 <version>
-The implementation was modified in LCL version 2.4 to ensure that an endless 
+The implementation was modified in LCL version 3.0 to ensure that an endless 
 loop is avoided when Down is changed for grouped button, or when 
 GroupAllUpAllowed is called.
 </version>
@@ -28605,7 +28605,7 @@ Items.
 </p>
 </descr>
 <version>
-Modified in LCL version 2.4.0. Refactored to include the AEnabledOnly argument.
+Modified in LCL version 3.0. Refactored to include the AEnabledOnly argument.
 </version>
 <seealso>
 <link id="TTreeNode.Items"/>
@@ -28732,7 +28732,7 @@ not have child nodes.
 </p>
 </descr>
 <version>
-Modified in LCL version 2.4.0. Refactored to include the AEnabledOnly argument.
+Modified in LCL version 3.0. Refactored to include the AEnabledOnly argument.
 </version>
 <seealso>
 <link id="TTreeNode.Items"/>
@@ -28830,7 +28830,7 @@ is not found.
 </p>
 </descr>
 <version>
-Modified in LCL version 2.4.0. Refactored to include the AEnabledOnly argument.
+Modified in LCL version 3.0. Refactored to include the AEnabledOnly argument.
 </version>
 <seealso/>
 </element>
@@ -28989,7 +28989,7 @@ a tree node is selected or drawn on the TreeView control.
 </p>
 </descr>
 <version>
-Modified in LCL version 2.4.0. Refactored to include the AEnabledOnly argument.
+Modified in LCL version 3.0. Refactored to include the AEnabledOnly argument.
 </version>
 <seealso>
 <link id="TTreeNode.Visible"/>
@@ -29080,7 +29080,7 @@ not exist, the return value is set to the Parent for the current node.
 </p>
 </descr>
 <version>
-Modified in LCL version 2.4.0. Refactored to include the AEnabledOnly argument.
+Modified in LCL version 3.0. Refactored to include the AEnabledOnly argument.
 </version>
 <seealso>
 <link id="TTreeNode.Expanded"/>
@@ -29163,7 +29163,7 @@ states is not found.
 </p>
 </descr>
 <version>
-Modified in LCL version 2.4.0. Refactored to include the AEnabledOnly argument.
+Modified in LCL version 3.0. Refactored to include the AEnabledOnly argument.
 </version>
 <seealso/>
 </element>
@@ -29203,7 +29203,7 @@ sibling nodes have been examined.
 </p>
 </descr>
 <version>
-Modified in LCL version 2.4.0. Refactored to include the AEnabledOnly argument.
+Modified in LCL version 3.0. Refactored to include the AEnabledOnly argument.
 </version>
 <seealso/>
 </element>
@@ -29246,7 +29246,7 @@ with the value returned from GetTextPath.
 </p>
 </descr>
 <version>
-Modified in LCL version 2.4 to use the PathDelimiter in TCustomTreeView.
+Modified in LCL version 3 to use the PathDelimiter in TCustomTreeView.
 </version>
 <seealso>
 <link id="TTreeNode.Text"/>
@@ -31330,7 +31330,7 @@ The return value is the TTreeNode instance found at the specified path, or
 </p>
 </descr>
 <version>
-Modified in LCL version 2.4 to expand a tree node (when enabled) if it is 
+Modified in LCL version 3.0 to expand a tree node (when enabled) if it is 
 part of the text path found in a node search.
 </version>
 <seealso>
@@ -36260,7 +36260,7 @@ classes like TCustomShellTreeView.
 </remark>
 </descr>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TTreeNode.GetTextPath"/>
@@ -37716,7 +37716,7 @@ MoveLeft is used in the KeyDown method for the control.
 </p>
 </descr>
 <version>
-Added in LCL version 2.4.0.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TCustomTreeView.MoveSelection"/>
@@ -37777,7 +37777,7 @@ MoveRight is used in the KeyDown method for the control.
 </p>
 </descr>
 <version>
-Added in LCL version 2.4.0.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TCustomTreeView.MoveSelection"/>
@@ -37813,7 +37813,7 @@ is pressed.
 </p>
 </descr>
 <version>
-Added in LCL version 2.4.0.
+Added in LCL version 3.0.
 </version>
 <seealso/>
 </element>
@@ -37835,7 +37835,7 @@ MoveCollapse is called from the KeyDown method when the VK_SUBTRACT (NumPad
 Minus) key is pressed.
 </p>
 </descr><version>
-Added in LCL version 2.4.0.
+Added in LCL version 3.0.
 </version>
 <seealso/>
 </element>

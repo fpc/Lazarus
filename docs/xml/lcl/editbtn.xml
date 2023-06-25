@@ -76,7 +76,7 @@ control.
 <link id="TDateEdit.Date"/>
 </seealso>
 <version>
-The value was modified in LCL version 2.4.
+The value was modified in LCL version 3.0.
 </version>
 </element>
 
@@ -87,7 +87,7 @@ The value was modified in LCL version 2.4.
 <link id="TTimeEdit.Time"/>
 </seealso>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 </element>
 
@@ -1238,7 +1238,7 @@ handler (when assigned).
 </p>
 </descr>
 <version>
-Introduced in LCL version 2.4.0 as a replacement for the OnIdle event handler 
+Introduced in LCL version 3.0 as a replacement for the OnIdle event handler 
 routine.
 </version>
 <seealso>
@@ -1344,7 +1344,7 @@ refresh the list of filtered items when an idle state occurs.
 </ul>
 </descr>
 <version>
-Added in LCL version 2.4.0.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TCustomControlFilterEdit.Filter"/>
@@ -1462,7 +1462,7 @@ state for the Button on the control.
 </p>
 </descr>
 <version>
-Modified in LCL version 2.4.0 to call InternalSetFilter.
+Modified in LCL version 3.0 to call InternalSetFilter.
 </version>
 <seealso>
 <link id="TCustomControlFilterEdit.Filter"/>
@@ -1810,7 +1810,7 @@ items in the associated Control.
 </p>
 </descr>
 <version>
-Modified in LCL version 2.4.0 to call InternalSetFilter when a new value is 
+Modified in LCL version 3.0 to call InternalSetFilter when a new value is 
 assigned to the property.
 </version>
 <seealso>

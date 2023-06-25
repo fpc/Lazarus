@@ -877,7 +877,7 @@ Default locale-independent format used for date values in DateToCfgStr.
 </short>
 <descr/>
 <version>
-Added in LazUtils version 2.4.0.
+Added in LazUtils version 3.0.
 </version>
 <seealso/>
 </element>
@@ -888,7 +888,7 @@ Default locale-independent format used for date/time values.
 </short>
 <descr/>
 <version>
-Added in LazUtils version 2.4.0.
+Added in LazUtils version 3.0.
 </version>
 <seealso/>
 </element>
@@ -899,7 +899,7 @@ Returns a string representation for TDateTime value using the specified format.
 </short>
 <descr/>
 <version>
-Added in LazUtils version 2.4.0.
+Added in LazUtils version 3.0.
 </version>
 <seealso/>
 </element>
@@ -928,7 +928,7 @@ TDateTime output value.
 </short>
 <descr/>
 <version>
-Added in LazUtils version 2.4.0.
+Added in LazUtils version 3.0.
 </version>
 <seealso/>
 </element>

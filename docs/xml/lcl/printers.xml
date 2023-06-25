@@ -66,7 +66,7 @@ properties.
 </p>
 </descr>
 <version>
-Modified in LCL 2.4 to be an alias to the System.UITypes.TPrinterOrientation 
+Modified in LCL 3.0 to be an alias to the System.UITypes.TPrinterOrientation 
 type for FPC versions 3.3.0 or higher.
 </version>
 <seealso>
@@ -104,7 +104,7 @@ Not implemented in the current LCL version.
 </p>
 </descr>
 <version>
-Modified in LCL 2.4 to be an alias to the System.UITypes.TPrinterCapability 
+Modified in LCL 3.0 to be an alias to the System.UITypes.TPrinterCapability 
 type for FPC versions 3.3.0 or higher.
 </version>
 <seealso>
@@ -132,7 +132,7 @@ Not implemented in the current LCL version.
 </p>
 </descr>
 <version>
-Modified in LCL 2.4 to be an alias to the System.UITypes.TPrinterCapabilities  
+Modified in LCL 3.0 to be an alias to the System.UITypes.TPrinterCapabilities  
 type for FPC versions 3.3.0 or higher.
 </version>
 <seealso>
@@ -179,7 +179,7 @@ Output uses Portrait orientation.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to System.UITypes.poPortrait for FPC 3.3.0 or 
+Added in LCL 3.0 as an alias to System.UITypes.poPortrait for FPC 3.3.0 or 
 higher.
 </version>
 <seealso>
@@ -196,7 +196,7 @@ Output uses Landscape orientation.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to System.UITypes.poLandscape for FPC 3.3.0 or 
+Added in LCL 3.0 as an alias to System.UITypes.poLandscape for FPC 3.3.0 or 
 higher.
 </version>
 <seealso>
@@ -213,7 +213,7 @@ Output uses Landscape orientation with coordinates rotated 180 degrees.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to System.UITypes.poReverseLandscape for FPC 
+Added in LCL 3.0 as an alias to System.UITypes.poReverseLandscape for FPC 
 3.3.0 or higher.
 </version>
 <seealso>
@@ -230,7 +230,7 @@ Output uses Portrait orientation with coordinates rotated 180 degrees.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to System.UITypes.poReversePortrait for FPC 
+Added in LCL 3.0 as an alias to System.UITypes.poReversePortrait for FPC 
 3.3.0 or higher.
 </version>
 <seealso>
@@ -247,7 +247,7 @@ Device supports copy mode.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to System.UITypes.pcCopies for FPC 3.3.0 or 
+Added in LCL 3.0 as an alias to System.UITypes.pcCopies for FPC 3.3.0 or 
 higher.
 </version>
 <seealso>
@@ -264,7 +264,7 @@ Device supports page orientations.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to System.UITypes.pcOrientation for FPC 3.3.0 or 
+Added in LCL 3.0 as an alias to System.UITypes.pcOrientation for FPC 3.3.0 or 
 higher.
 </version>
 <seealso>
@@ -281,7 +281,7 @@ Device supports custom collation for printed pages.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to System.UITypes.pcCollation for FPC 3.3.0 or 
+Added in LCL 3.0 as an alias to System.UITypes.pcCollation for FPC 3.3.0 or 
 higher.
 </version>
 <seealso>

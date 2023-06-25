@@ -2447,7 +2447,7 @@ the device context for its window Handle.
 </p>
 </descr>
 <version>
-Modified in LCL version 2.4 to include the DPI argument.
+Modified in LCL version 3.0 to include the DPI argument.
 </version>
 <seealso/>
 </element>

@@ -488,7 +488,7 @@ control the appearance for the button(s) on the control.
 </p>
 </descr>
 <version>
-Added in LCL version 2.4.0.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TDBDateTimePicker.ArrowShape"/>

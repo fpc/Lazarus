@@ -1335,7 +1335,7 @@ called to write the log message to the device or file.
 </p>
 </descr>
 <version>
-Modified in LazUtils version 2.4.0 to write logger group information.
+Modified in LazUtils version 3.0 to write logger group information.
 </version>
 <seealso>
 <link id="TLazLoggerFile.OnDbgOutEx"/>
@@ -1359,7 +1359,7 @@ type.
 <descr/>
 <seealso/>
 <version>
-Modified in LazUtils version 2.4.0 to include the AGroup argument.  
+Modified in LazUtils version 3.0 to include the AGroup argument.  
 </version>
 </element>
 <element name="TLazLoggerFile.DoDebugLn.s">
@@ -1373,7 +1373,7 @@ Modified in LazUtils version 2.4.0 to include the AGroup argument.
 <short/>
 <descr/>
 <version>
-Modified in LazUtils version 2.4.0 to include the AGroup argument.  
+Modified in LazUtils version 3.0 to include the AGroup argument.  
 </version>
 <seealso/>
 </element>
@@ -1588,7 +1588,7 @@ information.
 </short>
 <descr/>
 <version>
-Added in LazUtils version 2.4.0.
+Added in LazUtils version 3.0.
 </version>
 <seealso/>
 </element>
@@ -1599,7 +1599,7 @@ Event handler signalled to generate an extended log message with log group
 information.
 </short><descr/>
 <version>
-Added in LazUtils version 2.4.0.
+Added in LazUtils version 3.0.
 </version>
 <seealso/>
 </element>

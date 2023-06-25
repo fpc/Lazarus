@@ -3451,7 +3451,7 @@ control has been changed.
 </p>
 </descr>
 <version>
-Added in LCL version 2.4.0.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TCustomComboBox.RealSetText"/>
@@ -10114,7 +10114,7 @@ provide support for Delphi VCL-compatible OnClick notifications.
 </p>
 </descr>
 <version>
-Modified in LCL 2.4 to support Delphi VCL-compatible OnClick notifications.
+Modified in LCL 3.0 to support Delphi VCL-compatible OnClick notifications.
 </version>
 <seealso>
 <link id="TButtonControl.DoOnChange"/>
@@ -11378,7 +11378,7 @@ Use the OnClick event handler to perform any actions needed when mouse is clicke
 </p>
 </descr>
 <version>
-Modified in LCL 2.4 to support Delphi VCL-compatible OnClick notifications.
+Modified in LCL 3.0 to support Delphi VCL-compatible OnClick notifications.
 </version>
 <seealso>
 <link id="TCustomCheckBox.VCL_OnClick_Emulation"/>
@@ -11535,8 +11535,8 @@ Delphi VCL compatibility.
 <short>Sets the value for the Checked property.</short>
 <descr/>
 <version>
-Modified in LCL version 2.4 to remove processing for the linked Action and 
-OnChange or OnClick notifications. In 2.4, these actions are performed when 
+Modified in LCL version 3.0 to remove processing for the linked Action and 
+OnChange or OnClick notifications. In 3.0, these actions are performed when 
 the State property is updated.
 </version>
 <seealso>
@@ -11732,7 +11732,7 @@ when enabled and not already handled by an assigned Action.
 </p>
 </descr>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TButtonControl.Checked"/>
@@ -11768,7 +11768,7 @@ like TCheckBox, TRadioButton and TToggleBox.
 </p>
 </descr>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TCustomCheckBox.VCL_OnClick_Emulation"/>
@@ -11880,7 +11880,7 @@ value is cbChecked or cbUnchecked.
 </p>
 </descr>
 <version>
-Modified in LCL version 2.4 to prevent recursive updates (and event 
+Modified in LCL version 3.0 to prevent recursive updates (and event 
 notifications) when the action is changed.
 </version>
 <seealso>
@@ -13289,7 +13289,7 @@ to fill the display area with the value in Color.
 </p>
 </descr>
 <version>
-Modified in LCL version 2.4. Transparent is no longer toggled when Color is 
+Modified in LCL version 3.0. Transparent is no longer toggled when Color is 
 changed. Its value is independent of Color.
 </version>
 <seealso>
@@ -13655,7 +13655,7 @@ Set Transparent to <b>False</b> to make the label opaque.
 </descr>
 <seealso>
 <version>
-Modified in LCL version 2.4 to unbind Color and Transparent properties. 
+Modified in LCL version 3.0 to unbind Color and Transparent properties. 
 Setting Color does not automatically change Transparent from <b>True</b> to 
 <b>False</b> now.
 </version>

@@ -173,7 +173,7 @@ application is called to free resources allocated for the LCL component.
 </p>
 </descr>
 <version>
-Modified in LCL version 2.4 to signal the OnDecLCLRefcountToZero event in 
+Modified in LCL version 3.0 to signal the OnDecLCLRefcountToZero event in 
 lclclasses.pas when the counter reaches 0.
 </version>
 <seealso>
@@ -370,7 +370,7 @@ unassigned and FreeComponent is called.
 </p>
 </descr>
 <verison>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </verison>
 <seealso/>
 </element>

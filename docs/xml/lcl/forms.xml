@@ -213,7 +213,7 @@ Represents actions that can occur when a form is closed.
 </short>
 <descr/>
 <version>
-Modified in LCL 2.4 to be an alias to TCloseAction in System.UITypes for FPC 
+Modified in LCL 3.0 to be an alias to TCloseAction in System.UITypes for FPC 
 3.3.0 or higher.
 </version>
 <seealso>
@@ -244,7 +244,7 @@ Represents the caNone enumeration value in TCloseAction.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to the constant in SystemUITypes for FPC 3.3.0 or 
+Added in LCL 3.0 as an alias to the constant in SystemUITypes for FPC 3.3.0 or 
 higher.
 </version>
 <seealso/>
@@ -256,7 +256,7 @@ Represents the caHide enumeration value in TCloseAction.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to the constant in SystemUITypes for FPC 3.3.0 or 
+Added in LCL 3.0 as an alias to the constant in SystemUITypes for FPC 3.3.0 or 
 higher.
 </version>
 <seealso/>
@@ -268,7 +268,7 @@ Represents the caFree enumeration value in TCloseAction.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to the constant in SystemUITypes for FPC 3.3.0 or 
+Added in LCL 3.0 as an alias to the constant in SystemUITypes for FPC 3.3.0 or 
 higher.
 </version>
 <seealso/>
@@ -280,7 +280,7 @@ Represents the caMinimize enumeration value in TCloseAction.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to the constant in SystemUITypes for FPC 3.3.0 or 
+Added in LCL 3.0 as an alias to the constant in SystemUITypes for FPC 3.3.0 or 
 higher.
 </version>
 <seealso/>
@@ -3138,7 +3138,7 @@ SnapToMonitor and SnapToForms methods in TWindowMagnetManager.
 </p>
 </descr>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TCustomForm.SnapOptions"/>
@@ -3306,7 +3306,7 @@ platform only. None of the other widgetsets checked for or apply the message.
 </remark>
 </descr>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso/>
 </element>
@@ -4513,7 +4513,7 @@ Gets the value for the ScreenSnap property.
 </short>
 <descr/>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TCustomForm.ScreenSnap"/>
@@ -4531,7 +4531,7 @@ Sets the value for the ScreenSnap property.
 </short>
 <descr/>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TCustomForm.ScreenSnap"/>
@@ -4549,7 +4549,7 @@ Gets the value for the SnapBuffer property.
 </short>
 <descr/>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TCustomForm.SnapBuffer"/>
@@ -4566,7 +4566,7 @@ Value for the SnapBuffer property.
 Sets the value for the SnapBuffer property.
 </short>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TCustomForm.SnapBuffer"/>
@@ -4584,7 +4584,7 @@ Sets the value for the SnapOptions property.
 </short>
 <descr/>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TCustomForm.SnapOptions"/>
@@ -4730,7 +4730,7 @@ the message.
 </remark>
 </descr>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TCustomForm.SnapOptions"/>
@@ -7074,7 +7074,7 @@ displayed as a modal form.
 </p>
 </errors>
 <version>
-Modified in LCL version 2.4.0 to allow the application to handle an exception 
+Modified in LCL version 3.0.0 to allow the application to handle an exception 
 when its CaptureExceptions property is enabled.
 </version>
 <seealso/>
@@ -8278,7 +8278,7 @@ ScreenSnap are accessed or modified.
 </p>
 </descr>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso/>
 </element>
@@ -8314,7 +8314,7 @@ None of the other widgetsets checked for or apply the message.
 </remark>
 </descr>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso/>
 </element>
@@ -8333,7 +8333,7 @@ None of the other widgetsets checked for or apply the message.
 </remark>
 </descr>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso/>
 </element>
@@ -11489,7 +11489,7 @@ the message.
 </remark>
 </descr>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TWindowMagnetManager"/>
@@ -15045,7 +15045,7 @@ the OnDecLCLRefcountToZero handler is still in process.
 </p>
 </descr>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TApplication.ReleaseComponent"/>
@@ -15497,7 +15497,7 @@ used as the return value for the method, and is set to <b>True</b> if the
 action was successfully executed in an event handler.
 </p>
 <p>
-In LCL version 2.4 or higher, multiple handler routines can be assigned which 
+In LCL version 3.0 or higher, multiple handler routines can be assigned which 
 use the ahtActionExecute event type. This situation can occur when 
 TApplicationProperties tries to assign an OnActionExecute handler to the 
 TApplication instance and it already has a user-specified handler. It can also 
@@ -15513,7 +15513,7 @@ routines can execute the action, the return value is <b>False</b>.
 </p>
 </descr>
 <version>
-Modified in in LCL version 2.4 to provide support for multiple OnActionExecute 
+Modified in in LCL version 3.0 to provide support for multiple OnActionExecute 
 event handlers in the application.
 </version>
 <seealso>
@@ -15555,7 +15555,7 @@ used as the return value for the method, and is set to <b>True</b> if the
 action was successfully updated in an event handler.
 </p>
 <p>
-In LCL version 2.4 or higher, multiple handler routines can be assigned which 
+In LCL version 3.0 or higher, multiple handler routines can be assigned which 
 use the ahtActionUpdate event type. This situation can occur when 
 TApplicationProperties tries to assign an OnActionUpdate handler to the 
 TApplication instance and it already has a user-specified handler. It can also 
@@ -15571,7 +15571,7 @@ routines can update the action, the return value is <b>False</b>.
 </p>
 </descr>
 <version>
-Modified in in LCL version 2.4 to provide support for multiple OnActionUpdate 
+Modified in in LCL version 3.0 to provide support for multiple OnActionUpdate 
 event handlers in the application.
 </version>
 <seealso>
@@ -17021,7 +17021,7 @@ application.
 </short>
 <descr/>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso/>
 </element>
@@ -17044,7 +17044,7 @@ the application.
 </short>
 <descr/>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso/>
 </element>
@@ -17061,7 +17061,7 @@ application.
 </short>
 <descr/>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso/>
 </element>
@@ -17084,7 +17084,7 @@ the application.
 </short>
 <descr/>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso/>
 </element>

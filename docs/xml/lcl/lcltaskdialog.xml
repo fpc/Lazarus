@@ -1097,7 +1097,7 @@ check box state.
 </p>
 </descr>
 <version>
-Modified in LCL version 2.4.0 to use the LongBool type (instead of Boolean).
+Modified in LCL version 3.0 to use the LongBool type (instead of Boolean).
 </version>
 <seealso/>
 </element>

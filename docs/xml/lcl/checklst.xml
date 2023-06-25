@@ -654,7 +654,7 @@ calculate the item height when Style is set to lbOwnerDrawVariable.
 </p>
 </descr>
 <version>
-Added in LCL version 2.4 as a replacement for the MeasureItem method.
+Added in LCL version 3.0 as a replacement for the MeasureItem method.
 </version>
 <seealso>
 <link id="#lcl.stdctrls.TCustomListBox.OnMeasureItem">TCustomListBox.OnMeasureItem</link>
@@ -877,7 +877,7 @@ HeaderBackgroundColor and HeaderColor.
 </p>
 </descr>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TCustomCheckListBox.HeaderColor"/>
@@ -910,7 +910,7 @@ HeaderBackgroundColor and HeaderColor.
 </p>
 </descr>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TCustomCheckListBox.HeaderBackgroundColor"/>

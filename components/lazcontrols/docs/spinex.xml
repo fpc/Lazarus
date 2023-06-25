@@ -703,7 +703,7 @@ class instance is used when value comparisons are performed.
 </p>
 </descr>
 <version>
-Introduced in version 2.2.0. Modified in version 2.4 to remove the define 
+Introduced in version 2.2.0. Modified in version 3.0 to remove the define 
 for FPC compiler version.
 </version>
 <seealso>
@@ -1764,7 +1764,7 @@ class instance is used when value comparisons are performed.
 </p>
 </descr>
 <version>
-Introduced in version 2.2.0. Modified in version 2.4 to remove the define 
+Introduced in version 2.2.0. Modified in version 3.0 to remove the define 
 for FPC compiler version.
 </version>
 <seealso>
@@ -2387,7 +2387,7 @@ This method was introduced to ensure that the type specialization for the class 
 </p>
 </descr>
 <version>
-Introduced in version 2.2.0. Modified in version 2.4 to remove the FPC version compiler define.
+Introduced in version 2.2.0. Modified in version 3.0 to remove the FPC version compiler define.
 </version>
 <seealso>
 <link id="TSpinEditExBase.SameValue"/>

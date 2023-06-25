@@ -141,7 +141,7 @@ where the widgetset files are found.
 </p>
 </descr>
 <version>
-Added in LCL 2.4.
+Added in LCL 3.0.
 </version>
 <seealso>
 <link id="DisplayNameToDirName"/>
@@ -190,7 +190,7 @@ descriptive name is not found, the value 'gtk2' is used.
 </p>
 </descr>
 <version>
-Added in LCL 2.4.
+Added in LCL 3.0.
 </version>
 <seealso>
 <link id="DirNameToLCLPlatform"/>

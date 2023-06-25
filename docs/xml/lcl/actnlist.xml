@@ -1426,7 +1426,7 @@ Grayed is used when the value in the Checked property is updated.
 </p>
 </descr>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TCustomAction.Checked"/>

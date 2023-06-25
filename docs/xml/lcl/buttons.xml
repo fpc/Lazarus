@@ -281,7 +281,7 @@ assigned to the Glyph property.
 </p>
 </descr>
 <version>
-Added in LCL version 2.3.0. Available since version 2.4.0.
+Added in LCL version 2.3.0. Available since version 3.0.
 </version>
 <seealso>
 <link id="TButtonGlyph.Create"/>
@@ -1144,7 +1144,7 @@ been assigned for the property.
 </p>
 </descr>
 <version>
-Added in LCL version 2.3.0. Available since version 2.4.0.
+Added in LCL version 2.3.0. Available since version 3.0.
 </version>
 <seealso>
 <link id="TButtonGlyph.ExternalImages"/>
@@ -1170,7 +1170,7 @@ been assigned for the property.
 </p>
 </descr>
 <version>
-Added in LCL version 2.3.0. Available since version 2.4.0.
+Added in LCL version 2.3.0. Available since version 3.0.
 </version>
 <seealso>
 <link id="TButtonGlyph.ExternalImages"/>
@@ -1196,7 +1196,7 @@ been assigned for the property.
 </p>
 </descr>
 <version>
-Added in LCL version 2.3.0. Available since version 2.4.0.
+Added in LCL version 2.3.0. Available since version 3.0.
 </version>
 <seealso>
 <link id="TButtonGlyph.ExternalImages"/>
@@ -1222,7 +1222,7 @@ been assigned for the property.
 </p>
 </descr>
 <version>
-Added in LCL version 2.3.0. Available since version 2.4.0.
+Added in LCL version 2.3.0. Available since version 3.0.
 </version>
 <seealso>
 <link id="TButtonGlyph.ExternalImages"/>
@@ -2155,7 +2155,7 @@ stored as the property value in the Object Inspector.
 </p>
 </descr>
 <version>
-Added in LCL version 2.3.0. Available since version 2.4.0.
+Added in LCL version 2.3.0. Available since version 3.0.
 </version>
 <seealso/>
 </element>
@@ -2237,7 +2237,7 @@ stored as the property value in the Object Inspector.
 </p>
 </descr>
 <version>
-Added in LCL version 2.3.0. Available since version 2.4.0.
+Added in LCL version 2.3.0. Available since version 3.0.
 </version>
 <seealso/>
 </element>
@@ -2295,7 +2295,7 @@ and indicates that an explicit value has not been assigned to the property.
 </p>
 </descr>
 <version>
-Added in LCL version 2.3.0. Available since version 2.4.0.
+Added in LCL version 2.3.0. Available since version 3.0.
 </version>
 <seealso></seealso>
 </element>
@@ -2454,7 +2454,7 @@ stored as the property value in the Object Inspector.
 </p>
 </descr>
 <version>
-Added in LCL version 2.3.0. Available since version 2.4.0.
+Added in LCL version 2.3.0. Available since version 3.0.
 </version>
 <seealso>
 <link id="TCustomBitBtn.Images"/>
@@ -4024,7 +4024,7 @@ stored as the property value in the Object Inspector.
 </p>
 </descr>
 <version>
-Added in LCL version 2.3.0. Available since version 2.4.0.
+Added in LCL version 2.3.0. Available since version 3.0.
 </version>
 <seealso>
 <link id="TCustomSpeedButton.Images"/>
@@ -4160,7 +4160,7 @@ stored as the property value in the Object Inspector.
 </p>
 </descr>
 <version>
-Added in LCL version 2.3.0. Available since version 2.4.0.
+Added in LCL version 2.3.0. Available since version 3.0.
 </version>
 <seealso>
 <link id="TCustomSpeedButton.Images"/>
@@ -4212,7 +4212,7 @@ ButtonGlyph.
 </p>
 </descr>
 <version>
-Added in LCL version 2.3.0. Available since version 2.4.0.
+Added in LCL version 2.3.0. Available since version 3.0.
 </version>
 <seealso>
 <link id="TCustomSpeedButton.Images"/>
@@ -4384,7 +4384,7 @@ stored as the property value in the Object Inspector.
 </p>
 </descr>
 <version>
-Added in LCL version 2.3.0. Available since version 2.4.0.
+Added in LCL version 2.3.0. Available since version 3.0.
 </version>
 <seealso>
 <link id="TCustomSpeedButton.Images"/>
@@ -4410,7 +4410,7 @@ for the property.
 </p>
 </descr>
 <version>
-Added in LCL version 2.3.0. Available since version 2.4.0.
+Added in LCL version 2.3.0. Available since version 3.0.
 </version>
 <seealso/>
 </element>
@@ -4566,7 +4566,7 @@ RealGet/SetText. Get/SetTextBuf is only kept for compatibility.
 </p>
 </descr>
 <version>
-Modified in LCL version 2.4 to allow a multi-line value to be entered in the 
+Modified in LCL version 3.0 to allow a multi-line value to be entered in the 
 Object Inspector at design-time.
 </version>
 <seealso>

@@ -2882,7 +2882,7 @@ editor, project inspector, and source code file manager.
 </p>
 </descr>
 <version>
-Modified in LCL 2.4 to support use of unit name as a name space for classes in 
+Modified in LCL 3.0 to support use of unit name as a name space for classes in 
 a LFM resource.
 </version>
 <seealso/>

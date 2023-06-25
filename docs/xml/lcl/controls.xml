@@ -434,7 +434,7 @@ Starting value for control message constants defined in the LCL.
 Modal dialog exited with the None button.
 </short>
 <version>
-Modified in LCL 2.4 to be an alias to mrNone in System.UITypes for FPC 3.3.0 
+Modified in LCL 3.0 to be an alias to mrNone in System.UITypes for FPC 3.3.0 
 or higher.
 </version>
 <seealso>
@@ -449,7 +449,7 @@ Uncomment when the topic exists in the RTL documentation.
 Modal dialog exited with the OK button.
 </short>
 <version>
-Modified in LCL 2.4 to be an alias to mrOK in System.UITypes for FPC 3.3.0 
+Modified in LCL 3.0 to be an alias to mrOK in System.UITypes for FPC 3.3.0 
 or higher.
 </version>
 <seealso>
@@ -464,7 +464,7 @@ Uncomment when the topic exists in the RTL documentation.
 Modal dialog exited with the Cancel button.
 </short>
 <version>
-Modified in LCL 2.4 to be an alias to mrCancel in System.UITypes for FPC 3.3.0 
+Modified in LCL 3.0 to be an alias to mrCancel in System.UITypes for FPC 3.3.0 
 or higher.
 </version>
 <seealso>
@@ -479,7 +479,7 @@ Uncomment when the topic exists in the RTL documentation.
 Modal dialog aborted.
 </short>
 <version>
-Modified in LCL 2.4 to be an alias to mrAbort in System.UITypes for FPC 3.3.0 
+Modified in LCL 3.0 to be an alias to mrAbort in System.UITypes for FPC 3.3.0 
 or higher.
 </version>
 <seealso>
@@ -494,7 +494,7 @@ Uncomment when the topic exists in the RTL documentation.
 Modal dialog exited with the Retry button.
 </short>
 <version>
-Modified in LCL 2.4 to be an alias to mrRetry in System.UITypes for FPC 3.3.0 
+Modified in LCL 3.0 to be an alias to mrRetry in System.UITypes for FPC 3.3.0 
 or higher.
 </version>
 <seealso>
@@ -509,7 +509,7 @@ Uncomment when the topic exists in the RTL documentation.
 Modal dialog exited with the Ignore button.
 </short>
 <version>
-Modified in LCL 2.4 to be an alias to mrIgnore in System.UITypes for FPC 3.3.0 
+Modified in LCL 3.0 to be an alias to mrIgnore in System.UITypes for FPC 3.3.0 
 or higher.
 </version>
 <seealso>
@@ -525,7 +525,7 @@ Uncomment when the topic exists in the RTL documentation.
 Modal dialog exited with the Yes button.
 </short>
 <version>
-Modified in LCL 2.4 to be an alias to mrYes in System.UITypes for FPC 3.3.0 
+Modified in LCL 3.0 to be an alias to mrYes in System.UITypes for FPC 3.3.0 
 or higher.
 </version>
 <seealso>
@@ -540,7 +540,7 @@ Uncomment when the topic exists in the RTL documentation.
 Modal dialog exited with the No button.
 </short>
 <version>
-Modified in LCL 2.4 to be an alias to mrNo in System.UITypes for FPC 3.3.0 
+Modified in LCL 3.0 to be an alias to mrNo in System.UITypes for FPC 3.3.0 
 or higher.
 </version>
 <seealso>
@@ -555,7 +555,7 @@ Uncomment when the topic exists in the RTL documentation.
 Modal dialog exited with the All button.
 </short>
 <version>
-Modified in LCL 2.4 to be an alias to mrAll in System.UITypes for FPC 3.3.0 
+Modified in LCL 3.0 to be an alias to mrAll in System.UITypes for FPC 3.3.0 
 or higher.
 </version>
 <seealso>
@@ -570,7 +570,7 @@ Uncomment when the topic exists in the RTL documentation.
 Modal dialog exited with the NoToAll button.
 </short>
 <version>
-Modified in LCL 2.4 to be an alias to mrNoToAll in System.UITypes for FPC 
+Modified in LCL 3.0 to be an alias to mrNoToAll in System.UITypes for FPC 
 3.3.0 or higher.
 </version>
 <seealso>
@@ -585,7 +585,7 @@ Uncomment when the topic exists in the RTL documentation.
 Modal dialog exited with the YesToAll button.
 </short>
 <version>
-Modified in LCL 2.4 to be an alias to mrYesToAll in System.UITypes for FPC 
+Modified in LCL 3.0 to be an alias to mrYesToAll in System.UITypes for FPC 
 3.3.0 or higher.
 </version>
 <seealso>
@@ -600,7 +600,7 @@ Uncomment when the topic exists in the RTL documentation.
 Modal dialog exited with the Close button.
 </short>
 <version>
-Modified in LCL 2.4 to be an alias to mrClose in System.UITypes for FPC 3.3.0 
+Modified in LCL 3.0 to be an alias to mrClose in System.UITypes for FPC 3.3.0 
 or higher.
 </version>
 <seealso>
@@ -615,7 +615,7 @@ Uncomment when the topic exists in the RTL documentation.
 Last (highest) value of modal results.
 </short>
 <version>
-Modified in LCL 2.4 to be an alias to mrLast in System.UITypes for FPC 3.3.0 
+Modified in LCL 3.0 to be an alias to mrLast in System.UITypes for FPC 3.3.0 
 or higher.
 </version>
 <seealso>
@@ -1025,7 +1025,7 @@ vertical alignment of the control's center.
 </p>
 </descr>
 <version>
-Modified in LCL 2.4 to be an alias to the TAnchorKind type in System.UITypes 
+Modified in LCL 3.0 to be an alias to the TAnchorKind type in System.UITypes 
 for FPC 3.3.0 or higher.
 </version>
 <seealso>
@@ -1057,7 +1057,7 @@ and descendent classes.
 </p>
 </descr>
 <version>
-Modified in LCL 2.4 to be an alias to the TAnchors type in System.UITypes 
+Modified in LCL 3.0 to be an alias to the TAnchors type in System.UITypes 
 for FPC 3.3.0 or higher.
 </version>
 <seealso>
@@ -1076,7 +1076,7 @@ The side of another control, to which this control's side is anchored.
 </short>
 <descr/>
 <version>
-Modified in LCL 2.4 to be an alias to the TAnchorSideReference type in 
+Modified in LCL 3.0 to be an alias to the TAnchorSideReference type in 
 System.UITypes for FPC 3.3.0 or higher.
 </version>
 <seealso>
@@ -1102,7 +1102,7 @@ Represents the enumeration value akLeft in TAnchorKind.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to the System.UITypes constant for FPC 3.3.0 or 
+Added in LCL 3.0 as an alias to the System.UITypes constant for FPC 3.3.0 or 
 higher.
 </version>
 <seealso>
@@ -1119,7 +1119,7 @@ Represents the enumeration value akTop in TAnchorKind.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to the System.UITypes constant for FPC 3.3.0 or 
+Added in LCL 3.0 as an alias to the System.UITypes constant for FPC 3.3.0 or 
 higher.
 </version>
 <seealso>
@@ -1136,7 +1136,7 @@ Represents the enumeration value akRight in TAnchorKind.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to the System.UITypes constant for FPC 3.3.0 or 
+Added in LCL 3.0 as an alias to the System.UITypes constant for FPC 3.3.0 or 
 higher.
 </version>
 <seealso>
@@ -1152,7 +1152,7 @@ Represents the enumeration value akRight in TAnchorKind.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to the System.UITypes constant for FPC 3.3.0 or 
+Added in LCL 3.0 as an alias to the System.UITypes constant for FPC 3.3.0 or 
 higher.
 </version>
 <seealso>
@@ -1169,7 +1169,7 @@ Represents the enumeration value asrTop in TAnchorSideReference.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to the System.UITypes constant for FPC 3.3.0 or 
+Added in LCL 3.0 as an alias to the System.UITypes constant for FPC 3.3.0 or 
 higher.
 </version>
 <seealso>
@@ -1186,7 +1186,7 @@ Represents the enumeration value asrBottom in TAnchorSideReference.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to the System.UITypes constant for FPC 3.3.0 or 
+Added in LCL 3.0 as an alias to the System.UITypes constant for FPC 3.3.0 or 
 higher.
 </version>
 <seealso>
@@ -1203,7 +1203,7 @@ Represents the enumeration value asrCenter in TAnchorSideReference.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to the System.UITypes constant for FPC 3.3.0 or 
+Added in LCL 3.0 as an alias to the System.UITypes constant for FPC 3.3.0 or 
 higher.
 </version>
 <seealso>
@@ -1462,7 +1462,7 @@ swapped for left-handed users.
 </p>
 </descr>
 <version>
-Modified in LCL version 2.4 to be an alias for the TMouseButton type in 
+Modified in LCL version 3.0 to be an alias for the TMouseButton type in 
 System.UITypes for FPC 3.3.0 or higher.
 </version>
 <seealso>
@@ -1502,7 +1502,7 @@ Represents the mbLeft enumeration value in TMouseButton.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to the constant in System.UITypes for FPC 3.3.0 
+Added in LCL 3.0 as an alias to the constant in System.UITypes for FPC 3.3.0 
 or higher.
 </version>
 <seealso>
@@ -1519,7 +1519,7 @@ Represents the mbRight enumeration value in TMouseButton.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to the constant in System.UITypes for FPC 3.3.0 
+Added in LCL 3.0 as an alias to the constant in System.UITypes for FPC 3.3.0 
 or higher.
 </version>
 <seealso>
@@ -1536,7 +1536,7 @@ Represents the mbMiddle enumeration value in TMouseButton.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to the constant in System.UITypes for FPC 3.3.0 
+Added in LCL 3.0 as an alias to the constant in System.UITypes for FPC 3.3.0 
 or higher.
 </version>
 <seealso>
@@ -1553,7 +1553,7 @@ Represents the mbExtra1 enumeration value in TMouseButton.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to the constant in System.UITypes for FPC 3.3.0 
+Added in LCL 3.0 as an alias to the constant in System.UITypes for FPC 3.3.0 
 or higher.
 </version>
 <seealso>
@@ -1570,7 +1570,7 @@ Represents the mbExtra2 enumeration value in TMouseButton.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to the constant in System.UITypes for FPC 3.3.0 
+Added in LCL 3.0 as an alias to the constant in System.UITypes for FPC 3.3.0 
 or higher.
 </version>
 <seealso>
@@ -3353,7 +3353,7 @@ TDragKind is the type used to implement the Dragkind property in TControl.
 </p>
 </descr>
 <version>
-Modified in LCL 2.4 to be ab alias to TDragKind in System.UITypes for FPC 
+Modified in LCL 3.0 to be ab alias to TDragKind in System.UITypes for FPC 
 3.3.0 or higher.
 </version>
 <seealso>
@@ -3377,7 +3377,7 @@ Indicates whether a drag operation can start automatically.
 </short>
 <descr/>
 <version>
-Modified in LCL 2.4 to be an alias to TDragMode in System.UITypes for FPC 
+Modified in LCL 3.0 to be an alias to TDragMode in System.UITypes for FPC 
 3.3.0 or higher.
 </version>
 <seealso>
@@ -3405,7 +3405,7 @@ These values are sent in drag messages, allowing the control to perform
 special actions when the mouse moves over, enters, or leaves the control.
 </descr>
 <version>
-Modified in LCL 2.4 to be an alias to TDragState in System.UITypes for FPC 
+Modified in LCL 3.0 to be an alias to TDragState in System.UITypes for FPC 
 3.3.0 or higher.
 </version>
 <seealso>
@@ -3448,7 +3448,7 @@ dmDragCancel is sent to the source control.
 </dl>
 </descr>
 <version>
-Modified in LCL 2.4 to be an alias to TDragMessage in System.UITypes for FPC 
+Modified in LCL 3.0 to be an alias to TDragMessage in System.UITypes for FPC 
 3.3.0 or higher.
 </version>
 <seealso>
@@ -7014,7 +7014,7 @@ Range type used to represent the tab order for windowed controls.
 </short>
 <descr/>
 <version>
-Modified in LCL 2.4 to be an alias to TTabOrder in System.UITypes for FPC 
+Modified in LCL 3.0 to be an alias to TTabOrder in System.UITypes for FPC 
 3.3.0 or higher.
 </version>
 <seealso>

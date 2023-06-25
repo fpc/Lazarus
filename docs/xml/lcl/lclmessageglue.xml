@@ -209,7 +209,7 @@ Calls DeliverMessage to apply or dispatch the message for the target control.
 </p>
 </descr>
 <version>
-Modified in LCL version 2.4 to use the values in the Show and Status arguments 
+Modified in LCL version 3.0 to use the values in the Show and Status arguments 
 in the message for the target control.
 </version>
 <seealso/>
@@ -832,7 +832,7 @@ Applies the specified UTF-8-encoded character to the target control.
 </short>
 <descr/>
 <version>
-Modified in LCL version 2.4 to change the AUTF8Char argument to a variable 
+Modified in LCL version 3.0 to change the AUTF8Char argument to a variable 
 parameter.
 </version>
 <seealso/>

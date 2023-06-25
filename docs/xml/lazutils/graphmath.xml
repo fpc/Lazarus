@@ -389,7 +389,7 @@ widgetset.
 </p>
 </descr>
 <version>
-Added in LazUtils version 2.4.0.
+Added in LazUtils version 3.0.
 </version>
 <seealso/>
 </element>
@@ -616,7 +616,7 @@ than i2, or the arguments have the same value.
 </p>
 </descr>
 <version>
-Added in LazUtils version 2.4.0.
+Added in LazUtils version 3.0.
 </version>
 <seealso/>
 </element>
@@ -643,7 +643,7 @@ entry.
 </p>
 </descr>
 <version>
-Added in LazUtils version 2.4.0.
+Added in LazUtils version 3.0.
 </version>
 <seealso/>
 </element>
@@ -685,7 +685,7 @@ MoveRectToFit is used in the implementation for the DoDock method in TControl.
 </p>
 </descr>
 <version>
-Added in LazUtils version 2.4.0.
+Added in LazUtils version 3.0.
 </version>
 <seealso/>
 </element>

@@ -2251,7 +2251,7 @@ Not used in the current LazUtils implementation.
 </short>
 <descr/>
 <version>
-Added (but not currently used) in LazUtils 2.4.0.
+Added (but not currently used) in LazUtils 3.0.
 </version>
 <seealso>
 <link id="TMaskList"/>

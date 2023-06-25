@@ -4580,7 +4580,7 @@ when a radio button is removed from the control.
 </p>
 </descr>
 <version>
-Added in LCL version 2.4.0.
+Added in LCL version 3.0.0.
 </version>
 <seealso>
 <link id="#lcl.controls.TControl.Notification"/>
@@ -5437,7 +5437,7 @@ when a check box is removed from the control.
 </p>
 </descr>
 <version>
-Added in LCL version 2.4.0.
+Added in LCL version 3.0.0.
 </version>
 <seealso>
 <link id="#lcl.controls.TControl.Notification"/>
@@ -6815,7 +6815,7 @@ in the text style used to render the Caption on the control.
 <link id="#lcl.controls.TControl.Caption">TControl.Caption</link>
 </seealso>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 </element>
 
@@ -6858,7 +6858,7 @@ or form.
 <link id="#rtl.classes.TVerticalAlignment">TVerticalAlignment</link>
 </seealso>
 <version>
-Added in LCL version 2.3, and available since LCL version 2.4.0.
+Added in LCL version 2.3, and available since LCL version 3.0.
 </version>
 </element>
 

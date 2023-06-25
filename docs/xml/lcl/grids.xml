@@ -434,7 +434,7 @@ in TCustomGrid and descendent classes.
 </p>
 </descr>
 <version>
-Modified in version 2.4 to include goEditorParentColor and goEditorParentFont 
+Modified in version 3.0 to include goEditorParentColor and goEditorParentFont 
 options.
 </version>
 <seealso>
@@ -18147,7 +18147,7 @@ Use MouseWheelOption to control the mouse wheel behavior in the control.
 </p>
 </descr>
 <version>
-Modified in version 2.4 to include goEditorParentColor and goEditorParentFont 
+Modified in version 3.0 to include goEditorParentColor and goEditorParentFont 
 options.
 </version>
 <seealso>
