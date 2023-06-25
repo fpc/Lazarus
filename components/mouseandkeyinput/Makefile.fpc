@@ -1,12 +1,12 @@
 #   File generated automatically by Lazarus Package Manager
 #
-#   Makefile.fpc for LazMouseAndKeyInput 0.1
+#   Makefile.fpc for LazMouseAndKeyInput 0.9
 #
-#   This file was generated on 13-11-22
+#   This file was generated on 25-6-23
 
 [package]
 name=lazmouseandkeyinput
-version=0.1
+version=0.9
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
