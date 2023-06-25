@@ -81,7 +81,6 @@ else
   LazSrcDir=$(pwd | sed -e 's#/tools/install.*$##')
   # old-svn: Revision=$(svnversion $LazSrcDir) - comment this out as svn no longer works
   Revision=$(git -C $LazSrcDir describe --always --first-parent)
-  cd $TmpDir
   #  old-svn: cp -a $LazSrcDir $TmpLazDir
   mkdir $TmpLazDir
   cd $TmpLazDir

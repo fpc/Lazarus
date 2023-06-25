@@ -112,7 +112,7 @@ fi
 FPCVersion=$($ppcbin -v | grep version| sed 's/.*\([0-9]\+\.[0-9]\+\.[0-9]\+\).*/\1/')
 
 # get Lazarus version
-LazVersion=$(./get_lazarus_version.sh)
+LazVersion=$(./get_lazarus_version.sh | sed -e 's/RC[0-9]/.0/')
 # get consistent major.minor.release version, to avoid dpkg install an older version
 if [ $(echo $LazVersion | egrep '^[^.]*\.[^.]*$') ]; then
   LazVersion=${LazVersion}.0
@@ -159,6 +159,7 @@ cd -
 if [ "$UseCHMHelp" = "1" ]; then
   echo
   echo "Copying chm files"
+  mkdir -p $LazDestDir/docs/chm
   cd $LazSrcDir/docs/chm
   cp -v *.kwd *.chm $LazDestDir/docs/chm/
   cd -
