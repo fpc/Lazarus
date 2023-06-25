@@ -153,7 +153,7 @@ TFont.
 </p>
 </descr>
 <version>
-Modified in LCL 2.4 to be an alias to TFontPitch in System.UITypes for FPC 
+Modified in LCL 3.0 to be an alias to TFontPitch in System.UITypes for FPC 
 3.3.0 or higher.
 </version>
 <seealso>
@@ -186,7 +186,7 @@ the current LCL implementation.
 </p>
 </descr>
 <version>
-Modified in LCL 2.4 to be an alias to TFontName in System.UITypes for FPC 
+Modified in LCL 3.0 to be an alias to TFontName in System.UITypes for FPC 
 3.3.0 or higher.
 </version>
 <seealso>
@@ -216,7 +216,7 @@ longer than 31 characters.
 </remark>
 </descr>
 <version>
-Modified in LCL 2.4 to be an alias to TFontDataName in System.UITypes for FPC 
+Modified in LCL 3.0 to be an alias to TFontDataName in System.UITypes for FPC 
 3.3.0 or higher.
 </version>
 <seealso>
@@ -241,7 +241,7 @@ implement the <var>Style</var> member in <var>TFontData</var> and the Style
 property in <var>TFont</var>.
 </descr>
 <version>
-Modified in LCL 2.4 to be an alias to TFontStyle in System.UITypes for FPC 
+Modified in LCL 3.0 to be an alias to TFontStyle in System.UITypes for FPC 
 3.3.0 or higher.
 </version>
 <seealso>
@@ -278,7 +278,7 @@ more values from the <var>TFontStyle</var> enumeration.
 </p>
 </descr>
 <version>
-Modified in LCL 2.4 to be an alias to TFontStyles in System.UITypes for FPC 
+Modified in LCL 3.0 to be an alias to TFontStyles in System.UITypes for FPC 
 3.3.0 or higher.
 </version>
 <seealso>
@@ -303,7 +303,7 @@ implement the <var>Style</var> member in <var>TFontData</var> and
 </p>
 </descr>
 <version>
-Modified in LCL 2.4 to be an alias to TFontStylesBase in System.UITypes for 
+Modified in LCL 3.0 to be an alias to TFontStylesBase in System.UITypes for 
 FPC 3.3.0 or higher.
 </version>
 <seealso>
@@ -335,7 +335,7 @@ member in <var>TFontData</var> and <var>TFont</var>.
 </p>
 </descr>
 <version>
-Modified in LCL 2.4 to be an alias to TFontCharSet in System.UITypes for 
+Modified in LCL 3.0 to be an alias to TFontCharSet in System.UITypes for 
 FPC 3.3.0 or higher.
 </version>
 <seealso>
@@ -372,7 +372,7 @@ member in <var>TFontData</var> and <var>TFont</var>.
 </p>
 </descr>
 <version>
-Modified in LCL 2.4 to be an alias to TFontQuality in System.UITypes for FPC 
+Modified in LCL 3.0 to be an alias to TFontQuality in System.UITypes for FPC 
 3.3.0 or higher.
 </version>
 <seealso>
@@ -527,7 +527,7 @@ Represents the fpDefault enumeration value in TFontPitch.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to the corresponding constant in System.UITypes 
+Added in LCL 3.0 as an alias to the corresponding constant in System.UITypes 
 for FPC 3.3.0 or higher.
 </version>
 <seealso/>
@@ -539,7 +539,7 @@ Represents the fpVariable enumeration value in TFontPitch.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to the corresponding constant in System.UITypes 
+Added in LCL 3.0 as an alias to the corresponding constant in System.UITypes 
 for FPC 3.3.0 or higher.
 </version>
 <seealso/>
@@ -551,7 +551,7 @@ Represents the fpFixed enumeration value in TFontPitch.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to the corresponding constant in System.UITypes 
+Added in LCL 3.0 as an alias to the corresponding constant in System.UITypes 
 for FPC 3.3.0 or higher.
 </version>
 <seealso/>
@@ -563,7 +563,7 @@ Represents the fsBold enumeration value in TFontStyle.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to the corresponding constant in System.UITypes 
+Added in LCL 3.0 as an alias to the corresponding constant in System.UITypes 
 for FPC 3.3.0 or higher.
 </version>
 <seealso/>
@@ -575,7 +575,7 @@ Represents the fsItalic enumeration value in TFontStyle.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to the corresponding constant in System.UITypes 
+Added in LCL 3.0 as an alias to the corresponding constant in System.UITypes 
 for FPC 3.3.0 or higher.
 </version>
 <seealso/>
@@ -587,7 +587,7 @@ Represents the fsUnderline enumeration value in TFontStyle.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to the corresponding constant in System.UITypes 
+Added in LCL 3.0 as an alias to the corresponding constant in System.UITypes 
 for FPC 3.3.0 or higher.
 </version>
 <seealso/>
@@ -599,7 +599,7 @@ Represents the fsStrikeout enumeration value in TFontStyle.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to the corresponding constant in System.UITypes 
+Added in LCL 3.0 as an alias to the corresponding constant in System.UITypes 
 for FPC 3.3.0 or higher.
 </version>
 <seealso/>
@@ -611,7 +611,7 @@ Represents the fqDefault enumeration value in TFontQuality.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to the corresponding constant in System.UITypes 
+Added in LCL 3.0 as an alias to the corresponding constant in System.UITypes 
 for FPC 3.3.0 or higher.
 </version>
 <seealso/>
@@ -623,7 +623,7 @@ Represents the fqDraft enumeration value in TFontQuality.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to the corresponding constant in System.UITypes 
+Added in LCL 3.0 as an alias to the corresponding constant in System.UITypes 
 for FPC 3.3.0 or higher.
 </version>
 <seealso/>
@@ -635,7 +635,7 @@ Represents the fqProof enumeration value in TFontQuality.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to the corresponding constant in System.UITypes 
+Added in LCL 3.0 as an alias to the corresponding constant in System.UITypes 
 for FPC 3.3.0 or higher.
 </version>
 <seealso/>
@@ -647,7 +647,7 @@ Represents the fqNonAntialiased enumeration value in TFontQuality.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to the corresponding constant in System.UITypes 
+Added in LCL 3.0 as an alias to the corresponding constant in System.UITypes 
 for FPC 3.3.0 or higher.
 </version>
 <seealso/>
@@ -659,7 +659,7 @@ Represents the fqAntialiased enumeration value in TFontQuality.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to the corresponding constant in System.UITypes 
+Added in LCL 3.0 as an alias to the corresponding constant in System.UITypes 
 for FPC 3.3.0 or higher.
 </version>
 <seealso/>
@@ -671,7 +671,7 @@ Represents the fqCleartype enumeration value in TFontQuality.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to the corresponding constant in System.UITypes 
+Added in LCL 3.0 as an alias to the corresponding constant in System.UITypes 
 for FPC 3.3.0 or higher.
 </version>
 <seealso/>
@@ -683,7 +683,7 @@ Represents the fqCleartypeNatural enumeration value in TFontQuality.
 </short>
 <descr/>
 <version>
-Added in LCL 2.4 as an alias to the corresponding constant in System.UITypes 
+Added in LCL 3.0 as an alias to the corresponding constant in System.UITypes 
 for FPC 3.3.0 or higher.
 </version>
 <seealso/>
@@ -1169,7 +1169,7 @@ shape with a user-specified image (bitmap).
 </p>
 </descr>
 <version>
-Added in LCL version 2.4.0.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TBrushStyle"/>
@@ -1187,7 +1187,7 @@ shape with a user-specified pattern (bitmap).
 </p>
 </descr>
 <version>
-Added in LCL version 2.4.0.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TBrushStyle"/>

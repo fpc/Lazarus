@@ -91,7 +91,7 @@ TLanguageID is the type returned from the GetLanguageID function.
 </p>
 </descr>
 <version>
-Added in LazUtils version 2.4.0.
+Added in LazUtils version 3.0.
 </version>
 <seealso>
 <link id="GetLanguageID"/>
@@ -175,7 +175,7 @@ and classes which use the localization feature.
 </p>
 </descr>
 <version>
-Added in LazUtils version 2.4.0.
+Added in LazUtils version 3.0.
 </version>
 <seealso>
 <link id="TLanguageID"/>

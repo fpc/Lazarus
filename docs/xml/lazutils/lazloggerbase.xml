@@ -271,7 +271,7 @@ Passed as an argument to a TLazLoggerWriteExEvent handler routine.
 </p>
 </descr>
 <version>
-Added in LazUtils version 2.4.0.
+Added in LazUtils version 3.0.
 </version>
 <seealso>
 <link id="TLazLoggerWriteExEvent"/>
@@ -312,7 +312,7 @@ Only for DbgOut. <b>True</b> if the first segment in a new line.
 <short/>
 <descr/>
 <version>
-Added in LazUtils version 2.4.0.
+Added in LazUtils version 3.0.
 </version>
 <seealso/>
 </element>
@@ -687,7 +687,7 @@ Ordinal position for the property value retrieved in the method.
 <short/>
 <descr/>
 <version>
-Added in LazUtils version 2.4.0.
+Added in LazUtils version 3.0.
 </version>
 <seealso/>
 </element>
@@ -702,7 +702,7 @@ Added in LazUtils version 2.4.0.
 <short/>
 <descr/>
 <version>
-Added in LazUtils version 2.4.0.
+Added in LazUtils version 3.0.
 </version>
 <seealso/>
 </element>
@@ -717,7 +717,7 @@ Added in LazUtils version 2.4.0.
 <short/>
 <descr/>
 <version>
-Added in LazUtils version 2.4.0.
+Added in LazUtils version 3.0.
 </version>
 <seealso/>
 </element>
@@ -1039,7 +1039,7 @@ enabled.
 <descr>
 </descr>
 <version>
-Modified in LazUtils version 2.4.0 to use group information for the enabled 
+Modified in LazUtils version 3.0 to use group information for the enabled 
 logger.
 </version>
 <seealso>
@@ -1057,7 +1057,7 @@ Generates a log message with formatted value(s) for the specified type(s).
 <descr>
 </descr>
 <version>
-Modified in LazUtils version 2.4.0 to use group information for the enabled 
+Modified in LazUtils version 3.0 to use group information for the enabled 
 logger.
 </version>
 <seealso>

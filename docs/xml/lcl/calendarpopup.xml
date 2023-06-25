@@ -255,7 +255,7 @@ and executes the pop-up calendar dialog.
 </p>
 </descr>
 <version>
-Modified in LCL version 2.4.0 to include minimum and maximum date arguments.
+Modified in LCL version 3.0 to include minimum and maximum date arguments.
 </version>
 <seealso>
 <link id="ShowCalendarPopup"/>
@@ -339,7 +339,7 @@ pop-up.
 </p>
 </descr>
 <version>
-Modified in LCL version 2.4.0 to include an overloaded variant with minimum 
+Modified in LCL version 3.0 to include an overloaded variant with minimum 
 and maximum date arguments.
 </version>
 <seealso>

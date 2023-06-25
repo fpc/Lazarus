@@ -273,7 +273,7 @@ date as a String or a TDateTime value.
 <p>
 TCustomCalendar acts as a wrapper for the native calendar control on a given 
 platform. The range of dates allowed in a native calendar control varies by 
-platform. Starting in LCL version 2.4, TCustomCalendar includes MinDate and 
+platform. Starting in LCL version 3.0, TCustomCalendar includes MinDate and 
 MaxDate properties which can used to limit the dates displayed on the 
 calendar to a specified minimum and maximum date. Setting Date or DateTime to 
 a value outside the allowed range (when used) causes an EInvalidDate 
@@ -860,7 +860,7 @@ use the values.
 </remark>
 </descr>
 <version>
-Introduced in LCL 2.3, and available in LCL versions 2.4 and higher.
+Introduced in LCL 2.3, and available in LCL versions 3.0 and higher.
 </version>
 <seealso>
 <link id="TCustomCalendar.MinDate"/>
@@ -906,7 +906,7 @@ use the values.
 </remark>
 </descr>
 <version>
-Introduced in LCL 2.3, and available in LCL versions 2.4 and higher.
+Introduced in LCL 2.3, and available in LCL versions 3.0 and higher.
 </version>
 <seealso>
 <link id="TCustomCalendar.MaxDate"/>
@@ -1038,7 +1038,7 @@ with the selected date as a String or a TDateTime value.
 <p>
 TCalendar / TCustomCalendar act as a wrapper for the native calendar control 
 on a given platform. The range of dates allowed in a native calendar control 
-varies by platform. Starting in LCL version 2.4, TCustomCalendar includes 
+varies by platform. Starting in LCL version 3.0, TCustomCalendar includes 
 MinDate and MaxDate properties which can used to limit the dates displayed on 
 the calendar to a specified minimum and maximum date. Setting Date or 
 DateTime to a value outside the allowed range (when used) causes an 

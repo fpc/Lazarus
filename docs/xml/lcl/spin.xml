@@ -66,15 +66,15 @@ either MinValue or MaxValue has been given an explicit non-default value, the
 Value property is updated with corresponding range limit.
 </p>
 <p>
-In LCL version 2.4, the floating point property editor will not allow an 
+In LCL version 3.0, the floating point property editor will not allow an 
 invalid value to be stored in the Value property at design-time. An error is 
 raised (and handled) with the message 'Property value out of range', and the 
 Value property is not updated.
 </p>
 <p>
-LCL versions prior to 2.4 allowed the values +Inf, -Inf, and NaN to be 
+LCL versions prior to 3.0 allowed the values +Inf, -Inf, and NaN to be 
 assigned as the property value. These values are no longer supported in LCL 
-version 2.4 and later.
+version 3.0 and later.
 </p>
 <p>
 Use the MinValue and MaxValue properties to define the lower and upper limits 
@@ -101,7 +101,7 @@ control Value when the up or down buttons are clicked.
 <link id="#lcl.stdctrls.TCustomEdit">TCustomEdit</link>
 </seealso>
 <version>
-Modified in LCL version 2.4 to implement range checking with floating point property editor support.
+Modified in LCL version 3.0 to implement range checking with floating point property editor support.
 </version>
 </element>
 
@@ -702,15 +702,15 @@ non-default value, the Value property is updated with corresponding range
 limit.
 </p>
 <p>
-In LCL version 2.4, the floating point property editor will not allow an 
+In LCL version 3.0, the floating point property editor will not allow an 
 invalid value to be stored in the Value property at design-time. An error is 
 raised (and handled) with the message 'Property value out of range', and the 
 Value property is not updated.
 </p>
 <p>
-LCL versions prior to 2.4 allowed the values +Inf, -Inf, and NaN to be 
+LCL versions prior to 3.0 allowed the values +Inf, -Inf, and NaN to be 
 assigned as the property value. These values are no longer supported in LCL 
-version 2.4 and later.
+version 3.0 and later.
 </p>
 <p>
 Use the MinValue and MaxValue properties to define the lower and upper limits 
@@ -793,15 +793,15 @@ either MinValue or MaxValue has been given an explicit non-default value, the
 Value property is updated with corresponding range limit.
 </p>
 <p>
-In LCL version 2.4, the floating point property editor will not allow an 
+In LCL version 3.0, the floating point property editor will not allow an 
 invalid value to be stored in the Value property at design-time. An error is 
 raised (and handled) with the message 'Property value out of range'. The 
 Value property is reset to 0.
 </p>
 <p>
-LCL versions prior to 2.4 allowed the values +Inf, -Inf, and NaN to be 
+LCL versions prior to 3.0 allowed the values +Inf, -Inf, and NaN to be 
 assigned to the Value property. These values are no longer supported in LCL 
-version 2.4 and later.
+version 3.0 and later.
 </p>
 <p>
 Use the MinValue and MaxValue properties to define the lower and upper limits 
@@ -824,7 +824,7 @@ control Value when the up or down buttons are clicked.
 <link id="TSpinEdit"/>
 </seealso>
 <version>
-Modified in LCL version 2.4 to implement range checking with floating point 
+Modified in LCL version 3.0 to implement range checking with floating point 
 property editor support.
 </version>
 </element>

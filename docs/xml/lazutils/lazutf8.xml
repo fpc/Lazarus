@@ -330,12 +330,12 @@ converted to their Locale-specific values:
 <li>ListSeparator</li>
 </ul>
 <p>
-In LCL version 2.4 or higher, LongTimeFormat and ShortTimeFormat can contain 
+In LCL version 3.0 or higher, LongTimeFormat and ShortTimeFormat can contain 
 AM / PM format specifiers; i. e. 'hh:nn:ss AMPM'
 </p>
 </descr>
 <version>
-Modified in LCL version 2.4 to return 12-hour time formats using AM / PM in 
+Modified in LCL version 3.0 to return 12-hour time formats using AM / PM in 
 format settings.
 </version>
 <seealso>

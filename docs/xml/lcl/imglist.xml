@@ -3316,7 +3316,7 @@ or from application code.
 </p>
 </descr>
 <version>
-Added in LCL version 2.4.0.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TCustomImageList.BeginUpdate"/>
@@ -3362,7 +3362,7 @@ image list.
 </p>
 </descr>
 <version>
-Added in LCL version 2.4.0.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TCustomImageList.BeginUpdate"/>
@@ -3400,7 +3400,7 @@ image list.
 </p>
 </descr>
 <version>
-Added in LCL version 2.4.0.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TCustomImageList.BeginUpdate"/>
@@ -3968,7 +3968,7 @@ is changed.
 </p>
 </descr>
 <version>
-Modified in LCL version 2.4.0 to call the DoAfterUpdateStarted method.
+Modified in LCL version 3.0 to call the DoAfterUpdateStarted method.
 </version>
 <seealso>
 <link id="TCustomImageList.EndUpdate"/>
@@ -4013,7 +4013,7 @@ nested BeginUpdate calls active.
 </p>
 </descr>
 <version>
-Modified in LCL version 2.4.0 to call the DoBeforeUpdateEnded method.
+Modified in LCL version 3.0 to call the DoBeforeUpdateEnded method.
 </version>
 <seealso>
 <link id="TCustomImageList.BeginUpdate"/>

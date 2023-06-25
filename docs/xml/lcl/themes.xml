@@ -2156,7 +2156,7 @@ use the handle for DPI-aware contexts (Windows).
 </remark>
 </descr>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TThemeServices.GetDetailSizeForPPI"/>
@@ -2251,7 +2251,7 @@ Part allows: HP_HEADERSORTARROW
 <link id="#rtl.types.TSize">TSize</link>
 </seealso>
 <version>
-Added in LCL version 2.4. Replaces the deprecated GetDetailSize method.
+Added in LCL version 3.0. Replaces the deprecated GetDetailSize method.
 </version>
 </element>
 <element name="TThemeServices.GetDetailSizeForPPI.Result">
@@ -2391,7 +2391,7 @@ area only.
 </short>
 <descr/>
 <version>
-Modified in version 2.2.6 (2.4?) for the Win32 widgetset to clear all cached 
+Modified in version 2.2.6 for the Win32 widgetset to clear all cached 
 theme data when the theme has been changed. Returns the modified content 
 rectangle on success.
 </version>

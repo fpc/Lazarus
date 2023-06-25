@@ -1478,7 +1478,7 @@ Rect(7, 0, 1273, 1017). In this case, this function returns Rect(7, 0, 7, 7).
 </p>
 </descr>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso/>
 </element>
@@ -4670,7 +4670,7 @@ In the current LCL version, OffsetRect calls the routine in the RTL
 </p>
 </descr>
 <version>
-Deprecated in LCL version 2.4.0.
+Deprecated in LCL version 3.0.
 </version>
 <seealso/>
 </element>

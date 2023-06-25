@@ -5139,7 +5139,7 @@ control.
 </p>
 </descr>
 <version>
-Modified in version 2.4 to include the storage specifier for the property 
+Modified in version 3.0 to include the storage specifier for the property 
 value.
 </version>
 <seealso>
@@ -5198,7 +5198,7 @@ control.
 </p>
 </descr>
 <version>
-Modified in version 2.4 to include the storage specifier for the property 
+Modified in version 3.0 to include the storage specifier for the property 
 value.
 </version>
 <seealso>

@@ -2468,7 +2468,7 @@ indicates that either horizontal or high DPI scaling are used.
 <link id="#lcl.controls.TControl.DoAutoAdjustLayout">TControl.DoAutoAdjustLayout</link>
 </seealso>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 </element>
 <element name="TColorButton.DoAutoAdjustLayout.AMode">
@@ -4795,7 +4795,7 @@ TTaskDialogFlag values are stored in the TTaskDialogFlags type, as used in
 the TCustomTaskDialog.Flags property.
 </descr>
 <version>
-Modified in LCL 2.4.0 to include tfEmulateClassicStyle in the enumeration.
+Modified in LCL 3.0 to include tfEmulateClassicStyle in the enumeration.
 </version>
 <seealso>
 <link id="TTaskDialogFlags"/>
@@ -5586,7 +5586,7 @@ DoExecute is called from the Execute method.
 </seealso>
 </element>
 <version>
-Modified in version 2.4 to use the tfForceNonNative flag to determine whether an emulated dialog is displayed.
+Modified in version 3.0 to use the tfForceNonNative flag to determine whether an emulated dialog is displayed.
 </version>
 <element name="TCustomTaskDialog.DoExecute.Result">
 <short>

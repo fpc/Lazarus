@@ -7790,7 +7790,7 @@ A restricted set of options are available for the grid control:
 <element name="TDBGrid.CellHintPriority" link="#lcl.grids.TCustomGrid.CellHintPriority"/>
 <element name="TDBGrid.Color" link="#lcl.controls.TControl.Color"/>
 
-<!-- published in 2.4 -->
+<!-- published in 3.0 -->
 <element name="TDBGrid.ColRowDraggingCursor" link="#lcl.grids.TCustomGrid.ColRowDraggingCursor"/>
 <element name="TDBGrid.ColRowDragIndicatorColor" link="#lcl.grids.TCustomGrid.ColRowDragIndicatorColor"/>
 <element name="TDBGrid.ColSizingCursor" link="#lcl.grids.TCustomGrid.ColSizingCursor"/>

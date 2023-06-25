@@ -173,7 +173,7 @@ ExpandCollapseMode property in TCustomShellTreeView.
 <link id="TCustomShellTreeView.Collapse"/>
 </seealso>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 </element>
 <element name="TExpandCollapseMode.ecmRefreshedExpanding">
@@ -211,7 +211,7 @@ used in the implementation of file listing and sort routines as well.
 </p>
 </descr>
 <version>
-Modified in LCL version 2.4. It was moved from the implementation section to 
+Modified in LCL version 3.0. It was moved from the implementation section to 
 the interface section, and used to implement TFileItemCompareEvent routines.
 </version>
 <seealso>
@@ -540,7 +540,7 @@ Sets the value for the OnSortCompare property.
 </short>
 <descr/>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TCustomShellTreeView.OnSortCompare"/>
@@ -887,7 +887,7 @@ reduce the number of screen refreshes in the method.
 <link id="#lcl.comctrls.TCustomTreeView.AutoExpand">TCustomTreeView.AutoExpand</link>
 </seealso>
 <version>
-Modified in LCL version 2.4 to use ExpandCollapseMode to control actions 
+Modified in LCL version 3.0 to use ExpandCollapseMode to control actions 
 performed for child nodes.
 </version>
 </element>
@@ -939,7 +939,7 @@ Collapse is called when a tree node has executed its Collapse method.
 <link id="#rtl.classes.TComponent.ComponentState">TComponent.ComponentState</link>
 </seealso>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 </element>
 <element name="TCustomShellTreeView.Collapse.Node">
@@ -1103,7 +1103,7 @@ ExpandCollapseMode is used in the CanExpand and Collapse methods.
 </p>
 </descr>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TCustomShellTreeView.CanExpand"/>
@@ -1148,7 +1148,7 @@ Please note: Values in the <var>Items</var> property are populated when the
 </p>
 </descr>
 <version>
-Modified in LCL version 2.4 to initialize the PathDelimiter property and internal find options.
+Modified in LCL version 3.0 to initialize the PathDelimiter property and internal find options.
 </version>
 <seealso>
 <link id="TCustomShellTreeView.ObjectTypes"/>
@@ -1651,7 +1651,7 @@ end;
 </code>
 </descr>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TCustomShellTreeView.FileSortType"/>
@@ -1874,7 +1874,7 @@ control.
 </p>
 </descr>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TCustomShellListView.CreateListItem"/>
@@ -1903,7 +1903,7 @@ faDirectory flag value.
 </p>
 </descr>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TShellListItem.FileInfo"/>
@@ -1943,7 +1943,7 @@ a file or folder on the local file system. FileInfo includes values like:
 </ul>
 </descr>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="TCustomShellListView.DoAddItem"/>
@@ -2197,7 +2197,7 @@ created for the list item in the method.
 </p>
 </descr>
 <version>
-Added in LCL version 2.4.
+Added in LCL version 3.0.
 </version>
 <seealso>
 <link id="#lcl.comctrls.TCustomListView.CreatelistItem">TCustomListView.CreatelistItem</link>
@@ -2261,7 +2261,7 @@ using the option specified in the FileSortType property.
 </p>
 </descr>
 <version>
-Updated in LCL version 2.4 to use TShellListItem as the item class for list 
+Updated in LCL version 3.0 to use TShellListItem as the item class for list 
 items.
 </version>
 <seealso>
