@@ -230,8 +230,7 @@ begin
 
     GetMem(NewData, ArawImage.DataSize);
 
-    //if (Ridx <> 0) or (Gidx <> 1) or (Bidx <> 2) or (AIdx <> 3) then
-    if desc.Depth=32 then
+    if (Ridx <> 0) or (Gidx <> 1) or (Bidx <> 2) or (AIdx <> 3) then
     begin
       // put components in right order
 
@@ -258,6 +257,8 @@ begin
         Inc(DstRowPtr, ARowstride);
         Dec(y);
       end;
+    end else begin
+      System.Move(ArawImage.Data^, NewData^, ArawImage.DataSize);
     end;
 
   end
@@ -265,11 +266,13 @@ begin
     NewData := nil;
 
   // this is only a rough implementation, there is no check against bitsperpixel
-  case Desc.Depth of
+  case Desc.BitsPerPixel of
     1: ImageFormat := CAIRO_FORMAT_A1;
     8: ImageFormat := CAIRO_FORMAT_A8;
-    else
-       ImageFormat := CAIRO_FORMAT_ARGB32;
+    24: ImageFormat := CAIRO_FORMAT_RGB24;
+    32: ImageFormat := CAIRO_FORMAT_ARGB32;
+  else
+    Exit(False);
   end;
   ARowStride := GetBytesPerLine(Desc.Width, Desc.BitsPerPixel, rileDWordBoundary);
   ABitmap := HBitmap(TGtk3Image.Create(NewData, Desc.Width, Desc.Height, ARowStride, ImageFormat,
