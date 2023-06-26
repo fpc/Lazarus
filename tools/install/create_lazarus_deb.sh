@@ -180,6 +180,8 @@ rm -rf $LazDestDir/debian
 rm -rf $LazDestDir/components/aggpas/gpc
 rm -rf $LazDestDir/components/mpaslex
 rm -rf $LazDestDir/lcl/interfaces/carbon
+find $LazDestDir -name .gitignore -delete
+find $LazDestDir -name .gitattributes -delete
 
 # compile
 echo
@@ -233,7 +235,7 @@ echo "copying copyright and changelog files"
 LazBuildDocDir=$LazBuildDir/usr/share/doc/$PkgName
 mkdir -p $LazBuildDocDir
 cp $DebianSrcDir/copyright $LazBuildDocDir/
-cat $LazSrcDir/debian/changelog | sed -e "s/^lazarus (/$PkgName (/" > $LazBuildDocDir/changelog
+cat $LazSrcDir/tools/install/debian_lazarus/changelog.Debian | sed -e "s/^lazarus (/$PkgName (/" > $LazBuildDocDir/changelog
 cp $LazBuildDocDir/changelog $LazBuildDocDir/changelog.Debian
 gzip -n --best $LazBuildDocDir/changelog
 gzip -n --best $LazBuildDocDir/changelog.Debian
