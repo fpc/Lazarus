@@ -24,11 +24,12 @@ significant. The release number will always be 0 (zero) starting with version
 3.0.
 </p>
 <p>
-In addition, odd minor version numbers no longer indicate that it is a 
-development (or trunk) version. Minor version numbers will be incremented with 
-each subsequent release or fixes branch: 3.0, 3.1, 3.2, ad ininitum. 
-Development versions are always represented as minor version number 99; i.e. 
-3.99 is the development branch for the version 3.X family.
+In addition, an odd minor version numbers no longer indicate that it is a 
+development (or trunk) version. Instead, odd minor version numbers like 3.1 or 
+3.3 represent a fixes branch. For example: 3.1 would contain bug fixes for the 
+3.0 branch and would be used as the basis for the first 3.2 release. 
+Development (or trunk) versions are always represented as minor version number 
+99; i.e. 3.99 is the development branch for the version 3.X family.
 </p>
 <p>
 <file>lazversion.pas</file> is part of the <file>lazutils</file> package.
@@ -74,10 +75,13 @@ For the Lazarus version number 2.3.0.42, the value in laz_minor is 3.
 <p>
 <b>Please note:</b> Starting with Lazarus version 3.0, laz_minor is 
 incremented by 1 for each new release or fixes branch. For example: 3.0, 3.1, 
-3.2, ad infinitum. In addition, odd minor version numbers no longer indicate 
-that they are a development (or trunk) version. The development branch is 
-always represented as minor version number 99; i.e. 3.99 is the development 
-branch for the 3.X family.
+3.2, ad infinitum. In addition, an odd minor version number no longer 
+indicates that it is a development (or trunk) version. Instead, odd minor 
+version numbers like 3.1 or 3.3 represent a fixes branch. For example: 3.1 
+would contain bug fixes for the 3.0 branch and would be used as the basis for 
+the first 3.2 release. Development (or trunk) versions are always represented 
+as minor version number 99; i.e. 3.99 is the development branch for the version
+3.X family.
 </p>
 </descr>
 <seealso/>
