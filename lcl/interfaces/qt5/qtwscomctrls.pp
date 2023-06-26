@@ -894,7 +894,8 @@ begin
     exit;
 
   QtTreeWidget := TQtTreeWidget(ALV.Handle);
-  if Assigned(QtTreeWidget) then
+  if Assigned(QtTreeWidget) and
+    not (csDesigning in ALV.ComponentState) then
   begin
     if ASortIndicator = siNone then
       QtTreeWidget.Header.SetSortIndicatorVisible(false)
