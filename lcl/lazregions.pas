@@ -164,17 +164,27 @@ end;
 {
   The equation of the inner area of an axis aligned ellipse:
 
-  (X/a)^2 + (Y/b)^2 <= 1
+  ((X-Xc)/a)^2 + ((Y-Yc)/b)^2 <= 1
+
+  where Xc = (X1 + X2)/2   and   Yc = (Y1 + Y2)/2 (ellipse center
+    and  a = (X2 - X1)/2   and    b = (Y2 - Y1)/2 (half axes)
+
+  or:
+
+  ((2 X - (X1+X2)) / (X2-X1))^2 + ((2 Y - (Y1+X2)) / (Y2-Y1))^2 <= 1
 }
 function TLazRegionEllipse.IsPointInPart(AX, AY: Integer): Boolean;
-var
-  a, b: Integer;
 begin
-  a := X2 - X1;
-  b := Y2 - Y1;
-  if (a < 0) or (b < 0) then Exit(False);
-
-  Result := Sqr(AX/a) + Sqr(AY/b) <= 1;
+  if (X2 < X1) or (Y2 < Y1) then
+    Result := false
+  else
+  if (X1 = X2) then
+    Result := (AX = X1) and (AY >= Y1) and (AY <= Y2)
+  else
+  if (Y1 = Y2) then
+    Result := (AY = Y1) and (AX >= X1) and (AX <= X2)
+  else
+    Result := sqr((AX*2 - (X2+X1)) / (X2-X1)) + sqr((AY*2 - (Y1+Y2)) / (Y2 - Y1)) <= 1;
 end;
 
 { TLazRegionPart }
