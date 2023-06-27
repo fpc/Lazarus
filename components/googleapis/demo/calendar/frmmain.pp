@@ -14,7 +14,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  synautil, IniFiles, googlebase, googleservice, googleclient, googlecalendar;
+  Grids, synautil, IniFiles, googlebase, googleservice, googleclient,
+  googlecalendar, opensslsockets;
 
 type
 
@@ -31,7 +32,7 @@ type
     LEvents: TLabel;
     LEAccess: TLabel;
     LBCalendars: TListBox;
-    LBEvents: TListBox;
+    SGEvents: TStringGrid;
     procedure BCancelClick(Sender: TObject);
     procedure BFetchEventsClick(Sender: TObject);
     procedure BSetAccessClick(Sender: TObject);
@@ -122,7 +123,7 @@ begin
   else
     begin
     LEvents.Caption:='Events for calendar : <select a calendar>';
-    LBEvents.Items.Clear;
+    SGEvents.RowCount:=1;
     FCurrentCalendar:=Nil;
     end;
 
@@ -235,31 +236,68 @@ var
   Entry: TEvent;
   EN : String;
   i:integer;
+  pageToken: String;
+  SD, ED, TS: String; //Startdate, Enddate, Timestamp
+
+  function prepareDate(EVDate: TEventDateTime):String;
+  begin
+     if EVDate.date<>0 then
+       prepareDate:=DateToStr(EVDate.date)
+     else if EVDate.dateTime<>0 then
+       prepareDate:=DateTimeToStr(EVDate.datetime)
+     else
+       prepareDate:='(unspecified)';
+  end;
+
+  function prepareTS(EVDate: TEventDateTime):String;
+  begin
+     if EVDate.date<>0 then
+       prepareTS:=Format('%.*d',[12,TimeStampToMSecs(DateTimeToTimeStamp(EVDate.date)) div 1000])
+     else if EVDate.dateTime<>0 then
+       prepareTS:=Format('%.*d',[12,TimeStampToMSecs(DateTimeToTimeStamp(EVDate.dateTime)) div 1000])
+     else
+       prepareTS:='(unspecified)';
+  end;
+
 
 begin
   if LBCalendars.ItemIndex<0 then
-    Exit;
-  LBEvents.Items.Clear;
+     Exit;
+  BFetchEvents.Enabled:=False;
+  MainForm.Cursor:=crHourGlass;
+
+  SGEvents.RowCount:=1;
   FreeAndNil(Events);
-  Events:=FCalendarAPI.EventsResource.list(FCurrentCalendar.id,'');
   SaveRefreshToken;
   I:=0;
-  if assigned(Events) then
-    for Entry in Events.items do
-      begin
-      Inc(i);
-      EN:=Entry.Summary;
-      if EN='' then
-        EN:=Entry.id+' ('+Entry.description+')';
-      if Assigned(Entry.Start) then
-        if Entry.start.date<>0 then
-          EN:=DateToStr(Entry.start.date)+' : '+EN
-        else if Entry.start.dateTime<>0 then
-          EN:=DateTimeToStr(Entry.start.datetime)+' : '+EN
-        else
-          EN:='(unspecified time) '+EN;
-      LBEvents.Items.AddObject(IntToStr(i)+': '+EN,Entry);
+  pageToken := '';
+  repeat
+     SD:='(unspecified)';
+     ED:='(unspecified)';
+     TS:='(unspecified)';
+     Events:=FCalendarAPI.EventsResource.list(FCurrentCalendar.id,'pageToken='+pageToken);
+     if assigned(Events) then begin
+       pageToken:=Events.nextPageToken;
+       for Entry in Events.items do
+        begin
+        Inc(i);
+        if Assigned(Entry.start) then begin
+          SD:=prepareDate(Entry.start);
+          TS:=prepareTS(Entry.start);
+        end;
+
+        if Assigned(Entry._end) then
+          ED:=prepareDate(Entry._end);
+
+
+        SGEvents.InsertRowWithValues(SGEvents.RowCount,[IntToStr(i),SD,ED,Entry.Summary,TS]);
       end;
+      Application.ProcessMessages;
+    end;
+  until (not assigned(Events)) or (pageToken='');
+  SGEvents.SortColRow(True,4);
+  MainForm.Cursor:=crDefault;
+  BFetchEvents.Enabled:=True;
 end;
 
 Procedure TMainForm.DoUserConsent(Const AURL: String; Out AAuthCode: String);
