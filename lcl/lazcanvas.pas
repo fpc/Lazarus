@@ -860,9 +860,7 @@ end;
 
 procedure TLazCanvas.Polygon(const Points: array of TPoint; Winding: Boolean);
 begin
-  {$if FPC_FullVersion < 30203}
   PolygonNonZeroWindingRule := Winding;
-  {$ENDIF}
   inherited Polygon(Points);
 end;
 
