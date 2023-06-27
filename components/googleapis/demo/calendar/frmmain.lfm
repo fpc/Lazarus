@@ -2,13 +2,13 @@ object MainForm: TMainForm
   Left = 456
   Height = 388
   Top = 191
-  Width = 666
+  Width = 1240
   Caption = 'Calendar Demo'
   ClientHeight = 388
-  ClientWidth = 666
+  ClientWidth = 1240
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '1.5'
+  LCLVersion = '2.2.4.0'
   object BFetchCalendars: TButton
     Left = 8
     Height = 25
@@ -22,11 +22,11 @@ object MainForm: TMainForm
     Left = 0
     Height = 80
     Top = 308
-    Width = 666
+    Width = 1240
     Align = alBottom
     Caption = 'Please provide Google API access code'
     ClientHeight = 52
-    ClientWidth = 662
+    ClientWidth = 1236
     TabOrder = 1
     Visible = False
     object LEAccess: TLabel
@@ -38,7 +38,7 @@ object MainForm: TMainForm
       ParentColor = False
     end
     object BSetAccess: TButton
-      Left = 490
+      Left = 1064
       Height = 25
       Top = 9
       Width = 75
@@ -48,7 +48,7 @@ object MainForm: TMainForm
       TabOrder = 0
     end
     object BCancel: TButton
-      Left = 570
+      Left = 1144
       Height = 25
       Top = 8
       Width = 75
@@ -61,13 +61,13 @@ object MainForm: TMainForm
       Left = 112
       Height = 18
       Top = 8
-      Width = 362
+      Width = 936
       Anchors = [akTop, akLeft, akRight]
       TabOrder = 2
     end
   end
   object BFetchEvents: TButton
-    Left = 548
+    Left = 1122
     Height = 25
     Top = 8
     Width = 96
@@ -87,18 +87,6 @@ object MainForm: TMainForm
     OnSelectionChange = LBCalendarsSelectionChange
     ScrollWidth = 308
     TabOrder = 3
-    TopIndex = -1
-  end
-  object LBEvents: TListBox
-    Left = 328
-    Height = 249
-    Top = 40
-    Width = 324
-    Anchors = [akTop, akLeft, akRight, akBottom]
-    ItemHeight = 0
-    ScrollWidth = 320
-    TabOrder = 4
-    TopIndex = -1
   end
   object LEvents: TLabel
     Left = 328
@@ -109,5 +97,40 @@ object MainForm: TMainForm
     AutoSize = False
     Caption = 'Events for calendar : <select a calendar>'
     ParentColor = False
+  end
+  object SGEvents: TStringGrid
+    Left = 326
+    Height = 248
+    Top = 40
+    Width = 892
+    Anchors = [akTop, akLeft, akBottom]
+    FixedCols = 0
+    RowCount = 1
+    TabOrder = 4
+    ColWidths = (
+      64
+      108
+      108
+      493
+      112
+    )
+    Cells = (
+      5
+      0
+      0
+      'ID'
+      1
+      0
+      'Start Date/Time'
+      2
+      0
+      'End Date/Time'
+      3
+      0
+      'Description'
+      4
+      0
+      'TimeStamp'
+    )
   end
 end
