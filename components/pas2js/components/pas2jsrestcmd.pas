@@ -167,7 +167,9 @@ begin
 end;
 
 
-begin
+initialization
   InitCmdhandler;
+finalization
+  FreeAndNil(RestCmdHandler);
 end.
 
