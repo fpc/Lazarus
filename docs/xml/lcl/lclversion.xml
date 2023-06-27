@@ -61,11 +61,11 @@ contains the second number (2).
 even minor version number, like 3.0 or 3.2, represents a general availability 
 release. An odd minor version number no longer indicates that it is a 
 development (or trunk) version. Instead, an odd minor version number like 3.1 
-or 3.3 represents a fixes release. For example: 3.1 would contain bug fixes 
+or 3.3 represents a fixes branch. For example: 3.1 would contain bug fixes 
 for the 3.0 release and would be used as the basis for the 3.2 release. 
 Development (or trunk) versions are always represented as minor version number 
-99; i.e. 3.99 is the development branch for future releases such as fixes in 
-the 3.X family and the future 4.0 release.
+99; i.e. 3.99 is the development branch for the future 4.0 release. Also, 
+selected commits from this branch are cherry picked to the 3.X family.
 </p>
 </descr>
 <seealso>lcl_version</seealso>
