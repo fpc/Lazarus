@@ -4562,14 +4562,14 @@ begin
     NewHistItem.Identifier:=NewItem.Identifier;
     NewHistItem.NodeDesc:=NewItem.GetDesc;
     NewHistItem.ParamList:=NewItem.ParamTypeList;
-    AdjustIndex:=0;
+    AdjustIndex:=high(AdjustIndex);
   end;
   NewHistItem.HistoryIndex:=0;
   // adjust all other HistoryIndex
   AnAVLNode:=Fitems.FindLowest;
   while AnAVLNode<>nil do begin
     AnHistItem:=TIdentHistListItem(AnAVLNode.Data);
-    if AnHistItem.HistoryIndex>=AdjustIndex then
+    if AnHistItem.HistoryIndex<AdjustIndex then
       inc(AnHistItem.HistoryIndex);
     AnAVLNode:=FItems.FindSuccessor(AnAVLNode);
   end;
