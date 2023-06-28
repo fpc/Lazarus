@@ -3678,7 +3678,7 @@ type
     property ShowButtons: Boolean read GetShowButtons write SetShowButton default True;
     property ShowLines: Boolean read GetShowLines write SetShowLines default True;
     property ShowRoot: Boolean read GetShowRoot write SetShowRoot default True;
-    property ShowSeparators: Boolean read GetShowSeparators write SetShowSeparators default True;
+    property ShowSeparators: Boolean read GetShowSeparators write SetShowSeparators default false;
     property SortType: TSortType read FSortType write SetSortType default stNone;
     property ToolTips: Boolean read GetToolTips write SetToolTips default True;
   public
