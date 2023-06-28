@@ -111,6 +111,9 @@ end;
 
 class function TCocoaWSCustomCalendar.HitTest(const ACalendar: TCustomCalendar; const APoint: TPoint): TCalendarPart;
 begin
+  if TCocoaDatePicker(ACalendar.Handle).dateClicked then
+    exit(cpDate);
+
   // need to validate this decision...
   //Debugln('TCocoaWSCustomCalendar.HitTest Mouse Y : ' + IntToStr(APoint.y));
   if APoint.y >= 40 then

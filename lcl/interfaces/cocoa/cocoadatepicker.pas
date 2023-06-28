@@ -16,6 +16,7 @@ type
   TCocoaDatePicker = objcclass(NSDatePicker)
   public
     callback: ICommonCallback;
+    dateClicked: boolean;
     autoResize: boolean;
     retainAspectRatio: boolean;
 
@@ -57,7 +58,8 @@ begin
 
       // After mouse event, has our date changed
       newDate:= NSDateToDateTime(Self.dateValue);
-      if (oldDate <> newDate) and Assigned(callback) then
+      dateClicked:= (oldDate <> newDate);
+      if dateClicked and Assigned(callback) then
         callback.SendOnChange;
 
       // This also calls OnClick....
