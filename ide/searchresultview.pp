@@ -407,9 +407,9 @@ begin
   // load path style
   //mniPathRelative.Checked := true; // default
   case EnvironmentGuiOpts.SearchResultViewPathStyle of
-    mwfsShort   : mniPathAbsolute.Checked := true;
+    mwfsShort   : mniPathFileName.Checked := true;
     mwfsRelative: mniPathRelative.Checked := true;
-    mwfsFull    : mniPathFileName.Checked := true;
+    mwfsFull    : mniPathAbsolute.Checked := true;
   end;
   mniShowPathClick(Sender);
 end;
