@@ -566,15 +566,17 @@ begin
 end;
 
 function TQtComboStrings.Add(const S: String): Integer;
+var
+  I: Integer;
 begin
-  if FSorted then
+  Result := inherited Add(S);
+  if FSorted and Assigned(FWinControl) and (FWinControl.HandleAllocated) then
   begin
-    Find(S, Result);
-    FChanging := True;
-    Insert(Result, S);
-    FChanging := False;
-  end else
-    Result := inherited Add(S);
+    FOwner.BeginUpdate;
+    for I := 0 to Count - 1 do
+      FOwner.setItemText(I, Strings[I]);
+    FOwner.EndUpdate;
+  end;
 end;
 
 procedure TQtComboStrings.Assign(Source: TPersistent);
