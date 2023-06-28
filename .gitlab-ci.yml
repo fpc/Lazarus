@@ -11,6 +11,8 @@ variables:
 workflow:  # these rules enable pipeline for merge requests and try to avoid duplicate pipelines
   rules:
 #    - when: never  # uncomment this line to disable pipeline (useful for service needs)
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS && $CI_PIPELINE_SOURCE == "push"
+      when: never
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
       when: never
