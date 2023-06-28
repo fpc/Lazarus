@@ -148,6 +148,7 @@ object SearchResultsView: TSearchResultsView
     end
   end
   object ResultsNoteBook: TExtendedNotebook
+    AnchorSideTop.Control = ControlBar1
     Left = 0
     Height = 249
     Top = 26
