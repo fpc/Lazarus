@@ -2041,6 +2041,7 @@ CheckListbox.
 <element name="TCustomControlFilterEdit.Flat" link="#lcl.editbtn.TCustomEditButton.Flat"/>
 <element name="TCustomControlFilterEdit.FocusOnButtonClick" link="#lcl.editbtn.TCustomEditButton.FocusOnButtonClick"/>
 <element name="TCustomControlFilterEdit.Align" link="#lcl.controls.TControl.Align"/>
+<element name="TCustomControlFilterEdit.Alignment" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Alignment"/>
 <element name="TCustomControlFilterEdit.Anchors" link="#lcl.controls.TControl.Anchors"/>
 <element name="TCustomControlFilterEdit.BiDiMode" link="#lcl.controls.TControl.BiDiMode"/>
 <element name="TCustomControlFilterEdit.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
@@ -2992,6 +2993,7 @@ Hint displayed when the mouse hovers over the button for the control.
 <element name="TDirectoryEdit.Flat" link="#lcl.editbtn.TCustomEditButton.Flat"/>
 <element name="TDirectoryEdit.FocusOnButtonClick" link="#lcl.editbtn.TCustomEditButton.FocusOnButtonClick"/>
 <element name="TDirectoryEdit.Align" link="#lcl.controls.TControl.Align"/>
+<element name="TDirectoryEdit.Alignment" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Alignment"/>
 <element name="TDirectoryEdit.Anchors" link="#lcl.controls.TControl.Anchors"/>
 <element name="TDirectoryEdit.AutoSize" link="#lcl.controls.TControl.AutoSize"/>
 <element name="TDirectoryEdit.AutoSelect" link="#lcl.groupededit.TCustomAbstractGroupedEdit.AutoSelect"/>
@@ -4193,6 +4195,7 @@ their native calendar controls.
 <element name="TDateEdit.ButtonWidth" link="#lcl.editbtn.TCustomEditButton.ButtonWidth"/>
 <element name="TDateEdit.Action" link="#lcl.controls.TControl.Action"/>
 <element name="TDateEdit.Align" link="#lcl.controls.TControl.Align"/>
+<element name="TDateEdit.Alignment" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Alignment"/>
 <element name="TDateEdit.Anchors" link="#lcl.controls.TControl.Anchors"/>
 <element name="TDateEdit.AutoSize" link="#lcl.controls.TControl.AutoSize"/>
 <element name="TDateEdit.AutoSelect" link="#lcl.stdctrls.TCustomEdit.AutoSelect"/>
@@ -4594,6 +4597,7 @@ Event handler signalled to get an arbitrary time value for the control.
 <element name="TTimeEdit.ButtonWidth" link="#lcl.editbtn.TCustomEditButton.ButtonWidth"/>
 <element name="TTimeEdit.Action" link="#lcl.controls.TControl.Action"/>
 <element name="TTimeEdit.Align" link="#lcl.controls.TControl.Align"/>
+<element name="TTimeEdit.Alignment" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Alignment"/>
 <element name="TTimeEdit.Anchors" link="#lcl.controls.TControl.Anchors"/>
 <element name="TTimeEdit.AutoSize" link="#lcl.controls.TControl.AutoSize"/>
 <element name="TTimeEdit.AutoSelect" link="#lcl.groupededit.TCustomAbstractGroupedEdit.AutoSelect"/>
@@ -4948,6 +4952,7 @@ for the dialog in the RunDialog method.
 <element name="TCalcEdit.Flat" link="#lcl.editbtn.TCustomEditButton.Flat"/>
 <element name="TCalcEdit.FocusOnButtonClick" link="#lcl.editbtn.TCustomEditButton.FocusOnButtonClick"/>
 <element name="TCalcEdit.Align" link="#lcl.controls.TControl.Align"/>
+<element name="TCalcEdit.Alignment" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Alignment"/>
 <element name="TCalcEdit.Anchors" link="#lcl.controls.TControl.Anchors"/>
 <element name="TCalcEdit.BidiMode" link="#lcl.controls.TControl.BiDiMode"/>
 <element name="TCalcEdit.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
