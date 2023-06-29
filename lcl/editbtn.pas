@@ -300,6 +300,7 @@ type
     property FocusOnButtonClick;
     // Other properties
     property Align;
+    property Alignment;
     property Anchors;
     property BidiMode;
     property BorderSpacing;
@@ -520,6 +521,7 @@ type
     property FocusOnButtonClick;
     // Other properties
     property Align;
+    property Alignment;
     property Anchors;
     property AutoSize;
     property AutoSelect;
@@ -647,6 +649,7 @@ type
     property ButtonWidth;
     property Action;
     property Align;
+    property Alignment;
     property Anchors;
     property AutoSize;
     property AutoSelect;
@@ -752,6 +755,7 @@ type
       property ButtonWidth;
       property Action;
       property Align;
+      property Alignment;
       property Anchors;
       property AutoSize;
       property AutoSelect;
@@ -864,6 +868,7 @@ type
     property FocusOnButtonClick;
     // Other properties
     property Align;
+    property Alignment;
     property Anchors;
     property BidiMode;
     property BorderSpacing;
