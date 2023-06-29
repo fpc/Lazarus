@@ -2243,12 +2243,15 @@ control. Read and write access for the property value are redirected to the
 BaseEditor control.
 </p>
 <p>
-The default value for the property is <var>taLeftJustify</var>.
+The default value for the property is <var>taLeftJustify</var>. See 
+<link id="#rtl.classes.TAlignment">TAlignment</link> in the RTL for more 
+information about the values in the enumerated type and their meanings.
 </p>
 </descr>
 <seealso>
 <link id="TCustomAbstractGroupedEdit.BaseEditor"/>
 <link id="#lcl.stdctrls.TCustomEdit.Alignment">TCustomEdit.Alignment</link>
+<link id="#rtl.classes.TAlignment">TAlignment</link>
 </seealso>
 </element>
 
