@@ -1273,7 +1273,7 @@ begin
 
   // check if this PCP was used by another lazarus exe
   s := ExtractFileName(ParamStrUTF8(0));
-  CurPrgName := NormalizeLazExe(AppendPathDelim(ProgramDirectory) + s);
+  CurPrgName := NormalizeLazExe(AppendPathDelim(ProgramDirectoryWithBundle) + s);
   AltPrgName := NormalizeLazExe(AppendPathDelim(PCP + 'bin') + s);
   LastCalled := NormalizeLazExe(EnvironmentOptions.LastCalledByLazarusFullPath);
 

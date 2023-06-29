@@ -139,7 +139,7 @@ begin
   if CfgFileDone then
     exit;
   CfgFileDone := True;
-  CfgFileName := AppendPathDelim(ProgramDirectory) + 'lazarus.cfg';
+  CfgFileName := AppendPathDelim(ProgramDirectoryWithBundle) + 'lazarus.cfg';
   if FileExistsUTF8(CfgFileName) then begin
     DebugLn(['using config file ', CfgFileName]);
     CfgFileContent := TStringList.Create;
