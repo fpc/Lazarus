@@ -218,6 +218,7 @@ type
     procedure RecogniseActualParams;
     procedure RecogniseActualParam;
 
+    procedure RecogniseDeprecated;
     procedure RecogniseProcedureDirectives;
 
     procedure RecogniseExportsSection;
@@ -588,18 +589,7 @@ begin
 
   { unit can be "deprecated platform library" }
   if fcTokenList.FirstSolidTokenType in HintDirectives then
-  begin
-    PushNode(nHintDirectives);
-
-    while fcTokenList.FirstSolidTokenType in HintDirectives do
-      Recognise(HintDirectives);
-
-    PopNode;
-  end;
-
-  { or platform }
-  if fcTokenList.FirstSolidTokenType = ttPlatform then
-    Recognise(ttPlatform);
+    RecogniseHintDirectives;
 
   Recognise(ttSemicolon);
   RecogniseNotSolidTokens;
@@ -1313,9 +1303,9 @@ begin
       Recognise(ttNested);
     end;
 
-    // the type can be deprecated
-    if fcTokenList.FirstSolidTokenType = ttDeprecated then
-      Recognise(ttDeprecated);
+    // the type can be deprecated or another hint directive
+    if fcTokenList.FirstSolidTokenType in HintDirectives then
+      RecogniseHintDirectives;
 
     if fcTokenList.FirstSolidTokenType <> ttDot then
       break;
@@ -4476,6 +4466,13 @@ begin
   end;
 end;
 
+procedure TBuildParseTree.RecogniseDeprecated;
+begin
+  Recognise(ttDeprecated);
+  if fcTokenList.FirstSolidTokenType in LiteralStringStarters then
+    RecogniseLiteralString;
+end;
+
 procedure TBuildParseTree.RecogniseProcedureDirectives;
 var
   lTokenType, lNextType: TTokenType;
@@ -4518,9 +4515,7 @@ begin
             RecogniseIdentifier(False, idStrict);
           end;
           ttDeprecated: begin
-            Recognise(ttDeprecated);
-            if fcTokenList.FirstSolidTokenType <> ttSemicolon then
-              RecogniseConstantExpression;
+            RecogniseDeprecated;
           end
           else
             Recognise(ProcedureDirectives);
@@ -5965,7 +5960,10 @@ begin
 
     while (fcTokenList.FirstSolidTokenType in HintDirectives) do
     begin
-      Recognise(HintDirectives);
+      if fcTokenList.FirstSolidTokenType = ttDeprecated then
+        RecogniseDeprecated
+      else
+        Recognise(HintDirectives);
     end;
 
     PopNode;
