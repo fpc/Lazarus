@@ -3859,7 +3859,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/externhelp$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/ExternHelp.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/externhelp.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) externhelp$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} lib/*

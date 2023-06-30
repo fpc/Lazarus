@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for MacOSFiles 0.0
 #
-#   This file was generated on 13-11-22
+#   This file was generated on 30-6-23
 
 [package]
 name=macosfiles
@@ -56,7 +56,7 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/macosfiles$(PPUEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/MacOSFiles.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/macosfiles.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) macosfiles$(PPUEXT) compiled
 

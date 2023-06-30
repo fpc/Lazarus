@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for AnchorDockingDsgn 1.0
 #
-#   This file was generated on 25-6-23
+#   This file was generated on 30-6-23
 
 [package]
 name=anchordockingdsgn
@@ -56,7 +56,7 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/anchordockingdsgn$(PPUEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/AnchorDockingDsgn.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/anchordockingdsgn.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) anchordockingdsgn$(PPUEXT) compiled
 

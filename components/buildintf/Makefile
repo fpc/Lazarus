@@ -3859,7 +3859,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/buildintf$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/BuildIntf.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/buildintf.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) buildintf$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} units/*

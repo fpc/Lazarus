@@ -3859,7 +3859,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/debuggerintf$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/DebuggerIntf.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/debuggerintf.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) debuggerintf$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} lib/*

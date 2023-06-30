@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for FCL 1.0.1
 #
-#   This file was generated on 13-11-22
+#   This file was generated on 30-6-23
 
 [package]
 name=fcl
@@ -56,7 +56,7 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/fcllaz$(PPUEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/FCL.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/fcl.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) fcllaz$(PPUEXT) compiled
 

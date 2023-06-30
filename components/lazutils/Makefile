@@ -3859,7 +3859,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/lazutils$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/LazUtils.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/lazutils.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) lazutils$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} lib/*

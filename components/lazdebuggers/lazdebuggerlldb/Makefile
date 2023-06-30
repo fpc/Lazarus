@@ -3859,7 +3859,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/lazdebuggerlldb$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/LazDebuggerLldb.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/lazdebuggerlldb.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) lazdebuggerlldb$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} lib/*

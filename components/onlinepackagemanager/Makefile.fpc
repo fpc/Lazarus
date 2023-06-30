@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for OnlinePackageManager 1.0.1.2
 #
-#   This file was generated on 25-6-23
+#   This file was generated on 30-6-23
 
 [package]
 name=onlinepackagemanager
@@ -57,7 +57,7 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/onlinepackagemanager$(PPUEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/OnlinePackageManager.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/onlinepackagemanager.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) onlinepackagemanager$(PPUEXT) compiled
 

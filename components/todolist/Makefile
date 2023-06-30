@@ -3859,7 +3859,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/todolistlaz$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/ToDoListLaz.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/todolistlaz.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) todolistlaz$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} lib/*

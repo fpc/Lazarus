@@ -4192,7 +4192,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/onlinepackagemanager$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/OnlinePackageManager.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/onlinepackagemanager.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) onlinepackagemanager$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} lib/*

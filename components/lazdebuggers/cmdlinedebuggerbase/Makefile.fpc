@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for CmdLineDebuggerBase 0.0
 #
-#   This file was generated on 25-6-23
+#   This file was generated on 30-6-23
 
 [package]
 name=cmdlinedebuggerbase
@@ -56,7 +56,7 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/cmdlinedebuggerbase$(PPUEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/CmdLineDebuggerBase.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/cmdlinedebuggerbase.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) cmdlinedebuggerbase$(PPUEXT) compiled
 

@@ -3859,7 +3859,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/dbflaz$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/DBFLaz.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/dbflaz.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) dbflaz$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} lib/*

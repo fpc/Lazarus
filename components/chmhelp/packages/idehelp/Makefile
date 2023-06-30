@@ -3859,7 +3859,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/chmhelppkg$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/ChmHelpPkg.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/chmhelppkg.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) chmhelppkg$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} lib/*

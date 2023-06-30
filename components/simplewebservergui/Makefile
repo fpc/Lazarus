@@ -3859,7 +3859,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/simplewebservergui$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/SimpleWebServerGUI.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/simplewebservergui.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) simplewebservergui$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} lib/*

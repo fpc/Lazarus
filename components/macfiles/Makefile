@@ -3859,7 +3859,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/macosfiles$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/MacOSFiles.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/macosfiles.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) macosfiles$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} lib/*

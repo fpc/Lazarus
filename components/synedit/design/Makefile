@@ -3859,7 +3859,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/allsyneditdsgn$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/SynEditDsgn.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/syneditdsgn.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) allsyneditdsgn$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} units/*

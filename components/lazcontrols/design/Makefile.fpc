@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for LazControlDsgn 0.0
 #
-#   This file was generated on 25-6-23
+#   This file was generated on 30-6-23
 
 [package]
 name=lazcontroldsgn
@@ -56,7 +56,7 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/lazcontroldsgn$(PPUEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/LazControlDsgn.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/lazcontroldsgn.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) lazcontroldsgn$(PPUEXT) compiled
 

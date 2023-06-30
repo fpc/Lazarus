@@ -3859,7 +3859,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/memdslaz$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/MemDSLaz.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/memdslaz.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) memdslaz$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} lib/*

@@ -3859,7 +3859,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/editormacroscript$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/EditorMacroScript.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/editormacroscript.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) editormacroscript$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} lib/*

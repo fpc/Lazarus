@@ -4192,7 +4192,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/ideconfig$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/IdeConfig.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/ideconfig.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) ideconfig$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} lib/*

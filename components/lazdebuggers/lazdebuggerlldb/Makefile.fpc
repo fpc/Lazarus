@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for LazDebuggerLldb 0.0
 #
-#   This file was generated on 25-6-23
+#   This file was generated on 30-6-23
 
 [package]
 name=lazdebuggerlldb
@@ -56,7 +56,7 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/lazdebuggerlldb$(PPUEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/LazDebuggerLldb.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/lazdebuggerlldb.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) lazdebuggerlldb$(PPUEXT) compiled
 

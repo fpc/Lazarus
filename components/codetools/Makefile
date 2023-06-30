@@ -3859,7 +3859,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/codetools$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/CodeTools.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/codetools.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) codetools$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} units/*

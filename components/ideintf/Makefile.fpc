@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for IDEIntf 1.0
 #
-#   This file was generated on 25-6-23
+#   This file was generated on 30-6-23
 
 [package]
 name=ideintf
@@ -57,7 +57,7 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/ideintf$(PPUEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/IDEIntf.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/ideintf.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) ideintf$(PPUEXT) compiled
 

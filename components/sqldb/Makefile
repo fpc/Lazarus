@@ -3859,7 +3859,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/sqldblaz$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/SQLDBLaz.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/sqldblaz.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) sqldblaz$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} lib/*

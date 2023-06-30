@@ -3859,7 +3859,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/sdflaz$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/SDFLaz.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/sdflaz.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) sdflaz$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} lib/*

@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for Printer4Lazarus 0.5
 #
-#   This file was generated on 13-11-22
+#   This file was generated on 30-6-23
 
 [package]
 name=printer4lazarus
@@ -57,7 +57,7 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/printer4lazarus$(PPUEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/Printer4Lazarus.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/printer4lazarus.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) printer4lazarus$(PPUEXT) compiled
 

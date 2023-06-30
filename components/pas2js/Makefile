@@ -3859,7 +3859,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/pas2jsdsgn$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/Pas2JSDsgn.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/pas2jsdsgn.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) pas2jsdsgn$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} units/*

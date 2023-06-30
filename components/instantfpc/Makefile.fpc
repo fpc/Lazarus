@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for InstantFPCLaz 1.0
 #
-#   This file was generated on 25-6-23
+#   This file was generated on 30-6-23
 
 [package]
 name=instantfpclaz
@@ -56,7 +56,7 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/instantfpclaz$(PPUEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/InstantFPCLaz.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/instantfpclaz.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) instantfpclaz$(PPUEXT) compiled
 

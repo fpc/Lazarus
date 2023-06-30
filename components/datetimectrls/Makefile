@@ -3859,7 +3859,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/datetimectrls$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/DateTimeCtrls.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/datetimectrls.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) datetimectrls$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} lib/*

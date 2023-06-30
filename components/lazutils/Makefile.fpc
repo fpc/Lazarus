@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for LazUtils 1.0
 #
-#   This file was generated on 13-11-22
+#   This file was generated on 30-6-23
 
 [package]
 name=lazutils
@@ -56,7 +56,7 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/lazutils$(PPUEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/LazUtils.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/lazutils.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) lazutils$(PPUEXT) compiled
 

@@ -3859,7 +3859,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/cody$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/Cody.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/cody.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) cody$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} lib/*
