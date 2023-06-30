@@ -7635,12 +7635,12 @@ const
       i:=StartLazProcess.Parameters.Count-1;
       while (i>=0) do begin
         aParam:=StartLazProcess.Parameters[i];
-        if (LeftStr(aParam,length(PrimaryConfPathOptLong))=PrimaryConfPathOptLong)
-        or (LeftStr(aParam,length(PrimaryConfPathOptShort))=PrimaryConfPathOptShort)
-        then break;
+        if LazStartsText(PrimaryConfPathOptLong,aParam)
+            or LazStartsText(PrimaryConfPathOptShort,aParam)
+        then
+          break;
         dec(i);
       end;
-
       if i<0 then
         StartLazProcess.Parameters.Add(PrimaryConfPathOptLong + GetPrimaryConfigPath);
 
