@@ -61,7 +61,7 @@ type
     skcAll             // **ALL**
   );
 const
-  // IDE cmd line options
+  // IDE cmd line options (long options are case insensitive)
   ShowSetupDialogOptLong='--setup';
   PrimaryConfPathOptLong='--primary-config-path=';
   PrimaryConfPathOptShort='--pcp=';
@@ -91,6 +91,18 @@ const
     'SingleInstance',
     'All'
   );
+  // lazbuild cmd line options (long options are case insensitive)
+  CompilerOptLong = '--compiler';
+  AddPackageLink = '--add-package-link';
+
+  LazFileOpts: array[1..7] of string = (
+    PrimaryConfPathOptLong,PrimaryConfPathOptShort,
+    SecondaryConfPathOptLong,SecondaryConfPathOptShort,
+    LazarusDirOpt,
+    CompilerOptLong,
+    AddPackageLink
+  );
+
 const
   // startlazarus options
   StartLazarusPidOpt   = '--lazarus-pid=';
@@ -106,7 +118,8 @@ function ExpandParamFile(const s: string): string;
 function IsHelpRequested : Boolean;
 function IsVersionRequested : boolean;
 function GetLanguageSpecified : string;
-function ParamIsOption(ParamIndex : integer; const Option : string) : boolean;
+function ParamIsOption(ParamIndex : integer; const Option : string) : boolean; overload; // case insensitive
+function ParamIsOption(ParamIndex : integer; const OptionShort, OptionLong: string) : boolean; overload; // case insensitive
 function ParamIsOptionPlusValue(ParamIndex : integer;
             const Option : string; out AValue : string) : boolean;
 
@@ -149,19 +162,48 @@ begin
 end;
 
 function GetParamsAndCfgFile: TStrings;
-  procedure CleanDuplicates(ACurParam, AMatch, AClean: String);
+
+  procedure ExpandCfgFilename(var aParam: string);
+  // expand relative filenames in lazarus.cfg using the path of the cfg, not the currentdir
   var
     i: Integer;
+    aFilename: String;
   begin
-    if LazStartsText(AMatch, ACurParam) then begin
-      i := ParamsAndCfgFileContent.Count - 1;
-      while i >= 0 do begin
-        if LazStartsText(AClean, ParamsAndCfgFileContent[i]) then
-          ParamsAndCfgFileContent.Delete(i);
-        dec(i);
+    for i:=low(LazFileOpts) to high(LazFileOpts) do
+      if LazStartsText(LazFileOpts[i],aParam) then begin
+        aFilename:=copy(aParam,length(LazFileOpts[i])+1,length(aParam));
+        aFilename:=ResolveDots(aFilename);
+        if not FilenameIsAbsolute(aFilename) then
+          aFilename:=ResolveDots(ExtractFilePath(CfgFileName)+aFilename);
+        aParam:=LazFileOpts[i]+aFilename;
+        debugln(['ExpandCfgFilename ',aParam]);
+        exit;
       end;
+  end;
+
+  procedure CleanDuplicates(const ParamNames: array of string);
+  // keep the last and delete the rest
+  var
+    i, j, Found: Integer;
+    s: String;
+  begin
+    // ParamsAndCfgFileContent[0] is the exe -> never delete that
+    Found:=-1;
+    i:=ParamsAndCfgFileContent.Count-1;
+    while i>0 do begin
+      s:=ParamsAndCfgFileContent[i];
+      for j:=0 to high(ParamNames) do begin
+        if LazStartsText(ParamNames[j],s) then begin
+          if Found<1 then
+            Found:=i
+          else
+            ParamsAndCfgFileContent.Delete(i);
+        end;
+      end;
+      dec(i);
     end;
   end;
+
 var
   Cfg: TStrings;
   i: Integer;
@@ -188,7 +230,10 @@ begin
           if FindInvalidUTF8Codepoint(PChar(s), Length(s), True) > 0 then
             s := WinCPToUtf8(s);
           {$endif windows}
-          ParamsAndCfgFileContent.Add(s)
+
+          ExpandCfgFilename(s);
+
+          ParamsAndCfgFileContent.Add(s);
         end
       else
       if (Trim(s) <> '') and (s[1] <> '#') then
@@ -200,20 +245,15 @@ begin
     end;
   end;
 
-  for i := 1 to Paramcount do begin
-    s := ParamStrUTF8(i);
-    CleanDuplicates(s, PrimaryConfPathOptLong, PrimaryConfPathOptLong);
-    CleanDuplicates(s, PrimaryConfPathOptLong, PrimaryConfPathOptShort);
-    CleanDuplicates(s, PrimaryConfPathOptShort, PrimaryConfPathOptLong);
-    CleanDuplicates(s, PrimaryConfPathOptShort, PrimaryConfPathOptShort);
-    CleanDuplicates(s, SecondaryConfPathOptLong, SecondaryConfPathOptLong);
-    CleanDuplicates(s, SecondaryConfPathOptLong, SecondaryConfPathOptShort);
-    CleanDuplicates(s, SecondaryConfPathOptShort, SecondaryConfPathOptLong);
-    CleanDuplicates(s, SecondaryConfPathOptShort, SecondaryConfPathOptShort);
-    CleanDuplicates(s, LanguageOpt, LanguageOpt);
-    CleanDuplicates(s, LazarusDirOpt, LazarusDirOpt);
-    ParamsAndCfgFileContent.Add(s);
-  end;
+  // append the cmd line params
+  for i := 1 to Paramcount do
+    ParamsAndCfgFileContent.Add(ParamStrUTF8(i));
+
+  // delete duplicates, last wins
+  CleanDuplicates([PrimaryConfPathOptShort,PrimaryConfPathOptLong]);
+  CleanDuplicates([SecondaryConfPathOptShort,SecondaryConfPathOptLong]);
+  CleanDuplicates([LanguageOpt]);
+  CleanDuplicates([LazarusDirOpt]);
 
   Result := ParamsAndCfgFileContent;
 end;
@@ -291,8 +331,7 @@ begin
         IDEPid := 0;
       end;
     end
-    else if ParamIsOption(i, NoSplashScreenOptLong) or
-            ParamIsOption(i, NoSplashScreenOptShort) then
+    else if ParamIsOption(i, NoSplashScreenOptShort,NoSplashScreenOptLong) then
     begin
       ShowSplashScreen := false;
     end
@@ -332,36 +371,30 @@ end;
 
 function ExtractPrimaryConfigPath(aCmdLineParams: TStrings): string;
 
-  procedure GetParam(Param, Prefix: string; var Value: string);
+  function GetParam(const Param, Prefix: string): boolean;
   begin
-    if LeftStr(Param,length(Prefix))=Prefix then
-      Value:=copy(Param,length(Prefix)+1,length(Param));
+    if not LazStartsText(Prefix,Param) then exit(false);
+    ExtractPrimaryConfigPath:=copy(Param,length(Prefix)+1,length(Param));
   end;
 
 var
   i: Integer;
 begin
   Result:='';
-  for i:=0 to aCmdLineParams.Count-1 do
+  for i:=aCmdLineParams.Count-1 downto 0 do
   begin
-    GetParam(aCmdLineParams[i],PrimaryConfPathOptLong,Result);
-    GetParam(aCmdLineParams[i],PrimaryConfPathOptShort,Result);
+    if GetParam(aCmdLineParams[i],PrimaryConfPathOptLong) then exit;
+    if GetParam(aCmdLineParams[i],PrimaryConfPathOptShort) then exit;
   end;
 end;
 
 function ExpandParamFile(const s: string): string;
-const
-  a: array[1..5] of string = (
-    PrimaryConfPathOptLong,PrimaryConfPathOptShort,
-    SecondaryConfPathOptLong,SecondaryConfPathOptShort,
-    LazarusDirOpt
-  );
 var
   p: string;
 begin
   Result:=s;
-  for p in a do
-    if LeftStr(Result,length(p))=p then
+  for p in LazFileOpts do
+    if LazStartsText(p,Result) then
     begin
     Result:=LeftStr(Result,length(p))+ExpandFileNameUTF8(copy(Result,length(p)+1,length(Result)));
     exit;
@@ -386,8 +419,6 @@ end;
 
 function IsVersionRequested: boolean;
 begin
-  //Don't use ParamsAndCfgCount here, because ATM (2019-03-24) GetParamsAndCfgFile adds
-  //ParamStrUtf8(0) to it and may add more in the future
   Result := (ParamCount=1) and
             ((ParamStr(1)='--version') or
             (ParamStr(1)='-v'));
@@ -416,6 +447,15 @@ end;
 function ParamIsOption(ParamIndex : integer; const Option : string) : boolean;
 begin
   Result:=SysUtils.CompareText(ParamsAndCfgStr(ParamIndex),Option) = 0;
+end;
+
+function ParamIsOption(ParamIndex: integer; const OptionShort,
+  OptionLong: string): boolean;
+var
+  s: String;
+begin
+  s:=ParamsAndCfgStr(ParamIndex);
+  Result:=SameText(s,OptionShort) or SameText(s,OptionLong);
 end;
 
 function ParamIsOptionPlusValue(ParamIndex : integer;

@@ -276,7 +276,10 @@ begin
   NewExpValue:=ChompPathDelim(ExpandFileNameUTF8(NewValue));
   if NewExpValue=PrimaryConfigPath then exit;
   if ConsoleVerbosity>=0 then
-    debugln('SetPrimaryConfigPath NewValue="',UTF8ToConsole(NewValue),'" -> "',UTF8ToConsole(NewExpValue),'"');
+    if NewValue=NewExpValue then
+      debugln('SetPrimaryConfigPath NewValue="',UTF8ToConsole(NewExpValue),'"')
+    else
+      debugln('SetPrimaryConfigPath NewValue="',UTF8ToConsole(NewValue),'" expanded to "',UTF8ToConsole(NewExpValue),'"');
   PrimaryConfigPath := NewExpValue;
 end;
 
@@ -284,10 +287,17 @@ end;
   SetSecondaryConfigPath procedure
  ---------------------------------------------------------------------------}
 procedure SetSecondaryConfigPath(const NewValue: String);
+var
+  NewExpValue: String;
 begin
+  NewExpValue:=ChompPathDelim(ExpandFileNameUTF8(NewValue));
+  if NewExpValue=SecondaryConfigPath then exit;
   if ConsoleVerbosity>=0 then
-    debugln('SetSecondaryConfigPath NewValue="',UTF8ToConsole(NewValue),'" -> "',UTF8ToConsole(ExpandFileNameUTF8(NewValue)),'"');
-  SecondaryConfigPath := ChompPathDelim(ExpandFileNameUTF8(NewValue));
+    if NewValue=NewExpValue then
+      debugln('SetSecondaryConfigPath NewValue="',UTF8ToConsole(NewExpValue),'"')
+    else
+      debugln('SetSecondaryConfigPath NewValue="',UTF8ToConsole(NewValue),'" expanded to "',UTF8ToConsole(NewExpValue),'"');
+  SecondaryConfigPath := NewExpValue;
 end;
 
 {---------------------------------------------------------------------------
@@ -380,8 +390,6 @@ begin
 end;
 
 function GetLibraryPrefix(TargetOS: string): string;
-var
-  SrcOS: String;
 begin
   if TargetOS='' then
     TargetOS:=GetCompiledTargetOS;
