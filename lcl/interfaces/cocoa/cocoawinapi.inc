@@ -955,13 +955,26 @@ end;
 
 function TCocoaWidgetSet.Frame3d(DC: HDC; var ARect: TRect;
   const FrameWidth: integer; const Style: TBevelCut): Boolean;
+const
+  Edge: array[TBevelCut] of Integer =
+  (
+    {bvNone   } 0,
+    {bvLowered} BDR_SUNKENOUTER,
+    {bvRaised } EDGE_RAISED,
+    {bvSpace  } 0
+  );
 var
-  ctx: TCocoaContext;
+  I: Integer;
+  rect: TRect;
 begin
-  ctx := CheckDC(DC);
-  Result := Assigned(ctx) and (FrameWidth > 0);
-  if Result then
-    ctx.Frame3d(ARect, FrameWidth, Style);
+  Result := FrameWidth > 0;
+  if not Result then exit;
+  rect:= ARect;
+  for I := 0 to FrameWidth - 1 do
+  begin
+    Result := Boolean(DrawEdge(DC, rect, Edge[Style], BF_RECT or BF_ADJUST));
+    InflateRect(rect,-1,-1);
+  end;
 end;
 
 function TCocoaWidgetSet.FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH): Integer;
