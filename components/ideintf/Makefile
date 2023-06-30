@@ -4176,7 +4176,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/ideintf$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/IDEIntf.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/ideintf.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) ideintf$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} units/*

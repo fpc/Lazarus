@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for SDFLaz 0.1.1
 #
-#   This file was generated on 13-11-22
+#   This file was generated on 30-6-23
 
 [package]
 name=sdflaz
@@ -56,7 +56,7 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/sdflaz$(PPUEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/SDFLaz.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/sdflaz.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) sdflaz$(PPUEXT) compiled
 

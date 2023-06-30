@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for MemDSLaz 1.2.1
 #
-#   This file was generated on 25-6-23
+#   This file was generated on 30-6-23
 
 [package]
 name=memdslaz
@@ -56,7 +56,7 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/memdslaz$(PPUEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/MemDSLaz.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/memdslaz.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) memdslaz$(PPUEXT) compiled
 

@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for DateTimeCtrls 1.5.1
 #
-#   This file was generated on 13-11-22
+#   This file was generated on 30-6-23
 
 [package]
 name=datetimectrls
@@ -56,7 +56,7 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/datetimectrls$(PPUEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/DateTimeCtrls.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/datetimectrls.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) datetimectrls$(PPUEXT) compiled
 

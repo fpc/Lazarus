@@ -3843,7 +3843,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/fcllaz$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/FCL.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/fcl.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) fcllaz$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} ../units/*

@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for Cody 1.1
 #
-#   This file was generated on 25-6-23
+#   This file was generated on 30-6-23
 
 [package]
 name=cody
@@ -56,7 +56,7 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/cody$(PPUEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/Cody.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/cody.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) cody$(PPUEXT) compiled
 

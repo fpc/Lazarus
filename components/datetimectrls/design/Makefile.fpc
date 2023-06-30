@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for DateTimeCtrlsDsgn 1.5.1
 #
-#   This file was generated on 25-6-23
+#   This file was generated on 30-6-23
 
 [package]
 name=datetimectrlsdsgn
@@ -57,7 +57,7 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/datetimectrlsdsgn$(PPUEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/DateTimeCtrlsDsgn.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/datetimectrlsdsgn.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) datetimectrlsdsgn$(PPUEXT) compiled
 

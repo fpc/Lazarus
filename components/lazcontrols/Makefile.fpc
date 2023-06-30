@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for LazControls 1.0.1
 #
-#   This file was generated on 13-11-22
+#   This file was generated on 30-6-23
 
 [package]
 name=lazcontrols
@@ -56,7 +56,7 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/lazcontrols$(PPUEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/LazControls.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/lazcontrols.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) lazcontrols$(PPUEXT) compiled
 

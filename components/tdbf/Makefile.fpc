@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for DBFLaz 0.1.1
 #
-#   This file was generated on 25-6-23
+#   This file was generated on 30-6-23
 
 [package]
 name=dbflaz
@@ -56,7 +56,7 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/dbflaz$(PPUEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/DBFLaz.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/dbflaz.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) dbflaz$(PPUEXT) compiled
 

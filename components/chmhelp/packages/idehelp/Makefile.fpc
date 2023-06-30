@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for ChmHelpPkg 0.2.1
 #
-#   This file was generated on 25-6-23
+#   This file was generated on 30-6-23
 
 [package]
 name=chmhelppkg
@@ -56,7 +56,7 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/chmhelppkg$(PPUEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/ChmHelpPkg.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/chmhelppkg.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) chmhelppkg$(PPUEXT) compiled
 

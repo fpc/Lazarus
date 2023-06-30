@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for LazProjectGroups 0.7
 #
-#   This file was generated on 25-6-23
+#   This file was generated on 30-6-23
 
 [package]
 name=lazprojectgroups
@@ -56,7 +56,7 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/lazprojectgroups$(PPUEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/LazProjectGroups.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/lazprojectgroups.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) lazprojectgroups$(PPUEXT) compiled
 

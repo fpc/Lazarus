@@ -3843,7 +3843,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/cmdlinedebuggerbase$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/CmdLineDebuggerBase.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/cmdlinedebuggerbase.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) cmdlinedebuggerbase$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} lib/*

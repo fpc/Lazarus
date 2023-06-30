@@ -3843,7 +3843,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/anchordockpkg$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/AnchorDocking.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/anchordocking.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) anchordockpkg$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} units/*

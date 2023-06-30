@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for TurboPowerIPro 1.0
 #
-#   This file was generated on 13-11-22
+#   This file was generated on 30-6-23
 
 [package]
 name=turbopoweripro
@@ -56,7 +56,7 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/turbopoweripro$(PPUEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/TurboPowerIPro.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/turbopoweripro.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) turbopoweripro$(PPUEXT) compiled
 

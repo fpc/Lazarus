@@ -3843,7 +3843,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/anchordockingdsgn$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/AnchorDockingDsgn.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/anchordockingdsgn.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) anchordockingdsgn$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} units/*

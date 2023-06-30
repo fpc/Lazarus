@@ -3843,7 +3843,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/exampleprojects$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/ExampleProjects.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/exampleprojects.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) exampleprojects$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} lib/*

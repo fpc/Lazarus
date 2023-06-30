@@ -3843,7 +3843,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/turbopoweriprodsgn$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/TurboPowerIProDsgn.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/turbopoweriprodsgn.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) turbopoweriprodsgn$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} lib/*

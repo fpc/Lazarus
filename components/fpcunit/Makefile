@@ -3843,7 +3843,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/fpcunittestrunner$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/FPCUnitTestRunner.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/fpcunittestrunner.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) fpcunittestrunner$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} lib/*

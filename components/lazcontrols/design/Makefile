@@ -3843,7 +3843,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/lazcontroldsgn$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/LazControlDsgn.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/lazcontroldsgn.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) lazcontroldsgn$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} lib/*

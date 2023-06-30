@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for ToDoListLaz 1.0.3
 #
-#   This file was generated on 25-6-23
+#   This file was generated on 30-6-23
 
 [package]
 name=todolistlaz
@@ -56,7 +56,7 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/todolistlaz$(PPUEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/ToDoListLaz.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/todolistlaz.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) todolistlaz$(PPUEXT) compiled
 

@@ -3843,7 +3843,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/tachartlazaruspkg$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/TAChartLazarusPkg.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/tachartlazaruspkg.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) tachartlazaruspkg$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} lib/*

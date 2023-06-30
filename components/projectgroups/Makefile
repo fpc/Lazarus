@@ -3843,7 +3843,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/lazprojectgroups$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/LazProjectGroups.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/lazprojectgroups.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) lazprojectgroups$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} lib/*

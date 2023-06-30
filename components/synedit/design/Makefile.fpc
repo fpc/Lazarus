@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for SynEditDsgn 1.0
 #
-#   This file was generated on 25-6-23
+#   This file was generated on 30-6-23
 
 [package]
 name=syneditdsgn
@@ -56,7 +56,7 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/allsyneditdsgn$(PPUEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/SynEditDsgn.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/syneditdsgn.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) allsyneditdsgn$(PPUEXT) compiled
 

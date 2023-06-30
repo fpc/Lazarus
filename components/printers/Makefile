@@ -4176,7 +4176,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/printer4lazarus$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/Printer4Lazarus.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/printer4lazarus.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) printer4lazarus$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} lib/*

@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for SimpleWebServerGUI 1.0
 #
-#   This file was generated on 25-6-23
+#   This file was generated on 30-6-23
 
 [package]
 name=simplewebservergui
@@ -56,7 +56,7 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/simplewebservergui$(PPUEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/SimpleWebServerGUI.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/simplewebservergui.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) simplewebservergui$(PPUEXT) compiled
 

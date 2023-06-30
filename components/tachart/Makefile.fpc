@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for TAChartLazarusPkg 1.0
 #
-#   This file was generated on 25-6-23
+#   This file was generated on 30-6-23
 
 [package]
 name=tachartlazaruspkg
@@ -56,7 +56,7 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/tachartlazaruspkg$(PPUEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/TAChartLazarusPkg.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/tachartlazaruspkg.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) tachartlazaruspkg$(PPUEXT) compiled
 

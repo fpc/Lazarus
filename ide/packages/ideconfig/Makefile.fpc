@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for IdeConfig 1.0
 #
-#   This file was generated on 11.06.2023
+#   This file was generated on 30-6-23
 
 [package]
 name=ideconfig
@@ -57,7 +57,7 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/ideconfig$(PPUEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/IdeConfig.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/ideconfig.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) ideconfig$(PPUEXT) compiled
 

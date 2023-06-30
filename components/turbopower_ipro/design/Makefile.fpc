@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for TurboPowerIProDsgn 0.0
 #
-#   This file was generated on 25-6-23
+#   This file was generated on 30-6-23
 
 [package]
 name=turbopoweriprodsgn
@@ -56,7 +56,7 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/turbopoweriprodsgn$(PPUEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/TurboPowerIProDsgn.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/turbopoweriprodsgn.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) turbopoweriprodsgn$(PPUEXT) compiled
 

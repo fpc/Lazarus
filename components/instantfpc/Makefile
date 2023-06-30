@@ -3843,7 +3843,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/instantfpclaz$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/InstantFPCLaz.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/instantfpclaz.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) instantfpclaz$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} lib/*

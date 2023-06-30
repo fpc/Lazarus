@@ -3843,7 +3843,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/lazmouseandkeyinput$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/LazMouseAndKeyInput.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/lazmouseandkeyinput.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) lazmouseandkeyinput$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} lib/*

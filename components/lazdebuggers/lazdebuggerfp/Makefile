@@ -3843,7 +3843,7 @@ endif
 cleartarget:
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/lazdebuggerfp$(PPUEXT)
 compiled:
-	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/LazDebuggerFp.compiled
+	$(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/lazdebuggerfp.compiled
 all: cleartarget $(COMPILER_UNITTARGETDIR) lazdebuggerfp$(PPUEXT) compiled
 distclean: clean
 	${DELTREE} lib/*
