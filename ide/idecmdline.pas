@@ -176,7 +176,7 @@ function GetParamsAndCfgFile: TStrings;
         if not FilenameIsAbsolute(aFilename) then
           aFilename:=ResolveDots(ExtractFilePath(CfgFileName)+aFilename);
         aParam:=LazFileOpts[i]+aFilename;
-        debugln(['ExpandCfgFilename ',aParam]);
+        //debugln(['ExpandCfgFilename ',aParam]);
         exit;
       end;
   end;
