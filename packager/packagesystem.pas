@@ -4768,7 +4768,7 @@ begin
   s:=s+'        -$(DEL) $(COMPILER_UNITTARGETDIR)/'+MainUnitName+'$(PPUEXT)'+e;
   s:=s+''+e;
   s:=s+'compiled:'+e;
-  s:=s+'        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/'+APackage.Name+'.compiled'+e;
+  s:=s+'        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/'+lowercase(APackage.Name)+'.compiled'+e;
   s:=s+''+e;
   s:=s+'all: cleartarget $(COMPILER_UNITTARGETDIR) '+MainUnitName+'$(PPUEXT) compiled'+e;
   if DistCleanDir<>'' then begin
@@ -4951,7 +4951,7 @@ begin
     exit;
   end;
   FpmakeFPCFilename:=AppendPathDelim(APackage.Directory)+'fpmake.pp';
-  FPmakeCompiledFilename:=AppendPathDelim(APackage.Directory)+APackage.Name+'.compiled';
+  FPmakeCompiledFilename:=AppendPathDelim(APackage.Directory)+lowercase(APackage.Name)+'.compiled';
 
   SrcFilename:=APackage.GetSrcFilename;
 
