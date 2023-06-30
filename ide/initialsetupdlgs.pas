@@ -303,7 +303,6 @@ begin
       'photos',
       'movies',
       'videos',
-      'applications',
       'calendar',
       'calendars',
       'mail',
@@ -313,6 +312,14 @@ begin
       'caches',
       'trash',
       'containers',
+      {$IFDEF darwin}
+      'applications',
+      {$ENDIF}
+      {$IFDEF Linux}
+      'proc',
+      'sys',
+      'dev',
+      {$ENDIF}
       'tmp': continue;
       end;
       {$IFDEF VerboseFPCSrcScanThead}
