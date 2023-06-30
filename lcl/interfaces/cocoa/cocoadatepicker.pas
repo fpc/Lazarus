@@ -59,12 +59,11 @@ begin
       // After mouse event, has our date changed
       newDate:= NSDateToDateTime(Self.dateValue);
       dateClicked:= (oldDate <> newDate);
-      if dateClicked and Assigned(callback) then
+      if dateClicked then
         callback.SendOnChange;
 
       // This also calls OnClick....
-      if Assigned(Callback) then
-        callback.MouseUpDownEvent(event, true);
+      callback.MouseUpDownEvent(event, true);
     end;
   end;
 end;
