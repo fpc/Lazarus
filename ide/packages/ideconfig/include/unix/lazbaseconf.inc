@@ -24,9 +24,10 @@
 }
 
 const
-  DefaultFPCSrcDirs: array[1..15] of string = (
+  DefaultFPCSrcDirs: array[1..16] of string = (
     // search first for sources with right version
     '/usr/share/fpcsrc/$(FPCVer)',
+    '/usr/local/share/fpcsrc/$(FPCVer)',
     // then search for global paths
     '/usr/share/fpcsrc',
     '/usr/local/share/fpcsrc',
