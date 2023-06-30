@@ -297,6 +297,24 @@ begin
       if Terminated then Break;
       if (PathInfo.Name='') or (PathInfo.Name[1]='.')
       or ((PathInfo.Attr and faDirectory) = 0) then Continue;
+      case lowercase(PathInfo.Name) of
+      'pictures',
+      'music',
+      'photos',
+      'movies',
+      'videos',
+      'applications',
+      'calendar',
+      'calendars',
+      'mail',
+      'messages',
+      'contacts',
+      'cache',
+      'caches',
+      'trash',
+      'containers',
+      'tmp': continue;
+      end;
       {$IFDEF VerboseFPCSrcScanThead}
       fPath := APath;
       fFileInfo := PathInfo;
