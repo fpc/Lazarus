@@ -50,8 +50,8 @@ begin
     T := P.Targets.AddImplicitUnit('lazaruspackageintf.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
-    P.Sources.AddSrc('FCL.compiled');
-    P.InstallFiles.Add('FCL.compiled',AllOSes,'$(unitinstalldir)');
+    P.Sources.AddSrc('fcl.compiled');
+    P.InstallFiles.Add('fcl.compiled',AllOSes,'$(unitinstalldir)');
 
     end;
 end;

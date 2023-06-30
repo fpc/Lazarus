@@ -3877,7 +3877,7 @@ end;
 
 function TLazPackage.GetStateFilename(UseOverride: boolean): string;
 begin
-  Result:=AppendPathDelim(GetOutputDirectory(UseOverride))+Name+'.compiled';
+  Result:=AppendPathDelim(GetOutputDirectory(UseOverride))+lowercase(Name)+'.compiled';
 end;
 
 function TLazPackage.GetSrcFilename: string;
