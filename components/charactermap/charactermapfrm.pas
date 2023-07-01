@@ -46,6 +46,7 @@ uses
   GraphType, LazUTF8, LConvEncoding;
 
 type
+  TCharMapPage = (cmpUnicode, cmpAnsi);
   TOnInsertCharacterEvent = procedure (const C: TUTF8Char) of object;
 
   { TCharacterMapForm }
@@ -73,7 +74,6 @@ type
     procedure cbCodePageSelect(Sender: TObject);
     procedure cbUniRangeSelect(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
-    procedure HelpButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure seAnsiSizeChange(Sender: TObject);
@@ -99,11 +99,23 @@ type
     procedure FillAnsiGrid;
     procedure FillUnicodeGrid;
     procedure FillUniRangeList(ASorted: Boolean);
+    function GetActivePage: TCharMapPage;
+    function GetAlphaSort: Boolean;
+    function GetDropDownCount: Integer;
+    function GetFontSize: Integer;
     function UnicodeBlockIndexByName(AName: String): Integer;
     function UnicodeBlockSelected: Boolean;
     procedure SelectSystemCP;
+    procedure SetActivePage(AValue: TCharMapPage);
+    procedure SetAlphaSort(AValue: Boolean);
+    procedure SetDropDownCount(AValue: Integer);
+    procedure SetFontSize(AValue: Integer);
     procedure SetOnShowHelp(AValue: TNotifyEvent);
   public
+    property ActivePage: TCharMapPage read GetActivePage write SetActivePage;
+    property AlphaSort: Boolean read GetAlphaSort write SetAlphaSort;
+    property DropDownCount: Integer read GetDropDownCount write SetDropDownCount;
+    property FontSize: Integer read GetFontSize write SetFontSize;
     property OnInsertCharacter: TOnInsertCharacterEvent
       read FOnInsertCharacter write FOnInsertCharacter;
     property OnShowHelp: TNotifyEvent
@@ -210,11 +222,6 @@ begin
   cbCodePage.ItemIndex := 0;
 end;
 
-procedure TCharacterMapForm.HelpButtonClick(Sender: TObject);
-begin
-  //LazarusHelp.ShowHelpForIDEControl(Self);
-end;
-
 function RoundUp(Value, Divi:integer):integer;
 begin
   if Value mod Divi = 0 then
@@ -247,13 +254,6 @@ procedure TCharacterMapForm.FormShow(Sender: TObject);
 var
   savedFontSize: Integer;
 begin
-  (*          wp
-  AnsiGrid.Font.Name := EditorOpts.EditorFont;
-  UnicodeGrid.Font.Name := EditorOpts.EditorFont;
-  AnsiGrid.Font.Size := seAnsiSize.Value;
-  UnicodeGrid.Font.Size := seUniSize.Value;
-    *)
-
   // Auto-adjust the width of the AnsiGrid's fixed column. Note that
   // the font defined in PrepareCanvas is ignored by AutoSizeColumn.
   savedfontSize := AnsiGrid.Font.Size;
@@ -266,9 +266,6 @@ begin
   FUnicodeBlockIndex:=NOT_SELECTED;
   FillUniRangeList(SortUniRangeListButton.Down);
   FillUnicodeGrid;
-  // wp
-  //cbCodePage.DropDownCount := Math.max(EnvironmentOptions.DropDownCount, 25);
-  //cbUniRange.DropDownCount := Math.max(EnvironmentOptions.DropDownCount, 25);
 end;
 
 procedure TCharacterMapForm.seAnsiSizeChange(Sender: TObject);
@@ -453,6 +450,51 @@ begin
   if not UnicodeBlockSelected then
     FUnicodeBlockIndex:=Low(UnicodeBlocks);
   cbUniRange.Text:=UnicodeBlocks[FUnicodeBlockIndex].PG;
+end;
+
+function TCharacterMapForm.GetActivePage: TCharMapPage;
+begin
+  Result := TCharMapPage(PageControl1.ActivePageIndex);
+end;
+
+function TCharacterMapForm.GetAlphaSort: Boolean;
+begin
+  Result := SortUniRangeListButton.Down;
+end;
+
+function TCharacterMapForm.GetDropDownCount: Integer;
+begin
+  Result := CbUniRange.DropDownCount;
+end;
+
+function TCharacterMapForm.GetFontSize: Integer;
+begin
+  Result := seUniSize.Value;
+end;
+
+procedure TCharacterMapForm.SetActivePage(AValue: TCharMapPage);
+begin
+  PageControl1.ActivePageIndex := ord(AValue);
+end;
+
+procedure TCharacterMapForm.SetAlphaSort(AValue: Boolean);
+begin
+  SortUniRangeListButton.Down := AValue;
+end;
+
+procedure TCharacterMapForm.SetDropDownCount(AValue: Integer);
+begin
+  CbUniRange.DropDownCount := AValue;
+  CbCodePage.DropDownCount := AValue;
+end;
+
+procedure TCharacterMapForm.SetFontSize(AValue: Integer);
+begin
+  seUniSize.Value := AValue;
+  seAnsiSize.Value := AValue;
+
+  UnicodeGrid.Font.Size := AValue;
+  AnsiGrid.Font.Size := AValue;
 end;
 
 function TCharacterMapForm.UnicodeBlockIndexByName(AName: String): Integer;
