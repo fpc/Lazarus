@@ -410,9 +410,12 @@ var
 begin
   lb := Sender as TListBox;
   if lb.ItemIndex = fPrevPageIndex then Exit;
-  FillComponents(lb.Items[lb.ItemIndex]);
-  UpdatePageMoveButtons(lb.ItemIndex);
-  UpdateCompMoveButtons(-1);
+  if lb.ItemIndex >= 0 then
+  begin
+    FillComponents(lb.Items[lb.ItemIndex]);
+    UpdatePageMoveButtons(lb.ItemIndex);
+    UpdateCompMoveButtons(-1);
+  end;
   fPrevPageIndex := lb.ItemIndex;
 end;
 
