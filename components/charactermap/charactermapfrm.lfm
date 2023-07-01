@@ -2636,8 +2636,7 @@ object CharacterMapForm: TCharacterMapForm
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnShow = FormShow
-  Position = poScreenCenter
-  LCLVersion = '2.3.0.0'
+  LCLVersion = '3.99.0.0'
   object ButtonPanel: TButtonPanel
     Left = 6
     Height = 26
@@ -2648,7 +2647,6 @@ object CharacterMapForm: TCharacterMapForm
     OKButton.Enabled = False
     HelpButton.Name = 'HelpButton'
     HelpButton.DefaultCaption = True
-    HelpButton.OnClick = HelpButtonClick
     CloseButton.Name = 'CloseButton'
     CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
@@ -2668,10 +2666,10 @@ object CharacterMapForm: TCharacterMapForm
     Height = 433
     Top = 6
     Width = 578
-    ActivePage = pgAnsi
+    ActivePage = pgUnicode
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 0
     object pgUnicode: TTabSheet
       Caption = 'Unicode'
