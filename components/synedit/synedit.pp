@@ -519,7 +519,7 @@ type
     {$IFDEF WithSynExperimentalCharWidth}
     FSysCharWidthLinesView: TSynEditStringSystemWidthChars;
     {$ENDIF}
-    FTabbedLinesView:  TSynEditStringTabExpander;
+    FTabbedLinesView:  TSynEditStringTabExpanderBase;
     FTheLinesView: TSynEditStringsLinked;
     FLines: TSynEditStringListBase;          // The real (un-mapped) line-buffer
     FStrings: TStrings;               // External TStrings based interface to the Textbuffer
@@ -605,6 +605,7 @@ type
     procedure DoTopViewChanged(Sender: TObject);
     procedure SetScrollOnEditLeftOptions(AValue: TSynScrollOnEditOptions);
     procedure SetScrollOnEditRightOptions(AValue: TSynScrollOnEditOptions);
+    procedure SetTabViewClass(AValue: TSynEditStringTabExpanderClass);
     procedure UpdateScreenCaret;
     procedure AquirePrimarySelection;
     function GetChangeStamp: int64;
@@ -1191,6 +1192,7 @@ type
       read GetBracketHighlightStyle write SetBracketHighlightStyle;
     property TabWidth: integer read fTabWidth write SetTabWidth default 8;
     property WantTabs: boolean read fWantTabs write SetWantTabs default True;
+    property TabViewClass: TSynEditStringTabExpanderClass write SetTabViewClass;
 
     // Events
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -2169,6 +2171,19 @@ procedure TCustomSynEdit.SetScrollOnEditRightOptions(
 begin
   FScrollOnEditRightOptions.Assign(AValue);
   RecalcScrollOnEdit(nil);
+end;
+
+procedure TCustomSynEdit.SetTabViewClass(AValue: TSynEditStringTabExpanderClass
+  );
+var
+  i: Integer;
+begin
+  i := FTextViewsManager.IndexOf(FTabbedLinesView);
+  FTextViewsManager.RemoveSynTextView(FTabbedLinesView);
+  FTabbedLinesView.Free;
+  FTabbedLinesView := AValue.Create;
+  FTextViewsManager.AddTextView(FTabbedLinesView, i);
+  FTabbedLinesView.TabWidth := fTabWidth;
 end;
 
 constructor TCustomSynEdit.Create(AOwner: TComponent);

@@ -2006,6 +2006,7 @@ var
 begin
   i := FTextViewsList.IndexOf(aTextView);
   if i >= 0 then begin
+    aTextView.SetManager(nil);
     if aDestroy then
       TSynEditStringsLinked(FTextViewsList[i]).Free;
     FTextViewsList.Delete(i);
