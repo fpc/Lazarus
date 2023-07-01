@@ -551,14 +551,24 @@ begin
   begin
     responder := win.firstResponder;
     cb := responder.lclGetCallback;
-    if Assigned(cb) and (theEvent.type_=NSKeyDown) then
+    if Assigned(cb) then
     begin
-      // set CocoaOnlyState when NSKeyDown only,
-      // keep last CocoaOnlyState when NSKeyUp
-      if responder.conformsToProtocol(objcprotocol(NSTextInputClientProtocol)) then
-        cb.CocoaOnlyState := NSTextInputClientProtocol(responder).hasMarkedText
-      else
-        cb.CocoaOnlyState := false;
+      case theEvent.type_ of
+        NSKeyDown:
+          // when NSKeyDown, always reset CocoaOnlyState
+          if responder.conformsToProtocol(objcprotocol(NSTextInputClientProtocol)) then
+            cb.CocoaOnlyState := NSTextInputClientProtocol(responder).hasMarkedText
+          else
+            cb.CocoaOnlyState := false;
+        NSKeyUp:
+          // when NSKeyUp, reset CocoaOnlyState only if it's false (last KeyDown set)
+          // keep true if CocoaOnlyState=true
+          if not cb.CocoaOnlyState then
+          begin
+            if responder.conformsToProtocol(objcprotocol(NSTextInputClientProtocol)) then
+              cb.CocoaOnlyState := NSTextInputClientProtocol(responder).hasMarkedText;
+          end;
+      end;
     end;
   end;
 
