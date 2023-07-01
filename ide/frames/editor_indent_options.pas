@@ -54,6 +54,7 @@ type
     cbSlashExtend: TComboBox;
     CenterLabel1: TLabel;
     cbStringEnableAutoContinue: TCheckBox;
+    chkElasticTabs: TCheckBox;
     CommentsGroupDivider: TDividerBevel;
     edStringAutoAppend: TEdit;
     edStringAutoPrefix: TEdit;
@@ -100,6 +101,8 @@ type
     lblBlockIndentKeys: TLabel;
     TabIndentBlocksCheckBox: TCheckBox;
     SmartTabsCheckBox: TCheckBox;
+    ElastTabMinWidthsComboBox: TComboBox;
+    ElastTabMinWidthsLabel: TLabel;
     tbAnsi: TTabSheet;
     tbCurly: TTabSheet;
     tbShlash: TTabSheet;
@@ -126,6 +129,7 @@ type
     procedure SmartTabsCheckBoxChange(Sender: TObject);
     procedure TabIndentBlocksCheckBoxChange(Sender: TObject);
     procedure TabsToSpacesCheckBoxChange(Sender: TObject);
+    procedure chkElasticTabsChange(Sender: TObject);
   private
     FDefaultBookmarkImages: TImageList;
     FDialog: TAbstractOptionsEditorDialog;
@@ -173,6 +177,8 @@ begin
   TabsToSpacesCheckBox.Caption := dlgTabsToSpaces;
   TabWidthsLabel.Caption := dlgTabWidths;
   SmartTabsCheckBox.Caption := dlgSmartTabs;
+  chkElasticTabs.Caption := dlgElasticTabs;
+  ElastTabMinWidthsLabel.Caption := dlgElasticTabsWidths;
 
   // indents
   IndentsGroupDivider.Caption := dlgIndentsIndentGroupOptions;
@@ -273,6 +279,7 @@ begin
     SetComboBoxText(BlockIndentComboBox, IntToStr(BlockIndent), cstCaseInsensitive);
     SetComboBoxText(BlockTabIndentComboBox, IntToStr(BlockTabIndent), cstCaseInsensitive);
     SetComboBoxText(TabWidthsComboBox, IntToStr(TabWidth), cstCaseInsensitive);
+    SetComboBoxText(ElastTabMinWidthsComboBox, IntToStr(ElasticTabsMinWidth), cstCaseInsensitive);
     BlockIndentTypeComboBox.ItemIndex := ord(BlockIndentType);
 
     // tabs, indents
@@ -280,6 +287,7 @@ begin
     TabIndentBlocksCheckBox.Checked := eoTabIndent in SynEditOptions;
     SmartTabsCheckBox.Checked := eoSmartTabs in SynEditOptions;
     TabsToSpacesCheckBox.Checked := eoTabsToSpaces in SynEditOptions;
+    chkElasticTabs.Checked := ElasticTabs;
 
     lblBlockIndentShortcut.Caption := '';
     K := KeyMap.FindByCommand(ecBlockIndent);
@@ -373,6 +381,14 @@ begin
     UpdateOptionFromBool(TabIndentBlocksCheckBox.Checked, eoTabIndent);
     UpdateOptionFromBool(SmartTabsCheckBox.Checked, eoSmartTabs);
     UpdateOptionFromBool(TabsToSpacesCheckBox.Checked, eoTabsToSpaces);
+    ElasticTabs := chkElasticTabs.Checked;
+
+    i := StrToIntDef(ElastTabMinWidthsComboBox.Text, 2);
+    if i < 1 then
+      i := 1;
+    if i > 20 then
+      i := 20;
+    ElasticTabsMinWidth := i;
 
     i := StrToIntDef(TabWidthsComboBox.Text, 2);
     if i < 1 then
@@ -651,6 +667,13 @@ end;
 procedure TEditorIndentOptionsFrame.TabsToSpacesCheckBoxChange(Sender: TObject);
 begin
   SetPreviewOption(TabsToSpacesCheckBox.Checked, eoTabsToSpaces);
+end;
+
+procedure TEditorIndentOptionsFrame.chkElasticTabsChange(Sender: TObject);
+begin
+  SmartTabsCheckBox.Enabled    := not chkElasticTabs.Checked;
+  TabsToSpacesCheckBox.Enabled := not chkElasticTabs.Checked;
+  ElastTabMinWidthsComboBox.Enabled := chkElasticTabs.Checked;
 end;
 
 function TEditorIndentOptionsFrame.DefaultBookmarkImages: TImageList;

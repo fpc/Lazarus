@@ -1669,6 +1669,8 @@ resourcestring
   dlgUseTabsHistory = 'Use tab history when closing tabs';
   dlgShowGutterHints = 'Show gutter hints';
   dlgSmartTabs = 'Smart tabs';
+  dlgElasticTabs = 'Elastic tabs';
+  dlgElasticTabsWidths = 'Elastic min Widths';
   dlgTabsToSpaces = 'Tabs to spaces';
   dlgTabIndent = 'Tab indents blocks';
   dlgTrimTrailingSpaces = 'Trim trailing spaces';

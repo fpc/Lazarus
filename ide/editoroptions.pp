@@ -61,7 +61,8 @@ uses
   SynHighlighterPython, SynHighlighterUNIXShellScript, SynHighlighterXML,
   SynHighlighterJScript, SynHighlighterDiff, SynHighlighterBat,
   SynHighlighterIni, SynHighlighterPo, SynHighlighterPike, SynPluginMultiCaret,
-  SynEditMarkupFoldColoring, SynEditMarkup, SynGutterLineOverview, SynBeautifierPascal,
+  SynEditMarkupFoldColoring, SynEditMarkup, SynGutterLineOverview,
+  SynBeautifierPascal, SynEditTextDynTabExpander, SynEditTextTabExpander,
   // codetools
   LinkScanner, CodeToolManager,
   // IDEIntf
@@ -1422,6 +1423,8 @@ type
   TEditorOptionsBase = class(TIDEEditorOptions)
   private
     fDbgHintUseBackendDebugConverter: Boolean;
+    FElasticTabs: Boolean;
+    fElasticTabsMinWidth: Integer;
     FTabFont: String;
     FTabFontDisableAntialiasing: Boolean;
     FTabFontSize: Integer;
@@ -1585,6 +1588,9 @@ type
     property ScrollOnEditRightOptions: TSynScrollOnEditRightOptions
       read FScrollOnEditRightOptions write FScrollOnEditRightOptions;
     property ScrollPastEolMode: TEditorOptsScrollPastEolMode read FScrollPastEolMode write FScrollPastEolMode default optScrollPage;
+    // Tabs
+    property ElasticTabs: Boolean read FElasticTabs write FElasticTabs default False;
+    property ElasticTabsMinWidth: Integer read fElasticTabsMinWidth write fElasticTabsMinWidth default 1;
   end;
 
   { TEditorOptionsDefaults }
@@ -4818,6 +4824,8 @@ begin
   FStringBreakPrefix  := '';
 
   FScrollPastEolMode := optScrollPage;
+
+  FElasticTabsMinWidth := 1;
 end;
 
 function TEditorOptionsBase.GetTabPosition: TTabPosition;
@@ -4916,6 +4924,7 @@ begin
   fTrimSpaceType := settEditLine;
   fUndoLimit := 32767;
   fTabWidth := 8;
+  fElasticTabsMinWidth := 1;
   fBracketHighlightStyle := sbhsBoth;
   // Display options
   fGutterSeparatorIndex := 3;
@@ -6010,6 +6019,15 @@ begin
       b.StringBreakAppend  := FStringBreakAppend;
       b.StringBreakPrefix  := FStringBreakPrefix;
 
+    end;
+
+    if ElasticTabs then begin
+      ASynEdit.TabViewClass := TSynEditStringDynTabExpander;
+      ASynEdit.Options := fSynEditOptions - [eoSmartTabs, eoTabsToSpaces];
+      TSynEditStringDynTabExpander(ASynEdit.TextViewsManager.SynTextViewByClass[TSynEditStringDynTabExpander])
+        .MinTabWidth := FElasticTabsMinWidth;
+    end else begin
+      ASynEdit.TabViewClass := TSynEditStringTabExpander;
     end;
 
     ASynEdit.TrimSpaceType := FTrimSpaceType;
