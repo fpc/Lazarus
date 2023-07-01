@@ -2408,6 +2408,7 @@ var
   R: TRect;
   WindowPlacement: TWINDOWPLACEMENT;
   ParentHandle: THandle;
+  lclControl, lclParent: TWinControl;
 begin
   Result := False;
 
@@ -2425,6 +2426,24 @@ begin
     if ParentHandle <> 0 then
     begin
       if not Windows.ScreenToClient(ParentHandle, @LeftTop) then Exit;
+      lclControl := GetWin32WindowInfo(Handle)^.WinControl;
+      //Is this an MDIChild?
+      //Note: doing a more simple comparison: (ParentHandle = Win32WidgetSet.MDIClientHandle) has side effects, hence this more elaborate version
+      if (lclControl is TCustomForm) and
+         (TCustomForm(lclControl).FormStyle = fsMDIChild) and
+         (TCustomForm(lclControl).Parent = nil) and
+         Assigned(Application.MainForm) and
+         (Application.MainForm.FormStyle=fsMDIForm)
+      then
+      begin
+        //for a MDI ChildForm do not use ParentHandle
+        //because in this case ParentHandle = Win32WidgetSet.MDIClientHandle
+        //which is not a TWinControl, but a custom window created with the CreateWindowW API directly
+        //and GetLCLClientBoundsOffset() then returns False.
+        //Issue #40232
+        //ToDo: fix this in a better place?
+        ParentHandle := Handle;
+      end;
       if not GetLCLClientBoundsOffset(ParentHandle, R) then
         Exit;
       Dec(LeftTop.X, R.Left);
