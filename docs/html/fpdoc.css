@@ -8,115 +8,115 @@
 */
 
 body {
-  background: white
+  background: white;
 }
 
 body, p, th, td, caption, h1, h2, h3, ul, ol, dl {
   color: black;
-  font-family: sans-serif
+  font-family: sans-serif;
 }
 
 tt, span.kw, pre {
-  font-family: "Courier New", Courier, monospace
+  font-family: "Courier New", Courier, monospace;
 }
 
 body, p, th, td, caption, ul, ol, dl, tt, span.kw, pre {
-  font-size: 14px
+  font-size: 12pt;
 }
 
 A:link {
-  color: blue
+  color: blue;
 }
 
 A:visited {
-  color: darkblue
+  color: darkblue;
 }
 
 A:active {
-  color: red
+  color: red;
 }
 
 A {
-  text-decoration: none
+  text-decoration: none;
 }
 
 A:hover {
-  text-decoration: underline
+  text-decoration: underline;
 }
 
 h1, h2, td.h2 {
-  color: #005A9C
+  color: #005A9C;
 }
 
 /* Especially for Netscape on Linux: */
 h3, td.h3 {
-  font-size: 12pt
+  font-size: 12pt;
 }
 
 /* source fragments */
 span.code {
-  white-space: nowrap
+  white-space: nowrap;
 }
 
 /* symbols in source fragments */
 span.sym {
-  color: darkred
+  color: darkred;
 }
 
 /* keywords in source fragments */
 span.kw {
-  font-weight: bold
+  font-weight: bold;
 }
 
 /* comments in source fragments */
 span.cmt {
   color: darkcyan;
-  font-style: italic
+  font-style: italic;
 }
 
 /* directives in source fragments */
 span.dir {
   color: darkyellow;
-  font-style: italic
+  font-style: italic;
 }
 
 /* numbers in source fragments */
 span.num {
-  color: darkmagenta
+  color: darkmagenta;
 }
 
 /* characters (#...) in source fragments */
 span.chr {
-  color: darkcyan
+  color: darkcyan;
 }
 
 /* strings in source fragments */
 span.str {
-  color: blue
+  color: blue;
 }
 
 /* assembler passages in source fragments */
 span.asm {
-  color: green
+  color: green;
 }
 
 
 td.pre {
-  white-space: pre
+  white-space: pre;
 }
 
 p.cmt {
-  color: gray
+  color: gray;
 }
 
 span.warning {
   color: red;
-  font-weight: bold
+  font-weight: bold;
 }
 
 /* !!!: How should we define this...? */
 span.file {
-  color: darkgreen
+  color: darkgreen;
 }
 
 table.remark {
@@ -130,12 +130,12 @@ table.bar {
 span.bartitle {
   font-weight: bold;
   font-style: italic;
-  color: darkblue
+  color: darkblue;
 }
 
 span.footer {
   font-style: italic;
-  color: darkblue
+  color: darkblue;
 }
 
 /* definition list */
