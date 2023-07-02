@@ -26,7 +26,7 @@ unit SynEditTextTabExpander;
 interface
 
 uses
-  Classes, SysUtils, Math, LazSynEditText, SynEditTextBase;
+  Classes, SysUtils, Math, LazSynEditText, SynEditTextBase, SynEditTypes;
 
 type
 
@@ -110,6 +110,7 @@ type
     procedure ReleaseTabData;
   protected
     procedure TextBufferChanged(Sender: TObject); virtual;
+    procedure LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer); virtual;
     procedure LineTextChanged(Sender: TSynEditStrings; aIndex, aCount: Integer); virtual;
     procedure SetManager(AManager: TSynTextViewsManager); override;
     procedure SetSynStrings(AValue: TSynEditStrings); override;
@@ -119,27 +120,43 @@ type
     destructor Destroy; override;
   end;
 
+  { TSynEditStringTabExpanderWithLongest }
 
-  TSynEditStringTabExpander = class(TSynEditStringTabExpanderCommon)
+  TSynEditStringTabExpanderWithLongest = class(TSynEditStringTabExpanderCommon)
   private
-    FTabWidth: integer;
     FIndexOfLongestLine: Integer;
     FFirstUnknownLongestLine, FLastUnknownLongestLine: Integer;
+
+  protected
+    procedure InvalidateLongestLineInfo;
+    procedure LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer); override;
+    procedure LineTextChanged(Sender: TSynEditStrings; aIndex, aCount: Integer); override;
+
+    function  GetIndexOfLongestLine(AStartIndex, AnEndIndex: IntIdx; out ALen: integer): integer; virtual;
+    function  GetKnownLengthOfLine(AnIndex: IntIdx): integer; virtual;
+    procedure SetLongestLineInfo(AnIndex: IntIdx; ALen: Integer); virtual;
+    function  GetLengthOfLongestLine: integer; override;
+  public
+    constructor Create; override;
+  end;
+
+
+  TSynEditStringTabExpander = class(TSynEditStringTabExpanderWithLongest)
+  private
+    FTabWidth: integer;
     FLastLineHasTab: Boolean; // Last line, parsed by GetPhysicalCharWidths
     FLastLinePhysLen: Integer;
     FViewChangeStamp: int64;
-    procedure LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
     function ExpandedString(Index: integer): string;
     function ExpandedStringLength(Index: integer): Integer;
   protected
-    procedure LineTextChanged(Sender: TSynEditStrings; aIndex, aCount: Integer); override;
     procedure TextBufferChanged(Sender: TObject); override;
-    procedure SetManager(AManager: TSynTextViewsManager); override;
     function GetViewChangeStamp: int64; override;
     function  GetTabWidth : integer; override;
     procedure SetTabWidth(const AValue : integer); override;
     function  GetExpandedString(Index: integer): string; override;
-    function  GetLengthOfLongestLine: integer; override;
+    function GetKnownLengthOfLine(AnIndex: IntIdx): integer; override;
+    function GetIndexOfLongestLine(AStartIndex, AnEndIndex: IntIdx; out ALen: integer): integer; override;
     procedure DoGetPhysicalCharWidths(Line: PChar; LineLen, Index: Integer; PWidths: PPhysicalCharWidth); override;
   public
     constructor Create; override;
@@ -288,7 +305,6 @@ end;
 procedure TSynEditStringTabExpanderCommon.TextBufferChanged(Sender: TObject);
 var
   Data: TSynEditStringLineLenData;
-  i: integer;
 begin
   // Using self, instead as class, to register tab-width-data
   // other shared edits can have different tab-width
@@ -317,6 +333,12 @@ begin
     FTabData.IncRefCount;
 end;
 
+procedure TSynEditStringTabExpanderCommon.LineCountChanged(
+  Sender: TSynEditStrings; AIndex, ACount: Integer);
+begin
+  //
+end;
+
 procedure TSynEditStringTabExpanderCommon.LineTextChanged(
   Sender: TSynEditStrings; aIndex, aCount: Integer);
 var
@@ -331,6 +353,7 @@ procedure TSynEditStringTabExpanderCommon.SetManager(
 begin
   if Manager <> nil then begin
     RemoveNotifyHandler(senrTextBufferChanged, @TextBufferChanged);
+    RemoveChangeHandler(senrLineCount, @LineCountChanged);
     RemoveChangeHandler(senrLineChange, @LineTextChanged);
   end;
   if AManager = nil then
@@ -338,6 +361,7 @@ begin
   inherited SetManager(AManager);
   if Manager <> nil then begin
     AddChangeHandler(senrLineChange, @LineTextChanged);
+    AddChangeHandler(senrLineCount, @LineCountChanged);
     AddNotifyHandler(senrTextBufferChanged, @TextBufferChanged);
   end;
 end;
@@ -359,65 +383,20 @@ begin
   NextLines := nil;
 end;
 
-{ TSynEditStringTabExpander }
+{ TSynEditStringTabExpanderWithLongest }
 
-constructor TSynEditStringTabExpander.Create;
+procedure TSynEditStringTabExpanderWithLongest.InvalidateLongestLineInfo;
 begin
   FIndexOfLongestLine := -1;
   FFirstUnknownLongestLine := -1;
   FLastUnknownLongestLine := -1;
-  inherited Create;
-  TabWidth := 8;
 end;
 
-function TSynEditStringTabExpander.GetTabWidth: integer;
+procedure TSynEditStringTabExpanderWithLongest.LineCountChanged(
+  Sender: TSynEditStrings; AIndex, ACount: Integer);
 begin
-  Result := FTabWidth;
-end;
+  inherited LineCountChanged(Sender, AIndex, ACount);
 
-procedure TSynEditStringTabExpander.SetTabWidth(const AValue: integer);
-begin
-  if FTabWidth = AValue then exit;
-
-  {$PUSH}{$Q-}{$R-}
-  FViewChangeStamp := FViewChangeStamp + 1;
-  {$POP}
-
-  FTabWidth := AValue;
-  FIndexOfLongestLine := -1;
-  FFirstUnknownLongestLine := -1;
-  FLastUnknownLongestLine := -1;
-end;
-
-function TSynEditStringTabExpander.GetViewChangeStamp: int64;
-begin
-  Result := inherited GetViewChangeStamp;
-  {$PUSH}{$Q-}{$R-}
-  Result := Result + FViewChangeStamp;
-  {$POP}
-end;
-
-procedure TSynEditStringTabExpander.TextBufferChanged(Sender: TObject);
-begin
-  inherited TextBufferChanged(Sender);
-
-  LineTextChanged(TSynEditStrings(Sender), 0, Count);
-end;
-
-procedure TSynEditStringTabExpander.LineTextChanged(Sender: TSynEditStrings; aIndex,
-  aCount: Integer);
-begin
-  inherited LineTextChanged(Sender, aIndex, aCount);
-  if (FIndexOfLongestLine >= AIndex) and (FIndexOfLongestLine < AIndex+ACount) then
-    FIndexOfLongestLine := -1;
-  if (FFirstUnknownLongestLine < 0) or (AIndex < FFirstUnknownLongestLine) then
-    FFirstUnknownLongestLine := AIndex;
-  if AIndex+ACount-1 > FLastUnknownLongestLine then
-    FLastUnknownLongestLine := AIndex+ACount-1;
-end;
-
-procedure TSynEditStringTabExpander.LineCountChanged(Sender: TSynEditStrings; AIndex, ACount: Integer);
-begin
   if (FIndexOfLongestLine >= AIndex) then
     FIndexOfLongestLine := FIndexOfLongestLine + ACount;
 
@@ -438,6 +417,128 @@ begin
     FFirstUnknownLongestLine := AIndex;
   if (AIndex < FLastUnknownLongestLine) or (FLastUnknownLongestLine < 0) then
     FLastUnknownLongestLine := Max(AIndex, FLastUnknownLongestLine) +ACount;
+end;
+
+procedure TSynEditStringTabExpanderWithLongest.LineTextChanged(
+  Sender: TSynEditStrings; aIndex, aCount: Integer);
+begin
+  inherited LineTextChanged(Sender, aIndex, aCount);
+
+  if (FIndexOfLongestLine >= AIndex) and (FIndexOfLongestLine < AIndex+ACount) then
+    FIndexOfLongestLine := -1;
+  if (FFirstUnknownLongestLine < 0) or (AIndex < FFirstUnknownLongestLine) then
+    FFirstUnknownLongestLine := AIndex;
+  if AIndex+ACount-1 > FLastUnknownLongestLine then
+    FLastUnknownLongestLine := AIndex+ACount-1;
+end;
+
+function TSynEditStringTabExpanderWithLongest.GetIndexOfLongestLine(
+  AStartIndex, AnEndIndex: IntIdx; out ALen: integer): integer;
+begin
+  ALen := High(Result) - 5;
+  Result := -1;
+end;
+
+function TSynEditStringTabExpanderWithLongest.GetKnownLengthOfLine(
+  AnIndex: IntIdx): integer;
+begin
+  Result := High(Result) - 5;
+end;
+
+procedure TSynEditStringTabExpanderWithLongest.SetLongestLineInfo(
+  AnIndex: IntIdx; ALen: Integer);
+begin
+  fIndexOfLongestLine := AnIndex;
+end;
+
+function TSynEditStringTabExpanderWithLongest.GetLengthOfLongestLine: integer;
+var
+  NewIdx, NewLen: Integer;
+  Line1, Line2: Integer;
+begin
+  Result := 0;
+  Line1 := 0;
+  Line2 := Count - 1;
+
+  if (fIndexOfLongestLine >= 0) and (fIndexOfLongestLine < Count) then begin
+    Result := GetKnownLengthOfLine(FIndexOfLongestLine);
+    if Result <> LINE_LEN_UNKNOWN then begin
+      if (FFirstUnknownLongestLine < 0) then
+        exit;
+      // Result has the value from index
+      Line1 := FFirstUnknownLongestLine;
+      if (FLastUnknownLongestLine < Line2) then
+        Line2 := FLastUnknownLongestLine;
+    end
+    else begin
+      Result := 0;
+      if (FFirstUnknownLongestLine < 0) then begin
+        Line1 := fIndexOfLongestLine;
+        Line2 := fIndexOfLongestLine;
+      end
+      else begin // TODO: Calculate for fIndexOfLongestLine, instead of extending the range
+        Line1 := Min(fIndexOfLongestLine, FFirstUnknownLongestLine);
+        if (FLastUnknownLongestLine < Line2) then
+          Line2 := Max(fIndexOfLongestLine, FLastUnknownLongestLine);
+      end;
+    end;
+  end;
+
+  NewIdx := GetIndexOfLongestLine(Line1, Line2, NewLen);
+  if NewLen > Result then begin
+    SetLongestLineInfo(NewIdx, NewLen);
+    Result := NewLen;
+  end;
+
+  FFirstUnknownLongestLine := -1;
+  FLastUnknownLongestLine := -1;
+end;
+
+constructor TSynEditStringTabExpanderWithLongest.Create;
+begin
+  InvalidateLongestLineInfo;
+  inherited Create;
+end;
+
+{ TSynEditStringTabExpander }
+
+constructor TSynEditStringTabExpander.Create;
+begin
+  inherited Create;
+  TabWidth := 8;
+end;
+
+function TSynEditStringTabExpander.GetTabWidth: integer;
+begin
+  Result := FTabWidth;
+end;
+
+procedure TSynEditStringTabExpander.SetTabWidth(const AValue: integer);
+begin
+  if FTabWidth = AValue then exit;
+
+  {$PUSH}{$Q-}{$R-}
+  FViewChangeStamp := FViewChangeStamp + 1;
+  {$POP}
+
+  FTabWidth := AValue;
+  if NextLines <> nil then
+    LineTextChanged(nil, 0, Count);
+  InvalidateLongestLineInfo;
+end;
+
+function TSynEditStringTabExpander.GetViewChangeStamp: int64;
+begin
+  Result := inherited GetViewChangeStamp;
+  {$PUSH}{$Q-}{$R-}
+  Result := Result + FViewChangeStamp;
+  {$POP}
+end;
+
+procedure TSynEditStringTabExpander.TextBufferChanged(Sender: TObject);
+begin
+  inherited TextBufferChanged(Sender);
+  LineTextChanged(TSynEditStrings(Sender), 0, Count);
 end;
 
 function TSynEditStringTabExpander.ExpandedString(Index: integer): string;
@@ -500,17 +601,6 @@ begin
   end;
 end;
 
-procedure TSynEditStringTabExpander.SetManager(AManager: TSynTextViewsManager);
-begin
-  if Manager <> nil then begin
-    RemoveChangeHandler(senrLineCount, @LineCountChanged);
-  end;
-  inherited SetManager(AManager);
-  if Manager <> nil then begin
-    AddChangeHandler(senrLineCount, @LineCountChanged);
-  end;
-end;
-
 function TSynEditStringTabExpander.GetExpandedString(Index: integer): string;
 begin
   if (Index >= 0) and (Index < Count) then begin
@@ -546,50 +636,26 @@ begin
   FLastLinePhysLen := j;
 end;
 
-function TSynEditStringTabExpander.GetLengthOfLongestLine: integer;
+function TSynEditStringTabExpander.GetKnownLengthOfLine(AnIndex: IntIdx
+  ): integer;
+begin
+  Result := TabData[fIndexOfLongestLine];
+end;
+
+function TSynEditStringTabExpander.GetIndexOfLongestLine(AStartIndex,
+  AnEndIndex: IntIdx; out ALen: integer): integer;
 var
   Line: PChar;
   LineLen: Integer;
   CharWidths: PPhysicalCharWidth;
   i, j, m: Integer;
-  Line1, Line2: Integer;
 begin
   Result := 0;
-  Line1 := 0;
-  Line2 := Count - 1;
-
-  if (fIndexOfLongestLine >= 0) and (fIndexOfLongestLine < Count) then begin
-    Result := TabData[fIndexOfLongestLine];
-    if Result <> LINE_LEN_UNKNOWN then begin
-      if (FFirstUnknownLongestLine < 0) then
-        exit;
-      // Result has the value from index
-      Line1 := FFirstUnknownLongestLine;
-      if (FLastUnknownLongestLine < Line2) then
-        Line2 := FLastUnknownLongestLine;
-    end
-    else begin
-      Result := 0;
-      if (FFirstUnknownLongestLine < 0) then begin
-        Line1 := fIndexOfLongestLine;
-        Line2 := fIndexOfLongestLine;
-      end
-      else begin // TODO: Calculate for fIndexOfLongestLine, instead of extending the range
-        Line1 := Min(fIndexOfLongestLine, FFirstUnknownLongestLine);
-        if (FLastUnknownLongestLine < Line2) then
-          Line2 := Max(fIndexOfLongestLine, FLastUnknownLongestLine);
-      end;
-    end;
-  end;
-
-  FFirstUnknownLongestLine := -1;
-  FLastUnknownLongestLine := -1;
-
+  ALen := 0;
   try
-    //Result := 0;
     m := 0;
     CharWidths := nil;
-    for i := Line1 to Line2 do begin
+    for i := AStartIndex to AnEndIndex do begin
       j := TabData[i];
       if j = LINE_LEN_UNKNOWN then begin
         // embedd a copy of ExpandedStringLength
@@ -609,9 +675,9 @@ begin
         end;
       end;
 
-      if j > Result then begin
-        Result := j;
-        fIndexOfLongestLine := i;
+      if j > ALen then begin
+        ALen := j;
+        Result := i;
       end;
     end;
   finally
