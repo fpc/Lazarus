@@ -1211,32 +1211,32 @@ begin
   bsHorizontal:
     begin
       w:=4; h:=4;
-      pat_sample:=@stipple_horz;
+      pat_sample:=@stipple_horz[0];
     end;
   bsVertical:
     begin
       w:=4; h:=4;
-      pat_sample:=@stipple_vert;
+      pat_sample:=@stipple_vert[0];
     end;
   bsFDiagonal:
     begin
       w:=8; h:=8;
-      pat_sample:=@stipple_fdiag;
+      pat_sample:=@stipple_fdiag[0];
     end;
   bsBDiagonal:
     begin
       w:=8; h:=8;
-      pat_sample:=@stipple_bdiag;
+      pat_sample:=@stipple_bdiag[0];
     end;
   bsCross:
     begin
       w:=8; h:=8;
-      pat_sample:=@stipple_cross1;
+      pat_sample:=@stipple_cross1[0];
     end;
   bsDiagCross:
     begin
       w:=8; h:=8;
-      pat_sample:=@stipple_dcross;
+      pat_sample:=@stipple_dcross[0];
     end;
   else
     exit
@@ -1372,10 +1372,12 @@ begin
 end;
 
 procedure TGtk3DeviceContext.ApplyPen;
+
   procedure SetDash(d: array of double);
   begin
-    cairo_set_dash(pcr, @d, High(d)+1, 0);
+    cairo_set_dash(pcr, @d[0], High(d)+1, 0);
   end;
+
 var
   cap: Tcairo_line_cap_t;
   w: Double;

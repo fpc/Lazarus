@@ -337,8 +337,8 @@ type
   protected
     function CreateWidget(const {%H-}Params: TCreateParams):PGtkWidget; override;
   public
-    procedure GetDate(out AYear, AMonth, ADay: Word);
-    procedure SetDate(const AYear, AMonth, ADay: Word);
+    procedure GetDate(out AYear, AMonth, ADay: LongWord);
+    procedure SetDate(const AYear, AMonth, ADay: LongWord);
     procedure SetDisplayOptions(const ADisplayOptions: TGtkCalendarDisplayOptions);
   end;
 
@@ -4082,7 +4082,7 @@ begin
   FCentralWidget^.set_can_focus(True);
 end;
 
-procedure TGtk3Calendar.GetDate(out AYear, AMonth, ADay: Word);
+procedure TGtk3Calendar.GetDate(out AYear, AMonth, ADay: LongWord);
 begin
   AYear := 0;
   AMonth := 0;
@@ -4091,7 +4091,7 @@ begin
     PGtkCalendar(GetContainerWidget)^.get_date(@AYear, @AMonth, @ADay);
 end;
 
-procedure TGtk3Calendar.SetDate(const AYear, AMonth, ADay: Word);
+procedure TGtk3Calendar.SetDate(const AYear, AMonth, ADay: LongWord);
 begin
   if IsWidgetOK then
   begin

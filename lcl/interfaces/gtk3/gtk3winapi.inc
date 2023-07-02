@@ -1759,8 +1759,9 @@ end;
 function TGtk3WidgetSet.GetActiveWindow: HWND;
 var
   AWindow: PGdkWindow;
-  AData: gpointer;
-  AWidget: PGtkWidget;
+  AGtkWin: PGtkWindow;
+  AData, AWidget: gpointer;
+  Hndl: HWND;
   i: Integer;
 begin
   Result := 0;
@@ -1778,10 +1779,12 @@ begin
     begin
       if Screen.Forms[i].HandleAllocated then
       begin
-        if PGtkWindow(TGtk3Window(Screen.Forms[i].Handle).Widget)^.get_window = AWindow then
+        Hndl := Screen.Forms[i].Handle;
+        AGtkWin := PGtkWindow(TGtk3Window(Hndl).Widget);
+        if AGtkWin^.get_window = AWindow then
         begin
-          AWidget := PGtkWindow(TGtk3Window(Screen.Forms[i].Handle).Widget)^.get_focus;
-          Result := HWND(Screen.Forms[i].Handle);
+          AGtkWin^.get_focus;
+          Result := Hndl;
         end;
       end;
     end;
@@ -1903,7 +1906,7 @@ begin
   else
   begin
     cairo_region_destroy(TGtk3Region(RGN).Handle);
-    TGtk3Region(RGN).Handle := cairo_region_create_rectangle(@ARect);
+    TGtk3Region(RGN).Handle := cairo_region_create_rectangle(Pcairo_rectangle_int_t(@ARect));
     Result := 1;
   end;
 end;
