@@ -898,6 +898,8 @@ begin
         BtnType := NSPushOnPushOffButton;
         BezelStyle := BezelButton;
         useBezel := true;
+        if IsPushed(Details) then
+          btn.setBackgroundColor(NSColor.selectedTextBackgroundColor);
       end;
     else
       Result := false;
@@ -922,6 +924,7 @@ begin
   btn.setHighlighted( IsPushed(Details));
 
   if ((Details.Element = teToolBar) and (not IsPushed(Details)) and (not IsChecked(Details)))
+    or ((Details.Element = teButton) and (Details.Part = BP_PUSHBUTTON) and IsPushed(Details))
     or ((Details.Element = teButton) and (Details.Part = BP_CHECKBOX))
   then
     // this is "flat" mode. So unpushed state should draw no borders
