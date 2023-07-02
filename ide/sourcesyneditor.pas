@@ -1841,6 +1841,7 @@ end;
 
 destructor TIDESynEditor.Destroy;
 begin
+  ViewedTextBuffer.RemoveChangeHandler(senrHighlightChanged, @DoHighlightChanged);
   HighlightUserWordCount := 0;
   Highlighter := nil;
   FreeAndNil(FUserWordsList);
