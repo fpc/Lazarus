@@ -134,7 +134,7 @@ begin
     begin
       Canvas.Font.Color := clBtnHighlight;
       Rect2 := Rect;
-      OffsetRect(Rect2, 1, 1);
+      Types.OffsetRect(Rect2, 1, 1);
       DrawText(Canvas.Handle, PChar(LabelText), Length(LabelText), Rect2, Flags);
       Canvas.Font.Color := clBtnShadow;
     end;
@@ -449,8 +449,8 @@ begin
     begin
       case FLayout of
         tlTop: ; // nothing
-        tlCenter: OffsetRect(R, 0, (R.Height-CalcRect.Height) div 2);
-        tlBottom: OffsetRect(R, 0, R.Height-CalcRect.Height)
+        tlCenter: Types.OffsetRect(R, 0, (R.Height-CalcRect.Height) div 2);
+        tlBottom: Types.OffsetRect(R, 0, R.Height-CalcRect.Height)
       end;
       R.Height := CalcRect.Height;
     end;
@@ -463,16 +463,16 @@ begin
     CalcRect := RotateRect(CalcRect.Width, CalcRect.Height, angle);
     R := CalcRect;
     case FAlignment of
-      taLeftJustify: OffsetRect(R, -CalcRect.Left, 0);
-      taCenter: OffsetRect(R, (Width - CalcRect.Width) div 2 - CalcRect.Left, 0);
-      taRightJustify: OffsetRect(r, Width - CalcRect.Right, 0);
+      taLeftJustify: Types.OffsetRect(R, -CalcRect.Left, 0);
+      taCenter: Types.OffsetRect(R, (Width - CalcRect.Width) div 2 - CalcRect.Left, 0);
+      taRightJustify: Types.OffsetRect(r, Width - CalcRect.Right, 0);
     end;
     case FLayout of
-      tlTop: OffsetRect(R, 0, -CalcRect.Top);
-      tlCenter: OffsetRect(R, 0, (Height - CalcRect.Height) div 2 - CalcRect.Top);
-      tlBottom: OffsetRect(R, 0, Height - CalcRect.Bottom);
+      tlTop: Types.OffsetRect(R, 0, -CalcRect.Top);
+      tlCenter: Types.OffsetRect(R, 0, (Height - CalcRect.Height) div 2 - CalcRect.Top);
+      tlBottom: Types.OffsetRect(R, 0, Height - CalcRect.Bottom);
     end;
-    OffsetRect(R, -CalcRect.Left-1, -CalcRect.Top-1);
+    Types.OffsetRect(R, -CalcRect.Left-1, -CalcRect.Top-1);
   end;
   //debugln('TCustomLabel.Paint ',dbgs(Alignment=tacenter),' ',dbgs(Layout=tlCenter),' ',dbgs(TextLeft),' TextTop=',dbgs(TextTop),' ',dbgs(R));
   DoDrawText(R, Flags);

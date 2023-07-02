@@ -105,7 +105,7 @@ begin
   r.Right := r.Left + 18;
   r.Bottom := r.Top + 16;
 
-  OffsetRect(r, 2, (ARect.Bottom - ARect.Top) div 2 - 8);
+  Types.OffsetRect(r, 2, (ARect.Bottom - ARect.Top) div 2 - 8);
 
   with CB1.Canvas do
   begin

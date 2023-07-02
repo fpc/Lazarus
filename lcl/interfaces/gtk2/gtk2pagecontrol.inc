@@ -542,7 +542,7 @@ begin
     begin
       OffsetPage := RectFromGdkRect(PageWidget^.allocation);
       Result := RectFromGdkRect(TabWidget^.allocation);
-      OffsetRect(Result, -OffsetPage.Left, -OffsetPage.Top);
+      Types.OffsetRect(Result, -OffsetPage.Left, -OffsetPage.Top);
     end;
   end;
 end;

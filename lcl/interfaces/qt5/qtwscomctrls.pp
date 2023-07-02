@@ -29,7 +29,7 @@ uses
   SysUtils, Classes, Types,
   // LCL
   ComCtrls, Controls, LCLType, Graphics, StdCtrls,
-  LCLProc, LCLIntf, Forms, ImgList,
+  LCLIntf, Forms, ImgList,
   // Widgetset
   WSProc, WSComCtrls, WSLCLClasses;
 
@@ -1791,7 +1791,7 @@ begin
         (QtTreeWidget.OwnerData or QtTreeWidget.OwnerDrawn) then
       begin
         IconRect := Rect(0, 0, ImgListRes.Width, ImgListRes.Height);
-        OffsetRect(IconRect, Result.Left, Result.Top + APixelMetric);
+        Types.OffsetRect(IconRect, Result.Left, Result.Top + APixelMetric);
       end;
       IconRect.Left += APixelMetric + (ChkBoxRect.Right - ChkBoxRect.Left);
       IconRect.Right += APixelMetric;

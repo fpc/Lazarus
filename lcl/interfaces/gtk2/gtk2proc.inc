@@ -6222,7 +6222,7 @@ begin
     Widget^.allocation.width + Widget^.allocation.x,
     Widget^.allocation.height + Widget^.allocation.y);
 
-  OffsetRect(ItemStruct^.rcItem, -ItemStruct^.rcItem.Left, -ItemStruct^.rcItem.Top);
+  Types.OffsetRect(ItemStruct^.rcItem, -ItemStruct^.rcItem.Left, -ItemStruct^.rcItem.Top);
 
   // take frame borders into account
   with ItemStruct^.rcItem do

@@ -2700,7 +2700,7 @@ begin
   begin
     NPEraseFocusRect;
     RoundCoord(x, y);
-    OffsetRect(OldRect, x - OldRect.Left, y - OldRect.Top);
+    Types.OffsetRect(OldRect, x - OldRect.Left, y - OldRect.Top);
     NPDrawFocusRect;
     ShowSizes := True;
     FDesigner.UpdateStatus;
@@ -3288,7 +3288,7 @@ begin
   if (Mode = mdInsert) and not Down then
   begin
     NPEraseFocusRect;
-    OffsetRect(OldRect, -10000, -10000);
+    Types.OffsetRect(OldRect, -10000, -10000);
   end;
   fGuides.HideGuides;
 end;
@@ -7192,10 +7192,10 @@ begin
     begin
       if not Selected then
       begin
-        OffsetRect(Rect, 1, 1);
+        Types.OffsetRect(Rect, 1, 1);
         Font.Color := clBtnHighlight;
         DrawText(Handle, PChar(Caption), Length(Caption), Rect, Flags);
-        OffsetRect(Rect, -1, -1);
+        Types.OffsetRect(Rect, -1, -1);
       end;
       Font.Color := clBtnShadow;
     end;
@@ -7262,7 +7262,7 @@ begin
 
     if AMenuItem.Caption <> '-' then
     begin
-      OffsetRect(ARect, 0, 2);
+      Types.OffsetRect(ARect, 0, 2);
       DoDrawText(ACanvas, AMenuItem.Caption, ARect, Selected, AMenuItem.Enabled, DT_LEFT);
       if AMenuItem.ShortCut <> 0 then
       begin

@@ -475,7 +475,7 @@ begin
   for i := 0 to Pages.Count - 1 do            // drawing window background
   begin
     r := Pages[i]^.r;
-    OffsetRect(r, Preview.ofx, Preview.ofy);
+    Types.OffsetRect(r, Preview.ofx, Preview.ofy);
     if (r.Top > 2000) or (r.Bottom < 0) then
       Pages[i]^.Visible := False else
       Pages[i]^.Visible := RectVisible(Canvas.Handle, r);
@@ -499,7 +499,7 @@ begin
     if Pages[i]^.Visible then
     begin
       r := Pages[i]^.r;
-      OffsetRect(r, Preview.ofx, Preview.ofy);
+      Types.OffsetRect(r, Preview.ofx, Preview.ofy);
       Canvas.Rectangle(r.Left, r.Top, r.Right, r.Bottom);
       Canvas.Polyline([Point(r.Left + 1, r.Bottom),
                        Point(r.Right, r.Bottom),
@@ -511,7 +511,7 @@ begin
     if Pages[i]^.Visible then
     begin
       r := Pages[i]^.r;
-      OffsetRect(r, Preview.ofx, Preview.ofy);
+      Types.OffsetRect(r, Preview.ofx, Preview.ofy);
       if Pages[i]^.pgMargins then
         Pages.Draw(i, Canvas, r)
       else

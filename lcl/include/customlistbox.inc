@@ -839,7 +839,7 @@ begin
   if (Index=Items.Count) and (Index>0) then
   begin
     TWSCustomListBoxClass(WidgetSetClass).GetItemRect(Self, Index - 1, Result);
-    OffsetRect(Result, 0, Result.Bottom - Result.Top);
+    Types.OffsetRect(Result, 0, Result.Bottom - Result.Top);
   end;
 end;
 

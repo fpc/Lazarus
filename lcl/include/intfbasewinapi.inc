@@ -612,9 +612,9 @@ var
     If not CalcRect then
       Case LeftOffset of
         DT_CENTER :
-          OffsetRect(theRect, (Rect.Right - theRect.Right) div 2, 0);
+          Types.OffsetRect(theRect, (Rect.Right - theRect.Right) div 2, 0);
         DT_Right :
-          OffsetRect(theRect, Rect.Right - theRect.Right, 0);
+          Types.OffsetRect(theRect, Rect.Right - theRect.Right, 0);
       end;
 
     theRect.Bottom := theRect.Top + hT;
@@ -624,9 +624,9 @@ var
       If SingleLine then
         Case TopOffset of
           DT_VCENTER :
-            OffsetRect(theRect, 0, (Rect.Bottom - theRect.Bottom) div 2);
+            Types.OffsetRect(theRect, 0, (Rect.Bottom - theRect.Bottom) div 2);
           DT_Bottom :
-            OffsetRect(theRect, 0, Rect.Bottom - theRect.Bottom);
+            Types.OffsetRect(theRect, 0, Rect.Bottom - theRect.Bottom);
         end;
   end;
 var

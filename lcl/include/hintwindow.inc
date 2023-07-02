@@ -351,7 +351,7 @@ end;
 function THintWindow.OffsetHintRect(AOffset: TPoint; dy: Integer;
   KeepWidth: Boolean; KeepHeight: Boolean): Boolean;
 begin
-  Result:=OffsetRect(FHintRect, AOffset.X, AOffset.Y + dy);
+  Result:=Types.OffsetRect(FHintRect, AOffset.X, AOffset.Y + dy);
   AdjustBoundsForMonitor(KeepWidth, KeepHeight);
 end;
 

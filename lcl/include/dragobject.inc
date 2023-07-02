@@ -127,7 +127,7 @@ end;
 procedure TDragDockObject.AdjustDockRect(ARect: TRect);
 begin
   with DockOffset do
-    OffsetRect(FDockRect, -X, -Y);
+    Types.OffsetRect(FDockRect, -X, -Y);
 end;
 
 function TDragDockObject.GetDragCursor(Accepted: Boolean; X, Y: Integer): TCursor;

@@ -193,7 +193,7 @@ type
     procedure RebuildGridLayout; virtual;
     procedure AddHeaderPropertyEditor(Prop: TPropertyEditor);
     procedure BeforeMoveSelection(const DCol,DRow: Integer); override;
-    procedure CalcCellExtent(aCol, aRow: Integer; var aRect: TRect); virtual;
+    procedure CalcCellExtent(aCol, aRow: Integer; var aRect: TRect); override;
     procedure DoEditorHide; override;
     procedure DoEditorShow; override;
     procedure DrawCell(aCol, aRow: Integer; aRect: TRect;

@@ -681,7 +681,7 @@ begin
     end;
     rDrop:=rBar;
     szB:=Size(rBar);
-    OffsetRect(rDrop, szB.cx + 1, 2);
+    Types.OffsetRect(rDrop, szB.cx + 1, 2);
     rDrop.Right:=r.Right-1;
     rDrop.Bottom:=r.Bottom-1;
     Canvas.Frame(rDrop);

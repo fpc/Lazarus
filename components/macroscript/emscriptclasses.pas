@@ -432,15 +432,13 @@ function ExecBasicHandler({%H-}Caller: TPSExec; p: TPSExternalProcRec;
     ASyn := TSynEdit(o);
   end;
 var
-  res: PPSVariant;
   data: PPoint;
   temp: TPSVariantIFC;
   s: String;
-  typerec: TPSTypeRec;
   Obj: TSynEdit;
 begin
   Result := True;
-  case Longint(p.Ext1) of
+  case PtrUInt(p.Ext1) of
     FunctionId_POINT: begin // POINT()
         CheckMinParamCount(3, 'Point');
         data := GetVarPointFromStack(Stack, -1);

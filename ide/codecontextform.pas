@@ -851,7 +851,7 @@ var
 
       // token fits into line
       // => draw token
-      OffsetRect(TokenRect,TokenPos.x,TokenPos.y);
+      Types.OffsetRect(TokenRect,TokenPos.x,TokenPos.y);
       if Draw then begin
         Canvas.FillRect(Rect(TokenRect.Left,TokenRect.Top-VerticalSpace,
                              TokenRect.Right,TokenRect.Bottom+VerticalSpace));

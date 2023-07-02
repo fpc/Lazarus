@@ -5406,7 +5406,7 @@ begin
           pt := ClientToScreen(Point(ClientWidth-ScrollBarWidth - rc.Right - 4, 10));
           if eoScrollHintFollows in fOptions then
             pt.y := Mouse.CursorPos.y - (rc.Bottom div 2);
-          OffsetRect(rc, pt.x, pt.y);
+          Types.OffsetRect(rc, pt.x, pt.y);
           ScrollHint.ActivateWithBounds(rc, s);
           ScrollHint.Invalidate;
           ScrollHint.Update;

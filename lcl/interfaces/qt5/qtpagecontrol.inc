@@ -452,10 +452,10 @@ begin
   Offs := TabWidget.getGeometry;
   Result := TabWidget.TabBar.GetTabRect(AIndex);
   case ATabControl.TabPosition of
-    tpTop: OffsetRect(Result, 0, -Result.Bottom);
-    tpLeft: OffsetRect(Result, -Result.Right, 0);
-    tpRight: OffsetRect(Result, Offs.Width - Result.Right, 0);
-    tpBottom: OffsetRect(Result, 0, Offs.Height - Result.Bottom);
+    tpTop: Types.OffsetRect(Result, 0, -Result.Bottom);
+    tpLeft: Types.OffsetRect(Result, -Result.Right, 0);
+    tpRight: Types.OffsetRect(Result, Offs.Width - Result.Right, 0);
+    tpBottom: Types.OffsetRect(Result, 0, Offs.Height - Result.Bottom);
   end;
 end;
 

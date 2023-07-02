@@ -328,7 +328,7 @@ begin
     TextLeft := (cMinLeft + reqWidth - TextBox.Right) div 2;
 
   // position the text
-  OffsetRect(TextBox, TextLeft, Scale96ToFont(cLabelSpacing));
+  Types.OffsetRect(TextBox, TextLeft, Scale96ToFont(cLabelSpacing));
 
   // set size of form
   ClientWidth := reqWidth + 2 * Scale96ToFont(cLabelSpacing);
@@ -722,7 +722,7 @@ begin
     end;
 
     // calculate the text position
-    OffsetRect(TextBox,
+    Types.OffsetRect(TextBox,
                ((reqWidth-cMinLeft-TextBox.Right-cLabelSpacing) div 2) + cMinLeft,
                cLabelSpacing);
 

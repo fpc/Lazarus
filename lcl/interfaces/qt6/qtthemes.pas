@@ -11,8 +11,10 @@ uses
   Types, Classes, SysUtils,
   // qt bindings
   qt6,
+  // LazUtils
+  LazLoggerBase,
   // lcl
-  LCLType, LCLProc, LCLIntf, Graphics, Themes, TmSchema,
+  LCLType, LCLIntf, Graphics, Themes, TmSchema,
   // widgetset
   InterfaceBase, QtObjects
   ;
@@ -336,7 +338,7 @@ begin
           dx := ARect.Left;
           dy := ARect.Top;
           Context.translate(dx, dy);
-          OffsetRect(ARect, -dx, -dy);
+          Types.OffsetRect(ARect, -dx, -dy);
           QStyleOption_setRect(opt, @ARect);
 
           // issue #27182 qt5 does not implement splitter grabber in some themes.
@@ -357,7 +359,7 @@ begin
             begin
               opt := QStyleOptionGroupBox_create();
               Context.translate(ARect.Left, ARect.Top);
-              OffsetRect(ARect, -ARect.Left, -ARect.Top);
+              Types.OffsetRect(ARect, -ARect.Left, -ARect.Top);
             end;
             QStyleCC_ToolButton:
             begin
@@ -398,7 +400,7 @@ begin
               // workaround: qt has own minds about position of requested part -
               // but we need a way to draw it at our position
               Context.translate(ARect.Left, ARect.Top);
-              OffsetRect(ARect, -ARect.Left, -ARect.Top);
+              Types.OffsetRect(ARect, -ARect.Left, -ARect.Top);
             end;
             QStyleCC_Slider, QStyleCC_ScrollBar:
             begin
@@ -498,7 +500,7 @@ begin
                       and (ARect.Top > 0) then
                     begin
                       ClipR.Left := (ARect.Right - ARect.Left + 1) div 3;
-                      OffsetRect(ARect, -ClipR.Left, -1);
+                      Types.OffsetRect(ARect, -ClipR.Left, -1);
                     end;
                   end;
                   {$ENDIF}
@@ -739,7 +741,7 @@ begin
         begin
           Context.Translate(R.Left, R.Top);
           Context.Rotate(-0.1 * Context.Font.Angle);
-          OffsetRect(R, -R.Left, -R.Top);
+          Types.OffsetRect(R, -R.Left, -R.Top);
         end;
 
         if (Details.Element = teEdit) then

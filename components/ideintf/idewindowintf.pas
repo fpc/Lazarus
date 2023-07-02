@@ -1262,11 +1262,11 @@ begin
     // Move to visible area :
     // window is out at left side of screen
     if NewBounds.Right < Screen.DesktopLeft + 60 then
-      OffsetRect(NewBounds, Screen.DesktopLeft + 60 - NewBounds.Right, 0);
+      Types.OffsetRect(NewBounds, Screen.DesktopLeft + 60 - NewBounds.Right, 0);
 
     // window is out above the screen
     if NewBounds.Bottom < Screen.DesktopTop+60 then
-      OffsetRect(NewBounds, 0, Screen.DesktopTop + 60 - NewBounds.Bottom);
+      Types.OffsetRect(NewBounds, 0, Screen.DesktopTop + 60 - NewBounds.Bottom);
 
     // window is out at right side of screen, i = right edge of screen - 60
     i := Screen.DesktopWidth + Screen.DesktopLeft - 60;
@@ -1739,32 +1739,32 @@ begin
           if DockSibling.Parent<>nil then
           begin
             Offset:=DockSibling.ClientToScreen(Point(0,0));
-            OffsetRect(DockSiblingBounds,Offset.X,Offset.Y);
+            Types.OffsetRect(DockSiblingBounds,Offset.X,Offset.Y);
           end;
           case DockAlign of
           alLeft:
             begin
               NewBounds.Top:=DockSiblingBounds.Top;
               NewBounds.Bottom:=DockSiblingBounds.Bottom;
-              OffsetRect(NewBounds,DockSiblingBounds.Left-6-NewBounds.Right,0);
+              Types.OffsetRect(NewBounds,DockSiblingBounds.Left-6-NewBounds.Right,0);
             end;
           alRight:
             begin
               NewBounds.Top:=DockSiblingBounds.Top;
               NewBounds.Bottom:=DockSiblingBounds.Bottom;
-              OffsetRect(NewBounds,DockSiblingBounds.Right+6-NewBounds.Left,0);
+              Types.OffsetRect(NewBounds,DockSiblingBounds.Right+6-NewBounds.Left,0);
             end;
           alTop:
             begin
               NewBounds.Left:=DockSiblingBounds.Left;
               NewBounds.Right:=DockSiblingBounds.Right;
-              OffsetRect(NewBounds,0,DockSiblingBounds.Top-25-NewBounds.Bottom);
+              Types.OffsetRect(NewBounds,0,DockSiblingBounds.Top-25-NewBounds.Bottom);
             end;
           alBottom:
             begin
               NewBounds.Left:=DockSiblingBounds.Left;
               NewBounds.Right:=DockSiblingBounds.Right;
-              OffsetRect(NewBounds,0,DockSiblingBounds.Bottom+25-NewBounds.Top);
+              Types.OffsetRect(NewBounds,0,DockSiblingBounds.Bottom+25-NewBounds.Top);
             end;
           alClient:
             NewBounds:=DockSibling.BoundsRect;

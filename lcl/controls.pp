@@ -35,7 +35,7 @@ interface
 {$ENDIF}
 {$MACRO ON}
 
-{$IF FPC_FULLVERSION >= 30300}
+{$IF FPC_FULLVERSION >= 30200}
 {$DEFINE SysUITypes:=System.UITypes}
 {$ELSE}
 {$DEFINE SysUITypes:=UITypes}

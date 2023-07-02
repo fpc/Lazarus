@@ -284,7 +284,7 @@ begin
   if not LHorzVisible and not LVertVisible then Exit;
   LRect := Rect(0, 0, AControl.Width, AControl.Height);
   LPoint := AControl.ClientToParent(Point(0, 0), Self);
-  OffsetRect(LRect, LPoint.x, LPoint.y);
+  Types.OffsetRect(LRect, LPoint.x, LPoint.y);
   if LHorzVisible then
     if LRect.Left < 0 then
       HorzScrollBar.Position := HorzScrollBar.Position + LRect.Left
