@@ -1655,6 +1655,14 @@ msgstr ""
 msgid "Underline"
 msgstr ""
 
+#: lazarusidestrconsts.dlgelastictabs
+msgid "Elastic tabs"
+msgstr ""
+
+#: lazarusidestrconsts.dlgelastictabswidths
+msgid "Elastic min Widths"
+msgstr ""
+
 #: lazarusidestrconsts.dlgelementattributes
 msgid "Element Attributes"
 msgstr ""

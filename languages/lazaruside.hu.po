@@ -1671,6 +1671,14 @@ msgstr "Tab és behúzás"
 msgid "Underline"
 msgstr "Aláhúzott"
 
+#: lazarusidestrconsts.dlgelastictabs
+msgid "Elastic tabs"
+msgstr ""
+
+#: lazarusidestrconsts.dlgelastictabswidths
+msgid "Elastic min Widths"
+msgstr ""
+
 #: lazarusidestrconsts.dlgelementattributes
 msgid "Element Attributes"
 msgstr "Elem jellemzői"

@@ -1710,6 +1710,14 @@ msgstr "タブとインデント"
 msgid "Underline"
 msgstr "下線"
 
+#: lazarusidestrconsts.dlgelastictabs
+msgid "Elastic tabs"
+msgstr ""
+
+#: lazarusidestrconsts.dlgelastictabswidths
+msgid "Elastic min Widths"
+msgstr ""
+
 #: lazarusidestrconsts.dlgelementattributes
 msgid "Element Attributes"
 msgstr "要素の属性"

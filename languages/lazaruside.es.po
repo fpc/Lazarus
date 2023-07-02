@@ -1719,6 +1719,14 @@ msgstr "Tabulación y Sangrado"
 msgid "Underline"
 msgstr "Subrayado"
 
+#: lazarusidestrconsts.dlgelastictabs
+msgid "Elastic tabs"
+msgstr ""
+
+#: lazarusidestrconsts.dlgelastictabswidths
+msgid "Elastic min Widths"
+msgstr ""
+
 #: lazarusidestrconsts.dlgelementattributes
 msgid "Element Attributes"
 msgstr "Atributos del Elemento"

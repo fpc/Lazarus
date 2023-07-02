@@ -1662,6 +1662,14 @@ msgstr "Tab ja sisennys"
 msgid "Underline"
 msgstr "Alleviivaus"
 
+#: lazarusidestrconsts.dlgelastictabs
+msgid "Elastic tabs"
+msgstr ""
+
+#: lazarusidestrconsts.dlgelastictabswidths
+msgid "Elastic min Widths"
+msgstr ""
+
 #: lazarusidestrconsts.dlgelementattributes
 msgid "Element Attributes"
 msgstr "Elementin määrite"
