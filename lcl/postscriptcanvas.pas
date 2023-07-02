@@ -2543,13 +2543,13 @@ var
           theRect.Right := theRect.Left + Min(MaxWidth, AP.cX);
           if (Flags and DT_VCENTER) > 0 then
           begin
-            OffsetRect(theRect, 0, ((Rect.Bottom - Rect.Top) -
+            Types.OffsetRect(theRect, 0, ((Rect.Bottom - Rect.Top) -
               (theRect.Bottom - theRect.Top)) div 2);
           end
           else
           if (Flags and DT_BOTTOM) > 0 then
           begin
-            OffsetRect(theRect, 0, (Rect.Bottom - Rect.Top) -
+            Types.OffsetRect(theRect, 0, (Rect.Bottom - Rect.Top) -
               (theRect.Bottom - theRect.Top));
           end;
         end;
@@ -2592,12 +2592,12 @@ var
           DT_CENTER:
           begin
             Offset := (Rect.Right - theRect.Right) div 2;
-            OffsetRect(theRect, offset, 0);
+            Types.OffsetRect(theRect, offset, 0);
           end;
           DT_RIGHT:
           begin
             Offset := Rect.Right - theRect.Right;
-            OffsetRect(theRect, offset, 0);
+            Types.OffsetRect(theRect, offset, 0);
           end;
         end;
     end;
@@ -2909,24 +2909,24 @@ begin
       taRightJustify:
       begin
         Offset := ARect.Right - fRect.Right;
-        OffsetRect(fRect, Offset, 0);
+        Types.OffsetRect(fRect, Offset, 0);
       end;
       taCenter:
       begin
         Offset :=  (ARect.Right - fRect.Right) div 2;
-        OffsetRect(fRect, offset, 0);
+        Types.OffsetRect(fRect, offset, 0);
       end;
     end;
     case Style.Layout of
       tlCenter:
       begin
         Offset :=  ((ARect.Bottom - ARect.Top) - (fRect.Bottom - fRect.Top)) div 2;
-        OffsetRect(fRect, 0, offset);
+        Types.OffsetRect(fRect, 0, offset);
       end;
       tlBottom:
       begin
         Offset :=  ARect.Bottom - fRect.Bottom;
-        OffsetRect(fRect, 0, offset);
+        Types.OffsetRect(fRect, 0, offset);
       end;
     end;
   end;

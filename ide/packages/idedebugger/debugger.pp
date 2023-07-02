@@ -7101,6 +7101,7 @@ end;
 {$IfOpt C+}
 function TIdeWatches.Add: TCollectionItem;
 begin
+  Result := Nil; // Prevent compiler warning.
   assert(False, 'TIdeWatches.Add: False');
 end;
 {$EndIf}

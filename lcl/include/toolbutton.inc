@@ -266,7 +266,7 @@ procedure TToolButton.Paint;
           ARect.Top := (ARect.Top + ARect.Bottom) div 2 - 5;
           ARect.Bottom := ARect.Top + 5;
           DrawDivider(Details, ARect);
-          OffsetRect(ARect, 0, 5);
+          Types.OffsetRect(ARect, 0, 5);
           DrawDivider(Details, ARect);
         end
         else
@@ -279,7 +279,7 @@ procedure TToolButton.Paint;
           ARect.Left := (ARect.Left + ARect.Right) div 2 - 5;
           ARect.Right := ARect.Left + 5;
           DrawDivider(Details, ARect);
-          OffsetRect(ARect, 5, 0);
+          Types.OffsetRect(ARect, 5, 0);
           DrawDivider(Details, ARect);
         end
         else

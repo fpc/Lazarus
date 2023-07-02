@@ -2456,10 +2456,10 @@ begin
     else
     begin
       Canvas.Font.Color := clBtnHighlight;
-      OffsetRect(R, 1, 1);
+      Types.OffsetRect(R, 1, 1);
       Canvas.TextRect(R, R.Left, R.Top, S, TXTStyle);
       Canvas.Font.Color := clBtnShadow;
-      OffsetRect(R, -1, -1);
+      Types.OffsetRect(R, -1, -1);
     end;
   if (Details.Element = teTreeview) and (Details.Part = TVP_TREEITEM) then
   begin

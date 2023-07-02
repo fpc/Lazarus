@@ -1041,7 +1041,7 @@ begin
             ASize.cy := 0;
           // we must use real geometry, and then exclude menubar height.
           aClientRect := AWin.getGeometry;
-          OffsetRect(aClientRect, -aClientRect.Left, -aClientRect.Top);
+          Types.OffsetRect(aClientRect, -aClientRect.Left, -aClientRect.Top);
           dec(AClientRect.Bottom, ASize.cy);
           {$IFDEF VerboseQtResize}
           DebugLn('TQtWSCustomForm.getDefaultClientRect ',dbgsName(AWinControl),' ',dbgs(AWin.getClientBounds),' mnuBarHeight ',dbgs(AWin.MenuBar.getHeight),' ASize=',dbgs(ASize),' FINAL=',dbgs(AClientRect));

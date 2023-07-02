@@ -472,10 +472,10 @@ begin
       MoveRectToFit(ARect, NewDockSite.GetLogicalClientRect);
       // consider Align to increase chance the width/height is kept
       case Align of
-        alLeft: OffsetRect(ARect,-ARect.Left,0);
-        alTop: OffsetRect(ARect,0,-ARect.Top);
-        alRight: OffsetRect(ARect,NewDockSite.ClientWidth-ARect.Right,0);
-        alBottom: OffsetRect(ARect,0,NewDockSite.ClientHeight-ARect.Bottom);
+        alLeft: Types.OffsetRect(ARect,-ARect.Left,0);
+        alTop: Types.OffsetRect(ARect,0,-ARect.Top);
+        alRight: Types.OffsetRect(ARect,NewDockSite.ClientWidth-ARect.Right,0);
+        alBottom: Types.OffsetRect(ARect,0,NewDockSite.ClientHeight-ARect.Bottom);
       end;
     end;
     //DebugLn('TControl.DoDock AFTER Adjusting ',DbgSName(Self),' ',dbgs(ARect),' Align=',DbgS(Align),' NewDockSite.ClientRect=',dbgs(NewDockSite.ClientRect));

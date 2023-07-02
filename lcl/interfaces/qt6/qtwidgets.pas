@@ -7408,7 +7408,7 @@ begin
     begin
       R1 := ARect^;
       QWidget_geometry(MDIAreaHandle.Widget, @R);
-      OffsetRect(R1, -R.Left, -R.Top);
+      Types.OffsetRect(R1, -R.Left, -R.Top);
       QWidget_update(MDIAreaHandle.viewportWidget, @R1);
     end;
   end else
@@ -7428,7 +7428,7 @@ begin
     begin
       QRegion_boundingRect(ARgn, @R1);
       QWidget_geometry(MDIAreaHandle.Widget, @R);
-      OffsetRect(R1, -R.Left, -R.Top);
+      Types.OffsetRect(R1, -R.Left, -R.Top);
       ANewRgn := QRegion_create(PRect(@R1));
       QWidget_update(MDIAreaHandle.viewportWidget, ANewRgn);
       QRegion_destroy(ANewRgn);
@@ -7449,7 +7449,7 @@ begin
     begin
       R1 := ARect^;
       QWidget_geometry(MDIAreaHandle.Widget, @R);
-      OffsetRect(R1, -R.Left, -R.Top);
+      Types.OffsetRect(R1, -R.Left, -R.Top);
       QWidget_repaint(MDIAreaHandle.viewportWidget, @R1);
     end;
   end else
@@ -8552,7 +8552,7 @@ begin
   else
     R1 := Rect(0, 0, 0, 0);
   Result := R;
-  OffsetRect(Result, -Result.Left, -Result.Top);
+  Types.OffsetRect(Result, -Result.Left, -Result.Top);
   {$IFNDEF HASX11}
   if testAttribute(QtWA_Mapped) and QWidget_testAttribute(FCentralWidget, QtWA_Mapped) then
     QWidget_rect(FCentralWidget, @Result)
@@ -8646,7 +8646,7 @@ begin
     begin
       P := getClientOffset;
       R := ARect^;
-      OffsetRect(R, -P.X, -P.Y);
+      Types.OffsetRect(R, -P.X, -P.Y);
       QWidget_update(FCentralWidget, @R);
     end else
       QWidget_update(FCentralWidget);
@@ -8682,7 +8682,7 @@ begin
     begin
       P := getClientOffset;
       R := ARect^;
-      OffsetRect(R, -P.X, -P.Y);
+      Types.OffsetRect(R, -P.X, -P.Y);
       QWidget_repaint(FCentralWidget, @R);
     end else
       QWidget_repaint(FCentralWidget);
@@ -10396,7 +10396,7 @@ begin
   if Assigned(FOwner) then
   begin
     Pt := TabBarOffset;
-    OffsetRect(Result, Pt.X, Pt.Y);
+    Types.OffsetRect(Result, Pt.X, Pt.Y);
   end;
 end;
 
@@ -11691,7 +11691,7 @@ begin
           end else
           begin
             ButtonRect := R;
-            OffsetRect(ButtonRect, -R.Left, -R.Top);
+            Types.OffsetRect(ButtonRect, -R.Left, -R.Top);
           end;
 
           if PtInRect(ButtonRect, Pt) then
@@ -17389,7 +17389,7 @@ begin
       if HaveBar and (horizontalScrollBar.getVisibleTo(Widget)) then
         dec(Result.Bottom, horizontalScrollBar.getHeight);
     end;
-    OffsetRect(Result, -Result.Left, -Result.Top);
+    Types.OffsetRect(Result, -Result.Left, -Result.Top);
     {$IF DEFINED(VerboseQtResize) OR DEFINED(VerboseQScrollBarShowHide)}
     DebugLn('TQtAbstractScrollArea.GetClientBounds(not mapped): ',dbgsName(LCLObject),':',dbgsName(Self),' ',dbgs(Result),' ChildComplex=',dbgs(Ord(ChildOfComplexWidget)));
     {$ENDIF}
@@ -17615,7 +17615,7 @@ begin
   if ARect <> nil then
   begin
     P := getClientOffset;
-    OffsetRect(ARect^, -P.X , -P.Y);
+    Types.OffsetRect(ARect^, -P.X , -P.Y);
     QWidget_update(viewportWidget, ARect);
   end else
     QWidget_update(viewportWidget);
@@ -17636,7 +17636,7 @@ begin
   if ARect <> nil then
   begin
     P := getClientOffset;
-    OffsetRect(ARect^, -P.X , -P.Y);
+    Types.OffsetRect(ARect^, -P.X , -P.Y);
     QWidget_repaint(viewportWidget, ARect);
   end else
     QWidget_repaint(viewportWidget);
@@ -18530,13 +18530,13 @@ begin
     if R.Bottom-R.Top > D.Bottom-D.Top then // check height
       R.Bottom := R.Top + D.Bottom-D.Top;
     if R.Left < D.Left then
-      OffsetRect(R, D.Left-R.Left, 0);
+      Types.OffsetRect(R, D.Left-R.Left, 0);
     if R.Top < D.Top then
-      OffsetRect(R, 0, D.Top-R.Top);
+      Types.OffsetRect(R, 0, D.Top-R.Top);
     if (R.Right > D.Right) then
-      OffsetRect(R, D.Right-R.Right, 0);
+      Types.OffsetRect(R, D.Right-R.Right, 0);
     if (R.Bottom > D.Bottom) then
-      OffsetRect(R, 0, D.Bottom-R.Bottom);
+      Types.OffsetRect(R, 0, D.Bottom-R.Bottom);
 
     move(R.Left, R.Top);
   end;

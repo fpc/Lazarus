@@ -3950,7 +3950,7 @@ begin
     // Save all SynEditKeyStrokes into a tree map for fast lookup, sorted by command.
     for i:=ASynEditKeyStrokes.Count-1 downto 0 do begin
       Key:=ASynEditKeyStrokes[i];
-      Node:=KeyStrokesByCmds.FindKey({%H-}Pointer(Key.Command), @CompareKeyCmd);
+      Node:=KeyStrokesByCmds.FindKey({%H-}Pointer(PtrUInt(Key.Command)), @CompareKeyCmd);
       if Assigned(Node) then begin // Another key is already defined for this command
         KeyList:=TKeyStrokeList(Node.Data);
         if KeyList.FCount < 3 then
@@ -3987,7 +3987,7 @@ begin
       if (ccid >= ecFirstPlugin) and (ccid < ecLastPlugin) then
         ccid:=ccid+ACommandOffsetOffset;
       // Get SynEditKeyStrokes from the lookup tree
-      Node:=KeyStrokesByCmds.FindKey({%H-}Pointer(ccid), @CompareKeyCmd);
+      Node:=KeyStrokesByCmds.FindKey({%H-}Pointer(PtrUInt(ccid)), @CompareKeyCmd);
       // First and second shortcuts for this command
       UpdateOrAddKeyStroke(0, @CurRelation.ShortcutA);
       UpdateOrAddKeyStroke(1, @CurRelation.ShortcutB);

@@ -309,7 +309,7 @@ begin
     Exit;
     
   ARect := TQtWidget(AWinControl.Handle).getClientBounds;
-  OffsetRect(ARect, -ARect.Left, -ARect.Top);
+  Types.OffsetRect(ARect, -ARect.Left, -ARect.Top);
   Result := True;
 end;
 

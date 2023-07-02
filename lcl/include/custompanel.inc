@@ -174,10 +174,10 @@ begin
       else
       begin
         Canvas.Font.Color := clBtnHighlight;
-        OffsetRect(ARect, 1, 1);
+        Types.OffsetRect(ARect, 1, 1);
         Canvas.TextRect(ARect, ARect.Left, ARect.Top, Caption, TS);
         Canvas.Font.Color := clBtnShadow;
-        OffsetRect(ARect, -1, -1);
+        Types.OffsetRect(ARect, -1, -1);
       end
     else
       Canvas.Font.Color := Font.Color;

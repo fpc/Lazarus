@@ -240,7 +240,7 @@ var
   s: TbtString;
 begin
   Result := True;
-  case Longint(p.Ext1) of
+  case PtrUInt(p.Ext1) of
     Id_test_ord_mb: begin // test_ord_mb(ABtn: TMsgDlgBtn): Integer;
         if Stack.Count < 2 then raise TEMScriptBadParamException.Create('Invalid param count for "test_ord_mb"');
         Stack.SetInt(-1, test_ord_mb(TMsgDlgBtn(Stack.GetUInt(-2))) );

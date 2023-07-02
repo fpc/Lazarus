@@ -2347,7 +2347,7 @@ begin
       LPtoDP(DC, R, 2);
 
       DCOrigin := Offset;
-      OffsetRect(R, DCOrigin.X, DCOrigin.Y);
+      Types.OffsetRect(R, DCOrigin.X, DCOrigin.Y);
 
       // try to use the gdk functions, so that the current theme is used
       BInner := False;
@@ -2415,7 +2415,7 @@ begin
       if (grfFlags and BF_ADJUST) = BF_ADJUST then
       begin
         ARect := R;
-        OffsetRect(ARect, -DCOrigin.X, -DCOrigin.Y);
+        Types.OffsetRect(ARect, -DCOrigin.X, -DCOrigin.Y);
         DPtoLP(DC, ARect, 2);
       end;
       Result := True;
@@ -2515,12 +2515,12 @@ var
         theRect.Bottom := theRect.Top +  AP.cY;
         if (Flags and DT_VCENTER) > 0 then
         begin
-          OffsetRect(theRect, 0, ((Rect.Bottom - Rect.Top) - (theRect.Bottom - theRect.Top)) div 2);
+          Types.OffsetRect(theRect, 0, ((Rect.Bottom - Rect.Top) - (theRect.Bottom - theRect.Top)) div 2);
         end
         else
         if (Flags and DT_BOTTOM) > 0 then
         begin
-          OffsetRect(theRect, 0, (Rect.Bottom - Rect.Top) - (theRect.Bottom - theRect.Top));
+          Types.OffsetRect(theRect, 0, (Rect.Bottom - Rect.Top) - (theRect.Bottom - theRect.Top));
         end;
 
       end;
@@ -2567,9 +2567,9 @@ var
     if not CalcRect then
       case LeftOffset of
         DT_CENTER:
-          OffsetRect(theRect, (Rect.Right - theRect.Right) div 2, 0);
+          Types.OffsetRect(theRect, (Rect.Right - theRect.Right) div 2, 0);
         DT_RIGHT:
-          OffsetRect(theRect, Rect.Right - theRect.Right, 0);
+          Types.OffsetRect(theRect, Rect.Right - theRect.Right, 0);
       end;
   end;
 
@@ -2625,7 +2625,7 @@ var
   begin
     {see issue #27547}
     AClipRect := RectFromGdkRect(TGtkDeviceContext(DC).ClipRect);
-    OffsetRect(AClipRect, -AClipRect.Left, -AClipRect.Top);
+    Types.OffsetRect(AClipRect, -AClipRect.Left, -AClipRect.Top);
     Result := (TGtkDeviceContext(DC).CurrentFont^.LogFont.lfOrientation <> 0) and
         (Flags and DT_SINGLELINE <> 0) and
         (Flags and DT_VCENTER = 0) and (Flags and DT_CENTER = 0) and
@@ -3883,8 +3883,8 @@ begin
   if ((Options and (ETO_OPAQUE + ETO_CLIPPED)) <> 0) and (Rect = nil) then
   begin
     R := RectFromGdkRect(DevCtx.ClipRect);
-    OffsetRect(R, -R.Left, -R.Top);
-    OffsetRect(R, X, Y);
+    Types.OffsetRect(R, -R.Left, -R.Top);
+    Types.OffsetRect(R, X, Y);
     DrawText(DC, Str, Count, R, DT_SINGLELINE or DT_CALCRECT);
     Rect := @R;
   end;
@@ -4505,7 +4505,7 @@ begin
     lpRect^.Bottom := lpRect^.Top + CRect.Height;
   end;
   DPtoLP(DC, lpRect^, 2);
-  OffsetRect(lpRect^, -DCOrigin.X, -DCOrigin.Y);
+  Types.OffsetRect(lpRect^, -DCOrigin.X, -DCOrigin.Y);
 end;
 
 {------------------------------------------------------------------------------
@@ -6522,7 +6522,7 @@ begin
       Pt.X := Round(Adjustment^.value);
     dec(gdkRect.x, Pt.X);
     dec(gdkRect.y, Pt.Y);
-    OffsetRect(Rect^, -Pt.X, -Pt.Y);
+    Types.OffsetRect(Rect^, -Pt.X, -Pt.Y);
   end;
   WidgetInfo := GetWidgetInfo(Widget); // GetOrCreateWidgetInfo() ??
   if WidgetInfo <> nil then

@@ -2611,7 +2611,7 @@ begin
   if Handle = 0 then
     Exit(False);
   GetClientBounds(Handle, ARect);
-  OffsetRect(ARect, -ARect.Left, -ARect.Top);
+  Types.OffsetRect(ARect, -ARect.Left, -ARect.Top);
 
   Result := True;
 end;
@@ -4966,19 +4966,19 @@ begin
   if Rect <> nil then
   begin
     with TQtWidget(aHandle).getClientOffset do
-      OffsetRect(Rect^, x, y);
+      Types.OffsetRect(Rect^, x, y);
 
     {$IFDEF QTSCROLLABLEFORMS}
     if (TQtWidget(AHandle) is TQtMainWindow) and Assigned(TQtMainWindow(AHandle).ScrollArea) then
     begin
       Pt := TQtMainWindow(AHandle).ScrollArea.ScrolledOffset;
-      OffsetRect(Rect^, -Pt.X, -Pt.Y);
+      Types.OffsetRect(Rect^, -Pt.X, -Pt.Y);
     end else
     {$ENDIF}
     if TQtWidget(AHandle).ChildOfComplexWidget = ccwScrollingWinControl then
     begin
       Pt := TQtCustomControl(AHandle).viewport.ScrolledOffset;
-      OffsetRect(Rect^, -Pt.X, -Pt.Y);
+      Types.OffsetRect(Rect^, -Pt.X, -Pt.Y);
     end;
 
     // no need to handle bErase. Qt automatically erase rect on paint event according to docs
@@ -7119,7 +7119,7 @@ begin
           DstQDC.getClipping and DstQDC.getClipRegion.containsRect(SrcRect) then
         begin
           AClipRect := DstQDC.getClipRegion.getBoundingRect;
-          OffsetRect(AClipRect, -AClipRect.Left, -AClipRect.Top);
+          Types.OffsetRect(AClipRect, -AClipRect.Left, -AClipRect.Top);
 
           if (DstRect.Right - DstRect.Left <= AClipRect.Right) and
             (DstRect.Bottom - DstRect.Top <= AClipRect.Bottom) and

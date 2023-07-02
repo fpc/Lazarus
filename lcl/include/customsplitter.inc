@@ -229,13 +229,13 @@ var
     OldSize := GetControlSize(CurResizeControl);
     case ResizeAnchor of
       akLeft:
-        OffsetRect(NewRect, NewSize - OldSize, 0);
+        Types.OffsetRect(NewRect, NewSize - OldSize, 0);
       akRight:
-        OffsetRect(NewRect, OldSize - NewSize, 0);
+        Types.OffsetRect(NewRect, OldSize - NewSize, 0);
       akTop:
-        OffsetRect(NewRect, 0, NewSize - OldSize);
+        Types.OffsetRect(NewRect, 0, NewSize - OldSize);
       akBottom:
-        OffsetRect(NewRect, 0, OldSize - NewSize);
+        Types.OffsetRect(NewRect, 0, OldSize - NewSize);
     end;
     SetRubberBandRect(FSplitterWindow, NewRect);
   end;
@@ -476,9 +476,9 @@ begin
         NewRect.BottomRight := Parent.ClientToScreen(NewRect.BottomRight);
 
         if ResizeAnchor in [akLeft, akRight] then
-          OffsetRect(NewRect, Offset, 0)
+          Types.OffsetRect(NewRect, Offset, 0)
         else
-          OffsetRect(NewRect, 0, Offset);
+          Types.OffsetRect(NewRect, 0, Offset);
         SetRubberBandRect(FSplitterWindow, NewRect);
       end;
     end;

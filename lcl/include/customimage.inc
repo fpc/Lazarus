@@ -233,7 +233,7 @@ begin
     ChangeY := (ImgHeight-PicHeight) div 2;
     if FKeepOriginXWhenClipped and (ChangeX<0) then ChangeX := 0;
     if FKeepOriginYWhenClipped and (ChangeY<0) then ChangeY := 0;
-    OffsetRect(Result, ChangeX, ChangeY);
+    Types.OffsetRect(Result, ChangeX, ChangeY);
   end;
 end;
 

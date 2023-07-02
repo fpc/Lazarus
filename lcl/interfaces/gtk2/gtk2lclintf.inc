@@ -749,7 +749,7 @@ begin
   {$ENDIF}
   R := ARect;
   LPtoDP(ADC, R, 2);
-  OffSetRect(R, DCOrigin.x, DCOrigin.y);
+  Types.OffSetRect(R, DCOrigin.x, DCOrigin.y);
 
   Drawable := DevCtx.Drawable;
   if Drawable = nil then

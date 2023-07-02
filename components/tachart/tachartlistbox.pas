@@ -277,7 +277,7 @@ begin
   if cloShowCheckboxes in Options then begin
     ACheckBoxRect := Rect(0, 0, FCheckboxSize.CX, FCheckboxSize.CY);
     if isRTL then dec(x, FCheckboxSize.CX);
-    OffsetRect(ACheckboxRect, x, (AItemRect.Top + AItemRect.Bottom - FCheckboxSize.CY) div 2);
+    Types.OffsetRect(ACheckboxRect, x, (AItemRect.Top + AItemRect.Bottom - FCheckboxSize.CY) div 2);
     if cloShowIcons in Options then 
       x := IfThen(isRTL, ACheckboxRect.Left - MARGIN, ACheckboxRect.Right + MARGIN);
   end;

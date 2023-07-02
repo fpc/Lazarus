@@ -815,7 +815,7 @@ begin
   ParentOrigin.Y := 0;
   if FHintControl.Parent <> nil then
     ParentOrigin := FHintControl.Parent.ClientOrigin;
-  OffsetRect(HintInfo.CursorRect, ParentOrigin.X - ClientOrigin.X,
+  Types.OffsetRect(HintInfo.CursorRect, ParentOrigin.X - ClientOrigin.X,
     ParentOrigin.Y - ClientOrigin.Y);
   HintInfo.CursorPos := FHintControl.ScreenToClient(Info.MousePos);
   HintInfo.HintStr := GetControlShortHint(Info.Control);
@@ -866,7 +866,7 @@ begin
       WidthAdjust := HintWinRect.Right - HintWinRect.Left
     else
       WidthAdjust := 0;
-    OffsetRect(HintWinRect, HintInfo.HintPos.X - WidthAdjust, HintInfo.HintPos.Y);
+    Types.OffsetRect(HintWinRect, HintInfo.HintPos.X - WidthAdjust, HintInfo.HintPos.Y);
     //DebugLn(['TApplication.ShowHintWindow HintStr="',HintInfo.HintStr,'" HintWinRect=',dbgs(HintWinRect)]);
 
     FHintWindow.Color := HintInfo.HintColor;

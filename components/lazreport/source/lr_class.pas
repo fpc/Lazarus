@@ -5799,7 +5799,7 @@ begin
           w1 := r.Right - r.Left;
           h1 := r.Bottom - r.Top;
           if (Flags and flPictCenter) <> 0 then
-            OffsetRect(r, (w - w1) div 2, (h - h1) div 2);
+            Types.OffsetRect(r, (w - w1) div 2, (h - h1) div 2);
         end;
         {$IFDEF LCLNOGUI}
         bmp := TLazreportBitmap.create;
@@ -5815,7 +5815,7 @@ begin
         PictureWidth := Round(Picture.Width * ScaleX);
         PictureHeight := Round(Picture.Height * ScaleY);
         if (Flags and flPictCenter) <> 0 then
-          OffsetRect(r, (w - PictureWidth) div 2, (h - PictureHeight) div 2);
+          Types.OffsetRect(r, (w - PictureWidth) div 2, (h - PictureHeight) div 2);
         {$IFDEF LCLNOGUI}
         bmp := TLazreportBitmap.create;
         bmp.LoadFromGraphic(Picture.Graphic);
