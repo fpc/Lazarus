@@ -4655,7 +4655,7 @@ begin
         // alLeft: NewControl, Splitter, Sibling
         Splitter.SetBounds(Sibling.Left+NewSize,Sibling.Top,
                            Splitter.Width,Sibling.Height);
-        OffsetRect(NewBounds,Sibling.Left,Sibling.Top);
+        Types.OffsetRect(NewBounds,Sibling.Left,Sibling.Top);
         Sibling.SetBounds(Splitter.Left+Splitter.Width,Sibling.Top,
                           NewSiblingWidth,Sibling.Height);
       end else begin
@@ -4663,7 +4663,7 @@ begin
         Sibling.Width:=NewSiblingWidth;
         Splitter.SetBounds(Sibling.Left+Sibling.Width,Sibling.Top,
                            Splitter.Width,Sibling.Height);
-        OffsetRect(NewBounds,Splitter.Left+Splitter.Width,Sibling.Top);
+        Types.OffsetRect(NewBounds,Splitter.Left+Splitter.Width,Sibling.Top);
       end;
       NewSite.BoundsRect:=NewBounds;
     end else begin
@@ -4947,7 +4947,7 @@ procedure TAnchorDockHostSite.RemoveControlFromLayout(AControl: TControl);
         // shrink this site
         NewBounds:=OnlySiteLeft.BoundsRect;
         p:=ClientOrigin;
-        OffsetRect(NewBounds,p.x,p.y);
+        Types.OffsetRect(NewBounds,p.x,p.y);
         BoundsRect:=NewBounds;
       end else if DockMaster.IsCustomSite(Parent) then begin
         // parent is a custom dock site
@@ -5389,7 +5389,7 @@ begin
   for i:=0 to ControlCount-1 do begin
     Child:=Controls[i];
     NewBounds:=Child.BoundsRect;
-    OffsetRect(NewBounds,dx,dy);
+    Types.OffsetRect(NewBounds,dx,dy);
     if Child.AnchorSideLeft.Control=Self then
       NewBounds.Left:=0;
     if Child.AnchorSideTop.Control=Self then
@@ -6253,8 +6253,8 @@ function TAnchorDockHostSite.GetPageArea: TRect;
 begin
   Result:=Rect(0,0,Width*DockMaster.PageAreaInPercent div 100,
                Height*DockMaster.PageAreaInPercent div 100);
-  OffsetRect(Result,(Width*(100-DockMaster.PageAreaInPercent)) div 200,
-                    (Height*(100-DockMaster.PageAreaInPercent)) div 200);
+  Types.OffsetRect(Result,(Width*(100-DockMaster.PageAreaInPercent)) div 200,
+                         (Height*(100-DockMaster.PageAreaInPercent)) div 200);
 end;
 
 procedure TAnchorDockHostSite.ChangeBounds(ALeft, ATop, AWidth,
@@ -6516,10 +6516,6 @@ begin
 end;
 
 procedure TAnchorDockHeader.ButtonPaint(Sender: TObject);
-  function BtnPart(btn: TCustomSpeedButton): TThemedElementDetails;
-  begin
-    ThemeServices.GetElementDetails(tbPushButtonNormal);
-  end;
 var
   //LCanvas: TCanvas;
   AStyle: TTextStyle;
@@ -7206,7 +7202,7 @@ begin
       tpLeft,tpRight: DockRect.Top:=(DockRect.Top+DockRect.Bottom) div 2;
       end;
       Offset:=DockSite.Pages.ClientOrigin;
-      OffsetRect(DockRect,Offset.X,Offset.Y);
+      Types.OffsetRect(DockRect,Offset.X,Offset.Y);
       exit;
     end else if DropCtl is TAnchorDockPage then begin
       // dock in front of page
@@ -7216,7 +7212,7 @@ begin
       tpLeft,tpRight: DockRect.Bottom:=(DockRect.Top+DockRect.Bottom) div 2;
       end;
       Offset:=DockSite.Pages.ClientOrigin;
-      OffsetRect(DockRect,Offset.X,Offset.Y);
+      Types.OffsetRect(DockRect,Offset.X,Offset.Y);
       exit;
     end;
   end;
@@ -7243,7 +7239,7 @@ begin
   alRight:
     if Inside then begin
       DockRect:=Rect(0,0,Min(Client.Width,Site.Width div 2),Site.ClientHeight);
-      OffsetRect(DockRect,Site.ClientWidth-DockRect.Right,0);
+      Types.OffsetRect(DockRect,Site.ClientWidth-DockRect.Right,0);
     end else
       DockRect:=Bounds(Site.ClientWidth,0,Client.Width,Site.ClientHeight);
   alTop:
@@ -7254,7 +7250,7 @@ begin
   alBottom:
     if Inside then begin
       DockRect:=Rect(0,0,Site.ClientWidth,Min(Client.Height,Site.ClientHeight div 2));
-      OffsetRect(DockRect,0,Site.ClientHeight-DockRect.Bottom);
+      Types.OffsetRect(DockRect,0,Site.ClientHeight-DockRect.Bottom);
     end else
       DockRect:=Bounds(0,Site.ClientHeight,Site.ClientWidth,Client.Height);
   alClient:
@@ -7267,7 +7263,7 @@ begin
     exit; // use default
   end;
   Offset:=Site.ClientOrigin;
-  OffsetRect(DockRect,Offset.X,Offset.Y);
+  Types.OffsetRect(DockRect,Offset.X,Offset.Y);
 end;
 
 procedure TAnchorDockManager.RemoveControl(Control: TControl);
@@ -8252,9 +8248,9 @@ begin
     r.Left:=r.Right-lx;
   end;
   DrawEdge(Canvas.Handle,r, BDR_RAISEDINNER, BF_RECT );
-  OffsetRect(r,lx,ly);
+  Types.OffsetRect(r,lx,ly);
   DrawEdge(Canvas.Handle,r, BDR_RAISEDINNER, BF_RECT );
-  OffsetRect(r,lx,ly);
+  Types.OffsetRect(r,lx,ly);
   DrawEdge(Canvas.Handle,r, BDR_RAISEDINNER, BF_RECT );
 end;
 
