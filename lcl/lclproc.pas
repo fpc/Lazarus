@@ -28,7 +28,7 @@ uses
   {$IFDEF Darwin}MacOSAll, {$ENDIF}
   Classes, SysUtils, Math, Types, Laz_AVL_Tree,
   // LazUtils
-  LazFileUtils, LazUtilities, LazMethodList, LazUTF8, LazLoggerBase, LazTracer,
+  LazFileUtils, LazUtilities, LazMethodList, LazUTF8, LazUTF16, LazLoggerBase, LazTracer,
   GraphMath,
   // LCL
   LCLStrConsts, LCLType;
@@ -43,7 +43,7 @@ type
     Item: Pointer;
     IsDestroyed: boolean;
     Info: string;
-    CreationStack: TStackTracePointers; // stack trace at creationg
+    CreationStack: TStackTracePointers; // stack trace at creation
     DestructionStack: TStackTracePointers;// stack trace at destruction
     function AsString(WithStackTraces: boolean): string;
     destructor Destroy; override;
@@ -225,20 +225,12 @@ procedure DbgAppendToFileWithoutLn(FileName, S: String);
 function ClassCase(const AClass: TClass; const ACase: array of TClass {; const ADescendant: Boolean = True}): Integer; overload;
 function ClassCase(const AClass: TClass; const ACase: array of TClass; const ADescendant: Boolean): Integer; overload;
 
-// MWE: define (missing) UTF16string similar to UTF8
-//      strictly spoken, a widestring <> utf16string
-// todo: use it in existing functions
-type
-  UTF16String = type UnicodeString;
-  PUTF16String = ^UTF16String;
-
-// Felipe: Don't substitute with calls to lazutf16 because lazutf16 includes
-// some initialization code and tables, which are not necessary for the LCL
-function UTF16CharacterLength(p: PWideChar): integer;
-function UTF16Length(const s: UTF16String): PtrInt; inline;
-function UTF16Length(p: PWideChar; WordCount: PtrInt): PtrInt;
-function UTF16CharacterToUnicode(p: PWideChar; out CharLen: integer): Cardinal;
-function UnicodeToUTF16(u: cardinal): UTF16String;
+// Deprecated in Lazarus 3.99 July 2023.
+function UTF16CharacterLength(p: PWideChar): integer; deprecated 'Use LazUTF16.UTF16CharacterLength instead';
+function UTF16Length(const s: UnicodeString): PtrInt; deprecated 'Use LazUTF16.UTF16Length instead';
+function UTF16Length(p: PWideChar; WordCount: PtrInt): PtrInt; deprecated 'Use LazUTF16.UTF16Length instead';
+function UTF16CharacterToUnicode(p: PWideChar; out CharLen: integer): Cardinal; deprecated 'Use LazUTF16.UTF16CharacterToUnicode instead';
+function UnicodeToUTF16(u: cardinal): UnicodeString; deprecated 'Use LazUTF16.UnicodeToUTF16 instead';
 
 // identifier
 function CreateFirstIdentifier(const Identifier: string): string;
@@ -1317,7 +1309,7 @@ begin
   Result:=LazLoggerBase.dbgObjMem(AnObject);
 end;
 
-function dbghex(i: Int64): string;
+function dbgHex(i: Int64): string;
 begin
   Result:=LazLoggerBase.dbghex(i);
 end;
@@ -1731,76 +1723,28 @@ begin
 end;
 
 function UTF16CharacterLength(p: PWideChar): integer;
-// returns length of UTF16 character in number of words
-// The endianess of the machine will be taken.
 begin
-  if p<>nil then begin
-    if (ord(p[0]) < $D800) or (ord(p[0]) > $DFFF) then
-      Result:=1
-    else
-      Result:=2;
-  end else begin
-    Result:=0;
-  end;
+  Result:=LazUTF16.UTF16CharacterLength(p);
 end;
 
-function UTF16Length(const s: UTF16String): PtrInt;
+function UTF16Length(const s: UnicodeString): PtrInt;
 begin
-  Result:=UTF16Length(PWideChar(s),length(s));
+  Result:=LazUTF16.UTF16Length(s);
 end;
 
 function UTF16Length(p: PWideChar; WordCount: PtrInt): PtrInt;
-var
-  CharLen: LongInt;
 begin
-  Result:=0;
-  while (WordCount>0) do begin
-    inc(Result);
-    CharLen:=UTF16CharacterLength(p);
-    inc(p,CharLen);
-    dec(WordCount,CharLen);
-  end;
+  Result:=LazUTF16.UTF16Length(p, WordCount);
 end;
 
 function UTF16CharacterToUnicode(p: PWideChar; out CharLen: integer): Cardinal;
-var
-  w1: cardinal;
-  w2: Cardinal;
 begin
-  if p<>nil then begin
-    w1:=ord(p[0]);
-    if (w1 < $D800) or (w1 > $DFFF) then begin
-      // is 1 word character
-      Result:=w1;
-      CharLen:=1;
-    end else begin
-      // could be 2 word character
-      w2:=ord(p[1]);
-      if (w2>=$DC00) then begin
-        // is 2 word character
-        Result:=(w1-$D800) shl 10 + (w2-$DC00) + $10000;
-        CharLen:=2;
-      end else begin
-        // invalid character
-        Result:=w1;
-        CharLen:=1;
-      end;
-    end;
-  end else begin
-    Result:=0;
-    CharLen:=0;
-  end;
+  Result:=LazUTF16.UTF16CharacterToUnicode(p, CharLen);
 end;
 
-function UnicodeToUTF16(u: cardinal): UTF16String;
+function UnicodeToUTF16(u: cardinal): UnicodeString;
 begin
-  // u should be <= $10FFFF to fit into UTF-16
-
-  if u < $10000 then
-    // Note: codepoints $D800 - $DFFF are reserved
-    Result:=system.widechar(u)
-  else
-    Result:=system.widechar($D800+((u - $10000) shr 10))+system.widechar($DC00+((u - $10000) and $3ff));
+  Result:=LazUTF16.UnicodeToUTF16(u);
 end;
 
 function CreateFirstIdentifier(const Identifier: string): string;

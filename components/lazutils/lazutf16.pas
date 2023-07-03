@@ -36,18 +36,20 @@ type
 {$ENDIF}
 
 function UTF16CharacterLength(p: PWideChar): integer;
-function UTF16Length(const s: widestring): PtrInt; overload;
+function UTF16Length(const s: UnicodeString): PtrInt; overload;
 function UTF16Length(p: PWideChar; WordCount: PtrInt): PtrInt; overload;
-function UTF16Copy(const s: UnicodeString; StartCharIndex, CharCount: PtrInt): Unicodestring;
+function UTF16Copy(const s: UnicodeString; StartCharIndex, CharCount: PtrInt): UnicodeString;
 function UTF16CharStart(P: PWideChar; Len, CharIndex: PtrInt): PWideChar;
 function UTF16Pos(const SearchForText, SearchInText: UnicodeString; StartPos: PtrInt = 1): PtrInt;
 function UTF16CharacterToUnicode(p: PWideChar; out CharLen: integer): Cardinal;
-function UnicodeToUTF16(u: cardinal): widestring;
+function UnicodeToUTF16(u: cardinal): UnicodeString;
 function IsUTF16CharValid(AChar, ANextChar: WideChar): Boolean;
-function IsUTF16StringValid(AWideStr: widestring): Boolean;
-function Utf16StringReplace(const S, OldPattern, NewPattern: WideString; Flags: TReplaceFlags): WideString; Inline;
-function Utf16StringReplace(const S, OldPattern, NewPattern: WideString; Flags: TReplaceFlags; out Count: Integer): WideString;
+function IsUTF16StringValid(AStr: UnicodeString): Boolean;
+function Utf16StringReplace(const S, OldPattern, NewPattern: UnicodeString; Flags: TReplaceFlags): UnicodeString; Inline;
+function Utf16StringReplace(const S, OldPattern, NewPattern: UnicodeString; Flags: TReplaceFlags; out Count: Integer): UnicodeString;
 
+// The following functions use UnicodeTables which are initialized
+//  only when the functions are called.
 function UnicodeLowercase(u: cardinal): cardinal;
 {$IFDEF FPC}
 function UTF8LowerCaseViaTables(const s: string): string;
@@ -69,7 +71,7 @@ begin
   end;
 end;
 
-function UTF16Length(const s: widestring): PtrInt;
+function UTF16Length(const s: UnicodeString): PtrInt;
 begin
   Result:=UTF16Length(PWideChar(s),length(s));
 end;
@@ -87,7 +89,7 @@ begin
   end;
 end;
 
-function UTF16Copy(const s: UnicodeString; StartCharIndex, CharCount: PtrInt): Unicodestring;
+function UTF16Copy(const s: UnicodeString; StartCharIndex, CharCount: PtrInt): UnicodeString;
 // returns substring
 var
   StartPos: PWideChar;
@@ -218,15 +220,14 @@ begin
   end;
 end;
 
-function UnicodeToUTF16(u: cardinal): widestring;
+function UnicodeToUTF16(u: cardinal): UnicodeString;
 begin
   // u should be <= $10FFFF to fit into UTF-16
-
   if u < $10000 then
     // Note: codepoints $D800 - $DFFF are reserved
-    Result:=system.widechar(u)
+    Result:=widechar(u)
   else
-    Result:=system.widechar($D800+((u - $10000) shr 10))+system.widechar($DC00+((u - $10000) and $3ff));
+    Result:=widechar($D800+((u - $10000) shr 10))+widechar($DC00+((u - $10000) and $3ff));
 end;
 
 // Specification here: http://unicode.org/faq/utf_bom.html#utf16-7
@@ -244,20 +245,20 @@ begin
   Result := not Result;
 end;
 
-function IsUTF16StringValid(AWideStr: widestring): Boolean;
+function IsUTF16StringValid(AStr: UnicodeString): Boolean;
 var
   i: Integer;
 begin
   Result := True;
-  for i := 1 to Length(AWideStr)-1 do
+  for i := 1 to Length(AStr)-1 do
   begin
-    Result := Result and IsUTF16CharValid(AWideStr[i], AWideStr[i+1]);
+    Result := Result and IsUTF16CharValid(AStr[i], AStr[i+1]);
     if not Result then Exit;
   end;
 end;
 
-function Utf16StringReplace(const S, OldPattern, NewPattern: WideString;
-  Flags: TReplaceFlags): WideString;
+function Utf16StringReplace(const S, OldPattern, NewPattern: UnicodeString;
+  Flags: TReplaceFlags): UnicodeString;
 var
   DummyCount: Integer;
 begin
@@ -265,10 +266,10 @@ begin
 end;
 
 //Same as SysUtil.StringReplace but for WideStrings/UnicodeStrings, since it's not available in fpc yet
-function Utf16StringReplace(const S, OldPattern, NewPattern: WideString;
-                            Flags: TReplaceFlags; out Count: Integer): WideString;
+function Utf16StringReplace(const S, OldPattern, NewPattern: UnicodeString;
+  Flags: TReplaceFlags; out Count: Integer): UnicodeString;
 var
-  Srch, OldP, RemS: WideString; // Srch and OldP can contain WideUpperCase versions of S,OldPattern
+  Srch, OldP, RemS: UnicodeString; // Srch and OldP can contain WideUpperCase versions of S,OldPattern
   P: Integer;
 begin
   Srch:=S;
@@ -317,6 +318,7 @@ var
   UnicodeLower1E00_1FFC: array[$1E00..$1FFC] of word;
   UnicodeLower2126_2183: array[$2126..$2183] of word;
   UnicodeLower2C60_2CE2: array[$2C60..$2CE2] of word;
+  UnicodeTablesInitialized: Boolean;
 
 procedure InitUnicodeTables;
 var
@@ -997,10 +999,14 @@ begin
   UnicodeLower2C60_2CE2[$2CDE]:=$2CDF;
   UnicodeLower2C60_2CE2[$2CE0]:=$2CE1;
   UnicodeLower2C60_2CE2[$2CE2]:=$2CE3;
+
+  UnicodeTablesInitialized:=True;
 end;
 
 function UnicodeLowercase(u: cardinal): cardinal;
 begin
+  if not UnicodeTablesInitialized then
+    InitUnicodeTables;      // Initialize only when needed.
   if u<$00C0 then begin
     // most common
     if (u>=$0041) and (u<=$0061) then
@@ -1027,6 +1033,7 @@ begin
 end;
 
 {$IFDEF FPC}
+
 function UTF8LowercaseDynLength(const s: string): string;
 var
   Buf: shortstring;
@@ -1094,6 +1101,8 @@ var
   Changed: Boolean;
   p: PChar;
 begin
+  if not UnicodeTablesInitialized then
+    InitUnicodeTables;      // Initialize only when needed.
   Result:=s;
   if Result='' then exit;
   Changed:=false;
@@ -1142,9 +1151,8 @@ begin
     end;
   until false;
 end;
+
 {$ENDIF}
 
-initialization
-  InitUnicodeTables;
 end.
 

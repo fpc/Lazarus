@@ -27,8 +27,10 @@ uses
   qtobjects, qtint,
   // Free Pascal
   Classes, SysUtils, Types,
+  // LazUtils
+  LazUtilities, LazLoggerBase, LazUTF16,
   // LCL
-  LCLType, LCLProc, LazUTF8, LCLIntf, LMessages, Graphics, Forms, Controls,
+  LCLType, LazUTF8, LCLIntf, LMessages, Graphics, Forms, Controls,
   ComCtrls, ExtCtrls, StdCtrls, Menus, Dialogs, ImgList;
 
 type
