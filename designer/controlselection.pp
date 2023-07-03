@@ -39,9 +39,9 @@ interface
 uses
   Types, Classes, SysUtils, Math, FPCanvas,
   // LCL
-  LCLIntf, LCLProc, Controls, Forms, Graphics, Menus, ComCtrls,
+  LCLIntf, Controls, Forms, Graphics, Menus, ComCtrls,
   // LazUtils
-  GraphType, GraphMath,
+  GraphType, GraphMath, LazLoggerBase,
   // IDEIntf
   PropEditUtils, ComponentEditors, FormEditingIntf,
   // IDE
@@ -772,7 +772,7 @@ var
   r: TRect;
 begin
   r:=GetBounds;
-  Result:=not CompareRect(@r,@FMovedResizedBounds);
+  Result:=not SameRect(@r,@FMovedResizedBounds);
 end;
 
 function TSelectedControl.IsTopLvl: boolean;
@@ -2838,7 +2838,6 @@ end;
 
 procedure TControlSelection.SetRubberBandBounds(ARect:TRect);
 var
-  i :integer;
   InvFrame: TRect;
 begin
   if FForm = nil then exit;
@@ -2847,7 +2846,7 @@ begin
   MakeMinMax(ARect.Left, ARect.Right);
   MakeMinMax(ARect.Top, ARect.Bottom);
 
-  if not CompareRect(@FRubberBandBounds, @ARect) then
+  if not SameRect(@FRubberBandBounds, @ARect) then
   begin
     if (FForm <> nil) and (cssRubberbandPainted in FStates) then
     begin

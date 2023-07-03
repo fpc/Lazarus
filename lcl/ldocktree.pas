@@ -99,9 +99,9 @@ interface
 uses
   Math, Types, Classes, SysUtils, typinfo,
   // LazUtils
-  LazLoggerBase,
+  LazLoggerBase, LazTracer, GraphMath,
   // LCL
-  LCLProc, LCLType, LCLIntf, LCLStrConsts, Graphics, Controls, ExtCtrls, Forms,
+  LCLType, LCLIntf, Graphics, Controls, ExtCtrls, Forms,
   Menus, Themes, ComCtrls, LMessages, LResources;
 
 type
@@ -1573,7 +1573,7 @@ procedure TLazDockTree.MessageHandler(Sender: TControl; var Message: TLMessage);
     NewMouseState.IsMouseDown := (GetKeyState(VK_LBUTTON) and $80) <> 0;
     if not CompareMem(@FMouseState, @NewMouseState, SizeOf(NewMouseState)) then
     begin
-      if not CompareRect(@FMouseState.Rect, @NewMouseState.Rect) then
+      if not SameRect(@FMouseState.Rect, @NewMouseState.Rect) then
         InvalidateRect(DockSite.Handle, @FMouseState.Rect, False);
       FMouseState := NewMouseState;
       InvalidateRect(DockSite.Handle, @NewMouseState.Rect, False);
@@ -2006,7 +2006,7 @@ begin
   end;
   if not CompareMem(@FMouseState, @NewMouseState, SizeOf(NewMouseState)) then
   begin
-    if not CompareRect(@FMouseState.Rect, @NewMouseState.Rect) then
+    if not SameRect(@FMouseState.Rect, @NewMouseState.Rect) then
       InvalidateRect(Handle, @FMouseState.Rect, False);
     FMouseState := NewMouseState;
     InvalidateRect(Handle, @NewMouseState.Rect, False);

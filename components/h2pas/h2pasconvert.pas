@@ -25,9 +25,9 @@ interface
 uses
   Classes, SysUtils, Laz_AVL_Tree,
   // LCL
-  LCLProc, LResources, Forms, Controls, Dialogs, XMLPropStorage,
+  LResources, Forms, Controls, Dialogs, XMLPropStorage,
   // LazUtils
-  LazConfigStorage, FileUtil, LazFileUtils, LazFileCache,
+  LazConfigStorage, FileUtil, LazFileUtils, LazFileCache, GraphMath,
   // CodeTools
   CodeAtom, CodeTree, KeywordFuncLists, NonPascalCodeTools, BasicCodeTools,
   FileProcs, CodeCache, SourceChanger, CodeToolManager,
@@ -1789,7 +1789,7 @@ end;
 
 procedure TH2PasConverter.SetWindowBounds(const AValue: TRect);
 begin
-  if CompareRect(@FWindowBounds,@AValue) then exit;
+  if SameRect(@FWindowBounds,@AValue) then exit;
   FWindowBounds:=AValue;
   Modified:=true;
 end;
@@ -1847,7 +1847,7 @@ end;
 function TH2PasConverter.IsEqual(AConverter: TH2PasConverter): boolean;
 begin
   if (FAutoOpenLastProject<>AConverter.FAutoOpenLastProject)
-  or (not CompareRect(@FWindowBounds,@AConverter.FWindowBounds))
+  or (not SameRect(@FWindowBounds,@AConverter.FWindowBounds))
   or (Fh2pasFilename<>AConverter.h2pasFilename)
   or (not FProjectHistory.Equals(AConverter.FProjectHistory))
   then

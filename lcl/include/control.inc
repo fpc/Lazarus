@@ -1384,7 +1384,7 @@ begin
   if [csLoading,csDestroying]*ComponentState<>[] then exit;
   CurBounds:=BoundsRect;
   CurClientSize:=Point(ClientWidth,ClientHeight);
-  if (not CompareRect(@FLastDoChangeBounds,@CurBounds))
+  if (not SameRect(@FLastDoChangeBounds,@CurBounds))
   or (ComparePoints(CurClientSize,FLastDoChangeClientSize)<>0) then begin
     if FormIsUpdating then begin
       Include(FControlFlags,cfOnChangeBoundsNeeded);
@@ -4137,7 +4137,7 @@ begin
   end else
     NewBaseParentClientSize:=FBaseParentClientSize;
 
-  if (not CompareRect(@NewBaseBounds,@FBaseBounds))
+  if (not SameRect(@NewBaseBounds,@FBaseBounds))
   or (NewBaseParentClientSize.cx<>FBaseParentClientSize.cx)
   or (NewBaseParentClientSize.cy<>FBaseParentClientSize.cy)
   then begin

@@ -81,6 +81,7 @@ procedure MakeMinMax(var i1, i2: integer);
 
 procedure MoveRect(var ARect: TRect; x, y: Integer);
 procedure MoveRectToFit(var ARect: TRect; const MaxRect: TRect);
+function SameRect(R1, R2: PRect): Boolean;
 
 procedure PolyBezier2Polyline(Beziers: Array of TBezier;
   var Points : PPoint; var Count : Longint); Overload;
@@ -870,6 +871,16 @@ begin
     ARect.Top:=Max(ARect.Top-ARect.Bottom+MaxRect.Bottom,MaxRect.Top);
     ARect.Bottom:=MaxRect.Bottom;
   end;
+end;
+
+function SameRect(R1, R2: PRect): Boolean;
+begin
+  Result:=(R1^.Left=R2^.Left) and (R1^.Top=R2^.Top) and
+          (R1^.Bottom=R2^.Bottom) and (R1^.Right=R2^.Right);
+  {if not Result then begin
+    DebugLn(' DIFFER: ',R1^.Left,',',R1^.Top,',',R1^.Right,',',R1^.Bottom
+      ,' <> ',R2^.Left,',',R2^.Top,',',R2^.Right,',',R2^.Bottom);
+  end;}
 end;
 
 {------------------------------------------------------------------------------

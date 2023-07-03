@@ -3109,7 +3109,7 @@ end;
 
 function SendAppMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): Longint;
 begin
-  Result:=LCLProc.SendApplicationMessage(Msg,WParam,LParam);
+  Result:=SendApplicationMessage(Msg,WParam,LParam);
 end;
 
 procedure MoveWindowOrg(dc: hdc; X, Y: Integer);

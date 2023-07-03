@@ -189,7 +189,7 @@ end;
 procedure TDragDockObject.MoveDockImage;
 begin
   //Draw the form outlines when the position has changed
-  if not CompareRect(@DockRect, @EraseDockRect) then
+  if not SameRect(@DockRect, @EraseDockRect) then
   begin
     if HasOnDrawImage then
       OnDrawDockImage(Self, EraseDockRect, DockRect, disMove)

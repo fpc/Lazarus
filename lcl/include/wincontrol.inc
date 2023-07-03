@@ -2277,7 +2277,7 @@ begin
       if CurControl=nil then continue;
       NewBounds:=ControlBox.NewControlBounds;
       OldBounds:=CurControl.BoundsRect;
-      if not CompareRect(@NewBounds,@OldBounds) then begin
+      if not SameRect(@NewBounds,@OldBounds) then begin
         Result:=true;
         CurControl.SetBoundsKeepBase(NewBounds.Left,
                                      NewBounds.Top,
@@ -3045,7 +3045,7 @@ var
       Control.SetBoundsKeepBase(NewLeft, NewTop, NewWidth, NewHeight);
       //DebugLn(['DoPosition ',DbgSName(Control),' ',cfAutoSizeNeeded in Control.FControlFlags]);
       NewBounds:=Control.BoundsRect;
-      BoundsMutated:=not CompareRect(@OldBounds,@NewBounds);
+      BoundsMutated:=not SameRect(@OldBounds,@NewBounds);
       if BoundsMutated then begin
         LastBoundsMutated:=Control;
         LastBoundsMutatedOld:=OldBounds;
@@ -3414,7 +3414,7 @@ begin
           end;
           // Important: change the BaseBounds too, otherwise the changes will be undone by AlignControls
           OldChildBounds:=AControl.BoundsRect;
-          if not CompareRect(@OldChildBounds,@NewChildBounds) then begin
+          if not SameRect(@OldChildBounds,@NewChildBounds) then begin
             //DebugLn(['TWinControl.DoAutoSize moving child: ',DbgSName(AControl),' Old=',dbgs(OldChildBounds),' New=',dbgs(NewChildBounds)]);
             AControl.BoundsRect:=NewChildBounds;
             //DebugLn(['TWinControl.DoAutoSize AFTER ',DbgSName(AControl),' ',dbgs(AControl.BoundsRect)]);
@@ -3721,8 +3721,8 @@ begin
   R := GetClientRect;
   AdjustClientRect(R);
   //if CheckPosition(Self) then
-    //DebugLn(['TWinControl.DoAdjustClientRectChange ',DbgSName(Self),' new=',dbgs(r),' old=',dbgs(FAdjustClientRectRealized),' ',CompareRect(@r,@FAdjustClientRectRealized)]);
-  if not CompareRect(@R, @FAdjustClientRectRealized) then
+    //DebugLn(['TWinControl.DoAdjustClientRectChange ',DbgSName(Self),' new=',dbgs(r),' old=',dbgs(FAdjustClientRectRealized),' ',SameRect(@r,@FAdjustClientRectRealized)]);
+  if not SameRect(@R, @FAdjustClientRectRealized) then
   begin
     // client rect changed since last AlignControl
     {$IF defined(VerboseAllAutoSize) or defined(VerboseClientRectBugFix) or defined(VerboseIntfSizing) or defined(VerboseOnResize)}
@@ -6452,7 +6452,7 @@ begin
     // some widgetsets updates their clientrect when the first child was moved
     // do a second pass if ClientRect changed
     NewRect:=GetLogicalClientRect;
-    if not CompareRect(@ARect,@NewRect) then
+    if not SameRect(@ARect,@NewRect) then
       AlignControls(AControl, NewRect);
   finally
     EnableAlign;
@@ -6933,7 +6933,7 @@ begin
       GetWindowSize(Handle, NewWidth, NewHeight);
 
     NewBoundsRealized:=Bounds(Message.XPos, Message.YPos, NewWidth, NewHeight);
-    if CompareRect(@NewBoundsRealized,@FBoundsRealized) then exit;
+    if SameRect(@NewBoundsRealized,@FBoundsRealized) then exit;
 
     TopParent:=GetTopParent;
     if (TopParent is TWinControl)
@@ -7024,7 +7024,7 @@ begin
     NewBoundsRealized := Bounds(NewLeft, NewTop, Message.Width, Message.Height);
     OldClientSize := Size(0, 0);
     NewClientSize := Size(0, 0);
-    if CompareRect(@NewBoundsRealized, @FBoundsRealized) then
+    if SameRect(@NewBoundsRealized, @FBoundsRealized) then
     begin
       if not (wcfClientRectNeedsUpdate in FWinControlFlags) then
       begin
@@ -7146,7 +7146,7 @@ begin
   {$ENDIF}
   //DebugLn('TWinControl.WMSize B ',Name,':',ClassName,' ',NewLeft,',',NewTop);
   NewBoundsRealized := Bounds(NewLeft, NewTop, NewWidth, NewHeight);
-  if CompareRect(@NewBoundsRealized,@FBoundsRealized)
+  if SameRect(@NewBoundsRealized,@FBoundsRealized)
   and (not (wcfClientRectNeedsUpdate in FWinControlFlags)) then
     exit;
 
@@ -8118,7 +8118,7 @@ begin
   OldBounds := BoundsRect;
   NewBounds := Bounds(ALeft, ATop, AWidth, AHeight);
 
-  if not CompareRect(@NewBounds, @OldBounds) then
+  if not SameRect(@NewBounds, @OldBounds) then
   begin
     if [csDesigning,csDestroying,csLoading]*ComponentState=[csDesigning] then
       CheckDesignBounds;
@@ -8516,7 +8516,7 @@ begin
   // this can trigger WMSize messages
   TWSWinControlClass(WidgetSetClass).SetBounds(Self, Left, Top, Width, Height);
   NewClientRect := ClientRect;
-  if Visible and (not CompareRect(@OldClientRect,@NewClientRect)) then
+  if Visible and (not SameRect(@OldClientRect,@NewClientRect)) then
   begin
     // the widgetset has changed the clientrect in an unexpected way
     {$IFDEF VerboseIntfSizing}
@@ -8553,7 +8553,7 @@ begin
   if HandleAllocated
   and ([csLoading,csDestroying]*ComponentState=[])
   and (not (csDestroyingHandle in ControlState))
-  and (not CompareRect(@NewBounds,@FBoundsRealized))
+  and (not SameRect(@NewBounds,@FBoundsRealized))
   then begin
     // the new bounds were not yet sent to the InterfaceObject -> send them
     {$IFDEF CHECK_POSITION}
@@ -8579,7 +8579,7 @@ begin
       if not HandleAllocated then debugln('not HandleAllocated');
       if (csLoading in ComponentState) then debugln('csLoading');
       if (csDestroying in ComponentState) then debugln('csDestroying');
-      if (CompareRect(@NewBounds,@FBoundsRealized)) then debugln('bounds not changed');
+      if (SameRect(@NewBounds,@FBoundsRealized)) then debugln('bounds not changed');
     end;
     {$ENDIF}
     if not HandleAllocated then Check;

@@ -40,10 +40,10 @@ uses
   // RTL + FCL
   Types, Classes, Math, SysUtils, Variants, TypInfo,
   // LCL
-  LCLProc, LCLType, LResources, LCLIntf, LMessages, InterfaceBase,
+  LCLType, LResources, LCLIntf, LMessages, InterfaceBase,
   Forms, Controls, Graphics, Dialogs, ExtCtrls, Menus, ClipBrd,
   // LazUtils
-  GraphType, LazFileUtils, LazFileCache, LazLoggerBase, LazUtilities,
+  GraphType, GraphMath, LazFileUtils, LazFileCache, LazLoggerBase, LazUtilities,
   // IDEIntf
   IDEDialogs, PropEdits, PropEditUtils, ComponentEditors, MenuIntf,
   IDEImagesIntf, FormEditingIntf, ComponentReg, IDECommands, LazIDEIntf,
@@ -3716,8 +3716,8 @@ var
 begin
   NewFormBounds:=Form.BoundsRect;
   if FDefaultFormBoundsValid then begin
-    if (not CompareRect(@NewFormBounds,@FLastFormBounds))
-    and (not CompareRect(@NewFormBounds,@FDefaultFormBounds)) then begin
+    if (not SameRect(@NewFormBounds,@FLastFormBounds))
+    and (not SameRect(@NewFormBounds,@FDefaultFormBounds)) then begin
       //debugln('TDesigner.CheckFormBounds');
       Modified;
       if Selection.SelectionForm=Form then begin
@@ -4179,7 +4179,7 @@ var
     if not (Ancestor is TControl) then exit;
     OldBounds:=AControl.BoundsRect;
     NewBounds:=Ancestor.BoundsRect;
-    if not CompareRect(@OldBounds,@NewBounds) then begin
+    if not SameRect(@OldBounds,@NewBounds) then begin
       AControl.BoundsRect:=NewBounds;
       HasChanged:=true;
     end;

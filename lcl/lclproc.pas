@@ -113,6 +113,7 @@ procedure OwnerFormDesignerModified(AComponent: TComponent);
 
 // Deprecated in version 2.3, 2023-06.
 procedure FreeThenNil(var obj); deprecated 'Use LazUtilities.FreeThenNil instead';
+function CompareRect(R1, R2: PRect): Boolean; deprecated 'Use GraphMath.SameRect instead';
 function OffsetRect(var Rect: TRect; DX, DY: Integer): Boolean; deprecated 'Use Types.OffsetRect instead';
 procedure MoveRect(var ARect: TRect; x, y: Integer); deprecated 'Use GraphMath.MoveRect instead';
 procedure MoveRectToFit(var ARect: TRect; const MaxRect: TRect); deprecated 'Use GraphMath.MoveRectToFit instead';
@@ -134,7 +135,6 @@ function RemoveAmpersands(const ASource: String): String;
 function RemoveAmpersands(Src: PChar; var LineLength: Longint): PChar;
 
 function CompareHandles(h1, h2: TLCLHandle): integer;
-function CompareRect(R1, R2: PRect): Boolean;
 function ComparePoints(const p1, p2: TPoint): integer;
 function CompareCaret(const FirstCaret, SecondCaret: TPoint): integer;
 
@@ -835,6 +835,11 @@ begin
   LazUtilities.FreeThenNil(obj);
 end;
 
+function CompareRect(R1, R2: PRect): Boolean;
+begin
+  Result := GraphMath.SameRect(R1, R2);
+end;
+
 function OffsetRect(var Rect: TRect; DX, DY: Integer): Boolean;
 begin
   Result := Types.OffsetRect(Rect, DX, DY);
@@ -895,16 +900,6 @@ begin
     Result:=-1
   else
     Result:=0;
-end;
-
-function CompareRect(R1, R2: PRect): Boolean;
-begin
-  Result:=(R1^.Left=R2^.Left) and (R1^.Top=R2^.Top) and
-          (R1^.Bottom=R2^.Bottom) and (R1^.Right=R2^.Right);
-  {if not Result then begin
-    DebugLn(' DIFFER: ',R1^.Left,',',R1^.Top,',',R1^.Right,',',R1^.Bottom
-      ,' <> ',R2^.Left,',',R2^.Top,',',R2^.Right,',',R2^.Bottom);
-  end;}
 end;
 
 function ComparePoints(const p1, p2: TPoint): integer;

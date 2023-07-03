@@ -42,7 +42,7 @@ uses
   LCLProc, LCLType, LCLIntf, LResources, LMessages, Forms, Controls,
   Graphics, Dialogs, Themes, Buttons,
   // LazUtils
-  LazStringUtils,
+  LazStringUtils, GraphMath,
   // SynEdit
   SynEdit, SynEditKeyCmds,
   // CodeTools
@@ -882,7 +882,7 @@ var
         inc(y,(LineHeight-FBtnWidth) div 2);
       Item.NewBounds:=Bounds(AHintRect.Right-RightSpace-1,y,FBtnWidth,FBtnWidth);
       r:=Item.CopyAllButton.BoundsRect;
-      if not CompareRect(@r,@Item.NewBounds) then
+      if not SameRect(@r,@Item.NewBounds) then
         IdleConnected:=true;
     end;
     //debugln(['DrawHint ',y,' Line="',dbgstr(Line),'" LineHeight=',LineHeight,' ']);

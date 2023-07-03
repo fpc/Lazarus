@@ -9,9 +9,9 @@ interface
 uses
   Types, Classes, SysUtils, Math,
   // LCL
-  LCLProc, ExtCtrls, ComCtrls, Forms, Controls,
+  ExtCtrls, ComCtrls, Forms, Controls,
   // LazUtils
-  AvgLvlTree, LazConfigStorage, Laz2_XMLCfg, LazLoggerBase, LazTracer,
+  AvgLvlTree, LazConfigStorage, Laz2_XMLCfg, LazLoggerBase, LazTracer, GraphMath,
   // AnchorDocking
   AnchorDockStr;
 
@@ -916,7 +916,7 @@ end;
 
 procedure TAnchorDockLayoutTreeNode.SetBoundsRect(const AValue: TRect);
 begin
-  if CompareRect(@FBoundsRect,@AValue) then exit;
+  if SameRect(@FBoundsRect,@AValue) then exit;
   FBoundsRect:=AValue;
   IncreaseChangeStamp;
 end;
@@ -1001,7 +1001,7 @@ end;
 
 procedure TAnchorDockLayoutTreeNode.SetWorkAreaRect(const AValue: TRect);
 begin
-  if CompareRect(@FWorkAreaRect,@AValue) then exit;
+  if SameRect(@FWorkAreaRect,@AValue) then exit;
   FWorkAreaRect:=AValue;
   IncreaseChangeStamp;
 end;
@@ -1083,7 +1083,7 @@ var
   a: TAnchorKind;
 begin
   Result:=false;
-  if (not CompareRect(@FBoundsRect,@Node.FBoundsRect))
+  if (not SameRect(@FBoundsRect,@Node.FBoundsRect))
   or (Count<>Node.Count)
   or (NodeType<>Node.NodeType)
   or (Name<>Node.Name)
@@ -1094,7 +1094,7 @@ begin
   or (PageIndex<>Node.PageIndex)
   or (BoundSplitterPos<>Node.BoundSplitterPos)
   or (PixelsPerInch<>Node.PixelsPerInch)
-  or (not CompareRect(@FWorkAreaRect,@Node.FWorkAreaRect))
+  or (not SameRect(@FWorkAreaRect,@Node.FWorkAreaRect))
   then
     exit;
   for a:=low(TAnchorKind) to high(TAnchorKind) do
