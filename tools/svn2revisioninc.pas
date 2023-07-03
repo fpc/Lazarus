@@ -572,8 +572,8 @@ begin
     exit;
   end;
 
-  if not SvnInPath then
-    debugln('Warning: svn not in path.');
+  if not (GitInPath or SvnInPath or HgInPath) then
+    debugln('Warning: Version control client not in path.');
 
   Result := True;
 end;
