@@ -1847,10 +1847,10 @@ control.
 </ul>
 <p>
 The origin for AControl relative to its <var>Parent</var> is determined by 
-calling the <var>ClientToParent</var> method. <var>OffsetRect</var> is called 
-to apply the offset to the display rectangle for AControl. The adjusted 
-coordinates are used to reposition the visible scroll bars so that AControl 
-is visible in the client area for the scrolling window control.
+calling the <var>ClientToParent</var> method. <var>OffsetRect</var> (in Types) 
+is called to apply the offset to the display rectangle for AControl. The 
+adjusted coordinates are used to reposition the visible scroll bars so that 
+AControl is visible in the client area for the scrolling window control.
 </p>
 </descr>
 <seealso>
