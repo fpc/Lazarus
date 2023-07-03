@@ -38,7 +38,8 @@ unit DelphiCompat;
 interface
 
 uses
-  LMessages, Types, Classes, LCLType, LCLVersion;
+  LMessages, Types, Classes, LCLType, LCLVersion,
+  LazLoggerBase;
 
 const
   //Messages
