@@ -796,9 +796,6 @@ begin
 end;
 
 procedure TLCLCommonCallback.KeyEvBeforeDown;
-var
-  i: integer;
-  lclHandled: Boolean;
 begin
   // create the CN_KEYDOWN message
   if _IsSysKey then
@@ -824,7 +821,33 @@ begin
       Exit;
     end;
   end;
+end;
 
+procedure TLCLCommonCallback.KeyEvBeforeUp;
+begin
+  if _IsSysKey then
+    _KeyMsg.Msg := CN_SYSKEYUP
+  else
+    _KeyMsg.Msg := CN_KEYUP;
+
+  //Send message to LCL
+  if _KeyMsg.CharCode <> VK_UNKNOWN then
+  begin
+    NotifyApplicationUserInput(Target, _KeyMsg.Msg);
+    if (DeliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
+    begin
+      // the LCL has handled the key
+      KeyEvHandled;
+      Exit;
+    end;
+  end;
+end;
+
+procedure TLCLCommonCallback.KeyEvAfterDown(out AllowCocoaHandle: boolean);
+var
+  i: integer;
+  lclHandled: Boolean;
+begin
   if (_SendChar) then begin
     // send the UTF8 keypress
     i := 0;
@@ -867,30 +890,6 @@ begin
       //LCLCharToMacEvent(Char(_CharMsg.CharCode));
   end;
 
-end;
-
-procedure TLCLCommonCallback.KeyEvBeforeUp;
-begin
-  if _IsSysKey then
-    _KeyMsg.Msg := CN_SYSKEYUP
-  else
-    _KeyMsg.Msg := CN_KEYUP;
-
-  //Send message to LCL
-  if _KeyMsg.CharCode <> VK_UNKNOWN then
-  begin
-    NotifyApplicationUserInput(Target, _KeyMsg.Msg);
-    if (DeliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
-    begin
-      // the LCL has handled the key
-      KeyEvHandled;
-      Exit;
-    end;
-  end;
-end;
-
-procedure TLCLCommonCallback.KeyEvAfterDown(out AllowCocoaHandle: boolean);
-begin
   AllowCocoaHandle := False;
 
   if _KeyHandled then Exit;

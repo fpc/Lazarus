@@ -584,14 +584,22 @@ begin
 
           if cb.IsCocoaOnlyState then
           begin
+            // in IME state
             inherited sendEvent(theEvent);
           end
           else
           begin
+            // not in IME state
             cb.KeyEvBefore(theEvent, allowcocoa);
+            // may be triggered into IME state
             if allowcocoa then
               inherited sendEvent(theEvent);
-            cb.KeyEvAfter;
+            // retest IME state
+            if responder.conformsToProtocol(objcprotocol(NSTextInputClientProtocol)) then
+              cb.CocoaOnlyState := NSTextInputClientProtocol(responder).hasMarkedText;
+            // if in IME state, pass KeyEvAfter
+            if not cb.CocoaOnlyState then
+              cb.KeyEvAfter;
           end;
         finally
           if Assigned(wnd) then
