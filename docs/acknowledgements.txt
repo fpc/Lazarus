@@ -3,27 +3,32 @@
 
 #Component libraries:
 
-Windows XP Theme Manager 
-http://www.soft-gems.net/
+Windows XP Theme Manager
+https://web.archive.org/web/20120105134619/http://www.soft-gems.net/
+(Original site no longer available)
 
 
 #Icon sets:
 
-Silk icon set 1.3 by Mark James 
-http://www.famfamfam.com/lab/icons/silk/
+Icons provided by Roland Hahn
+https://www.rhsoft.de/
+
+Silk icon set 1.3 by Mark James
+https://github.com/legacy-icons/famfamfam-silk
+(Original site http://www.famfamfam.com/lab/icons/silk/ no longer available)
 
 Tango Icon Library 
 http://tango.freedesktop.org/Tango_Icon_Library
 
 Fugue Icons
-http://p.yusukekamiyamane.com/
+https://p.yusukekamiyamane.com/
 
 
 #RemObjects Pascal Script 
 Created by Carlo Kok / RemObjects Software
 Fixed for Lazarus by Bogusіaw Brandys
-http://www.remobjects.com/ps.aspx
+https://www.remobjects.com/ps.aspx
 
 TDiff by Angus Johnson
 Fixed for Freepascal by  Rickard Johansson (RJ TextEd)
-http://github.com/rickard67/TextDiff
+https://github.com/rickard67/TextDiff
