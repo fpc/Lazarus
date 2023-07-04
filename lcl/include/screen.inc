@@ -113,7 +113,7 @@ end;
 {------------------------------------------------------------------------------
   function TScreen.CustomFormIndex(AForm: TCustomForm): integer;
  ------------------------------------------------------------------------------}
-function TScreen.CustomFormIndex(AForm: TCustomForm): integer;
+function TScreen.CustomFormIndex(AForm: TCustomForm): Integer;
 begin
   Result := FCustomForms.Count - 1;
   while (Result >= 0) and (CustomForms[Result] <> AForm) do
@@ -123,7 +123,7 @@ end;
 {------------------------------------------------------------------------------
   function TScreen.FormIndex(AForm: TForm): integer;
  ------------------------------------------------------------------------------}
-function TScreen.FormIndex(AForm: TForm): integer;
+function TScreen.FormIndex(AForm: TForm): Integer;
 begin
   Result := FFormList.Count - 1;
   while (Result >= 0) and (Forms[Result] <> AForm) do
@@ -133,7 +133,7 @@ end;
 {------------------------------------------------------------------------------
   function TScreen.CustomFormZIndex(AForm: TCustomForm): integer;
  ------------------------------------------------------------------------------}
-function TScreen.CustomFormZIndex(AForm: TCustomForm): integer;
+function TScreen.CustomFormZIndex(AForm: TCustomForm): Integer;
 begin
   Result:=FCustomFormsZOrdered.Count-1;
   while (Result >= 0) and (CustomFormsZOrdered[Result] <> AForm) do dec(Result);
@@ -890,6 +890,18 @@ begin
   Result := FSystemFont;
 end;
 
+procedure TScreen.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation=opRemove then
+  begin
+    if FLastActiveControl=AComponent then
+      FLastActiveControl:=nil;
+    if FLastActiveCustomForm=AComponent then
+      FLastActiveCustomForm:=nil;
+  end;
+end;
+
 function TScreen.GetHintFont: TFont;
 begin
   if (FHintFont = nil) then
@@ -1075,6 +1087,8 @@ begin
   if FLastActiveControl <> FActiveControl then
   begin
     FLastActiveControl := FActiveControl;
+    if FLastActiveControl<>nil then
+      FreeNotification(FLastActiveControl);
     NotifyOnActiveControlChanged;
   end;
 end;

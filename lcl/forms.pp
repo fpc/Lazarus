@@ -1210,6 +1210,8 @@ type
     function GetIconFont: TFont; virtual;
     function GetMenuFont: TFont; virtual;
     function GetSystemFont: TFont; virtual;
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+      override;
     property MagnetManager: TWindowMagnetManager read FMagnetManager;
   public
     constructor Create(AOwner : TComponent); override;
