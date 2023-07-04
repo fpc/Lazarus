@@ -25,7 +25,7 @@ unit AboutFrm;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, StrUtils,
   // LCL
   Forms, Controls, Graphics, StdCtrls, Buttons, ExtCtrls, ComCtrls, Menus,
   LCLIntf, LazConf, InterfaceBase, LCLPlatformDef, Clipbrd, LCLVersion,
@@ -145,39 +145,45 @@ begin
   Result:=LazarusRevisionStr;
 end;
 
+// Compiler generated date string is in form y/m/d and time string in hh:mm:ss.
+// This function gives a custom string respresentation.
+function GetCustomBuildDate: string;
+var
+  s: string;
+  SlashPos1, SlashPos2: integer;
+  Dt, Tm: TDateTime;
+begin
+  // Date
+  s := {$I %date%};
+  SlashPos1 := Pos('/',s);
+  SlashPos2 := PosEx('/',s,SlashPos1+1);
+  Dt := EncodeDate(StrToWord(Copy(s,1,SlashPos1-1)),
+                   StrToWord(Copy(s,SlashPos1+1,SlashPos2-SlashPos1-1)),
+                   StrToWord(Copy(s,SlashPos2+1,Length(s)-SlashPos2)));
+  // Time
+  s := {$I %time%};
+  SlashPos1 := Pos(':',s);
+  SlashPos2 := PosEx(':',s,SlashPos1+1);
+  Tm := EncodeTime(StrToWord(Copy(s,1,SlashPos1-1)),
+                   StrToWord(Copy(s,SlashPos1+1,SlashPos2-SlashPos1-1)),
+                   0, 0); // Keep seconds = 0 here.
+
+  Result := FormatDateTime('yyyy-mm-dd  hh":"nn', Dt+Tm); // Custom separators.
+  //FormatDateTime('yyyy/mm/dd  hh:nn', Dt+Tm); // Separators from DefaultFormatSettings.
+  //FormatDateTime('c', Dt+Tm); // Use ShortDateFormat and ShortTimeFormat.
+end;
+
 { TAboutForm }
 
 procedure TAboutForm.AboutFormCreate(Sender:TObject);
 const
   DoubleLineEnding = LineEnding + LineEnding;
-
-  {The compiler generated date string is always of the form y/m/d.
-   This function gives it a string respresentation according to the
-   shortdateformat}
-  function GetLocalizedBuildDate(): string;
-  var
-    BuildDate: string;
-    BuildTime: string;
-    SlashPos1, SlashPos2: integer;
-    Date: TDateTime;
-  begin
-    BuildDate := {$I %date%};
-    BuildTime := {$I %time%};
-    SlashPos1 := Pos('/',BuildDate);
-    SlashPos2 := SlashPos1 +
-      Pos('/', Copy(BuildDate, SlashPos1+1, Length(BuildDate)-SlashPos1));
-    Date := EncodeDate(StrToWord(Copy(BuildDate,1,SlashPos1-1)),
-      StrToWord(Copy(BuildDate,SlashPos1+1,SlashPos2-SlashPos1-1)),
-      StrToWord(Copy(BuildDate,SlashPos2+1,Length(BuildDate)-SlashPos2)));
-    Result := FormatDateTime('yyyy-mm-dd', Date)+' '+BuildTime;
-  end;
-
 begin
   Notebook.PageIndex:=0;
   Caption:=lisAboutLazarus;
   VersionLabel.Caption := lisVersion+': '+ GetLazarusVersionString;
   RevisionLabel.Caption := lisRevision+LazarusRevisionStr;
-  BuildDateLabel.Caption := lisDate+': '+GetLocalizedBuildDate;
+  BuildDateLabel.Caption := lisBuildDate+': '+GetCustomBuildDate;
   FPCVersionLabel.Caption:= lisFPCVersion+{$I %FPCVERSION%};
   PlatformLabel.Caption:=GetCompiledTargetCPU+'-'+GetCompiledTargetOS
                          +'-'+LCLPlatformDisplayNames[GetDefaultLCLWidgetType];

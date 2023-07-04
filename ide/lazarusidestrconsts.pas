@@ -1086,7 +1086,7 @@ resourcestring
   lisAboutLazarus = 'About Lazarus';
   lisVersion = 'Version';
   lisVerToClipboard = 'Copy version information to clipboard';
-  lisDate = 'Date';
+  lisBuildDate = 'Build Date';
   lisFPCVersion = 'FPC Version: ';
   lisRevision = 'Revision: ';
   lisPrior = 'prior %s';
