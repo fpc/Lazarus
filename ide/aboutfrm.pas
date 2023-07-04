@@ -196,9 +196,9 @@ begin
     Format(lisAboutLazarusMsg,[DoubleLineEnding,DoubleLineEnding,DoubleLineEnding]);
 
   OfficialLabel.Caption := lisAboutOfficial;
-  OfficialURLLabel.Caption := 'http://www.lazarus-ide.org';
+  OfficialURLLabel.Caption := 'https://www.lazarus-ide.org';
   DocumentationLabel.Caption := lisAboutDocumentation;
-  DocumentationURLLabel.Caption := 'http://wiki.lazarus.freepascal.org';
+  DocumentationURLLabel.Caption := 'https://wiki.freepascal.org';
 
   LoadContributors;
   LoadAcknowledgements;
@@ -384,7 +384,7 @@ begin
       else
       begin
         //check for url
-        if Pos('http://', s) = 1 then
+        if (Pos('http://', s) = 1) or (Pos('https://', s) = 1) then
         begin
           if i = FActiveLine then
           begin
@@ -410,7 +410,7 @@ end;
 function TScrollingText.ActiveLineIsURL: boolean;
 begin
   if (FActiveLine > 0) and (FActiveLine < FLines.Count) then
-    Result := Pos('http://', FLines[FActiveLine]) = 1
+    Result := (Pos('http://', FLines[FActiveLine]) = 1) or (Pos('https://', FLines[FActiveLine]) = 1)
   else
     Result := False;
 end;
