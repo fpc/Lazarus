@@ -663,7 +663,7 @@ var
 begin
   if not _inIME then exit;
 
-  textView:= NSTextView(self.window.fieldEditor_forObject(false,nil));
+  textView:= NSTextView(self.window.fieldEditor_forObject(true,nil));
   if Assigned(textView) then
     textView.removeFromSuperview;
 
@@ -683,7 +683,7 @@ begin
   if nsText.length > 0 then
   begin
     _inIME:= true;
-    textView:= NSTextView(self.window.fieldEditor_forObject(false,nil));
+    textView:= NSTextView(self.window.fieldEditor_forObject(true,nil));
     if Assigned(textView) then
       textView.setMarkedText_selectedRange_replacementRange(aString,selectedRange,replacementRange);
   end
@@ -713,13 +713,25 @@ begin
 end;
 
 function TCocoaCustomControl.selectedRange: NSRange;
+var
+  textView: NSTextView;
 begin
-  Result := NSMakeRange(0,0);
+  textView:= NSTextView(self.window.fieldEditor_forObject(true,nil));
+  if not Assigned(textView) then
+    Result:= NSMakeRange( NSNotFound, 0 )
+  else
+    Result:= textView.selectedRange;
 end;
 
 function TCocoaCustomControl.markedRange: NSRange;
+var
+  textView: NSTextView;
 begin
-  Result := NSMakeRange(0,0);
+  textView:= NSTextView(self.window.fieldEditor_forObject(true,nil));
+  if not Assigned(textView) then
+    Result:= NSMakeRange( NSNotFound, 0 )
+  else
+    Result:= textView.markedRange;
 end;
 
 function TCocoaCustomControl.attributedSubstringForProposedRange_actualRange(
