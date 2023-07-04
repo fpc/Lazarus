@@ -31,13 +31,22 @@ interface
 
 uses
   Classes, SysUtils,
-  LazFileUtils, LazUTF8, FPCAdds, LazLoggerBase,
+  // LazUtils
+  LazFileUtils, LazUTF8, FPCAdds, LazLoggerBase, Translations,
+  // LCL
+  Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, ButtonPanel, LazHelpHTML,
+  LazHelpIntf,
+  // CodeTools
   CodeToolManager, DefineTemplates, LinkScanner,
-  Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls,
-  ButtonPanel, LazHelpHTML, LazHelpIntf,
-  IDEHelpIntf, IDEWindowIntf, LazIDEIntf, IDEExternToolIntf,
-  EnvironmentOpts, AboutFrm, LazConf, LazarusIDEStrConsts, Project,
-  SourceEditor, InitialSetupProc, PackageSystem, PackageDefs;
+  // IdeConfig
+  TransferMacros, EnvironmentOpts, LazConf,
+  // BuildIntf
+  MacroDefIntf, IDEExternToolIntf,
+  // IdeIntf
+  IDEHelpIntf, IDEWindowIntf, LazIDEIntf,
+  // IDE
+  AboutFrm, LazarusIDEStrConsts, Project, SourceEditor, InitialSetupProc,
+  PackageSystem, PackageDefs;
 
 type
 
@@ -47,6 +56,7 @@ type
     ButtonPanel1: TButtonPanel;
     ExtToolMemo: TMemo;
     GeneralMemo: TMemo;
+    MacrosMemo: TMemo;
     HelpMemo: TMemo;
     ModifiedMemo: TMemo;
     PageControl1: TPageControl;
@@ -54,6 +64,7 @@ type
     ModifiedTabSheet: TTabSheet;
     HelpTabSheet: TTabSheet;
     ExtToolTabSheet: TTabSheet;
+    MacroTabSheet: TTabSheet;
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
   private
@@ -76,6 +87,7 @@ type
     procedure GatherExternalTools(sl: TStrings);
   public
     procedure UpdateGeneralMemo;
+    procedure UpdateMacrosMemo;
     procedure UpdateModifiedMemo;
     procedure UpdateHelpMemo;
     procedure UpdateExternalTools;
@@ -88,9 +100,6 @@ function ShowIDEInfo: TModalResult;
 
 
 implementation
-
-uses
-  Translations;
 
 function ShowIDEInfo: TModalResult;
 var
@@ -113,6 +122,7 @@ begin
   Caption:=lisIDEInfoInformationAboutTheIDE;
 
   UpdateGeneralMemo;
+  UpdateMacrosMemo;
   UpdateModifiedMemo;
   UpdateHelpMemo;
   UpdateExternalTools;
@@ -256,9 +266,13 @@ end;
 procedure TIDEInfoDialog.GatherParameters(sl: TStrings);
 var
   i: Integer;
+  loFileDateTime: TDateTime;
 begin
   sl.Add('Working directory='+GetCurrentDirUTF8);
   sl.Add('Application.ExeName='+Application.ExeName);
+  if FileAge(Application.ExeName, loFileDateTime) then
+    sl.Add(FormatDateTime('yyyy/mm/dd hh:nn:ss',loFileDateTime));
+
   sl.Add('');
   sl.add('Parameters:');
   for i:=0 to Paramcount do
@@ -486,6 +500,42 @@ begin
     GeneralMemo.Lines.Assign(sl);
   finally
     sl.Free;
+  end;
+end;
+
+procedure TIDEInfoDialog.UpdateMacrosMemo;
+var
+  i: integer;
+  lTransferMacro: TTransferMacro;
+  lMacroFunctionStr: String;
+  lStr : string = '???';
+  lData: PtrInt = 0;
+  lAbort: boolean;
+begin
+  MacrosMemo.Lines.Clear;
+  try
+    for i := 0 to GlobalMacroList.Count - 1 do begin
+      lTransferMacro := GlobalMacroList.Items[i];
+      lStr := lTransferMacro.Name;
+      { Skip user interactive method calls }
+      if tmfInteractive in lTransferMacro.Flags then begin
+        Str(tmfInteractive, lStr);
+        lMacroFunctionStr := '['+lstr+'] function';
+      end
+      { Dont know exactly what's that, protect access }
+      else try
+        lAbort := False;
+        lData := 0;
+        if Assigned(lTransferMacro.MacroFunction) then
+          lMacroFunctionStr := lTransferMacro.MacroFunction(lStr, lData, lAbort);
+      except
+        lMacroFunctionStr := '??? MacroFunction ???';
+        lAbort := True;
+      end;
+      MacrosMemo.Lines.Add('$('+lTransferMacro.Name+')='+lMacroFunctionStr);
+    end;
+  finally
+    ModifiedMemo.Lines.EndUpdate;
   end;
 end;
 

@@ -1,35 +1,35 @@
 object IDEInfoDialog: TIDEInfoDialog
-  Left = 490
-  Height = 450
-  Top = 207
+  Left = 431
+  Height = 516
+  Top = 212
   Width = 700
   BorderIcons = [biSystemMenu, biMaximize]
   Caption = 'IDEInfoDialog'
-  ClientHeight = 450
+  ClientHeight = 516
   ClientWidth = 700
   OnClose = FormClose
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.7'
+  LCLVersion = '3.99.0.0'
   object PageControl1: TPageControl
     Left = 6
-    Height = 404
+    Height = 464
     Top = 6
     Width = 688
-    ActivePage = ExtToolTabSheet
+    ActivePage = GeneralTabSheet
     Align = alClient
     BorderSpacing.Around = 6
-    TabIndex = 3
+    TabIndex = 0
     TabOrder = 0
     object GeneralTabSheet: TTabSheet
       Caption = 'General'
-      ClientHeight = 375
-      ClientWidth = 684
+      ClientHeight = 433
+      ClientWidth = 678
       object GeneralMemo: TMemo
         Left = 0
-        Height = 361
+        Height = 433
         Top = 0
-        Width = 727
+        Width = 678
         Align = alClient
         Lines.Strings = (
           'Memo1'
@@ -39,15 +39,33 @@ object IDEInfoDialog: TIDEInfoDialog
         TabOrder = 0
       end
     end
+    object MacroTabSheet: TTabSheet
+      Caption = 'IDE macros'
+      ClientHeight = 433
+      ClientWidth = 678
+      object MacrosMemo: TMemo
+        Left = 0
+        Height = 433
+        Top = 0
+        Width = 678
+        Align = alClient
+        Lines.Strings = (
+          'MacrosMemo'
+        )
+        ReadOnly = True
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+      end
+    end
     object ModifiedTabSheet: TTabSheet
       Caption = 'Modified'
-      ClientHeight = 375
-      ClientWidth = 684
+      ClientHeight = 433
+      ClientWidth = 678
       object ModifiedMemo: TMemo
         Left = 0
-        Height = 361
+        Height = 433
         Top = 0
-        Width = 727
+        Width = 678
         Align = alClient
         Lines.Strings = (
           'ModifiedMemo'
@@ -58,13 +76,13 @@ object IDEInfoDialog: TIDEInfoDialog
     end
     object HelpTabSheet: TTabSheet
       Caption = 'Help'
-      ClientHeight = 375
-      ClientWidth = 684
+      ClientHeight = 433
+      ClientWidth = 678
       object HelpMemo: TMemo
         Left = 0
-        Height = 375
+        Height = 433
         Top = 0
-        Width = 684
+        Width = 678
         Align = alClient
         Lines.Strings = (
           'HelpMemo'
@@ -75,13 +93,13 @@ object IDEInfoDialog: TIDEInfoDialog
     end
     object ExtToolTabSheet: TTabSheet
       Caption = 'External Tools'
-      ClientHeight = 375
-      ClientWidth = 684
+      ClientHeight = 433
+      ClientWidth = 678
       object ExtToolMemo: TMemo
         Left = 0
-        Height = 375
+        Height = 433
         Top = 0
-        Width = 684
+        Width = 678
         Align = alClient
         Lines.Strings = (
           'ExtToolMemo'
@@ -92,8 +110,8 @@ object IDEInfoDialog: TIDEInfoDialog
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 28
-    Top = 416
+    Height = 34
+    Top = 476
     Width = 688
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True

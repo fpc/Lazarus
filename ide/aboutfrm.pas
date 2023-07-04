@@ -157,17 +157,19 @@ const
   function GetLocalizedBuildDate(): string;
   var
     BuildDate: string;
+    BuildTime: string;
     SlashPos1, SlashPos2: integer;
     Date: TDateTime;
   begin
     BuildDate := {$I %date%};
+    BuildTime := {$I %time%};
     SlashPos1 := Pos('/',BuildDate);
     SlashPos2 := SlashPos1 +
       Pos('/', Copy(BuildDate, SlashPos1+1, Length(BuildDate)-SlashPos1));
     Date := EncodeDate(StrToWord(Copy(BuildDate,1,SlashPos1-1)),
       StrToWord(Copy(BuildDate,SlashPos1+1,SlashPos2-SlashPos1-1)),
       StrToWord(Copy(BuildDate,SlashPos2+1,Length(BuildDate)-SlashPos2)));
-    Result := FormatDateTime('yyyy-mm-dd', Date);
+    Result := FormatDateTime('yyyy-mm-dd', Date)+' '+BuildTime;
   end;
 
 begin
