@@ -25,5 +25,8 @@
 		<issue name="TPageControl.TabWidth">
 			<short>Changing of default tab width is not supported</short>
 		</issue>
+		<issue name="TTrackBar.ScalePos">
+			<short>Trackbar ScalePos does not apply to Cocoa</short>
+		</issue>
 	</widgetset>
 </package>
