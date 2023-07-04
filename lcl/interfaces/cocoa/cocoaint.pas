@@ -84,8 +84,6 @@ type
     aloop : TApplicationMainLoop;
     isrun : Boolean;
     modals : NSMutableDictionary;
-    inputclient : TCocoaInputClient;
-    inputctx    : NSTextInputContext;
     {$ifdef COCOAPPRUNNING_OVERRIDEPROPERTY}
     Stopped : Boolean;
     {$endif}
@@ -473,7 +471,6 @@ end;
 procedure TCocoaApplication.dealloc;
 begin
   if Assigned(modals) then modals.release;
-  if Assigned(inputclient) then inputclient.release;
   inherited dealloc;
 end;
 
@@ -584,19 +581,6 @@ begin
           end
           else
             wnd := nil;
-
-          {$ifndef CPUPOWERPC}
-          if (theEvent.type_ = NSKeyDown)
-            and not (win.firstResponder.conformsToProtocol(objcprotocol(NSTextInputClientProtocol))) then
-          begin
-            if not Assigned(inputctx) then
-            begin
-              inputclient := TCocoaInputClient.alloc.init;
-              inputctx := NSTextInputContext.alloc.initWithClient(inputclient);
-            end;
-            inputctx.handleEvent(theEvent);
-          end;
-          {$endif}
 
           if cb.IsCocoaOnlyState then
           begin
