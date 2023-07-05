@@ -759,6 +759,48 @@ size for the relocated rectangle.
 </short>
 </element>
 
+<element name="SameRect">
+<short>
+Indicates whether member in the specified rectangles have the same values.
+</short>
+<descr>
+<p>
+<var>SameRect</var> is <var>Boolean</var> function used to determine whether 
+the <var>TRect</var> instances R1 and R2 represent the same rectangular areas. 
+It compares the values for the Left, Right, Top, and Bottom members in the 
+TRect instances. The return value is <b>True</b> when members in R1 have the 
+same values as the corresponding members in R2.
+</p>
+<p>
+SameRect replaces the deprecated CompareRect routine in the 
+<file>lclproc.pas</file> unit in the LCL.
+</p>
+</descr>
+<version>
+Added in LazUtils version 3.99.
+</version>
+<seealso>
+<link id="#lcl.lclproc.CompareRect">CompareRect</link>
+<link id="#rtl.types.PRect">PRect</link>
+<link id="#rtl.types.TRect">TRect</link>
+</seealso>
+</element>
+<element name="SameRect.Result">
+<short>
+True when the specified rectangles have the same values in the members.
+</short>
+</element>
+<element name="SameRect.R1">
+<short>
+Pointer to a TRect instance examined in the routine.
+</short>
+</element>
+<element name="SameRect.R2">
+<short>
+Pointer to a TRect instance examined in the routine.
+</short>
+</element>
+
 <element name="PolyBezier2Polyline">
 <short>
 <var>PolyBezier2Polyline</var> - convert an array of 4-Point Bezier into a
