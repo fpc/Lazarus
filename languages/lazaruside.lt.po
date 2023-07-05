@@ -5524,6 +5524,10 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Daryti"
 
+#: lazarusidestrconsts.lisbuilddate
+msgid "Build Date"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr "Daryti IKA"
@@ -8316,10 +8320,6 @@ msgstr "Savos kurybos „Free Pascal“ programa."
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
 msgstr "Duomenų modulis"
-
-#: lazarusidestrconsts.lisdate
-msgid "Date"
-msgstr "Data"
 
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"

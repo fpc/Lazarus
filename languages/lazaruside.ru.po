@@ -5,12 +5,12 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-07-03 01:37+0300\n"
+"PO-Revision-Date: 2023-07-05 15:50+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.4.3\n"
+"X-Generator: Poedit 2.2.4\n"
 
 #: lazarusidestrconsts.dbgeventbreakaddressbreakpoint
 #, object-pascal-format
@@ -5386,6 +5386,10 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Сборка"
 
+#: lazarusidestrconsts.lisbuilddate
+msgid "Build Date"
+msgstr "Дата сборки"
+
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr "Сборка IDE"
@@ -8160,10 +8164,6 @@ msgstr "Пользовательская программа на Free Pascal."
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
 msgstr "Модуль данных"
-
-#: lazarusidestrconsts.lisdate
-msgid "Date"
-msgstr "Дата"
 
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"

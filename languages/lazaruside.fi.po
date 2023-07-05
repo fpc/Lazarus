@@ -5405,6 +5405,10 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Kokoa"
 
+#: lazarusidestrconsts.lisbuilddate
+msgid "Build Date"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr "Kokoa IDE"
@@ -8181,10 +8185,6 @@ msgstr "Mukautettu Free Pascal -ohjelma."
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
 msgstr ""
-
-#: lazarusidestrconsts.lisdate
-msgid "Date"
-msgstr "Päiväys"
 
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"

@@ -5394,6 +5394,10 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Зібрати"
 
+#: lazarusidestrconsts.lisbuilddate
+msgid "Build Date"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr "Зібрати ІСР"
@@ -8171,10 +8175,6 @@ msgstr "Власна програма на Free Pascal."
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
 msgstr "Модуль даних"
-
-#: lazarusidestrconsts.lisdate
-msgid "Date"
-msgstr "Дата"
 
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"

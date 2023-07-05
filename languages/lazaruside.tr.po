@@ -5361,6 +5361,10 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Derle"
 
+#: lazarusidestrconsts.lisbuilddate
+msgid "Build Date"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr "IDE oluştur"
@@ -8140,10 +8144,6 @@ msgstr "Özel Free Pascal programı."
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
 msgstr "Veri modülü"
-
-#: lazarusidestrconsts.lisdate
-msgid "Date"
-msgstr "Tarih"
 
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"

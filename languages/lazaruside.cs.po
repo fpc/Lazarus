@@ -5451,6 +5451,10 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Sestavit"
 
+#: lazarusidestrconsts.lisbuilddate
+msgid "Build Date"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr "Sestavit IDE"
@@ -8242,10 +8246,6 @@ msgstr "Vlastní Free Pascal program."
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
 msgstr "Datový modul"
-
-#: lazarusidestrconsts.lisdate
-msgid "Date"
-msgstr "Datum"
 
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"

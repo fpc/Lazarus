@@ -5449,6 +5449,10 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Vybudovať"
 
+#: lazarusidestrconsts.lisbuilddate
+msgid "Build Date"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr "Vybudovať IDE"
@@ -8251,10 +8255,6 @@ msgstr ""
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
 msgstr ""
-
-#: lazarusidestrconsts.lisdate
-msgid "Date"
-msgstr "Dátum"
 
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"

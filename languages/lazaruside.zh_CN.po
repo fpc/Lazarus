@@ -5429,6 +5429,10 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "构建"
 
+#: lazarusidestrconsts.lisbuilddate
+msgid "Build Date"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr "构建IDE"
@@ -8208,10 +8212,6 @@ msgstr "一个自定义Free Pascal程序."
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
 msgstr "Data模块"
-
-#: lazarusidestrconsts.lisdate
-msgid "Date"
-msgstr "日期"
 
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"

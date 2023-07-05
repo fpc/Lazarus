@@ -5712,6 +5712,10 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "בנה"
 
+#: lazarusidestrconsts.lisbuilddate
+msgid "Build Date"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr ""
@@ -8603,10 +8607,6 @@ msgstr ""
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
 msgstr "מודול תאריך"
-
-#: lazarusidestrconsts.lisdate
-msgid "Date"
-msgstr "תאריך"
 
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"

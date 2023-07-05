@@ -5519,6 +5519,10 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "構築"
 
+#: lazarusidestrconsts.lisbuilddate
+msgid "Build Date"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr "IDEを構築"
@@ -8312,10 +8316,6 @@ msgstr "カスタムFree Pascalプログラム"
 #: lazarusidestrconsts.lisdatamodule
 msgid "Data Module"
 msgstr "データモジュール"
-
-#: lazarusidestrconsts.lisdate
-msgid "Date"
-msgstr "日付"
 
 #: lazarusidestrconsts.lisdbgenbreakpointevaluation
 msgid "Breakpoint Evaluation"
