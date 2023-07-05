@@ -41,8 +41,10 @@ that are useful in LCL applications.
 <element name="LazUtilities"/>
 <element name="LazMethodList"/>
 <element name="LazUTF8"/>
+<element name="LazUTF16"/>
 <element name="LazLoggerBase"/>
 <element name="LazTracer"/>
+<element name="GraphMath"/>
 <element name="LCLStrConsts"/>
 <element name="LCLType"/>
 
@@ -1427,17 +1429,17 @@ the end of the dumped range.
 <short/>
 </element>
 
-<element name="dbghex">
+<element name="dbgHex">
 <short>Provides a hex dump of an Int64 value, (sign + absolute value).</short>
 <descr/>
 <errors>
 </errors>
 <seealso/>
 </element>
-<element name="dbghex.Result">
+<element name="dbgHex.Result">
 <short/>
 </element>
-<element name="dbghex.i">
+<element name="dbgHex.i">
 <short/>
 </element>
 
@@ -1563,71 +1565,62 @@ found.
 </short>
 </element>
 
-<element name="UTF16String">
-<short>Alias to the UnicodeString type.</short>
-<descr/>
-<seealso/>
-</element>
-
-<element name="PUTF16String" link="UTF16String">
-<short>Pointer to the UTF16String type.</short>
-<descr/>
-<seealso/>
-</element>
-
 <element name="UTF16CharacterLength">
 <short>
-Deprecated, see the <file>LazUTF16</file> unit in the <file>LazUtils</file> 
-package for replacements.
+Deprecated. Use the <var>LazUTF16.UTF16CharacterLength</var> routine instead.
 </short>
+<version>
+Deprecated in LCL version 4.0 (July 2023).
+</version>
+<seealso>
+<link id="#lazutils.lazutf16.UTF16CharacterLength"/>
+</seealso>
 </element>
-<element name="UTF16CharacterLength.Result">
-<short/>
-</element>
-<element name="UTF16CharacterLength.p">
-<short/>
-</element>
+<element name="UTF16CharacterLength.Result"/>
+<element name="UTF16CharacterLength.p"/>
 
 <element name="UTF16Length">
 <short>
-Deprecated, see the <file>LazUTF16</file> unit in the <file>LazUtils</file> 
-package for replacements.
+Deprecated. Use the <var>LazUTF16.UTF16Length</var> routine instead.
 </short>
+<version>
+Deprecated in LCL version 4.0 (July 2023).
+</version>
+<seealso>
+<link id="#lazutils.lazutf16.UTF16Length"/>
+</seealso>
 </element>
-<element name="UTF16Length.Result">
-<short/>
-</element>
-<element name="UTF16Length.s">
-<short/>
-</element>
-<element name="UTF16Length.p">
-<short/>
-</element>
-<element name="UTF16Length.WordCount">
-<short/>
-</element>
+<element name="UTF16Length.Result"/>
+<element name="UTF16Length.s"/>
+<element name="UTF16Length.p"/>
+<element name="UTF16Length.WordCount"/>
 
 <element name="UTF16CharacterToUnicode">
 <short>
-Deprecated, see the <file>LazUTF16</file> unit in the <file>LazUtils</file> 
-package for replacements.
+Deprecated. Use the <var>LazUTF16.UTF16CharacterToUnicode</var> routine 
+instead.
 </short>
+<version>
+Deprecated in LCL version 4.0 (July 2023).
+</version>
+<seealso>
+<link id="#lazutils.lazutf16.UTF16CharacterToUnicode"/>
+</seealso>
 </element>
-<element name="UTF16CharacterToUnicode.Result">
-<short/>
-</element>
-<element name="UTF16CharacterToUnicode.p">
-<short/>
-</element>
-<element name="UTF16CharacterToUnicode.CharLen">
-<short/>
-</element>
+<element name="UTF16CharacterToUnicode.Result"/>
+<element name="UTF16CharacterToUnicode.p"/>
+<element name="UTF16CharacterToUnicode.CharLen"/>
 
 <element name="UnicodeToUTF16">
 <short>
-Deprecated, see the <file>LazUTF16</file> unit in the <file>LazUtils</file> 
-package for replacements.
+Deprecated. Use the <var>LazUTF16.UnicodeToUTF16</var> routine instead.
 </short>
+<version>
+Deprecated in LCL version 4.0 (July 2023).
+</version>
+<seealso>
+<link id="#lazutils.lazutf16.UnicodeToUTF16"/>
+</seealso>
 </element>
 <element name="UnicodeToUTF16.Result">
 <short/>
