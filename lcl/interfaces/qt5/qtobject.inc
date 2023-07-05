@@ -320,7 +320,6 @@ begin
   if not QCoreApplication_hasPendingEvents() then
   {$ENDIF}
   QAbstractEventDispatcher_processEvents(QThread_eventDispatcher(QThread_currentThread()), QEventLoopWaitForMoreEvents);
-  //  QCoreApplication_processEvents(QEventLoopWaitForMoreEvents);
 end;
 
 {------------------------------------------------------------------------------
@@ -333,7 +332,6 @@ end;
 procedure TQtWidgetSet.AppProcessMessages;
 begin
   QAbstractEventDispatcher_processEvents(QThread_eventDispatcher(QThread_currentThread()), QEventLoopAllEvents);
-  // QCoreApplication_processEvents(QEventLoopAllEvents);
 end;
 
 {------------------------------------------------------------------------------
