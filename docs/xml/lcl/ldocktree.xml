@@ -41,10 +41,10 @@ TDockTree used in the LCL.
 <element name="SysUtils"/>
 <element name="TypInfo"/>
 <element name="LazLoggerBase"/>
-<element name="LCLProc"/>
+<element name="LazTracer"/>
+<element name="GraphMath"/>
 <element name="LCLType"/>
 <element name="LCLIntf"/>
-<element name="LCLStrConsts"/>
 <element name="Graphics"/>
 <element name="Controls"/>
 <element name="ExtCtrls"/>
