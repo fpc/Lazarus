@@ -11713,6 +11713,40 @@ UseCLDefault define for the platform).
 <short>Value for the property.</short>
 </element>
 
+<element name="TScreen.Notification">
+<short>
+Performs actions when the specified component is added to or removed from the 
+class instance.
+</short>
+<descr>
+<p>
+<var>Notification</var> is an overridden method used to perform actions needed 
+when a component is added to or removed from the class instance. It calls the 
+inherited method on entry to remove the free notification for the component 
+and to signal the Notification method for any child components. In TScreen, it 
+ensures that an internal member used to track the value in ActiveControl or  
+ActiveCustomForm is <b>Nil</b>'d when AComponent is removed and it is stored 
+in one of the members.
+</p>
+</descr>
+<seealso>
+<link id="TScreen.ActiveControl"/>
+<link id="TScreen.ActiveCustomForm"/>
+<link id="#rtl.classes.TComponent">TComponent</link>
+<link id="#rtl.classes.TComponent.Components">TComponent.Components</link>
+</seealso>
+</element>
+<element name="TScreen.Notification.AComponent">
+<short>
+Component added or removed in the notification.
+</short>
+</element>
+<element name="TScreen.Notification.Operation">
+<short>
+Operation performed for the specified component.
+</short>
+</element>
+
 <element name="TScreen.MagnetManager">
 <short>
 Manages screen / form snapping behavior for the screen.
