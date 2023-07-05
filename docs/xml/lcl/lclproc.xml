@@ -784,6 +784,32 @@ instead.
 <short>The object reference freed and <b>Nil</b>'d in the routine.</short>
 </element>
 
+<element name="CompareRect">
+.
+<short>
+Deprecated. Indicates if the specified rectangle pointers have the same 
+coordinate values.
+</short>
+<descr/>
+<version>
+Deprecated in LCL version 3.99 (June 2023). Use the SameRect routine in the 
+<file>graphmath.pp</file> unit (LazUtils) instead.
+</version>
+<seealso/>
+</element>
+<element name="CompareRect.Result">
+<short>
+<b>True</b> when the top, left, bottom, and right values in each rectangle 
+are the same.
+</short>
+</element>
+<element name="CompareRect.R1">
+<short>Pointer to the first rectangle for the comparison.</short>
+</element>
+<element name="CompareRect.R2">
+<short>Pointer to the second rectangle for the comparison.</short>
+</element>
+
 <element name="RegisterInterfaceInitializationHandler">
 <short>
 Registers an initialization routine needed before the LCL is initialized.
@@ -1005,27 +1031,6 @@ The return value contains the following:
 </element>
 <element name="CompareHandles.h2">
 <short>Second handle for the comparison.</short>
-</element>
-
-<element name="CompareRect">
-<short>
-Indicates if the specified rectangle pointers have the same coordinate values.
-</short>
-<descr/>
-<errors/>
-<seealso/>
-</element>
-<element name="CompareRect.Result">
-<short>
-<b>True</b> when the top, left, bottom, and right values in each rectangle 
-are the same.
-</short>
-</element>
-<element name="CompareRect.R1">
-<short>Pointer to the first rectangle for the comparison.</short>
-</element>
-<element name="CompareRect.R2">
-<short>Pointer to the second rectangle for the comparison.</short>
 </element>
 
 <element name="ComparePoints">
