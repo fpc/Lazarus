@@ -162,6 +162,8 @@ begin
 end;
 
 function GetParamsAndCfgFile: TStrings;
+var
+  CfgDir: string;
 
   procedure ExpandCfgFilename(var aParam: string);
   // expand relative filenames in lazarus.cfg using the path of the cfg, not the currentdir
@@ -172,9 +174,7 @@ function GetParamsAndCfgFile: TStrings;
     for i:=low(LazFileOpts) to high(LazFileOpts) do
       if LazStartsText(LazFileOpts[i],aParam) then begin
         aFilename:=copy(aParam,length(LazFileOpts[i])+1,length(aParam));
-        aFilename:=ResolveDots(aFilename);
-        if not FilenameIsAbsolute(aFilename) then
-          aFilename:=ResolveDots(ExtractFilePath(CfgFileName)+aFilename);
+        aFilename:=ExpandFileNameUTF8(aFilename,CfgDir);
         aParam:=LazFileOpts[i]+aFilename;
         //debugln(['ExpandCfgFilename ',aParam]);
         exit;
@@ -220,6 +220,7 @@ begin
   if Cfg <> nil then begin
     Warn := '';
     // insert Cfg at start. For duplicates the latest occurrence takes precedence
+    CfgDir:=ExtractFilePath(CfgFileName);
     for i := 0 to Cfg.Count - 1 do begin
       s := Cfg[i];
       if (s <> '') and (s[1] = '-') then
