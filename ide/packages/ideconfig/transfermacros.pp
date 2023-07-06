@@ -58,7 +58,6 @@ type
     FMarkUnhandledMacros: boolean;
     FMaxUsePerMacro: integer;
     fOnSubstitution: TOnSubstitution;
-    fBusy: TStringList; // current working Macros, used for circle detection
     procedure SetMarkUnhandledMacros(const AValue: boolean);
   protected
     function GetItems(Index: integer): TTransferMacro;
@@ -175,7 +174,6 @@ destructor TTransferMacroList.Destroy;
 begin
   Clear;
   FreeAndNil(fItems);
-  FreeAndNil(fBusy);
   inherited Destroy;
 end;
 
@@ -251,7 +249,7 @@ function TTransferMacroList.SubstituteStr(var s:string; const Data: PtrInt;
   Depth: integer): boolean;
 
   function SearchBracketClose(Position: integer): integer;
-  var BracketClose:char;
+  var BracketClose: char;
   begin
     if s[Position]='(' then BracketClose:=')'
     else BracketClose:='}';
@@ -265,26 +263,22 @@ function TTransferMacroList.SubstituteStr(var s:string; const Data: PtrInt;
   end;
 
 var
-  MacroStart,MacroEnd: integer;
+  MacroStart, MacroEnd: integer;
   MacroName, MacroStr, MacroParam: string;
   Handled, Abort: boolean;
-  OldMacroLen: Integer;
-  sLen: Integer;
-  InUse: Integer;
-  i: Integer;
-  LoopDepth: Integer;
-  LoopPos: Integer;
+  sLen, OldMacroLen: Integer;
+  i, InUse: Integer;
+  Busy: TStringList; // current working Macros, used for circle detection
 begin
   if Depth>10 then begin
-    Result:=false;
     s:='(macro loop detected)'+s;
-    exit;
+    exit(false);
   end;
   Result:=true;
   sLen:=length(s);
   MacroStart:=1;
-  LoopDepth:=1;
-  LoopPos:=1;
+  Busy:=nil;
+  try
   repeat
     while (MacroStart<sLen) do begin
       if (s[MacroStart]<>'$') then
@@ -325,9 +319,9 @@ begin
       //  debugln(['TTransferMacroList.SubstituteStr START MacroName=',MacroName,' Param="',MacroParam,'"']);
       // check for endless loop
       InUse:=0;
-      if fBusy<>nil then begin
-        for i:=0 to fBusy.Count-1 do begin
-          if SysUtils.CompareText(fBusy[i],MacroName)=0 then begin
+      if Busy<>nil then begin
+        for i:=0 to Busy.Count-1 do begin
+          if CompareText(Busy[i],MacroName)=0 then begin
             inc(InUse);
             if InUse>MaxUsePerMacro then begin
               // cycle detected
@@ -338,25 +332,18 @@ begin
         end;
       end;
       if not Handled then begin
-        if fBusy=nil then fBusy:=TStringList.Create;
-        try
-          fBusy.Add(MacroName);
-          if MacroParam<>'' then begin
-            // substitute param
-            if not SubstituteStr(MacroParam,Data,Depth+1) then begin
-              Result:=false;
-              exit;
-            end;
-          end;
-          // find macro and get value
-          ExecuteMacro(MacroName,MacroParam,Data,Handled,Abort,Depth+1);
-          if Abort then begin
-            Result:=false;
-            exit;
-          end;
-        finally
-          fBusy.Delete(fBusy.Count-1);
+        if Busy=nil then
+          Busy:=TStringList.Create;
+        Busy.Add(MacroName);
+        if MacroParam<>'' then begin
+          // substitute param
+          if not SubstituteStr(MacroParam,Data,Depth+1) then // Recursive call.
+            exit(false);
         end;
+        // find macro and get value
+        ExecuteMacro(MacroName,MacroParam,Data,Handled,Abort,Depth+1);
+        if Abort then
+          exit(false);
         MacroStr:=MacroParam;
       end;
       // mark unhandled macros
@@ -366,13 +353,6 @@ begin
       end;
       // replace macro with new value
       if Handled then begin
-        if MacroStart>LoopPos then
-          LoopDepth:=1
-        else begin
-          inc(LoopDepth);
-          //DebugLn(['TTransferMacroList.SubstituteStr double macro: ',s,' Depth=',LoopDepth,' Pos=',LoopPos]);
-        end;
-        LoopPos:=MacroStart;
         s:=copy(s,1,MacroStart-1)+MacroStr+copy(s,MacroEnd,length(s));
         sLen:=length(s);
         // continue at replacement, because a macrovalue can contain macros
@@ -381,7 +361,10 @@ begin
     end;
     MacroStart:=MacroEnd;
   until false;
-  
+  finally
+    Busy.Free;
+  end;
+
   // convert $$ chars
   MacroStart:=2;
   while (MacroStart<sLen) do begin
