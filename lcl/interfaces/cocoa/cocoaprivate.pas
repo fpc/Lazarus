@@ -205,6 +205,8 @@ type
     faileddraw  : Boolean;
 
     _inIME: Boolean;
+  private
+    function getWindowEditor(): NSTextView; message 'getWindowEditor';
   public
     callback: ICommonCallback;
     auxMouseByParent: Boolean;
@@ -606,6 +608,11 @@ begin
     Result:= NSString( aString );
 end;
 
+function TCocoaCustomControl.getWindowEditor(): NSTextView;
+begin
+  Result:= NSTextView( self.window.fieldEditor_forObject(true,nil) );
+end;
+
 procedure TCocoaCustomControl.setStringValue(avalue: NSString);
 begin
   if Assigned(fstr) then fstr.release;
@@ -640,16 +647,16 @@ end;
 
 procedure TCocoaCustomControl.keyDown(theEvent: NSEvent);
 var
-  view: NSView;
+  textView: NSView;
   isFirst: Boolean;
 begin
   isFirst:= not _inIME;
   inputContext.handleEvent(theEvent);
   if _inIME and isFirst then
   begin
-    view:= self.window.fieldEditor_forObject(true, nil);
-    view.setFrameSize( NSMakeSize(self.frame.size.width,16) );
-    self.addSubView( view );
+    textView:= getWindowEditor();
+    textView.setFrameSize( NSMakeSize(self.frame.size.width,16) );
+    self.addSubView( textView );
   end
   else if not _inIME then
     inputContext.discardMarkedText;
@@ -658,12 +665,12 @@ end;
 procedure TCocoaCustomControl.insertText_replacementRange(aString: id;
   replacementRange: NSRange);
 var
-  textView: NSTextView;
+  textView: NSView;
   nsText: NSString;
 begin
   if not _inIME then exit;
 
-  textView:= NSTextView(self.window.fieldEditor_forObject(true,nil));
+  textView:= getWindowEditor();
   if Assigned(textView) then
     textView.removeFromSuperview;
 
@@ -714,9 +721,9 @@ end;
 
 function TCocoaCustomControl.selectedRange: NSRange;
 var
-  textView: NSTextView;
+  textView: NSText;
 begin
-  textView:= NSTextView(self.window.fieldEditor_forObject(true,nil));
+  textView:= getWindowEditor();
   if not Assigned(textView) then
     Result:= NSMakeRange( NSNotFound, 0 )
   else
@@ -727,7 +734,7 @@ function TCocoaCustomControl.markedRange: NSRange;
 var
   textView: NSTextView;
 begin
-  textView:= NSTextView(self.window.fieldEditor_forObject(true,nil));
+  textView:= getWindowEditor();
   if not Assigned(textView) then
     Result:= NSMakeRange( NSNotFound, 0 )
   else
