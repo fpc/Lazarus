@@ -1,10 +1,5 @@
 {%MainUnit customdrawnwsforms.pp}
 
-// redefines:
-// The version from FreePascal crash except in FPC 2.7.1+ from 10 Dec 2011 +
-function XmbLookupString(p1: PXIC; ev: PXKeyPressedEvent; str: PChar; len: longword; ks: PKeySym; stat: PStatus): longint; cdecl; external;
-function Xutf8LookupString(p1: PXIC; ev: PXKeyPressedEvent; str: PChar; len: longword; ks: PKeySym; stat: PStatus): longint; cdecl; external;
-
 { TCDWSCustomForm }
 
 class procedure TCDWSCustomForm.UpdateMotifWMHints(const AWinControl: TWinControl; CanMaximize: Boolean);
