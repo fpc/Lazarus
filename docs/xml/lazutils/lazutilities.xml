@@ -22,20 +22,33 @@ and LCL.
 <element name="SysUtils"/>
 <element name="TypInfo"/>
 
-<!-- TODO: Added in e3691f68. -->
 <element name="TGetSkipCheckByKey">
-<short/>
-<descr/>
+<short>
+Specifies a Boolean function type used to implement the GetSkipCheckByKey and 
+SetSkipCheckByKeyProc routines.
+</short>
+<descr>
+<p>
+The function type includes the <var>AKey</var> string argument which contains 
+the key value to locate in the function. TGetSkipCheckByKey is used in the 
+Lazarus IDE to implement a routine which checks command line parameters for a 
+language identifier.
+</p>
+</descr>
 <version>
 Added in LazUtils version 3.0.
 </version>
-<seealso/>
-<notes><note>???</note></notes>
+<seealso>
+<link id="GetSkipCheckByKey"/>
+<link id="SetSkipCheckByKeyProc"/>
+</seealso>
 </element>
 
-<!-- TODO: Added in e3691f68. -->
 <element name="GetSkipCheckByKey">
-<short/>
+<short>
+Gets and executes the function assigned to an implementation variable using 
+the specified argument.
+</short>
 <descr/>
 <version>
 Added in LazUtils version 3.0.
@@ -43,15 +56,21 @@ Added in LazUtils version 3.0.
 <seealso/>
 </element>
 <element name="GetSkipCheckByKey.Result">
-<short/>
+<short>
+<b>True</b> if a function was assigned to the implementation variable, 
+executed in the routine, and returned <b>True</b>. Otherwise, <b>False</b>.
+</short>
 </element>
 <element name="GetSkipCheckByKey.AKey">
-<short/>
+<short>
+Value
+</short>
 </element>
 
-<!-- TODO: Added in e3691f68. -->
 <element name="SetSkipCheckByKeyProc">
-<short/>
+<short>
+Sets the value for an implementation variable to the specified function.
+</short>
 <descr/>
 <version>
 Added in LazUtils version 3.0.
@@ -59,7 +78,9 @@ Added in LazUtils version 3.0.
 <seealso/>
 </element>
 <element name="SetSkipCheckByKeyProc.AProc">
-<short/>
+<short>
+Function type assigned to the implementation variable.
+</short>
 </element>
 
 <element name="FreeThenNil">
