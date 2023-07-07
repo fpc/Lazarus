@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="10"/>
+    <Version Value="12"/>
     <General>
       <Flags>
         <MainUnitHasCreateFormStatements Value="False"/>
         <MainUnitHasTitleStatement Value="False"/>
         <MainUnitHasScaledStatement Value="False"/>
+        <CompatibilityMode Value="True"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
-      <MainUnit Value="0"/>
       <Title Value="FPReport LCL Demo"/>
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
@@ -22,9 +22,16 @@
     </PublishOptions>
     <RunParams>
       <local>
-        <FormatVersion Value="1"/>
         <CommandLineParams Value="-d simplelist"/>
       </local>
+      <FormatVersion Value="2"/>
+      <Modes Count="1">
+        <Mode0 Name="default">
+          <local>
+            <CommandLineParams Value="-d simplelist"/>
+          </local>
+        </Mode0>
+      </Modes>
     </RunParams>
     <RequiredPackages Count="1">
       <Item1>
@@ -97,14 +104,11 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="polygon"/>
+      <OtherUnitFiles Value="polygon;$(FPCSrcDir)/packages/fcl-report/demos;$(FPCSrcDir)/packages/fcl-report/demos/polygon"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Other>
       <CustomOptions Value="-dexportlcl"/>
-      <OtherDefines Count="1">
-        <Define0 Value="exportlcl"/>
-      </OtherDefines>
     </Other>
   </CompilerOptions>
   <Debugging>
