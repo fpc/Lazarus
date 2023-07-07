@@ -2038,16 +2038,32 @@ event is handled for the control.
 <short>
 Loads the Glyph image with the specified named from a resource instance.
 </short>
-<descr></descr>
-<seealso></seealso>
+<descr>
+<p>
+Calls the LoadGlyphFromLazarusResource routine in <file>buttons.pas</file> to 
+load the bitmap for the specified resource name into the Glyph for the button 
+control.
+</p>
+</descr>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type for the Instance 
+argument instead of the deprecated THandle type.
+</version>
+<seealso>
+<link id="TCustomBitBtn.Glyph"/>
+<link id="LoadGlyphFromLazarusResource"/>
+<link id="#lcl.lcltype.TLCLHandle">TLCLHandle</link>
+</seealso>
 </element>
 <element name="TCustomBitBtn.LoadGlyphFromResourceName.Instance">
 <short>
-Handle for the resource instance where the glyph is stored.
+Handle for the resource instance where the glyph image is stored.
 </short>
 </element>
 <element name="TCustomBitBtn.LoadGlyphFromResourceName.AName">
-<short>Resource name for the glyph loaded in the method.</short>
+<short>
+Resource name for the glyph loaded in the method.
+</short>
 </element>
 
 <element name="TCustomBitBtn.LoadGlyphFromLazarusResource">
@@ -4001,8 +4017,22 @@ value is the current class instance in this circumstance.
 Loads the image for the Glyph with the specified name from a resource 
 instance.
 </short>
-<descr></descr>
-<seealso></seealso>
+<descr>
+<p>
+Calls the LoadGlyphFromLazarusResource routine in <file>buttons.pas</file> to 
+load the bitmap for the specified resource name into the Glyph for the button 
+control.
+</p>
+</descr>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type for the Instance 
+argument instead of the deprecated THandle type.
+</version>
+<seealso>
+<link id="TCustomSpeedButton.Glyph"/>
+<link id="LoadGlyphFromLazarusResource"/>
+<link id="#lcl.lcltype.TLCLHandle">TLCLHandle</link>
+</seealso>
 </element>
 <element name="TCustomSpeedButton.LoadGlyphFromResourceName.Instance">
 <short>
@@ -4877,13 +4907,15 @@ Determines the default image loaded for the bitmapped button.
 
 
 <element name="LoadGlyphFromResourceName">
-<short>Loads a bitmap from a named resource into the specified Glyph.</short>
+<short>
+Loads a bitmap from a named resource into the specified Glyph.
+</short>
 <descr>
 <p>
 <var>LoadGlyphFromResourceName</var> is a procedure used to load a bitmap 
 into the specified <var>Glyph</var> from a named resource. <var>AGlyph</var> 
 is the <var>TButtonGlyph</var> where the bitmap is stored. 
-<var>Instance</var> is a <var>THandle</var> for the resource instance 
+<var>Instance</var> is a <var>TLCLHandle</var> for the resource instance 
 accessed in the routine. <var>AName</var> contains the name for the resource 
 loaded in the routine.
 </p>
@@ -4901,11 +4933,16 @@ set to <b>Nil</b>.
 and <var>TCustomSpeedButton</var>.
 </p>
 </descr>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type for the Instance 
+argument instead of the deprecated THandle type.
+</version>
 <seealso>
 <link id="TCustomBitBtn.LoadGlyphFromResourceName"/>
 <link id="TCustomSpeedButton.LoadGlyphFromResourceName"/>
 <link id="TButtonGlyph"/>
 <link id="CreateBitmapFromResourceName"/>
+<link id="#lcl.lcltype.TLCLHandle">TLCLHandle</link>
 </seealso>
 </element>
 <element name="LoadGlyphFromResourceName.AGlyph">
