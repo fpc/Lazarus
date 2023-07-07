@@ -911,6 +911,8 @@ end;
 
 procedure TLCLCommonCallback.KeyEvAfterDown(out AllowCocoaHandle: boolean);
 begin
+  AllowCocoaHandle:= false;
+
   if _KeyHandled then exit;
   send_UTF8KeyPress;
 
@@ -922,6 +924,9 @@ begin
 
   if _KeyHandled then exit;
   send_LM_CHAR_Message;
+
+  if _KeyHandled then exit;
+  AllowCocoaHandle:= not BlockCocoaKeyBeep;
 end;
 
 procedure TLCLCommonCallback.KeyEvAfterUp;

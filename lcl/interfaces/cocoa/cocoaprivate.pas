@@ -650,6 +650,12 @@ var
   textView: NSView;
   isFirst: Boolean;
 begin
+  if (not _inIME) and (theEvent.keyCode in [kVK_Return,kVK_Escape]) then
+  begin
+    inherited;
+    exit;
+  end;
+
   isFirst:= not _inIME;
   inputContext.handleEvent(theEvent);
   if _inIME and isFirst then
@@ -665,19 +671,14 @@ end;
 procedure TCocoaCustomControl.insertText_replacementRange(aString: id;
   replacementRange: NSRange);
 var
-  textView: NSView;
   nsText: NSString;
 begin
   if not _inIME then exit;
 
-  textView:= getWindowEditor();
-  if Assigned(textView) then
-    textView.removeFromSuperview;
+  unmarkText;
 
   nsText:= getNSStringObject(aString);
   lclGetCallback.InputClientInsertText(nsText.UTF8String);
-
-  unmarkText;
 end;
 
 procedure TCocoaCustomControl.setMarkedText_selectedRange_replacementRange(
@@ -690,7 +691,7 @@ begin
   if nsText.length > 0 then
   begin
     _inIME:= true;
-    textView:= NSTextView(self.window.fieldEditor_forObject(true,nil));
+    textView:= getWindowEditor();
     if Assigned(textView) then
       textView.setMarkedText_selectedRange_replacementRange(aString,selectedRange,replacementRange);
   end
@@ -704,8 +705,13 @@ begin
 end;
 
 procedure TCocoaCustomControl.unmarkText;
+var
+  textView: NSTextView;
 begin
   _inIME:= false;
+  textView:= getWindowEditor();
+  if Assigned(textView) then
+    textView.removeFromSuperview;
 end;
 
 function TCocoaCustomControl.firstRectForCharacterRange_actualRange(
