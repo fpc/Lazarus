@@ -800,8 +800,6 @@ end;
 
 function FindResourceLFM(ResName: string): HRSRC;
 {$if defined(WinCE)}
-//function FindResourceLFM(ResName: string): HRSRC;
-//{$if (FPC_FULLVERSION>=20605) and defined(WinCE)}
 var
   u: UnicodeString;
 begin

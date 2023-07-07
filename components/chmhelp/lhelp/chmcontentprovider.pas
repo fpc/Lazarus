@@ -10,11 +10,9 @@ unit ChmContentProvider;
 {$Note Compiling lhelp with search support}
 {$DEFINE CHM_SEARCH}
 
-{$IF FPC_FULLVERSION>=20400}
 {$Note Compiling lhelp *with* binary index and toc support}
 // CHMs can have both binary and text Table of Contents and index
 {$DEFINE CHM_BINARY_INDEX_TOC}    // internal chm index else external file`s indexes
-{$endif}
 
 {off $DEFINE CHM_DEBUG_TIME}
 

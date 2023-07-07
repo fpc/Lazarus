@@ -29,12 +29,10 @@ interface
 
 {$IFDEF Windows}
 {$IFDEF HEAPTRC_WINDOW}
-{$IF FPC_FULLVERSION>=20701}
 uses
   SysUtils, Windows, Messages;
 
 procedure ShowWindow(AStr : String);
-{$ENDIF}
 {$ENDIF}
 {$ENDIF}
 
@@ -42,7 +40,6 @@ implementation
 
 {$IFDEF Windows}
 {$IFDEF HEAPTRC_WINDOW}
-{$IF FPC_FULLVERSION>=20701}
 Var
   WndHandle,
   ButtonHandle,
@@ -189,7 +186,6 @@ Begin
 
   UnregisterClass(WndClass.lpszClassName, WndClass.hInstance);
 end;
-{$ENDIF}
 {$ENDIF}
 {$ENDIF}
 

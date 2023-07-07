@@ -4071,11 +4071,7 @@ begin
   TM.tmBreakChar := '?';
   TM.tmItalic := Ord(lFont.Italic);
   TM.tmUnderlined := Ord(lFont.Underline);
-  {$IF (FPC_FULLVERSION<=20600) or (FPC_FULLVERSION=20602)}
-  TM.tmStruckOut := Ord(lFont.StrikeTrough); //old version with typo
-  {$ELSE}
   TM.tmStruckOut := Ord(lFont.StrikeThrough);
-  {$ENDIF}
 
   { Defaults to a TrueType font.
     Note that the meaning of the FIXED_PITCH constant is the opposite of

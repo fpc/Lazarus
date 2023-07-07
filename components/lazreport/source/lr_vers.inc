@@ -56,11 +56,6 @@
 {$ENDIF}
 {$DEFINE Delphi5}
 
-{$if FPC_FULLVERSION<20701}
-  // in former FCL versions TBookmark was a simple pointer
-  {$DEFINE noautomatedbookmark}
-{$endif}
-
 {$IFDEF Darwin}
   {$DEFINE PRINTDIALOG_NATIVE_PRINTDIALOG}
   {$DEFINE PRINTDIALOG_DISABLE_PRINTER_PROPERTIES}

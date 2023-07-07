@@ -260,35 +260,9 @@ end;
 {$ENDIF WINCE}
 
 function GetEnvironmentVariableWide(const EnvVar: string): UnicodeString;
-{$IF FPC_FULLVERSION>=30000}
 begin
   Result:=GetEnvironmentVariable(UTF8ToUTF16(EnvVar));
 end;
-{$ELSE}
-var
-  s, upperenv : Unicodestring;
-  i : longint;
-  hp,p : pwidechar;
-begin
-  Result:='';
-  p:=GetEnvironmentStringsW;
-  hp:=p;
-  upperenv:=uppercase(envvar);
-  while hp^<>#0 do
-  begin
-    s:=hp;
-    i:=pos('=',s);
-    if uppercase(copy(s,1,i-1))=upperenv then
-    begin
-      Result:=copy(s,i+1,length(s)-i);
-      break;
-    end;
-    { next string entry}
-    hp:=hp+strlen(hp)+1;
-  end;
-  FreeEnvironmentStringsW(p);
-end;
-{$ENDIF}
 
 
 //*************** END WideString impementations

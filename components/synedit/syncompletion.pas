@@ -479,17 +479,13 @@ const
 implementation
 
 function IsIdentifierChar(p: PChar): boolean; inline;
-{$IF FPC_FULLVERSION >= 20701}
 var
   u: UnicodeString;
   i: Integer;
   L: SizeUInt;
-{$ENDIF}
 begin
   Result := p^ in ['a'..'z','A'..'Z','0'..'9','_'];
   if Result then exit;
-
-  {$IF FPC_FULLVERSION >= 20701}
   if p^ <= #127 then exit;
   i := UTF8CodepointSize(p);
   SetLength(u, i);
@@ -500,7 +496,6 @@ begin
     if L > 1 then
       Result := TCharacter.IsLetterOrDigit(u, 1);
   end;
-  {$ENDIF}
 end;
 
 { TSynBaseCompletionFormScrollBar }

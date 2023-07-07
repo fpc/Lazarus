@@ -84,17 +84,11 @@ type
     procedure EnumerateItems(const Method: TLCLEnumItemsMethod);
   end;
 
-{$IF FPC_FULLVERSION>20402}
-  TStreamSizeType = PtrInt;
-{$ELSE}
-  TStreamSizeType = Longint;
-{$IFEND}
-
   { TExtMemoryStream }
   
   TExtMemoryStream = class(TMemoryStream)
   protected
-    function Realloc(var NewCapacity: TStreamSizeType): Pointer; override;
+    function Realloc(var NewCapacity: PtrInt): Pointer; override;
   public
     property Capacity;
   end;
@@ -274,7 +268,7 @@ end;
 
 { TExtMemoryStream }
 
-function TExtMemoryStream.Realloc(var NewCapacity: TStreamSizeType): Pointer;
+function TExtMemoryStream.Realloc(var NewCapacity: PtrInt): Pointer;
 begin
   // if we are growing, grow at least a quarter
   if (NewCapacity > Capacity) then

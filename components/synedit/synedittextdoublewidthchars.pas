@@ -427,11 +427,7 @@ begin
   dec(PWidths);
 
   {$IFDEF SynForceDoubeWidthHack}
-  {$IF FPC_FULLVERSION>=20701}
   if (DefaultSystemCodePage = 932) {Japanese}
-  {$ELSE}
-  if (GetACP = 932) {Japanese}
-  {$ENDIF}
   then begin
     for i := 0 to LineLen - 1 do begin
       inc(Line);

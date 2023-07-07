@@ -4586,11 +4586,7 @@ begin
   ADest.Font.Bold := AFont.Bold;
   ADest.Font.Italic := AFont.Italic;
   ADest.Font.Underline := AFont.Underline;
-  {$IF (FPC_FULLVERSION<=20600) or (FPC_FULLVERSION=20602)}
-  ADest.Font.StrikeTrough := AFont.StrikeThrough; //old version with typo
-  {$ELSE}
   ADest.Font.StrikeThrough := AFont.StrikeThrough;
-  {$ENDIF}
 
   {$ifdef USE_LCL_CANVAS}
   ALCLDest.Font.Orientation := Round(AFont.Orientation * 10);  // wp: was * 16

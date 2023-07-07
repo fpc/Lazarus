@@ -153,9 +153,7 @@ procedure TfrDBDataSet.FreeBookMark(BM: Pointer);
 var
   ds: TDataset;
 begin
-  {$IFNDEF noautomatedbookmark}
   SetLength(TBookMark(BM),0);  //decreases refcount of bookmark
-  {$ENDIF noautomatedbookmark}
   ds := DataSet;
   if Assigned(ds) and Assigned(BM) then
     ds.FreeBookmark(BM);

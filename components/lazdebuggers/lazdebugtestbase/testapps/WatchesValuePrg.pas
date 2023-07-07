@@ -344,20 +344,15 @@ type
   // recursive declaration
   TSize = record
     cx : Longint; cy : Longint;
-   public
-  {$if FPC_FULLVERSION >= 30000}
-     constructor Create(asz :TSize);
-  {$ENDIF}
+  public
+    constructor Create(asz :TSize);
   end;
 
   TFunc1 = function(SomeValue, Foo: Integer; Bar: Word; X: Byte): Boolean;
   TProc1 = procedure();
   TMeth1 = function(AVal: Integer): Boolean of object;
-  {$if FPC_FULLVERSION >= 30000}
   PFuncSelfRef = ^TFuncSelfRef;
   TFuncSelfRef = function(SomeValue, Foo: PFuncSelfRef): PFuncSelfRef;
-  {$ENDIF}
-
 
   // Recursive pointers
   TRecursePtrA1 = ^TRecursePtrA2;
@@ -534,10 +529,7 @@ var
   MyStringList: TMyStringList;
 
   U8Data1, U8Data2: Utf8String;
-
-  {$if FPC_FULLVERSION >= 30000}
   dummy1: PFuncSelfRef;
-  {$ENDIF}
 
 const
 (* LOCATION: global const *)
@@ -607,10 +599,8 @@ var
   TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=gv_ptrlist_, "_OP_=:PPointerList;//", "_O2_=:PPointerList;//" )
 
 
-{$if FPC_FULLVERSION >= 30000}
 constructor TSize.Create(asz :TSize);
 begin end;
-{$endif}
 constructor TObjectCreate3Int64.Create;
 begin end;
 destructor TObjectCreate3Int64.Destroy;
@@ -983,10 +973,7 @@ begin
   VarCastRecl4.l4 := 13;
   VarCastRecq2.q  := $0010001100120013;
   VarCastRecq2.q2 := $0020002100220023;
-
-  {$if FPC_FULLVERSION >= 30000}
   dummy1 := nil;
-  {$ENDIF}
 
   with ModifyTestByte      do begin pre := qword($9696969696969696); post := $69; val := $01; end;
   with ModifyTestWord      do begin pre := qword($9696969696969696); post := $69; val := $0101; end;

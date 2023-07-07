@@ -24,9 +24,7 @@ unit LR_RRect;
 interface
 
 {$I lr_vers.inc}
-{$if (FPC_FULLVERSION>=20701)}
 {$Packset 1}
-{$endif}
 
 uses
   Classes, SysUtils, LResources, GraphMath,

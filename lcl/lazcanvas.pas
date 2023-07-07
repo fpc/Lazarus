@@ -888,11 +888,7 @@ begin
   Font.Bold := AFont.Bold;
   Font.Italic := AFont.Italic;
   Font.Underline := AFont.Underline;
-  {$IF (FPC_FULLVERSION<=20600)}
-  Font.{%H-}StrikeTrough := AFont.{%H-}StrikeTrough; //old version with typo
-  {$ELSE}
   Font.StrikeThrough := AFont.StrikeThrough;
-  {$ENDIF}
 end;
 
 { TFPWindowsSharpInterpolation }

@@ -258,11 +258,7 @@ begin
   if FNeedRTLAnsiValid then
     exit(FNeedRTLAnsi);
   {$IFDEF Windows}
-    {$IF FPC_FULLVERSION>=20701}
-    FNeedRTLAnsi:=DefaultSystemCodePage<>CP_UTF8;
-    {$ELSE}
-    FNeedRTLAnsi:=GetACP<>CP_UTF8;
-    {$ENDIF}
+  FNeedRTLAnsi:=DefaultSystemCodePage<>CP_UTF8;
   {$ELSE}
   FNeedRTLAnsi:=false;
   Lang := SysUtils.GetEnvironmentVariable('LC_ALL');

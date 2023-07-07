@@ -34,11 +34,7 @@ uses
   {$IFDEF UNIX}
   baseunix,
   {$endif}
-  sysutils, Classes, LazFileUtils
-  {$IF FPC_FULLVERSION<20701}
-  ,LazSysUtils
-  {$ENDIF}
-  ;
+  sysutils, Classes, LazFileUtils;
 
 const
   HEADER_VERSION = 2;
@@ -184,7 +180,7 @@ resourcestring
 implementation
 
 type
-  TIPCSearchRec = {$IF FPC_FULLVERSION>=20701}TRawByteSearchRec{$ELSE}TSearchRec{$ENDIF};
+  TIPCSearchRec = TRawByteSearchRec;
 
 const
   {$IFDEF UNIX}

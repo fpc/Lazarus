@@ -19,11 +19,7 @@ unit CairoCanvas;
           |____TCairoSvgCanvas
 *)
 {$mode objfpc}{$H+}
-
-{$if (FPC_FULLVERSION>=20701)}
 {$Packset 1}
-{$endif}
-
 {$define pangocairo}
 
 {-$define DebugClip}

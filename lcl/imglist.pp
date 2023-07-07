@@ -334,8 +334,7 @@ type
     procedure ReadData(AStream: TStream); virtual;
     procedure WriteAdvData(AStream: TStream); virtual;
     procedure ReadAdvData(AStream: TStream); virtual;
-    function Equals(Obj: TObject): boolean;
-      {$IF FPC_FULLVERSION>=20402}override;{$ENDIF}
+    function Equals(Obj: TObject): boolean; override;
     procedure BeginUpdate;
     procedure EndUpdate;
 

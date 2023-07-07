@@ -21,12 +21,6 @@ interface
 
 {$I qtdefines.inc}
 
-// todo: check if build macros can handle this and define it
-// in package LCL instead (it's needed for several widgetsets)
-{$if (FPC_FULLVERSION>=20701) OR (FPC_FULLVERSION>=20603)}
-{$define HAS_INHERITED_INSERTITEM}
-{$endif}
-
 uses
   // Bindings
   qt4,
@@ -50,9 +44,6 @@ type
     procedure SetSorted(AValue: Boolean);
   protected
     procedure Put(Index: Integer; const S: string); override;
-    {$IFNDEF HAS_INHERITED_INSERTITEM}
-    procedure InsertItem(Index: Integer; const S: string); override;
-    {$ENDIF}
     procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
   public
     constructor Create(AWinControl: TWinControl; AOwner: TQtComboBox);
@@ -80,9 +71,6 @@ type
     FOwner: TQtListWidget;
   protected
     procedure Put(Index: Integer; const S: string); override;
-    {$IFNDEF HAS_INHERITED_INSERTITEM}
-    procedure InsertItem(Index: Integer; const S: string); override;
-    {$ENDIF}
     procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
   public
     constructor Create(AWinControl: TWinControl; AOwner: TQtListWidget);
@@ -509,27 +497,6 @@ begin
   FOwner.EndUpdate;
 end;
 
-{$IFNDEF HAS_INHERITED_INSERTITEM}
-procedure TQtComboStrings.InsertItem(Index: Integer; const S: string);
-var
-  FSavedIndex: Integer;
-  FSavedText: WideString;
-begin
-  inherited InsertItem(Index, S);
-  FOwner.BeginUpdate;
-  FSavedText := FOwner.getText;
-  FSavedIndex := FOwner.currentIndex;
-  FOwner.insertItem(Index, S);
-  if FOwner.getEditable then
-  begin
-    if (FSavedIndex <> FOwner.currentIndex) then
-      FOwner.setCurrentIndex(FSavedIndex);
-    FOwner.setText(FSavedText);
-  end;
-  FOwner.EndUpdate;
-end;
-{$ENDIF}
-
 procedure TQtComboStrings.InsertItem(Index: Integer; const S: string; O: TObject);
 var
   FSavedIndex: Integer;
@@ -724,26 +691,7 @@ begin
     FOwner.EndUpdate;
   end;
 end;
-{$IFNDEF HAS_INHERITED_INSERTITEM}
-procedure TQtListStrings.InsertItem(Index: Integer; const S: string);
-begin
-  inherited InsertItem(Index, S);
-  if Assigned(FWinControl) and (FWinControl.HandleAllocated) then
-  begin
-    FOwner.BeginUpdate;
-    FOwner.insertItem(Index, S);
-    if FOwner is TQtCheckListBox then
-    begin
-      FOwner.ItemFlags[Index] := FOwner.ItemFlags[Index] or QtItemIsUserCheckable;
-      if TQtCheckListBox(FOwner).AllowGrayed then
-        FOwner.ItemFlags[Index] := FOwner.ItemFlags[Index] or QtItemIsTristate
-      else
-        FOwner.ItemFlags[Index] := FOwner.ItemFlags[Index] and not QtItemIsTristate;
-    end;
-    FOwner.EndUpdate;
-  end;
-end;
-{$ENDIF}
+
 procedure TQtListStrings.InsertItem(Index: Integer; const S: string; O: TObject);
 begin
   inherited InsertItem(Index, S, O);

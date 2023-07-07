@@ -1248,9 +1248,6 @@ var
   StartTime: TDateTime;
   EndTime: TDateTime;
 begin
-  {$IF FPC_FULLVERSION<30000}
-  CurrentThread:=Self;
-  {$ENDIF}
   try
     Files:=nil;
     try
@@ -1301,9 +1298,6 @@ begin
     end;
   finally
     Scanned;
-    {$IF FPC_FULLVERSION<30000}
-    CurrentThread:=nil;
-    {$ENDIF}
   end;
 end;
 
@@ -1547,11 +1541,7 @@ begin
     FScanThread:=TWikiHelpThread.Create(true);
     FScanThread.FreeOnTerminate:=true;
     FScanThread.Help:=Self;
-    {$IF FPC_FULLVERSION<=20403}
-    FScanThread.Resume;
-    {$ELSE}
     FScanThread.Start;
-    {$ENDIF}
   finally
     LeaveCritSect;
   end;

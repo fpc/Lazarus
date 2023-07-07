@@ -599,23 +599,11 @@ const
   LazTiffSoftware = LazTiffExtraPrefix + 'Software';
 
 type
-  {$IF FPC_FULLVERSION<20601}
-  {$DEFINE OldTiffCreateImageHook}
-  {$ENDIF}
-
   TLazReaderTiff = class(TFPReaderTiff, ILazImageReader)
   private
     FUpdateDescription: Boolean;
-    {$IFDEF OldTiffCreateImageHook}
-    // the OnCreateImage event is "abused" to update the description after the
-    // format and before the image is read
-    FOrgEvent: TTiffCreateCompatibleImgEvent;
-    procedure CreateImageHook(Sender: TFPReaderTiff; var NewImage: TFPCustomImage);
-    procedure DoCreateImage(ImgFileDir: TTiffIDF);
-    {$ELSE}
   protected
     procedure DoCreateImage(ImgFileDir: TTiffIFD); override;
-    {$ENDIF}
   public
     function  GetUpdateDescription: Boolean;
     procedure SetUpdateDescription(AValue: Boolean);
@@ -6185,15 +6173,12 @@ begin
 end;
 {$ENDIF}
 
-procedure TLazReaderTiff.DoCreateImage(
-  ImgFileDir: {$IFDEF OldTiffCreateImageHook}TTiffIDF{$ELSE}TTiffIFD{$ENDIF});
+procedure TLazReaderTiff.DoCreateImage(ImgFileDir: TTiffIFD);
 var
   Desc: TRawImageDescription;
   IsAlpha, IsGray: Boolean;
 begin
-  {$IFNDEF OldTiffCreateImageHook}
   inherited;
-  {$ENDIF}
 
   if not FUpdateDescription then Exit;
   if not (theImage is TLazIntfImage) then Exit;
@@ -6266,15 +6251,7 @@ end;
 
 procedure TLazReaderTiff.InternalRead(Str: TStream; Img: TFPCustomImage);
 begin
-  {$IFDEF OldTiffCreateImageHook}
-  FOrgEvent := OnCreateImage;
-  OnCreateImage := @CreateImageHook;
   inherited InternalRead(Str, Img);
-  OnCreateImage := FOrgEvent;
-  FOrgEvent := nil;
-  {$ELSE}
-  inherited InternalRead(Str, Img);
-  {$ENDIF}
 end;
 
 function TLazReaderTiff.QueryInterface(constref iid: TGuid; out obj): longint; {$IFDEF WINDOWs}stdcall{$ELSE}cdecl{$ENDIF};

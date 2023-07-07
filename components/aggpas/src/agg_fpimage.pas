@@ -382,11 +382,7 @@ type
     property Bold; // only windows
     property Italic; // only windows
     property Underline; // not supported
-    {$IF (FPC_FULLVERSION<=20600) or (FPC_FULLVERSION=20602)}
-    property StrikeTrough; //old version with typo
-    {$ELSE}
     property StrikeThrough;
-    {$ENDIF}
   end;
 
   { TAggFPPath }

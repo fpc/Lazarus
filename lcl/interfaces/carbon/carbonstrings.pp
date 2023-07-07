@@ -18,10 +18,6 @@ interface
 // defines
 {$I carbondefines.inc}
 
-{$if (FPC_FULLVERSION>=20701) OR (FPC_FULLVERSION>=20603)}
-{$define HAS_INHERITED_INSERTITEM}
-{$endif}
-
 uses
   // rtl+ftl
   Classes, SysUtils,
@@ -40,10 +36,6 @@ type
     FOwner: TCarbonComboBox;  // Carbon combo box control owning strings
   protected
     procedure Put(Index: Integer; const S: string); override;
-    {$IFNDEF HAS_INHERITED_INSERTITEM}
-    // before fpc 2.7.1 InsertItem(Index,S) did not call InsertItem(Index,S,nil)
-    procedure InsertItem(Index: Integer; const S: string); override;
-    {$ENDIF}
     procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
   public
     constructor Create(AOwner: TCarbonComboBox);
@@ -63,10 +55,6 @@ type
     FWinControl: TWinControl;
   protected
     procedure Put(Index: Integer; const S: string); override;
-    {$IFNDEF HAS_INHERITED_INSERTITEM}
-    // before fpc 2.7.1 InsertItem(Index,S) did not call InsertItem(Index,S,nil)
-    procedure InsertItem(Index: Integer; const S: string); override;
-    {$ENDIF}
     procedure InsertItem(Index: Integer; const S: string; O: TObject); override;
   public
     constructor Create(AOwner: TCarbonListBox; AWinControl: TWinControl);
@@ -124,22 +112,6 @@ begin
   FOwner.Remove(Index);
   FOwner.Insert(Index, S);
 end;
-
-{$IFNDEF HAS_INHERITED_INSERTITEM}
-{------------------------------------------------------------------------------
-  Method:  TCarbonComboBoxStrings.InsertItem
-  Params:  Index - Line index
-           S     - Text to insert
-
-  Inserts the text on line with the specified index
- ------------------------------------------------------------------------------}
-procedure TCarbonComboBoxStrings.InsertItem(Index: Integer; const S: string);
-begin
-  inherited InsertItem(Index, S);
-
-  FOwner.Insert(Index, S);
-end;
-{$ENDIF}
 
 {------------------------------------------------------------------------------
   Method:  TCarbonComboBoxStrings.InsertItem
@@ -239,22 +211,6 @@ begin
 
   FOwner.UpdateItem(Index);
 end;
-
-{$IFNDEF HAS_INHERITED_INSERTITEM}
-{------------------------------------------------------------------------------
-  Method:  TCarbonListBoxStrings.InsertItem
-  Params:  Index - Line index
-           S     - Text to insert
-
-  Inserts the text on line with the specified index
- ------------------------------------------------------------------------------}
-procedure TCarbonListBoxStrings.InsertItem(Index: Integer; const S: string);
-begin
-  inherited InsertItem(Index, S);
-
-  FOwner.InsertItem(Index); // Without this call, dynamically adding items won't work
-end;
-{$ENDIF}
 
 {------------------------------------------------------------------------------
   Method:  TCarbonListBoxStrings.InsertItem

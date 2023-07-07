@@ -26,19 +26,14 @@ uses
   {$ELSE}
     {$IFnDEF HASAMIGA}
       Unix, BaseUnix,
-      {$If defined(Linux) and (FPC_FULLVERSION<30000)}
-      Linux,
-      {$EndIf}
     {$ENDIF}
   {$ENDIF}
   Classes;
 
-{$IF FPC_FULLVERSION>=30000}
 function GetTickCount64: QWord;
 begin
   Result := SysUtils.GetTickCount64;
 end;
-{$ENDIF}
 
 // ToDo: Move the code to 1 include file per platform
 {$IFDEF WINDOWS}
@@ -49,15 +44,6 @@ begin
   windows.GetSystemTime(SystemTime{%H-});
   result := systemTimeToDateTime(SystemTime);
 end;
-
-{$IF FPC_FULLVERSION<30000}
-function GetTickCount64: QWord;
-begin
-  // GetTickCount64 is better, but we need to check the Windows version to use it
-  Result := Windows.GetTickCount();
-end;
-{$ENDIF FPC_FULLVERSION}
-
 {$ELSE WINDOWS}
 {$IFDEF UNIX}
 Const
@@ -115,39 +101,12 @@ begin
   result := systemTimeToDateTime(SystemTime);
 end;
 
-{$IF FPC_FULLVERSION<30000}
-{$IF defined(Linux) and not defined(GetTickCountTimeOfDay)}
-function GetTickCount64: QWord;
-var
-  tp: timespec;
-begin
-  clock_gettime(CLOCK_MONOTONIC, @tp); // exists since Linux Kernel 2.6
-  Result := (Int64(tp.tv_sec) * 1000) + (tp.tv_nsec div 1000000);
-end;
-{$ELSE}
-function GetTickCount64: QWord;
-var
-  tp: TTimeVal;
-begin
-  fpgettimeofday(@tp, nil);
-  Result := (Int64(tp.tv_sec) * 1000) + (tp.tv_usec div 1000);
-end;
-{$ENDIF}
-{$ENDIF FPC_FULLVERSION}
-
 {$ELSE UNIX}
 // Not Windows and not UNIX, so just write the most trivial code until we have something better:
 function NowUTC: TDateTime;
 begin
   Result := Now;
 end;
-
-{$IF FPC_FULLVERSION<30000}
-function GetTickCount64: QWord;
-begin
-  Result := Trunc(Now * 24 * 60 * 60 * 1000);
-end;
-{$ENDIF FPC_FULLVERSION}
 {$ENDIF UNIX}
 {$ENDIF WINDOWS}
 

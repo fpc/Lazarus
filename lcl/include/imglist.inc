@@ -2392,11 +2392,7 @@ begin
       CurStream.Free;
     end;
   end else
-    {$IF FPC_FULLVERSION>20402}
     Result:=inherited Equals(Obj);
-    {$ELSE}
-    Result:=false;
-    {$ENDIF}
 end;
 
 function TCustomImageList.FindResolution(AImageWidth: Integer; out

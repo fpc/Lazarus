@@ -1645,9 +1645,7 @@ begin
     vtPWideChar: s:=AnsiString(WideString(s)+Args[i].VPWideChar);
     vtWideChar: s:=AnsiString(WideString(s)+Args[i].VWideChar);
     vtWidestring: s:=AnsiString(WideString(s)+WideString(Args[i].VWideString));
-{$IF FPC_FULLVERSION>=20701}
     vtUnicodeString: s:=AnsiString(UnicodeString(s)+UnicodeString(Args[i].VUnicodeString));
-{$endif}
     vtObject: s:=s+DbgSName(Args[i].VObject);
     vtClass: s:=s+DbgSName(Args[i].VClass);
     vtPointer: s:=s+Dbgs(Args[i].VPointer);
