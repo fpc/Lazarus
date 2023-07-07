@@ -13,7 +13,7 @@ unit LazFreeTypeFontCollection;
 interface
 
 uses
-  Classes, SysUtils, Laz_AVL_Tree,
+  Classes, SysUtils, AVL_Tree,
   // LazUtils
   LazStringUtils, LazUTF8,
   // FreeType

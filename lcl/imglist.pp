@@ -46,7 +46,7 @@ interface
 
 uses
   // RTL + FCL
-  Types, math, SysUtils, Classes, RtlConsts, Contnrs, zstream, Laz_AVL_Tree,
+  Types, Math, SysUtils, Classes, RtlConsts, Contnrs, ZStream, AVL_Tree,
   FPReadBMP, FPimage, FPImgCanv, FPCanvas,
   // LCL
   LCLStrConsts, LCLIntf, LResources, LCLType, LCLProc, LCLClasses,

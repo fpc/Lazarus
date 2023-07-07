@@ -16,7 +16,7 @@ unit GraphPropEdits;
 interface
 
 uses
-  Types, Classes, TypInfo, SysUtils, Math, System.UITypes,
+  Types, Classes, TypInfo, SysUtils, System.UITypes,
   // LCL
   LCLType, Forms, Graphics, Buttons, Menus, Dialogs, Grids, ImgList, EditBtn,
   // LazUtils

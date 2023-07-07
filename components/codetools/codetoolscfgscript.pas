@@ -53,7 +53,7 @@ unit CodeToolsCfgScript;
 interface
 
 uses
-  Classes, SysUtils, typinfo, Laz_AVL_Tree,
+  Classes, SysUtils, TypInfo, AVL_Tree,
   // Codetools
   BasicCodeTools, KeywordFuncLists, FileProcs, CodeToolsStrConsts;
 

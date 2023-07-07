@@ -42,7 +42,7 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, TypInfo, Laz_AVL_Tree,
+  Classes, SysUtils, TypInfo, AVL_Tree,
   // LCL
   Forms, Controls, Dialogs, LResources, LCLMemManager, LCLProc,
   //LazUtils

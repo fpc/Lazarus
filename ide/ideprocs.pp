@@ -31,7 +31,7 @@ interface
 
 uses
   // RTL
-  Classes, SysUtils, Laz_AVL_Tree,
+  Classes, SysUtils, AVL_Tree,
   // LazUtils
   FileUtil, LazFileUtils, LazUtilities, LazFileCache, LazUTF8,
   Laz2_XMLCfg, LazLoggerBase, LazTracer,

@@ -37,7 +37,7 @@ unit InstallPkgSetDlg;
 interface
 
 uses
-  Classes, SysUtils, contnrs, Laz_AVL_Tree,
+  Classes, SysUtils, Contnrs, AVL_Tree,
   // LCL
   LCLType, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons,
   ExtCtrls, ComCtrls, ImgList,

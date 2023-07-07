@@ -32,7 +32,7 @@ unit etMessageFrame;
 interface
 
 uses
-  Math, StrUtils, Classes, SysUtils, Laz_AVL_Tree,
+  Math, StrUtils, Classes, SysUtils, AVL_Tree,
   // LCL
   Forms, Buttons, ExtCtrls, Controls, LMessages, LCLType, LCLIntf,
   Graphics, Themes, ImgList, Menus, Clipbrd, Dialogs, StdCtrls,

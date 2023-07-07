@@ -26,7 +26,7 @@ interface
 
 uses
   {$IFDEF Darwin}MacOSAll, {$ENDIF}
-  Classes, SysUtils, Math, Types, Laz_AVL_Tree,
+  Classes, SysUtils, Math, Types, AVL_Tree,
   // LazUtils
   LazFileUtils, LazUtilities, LazMethodList, LazUTF8, LazUTF16, LazLoggerBase, LazTracer,
   GraphMath,

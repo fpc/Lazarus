@@ -51,7 +51,7 @@ unit ExtractProcTool;
 interface
 
 uses
-  Classes, SysUtils, math, Laz_AVL_Tree,
+  Classes, SysUtils, Math, AVL_Tree,
   // Codetools
   FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
   CodeCache, CustomCodeTool, PascalReaderTool,

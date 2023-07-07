@@ -14,7 +14,7 @@ unit IDEExternToolIntf;
 interface
 
 uses
-  Classes, SysUtils, Math, Laz_AVL_Tree,
+  Classes, SysUtils, Math, AVL_Tree,
   // LazUtils
   UTF8Process, LazFileUtils, LazFileCache, LazMethodList, LazLoggerBase,
   // BuildIntf

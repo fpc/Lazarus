@@ -37,7 +37,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, Laz_Avl_Tree,
+  Classes, SysUtils, Avl_Tree,
   // Codetools
   SourceLog, LinkScanner, FileProcs, DirectoryCacher,
   // LazUtils

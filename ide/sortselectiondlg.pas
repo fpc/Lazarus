@@ -39,7 +39,7 @@ unit SortSelectionDlg;
 interface
 
 uses
-  SysUtils, Laz_AVL_Tree,
+  SysUtils, AVL_Tree,
   // LCL
   Forms, Controls, StdCtrls, ExtCtrls, ButtonPanel,
   // LazUtils

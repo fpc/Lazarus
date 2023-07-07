@@ -37,7 +37,7 @@ unit SearchResultView;
 interface
 
 uses
-  Classes, SysUtils, Math, StrUtils, Laz_AVL_Tree,
+  Classes, SysUtils, Math, StrUtils, AVL_Tree,
   // LCL
   LCLProc, LCLType, Forms, Controls, Graphics, ComCtrls, Menus, Clipbrd,
   ActnList, ExtCtrls, StdCtrls, Dialogs, LCLIntf,

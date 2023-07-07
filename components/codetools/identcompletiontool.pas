@@ -50,7 +50,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, typinfo, crc, Laz_AVL_Tree,
+  Classes, SysUtils, typinfo, crc, AVL_Tree,
   // LazUtils
   LazFileUtils, LazDbgLog, AvgLvlTree,
   // Codetools

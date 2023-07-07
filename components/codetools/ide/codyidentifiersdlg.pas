@@ -37,7 +37,7 @@ unit CodyIdentifiersDlg;
 interface
 
 uses
-  Classes, SysUtils, Math, LCLProc, contnrs, Laz_AVL_Tree,
+  Classes, SysUtils, Math, LCLProc, contnrs, AVL_Tree,
   // LCL
   Forms, Controls, Dialogs, ButtonPanel, StdCtrls, ExtCtrls, LCLType, Buttons, Menus,
   // IdeIntf

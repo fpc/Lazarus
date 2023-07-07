@@ -53,7 +53,7 @@ interface
 
 uses
   // RTL + FCL
-  Classes, SysUtils, types, math, contnrs, Laz_AVL_Tree,
+  Classes, SysUtils, Types, Math, Contnrs, AVL_Tree,
   // LCL
   Forms, ComCtrls, Controls, ButtonPanel, Themes, Graphics, StdCtrls, Buttons,
   InterfaceBase,

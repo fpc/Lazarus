@@ -51,7 +51,7 @@ unit LPKCache;
 interface
 
 uses
-  Classes, SysUtils, Laz_AVL_Tree,
+  Classes, SysUtils, AVL_Tree,
   // LazUtils
   LazFileUtils, Laz2_XMLCfg, LazLoggerBase, LazTracer, LazMethodList,
   // IdeIntf

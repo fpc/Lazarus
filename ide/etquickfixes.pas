@@ -53,7 +53,7 @@ unit etQuickFixes;
 interface
 
 uses
-  Classes, SysUtils, Laz_AVL_Tree,
+  Classes, SysUtils, AVL_Tree,
   // LCL
   Menus, Dialogs, Controls,
   // LazUtils

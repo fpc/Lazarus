@@ -31,7 +31,7 @@ interface
 
 uses
   // RTL + FCL
-  SysUtils, Math, Types, Classes, Contnrs, Laz_AVL_Tree,
+  SysUtils, Math, Types, Classes, Contnrs, AVL_Tree,
   FPImage, FPCanvas,
   FPWriteBMP,              // bmp support
   FPWritePNG, PNGComn,     // png support

@@ -44,7 +44,7 @@ unit CodyFindOverloads;
 interface
 
 uses
-  Classes, SysUtils, contnrs, Laz_AVL_Tree,
+  Classes, SysUtils, contnrs, AVL_Tree,
   // LazUtils
   FileUtil, LazLoggerBase, LazUtilities,
   // LCL

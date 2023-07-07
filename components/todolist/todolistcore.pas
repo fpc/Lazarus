@@ -36,7 +36,7 @@ interface
 
 uses
   // FCL, RTL
-  Classes, SysUtils, StrUtils, Laz_AVL_Tree,
+  Classes, SysUtils, StrUtils, AVL_Tree,
   // LCL
   LCLType, LclIntf, Controls, Dialogs, ComCtrls,
   // LazUtils

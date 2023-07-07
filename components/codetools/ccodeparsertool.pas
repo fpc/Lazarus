@@ -111,7 +111,7 @@ uses
   MemCheck,
   {$ENDIF}
   // RTL + FCL
-  Classes, SysUtils, Laz_AVL_Tree,
+  Classes, SysUtils, AVL_Tree,
   // CodeTools
   FileProcs, BasicCodeTools, KeywordFuncLists, CodeCache, CodeTree,
   NonPascalCodeTools, CodeToolsStructs,

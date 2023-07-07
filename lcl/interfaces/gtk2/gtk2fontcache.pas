@@ -14,7 +14,7 @@ interface
 
 uses
   // RTL
-  Classes, SysUtils, glib2, pango, Laz_AVL_Tree,
+  Classes, SysUtils, glib2, pango, AVL_Tree,
   // LazUtils
   LazUtilities, LazLoggerBase, LazTracer,
   // LCL

@@ -32,7 +32,7 @@ unit ExtractProcDlg;
 interface
 
 uses
-  Classes, SysUtils, Laz_AVL_Tree,
+  Classes, SysUtils, AVL_Tree,
   // LCL
   Forms, Controls, Dialogs, ExtCtrls, StdCtrls, ButtonPanel, LCLProc,
   // LazUtils

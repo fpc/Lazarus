@@ -23,7 +23,7 @@ unit H2PasConvert;
 interface
 
 uses
-  Classes, SysUtils, Laz_AVL_Tree,
+  Classes, SysUtils, AVL_Tree,
   // LCL
   LResources, Forms, Controls, Dialogs, XMLPropStorage,
   // LazUtils

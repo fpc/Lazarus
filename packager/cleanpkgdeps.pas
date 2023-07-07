@@ -32,7 +32,7 @@ unit CleanPkgDeps;
 interface
 
 uses
-  Classes, SysUtils, contnrs, Laz_AVL_Tree,
+  Classes, SysUtils, Contnrs, AVL_Tree,
   // LCL
   Forms, Controls, ComCtrls, ExtCtrls, StdCtrls, Buttons,
   // IdeIntf

@@ -30,7 +30,7 @@ unit LFMTrees;
 interface
 
 uses
-  Classes, SysUtils, TypInfo, Laz_AVL_Tree,
+  Classes, SysUtils, TypInfo, AVL_Tree,
   // LazUtils
   LazUtilities,
   // Codetools

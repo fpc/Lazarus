@@ -18,7 +18,7 @@ unit LazConfigStorage;
 interface
 
 uses
-  Classes, SysUtils, typinfo, Laz_AVL_Tree,
+  Classes, SysUtils, TypInfo, AVL_Tree,
   // LazUtils
   LazLoggerBase, AvgLvlTree, LazStringUtils;
   

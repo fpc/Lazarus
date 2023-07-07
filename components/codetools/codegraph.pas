@@ -30,7 +30,7 @@ unit CodeGraph;
 interface
 
 uses
-  Classes, SysUtils, Laz_AVL_Tree,
+  Classes, SysUtils, AVL_Tree,
   // Codetools
   CodeTree, FileProcs;
   

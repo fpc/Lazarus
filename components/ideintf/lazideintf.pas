@@ -16,9 +16,9 @@ unit LazIDEIntf;
 interface
 
 uses
-  Classes, SysUtils, System.UITypes,
+  Classes, SysUtils,
   // LCL
-  Forms, Controls, LazHelpHTML,
+  Forms, Controls,
   // LazUtils
   LazMethodList, AvgLvlTree,
   // BuildIntf

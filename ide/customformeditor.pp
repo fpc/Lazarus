@@ -39,7 +39,7 @@ uses
   MemCheck,
 {$ENDIF}
   // RTL+FCL
-  Classes, SysUtils, TypInfo, Math, Laz_AVL_Tree,
+  Classes, SysUtils, TypInfo, Math, AVL_Tree,
   // LCL
   LCLIntf, LCLType, LResources, LCLMemManager, Controls, Graphics,
   Forms, Menus, Dialogs,

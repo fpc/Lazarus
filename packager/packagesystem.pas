@@ -45,7 +45,7 @@ uses
   MemCheck,
   {$ENDIF}
   // FPC
-  Classes, SysUtils, contnrs, strutils, Laz_AVL_Tree, fpmkunit,
+  Classes, SysUtils, Contnrs, StrUtils, AVL_Tree, fpmkunit,
   // LCL
   Forms, Controls, Dialogs, LCLProc,
   // LazUtils

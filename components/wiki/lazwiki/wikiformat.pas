@@ -27,7 +27,7 @@ unit WikiFormat;
 interface
 
 uses
-  Classes, SysUtils, Laz_AVL_Tree,
+  Classes, SysUtils, AVL_Tree,
   // LazUtils
   LazFileUtils, Laz2_XMLRead, Laz2_DOM, LazLoggerBase, AvgLvlTree, LazUTF8, LazStringUtils,
   // Codetools

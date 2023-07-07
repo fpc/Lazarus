@@ -32,7 +32,7 @@ unit etSrcEditMarks;
 interface
 
 uses
-  Classes, SysUtils, math, Laz_AVL_Tree,
+  Classes, SysUtils, Math, AVL_Tree,
   // LCL
   Graphics, Controls, Forms, ImgList,
   // LazUtils

@@ -4728,7 +4728,7 @@ begin
   begin
     GetContainerWidget^.get_allocation(@AAlloc);
     Result := RectFromGtkAllocation(AAlloc);
-    OffsetRect(Result, -Result.Left, -Result.Top);
+    Types.OffsetRect(Result, -Result.Left, -Result.Top);
   end else
   begin
     ACurrentPage := PGtkNoteBook(GetContainerWidget)^.get_current_page;
@@ -4740,7 +4740,7 @@ begin
       else
         GetContainerWidget^.get_allocation(@AAlloc);
       Result := RectFromGtkAllocation(AAlloc);
-      OffsetRect(Result, -Result.Left, -Result.Top);
+      Types.OffsetRect(Result, -Result.Left, -Result.Top);
     end;
   end;
   // DebugLn('TGtk3NoteBook.getClientRect Result ',dbgs(Result));

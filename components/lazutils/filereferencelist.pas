@@ -31,7 +31,7 @@ unit FileReferenceList;
 interface
 
 uses
-  Classes, SysUtils, Laz_AVL_Tree,
+  Classes, SysUtils, AVL_Tree,
   // LazUtils
   LazFileUtils, LazFileCache, LazTracer;
 

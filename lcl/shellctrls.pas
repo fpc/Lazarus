@@ -22,7 +22,7 @@ unit ShellCtrls;
 interface
 
 uses
-  Classes, SysUtils, Types, Math, Laz_AVL_Tree,
+  Classes, SysUtils, Types, Math, AVL_Tree,
   // LCL
   Forms, Graphics, ComCtrls, LCLStrConsts,
   // LazUtils

@@ -30,7 +30,9 @@ unit PPUCodeTools;
 interface
 
 uses
-  Classes, SysUtils, Laz_AVL_Tree, PPUParser, FileProcs, LazFileUtils, LazFileCache;
+  Classes, SysUtils, AVL_Tree,
+  PPUParser, FileProcs,
+  LazFileUtils, LazFileCache;
 
 type
 

@@ -28,7 +28,7 @@ unit Compiler_Other_Options;
 interface
 
 uses
-  Classes, SysUtils, math, Laz_AVL_Tree,
+  Classes, SysUtils, Math, AVL_Tree,
   // LCL
   Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, ExtCtrls, Buttons, LCLType,
   // LazUtils

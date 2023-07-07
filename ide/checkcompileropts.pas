@@ -32,7 +32,7 @@ unit CheckCompilerOpts;
 interface
 
 uses
-  Classes, SysUtils, Laz_AVL_Tree,
+  Classes, SysUtils, AVL_Tree,
   // LCL
   Forms, Controls, Dialogs, Clipbrd, StdCtrls, Menus, ExtCtrls, ButtonPanel, ComCtrls,
   // LazUtils

@@ -35,7 +35,7 @@ interface
 
 uses
   // RTL + FCL
-  Classes, SysUtils, math, process, Pipes, Laz_AVL_Tree, System.UITypes,
+  Classes, SysUtils, math, process, Pipes, AVL_Tree, System.UITypes,
   // LazUtils
   FileUtil, LazFileUtils, LazUtilities, LazLoggerBase, UTF8Process, LazUTF8,
   AvgLvlTree,

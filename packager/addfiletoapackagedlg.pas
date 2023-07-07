@@ -39,7 +39,7 @@ unit AddFileToAPackageDlg;
 interface
 
 uses
-  Classes, SysUtils, Laz_AVL_Tree,
+  Classes, SysUtils, AVL_Tree,
   // LCL
   Forms, Controls, StdCtrls, Dialogs, ButtonPanel,
   // LazUtils

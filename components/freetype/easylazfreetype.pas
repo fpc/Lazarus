@@ -19,7 +19,7 @@ unit EasyLazFreeType;
 interface
 
 uses
-  Classes, SysUtils, fpimage, Laz_AVL_Tree,
+  Classes, SysUtils, fpimage, AVL_Tree,
   // LazUtils
   LazUTF8,
   // FreeType

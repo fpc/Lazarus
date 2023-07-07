@@ -47,7 +47,7 @@ uses
   MemCheck,
   {$ENDIF}
   // RTL, FCL
-  TypInfo, math, Classes, SysUtils, contnrs, Laz_AVL_Tree,
+  TypInfo, Math, Classes, SysUtils, Contnrs, AVL_Tree,
   // LCL
   Forms, Controls, Dialogs, Menus, ComCtrls, LResources,
   // LazUtils

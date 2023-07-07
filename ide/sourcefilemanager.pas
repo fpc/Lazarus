@@ -32,7 +32,7 @@ unit SourceFileManager;
 interface
 
 uses
-  Classes, SysUtils, TypInfo, Math, fpjson, Laz_AVL_Tree,
+  Classes, SysUtils, TypInfo, Math, fpjson, AVL_Tree,
   // LCL
   Controls, Forms, Dialogs, LCLIntf, LCLType, LclStrConsts,
   LResources, LCLMemManager,

@@ -37,7 +37,7 @@ interface
 
 uses
   // RTL + LCL
-  Classes, SysUtils, Laz_AVL_Tree,
+  Classes, SysUtils, AVL_Tree,
   // LCL
   Dialogs,
   // LazUtils

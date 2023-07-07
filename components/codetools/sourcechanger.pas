@@ -42,7 +42,7 @@ interface
 {off $DEFINE VerboseSrcChanger}
 
 uses
-  Classes, SysUtils, typinfo, Laz_AVL_Tree,
+  Classes, SysUtils, TypInfo, AVL_Tree,
   // LazUtils
   LazDbgLog,
   // Codetools

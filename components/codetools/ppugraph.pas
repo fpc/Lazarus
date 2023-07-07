@@ -30,7 +30,7 @@ unit PPUGraph;
 interface
 
 uses
-  Classes, SysUtils, Laz_AVL_Tree,
+  Classes, SysUtils, AVL_Tree,
   {$IFnDEF HASAMIGA}
   dynlibs,
   {$ENDIF}

@@ -43,7 +43,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, Laz_AVL_Tree,
+  Classes, SysUtils, AVL_Tree,
   // Codetools
   FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
   KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache,

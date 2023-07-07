@@ -40,9 +40,9 @@ unit SynBeautifier;
 interface
 
 uses
-  Classes, SysUtils, StrUtils,
+  Classes, SysUtils,
   LazStringUtils,
-  SynEditMiscClasses, SynEditMiscProcs, LazSynEditText, SynEditPointClasses,
+  SynEditMiscClasses, LazSynEditText, SynEditPointClasses,
   SynEditKeyCmds, SynEditTypes;
 
 type

@@ -39,7 +39,7 @@ interface
 
 uses
   // RTL+FCL
-  Classes, SysUtils, types, Laz_AVL_Tree,
+  Classes, SysUtils, Types, AVL_Tree,
   // LazUtils
   LazStringUtils, LazLoggerBase,
   // LCL

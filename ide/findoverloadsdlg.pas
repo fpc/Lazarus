@@ -37,7 +37,7 @@ unit FindOverloadsDlg;
 interface
 
 uses
-  Classes, SysUtils, Laz_AVL_Tree,
+  Classes, SysUtils, AVL_Tree,
   // LCL
   Forms, Controls, StdCtrls, ButtonPanel, ComCtrls,
   // LazUtils

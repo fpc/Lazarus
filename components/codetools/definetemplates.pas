@@ -54,7 +54,7 @@ interface
 
 uses
   // RTL + FCL
-  Classes, SysUtils, contnrs, process, Laz_AVL_Tree,
+  Classes, SysUtils, Contnrs, process, AVL_Tree,
   // CodeTools
   CodeToolsStrConsts, ExprEval, DirectoryCacher, BasicCodeTools,
   CodeToolsStructs, KeywordFuncLists, LinkScanner, FileProcs,

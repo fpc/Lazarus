@@ -24,7 +24,7 @@ unit Maps;
 interface
 
 uses
-  Classes, SysUtils, Math, typinfo, Laz_AVL_Tree,
+  Classes, SysUtils, Math, TypInfo, AVL_Tree,
   // LazUtils
   FPCAdds;
   

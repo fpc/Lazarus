@@ -85,7 +85,7 @@ uses
   MemCheck,
   {$ENDIF}
   // RTL + FCL
-  Classes, SysUtils, contnrs, Laz_AVL_Tree,
+  Classes, SysUtils, Contnrs, AVL_Tree,
   // CodeTools
   FileProcs, CodeToolsStrConsts, StdCodeTools,
   CodeTree, CodeAtom, CodeCache, CustomCodeTool, PascalParserTool, MethodJumpTool,

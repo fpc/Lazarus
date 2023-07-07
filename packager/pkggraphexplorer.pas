@@ -37,7 +37,7 @@ unit PkgGraphExplorer;
 interface
 
 uses
-  Classes, SysUtils, contnrs, Laz_AVL_Tree,
+  Classes, SysUtils, Contnrs, AVL_Tree,
   // LCL
   LCLType, LCLIntf, Forms, Controls, ComCtrls, StdCtrls, ExtCtrls,
   Menus, ButtonPanel,

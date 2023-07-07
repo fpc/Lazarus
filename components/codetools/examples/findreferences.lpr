@@ -35,9 +35,9 @@ program findreferences;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, AVL_Tree,
   // LazUtils
-  LazFileUtils, Laz_AVL_Tree,
+  LazFileUtils,
   // CodeTools
   CodeCache, CodeToolManager, CTUnitGraph;
 

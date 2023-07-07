@@ -28,9 +28,7 @@ program AddMethodAssign;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils,
-  // LazUtils
-  Laz_AVL_Tree,
+  Classes, SysUtils, AVL_Tree,
   // CodeTools
   CodeCache, CodeToolManager, FileProcs,
   BasicCodeTools, CodeTree, FindDeclarationTool, AssignExample1;

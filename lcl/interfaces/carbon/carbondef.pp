@@ -29,8 +29,7 @@ interface
 uses
   // libs
   MacOSAll,
-  Classes, SysUtils, Controls,
-  Laz_AVL_Tree,
+  Classes, SysUtils, Controls, AVL_Tree,
   // lcl
   LCLType, LCLProc, Graphics, Contnrs, LMessages, LCLMessageGlue,
   LazLoggerBase,

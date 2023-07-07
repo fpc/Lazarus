@@ -19,7 +19,7 @@ unit UnitResources;
 interface
 
 uses
-  Classes, SysUtils, System.UITypes,
+  Classes, SysUtils,
   // LCL
   LCLMemManager, Forms, LResources;
 

@@ -28,7 +28,7 @@ program TestFPCSrcUnitRules;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CustApp, Laz_AVL_Tree,
+  Classes, SysUtils, CustApp, AVL_Tree,
   // LazUtils
   LazFileUtils, AvgLvlTree, LazLogger,
   // CodeTools

@@ -36,7 +36,7 @@ interface
 
 uses
   // RTL + FCL
-  Classes, SysUtils, types, math, Laz_AVL_Tree,
+  Classes, SysUtils, Types, Math, AVL_Tree,
   // LCL
   Forms, Controls, ExtCtrls, ComCtrls, StdCtrls, Buttons, Dialogs, Menus,
   Clipbrd, CheckLst,

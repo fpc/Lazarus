@@ -61,7 +61,7 @@ interface
 
 uses
   // FCL, RTL
-  Classes, SysUtils, Math, Laz_AVL_Tree,
+  Classes, SysUtils, Math, AVL_Tree,
   // LCL
   LCLType, LclIntf, Forms, Controls, StdCtrls, Dialogs, ComCtrls,
   ActnList, XMLPropStorage, ExtCtrls,

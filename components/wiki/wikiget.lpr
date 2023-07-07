@@ -29,7 +29,7 @@ uses
   {$IFDEF UNIX}
   cthreads,
   {$ENDIF}
-  Classes, SysUtils, CustApp, strutils, Laz_AVL_Tree,
+  Classes, SysUtils, CustApp, strutils, AVL_Tree,
   // LazUtils
   LazFileUtils, Laz2_XMLRead, Laz2_DOM, Laz2_XMLWrite, LazLogger, avglvltree,
   LazUTF8, LazStringUtils,

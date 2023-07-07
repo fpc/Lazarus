@@ -73,7 +73,6 @@ begin
     D := T.Dependencies.AddUnit('laz2_xmlutils');
     D := T.Dependencies.AddUnit('laz2_XMLWrite');
     D := T.Dependencies.AddUnit('laz2_xpath');
-    D := T.Dependencies.AddUnit('Laz_AVL_Tree');
     D := T.Dependencies.AddUnit('Laz_DOM');
     D := T.Dependencies.AddUnit('Laz_XMLCfg');
     D := T.Dependencies.AddUnit('Laz_XMLRead');
@@ -143,7 +142,6 @@ begin
     T := P.Targets.AddImplicitUnit('laz2_xmlutils.pas');
     T := P.Targets.AddImplicitUnit('laz2_xmlwrite.pas');
     T := P.Targets.AddImplicitUnit('laz2_xpath.pas');
-    T := P.Targets.AddImplicitUnit('laz_avl_tree.pp');
     T := P.Targets.AddImplicitUnit('laz_dom.pas');
     T := P.Targets.AddImplicitUnit('laz_xmlcfg.pas');
     T := P.Targets.AddImplicitUnit('laz_xmlread.pas');

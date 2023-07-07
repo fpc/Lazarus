@@ -28,7 +28,7 @@ program unitdicttest;
 {$mode objfpc}{$H+}
 
 uses
-  SysUtils, Laz_AVL_Tree,
+  SysUtils, AVL_Tree,
   // LazUtils
   LazFileUtils, AvgLvlTree,
   // CodeTools

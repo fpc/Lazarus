@@ -38,7 +38,7 @@ interface
 
 uses
   // FCL
-  Classes, SysUtils, Contnrs, TypInfo, Laz_AVL_Tree,
+  Classes, SysUtils, Contnrs, TypInfo, AVL_Tree,
   System.UITypes,
   // LCL
   Forms, ImgList,

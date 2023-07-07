@@ -37,7 +37,7 @@ unit ProjectResources;
 interface
 
 uses
-  Classes, SysUtils, resource, reswriter, fgl, Laz_AVL_Tree,
+  Classes, SysUtils, resource, reswriter, fgl, AVL_Tree,
   // LCL
   Controls, LResources,
   // LazUtils

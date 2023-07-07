@@ -11,7 +11,7 @@ interface
 
 uses
   Classes, SysUtils, CodeToolManager, CodeCache, CodeTree, BasicCodeTools,
-  CTUnitGraph, LazLogger, LazFileUtils, Laz_AVL_Tree, fpcunit, testregistry,
+  CTUnitGraph, LazLogger, LazFileUtils, AVL_Tree, fpcunit, testregistry,
   TestFinddeclaration;
 
 const

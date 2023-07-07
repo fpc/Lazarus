@@ -32,7 +32,7 @@ uses
   {$IFNDEF DisableLCLTIFF}
   FPReadTiff, FPWriteTiff, FPTiffCmn, 
   {$ENDIF}
-  Laz_AVL_Tree,
+  AVL_Tree,
   // LazUtils
   GraphType, FPCAdds, LazLoggerBase, LazTracer,
   // LCL

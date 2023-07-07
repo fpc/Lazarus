@@ -30,7 +30,7 @@ unit ConvertSettings;
 interface
 
 uses
-  Classes, SysUtils, Laz_AVL_Tree,
+  Classes, SysUtils, AVL_Tree,
   // LCL
   Forms, Controls, Dialogs, StdCtrls, Buttons, ButtonPanel, ComCtrls,
   // LazUtils

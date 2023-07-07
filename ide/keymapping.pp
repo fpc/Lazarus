@@ -32,7 +32,7 @@ unit KeyMapping;
 interface
 
 uses
-  Classes, SysUtils, contnrs, Laz_AVL_Tree,
+  Classes, SysUtils, Contnrs, AVL_Tree,
   // LCL
   Forms, LCLType, LCLProc,
   // LazUtils

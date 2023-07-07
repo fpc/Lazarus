@@ -18,7 +18,7 @@ unit EduSpeedButtons;
 interface
 
 uses
-  Classes, SysUtils, Laz_AVL_Tree,
+  Classes, SysUtils, AVL_Tree,
   // LCL
   Controls, Graphics, LResources, Forms, StdCtrls, ExtCtrls, Dialogs,
   ComCtrls, Buttons,

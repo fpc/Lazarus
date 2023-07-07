@@ -30,9 +30,9 @@ unit PPUListDlg;
 interface
 
 uses
-  Classes, SysUtils, contnrs, math, Laz_AVL_Tree,
+  Classes, SysUtils, contnrs, math, AVL_Tree,
   // LCL
-  LCLProc, FileUtil, Forms, Controls, Dialogs, ButtonPanel, Grids, StdCtrls,
+  FileUtil, Forms, Controls, Dialogs, ButtonPanel, Grids, StdCtrls,
   ExtCtrls, ComCtrls,
   // LazUtils
   AvgLvlTree, LazUTF8,

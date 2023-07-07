@@ -13,7 +13,7 @@ unit GtkFontCache;
 interface
 
 uses
-  Classes, SysUtils, FPCAdds, LCLProc, LCLType, Laz_AVL_Tree, gtkdef,
+  Classes, SysUtils, FPCAdds, LCLProc, LCLType, AVL_Tree, gtkdef,
   {$IFDEF Gtk1}
   gdk,
   {$ELSE}

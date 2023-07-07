@@ -24,7 +24,7 @@ unit ComponentReg;
 interface
 
 uses
-  Classes, SysUtils, typinfo, Contnrs, Laz_AVL_Tree, fgl,
+  Classes, SysUtils, TypInfo, AVL_Tree, fgl,
   // LCL
   Controls,
   // LazUtils

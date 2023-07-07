@@ -33,7 +33,7 @@ interface
 
 uses
   // RTL + FCL
-  Classes, SysUtils, Laz_AVL_Tree,
+  Classes, SysUtils, AVL_Tree,
   // LCL
   LCLIntf, LCLType, FileProcs, Forms, Controls, ComCtrls, StdCtrls,
   Dialogs, Graphics, Buttons, ButtonPanel, LazHelpHTML, HelpIntfs,

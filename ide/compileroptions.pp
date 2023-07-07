@@ -42,7 +42,7 @@ unit CompilerOptions;
 interface
 
 uses
-  Classes, SysUtils, Laz_AVL_Tree, System.UITypes,
+  Classes, SysUtils, AVL_Tree, System.UITypes,
   // LazUtils
   FileUtil, LazFileUtils, LazUTF8, Laz2_XMLCfg, Laz2_DOM, LazUtilities, LazTracer,
   LazStringUtils, FPCAdds, LazVersion,

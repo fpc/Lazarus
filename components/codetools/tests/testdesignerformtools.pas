@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, CodeToolManager, CodeCache, DefineTemplates,
-  LazLogger, LazFileUtils, AvgLvlTree, Laz_AVL_Tree, fpcunit, testregistry,
+  LazLogger, LazFileUtils, AvgLvlTree, AVL_Tree, fpcunit, testregistry,
   TestFinddeclaration, TestStdCodetools,
   Dsgn_AmbigBearBtn, Dsgn_BearControls, Dsgn_BearButtons;
 

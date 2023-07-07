@@ -22,7 +22,7 @@ unit LvlGraphCtrl;
 interface
 
 uses
-  Classes, SysUtils, types, math, typinfo, FPimage, FPCanvas, Laz_AVL_Tree,
+  Classes, SysUtils, Types, Math, TypInfo, FPimage, FPCanvas, AVL_Tree,
   // LCL
   LMessages, LCLType, LCLIntf, Graphics, Controls, ImgList, Forms, Themes,
   // LazUtils
@@ -556,7 +556,6 @@ type
     procedure WMHScroll(var Msg: TLMScroll); message LM_HSCROLL;
     procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
     procedure WMMouseWheel(var Message: TLMMouseEvent); message LM_MOUSEWHEEL;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure ImageListChange(Sender: TObject);
   protected
     procedure GraphInvalidate(Sender: TObject); virtual;
@@ -573,8 +572,8 @@ type
     procedure Paint; override;
     function Draw(Step: TLvlGraphDrawStep): boolean; virtual;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer
-      ); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure CreateWnd; override;
     procedure HighlightConnectedEgdes(Element: TObject);
     procedure DoOnShowHint(HintInfo: PHintInfo); override;
@@ -1682,7 +1681,6 @@ end;
 procedure TMinXGraph.BindPairs;
 var
   i: Integer;
-  Level: TMinXLevel;
   Pair: TMinXPair;
 begin
   for i:=0 to length(Pairs)-1 do begin

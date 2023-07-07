@@ -19,7 +19,7 @@ unit LCLResCache;
 interface
 
 uses
-  Classes, SysUtils, Types, Laz_AVL_Tree,
+  Classes, SysUtils, Types, AVL_Tree,
   // LazUtils
   FPCAdds, LazLoggerBase, LazTracer,
   // LCL

@@ -30,7 +30,7 @@ unit FPDocSelectLink;
 interface
 
 uses
-  Classes, SysUtils, Laz_AVL_Tree,
+  Classes, SysUtils, AVL_Tree,
   // LCL
   LCLType, Forms, Controls, Graphics, ExtCtrls, StdCtrls, ButtonPanel,
   // LazUtils

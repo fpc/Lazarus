@@ -37,7 +37,7 @@ unit PkgLinksDlg;
 interface
 
 uses
-  Classes, SysUtils, Laz_AVL_Tree,
+  Classes, SysUtils, AVL_Tree,
   // LCL
   Forms, Controls, StdCtrls, Buttons, Grids, ExtCtrls, ComCtrls, Menus, Dialogs,
   // Codetools

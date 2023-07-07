@@ -37,7 +37,7 @@ interface
 {$INTERFACES CORBA}
 
 uses
-  System.UITypes, Classes, SysUtils, TypInfo, Types, Laz_AVL_Tree,
+  System.UITypes, Classes, SysUtils, TypInfo, Types, AVL_Tree,
   // LCL
   LCLStrConsts, LCLType, LCLProc, Graphics, LMessages, LCLIntf, InterfaceBase,
   ImgList, PropertyStorage, Menus, ActnList, LCLClasses, LResources, LCLPlatformDef,

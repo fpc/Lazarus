@@ -30,7 +30,7 @@ unit CodeIndex;
 interface
 
 uses
-  SysUtils, Laz_AVL_Tree,
+  SysUtils, AVL_Tree,
   // LazUtils
   LazFileUtils,
   // Codetools

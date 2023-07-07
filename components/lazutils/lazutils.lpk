@@ -135,10 +135,6 @@
         <UnitName Value="Laz2_XPath"/>
       </Item>
       <Item>
-        <Filename Value="laz_avl_tree.pp"/>
-        <UnitName Value="Laz_AVL_Tree"/>
-      </Item>
-      <Item>
         <Filename Value="laz_dom.pas"/>
         <UnitName Value="Laz_DOM"/>
       </Item>

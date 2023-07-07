@@ -30,7 +30,7 @@ unit CodeToolsDefPreview;
 interface
 
 uses
-  Classes, SysUtils, Math, Laz_AVL_Tree,
+  Classes, SysUtils, Math, AVL_Tree,
   // LCL
   Forms, Dialogs, ButtonPanel, StdCtrls, ComCtrls, ExtCtrls,
   // LazUtils

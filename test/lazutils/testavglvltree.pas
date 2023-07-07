@@ -19,7 +19,6 @@ interface
 uses
   Classes, SysUtils, fpcunit, testglobals, LazLogger,
   AVL_Tree, // the unit from FPC
-  // Laz_AVL_Tree, the unit copied from FPC when compiling Lazarus for older compilers
   AvgLvlTree // unit from LazUtils, an extended version
   ;
 

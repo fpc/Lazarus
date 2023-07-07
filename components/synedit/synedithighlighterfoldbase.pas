@@ -57,7 +57,7 @@ unit SynEditHighlighterFoldBase;
 interface
 
 uses
-  SysUtils, Classes, math, Laz_AVL_Tree,
+  SysUtils, Classes, Math, AVL_Tree,
   // LazUtils
   LazClasses, LazLoggerBase, LazTracer,
   // SynEdit

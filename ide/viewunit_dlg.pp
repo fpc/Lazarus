@@ -40,7 +40,7 @@ unit ViewUnit_Dlg;
 interface
 
 uses
-  SysUtils, Classes, Laz_AVL_Tree,
+  SysUtils, Classes, AVL_Tree,
   // LCL
   LCLType, LCLIntf,
   Controls, Forms, Buttons, StdCtrls, ExtCtrls, ButtonPanel, Menus, ComCtrls,

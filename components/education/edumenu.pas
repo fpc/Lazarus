@@ -18,7 +18,7 @@ unit EduMenu;
 interface
 
 uses
-  Classes, SysUtils, Laz_AVL_Tree,
+  Classes, SysUtils, AVL_Tree,
   // LCL
   LCLProc, LResources, Forms, StdCtrls, ComCtrls, Controls, ExtCtrls,
   // LazUtils

@@ -39,7 +39,7 @@ unit BasicCodeTools;
 interface
 
 uses
-  Classes, SysUtils, StrUtils, Laz_AVL_Tree,
+  Classes, SysUtils, StrUtils, AVL_Tree,
   // LazUtils
   LazFileUtils, LazStringUtils, LazUTF8,
   // Codetools
