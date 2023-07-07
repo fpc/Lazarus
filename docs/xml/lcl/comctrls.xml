@@ -28903,14 +28903,20 @@ Gets the value for the Handle property.
 </short>
 <descr>
 <p>
-GetHandle is a THandle function used to get the value for the Handle 
-property. It is the Handle allocated for the associated TreeView control, or 
-zero (0) if the TreeView property has not been assigned for the node.
+<var>GetHandle</var> is a <var>TLCLHandle</var> function used to get the value 
+for the <var>Handle</var> property. It is the Handle allocated for the 
+associated TreeView control, or zero (0) if the TreeView property has not been 
+assigned for the node.
 </p>
 </descr>
+<version>
+Modified in LCL version 4.0 to return the TLCLHandle type instead of the 
+deprecated THandle type.
+</version>
 <seealso>
 <link id="TTreeNode.Handle"/>
 <link id="TTreeNode.TreeView"/>
+<link id="#lcl.lcltype.TLCLHandle">TLCLHandle</link>
 </seealso>
 </element>
 <element name="TTreeNode.GetHandle.Result">
@@ -30229,13 +30235,19 @@ tree node.
 </short>
 <descr>
 <p>
-<var>THandle</var> is a read-only <var>THandle</var> property with the handle 
-assigned for the associated <var>TreeView</var> control. The property value 
-is <b>0</b> (<b>zero</b>) if a handle has not been assigned for the TreeView 
-control.
+<var>Handle</var> is a read-only <var>TLCLHandle</var> property with the 
+handle assigned for the associated <var>TreeView</var> control. The property 
+value is <b>0</b> (<b>zero</b>) if a handle has not been assigned for the 
+TreeView control.
 </p>
 </descr>
-<seealso/>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type.
+</version>
+<seealso>
+<link id="#lcl.lcltype.TLCLHandle">TLCLHandle</link>
+</seealso>
 </element>
 
 <element name="TTreeNode.HasChildren">
@@ -31081,7 +31093,14 @@ and <var>TreeNodes</var> properties in <var>TTreeNode</var>.
 Gets the handle for the TreeView component using the collection of nodes.
 </short>
 <descr/>
-<seealso/>
+<version>
+Modified in LCL version 4.0 to return the TLCLHandle type instead of the 
+deprecated THandle type.
+</version>
+<seealso>
+<link id="TCustomTreeView.Handle"/>
+<link id="#lcl.lcltype.TLCLHandle">TLCLHandle</link>
+</seealso>
 </element>
 <element name="TTreeNodes.GetHandle.Result">
 <short>The handle for the TreeView, or 0 when TreeView is unassigned.</short>
