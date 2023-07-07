@@ -477,12 +477,13 @@ String used as the default title or caption for the dialog form.
 <short>Resets the values in internal state flags for the dialog.</short>
 <descr>
 <p>
-Called from the <var>Execute</var> method before the widgetset handle is 
+Called from the <var>Execute</var> method before the widgetset Handle is 
 allocated and the dialog is displayed.
 </p>
 </descr>
 <seealso>
 <link id="TCommonDialog.Execute"/>
+<link id="TCommonDialog.Handle"/>
 <link id="TCommonDialog.DoExecute"/>
 </seealso>
 </element>
@@ -571,9 +572,29 @@ exit the dialog.
 </element>
 
 <element name="TCommonDialog.Handle">
-<short>Operating system <var>Handle</var> for the dialog.</short>
-<descr/>
-<seealso/>
+<short>
+Contains the handle for the dialog form.
+</short>
+<descr>
+<p>
+<var>Handle</var> is a <var>TLCLHandle</var> property with the handle for the 
+dialog form. Its value is assigned in the Execute method and contains the 
+handle from the widgetset class instance. Handle is checked during execution 
+of the dialog to ensure that it does not contain an unassigned value. The 
+unassigned value for Handle is 0 (zero). Handle is destroyed when the Close 
+method is executed.
+</p>
+</descr>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type in the property.
+</version>
+<seealso>
+<link id="TCommonDialog.Execute"/>
+<link id="TCommonDialog.Close"/>
+<link id="TCommonDialog.HandleAllocated"/>
+<link id="#lcl.lcltype.TLCLHandle">TLCLHandle</link>
+</seealso>
 </element>
 
 <element name="TCommonDialog.UserChoice">
@@ -703,7 +724,7 @@ widgetset <var>Handle</var> for the dialog is freed.
 
 <element name="TCommonDialog.HandleAllocated">
 <short>
-Returns <b>True</b> if a widgetset handle has been allocated for the dialog.
+Returns <b>True</b> if a widgetset Handle has been allocated for the dialog.
 </short>
 <descr/>
 <seealso>
@@ -712,7 +733,7 @@ Returns <b>True</b> if a widgetset handle has been allocated for the dialog.
 </element>
 <element name="TCommonDialog.HandleAllocated.Result">
 <short>
-<b>True</b> if a widgetset handle has been allocated for the dialog.
+<b>True</b> if a widgetset Handle has been allocated for the dialog.
 </short>
 </element>
 
