@@ -28,8 +28,7 @@ uses
 type
 
   { TFPReportPreviewForm }
-  // Fool the IDE.
-  TForm = TCustomFPreportPreviewForm;
+
   TOpenURLEvent = Procedure (Sender : TObject; Const AURL : String) of Object;
 
   TFPReportPreviewForm = class(TForm)
