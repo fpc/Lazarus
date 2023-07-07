@@ -9,7 +9,7 @@ interface
 
 uses
   Types,
-  CGGeometry, CocoaAll, cocoa_extra,
+  CocoaAll, cocoa_extra,
   Classes, Controls, SysUtils,
   //
   WSControls, LCLType, LMessages, LCLProc, LCLIntf, Graphics, Forms,
@@ -66,6 +66,12 @@ type
     _isCocoaOnlyState: Boolean;
     _UTF8Character : array [0..7] of TUTF8Char;
     _UTF8Charcount : Integer;
+  private
+    procedure send_UTF8KeyPress();
+    procedure send_CN_CHAR_Message();
+    procedure send_LM_KEYDOWN_Message();
+    procedure send_LM_CHAR_Message();
+  protected
     procedure OffsetMousePos(LocInWin: NSPoint; out PtInBounds, PtInClient, PtForChildCtrls: TPoint );
     procedure ScreenMousePos(var Point: NSPoint);
     procedure KeyEvBeforeDown;
@@ -796,77 +802,25 @@ begin
 end;
 
 procedure TLCLCommonCallback.KeyEvBeforeDown;
-var
-  i: integer;
-  lclHandled: Boolean;
 begin
+  // is the key combination help key (Cmd + ?)
+  if _SendChar and _IsSysKey and (_UTF8Character[0] = '?') then
+    Application.ShowHelpForObject(Target);
+
+  //Send message to LCL
+  if _KeyMsg.CharCode = VK_UNKNOWN then
+    exit;
+
   // create the CN_KEYDOWN message
   if _IsSysKey then
     _KeyMsg.Msg := CN_SYSKEYDOWN
   else
     _KeyMsg.Msg := CN_KEYDOWN;
 
-  // is the key combination help key (Cmd + ?)
-  if _SendChar and _IsSysKey and (_UTF8Character[0] = '?') then
-    Application.ShowHelpForObject(Target);
-
-  // widget can filter some keys from being send to cocoa control
-  //if Widget.FilterKeyPress(IsSysKey, UTF8Character) then Result := noErr;
-
-  //Send message to LCL
-  if _KeyMsg.CharCode <> VK_UNKNOWN then
-  begin
-    NotifyApplicationUserInput(Target, _KeyMsg.Msg);
-    if (DeliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
-    begin
-      // the LCL handled the key
-      KeyEvHandled;
-      Exit;
-    end;
-  end;
-
-  if (_SendChar) then begin
-    // send the UTF8 keypress
-    i := 0;
-    lclHandled := false;
-    for i := 0 to _UTF8Charcount -1 do
-    begin
-      lclHandled := false;
-      if Target.IntfUTF8KeyPress(_UTF8Character[i], 1, _IsSysKey) then
-        lclHandled := true;
-    end;
-
-    if lclHandled then
-    begin
-      // the LCL has handled the key
-      if ForceReturnKeyDown and (_KeyMsg.CharCode = VK_RETURN) then
-        _SendChar := False
-      else
-        KeyEvHandled;
-      Exit;
-    end;
-
-    //if OrigChar <> _UTF8Character then
-      //LCLCharToMacEvent(_UTF8Character);
-
-    // create the CN_CHAR / CN_SYSCHAR message
-    if _IsSysKey then
-      _CharMsg.Msg := CN_SYSCHAR
-    else
-      _CharMsg.Msg := CN_CHAR;
-
-    //Send message to LCL
-    if (DeliverMessage(_CharMsg) <> 0) or (_CharMsg.CharCode=VK_UNKNOWN) then
-    begin
-      // the LCL handled the key
-      KeyEvHandled;
-      Exit;
-    end;
-
-    //if _CharMsg.CharCode <> ord(_KeyChar) then
-      //LCLCharToMacEvent(Char(_CharMsg.CharCode));
-  end;
-
+  NotifyApplicationUserInput(Target, _KeyMsg.Msg);
+  if (DeliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
+    // the LCL handled the key
+    KeyEvHandled;
 end;
 
 procedure TLCLCommonCallback.KeyEvBeforeUp;
@@ -889,40 +843,90 @@ begin
   end;
 end;
 
+procedure TLCLCommonCallback.send_UTF8KeyPress();
+var
+  i: integer;
+  lclHandled: Boolean;
+begin
+  if not _sendChar then exit;
+
+  // send the UTF8 keypress
+  i := 0;
+  lclHandled := false;
+  for i := 0 to _UTF8Charcount -1 do
+  begin
+    lclHandled := false;
+    if Target.IntfUTF8KeyPress(_UTF8Character[i], 1, _IsSysKey) then
+      lclHandled := true;
+  end;
+
+  if lclHandled then
+  begin
+    // the LCL has handled the key
+    if ForceReturnKeyDown and (_KeyMsg.CharCode = VK_RETURN) then
+      _SendChar := False
+    else
+      KeyEvHandled;
+  end;
+end;
+
+procedure TLCLCommonCallback.send_CN_CHAR_Message();
+begin
+  if not _SendChar then exit;
+
+  if _IsSysKey then
+    _CharMsg.Msg := CN_SYSCHAR
+  else
+    _CharMsg.Msg := CN_CHAR;
+
+  if (DeliverMessage(_CharMsg) <> 0) or (_CharMsg.CharCode=VK_UNKNOWN) then
+    KeyEvHandled;
+end;
+
+procedure TLCLCommonCallback.send_LM_KEYDOWN_Message();
+begin
+  if _KeyMsg.CharCode = VK_UNKNOWN then exit;
+
+  if _IsSysKey then
+    _KeyMsg.Msg := LM_SYSKEYDOWN
+  else
+    _KeyMsg.Msg := LM_KEYDOWN;
+
+  if (DeliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
+    KeyEvHandled;
+end;
+
+procedure TLCLCommonCallback.send_LM_CHAR_Message();
+begin
+  if not _SendChar then exit;
+
+  if _IsSysKey then
+    _CharMsg.Msg := LM_SYSCHAR
+  else
+    _CharMsg.Msg := LM_CHAR;
+
+  if DeliverMessage(_CharMsg) <> 0 then
+    KeyEvHandled;
+end;
+
 procedure TLCLCommonCallback.KeyEvAfterDown(out AllowCocoaHandle: boolean);
 begin
-  AllowCocoaHandle := False;
+  AllowCocoaHandle:= false;
 
-  if _KeyHandled then Exit;
-  KeyEvHandled;
+  if _KeyHandled then exit;
+  send_UTF8KeyPress;
 
-  // Send an LM_(SYS)KEYDOWN
-  if _KeyMsg.CharCode <> VK_UNKNOWN then
-  begin
-    if _IsSysKey then
-      _KeyMsg.Msg := LM_SYSKEYDOWN
-    else
-      _KeyMsg.Msg := LM_KEYDOWN;
+  if _KeyHandled then exit;
+  send_CN_CHAR_Message;
 
-    if (DeliverMessage(_KeyMsg) <> 0) or (_KeyMsg.CharCode = VK_UNKNOWN) then
-      Exit;
-  end;
+  if _KeyHandled then exit;
+  send_LM_KEYDOWN_Message;
 
-  //Send an LM_(SYS)CHAR
-  if _SendChar then begin
-    if _IsSysKey then
-      _CharMsg.Msg := LM_SYSCHAR
-    else
-      _CharMsg.Msg := LM_CHAR;
+  if _KeyHandled then exit;
+  send_LM_CHAR_Message;
 
-    if DeliverMessage(_CharMsg) <> 0 then
-      Exit;
-  end;
-
-  if BlockCocoaKeyBeep then
-    Exit;
-
-  AllowCocoaHandle := True;
+  if _KeyHandled then exit;
+  AllowCocoaHandle:= not BlockCocoaKeyBeep;
 end;
 
 procedure TLCLCommonCallback.KeyEvAfterUp;
