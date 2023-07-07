@@ -825,7 +825,14 @@ begin
     Config.hMainIcon := TD_ICONS[aDialogIcon];
     Config.hFooterIcon := TD_FOOTERICONS[aFooterIcon];
     Config.nDefaultButton := aButtonDef;
-    Config.nDefaultRadioButton := aRadioDef+200;
+    {
+      Although the offcial MS docs (https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-taskdialogconfig)
+      states that setting the flag TDF_NO_DEFAULT_RADIO_BUTTON should cause that no radiobutton
+      is selected when the dialog displays, testing shows that (at least on Win10) this only
+      works correctly if nDefaultRadioButton does NOT point to a radiobutton in the pRadioButtons array.
+    }
+    if not (tdfNoDefaultRadioButton in AFlags) then
+      Config.nDefaultRadioButton := aRadioDef+200;
     Config.cxWidth := MulDiv(aWidth, 4, DialogBaseUnits);  // cxWidth needed in "dialog units"
     Config.pfCallback := @TaskDialogCallbackProc;
     Config.lpCallbackData := @self;
@@ -943,7 +950,7 @@ begin
               Hint := aHint; // note shown as Hint
             end;
             inc(Y,Height + ARadioOffset);
-            if (i=0) or (i=aRadioDef) then
+            if not (tdfNoDefaultRadioButton in AFlags) and ((i=0) or (i=aRadioDef)) then
               Checked := true;
           end;
         end;
