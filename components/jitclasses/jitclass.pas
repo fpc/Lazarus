@@ -27,9 +27,6 @@ unit JitClass;
 {$PointerMath on}
 {.$Inline off}
 
-{$IF FPC_FULLVERSION<30100}
-  {$DEFINE HasVMTParent}
-{$ENDIF}
 {$WARN 4055 off : Conversion between ordinals and pointers is not portable}
 interface
 
@@ -1195,12 +1192,8 @@ begin
   FJitPVmt^.vIntfTable:=@EmptyIntf; // A nil pointer stops the recursion
 
   // set vmtParent
-  {$IFDEF HasVMTParent}
-  FJitPVmt^.vParent:=AncestorVMT;
-  {$ELSE}
   GetMem(FJitPVmt^.vParentRef,SizeOf(Pointer));
   FJitPVmt^.vParentRef^:=AncestorVMT;
-  {$ENDIF}
 
   // copy the methods part
   System.Move(Pointer(Pointer(AncestorVMT)+vmtMethodStart)^,
@@ -1323,10 +1316,8 @@ begin
     Freemem(AJitPVmtMem.VmtPtr^.vMethodTable);
   if AJitPVmtMem.VmtPtr^.vClassName <> nil then
     Freemem(AJitPVmtMem.VmtPtr^.vClassName);
-  {$IFnDEF HasVMTParent}
   if AJitPVmtMem.VmtPtr^.vParentRef<> nil then
     Freemem(AJitPVmtMem.VmtPtr^.vParentRef);
-  {$ENDIF}
 
   AJitPVmtMem.DeAllocate;
 end;
@@ -1434,11 +1425,7 @@ begin
   end;
   NameIdxMap.Free;
 
-  {$IFDEF HasVMTParent}
-  FVmtParentMemSize := 0;
-  {$ELSE}
   FVmtParentMemSize := SizeOf(Pointer);
-  {$ENDIF}
 
   (* vmtTypeInfo = pointer to
         TTypeInfo (Kind, Name)
@@ -1451,12 +1438,8 @@ begin
   FJitPVmt^.vTypeInfo:=NewTypeInfo;
   FJitPVmt^.vInstanceSize  := 0; // not yet ready
 
-  {$IFDEF HasVMTParent}
-  VmtParentMem := FAncestorClass.ClassInfo;
-  {$ELSE}
   VmtParentMem  := Pointer(NewTypeInfo) + FTypeInfoMemSize;
   VmtParentMem^ :=FAncestorClass.ClassInfo;
-  {$ENDIF}
 
   FRttiWriterClass := TJitRttiWriterTkClass.Create(NewTypeInfo,
     FClassName, FClassUnit, TClass(FJitPVmt), VmtParentMem,

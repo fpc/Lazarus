@@ -277,7 +277,7 @@ begin
     Name:='Template Project';
   FVariables:=TStringList.Create;
   FIgnoreExts:=TStringList.Create;
-  {$IF FPC_FULLVERSION>=30200}FIgnoreExts.UseLocale := false;{$ENDIF}
+  FIgnoreExts.UseLocale := false;
   FIgnoreExts.CommaText:='.lpr,.lps,.lfm,.lrs,.ico,.res,.lpi,.bak';
 end;
 

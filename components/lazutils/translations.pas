@@ -56,7 +56,7 @@ interface
 
 uses
   Classes, SysUtils,
-  {$IF FPC_FULLVERSION>=30001}jsonscanner,{$ENDIF} jsonparser, fpjson,
+  jsonscanner, jsonparser, fpjson,
   // LazUtils
   FileUtil, LazFileUtils, LazUTF8, LConvEncoding, LazLoggerBase,
   AvgLvlTree, StringHashList;
@@ -1392,7 +1392,7 @@ var
     K, L: Integer;
     Data: TJSONData;
   begin
-    Parser := TJSONParser.Create(InputLines.Text{$IF FPC_FULLVERSION>=30001},jsonscanner.DefaultOptions{$ENDIF});
+    Parser := TJSONParser.Create(InputLines.Text,jsonscanner.DefaultOptions);
     try
       JsonData := Parser.Parse as TJSONObject;
       try

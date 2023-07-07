@@ -22,11 +22,7 @@ uses
   Controls, ComCtrls, ExtCtrls, Buttons, LResources, LCLType, Graphics,
   // LazUtils
   LazStringUtils,
-{$IF FPC_FULLVERSION>=30200}
   Generics.Collections,
-{$ELSE}
-  sparta_Generics.Collections,
-{$ENDIF}
   // IdeIntf
   ComponentReg, LazIDEIntf, PropEdits, FormEditingIntf, IDEImagesIntf;
 

@@ -34,18 +34,10 @@ interface
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 {$MACRO ON}
-
-{$IF FPC_FULLVERSION >= 30200}
-{$DEFINE SysUITypes:=System.UITypes}
-{$ELSE}
-{$DEFINE SysUITypes:=UITypes}
-{$ENDIF}
-
 {$INTERFACES CORBA}
 
 uses
-  SysUITypes,
-  Classes, SysUtils, TypInfo, Types, Laz_AVL_Tree,
+  System.UITypes, Classes, SysUtils, TypInfo, Types, Laz_AVL_Tree,
   // LCL
   LCLStrConsts, LCLType, LCLProc, Graphics, LMessages, LCLIntf, InterfaceBase,
   ImgList, PropertyStorage, Menus, ActnList, LCLClasses, LResources, LCLPlatformDef,
@@ -56,22 +48,22 @@ uses
 
 const
   // Used for ModalResult
-  mrNone    = SysUITypes.mrNone;
-  mrOK      = SysUITypes.mrOK;
-  mrCancel  = SysUITypes.mrCancel;
-  mrAbort   = SysUITypes.mrAbort;
-  mrRetry   = SysUITypes.mrRetry;
-  mrIgnore  = SysUITypes.mrIgnore;
-  mrYes     = SysUITypes.mrYes;
-  mrNo      = SysUITypes.mrNo;
-  mrAll     = SysUITypes.mrAll;
-  mrNoToAll = SysUITypes.mrNoToAll;
-  mrYesToAll= SysUITypes.mrYesToAll;
-  mrClose   = SysUITypes.mrClose;
-  mrLast    = SysUITypes.mrLast;
+  mrNone    = System.UITypes.mrNone;
+  mrOK      = System.UITypes.mrOK;
+  mrCancel  = System.UITypes.mrCancel;
+  mrAbort   = System.UITypes.mrAbort;
+  mrRetry   = System.UITypes.mrRetry;
+  mrIgnore  = System.UITypes.mrIgnore;
+  mrYes     = System.UITypes.mrYes;
+  mrNo      = System.UITypes.mrNo;
+  mrAll     = System.UITypes.mrAll;
+  mrNoToAll = System.UITypes.mrNoToAll;
+  mrYesToAll= System.UITypes.mrYesToAll;
+  mrClose   = System.UITypes.mrClose;
+  mrLast    = System.UITypes.mrLast;
 
 function GetModalResultStr(ModalResult: TModalResult): ShortString;
-  deprecated 'Use the ModalResultStr array from unit UITypes directly.';
+  deprecated 'Use the ModalResultStr array from unit System.UITypes directly.';
 property ModalResultStr[ModalResult: TModalResult]: shortstring read GetModalResultStr;
 
 const
@@ -176,9 +168,9 @@ type
   TAlign = (alNone, alTop, alBottom, alLeft, alRight, alClient, alCustom);
   TAlignSet = set of TAlign;
   {$IF FPC_FULLVERSION >= 30300}
-  TAnchorKind = SysUITypes.TAnchorKind;
-  TAnchors = SysUITypes.TAnchors;
-  TAnchorSideReference = SysUITypes.TAnchorSideReference;
+  TAnchorKind = System.UITypes.TAnchorKind;
+  TAnchors = System.UITypes.TAnchors;
+  TAnchorSideReference = System.UITypes.TAnchorSideReference;
   {$ELSE}
   TAnchorKind = (akTop, akLeft, akRight, akBottom);
   TAnchors = set of TAnchorKind;
@@ -187,14 +179,14 @@ type
 
 const
   {$IF FPC_FULLVERSION >= 30300}
-  akLeft = SysUITypes.akLeft;
-  akTop = SysUITypes.akTop;
-  akRight = SysUITypes.akRight;
-  akBottom = SysUITypes.akBottom;
+  akLeft = System.UITypes.akLeft;
+  akTop = System.UITypes.akTop;
+  akRight = System.UITypes.akRight;
+  akBottom = System.UITypes.akBottom;
 
-  asrTop = SysUITypes.asrTop;
-  asrBottom = SysUITypes.asrBottom;
-  asrCenter = SysUITypes.asrCenter;
+  asrTop = System.UITypes.asrTop;
+  asrBottom = System.UITypes.asrBottom;
+  asrCenter = System.UITypes.asrCenter;
   {$ENDIF}
 
   asrLeft = asrTop;
@@ -219,18 +211,18 @@ type
   TBevelCut = TGraphicsBevelCut;
 
   {$IF FPC_FULLVERSION >= 30300}
-  TMouseButton = SysUITypes.TMouseButton;
+  TMouseButton = System.UITypes.TMouseButton;
   {$ELSE}
   TMouseButton = (mbLeft, mbRight, mbMiddle, mbExtra1, mbExtra2);
   {$ENDIF}
 
 const
   {$IF FPC_FULLVERSION >= 30300}
-  mbLeft = SysUITypes.mbLeft;
-  mbRight = SysUITypes.mbRight;
-  mbMiddle = SysUITypes.mbMiddle;
-  mbExtra1 = SysUITypes.mbExtra1;
-  mbExtra2 = SysUITypes.mbExtra2;
+  mbLeft = System.UITypes.mbLeft;
+  mbRight = System.UITypes.mbRight;
+  mbMiddle = System.UITypes.mbMiddle;
+  mbExtra1 = System.UITypes.mbExtra1;
+  mbExtra2 = System.UITypes.mbExtra2;
   {$ENDIF}
 
   fsAllStayOnTop = [fsStayOnTop, fsSystemStayOnTop];
@@ -468,10 +460,10 @@ type
   TDragObject = class;
 
   {$IF FPC_FULLVERSION >= 30300}
-  TDragKind = SysUITypes.TDragKind;
-  TDragMode = SysUITypes.TDragMode;
-  TDragState = SysUITypes.TDragState;
-  TDragMessage = SysUITypes.TDragMessage;
+  TDragKind = System.UITypes.TDragKind;
+  TDragMode = System.UITypes.TDragMode;
+  TDragState = System.UITypes.TDragState;
+  TDragMessage = System.UITypes.TDragMessage;
   {$ELSE}
   TDragKind = (dkDrag, dkDock);
   TDragMode = (dmManual , dmAutomatic);
@@ -983,7 +975,7 @@ type
   TControlAutoSizePhases = set of TControlAutoSizePhase;
 
   {$IF FPC_FULLVERSION >= 30300}
-  TTabOrder = SysUITypes.TTabOrder;
+  TTabOrder = System.UITypes.TTabOrder;
   {$ELSE}
   TTabOrder = -1..32767;
   {$ENDIF}
@@ -2786,22 +2778,22 @@ procedure Register;
 
 {$IF FPC_FULLVERSION >= 30300}
 const
-  dkDrag = SysUITypes.dkDrag;
-  dkDock = SysUITypes.dkDock;
+  dkDrag = System.UITypes.dkDrag;
+  dkDock = System.UITypes.dkDock;
 
-  dmManual = SysUITypes.dmManual;
-  dmAutomatic = SysUITypes.dmAutomatic;
+  dmManual = System.UITypes.dmManual;
+  dmAutomatic = System.UITypes.dmAutomatic;
 
-  dsDragEnter = SysUITypes.dsDragEnter;
-  dsDragLeave = SysUITypes.dsDragLeave;
-  dsDragMove = SysUITypes.dsDragMove;
+  dsDragEnter = System.UITypes.dsDragEnter;
+  dsDragLeave = System.UITypes.dsDragLeave;
+  dsDragMove = System.UITypes.dsDragMove;
 
-  dmDragEnter = SysUITypes.dmDragEnter;
-  dmDragLeave = SysUITypes.dmDragLeave;
-  dmDragMove = SysUITypes.dmDragMove;
-  dmDragDrop = SysUITypes.dmDragDrop;
-  dmDragCancel = SysUITypes.dmDragCancel;
-  dmFindTarget = SysUITypes.dmFindTarget;
+  dmDragEnter = System.UITypes.dmDragEnter;
+  dmDragLeave = System.UITypes.dmDragLeave;
+  dmDragMove = System.UITypes.dmDragMove;
+  dmDragDrop = System.UITypes.dmDragDrop;
+  dmDragCancel = System.UITypes.dmDragCancel;
+  dmFindTarget = System.UITypes.dmFindTarget;
 {$ENDIF}
 
 implementation
@@ -3050,7 +3042,7 @@ end;
 
 function GetModalResultStr(ModalResult: TModalResult): ShortString;
 begin
-  Result := SysUITypes.ModalResultStr[ModalResult];
+  Result := System.UITypes.ModalResultStr[ModalResult];
 end;
 
 {------------------------------------------------------------------------------
@@ -4645,9 +4637,6 @@ end;
 
 initialization
   //DebugLn('controls.pp - initialization');
-  {$IF FPC_FULLVERSION<30003}
-  RegisterPropertyToSkip(TDataModule, 'PPI',    'PPI was introduced in FPC 3.0.3', '');
-  {$ENDIF}
   Mouse := TMouse.Create;
   DefaultDockManagerClass := TDockTree;
   DragManager := TDragManagerDefault.Create(nil);

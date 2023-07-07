@@ -29,8 +29,7 @@ interface
 
 uses
   // RTL + FCL
-  Classes, SysUtils,
-  {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
+  Classes, SysUtils, System.UITypes,
   // LCL
   Forms, StdCtrls, ExtCtrls, CheckLst, ButtonPanel, Buttons,
   // CodeTools

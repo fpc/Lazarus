@@ -319,17 +319,14 @@ begin
 end;
 
 function TGenerateFppkgConfigurationDialog.CheckFpcmkcfgQuality(out Note: string): TSDFilenameQuality;
-{$IF FPC_FULLVERSION>30100}
 var
   FpcmkcfgExecutable: string;
   Proc: TProcessUTF8;
   S: string;
   Ver: TFPVersion;
-{$ENDIF}
 begin
   Result := sddqCompatible;
   Note:='';
-  {$IF FPC_FULLVERSION>30100}
   FpcmkcfgExecutable := FindFPCTool('fpcmkcfg'+GetExecutableExt, EnvironmentOptions.GetParsedCompilerFilename);
   if FpcmkcfgExecutable = '' then
     begin
@@ -382,7 +379,6 @@ begin
       Proc.Free;
     end;
     end;
-  {$ENDIF}
 end;
 
 procedure TGenerateFppkgConfigurationDialog.FpcPrefixComboboxChange(Sender: TObject);
@@ -417,11 +413,9 @@ end;
 procedure TGenerateFppkgConfigurationDialog.FppkgWriteConfigButtonClick(Sender: TObject);
 var
   Msg: string;
-{$IF FPC_FULLVERSION>30100}
   FpcmkcfgExecutable, CompConfigFilename: string;
   Proc: TProcessUTF8;
   Fppkg: TFppkgHelper;
-{$ENDIF}
 
   procedure ShowFpcmkcfgError;
   begin
@@ -434,7 +428,6 @@ var
   end;
 
 begin
-  {$IF FPC_FULLVERSION>30100}
   try
     FpcmkcfgExecutable := FindFPCTool('fpcmkcfg'+GetExecutableExt, EnvironmentOptions.GetParsedCompilerFilename);
     if FpcmkcfgExecutable<>'' then
@@ -497,7 +490,6 @@ begin
 
   fLastParsedFpcPrefix := '';
   UpdateFppkgNote;
-  {$ENDIF}
   if CheckFppkgConfiguration(FFppkgCfgFilename, Msg)<>sddqCompatible then
   begin
     IDEMessageDialog(lisFppkgProblem, Format(lisFppkgWriteConfFailed, [Msg]),

@@ -7,11 +7,7 @@ interface
 uses
   Classes, SysUtils,
   Forms, Controls, LMessages,
-{$IF FPC_FULLVERSION>=30200}
   Generics.Collections,
-{$ELSE}
-  sparta_Generics.Collections,
-{$ENDIF}
   sparta_AbstractResizer, sparta_InterfacesMDI, sparta_BasicResizeFrame;
 
 type

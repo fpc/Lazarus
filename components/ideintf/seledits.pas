@@ -62,11 +62,7 @@ begin
   FPanel := APanel;
   FControl := AControl;
   FPropType := TypeInfo(Integer);
-{$if FPC_FULLVERSION<30101}
-  FPropInfo.PropType := FPropType;
-{$else}
   FPropInfo.PropTypeRef := @FPropType;
-{$endif}
   FPropInfo.Name := 'ControlIndex';
   SetPropEntry(0, Nil, @FPropInfo);
 end;

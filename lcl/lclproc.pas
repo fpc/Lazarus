@@ -1925,9 +1925,7 @@ initialization
   BackTraceStrFunc := @SysBackTraceStr;
   {$endif}
   {$ifdef AROS}
-    {$if FPC_FULLVERSION>=30101}
-    EnableBackTraceStr;
-    {$endif}
+  EnableBackTraceStr;
   {$endif}
   InterfaceInitializationHandlers := TFPList.Create;
   InterfaceFinalizationHandlers := TFPList.Create;

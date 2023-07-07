@@ -33,20 +33,14 @@ interface
 
 uses
   // RTL + FCL
-  Classes, SysUtils, Types, TypInfo, Math, CustApp,
+  Classes, SysUtils, Types, TypInfo, Math, CustApp, System.UITypes,
   // LCL
   LCLStrConsts, LCLType, LCLProc, LCLIntf, LCLVersion, LCLClasses, InterfaceBase,
   LResources, Graphics, Menus, LMessages, CustomTimer, ActnList,
   ClipBrd, HelpIntfs, Controls, ImgList, Themes,
   // LazUtils
   LazFileUtils, LazUTF8, Maps, IntegerList, LazMethodList, LazLoggerBase,
-  LazUtilities, GraphType,
-  {$IF FPC_FULLVERSION >= 30200}
-  System.UITypes
-  {$ELSE}
-  UITypes
-  {$ENDIF}
-  ;
+  LazUtilities, GraphType;
 
 type
   TProcedure = procedure;
@@ -482,13 +476,8 @@ type
     );
   TFormState = set of TFormStateType;
 
-  {$IF FPC_FULLVERSION >= 30200}
   TModalResult = System.UITypes.TModalResult;
   PModalResult = ^System.UITypes.TModalResult;
-  {$ELSE}
-  TModalResult = UITypes.TModalResult;
-  PModalResult = ^UITypes.TModalResult;
-  {$ENDIF}
 
   TFormHandlerType = (
     fhtFirstShow,

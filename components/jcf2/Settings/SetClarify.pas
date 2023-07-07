@@ -89,11 +89,11 @@ begin
   SetSection('Clarify');
 
   fcIgnoreUnusedParams := TStringList.Create;  // Will compare with CompareText.
-  {$IF FPC_FULLVERSION>=30200}fcIgnoreUnusedParams.UseLocale := False;{$ENDIF}
+  fcIgnoreUnusedParams.UseLocale := False;
   fcIgnoreUnusedParams.Duplicates := dupIgnore;
 
   fcFileExtensions := TStringList.Create;
-  {$IF FPC_FULLVERSION>=30200}fcFileExtensions.UseLocale := False;{$ENDIF}
+  fcFileExtensions.UseLocale := False;
   fcFileExtensions.Duplicates := dupIgnore;
 
 end;

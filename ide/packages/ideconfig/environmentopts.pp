@@ -37,8 +37,7 @@ uses
 {$ifdef Windows}
   ShlObj,
 {$endif}
-  Classes, SysUtils, Contnrs,
-{$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
+  Classes, SysUtils, Contnrs, System.UITypes,
   // LazUtils
   LazFileUtils, FileUtil, LazFileCache, LazConfigStorage, LazUTF8, LazStringUtils,
   Laz2_XMLCfg, Laz2_DOM,

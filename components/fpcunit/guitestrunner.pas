@@ -877,12 +877,7 @@ begin
         Format(rsException, [AFailure.ExceptionClassName])) as TMessageTreeNode;
       Node.ImageIndex := imgWarningSign;
       Node.SelectedIndex := imgWarningSign;
-      {$IF FPC_FULLVERSION <= 30001}
-      Node := TestTree.Items.AddChild(FailureNode,
-        Format('at line %d in <%s>', [AFailure.LineNumber, AFailure.UnitName])) as TMessageTreeNode;
-      {$ELSE}
       Node := TestTree.Items.AddChild(FailureNode, 'at ' + AFailure.LocationInfo) as TMessageTreeNode;
-      {$ENDIF}
       Node.ImageIndex := imgWarningSign;
       Node.SelectedIndex := imgWarningSign;
       PaintNodeFailure(FailureNode);
@@ -933,13 +928,7 @@ begin
     Node.ImageIndex := imgWarningSign;
     Node.SelectedIndex := imgWarningSign;
     // line info details
-    {$IF FPC_FULLVERSION <= 30001}
-    Node := TestTree.Items.AddChild(ErrorNode,
-      Format('at line %d in <%s>', [AError.LineNumber, AError.UnitName])) as TMessageTreeNode;
-
-    {$ELSE}
     node := TestTree.Items.AddChild(ErrorNode, 'at ' + AError.LocationInfo);
-    {$ENDIF}
     Node.ImageIndex := imgInfoSign;
     Node.SelectedIndex := imgInfoSign;
     // TODO : add stack trace info

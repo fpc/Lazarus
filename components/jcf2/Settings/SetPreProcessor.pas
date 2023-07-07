@@ -78,12 +78,12 @@ begin
   SetSection('PreProcessor');
 
   fcDefinedSymbols := TStringList.Create;     // Will compare with CompareText.
-  {$IF FPC_FULLVERSION>=30200}fcDefinedSymbols.UseLocale := False;{$ENDIF}
+  fcDefinedSymbols.UseLocale := False;
   //fcDefinedSymbols.Sorted := True;
   fcDefinedSymbols.Duplicates := dupIgnore;
 
   fcDefinedOptions := TStringList.Create;
-  {$IF FPC_FULLVERSION>=30200}fcDefinedOptions.UseLocale := False;{$ENDIF}
+  fcDefinedOptions.UseLocale := False;
   //fcDefinedOptions.Sorted := True;
   fcDefinedOptions.Duplicates := dupIgnore;
 end;

@@ -36,19 +36,11 @@ unit FpDbgHardcodedFreepascalInfo;
 {$mode objfpc}{$H+}
 {$IFDEF INLINE_OFF}{$INLINE OFF}{$ENDIF}
 
-{$IF FPC_FULLVERSION>30100}
-  {$DEFINE HasGenObjDict}
-{$ENDIF}
-
 interface
 
 uses
   SysUtils,
-  {$IFDEF HasGenObjDict}
   generics.collections,
-  {$ELSE}
-  AvgLvlTree,
-  {$ENDIF}
   DbgIntfBaseTypes,
   fpDbgSymTable,
   FpdMemoryTools,
@@ -57,11 +49,7 @@ uses
 type
   TDbgHardcodedFPCClassMember = class;
   TDbgHardcodedVariableValue = class;
-  {$IFDEF HasGenObjDict}
   TDbgHardcodedFPCClassMemberCollection = specialize TObjectDictionary<string, TDbgHardcodedFPCClassMember>;
-  {$ELSE}
-  TDbgHardcodedFPCClassMemberCollection = TStringToPointerTree;
-  {$ENDIF}
 
   { TDbgTypeSymbol }
 
@@ -290,11 +278,7 @@ begin
   FieldTypeDef := TDbgTypeSymbol.Create('longint');
   try
     FieldDef := TDbgHardcodedFPCClassMember.Create('HelpContext', skInteger, FieldTypeDef, 0);
-    {$IFDEF HasGenObjDict}
     FFields.Add(FieldDef.Name, FieldDef);
-    {$ELSE}
-    FFields[FieldDef.Name]:=FieldDef;
-    {$ENDIF}
   finally
     FieldTypeDef.ReleaseReference;
   end;
@@ -302,11 +286,7 @@ begin
   FieldTypeDef := TDbgHardcodedFPCAnsistringTypeSymbol.Create('string');
   try
     FieldDef := TDbgHardcodedFPCClassMember.Create('Message', skAnsiString, FieldTypeDef, 1);
-    {$IFDEF HasGenObjDict}
     FFields.Add(FieldDef.Name, FieldDef);
-    {$ELSE}
-    FFields[FieldDef.Name]:=FieldDef;
-    {$ENDIF}
   finally
     FieldTypeDef.ReleaseReference;
   end;
@@ -539,18 +519,13 @@ function TDbgHardcodedFPCClassTypeSymbol.GetFields: TDbgHardcodedFPCClassMemberC
 begin
   if not Assigned(FFields) then
     begin
-    {$IFDEF HasGenObjDict}
     FFields := TDbgHardcodedFPCClassMemberCollection.Create;
-    {$ELSE}
-    FFields := TStringToPointerTree.Create(true);
-    {$ENDIF}
     FillFields;
     end;
   Result := FFields;
 end;
 
 function TDbgHardcodedFPCClassTypeSymbol.GetNestedSymbol(AIndex: Int64): TFpSymbol;
-{$IFDEF HasGenObjDict}
 var
   Member: TDbgHardcodedFPCClassMember;
 begin
@@ -562,25 +537,11 @@ begin
       Break;
       end;
 end;
-{$ELSE}
-var
-  Node: PStringToPointerTreeItem;
-begin
-  Result := nil;
-  for Node in FFields do
-    if TDbgHardcodedFPCClassMember(Node^.Value).FieldIndex=AIndex then
-      exit(TDbgHardcodedFPCClassMember(Node^.Value));
-end;
-{$ENDIF}
 
 function TDbgHardcodedFPCClassTypeSymbol.GetNestedSymbolByName(
   const AIndex: string): TFpSymbol;
 begin
-  {$IFDEF HasGenObjDict}
   Result := GetFields.Items[AIndex]
-  {$ELSE}
-  Result := TFpSymbol(FFields[AIndex]);
-  {$ENDIF}
 end;
 
 function TDbgHardcodedFPCClassTypeSymbol.GetNestedSymbolCount: Integer;
@@ -589,21 +550,11 @@ begin
 end;
 
 destructor TDbgHardcodedFPCClassTypeSymbol.Destroy;
-{$IFDEF HasGenObjDict}
 var
   Field: TDbgHardcodedFPCClassMember;
-{$ELSE}
-var
-  Node: PStringToPointerTreeItem;
-{$ENDIF}
 begin
-  {$IFDEF HasGenObjDict}
   for Field in FFields.Values do
     Field.ReleaseReference;
-  {$ELSE}
-  for Node in FFields do
-    TDbgHardcodedFPCClassMember(Node^.Value).ReleaseReference;
-  {$ENDIF}
   FFields.Free;
   inherited Destroy;
 end;

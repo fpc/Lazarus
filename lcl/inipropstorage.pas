@@ -93,7 +93,7 @@ begin
       end;
     FReadOnly:=ReadOnly;
     if not (csDesigning in ComponentState) then
-      FInifile:=IniFileClass.Create(GetIniFileName{$IF FPC_FULLVERSION>=30101}, TEncoding.UTF8{$ENDIF});
+      FInifile:=IniFileClass.Create(GetIniFileName, TEncoding.UTF8);
     end;
   Inc(FCount);
 end;

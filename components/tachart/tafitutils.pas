@@ -118,11 +118,9 @@ type
     property xBar: Double read fXBar;
     property SSx: Double read fSSx;
   public
-    {$IF FPC_FullVersion >= 30004}
     function Fcrit: Double;
     function pValue: Double;
     property tValue: Double read ftValue;
-    {$ENDIF}
   end;
 
   operator := (AEq: IFitEquationText): String; inline;
@@ -439,10 +437,8 @@ end;
 procedure TFitStatistics.CalcTValue;
 begin
   fTValue := NaN;
-  {$IF FPC_FullVersion >= 30004}
   if (fAlpha > 0) and (fN > fM) then
     fTValue := invtdist(fAlpha, fN - fM, 2)
-  {$IFEND}
 end;
 
 { Total variance of data values minus calculated values, weighted by
@@ -468,7 +464,6 @@ begin
     Result := NaN;
 end;
 
-{$IF FPC_FullVersion >= 30004}
 function TFitStatistics.Fcrit: Double;
 begin
   if (M = 1) then
@@ -476,14 +471,12 @@ begin
   else
     Result := InvFDist(FAlpha, M-1, N-M);
 end;
-{$IFEND}
 
 function TFitStatistics.GetVarCovar(i, j: Integer): Double;
 begin
   Result := fVarCovar[i, j];
 end;
 
-{$IF FPC_FullVersion >= 30004}
 { Probability that the scatter of the data around the fitted curve is by chance.
   Should be several 0.1, the higher the better.
   According to Numerical Recipes, very small (<< 0.1) values mean
@@ -499,7 +492,6 @@ begin
   else
     Result := NaN;
 end;
-{$IFEND}
 
 { Variance normalized to the degrees of freedem. Should be about 1 for
   a "moderately" good fit. }
@@ -547,10 +539,8 @@ begin
   AText.Add(Format('Fcrit(%d, %d)', [M-1, DOF]) + ASeparator +
     Format(IfThen(Fcrit < 1E-3, FMT, ANumFormat), [Fcrit]));
     }
-  {$IF FPC_FullVersion >= 30004}
   AText.Add(rsFitTValue + ASeparator + FloatToStrEx(FtValue, PRECISION, ANumFormat, AExpFormat, NaNStr));
   AText.Add(rsFitPValue + ASeparator + FloatToStrEx(pValue, PRECISION, ANumFormat, AExpFormat, NaNStr));
-  {$IFEND}
 end;
 
 procedure TFitStatistics.Report_VarCovar(AText: TStrings; ANumFormat: String = '%12.6f');

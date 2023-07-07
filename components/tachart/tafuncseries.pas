@@ -320,10 +320,8 @@ type
     procedure SetPen(AValue: TChartPen);
     procedure SetStep(AValue: TFuncSeriesStep);
     procedure SetUseCombinedExtentY(AValue: Boolean);
-    {$IF FPC_FullVersion >= 30004}
     procedure GetInterval(const Ax: Double; out AY: Double; IsUpper, IsPrediction: Boolean);
     function GetParam_pValue(AIndex: Integer): Double;
-    {$IFEND}
   strict protected
     procedure CalcXRange(out AXMin, AXMax: Double);
     function TransformX(AX: Double): Extended; inline;
@@ -351,13 +349,11 @@ type
     function Extent: TDoubleRect; override;
     function EquationText: IFitEquationText;
     function FitParams: TDoubleDynArray;
-    {$IF FPC_FullVersion >= 30004}
     procedure GetConfidenceLimits(AIndex: Integer; out ALower, AUpper: Double);
     procedure GetLowerConfidenceInterval(const Ax: Double; out AY: Double);
     procedure GetUpperConfidenceInterval(const Ax: Double; out AY: Double);
     procedure GetLowerPredictionInterval(const Ax: Double; out AY: Double);
     procedure GetUpperPredictionInterval(const Ax: Double; out AY: Double);
-    {$IFEND}
     function GetNearestPoint(
       const AParams: TNearestPointParams;
       out AResults: TNearestPointResults): Boolean; override;
@@ -366,9 +362,7 @@ type
   public  // properties
     property Param[AIndex: Integer]: Double read GetParam;
     property ParamError[AIndex: Integer]: Double read GetParamError;
-    {$IF FPC_FullVersion >= 30004}
     property Param_pValue[AIndex: Integer]: Double read GetParam_pValue;
-    {$IFEND}
     property Param_tValue[AIndex: Integer]: Double read GetParam_tValue;
     property FitStatistics: TFitStatistics read FFitStatistics;
     property ConfidenceLevel: Double read FConfidenceLevel write SetConfidenceLevel;
@@ -504,7 +498,7 @@ type
 implementation
 
 uses
-  {$IF FPC_FullVersion >= 30101}ipf{$ELSE}ipf_fix{$ENDIF},
+  ipf,
   GraphType, GraphUtil, Math, spe, StrUtils, SysUtils,
   TAChartStrConsts, TAGeometry, TAGraph, TAMath;
 
@@ -2010,7 +2004,6 @@ begin
     Result[i] := Param[i];
 end;
 
-{$IF FPC_FullVersion >= 30004}
 procedure TFitSeries.GetConfidenceLimits(AIndex: Integer; out ALower, AUpper: Double);
 var
   val, sig, t: Double;
@@ -2082,7 +2075,6 @@ procedure TFitSeries.GetUpperPredictionInterval(const AX: Double; out AY: Double
 begin
   GetInterval(AX, AY, true, true);
 end;
-{$IFEND}
 
 { Function removed, but left here commented to show useage of IEquationText.
 function TFitSeries.GetFitEquationString(ANumFormat: String; AXText: String;
@@ -2183,7 +2175,6 @@ begin
   end;
 end;
 
-{$IF FPC_FullVersion >= 30004}
 function TFitSeries.GetParam_pValue(AIndex: Integer): Double;
 var
   t: Double;
@@ -2197,7 +2188,6 @@ begin
   else
     Result := tDist(t, FFitStatistics.DOF, 2);
 end;
-{$IFEND}
 
 function TFitSeries.GetParam_RawError(AIndex: Integer): Double;
 var

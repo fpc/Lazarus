@@ -59,8 +59,7 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, TypInfo,
-  {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
+  Classes, TypInfo, System.UITypes,
   // LCL
   Forms,
   // Codetools

@@ -75,10 +75,6 @@ end;
 procedure TCreateCodeForm.FormCreate(Sender: TObject);
 begin
   FGenerator:=TJSONToPascal.Create(Self);
-  {$IF FPC_FULLVERSION<=30004}
-  ETopLevelClassName.Enabled:=False;
-  ETopLevelClassName.Text:='TMyObject';
-  {$ENDIF}
 end;
 
 procedure TCreateCodeForm.OKButtonClick(Sender: TObject);
@@ -128,9 +124,7 @@ begin
     if CGoptions.Checked[Ord(T)] then
       Include(O,T);
   FGenerator.Options:=O;
-  {$IF FPC_FULLVERSION>30004}
   FGenerator.TopLevelObjectClassName:=ETopLevelClassName.Text;
-  {$ENDIF}
   FGenerator.DestUnitName:=EUnitName.Text;
   if (FGenerator.DestUnitName='') then
     FGenerator.DestUnitName:=ChangeFileExt(ExtractFileName(FECode.FileName),'');

@@ -27,19 +27,13 @@ uses
   // Libs
   MacOSAll, CocoaAll;
 
-{$if FPC_FULLVERSION>=30200}
 {$define HASObjCBOOL}
-{$endif}
 
 type
   // Due to backwards incompatible changes in FPC sources
   // (switching from Boolean to Boolean8), LCL has to adopt
   // either type, depending on FPC version
-  LCLObjCBoolean = {$ifdef HASObjCBOOL}
-                   ObjCBOOL
-                   {$else}
-                   Boolean   // FPC 3.0.4 and earlier are using "boolean" type
-                   {$endif};
+  LCLObjCBoolean = ObjCBOOL;
 
 type
   NSImageScaling = NSUInteger;
@@ -74,13 +68,6 @@ type
   NSStatusItemFix = objccategory external (NSStatusItem)
     procedure setEnabled_(aenabled: ObjCBool); message 'setEnabled:';
   end;
-
-{$if FPC_FULLVERSION < 30200}
-  NSAppearance = objcclass external(NSObject)
-    function name: NSString; message 'name';
-    class function currentAppearance: NSAppearance; message 'currentAppearance';
-  end;
-{$endif}
 
   NSApplicationFix = objccategory external (NSApplication)
     {$ifdef BOOLFIX}
@@ -307,12 +294,10 @@ const
   NSTableViewAnimationSlideRight = $40; // Animates a row in by sliding from the right. Animates a row out by sliding towards the right.
 
 
-{$if FPC_FULLVERSION >= 30200}
 // all of the sudden those are gone! in FPC 3.2.0rc
 const
   NSVariableStatusItemLength = -1;
   NSSquareStatusItemLength = -2;
-{$endif}
 
 type
   NSSavePanelFix = objccategory external (NSSavePanel)

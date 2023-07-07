@@ -15,12 +15,7 @@
 {$define USE_IOS_VALUES}
 {$endif}
 
-{$if FPC_FULLVERSION>=30200}
 {$undef BOOLFIX}
-{$else}
-{$define BOOLFIX}
-{$endif}
-
 
 // Originally LCL-Cocoa would override "run" method and have direct control
 // over the event loop. However that presumed to cause issues in macOS 10.15

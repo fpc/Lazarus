@@ -851,8 +851,7 @@ type
     function GetData(const FormatEtcIn: TFormatEtc; out Medium: TStgMedium): HResult; virtual; stdcall;
     function GetDataHere(const {%H-}FormatEtc: TFormatEtc; out {%H-}Medium: TStgMedium): HResult; virtual; stdcall;
     function QueryGetData(const FormatEtc: TFormatEtc): HResult; virtual; stdcall;
-    function SetData(const FormatEtc: TFormatEtc;
-      {$IF FPC_FullVersion >= 30200}var{$ELSE}const{$IFEND} Medium: TStgMedium;
+    function SetData(const FormatEtc: TFormatEtc; var Medium: TStgMedium;
       DoRelease: BOOL): HResult; virtual; stdcall;
   end;
 
@@ -14278,12 +14277,7 @@ asm
         PUSH    EBX
         PUSH    EDI
         PUSH    ESI
-        {$if FPC_FULLVERSION >= 30100}
         MOV     ESI, EDX
-        {$else}
-        MOV     ECX, EDX               //fpc < 3.1: count is in EDX. Move to ECX
-        MOV     ESI, [EBP+8]           //fpc < 3.1: TheArray is in EBP+8
-        {$endif}
         MOV     EDX, -1
         JCXZ    @@Finish               // Empty list?
         INC     EDX                    // init remaining entries counter

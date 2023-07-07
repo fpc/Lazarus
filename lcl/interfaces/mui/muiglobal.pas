@@ -44,14 +44,6 @@ const
   RPTAG_BGCOLOR = RPTAG_BPENCOLOR;
   RPTAG_PENMODE = TAG_IGNORE;
 {$endif}
-{$if defined(Amiga68k) and (FPC_FULLVERSION<30101)}
-const
-  IECODE_MBUTTON   = $6A;
-  IECODE_UP_PREFIX = $80;
-  MIDDLEUP         = IECODE_MBUTTON + IECODE_UP_PREFIX;
-  MIDDLEDOWN       = IECODE_MBUTTON;
-{$endif}
-
 
 type
   THookFunc = function(Hook: PHook; Obj: PObject_; Msg: Pointer): LongInt;
@@ -110,11 +102,7 @@ begin
   Result := nil;
   if Port <> nil then
   begin
-    {$if FPC_FULLVERSION<30101}
-    Result := Exec.AllocMem(Size, MEMF_CLEAR);
-    {$else}
     Result := ExecAllocMem(Size, MEMF_CLEAR);
-    {$endif}
     if Result <> nil then
     begin
       Result^.io_Message.mn_Node.ln_Type := 7;
@@ -143,11 +131,7 @@ begin
   SigBit := AllocSignal(-1);
   if SigBit = -1 then
    Exit;
-  {$if FPC_FULLVERSION<30101}
-  Result := Exec.AllocMem(SizeOf(TMsgPort), MEMF_CLEAR);
-  {$else}
   Result := ExecAllocMem(SizeOf(TMsgPort), MEMF_CLEAR);
-  {$endif}
   if Result = nil then
   begin
     FreeSignal(SigBit);

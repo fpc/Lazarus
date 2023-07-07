@@ -2738,7 +2738,7 @@ var
 begin
   if not AutoFill then Exit;
   Values:=TStringList.Create;
-  {$IF FPC_FULLVERSION>=30200}Values.UseLocale := False;{$ENDIF}
+  Values.UseLocale := False;
   Values.Sorted:=paSortList in GetAttributes;
   try
     AddValue := @Values.Add;
@@ -8220,9 +8220,7 @@ begin
   RegisterPropertyEditor(TypeInfo(TTabOrder), TControl, 'TabOrder', TTabOrderPropertyEditor);
   RegisterPropertyEditor(TypeInfo(ShortString), nil, '', TCaptionPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TStrings), nil, '', TStringsPropertyEditor);
-  {$IF FPC_FULLVERSION > 30101}
   RegisterPropertyEditor(TypeInfo(TFileName), nil, '', TFileNamePropertyEditor);
-  {$ENDIF}
   RegisterPropertyEditor(TypeInfo(AnsiString), nil, 'SessionProperties', TSessionPropertiesPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TModalResult), nil, 'ModalResult', TModalResultPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TShortCut), nil, '', TShortCutPropertyEditor);

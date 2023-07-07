@@ -39,7 +39,7 @@ interface
 uses
   // FCL
   Classes, SysUtils, Contnrs, TypInfo, Laz_AVL_Tree,
-  {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
+  System.UITypes,
   // LCL
   Forms, ImgList,
   // Codetools

@@ -29,10 +29,9 @@ unit opkman_uploader;
 interface
 
 uses
-  Classes, SysUtils, base64,
+  Classes, SysUtils, base64, fphttpclient, opensslsockets,
   // OpkMan
-  opkman_options, opkman_const,
-  {$IF FPC_FULLVERSION>=30200}fphttpclient, opensslsockets{$ELSE}opkman_httpclient{$ENDIF};
+  opkman_options, opkman_const;
 
 type
   TOnUploadProgress = procedure(Sender: TObject; AFileName: String) of object;

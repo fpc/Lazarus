@@ -397,11 +397,7 @@ begin
   ANode^.VClassName := '(V)' + ANode^.WSClass.ClassName;
   PPointer(ANode^.VClass + vmtClassName)^ := @ANode^.VClassName;
   // Adjust classparent
-  {$IF (FPC_FULLVERSION >= 30101)}
   PPointer(ANode^.VClass + vmtParent)^ := @ParentWSNode^.WSClass;
-  {$ELSE}
-  PPointer(ANode^.VClass + vmtParent)^ := ParentWSNode^.WSClass;
-  {$ENDIF}
   // Delete methodtable entry
   PPointer(ANode^.VClass + vmtMethodTable)^ := nil;
 end;

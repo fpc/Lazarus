@@ -24,9 +24,6 @@ unit JitRttiWriter;
 {$mode objfpc}{$H+}
 {$ModeSwitch typehelpers}
 
-{$IF FPC_FULLVERSION<30100}
-  {$DEFINE HasVMTParent}
-{$ENDIF}
 {$WARN 4055 off : Conversion between ordinals and pointers is not portable}
 interface
 
@@ -848,11 +845,7 @@ begin
   inherited Create(ADestMem, AClassName, tkClass);
 
   FTypeData^.ClassType := AClass;
-  {$IFDEF HasVMTParent}
-  FTypeData^.ParentInfo := AnAnchestorInfo;
-  {$ELSE}
   FTypeData^.ParentInfoRef := AnAnchestorInfo;
-  {$ENDIF}
   FTypeData^.UnitName := AUnitName;
   FTypeData^.PropCount := ATotalPropCount;
 
@@ -862,14 +855,9 @@ begin
   FCurDestMemPos := nil;
 end;
 
-procedure TJitRttiWriterTkClass.WriteAnchestorInfo(AnAnchestorInfo: TypeInfoPtr
-  );
+procedure TJitRttiWriterTkClass.WriteAnchestorInfo(AnAnchestorInfo: TypeInfoPtr);
 begin
-  {$IFDEF HasVMTParent}
-  FTypeData^.ParentInfo := AnAnchestorInfo;
-  {$ELSE}
   FTypeData^.ParentInfoRef := AnAnchestorInfo;
-  {$ENDIF}
 end;
 
 procedure TJitRttiWriterTkClass.WriteTotalPropCount(APropCount: Integer);

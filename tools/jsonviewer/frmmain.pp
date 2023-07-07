@@ -38,11 +38,7 @@ type
 
   { TJSONTab }
   TViewerOptions = Class(TObject)
-  {$IF FPC_FULLVERSION>=30002}
     FOptions : TJSONOptions;
-  {$ELSE}
-    FStrict,
-  {$ENDIF}
     FQuoteStrings,
     FSortObjectMembers,
     FCompact,
@@ -299,9 +295,7 @@ type
     procedure SaveToFile(const AFileName: string);
     procedure SetCaption;
     procedure ShowJSONDocument;
-    {$IF FPC_FULLVERSION>=30002}
     procedure ToggleOption(O: TJSONOption; Enable: Boolean);
-    {$ENDIF}
     Property CurrentJSONTab : TJSONTab Read GetCurrenTJSONTab;
     Property CurrentFind : TTreeNode Read GetCurrentFind Write setCurrentFind;
     Property CurrentRoot : TJSONData Read GetCurrentRoot;
@@ -441,7 +435,6 @@ begin
 end;
 
 { TMainForm }
-{$IF FPC_FULLVERSION>=30002}
 procedure TMainForm.ToggleOption(O : TJSONOption; Enable : Boolean);
 Var
   S : String;
@@ -454,16 +447,10 @@ begin
   Delete(S,1,2);
   PSMain.StoredValue[S]:=IntToStr(Ord(Enable));
 end;
-{$ENDIF}
 
 procedure TMainForm.MIStrictClick(Sender: TObject);
 begin
-{$IF FPC_FULLVERSION>=30002}
   ToggleOption(joStrict,(Sender as TMenuItem).Checked);
-{$ELSE}
-  FStrict:=(Sender as TMenuItem).Checked;
-  PSMain.StoredValue['strict']:=IntToStr(Ord(Fstrict));
-{$ENDIF}
 end;
 
 procedure TMainForm.PCJSONCloseTabClicked(Sender: TObject);
@@ -475,14 +462,11 @@ end;
 procedure TMainForm.PSMainStoredValues0Restore(Sender: TStoredValue;
   var Value: TStoredType);
 
-{$IF FPC_FULLVERSION>=30002}
 Var
   S : String;
   o : integer;
   JO : TJSONOption;
-{$ENDIF}
 begin
-  {$IF FPC_FULLVERSION>=30002}
   S:=Sender.Name;
   O:=GetEnumValue(TypeInfo(TJSONOption),'jo'+S);
   if O<>-1 then
@@ -493,9 +477,6 @@ begin
       else
         Exclude(FOptions.Foptions,JO);
     end;
-  {$ELSE}
-  FStrict:=StrToIntDef(Value,0)=1
-  {$ENDIF}
 end;
 
 procedure TMainForm.PSMainStoredValues1Restore(Sender: TStoredValue;
@@ -874,9 +855,7 @@ end;
 
 procedure TMainForm.ACreateCodeExecute(Sender: TObject);
 begin
-  {$IF FPC_FULLVERSION>=30004}
   CreateCodeFromJSON(CurrentRoot);
-  {$endif}
 end;
 
 procedure TMainForm.ACreateCodeUpdate(Sender: TObject);
@@ -1085,13 +1064,8 @@ Var
 begin
   D:=Nil;
   try
-{$IF FPC_FULLVERSION>=30002}
     P:=TJSONParser.Create(Clipboard.AsText,[]);
     P.Options:=FOptions.FOptions;
-{$ELSE}
-    P:=TJSONParser.Create(Clipboard.AsText);
-    P.Strict:=FStrict;
-{$ENDIF}
     try
       D:=P.Parse;
     finally
@@ -1509,13 +1483,6 @@ begin
     ShowMessage(Format(SErrCreatingConfigDir,[S]));
   FFavouritesFileName:=S+'favourites.json';
   PSMain.Active:=True;
-{$IF FPC_FULLVERSION<30002}
-  MIAllowTrailingComma.Visible:=False;
-  MIAllowComments.Visible:=False;
-{$ENDIF}
-{$IF FPC_FULLVERSION<30004}
-  ACreateCode.Visible:=False;
-{$endif}
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
@@ -1578,16 +1545,12 @@ end;
 
 procedure TMainForm.MIAllowTrailingCommaClick(Sender: TObject);
 begin
-  {$IF FPC_FULLVERSION>=30002}
-    ToggleOption(joIgnoreTrailingComma,(Sender as TMenuItem).Checked);
-  {$ENDIF}
+  ToggleOption(joIgnoreTrailingComma,(Sender as TMenuItem).Checked);
 end;
 
 procedure TMainForm.MIAllowCommentsClick(Sender: TObject);
 begin
-  {$IF FPC_FULLVERSION>=30002}
-    ToggleOption(joComments,(Sender as TMenuItem).Checked);
-  {$ENDIF}
+  ToggleOption(joComments,(Sender as TMenuItem).Checked);
 end;
 
 procedure TMainForm.ShowJSONDocument;
@@ -1649,15 +1612,9 @@ Var
 begin
   S:=TFileStream.Create(AFileName,fmOpenRead or fmShareDenyWrite);
   try
-{$IF FPC_FULLVERSION>=30002}
     P:=TJSONParser.Create(S,[]);
-{$ELSE}
-    P:=TJSONParser.Create(S);
-{$ENDIF}
     try
-{$IF FPC_FULLVERSION>=30002}
       P.Options:=P.Options+[joStrict];
-{$ENDIF}
       D:=P.Parse;
     finally
       P.Free;
@@ -1704,12 +1661,8 @@ begin
   if FSyn.Modified then
   begin
    try
-     {$IF FPC_FULLVERSION>=30002}
       P:=TJSONParser.Create(FSyn.Text,[]);
       P.Options:=P.Options+[joStrict, joComments];
-     {$ELSE}
-      P:=TJSONParser.Create(FSyn.Text);
-     {$ENDIF}
       D:=P.Parse;
       Root:=D;
       Modified:=true;

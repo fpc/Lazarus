@@ -25,14 +25,10 @@ uses
   Classes, SysUtils, fpWeb, fpHTML, fpdatasetform,
   extjsjson, extjsxml, fpjsonrpc, jstree,jsparser,
   fpextdirect,fpwebdata, fpwebfile,
-{$IF FPC_FULLVERSION>=30004}
   fphttpclient,
   fphttpserver,
-{$ENDIF}
-{$IF FPC_FULLVERSION>=30100}
   fpoauth2,
   fpoauth2ini,
-{$ENDIF}
   webjsonrpc,
   Controls, Dialogs, Forms,
   frmnewhttpapp,
@@ -258,7 +254,6 @@ begin
                                ]);
 end;
 
-{$IF FPC_FULLVERSION>=30100}
 procedure RegisterTFPHTTPWebClient;
 begin
 end;
@@ -270,22 +265,17 @@ procedure RegisterTFPOAuth2IniStore;
 begin
   RegisterComponents(fpWebTab,[TFPOAuth2IniStore]);
 end;
-{$ENDIF}
 
 Procedure RegisterWebComponents;
 
 begin
-  {$IF FPC_FULLVERSION>=30004}
   RegisterComponents(fpWebTab,[TFPHTTPClient,TFPHTTPServer]);
-  {$ENDIF}
   RegisterUnit('fphtml',@RegisterHTMLComponents);
   RegisterUnit('fpdatasetform',@RegisterdatasetComponents);
-  {$IF FPC_FULLVERSION>=30100}
   RegisterUnit('fphttpwebclient',@RegisterTFPHTTPWebClient);
   RegisterUnit('fpoauth2',@RegisterTOAuth2Handler);
   RegisterUnit('fpoauth2ini',@RegisterTFPOAuth2IniStore);
   //classes.RegisterComponents(fpWebTab,[TFPHTTPWebClient,TOAuth2Handler,TFPOAuth2IniStore]);
-  {$ENDIF}
 end;
 
 procedure Register;

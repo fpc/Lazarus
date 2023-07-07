@@ -85,9 +85,9 @@ begin
   fcWords := TStringList.Create;
 
   fcLeftWords := TStringList.Create;        // Will compare with CompareText.
-  {$IF FPC_FULLVERSION>=30200}fcLeftWords.UseLocale := False;{$ENDIF}
+  fcLeftWords.UseLocale := False;
   fcRightWords := TStringList.Create;
-  {$IF FPC_FULLVERSION>=30200}fcRightWords.UseLocale := False;{$ENDIF}
+  fcRightWords.UseLocale := False;
 end;
 
 destructor TSetReplace.Destroy;

@@ -18,11 +18,7 @@ interface
 
 uses
   Classes, SysUtils,
-{$IF FPC_FULLVERSION>=30200}
   Generics.Collections, Generics.Defaults,
-{$ELSE}
-  sparta_Generics.Collections, sparta_Generics.Defaults,
-{$ENDIF}
   contnrs,
   // LCL
   LCLIntf, LCLType, LMessages, ComCtrls, Controls, Forms, ExtCtrls, Graphics,

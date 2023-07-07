@@ -879,11 +879,7 @@ begin
     exit;
 
   {$IFDEF WINDOWS}
-  {$IF FPC_FULLVERSION >= 30101}
   Stream := TStringStream.Create(InsertClipHeader(Html), DefaultSystemCodePage);
-  {$ELSE}
-  Stream := TStringStream.Create(InsertClipHeader(Html));
-  {$ENDIF}
   {$ELSE}
   Stream := TStringStream.Create(Html);
   {$ENDIF}

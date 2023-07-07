@@ -21,8 +21,7 @@ unit IDETextConverter;
 interface
 
 uses
-  Classes, SysUtils, TypInfo,
-  {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
+  Classes, SysUtils, TypInfo, System.UITypes,
   // LCL
   LCLProc,
   // LazUtils

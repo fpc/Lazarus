@@ -8,11 +8,7 @@ uses
   Classes, SysUtils, TypInfo, IniFiles,
   Menus,
   ComponentEditors, PropEdits,
-{$IF FPC_FULLVERSION>=30200}
   Generics.Defaults,
-{$ELSE}
-  sparta_Generics.Defaults,
-{$ENDIF}
   DesignIntf, DesignMenus;
 
 type

@@ -28,9 +28,6 @@ interface
 {$DEFINE HasFPCanvas1}
 {$DEFINE HasFPEndCap}
 {$DEFINE HasFPJoinStyle}
-{$IF FPC_FULLVERSION>=30203}
-{$DEFINE UseSystemUITypes}
-{$ENDIF}
 
 uses
   // RTL + FCL
@@ -50,9 +47,7 @@ uses
   {$IFNDEF DisableLCLGIF}
   FPReadGif,
   {$ENDIF}
-  {$IFDEF UseSystemUITypes}
   System.UITypes,
-  {$ENDIF}
   // LCL
   LCLVersion, LCLStrConsts, LCLType, LCLProc, LMessages, LResources, LCLResCache,
   IntfGraphics, IcnsTypes, WSReferences,
@@ -60,7 +55,7 @@ uses
   GraphType, GraphMath, FPCAdds, LazLoggerBase, LazTracer, LazUtilities;
 
 type
-  PColor = {$IFDEF UseSystemUITypes}System.UITypes.PColor{$ELSE}^TColor{$ENDIF};
+  PColor = System.UITypes.PColor;
   TColor = TGraphicsColor;
 
   {$IF FPC_FULLVERSION>=30300}
@@ -1811,7 +1806,7 @@ type
     class function GetFileExtensions: string; override;
   public
     property CompressionQuality: TJPEGQualityRange read FQuality write SetCompressionQuality;
-    property GrayScale: Boolean read FGrayScale {$IF FPC_FullVersion >= 30004} write SetGrayScale{$IFEND};
+    property GrayScale: Boolean read FGrayScale write SetGrayScale;
     property MinHeight: Integer read FMinHeight write FMinHeight;
     property MinWidth: Integer read FMinWidth write FMinWidth;
     property ProgressiveEncoding: boolean read FProgressiveEncoding write SetProgressiveEncoding;

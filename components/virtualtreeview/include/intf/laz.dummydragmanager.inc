@@ -533,8 +533,7 @@ end;
 
 //----------------------------------------------------------------------------------------------------------------------
 
-function TVTDataObject.SetData(const FormatEtc: TFormatEtc;
-  {$IF FPC_FullVersion >= 30200}var{$ELSE}const{$IFEND} Medium: TStgMedium;
+function TVTDataObject.SetData(const FormatEtc: TFormatEtc; var Medium: TStgMedium;
   DoRelease: BOOL): HResult;
 
 // Allows dynamic adding to the IDataObject during its existance. Most noteably it is used to implement

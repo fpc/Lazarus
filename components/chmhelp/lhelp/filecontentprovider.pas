@@ -43,7 +43,7 @@ begin
   if FileContentProviders = nil Then // Singleton
   begin
     FileContentProviders := TStringList.Create;
-    {$IF FPC_FULLVERSION>=30200}FileContentProviders.UseLocale := false;{$ENDIF}
+    FileContentProviders.UseLocale := false;
   end;
   Result := FileContentProviders;
 end;

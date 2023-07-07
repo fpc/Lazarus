@@ -31,8 +31,7 @@ unit BuildModesManager;
 interface
 
 uses
-  Classes, SysUtils,
-  {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
+  Classes, SysUtils, System.UITypes,
   // LCL
   Forms, Dialogs, StdCtrls, Grids, Menus, ComCtrls, ButtonPanel,
   // LazUtils

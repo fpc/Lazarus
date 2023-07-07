@@ -479,12 +479,8 @@ end;
 
 procedure TfrmMain.FitCompleteHandler(Sender:TObject);
 const
-  {$IF FPC_FullVersion >= 30004}
   MASK = '%-4s %10s %10s %10s %10s';
   CONF_MASK = '%-4s %10s %10s %10s';
-  {$ELSE}
-  MASK = '%-4s %10s %10s %10s';
-  {$IFEND}
   EXP_FMT = '%.3e';
   STD_FMT = '%.3f';
   PARAM_NAME: array[0..1] of String = ('a', 'b');
@@ -506,11 +502,7 @@ begin
         fitOK:
           begin
             Add('PARAMETERS');
-            {$IF FPC_FullVersion >= 30004}
             Add(Format(MASK, ['Name', 'Value', 'Std.Error', 't value', 'p (>|t|)']));
-            {$ELSE}
-            Add(Format(MASK, ['Name', 'Value', 'Std.Error', 't value']));
-            {$IFEND}
             for i := 0 to FitSeries.ParamCount - 1 do begin
               case FitSeries.FitEquation of
                 fePolynomial, feCustom:
@@ -523,13 +515,10 @@ begin
                 FloatToStrEx(FitSeries.Param[i], PRECISION, STD_FMT, EXP_FMT),
                 FloatToStrEx(FitSeries.ParamError[i], PRECISION, STD_FMT, EXP_FMT),
                 FloatToStrEx(FitSeries.Param_tValue[i], PRECISION, STD_FMT, EXP_FMT)
-                {$IF FPC_FullVersion >= 30004},
                 FloatToStrEx(FitSeries.Param_pValue[i], PRECISION, STD_FMT, EXP_FMT)
-                {$IFEND}
               ]));
             end;
             Add('');
-            {$IF FPC_FullVersion >= 30004}
             Add('CONFIDENCE LIMITS');
             Add(Format(CONF_MASK, ['Name', 'Value', 'Lower', 'Upper']));
             for i := 0 to FitSeries.ParamCount - 1 do begin
@@ -548,7 +537,6 @@ begin
               ]));
             end;
             Add('');
-            {$IFEND}
             Add('ANALYSIS OF VARIANCE');
             lbResults.Canvas.Font.Assign(lbResults.Font);
             FReportDecimals := 5;
@@ -557,16 +545,13 @@ begin
             Add('VARIANCE-COVARIANCE MATRIX');
             FitSeries.FitStatistics.Report_VarCovar(lbResults.Items);
 
-            {$IF FPC_FullVersion >= 30004}
             UpperConfIntervalSeries.OnCalculate := @FitSeries.GetUpperConfidenceInterval;
             LowerConfIntervalSeries.OnCalculate := @FitSeries.GetLowerConfidenceInterval;
             UpperPredIntervalSeries.OnCalculate := @FitSeries.GetUpperPredictionInterval;
             LowerPredIntervalSeries.OnCalculate := @FitSeries.GetLowerPredictionInterval;
-            {$IFEND}
 
             Add('');
             Add('VALUES');
-            {$IF FPC_FullVersion >= 30004}
             Add(Format('%8s %8s %8s %8s %8s %8s %8s', ['x', 'y', 'y hat', 'confL', 'confH', 'predL', 'predH']));
             for i := 0 to FitSeries.Count-1 do
             begin
@@ -578,15 +563,6 @@ begin
                 FitSeries.XValue[i], FitSeries.YValue[i], FitSeries.Calculate(FitSeries.XValue[i]),
                 confL, confH, predL, predH]));
             end;
-            {$ELSE}
-            Add(Format('%8s %8s %8s', ['x', 'y', 'y hat']));
-            for i := 0 to FitSeries.Count-1 do
-            begin
-              Add(Format('%8.2f %8.2f %8.2f', [
-                FitSeries.XValue[i], FitSeries.YValue[i], FitSeries.Calculate(FitSeries.XValue[i])
-              ]));
-            end;
-            {$IFEND}
 
             ShowIntervalSeries(true);
           end;
@@ -739,12 +715,10 @@ end;
 
 procedure TfrmMain.ShowIntervalSeries(AEnable: Boolean);
 begin
-  {$IF FPC_FullVersion > 30004}
   UpperConfIntervalSeries.Active := AEnable and cbShowConfidenceIntervals.Checked;
   LowerConfIntervalSeries.Active := AEnable and cbShowConfidenceIntervals.Checked;
   UpperPredIntervalSeries.Active := AEnable and cbShowPredictionIntervals.Checked;
   LowerPredIntervalSeries.Active := AEnable and cbShowPredictionIntervals.Checked;
-  {$IFEND}
 end;
 
 end.

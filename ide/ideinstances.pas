@@ -37,12 +37,7 @@ unit IDEInstances;
 interface
 
 uses
-  Classes, sysutils, crc, Process,
-  {$IF (FPC_FULLVERSION >= 30101)}
-  AdvancedIPC,
-  {$ELSE}
-  LazAdvancedIPC,
-  {$ENDIF}
+  Classes, sysutils, crc, Process, AdvancedIPC,
   Controls, Dialogs, ExtCtrls, LCLIntf, LCLType,
   LazFileUtils, FileUtil, Laz2_XMLRead, Laz2_XMLWrite, Laz2_DOM, LazUTF8,
   UTF8Process, LazLoggerBase,

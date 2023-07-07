@@ -32,8 +32,7 @@ unit PublishModuleDlg;
 interface
 
 uses
-  Classes, SysUtils, StrUtils, Zipper,
-  {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
+  Classes, SysUtils, StrUtils, Zipper, System.UITypes,
   // LCL
   LCLType, Forms, StdCtrls, Dialogs, Buttons, ButtonPanel, LCLIntf,
   // LazUtils

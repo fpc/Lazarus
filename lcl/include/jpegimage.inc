@@ -95,9 +95,7 @@ begin
   if not(AWriter is TFPWriterJPEG) then Exit;
   TFPWriterJPEG(AWriter).ProgressiveEncoding := ProgressiveEncoding;
   TFPWriterJPEG(AWriter).CompressionQuality := CompressionQuality;
-  {$IF FPC_FullVersion >= 30004}
   TFPWriterJPEG(AWriter).GrayScale := GrayScale;
-  {$IFEND}
 end;
 
 procedure TJPEGImage.SetCompressionQuality(AValue: TJPEGQualityRange);

@@ -31,8 +31,6 @@ uses
   TestGlobals,
   // non Pascal
   TestCfgScript, TestCTH2Pas, TestCTXMLFixFragments,
-  {$IF FPC_FULLVERSION >= 30101}
-  {$ENDIF}
   {$IFDEF Darwin}
   fdt_objccategory, fdt_objcclass,
   {$ENDIF}
@@ -56,11 +54,7 @@ type
   protected
     Options: TCodeToolsOptions;
     procedure AppendLongOpts; override;
-    {$IF FPC_FULLVERSION>=30100}
     function ParseOptions: Boolean; override;
-    {$ELSE}
-    procedure ParseOptions; override;
-    {$ENDIF}
     procedure WriteCustomHelp; override;
 
     procedure ExtendXmlDocument(Doc: TXMLDocument); override;
@@ -78,15 +72,9 @@ begin
   LongOpts.Add('filemask:');
 end;
 
-{$IF FPC_FULLVERSION>=30100}
 function TCTTestRunner.ParseOptions: Boolean;
 begin
   Result:=inherited ParseOptions;
-{$ELSE}
-procedure TCTTestRunner.ParseOptions;
-begin
-  inherited ParseOptions;
-{$ENDIF}
 
   if Options=nil then
     Options:=TCodeToolsOptions.Create;

@@ -7,12 +7,10 @@ interface
 uses
   Classes,
   SysUtils,
-  {$IF FPC_FULLVERSION>30100}
   pkgFppkg,
   fpmkunit,
   fprepos,
   LazarusIDEStrConsts,
-  {$ENDIF}
   // LazUtils
   LazLogger, LazFileCache, FileUtil, LazFileUtils;
 
@@ -26,9 +24,7 @@ type
 
   TFppkgHelper = class
   private
-    {$IF FPC_FULLVERSION>30100}
     FFPpkg: TpkgFPpkg;
-    {$ENDIF}
     FIsProperlyConfigured: TFppkgPropConfigured;
     FConfStatusMessage: string;
     FOverrideConfigurationFilename: string;
@@ -61,10 +57,6 @@ var
 { TFppkgHelper }
 
 procedure TFppkgHelper.InitializeFppkg;
-{$IF NOT (FPC_FULLVERSION>30100)}
-begin
-end;
-{$ELSE}
 var
   FPpkg: TpkgFPpkg;
 begin
@@ -94,7 +86,6 @@ begin
     FPpkg.Free;
   end;
 end;
-{$ENDIF FPC_FULLVERSION>30100}
 
 constructor TFppkgHelper.Create;
 begin
@@ -103,9 +94,7 @@ end;
 
 destructor TFppkgHelper.Destroy;
 begin
-{$IF FPC_FULLVERSION>30100}
   FFPpkg.Free;
-{$ENDIF FPC_FULLVERSION>30100}
   inherited Destroy;
 end;
 
@@ -117,14 +106,9 @@ begin
 end;
 
 function TFppkgHelper.HasPackage(const PackageName: string): Boolean;
-{$IF FPC_FULLVERSION>30100}
 var
   Msg: string;
-{$ENDIF}
 begin
-{$IF NOT (FPC_FULLVERSION>30100)}
-  Result := HasFPCPackagesOnly(PackageName);
-{$ELSE }
   if IsProperlyConfigured(Msg) then
     begin
     Result :=
@@ -146,18 +130,14 @@ begin
     end
   else
     Result := HasFPCPackagesOnly(PackageName);
-{$ENDIF FPC_FULLVERSION>30100}
 end;
 
 procedure TFppkgHelper.ListPackages(AList: TStringList);
-{$IF FPC_FULLVERSION>30100}
 var
   I, J: Integer;
   Repository: TFPRepository;
-{$ENDIF FPC_FULLVERSION>30100}
 begin
   AList.Clear;
-{$IF FPC_FULLVERSION>30100}
   if not Assigned(FFPpkg) then
     Exit;
   for I := 0 to FFPpkg.RepositoryList.Count -1 do
@@ -168,23 +148,16 @@ begin
       AList.AddObject(Repository.Packages[J].Name, Repository.Packages[J]);
       end;
     end;
-{$ENDIF FPC_FULLVERSION>30100}
 end;
 
 function TFppkgHelper.GetPackageUnitPath(const PackageName: string): string;
-{$IF FPC_FULLVERSION>30100}
 var
   FppkgPackage: TFPPackage;
 {$IF not (FPC_FULLVERSION>30300)}
   PackageVariantsArray: TFppkgPackageVariantArray;
 {$ENDIF}
   i: Integer;
-{$ENDIF FPC_FULLVERSION>30100}
 begin
-{$IF NOT (FPC_FULLVERSION>30100)}
-  if PackageName='' then ;
-  Result := '';
-{$ELSE}
   if not Assigned(FFPpkg) then
     begin
     Result := '';
@@ -215,27 +188,18 @@ begin
     // be installed into, and use the corresponding packagestructure.
     Result := '';
     end;
-{$ENDIF FPC_FULLVERSION>30100}
 end;
 
 function TFppkgHelper.GetPackageVariantArray(const PackageName: string): TFppkgPackageVariantArray;
-{$IF FPC_FULLVERSION>30100}
 var
   FppkgPackage: TFPPackage;
   UnitConfigFile: TStringList;
   PackageVariantStr, PackageVariant, UnitConfigFilename: String;
   PackageVariantOptions: TStringArray;
   i: Integer;
-{$ENDIF FPC_FULLVERSION>30100}
 begin
-  {$IF FPC_FULLVERSION>30100}
   Result := [];
-  {$ELSE}
-  SetLength(Result, 0);
-  if PackageName='' then ;
-  {$ENDIF FPC_FULLVERSION>30100}
 
-  {$IF FPC_FULLVERSION>30100}
   if not Assigned(FFPpkg) then
     begin
     Result := [];
@@ -270,17 +234,13 @@ begin
       end;
       end
     end
-  {$ENDIF FPC_FULLVERSION>30100}
 end;
 
 function TFppkgHelper.IsProperlyConfigured(out Message: string): Boolean;
-{$IF FPC_FULLVERSION>30100}
 var
   CompilerFilename: string;
-{$ENDIF FPC_FULLVERSION>30100}
 begin
   Message := '';
-  {$IF FPC_FULLVERSION>30100}
   if Assigned(FFPpkg) and (FIsProperlyConfigured=fpcUnknown) then
     begin
     FIsProperlyConfigured := fpcYes;
@@ -324,9 +284,6 @@ begin
       end;
     end;
   result := FIsProperlyConfigured=fpcYes;
-  {$ELSE}
-  result := True;
-  {$ENDIF FPC_FULLVERSION>30100}
   Message := FConfStatusMessage;
 end;
 
@@ -468,31 +425,24 @@ end;
 function TFppkgHelper.GetCompilerFilename: string;
 begin
   Result := '';
-  {$IF FPC_FULLVERSION>30100}
   if Assigned(FFPpkg) then
     begin
     Result := FFPpkg.CompilerOptions.Compiler;
     end;
-  {$ENDIF}
 end;
 
 procedure TFppkgHelper.ReInitialize;
 begin
   FIsProperlyConfigured := fpcUnknown;
-  {$IF FPC_FULLVERSION>30100}
   FreeAndNil(FFPpkg);
-  {$ENDIF}
   InitializeFppkg;
 end;
 
 function TFppkgHelper.GetCompilerConfigurationFileName: string;
-{$IF FPC_FULLVERSION>30100}
 var
   FPpkg: TpkgFPpkg;
-{$ENDIF}
 begin
   Result := '';
-  {$IF FPC_FULLVERSION>30100}
   if Assigned(FFPpkg) then
     Result:=ConcatPaths([FFPpkg.Options.GlobalSection.CompilerConfigDir, FFPpkg.Options.CommandLineSection.CompilerConfig])
   else
@@ -510,7 +460,6 @@ begin
       FPpkg.Free;
     end;
     end
-  {$ENDIF}
 end;
 
 function TFppkgHelper.GetConfigurationFileName: string;

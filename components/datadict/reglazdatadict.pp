@@ -23,10 +23,8 @@ uses
   ,fpcgdbcoll
   ,fpcgCreateDBF
   ,fpcgtiOPF
-{$IF FPC_FULLVERSION>=30101}
   ,fpcgfieldmap
   ,fpcgtypesafedataset
-{$ENDIF}
 {$ENDIF NOSTDCODEGENS}
   ;
 

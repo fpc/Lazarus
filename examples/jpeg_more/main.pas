@@ -135,9 +135,7 @@ begin
   try
     jpeg.LoadFromFile(filename);
     jpeg.CompressionQuality := SbQuality.Position;
-    {$IF FPC_FullVersion >= 30004}
     jpeg.GrayScale := CbGrayScale.Checked;
-    {$IFEND}
     jpeg.ProgressiveEncoding := CbProgressive.Checked;
     jpeg.SaveToFile(newFileName);
   finally
@@ -171,9 +169,6 @@ begin
   LblProgressive.Caption := '';
   BtnReadClick(nil);
   SbQualityChange(nil);
-  {$IF FPC_FullVersion < 30004}
-  CbGrayScale.Enabled := false;
-  {$ENDIF}
 end;
 
 function TForm1.GetFileName: String;

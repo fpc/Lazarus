@@ -5,8 +5,7 @@ unit DBGridColumnsPropEditForm;
 interface
 
 uses
-  Classes, SysUtils, TypInfo, DB,
-  {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
+  Classes, SysUtils, TypInfo, DB, System.UITypes,
   // LCL
   LCLType, Dialogs, Forms, ComCtrls, StdCtrls, ActnList, DBGrids,
   // LazUtils

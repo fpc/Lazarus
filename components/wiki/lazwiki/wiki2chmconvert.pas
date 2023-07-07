@@ -129,9 +129,7 @@ end;
 
 procedure TWiki2CHMConverter.AddIndexItem(AText, AUrl: String);
 var
-  {$IF FPC_FULLVERSION>=30200}
   x: integer;
-  {$ENDIF}
   AItem: TCHMSiteMapItem;
   i: Integer;
   txt, url, itemtxt, itemurl, itemlocal: String;
@@ -148,7 +146,6 @@ begin
   for i:=0 to FIndexSiteMap.Items.Count-1 do begin
     AItem := FIndexSiteMap.Items.Item[i];
     itemtxt := UTF8Lowercase(AItem.Text);
-    {$IF FPC_FULLVERSION>=30200}
     URL:='';
     for x:=0 to AItem.SubItemcount-1 do
     begin
@@ -159,9 +156,6 @@ begin
       if URL<>'' then
         break;
     end;
-    {$ELSE}
-    URL:=AItem.URL;
-    {$ENDIF}
     itemurl := UTF8Lowercase(URL);
     itemlocal := UTF8Lowercase(AItem.Local);
     if (txt = itemtxt) and ((url = itemurl) or (url = itemlocal)) then
@@ -170,12 +164,7 @@ begin
 
   AItem := FIndexSiteMap.Items.NewItem;
   AItem.Text := UTF8Trim(AText);
-  {$IF FPC_FULLVERSION>=30200}
   AItem.AddLocal(AUrl);
-  {$ELSE}
-  AItem.Local := Trim(AUrl);
-  AItem.Keyword := UTF8Trim(AText);
-  {$ENDIF}
 end;
 
 procedure TWiki2CHMConverter.AddTocItem(ALevel: Integer; AText, AUrl: String);
@@ -204,11 +193,7 @@ var
   item: TCHMSitemapItem;
 begin
   item := NewItemAtLevel(ALevel);
-  {$IF FPC_FULLVERSION>=30200}
   Item.AddLocal(AUrl);
-  {$ELSE}
-  item.Local := AUrl;
-  {$ENDIF}
   item.Text := EscapeToHTML(AText);
   item.ImageNumber := 0;
 end;

@@ -279,9 +279,9 @@ begin
   fcReg := TRegIniFile.Create(REG_ROOT_KEY);
 
   fcExclusionsFiles := TStringList.Create;      // Will compare with CompareText.
-  {$IF FPC_FULLVERSION>=30200}fcExclusionsFiles.UseLocale := False;{$ENDIF}
+  fcExclusionsFiles.UseLocale := False;
   fcExclusionsDirs := TStringList.Create;
-  {$IF FPC_FULLVERSION>=30200}fcExclusionsDirs.UseLocale := False;{$ENDIF}
+  fcExclusionsDirs.UseLocale := False;
 end;
 
 destructor TJCFRegistrySettings.Destroy;

@@ -38,10 +38,6 @@ type
     procedure TestIndexedAVLTreeAddsDeletes;
   end;
 
-  {$IF FPC_FULLVERSION<30101}
-  TAVLTreeClass = class of TAVLTree;
-  {$ENDIF}
-
   { TTest_AVLTree - the FPC unit}
 
   TTest_AVLTree = class(TTestCase)
@@ -49,9 +45,7 @@ type
     fTreeClass: TAVLTreeClass;
     function CreateTree(Args: array of const): TAVLTree;
     procedure TestSequence(Args: array of const);
-    {$IF FPC_FULLVERSION>=30101}
     procedure TestAscendingSequence(InitArgs: array of const; AscSeq: array of const);
-    {$ENDIF}
     procedure TestAVLTree;
   published
     procedure TestAVLTreeAddsDeletes;
@@ -103,7 +97,6 @@ begin
   Tree.Free;
 end;
 
-{$IF FPC_FULLVERSION>=30101}
 procedure TTest_AVLTree.TestAscendingSequence(InitArgs: array of const;
   AscSeq: array of const);
 var
@@ -134,7 +127,6 @@ begin
   Tree.ConsistencyCheck;
   Tree.Free;
 end;
-{$ENDIF}
 
 procedure TTest_AVLTree.TestAVLTree;
 begin
@@ -165,7 +157,6 @@ begin
   TestSequence([1,2,3,-3,-1,-2]);
   TestSequence([1,2,3,-3,-2,-1]);
 
-  {$IF FPC_FULLVERSION>=30101}
   // test AddAscendingSequence
   TestAscendingSequence([],[1]);
   TestAscendingSequence([],[1,2]);
@@ -176,7 +167,6 @@ begin
   TestAscendingSequence([2],[1,3,4,5]);
   TestAscendingSequence([3],[1,2,4,5,6]);
   TestAscendingSequence([3,4],[1,2,5,6,7]);
-  {$ENDIF}
 end;
 
 procedure TTest_AVLTree.TestAVLTreeAddsDeletes;

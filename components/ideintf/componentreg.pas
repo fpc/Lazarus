@@ -797,12 +797,12 @@ begin
   fComponentCache:=TAVLTree.Create(@CompareIDEComponentByClass);
   fOrigComponentPageCache:=TStringList.Create;
   fOrigComponentPageCache.OwnsObjects:=True;
-  {$IF FPC_FULLVERSION>=30200}fOrigComponentPageCache.UseLocale:=False;{$ENDIF}
+  fOrigComponentPageCache.UseLocale:=False;
   fOrigComponentPageCache.CaseSensitive:=True;
   fOrigComponentPageCache.Sorted:=True;
   fUserComponentPageCache:=TStringList.Create;
   fUserComponentPageCache.OwnsObjects:=True;
-  {$IF FPC_FULLVERSION>=30200}fUserComponentPageCache.UseLocale:=False;{$ENDIF}
+  fUserComponentPageCache.UseLocale:=False;
   fUserComponentPageCache.CaseSensitive:=True;
   fUserComponentPageCache.Sorted:=True;
   fOrigPageHelper:=TStringListUTF8Fast.Create; // Note: CaseSensitive = False

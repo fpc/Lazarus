@@ -160,7 +160,7 @@ begin
   fiCurrentTokenIndex := 0;
 
   fcDefinedSymbols := TStringList.Create;      // Will compare with CompareText.
-  {$IF FPC_FULLVERSION>=30200}fcDefinedSymbols.UseLocale := False;{$ENDIF}
+  fcDefinedSymbols.UseLocale := False;
   fcDefinedSymbols.Sorted := True;
   fcDefinedSymbols.Duplicates := dupIgnore;
 

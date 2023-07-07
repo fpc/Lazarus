@@ -141,7 +141,6 @@ begin
       NewNode := TContentTreeNode(fTreeView.Items.Insert(ANextNode, txt))
     else
       NewNode := TContentTreeNode(fTreeView.Items.AddChild(AParentNode, txt));
-    {$IF FPC_FULLVERSION>=30200}
     URL:='';
     for x:=0 to AItem.SubItemcount-1 do
     begin
@@ -152,9 +151,6 @@ begin
       if URL<>'' then
         break;
     end;
-    {$ELSE}
-    URL:=AItem.URL;
-    {$ENDIF}
     NewNode.Url := FixURL('/'+URL);
     NewNode.Data := fChm;
     if fTreeView.Images <> nil then

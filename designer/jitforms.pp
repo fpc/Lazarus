@@ -34,10 +34,6 @@ unit JITForms;
 
 {$I ide.inc}
 
-{$IF FPC_FULLVERSION<30100}
-  {$DEFINE HasVMTParent}
-{$ENDIF}
-
 { $DEFINE VerboseJITForms}
 
 interface
@@ -1535,12 +1531,8 @@ begin
   NewVMT^.vInstanceSize2:=-AncestorClass.InstanceSize;
 
   // set vmtParent
-  {$IFDEF HasVMTParent}
-  NewVMT^.vParent:=AncestorVMT;
-  {$ELSE}
   GetMem(NewVMT^.vParentRef,SizeOf(Pointer));
   NewVMT^.vParentRef^:=AncestorVMT;
-  {$ENDIF}
 
   // set vmtClassName: create pointer to classname (PShortString)
   GetMem(ClassNamePShortString,SizeOf(ShortString));
@@ -1584,12 +1576,8 @@ begin
 
   // set TypeData (PropCount is the total number of properties, including ancestors)
   NewTypeData^.ClassType:=TClass(NewVMT);
-  {$IFDEF HasVMTParent}
-  NewTypeData^.ParentInfo:=AncestorClass.ClassInfo;
-  {$ELSE}
   GetMem(NewTypeData^.ParentInfoRef,SizeOf(Pointer));
   NewTypeData^.ParentInfoRef^:=AncestorClass.ClassInfo;
-  {$ENDIF}
   NewTypeData^.PropCount:=GetTypeData(NewTypeData^.ParentInfo)^.PropCount;
   NewTypeData^.UnitName:=NewUnitName;
   AddedPropCount:=GetTypeDataPropCountAddr(NewTypeData);
@@ -1637,9 +1625,7 @@ var
   OldFieldTable: PFieldTable;
   OldTypeInfo: PTypeInfo;
   OldMethodTable: PMethodNameTable;
-  {$IF FPC_FULLVERSION>=30100}
   OldTypeData: PTypeData;
-  {$ENDIF}
 begin
   // free TJITMethods
   JITMethods.DeleteAllOfClass(AClass);
@@ -1654,9 +1640,7 @@ begin
   end;
 
   // set vmtParent
-  {$IFNDEF HasVMTParent}
   FreeMem(OldVMT^.vParentRef);
-  {$ENDIF}
 
   // free classname
   ClassNamePShortString:=Pointer(OldVMT^.vClassName);
@@ -1669,12 +1653,10 @@ begin
 
   // free typeinfo
   OldTypeInfo:=PTypeInfo(OldVMT^.vTypeInfo);
-  {$IFNDEF HasVMTParent}
   // free ParentInfoRef
   OldTypeData:=GetTypeData(OldTypeInfo);
   FreeMem(OldTypeData^.ParentInfoRef);
   OldTypeData^.ParentInfoRef:=nil;
-  {$ENDIF}
   FreeMem(OldTypeInfo);
 
   // free vmt

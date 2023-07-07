@@ -29,12 +29,11 @@ unit opkman_zipper;
 interface
 
 uses
-  Classes, SysUtils, strutils,
+  Classes, SysUtils, strutils, zipper,
   // LazUtils
   FileUtil, LazFileUtils,
   // OpkMan
-  opkman_serializablepackages, opkman_common,
-  {$IF FPC_FULLVERSION>=30200}zipper{$ELSE}opkman_zip{$ENDIF};
+  opkman_serializablepackages, opkman_common;
 
 type
   TOnProgressEx = procedure(Sender : TObject; const ATotPos, ATotSize: Int64);

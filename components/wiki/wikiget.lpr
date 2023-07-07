@@ -37,12 +37,7 @@ uses
   CodeToolsStructs,
   // Wiki
   fphttpclient,HTTPDefs,
-  {$IF FPC_FULLVERSION >= 30200}
   opensslsockets,
-  {$ELSE}
-  fpopenssl,
-  openssl,
-  {$ENDIF}
   WikiParser, WikiFormat;
 
 const

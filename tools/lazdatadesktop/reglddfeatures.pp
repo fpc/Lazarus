@@ -28,10 +28,8 @@ uses
   fpddodbc,    // Any ODBC supported
   fpddmssql,
   // code generators
-{$IF FPC_FULLVERSION>=30200}
   fpcgfieldmap,
   fpcgtypesafedataset,
-{$ENDIF}
   fpcgSQLConst,
   fpcgdbcoll,
   fpcgCreateDBF,

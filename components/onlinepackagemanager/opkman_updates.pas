@@ -30,16 +30,11 @@ interface
 uses
   {$IFDEF MSWINDOWS}windows, opkman_const,{$ENDIF}
   Classes, SysUtils, Controls, fpjson, fpjsonrtti, jsonparser, dateutils,
+  fphttpclient, opensslsockets, openssl,
   // LazUtils
   LazIDEIntf, LazFileUtils,
   // OpkMan
-  opkman_serializablepackages, opkman_options, opkman_common, opkman_visualtree,
-  opkman_OpenSSLfrm,
-  {$IF FPC_FULLVERSION>=30200}
-  zipper, fphttpclient, opensslsockets, openssl;
-  {$ELSE}
-  opkman_zip, opkman_httpclient;
-  {$ENDIF}
+  opkman_serializablepackages, opkman_options, opkman_common, opkman_visualtree;
 
 const
   OpkVersion = 1;
@@ -130,7 +125,7 @@ var
   Updates: TUpdates = nil;
 
 implementation
-uses opkman_mainfrm;
+
 { TUpdatePackage }
 
 procedure TUpdatePackage.Clear;
@@ -252,9 +247,7 @@ begin
   FreeOnTerminate := True;
   OnTerminate := @DoTerminated;
   FHTTPClient := TFPHTTPClient.Create(nil);
-  {$IF FPC_FULLVERSION>=30200}
   FHTTPClient.IOTimeout := Options.ConTimeOut*1000;
-  {$ENDIF}
   if Options.ProxyEnabled then
   begin
     FHTTPClient.Proxy.Host:= Options.ProxyServer;

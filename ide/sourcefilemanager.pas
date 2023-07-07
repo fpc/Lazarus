@@ -6021,9 +6021,7 @@ var
   ARestoreVisible: Boolean;
   NestedAncestorClass: TComponentClass;
   DsgControl: TCustomDesignControl;
-  {$IF (FPC_FULLVERSION >= 30003)}
   DsgDataModule: TDataModule;
-  {$ENDIF}
   AmbiguousClasses: TFPList;
   ResolvedClasses, ResolvedVars: TStringToPointerTree;
 begin
@@ -6246,7 +6244,6 @@ begin
           end;
           DsgControl.PixelsPerInch := Screen.PixelsPerInch;
         end;
-        {$IF (FPC_FULLVERSION >= 30003)} // TDataModule.DesignPPI was added in FPC 3.0.3
         if NewComponent is TDataModule then
         begin
           DsgDataModule := TDataModule(NewComponent);
@@ -6262,7 +6259,6 @@ begin
             DsgDataModule.DesignPPI := Screen.PixelsPerInch;
           end;
         end;
-        {$ENDIF}
 
         if NewComponent<>nil then
           AnUnitInfo.ResourceBaseClass:=GetComponentBaseClass(NewComponent.ClassType);

@@ -38,8 +38,7 @@ unit Compiler;
 interface
 
 uses
-  Classes, SysUtils, Contnrs, StrUtils,
-  {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
+  Classes, SysUtils, Contnrs, StrUtils, System.UITypes,
   // LazUtils
   FPCAdds, LazUTF8, LazFileUtils, LazUtilities, LazLoggerBase,
   // Codetools

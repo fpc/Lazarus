@@ -29,10 +29,11 @@ unit opkman_downloader;
 interface
 
 uses
-  Classes, SysUtils, fpjson, LazIDEIntf, md5,
+  Classes, SysUtils, fpjson, md5, fphttpclient, opensslsockets,
+  // IdeIntf
+  LazIDEIntf,
   // OpkMan
-  opkman_common, opkman_serializablepackages, opkman_const, opkman_options,
-  {$IF FPC_FULLVERSION>=30200}fphttpclient, opensslsockets{$ELSE}opkman_httpclient{$ENDIF};
+  opkman_common, opkman_serializablepackages, opkman_const, opkman_options;
 
 type
   TDownloadType = (dtJSON, dtPackage, dtUpdate);

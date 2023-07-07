@@ -17,8 +17,7 @@ unit IDEDialogs;
 interface
 
 uses
-  Classes,
-  {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
+  Classes, System.UITypes,
   // LCL
   Dialogs,
   // LazUtils

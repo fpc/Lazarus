@@ -21,11 +21,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ButtonPanel, Buttons, Spin, EditBtn, ActnList,
-{$IF FPC_FULLVERSION>=30101}
   fpexprpars,
-{$ELSE}
-  fprepexprpars,
-{$ENDIF}
   fpreport, reportdesignbaseforms;
 
 type
