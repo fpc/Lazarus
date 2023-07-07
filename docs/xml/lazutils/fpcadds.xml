@@ -76,14 +76,6 @@ Used in the implementation of <var>TSynCustomExporter</var> and
 <seealso></seealso>
 </element>
 
-<element name="PHandle">
-<short>Type used for a pointer to a THandle type.</short>
-<descr>
-Also defined in <file>lcltype.pp</file>.
-</descr>
-<seealso></seealso>
-</element>
-
 <element name="StrToWord">
 <short>Converts the value in a String to a Word data type.</short>
 <descr></descr>
