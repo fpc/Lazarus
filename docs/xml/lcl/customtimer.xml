@@ -32,11 +32,10 @@ used as the ancestor for timer components in the Lazarus Component Library
 
 <element name="Classes"/>
 <element name="SysUtils"/>
-<element name="LCLProc"/>
+<element name="CustApp"/>
 <element name="LCLStrConsts"/>
 <element name="LCLType"/>
 <element name="InterfaceBase"/>
-<element name="CustApp"/>
 
 <element name="TCustomTimer">
 <short>
@@ -191,11 +190,11 @@ property values in the timer class instance. UpdateTimer calls
 <var>KillTimer</var> to stop the timer if it has been enabled and a widget 
 set handle has been previously assigned for the class instance. The handle is 
 recreated at run-time using the <var>Timer</var> method as a polling routine 
-when <var>Enabled</var> contains <b>True</b>, <var>Interval</var> contains a 
-value greater than <b>0</b> (<b>zero</b>), and <var>OnTimer</var> has been 
-assigned for the class instance. The handle is not recreated if the component 
-is being freed, or when the component is <var>Loaded</var> using the LCL 
-streaming mechanism.
+when <var>Enabled</var> contains <b>True</b>, when <var>Interval</var> 
+contains a value greater than <b>0</b> (<b>zero</b>), and <var>OnTimer</var> 
+has been assigned for the class instance. The handle is not recreated if the 
+component is being freed, or when the component is <var>Loaded</var> using the 
+LCL streaming mechanism.
 </p>
 <p>
 UpdateTimer can raise an <var>EOutOfResources</var> exception with the 
