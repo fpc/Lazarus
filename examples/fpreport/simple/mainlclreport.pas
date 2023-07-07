@@ -9,7 +9,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   fpreportlclexport, ExtCtrls, ComCtrls, fpreport,
-  // for a nicer preview add this unit: fpreportpreview
+  fpreportpreview // this unit is needed for a nicer preview
   ;
 
 const
