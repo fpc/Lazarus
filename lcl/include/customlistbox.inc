@@ -450,11 +450,23 @@ end;
 { function TCustomListBox.GetSelCount                                          }
 {------------------------------------------------------------------------------}
 function TCustomListBox.GetSelCount: integer;
+var
+  i: Integer;
 begin
   if HandleAllocated then
     Result := TWSCustomListBoxClass(WidgetSetClass).GetSelCount(Self)
   else
-    Result := 0;
+  begin
+    if not MultiSelect then
+      Result := Ord(FItemIndex >- 1)  //use FItemIndex since HandleAllocated = False
+    else
+    begin
+      Result := 0;
+      if FCacheValid then  //otherwise GetSelectedCache raises an exception
+        for i := 0 to Items.Count - 1 do
+          if GetSelectedCache(i) then Inc(Result);
+    end;
+  end;
 end;
 
 function TCustomListBox.GetItemHeight: Integer;
