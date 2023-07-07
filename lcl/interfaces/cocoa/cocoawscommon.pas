@@ -9,7 +9,7 @@ interface
 
 uses
   Types,
-  CGGeometry, CocoaAll, cocoa_extra,
+  CocoaAll, cocoa_extra,
   Classes, Controls, SysUtils,
   //
   WSControls, LCLType, LMessages, LCLProc, LCLIntf, Graphics, Forms,

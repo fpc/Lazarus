@@ -27,7 +27,7 @@ interface
 
 uses
   // rtl+ftl
-  Types, Classes, SysUtils, Math, contnrs, GraphMath,
+  Types, Classes, SysUtils, Math, GraphMath,
   // carbon bindings
   MacOSAll,
   // interfacebase
@@ -37,7 +37,7 @@ uses
   cocoa_extra, CocoaWSMenus, CocoaWSForms, CocoaWindows, CocoaScrollers,
   CocoaWSClipboard, CocoaTextEdits, CocoaWSCommon,
   // LCL
-  LCLStrConsts, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType,
+  LMessages, LCLProc, LCLIntf, LCLType,
   Controls, Forms, Themes, Menus,
   IntfGraphics, Graphics, CocoaWSFactory;
 
