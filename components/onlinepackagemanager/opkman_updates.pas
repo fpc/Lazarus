@@ -126,6 +126,11 @@ var
 
 implementation
 
+{$IFDEF MSWINDOWS}
+uses
+  opkman_mainfrm, opkman_OpenSSLfrm, zipper;
+{$ENDIF}
+
 { TUpdatePackage }
 
 procedure TUpdatePackage.Clear;
