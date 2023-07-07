@@ -2277,7 +2277,6 @@ end;
 
 procedure TDataPointCrosshairTool.MouseDown(APoint: TPoint);
 begin
-  FCurrentDrawer := nil;
   MouseMove(APoint);
 end;
 
@@ -2288,7 +2287,9 @@ var
   lastIndex: Integer;
   xorMode: Boolean;
 begin
+  FCurrentDrawer := nil;
   id := GetCurrentDrawer;
+
   lastSeries := FSeries;
   lastIndex := FPointIndex;
   xorMode := EffectiveDrawingMode = tdmXOR;
