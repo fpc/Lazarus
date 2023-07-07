@@ -28257,7 +28257,7 @@ transparent.
 <var>CheckTransparentWindow</var> is procedure used to check whether the 
 handle for a windowed control (or a parent control) is transparent. 
 CheckTransparentWindow uses the current mouse position to locate controls or 
-forms under the mouse rectangle. The LM_NCHITTEST message is performed for 
+forms under the mouse pointer. The LM_NCHITTEST message is performed for 
 AWinControl to determine if the handle is drawn transparently. Additional 
 Forms in the Z-Order are visited until an opaque windowed control is located. 
 Parent controls are searched too (when needed).
@@ -28269,7 +28269,16 @@ located, the value in Handle is set to 0, and AWinControl is set to
 <b>Nil</b>.
 </p>
 </descr>
-<seealso/>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type for the Handle argument.
+</version>
+<seealso>
+<link id="TControl.Parent"/>
+<link id="TMouse.CursorPos"/>
+<link id="#lcl.forms.TScreen.CustomFormZOrderCount">TScreen.CustomFormZOrderCount</link>
+<link id="#lcl.lcltype.TLCLHandle">TLCLHandle</link>
+</seealso>
 </element>
 <element name="CheckTransparentWindow.Handle">
 <short>
@@ -28294,8 +28303,8 @@ AWinHandle. The return value contains the Word value used in the Msg member in
 a TLMMouse mouse message.
 </p>
 <p>
-LastMouse contains the most recent mouse event information examined and 
-potentially updated in the method.
+The LastMouse parameter is updated with the most recent mouse event 
+information examined and used in the method.
 </p>
 <p>
 CheckMouseButtonDownUp consolidates mouse down events (single, double, triple, 
@@ -28303,7 +28312,7 @@ and quadruple) into a single value used in a mouse message, and updates
 LastMouse when needed.
 </p>
 <p>
-AWinControl contains the control with the handle where the event mouse events 
+AWinControl contains the control with the handle where the mouse event(s) 
 occurred.
 </p>
 <p>
@@ -28327,6 +28336,10 @@ CheckMouseButtonDownUp is used in the callback routine for a widgetset class
 when a mouse event message is created and passed to the class instance.
 </p>
 </descr>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type in the AWinHandle argument.
+</version>
 <seealso/>
 </element>
 <element name="CheckMouseButtonDownUp.Result">
