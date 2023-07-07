@@ -27,7 +27,7 @@ interface
 
 uses
   // rtl+ftl
-  Types, Classes, SysUtils, Math, contnrs, GraphMath,
+  Types, Classes, SysUtils, Math, GraphMath,
   // carbon bindings
   MacOSAll,
   // interfacebase
@@ -37,7 +37,7 @@ uses
   cocoa_extra, CocoaWSMenus, CocoaWSForms, CocoaWindows, CocoaScrollers,
   CocoaWSClipboard, CocoaTextEdits, CocoaWSCommon,
   // LCL
-  LCLStrConsts, LMessages, LCLMessageGlue, LCLProc, LCLIntf, LCLType,
+  LMessages, LCLProc, LCLIntf, LCLType,
   Controls, Forms, Themes, Menus,
   IntfGraphics, Graphics, CocoaWSFactory;
 
@@ -84,8 +84,6 @@ type
     aloop : TApplicationMainLoop;
     isrun : Boolean;
     modals : NSMutableDictionary;
-    inputclient : TCocoaInputClient;
-    inputctx    : NSTextInputContext;
     {$ifdef COCOAPPRUNNING_OVERRIDEPROPERTY}
     Stopped : Boolean;
     {$endif}
@@ -473,7 +471,6 @@ end;
 procedure TCocoaApplication.dealloc;
 begin
   if Assigned(modals) then modals.release;
-  if Assigned(inputclient) then inputclient.release;
   inherited dealloc;
 end;
 
@@ -585,29 +582,24 @@ begin
           else
             wnd := nil;
 
-          {$ifndef CPUPOWERPC}
-          if (theEvent.type_ = NSKeyDown)
-            and not (win.firstResponder.conformsToProtocol(objcprotocol(NSTextInputClientProtocol))) then
-          begin
-            if not Assigned(inputctx) then
-            begin
-              inputclient := TCocoaInputClient.alloc.init;
-              inputctx := NSTextInputContext.alloc.initWithClient(inputclient);
-            end;
-            inputctx.handleEvent(theEvent);
-          end;
-          {$endif}
-
           if cb.IsCocoaOnlyState then
           begin
+            // in IME state
             inherited sendEvent(theEvent);
           end
           else
           begin
+            // not in IME state
             cb.KeyEvBefore(theEvent, allowcocoa);
+            // may be triggered into IME state
             if allowcocoa then
               inherited sendEvent(theEvent);
-            cb.KeyEvAfter;
+            // retest IME state
+            if responder.conformsToProtocol(objcprotocol(NSTextInputClientProtocol)) then
+              cb.CocoaOnlyState := NSTextInputClientProtocol(responder).hasMarkedText;
+            // if in IME state, pass KeyEvAfter
+            if not cb.CocoaOnlyState then
+              cb.KeyEvAfter;
           end;
         finally
           if Assigned(wnd) then

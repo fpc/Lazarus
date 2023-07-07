@@ -203,6 +203,10 @@ type
 
     isdrawing   : integer;
     faileddraw  : Boolean;
+
+    _inIME: Boolean;
+  private
+    function getWindowEditor(): NSTextView; message 'getWindowEditor';
   public
     callback: ICommonCallback;
     auxMouseByParent: Boolean;
@@ -234,9 +238,19 @@ type
     function stringValue: NSString; override;
     procedure addSubView(aview: NSView); override;
 
-    // this is parts of
+  public
+    // NSTextInputClientProtocol related.
+    // implements a base NSTextInputClient for non-editable LCL CustomControl,
+    // like Form, Grid, ListView, that are not system control and not FullEditControl.
+    // 1. when using IME in these controls, a temporary and one-time editor is shown
+    //    at the bottom of the control, supporting IME such as Chinese.
+    // 2. refers to MacOS Finder, when using IME in the file list view,
+    //    a small window will pop up at the bottom of the screen for input.
+    //    the text can then be used for filename starting character match.
+    // 3. it is useful for implementing IME support for controls that do not
+    //    have a text input window.
+    procedure keyDown(theEvent: NSEvent); override;
     procedure insertText_replacementRange (aString: id; replacementRange: NSRange);
-    procedure doCommandBySelector (aSelector: SEL); override;
     procedure setMarkedText_selectedRange_replacementRange (aString: id; selectedRange: NSRange; replacementRange: NSRange);
     procedure unmarkText;
     function selectedRange: NSRange;
@@ -246,6 +260,7 @@ type
     function validAttributesForMarkedText: NSArray;
     function firstRectForCharacterRange_actualRange (aRange: NSRange; actualRange: NSRangePointer): NSRect;
     function characterIndexForPoint (aPoint: NSPoint): NSUInteger;
+    procedure doCommandBySelector (aSelector: SEL); override;
   end;
 
   { ICocoaIMEControl }
@@ -585,6 +600,19 @@ end;
 
 { TCocoaCustomControl }
 
+function getNSStringObject( const aString: id ) : NSString;
+begin
+  if aString.isKindOfClass( NSAttributedString.classClass ) then
+    Result:= NSAttributedString( aString ).string_
+  else
+    Result:= NSString( aString );
+end;
+
+function TCocoaCustomControl.getWindowEditor(): NSTextView;
+begin
+  Result:= NSTextView( self.window.fieldEditor_forObject(true,nil) );
+end;
+
 procedure TCocoaCustomControl.setStringValue(avalue: NSString);
 begin
   if Assigned(fstr) then fstr.release;
@@ -617,40 +645,106 @@ begin
   end;
 end;
 
-procedure TCocoaCustomControl.insertText_replacementRange(aString: id;
-  replacementRange: NSRange);
+procedure TCocoaCustomControl.keyDown(theEvent: NSEvent);
+var
+  textView: NSView;
+  isFirst: Boolean;
 begin
-  lclGetCallback.InputClientInsertText(NSStringToString(NSString(astring)));
+  if (not _inIME) and (theEvent.keyCode in [kVK_Return,kVK_Escape]) then
+  begin
+    inherited;
+    exit;
+  end;
+
+  isFirst:= not _inIME;
+  inputContext.handleEvent(theEvent);
+  if _inIME and isFirst then
+  begin
+    textView:= getWindowEditor();
+    textView.setFrameSize( NSMakeSize(self.frame.size.width,16) );
+    self.addSubView( textView );
+  end
+  else if not _inIME then
+    inputContext.discardMarkedText;
 end;
 
-procedure TCocoaCustomControl.doCommandBySelector(aSelector: SEL);
+procedure TCocoaCustomControl.insertText_replacementRange(aString: id;
+  replacementRange: NSRange);
+var
+  nsText: NSString;
 begin
-  inherited doCommandBySelector(ASelector);
+  if not _inIME then exit;
+
+  unmarkText;
+
+  nsText:= getNSStringObject(aString);
+  lclGetCallback.InputClientInsertText(nsText.UTF8String);
 end;
 
 procedure TCocoaCustomControl.setMarkedText_selectedRange_replacementRange(
   aString: id; selectedRange: NSRange; replacementRange: NSRange);
+var
+  textView: NSTextView;
+  nsText: NSString;
 begin
-
-end;
-
-procedure TCocoaCustomControl.unmarkText;
-begin
-end;
-
-function TCocoaCustomControl.selectedRange: NSRange;
-begin
-  Result := NSMakeRange(0,0);
-end;
-
-function TCocoaCustomControl.markedRange: NSRange;
-begin
-  Result := NSMakeRange(0,0);
+  nsText:= getNSStringObject(aString);
+  if nsText.length > 0 then
+  begin
+    _inIME:= true;
+    textView:= getWindowEditor();
+    if Assigned(textView) then
+      textView.setMarkedText_selectedRange_replacementRange(aString,selectedRange,replacementRange);
+  end
+  else
+    unmarkText;
 end;
 
 function TCocoaCustomControl.hasMarkedText: LCLObjCBoolean;
 begin
-  Result := false;
+  Result := _inIME;
+end;
+
+procedure TCocoaCustomControl.unmarkText;
+var
+  textView: NSTextView;
+begin
+  _inIME:= false;
+  textView:= getWindowEditor();
+  if Assigned(textView) then
+    textView.removeFromSuperview;
+end;
+
+function TCocoaCustomControl.firstRectForCharacterRange_actualRange(
+  aRange: NSRange; actualRange: NSRangePointer): NSRect;
+var
+  point: NSPoint;
+  rect: NSRect;
+begin
+  point:= self.convertPoint_toView(NSZeroPoint, nil);
+  rect:= NSMakeRect(point.x, point.y, 0, 16);
+  Result:= self.window.convertRectToScreen(rect);
+end;
+
+function TCocoaCustomControl.selectedRange: NSRange;
+var
+  textView: NSText;
+begin
+  textView:= getWindowEditor();
+  if not Assigned(textView) then
+    Result:= NSMakeRange( NSNotFound, 0 )
+  else
+    Result:= textView.selectedRange;
+end;
+
+function TCocoaCustomControl.markedRange: NSRange;
+var
+  textView: NSTextView;
+begin
+  textView:= getWindowEditor();
+  if not Assigned(textView) then
+    Result:= NSMakeRange( NSNotFound, 0 )
+  else
+    Result:= textView.markedRange;
 end;
 
 function TCocoaCustomControl.attributedSubstringForProposedRange_actualRange(
@@ -664,16 +758,15 @@ begin
   Result := nil;
 end;
 
-function TCocoaCustomControl.firstRectForCharacterRange_actualRange(
-  aRange: NSRange; actualRange: NSRangePointer): NSRect;
-begin
-  Result := NSMakeRect(0,0,0,0);
-end;
-
 function TCocoaCustomControl.characterIndexForPoint(aPoint: NSPoint
   ): NSUInteger;
 begin
   Result := 0;
+end;
+
+procedure TCocoaCustomControl.doCommandBySelector(aSelector: SEL);
+begin
+  inherited doCommandBySelector(ASelector);
 end;
 
 procedure TCocoaCustomControl.dealloc;
@@ -914,14 +1007,6 @@ end;
 function TCocoaFullControlEdit.resignFirstResponder: ObjCBOOL;
 begin
   Result := not hasMarkedText();
-end;
-
-function getNSStringObject( const aString: id ) : NSString;
-begin
-  if aString.isKindOfClass( NSAttributedString.classClass ) then
-    Result:= NSAttributedString( aString ).string_
-  else
-    Result:= NSString( aString );
 end;
 
 function isIMEDuplicateCall( const newParams, currentParams: TCocoaIMEParameters ) : Boolean;

@@ -146,25 +146,6 @@ function NSEventRawKeyChar(ev: NSEvent): System.WideChar;
 function AllocImageRotatedByDegrees(src: NSImage; degrees: double): NSImage;
 function AllocCursorFromCursorByDegrees(src: NSCursor; degrees: double): NSCursor;
 
-type
-
-  { TCocoaInputClient }
-
-  TCocoaInputClient = objcclass(NSObject, NSTextInputClientProtocol)
-    procedure insertText_replacementRange(aString: id; replacementRange: NSRange);
-    procedure setMarkedText_selectedRange_replacementRange(aString: id; selectedRange: NSRange; replacementRange: NSRange);
-    procedure unmarkText;
-    function selectedRange: NSRange;
-    function markedRange: NSRange;
-    function hasMarkedText: LCLObjCBoolean;
-    function attributedSubstringForProposedRange_actualRange(aRange: NSRange; actualRange: NSRangePointer): NSAttributedString;
-    function validAttributesForMarkedText: NSArray;
-    function firstRectForCharacterRange_actualRange(aRange: NSRange; actualRange: NSRangePointer): NSRect;
-    function characterIndexForPoint(aPoint: NSPoint): NSUInteger;
-
-    procedure doCommandBySelector(asel: sel); message 'doCommandBySelector:';
-  end;
-
 implementation
 
 const
@@ -890,70 +871,6 @@ begin
   else
     Result := '';
 end;
-
-{ TCocoaInputClient }
-
-procedure TCocoaInputClient.insertText_replacementRange(aString: id;
-  replacementRange: NSRange);
-begin
-
-end;
-
-procedure TCocoaInputClient.setMarkedText_selectedRange_replacementRange(
-  aString: id; selectedRange: NSRange; replacementRange: NSRange);
-begin
-
-end;
-
-procedure TCocoaInputClient.unmarkText;
-begin
-
-end;
-
-function TCocoaInputClient.selectedRange: NSRange;
-begin
-  Result.location := 0;
-  Result.length := 0;
-end;
-
-function TCocoaInputClient.markedRange: NSRange;
-begin
-  Result.location := 0;
-  Result.length := 0;
-end;
-
-function TCocoaInputClient.hasMarkedText: LCLObjCBoolean;
-begin
-  Result := false;
-end;
-
-function TCocoaInputClient.attributedSubstringForProposedRange_actualRange(
-  aRange: NSRange; actualRange: NSRangePointer): NSAttributedString;
-begin
-  Result := nil;
-end;
-
-function TCocoaInputClient.validAttributesForMarkedText: NSArray;
-begin
-  Result := nil;
-end;
-
-function TCocoaInputClient.firstRectForCharacterRange_actualRange(
-  aRange: NSRange; actualRange: NSRangePointer): NSRect;
-begin
-  Result := NSZeroRect;
-end;
-
-function TCocoaInputClient.characterIndexForPoint(aPoint: NSPoint): NSUInteger;
-begin
-  Result := 0;
-end;
-
-procedure TCocoaInputClient.doCommandBySelector(asel: sel);
-begin
-
-end;
-
 
 { NSLCLDebugExtension }
 
