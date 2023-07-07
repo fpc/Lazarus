@@ -31,7 +31,7 @@ type
 
   TOpenURLEvent = Procedure (Sender : TObject; Const AURL : String) of Object;
 
-  TFPReportPreviewForm = class(TForm)
+  TFPReportPreviewForm = class(TCustomFPreportPreviewForm)
     AClose: TAction;
     ALast: TAction;
     AFirst: TAction;
