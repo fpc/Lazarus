@@ -551,7 +551,7 @@ const
 
   { a value larger than the number of keywords,
     used as an initial size for the dynamic array }
-  INITIAL_MAX_KEYWORDS = 234;
+  INITIAL_MAX_KEYWORDS = 240;
 
 var
   { final number of keywords added }
@@ -708,6 +708,12 @@ begin
   AddKeyword('ms_abi_cdecl', wtReservedWordDirective, ttCdecl);
   AddKeyword('sysv_abi_default', wtReservedWordDirective, ttCdecl);
   AddKeyword('sysv_abi_cdecl', wtReservedWordDirective, ttCdecl);
+  AddKeyword('cppdecl', wtReservedWordDirective, ttCdecl);
+  AddKeyword('hardfloat', wtReservedWordDirective, ttCdecl);
+  AddKeyword('softfloat', wtReservedWordDirective, ttCdecl);
+  AddKeyword('mwpascal', wtReservedWordDirective, ttCdecl);
+  AddKeyword('winapi', wtReservedWordDirective, ttCdecl);
+  AddKeyword('iocheck', wtReservedWordDirective, ttCdecl);
   AddKeyword('message', wtReservedWordDirective, ttMessage);
   AddKeyword('published', wtReservedWordDirective, ttPublished);
   AddKeyword('write', wtReservedWordDirective, ttWrite);
