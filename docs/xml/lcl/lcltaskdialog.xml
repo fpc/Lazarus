@@ -1133,9 +1133,15 @@ for the first custom button defined in Buttons string).
 </p>
 <p>
 If Buttons have been defined, <var>aButtonDef</var> can set the selected 
-Button ID. If Radio buttons have been defined, the default radio button 
-defined in the RadioButtons property is pre-selected. Otherwise, the default 
-radio button is set to 0.
+Button ID on the dialog. 
+</p>
+<p>
+If radio buttons have been defined in Radios, values in ARadioDef and AFlags 
+are used to control the default radio button which is Checked on the dialog. 
+If tdfNoDefaultRadioButton has not been included in AFlags, aRadioDef is used 
+as the default radio button. When aRadioDef is unassigned (0), the first radio 
+button is Checked. If tdfNoDefaultRadioButton has been included in AFlags, all 
+radio buttons are unchecked by default on the dialog.
 </p>
 <p>
 <var>aDialogIcon</var> and <var>aFooterIcon</var> are used to specify the 
