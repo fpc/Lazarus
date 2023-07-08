@@ -6189,23 +6189,32 @@ display the items in the control.
 </element>
 
 <element name="TCustomListBox.SelCount">
-<short>The number of selected items in the list.</short>
+<short>
+The number of selected items in the list box control.
+</short>
 <descr>
 <p>
 <var>SelCount</var> is a read-only <var>Integer</var> property which contains 
-the number of <var>Items</var> selected in the list box control. The return 
-value is the result returned by the <var>GetSelCount</var> method in the 
-widgetset class, or 0 (zero) when a handle has not been allocated for the 
-control. SelCount is significant when the <var>MultiSelect</var> property is 
-enabled.
+the number of <var>Items</var> selected in the list box control. The property 
+value is the result returned by the <var>GetSelCount</var> method 
+in the widgetset class when its Handle has been allocated. 
 </p>
 <p>
-Use <var>Selected</var> to read or write the selected state for a single 
-value defined in the Items for the control.
+If the widget Handle is unassigned, the property value is determined using 
+either the value in ItemIndex or the list items in the local cache. If 
+MultiSelect has not been enabled, the property value is either 0 or 1; 0 when 
+<b>ItemIndex = -1</b> and 1 when <b>ItemIndex &gt; -1</b>. If MultiSelect is 
+<b>True</b>, the local item cache is searched to get the number of items 
+selected in the control. The value is 0 if the local cache is invalid or none 
+of the cached items are in the selected state.
 </p>
 <p>
-Use <var>SelectRange</var> to set the selected state for Items in a specified 
-range of positions.
+Use <var>Selected</var> to get or set the selected state for an item on the 
+control.
+</p>
+<p>
+Use <var>SelectRange</var> to set or reset the selected state for Items in a 
+specified range of positions.
 </p>
 <p>
 Use <var>SelectAll</var> to select all Items in the control.
@@ -6216,10 +6225,12 @@ Use <var>ClearSelection</var> to remove all item selections in the control.
 </descr>
 <seealso>
 <link id="TCustomListBox.Selected"/>
+<link id="TCustomListBox.ItemIndex"/>
+<link id="TCustomListBox.Items"/>
+<link id="TCustomListBox.MultiSelect"/>
 <link id="TCustomListBox.SelectRange"/>
 <link id="TCustomListBox.SelectAll"/>
 <link id="TCustomListBox.ClearSelection"/>
-<link id="TCustomListBox.MultiSelect"/>
 <link id="TCustomListBox.ExtendedSelect"/>
 </seealso>
 </element>
