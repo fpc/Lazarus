@@ -24,7 +24,7 @@ interface
 uses
   // RTL / FCL
   Classes, TypInfo, SysUtils, types, RtlConsts, variants, Contnrs, strutils, FGL,
-  Math,
+  Math, System.UITypes,
   // LCL
   LCLType, LCLIntf, LCLProc, Forms, Controls, ButtonPanel, Graphics,
   StdCtrls, Buttons, Menus, ExtCtrls, ComCtrls, Dialogs, EditBtn, Grids, ValEdit,
@@ -33,7 +33,7 @@ uses
   CheckBoxThemed,
   // LazUtils
   FileUtil, StringHashList, LazMethodList, LazLoggerBase, LazUtilities, LazStringUtils,
-  GraphType, UITypes, FPCAdds, // for StrToQWord in older fpc versions
+  GraphType, FPCAdds, // for StrToQWord in older fpc versions
   // IdeIntf
   ObjInspStrConsts, PropEditUtils, TextTools,
   // Forms with .lfm files

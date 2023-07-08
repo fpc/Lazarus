@@ -113,7 +113,6 @@ begin
     D := T.Dependencies.AddUnit('StringHashList');
     D := T.Dependencies.AddUnit('TextStrings');
     D := T.Dependencies.AddUnit('Translations');
-    D := T.Dependencies.AddUnit('UITypes');
     D := T.Dependencies.AddInclude('unixfileutil.inc');
     D := T.Dependencies.AddInclude('unixlazfileutils.inc');
     D := T.Dependencies.AddInclude('unixlazutf8.inc');
@@ -180,7 +179,6 @@ begin
     T := P.Targets.AddImplicitUnit('stringhashlist.pas');
     T := P.Targets.AddImplicitUnit('textstrings.pas');
     T := P.Targets.AddImplicitUnit('translations.pas');
-    T := P.Targets.AddImplicitUnit('uitypes.pas');
     T := P.Targets.AddImplicitUnit('utf8process.pp');
 
     // copy the compiled file, so the IDE knows how the package was compiled

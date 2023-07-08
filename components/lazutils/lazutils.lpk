@@ -295,10 +295,6 @@
         <UnitName Value="Translations"/>
       </Item>
       <Item>
-        <Filename Value="uitypes.pas"/>
-        <UnitName Value="UITypes"/>
-      </Item>
-      <Item>
         <Filename Value="unixfileutil.inc"/>
         <Type Value="Include"/>
       </Item>

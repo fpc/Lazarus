@@ -30,12 +30,12 @@ uses
 ////////////////////////////////////////////////////
 // rtl
   Windows, shlobj, ShellApi, ActiveX, SysUtils, Classes, CommDlg,
+  {$ifdef DebugCommonDialogEvents}
+  System.UITypes,
+  {$endif}
 // lcl
   LCLProc, LCLType, Dialogs, Controls, Graphics, Forms, Masks,
   // LazUtils
-  {$ifdef DebugCommonDialogEvents}
-  UITypes,
-  {$endif}
   LazFileUtils, LazUTF8,
 // ws
   WSDialogs, WSLCLClasses, Win32Extra, Win32Int, InterfaceBase,
