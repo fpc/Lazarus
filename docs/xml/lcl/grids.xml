@@ -16581,15 +16581,17 @@ assigned to the <var>TGridColumn</var> instances when the <var>Columns</var>
 collection has been Enabled. The resizing algorithm works as follows:
 </p>
 <ul>
-<li>Fixed Columns are not resized.</li>
+<li>
+Fixed columns are not resized.
+</li>
 <li>
 When Columns has not been Enabled, or the column position is not found in 
 Columns, a default sizing priority of 1 is used along with the minimum and 
 maximum sizes defined in the DEFMINSIZE and DEFMAXSIZE constants.
 </li>
 <li>
-When Columns is Enabled, and a column exists at a given position, values from 
-the TGridColumn instance are used including: SizePriority, MinSize, and 
+When Columns is Enabled, and a column is defined for a given position, values 
+from the TGridColumn instance are used including: SizePriority, MinSize, and 
 MaxSize.
 </li>
 <li>
@@ -16598,27 +16600,37 @@ A column with a SizePriority of 0 is not resized.
 <li>
 A column with a non-zero value in SizePriority is adjusted using the average 
 available width with respect to the MinSize and MaxSize for all of the 
-defined columns.
+defined columns. When MinSize and MaxSize have the same non-zero value, the 
+column cannot be resized. If all columns have assigned MinSize and MaxSize 
+values, the auto-fill algorithm may not be able to set column widths as 
+intended. At least one of the columns should have MinSize and MaxSize set to 0 
+for the intended result.
 </li>
 <li>
-If Columns is not Enabled or populated, or all columns have a SizePriority of 
-0, the last column in the grid is resized to the available width.
+If Columns is not Enabled (populated), fixed columns are set to the size found 
+in either ColWidths (preferred) or DefaultColWidth (default). Non-fixed 
+columns (starting at FixedCols-1) are uniformly resized to fill the available 
+unused area following the fixed columns.
 </li>
 </ul>
 <p>
-Note that TGridColumn instances in Columns are initially created with 
+Please note that TGridColumn instances in Columns are initially created with 
 SizePriority set to 1. For TDbGrid, which automatically populates Columns, 
 this means the user will not be able to resize these columns using the mouse 
 (since they are auto-sized).
 </p>
 <p>
 Use ColWidths to set the width for a specified column when the Columns 
-collection has not been enabled or populated.
+collection has not been enabled or populated. Use DefaultColWidth to set the 
+default width used when a width is not available in ColWidths or Columns.
 </p>
 </descr>
 <seealso>
 <link id="TCustomGrid.ColWidths"/>
+<link id="TCustomGrid.DefaultColWidth"/>
 <link id="TCustomGrid.Columns"/>
+<link id="TCustomGrid.FixedCols"/>
+<link id="TCustomGrid.ColCount"/>
 <link id="TGridColumns"/>
 <link id="TGridColumn.MaxSize"/>
 <link id="TGridColumn.MinSize"/>
