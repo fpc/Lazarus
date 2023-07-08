@@ -1086,6 +1086,8 @@ begin
   GetDefaultDrawer().DrawFocusRect(LazDC, Types.Point(Rect.Left, Rect.Top),
     Types.Size(Rect.Right - Rect.Left, Rect.Bottom - Rect.Top));
   LazDC.RestoreState(-1);
+
+  Result := True;
 end;
 
 function TCDWidgetSet.DrawFrameControl(DC: HDC; const Rect: TRect; uType,
