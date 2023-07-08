@@ -28,11 +28,11 @@ uses
   {$IFDEF unix}
   cthreads,
   {$ENDIF}
-  Classes, SysUtils, Math, CustApp, System.UITypes,
+  Classes, SysUtils, math, CustApp,
   Interfaces, // this includes the NoGUI widgetset
   // LazUtils
   Masks, LConvEncoding, FileUtil, LazFileUtils, LazLoggerBase, LazUtilities,
-  LazUTF8, Laz2_XMLCfg, LazStringUtils,
+  LazUTF8, Laz2_XMLCfg, UITypes, LazStringUtils,
   // LCL
   LCLPlatformDef, Forms,
   // Codetools

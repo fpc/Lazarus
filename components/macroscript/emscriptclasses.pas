@@ -449,14 +449,14 @@ begin
         CheckMinParamCount(5, 'MessageDlg');
         Stack.SetInt(-1,
           MessageDlg(Stack.GetAnsiString(-2), TMsgDlgType(Stack.GetUInt(-3)),
-            TMsgDlgButtons(Word(GetSetFromStack(Stack, -4))), Stack.GetInt(-5))
+            TMsgDlgButtons(GetSetFromStack(Stack, -4)), Stack.GetInt(-5))
         );
       end;
     FunctionId_MessageDlgPos: begin // MessageDlgPos(Msg: string; DlgType :TMsgDlgType; Buttons :TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer): Integer
         CheckMinParamCount(7, 'MessageDlgPos');
         Stack.SetInt(-1,
           MessageDlgPos(Stack.GetAnsiString(-2), TMsgDlgType(Stack.GetUInt(-3)),
-            TMsgDlgButtons(Word(GetSetFromStack(Stack, -4))), Stack.GetInt(-5),
+            TMsgDlgButtons(GetSetFromStack(Stack, -4)), Stack.GetInt(-5),
             Stack.GetInt(-6), Stack.GetInt(-7) )
         );
       end;
@@ -464,7 +464,7 @@ begin
         CheckMinParamCount(8, 'MessageDlgPosHelp');
         Stack.SetInt(-1,
           MessageDlgPosHelp(Stack.GetAnsiString(-2), TMsgDlgType(Stack.GetUInt(-3)),
-            TMsgDlgButtons(Word(GetSetFromStack(Stack, -4))), Stack.GetInt(-5),
+            TMsgDlgButtons(GetSetFromStack(Stack, -4)), Stack.GetInt(-5),
             Stack.GetInt(-6), Stack.GetInt(-7), Stack.GetAnsiString(-8))
         );
       end;

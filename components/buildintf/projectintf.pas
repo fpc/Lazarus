@@ -16,7 +16,8 @@ unit ProjectIntf;
 interface
 
 uses
-  Classes, SysUtils, Contnrs, System.UITypes,
+  Classes, SysUtils, Contnrs,
+  {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
   // LazUtils
   FileUtil, LazFileUtils, LazFileCache, LazMethodList, AvgLvlTree,
   // BuildIntf

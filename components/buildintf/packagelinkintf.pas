@@ -5,7 +5,8 @@ unit PackageLinkIntf;
 interface
 
 uses
-  SysUtils, Classes, System.UITypes,
+  SysUtils, Classes,
+  {$IF FPC_FULLVERSION >= 30200}System.{$ENDIF}UITypes,
   // LazUtils
   LazFileUtils,
   // BuildIntf

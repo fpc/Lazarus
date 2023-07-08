@@ -22,40 +22,40 @@ interface
 
 uses
   // RTL + FCL
-  Types, TypInfo, Classes, SysUtils, System.UITypes,
+  Types, typinfo, Classes, SysUtils,
   // LCL
   LMessages, LResources, LCLIntf, InterfaceBase, LCLStrConsts, LCLType,
   Forms, Controls, Themes, Graphics, Buttons, ButtonPanel, StdCtrls,
   ExtCtrls, LCLClasses, ClipBrd, Menus, LCLTaskDialog, DialogRes,
   // LazUtils
-  GraphType, FileUtil, LazFileUtils, LazStringUtils, LazLoggerBase;
+  GraphType, UITypes, FileUtil, LazFileUtils, LazStringUtils, LazLoggerBase;
 
 type
   // Aliases for types in UITypes.
-  TMsgDlgType    = System.UITypes.TMsgDlgType;
-  TMsgDlgBtn     = System.UITypes.TMsgDlgBtn;
-  TMsgDlgButtons = System.UITypes.TMsgDlgButtons;
+  TMsgDlgType    = UITypes.TMsgDlgType;
+  TMsgDlgBtn     = UITypes.TMsgDlgBtn;
+  TMsgDlgButtons = UITypes.TMsgDlgButtons;
 
 const
   // Aliases for enum values in UITypes.
-  mtWarning      = System.UITypes.TMsgDlgType.mtWarning;
-  mtError        = System.UITypes.TMsgDlgType.mtError;
-  mtInformation  = System.UITypes.TMsgDlgType.mtInformation;
-  mtConfirmation = System.UITypes.TMsgDlgType.mtConfirmation;
-  mtCustom       = System.UITypes.TMsgDlgType.mtCustom;
+  mtWarning      = UITypes.TMsgDlgType.mtWarning;
+  mtError        = UITypes.TMsgDlgType.mtError;
+  mtInformation  = UITypes.TMsgDlgType.mtInformation;
+  mtConfirmation = UITypes.TMsgDlgType.mtConfirmation;
+  mtCustom       = UITypes.TMsgDlgType.mtCustom;
 
-  mbYes      = System.UITypes.TMsgDlgBtn.mbYes;
-  mbNo       = System.UITypes.TMsgDlgBtn.mbNo;
-  mbOK       = System.UITypes.TMsgDlgBtn.mbOK;
-  mbCancel   = System.UITypes.TMsgDlgBtn.mbCancel;
-  mbAbort    = System.UITypes.TMsgDlgBtn.mbAbort;
-  mbRetry    = System.UITypes.TMsgDlgBtn.mbRetry;
-  mbIgnore   = System.UITypes.TMsgDlgBtn.mbIgnore;
-  mbAll      = System.UITypes.TMsgDlgBtn.mbAll;
-  mbNoToAll  = System.UITypes.TMsgDlgBtn.mbNoToAll;
-  mbYesToAll = System.UITypes.TMsgDlgBtn.mbYesToAll;
-  mbHelp     = System.UITypes.TMsgDlgBtn.mbHelp;
-  mbClose    = System.UITypes.TMsgDlgBtn.mbClose;
+  mbYes      = UITypes.TMsgDlgBtn.mbYes;
+  mbNo       = UITypes.TMsgDlgBtn.mbNo;
+  mbOK       = UITypes.TMsgDlgBtn.mbOK;
+  mbCancel   = UITypes.TMsgDlgBtn.mbCancel;
+  mbAbort    = UITypes.TMsgDlgBtn.mbAbort;
+  mbRetry    = UITypes.TMsgDlgBtn.mbRetry;
+  mbIgnore   = UITypes.TMsgDlgBtn.mbIgnore;
+  mbAll      = UITypes.TMsgDlgBtn.mbAll;
+  mbNoToAll  = UITypes.TMsgDlgBtn.mbNoToAll;
+  mbYesToAll = UITypes.TMsgDlgBtn.mbYesToAll;
+  mbHelp     = UITypes.TMsgDlgBtn.mbHelp;
+  mbClose    = UITypes.TMsgDlgBtn.mbClose;
 
   // Combinations of buttons.
   mbYesNoCancel = [mbYes, mbNo, mbCancel];

@@ -6,7 +6,7 @@ interface
 
 uses
   // LazUtils
-  System.UITypes;
+  UITypes;
 
 type
   TLazMessageWorker = function(const aCaption, aMsg: string;
