@@ -4123,12 +4123,12 @@ var
     AnyCase: Boolean;
     Dir, FoundFilename: String;
   begin
-    Dir:=ExtractFilePath(FMainSourceFilename);
     AnyCase:=Values.IsDefined('PAS2JS');
 
     if HasPathDelims then begin
       // find an include file with a path e.g. 'foo/bar.inc'
       // -> search in 'foo/', do not search in include path
+      Dir:=ExtractFilePath(SrcFilename);
       if Dir='' then begin
         // searching in virtual directory is not yet supported
         exit(false);
@@ -4149,6 +4149,7 @@ var
     end;
 
     // search in dir of unit
+    Dir:=ExtractFilePath(FMainSourceFilename);
     FoundFilename:=DirectoryCachePool.FindIncludeFileInDirectory(Dir,RelFilename,AnyCase);
     if FoundFilename<>'' then begin
       {$IFDEF VerboseIncludeSearch}
