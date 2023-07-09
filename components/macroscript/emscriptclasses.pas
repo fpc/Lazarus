@@ -363,6 +363,42 @@ begin
   Result := tbtu32(dat^);
 end;
 
+function GetMsgDlgButtonsFromStack(Stack: TPSStack; Idx: Integer): TMsgDlgButtons; inline;
+var
+  val: Cardinal;
+begin
+  val := GetSetFromStack(Stack, Idx);
+  {$IF sizeof(TMsgDlgButtons) = 2}
+  Result := TMsgDlgButtons(word(val));
+  {$ELSE}
+  Result := TMsgDlgButtons(val);
+  {$ENDIF}
+end;
+
+function GetSynSearchOptionsFromStack(Stack: TPSStack; Idx: Integer): TSynSearchOptions; inline;
+var
+  val: Cardinal;
+begin
+  val := GetSetFromStack(Stack, Idx);
+  {$IF sizeof(TSynSearchOptions) = 2}
+  Result := TSynSearchOptions(word(val));
+  {$ELSE}
+  Result := TSynSearchOptions(val);
+  {$ENDIF}
+end;
+
+function GetSynEditTextFlagsFromStack(Stack: TPSStack; Idx: Integer): TSynEditTextFlags; inline;
+var
+  val: Cardinal;
+begin
+  val := GetSetFromStack(Stack, Idx);
+  {$IF sizeof(TSynEditTextFlags) = 2}
+  Result := TSynEditTextFlags(word(val));
+  {$ELSE}
+  Result := TSynEditTextFlags(val);
+  {$ENDIF}
+end;
+
 function GetEnumFromStack(Stack: TPSStack; Idx: Integer): Cardinal;
 var
   val: PPSVariant;
@@ -449,14 +485,14 @@ begin
         CheckMinParamCount(5, 'MessageDlg');
         Stack.SetInt(-1,
           MessageDlg(Stack.GetAnsiString(-2), TMsgDlgType(Stack.GetUInt(-3)),
-            TMsgDlgButtons(GetSetFromStack(Stack, -4)), Stack.GetInt(-5))
+            GetMsgDlgButtonsFromStack(Stack, -4), Stack.GetInt(-5))
         );
       end;
     FunctionId_MessageDlgPos: begin // MessageDlgPos(Msg: string; DlgType :TMsgDlgType; Buttons :TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer): Integer
         CheckMinParamCount(7, 'MessageDlgPos');
         Stack.SetInt(-1,
           MessageDlgPos(Stack.GetAnsiString(-2), TMsgDlgType(Stack.GetUInt(-3)),
-            TMsgDlgButtons(GetSetFromStack(Stack, -4)), Stack.GetInt(-5),
+            GetMsgDlgButtonsFromStack(Stack, -4), Stack.GetInt(-5),
             Stack.GetInt(-6), Stack.GetInt(-7) )
         );
       end;
@@ -464,7 +500,7 @@ begin
         CheckMinParamCount(8, 'MessageDlgPosHelp');
         Stack.SetInt(-1,
           MessageDlgPosHelp(Stack.GetAnsiString(-2), TMsgDlgType(Stack.GetUInt(-3)),
-            TMsgDlgButtons(GetSetFromStack(Stack, -4)), Stack.GetInt(-5),
+            GetMsgDlgButtonsFromStack(Stack, -4), Stack.GetInt(-5),
             Stack.GetInt(-6), Stack.GetInt(-7), Stack.GetAnsiString(-8))
         );
       end;
@@ -696,7 +732,7 @@ begin
         if not Result then
           exit;
         Stack.SetInt(-1,
-          Obj.SearchReplace(Stack.GetAnsiString(-3), Stack.GetAnsiString(-4), TSynSearchOptions(GetSetFromStack(Stack, -5)))
+          Obj.SearchReplace(Stack.GetAnsiString(-3), Stack.GetAnsiString(-4), GetSynSearchOptionsFromStack(Stack, -5))
         );
       end;
     FunctionId_SearchReplaceEx: begin  // function SearchReplaceEx(ASearch, AReplace: string; AOptions: TSynSearchOptions; AStart: TPoint): integer;
@@ -706,7 +742,7 @@ begin
           exit;
         Stack.SetInt(-1,
           Obj.SearchReplaceEx(Stack.GetAnsiString(-3), Stack.GetAnsiString(-4),
-            TSynSearchOptions(GetSetFromStack(Stack, -5)), GetVarPointFromStack(Stack, -6)^)
+            GetSynSearchOptionsFromStack(Stack, -5), GetVarPointFromStack(Stack, -6)^)
         );
       end;
 
@@ -775,7 +811,7 @@ begin
         if not Result then
           exit;
         Obj.SetTextBetweenPoints(GetVarPointFromStack(Stack, -2)^, GetVarPointFromStack(Stack, -3)^,
-          Stack.GetAnsiString(-4), TSynEditTextFlags(GetSetFromStack(Stack, -5)),
+          Stack.GetAnsiString(-4), GetSynEditTextFlagsFromStack(Stack, -5),
           TSynCaretAdjustMode(Stack.GetUInt(-6)), TSynMarksAdjustMode(Stack.GetUInt(-7)),
           TSynSelectionMode(Stack.GetUInt(-8))
         );
