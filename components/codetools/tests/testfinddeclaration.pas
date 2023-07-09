@@ -1275,8 +1275,14 @@ var
     FoundFilename: String;
   DirDef, UnitPathDef: TDefineTemplate;
   DirCache: TCTDirectoryCachePool;
+  Cache: TCTStarDirectoryCache;
+  i: Integer;
 begin
   StarDir:=ExpandFileNameUTF8(SetDirSeparators('moduletests/star'));
+
+  DirCache:=CodeToolBoss.DirectoryCachePool;
+  if DirCache.StarDirectoryExcludes.IndexOf('ignore')<0 then
+    DirCache.StarDirectoryExcludes.Add('ignore');
 
   DirDef:=TDefineTemplate.Create('TTestFindDeclaration_UnitSearch','','',StarDir,da_Directory);
   try
@@ -1293,8 +1299,6 @@ begin
 
     UnitPath:=CodeToolBoss.GetUnitPathForDirectory(StarDir+PathDelim+'green');
     AssertEquals('unit path',Expected,UnitPath);
-
-    DirCache:=CodeToolBoss.DirectoryCachePool;
 
     // searching a lowercase unit
     anUnitName:='Star.Red1';
@@ -1316,6 +1320,17 @@ begin
     FoundFilename:=DirCache.FindUnitSourceInCompletePath(StarDir,anUnitName,InFilename,true);
     Expected:=StarDir+PathDelim+'green/Star.Green3.pas';
     AssertEquals('searching '+anUnitName,Expected,FoundFilename);
+
+    // check excludes
+    Cache:=DirCache.GetStarCache(StarDir,ctsdStarStar);
+    for i:=0 to Cache.Listing.Count-1 do begin
+      FoundFilename:=Cache.Listing.GetSubDirFilename(i);
+      if (FoundFilename[1]='.')
+          or (Pos(PathDelim+'.',FoundFilename)>0)
+          or (Pos('ignore',FoundFilename)>0) then
+        Fail('Failed to exclude "'+FoundFilename+'"');
+    end;
+
   finally
     CodeToolBoss.DefineTree.RemoveDefineTemplate(DirDef);
   end;
@@ -1344,6 +1359,10 @@ var
 begin
   StarDir:=ExpandFileNameUTF8(SetDirSeparators('moduletests/star'));
 
+  DirCache:=CodeToolBoss.DirectoryCachePool;
+  if DirCache.StarDirectoryExcludes.IndexOf('ignore')<0 then
+    DirCache.StarDirectoryExcludes.Add('ignore');
+
   DirDef:=TDefineTemplate.Create('TTestFindDeclaration_IncudeSearch','','',StarDir,da_Directory);
   try
     CodeToolBoss.DefineTree.Add(DirDef);
@@ -1359,8 +1378,6 @@ begin
 
     IncPath:=CodeToolBoss.GetIncludePathForDirectory(StarDir+PathDelim+'green');
     AssertEquals('include path',Expected,IncPath);
-
-    DirCache:=CodeToolBoss.DirectoryCachePool;
 
     // searching a lowercase include
     IncFilename:='Star.inc';

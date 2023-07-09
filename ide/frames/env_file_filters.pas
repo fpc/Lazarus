@@ -1,4 +1,9 @@
-unit env_file_filters;
+{
+Abstract:
+  Frame for environment options for main paths, like
+  Lazarus directory, compiler path.
+}
+unit Env_File_Filters;
 
 {$mode objfpc}{$H+}
 
@@ -17,19 +22,22 @@ uses
 
 const
   FileDialogFilterConfigFile = 'filefilters.xml';
+
 type
 
   { TFileFiltersOptionsFrame }
 
   TFileFiltersOptionsFrame = class(TAbstractIDEOptionsEditor)
+    edStarDirExcludes: TEdit;
     grdFileFilters: TStringGrid;
+    lblStarDirExcludes: TLabel;
     MenuItem1: TMenuItem;
     SetDefaultMenuItem: TMenuItem;
     pmGrid: TPopupMenu;
     pmiAddRow: TMenuItem;
     pmiDelRow: TMenuItem;
     pmiInsRow: TMenuItem;
-    lblTitle: TLabel;
+    lblFileDlgFilters: TLabel;
     procedure grdFileFiltersKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure pmiAddRowClick(Sender: TObject);
     procedure pmiDelRowClick(Sender: TObject);
@@ -45,7 +53,6 @@ type
     procedure WriteSettings({%H-}AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
-
 
 procedure LoadFileDialogFilter;
 procedure SaveFileDialogFilter;
@@ -63,7 +70,6 @@ const
   KeyFilterCount    = 'Count';
   KeyFilterName     = 'Name';
   KeyFilterMask     = 'Mask';
-
 
 procedure LoadFileDialogFilter;
 var
@@ -278,7 +284,7 @@ end;
 
 procedure TFileFiltersOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  lblTitle.Caption := lisFileFiltersTitle;
+  lblFileDlgFilters.Caption := lisFileFiltersTitle;
   grdFileFilters.DefaultColWidth := 40;
   grdFileFilters.RowCount := 1;
 
@@ -290,6 +296,8 @@ begin
   pmiInsRow.Caption := lisFileFiltersInsertRow;
 
   SetDefaultMenuItem.Caption := lisFileFiltersSetDefaults;
+
+  lblStarDirExcludes.Caption:='Excludes for * and ** in unit and include search paths';
 end;
 
 procedure TFileFiltersOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -298,6 +306,8 @@ begin
   fLoaded:=true;
 
   LoadGridFromFileDialogFilter(grdFileFilters,EnvironmentOptions.FileDialogFilter,false);
+
+  edStarDirExcludes.Text:=EnvironmentOptions.StarDirectoryExcludes;
 end;
 
 procedure TFileFiltersOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -314,6 +324,8 @@ begin
     EnvironmentOptions.FileDialogFilter:=Filter;
     SaveFileDialogFilter;
   end;
+
+  EnvironmentOptions.StarDirectoryExcludes:=edStarDirExcludes.Text;
 end;
 
 class function TFileFiltersOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

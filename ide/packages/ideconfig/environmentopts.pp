@@ -108,6 +108,7 @@ const
   DefaultBackupAddExt = 'bak';
   DefaultBackupMaxCounter = 9;
   DefaultBackupSubDirectory = 'backup';
+  DefaultStarDirectoryExcludes = '.*;'+DefaultBackupSubDirectory;
 
 { Naming }
 
@@ -255,6 +256,7 @@ type
     FFileHasChangedOnDisk: boolean;
     FMaxExtToolsInParallel: integer;
     FOldLazarusVersion: string;
+    FStarDirectoryExcludes: string;
     FXMLCfg: TRttiXMLConfig;
     FConfigStore: TXMLOptionsStorage;
     // auto save
@@ -435,6 +437,8 @@ type
     property CompilerMessagesFileHistory: TStringList read FCompilerMessagesFileHistory;
     // ToDo: Remove this from trunk after Lazarus 2.2.0 is out. Now for backwards compatibility.
     property ManyBuildModesSelection: TStringList read FManyBuildModesSelection;
+    // global excludes for * and ** in unit paths
+    property StarDirectoryExcludes: string read FStarDirectoryExcludes write FStarDirectoryExcludes;
 
     // Primary-config verification
     property LastCalledByLazarusFullPath: String read FLastCalledByLazarusFullPath write FLastCalledByLazarusFullPath;
@@ -516,6 +520,8 @@ type
     // default template for each 'new item' category: Name=Path, Value=TemplateName
     property NewFormTemplate: string read FNewFormTemplate write FNewFormTemplate;
     property NewUnitTemplate: string read FNewUnitTemplate write FNewUnitTemplate;
+
+    // file filters
     property FileDialogFilter: string read FFileDialogFilter write FFileDialogFilter;
   end;
 
@@ -704,6 +710,7 @@ begin
   CompilerMessagesFilename:='';
   FCompilerMessagesFileHistory:=TStringList.Create;
   FManyBuildModesSelection:=TStringList.Create;
+  FStarDirectoryExcludes:=DefaultStarDirectoryExcludes;
 
   // recent files and directories
   FRecentOpenFiles:=TStringList.Create;
@@ -917,6 +924,7 @@ begin
   CompilerMessagesFilename:=FXMLCfg.GetValue(Path+'CompilerMessagesFilename/Value',CompilerMessagesFilename);
   LoadRecentList(FXMLCfg,FCompilerMessagesFileHistory,Path+'CompilerMessagesFilename/History/',rltFile);
   LoadRecentList(FXMLCfg,FManyBuildModesSelection,Path+'ManyBuildModesSelection/',rltCaseInsensitive);
+  StarDirectoryExcludes:=FXMLCfg.GetValue(Path+'StarDirExcludes/Value',DefaultStarDirectoryExcludes);
 
   // Primary-config verification
   FLastCalledByLazarusFullPath:=FXMLCfg.GetValue(Path+'LastCalledByLazarusFullPath/Value','');
@@ -1139,6 +1147,7 @@ begin
   FXMLCfg.SetDeleteValue(Path+'FppkgConfigFile/Value',FppkgConfigFile,'');
   SaveRecentList(FXMLCfg,FFppkgConfigFileHistory,Path+'FppkgConfigFile/History/');
   // Note: ManyBuildModesSelection is not stored here any more. Moved to project settings.
+  FXMLCfg.SetDeleteValue(Path+'StarDirExcludes/Value',StarDirectoryExcludes,DefaultStarDirectoryExcludes);
 
   // Primary-config verification
   FXMLCfg.SetDeleteValue(Path+'LastCalledByLazarusFullPath/Value',FLastCalledByLazarusFullPath,'');

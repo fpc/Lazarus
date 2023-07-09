@@ -8,7 +8,7 @@
  
   Author: Mattias Gaertner
 
-  Abtract:
+  Abstract:
    Registers a new designer base class (like TForm or TDataModule) in the IDE.
 }
 unit CustomComponentClass;

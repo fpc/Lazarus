@@ -9,11 +9,15 @@ object FileFiltersOptionsFrame: TFileFiltersOptionsFrame
   DesignLeft = 386
   DesignTop = 179
   object grdFileFilters: TStringGrid
+    AnchorSideTop.Control = lblFileDlgFilters
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = lblStarDirExcludes
     Left = 8
-    Height = 281
-    Top = 32
+    Height = 223
+    Top = 27
     Width = 440
     Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Top = 6
     ColCount = 3
     Columns = <    
       item
@@ -30,16 +34,48 @@ object FileFiltersOptionsFrame: TFileFiltersOptionsFrame
     TabOrder = 0
     OnKeyDown = grdFileFiltersKeyDown
   end
-  object lblTitle: TLabel
-    Left = 8
-    Height = 20
-    Top = 9
-    Width = 46
-    Caption = 'lblTitle'
+  object lblFileDlgFilters: TLabel
+    Left = 6
+    Height = 15
+    Top = 6
+    Width = 85
+    Caption = 'lblFileDlgFilters'
+  end
+  object lblStarDirExcludes: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = edStarDirExcludes
+    Left = 6
+    Height = 15
+    Top = 260
+    Width = 100
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 10
+    BorderSpacing.Bottom = 6
+    Caption = 'lblStarDirExcludes'
+  end
+  object edStarDirExcludes: TEdit
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblStarDirExcludes
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 6
+    Height = 32
+    Top = 281
+    Width = 443
+    Anchors = [akLeft, akRight, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
+    TabOrder = 1
   end
   object pmGrid: TPopupMenu
-    left = 205
-    top = 75
+    Left = 205
+    Top = 75
     object pmiAddRow: TMenuItem
       Caption = 'Add row'
       OnClick = pmiAddRowClick

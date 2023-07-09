@@ -5112,6 +5112,7 @@ begin
   FPCSrcDirChanged:=false;
   FPCCompilerChanged:=OldCompilerFilename<>EnvironmentOptions.CompilerFilename;
   LazarusSrcDirChanged:=false;
+  CodeToolBoss.DirectoryCachePool.StarDirectoryExcludes.DelimitedText:=EnvironmentOptions.StarDirectoryExcludes;
   ChangeMacroValue('LazarusDir',EnvironmentOptions.GetParsedLazarusDirectory);
   ChangeMacroValue('FPCSrcDir',EnvironmentOptions.GetParsedFPCSourceDirectory);
   MainBuildBoss.EnvOptsChanged;
@@ -9786,11 +9787,12 @@ begin
     Variables[ExternalMacroStart+'LCLWidgetType']:=GetLCLWidgetTypeName;
     Variables[ExternalMacroStart+'FPCSrcDir']:=EnvironmentOptions.GetParsedFPCSourceDirectory;
   end;
+  CodeToolBoss.DirectoryCachePool.StarDirectoryExcludes.DelimitedText:=EnvironmentOptions.StarDirectoryExcludes;
 
   // the first template is the "use default" flag
   CreateUseDefaultsFlagTemplate;
 
-  // load include file relationships
+  // load cached include file relationships
   AFilename:=AppendPathDelim(GetPrimaryConfigPath)+CodeToolsIncludeLinkFile;
   if FileExistsCached(AFilename) then
     CodeToolBoss.SourceCache.LoadIncludeLinksFromFile(AFilename);

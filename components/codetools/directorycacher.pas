@@ -2162,10 +2162,15 @@ var
   function IsExcluded(const CurSubDir: string): boolean;
   var
     i: Integer;
+    CurDir, ExcludeMask: String;
   begin
-    for i:=0 to Excludes.Count-1 do
-      if FilenameIsMatching(Excludes[i],CurSubDir,true) then
+    CurDir:=ExtractFilename(CurSubDir);
+    for i:=0 to Excludes.Count-1 do begin
+      ExcludeMask:=Excludes[i];
+      if FilenameIsMatching(ExcludeMask,CurSubDir,true)
+          or FilenameIsMatching(ExcludeMask,CurDir,true) then
         exit(true);
+    end;
     Result:=false;
   end;
 
@@ -2453,6 +2458,7 @@ begin
     FileStateCache.AddChangeTimeStampHandler(@OnFileStateCacheChangeTimeStamp);
   FStarDirectoryExcludes:=TStringListUTF8Fast.Create;
   FStarDirectoryExcludes.Delimiter:=';';
+  FStarDirectoryExcludes.Add('.*');
 end;
 
 destructor TCTDirectoryCachePool.Destroy;

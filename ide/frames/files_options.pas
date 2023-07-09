@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************
 
-  Abtract:
+  Abstract:
     Frame for environment options for main paths, like
     Lazarus directory, compiler path.
 }
