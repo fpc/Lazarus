@@ -806,11 +806,13 @@ type
     function IgnoreErrorAfterValid: boolean;
     function CleanPosIsAfterIgnorePos(CleanPos: integer): boolean;
     function LoadSourceCaseLoUp(const AFilename: string; AllowVirtual: boolean = false): TSourceLog;
-    function LoadIncludeFile(const AFilename: string; AllowVirtual: boolean = false): TSourceLog;
+    function LoadIncludeFile(
+      const AFilename: string; // epxanded filename or virtual file
+      AllowVirtual: boolean = false): TSourceLog; // trying different case and extensions, does not search in include path
     class function GetPascalCompiler(Evals: TExpressionEvaluator): TPascalCompiler;
 
     function SearchIncludeFile(AFilename: string; out NewCode: TSourceLog;
-                         var MissingIncludeFile: TMissingIncludeFile): boolean;
+                         var MissingIncludeFile: TMissingIncludeFile): boolean; // search in includepath
     {$IFDEF GuessMisplacedIfdef}
     function GuessMisplacedIfdefEndif(StartCursorPos: integer;
                                       StartCode: pointer;
@@ -818,7 +820,6 @@ type
                                       out EndCode: Pointer): boolean;
     {$ENDIF}
     function GetHiddenUsedUnits: string; // comma separated
-    property DirectoryCachePool: TCTDirectoryCachePool read FDirectoryCachePool write FDirectoryCachePool;
 
     // global write lock
     procedure ActivateGlobalWriteLock;
@@ -829,6 +830,7 @@ type
                          read FOnSetGlobalWriteLock write FOnSetGlobalWriteLock;
 
     // properties
+    property DirectoryCachePool: TCTDirectoryCachePool read FDirectoryCachePool write FDirectoryCachePool;
     property OnLoadSource: TOnLoadSource read FOnLoadSource write FOnLoadSource;
     property OnDeleteSource: TOnDeleteSource read FOnDeleteSource write FOnDeleteSource;
     property OnGetSourceStatus: TOnGetSourceStatus
@@ -4042,7 +4044,7 @@ end;
 function TLinkScanner.LoadIncludeFile(const AFilename: string;
   AllowVirtual: boolean): TSourceLog;
 var
-  Path, FileNameOnly: string;
+  Path, FileNameNoPath: string;
   SecondaryFileName: String;
 
   function Search(const ShortFilename: string; var r: TSourceLog): boolean;
@@ -4070,15 +4072,15 @@ begin
   Path:=ResolveDots(ExtractFilePath(AFilename));
   if (not AllowVirtual) and not FilenameIsAbsolute(Path) then
     exit(nil);
-  FileNameOnly:=ExtractFilename(AFilename);
+  FileNameNoPath:=ExtractFilename(AFilename);
 
-  if Search(FileNameOnly,Result) then exit;
+  if Search(FileNameNoPath,Result) then exit;
 
-  if ExtractFileExt(FileNameOnly)='' then begin
+  if ExtractFileExt(FileNameNoPath)='' then begin
     // search with the default file extensions
-    if Search(FileNameOnly+'.inc',Result) then exit;
-    if Search(FileNameOnly+'.pp',Result) then exit;
-    if Search(FileNameOnly+'.pas',Result) then exit;
+    if Search(FileNameNoPath+'.inc',Result) then exit;
+    if Search(FileNameNoPath+'.pp',Result) then exit;
+    if Search(FileNameNoPath+'.pas',Result) then exit;
   end;
 
   Result:=nil;
@@ -4107,8 +4109,6 @@ end;
 function TLinkScanner.SearchIncludeFile(AFilename: string; out
   NewCode: TSourceLog; var MissingIncludeFile: TMissingIncludeFile): boolean;
 var
-  IncludePath: string;
-  ExpFilename: string;
   HasPathDelims: Boolean;
 
   procedure SetMissingIncludeFile;
@@ -4118,90 +4118,78 @@ var
     MissingIncludeFile.IncludePath:=Values.Variables[ExternalMacroStart+'INCPATH'];
   end;
 
-  function SearchPath(const APath, RelFilename: string): boolean;
-  begin
-    Result:=false;
-    if APath='' then exit;
-    {$IFDEF VerboseIncludeSearch}
-    DebugLn('TLinkScanner.SearchPath CurIncPath="',APath,'" / "',RelFilename,'"');
-    {$ENDIF}
-    ExpFilename:=AppendPathDelim(APath)+RelFilename;
-    if not FilenameIsAbsolute(ExpFilename) then
-      ExpFilename:=ExtractFilePath(FMainSourceFilename)+ExpFilename;
-    NewCode:=LoadIncludeFile(ExpFilename);
-    Result:=NewCode<>nil;
-  end;
-
-  function Search(const RelFilename: string): boolean;
+  function Search(RelFilename: string): boolean;
   var
-    IsVirtualUnit: Boolean;
-    Dir, CurPath: String;
-    PathStart, PathEnd: integer;
+    AnyCase: Boolean;
+    Dir, FoundFilename: String;
   begin
     Dir:=ExtractFilePath(FMainSourceFilename);
-    IsVirtualUnit:=not FilenameIsAbsolute(Dir);
-    if IsVirtualUnit then begin
-      // main source is virtual -> allow virtual include file
-      NewCode:=LoadIncludeFile(RelFilename,true);
-      Result:=(NewCode<>nil);
-      if Result then exit;
-    end else begin
-      // main source has absolute filename
-      // -> search in directory of unit
-      ExpFilename:=Dir+RelFilename;
-      NewCode:=LoadIncludeFile(ExpFilename);
-      Result:=(NewCode<>nil);
-      if Result then exit;
+    AnyCase:=Values.IsDefined('PAS2JS');
+
+    if HasPathDelims then begin
+      // find an include file with a path e.g. 'foo/bar.inc'
+      // -> search in 'foo/', do not search in include path
+      if Dir='' then begin
+        // searching in virtual directory is not yet supported
+        exit(false);
+      end;
+
+      Dir:=ResolveDots(Dir+ExtractFilePath(RelFilename));
+      RelFilename:=ExtractFileName(RelFilename);
+      FoundFilename:=DirectoryCachePool.FindIncludeFileInDirectory(Dir,RelFilename,AnyCase);
+      if FoundFilename<>'' then begin
+        {$IFDEF VerboseIncludeSearch}
+        DebugLn('TLinkScanner.Search Filename="',AFilename,'" Found="',FoundFilename,'"');
+        {$ENDIF}
+        NewCode:=FOnLoadSource(Self,FoundFilename,true);
+        if (NewCode<>nil) then
+          exit(true);
+      end;
+      exit(false);
+    end;
+
+    // search in dir of unit
+    FoundFilename:=DirectoryCachePool.FindIncludeFileInDirectory(Dir,RelFilename,AnyCase);
+    if FoundFilename<>'' then begin
+      {$IFDEF VerboseIncludeSearch}
+      DebugLn('TLinkScanner.Search Filename="',AFilename,'" Found="',FoundFilename,'"');
+      {$ENDIF}
+      NewCode:=FOnLoadSource(Self,FoundFilename,true);
+      if (NewCode<>nil) then
+        exit(true);
+    end;
+
+    // search in include path
+    FoundFilename:=DirectoryCachePool.FindIncludeFileInCompletePath(Dir,RelFilename,AnyCase);
+    if FoundFilename<>'' then begin
+      {$IFDEF VerboseIncludeSearch}
+      DebugLn('TLinkScanner.Search Filename="',AFilename,'" Found="',FoundFilename,'"');
+      {$ENDIF}
+      NewCode:=FOnLoadSource(Self,FoundFilename,true);
+      if (NewCode<>nil) then
+        exit(true);
     end;
 
     if not HasPathDelims then begin
-      // file without path -> search in inc paths
-
-      if MissingIncludeFile=nil then
-        IncludePath:=Values.Variables[ExternalMacroStart+'INCPATH']
-      else
-        IncludePath:=MissingIncludeFile.IncludePath;
-
-      {$IFDEF VerboseIncludeSearch}
-      DebugLn('TLinkScanner.SearchIncludeFile IncPath="',IncludePath,'"');
-      {$ENDIF}
-      PathStart:=1;
-      PathEnd:=PathStart;
-      while PathEnd<=length(IncludePath) do begin
-        if IncludePath[PathEnd]=';' then begin
-          if PathEnd>PathStart then begin
-            CurPath:=TrimFilename(copy(IncludePath,PathStart,PathEnd-PathStart));
-            Result:=SearchPath(CurPath,RelFilename);
-            if Result then exit;
-          end;
-          PathStart:=PathEnd+1;
-          PathEnd:=PathStart;
-        end else
-          inc(PathEnd);
-      end;
-      if PathEnd>PathStart then begin
-        CurPath:=TrimFilename(copy(IncludePath,PathStart,PathEnd-PathStart));
-        Result:=SearchPath(CurPath,RelFilename);
-        if Result then exit;
-      end;
-
-      // then search the include file in directories defines in fpc.cfg (by -Fi option)
-      if (not IsVirtualUnit) and OnFindIncFileInFPCSrcDir(Self,AFilename,ExpFilename) then
+      // search the include file in directories defines in fpc.cfg (by -Fi option)
+      if FilenameIsAbsolute(Dir)
+          and Values.IsDefined('FPC')
+          and OnFindIncFileInFPCSrcDir(Self,AFilename,FoundFilename) then
       begin
-        NewCode:=FOnLoadSource(Self,ExpFilename,true);
-        Result:=(NewCode<>nil);
-        exit;
+        NewCode:=FOnLoadSource(Self,FoundFilename,true);
+        if NewCode<>nil then
+          exit(true);
       end;
     end;
 
-    // search in directory of source of include directive
-    // Note: fpc 3.2.2 does not do that
+    // last: search in directory of source of include directive
+    // Note: fpc 3.2.2 does not do that, but for codetools it is more convenient to find it
     if FilenameIsAbsolute(SrcFilename)
     and (CompareFilenames(SrcFilename,FMainSourceFilename)<>0) then begin
-      ExpFilename:=ExtractFilePath(SrcFilename)+RelFilename;
-      NewCode:=LoadIncludeFile(ExpFilename);
-      Result:=(NewCode<>nil);
-      if Result then exit;
+      FoundFilename:=ExtractFilePath(SrcFilename)+RelFilename;
+      NewCode:=LoadIncludeFile(FoundFilename);
+      if NewCode<>nil then
+        exit(true);
     end;
 
     Result:=false;
@@ -4212,7 +4200,6 @@ begin
   DebugLn('TLinkScanner.SearchIncludeFile Filename="',AFilename,'"');
   {$ENDIF}
   NewCode:=nil;
-  IncludePath:='';
 
   // beware of 'dir/file.inc'
   HasPathDelims:=(System.Pos('/',AFilename)>0) or (System.Pos('\',AFilename)>0);

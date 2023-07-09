@@ -384,6 +384,12 @@ type
     function GetNamespacesForDirectory(const Directory: string;
                           UseCache: boolean = true): string;// value of macro #Namespaces
 
+    // simple global defines for tests and simple projects
+    function GetGlobalDefines(CreateIfNotExists: boolean = true): TDefineTemplate;
+    function SetGlobalPath(const DefName, Description, MacroName, SearchPath: string): TDefineTemplate;
+    function SetGlobalUnitPath(const UnitPath: string): TDefineTemplate;
+    function SetGlobalIncludePath(const IncludePath: string): TDefineTemplate;
+
     // miscellaneous
     property OnGetMethodName: TOnGetMethodname read FOnGetMethodName
                                                write FOnGetMethodName;
@@ -1770,6 +1776,47 @@ begin
     if UnitSet<>nil then
       Result:=MergeWithDelimiter(Result,UnitSet.GetUnitScopes,';');
   end;
+end;
+
+function TCodeToolManager.GetGlobalDefines(CreateIfNotExists: boolean
+  ): TDefineTemplate;
+begin
+  Result:=DefineTree.FindDefineTemplateByName(StdDefTemplGlobal,true);
+  if (Result=nil) and CreateIfNotExists then begin
+    Result:=TDefineTemplate.Create(StdDefTemplGlobal,'Global definitions','','',da_Block);
+    DefineTree.AddFirst(Result);
+  end;
+end;
+
+function TCodeToolManager.SetGlobalPath(const DefName, Description, MacroName,
+  SearchPath: string): TDefineTemplate;
+var
+  GlobalDef: TDefineTemplate;
+  NewValue: String;
+begin
+  GlobalDef:=GetGlobalDefines;
+  Result:=GlobalDef.FindChildByName(DefName);
+  NewValue:='$('+MacroName+');'+SearchPath;
+  if Result=nil then begin
+    Result:=TDefineTemplate.Create(DefName,Description,MacroName,
+      NewValue,da_DefineRecurse);
+  end else if Result.Value=NewValue then
+    exit
+  else
+    Result.Value:=NewValue;
+  DefineTree.ClearCache;
+end;
+
+function TCodeToolManager.SetGlobalUnitPath(const UnitPath: string
+  ): TDefineTemplate;
+begin
+  Result:=SetGlobalPath('UnitPath','Unit search path',UnitPathMacroName,UnitPath);
+end;
+
+function TCodeToolManager.SetGlobalIncludePath(const IncludePath: string
+  ): TDefineTemplate;
+begin
+  Result:=SetGlobalPath('IncPath','Include search path',IncludePathMacroName,IncludePath);
 end;
 
 procedure TCodeToolManager.FreeListOfPCodeXYPosition(var List: TFPList);

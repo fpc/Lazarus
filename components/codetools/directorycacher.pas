@@ -178,7 +178,7 @@ type
                       const FileCase: TCTSearchFileCase): string; virtual; abstract;
     function FindIncludeFile(const IncFilename: string; AnyCase: boolean): string; virtual; abstract;
     function FindUnitSource(const AUnitName: string; AnyCase: boolean): string; virtual; abstract;
-    property Directory: string read FDirectory;
+    property Directory: string read FDirectory; // with trailing pathdelim
     property Pool: TCTDirectoryCachePool read FPool;
   end;
 
@@ -201,8 +201,7 @@ type
     procedure AddToCache(const UnitSrc: TCTDirectoryUnitSources;
                          const Search, Filename: string);
   public
-    constructor Create(const TheDirectory: string;
-                       ThePool: TCTDirectoryCachePool);
+    constructor Create(const TheDirectory: string; ThePool: TCTDirectoryCachePool);
     destructor Destroy; override;
     procedure CalcMemSize(Stats: TCTMemStats); override;
     procedure Reference;
@@ -211,23 +210,27 @@ type
     function IndexOfFileCaseSensitive(ShortFilename: PChar): integer; override;
     function FindFile(const ShortFilename: string;
                       const FileCase: TCTSearchFileCase): string; override;
-    function FindIncludeFile(const IncFilename: string; AnyCase: boolean
-      ): string; override;
     function FileAge(const ShortFilename: string): TCTFileAgeTime;
     function FileAttr(const ShortFilename: string): TCTDirectoryListingAttr;
     function FileSize(const ShortFilename: string): TCTDirectoryListingSize;
+    // unit link (for fpc ppu files to fpc src file)
     function FindUnitLink(const AUnitName: string): string;
-    function FindUnitInUnitSet(const AUnitName: string;
-                               SrcSearchRequiresPPU: boolean = true): string;
-    function FindCompiledUnitInUnitSet(const AUnitName: string): string;
+    function FindUnitInUnitSet(const AUnitName: string; SrcSearchRequiresPPU: boolean = true): string;
+    // find unit source
     function FindUnitSource(const AUnitName: string; AnyCase: boolean): string; override;
     function FindUnitSourceInCleanSearchPath(const AUnitName,
                                   SearchPath: string; AnyCase: boolean): string; // search in unitpath
     function FindUnitSourceInCompletePath(var AUnitName, InFilename: string; // search in unitpath and unitpaths of output dirs
                AnyCase: boolean; FPCSrcSearchRequiresPPU: boolean = false;
                const AddNameSpaces: string = ''): string;
-    function FindCompiledUnitInCompletePath(const AnUnitname: string;
-                                            AnyCase: boolean): string;
+    // find ppu/dcu file
+    function FindCompiledUnitInUnitSet(const AUnitName: string): string;
+    function FindCompiledUnitInCompletePath(const AnUnitname: string; AnyCase: boolean): string;
+    // include files
+    function FindIncludeFile(const IncFilename: string; AnyCase: boolean): string; override;
+    function FindIncludeFileInPath(IncFilename: string; AnyCase: boolean): string;
+    function FindIncludeFileInCleanPath(IncFilename, SearchPath: string; AnyCase: boolean): string;
+
     procedure IterateFPCUnitsInSet(const Iterate: TCTOnIterateFile);
     procedure UpdateListing;
     procedure WriteListing;
@@ -239,7 +242,7 @@ type
     property Listing: TCTDirectoryListing read FListing;
   end;
 
-  { TCTStarDirectoryCache }
+  { TCTStarDirectoryCache - a cache for a directory and its sub directories, e.g. searching in '/foo/**' }
 
   TCTStarDirectoryCache = class(TCTDirectoryBaseCache)
   private
@@ -346,8 +349,10 @@ type
                                    const Iterate: TCTOnIterateFile);
     function FindDiskFilename(const Filename: string;
                               {%H-}SearchCaseInsensitive: boolean = false): string; // using Pascal case insensitivity, not UTF-8
-    function FindIncludeFileInDirectory(const Directory, IncFileName: string;
+    function FindIncludeFileInDirectory(Directory, IncFileName: string;
                                         AnyCase: boolean = false): string;
+    function FindIncludeFileInCompletePath(Directory, IncFilename: string;
+                                           AnyCase: boolean = false): string;
     function FindUnitInDirectory(const Directory, AUnitName: string;
                                  AnyCase: boolean = false): string;
     function FindVirtualFile(const Filename: string): string;
@@ -378,7 +383,7 @@ function CompareCTDirectoryCaches(Data1, Data2: Pointer): integer;
 function CompareAnsiStringAndDirectoryCache(Dir, Cache: Pointer): integer;
 
 function ComparePCharFirstCaseInsAThenCase(Data1, Data2: Pointer): integer; // insensitive ASCII then byte wise
-function ComparePCharCaseInsensitiveA(Data1, Data2: Pointer): integer; // insensitive ASCII
+function ComparePCharCaseInsensitiveASCII(Data1, Data2: Pointer): integer; // insensitive ASCII
 function ComparePCharCaseSensitive(Data1, Data2: Pointer): integer; // byte wise
 
 // star directories
@@ -465,12 +470,12 @@ end;
 
 function ComparePCharFirstCaseInsAThenCase(Data1, Data2: Pointer): integer;
 begin
-  Result:=ComparePCharCaseInsensitiveA(Data1,Data2);
+  Result:=ComparePCharCaseInsensitiveASCII(Data1,Data2);
   if Result=0 then
     Result:=ComparePCharCaseSensitive(Data1,Data2);
 end;
 
-function ComparePCharCaseInsensitiveA(Data1, Data2: Pointer): integer;
+function ComparePCharCaseInsensitiveASCII(Data1, Data2: Pointer): integer;
 var
   p1: PChar absolute Data1;
   p2: PChar absolute Data2;
@@ -482,7 +487,7 @@ begin
   Result:=ord(FPUpChars[p1^])-ord(FPUpChars[p2^]);
 end;
 
-function ComparePCharCaseInsensitiveA(Data1, Data2: Pointer; MaxCount: PtrInt): integer;
+function ComparePCharCaseInsensitiveASCII(Data1, Data2: Pointer; MaxCount: PtrInt): integer;
 var
   p1: PChar absolute Data1;
   p2: PChar absolute Data2;
@@ -543,6 +548,59 @@ begin
   until false;
 end;
 
+function CheckLoUpCase(Find, Candidate: PChar; MaxCount: PtrInt): boolean;
+var
+  i: PtrInt;
+  CurFind, CurCandidate: PChar;
+  c: Char;
+begin
+  // check case sensitive
+  CurFind:=Find;
+  CurCandidate:=Candidate;
+  i:=0;
+  repeat
+    if i=MaxCount then exit(true);
+    if (CurFind^<>CurCandidate^) then break;
+    if CurFind^=#0 then exit(true);
+    inc(i);
+    inc(CurFind);
+    inc(CurCandidate);
+  until false;
+
+  // check lowercase Find
+  CurFind:=Find;
+  CurCandidate:=Candidate;
+  i:=0;
+  repeat
+    if i=MaxCount then exit(true);
+    c:=CurFind^;
+    case c of
+    'A'..'Z':
+      if ord(c)+32<>ord(CurCandidate^) then break;
+    else if c<>CurCandidate^ then break;
+    end;
+    if CurFind^=#0 then exit(true);
+    inc(i);
+    inc(CurFind);
+    inc(CurCandidate);
+  until false;
+
+  // check uppercase Find
+  CurFind:=Find;
+  CurCandidate:=Candidate;
+  i:=0;
+  repeat
+    if i=MaxCount then exit(true);
+    if (FPUpChars[CurFind^]<>CurCandidate^) then break;
+    if CurFind^=#0 then exit(true);
+    inc(i);
+    inc(CurFind);
+    inc(CurCandidate);
+  until false;
+
+  Result:=false;
+end;
+
 function IsCTStarDirectory(const Directory: string; out p: integer
   ): TCTStarDirectoryKind;
 var
@@ -598,7 +656,7 @@ begin
         ComparePCharCaseInsensitiveA(Pointer(TheUnitName),@UnitLinks[UnitLinkStart],UnitLinkLen)]);
       {$ENDIF}
       if (UnitLinkLen=length(TheUnitName))
-      and (ComparePCharCaseInsensitiveA(Pointer(TheUnitName),@UnitLinks[UnitLinkStart],
+      and (ComparePCharCaseInsensitiveASCII(Pointer(TheUnitName),@UnitLinks[UnitLinkStart],
            UnitLinkLen)=0)
       then begin
         // unit found -> parse filename
@@ -966,7 +1024,7 @@ begin
   while l<=r do begin
     m:=(l+r) shr 1;
     CurFilename:=@Files[FListing.Starts[m]+DirListNameOffset];
-    cmp:=ComparePCharCaseInsensitiveA(ShortFilename,CurFilename);
+    cmp:=ComparePCharCaseInsensitiveASCII(ShortFilename,CurFilename);
     if cmp>0 then
       l:=m+1
     else if cmp<0 then
@@ -1114,17 +1172,20 @@ end;
 function TCTDirectoryCache.FindIncludeFile(const IncFilename: string;
   AnyCase: boolean): string;
 var
-  Files, CurFilename, IncExtP, CurExtP: PChar;
+  Files, CurFilename, IncExtP, CurExtP, IncFilenameP: PChar;
   Starts: PInteger;
   l, r, m, first, cmp, Best: Integer;
   AUnitName: String;
-  Fits: Boolean;
+  Stop: Boolean;
   Ext, BestExt: TCTPascalIncExtType;
 begin
   Result:='';
   {$IFDEF DebugDirCacheFindIncFile}
   //if (CompareText(AUnitName,DebugUnitName)=0) and (System.Pos(DebugDirPart,directory)>0) then
     DebugLn('TCTDirectoryCache.FindIncludeFile IncName="',IncFilename,'" AnyCase=',dbgs(AnyCase),' Directory=',Directory);
+  {$ENDIF}
+  {$IFDEF CaseInsensitiveFilenames}
+  AnyCase:=true;
   {$ENDIF}
   if IncFilename='' then exit;
   if Directory<>'' then begin
@@ -1133,13 +1194,10 @@ begin
     if Files=nil then exit;
     Starts:=FListing.Starts;
 
-    // AnyCase:
-    //   search IncFilename
-    //   if IncFilename has no ext, then seach IncFilename.inc, IncFilename.pp, IncFilename.pas
-    // not AnyCase:
-    //   search IncFilename
-    //   if IncFilename has no ext, then seach IncFilename.inc, IncFilename.pp, IncFilename.pas
+    // first search IncFilename
+    // if IncFilename has no ext, then seach IncFilename.inc, IncFilename.pp, IncFilename.pas
 
+    IncFilenameP:=PChar(IncFilename);
     l:=length(IncFilename);
     while (l>0) and (IncFilename[l]<>'.') do dec(l);
     if l>0 then begin
@@ -1187,53 +1245,40 @@ begin
       CurExtP:=CurFilename+length(AUnitname);
       {$IFDEF DebugDirCacheFindIncFile}
       //if (CompareText(AUnitName,DebugUnitName)=0) and (System.Pos(DebugDirPart,directory)>0) then
-        DebugLn('TCTDirectoryCache.FindIncludeFile NEXT "',CurFilename,'" ExtStart=',dbgstr(CurExt^));
+        DebugLn('TCTDirectoryCache.FindIncludeFile NEXT "',CurFilename,'" ExtStart=',dbgstr(CurExtP^));
       {$ENDIF}
-      Fits:=false;
+      Stop:=false;
       if IncExtP<>nil then begin
         // include file with extension
-        if ComparePCharCaseInsensitiveA(CurExtP,IncExtP)=0 then
-          Fits:=true;
-      end else begin
-        // include file without extension -> search without and default extension
-        if (CurExtP^=#0) then begin
-          Fits:=true;
-          Ext:=pietNone;
-        end else begin
-          Ext:=IsPascalIncExt(IncExtP);
-          Fits:=Ext>pietNone;
-        end;
-      end;
-      if Fits then begin
-        // the extension fits -> check case
-        Result:=CurFilename;
-        {$IFDEF DebugDirCacheFindIncFile}
-        //if (CompareText(AUnitName,DebugUnitName)=0) and (System.Pos(DebugDirPart,directory)>0) then
-          DebugLn('TCTDirectoryCache.FindIncludeFile CHECKING CASE "',CurFilename,'"');
-        {$ENDIF}
         if AnyCase then begin
+          if ComparePCharCaseInsensitiveASCII(CurExtP,IncExtP)=0 then
+            // any case with extension fits -> can't get any better
+            Stop:=true;
+        end else if CheckLoUpCase(IncFilenameP,CurFilename,length(IncFilename)+1) then
+          Stop:=true; // mixed case with extension fits -> can't get any better
+      end else begin
+        // include file without extension -> search without and with default extension
+        if (CurExtP^=#0) then begin
+          if AnyCase or CheckLoUpCase(IncFilenameP,CurFilename,length(IncFilename)+1) then
+            // file without extension fits a file without extension -> can't get any better
+            Stop:=true;
         end else begin
-          // check case platform dependent
-          {$IFDEF CaseInsensitiveFilenames}
-          {$ELSE}
-          if (LeftStr(Result,length(AUnitName))<>AUnitName)
-              and (Result<>lowercase(Result))
-              and (Result<>uppercase(Result)) then
-            Fits:=false;
-          {$ENDIF}
-        end;
-        if Fits then begin
-          if IncExtP<>nil then begin
-            // include file with extension -> found
-            exit;
-          end else begin
-            // include file without extension -> search best extension
+          Ext:=IsPascalIncExt(CurExtP);
+          if Ext>pietNone then begin
+            // file without extension fits an include file with extension
+            // Note: the compiler prefers file.inc over file.pas
             if (Best<0) or (BestExt>Ext) then begin
-              Best:=m;
-              BestExt:=Ext;
+              if AnyCase or CheckLoUpCase(IncFilenameP,CurFilename,length(IncFilename)) then begin
+                Best:=m;
+                BestExt:=Ext;
+              end;
             end;
           end;
         end;
+      end;
+      if Stop then begin
+        Best:=m;
+        break;
       end;
       inc(m);
     end;
@@ -1252,6 +1297,71 @@ begin
     // this is a virtual directory
     Result:=Pool.FindVirtualInclude(IncFilename);
     if Result<>'' then exit;
+  end;
+  Result:='';
+end;
+
+function TCTDirectoryCache.FindIncludeFileInPath(IncFilename: string;
+  AnyCase: boolean): string;
+var
+  HasPathDelims: Boolean;
+  SearchPath: String;
+begin
+  Result:='';
+  {$IFDEF DebugDirCacheFindIncFile}
+  //if (CompareText(AUnitName,DebugUnitName)=0) and (System.Pos(DebugDirPart,directory)>0) then
+    DebugLn('TCTDirectoryCache.FindIncludeFileInPath IncName="',IncFilename,'" AnyCase=',dbgs(AnyCase),' Directory=',Directory);
+  {$ENDIF}
+  if IncFilename='' then exit;
+
+  IncFilename:=ResolveDots(IncFilename);
+
+  HasPathDelims:=(System.Pos('/',IncFilename)>0) or (System.Pos('\',IncFilename)>0);
+  if HasPathDelims then begin
+    Result:=Pool.FindIncludeFileInCompletePath(Directory,IncFilename,AnyCase);
+    exit;
+  end;
+
+  SearchPath:=Strings[ctdcsIncludePath];
+  Result:=FindIncludeFileInCleanPath(IncFilename,SearchPath,AnyCase);
+end;
+
+function TCTDirectoryCache.FindIncludeFileInCleanPath(IncFilename,
+  SearchPath: string; AnyCase: boolean): string;
+var
+  StartPos, p: Integer;
+  l: SizeInt;
+  CurPath: String;
+  IsAbsolute, HasPathDelims: Boolean;
+begin
+  Result:='';
+  HasPathDelims:=(System.Pos('/',IncFilename)>0) or (System.Pos('\',IncFilename)>0);
+  if HasPathDelims then
+    exit;
+
+  StartPos:=1;
+  l:=length(SearchPath);
+  while StartPos<=l do begin
+    p:=StartPos;
+    while (p<=l) and (SearchPath[p]<>';') do inc(p);
+    CurPath:=Trim(copy(SearchPath,StartPos,p-StartPos));
+    if CurPath<>'' then begin
+      IsAbsolute:=FilenameIsAbsolute(CurPath);
+      if (not IsAbsolute) and (Directory<>'') then begin
+        CurPath:=Directory+CurPath;
+        IsAbsolute:=true;
+      end;
+      //DebugLn('TCTDirectoryCache.FindIncludeFileInCleanPath CurPath="',CurPath,'"');
+      if IsAbsolute then begin
+        CurPath:=AppendPathDelim(CurPath);
+        Result:=Pool.FindIncludeFileInDirectory(CurPath,IncFilename,AnyCase);
+      end else if (CurPath='.') and (Directory='') then
+        Result:=Pool.FindVirtualInclude(IncFilename)
+      else
+        Result:='';
+      if Result<>'' then exit;
+    end;
+    StartPos:=p+1;
   end;
   Result:='';
 end;
@@ -1764,13 +1874,13 @@ end;
 function TCTStarDirectoryCache.FindIncludeFile(const IncFilename: string;
   AnyCase: boolean): string;
 var
-  Files, CurFilename, IncExtP, CurExtP: PChar;
+  Files, IncExtP, CurExtP, CurFilename, IncFilenameP: PChar;
   Starts: PInteger;
-  l, r, m, first, cmp, DirIndex: TListingPosition;
+  l, r, m, first, cmp: TListingPosition;
   AUnitName: String;
-  Fits: Boolean;
   Ext, BestExt: TCTPascalIncExtType;
-  BestDirIndex, Best: Integer;
+  Best: Integer;
+  Stop: Boolean;
 begin
   Result:='';
   {$IFDEF DebugDirCacheFindIncFile}
@@ -1783,6 +1893,7 @@ begin
   if Files=nil then exit;
   Starts:=FListing.Starts;
 
+  IncFilenameP:=PChar(IncFilename);
   l:=length(IncFilename);
   while (l>0) and (IncFilename[l]<>'.') do dec(l);
   if l>0 then begin
@@ -1817,7 +1928,6 @@ begin
   m:=first;
   // -> now find a filename with correct case and extension
   Best:=-1;
-  BestDirIndex:=-1;
   BestExt:=high(TCTPascalIncExtType);
   while m<FListing.Count do begin
     CurFilename:=@Files[Starts[m]+SizeOf(TListingHeader)];
@@ -1830,60 +1940,40 @@ begin
     CurExtP:=CurFilename+length(AUnitname);
     {$IFDEF DebugDirCacheFindIncFile}
     //if (CompareText(AUnitName,DebugUnitName)=0) and (System.Pos(DebugDirPart,directory)>0) then
-      DebugLn('TCTDirectoryCache.FindIncludeFile NEXT "',CurFilename,'" ExtStart=',dbgstr(CurExt^));
+      DebugLn('TCTDirectoryCache.FindIncludeFile NEXT "',CurFilename,'" ExtStart=',dbgstr(CurExtP^));
     {$ENDIF}
-    Fits:=false;
+    Stop:=false;
     if IncExtP<>nil then begin
       // include file with extension
-      if ComparePCharCaseInsensitiveA(CurExtP,IncExtP)=0 then
-        Fits:=true;
-    end else begin
-      // include file without extension -> search without and default extension
-      if (CurExtP^=#0) then begin
-        Fits:=true;
-        Ext:=pietNone;
-      end else begin
-        Ext:=IsPascalIncExt(IncExtP);
-        Fits:=Ext>pietNone;
-      end;
-    end;
-    if Fits then begin
-      // the extension fits -> check case
-      Result:=CurFilename;
-      {$IFDEF DebugDirCacheFindIncFile}
-      //if (CompareText(AUnitName,DebugUnitName)=0) and (System.Pos(DebugDirPart,directory)>0) then
-        DebugLn('TCTDirectoryCache.FindIncludeFile CHECKING CASE "',CurFilename,'"');
-      {$ENDIF}
       if AnyCase then begin
+        if ComparePCharCaseInsensitiveASCII(CurExtP,IncExtP)=0 then
+          // any case with extension fits -> can't get any better
+          Stop:=true;
+      end else if CheckLoUpCase(IncFilenameP,CurFilename,length(IncFilename)+1) then
+        Stop:=true; // mixed case with extension fits -> can't get any better
+    end else begin
+      // include file without extension -> search without and with default extension
+      if (CurExtP^=#0) then begin
+        if AnyCase or CheckLoUpCase(IncFilenameP,CurFilename,length(IncFilename)+1) then
+          // file without extension fits a file without extension -> can't get any better
+          Stop:=true;
       end else begin
-        // check case platform dependent
-        {$IFDEF CaseInsensitiveFilenames}
-        {$ELSE}
-        if (LeftStr(Result,length(AUnitName))<>AUnitName)
-            and (Result<>lowercase(Result))
-            and (Result<>uppercase(Result)) then
-          Fits:=false;
-        {$ENDIF}
-      end;
-      if Fits then begin
-        if IncExtP<>nil then begin
-          // include file with extension -> found
-          Result:=FListing.GetSubDirFilename(m);
-          exit;
-        end else begin
-          // include file without extension
-          //   the first in inc path wins
-          //   filename.inc is better than filename.pas
-          DirIndex:=FListing.GetSubDirIndex(m);
-          if (Best<0)
-              or (BestDirIndex>DirIndex)
-              or ((BestDirIndex=DirIndex) and (BestExt>Ext)) then
-          begin
-            Best:=m;
-            BestExt:=Ext;
+        Ext:=IsPascalIncExt(CurExtP);
+        if Ext>pietNone then begin
+          // file without extension fits an include file with extension
+          // Note: the compiler prefers file.inc over file.pas
+          if (Best<0) or (BestExt>Ext) then begin
+            if AnyCase or CheckLoUpCase(IncFilenameP,CurFilename,length(IncFilename)) then begin
+              Best:=m;
+              BestExt:=Ext;
+            end;
           end;
         end;
       end;
+    end;
+    if Stop then begin
+      Best:=m;
+      break;
     end;
     inc(m);
   end;
@@ -2012,7 +2102,7 @@ begin
   while l<=r do begin
     m:=(l+r) shr 1;
     CurFilename:=@Files[FListing.Starts[m]+SizeOf(TListingHeader)];
-    cmp:=ComparePCharCaseInsensitiveA(ShortFilename,CurFilename);
+    cmp:=ComparePCharCaseInsensitiveASCII(ShortFilename,CurFilename);
     if cmp>0 then
       l:=m+1
     else if cmp<0 then
@@ -2065,13 +2155,19 @@ var
   WorkingListingCount: integer;
   WorkingListingCapacity: integer;
 
-  procedure TraverseDir(const CurSubDir: string; SubDirIndex, Level: integer);
+  procedure TraverseDir(const CurSubDir: string; Level: integer);
   var
+    SubDirIndex: TListingPosition;
     Dir: TCTDirectoryCache;
     DirListing: TCTDirectoryListing;
     i, NewCapacity: Integer;
     WorkingItem: PWorkStarFileInfo;
   begin
+    if Level=0 then
+      SubDirIndex:=-1
+    else
+      SubDirIndex:=FListing.SubDirs.Add(CurSubDir);
+
     Dir:=Pool.GetCache(Directory+CurSubDir,true,false);
     Dir.UpdateListing;
     DirListing:=Dir.Listing;
@@ -2086,7 +2182,7 @@ var
         if WorkingListingCapacity>0 then
           NewCapacity:=WorkingListingCapacity*2
         else
-          NewCapacity:=256;
+          NewCapacity:=128;
         ReAllocMem(WorkingListing,SizeOf(TWorkStarFileInfo)*NewCapacity);
         FillByte(WorkingListing[WorkingListingCount],
                  SizeOf(TWorkStarFileInfo)*(NewCapacity-WorkingListingCapacity),0);
@@ -2108,8 +2204,10 @@ var
     for i:=0 to DirListing.Count-1 do begin
       if DirListing.GetAttr(i) and faDirectory=0 then continue;
       // add sub directory
-      SubDirIndex:=FListing.SubDirs.Add(CurSubDir);
-      TraverseDir(CurSubDir+PathDelim+DirListing.GetFilename(i),SubDirIndex,Level);
+      if Level=1 then
+        TraverseDir(DirListing.GetFilename(i),Level)
+      else
+        TraverseDir(CurSubDir+PathDelim+DirListing.GetFilename(i),Level);
     end;
   end;
 
@@ -2131,7 +2229,7 @@ begin
   WorkingListingCount:=0;
   WorkingListingCapacity:=0;
   try
-    TraverseDir('',-1,0);
+    TraverseDir('',0);
 
     if WorkingListingCount=0 then exit;
 
@@ -2175,11 +2273,11 @@ end;
 procedure TCTStarDirectoryCache.WriteListing;
 var
   i: Integer;
-  Filename: PChar;
+  Filename: String;
 begin
   writeln('TCTStarDirectoryCache.WriteListing Count=',FListing.Count,' Size=',FListing.Size);
   for i:=0 to FListing.Count-1 do begin
-    Filename:=FListing.GetShortFilename(i);
+    Filename:=FListing.GetSubDirFilename(i);
     writeln(i,' "',Filename,'"');
   end;
 end;
@@ -2285,7 +2383,7 @@ begin
   if (Index<0) or (Index>=Count) then
     RaiseIndexOutOfBounds;
   i:=PListingHeader(@Files[Starts[Index]])^.SubDirIndex;
-  if i>=0 then
+  if i<0 then
     Result:=''
   else
     Result:=SubDirs[i]+PathDelim;
@@ -2417,7 +2515,7 @@ begin
   if Node<>nil then begin
     Result:=TCTStarDirectoryCache(Node.Data);
   end else if CreateIfNotExists then begin
-    Dir:=FindDiskFilename(Directory);
+    Dir:=AppendPathDelim(FindDiskFilename(Directory));
     Result:=TCTStarDirectoryCache.Create(Dir,Kind,Self);
     FStarDirectories[Kind].Add(Result);
   end else
@@ -2647,7 +2745,7 @@ begin
   Result:=Cache.Directory+Result;
 end;
 
-function TCTDirectoryCachePool.FindIncludeFileInDirectory(const Directory,
+function TCTDirectoryCachePool.FindIncludeFileInDirectory(Directory,
   IncFileName: string; AnyCase: boolean): string;
 var
   Cache: TCTDirectoryBaseCache;
@@ -2767,6 +2865,15 @@ var
 begin
   Cache:=GetCache(Directory,true,false);
   Result:=Cache.FindUnitSourceInCompletePath(AUnitName,InFilename,AnyCase);
+end;
+
+function TCTDirectoryCachePool.FindIncludeFileInCompletePath(Directory,
+  IncFilename: string; AnyCase: boolean): string;
+var
+  Cache: TCTDirectoryCache;
+begin
+  Cache:=GetCache(Directory,true,false);
+  Result:=Cache.FindIncludeFileInPath(IncFilename,AnyCase);
 end;
 
 function TCTDirectoryCachePool.FindCompiledUnitInCompletePath(

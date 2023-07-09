@@ -328,13 +328,13 @@ procedure TTestBasicCodeTools.TestDateToCfgStr;
     Actual: String;
     ActualDate: TDateTime;
   begin
-    Actual:=DateToCfgStr(Date,aFormat);
+    Actual:=LazConfigStorage.DateToCfgStr(Date,aFormat);
     if Actual<>Expected then begin
       writeln(dbgsDiff(Expected,Actual));
       AssertEquals('DateToCfgStr failed: Format="'+aFormat+'"',Expected,Actual);
       exit;
     end;
-    if (not CfgStrToDate(Actual,ActualDate,aFormat)) then begin
+    if (not LazConfigStorage.CfgStrToDate(Actual,ActualDate,aFormat)) then begin
       AssertEquals('CfgStrToDate failed: Format="'+aFormat+'" Cfg="'+Actual+'"',false,true);
       exit;
     end;

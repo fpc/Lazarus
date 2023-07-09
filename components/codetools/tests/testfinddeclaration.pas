@@ -58,12 +58,11 @@ unit TestFindDeclaration;
 interface
 
 uses
-  Classes, SysUtils, contnrs,
-  fpcunit, testregistry,
-  FileProcs, LazFileUtils, LazLogger,
-  CodeToolManager, ExprEval, CodeCache, BasicCodeTools,
+  Classes, SysUtils, contnrs, fpcunit, testregistry, FileProcs, LazFileUtils,
+  LazLogger, CodeToolManager, ExprEval, CodeCache, BasicCodeTools,
   CustomCodeTool, CodeTree, FindDeclarationTool, KeywordFuncLists,
-  IdentCompletionTool, DefineTemplates, StrUtils, TestPascalParser;
+  IdentCompletionTool, DefineTemplates, DirectoryCacher, StrUtils,
+  TestPascalParser;
 
 const
   MarkDecl = '#'; // a declaration, must be unique
@@ -139,12 +138,20 @@ type
     procedure TestFindDeclaration_ArrayMultiDimDot;
     procedure TestFindDeclaration_VarArgsOfType;
     procedure TestFindDeclaration_ProcRef;
+
+    // unit/include search
     procedure TestFindDeclaration_UnitSearch_CurrentDir;
+    procedure TestFindDeclaration_UnitSearch_StarStar;
+    procedure TestFindDeclaration_IncludeSearch_DirectiveWithPath;
+    procedure TestFindDeclaration_IncludeSearch_StarStar;
+
+    // directives
+    procedure TestFindDeclaration_DirectiveWithIn;
+
     // test all files in directories:
     procedure TestFindDeclaration_FPCTests;
     procedure TestFindDeclaration_LazTests;
     procedure TestFindDeclaration_LazTestsBugs;
-    procedure TestFindDeclaration_DirectiveWithIn;
   end;
 
 implementation
@@ -1262,19 +1269,120 @@ begin
   end;
 end;
 
-procedure TTestFindDeclaration.TestFindDeclaration_FPCTests;
+procedure TTestFindDeclaration.TestFindDeclaration_UnitSearch_StarStar;
+var
+  StarDir, UnitPath, Expected, anUnitName, InFilename,
+    FoundFilename: String;
+  DirDef, UnitPathDef: TDefineTemplate;
+  DirCache: TCTDirectoryCachePool;
 begin
-  TestFiles('fpctests');
+  StarDir:=ExpandFileNameUTF8(SetDirSeparators('moduletests/star'));
+
+  DirDef:=TDefineTemplate.Create('TTestFindDeclaration_UnitSearch','','',StarDir,da_Directory);
+  try
+    CodeToolBoss.DefineTree.Add(DirDef);
+    UnitPathDef:=TDefineTemplate.Create('UnitPath','',UnitPathMacroName,DefinePathMacro+PathDelim+'**',da_DefineRecurse);
+    DirDef.AddChild(UnitPathDef);
+    CodeToolBoss.DefineTree.ClearCache;
+
+    // check unit path in some directories
+    Expected:=StarDir+PathDelim+'**';
+
+    UnitPath:=CodeToolBoss.GetUnitPathForDirectory(StarDir);
+    AssertEquals('unit path',Expected,UnitPath);
+
+    UnitPath:=CodeToolBoss.GetUnitPathForDirectory(StarDir+PathDelim+'green');
+    AssertEquals('unit path',Expected,UnitPath);
+
+    DirCache:=CodeToolBoss.DirectoryCachePool;
+
+    // searching a lowercase unit
+    anUnitName:='Star.Red1';
+    InFilename:='';
+    FoundFilename:=DirCache.FindUnitSourceInCompletePath(StarDir,anUnitName,InFilename);
+    Expected:=StarDir+PathDelim+'red/star.red1.pas';
+    AssertEquals('searching '+anUnitName,Expected,FoundFilename);
+
+    // searching a mixedcase unit
+    anUnitName:='Star.Green3';
+    InFilename:='';
+    FoundFilename:=DirCache.FindUnitSourceInCompletePath(StarDir,anUnitName,InFilename);
+    Expected:=StarDir+PathDelim+'green/Star.Green3.pas';
+    AssertEquals('searching '+anUnitName,Expected,FoundFilename);
+
+    // searching an anycase unit
+    anUnitName:='star.green3';
+    InFilename:='';
+    FoundFilename:=DirCache.FindUnitSourceInCompletePath(StarDir,anUnitName,InFilename,true);
+    Expected:=StarDir+PathDelim+'green/Star.Green3.pas';
+    AssertEquals('searching '+anUnitName,Expected,FoundFilename);
+  finally
+    CodeToolBoss.DefineTree.RemoveDefineTemplate(DirDef);
+  end;
 end;
 
-procedure TTestFindDeclaration.TestFindDeclaration_LazTests;
+procedure TTestFindDeclaration.
+  TestFindDeclaration_IncludeSearch_DirectiveWithPath;
+var
+  aFilename: String;
+  StarCode: TCodeBuffer;
+  Tool: TCodeTool;
 begin
-  TestFiles('laztests');
+  aFilename:=ExpandFileNameUTF8(SetDirSeparators('moduletests/star/star.main.pas'));
+  StarCode:=CodeToolBoss.LoadFile(aFilename,true,false);
+  if not CodeToolBoss.Explore(STarCode,Tool,true) then begin
+    debugln('Error: '+CodeToolBoss.ErrorDbgMsg);
+    Fail('Explore failed: '+CodeToolBoss.ErrorMessage);
+  end;
 end;
 
-procedure TTestFindDeclaration.TestFindDeclaration_LazTestsBugs;
+procedure TTestFindDeclaration.TestFindDeclaration_IncludeSearch_StarStar;
+var
+  StarDir, IncPath, Expected, IncFilename, FoundFilename: String;
+  DirDef, IncPathDef: TDefineTemplate;
+  DirCache: TCTDirectoryCachePool;
 begin
-  TestFiles('laztests', 'b*.p*');
+  StarDir:=ExpandFileNameUTF8(SetDirSeparators('moduletests/star'));
+
+  DirDef:=TDefineTemplate.Create('TTestFindDeclaration_IncudeSearch','','',StarDir,da_Directory);
+  try
+    CodeToolBoss.DefineTree.Add(DirDef);
+    IncPathDef:=TDefineTemplate.Create('IncPath','',IncludePathMacroName,DefinePathMacro+PathDelim+'**',da_DefineRecurse);
+    DirDef.AddChild(IncPathDef);
+    CodeToolBoss.DefineTree.ClearCache;
+
+    // check include search path in some directories
+    Expected:=StarDir+PathDelim+'**';
+
+    IncPath:=CodeToolBoss.GetIncludePathForDirectory(StarDir);
+    AssertEquals('include path',Expected,IncPath);
+
+    IncPath:=CodeToolBoss.GetIncludePathForDirectory(StarDir+PathDelim+'green');
+    AssertEquals('include path',Expected,IncPath);
+
+    DirCache:=CodeToolBoss.DirectoryCachePool;
+
+    // searching a lowercase include
+    IncFilename:='Star.inc';
+    FoundFilename:=DirCache.FindIncludeFileInCompletePath(StarDir,IncFilename);
+    Expected:=StarDir+PathDelim+'star.inc';
+    AssertEquals('searching '+IncFilename,Expected,FoundFilename);
+
+    // searching a mixedcase include
+    IncFilename:='Green.inc';
+    FoundFilename:=DirCache.FindIncludeFileInCompletePath(StarDir,IncFilename);
+    Expected:=StarDir+PathDelim+'green/Green.inc';
+    AssertEquals('searching '+IncFilename,Expected,FoundFilename);
+
+    // searching an include file without extension
+    IncFilename:='Green';
+    FoundFilename:=DirCache.FindIncludeFileInCompletePath(StarDir,IncFilename);
+    Expected:=StarDir+PathDelim+'green/Green.inc';
+    AssertEquals('searching '+IncFilename,Expected,FoundFilename);
+
+  finally
+    CodeToolBoss.DefineTree.RemoveDefineTemplate(DirDef);
+  end;
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_DirectiveWithIn;
@@ -1298,6 +1406,21 @@ begin
   'end.',
   '']);
   FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_FPCTests;
+begin
+  TestFiles('fpctests');
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_LazTests;
+begin
+  TestFiles('laztests');
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_LazTestsBugs;
+begin
+  TestFiles('laztests', 'b*.p*');
 end;
 
 initialization
