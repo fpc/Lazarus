@@ -4374,7 +4374,7 @@ Ensures that resources are allocated for the Reference property.
 <element name="TBrush.DoAllocateResources">
 <short>
 Performs actions needed to allocate (or reallocate) resources for the brush 
-instance.  
+instance.
 </short>
 <descr/>
 <seealso>
@@ -5629,16 +5629,17 @@ representing a specific image format.
 </element>
 
 <element name="TGraphic.LoadFromResourceName">
-<short>Loads a resource with the specified name from the given handle.</short>
+<short>
+Loads a resource with the specified name from the given handle.
+</short>
 <descr>
 <p>
 <var>LoadFromResourceName</var> is a procedure used to load a resource with 
 the name specified in <var>ResName</var> using the handle provided in 
 <var>Instance</var>. LoadFromResourceName calls <var>GetResourceType</var> to 
 get the <var>Integer</var> resource type used in the class instance. No 
-actions are performed in the method when the <var>TResourceType</var> value 
-is unassigned (contains
-<b>Nil</b>).
+actions are performed in the method when the <var>TResourceType</var> value is 
+unassigned (contains <b>Nil</b>).
 </p>
 <p>
 LoadFromResourceName creates a temporary <var>TResourceStream</var> that is 
@@ -5653,7 +5654,17 @@ Use <var>LoadFromLazarusResource</var> to load a Lazarus resource from a
 <b>.lrs</b> file with a give name.
 </p>
 </descr>
-<seealso/>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type in the Instance parameter.
+</version>
+<seealso>
+<link id="TGraphic.GetResourceType"/>
+<link id="TGraphic.LoadFromStream"/>
+<link id="#lcl.lcltype.TLCLHandle">LCLType.TLCLHandle</link>
+<link id="#lcl.wsreferences.TLCLHandle">WSReferences.TLCLHandle</link>
+<link id="#rtl.classes.TResourceStream">TResourceStream</link>
+</seealso>
 </element>
 <element name="TGraphic.LoadFromResourceName.Instance">
 <short>Handle where the content for the resource is stored.</short>
@@ -5664,7 +5675,7 @@ Use <var>LoadFromLazarusResource</var> to load a Lazarus resource from a
 
 <element name="TGraphic.LoadFromResourceID">
 <short>
-Load graphic data from a resource identified by the integer identifier 
+Loads graphic data from a resource identified by the integer identifier 
 <var>ResID</var>.
 </short>
 <descr>
@@ -5700,7 +5711,19 @@ Use <var>LoadFromLazarusResource</var> to load a Lazarus resource from a
 Raises an EResNotFound exception when the TResourceStream is initialized if 
 the resource type or the resource handle is invalid.
 </errors>
-<seealso/>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type in the Instance parameter.
+</version>
+<seealso>
+<link id="TGraphic.GetResourceType"/>
+<link id="TGraphic.LoadFromStream"/>
+<link id="TGraphic.LoadFromResourceName"/>
+<link id="TGraphic.LoadFromLazarusResource"/>
+<link id="#lcl.lcltype.TLCLHandle">LCLType.TLCLHandle</link>
+<link id="#lcl.wsreferences.TLCLHandle">WSReferences.TLCLHandle</link>
+<link id="#rtl.classes.TResourceStream">TResourceStream</link>
+</seealso>
 </element>
 <element name="TGraphic.LoadFromResourceID.Instance">
 <short>Handle where the content for the resource is stored.</short>
@@ -6812,7 +6835,7 @@ Loads content from the specified resource into the Graphic property.
 <var>LoadFromResourceName</var> is an overloaded method used to created a
 <var>TGraphic</var> instance with the content from the specified resource 
 name.
-<var>Instance</var> is the Handle with the resources examined in the method.
+<var>Instance</var> is the handle with the resources examined in the method.
 <var>ResName</var> is the name of the resource loaded in the method.
 </p>
 <p>
@@ -6826,8 +6849,8 @@ instance.
 <p>
 An overloaded variant includes an <var>AClass</var> argument with the class 
 type for the TGraphic descendant needed for a supported image format. The 
-<var>LoadFromStream</var> in the class instance is called to load the named 
-resource.
+<var>LoadFromResourceName</var> method in the class instance is called to load 
+the named resource.
 </p>
 <p>
 The existing TGraphic instance in Graphic is freed and the new TGraphic 
@@ -6835,7 +6858,18 @@ instance is used as the member variable. The Changed method is called to
 signal the OnChange event handler (when assigned).
 </p>
 </descr>
-<seealso/>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type in the Instance parameter.
+</version>
+<seealso>
+<link id="TPicture.Changed"/>
+<link id="TGraphic.OnChange"/>
+<link id="TGraphic.LoadFromResourceName"/>
+<link id="CreateGraphicFromResourceName"/>
+<link id="#lcl.lcltype.TLCLHandle">LCLType.TLCLHandle</link>
+<link id="#lcl.wsreferences.TLCLHandle">WSReferences.TLCLHandle</link>
+</seealso>
 </element>
 <element name="TPicture.LoadFromResourceName.Instance">
 <short>Handle with the resources examine in the method.</short>
@@ -6855,13 +6889,30 @@ signal the OnChange event handler (when assigned).
 <short>File name with resource retrieved in the method.</short>
 </element>
 
+<!-- TODO. Needs description. -->
 <element name="TPicture.LoadFromStream">
-<short>Loads a supported image format from the specified stream.</short>
+<short>
+Loads picture data in a supported image format from the specified stream.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TGraphicClass"/>
+<link id="TPortableNetworkGraphic"/>
+<link id="TPixmap"/>
+<link id="TBitmap"/>
+<link id="TCursorImage"/>
+<link id="TIcon"/>
+<link id="TIcnsIcon"/>
+<link id="TJpegImage"/>
+<link id="TTiffImage"/>
+<link id="TGIFImage"/>
+<link id="TPortableAnyMapGraphic"/>
+</seealso>
 </element>
 <element name="TPicture.LoadFromStream.Stream">
-<short/>
+<short>
+Stream instance with the graphics format and data loaded in the method.
+</short>
 </element>
 
 <element name="TPicture.LoadFromStreamWithFileExt">
@@ -10871,6 +10922,7 @@ controls.
 <element name="TSharedRasterImage.FHandle"/>
 <element name="TSharedRasterImage.FBitmapCanvas"/>
 <element name="TSharedRasterImage.FSaveStream"/>
+
 <element name="TSharedRasterImage.FreeHandle">
 <short>Frees the handle for the shared image.</short>
 <descr>
@@ -10896,14 +10948,13 @@ No actions are performed in the method when the handle is already set to
 
 <element name="TSharedRasterImage.ReleaseHandle">
 <short>
-<var>ReleaseHandle</var> - returns the identity of the handle that has just 
-been released.
+Returns the handle that has just been released.
 </short>
 <descr>
 <p>
-ReleaseHandle is a THandle function used to release a reference for the 
-handle in the class instance. The return value contains the value for the 
-handle on entry.
+<var>ReleaseHandle</var> is a <var>TLCLHandle</var> function used to release a 
+reference for the handle in the class instance. The return value contains the 
+value for the handle on entry.
 </p>
 <p>
 ReleaseHandle sets the handle value to 0 to indicate that it is no longer 
@@ -10916,10 +10967,19 @@ like TCustomBitmap and TIcon, when their ReleaseHandle method is called to
 free the handle for its shared image.
 </p>
 </descr>
-<seealso/>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type in the return value.
+</version>
+<seealso>
+<link id="#lcl.lcltype.TLCLHandle">LCLType.TLCLHandle</link>
+<link id="#lcl.wsreferences.TLCLHandle">WSReferences.TLCLHandle</link>
+</seealso>
 </element>
 <element name="TSharedRasterImage.ReleaseHandle.Result">
-<short/>
+<short>
+Value for the internal handle on entry to the method.
+</short>
 </element>
 
 <element name="TSharedRasterImage.IsEmpty">
@@ -10956,7 +11016,8 @@ constructor on entry.
 </element>
 
 <element name="TSharedRasterImage.CreateDefaultHandle">
-<short>Not implemented in the current LCL version.
+<short>
+Abstract virtual method not implemented in the class instance.
 </short>
 <descr/>
 <seealso/>
@@ -10983,15 +11044,20 @@ Calls the inherited destructor prior to exiting from the method.
 </element>
 
 <element name="TSharedRasterImage.HandleAllocated">
-<short>Determines whether the Handle for the class has been allocated.</short>
+<short>
+Determines whether the Handle for the class has been allocated.
+</short>
 <descr>
 <p>
 Implements the abstract virtual method defined in <var>TSharedImage</var>. 
-The return value is <b>True</b> when the Handle contains a non-zero value.
+The return value is <b>True</b> when the internal handle contains a non-zero 
+value.
 </p>
 </descr>
 <seealso>
 <link id="TSharedImage.HandleAllocated"/>
+<link id="#lcl.lcltype.TLCLHandle">LCLType.TLCLHandle</link>
+<link id="#lcl.wsreferences.TLCLHandle">WSReferences.TLCLHandle</link>
 </seealso>
 </element>
 <element name="TSharedRasterImage.HandleAllocated.Result">
@@ -11403,21 +11469,31 @@ for the class instance.
 </element>
 
 <element name="TRasterImage.GetHandle">
-<short>Gets the value for the Handle property.</short>
+<short>
+Gets the value for the handle used in the image.
+</short>
 <descr>
 <p>
-Calls HandleNeeded to ensure that valid handles exist for the image. Requires 
-a valid handle in the shared raster image for the class instance.
+Calls HandleNeeded to ensure that valid handle(s) exist for the image. The 
+return value is the handle in the shared raster image for the class instance.
 </p>
 </descr>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type in the return value.
+</version>
 <seealso>
 <link id="TRasterImage.HandleNeeded"/>
 <link id="TRasterImage.BitmapHandle"/>
 <link id="TRasterImage.MaskHandle"/>
+<link id="#lcl.lcltype.TLCLHandle">LCLType.TLCLHandle</link>
+<link id="#lcl.wsreferences.TLCLHandle">WSReferences.TLCLHandle</link>
 </seealso>
 </element>
 <element name="TRasterImage.GetHandle.Result">
-<short>Value for the property.</short>
+<short>
+Handle for the raster image.
+</short>
 </element>
 
 <element name="TRasterImage.GetBitmapHandle">
@@ -11902,10 +11978,12 @@ image data for a specific image format.
 </element>
 
 <element name="TRasterImage.SetHandle">
-<short>Sets the Handle used for the image.</short>
+<short>
+Sets the handle used for the image.
+</short>
 <descr>
 <p>
-<var>SetHandle</var> stores the specified <var>THandle</var> value as the 
+<var>SetHandle</var> stores the specified <var>TLCLHandle</var> value as the 
 handle used for the image. The handle is actually the one used by the internal
 <var>TSharedRasterImage</var> instance for the class. No actions are 
 performed in the method when the value in AHandle is the same as the handle 
@@ -11918,6 +11996,10 @@ assigned to the internal shared image. When no other active update processes
 are pending, the <var>Changed</var> method is called.
 </p>
 </descr>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type in the AValue parameter.
+</version>
 <seealso>
 <link id="TRasterImage.Changed"/>
 <link id="TRasterImage.Canvas"/>
@@ -11925,6 +12007,8 @@ are pending, the <var>Changed</var> method is called.
 <link id="TRasterImage.EndUpdate"/>
 <link id="TRasterImage.SetHandles"/>
 <link id="TSharedImage.Reference"/>
+<link id="#lcl.lcltype.TLCLHandle">LCLType.TLCLHandle</link>
+<link id="#lcl.wsreferences.TLCLHandle">WSReferences.TLCLHandle</link>
 </seealso>
 </element>
 <element name="TRasterImage.SetHandle.AValue">
@@ -13712,18 +13796,26 @@ before the value in RawImage is accessed. For example:
 </element>
 
 <element name="TCustomBitmap.SetHandle">
-<short>Re-implements the method from the ancestor class.</short>
+<short>
+Re-implements the method from the ancestor class.
+</short>
 <descr>
 <p>
 <var>SetHandle</var> is an overridden method in <var>TCustomBitmap</var>, and 
 re-implements the method from the <var>TRasterImage</var> ancestor class. 
-<var>AValue</var> contains the new handle assigned to the 
+<var>AValue</var> contains the new handle instance assigned to the 
 <var>BitmapHandle</var> property.
 </p>
 </descr>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type in the Value parameter.
+</version>
 <seealso>
 <link id="TRasterImage.BitmapHandle"/>
 <link id="TRasterImage.SetHandle"/>
+<link id="#lcl.lcltype.TLCLHandle">LCLType.TLCLHandle</link>
+<link id="#lcl.wsreferences.TLCLHandle">WSReferences.TLCLHandle</link>
 </seealso>
 </element>
 <element name="TCustomBitmap.SetHandle.Value">
@@ -15236,15 +15328,24 @@ Frees the existing icon image and reloads it from the specified handle.
 <descr>
 <p>
 Calls FreeHandle to free the existing handle for the Icon in the widgetset 
-class, and sets the Handle to the value specified in NewHandle. Gets icon 
+class, and sets the handle to the value specified in NewHandle. Gets icon 
 information from the widgetset class and adds a new icon image to the list of 
 Images.
 </p>
 </descr>
-<seealso/>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type in the NewHandle parameter.
+</version>
+<seealso>
+<link id="#lcl.lcltype.TLCLHandle">LCLType.TLCLHandle</link>
+<link id="#lcl.wsreferences.TLCLHandle">WSReferences.TLCLHandle</link>
+</seealso>
 </element>
 <element name="TSharedIcon.UpdateFromHandle.NewHandle">
-<short/>
+<short>
+TLCLHandle instance assigned as the handle for the shared icon.
+</short>
 </element>
 
 <element name="TSharedIcon.IsEmpty">
@@ -16285,24 +16386,32 @@ Unshares an existing shared image handle and set the new value.
 </short>
 <descr>
 <p>
-SetHandle is a method used to set set the value for the shared image handle 
-in the icon instance. It ensures that an existing shared image handle frees 
-both its canvas context and the data in its TSharedImage instance.
+<var>SetHandle</var> is a method used to set set the value for the shared 
+image handle in the icon instance. It ensures that an existing shared image 
+handle frees both its canvas context and the data in its TSharedImage instance.
 </p>
 <p>
 It calls UpdateHandle to set the new shared handle for the icon instance to 
 AValue. Values in Current and Count are reset when the handle is changed. 
 Current is set 0 when multiple images are used in the icon. It is set to -1 
 when a single image is present. Changed is called to update the value in 
-Modified and signal the OnCHange event handler (when assigned).
+Modified and signal the OnChange event handler (when assigned).
 </p>
 </descr>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type in the AValue parameter.
+</version>
 <seealso>
 <link id="TRasterImage.SetHandle"/>
+<link id="#lcl.lcltype.TLCLHandle">LCLType.TLCLHandle</link>
+<link id="#lcl.wsreferences.TLCLHandle">WSReferences.TLCLHandle</link>
 </seealso>
 </element>
 <element name="TCustomIcon.SetHandle.AValue">
-<short>New value for the shared image handle in the icon.</short>
+<short>
+New value for the shared image handle in the icon.
+</short>
 </element>
 
 <element name="TCustomIcon.UpdateHandle">
@@ -16808,9 +16917,8 @@ Loads the icon with the specified resource name from the instance handle.
 <p>
 <var>LoadFromResourceName</var> is an overridden procedure used to load a 
 resource with the name specified in <var>ResName</var> using the handle 
-provided in
-<var>Instance</var>. LoadFromResourceName re-implements the method defined in 
-the ancestor class, and does not call the inherited method.
+provided in <var>Instance</var>. LoadFromResourceName re-implements the method 
+defined in the ancestor class, and does not call the inherited method.
 </p>
 <p>
 LoadFromResourceName calls <var>GetResourceType</var> to get the 
@@ -16835,7 +16943,17 @@ Use <var>LoadFromLazarusResource</var> to load a Lazarus resource from a
 <b>.lrs</b> file with a give name.
 </p>
 </descr>
-<seealso/>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type in the Instance parameter.
+</version>
+<seealso>
+<link id="TCustomIcon.LoadFromResourceHandle"/>
+<link id="TGraphic.GetResourceType"/>
+<link id="#lcl.lcltype.TResourceType">TResourceType</link>
+<link id="#lcl.lcltype.TLCLHandle">LCLType.TLCLHandle</link>
+<link id="#lcl.wsreferences.TLCLHandle">WSReferences.TLCLHandle</link>
+</seealso>
 </element>
 <element name="TCustomIcon.LoadFromResourceName.Instance">
 <short>Handle where the content for the resource is stored.</short>
@@ -16856,7 +16974,7 @@ LoadFromResourceID re-implements the method defined in the ancestor class,
 and does not call the inherited method.
 </p>
 <p>
-<var>Instance</var> contains the Handle used to read the resource.
+<var>Instance</var> contains the handle used to read the resource.
 <var>ResID</var> contains an Integer pointer to the resource identifier 
 loaded in the method.
 </p>
@@ -16888,7 +17006,14 @@ Use <var>LoadFromLazarusResource</var> to load a Lazarus resource from a
 Raises an EResNotFound exception if the resource handle for the specified ID 
 and type is not valid.
 </errors>
-<seealso/>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type in the Instance parameter.
+</version>
+<seealso>
+<link id="#lcl.lcltype.TLCLHandle">LCLType.TLCLHandle</link>
+<link id="#lcl.wsreferences.TLCLHandle">WSReferences.TLCLHandle</link>
+</seealso>
 </element>
 <element name="TCustomIcon.LoadFromResourceID.Instance">
 <short>Handle where the content for the resource is stored.</short>
@@ -16907,8 +17032,14 @@ LoadFromResourceHandle has an empty implementation in TCustomIcon. It is
 re-implemented in TIcon descendant.
 </p>
 </descr>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type in the Instance parameter.
+</version>
 <seealso>
 <link id="TIcon.LoadFromResourceHandle"/>
+<link id="#lcl.lcltype.TLCLHandle">LCLType.TLCLHandle</link>
+<link id="#lcl.wsreferences.TLCLHandle">WSReferences.TLCLHandle</link>
 </seealso>
 </element>
 <element name="TCustomIcon.LoadFromResourceHandle.Instance">
@@ -17215,13 +17346,20 @@ image has already been assigned.
 </seealso>
 </element>
 
+<!-- TODO: Needs description. -->
 <element name="TIcon.LoadFromResourceHandle">
 <short>
 Loads icon data from the specified instance and resource handles.
 </short>
 <descr/>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type in the Instance parameter.
+</version>
 <seealso>
 <link id="TCustomIcon.LoadFromResourceHandle"/>
+<link id="#lcl.lcltype.TLCLHandle">LCLType.TLCLHandle</link>
+<link id="#lcl.wsreferences.TLCLHandle">WSReferences.TLCLHandle</link>
 </seealso>
 </element>
 <element name="TIcon.LoadFromResourceHandle.Instance">
@@ -17231,13 +17369,14 @@ Loads icon data from the specified instance and resource handles.
 <short>Resource handle with the icon data loaded in the method.</short>
 </element>
 
+<!-- TODO: Needs description. -->
 <element name="TIcon.ReleaseHandle">
 <short>Frees the Handle used for the Icon.</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TIcon.ReleaseHandle.Result">
-<short>HICON value removed from the Handle in the class instance.</short>
+<short>HICON value removed from the handle in the class instance.</short>
 </element>
 
 <element name="TIcon.GetResourceType">
@@ -17267,8 +17406,8 @@ Handle used to access the image data for the icon.
 <descr>
 <p>
 <var>Handle</var> is a <var>HICON</var> property which contains the handle 
-for the icon used to access image data for the icon. The property value is 
-provided by the inherited GetHandle method, and contains the Handle for its 
+for the icon used to access its image data. The property value is provided by 
+the inherited GetHandle method, and contains the handle for its 
 TSharedRasterImage instance.
 </p>
 <p>
@@ -17737,18 +17876,29 @@ Returns <var>RT_GROUP_CURSOR</var> in <var>TCursorImage</var>.
 <short/>
 </element>
 
-<element link="#lcl.graphics.TCustomIcon.LoadFromResourceHandle" name="TCursorImage.LoadFromResourceHandle">
+<!-- TODO: Needs content. -->
+<element name="TCursorImage.LoadFromResourceHandle">
 <short/>
 <descr/>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type in the Instance parameter.
+</version>
 <seealso>
-<link id="TCustomIcon.LoadFromResourceHandle"/>
+<link id="TCustomIcon.LoadFromResourceHandle"/> 
+<link id="#lcl.lcltype.TLCLHandle">LCLType.TLCLHandle</link>
+<link id="#lcl.wsreferences.TLCLHandle">WSReferences.TLCLHandle</link>
 </seealso>
 </element>
 <element name="TCursorImage.LoadFromResourceHandle.Instance">
-<short/>
+<short>
+Handle for the resource instance with the cursor image.
+</short>
 </element>
 <element name="TCursorImage.LoadFromResourceHandle.ResHandle">
-<short/>
+<short>
+Handle for the resource entry with the cursor image.
+</short>
 </element>
 
 <element link="#lcl.graphics.TGraphic.LazarusResourceTypeValid" name="TCursorImage.LazarusResourceTypeValid">
@@ -19965,13 +20115,21 @@ the Lazarus Resource (.LRS).
 <short/>
 </element>
 
+<!-- TODO: Needs content. -->
 <element name="CreateGraphicFromResourceName">
 <short>
-Creates and loads a TGraphic instance using the specified instance handle and 
-resource name.
+Creates and loads a TGraphic instance using the specified resource instance 
+handle and resource name.
 </short>
 <descr/>
-<seealso/>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type in the Instance parameter.
+</version>
+<seealso>
+<link id="#lcl.lcltype.TLCLHandle">LCLType.TLCLHandle</link>
+<link id="#lcl.wsreferences.TLCLHandle">WSReferences.TLCLHandle</link>
+</seealso>
 </element>
 <element name="CreateGraphicFromResourceName.Result">
 <short/>
@@ -19995,7 +20153,14 @@ stored in a Lazarus resource. Typically used to load button glyphs and icons
 displayed on the component palette in the Lazarus IDE.
 </p>
 </descr>
-<seealso/>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type in the Instance parameter.
+</version>
+<seealso>
+<link id="#lcl.lcltype.TLCLHandle">LCLType.TLCLHandle</link>
+<link id="#lcl.wsreferences.TLCLHandle">WSReferences.TLCLHandle</link>
+</seealso>
 </element>
 <element name="CreateBitmapFromResourceName.Result">
 <short>Bitmap instance created and loaded in the routine.</short>
@@ -20008,6 +20173,8 @@ Handle for the Lazarus resource with the content for the bitmap.
 <element name="CreateBitmapFromResourceName.ResName">
 <short>Name for the RT_BITMAP resource loaded in the routine.</short>
 </element>
+
+<!-- TODO: Needs content. -->
 <element name="CreateBitmapFromLazarusResource">
 <short>Creates and loads a Bitmap from a Lazarus Resource (.lrs) file.
 </short>
