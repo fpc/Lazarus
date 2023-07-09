@@ -317,9 +317,11 @@ type
     FOnGetString: TCTDirCacheGetString;
     FOnGetUnitFromSet: TCTGetUnitFromSet;
     FOnIterateFPCUnitsFromSet: TCTIterateFPCUnitsFromSet;
+    FStarDirectoryExcludes: TStrings;
     procedure DoRemove(ACache: TCTDirectoryCache);
     procedure OnFileStateCacheChangeTimeStamp(Sender: TObject;
                                               const AFilename: string);
+    procedure SetStarDirectoryExcludes(const AValue: TStrings);
   public
     constructor Create;
     destructor Destroy; override;
@@ -377,6 +379,7 @@ type
                  read FOnGetCompiledUnitFromSet write FOnGetCompiledUnitFromSet;
     property OnIterateFPCUnitsFromSet: TCTIterateFPCUnitsFromSet
                  read FOnIterateFPCUnitsFromSet write FOnIterateFPCUnitsFromSet;
+    property StarDirectoryExcludes: TStrings read FStarDirectoryExcludes write SetStarDirectoryExcludes;
   end;
   
 function CompareCTDirectoryCaches(Data1, Data2: Pointer): integer;
@@ -2154,6 +2157,17 @@ var
   WorkingListing: PWorkStarFileInfo;
   WorkingListingCount: integer;
   WorkingListingCapacity: integer;
+  Excludes: TStrings;
+
+  function IsExcluded(const CurSubDir: string): boolean;
+  var
+    i: Integer;
+  begin
+    for i:=0 to Excludes.Count-1 do
+      if FilenameIsMatching(Excludes[i],CurSubDir,true) then
+        exit(true);
+    Result:=false;
+  end;
 
   procedure TraverseDir(const CurSubDir: string; Level: integer);
   var
@@ -2163,6 +2177,8 @@ var
     i, NewCapacity: Integer;
     WorkingItem: PWorkStarFileInfo;
   begin
+    if IsExcluded(CurSubDir) then exit;
+
     if Level=0 then
       SubDirIndex:=-1
     else
@@ -2229,6 +2245,7 @@ begin
   WorkingListingCount:=0;
   WorkingListingCapacity:=0;
   try
+    Excludes:=Pool.StarDirectoryExcludes;
     TraverseDir('',0);
 
     if WorkingListingCount=0 then exit;
@@ -2415,6 +2432,14 @@ begin
   end;
 end;
 
+procedure TCTDirectoryCachePool.SetStarDirectoryExcludes(const AValue: TStrings
+  );
+begin
+  if FStarDirectoryExcludes.Equals(AValue) then Exit;
+  FStarDirectoryExcludes.Assign(AValue);
+  IncreaseConfigTimeStamp;
+end;
+
 constructor TCTDirectoryCachePool.Create;
 var
   sk: TCTStarDirectoryKind;
@@ -2426,6 +2451,8 @@ begin
   IncreaseConfigTimeStamp;
   if FileStateCache<>nil then
     FileStateCache.AddChangeTimeStampHandler(@OnFileStateCacheChangeTimeStamp);
+  FStarDirectoryExcludes:=TStringListUTF8Fast.Create;
+  FStarDirectoryExcludes.Delimiter:=';';
 end;
 
 destructor TCTDirectoryCachePool.Destroy;
@@ -2448,6 +2475,7 @@ begin
     FStarDirectories[sk].Free;
     FStarDirectories[sk]:=nil;
   end;
+  FreeAndNil(FStarDirectoryExcludes);
   inherited Destroy;
 end;
 
@@ -2750,11 +2778,7 @@ function TCTDirectoryCachePool.FindIncludeFileInDirectory(Directory,
 var
   Cache: TCTDirectoryBaseCache;
 begin
-  {$IFDEF EnableStarStarPath}
   Cache:=GetBaseCache(Directory,true);
-  {$ELSE}
-  Cache:=GetCache(Directory,true,false);
-  {$ENDIF}
   Result:=Cache.FindIncludeFile(IncFileName,AnyCase);
   if Result='' then exit;
   Result:=Cache.Directory+Result;
@@ -2765,11 +2789,7 @@ function TCTDirectoryCachePool.FindUnitInDirectory(const Directory,
 var
   Cache: TCTDirectoryBaseCache;
 begin
-  {$IFDEF EnableStarStarPath}
   Cache:=GetBaseCache(Directory,true);
-  {$ELSE}
-  Cache:=GetCache(Directory,true,false);
-  {$ENDIF}
   Result:=Cache.FindUnitSource(AUnitName,AnyCase);
   if Result='' then exit;
   Result:=Cache.Directory+Result;
