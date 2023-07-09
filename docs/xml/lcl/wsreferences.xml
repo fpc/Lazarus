@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fpdoc-descriptions>
+<package name="lcl">
+<!-- 
+====================================================================
+WSReferences
+====================================================================
+-->
+<module name="WSReferences">
+<short>
+Contains types used to represent references to widget set classes and their 
+handles.
+</short>
+<descr>
+<p>
+<file>wsreferences.pp</file> contains types used as skeleton widget set 
+component classes. These classes are never directly instantiated and may only 
+contain class functions. Includes type used represent a handle and a pointer 
+to a handle in widget set classes and LCL components.
+</p>
+<p>
+<file>wsreferences.pp</file> is part of the Lazarus Component Library 
+(<b>LCL</b>).
+</p>
+</descr>
+
+<element name="TLCLHandle">
+<short>
+The type used for handles in widget set classes and LCL components.
+</short>
+<descr/>
+<seealso>
+<link id="#lcl.lcltype.TLCLHandle">LCLType.TLCLHandle</link>
+</seealso>
+</element>
+
+<element name="PLCLHandle">
+<short>
+Pointer to a TLCLHandle instance.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="PWSReference">
+<short>
+Pointer to a widget set reference instance.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TWSReference">
+<short>
+Represents a reference to a widget set class instance.
+</short>
+<descr>
+<p>
+Abstract (temporary) base object for all references to WS classes. This 
+reference replaces the functionality of a Handle. An object is choosen to 
+disallow assignments using different types of handles.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TWSReference.GetAllocated"/>
+<element name="TWSReference.GetAllocated.Result"/>
+
+<element name="TWSReference.FRef">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TWSReference._Clear">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TWSReference._Init">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TWSReference._Init.APtr">
+<short/>
+</element>
+<element name="TWSReference._Init.AHandle">
+<short/>
+</element>
+
+<element name="TWSReference._Handle">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TWSReference.Allocated">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TWSReference.Ptr">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TWSCustomImageListReference">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TWSCustomImageListReference.Handle">
+<short/>
+</element>
+
+<element name="TWSGDIObjReference">
+<short/>
+<descr/>
+<seealso/>
+</element>
+  
+<element name="TWSBitmapReference">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TWSBitmapReference.Handle">
+<short/>
+</element>
+
+<element name="TWSBrushReference">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TWSBrushReference._lclHandle">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TWSBrushReference.Handle">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TWSPenReference">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TWSPenReference._lclHandle">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TWSPenReference.Handle">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TWSFontReference">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TWSFontReference._lclHandle">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TWSFontReference.Handle">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TWSRegionReference">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TWSRegionReference._lclHandle">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TWSRegionReference.Handle">
+<short/>
+<descr/>
+<seealso/>
+</element>
+  
+<element name="TWSDeviceContextReference">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TWSDeviceContextReference.Handle">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TWSIconReference">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TWSIconReference.Handle">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+</module>
+<!-- WSReferences -->
+</package>
+</fpdoc-descriptions>
