@@ -12591,37 +12591,56 @@ Finds the monitor containing the form with the given window handle.
 </short>
 <descr>
 <p>
-MonitorFromWindow is a TMonitor function used to locate monitor where the 
+MonitorFromWindow is a TMonitor function used to locate the monitor where the 
 form represented by the specified window Handle is displayed.
 </p>
 <p>
 <var>MonitorDefault</var> is a <var>TMonitorDefaultTo</var> enumeration value 
 which indicates the monitor used when the display area for the form is not 
-found on a monitor. See TMonitorDefaultTo for more information about the 
-values in the enumeration and their meanings.
+found on a monitor. 
+See <link href="TMonitorDefaultTo">TMonitorDefaultTo</link> for more 
+information about the values in the enumeration and their meanings.
 </p>
 <p>
-MonitorFromWindow calls MonitorFromWindow in the widgetset class to get a 
-monitor handle used to locate the monitor in the Monitors property. The 
-UpdatedMonitor method is called to ensure that Monitors contains up-to-date 
+MonitorFromWindow calls the MonitorFromWindow routine in the LCL interface to 
+get the HMONITOR handle to locate in the Monitors property. The 
+UpdatedMonitors method is called to ensure that Monitors contains up-to-date 
 values for the available monitors.
 </p>
 <p>
-If a monitor with the Handle is not found, GetWindowRect is called to get the 
-display areas for the monitor Handle. MonitorFromRect is called to locate the 
-monitor which contains the rectangle.
+If the handle is found in Monitors, the TMonitor instance with the handle is 
+used as the return value.
+</p>
+<p>
+If a monitor is not found, GetWindowRect is called to get the display area for 
+the TLCLHandle specified in the Handle argument. MonitorFromRect is called to 
+locate the monitor which contains the rectangle. The TMonitor instance is used 
+as the return value.
+</p>
+<p>
+MonitorFromWindow is called from methods like TCustomForm.GetMonitor.
 </p>
 </descr>
-<seealso/>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type in the Handle parameter.
+</version>
+<seealso>
+<link id="TCustomForm.GetMonitor"/>
+<link id="TMonitor.Handle"/>
+<link id="TMonitorDefaultTo"/>
+<link id="#lcl.lcltype.TLCLHandle">TLCLHandle</link>
+<link id="#lcl.lcltype.HMONITOR">HMONITOR</link>
+</seealso>
 </element>
 <element name="TScreen.MonitorFromWindow.Result">
-<short>The monitor found.</short>
+<short>The TMonitor instance found for the specified handle.</short>
 </element>
 <element name="TScreen.MonitorFromWindow.Handle">
-<short>The window handle to use.</short>
+<short>The TLCLHandle instance on the monitor located in the method.</short>
 </element>
 <element name="TScreen.MonitorFromWindow.MonitorDefault">
-<short>What to return when no monitor was found.</short>
+<short>What to return if a monitor was found.</short>
 </element>
 
 <element name="TScreen.BeginTempCursor">
@@ -18084,23 +18103,28 @@ Values are added to and removed from Flags in methods like:
 
 <element name="TApplication.Handle">
 <short>
-Provides access to the widgetset handle for the application instance.
+Provides access to the handle for the application instance.
 </short>
 <descr>
 <p>
-<var>Handle</var> is a <var>THandle</var> property which provides access to 
-the widgetset handle used for the application instance. Reading the value for 
-the property is redirected to the AppHandle allocated in the widgetset class. 
-Setting the value for the property causes the AppHandle in the widgetset 
-class to be updated with the new value.
+<var>Handle</var> is a <var>TLCLHandle</var> property which provides access to 
+the handle used for the application instance. Reading the value for the 
+property is redirected to the AppHandle allocated in the widgetset class. 
+Setting the value for the property causes the AppHandle in the widgetset class 
+to be updated with the new value.
 </p>
 <p>
 Handle is used to send and receive window messages and state change 
 notifications for the application instance using the <b>LCL</b> interface.
 </p>
 </descr>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type.
+</version>
 <seealso>
-<link id="TWidgetSet.AppHandle"/>
+<link id="#lcl.lcltype.TLCLHandle">TLCLHandle</link>
+<link id="#lcl.interfacebase.TWidgetSet.AppHandle">TWidgetSet.AppHandle</link>
 </seealso>
 </element>
 
