@@ -994,8 +994,6 @@ type
     property Exec: TPSExec read FExec;
   end;
 
-  { TPSRuntimeClass }
-
   TPSRuntimeClass = class
   protected
     FClassName: tbtstring;
