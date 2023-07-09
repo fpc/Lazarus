@@ -32,7 +32,7 @@
 			<short>MinDate property is not (fully) supported</short>
       <descr>While programmatically setting a date is limited by MinDate/MaxDate, the calendar still allow to select dates that are out of that range</descr>
 		</issue>
-		<issue name="TCalendar.MinDate">
+		<issue name="TCalendar.MaxDate">
 			<short>MaxDate property is not (fully) supported</short>
       <descr>While programmatically setting a date is limited by MinDate/MaxDate, the calendar still allow to select dates that are out of that range</descr>
 		</issue>
@@ -40,7 +40,7 @@
 			<short>TDateEdit.MinDate is not supported by the native Calendar.</short>
 		</issue>
 		<issue name="TDateEdit.MaxDate">
-			<short>TDateEdit.MinDate is not supported by the native Calendar.</short>
+			<short>TDateEdit.MaxDate is not supported by the native Calendar.</short>
 		</issue>
 	</widgetset>
 </package>
