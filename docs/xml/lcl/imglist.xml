@@ -82,8 +82,13 @@ TDestroyResolutionHandleEvent is the type used to implement the
 OnDestroyResolutionHandle in TChangeLink.
 </p>
 </descr>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type in the AReferenceHandle parameter.
+</version>
 <seealso>
 <link id="TChangeLink.OnDestroyResolutionHandle"/>
+<link id="#lcl.wsreferences.TLCLHandle">TLCLHandle</link>
 </seealso>
 </element>
 <element name="TDestroyResolutionHandleEvent.Sender">
@@ -729,22 +734,32 @@ ReadData is used in the implementation of the
 </element>
 
 <element name="TCustomImageListResolution.GetReferenceHandle">
-<short>Gets the Handle for the Reference image list.</short>
+<short>
+Gets the handle from the widgetset Reference for the image list.
+</short>
 <descr>
 <p>
 <var>GetReferenceHandle</var> is an overridden method used to get the handle 
-for the TWSCustomImageListReference class for the widgetset. Some (all?) 
-platforms / widgetsets require a handle when manipulating an image list. 
-GetReferenceHandle uses the value in the Reference property to supply the 
-value for the Handle.
+for the TWSCustomImageListReference class for the widgetset. Some platforms / 
+widgetsets require a handle when manipulating an image list. 
+GetReferenceHandle uses the Handle property from the widgetset reference as 
+the return value.
 </p>
 </descr>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type in the return value for the method.
+</version>
 <seealso>
 <link id="TCustomImageListResolution.Reference"/>
+<link id="#lcl.wsreferences.TLCLHandle">TLCLHandle</link>
+<link id="#lcl.wsreferences.TWSCustomImageListReference">TWSCustomImageListReference</link>
 </seealso>
 </element>
 <element name="TCustomImageListResolution.GetReferenceHandle.Result">
-<short>Handle for the Reference class in the image list.</short>
+<short>
+Handle for the widgetset Reference class used for the image list.
+</short>
 </element>
 
 <element name="TCustomImageListResolution.WSCreateReference">
@@ -4488,7 +4503,8 @@ Adds a graphic from a resource with the specified resource name.
 store a TGraphic for the specified resource name.
 </p>
 <p>
-<var>Instance</var> is a THandle value for the resource.
+<var>Instance</var> is a TLCLHandle value with the handle for the resource 
+where an image is stored.
 </p>
 <p>
 <var>ResourceName</var> is a String value that contains the name for the 
@@ -4518,10 +4534,15 @@ value contains the ordinal position in the image list where the image was
 stored.
 </p>
 </descr>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type in the Instance parameter.
+</version>
 <seealso>
 <link id="TCustomImageList.Add"/>
 <link id="TCustomImageList.AddIcon"/>
 <link id="#lcl.graphics.CreateGraphicFromResourceName">CreateGraphicFromResourceName</link>
+<link id="#lcl.wsreferences.TLCLHandle">TLCLHandle</link>
 </seealso>
 </element>
 <element name="TCustomImageList.AddResourceName.Result">
