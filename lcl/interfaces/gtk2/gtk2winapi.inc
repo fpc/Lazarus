@@ -1304,26 +1304,58 @@ end;
 function TGtk2WidgetSet.CreateEllipticRgn(X1, Y1, X2, Y2: Integer): HRGN;
 var
   points: array of TGdkPoint;
-  n_points: Integer;
-  i, Xc, Yc, a, b: Integer;
-  t: Double;
+  n_points, i, n4, aLeft, aRight, aTop, aBottom: Integer;
+  Xc, Yc, a, b, t: single;
+  AX, AY, BX, BY, CX, CY, Deviation: single;
   GObject: PGdiObject;
   RegionObj: PGdkRegion;
 begin
-  a := (X2 - X1) div 2;
-  b := (Y2 - Y1) div 2;
-  Xc := X1 + a;
-  Yc := Y1 + b;
+  Xc:=single(X1+X2)/2;
+  Yc:=single(Y1+Y2)/2;
+  a:=single(X2-X1)/2;
+  b:=single(Y2-Y1)/2;
 
   // Choose a large enough amount of points
-  n_points := Max(X2-X1,Y2-Y1) * 4;
+  n_points:=0;
+  repeat
+    inc(n_points,4);
+    t := single(1) / single(n_points) * 2 * Pi;
+    AX := a * cos(t);
+    AY := a * sin(t);
+    BX := a * cos(t/2);
+    BY := a * sin(t/2);
+    CX := (AX + a) /2;
+    CY := (AY + 0) /2;
+    Deviation := sqrt(sqr(BX-CX)+sqr(BY-CY));
+  until Deviation<0.4;
+
   SetLength(points{%H-}, n_points);
   // And fill them iterating through the ellipse
-  for i := 0 to n_points - 1 do
+  n4 := n_points div 4;
+  for i := 0 to n4 do
   begin
-    t := (i / n_points) * 2 * Pi;
-    points[i].X := Round(Xc + a * cos(t));
-    points[i].Y := Round(Yc + b * sin(t));
+    t := single(i) / single(n_points) * 2 * Pi;
+    aRight := Round(Xc + a * cos(t));
+    aLeft := Trunc(2*Xc - aRight);
+    aTop := Round(Yc + b * sin(t));
+    aBottom := Trunc(2*Yc - aTop);
+    points[i].X := aRight;
+    points[i].Y := aTop;
+    if i>0 then
+    begin
+      points[n_points - i].X := aRight;
+      points[n_points - i].Y := aBottom;
+    end;
+    if i<n4 then
+    begin
+      points[2*n4 - i].X := aLeft;
+      points[2*n4 - i].Y := aTop;
+      if i>0 then
+      begin
+        points[2*n4 + i].X := aLeft;
+        points[2*n4 + i].Y := aBottom;
+      end;
+    end;
   end;
 
   GObject := NewGDIObject(gdiRegion);
