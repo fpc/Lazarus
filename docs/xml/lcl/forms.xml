@@ -12598,7 +12598,7 @@ form represented by the specified window Handle is displayed.
 <var>MonitorDefault</var> is a <var>TMonitorDefaultTo</var> enumeration value 
 which indicates the monitor used when the display area for the form is not 
 found on a monitor. 
-See <link href="TMonitorDefaultTo">TMonitorDefaultTo</link> for more 
+See <link id="TMonitorDefaultTo">TMonitorDefaultTo</link> for more 
 information about the values in the enumeration and their meanings.
 </p>
 <p>
@@ -12626,7 +12626,6 @@ Modified in LCL version 4.0 to use the TLCLHandle type instead of the
 deprecated THandle type in the Handle parameter.
 </version>
 <seealso>
-<link id="TCustomForm.GetMonitor"/>
 <link id="TMonitor.Handle"/>
 <link id="TMonitorDefaultTo"/>
 <link id="#lcl.lcltype.TLCLHandle">TLCLHandle</link>
