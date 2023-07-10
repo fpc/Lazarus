@@ -1294,83 +1294,28 @@ end;
 
 {
   Gtk2 has no function to build an elliptical region so we approximate it to a
-  polygon. Our Ellipse is axis-aligned, so it's parametrization is:
-
-  X(t) = Xc + a * cos(t)
-  Y(t) = Yc + b * sin(t)
-
-  (Xc,Yc) is the center of the ellipse
+  polygon.
 }
 function TGtk2WidgetSet.CreateEllipticRgn(X1, Y1, X2, Y2: Integer): HRGN;
 var
-  points: array of TGdkPoint;
-  n_points, i, n4, aLeft, aRight, aTop, aBottom: Integer;
-  Xc, Yc, a, b, MaxR, t: single;
-  AX, AY, BX, BY, CX, CY, Deviation: single;
+  Points: TPointArray;
+  gPoints: array of TGdkPoint;
+  i: Integer;
   GObject: PGdiObject;
   RegionObj: PGdkRegion;
 begin
-  Xc:=single(X1+X2)/2;
-  Yc:=single(Y1+Y2)/2;
-  a:=single(X2-X1)/2;
-  b:=single(Y2-Y1)/2;
-  MaxR:=Max(a,b);
-
-  // Choose the minimum number of points
-  // so that the error - the distance between the edges and the mathematical
-  // circle is less than the rounding error (0.5), for a smoother step 0.4.
-  n_points:=0;
-  repeat
-    inc(n_points,4);
-    t := single(1) / single(n_points) * 2 * Pi;
-    AX := MaxR * cos(t);
-    AY := MaxR * sin(t);
-    BX := MaxR * cos(t/2);
-    BY := MaxR * sin(t/2);
-    CX := (AX + MaxR) /2;
-    CY := (AY + 0) /2;
-    Deviation := sqrt(sqr(BX-CX)+sqr(BY-CY));
-  until Deviation<0.4;
-  SetLength(points{%H-}, n_points);
-
-  // And fill them iterating through the ellipse
-  // by computing the upper right quarter and mirror the other three quartes.
-  // This way a perfectly symmetrical ellipse is created.
-  n4 := n_points div 4;
-  for i := 0 to n4 do
-  begin
-    t := single(i) / single(n_points) * 2 * Pi;
-    aRight := Round(Xc + a * cos(t));
-    aLeft := Trunc(2*Xc - aRight);
-    aTop := Round(Yc + b * sin(t));
-    aBottom := Trunc(2*Yc - aTop);
-    points[i].X := aRight;
-    points[i].Y := aTop;
-    if i>0 then
-    begin
-      points[n_points - i].X := aRight;
-      points[n_points - i].Y := aBottom;
-    end;
-    if i<n4 then
-    begin
-      points[2*n4 - i].X := aLeft;
-      points[2*n4 - i].Y := aTop;
-      if i>0 then
-      begin
-        points[2*n4 + i].X := aLeft;
-        points[2*n4 + i].Y := aBottom;
-      end;
-    end;
+  Points:=EllipsePolygon(Rect(X1,Y1,X2,Y2));
+  SetLength(gPoints,length(Points));
+  for i:=0 to length(Points)-1 do begin
+    gPoints[i].x:=Points[i].x;
+    gPoints[i].y:=Points[i].y;
   end;
 
   GObject := NewGDIObject(gdiRegion);
-  RegionObj := gdk2.gdk_region_polygon(@points[0], n_points, GDK_WINDING_RULE);
+  RegionObj := gdk2.gdk_region_polygon(@gPoints[0], length(gPoints), GDK_WINDING_RULE);
   GObject^.GDIRegionObject := RegionObj;
 
   Result := HRGN({%H-}PtrUInt(GObject));
-
-  // Free the allocated array
-  SetLength(points, 0);
   //DebugLn('TGtk2WidgetSet.CreateRectRgn A ',GDKRegionAsString(RegionObj));
 end;
 

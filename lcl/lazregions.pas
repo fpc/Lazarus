@@ -11,12 +11,12 @@ interface
 
 uses
   Classes, SysUtils, fpcanvas,
-  LCLType;
+  LCLType, GraphType;
 
 type
   TLazRegionFillMode = (rfmOddEven, rfmWinding);
 
-  TPointArray = array of TPoint;
+  TPointArray = GraphType.TPointArray;
 
   { TLazRegionPart }
 

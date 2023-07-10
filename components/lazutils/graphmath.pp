@@ -32,7 +32,7 @@ interface
 Uses
   Types, Classes, SysUtils, Math,
   // LazUtils
-  LazUtilities;
+  GraphType, LazUtilities;
 
 Type
   TFloatPoint = Record
@@ -72,6 +72,7 @@ function Distance(const Pt, SP, EP : TFloatPoint) : Extended; overload;
 function EccentricAngle(const PT : TPoint; const Rect : TRect) : Extended;
 
 function EllipseRadialLength(const Rect : TRect; EccentricAngle : Extended) : Longint;
+function EllipsePolygon(const aRect: TRect): TPointArray;
 
 function FloatPoint(AX,AY : Extended): TFloatPoint; inline;
 
@@ -139,7 +140,7 @@ Operator = (const Compare1, Compare2  : TRect) : Boolean;
 implementation
 
 
-Operator + (const Addend1, Addend2 : TFloatPoint) : TFloatPoint;
+operator+(const Addend1, Addend2: TFloatPoint): TFloatPoint;
 Begin
   With Result do begin
     X := Addend1.X + Addend2.X;
@@ -147,7 +148,7 @@ Begin
   end;
 end;
 
-Operator + (const Addend1 : TFloatPoint; Addend2 : Extended) : TFloatPoint;
+operator+(const Addend1: TFloatPoint; Addend2: Extended): TFloatPoint;
 Begin
   With Result do begin
     X := Addend1.X + Addend2;
@@ -155,12 +156,12 @@ Begin
   end;
 end;
 
-Operator + (Addend1 : Extended; const Addend2 : TFloatPoint) : TFloatPoint;
+operator+(Addend1: Extended; const Addend2: TFloatPoint): TFloatPoint;
 begin
   Result := Addend2 + Addend1;
 end;
 
-Operator + (const Addend1 : TFloatPoint; const Addend2 : TPoint) : TFloatPoint;
+operator+(const Addend1: TFloatPoint; const Addend2: TPoint): TFloatPoint;
 Begin
   With Result do begin
     X := Addend1.X + Addend2.X;
@@ -168,12 +169,12 @@ Begin
   end;
 end;
 
-Operator + (const Addend1 : TPoint; const Addend2 : TFloatPoint) : TFloatPoint;
+operator+(const Addend1: TPoint; const Addend2: TFloatPoint): TFloatPoint;
 begin
   Result := Addend2 + Addend1;
 end;
 
-Operator - (const Minuend, Subtrahend:TFloatPoint) : TFloatPoint;
+operator-(const Minuend, Subtrahend: TFloatPoint): TFloatPoint;
 Begin
   With Result do begin
     X := Minuend.X - Subtrahend.X;
@@ -181,7 +182,7 @@ Begin
   end;
 end;
 
-Operator - (const Minuend : TFloatPoint; Subtrahend : Extended) : TFloatPoint;
+operator-(const Minuend: TFloatPoint; Subtrahend: Extended): TFloatPoint;
 Begin
   With Result do begin
     X := Minuend.X - Subtrahend;
@@ -189,7 +190,7 @@ Begin
   end;
 end;
 
-Operator - (const Minuend : TFloatPoint; const Subtrahend : TPoint) : TFloatPoint;
+operator-(const Minuend: TFloatPoint; const Subtrahend: TPoint): TFloatPoint;
 begin
   With Result do begin
     X := Minuend.X - Subtrahend.X;
@@ -197,7 +198,7 @@ begin
   end;
 end;
 
-Operator - (const Minuend : TPoint; const Subtrahend : TFloatPoint) : TFloatPoint;
+operator-(const Minuend: TPoint; const Subtrahend: TFloatPoint): TFloatPoint;
 begin
   With Result do begin
     X := Minuend.X - Subtrahend.X;
@@ -205,7 +206,7 @@ begin
   end;
 end;
 
-Operator * (const Multiplicand, Multiplier : TFloatPoint) : TFloatPoint;
+operator*(const Multiplicand, Multiplier: TFloatPoint): TFloatPoint;
 Begin
   With Result do begin
     X := Multiplicand.X * Multiplier.X;
@@ -213,7 +214,7 @@ Begin
   end;
 end;
 
-Operator * (const Multiplicand : TFloatPoint; Multiplier : Extended) : TFloatPoint;
+operator*(const Multiplicand: TFloatPoint; Multiplier: Extended): TFloatPoint;
 Begin
   With Result do begin
     X := Multiplicand.X * Multiplier;
@@ -221,12 +222,13 @@ Begin
   end;
 end;
 
-Operator * (Multiplicand : Extended; const Multiplier : TFloatPoint) : TFloatPoint;
+operator*(Multiplicand: Extended; const Multiplier: TFloatPoint): TFloatPoint;
 Begin
   Result := Multiplier*Multiplicand;
 end;
 
-Operator * (const Multiplicand : TFloatPoint; const Multiplier : TPoint) : TFloatPoint;
+operator*(const Multiplicand: TFloatPoint; const Multiplier: TPoint
+  ): TFloatPoint;
 begin
   With Result do begin
     X := Multiplicand.X * Multiplier.X;
@@ -234,12 +236,13 @@ begin
   end;
 end;
 
-Operator * (const Multiplicand : TPoint; const Multiplier : TFloatPoint) : TFloatPoint;
+operator*(const Multiplicand: TPoint; const Multiplier: TFloatPoint
+  ): TFloatPoint;
 begin
   Result := Multiplier*Multiplicand;
 end;
 
-Operator / (const Dividend, Divisor : TFloatPoint) : TFloatPoint;
+operator/(const Dividend, Divisor: TFloatPoint): TFloatPoint;
 Begin
   With Result do begin
     X := Dividend.X / Divisor.X;
@@ -247,7 +250,7 @@ Begin
   end;
 end;
 
-Operator / (const Dividend : TFloatPoint; Divisor : Extended) : TFloatPoint;
+operator/(const Dividend: TFloatPoint; Divisor: Extended): TFloatPoint;
 begin
   With Result do begin
     X := Dividend.X / Divisor;
@@ -255,7 +258,7 @@ begin
   end;
 end;
 
-Operator / (const Dividend : TFloatPoint; const Divisor : TPoint) : TFloatPoint;
+operator/(const Dividend: TFloatPoint; const Divisor: TPoint): TFloatPoint;
 begin
   With Result do begin
     X := Dividend.X / Divisor.X;
@@ -263,7 +266,7 @@ begin
   end;
 end;
 
-Operator / (const Dividend : TPoint; const Divisor : TFloatPoint) : TFloatPoint;
+operator/(const Dividend: TPoint; const Divisor: TFloatPoint): TFloatPoint;
 begin
   With Result do begin
     X := Dividend.X / Divisor.X;
@@ -271,23 +274,23 @@ begin
   end;
 end;
 
-Operator = (const Compare1, Compare2  : TPoint) : Boolean;
+operator=(const Compare1, Compare2: TPoint): Boolean;
 begin
   Result := (Compare1.X = Compare2.X) and (Compare1.Y = Compare2.Y);
 end;
 
-Operator = (const Compare1, Compare2  : TFloatPoint) : Boolean;
+operator=(const Compare1, Compare2: TFloatPoint): Boolean;
 begin
   Result := (Compare1.X = Compare2.X) and (Compare1.Y = Compare2.Y);
 end;
 
-Operator := (const Value : TFloatPoint) : TPoint;
+operator:=(const Value: TFloatPoint): TPoint;
 begin
   Result.X := Trunc(SimpleRoundTo(Value.X, 0));
   Result.Y := Trunc(SimpleRoundTo(Value.Y, 0));
 end;
 
-Operator := (const Value : TPoint) : TFloatPoint;
+operator:=(const Value: TPoint): TFloatPoint;
 begin
   With Result do begin
     X := Value.X;
@@ -295,7 +298,7 @@ begin
   end;
 end;
 
-Operator = (const Compare1, Compare2  : TRect) : Boolean;
+operator=(const Compare1, Compare2: TRect): Boolean;
 begin
   Result := (Compare1.Left = Compare2.Left) and
             (Compare1.Top = Compare2.Top) and
@@ -665,7 +668,7 @@ end;
   for use in other routines such as EccentricAngle.
 
 ------------------------------------------------------------------------------}
-function Distance(const Pt1,Pt2 : TPoint) : Extended;
+function Distance(const PT1, Pt2: TPoint): Extended;
 begin
   Result := Sqrt(Sqr(Pt2.X - Pt1.X) + Sqr(Pt2.Y - Pt1.Y));
 end;
@@ -783,6 +786,72 @@ begin
   Result := TruncToInt(R);
 end;
 
+function EllipsePolygon(const aRect: TRect): TPointArray;
+{ Our Ellipse is axis-aligned, so it's parametrization is:
+
+  X(t) = Xc + a * cos(t)
+  Y(t) = Yc + b * sin(t)
+
+  (Xc,Yc) is the center of the ellipse }
+var
+  n_points, i, n4, aLeft, aRight, aTop, aBottom: Integer;
+  Xc, Yc, a, b, MaxR, t: single;
+  AX, AY, BX, BY, CX, CY, Deviation: single;
+begin
+  Xc:=single(aRect.Left+aRect.Right)/2;
+  Yc:=single(aRect.Top+aRect.Bottom)/2;
+  a:=single(aRect.Width)/2;
+  b:=single(aRect.Height)/2;
+  MaxR:=Max(a,b);
+
+  // Choose the minimum number of points, so that the error - the distance
+  // between the edges and the mathematical circle is less than the rounding
+  // error (0.5), for a smoother step 0.4.
+  n_points:=0;
+  repeat
+    inc(n_points,4);
+    t := single(1) / single(n_points) * 2 * Pi;
+    AX := MaxR * cos(t);
+    AY := MaxR * sin(t);
+    BX := MaxR * cos(t/2);
+    BY := MaxR * sin(t/2);
+    CX := (AX + MaxR) /2;
+    CY := (AY + 0) /2;
+    Deviation := sqrt(sqr(BX-CX)+sqr(BY-CY));
+  until Deviation<0.4;
+  SetLength(Result{%H-}, n_points);
+
+  // And fill them iterating through the ellipse
+  // by computing the upper right quarter and mirror the other three quartes.
+  // This way a perfectly symmetrical ellipse is created.
+  n4 := n_points div 4;
+  for i := 0 to n4 do
+  begin
+    t := single(i) / single(n_points) * 2 * Pi;
+    aRight := Round(Xc + a * cos(t));
+    aLeft := Trunc(2*Xc - aRight);
+    aTop := Round(Yc + b * sin(t));
+    aBottom := Trunc(2*Yc - aTop);
+    Result[i].X := aRight;
+    Result[i].Y := aTop;
+    if i>0 then
+    begin
+      Result[n_points - i].X := aRight;
+      Result[n_points - i].Y := aBottom;
+    end;
+    if i<n4 then
+    begin
+      Result[2*n4 - i].X := aLeft;
+      Result[2*n4 - i].Y := aTop;
+      if i>0 then
+      begin
+        Result[2*n4 + i].X := aLeft;
+        Result[2*n4 + i].Y := aBottom;
+      end;
+    end;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method:   FloatPoint
   Params:   AX, AY
@@ -895,8 +964,8 @@ end;
   be Freed when done by calling to ReallocMem(Points, 0).
 
 ------------------------------------------------------------------------------}
-procedure PolyBezier2Polyline(Beziers: Array of TBezier;
-  var Points : PPoint; var Count : Longint);
+procedure PolyBezier2Polyline(Beziers: array of TBezier; var Points: PPoint;
+  var Count: Longint);
 var
   I : Integer;
 begin
@@ -930,8 +999,8 @@ end;
   by calling to ReallocMem(Points, 0).
 
 ------------------------------------------------------------------------------}
-procedure PolyBezier2Polyline(Beziers : Array of TPoint; var Points : PPoint;
-  var Count : Longint; Continuous : Boolean);
+procedure PolyBezier2Polyline(Beziers: array of TPoint; var Points: PPoint;
+  var Count: Longint; Continuous: Boolean);
 begin
   PolyBezier2Polyline(@Beziers[0],High(Beziers) + 1, Points, Count, Continuous);
 end;
@@ -1052,7 +1121,7 @@ end;
   that is, it is the Center.
 
 ------------------------------------------------------------------------------}
-function Quadrant(const Pt,Center : TPoint) : Integer;
+function Quadrant(const PT, Center: TPoint): Integer;
 var
   X,Y,CX,CY : Longint;
 begin

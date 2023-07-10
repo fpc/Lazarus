@@ -39,6 +39,8 @@ uses
 {$endif}
 
 type
+  TPointArray = array of TPoint;
+
   TGraphicsColor = {$ifdef UseSystemUITypes}System.UITypes.TColor{$else}-$7FFFFFFF-1..$7FFFFFFF{$endif};
   TGraphicsFillStyle =
   (
