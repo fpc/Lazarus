@@ -9611,6 +9611,10 @@ msgstr ""
 msgid "%s excluded at run time"
 msgstr "%s 実行時に除外"
 
+#: lazarusidestrconsts.lisexcludesforstars
+msgid "Excludes for * and ** in unit and include search paths"
+msgstr ""
+
 #: lazarusidestrconsts.lisexecutableisadirectory
 #, object-pascal-format
 msgid "executable \"%s\" is a directory"

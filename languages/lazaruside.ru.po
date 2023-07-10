@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-07-05 15:50+0300\n"
+"PO-Revision-Date: 2023-07-10 17:01+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -9450,6 +9450,10 @@ msgstr "Исключить"
 #, object-pascal-format
 msgid "%s excluded at run time"
 msgstr "%s исключён во время исполнения"
+
+#: lazarusidestrconsts.lisexcludesforstars
+msgid "Excludes for * and ** in unit and include search paths"
+msgstr "Исключения для * и ** в путях поиска модулей и включаемых файлов"
 
 #: lazarusidestrconsts.lisexecutableisadirectory
 #, object-pascal-format
