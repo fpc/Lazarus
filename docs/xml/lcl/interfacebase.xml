@@ -51,6 +51,7 @@ this unit to the OnLCLWidgetTypeName function variable in
 <element name="LCLPlatformDef"/>
 <element name="IntfGraphics"/>
 <element name="Themes"/>
+<element name="WSReferences"/>
 <element name="LazUTF8"/>
 <element name="IntegerList"/>
 <element name="LazUtilities"/>
@@ -887,11 +888,56 @@ be preprocessed or modified prior to starting an application.
 <element name="TWidgetSet.CreateThemeServices" link="#lcl.interfacebase.TWidgetSet.ThemeServices"/>
 <element name="TWidgetSet.CreateThemeServices.Result"/>
 
-<element name="TWidgetSet.GetAppHandle" link="#lcl.interfacebase.TWidgetSet.AppHandle"/>
-<element name="TWidgetSet.GetAppHandle.Result"/>
+<element name="TWidgetSet.GetAppHandle">
+<short>
+Gets the value for the AppHandle property.
+</short>
+<descr>
+<p>
+Always returns 0 (the unassigned handle value) in TWidgetSet. It is overridden 
+in descendent classes to return the value provided for the platform.
+</p>
+</descr>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type for the property value.
+</version>
+<seealso>
+<link id="TWidgetSet.AppHandle"/>
+<link id="#lcl.wsreferences.TLCLHandle">TLCLHandle</link>
+</seealso>
+</element>
+<element name="TWidgetSet.GetAppHandle.Result">
+<short>
+Value for the AppHandle property.
+</short>
+</element>
 
-<element name="TWidgetSet.SetAppHandle" link="#lcl.interfacebase.TWidgetSet.AppHandle"/>
-<element name="TWidgetSet.SetAppHandle.AValue"/>
+<element name="TWidgetSet.SetAppHandle">
+<short>
+Sets the value for the AppHandle property.
+</short>
+<descr>
+<p>
+SetAppHandle has an empty implementation in TWidgetSet. It is overridden in 
+descendent classes, and generally ensures that an assigned handle is not 
+unassigned after it has been created.
+</p>
+</descr>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type for the property value.
+</version>
+<seealso>
+<link id="TWidgetSet.AppHandle"/>
+<link id="#lcl.wsreferences.TLCLHandle">TLCLHandle</link>
+</seealso>
+</element>
+<element name="TWidgetSet.SetAppHandle.AValue">
+<short>
+New value for the AppHandle property.
+</short>
+</element>
 
 <element name="TWidgetSet.Create">
 <short>Constructor for the class instance.</short>
@@ -916,7 +962,7 @@ allocate the <var>TThemeServices</var> instance used in the
 <var>BeforeDestruction</var> is an overridden method used to perform actions 
 needed prior to freeing the class instance. BeforeDestruction ensures that 
 resources allocated for the <var>ThemeServices</var> property are freed and 
-nil'd. BeforeDestruction calls the inherited method prior to exit.
+<b>nil</b>'d. BeforeDestruction calls the inherited method prior to exit.
 </p>
 </descr>
 <seealso>
@@ -1343,25 +1389,43 @@ Component for the designer flag value.
 </element>
 
 <element name="TWidgetSet.CreateTimer">
-<short>Creates a timer with the given callback method.</short>
-<descr/>
-<seealso/>
-</element>
-<element name="TWidgetSet.CreateTimer.Result">
-<short>The timer ID, zero on failure.</short>
+<short>
+Creates a timer with the given callback method.
+</short>
+<descr>
+<p>
+Declared as an abstract virtual method in TWidgetSet. Must be implemented in 
+a descendent class to use the platform-specific mechanism(s) required for the 
+implementation.
+</p>
+</descr><version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type in the return value.
+</version>
 <seealso>
 <link id="TWidgetSet.DestroyTimer"/>
+<link id="TWSTimerProc"/>
+<link id="#lcl.wsreferences.TLCLHandle">TLCLHandle</link>
 </seealso>
 </element>
+<element name="TWidgetSet.CreateTimer.Result">
+<short>
+The handle (or ID) for the timer. Zero on failure.
+</short>
+</element>
 <element name="TWidgetSet.CreateTimer.Interval">
-<short>The time interval.</short>
+<short>The timer interval before the callback is executed.</short>
 </element>
 <element name="TWidgetSet.CreateTimer.TimerProc">
-<short>The callback method.</short>
+<short>
+The callback method executed when the timer interval has elapsed.
+</short>
 </element>
 
 <element name="TWidgetSet.DestroyTimer">
-<short>Destroys a timer.</short>
+<short>
+Destroys the timer with the specified handle.
+</short>
 <descr>
 <p>
 Declared as an abstract virtual method in TWidgetSet. Must be implemented in 
@@ -1369,26 +1433,44 @@ a descendent class to use the platform-specific mechanism(s) required for the
 implementation.
 </p>
 </descr>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type in the TimerHandle parameter.
+</version>
 <seealso>
 <link id="TWidgetSet.CreateTimer"/>
+<link id="TWSTimerProc"/>
+<link id="#lcl.wsreferences.TLCLHandle">TLCLHandle</link>
 </seealso>
 </element>
 <element name="TWidgetSet.DestroyTimer.Result">
-<short><b>False</b> on failure.</short>
+<short>
+<b>True</b> if the timer was successfully destroyed. <b>False</b> on failure.
+</short>
 </element>
 <element name="TWidgetSet.DestroyTimer.TimerHandle">
-<short>The timer ID.</short>
+<short>Handle (or ID) for the timer destroyed in the method.</short>
 </element>
 
 <element name="TWidgetSet.AppHandle">
-<short>Native handle for a TApplication instance.</short>
+<short>
+Native handle for a TApplication instance.
+</short>
 <descr>
 <p>
-<var>AppHandle</var> is a platform-specific property. The meaning and use for 
-the handle changes from widgetset to widgetset.
+<var>AppHandle</var> is a <var>TLCLHandle</var> property with the handle for 
+the application in the widgetset class instance. <var>AppHandle</var> is a 
+platform-specific property. The meaning and use for the handle changes from 
+widgetset to widgetset.
 </p>
 </descr>
-<seealso/>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type in the property value.
+</version>
+<seealso>
+<link id="#lcl.wsreferences.TLCLHandle">TLCLHandle</link>
+</seealso>
 </element>
 
 <!-- winapi includes -->
@@ -7566,6 +7648,7 @@ the initial value for the edit control on entry.
 </short>
 </element>
 
+<!-- TODO: Needs content. -->
 <element name="TPromptDialogFunction">
 <short/>
 <descr/>
@@ -7605,6 +7688,7 @@ the initial value for the edit control on entry.
 <short/>
 </element>
 
+<!-- TODO: Needs content. -->
 <element name="TQuestionDialogFunction">
 <short/>
 <descr/>
@@ -7635,8 +7719,13 @@ Specifies a function called to load a bitmap image from the specified file or
 resource and return the handle for the image.
 </short>
 <descr/>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type in the hInstance parameter.
+</version>
 <seealso>
 <link id="LoadBitmapFunction"/>
+<link id="#lcl.wsreferences.TLCLHandle">TLCLHandle</link>
 </seealso>
 </element>
 <element name="TLoadBitmapFunction.Result">
@@ -7661,6 +7750,14 @@ Specifies a function called to load a cursor shape with the specified
 identifier and return the handle for the cursor image.
 </short>
 <descr/>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type in the hInstance parameter.
+</version>
+<seealso>
+<link id="LoadCursorFunction"/>
+<link id="#lcl.wsreferences.TLCLHandle">TLCLHandle</link>
+</seealso>
 <seealso/>
 </element>
 <element name="TLoadCursorFunction.Result">
@@ -7679,10 +7776,19 @@ Identifier for the cursor shape loaded in the routine.
 </short>
 </element>
 
+<!-- TODO: Needs content. -->
 <element name="TLoadIconFunction">
 <short/>
 <descr/>
-<seealso/>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type in the hInstance parameter.
+
+</version>
+<seealso>
+<link id="LoadIconFunction"/>
+<link id="#lcl.wsreferences.TLCLHandle">TLCLHandle</link>
+</seealso>
 </element>
 <element name="TLoadIconFunction.Result">
 <short/>
@@ -7694,18 +7800,21 @@ Identifier for the cursor shape loaded in the routine.
 <short/>
 </element>
 
+<!-- TODO: Needs content. -->
 <element name="InputDialogFunction">
 <short/>
 <descr/>
 <seealso/>
 </element>
 
+<!-- TODO: Needs content. -->
 <element name="PromptDialogFunction">
 <short/>
 <descr/>
 <seealso/>
 </element>
 
+<!-- TODO: Needs content. -->
 <element name="QuestionDialogFunction">
 <short/>
 <descr/>
