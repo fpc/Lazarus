@@ -297,7 +297,7 @@ begin
 
   SetDefaultMenuItem.Caption := lisFileFiltersSetDefaults;
 
-  lblStarDirExcludes.Caption:='Excludes for * and ** in unit and include search paths';
+  lblStarDirExcludes.Caption:=lisExcludesForStars;
 end;
 
 procedure TFileFiltersOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);

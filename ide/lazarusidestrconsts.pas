@@ -6121,6 +6121,9 @@ resourcestring
   lisMenuPkgNewPackageComponent = 'New package component';
   lisSaveChangedFiles = 'Save changed files?';
 
+  lisExcludesForStars =
+    'Excludes for * and ** in unit and include search paths';
+
   lisUIClearIncludedByReference = 'Clear include cache';
   lisChangeParent = 'Change Parent';
   lisLazarusIDE = 'Lazarus IDE';
