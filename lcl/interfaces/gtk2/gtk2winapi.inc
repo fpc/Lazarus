@@ -1305,7 +1305,7 @@ function TGtk2WidgetSet.CreateEllipticRgn(X1, Y1, X2, Y2: Integer): HRGN;
 var
   points: array of TGdkPoint;
   n_points, i, n4, aLeft, aRight, aTop, aBottom: Integer;
-  Xc, Yc, a, b, t: single;
+  Xc, Yc, a, b, MaxR, t: single;
   AX, AY, BX, BY, CX, CY, Deviation: single;
   GObject: PGdiObject;
   RegionObj: PGdkRegion;
@@ -1314,23 +1314,28 @@ begin
   Yc:=single(Y1+Y2)/2;
   a:=single(X2-X1)/2;
   b:=single(Y2-Y1)/2;
+  MaxR:=Max(a,b);
 
-  // Choose a large enough amount of points
+  // Choose the minimum number of points
+  // so that the error - the distance between the edges and the mathematical
+  // circle is less than the rounding error (0.5), for a smoother step 0.4.
   n_points:=0;
   repeat
     inc(n_points,4);
     t := single(1) / single(n_points) * 2 * Pi;
-    AX := a * cos(t);
-    AY := a * sin(t);
-    BX := a * cos(t/2);
-    BY := a * sin(t/2);
-    CX := (AX + a) /2;
+    AX := MaxR * cos(t);
+    AY := MaxR * sin(t);
+    BX := MaxR * cos(t/2);
+    BY := MaxR * sin(t/2);
+    CX := (AX + MaxR) /2;
     CY := (AY + 0) /2;
     Deviation := sqrt(sqr(BX-CX)+sqr(BY-CY));
   until Deviation<0.4;
-
   SetLength(points{%H-}, n_points);
+
   // And fill them iterating through the ellipse
+  // by computing the upper right quarter and mirror the other three quartes.
+  // This way a perfectly symmetrical ellipse is created.
   n4 := n_points div 4;
   for i := 0 to n4 do
   begin
