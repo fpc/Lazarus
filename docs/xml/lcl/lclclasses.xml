@@ -244,8 +244,14 @@ Applications only can send messages to a windowed control, using its window
 Handle.
 </p>
 </descr>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type as the return value for the GetReferenceHandle method.
+</version>
 <seealso>
+<link id="TLCLReferenceComponent.GetReferenceHandle"/>
 <link id="TLCLReferenceComponent.ReferenceNeeded"/>
+<link id="#lcl.WSReferences.TLCLHandle">TLCLHandle</link>
 </seealso>
 </element>
 
@@ -257,7 +263,7 @@ Handle.
 <short>Set while we are creating the Reference.</short>
 </element>
 
-<element name="TLCLReferenceComponent.GetHandle" link="#lcl.lclclasses.TLCLReferenceComponent.Handle"/>
+<element name="TLCLReferenceComponent.GetHandle"/>
 <element name="TLCLReferenceComponent.GetHandle.Result"/>
 
 <element name="TLCLReferenceComponent.GetReferenceAllocated">
@@ -306,7 +312,14 @@ Override this method to supply specific widget creation parameters.
 </element>
 
 <element name="TLCLReferenceComponent.ReferenceNeeded">
-<short>Creates a Reference, if not already done.</short>
+<short>
+Creates the widgetset Reference for the class, if it has not already been 
+allocated.
+</short>
+<seealso>
+<link id="TLCLReferenceComponent.WSCreateReference"/>
+<link id="TLCLReferenceComponent.GetReferenceHandle"/>
+</seealso>
 </element>
 
 <element name="TLCLReferenceComponent.WSCreateReference">
