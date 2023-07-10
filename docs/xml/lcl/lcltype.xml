@@ -99,20 +99,24 @@ Library).
 <element name="TDockImageOperation.disHide">
 <short>Hide the image.</short>
 </element>
-<!-- "type" alias type Visibility: default -->
+
 <element name="THandle">
-<short>Alias to the PtrUInt type.</short>
+<short>
+Deprecated. Alias to the PtrUInt type.
+</short>
 <descr>
 <p>
 Defined for platforms other than Windows. Needed because THandle in the RTL 
 SysUtils unit is defined as longint.
 </p>
 </descr>
+<version>
+THandle has been deprecated in LCL version 4.0 (July 2023). Use the TLCLHandle 
+type instead.
+</version>
 <seealso/>
 </element>
-<element link="#lcl.lcltype.THandle" name="HANDLE"/>
-<element link="#lcl.lcltype.THandle" name="PHandle"/>
-<!-- alias type Visibility: default -->
+
 <element name="HKEY">
 <short>Handle to a registry key.</short>
 <descr/>
@@ -294,17 +298,24 @@ Handle.
 <descr/>
 <seealso/>
 </element>
-<!-- "type" alias type Visibility: default -->
+
 <element name="TLCLIntfHandle">
-<short>Alias for the THandle type.</short>
+<short>Deprecated. Alias for the TLCLHandle type.</short>
 <descr>
 <p>
-TLCLIntfHandle is the type returned from the CreateHandle method in widgetset 
-classes.
+<var>TLCLIntfHandle</var> is the type returned from the CreateHandle method in 
+widgetset classes.
 </p>
+<version>
+TLCLIntfHandle has been deprecated in LCL version 4.0. Use the TLCLHandle type 
+instead.
+</version>
 </descr>
-<seealso/>
+<seealso>
+<link id="#lcl.wsreferences.TLCLHandle">TLCLHandle</link>
+</seealso>
 </element>
+
 <!-- pointer type Visibility: default -->
 <element link="HKEY" name="PHKEY"/>
 <!-- constant Visibility: default -->
@@ -6950,17 +6961,14 @@ while the user is dragging the slider. (read only)
 <descr>
 <p>
 COLORREF is the type used for color constants defined in the LCL. It is 
-interchangeable with the TColorRef type; TColorRef is an alias for COLORREF.
+interchangeable with the TColorRef type; COLORREF is an alias for TColorRef in 
+the RTL System.UITypes unit.
 </p>
 <p>
 The base type used for the definition is dependent on the compiler version 
 used to build the LCL. Starting in FPC version 3.2.3, the base type is the 
 TColorRef type defined in the System.UITypes namespace in the FPC run-time 
-library (RTL). For previous compiler versions, the base type is Cardinal.
-</p>
-<p>
-This is done to prevent type conflicts when both System.UITypes and LCL units 
-are used.
+library (RTL).
 </p>
 <p>
 Values in COLORREF (and TColorRef) are normally OR-ed with the value 
@@ -6969,10 +6977,11 @@ $80000000 to prevent interference with other MS color enumeration values.
 </descr>
 <seealso>
 <link id="TColorRef"/>
+<!-- TODO: Uncomment when rtl.system.uitypes is available. -->
 <!-- link id="#rtl.system.uitypes.TColorRef"/ -->
 </seealso>
 </element>
-<!-- alias type Visibility: default -->
+
 <element name="TColorRef">
 <short>Represents color constants in the LCL.</short>
 <descr>
