@@ -33,6 +33,7 @@ type
   TChartImageList = class(TImageList)
   private
     FChart: TChart;
+    FChartPending: Boolean;
     FFirstSeriesIndex: Integer;
     FListener: TListener;
     FOnPopulate: TNotifyEvent;
@@ -40,12 +41,10 @@ type
     procedure SetChart(AValue: TChart);
   protected
     procedure ClearAllSeries;
+    procedure Loaded; override;
     procedure Populate;
   public
-    procedure ReadData(AStream: TStream); override;
-    procedure WriteData(AStream: TStream); override;
-    procedure ReadAdvData(AStream: TStream); override;
-    procedure WriteAdvData(AStream: TStream); override;
+    procedure DefineProperties(Filer: TFiler); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -64,7 +63,7 @@ procedure Register;
 implementation
 
 uses
-  Math, SysUtils,
+  Math, SysUtils, ImgList,
   TADrawUtils, TADrawerCanvas, TAEnumerators, TALegend;
 
 
@@ -101,6 +100,18 @@ begin
   inherited Destroy;
 end;
 
+{ We don't want to write the series images to stream.
+  They will be recreated automatically when the chart is assigned on loading. }
+procedure TChartImageList.DefineProperties(Filer: TFiler);
+var
+  ch: TChart;
+begin
+  ch := FChart;
+  SetChart(nil);  // This removes the series images
+  inherited;
+  SetChart(ch);
+end;
+
 function TChartImageList.GetSeries(AImgIndex: Integer): TCustomChartSeries;
 begin
   Result := nil;
@@ -120,14 +131,30 @@ begin
     if GetSeries(Result) = ASeries then exit;
 end;
 
+procedure TChartImageList.Loaded;
+var
+  ch: TChart;
+begin
+  inherited;
+  if FChartPending then
+  begin
+    ch := FChart;
+    FChart := nil;
+    SetChart(ch);
+    FChartPending := false;
+  end;
+end;
+
 procedure TChartImageList.Populate;
 var
   legendItems: TChartLegendItems = nil;
-  bmp: TBitmap;
+  res: TCustomImageListResolution;
+  bmp: array of TCustomBitmap = nil;
   r: TRect;
   s: TCustomChartSeries;
   id: IChartDrawer;
   li: TLegendItem;
+  i, n: Integer;
 begin
   ClearAllSeries;
   if FChart = nil then exit;
@@ -136,48 +163,51 @@ begin
   FSeriesCount := 0;
 
   legendItems := TChartLegendItems.Create;
-  bmp := TBitmap.Create;
   try
-    bmp.Width := Width;
-    bmp.Height := Height;
-    bmp.Canvas.Brush.Style := bsSolid;
-    bmp.Canvas.Pen.Style := psSolid;
-    bmp.Canvas.Pen.Width := 1;
-    bmp.Transparent := true;
-    bmp.TransparentMode := tmAuto;
-    r := Rect(0, 0, Width, Height);
-    id := TCanvasDrawer.Create(bmp.Canvas);
-    id.Pen := FChart.Legend.SymbolFrame;
     for s in CustomSeries(FChart) do
       s.GetSingleLegendItem(legendItems);
-    for li in legendItems do begin
-      bmp.Canvas.Brush.Color := BkColor;
-      bmp.Canvas.FillRect(r);
-      li.Draw(id, R);
-      AddMasked(bmp, bmp.TransparentColor);
-      FSeriesCount += 1;
+    if ResolutionCount = 0 then
+      n := 1
+    else
+      n := ResolutionCount;
+    SetLength(bmp, n);
+    for i := 0 to n-1 do
+      bmp[i] := TBitmap.Create;
+    try
+      for li in legendItems do
+      begin
+        for i := 0 to n-1 do
+        begin
+          if ResolutionCount = 0 then
+            r := Rect(0, 0, Width, Height)
+          else
+          begin
+            res := ResolutionByIndex[i];
+            r := Rect(0, 0, res.Width, res.Height);
+          end;
+          id := TCanvasDrawer.Create(bmp[i].Canvas);
+          id.Pen := FChart.Legend.SymbolFrame;
+          bmp[i].SetSize(r.Width, r.Height);
+          bmp[i].Canvas.Brush.Style := bsSolid;
+          bmp[i].Canvas.Brush.Color := BkColor;
+          bmp[i].Canvas.Pen.Style := psSolid;
+          bmp[i].Canvas.Pen.Width := 1;
+          bmp[i].Transparent := true;
+          bmp[i].TransparentMode := tmAuto;
+          bmp[i].Canvas.FillRect(r);
+          li.Draw(id, r);
+        end;
+        AddMultipleResolutions(bmp);
+        inc(FSeriesCount);
+      end;
+      if Assigned(FOnPopulate) then FOnPopulate(self);
+    finally
+      for i := 0 to high(bmp) do
+        bmp[i].Free;
     end;
-    if Assigned(FOnPopulate) then FOnPopulate(Self);
   finally
-    FreeAndNil(legendItems);
-    FreeAndNil(bmp);
+    legendItems.Free;
   end;
-end;
-
-procedure TChartImageList.ReadAdvData(AStream: TStream);
-begin
-  Unused(AStream);
-end;
-
-procedure TChartImageList.ReadData(AStream: TStream);
-var
-  ch: TChart;
-begin
-  ch := Chart;
-  Chart := nil;
-  Clear;
-  inherited ReadData(AStream);
-  Chart := ch;
 end;
 
 // Notification procedure of the listener. Responds to chart broadcasts
@@ -191,6 +221,14 @@ end;
 procedure TChartImageList.SetChart(AValue:TChart);
 begin
   if FChart = AValue then exit;
+  if csLoading in ComponentState then
+  begin
+    // During lfm reading wait with assigning the chart until the static images
+    // have been loaded.
+    FChart := AValue;
+    FChartPending := true;
+    exit;
+  end;
 
   if FListener.IsListening then
     FChart.Broadcaster.Unsubscribe(FListener);
@@ -199,26 +237,6 @@ begin
     FChart.Broadcaster.Subscribe(FListener);
 
   SeriesChanged(Self);
-end;
-
-procedure TChartImageList.WriteAdvData(AStream: TStream);
-begin
-  Unused(AStream);
-end;
-
-procedure TChartImageList.WriteData(AStream: TStream);
-var
-  ch: TChart;
-begin
-  ch := Chart;
-  Chart := nil;
-  inherited WriteData(AStream);
-  Chart := ch;{
-
-  // Don't write the series images to stream.
-  // They will be recreated automatically when the chart is assigned on loading.
-  Unused(AStream);
-  }
 end;
 
 end.
