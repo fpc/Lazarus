@@ -66,20 +66,30 @@ Use the winding fill mode (fills any region with a non-zero winding value).
 </short>
 </element>
 
-<!-- array type Visibility: default -->
 <element name="TPointArray">
-<short>Defines an array type used for TPoint values.</short>
+<short>
+Defines an array type used for TPoint values.
+</short>
 <descr>
 <p>
 <var>TPointArray</var> is an array type used for <var>TPoint</var> instances 
 which define the vertices in a polygon. It is used to implement the 
 <var>Points</var> member in <var>TLazRegionPolygon</var>, and passed as an 
-argument to the <var>AddPolygon</var> method in <var>TLazRegion</var>.
+argument to the <var>AddPolygon</var> method in <var>TLazRegion</var>. 
+</p>
+<p>
+TPointArray is an alias for the TPointArray type defined in the 
+<file>LazUtils</file> <file>graphtype.pp</file> unit.
 </p>
 </descr>
+<version>
+Modified in LCL version 4.0 to be an alias to the TPointArray type defined in 
+the <file>graphtype.pp</file> unit (LazUtils).
+</version>
 <seealso>
 <link id="TLazRegionPolygon.Points"/>
 <link id="TLazRegion.AddPolygon"/>
+<link id="#lazutils.graphtype.TPointArray">TPointArray</link>
 </seealso>
 </element>
 
@@ -695,6 +705,7 @@ store the new TLazRegionPolygon instance in Parts.
 <link id="TLazRegionPolygon.FillMode"/>
 <link id="TPointArray"/>
 <link id="TLazRegionFillMode"/>
+<link id="#lazutils.graphtype.TPointArray">GraphType.TPointArray</link>
 </seealso>
 </element>
 <element name="TLazRegion.AddPolygon.APoints">
