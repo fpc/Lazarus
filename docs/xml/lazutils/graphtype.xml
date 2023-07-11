@@ -42,6 +42,21 @@ and utility functions.
 <element name="FPCAdds"/>
 <element name="LazLoggerBase"/>
 
+<element name="TPointArray">
+<short>
+Type used to store an array of TPoint values.
+</short>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="#lazutils.graphmath.EllipsePolygon">EllipsePolygon</link>
+<link id="#lcl.lazregions.TLazRegion.AddPolygon">TLazRegion.AddPolygon</link>
+<link id="#rtl.types.TPoint">TPoint</link>
+</seealso>
+</element>
+
 <element name="TGraphicsColor">
 <short>
 Defines the Integer range type with values that can be used for colors.
