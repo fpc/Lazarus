@@ -707,7 +707,13 @@ constraints.
 <element name="TWSWinControl.CreateHandle">
 <short></short>
 <descr></descr>
-<seealso></seealso>
+<version>
+Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
+deprecated THandle type in the return value for the method.
+</version>
+<seealso>
+<link id="#lcl.wsreferences.TLCLHandle">TLCLHandle</link>
+</seealso>
 </element>
 <element name="TWSWinControl.CreateHandle.Result">
 <short></short>
