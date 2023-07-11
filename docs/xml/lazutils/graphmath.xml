@@ -37,6 +37,7 @@ package.
 <element name="Classes"/>
 <element name="SysUtils"/>
 <element name="Math"/>
+<element name="GraphType"/>
 <element name="LazUtilities"/>
 
 <element name="TFloatPoint">
@@ -614,6 +615,40 @@ o&apos;clock position.
 <short/>
 </element>
 
+<element name="EllipsePolygon">
+<short>
+Gets an array of points for a polygon which approximates an ellipse in the 
+specified rectangle.
+</short>
+<descr>
+<p>
+<var>EllipsePolygon</var> is a <var>TPointArray</var> function used to 
+calculate the array of points which approximate an ellipse bounded by the 
+rectangle specified in the ARect argument. In EllipsePolygon, the ellipse is 
+aligned to X and Y axes in the rectangle. It calculates the center point, 
+radii, and diameter for the ellipse using ARect as well as the minimum number 
+of points needed such that the distance between the edges of the rectangle and 
+the mathematical circle is less than the rounding error (0.5) and a smoother 
+stepping value of 0.4. The points for the polygon are calculated and stored in 
+the return value.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.  
+</version>
+<seealso/>
+</element>
+<element name="EllipsePolygon.Result">
+<short>
+Array with the points for the polygon.
+</short>
+</element>
+<element name="EllipsePolygon.ARect">
+<short>
+Rectangle instance with the bounds for an X- and Y-aligned ellipse.
+</short>
+</element>
+
 <element name="FloatPoint">
 <short>
 <var>FloatPoint</var> - it is essentially like Classes.Point in use, except
@@ -1011,7 +1046,7 @@ Use SplitBezier to split any 4-Point Bezier into two 4-Point Beziers: a
 <short/>
 </element>
 
-<element name="add(TFloatPoint,TFloatPoint):TFloatPoint">
+<element name="operator +(TFloatPoint,TFloatPoint):TFloatPoint">
 <short>
 Implements the Add operator (+) for values using the TFloatPoint type.
 </short>
@@ -1023,7 +1058,7 @@ corresponding members in the TFloatPoint result.
 </descr>
 </element>
 
-<element name="add(TFloatPoint,Extended):TFloatPoint">
+<element name="operator +(TFloatPoint,Extended):TFloatPoint">
 <short>
 Implements the Add operator (+) for values using the TFloatPoint and Extended 
 types.
@@ -1037,7 +1072,7 @@ type and used in the result for the operator.
 <seealso/>
 </element>
 
-<element name="add(Extended,TFloatPoint):TFloatPoint">
+<element name="operator +(Extended,TFloatPoint):TFloatPoint">
 <short>
 Implements the Add operator (+) for values using the Extended and TFloatPoint 
 types.
@@ -1051,7 +1086,7 @@ type and used in the result for the operator.
 <seealso/>
 </element>
 
-<element name="add(TFloatPoint,TPoint):TFloatPoint">
+<element name="operator +(TFloatPoint,TPoint):TFloatPoint">
 <short>
 Implements the Add operator (+) for values using the TFloatPoint and TPoint 
 types.
@@ -1060,7 +1095,7 @@ types.
 <seealso/>
 </element>
 
-<element name="add(TPoint,TFloatPoint):TFloatPoint">
+<element name="operator +(TPoint,TFloatPoint):TFloatPoint">
 <short>
 Implements the Add operator (+) for values using the TPoint and TFloatPoint 
 types.
@@ -1069,7 +1104,7 @@ types.
 <seealso/>
 </element>
 
-<element name="subtract(TFloatPoint,Extended):TFloatPoint">
+<element name="operator -(TFloatPoint,Extended):TFloatPoint">
 <short>
 Implements the Subtract operator (-) for values using the TFloatPoint and 
 Extended types.
@@ -1082,14 +1117,14 @@ the TFloatPoint type and used in the result for the operator.
 </descr>
 </element>
 
-<element name="subtract(TFloatPoint,TFloatPoint):TFloatPoint">
+<element name="operator -(TFloatPoint,TFloatPoint):TFloatPoint">
 <short>
 Implements the Subtract operator (-) for values using the TFloatPoint type.
 </short>
 <descr/>
 </element>
 
-<element name="subtract(TFloatPoint,TPoint):TFloatPoint">
+<element name="operator -(TFloatPoint,TPoint):TFloatPoint">
 <short>
 Implements the Subtract operator (-) for values using the TFloatPoint and 
 TPoint types.
@@ -1097,7 +1132,7 @@ TPoint types.
 <descr/>
 </element>
 
-<element name="subtract(TPoint,TFloatPoint):TFloatPoint">
+<element name="operator -(TPoint,TFloatPoint):TFloatPoint">
 <short>
 Implements the Subtract operator (-) for values using the TPoint and 
 TFloatPoint types.
@@ -1105,14 +1140,14 @@ TFloatPoint types.
 <descr/>
 </element>
 
-<element name="multiply(TFloatPoint,TFloatPoint):TFloatPoint">
+<element name="operator *(TFloatPoint,TFloatPoint):TFloatPoint">
 <short>
 Implements the Multiply operator (*) for values using the TFloatPoint type.
 </short>
 <descr/>
 </element>
 
-<element name="multiply(TFloatPoint,Extended):TFloatPoint">
+<element name="operator *(TFloatPoint,Extended):TFloatPoint">
 <short>
 Implements the Multiply operator (*) for values using the TFloatPoint and 
 Extended types.
@@ -1124,7 +1159,7 @@ The value in the Extended type is applied to both the X and Y members in the TFl
 </descr>
 </element>
 
-<element name="multiply(Extended,TFloatPoint):TFloatPoint">
+<element name="operator *(Extended,TFloatPoint):TFloatPoint">
 <short>
 Implements the Multiply operator (*) for values using the Extended and 
 TFloatPoint types.
@@ -1136,7 +1171,7 @@ The value in the Extended type is applied to both the X and Y members in the TFl
 </descr>
 </element>
 
-<element name="multiply(TFloatPoint,TPoint):TFloatPoint">
+<element name="operator *(TFloatPoint,TPoint):TFloatPoint">
 <short>
 Implements the Multiply operator (*) for values using the TFloatPoint and 
 TPoint types.
@@ -1144,7 +1179,7 @@ TPoint types.
 <descr/>
 </element>
 
-<element name="multiply(TPoint,TFloatPoint):TFloatPoint">
+<element name="operator *(TPoint,TFloatPoint):TFloatPoint">
 <short>
 Implements the Multiply operator (*) for values using the TPoint and 
 TFloatPoint types.
@@ -1152,14 +1187,14 @@ TFloatPoint types.
 <descr/>
 </element>
 
-<element name="divide(TFloatPoint,TFloatPoint):TFloatPoint">
+<element name="operator /(TFloatPoint,TFloatPoint):TFloatPoint">
 <short>
 Implements the Divide operator (/) for values using the TFloatPoint type.
 </short>
 <descr/>
 </element>
 
-<element name="divide(TFloatPoint,Extended):TFloatPoint">
+<element name="operator /(TFloatPoint,Extended):TFloatPoint">
 <short>
 Implements the Divide operator (/) for values using the TFloatPoint and 
 Extended types.
@@ -1173,7 +1208,7 @@ performed for the divisor in the operator.
 </descr>
 </element>
 
-<element name="divide(TFloatPoint,TPoint):TFloatPoint">
+<element name="operator /(TFloatPoint,TPoint):TFloatPoint">
 <short>
 Implements the Divide operator (/) for values using the TFloatPoint and 
 TPoint types.
@@ -1181,7 +1216,7 @@ TPoint types.
 <descr/>
 </element>
 
-<element name="divide(TPoint,TFloatPoint):TFloatPoint">
+<element name="operator /(TPoint,TFloatPoint):TFloatPoint">
 <short>
 Implements the Divide operator (/) for values using the TPoint and 
 TFloatPoint types.
@@ -1189,7 +1224,7 @@ TFloatPoint types.
 <descr/>
 </element>
 
-<element name="equal(TPoint,TPoint):Boolean">
+<element name="operator =(TPoint,TPoint):Boolean">
 <short>
 Implements the Equal operator (=) to compare values using the TPoint type.
 </short>
@@ -1201,7 +1236,7 @@ the same.
 </descr>
 </element>
 
-<element name="equal(TFloatPoint,TFloatPoint):Boolean">
+<element name="operator =(TFloatPoint,TFloatPoint):Boolean">
 <short>
 Implements the Equal operator (=) to compare values using the TFloatPoint type.
 </short>
@@ -1213,7 +1248,7 @@ the same.
 </descr>
 </element>
 
-<element name="equal(TRect,TRect):Boolean">
+<element name="operator =(TRect,TRect):Boolean">
 <short>
 Implements the Equal operator (=) to compare values using the TRect type.
 </short>
@@ -1225,7 +1260,7 @@ compared values are the same.
 </descr>
 </element>
 
-<element name="assign(TFloatPoint):TPoint">
+<element name="operator :=(TFloatPoint):TPoint">
 <short>
 Implements the Assign operator (=) to store a value using the TFloatPoint type 
 to a TPoint instance.
@@ -1240,7 +1275,7 @@ used for the X and Y members in the result for the operator.
 </descr>
 </element>
 
-<element name="assign(TPoint):TFloatPoint">
+<element name="operator :=(TPoint):TFloatPoint">
 <short>
 Implements the Assign operator (=) to store a value using the TPoint type to a 
 TFloatPoint instance.
