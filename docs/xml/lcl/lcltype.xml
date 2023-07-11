@@ -306,11 +306,11 @@ Handle.
 <var>TLCLIntfHandle</var> is the type returned from the CreateHandle method in 
 widgetset classes.
 </p>
+</descr>
 <version>
 TLCLIntfHandle has been deprecated in LCL version 4.0. Use the TLCLHandle type 
 instead.
 </version>
-</descr>
 <seealso>
 <link id="#lcl.wsreferences.TLCLHandle">TLCLHandle</link>
 </seealso>
