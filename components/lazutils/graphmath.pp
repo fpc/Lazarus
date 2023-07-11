@@ -796,7 +796,7 @@ function EllipsePolygon(const aRect: TRect): TPointArray;
 var
   n_points, i, n4, aLeft, aRight, aTop, aBottom: Integer;
   Xc, Yc, a, b, MaxR, t: single;
-  AX, AY, BX, BY, CX, CY, Deviation: single;
+  SinT, CosT, AX, AY, BX, BY, CX, CY, Deviation: single;
 begin
   Xc:=single(aRect.Left+aRect.Right)/2;
   Yc:=single(aRect.Top+aRect.Bottom)/2;
@@ -811,10 +811,12 @@ begin
   repeat
     inc(n_points,4);
     t := single(1) / single(n_points) * 2 * Pi;
-    AX := MaxR * cos(t);
-    AY := MaxR * sin(t);
-    BX := MaxR * cos(t/2);
-    BY := MaxR * sin(t/2);
+    SinCos(t,SinT,CosT);
+    AX := MaxR * CosT;
+    AY := MaxR * SinT;
+    SinCos(t/2,SinT,CosT);
+    BX := MaxR * CosT;
+    BY := MaxR * SinT;
     CX := (AX + MaxR) /2;
     CY := (AY + 0) /2;
     Deviation := sqrt(sqr(BX-CX)+sqr(BY-CY));
@@ -828,9 +830,10 @@ begin
   for i := 0 to n4 do
   begin
     t := single(i) / single(n_points) * 2 * Pi;
-    aRight := Round(Xc + a * cos(t));
+    SinCos(t,SinT,CosT);
+    aRight := Round(Xc + a * CosT);
     aLeft := Trunc(2*Xc - aRight);
-    aTop := Round(Yc + b * sin(t));
+    aTop := Round(Yc + b * SinT);
     aBottom := Trunc(2*Yc - aTop);
     Result[i].X := aRight;
     Result[i].Y := aTop;
