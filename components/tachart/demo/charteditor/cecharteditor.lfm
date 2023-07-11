@@ -10,7 +10,7 @@ object ChartEditorForm: TChartEditorForm
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '2.3.0.0'
+  LCLVersion = '3.99.0.0'
   object ButtonPanel: TButtonPanel
     Left = 6
     Height = 34
@@ -92,11 +92,12 @@ object ChartEditorForm: TChartEditorForm
     ClientWidth = 618
     Color = clWindowText
     Font.Color = clWindow
+    ParentBackground = False
     ParentColor = False
     ParentFont = False
     TabOrder = 4
     object Label1: TLabel
-      AnchorSideLeft.Control = Image1
+      AnchorSideLeft.Control = HeaderImage
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = TitlePanel
       Left = 30
@@ -112,7 +113,7 @@ object ChartEditorForm: TChartEditorForm
       Font.Style = [fsBold]
       ParentFont = False
     end
-    object Image1: TImage
+    object HeaderImage: TImage
       AnchorSideLeft.Control = TitlePanel
       AnchorSideTop.Control = TitlePanel
       AnchorSideTop.Side = asrCenter
@@ -120,7 +121,9 @@ object ChartEditorForm: TChartEditorForm
       Height = 16
       Top = 6
       Width = 16
+      AutoSize = True
       BorderSpacing.Left = 4
+      Images = ChartImagesDM.ChartImages
     end
   end
 end

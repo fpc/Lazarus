@@ -66,7 +66,7 @@ begin
   FPointerPenFrame.borderspacing.Around := 8;
   FPointerPenFrame.OnChange := @ChangedHandler;
   FPointerPenFrame.Parent := gbPointerPen;
-  gbPointerPen.caption := 'Border';
+  gbPointerPen.Caption := 'Border';
   gbPointerPen.AutoSize := true;
 
   AutoSize := true;

@@ -17,7 +17,7 @@ type
   TChartEditorForm = class(TForm)
     CloseButton: TPanelBitBtn;
     ButtonPanel: TButtonPanel;
-    Image1: TImage;
+    HeaderImage: TImage;
     Label1: TLabel;
     Notebook: TNotebook;
     TitlePanel: TPanel;
@@ -42,10 +42,8 @@ type
     FAxesNode: TTreeNode;
     FSeriesNode: TTreeNode;
     FOKClicked: Boolean;
-    FApplyButton: TBitBtn;
     function AddFrame(AParentNode: TTreeNode; ACaption: String; AFrame: TFrame;
       AImageIndex: Integer): TTreeNode;
-    procedure ApplyButtonClick(Sender: TObject);
     procedure FindComponentClass({%H-}AReader: TReader; const AClassName: String;
       var AClass: TComponentClass);
     function GetPageIndexOfNode(ANode: TTreeNode): Integer;
@@ -213,34 +211,6 @@ begin
   Result.SelectedIndex := AImageIndex;
 end;
 
-procedure TChartEditorForm.ApplyButtonClick(Sender: TObject);
-var
-  msg: String;
-  C: TWinControl;
-begin
-  if not Validate(Tree.Selected, msg, C) then
-  begin
-    C.SetFocus;
-    MessageDlg(msg, mtError, [mbOK], 0);
-    ModalResult := mrNone;
-  end else
-    SaveChartToStream;
-end;
-                                  (*
-procedure TChartEditorForm.CloseButtonClick(Sender: TObject);
-var
-  msg: String;
-  C: TWinControl;
-begin
-  if not Validate(Tree.Selected, msg, C) then
-  begin
-    C.SetFocus;
-    MessageDlg(msg, mtError, [mbOK], 0);
-    ModalResult := mrNone;
-  end else
-    RestoreChartFromStream;
-end;
-                   *)
 procedure TChartEditorForm.FormActivate(Sender: TObject);
 var
   w: Integer = 0;
@@ -319,7 +289,6 @@ end;
 
 procedure TChartEditorForm.FormCreate(Sender: TObject);
 begin
-  ceImages.ChartImagesDM.ChartImages.GetBitmap(7, ButtonPanel.CloseButton.Glyph);
   Tree.Items.BeginUpdate;
   try
     Tree.Items.Clear;
@@ -332,16 +301,6 @@ begin
   finally
     Tree.Items.EndUpdate;
   end;
-
-  FApplyButton := TBitBtn.Create(ButtonPanel);
-  FApplyButton.Caption := 'Apply';
-  FApplyButton.Images := ChartImagesDM.ChartImages;
-  FApplyButton.ImageIndex := 7;
-  FApplyButton.AutoSize := true;
-  FApplyButton.OnClick := @ApplyButtonClick;
-  FApplyButton.AnchorSideTop.Control := ButtonPanel.OKButton;
-  FApplyButton.Parent := ButtonPanel;
-
   AutoSize := true;
 end;
 
@@ -538,6 +497,7 @@ end;
 procedure TChartEditorForm.SeriesChangedHandler(Sender: TObject);
 begin
   UpdateImages;
+  HeaderImage.Refresh;
 end;
 
 procedure TChartEditorForm.SetChart(AValue: TChart);
@@ -608,7 +568,7 @@ begin
       Label1.Caption := 'Series: "' + s + '"'
     else
       Label1.Caption := s;
-    ChartImagesDM.ChartImages.GetBitmap(Tree.Selected.ImageIndex, Image1.Picture.Bitmap);
+    HeaderImage.ImageIndex := Tree.Selected.ImageIndex;
   end;
 end;
 
@@ -616,7 +576,6 @@ procedure TChartEditorForm.UpdateImages;
 begin
   ChartImagesDM.ChartImages.Chart := nil;
   ChartImagesDM.ChartImages.Chart := FChart;
-  ChartImagesDM.ChartImages.GetBitmap(Tree.Selected.ImageIndex, Image1.Picture.Bitmap);
 end;
 
 function TChartEditorForm.Validate(ANode: TTreeNode; out AMsg: String;
