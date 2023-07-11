@@ -26,7 +26,7 @@ unit TAChartImageList;
 interface
 
 uses
-  Classes, Graphics, Controls,
+  LCLIntf, Classes, Graphics, Controls,
   TAChartUtils, TACustomSeries, TAGraph;
 
 type
@@ -154,7 +154,7 @@ var
   s: TCustomChartSeries;
   id: IChartDrawer;
   li: TLegendItem;
-  i, n: Integer;
+  i, n, idx: Integer;
 begin
   ClearAllSeries;
   if FChart = nil then exit;
@@ -195,9 +195,12 @@ begin
           bmp[i].Transparent := true;
           bmp[i].TransparentMode := tmAuto;
           bmp[i].Canvas.FillRect(r);
+          InflateRect(r, -1, -1);
           li.Draw(id, r);
         end;
-        AddMultipleResolutions(bmp);
+        idx := AddMasked(TBitmap(bmp[0]), bmp[0].TransparentColor);
+        for i := 1 to n-1 do
+          ReplaceMasked(idx, bmp[i], bmp[i].TransparentColor, false);
         inc(FSeriesCount);
       end;
       if Assigned(FOnPopulate) then FOnPopulate(self);
