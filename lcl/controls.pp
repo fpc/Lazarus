@@ -62,9 +62,9 @@ const
   mrClose   = System.UITypes.mrClose;
   mrLast    = System.UITypes.mrLast;
 
-function GetModalResultStr(ModalResult: TModalResult): ShortString;
-  deprecated 'Use the ModalResultStr array from unit System.UITypes directly.';
-property ModalResultStr[ModalResult: TModalResult]: shortstring read GetModalResultStr;
+//function GetModalResultStr(ModalResult: TModalResult): ShortString;
+//  deprecated 'Use the ModalResultStr array from unit System.UITypes directly.';
+//property ModalResultStr[ModalResult: TModalResult]: shortstring read GetModalResultStr;
 
 const
   // define aliases for Delphi compatibility
