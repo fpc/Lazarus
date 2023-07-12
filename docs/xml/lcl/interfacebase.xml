@@ -576,7 +576,7 @@ Use <var>Cancel</var> to control whether the button is used as the Cancel
 button in the dialog.
 </p>
 <p>
-Use <var>ModalResult</var> to set the value returned when the button is 
+Use <var>ModalResult</var> to get or set the value returned when the button is 
 clicked.
 </p>
 </descr>
@@ -591,17 +591,52 @@ clicked.
 <short>The modal result value returned when the button is clicked.</short>
 <descr>
 <p>
-<var>ModalResult</var> is a <var>LongInt</var> property which contains the 
-modal result value returned when the button is clicked in the dialog.
+<var>ModalResult</var> is a <var>LongInt</var> property which contains the modal result value returned when the button is clicked in the dialog.
 </p>
 <p>
-ModalResult values correspond to the values in the <var>TModalResult</var> 
-enumeration, but use the native data type expected in <var>TWidgetSet</var> 
-methods.
+ModalResult can contain a value defined the <var>TModalResult</var> range type 
+found in the RTL <file>system.uitypes.pp</file> unit. Applications will 
+normally want to use the descriptive modal result constants when reading or 
+writing the value, like:
+</p>
+<ul>
+<li>mrNone</li>
+<li>mrOK</li>
+<li>mrCancel</li>
+<li>mrAbort</li>
+<li>mrRetry</li>
+<li>mrIgnore</li>
+<li>mrYes</li>
+<li>mrNo</li>
+<li>mrAll</li>
+<li>mrNoToAll</li>
+<li>mrYesToAll</li>
+<li>mrClose</li>
+</ul>
+<p>
+The default value for the property is set to 0 (mrNone) in the Create 
+constructor.
 </p>
 </descr>
 <seealso>
-<link id="#lazutils.uitypes.TModalResult">TModalResult</link>
+<link id="TDialogButton.Create"/>
+<!--
+TODO: Uncomment when system.uitypes exists in RTL.CHM.
+
+<link id="#rtl.system.uitypes.TModalResult">TModalResult</link>
+<link id="#rtl.system.uitypes.mrNone">mrNone</link>
+<link id="#rtl.system.uitypes.mrOK">mrOK</link>
+<link id="#rtl.system.uitypes.mrCancel">mrCancel</link>
+<link id="#rtl.system.uitypes.mrAbort">mrAbort</link>
+<link id="#rtl.system.uitypes.mrRetry">mrRetry</link>
+<link id="#rtl.system.uitypes.mrIgnore">mrIgnore</link>
+<link id="#rtl.system.uitypes.mrYes">mrYes</link>
+<link id="#rtl.system.uitypes.mrNo">mrNo</link>
+<link id="#rtl.system.uitypes.mrAll">mrAll</link>
+<link id="#rtl.system.uitypes.mrNoToAll">mrNoToAll</link>
+<link id="#rtl.system.uitypes.mrYesToAll">mrYesToAll</link>
+<link id="#rtl.system.uitypes.mrClose">mrClose</link>
+-->
 </seealso>
 </element>
 
