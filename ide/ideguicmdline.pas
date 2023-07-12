@@ -166,7 +166,7 @@ begin
   for i:= 1 to ParamsAndCfgCount do
   begin
     //DebugLn(['ParseGuiCmdLineParams ',i,' "',ParamsAndCfgStr(i),'"']);
-    if ParamIsOption(i, NoSplashScreenOptShort, NoSplashScreenOptShort) then
+    if ParamIsOption(i, NoSplashScreenOptShort, NoSplashScreenOptLong) then
       ShowSplashScreen := false
     else if ParamIsOption(i, ShowSetupDialogOptLong) then
       Setup:=true
