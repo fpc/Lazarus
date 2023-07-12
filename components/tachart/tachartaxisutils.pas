@@ -87,8 +87,11 @@ type
   strict private
     FDefaultListener: TListener;
     FDefaultSource: TIntervalChartSource;
+    FListener: TListener;
+    FSource: TCustomChartSource;
     FSourceExchangeXY: Boolean;
     FStripes: TChartStyles;
+    procedure SetSource(AValue: TCustomChartSource);
     procedure SetStripes(AValue: TChartStyles);
   strict protected
     function IsFormatStored: Boolean;
@@ -98,7 +101,9 @@ type
     function Measure(
       ADrawer: IChartDrawer; AIsVertical: Boolean; ATickLength: Integer;
       AValues: TChartValueTextArray): Integer;
+    function SourceDef: TCustomChartSource;
     property DefaultSource: TIntervalChartSource read FDefaultSource;
+    property Source: TCustomChartSource read FSource write SetSource;
     property SourceExchangeXY: Boolean
       read FSourceExchangeXY write FSourceExchangeXY default false;
     property Stripes: TChartStyles read FStripes write SetStripes;
@@ -113,6 +118,8 @@ type
     property Frame;
     property LabelBrush;
     property OverlapPolicy;
+    property Source;
+    property SourceExchangeXY;
     property Style default smsNone;
   end;
 
@@ -121,18 +128,12 @@ type
   TChartAxisMarks = class(TCustomChartAxisMarks)
   strict private
     FAtDataOnly: Boolean;
-    FListener: TListener;
     FRange: TChartRange;
-    FSource: TCustomChartSource;
-
     procedure SetAtDataOnly(AValue: Boolean);
     procedure SetRange(AValue: TChartRange);
-    procedure SetSource(AValue: TCustomChartSource);
   public
     constructor Create(AOwner: TCustomChart);
     destructor Destroy; override;
-
-    function SourceDef: TCustomChartSource;
   published
     property AtDataOnly: Boolean
       read FAtDataOnly write SetAtDataOnly default false;
@@ -143,7 +144,7 @@ type
     property OverlapPolicy;
     property Range: TChartRange read FRange write SetRange;
     property RotationCenter;
-    property Source: TCustomChartSource read FSource write SetSource;
+    property Source;
     property SourceExchangeXY;
     property Stripes;
     property Style default smsValue;
@@ -186,6 +187,7 @@ type
   public
     procedure Assign(ASource: TPersistent); override;
     function IsFlipped: Boolean; virtual;
+    function IsVertical: Boolean; inline;
     function TryApplyStripes(
       ADrawer: IChartDrawer; var AIndex: Cardinal): Boolean;
 
@@ -634,11 +636,13 @@ begin
   FDefaultSource := TIntervalChartSource.Create(AOwner);
   FDefaultSource.Broadcaster.Subscribe(FDefaultListener);
   FDistance := 1;
+  FListener := TListener.Create(@FSource, @StyleChanged);
   FLabelBrush.Style := bsClear;
 end;
 
 destructor TCustomChartAxisMarks.Destroy;
 begin
+  FreeAndNil(FListener);
   FreeAndNil(FDefaultListener);
   FreeAndNil(FDefaultSource);
   inherited;
@@ -667,6 +671,18 @@ begin
   Result += ADrawer.Scale(ATickLength) + ADrawer.Scale(Distance);
 end;
 
+procedure TCustomChartAxisMarks.SetSource(AValue: TCustomChartSource);
+begin
+  if FSource = AValue then exit;
+  if FListener.IsListening then
+    FSource.Broadcaster.Unsubscribe(FListener);
+  FSource := AValue;
+  if FSource <> nil then
+    FSource.Broadcaster.Subscribe(FListener);
+  StyleChanged(Self);
+end;
+
+
 procedure TCustomChartAxisMarks.SetStripes(AValue: TChartStyles);
 begin
   if FStripes = AValue then exit;
@@ -674,12 +690,19 @@ begin
   StyleChanged(Self);
 end;
 
+function TCustomChartAxisMarks.SourceDef: TCustomChartSource;
+begin
+  Result := FSource;
+  if Result = nil then
+    Result := DefaultSource;
+end;
+
+
 { TChartAxisMarks }
 
 constructor TChartAxisMarks.Create(AOwner: TCustomChart);
 begin
   inherited Create(AOwner);
-  FListener := TListener.Create(@FSource, @StyleChanged);
   FRange := TChartRange.Create(AOwner);
   FStyle := smsValue;
   FFormat := SERIES_MARK_FORMATS[FStyle];
@@ -688,7 +711,6 @@ end;
 destructor TChartAxisMarks.Destroy;
 begin
   FreeAndNil(FRange);
-  FreeAndNil(FListener);
   inherited;
 end;
 
@@ -706,23 +728,6 @@ begin
   StyleChanged(Self);
 end;
 
-procedure TChartAxisMarks.SetSource(AValue: TCustomChartSource);
-begin
-  if FSource = AValue then exit;
-  if FListener.IsListening then
-    FSource.Broadcaster.Unsubscribe(FListener);
-  FSource := AValue;
-  if FSource <> nil then
-    FSource.Broadcaster.Subscribe(FListener);
-  StyleChanged(Self);
-end;
-
-function TChartAxisMarks.SourceDef: TCustomChartSource;
-begin
-  Result := FSource;
-  if Result = nil then
-    Result := DefaultSource;
-end;
 
 { TChartBasicAxis }
 
@@ -770,6 +775,11 @@ end;
 function TChartBasicAxis.IsFlipped: Boolean;
 begin
   Result := false;
+end;
+
+function TChartBasicAxis.IsVertical: Boolean;
+begin
+  Result := Alignment in [calLeft, calRight];
 end;
 
 procedure TChartBasicAxis.SetArrow(AValue: TChartArrow);

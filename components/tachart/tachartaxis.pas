@@ -165,7 +165,6 @@ type
     function IsDefaultPosition: Boolean;
     function IsFlipped: Boolean; override;
     function IsPointInside(const APoint: TPoint): Boolean;
-    function IsVertical: Boolean; inline;
     procedure Measure(const AExtent: TDoubleRect; const AClipRect: TRect;
       var AMeasureData: TChartAxisGroup);
     function MeasureLabelSize(ADrawer: IChartDrawer): Integer;
@@ -376,12 +375,27 @@ end{%H-}; // to silence the compiler warning of impossible inherited inside inli
 function TChartMinorAxis.GetMarkValues(AMin, AMax: Double): TChartValueTextArray;
 var
   vp: TValuesInRangeParams;
+  i: Integer;
+  item: PChartDataItem;
 begin
   if not Visible then exit(nil);
   with Collection as TChartMinorAxisList do
     vp := ParentAxis.MakeValuesInRangeParams(AMin, AMax);
   vp.FFormat := Marks.Format;
-  Marks.DefaultSource.ValuesInRange(vp, Result);
+  if Marks.Source = nil then
+    Marks.DefaultSource.ValuesInRange(vp, Result)
+  else begin
+    SetLength(Result, Marks.Source.count);
+    for i := 0 to Marks.Source.Count-1 do begin
+      item := Marks.Source[i];
+      if IsVertical then
+        Result[i].FValue := item^.Y
+      else
+        Result[i].FValue := item^.X;
+      Result[i].FText := Marks.Source.FormatItemXYText(
+        Marks.Format, item^.X, item^.Y, item^.Text);
+    end;
+  end;
 end;
 
 procedure TChartMinorAxis.SetAlignment(AValue: TChartAxisAlignment);
@@ -782,11 +796,6 @@ end;
 function TChartAxis.IsPointInside(const APoint: TPoint): Boolean;
 begin
   Result := PtInRect(FTitleRect, APoint) and not PtInRect(FAxisRect, APoint);
-end;
-
-function TChartAxis.IsVertical: Boolean; inline;
-begin
-  Result := Alignment in [calLeft, calRight];
 end;
 
 function TChartAxis.IsWordwrappedTitle: Boolean;
