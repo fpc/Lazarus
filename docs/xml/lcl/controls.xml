@@ -12496,7 +12496,7 @@ immediate abort of dragging before dragging really starts.
 
 <element name="TControl.Notification">
 <short>
-Notification handler for insertion or deletion of components in the control.
+Notification handler for insertion or deletion of components.
 </short>
 <descr>
 <p>
@@ -12505,19 +12505,12 @@ all attached notification handlers.
 </p>
 <p>
 If <var>Operation</var> is <var>opRemove</var>, additional actions are 
-performed in the method. If <var>AComponent</var> is the component used in 
-PopupMenu, Action, or HostDockSite the property value is set to <b>Nil</b>. If 
-AComponent is an alignment control in anchor docking, the reference is also 
-set to <b>Nil</b> for the AnchorSide where it is used.
+performed, depending on <var>AComponent</var>: the PopupMenu, Action, or 
+anchors for the removed control are detached.
 </p>
 </descr>
 <seealso>
-<link id="TControl.Action"/>
-<link id="TControl.PopupMenu"/>
-<link id="TControl.HostDockSite"/>
-<link id="TControl.AnchorSide"/>
 <link id="#rtl.classes.TComponent.Notification">TComponent.Notification</link>
-<link id="#rtl.classes.TOperation">TOperation</link>
 </seealso>
 </element>
 <element name="TControl.Notification.AComponent">
