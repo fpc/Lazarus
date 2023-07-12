@@ -54,6 +54,7 @@ The following components are added to the Lazarus IDE component palette:
 <element name="TypInfo"/>
 <element name="Classes"/>
 <element name="SysUtils"/>
+<element name="System.UITypes"/>
 <element name="LMessages"/>
 <element name="LResources"/>
 <element name="LCLIntf"/>
@@ -72,143 +73,229 @@ The following components are added to the Lazarus IDE component palette:
 <element name="ClipBrd"/>
 <element name="Menus"/>
 <element name="LCLTaskDialog"/>
+<element name="DialogRes"/>
 <element name="GraphType"/>
-<element name="UITypes"/>
 <element name="FileUtil"/>
 <element name="LazFileUtils"/>
 <element name="LazStringUtils"/>
 <element name="LazLoggerBase"/>
 
+<!-- 
+Link to the topic content in system.uitypes when it exists in RTL.CHM. 
+-->
 <element name="TMsgDlgType">
-<short>Identifies a dialog type or style.</short>
+<short>Identifies the type or style for a message dialog.</short>
 <descr>
 <p>
-<var>TMsgDlgType</var> is an alias to the <var>TMsgDlgType</var> type in 
-<file>uitypes.pas</file>.
+<var>TMsgDlgType</var> is an alias to the <var>TMsgDlgType</var> enumerated 
+type in the RTL <file>system.uitypes.pp</file> unit. TMsgDlgType defines a 
+type of dialog implemented in a message box. Values in the enumeration 
+determine the caption, icon, string literals, and buttons displayed in various 
+dialog types.
+</p>
+<p>
+Values from the enumeration can be represented using the descriptive modal 
+dialog type constants, such as: mtWarning, mtError, mtInformation, 
+mtConfirmation, and mtCustom.
+</p>
+<p>
+Values from TMsgDlgType are used in several routines, such as: 
+<var>MessageDlg</var>, <var>MessageDlgPos</var>,<var> MessageDlgPosHelp</var>, 
+<var>CreateMessageDialog</var>, <var>QuestionDlg</var>, and 
+<var>LazMessageDlg</var>.
 </p>
 </descr>
 <seealso>
-<link id="#lazutils.uitypes.TMsgDlgType">UITypes.TMsgDlgType</link>
+<!--
+TODO: Uncomment when system.uitypes exists in RTL.CHM.
+<link id="#rtl.system.uitypes.TMsgDlgType">System.UITypes.TMsgDlgType</link> 
+-->
+<link id="mtWarning"/>
+<link id="mtError"/>
+<link id="mtInformation"/>
+<link id="mtConfirmation"/>
+<link id="mtCustom"/>
+<link id="MessageDlg"/>
+<link id="MessageDlgPos"/>
+<link id="MessageDlgPosHelp"/>
+<link id="CreateMessageDialog"/>
+<link id="QuestionDlg"/>
+<link id="#lcl.lazdialogs.LazMessageDlg">LazMessageDlg</link>
 </seealso>
 </element>
 
+<!-- 
+Link to the topic content in system.uitypes when it exists in RTL.CHM. 
+-->
 <element name="TMsgDlgBtn">
 <short>Identifies dialog button types.</short>
 <descr>
 <p>
 <var>TMsgDlgBtn</var> is an alias to the <var>TMsgDlgBtn</var> type in 
-<file>uitypes.pas</file>.
+<file>system.uitypes.pp</file>. TMsgDlgBtn is an enumeration type with values 
+that define the buttons that can be displayed in a message dialog. TMsgDlgBtn 
+values also determine the modal result returned from the dialog when the 
+corresponding button is clicked.
+</p>
+<p>
+Values from the enumeration can be represented using the descriptive message 
+button constants, such as: mbYes, mbNo, mbOK, mbCancel, mbAbort, mbRetry, 
+mbIgnore, mbAll, mbNoToAll, mbYesToAll, mbHelp, and mbClose.
+</p>
+<p>
+Values in the enumeration are used in various routines, such as: <var>
+MessageDlg</var>, <var>MessageDlgPos</var>, <var>MessageDlgPosHelp</var>, 
+<var>CreateMessageDialog</var>, <var>QuestionDlg</var>, and 
+<var>LazMessageDlg</var>.
 </p>
 </descr>
 <seealso>
-<link id="#lazutils.uitypes.TMsgDlgBtn">UITypes.TMsgDlgBtn</link>
+<!--
+TODO: Uncomment when system.uitypes exists in RTL.CHM.
+<link id="#rtl.system.uitypes.TMsgDlgBtn">System.UITypes.TMsgDlgBtn</link> 
+-->
+<link id="mbYes"/>
+<link id="mbNo"/>
+<link id="mbOK"/>
+<link id="mbCancel"/>
+<link id="mbAbort"/>
+<link id="mbRetry"/>
+<link id="mbIgnore"/>
+<link id="mbAll"/>
+<link id="mbNoToAll"/>
+<link id="mbYesToAll"/>
+<link id="mbHelp"/>
+<link id="mbClose"/>
+<link id="MessageDlg"/>
+<link id="MessageDlgPos"/>
+<link id="MessageDlgPosHelp"/>
+<link id="CreateMessageDialog"/>
+<link id="QuestionDlg"/>
+<link id="#lcl.lazdialogs.LazMessageDlg">LazMessageDlg</link>
 </seealso>
 </element>
 
+<!-- 
+Link to the topic content in system.uitypes when it exists in RTL.CHM. 
+-->
 <element name="TMsgDlgButtons">
-<short>Set with button messages for dialogs.</short>
+<short>
+Set type used to store the buttons on a message dialog.
+</short>
 <descr>
 <p>
-<var>TMsgDlgButtons</var> is an alias to the <var>TMsgDlgButtons</var> type 
-in <file>uitypes.pas</file>.
+<var>TMsgDlgButtons</var> is an alias to the <var>TMsgDlgButtons</var> type in 
+<file>system.uitypes.pp</file>. TMsgDlgButtons is a set type used to store 
+zero or more values from the TMsgDlgBtn enumeration. TMsgDlgButtons is passed 
+as an argument to routines like: <var>MessageDlg</var>, 
+<var>MessageDlgPos</var>, <var>MessageDlgPosHelp</var>, 
+<var>CreateMessageDialog</var>, <var>QuestionDlg</var>, and 
+<var>LazMessageDlg</var>.
 </p>
 </descr>
-<seealso>
-<link id="#lazutils.uitypes.TMsgDlgButtons">UITypes.TMsgDlgButtons</link>
+<seealso>  
+<!--
+TODO: Uncomment when system.uitypes exists in RTL.CHM.
+<link id="#rtl.system.uitypes.TMsgDlgButtons">System.UITypes.TMsgDlgButtons</link>
+<link id="#rtl.system.uitypes.TMsgDlgBtn">System.UITypes.TMsgDlgBtn</link>
+-->
+<link id="TMsgDlgBtn"/>
 </seealso>
 </element>
 
 <element name="mtWarning">
 <short>
-Alias to the TMsgDlgType enumeration value in <file>uitypes</file>.
+Alias to the TMsgDlgType enumeration value in <file>system.uitypes.pp</file>.
 </short>
 </element>
 <element name="mtError">
 <short>
-Alias to the TMsgDlgType enumeration value in <file>uitypes</file>.
+Alias to the TMsgDlgType enumeration value in <file>system.uitypes.pp</file>.
 </short>
 </element>
 <element name="mtInformation">
 <short>
-Alias to the TMsgDlgType enumeration value in <file>uitypes</file>.
+Alias to the TMsgDlgType enumeration value in <file>system.uitypes.pp</file>.
 </short>
 </element>
 <element name="mtConfirmation">
 <short>
-Alias to the TMsgDlgType enumeration value in <file>uitypes</file>.
+Alias to the TMsgDlgType enumeration value in <file>system.uitypes.pp</file>.
 </short>
 </element>
 <element name="mtCustom">
 <short>
-Alias to the TMsgDlgType enumeration value in <file>uitypes</file>.
+Alias to the TMsgDlgType enumeration value in <file>system.uitypes.pp</file>.
 </short>
 </element>
 
 <element name="mbYes">
 <short>
-Alias to the TMsgDlgBtn enumeration value in <file>uitypes</file>.
+Alias to the TMsgDlgBtn enumeration value in <file>system.uitypes.pp</file>.
 </short>
 </element>
 <element name="mbNo">
 <short>
-Alias to the TMsgDlgBtn enumeration value in <file>uitypes</file>.
+Alias to the TMsgDlgBtn enumeration value in <file>system.uitypes.pp</file>.
 </short>
 </element>
 <element name="mbOK">
 <short>
-Alias to the TMsgDlgBtn enumeration value in <file>uitypes</file>.
+Alias to the TMsgDlgBtn enumeration value in <file>system.uitypes.pp</file>.
 </short>
 </element>
 <element name="mbCancel">
 <short>
-Alias to the TMsgDlgBtn enumeration value in <file>uitypes</file>.
+Alias to the TMsgDlgBtn enumeration value in <file>system.uitypes.pp</file>.
 </short>
 </element>
 <element name="mbAbort">
 <short>
-Alias to the TMsgDlgBtn enumeration value in <file>uitypes</file>.
+Alias to the TMsgDlgBtn enumeration value in <file>system.uitypes.pp</file>.
 </short>
 </element>
 <element name="mbRetry">
 <short>
-Alias to the TMsgDlgBtn enumeration value in <file>uitypes</file>.
+Alias to the TMsgDlgBtn enumeration value in <file>system.uitypes.pp</file>.
 </short>
 </element>
 <element name="mbIgnore">
 <short>
-Alias to the TMsgDlgBtn enumeration value in <file>uitypes</file>.
+Alias to the TMsgDlgBtn enumeration value in <file>system.uitypes.pp</file>.
 </short>
 </element>
 <element name="mbAll">
 <short>
-Alias to the TMsgDlgBtn enumeration value in <file>uitypes</file>.
+Alias to the TMsgDlgBtn enumeration value in <file>system.uitypes.pp</file>.
 </short>
 </element>
 <element name="mbNoToAll">
 <short>
-Alias to the TMsgDlgBtn enumeration value in <file>uitypes</file>.
+Alias to the TMsgDlgBtn enumeration value in <file>system.uitypes.pp</file>.
 </short>
 </element>
 <element name="mbYesToAll">
 <short>
-Alias to the TMsgDlgBtn enumeration value in <file>uitypes</file>.
+Alias to the TMsgDlgBtn enumeration value in <file>system.uitypes.pp</file>.
 </short>
 </element>
 <element name="mbHelp">
 <short>
-Alias to the TMsgDlgBtn enumeration value in <file>uitypes</file>.
+Alias to the TMsgDlgBtn enumeration value in <file>system.uitypes.pp</file>.
 </short>
 </element>
 <element name="mbClose">
 <short>
-Alias to the TMsgDlgBtn enumeration value in <file>uitypes</file>.
+Alias to the TMsgDlgBtn enumeration value in <file>system.uitypes.pp</file>.
 </short>
 </element>
 
 <element name="mbYesNoCancel">
 <short>A set constant with Yes, No, Cancel buttons.</short>
 <descr>
+<p>
 A set constant used to show Yes, No, and Cancel buttons on a message dialog.
+</p>
 </descr>
 <seealso/>
 </element>
@@ -216,7 +303,9 @@ A set constant used to show Yes, No, and Cancel buttons on a message dialog.
 <element name="mbYesNo">
 <short>A set constant with Yes, No buttons.</short>
 <descr>
+<p>
 A set constant used to show Yes and No buttons on a message dialog.
+</p>
 </descr>
 <seealso/>
 </element>
@@ -225,8 +314,11 @@ A set constant used to show Yes and No buttons on a message dialog.
 <short>
 A set constant to show an OK and a Cancel button on a message dialog.
 </short>
-<descr>A set constant to show an OK and a Cancel button on a message 
-dialog.</descr>
+<descr>
+<p>
+A set constant to show an OK and a Cancel button on a message dialog.
+</p>
+</descr>
 <seealso/>
 </element>
 
@@ -235,7 +327,9 @@ dialog.</descr>
 A set constant to show an Abort, Retry , Ignore buttons on a message dialog.
 </short>
 <descr>
+<p>
 A set constant to show an Abort, Retry and Ignore buttons on a message dialog.
+</p>
 </descr>
 <seealso/>
 </element>
@@ -598,20 +692,26 @@ deprecated THandle type in the property.
 </element>
 
 <element name="TCommonDialog.UserChoice">
-<short><var>UserChoice</var> - the value selected by the user.</short>
+<short>
+Contains the modal result value selected by the user.
+</short>
 <descr>
 <p>
-<var>UserChoice</var> is an <var>name</var> property which contains the modal 
-result value returned for the dialog. It uses modal result constants like 
-mrOk, mrCancel, et. al. as defined in the <file>UITypes</file> unit. Its 
-value is updated by methods in the widgetset class when they display and 
-process the dialog for the platform.
+<var>UserChoice</var> is an <var>Integer</var> property which contains the 
+modal result value returned for the dialog. It uses values from the modal 
+result constants like mrOk, mrCancel, et. al. as defined in this unit and in 
+the <file>system.uitypes.pp</file> unit. Its value is updated by methods in 
+the widgetset class when they display and process the dialog for the platform.
 </p>
 </descr>
 <seealso>
 <link id="TCommonDialog.Execute"/>
 <link id="TCommonDialog.DoExecute"/>
-<link id="#lazutils.uitypes.TModalResult">TModalResult</link>
+<link id="TModalResult"/>
+<!-- 
+TODO: Uncomment when system.uitypes exists in RTL.CHM. 
+<link id="#rtl.system.uitypes.TModalResult">System.UITypes.TModalResult</link>
+-->
 </seealso>
 </element>
 
