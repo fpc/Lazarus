@@ -127,7 +127,7 @@ interface
 
 uses
   {$IFDEF MSWINDOWS}
-  Windows, ctypes,  CommCtrl,
+  Windows, CommCtrl,
   {$ENDIF}
   Classes, SysUtils,
   LazUTF8,
