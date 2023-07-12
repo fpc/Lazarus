@@ -2089,6 +2089,7 @@ resourcestring
   dlgFoldPasWhileDo         = 'While/Do';
   dlgFoldPasWithDo          = 'With/Do';
   dlgFoldPasProcedure       = 'Procedure';
+  dlgFoldPasAnonProcedure   = 'Anonymous Procedure';
   dlgFoldPasUses            = 'Uses';
   dlgFoldPasVarType         = 'Var/Type (global)';
   dlgFoldLocalPasVarType    = 'Var/Type (local)';

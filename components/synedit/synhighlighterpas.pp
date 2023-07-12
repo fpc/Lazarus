@@ -140,6 +140,7 @@ type
     cfbtWhileDo,
     cfbtWithDo,
     cfbtIfElse,
+    cfbtAnonynmousProcedure,
     // Internal type / not configurable
     cfbtCaseElse,     // "else" in case can have multiply statements
     cfbtPackage,
@@ -150,7 +151,7 @@ type
 
 
 const
-  cfbtLastPublic = cfbtIfElse;
+  cfbtLastPublic = cfbtAnonynmousProcedure;
   cfbtFirstPrivate = cfbtCaseElse;
 
   CountPascalCodeFoldBlockOffset =
@@ -160,7 +161,7 @@ const
     [low(TPascalCodeFoldBlockType)..high(TPascalCodeFoldBlockType)]);
 
   PascalWordTripletRanges = TPascalCodeFoldBlockTypes(
-    [cfbtBeginEnd, cfbtTopBeginEnd, cfbtProcedure, cfbtClass, cfbtProgram, cfbtRecord,
+    [cfbtBeginEnd, cfbtTopBeginEnd, cfbtProcedure, cfbtAnonynmousProcedure, cfbtClass, cfbtProgram, cfbtRecord,
      cfbtTry, cfbtExcept, cfbtRepeat, cfbtAsm, cfbtCase, cfbtCaseElse,
      cfbtIfDef, cfbtRegion,
      cfbtIfThen, cfbtForDo,cfbtWhileDo,cfbtWithDo
@@ -226,6 +227,7 @@ const
       // Internal type / not configurable
       cfbtCaseElse,
       cfbtPackage,
+      cfbtProcedure,
       cfbtNone
     );
 
@@ -539,6 +541,9 @@ type
 
     // Open/Close Folds
     procedure GetTokenBounds(out LogX1,LogX2: Integer); override;
+    function ScanAheadForNextToken(RunOffs: Integer; MaxLineCnt: Integer = 1000): String; //inline;
+    function IsAnonynmousFunc(RunOffs: Integer): Boolean;
+
     function StartPascalCodeFoldBlock
              (ABlockType: TPascalCodeFoldBlockType; ForceDisabled: Boolean = False
               ): TSynCustomCodeFoldBlock;
@@ -1136,7 +1141,7 @@ begin
           EndPascalCodeFoldBlock;
       end else if tfb in [cfbtTopBeginEnd, cfbtAsm] then begin
         EndPascalCodeFoldBlock;
-        if TopPascalCodeFoldBlockType in [cfbtProcedure] then
+        if TopPascalCodeFoldBlockType in [cfbtProcedure, cfbtAnonynmousProcedure] then
           EndPascalCodeFoldBlock;
       end else if tfb in [cfbtCaseElse] then begin
         EndPascalCodeFoldBlock;
@@ -1154,7 +1159,7 @@ begin
           EndPascalCodeFoldBlock(True);
         end;
         fStringLen := sl;
-      end else if tfb = cfbtProcedure then begin
+      end else if tfb = cfbtProcedure then begin //cfbtAnonynmousProcedure ?
 //        EndPascalCodeFoldBlock; // wrong source: procedure end, without begin
       end else if tfb = cfbtUnitSection then begin
         EndPascalCodeFoldBlockLastLine;
@@ -1246,11 +1251,11 @@ function TSynPasSyn.Func32: TtkTokenKind;
 begin
   if KeyComp('Label') then begin
     if (TopPascalCodeFoldBlockType in  [cfbtVarType, cfbtLocalVarType, cfbtNone,
-        cfbtProcedure, cfbtProgram, cfbtUnit, cfbtUnitSection])
+        cfbtProcedure, cfbtAnonynmousProcedure, cfbtProgram, cfbtUnit, cfbtUnitSection])
     then begin
       if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
         EndPascalCodeFoldBlockLastLine;
-      if TopPascalCodeFoldBlockType in [cfbtProcedure]
+      if TopPascalCodeFoldBlockType in [cfbtProcedure, cfbtAnonynmousProcedure]
       then StartPascalCodeFoldBlock(cfbtLocalVarType)
       else StartPascalCodeFoldBlock(cfbtVarType);
     end;
@@ -1339,7 +1344,7 @@ begin
       EndPascalCodeFoldBlockLastLine;
     Result := tkKey;
     tbf := TopPascalCodeFoldBlockType;
-    if tbf in [cfbtProcedure]
+    if tbf in [cfbtProcedure, cfbtAnonynmousProcedure]
     then StartPascalCodeFoldBlock(cfbtTopBeginEnd, True)
     else StartPascalCodeFoldBlock(cfbtBeginEnd, tbf in [
       cfbtProgram, cfbtUnit, cfbtUnitSection, cfbtPackage,
@@ -1421,11 +1426,11 @@ begin
   else if KeyComp('Var') then begin
     if (PasCodeFoldRange.BracketNestLevel = 0) and
         (TopPascalCodeFoldBlockType in
-        [cfbtVarType, cfbtLocalVarType, cfbtNone, cfbtProcedure, cfbtProgram,
+        [cfbtVarType, cfbtLocalVarType, cfbtNone, cfbtProcedure, cfbtAnonynmousProcedure, cfbtProgram,
          cfbtUnit, cfbtUnitSection]) then begin
       if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
         EndPascalCodeFoldBlockLastLine;
-      if TopPascalCodeFoldBlockType in [cfbtProcedure]
+      if TopPascalCodeFoldBlockType in [cfbtProcedure, cfbtAnonynmousProcedure]
       then StartPascalCodeFoldBlock(cfbtLocalVarType)
       else StartPascalCodeFoldBlock(cfbtVarType);
     end;
@@ -1739,7 +1744,7 @@ begin
   if KeyComp('Type') then begin
     if (PasCodeFoldRange.BracketNestLevel = 0)
        and (TopPascalCodeFoldBlockType in
-        [cfbtVarType, cfbtLocalVarType, cfbtNone, cfbtProcedure, cfbtProgram,
+        [cfbtVarType, cfbtLocalVarType, cfbtNone, cfbtProcedure, cfbtAnonynmousProcedure, cfbtProgram,
          cfbtUnit, cfbtUnitSection])
     then begin
       if (rsAfterEqualOrColon in fRange) then begin
@@ -1749,7 +1754,7 @@ begin
       else begin
         if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
           EndPascalCodeFoldBlockLastLine;
-        if TopPascalCodeFoldBlockType in [cfbtProcedure]
+        if TopPascalCodeFoldBlockType in [cfbtProcedure, cfbtAnonynmousProcedure]
         then StartPascalCodeFoldBlock(cfbtLocalVarType)
         else StartPascalCodeFoldBlock(cfbtVarType);
         fRange := fRange + [rsInTypeBlock];
@@ -1810,11 +1815,11 @@ begin
   else if KeyComp('Const') then begin
     if (PasCodeFoldRange.BracketNestLevel = 0) and
         (TopPascalCodeFoldBlockType in
-        [cfbtVarType, cfbtLocalVarType, cfbtNone, cfbtProcedure, cfbtProgram,
+        [cfbtVarType, cfbtLocalVarType, cfbtNone, cfbtProcedure, cfbtAnonynmousProcedure, cfbtProgram,
          cfbtUnit, cfbtUnitSection]) then begin
       if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
         EndPascalCodeFoldBlockLastLine;
-      if TopPascalCodeFoldBlockType in [cfbtProcedure]
+      if TopPascalCodeFoldBlockType in [cfbtProcedure, cfbtAnonynmousProcedure]
       then StartPascalCodeFoldBlock(cfbtLocalVarType)
       else StartPascalCodeFoldBlock(cfbtVarType);
     end;
@@ -2036,72 +2041,12 @@ function TSynPasSyn.Func89: TtkTokenKind;
   function ScanForClassSection: Boolean;
   var
     Txt: String;
-    NestBrace1, NestBrace2: Integer;
-    i, l, Idx: Integer;
   begin
     Result := False;
-    Txt := copy(fLine, Run + 7, length(fLine));
-    Idx := LineIndex;
-    NestBrace1 := 0;
-    NestBrace2 := 0;
-    while true do begin
-      i := 1;
-      l := length(Txt);
-      while i <= l do begin
-        case Txt[i] of
-          '{' : if (NestBrace2 = 0) and (NestedComments or (NestBrace1 = 0)) then
-                  inc(NestBrace1);
-          '}' : if (NestBrace2 = 0) then
-                  if NestBrace1 > 0
-                  then dec(NestBrace1)
-                  else exit;
-          '(' : if (NestBrace1 = 0) then
-                  if (i+1 > l) or (Txt[i+1] <> '*')
-                    then exit
-                    else
-                    if NestedComments or (NestBrace2 = 0) then begin
-                      inc(NestBrace2);
-                      inc(i);
-                    end;
-          '*' : if (NestBrace1 = 0) then
-                  if  (i+1 <= l) and (Txt[i+1] = ')') and (NestBrace2 > 0)
-                    then begin
-                      dec(NestBrace2);
-                      inc(i);
-                    end
-                    else
-                    if NestBrace2 = 0 then
-                      exit;
-          '/' : If (NestBrace1 = 0) and (NestBrace2 = 0) then begin
-                  if  (i+1 <= l) and (Txt[i+1] = '/')
-                    then i := l
-                    else exit;
-                end;
-          #1..#32: {do nothing};
-          'p', 'P' : If (NestBrace1 = 0) and (NestBrace2 = 0) then begin
-                       if ( (i+6 <= l) and
-                            ((i+6 = l) or (Txt[i+7] in [#1..#32])) and
-                            (KeyCompEx(@Txt[i+1], PChar('rivate'), 6)) )
-                       or ( (i+8 <= l) and
-                            ((i+8 = l) or (Txt[i+9] in [#1..#32])) and
-                            (KeyCompEx(@Txt[i+1], PChar('rotected'), 8)) )
-                        then
-                          exit(True)
-                        else
-                          exit;
-                     end;
-          else
-             If (NestBrace1 = 0) and (NestBrace2 = 0) then
-              exit;
-        end;
-        inc(i);
-      end;
-      inc(Idx);
-      if Idx < CurrentLines.Count then
-        Txt := CurrentLines[Idx]
-      else
-        break;
-    end;
+    Txt := ScanAheadForNextToken(7);
+    if (Txt<>'') and (Txt[1] in ['p', 'P']) then
+      Result := ( (Length(Txt) = 7) and KeyCompEx(@Txt[1], PChar('rivate'), 6) ) or
+                ( (Length(Txt) = 9) and KeyCompEx(@Txt[1], PChar('rotected'), 8) );
   end;
 
 begin
@@ -2327,20 +2272,25 @@ var
   InClass: Boolean;
 begin
   if KeyComp('Function') then begin
-    if not(rsAfterEqualOrColon in fRange) then begin
-      PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
-      CloseBeginEndBlocksBeforeProc;
+    if (TopPascalCodeFoldBlockType in PascalStatementBlocks) and IsAnonynmousFunc(8) then begin
+      StartPascalCodeFoldBlock(cfbtAnonynmousProcedure);
+    end
+    else begin
+      if not(rsAfterEqualOrColon in fRange) then begin
+        PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
+        CloseBeginEndBlocksBeforeProc;
 
-      if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
-        EndPascalCodeFoldBlockLastLine;
+        if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
+          EndPascalCodeFoldBlockLastLine;
 
-      InClass := TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtRecord];
-      if ( (rsImplementation in fRange) and (not InClass) ) then
-        StartPascalCodeFoldBlock(cfbtProcedure);
+        InClass := TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtRecord];
+        if ( (rsImplementation in fRange) and (not InClass) ) then
+          StartPascalCodeFoldBlock(cfbtProcedure);
 
-      if InClass then
-        fRange := fRange + [rsAfterClassMembers];
-      fRange := fRange + [rsAtProcName];
+        if InClass then
+          fRange := fRange + [rsAfterClassMembers];
+        fRange := fRange + [rsAtProcName];
+      end;
     end;
     fRange := fRange + [rsInProcHeader];
     Result := tkKey;
@@ -2376,20 +2326,25 @@ var
   InClass: Boolean;
 begin
   if KeyComp('Procedure') then begin
-    if not(rsAfterEqualOrColon in fRange) then begin
-      PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
-      CloseBeginEndBlocksBeforeProc;
+    if (TopPascalCodeFoldBlockType in PascalStatementBlocks) and IsAnonynmousFunc(9) then begin
+      StartPascalCodeFoldBlock(cfbtAnonynmousProcedure);
+    end
+    else begin
+      if not(rsAfterEqualOrColon in fRange) then begin
+        PasCodeFoldRange.BracketNestLevel := 0; // Reset in case of partial code
+        CloseBeginEndBlocksBeforeProc;
 
-      if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
-        EndPascalCodeFoldBlockLastLine;
+        if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
+          EndPascalCodeFoldBlockLastLine;
 
-      InClass := TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtRecord];
-      if ( (rsImplementation in fRange) and (not InClass) ) then
-        StartPascalCodeFoldBlock(cfbtProcedure);
+        InClass := TopPascalCodeFoldBlockType in [cfbtClass, cfbtClassSection, cfbtRecord];
+        if ( (rsImplementation in fRange) and (not InClass) ) then
+          StartPascalCodeFoldBlock(cfbtProcedure);
 
-      if InClass then
-        fRange := fRange + [rsAfterClassMembers];
-      fRange := fRange + [rsAtProcName];
+        if InClass then
+          fRange := fRange + [rsAfterClassMembers];
+        fRange := fRange + [rsAtProcName];
+      end;
     end;
     fRange := fRange + [rsInProcHeader];
     Result := tkKey;
@@ -3530,7 +3485,7 @@ begin
   t := TopPascalCodeFoldBlockType;
   if ( (t in PascalStatementBlocks - [cfbtAsm])  or               //cfbtClass, cfbtClassSection,
        ( ( (t in [cfbtVarType, cfbtLocalVarType]) or
-           ((t in [cfbtProcedure]) and (PasCodeFoldRange.BracketNestLevel > 0))
+           ((t in [cfbtProcedure, cfbtAnonynmousProcedure]) and (PasCodeFoldRange.BracketNestLevel > 0))
          ) and
          (fRange * [rsInTypeBlock, rsAfterEqual] = [rsAfterEqual])
      )) and
@@ -4430,6 +4385,120 @@ begin
   LogX2 := LogX1 + fStringLen;
 end;
 
+function TSynPasSyn.ScanAheadForNextToken(RunOffs: Integer; MaxLineCnt: Integer
+  ): String;
+var
+  Txt: PChar;
+  TxtPos, TxtLen: Integer;
+  TxtStr: String;
+  NestBrace1, NestBrace2: Integer;
+  CurLineIdx, TxtPos2: Integer;
+begin
+  Result := '';
+  Txt    := fLine;
+  TxtPos := Run + RunOffs;
+  TxtLen := fLineLen;
+  CurLineIdx := LineIndex;
+
+  NestBrace1 := 0;
+  NestBrace2 := 0;
+  while true do begin
+    while TxtPos < TxtLen do begin
+      case Txt[TxtPos] of
+        '{' : if (NestBrace2 = 0) and (NestedComments or (NestBrace1 = 0)) then
+                inc(NestBrace1);
+        '}' : if (NestBrace2 = 0) then
+                if NestBrace1 > 0
+                then dec(NestBrace1)
+                else exit('}');
+        '(' : if (NestBrace1 = 0) then
+                if (TxtPos+1 <= TxtLen) and (Txt[TxtPos+1] = '*') then begin
+                  if NestedComments or (NestBrace2 = 0) then begin
+                    inc(NestBrace2);
+                    inc(TxtPos);
+                  end
+                end
+                else
+                if (NestBrace2 = 0) then
+                  exit('(');
+        '*' : if (NestBrace1 = 0) then
+                if  (TxtPos+1 <= TxtLen) and (Txt[TxtPos+1] = ')') and (NestBrace2 > 0)
+                  then begin
+                    dec(NestBrace2);
+                    inc(TxtPos);
+                  end
+                  else
+                  if NestBrace2 = 0 then
+                    exit('*');
+        '/' : If (NestBrace1 = 0) and (NestBrace2 = 0) then begin
+                if  (TxtPos+1 <= TxtLen) and (Txt[TxtPos+1] = '/')
+                  then TxtPos := TxtLen
+                  else exit('/');
+              end;
+        #1..#32: {do nothing};
+        else
+          If (NestBrace1 = 0) and (NestBrace2 = 0) then begin
+            TxtPos2 := TxtPos + 1;
+            if Identifiers[Txt[TxtPos]] then
+              while (TxtPos2 < TxtLen) and Identifiers[Txt[TxtPos2]] do
+                inc(TxtPos2)
+            else
+              while (TxtPos2 < TxtLen) and
+                    not( Identifiers[Txt[TxtPos2]] or IsSpaceChar[Txt[TxtPos2]] )
+              do
+                inc(TxtPos2);
+            if TxtPos2 - TxtPos > 0 then begin
+              SetLength(Result, TxtPos2 - TxtPos);
+              move(Txt[TxtPos], Result[1], TxtPos2 - TxtPos);
+            end;
+            exit;
+          end;
+      end;
+      inc(TxtPos);
+    end;
+    dec(MaxLineCnt);
+    if MaxLineCnt < 0 then
+      exit;
+    inc(CurLineIdx);
+    if CurLineIdx < CurrentLines.Count then begin
+      TxtStr := CurrentLines[CurLineIdx];
+      Txt    := PChar(TxtStr);
+      TxtPos := 0;
+      TxtLen := length(Txt);
+    end
+    else
+      break;
+  end;
+end;
+
+function TSynPasSyn.IsAnonynmousFunc(RunOffs: Integer): Boolean;
+var
+  Txt: String;
+begin
+  Txt := ScanAheadForNextToken(RunOffs);
+  Result := Txt = '';
+  if Result then
+    exit;
+
+  case Txt[1] of
+    '(', ':', ';': Result := True;
+    'a', 'A': Result := ( (Length(Txt) = 3) and KeyCompEx(@Txt[1], PChar('asm'),   3) );
+    'b', 'B': Result := ( (Length(Txt) = 5) and KeyCompEx(@Txt[1], PChar('begin'), 5) );
+    'c', 'C': Result := ( (Length(Txt) = 5) and KeyCompEx(@Txt[1], PChar('const'), 5) ) or
+                        ( (Length(Txt) = 5) and KeyCompEx(@Txt[1], PChar('cdecl'), 5) );
+    'i', 'I': Result := ( (Length(Txt) = 5) and KeyCompEx(@Txt[1], PChar('inline'), 5) ) or
+                        ( (Length(Txt) = 5) and KeyCompEx(@Txt[1], PChar('interrupt'), 5) );
+    'l', 'L': Result := ( (Length(Txt) = 5) and KeyCompEx(@Txt[1], PChar('label'), 5) );
+    'n', 'N': Result := ( (Length(Txt) = 5) and KeyCompEx(@Txt[1], PChar('none'), 5) );
+    'p', 'P': Result := ( (Length(Txt) = 5) and KeyCompEx(@Txt[1], PChar('pascal'), 5) );
+    'r', 'R': Result := ( (Length(Txt) = 5) and KeyCompEx(@Txt[1], PChar('register'), 5) );
+    's', 'S': Result := ( (Length(Txt) = 5) and KeyCompEx(@Txt[1], PChar('safecall'), 5) ) or
+                        ( (Length(Txt) = 5) and KeyCompEx(@Txt[1], PChar('stdcall'), 5) );
+    't', 'T': Result := ( (Length(Txt) = 4) and KeyCompEx(@Txt[1], PChar('type'),  4) );
+    'v', 'V': Result := ( (Length(Txt) = 3) and KeyCompEx(@Txt[1], PChar('var'),   3) );
+  end;
+end;
+
 function TSynPasSyn.FoldTypeCount: integer;
 begin
   Result := 3;
@@ -4565,13 +4634,13 @@ begin
         Include( aActions, sfaOutlineMergeParent);
     end;
 
-    if (PasBlockType in [cfbtProcedure]) then begin
+    if (PasBlockType in [cfbtProcedure, cfbtAnonynmousProcedure]) then begin
       t := FFoldConfig[ord(cfbtTopBeginEnd)];
       if t.Enabled and (sfaOutline in t.FoldActions) then
         aActions := aActions + [sfaOutlineKeepLevel,sfaOutlineNoColor];
     end;
 
-    //if (PasBlockType in [cfbtProcedure]) and (InProcLevel > 0) then //nested
+    //if (PasBlockType in [cfbtProcedure, cfbtAnonynmousProcedure]) and (InProcLevel > 0) then //nested
     //  aActions := aActions + [sfaOutlineForceIndent];
 
     if (PasBlockType in [cfbtExcept]) then begin
@@ -4816,7 +4885,7 @@ begin
     exit;
   while TopPascalCodeFoldBlockType in PascalStatementBlocks + [cfbtAsm] do
     EndPascalCodeFoldBlockLastLine;
-  if TopPascalCodeFoldBlockType = cfbtProcedure then
+  if TopPascalCodeFoldBlockType in [cfbtProcedure, cfbtAnonynmousProcedure] then
     EndPascalCodeFoldBlockLastLine; // This procedure did have a begin/end block, so it must end too
 end;
 
