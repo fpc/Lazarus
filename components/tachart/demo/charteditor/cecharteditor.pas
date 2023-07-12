@@ -18,7 +18,7 @@ type
     CloseButton: TPanelBitBtn;
     ButtonPanel: TButtonPanel;
     HeaderImage: TImage;
-    Label1: TLabel;
+    TitleLabel: TLabel;
     Notebook: TNotebook;
     TitlePanel: TPanel;
     Splitter1: TSplitter;
@@ -563,11 +563,11 @@ begin
     Notebook.PageIndex := pageIdx;
     s := Tree.Selected.Text;
     if Tree.Selected.Parent = FAxesNode then
-      Label1.Caption := 'Axis: ' + s
+      TitleLabel.Caption := 'Axis: ' + s
     else if Tree.Selected.Parent = FSeriesNode then
-      Label1.Caption := 'Series: "' + s + '"'
+      TitleLabel.Caption := 'Series: "' + s + '"'
     else
-      Label1.Caption := s;
+      TitleLabel.Caption := s;
     HeaderImage.ImageIndex := Tree.Selected.ImageIndex;
   end;
 end;
