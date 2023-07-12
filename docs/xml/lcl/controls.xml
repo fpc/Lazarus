@@ -638,6 +638,7 @@ Uncomment when the topic exists in the RTL documentation.
 </seealso>
 </element>
 
+<!--
 <element name="GetModalResultStr">
 <short>
 Deprecated; Use the ModalResultStr array from the <file>UITypes</file> unit.
@@ -647,7 +648,9 @@ Deprecated; Use the ModalResultStr array from the <file>UITypes</file> unit.
 </element>
 <element name="GetModalResultStr.Result"/>
 <element name="GetModalResultStr.ModalResult"/>
+-->
 
+<!--
 <element name="ModalResultStr">
 <short>
 Gets the string representation for a modal result value.
@@ -664,7 +667,8 @@ ModalResultStr array from the <file>UITypes</file> unit directly.
 <link id="#lcl.uitypes.ModalResultStr">ModalResultStr</link>
 <link id="#lcl.uitypes.TModalResult">TModalResult</link>
 </seealso>
-</element>
+</element> 
+-->
 
 <element name="fsSurface">
 <short>
