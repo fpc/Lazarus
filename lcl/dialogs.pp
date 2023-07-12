@@ -543,6 +543,7 @@ type
     tfShowMarqueeProgressBar, tfCallbackTimer,
     tfPositionRelativeToWindow, tfRtlLayout,
     tfNoDefaultRadioButton, tfCanBeMinimized,
+    tfNoSetForeGround, tfSizeToContent,
     tfForceNonNative, tfEmulateClassicStyle);
   TTaskDialogFlags = set of TTaskDialogFlag;
 

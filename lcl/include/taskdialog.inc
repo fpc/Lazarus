@@ -179,6 +179,10 @@ function TCustomTaskDialog.DoExecute(ParentWnd: HWND): Boolean;
       Result := Result + [tdfNoDefaultRadioButton];
     if tfCanBeMinimized in aTaskFlags then
       Result := Result + [tdfCanBeMinimized];
+    if tfNoSetForeGround in aTaskFlags then
+      Result := Result + [tdfNoSetForeGround];
+    if tfSizeToContent in aTaskFlags then
+      Result := Result + [tdfSizeToContent];
   end;
 
   function TF_DIALOGICON(const aIcon: TTaskDialogIcon): LCLTaskDialog.TTaskDialogIcon;
