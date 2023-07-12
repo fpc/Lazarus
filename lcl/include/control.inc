@@ -3555,9 +3555,10 @@ begin
   begin
     if AComponent = PopupMenu then
       PopupMenu := nil
-    else
-    if AComponent = Action then
-      Action := nil;
+    else if AComponent = Action then
+      Action := nil
+    else if AComponent = FHostDockSite then
+      FHostDockSite := nil;
     //debugln('TControl.Notification A ',DbgSName(Self),' ',DbgSName(AComponent));
     for Kind := Low(TAnchorKind) to High(TAnchorKind) do
     begin
@@ -3573,7 +3574,7 @@ var
   FloatHost: TWinControl;
   R: TRect;
 begin
-  DebugLn(['TControl.DoFloatMsg ',DbgSName(Self),' Floating=',Floating]);
+  //DebugLn(['TControl.DoFloatMsg ',DbgSName(Self),' Floating=',Floating]);
   if Floating and (Parent <> nil) then
   begin
     P := Parent.ClientToScreen(Point(Left, Top));
