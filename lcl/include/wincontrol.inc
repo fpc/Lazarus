@@ -2405,7 +2405,7 @@ end;
 {------------------------------------------------------------------------------
   function TWinControl.AutoSizeDelayed: boolean;
 ------------------------------------------------------------------------------}
-function TWinControl.AutoSizeDelayed: boolean;
+function TWinControl.AutoSizeDelayed: Boolean;
 begin
   Result:=(csDestroyingHandle in ControlState)
           or (inherited AutoSizeDelayed);
@@ -3755,7 +3755,7 @@ end;
   The clientrect is cached. Call this procedure to invalidate the cache, so that
   next time the clientrect is fetched from the interface.
 -------------------------------------------------------------------------------}
-procedure TWinControl.InvalidateClientRectCache(WithChildControls: boolean);
+procedure TWinControl.InvalidateClientRectCache(WithChildControls: Boolean);
 var
   I: Integer;
 begin
@@ -3783,7 +3783,7 @@ end;
 
   The clientrect is cached. Check if cache is valid.
 -------------------------------------------------------------------------------}
-function TWinControl.ClientRectNeedsInterfaceUpdate: boolean;
+function TWinControl.ClientRectNeedsInterfaceUpdate: Boolean;
 var
   InterfaceWidth, InterfaceHeight: integer;
   IntfClientRect: TRect;
@@ -3824,7 +3824,7 @@ end;
   Changing the clientrect in the LCL to the most probable size reduces
   unneccessary resizes.
 -------------------------------------------------------------------------------}
-procedure TWinControl.DoSetBounds(ALeft, ATop, AWidth, AHeight : integer);
+procedure TWinControl.DoSetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 var
   OldWidth: LongInt;
   OldHeight: LongInt;
@@ -3934,7 +3934,7 @@ end;
 
   Allow TControl as child.
 -------------------------------------------------------------------------------}
-function TWinControl.ChildClassAllowed(ChildClass: TClass): boolean;
+function TWinControl.ChildClassAllowed(ChildClass: TClass): Boolean;
 begin
   Result:=(ChildClass<>nil) and ChildClass.InheritsFrom(TControl);
 end;
@@ -4136,7 +4136,7 @@ end;
   If Scrolled is true, the rectangle is moved by the current scrolling values
   (for an example see TScrollingWincontrol).
 ------------------------------------------------------------------------------}
-function TWinControl.GetChildrenRect(Scrolled: boolean): TRect;
+function TWinControl.GetChildrenRect(Scrolled: Boolean): TRect;
 var
   ScrolledOffset: TPoint;
 begin
@@ -4317,7 +4317,7 @@ end;
   Send Move and Size messages through the LCL message paths. This simulates the
   VCL behaviour and has no real effect.
 -------------------------------------------------------------------------------}
-procedure TWinControl.SendMoveSizeMessages(SizeChanged, PosChanged: boolean);
+procedure TWinControl.SendMoveSizeMessages(SizeChanged, PosChanged: Boolean);
 var
   SizeMsg : TLMSize;
   MoveMsg : TLMMove;
@@ -4450,7 +4450,7 @@ begin
   Result := CanTab and (HandleAllocated and (FindOwnerControl(GetFocus)=Self));
 end;
 
-function TWinControl.PerformTab(ForwardTab: boolean): boolean;
+function TWinControl.PerformTab(ForwardTab: Boolean): Boolean;
 var
   NewFocus: TWinControl;
   ParentForm: TCustomForm;
@@ -4490,7 +4490,7 @@ end;
 {------------------------------------------------------------------------------
   TWinControl FindChildControl
 ------------------------------------------------------------------------------}
-function TWinControl.FindChildControl(const ControlName: String): TControl;
+function TWinControl.FindChildControl(const ControlName: string): TControl;
 var
   I: Integer;
 begin
@@ -5059,7 +5059,7 @@ end;
   (e.g. after KeyDown but before KeyPress).
 ------------------------------------------------------------------------------}
 function TWinControl.IntfUTF8KeyPress(var UTF8Key: TUTF8Char;
-  RepeatCount: integer; SystemKey: boolean): boolean;
+  RepeatCount: Integer; SystemKey: Boolean): Boolean;
 begin
   IncLCLRefCount;
   try
@@ -5285,7 +5285,7 @@ end;
 
 
 -------------------------------------------------------------------------------}
-function TWinControl.GetControlIndex(AControl: TControl): integer;
+function TWinControl.GetControlIndex(AControl: TControl): Integer;
 begin
   if FControls <> nil then
     Result := FControls.IndexOf(AControl)
@@ -5298,7 +5298,7 @@ end;
 
 
 -------------------------------------------------------------------------------}
-procedure TWinControl.SetControlIndex(AControl: TControl; NewIndex: integer);
+procedure TWinControl.SetControlIndex(AControl: TControl; NewIndex: Integer);
 begin
   SetChildZPosition(AControl, NewIndex);
 end;
@@ -5431,7 +5431,7 @@ begin
   inherited WndProc(Message);
 end;
 
-procedure TWinControl.WSSetText(const AText: String);
+procedure TWinControl.WSSetText(const AText: string);
 begin
   TWSWinControlClass(WidgetSetClass).SetText(Self, AText);
 end;
@@ -5638,7 +5638,7 @@ begin
     inherited DoFloatMsg(ADockSource);
 end;
 
-function TWinControl.GetDockCaption(AControl: TControl): String;
+function TWinControl.GetDockCaption(AControl: TControl): string;
 begin
   Result := AControl.GetDefaultDockCaption;
   DoGetDockCaption(AControl, Result);
@@ -5651,7 +5651,8 @@ begin
    Exclude an currently undocking control. }
 end;
 
-procedure TWinControl.DoGetDockCaption(AControl: TControl; var ACaption: String);
+procedure TWinControl.DoGetDockCaption(AControl: TControl; var ACaption: string
+  );
 begin
   if Assigned(FOnGetDockCaption) then
     OnGetDockCaption(Self, AControl, ACaption);
@@ -5843,7 +5844,7 @@ begin
   Result := False;
 end;
 
-function TWinControl.ChildKey(var Message: TLMKey): boolean;
+function TWinControl.ChildKey(var Message: TLMKey): Boolean;
 begin
   if Assigned(Parent) then
     Result := Parent.ChildKey(Message)
@@ -5851,7 +5852,7 @@ begin
     Result := false;
 end;
 
-function TWinControl.DialogChar(var Message: TLMKey): boolean;
+function TWinControl.DialogChar(var Message: TLMKey): Boolean;
 var
   I: integer;
 begin
@@ -5987,7 +5988,7 @@ end;
 
   Returns True if key handled
 ------------------------------------------------------------------------------}
-function TWinControl.DoUTF8KeyPress(var UTF8Key: TUTF8Char): boolean;
+function TWinControl.DoUTF8KeyPress(var UTF8Key: TUTF8Char): Boolean;
 var
   AParent: TWinControl;
   F: TCustomForm;
@@ -6158,7 +6159,7 @@ end;
 {------------------------------------------------------------------------------
   procedure TWinControl.Insert(AControl: TControl; Index: integer);
 ------------------------------------------------------------------------------}
-procedure TWinControl.Insert(AControl: TControl; Index: integer);
+procedure TWinControl.Insert(AControl: TControl; Index: Integer);
 begin
   if AControl = nil then exit;
   if AControl.FParent<>nil then
@@ -6295,13 +6296,13 @@ begin
   Registered := True;
 end;
 
-function TWinControl.IsClientHeightStored: boolean;
+function TWinControl.IsClientHeightStored: Boolean;
 begin
   // The ClientHeight is needed to restore children anchored akBottom
   Result:=ControlCount>0;
 end;
 
-function TWinControl.IsClientWidthStored: boolean;
+function TWinControl.IsClientWidthStored: Boolean;
 begin
   // The ClientWidth is needed to restore children anchored akRight
   Result:=ControlCount>0;
@@ -6341,7 +6342,7 @@ begin
   InsertControl(AControl, ControlCount);
 end;
 
-procedure TWinControl.InsertControl(AControl: TControl; Index: integer);
+procedure TWinControl.InsertControl(AControl: TControl; Index: Integer);
 begin
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TWinControl.InsertControl'){$ENDIF};
   try
@@ -7727,7 +7728,7 @@ end;
   
   Checks if all Handles of all Parents are created.
  ------------------------------------------------------------------------------}
-function TWinControl.ParentHandlesAllocated: boolean;
+function TWinControl.ParentHandlesAllocated: Boolean;
 var
   CurControl: TWinControl;
 begin
@@ -7968,7 +7969,7 @@ end;
 
   decreases the BoundsLockCount
  ------------------------------------------------------------------------------}
-function TWinControl.GetIsResizing: boolean;
+function TWinControl.GetIsResizing: Boolean;
 begin
   Result:=BoundsLockCount>0;
 end;
@@ -8045,7 +8046,7 @@ begin
 end;
 
 function TWinControl.DoDockClientMsg(DragDockObject: TDragDockObject;
-  aPosition: TPoint): boolean;
+  aPosition: TPoint): Boolean;
 var
   DestRect: TRect;
   Form: TCustomForm;
@@ -8069,7 +8070,7 @@ begin
   end;
 end;
 
-function TWinControl.DoUndockClientMsg(NewTarget, Client: TControl): boolean;
+function TWinControl.DoUndockClientMsg(NewTarget, Client: TControl): Boolean;
 begin
   Result := True;
   {$IFDEF VerboseDocking}
@@ -8086,7 +8087,7 @@ end;
 
   Sets the bounds of the control.
  ------------------------------------------------------------------------------}
-procedure TWinControl.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
+procedure TWinControl.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 
   procedure CheckDesignBounds;
   begin
@@ -8164,7 +8165,7 @@ end;
   the widgetset.
  ------------------------------------------------------------------------------}
 procedure TWinControl.CalculatePreferredSize(var PreferredWidth,
-  PreferredHeight: integer; WithThemeSpace: Boolean);
+  PreferredHeight: Integer; WithThemeSpace: Boolean);
 
   {$IFDEF VerboseCalculatePreferredSize}
   procedure trav(aControl: TControl; Prefix: string);
@@ -8263,7 +8264,7 @@ begin
   {$ENDIF}
 end;
 
-procedure TWinControl.GetPreferredSizeClientFrame(out aWidth, aHeight: integer);
+procedure TWinControl.GetPreferredSizeClientFrame(out aWidth, aHeight: Integer);
 begin
   aWidth:=Width-ClientWidth;
   aHeight:=Height-ClientHeight;
