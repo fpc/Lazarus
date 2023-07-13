@@ -5699,7 +5699,8 @@ initialize and execute the task dialog. It ensures that the index for the
 default Buttons and RadioButtons are updated before executing the task 
 dialog. It also builds the delimited list of captions for each of the items 
 in Buttons and RadioButtons. The lists use the format needed for the task 
-dialog wrapper (#10 is the delimiter).
+dialog wrapper (#10 is the delimiter). Values in Flags are examined and 
+converted to the constants used in the task dialog wrapper.
 </p>
 <p>
 Property values are copied to the members in the TTaskDialog instance, 
@@ -5740,7 +5741,14 @@ DoExecute is called from the Execute method.
 </seealso>
 </element>
 <version>
-Modified in version 3.0 to use the tfForceNonNative flag to determine whether an emulated dialog is displayed.
+<p>
+Modified in version 3.0 to use the tfForceNonNative flag to determine whether 
+an emulated dialog is displayed.
+</p>
+<p>
+Modified in LCL 4.0 to use tfNoSetForeGround and tfSizeToContent when included 
+in the flag values.
+</p>
 </version>
 <element name="TCustomTaskDialog.DoExecute.Result">
 <short>
