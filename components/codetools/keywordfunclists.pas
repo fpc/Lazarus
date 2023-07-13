@@ -909,6 +909,12 @@ begin
     Add('VARARGS'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('VECTORCALL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXTERNAL'     ,{$ifdef FPC}@{$endif}AllwaysTrue); //jvm
+    Add('WINAPI'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('OLDFPCCALL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SOFTFLOAT'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('HARDFLOAT'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('IOCHECK'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LOCAL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
 
   IsKeyWordProcedureSpecifier:=TKeyWordFunctionList.Create('IsKeyWordProcedureSpecifier');
@@ -1035,6 +1041,10 @@ begin
     Add('POPSTACK'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SAFECALL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('VECTORCALL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('WINAPI'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('OLDFPCCALL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SOFTFLOAT'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('HARDFLOAT'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     // Note: 'inline' and 'is nested' are not a calling specifiers
   end;
 
