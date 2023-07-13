@@ -40,6 +40,7 @@ The original file name is SynTaskDialog.pas.
 <!-- unresolved external references -->
 <element name="Windows"/>
 <element name="ctypes"/>
+<element name="CommCtrl"/>
 <element name="Classes"/>
 <element name="SysUtils"/>
 <element name="LazUTF8"/>
@@ -294,9 +295,6 @@ http://msdn.microsoft.com/en-us/library/bb787473(v=vs.85).aspx
 </url>
 </p>
 <p>
-Please note: TTaskDialogFlag <b>does not</b> include the TDF_SIZE_TO_CONTENT flag allowed in the Windows API.
-</p>
-<p>
 tdfQuery, tdfQueryMasked, and tdfQueryFieldFocused are custom flags, 
 implemented in Pascal code, to handle an input query.
 </p>
@@ -305,6 +303,10 @@ An emulated task dialog (as opposed to a native one) will handle only
 tdfUseCommandLinks, tdfUseCommandLinksNoIcon, and tdfQuery flag options.
 </p>
 </descr>
+<version>
+Modified in LCL 4.0 to include tdfNoSetForeGround and tdfSizeToContent flag 
+values.
+</version>
 <seealso/>
 </element>
 <element name="TTaskDialogFlag.tdfEnableHyperLinks">
@@ -405,6 +407,18 @@ Causes all radio buttons on a task dialog to be unselected when it is displayed.
 <short>
 Allows the task dialog to be minimized. 
 </short>
+<element name="TTaskDialogFlag.tdfNoSetForeGround">
+<short>
+Prevents the task dialog from being brought to the foreground when it is 
+activated. Defined for Windows 8 or later version.
+</short>
+</element>
+<element name="TTaskDialogFlag.tdfSizeToContent">
+<short>
+Indicates the width for the dialog is determined by the text in the content 
+area. The flag is ignored if the dialog width is not set to 0 (zero).
+</short>
+</element>
 </element>
 <element name="TTaskDialogFlag.tdfQuery">
 <short>
@@ -1198,9 +1212,16 @@ button is clicked.
 </descr>
 <seealso/>
 <version>
+<p>
 Modified in LCL version 2.2.6+ for native dialogs on the Windows platform. An 
 explicit dialog width (in pixels) is converted to dialog base units for use in 
 the TaskDialogIndirect Windows API.
+</p>
+<p>
+Modified in LCL 4.0 to provide support on the Windows platform for the 
+TDF_NO_SET_FOREGROUND and TDF_SIZE_TO_CONTENT flags not implemented in 
+CommCtrl for FPC versions prior to 3.3.1.
+</p>
 </version>
 </element>
 <element name="TTaskDialog.Execute.Result">
