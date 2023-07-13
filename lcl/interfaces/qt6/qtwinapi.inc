@@ -1557,9 +1557,9 @@ begin
   Desktop := QGuiApplication_primaryScreen();
   Result := True;
   QScreen_virtualSiblings(Desktop, @AArray);
-  for i := 0 to length(AArray) - 1 do
+  for i := 1 to length(AArray) do
   begin
-    Result := Result and lpfnEnum(i + 1, 0, nil, dwData);
+    Result := lpfnEnum(i, 0, nil, dwData);
     if not Result then break;
   end;
 end;
