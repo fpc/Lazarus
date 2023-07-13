@@ -605,6 +605,7 @@ begin
     ecMoveEditorRightmost     : Result:= srkmecMoveEditorRightmost;
     ecToggleBreakPoint        : Result:= srkmecToggleBreakPoint;
     ecToggleBreakPointEnabled : Result:= srkmecToggleBreakPointEnabled;
+    ecBreakPointProperties    : Result:= srkmecBreakPointProperties;
     ecRemoveBreakPoint        : Result:= srkmecRemoveBreakPoint;
 
     ecNextSharedEditor:        Result := srkmecNextSharedEditor;
@@ -964,6 +965,7 @@ begin
   case cmd - emcIdeMouseCommandOffset of
     emcOffsetToggleBreakPoint:        Result := srkmecToggleBreakPoint;
     emcOffsetToggleBreakPointEnabled: Result := srkmecToggleBreakPointEnabled;
+    emcOffsetBreakPointProperties:    Result := srkmecBreakPointProperties;
     else
       Result := '';
   end;
@@ -1370,6 +1372,7 @@ begin
   ecResetDebugger:       SetSingle(VK_UNKNOWN,[]);
   ecToggleBreakPoint:    SetSingle(VK_F5,[]);
   ecToggleBreakPointEnabled:    SetSingle(VK_F5,[ssShift, XCtrl]);
+  ecBreakPointProperties:SetSingle(VK_F5,[ssAlt, XCtrl]);
   ecMoveEditorLeft:      SetSingle(VK_UNKNOWN,[]);
   ecMoveEditorRight:     SetSingle(VK_UNKNOWN,[]);
   ecMoveEditorLeftmost:  SetSingle(VK_UNKNOWN,[]);
@@ -3180,6 +3183,7 @@ begin
   AddDefault(C, 'Go to next editor in history', srkmecNextEditorInHistory, ecNextEditorInHistory);
   AddDefault(C, 'Add break point', srkmecToggleBreakPoint, ecToggleBreakPoint);
   AddDefault(C, 'Enable/Disable break point', srkmecToggleBreakPointEnabled, ecToggleBreakPointEnabled);
+  AddDefault(C, 'Show break point properties', srkmecBreakPointProperties, ecBreakPointProperties);
   AddDefault(C, 'Remove break point', srkmecRemoveBreakPoint, ecRemoveBreakPoint);
   AddDefault(C, 'Move editor left', srkmecMoveEditorLeft, ecMoveEditorLeft);
   AddDefault(C, 'Move editor right', srkmecMoveEditorRight, ecMoveEditorRight);

@@ -304,6 +304,7 @@ const
   ecToggleBreakPoint        = ecFirstLazarus + 470;
   ecRemoveBreakPoint        = ecFirstLazarus + 471;
   ecToggleBreakPointEnabled = ecFirstLazarus + 472;
+  ecBreakPointProperties    = ecFirstLazarus + 473;
 
 
   // project menu
@@ -463,13 +464,15 @@ const
   // Mouse command offsets
   emcOffsetToggleBreakPoint        = 0;
   emcOffsetToggleBreakPointEnabled = 1;
+  emcOffsetBreakPointProperties    = 2;
 
 var
   emcToggleBreakPoint,
-  emcToggleBreakPointEnabled : integer;
+  emcToggleBreakPointEnabled,
+  emcBreakPointProperties : integer;
 
 const
-  emcIdeMouseCommandsCount = 2;
+  emcIdeMouseCommandsCount = 3;
 
 type
   TIDECommand = class;
@@ -1964,7 +1967,7 @@ begin
 end;
 
 const
-  IDEEditorCommandStrs: array[0..322] of TIdentMapEntry = (         // DRB reduced elements from 323
+  IDEEditorCommandStrs: array[0..323] of TIdentMapEntry = (         // DRB reduced elements from 323
   // search
     (Value: ecFind;                                   Name: 'ecFind'),
     (Value: ecFindAgain;                              Name: 'ecFindAgain'),
@@ -2126,6 +2129,7 @@ const
     (Value: ecMoveEditorRight;                        Name: 'ecMoveEditorRight'),
     (Value: ecToggleBreakPoint;                       Name: 'ecToggleBreakPoint'),
     (Value: ecToggleBreakPointEnabled;                Name: 'ecToggleBreakPointEnabled'),
+    (Value: ecBreakPointProperties;                   Name: 'ecBreakPointProperties'),
 
     (Value: ecRemoveBreakPoint;                       Name: 'ecRemoveBreakPoint'),
     (Value: ecMoveEditorLeftmost;                     Name: 'ecMoveEditorLeftmost'),
@@ -2376,7 +2380,8 @@ var
   IDEEditorMouseCommandStrs: array[0..emcIdeMouseCommandsCount-1] of TIdentMapEntry = (
     // Initialize with Value = 0 .. emcIdeMouseCommandsCount
     (Value: emcOffsetToggleBreakPoint;                   Name: 'emcToggleBreakPoint'),
-    (Value: emcOffsetToggleBreakPointEnabled;            Name: 'emcToggleBreakPointEnabled')
+    (Value: emcOffsetToggleBreakPointEnabled;            Name: 'emcToggleBreakPointEnabled'),
+    (Value: emcOffsetBreakPointProperties;               Name: 'emcBreakPointProperties')
   );
 
 procedure SetIdeMouseCommandOffset(AStartNum: Integer);
@@ -2384,6 +2389,7 @@ begin
   TheEmcIdeMouseCommandOffset := AStartNum;
   emcToggleBreakPoint        := AStartNum + emcOffsetToggleBreakPoint;  // update last
   emcToggleBreakPointEnabled := AStartNum + emcOffsetToggleBreakPointEnabled;
+  emcBreakPointProperties    := AStartNum + emcOffsetBreakPointProperties;
 end;
 
 function GetIdeMouseCommandOffset: Integer;

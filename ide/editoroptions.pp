@@ -3702,8 +3702,9 @@ begin
   end;
 
   with FGutterActions do begin
-    AddCommand(emcToggleBreakPoint,          False, mbXLeft,   ccSingle,    CDir, R, [],                      [SYNEDIT_LINK_MODIFIER]);
-    AddCommand(emcToggleBreakPointEnabled,   False, mbXLeft,   ccSingle,    CDir, R, [SYNEDIT_LINK_MODIFIER], [SYNEDIT_LINK_MODIFIER]);
+    AddCommand(emcToggleBreakPoint,          False, mbXLeft,   ccSingle,    CDir, R, [],                      [ssAlt, SYNEDIT_LINK_MODIFIER]);
+    AddCommand(emcToggleBreakPointEnabled,   False, mbXLeft,   ccSingle,    CDir, R, [SYNEDIT_LINK_MODIFIER], [ssAlt, SYNEDIT_LINK_MODIFIER]);
+    AddCommand(emcBreakPointProperties,      False, mbXLeft,   ccSingle,    CDir, R, [ssAlt], [ssAlt]);
   end;
 
 

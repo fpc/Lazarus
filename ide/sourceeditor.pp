@@ -298,6 +298,8 @@ type
     procedure EditorChangeUpdating({%H-}ASender: TObject; AnUpdating: Boolean);
     procedure ToggleBreakpoint(ALine: Integer);
     procedure ToggleBreakpointEnabled(ALine: Integer);
+    procedure DoShowBreakpointProps(ALine: PtrInt);
+    procedure ShowBreakpointProps(ALine: Integer);
     function  EditorHandleMouseAction(AnAction: TSynEditMouseAction;
                                       var {%H-}AnInfo: TSynEditMouseActionInfo): Boolean;
     function GetCodeBuffer: TCodeBuffer;
@@ -717,6 +719,7 @@ type
     procedure DeleteBreakpointClicked(Sender: TObject);
     procedure ToggleBreakpointClicked(Sender: TObject);
     procedure ToggleBreakpointEnabledClicked(Sender: TObject);
+    procedure ShowBreakpointPropsClicked(Sender: TObject);
   private
     FManager: TSourceEditorManager;
     FUpdateLock, FFocusLock, fAutoFocusLock: Integer;
@@ -5831,6 +5834,40 @@ begin
   end;
 end;
 
+procedure TSourceEditor.DoShowBreakpointProps(ALine: PtrInt);
+var
+  BreakPtMark: TSourceMark;
+  BreakPoint: TIDEBreakPoint;
+begin
+  BreakPtMark := SourceEditorMarks.FindBreakPointMark(Self, ALine);
+  if BreakPtMark = nil then begin
+    DebugBoss.DoCreateBreakPoint(Filename, ALine, True, BreakPoint, True);
+    if BreakPoint = nil then
+      exit;
+
+    if DebugBoss.ShowBreakPointProperties(BreakPoint) <> mrOK then
+      BreakPoint.ReleaseReference
+    else
+      BreakPoint.EndUpdate;
+  end
+  else begin
+    if BreakPtMark.Data <> nil
+    then BreakPoint := TIDEBreakPoint(BreakPtMark.Data)
+    else BreakPoint := DebugBoss.BreakPoints.Find(FileName, ALine);
+    if BreakPoint = nil then
+      exit;
+
+    BreakPoint.BeginUpdate;
+    DebugBoss.ShowBreakPointProperties(BreakPoint);
+    BreakPoint.EndUpdate;
+  end;
+end;
+
+procedure TSourceEditor.ShowBreakpointProps(ALine: Integer);
+begin
+  Application.QueueAsyncCall(@DoShowBreakpointProps, ALine);
+end;
+
 function TSourceEditor.EditorHandleMouseAction(AnAction: TSynEditMouseAction;
   var AnInfo: TSynEditMouseActionInfo): Boolean;
 begin
@@ -5859,6 +5896,11 @@ begin
 
   if AnAction.Command = emcToggleBreakPointEnabled then begin
     ToggleBreakpointEnabled(AnInfo.NewCaret.LinePos);
+    exit;
+  end;
+
+  if AnAction.Command = emcBreakPointProperties then begin
+    ShowBreakpointProps(AnInfo.NewCaret.LinePos);
     exit;
   end;
 
@@ -8534,13 +8576,19 @@ end;
 procedure TSourceNotebook.ToggleBreakpointEnabledClicked(Sender: TObject);
 var
   ASrcEdit: TSourceEditor;
-  Line: LongInt;
-  BreakPtMark: TSourceMark;
-  BreakPoint: TIDEBreakPoint;
 begin
   ASrcEdit:=GetActiveSE;
   if ASrcEdit=nil then exit;
   ASrcEdit.ToggleBreakpointEnabled(ASrcEdit.EditorComponent.CaretY);
+end;
+
+procedure TSourceNotebook.ShowBreakpointPropsClicked(Sender: TObject);
+var
+  ASrcEdit: TSourceEditor;
+begin
+  ASrcEdit:=GetActiveSE;
+  if ASrcEdit=nil then exit;
+  ASrcEdit.ShowBreakpointProps(ASrcEdit.EditorComponent.CaretY);
 end;
 
 procedure TSourceNotebook.CompleteCodeMenuItemClick(Sender: TObject);
