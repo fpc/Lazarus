@@ -38,7 +38,8 @@ uses
   // LazUtils
   Laz2_XMLCfg, FileUtil,
   // SynEdit
-  SynEditKeyCmds, SynPluginTemplateEdit, SynPluginSyncroEdit, SynPluginMultiCaret,
+  SynEditKeyCmds, SynPluginTemplateEdit, SynPluginSyncroEdit,
+  SynPluginMultiCaret, SynEditMouseCmds,
   // IdeIntf
   IDECommands,
   // IDE
@@ -227,6 +228,8 @@ type
 function IDEShortCutEmpty(const Key: TIDEShortCut): boolean;
 function KeyAndShiftStateToEditorKeyString(const Key: TIDEShortCut): String;
 function EditorCommandToDescriptionString(cmd: word): String;
+function EditorMouseCommandToDescriptionString(cmd: TSynEditorMouseCommand): String;
+function EditorMouseCommandToConfigString(cmd: TSynEditorMouseCommand): String;
 
 function KeySchemeNameToSchemeType(const SchemeName: string): TKeyMapScheme;
 
@@ -953,6 +956,22 @@ begin
 
       end;
   end;
+end;
+
+function EditorMouseCommandToDescriptionString(cmd: TSynEditorMouseCommand
+  ): String;
+begin
+  case cmd - emcIdeMouseCommandOffset of
+    emcOffsetToggleBreakPoint:        Result := srkmecToggleBreakPoint;
+    emcOffsetToggleBreakPointEnabled: Result := srkmecToggleBreakPointEnabled;
+    else
+      Result := '';
+  end;
+end;
+
+function EditorMouseCommandToConfigString(cmd: TSynEditorMouseCommand): String;
+begin
+  Result := '';
 end;
 
 function KeyValuesToCaptionStr(const ShortcutA, ShortcutB: TIDEShortCut;
@@ -4416,6 +4435,13 @@ initialization
                            @IDECommandToIdent);
   CustomKeySchemas := TStringList.Create;
   CustomKeySchemas.OwnsObjects := true;
+
+  emcIdeMouseCommandOffset := AllocatePluginMouseRange(emcIdeMouseCommandsCount);
+  RegisterMouseCmdIdentProcs(@IdentToIDEMouseCommand,
+                             @IDEMouseCommandToIdent);
+  RegisterExtraGetEditorMouseCommandValues(@GetIdeMouseCommandValues);
+  RegisterMouseCmdNameAndOptProcs(@EditorMouseCommandToDescriptionString,
+                                  @EditorMouseCommandToConfigString);
 
 finalization
   CustomKeySchemas.Free;

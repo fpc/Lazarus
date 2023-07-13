@@ -102,6 +102,8 @@ var
 begin
   i:=0;
   if IdentToSynMouseCmd(S, i) then begin
+    if i = emcOnMainGutterClick then // Now emcToggleBreakPoint;
+      exit;
     s2 := MouseCommandName(i);
     if s2 = '' then s2 := s;
     ActionBox.Items.AddObject(s2, TObject(ptrint(i)));

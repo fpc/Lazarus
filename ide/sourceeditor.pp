@@ -296,6 +296,8 @@ type
     procedure EditorActivateSyncro(Sender: TObject);
     procedure EditorDeactivateSyncro(Sender: TObject);
     procedure EditorChangeUpdating({%H-}ASender: TObject; AnUpdating: Boolean);
+    procedure ToggleBreakpoint(ALine: Integer);
+    procedure ToggleBreakpointEnabled(ALine: Integer);
     function  EditorHandleMouseAction(AnAction: TSynEditMouseAction;
                                       var {%H-}AnInfo: TSynEditMouseActionInfo): Boolean;
     function GetCodeBuffer: TCodeBuffer;
@@ -345,8 +347,6 @@ type
 
     procedure FocusEditor;// called by TSourceNotebook when the Notebook page
                           // changes so the editor is focused
-    procedure OnGutterClick(Sender: TObject; {%H-}X, {%H-}Y, Line: integer;
-         {%H-}Mark: TSynEditMark);
     procedure OnEditorSpecialLineColor(Sender: TObject; Line: integer;
          var Special: boolean; Markup: TSynSelectedColor);
     function RefreshEditorSettings: Boolean;
@@ -4913,54 +4913,6 @@ begin
   ShowHelpOrErrorForSourcePosition(Filename,FEditor.LogicalCaretXY);
 end;
 
-procedure TSourceEditor.OnGutterClick(Sender: TObject; X, Y, Line: integer;
-  Mark: TSynEditMark);
-var
-  Marks: PSourceMark;
-  i, MarkCount: Integer;
-  BreakFound: Boolean;
-  Ctrl: Boolean;
-  ABrkPoint: TIDEBreakPoint;
-  Mrk: TSourceMark;
-begin
-  // create or delete breakpoint
-  // find breakpoint Mark at line
-  Marks := nil;
-  Ctrl := SYNEDIT_LINK_MODIFIER in GetKeyShiftState;
-  try
-    SourceEditorMarks.GetMarksForLine(Self, Line, Marks, MarkCount);
-    BreakFound := False;
-    for i := 0 to MarkCount - 1 do
-    begin
-      Mrk := Marks[i];
-      if Mrk.IsBreakPoint and
-        (Mrk.Data <> nil) and (Mrk.Data is TIDEBreakPoint)
-      then begin
-        BreakFound := True;
-        if Ctrl then
-          TIDEBreakPoint(Mrk.Data).Enabled := not TIDEBreakPoint(Mrk.Data).Enabled
-        else
-          DebugBoss.DoDeleteBreakPointAtMark(Mrk)
-      end;
-    end;
-  finally
-    FreeMem(Marks);
-  end;
-
-  if not BreakFound then begin
-    DebugBoss.LockCommandProcessing;
-    try
-      DebugBoss.DoCreateBreakPoint(Filename, Line, True, ABrkPoint, True);
-      if Ctrl and (ABrkPoint <> nil)
-      then ABrkPoint.Enabled := False;
-    finally
-      if ABrkPoint <> nil then
-        ABrkPoint.EndUpdate;
-      DebugBoss.UnLockCommandProcessing;
-    end;
-  end;
-end;
-
 procedure TSourceEditor.OnEditorSpecialLineColor(Sender: TObject; Line: integer;
   var Special: boolean; Markup: TSynSelectedColor);
 var
@@ -5323,7 +5275,6 @@ Begin
       OnProcessUserCommand := @ProcessUserCommand;
       OnCommandProcessed := @UserCommandProcessed;
       OnReplaceText := @OnReplace;
-      OnGutterClick := @Self.OnGutterClick;
       OnSpecialLineMarkup := @OnEditorSpecialLineColor;
       OnMouseMove := @EditorMouseMoved;
       OnMouseWheel := @EditorMouseWheel;
@@ -5841,24 +5792,77 @@ begin
   end;
 end;
 
+procedure TSourceEditor.ToggleBreakpoint(ALine: Integer);
+var
+  BreakPtMark: TSourceMark;
+begin
+  BreakPtMark := SourceEditorMarks.FindBreakPointMark(Self, ALine);
+  if BreakPtMark = nil then
+    DebugBoss.DoCreateBreakPoint(Filename, ALine, True)
+  else
+    DebugBoss.DoDeleteBreakPointAtMark(BreakPtMark);
+end;
+
+procedure TSourceEditor.ToggleBreakpointEnabled(ALine: Integer);
+var
+  BreakPtMark: TSourceMark;
+  BreakPoint: TIDEBreakPoint;
+begin
+  BreakPtMark := SourceEditorMarks.FindBreakPointMark(Self, ALine);
+  if BreakPtMark = nil then begin
+    DebugBoss.LockCommandProcessing;
+    try
+      DebugBoss.DoCreateBreakPoint(Filename, ALine, True, BreakPoint, True);
+      if BreakPoint <> nil then begin
+        BreakPoint.Enabled := False;
+        BreakPoint.EndUpdate;
+      end;
+    finally
+      DebugBoss.UnLockCommandProcessing;
+    end;
+  end
+  else
+  begin
+    if BreakPtMark.Data <> nil
+    then BreakPoint := TIDEBreakPoint(BreakPtMark.Data)
+    else BreakPoint := DebugBoss.BreakPoints.Find(FileName, ALine);
+    if BreakPoint <> nil then
+      BreakPoint.Enabled := not BreakPoint.Enabled;
+  end;
+end;
+
 function TSourceEditor.EditorHandleMouseAction(AnAction: TSynEditMouseAction;
   var AnInfo: TSynEditMouseActionInfo): Boolean;
 begin
-  Result := AnAction.Command = emcContextMenu;
-  if not Result then exit;
+  Result := True;
 
-  case AnAction.Option2 of
-    1: FMouseActionPopUpMenu := SourceNotebook.DbgPopUpMenu;
-    2: FMouseActionPopUpMenu := SourceNotebook.TabPopUpMenu;
-    else
-      FMouseActionPopUpMenu := PopupMenu;
+  if AnAction.Command = emcContextMenu then begin
+    case AnAction.Option2 of
+      1:   FMouseActionPopUpMenu := SourceNotebook.DbgPopUpMenu;
+      2:   FMouseActionPopUpMenu := SourceNotebook.TabPopUpMenu;
+      else FMouseActionPopUpMenu := PopupMenu;
+    end;
+
+    if (not FInEditorChangedUpdating) and (FMouseActionPopUpMenu <> nil) then begin
+      FMouseActionPopUpMenu.PopupComponent := FEditor;
+      FMouseActionPopUpMenu.PopUp;
+      FMouseActionPopUpMenu := nil;
+    end;
+
+    exit;
   end;
 
-  if (not FInEditorChangedUpdating) and (FMouseActionPopUpMenu <> nil) then begin
-    FMouseActionPopUpMenu.PopupComponent := FEditor;
-    FMouseActionPopUpMenu.PopUp;
-    FMouseActionPopUpMenu := nil;
+  if AnAction.Command = emcToggleBreakPoint then begin
+    ToggleBreakpoint(AnInfo.NewCaret.LinePos);
+    exit;
   end;
+
+  if AnAction.Command = emcToggleBreakPointEnabled then begin
+    ToggleBreakpointEnabled(AnInfo.NewCaret.LinePos);
+    exit;
+  end;
+
+  Result := False;
 end;
 
 procedure TSourceEditor.EditorMouseMoved(Sender: TObject; Shift: TShiftState;
@@ -6560,7 +6564,6 @@ begin
     OnProcessUserCommand := nil;
     OnCommandProcessed := nil;
     OnReplaceText := nil;
-    OnGutterClick := nil;
     OnSpecialLineMarkup := nil;
     OnMouseMove := nil;
     OnMouseWheel := nil;
@@ -8521,19 +8524,11 @@ end;
 procedure TSourceNotebook.ToggleBreakpointClicked(Sender: TObject);
 var
   ASrcEdit: TSourceEditor;
-  Line: LongInt;
-  BreakPtMark: TSourceMark;
 begin
+  // create or delete breakpoint
   ASrcEdit:=GetActiveSE;
   if ASrcEdit=nil then exit;
-  // create or delete breakpoint
-  // find breakpoint mark at line
-  Line:=ASrcEdit.EditorComponent.CaretY;
-  BreakPtMark := SourceEditorMarks.FindBreakPointMark(ASrcEdit, Line);
-  if BreakPtMark = nil then
-    DebugBoss.DoCreateBreakPoint(ASrcEdit.Filename,Line,true)
-  else
-    DebugBoss.DoDeleteBreakPointAtMark(BreakPtMark);
+  ASrcEdit.ToggleBreakpoint(ASrcEdit.EditorComponent.CaretY);
 end;
 
 procedure TSourceNotebook.ToggleBreakpointEnabledClicked(Sender: TObject);
@@ -8545,22 +8540,7 @@ var
 begin
   ASrcEdit:=GetActiveSE;
   if ASrcEdit=nil then exit;
-  // create or delete breakpoint
-  // find breakpoint mark at line
-  Line:=ASrcEdit.EditorComponent.CaretY;
-  BreakPtMark := SourceEditorMarks.FindBreakPointMark(ASrcEdit, Line);
-  if BreakPtMark = nil then begin
-    DebugBoss.DoCreateBreakPoint(ASrcEdit.Filename,Line,true, BreakPoint, True);
-    if BreakPoint <> nil then begin
-      BreakPoint.Enabled := False;
-      BreakPoint.EndUpdate;
-    end;
-  end
-  else
-  begin
-    BreakPoint := DebugBoss.BreakPoints.Find(ASrcEdit.FileName, Line);
-    BreakPoint.Enabled := not BreakPoint.Enabled;
-  end;
+  ASrcEdit.ToggleBreakpointEnabled(ASrcEdit.EditorComponent.CaretY);
 end;
 
 procedure TSourceNotebook.CompleteCodeMenuItemClick(Sender: TObject);

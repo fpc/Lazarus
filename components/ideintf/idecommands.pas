@@ -459,6 +459,17 @@ const
   // TSynPluginSyncroEdit - selecting
   ecIdePSyncroEdSelStart              = ecFirstPlugin +  90;
 
+const
+  // Mouse command offsets
+  emcOffsetToggleBreakPoint        = 0;
+  emcOffsetToggleBreakPointEnabled = 1;
+
+var
+  emcToggleBreakPoint,
+  emcToggleBreakPointEnabled : integer;
+
+const
+  emcIdeMouseCommandsCount = 2;
 
 type
   TIDECommand = class;
@@ -854,6 +865,14 @@ function IdentToIDECommand(const Ident: string; var Cmd: longint): boolean;
 function IDECommandToIdent(Cmd: longint; var Ident: string): boolean;
 function IDECommandToIdent(Cmd: longint): string;
 procedure GetIDEEditorCommandValues(Proc: TGetStrProc);
+
+procedure SetIdeMouseCommandOffset(AStartNum: Integer);
+function  GetIdeMouseCommandOffset: Integer;
+function  IdentToIDEMouseCommand(const Ident: string; var Cmd: longint): boolean;
+function  IDEMouseCommandToIdent(Cmd: longint; var Ident: string): boolean;
+procedure GetIdeMouseCommandValues(Proc: TGetStrProc);
+
+property  emcIdeMouseCommandOffset: integer read GetIdeMouseCommandOffset write SetIdeMouseCommandOffset;
 
 implementation
 
@@ -2350,6 +2369,45 @@ var
 begin
   for i := Low(IDEEditorCommandStrs) to High(IDEEditorCommandStrs) do
     Proc(IDEEditorCommandStrs[I].Name);
+end;
+
+var
+  TheEmcIdeMouseCommandOffset: Integer;
+  IDEEditorMouseCommandStrs: array[0..emcIdeMouseCommandsCount-1] of TIdentMapEntry = (
+    // Initialize with Value = 0 .. emcIdeMouseCommandsCount
+    (Value: emcOffsetToggleBreakPoint;                   Name: 'emcToggleBreakPoint'),
+    (Value: emcOffsetToggleBreakPointEnabled;            Name: 'emcToggleBreakPointEnabled')
+  );
+
+procedure SetIdeMouseCommandOffset(AStartNum: Integer);
+begin
+  TheEmcIdeMouseCommandOffset := AStartNum;
+  emcToggleBreakPoint        := AStartNum + emcOffsetToggleBreakPoint;  // update last
+  emcToggleBreakPointEnabled := AStartNum + emcOffsetToggleBreakPointEnabled;
+end;
+
+function GetIdeMouseCommandOffset: Integer;
+begin
+  Result := TheEmcIdeMouseCommandOffset;
+end;
+
+function IdentToIDEMouseCommand(const Ident: string; var Cmd: longint): boolean;
+begin
+  Result := IdentToInt(Ident, Cmd, IDEEditorMouseCommandStrs);
+  Cmd := Cmd + emcIdeMouseCommandOffset;
+end;
+
+function IDEMouseCommandToIdent(Cmd: longint; var Ident: string): boolean;
+begin
+  Result := IntToIdent(Cmd - emcIdeMouseCommandOffset, Ident, IDEEditorMouseCommandStrs);
+end;
+
+procedure GetIdeMouseCommandValues(Proc: TGetStrProc);
+var
+  i: Integer;
+begin
+  for i := Low(IDEEditorMouseCommandStrs) to High(IDEEditorMouseCommandStrs) do
+    Proc(IDEEditorMouseCommandStrs[I].Name);
 end;
 
 end.
