@@ -516,7 +516,7 @@ const
   = (
       (Name:  dlgFoldPasProcedure;     Xml:     'Procedure';
        Index: ord(cfbtProcedure);    Enabled: True),
-      (Name:  dlgFoldPasProcedure;     Xml:     'AnonynmousProcedure';
+      (Name:  dlgFoldPasAnonProcedure; Xml:     'AnonymousProcedure';
        Index: ord(cfbtAnonynmousProcedure);    Enabled: True),
       (Name:  dlgFoldLocalPasVarType;  Xml:     'LocalVarType';
        Index: ord(cfbtLocalVarType); Enabled: True),
