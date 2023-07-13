@@ -26,6 +26,7 @@ type
 
   TBreakPropertyDlg = class(TDebuggerDlg)
     ButtonPanel: TButtonPanel;
+    chkEnabled: TCheckBox;
     chkTakeSnap: TCheckBox;
     chkLogCallStack: TCheckBox;
     chkEnableGroups: TCheckBox;
@@ -251,6 +252,7 @@ begin
           FBreakpoint.SetWatch(edtFilename.Text, ws, wk);
         end;
     end;
+    FBreakpoint.Enabled := chkEnabled.Checked;
     // expression
     FBreakpoint.Expression := edtCondition.Text;
     // hitcount
@@ -349,6 +351,7 @@ begin
   end;
   // expression
   edtCondition.Text := FBreakpoint.Expression;
+  chkEnabled.Checked := FBreakpoint.Enabled;
   // hitcount
   edtCounter.Text := IntToStr(FBreakpoint.BreakHitCount);
   // auto continue
@@ -428,6 +431,7 @@ begin
         rbReadWrite.Caption := lisWatchKindReadWrite;
       end;
   end;
+  chkEnabled.Caption := lisBPSEnabled;
   lblCondition.Caption := lisCondition + ':';
   lblHitCount.Caption := lisHitCount + ':';
   lblAutoContinue.Caption := lisAutoContinueAfter;
