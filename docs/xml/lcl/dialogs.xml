@@ -4922,13 +4922,23 @@ Causes the current page only to be printed.
 </element>
 
 <element name="TTaskDialogFlag">
-<short>Represents options that can be enabled for TTaskDialog.</short>
+<short>
+Represents options that can be enabled for TTaskDialog.
+</short>
 <descr>
+<p>
 TTaskDialogFlag values are stored in the TTaskDialogFlags type, as used in 
 the TCustomTaskDialog.Flags property.
+</p>
 </descr>
 <version>
+<p>
 Modified in LCL 3.0 to include tfEmulateClassicStyle in the enumeration.
+</p>
+<p>
+Modified in LCL 4.0 to include tfNoSetForeGround and tfSizeToContent in the 
+enumeration.
+</p>
 </version>
 <seealso>
 <link id="TTaskDialogFlags"/>
@@ -5006,6 +5016,17 @@ Form position will be poOwnerFormCenter, instead of poScreenCenter.
 </element>
 <element name="TTaskDialogFlag.tfCanBeMinimized">
 <short>Allow the dialog to be minimized.</short>
+</element>
+<element name="TTaskDialogFlag.tfNoSetForeGround">
+<short>
+Prevents bring the dialog to the foreground when the dialog is activated.
+</short>
+</element>
+<element name="TTaskDialogFlag.tfSizeToContent">
+<short>
+Indicates the width for the dialog is determined by the text in the content 
+area. The flag is ignored if the dialog width is not set to 0 (zero).
+</short>
 </element>
 <element name="TTaskDialogFlag.tfForceNonNative">
 <short>Forces use of an emulated task dialog form.</short>
