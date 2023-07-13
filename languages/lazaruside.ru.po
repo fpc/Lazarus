@@ -5,12 +5,12 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-07-10 17:01+0300\n"
+"PO-Revision-Date: 2023-07-14 02:22+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 2.4.3\n"
 
 #: lazarusidestrconsts.dbgeventbreakaddressbreakpoint
 #, object-pascal-format
@@ -1933,6 +1933,10 @@ msgstr "Объект (унаследованный, вложенный)"
 msgctxt "lazarusidestrconsts.dlgfoldlocalpasvartype"
 msgid "Var/Type (local)"
 msgstr "Секции Var/Type (локальные)"
+
+#: lazarusidestrconsts.dlgfoldpasanonprocedure
+msgid "Anonymous Procedure"
+msgstr "Анонимная процедура"
 
 #: lazarusidestrconsts.dlgfoldpasansicomment
 msgid "Comment (* *)"
@@ -20603,6 +20607,10 @@ msgstr "Переключить видимость выделенного"
 #: lazarusidestrconsts.srkmecblockunindent
 msgid "Unindent block"
 msgstr "Уменьшить отступ выделенного"
+
+#: lazarusidestrconsts.srkmecbreakpointproperties
+msgid "show breakpoint properties"
+msgstr "Показать параметры точки останова"
 
 #: lazarusidestrconsts.srkmecbuild
 msgid "build program/project"

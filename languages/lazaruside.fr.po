@@ -1949,6 +1949,10 @@ msgctxt "lazarusidestrconsts.dlgfoldlocalpasvartype"
 msgid "Var/Type (local)"
 msgstr "Var/Type (local)"
 
+#: lazarusidestrconsts.dlgfoldpasanonprocedure
+msgid "Anonymous Procedure"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfoldpasansicomment
 msgid "Comment (* *)"
 msgstr "Commentaire (* *)"
@@ -20672,6 +20676,10 @@ msgstr "Inverser le bloc"
 #: lazarusidestrconsts.srkmecblockunindent
 msgid "Unindent block"
 msgstr "Désindenter le bloc"
+
+#: lazarusidestrconsts.srkmecbreakpointproperties
+msgid "show breakpoint properties"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecbuild
 msgid "build program/project"

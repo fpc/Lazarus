@@ -1957,6 +1957,10 @@ msgctxt "lazarusidestrconsts.dlgfoldlocalpasvartype"
 msgid "Var/Type (local)"
 msgstr "值/类型(局部)(Var/Type (local))"
 
+#: lazarusidestrconsts.dlgfoldpasanonprocedure
+msgid "Anonymous Procedure"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfoldpasansicomment
 msgid "Comment (* *)"
 msgstr "注释(**)"
@@ -20711,6 +20715,10 @@ msgstr "切换语句块"
 #: lazarusidestrconsts.srkmecblockunindent
 msgid "Unindent block"
 msgstr "不缩进语句块"
+
+#: lazarusidestrconsts.srkmecbreakpointproperties
+msgid "show breakpoint properties"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecbuild
 msgid "build program/project"

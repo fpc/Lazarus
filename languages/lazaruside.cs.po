@@ -1961,6 +1961,10 @@ msgctxt "lazarusidestrconsts.dlgfoldlocalpasvartype"
 msgid "Var/Type (local)"
 msgstr "Var/Type (místní)"
 
+#: lazarusidestrconsts.dlgfoldpasanonprocedure
+msgid "Anonymous Procedure"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfoldpasansicomment
 msgid "Comment (* *)"
 msgstr "Komentář (* *)"
@@ -20752,6 +20756,10 @@ msgstr "Přepnout blok"
 #: lazarusidestrconsts.srkmecblockunindent
 msgid "Unindent block"
 msgstr "Vrátit odsazení bloku"
+
+#: lazarusidestrconsts.srkmecbreakpointproperties
+msgid "show breakpoint properties"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecbuild
 msgid "build program/project"

@@ -1920,6 +1920,10 @@ msgctxt "lazarusidestrconsts.dlgfoldlocalpasvartype"
 msgid "Var/Type (local)"
 msgstr "Var/Type (paikallinen)"
 
+#: lazarusidestrconsts.dlgfoldpasanonprocedure
+msgid "Anonymous Procedure"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfoldpasansicomment
 msgid "Comment (* *)"
 msgstr "Kommentti (* *)"
@@ -20553,6 +20557,10 @@ msgstr "Vaihda lohko"
 #: lazarusidestrconsts.srkmecblockunindent
 msgid "Unindent block"
 msgstr "Poista lohkon sisennys"
+
+#: lazarusidestrconsts.srkmecbreakpointproperties
+msgid "show breakpoint properties"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecbuild
 msgid "build program/project"

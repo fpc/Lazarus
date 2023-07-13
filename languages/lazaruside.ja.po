@@ -1993,6 +1993,10 @@ msgctxt "lazarusidestrconsts.dlgfoldlocalpasvartype"
 msgid "Var/Type (local)"
 msgstr "Var/Type (ローカル)"
 
+#: lazarusidestrconsts.dlgfoldpasanonprocedure
+msgid "Anonymous Procedure"
+msgstr ""
+
 #: lazarusidestrconsts.dlgfoldpasansicomment
 msgid "Comment (* *)"
 msgstr "コメント　(* *)"
@@ -20913,6 +20917,10 @@ msgstr "ブロックをトグル"
 #: lazarusidestrconsts.srkmecblockunindent
 msgid "Unindent block"
 msgstr "ブロックのインデントを戻す"
+
+#: lazarusidestrconsts.srkmecbreakpointproperties
+msgid "show breakpoint properties"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecbuild
 msgid "build program/project"
