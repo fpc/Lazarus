@@ -879,6 +879,7 @@ function GetEnclosedControls(const ARect: TAnchorControlsRect): TFPList;
 implementation
 
 const
+  IconsFont = 'Segoe MDL2 Assets';
   TestTxt = 'ABCXYZ123gqj';
   FlatPinnedSym = #$EE#$A1#$80{E840};//pinned
   FlatCrossSym = #$EE#$9C#$91{E711};//cross
@@ -6546,7 +6547,7 @@ begin
       AStyle.ShowPrefix:=True;
       rect:=btn.ClientRect;
       InflateRect(rect,-1,-1);
-      btn.Canvas.Font.Name:='Segoe MDL2 Assets';
+      btn.Canvas.Font.Name:=IconsFont;
       if sender is TAnchorDockMinimizeButton then begin
         txt:=FlatPinnedSym
       end else
@@ -6740,7 +6741,7 @@ begin
     R := Rect(0, 0, 10000, 10000);
     DrawText(LCanvas.Handle, PChar(TestTxt), Length(TestTxt), R, Flags);
     PreferredWidth := R.Bottom - R.Top;
-    LCanvas.Font.Name := 'Segoe MDL2 Assets';
+    LCanvas.Font.Name := IconsFont;
     R := Rect(0, 0, 10000, 10000);
     DrawText(LCanvas.Handle, PChar(TestTxt2), Length(TestTxt2), R, Flags);
     PreferredWidth := max(R.Bottom - R.Top, PreferredWidth);
@@ -6879,7 +6880,7 @@ begin
       CloseButton.AnchorSide[akTop].Side := asrTop;
       CloseButton.AnchorSide[akTop].Control := Self;
       CloseButton.Anchors := [akTop,akLeft];
-       if MinimizeButton<>nil then begin
+      if MinimizeButton<>nil then begin
         MinimizeButton.AnchorSide[akLeft].Side := asrCenter;
         MinimizeButton.AnchorSide[akLeft].Control := Self;
         MinimizeButton.AnchorSide[akTop].Side := asrBottom;
