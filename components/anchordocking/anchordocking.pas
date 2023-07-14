@@ -844,8 +844,11 @@ type
 var
   DockMaster: TAnchorDockMaster = nil;
 
-  PreferredButtonWidth:integer = -1;
-  PreferredButtonHeight:integer = -1;
+  PreferredButtonWidth: Integer = -1;
+  PreferredButtonHeight: Integer = -1;
+  HardcodedButtonSize: Integer = 13;
+  ButtonBorderSpacingAround: Integer = 2;
+
 
 function dbgs(SiteType: TAnchorDockHostSiteType): string; overload;
 
@@ -876,8 +879,6 @@ function GetEnclosedControls(const ARect: TAnchorControlsRect): TFPList;
 implementation
 
 const
-  HardcodedButtonSize:integer = 13;
-  ButtonBorderSpacingAround = 2;
   TestTxt = 'ABCXYZ123gqj';
   FlatPinnedSym = #$EE#$A1#$80{E840};//pinned
   FlatCrossSym = #$EE#$9C#$91{E711};//cross
