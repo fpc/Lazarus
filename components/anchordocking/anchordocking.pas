@@ -119,37 +119,6 @@ uses
 const ADAutoSizingReason = 'TAnchorDockMaster Delayed';
 {$ENDIF}
 
-const EmptyMouseTimeStartX=low(Integer);
-      MouseNoMoveDelta=5;
-      MouseNoMoveTime=500;
-      HideOverlappingFormByMouseLoseTime=500;
-      ButtonBorderSpacingAround=4;
-      OppositeAnchorKind2Align: array[TAnchorKind] of TAlign = (
-        alBottom, // akTop,
-        alRight,  // akLeft,
-        alLeft,   // akRight,
-        alTop     // akBottom
-        );
-      OppositeAnchorKind: array[TAnchorKind] of TAnchorKind = (
-        akBottom, // akTop,
-        akRight,  // akLeft,
-        akLeft,   // akRight,
-        akTop     // akBottom
-        );
-      {AnchorKind2Align: array[TAnchorKind] of TAlign = (
-        alTop,  // akTop,
-        alLeft, // akLeft,
-        alRight,// akRight,
-        alBottom// akBottom
-        );}
-      OppositeAnchorKind2TADLHeaderPosition: array[TAnchorKind] of TADLHeaderPosition = (
-        adlhpBottom, // akTop,
-        adlhpRight,  // akLeft,
-        adlhpLeft,   // akRight,
-        adlhpTop     // akBottom
-        );
-
-
 type
   TAnchorDockHostSite = class;
 
@@ -874,14 +843,12 @@ type
 
 var
   DockMaster: TAnchorDockMaster = nil;
-  DockTimer: TTimer = nil;
 
-  PreferredButtonWidth:integer=-1;
-  PreferredButtonHeight:integer=-1;
+  PreferredButtonWidth: Integer = -1;
+  PreferredButtonHeight: Integer = -1;
+  HardcodedButtonSize: Integer = 13;
+  ButtonBorderSpacingAround: Integer = 2;
 
-
-const
-  HardcodedButtonSize:integer=13;
 
 function dbgs(SiteType: TAnchorDockHostSiteType): string; overload;
 
@@ -910,6 +877,44 @@ function GetEnclosingControlRect(ControlList: TFPlist;
 function GetEnclosedControls(const ARect: TAnchorControlsRect): TFPList;
 
 implementation
+
+const
+  IconsFont = 'Segoe MDL2 Assets';
+  TestTxt = 'ABCXYZ123gqj';
+  FlatPinnedSym = #$EE#$A1#$80{E840};//pinned
+  FlatCrossSym = #$EE#$9C#$91{E711};//cross
+  EmptyMouseTimeStartX = low(Integer);
+  MouseNoMoveDelta = 5;
+  MouseNoMoveTime = 500;
+  HideOverlappingFormByMouseLoseTime = 500;
+  OppositeAnchorKind2Align: array[TAnchorKind] of TAlign = (
+    alBottom, // akTop,
+    alRight,  // akLeft,
+    alLeft,   // akRight,
+    alTop     // akBottom
+    );
+  OppositeAnchorKind: array[TAnchorKind] of TAnchorKind = (
+    akBottom, // akTop,
+    akRight,  // akLeft,
+    akLeft,   // akRight,
+    akTop     // akBottom
+    );
+  {AnchorKind2Align: array[TAnchorKind] of TAlign = (
+    alTop,  // akTop,
+    alLeft, // akLeft,
+    alRight,// akRight,
+    alBottom// akBottom
+    );}
+  OppositeAnchorKind2TADLHeaderPosition: array[TAnchorKind] of TADLHeaderPosition = (
+    adlhpBottom, // akTop,
+    adlhpRight,  // akLeft,
+    adlhpLeft,   // akRight,
+    adlhpTop     // akBottom
+    );
+
+
+var
+  DockTimer: TTimer = nil;
 
 function dbgs(SiteType: TAnchorDockHostSiteType): string; overload;
 begin
@@ -2921,8 +2926,8 @@ procedure TAnchorDockMaster.SetFlatHeadersButtons(AValue: boolean);
 begin
   if FFlatHeadersButtons=AValue then Exit;
   FFlatHeadersButtons:=AValue;
+  AutoSizeAllHeaders(True);
   InvalidateHeaders;
-  EnableAllAutoSizing;
   OptionsChanged;
 end;
 
@@ -3098,7 +3103,16 @@ begin
     if not (Site is TAnchorDockHostSite) then continue;
     if (Site.Header<>nil) and (Site.Header.Parent<>nil) then begin
       Site.Header.InvalidatePreferredSize;
-      DisableControlAutoSizing(Site);
+      DisableControlAutoSizing(Site.Header);
+      if Site.Header.CloseButton<>nil then begin
+        Site.Header.CloseButton.InvalidatePreferredSize;
+        DisableControlAutoSizing(Site.Header.CloseButton);
+      end;
+      if Site.Header.MinimizeButton<>nil then begin
+        Site.Header.MinimizeButton.InvalidatePreferredSize;
+        DisableControlAutoSizing(Site.Header.MinimizeButton);
+      end;
+      Site.Header.AdjustSize;
     end;
   end;
   if EnableAutoSizing then
@@ -6311,6 +6325,7 @@ begin
     Header.Parent:=Self;
     Header.MinimizeButton.Visible:=(DockMaster.DockSitesCanBeMinimized and CanBeMinimized(Splitter,SplitterAnchorKind))or Minimized;
     Header.MinimizeButton.Parent:=Header;
+    Header.DoAutoSize;
   end
   else
     Header.Parent:=nil;
@@ -6532,12 +6547,11 @@ begin
       AStyle.ShowPrefix:=True;
       rect:=btn.ClientRect;
       InflateRect(rect,-1,-1);
-      btn.Canvas.Font.Name:='Segoe MDL2 Assets';
+      btn.Canvas.Font.Name:=IconsFont;
       if sender is TAnchorDockMinimizeButton then begin
-        //txt:=#$EE#$9C#$98{E718};//Pin
-        txt:=#$EE#$A1#$80{E840};//pinned
+        txt:=FlatPinnedSym
       end else
-        txt:=#$EE#$9C#$91{E711};//cross
+        txt:=FlatCrossSym;
       btn.Canvas.TextRect(rect, rect.TopLeft.X, rect.TopLeft.Y,txt,AStyle);
     finally
     end;
@@ -6711,16 +6725,41 @@ begin
   draw(DockMaster.CurrentADHeaderStyle);
 end;
 
+procedure CalculatePreferredFlatButtonSize(Handle: HWND; out PreferredWidth,
+  PreferredHeight: integer);
+const
+  TestTxt2 = FlatPinnedSym+FlatCrossSym;
+var
+  LCanvas: TCanvas;
+  R: TRect;
+  Flags: cardinal;
+begin
+  LCanvas:= TCanvas.Create;
+  try
+    LCanvas.Handle := GetDC(Handle);
+    Flags := DT_CALCRECT or DT_EXPANDTABS or DT_SINGLELINE or DT_NOPREFIX;
+    R := Rect(0, 0, 10000, 10000);
+    DrawText(LCanvas.Handle, PChar(TestTxt), Length(TestTxt), R, Flags);
+    PreferredWidth := R.Bottom - R.Top;
+    LCanvas.Font.Name := IconsFont;
+    R := Rect(0, 0, 10000, 10000);
+    DrawText(LCanvas.Handle, PChar(TestTxt2), Length(TestTxt2), R, Flags);
+    PreferredWidth := max(R.Bottom - R.Top, PreferredWidth);
+    PreferredHeight:=PreferredWidth;
+  finally
+    LCanvas.Handle:= 0;
+    LCanvas.Free;
+  end;
+end;
+
 procedure TAnchorDockHeader.CalculatePreferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
-const
-  TestTxt = 'ABCXYZ123gqj';
 var
   DC: HDC;
   R: TRect;
   OldFont: HGDIOBJ;
   Flags: cardinal;
-  NeededHeight: Integer;
+  NeededWidth,NeededHeight: Integer;
 begin
   inherited CalculatePreferredSize(PreferredWidth,PreferredHeight,WithThemeSpace);
   if Caption<>'' then begin
@@ -6748,6 +6787,11 @@ begin
     end else begin
       PreferredHeight:=Max(NeededHeight,PreferredHeight);
   end;
+  end;
+  if DockMaster.FlatHeadersButtons then begin
+    CalculatePreferredFlatButtonSize(Handle, NeededWidth, NeededHeight);
+    PreferredWidth:=Max(PreferredWidth, NeededWidth+2*ButtonBorderSpacingAround);
+    PreferredHeight:=Max(PreferredHeight, NeededHeight+2*ButtonBorderSpacingAround);
   end;
 end;
 
@@ -6827,41 +6871,42 @@ end;
 
 procedure TAnchorDockHeader.UpdateHeaderControls;
 begin
-  if Align in [alLeft,alRight] then begin
-    if CloseButton<>nil then begin
+  if CloseButton<>nil then begin
+    if Align in [alLeft,alRight] then begin
       //MinimizeButton.Align:=alTop;
       //CloseButton.Align:=alTop;
       CloseButton.AnchorSide[akLeft].Side := asrCenter;
       CloseButton.AnchorSide[akLeft].Control := Self;
       CloseButton.AnchorSide[akTop].Side := asrTop;
       CloseButton.AnchorSide[akTop].Control := Self;
-      CloseButton.Anchors := [akTop] + [akLeft];
-
-      MinimizeButton.AnchorSide[akLeft].Side := asrCenter;
-      MinimizeButton.AnchorSide[akLeft].Control := Self;
-      MinimizeButton.AnchorSide[akTop].Side := asrBottom;
-      MinimizeButton.AnchorSide[akTop].Control := CloseButton;
-      MinimizeButton.Anchors := [akTop] + [akLeft];
-    end;
-  end else begin
-    if CloseButton<>nil then begin
+      CloseButton.Anchors := [akTop,akLeft];
+      if MinimizeButton<>nil then begin
+        MinimizeButton.AnchorSide[akLeft].Side := asrCenter;
+        MinimizeButton.AnchorSide[akLeft].Control := Self;
+        MinimizeButton.AnchorSide[akTop].Side := asrBottom;
+        MinimizeButton.AnchorSide[akTop].Control := CloseButton;
+        MinimizeButton.Anchors := [akTop,akLeft];
+        MinimizeButton.BorderSpacing.Around:=ButtonBorderSpacingAround;
+      end;
+    end else begin
       //MinimizeButton.Align:=alRight;
       //CloseButton.Align:=alRight;
       CloseButton.AnchorSide[akRight].Side := asrRight;
       CloseButton.AnchorSide[akRight].Control := Self;
       CloseButton.AnchorSide[akTop].Side := asrCenter;
       CloseButton.AnchorSide[akTop].Control := Self;
-      CloseButton.Anchors := [akTop] + [akRight];
-
-      MinimizeButton.AnchorSide[akRight].Side := asrLeft;
-      MinimizeButton.AnchorSide[akRight].Control := CloseButton;
-      MinimizeButton.AnchorSide[akTop].Side := asrCenter;
-      MinimizeButton.AnchorSide[akTop].Control := Self;
-      MinimizeButton.Anchors := [akTop] + [akRight];
+      CloseButton.Anchors := [akTop,akRight];
+      if MinimizeButton<>nil then begin
+        MinimizeButton.AnchorSide[akRight].Side := asrLeft;
+        MinimizeButton.AnchorSide[akRight].Control := CloseButton;
+        MinimizeButton.AnchorSide[akTop].Side := asrCenter;
+        MinimizeButton.AnchorSide[akTop].Control := Self;
+        MinimizeButton.Anchors := [akTop,akRight];
+        MinimizeButton.BorderSpacing.Around:=ButtonBorderSpacingAround;
+      end;
     end;
+    CloseButton.BorderSpacing.Around:=ButtonBorderSpacingAround;
   end;
-  CloseButton.BorderSpacing.Around:=ButtonBorderSpacingAround;
-  MinimizeButton.BorderSpacing.Around:=ButtonBorderSpacingAround;
   //debugln(['TAnchorDockHeader.UpdateHeaderControls ',dbgs(Align),' ',dbgs(CloseButton.Align)]);
 end;
 
@@ -6993,18 +7038,21 @@ end;
 procedure TAnchorDockCloseButton.CalculatePreferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
-  with ThemeServices.GetDetailSizeForPPI(ThemeServices.GetElementDetails(
-      {$IFDEF LCLWIN32}twCloseButtonNormal{$ELSE}twSmallCloseButtonNormal{$ENDIF}),
-      Font.PixelsPerInch) do
-  begin
-    PreferredWidth:=cx;
-    PreferredHeight:=cy;
-    ButtonSizeCorrector(PreferredWidth,PreferredHeight);
-    {$IF defined(LCLGtk2) or defined(Carbon)}
-    inc(PreferredWidth,2);
-    inc(PreferredHeight,2);
-    {$ENDIF}
-  end;
+  if not DockMaster.FlatHeadersButtons then
+    with ThemeServices.GetDetailSizeForPPI(ThemeServices.GetElementDetails(
+        {$IFDEF LCLWIN32}twCloseButtonNormal{$ELSE}twSmallCloseButtonNormal{$ENDIF}),
+        Font.PixelsPerInch) do
+    begin
+      PreferredWidth:=cx;
+      PreferredHeight:=cy;
+      ButtonSizeCorrector(PreferredWidth,PreferredHeight);
+      {$IF defined(LCLGtk2) or defined(Carbon)}
+      inc(PreferredWidth,2);
+      inc(PreferredHeight,2);
+      {$ENDIF}
+    end
+  else
+    CalculatePreferredFlatButtonSize(Parent.Handle, PreferredWidth,PreferredHeight);
 end;
 
 { TAnchorDockMinimizeButton }
@@ -7037,18 +7085,21 @@ end;
 procedure TAnchorDockMinimizeButton.CalculatePreferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
-  with ThemeServices.GetDetailSizeForPPI(ThemeServices.GetElementDetails(
-      {$IFDEF LCLGtk2}twMDIRestoreButtonNormal{$ELSE}twMinButtonNormal{$ENDIF}),
-      Font.PixelsPerInch) do
-  begin
-    PreferredWidth:=cx;
-    PreferredHeight:=cy;
-    ButtonSizeCorrector(PreferredWidth,PreferredHeight);
-    {$IF defined(LCLGtk2) or defined(Carbon)}
-    inc(PreferredWidth,2);
-    inc(PreferredHeight,2);
-    {$ENDIF}
-  end;
+  if not DockMaster.FlatHeadersButtons then
+    with ThemeServices.GetDetailSizeForPPI(ThemeServices.GetElementDetails(
+        {$IFDEF LCLGtk2}twMDIRestoreButtonNormal{$ELSE}twMinButtonNormal{$ENDIF}),
+        Font.PixelsPerInch) do
+    begin
+      PreferredWidth:=cx;
+      PreferredHeight:=cy;
+      ButtonSizeCorrector(PreferredWidth,PreferredHeight);
+      {$IF defined(LCLGtk2) or defined(Carbon)}
+      inc(PreferredWidth,2);
+      inc(PreferredHeight,2);
+      {$ENDIF}
+    end
+  else
+    CalculatePreferredFlatButtonSize(Parent.Handle, PreferredWidth,PreferredHeight);
 end;
 
 { TAnchorDockManager }
