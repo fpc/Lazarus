@@ -39,16 +39,15 @@ uses
 var
   LazarusDir: String;
 
-function FindLPK(Dir,MainSrc: string; out HasConditionals: boolean): string;
+function FindLPK(Dir, MainSrc: string; out HasConditionals: boolean): string;
 var
   FileInfo: TSearchRec;
   LPK: TXMLConfig;
   i: Integer;
-  Path: String;
-  FileType: String;
-  CurFilename: String;
-  Fits: Boolean;
+  Path, FileType, CurFilename, SubPath: String;
+  Fits, LegacyList: Boolean;
   LPKFilename: TFilename;
+  FileVersion, Count: Integer;
 begin
   Result:='';
   Dir:=AppendPathDelim(Dir);
@@ -62,12 +61,16 @@ begin
         Fits:=false;
         if sysutils.CompareText(ExtractFileNameOnly(FileInfo.Name),ExtractFileNameOnly(MainSrc))=0 then
           Fits:=true;
+        FileVersion:=LPK.GetValue('Package/Version',integer(0));
         //writeln('FindLPK ',LPKFilename);
-        for i:=1 to LPK.GetValue('Package/Files/Count',0) do begin
-          Path:='Package/Files/Item'+IntToStr(i)+'/';
-          FileType:=LPK.GetValue(Path+'Type/Value','');
+        Path:='Package/Files/';
+        LegacyList := (FileVersion<=4) or LPK.IsLegacyList(Path);
+        Count:=LPK.GetListItemCount(Path, 'Item', LegacyList);
+        for i:=0 to Count-1 do begin
+          SubPath := Path+LPK.GetListItemXPath('Item', i, LegacyList, True)+'/';
+          FileType:=LPK.GetValue(SubPath+'Type/Value','');
           if FileType='' then continue;
-          CurFilename:=LPK.GetValue(Path+'Filename/Value','');
+          CurFilename:=SetDirSeparators(LPK.GetValue(SubPath+'Filename/Value',''));
           //writeln('FindLPK ',CurFilename,' ',FileType);
           if FileType='Main Unit' then begin
             //writeln('FindLPK MainUnit=',CurFilename);

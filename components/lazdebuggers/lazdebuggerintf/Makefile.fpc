@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for LazDebuggerIntf 0.0.1
 #
-#   This file was generated on 08/01/2022
+#   This file was generated on 14-7-23
 
 [package]
 name=lazdebuggerintf
@@ -56,7 +56,7 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/lazdebuggerintfpackage$(PPUEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/LazDebuggerIntf.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/lazdebuggerintf.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) lazdebuggerintfpackage$(PPUEXT) compiled
 

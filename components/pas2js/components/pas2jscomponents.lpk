@@ -9,7 +9,7 @@
       <SearchPaths>
         <IncludeFiles Value="stubs"/>
         <OtherUnitFiles Value="stubs"/>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
       </SearchPaths>
     </CompilerOptions>
     <Description Value="(Non-visual) Design-time components for Pas2js projects."/>

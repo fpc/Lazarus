@@ -97,16 +97,16 @@ DEFAULT_IDE_OPTIONS= $(LAZARUS_LIBPATHS) \
   -Fu../components/lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/lazcontrols/design/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) \
-  -Fu../components/lazdebuggers/cmdlinedebuggerbase/lib/$(CPU_TARGET)-$(OS_TARGET) \
+  -Fu../components/lazdebuggers/cmdlinedebuggerbase/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/lazdebuggergdbmi/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/lclextensions/lib/$(CPU_TARGET)-$(OS_TARGET)-$(LCL_PLATFORM) \
   -Fu../components/virtualtreeview/lib/$(CPU_TARGET)-$(OS_TARGET)-$(LCL_PLATFORM) \
   -Fu../components/fpdebug/lib/$(CPU_TARGET)-$(OS_TARGET) \
-  -Fu../components/lazdebuggers/lazdebuggerfp/lib/$(CPU_TARGET)-$(OS_TARGET) \
-  -Fu../components/lazdebuggers/lazdebuggerlldb/lib/$(CPU_TARGET)-$(OS_TARGET) \
-  -Fu../components/lazdebuggers/lazdebuggerfplldb/lib/$(CPU_TARGET)-$(OS_TARGET) \
-  -Fupackages/ideconfig/lib/$(CPU_TARGET)-$(OS_TARGET) \
-  -Fupackages/idedebugger/lib/$(CPU_TARGET)-$(OS_TARGET)
+  -Fu../components/lazdebuggers/lazdebuggerfp/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+  -Fu../components/lazdebuggers/lazdebuggerlldb/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+  -Fu../components/lazdebuggers/lazdebuggerfplldb/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+  -Fupackages/ideconfig/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+  -Fupackages/idedebugger/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
 
 #
 # Options to compile an IDE with a lot of packages
@@ -144,9 +144,7 @@ BIG_IDE_OPTIONS=-dBigIDE $(DEFAULT_IDE_OPTIONS) \
   -Fu../components/pas2js/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/exampleswindow/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/charactermap/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
-  -Fu../components/charactermap/design/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
-  -Fupackages/ideconfig/lib/$(CPU_TARGET)-$(OS_TARGET) \
-  -Fupackages/idedebugger/lib/$(CPU_TARGET)-$(OS_TARGET)
+  -Fu../components/charactermap/design/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
 
 #
 # Options for compiling lazbuild

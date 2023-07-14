@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <PathDelim Value="\"/>
     <Name Value="LazDebuggerLldb"/>
     <Type Value="RunAndDesignTime"/>
@@ -9,7 +9,7 @@
       <Version Value="11"/>
       <PathDelim Value="\"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
       </SearchPaths>
       <Other>
         <CustomOptions Value="$(IDEBuildOptions)"/>
@@ -50,6 +50,7 @@ This package allows the IDE to provide debugging by using lldb as external back-
         <UnitName Value="LldbHelper"/>
       </Item3>
     </Files>
+    <CompatibilityMode Value="True"/>
     <RequiredPkgs Count="3">
       <Item1>
         <PackageName Value="CmdLineDebuggerBase"/>
