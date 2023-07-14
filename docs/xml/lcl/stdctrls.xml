@@ -10027,12 +10027,6 @@ mechanism.
 </element>
 
 <!-- protected -->
-<element name="TButtonControl.FSkipOnChangeOnClick">
-<short>
-Member used to suppress calls to OnClicked in TCustomCheckBox.
-</short>
-</element>
-
 <element name="TButtonControl.WMDefaultClicked">
 <short>Implements the default handler for the LM_CLICKED message.</short>
 </element>
@@ -10099,16 +10093,17 @@ Performs actions needed when a click message is handled for the control.
 </short>
 <descr>
 <p>
-<var>Click</var> is an overridden method in <var>TButtonControl</var>. It 
-ensures that an OnChange notification occurs when needed. Click calls the 
-<var>DoOnChange</var> method which signals the <var>OnEditingDone</var> and 
-<var>OnChange</var> event handlers (when assigned).
+<var>Click</var> is an overridden method in <var>TButtonControl</var>. Click 
+calls the <var>DoOnChange</var> method which signals the 
+<var>OnEditingDone</var> and <var>OnChange</var> event handlers (when 
+assigned).
 </p>
 <p>
 Click calls the inherited method prior to exit. The inherited method (in 
-TControl) signals either the OnClick handler for the control or the OnExecute 
-handler in the Action. OnClick is used when Action has not been assigned, or when OnClick contains a handler routine that differs from the one assigned to 
-the OnExecute handler in the Action.
+TControl) signals either the OnClick event handler or the OnExecute handler 
+in the Action. OnClick is used when Action has not been assigned, or when 
+OnClick contains a handler routine that differs from the one assigned to the 
+OnExecute handler in the Action.
 </p>
 <p>
 Click can be called in two different usage scenarios. If standard click 
@@ -10119,19 +10114,10 @@ ControlStyle. This avoids duplicate click notifications when csClickEvents
 is enabled in ControlStyle and Click is handled when the WMLButtonUp method 
 is executed.
 </p>
-<p>
-Click is overridden and re-implemented in the TCustomCheckBox descendent to 
-provide support for Delphi VCL-compatible OnClick notifications.
-</p>
 </descr>
-<version>
-Modified in LCL 3.0 to support Delphi VCL-compatible OnClick notifications.
-</version>
 <seealso>
 <link id="TButtonControl.DoOnChange"/>
 <link id="TButtonControl.OnChange"/>
-<link id="TCustomCheckBox.Click"/>
-<link id="TCustomCheckBox.VCL_OnClick_Emulation"/>
 <link id="#lcl.controls.TControl.Click">TControl.Click</link>
 <link id="#lcl.controls.TControl.Action">TControl.Action</link>
 <link id="#lcl.controls.TControl.OnEditingDone">TControl.OnEditingDone</link>
@@ -11357,52 +11343,37 @@ handler. Use <var>ClicksDisabled</var> is control the event handler signalled.
 <descr>
 <p>
 <var>Click</var> is an overridden method in <var>TCustomCheckBox</var>. It 
-performs actions needed when a mouse click or its keyboard equivalent occurs 
-for the control.
+performs actions needed when the value in the Checked or State property is 
+changed for the control, whether by mouse click or setting the value in 
+program code.
 </p>
 <p>
 TCustomCheckBox re-implements the method from the TButtonControl ancestor to 
-provide support for OnClick event notifications. The VCL_OnClick_Emulation 
-class variable determines whether Delphi VCL-compatible OnClick event 
-notifications are used. No actions are performed in the method when 
-VCL_OnClick_Emulation is set to <b>True</b>. The OnClick event is signalled  
-when the LM_CLICKED message is applied in the ancestor class 
-(TButtonControl).
+ignore the mouse click event. It has an empty implementation, and does not call the inherited method.
 </p>
 <p>
-See VCL_OnClick_Emulation for more information about Delphi VCL-compatible 
-OnClick event notifications.
+In TCustomCheckBox, the click action may be handled in two different ways. 
+The action may be performed (in TControl) when the left mouse button is 
+released and standard click events are enabled in ControlStyle. The click 
+action may be performed in DoClickOnChange (by calling the inherited Click 
+method) when the value in State is changed and ClicksDisabled is <b>False</b>.
 </p>
 <p>
-When VCL_OnClick_Emulation is <b>False</b>, the inherited Click method (in 
-TButtonControl) is called to perform the actions needed. This includes 
-signalling the OnChange event handler (when assigned and not already 
-performed), and executing the OnClick handler in the control or the OnExecute 
-handler from an assigned Action.
-</p>
-<p>
-Use the OnChange event handler to perform any actions needed when a new value 
-is assigned to the State (or Checked) property.
-</p>
-<p>
-Use the OnClick event handler to perform any actions needed when mouse is clicked on the control.
+This avoids a duplicate click notification when csClickEvents is enabled in 
+ControlStyle and Click is handled when the WMLButtonUp method is executed, or 
+when the click is triggered by an associated Action.
 </p>
 </descr>
-<version>
-Modified in LCL 3.0 to support Delphi VCL-compatible OnClick notifications.
-</version>
 <seealso>
-<link id="TCustomCheckBox.VCL_OnClick_Emulation"/>
 <link id="TCustomCheckBox.State"/>
-<link id="TCustomCheckBox.OnChange"/>
 <link id="TCustomCheckBox.DoClickOnChange"/>
 <link id="TButtonControl.Checked"/>
 <link id="TButtonControl.ClicksDisabled"/>
 <link id="#lcl.controls.TControl.Click">TControl.Click</link>
-<link id="#lcl.controls.TControl.OnClick">TControl.OnClick</link>
 <link id="#lcl.controls.TControl.Action">TControl.Action</link>
 <link id="#lcl.controls.TControl.ControlState">TControl.ControlState</link>
 <link id="#lcl.controls.TControl.ControlStyle">TControl.ControlStyle</link>
+<link id="#lcl.controls.TControl.WMLButtonUp">TControl.WMLButtonUp</link>
 </seealso>
 </element>
 
@@ -11648,142 +11619,6 @@ TextChanged calls the inherited method prior to exit.
 <element name="TCustomCheckBox.CreateParams" link="#lcl.controls.TWinControl.CreateParams"/>
 <element name="TCustomCheckBox.CreateParams.Params">
 <short>Creation parameters updated in the method.</short>
-</element>
-
-<element name="TCustomCheckBox.VCL_OnClick_Emulation">
-<short>
-Indicates whether the OnClick behavior used in the Delphi VCL is enabled for 
-the control.
-</short>
-<descr>
-<p>
-<var>VCL_OnClick_Emulation</var> is a class variable which indicates whether 
-the OnClick event is signalled using the behavior implemented in the Delphi 
-VCL.
-</p>
-<p>
-For check box-style controls, there are two events of particular 
-significance: OnChange and OnClick.
-</p>
-<p>
-In the LCL (Lazarus Component Library), these events are separate and 
-distinct. OnChange occurs when the value in either the State or the Checked 
-property is changed to a new value. This can result from assignment in 
-program code, by clicking the mouse, or using a keyboard equivalent which 
-causes the property to be updated. OnClick occurs only when the mouse or 
-keyboard is used to interact with the control.
-</p>
-<p>
-In the Delphi VCL, the OnChange event does not exist. The OnClick handler is 
-signalled when the value in State is changed and when the control is clicked. 
-This class member allows use of Delphi handling for OnClick when the 
-application has not accounted for the difference between the events and their 
-usage in the LCL.
-</p>
-<p>
-When set to <b>True</b>, the OnClick event is signalled each time the State 
-property is changed to a new value - including when the value was assigned 
-instead of using the mouse or keyboard to perform the change. OnClick (and 
-OnChange) are signalled only when a change in the State or Checked value 
-occurs.
-</p>
-<p>
-The OnChange event in the VCL emulation mode has the same semantics and would 
-be fired immediately before calling OnClick. This allows developers to 
-migrate their applications from Delphi and gradually rework their code 
-preparing for the behavior switch.
-</p>
-<p>
-For example, when a user clicks TRadioButton many times the event handler 
-would only be called when the button transits to the selected state. 
-Subsequent clicks on the already selected radio button would not result in 
-additional OnClick event notifications. The OnChange event is also suppressed 
-in this scenario.
-</p>
-<p>
-When set to <b>False</b>, LCL event handling is used. The OnChange event 
-handler is signalled when the State or Checked property is changed to a new 
-value, whether the change was caused by a user action or assignment in 
-program code.
-</p>
-<p>
-The OnClick event handler in this mode is signalled each time the control is 
-activated using the mouse, the keyboard, or by any other user action the 
-operating system considers equal to clicking. It is signalled even when the 
-State for the control is not changed. For radio buttons, repeated clicks on 
-an already Checked control would result in an OnClick event notification for 
-each mouse click.
-</p>
-<p>
-VCL_OnClick_Emulation does not require a class instance to access the member 
-value. Changing the value affects all instances of the TCustomCheckBox 
-control and descendants (like TToggleBox and TRadioButton) used in the 
-application. 
-</p>
-<p>
-For example:
-</p>
-<code>
-// enable Delphi OnClick behavior for all check boxes and descendants
-TCheckBox.VCL_OnClick_Emulation := True;
-
-// enable LCL OnClick behavior for all check boxes and descendants
-TCheckBox.VCL_OnClick_Emulation := False;
-</code>
-<p>
-The default value for the member is <b>True</b> as assigned in the 
-CreateClass class constructor. This enables Delphi VCL-compatible OnClick  
-event notifications.
-</p>
-<p>
-VCL_OnClick_Emulation is used in the Click method to <b>prevent</b> calls to 
-the inherited Click method when enabled. It is also used in the 
-DoClickOnChange method to ensure that the inherited Click method is called 
-when enabled and not already handled by an assigned Action.
-</p>
-</descr>
-<version>
-Added in LCL version 3.0.
-</version>
-<seealso>
-<link id="TButtonControl.Checked"/>
-<link id="TButtonControl.Click"/>
-<link id="TButtonControl.ClicksDisabled"/>
-<link id="TCustomCheckBox.State"/>
-<link id="TCustomCheckBox.OnChange"/>
-<link id="TCustomCheckBox.DoClickOnChange"/>
-<link id="TCustomCheckBox.CreateClass"/>
-<link id="#lcl.controls.TControl.OnClick">TControl.OnClick</link>
-<link id="#lcl.controls.TControl.Click">TControl.Click</link>
-</seealso>
-</element>
-
-<element name="TCustomCheckBox.CreateClass">
-<short>
-Class constructor for the TCustomCheckBox class type.
-</short>
-<descr>
-<p>
-<var>CreateClass</var> is the class constructor for the 
-<var>TCustomCheckBox</var> class type. It allows class variables and class 
-properties to be initialized before the class type is used. The class 
-constructor is <b>not</b> explicitly called in program code; it is called 
-before entry into the initialization section for the <file>stdctrls.pp</file> 
-unit.
-</p>
-<p>
-CreateClass ensures that the VCL_OnClick_Emulation class variable is set to 
-<b>True</b> before an instance of the class is created. This enables Delphi 
-VCL-compatible OnClick behavior in TCustomCheckBox and descendent classes 
-like TCheckBox, TRadioButton and TToggleBox.
-</p>
-</descr>
-<version>
-Added in LCL version 3.0.
-</version>
-<seealso>
-<link id="TCustomCheckBox.VCL_OnClick_Emulation"/>
-</seealso>
 </element>
 
 <element name="TCustomCheckBox.Create">
@@ -12042,50 +11877,6 @@ enables auto-sizing of the text displayed for the control instance.
 <element name="TCheckBox.OnChange" link="#lcl.stdctrls.TButtonControl.OnChange"/>
 <element name="TCheckBox.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 
-<element name="TCheckBox.OnClick">
-<short>
-Event handler signalled when a mouse click occurs on the control.
-</short>
-<descr>
-<p>
-<var>OnClick</var> is a published <var>TNotifyEvent</var> property in 
-<var>TCheckBox</var>. It contains the event handler signalled when a mouse 
-click, or the keyboard equivalent, occurs when the control has focus. The 
-actions performed for the click event can be specified in a user-supplied 
-method, or by selecting an Action from an ActionList.
-</p>
-<p>
-OnClick is signalled (when assigned) from the Click method in the 
-TButtonControl ancestor. It occurs when the event has not been handled in the 
-descendant class and an Action has not been assigned using the ActionLink for 
-the control. When Action is assigned, the Execute method in the ActionLink is 
-called instead.
-</p>
-<p>
-TButtonControl descendants, like TCheckBox and TRadioButton, may signal the 
-event handler when the value in State (or Checked) is changed. The 
-VCL_OnClick_Emulation class variable enables this Delphi VCL-compatible 
-behavior when it is set to <b>True</b>. When set to <b>False</b>, the event 
-occurs only when mouse or keyboard is used to interact with the control.
-</p>
-<p>
-Use the OnChange event handler to perform actions needed when the value in 
-the State property is changed.
-</p>
-</descr>
-<seealso>
-<link id="TCustomCheckBox.VCL_OnClick_Emulation"/>
-<link id="TCustomCheckBox.State"/>
-<link id="TButtonControl.Checked"/>
-<link id="TButtonControl.OnChange"/>
-<link id="#lcl.controls.TControl.OnClick">TControl.OnClick</link>
-<link id="#lcl.controls.TControl.Action">TControl.Action</link>
-<link id="#lcl.controls.TControl.ActionLink">TControl.ActionLink</link>
-<link id="#rtl.classes.TBasicAction">TBasicAction</link>
-<link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
-</seealso>
-</element>
-
 <element name="TCheckBox.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
 <element name="TCheckBox.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
 <element name="TCheckBox.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
@@ -12209,51 +12000,7 @@ TabStop (<b>True</b>) and ParentColor (<b>False</b>) properties.
 <element name="TToggleBox.Font" link="#lcl.controls.TControl.Font"/>
 <element name="TToggleBox.Hint" link="#lcl.controls.TControl.Hint"/>
 <element name="TToggleBox.OnChange" link="#lcl.stdctrls.TButtonControl.OnChange"/>
-
-<element name="TToggleBox.OnClick">
-<short>
-Event handler signalled when the mouse is clicked on the control.
-</short>
-<descr>
-<p>
-<var>OnClick</var> is a published <var>TNotifyEvent</var> in 
-<var>TToggleBox</var>. It contains the event handler signalled when a mouse 
-click, or the keyboard equivalent, occurs when the control has focus. The 
-actions performed for the click event can be specified in a user-supplied 
-method, or by selecting an Action from an ActionList.
-</p>
-<p>
-OnClick is signalled (when assigned) from the Click method in the 
-TButtonControl ancestor. It occurs when the event has not been handled in the 
-descendant class and an Action has not been assigned using the ActionLink for 
-the control. When Action is assigned, the Execute method in the ActionLink is 
-called instead.
-</p>
-<p>
-TButtonControl descendants, like TCheckBox and TToggleBox, may signal the 
-event handler when the value in State (or Checked) is changed. The 
-VCL_OnClick_Emulation class variable enables this Delphi VCL-compatible 
-behavior when it is set to <b>True</b>. When set to <b>False</b>, the event 
-occurs only when mouse or keyboard is used to interact with the control.
-</p>
-<p>
-Use the OnChange event handler to perform actions needed when the value in 
-the State property is changed.
-</p>
-</descr>
-<seealso>
-<link id="TCustomCheckBox.VCL_OnClick_Emulation"/>
-<link id="TCustomCheckBox.State"/>
-<link id="TButtonControl.Checked"/>
-<link id="TButtonControl.OnChange"/>
-<link id="#lcl.controls.TControl.OnClick">TControl.OnClick</link>
-<link id="#lcl.controls.TControl.Action">TControl.Action</link>
-<link id="#lcl.controls.TControl.ActionLink">TControl.ActionLink</link>
-<link id="#rtl.classes.TBasicAction">TBasicAction</link>
-<link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
-</seealso>
-</element>
-
+<element name="TToggleBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TToggleBox.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
 <element name="TToggleBox.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
 <element name="TToggleBox.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
@@ -12522,51 +12269,7 @@ The default value for the property is <b>True</b> in <var>TRadioButton</var>.
 <element name="TRadioButton.Hint" link="#lcl.controls.TControl.Hint"/>
 <element name="TRadioButton.OnChange" link="#lcl.stdctrls.TButtonControl.OnChange"/>
 <element name="TRadioButton.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
-
-<element name="TRadioButton.OnClick">
-<short>
-Event handler signalled when the mouse is clicked on the control.
-</short>
-<descr>
-<p>
-<var>OnClick</var> is a published <var>TNotifyEvent</var> in 
-<var>TRadioButton</var>. It contains the event handler signalled when a mouse 
-click, or the keyboard equivalent, occurs when the control has focus. The 
-actions performed for the click event can be specified in a user-supplied 
-method, or by selecting an Action from an ActionList.
-</p>
-<p>
-OnClick is signalled (when assigned) from the Click method in the 
-TButtonControl ancestor. It occurs when the event has not been handled in the 
-descendant class and an Action has not been assigned using the ActionLink for 
-the control. When Action is assigned, the Execute method in the ActionLink is 
-called instead.
-</p>
-<p>
-TButtonControl descendants, like TCheckBox and TToggleBox, may signal the 
-event handler when the value in State (or Checked) is changed. The 
-VCL_OnClick_Emulation class variable enables this Delphi VCL-compatible 
-behavior when it is set to <b>True</b>. When set to <b>False</b>, the event 
-occurs only when mouse or keyboard is used to interact with the control.
-</p>
-<p>
-Use the OnChange event handler to perform actions needed when the value in 
-the State property is changed.
-</p>
-</descr>
-<seealso>
-<link id="TCustomCheckBox.VCL_OnClick_Emulation"/>
-<link id="TCustomCheckBox.State"/>
-<link id="TButtonControl.Checked"/>
-<link id="TButtonControl.OnChange"/>
-<link id="#lcl.controls.TControl.OnClick">TControl.OnClick</link>
-<link id="#lcl.controls.TControl.Action">TControl.Action</link>
-<link id="#lcl.controls.TControl.ActionLink">TControl.ActionLink</link>
-<link id="#rtl.classes.TBasicAction">TBasicAction</link>
-<link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
-</seealso>
-</element>
-
+<element name="TRadioButton.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TRadioButton.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
 <element name="TRadioButton.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
 <element name="TRadioButton.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
