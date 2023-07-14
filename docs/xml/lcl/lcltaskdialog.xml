@@ -39,7 +39,6 @@ The original file name is SynTaskDialog.pas.
 
 <!-- unresolved external references -->
 <element name="Windows"/>
-<element name="ctypes"/>
 <element name="CommCtrl"/>
 <element name="Classes"/>
 <element name="SysUtils"/>
