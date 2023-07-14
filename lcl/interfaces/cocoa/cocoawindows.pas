@@ -119,6 +119,9 @@ type
   TCocoaWindowContent = objcclass;
 
   TCocoaWindow = objcclass(NSWindow, NSWindowDelegateProtocol)
+  private
+    // for the reentrancy of makeFirstResponder()
+    makeFirstResponderCount: Integer;
   protected
     fieldEditor: TCocoaFieldEditor;
     firedMouseEvent: Boolean;
@@ -1003,28 +1006,36 @@ begin
 end;
 
 // return proper focused responder by kind of class of NSResponder
-function getProperFocusedResponder( const aResponder : NSResponder): NSResponder;
-var
-  dl : NSObject;
+function getProperFocusedResponder( const aResponder : NSResponder ): NSResponder;
 begin
   Result := aResponder;
-  if Result.isKindOfClass(TCocoaFieldEditor) then
-  begin
-    dl := {%H-}NSObject( TCocoaFieldEditor(Result).delegate );
-    if Assigned(dl) and (dl.isKindOfClass(NSView)) then
-      Result := NSResponder(dl);
-  end
-  else
   if Result.isKindOfClass(NSWindow) then
+    Result:= TCocoaWindowContent(NSWindow(Result).contentView).documentView;
+end;
+
+// return responder callback by kind of class of NSResponder
+function getResponderCallback( const aResponder : NSResponder ): ICommonCallback;
+var
+  newResponder: NSResponder;
+  dl : NSObject;
+begin
+  Result:= nil;
+  if not Assigned(aResponder) then exit;
+
+  newResponder := aResponder;
+  if newResponder.isKindOfClass(NSText) then
   begin
-    // critical step to avoid infinite loops caused by
-    // 'Focus-fight' between LCL and COCOA
-    Result := nil;
+    dl := {%H-}NSObject( NSText(newResponder).delegate );
+    if Assigned(dl) and (dl.isKindOfClass(NSView)) then
+      newResponder := NSResponder(dl);
   end
   else
   begin
-    Result := Result.lclContentView;
+    newResponder := newResponder.lclContentView;
   end;
+
+  if Assigned(newResponder) then
+    Result:= newResponder.lclGetCallback;
 end;
 
 // send KillFocus/SetFocus messages to LCL at the right time
@@ -1037,31 +1048,44 @@ end;
 // 3. makeFirstResponder() already avoids infinite loops caused by 'Focus-fight'
 // between LCL and COCOA, see also:
 // https://wiki.lazarus.freepascal.org/Cocoa_Internals/Application#Focus_Change
+// 4. makeFirstResponder() is Reentrant and Thread-safe
+//
 function TCocoaWindow.makeFirstResponder( aResponder : NSResponder ): ObjCBOOL;
 var
   lastResponder : NSResponder;
   newResponder : NSResponder;
+  cb : ICommonCallback;
 begin
-  lastResponder := self.firstResponder;
-  newResponder := aResponder;
+  inc( makeFirstResponderCount );
+  try
+    lastResponder := self.firstResponder;
+    newResponder := getProperFocusedResponder( aResponder );
+    if lastResponder = newResponder then exit;
 
-  // do toggle Focused Control
-  // Result=false when the focused control has not been changed
-  Result := inherited makeFirstResponder( newResponder );
-  if not Result then exit;
+    // do toggle Focused Control
+    // Result=false when the focused control has not been changed
+    // TCocoaWindow.makeFirstResponder() may be triggered reentrant here
+    Result := inherited makeFirstResponder( newResponder );
+    if not Result then exit;
 
-  // send KillFocus/SetFocus messages to LCL
-  // 1st: send KillFocus Message first
-  lastResponder := getProperFocusedResponder( lastResponder );
-  if Assigned(lastResponder) and Assigned(lastResponder.lclGetCallback) then
-    lastResponder.lclGetCallback.ResignFirstResponder;
+    // send KillFocus/SetFocus messages to LCL only at level one
+    if makeFirstResponderCount > 1 then
+      exit;
 
-  // 2st: send SetFocus Message
-  // focused control may not be aResponder
-  // get focused control via firstResponder again
-  newResponder := getProperFocusedResponder( self.firstResponder );
-  if Assigned(newResponder) and Assigned(newResponder.lclGetCallback) then
-    newResponder.lclGetCallback.BecomeFirstResponder;
+    // 1st: send KillFocus Message first
+    cb:= getResponderCallback( lastResponder );
+    if Assigned(cb) then
+      cb.ResignFirstResponder;
+
+    // 2st: send SetFocus Message
+    // TCocoaWindow.makeFirstResponder() may be triggered reentrant here
+    cb := getResponderCallback( self.firstResponder );
+    if Assigned(cb) then
+      cb.BecomeFirstResponder;
+
+  finally
+    dec( makeFirstResponderCount );
+  end;
 end;
 
 
