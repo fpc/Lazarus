@@ -75,8 +75,8 @@ type
     dwNumEntries: DWORD;
     table: array [0..ANY_SIZE - 1] of MIB_TCPROW2;
   end;
-function GetTcpTable2(pTcpTable: PMIB_TCPTABLE2; var pdwSize: DWORD; bOrder: BOOL): DWORD; stdcall; external 'iphlpapi' name 'GetTcpTable2';
-function GetModuleFilenameExW(hndProcess: HANDLE; hndModule: HMODULE; lpFilename: LPWSTR; nSize: DWord): DWord; stdcall; external 'psapi' name 'GetModuleFileNameExW';
+function GetTcpTable2(pTcpTable: PMIB_TCPTABLE2; var pdwSize: DWORD; bOrder: BOOL; out aResult: DWord): boolean;
+function GetModuleFilenameExW(hndProcess: HANDLE; hndModule: HMODULE; lpFilename: LPWSTR; nSize: DWord; out aResult: DWord): boolean;
 {$ENDIF}
 
 function MaybeQuote(S : String) : String;
@@ -84,6 +84,48 @@ function ReadNext(const Line: string; var p: integer): string;
 function GetNextIPPort(Port: word): word;
 
 implementation
+
+{$IFDEF MSWindows}
+type
+  TGetTcpTable2 = function(pTcpTable: PMIB_TCPTABLE2; var pdwSize: DWORD; bOrder: BOOL): DWORD; stdcall;
+var
+  IPHlpApiLibLoaded: boolean = false;
+  IPHlpApiLibHandle: HMODULE = 0;
+  GetTcpTable2Func: TGetTcpTable2 = nil;
+function GetTcpTable2(pTcpTable: PMIB_TCPTABLE2; var pdwSize: DWORD; bOrder: BOOL; out aResult: DWord): boolean;
+begin
+  if not IPHlpApiLibLoaded then
+  begin
+    IPHlpApiLibLoaded:=true;
+    IPHlpApiLibHandle := SafeLoadLibrary('iphlpapi.dll');
+    if IPHlpApiLibHandle=0 then exit(false);
+    GetTcpTable2Func := TGetTcpTable2(GetProcAddress(IPHlpApiLibHandle, PChar('GetTcpTable2')));
+  end;
+  if GetTcpTable2Func=nil then exit(false);
+  Result:=true;
+  aResult:=GetTcpTable2Func(pTcpTable,pdwSize,bOrder);
+end;
+
+type
+  TGetModuleFilenameExW = function(hndProcess: HANDLE; hndModule: HMODULE; lpFilename: LPWSTR; nSize: DWord): DWord; stdcall;
+var
+  psapiLibLoaded: boolean = false;
+  psapiLibHandle: HMODULE = 0;
+  GetModuleFilenameExWFunc: TGetModuleFilenameExW = nil;
+function GetModuleFilenameExW(hndProcess: HANDLE; hndModule: HMODULE; lpFilename: LPWSTR; nSize: DWord; out aResult: DWord): boolean;
+begin
+  if not psapiLibLoaded then
+  begin
+    psapiLibLoaded:=true;
+    psapiLibHandle := SafeLoadLibrary('psapi.dll');
+    if psapiLibHandle=0 then exit(false);
+    GetModuleFilenameExWFunc := TGetModuleFilenameExW(GetProcAddress(IPHlpApiLibHandle, PChar('GetModuleFilenameExW')));
+  end;
+  if GetModuleFilenameExWFunc=nil then exit(false);
+  Result:=true;
+  aResult:=GetModuleFilenameExWFunc(hndProcess,hndModule,lpFilename,nSize);
+end;
+{$ENDIF}
 
 function ReadNext(const Line: string; var p: integer): string;
 var
@@ -674,14 +716,14 @@ begin
   pTCPTable:=GetMem(aSize);
   if pTCPTable=nil then exit;
   try
-    r:=GetTcpTable2(pTCPTable,aSize,true);
+    if not GetTcpTable2(pTCPTable,aSize,true,r) then exit;
     if r=ERROR_INSUFFICIENT_BUFFER then
     begin
       ReAllocMem(pTCPTable,aSize);
       if pTCPTable=nil then exit;
     end;
 
-    r:=GetTcpTable2(pTCPTable,aSize,true);
+    GetTcpTable2(pTCPTable,aSize,true,r);
     if r<>NO_ERROR then exit;
 
     {$R-}
@@ -707,7 +749,7 @@ begin
   h:=OpenProcess(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ, WINBOOL(false), aPid);
   if h=0 then exit;
   try
-    aSize:=GetModuleFilenameExW(h,0,@CurExeName[0],length(CurExeName));
+    if not GetModuleFilenameExW(h,0,@CurExeName[0],length(CurExeName),aSize) then exit;
     if aSize>0 then
     begin
       aDesc:=CurExeName;
@@ -753,14 +795,14 @@ begin
   pTCPTable:=GetMem(aSize);
   if pTCPTable=nil then exit;
   try
-    r:=GetTcpTable2(pTCPTable,aSize,true);
+    if not GetTcpTable2(pTCPTable,aSize,true,r) then exit;
     if r=ERROR_INSUFFICIENT_BUFFER then
     begin
       ReAllocMem(pTCPTable,aSize);
       if pTCPTable=nil then exit;
     end;
 
-    r:=GetTcpTable2(pTCPTable,aSize,true);
+    GetTcpTable2(pTCPTable,aSize,true,r);
     if r<>NO_ERROR then exit;
 
     Ports:=copy(AvoidPorts);
