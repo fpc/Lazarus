@@ -541,8 +541,10 @@ type
 
     // Open/Close Folds
     procedure GetTokenBounds(out LogX1,LogX2: Integer); override;
-    function ScanAheadForNextToken(RunOffs: Integer; MaxLineCnt: Integer = 1000): String; //inline;
-    function IsAnonynmousFunc(RunOffs: Integer): Boolean;
+    function ScanAheadForNextToken(RunOffs: Integer;
+                                   out AFndLine: String; out ATokStart, ATokLen: integer;
+                                   MaxLineCnt: Integer = 1000): Boolean; //inline;
+    function IsAnonynmousFunc(RunOffs: Integer; AnIsFunction: boolean): Boolean;
 
     function StartPascalCodeFoldBlock
              (ABlockType: TPascalCodeFoldBlockType; ForceDisabled: Boolean = False
@@ -2040,13 +2042,13 @@ end;
 function TSynPasSyn.Func89: TtkTokenKind;
   function ScanForClassSection: Boolean;
   var
-    Txt: String;
+    FndLine: String;
+    FndPos, FndLen: integer;
   begin
-    Result := False;
-    Txt := ScanAheadForNextToken(7);
-    if (Txt<>'') and (Txt[1] in ['p', 'P']) then
-      Result := ( (Length(Txt) = 7) and KeyCompEx(@Txt[1], PChar('rivate'), 6) ) or
-                ( (Length(Txt) = 9) and KeyCompEx(@Txt[1], PChar('rotected'), 8) );
+    Result := ScanAheadForNextToken(7, FndLine, FndPos, FndLen);
+    if Result and (FndLine[FndPos] in ['p', 'P']) then
+      Result := ( (FndLen = 7) and KeyCompEx(@FndLine[FndPos + 1], PChar('rivate'), 6) ) or
+                ( (FndLen = 9) and KeyCompEx(@FndLine[FndPos + 1], PChar('rotected'), 8) );
   end;
 
 begin
@@ -2272,7 +2274,7 @@ var
   InClass: Boolean;
 begin
   if KeyComp('Function') then begin
-    if (TopPascalCodeFoldBlockType in PascalStatementBlocks) and IsAnonynmousFunc(8) then begin
+    if (TopPascalCodeFoldBlockType in PascalStatementBlocks) and IsAnonynmousFunc(8, True) then begin
       StartPascalCodeFoldBlock(cfbtAnonynmousProcedure);
     end
     else begin
@@ -2326,7 +2328,7 @@ var
   InClass: Boolean;
 begin
   if KeyComp('Procedure') then begin
-    if (TopPascalCodeFoldBlockType in PascalStatementBlocks) and IsAnonynmousFunc(9) then begin
+    if (TopPascalCodeFoldBlockType in PascalStatementBlocks) and IsAnonynmousFunc(9, False) then begin
       StartPascalCodeFoldBlock(cfbtAnonynmousProcedure);
     end
     else begin
@@ -4385,16 +4387,36 @@ begin
   LogX2 := LogX1 + fStringLen;
 end;
 
-function TSynPasSyn.ScanAheadForNextToken(RunOffs: Integer; MaxLineCnt: Integer
-  ): String;
+function TSynPasSyn.ScanAheadForNextToken(RunOffs: Integer; out
+  AFndLine: String; out ATokStart, ATokLen: integer; MaxLineCnt: Integer
+  ): Boolean;
 var
   Txt: PChar;
-  TxtPos, TxtLen: Integer;
-  TxtStr: String;
+  TxtPos, TxtLen: Integer; // TxtPos in PChar
   NestBrace1, NestBrace2: Integer;
-  CurLineIdx, TxtPos2: Integer;
+  CurLineIdx: Integer;
+
+  function SetFoundToken: Boolean;
+  var
+    TxtPos2: Integer;
+  begin
+    TxtPos2 := TxtPos + 1;
+    if Identifiers[Txt[TxtPos]] then
+      while (TxtPos2 < TxtLen) and Identifiers[Txt[TxtPos2]] do
+        inc(TxtPos2)
+    else
+      while (TxtPos2 < TxtLen) and
+            not( Identifiers[Txt[TxtPos2]] or IsSpaceChar[Txt[TxtPos2]] )
+      do
+        inc(TxtPos2);
+    Result    := True;
+    ATokStart := TxtPos + 1; // PChar to String index
+    ATokLen   := TxtPos2 - TxtPos;
+  end;
+
 begin
-  Result := '';
+  Result := False;
+  AFndLine := fLineStr;
   Txt    := fLine;
   TxtPos := Run + RunOffs;
   TxtLen := fLineLen;
@@ -4410,7 +4432,7 @@ begin
         '}' : if (NestBrace2 = 0) then
                 if NestBrace1 > 0
                 then dec(NestBrace1)
-                else exit('}');
+                else exit(SetFoundToken);
         '(' : if (NestBrace1 = 0) then
                 if (TxtPos+1 <= TxtLen) and (Txt[TxtPos+1] = '*') then begin
                   if NestedComments or (NestBrace2 = 0) then begin
@@ -4420,7 +4442,7 @@ begin
                 end
                 else
                 if (NestBrace2 = 0) then
-                  exit('(');
+                  exit(SetFoundToken);
         '*' : if (NestBrace1 = 0) then
                 if  (TxtPos+1 <= TxtLen) and (Txt[TxtPos+1] = ')') and (NestBrace2 > 0)
                   then begin
@@ -4429,28 +4451,16 @@ begin
                   end
                   else
                   if NestBrace2 = 0 then
-                    exit('*');
+                    exit(SetFoundToken);
         '/' : If (NestBrace1 = 0) and (NestBrace2 = 0) then begin
                 if  (TxtPos+1 <= TxtLen) and (Txt[TxtPos+1] = '/')
                   then TxtPos := TxtLen
-                  else exit('/');
+                  else exit(SetFoundToken);
               end;
         #1..#32: {do nothing};
         else
           If (NestBrace1 = 0) and (NestBrace2 = 0) then begin
-            TxtPos2 := TxtPos + 1;
-            if Identifiers[Txt[TxtPos]] then
-              while (TxtPos2 < TxtLen) and Identifiers[Txt[TxtPos2]] do
-                inc(TxtPos2)
-            else
-              while (TxtPos2 < TxtLen) and
-                    not( Identifiers[Txt[TxtPos2]] or IsSpaceChar[Txt[TxtPos2]] )
-              do
-                inc(TxtPos2);
-            if TxtPos2 - TxtPos > 0 then begin
-              SetLength(Result, TxtPos2 - TxtPos);
-              move(Txt[TxtPos], Result[1], TxtPos2 - TxtPos);
-            end;
+            Result := SetFoundToken;
             exit;
           end;
       end;
@@ -4461,8 +4471,8 @@ begin
       exit;
     inc(CurLineIdx);
     if CurLineIdx < CurrentLines.Count then begin
-      TxtStr := CurrentLines[CurLineIdx];
-      Txt    := PChar(TxtStr);
+      AFndLine := CurrentLines[CurLineIdx];
+      Txt    := PChar(AFndLine);
       TxtPos := 0;
       TxtLen := length(Txt);
     end
@@ -4471,31 +4481,33 @@ begin
   end;
 end;
 
-function TSynPasSyn.IsAnonynmousFunc(RunOffs: Integer): Boolean;
+function TSynPasSyn.IsAnonynmousFunc(RunOffs: Integer; AnIsFunction: boolean
+  ): Boolean;
 var
-  Txt: String;
+  FndLine: String;
+  FndPos, FndLen: integer;
 begin
-  Txt := ScanAheadForNextToken(RunOffs);
-  Result := Txt = '';
-  if Result then
+  Result := ScanAheadForNextToken(RunOffs, FndLine, FndPos, FndLen, 0);
+  if not Result then
     exit;
 
-  case Txt[1] of
-    '(', ':', ';': Result := True;
-    'a', 'A': Result := ( (Length(Txt) = 3) and KeyCompEx(@Txt[1], PChar('asm'),   3) );
-    'b', 'B': Result := ( (Length(Txt) = 5) and KeyCompEx(@Txt[1], PChar('begin'), 5) );
-    'c', 'C': Result := ( (Length(Txt) = 5) and KeyCompEx(@Txt[1], PChar('const'), 5) ) or
-                        ( (Length(Txt) = 5) and KeyCompEx(@Txt[1], PChar('cdecl'), 5) );
-    'i', 'I': Result := ( (Length(Txt) = 5) and KeyCompEx(@Txt[1], PChar('inline'), 5) ) or
-                        ( (Length(Txt) = 5) and KeyCompEx(@Txt[1], PChar('interrupt'), 5) );
-    'l', 'L': Result := ( (Length(Txt) = 5) and KeyCompEx(@Txt[1], PChar('label'), 5) );
-    'n', 'N': Result := ( (Length(Txt) = 5) and KeyCompEx(@Txt[1], PChar('none'), 5) );
-    'p', 'P': Result := ( (Length(Txt) = 5) and KeyCompEx(@Txt[1], PChar('pascal'), 5) );
-    'r', 'R': Result := ( (Length(Txt) = 5) and KeyCompEx(@Txt[1], PChar('register'), 5) );
-    's', 'S': Result := ( (Length(Txt) = 5) and KeyCompEx(@Txt[1], PChar('safecall'), 5) ) or
-                        ( (Length(Txt) = 5) and KeyCompEx(@Txt[1], PChar('stdcall'), 5) );
-    't', 'T': Result := ( (Length(Txt) = 4) and KeyCompEx(@Txt[1], PChar('type'),  4) );
-    'v', 'V': Result := ( (Length(Txt) = 3) and KeyCompEx(@Txt[1], PChar('var'),   3) );
+  case FndLine[FndPos] of
+    ':':      Result := AnIsFunction;
+    '(', ';': Result := True;
+    'a', 'A': Result := ( (FndLen = 3) and KeyCompEx(@FndLine[FndPos], PChar('asm'),   3) );
+    'b', 'B': Result := ( (FndLen = 5) and KeyCompEx(@FndLine[FndPos], PChar('begin'), 5) );
+    'c', 'C': Result := ( (FndLen = 5) and KeyCompEx(@FndLine[FndPos], PChar('const'), 5) ) or
+                        ( (FndLen = 5) and KeyCompEx(@FndLine[FndPos], PChar('cdecl'), 5) );
+    'i', 'I': Result := ( (FndLen = 5) and KeyCompEx(@FndLine[FndPos], PChar('inline'), 5) ) or
+                        ( (FndLen = 5) and KeyCompEx(@FndLine[FndPos], PChar('interrupt'), 5) );
+    'l', 'L': Result := ( (FndLen = 5) and KeyCompEx(@FndLine[FndPos], PChar('label'), 5) );
+    'n', 'N': Result := ( (FndLen = 5) and KeyCompEx(@FndLine[FndPos], PChar('none'), 5) );
+    'p', 'P': Result := ( (FndLen = 5) and KeyCompEx(@FndLine[FndPos], PChar('pascal'), 5) );
+    'r', 'R': Result := ( (FndLen = 5) and KeyCompEx(@FndLine[FndPos], PChar('register'), 5) );
+    's', 'S': Result := ( (FndLen = 5) and KeyCompEx(@FndLine[FndPos], PChar('safecall'), 5) ) or
+                        ( (FndLen = 5) and KeyCompEx(@FndLine[FndPos], PChar('stdcall'), 5) );
+    't', 'T': Result := ( (FndLen = 4) and KeyCompEx(@FndLine[FndPos], PChar('type'),  4) );
+    'v', 'V': Result := ( (FndLen = 3) and KeyCompEx(@FndLine[FndPos], PChar('var'),   3) );
   end;
 end;
 
