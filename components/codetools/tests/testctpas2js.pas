@@ -26,6 +26,7 @@ type
     FBaseDir: string;
     FCode: TCodeBuffer;
     FPas2jsFilename: string;
+    FRTLDirDefines: TDefineTemplate;
     FUnitSetCache: TFPCUnitSetCache;
     FVirtualDirDefines: TDefineTemplate;
   protected
@@ -34,6 +35,7 @@ type
     procedure DoParseModule(aCode: TCodeBuffer; out Tool: TCodeTool); virtual;
   public
     constructor Create; override;
+    destructor Destroy; override;
     procedure Add(const s: string);
     procedure Add(Args: array of const);
     function FindPas2js: string;
@@ -45,6 +47,7 @@ type
     property Code: TCodeBuffer read FCode;
     property Pas2jsFilename: string read FPas2jsFilename write FPas2jsFilename; // compiler filename
     property UnitSetCache: TFPCUnitSetCache read FUnitSetCache write FUnitSetCache;
+    property RTLDirDefines: TDefineTemplate read FRTLDirDefines write FRTLDirDefines;
     property VirtualDirDefines: TDefineTemplate read FVirtualDirDefines write FVirtualDirDefines;
     property BaseDir: string read FBaseDir write FBaseDir;
   end;
@@ -65,7 +68,7 @@ implementation
 procedure TCustomTestPas2js.SetUp;
 var
   CurUnitSet: TFPCUnitSetCache;
-  UnitSetID: String;
+  UnitSetID, SystemFilename, RTLDir: String;
   CompilerDefines: TDefineTemplate;
 begin
   inherited SetUp;
@@ -79,13 +82,27 @@ begin
         '','','','',true);
       // parse compiler settings
       UnitSetCache.Init;
+
+      SystemFilename:=UnitSetCache.GetUnitSrcFile('system',false);
+      if SystemFilename='' then
+        Fail('pas2js system unit not found');
+      RTLDir:=ExtractFilePath(SystemFilename);
+      // set pas2js for rtl directory
+      RTLDirDefines:=TDefineTemplate.Create(
+        'RTLDirPas2js', 'set pas2js as compiler',
+        '',ChompPathDelim(RTLDir),da_Directory);
+      RTLDirDefines.AddChild(TDefineTemplate.Create('Reset','','','',da_UndefineAll));
+      // create template for Pas2js settings
+      CompilerDefines:=CreateFPCTemplate(UnitSetCache,nil);
+      RTLDirDefines.AddChild(CompilerDefines);
+      CodeToolBoss.DefineTree.Add(RTLDirDefines);
     end;
     UnitSetID:=UnitSetCache.GetUnitSetID;
 
     // set pas2js for virtual directory
     if VirtualDirDefines=nil then begin
       VirtualDirDefines:=TDefineTemplate.Create(
-        'VirtualDirPas2js', 'set pas2js as compiler for virtual directory',
+        'VirtualDirPas2js', 'set pas2js as compiler',
         '',VirtualDirectory,da_Directory);
       VirtualDirDefines.AddChild(TDefineTemplate.Create('Reset','','','',da_UndefineAll));
       // create template for Pas2js settings
@@ -105,6 +122,8 @@ begin
       AssertEquals('VirtualDirectory compiler should be pas2js',
         PascalCompilerNames[pcPas2js],
         PascalCompilerNames[CodeToolBoss.GetPascalCompilerForDirectory('')]);
+
+
   end;
   FCode:=CodeToolBoss.CreateFile('test1.pas');
 end;
@@ -142,6 +161,13 @@ begin
   inherited Create;
   FAutoSearchPas2js:=true;
   FBaseDir:='pas2js';
+end;
+
+destructor TCustomTestPas2js.Destroy;
+begin
+  if (RTLDirDefines<>nil) and (CodeToolBoss<>nil) then
+    CodeToolBoss.DefineTree.RemoveDefineTemplate(RTLDirDefines);
+  inherited Destroy;
 end;
 
 procedure TCustomTestPas2js.Add(const s: string);
