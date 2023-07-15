@@ -324,8 +324,10 @@ begin
       while (IdentifierEndPos>1) and (IsSpaceChar[Src[IdentifierEndPos-1]]) do
         dec(IdentifierEndPos);
       IdentifierStartPos:=IdentifierEndPos;
-      // allow after . (for completion)
-      if not ((IdentifierStartPos>1) and (Src[IdentifierStartPos-1]='.')) then begin
+      if (IdentifierStartPos>1) and (Src[IdentifierStartPos-1]='.') then begin
+        // .{...} for completion
+      end else begin
+        // check identifier in front of comment
         while (IdentifierStartPos>1) and (IsIdentChar[Src[IdentifierStartPos-1]]) do
           dec(IdentifierStartPos);
         if IdentifierStartPos=p then begin
