@@ -207,6 +207,7 @@ type
     _inIME: Boolean;
   private
     function getWindowEditor(): NSTextView; message 'getWindowEditor';
+    procedure DoCallInputClientInsertText(nsText:NSString); message 'DoCallInputClientInsertText:';
   public
     callback: ICommonCallback;
     auxMouseByParent: Boolean;
@@ -668,6 +669,17 @@ begin
     inputContext.discardMarkedText;
 end;
 
+procedure TCocoaCustomControl.DoCallInputClientInsertText(nsText:NSString);
+begin
+  if Assigned(callback) then
+    callback.InputClientInsertText(nsText.UTF8String);
+  nsText.release;
+end;
+
+// in TCocoaCustomControl, such as Form, Grid, ListView,
+// after inputting text, another control may be focused.
+// in insertText_replacementRange(), Cocoa/InputContext doesn't like it,
+// so calling InputClientInsertText() asynchronously.
 procedure TCocoaCustomControl.insertText_replacementRange(aString: id;
   replacementRange: NSRange);
 var
@@ -677,8 +689,8 @@ begin
 
   unmarkText;
 
-  nsText:= getNSStringObject(aString);
-  lclGetCallback.InputClientInsertText(nsText.UTF8String);
+  nsText:= getNSStringObject(aString).copy;
+  performSelector_withObject_afterDelay(ObjCSelector('DoCallInputClientInsertText:'), nsText, 0 );
 end;
 
 procedure TCocoaCustomControl.setMarkedText_selectedRange_replacementRange(
