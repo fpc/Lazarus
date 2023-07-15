@@ -9419,28 +9419,36 @@ var
   end;
 
   function ResolveAttribute(const Context: TFindContext): boolean;
-  var
-    Identifier: String;
-    I: Integer;
-  begin
-    Result:=false;
-    if CurAtom.Flag<>cafWord then exit;
-    Identifier:=GetAtom;
-    Params.Flags := Params.Flags - [fdfExceptionOnNotFound];
-    for I := 0 to 1 do
+
+    function Find(const Identifier: string): boolean;
     begin
-      // first check for attribute with exactly the same name
-      // if not found, append 'Attribute'
-      if I=1 then // append 'attribute' to typename
-        Identifier+='Attribute';
       Params.SetIdentifier(Self,PChar(Identifier),@CheckSrcIdentifier);
       if Context.Tool.FindIdentifierInContext(Params) then begin
         ExprType.Desc:=xtContext;
         ExprType.Context:=CreateFindContext(Params);
         Params.Load(OldInput,true);
         exit(true);
-      end;
+      end else
+        Result:=false;
     end;
+
+  var
+    Identifier: String;
+  begin
+    Result:=false;
+    if CurAtom.Flag<>cafWord then exit;
+    Identifier:=GetAtom;
+    Params.Flags := Params.Flags - [fdfExceptionOnNotFound];
+
+    if (CurAtom.EndPos-CurAtom.StartPos<length('Attribute'))
+        or (not CompareSrcIdentifiers(CurAtom.EndPos-length('Attribute'),'attribute')) then
+    begin
+      // attribute name does not end with 'attribute'
+      // -> first search IdentifierAttribute
+      if Find(Identifier+'Attribute') then exit(true);
+    end;
+    // then search the name
+    if Find(Identifier) then exit(true);
     Params.Load(OldInput,false);
   end;
   
