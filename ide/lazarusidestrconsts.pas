@@ -6010,9 +6010,6 @@ resourcestring
   lisCFEErrorDestroyingComponentOfTypeOfUnit = 'Error destroying component of '
     +'type %s of unit %s:%s%s';
   lisCFEErrorDestroyingComponent = 'Error destroying component';
-  lisCFEContinueLoading = 'Continue loading';
-  lisCFECancelLoadingThisResource = 'Cancel loading this resource';
-  lisCFEStopAllLoading = 'Stop all loading';
   lisCFEErrorReading = 'Error reading %s';
   lisCFEComponent = '%s%sComponent: %s:%s';
   lisCFEComponentClass = '%s%sComponent Class: %s';

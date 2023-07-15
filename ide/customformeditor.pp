@@ -98,8 +98,6 @@ type
     procedure SetSelection(const ASelection: TPersistentSelectionList);
     procedure OnObjectInspectorModified(Sender: TObject);
     procedure SetObj_Inspector(AnObjectInspector: TObjectInspectorDlg); virtual;
-    procedure JITListReaderError(Sender: TObject; Reader: TReader;
-          ErrorType: TJITFormError; var Action: TModalResult); virtual;
     procedure JITListBeforeCreate(Sender: TObject; Instance: TPersistent);
     procedure JITListException(Sender: TObject; E: Exception;
                                var {%H-}Action: TModalResult);
@@ -338,9 +336,7 @@ var
 
 implementation
 
-
-function CompareDefPropCacheItems(Item1, Item2: TDefinePropertiesCacheItem
-  ): integer;
+function CompareDefPropCacheItems(Item1, Item2: TDefinePropertiesCacheItem): integer;
 begin
   Result:=CompareText(Item1.PersistentClassname,Item2.PersistentClassname);
 end;
@@ -487,7 +483,6 @@ constructor TCustomFormEditor.Create;
 
   procedure InitJITList(List: TJITComponentList);
   begin
-    List.OnReaderError:=@JITListReaderError;
     List.OnBeforeCreate:=@JITListBeforeCreate;
     List.OnException:=@JITListException;
     List.OnPropertyNotFound:=@JITListPropertyNotFound;
@@ -1618,12 +1613,15 @@ begin
   if JITList=nil then
     RaiseGDBException('TCustomFormEditor.CreateComponentFromStream ClassName='+
                       AncestorType.ClassName);
-  NewJITIndex := JITList.AddJITComponentFromStream(BinStream, UnitResourcefileFormat,
-              AncestorType,NewUnitName,Interactive,Visible,DisableAutoSize,
-              ContextObj);
-  if NewJITIndex < 0 then begin
-    Result:=nil;
-    exit;
+  try
+    NewJITIndex := JITList.AddJITComponentFromStream(BinStream, UnitResourcefileFormat,
+                AncestorType,NewUnitName,Interactive,Visible,DisableAutoSize,
+                ContextObj);
+    if NewJITIndex < 0 then
+      exit(nil);
+  except
+    on E: EUnknownProperty do
+      exit(nil);
   end;
   Result:=JITList[NewJITIndex];
 end;
@@ -2124,84 +2122,6 @@ begin
   if FStandardDefinePropertiesRegistered then exit;
   FStandardDefinePropertiesRegistered:=true;
   RegisterDefineProperty('TStrings','Strings');
-end;
-
-procedure TCustomFormEditor.JITListReaderError(Sender: TObject;
-  Reader: TReader; ErrorType: TJITFormError; var Action: TModalResult);
-var
-  aCaption, aMsg: string;
-  DlgType: TMsgDlgType;
-  Buttons: TMsgDlgButtons;
-  JITComponentList: TJITComponentList;
-  StreamClass: TComponentClass;
-  AnUnitInfo: TUnitInfo;
-  LFMFilename: String;
-  ErrorBinPos: Int64;
-begin
-  JITComponentList:=TJITComponentList(Sender);
-  aCaption:='Read error';
-  aMsg:='';
-  DlgType:=mtError;
-  Buttons:=[mbCancel];
-
-  // get current lfm filename
-  LFMFilename:='';
-  if (JITComponentList.CurReadStreamClass<>nil)
-  and (JITComponentList.CurReadStreamClass.InheritsFrom(TComponent)) then begin
-    StreamClass:=TComponentClass(JITComponentList.CurReadStreamClass);
-    AnUnitInfo:=Project1.UnitWithComponentClass(StreamClass);
-    if AnUnitInfo<>nil then begin
-      LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
-    end;
-  end;
-  if LFMFilename<>'' then
-    aCaption:=Format(lisCFEErrorReading, [ExtractFilename(LFMFilename)]);
-  
-  with JITComponentList do begin
-    if LFMFilename<>'' then
-      aMsg:=aMsg+LFMFilename
-    else if CurReadStreamClass<>nil then
-      aMsg:=Format(lisCFEStream, [aMsg, CurReadStreamClass.ClassName])
-    else
-      aMsg:=aMsg+'JITList='+ClassName;
-    aMsg:=aMsg+': ';
-    if CurReadJITComponent<>nil then
-      aMsg:=Format(lisCFERoot, [aMsg, CurReadJITComponent.Name,
-        CurReadJITComponent.ClassName]);
-    if CurReadChild<>nil then
-      aMsg:=Format(lisCFEComponent,
-                   [aMsg, LineEnding, CurReadChild.Name, CurReadChild.ClassName])
-    else if CurReadChildClass<>nil then
-      aMsg:=Format(lisCFEComponentClass,
-                   [aMsg, LineEnding, CurReadChildClass.ClassName]);
-    aMsg:=aMsg+LineEnding+CurReadErrorMsg;
-  end;
-  if (Reader<>nil) and (Reader.Driver is TLRSObjectReader) then begin
-    ErrorBinPos:=TLRSObjectReader(Reader.Driver).Stream.Position;
-    aMsg:=Format(lisCFEStreamPosition, [aMsg, LineEnding, dbgs(ErrorBinPos)]);
-  end;
-
-  case ErrorType of
-    jfeUnknownProperty, jfeReaderError:
-      begin
-        Buttons:=[mbIgnore,mbCancel];
-      end;
-    jfeUnknownComponentClass:
-      begin
-        aMsg:=Format(lisCFEClassNotFound,
-                     [aMsg, LineEnding, JITComponentList.CurUnknownClassName]);
-      end;
-  end;
-  if Buttons=[mbIgnore,mbCancel] then begin
-    Action:=IDEQuestionDialog(aCaption,aMsg,DlgType,
-      [mrIgnore, lisCFEContinueLoading,
-       mrCancel, lisCFECancelLoadingThisResource,
-       mrAbort, lisCFEStopAllLoading]);
-  end else begin
-    Action:=IDEQuestionDialog(aCaption,aMsg,DlgType,
-      [mrCancel, lisCFECancelLoadingThisResource,
-       mrAbort, lisCFEStopAllLoading]);
-  end;
 end;
 
 procedure TCustomFormEditor.JITListBeforeCreate(Sender: TObject;

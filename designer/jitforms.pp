@@ -46,7 +46,7 @@ uses
   // LCL
   Forms, Controls, Dialogs, LResources, LCLMemManager, LCLProc,
   //LazUtils
-  AvgLvlTree, LazUtilities, LazLoggerBase, LazTracer,
+  AvgLvlTree, LazUtilities, LazStringUtils, LazLoggerBase, LazTracer,
   // CodeTools
   BasicCodeTools,
   // IdeIntf
@@ -67,8 +67,7 @@ type
   TJITFormErrors = set of TJITFormError;
   
   TJITReaderErrorEvent = procedure(Sender: TObject; Reader: TReader;
-                                   ErrorType: TJITFormError;
-                                   var Action: TModalResult) of object;
+                                   ErrorType: TJITFormError) of object;
   TJITBeforeCreateEvent = procedure(Sender: TObject; Instance: TPersistent) of object;
   TJITExceptionEvent = procedure(Sender: TObject; E: Exception;
                                  var Action: TModalResult) of object;
@@ -82,6 +81,7 @@ type
   TJITFindClass = procedure(Sender: TObject;
                             const VarName, aClassUnitName, aClassName: string;
                             var ComponentClass: TComponentClass) of object;
+  EUnknownProperty = class(Exception);
 
 
   { TJITComponentList }
@@ -968,6 +968,8 @@ begin
         AControl.ControlStyle:=AControl.ControlStyle+[csSetCaption];
     end;
   except
+    on E: EUnknownProperty do
+      raise; // Will be caught in TCustomFormEditor.CreateRawComponentFromStream
     on E: Exception do begin
       HandleException(E,'[TJITComponentList.AddJITComponentFromStream] ERROR reading form stream'
          +' of Class "'+NewClassName+'"',Action);
@@ -1904,36 +1906,34 @@ end;
 
 procedure TJITComponentList.ReaderError(Reader: TReader;
   const ErrorMsg: Ansistring; var Handled: Boolean);
-// ToDo: use SUnknownProperty when it is published by the fpc team
 const
+  // rtlconst.inc has SUnknownProperty = 'Unknown property: "%s"';
   SUnknownProperty = 'Unknown property';
 var
   ErrorType: TJITFormError;
-  Action: TModalResult;
   ErrorBinPos: Int64;
 begin
-  ErrorType:=jfeReaderError;
-  Action:=mrCancel;
   FCurReadErrorMsg:=ErrorMsg;
   FCurUnknownProperty:=''; // ToDo find name property
   // find out, what error occurred
-  if RightStr(ErrorMsg,length(SUnknownProperty))=SUnknownProperty then begin
-    ErrorType:=jfeUnknownProperty;
-    Action:=mrIgnore;
-  end;
+  if LazStartsStr(SUnknownProperty, ErrorMsg) then
+    ErrorType:=jfeUnknownProperty
+  else
+    ErrorType:=jfeReaderError;
   if Reader.Driver is TLRSObjectReader then begin
     // save error position
     ErrorBinPos:=TLRSObjectReader(Reader.Driver).Stream.Position;
     FErrors.Add(-1,ErrorBinPos,nil);
   end;
   if Assigned(OnReaderError) then
-    OnReaderError(Self,Reader,ErrorType,Action);
-  Handled:=Action in [mrIgnore];
+    OnReaderError(Self,Reader,ErrorType);
+  Handled:=true;
   FCurUnknownProperty:='';
-  
   DebugLn('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
   DebugLn(['[TJITComponentList.ReaderError] "'+ErrorMsg+'" ignoring=',Handled]);
   DebugLn('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
+  // EUnknownProperty will be caught in TCustomFormEditor.CreateRawComponentFromStream
+  raise EUnknownProperty.Create('');
 end;
 
 procedure TJITComponentList.ReaderFindComponentClass(Reader: TReader;
