@@ -1590,9 +1590,9 @@ var
 begin
   Desktop := QApplication_desktop();
   Result := True;
-  for i := 0 to QDesktopWidget_numScreens(Desktop) - 1 do
+  for i := 1 to QDesktopWidget_numScreens(Desktop) do
   begin
-    Result := Result and lpfnEnum(i + 1, 0, nil, dwData);
+    Result := lpfnEnum(i, 0, nil, dwData);
     if not Result then break;
   end;
 end;
