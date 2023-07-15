@@ -305,7 +305,7 @@ begin
     ,'  end;'
     ,'implementation'
     ,'end.'],
-   ['Button1:Dsgn_AmbigBearBtn.TBearButton']
+   ['Button1:Dsgn_AmbigBearBtn/TBearButton']
     );
 end;
 
@@ -325,9 +325,9 @@ begin
     ,'  end;'
     ,'implementation'
     ,'end.'],
-   ['Button1:Dsgn_AmbigBearBtn.TBearButton',
-    'Button2:Dsgn_BearButtons.TBearButton',
-    'Label1:Dsgn_BearControls.TBearLabel']
+   ['Button1:Dsgn_AmbigBearBtn/TBearButton',
+    'Button2:Dsgn_BearButtons/TBearButton',
+    'Label1:Dsgn_BearControls/TBearLabel']
     );
 end;
 
