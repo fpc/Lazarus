@@ -6048,10 +6048,6 @@ msgstr "Błędne wcięcia"
 msgid "An exception occurred during deletion of%s\"%s:%s\"%s%s"
 msgstr "Wystąpił wyjątek podczas kasowania %s\"%s:%s\"%s%s"
 
-#: lazarusidestrconsts.liscfecancelloadingthisresource
-msgid "Cancel loading this resource"
-msgstr "Zrezygnuj z wczytywania tego zasobu"
-
 #: lazarusidestrconsts.liscfeclassnotfound
 #, object-pascal-format
 msgid "%s%sClass \"%s\" not found."
@@ -6066,10 +6062,6 @@ msgstr "%s nie istnieje: %s"
 #, object-pascal-format, fuzzy, badformat
 msgid "%s%sComponent Class: %s"
 msgstr "błędna nazwa klasy=\"%s\""
-
-#: lazarusidestrconsts.liscfecontinueloading
-msgid "Continue loading"
-msgstr "Kontynuuj wczytywanie"
 
 #: lazarusidestrconsts.liscfedonotknowhowtocopythisformeditingselection
 msgid "Do not know how to copy this form editing selection"
@@ -6129,10 +6121,6 @@ msgstr "Nieprawidłowy właściciel komponentu"
 #, object-pascal-format, fuzzy, badformat
 msgid "%sRoot=%s:%s"
 msgstr "%s nie istnieje: %s"
-
-#: lazarusidestrconsts.liscfestopallloading
-msgid "Stop all loading"
-msgstr "Przerwij wczytywanie wszystkiego"
 
 #: lazarusidestrconsts.liscfestream
 #, object-pascal-format, fuzzy

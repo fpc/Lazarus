@@ -5991,10 +5991,6 @@ msgstr "Falsche Einrückung"
 msgid "An exception occurred during deletion of%s\"%s:%s\"%s%s"
 msgstr "Eine Ausnahme trat auf während des Löschens von%s\"%s:%s\"%s%s"
 
-#: lazarusidestrconsts.liscfecancelloadingthisresource
-msgid "Cancel loading this resource"
-msgstr "Laden dieser Ressource abbrechen"
-
 #: lazarusidestrconsts.liscfeclassnotfound
 #, object-pascal-format
 msgid "%s%sClass \"%s\" not found."
@@ -6009,10 +6005,6 @@ msgstr "%s%sKomponente: %s:%s"
 #, object-pascal-format
 msgid "%s%sComponent Class: %s"
 msgstr "%s%sKomponentenklasse: %s"
-
-#: lazarusidestrconsts.liscfecontinueloading
-msgid "Continue loading"
-msgstr "Laden fortsetzen"
 
 #: lazarusidestrconsts.liscfedonotknowhowtocopythisformeditingselection
 msgid "Do not know how to copy this form editing selection"
@@ -6071,10 +6063,6 @@ msgstr "Ungültiger Besitzer der Komponente"
 #, object-pascal-format
 msgid "%sRoot=%s:%s"
 msgstr ""
-
-#: lazarusidestrconsts.liscfestopallloading
-msgid "Stop all loading"
-msgstr "Alle Ladevorgänge anhalten"
 
 #: lazarusidestrconsts.liscfestream
 #, object-pascal-format

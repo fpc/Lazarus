@@ -5943,10 +5943,6 @@ msgstr "错误缩进"
 msgid "An exception occurred during deletion of%s\"%s:%s\"%s%s"
 msgstr "一个异常发生 在%s\"%s:%s\"%s%s删除的期间"
 
-#: lazarusidestrconsts.liscfecancelloadingthisresource
-msgid "Cancel loading this resource"
-msgstr "取消加载这个资源"
-
 #: lazarusidestrconsts.liscfeclassnotfound
 #, object-pascal-format
 msgid "%s%sClass \"%s\" not found."
@@ -5961,10 +5957,6 @@ msgstr "%s%s组件:%s:%s"
 #, object-pascal-format
 msgid "%s%sComponent Class: %s"
 msgstr "%s%s组件类:%s"
-
-#: lazarusidestrconsts.liscfecontinueloading
-msgid "Continue loading"
-msgstr "继续加载"
 
 #: lazarusidestrconsts.liscfedonotknowhowtocopythisformeditingselection
 msgid "Do not know how to copy this form editing selection"
@@ -6023,10 +6015,6 @@ msgstr "无效的组件拥有者"
 #, object-pascal-format
 msgid "%sRoot=%s:%s"
 msgstr "%sRoot(根)=%s:%s"
-
-#: lazarusidestrconsts.liscfestopallloading
-msgid "Stop all loading"
-msgstr "停止所有加载"
 
 #: lazarusidestrconsts.liscfestream
 #, object-pascal-format

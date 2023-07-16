@@ -5875,10 +5875,6 @@ msgstr "Yanlış girinti"
 msgid "An exception occurred during deletion of%s\"%s:%s\"%s%s"
 msgstr "%s\"%s:%s\"%s%s öğesinin silinmesi sırasında bir istisna oluştu"
 
-#: lazarusidestrconsts.liscfecancelloadingthisresource
-msgid "Cancel loading this resource"
-msgstr "Bu kaynağı yüklemeyi iptal et"
-
 #: lazarusidestrconsts.liscfeclassnotfound
 #, object-pascal-format
 msgid "%s%sClass \"%s\" not found."
@@ -5893,10 +5889,6 @@ msgstr "%s%s Bileşeni: %s: %s"
 #, object-pascal-format
 msgid "%s%sComponent Class: %s"
 msgstr "%s%sBileşen Sınıfı: %s"
-
-#: lazarusidestrconsts.liscfecontinueloading
-msgid "Continue loading"
-msgstr "Yüklemeye devam et"
 
 #: lazarusidestrconsts.liscfedonotknowhowtocopythisformeditingselection
 msgid "Do not know how to copy this form editing selection"
@@ -5955,10 +5947,6 @@ msgstr "Geçersiz bileşen sahibi"
 #, object-pascal-format
 msgid "%sRoot=%s:%s"
 msgstr "%s kök = %s: %s"
-
-#: lazarusidestrconsts.liscfestopallloading
-msgid "Stop all loading"
-msgstr "Tüm yüklemeyi durdur"
 
 #: lazarusidestrconsts.liscfestream
 #, object-pascal-format

@@ -6041,10 +6041,6 @@ msgstr "Sangrado erróneo"
 msgid "An exception occurred during deletion of%s\"%s:%s\"%s%s"
 msgstr "Se produjo una excepción durante la eliminación de%s\"%s:%s\"%s%s"
 
-#: lazarusidestrconsts.liscfecancelloadingthisresource
-msgid "Cancel loading this resource"
-msgstr "Cancelar la carga de este recurso"
-
 #: lazarusidestrconsts.liscfeclassnotfound
 #, object-pascal-format
 msgid "%s%sClass \"%s\" not found."
@@ -6059,10 +6055,6 @@ msgstr "%s%sComponente: %s:%s"
 #, object-pascal-format
 msgid "%s%sComponent Class: %s"
 msgstr "%s%sComponente de Clase: %s"
-
-#: lazarusidestrconsts.liscfecontinueloading
-msgid "Continue loading"
-msgstr "Continuar carga"
 
 #: lazarusidestrconsts.liscfedonotknowhowtocopythisformeditingselection
 msgid "Do not know how to copy this form editing selection"
@@ -6121,10 +6113,6 @@ msgstr "Propietario del componente no válido"
 #, object-pascal-format
 msgid "%sRoot=%s:%s"
 msgstr "%sRaíz=%s:%s"
-
-#: lazarusidestrconsts.liscfestopallloading
-msgid "Stop all loading"
-msgstr "Detener todas las cargas"
 
 #: lazarusidestrconsts.liscfestream
 #, object-pascal-format

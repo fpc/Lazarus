@@ -5965,10 +5965,6 @@ msgstr "Nesprávné odsazení"
 msgid "An exception occurred during deletion of%s\"%s:%s\"%s%s"
 msgstr "Došlo k výjimce během mazání%s\"%s:%s\"%s%s"
 
-#: lazarusidestrconsts.liscfecancelloadingthisresource
-msgid "Cancel loading this resource"
-msgstr "Zrušit načítání tohoto zdroje"
-
 #: lazarusidestrconsts.liscfeclassnotfound
 #, object-pascal-format
 msgid "%s%sClass \"%s\" not found."
@@ -5983,10 +5979,6 @@ msgstr "%s%sKomponenta: %s:%s"
 #, object-pascal-format
 msgid "%s%sComponent Class: %s"
 msgstr "%s%sTřída komponenty: %s"
-
-#: lazarusidestrconsts.liscfecontinueloading
-msgid "Continue loading"
-msgstr "Pokračovat v nahrávání"
 
 #: lazarusidestrconsts.liscfedonotknowhowtocopythisformeditingselection
 msgid "Do not know how to copy this form editing selection"
@@ -6045,10 +6037,6 @@ msgstr "Neplatný vlastník komponenty"
 #, object-pascal-format
 msgid "%sRoot=%s:%s"
 msgstr "%sKořen=%s:%s"
-
-#: lazarusidestrconsts.liscfestopallloading
-msgid "Stop all loading"
-msgstr "Zastavit všechna nahrávání"
 
 #: lazarusidestrconsts.liscfestream
 #, object-pascal-format

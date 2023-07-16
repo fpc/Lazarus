@@ -5917,10 +5917,6 @@ msgstr "Väärä sisennys"
 msgid "An exception occurred during deletion of%s\"%s:%s\"%s%s"
 msgstr "Keskeytys tapahtui poistettaessa%s\"%s:%s\"%s%s"
 
-#: lazarusidestrconsts.liscfecancelloadingthisresource
-msgid "Cancel loading this resource"
-msgstr "Peruuta tämän resurssin lataaminen"
-
 #: lazarusidestrconsts.liscfeclassnotfound
 #, object-pascal-format
 msgid "%s%sClass \"%s\" not found."
@@ -5935,10 +5931,6 @@ msgstr "%s%sKomponentti: %s:%s"
 #, object-pascal-format
 msgid "%s%sComponent Class: %s"
 msgstr "%s%sKomponenttiluokka: %s"
-
-#: lazarusidestrconsts.liscfecontinueloading
-msgid "Continue loading"
-msgstr "Jatka lataamista"
 
 #: lazarusidestrconsts.liscfedonotknowhowtocopythisformeditingselection
 msgid "Do not know how to copy this form editing selection"
@@ -5997,10 +5989,6 @@ msgstr "Kelvoton komponentin omistaja"
 #, object-pascal-format
 msgid "%sRoot=%s:%s"
 msgstr "%sJuuri=%s:%s"
-
-#: lazarusidestrconsts.liscfestopallloading
-msgid "Stop all loading"
-msgstr "Lopeta kaikki lataaminen"
 
 #: lazarusidestrconsts.liscfestream
 #, object-pascal-format
