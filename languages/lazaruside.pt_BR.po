@@ -5962,10 +5962,6 @@ msgstr "Identação incorreta"
 msgid "An exception occurred during deletion of%s\"%s:%s\"%s%s"
 msgstr "Uma exceção ocorreu durante exclusão de %s\"%s%s\"%s%s"
 
-#: lazarusidestrconsts.liscfecancelloadingthisresource
-msgid "Cancel loading this resource"
-msgstr "Cancelar carregamento deste recurso"
-
 #: lazarusidestrconsts.liscfeclassnotfound
 #, object-pascal-format
 msgid "%s%sClass \"%s\" not found."
@@ -5980,10 +5976,6 @@ msgstr "%s%sComponente: %s:%s"
 #, object-pascal-format
 msgid "%s%sComponent Class: %s"
 msgstr "%s%sClasse Componente: %s"
-
-#: lazarusidestrconsts.liscfecontinueloading
-msgid "Continue loading"
-msgstr "Continuar carregando"
 
 #: lazarusidestrconsts.liscfedonotknowhowtocopythisformeditingselection
 msgid "Do not know how to copy this form editing selection"
@@ -6042,10 +6034,6 @@ msgstr "Proprietário do componente inválido"
 #, object-pascal-format
 msgid "%sRoot=%s:%s"
 msgstr "%sRaiz=%s:%s"
-
-#: lazarusidestrconsts.liscfestopallloading
-msgid "Stop all loading"
-msgstr "Parar todo o carregamento"
 
 #: lazarusidestrconsts.liscfestream
 #, object-pascal-format

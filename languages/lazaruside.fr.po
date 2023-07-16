@@ -5940,10 +5940,6 @@ msgstr "Mauvaise indentation"
 msgid "An exception occurred during deletion of%s\"%s:%s\"%s%s"
 msgstr "Une exception s'est produite lors de la suppression de%s\"%s :%s\"%s%s"
 
-#: lazarusidestrconsts.liscfecancelloadingthisresource
-msgid "Cancel loading this resource"
-msgstr "Annuler le chargement de cette ressource"
-
 #: lazarusidestrconsts.liscfeclassnotfound
 #, object-pascal-format
 msgid "%s%sClass \"%s\" not found."
@@ -5958,10 +5954,6 @@ msgstr "%s%sComposant : %s:%s"
 #, object-pascal-format
 msgid "%s%sComponent Class: %s"
 msgstr "%s%sClasse de composant : %s"
-
-#: lazarusidestrconsts.liscfecontinueloading
-msgid "Continue loading"
-msgstr "Continuer le chargement"
 
 #: lazarusidestrconsts.liscfedonotknowhowtocopythisformeditingselection
 msgid "Do not know how to copy this form editing selection"
@@ -6020,10 +6012,6 @@ msgstr "Composant propriétaire incorrect"
 #, object-pascal-format
 msgid "%sRoot=%s:%s"
 msgstr "%sRacine =%s:%s"
-
-#: lazarusidestrconsts.liscfestopallloading
-msgid "Stop all loading"
-msgstr "Arrêter tous les chargements"
 
 #: lazarusidestrconsts.liscfestream
 #, object-pascal-format

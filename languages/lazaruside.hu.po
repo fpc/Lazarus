@@ -5939,10 +5939,6 @@ msgstr "Hibás behúzás"
 msgid "An exception occurred during deletion of%s\"%s:%s\"%s%s"
 msgstr "Kivétel keletkezett a következő törlése közben:%s\"%s:%s\"%s%s"
 
-#: lazarusidestrconsts.liscfecancelloadingthisresource
-msgid "Cancel loading this resource"
-msgstr "Ezt az erőforrást ne töltse be"
-
 #: lazarusidestrconsts.liscfeclassnotfound
 #, object-pascal-format
 msgid "%s%sClass \"%s\" not found."
@@ -5957,10 +5953,6 @@ msgstr "%s%sKomponens: %s:%s"
 #, object-pascal-format
 msgid "%s%sComponent Class: %s"
 msgstr "%s%sKomponens osztály: %s"
-
-#: lazarusidestrconsts.liscfecontinueloading
-msgid "Continue loading"
-msgstr "Betöltés folytatása"
 
 #: lazarusidestrconsts.liscfedonotknowhowtocopythisformeditingselection
 msgid "Do not know how to copy this form editing selection"
@@ -6019,10 +6011,6 @@ msgstr "Érvénytelen komponens tulajdonos"
 #, object-pascal-format
 msgid "%sRoot=%s:%s"
 msgstr "%sRoot=%s:%s"
-
-#: lazarusidestrconsts.liscfestopallloading
-msgid "Stop all loading"
-msgstr "Minden betöltés megszakítása"
 
 #: lazarusidestrconsts.liscfestream
 #, object-pascal-format

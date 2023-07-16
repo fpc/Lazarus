@@ -6049,10 +6049,6 @@ msgstr "間違ったインデント"
 msgid "An exception occurred during deletion of%s\"%s:%s\"%s%s"
 msgstr "削除中に例外が発生しました %s\"%s:%s\"%s%s"
 
-#: lazarusidestrconsts.liscfecancelloadingthisresource
-msgid "Cancel loading this resource"
-msgstr "このソースの読み込みを中止"
-
 #: lazarusidestrconsts.liscfeclassnotfound
 #, object-pascal-format
 msgid "%s%sClass \"%s\" not found."
@@ -6067,10 +6063,6 @@ msgstr "%s%sコンポーネント: %s:%s"
 #, object-pascal-format
 msgid "%s%sComponent Class: %s"
 msgstr "%s%sコンポーネントクラス: %s"
-
-#: lazarusidestrconsts.liscfecontinueloading
-msgid "Continue loading"
-msgstr "読み込みを続ける"
 
 #: lazarusidestrconsts.liscfedonotknowhowtocopythisformeditingselection
 msgid "Do not know how to copy this form editing selection"
@@ -6129,10 +6121,6 @@ msgstr "無効なコンポーネントのオーナー"
 #, object-pascal-format
 msgid "%sRoot=%s:%s"
 msgstr "%sRoot=%s:%s"
-
-#: lazarusidestrconsts.liscfestopallloading
-msgid "Stop all loading"
-msgstr "すべての読み込みを中止"
 
 #: lazarusidestrconsts.liscfestream
 #, object-pascal-format

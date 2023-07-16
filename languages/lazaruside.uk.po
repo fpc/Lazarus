@@ -5924,10 +5924,6 @@ msgstr "Неправильні відступи"
 msgid "An exception occurred during deletion of%s\"%s:%s\"%s%s"
 msgstr "Стався виняток під час видалення%s\"%s:%s\"%s%s"
 
-#: lazarusidestrconsts.liscfecancelloadingthisresource
-msgid "Cancel loading this resource"
-msgstr "Скасувати завантаження цього ресурсу"
-
 #: lazarusidestrconsts.liscfeclassnotfound
 #, object-pascal-format
 msgid "%s%sClass \"%s\" not found."
@@ -5942,10 +5938,6 @@ msgstr "%s%sКомпонент: %s:%s"
 #, object-pascal-format
 msgid "%s%sComponent Class: %s"
 msgstr "%s%sКлас компонента: %s"
-
-#: lazarusidestrconsts.liscfecontinueloading
-msgid "Continue loading"
-msgstr "Продовжити завантаження"
 
 #: lazarusidestrconsts.liscfedonotknowhowtocopythisformeditingselection
 msgid "Do not know how to copy this form editing selection"
@@ -6004,10 +5996,6 @@ msgstr "Неприпустимий власник компонента"
 #, object-pascal-format
 msgid "%sRoot=%s:%s"
 msgstr "%sКореневий=%s:%s"
-
-#: lazarusidestrconsts.liscfestopallloading
-msgid "Stop all loading"
-msgstr "Зупинити всі завантаження"
 
 #: lazarusidestrconsts.liscfestream
 #, object-pascal-format

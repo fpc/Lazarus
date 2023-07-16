@@ -6269,10 +6269,6 @@ msgstr "הזחה שגויה"
 msgid "An exception occurred during deletion of%s\"%s:%s\"%s%s"
 msgstr "קרתה חריגה בזמן הסרת %s\"%s:%s\"%s%s"
 
-#: lazarusidestrconsts.liscfecancelloadingthisresource
-msgid "Cancel loading this resource"
-msgstr "בטל טעינת משאב זה"
-
 #: lazarusidestrconsts.liscfeclassnotfound
 #, object-pascal-format, fuzzy, badformat
 msgid "%s%sClass \"%s\" not found."
@@ -6287,10 +6283,6 @@ msgstr "רכיב: %s:%s"
 #, object-pascal-format, fuzzy, badformat
 msgid "%s%sComponent Class: %s"
 msgstr "מחלקת רכיבים: %s"
-
-#: lazarusidestrconsts.liscfecontinueloading
-msgid "Continue loading"
-msgstr "ממשיך בטעינה"
 
 #: lazarusidestrconsts.liscfedonotknowhowtocopythisformeditingselection
 msgid "Do not know how to copy this form editing selection"
@@ -6350,10 +6342,6 @@ msgstr "הבעלים של הרכיב אינו חוקי"
 #, object-pascal-format, fuzzy, badformat
 msgid "%sRoot=%s:%s"
 msgstr "רוט= %s:%s"
-
-#: lazarusidestrconsts.liscfestopallloading
-msgid "Stop all loading"
-msgstr "עצור את כל הטעינות"
 
 #: lazarusidestrconsts.liscfestream
 #, object-pascal-format, fuzzy, badformat

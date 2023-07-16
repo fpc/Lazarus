@@ -6064,10 +6064,6 @@ msgstr "Indentazione errata"
 msgid "An exception occurred during deletion of%s\"%s:%s\"%s%s"
 msgstr "Si è verificato un errore nel cancellare%s\"%s:%s\"%s%s"
 
-#: lazarusidestrconsts.liscfecancelloadingthisresource
-msgid "Cancel loading this resource"
-msgstr "Cancella il caricamento di questa risorsa"
-
 #: lazarusidestrconsts.liscfeclassnotfound
 #, object-pascal-format
 msgid "%s%sClass \"%s\" not found."
@@ -6082,10 +6078,6 @@ msgstr "%s%sComponent: %s:%s"
 #, object-pascal-format
 msgid "%s%sComponent Class: %s"
 msgstr "%s%sComponent Class: %s"
-
-#: lazarusidestrconsts.liscfecontinueloading
-msgid "Continue loading"
-msgstr "Continua il caricamento"
 
 #: lazarusidestrconsts.liscfedonotknowhowtocopythisformeditingselection
 msgid "Do not know how to copy this form editing selection"
@@ -6144,10 +6136,6 @@ msgstr "Proprietario del componente non valido"
 #, object-pascal-format
 msgid "%sRoot=%s:%s"
 msgstr "%sRoot=%s:%s"
-
-#: lazarusidestrconsts.liscfestopallloading
-msgid "Stop all loading"
-msgstr "Arresta tutto il caricamento"
 
 #: lazarusidestrconsts.liscfestream
 #, object-pascal-format
