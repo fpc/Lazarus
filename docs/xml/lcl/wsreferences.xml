@@ -26,11 +26,68 @@ to a handle in widget set classes and LCL components.
 
 <element name="TLCLHandle">
 <short>
-The type used for handles in widget set classes and LCL components.
+The type used for handles in LCL applications, components, controls, and widget set classes.
 </short>
-<descr/>
+<descr>
+<p>
+<var>TLCLHandle</var> is an alias for the <var>PtrUInt</var> (Pointer to 
+Unsigned Integer) type, and the type used to represent handles in the Lazarus 
+Component Library (LCL).
+</p>
+<p>
+TLCLHandle differentiates the handle type used in LCL from the THandle type 
+used in the FPC Run-time Library (RTL) and numerous other libraries. It is 
+needed because the RTL THandle type is a longint (signed) value on 64-bit 
+Linux platforms and not suitable for use as a window handle in the 
+multi-platform LCL.
+</p>
+<p>
+TLCLHandle is the type used to represent all handles for an application, 
+controls, and components in the LCL - including those in widgetset class 
+instances. In the LCL type system, it is equivalent to HWND (and related 
+identifiers like HDC, HFONT, HICON, HBRUSH, et. al.) used to identify window 
+objects and resources. TLCLHandle is one of the values that can be returned by 
+the TWSReference class used for widgetset class references (The other is a 
+Pointer to the TLCLHandle type).
+</p>
+<p>
+TLCLHandle is used in the implementation of classes like:
+</p>
+<ul>
+<li>TApplication</li>
+<li>TLCLComponent</li>
+<li>TLCLReferenceComponent</li>
+<li>TCustomBitBtn</li>
+<li>TCustomTimer</li>
+<li>TCommonDialog</li>
+<li>TScreen</li>
+<li>TGraphic</li>
+<li>TPicture</li>
+<li>TSharedRasterImage</li>
+<li>TRasterImage</li>
+<li>TCustomBitmap</li>
+<li>TSharedIcon</li>
+<li>TCustomIcon</li>
+<li>TIcon</li>
+<li>TBrush</li>
+<li>TPen</li>
+<li>TCursorImage</li>
+<li>TChangeLink</li>
+<li>TCustomImageListResolution</li>
+<li>TCustomImageList</li>
+<li>TRegion</li>
+<li>TTreeNode</li>
+<li>TTreeNodes</li>
+</ul>
+<remark>
+TLCLHandle is the replacement for the redefined THandle alias in LCL versions 
+prior to 4.0. THandle is deprecated in LCL 4.0; use TLCLHandle instead.
+</remark>
+</descr>
 <seealso>
 <link id="#lcl.lcltype.TLCLHandle">LCLType.TLCLHandle</link>
+<link id="#lcl.lclclasses.TLCLComponment">TLCLComponment</link>
+<link id="#lcl.lclclasses.TLCLReferenceComponment">TLCLReferenceComponment</link>
 </seealso>
 </element>
 
@@ -39,7 +96,9 @@ The type used for handles in widget set classes and LCL components.
 Pointer to a TLCLHandle instance.
 </short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TLCLHandle"/>
+</seealso>
 </element>
 
 <element name="PWSReference">
