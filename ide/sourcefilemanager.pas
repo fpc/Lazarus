@@ -6299,10 +6299,8 @@ begin
           end;
           LFMUnitInfo:=Project1.UnitWithEditorComponent(SourceEditorManager.ActiveEditor);
           Result:=CheckLFMInEditor(LFMUnitInfo, true);
-          if Result=mrOk then begin
+          if Result=mrOk then
             AnUnitInfo.HasErrorInLFM:=False;
-            Result:=mrCancel;
-          end;
           exit;
         end;
       finally

@@ -332,6 +332,7 @@ type
     procedure SetDisableI18NForLFM(const AValue: boolean);
     procedure SetFileReadOnly(const AValue: Boolean);
     procedure SetComponent(const AValue: TComponent);
+    procedure SetHasErrorInLFM(AValue: boolean);
     procedure SetLoaded(const AValue: Boolean);
     procedure SetLoadedDesigner(const AValue: Boolean);
     procedure SetModified(const AValue: boolean);
@@ -472,7 +473,7 @@ type
     property Loaded: Boolean read fLoaded write SetLoaded;
     property LoadedDesigner: Boolean read fLoadedDesigner write SetLoadedDesigner;
     property LoadingComponent: boolean read FLoadingComponent write FLoadingComponent;
-    property HasErrorInLFM: boolean read fHasErrorInLFM write fHasErrorInLFM;
+    property HasErrorInLFM: boolean read fHasErrorInLFM write SetHasErrorInLFM;
     property Modified: boolean read GetModified write SetModified;// not Session data
     property SessionModified: boolean read FSessionModified write SetSessionModified;
     property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;
@@ -2637,6 +2638,13 @@ begin
     ClearComponentDependencies
   else
     FResourceBaseClass:=GetComponentBaseClass(fComponent.ClassType);
+end;
+
+procedure TUnitInfo.SetHasErrorInLFM(AValue: boolean);
+begin
+  if fHasErrorInLFM=AValue then Exit;
+  fHasErrorInLFM:=AValue;
+  Modified:=true;
 end;
 
 procedure TUnitInfo.SetIsPartOfProject(const AValue: boolean);
