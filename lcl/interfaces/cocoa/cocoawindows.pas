@@ -122,6 +122,8 @@ type
   private
     // for the reentrancy of makeFirstResponder()
     makeFirstResponderCount: Integer;
+  private
+    procedure DoWindowDidBecomeKey(); message 'DoWindowDidBecomeKey';
   protected
     fieldEditor: TCocoaFieldEditor;
     firedMouseEvent: Boolean;
@@ -234,6 +236,9 @@ type
   end;
 
 implementation
+
+uses
+  CocoaInt;
 
 { TCocoaDesignOverlay }
 
@@ -756,6 +761,13 @@ begin
     callback.Close;
 end;
 
+procedure TCocoaWindow.DoWindowDidBecomeKey();
+begin
+  if Assigned(CocoaWidgetSet.CurModalForm) then
+    CocoaWidgetSet.CurModalForm.orderFront(nil);
+  CursorHelper.SetCursorOnActive();
+end;
+
 procedure TCocoaWindow.windowDidBecomeKey(notification: NSNotification);
 begin
   // forcing to keep the level as all other LCL windows
@@ -780,7 +792,7 @@ begin
     and (contentView.isKindOfClass(TCocoaWindowContent)) then
     self.makeFirstResponder( TCocoaWindowContent(contentView).documentView );
 
-  CursorHelper.SetCursorOnActive;
+  performSelector_withObject_afterDelay( ObjCSelector('DoWindowDidBecomeKey'), nil, 0.1 );
 end;
 
 procedure TCocoaWindow.windowDidResignKey(notification: NSNotification);
