@@ -6281,10 +6281,13 @@ begin
           end;
         end
         else begin
-          // Error streaming component -> examine lfm file,
-          // but not when opening project. It would open many lfm file copies.
-          if ofProjectLoading in OpenFlags then exit;
-          DebugLn('LoadLFM ERROR: streaming failed lfm="',LFMBuf.Filename,'"');
+          // Error streaming component -> examine lfm file
+          // but not when opening a project. It would open many lfm file copies.
+          DebugLn('LoadLFM ERROR: streaming failed. Unit="', AnUnitInfo.Filename, '", lfm="', LFMBuf.Filename,'"');
+          if ofProjectLoading in OpenFlags then begin
+            AnUnitInfo.HasErrorInLFM:=True;
+            exit;
+          end;
           // open lfm file in editor
           if AnUnitInfo.OpenEditorInfoCount > 0 then
             Result:=OpenEditorFile(LFMBuf.Filename,
@@ -6300,7 +6303,10 @@ begin
           end;
           LFMUnitInfo:=Project1.UnitWithEditorComponent(SourceEditorManager.ActiveEditor);
           Result:=CheckLFMInEditor(LFMUnitInfo, true);
-          if Result=mrOk then Result:=mrCancel;
+          if Result=mrOk then begin
+            AnUnitInfo.HasErrorInLFM:=False;
+            Result:=mrCancel;
+          end;
           exit;
         end;
       finally

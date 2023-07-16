@@ -288,6 +288,7 @@ type
     fLoaded: Boolean; // loaded in the source editor, needed to restore open files
     fLoadedDesigner: Boolean; // has a visible designer, needed to restore open designers
     FLoadingComponent: boolean;
+    fHasErrorInLFM: boolean;
     fModified: boolean;
     fNext, fPrev: array[TUnitInfoList] of TUnitInfo;
     fOnFileBackup: TOnFileBackup;
@@ -471,6 +472,7 @@ type
     property Loaded: Boolean read fLoaded write SetLoaded;
     property LoadedDesigner: Boolean read fLoadedDesigner write SetLoadedDesigner;
     property LoadingComponent: boolean read FLoadingComponent write FLoadingComponent;
+    property HasErrorInLFM: boolean read fHasErrorInLFM write fHasErrorInLFM;
     property Modified: boolean read GetModified write SetModified;// not Session data
     property SessionModified: boolean read FSessionModified write SetSessionModified;
     property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;
