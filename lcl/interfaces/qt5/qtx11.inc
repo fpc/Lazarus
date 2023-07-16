@@ -66,12 +66,10 @@ var
   ScreenNum: Integer;
   RootWin: TWindow;
   WMAtom: TAtom;
-
   typeReturned: TAtom;
   formatReturned: Integer;
-  nitemsReturned: PtrInt;
-  unused: PtrInt;
-  WidgetIndex, DesktopIndex: Pointer;
+  nitemsReturned, unused: culong;
+  WidgetIndex, DesktopIndex: pcuchar;
   WidgetWin: TWindow;
 begin
   Result := True;
@@ -148,7 +146,7 @@ begin
   XClient.data.l[2] := 0;
   Result := XSendEvent(Display, RootWin, False,
 	      SubstructureRedirectMask or SubstructureNotifyMask,
-	      @XClient) <> Success;
+	      PXEvent(@XClient)) <> Success; // Suspicious typecast! (by Juha)
 end;
 
 function X11GetActiveWindow: QWidgetH;
@@ -159,8 +157,8 @@ var
   WMAtom: TAtom;
   ActualTypeReturn: TAtom;
   ActualFormatReturn: LongInt;
-  NItemsReturn, BytesAfterReturn: Cardinal;
-  Ptr: Pointer;
+  NItemsReturn, BytesAfterReturn: culong;
+  Ptr: Pcuchar;
   Valid: Boolean;
 begin
   Result := nil;
@@ -207,9 +205,8 @@ var
 
   typeReturned: TAtom;
   formatReturned: Integer;
-  nitemsReturned: PtrInt;
-  unused: PtrInt;
-  data: Pointer;
+  nitemsReturned, unused: culong;
+  data: Pcuchar;
 begin
   Result := '';
 
@@ -256,7 +253,7 @@ begin
               @unused, @data) = Success then
             begin
               if (typeReturned = WMAtom) and (formatReturned = 8) then
-                Result := StrPas(Data);
+                Result := StrPas(PChar(Data));
               if Data <> nil then
                 XFree(Data);
               Data := nil;
@@ -334,7 +331,7 @@ begin
   Xclient.data.l[4] := 0;
   XSendEvent (Display, RootWin, False,
 	      SubstructureRedirectMask or SubstructureNotifyMask,
-	      @Xclient);
+	      PXEvent(@Xclient)); // Suspicious typecast! (by Juha)
 end;
 
 function GetAlwaysOnTopX11(Widget: QWidgetH): boolean;
@@ -344,9 +341,8 @@ var
   WMAtom: TAtom;
   typeReturned: TAtom;
   formatReturned: Integer;
-  nitemsReturned: PtrInt;
-  unused: PtrInt;
-  data: Pointer;
+  nitemsReturned, unused: culong;
+  data: pcuchar;
 begin
   Result := False;
   if IsWayland then
@@ -395,7 +391,7 @@ end;
 function GetKeyLockState(const AKey: Byte): Boolean;
 var
   Display: PDisplay;
-  n: Cardinal;
+  n: Word;
 begin
   Result := False;
   if IsWayland then

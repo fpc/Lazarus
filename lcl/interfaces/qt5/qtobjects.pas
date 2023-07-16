@@ -5152,7 +5152,7 @@ begin
   if (AnObject = nil) or (AQtClass = '') then
     Result := False
   else
-    Result := QObject_inherits(AnObject, @AQtClass);
+    Result := QObject_inherits(AnObject, PAnsiChar(@AQtClass)); // Suspicious typecast! (by Juha)
 end;
 
 constructor TQtObjectDump.Create(AnObject: QObjectH);

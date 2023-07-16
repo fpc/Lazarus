@@ -35,7 +35,7 @@ uses
   // Bindings - qt5 must come first to avoid type redefinition problems
   qt5,
   // RTL
-  Classes, SysUtils, Math, Types,
+  Classes, SysUtils, Math, Types, ctypes,
   // LCL
   InterfaceBase, LCLPlatformDef, LCLProc, LCLType, LMessages,
   LCLMessageGlue, LCLStrConsts, Controls, ExtCtrls, Forms,
