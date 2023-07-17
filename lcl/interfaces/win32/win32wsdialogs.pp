@@ -1576,6 +1576,7 @@ end;
 
 class function TWin32WSTaskDialog.Execute(const ADlg: TCustomTaskDialog): Boolean;
 begin
+  //writeln('TWin32WSTaskDialog.Execute');
   Result := inherited Execute(ADlg);
 end;
 

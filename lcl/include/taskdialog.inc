@@ -118,6 +118,13 @@ begin
     Result := mrNone;
 end;
 
+class procedure TCustomTaskDialog.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterTaskDialog;
+end;
+
+
 destructor TCustomTaskDialog.Destroy;
 begin
   FButtons.Free;

@@ -613,7 +613,9 @@ type
     property Items[Index: Integer]: TTaskDialogBaseButtonItem read GetItem write SetItem; default;
   end;
 
-  TCustomTaskDialog = class(TComponent)
+  { TCustomTaskDialog }
+
+  TCustomTaskDialog = class(TLCLComponent)
   private
     FButton: TTaskDialogButtonItem;
     FButtons: TTaskDialogButtons;
@@ -640,6 +642,7 @@ type
     procedure SetRadioButtons(const Value: TTaskDialogButtons);
     function ButtonIDToModalResult(const AButtonID: Integer): TModalResult;
   protected
+    class procedure WSRegisterClass; override;
     function DoExecute(ParentWnd: HWND): Boolean; dynamic;
     procedure DoOnButtonClicked(AModalResult: Integer; var ACanClose: Boolean); dynamic;
   public

@@ -103,8 +103,8 @@ type
   end;
 
   { TWSTaskDialog }
-
-  TWSTaskDialog  = class(TWSCommonDialog)
+  TWSTaskDialogClass = class of TWSTaskDialog;
+  TWSTaskDialog  = class(TWSLCLComponent)
   published
     class function Execute(const ADlg: TCustomTaskDialog): Boolean; virtual;
   end;
@@ -200,6 +200,7 @@ end;
 
 class function TWSTaskDialog.Execute(const ADlg: TCustomTaskDialog): Boolean;
 begin
+  //writeln('TWSTaskDialog.Execute');
   Result := ExecuteLCLTaskDialog(TTaskDialog(ADlg));
 end;
 

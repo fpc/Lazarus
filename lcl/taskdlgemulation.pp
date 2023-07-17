@@ -16,6 +16,7 @@ implementation
 
 function ExecuteLCLTaskDialog(const ADlg: TTaskDialog): Boolean;
 begin
+  //writeln('ExecuteLCLTaskDialog');
   Result := False;
 end;
 
