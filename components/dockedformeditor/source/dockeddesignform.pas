@@ -113,29 +113,28 @@ procedure TDesignForm.WndMethod(var Msg: TLMessage);
 var
   Timer: TLMTimer;
 begin
-  if Msg.msg = LM_TIMER then
-  begin
-    Timer := TLMTimer(Msg);
-    case Timer.TimerID of
-      WM_SETNOFRAME:
-        begin
-          KillTimer(Form.Handle, WM_SETNOFRAME);
-          LCLIntf.ShowWindow(Form.Handle, SW_HIDE);
-          FHiding := False;
-          FixF12_ActiveEditor;
-          Exit;
-        end;
-      WM_BOUNDTODESIGNTABSHEET:
-        begin
-          KillTimer(Form.Handle, WM_BOUNDTODESIGNTABSHEET);
-          if Assigned(FOnAdjustPageNeeded) then
-            FOnAdjustPageNeeded(Self);
-          Exit;
-        end;
-    end;
-  end;
-
   case Msg.msg of
+    LM_TIMER:
+      begin
+        Timer := TLMTimer(Msg);
+        case Timer.TimerID of
+          WM_SETNOFRAME:
+            begin
+              KillTimer(Form.Handle, WM_SETNOFRAME);
+              LCLIntf.ShowWindow(Form.Handle, SW_HIDE);
+              FHiding := False;
+              FixF12_ActiveEditor;
+              Exit;
+            end;
+          WM_BOUNDTODESIGNTABSHEET:
+            begin
+              KillTimer(Form.Handle, WM_BOUNDTODESIGNTABSHEET);
+              if Assigned(FOnAdjustPageNeeded) then
+                FOnAdjustPageNeeded(Self);
+              Exit;
+            end;
+        end;
+      end;
     {$IFDEF LCLWin32}
     // we need to correct ActiveEditor to right form
     // this code works correctly on Windows platform
