@@ -72,16 +72,18 @@ TLCLHandle is used in the implementation of classes like:
 <li>TBrush</li>
 <li>TPen</li>
 <li>TCursorImage</li>
-<li>TChangeLink</li>
-<li>TCustomImageListResolution</li>
 <li>TCustomImageList</li>
+<li>TCustomImageListResolution</li>
+<li>TChangeLink</li>
 <li>TRegion</li>
 <li>TTreeNode</li>
 <li>TTreeNodes</li>
 </ul>
 <remark>
 TLCLHandle is the replacement for the redefined THandle alias in LCL versions 
-prior to 4.0. THandle is deprecated in LCL 4.0; use TLCLHandle instead.
+prior to 4.0. THandle is deprecated in LCL 4.0; TLCLHandle is used instead. 
+THandle is still used in the FPC RTL (and in LazUtils) to represent files, 
+file or handle streams, sockets, IO devices, processes, etc.
 </remark>
 </descr>
 <seealso>
@@ -95,9 +97,14 @@ prior to 4.0. THandle is deprecated in LCL 4.0; use TLCLHandle instead.
 <short>
 Pointer to a TLCLHandle instance.
 </short>
-<descr/>
+<descr>
+<p>
+Used when accessing cached resource items in the LCL.
+</p>
+</descr>
 <seealso>
 <link id="TLCLHandle"/>
+<link id="#lcl.lclrescache.ComparePHandleWithResourceCacheItem">ComparePHandleWithResourceCacheItem</link>
 </seealso>
 </element>
 
@@ -105,8 +112,16 @@ Pointer to a TLCLHandle instance.
 <short>
 Pointer to a widget set reference instance.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Used in the implementation of the TLCLReferenceComponent and descendants, and 
+returned by their WSCreateReference methods.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.lclclasses.TLCLReferenceComponent.WSCreateReference">TLCLReferenceComponent.WSCreateReference</link>
+<link id="#lcl.imglist.TCustomImageListResolution.WSCreateReference">TCustomImageListResolution.WSCreateReference</link>
+</seealso>
 </element>
 
 <element name="TWSReference">
@@ -115,55 +130,99 @@ Represents a reference to a widget set class instance.
 </short>
 <descr>
 <p>
-Abstract (temporary) base object for all references to WS classes. This 
-reference replaces the functionality of a Handle. An object is choosen to 
-disallow assignments using different types of handles.
+Abstract (temporary) base object for all references to widgetset classes. This 
+reference replaces the functionality of a Handle. An object is used to 
+disallow assignments using different types of handles. It is used as the base 
+class for widgetset descendants like TWSCustomImageListReference, 
+TWSGDIObjReference, TWSDeviceContextReference, and TWSIconReference.
 </p>
 </descr>
 <seealso/>
 </element>
 
+<!-- private -->
 <element name="TWSReference.GetAllocated"/>
 <element name="TWSReference.GetAllocated.Result"/>
 
+<!-- protected -->
 <element name="TWSReference.FRef">
-<short/>
+<short>
+Variant record type which allows access to TLCLHandle and Pointer values in 
+the reference.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TWSReference._Clear">
-<short/>
-<descr/>
+<short>
+Clears the handle assigned in the reference.
+</short>
+<descr>
+<p>
+Sets the internal Pointer for the reference to <b>Nil</b>.
+</p>
+<remark>  
+This method, and the others with a '_' prefix, are temporary and for widgetset 
+use only. They can be removed at any time, and without any prior notice.
+</remark>
+</descr>
 <seealso/>
 </element>
 
 <element name="TWSReference._Init">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Stores the specified handle or pointer to an internal member in the reference.
+</short>
+<descr>
+<remark>  
+This method, and the others with a '_' prefix, are temporary and for widgetset 
+use only. They can be removed at any time, and without any prior notice.
+</remark>
+</descr>
+<seealso>
+<link id="TLCLHandle"/>
+</seealso>
 </element>
 <element name="TWSReference._Init.APtr">
-<short/>
+<short>
+Pointer to the handle stored in the reference.  
+</short>
 </element>
 <element name="TWSReference._Init.AHandle">
-<short/>
+<short>
+TLCLHandle instance stored in the reference.    
+</short>
 </element>
 
 <element name="TWSReference._Handle">
 <short/>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Gets the TLCLHandle instance assigned to the reference.
+</p>
+<remark>  
+This method, and the others with a '_' prefix, are temporary and for widgetset 
+use only. They can be removed at any time, and without any prior notice.
+</remark>
+</descr>
+<seealso>
+<link id="TLCLHandle"/>
+</seealso>
 </element>
 
 <element name="TWSReference.Allocated">
-<short/>
+<short>
+Contains <b>True</b> if a handle has been assigned in the reference.  
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TWSReference.Ptr">
-<short/>
+<short>
+Returns a Pointer with the handle for the reference.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -173,8 +232,11 @@ disallow assignments using different types of handles.
 <descr/>
 <seealso/>
 </element>
+
 <element name="TWSCustomImageListReference.Handle">
 <short/>
+<descr/>
+<seealso/>
 </element>
 
 <element name="TWSGDIObjReference">
@@ -188,8 +250,11 @@ disallow assignments using different types of handles.
 <descr/>
 <seealso/>
 </element>
+
 <element name="TWSBitmapReference.Handle">
 <short/>
+<descr/>
+<seealso/>
 </element>
 
 <element name="TWSBrushReference">
