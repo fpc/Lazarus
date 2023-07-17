@@ -24,7 +24,7 @@ uses
   SrcEditorIntf, IDEWindowIntf, PropEdits, ComponentEditors, IDEOptEditorIntf,
   IDEOptionsIntf,
   // DockedFormEditor
-  DockedMainIDE, DockedOptionsIDE, DockedOptionsFrame;
+  DockedMainIDE, DockedDesignForm, DockedOptionsIDE, DockedOptionsFrame;
 
 var
   DockedOptionsFrameID: Integer = 1000;
@@ -61,12 +61,13 @@ begin
   DockedOptions.LoadSafe;
 
   IDETabMaster := TDockedTabMaster.Create;
+  DesignForms := TDesignForms.Create;
 end;
 
 finalization
   Screen.RemoveHandlerFormAdded(TDockedMainIDE.Screen_FormAdded);
   Screen.RemoveHandlerRemoveForm(TDockedMainIDE.Screen_FormDel);
-
+  FreeAndNil(DesignForms);
   FreeAndNil(IDETabMaster);
   FreeAndNil(DockedOptions);
 end.
