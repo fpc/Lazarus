@@ -4602,12 +4602,23 @@ end;
 { TIdentifierHistoryList }
 
 procedure TIdentifierHistoryList.SetCapacity(const AValue: integer);
+var
+  AnAVLNode, AnAVLNode2: TAVLTreeNode;
 begin
   if FCapacity=AValue then exit;
   FCapacity:=AValue;
   if FCapacity<1 then FCapacity:=1;
-  while (FItems.Count>0) and (FItems.Count>=FCapacity) do
-    FItems.FreeAndDelete(FItems.FindHighest);
+  if (FItems.Count>=FCapacity) then begin
+    AnAVLNode:=Fitems.FindLowest;
+    while (AnAVLNode<>nil) do begin
+      AnAVLNode2:=FItems.FindSuccessor(AnAVLNode);
+      if TIdentHistListItem(AnAVLNode.Data).HistoryIndex > FCapacity then
+        FItems.FreeAndDelete(AnAVLNode);
+      AnAVLNode:=AnAVLNode2;
+    end;
+    if (FItems.Count>=FCapacity) then // data corrupted?
+      FItems.Clear;
+  end;
 end;
 
 function TIdentifierHistoryList.FindItem(NewItem: TIdentifierListItem
@@ -4641,7 +4652,7 @@ procedure TIdentifierHistoryList.Add(NewItem: TIdentifierListItem);
 var
   OldAVLNode: TAVLTreeNode;
   NewHistItem: TIdentHistListItem;
-  AnAVLNode: TAVLTreeNode;
+  AnAVLNode, HighestAVLNode: TAVLTreeNode;
   AdjustIndex: Integer;
   AnHistItem: TIdentHistListItem;
 begin
@@ -4675,8 +4686,20 @@ begin
       inc(AnHistItem.HistoryIndex);
     AnAVLNode:=FItems.FindSuccessor(AnAVLNode);
   end;
-  if (FItems.Count>0) and (FItems.Count>=FCapacity) then
-    FItems.FreeAndDelete(FItems.FindHighest);
+
+  if (FItems.Count>0) and (FItems.Count>=FCapacity) then begin
+    HighestAVLNode:=Fitems.FindLowest;
+    AnHistItem:=TIdentHistListItem(HighestAVLNode.Data);
+    AnAVLNode:=FItems.FindSuccessor(HighestAVLNode);
+    while (AnAVLNode<>nil) do begin
+      if TIdentHistListItem(AnAVLNode.Data).HistoryIndex > AnHistItem.HistoryIndex then begin
+        HighestAVLNode:=AnAVLNode;
+        AnHistItem:=TIdentHistListItem(HighestAVLNode.Data);
+      end;
+      AnAVLNode:=FItems.FindSuccessor(AnAVLNode);
+    end;
+    FItems.FreeAndDelete(HighestAVLNode);
+    end;
   FItems.Add(NewHistItem);
   {$IFDEF ShowHistory}
   DebugLn(['TIdentifierHistoryList.Added Count=',Count]);
