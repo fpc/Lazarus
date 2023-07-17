@@ -256,6 +256,9 @@ begin
   ButtonID := TaskDlg.Execute(TD_COMMONBUTTONS(CommonButtons), DefBtn, TD_FLAGS(Flags), TF_DIALOGICON(MainIcon), TF_FOOTERICON(FooterIcon),
     DefRB, FWidth, ParentWnd, tfForceNonNative in Flags, tfEmulateClassicStyle in Flags, @DoOnButtonClickedHandler);
   Result := ButtonID>=0;
+
+
+
   FModalResult := ButtonIDToModalResult(ButtonID);
 
   if (TaskDlg.RadioRes>=200) and (TaskDlg.RadioRes-200<RadioButtons.Count) then
