@@ -1306,21 +1306,21 @@ begin
     anUnitName:='Star.Red1';
     InFilename:='';
     FoundFilename:=DirCache.FindUnitSourceInCompletePath(StarDir,anUnitName,InFilename);
-    Expected:=StarDir+PathDelim+'red/star.red1.pas';
+    Expected:=StarDir+PathDelim+'red'+PathDelim+'star.red1.pas';
     AssertEquals('searching '+anUnitName,Expected,FoundFilename);
 
     // searching a mixedcase unit
     anUnitName:='Star.Green3';
     InFilename:='';
     FoundFilename:=DirCache.FindUnitSourceInCompletePath(StarDir,anUnitName,InFilename);
-    Expected:=StarDir+PathDelim+'green/Star.Green3.pas';
+    Expected:=StarDir+PathDelim+'green'+PathDelim+'Star.Green3.pas';
     AssertEquals('searching '+anUnitName,Expected,FoundFilename);
 
     // searching an anycase unit
     anUnitName:='star.green3';
     InFilename:='';
     FoundFilename:=DirCache.FindUnitSourceInCompletePath(StarDir,anUnitName,InFilename,true);
-    Expected:=StarDir+PathDelim+'green/Star.Green3.pas';
+    Expected:=StarDir+PathDelim+'green'+PathDelim+'Star.Green3.pas';
     AssertEquals('searching '+anUnitName,Expected,FoundFilename);
 
     // check excludes
@@ -1390,13 +1390,13 @@ begin
     // searching a mixedcase include
     IncFilename:='Green.inc';
     FoundFilename:=DirCache.FindIncludeFileInCompletePath(StarDir,IncFilename);
-    Expected:=StarDir+PathDelim+'green/Green.inc';
+    Expected:=StarDir+PathDelim+'green'+PathDelim+'Green.inc';
     AssertEquals('searching '+IncFilename,Expected,FoundFilename);
 
     // searching an include file without extension
     IncFilename:='Green';
     FoundFilename:=DirCache.FindIncludeFileInCompletePath(StarDir,IncFilename);
-    Expected:=StarDir+PathDelim+'green/Green.inc';
+    Expected:=StarDir+PathDelim+'green'+PathDelim+'Green.inc';
     AssertEquals('searching '+IncFilename,Expected,FoundFilename);
 
   finally
