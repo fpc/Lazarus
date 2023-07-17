@@ -23,7 +23,7 @@ uses
   // LCL
   LMessages, Forms, LCLType, LCLIntf, Controls,
   // IDEIntf
-  SrcEditorIntf,
+  SrcEditorIntf, LazIDEIntf, ProjectIntf,
   // DockedFormEditor
   DockedFormAccesses, DockedBasicAnchorDesigner;
 
@@ -32,10 +32,13 @@ const
   WM_BOUNDTODESIGNTABSHEET = WM_USER + 1;
 
 type
+  TDesignForms = class;
+
   { TDesignForm }
 
   TDesignForm = class(TDesignFormIDE)
   private
+    FContainer: TDesignForms;
     FHiding: Boolean;
     FOnAdjustPageNeeded: TNotifyEvent;
     FWndMethod: TWndMethod;
@@ -53,14 +56,21 @@ type
   { TDesignForms }
 
   TDesignForms = class(specialize TFPGList<TDesignForm>)
+  private
+    FProjectOpening: Boolean;
   public
+    constructor Create;
     destructor Destroy; override;
+    function Add(const Item: TDesignForm): Integer;
     procedure DeleteDesignForm(AIndex: Integer);
     function Find(AForm: TCustomForm): TDesignForm; overload;
     function Find(ADesigner: TIDesigner): TDesignForm; overload;
     function IndexOf(AForm: TCustomForm): Integer; overload;
     procedure Remove(AForm: TCustomForm); overload;
     procedure RemoveAllAnchorDesigner;
+    // Project state change event handlers.
+    function ProjOpening(Sender: TObject; AProject: TLazProject): TModalResult;
+    function ProjOpened(Sender: TObject; AProject: TLazProject): TModalResult;
   end;
 
 var
@@ -74,6 +84,11 @@ procedure TDesignForm.FixF12_ActiveEditor;
 var
   i: Integer;
 begin
+  // Don't get a form's designer while project opens.
+  // A read error would lead to an eternal loop.
+  Assert(Assigned(FContainer), 'TDesignForm.FixF12_ActiveEditor: FContainer=Nil');
+  if FContainer.FProjectOpening then Exit;
+
   // Without this, button F12 don't work. (after creating new for editor is inactive)
   // Just do it for new created forms or the last loaded form becomes the active
   // source editor after reopening a project.
@@ -161,11 +176,26 @@ end;
 
 { TDesignForms }
 
+constructor TDesignForms.Create;
+begin
+  inherited;
+  LazarusIDE.AddHandlerOnProjectOpening(@ProjOpening);
+  LazarusIDE.AddHandlerOnProjectOpened(@ProjOpened);
+end;
+
 destructor TDesignForms.Destroy;
 begin
+  //LazarusIDE.RemoveHandlerOnProjectOpened(@ProjOpened);  // Causes a crash.
+  //LazarusIDE.RemoveHandlerOnProjectOpening(@ProjOpening);
   while Count > 0 do
     DeleteDesignForm(0);
   inherited Destroy;
+end;
+
+function TDesignForms.Add(const Item: TDesignForm): Integer;
+begin
+  Item.FContainer := Self;
+  inherited;
 end;
 
 procedure TDesignForms.DeleteDesignForm(AIndex: Integer);
@@ -235,11 +265,17 @@ begin
   end;
 end;
 
-initialization
-  DesignForms := TDesignForms.Create;
+function TDesignForms.ProjOpening(Sender: TObject; AProject: TLazProject): TModalResult;
+begin
+  FProjectOpening := True;
+  Result := mrOK;
+end;
 
-finalization
-  FreeAndNil(DesignForms);
+function TDesignForms.ProjOpened(Sender: TObject; AProject: TLazProject): TModalResult;
+begin
+  FProjectOpening := False;
+  Result := mrOK;
+end;
 
 end.
 
