@@ -157,6 +157,13 @@ type
     constructor Create(ADialog: TOpenDialog);
   end;
 
+  { TWin32WSTaskDialog }
+
+  TWin32WSTaskDialog = class(TWSTaskDialog)
+  public
+    class function Execute(const ACommonDialog: TCommonDialog): Boolean; override;
+  end;
+
 function OpenFileDialogCallBack(Wnd: HWND; uMsg: UINT; {%H-}wParam: WPARAM;
   lParam: LPARAM): UINT_PTR; stdcall;
 
@@ -1563,6 +1570,13 @@ constructor TFileDialogEvents.Create(ADialog: TOpenDialog);
 begin
   inherited Create;
   FDialog := ADialog;
+end;
+
+{ TWin32WSTaskDialog }
+
+class function TWin32WSTaskDialog.Execute(const ACommonDialog: TCommonDialog): Boolean;
+begin
+  Result := inherited Execute(ACommonDialog);
 end;
 
 initialization

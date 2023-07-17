@@ -61,6 +61,7 @@ function WSRegisterSelectDirectoryDialog: Boolean; external name 'WSRegisterSele
 function WSRegisterColorDialog: Boolean;       external name 'WSRegisterColorDialog';
 function WSRegisterColorButton: Boolean;       external name 'WSRegisterColorButton';
 function WSRegisterFontDialog: Boolean;        external name 'WSRegisterFontDialog';
+function WSRegisterTaskDialog: Boolean;        external name 'WSRegisterTaskDialog';
 // StdCtrls
 function WSRegisterCustomScrollBar: Boolean;   external name 'WSRegisterCustomScrollBar';
 function WSRegisterCustomGroupBox: Boolean;    external name 'WSRegisterCustomGroupBox';

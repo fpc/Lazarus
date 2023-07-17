@@ -102,6 +102,13 @@ type
     class function QueryWSEventCapabilities(const ACommonDialog: TCommonDialog): TCDWSEventCapabilities; override;
   end;
 
+  { TWSTaskDialog }
+
+  TWSTaskDialog  = class(TWSCommonDialog)
+  published
+    class function Execute(const ACommonDialog: TCommonDialog): Boolean; virtual;
+  end;
+
   { WidgetSetRegistration }
 
   procedure RegisterCommonDialog;
@@ -112,6 +119,7 @@ type
   procedure RegisterColorDialog;
   procedure RegisterColorButton;
   procedure RegisterFontDialog;
+  procedure RegisterTaskDialog;
 
 implementation
 
@@ -186,6 +194,14 @@ begin
     Exit;
   end;
   Result:=inherited QueryWSEventCapabilities(ACommonDialog);
+end;
+
+{ TWSTaskDialog }
+
+class function TWSTaskDialog.Execute(const ACommonDialog: TCommonDialog): Boolean;
+begin
+  //ToDo call new LCLTaskDialog.Execute
+  Result := False;
 end;
 
 { WidgetSetRegistration }
@@ -275,6 +291,15 @@ begin
   WSRegisterFontDialog;
 //  if not WSRegisterFontDialog then
 //    RegisterWSComponent(TFontDialog, TWSFontDialog);
+  Done := True;
+end;
+
+procedure RegisterTaskDialog;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+  WSRegisterTaskDialog;
   Done := True;
 end;
 
