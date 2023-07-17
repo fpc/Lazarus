@@ -226,6 +226,9 @@ const
   TD_BTNMOD: array[TTaskDialogCommonButton] of Integer = (
     mrOk, mrYes, mrNo, mrCancel, mrRetry, mrAbort);
 begin
+  //Current goal of refactoring: replace all this with:
+  //Result := TWSTaskDialogClass(WidgetSetClass).Execute(Self);
+
   FillChar(TaskDlg, SizeOf(LCLTaskDialog.TTaskDialog), 0);
 
   if RadioButtons.DefaultButton<> nil then
