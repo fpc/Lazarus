@@ -523,8 +523,7 @@ begin
   if Result<>0 then exit;
 
   //debugln('CompareIdentHistListItem ',Item2.Identifier,'=',Item1.Identifier);
-  Result:=CompareIdentifiers(PChar(Pointer(Item2.ParamList)),
-                             PChar(Pointer(Item1.ParamList)));
+  Result:=CompareTextIgnoringSpace(Item2.ParamList,Item1.ParamList,false);
 end;
 
 function CompareIdentItemWithHistListItem(Data1, Data2: Pointer): integer;
