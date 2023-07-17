@@ -1,4 +1,4 @@
-unit taskdlgemulation;
+unit TaskDlgEmulation;
 
 {$mode ObjFPC}{$H+}
 
