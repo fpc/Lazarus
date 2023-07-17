@@ -889,7 +889,7 @@ begin
     else begin
       FNewUnitInfo:=Project1.Units[FUnitIndex];
     end;
-    FNewUnitInfo.Flags := FNewUnitInfo.Flags + [uifInternalFile];
+    FNewUnitInfo.InternalFile := True;
 
     if FNewUnitInfo.OpenEditorInfoCount > 0 then begin
       FNewEditorInfo := FNewUnitInfo.OpenEditorInfo[0];

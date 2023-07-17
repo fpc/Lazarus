@@ -163,10 +163,24 @@ type
   //---------------------------------------------------------------------------
 
   TUnitInfoFlag = (
+    uifAutoReferenceSourceDir,
+    uifBuildFileIfActive,
     uifComponentUsedByDesigner,
     uifComponentIndirectlyUsedByDesigner,
+    uifCustomDefaultHighlighter,
+    uifDisableI18NForLFM,
+    uifFileReadOnly,
+    uifHasErrorInLFM,
+    uifHasResources,   // source has resource file
+    uifInternalFile, // data from an internal source (e.g. an editor macro (pascal script) from memory)
+    uifLoaded,         // loaded in the source editor, needed to restore open files
+    uifLoadedDesigner, // has a visible designer, needed to restore open designers
+    uifLoadingComponent,
     uifMarked,
-    uifInternalFile    // data from an internal source (e.g. an editor macro (pascal script) from memory)
+    uifModified,
+    uifRunFileIfActive,
+    uifSessionModified,
+    uifUserReadOnly
     );
   TUnitInfoFlags = set of TUnitInfoFlag;
 
@@ -256,14 +270,10 @@ type
   private
     FComponentTypesToClasses: TStringToPointerTree;
     FComponentVarsToClasses: TStringToPointerTree;
-    FCustomDefaultHighlighter: boolean;
     FDefaultSyntaxHighlighter: TLazSyntaxHighlighter;
-    FDisableI18NForLFM: boolean;
     FEditorInfoList: TUnitEditorInfoList;
-    FAutoReferenceSourceDir: boolean;
     fAutoRevertLockCount: integer;// =0 means, codetools can auto update from disk
     fBookmarks: TFileBookmarks;
-    FBuildFileIfActive: boolean;
     fComponent: TComponent;
     FComponentState: TWindowState; // state of component when we save it
     FResourceBaseClass: TPFComponentBaseClass;
@@ -277,38 +287,37 @@ type
     FComponentLastLRSStreamSize: TStreamSeekType;
     FDirectives: TStrings;
     fFileName: string; // with path = saved, without path = not yet saved
-    fFileReadOnly: Boolean;
     FFirstRequiredComponent: TUnitComponentDependency;
     FFirstUsedByComponent: TUnitComponentDependency;
     FFlags: TUnitInfoFlags;
-    fHasResources: boolean; // source has resource file
-    fLoaded: Boolean; // loaded in the source editor, needed to restore open files
-    fLoadedDesigner: Boolean; // has a visible designer, needed to restore open designers
-    FLoadingComponent: boolean;
-    fHasErrorInLFM: boolean;
-    fModified: boolean;
     fNext, fPrev: array[TUnitInfoList] of TUnitInfo;
     fOnFileBackup: TOnFileBackup;
     fOnLoadSaveFilename: TOnLoadSaveFilename;
     FOnUnitNameChange: TOnUnitNameChange;
     FProject: TProject;
     FRevertLockCount: integer;// >0 means IDE is currently reverting this unit
-    FRunFileIfActive: boolean;
-    FSessionModified: boolean;
     fSource: TCodeBuffer;
     FSourceLFM: TCodeBuffer;
     fUsageCount: extended;
-    fUserReadOnly: Boolean;
     fSourceChangeStep: LongInt;
     FSourceDirectoryReferenced: boolean;
-    FSourceDirNeedReference: boolean;
     fLastDirectoryReferenced: string;
     FSetBookmarLock: Integer;
     FUnitResourceFileformat: TUnitResourcefileFormatClass;
 
     function ComponentLFMOnDiskHasChanged: boolean;
+    function GetAutoReferenceSourceDir: boolean;
+    function GetBuildFileIfActive: boolean;
+    function GetCustomDefaultHighlighter: boolean;
+    function GetDisableI18NForLFM: boolean;
     function GetEditorInfo(Index: Integer): TUnitEditorInfo;
+    function GetFileReadOnly: Boolean;
+    function GetHasErrorInLFM: boolean;
     function GetHasResources: boolean;
+    function GetInternalFile: boolean;
+    function GetLoaded: Boolean;
+    function GetLoadedDesigner: Boolean;
+    function GetLoadingComponent: boolean;
     function GetModified: boolean;
     function GetNextAutoRevertLockedUnit: TUnitInfo;
     function GetNextLoadedUnit: TUnitInfo;
@@ -321,17 +330,23 @@ type
     function GetPrevPartOfProject: TUnitInfo;
     function GetPrevUnitWithComponent: TUnitInfo;
     function GetPrevUnitWithEditorIndex: TUnitInfo;
+    function GetRunFileIfActive: boolean;
+    function GetSessionModified: boolean;
     function GetUnitResourceFileformat: TUnitResourcefileFormatClass;
+    function GetUserReadOnly: Boolean;
     procedure SetAutoReferenceSourceDir(const AValue: boolean);
     procedure SetBuildFileIfActive(const AValue: boolean);
+    procedure SetCustomDefaultHighlighter(AValue: boolean);
     procedure SetDefaultSyntaxHighlighter(const AValue: TLazSyntaxHighlighter);
-    procedure SetDirectives(const AValue: TStrings);
     procedure SetDisableI18NForLFM(const AValue: boolean);
     procedure SetFileReadOnly(const AValue: Boolean);
     procedure SetComponent(const AValue: TComponent);
     procedure SetHasErrorInLFM(AValue: boolean);
+    procedure SetHasResources(AValue: boolean);
+    procedure SetInternalFile(AValue: boolean);
     procedure SetLoaded(const AValue: Boolean);
     procedure SetLoadedDesigner(const AValue: Boolean);
+    procedure SetLoadingComponent(AValue: boolean);
     procedure SetModified(const AValue: boolean);
     procedure SetProject(const AValue: TProject);
     procedure SetRunFileIfActive(const AValue: boolean);
@@ -437,7 +452,7 @@ type
     property PrevPartOfProject: TUnitInfo read GetPrevPartOfProject;
   public
     property Bookmarks: TFileBookmarks read FBookmarks write FBookmarks;
-    property BuildFileIfActive: boolean read FBuildFileIfActive
+    property BuildFileIfActive: boolean read GetBuildFileIfActive
                                         write SetBuildFileIfActive;
     property Component: TComponent read fComponent write SetComponent;
     property ComponentName: string read fComponentName write fComponentName;
@@ -457,36 +472,34 @@ type
     property ComponentLastLFMStreamSize: TStreamSeekType
              read FComponentLastLFMStreamSize write FComponentLastLFMStreamSize;
     property CustomDefaultHighlighter: boolean
-                               read FCustomDefaultHighlighter write FCustomDefaultHighlighter;
-    property Directives: TStrings read FDirectives write SetDirectives;
-    property DisableI18NForLFM: boolean read FDisableI18NForLFM write SetDisableI18NForLFM;
-    property FileReadOnly: Boolean read fFileReadOnly write SetFileReadOnly;
-    property FirstRequiredComponent: TUnitComponentDependency
-                                                   read FFirstRequiredComponent;
-    property FirstUsedByComponent: TUnitComponentDependency
-                                                     read FFirstUsedByComponent;
-    property Flags: TUnitInfoFlags read FFlags write FFlags;
-    property HasResources: boolean read GetHasResources write fHasResources;
-    property Loaded: Boolean read fLoaded write SetLoaded;
-    property LoadedDesigner: Boolean read fLoadedDesigner write SetLoadedDesigner;
-    property LoadingComponent: boolean read FLoadingComponent write FLoadingComponent;
-    property HasErrorInLFM: boolean read fHasErrorInLFM write SetHasErrorInLFM;
+             read GetCustomDefaultHighlighter write SetCustomDefaultHighlighter;
+    property Directives: TStrings read FDirectives write FDirectives;
+    property DisableI18NForLFM: boolean read GetDisableI18NForLFM write SetDisableI18NForLFM;
+    property FileReadOnly: Boolean read GetFileReadOnly write SetFileReadOnly;
+    property FirstRequiredComponent: TUnitComponentDependency read FFirstRequiredComponent;
+    property FirstUsedByComponent: TUnitComponentDependency read FFirstUsedByComponent;
+    property Flags: TUnitInfoFlags read FFlags;
+    property HasErrorInLFM: boolean read GetHasErrorInLFM write SetHasErrorInLFM;
+    property HasResources: boolean read GetHasResources write SetHasResources;
+    property InternalFile: boolean read GetInternalFile write SetInternalFile;
+    property Loaded: Boolean read GetLoaded write SetLoaded;
+    property LoadedDesigner: Boolean read GetLoadedDesigner write SetLoadedDesigner;
+    property LoadingComponent: boolean read GetLoadingComponent write SetLoadingComponent;
     property Modified: boolean read GetModified write SetModified;// not Session data
-    property SessionModified: boolean read FSessionModified write SetSessionModified;
+    property SessionModified: boolean read GetSessionModified write SetSessionModified;
     property OnFileBackup: TOnFileBackup read fOnFileBackup write fOnFileBackup;
     property OnLoadSaveFilename: TOnLoadSaveFilename
                              read fOnLoadSaveFilename write fOnLoadSaveFilename;
     property OnUnitNameChange: TOnUnitNameChange
                                  read FOnUnitNameChange write FOnUnitNameChange;
     property Project: TProject read FProject write SetProject;
-    property RunFileIfActive: boolean read FRunFileIfActive write SetRunFileIfActive;
+    property RunFileIfActive: boolean read GetRunFileIfActive write SetRunFileIfActive;
     property Source: TCodeBuffer read fSource write SetSource;
     property SourceLFM: TCodeBuffer read FSourceLFM write SetSourceLFM;
     property DefaultSyntaxHighlighter: TLazSyntaxHighlighter
                                read FDefaultSyntaxHighlighter write SetDefaultSyntaxHighlighter;
-    property UserReadOnly: Boolean read fUserReadOnly write SetUserReadOnly;
-    property SourceDirectoryReferenced: boolean read FSourceDirectoryReferenced;
-    property AutoReferenceSourceDir: boolean read FAutoReferenceSourceDir
+    property UserReadOnly: Boolean read GetUserReadOnly write SetUserReadOnly;
+    property AutoReferenceSourceDir: boolean read GetAutoReferenceSourceDir
                                              write SetAutoReferenceSourceDir;
   end;
 
@@ -1747,26 +1760,26 @@ procedure TUnitInfo.Clear;
 begin
   FBookmarks.Clear;
   FSetBookmarLock := 0;
-  FBuildFileIfActive:=false;
+  BuildFileIfActive:=false;
   fComponent := nil;
   fComponentName := '';
   fComponentResourceName := '';
   FComponentState := wsNormal;
   FDefaultSyntaxHighlighter := lshText;
-  FDisableI18NForLFM:=false;
-  FCustomDefaultHighlighter := False;
+  DisableI18NForLFM:=false;
+  CustomDefaultHighlighter := False;
   FEditorInfoList.ClearEachInfo;
   fFilename := '';
-  fFileReadOnly := false;
-  fHasResources := false;
-  fAutoReferenceSourceDir := true;
+  FileReadOnly := false;
+  HasResources := false;
+  AutoReferenceSourceDir := true;
   inherited SetIsPartOfProject(false);
   Modified := false;
   SessionModified := false;
-  FRunFileIfActive:=false;
+  RunFileIfActive:=false;
   FUnitName := '';
   fUsageCount:=-1;
-  fUserReadOnly := false;
+  UserReadOnly := false;
   if fSource<>nil then fSource.Clear;
   Loaded := false;
   LoadedDesigner := false;
@@ -1833,13 +1846,13 @@ begin
   if SaveSession and Assigned(Project.OnSaveUnitSessionInfo) then
     Project.OnSaveUnitSessionInfo(Self);
   if IsPartOfProject and SaveData then
-    XMLConfig.SetDeleteValue(Path+'DisableI18NForLFM/Value',FDisableI18NForLFM,false);
+    XMLConfig.SetDeleteValue(Path+'DisableI18NForLFM/Value',DisableI18NForLFM,false);
 
   // context data (project/session)
   if (IsPartOfProject and SaveData) or ((not IsPartOfProject) and SaveSession)
   then begin
     XMLConfig.SetDeleteValue(Path+'ComponentName/Value',fComponentName,'');
-    XMLConfig.SetDeleteValue(Path+'HasResources/Value',fHasResources,false);
+    XMLConfig.SetDeleteValue(Path+'HasResources/Value',uifHasResources in FFlags,false);
     XMLConfig.SetDeleteValue(Path+'ResourceBaseClass/Value',
                              PFComponentBaseClassNames[FResourceBaseClass],
                              PFComponentBaseClassNames[pfcbcNone]);
@@ -1875,13 +1888,13 @@ begin
           BM.CursorPos := Point(X, Y);
       end;
     FBookmarks.SaveToXMLConfig(XMLConfig,Path+'Bookmarks/');
-    XMLConfig.SetDeleteValue(Path+'Loaded/Value',fLoaded,false);
-    XMLConfig.SetDeleteValue(Path+'LoadedDesigner/Value',fLoadedDesigner,false);
-    XMLConfig.SetDeleteValue(Path+'ReadOnly/Value',fUserReadOnly,false);
+    XMLConfig.SetDeleteValue(Path+'Loaded/Value',Loaded,false);
+    XMLConfig.SetDeleteValue(Path+'LoadedDesigner/Value',LoadedDesigner,false);
+    XMLConfig.SetDeleteValue(Path+'ReadOnly/Value',UserReadOnly,false);
     XMLConfig.SetDeleteValue(Path+'BuildFileIfActive/Value',
-                             FBuildFileIfActive,false);
+                             BuildFileIfActive,false);
     XMLConfig.SetDeleteValue(Path+'RunFileIfActive/Value',
-                             FRunFileIfActive,false);
+                             RunFileIfActive,false);
     // save custom session data
     SaveStringToStringTree(XMLConfig,CustomSessionData,Path+'CustomSessionData/');
     XMLConfig.SetDeleteValue(Path+'DefaultSyntaxHighlighter/Value',
@@ -1912,7 +1925,7 @@ begin
     if fComponentName='' then
       fComponentName:=XMLConfig.GetValue(Path+'FormName/Value','');
     FComponentState := TWindowState(XMLConfig.GetValue(Path+'ComponentState/Value',0));
-    FDisableI18NForLFM:=XMLConfig.GetValue(Path+'DisableI18NForLFM/Value',false);
+    DisableI18NForLFM:=XMLConfig.GetValue(Path+'DisableI18NForLFM/Value',false);
     HasResources:=XMLConfig.GetValue(Path+'HasResources/Value',false);
     FResourceBaseClass:=StrToComponentBaseClass(
                          XMLConfig.GetValue(Path+'ResourceBaseClass/Value',''));
@@ -1953,9 +1966,9 @@ begin
     LoadedDesigner:=XMLConfig.GetValue(Path+'LoadedDesigner/Value',FileVersion<8)
   else
     LoadedDesigner:=false;
-  fUserReadOnly:=XMLConfig.GetValue(Path+'ReadOnly/Value',false);
-  FBuildFileIfActive:=XMLConfig.GetValue(Path+'BuildFileIfActive/Value',false);
-  FRunFileIfActive:=XMLConfig.GetValue(Path+'RunFileIfActive/Value',false);
+  UserReadOnly:=XMLConfig.GetValue(Path+'ReadOnly/Value',false);
+  BuildFileIfActive:=XMLConfig.GetValue(Path+'BuildFileIfActive/Value',false);
+  RunFileIfActive:=XMLConfig.GetValue(Path+'RunFileIfActive/Value',false);
   fUsageCount:=XMLConfig.GetValue(Path+'UsageCount/Value',-1);
   if fUsageCount<1 then begin
     UpdateUsageCount(uuIsLoaded,1);
@@ -2014,7 +2027,7 @@ begin
   //DebugLn('TUnitInfo.SetInternalFilename Old=',fFileName,' New=',NewFilename);
   
   // if directory changed then remove the old directory reference
-  if SourceDirectoryReferenced
+  if FSourceDirectoryReferenced
   and (Project<>nil)
   and (fLastDirectoryReferenced<>GetDirectory) then begin
     Project.SourceDirectories.RemoveFilename(fLastDirectoryReferenced);
@@ -2031,7 +2044,7 @@ procedure TUnitInfo.UpdateHasCustomHighlighter(aDefaultHighlighter: TLazSyntaxHi
 var
   i: Integer;
 begin
-  FCustomDefaultHighlighter := FDefaultSyntaxHighlighter <> aDefaultHighlighter;
+  CustomDefaultHighlighter := FDefaultSyntaxHighlighter <> aDefaultHighlighter;
   for i := 0 to FEditorInfoList.Count - 1 do
     FEditorInfoList[i].CustomHighlighter :=
       FEditorInfoList[i].SyntaxHighlighter <> aDefaultHighlighter;
@@ -2079,7 +2092,7 @@ var
   i: Integer;
 begin
   //debugln(['TUnitInfo.UpdateDefaultHighlighter ',Filename,' ',ord(aDefaultHighlighter)]);
-  if not FCustomDefaultHighlighter then
+  if not CustomDefaultHighlighter then
     DefaultSyntaxHighlighter := aDefaultHighlighter
   else
     for i := 0 to FEditorInfoList.Count - 1 do
@@ -2184,6 +2197,26 @@ begin
   if SourceLFM.FileOnDiskHasChanged then exit(true);
 end;
 
+function TUnitInfo.GetAutoReferenceSourceDir: boolean;
+begin
+  Result:=uifAutoReferenceSourceDir in FFlags;
+end;
+
+function TUnitInfo.GetBuildFileIfActive: boolean;
+begin
+  Result:=uifBuildFileIfActive in FFlags;
+end;
+
+function TUnitInfo.GetCustomDefaultHighlighter: boolean;
+begin
+  Result:=uifCustomDefaultHighlighter in FFlags;
+end;
+
+function TUnitInfo.GetDisableI18NForLFM: boolean;
+begin
+  Result:=uifDisableI18NForLFM in FFlags;
+end;
+
 procedure TUnitInfo.SetTimeStamps;
 begin
   if FSource<>nil then
@@ -2243,17 +2276,16 @@ end;
 
 procedure TUnitInfo.UpdateSourceDirectoryReference;
 begin
-  FSourceDirNeedReference:=IsPartOfProject and (FilenameIsPascalSource(Filename));
   if (not AutoReferenceSourceDir) or (FProject=nil) then exit;
-  if FSourceDirNeedReference then begin
-    if not SourceDirectoryReferenced then begin
+  if IsPartOfProject and (FilenameIsPascalSource(Filename)) then begin
+    if not FSourceDirectoryReferenced then begin
       fLastDirectoryReferenced:=GetDirectory;
       //DebugLn('TUnitInfo.UpdateSourceDirectoryReference ADD File="',Filename,'" Project.SourceDirectories.TimeStamp=',dbgs(Project.SourceDirectories.TimeStamp));
       FSourceDirectoryReferenced:=true;
       Project.SourceDirectories.AddFilename(fLastDirectoryReferenced);
     end;
   end else begin
-    if SourceDirectoryReferenced then begin
+    if FSourceDirectoryReferenced then begin
       //DebugLn('TUnitInfo.UpdateSourceDirectoryReference REMOVE File="',Filename,'" Project.SourceDirectories.TimeStamp=',dbgs(Project.SourceDirectories.TimeStamp));
       FSourceDirectoryReferenced:=false;
       Project.SourceDirectories.RemoveFilename(fLastDirectoryReferenced);
@@ -2455,24 +2487,57 @@ end;
 
 procedure TUnitInfo.SetUserReadOnly(const NewValue: boolean);
 begin
-  fUserReadOnly:=NewValue;
+  if NewValue then
+    Include(FFlags, uifUserReadOnly)
+  else
+    Exclude(FFlags, uifUserReadOnly);
   if fSource<>nil then
     fSource.ReadOnly:=ReadOnly;
 end;
 
 function TUnitInfo.GetHasResources:boolean;
 begin
-  Result:=fHasResources or (ComponentName<>'');
+  Result:=(uifHasResources in FFlags) or (ComponentName<>'');
+end;
+
+function TUnitInfo.GetInternalFile: boolean;
+begin
+  Result:=uifInternalFile in FFlags;
+end;
+
+function TUnitInfo.GetLoaded: Boolean;
+begin
+  Result:=uifLoaded in FFlags;
+end;
+
+function TUnitInfo.GetLoadedDesigner: Boolean;
+begin
+  Result:=uifLoadedDesigner in FFlags;
+end;
+
+function TUnitInfo.GetLoadingComponent: boolean;
+begin
+  Result:=uifLoadingComponent in FFlags;
 end;
 
 function TUnitInfo.GetEditorInfo(Index: Integer): TUnitEditorInfo;
 begin
-  Result := FEditorInfoList[Index];
+  Result:=FEditorInfoList[Index];
+end;
+
+function TUnitInfo.GetFileReadOnly: Boolean;
+begin
+  Result:=uifFileReadOnly in FFlags;
+end;
+
+function TUnitInfo.GetHasErrorInLFM: boolean;
+begin
+  Result:=uifHasErrorInLFM in FFlags;
 end;
 
 function TUnitInfo.GetModified: boolean;
 begin
-  Result:=fModified
+  Result:=(uifModified in FFlags)
     or ((Source<>nil) and (Source.ChangeStep<>fSourceChangeStep));
 end;
 
@@ -2531,6 +2596,16 @@ begin
   Result:=fPrev[uilWithEditorIndex];
 end;
 
+function TUnitInfo.GetRunFileIfActive: boolean;
+begin
+  Result:=uifRunFileIfActive in FFlags;
+end;
+
+function TUnitInfo.GetSessionModified: boolean;
+begin
+  Result:=uifSessionModified in FFlags;
+end;
+
 function TUnitInfo.GetUnitResourceFileformat: TUnitResourcefileFormatClass;
 var
   ResourceFormats : TUnitResourcefileFormatArr;
@@ -2558,18 +2633,37 @@ begin
   Result := FUnitResourceFileformat;
 end;
 
+function TUnitInfo.GetUserReadOnly: Boolean;
+begin
+  Result:=uifUserReadOnly in FFlags;
+end;
+
 procedure TUnitInfo.SetAutoReferenceSourceDir(const AValue: boolean);
 begin
-  if FAutoReferenceSourceDir=AValue then exit;
-  FAutoReferenceSourceDir:=AValue;
+  if AutoReferenceSourceDir=AValue then exit;
+  if AValue then
+    Include(FFlags, uifAutoReferenceSourceDir)
+  else
+    Exclude(FFlags, uifAutoReferenceSourceDir);
   UpdateSourceDirectoryReference;
 end;
 
 procedure TUnitInfo.SetBuildFileIfActive(const AValue: boolean);
 begin
-  if FBuildFileIfActive=AValue then exit;
-  FBuildFileIfActive:=AValue;
+  if BuildFileIfActive=AValue then exit;
+  if AValue then
+    Include(FFlags, uifBuildFileIfActive)
+  else
+    Exclude(FFlags, uifBuildFileIfActive);
   SessionModified:=true;
+end;
+
+procedure TUnitInfo.SetCustomDefaultHighlighter(AValue: boolean);
+begin
+  if AValue then
+    Include(FFlags, uifCustomDefaultHighlighter)
+  else
+    Exclude(FFlags, uifCustomDefaultHighlighter);
 end;
 
 procedure TUnitInfo.SetDefaultSyntaxHighlighter(const AValue: TLazSyntaxHighlighter);
@@ -2583,23 +2677,23 @@ begin
       FEditorInfoList[i].SyntaxHighlighter := AValue;
 end;
 
-procedure TUnitInfo.SetDirectives(const AValue: TStrings);
-begin
-  if FDirectives=AValue then exit;
-  FDirectives:=AValue;
-end;
-
 procedure TUnitInfo.SetDisableI18NForLFM(const AValue: boolean);
 begin
-  if FDisableI18NForLFM=AValue then exit;
-  FDisableI18NForLFM:=AValue;
+  if DisableI18NForLFM=AValue then exit;
+  if AValue then
+    Include(FFlags, uifDisableI18NForLFM)
+  else
+    Exclude(FFlags, uifDisableI18NForLFM);
   Modified:=true;
 end;
 
 procedure TUnitInfo.SetFileReadOnly(const AValue: Boolean);
 begin
-  if fFileReadOnly=AValue then exit;
-  fFileReadOnly:=AValue;
+  if FileReadOnly=AValue then exit;
+  if AValue then
+    Include(FFlags, uifFileReadOnly)
+  else
+    Exclude(FFlags, uifFileReadOnly);
   if fSource<>nil then
     fSource.ReadOnly:=ReadOnly;
 end;
@@ -2617,9 +2711,28 @@ end;
 
 procedure TUnitInfo.SetHasErrorInLFM(AValue: boolean);
 begin
-  if fHasErrorInLFM=AValue then Exit;
-  fHasErrorInLFM:=AValue;
+  if HasErrorInLFM=AValue then Exit;
+  if AValue then
+    Include(FFlags, uifHasErrorInLFM)
+  else
+    Exclude(FFlags, uifHasErrorInLFM);
   Modified:=true;
+end;
+
+procedure TUnitInfo.SetHasResources(AValue: boolean);
+begin
+  if AValue then
+    Include(FFlags, uifHasResources)
+  else
+    Exclude(FFlags, uifHasResources);
+end;
+
+procedure TUnitInfo.SetInternalFile(AValue: boolean);
+begin
+  if AValue then
+    Include(FFlags, uifInternalFile)
+  else
+    Exclude(FFlags, uifInternalFile);
 end;
 
 procedure TUnitInfo.SetIsPartOfProject(const AValue: boolean);
@@ -2643,12 +2756,13 @@ end;
 -------------------------------------------------------------------------------}
 procedure TUnitInfo.SetLoaded(const AValue: Boolean);
 begin
-  if fLoaded=AValue then exit;
-  fLoaded:=AValue;
-  if fLoaded then begin
+  if Loaded=AValue then exit;
+  if AValue then begin
+    Include(FFlags, uifLoaded);
     IncreaseAutoRevertLock;
     UpdateUsageCount(uuIsLoaded,0);
   end else begin
+    Exclude(FFlags, uifLoaded);
     DecreaseAutoRevertLock;
   end;
 end;
@@ -2663,8 +2777,18 @@ end;
 -------------------------------------------------------------------------------}
 procedure TUnitInfo.SetLoadedDesigner(const AValue: Boolean);
 begin
-  if fLoadedDesigner=AValue then exit;
-  fLoadedDesigner:=AValue;
+  if AValue then
+    Include(FFlags, uifLoadedDesigner)
+  else
+    Exclude(FFlags, uifLoadedDesigner);
+end;
+
+procedure TUnitInfo.SetLoadingComponent(AValue: boolean);
+begin
+  if AValue then
+    Include(FFlags, uifLoadingComponent)
+  else
+    Exclude(FFlags, uifLoadingComponent);
 end;
 
 procedure TUnitInfo.SetModified(const AValue: boolean);
@@ -2673,8 +2797,11 @@ begin
   {$IFDEF VerboseIDEModified}
   debugln(['TUnitInfo.SetModified ',Filename,' new Modified=',AValue]);
   {$ENDIF}
-  fModified:=AValue;
-  if (not fModified) and Assigned(Source) then
+  if AValue then
+    Include(FFlags, uifModified)
+  else
+    Exclude(FFlags, uifModified);
+  if (not AValue) and Assigned(Source) then
     SetTimeStamps;
 end;
 
@@ -2709,18 +2836,24 @@ end;
 
 procedure TUnitInfo.SetRunFileIfActive(const AValue: boolean);
 begin
-  if FRunFileIfActive=AValue then exit;
-  FRunFileIfActive:=AValue;
+  if RunFileIfActive=AValue then exit;
+  if AValue then
+    Include(FFlags, uifRunFileIfActive)
+  else
+    Exclude(FFlags, uifRunFileIfActive);
   SessionModified:=true;
 end;
 
 procedure TUnitInfo.SetSessionModified(const AValue: boolean);
 begin
-  if FSessionModified=AValue then exit;
+  if SessionModified=AValue then exit;
   {$IFDEF VerboseIDEModified}
   debugln(['TUnitInfo.SetSessionModified ',Filename,' new Modified=',AValue]);
   {$ENDIF}
-  FSessionModified:=AValue;
+  if AValue then
+    Include(FFlags, uifSessionModified)
+  else
+    Exclude(FFlags, uifSessionModified);
 end;
 
 

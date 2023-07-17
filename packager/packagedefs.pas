@@ -205,7 +205,6 @@ type
     property Flags: TPkgFileFlags read FFlags write SetFlags;
     property HasRegisterProc: boolean read GetHasRegisterProc write SetHasRegisterProc;
     property LazPackage: TLazPackage read FPackage;
-    property SourceDirectoryReferenced: boolean read FSourceDirectoryReferenced;
   end;
   
   
@@ -1579,12 +1578,12 @@ procedure TPkgFile.UpdateSourceDirectoryReference;
 begin
   if (not AutoReferenceSourceDir) or (FPackage=nil) then exit;
   if FSourceDirNeedReference then begin
-    if not SourceDirectoryReferenced then begin
+    if not FSourceDirectoryReferenced then begin
       LazPackage.SourceDirectories.AddFilename(FDirectory);
       FSourceDirectoryReferenced:=true;
     end;
   end else begin
-    if SourceDirectoryReferenced then begin
+    if FSourceDirectoryReferenced then begin
       LazPackage.SourceDirectories.RemoveFilename(FDirectory);
       FSourceDirectoryReferenced:=false;
     end;
