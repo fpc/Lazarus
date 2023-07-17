@@ -106,7 +106,7 @@ type
 
   TWSTaskDialog  = class(TWSCommonDialog)
   published
-    class function Execute(const ACommonDialog: TCommonDialog): Boolean; virtual;
+    class function Execute(const ADlg: TCustomTaskDialog): Boolean; virtual;
   end;
 
   { WidgetSetRegistration }
@@ -198,7 +198,7 @@ end;
 
 { TWSTaskDialog }
 
-class function TWSTaskDialog.Execute(const ACommonDialog: TCommonDialog): Boolean;
+class function TWSTaskDialog.Execute(const ADlg: TCustomTaskDialog): Boolean;
 begin
   //ToDo call new LCLTaskDialog.Execute
   Result := False;

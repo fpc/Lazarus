@@ -161,7 +161,7 @@ type
 
   TWin32WSTaskDialog = class(TWSTaskDialog)
   public
-    class function Execute(const ACommonDialog: TCommonDialog): Boolean; override;
+    class function Execute(const ADlg: TCustomTaskDialog): Boolean; override;
   end;
 
 function OpenFileDialogCallBack(Wnd: HWND; uMsg: UINT; {%H-}wParam: WPARAM;
@@ -1574,9 +1574,9 @@ end;
 
 { TWin32WSTaskDialog }
 
-class function TWin32WSTaskDialog.Execute(const ACommonDialog: TCommonDialog): Boolean;
+class function TWin32WSTaskDialog.Execute(const ADlg: TCustomTaskDialog): Boolean;
 begin
-  Result := inherited Execute(ACommonDialog);
+  Result := inherited Execute(ADlg);
 end;
 
 initialization
