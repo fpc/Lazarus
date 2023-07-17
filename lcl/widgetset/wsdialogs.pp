@@ -124,7 +124,7 @@ type
 implementation
 
 uses
-  LResources;
+  LResources, TaskDlgEmulation;
 
 class function  TWSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): TLCLHandle;
 begin
@@ -200,8 +200,7 @@ end;
 
 class function TWSTaskDialog.Execute(const ADlg: TCustomTaskDialog): Boolean;
 begin
-  //ToDo call new LCLTaskDialog.Execute
-  Result := False;
+  Result := ExecuteLCLTaskDialog(TTaskDialog(ADlg));
 end;
 
 { WidgetSetRegistration }
