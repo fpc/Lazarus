@@ -195,7 +195,7 @@ end;
 function TDesignForms.Add(const Item: TDesignForm): Integer;
 begin
   Item.FContainer := Self;
-  inherited;
+  Result := inherited Add(Item);
 end;
 
 procedure TDesignForms.DeleteDesignForm(AIndex: Integer);
