@@ -1077,6 +1077,9 @@ begin
     end;
   end;
 
+  // auto save
+  FAutoSaveActiveDesktop:=XMLCfg.GetValue(Path+'AutoSave/ActiveDesktop',True);
+
   // The user can define many desktops. They are saved under path Desktops/.
   FDesktops.Clear;
   FDesktops.SetConfig(XMLCfg, FConfigStorage);
@@ -1204,6 +1207,9 @@ begin
     end;
   end;
 
+  // auto save
+  XMLCfg.SetDeleteValue(Path+'AutoSave/ActiveDesktop', FAutoSaveActiveDesktop, True);
+
   //automatically save active desktops
   if AutoSaveActiveDesktop
   and (Application.MainForm<>nil) and Application.MainForm.Visible then
@@ -1304,14 +1310,12 @@ end;
 
 procedure TEnvGuiOptions.DisableDebugDesktop;
 begin
-  if (LastDesktopBeforeDebug=nil)
-  or (Desktop=nil) then
+  if (LastDesktopBeforeDebug=nil) or (Desktop=nil) then
     Exit;
   try
-    if AutoSaveActiveDesktop
-    and Assigned(DebugDesktop) then
+    if AutoSaveActiveDesktop and Assigned(DebugDesktop) then
     begin
-      Desktop.ImportSettingsFromIDE(EnvironmentGuiOpts);
+      Desktop.ImportSettingsFromIDE(Self);
       DebugDesktop.Assign(Desktop);
     end;
     UseDesktop(LastDesktopBeforeDebug);
