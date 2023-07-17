@@ -68,6 +68,8 @@ type
     ICAutoOnTypeMinLengthLbl: TLabel;
     ICAutoOnTypeMinLength: TSpinEdit;
     ICSortOrderRadioGroup: TRadioGroup;
+    ICHistoryLimitLabel: TLabel;
+    ICHistoryLimitSpinEdit: TSpinEdit;
   private
   public
     function GetTitle: String; override;
@@ -111,6 +113,7 @@ begin
 
   ICSortDividerBevel.Caption:=lisSorting;
   ICSortForHistoryCheckBox.Caption:=lisShowRecentlyUsedIdentifiersAtTop;
+  ICHistoryLimitLabel.Caption := lisSortHistoryLimit;
   ICSortOrderRadioGroup.Hint:=lisForExampleShowAtTopTheLocalVariablesThenTheMembers;
   ICSortOrderRadioGroup.Caption:=lisSortOrderTitle;
   ICSortOrderRadioGroup.Items[0]:= lisSortOrderScopedAlphabetic;
@@ -155,6 +158,7 @@ begin
     ICJumpToErrorCheckBox.Checked:=IdentComplJumpToError;
     ICShowHelpCheckBox.Checked:=IdentComplShowHelp;
     ICSortForHistoryCheckBox.Checked:=IdentComplSortForHistory;
+    ICHistoryLimitSpinEdit.Value:= IdentComplHistoryLimit;
     case IdentComplSortMethod of
       icsScopedAlphabetic:  ICSortOrderRadioGroup.ItemIndex:= 0;
       icsAlphabetic:        ICSortOrderRadioGroup.ItemIndex:= 1;
@@ -193,6 +197,7 @@ begin
     IdentComplJumpToError:=ICJumpToErrorCheckBox.Checked;
     IdentComplShowHelp:=ICShowHelpCheckBox.Checked;
     IdentComplSortForHistory:=ICSortForHistoryCheckBox.Checked;
+    IdentComplHistoryLimit:=ICHistoryLimitSpinEdit.Value;
     case ICSortOrderRadioGroup.ItemIndex of
       0: IdentComplSortMethod:=icsScopedAlphabetic;
       1: IdentComplSortMethod:=icsAlphabetic;

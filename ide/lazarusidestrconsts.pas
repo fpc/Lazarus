@@ -5783,6 +5783,7 @@ resourcestring
   lisForExampleShowAtTopTheLocalVariablesThenTheMembers = '"Scoped" sorting will show'
     +' local variables on top, then the members of current class, then of the'
     +' ancestors, then the current unit, then of used units';
+  lisSortHistoryLimit = 'History items limit';
   lisSortOrderTitle = 'Order by';
   lisSortOrderDefinition = 'Definition (Scoped)';
   lisSortOrderScopedAlphabetic = 'Alphabetic (Scoped)';
