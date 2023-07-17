@@ -1095,8 +1095,8 @@ begin
   {$ENDIF}
   FreeAndNil(DefaultLFMTrees);
   FreeAndNil(Positions);
-  FreeAndNil(IdentifierHistory);
   FreeAndNil(IdentifierList);
+  FreeAndNil(IdentifierHistory);
   FPascalTools.FreeAndClear;
   FreeAndNil(FPascalTools);
   FDirectivesTools.FreeAndClear;
