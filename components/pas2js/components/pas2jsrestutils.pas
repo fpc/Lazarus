@@ -27,6 +27,8 @@ Type
     Procedure GetConnectionList(aConnection : TSQLDBRestConnection; aList : TStrings; {%H-}aScheme : String = '');
     function UpdateFieldDefs(aConnection: TSQLDBRestConnection; aResource: String;
       aFieldDefs: TFieldDefs): Integer;
+    function UpdateParams(aConnection: TSQLDBRestConnection; aResource: String;
+      aParams: TQueryParams): Integer;
     Procedure GetDatasetData(aDataset : TSQLDBRestDataset; aBuf : TBufDataset);
     Function GetFullResourceName(aDataset : TSQLDBRestDataset) : String;
     Property OnLog : TLogEvent read FOnLog write FOnLog;
@@ -195,8 +197,8 @@ begin
   end;
 end;
 
-Function TPas2JSRestUtils.UpdateFieldDefs(aConnection: TSQLDBRestConnection;
-  aResource: String; aFieldDefs: TFieldDefs) : Integer;
+function TPas2JSRestUtils.UpdateFieldDefs(aConnection: TSQLDBRestConnection;
+  aResource: String; aFieldDefs: TFieldDefs): Integer;
 Var
   Buf : TBufDataset;
   aName : TField;
@@ -227,6 +229,42 @@ begin
       end;
   finally
     aFieldDefs.EndUpdate;
+    Buf.Free;
+  end;
+end;
+
+function TPas2JSRestUtils.UpdateParams(aConnection: TSQLDBRestConnection;
+  aResource: String; aParams: TQueryParams): Integer;
+
+Var
+  Buf : TBufDataset;
+  aName : TField;
+  aType : TField;
+  P : TParam;
+
+begin
+  Result:=0;
+  Buf:=TLocalBufDataset.Create(Self);
+  try
+    if not LoadDataset(Buf,AConnection,aConnection.MetaDataResourceName+'/'+aResource+'/parameters') then
+       Exit(-1);
+    Buf.Open;
+    aName:=Buf.FieldByName('name');
+    aType:=Buf.FieldByName('type');
+    aParams.BeginUpdate;
+    While not Buf.EOF do
+      begin
+      if aParams.FindParam(aName.AsString)=Nil then
+        begin
+        P:=aParams.Add as TParam;
+        P.Name:=aName.AsString;
+        P.DataType:=GetFieldType(aType.AsString);
+        Inc(Result);
+        end;
+      Buf.Next;
+      end;
+  finally
+    aParams.EndUpdate;
     Buf.Free;
   end;
 end;

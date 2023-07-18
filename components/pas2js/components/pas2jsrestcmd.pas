@@ -15,6 +15,7 @@ Type
   TIDEPas2JSRestCommandHandler = Class(TComponent)
   Private
     FCmdGetFieldDefs: TIDEMenuCommand;
+    FCmdGetParamDefs: TIDEMenuCommand;
     FCmdShowData: TIDEMenuCommand;
     FLogEnabled: Boolean;
     FmnuCompRestSection: TIDEMenuSection;
@@ -32,11 +33,14 @@ Type
     Procedure CheckDataset(Sender : TObject); virtual;
     // Create fielddefs for dataset
     Procedure CreateFieldDefs(Sender : TObject); virtual;
+    // Create parameters for dataset
+    Procedure CreateParams(Sender : TObject); virtual;
     // Show the data that would be fetched by dataset
     Procedure ShowData(Sender : TObject); virtual;
     // Public access to menu itrms.
     Property CmdShowData : TIDEMenuCommand Read FCmdShowData Write FCmdShowData;
     Property CmdGetFieldDefs : TIDEMenuCommand Read FCmdGetFieldDefs Write FCmdGetFieldDefs;
+    Property CmdGetParamDefs : TIDEMenuCommand Read FCmdGetParamDefs Write FCmdGetParamDefs;
     Property mnuCompRestSection : TIDEMenuSection Read FmnuCompRestSection Write FmnuCompRestSection;
     // Logging
     Property OnLog : TLogEvent read FOnLog write FOnLog;
@@ -49,7 +53,7 @@ Var
 
 implementation
 
-uses dialogs, bufdataset, strpas2jscomponents, pas2jsrestutils, frmRestData;
+uses dialogs, bufdataset, strpas2jscomponents, pas2jsrestutils, frmRestData, FormEditingIntf, ComponentEditors;
 
 procedure TIDEPas2JSRestCommandHandler.DoLog(const Msg: String);
 begin
@@ -88,6 +92,7 @@ begin
 //  RegisterIDEMenuCommand(mnuCompDDSection,'ddeditfields',SMenuDatadictApply,@IDEDDC.ApplyDD,Nil,Nil);
   CmdShowData:=RegisterIDEMenuCommand(mnuCompRestSection,'showData',rsMenuRestShowData,@ShowData,Nil,Nil);
   CmdGetFieldDefs:=RegisterIDEMenuCommand(mnuCompRestSection,'createFieldDefs',rsMenuRestCreateFieldDefs,@CreateFieldDefs,Nil,Nil);
+  CmdGetParamDefs:=RegisterIDEMenuCommand(mnuCompRestSection,'createParamDefs',rsMenuRestCreateParamDefs,@CreateParams,Nil,Nil);
 
 end;
 
@@ -109,6 +114,7 @@ procedure TIDEPas2JSRestCommandHandler.CreateFieldDefs(Sender: TObject);
 Var
   DS : TSQLDBRestDataset;
   aCount: Integer;
+  CED : TComponentEditorDesigner;
 
 begin
   DS:=GetDataset;
@@ -125,14 +131,60 @@ begin
     ShowMessage(rsNoResourceCannotCreateFieldDefs);
     Exit;
     end;
+  DS.FieldDefs.Clear;
   aCount:=IDERestUtils.UpdateFieldDefs(DS.Connection,IDERestUtils.GetFullResourceName(DS),DS.FieldDefs);
   if aCount=-1 then
     ShowMessage(rsServerRequestFailedCannotCreateFieldDefs)
   else if aCount=0 then
     ShowMessage(rsCreateFieldDefsNoNew)
   else
-    ShowMessage(Format(rsCreateFieldDefsCount,[aCount]))
+    ShowMessage(Format(rsCreateFieldDefsCount,[aCount]));
+  if (FormEditingHook.GetCurrentDesigner is TComponentEditorDesigner) then
+    begin
+    CED:=(FormEditingHook.GetCurrentDesigner as TComponentEditorDesigner);
+    CED.Modified;
+    if assigned(CED.PropertyEditorHook) then
+     CED.PropertyEditorHook.RefreshPropertyValues;
+    end;
+end;
 
+procedure TIDEPas2JSRestCommandHandler.CreateParams(Sender: TObject);
+Var
+  DS : TSQLDBRestDataset;
+  aCount: Integer;
+  CED : TComponentEditorDesigner;
+
+begin
+  DS:=GetDataset;
+  if (DS=nil) or (DS.Connection=Nil) then exit;
+  if DS.Connection.MetaDataResourceName='' then
+    begin
+    Dolog('%s: %s',[DS.Connection.Name,rsNoMetaDataResource]);
+    ShowMessage(rsNoMetaDataResourceCannotCreateParams);
+    exit;
+    end;
+  if (DS.ResourceName='') then
+    begin
+    DoLog('%s: %s',[DS.Name,rsNoResource]);
+    ShowMessage(rsNoResourceCannotCreateParams);
+    Exit;
+    end;
+  DS.Params.Clear;
+  aCount:=IDERestUtils.UpdateParams(DS.Connection,IDERestUtils.GetFullResourceName(DS),DS.Params);
+
+  if aCount=-1 then
+    ShowMessage(rsServerRequestFailedCannotCreateParams)
+  else if aCount=0 then
+    ShowMessage(rsCreateParamsNoNew)
+  else
+    ShowMessage(Format(rsCreateParamsCount,[aCount]));
+  if (FormEditingHook.GetCurrentDesigner is TComponentEditorDesigner) then
+    begin
+    CED:=(FormEditingHook.GetCurrentDesigner as TComponentEditorDesigner);
+    CED.Modified;
+    if assigned(CED.PropertyEditorHook) then
+     CED.PropertyEditorHook.RefreshPropertyValues;
+    end;
 end;
 
 procedure TIDEPas2JSRestCommandHandler.ShowData(Sender: TObject);

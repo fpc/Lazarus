@@ -16,14 +16,20 @@ Resourcestring
   rsPas2JSRest = 'Pas2JS REST';
   rsMenuRestShowData = 'Show data';
   rsMenuRestCreateFieldDefs = 'Create field defs';
+  rsMenuRestCreateParamDefs = 'Create parameters';
   rsNoMetaDataResource = 'No metadata resource present';
   rsNoResource = 'No resource present';
   rsNoMetaDataResourceCannotCreateFieldDefs = 'No metadata resource present, cannot get fielddefs';
+  rsNoMetaDataResourceCannotCreateParams = 'No metadata resource present, cannot get parameters';
   rsNoResourceCannotCreateFieldDefs = 'No resource present, cannot get fielddefs';
+  rsNoResourceCannotCreateParams = 'No resource present, cannot get params';
   rsNoResourceCannotShowData = 'No resource present, cannot show data';
   rsServerRequestFailedCannotCreateFieldDefs = 'Server request failed, cannot update fielddefs';
+  rsServerRequestFailedCannotCreateParams = 'Server request failed, cannot update parameters';
   rsCreateFieldDefsCount = 'Added %d fielddefs';
   rsCreateFieldDefsNoNew = 'Fielddefs are up-to-date, no new fielddefs were added';
+  rsCreateParamsCount = 'Added %d parameters';
+  rsCreateParamsNoNew = 'Parameters are up-to-date, no new parameters were added';
 
   rsEditingHTMLProp = 'Editing HTML property: %s';
   rsEditTemplate = 'Edit Template';
