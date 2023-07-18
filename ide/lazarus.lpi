@@ -576,7 +576,9 @@
         <Filename Value="frames/env_file_filters.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="FileFiltersOptionsFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="Env_File_Filters"/>
       </Unit>
       <Unit>
         <Filename Value="idefpdocfilesearch.pas"/>
