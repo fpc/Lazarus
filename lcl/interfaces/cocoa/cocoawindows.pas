@@ -785,13 +785,6 @@ begin
   if Assigned(callback) then
     callback.Activate;
 
-  // LCL didn't change focus. TCocoaWindow should not keep the focus for itself
-  // and it should pass it to it's content view
-  if (firstResponder = self)
-    and Assigned(contentView)
-    and (contentView.isKindOfClass(TCocoaWindowContent)) then
-    self.makeFirstResponder( TCocoaWindowContent(contentView).documentView );
-
   performSelector_withObject_afterDelay( ObjCSelector('DoWindowDidBecomeKey'), nil, 0.1 );
 end;
 
