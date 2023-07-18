@@ -2551,35 +2551,20 @@ end;
 
 function TCocoaWidgetSet.SetFocus(Handle: HWND): HWND;
 var
-  Obj: NSObject;
   lView: NSView;
-  cb: ICommonCallback;
 begin
   if Handle <> 0 then
   begin
     Result := GetFocus;
     if Result = Handle then
       Exit;
-    Obj := NSObject(Handle);
-    if Obj.isKindOfClass(NSWindow) then
+    lView := NSObject(Handle).lclContentView;
+    if Assigned(lView) and Assigned(lView.window) then
     begin
-      NSWindow(Obj).makeKeyWindow;
-      NSWindow(Obj).makeFirstResponder(nil);
-    end
-    else
-    begin
-      lView := obj.lclContentView;
-      if lView <> nil then
-      begin
-        if lView.window <> nil then
-        begin
-          lView.window.makeKeyWindow;
-          lView.window.makeFirstResponder(lView.lclContentView);
-        end else
-          Result := 0; // the view is on window, cannot set focus. Fail
-      end else
-        Result := 0;
-    end;
+      lView.window.makeKeyWindow;
+      lView.window.makeFirstResponder(lView.lclContentView);
+    end else
+      Result := 0;
   end
   else
     Result := 0;
