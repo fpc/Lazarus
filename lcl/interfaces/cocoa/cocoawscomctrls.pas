@@ -1051,7 +1051,7 @@ begin
     sz := lTableLV.intercellSpacing;
     // Windows compatibility. on Windows there's no extra space between columns
     sz.width := 0;
-    lTableLV.setIntercellSpacing(sz);;
+    lTableLV.setIntercellSpacing(sz);
     lTableLV.release;
     {$IFDEF COCOA_DEBUG_LISTVIEW}
     WriteLn(Format('[TCocoaWSCustomListView.CreateHandle] headerView=%d', [PtrInt(lTableLV.headerView)]));

@@ -402,7 +402,7 @@ var
   control: TControl;
 begin
   GetCursorPos(P);
-  control:= FindControlAtPosition(P, true);;
+  control:= FindControlAtPosition(P, true);
   if Assigned(control) then
     TCocoaCursor(Screen.Cursors[control.Cursor]).SetCursor;
 end;
