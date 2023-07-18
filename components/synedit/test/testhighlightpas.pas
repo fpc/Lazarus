@@ -1176,7 +1176,10 @@ begin
 end;
 
 procedure TTestHighlighterPas.TestContextForDeprecated;
-  procedure SubTest(s: String);
+  procedure SubTest(s: String;
+    AEnbledTypes: TPascalCodeFoldBlockTypes;
+    AHideTypes: TPascalCodeFoldBlockTypes = [];
+    ANoFoldTypes: TPascalCodeFoldBlockTypes = []);
 
     procedure SubTest2(struct: String);
     begin
@@ -1250,6 +1253,7 @@ procedure TTestHighlighterPas.TestContextForDeprecated;
   begin
     PushBaseName('test for '+s);
     ReCreateEdit;
+    EnableFolds(AEnbledTypes, AHideTypes, ANoFoldTypes);
     SetLines
       ([  'Unit A; interface',
           'var',
@@ -1320,13 +1324,66 @@ procedure TTestHighlighterPas.TestContextForDeprecated;
     CheckTokensForLine('after class declaration', 4,
       [tkKey, tkSpace, tkKey, tkSymbol]);
 
+
+    // after unit declaration
+    SetLines
+      ([  'Unit A nonkey;', // check wrong word - must not be key
+          'interface uses foo;',
+          ''
+      ]);
+    CheckTokensForLine('dummy word after unit', 0,
+      [tkKey, tkSpace, tkIdentifier, tkSpace, tkIdentifier, tkSymbol]);
+
+    SetLines
+      ([  'Unit A;'+s+';', // must not be key
+          'interface uses foo;',
+          ''
+      ]);
+    CheckTokensForLine('after unit, but after semicolon', 0,
+      [tkKey, tkSpace, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol]);
+
+    SetLines
+      ([  'Unit A '+s+';',
+          'interface uses foo;',
+          ''
+      ]);
+    CheckTokensForLine('after unit', 0,
+      [tkKey, tkSpace, tkIdentifier, tkSpace, tkKey, tkSymbol]);
+    CheckTokensForLine('after unit - next line', 1,
+      [tkKey, tkSpace, tkKey, tkSpace, tkIdentifier, tkSymbol]);
+
+    SetLines
+      ([  'Unit A.B '+s+';',
+          'interface uses foo;',
+          ''
+      ]);
+    CheckTokensForLine('after dotted unit', 0,
+      [tkKey, tkSpace, tkIdentifier, tkSymbol, tkIdentifier, tkSpace, tkKey, tkSymbol]);
+    CheckTokensForLine('after unit - next line', 1,
+      [tkKey, tkSpace, tkKey, tkSpace, tkIdentifier, tkSymbol]);
+
+
     PopBaseName;
   end;
+
+var
+  AFolds: TPascalCodeFoldBlockTypes;
+  i: Integer;
 begin
-  SubTest('deprecated');
-  SubTest('unimplemented');
-  SubTest('experimental');
-  SubTest('platform');
+  for i := 0 to $40-1 do begin
+    AFolds := [cfbtBeginEnd..cfbtNone];
+    if (i and $01) = 0 then AFolds := AFolds - [cfbtProgram, cfbtUnit];
+    if (i and $02) = 0 then AFolds := AFolds - [cfbtUnitSection];
+    if (i and $04) = 0 then AFolds := AFolds - [cfbtVarType, cfbtLocalVarType];
+    if (i and $08) = 0 then AFolds := AFolds - [cfbtClass, cfbtRecord];
+    if (i and $10) = 0 then AFolds := AFolds - [cfbtClassSection];
+    if (i and $20) = 0 then AFolds := AFolds - [cfbtProcedure];
+    //if (i and $40) = 0 then AFolds := AFolds - [cfbtAnonynmousProcedure];
+    SubTest('deprecated'   , AFolds);
+    SubTest('unimplemented', AFolds);
+    SubTest('experimental' , AFolds);
+    SubTest('platform'     , AFolds);
+  end;
 end;
 
 procedure TTestHighlighterPas.TestContextForClassModifier;

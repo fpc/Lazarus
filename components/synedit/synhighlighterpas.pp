@@ -97,6 +97,7 @@ type
     rsAtClosingBracket,   // ')'
     rsAtCaseLabel,
     rsAtProcName,    // after a procedure/function/... keyword, when the name is expected (not for types)
+                     // also after "unit unitname" to detect "deprecated"
     rsAfterProcName,
     rsInProcHeader,       // Declaration or implementation header of a Procedure, function, constructor...
     rsWasInProcHeader,    // after the semicolon that ended a "ProcHeader / proc-modifiers are possible
@@ -1707,6 +1708,7 @@ begin
   if KeyComp('Unit') then begin
     if TopPascalCodeFoldBlockType=cfbtNone then StartPascalCodeFoldBlock(cfbtUnit);
     Result := tkKey;
+    fRange := fRange + [rsAtProcName];
   end
   else if KeyComp('Uses') then begin
     if (TopPascalCodeFoldBlockType in
@@ -1937,7 +1939,9 @@ begin
            (fRange * [rsAfterClassMembers, rsVarTypeInSpecification] <> []) and
            (fRange * [rsInProcHeader] = []) ) or
          ( (tbf in [cfbtUnitSection, cfbtProgram, cfbtProcedure]) and
-           (fRange * [rsInProcHeader] = []) )
+           (fRange * [rsInProcHeader] = []) ) or
+         ( (tbf in [cfbtUnit, cfbtNone]) and
+           (fRange * [rsInProcHeader, rsAfterProcName] = [rsAfterProcName]) )
        ) and
        ( fRange *[rsAfterEqualOrColon, rsProperty] = [] ) and
        (PasCodeFoldRange.BracketNestLevel = 0)
@@ -2254,7 +2258,9 @@ begin
            (fRange * [rsAfterClassMembers, rsVarTypeInSpecification] <> []) and
            (fRange * [rsInProcHeader] = []) ) or
          ( (tbf in [cfbtUnitSection, cfbtProgram, cfbtProcedure]) and
-           (fRange * [rsInProcHeader] = []) )
+           (fRange * [rsInProcHeader] = []) ) or
+         ( (tbf in [cfbtUnit, cfbtNone]) and
+           (fRange * [rsInProcHeader, rsAfterProcName] = [rsAfterProcName]) )
        ) and
        ( fRange *[rsAfterEqualOrColon, rsProperty] = [] ) and
        (PasCodeFoldRange.BracketNestLevel = 0)
@@ -2604,7 +2610,9 @@ begin
            (fRange * [rsAfterClassMembers, rsVarTypeInSpecification] <> []) and
            (fRange * [rsInProcHeader] = []) ) or
          ( (tbf in [cfbtUnitSection, cfbtProgram, cfbtProcedure]) and
-           (fRange * [rsInProcHeader] = []) )
+           (fRange * [rsInProcHeader] = []) ) or
+         ( (tbf in [cfbtUnit, cfbtNone]) and
+           (fRange * [rsInProcHeader, rsAfterProcName] = [rsAfterProcName]) )
        ) and
        ( fRange *[rsAfterEqualOrColon, rsProperty] = [] ) and
        (PasCodeFoldRange.BracketNestLevel = 0)
@@ -2681,7 +2689,9 @@ begin
            (fRange * [rsAfterClassMembers, rsVarTypeInSpecification] <> []) and
            (fRange * [rsInProcHeader] = []) ) or
          ( (tbf in [cfbtUnitSection, cfbtProgram, cfbtProcedure]) and
-           (fRange * [rsInProcHeader] = []) )
+           (fRange * [rsInProcHeader] = []) ) or
+         ( (tbf in [cfbtUnit, cfbtNone]) and
+           (fRange * [rsInProcHeader, rsAfterProcName] = [rsAfterProcName]) )
        ) and
        ( fRange *[rsAfterEqualOrColon, rsProperty] = [] ) and
        (PasCodeFoldRange.BracketNestLevel = 0)
@@ -3547,8 +3557,9 @@ begin
     fRange := fRange + [rsAtPropertyOrReadWrite];
     FOldRange := FOldRange - [rsAtPropertyOrReadWrite];
   end;
-  if fRange * [rsInProcHeader, rsAfterProcName] = [rsInProcHeader, rsAfterProcName] then begin
-    FTokenFlags := FTokenFlags + [tfProcName];
+  if fRange * [rsAfterProcName] = [rsAfterProcName] then begin
+    if rsInProcHeader in fRange then
+      FTokenFlags := FTokenFlags + [tfProcName];
     fRange := fRange + [rsAtProcName];
   end;
 end;
@@ -3925,8 +3936,9 @@ begin
 
         fProcTable[fLine[Run]];
 
-        if (FTokenID = tkIdentifier) and (rsAtProcName in fRange) then begin
-          FTokenFlags := FTokenFlags + [tfProcName];
+        if (FTokenID = tkIdentifier) and (fRange * [rsAtProcName] = [rsAtProcName]) then begin
+          if rsInProcHeader in fRange then
+            FTokenFlags := FTokenFlags + [tfProcName];
           fRange := fRange + [rsAfterProcName];
         end;
 

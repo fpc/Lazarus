@@ -98,7 +98,7 @@ var
   i: Integer;
 begin
   for i := 0 to FTheHighLighter.AttrCount - 1 do begin
-    DebugLn(['# ', i, ' ', FTheHighLighter.Attribute[i].StoredName]);
+    //DebugLn(['# ', i, ' ', FTheHighLighter.Attribute[i].StoredName]);
     FTheHighLighter.Attribute[i].Foreground := 10000 + i; // unique foreground colors
     FTheHighLighter.Attribute[i].Foreground := 10000 + i; // unique foreground colors
     if FTheHighLighter.Attribute[i] is TSynHighlighterAttributesModifier then begin
