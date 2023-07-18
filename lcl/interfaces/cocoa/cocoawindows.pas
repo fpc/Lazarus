@@ -763,8 +763,8 @@ end;
 
 procedure TCocoaWindow.DoWindowDidBecomeKey();
 begin
-  if Assigned(CocoaWidgetSet.CurModalForm) then
-    CocoaWidgetSet.CurModalForm.orderFront(nil);
+  if CocoaWidgetSet.isModalSession then
+    self.orderFront(nil);
   CursorHelper.SetCursorOnActive();
 end;
 
@@ -1040,6 +1040,11 @@ begin
     dl := {%H-}NSObject( NSText(newResponder).delegate );
     if Assigned(dl) and (dl.isKindOfClass(NSView)) then
       newResponder := NSResponder(dl);
+  end
+  else
+  if newResponder.isKindOfClass(NSWindow) or newResponder.isKindOfClass(TCocoaWindowContentDocument) then
+  begin
+    newResponder := nil;
   end
   else
   begin
