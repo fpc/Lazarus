@@ -1059,7 +1059,6 @@ end;
 // between LCL and COCOA, see also:
 // https://wiki.lazarus.freepascal.org/Cocoa_Internals/Application#Focus_Change
 // 4. makeFirstResponder() is Reentrant and Thread-safe
-//
 function TCocoaWindow.makeFirstResponder( aResponder : NSResponder ): ObjCBOOL;
 var
   lastResponder : NSResponder;

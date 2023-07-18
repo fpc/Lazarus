@@ -290,7 +290,7 @@ begin
       if sc.frame.size.height = 0 then Exit; // do nothing
       ps := pt.y / sc.frame.size.height;
     end;
-    sz := (sc.maxInt - sc.minInt - sc.pageInt);;
+    sz := (sc.maxInt - sc.minInt - sc.pageInt);
     newPos := Round(sc.minInt + sz * ps);
     sc.lclSetPos(NewPos);
   end;

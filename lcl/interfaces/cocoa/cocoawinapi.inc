@@ -2726,7 +2726,7 @@ begin
     SM_LCLHasFormAlphaBlend:
       Result := 1;
   else
-    DebugLn('TCocoaWidgetSet.GetSystemMetrics TODO ', DbgS(NIndex));;
+    DebugLn('TCocoaWidgetSet.GetSystemMetrics TODO ', DbgS(NIndex));
   end;
 
   {$IFDEF VerboseWinAPI}

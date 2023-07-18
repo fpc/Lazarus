@@ -603,7 +603,7 @@ end;
 
 function getNSStringObject( const aString: id ) : NSString;
 begin
-  if aString.isKindOfClass( NSAttributedString.classClass ) then
+  if aString.isKindOfClass( NSAttributedString ) then
     Result:= NSAttributedString( aString ).string_
   else
     Result:= NSString( aString );
