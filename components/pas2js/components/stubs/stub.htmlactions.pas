@@ -106,6 +106,8 @@ Type
 
    THTMLCustomElementActionList = class(TComponent)
    private
+     FAfterBind: TNotifyEvent;
+     FBeforeBind: TNotifyEvent;
      FList : TFPList;
      FOnExecute: THTMLGLobalNotifyEvent;
      function GetAction(aIndex: Integer): THTMLCustomElementAction;
@@ -132,11 +134,15 @@ Type
      Property ActionCount : Integer Read GetActionsCount;
    Protected
      Property OnExecute : THTMLGLobalNotifyEvent Read FOnExecute Write FOnExecute;
+     property BeforeBind : TNotifyEvent Read FBeforeBind Write FAfterBind;
+     Property AfterBind : TNotifyEvent Read FAfterBind Write FAfterBind;
    end;
 
    THTMLElementActionList = Class(THTMLCustomElementActionList)
    Published
      Property OnExecute;
+     property AfterBind;
+     property BeforeBind;
    end;
 
 
