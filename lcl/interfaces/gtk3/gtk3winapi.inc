@@ -1982,6 +1982,8 @@ begin
 end;
 
 function TGtk3WidgetSet.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
+var
+  pscr: PGdkScreen;
 begin
   {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
   if (Index <> BITSPIXEL) and (Index <> LOGPIXELSX) and (Index <> LOGPIXELSY) then
@@ -2025,14 +2027,11 @@ begin
     end;
     PLANES: Result := 1;
     SIZEPALETTE: Result := gdk_window_get_visual(gdk_get_default_root_window)^.get_colormap_size;
-    LOGPIXELSX : { Logical pixels per inch in X }
-    begin
-      Result := LazUtilities.RoundToInt(gdk_screen_width / (gdk_screen_width_mm / 25.4));
-    end;
 
-    LOGPIXELSY : { Logical pixels per inch in Y }
+    LOGPIXELSX, LOGPIXELSY : { Logical pixels per inch in X and Y }
     begin
-      Result := LazUtilities.RoundToInt(gdk_screen_height / (gdk_screen_height_mm / 25.4));
+      pscr := TGdkScreen.get_default;
+      Result := round(pscr^.get_resolution);
     end;
   end;
 
