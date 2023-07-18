@@ -5,12 +5,12 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-07-14 02:22+0300\n"
+"PO-Revision-Date: 2023-07-18 17:11+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.4.3\n"
+"X-Generator: Poedit 2.2.4\n"
 
 #: lazarusidestrconsts.dbgeventbreakaddressbreakpoint
 #, object-pascal-format
@@ -17728,6 +17728,10 @@ msgstr "Совпадения"
 #: lazarusidestrconsts.lissorrythistypeisnotyetimplemented
 msgid "Sorry, this type is not yet implemented"
 msgstr "Извините, этот тип ещё не реализован"
+
+#: lazarusidestrconsts.lissorthistorylimit
+msgid "History items limit"
+msgstr "Максимальное количество элементов истории"
 
 #: lazarusidestrconsts.lissorting
 msgid "Sorting"

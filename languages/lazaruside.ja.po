@@ -18007,6 +18007,10 @@ msgstr "一致"
 msgid "Sorry, this type is not yet implemented"
 msgstr "すみません、この型はまだ実装されていません"
 
+#: lazarusidestrconsts.lissorthistorylimit
+msgid "History items limit"
+msgstr ""
+
 #: lazarusidestrconsts.lissorting
 msgid "Sorting"
 msgstr "並べ替え中"

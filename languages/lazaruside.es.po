@@ -18062,6 +18062,10 @@ msgstr "Coincidencias"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Lo siento, este tipo no está todavía implementado"
 
+#: lazarusidestrconsts.lissorthistorylimit
+msgid "History items limit"
+msgstr ""
+
 #: lazarusidestrconsts.lissorting
 msgid "Sorting"
 msgstr "Ordenando"

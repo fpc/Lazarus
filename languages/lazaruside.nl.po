@@ -18327,6 +18327,10 @@ msgstr "Komt overeen"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Excuses, dit type is nog niet geimplementeerd."
 
+#: lazarusidestrconsts.lissorthistorylimit
+msgid "History items limit"
+msgstr ""
+
 #: lazarusidestrconsts.lissorting
 msgid "Sorting"
 msgstr ""

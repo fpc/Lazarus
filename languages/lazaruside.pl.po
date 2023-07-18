@@ -17982,6 +17982,10 @@ msgstr "Odpowiedniki"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Przykro mi, ten typ jeszcze nie jest obsługiwany"
 
+#: lazarusidestrconsts.lissorthistorylimit
+msgid "History items limit"
+msgstr ""
+
 #: lazarusidestrconsts.lissorting
 msgid "Sorting"
 msgstr "Sortowanie"

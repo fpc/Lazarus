@@ -17699,6 +17699,10 @@ msgstr ""
 msgid "Sorry, this type is not yet implemented"
 msgstr ""
 
+#: lazarusidestrconsts.lissorthistorylimit
+msgid "History items limit"
+msgstr ""
+
 #: lazarusidestrconsts.lissorting
 msgid "Sorting"
 msgstr ""

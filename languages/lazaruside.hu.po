@@ -17796,6 +17796,10 @@ msgstr "Találatok"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Sajnáljuk, ez a típus egyelőre nincs megvalósítva"
 
+#: lazarusidestrconsts.lissorthistorylimit
+msgid "History items limit"
+msgstr ""
+
 #: lazarusidestrconsts.lissorting
 msgid "Sorting"
 msgstr "Rendezés"

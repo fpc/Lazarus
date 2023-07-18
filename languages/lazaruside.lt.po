@@ -18047,6 +18047,10 @@ msgstr "Atitikmenys"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Deja, šis tipas dar neįgyvendintas"
 
+#: lazarusidestrconsts.lissorthistorylimit
+msgid "History items limit"
+msgstr ""
+
 #: lazarusidestrconsts.lissorting
 msgid "Sorting"
 msgstr "Rūšiuojama"

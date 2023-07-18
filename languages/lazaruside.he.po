@@ -18740,6 +18740,10 @@ msgstr "התאמות"
 msgid "Sorry, this type is not yet implemented"
 msgstr "מצטער, סוג זה לא ממומש עדיין"
 
+#: lazarusidestrconsts.lissorthistorylimit
+msgid "History items limit"
+msgstr ""
+
 #: lazarusidestrconsts.lissorting
 msgid "Sorting"
 msgstr ""

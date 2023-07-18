@@ -17675,6 +17675,10 @@ msgstr "Löydetty"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Valitan, tätä tyyppiä ei ole vielä toteutettu"
 
+#: lazarusidestrconsts.lissorthistorylimit
+msgid "History items limit"
+msgstr ""
+
 #: lazarusidestrconsts.lissorting
 msgid "Sorting"
 msgstr "Järjestää"

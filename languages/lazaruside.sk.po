@@ -17948,6 +17948,10 @@ msgstr "Vhovujúce"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Prepáčte, tento typ zatiaľ nie je implementovaný"
 
+#: lazarusidestrconsts.lissorthistorylimit
+msgid "History items limit"
+msgstr ""
+
 #: lazarusidestrconsts.lissorting
 msgid "Sorting"
 msgstr ""

@@ -17753,6 +17753,10 @@ msgstr "Збіги"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Вибачте, цей тип ще не реалізовано"
 
+#: lazarusidestrconsts.lissorthistorylimit
+msgid "History items limit"
+msgstr ""
+
 #: lazarusidestrconsts.lissorting
 msgid "Sorting"
 msgstr "Упорядкування"

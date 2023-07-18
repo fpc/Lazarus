@@ -18094,6 +18094,10 @@ msgstr "Corrispondenze"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Spiacente, questo tipo non è ancora implementato"
 
+#: lazarusidestrconsts.lissorthistorylimit
+msgid "History items limit"
+msgstr ""
+
 #: lazarusidestrconsts.lissorting
 msgid "Sorting"
 msgstr ""

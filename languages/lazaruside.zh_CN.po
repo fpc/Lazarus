@@ -17799,6 +17799,10 @@ msgstr "匹配"
 msgid "Sorry, this type is not yet implemented"
 msgstr "对不起,这个类型尚未实施"
 
+#: lazarusidestrconsts.lissorthistorylimit
+msgid "History items limit"
+msgstr ""
+
 #: lazarusidestrconsts.lissorting
 msgid "Sorting"
 msgstr "排序"

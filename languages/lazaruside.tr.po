@@ -17676,6 +17676,10 @@ msgstr "Karşılaşmalar"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Üzgünüz, bu tür henüz uygulanmadı"
 
+#: lazarusidestrconsts.lissorthistorylimit
+msgid "History items limit"
+msgstr ""
+
 #: lazarusidestrconsts.lissorting
 msgid "Sorting"
 msgstr "Sıralama"

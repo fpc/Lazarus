@@ -17897,6 +17897,10 @@ msgstr "Treffer"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Entschuldigung, dieser Typ ist (noch) nicht implementiert"
 
+#: lazarusidestrconsts.lissorthistorylimit
+msgid "History items limit"
+msgstr ""
+
 #: lazarusidestrconsts.lissorting
 msgid "Sorting"
 msgstr "Sortierung"
