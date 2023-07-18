@@ -591,46 +591,69 @@ begin
 end;
 
 procedure TTestHighlighterPas.TestContextForProcModifiers;
+var
+  AFolds: TPascalCodeFoldBlockTypes;
+  i: Integer;
 begin
-  {%region message modifier for procedure}
-    ReCreateEdit;
-    SetLines
-      ([ 'Unit A; interface',
-         'type TFoo=class',
-           'message: message;',
-           'Procedure message(message: message); message 100;',
-           'property message: message read message;',
-         'end;',
-         'var',
-         '  message: message;',
-         'Procedure message(message: message);'
+  for i := 0 to $10-1 do begin
+    AFolds := [cfbtBeginEnd..cfbtNone];
+    if (i and $01) = 0 then AFolds := AFolds - [cfbtProgram, cfbtUnit];
+    if (i and $02) = 0 then AFolds := AFolds - [cfbtUnitSection];
+    if (i and $04) = 0 then AFolds := AFolds - [cfbtClass, cfbtRecord];
+    if (i and $08) = 0 then AFolds := AFolds - [cfbtClassSection];
+
+    {%region message modifier for procedure}
+      ReCreateEdit;
+      EnableFolds(AFolds);
+      SetLines
+        ([ 'Unit A; interface',
+           'type TFoo=class',
+             'message: message;',
+             'Procedure message(message: message); message 100;',
+             'property message: message read message;',
+           'end;',
+           'var',
+           '  message: message;',
+           'Procedure message(message: message);'
+        ]);
+    CheckTokensForLine('class field',  2,
+      [ tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol ]);
+    CheckTokensForLine('class, proc message',  3,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName, tkSymbol,        // "Procedure",  " ", "message", "("
+        tkIdentifier, tkSymbol, tkSpace, tkIdentifier, // "message",, ":", " ", "message"
+        tkSymbol, tkSymbol, tkSpace,                   // ")", ";", " "
+        tkKey, // "message" as key
+        tkSpace, tkNumber, tkSymbol
       ]);
-  CheckTokensForLine('class field',  2,
-    [ tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol ]);
-  CheckTokensForLine('class, proc message',  3,
-    [ tkKey, tkSpace, tkIdentifier + FAttrProcName, tkSymbol,        // "Procedure",  " ", "message", "("
-      tkIdentifier, tkSymbol, tkSpace, tkIdentifier, // "message",, ":", " ", "message"
-      tkSymbol, tkSymbol, tkSpace,                   // ")", ";", " "
-      tkKey, // "message" as key
-      tkSpace, tkNumber, tkSymbol
-    ]);
-  CheckTokensForLine('property',  4,
-    [ tkKey, tkSpace, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkKey, tkSpace, tkIdentifier ]);
+    CheckTokensForLine('property',  4,
+      [ tkKey, tkSpace, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSpace, tkKey, tkSpace, tkIdentifier ]);
 
-  CheckTokensForLine('var',  7,
-    [ tkSpace, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol ]);
-  CheckTokensForLine('procedure',  8,
-    [ tkKey, tkSpace, tkIdentifier + FAttrProcName, tkSymbol,        // "Procedure",  " ", "message", "("
-      tkIdentifier, tkSymbol, tkSpace, tkIdentifier, // "message",, ":", " ", "message"
-      tkSymbol, tkSymbol                             // ")", ";"
-    ]);
+    CheckTokensForLine('var',  7,
+      [ tkSpace, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol ]);
+    CheckTokensForLine('procedure',  8,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName, tkSymbol,        // "Procedure",  " ", "message", "("
+        tkIdentifier, tkSymbol, tkSpace, tkIdentifier, // "message",, ":", " ", "message"
+        tkSymbol, tkSymbol                             // ")", ";"
+      ]);
 
-  {%endregion}
+    {%endregion}
+  end;
 end;
 
 procedure TTestHighlighterPas.TestContextForProcModifiers2;
+var
+  AFolds: TPascalCodeFoldBlockTypes;
+  i: Integer;
 begin
+  for i := 0 to $10-1 do begin
+    AFolds := [cfbtBeginEnd..cfbtNone];
+    if (i and $01) = 0 then AFolds := AFolds - [cfbtProgram, cfbtUnit];
+    if (i and $02) = 0 then AFolds := AFolds - [cfbtUnitSection];
+    if (i and $04) = 0 then AFolds := AFolds - [cfbtClass, cfbtRecord];
+    if (i and $08) = 0 then AFolds := AFolds - [cfbtProcedure];
+
     ReCreateEdit;
+    EnableFolds(AFolds);
     SetLines
       ([ 'Unit A; interface',
          'type',
@@ -657,285 +680,304 @@ begin
          ''
       ]);
 
-  CheckTokensForLine('type cdecl',  2,
-    [ tkIdentifier, TK_Equal, tkKey,  // cdecl=function
-      TK_Bracket, tkIdentifier, TK_Comma, tkIdentifier, TK_Bracket,  // (cdecl:cdecl)
-      TK_Colon, tkIdentifier, TK_Semi, tkKey, TK_Semi // :cdecl;cdecl;
-    ]);
+    CheckTokensForLine('type cdecl',  2,
+      [ tkIdentifier, TK_Equal, tkKey,  // cdecl=function
+        TK_Bracket, tkIdentifier, TK_Comma, tkIdentifier, TK_Bracket,  // (cdecl:cdecl)
+        TK_Colon, tkIdentifier, TK_Semi, tkKey, TK_Semi // :cdecl;cdecl;
+      ]);
 
-  CheckTokensForLine('StdCall=class',  4,
-    [ tkIdentifier, TK_Equal, tkKey,  // Stdcall=class
-      TK_Bracket, tkIdentifier, TK_Bracket  // (cdecl)
-    ]);
+    CheckTokensForLine('StdCall=class',  4,
+      [ tkIdentifier, TK_Equal, tkKey,  // Stdcall=class
+        TK_Bracket, tkIdentifier, TK_Bracket  // (cdecl)
+      ]);
 
-  CheckTokensForLine('function/method cdecl',  5,
-    [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  // function cdecl
-      TK_Bracket, tkIdentifier, TK_Comma, tkIdentifier, TK_Bracket,  // (cdecl:cdecl)
-      TK_Colon, tkIdentifier, TK_Semi, tkKey, TK_Semi, // :cdecl;cdecl;
-      tkKey, TK_Semi //deprecated;
-    ]);
+    CheckTokensForLine('function/method cdecl',  5,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  // function cdecl
+        TK_Bracket, tkIdentifier, TK_Comma, tkIdentifier, TK_Bracket,  // (cdecl:cdecl)
+        TK_Colon, tkIdentifier, TK_Semi, tkKey, TK_Semi, // :cdecl;cdecl;
+        tkKey, TK_Semi //deprecated;
+      ]);
 
-  CheckTokensForLine('property',  6,
-    [ tkKey, tkSpace, tkIdentifier, TK_Colon, tkIdentifier, tkSpace, tkKey, tkSpace, tkIdentifier, TK_Semi ]);
+    CheckTokensForLine('property',  6,
+      [ tkKey, tkSpace, tkIdentifier, TK_Colon, tkIdentifier, tkSpace, tkKey, tkSpace, tkIdentifier, TK_Semi ]);
 
-  CheckTokensForLine('StdCall=record',  9,
-    [ tkIdentifier, TK_Equal, tkKey  // Stdcall=record
-    ]);
+    CheckTokensForLine('StdCall=record',  9,
+      [ tkIdentifier, TK_Equal, tkKey  // Stdcall=record
+      ]);
 
-  CheckTokensForLine('funciton in recorld',  10,
-    [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  // function cdecl
-      TK_Bracket, tkIdentifier, TK_Comma, tkIdentifier, TK_Bracket,  // (cdecl:cdecl)
-      TK_Colon, tkIdentifier, TK_Semi, tkKey, TK_Semi, // :cdecl;cdecl;
-      tkKey, TK_Semi //deprecated;
-    ]);
+    CheckTokensForLine('funciton in recorld',  10,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  // function cdecl
+        TK_Bracket, tkIdentifier, TK_Comma, tkIdentifier, TK_Bracket,  // (cdecl:cdecl)
+        TK_Colon, tkIdentifier, TK_Semi, tkKey, TK_Semi, // :cdecl;cdecl;
+        tkKey, TK_Semi //deprecated;
+      ]);
 
-  CheckTokensForLine('var cdecl function',  14,
-    [ tkIdentifier, TK_Equal, tkKey,  // Stdcall:function
-      TK_Bracket, tkIdentifier, TK_Comma, tkIdentifier, TK_Bracket,  // (cdecl:cdecl)
-      TK_Colon, tkIdentifier, TK_Semi, tkKey, TK_Semi // :cdecl;cdecl;
-    ]);
+    CheckTokensForLine('var cdecl function',  14,
+      [ tkIdentifier, TK_Equal, tkKey,  // Stdcall:function
+        TK_Bracket, tkIdentifier, TK_Comma, tkIdentifier, TK_Bracket,  // (cdecl:cdecl)
+        TK_Colon, tkIdentifier, TK_Semi, tkKey, TK_Semi // :cdecl;cdecl;
+      ]);
 
-  CheckTokensForLine('var cdecl:cdecl',  16,
-    [ tkIdentifier, TK_Colon, tkIdentifier, TK_Semi  //cdecl:cdecl;
-    ]);
+    CheckTokensForLine('var cdecl:cdecl',  16,
+      [ tkIdentifier, TK_Colon, tkIdentifier, TK_Semi  //cdecl:cdecl;
+      ]);
 
-  CheckTokensForLine('function',  18,
-    [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  // function StdCall
-      TK_Bracket, tkIdentifier, TK_Comma, tkIdentifier, TK_Bracket,  // (cdecl:cdecl)
-      TK_Colon, tkIdentifier, TK_Semi, tkKey, TK_Semi // :cdecl;cdecl;
-    ]);
+    CheckTokensForLine('function',  18,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  // function StdCall
+        TK_Bracket, tkIdentifier, TK_Comma, tkIdentifier, TK_Bracket,  // (cdecl:cdecl)
+        TK_Colon, tkIdentifier, TK_Semi, tkKey, TK_Semi // :cdecl;cdecl;
+      ]);
 
-  CheckTokensForLine('var cdecl deprecated:cdecl',  20,
-    [ tkIdentifier, TK_Colon, tkIdentifier,   //cdecl:cdecl
-      tkSpace, tkKey, TK_Semi //deprecated;
-    ]);
+    CheckTokensForLine('var cdecl deprecated:cdecl',  20,
+      [ tkIdentifier, TK_Colon, tkIdentifier,   //cdecl:cdecl
+        tkSpace, tkKey, TK_Semi //deprecated;
+      ]);
 
-  CheckTokensForLine('function deprecated',  21,
-    [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  // function StdCall
-      TK_Bracket, tkIdentifier, TK_Comma, tkIdentifier, TK_Bracket,  // (cdecl:cdecl)
-      TK_Colon, tkIdentifier,TK_Semi, // :cdecl;
-      tkKey, TK_Semi, // cdecl;
-      tkKey, TK_Semi //deprecated;
-    ]);
+    CheckTokensForLine('function deprecated',  21,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  // function StdCall
+        TK_Bracket, tkIdentifier, TK_Comma, tkIdentifier, TK_Bracket,  // (cdecl:cdecl)
+        TK_Colon, tkIdentifier,TK_Semi, // :cdecl;
+        tkKey, TK_Semi, // cdecl;
+        tkKey, TK_Semi //deprecated;
+      ]);
 
+  end;
 end;
 
 procedure TTestHighlighterPas.TestContextForProperties;
+var
+  AFolds: TPascalCodeFoldBlockTypes;
+  i: Integer;
 begin
-  {%region property and index}
-    ReCreateEdit;
-    SetLines
-      ([ 'Unit A; interface',
-         'type TFoo = class',
-         'property Index[Index: Integer]: Integer read GetIndex write SetIndex Index 3;',
-         ''
-      ]);
-  CheckTokensForLine('property with index',  2,
-    [ tkKey, tkSpace, tkIdentifier, tkSymbol,        // "property",  " ", "Index", "["
-      tkIdentifier, tkSymbol, tkSpace, tkIdentifier, // "Index",, ":", " ", "Integer"
-      tkSymbol, tkSymbol, tkSpace, tkIdentifier,     // "]", ":", " ", "Integer"
-      tkSpace, tkKey, tkSpace, tkIdentifier,      // " ", 'read', " ", "GetIndex"
-      tkSpace, tkKey, tkSpace, tkIdentifier,      // " ", 'write', " ", "SetIndex"
-      tkSpace, tkKey, tkSpace, tkNumber,             // '" ", "INDEX" (key), " ", "3"
-      tkSymbol
-    ]);
+  for i := 0 to $10-1 do begin
+    AFolds := [cfbtBeginEnd..cfbtNone];
+    if (i and $01) = 0 then AFolds := AFolds - [cfbtProgram, cfbtUnit];
+    if (i and $02) = 0 then AFolds := AFolds - [cfbtUnitSection];
+    if (i and $04) = 0 then AFolds := AFolds - [cfbtClass, cfbtRecord];
+    if (i and $08) = 0 then AFolds := AFolds - [cfbtClassSection];
 
-    SetLines
-      ([ 'Unit A; interface',
-         'type TFoo = class',
-         'property AnIndex[Index: Index]: Index read Index write Index Index 3;',
-         ''
-      ]);
-  CheckTokensForLine('property with index 2',  2,
-    [ tkKey, tkSpace, tkIdentifier, tkSymbol,        // "property",  " ", "AnIndex", "["
-      tkIdentifier, tkSymbol, tkSpace, tkIdentifier, // "Index",, ":", " ", "Index"
-      tkSymbol, tkSymbol, tkSpace, tkIdentifier,     // "]", ":", " ", "Index"
-      tkSpace, tkKey, tkSpace, tkIdentifier,      // " ", 'read', " ", "Index"
-      tkSpace, tkKey, tkSpace, tkIdentifier,      // " ", 'write', " ", "Index"
-      tkSpace, tkKey, tkSpace, tkNumber,             // '" ", "INDEX" (key), " ", "3"
-      tkSymbol
-    ]);
-
-    SetLines
-      ([ 'Unit A; interface',
-         'type',
-         'Index = Integer;',
-         'Foo = Index;',
-         '',
-         'var',
-         'Foo, Index: Index;',
-         'Index: Index;',
-         ''
-      ]);
-  CheckTokensForLine('index outside property',  2,
-    [tkIdentifier, tkSpace, tkSymbol, tkSpace, tkIdentifier, tkSymbol]);
-  CheckTokensForLine('index outside property',  3,
-    [tkIdentifier, tkSpace, tkSymbol, tkSpace, tkIdentifier, tkSymbol]);
-  CheckTokensForLine('index outside property',  6,
-    [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol]);
-  CheckTokensForLine('index outside property',  7,
-    [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol]);
-
-  {%endregion}
-
-  {%region property and read/write}
-    ReCreateEdit;
-    SetLines
-      ([ 'Unit A; interface',
-         'type TFoo = class',
-         'property read[read: read]: read read read write read;',
-         ''
-      ]);
-  CheckTokensForLine('property "read"',  2,
-    [ tkKey, tkSpace, tkIdentifier, tkSymbol,        // "property",  " ", "read", "["
-      tkIdentifier, tkSymbol, tkSpace, tkIdentifier, // "read",, ":", " ", "read"
-      tkSymbol, tkSymbol, tkSpace, tkIdentifier,     // "]", ":", " ", "read"
-      tkSpace, tkKey, tkSpace, tkIdentifier,      // " ", 'READ', " ", "read"
-      tkSpace, tkKey, tkSpace, tkIdentifier,      // " ", 'write', " ", "read"
-      tkSymbol
-    ]);
-
-
-    ReCreateEdit;
-    SetLines
-      ([ 'Unit A; interface',
-         'type TFoo = class',
-         'property write[write: write]: write read write write write;',
-         ''
-      ]);
-  CheckTokensForLine('property "write"',  2,
-    [ tkKey, tkSpace, tkIdentifier, tkSymbol,        // "property",  " ", "write", "["
-      tkIdentifier, tkSymbol, tkSpace, tkIdentifier, // "write",, ":", " ", "write"
-      tkSymbol, tkSymbol, tkSpace, tkIdentifier,     // "]", ":", " ", "write"
-      tkSpace, tkKey, tkSpace, tkIdentifier,      // " ", 'read', " ", "write"
-      tkSpace, tkKey, tkSpace, tkIdentifier,      // " ", 'write', " ", "write"
-      tkSymbol
-    ]);
-  {%endregion}
-
-  {%region property and default}
-    ReCreateEdit;
-    SetLines
-      ([ 'Unit A; interface',
-         'type TFoo = class',
-         'default,default:default;',
-         'private type',
-         'default=integer;',
-         'private',
-         'a: default;',
-         'default:default.default;',
- {8}     'function default(default:default):default;',
- {9}     'function default(default:default.default):default.default;',
-{10}     'property default[default:default]:default read default write default; default;',
-{11}     'property default:default read default default default;',
-{12}     'property default:default index default read default default default-default+default;',
-         // property could read a field inside an embedded record
-{13}     'property default:default.default index {C} default.default read {C} default.default {C} default default.default * default.default;',
-{14}     'property default: default index not default.default read default default -default.default;',
-{15}     'property default: default.default index specialize default<default, default>.default read default default default.default;',
-{16}     'property default: specialize default<default, default> index specialize default<default, default>.default read default default specialize default<default, default>.default;',
-         ''
+    {%region property and index}
+      ReCreateEdit;
+      EnableFolds(AFolds);
+      SetLines
+        ([ 'Unit A; interface',
+           'type TFoo = class',
+           'property Index[Index: Integer]: Integer read GetIndex write SetIndex Index 3;',
+           ''
+        ]);
+    CheckTokensForLine('property with index',  2,
+      [ tkKey, tkSpace, tkIdentifier, tkSymbol,        // "property",  " ", "Index", "["
+        tkIdentifier, tkSymbol, tkSpace, tkIdentifier, // "Index",, ":", " ", "Integer"
+        tkSymbol, tkSymbol, tkSpace, tkIdentifier,     // "]", ":", " ", "Integer"
+        tkSpace, tkKey, tkSpace, tkIdentifier,      // " ", 'read', " ", "GetIndex"
+        tkSpace, tkKey, tkSpace, tkIdentifier,      // " ", 'write', " ", "SetIndex"
+        tkSpace, tkKey, tkSpace, tkNumber,             // '" ", "INDEX" (key), " ", "3"
+        tkSymbol
       ]);
 
-  CheckTokensForLine('FIELD: default,default:default;',  2,
-    [ tkIdentifier, TK_Comma, tkIdentifier,    // default , default
-      TK_Colon, tkIdentifier, TK_Semi                   // : default;
-    ]);
+      SetLines
+        ([ 'Unit A; interface',
+           'type TFoo = class',
+           'property AnIndex[Index: Index]: Index read Index write Index Index 3;',
+           ''
+        ]);
+    CheckTokensForLine('property with index 2',  2,
+      [ tkKey, tkSpace, tkIdentifier, tkSymbol,        // "property",  " ", "AnIndex", "["
+        tkIdentifier, tkSymbol, tkSpace, tkIdentifier, // "Index",, ":", " ", "Index"
+        tkSymbol, tkSymbol, tkSpace, tkIdentifier,     // "]", ":", " ", "Index"
+        tkSpace, tkKey, tkSpace, tkIdentifier,      // " ", 'read', " ", "Index"
+        tkSpace, tkKey, tkSpace, tkIdentifier,      // " ", 'write', " ", "Index"
+        tkSpace, tkKey, tkSpace, tkNumber,             // '" ", "INDEX" (key), " ", "3"
+        tkSymbol
+      ]);
 
-  CheckTokensForLine('TYPE: default=integer;',  4,
-    [ tkIdentifier, TK_Equal, tkIdentifier, TK_Semi // default = integer ;
-    ]);
+      SetLines
+        ([ 'Unit A; interface',
+           'type',
+           'Index = Integer;',
+           'Foo = Index;',
+           '',
+           'var',
+           'Foo, Index: Index;',
+           'Index: Index;',
+           ''
+        ]);
+    CheckTokensForLine('index outside property',  2,
+      [tkIdentifier, tkSpace, tkSymbol, tkSpace, tkIdentifier, tkSymbol]);
+    CheckTokensForLine('index outside property',  3,
+      [tkIdentifier, tkSpace, tkSymbol, tkSpace, tkIdentifier, tkSymbol]);
+    CheckTokensForLine('index outside property',  6,
+      [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol]);
+    CheckTokensForLine('index outside property',  7,
+      [tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol]);
 
-  CheckTokensForLine('FIELD: default:default.default;',  7,
-    [ tkIdentifier, TK_Colon, tkIdentifier, TK_Dot, tkIdentifier, TK_Semi   // default : default . default ;
-    ]);
+    {%endregion}
 
-  CheckTokensForLine('function default(default:default):default;',  8,
-    [ tkKey, tkSpace, tkIdentifier + FAttrProcName,                         // function default
-      TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Bracket,  // ( default : default )
-      TK_Colon, tkIdentifier, TK_Semi                       // : default;
-    ]);
-
-  CheckTokensForLine('function default(default:default.default):default.default;',  9,
-    [ tkKey, tkSpace, tkIdentifier + FAttrProcName,                           // function default
-      TK_Bracket, tkIdentifier, TK_Colon,                     // ( default :
-      tkIdentifier, TK_Dot, tkIdentifier, TK_Bracket,         // default . default )
-      TK_Colon, tkIdentifier, TK_Dot, tkIdentifier, TK_Semi  // : default . default;
-    ]);
-
-  CheckTokensForLine('property default[default:default]:default read default write default; default;',  10,
-    [ tkKey, tkSpace, tkIdentifier, TK_Bracket, tkIdentifier,     // property default[default
-      TK_Colon, tkIdentifier, TK_Bracket, TK_Colon, tkIdentifier, // :default]:default
-      tkSpace, tkKey, tkSpace, tkIdentifier,  // read default
-      tkSpace, tkKey, tkSpace, tkIdentifier,  // write default
-      TK_Semi, tkSpace, tkKey, TK_Semi // ; default;
-    ]);
-
-  CheckTokensForLine('property default:default read default default default;',  11,
-    [ tkKey, tkSpace, tkIdentifier, TK_Colon, tkIdentifier,   //property default:default
-      tkSpace, tkKey, tkSpace, tkIdentifier, // read default
-      tkSpace, tkKey, tkSpace, tkIdentifier, TK_Semi  // default default;
-    ]);
-
-  CheckTokensForLine('property default:default index default read default default default-default+default;',  12,
-    [ tkKey, tkSpace, tkIdentifier, TK_Colon, tkIdentifier,  // property default:default
-      tkSpace, tkKey, tkSpace, tkIdentifier, // index default
-      tkSpace, tkKey, tkSpace, tkIdentifier, // read default
-      tkSpace, tkKey, tkSpace, tkIdentifier, // default default
-      tkSymbol, tkIdentifier, tkSymbol, tkIdentifier, TK_Semi // -default+default;
-    ]);
-
-  CheckTokensForLine('property default:default.default index {C} default.default read {C} default.default {C} default default.default * default.default;',  13,
-    [ tkKey, tkSpace, tkIdentifier, TK_Colon, tkIdentifier, TK_Dot, tkIdentifier,  // property default:default.default
-      tkSpace, tkKey, tkSpace, tkComment, tkSpace, // index (C}
-      tkIdentifier, TK_Dot, tkIdentifier, tkSpace, // default.default
-      tkKey, tkSpace, tkComment, tkSpace,          // read (C}
-      tkIdentifier, TK_Dot, tkIdentifier, tkSpace, // default.default
-      tkComment, tkSpace, // (C}
-      tkKey, tkSpace, tkIdentifier, TK_Dot, tkIdentifier, tkSpace,  // default default.default
-      tkSymbol, tkSpace, tkIdentifier, TK_Dot, tkIdentifier, TK_Semi // * default.default;
-    ]);
-
-  CheckTokensForLine('property default: default index not default.default read default default -default.default;',  14,
-    [ tkKey, tkSpace, tkIdentifier, TK_Colon, tkSpace, tkIdentifier, tkSpace,  // property default:default
-      tkKey, tkSpace, tkKey, tkSpace, tkIdentifier, TK_Dot, tkIdentifier, tkSpace, // index not default.default
-      tkKey, tkSpace, tkIdentifier, tkSpace,  //read default
-      tkKey, tkSpace, tkSymbol, tkIdentifier, TK_Dot, tkIdentifier, TK_Semi // default -default.default;
-    ]);
-
-  CheckTokensForLine('property default: default.default index specialize default<default, default>.default read default default default.default;',  15,
-    [ tkKey, tkSpace, tkIdentifier, TK_Colon, tkSpace, tkIdentifier, TK_Dot, tkIdentifier, tkSpace,  // property default: default.default
-      tkKey, tkSpace, tkKey, tkSpace, // index specialize
-      tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol,  //default<default, default>
-      tkSymbol, tkIdentifier, tkSpace,  // .default
-      tkKey, tkSpace, tkIdentifier, tkSpace,  // read default
-      tkKey, tkSpace, tkIdentifier, TK_Dot, tkIdentifier, TK_Semi  // default default.default;
-    ]);
-
-  CheckTokensForLine('property default: specialize default<default, default> index specialize default<default, default>.default read default default specialize default<default, default>.default;',  16,
-    [ tkKey, tkSpace, tkIdentifier, TK_Colon, tkSpace,  // property default:
-      tkKey, tkSpace, //specialize
-      tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol, tkSpace,  //default<default, default>
-      tkKey, tkSpace, tkKey, tkSpace,  // index specialize
-      tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol,  // default<default, default>
-      tkSymbol, tkIdentifier, tkSpace, // .default
-      tkKey, tkSpace, tkIdentifier, tkSpace, // read default
-      tkKey, tkSpace, tkKey, tkSpace, // default specialize
-      tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol, // default<default, default>
-      tkSymbol, tkIdentifier, TK_Semi // .default;
-    ]);
+    {%region property and read/write}
+      ReCreateEdit;
+      EnableFolds(AFolds);
+      SetLines
+        ([ 'Unit A; interface',
+           'type TFoo = class',
+           'property read[read: read]: read read read write read;',
+           ''
+        ]);
+    CheckTokensForLine('property "read"',  2,
+      [ tkKey, tkSpace, tkIdentifier, tkSymbol,        // "property",  " ", "read", "["
+        tkIdentifier, tkSymbol, tkSpace, tkIdentifier, // "read",, ":", " ", "read"
+        tkSymbol, tkSymbol, tkSpace, tkIdentifier,     // "]", ":", " ", "read"
+        tkSpace, tkKey, tkSpace, tkIdentifier,      // " ", 'READ', " ", "read"
+        tkSpace, tkKey, tkSpace, tkIdentifier,      // " ", 'write', " ", "read"
+        tkSymbol
+      ]);
 
 
+      ReCreateEdit;
+      EnableFolds(AFolds);
+      SetLines
+        ([ 'Unit A; interface',
+           'type TFoo = class',
+           'property write[write: write]: write read write write write;',
+           ''
+        ]);
+    CheckTokensForLine('property "write"',  2,
+      [ tkKey, tkSpace, tkIdentifier, tkSymbol,        // "property",  " ", "write", "["
+        tkIdentifier, tkSymbol, tkSpace, tkIdentifier, // "write",, ":", " ", "write"
+        tkSymbol, tkSymbol, tkSpace, tkIdentifier,     // "]", ":", " ", "write"
+        tkSpace, tkKey, tkSpace, tkIdentifier,      // " ", 'read', " ", "write"
+        tkSpace, tkKey, tkSpace, tkIdentifier,      // " ", 'write', " ", "write"
+        tkSymbol
+      ]);
+    {%endregion}
+
+    {%region property and default}
+      ReCreateEdit;
+      EnableFolds(AFolds);
+      SetLines
+        ([ 'Unit A; interface',
+           'type TFoo = class',
+           'default,default:default;',
+           'private type',
+           'default=integer;',
+           'private',
+           'a: default;',
+           'default:default.default;',
+   {8}     'function default(default:default):default;',
+   {9}     'function default(default:default.default):default.default;',
+  {10}     'property default[default:default]:default read default write default; default;',
+  {11}     'property default:default read default default default;',
+  {12}     'property default:default index default read default default default-default+default;',
+           // property could read a field inside an embedded record
+  {13}     'property default:default.default index {C} default.default read {C} default.default {C} default default.default * default.default;',
+  {14}     'property default: default index not default.default read default default -default.default;',
+  {15}     'property default: default.default index specialize default<default, default>.default read default default default.default;',
+  {16}     'property default: specialize default<default, default> index specialize default<default, default>.default read default default specialize default<default, default>.default;',
+           ''
+        ]);
+
+    CheckTokensForLine('FIELD: default,default:default;',  2,
+      [ tkIdentifier, TK_Comma, tkIdentifier,    // default , default
+        TK_Colon, tkIdentifier, TK_Semi                   // : default;
+      ]);
+
+    CheckTokensForLine('TYPE: default=integer;',  4,
+      [ tkIdentifier, TK_Equal, tkIdentifier, TK_Semi // default = integer ;
+      ]);
+
+    CheckTokensForLine('FIELD: default:default.default;',  7,
+      [ tkIdentifier, TK_Colon, tkIdentifier, TK_Dot, tkIdentifier, TK_Semi   // default : default . default ;
+      ]);
+
+    CheckTokensForLine('function default(default:default):default;',  8,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,                         // function default
+        TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Bracket,  // ( default : default )
+        TK_Colon, tkIdentifier, TK_Semi                       // : default;
+      ]);
+
+    CheckTokensForLine('function default(default:default.default):default.default;',  9,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,                           // function default
+        TK_Bracket, tkIdentifier, TK_Colon,                     // ( default :
+        tkIdentifier, TK_Dot, tkIdentifier, TK_Bracket,         // default . default )
+        TK_Colon, tkIdentifier, TK_Dot, tkIdentifier, TK_Semi  // : default . default;
+      ]);
+
+    CheckTokensForLine('property default[default:default]:default read default write default; default;',  10,
+      [ tkKey, tkSpace, tkIdentifier, TK_Bracket, tkIdentifier,     // property default[default
+        TK_Colon, tkIdentifier, TK_Bracket, TK_Colon, tkIdentifier, // :default]:default
+        tkSpace, tkKey, tkSpace, tkIdentifier,  // read default
+        tkSpace, tkKey, tkSpace, tkIdentifier,  // write default
+        TK_Semi, tkSpace, tkKey, TK_Semi // ; default;
+      ]);
+
+    CheckTokensForLine('property default:default read default default default;',  11,
+      [ tkKey, tkSpace, tkIdentifier, TK_Colon, tkIdentifier,   //property default:default
+        tkSpace, tkKey, tkSpace, tkIdentifier, // read default
+        tkSpace, tkKey, tkSpace, tkIdentifier, TK_Semi  // default default;
+      ]);
+
+    CheckTokensForLine('property default:default index default read default default default-default+default;',  12,
+      [ tkKey, tkSpace, tkIdentifier, TK_Colon, tkIdentifier,  // property default:default
+        tkSpace, tkKey, tkSpace, tkIdentifier, // index default
+        tkSpace, tkKey, tkSpace, tkIdentifier, // read default
+        tkSpace, tkKey, tkSpace, tkIdentifier, // default default
+        tkSymbol, tkIdentifier, tkSymbol, tkIdentifier, TK_Semi // -default+default;
+      ]);
+
+    CheckTokensForLine('property default:default.default index {C} default.default read {C} default.default {C} default default.default * default.default;',  13,
+      [ tkKey, tkSpace, tkIdentifier, TK_Colon, tkIdentifier, TK_Dot, tkIdentifier,  // property default:default.default
+        tkSpace, tkKey, tkSpace, tkComment, tkSpace, // index (C}
+        tkIdentifier, TK_Dot, tkIdentifier, tkSpace, // default.default
+        tkKey, tkSpace, tkComment, tkSpace,          // read (C}
+        tkIdentifier, TK_Dot, tkIdentifier, tkSpace, // default.default
+        tkComment, tkSpace, // (C}
+        tkKey, tkSpace, tkIdentifier, TK_Dot, tkIdentifier, tkSpace,  // default default.default
+        tkSymbol, tkSpace, tkIdentifier, TK_Dot, tkIdentifier, TK_Semi // * default.default;
+      ]);
+
+    CheckTokensForLine('property default: default index not default.default read default default -default.default;',  14,
+      [ tkKey, tkSpace, tkIdentifier, TK_Colon, tkSpace, tkIdentifier, tkSpace,  // property default:default
+        tkKey, tkSpace, tkKey, tkSpace, tkIdentifier, TK_Dot, tkIdentifier, tkSpace, // index not default.default
+        tkKey, tkSpace, tkIdentifier, tkSpace,  //read default
+        tkKey, tkSpace, tkSymbol, tkIdentifier, TK_Dot, tkIdentifier, TK_Semi // default -default.default;
+      ]);
+
+    CheckTokensForLine('property default: default.default index specialize default<default, default>.default read default default default.default;',  15,
+      [ tkKey, tkSpace, tkIdentifier, TK_Colon, tkSpace, tkIdentifier, TK_Dot, tkIdentifier, tkSpace,  // property default: default.default
+        tkKey, tkSpace, tkKey, tkSpace, // index specialize
+        tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol,  //default<default, default>
+        tkSymbol, tkIdentifier, tkSpace,  // .default
+        tkKey, tkSpace, tkIdentifier, tkSpace,  // read default
+        tkKey, tkSpace, tkIdentifier, TK_Dot, tkIdentifier, TK_Semi  // default default.default;
+      ]);
+
+    CheckTokensForLine('property default: specialize default<default, default> index specialize default<default, default>.default read default default specialize default<default, default>.default;',  16,
+      [ tkKey, tkSpace, tkIdentifier, TK_Colon, tkSpace,  // property default:
+        tkKey, tkSpace, //specialize
+        tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol, tkSpace,  //default<default, default>
+        tkKey, tkSpace, tkKey, tkSpace,  // index specialize
+        tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol,  // default<default, default>
+        tkSymbol, tkIdentifier, tkSpace, // .default
+        tkKey, tkSpace, tkIdentifier, tkSpace, // read default
+        tkKey, tkSpace, tkKey, tkSpace, // default specialize
+        tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol, // default<default, default>
+        tkSymbol, tkIdentifier, TK_Semi // .default;
+      ]);
 
 
 
 
-  {%endregion}
+
+
+    {%endregion}
+  end;
 end;
 
 procedure TTestHighlighterPas.TestContextForProcedure;
 var
   AtP, AtI, AtK: TSynHighlighterAttributes;
+var
+  AFolds: TPascalCodeFoldBlockTypes;
+  i: Integer;
 begin
   ReCreateEdit;
   AtP := PasHighLighter.ProcedureHeaderName;
@@ -979,37 +1021,49 @@ begin
        'end.',
        ''
     ]);
-  EnableFolds([cfbtBeginEnd..cfbtNone]);
-  CheckFoldOpenCounts('', [ 1, 1, 0,
-                            1 {type}, 1, 0, 0, 0, 0,
-                            1 {var}, 0, 0, 1 {type}, 0, 0, 0,
-                            0 {Proc}, 0,
-                            1 {impl}, 0, 1 {var}, 0, 0, 1 {type}, 0, 0, 0,
-                            1 {proc}, 1 {var}, 0, 0, 0, 0, 0
-                     ]);
-  AssertEquals('Len var 1 ',   2, PasHighLighter.FoldLineLength(9, 0));
-  AssertEquals('Len type 1 ',  3, PasHighLighter.FoldLineLength(12, 0));
-  AssertEquals('Len var 2 ',   2, PasHighLighter.FoldLineLength(20, 0));
-  AssertEquals('Len type 2 ',  3, PasHighLighter.FoldLineLength(23, 0));
-  AssertEquals('Len var 3 ',   2, PasHighLighter.FoldLineLength(28, 0));
 
+  for i := 0 to $20-1 do begin
+    AFolds := [cfbtBeginEnd..cfbtNone];
+    if (i and $01) = 0 then AFolds := AFolds - [cfbtProgram, cfbtUnit];
+    if (i and $02) = 0 then AFolds := AFolds - [cfbtUnitSection];
+    if (i and $04) = 0 then AFolds := AFolds - [cfbtClass, cfbtRecord];
+    if (i and $08) = 0 then AFolds := AFolds - [cfbtClassSection];
+    if (i and $10) = 0 then AFolds := AFolds - [cfbtProcedure];
+    EnableFolds(AFolds);
+    if i = $20-1 then begin
+      // fold depth / only for all folds enabled
+      CheckFoldOpenCounts('', [ 1, 1, 0,
+                                1 {type}, 1, 0, 0, 0, 0,
+                                1 {var}, 0, 0, 1 {type}, 0, 0, 0,
+                                0 {Proc}, 0,
+                                1 {impl}, 0, 1 {var}, 0, 0, 1 {type}, 0, 0, 0,
+                                1 {proc}, 1 {var}, 0, 0, 0, 0, 0
+                         ]);
+      AssertEquals('Len var 1 ',   2, PasHighLighter.FoldLineLength(9, 0));
+      AssertEquals('Len type 1 ',  3, PasHighLighter.FoldLineLength(12, 0));
+      AssertEquals('Len var 2 ',   2, PasHighLighter.FoldLineLength(20, 0));
+      AssertEquals('Len type 2 ',  3, PasHighLighter.FoldLineLength(23, 0));
+      AssertEquals('Len var 3 ',   2, PasHighLighter.FoldLineLength(28, 0));
+    end;
 
-  CheckTokensForLine('IBar.p1',   5, [ tkSpace, tkKey + AtK, tkSpace, tkIdentifier + AtP, tkSymbol ]);
-  CheckTokensForLine('IBar.p2',   6, [ tkSpace, tkKey + AtK, tkSpace, tkIdentifier + AtP, tkSymbol ]);
-  CheckTokensForLine('foo p of', 10, [ tkSpace, tkIdentifier, tkSymbol, tkSpace,
-    tkKey + AtK, tkSpace, tkKey + AtK {of}, tkSpace, tkKey, tkSymbol
-    ]);
-  CheckTokensForLine('TBar',     14, [ tkSpace, tkKey + AtK, tkSymbol, tkSymbol, tkSymbol,
-    tkSpace, tkIdentifier + AtI, tkSymbol
-    ]);
+    CheckTokensForLine('IBar.p1',   5, [ tkSpace, tkKey + AtK, tkSpace, tkIdentifier + AtP, tkSymbol ]);
+    CheckTokensForLine('IBar.p2',   6, [ tkSpace, tkKey + AtK, tkSpace, tkIdentifier + AtP, tkSymbol ]);
+    CheckTokensForLine('foo p of', 10, [ tkSpace, tkIdentifier, tkSymbol, tkSpace,
+      tkKey + AtK, tkSpace, tkKey + AtK {of}, tkSpace, tkKey, tkSymbol
+      ]);
+    CheckTokensForLine('TBar',     14, [ tkSpace, tkKey + AtK, tkSymbol, tkSymbol, tkSymbol,
+      tkSpace, tkIdentifier + AtI, tkSymbol
+      ]);
 
-
+  end;
 end;
 
 procedure TTestHighlighterPas.TestContextForProcedureNameAttr;
+var
+  AFolds: TPascalCodeFoldBlockTypes;
+  i: Integer;
 begin
   ReCreateEdit;
-
   SetLines
     ([ 'Unit A;',
 { 1}   'interface',
@@ -1047,94 +1101,104 @@ begin
        ''
     ]);
 
+  for i := 0 to $20-1 do begin
+    AFolds := [cfbtBeginEnd..cfbtNone];
+    if (i and $01) = 0 then AFolds := AFolds - [cfbtProgram, cfbtUnit];
+    if (i and $02) = 0 then AFolds := AFolds - [cfbtUnitSection];
+    if (i and $04) = 0 then AFolds := AFolds - [cfbtClass, cfbtRecord];
+    if (i and $08) = 0 then AFolds := AFolds - [cfbtClassSection];
+    if (i and $10) = 0 then AFolds := AFolds - [cfbtProcedure];
+    EnableFolds(AFolds);
 
-  CheckTokensForLine('procedure Bar in class',  4,
-    [ tkKey, tkSpace, tkIdentifier + FAttrProcName, TK_Semi     // Procedure Bar;
-    ]);
+    CheckTokensForLine('procedure Bar in class',  4,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName, TK_Semi     // Procedure Bar;
+      ]);
 
-  CheckTokensForLine('function Bar:boolean in class',  5,
-    [ tkKey, tkSpace, tkIdentifier + FAttrProcName,      // function Bar
-      TK_Colon, tkIdentifier, TK_Semi  //: boolean;
-    ]);
+    CheckTokensForLine('function Bar:boolean in class',  5,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,      // function Bar
+        TK_Colon, tkIdentifier, TK_Semi  //: boolean;
+      ]);
 
-  CheckTokensForLine('function Bar(a:t.x):boolean in class',  6,
-    [ tkKey, tkSpace, tkIdentifier + FAttrProcName,      // function Bar
-      TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Dot, tkIdentifier, TK_Bracket,  // (a:t.x)
-      TK_Colon, tkIdentifier, TK_Dot, tkIdentifier, TK_Semi  // :t.x;
-    ]);
-
-
-  CheckTokensForLine('procedure Bar',  9,
-    [ tkKey, tkSpace, tkIdentifier + FAttrProcName, TK_Semi     // Procedure Bar;
-    ]);
-
-  CheckTokensForLine('function Bar:boolean',  10,
-    [ tkKey, tkSpace, tkIdentifier + FAttrProcName,      // function Bar
-      TK_Colon, tkIdentifier, TK_Semi  //: boolean;
-    ]);
-
-  CheckTokensForLine('function Bar(a:t.x):boolean', 11,
-    [ tkKey, tkSpace, tkIdentifier + FAttrProcName,      // function Bar
-      TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Dot, tkIdentifier, TK_Bracket,  // (a:t.x)
-      TK_Colon, tkIdentifier, TK_Dot, tkIdentifier, TK_Semi  // :t.x;
-    ]);
+    CheckTokensForLine('function Bar(a:t.x):boolean in class',  6,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,      // function Bar
+        TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Dot, tkIdentifier, TK_Bracket,  // (a:t.x)
+        TK_Colon, tkIdentifier, TK_Dot, tkIdentifier, TK_Semi  // :t.x;
+      ]);
 
 
-  CheckTokensForLine('procedure TFoo.Bar', 14,
-    [ tkKey, tkSpace, tkIdentifier + FAttrProcName, TK_Dot + FAttrProcName, tkIdentifier + FAttrProcName, TK_Semi     // Procedure TFoo.Bar;
-    ]);
+    CheckTokensForLine('procedure Bar',  9,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName, TK_Semi     // Procedure Bar;
+      ]);
 
-  CheckTokensForLine('function TFoo.Bar:boolean', 16,
-    [ tkKey, tkSpace, tkIdentifier + FAttrProcName, TK_Dot + FAttrProcName, tkIdentifier + FAttrProcName,      // function TFoo.Bar
-      TK_Colon, tkIdentifier, TK_Semi  //: boolean;
-    ]);
+    CheckTokensForLine('function Bar:boolean',  10,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,      // function Bar
+        TK_Colon, tkIdentifier, TK_Semi  //: boolean;
+      ]);
 
-  CheckTokensForLine('function TFoo.Bar(a:t.x):boolean', 18,
-    [ tkKey, tkSpace, tkIdentifier + FAttrProcName, TK_Dot + FAttrProcName, tkIdentifier + FAttrProcName,      // function TFoo.Bar
-      TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Dot, tkIdentifier, TK_Bracket,  // (a:t.x)
-      TK_Colon, tkIdentifier, TK_Dot, tkIdentifier, TK_Semi  // :t.x;
-    ]);
+    CheckTokensForLine('function Bar(a:t.x):boolean', 11,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,      // function Bar
+        TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Dot, tkIdentifier, TK_Bracket,  // (a:t.x)
+        TK_Colon, tkIdentifier, TK_Dot, tkIdentifier, TK_Semi  // :t.x;
+      ]);
 
 
+    CheckTokensForLine('procedure TFoo.Bar', 14,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName, TK_Dot + FAttrProcName, tkIdentifier + FAttrProcName, TK_Semi     // Procedure TFoo.Bar;
+      ]);
 
-  CheckTokensForLine('procedure Bar', 20,
-    [ tkKey, tkSpace, tkIdentifier + FAttrProcName, TK_Semi     // Procedure TFoo.Bar;
-    ]);
+    CheckTokensForLine('function TFoo.Bar:boolean', 16,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName, TK_Dot + FAttrProcName, tkIdentifier + FAttrProcName,      // function TFoo.Bar
+        TK_Colon, tkIdentifier, TK_Semi  //: boolean;
+      ]);
 
-  CheckTokensForLine('function Bar:boolean', 22,
-    [ tkKey, tkSpace, tkIdentifier + FAttrProcName,      // function TFoo.Bar
-      TK_Colon, tkIdentifier, TK_Semi  //: boolean;
-    ]);
-
-  CheckTokensForLine('function Bar(a:t.x):boolean', 24,
-    [ tkKey, tkSpace, tkIdentifier + FAttrProcName,      // function TFoo.Bar
-      TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Dot, tkIdentifier, TK_Bracket,  // (a:t.x)
-      TK_Colon, tkIdentifier, TK_Dot, tkIdentifier, TK_Semi  // :t.x;
-    ]);
+    CheckTokensForLine('function TFoo.Bar(a:t.x):boolean', 18,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName, TK_Dot + FAttrProcName, tkIdentifier + FAttrProcName,      // function TFoo.Bar
+        TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Dot, tkIdentifier, TK_Bracket,  // (a:t.x)
+        TK_Colon, tkIdentifier, TK_Dot, tkIdentifier, TK_Semi  // :t.x;
+      ]);
 
 
 
-  CheckTokensForLine('var p1:procedure deprecated;', 28,
-    [ tkIdentifier, TK_Colon, tkKey, tkSpace, tkKey, TK_Semi     // p1:procedure deprecated;
-    ]);
+    CheckTokensForLine('procedure Bar', 20,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName, TK_Semi     // Procedure TFoo.Bar;
+      ]);
 
-  CheckTokensForLine('var p2:procedure(a:int64) deprecated;', 29,
-    [ tkIdentifier, TK_Colon, tkKey,   // p2:procedure
-    TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Bracket,    // (a:int64)
-    tkSpace, tkKey, TK_Semi  //deprecated;
-    ]);
+    CheckTokensForLine('function Bar:boolean', 22,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,      // function TFoo.Bar
+        TK_Colon, tkIdentifier, TK_Semi  //: boolean;
+      ]);
 
-  CheckTokensForLine('var f1:function:int64 deprecated;', 30,
-    [ tkIdentifier, TK_Colon, tkKey,   // f1:function
-    TK_Colon, tkIdentifier, tkSpace, tkKey, TK_Semi    // :int64 deprecated;
-    ]);
+    CheckTokensForLine('function Bar(a:t.x):boolean', 24,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,      // function TFoo.Bar
+        TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Dot, tkIdentifier, TK_Bracket,  // (a:t.x)
+        TK_Colon, tkIdentifier, TK_Dot, tkIdentifier, TK_Semi  // :t.x;
+      ]);
 
 
+
+    CheckTokensForLine('var p1:procedure deprecated;', 28,
+      [ tkIdentifier, TK_Colon, tkKey, tkSpace, tkKey, TK_Semi     // p1:procedure deprecated;
+      ]);
+
+    CheckTokensForLine('var p2:procedure(a:int64) deprecated;', 29,
+      [ tkIdentifier, TK_Colon, tkKey,   // p2:procedure
+      TK_Bracket, tkIdentifier, TK_Colon, tkIdentifier, TK_Bracket,    // (a:int64)
+      tkSpace, tkKey, TK_Semi  //deprecated;
+      ]);
+
+    CheckTokensForLine('var f1:function:int64 deprecated;', 30,
+      [ tkIdentifier, TK_Colon, tkKey,   // f1:function
+      TK_Colon, tkIdentifier, tkSpace, tkKey, TK_Semi    // :int64 deprecated;
+      ]);
+
+  end;
 end;
 
 procedure TTestHighlighterPas.TestContextForInterface;
 var
   AtP, AtI, AtK: TSynHighlighterAttributes;
+  AFolds: TPascalCodeFoldBlockTypes;
+  i: Integer;
 begin
   ReCreateEdit;
   AtK := PasHighLighter.KeywordAttribute;
@@ -1157,22 +1221,31 @@ begin
        'implementation',
        ''
     ]);
-  EnableFolds([cfbtBeginEnd..cfbtNone]);
-  CheckFoldOpenCounts('', [ 1, 1, 0,
-                            1 {type}, 1, 0, 0, 0, 0,
-                            1 {var},  0, 0, 0, 0, 0
-                            // implementation
-                     ]);
-  AssertEquals('Len type ',  5, PasHighLighter.FoldLineLength(3, 0));
-  AssertEquals('Len intf ',  3, PasHighLighter.FoldLineLength(4, 0));
-  AssertEquals('Len var  ',  1, PasHighLighter.FoldLineLength(9, 0)); // ends at next procedure
 
-  CheckTokensForLine('unit "interface"',  1,
-    [ tkKey + AtK ]);
-  CheckTokensForLine('type "interface"',  4,
-    [ tkSpace, tkIdentifier, tkSpace, tkSymbol, tkSpace, tkKey + AtK ]);
-  CheckTokensForLine('var "interface"',  10,
-    [ tkSpace, tkIdentifier, tkSymbol, tkSpace, tkKey + AtK ]); // not allowed, still a keyword
+  for i := 0 to $08-1 do begin
+    AFolds := [cfbtBeginEnd..cfbtNone];
+    if (i and $01) = 0 then AFolds := AFolds - [cfbtProgram, cfbtUnit];
+    if (i and $02) = 0 then AFolds := AFolds - [cfbtUnitSection];
+    if (i and $04) = 0 then AFolds := AFolds - [cfbtClass, cfbtRecord];
+    EnableFolds(AFolds);
+    if i = $08-1 then begin
+      CheckFoldOpenCounts('', [ 1, 1, 0,
+                                1 {type}, 1, 0, 0, 0, 0,
+                                1 {var},  0, 0, 0, 0, 0
+                                // implementation
+                         ]);
+      AssertEquals('Len type ',  5, PasHighLighter.FoldLineLength(3, 0));
+      AssertEquals('Len intf ',  3, PasHighLighter.FoldLineLength(4, 0));
+      AssertEquals('Len var  ',  1, PasHighLighter.FoldLineLength(9, 0)); // ends at next procedure
+    end;
+
+    CheckTokensForLine('unit "interface"',  1,
+      [ tkKey + AtK ]);
+    CheckTokensForLine('type "interface"',  4,
+      [ tkSpace, tkIdentifier, tkSpace, tkSymbol, tkSpace, tkKey + AtK ]);
+    CheckTokensForLine('var "interface"',  10,
+      [ tkSpace, tkIdentifier, tkSymbol, tkSpace, tkKey + AtK ]); // not allowed, still a keyword
+  end;
 end;
 
 procedure TTestHighlighterPas.TestContextForDeprecated;
@@ -1387,161 +1460,185 @@ begin
 end;
 
 procedure TTestHighlighterPas.TestContextForClassModifier;
+var
+  AFolds: TPascalCodeFoldBlockTypes;
+  i: Integer;
 begin
-  ReCreateEdit;
-  SetLines
-    ([ 'Unit A; interface',
-       'type',
-       'TFoo = class sealed abstract',
-         'a, sealed, abstract: Integer;',
-         'procedure Foo; abstract;',
-        'end;',
-       ''
-    ]);
+  for i := 0 to $08-1 do begin
+    AFolds := [cfbtBeginEnd..cfbtNone];
+    if (i and $01) = 0 then AFolds := AFolds - [cfbtProgram, cfbtUnit];
+    if (i and $02) = 0 then AFolds := AFolds - [cfbtUnitSection];
+    if (i and $04) = 0 then AFolds := AFolds - [cfbtClass, cfbtRecord];
 
-  CheckTokensForLine('class declaration"',  2,
-    [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
-      tkKey {class}, tkSpace,
-      tkKey {sealed}, tkSpace, tkKey {abstract}
-    ]);
-  CheckTokensForLine('var in class "',  3,
-    [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
-      tkSpace, tkIdentifier, tkSymbol
-    ]);
-  CheckTokensForLine('procedure in class "',  4,
-    [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  tkSymbol, tkSpace, tkKey,  tkSymbol ]);
+    ReCreateEdit;
+    EnableFolds(AFolds);
+    SetLines
+      ([ 'Unit A; interface',
+         'type',
+         'TFoo = class sealed abstract',
+           'a, sealed, abstract: Integer;',
+           'procedure Foo; abstract;',
+          'end;',
+         ''
+      ]);
 
-
-
-  ReCreateEdit;
-  SetLines
-    ([ 'Unit A; interface',
-       'type',
-       'TFoo = class {} sealed abstract',
-         'a, sealed, abstract: Integer;',
-         'procedure Foo; abstract;',
-        'end;',
-       ''
-    ]);
-
-  CheckTokensForLine('class declaration"',  2,
-    [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
-      tkKey {class}, tkSpace, tkComment, tkSpace,
-      tkKey {sealed}, tkSpace, tkKey {abstract}
-    ]);
-  CheckTokensForLine('var in class "',  3,
-    [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
-      tkSpace, tkIdentifier, tkSymbol
-    ]);
-  CheckTokensForLine('procedure in class "',  4,
-    [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  tkSymbol, tkSpace, tkKey,  tkSymbol ]);
+    CheckTokensForLine('class declaration"',  2,
+      [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
+        tkKey {class}, tkSpace,
+        tkKey {sealed}, tkSpace, tkKey {abstract}
+      ]);
+    CheckTokensForLine('var in class "',  3,
+      [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
+        tkSpace, tkIdentifier, tkSymbol
+      ]);
+    CheckTokensForLine('procedure in class "',  4,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  tkSymbol, tkSpace, tkKey,  tkSymbol ]);
 
 
 
-  ReCreateEdit;
-  SetLines
-    ([ 'Unit A; interface',
-       'type',
-       'TFoo = class {}',
-       ' sealed abstract',
-         'a, sealed, abstract: Integer;',
-         'procedure Foo; abstract;',
-        'end;',
-       ''
-    ]);
+    ReCreateEdit;
+    EnableFolds(AFolds);
+    SetLines
+      ([ 'Unit A; interface',
+         'type',
+         'TFoo = class {} sealed abstract',
+           'a, sealed, abstract: Integer;',
+           'procedure Foo; abstract;',
+          'end;',
+         ''
+      ]);
 
-  CheckTokensForLine('class declaration"',  2,
-    [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
-      tkKey {class}, tkSpace, tkComment
-    ]);
-  CheckTokensForLine('class declaration"',  3,
-    [ tkSpace, tkKey {sealed}, tkSpace, tkKey {abstract}
-    ]);
-  CheckTokensForLine('var in class "',  4,
-    [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
-      tkSpace, tkIdentifier, tkSymbol
-    ]);
-  CheckTokensForLine('procedure in class "',  5,
-    [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  tkSymbol, tkSpace, tkKey,  tkSymbol ]);
+    CheckTokensForLine('class declaration"',  2,
+      [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
+        tkKey {class}, tkSpace, tkComment, tkSpace,
+        tkKey {sealed}, tkSpace, tkKey {abstract}
+      ]);
+    CheckTokensForLine('var in class "',  3,
+      [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
+        tkSpace, tkIdentifier, tkSymbol
+      ]);
+    CheckTokensForLine('procedure in class "',  4,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  tkSymbol, tkSpace, tkKey,  tkSymbol ]);
 
 
 
+    ReCreateEdit;
+    EnableFolds(AFolds);
+    SetLines
+      ([ 'Unit A; interface',
+         'type',
+         'TFoo = class {}',
+         ' sealed abstract',
+           'a, sealed, abstract: Integer;',
+           'procedure Foo; abstract;',
+          'end;',
+         ''
+      ]);
 
-  ReCreateEdit;
-  SetLines
-    ([ 'Unit A; interface',
-       'type',
-       'TFoo = class(sealed) sealed abstract',
-         'helper, sealed, abstract: Integer;',
-         'procedure Foo; abstract;',
-        'end;',
-       ''
-    ]);
-
-  CheckTokensForLine('class declaration"',  2,
-    [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
-      tkKey {class}, tkSymbol, tkIdentifier, tkSymbol, tkSpace,
-      tkKey {sealed}, tkSpace,
-      tkKey {abstract}
-    ]);
-  CheckTokensForLine('var in class "',  3,
-    [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
-      tkSpace, tkIdentifier, tkSymbol
-    ]);
-  CheckTokensForLine('procedure in class "',  4,
-    [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  tkSymbol, tkSpace, tkKey,  tkSymbol ]);
+    CheckTokensForLine('class declaration"',  2,
+      [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
+        tkKey {class}, tkSpace, tkComment
+      ]);
+    CheckTokensForLine('class declaration"',  3,
+      [ tkSpace, tkKey {sealed}, tkSpace, tkKey {abstract}
+      ]);
+    CheckTokensForLine('var in class "',  4,
+      [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
+        tkSpace, tkIdentifier, tkSymbol
+      ]);
+    CheckTokensForLine('procedure in class "',  5,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  tkSymbol, tkSpace, tkKey,  tkSymbol ]);
 
 
+
+
+    ReCreateEdit;
+    EnableFolds(AFolds);
+    SetLines
+      ([ 'Unit A; interface',
+         'type',
+         'TFoo = class(sealed) sealed abstract',
+           'helper, sealed, abstract: Integer;',
+           'procedure Foo; abstract;',
+          'end;',
+         ''
+      ]);
+
+    CheckTokensForLine('class declaration"',  2,
+      [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
+        tkKey {class}, tkSymbol, tkIdentifier, tkSymbol, tkSpace,
+        tkKey {sealed}, tkSpace,
+        tkKey {abstract}
+      ]);
+    CheckTokensForLine('var in class "',  3,
+      [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
+        tkSpace, tkIdentifier, tkSymbol
+      ]);
+    CheckTokensForLine('procedure in class "',  4,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  tkSymbol, tkSpace, tkKey,  tkSymbol ]);
+
+  end;
 end;
 
 procedure TTestHighlighterPas.TestContextForClassHelper;
+var
+  AFolds: TPascalCodeFoldBlockTypes;
+  i: Integer;
 begin
-  ReCreateEdit;
-  SetLines
-    ([ 'Unit A; interface',
-       'type',
-       'TFoo = class helper for TBar',
-         'helper, sealed, abstract: Integer;',
-         'procedure Foo; abstract;',
-        'end;',
-       ''
-    ]);
-  CheckTokensForLine('class declaration"',  2,
-    [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
-      tkKey {class}, tkSpace, tkKey {helper}, tkSpace, tkKey {for},
-      tkSpace, tkIdentifier
-    ]);
-  CheckTokensForLine('var in class "',  3,
-    [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
-      tkSpace, tkIdentifier, tkSymbol
-    ]);
-  CheckTokensForLine('procedure in class "',  4,
-    [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  tkSymbol, tkSpace, tkKey,  tkSymbol ]);
+  for i := 0 to $08-1 do begin
+    AFolds := [cfbtBeginEnd..cfbtNone];
+    if (i and $01) = 0 then AFolds := AFolds - [cfbtProgram, cfbtUnit];
+    if (i and $02) = 0 then AFolds := AFolds - [cfbtUnitSection];
+    if (i and $04) = 0 then AFolds := AFolds - [cfbtClass, cfbtRecord];
+
+    ReCreateEdit;
+    EnableFolds(AFolds);
+    SetLines
+      ([ 'Unit A; interface',
+         'type',
+         'TFoo = class helper for TBar',
+           'helper, sealed, abstract: Integer;',
+           'procedure Foo; abstract;',
+          'end;',
+         ''
+      ]);
+    CheckTokensForLine('class declaration"',  2,
+      [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
+        tkKey {class}, tkSpace, tkKey {helper}, tkSpace, tkKey {for},
+        tkSpace, tkIdentifier
+      ]);
+    CheckTokensForLine('var in class "',  3,
+      [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
+        tkSpace, tkIdentifier, tkSymbol
+      ]);
+    CheckTokensForLine('procedure in class "',  4,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  tkSymbol, tkSpace, tkKey,  tkSymbol ]);
 
 
-  ReCreateEdit;
-  SetLines
-    ([ 'Unit A; interface',
-       'type',
-       'TFoo = class helper(helper) for helper',
-         'helper, sealed, abstract: Integer;',
-         'procedure Foo; abstract;',
-        'end;',
-       ''
-    ]);
-  CheckTokensForLine('class declaration"',  2,
-    [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
-      tkKey {class}, tkSpace, tkKey {helper}, tkSymbol, tkIdentifier, tkSymbol,
-      tkSpace, tkKey {for},
-      tkSpace, tkIdentifier
-    ]);
-  CheckTokensForLine('var in class "',  3,
-    [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
-      tkSpace, tkIdentifier, tkSymbol
-    ]);
-  CheckTokensForLine('procedure in class "',  4,
-    [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  tkSymbol, tkSpace, tkKey,  tkSymbol ]);
-
+    ReCreateEdit;
+    EnableFolds(AFolds);
+    SetLines
+      ([ 'Unit A; interface',
+         'type',
+         'TFoo = class helper(helper) for helper',
+           'helper, sealed, abstract: Integer;',
+           'procedure Foo; abstract;',
+          'end;',
+         ''
+      ]);
+    CheckTokensForLine('class declaration"',  2,
+      [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
+        tkKey {class}, tkSpace, tkKey {helper}, tkSymbol, tkIdentifier, tkSymbol,
+        tkSpace, tkKey {for},
+        tkSpace, tkIdentifier
+      ]);
+    CheckTokensForLine('var in class "',  3,
+      [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
+        tkSpace, tkIdentifier, tkSymbol
+      ]);
+    CheckTokensForLine('procedure in class "',  4,
+      [ tkKey, tkSpace, tkIdentifier + FAttrProcName,  tkSymbol, tkSpace, tkKey,  tkSymbol ]);
+  end;
 end;
 
 procedure TTestHighlighterPas.TestContextForTypeHelper;
@@ -1572,108 +1669,143 @@ procedure TTestHighlighterPas.TestContextForTypeHelper;
     AssertEquals('not a helper, switched off / no fold', 0, PasHighLighter.FoldOpenCount(11));
   end;
 
+var
+  AFolds: TPascalCodeFoldBlockTypes;
+  i: Integer;
 begin
-  ReCreateEdit;
-  SetLines
-    ([ 'Unit A; {$mode objfpc} interface',
-       'type',
-       'helper = type helper for helper;',
-       'type',
-       '{$modeswitch typehelpers}',
-       'helper = type helper for helper',
-         'procedure Foo; static;',
-        'end;',
-       'helper = type integer;',
-       'type',
-       '{$modeswitch typehelpers-}',
-       'helper = type helper for helper;',
-       '{$modeswitch typehelpers}',
-       ''
-    ]);
+  for i := 0 to $08-1 do begin
+    AFolds := [cfbtBeginEnd..cfbtNone];
+    if (i and $01) = 0 then AFolds := AFolds - [cfbtProgram, cfbtUnit];
+    if (i and $02) = 0 then AFolds := AFolds - [cfbtUnitSection];
+    if (i and $04) = 0 then AFolds := AFolds - [cfbtClass, cfbtRecord];
 
-  DoChecks;
-  SynEdit.TestTypeText(1, 2, ' ');
-  DoChecks; // modeswitch on rescan
+    ReCreateEdit;
+    EnableFolds(AFolds);
+    SetLines
+      ([ 'Unit A; {$mode objfpc} interface',
+         'type',
+         'helper = type helper for helper;',
+         'type',
+         '{$modeswitch typehelpers}',
+         'helper = type helper for helper',
+           'procedure Foo; static;',
+          'end;',
+         'helper = type integer;',
+         'type',
+         '{$modeswitch typehelpers-}',
+         'helper = type helper for helper;',
+         '{$modeswitch typehelpers}',
+         ''
+      ]);
 
-  PasHighLighter.FoldConfig[ord(cfbtClass)].Enabled := False;
-  DoChecks;
+    DoChecks;
+    SynEdit.TestTypeText(1, 2, ' ');
+    DoChecks; // modeswitch on rescan
 
+    PasHighLighter.FoldConfig[ord(cfbtClass)].Enabled := False;
+    DoChecks;
+  end;
 end;
 
 procedure TTestHighlighterPas.TestContextForClassFunction;
 var
-  i: Integer;
+  i, j: Integer;
+  AFolds: TPascalCodeFoldBlockTypes;
 const
   t: array[0..2] of string = ('class', 'object', 'record');
 begin
-  for i:= 0 to 2 do begin
-  ReCreateEdit;
-  EnableFolds([cfbtBeginEnd..cfbtNone]);
+  for i := 0 to $08-1 do begin
+    AFolds := [cfbtBeginEnd..cfbtNone];
+    if (i and $01) = 0 then AFolds := AFolds - [cfbtProgram, cfbtUnit];
+    if (i and $02) = 0 then AFolds := AFolds - [cfbtUnitSection];
+    if (i and $04) = 0 then AFolds := AFolds - [cfbtClass, cfbtRecord];
 
-  SetLines
-    ([ 'Unit A; interface',
-       'type',
-       'TFoo = '+t[i],
-         'class function f1: boolean;',
-         'class procedure p1(v: boolean);',
-        'end;',
-       ''
-    ]);
-  //   unit/iface,  type,  record, -,-
-  CheckFoldOpenCounts('', [2, 1, 1, 0, 0]);
-  CheckTokensForLine('class function',  3,
-    [ tkKey, tkSpace, tkKey, tkSpace,  tkIdentifier + FAttrProcName, tkSymbol, tkSpace,  tkIdentifier, tkSymbol  ]);
-  CheckTokensForLine('class procedure',  4,
-    [ tkKey, tkSpace, tkKey, tkSpace,  tkIdentifier + FAttrProcName, tkSymbol, tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSymbol  ]);
+    for j:= 0 to 2 do begin
+      ReCreateEdit;
+      EnableFolds(AFolds);
 
+      SetLines
+        ([ 'Unit A; interface',
+           'type',
+           'TFoo = '+t[j],
+             'class function f1: boolean;',
+             'class procedure p1(v: boolean);',
+            'end;',
+           ''
+        ]);
+      //   unit/iface,  type,  record, -,-
+      if i = $08-1 then
+        CheckFoldOpenCounts('', [2, 1, 1, 0, 0]);
+
+      CheckTokensForLine('class function',  3,
+        [ tkKey, tkSpace, tkKey, tkSpace,  tkIdentifier + FAttrProcName, tkSymbol, tkSpace,  tkIdentifier, tkSymbol  ]);
+      CheckTokensForLine('class procedure',  4,
+        [ tkKey, tkSpace, tkKey, tkSpace,  tkIdentifier + FAttrProcName, tkSymbol, tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSymbol  ]);
+
+    end;
   end;
 end;
 
 procedure TTestHighlighterPas.TestContextForRecordHelper;
+var
+  AFolds: TPascalCodeFoldBlockTypes;
+  i: Integer;
 begin
-  ReCreateEdit;
-  SetLines
-    ([ 'Unit A; interface {$mode delphi}',
-       'type',
-       'TFoo = record helper for TBar',
-         'helper, sealed, abstract: Integer;',
-        'end;',
-       ''
-    ]);
-  CheckTokensForLine('record declaration"',  2,
-    [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
-      tkKey {class}, tkSpace, tkKey {helper}, tkSpace, tkKey {for},
-      tkSpace, tkIdentifier
-    ]);
-  CheckTokensForLine('var in class "',  3,
-    [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
-      tkSpace, tkIdentifier, tkSymbol
-    ]);
+  for i := 0 to $08-1 do begin
+    AFolds := [cfbtBeginEnd..cfbtNone];
+    if (i and $01) = 0 then AFolds := AFolds - [cfbtProgram, cfbtUnit];
+    if (i and $02) = 0 then AFolds := AFolds - [cfbtUnitSection];
+    if (i and $04) = 0 then AFolds := AFolds - [cfbtClass, cfbtRecord];
 
 
-  ReCreateEdit;
-  SetLines
-    ([ 'Unit A; interface  {$mode delphi}',
-       'type',
-       'TFoo = record helper(helper) for helper',
-         'helper, sealed, abstract: Integer;',
-        'end;',
-       ''
-    ]);
-  CheckTokensForLine('record declaration"',  2,
-    [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
-      tkKey {class}, tkSpace, tkKey {helper}, tkSymbol, tkIdentifier, tkSymbol,
-      tkSpace, tkKey {for},
-      tkSpace, tkIdentifier
-    ]);
-  CheckTokensForLine('var in class "',  3,
-    [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
-      tkSpace, tkIdentifier, tkSymbol
-    ]);
+    ReCreateEdit;
+    EnableFolds(AFolds);
+    SetLines
+      ([ 'Unit A; interface {$mode delphi}',
+         'type',
+         'TFoo = record helper for TBar',
+           'helper, sealed, abstract: Integer;',
+          'end;',
+         ''
+      ]);
+    CheckTokensForLine('record declaration"',  2,
+      [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
+        tkKey {class}, tkSpace, tkKey {helper}, tkSpace, tkKey {for},
+        tkSpace, tkIdentifier
+      ]);
+    CheckTokensForLine('var in class "',  3,
+      [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
+        tkSpace, tkIdentifier, tkSymbol
+      ]);
 
+
+    ReCreateEdit;
+    EnableFolds(AFolds);
+    SetLines
+      ([ 'Unit A; interface  {$mode delphi}',
+         'type',
+         'TFoo = record helper(helper) for helper',
+           'helper, sealed, abstract: Integer;',
+          'end;',
+         ''
+      ]);
+    CheckTokensForLine('record declaration"',  2,
+      [ tkIdentifier, tkSpace, tkSymbol, tkSpace,
+        tkKey {class}, tkSpace, tkKey {helper}, tkSymbol, tkIdentifier, tkSymbol,
+        tkSpace, tkKey {for},
+        tkSpace, tkIdentifier
+      ]);
+    CheckTokensForLine('var in class "',  3,
+      [ tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol, tkSpace,  tkIdentifier, tkSymbol,
+        tkSpace, tkIdentifier, tkSymbol
+      ]);
+  end;
 end;
 
 procedure TTestHighlighterPas.TestContextForStatic;
+var
+  AFolds: TPascalCodeFoldBlockTypes;
+  i: Integer;
 begin
   ReCreateEdit;
   SetLines
@@ -1694,42 +1826,50 @@ begin
        ''
     ]);
 
-  CheckTokensForLine('static = class',      2,
-                     [tkIdentifier, tkSymbol, tkKey, tkSpace, tkKey, tkSymbol]);
-  CheckTokensForLine('Tfoo=class(static)',  3,
-  [tkIdentifier, tkSymbol, tkKey,tkSymbol, tkIdentifier, tkSymbol]);
-  CheckTokensForLine('fields',              4,
-                     [tkSpace, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol, tkSpace, tkKey, tkSymbol]);
-  CheckTokensForLine('fields 2',            5,
-                     [tkSpace, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol, tkSpace, tkKey, tkSymbol]);
-  CheckTokensForLine('function',            6,
-                     [tkSpace, tkKey, tkSpace, tkIdentifier + FAttrProcName, tkSymbol, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol,
-                      tkSymbol, tkSpace, tkIdentifier, tkSymbol, // : #32 static ;
-                      tkSpace, tkKey, tkSymbol                   // #32 static ;
-                     ]);
-  CheckTokensForLine('property',            7,
-                     [tkSpace, tkKey, tkSpace, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol,
-                      tkSymbol, tkSpace, tkIdentifier,           // : #32 static
-                      tkSpace, tkKey, tkSpace, tkIdentifier,     // #32 read static
-                      tkSpace, tkKey, tkSpace, tkIdentifier,     // #32 write static
-                      tkSymbol                   // ;
-                     ]);
-  CheckTokensForLine('pup fields',          9,
-                     [tkSpace, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol, tkSpace, tkKey, tkSymbol]);
-  CheckTokensForLine('pup fields 2',       10,
-                     [tkSpace, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol, tkSpace, tkKey, tkSymbol]);
-  CheckTokensForLine('pup function',       11,
-                     [tkSpace, tkKey, tkSpace, tkIdentifier + FAttrProcName, tkSymbol, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol,
-                      tkSymbol, tkSpace, tkIdentifier, tkSymbol, // : #32 static ;
-                      tkSpace, tkKey, tkSymbol                   // #32 static ;
-                     ]);
-  CheckTokensForLine('pup property',       12,
-                     [tkSpace, tkKey, tkSpace, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol,
-                      tkSymbol, tkSpace, tkIdentifier,           // : #32 static
-                      tkSpace, tkKey, tkSpace, tkIdentifier,     // #32 read static
-                      tkSpace, tkKey, tkSpace, tkIdentifier,     // #32 write static
-                      tkSymbol                   // ;
-                     ]);
+  for i := 0 to $08-1 do begin
+    AFolds := [cfbtBeginEnd..cfbtNone];
+    if (i and $01) = 0 then AFolds := AFolds - [cfbtProgram, cfbtUnit];
+    if (i and $02) = 0 then AFolds := AFolds - [cfbtUnitSection];
+    if (i and $04) = 0 then AFolds := AFolds - [cfbtClass, cfbtRecord];
+    EnableFolds(AFolds);
+
+    CheckTokensForLine('static = class',      2,
+                       [tkIdentifier, tkSymbol, tkKey, tkSpace, tkKey, tkSymbol]);
+    CheckTokensForLine('Tfoo=class(static)',  3,
+    [tkIdentifier, tkSymbol, tkKey,tkSymbol, tkIdentifier, tkSymbol]);
+    CheckTokensForLine('fields',              4,
+                       [tkSpace, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol, tkSpace, tkKey, tkSymbol]);
+    CheckTokensForLine('fields 2',            5,
+                       [tkSpace, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol, tkSpace, tkKey, tkSymbol]);
+    CheckTokensForLine('function',            6,
+                       [tkSpace, tkKey, tkSpace, tkIdentifier + FAttrProcName, tkSymbol, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol,
+                        tkSymbol, tkSpace, tkIdentifier, tkSymbol, // : #32 static ;
+                        tkSpace, tkKey, tkSymbol                   // #32 static ;
+                       ]);
+    CheckTokensForLine('property',            7,
+                       [tkSpace, tkKey, tkSpace, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol,
+                        tkSymbol, tkSpace, tkIdentifier,           // : #32 static
+                        tkSpace, tkKey, tkSpace, tkIdentifier,     // #32 read static
+                        tkSpace, tkKey, tkSpace, tkIdentifier,     // #32 write static
+                        tkSymbol                   // ;
+                       ]);
+    CheckTokensForLine('pup fields',          9,
+                       [tkSpace, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol, tkSpace, tkKey, tkSymbol]);
+    CheckTokensForLine('pup fields 2',       10,
+                       [tkSpace, tkIdentifier, tkSymbol, tkSpace, tkIdentifier, tkSymbol, tkSpace, tkKey, tkSymbol]);
+    CheckTokensForLine('pup function',       11,
+                       [tkSpace, tkKey, tkSpace, tkIdentifier + FAttrProcName, tkSymbol, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol,
+                        tkSymbol, tkSpace, tkIdentifier, tkSymbol, // : #32 static ;
+                        tkSpace, tkKey, tkSymbol                   // #32 static ;
+                       ]);
+    CheckTokensForLine('pup property',       12,
+                       [tkSpace, tkKey, tkSpace, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkIdentifier, tkSymbol,
+                        tkSymbol, tkSpace, tkIdentifier,           // : #32 static
+                        tkSpace, tkKey, tkSpace, tkIdentifier,     // #32 read static
+                        tkSpace, tkKey, tkSpace, tkIdentifier,     // #32 write static
+                        tkSymbol                   // ;
+                       ]);
+  end;
 end;
 
 procedure TTestHighlighterPas.TestCaretAsString;
