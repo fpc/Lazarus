@@ -146,12 +146,6 @@ function NSEventRawKeyChar(ev: NSEvent): System.WideChar;
 function AllocImageRotatedByDegrees(src: NSImage; degrees: double): NSImage;
 function AllocCursorFromCursorByDegrees(src: NSCursor; degrees: double): NSCursor;
 
-implementation
-
-const
-  DarkName = 'NSAppearanceNameDarkAqua'; // used in 10.14
-  DarkNameVibrant = 'NSAppearanceNameVibrantDark'; // used in 10.13
-
 var
   NSSTR_DARK_NAME: NSString;
   NSSTR_DARK_NAME_VIBRANT: NSString;
@@ -159,6 +153,12 @@ var
   NSSTR_CARRIAGE_RETURN: NSString;
   NSSTR_LINE_SEPARATOR: NSString;
   NSSTR_PARAGRAPH_SEPARATOR: NSString;
+
+implementation
+
+const
+  DarkName = 'NSAppearanceNameDarkAqua'; // used in 10.14
+  DarkNameVibrant = 'NSAppearanceNameVibrantDark'; // used in 10.13
 
 procedure ApplicationWillShowModal;
 begin
