@@ -77,6 +77,7 @@ type
     {$endif}
 
     function appearance: NSAppearance; message 'appearance'; // 10.14 (10.13)
+    procedure setAppearance(newValue:NSAppearance); message 'setAppearance:'; // 10.14 (10.13)
     function effectiveAppearance: NSAppearance; message 'effectiveAppearance'; // 10.14 (10.13)
   end;
 
