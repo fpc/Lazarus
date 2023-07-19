@@ -169,6 +169,8 @@ var
   mRes, I: Integer;
   aParent: HWND;
 begin
+  if not Assigned(FDlg) then
+    Exit(False);
   SetupControls;
 
   aParent := FDlg.ParentWindow;
