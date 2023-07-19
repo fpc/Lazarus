@@ -230,6 +230,13 @@ begin
   //Result := TWSTaskDialogClass(WidgetSetClass).Execute(Self);
   FParentWindow := ParentWnd;
 
+
+  //temporary show new, then old dialog, both in emulated mode (regardless of Flags)
+  LCLTaskDialog.TaskDialogIndirect := nil;
+  Result := TWSTaskDialogClass(WidgetSetClass).Execute(Self);
+  debugln(['TWSTaskDialogClass(WidgetSetClass).Execute(Self)=',Result]);
+
+
   FillChar(TaskDlg, SizeOf(LCLTaskDialog.TTaskDialog), 0);
 
   if RadioButtons.DefaultButton<> nil then
@@ -258,9 +265,9 @@ begin
     DefRB, FWidth, ParentWnd, tfForceNonNative in Flags, tfEmulateClassicStyle in Flags, @DoOnButtonClickedHandler);
   Result := ButtonID>=0;
 
-
-
   FModalResult := ButtonIDToModalResult(ButtonID);
+
+  //ToDo move FirstButtonIndex and FirstRadioButtonIndex to interface section Dialogs unit.
 
   if (TaskDlg.RadioRes>=200) and (TaskDlg.RadioRes-200<RadioButtons.Count) then
     FRadioButton := RadioButtons[TaskDlg.RadioRes-200] as TTaskDialogRadioButtonItem

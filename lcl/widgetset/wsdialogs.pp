@@ -200,7 +200,7 @@ end;
 
 class function TWSTaskDialog.Execute(const ADlg: TCustomTaskDialog): Boolean;
 begin
-  //writeln('TWSTaskDialog.Execute');
+  //writeln('TWSTaskDialog.Execute: Assigned(ADlg)=',Assigned(ADlg));
   Result := ExecuteLCLTaskDialog(TTaskDialog(ADlg));
 end;
 

@@ -159,7 +159,10 @@ end;
 
 constructor TLCLTaskDialog.CreateNew(AOwner: TComponent; Num: Integer);
 begin
+  debugln('TLCLTaskDialog.CreateNew: AOwner=',DbgSName(AOwner));
   inherited CreateNew(AOwner, Num);
+  if (AOwner is TCustomTaskDialog) then
+    FDlg := TTaskDialog(AOwner);
   Rad := nil;
   KeyPreview := True;
 end;
@@ -169,6 +172,7 @@ var
   mRes, I: Integer;
   aParent: HWND;
 begin
+  debugln(['TLCLTaskDialog.Execute: Assigned(FDlg)=',Assigned(FDlg)]);
   if not Assigned(FDlg) then
     Exit(False);
   SetupControls;
@@ -684,7 +688,7 @@ begin
 
 
   // add buttons and verification checkbox
-  if (aCommonButtons=[]) or (Verify<>'') or
+  if (aCommonButtons <> []) or (Verify<>'') or
      ((Buttons<>'') and not (tfUseCommandLinks in FDlg.Flags)) then
   begin
     CurrTabOrder := Panel.TabOrder;
@@ -700,8 +704,10 @@ begin
         Free;
       end;
     for Btn := high(TTaskDialogCommonButton) downto low(TTaskDialogCommonButton) do
+    begin
       if (Btn in aCommonButtons) then
         AddButton(TD_Trans(LoadResString(TD_BTNS(Btn))), TD_BTNMOD[Btn]);
+    end;
     if Verify<>'' then
     begin
       Verif := TCheckBox.Create(Self);
@@ -771,6 +777,9 @@ begin
   inherited KeyDown(Key, Shift);
 end;
 
+finalization
+  if assigned(LDefaultFont) then
+    LDefaultFont.Free;
 
 
 end.
