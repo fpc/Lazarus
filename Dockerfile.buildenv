@@ -6,6 +6,7 @@ ARG FPC_MAIN_VER
 
 RUN dpkg --add-architecture i386 && apt-get update && apt-get -y install \
     build-essential \
+    git \
     libc6-dev-i386 \
     libgtk2.0-dev \
     libgtk-3-dev \
@@ -87,6 +88,31 @@ RUN tarballs=( \
       fi; \
       cd ..; \
     done; \
+    # save sources for FPC from main branch separately (they are needed e.g. for running Codetools tests)
+    fpcsrcdir=/fpcsrc; \
+    fpcsrcdirmain=$fpcsrcdir/$FPC_MAIN_VER; \
+    mkdir -p $fpcsrcdirmain; \
+    tar zxf source-main.tar.gz --strip-components=1 --directory $fpcsrcdirmain; \
+    if [ $? -ne 0 ]; then \
+      exit 1; \
+    fi; \
+    # compile and install pas2js (needed for running some Codetools tests)
+    git clone --depth 1 https://gitlab.com/freepascal.org/fpc/pas2js.git; \
+    if [ $? -ne 0 ]; then \
+      exit 1; \
+    fi; \
+    cd pas2js; \
+    rm -rf compiler; \
+    ln -s ../source-main compiler; \
+    make all FPC=/usr/lib/fpc/$FPC_MAIN_VER/ppcx64; \
+    make install FPC=/usr/lib/fpc/$FPC_MAIN_VER/ppcx64; \
+    if [ $? -ne 0 ]; then \
+      exit 1; \
+    fi; \
+    cd ..; \
+    rm -rf pas2js; \
+    echo "Contents of /usr/local/bin/pas2js.cfg:"; \
+    cat /usr/local/bin/pas2js.cfg; \
     # remove sources
     for tbl in "${tarballs[@]}"; do \
       tarball=($tbl); \
