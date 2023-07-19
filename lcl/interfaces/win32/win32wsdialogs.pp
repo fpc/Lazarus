@@ -1574,15 +1574,31 @@ end;
 
 { TWin32WSTaskDialog }
 
+var
+  TaskDialogIndirect: function(AConfig: pointer; Res: PInteger;
+    ResRadio: PInteger; VerifyFlag: PBOOL): HRESULT; stdcall;
+
 class function TWin32WSTaskDialog.Execute(const ADlg: TCustomTaskDialog): Boolean;
 begin
   //writeln('TWin32WSTaskDialog.Execute');
   Result := inherited Execute(ADlg);
 end;
 
+procedure InitTaskDialogIndirect;
+var OSVersionInfo: TOSVersionInfo;
+begin
+  OSVersionInfo.dwOSVersionInfoSize := sizeof(OSVersionInfo);
+  GetVersionEx(OSVersionInfo);
+  if OSVersionInfo.dwMajorVersion<6 then
+    TaskDialogIndirect := nil else
+    Pointer(TaskDialogIndirect) := GetProcAddress(GetModuleHandle(comctl32),'TaskDialogIndirect');
+end;
+
+
 initialization
   if (Win32MajorVersion = 4) then
     OpenFileNameSize := SizeOf(OPENFILENAME_NT4)
   else
     OpenFileNameSize := SizeOf(OPENFILENAME);
+  InitTaskDialogIndirect;
 end.
