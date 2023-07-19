@@ -2044,8 +2044,8 @@ end;
 
 destructor TCDEdit.Destroy;
 begin
-  inherited Destroy;
   FLines.Free;
+  inherited Destroy;
   //FCaretTimer.Free; Don't free here because it is assigned with a owner
 end;
 

@@ -13,10 +13,6 @@
 }
 
 
-// The version from FreePascal crash except in FPC 2.7.1+ from 10 Dec 2011 +
-function XOpenIM(para1: PDisplay; para2: PXrmHashBucketRec; para3: Pchar; para4: Pchar): PXIM; cdecl; external;
-function XCreateIC(para1: PXIM; para2: array of const): PXIC; cdecl; external;
-
 procedure MyXConnectionWatchProc(display: PDisplay; client_data: TXPointer;
   fd: cint; opening: XLib.TBool; watch_data: PXPointer); cdecl;
 begin
