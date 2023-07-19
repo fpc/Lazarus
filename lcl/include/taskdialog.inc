@@ -228,6 +228,7 @@ const
 begin
   //Current goal of refactoring: replace all this with:
   //Result := TWSTaskDialogClass(WidgetSetClass).Execute(Self);
+  FParentWindow := ParentWnd;
 
   FillChar(TaskDlg, SizeOf(LCLTaskDialog.TTaskDialog), 0);
 
