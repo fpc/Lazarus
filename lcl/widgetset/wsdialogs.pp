@@ -106,7 +106,7 @@ type
   TWSTaskDialogClass = class of TWSTaskDialog;
   TWSTaskDialog  = class(TWSLCLComponent)
   published
-    class function Execute(const ADlg: TCustomTaskDialog): Integer; virtual;
+    class function Execute(const ADlg: TCustomTaskDialog; AParentWnd: HWND; out ARadioRes: Integer): Integer; virtual;
   end;
 
   { WidgetSetRegistration }
@@ -198,10 +198,10 @@ end;
 
 { TWSTaskDialog }
 
-class function TWSTaskDialog.Execute(const ADlg: TCustomTaskDialog): Integer;
+class function TWSTaskDialog.Execute(const ADlg: TCustomTaskDialog; AParentWnd: HWND; out ARadioRes: Integer): Integer;
 begin
   //writeln('TWSTaskDialog.Execute: Assigned(ADlg)=',Assigned(ADlg));
-  Result := ExecuteLCLTaskDialog(TTaskDialog(ADlg));
+  Result := ExecuteLCLTaskDialog(TTaskDialog(ADlg), AParentWnd, ARadiores);
 end;
 
 { WidgetSetRegistration }

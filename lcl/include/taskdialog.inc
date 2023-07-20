@@ -221,7 +221,7 @@ var
   TaskDlg: LCLTaskDialog.TTaskDialog;
   DefRB, DefBtn: TModalResult;
   B: TTaskDialogBaseButtonItem;
-  ButtonID: Integer;
+  ButtonID, ARadioRes: Integer;
 const
   TD_BTNMOD: array[TTaskDialogCommonButton] of Integer = (
     mrOk, mrYes, mrNo, mrCancel, mrRetry, mrAbort);
@@ -233,15 +233,14 @@ begin
 
   //temporary show new, then old dialog, both in emulated mode (regardless of Flags)
   LCLTaskDialog.TaskDialogIndirect := nil;
-  ButtonID := TWSTaskDialogClass(WidgetSetClass).Execute(Self);
+  ButtonID := TWSTaskDialogClass(WidgetSetClass).Execute(Self, ParentWnd, ARadioRes);
   FModalResult := ButtonIDToModalResult(ButtonID);
   Result := (ButtonID >= 0);
   debugln(['TWSTaskDialogClass(WidgetSetClass).Execute(Self)=',ButtonID,', Result=',Result]);
   debugln(['New: ButtonID=',ButtonID]);
   debugln(['New: FModalResult=',FModalResult]);
   debugln(['New: VerifyChecked=',tfVerificationFlagChecked in FFlags]);
-  //ToDo: we need to retrieve RadioResult, since we cannot set RadioButton (it's read only)
-
+  debugln(['New: ARadioRes=',ARadioRes]);
   FillChar(TaskDlg, SizeOf(LCLTaskDialog.TTaskDialog), 0);
 
   if RadioButtons.DefaultButton<> nil then
@@ -276,7 +275,7 @@ begin
   debugln(['Old: FModalResult=',FModalResult]);
 
   //ToDo move FirstButtonIndex and FirstRadioButtonIndex to interface section Dialogs unit.
-
+  debugln(['Old: TaskDlg.RadioRes=',TaskDlg.RadioRes]);
   if (TaskDlg.RadioRes>=200) and (TaskDlg.RadioRes-200<RadioButtons.Count) then
     FRadioButton := RadioButtons[TaskDlg.RadioRes-200] as TTaskDialogRadioButtonItem
   else

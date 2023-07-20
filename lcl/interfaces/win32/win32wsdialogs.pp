@@ -161,7 +161,7 @@ type
 
   TWin32WSTaskDialog = class(TWSTaskDialog)
   public
-    class function Execute(const ADlg: TCustomTaskDialog): Integer; override;
+    class function Execute(const ADlg: TCustomTaskDialog; AParentWnd: HWND; out ARadioRes: Integer): Integer; override;
   end;
 
 function OpenFileDialogCallBack(Wnd: HWND; uMsg: UINT; {%H-}wParam: WPARAM;
@@ -1578,10 +1578,10 @@ var
   TaskDialogIndirect: function(AConfig: pointer; Res: PInteger;
     ResRadio: PInteger; VerifyFlag: PBOOL): HRESULT; stdcall;
 
-class function TWin32WSTaskDialog.Execute(const ADlg: TCustomTaskDialog): Integer;
+class function TWin32WSTaskDialog.Execute(const ADlg: TCustomTaskDialog; AParentWnd: HWND; out ARadioRes: Integer): Integer;
 begin
   //writeln('TWin32WSTaskDialog.Execute');
-  Result := inherited Execute(ADlg);
+  Result := inherited Execute(ADlg, AParentWnd, ARadioRes);
 end;
 
 procedure InitTaskDialogIndirect;

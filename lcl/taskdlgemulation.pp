@@ -24,7 +24,6 @@ type
   private
     /// the Task Dialog structure which created the form
     FDlg: TTaskDialog;
-    FRadioRes: Integer;
     FVerifyChecked: Boolean;
     RadioButtonArray: array of TRadioButton;
 
@@ -58,9 +57,8 @@ type
 
     constructor CreateNew(AOwner: TComponent; Num: Integer = 0); override;
 
-    function Execute: Integer;
+    function Execute(AParentWnd: HWND; out ARadioRes: Integer): Integer;
   public
-    property RadioRes: Integer read FRadioRes;
   end;
 
 
@@ -70,7 +68,7 @@ var
   TaskDialog_Translate: TTaskDialogTranslate;
 
 
-function ExecuteLCLTaskDialog(const ADlg: TTaskDialog): Integer;
+function ExecuteLCLTaskDialog(const ADlg: TTaskDialog; AParentWnd: HWND; out ARadioRes: Integer): Integer;
 
 implementation
 
@@ -228,7 +226,7 @@ end;
 
 
 { -------------- }
-function ExecuteLCLTaskDialog(const ADlg: TTaskDialog): Integer;
+function ExecuteLCLTaskDialog(const ADlg: TTaskDialog; AParentWnd: HWND; out ARadioRes: Integer): Integer;
 var
   DlgForm: TLCLTaskDialog;
 begin
@@ -236,7 +234,7 @@ begin
   Result := -1;
   DlgForm := TLCLTaskDialog.CreateNew(ADlg);
   try
-    Result := DlgForm.Execute;
+    Result := DlgForm.Execute(AParentWnd, ARadioRes);
   finally
     FreeAndNil(DlgForm);
   end;
@@ -252,21 +250,19 @@ begin
   KeyPreview := True;
 end;
 
-function TLCLTaskDialog.Execute: Integer;
+function TLCLTaskDialog.Execute(AParentWnd: HWND; out ARadioRes: Integer): Integer;
 var
   mRes, I: Integer;
-  aParent: HWND;
 begin
   debugln(['TLCLTaskDialog.Execute: Assigned(FDlg)=',Assigned(FDlg)]);
   if not Assigned(FDlg) then
     Exit(-1);
   SetupControls;
 
-  aParent := FDlg.ParentWindow;
   //set form parent
-  if (aParent <> 0) then
+  if (AParentWnd <> 0) then
     for I := 0 to Screen.CustomFormCount-1 do
-      if Screen.CustomForms[I].Handle = aParent then
+      if Screen.CustomForms[I].Handle = AParentWnd then
       begin
         PopupParent := Screen.CustomForms[I];
         Break;
@@ -301,10 +297,10 @@ begin
       FDlg.Flags := FDlg.Flags - [tfVerificationFlagChecked]
   end;
 
-  FRadioRes := 0;
+  ARadioRes := 0;
   for i := 0 to high(RadioButtonArray) do
     if RadioButtonArray[i].Checked then
-      FRadioRes := i+FirstRadioButtonIndex;
+      ARadioRes := i+FirstRadioButtonIndex;
 
 
 end;
