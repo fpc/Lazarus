@@ -149,6 +149,8 @@ begin
   BakProjSubDirComboBox.Text:='';
   with BakProjSubDirComboBox.Items do
   begin
+    // NOTE: dlgBakNoSubDirectory ItemIndex position is assumed to be Items.Count-2
+    // in BackupOptionsFrame.WriteSettings method.
     BeginUpdate;
     Clear;
     Add(dlgBakNoSubDirectory);
@@ -199,6 +201,8 @@ begin
   BakOtherSubDirLabel.Caption := dlgEdBSubDir;
   with BakOtherSubDirComboBox.Items do
   begin
+    // NOTE: dlgBakNoSubDirectory ItemIndex position is assumed to be Items.Count-2
+    // in BackupOptionsFrame.WriteSettings method.
     BeginUpdate;
     Clear;
     Add(dlgBakNoSubDirectory);
@@ -275,9 +279,13 @@ begin
         MaxCounter:=0
       else
         MaxCounter:=StrToIntDef(BakProjMaxCounterComboBox.Text,1);
-      SubDirectory:=BakProjSubDirComboBox.Text;
-      if SubDirectory=dlgBakNoSubDirectory then
-        SubDirectory:='';
+      // BakProjSubDirComboBox has two fixed last items: '(no subdirectory)' and 'backup'.
+      // Check if selected item is '(no subdirectory)' in translation-independent manner
+      // (as the caption itself can be changed when the interface language is switched).
+      if BakProjSubDirComboBox.ItemIndex=BakProjSubDirComboBox.Items.Count-2 then
+        SubDirectory:=''
+      else
+        SubDirectory:=BakProjSubDirComboBox.Text;
     end;
     with BackupInfoOtherFiles do
     begin
@@ -294,7 +302,10 @@ begin
         MaxCounter:=0
       else
         MaxCounter:=StrToIntDef(BakOtherMaxCounterComboBox.Text,1);
-      if BakOtherSubDirComboBox.Text=dlgBakNoSubDirectory then
+      // BakOtherSubDirComboBox has two fixed last items: '(no subdirectory)' and 'backup'.
+      // Check if selected item is '(no subdirectory)' in translation-independent manner
+      // (as the caption itself can be changed when the interface language is switched).
+      if BakOtherSubDirComboBox.ItemIndex=BakOtherSubDirComboBox.Items.Count-2 then
         SubDirectory:=''
       else
         SubDirectory:=BakOtherSubDirComboBox.Text;
