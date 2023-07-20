@@ -1151,7 +1151,7 @@ procedure TLazLogger.DebugLnExit(LogEnabled: TLazLoggerLogEnabled;
 var
   t: String;
 begin
-  t := ArgsToString(Args);
+  if LogEnabled.Enabled then t := ArgsToString(Args);
   DecreaseIndent(LogEnabled);
   if not LogEnabled.Enabled then exit;
   DoDebugLn(t, LogEnabled.Group);
@@ -1162,7 +1162,7 @@ procedure TLazLogger.DebugLnExit(LogEnabled: TLazLoggerLogEnabled; s: string;
 var
   t: String;
 begin
-  t := Format(S, Args);
+  if LogEnabled.Enabled then t := Format(S, Args);
   DecreaseIndent(LogEnabled);
   if not LogEnabled.Enabled then exit;
   DoDebugLn(t, LogEnabled.Group);
