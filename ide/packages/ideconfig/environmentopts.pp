@@ -267,6 +267,8 @@ type
     FLastOpenPackages: TLastOpenPackagesList;//list of filenames with open packages
     // comboboxes
     FDropDownCount: Integer;
+    // messages view
+    FMsgViewShowFPCMsgLinesCompiled: Boolean;
     // project inspector
     FProjInspSortAlphabetically: boolean;
     FProjInspShowDirHierarchy: boolean;
@@ -517,6 +519,9 @@ type
     property LanguageID: string read fLanguageID write fLanguageID;
     // comboboxes
     property DropDownCount: Integer read FDropDownCount write FDropDownCount;
+    // messages view
+    property MsgViewShowFPCMsgLinesCompiled: Boolean read FMsgViewShowFPCMsgLinesCompiled
+                                                    write FMsgViewShowFPCMsgLinesCompiled;
     // default template for each 'new item' category: Name=Path, Value=TemplateName
     property NewFormTemplate: string read FNewFormTemplate write FNewFormTemplate;
     property NewUnitTemplate: string read FNewUnitTemplate write FNewUnitTemplate;
@@ -1000,8 +1005,6 @@ begin
     FAutoSaveIntervalInSecs:=FXMLCfg.GetValue(Path+'AutoSave/IntervalInSecs',DefaultAutoSaveIntervalInSecs);
     FLastSavedProjectFile:=FXMLCfg.GetValue(Path+'AutoSave/LastSavedProjectFile','');
     FOpenLastProjectAtStart:=FXMLCfg.GetValue(Path+'AutoSave/OpenLastProjectAtStart',true);
-    FNewProjectTemplateAtStart:=FXMLCfg.GetValue(Path+'NewProjectTemplateAtStart/Value','Application');
-    //FAutoSaveActiveDesktop:=FXMLCfg.GetValue(Path+'AutoSave/ActiveDesktop',True);
     FLastOpenPackages.Clear;
     if FOpenLastProjectAtStart then
     begin
@@ -1017,17 +1020,16 @@ begin
     // project inspector
     FProjInspSortAlphabetically:=FXMLCfg.GetValue(Path+'ProjInspSortAlphabetically/Value',false);
     FProjInspShowDirHierarchy:=FXMLCfg.GetValue(Path+'ProjInspShowDirHierarchy/Value',false);
-
     // package editor
     FPackageEditorSortAlphabetically:=FXMLCfg.GetValue(Path+'PackageEditorSortAlphabetically/Value',false);
     FPackageEditorShowDirHierarchy:=FXMLCfg.GetValue(Path+'PackageEditorShowDirHierarchy/Value',false);
-
     // procedure list
     FProcedureListFilterStart:=FXMLCfg.GetValue(Path+'ProcedureListFilterStart/Value',false);
     FCheckDiskChangesWithLoading:=FXMLCfg.GetValue(Path+'CheckDiskChangesWithLoading/Value',false);
-
     // comboboxes
     FDropDownCount:=FXMLCfg.GetValue(Path+'ComboBoxes/DropDownCount',DefaultDropDownCount);
+    // messages view
+    FMsgViewShowFPCMsgLinesCompiled:=XMLCfg.GetValue(Path+'MsgView/FPCMsg/ShowLinesCompiled',false);
 
     // recent files and directories
     FMaxRecentOpenFiles:=FXMLCfg.GetValue(Path+'Recent/OpenFiles/Max',DefaultMaxRecentOpenFiles);
@@ -1036,7 +1038,8 @@ begin
     LoadRecentList(FXMLCfg,FRecentProjectFiles,Path+'Recent/ProjectFiles/',rltFile);
     FMaxRecentPackageFiles:=FXMLCfg.GetValue(Path+'Recent/PackageFiles/Max',DefaultMaxRecentPackageFiles);
     LoadRecentList(FXMLCfg,FRecentPackageFiles,Path+'Recent/PackageFiles/',rltFile);
-
+    FNewProjectTemplateAtStart:=FXMLCfg.GetValue(Path+'NewProjectTemplateAtStart/Value','Application');
+    FMultipleInstances:=StrToIDEMultipleInstancesOption(FXMLCfg.GetValue(Path+'MultipleInstances/Value',''));
     FAlreadyPopulatedRecentFiles := FXMLCfg.GetValue(Path+'Recent/AlreadyPopulated', false);
 
     // other recent settings
@@ -1075,7 +1078,6 @@ begin
       Path+'UnitRenameReferencesAction/Value',UnitRenameReferencesActionNames[urraAsk]));
     FAskForFilenameOnNewFile:=FXMLCfg.GetValue(Path+'AskForFilenameOnNewFile/Value',false);
     FLowercaseDefaultFilename:=FXMLCfg.GetValue(Path+'LowercaseDefaultFilename/Value',true);
-    FMultipleInstances:=StrToIDEMultipleInstancesOption(FXMLCfg.GetValue(Path+'MultipleInstances/Value',''));
 
     // fpdoc
     FPDocPaths := FXMLCfg.GetValue(Path+'LazDoc/Paths','');
@@ -1212,9 +1214,6 @@ begin
     FXMLCfg.SetDeleteValue(Path+'AutoSave/IntervalInSecs',FAutoSaveIntervalInSecs,DefaultAutoSaveIntervalInSecs);
     FXMLCfg.SetDeleteValue(Path+'AutoSave/LastSavedProjectFile',FLastSavedProjectFile,'');
     FXMLCfg.SetDeleteValue(Path+'AutoSave/OpenLastProjectAtStart',FOpenLastProjectAtStart,true);
-
-    FXMLCfg.SetDeleteValue(Path+'NewProjectTemplateAtStart/Value',FNewProjectTemplateAtStart,'Application');
-    //FXMLCfg.SetDeleteValue(Path+'AutoSave/ActiveDesktop', FAutoSaveActiveDesktop, True);
     FXMLCfg.DeletePath(Path+'AutoSave/LastOpenPackages/');
     if FOpenLastProjectAtStart then
       for i := 0 to FLastOpenPackages.Count-1 do
@@ -1223,17 +1222,16 @@ begin
     // project inspector
     FXMLCfg.SetDeleteValue(Path+'ProjInspSortAlphabetically/Value',FProjInspSortAlphabetically,false);
     FXMLCfg.SetDeleteValue(Path+'ProjInspShowDirHierarchy/Value',FProjInspShowDirHierarchy,false);
-
     // package editor
     FXMLCfg.SetDeleteValue(Path+'PackageEditorSortAlphabetically/Value',FPackageEditorSortAlphabetically,false);
     FXMLCfg.SetDeleteValue(Path+'PackageEditorShowDirHierarchy/Value',FPackageEditorShowDirHierarchy,false);
-
     // procedure list
     FXMLCfg.SetDeleteValue(Path+'ProcedureListFilterStart/Value',FProcedureListFilterStart,false);
     FXMLCfg.SetDeleteValue(Path+'CheckDiskChangesWithLoading/Value',FCheckDiskChangesWithLoading,false);
-
     // comboboxes
     FXMLCfg.SetDeleteValue(Path+'ComboBoxes/DropDownCount',FDropDownCount,DefaultDropDownCount);
+    // messages view
+    XMLCfg.SetDeleteValue(Path+'MsgView/FPCMsg/ShowLinesCompiled',FMsgViewShowFPCMsgLinesCompiled,false);
 
     // recent files and directories
     FXMLCfg.SetDeleteValue(Path+'Recent/OpenFiles/Max',FMaxRecentOpenFiles,DefaultMaxRecentOpenFiles);
@@ -1242,7 +1240,10 @@ begin
     SaveRecentList(FXMLCfg,FRecentProjectFiles,Path+'Recent/ProjectFiles/',FMaxRecentProjectFiles);
     FXMLCfg.SetDeleteValue(Path+'Recent/PackageFiles/Max',FMaxRecentPackageFiles,DefaultMaxRecentPackageFiles);
     SaveRecentList(FXMLCfg,FRecentPackageFiles,Path+'Recent/PackageFiles/',FMaxRecentPackageFiles);
-
+    FXMLCfg.SetDeleteValue(Path+'NewProjectTemplateAtStart/Value',FNewProjectTemplateAtStart,'Application');
+    FXMLCfg.SetDeleteValue(Path+'MultipleInstances/Value',
+        IDEMultipleInstancesOptionNames[FMultipleInstances],
+        IDEMultipleInstancesOptionNames[DefaultIDEMultipleInstancesOption]);
     FXMLCfg.SetDeleteValue(Path+'Recent/AlreadyPopulated', FAlreadyPopulatedRecentFiles, false);
 
     // other recent settings
@@ -1266,13 +1267,8 @@ begin
     FXMLCfg.SetDeleteValue(Path+'AmbiguousFileAction/Value',
       AmbiguousFileActionNames[fAmbiguousFileAction],
       AmbiguousFileActionNames[afaAsk]);
-    FXMLCfg.SetDeleteValue(Path+'AskForFilenameOnNewFile/Value',
-                             FAskForFilenameOnNewFile,false);
-    FXMLCfg.SetDeleteValue(Path+'LowercaseDefaultFilename/Value',
-                             FLowercaseDefaultFilename,true);
-    FXMLCfg.SetDeleteValue(Path+'MultipleInstances/Value',
-        IDEMultipleInstancesOptionNames[FMultipleInstances],
-        IDEMultipleInstancesOptionNames[DefaultIDEMultipleInstancesOption]);
+    FXMLCfg.SetDeleteValue(Path+'AskForFilenameOnNewFile/Value',FAskForFilenameOnNewFile,false);
+    FXMLCfg.SetDeleteValue(Path+'LowercaseDefaultFilename/Value',FLowercaseDefaultFilename,true);
 
     // fpdoc
     FXMLCfg.SetDeleteValue(Path+'LazDoc/Paths',FPDocPaths,'');

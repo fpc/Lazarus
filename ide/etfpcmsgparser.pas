@@ -1441,7 +1441,7 @@ begin
   Result:=true;
   MsgLine:=CreateMsgLine;
   MsgLine.SubTool:=DefaultSubTool;
-  if EnvironmentGuiOpts.MsgViewShowFPCMsgLinesCompiled then
+  if EnvironmentOptions.MsgViewShowFPCMsgLinesCompiled then
     MsgLine.Urgency:=mluImportant
   else
     MsgLine.Urgency:=mluVerbose;
@@ -2744,7 +2744,7 @@ begin
   FPCMsgIDThereWereErrorsCompiling: // There were $1 errors compiling module, stopping
     MsgUrgency:=mluVerbose;
   FPCMsgIDLinesCompiled: // n lines compiled, m sec
-    if EnvironmentGuiOpts.MsgViewShowFPCMsgLinesCompiled then
+    if EnvironmentOptions.MsgViewShowFPCMsgLinesCompiled then
       MsgUrgency:=mluImportant;
   end;
   MsgLine:=CreateMsgLine;

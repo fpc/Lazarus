@@ -283,7 +283,6 @@ type
     FMsgViewColors: array[TMsgWndColor] of TColor;
     FMsgColors: array[TMessageLineUrgency] of TColor;
     FMsgViewFilters: TLMsgViewFilters;
-    FMsgViewShowFPCMsgLinesCompiled: Boolean;
     // desktops
     FDesktops: TDesktopOptList;
     FDesktop: TDesktopOpt;
@@ -383,7 +382,6 @@ type
     property MsgViewColors[c: TMsgWndColor]: TColor read GetMsgViewColors write SetMsgViewColors;
     property MsgViewFilters: TLMsgViewFilters read FMsgViewFilters;
     property MsgColors[u: TMessageLineUrgency]: TColor read GetMsgColors write SetMsgColors;
-    property MsgViewShowFPCMsgLinesCompiled: Boolean read FMsgViewShowFPCMsgLinesCompiled write FMsgViewShowFPCMsgLinesCompiled;
     // desktops
     property Desktops: TDesktopOptList read FDesktops;
     property Desktop: TDesktopOpt read FDesktop;               // the working desktop, standalone
@@ -968,7 +966,6 @@ begin
   for u:=low(TMessageLineUrgency) to high(TMessageLineUrgency) do
     fMsgColors[u] := clDefault;
   FMsgViewFilters:=TLMsgViewFilters.Create(nil);
-  FMsgViewShowFPCMsgLinesCompiled:=false;
   // Desktop collection
   FDesktops := TDesktopOptList.Create;
   // FDesktop points to the IDE properties
@@ -1060,7 +1057,6 @@ begin
     fMsgColors[u] := XMLCfg.GetValue(
       Path+'MsgView/MsgColors/'+dbgs(u),clDefault);
   FMsgViewFilters.LoadFromXMLConfig(XMLCfg,'MsgView/Filters/');
-  FMsgViewShowFPCMsgLinesCompiled:=XMLCfg.GetValue(Path+'MsgView/FPCMsg/ShowLinesCompiled',false);
   // IDEEditorGroups
   for i := 0 to IDEEditorGroups.Count-1 do
   begin
@@ -1188,7 +1184,6 @@ begin
     XMLCfg.SetDeleteValue(Path+'MsgView/MsgColors/'+dbgs(u),
     fMsgColors[u],clDefault);
   MsgViewFilters.SaveToXMLConfig(XMLCfg,'MsgView/Filters/');
-  XMLCfg.SetDeleteValue(Path+'MsgView/FPCMsg/ShowLinesCompiled',FMsgViewShowFPCMsgLinesCompiled,false);
   // IDEEditorGroups
   for i := 0 to IDEEditorGroups.Count-1 do
   begin

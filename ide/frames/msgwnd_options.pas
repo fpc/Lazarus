@@ -276,8 +276,8 @@ begin
     MWShowIconsCheckBox.Checked := ShowMessagesIcons;
     MWAlwaysDrawFocusedCheckBox.Checked := MsgViewAlwaysDrawFocused;
     MWFocusCheckBox.Checked := MsgViewFocus;
-    MWShowFPCMsgLinesCompiledCheckBox.Checked := MsgViewShowFPCMsgLinesCompiled;
   end;
+  MWShowFPCMsgLinesCompiledCheckBox.Checked := EnvOpt.MsgViewShowFPCMsgLinesCompiled;
   MWMaxProcsSpinEdit.Value := EnvOpt.MaxExtToolsInParallel;
   fReady:=true;
 end;
@@ -300,8 +300,8 @@ begin
     ShowMessagesIcons := MWShowIconsCheckBox.Checked;
     MsgViewAlwaysDrawFocused := MWAlwaysDrawFocusedCheckBox.Checked;
     MsgViewFocus := MWFocusCheckBox.Checked;
-    MsgViewShowFPCMsgLinesCompiled := MWShowFPCMsgLinesCompiledCheckBox.Checked;
   end;
+  EnvOpt.MsgViewShowFPCMsgLinesCompiled := MWShowFPCMsgLinesCompiledCheckBox.Checked;
   EnvOpt.MaxExtToolsInParallel := MWMaxProcsSpinEdit.Value;
 end;
 
