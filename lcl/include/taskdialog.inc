@@ -239,7 +239,8 @@ begin
   debugln(['TWSTaskDialogClass(WidgetSetClass).Execute(Self)=',ButtonID,', Result=',Result]);
   debugln(['New: ButtonID=',ButtonID]);
   debugln(['New: FModalResult=',FModalResult]);
-
+  debugln(['New: VerifyChecked=',tfVerificationFlagChecked in FFlags]);
+  //ToDo: we need to retrieve RadioResult, since we cannot set RadioButton (it's read only)
 
   FillChar(TaskDlg, SizeOf(LCLTaskDialog.TTaskDialog), 0);
 
