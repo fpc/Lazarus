@@ -233,8 +233,12 @@ begin
 
   //temporary show new, then old dialog, both in emulated mode (regardless of Flags)
   LCLTaskDialog.TaskDialogIndirect := nil;
-  Result := TWSTaskDialogClass(WidgetSetClass).Execute(Self);
-  debugln(['TWSTaskDialogClass(WidgetSetClass).Execute(Self)=',Result]);
+  ButtonID := TWSTaskDialogClass(WidgetSetClass).Execute(Self);
+  FModalResult := ButtonIDToModalResult(ButtonID);
+  Result := (ButtonID >= 0);
+  debugln(['TWSTaskDialogClass(WidgetSetClass).Execute(Self)=',ButtonID,', Result=',Result]);
+  debugln(['New: ButtonID=',ButtonID]);
+  debugln(['New: FModalResult=',FModalResult]);
 
 
   FillChar(TaskDlg, SizeOf(LCLTaskDialog.TTaskDialog), 0);
@@ -263,9 +267,12 @@ begin
 
   ButtonID := TaskDlg.Execute(TD_COMMONBUTTONS(CommonButtons), DefBtn, TD_FLAGS(Flags), TF_DIALOGICON(MainIcon), TF_FOOTERICON(FooterIcon),
     DefRB, FWidth, ParentWnd, tfForceNonNative in Flags, tfEmulateClassicStyle in Flags, @DoOnButtonClickedHandler);
+  debugln(['TaskDlg.Execute()=',ButtonID,', Result=',Result]);
+  debugln(['Old: ButtonID=',ButtonID]);
   Result := ButtonID>=0;
 
   FModalResult := ButtonIDToModalResult(ButtonID);
+  debugln(['Old: FModalResult=',FModalResult]);
 
   //ToDo move FirstButtonIndex and FirstRadioButtonIndex to interface section Dialogs unit.
 

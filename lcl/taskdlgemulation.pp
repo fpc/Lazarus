@@ -37,7 +37,7 @@ type
 
     constructor CreateNew(AOwner: TComponent; Num: Integer = 0); override;
 
-    function Execute: Boolean;
+    function Execute: Integer;
   public
     /// the labels corresponding to the Task Dialog main elements
     Element: array[tdeContent..tdeMainInstruction] of TLabel;
@@ -59,7 +59,7 @@ var
   TaskDialog_Translate: TTaskDialogTranslate;
 
 
-function ExecuteLCLTaskDialog(const ADlg: TTaskDialog): Boolean;
+function ExecuteLCLTaskDialog(const ADlg: TTaskDialog): Integer;
 
 implementation
 
@@ -143,12 +143,12 @@ end;
 
 
 { -------------- }
-function ExecuteLCLTaskDialog(const ADlg: TTaskDialog): Boolean;
+function ExecuteLCLTaskDialog(const ADlg: TTaskDialog): Integer;
 var
   DlgForm: TLCLTaskDialog;
 begin
   debugln('ExecuteLCLTaskDialog');
-  Result := False;
+  Result := -1;
   DlgForm := TLCLTaskDialog.CreateNew(ADlg);
   try
     Result := DlgForm.Execute;
@@ -167,14 +167,14 @@ begin
   KeyPreview := True;
 end;
 
-function TLCLTaskDialog.Execute: Boolean;
+function TLCLTaskDialog.Execute: Integer;
 var
   mRes, I: Integer;
   aParent: HWND;
 begin
   debugln(['TLCLTaskDialog.Execute: Assigned(FDlg)=',Assigned(FDlg)]);
   if not Assigned(FDlg) then
-    Exit(False);
+    Exit(-1);
   SetupControls;
 
   aParent := FDlg.ParentWindow;
@@ -193,8 +193,8 @@ begin
 
 
 
-  mRes := ShowModal;
-  Result := (mRes > 0);
+  Result := ShowModal;
+  //Result := (mRes > 0);
 
 //ToDo implement this
 (*
