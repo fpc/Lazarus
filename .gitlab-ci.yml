@@ -329,4 +329,4 @@ tests-codetools: # run Codetools tests and output results in JUnit format (for t
       junit: $OUTPUT_FILE
   rules:
     - !reference [.runscheduled, rules]
-    - !reference [.manualjob, rules]
+    - !reference [.onsuccessjob, rules]
