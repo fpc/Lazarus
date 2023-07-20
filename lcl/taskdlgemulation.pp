@@ -29,6 +29,18 @@ type
     FVerifyChecked: Boolean;
     Rad: array of TRadioButton;
 
+    Buttons, Radios, Title, Instruction, Content,
+    TaskDlgInfoCollapse, Info, Footer,
+    Verify, Selection: String;
+    aCommonButtons: TTaskDialogCommonButtons;
+    Panel: TPanel;
+
+    Image: TImage; //Dialog Icon;
+    procedure SetupIcon(out IconBorder,X,Y: Integer; AParent: TWinControl);
+    procedure AddRadios(ARadioOffSet, AWidth, ARadioDef, AFontHeight: Integer; var X,Y: Integer; AParent: TWinControl);
+    procedure AddCommandLinkButtons(var X, Y: Integer; AWidth, AButtonDef, AFontHeight: Integer; AParent: TWinControl);
+    procedure AddButtonsAndCheckBox(var X,Y, XB: Integer; AWidth, AButtonDef: Integer; APArent: TWinControl);
+
   protected
     procedure HandleEmulatedButtonClicked(Sender: TObject);
     procedure SetupControls;
@@ -124,6 +136,23 @@ begin
     result := StringReplace(aText, '\n', #10, [rfReplaceAll]);
 end;
 
+//if aText contains '\n'
+//  return the part before '\n'
+//  set aHint to part after '\n' and replace all remaining '\n' in aHint with a LineFeed character
+function NoCR(const aText: string; out aHint: String): String;
+var
+  i: integer;
+begin
+  Result := aText;
+  aHint := '';
+  i := pos('\n',aText);
+  if (i > 0) then
+  begin
+    aHint := CR(copy(Result,i+2,maxInt));
+    SetLength(Result,i-1);
+  end;
+end;
+
 
 function TD_BTNS(button: TTaskDialogCommonButton): pointer;
 begin
@@ -136,6 +165,60 @@ begin
     tcbClose:  result := @rsMbClose;
   end;
 end;
+
+
+
+function TF_DIALOGICON(const aIcon: TTaskDialogIcon): TLCLTaskDialogIcon;
+begin
+  case aIcon of
+    tdiWarning: Result := tiWarning;
+    tdiError: Result := tiError;
+    tdiInformation: Result := tiInformation;
+    tdiShield: Result := tiShield;
+    tdiQuestion: Result := tiQuestion;
+  else
+    Result := tiBlank;
+  end;
+end;
+
+function TF_FOOTERICON(const aIcon: TTaskDialogIcon): TLCLTaskDialogFooterIcon;
+begin
+  case aIcon of
+    tdiWarning: Result := tfiWarning;
+    tdiError: Result := tfiError;
+    tdiInformation: Result := tfiInformation;
+    tdiShield: Result := tfiShield;
+    tdiQuestion: Result := tfiQuestion;
+  else
+    Result := tfiBlank;
+  end;
+end;
+
+
+function TD_Trans(const aString: string): string;
+begin
+  if Assigned(TaskDialog_Translate) then
+    Result := TaskDialog_Translate(aString)
+  else
+    Result := aString;
+end;
+
+
+
+function IconMessage(Icon: TLCLTaskDialogIcon): string;
+begin
+  case Icon of
+    tiWarning:   result := rsMtWarning;
+    tiQuestion:  result := rsMtConfirmation;
+    tiError:     result := rsMtError;
+    tiInformation, tiShield: result := rsMtInformation;
+    else result := '';
+  end;
+  result := TD_Trans(result);
+end;
+
+
+
 
 
 
@@ -217,12 +300,208 @@ begin
 
 end;
 
+
+
+
+procedure TLCLTaskDialog.SetupIcon(out IconBorder,X,Y: Integer; AParent: TWinControl);
+var
+  aDialogIcon: TLCLTaskDialogIcon;
+begin
+  if (tfEmulateClassicStyle in FDlg.Flags) then
+    IconBorder := 10
+  else
+    IconBorder := 24;
+
+  aDialogIcon := TF_DIALOGICON(FDlg.MainIcon);
+  if (LCL_IMAGES[aDialogIcon]<>0) then
+  begin
+    Image := TImage.Create(Self);
+    Image.Parent := AParent;
+    Image.Images := DialogGlyphs;
+    Image.ImageIndex := DialogGlyphs.DialogIcon[LCL_IMAGES[aDialogIcon]];
+    Image.SetBounds(IconBorder,IconBorder, 32, 32);
+    Image.Stretch := True;
+    Image.StretchOutEnabled := False;
+    Image.Proportional := True;
+    Image.Center := True;
+    X := Image.Width+IconBorder*2;
+    Y := Image.Top;
+    if (tfEmulateClassicStyle in FDlg.Flags) then
+      inc(Y, 8);
+  end else
+  begin
+    Image := nil;
+    if (not (tfEmulateClassicStyle in FDlg.Flags)) and (Instruction <> '') then
+      IconBorder := IconBorder*2;
+    X := IconBorder;
+    Y := IconBorder;
+  end;
+end;
+
+procedure TLCLTaskDialog.AddRadios(ARadioOffSet, AWidth, ARadioDef, AFontHeight: Integer; var X,Y: Integer; AParent: TWinControl);
+var
+  i: Integer;
+  aHint: String;
+begin
+  with TStringList.Create do
+  try
+    Text := SysUtils.Trim(Radios);
+    SetLength(Rad,Count);
+    for i := 0 to Count-1 do begin
+      Rad[i] := TRadioButton.Create(Self);
+      with Rad[i] do begin
+        Parent := AParent;
+        AutoSize := False;
+        SetBounds(X+16,Y,aWidth-32-X, (6-AFontHeight) + ARadioOffset);
+        Caption := NoCR(Strings[i], aHint);
+        if aHint<>'' then begin
+          ShowHint := True;
+          Hint := aHint; // note shown as Hint
+        end;
+        inc(Y,Height + ARadioOffset);
+        if not (tfNoDefaultRadioButton in FDlg.Flags) and ((i=0) or (i=aRadioDef)) then
+          Checked := True;
+      end;
+    end;
+    inc(Y,24);
+  finally
+    Free;
+  end;
+end;
+
+procedure TLCLTaskDialog.AddCommandLinkButtons(var X, Y: Integer; AWidth, AButtonDef, AFontHeight: Integer; AParent: TWinControl);
+var
+  i: Integer;
+  CommandLink: TBitBtn;
+  aHint: String;
+begin
+  with TStringList.Create do
+  try
+    inc(Y,8);
+    Text := SysUtils.Trim(Buttons);
+    for i := 0 to Count-1 do
+    begin
+      CommandLink := TBitBtn.Create(Self);
+      with CommandLink do
+      begin
+        Parent := AParent;
+        Font.Height := AFontHeight-3;
+        if (tfEmulateClassicStyle in FDlg.Flags) then
+          SetBounds(X,Y,aWidth-10-X,40) else
+          SetBounds(X,Y,aWidth-16-X,40);
+        Caption := NoCR(Strings[i], aHint);
+        if aHint<>'' then begin
+          ShowHint := True;
+          Hint := aHint; // note shown as Hint
+        end;
+        inc(Y,Height+2);
+        ModalResult := i+FirstButtonIndex;
+        OnClick := @HandleEmulatedButtonClicked;
+        if ModalResult=aButtonDef then
+          ActiveControl := CommandLink;
+        if (tfEmulateClassicStyle in FDlg.Flags) then begin
+          Font.Height := AFontHeight - 2;
+          Font.Style := [fsBold]
+        end;
+        if (tfEmulateClassicStyle in FDlg.Flags) then begin
+          Margin := 7;
+          Spacing := 7;
+        end else begin
+          Margin := 24;
+          Spacing := 10;
+        end;
+        if not (tfUseCommandLinksNoIcon in FDlg.Flags) then
+        begin
+          Images := LCLGlyphs;
+          ImageIndex := LCLGlyphs.GetImageIndex('btn_arrowright');
+          end;
+        end;
+      end;
+    inc(Y,24);
+  finally
+    Free;
+  end;
+
+end;
+
+procedure TLCLTaskDialog.AddButtonsAndCheckBox(var X, Y, XB: Integer; AWidth, AButtonDef: Integer; APArent: TWinControl);
+var
+  CurrTabOrder, i: Integer;
+  Btn: TTaskDialogCommonButton;
+
+  function AddButton(const s: string; ModalResult: integer): TButton;
+  var
+    WB: integer;
+  begin
+    WB := Canvas.TextWidth(s)+52;
+    dec(XB,WB);
+    if XB<X shr 1 then begin
+      XB := aWidth-WB;
+      inc(Y,32);
+    end;
+    result := TButton.Create(Self);
+    result.Parent := AParent;
+      if (tfEmulateClassicStyle in FDlg.Flags) then
+        result.SetBounds(XB,Y,WB-10,22)
+      else
+        result.SetBounds(XB,Y,WB-12,28);
+    result.Caption := s;
+    result.ModalResult := ModalResult;
+    result.TabOrder := CurrTabOrder;
+    result.OnClick := @HandleEmulatedButtonClicked;
+    case ModalResult of
+      mrOk: begin
+        result.Default := True;
+        if aCommonButtons=[tcbOk] then
+          result.Cancel := True;
+      end;
+      mrCancel: result.Cancel := True;
+    end;
+    if ModalResult=aButtonDef then
+      ActiveControl := result;
+  end;
+begin
+  CurrTabOrder := Panel.TabOrder;
+  inc(Y, 16);
+  XB := aWidth;
+  if not (tfUseCommandLinks in FDlg.Flags) then
+    with TStringList.Create do
+    try
+      Text := SysUtils.trim(Buttons);
+      for i := Count-1 downto 0 do
+        AddButton(Strings[i],i+FirstButtonIndex);
+    finally
+      Free;
+    end;
+  for Btn := high(TTaskDialogCommonButton) downto low(TTaskDialogCommonButton) do
+  begin
+    if (Btn in aCommonButtons) then
+      AddButton(TD_Trans(LoadResString(TD_BTNS(Btn))), TD_BTNMOD[Btn]);
+  end;
+  if Verify<>'' then
+  begin
+    Verif := TCheckBox.Create(Self);
+    with Verif do
+    begin
+      Parent := AParent;
+      if X+16+Canvas.TextWidth(Verify)>XB then begin
+        inc(Y,32);
+        XB := aWidth;
+      end;
+      SetBounds(X,Y,XB-X,24);
+      Caption := Verify;
+      Checked := FVerifyChecked;
+    end;
+  end;
+  inc(Y,36);
+end;
+
 procedure TLCLTaskDialog.HandleEmulatedButtonClicked(Sender: TObject);
 var Btn: TButton absolute Sender;
     CanClose: Boolean;
 begin
   if Assigned(FDlg) and Assigned(FDlg.OnButtonClicked) then begin
-    CanClose := true;
+    CanClose := True;
     FDlg.{Dialog.}OnButtonClicked(FDlg,Btn.ModalResult,CanClose);
     if not CanClose then
       ModalResult := mrNone;
@@ -238,53 +517,6 @@ end;
   //  0, idDialogWarning, idDialogConfirm, idDialogError, idDialogInfo, idDialogShield);
 
 
-function TD_Trans(const aString: string): string;
-begin
-  if Assigned(TaskDialog_Translate) then
-    Result := TaskDialog_Translate(aString)
-  else
-    Result := aString;
-end;
-
-function TF_DIALOGICON(const aIcon: TTaskDialogIcon): TLCLTaskDialogIcon;
-begin
-  case aIcon of
-    tdiWarning: Result := tiWarning;
-    tdiError: Result := tiError;
-    tdiInformation: Result := tiInformation;
-    tdiShield: Result := tiShield;
-    tdiQuestion: Result := tiQuestion;
-  else
-    Result := tiBlank;
-  end;
-end;
-
-function TF_FOOTERICON(const aIcon: TTaskDialogIcon): TLCLTaskDialogFooterIcon;
-begin
-  case aIcon of
-    tdiWarning: Result := tfiWarning;
-    tdiError: Result := tfiError;
-    tdiInformation: Result := tfiInformation;
-    tdiShield: Result := tfiShield;
-    tdiQuestion: Result := tfiQuestion;
-  else
-    Result := tfiBlank;
-  end;
-end;
-
-
-function IconMessage(Icon: TLCLTaskDialogIcon): string;
-begin
-  case Icon of
-    tiWarning:   result := rsMtWarning;
-    tiQuestion:  result := rsMtConfirmation;
-    tiError:     result := rsMtError;
-    tiInformation, tiShield: result := rsMtInformation;
-    else result := '';
-  end;
-  result := TD_Trans(result);
-end;
-
 
 procedure TLCLTaskDialog.SetupControls;
 var
@@ -292,15 +524,9 @@ var
   aRadioDef, aButtonDef: TModalResult;
   B: TTaskDialogBaseButtonItem;
   ButtonID: Integer;
-  Buttons, Radios, Title, Inst, Content,
-  TaskDlgInfoCollapse, Info, Footer,
-  Verify, Selection: TTranslateString;
   ARadioOffset, FontHeight, aWidth, IconBorder, X, Y, i, XB: integer;
-  aCommonButtons: TTaskDialogCommonButtons;
-  Panel: TPanel;
   Par: TWinControl;
   aDialogIcon: TLCLTaskDialogIcon;
-  Image: TImage;
   CommandLink: TBitBtn;
   aHint: String;
   List: TStringListUTF8Fast;
@@ -317,7 +543,7 @@ var
 
     result := TLabel.Create(Self);
     result.Parent := Par;
-    result.WordWrap := true;
+    result.WordWrap := True;
     if BigFont then
     begin
       if (tfEmulateClassicStyle in FDlg.Flags) then
@@ -333,7 +559,7 @@ var
     end
     else
       result.Font.Height := FontHeight;
-    result.AutoSize := false;
+    result.AutoSize := False;
     R.Left := 0;
     R.Top := 0;
     W := aWidth-X-8;
@@ -348,14 +574,14 @@ var
 
 
   function NoCR(const aText: string): string;
-  var i: integer;
+  var k: integer;
   begin
     result := aText;
     aHint := '';
-    i := pos('\n',result);
-    if i>0 then begin
-      aHint := CR(copy(result,i+2,maxInt));
-      SetLength(result,i-1);
+    k := pos('\n',result);
+    if k>0 then begin
+      aHint := CR(copy(result,k+2,maxInt));
+      SetLength(result,k-1);
     end;
   end;
 
@@ -381,11 +607,11 @@ var
     result.OnClick := @HandleEmulatedButtonClicked;
     case ModalResult of
       mrOk: begin
-        result.Default := true;
+        result.Default := True;
         if aCommonButtons=[tcbOk] then
-          result.Cancel := true;
+          result.Cancel := True;
       end;
-      mrCancel: result.Cancel := true;
+      mrCancel: result.Cancel := True;
     end;
     if ModalResult=aButtonDef then
       ActiveControl := result;
@@ -430,13 +656,13 @@ begin
   Selection := '';
 
   Title := FDlg.Caption;
-  Inst := FDlg.Title;
+  Instruction := FDlg.Title;
   Content := FDlg.Text;
   TaskDlgInfoCollapse := FDlg.ExpandButtonCaption;
   Info := FDlg.ExpandedText;
   Footer := FDlg.FooterText;
   Verify := FDlg.VerificationText;
-  FVeriFyChecked := (tfVerificationFlagChecked in FDlg.Flags);
+  FVerifyChecked := (tfVerificationFlagChecked in FDlg.Flags);
 
   aCommonButtons := FDlg.CommonButtons;
 
@@ -452,8 +678,8 @@ begin
       Title := Application.Title else
       Title := Application.MainForm.Caption;
   //
-  if (Inst = '') then
-    Inst := IconMessage(TF_DIALOGICON(FDlg.MainIcon));
+  if (Instruction = '') then
+    Instruction := IconMessage(TF_DIALOGICON(FDlg.MainIcon));
 
   //Dialog.OnButtonClicked := aOnButtonClicked;
 
@@ -480,7 +706,7 @@ begin
   aWidth := FDlg.FWidth;
   if (aWidth <= 0) then
   begin
-    aWidth := Canvas.TextWidth(Inst);
+    aWidth := Canvas.TextWidth(Instruction);
     if (aWidth > 300) or (Canvas.TextWidth(Content) > 300) or
        (Length(Buttons) > 40) then
       aWidth := 480 else
@@ -505,47 +731,20 @@ begin
   Par := Panel;
 
   // handle main dialog icon
-  if (tfEmulateClassicStyle in FDlg.Flags) then
-    IconBorder := 10
-  else
-    IconBorder := 24;
-
-  aDialogIcon := TF_DIALOGICON(FDlg.MainIcon);
-  if (LCL_IMAGES[aDialogIcon]<>0) then
-  begin
-    Image := TImage.Create(Self);
-    Image.Parent := Par;
-    Image.Images := DialogGlyphs;
-    Image.ImageIndex := DialogGlyphs.DialogIcon[LCL_IMAGES[aDialogIcon]];
-    Image.SetBounds(IconBorder,IconBorder, 32, 32);
-    Image.Stretch := True;
-    Image.StretchOutEnabled := False;
-    Image.Proportional := True;
-    Image.Center := True;
-    X := Image.Width+IconBorder*2;
-    Y := Image.Top;
-    if (tfEmulateClassicStyle in FDlg.Flags) then
-      inc(Y, 8);
-  end else
-  begin
-    Image := nil;
-    if (not (tfEmulateClassicStyle in FDlg.Flags)) and (Inst <> '') then
-      IconBorder := IconBorder*2;
-    X := IconBorder;
-    Y := IconBorder;
-  end;
+  SetupIcon(IconBorder, X, Y, Par);
 
   // add main texts (Instruction, Content, Information)
-  Element[tdeMainInstruction] := AddLabel(Inst, true);
-  Element[tdeContent] := AddLabel(Content, false);
+  Element[tdeMainInstruction] := AddLabel(Instruction, True);
+  Element[tdeContent] := AddLabel(Content, False);
   if (Info <> '') then
     // no information collapse/expand yet: it's always expanded
-    Element[tdeExpandedInfo] := AddLabel(Info, false);
+    Element[tdeExpandedInfo] := AddLabel(Info, False);
 
 
   // add radio buttons
   if Radios<>'' then
   begin
+    (*
     {$IFDEF MSWINDOWS}
     if WidgetSet.GetLCLCapability(lcNativeTaskDialog) = LCL_CAPABILITY_NO then
       ARadioOffset := 1
@@ -554,80 +753,16 @@ begin
     {$ELSE}
     ARadioOffset := 1;
     {$ENDIF}
-    with TStringList.Create do
-    try
-      Text := SysUtils.trim(Radios);
-      SetLength(Rad,Count);
-      for i := 0 to Count-1 do begin
-        Rad[i] := TRadioButton.Create(Self);
-        with Rad[i] do begin
-          Parent := Par;
-          AutoSize := False;
-          SetBounds(X+16,Y,aWidth-32-X, (6-FontHeight) + ARadioOffset);
-          Caption := NoCR(Strings[i]);
-          if aHint<>'' then begin
-            ShowHint := true;
-            Hint := aHint; // note shown as Hint
-          end;
-          inc(Y,Height + ARadioOffset);
-          if not (tfNoDefaultRadioButton in FDlg.Flags) and ((i=0) or (i=aRadioDef)) then
-            Checked := true;
-        end;
-      end;
-      inc(Y,24);
-    finally
-      Free;
-    end;
+    *)
+    ARadioOffset := 1;
+    AddRadios(ARadioOffSet, aWidth, aRadioDef, FontHeight, X, Y, Par);
   end;
 
 
 
   // add command links buttons
   if (tfUseCommandLinks in FDlg.Flags) and (Buttons<>'') then
-    with TStringList.Create do
-    try
-      inc(Y,8);
-      Text := SysUtils.trim(Buttons);
-      for i := 0 to Count-1 do begin
-        CommandLink := TBitBtn.Create(Self);
-        with CommandLink do begin
-          Parent := Par;
-          Font.Height := FontHeight-3;
-          if (tfEmulateClassicStyle in FDlg.Flags) then
-            SetBounds(X,Y,aWidth-10-X,40) else
-            SetBounds(X,Y,aWidth-16-X,40);
-          Caption := NoCR(Strings[i]);
-          if aHint<>'' then begin
-            ShowHint := true;
-            Hint := aHint; // note shown as Hint
-          end;
-          inc(Y,Height+2);
-          ModalResult := i+FirstButtonIndex;
-          OnClick := @HandleEmulatedButtonClicked;
-          if ModalResult=aButtonDef then
-            ActiveControl := CommandLink;
-          if (tfEmulateClassicStyle in FDlg.Flags) then begin
-            Font.Height := FontHeight - 2;
-            Font.Style := [fsBold]
-          end;
-          if (tfEmulateClassicStyle in FDlg.Flags) then begin
-            Margin := 7;
-            Spacing := 7;
-          end else begin
-            Margin := 24;
-            Spacing := 10;
-          end;
-          if not (tfUseCommandLinksNoIcon in FDlg.Flags) then
-          begin
-            Images := LCLGlyphs;
-            ImageIndex := LCLGlyphs.GetImageIndex('btn_arrowright');
-            end;
-          end;
-        end;
-      inc(Y,24);
-    finally
-      Free;
-    end;
+    AddCommandLinkButtons(X, Y, aWidth, aButtonDef, FontHeight, Par);
 
 
 (*
@@ -691,39 +826,7 @@ begin
   if (aCommonButtons <> []) or (Verify<>'') or
      ((Buttons<>'') and not (tfUseCommandLinks in FDlg.Flags)) then
   begin
-    CurrTabOrder := Panel.TabOrder;
-    inc(Y, 16);
-    XB := aWidth;
-    if not (tfUseCommandLinks in FDlg.Flags) then
-      with TStringList.Create do
-      try
-        Text := SysUtils.trim(Buttons);
-        for i := Count-1 downto 0 do
-          AddButton(Strings[i],i+FirstButtonIndex);
-      finally
-        Free;
-      end;
-    for Btn := high(TTaskDialogCommonButton) downto low(TTaskDialogCommonButton) do
-    begin
-      if (Btn in aCommonButtons) then
-        AddButton(TD_Trans(LoadResString(TD_BTNS(Btn))), TD_BTNMOD[Btn]);
-    end;
-    if Verify<>'' then
-    begin
-      Verif := TCheckBox.Create(Self);
-      with Verif do
-      begin
-        Parent := Par;
-        if X+16+Canvas.TextWidth(Verify)>XB then begin
-          inc(Y,32);
-          XB := aWidth;
-        end;
-        SetBounds(X,Y,XB-X,24);
-        Caption := Verify;
-        Checked := FVerifyChecked;
-      end;
-    end;
-    inc(Y,36);
+    AddButtonsAndCheckBox(X, Y, XB, aWidth, aButtonDef, Par);
   end
   else
     XB := 0;
@@ -754,7 +857,7 @@ begin
     begin
       X := 24;
     end;
-    Element[tdeFooter] := AddLabel(Footer, false);
+    Element[tdeFooter] := AddLabel(Footer, False);
   end;
 
 
