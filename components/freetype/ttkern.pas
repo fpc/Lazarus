@@ -47,7 +47,7 @@ const
   COVERAGE_CROSS_STREAM = 4;
   COVERAGE_OVERRIDE = 8;
   SUBTABLE_FORMAT_BINARY_SEARCH = 0;
-  SUBTABLE_FORMAT_TWO_DIMENSIONAL = 2;
+  //SUBTABLE_FORMAT_TWO_DIMENSIONAL = 2;
 
 type
   TKerningPair = record
@@ -78,7 +78,6 @@ type
 function TKerningTables.GetKerning(ALeftGlyph, ARightGlyph: UShort): TT_KerningInfo;
 var
   i: Integer;
-  found: Boolean;
 begin
   result.kerning_x:= 0;
   result.kerning_y:= 0;

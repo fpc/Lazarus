@@ -1789,7 +1789,7 @@ var
 begin
   if AText = '' then
   begin
-    setlength(result, 0);
+    setlength(result{%H-}, 0);
     exit;
   end;
   pstr := @AText[1];
@@ -2021,7 +2021,7 @@ begin
         begin
           for j := 1 to length(value) div 2 do
             pword(@value[j*2-1])^ := BEtoN(pword(@value[j*2-1])^);
-          setlength(value2, 3*(length(value) div 2) + 1); //maximum is 3-byte chars and NULL char at the end
+          setlength(value2{%H-}, 3*(length(value) div 2) + 1); //maximum is 3-byte chars and NULL char at the end
           len := system.UnicodeToUtf8(@value2[1],length(value2),PUnicodeChar( @value[1] ),length(value) div 2);
           if len > 0 then
           begin

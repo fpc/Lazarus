@@ -1726,7 +1726,7 @@ uses
     len: integer;
   begin
     TT_Get_Name_String(face, nameIndex, str, len);
-    setlength(result,len);
+    setlength(result{%H-},len);
     if len <> 0 then move(str^, result[1], len);
   end;
 
