@@ -57,34 +57,34 @@ object CallStackDlg: TCallStackDlg
     ShowHint = True
     TabOrder = 1
     object ToolButtonShow: TToolButton
-      Left = 28
+      Left = 32
       Top = 2
       Action = actShow
       ImageIndex = 0
       ShowCaption = False
     end
     object ToolButtonCurrent: TToolButton
-      Left = 51
+      Left = 55
       Top = 2
       Action = actSetCurrent
       ShowCaption = False
     end
     object ToolButton4: TToolButton
-      Left = 74
+      Left = 78
       Height = 22
       Top = 2
       Caption = 'ToolButton4'
       Style = tbsSeparator
     end
     object ToolButtonMore: TToolButton
-      Left = 113
+      Left = 121
       Top = 2
       Action = actViewMore
       ImageIndex = 1
       ShowCaption = False
     end
     object ToolButtonMax: TToolButton
-      Left = 78
+      Left = 86
       Top = 2
       Action = actViewLimit
       AutoSize = True
@@ -92,14 +92,14 @@ object CallStackDlg: TCallStackDlg
       Style = tbsDropDown
     end
     object ToolButtonGoto: TToolButton
-      Left = 236
+      Left = 248
       Top = 2
       Action = actViewGoto
       ImageIndex = 4
       ShowCaption = False
     end
     object ToolButtonCopyAll: TToolButton
-      Left = 263
+      Left = 279
       Top = 2
       Action = actCopyAll
       ImageIndex = 5
@@ -113,28 +113,28 @@ object CallStackDlg: TCallStackDlg
       Style = tbsSeparator
     end
     object ToolButton9: TToolButton
-      Left = 136
+      Left = 144
       Height = 22
       Top = 2
       Caption = 'ToolButton9'
       Style = tbsSeparator
     end
     object ToolButtonTop: TToolButton
-      Left = 140
+      Left = 152
       Top = 2
       Action = actViewTop
       ImageIndex = 2
       ShowCaption = False
     end
     object ToolButtonBottom: TToolButton
-      Left = 163
+      Left = 175
       Top = 2
       Action = actViewBottom
       ImageIndex = 3
       ShowCaption = False
     end
     object Panel1: TPanel
-      Left = 186
+      Left = 198
       Height = 22
       Top = 2
       Width = 50
@@ -164,7 +164,7 @@ object CallStackDlg: TCallStackDlg
       Style = tbsCheck
     end
     object ToolButton2: TToolButton
-      Left = 259
+      Left = 271
       Height = 22
       Top = 2
       Caption = 'ToolButton2'
@@ -201,7 +201,7 @@ object CallStackDlg: TCallStackDlg
     end
     object popCopyAll: TMenuItem
       Action = actCopyAll
-      OnClick = actCopyLineClick
+      OnClick = actCopyAllClick
     end
   end
   object aclActions: TActionList
@@ -251,7 +251,7 @@ object CallStackDlg: TCallStackDlg
     end
     object actCopyAll: TAction
       Caption = 'Copy All'
-      OnExecute = actCopyLineClick
+      OnExecute = actCopyAllClick
     end
     object actToggleBreakPoint: TAction
       Caption = 'Toggle Breakpoint'
