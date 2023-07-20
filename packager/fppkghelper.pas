@@ -89,12 +89,13 @@ end;
 
 constructor TFppkgHelper.Create;
 begin
+  inherited Create;
   InitializeFppkg;
 end;
 
 destructor TFppkgHelper.Destroy;
 begin
-  FFPpkg.Free;
+  FreeAndNil(FFPpkg);
   inherited Destroy;
 end;
 
@@ -480,4 +481,5 @@ end;
 
 finalization
   GFppkgHelper.Free;
+  GFppkgHelper:=nil;
 end.
