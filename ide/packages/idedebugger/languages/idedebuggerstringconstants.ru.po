@@ -536,7 +536,7 @@ msgstr "Копировать весь вывод в буфер обмена"
 
 #: idedebuggerstringconstants.liscopyline
 msgid "Copy Line"
-msgstr ""
+msgstr "Копировать строку"
 
 #: idedebuggerstringconstants.liscsbottom
 msgctxt "lazarusidestrconsts.liscsbottom"
