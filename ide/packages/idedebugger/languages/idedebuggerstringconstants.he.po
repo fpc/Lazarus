@@ -538,6 +538,10 @@ msgstr "העתק הכל"
 msgid "Copy all output to clipboard"
 msgstr "העתק את כל הפלט ללוח הזמני"
 
+#: idedebuggerstringconstants.liscopyline
+msgid "Copy Line"
+msgstr ""
+
 #: idedebuggerstringconstants.liscsbottom
 msgctxt "lazarusidestrconsts.liscsbottom"
 msgid "Bottom"

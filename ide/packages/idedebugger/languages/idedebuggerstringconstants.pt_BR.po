@@ -544,6 +544,10 @@ msgstr "Copiar Tudo"
 msgid "Copy all output to clipboard"
 msgstr "Copiar toda saída para área transferência"
 
+#: idedebuggerstringconstants.liscopyline
+msgid "Copy Line"
+msgstr ""
+
 #: idedebuggerstringconstants.liscsbottom
 msgctxt "lazarusidestrconsts.liscsbottom"
 msgid "Bottom"

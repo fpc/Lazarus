@@ -529,6 +529,10 @@ msgstr "Tümünü Kopyala"
 msgid "Copy all output to clipboard"
 msgstr "Tüm çıktıları panoya kopyala"
 
+#: idedebuggerstringconstants.liscopyline
+msgid "Copy Line"
+msgstr ""
+
 #: idedebuggerstringconstants.liscsbottom
 msgctxt "lazarusidestrconsts.liscsbottom"
 msgid "Bottom"

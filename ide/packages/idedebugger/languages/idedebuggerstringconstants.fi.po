@@ -538,6 +538,10 @@ msgstr "Kopioi kaikki"
 msgid "Copy all output to clipboard"
 msgstr "Kopioi kaikki tulostus leikepöydälle"
 
+#: idedebuggerstringconstants.liscopyline
+msgid "Copy Line"
+msgstr ""
+
 #: idedebuggerstringconstants.liscsbottom
 msgctxt "lazarusidestrconsts.liscsbottom"
 msgid "Bottom"

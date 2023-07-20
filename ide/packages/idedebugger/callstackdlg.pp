@@ -59,6 +59,7 @@ type
   TCallStackDlg = class(TDebuggerDlg)
     aclActions: TActionList;
     actCopyAll: TAction;
+    actCopyLine: TAction;
     actShowDisass: TAction;
     actToggleBreakPoint: TAction;
     actViewBottom: TAction;
@@ -68,8 +69,10 @@ type
     actViewMore: TAction;
     actSetCurrent: TAction;
     actShow: TAction;
+    popCopyLine: TMenuItem;
     popShowDisass: TMenuItem;
     popToggle: TMenuItem;
+    Separator1: TMenuItem;
     ToolButtonPower: TToolButton;
     ToolButton2: TToolButton;
     ToolButtonTop: TToolButton;
@@ -110,6 +113,7 @@ type
     procedure txtGotoKeyPress(Sender: TObject; var Key: char);
     procedure lvCallStackDBLCLICK(Sender: TObject);
     procedure actCopyAllClick(Sender: TObject);
+    procedure actCopyLineClick(Sender: TObject);
     procedure actSetAsCurrentClick(Sender : TObject);
     procedure actShowClick(Sender: TObject);
   private
@@ -129,6 +133,7 @@ type
     procedure UpdateView;
     procedure JumpToSource;
     procedure CopyToClipBoard;
+    procedure LineToClipBoard;
     procedure ToggleBreakpoint(Item: TListItem);
   protected
     procedure DoBeginUpdate; override;
@@ -582,6 +587,22 @@ begin
   ClipBoard.AsText := S;
 end;
 
+procedure TCallStackDlg.LineToClipBoard;
+var
+  n: integer;
+  Entry: TIdeCallStackEntry;
+  S: String;
+begin
+  Entry := GetCurrentEntry;
+  if not Assigned(Entry) then
+    exit;
+
+  Clipboard.Clear;
+
+  ClipBoard.AsText := format('%s at %s:%d',
+                             [GetFunction(Entry), Entry.Source, Entry.Line]);
+end;
+
 procedure TCallStackDlg.ToggleBreakpoint(Item: TListItem);
 var
   idx: Integer;
@@ -666,6 +687,11 @@ end;
 procedure TCallStackDlg.actCopyAllClick(Sender: TObject);
 begin
   CopyToClipBoard;
+end;
+
+procedure TCallStackDlg.actCopyLineClick(Sender: TObject);
+begin
+  LineToClipBoard;
 end;
 
 procedure TCallStackDlg.actSetAsCurrentClick(Sender : TObject);
@@ -798,6 +824,7 @@ begin
   actShowDisass.Caption := lisViewSourceDisass;
   actToggleBreakPoint.Caption := uemToggleBreakpoint;
   actSetCurrent.Caption := lisCurrent;
+  actCopyLine.Caption := lisCopyLine;
   actCopyAll.Caption := lisCopyAll;
 
   actViewMore.Hint := lisMore;

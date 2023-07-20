@@ -521,6 +521,10 @@ msgstr ""
 msgid "Copy all output to clipboard"
 msgstr ""
 
+#: idedebuggerstringconstants.liscopyline
+msgid "Copy Line"
+msgstr ""
+
 #: idedebuggerstringconstants.liscsbottom
 msgid "Bottom"
 msgstr ""

@@ -542,6 +542,10 @@ msgstr "Kopírovat vše"
 msgid "Copy all output to clipboard"
 msgstr "Zkopírovat celý výstup do schránky"
 
+#: idedebuggerstringconstants.liscopyline
+msgid "Copy Line"
+msgstr ""
+
 #: idedebuggerstringconstants.liscsbottom
 msgctxt "lazarusidestrconsts.liscsbottom"
 msgid "Bottom"

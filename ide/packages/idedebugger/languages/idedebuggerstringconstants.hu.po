@@ -542,6 +542,10 @@ msgstr "Minden másolása"
 msgid "Copy all output to clipboard"
 msgstr "Minden kimenet másolása a vágólapra"
 
+#: idedebuggerstringconstants.liscopyline
+msgid "Copy Line"
+msgstr ""
+
 #: idedebuggerstringconstants.liscsbottom
 msgctxt "lazarusidestrconsts.liscsbottom"
 msgid "Bottom"

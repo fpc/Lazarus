@@ -8,7 +8,7 @@ object CallStackDlg: TCallStackDlg
   ClientHeight = 246
   ClientWidth = 562
   OnCreate = FormCreate
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '3.99.0.0'
   Visible = True
   object lvCallStack: TListView
     Left = 0
@@ -23,7 +23,7 @@ object CallStackDlg: TCallStackDlg
       item
         AutoSize = True
         Caption = 'Index'
-        Width = 100
+        Width = 44
       end    
       item
         Caption = 'Source'
@@ -57,34 +57,34 @@ object CallStackDlg: TCallStackDlg
     ShowHint = True
     TabOrder = 1
     object ToolButtonShow: TToolButton
-      Left = 32
+      Left = 28
       Top = 2
       Action = actShow
       ImageIndex = 0
       ShowCaption = False
     end
     object ToolButtonCurrent: TToolButton
-      Left = 55
+      Left = 51
       Top = 2
       Action = actSetCurrent
       ShowCaption = False
     end
     object ToolButton4: TToolButton
-      Left = 78
+      Left = 74
       Height = 22
       Top = 2
       Caption = 'ToolButton4'
       Style = tbsSeparator
     end
     object ToolButtonMore: TToolButton
-      Left = 121
+      Left = 113
       Top = 2
       Action = actViewMore
       ImageIndex = 1
       ShowCaption = False
     end
     object ToolButtonMax: TToolButton
-      Left = 86
+      Left = 78
       Top = 2
       Action = actViewLimit
       AutoSize = True
@@ -92,14 +92,14 @@ object CallStackDlg: TCallStackDlg
       Style = tbsDropDown
     end
     object ToolButtonGoto: TToolButton
-      Left = 248
+      Left = 236
       Top = 2
       Action = actViewGoto
       ImageIndex = 4
       ShowCaption = False
     end
     object ToolButtonCopyAll: TToolButton
-      Left = 279
+      Left = 263
       Top = 2
       Action = actCopyAll
       ImageIndex = 5
@@ -113,28 +113,28 @@ object CallStackDlg: TCallStackDlg
       Style = tbsSeparator
     end
     object ToolButton9: TToolButton
-      Left = 144
+      Left = 136
       Height = 22
       Top = 2
       Caption = 'ToolButton9'
       Style = tbsSeparator
     end
     object ToolButtonTop: TToolButton
-      Left = 152
+      Left = 140
       Top = 2
       Action = actViewTop
       ImageIndex = 2
       ShowCaption = False
     end
     object ToolButtonBottom: TToolButton
-      Left = 175
+      Left = 163
       Top = 2
       Action = actViewBottom
       ImageIndex = 3
       ShowCaption = False
     end
     object Panel1: TPanel
-      Left = 198
+      Left = 186
       Height = 22
       Top = 2
       Width = 50
@@ -164,7 +164,7 @@ object CallStackDlg: TCallStackDlg
       Style = tbsCheck
     end
     object ToolButton2: TToolButton
-      Left = 271
+      Left = 259
       Height = 22
       Top = 2
       Caption = 'ToolButton2'
@@ -193,9 +193,15 @@ object CallStackDlg: TCallStackDlg
       Action = actSetCurrent
       OnClick = actSetAsCurrentClick
     end
+    object Separator1: TMenuItem
+      Caption = '-'
+    end
+    object popCopyLine: TMenuItem
+      Action = actCopyLine
+    end
     object popCopyAll: TMenuItem
       Action = actCopyAll
-      OnClick = actCopyAllClick
+      OnClick = actCopyLineClick
     end
   end
   object aclActions: TActionList
@@ -208,14 +214,6 @@ object CallStackDlg: TCallStackDlg
         'enter'
       )
       ShortCut = 16470
-    end
-    object actSetCurrent: TAction
-      Caption = 'Current'
-      OnExecute = actSetAsCurrentClick
-    end
-    object actCopyAll: TAction
-      Caption = 'Copy All'
-      OnExecute = actCopyAllClick
     end
     object actViewMore: TAction
       Category = 'View'
@@ -241,6 +239,19 @@ object CallStackDlg: TCallStackDlg
       Category = 'View'
       Caption = 'Bottom'
       OnExecute = actViewBottomExecute
+    end
+    object actSetCurrent: TAction
+      Caption = 'Current'
+      OnExecute = actSetAsCurrentClick
+    end
+    object actCopyLine: TAction
+      Caption = 'Copy line'
+      OnExecute = actCopyLineClick
+      ShortCut = 16451
+    end
+    object actCopyAll: TAction
+      Caption = 'Copy All'
+      OnExecute = actCopyLineClick
     end
     object actToggleBreakPoint: TAction
       Caption = 'Toggle Breakpoint'

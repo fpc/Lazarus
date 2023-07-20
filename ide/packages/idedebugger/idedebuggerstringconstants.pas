@@ -168,6 +168,7 @@ resourcestring
   lisViewSourceDisass = 'View Assembler';
   lisMaxS = 'Max %d';
   lisGotoSelected = 'Goto selected';
+  lisCopyLine = 'Copy Line';
   lisCopyAll = 'Copy All';
   lisIndex = 'Index';
   lisFunction = 'Function';
