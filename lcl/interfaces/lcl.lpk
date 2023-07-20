@@ -131,7 +131,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="3" Minor="99"/>
-    <Files Count="528">
+    <Files Count="529">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2608,6 +2608,11 @@ end;"/>
         <Filename Value="gtk3/issues.xml"/>
         <Type Value="Issues"/>
       </Item528>
+      <Item529>
+        <Filename Value="gtk3/alllclintfunits.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="AllLCLIntfUnits"/>
+      </Item529>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../../docs/xml/lcl"/>
