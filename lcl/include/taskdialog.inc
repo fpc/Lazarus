@@ -232,7 +232,9 @@ begin
 
 
   //temporary show new, then old dialog, both in emulated mode (regardless of Flags)
+  {$IFDEF MSWINDOWS}
   LCLTaskDialog.TaskDialogIndirect := nil;
+  {$ENDIF}
   ButtonID := TWSTaskDialogClass(WidgetSetClass).Execute(Self, ParentWnd, ARadioRes);
   FModalResult := ButtonIDToModalResult(ButtonID);
   Result := (ButtonID >= 0);
