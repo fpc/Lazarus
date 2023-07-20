@@ -22,8 +22,10 @@ uses
   Classes, SysUtils, fgl,
   // LCL
   LMessages, Forms, LCLType, LCLIntf, Controls,
+  // LazUtils
+  LazLoggerBase,
   // IDEIntf
-  SrcEditorIntf, LazIDEIntf, ProjectIntf,
+  SrcEditorIntf,
   // DockedFormEditor
   DockedFormAccesses, DockedBasicAnchorDesigner;
 
@@ -42,12 +44,14 @@ type
     FHiding: Boolean;
     FOnAdjustPageNeeded: TNotifyEvent;
     FWndMethod: TWndMethod;
+    class var FNewForm: TCustomForm;
     procedure FixF12_ActiveEditor;
     procedure FormChangeBounds(Sender: TObject);
     procedure WndMethod(var Msg: TLMessage);
   public
     constructor Create(AForm: TCustomForm); override;
     destructor Destroy; override;
+    class procedure Screen_NewFormCreated(Sender: TObject; AForm: TCustomForm);
   public
     property Hiding: Boolean read FHiding write FHiding;
     property OnAdjustPageNeeded: TNotifyEvent read FOnAdjustPageNeeded write FOnAdjustPageNeeded;
@@ -56,10 +60,7 @@ type
   { TDesignForms }
 
   TDesignForms = class(specialize TFPGList<TDesignForm>)
-  private
-    FProjectOpening: Boolean;
   public
-    constructor Create;
     destructor Destroy; override;
     function Add(const Item: TDesignForm): Integer;
     procedure DeleteDesignForm(AIndex: Integer);
@@ -68,9 +69,6 @@ type
     function IndexOf(AForm: TCustomForm): Integer; overload;
     procedure Remove(AForm: TCustomForm); overload;
     procedure RemoveAllAnchorDesigner;
-    // Project state change event handlers.
-    function ProjOpening(Sender: TObject; AProject: TLazProject): TModalResult;
-    function ProjOpened(Sender: TObject; AProject: TLazProject): TModalResult;
   end;
 
 var
@@ -80,20 +78,24 @@ implementation
 
 { TDesignForm }
 
+class procedure TDesignForm.Screen_NewFormCreated(Sender: TObject; AForm: TCustomForm);
+begin
+  FNewForm := AForm;
+  //DebugLn(['TDesignForm.Screen_NewFormCreated! Self=', Self,
+  //  ', FNewForm=', FNewForm.Name,':',FNewForm.ClassName]);
+end;
+
 procedure TDesignForm.FixF12_ActiveEditor;
 var
   i: Integer;
 begin
-  // Don't get a form's designer while project opens.
-  // A read error would lead to an eternal loop.
-  Assert(Assigned(FContainer), 'TDesignForm.FixF12_ActiveEditor: FContainer=Nil');
-  if FContainer.FProjectOpening then Exit;
+  //DebugLn(['TDesignForm.FixF12_ActiveEditor: Self=', Self, ', FNewForm=', FNewForm, ', Form=', Form]);
+  if FNewForm = Nil then exit;
+  FNewForm := Nil;
+  //DebugLn([' TDesignForm.FixF12_ActiveEditor: Passed']);
 
-  // Without this, button F12 don't work. (after creating new for editor is inactive)
-  // Just do it for new created forms or the last loaded form becomes the active
-  // source editor after reopening a project.
+  // Without this, button F12 don't work after creating a new form.
   if Designer <> SourceEditorManagerIntf.ActiveEditor.GetDesigner(True) then Exit;
-
   SourceEditorManagerIntf.ActiveEditor := nil;
   for i := 0 to SourceEditorManagerIntf.UniqueSourceEditorCount - 1 do
     if Designer = SourceEditorManagerIntf.UniqueSourceEditors[i].GetDesigner(True) then
@@ -176,17 +178,8 @@ end;
 
 { TDesignForms }
 
-constructor TDesignForms.Create;
-begin
-  inherited;
-  LazarusIDE.AddHandlerOnProjectOpening(@ProjOpening);
-  LazarusIDE.AddHandlerOnProjectOpened(@ProjOpened);
-end;
-
 destructor TDesignForms.Destroy;
 begin
-  //LazarusIDE.RemoveHandlerOnProjectOpened(@ProjOpened);  // Causes a crash.
-  //LazarusIDE.RemoveHandlerOnProjectOpening(@ProjOpening);
   while Count > 0 do
     DeleteDesignForm(0);
   inherited Destroy;
@@ -263,18 +256,6 @@ begin
     LAnchorDesigner.Free;
     LDesignForm.AnchorDesigner := nil;
   end;
-end;
-
-function TDesignForms.ProjOpening(Sender: TObject; AProject: TLazProject): TModalResult;
-begin
-  FProjectOpening := True;
-  Result := mrOK;
-end;
-
-function TDesignForms.ProjOpened(Sender: TObject; AProject: TLazProject): TModalResult;
-begin
-  FProjectOpening := False;
-  Result := mrOK;
 end;
 
 end.

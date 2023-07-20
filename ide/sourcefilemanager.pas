@@ -4606,6 +4606,7 @@ begin
     Project1.AddCreateFormToProjectFile(NewComponent.ClassName,
                                         NewComponent.Name);
   end;
+  Screen.NewFormWasCreated(TCustomForm(NewComponent));
   Result:=mrOk;
 end;
 
