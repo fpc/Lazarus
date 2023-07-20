@@ -19,14 +19,14 @@ begin
   {$ENDIF}
 end;
 
-procedure DbgOut(Args: array of const);
+procedure DbgOut(const Args: array of const);
 begin
   {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
   DebugLogger.DbgOut(Args);
   {$ENDIF}
 end;
 
-procedure DbgOut(const S: String; Args: array of const);
+procedure DbgOut(const S: String; const Args: array of const);
 begin
   {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
   DebugLogger.DbgOut(S, Args);
@@ -50,14 +50,14 @@ begin
   {$ENDIF}
 end;
 
-procedure DebugLn(Args: array of const);
+procedure DebugLn(const Args: array of const);
 begin
   {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
   DebugLogger.DebugLn(Args);
   {$ENDIF}
 end;
 
-procedure DebugLn(const S: String; Args: array of const);
+procedure DebugLn(const S: String; const Args: array of const);
 begin
   {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
   DebugLogger.DebugLn(S, Args);
@@ -88,14 +88,14 @@ begin
   {$ENDIF}
 end;
 
-procedure DebugLnEnter(Args: array of const);
+procedure DebugLnEnter(const Args: array of const);
 begin
   {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
   DebugLogger.DebugLnEnter(Args);
   {$ENDIF}
 end;
 
-procedure DebugLnEnter(s: string; Args: array of const);
+procedure DebugLnEnter(s: string; const Args: array of const);
 begin
   {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
   DebugLogger.DebugLnEnter(s, Args);
@@ -127,14 +127,14 @@ begin
   {$ENDIF}
 end;
 
-procedure DebugLnExit(Args: array of const);
+procedure DebugLnExit(const Args: array of const);
 begin
   {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
   DebugLogger.DebugLnExit(Args);
   {$ENDIF}
 end;
 
-procedure DebugLnExit(s: string; Args: array of const);
+procedure DebugLnExit(s: string; const Args: array of const);
 begin
   {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
   DebugLogger.DebugLnExit(s, Args);
@@ -166,14 +166,14 @@ begin
   {$ENDIF}
 end;
 
-procedure DbgOut(LogEnabled: TLazLoggerLogEnabled; Args: array of const);
+procedure DbgOut(LogEnabled: TLazLoggerLogEnabled; const Args: array of const);
 begin
   {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
   DebugLogger.DbgOut(LogEnabled, Args);
   {$ENDIF}
 end;
 
-procedure DbgOut(LogEnabled: TLazLoggerLogEnabled; const S: String; Args: array of const);
+procedure DbgOut(LogEnabled: TLazLoggerLogEnabled; const S: String; const Args: array of const);
 begin
   {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
   DebugLogger.DbgOut(LogEnabled, s, Args);
@@ -198,14 +198,14 @@ begin
   {$ENDIF}
 end;
 
-procedure DebugLn(LogEnabled: TLazLoggerLogEnabled; Args: array of const);
+procedure DebugLn(LogEnabled: TLazLoggerLogEnabled; const Args: array of const);
 begin
   {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
   DebugLogger.DebugLn(LogEnabled, Args);
   {$ENDIF}
 end;
 
-procedure DebugLn(LogEnabled: TLazLoggerLogEnabled; const S: String; Args: array of const);
+procedure DebugLn(LogEnabled: TLazLoggerLogEnabled; const S: String; const Args: array of const);
 begin
   {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
   DebugLogger.DebugLn(LogEnabled, s, Args);
@@ -237,14 +237,14 @@ begin
   {$ENDIF}
 end;
 
-procedure DebugLnEnter(LogEnabled: TLazLoggerLogEnabled; Args: array of const);
+procedure DebugLnEnter(LogEnabled: TLazLoggerLogEnabled; const Args: array of const);
 begin
   {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
   DebugLogger.DebugLnEnter(LogEnabled, Args);
   {$ENDIF}
 end;
 
-procedure DebugLnEnter(LogEnabled: TLazLoggerLogEnabled; s: string; Args: array of const);
+procedure DebugLnEnter(LogEnabled: TLazLoggerLogEnabled; s: string; const Args: array of const);
 begin
   {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
   DebugLogger.DebugLnEnter(LogEnabled, s, Args);
@@ -276,14 +276,14 @@ begin
   {$ENDIF}
 end;
 
-procedure DebugLnExit(LogEnabled: TLazLoggerLogEnabled; Args: array of const);
+procedure DebugLnExit(LogEnabled: TLazLoggerLogEnabled; const Args: array of const);
 begin
   {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
   DebugLogger.DebugLnExit(LogEnabled, Args);
   {$ENDIF}
 end;
 
-procedure DebugLnExit(LogEnabled: TLazLoggerLogEnabled; s: string; Args: array of const);
+procedure DebugLnExit(LogEnabled: TLazLoggerLogEnabled; s: string; const Args: array of const);
 begin
   {$IFnDEF USED_BY_LAZLOGGER_DUMMY}
   DebugLogger.DebugLnExit(LogEnabled, s, Args);
