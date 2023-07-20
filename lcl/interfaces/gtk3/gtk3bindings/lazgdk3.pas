@@ -9,6 +9,7 @@ unit LazGdk3;
 {$ifdef Unix}
 {$LINKLIB libgdk-3.so.0}
 {$endif}
+{$WARN 3031 off : Values in enumeration types have to be ascending}
 interface
 uses
   CTypes, LazGdkPixbuf2, LazGio2, LazPango1, Lazcairo1, LazGLib2, LazGObject2;

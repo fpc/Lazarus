@@ -10,6 +10,7 @@ unit LazGLib2;
 {$LINKLIB libgobject-2.0.so.0}
 {$LINKLIB libglib-2.0.so.0}
 {$endif}
+{$WARN 3031 off : Values in enumeration types have to be ascending}
 interface
 uses
   CTypes;

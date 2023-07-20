@@ -10,6 +10,7 @@ unit LazHarfBuzz0;
 {$LINKLIB libharfbuzz.so.0}
 {$LINKLIB libharfbuzz-gobject.so.0}
 {$endif}
+{$WARN 3031 off : Values in enumeration types have to be ascending}
 interface
 uses
   CTypes, LazGObject2, Lazfreetype2_2, LazGLib2;
