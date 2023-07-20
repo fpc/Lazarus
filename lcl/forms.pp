@@ -1103,6 +1103,7 @@ type
                                   LastControl: TControl) of object;
 
   TScreenNotification = (
+    snNewFormCreated,
     snFormAdded,
     snRemoveForm,
     snActiveControlChanged,
@@ -1210,6 +1211,7 @@ type
     function CustomFormZIndex(AForm: TCustomForm): Integer;
     procedure MoveFormToFocusFront(ACustomForm: TCustomForm);
     procedure MoveFormToZFront(ACustomForm: TCustomForm);
+    procedure NewFormWasCreated(AForm: TCustomForm);
     function GetCurrentModalForm: TCustomForm;
     function GetCurrentModalFormZIndex: Integer;
     function CustomFormBelongsToActiveGroup(AForm: TCustomForm): Boolean;
@@ -1221,6 +1223,9 @@ type
     procedure UpdateScreen;
     // handler
     procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
+    procedure AddHandlerNewFormCreated(OnNewFormCreated: TScreenFormEvent;
+                                       AsFirst: Boolean=false);
+    procedure RemoveHandlerNewFormCreated(OnNewFormCreated: TScreenFormEvent);
     procedure AddHandlerFormAdded(OnFormAdded: TScreenFormEvent;
                                   AsFirst: Boolean=false);
     procedure RemoveHandlerFormAdded(OnFormAdded: TScreenFormEvent);

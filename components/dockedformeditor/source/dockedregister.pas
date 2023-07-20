@@ -37,6 +37,7 @@ procedure Register;
 begin
   Screen.AddHandlerFormAdded(TDockedMainIDE.Screen_FormAdded);
   Screen.AddHandlerRemoveForm(TDockedMainIDE.Screen_FormDel);
+  Screen.AddHandlerNewFormCreated(TDesignForm.Screen_NewFormCreated);
   SourceEditorManagerIntf.RegisterChangeEvent(semWindowCreate, TDockedMainIDE.WindowCreate);
   SourceEditorManagerIntf.RegisterChangeEvent(semWindowDestroy, TDockedMainIDE.WindowDestroy);
   SourceEditorManagerIntf.RegisterChangeEvent(semWindowShow, TDockedMainIDE.WindowShow);
@@ -65,6 +66,7 @@ begin
 end;
 
 finalization
+  Screen.RemoveHandlerNewFormCreated(TDesignForm.Screen_NewFormCreated);
   Screen.RemoveHandlerFormAdded(TDockedMainIDE.Screen_FormAdded);
   Screen.RemoveHandlerRemoveForm(TDockedMainIDE.Screen_FormDel);
   FreeAndNil(DesignForms);

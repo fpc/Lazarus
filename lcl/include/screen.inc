@@ -178,6 +178,11 @@ begin
   end;
 end;
 
+procedure TScreen.NewFormWasCreated(AForm: TCustomForm);
+begin
+  NotifyScreenFormHandler(snNewFormCreated,AForm);
+end;
+
 function TScreen.GetCurrentModalForm: TCustomForm;
 var
   i: Integer;
@@ -278,6 +283,17 @@ begin
   for HandlerType:=Low(TScreenNotification) to High(TScreenNotification) do
     FScreenHandlers[HandlerType].RemoveAllMethodsOfObject(AnObject);
   inherited RemoveAllHandlersOfObject(AnObject);
+end;
+
+procedure TScreen.AddHandlerNewFormCreated(OnNewFormCreated: TScreenFormEvent;
+  AsFirst: Boolean);
+begin
+  AddHandler(snNewFormCreated,TMethod(OnNewFormCreated),AsFirst);
+end;
+
+procedure TScreen.RemoveHandlerNewFormCreated(OnNewFormCreated: TScreenFormEvent);
+begin
+  RemoveHandler(snNewFormCreated,TMethod(OnNewFormCreated));
 end;
 
 procedure TScreen.AddHandlerFormAdded(OnFormAdded: TScreenFormEvent;
