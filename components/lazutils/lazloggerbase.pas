@@ -133,9 +133,9 @@ type
     procedure IndentChanged; virtual;
     function  GetBlockHandler({%H-}AIndex: Integer): TLazLoggerBlockHandler; virtual;
 
-    procedure DoDbgOut({%H-}s: string; AGroup: PLazLoggerLogGroup = nil); virtual;
-    procedure DoDebugLn({%H-}s: string; AGroup: PLazLoggerLogGroup = nil); virtual;
-    procedure DoDebuglnStack(const {%H-}s: string; AGroup: PLazLoggerLogGroup = nil); virtual;
+    procedure DoDbgOut({%H-}s: string; {%H-}AGroup: PLazLoggerLogGroup = nil); virtual;
+    procedure DoDebugLn({%H-}s: string; {%H-}AGroup: PLazLoggerLogGroup = nil); virtual;
+    procedure DoDebuglnStack(const {%H-}s: string; {%H-}AGroup: PLazLoggerLogGroup = nil); virtual;
 
     function  ArgsToString(Args: array of const): string;
     property  IsInitialized: Boolean read FIsInitialized;

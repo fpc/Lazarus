@@ -794,7 +794,7 @@ begin
     tkQWord: Result := IntToStr(QWord(AValue));
     tkSet:   Result := SetToString(APTypeInfo, @AValue, True);
     tkChar:  Result := Char(AValue);
-    tkWChar: Result := WideChar(AValue);
+    tkWChar: Result := {%H-}WideChar(AValue);
   end;
 end;
 

@@ -194,7 +194,7 @@ type
                           const {%H-}s16: string = ''; const {%H-}s17: string = ''; const {%H-}s18: string = ''); overload;
 
     procedure DumpExceptionBackTrace;
-    procedure DumpExceptionBackTrace(LogEnabled: TLazLoggerLogEnabled);
+    procedure DumpExceptionBackTrace({%H-}LogEnabled: TLazLoggerLogEnabled);
   end;
 
 

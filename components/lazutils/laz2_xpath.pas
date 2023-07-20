@@ -698,7 +698,7 @@ begin
   end;
 end;
 
-procedure AddNodes(var Dst: TXPathNodeArray; const Src: array of TXPathExprNode;
+procedure AddNodes(var Dst: TXPathNodeArray; const {%H-}Src: array of TXPathExprNode;
   var Count: Integer);
 var
   L: Integer;

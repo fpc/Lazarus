@@ -164,7 +164,7 @@ type
 
     procedure DoDbgOut(s: string; AGroup: PLazLoggerLogGroup = nil); override;
     procedure DoDebugLn(s: string; AGroup: PLazLoggerLogGroup = nil); override;
-    procedure DoDebuglnStack(const s: string; AGroup: PLazLoggerLogGroup = nil); override;
+    procedure DoDebuglnStack(const s: string; {%H-}AGroup: PLazLoggerLogGroup = nil); override;
 
     property FileHandle: TLazLoggerFileHandle read GetFileHandle write SetFileHandle;
   public
