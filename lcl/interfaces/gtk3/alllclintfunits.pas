@@ -1,5 +1,6 @@
 { This unit was automatically created by update_allunits }
 unit AllLCLIntfUnits;
+{$WARN 5023 off : Unit "$1" not used in $2}
 interface
 uses
   gtk3wsforms,
