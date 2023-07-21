@@ -2157,6 +2157,7 @@ resourcestring
   dlgAddHiAttrSyncroEditArea      = 'Selected Area';
   dlgAddHiAttrGutterSeparator     = 'Gutter Separator';
   dlgAddHiAttrDefaultWindow       = 'Default Text / Window';
+  dlgAddHiAttrRecentlyUsed        = 'Recently used item';
   dlgAddHiAttrWindowBorder        = 'Window border';
   dlgAddHiAttrHighlightPrefix     = 'Highlight prefix';
   dlgAddHiAttrOutlineLevel1Color  = 'Level  1';

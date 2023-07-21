@@ -105,7 +105,8 @@ type
     iliIsLibrary,
     iliAtCursor, // the item is the identifier at the completion
     iliNeedsAmpersand, //the item has to be prefixed with '&'
-    iliHasLowerVisibility
+    iliHasLowerVisibility,
+    iliIsRecentItem // the item was sorted to the front as it was recently used
     );
   TIdentListItemFlags = set of TIdentListItemFlag;
   
@@ -712,8 +713,10 @@ var
         Continue;
       if (CurItem.HistoryIndex > HistoryLimits[CurItmComp]) then
         break;
-      if (CurItem.Identifier<>'') and (FilterCurItem >= 0) then
+      if (CurItem.Identifier<>'') and (FilterCurItem >= 0) then begin
+        CurItem.Flags := CurItem.Flags + [iliIsRecentItem];
         InsertCurItem;
+      end;
     end;
   end;
 
@@ -780,8 +783,10 @@ begin
         {$IFDEF ShowFilteredIdents}
         DebugLn(['::: FILTERED ITEM ',FFilteredList.Count,' ',CurItem.Identifier]);
         {$ENDIF}
-        if CurItem.HistoryIndex > HistoryLimits[CurItmComp] then
+        if CurItem.HistoryIndex > HistoryLimits[CurItmComp] then begin
+          CurItem.Flags := CurItem.Flags - [iliIsRecentItem];
           InsertCurItem;
+        end;
       end
       else if i>0 then begin
         {$IFDEF ShowFilteredIdents}

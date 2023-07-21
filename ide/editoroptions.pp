@@ -126,7 +126,7 @@ const
     '', '', // ahaCaretColor, ahaOverviewGutter
     '', '', '',  // ahaIfDefBlockInactive, ahaIfDefBlockActive, ahaIfDefBlockTmpActive
     '', '', '',  // ahaIfDefNodeInactive, ahaIfDefNodeActive, ahaIfDefNodeTmpActive
-    '', '', '', '', // ahaIdentComplWindow, ahaIdentComplWindowBorder, ahaIdentComplWindowSelection, ahaIdentComplWindowHighlight
+    '', '', '', '', '', // ahaIdentComplWindow, ahaIdentComplWindowBorder, ahaIdentComplRecent, ahaIdentComplWindowSelection, ahaIdentComplWindowHighlight
     '', '', '', '', '', '', '', '', '', '' // ahaOutlineLevel1Color..ahaOutlineLevel10Color
   );
 
@@ -174,6 +174,7 @@ const
     { ahaIfDefNodeTmpActive }  agnIfDef,
     { ahaIdentComplWindow }           agnIdentComplWindow,
     { ahaIdentComplWindowBorder }     agnIdentComplWindow,
+    { ahaIdentComplRecent }     agnIdentComplWindow,
     { ahaIdentComplWindowSelection }  agnIdentComplWindow,
     { ahaIdentComplWindowHighlight }  agnIdentComplWindow,
     { ahaOutlineLevel1Color }  agnOutlineColors,
@@ -233,6 +234,7 @@ const
     { ahaIfDefNodeTmpActive } [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask],
     { ahaIdentComplWindow }   [hafBackColor, hafForeColor],
     { ahaIdentComplWindowBorder }    [hafForeColor],
+    { ahaIdentComplRecent}    [hafForeColor],
     { ahaIdentComplWindowSelection } [hafBackColor, hafForeColor],
     { ahaIdentComplWindowHighlight } [hafForeColor],
     { ahaFoldLevel1Color }    [hafBackColor, hafForeColor, hafFrameColor, hafAlpha, hafPrior, hafFrameStyle, hafFrameEdges, hafStyle, hafStyleMask, hafMarkupFoldColor],
@@ -2723,6 +2725,7 @@ begin
 
   AdditionalHighlightAttributes[ahaIdentComplWindow]          := dlgAddHiAttrDefaultWindow;
   AdditionalHighlightAttributes[ahaIdentComplWindowBorder]    := dlgAddHiAttrWindowBorder;
+  AdditionalHighlightAttributes[ahaIdentComplRecent]          := dlgAddHiAttrRecentlyUsed;
   AdditionalHighlightAttributes[ahaIdentComplWindowSelection] := dlgBlockGroupOptions;
   AdditionalHighlightAttributes[ahaIdentComplWindowHighlight] := dlgAddHiAttrHighlightPrefix;
   AdditionalHighlightGroupNames[agnIdentComplWindow]          := dlgIdentifierCompletion;
@@ -6902,6 +6905,12 @@ begin
         IDESynEdit.MarkupIdentComplWindow.BorderColor:= Attri.Foreground
       else
         IDESynEdit.MarkupIdentComplWindow.BorderColor:= clNone;
+
+      Attri := GetUsedAttr(ahaIdentComplRecent);
+      if Attri<>nil then
+        IDESynEdit.MarkupIdentComplWindow.HistoryTextColor := Attri.Foreground
+      else
+        IDESynEdit.MarkupIdentComplWindow.HistoryTextColor := clNone;
 
       Attri := GetUsedAttr(ahaIdentComplWindowHighlight);
       if Attri<>nil then

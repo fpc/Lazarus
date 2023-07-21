@@ -226,6 +226,7 @@ type
     FBorderColor: TColor;
     FHighlightColor: TColor;
     FTextColor: TColor;
+    FHistoryTextColor: TColor;
     FTextSelectedColor: TColor;
     FWindowColor: TColor;
   public
@@ -233,6 +234,7 @@ type
   public
     property WindowColor: TColor read FWindowColor write FWindowColor;
     property TextColor: TColor read FTextColor write FTextColor;
+    property HistoryTextColor: TColor read FHistoryTextColor write FHistoryTextColor;
     property BorderColor: TColor read FBorderColor write FBorderColor;
     property HighlightColor: TColor read FHighlightColor write FHighlightColor;
     property TextSelectedColor: TColor read FTextSelectedColor write FTextSelectedColor;
@@ -519,6 +521,7 @@ begin
   FBorderColor := clNone;
   FHighlightColor := clNone;
   FTextColor := clNone;
+  FHistoryTextColor := clNone;
   FTextSelectedColor := clNone;
   FWindowColor := clNone;
 end;
