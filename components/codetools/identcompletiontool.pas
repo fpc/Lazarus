@@ -742,8 +742,11 @@ begin
          ( (FFoundHistoryItems[j].Compatibility = HistComp) or (not HasCompSort) ) and
          (FFoundHistoryItems[j].Identifier <> '')
       then begin
-        HistoryLimits[HistComp] := FFoundHistoryItems[j].HistoryIndex;
-        dec(TotalHistLimit);
+        CurItem := FFoundHistoryItems[j];
+        if (FilterCurItem >= 0) then begin
+          HistoryLimits[HistComp] := FFoundHistoryItems[j].HistoryIndex;
+          dec(TotalHistLimit);
+        end;
       end;
     end;
     if not HasCompSort then
