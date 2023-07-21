@@ -4725,8 +4725,8 @@ code compatibility.
 </p>
 <remark>
 In the current LCL release, the LM_WINDOWPOSCHANGING message is dispatched for 
-the Windows platform only. None of the other widgetsets checked for or apply 
-the message.
+the Windows platform only. None of the other widgetsets check for or apply the 
+message.
 </remark>
 </descr>
 <version>
@@ -11727,14 +11727,15 @@ Notifies handler(s) when a new form is created for the TScreen instance.
 <var>TScreen</var> instance when a new form instance is created. It calls the 
 NotifyScreenFormHandler method using the handler type for the notification and 
 the TCustomForm instance in <var>AForm</var> as arguments. The screen form 
-event is signalled for all registered handlers using the snNewFormCreated 
+event is signalled for all registered handlers which use the snNewFormCreated 
 screen notification type.
 </p>
 <p>
 NewFormWasCreated is called at design-time from the source file manager in the 
-Lazarus IDE. It is called immediately after a new form instance is created and 
-added to the active project in the IDE. NewFormWasCreated is not called at 
-run-time in the LCL.
+Lazarus IDE. It is called immediately after a new form or datamodule type is 
+created and added to the active project in the IDE. NewFormWasCreated is not 
+called at run-time in the LCL, and has no relationship to when an instance of 
+a form type is created in an application.
 </p>
 </descr>
 <version>
@@ -12001,12 +12002,14 @@ instance.
 </short>
 <descr>
 <p>
-<var>AddHandlerNewFormCreated</var> calls the internal method used to add the 
+<var>AddHandlerNewFormCreated</var> calls an internal method which adds the 
 form handler routine in <var>OnNewFormCreated</var> to the list of handlers 
-for the snNewFormCreated notification type. <var>AsFirst</var> indicates 
+for the <var>snNewFormCreated</var> notification type. OnNewFormCreated is an 
+implementation of TScreenFormEvent which provides access to the screen and 
+form instances for the notification event. <var>AsFirst</var> indicates 
 whether the handler is inserted at the beginning of the list (<b>True</b>) or 
 appended to the end of the list (<b>False</b>). The default value for the 
-parameter is <b>False</b>.
+AsFirst parameter is <b>False</b>.
 </p>
 </descr>
 <version>
