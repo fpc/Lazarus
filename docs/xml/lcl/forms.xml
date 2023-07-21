@@ -10630,10 +10630,19 @@ Type for a screen notification handler used for control-related events.
 <element name="TScreenNotification">
 <short>Screen notification events and handler types.</short>
 <descr/>
+<version>
+Modified in LCL version 3.0 to include snNewFormCreated in the enumeration 
+values.
+</version>
 <seealso>
 <link id="TScreenFormEvent"/>
 <link id="TScreenControlEvent"/>
 </seealso>
+</element>
+<element name="TScreenNotification.snNewFormCreated">
+<short>
+Indicates that a new form instance has been instantiated on a TScreen.
+</short>
 </element>
 <element name="TScreenNotification.snFormAdded">
 <short>A form was added.</short>
@@ -11708,6 +11717,41 @@ is shutting down.
 <short>Form instance to move to the top of the Z-order.</short>
 </element>
 
+<element name="TScreen.NewFormWasCreated">
+<short>
+Notifies handler(s) when a new form is created for the TScreen instance.
+</short>
+<descr>
+<p>
+<var>NewFormWasCreated</var> is method which notifies form handlers for the 
+<var>TScreen</var> instance when a new form instance is created. It calls the 
+NotifyScreenFormHandler method using the handler type for the notification and 
+the TCustomForm instance in <var>AForm</var> as arguments. The screen form 
+event is signalled for all registered handlers using the snNewFormCreated 
+screen notification type.
+</p>
+<p>
+NewFormWasCreated is called at design-time from the source file manager in the 
+Lazarus IDE. It is called immediately after a new form instance is created and 
+added to the active project in the IDE. NewFormWasCreated is not called at 
+run-time in the LCL.
+</p>
+</descr>
+<version>
+Added in LCL version 3.0.
+</version>
+<seealso>
+<link id="TScreen.NewFormWasCreated"/>
+<link id="TScreenNotification"/>
+<link id="TCustomForm"/>
+</seealso>
+</element>
+<element name="TScreen.NewFormWasCreated.AForm">
+<short>
+Form instance that was created on the screen.
+</short>
+</element>
+
 <element name="TScreen.GetCurrentModalForm">
 <short>
 Returns the Modal form at the top of the Z-order for the screen.
@@ -11947,6 +11991,71 @@ Called when the Lazarus IDE is terminated.
 <element name="TScreen.RemoveAllHandlersOfObject.AnObject">
 <short>
 Object instance with the handlers removed in the method.
+</short>
+</element>
+
+<element name="TScreen.AddHandlerNewFormCreated">
+<short>
+Adds the specified handler routine to the new form handlers for the screen 
+instance.
+</short>
+<descr>
+<p>
+<var>AddHandlerNewFormCreated</var> calls the internal method used to add the 
+form handler routine in <var>OnNewFormCreated</var> to the list of handlers 
+for the snNewFormCreated notification type. <var>AsFirst</var> indicates 
+whether the handler is inserted at the beginning of the list (<b>True</b>) or 
+appended to the end of the list (<b>False</b>). The default value for the 
+parameter is <b>False</b>.
+</p>
+</descr>
+<version>
+Added in LCL version 3.0.
+</version>
+<seealso>
+<link id="TScreen.RemoveHandlerNewFormCreated"/>
+<link id="TScreenNotification"/>
+<link id="TScreenFormEvent"/>
+</seealso>
+</element>
+<element name="TScreen.AddHandlerNewFormCreated.OnNewFormCreated">
+<short>
+Handler routine added to the internal new screen form handlers for the TScreen 
+instance.
+</short>
+</element>
+<element name="TScreen.AddHandlerNewFormCreated.AsFirst">
+<short>
+<b>True</b> if the handler is inserted as the first handler for the type. 
+<b>False</b> if the routine is append to the end of the list for the handler 
+type.
+</short>
+</element>
+
+<element name="TScreen.RemoveHandlerNewFormCreated">
+<short>
+Removes the specified handler routine from the new form handlers for the 
+screen instance.
+</short>
+<descr>
+<p>
+<var>RemoveHandlerNewFormCreated</var> calls the internal method used to 
+remove the form handler routine in <var>OnNewFormCreated</var> from the list 
+of handlers for the snNewFormCreated notification type.
+</p>
+</descr><version>
+Added in LCL version 3.0.
+</version>
+<seealso>
+<link id="TScreen.AddHandlerNewFormCreated"/>
+<link id="TScreenNotification"/>
+<link id="TScreenFormEvent"/>
+</seealso>
+</element>
+<element name="TScreen.RemoveHandlerNewFormCreated.OnNewFormCreated">
+<short>
+Handler routine removed from the internal new form handlers for the screen 
+instance.
 </short>
 </element>
 
