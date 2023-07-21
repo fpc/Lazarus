@@ -5904,11 +5904,11 @@ begin
     LFMChecker.RootMustBeClassInIntf:=true;
     LFMChecker.ObjectsMustExist:=true;
     if LFMChecker.Repair=mrOk then begin
-      if not Quiet then begin
+      LFMUnitInfo.Modified:=True;
+      if not Quiet then
         IDEMessageDialog(lisLFMIsOk,
           lisClassesAndPropertiesExistValuesWereNotChecked,
           mtInformation,[mbOk],'');
-      end;
     end else begin
       MainIDE.DoJumpToCompilerMessage(true);
       Result:=mrAbort;
@@ -6300,8 +6300,10 @@ begin
           end;
           LFMUnitInfo:=Project1.UnitWithEditorComponent(SourceEditorManager.ActiveEditor);
           Result:=CheckLFMInEditor(LFMUnitInfo, true);
-          if Result=mrOk then
+          if Result=mrOk then begin
             AnUnitInfo.HasErrorInLFM:=False;
+            Result:=mrCancel;
+          end;
           exit;
         end;
       finally
