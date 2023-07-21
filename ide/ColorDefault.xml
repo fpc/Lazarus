@@ -45,6 +45,7 @@
           <ahaRightMargin Foreground="clSilver"/>
           <ahaOverviewGutter Foreground="13948116" Background="15263976" FrameColor="12632256"/>
           <ahaIdentComplWindowHighlight Foreground="187"/>
+          <ahaIdentComplRecent Foreground="clGreen"/>
           <ahaOutlineLevel1Color Foreground="clRed"/>
           <ahaOutlineLevel2Color Foreground="39159"/>
           <ahaOutlineLevel3Color Foreground="2280512"/>
