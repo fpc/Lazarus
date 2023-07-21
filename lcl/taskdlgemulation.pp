@@ -27,7 +27,8 @@ type
     FVerifyChecked: Boolean;
     RadioButtonArray: array of TRadioButton;
 
-    CustomButtons, Radios, DialogCaption, DlgTitle, DlgText,
+    CustomButtons, Radios: TStringList;
+    DialogCaption, DlgTitle, DlgText,
     ExpandedButtonCaption, ExpandedText, FooterText,
     VerificationText, Selection: String;
     CommonButtons: TTaskDialogCommonButtons;
@@ -56,6 +57,7 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
 
     constructor CreateNew(AOwner: TComponent; Num: Integer = 0); override;
+    destructor Destroy; override;
 
     function Execute(AParentWnd: HWND; out ARadioRes: Integer): Integer;
   public
@@ -250,6 +252,13 @@ begin
   KeyPreview := True;
 end;
 
+destructor TLCLTaskDialog.Destroy;
+begin
+  CustomButtons.Free;
+  Radios.Free;
+  inherited Destroy;
+end;
+
 function TLCLTaskDialog.Execute(AParentWnd: HWND; out ARadioRes: Integer): Integer;
 var
   mRes, I: Integer;
@@ -359,30 +368,26 @@ var
   i: Integer;
   aHint: String;
 begin
-  with TStringList.Create do
-  try
-    Text := SysUtils.Trim(Radios);
-    SetLength(RadioButtonArray,Count);
-    for i := 0 to Count-1 do begin
-      RadioButtonArray[i] := TRadioButton.Create(Self);
-      with RadioButtonArray[i] do begin
-        Parent := AParent;
-        AutoSize := False;
-        SetBounds(X+16,Y,aWidth-32-X, (6-AFontHeight) + ARadioOffset);
-        Caption := NoCR(Strings[i], aHint);
-        if aHint<>'' then begin
-          ShowHint := True;
-          Hint := aHint; // note shown as Hint
-        end;
-        inc(Y,Height + ARadioOffset);
-        if not (tfNoDefaultRadioButton in FDlg.Flags) and ((i=0) or (i=aRadioDef)) then
-          Checked := True;
+  SetLength(RadioButtonArray,Radios.Count);
+  for i := 0 to Radios.Count-1 do
+  begin
+    RadioButtonArray[i] := TRadioButton.Create(Self);
+    with RadioButtonArray[i] do
+    begin
+      Parent := AParent;
+      AutoSize := False;
+      SetBounds(X+16,Y,aWidth-32-X, (6-AFontHeight) + ARadioOffset);
+      Caption := NoCR(Radios[i], aHint);
+      if aHint<>'' then begin
+        ShowHint := True;
+        Hint := aHint; // note shown as Hint
       end;
+      inc(Y,Height + ARadioOffset);
+      if not (tfNoDefaultRadioButton in FDlg.Flags) and ((i=0) or (i=aRadioDef)) then
+        Checked := True;
     end;
-    inc(Y,24);
-  finally
-    Free;
   end;
+  inc(Y,24);
 end;
 
 procedure TLCLTaskDialog.AddCommandLinkButtons(var X, Y: Integer; AWidth, AButtonDef, AFontHeight: Integer; AParent: TWinControl);
@@ -391,53 +396,51 @@ var
   CommandLink: TBitBtn;
   aHint: String;
 begin
-  with TStringList.Create do
-  try
-    inc(Y,8);
-    Text := SysUtils.Trim(CustomButtons);
-    for i := 0 to Count-1 do
+  inc(Y,8);
+  for i := 0 to CustomButtons.Count-1 do
+  begin
+    CommandLink := TBitBtn.Create(Self);
+    with CommandLink do
     begin
-      CommandLink := TBitBtn.Create(Self);
-      with CommandLink do
+      Parent := AParent;
+      Font.Height := AFontHeight-3;
+      if (tfEmulateClassicStyle in FDlg.Flags) then
+        SetBounds(X,Y,aWidth-10-X,40) else
+        SetBounds(X,Y,aWidth-16-X,40);
+      Caption := NoCR(CustomButtons[i], aHint);
+      if aHint<>'' then
       begin
-        Parent := AParent;
-        Font.Height := AFontHeight-3;
-        if (tfEmulateClassicStyle in FDlg.Flags) then
-          SetBounds(X,Y,aWidth-10-X,40) else
-          SetBounds(X,Y,aWidth-16-X,40);
-        Caption := NoCR(Strings[i], aHint);
-        if aHint<>'' then begin
-          ShowHint := True;
-          Hint := aHint; // note shown as Hint
-        end;
-        inc(Y,Height+2);
-        ModalResult := i+FirstButtonIndex;
-        OnClick := @HandleEmulatedButtonClicked;
-        if ModalResult=aButtonDef then
-          ActiveControl := CommandLink;
-        if (tfEmulateClassicStyle in FDlg.Flags) then begin
-          Font.Height := AFontHeight - 2;
-          Font.Style := [fsBold]
-        end;
-        if (tfEmulateClassicStyle in FDlg.Flags) then begin
-          Margin := 7;
-          Spacing := 7;
-        end else begin
-          Margin := 24;
-          Spacing := 10;
-        end;
-        if not (tfUseCommandLinksNoIcon in FDlg.Flags) then
-        begin
-          Images := LCLGlyphs;
-          ImageIndex := LCLGlyphs.GetImageIndex('btn_arrowright');
-          end;
+        ShowHint := True;
+        Hint := aHint; // note shown as Hint
+      end;
+      inc(Y,Height+2);
+      ModalResult := i+FirstButtonIndex;
+      OnClick := @HandleEmulatedButtonClicked;
+      if ModalResult=aButtonDef then
+        ActiveControl := CommandLink;
+      if (tfEmulateClassicStyle in FDlg.Flags) then
+      begin
+        Font.Height := AFontHeight - 2;
+        Font.Style := [fsBold]
+      end;
+      if (tfEmulateClassicStyle in FDlg.Flags) then
+      begin
+        Margin := 7;
+        Spacing := 7;
+      end
+      else
+      begin
+        Margin := 24;
+        Spacing := 10;
+      end;
+      if not (tfUseCommandLinksNoIcon in FDlg.Flags) then
+      begin
+        Images := LCLGlyphs;
+        ImageIndex := LCLGlyphs.GetImageIndex('btn_arrowright');
         end;
       end;
-    inc(Y,24);
-  finally
-    Free;
-  end;
-
+    end;
+  inc(Y,24);
 end;
 
 procedure TLCLTaskDialog.AddButtonsAndCheckBox(var X, Y, XB: Integer; AWidth, AButtonDef: Integer; APArent: TWinControl);
@@ -481,14 +484,8 @@ begin
   inc(Y, 16);
   XB := aWidth;
   if not (tfUseCommandLinks in FDlg.Flags) then
-    with TStringList.Create do
-    try
-      Text := SysUtils.trim(CustomButtons);
-      for i := Count-1 downto 0 do
-        AddButton(Strings[i],i+FirstButtonIndex);
-    finally
-      Free;
-    end;
+    for i := CustomButtons.Count-1 downto 0 do
+      AddButton(CustomButtons[i],i+FirstButtonIndex);
   for Btn := high(TTaskDialogCommonButton) downto low(TTaskDialogCommonButton) do
   begin
     if (Btn in CommonButtons) then
@@ -518,7 +515,7 @@ var Btn: TButton absolute Sender;
 begin
   if Assigned(FDlg) and Assigned(FDlg.OnButtonClicked) then begin
     CanClose := True;
-    FDlg.{Dialog.}OnButtonClicked(FDlg,Btn.ModalResult,CanClose);
+    FDlg.OnButtonClicked(FDlg,Btn.ModalResult,CanClose);
     if not CanClose then
       ModalResult := mrNone;
   end;
@@ -527,7 +524,6 @@ end;
 
 procedure TLCLTaskDialog.SetupControls;
 var
-  //TaskDlg: LCLTaskDialog.TTaskDialog;
   aRadioDef, aButtonDef: TModalResult;
   B: TTaskDialogBaseButtonItem;
   ButtonID: Integer;
@@ -606,12 +602,12 @@ begin
   else
     aButtonDef := TD_BTNMOD[FDlg.DefaultButton];
 
-  CustomButtons := '';
+  CustomButtons := TStringList.Create;
   for B in FDlg.Buttons do
-    CustomButtons := CustomButtons + B.Caption + #10;
-  Radios := '';
+    CustomButtons.Add(B.Caption);
+  Radios := TStringList.Create;
   for B in FDlg.RadioButtons do
-    Radios := Radios + B.Caption + #10;
+    Radios.Add(B.Caption);
 
   //ToDo
   //This field/parameter is currently not used in Dialogs.TTaskDialog and not passed so we cannot initialize it properly yet
@@ -628,7 +624,7 @@ begin
 
   CommonButtons := FDlg.CommonButtons;
 
-  if (CommonButtons=[]) and (CustomButtons='') then
+  if (CommonButtons=[]) and (CustomButtons.Count=0) then
   begin
     CommonButtons := [tcbOk];
     if (aButtonDef = 0) then
@@ -672,7 +668,7 @@ begin
   begin
     aWidth := Canvas.TextWidth(DlgTitle);
     if (aWidth > 300) or (Canvas.TextWidth(DlgText) > 300) or
-       (Length(CustomButtons) > 40) then
+       (Length(CustomButtons.Text) > 40) then
       aWidth := 480 else
       aWidth := 420;
   end
@@ -699,18 +695,8 @@ begin
 
 
   // add radio CustomButtons
-  if Radios<>'' then
+  if (Radios.Count > 0) then
   begin
-    (*
-    {$IFDEF MSWINDOWS}
-    if WidgetSet.GetLCLCapability(lcNativeTaskDialog) = LCL_CAPABILITY_NO then
-      ARadioOffset := 1
-    else
-      ARadioOffset := 0;
-    {$ELSE}
-    ARadioOffset := 1;
-    {$ENDIF}
-    *)
     ARadioOffset := 1;
     AddRadios(ARadioOffSet, aWidth, aRadioDef, FontHeight, X, Y, CurrParent);
   end;
@@ -718,7 +704,7 @@ begin
 
 
   // add command links CustomButtons
-  if (tfUseCommandLinks in FDlg.Flags) and (CustomButtons<>'') then
+  if (tfUseCommandLinks in FDlg.Flags) and (CustomButtons.Count<>0) then
     AddCommandLinkButtons(X, Y, aWidth, aButtonDef, FontHeight, CurrParent);
 
 
@@ -777,17 +763,13 @@ begin
   Panel.Height := Y;
   CurrParent := Self;
 
-
-
   XB := 0;
   // add CustomButtons and verification checkbox
   if (CommonButtons <> []) or (VerificationText<>'') or
-     ((CustomButtons<>'') and not (tfUseCommandLinks in FDlg.Flags)) then
+     ((CustomButtons.Count<>0) and not (tfUseCommandLinks in FDlg.Flags)) then
   begin
     AddButtonsAndCheckBox(X, Y, XB, aWidth, aButtonDef, CurrParent);
   end;
-
-
 
   // add FooterText text with optional icon
   if (FooterText <> '') then
