@@ -606,6 +606,10 @@ msgstr "8. szint"
 msgid "Level  9"
 msgstr "9. szint"
 
+#: lazarusidestrconsts.dlgaddhiattrrecentlyused
+msgid "Recently used item"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditarea
 msgid "Selected Area"
 msgstr "Kijelölt terület"

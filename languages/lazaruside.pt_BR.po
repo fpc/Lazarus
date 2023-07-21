@@ -606,6 +606,10 @@ msgstr "Nível 8"
 msgid "Level  9"
 msgstr "Nível 9"
 
+#: lazarusidestrconsts.dlgaddhiattrrecentlyused
+msgid "Recently used item"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditarea
 msgid "Selected Area"
 msgstr "Área selecionada"

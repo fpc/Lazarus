@@ -608,6 +608,10 @@ msgstr "Seviye 8"
 msgid "Level  9"
 msgstr "Seviye 9"
 
+#: lazarusidestrconsts.dlgaddhiattrrecentlyused
+msgid "Recently used item"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditarea
 msgid "Selected Area"
 msgstr "Seçilen Alan"

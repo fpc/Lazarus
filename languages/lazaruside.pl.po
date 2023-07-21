@@ -619,6 +619,10 @@ msgstr "Poziom  8"
 msgid "Level  9"
 msgstr "Poziom  9"
 
+#: lazarusidestrconsts.dlgaddhiattrrecentlyused
+msgid "Recently used item"
+msgstr ""
+
 #: lazarusidestrconsts.dlgaddhiattrsyncroeditarea
 msgid "Selected Area"
 msgstr "Zaznaczony obszar"
