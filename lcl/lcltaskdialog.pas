@@ -649,7 +649,7 @@ var
 var RU: array of Ws;
     RUCount: integer;
     But: array of TTASKDIALOG_BUTTON;
-  procedure AddRU(Text: string; var n: integer; firstID: integer);
+  procedure AddRU(Text: string; var n: longword{integer}; firstID: integer);
   var
     P: PChar;
   begin
@@ -683,7 +683,7 @@ var RU: array of Ws;
 
 var
   {$IFDEF MSWINDOWS}
-  Config: TTASKDIALOGCONFIG;
+  Config: CommCtrl.TTASKDIALOGCONFIG;
   {$ENDIF}
   i, X, Y, XB, IconBorder, FontHeight: integer;
   Par: TWinControl;
@@ -863,7 +863,7 @@ begin
       Config.nDefaultRadioButton := aRadioDef+FirstRadioButtonIndex;
     Config.cxWidth := MulDiv(aWidth, 4, DialogBaseUnits);  // cxWidth needed in "dialog units"
     Config.pfCallback := @TaskDialogCallbackProc;
-    Config.lpCallbackData := @self;
+    Config.lpCallbackData := PtrInt(@self);
     if TaskDialogIndirect(@Config,@result,@RadioRes,@VerifyChecked)=S_OK then
       exit; // error (mostly invalid argument) -> execute the VCL emulation
   end;

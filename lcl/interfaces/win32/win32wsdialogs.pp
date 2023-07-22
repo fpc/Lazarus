@@ -1578,15 +1578,86 @@ var
   TaskDialogIndirect: function(AConfig: pointer; Res: PInteger;
     ResRadio: PInteger; VerifyFlag: PBOOL): HRESULT; stdcall;
 
-class function TWin32WSTaskDialog.Execute(const ADlg: TCustomTaskDialog; AParentWnd: HWND; out ARadioRes: Integer): Integer;
+
+function TaskDialogFlagsToInteger(aFlags: TTaskDialogFlags): Integer;
+const
+  //missing from CommCtrls in fpc < 3.3.1
+  TDF_NO_SET_FOREGROUND = $10000;
+  TDF_SIZE_TO_CONTENT   = $1000000;
+
+{
+  tfEnableHyperlinks, tfUseHiconMain,
+  tfUseHiconFooter, tfAllowDialogCancellation,
+  tfUseCommandLinks, tfUseCommandLinksNoIcon,
+  tfExpandFooterArea, tfExpandedByDefault,
+  tfVerificationFlagChecked, tfShowProgressBar,
+  tfShowMarqueeProgressBar, tfCallbackTimer,
+  tfPositionRelativeToWindow, tfRtlLayout,
+  tfNoDefaultRadioButton, tfCanBeMinimized,
+  tfNoSetForeGround, tfSizeToContent,
+  tfForceNonNative, tfEmulateClassicStyle);
+
+}
+  FlagValues: Array[TTaskDialogFlag] of Integer = (
+    TDF_ENABLE_HYPERLINKS, TDF_USE_HICON_MAIN,
+    TDF_USE_HICON_FOOTER, TDF_ALLOW_DIALOG_CANCELLATION,
+    TDF_USE_COMMAND_LINKS, TDF_USE_COMMAND_LINKS_NO_ICON,
+    TDF_EXPAND_FOOTER_AREA, TDF_EXPANDED_BY_DEFAULT,
+    TDF_VERIFICATION_FLAG_CHECKED, TDF_SHOW_PROGRESS_BAR,
+    TDF_SHOW_MARQUEE_PROGRESS_BAR, TDF_CALLBACK_TIMER,
+    TDF_POSITION_RELATIVE_TO_WINDOW, TDF_RTL_LAYOUT,
+    TDF_NO_DEFAULT_RADIO_BUTTON, TDF_CAN_BE_MINIMIZED,
+    TDF_NO_SET_FOREGROUND {added in Windows 8}, TDF_SIZE_TO_CONTENT,
+    //custom LCL flags
+    0 {tfForceNonNative}, 0 {tfEmulateClassicStyle});
+var
+  aFlag: TTaskDialogFlag;
 begin
-  //writeln('TWin32WSTaskDialog.Execute');
-  Result := inherited Execute(ADlg, AParentWnd, ARadioRes);
+  Result := 0;
+  for aFlag := Low(TTaskDialogFlags) to High(TTaskDialogFlags) do
+    if (aFlag in aFlags) then Result := Result or FlagValues[aFlag];
+end;
+
+class function TWin32WSTaskDialog.Execute(const ADlg: TCustomTaskDialog; AParentWnd: HWND; out ARadioRes: Integer): Integer;
+var
+  Config: TTASKDIALOGCONFIG;
+  VerifyChecked: BOOL;
+begin
+  writeln('TWin32WSTaskDialog.Execute');
+  if not Assigned(TaskDialogIndirect)  or
+     (tfForceNonNative in ADlg.Flags)
+     //Yet to be implemented: or (ADlg.Selection <> '') or (tfQuery in ADlg.Flags)
+  then
+    Result := inherited Execute(ADlg, AParentWnd, ARadioRes)
+  else
+  begin
+
+    Result := TaskDialogIndirect(@Config, @Result, @ARadioRes, @VerifyChecked);
+    //for now let it fail, it's not functional yet.
+    Result := -1;
+    if (Result = S_OK) then
+    begin
+      if VerifyChecked then
+        ADlg.Flags := ADlg.Flags + [tfVerificationFlagChecked]
+      else
+        ADlg.Flags := ADlg.Flags - [tfVerificationFlagChecked]
+    end
+    else
+    begin
+      writeln('TWin32WSTaskDialog.Execute: Call to TaskDialogIndirect failed, result was: ',LongInt(Result).ToHexString);
+      Result := inherited Execute(ADlg, AParentWnd, ARadioRes);  //probably illegal parameters: fallback to emulated taskdialog
+    end;
+  end;
 end;
 
 procedure InitTaskDialogIndirect;
-var OSVersionInfo: TOSVersionInfo;
+var
+  OSVersionInfo: TOSVersionInfo;
 begin
+  //Note: CommCtrl already has TaskDialogIndirect, which returns E_NOTIMPL if this function is not available in 'comctl32.dll'
+  //We could check that in order to initilaize our TaskDialogIndirect variable.
+  //We shouldn't CommCtrl.TaskDialogIndirect to nil, other (third party) code may rely on in not ever being nil.
+
   OSVersionInfo.dwOSVersionInfoSize := sizeof(OSVersionInfo);
   GetVersionEx(OSVersionInfo);
   if OSVersionInfo.dwMajorVersion<6 then
