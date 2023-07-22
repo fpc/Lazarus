@@ -17,7 +17,7 @@ object MainFrm: TMainFrm
   OnKeyPress = FormKeyPress
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '2.3.0.0'
+  LCLVersion = '3.99.0.0'
   object pnMain: TPanel
     Left = 0
     Height = 630
@@ -135,13 +135,15 @@ object MainFrm: TMainFrm
         end
       end
       object lbFilterBy: TLabel
-        Left = 225
+        AnchorSideRight.Control = cbFilterBy
+        Left = 223
         Height = 15
         Top = 14
         Width = 45
         Alignment = taRightJustify
+        Anchors = [akTop, akRight]
+        BorderSpacing.Right = 8
         Caption = 'Filter by:'
-        Color = clDefault
         ParentColor = False
       end
       object cbPackageCategory: TComboBox
@@ -256,6 +258,7 @@ object MainFrm: TMainFrm
       ClientHeight = 0
       ClientWidth = 950
       Color = clBtnFace
+      ParentBackground = False
       ParentColor = False
       TabOrder = 3
       Visible = False
