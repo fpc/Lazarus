@@ -1160,7 +1160,7 @@ begin
   or (StartControl=DestControl) then
     exit(false);
   Parent:=StartControl.Parent;
-  SetLength(Checked,Parent.ControlCount);
+  SetLength(Checked{%H-},Parent.ControlCount);
   for i:=0 to length(Checked)-1 do Checked[i]:=false;
   Result:=Check(Parent.GetControlIndex(StartControl));
 end;

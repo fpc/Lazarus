@@ -741,7 +741,7 @@ begin
   try
     e:=LineEnding;
     LogCols:=Cols+length(e);
-    SetLength(Result,LogCols*Rows);
+    SetLength(Result{%H-},LogCols*Rows);
     // fill space
     FillChar(Result[1],length(Result),' ');
     // add line endings
