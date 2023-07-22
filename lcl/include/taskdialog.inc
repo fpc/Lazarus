@@ -228,7 +228,6 @@ const
 begin
   //Current goal of refactoring: replace all this with:
   //Result := TWSTaskDialogClass(WidgetSetClass).Execute(Self);
-  FParentWindow := ParentWnd;
 
 
   //temporary show new, then old dialog, both in emulated mode (regardless of Flags)

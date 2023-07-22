@@ -629,7 +629,6 @@ type
     FFooterText: TTranslateString;
     FMainIcon: TTaskDialogIcon;
     FModalResult: TModalResult;
-    FParentWindow: HWND;
     FRadioButton: TTaskDialogRadioButtonItem;
     FRadioButtons: TTaskDialogButtons;
     FText: TTranslateString;
@@ -647,9 +646,6 @@ type
     procedure DoOnButtonClicked(AModalResult: Integer; var ACanClose: Boolean); dynamic;
   public
     FWidth: Integer; //ToDo: make this a readonly property, so we can use it in the TaskDlgEmulation unit.
-
-
-    property ParentWindow: HWND read FParentWindow;
 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
