@@ -1029,8 +1029,24 @@ begin
   try
     include(FStateFlags, wdsDeleting);
     VNode := tvWatches.GetFirstSelected;
+    w := TIdeWatch(tvWatches.NodeItem[VNode]);
+    while (VNode <> nil) and
+          ((w = nil) or (w <> w.TopParentWatch))
+    do begin
+      VNode := tvWatches.GetNextSelected(VNode);
+      w := TIdeWatch(tvWatches.NodeItem[VNode]);
+    end;
+
     while VNode <> nil do begin
       NNode := tvWatches.GetNextSelected(VNode);
+      w := TIdeWatch(tvWatches.NodeItem[NNode]);
+      while (NNode <> nil) and
+            ((w = nil) or (w <> w.TopParentWatch))
+      do begin
+        NNode := tvWatches.GetNextSelected(NNode);
+        w := TIdeWatch(tvWatches.NodeItem[NNode]);
+      end;
+
       w := TIdeWatch(tvWatches.NodeItem[VNode]);
       if (w <> nil) and (w = w.TopParentWatch) then begin
         if tvWatches.NodeItem[VNode] = FWatchInUpDateItem then
