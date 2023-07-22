@@ -44,8 +44,8 @@ type
     /// the Task Dialog optional checkbox
     VerifyCheckBox: TCheckBox;
 
-    procedure SetupIcon(out IconBorder,X,Y: Integer; AParent: TWinControl);
-    procedure SetupPanel;
+    procedure AddIcon(out IconBorder,X,Y: Integer; AParent: TWinControl);
+    procedure AddPanel;
     procedure AddRadios(ARadioOffSet, AWidth, ARadioDef, AFontHeight: Integer; var X,Y: Integer; AParent: TWinControl);
     procedure AddCommandLinkButtons(var X, Y: Integer; AWidth, AButtonDef, AFontHeight: Integer; AParent: TWinControl);
     procedure AddButtonsAndCheckBox(var X,Y, XB: Integer; AWidth, AButtonDef: Integer; APArent: TWinControl);
@@ -319,7 +319,7 @@ end;
 
 
 
-procedure TLCLTaskDialog.SetupIcon(out IconBorder,X,Y: Integer; AParent: TWinControl);
+procedure TLCLTaskDialog.AddIcon(out IconBorder,X,Y: Integer; AParent: TWinControl);
 var
   aDialogIcon: TLCLTaskDialogIcon;
 begin
@@ -354,7 +354,7 @@ begin
   end;
 end;
 
-procedure TLCLTaskDialog.SetupPanel;
+procedure TLCLTaskDialog.AddPanel;
 begin
   Panel := TPanel.Create(Self);
   Panel.Parent := Self;
@@ -705,11 +705,11 @@ begin
   Caption := DialogCaption;
 
   // create a white panel for the main dialog part
-  SetupPanel;
+  AddPanel;
   CurrParent := Panel;
 
   // handle main dialog icon
-  SetupIcon(IconBorder, X, Y, CurrParent);
+  AddIcon(IconBorder, X, Y, CurrParent);
 
   // add main texts (DlgTitle, DlgText, Information)
   Element[tdeMainInstruction] := AddLabel(DlgTitle, True, X, Y, FontHeight, aWidth, CurrParent);
