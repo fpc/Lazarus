@@ -278,6 +278,9 @@ function Gtk3IsGdkWindow(AWidget: PGObject): GBoolean;
 function Gtk3IsGdkPixbuf(AWidget: PGObject): GBoolean;
 function Gtk3IsGdkVisual(AVisual: PGObject): GBoolean;
 
+function Gtk3WidgetIsA(AWidget: PGtkWidget; AType: TGType): boolean;
+function Get3WidgetClassName(AWidget: PGtkWidget): string;
+
 function Gtk3IsPangoContext(APangoContext: PGObject): GBoolean;
 function Gtk3IsPangoFontMetrics(APangoFontMetrics: PGObject): GBoolean;
 
@@ -554,6 +557,32 @@ end;
 function Gtk3IsGdkVisual(AVisual: PGObject): GBoolean;
 begin
   Result := (AVisual <> nil) and  g_type_check_instance_is_a(PGTypeInstance(AVisual), gdk_visual_get_type);
+end;
+
+function Gtk3WidgetIsA(AWidget: PGtkWidget; AType: TGType): boolean;
+begin
+  Result := (AWidget <> nil) and  g_type_check_instance_is_a(PGTypeInstance(AWidget), AType);
+end;
+
+function Get3WidgetClassName(AWidget: PGtkWidget): string;
+var
+  ClassPGChar: Pgchar;
+  ClassLen: Integer;
+begin
+  Result:='';
+  if AWidget=nil then begin
+    Result:='nil';
+    exit;
+  end;
+  ClassPGChar:=g_type_name_from_instance(PGTypeInstance(AWidget));
+  if ClassPGChar=nil then begin
+    Result:='<Widget without classname>';
+    exit;
+  end;
+  ClassLen:=strlen(ClassPGChar);
+  SetLength(Result,ClassLen);
+  if ClassLen>0 then
+    Move(ClassPGChar[0],Result[1],ClassLen);
 end;
 
 function Gtk3IsPangoContext(APangoContext: PGObject): GBoolean;

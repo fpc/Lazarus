@@ -160,19 +160,27 @@ class function TGtk3WSCustomForm.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLHandle;
 var
   AWindow: TGtk3Window;
-  AWinPtr: PGtkWindow;
+  AGtkWindow: PGtkWindow;
   ARect: TGdkRectangle;
+  AWidget: PGtkWidget;
 begin
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WSCustomForm.CreateHandle');
   {$ENDIF}
   AWindow := TGtk3Window.Create(AWinControl, AParams);
 
-  AWinPtr := PGtkWindow(AWindow.Widget);
-  AWindow.Title := AWinControl.Caption;
+  //debugln(['TGtk3WSCustomForm.CreateHandle AWindow.Widget=',Get3WidgetClassName(AWindow.Widget)]);
 
-  AWinPtr^.set_resizable(True);
-  AWinPtr^.set_has_resize_grip(False);
+  AWidget:=AWindow.Widget;
+  AGtkWindow:=nil;
+  if Gtk3IsGtkWindow(AWidget) then
+  begin
+    AGtkWindow := PGtkWindow(AWidget);
+    AWindow.Title := AWinControl.Caption;
+
+    AGtkWindow^.set_resizable(True);
+    AGtkWindow^.set_has_resize_grip(False);
+  end;
 
   with ARect do
   begin
@@ -181,8 +189,9 @@ begin
     width := AWinControl.Width;
     height := AWinControl.Height;
   end;
-  AWinPtr^.set_allocation(@ARect);
-  Gtk3WidgetSet.AddWindow(AWinPtr);
+  AWidget^.set_allocation(@ARect);
+  if AGtkWindow<>nil then
+    Gtk3WidgetSet.AddWindow(AGtkWindow);
 
   Result := TLCLHandle(AWindow);
 
@@ -205,11 +214,14 @@ end;
 class procedure TGtk3WSCustomForm.ShowHide(const AWinControl: TWinControl);
 var
   AMask: TGdkEventMask;
-  AForm: TCustomForm;
+  AForm, OtherForm: TCustomForm;
   AWindow: PGtkWindow;
   i: Integer;
   AGeom: TGdkGeometry;
   AGeomMask: TGdkWindowHints;
+  ShouldBeVisible: Boolean;
+  AGtk3Widget: TGtk3Widget;
+  OtherGtk3Window: TGtk3Window;
 begin
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WSCustomForm.ShowHide handleAllocated=',dbgs(AWinControl.HandleAllocated));
@@ -220,42 +232,54 @@ begin
   {$IFDEF GTK3DEBUGCORE}
   DebugLn('TGtk3WSCustomForm.ShowHide visible=',dbgs(AWinControl.HandleObjectShouldBeVisible));
   {$ENDIF}
-  AWindow := PGtkWindow(TGtk3Widget(AForm.Handle).Widget);
+  AGtk3Widget:=TGtk3Widget(AForm.Handle);
+  if Gtk3IsGtkWindow(AGtk3Widget.Widget) then
+    AWindow := PGtkWindow(AGtk3Widget.Widget)
+  else
+    AWindow := nil;
 
-  if (fsModal in AForm.FormState) and AForm.HandleObjectShouldBeVisible then
+  ShouldBeVisible:=AForm.HandleObjectShouldBeVisible;
+  if (fsModal in AForm.FormState) and ShouldBeVisible and (AWindow<>nil) then
   begin
     AWindow^.set_type_hint(GDK_WINDOW_TYPE_HINT_DIALOG);
     AWindow^.set_modal(True);
   end;
-  TGtk3Widget(AWinControl.Handle).Visible := AWinControl.HandleObjectShouldBeVisible;
-  if TGtk3Widget(AWinControl.Handle).Visible then
+  AGtk3Widget.Visible := ShouldBeVisible;
+  if AGtk3Widget.Visible then
   begin
-    if (fsModal in AForm.FormState) and (Application.ModalLevel > 0) then
+    if (fsModal in AForm.FormState) and (Application.ModalLevel > 0) and (AWindow<>nil) then
     begin
       // DebugLn('TGtk3WSCustomForm.ShowHide ModalLevel=',dbgs(Application.ModalLevel),' Self=',dbgsName(AForm));
       if Application.ModalLevel > 1 then
       begin
         for i := 0 to Screen.CustomFormZOrderCount - 1 do
         begin
-          // DebugLn('CustomFormZOrder[',dbgs(i),'].',dbgsName(Screen.CustomFormsZOrdered[i]),' modal=',
-          //  dbgs(fsModal in Screen.CustomFormsZOrdered[i].FormState));
-          if (Screen.CustomFormsZOrdered[i] <> AForm) and
-            (fsModal in Screen.CustomFormsZOrdered[i].FormState) and
-            Screen.CustomFormsZOrdered[i].HandleAllocated then
+          OtherForm:=Screen.CustomFormsZOrdered[i];
+          // DebugLn('CustomFormZOrder[',dbgs(i),'].',dbgsName(OtherForm),' modal=',dbgs(fsModal in OtherForm.FormState));
+          if (OtherForm <> AForm) and
+            (fsModal in OtherForm.FormState) and
+            OtherForm.HandleAllocated then
           begin
-            // DebugLn('TGtk3WSCustomForm.ShowHide setTransient for ',dbgsName(Screen.CustomFormsZOrdered[i]));
-            AWindow^.set_transient_for(PGtkWindow(TGtk3Window(Screen.CustomFormsZOrdered[i].Handle).Widget));
-            break;
+            // DebugLn('TGtk3WSCustomForm.ShowHide setTransient for ',dbgsName(OtherForm));
+            OtherGtk3Window:=TGtk3Window(OtherForm.Handle);
+            if Gtk3IsGtkWindow(OtherGtk3Window.Widget) then
+            begin
+              AWindow^.set_transient_for(PGtkWindow(OtherGtk3Window.Widget));
+              break;
+            end;
           end;
         end;
       end;
     end;
-    AWindow^.show_all;
-    AMask := AWindow^.window^.get_events;
-    AWindow^.window^.set_events(GDK_ALL_EVENTS_MASK {AMask or GDK_POINTER_MOTION_MASK or GDK_POINTER_MOTION_HINT_MASK});
+    if AWindow<>nil then
+    begin
+      AWindow^.show_all;
+      AMask := AWindow^.window^.get_events;
+      AWindow^.window^.set_events(GDK_ALL_EVENTS_MASK {AMask or GDK_POINTER_MOTION_MASK or GDK_POINTER_MOTION_HINT_MASK});
+    end;
   end else
   begin
-    if fsModal in AForm.FormState then
+    if (fsModal in AForm.FormState) and (AWindow<>nil) then
     begin
       if AWindow^.transient_for <> nil then
       begin
