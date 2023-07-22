@@ -49,6 +49,7 @@ type
     procedure AddRadios(ARadioOffSet, AWidth, ARadioDef, AFontHeight: Integer; var X,Y: Integer; AParent: TWinControl);
     procedure AddCommandLinkButtons(var X, Y: Integer; AWidth, AButtonDef, AFontHeight: Integer; AParent: TWinControl);
     procedure AddButtonsAndCheckBox(var X,Y, XB: Integer; AWidth, AButtonDef: Integer; APArent: TWinControl);
+    procedure AddFooter(var X, Y, XB: Integer; AFontHeight, AWidth: Integer; APArent: TWinControl);
 
   protected
     procedure HandleEmulatedButtonClicked(Sender: TObject);
@@ -377,7 +378,7 @@ begin
       Parent := AParent;
       AutoSize := False;
       SetBounds(X+16,Y,aWidth-32-X, (6-AFontHeight) + ARadioOffset);
-      Caption := NoCR(Radios[i], aHint);
+      Caption := NoCR(Radios[i], aHint); //LCL RadioButton doesn't support multiline captions
       if aHint<>'' then begin
         ShowHint := True;
         Hint := aHint; // note shown as Hint
@@ -509,6 +510,87 @@ begin
   inc(Y,36);
 end;
 
+procedure TLCLTaskDialog.AddFooter(var X, Y, XB: Integer; AFontHeight, AWidth: Integer; APArent: TWinControl);
+  procedure AddBevel;
+  var
+    BX: integer;
+  begin
+    with TBevel.Create(Self) do begin
+      Parent := AParent;
+      if (Image<>nil) and (Y<Image.Top+Image.Height) then
+        BX := X else
+        BX := 2;
+      SetBounds(BX,Y,aWidth-BX-2,2);
+    end;
+    inc(Y,16);
+  end;
+
+  function AddLabel(Text: string; BigFont: boolean): TLabel;
+  var R: TRect;
+      W: integer;
+  begin
+    if Text = '' then
+      exit(nil);
+
+    Result := TLabel.Create(Self);
+    Result.Parent := AParent;
+    Result.WordWrap := True;
+    if BigFont then
+    begin
+      if (tfEmulateClassicStyle in FDlg.Flags) then
+      begin
+        Result.Font.Height := AFontHeight-2;
+        Result.Font.Style := [fsBold]
+      end
+      else
+      begin
+        Result.Font.Height := AFontHeight-4;
+        Result.Font.Color := clHighlight;
+      end;
+    end
+    else
+      Result.Font.Height := AFontHeight;
+    Result.AutoSize := False;
+    R.Left := 0;
+    R.Top := 0;
+    W := aWidth-X-8;
+    R.Right := W;
+    R.Bottom := Result.Height;
+    LCLIntf.DrawText(Result.Canvas.Handle,PChar(Text),Length(Text),R,DT_CALCRECT or DT_WORDBREAK);//lazarus does not return box height on OSX (Lazarus bug), the height is stored in the rect in all cases, so we don't need to use the Result
+
+    Result.SetBounds(X,Y,W,R.Bottom);
+    Result.Caption := Text;
+    inc(Y,R.Bottom+16);
+  end;
+
+
+begin
+  if XB<>0 then
+    AddBevel
+  else
+    inc(Y,16);
+  if (LCL_FOOTERIMAGES[TF_FOOTERICON(FDlg.FooterIcon)]<>0) then
+  begin
+    Image := TImage.Create(Self);
+    Image.Parent := AParent;
+    Image.Images := DialogGlyphs;
+    Image.ImageWidth := 16;
+    Image.ImageIndex := DialogGlyphs.DialogIcon[LCL_FOOTERIMAGES[TF_FOOTERICON(FDlg.FooterIcon)]];
+    Image.Stretch := True;
+    Image.StretchOutEnabled := False;
+    Image.Proportional := True;
+    Image.Center := True;
+    Image.SetBounds(24,Y,16,16);
+    X := 40+Image.Width;
+  end
+  else
+  begin
+    X := 24;
+  end;
+  Element[tdeFooter] := AddLabel(FooterText, False);
+
+end;
+
 procedure TLCLTaskDialog.HandleEmulatedButtonClicked(Sender: TObject);
 var Btn: TButton absolute Sender;
     CanClose: Boolean;
@@ -572,22 +654,6 @@ var
     Result.SetBounds(X,Y,W,R.Bottom);
     Result.Caption := Text;
     inc(Y,R.Bottom+16);
-  end;
-
-
-
-  procedure AddBevel;
-  var
-    BX: integer;
-  begin
-    with TBevel.Create(Self) do begin
-      Parent := CurrParent;
-      if (Image<>nil) and (Y<Image.Top+Image.Height) then
-        BX := X else
-        BX := 2;
-      SetBounds(BX,Y,aWidth-BX-2,2);
-    end;
-    inc(Y,16);
   end;
 
 
@@ -773,34 +839,9 @@ begin
 
   // add FooterText text with optional icon
   if (FooterText <> '') then
-  begin
-    if XB<>0 then
-      AddBevel
-    else
-      inc(Y,16);
-    if (LCL_FOOTERIMAGES[TF_FOOTERICON(FDlg.FooterIcon)]<>0) then
-    begin
-      Image := TImage.Create(Self);
-      Image.Parent := CurrParent;
-      Image.Images := DialogGlyphs;
-      Image.ImageWidth := 16;
-      Image.ImageIndex := DialogGlyphs.DialogIcon[LCL_FOOTERIMAGES[TF_FOOTERICON(FDlg.FooterIcon)]];
-      Image.Stretch := True;
-      Image.StretchOutEnabled := False;
-      Image.Proportional := True;
-      Image.Center := True;
-      Image.SetBounds(24,Y,16,16);
-      X := 40+Image.Width;
-    end
-    else
-    begin
-      X := 24;
-    end;
-    Element[tdeFooter] := AddLabel(FooterText, False);
-  end;
+    AddFooter(X, Y, XB, FontHeight, aWidth, CurrParent);
 
-
-  ClientHeight := Y;
+   ClientHeight := Y;
 
 end;
 
