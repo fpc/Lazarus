@@ -696,6 +696,9 @@ type
     property OnButtonClicked;
   end;
 
+const
+  TaskDialogFirstButtonIndex = 100;
+  TaskDialogFirstRadioButtonIndex = 200;
 
 var
   MinimumDialogButtonWidth: Integer = 75;

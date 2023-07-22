@@ -115,8 +115,6 @@ const
     0, idDialogWarning, idDialogConfirm, idDialogError, idDialogInfo, idDialogShield);
 
 const
-  FirstButtonIndex = 100;
-  FirstRadioButtonIndex = 200;
   TD_BTNMOD: array[TTaskDialogCommonButton] of Integer = (
     mrOk, mrYes, mrNo, mrCancel, mrRetry, mrAbort);
 
@@ -311,7 +309,7 @@ begin
   ARadioRes := 0;
   for i := 0 to high(RadioButtonArray) do
     if RadioButtonArray[i].Checked then
-      ARadioRes := i+FirstRadioButtonIndex;
+      ARadioRes := i+TaskDialogFirstRadioButtonIndex;
 
 
 end;
@@ -416,7 +414,7 @@ begin
         Hint := aHint; // note shown as Hint
       end;
       inc(Y,Height+2);
-      ModalResult := i+FirstButtonIndex;
+      ModalResult := i+TaskDialogFirstButtonIndex;
       OnClick := @HandleEmulatedButtonClicked;
       if ModalResult=aButtonDef then
         ActiveControl := CommandLink;
@@ -487,7 +485,7 @@ begin
   XB := aWidth;
   if not (tfUseCommandLinks in FDlg.Flags) then
     for i := CustomButtons.Count-1 downto 0 do
-      AddButton(CustomButtons[i],i+FirstButtonIndex);
+      AddButton(CustomButtons[i],i+TaskDialogFirstButtonIndex);
   for Btn := high(TTaskDialogCommonButton) downto low(TTaskDialogCommonButton) do
   begin
     if (Btn in CommonButtons) then
@@ -701,7 +699,7 @@ begin
     if (aWidth < 120) then aWidth := 120;
   ClientWidth := aWidth;
 
-  Height := FirstRadioButtonIndex;
+  Height := TaskDialogFirstRadioButtonIndex;
   Caption := DialogCaption;
 
   // create a white panel for the main dialog part

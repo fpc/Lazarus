@@ -98,7 +98,7 @@ end;
 function TCustomTaskDialog.ButtonIDToModalResult(const AButtonID: Integer
   ): TModalResult;
 begin
-  if AButtonID<100 then
+  if AButtonID<TaskDialogFirstButtonIndex then
     begin
       case AButtonID of
         IDOK: Result := mrOK;
@@ -112,8 +112,8 @@ begin
         else Result := AButtonID
       end;
     end
-  else if (AButtonID-100<Buttons.Count) then
-    Result := Buttons[AButtonID-100].ModalResult
+  else if (AButtonID-TaskDialogFirstButtonIndex<Buttons.Count) then
+    Result := Buttons[AButtonID-TaskDialogFirstButtonIndex].ModalResult
   else
     Result := mrNone;
 end;
@@ -276,10 +276,10 @@ begin
   FModalResult := ButtonIDToModalResult(ButtonID);
   debugln(['Old: FModalResult=',FModalResult]);
 
-  //ToDo move FirstButtonIndex and FirstRadioButtonIndex to interface section Dialogs unit.
+  //ToDo move TaskDialogFirstButtonIndex and TaskDialogFirstRadioButtonIndex to interface section Dialogs unit.
   debugln(['Old: TaskDlg.RadioRes=',TaskDlg.RadioRes]);
-  if (TaskDlg.RadioRes>=200) and (TaskDlg.RadioRes-200<RadioButtons.Count) then
-    FRadioButton := RadioButtons[TaskDlg.RadioRes-200] as TTaskDialogRadioButtonItem
+  if (TaskDlg.RadioRes>=TaskDialogFirstRadioButtonIndex) and (TaskDlg.RadioRes-TaskDialogFirstRadioButtonIndex<RadioButtons.Count) then
+    FRadioButton := RadioButtons[TaskDlg.RadioRes-TaskDialogFirstRadioButtonIndex] as TTaskDialogRadioButtonItem
   else
     FRadioButton := nil;
   if TaskDlg.VerifyChecked then
@@ -331,7 +331,7 @@ begin
   inherited Create(ACollection);
 
   FClient := Collection.Owner as TCustomTaskDialog;
-  FModalResult := 100 + ID;
+  FModalResult := TaskDialogFirstButtonIndex + ID;
 end;
 
 function TTaskDialogBaseButtonItem.GetDefault: Boolean;
