@@ -7406,6 +7406,9 @@ begin
     exit;
   end;
 
+  // For example .lfm file open in editor
+  if not FilenameIsPascalUnit(AnUnitInfo.Filename) then exit;
+
   AnUnitInfo.LoadingComponent:=true;
   try
     // search component lfm
