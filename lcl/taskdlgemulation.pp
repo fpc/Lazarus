@@ -50,6 +50,7 @@ type
     procedure AddCommandLinkButtons(var X, Y: Integer; AWidth, AButtonDef, AFontHeight: Integer; AParent: TWinControl);
     procedure AddButtonsAndCheckBox(var X,Y, XB: Integer; AWidth, AButtonDef: Integer; APArent: TWinControl);
     procedure AddFooter(var X, Y, XB: Integer; AFontHeight, AWidth: Integer; APArent: TWinControl);
+    function AddLabel(const AText: string; BigFont: boolean; var X, Y: Integer; AFontHeight, AWidth: Integer; APArent: TWinControl): TLabel;
 
   protected
     procedure HandleEmulatedButtonClicked(Sender: TObject);
@@ -525,45 +526,6 @@ procedure TLCLTaskDialog.AddFooter(var X, Y, XB: Integer; AFontHeight, AWidth: I
     inc(Y,16);
   end;
 
-  function AddLabel(Text: string; BigFont: boolean): TLabel;
-  var R: TRect;
-      W: integer;
-  begin
-    if Text = '' then
-      exit(nil);
-
-    Result := TLabel.Create(Self);
-    Result.Parent := AParent;
-    Result.WordWrap := True;
-    if BigFont then
-    begin
-      if (tfEmulateClassicStyle in FDlg.Flags) then
-      begin
-        Result.Font.Height := AFontHeight-2;
-        Result.Font.Style := [fsBold]
-      end
-      else
-      begin
-        Result.Font.Height := AFontHeight-4;
-        Result.Font.Color := clHighlight;
-      end;
-    end
-    else
-      Result.Font.Height := AFontHeight;
-    Result.AutoSize := False;
-    R.Left := 0;
-    R.Top := 0;
-    W := aWidth-X-8;
-    R.Right := W;
-    R.Bottom := Result.Height;
-    LCLIntf.DrawText(Result.Canvas.Handle,PChar(Text),Length(Text),R,DT_CALCRECT or DT_WORDBREAK);//lazarus does not return box height on OSX (Lazarus bug), the height is stored in the rect in all cases, so we don't need to use the Result
-
-    Result.SetBounds(X,Y,W,R.Bottom);
-    Result.Caption := Text;
-    inc(Y,R.Bottom+16);
-  end;
-
-
 begin
   if XB<>0 then
     AddBevel
@@ -587,8 +549,46 @@ begin
   begin
     X := 24;
   end;
-  Element[tdeFooter] := AddLabel(FooterText, False);
+  Element[tdeFooter] := AddLabel(FooterText, False, X, Y, AFontHeight, AWidth, AParent);
 
+end;
+
+function TLCLTaskDialog.AddLabel(const AText: string; BigFont: boolean; var X, Y: Integer; AFontHeight, AWidth: Integer; APArent: TWinControl): TLabel;
+var
+  R: TRect;
+  W: integer;
+begin
+  if (AText = '') then
+    Exit(nil);
+  Result := TLabel.Create(Self);
+  Result.Parent := AParent;
+  Result.WordWrap := True;
+  if BigFont then
+  begin
+    if (tfEmulateClassicStyle in FDlg.Flags) then
+    begin
+      Result.Font.Height := AFontHeight-2;
+      Result.Font.Style := [fsBold]
+    end
+    else
+    begin
+      Result.Font.Height := AFontHeight-4;
+      Result.Font.Color := clHighlight;
+    end;
+  end
+  else
+    Result.Font.Height := AFontHeight;
+  Result.AutoSize := False;
+  R.Left := 0;
+  R.Top := 0;
+  W := aWidth-X-8;
+  R.Right := W;
+  R.Bottom := Result.Height;
+  LCLIntf.DrawText(Result.Canvas.Handle,PChar(Text),Length(Text),R,DT_CALCRECT or DT_WORDBREAK);//lazarus does not return box height on OSX (Lazarus bug), the height is stored in the rect in all cases, so we don't need to use the Result
+
+  Result.SetBounds(X,Y,W,R.Bottom);
+  Result.Caption := AText;
+  inc(Y,R.Bottom+16);
 end;
 
 procedure TLCLTaskDialog.HandleEmulatedButtonClicked(Sender: TObject);
@@ -616,47 +616,6 @@ var
   aHint: String;
   List: TStringListUTF8Fast;
   Btn: TTaskDialogCommonButton;
-
-
-  function AddLabel(Text: string; BigFont: boolean): TLabel;
-  var R: TRect;
-      W: integer;
-  begin
-    if Text = '' then
-      exit(nil);
-
-    Result := TLabel.Create(Self);
-    Result.Parent := CurrParent;
-    Result.WordWrap := True;
-    if BigFont then
-    begin
-      if (tfEmulateClassicStyle in FDlg.Flags) then
-      begin
-        Result.Font.Height := FontHeight-2;
-        Result.Font.Style := [fsBold]
-      end
-      else
-      begin
-        Result.Font.Height := FontHeight-4;
-        Result.Font.Color := clHighlight;
-      end;
-    end
-    else
-      Result.Font.Height := FontHeight;
-    Result.AutoSize := False;
-    R.Left := 0;
-    R.Top := 0;
-    W := aWidth-X-8;
-    R.Right := W;
-    R.Bottom := Result.Height;
-    LCLIntf.DrawText(Result.Canvas.Handle,PChar(Text),Length(Text),R,DT_CALCRECT or DT_WORDBREAK);//lazarus does not return box height on OSX (Lazarus bug), the height is stored in the rect in all cases, so we don't need to use the Result
-
-    Result.SetBounds(X,Y,W,R.Bottom);
-    Result.Caption := Text;
-    inc(Y,R.Bottom+16);
-  end;
-
-
 begin
 
   if FDlg.RadioButtons.DefaultButton<> nil then
@@ -753,11 +712,11 @@ begin
   SetupIcon(IconBorder, X, Y, CurrParent);
 
   // add main texts (DlgTitle, DlgText, Information)
-  Element[tdeMainInstruction] := AddLabel(DlgTitle, True);
-  Element[tdeContent] := AddLabel(DlgText, False);
+  Element[tdeMainInstruction] := AddLabel(DlgTitle, True, X, Y, FontHeight, aWidth, CurrParent);
+  Element[tdeContent] := AddLabel(DlgText, False, X, Y, FontHeight, aWidth, CurrParent);
   if (ExpandedText <> '') then
     // no information collapse/expand yet: it's always expanded
-    Element[tdeExpandedInfo] := AddLabel(ExpandedText, False);
+    Element[tdeExpandedInfo] := AddLabel(ExpandedText, False, X, Y,  FontHeight, aWidth, CurrParent);
 
 
   // add radio CustomButtons
