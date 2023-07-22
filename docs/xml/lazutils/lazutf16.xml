@@ -42,17 +42,36 @@ a UTF-16 table, but it might be extended to include various UTF-16 routines.
 
 <element name="UTF16CharacterLength">
 <short>
-Gets the length of the UTF-16 character in the specified PWideChar value.
+Gets the length of the UTF-16 character in the specified PWideChar value as a 
+number Word values.
 </short>
 <descr>
 <p>
-Uses the endian-ness for the platform. Returns 0, 1, or 2.
+Uses the endian-ness for the platform. UTF16CharacterLength checks the first 
+Word value in <var>p</var> to determine the return value for the routine, and 
+can contain:
 </p>
+<dl>
+<dt>0</dt>
+<dd>
+Returned when the value in the <var>p</var> argument is <b>Nil</b>.
+</dd>
+<dt>1</dt>
+<dd>
+Returned when the first Word value in <var>p</var> argument is outside the 
+range $D800..$DFFF.
+</dd>
+<dt>2</dt>
+<dd>
+Returned when the first Word value in <var>p</var> argument is included in the 
+range $D800..$DFFF.  
+</dd>
+</dl>
 </descr>
 </element>
 <element name="UTF16CharacterLength.Result">
 <short>
-Length of the UTF-16 character in the value, or 0 when <b>Nil</b>.
+Length of the UTF-16 character in the specified value, or 0 when <b>Nil</b>.
 </short>
 </element>
 <element name="UTF16CharacterLength.p">
@@ -62,15 +81,29 @@ PWideChar value examined in the routine.
 </element>
 
 <element name="UTF16Length">
-<short>Gets the length for the specified value in UTF-16 characters.</short>
+<short>
+Gets the length for the specified value in UTF-16 characters.
+</short>
 <descr>
 <p>
-Examines 16-UTF values in the specified Unicode string until the number of word 
-values is exceeded. Using zero (0) in WordCount causes no actions to be 
-performed in the routine, and the return value is 0.
+<var>UTF16Length</var> is an overloaded <var>PtrInt</var> function used to get 
+the length for the specified value as a number of Unicode code points. The 
+overloaded variants allow the string examined in the routine to be specified 
+as either a <var>UnicodeString</var> or a <var>PWideChar</var> type. The 
+variant using PWideChar includes the WordCount argument with the number of 
+Word values in the input.
+</p>
+<p>
+UTF16Length examines the input values to determine the number of code points 
+for the return value. Each code point can be represented as either 1 or 2 word 
+values in UTF-16. The UTF16CharacterLength routine is called for the input 
+until the number of Word values has been examined in the method. The return 
+value is incremented by 1 for each code point read from the input value.
 </p>
 </descr>
-<seealso/>
+<seealso>
+<link id="UTF16CharacterLength"/>
+</seealso>
 </element>
 <element name="UTF16Length.Result">
 <short>
@@ -116,31 +149,56 @@ specified value.
 <short>Number of characters (code points) copied in the the routine.</short>
 </element>
 
-<!-- TODO: Needs description. -->
 <element name="UTF16CharStart">
 <short>
-Gets a pointer to the character (UTF-16 codepoint) at the specified position 
-(zero-based) in a WideChar value.
+Gets a pointer to the Unicode character at the ordinal position in P specified 
+by the CharIndex argument.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>P</var> is the <var>PWideChar</var> value with the content examined in 
+the routine.
+</p>
+<p>
+<var>Len</var> contains the number of <var>Word</var> values examined in the P 
+argument.
+</p>
+<p>
+<var>CharIndex</var> specifies the ordinal position in P for the character 
+pointer in the return value. CharIndex is zero-based and refers to a code 
+point in P and not the individual Word values.
+</p>
+<p>
+UTF16CharStart calls the <var>UTF16CharacterLength</var> routine to examine 
+and skip each of the code points in P until the code point at CharIndex is 
+found. The return value points to the Unicode character at the specified 
+ordinal position. The return value is Nil for any of the following conditions:
+</p>
+<ul>
+<li>The P argument is <b>Nil</b>.</li>
+<li>Len is zero or a negative number.</li>
+<li>The code point at CharIndex does not exist in the specified Len.</li>
+</ul>
+</descr>
+<seealso>
+<link id="UTF16CharacterLength"/>
+</seealso>
 </element>
 <element name="UTF16CharStart.Result">
 <short>
-Pointer to the UTF-16 character at the specified position in the value, or 
-<b>Nil</b> if P is empty or a UTF-16 character is not found at the specified 
-ordinal position.
+Pointer to the Unicode character (code point) at the specified ordinal 
+position.
 </short>
 </element>
 <element name="UTF16CharStart.P">
 <short>PWideChar value with the values examined in the routine.</short>
 </element>
 <element name="UTF16CharStart.Len">
-<short>Len is the length in words of P.</short>
+<short>Len is the number of Word values in P.</short>
 </element>
 <element name="UTF16CharStart.CharIndex">
 <short>
-CharIndex is the position of the desired UnicodeChar (starting at 0).
+CharIndex is the position for the desired UnicodeChar (starting at 0).
 </short>
 </element>
 
