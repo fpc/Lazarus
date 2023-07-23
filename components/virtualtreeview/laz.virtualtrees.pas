@@ -23512,7 +23512,7 @@ begin
           AdjustTotalCount(Destination.Parent, Node.TotalCount, True);
 
           // Add the new node's height only if its parent is expanded.
-          if FullyVisible[Node] then
+          if (vsExpanded in Node.Parent.States) and (vsVisible in Node.States) then
           begin
             AdjustTotalHeight(Destination.Parent, Node.TotalHeight, True);
             Inc(FVisibleCount, CountVisibleChildren(Node) + Cardinal(IfThen(IsEffectivelyVisible[Node], 1)));
@@ -23543,7 +23543,7 @@ begin
           AdjustTotalCount(Destination.Parent, Node.TotalCount, True);
 
           // Add the new node's height only if its parent is expanded.
-          if FullyVisible[Node] then
+          if (vsExpanded in Node.Parent.States) and (vsVisible in Node.States) then
           begin
             AdjustTotalHeight(Destination.Parent, Node.TotalHeight, True);
             Inc(FVisibleCount, CountVisibleChildren(Node) + Cardinal(IfThen(IsEffectivelyVisible[Node], 1)));
@@ -23580,7 +23580,7 @@ begin
           Include(Destination.States, vsHasChildren);
           AdjustTotalCount(Destination, Node.TotalCount, True);
           // Add the new node's height only if its parent is expanded.
-          if FullyVisible[Node] then
+          if (vsExpanded in Node.Parent.States) and (vsVisible in Node.States) then
           begin
             AdjustTotalHeight(Destination, Node.TotalHeight, True);
             Inc(FVisibleCount, CountVisibleChildren(Node) + Cardinal(IfThen(IsEffectivelyVisible[Node], 1)));
@@ -23612,7 +23612,7 @@ begin
           Include(Destination.States, vsHasChildren);
           AdjustTotalCount(Destination, Node.TotalCount, True);
           // Add the new node's height only if its parent is expanded.
-          if FullyVisible[Node] then
+          if (vsExpanded in Node.Parent.States) and (vsVisible in Node.States) then
           begin
             AdjustTotalHeight(Destination, Node.TotalHeight, True);
             Inc(FVisibleCount, CountVisibleChildren(Node) + Cardinal(IfThen(IsEffectivelyVisible[Node], 1)));
