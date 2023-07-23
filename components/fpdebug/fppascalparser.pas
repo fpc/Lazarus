@@ -4755,6 +4755,14 @@ function TFpPascalExpressionPartOperatorCompare.DoGetResultValue: TFpValue;
       r.Free;
     end;
   end;
+  function BoolEqual(ABoolVal, AOtherVal: TFpValue; AReverse: Boolean = False): TFpValue;
+  begin
+    Result := nil;
+    if (AOtherVal.Kind = skBoolean) then
+      Result := TFpValueConstBool.Create((ABoolVal.AsBool = AOtherVal.AsBool) xor AReverse)
+    else
+      SetError('= not supported');
+  end;
 
   function IntGreaterThanValue(AIntVal, AOtherVal: TFpValue; AReverse: Boolean = False): TFpValue;
   begin
@@ -4905,6 +4913,7 @@ begin
       skString, skAnsiString, skWideString, skChar{, skWideChar}:
                   Result := CharDataEqualToValue(tmp1, tmp2, (s = '<>'));
       skSet:      Result := SetEqual(tmp1, tmp2, (s = '<>'));
+      skBoolean:  Result := BoolEqual(tmp1, tmp2, (s = '<>'));
     end;
   end
   else
