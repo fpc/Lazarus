@@ -46,7 +46,9 @@ type
     LEPassword: TLabel;
     LEHostName: TLabel;
     LEDatabaseName: TLabel;
+    Panel1: TPanel;
     procedure BTestClick(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
     FDriver : String;
@@ -165,6 +167,13 @@ procedure TSQLConnectionForm.BTestClick(Sender: TObject);
 
 begin
   TestConnection;
+end;
+
+procedure TSQLConnectionForm.FormActivate(Sender: TObject);
+begin
+  ClientHeight := Panel1.Height + BPButtons.Height + 2*BPButtons.BorderSpacing.Around;
+  Constraints.MinHeight := Height;
+  Constraints.MaxHeight := Height;
 end;
 
 function TSQLConnectionForm.GetShowHost: Boolean;

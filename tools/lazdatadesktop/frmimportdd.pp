@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, CheckLst,
-  Buttons, ActnList,fpdatadict, StdCtrls, lazdatadeskstr;
+  Buttons, ActnList,fpdatadict, StdCtrls, ExtCtrls, lazdatadeskstr;
 
 type
 
@@ -42,6 +42,7 @@ type
     BSelectAll: TButton;
     CBUpdateExisting: TCheckBox;
     LBItems: TCheckListBox;
+    Panel1: TPanel;
     procedure DoSelection(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
