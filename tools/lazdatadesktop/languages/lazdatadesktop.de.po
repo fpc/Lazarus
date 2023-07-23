@@ -993,3 +993,4 @@ msgstr "Es ist ein Datenwörterbuch aktiv. Soll in dieses Datenwörterbuch impor
 #: lazdatadeskstr.syes
 msgid "Yes"
 msgstr "Ja"
+
