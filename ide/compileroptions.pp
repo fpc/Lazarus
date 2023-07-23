@@ -55,8 +55,9 @@ uses
   SrcEditorIntf,
   // IdeConfig
   LazConf, EnvironmentOpts, SearchPathProcs, IdeXmlConfigProcs, TransferMacros,
+  IDEProcs, ModeMatrixOpts, CompOptsModes,
   // IDE
-  LazarusIDEStrConsts, IDEProcs, etFPCMsgParser, ModeMatrixOpts, CompOptsModes;
+  LazarusIDEStrConsts, etFPCMsgParser;
 
 const
   DefaultCompilerPath = '$(CompPath)';

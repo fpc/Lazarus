@@ -35,8 +35,10 @@ uses
   StdCtrls, ComCtrls, Forms, ButtonPanel,
   // LazUtils
   LazUTF8, LazLoggerBase, AvgLvlTree,
+  // IdeConfig
+  EnvironmentOpts, ModeMatrixOpts, CompOptsModes,
   // IDE
-  LazarusIDEStrConsts, EnvironmentOpts, Project, ModeMatrixOpts, CompOptsModes;
+  LazarusIDEStrConsts, Project;
 
 type
 

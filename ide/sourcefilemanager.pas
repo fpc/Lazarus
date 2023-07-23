@@ -52,9 +52,9 @@ uses
   IdeIntfStrConsts, ObjectInspector, SrcEditorIntf, EditorSyntaxHighlighterDef,
   UnitResources, ComponentReg, InputHistory,
   // IdeConfig
-  EnvironmentOpts, SearchPathProcs, TransferMacros, RecentListProcs,
+  EnvironmentOpts, SearchPathProcs, TransferMacros, RecentListProcs, IDEProcs,
   // IDE
-  IDEProcs, DialogProcs, IDEProtocol, LazarusIDEStrConsts, NewDialog,
+  DialogProcs, IDEProtocol, LazarusIDEStrConsts, NewDialog,
   NewProjectDlg, MainBase, MainBar, MainIntf, Project, ProjectDefs,
   ProjectInspector, CompilerOptions, SourceSynEditor, SourceEditor,
   EditorOptions, CustomFormEditor, ControlSelection,

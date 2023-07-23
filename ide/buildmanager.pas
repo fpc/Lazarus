@@ -35,9 +35,9 @@ interface
 
 uses
   // RTL + FCL
-  Classes, SysUtils, Types, AVL_Tree,
+  Classes, SysUtils, Types, AVL_Tree, System.UITypes,
   // LCL
-  InterfaceBase, LCLPlatformDef, Dialogs, Forms, Controls,
+  InterfaceBase, LCLPlatformDef,
   // CodeTools
   ExprEval, BasicCodeTools, CodeToolManager, DefineTemplates, CodeCache,
   FileProcs, CodeToolsCfgScript, LinkScanner,
@@ -51,8 +51,9 @@ uses
   IDEDialogs, LazIDEIntf, IDEMsgIntf, SrcEditorIntf, InputHistory,
   // IdeConfig
   LazConf, EnvironmentOpts, ModeMatrixOpts, TransferMacros, IdeConfStrConsts,
+  IDEProcs,
   // IDE
-  IDECmdLine, LazarusIDEStrConsts, DialogProcs, IDEProcs,
+  LazarusIDEStrConsts, DialogProcs,
   EditDefineTree, ProjectResources, MiscOptions, CompilerOptions,
   ExtTools, etMakeMsgParser, etFPCMsgParser, etPas2jsMsgParser, Compiler,
   FPCSrcScan, PackageDefs, PackageSystem, Project, ProjectIcon, BaseBuildManager,

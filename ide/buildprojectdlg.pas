@@ -37,9 +37,10 @@ uses
   FileProcs, CodeToolManager, DirectoryCacher,
   // IDEIntf
   IdeIntfStrConsts, IDEDialogs, IDEImagesIntf, PackageIntf, InputHistory,
+  // IdeConfig
+  EnvironmentOpts, RecentListProcs,
   // IDE
-  PackageDefs, PackageSystem, LazarusIDEStrConsts, Project,
-  EnvironmentOpts, IDEProcs, RecentListProcs;
+  PackageDefs, PackageSystem, LazarusIDEStrConsts, Project;
 
 type
   TBuildProjectDialogItem = class

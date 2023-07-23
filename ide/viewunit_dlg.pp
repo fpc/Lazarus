@@ -52,8 +52,10 @@ uses
   ListFilterEdit,
   // IdeIntf
   IdeIntfStrConsts, IDEWindowIntf, IDEHelpIntf, IDEImagesIntf, TextTools,
+  // IdeConfig
+  SearchPathProcs,
   // IDE
-  LazarusIdeStrConsts, IDEProcs, CustomFormEditor, SearchPathProcs, PackageDefs;
+  LazarusIdeStrConsts, CustomFormEditor, PackageDefs;
 
 type
   TIDEProjectItem = (

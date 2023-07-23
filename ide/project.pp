@@ -65,9 +65,9 @@ uses
   {$IFnDEF LCLNOGUI} IdeDebuggerOpts, IdeDebuggerBackendValueConv, Debugger,{$EndIf}
   // IdeConfig
   EnvironmentOpts, LazConf, TransferMacros, SearchPathProcs, IdeXmlConfigProcs,
+  IDECmdLine, IDEProcs, CompOptsModes, ModeMatrixOpts,
   // IDE
-  CompOptsModes, ProjectResources, ProjectIcon,
-  IDECmdLine, IDEProcs, CompilerOptions, RunParamsOpts, ModeMatrixOpts,
+  ProjectResources, ProjectIcon, CompilerOptions, RunParamsOpts,
   ProjectDefs, EditDefineTree, LazarusIDEStrConsts,
   ProjPackCommon, PackageDefs, PackageSystem;
 

@@ -519,7 +519,7 @@ function CommentText(const s: string; CommentType: TCommentType): string;
       inc(NewPos,length(EndOfLine));
     end;
     if NewPos<>NewLen+1 then
-      raise Exception.Create('IDEProcs.CommentText ERROR: '
+      raise Exception.Create('CommentText ERROR: '
         +IntToStr(NewPos-1)+'<>'+IntToStr(NewLen));
   end;
 

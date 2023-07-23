@@ -35,17 +35,13 @@ uses
   // LazUtils
   FileUtil, LazFileUtils, LazUtilities, LazFileCache, LazUTF8,
   Laz2_XMLCfg, LazLoggerBase, LazTracer,
-  // LCL
-  StdCtrls, ExtCtrls,
   // CodeTools
   BasicCodeTools, CodeToolManager, CodeToolsConfig, CodeCache, KeywordFuncLists,
   FileProcs,
   // BuildIntf
   PackageIntf,
   // IdeConfig
-  TransferMacros, LazConf,
-  // IDE
-  LazarusIDEStrConsts;
+  TransferMacros, LazConf, IdeConfStrConsts;
 
 const
   SBuildMethod: array[TBuildMethod] of string = (
@@ -98,7 +94,6 @@ procedure ReverseList(List: TFPList);
 procedure FreeListObjects(List: TList; FreeList: boolean);
 procedure FreeListObjects(List: TFPList; FreeList: boolean);
 function CompareMemStreamText(s1, s2: TMemoryStream): Boolean;
-function CheckGroupItemChecked(CheckGroup: TCheckGroup; const Caption: string): Boolean;
 procedure CheckCompNameValidity(const AName: string);
 
 
@@ -685,11 +680,6 @@ begin
       until false;
     end;
   end;
-end;
-
-function CheckGroupItemChecked(CheckGroup: TCheckGroup; const Caption: string): Boolean;
-begin
-  Result := CheckGroup.Checked[CheckGroup.Items.IndexOf(Caption)];
 end;
 
 procedure CheckCompNameValidity(const AName: string);

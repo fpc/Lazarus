@@ -98,10 +98,12 @@ uses
   UTF8Process, FileUtil, LazFileUtils, LazUtilities, LazUTF8,
   // CodeTools
   FileProcs,
-  // IdeIntf
+  // BuildIntf
   BaseIDEIntf,
+  // IdeConfig
+  LazConf, IDECmdLine,
   // IDE
-  IDECmdLine, LazConf, Splash, IDEInstances;
+  Splash, IDEInstances;
 
 type
 

@@ -41,8 +41,10 @@ uses
   Controls, Dialogs, ExtCtrls, LCLIntf, LCLType,
   LazFileUtils, FileUtil, Laz2_XMLRead, Laz2_XMLWrite, Laz2_DOM, LazUTF8,
   UTF8Process, LazLoggerBase,
-  EnvironmentOpts, IDEOptionsIntf, IDEOptEditorIntf,
-  LazarusIDEStrConsts, IDECmdLine, LazConf;
+  IDEOptionsIntf,
+  IDEOptEditorIntf,
+  EnvironmentOpts, IDECmdLine, LazConf,
+  LazarusIDEStrConsts;
 
 type
   TStartNewInstanceResult = (ofrStartNewInstance, ofrDoNotStart, ofrModalError,

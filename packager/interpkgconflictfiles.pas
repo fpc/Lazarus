@@ -64,10 +64,9 @@ uses
   // IDEIntf
   ProjectIntf, CompOptsIntf, IDEWindowIntf, LazIDEIntf, IDEMsgIntf, IDEExternToolIntf,
   // IdeConfig
-  EnvironmentOpts, TransferMacros,
+  EnvironmentOpts, TransferMacros, IDEProcs, SearchPathProcs,
   // IDE
-  CompilerOptions, IDEProcs, DialogProcs, LazarusIDEStrConsts,
-  SearchPathProcs, PackageDefs, PackageSystem;
+  CompilerOptions, DialogProcs, LazarusIDEStrConsts, PackageDefs, PackageSystem;
 
 type
   TPGInterPkgOwnerInfo = class

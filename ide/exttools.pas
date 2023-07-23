@@ -44,7 +44,7 @@ uses
   // IdeConfig
   TransferMacros,
   // IDE
-  IDECmdLine, LazarusIDEStrConsts;
+  LazarusIDEStrConsts;
 
 type
   TLMVToolState = (

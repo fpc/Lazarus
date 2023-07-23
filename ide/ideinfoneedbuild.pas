@@ -35,11 +35,14 @@ uses
   Forms, Controls, StdCtrls, ButtonPanel, LCLType,
   // LazUtils
   LazUtilities, LazUTF8,
+  // BuildIntf
+  ProjectIntf, PackageIntf,
   // IdeIntf
-  IDEWindowIntf, LazIDEIntf, ProjectIntf, PackageIntf, InputHistory,
+  IDEWindowIntf, LazIDEIntf, InputHistory,
+  // IdeConfig
+  EnvironmentOpts, IDEProcs,
   // IDE
-  LazarusIDEStrConsts, PackageDefs, PackageSystem, Project,
-  EnvironmentOpts, IDEProcs, BuildManager;
+  LazarusIDEStrConsts, PackageDefs, PackageSystem, Project, BuildManager;
 
 type
   TINeedBuild = (

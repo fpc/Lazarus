@@ -71,9 +71,9 @@ uses
   IDEHelpIntf, IDECommands, IDEDialogs, IDEImagesIntf, LazIDEIntf, ToolBarIntf,
   IdeIntfStrConsts, MenuIntf, InputHistory,
   // IdeConfig
-  EnvironmentOpts, IDEOptionDefs, TransferMacros,
+  EnvironmentOpts, IDEOptionDefs, TransferMacros, IDEProcs,
   // IDE
-  LazarusIDEStrConsts, MainBase, MainBar, IDEProcs, DialogProcs, Project,
+  LazarusIDEStrConsts, MainBase, MainBar, DialogProcs, Project,
   BuildManager, AddToProjectDlg, EnvGuiOptions,
   BasePkgManager, ProjPackChecks, ProjPackEditing, ProjPackFilePropGui, PackageDefs,
   AddPkgDependencyDlg, AddFPMakeDependencyDlg;

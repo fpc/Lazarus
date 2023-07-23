@@ -40,10 +40,12 @@ uses
   // BuildIntf
   BaseIDEIntf, MacroIntf, PackageIntf, LazMsgWorker, ProjectIntf, IDEExternToolIntf,
   CompOptsIntf, IDEOptionsIntf, PackageDependencyIntf,
+  // IdeConfig
+  LazConf, IDECmdLine,
   // IDE
   InitialSetupProc, ExtToolsConsole, CompilerOptions,
   ApplicationBundle, TransferMacros, EnvironmentOpts, IDETranslations,
-  LazarusIDEStrConsts, IDECmdLine, MiscOptions, Project, LazConf, PackageDefs,
+  LazarusIDEStrConsts, MiscOptions, Project, PackageDefs,
   PackageLinks, PackageSystem, InterPkgConflictFiles, BuildLazDialog,
   BuildProfileManager, BuildManager, BaseBuildManager, ModeMatrixOpts;
 

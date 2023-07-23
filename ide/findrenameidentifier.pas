@@ -42,10 +42,9 @@ uses
   IdeIntfStrConsts, LazIDEIntf, IDEWindowIntf, SrcEditorIntf, PackageIntf,
   IDEDialogs, InputHistory,
   // LazConfig
-  TransferMacros,
+  TransferMacros, IDEProcs,
   // IDE
-  LazarusIDEStrConsts, IDEProcs, MiscOptions, DialogProcs,
-  SearchResultView, CodeHelp;
+  LazarusIDEStrConsts, MiscOptions, DialogProcs, SearchResultView, CodeHelp;
 
 type
 

@@ -376,7 +376,9 @@
         <Filename Value="../designer/askcompnamedlg.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="AskCompNameDialog"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="AskCompNameDlg"/>
       </Unit>
       <Unit>
         <Filename Value="frames/project_application_options.pas"/>
@@ -500,7 +502,9 @@
         <Filename Value="buildmodediffdlg.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="BuildModeDiffDialog"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="BuildModeDiffDlg"/>
       </Unit>
       <Unit>
         <Filename Value="checkcompoptsfornewunitdlg.pas"/>
@@ -548,6 +552,7 @@
         <Filename Value="../packager/frames/package_integration_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="PackageIntegrationOptionsFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
       </Unit>
       <Unit>
@@ -565,13 +570,10 @@
       <Unit>
         <Filename Value="buildprojectdlg.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="CleanBuildProjectDialog"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="BuildProjectDlg"/>
-      </Unit>
-      <Unit>
-        <Filename Value="ideguicmdline.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="IDEGuiCmdLine"/>
       </Unit>
       <Unit>
         <Filename Value="frames/env_file_filters.pas"/>
@@ -604,6 +606,7 @@
         <Filename Value="ideinfoneedbuild.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="IDEInfoNeedBuildDlg"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="IDEInfoNeedBuild"/>
       </Unit>
@@ -687,6 +690,7 @@
       <Unit>
         <Filename Value="etmakemsgparser.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="etMakeMsgParser"/>
       </Unit>
       <Unit>
         <Filename Value="etmessageframe.pas"/>
@@ -748,14 +752,11 @@
         <HasResources Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="idecmdline.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="IDECmdLine"/>
-      </Unit>
-      <Unit>
         <Filename Value="initialsetupdlgs.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="InitialSetupDialog"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="InitialSetupDlgs"/>
       </Unit>
       <Unit>
@@ -809,13 +810,10 @@
       <Unit>
         <Filename Value="makeresstrdlg.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="MakeResStrDialog"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="MakeResStrDlg"/>
-      </Unit>
-      <Unit>
-        <Filename Value="ideprocs.pp"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="IDEProcs"/>
       </Unit>
       <Unit>
         <Filename Value="lazarusidestrconsts.pas"/>
@@ -887,6 +885,7 @@
       <Unit>
         <Filename Value="projectuserresources.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="ProjectUserResources"/>
       </Unit>
       <Unit>
         <Filename Value="buildfiledlg.pas"/>
@@ -915,7 +914,9 @@
       <Unit>
         <Filename Value="searchfrm.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="SearchProgressForm"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="SearchFrm"/>
       </Unit>
       <Unit>
@@ -1017,7 +1018,9 @@
       <Unit>
         <Filename Value="checkcompileropts.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="CheckCompilerOptsDlg"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="CheckCompilerOpts"/>
       </Unit>
       <Unit>
@@ -1028,7 +1031,10 @@
       <Unit>
         <Filename Value="buildprofilemanager.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="BuildProfileManagerForm"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="BuildProfileManager"/>
       </Unit>
       <Unit>
         <Filename Value="comppagespopup.pas"/>
@@ -1070,11 +1076,15 @@
       <Unit>
         <Filename Value="findoverloadsdlg.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="FindOverloadsDialog"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="FindOverloadsDlg"/>
       </Unit>
       <Unit>
         <Filename Value="codeexplopts.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="CodeExplOpts"/>
       </Unit>
       <Unit>
         <Filename Value="encloseselectiondlg.pas"/>
@@ -1091,6 +1101,7 @@
       <Unit>
         <Filename Value="miscoptions.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="MiscOptions"/>
       </Unit>
       <Unit>
         <Filename Value="codeexplorer.pas"/>
@@ -1142,10 +1153,6 @@
         <HasResources Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="compoptsmodes.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="applicationbundle.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ApplicationBundle"/>
@@ -1166,7 +1173,9 @@
       <Unit>
         <Filename Value="codetoolsdefines.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="CodeToolsDefinesEditor"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="CodeToolsDefines"/>
       </Unit>
       <Unit>
@@ -1243,7 +1252,10 @@
       <Unit>
         <Filename Value="findunitdlg.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="FindUnitDialog"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="FindUnitDlg"/>
       </Unit>
       <Unit>
         <Filename Value="idewindowhelp.pas"/>
@@ -1279,6 +1291,7 @@
       <Unit>
         <Filename Value="editdefinetree.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="EditDefineTree"/>
       </Unit>
       <Unit>
         <Filename Value="runparamsopts.pas"/>
@@ -1340,7 +1353,9 @@
       <Unit>
         <Filename Value="findrenameidentifier.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="FindRenameIdentifierDialog"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="FindRenameIdentifier"/>
       </Unit>
       <Unit>
@@ -1384,7 +1399,10 @@
       <Unit>
         <Filename Value="../packager/interpkgconflictfiles.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="PGIPConflictsDialog"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="InterPkgConflictFiles"/>
       </Unit>
       <Unit>
         <Filename Value="encloseifdef.pas"/>

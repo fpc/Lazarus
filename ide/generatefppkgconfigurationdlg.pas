@@ -47,12 +47,11 @@ uses
   ExtCtrls,
   // Codetools
   CodeToolManager, DefineTemplates,
+  // IdeConfig
+  IDEProcs, LazConf, EnvironmentOpts,
   // IDE
-  IDEProcs,
-  LazConf,
   LazarusIDEStrConsts,
   InitialSetupProc,
-  EnvironmentOpts,
   // Packager
   FppkgHelper,
   // Ideintf

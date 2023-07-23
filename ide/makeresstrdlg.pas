@@ -48,8 +48,10 @@ uses
   CodeToolManager, CodeToolsStructs, CodeCache,
   // IdeIntf
   IdeIntfStrConsts, IDEWindowIntf, IDEHelpIntf, IDEDialogs, InputHistory,
+  // IdeConfig
+  RecentListProcs,
   // IDE
-  LazarusIDEStrConsts, EditorOptions, MiscOptions, IDEProcs, RecentListProcs;
+  LazarusIDEStrConsts, EditorOptions, MiscOptions;
 
 type
 

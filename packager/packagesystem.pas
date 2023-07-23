@@ -62,9 +62,9 @@ uses
   // Package registration
   LazarusPackageIntf,
   // IdeConfig
-  EnvironmentOpts, LazConf, TransferMacros,
+  EnvironmentOpts, LazConf, TransferMacros, IDEProcs,
   // IDE
-  LazarusIDEStrConsts, IDECmdLine, IDEProcs, DialogProcs, IDETranslations,
+  LazarusIDEStrConsts, DialogProcs, IDETranslations,
   CompilerOptions, SearchPathProcs, PackageLinks, PackageDefs, ComponentReg,
   FppkgHelper, PkgSysBasePkgs;
 

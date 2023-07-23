@@ -33,16 +33,12 @@ unit CompOptsModes;
 
 {$mode objfpc}{$H+}
 
-{$i ide.inc}
-
 interface
 
 uses
   Classes, SysUtils,
-  ExprEval,
-  LazLoggerBase,
-  ProjectIntf,
-  IDEProcs;
+  // LazUtils
+  LazLoggerBase;
 
 type
 

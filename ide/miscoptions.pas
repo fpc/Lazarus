@@ -30,8 +30,19 @@ unit MiscOptions;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, BuildProfileManager, CodeToolsStructs, TextTools,
-  LazFileUtils, Laz2_XMLCfg, LazFileCache, LazConf, IDEProcs, IdeXmlConfigProcs;
+  Classes, SysUtils,
+  // LCL
+  LCLProc,
+  // LazUtils
+  LazFileUtils, Laz2_XMLCfg, LazFileCache, LazLoggerBase,
+  // CodeTools
+  CodeToolsStructs,
+  // IdeIntf
+  TextTools,
+  // IdeConfig
+  LazConf, IDEProcs, IdeXmlConfigProcs,
+  // IDE
+  BuildProfileManager;
 
 type
   { TFindRenameIdentifierOptions }

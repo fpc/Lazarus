@@ -40,7 +40,7 @@ uses
   // IdeIntf
   IdeIntfStrConsts, BaseIDEIntf, IDEMsgIntf, IDEExternToolIntf, IDEImagesIntf,
   // IDE
-  IDEProcs, DialogProcs, LazarusIDEStrConsts,
+  DialogProcs, LazarusIDEStrConsts,
   // Converter
   ConverterTypes, ReplaceNamesUnit, ReplaceFuncsUnit;
 

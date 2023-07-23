@@ -69,15 +69,14 @@ uses
   IDEWindowIntf, ProjectIntf, MacroDefIntf, ToolBarIntf, IDEDialogs, IDECommands,
   EditorSyntaxHighlighterDef, IdeIntfStrConsts,
   // DebuggerIntf
-  DbgIntfDebuggerBase, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
+  DbgIntfDebuggerBase, LazDebuggerIntfBaseTypes,
   // IdeDebugger
   BaseDebugManager, Debugger, IdeDebuggerStringConstants,
   // IdeConfig
-  EnvironmentOpts, IDEOptionDefs, TransferMacros,
+  EnvironmentOpts, IDEOptionDefs, TransferMacros, IDECmdLine, IDEProcs,
   // IDE units
-  IDECmdLine, LazarusIDEStrConsts, EditorOptions, EnvGuiOptions,
-  WordCompletion, FindReplaceDialog, IDEProcs,
-  IDEHelpManager, MacroPromptDlg, CodeContextForm,
+  LazarusIDEStrConsts, EditorOptions, EnvGuiOptions,
+  WordCompletion, FindReplaceDialog, IDEHelpManager, MacroPromptDlg, CodeContextForm,
   SrcEditHintFrm, etMessagesWnd, etSrcEditMarks, CodeMacroPrompt,
   CodeTemplatesDlg, CodeToolsOptions, editor_general_options, SortSelectionDlg,
   EncloseSelectionDlg, EncloseIfDef, InvertAssignTool, SourceEditProcs,

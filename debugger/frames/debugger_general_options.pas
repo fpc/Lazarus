@@ -33,11 +33,11 @@ uses
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf,
   // IdeConfig
-  SearchPathProcs, EnvironmentOpts,
+  SearchPathProcs, EnvironmentOpts, IDEProcs,
   // IdeDebugger
   BaseDebugManager, IdeDebuggerOpts, EnvDebuggerOptions,
   // IDE
-  LazarusIDEStrConsts, PathEditorDlg, IDEProcs;
+  LazarusIDEStrConsts, PathEditorDlg;
 
 type
 

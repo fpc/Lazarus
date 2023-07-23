@@ -56,9 +56,9 @@ uses
   IDECommands, IDEMsgIntf, MacroIntf, PackageIntf, LazHelpIntf, ProjectIntf,
   IDEDialogs, IDEHelpIntf, LazIDEIntf, IDEExternToolIntf,
   // IdeConfig
-  EnvironmentOpts, TransferMacros,
+  EnvironmentOpts, TransferMacros, IDEProcs,
   // IDE
-  EditorOptions, LazarusIDEStrConsts, IDEProcs, PackageDefs, PackageSystem,
+  EditorOptions, LazarusIDEStrConsts, PackageDefs, PackageSystem,
   DialogProcs, KeyMapping, SearchPathProcs;
 
 const

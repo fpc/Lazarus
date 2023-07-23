@@ -29,12 +29,12 @@ uses
   Classes, SysUtils, TypInfo,
   // LCL
   LCLType, Forms, Controls, Dialogs, StdCtrls, ButtonPanel, ExtCtrls,
-  // LazUtils
-  LazStringUtils,
   // IdeIntf
   IdeIntfStrConsts, PropEdits,
+  // IdeConfig
+  IDEProcs,
   // IDE
-  IDEProcs, LazarusIDEStrConsts;
+  LazarusIDEStrConsts;
 
 type
 

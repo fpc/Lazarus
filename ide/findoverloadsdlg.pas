@@ -37,16 +37,20 @@ unit FindOverloadsDlg;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree,
+  Classes, SysUtils, AVL_Tree, System.UITypes,
   // LCL
-  Forms, Controls, StdCtrls, ButtonPanel, ComCtrls,
+  Forms, StdCtrls, ButtonPanel, ComCtrls,
   // LazUtils
   LazFileUtils, LazLoggerBase,
   // codetools
   FindDeclarationTool, PascalParserTool, CodeTree, CodeCache, CodeToolManager,
   FindOverloads,
-  // IDE
-  LazIDEIntf, ProjectIntf, SrcEditorIntf, IDEProcs;
+  // BuildIntf
+  ProjectIntf,
+  // IdeIntf
+  SrcEditorIntf, LazIDEIntf,
+  // IdeConfig
+  IDEProcs;
 
 type
 

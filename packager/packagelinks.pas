@@ -49,8 +49,10 @@ uses
   FileProcs, CodeToolManager,
   // BuildIntf
   PackageDependencyIntf, PackageLinkIntf, PackageIntf, MacroIntf,
+  // IdeConfig
+  EnvironmentOpts, LazConf, IDEProcs,
   // IDE
-  IDEProcs, EnvironmentOpts, LazConf, IDECmdLine, PackageDefs;
+  PackageDefs;
   
 const
   PkgLinksFileVersion = 3;

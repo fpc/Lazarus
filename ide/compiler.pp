@@ -48,9 +48,9 @@ uses
   // IdeIntf
   IDEMsgIntf, LazIDEIntf,
   // IdeConfig
-  TransferMacros,
+  TransferMacros, IDECmdLine,
   // IDE
-  IDECmdLine, LazarusIDEStrConsts, CompilerOptions, Project;
+  LazarusIDEStrConsts, CompilerOptions, Project;
 
 type
   TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean) of object;

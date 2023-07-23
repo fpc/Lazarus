@@ -5,14 +5,11 @@ unit FppkgHelper;
 interface
 
 uses
-  Classes,
-  SysUtils,
-  pkgFppkg,
-  fpmkunit,
-  fprepos,
-  LazarusIDEStrConsts,
+  Classes, SysUtils, pkgFppkg, fpmkunit, fprepos,
   // LazUtils
-  LazLogger, LazFileCache, FileUtil, LazFileUtils;
+  LazLogger, LazFileCache, FileUtil, LazFileUtils,
+  // IDE
+  LazarusIDEStrConsts;
 
 type
 

@@ -40,8 +40,10 @@ uses
   LConvEncoding, LazFileUtils, LazFileCache, LazStringUtils, LazUTF8, AvgLvlTree,
   // IDEIntf
   IdeIntfStrConsts, IDEWindowIntf, SrcEditorIntf, IDEHelpIntf, IDEImagesIntf,
+  // IdeConfig
+  IDEProcs,
   // IDE
-  IDEProcs, PackageDefs, PackageSystem, Project, LazarusIDEStrConsts,
+  PackageDefs, PackageSystem, Project, LazarusIDEStrConsts,
   EnvironmentOpts, SearchPathProcs;
 
 type

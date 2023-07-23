@@ -65,11 +65,11 @@ uses
   UnitResources, InputHistory,
   // IdeConfig
   EnvironmentOpts, IDEOptionDefs, ModeMatrixOpts, RecentListProcs,
-  SearchPathProcs, TransferMacros,
+  SearchPathProcs, TransferMacros, IDECmdLine, IDEProcs,
   // FCL registration
   LazarusPackageIntf,
   // IDE
-  IDECmdLine, LazarusIDEStrConsts, IDEProcs, DialogProcs, MiscOptions,
+  LazarusIDEStrConsts, DialogProcs, MiscOptions,
   Project, ProjPackEditing, AddToPackageDlg, PackageDefs, PackageLinks, PackageSystem,
   OpenInstalledPkgDlg, PkgGraphExplorer, BrokenDependenciesDlg, CompilerOptions,
   IDETranslations, BuildLazDialog, NewDialog, FindInFilesDlg,

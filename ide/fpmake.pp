@@ -235,7 +235,6 @@ begin
     P.Sources.AddSrc('compiler.pp');
     P.Sources.AddSrc('componentlist.pas');
     P.Sources.AddSrc('componentpalette.pas');
-    P.Sources.AddSrc('compoptsmodes.pas');
     P.Sources.AddSrc('customformeditor.pp');
     P.Sources.AddSrc('debugmanager.pas');
     P.Sources.AddSrc('dialogprocs.pas');
@@ -317,13 +316,11 @@ begin
     P.Sources.AddSrc('gotofrm.pas');
     P.Sources.AddSrc('helpfpcmessages.pas');
     P.Sources.AddSrc('helpoptions.pas');
-    P.Sources.AddSrc('idecmdline.pas');
     P.Sources.AddSrc('idecontexthelpedit.pas');
     P.Sources.AddSrc('idedefs.pas');
     P.Sources.AddSrc('idefpcinfo.pas');
     P.Sources.AddSrc('ideoptiondefs.pas');
     P.Sources.AddSrc('ideoptionsdlg.pas');
-    P.Sources.AddSrc('ideprocs.pp');
     P.Sources.AddSrc('ideprotocol.pas');
     P.Sources.AddSrc('idetranslations.pas');
     P.Sources.AddSrc('idewindowhelp.pas');

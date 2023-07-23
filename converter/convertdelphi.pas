@@ -44,8 +44,10 @@ uses
   // IDEIntf
   ComponentReg, IDEDialogs, LazIDEIntf, PackageIntf, ProjectIntf,
   IDEExternToolIntf, IDEOptEditorIntf,
+  // IdeConfig
+  IDEProcs,
   // IDE
-  IDEProcs, DialogProcs, CompilerOptions, ProjPackCommon, Project,
+  DialogProcs, CompilerOptions, ProjPackCommon, Project,
   PackageDefs, PackageSystem, PackageEditor,
   BasePkgManager, LazarusIDEStrConsts, SearchPathProcs, SourceFileManager,
   // Converter

@@ -12,9 +12,11 @@ uses
   LazFileUtils, LazFileCache, LazLoggerBase,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, MacroIntf, CompOptsIntf, IDEImagesIntf, IDEDialogs,
+  // IdeConfig
+  SearchPathProcs,
   // IDE
-  Project, CompilerOptions, LazarusIDEStrConsts, PathEditorDlg, IDEProcs,
-  CheckCompilerOpts, ShowCompilerOpts, ImExportCompilerOpts, SearchPathProcs;
+  Project, CompilerOptions, LazarusIDEStrConsts, PathEditorDlg,
+  CheckCompilerOpts, ShowCompilerOpts, ImExportCompilerOpts;
 
 type
 

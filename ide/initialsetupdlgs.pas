@@ -55,11 +55,10 @@ uses
   // LazDebuggerGdbmi
   GDBMIDebugger,
   // IdeConfig
-  LazConf, EnvironmentOpts, TransferMacros,
+  LazConf, EnvironmentOpts, TransferMacros, IDEProcs,
   // IDE
   LazarusIDEStrConsts, AboutFrm, IDETranslations, BaseBuildManager, InitialSetupProc,
-  GenerateFppkgConfigurationDlg, IDEProcs, InitialSetupDlgDebuggerFrame,
-  IdeDebuggerOpts;
+  GenerateFppkgConfigurationDlg, InitialSetupDlgDebuggerFrame, IdeDebuggerOpts;
   
 type
   TInitialSetupDialog = class;

@@ -24,12 +24,44 @@ Files in this package are for the main configuration of the IDE."/>
     <Version Major="1"/>
     <Files>
       <Item>
-        <Filename Value="searchpathprocs.pas"/>
-        <UnitName Value="SearchPathProcs"/>
+        <Filename Value="compoptsmodes.pas"/>
+        <UnitName Value="CompOptsModes"/>
       </Item>
       <Item>
-        <Filename Value="recentlistprocs.pas"/>
-        <UnitName Value="RecentListProcs"/>
+        <Filename Value="coolbaroptions.pas"/>
+        <UnitName Value="CoolBarOptions"/>
+      </Item>
+      <Item>
+        <Filename Value="diffpatch.pas"/>
+        <UnitName Value="DiffPatch"/>
+      </Item>
+      <Item>
+        <Filename Value="editortoolbaroptions.pas"/>
+        <UnitName Value="EditorToolBarOptions"/>
+      </Item>
+      <Item>
+        <Filename Value="environmentopts.pp"/>
+        <UnitName Value="EnvironmentOpts"/>
+      </Item>
+      <Item>
+        <Filename Value="idecmdline.pas"/>
+        <UnitName Value="IDECmdLine"/>
+      </Item>
+      <Item>
+        <Filename Value="ideconfstrconsts.pas"/>
+        <UnitName Value="IdeConfStrConsts"/>
+      </Item>
+      <Item>
+        <Filename Value="ideguicmdline.pas"/>
+        <UnitName Value="IDEGuiCmdLine"/>
+      </Item>
+      <Item>
+        <Filename Value="ideoptiondefs.pas"/>
+        <UnitName Value="IDEOptionDefs"/>
+      </Item>
+      <Item>
+        <Filename Value="ideprocs.pp"/>
+        <UnitName Value="IDEProcs"/>
       </Item>
       <Item>
         <Filename Value="idexmlconfigprocs.pas"/>
@@ -40,44 +72,28 @@ Files in this package are for the main configuration of the IDE."/>
         <UnitName Value="LazConf"/>
       </Item>
       <Item>
-        <Filename Value="version.inc"/>
-        <Type Value="Include"/>
-      </Item>
-      <Item>
-        <Filename Value="ideoptiondefs.pas"/>
-        <UnitName Value="IDEOptionDefs"/>
-      </Item>
-      <Item>
         <Filename Value="modematrixopts.pas"/>
         <UnitName Value="ModeMatrixOpts"/>
       </Item>
       <Item>
-        <Filename Value="editortoolbaroptions.pas"/>
-        <UnitName Value="EditorToolBarOptions"/>
+        <Filename Value="recentlistprocs.pas"/>
+        <UnitName Value="RecentListProcs"/>
+      </Item>
+      <Item>
+        <Filename Value="searchpathprocs.pas"/>
+        <UnitName Value="SearchPathProcs"/>
       </Item>
       <Item>
         <Filename Value="toolbaroptionsbase.pas"/>
         <UnitName Value="ToolBarOptionsBase"/>
       </Item>
       <Item>
-        <Filename Value="coolbaroptions.pas"/>
-        <UnitName Value="CoolBarOptions"/>
-      </Item>
-      <Item>
-        <Filename Value="environmentopts.pp"/>
-        <UnitName Value="EnvironmentOpts"/>
-      </Item>
-      <Item>
-        <Filename Value="diffpatch.pas"/>
-        <UnitName Value="DiffPatch"/>
-      </Item>
-      <Item>
         <Filename Value="transfermacros.pp"/>
         <UnitName Value="TransferMacros"/>
       </Item>
       <Item>
-        <Filename Value="ideconfstrconsts.pas"/>
-        <UnitName Value="IdeConfStrConsts"/>
+        <Filename Value="version.inc"/>
+        <Type Value="Include"/>
       </Item>
     </Files>
     <i18n>

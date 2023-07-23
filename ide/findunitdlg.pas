@@ -44,7 +44,7 @@ uses
   // IDEIntf
   IdeIntfStrConsts, LazIDEIntf, IDEMsgIntf, PackageLinkIntf, PackageIntf, IDEExternToolIntf,
   // IDE
-  DialogProcs, PackageDefs, Project, IDEProcs, LazarusIDEStrConsts,
+  DialogProcs, PackageDefs, Project, LazarusIDEStrConsts,
   etFPCMsgParser, SearchPathProcs, PackageLinks, PackageSystem, BasePkgManager;
 
 type

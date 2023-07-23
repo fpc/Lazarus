@@ -38,9 +38,10 @@ uses
   SynColorAttribEditor,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, IDEUtils,
+  // IdeConfig
+  IDEProcs, LazConf,
   // IDE
-  EditorOptions, editor_general_options, LazarusIDEStrConsts, IDEProcs, LazConf,
-  SourceMarks;
+  EditorOptions, editor_general_options, LazarusIDEStrConsts, SourceMarks;
 
 type
 

@@ -40,7 +40,9 @@ uses
   // IdeIntf
   IDEOptEditorIntf, IDEImagesIntf, InputHistory,
   // IdeConfig
-  IDEProcs, LazarusIDEStrConsts, Project, CompilerOptions, RecentListProcs;
+  RecentListProcs,
+  // IDE
+  LazarusIDEStrConsts, Project, CompilerOptions;
 
 type
   { TImExportCompOptsDlg }

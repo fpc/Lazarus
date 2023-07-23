@@ -27,9 +27,11 @@ uses
   // IdeIntf
   MacroIntf, IDEWindowIntf, SrcEditorIntf, IDEHelpIntf, IDEDialogs,
   IdeIntfStrConsts, ProjectGroupIntf, InputHistory,
+  // IdeConfig
+  EnvironmentOpts, SearchPathProcs,
   // IDE
   LazarusIDEStrConsts, InputhistoryWithSearchOpt, EditorOptions, Project,
-  IDEProcs, SearchFrm, SearchResultView, EnvironmentOpts, SearchPathProcs;
+  SearchFrm, SearchResultView;
 
 type
   { TLazFindInFilesDialog }

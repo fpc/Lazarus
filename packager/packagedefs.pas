@@ -54,10 +54,9 @@ uses
   // IDEIntf
   LazIDEIntf, IDEOptEditorIntf, IDEDialogs, ComponentReg, IDEImagesIntf,
   // IdeConfig
-  TransferMacros,
+  TransferMacros, IDEProcs, IDEOptionDefs, CompOptsModes, SearchPathProcs, IdeXmlConfigProcs,
   // IDE
-  EditDefineTree, CompilerOptions, CompOptsModes, IDEOptionDefs, ProjPackCommon,
-  LazarusIDEStrConsts, IDEProcs, SearchPathProcs, IdeXmlConfigProcs, FppkgHelper;
+  EditDefineTree, CompilerOptions, ProjPackCommon, LazarusIDEStrConsts, FppkgHelper;
 
 type
   TLazPackage = class;

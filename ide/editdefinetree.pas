@@ -40,10 +40,10 @@ uses
   FileUtil, LazTracer,
   // CodeTools
   FileProcs, CodeToolManager, DefineTemplates, LinkScanner,
-  // IdeIntf
+  // BuildIntf
   CompOptsIntf,
   // IDE
-  IDEProcs, CompilerOptions, LazarusIDEStrConsts;
+  CompilerOptions, LazarusIDEStrConsts;
 
 
 // global
@@ -213,7 +213,7 @@ var
 begin
   Count:=0;
   for i:=1 to length(s)-1 do begin
-    if ((i=1) or (s[i-1]<>FileProcs.SpecialChar))
+    if ((i=1) or (s[i-1]<>SpecialChar))
     and (s[i]='$') and (s[i+1] in ['(','{']) then
       inc(Count);
   end;
@@ -227,7 +227,7 @@ begin
   while (i<=length(s)) do begin
     if (i<length(s))
     and ((s[i]='$') and (s[i+1] in ['(','{']))
-    and ((i=1) or (s[i-1]<>FileProcs.SpecialChar))
+    and ((i=1) or (s[i-1]<>SpecialChar))
     then begin
       Result[j]:=s[i];
       Result[j+1]:='(';

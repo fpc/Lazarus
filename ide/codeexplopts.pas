@@ -42,10 +42,14 @@ uses
   BasicCodeTools,
   // LazUtils
   AvgLvlTree, Laz2_XMLCfg, LazFileUtils, LazFileCache, LazLoggerBase,
+  // BuildIntf
+  IDEOptionsIntf,
   // IDEIntf
-  IDEOptionsIntf, IDEOptEditorIntf,
+  IDEOptEditorIntf,
+  // IdeConfig
+  LazConf, IdeXmlConfigProcs,
   // IDE
-  LazConf, IDEProcs, LazarusIDEStrConsts, IdeXmlConfigProcs;
+  LazarusIDEStrConsts;
 
 type
   { TCodeExplorerOptions }

@@ -182,7 +182,12 @@ begin
     EditorTrimSpaceTypeComboBox.ItemIndex := ord(TrimSpaceType);
   end;
 end;
-
+{
+function CheckGroupItemChecked(CheckGroup: TCheckGroup; const Caption: string): Boolean;
+begin
+  Result := CheckGroup.Checked[CheckGroup.Items.IndexOf(Caption)];
+end;
+}
 procedure TEditorGeneralMiscOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 
   procedure UpdateOptionFromBool(AValue: Boolean; AnOption: TSynEditorOption); overload;

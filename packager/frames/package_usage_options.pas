@@ -12,8 +12,10 @@ uses
   Forms, Controls, StdCtrls, Dialogs,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, MacroIntf,
+  // IdeConfic
+  IDEProcs,
   // IDE
-  PathEditorDlg, LazarusIDEStrConsts, IDEProcs, SearchPathProcs, PackageDefs;
+  PathEditorDlg, LazarusIDEStrConsts, SearchPathProcs, PackageDefs;
 
 type
 

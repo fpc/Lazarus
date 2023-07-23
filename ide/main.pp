@@ -114,7 +114,7 @@ uses
   // converter
   ChgEncodingDlg, ConvertDelphi, MissingPropertiesDlg, LazXMLForms,
   // IdeConfig
-  IdeConfig, LazConf, EnvironmentOpts, TransferMacros,
+  IdeConfig, LazConf, EnvironmentOpts, TransferMacros, IDECmdLine, IDEGuiCmdLine, IDEProcs,
   // environment option frames
   editor_general_options, componentpalette_options, formed_options, OI_options,
   MsgWnd_Options, Files_Options, Desktop_Options, window_options, IdeStartup_Options,
@@ -150,7 +150,7 @@ uses
   Splash, IDEDefs, LazarusIDEStrConsts, SearchResultView,
   CodeTemplatesDlg, CodeBrowser, FindUnitDlg, InspectChksumChangedDlg,
   IdeOptionsDlg, EditDefineTree, KeyMapping,
-  IDETranslations, IDEProcs, ExtToolDialog, ExtToolEditDlg, JumpHistoryView,
+  IDETranslations, ExtToolDialog, ExtToolEditDlg, JumpHistoryView,
   DesktopManager, DiskDiffsDialog, BuildLazDialog, BuildProfileManager,
   BuildManager, CheckCompOptsForNewUnitDlg, MiscOptions,
   InputhistoryWithSearchOpt, UnitDependencies, IDEFPCInfo, IDEInfoDlg,
@@ -161,7 +161,7 @@ uses
   FindRenameIdentifier, AbstractsMethodsDlg, EmptyMethodsDlg, UnusedUnitsDlg,
   UseUnitDlg, FindOverloadsDlg, EditorFileManager, CleanDirDlg, CodeContextForm,
   AboutFrm, CompatibilityRestrictions, RestrictionBrowser, ProjectWizardDlg,
-  IDECmdLine, IDEGuiCmdLine, CodeExplOpts, EditorMacroListViewer,
+  CodeExplOpts, EditorMacroListViewer,
   SourceFileManager, EditorToolbarStatic, IDEInstances, NotifyProcessEnd,
   WordCompletion, EnvGuiOptions, EnvDebuggerOptions,
   // main ide

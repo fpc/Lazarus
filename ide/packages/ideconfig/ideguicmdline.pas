@@ -1,6 +1,6 @@
 {
  /***************************************************************************
-                              idecmdline.pas
+                              ideguicmdline.pas
                              --------------------
                A unit to manage command lines issue used inside the ide
 
@@ -45,7 +45,7 @@ uses
   LazUtilities, LazFileUtils, LazStringUtils,
   // Codetools
   FileProcs,
-  // IDE
+  // IdeConfig
   LazConf, IDECmdLine;
 
 procedure ParseGuiCmdLineParams(var SkipAutoLoadingLastProject,
