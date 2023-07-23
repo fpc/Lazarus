@@ -8,7 +8,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, SynHighlighterSQL, SynEdit, LResources, Forms,
   DB, LCLType, Controls, ComCtrls, StdCtrls, ActnList, Dialogs, ExtCtrls, Menus,
-  fpDatadict, fradata, lazdatadeskstr, sqlscript, sqldb, fpddsqldb;
+  dmImages, fpDatadict, fradata, lazdatadeskstr, sqlscript, sqldb, fpddsqldb;
 
 type
    TExecuteMode = (emSingle,emSelection,emScript,emSelectionScript);
@@ -33,7 +33,6 @@ type
     APreviousQuery: TAction;
     AExecute: TAction;
     ALQuery: TActionList;
-    ILQuery: TImageList;
     MIExecuteSelectionScript: TMenuItem;
     MIExecuteScript: TMenuItem;
     MIExecuteSelection: TMenuItem;
@@ -72,7 +71,6 @@ type
     procedure AExecuteSingleExecute(Sender: TObject);
     procedure aRollBackExecute(Sender: TObject);
     procedure aRollBackUpdate(Sender: TObject);
-    procedure BExecClick(Sender: TObject);
     procedure CloseQueryClick(Sender: TObject);
     procedure HaveNextQuery(Sender: TObject);
     procedure HavePreviousQuery(Sender: TObject);
@@ -401,12 +399,6 @@ begin
   MResult.Append(Format(SErrUnknownDirective,[Directive,Argument]));
   StopExecution:=False;
   // Not yet implemented
-end;
-
-procedure TQueryFrame.BExecClick(Sender : TObject);
-
-begin
-
 end;
 
 procedure TQueryFrame.AExecuteExecute(Sender: TObject);
