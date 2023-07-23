@@ -445,8 +445,8 @@ not match the expected length for the comment style.
 </p>
 </descr>
 <errors>
-Raises an Exception with the message 'IDEProcs.CommentText ERROR: ' when an 
-unexpected length is found for the commented value.
+Raises an Exception with the message 'CommentText ERROR: ' when an unexpected 
+length is found for the commented value.
 </errors>
 <seealso>
 <link id="TCommentType"/>
