@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, ExtCtrls, ComCtrls, ButtonPanel, lazdatadeskstr;
+  Buttons, ExtCtrls, ComCtrls, ButtonPanel, lazdatadeskstr, dmImages;
 
 type
   TTestConnectionEvent = Procedure (Sender : TObject;Const ADriver : String; Params : TStrings) of object;

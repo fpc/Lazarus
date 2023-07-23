@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, db, FileUtil, LResources, Forms, Controls, ExtCtrls,
-  DbCtrls, DBGrids, Buttons;
+  DbCtrls, DBGrids, Buttons, dmImages;
 
 type
 
@@ -131,7 +131,7 @@ procedure TDataFrame.Checkbuttons;
 
 Const
   NavBtns  = [nbFirst,nbPrior,nbNext,nbLast,nbRefresh];
-  EditBtns = [nbInsert,nbPost,nbDelete,nbCancel];
+  EditBtns = [nbInsert,nbEdit,nbPost,nbDelete,nbCancel];
 
 begin
   If Assigned(FNavigator) and Assigned(Dataset) then

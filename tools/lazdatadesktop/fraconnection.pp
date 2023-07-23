@@ -6,7 +6,8 @@ interface
 
 uses
   fpdatadict, fraquery, Classes, SysUtils, FileUtil, LResources, Graphics, DB,
-  Forms, Controls, ComCtrls, ExtCtrls;
+  Forms, Controls, ComCtrls, ExtCtrls,
+  dmImages;
 
 type
 
@@ -14,7 +15,6 @@ type
 
   TConnectionFrame = class(TFrame)
     FTV: TTreeView;
-    FImgList: TImageList;
     FSplit: TSplitter;
     FPC: TPageControl;
     FTSQuery: TTabSheet;
@@ -136,6 +136,7 @@ begin
   FQueryPanel.Name:='FQueryPanel';
   FQueryPanel.Parent:=FTSQuery;
   FQueryPanel.Align:=alClient;
+  FTV.Images := ImgDatamodule.AppImages;
 end;
 
 destructor TConnectionFrame.Destroy;

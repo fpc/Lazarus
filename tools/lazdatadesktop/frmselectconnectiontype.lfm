@@ -7,21 +7,30 @@ object SelectConnectionTypeForm: TSelectConnectionTypeForm
   ClientHeight = 241
   ClientWidth = 335
   OnCreate = FormCreate
-  LCLVersion = '0.9.27'
+  LCLVersion = '3.99.0.0'
   object LBConnections: TListBox
-    Left = 0
-    Height = 194
-    Top = 0
-    Width = 335
+    Left = 6
+    Height = 189
+    Top = 6
+    Width = 323
     Align = alClient
+    BorderSpacing.Around = 6
     ItemHeight = 0
     TabOrder = 0
   end
   object BPConnections: TButtonPanel
     Left = 6
-    Height = 35
-    Top = 200
+    Height = 34
+    Top = 201
     Width = 323
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 1
     ShowButtons = [pbOK, pbCancel]
   end

@@ -65,7 +65,7 @@
         <MinVersion Minor="1" Release="1" Valid="True"/>
       </Item8>
     </RequiredPackages>
-    <Units Count="14">
+    <Units Count="15">
       <Unit0>
         <Filename Value="lazdatadesktop.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -147,6 +147,14 @@
         <Filename Value="reglddfeatures.pp"/>
         <IsPartOfProject Value="True"/>
       </Unit13>
+      <Unit14>
+        <Filename Value="dmimages.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ImgDatamodule"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="DataModule"/>
+        <UnitName Value="dmImages"/>
+      </Unit14>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -158,6 +166,9 @@
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
+      <Debugging>
+        <DebugInfoType Value="dsDwarf3"/>
+      </Debugging>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>
