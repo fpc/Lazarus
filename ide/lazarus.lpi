@@ -1181,7 +1181,10 @@
       <Unit>
         <Filename Value="frmcustomapplicationoptions.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="CustomApplicationOptionsForm"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="frmCustomApplicationOptions"/>
       </Unit>
       <Unit>
         <Filename Value="exttooleditdlg.pas"/>
@@ -1197,6 +1200,7 @@
         <Filename Value="sysvaruseroverridedlg.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="SysVarUserOverrideDlg"/>
       </Unit>
       <Unit>
         <Filename Value="raw_window.pas"/>

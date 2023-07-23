@@ -21,7 +21,6 @@
 }
 program lazbuild;
 
-
 {$mode objfpc}{$H+}
 
 uses
@@ -41,11 +40,10 @@ uses
   BaseIDEIntf, MacroIntf, PackageIntf, LazMsgWorker, ProjectIntf, IDEExternToolIntf,
   CompOptsIntf, IDEOptionsIntf, PackageDependencyIntf,
   // IdeConfig
-  LazConf, IDECmdLine,
+  LazConf, IDECmdLine, TransferMacros, EnvironmentOpts,
   // IDE
-  InitialSetupProc, ExtToolsConsole, CompilerOptions,
-  ApplicationBundle, TransferMacros, EnvironmentOpts, IDETranslations,
-  LazarusIDEStrConsts, MiscOptions, Project, PackageDefs,
+  InitialSetupProc, ExtToolsConsole, CompilerOptions, ApplicationBundle,
+  IDETranslations, LazarusIDEStrConsts, MiscOptions, Project, PackageDefs,
   PackageLinks, PackageSystem, InterPkgConflictFiles, BuildLazDialog,
   BuildProfileManager, BuildManager, BaseBuildManager, ModeMatrixOpts;
 

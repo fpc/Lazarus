@@ -8,7 +8,7 @@ uses
   Classes, SysUtils,
   // LazUtils
   LazLogger, LazUtilities,
-  // IDEIntf
+  // BuildIntf
   IDEExternToolIntf,
   // IDE
   ExtTools;

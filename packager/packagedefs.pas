@@ -38,8 +38,7 @@ interface
 
 uses
   // FCL
-  Classes, SysUtils, Contnrs, TypInfo, AVL_Tree,
-  System.UITypes,
+  Classes, SysUtils, Contnrs, TypInfo, AVL_Tree, System.UITypes,
   // LCL
   Forms, ImgList,
   // Codetools
@@ -774,12 +773,12 @@ type
                                             write FUserIgnoreChangeStamp;
     property OnModifySilently: TNotifyEvent read FOnModifySilently write FOnModifySilently;
   end;
-  
+
   PLazPackage = ^TLazPackage;
-  
-  
+
+
   { TBasePackageEditor }
-  
+
   TBasePackageEditor = class(TForm)
   protected
     function GetLazPackage: TLazPackage; virtual;

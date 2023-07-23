@@ -4128,10 +4128,8 @@ begin
       [Project1.GetTitleOrName]),
       mtconfirmation, [mbYes, mbNo, mbCancel])=mrYes then
     begin
-      if SaveProject([])=mrAbort then begin
-        Result:=mrAbort;
-        exit;
-      end;
+      if SaveProject([])=mrAbort then
+        exit(mrAbort);
     end;
   end;
   Result:=mrOk;
@@ -4155,7 +4153,7 @@ begin
   Result:=MainIDE.DoCallProjectChangedHandler(lihtProjectClose, Project1);
   if Result=mrAbort then exit;
 
-    // close all loaded files
+  // close all loaded files
   SourceEditorManager.IncUpdateLock;
   try
     while SourceEditorManager.SourceEditorCount > 0 do begin

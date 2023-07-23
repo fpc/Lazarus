@@ -65,11 +65,14 @@ uses
   SynBeautifierPascal, SynEditTextDynTabExpander, SynEditTextTabExpander,
   // codetools
   LinkScanner, CodeToolManager,
+  // BuildIntf
+  IDEOptionsIntf, MacroIntf,
   // IDEIntf
-  IDECommands, SrcEditorIntf, IDEOptionsIntf, IDEOptEditorIntf, IDEDialogs,
-  EditorSyntaxHighlighterDef, MacroIntf,
+  IDECommands, SrcEditorIntf, IDEOptEditorIntf, IDEDialogs, EditorSyntaxHighlighterDef,
+  // IdeConfig
+  LazConf,
   // IDE
-  SourceMarks, LazarusIDEStrConsts, KeyMapping, LazConf;
+  SourceMarks, LazarusIDEStrConsts, KeyMapping;
 
 const
   DefaultCompletionLongLineHintType = sclpExtendRightOnly;

@@ -42,8 +42,12 @@ uses
   SynPluginMultiCaret, SynEditMouseCmds,
   // IdeIntf
   IDECommands,
+  // IdeConfig
+  LazConf,
+  // IdeDebugger
+  Debugger, IdeDebuggerStringConstants,
   // IDE
-  IdeDebuggerStringConstants, LazarusIDEStrConsts, LazConf, Debugger;
+  LazarusIDEStrConsts;
 
 type
   TKeyMapScheme = (

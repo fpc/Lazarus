@@ -41,8 +41,10 @@ uses
   Laz2_XMLCfg,
   // IDEIntf
   IdeIntfStrConsts,
+  // IDEConfig
+  LazConf, EnvironmentOpts,
   // IDE
-  LazarusIDEStrConsts, LazConf, EnvironmentOpts, FppkgHelper;
+  LazarusIDEStrConsts, FppkgHelper;
 
 type
   TSDFilenameQuality = (

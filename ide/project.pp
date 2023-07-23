@@ -4686,9 +4686,8 @@ begin
         AFilename:=TrimFilename(ProjectPath+AFilename);
     end else begin
       // try making filename relative to project file
-      if FileCanBeMadeRelative then begin
+      if FileCanBeMadeRelative then
         AFilename:=CreateRelativePath(AFilename,ProjectPath);
-      end;
     end;
   end;
 

@@ -26,9 +26,13 @@ unit frmCustomApplicationOptions;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, Buttons,ButtonPanel,
-  IdeIntfStrConsts, LazarusIDEStrConsts;
+  Classes, SysUtils,
+  // LCL
+  Forms, StdCtrls, ExtCtrls, ButtonPanel,
+  // IDEIntf
+  IdeIntfStrConsts,
+  // IDE
+  LazarusIDEStrConsts;
 
 type
 
@@ -47,9 +51,8 @@ type
     function GetBool(Index: integer): Boolean;
     function GetTitle: String;
   private
-    { private declarations }
+
   public
-    { public declarations }
     Property Title : String Read GetTitle;
     Property AppClassName : String Read GetAppName;
     Property CodeUsage : Boolean Index 0 Read GetBool;

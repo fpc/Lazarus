@@ -47,7 +47,7 @@ uses
   // IdeConfig
   EnvironmentOpts, LazConf, TransferMacros, IDECmdLine,
   // IDE
-  LazarusIDEStrConsts, etMakeMsgParser, EnvGuiOptions;
+  LazarusIDEStrConsts, etMakeMsgParser;
 
 const
   FPCMsgIDCompiling = 3104;

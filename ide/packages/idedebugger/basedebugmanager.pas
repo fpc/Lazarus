@@ -40,14 +40,16 @@ uses
   Forms,
   // LazUtils
   Laz2_XMLCfg,
+  // BuildIntf
+  IDEOptionsIntf,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf,
+  IDEOptEditorIntf,
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfPseudoTerminal,
+  // LazDebuggerIntf
   LazDebuggerIntf,
-  IdeDebuggerOpts,
-  // IDE
-  Debugger, IdeDebuggerBase;
+  // IdeDebugger
+  IdeDebuggerBase, IdeDebuggerOpts, Debugger;
 
 type
   TDebugDialogType = (

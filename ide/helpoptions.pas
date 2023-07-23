@@ -36,10 +36,14 @@ interface
 
 uses
   Classes, SysUtils,
+  // LCL
+  LazHelpIntf,
   // LazUtils
   LazFileUtils, Laz2_XMLCfg, LazFileCache, LazLoggerBase,
+  // BuildIntf
+  MacroIntf, IDEOptionsIntf,
   // IdeIntf
-  IdeIntfStrConsts, LazHelpIntf, IDEOptionsIntf, IDEOptEditorIntf, MacroIntf,
+  IdeIntfStrConsts, IDEOptEditorIntf,
   // IdeConfig
   IDEOptionDefs, LazConf;
 

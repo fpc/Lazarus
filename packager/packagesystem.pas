@@ -37,7 +37,6 @@ unit PackageSystem;
 interface
 
 {off $DEFINE IDE_MEM_CHECK}
-
 {$DEFINE StopOnRegError}
 
 uses
@@ -45,9 +44,9 @@ uses
   MemCheck,
   {$ENDIF}
   // FPC
-  Classes, SysUtils, Contnrs, StrUtils, AVL_Tree, fpmkunit,
+  Classes, SysUtils, Contnrs, StrUtils, AVL_Tree, fpmkunit, System.UITypes,
   // LCL
-  Forms, Controls, Dialogs, LCLProc,
+  Forms, Dialogs, LCLProc,
   // LazUtils
   FileUtil, LazFileCache, LazLoggerBase, LazUtilities, LazFileUtils, LazUTF8,
   Laz2_XMLCfg, Laz2_XMLRead, LazStringUtils, AvgLvlTree, FPCAdds,
@@ -58,15 +57,14 @@ uses
   IDEExternToolIntf, MacroDefIntf, ProjectIntf, CompOptsIntf, FppkgIntf,
   PackageDependencyIntf, PackageLinkIntf, PackageIntf,
   // IDEIntf
-  IDEDialogs, IDEMsgIntf, LazIDEIntf,
+  IDEDialogs, IDEMsgIntf, LazIDEIntf, ComponentReg,
   // Package registration
   LazarusPackageIntf,
   // IdeConfig
-  EnvironmentOpts, LazConf, TransferMacros, IDEProcs,
+  EnvironmentOpts, LazConf, TransferMacros, IDEProcs, SearchPathProcs,
   // IDE
-  LazarusIDEStrConsts, DialogProcs, IDETranslations,
-  CompilerOptions, SearchPathProcs, PackageLinks, PackageDefs, ComponentReg,
-  FppkgHelper, PkgSysBasePkgs;
+  LazarusIDEStrConsts, DialogProcs, IDETranslations, CompilerOptions,
+  PackageLinks, PackageDefs, FppkgHelper, PkgSysBasePkgs;
 
 const
   MakefileCompileVersion = 2;
