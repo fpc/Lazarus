@@ -7180,20 +7180,10 @@ msgstr "Никогда"
 msgid "Extend right only"
 msgstr "Удлинять только вправо"
 
-#: lazarusidestrconsts.liscomponentnameisapascalkeyword
-#, object-pascal-format
-msgid "Component name \"%s\" is a Pascal keyword."
-msgstr "Имя компонента \"%s\" является ключевым словом Паскаля."
-
 #: lazarusidestrconsts.liscomponentnameiskeyword
 #, object-pascal-format
 msgid "Component name \"%s\" is keyword"
 msgstr "Имя компонента \"%s\" является ключевым словом"
-
-#: lazarusidestrconsts.liscomponentnameisnotavalididentifier
-#, object-pascal-format
-msgid "Component name \"%s\" is not a valid identifier"
-msgstr "Имя компонента \"%s\" не является корректным идентификатором"
 
 #: lazarusidestrconsts.liscomppalcomponentlist
 msgid "View All"

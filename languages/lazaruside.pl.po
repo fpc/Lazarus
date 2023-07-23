@@ -7350,20 +7350,10 @@ msgstr "Nigdy"
 msgid "Extend right only"
 msgstr "Rozciągnij tylko w prawo"
 
-#: lazarusidestrconsts.liscomponentnameisapascalkeyword
-#, object-pascal-format
-msgid "Component name \"%s\" is a Pascal keyword."
-msgstr "Nazwa komponentu \"%s\" jest słowem kluczowym Pascala."
-
 #: lazarusidestrconsts.liscomponentnameiskeyword
 #, object-pascal-format
 msgid "Component name \"%s\" is keyword"
 msgstr "Próbujesz użyć nazwy komponentu \"%s\" będącej słowem kluczowym"
-
-#: lazarusidestrconsts.liscomponentnameisnotavalididentifier
-#, object-pascal-format
-msgid "Component name \"%s\" is not a valid identifier"
-msgstr "Nazwa komponentu \"%s\" nie jest prawidłowym identyfikatorem"
 
 #: lazarusidestrconsts.liscomppalcomponentlist
 msgid "View All"

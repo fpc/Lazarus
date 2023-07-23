@@ -7220,20 +7220,10 @@ msgstr "Soha"
 msgid "Extend right only"
 msgstr "Meghosszabbítás csak jobbra"
 
-#: lazarusidestrconsts.liscomponentnameisapascalkeyword
-#, object-pascal-format
-msgid "Component name \"%s\" is a Pascal keyword."
-msgstr "A(z) \"%s\" komponens neve egy pascal kulcsszó"
-
 #: lazarusidestrconsts.liscomponentnameiskeyword
 #, object-pascal-format
 msgid "Component name \"%s\" is keyword"
 msgstr "A(z) \"%s\" komponens név egy kulcsszó"
-
-#: lazarusidestrconsts.liscomponentnameisnotavalididentifier
-#, object-pascal-format
-msgid "Component name \"%s\" is not a valid identifier"
-msgstr "A(z) \"%s\" komponens azonosító érvénytelen"
 
 #: lazarusidestrconsts.liscomppalcomponentlist
 msgid "View All"

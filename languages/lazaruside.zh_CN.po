@@ -7228,20 +7228,10 @@ msgstr "从不"
 msgid "Extend right only"
 msgstr "仅恰好延伸(Extend right only)"
 
-#: lazarusidestrconsts.liscomponentnameisapascalkeyword
-#, object-pascal-format
-msgid "Component name \"%s\" is a Pascal keyword."
-msgstr "组件名\"%s\"是一个Pascal关键字."
-
 #: lazarusidestrconsts.liscomponentnameiskeyword
 #, object-pascal-format
 msgid "Component name \"%s\" is keyword"
 msgstr "组件名\"%s\"是关键字"
-
-#: lazarusidestrconsts.liscomponentnameisnotavalididentifier
-#, object-pascal-format
-msgid "Component name \"%s\" is not a valid identifier"
-msgstr "组件名\"%s\"不是一个有效的标识符"
 
 #: lazarusidestrconsts.liscomppalcomponentlist
 msgid "View All"

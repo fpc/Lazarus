@@ -7160,20 +7160,10 @@ msgstr "Asla"
 msgid "Extend right only"
 msgstr "Yalnızca sağa uzat"
 
-#: lazarusidestrconsts.liscomponentnameisapascalkeyword
-#, object-pascal-format
-msgid "Component name \"%s\" is a Pascal keyword."
-msgstr "Bileşen adı \"%s\" Pascal bir anahtar kelimedir."
-
 #: lazarusidestrconsts.liscomponentnameiskeyword
 #, object-pascal-format
 msgid "Component name \"%s\" is keyword"
 msgstr "Bileşen adı \"%s\" anahtar kelime"
-
-#: lazarusidestrconsts.liscomponentnameisnotavalididentifier
-#, object-pascal-format
-msgid "Component name \"%s\" is not a valid identifier"
-msgstr "Bileşen adı \"%s\" geçerli bir tanımlayıcı değil"
 
 #: lazarusidestrconsts.liscomppalcomponentlist
 msgid "View All"

@@ -7331,20 +7331,10 @@ msgstr "しない(ない)"
 msgid "Extend right only"
 msgstr "右だけ展開"
 
-#: lazarusidestrconsts.liscomponentnameisapascalkeyword
-#, object-pascal-format
-msgid "Component name \"%s\" is a Pascal keyword."
-msgstr "コンポーネント名 \"%s\" は Pascal キーワードです"
-
 #: lazarusidestrconsts.liscomponentnameiskeyword
 #, object-pascal-format
 msgid "Component name \"%s\" is keyword"
 msgstr "コンポーネント名 \"%s\" はキーワードです"
-
-#: lazarusidestrconsts.liscomponentnameisnotavalididentifier
-#, object-pascal-format
-msgid "Component name \"%s\" is not a valid identifier"
-msgstr "コンポーネント名 \"%s\" は無効な識別子です"
 
 #: lazarusidestrconsts.liscomppalcomponentlist
 msgid "View All"

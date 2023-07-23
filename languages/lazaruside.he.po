@@ -7579,23 +7579,11 @@ msgstr "אף פעם"
 msgid "Extend right only"
 msgstr "הרחב ימינה בלבד"
 
-#: lazarusidestrconsts.liscomponentnameisapascalkeyword
-#, object-pascal-format, fuzzy
-#| msgid "Component name \"%s\" is a pascal keyword."
-msgid "Component name \"%s\" is a Pascal keyword."
-msgstr "שם הרכיב  \"%s\" הוא מילת מפתח של פסקל"
-
 #: lazarusidestrconsts.liscomponentnameiskeyword
 #, object-pascal-format, fuzzy, badformat
 #| msgid "Component name %s%s%s is keyword"
 msgid "Component name \"%s\" is keyword"
 msgstr "שם הרכיב s%s%s% הוא מלת מפתח"
-
-#: lazarusidestrconsts.liscomponentnameisnotavalididentifier
-#, object-pascal-format, fuzzy, badformat
-#| msgid "Component name %s%s%s is not a valid identifier"
-msgid "Component name \"%s\" is not a valid identifier"
-msgstr "שם הרכיב s%s%s% אינו מזהה חוקי"
 
 #: lazarusidestrconsts.liscomppalcomponentlist
 msgid "View All"

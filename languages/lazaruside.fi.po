@@ -7205,20 +7205,10 @@ msgstr "Ei koskaan"
 msgid "Extend right only"
 msgstr "Laajenna vain oikealle"
 
-#: lazarusidestrconsts.liscomponentnameisapascalkeyword
-#, object-pascal-format
-msgid "Component name \"%s\" is a Pascal keyword."
-msgstr "Komponentin nimi \"%s\" on Pascalin avainsana."
-
 #: lazarusidestrconsts.liscomponentnameiskeyword
 #, object-pascal-format
 msgid "Component name \"%s\" is keyword"
 msgstr "Komponentin nimi \"%s\" on avainsana"
-
-#: lazarusidestrconsts.liscomponentnameisnotavalididentifier
-#, object-pascal-format
-msgid "Component name \"%s\" is not a valid identifier"
-msgstr "Komponentin nimi \"%s\" ei ole sallittu tunniste"
 
 #: lazarusidestrconsts.liscomppalcomponentlist
 msgid "View All"

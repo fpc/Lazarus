@@ -7336,20 +7336,10 @@ msgstr "Nunca"
 msgid "Extend right only"
 msgstr "Extender unicamente a la derecha"
 
-#: lazarusidestrconsts.liscomponentnameisapascalkeyword
-#, object-pascal-format
-msgid "Component name \"%s\" is a Pascal keyword."
-msgstr "El nombre del componente \"%s\" es una palabra clave de Pascal."
-
 #: lazarusidestrconsts.liscomponentnameiskeyword
 #, object-pascal-format
 msgid "Component name \"%s\" is keyword"
 msgstr "El nombre del componente \"%s\" es una palabra"
-
-#: lazarusidestrconsts.liscomponentnameisnotavalididentifier
-#, object-pascal-format
-msgid "Component name \"%s\" is not a valid identifier"
-msgstr "El nombre del Componente \"%s\" no es un identificador válido"
 
 #: lazarusidestrconsts.liscomppalcomponentlist
 msgid "View All"
