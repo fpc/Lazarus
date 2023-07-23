@@ -242,6 +242,11 @@ begin
   debugln(['New: FModalResult=',FModalResult]);
   debugln(['New: VerifyChecked=',tfVerificationFlagChecked in FFlags]);
   debugln(['New: ARadioRes=',ARadioRes]);
+
+
+
+
+
   FillChar(TaskDlg, SizeOf(LCLTaskDialog.TTaskDialog), 0);
 
   if RadioButtons.DefaultButton<> nil then

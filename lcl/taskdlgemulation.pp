@@ -74,6 +74,19 @@ var
 
 function ExecuteLCLTaskDialog(const ADlg: TTaskDialog; AParentWnd: HWND; out ARadioRes: Integer): Integer;
 
+
+type
+  TLCLTaskDialogIcon = (
+    tiBlank, tiWarning, tiQuestion, tiError, tiInformation, tiNotUsed, tiShield);
+  TLCLTaskDialogFooterIcon = (
+    tfiBlank, tfiWarning, tfiQuestion, tfiError, tfiInformation, tfiShield);
+
+function IconMessage(Icon: TLCLTaskDialogIcon): string;
+function TF_DIALOGICON(const aIcon: TTaskDialogIcon): TLCLTaskDialogIcon;
+function TF_FOOTERICON(const aIcon: TTaskDialogIcon): TLCLTaskDialogFooterIcon;
+
+
+
 implementation
 
 var
@@ -102,11 +115,6 @@ begin
   {$ENDIF}
 end;
 
-type
-  TLCLTaskDialogIcon = (
-    tiBlank, tiWarning, tiQuestion, tiError, tiInformation, tiNotUsed, tiShield);
-  TLCLTaskDialogFooterIcon = (
-    tfiBlank, tfiWarning, tfiQuestion, tfiError, tfiInformation, tfiShield);
 
 const
   LCL_IMAGES: array[TLCLTaskDialogIcon] of Integer = (
@@ -593,9 +601,10 @@ procedure TLCLTaskDialog.HandleEmulatedButtonClicked(Sender: TObject);
 var Btn: TButton absolute Sender;
     CanClose: Boolean;
 begin
-  if Assigned(FDlg) and Assigned(FDlg.OnButtonClicked) then begin
+  if Assigned(FDlg) and Assigned(FDlg.OnButtonClicked) then
+  begin
     CanClose := True;
-    FDlg.OnButtonClicked(FDlg,Btn.ModalResult,CanClose);
+    FDlg.OnButtonClicked(FDlg, FDlg.ButtonIDToModalResult(Btn.ModalResult),CanClose);
     if not CanClose then
       ModalResult := mrNone;
   end;
@@ -627,9 +636,9 @@ begin
 
   CustomButtons := TStringList.Create;
   for B in FDlg.Buttons do
-    CustomButtons.Add(B.Caption);
+    CustomButtons.Add(B.Caption);        //**********   ModalResult and Default???
   Radios := TStringList.Create;
-  for B in FDlg.RadioButtons do
+  for B in FDlg.RadioButtons do          //**********   Default?
     Radios.Add(B.Caption);
 
   //ToDo

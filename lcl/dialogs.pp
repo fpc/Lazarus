@@ -639,7 +639,6 @@ type
       var ACanClose: Boolean);
     procedure SetButtons(const Value: TTaskDialogButtons);
     procedure SetRadioButtons(const Value: TTaskDialogButtons);
-    function ButtonIDToModalResult(const AButtonID: Integer): TModalResult;
   protected
     class procedure WSRegisterClass; override;
     function DoExecute(ParentWnd: HWND): Boolean; dynamic;
@@ -649,6 +648,7 @@ type
 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function ButtonIDToModalResult(const AButtonID: Integer): TModalResult;
     function Execute: Boolean; overload; dynamic;
     function Execute(ParentWnd: HWND): Boolean; overload; dynamic;
     property Button: TTaskDialogButtonItem read FButton write FButton;

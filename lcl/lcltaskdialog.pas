@@ -772,6 +772,7 @@ var
     end;
     if ModalResult=aButtonDef then
       Dialog.Form.ActiveControl := result;
+    writeln('AddButton: Result.ModalResult=',Result.ModalResult);
   end;
   {$IFDEF MSWINDOwS}
   function TaskDialogFlagsToInteger(aFlags: TTaskDialogFlags): Integer;
