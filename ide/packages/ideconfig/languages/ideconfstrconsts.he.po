@@ -5,6 +5,18 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: ideconfstrconsts.liscomponentnameisapascalkeyword
+#, object-pascal-format, fuzzy
+#| msgid "Component name \"%s\" is a pascal keyword."
+msgid "Component name \"%s\" is a Pascal keyword."
+msgstr "שם הרכיב  \"%s\" הוא מילת מפתח של פסקל"
+
+#: ideconfstrconsts.liscomponentnameisnotavalididentifier
+#, object-pascal-format, fuzzy, badformat
+#| msgid "Component name %s%s%s is not a valid identifier"
+msgid "Component name \"%s\" is not a valid identifier"
+msgstr "שם הרכיב s%s%s% אינו מזהה חוקי"
+
 #: ideconfstrconsts.listmfunctionappendpathdelimiter
 msgid "Function: append path delimiter"
 msgstr "פונקציה: הוסף את תוחם הנתיב"
