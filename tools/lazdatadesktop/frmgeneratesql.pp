@@ -26,16 +26,16 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  ExtCtrls, Buttons, StdCtrls, {Spin,} RTTICtrls, fpdatadict, lazdatadeskstr;
+  ExtCtrls, Buttons, StdCtrls, ButtonPanel, RTTICtrls, fpdatadict,
+  lazdatadeskstr;
 
 type
 
   { TGenerateSQLForm }
 
   TGenerateSQLForm = class(TForm)
-    BOK: TButton;
-    BCancel: TButton;
     BGenerate: TButton;
+    ButtonPanel: TButtonPanel;
     CBTables: TComboBox;
     CBIgnoreSelection: TCheckBox;
     LBKeyFields: TListBox;
@@ -54,7 +54,6 @@ type
     POptions: TPanel;
     PSelectFields: TPanel;
     PCSQL: TPageControl;
-    PButtons: TPanel;
     SELineLength: TTISpinEdit;
     SEIndent: TTISpinEdit;
     CLBOptions: TTICheckGroup;
@@ -204,7 +203,7 @@ begin
   MDelete.Clear;
   MCreate.Clear;
   FSQLGenerated:=False;
-  BOK.Default:=False;
+  ButtonPanel.OKButton.Default:=False;
   BGenerate.Default:=True;
 end;
 
@@ -256,7 +255,7 @@ begin
         end;
       FSQLGenerated:=True;
       BGenerate.Default:=False;
-      BOK.Default:=True;
+      ButtonPanel.OKButton.Default:=True;
       PCSQL.ActivePage:=TSSelect;
     finally
       FL.Free;
@@ -327,8 +326,8 @@ begin
   LSELineLength.Caption:= sld_Linelength;
   CBIgnoreSelection.Caption:= sld_Createfulltablecreationsql;
   BGenerate.Caption:= sld_Generatesql;
-  BCancel.Caption:= sld_Cancel;
-  BOK.Caption:= sld_Ok;
+  ButtonPanel.CancelButton.Caption:= sld_Cancel;
+  ButtonPanel.OKButton.Caption:= sld_Ok;
 
   CLBOptions.Link.AliasValues.Values['eoLineFeedAfterField'] := eoLineFeedAfterField;
   CLBOptions.Link.AliasValues.Values['eoUseOldInWhereParams'] := eoUseOldInWhereParams;
