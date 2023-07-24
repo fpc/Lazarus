@@ -1867,7 +1867,7 @@ var
 
 
 begin
-  if IsConsole then writeln('TWin32WSTaskDialog.Execute A');
+  //if IsConsole then writeln('TWin32WSTaskDialog.Execute A');
   //if not Assigned(TaskDialogIndirect)  or
   if not TaskDialogIndirectAvailable  or
      (tfForceNonNative in ADlg.Flags)

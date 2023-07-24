@@ -72,7 +72,7 @@ var
   TaskDialog_Translate: TTaskDialogTranslate;
 
 
-function ExecuteLCLTaskDialog(const ADlg: TTaskDialog; AParentWnd: HWND; out ARadioRes: Integer): Integer;
+function ExecuteLCLTaskDialog(const ADlg: TCustomTaskDialog; AParentWnd: HWND; out ARadioRes: Integer): Integer;
 
 
 type
@@ -236,7 +236,7 @@ end;
 
 
 { -------------- }
-function ExecuteLCLTaskDialog(const ADlg: TTaskDialog; AParentWnd: HWND; out ARadioRes: Integer): Integer;
+function ExecuteLCLTaskDialog(const ADlg: TCustomTaskDialog; AParentWnd: HWND; out ARadioRes: Integer): Integer;
 var
   DlgForm: TLCLTaskDialog;
 begin

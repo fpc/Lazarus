@@ -201,7 +201,7 @@ end;
 class function TWSTaskDialog.Execute(const ADlg: TCustomTaskDialog; AParentWnd: HWND; out ARadioRes: Integer): Integer;
 begin
   //writeln('TWSTaskDialog.Execute: Assigned(ADlg)=',Assigned(ADlg));
-  Result := ExecuteLCLTaskDialog(TTaskDialog(ADlg), AParentWnd, ARadiores);
+  Result := ExecuteLCLTaskDialog(ADlg, AParentWnd, ARadiores);
 end;
 
 { WidgetSetRegistration }
