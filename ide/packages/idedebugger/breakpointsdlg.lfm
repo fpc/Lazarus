@@ -6,60 +6,13 @@ object BreakpointsDlg: TBreakpointsDlg
   HelpType = htKeyword
   HorzScrollBar.Page = 559
   VertScrollBar.Page = 204
-  ActiveControl = lvBreakPoints
   BorderStyle = bsSizeToolWin
   Caption = 'Breakpoint list'
   ClientHeight = 205
   ClientWidth = 560
   OnCreate = BreakpointsDlgCREATE
+  LCLVersion = '3.99.0.0'
   Visible = True
-  object lvBreakPoints: TListView
-    Left = 0
-    Height = 179
-    Top = 26
-    Width = 560
-    HelpType = htKeyword
-    Align = alClient
-    Columns = <    
-      item
-        Caption = 'State'
-      end    
-      item
-        Caption = 'Filename/Address'
-        Width = 150
-      end    
-      item
-        Caption = 'Line/Length'
-        Width = 100
-      end    
-      item
-        Caption = 'Condition'
-        Width = 75
-      end    
-      item
-        Caption = 'Action'
-        Width = 150
-      end    
-      item
-        Caption = 'Pass Count'
-        Width = 100
-      end    
-      item
-        Caption = 'Group'
-        Width = 80
-      end>
-    MultiSelect = True
-    PopupMenu = mnuPopup
-    ReadOnly = True
-    RowSelect = True
-    SortColumn = 1
-    SortType = stText
-    TabOrder = 0
-    ViewStyle = vsReport
-    OnClick = lvBreakPointsClick
-    OnDblClick = lvBreakPointsDBLCLICK
-    OnSelectItem = lvBreakPointsSelectItem
-  end
   object ToolBar1: TToolBar
     Left = 0
     Height = 26
@@ -68,68 +21,129 @@ object BreakpointsDlg: TBreakpointsDlg
     Caption = 'ToolBar1'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 1
+    TabOrder = 0
     object ToolButtonAdd: TToolButton
       Left = 1
       Top = 2
       Caption = 'Add...'
       MenuItem = popAdd
-      Style = tbsDropDown
+      Style = tbsButtonDrop
     end
     object ToolButtonEnable: TToolButton
-      Left = 36
+      Left = 34
       Top = 2
       Action = actEnableSelected
     end
     object ToolButtonDisable: TToolButton
-      Left = 59
+      Left = 57
       Top = 2
       Action = actDisableSelected
     end
     object ToolButtonTrash: TToolButton
-      Left = 82
+      Left = 80
       Top = 2
       Action = actDeleteSelected
     end
     object ToolSep1: TToolButton
-      Left = 105
+      Left = 103
       Height = 22
       Top = 2
-      Width = 10
       Style = tbsSeparator
     end
     object ToolButtonEnableAll: TToolButton
-      Left = 115
+      Left = 111
       Top = 2
       Action = actEnableAll
     end
     object ToolButtonDisableAll: TToolButton
-      Left = 138
+      Left = 134
       Top = 2
       Action = actDisableAll
     end
     object ToolButtonTrashAll: TToolButton
-      Left = 161
+      Left = 157
       Top = 2
       Action = actDeleteAll
     end
     object ToolSep2: TToolButton
-      Left = 184
+      Left = 180
       Height = 22
       Top = 2
-      Width = 10
       Style = tbsSeparator
     end
     object ToolButtonProperties: TToolButton
-      Left = 194
+      Left = 188
       Top = 2
       Action = actProperties
     end
+    object tbGroupByBrkGroup: TToolButton
+      Left = 211
+      Top = 2
+      Caption = 'Grp'
+      OnClick = tbGroupByBrkGroupClick
+      Style = tbsCheck
+    end
+  end
+  object tvBreakPoints: TDbgTreeView
+    Left = 0
+    Height = 179
+    Top = 26
+    Width = 560
+    Align = alClient
+    DefaultText = 'Node'
+    Header.AutoSizeIndex = 0
+    Header.Columns = <    
+      item
+        Position = 0
+        Text = 'State'
+      end    
+      item
+        Position = 1
+        Text = 'Filename/Address'
+        Width = 150
+      end    
+      item
+        Position = 2
+        Text = 'Line'
+        Width = 100
+      end    
+      item
+        Position = 3
+        Text = 'Condition'
+        Width = 75
+      end    
+      item
+        Position = 4
+        Text = 'Action'
+        Width = 150
+      end    
+      item
+        Position = 5
+        Text = 'Pass count'
+        Width = 100
+      end    
+      item
+        Position = 6
+        Text = 'Group'
+        Width = 80
+      end>
+    Header.Options = [hoColumnResize, hoDrag, hoShowSortGlyphs, hoVisible]
+    PopupMenu = mnuPopup
+    TabOrder = 1
+    TreeOptions.AutoOptions = [toAutoScrollOnExpand, toAutoSort, toAutoTristateTracking, toAutoDeleteMovedNodes, toAutoChangeScale]
+    TreeOptions.MiscOptions = [toFullRepaintOnResize, toInitOnSave, toWheelPanning]
+    TreeOptions.PaintOptions = [toShowButtons, toShowDropmark, toShowRoot, toShowTreeLines, toThemeAware, toUseBlendedImages, toUseExplorerTheme]
+    TreeOptions.SelectionOptions = [toFullRowSelect, toMultiSelect, toRightClickSelect]
+    OnChange = tvBreakPointsChange
+    OnCompareNodes = tvBreakPointsCompareNodes
+    OnFocusChanged = tvBreakPointsFocusChanged
+    OnHeaderClick = tvBreakPointsHeaderClick
+    OnNodeDblClick = tvBreakPointsNodeDblClick
   end
   object mnuPopup: TPopupMenu
     OnPopup = mnuPopupPopup
-    left = 24
-    top = 40
+    Left = 24
+    Top = 40
     object popShow: TMenuItem
       Action = actShow
       Default = True
@@ -201,8 +215,8 @@ object BreakpointsDlg: TBreakpointsDlg
     end
   end
   object ActionList1: TActionList
-    left = 96
-    top = 72
+    Left = 96
+    Top = 72
     object actToggleCurrentEnable: TAction
       Caption = 'actToggleCurrentEnable'
       OnExecute = popEnabledClick

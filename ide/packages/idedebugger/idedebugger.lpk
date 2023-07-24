@@ -186,6 +186,10 @@
         <Filename Value="envdebuggeroptions.pas"/>
         <UnitName Value="EnvDebuggerOptions"/>
       </Item>
+      <Item>
+        <Filename Value="breakprointgroupframe.pas"/>
+        <UnitName Value="BreakprointGroupFrame"/>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

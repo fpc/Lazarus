@@ -6396,7 +6396,10 @@ end;
 
 function TIDEBreakPointGroup.Count: Integer;
 begin
-  Result := FBreakpoints.Count;
+  if FBreakpoints = nil then
+    Result := 0
+  else
+    Result := FBreakpoints.Count;
 end;
 
 constructor TIDEBreakPointGroup.Create(ACollection: TCollection);

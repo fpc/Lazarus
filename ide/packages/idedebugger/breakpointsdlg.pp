@@ -39,20 +39,22 @@ interface
 
 uses
 
-  Classes, SysUtils, LazFileUtils, Forms, Controls, Dialogs,
-  IDEWindowIntf, Menus, ComCtrls, Debugger, DebuggerDlg, ActnList,
-  IDEImagesIntf, DbgIntfDebuggerBase, DbgIntfMiscClasses,
-  BaseDebugManager, IdeDebuggerStringConstants, IdeIntfStrConsts, SrcEditorIntf;
+  Classes, SysUtils, LazFileUtils, Forms, Controls, Dialogs, IDEWindowIntf,
+  Menus, ComCtrls, Debugger, DebuggerDlg, ActnList, ExtCtrls, IDEImagesIntf,
+  DbgIntfDebuggerBase, DbgIntfMiscClasses, BaseDebugManager,
+  IdeDebuggerStringConstants, DebuggerTreeView, BreakprointGroupFrame,
+  IdeDebuggerOpts, IdeIntfStrConsts, SrcEditorIntf, laz.VirtualTrees;
 
 type
   TBreakPointsDlgState = (
-    bpdsItemsNeedUpdate
+    bpdsItemsNeedUpdate,
+    bpdsInEndUpdate
     );
   TBreakPointsDlgStates = set of TBreakPointsDlgState;
 
   { TBreakPointsDlg }
 
-  TBreakPointsDlg = class(TDebuggerDlg)
+  TBreakPointsDlg = class(TDebuggerDlg, IFPObserver)
     actAddSourceBP: TAction;
     actAddAddressBP: TAction;
     actAddWatchPoint: TAction;
@@ -71,7 +73,8 @@ type
     actEnableAllInSrc: TAction;
     actDisableAllInSrc: TAction;
     ActionList1: TActionList;
-    lvBreakPoints: TListView;
+    tbGroupByBrkGroup: TToolButton;
+    tvBreakPoints: TDbgTreeView;
     popGroupSep: TMenuItem;
     popGroupSetNew: TMenuItem;
     popGroupSetNone: TMenuItem;
@@ -115,9 +118,6 @@ type
     procedure actGroupSetNewExecute(Sender: TObject);
     procedure actShowExecute(Sender: TObject);
     procedure BreakpointsDlgCREATE(Sender: TObject);
-    procedure lvBreakPointsClick(Sender: TObject);
-    procedure lvBreakPointsDBLCLICK(Sender: TObject);
-    procedure lvBreakPointsSelectItem(Sender: TObject; {%H-}Item: TListItem; {%H-}Selected: Boolean);
     procedure mnuPopupPopup(Sender: TObject);
     procedure popDeleteAllSameSourceCLICK(Sender: TObject);
     procedure popDisableAllSameSourceCLICK(Sender: TObject);
@@ -128,21 +128,45 @@ type
     procedure popDisableAllClick(Sender: TObject);
     procedure popEnableAllClick(Sender: TObject);
     procedure popDeleteAllClick(Sender: TObject);
+    procedure tbGroupByBrkGroupClick(Sender: TObject);
+    procedure tvBreakPointsChange(Sender: TBaseVirtualTree; Node: PVirtualNode);
+    procedure tvBreakPointsCompareNodes(Sender: TBaseVirtualTree; Node1,
+      Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
+    procedure tvBreakPointsFocusChanged(Sender: TBaseVirtualTree;
+      Node: PVirtualNode; Column: TColumnIndex);
+    procedure tvBreakPointsHeaderClick(Sender: TVTHeader;
+      HitInfo: TVTHeaderHitInfo);
+    procedure tvBreakPointsNodeDblClick(Sender: TBaseVirtualTree;
+      const HitInfo: THitInfo);
   private
+    FSecondarySortCol, FCurrentSortCol: TColumnIndex;
+    FSecondarySortDir: TSortDirection;
     FBaseDirectory: string;
     FStates: TBreakPointsDlgStates;
-    FLockActionUpdate: Integer;
+    FUngroupedHeader: TBreakpointGroupFrame;
+
     procedure BreakPointAdd(const {%H-}ASender: TIDEBreakPoints;
                             const ABreakpoint: TIDEBreakPoint);
     procedure BreakPointUpdate(const ASender: TIDEBreakPoints;
                                const ABreakpoint: TIDEBreakPoint);
     procedure BreakPointRemove(const {%H-}ASender: TIDEBreakPoints;
                                const ABreakpoint: TIDEBreakPoint);
+    procedure DoGroupDeleteBtnClicked(Sender: TBreakpointGroupFrame;
+      BrkGroup: TIDEBreakPointGroup);
+    procedure FPOObservedChanged(ASender : TObject; Operation : TFPObservedOperation; Data : Pointer);
+    procedure ClearTree;
+    procedure DoItemRemoved(Sender: TDbgTreeView; AnItem: TObject;
+      ANode: PVirtualNode);
+    function  GetNodeForBrkGroup(const ABrkGroup: TIDEBreakPointGroup): PVirtualNode;
     procedure SetBaseDirectory(const AValue: string);
     procedure popSetGroupItemClick(Sender: TObject);
     procedure SetGroup(const NewGroup: TIDEBreakPointGroup);
 
-    procedure UpdateItem(const AnItem: TListItem;
+    function  FindParentNode(const ABreakpoint: TIDEBreakPoint): PVirtualNode;
+    procedure ChangeParentNode(const ANode, ANewParentNode: PVirtualNode);
+    function  GetGroupFrame(const ANode: PVirtualNode): TBreakpointGroupFrame; inline;
+
+    procedure UpdateItem(const AVNode: PVirtualNode;
                          const ABreakpoint: TIDEBreakPoint);
     procedure UpdateAll;
     
@@ -158,6 +182,7 @@ type
     procedure ColSizeSetter(AColId: Integer; ASize: Integer);
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   public
     property BaseDirectory: string read FBaseDirectory write SetBaseDirectory;
     property BreakPoints;
@@ -242,44 +267,191 @@ end;
 procedure TBreakPointsDlg.BreakPointAdd(const ASender: TIDEBreakPoints;
   const ABreakpoint: TIDEBreakPoint);
 var
-  Item: TListItem;
-  n: Integer;
+  VNode, p: PVirtualNode;
+  g: TBreakpointGroupFrame;
 begin
-  Item := lvBreakPoints.Items.FindData(ABreakpoint);
-  if Item = nil
-  then begin
-    Item := lvBreakPoints.Items.Add;
-    Item.Data := ABreakPoint;
-    for n := 0 to 5 do
-      Item.SubItems.Add('');
-  end;
+  BeginUpdate;
+  try
+    VNode := tvBreakPoints.FindNodeForItem(ABreakpoint);
+    if VNode = nil
+    then begin
+      p := FindParentNode(ABreakpoint);
+      VNode := tvBreakPoints.AddChild(p, ABreakpoint);
+      g := GetGroupFrame(p);
+      if g <> nil then g.UpdateDisplay;
+      tvBreakPoints.SelectNode(VNode);
+    end;
 
-  UpdateItem(Item, ABreakPoint);
+    UpdateItem(VNode, ABreakPoint);
+  finally
+    EndUpdate;
+  end;
 end;
 
 procedure TBreakPointsDlg.BreakPointUpdate(const ASender: TIDEBreakPoints;
   const ABreakpoint: TIDEBreakPoint);
 var
-  Item: TListItem;
+  VNode: PVirtualNode;
 begin
   if ABreakpoint = nil then Exit;
 
-  Item := lvBreakPoints.Items.FindData(ABreakpoint);
-  if Item = nil
-  then BreakPointAdd(ASender, ABreakPoint)
-  else begin
-    if UpdateCount>0 then begin
-      Include(FStates,bpdsItemsNeedUpdate);
-      exit;
+  BeginUpdate;
+  try
+    VNode := tvBreakPoints.FindNodeForItem(ABreakpoint);
+    if VNode = nil
+    then BreakPointAdd(ASender, ABreakPoint)
+    else begin
+      if UpdateCount>0 then begin
+        Include(FStates,bpdsItemsNeedUpdate);
+        exit;
+      end;
+      UpdateItem(VNode, ABreakPoint);
     end;
-    UpdateItem(Item, ABreakPoint);
+  finally
+    EndUpdate;
   end;
 end;
 
 procedure TBreakPointsDlg.BreakPointRemove(const ASender: TIDEBreakPoints;
   const ABreakpoint: TIDEBreakPoint);
 begin
-  lvBreakPoints.Items.FindData(ABreakpoint).Free;
+  BeginUpdate;
+  try
+    tvBreakPoints.DeleteNode(tvBreakPoints.FindNodeForItem(ABreakpoint));
+  finally
+    EndUpdate;
+  end;
+end;
+
+procedure TBreakPointsDlg.DoGroupDeleteBtnClicked(
+  Sender: TBreakpointGroupFrame; BrkGroup: TIDEBreakPointGroup);
+var
+  ConfirmDeleteDlg: TTaskDialog;
+  DlgResult: TModalResult;
+  i: Integer;
+begin
+  if BrkGroup.Count = 0 then begin
+    BrkGroup.Free;
+    exit;
+  end;
+
+  ConfirmDeleteDlg := TTaskDialog.Create(Self);
+  try
+    ConfirmDeleteDlg.Flags := [tfAllowDialogCancellation];
+    ConfirmDeleteDlg.Caption := 'Delete breakpoint group';
+    ConfirmDeleteDlg.Title := Format('The breakpoint group "%s" will be deleted.', [BrkGroup.Name]);
+    ConfirmDeleteDlg.Text := 'Please choose what to do with the breakpoints in the group:';
+    ConfirmDeleteDlg.MainIcon := tdiWarning;
+
+    with ConfirmDeleteDlg.RadioButtons.Add do begin
+      ModalResult := 1;
+      Default := True;
+      Caption := 'Keep Breakpoints';
+    end;
+    with ConfirmDeleteDlg.RadioButtons.Add do begin
+      ModalResult := 2;
+      Caption := 'Delete Breakpoints';
+    end;
+
+    if not ConfirmDeleteDlg.Execute() then
+       exit;
+    DlgResult := ConfirmDeleteDlg.ModalResult;
+    if (DlgResult = mrOK) and (nil <> ConfirmDeleteDlg.RadioButton) then begin
+      if ConfirmDeleteDlg.RadioButton.ModalResult = 2 then begin
+        for i := BrkGroup.Count - 1 downto 0 do
+          BrkGroup.Breakpoints[i].ReleaseReference;
+      end;
+      BrkGroup.Free;
+    end;
+  finally
+    ConfirmDeleteDlg.free
+  end;
+end;
+
+procedure TBreakPointsDlg.FPOObservedChanged(ASender: TObject;
+  Operation: TFPObservedOperation; Data: Pointer);
+var
+  GrpHeader: TBreakpointGroupFrame;
+  VNode: PVirtualNode;
+begin
+  if ASender <> DebugBoss.BreakPointGroups then
+    exit;
+  BeginUpdate;
+  try
+    case Operation of
+      ooChange: begin
+          if Data = nil then begin // several items where updated
+            UpdateAll;
+          end
+          else begin
+            GrpHeader := GetGroupFrame(GetNodeForBrkGroup(TIDEBreakPointGroup(Data)));
+            if GrpHeader <> nil then begin
+              GrpHeader.UpdateDisplay;
+              tvBreakPoints.Invalidate;
+            end;
+          end;
+        end;
+      ooFree: ;
+      ooAddItem: begin
+          GetNodeForBrkGroup(TIDEBreakPointGroup(Data));
+        end;
+      ooDeleteItem: begin
+          VNode :=tvBreakPoints.FindNodeForItem(TObject(Data));
+          if VNode <> nil then begin
+            tvBreakPoints.DeleteNode(VNode);
+          end;
+        end;
+      ooCustom: ;
+    end;
+  finally
+    EndUpdate;
+  end;
+end;
+
+procedure TBreakPointsDlg.ClearTree;
+var
+  PVNode: PVirtualNode;
+begin
+  BeginUpdate;
+  try
+    tvBreakPoints.Clear;
+
+    PVNode := tvBreakPoints.AddChild(nil, nil);
+    FUngroupedHeader := TBreakpointGroupFrame.Create(Self, tvBreakPoints, PVNode, nil);
+    FUngroupedHeader.Visible := tbGroupByBrkGroup.Down;
+    tvBreakPoints.NodeControl[PVNode] := FUngroupedHeader;
+  finally
+    EndUpdate;
+  end;
+end;
+
+procedure TBreakPointsDlg.DoItemRemoved(Sender: TDbgTreeView; AnItem: TObject;
+  ANode: PVirtualNode);
+begin
+  tvBreakPointsChange(nil, nil);
+end;
+
+function TBreakPointsDlg.GetNodeForBrkGroup(const ABrkGroup: TIDEBreakPointGroup
+  ): PVirtualNode;
+var
+  GrpHeader: TBreakpointGroupFrame;
+begin
+  if ABrkGroup = nil then
+    exit(tvBreakPoints.FindNodeForControl(FUngroupedHeader));
+
+  Result := tvBreakPoints.FindNodeForItem(ABrkGroup);
+  if Result = nil then begin
+    tvBreakPoints.BeginUpdate;
+    try
+      Result := tvBreakPoints.AddChild(nil, ABrkGroup);
+      GrpHeader := TBreakpointGroupFrame.Create(Self, tvBreakPoints, Result, ABrkGroup);
+      GrpHeader.Visible := tbGroupByBrkGroup.Down;
+      GrpHeader.OnDeleteGroup := @DoGroupDeleteBtnClicked;
+      tvBreakPoints.NodeControl[Result] := GrpHeader;
+    finally
+      tvBreakPoints.EndUpdate;
+    end;
+  end;
 end;
 
 procedure TBreakPointsDlg.SetBaseDirectory(const AValue: string);
@@ -291,41 +463,87 @@ end;
 
 procedure TBreakPointsDlg.SetGroup(const NewGroup: TIDEBreakPointGroup);
 var
+  VNode: PVirtualNode;
+  Brk: TIDEBreakPoint;
   OldGroup: TIDEBreakPointGroup;
   OldGroups: TList;
-  i: Integer;
   PrevChoice: TModalResult;
 begin
-  PrevChoice := mrNone;
-  OldGroups := TList.Create;
+  BeginUpdate;
   try
-    for i := 0 to lvBreakPoints.Items.Count - 1 do
-      if lvBreakPoints.Items[i].Selected then
+    PrevChoice := mrNone;
+    OldGroups := TList.Create;
+    try
+      for VNode in tvBreakPoints.SelectedItemNodes do
       begin
-        OldGroup := TIDEBreakPoint(lvBreakPoints.Items[i].Data).Group;
-        TIDEBreakPoint(lvBreakPoints.Items[i].Data).Group := NewGroup;
+        Brk := TIDEBreakPoint(tvBreakPoints.NodeItem[VNode]);
+        OldGroup := Brk.Group;
+        Brk.Group := NewGroup;
         if (OldGroup <> nil) and (OldGroup.Count = 0) and (OldGroups.IndexOf(OldGroup) < 0) then
           OldGroups.Add(OldGroup);
       end;
-  finally
-    while OldGroups.Count > 0 do begin
-      OldGroup := TIDEBreakPointGroup(OldGroups[0]);
-      OldGroups.Delete(0);
-      if not (PrevChoice in [mrYesToAll, mrNoToAll]) then
-      begin
-        if OldGroups.Count > 0 then
-          PrevChoice := MessageDlg(Caption, Format(lisGroupEmptyDelete + lisGroupEmptyDeleteMore,
-            [OldGroup.Name, LineEnding, OldGroups.Count]),
-            mtConfirmation, mbYesNo + [mbYesToAll, mbNoToAll], 0)
-        else
-          PrevChoice := MessageDlg(Caption, Format(lisGroupEmptyDelete,
-            [OldGroup.Name]), mtConfirmation, mbYesNo, 0);
+    finally
+      while OldGroups.Count > 0 do begin
+        OldGroup := TIDEBreakPointGroup(OldGroups[0]);
+        OldGroups.Delete(0);
+        if not (PrevChoice in [mrYesToAll, mrNoToAll]) then
+        begin
+          if OldGroups.Count > 0 then
+            PrevChoice := MessageDlg(Caption, Format(lisGroupEmptyDelete + lisGroupEmptyDeleteMore,
+              [OldGroup.Name, LineEnding, OldGroups.Count]),
+              mtConfirmation, mbYesNo + [mbYesToAll, mbNoToAll], 0)
+          else
+            PrevChoice := MessageDlg(Caption, Format(lisGroupEmptyDelete,
+              [OldGroup.Name]), mtConfirmation, mbYesNo, 0);
+        end;
+        if PrevChoice in [mrYes, mrYesToAll] then
+          OldGroup.Free;
       end;
-      if PrevChoice in [mrYes, mrYesToAll] then
-        OldGroup.Free;
+      OldGroups.Free;
     end;
-    OldGroups.Free;
+  finally
+    EndUpdate;
   end;
+end;
+
+function TBreakPointsDlg.FindParentNode(const ABreakpoint: TIDEBreakPoint
+  ): PVirtualNode;
+var
+  BrkGroup: TIDEBreakPointGroup;
+  GrpHeader: TBreakpointGroupFrame;
+begin
+  Result := tvBreakPoints.RootNode;
+
+  if tbGroupByBrkGroup.Down then begin
+    BrkGroup := ABreakpoint.Group;
+    Result := GetNodeForBrkGroup(BrkGroup);
+  end;
+end;
+
+procedure TBreakPointsDlg.ChangeParentNode(const ANode,
+  ANewParentNode: PVirtualNode);
+var
+  CurParent: PVirtualNode;
+  f: TBreakpointGroupFrame;
+begin
+  CurParent := tvBreakPoints.NodeParent[ANode];
+  if CurParent = ANewParentNode then
+    exit;
+  tvBreakPoints.NodeParent[ANode] := ANewParentNode;
+
+  f := GetGroupFrame(CurParent);
+  if f <> nil then f.UpdateDisplay;
+  f := GetGroupFrame(ANewParentNode);
+  if f <> nil then f.UpdateDisplay;
+end;
+
+function TBreakPointsDlg.GetGroupFrame(const ANode: PVirtualNode
+  ): TBreakpointGroupFrame;
+begin
+  if ANode = nil then
+    exit(nil);
+  Result := TBreakpointGroupFrame(tvBreakPoints.NodeControl[ANode]);
+  assert((Result = nil) or (TObject(Result) is TBreakpointGroupFrame), 'TBreakPointsDlg.GetGroupFrame: (Result = nil) or (TObject(Result) is TBreakpointGroupFrame)');
 end;
 
 constructor TBreakPointsDlg.Create(AOwner: TComponent);
@@ -337,11 +555,14 @@ begin
   BreakpointsNotification.OnAdd    := @BreakPointAdd;
   BreakpointsNotification.OnUpdate := @BreakPointUpdate;
   BreakpointsNotification.OnRemove := @BreakPointRemove;
+  tvBreakPoints.OnItemRemoved := @DoItemRemoved;
+
+  DebugBoss.BreakPointGroups.FPOAttachObserver(Self);
 
   ActionList1.Images := IDEImages.Images_16;
   ToolBar1.Images := IDEImages.Images_16;
   mnuPopup.Images := IDEImages.Images_16;
-  lvBreakPoints.SmallImages := IDEImages.Images_16;
+  tvBreakPoints.Images := IDEImages.Images_16;
 
   ToolButtonAdd.ImageIndex := IDEImages.LoadImage('laz_add');
 
@@ -373,28 +594,40 @@ begin
   actProperties.Hint := lisDbgBreakpointPropertiesHint;
   actProperties.ImageIndex := IDEImages.LoadImage('menu_environment_options');
 
+  tbGroupByBrkGroup.ImageIndex := IDEImages.LoadImage('ttreeview');
+  case DebuggerOptions.BreakpointsDialogShowTree of
+    bstNone:     tbGroupByBrkGroup.Down := False;
+    bstBrkGroup: tbGroupByBrkGroup.Down := True;
+  end;
+
   actToggleCurrentEnable.Caption:= lisBtnEnabled;
 
   actEnableAllInSrc.Caption:= lisEnableAllInSameSource;
   actDisableAllInSrc.Caption:= lisDisableAllInSameSource;
   actDeleteAllInSrc.Caption:= lisDeleteAllInSameSource;
   for i := low(COL_WIDTHS) to high(COL_WIDTHS) do
-    lvBreakPoints.Column[i].Width := COL_WIDTHS[i];
+    tvBreakPoints.Header.Columns[i].Width := COL_WIDTHS[i];
 
-  FLockActionUpdate := 0;
+  ClearTree;
+end;
+
+destructor TBreakPointsDlg.Destroy;
+begin
+  if (DebugBoss <> nil) and (DebugBoss.BreakPointGroups <> nil) then
+    DebugBoss.BreakPointGroups.FPODetachObserver(Self);
+  inherited Destroy;
 end;
 
 procedure TBreakPointsDlg.BreakpointsDlgCREATE(Sender: TObject);
 begin
   Caption:= lisMenuViewBreakPoints;
-  lvBreakPoints.Align:=alClient;
-  lvBreakPoints.Columns[0].Caption:= lisBrkPointState;
-  lvBreakPoints.Columns[1].Caption:= lisFilenameAddress;
-  lvBreakPoints.Columns[2].Caption:= lisLineLength;
-  lvBreakPoints.Columns[3].Caption:= lisCondition;
-  lvBreakPoints.Columns[4].Caption:= lisBrkPointAction;
-  lvBreakPoints.Columns[5].Caption:= lisPassCount;
-  lvBreakPoints.Columns[6].Caption:= lisGroup;
+  tvBreakPoints.Header.Columns[0].Text:= lisBrkPointState;
+  tvBreakPoints.Header.Columns[1].Text:= lisFilenameAddress;
+  tvBreakPoints.Header.Columns[2].Text:= lisLineLength;
+  tvBreakPoints.Header.Columns[3].Text:= lisCondition;
+  tvBreakPoints.Header.Columns[4].Text:= lisBrkPointAction;
+  tvBreakPoints.Header.Columns[5].Text:= lisPassCount;
+  tvBreakPoints.Header.Columns[6].Text:= lisGroup;
   actShow.Caption := lisViewSource;
   popAdd.Caption:= lisAdd;
   actAddSourceBP.Caption := lisSourceBreakpoint;
@@ -407,19 +640,14 @@ end;
 
 procedure TBreakPointsDlg.actEnableSelectedExecute(Sender: TObject);
 var
-  n: Integer;
-  Item: TListItem;
+  VNode: PVirtualNode;
 begin
+  BeginUpdate;
   try
-    DisableAllActions;
-    for n := 0 to lvBreakPoints.Items.Count -1 do
-    begin
-      Item := lvBreakPoints.Items[n];
-      if Item.Selected then
-        TIDEBreakPoint(Item.Data).Enabled := True;
-    end;
+    for VNode in tvBreakPoints.SelectedItemNodes do
+      TIDEBreakPoint(tvBreakPoints.NodeItem[VNode]).Enabled := True;
   finally
-    lvBreakPointsSelectItem(nil, nil, False);
+    EndUpdate
   end;
 end;
 
@@ -428,38 +656,43 @@ var
   GroupName: String;
   NewGroup: TIDEBreakPointGroup;
 begin
-  GroupName := '';
-  if not InputQuery(Caption, lisGroupNameInput, GroupName) then Exit;
-  if GroupName = '' then
-  begin
-    if MessageDlg(Caption, lisGroupNameEmptyClearInstead,
-      mtConfirmation, mbYesNo, 0) = mrYes then Exit;
-    NewGroup := nil;
-  end
-  else begin
-    NewGroup := DebugBoss.BreakPointGroups.GetGroupByName(GroupName);
-    if NewGroup = nil then
+  BeginUpdate;
+  try
+    GroupName := '';
+    if not InputQuery(Caption, lisGroupNameInput, GroupName) then Exit;
+    if GroupName = '' then
     begin
-      if not TIDEBreakPointGroup.CheckName(GroupName) then
-      begin
-        MessageDlg(Caption, lisGroupNameInvalid, mtError, [mbOk], 0);
-        Exit;
-      end;
-      NewGroup := TIDEBreakPointGroup(DebugBoss.BreakPointGroups.Add);
-      try
-        NewGroup.Name := GroupName;
-      except
-        NewGroup.Free;
-        raise;
-      end;
+      if MessageDlg(Caption, lisGroupNameEmptyClearInstead,
+        mtConfirmation, mbYesNo, 0) = mrYes then Exit;
+      NewGroup := nil;
     end
-    else if MessageDlg(Caption, Format(lisGroupAssignExisting,
-        [GroupName]), mtConfirmation, mbYesNo, 0) <> mrYes
-      then
-        Exit;
-  end;
+    else begin
+      NewGroup := DebugBoss.BreakPointGroups.GetGroupByName(GroupName);
+      if NewGroup = nil then
+      begin
+        if not TIDEBreakPointGroup.CheckName(GroupName) then
+        begin
+          MessageDlg(Caption, lisGroupNameInvalid, mtError, [mbOk], 0);
+          Exit;
+        end;
+        NewGroup := TIDEBreakPointGroup(DebugBoss.BreakPointGroups.Add);
+        try
+          NewGroup.Name := GroupName;
+        except
+          NewGroup.Free;
+          raise;
+        end;
+      end
+      else if MessageDlg(Caption, Format(lisGroupAssignExisting,
+          [GroupName]), mtConfirmation, mbYesNo, 0) <> mrYes
+        then
+          Exit;
+    end;
 
-  SetGroup(NewGroup);
+    SetGroup(NewGroup);
+  finally
+    EndUpdate;
+  end;
 end;
 
 procedure TBreakPointsDlg.actGroupSetNoneExecute(Sender: TObject);
@@ -484,19 +717,14 @@ end;
 
 procedure TBreakPointsDlg.actDisableSelectedExecute(Sender: TObject);
 var
-  n: Integer;
-  Item: TListItem;
+  VNode: PVirtualNode;
 begin
+  BeginUpdate;
   try
-    DisableAllActions;
-    for n := 0 to lvBreakPoints.Items.Count -1 do
-    begin
-      Item := lvBreakPoints.Items[n];
-      if Item.Selected then
-        TIDEBreakPoint(Item.Data).Enabled := False;
-    end;
+    for VNode in tvBreakPoints.SelectedItemNodes do
+      TIDEBreakPoint(tvBreakPoints.NodeItem[VNode]).Enabled := False;
   finally
-    lvBreakPointsSelectItem(nil, nil, False);
+    EndUpdate;
   end;
 end;
 
@@ -505,108 +733,58 @@ var
   NewBreakpoint: TIDEBreakPoint;
   SrcEdit: TSourceEditorInterface;
 begin
-  SrcEdit := SourceEditorManagerIntf.ActiveEditor;
-  if SrcEdit <> nil then
-    NewBreakpoint := BreakPoints.Add(SrcEdit.FileName, SrcEdit.CursorTextXY.Y, True)
-  else
-    NewBreakpoint := BreakPoints.Add('', 0, True);
-  if DebugBoss.ShowBreakPointProperties(NewBreakpoint) = mrOk then begin
-    NewBreakpoint.EndUpdate;
-    UpdateAll;
-  end
-  else
-    ReleaseRefAndNil(NewBreakpoint);
+  BeginUpdate;
+  try
+    SrcEdit := SourceEditorManagerIntf.ActiveEditor;
+    if SrcEdit <> nil then
+      NewBreakpoint := BreakPoints.Add(SrcEdit.FileName, SrcEdit.CursorTextXY.Y, True)
+    else
+      NewBreakpoint := BreakPoints.Add('', 0, True);
+    if DebugBoss.ShowBreakPointProperties(NewBreakpoint) = mrOk then begin
+      NewBreakpoint.EndUpdate;
+      UpdateAll;
+    end
+    else
+      ReleaseRefAndNil(NewBreakpoint);
+  finally
+    EndUpdate;
+  end;
 end;
 
 procedure TBreakPointsDlg.actAddWatchPointExecute(Sender: TObject);
 var
   NewBreakpoint: TIDEBreakPoint;
 begin
-  NewBreakpoint := BreakPoints.Add('', wpsGlobal, wpkWrite, True);
-  if DebugBoss.ShowBreakPointProperties(NewBreakpoint) = mrOk then begin
-    NewBreakpoint.EndUpdate;
-    UpdateAll;
-  end
-  else
-    ReleaseRefAndNil(NewBreakpoint);
+  BeginUpdate;
+  try
+    NewBreakpoint := BreakPoints.Add('', wpsGlobal, wpkWrite, True);
+    if DebugBoss.ShowBreakPointProperties(NewBreakpoint) = mrOk then begin
+      NewBreakpoint.EndUpdate;
+      UpdateAll;
+    end
+    else
+      ReleaseRefAndNil(NewBreakpoint);
+  finally
+    EndUpdate;
+  end;
 end;
 
 procedure TBreakPointsDlg.actAddAddressBPExecute(Sender: TObject);
 var
   NewBreakpoint: TIDEBreakPoint;
 begin
-  NewBreakpoint := BreakPoints.Add(0, True);
-  if DebugBoss.ShowBreakPointProperties(NewBreakpoint) = mrOk then begin
-    NewBreakpoint.EndUpdate;
-    UpdateAll;
-  end
-  else
-    ReleaseRefAndNil(NewBreakpoint);
-end;
-
-procedure TBreakPointsDlg.lvBreakPointsClick(Sender: TObject);
-begin
-  lvBreakPointsSelectItem(nil, nil, False);
-end;
-
-procedure TBreakPointsDlg.lvBreakPointsDBLCLICK(Sender: TObject);
-begin
-  lvBreakPointsSelectItem(nil, nil, False);
-  JumpToCurrentBreakPoint;
-end;
-
-procedure TBreakPointsDlg.lvBreakPointsSelectItem(Sender: TObject; Item: TListItem;
-  Selected: Boolean);
-var
-  ItemSelected: Boolean;
-  SelCanEnable, SelCanDisable: Boolean;
-  AllCanEnable, AllCanDisable: Boolean;
-  CurBreakPoint: TIDEBreakPoint;
-  i: Integer;
-begin
-  if FLockActionUpdate > 0 then exit;
-
-  ItemSelected := lvBreakPoints.Selected <> nil;
-  if ItemSelected then
-    CurBreakPoint := TIDEBreakPoint(lvBreakPoints.Selected.Data)
-  else
-    CurBreakPoint := nil;
-  SelCanEnable := False;
-  SelCanDisable := False;
-  AllCanEnable := False;
-  allCanDisable := False;
-  for i := 0 to lvBreakPoints.Items.Count - 1 do begin
-    if lvBreakPoints.Items[i].Data = nil then
-      continue;
-    if lvBreakPoints.Items[i].Selected then begin
-      SelCanEnable := SelCanEnable or not TIDEBreakPoint(lvBreakPoints.Items[i].Data).Enabled;
-      SelCanDisable := SelCanDisable or TIDEBreakPoint(lvBreakPoints.Items[i].Data).Enabled;
-    end;
-    AllCanEnable := AllCanEnable or not TIDEBreakPoint(lvBreakPoints.Items[i].Data).Enabled;
-    AllCanDisable := AllCanDisable or TIDEBreakPoint(lvBreakPoints.Items[i].Data).Enabled;
+  BeginUpdate;
+  try
+    NewBreakpoint := BreakPoints.Add(0, True);
+    if DebugBoss.ShowBreakPointProperties(NewBreakpoint) = mrOk then begin
+      NewBreakpoint.EndUpdate;
+      UpdateAll;
+    end
+    else
+      ReleaseRefAndNil(NewBreakpoint);
+  finally
+    EndUpdate;
   end;
-
-  actToggleCurrentEnable.Enabled := ItemSelected;
-  actToggleCurrentEnable.Checked := (CurBreakPoint <> nil) and CurBreakPoint.Enabled;
-
-  actEnableSelected.Enabled := SelCanEnable;
-  actDisableSelected.Enabled := SelCanDisable;
-  actDeleteSelected.Enabled := ItemSelected;
-
-  actEnableAll.Enabled := AllCanEnable;
-  actDisableAll.Enabled := AllCanDisable;
-  actDeleteAll.Enabled := lvBreakPoints.Items.Count > 0;
-
-  actEnableAllInSrc.Enabled := ItemSelected;
-  actDisableAllInSrc.Enabled := ItemSelected;
-  actDeleteAllInSrc.Enabled := ItemSelected;
-
-  actProperties.Enabled := ItemSelected;
-  actShow.Enabled := ItemSelected;
-
-  popGroup.Enabled := ItemSelected;
-  actGroupSetNew.Enabled := ItemSelected;
-  actGroupSetNone.Enabled := ItemSelected;
 end;
 
 procedure TBreakPointsDlg.mnuPopupPopup(Sender: TObject);
@@ -628,196 +806,412 @@ end;
 
 procedure TBreakPointsDlg.popDeleteAllSameSourceCLICK(Sender: TObject);
 var
-  n: Integer;
-  Item: TListItem;
-  CurItem: TListItem;
+  VNode: PVirtualNode;
   CurBreakPoint: TIDEBreakPoint;
   Filename: String;
 begin
+  BeginUpdate;
   try
-    DisableAllActions;
-    CurItem:=lvBreakPoints.Selected;
-    if (CurItem=nil) then exit;
-    Filename:=TIDEBreakpoint(CurItem.Data).Source;
+    VNode := tvBreakPoints.FocusedNode;
+    if VNode = nil then
+      exit;
+    Filename:=TIDEBreakpoint(tvBreakPoints.NodeItem[VNode]).Source;
     if MessageDlg(lisDeleteAllBreakpoints,
       Format(lisDeleteAllBreakpoints2, [Filename]),
       mtConfirmation,[mbYes,mbCancel],0)<>mrYes
     then exit;
-    for n := lvBreakPoints.Items.Count - 1 downto 0 do
+
+    VNode := tvBreakPoints.GetFirstNoInit;
+    while VNode <> nil do
     begin
-      Item := lvBreakPoints.Items[n];
-      CurBreakPoint:=TIDEBreakPoint(Item.Data);
+      CurBreakPoint:=TIDEBreakPoint(tvBreakPoints.NodeItem[VNode]);
+      VNode := tvBreakPoints.GetNextNoInit(VNode);
       if CompareFilenames(CurBreakPoint.Source,Filename)=0
       then ReleaseRefAndNil(CurBreakPoint);
     end;
   finally
-    lvBreakPointsSelectItem(nil, nil, False);
+    EndUpdate;
   end;
 end;
 
 procedure TBreakPointsDlg.popDisableAllSameSourceCLICK(Sender: TObject);
 var
-  n: Integer;
-  Item: TListItem;
-  CurItem: TListItem;
+  VNode: PVirtualNode;
   CurBreakPoint: TIDEBreakPoint;
   Filename: String;
 begin
+  BeginUpdate;
   try
-    DisableAllActions;
-    CurItem:=lvBreakPoints.Selected;
-    if (CurItem=nil) then exit;
-    Filename:=TIDEBreakpoint(CurItem.Data).Source;
-    for n := 0 to lvBreakPoints.Items.Count - 1 do
+    VNode := tvBreakPoints.FocusedNode;
+    if VNode = nil then
+      exit;
+    Filename:=TIDEBreakpoint(tvBreakPoints.NodeItem[VNode]).Source;
+
+    for VNode in tvBreakPoints.NoInitItemNodes do
     begin
-      Item := lvBreakPoints.Items[n];
-      CurBreakPoint:=TIDEBreakPoint(Item.Data);
+      CurBreakPoint:=TIDEBreakPoint(tvBreakPoints.NodeItem[VNode]);
       if CompareFilenames(CurBreakPoint.Source,Filename)=0
       then CurBreakPoint.Enabled := False;
     end;
   finally
-    lvBreakPointsSelectItem(nil, nil, False);
+    EndUpdate;
   end;
 end;
 
 procedure TBreakPointsDlg.popEnableAllSameSourceCLICK(Sender: TObject);
 var
-  n: Integer;
-  Item: TListItem;
-  CurItem: TListItem;
+  VNode: PVirtualNode;
   CurBreakPoint: TIDEBreakPoint;
   Filename: String;
 begin
+  BeginUpdate;
   try
-    DisableAllActions;
-    CurItem:=lvBreakPoints.Selected;
-    if (CurItem=nil) then exit;
-    Filename:=TIDEBreakpoint(CurItem.Data).Source;
-    for n := 0 to lvBreakPoints.Items.Count - 1 do
+    VNode := tvBreakPoints.FocusedNode;
+    if VNode = nil then
+      exit;
+    Filename:=TIDEBreakpoint(tvBreakPoints.NodeItem[VNode]).Source;
+
+    for VNode in tvBreakPoints.NoInitItemNodes do
     begin
-      Item := lvBreakPoints.Items[n];
-      CurBreakPoint:=TIDEBreakPoint(Item.Data);
+      CurBreakPoint:=TIDEBreakPoint(tvBreakPoints.NodeItem[VNode]);
       if CompareFilenames(CurBreakPoint.Source,Filename)=0
       then CurBreakPoint.Enabled := True;
     end;
   finally
-    lvBreakPointsSelectItem(nil, nil, False);
+    EndUpdate;
   end;
 end;
 
 procedure TBreakPointsDlg.popDeleteAllClick(Sender: TObject);
 var
-  n: Integer;
-begin                                    
+  VNode: PVirtualNode;
+  CurBreakPoint: TIDEBreakPoint;
+begin
+  BeginUpdate;
   try
-    DisableAllActions;
     if MessageDlg(lisDeleteAllBreakpoints,
       lisDeleteAllBreakpoints,
       mtConfirmation,[mbYes,mbCancel],0)<>mrYes
     then exit;
-    lvBreakPoints.BeginUpdate;
-    try
-      for n := lvBreakPoints.Items.Count - 1 downto 0 do
-        TIDEBreakPoint(lvBreakPoints.Items[n].Data).ReleaseReference;
-    finally
-      lvBreakPoints.EndUpdate;
+
+    VNode := tvBreakPoints.GetFirstNoInit;
+    while VNode <> nil do
+    begin
+      CurBreakPoint:=TIDEBreakPoint(tvBreakPoints.NodeItem[VNode]);
+      VNode := tvBreakPoints.GetNextNoInit(VNode);
+      CurBreakPoint.ReleaseReference;
     end;
   finally
-    lvBreakPointsSelectItem(nil, nil, False);
+    EndUpdate;
   end;
+end;
+
+procedure TBreakPointsDlg.tbGroupByBrkGroupClick(Sender: TObject);
+begin
+  UpdateAll;
+
+  case tbGroupByBrkGroup.Down of
+    True:  DebuggerOptions.BreakpointsDialogShowTree := bstBrkGroup;
+    False: DebuggerOptions.BreakpointsDialogShowTree := bstNone;
+  end;
+  DebuggerOptions.Save;
+end;
+
+procedure TBreakPointsDlg.tvBreakPointsChange(Sender: TBaseVirtualTree;
+  Node: PVirtualNode);
+var
+  VNode: PVirtualNode;
+  ItemSelected: Boolean;
+  SelCanEnable, SelCanDisable: Boolean;
+  AllCanEnable, AllCanDisable: Boolean;
+  CurBreakPoint: TIDEBreakPoint;
+  TotalCnt: Integer;
+begin
+  if UpdateCount > 0 then exit;
+
+  SelCanEnable := False;
+  SelCanDisable := False;
+  AllCanEnable := False;
+  allCanDisable := False;
+  TotalCnt := 0;
+  for VNode in tvBreakPoints.NoInitItemNodes do begin
+    CurBreakPoint := TIDEBreakPoint(tvBreakPoints.NodeItem[VNode]);
+    if CurBreakPoint = nil then
+      continue;
+    inc(TotalCnt);
+    if tvBreakPoints.Selected[VNode] then begin
+      SelCanEnable  := SelCanEnable  or not CurBreakPoint.Enabled;
+      SelCanDisable := SelCanDisable or CurBreakPoint.Enabled;
+    end;
+    AllCanEnable  := AllCanEnable  or not CurBreakPoint.Enabled;
+    AllCanDisable := AllCanDisable or CurBreakPoint.Enabled;
+  end;
+
+  CurBreakPoint := TIDEBreakPoint(tvBreakPoints.FocusedItem);
+  ItemSelected := CurBreakPoint <> nil;
+
+  actToggleCurrentEnable.Enabled := ItemSelected;
+  actToggleCurrentEnable.Checked := (CurBreakPoint <> nil) and CurBreakPoint.Enabled;
+
+  actEnableSelected.Enabled := SelCanEnable;
+  actDisableSelected.Enabled := SelCanDisable;
+  actDeleteSelected.Enabled := ItemSelected;
+
+  actEnableAll.Enabled := AllCanEnable;
+  actDisableAll.Enabled := AllCanDisable;
+  actDeleteAll.Enabled := TotalCnt > 0;
+
+  actEnableAllInSrc.Enabled := ItemSelected;
+  actDisableAllInSrc.Enabled := ItemSelected;
+  actDeleteAllInSrc.Enabled := ItemSelected;
+
+  actProperties.Enabled := ItemSelected;
+  actShow.Enabled := ItemSelected;
+
+  popGroup.Enabled := ItemSelected;
+  actGroupSetNew.Enabled := ItemSelected;
+  actGroupSetNone.Enabled := ItemSelected;
+
+  tvBreakPoints.Invalidate;
+end;
+
+procedure TBreakPointsDlg.tvBreakPointsCompareNodes(Sender: TBaseVirtualTree;
+  Node1, Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
+var
+  c1, c2: TBreakpointGroupFrame;
+  b1, b2: TIDEBreakPoint;
+  Desc: integer;
+begin
+  Result := 0;
+  if tvBreakPoints.Header.SortDirection = sdDescending then
+    Desc := -1
+  else
+    Desc := 1;
+
+  c1 := GetGroupFrame(Node1);
+  c2 := GetGroupFrame(Node2);
+
+  if (c1 <> nil) and (c2 <> nil) then begin
+    Result := Desc * c1.Compare(c2);
+    exit;
+  end
+  else
+  if (c1 <> nil) and (c2 = nil) then begin
+    Result := Desc;
+    exit;
+  end
+  else
+  if (c1 = nil) and (c2 <> nil) then begin
+    Result := -Desc;
+    exit;
+  end;
+
+  b1 := TIDEBreakPoint(tvBreakPoints.NodeItem[Node1]);
+  b2 := TIDEBreakPoint(tvBreakPoints.NodeItem[Node2]);
+
+  case Column of
+    0: Result := (ord(b1.Enabled)*256 + ord(b1.Valid)) - (ord(b2.Enabled)*256 + ord(b2.Valid));
+    1: begin
+        if (b1.Kind = bpkAddress) and (b2.Kind = bpkAddress) then begin
+          if b1.Address = b2.Address then Result := 0
+          else
+          if b1.Address > b2.Address then Result := 1
+          else
+          Result := -1;
+        end
+        else begin
+          Result := ord(b1.Kind) - ord(b2.Kind);
+          if Result = 0 then
+            Result := CompareStr(tvBreakPoints.Text[Node1,1], tvBreakPoints.Text[Node2,1]);
+        end;
+      end;
+    2: begin
+        if (b1.Kind = bpkSource) and (b2.Kind = bpkSource) then begin
+          Result := b1.Line - b2.Line;
+        end
+        else begin
+          Result := CompareStr(tvBreakPoints.Text[Node1,1], tvBreakPoints.Text[Node2,1]);
+        end;
+      end;
+    else
+      if (Column >= 0) and (Column <= 6) then
+        Result := CompareStr(tvBreakPoints.Text[Node1, Column], tvBreakPoints.Text[Node2, Column]);
+  end;
+
+  if (Result = 0) and (Column >= 0) and (FSecondarySortCol >= 0) and (FSecondarySortCol <> Column) then begin
+    case FSecondarySortCol of
+      0: Result := (ord(b1.Enabled)*256 + ord(b1.Valid)) - (ord(b2.Enabled)*256 + ord(b2.Valid));
+      1: begin
+          if (b1.Kind = bpkAddress) and (b2.Kind = bpkAddress) then begin
+            if b1.Address = b2.Address then Result := 0
+            else
+            if b1.Address > b2.Address then Result := 1
+            else
+            Result := -1;
+          end
+          else begin
+            Result := ord(b1.Kind) - ord(b2.Kind);
+            if Result = 0 then
+              Result := CompareStr(tvBreakPoints.Text[Node1,1], tvBreakPoints.Text[Node2,1]);
+          end;
+        end;
+      2: begin
+          if (b1.Kind = bpkSource) and (b2.Kind = bpkSource) then begin
+            Result := b1.Line - b2.Line;
+          end
+          else begin
+            Result := CompareStr(tvBreakPoints.Text[Node1,1], tvBreakPoints.Text[Node2,1]);
+          end;
+        end;
+      else
+        if (FSecondarySortCol >= 0) and (FSecondarySortCol <= 6) then
+          Result := CompareStr(tvBreakPoints.Text[Node1, FSecondarySortCol], tvBreakPoints.Text[Node2, FSecondarySortCol]);
+    end;
+    if FSecondarySortDir = sdDescending then
+      Result := -Result;
+  end;
+
+  if Result = 0 then
+    Result := b1.Index - b2.Index;
+end;
+
+procedure TBreakPointsDlg.tvBreakPointsFocusChanged(Sender: TBaseVirtualTree;
+  Node: PVirtualNode; Column: TColumnIndex);
+begin
+  tvBreakPointsChange(nil, nil);
+end;
+
+procedure TBreakPointsDlg.tvBreakPointsHeaderClick(Sender: TVTHeader;
+  HitInfo: TVTHeaderHitInfo);
+begin
+  tvBreakPoints.BeginUpdate;
+  try
+    if tvBreakPoints.Header.SortColumn <> HitInfo.Column then begin
+      if tvBreakPoints.Header.SortColumn >= 0 then begin
+        FSecondarySortCol := tvBreakPoints.Header.SortColumn;
+        FSecondarySortDir := tvBreakPoints.Header.SortDirection;
+      end
+      else
+      if tvBreakPoints.Header.SortColumn <> FCurrentSortCol then begin
+        FSecondarySortCol := -1;
+      end;
+
+      tvBreakPoints.Header.SortColumn := HitInfo.Column;
+      tvBreakPoints.Header.SortDirection := sdAscending;
+      FCurrentSortCol := HitInfo.Column;
+    end
+    else
+    if tvBreakPoints.Header.SortDirection = sdAscending then
+      tvBreakPoints.Header.SortDirection := sdDescending
+    else
+    begin
+      tvBreakPoints.Header.SortColumn := -1;
+      tvBreakPoints.Header.SortDirection := sdAscending;
+    end;
+  finally
+    tvBreakPoints.EndUpdate;
+  end;
+  //tvBreakPoints.SortTree(tvBreakPoints.Header.SortColumn, tvBreakPoints.Header.SortDirection);
+end;
+
+procedure TBreakPointsDlg.tvBreakPointsNodeDblClick(Sender: TBaseVirtualTree;
+  const HitInfo: THitInfo);
+begin
+  tvBreakPointsChange(nil, nil);
+  JumpToCurrentBreakPoint;
 end;
 
 procedure TBreakPointsDlg.popDeleteClick(Sender: TObject);
 begin
+  BeginUpdate;
   try
-    DisableAllActions;
     DeleteSelectedBreakpoints;
   finally
-    lvBreakPointsSelectItem(nil, nil, False);
+    EndUpdate;
   end;
 end;
 
 procedure TBreakPointsDlg.popDisableAllClick(Sender: TObject);
 var
-  n: Integer;
-  Item: TListItem;
+  VNode: PVirtualNode;
 begin
+  BeginUpdate;
   try
-    DisableAllActions;
-    for n := 0 to lvBreakPoints.Items.Count - 1 do
-    begin
-      Item := lvBreakPoints.Items[n];
-      if Item.Data <> nil
-      then TIDEBreakPoint(Item.Data).Enabled := False;
-    end;
+    for VNode in tvBreakPoints.NoInitItemNodes do
+      TIDEBreakPoint(tvBreakPoints.NodeItem[VNode]).Enabled := False;
   finally
-    lvBreakPointsSelectItem(nil, nil, False);
+    EndUpdate;
   end;
 end;
 
 procedure TBreakPointsDlg.popEnableAllClick(Sender: TObject);
 var
-  n: Integer;
-  Item: TListItem;
+  VNode: PVirtualNode;
 begin
+  BeginUpdate;
   try
-    DisableAllActions;
-    for n := 0 to lvBreakPoints.Items.Count - 1 do
-    begin
-      Item := lvBreakPoints.Items[n];
-      if Item.Data <> nil
-      then TIDEBreakPoint(Item.Data).Enabled := True;
-    end;
+    for VNode in tvBreakPoints.NoInitItemNodes do
+      TIDEBreakPoint(tvBreakPoints.NodeItem[VNode]).Enabled := True;
   finally
-    lvBreakPointsSelectItem(nil, nil, False);
+    EndUpdate;
   end;
 end;
 
 procedure TBreakPointsDlg.popEnabledClick(Sender: TObject);
 var
-  n: Integer;
-  Item: TListItem;
+  VNode: PVirtualNode;
+  CurBreakPoint: TIDEBreakPoint;
   Enable: Boolean;
 begin
+  BeginUpdate;
   try
-    DisableAllActions;
-    Item:=lvBreakPoints.Selected;
-    if (Item=nil) then exit;
+    VNode := tvBreakPoints.FocusedNode;
+    if VNode = nil then
+      exit;
 
-    Enable := not TIDEBreakPoint(Item.Data).Enabled;
+    CurBreakPoint:=TIDEBreakpoint(tvBreakPoints.NodeItem[VNode]);
+    Enable := not CurBreakPoint.Enabled;
 
-    if lvBreakPoints.SelCount > 1
+    if tvBreakPoints.SelectedCount > 1
     then begin
-      for n := 0 to lvBreakPoints.Items.Count -1 do
-      begin
-        Item := lvBreakPoints.Items[n];
-        if Item.Selected then
-          TIDEBreakPoint(Item.Data).Enabled := Enable;
-      end;
+      for VNode in tvBreakPoints.SelectedItemNodes do
+        TIDEBreakPoint(tvBreakPoints.NodeItem[VNode]).Enabled := Enable;
     end
     else begin
-      TIDEBreakPoint(Item.Data).Enabled:= Enable;
+      CurBreakPoint.Enabled:= Enable;
     end;
   finally
-    lvBreakPointsSelectItem(nil, nil, False);
+    EndUpdate;
   end;
 end;
 
 procedure TBreakPointsDlg.popPropertiesClick(Sender: TObject);
 begin
+  BeginUpdate;
   try
-    DisableAllActions;
     ShowProperties;
   finally
-    lvBreakPointsSelectItem(nil, nil, False);
+    EndUpdate;
   end;
 end;
 
 procedure TBreakPointsDlg.DoEndUpdate;
 begin
   inherited DoEndUpdate;
-  if bpdsItemsNeedUpdate in FStates then UpdateAll;
-  lvBreakPointsSelectItem(nil, nil, False);
+
+  if bpdsInEndUpdate in FStates then
+    exit;
+
+  Include(FStates, bpdsInEndUpdate);
+  try
+    if bpdsItemsNeedUpdate in FStates then
+      UpdateAll; // calls begin/end udpate
+
+    tvBreakPointsChange(nil, nil);
+    tvBreakPoints.EndUpdate;
+  finally
+    Exclude(FStates, bpdsInEndUpdate);
+  end;
 end;
 
 procedure TBreakPointsDlg.DisableAllActions;
@@ -833,8 +1227,8 @@ end;
 
 function TBreakPointsDlg.ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
 begin
-  if (AColId - 1 >= 0) and (AColId - 1 < lvBreakPoints.ColumnCount) then begin
-    ASize := lvBreakPoints.Column[AColId - 1].Width;
+  if (AColId - 1 >= 0) and (AColId - 1 < tvBreakPoints.Header.Columns.Count) then begin
+    ASize := tvBreakPoints.Header.Columns[AColId - 1].Width;
     Result := ASize <> COL_WIDTHS[AColId - 1];
   end
   else
@@ -844,199 +1238,228 @@ end;
 procedure TBreakPointsDlg.ColSizeSetter(AColId: Integer; ASize: Integer);
 begin
   case AColId of
-    COL_BREAK_STATE:     lvBreakPoints.Column[0].Width := ASize;
-    COL_BREAK_FILE:      lvBreakPoints.Column[1].Width := ASize;
-    COL_BREAK_LINE:      lvBreakPoints.Column[2].Width := ASize;
-    COL_BREAK_CONDITION: lvBreakPoints.Column[3].Width := ASize;
-    COL_BREAK_ACTION:    lvBreakPoints.Column[4].Width := ASize;
-    COL_BREAK_PASS:      lvBreakPoints.Column[5].Width := ASize;
-    COL_BREAK_GROUP:     lvBreakPoints.Column[6].Width := ASize;
+    COL_BREAK_STATE:     tvBreakPoints.Header.Columns[0].Width := ASize;
+    COL_BREAK_FILE:      tvBreakPoints.Header.Columns[1].Width := ASize;
+    COL_BREAK_LINE:      tvBreakPoints.Header.Columns[2].Width := ASize;
+    COL_BREAK_CONDITION: tvBreakPoints.Header.Columns[3].Width := ASize;
+    COL_BREAK_ACTION:    tvBreakPoints.Header.Columns[4].Width := ASize;
+    COL_BREAK_PASS:      tvBreakPoints.Header.Columns[5].Width := ASize;
+    COL_BREAK_GROUP:     tvBreakPoints.Header.Columns[6].Width := ASize;
   end;
 end;
 
-procedure TBreakPointsDlg.UpdateItem(const AnItem: TListItem;
+procedure TBreakPointsDlg.UpdateItem(const AVNode: PVirtualNode;
   const ABreakpoint: TIDEBreakPoint);
 var
+  ParentVNode: PVirtualNode;
   s, Filename: String;
 begin
-  // Filename/Address
-  // Line/Length
-  // Condition
-  // Action
-  // Pass Count
-  // Group
+  BeginUpdate;
+  try
+    ParentVNode := FindParentNode(ABreakpoint);
+    ChangeParentNode(AVNode, ParentVNode);
 
-  // state
-  AnItem.Caption := GetBreakPointStateDescription(ABreakpoint);
-  AnItem.ImageIndex := GetBreakPointImageIndex(ABreakpoint);
-  
-  // filename/address
-  case ABreakpoint.Kind of
-    bpkSource:
-      begin
-        Filename:=ABreakpoint.Source;
-        if BaseDirectory<>'' then
-          Filename:=CreateRelativePath(Filename,BaseDirectory);
-        AnItem.SubItems[0] := Filename;
-        // line
-        if ABreakpoint.Line > 0
-        then AnItem.SubItems[1] := IntToStr(ABreakpoint.Line)
-        else AnItem.SubItems[1] := '';
-      end;
-    bpkAddress:
-      begin
-        // todo: how to define digits count? 8 or 16 depends on gdb pointer size for platform
-        AnItem.SubItems[0] := '$' + IntToHex(ABreakpoint.Address, 8);
-      end;
-    bpkData:
-      begin
-        AnItem.SubItems[0] := ABreakpoint.WatchData;
-        case ABreakpoint.WatchScope of
-          wpsGlobal: s:= lisWatchScopeGlobal;
-          wpsLocal:  s:= lisWatchScopeLocal;
-          else s := '';
+    if tvBreakPoints.ChildCount[ParentVNode] = 1 then
+      tvBreakPoints.Expanded[ParentVNode] := True;
+
+    // state
+    tvBreakPoints.NodeText[AVNode, 0] := GetBreakPointStateDescription(ABreakpoint);
+    tvBreakPoints.NodeImageIndex[AVNode, 0] := GetBreakPointImageIndex(ABreakpoint);
+
+    // filename/address
+    case ABreakpoint.Kind of
+      bpkSource:
+        begin
+          Filename:=ABreakpoint.Source;
+          if BaseDirectory<>'' then
+            Filename:=CreateRelativePath(Filename,BaseDirectory);
+          tvBreakPoints.NodeText[AVNode, 1] := Filename;
+          // line
+          if ABreakpoint.Line > 0
+          then tvBreakPoints.NodeText[AVNode, 2] := IntToStr(ABreakpoint.Line)
+          else tvBreakPoints.NodeText[AVNode, 2] := '';
         end;
-        s := s +' / ';
-        case ABreakpoint.WatchKind of
-          wpkRead:      s := s + lisWatchKindRead;
-          wpkReadWrite: s := s + lisWatchKindReadWrite;
-          wpkWrite:     s := s + lisWatchKindWrite;
+      bpkAddress:
+        begin
+          // todo: how to define digits count? 8 or 16 depends on gdb pointer size for platform
+          tvBreakPoints.NodeText[AVNode, 1] := '$' + IntToHex(ABreakpoint.Address, 8);
         end;
-        AnItem.SubItems[1] := s;
-      end;
+      bpkData:
+        begin
+          tvBreakPoints.NodeText[AVNode, 1] := ABreakpoint.WatchData;
+          case ABreakpoint.WatchScope of
+            wpsGlobal: s:= lisWatchScopeGlobal;
+            wpsLocal:  s:= lisWatchScopeLocal;
+            else s := '';
+          end;
+          s := s +' / ';
+          case ABreakpoint.WatchKind of
+            wpkRead:      s := s + lisWatchKindRead;
+            wpkReadWrite: s := s + lisWatchKindReadWrite;
+            wpkWrite:     s := s + lisWatchKindWrite;
+          end;
+          tvBreakPoints.NodeText[AVNode, 2] := s;
+        end;
+    end;
+
+    // expression
+    tvBreakPoints.NodeText[AVNode, 3] := ABreakpoint.Expression;
+
+    // actions
+    tvBreakPoints.NodeText[AVNode, 4]  := GetBreakPointActionsDescription(ABreakpoint);
+
+    // hitcount
+    tvBreakPoints.NodeText[AVNode, 5] := IntToStr(ABreakpoint.HitCount);
+
+    // group
+    if ABreakpoint.Group = nil
+    then tvBreakPoints.NodeText[AVNode, 6] := ''
+    else tvBreakPoints.NodeText[AVNode, 6] := ABreakpoint.Group.Name;
+
+  finally
+    EndUpdate;
   end;
-
-  // expression
-  AnItem.SubItems[2] := ABreakpoint.Expression;
-  
-  // actions
-  AnItem.SubItems[3]  := GetBreakPointActionsDescription(ABreakpoint);
-  
-  // hitcount
-  AnItem.SubItems[4] := IntToStr(ABreakpoint.HitCount);
-  
-  // group
-  if ABreakpoint.Group = nil
-  then AnItem.SubItems[5] := ''
-  else AnItem.SubItems[5] := ABreakpoint.Group.Name;
-
-  lvBreakPointsSelectItem(nil, nil, False);
 end;
 
 procedure TBreakPointsDlg.UpdateAll;
 var
-  i: Integer;
-  CurItem: TListItem;
+  VNode, LastAbandoned: PVirtualNode;
+  GrpHeader: TBreakpointGroupFrame;
 begin
   if UpdateCount>0 then begin
     Include(FStates,bpdsItemsNeedUpdate);
     exit;
   end;
-  Exclude(FStates,bpdsItemsNeedUpdate);
-  inc(FLockActionUpdate);
-  for i:=0 to lvBreakPoints.Items.Count-1 do begin
-    CurItem:=lvBreakPoints.Items[i];
-    UpdateItem(CurItem,TIDEBreakPoint(CurItem.Data));
+
+  BeginUpdate;
+  try
+    Exclude(FStates,bpdsItemsNeedUpdate);
+
+    LastAbandoned := nil;
+    for VNode in tvBreakPoints.NoInitItemNodes(False, True) do begin
+      GrpHeader := GetGroupFrame(VNode);
+      if GrpHeader <> nil then begin
+        if LastAbandoned <> nil then begin
+          tvBreakPoints.DeleteNode(LastAbandoned);
+          LastAbandoned := nil;
+        end;
+        GrpHeader.Visible := tbGroupByBrkGroup.Down;
+        if GrpHeader.GroupKind = bgfAbandoned then
+          LastAbandoned := VNode;
+      end
+      else
+        UpdateItem(VNode, TIDEBreakPoint(tvBreakPoints.NodeItem[VNode]));
+    end;
+    if LastAbandoned <> nil then begin
+      tvBreakPoints.DeleteNode(LastAbandoned);
+      LastAbandoned := nil;
+    end;
+  finally
+    EndUpdate;
   end;
-  dec(FLockActionUpdate);
-  lvBreakPointsSelectItem(nil, nil, False);
 end;
 
 procedure TBreakPointsDlg.DeleteSelectedBreakpoints;
 var
-  Item: TListItem;
+  VNode: PVirtualNode;
   CurBreakPoint: TIDEBreakPoint;
   Msg: String;
-  List: TList;
-  n, Idx: Integer;
 begin
-  Idx := lvBreakPoints.ItemIndex;
-  Item:=lvBreakPoints.Selected;
-  if Item = nil then exit;
+  BeginUpdate;
+  try
+    CurBreakPoint:=TIDEBreakPoint(tvBreakPoints.FocusedItem);
+    if CurBreakPoint = nil then exit;
 
-  if lvBreakPoints.SelCount = 1 then
-  begin
-    CurBreakPoint:=TIDEBreakPoint(Item.Data);
-    case CurBreakPoint.Kind of
-      bpkSource: Msg := Format(lisDeleteBreakpointAtLine,
-                           [LineEnding, CurBreakPoint.Source, CurBreakPoint.Line]);
-      bpkAddress: Msg := Format(lisDeleteBreakpointForAddress, ['$' + IntToHex(CurBreakPoint.Address, 8)]);
-      bpkData: Msg := Format(lisDeleteBreakpointForWatch, [CurBreakPoint.WatchData]);
-    end;
-  end
-  else
-    Msg := lisDeleteAllSelectedBreakpoints;
-  if MessageDlg(Msg, mtConfirmation, [mbYes,mbCancel],0) <> mrYes then exit;
-
-  if lvBreakPoints.SelCount = 1
-  then begin
-    TBaseBreakPoint(Item.Data).ReleaseReference;
-  end
-  else begin
-    List := TList.Create;
-    for n := 0 to lvBreakPoints.Items.Count - 1 do
+    if tvBreakPoints.SelectedCount <= 1 then
     begin
-      Item := lvBreakPoints.Items[n];
-      if Item.Selected
-      then List.Add(Item.Data);
-    end;
+      case CurBreakPoint.Kind of
+        bpkSource: Msg := Format(lisDeleteBreakpointAtLine,
+                             [LineEnding, CurBreakPoint.Source, CurBreakPoint.Line]);
+        bpkAddress: Msg := Format(lisDeleteBreakpointForAddress, ['$' + IntToHex(CurBreakPoint.Address, 8)]);
+        bpkData: Msg := Format(lisDeleteBreakpointForWatch, [CurBreakPoint.WatchData]);
+      end;
+    end
+    else
+      Msg := lisDeleteAllSelectedBreakpoints;
+    if MessageDlg(Msg, mtConfirmation, [mbYes,mbCancel],0) <> mrYes then exit;
 
-    lvBreakPoints.BeginUpdate;
-    try
-      for n := 0 to List.Count - 1 do
-        TBaseBreakPoint(List[n]).ReleaseReference;
-    finally
-      lvBreakPoints.EndUpdate;
+    if tvBreakPoints.SelectedCount <= 1
+    then begin
+      CurBreakPoint.ReleaseReference;
+    end
+    else begin
+      tvBreakPoints.BeginUpdate;
+      try
+        VNode := tvBreakPoints.GetFirstSelected;
+        while VNode <> nil do
+        begin
+          CurBreakPoint:=TIDEBreakPoint(VNode);
+          VNode := tvBreakPoints.GetNextSelected(VNode);
+          CurBreakPoint.ReleaseReference;
+        end;
+      finally
+        tvBreakPoints.EndUpdate;
+      end;
     end;
-    List.Free;
+  finally
+    EndUpdate;
   end;
-  if Idx > lvBreakPoints.Items.Count - 1 then
-    Idx := lvBreakPoints.Items.Count - 1;
-  if Idx >= 0 then
-    lvBreakPoints.ItemIndex := Idx;
 end;
 
 procedure TBreakPointsDlg.JumpToCurrentBreakPoint;
 var
-  CurItem: TListItem;
   CurBreakPoint: TIDEBreakPoint;
 begin
-  CurItem:=lvBreakPoints.Selected;
-  if CurItem=nil then exit;
-  CurBreakPoint:=TIDEBreakPoint(CurItem.Data);
+  CurBreakPoint:=TIDEBreakPoint(tvBreakPoints.FocusedItem);
+  if CurBreakPoint = nil then exit;
+
   if CurBreakPoint.Kind = bpkSource then
     DebugBoss.JumpToUnitSource(CurBreakPoint.Source, CurBreakPoint.Line, False);
 end;
 
 procedure TBreakPointsDlg.ShowProperties;
 var
-  Item: TListItem;
   CurBreakPoint: TIDEBreakPoint;
 begin
-  Item:=lvBreakPoints.Selected;
-  if Item = nil then exit;
+  CurBreakPoint:=TIDEBreakPoint(tvBreakPoints.FocusedItem);
+  if CurBreakPoint = nil then exit;
 
-  CurBreakPoint:=TIDEBreakPoint(Item.Data);
-
-  DebugBoss.ShowBreakPointProperties(CurBreakPoint);
+  BeginUpdate;
+  try
+    DebugBoss.ShowBreakPointProperties(CurBreakPoint);
+  finally
+    EndUpdate;
+  end;
 end;
 
 procedure TBreakPointsDlg.DoBreakPointsChanged;
 var
   i: Integer;
+  VNode: PVirtualNode;
 begin
-  lvBreakPoints.Items.Clear;
-  if BreakPoints <> nil
-  then begin
-    for i:=0 to BreakPoints.Count-1 do
-      BreakPointUpdate(BreakPoints, BreakPoints.Items[i]);
+  BeginUpdate;
+  try
+    for VNode in tvBreakPoints.NoInitItemNodes(False, True) do
+      if tvBreakPoints.NodeControl[VNode] = nil then
+        tvBreakPoints.DeleteNode(VNode);
+
+    if BreakPoints <> nil
+    then begin
+      for i:=0 to BreakPoints.Count-1 do
+        BreakPointUpdate(BreakPoints, BreakPoints.Items[i]);
+    end;
+  finally
+    EndUpdate;
   end;
 end;
 
 procedure TBreakPointsDlg.DoBeginUpdate;
 begin
   inherited DoBeginUpdate;
-  DisableAllActions;
+  if not (bpdsInEndUpdate in FStates) then begin
+    tvBreakPoints.BeginUpdate;
+    DisableAllActions;
+  end;
 end;
 
 initialization

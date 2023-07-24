@@ -107,6 +107,8 @@ type
     property ForcedUnsuitableClass: TDebuggerClass read FForcedUnsuitableClass;
   end;
 
+  TBreakpointsDialogShowTreeType = (bstNone, bstBrkGroup);
+
   { TDebuggerOptions }
 
   TDebuggerOptions = class(TAbstractIDEEnvironmentOptions)
@@ -118,6 +120,7 @@ type
     *)
     DebuggerOptsVersionFpDebugUpdate = 1;
   private
+    FBreakpointsDialogShowTree: TBreakpointsDialogShowTreeType;
     FFilename: string;
     FFileVersion: integer;
 
@@ -168,6 +171,7 @@ type
 
   published
     property SetupCheckIgnoreNoDefault: Boolean read FSetupCheckIgnoreNoDefault write FSetupCheckIgnoreNoDefault;
+    property BreakpointsDialogShowTree: TBreakpointsDialogShowTreeType read FBreakpointsDialogShowTree write FBreakpointsDialogShowTree default bstBrkGroup;
   end;
 
   TCurrentDebuggerSetupResult = (
@@ -825,6 +829,7 @@ end;
 procedure TDebuggerOptions.Init;
 begin
   // Init for all published values
+  FBreakpointsDialogShowTree := bstBrkGroup;
 end;
 
 procedure TDebuggerOptions.Load;

@@ -44,6 +44,7 @@ type
 
   TDbgTreeNodeData = record
     Item: TObject;  // Must be the first field.  Node.AddChild will write the new "Item" at UserData^  (aka the memory at the start of UserData)
+    ImageIndex: Array of Integer;
     CachedText: Array of String;
     Control: TControl;
     PrevControlNode, NextControlNode: PVirtualNode;
@@ -59,9 +60,12 @@ type
     FFirstControlNode: PVirtualNode; // not ordered
     FOnItemRemoved: TItemRemovedEvent;
     function GetNodeControl(Node: PVirtualNode): TControl;
+    function GetNodeImageIndex(Node: PVirtualNode; AColumn: integer): Integer;
     function GetNodeItem(Node: PVirtualNode): TObject;
     function GetNodeText(Node: PVirtualNode; AColumn: integer): String;
     procedure SetNodeControl(Node: PVirtualNode; AValue: TControl);
+    procedure SetNodeImageIndex(Node: PVirtualNode; AColumn: integer;
+      AValue: Integer);
     procedure SetNodeItem(Node: PVirtualNode; AValue: TObject);
     procedure SetNodeText(Node: PVirtualNode; AColumn: integer; AValue: String);
     procedure ChangeControl(Node: PVirtualNode; NData: PDbgTreeNodeData; AControl: TControl);
@@ -83,6 +87,9 @@ type
     procedure DoGetText(Node: PVirtualNode; Column: TColumnIndex;
       TextType: TVSTTextType; var AText: String); override;
     procedure DoPaintNode(var PaintInfo: TVTPaintInfo); override;
+    function DoGetImageIndex(Node: PVirtualNode; Kind: TVTImageKind;
+      Column: TColumnIndex; var Ghosted: Boolean; var Index: Integer
+      ): TCustomImageList; override;
   public
     function GetNodeData(Node: PVirtualNode): PDbgTreeNodeData; reintroduce;
 
@@ -108,6 +115,7 @@ type
 
     property NodeItem[Node: PVirtualNode]: TObject read GetNodeItem write SetNodeItem;
     property NodeText[Node: PVirtualNode; AColumn: integer]: String read GetNodeText write SetNodeText;
+    property NodeImageIndex[Node: PVirtualNode; AColumn: integer]: Integer read GetNodeImageIndex write SetNodeImageIndex;
     property NodeControl[Node: PVirtualNode]: TControl read GetNodeControl write SetNodeControl;
 
     property OnItemRemoved: TItemRemovedEvent read FOnItemRemoved write FOnItemRemoved;
@@ -195,6 +203,17 @@ begin
     Result := Data^.Control;
 end;
 
+function TDbgTreeView.GetNodeImageIndex(Node: PVirtualNode; AColumn: integer
+  ): Integer;
+var
+  Data: PDbgTreeNodeData;
+begin
+  Result := -1;
+  Data := GetNodeData(Node);
+  if (Data <> nil) and (AColumn < Length(Data^.ImageIndex)) then
+    Result := Data^.ImageIndex[AColumn] - 1;
+end;
+
 function TDbgTreeView.GetNodeItem(Node: PVirtualNode): TObject;
 var
   Data: PDbgTreeNodeData;
@@ -231,6 +250,19 @@ begin
     AValue.Visible := False;
     AValue.Parent := Self;
     AValue.AutoSize := False;
+  end;
+end;
+
+procedure TDbgTreeView.SetNodeImageIndex(Node: PVirtualNode; AColumn: integer;
+  AValue: Integer);
+var
+  Data: PDbgTreeNodeData;
+begin
+  Data := GetNodeData(Node);
+  if Data <> nil then begin
+    if AColumn >= Length(Data^.ImageIndex) then
+      SetLength(Data^.ImageIndex, AColumn + 1);
+    Data^.ImageIndex[AColumn] := AValue + 1;
   end;
 end;
 
@@ -491,6 +523,15 @@ begin
   end;
 
   inherited DoPaintNode(PaintInfo);
+end;
+
+function TDbgTreeView.DoGetImageIndex(Node: PVirtualNode; Kind: TVTImageKind;
+  Column: TColumnIndex; var Ghosted: Boolean; var Index: Integer
+  ): TCustomImageList;
+begin
+  Result := nil;
+  Ghosted := False;
+  Index := GetNodeImageIndex(Node, Column);
 end;
 
 function TDbgTreeView.GetNodeData(Node: PVirtualNode): PDbgTreeNodeData;
