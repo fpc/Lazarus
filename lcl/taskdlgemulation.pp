@@ -126,16 +126,6 @@ const
   TD_BTNMOD: array[TTaskDialogCommonButton] of Integer = (
     mrOk, mrYes, mrNo, mrCancel, mrRetry, mrAbort);
 
-
-type
-  /// internal type used for Unicode string storage
-  WS = WideString;
-
-function _WS(const aString: string): WS;
-begin
-  Result := UTF8Decode(aString);
-end;
-
 function CR(const aText: string): string;
 begin
   if pos('\n', aText) = 0 then
@@ -213,8 +203,6 @@ begin
     Result := aString;
 end;
 
-
-
 function IconMessage(Icon: TLCLTaskDialogIcon): string;
 begin
   case Icon of
@@ -228,19 +216,11 @@ begin
 end;
 
 
-
-
-
-
-
-
-
-{ -------------- }
 function ExecuteLCLTaskDialog(const ADlg: TCustomTaskDialog; AParentWnd: HWND; out ARadioRes: Integer): Integer;
 var
   DlgForm: TLCLTaskDialog;
 begin
-  debugln('ExecuteLCLTaskDialog');
+  //debugln('ExecuteLCLTaskDialog');
   Result := -1;
   DlgForm := TLCLTaskDialog.CreateNew(ADlg);
   try
@@ -252,7 +232,7 @@ end;
 
 constructor TLCLTaskDialog.CreateNew(AOwner: TComponent; Num: Integer);
 begin
-  debugln('TLCLTaskDialog.CreateNew: AOwner=',DbgSName(AOwner));
+  //debugln('TLCLTaskDialog.CreateNew: AOwner=',DbgSName(AOwner));
   inherited CreateNew(AOwner, Num);
   if (AOwner is TCustomTaskDialog) then
     FDlg := TTaskDialog(AOwner);
@@ -271,7 +251,7 @@ function TLCLTaskDialog.Execute(AParentWnd: HWND; out ARadioRes: Integer): Integ
 var
   mRes, I: Integer;
 begin
-  debugln(['TLCLTaskDialog.Execute: Assigned(FDlg)=',Assigned(FDlg)]);
+  //debugln(['TLCLTaskDialog.Execute: Assigned(FDlg)=',Assigned(FDlg)]);
   if not Assigned(FDlg) then
     Exit(-1);
   SetupControls;
@@ -289,10 +269,7 @@ begin
   if Assigned(PopupParent) then
     PopupMode := pmExplicit;
 
-
-
   Result := ShowModal;
-  //Result := (mRes > 0);
 
 //ToDo implement this
 (*
@@ -318,8 +295,6 @@ begin
   for i := 0 to high(RadioButtonArray) do
     if RadioButtonArray[i].Checked then
       ARadioRes := i+TaskDialogFirstRadioButtonIndex;
-
-
 end;
 
 
@@ -350,7 +325,8 @@ begin
     Y := Image.Top;
     if (tfEmulateClassicStyle in FDlg.Flags) then
       inc(Y, 8);
-  end else
+  end
+  else
   begin
     Image := nil;
     if (not (tfEmulateClassicStyle in FDlg.Flags)) and (DlgTitle <> '') then
@@ -386,7 +362,7 @@ begin
       AutoSize := False;
       SetBounds(X+16,Y,aWidth-32-X, (6-AFontHeight) + ARadioOffset);
       Caption := NoCR(Radios[i], aHint); //LCL RadioButton doesn't support multiline captions
-      if aHint<>'' then begin
+      if (aHint <> '') then begin
         ShowHint := True;
         Hint := aHint; // note shown as Hint
       end;
@@ -416,7 +392,7 @@ begin
         SetBounds(X,Y,aWidth-10-X,40) else
         SetBounds(X,Y,aWidth-16-X,40);
       Caption := NoCR(CustomButtons[i], aHint);
-      if aHint<>'' then
+      if (aHint <> '') then
       begin
         ShowHint := True;
         Hint := aHint; // note shown as Hint
@@ -462,16 +438,17 @@ var
   begin
     WB := Canvas.TextWidth(s)+52;
     dec(XB,WB);
-    if XB<X shr 1 then begin
+    if XB<X shr 1 then
+    begin
       XB := aWidth-WB;
       inc(Y,32);
     end;
     Result := TButton.Create(Self);
     Result.Parent := AParent;
-      if (tfEmulateClassicStyle in FDlg.Flags) then
-        Result.SetBounds(XB,Y,WB-10,22)
-      else
-        Result.SetBounds(XB,Y,WB-12,28);
+    if (tfEmulateClassicStyle in FDlg.Flags) then
+      Result.SetBounds(XB,Y,WB-10,22)
+    else
+      Result.SetBounds(XB,Y,WB-12,28);
     Result.Caption := s;
     Result.ModalResult := ModalResult;
     Result.TabOrder := CurrTabOrder;
@@ -499,13 +476,13 @@ begin
     if (Btn in CommonButtons) then
       AddButton(TD_Trans(LoadResString(TD_BTNS(Btn))), TD_BTNMOD[Btn]);
   end;
-  if VerificationText<>'' then
+  if (VerificationText <> '') then
   begin
     VerifyCheckBox := TCheckBox.Create(Self);
     with VerifyCheckBox do
     begin
       Parent := AParent;
-      if X+16+Canvas.TextWidth(VerificationText)>XB then begin
+      if (X+16+Canvas.TextWidth(VerificationText) > XB) then begin
         inc(Y,32);
         XB := aWidth;
       end;
@@ -556,7 +533,6 @@ begin
     X := 24;
   end;
   Element[tdeFooter] := AddLabel(FooterText, False, X, Y, AFontHeight, AWidth, AParent);
-
 end;
 
 function TLCLTaskDialog.AddLabel(const AText: string; BigFont: boolean; var X, Y: Integer; AFontHeight, AWidth: Integer; APArent: TWinControl): TLabel;
@@ -669,12 +645,8 @@ begin
     else
       DialogCaption := Application.MainForm.Caption;
 
-
-  //
   if (DlgTitle = '') then
     DlgTitle := IconMessage(TF_DIALOGICON(FDlg.MainIcon));
-
-
 
   PixelsPerInch := 96; // we are using 96 PPI in the code, scale it automatically at ShowModal
   Font.PixelsPerInch := 96;
@@ -732,8 +704,6 @@ begin
     ARadioOffset := 1;
     AddRadios(ARadioOffSet, aWidth, aRadioDef, FontHeight, X, Y, CurrParent);
   end;
-
-
 
   // add command links CustomButtons
   if (tfUseCommandLinks in FDlg.Flags) and (CustomButtons.Count<>0) then
@@ -808,7 +778,6 @@ begin
     AddFooter(X, Y, XB, FontHeight, aWidth, CurrParent);
 
    ClientHeight := Y;
-
 end;
 
 procedure TLCLTaskDialog.KeyDown(var Key: Word; Shift: TShiftState);
@@ -832,4 +801,3 @@ finalization
 
 
 end.
-
