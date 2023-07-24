@@ -1856,7 +1856,7 @@ var
       Config.nDefaultRadioButton := DefRB + TaskDialogFirstRadioButtonIndex;
     //writeln('PrepareTaskDialogConfig O');
 
-    Config.cxWidth := MulDiv(ADlg.FWidth, 4, DialogBaseUnits);  // cxWidth needed in "dialog units"
+    Config.cxWidth := MulDiv(ADlg.Width, 4, DialogBaseUnits);  // cxWidth needed in "dialog units"
     //writeln('PrepareTaskDialogConfig P');
 
     Config.pfCallback := @TaskDialogCallbackProc;

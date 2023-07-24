@@ -634,6 +634,7 @@ type
     FText: TTranslateString;
     FTitle: TTranslateString;
     FVerificationText: TTranslateString;
+    FWidth: Integer;
     FOnButtonClicked: TTaskDlgClickEvent;
     //procedure DoOnButtonClickedHandler(Sender: PTaskDialog; AButtonID: Integer;
     //  var ACanClose: Boolean);
@@ -644,8 +645,6 @@ type
     function DoExecute(ParentWnd: HWND): Boolean; dynamic;
     procedure DoOnButtonClicked(AModalResult: Integer; var ACanClose: Boolean); dynamic;
   public
-    FWidth: Integer; //ToDo: make this a readonly property, so we can use it in the TaskDlgEmulation unit.
-
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function ButtonIDToModalResult(const AButtonID: Integer): TModalResult;

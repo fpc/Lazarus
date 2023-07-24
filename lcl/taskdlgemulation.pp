@@ -695,7 +695,7 @@ begin
   if (FontHeight = 0) then
     FontHeight := Screen.SystemFont.Height;
 
-  aWidth := FDlg.FWidth;
+  aWidth := FDlg.Width;
   if (aWidth <= 0) then
   begin
     aWidth := Canvas.TextWidth(DlgTitle);
