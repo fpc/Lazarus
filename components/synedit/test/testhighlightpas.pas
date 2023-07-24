@@ -1451,7 +1451,7 @@ begin
     if (i and $08) = 0 then AFolds := AFolds - [cfbtClass, cfbtRecord];
     if (i and $10) = 0 then AFolds := AFolds - [cfbtClassSection];
     if (i and $20) = 0 then AFolds := AFolds - [cfbtProcedure];
-    //if (i and $40) = 0 then AFolds := AFolds - [cfbtAnonynmousProcedure];
+    //if (i and $40) = 0 then AFolds := AFolds - [cfbtAnonymousProcedure];
     SubTest('deprecated'   , AFolds);
     SubTest('unimplemented', AFolds);
     SubTest('experimental' , AFolds);

@@ -1,4 +1,4 @@
-unit BreakprointGroupFrame;
+unit BreakpointGroupFrame;
 
 {$mode objfpc}{$H+}
 

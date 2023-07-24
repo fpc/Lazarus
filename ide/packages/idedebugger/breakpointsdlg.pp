@@ -42,7 +42,7 @@ uses
   Menus, ComCtrls, Debugger, DebuggerDlg, ActnList, ExtCtrls, IDEImagesIntf,
   {$ifdef Windows} ActiveX, {$else} laz.FakeActiveX, {$endif}
   DbgIntfDebuggerBase, DbgIntfMiscClasses, BaseDebugManager,
-  IdeDebuggerStringConstants, DebuggerTreeView, BreakprointGroupFrame,
+  IdeDebuggerStringConstants, DebuggerTreeView, breakpointgroupframe,
   IdeDebuggerOpts, IdeIntfStrConsts, SrcEditorIntf, laz.VirtualTrees;
 
 type

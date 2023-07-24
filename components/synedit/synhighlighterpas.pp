@@ -141,7 +141,7 @@ type
     cfbtWhileDo,
     cfbtWithDo,
     cfbtIfElse,
-    cfbtAnonynmousProcedure,
+    cfbtAnonymousProcedure,
     // Internal type / not configurable
     cfbtCaseElse,     // "else" in case can have multiply statements
     cfbtPackage,
@@ -152,7 +152,7 @@ type
 
 
 const
-  cfbtLastPublic = cfbtAnonynmousProcedure;
+  cfbtLastPublic = cfbtAnonymousProcedure;
   cfbtFirstPrivate = cfbtCaseElse;
 
   CountPascalCodeFoldBlockOffset =
@@ -162,7 +162,7 @@ const
     [low(TPascalCodeFoldBlockType)..high(TPascalCodeFoldBlockType)]);
 
   PascalWordTripletRanges = TPascalCodeFoldBlockTypes(
-    [cfbtBeginEnd, cfbtTopBeginEnd, cfbtProcedure, cfbtAnonynmousProcedure, cfbtClass, cfbtProgram, cfbtRecord,
+    [cfbtBeginEnd, cfbtTopBeginEnd, cfbtProcedure, cfbtAnonymousProcedure, cfbtClass, cfbtProgram, cfbtRecord,
      cfbtTry, cfbtExcept, cfbtRepeat, cfbtAsm, cfbtCase, cfbtCaseElse,
      cfbtIfDef, cfbtRegion,
      cfbtIfThen, cfbtForDo,cfbtWhileDo,cfbtWithDo
@@ -545,7 +545,7 @@ type
     function ScanAheadForNextToken(RunOffs: Integer;
                                    out AFndLine: String; out ATokStart, ATokLen: integer;
                                    MaxLineCnt: Integer = 1000): Boolean; //inline;
-    function IsAnonynmousFunc(RunOffs: Integer; AnIsFunction: boolean): Boolean;
+    function IsAnonymousFunc(RunOffs: Integer; AnIsFunction: boolean): Boolean;
 
     function StartPascalCodeFoldBlock
              (ABlockType: TPascalCodeFoldBlockType; ForceDisabled: Boolean = False
@@ -1144,7 +1144,7 @@ begin
           EndPascalCodeFoldBlock;
       end else if tfb in [cfbtTopBeginEnd, cfbtAsm] then begin
         EndPascalCodeFoldBlock;
-        if TopPascalCodeFoldBlockType in [cfbtProcedure, cfbtAnonynmousProcedure] then
+        if TopPascalCodeFoldBlockType in [cfbtProcedure, cfbtAnonymousProcedure] then
           EndPascalCodeFoldBlock;
       end else if tfb in [cfbtCaseElse] then begin
         EndPascalCodeFoldBlock;
@@ -1162,7 +1162,7 @@ begin
           EndPascalCodeFoldBlock(True);
         end;
         fStringLen := sl;
-      end else if tfb = cfbtProcedure then begin //cfbtAnonynmousProcedure ?
+      end else if tfb = cfbtProcedure then begin //cfbtAnonymousProcedure ?
 //        EndPascalCodeFoldBlock; // wrong source: procedure end, without begin
       end else if tfb = cfbtUnitSection then begin
         EndPascalCodeFoldBlockLastLine;
@@ -1254,11 +1254,11 @@ function TSynPasSyn.Func32: TtkTokenKind;
 begin
   if KeyComp('Label') then begin
     if (TopPascalCodeFoldBlockType in  [cfbtVarType, cfbtLocalVarType, cfbtNone,
-        cfbtProcedure, cfbtAnonynmousProcedure, cfbtProgram, cfbtUnit, cfbtUnitSection])
+        cfbtProcedure, cfbtAnonymousProcedure, cfbtProgram, cfbtUnit, cfbtUnitSection])
     then begin
       if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
         EndPascalCodeFoldBlockLastLine;
-      if TopPascalCodeFoldBlockType in [cfbtProcedure, cfbtAnonynmousProcedure]
+      if TopPascalCodeFoldBlockType in [cfbtProcedure, cfbtAnonymousProcedure]
       then StartPascalCodeFoldBlock(cfbtLocalVarType)
       else StartPascalCodeFoldBlock(cfbtVarType);
     end;
@@ -1347,7 +1347,7 @@ begin
       EndPascalCodeFoldBlockLastLine;
     Result := tkKey;
     tbf := TopPascalCodeFoldBlockType;
-    if tbf in [cfbtProcedure, cfbtAnonynmousProcedure]
+    if tbf in [cfbtProcedure, cfbtAnonymousProcedure]
     then StartPascalCodeFoldBlock(cfbtTopBeginEnd, True)
     else StartPascalCodeFoldBlock(cfbtBeginEnd, tbf in [
       cfbtProgram, cfbtUnit, cfbtUnitSection, cfbtPackage,
@@ -1429,11 +1429,11 @@ begin
   else if KeyComp('Var') then begin
     if (PasCodeFoldRange.BracketNestLevel = 0) and
         (TopPascalCodeFoldBlockType in
-        [cfbtVarType, cfbtLocalVarType, cfbtNone, cfbtProcedure, cfbtAnonynmousProcedure, cfbtProgram,
+        [cfbtVarType, cfbtLocalVarType, cfbtNone, cfbtProcedure, cfbtAnonymousProcedure, cfbtProgram,
          cfbtUnit, cfbtUnitSection]) then begin
       if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
         EndPascalCodeFoldBlockLastLine;
-      if TopPascalCodeFoldBlockType in [cfbtProcedure, cfbtAnonynmousProcedure]
+      if TopPascalCodeFoldBlockType in [cfbtProcedure, cfbtAnonymousProcedure]
       then StartPascalCodeFoldBlock(cfbtLocalVarType)
       else StartPascalCodeFoldBlock(cfbtVarType);
     end;
@@ -1748,7 +1748,7 @@ begin
   if KeyComp('Type') then begin
     if (PasCodeFoldRange.BracketNestLevel = 0)
        and (TopPascalCodeFoldBlockType in
-        [cfbtVarType, cfbtLocalVarType, cfbtNone, cfbtProcedure, cfbtAnonynmousProcedure, cfbtProgram,
+        [cfbtVarType, cfbtLocalVarType, cfbtNone, cfbtProcedure, cfbtAnonymousProcedure, cfbtProgram,
          cfbtUnit, cfbtUnitSection])
     then begin
       if (rsAfterEqualOrColon in fRange) then begin
@@ -1758,7 +1758,7 @@ begin
       else begin
         if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
           EndPascalCodeFoldBlockLastLine;
-        if TopPascalCodeFoldBlockType in [cfbtProcedure, cfbtAnonynmousProcedure]
+        if TopPascalCodeFoldBlockType in [cfbtProcedure, cfbtAnonymousProcedure]
         then StartPascalCodeFoldBlock(cfbtLocalVarType)
         else StartPascalCodeFoldBlock(cfbtVarType);
         fRange := fRange + [rsInTypeBlock];
@@ -1819,11 +1819,11 @@ begin
   else if KeyComp('Const') then begin
     if (PasCodeFoldRange.BracketNestLevel = 0) and
         (TopPascalCodeFoldBlockType in
-        [cfbtVarType, cfbtLocalVarType, cfbtNone, cfbtProcedure, cfbtAnonynmousProcedure, cfbtProgram,
+        [cfbtVarType, cfbtLocalVarType, cfbtNone, cfbtProcedure, cfbtAnonymousProcedure, cfbtProgram,
          cfbtUnit, cfbtUnitSection]) then begin
       if TopPascalCodeFoldBlockType in [cfbtVarType, cfbtLocalVarType] then
         EndPascalCodeFoldBlockLastLine;
-      if TopPascalCodeFoldBlockType in [cfbtProcedure, cfbtAnonynmousProcedure]
+      if TopPascalCodeFoldBlockType in [cfbtProcedure, cfbtAnonymousProcedure]
       then StartPascalCodeFoldBlock(cfbtLocalVarType)
       else StartPascalCodeFoldBlock(cfbtVarType);
     end;
@@ -2280,8 +2280,8 @@ var
   InClass: Boolean;
 begin
   if KeyComp('Function') then begin
-    if (TopPascalCodeFoldBlockType in PascalStatementBlocks) and IsAnonynmousFunc(8, True) then begin
-      StartPascalCodeFoldBlock(cfbtAnonynmousProcedure);
+    if (TopPascalCodeFoldBlockType in PascalStatementBlocks) and IsAnonymousFunc(8, True) then begin
+      StartPascalCodeFoldBlock(cfbtAnonymousProcedure);
     end
     else begin
       if not(rsAfterEqualOrColon in fRange) then begin
@@ -2334,8 +2334,8 @@ var
   InClass: Boolean;
 begin
   if KeyComp('Procedure') then begin
-    if (TopPascalCodeFoldBlockType in PascalStatementBlocks) and IsAnonynmousFunc(9, False) then begin
-      StartPascalCodeFoldBlock(cfbtAnonynmousProcedure);
+    if (TopPascalCodeFoldBlockType in PascalStatementBlocks) and IsAnonymousFunc(9, False) then begin
+      StartPascalCodeFoldBlock(cfbtAnonymousProcedure);
     end
     else begin
       if not(rsAfterEqualOrColon in fRange) then begin
@@ -3497,7 +3497,7 @@ begin
   t := TopPascalCodeFoldBlockType;
   if ( (t in PascalStatementBlocks - [cfbtAsm])  or               //cfbtClass, cfbtClassSection,
        ( ( (t in [cfbtVarType, cfbtLocalVarType]) or
-           ((t in [cfbtProcedure, cfbtAnonynmousProcedure]) and (PasCodeFoldRange.BracketNestLevel > 0))
+           ((t in [cfbtProcedure, cfbtAnonymousProcedure]) and (PasCodeFoldRange.BracketNestLevel > 0))
          ) and
          (fRange * [rsInTypeBlock, rsAfterEqual] = [rsAfterEqual])
      )) and
@@ -4493,7 +4493,7 @@ begin
   end;
 end;
 
-function TSynPasSyn.IsAnonynmousFunc(RunOffs: Integer; AnIsFunction: boolean
+function TSynPasSyn.IsAnonymousFunc(RunOffs: Integer; AnIsFunction: boolean
   ): Boolean;
 var
   FndLine: String;
@@ -4658,13 +4658,13 @@ begin
         Include( aActions, sfaOutlineMergeParent);
     end;
 
-    if (PasBlockType in [cfbtProcedure, cfbtAnonynmousProcedure]) then begin
+    if (PasBlockType in [cfbtProcedure, cfbtAnonymousProcedure]) then begin
       t := FFoldConfig[ord(cfbtTopBeginEnd)];
       if t.Enabled and (sfaOutline in t.FoldActions) then
         aActions := aActions + [sfaOutlineKeepLevel,sfaOutlineNoColor];
     end;
 
-    //if (PasBlockType in [cfbtProcedure, cfbtAnonynmousProcedure]) and (InProcLevel > 0) then //nested
+    //if (PasBlockType in [cfbtProcedure, cfbtAnonymousProcedure]) and (InProcLevel > 0) then //nested
     //  aActions := aActions + [sfaOutlineForceIndent];
 
     if (PasBlockType in [cfbtExcept]) then begin
@@ -4909,7 +4909,7 @@ begin
     exit;
   while TopPascalCodeFoldBlockType in PascalStatementBlocks + [cfbtAsm] do
     EndPascalCodeFoldBlockLastLine;
-  if TopPascalCodeFoldBlockType in [cfbtProcedure, cfbtAnonynmousProcedure] then
+  if TopPascalCodeFoldBlockType in [cfbtProcedure, cfbtAnonymousProcedure] then
     EndPascalCodeFoldBlockLastLine; // This procedure did have a begin/end block, so it must end too
 end;
 
