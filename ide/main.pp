@@ -6383,6 +6383,8 @@ begin
     if (GetActiveMode=nil) and (Count>0) then
       ActiveModeName:=Modes[0].Name;
 
+  Assert(Assigned(DebugBossMgr.ProjectLink), 'CreateProjectObject: ProjectLink=Nil');
+  DebugBossMgr.ProjectLink.Project:=Result;
   Result.MainProject:=true;
   Result.OnFileBackup:=@MainBuildBoss.BackupFileForWrite;
   Result.OnLoadProjectInfo:=@OnLoadProjectInfoFromXMLConfig;

@@ -42,7 +42,7 @@ uses
   // IdeConfig
   EnvironmentOpts, TransferMacros,
   // IDE
-  LazarusIDEStrConsts, PathEditorDlg, DialogProcs, Project, EnvGuiOptions;
+  LazarusIDEStrConsts, PathEditorDlg, DialogProcs, DebugManager, EnvGuiOptions;
 
 type
 
@@ -127,8 +127,7 @@ implementation
 
 { TDebuggerClassOptionsFrame }
 
-procedure TDebuggerClassOptionsFrame.cmbDebuggerPathEditingDone(Sender: TObject
-  );
+procedure TDebuggerClassOptionsFrame.cmbDebuggerPathEditingDone(Sender: TObject);
 var
   ParsedFName: String;
 begin
@@ -161,8 +160,7 @@ begin
   LblWarnClassChange.Visible := True;
 end;
 
-procedure TDebuggerClassOptionsFrame.cmdOpenAdditionalPathClick(
-  Sender: TObject);
+procedure TDebuggerClassOptionsFrame.cmdOpenAdditionalPathClick(Sender: TObject);
 begin
   PathEditorDialog.Path:=txtAdditionalPath.Text;
   PathEditorDialog.Templates:=GetForcedPathDelims(
@@ -350,8 +348,7 @@ begin
   UpdateDebuggerClassDropDown;
 end;
 
-procedure TDebuggerClassOptionsFrame.cmbDebuggerTypeEditingDone(
-  Sender: TObject);
+procedure TDebuggerClassOptionsFrame.cmbDebuggerTypeEditingDone(Sender: TObject);
 begin
   UpdateDebuggerClass;
   FetchDebuggerSpecificOptions;
@@ -595,9 +592,10 @@ begin
 
   if ShowWarningOverridenByProject and Assigned(FSelectedDbgPropertiesConfig) then
     lblWarningProject.Visible := not (
-      (Project1.DebuggerBackend = FSelectedDbgPropertiesConfig.UID) or
-      (Project1.DebuggerBackend = 'IDE') or
-      ( (Project1.DebuggerBackend = '') and (Project1.DebuggerPropertiesConfigList.Count = 0) )
+      (DebugBossMgr.ProjectLink.DebuggerBackend = FSelectedDbgPropertiesConfig.UID) or
+      (DebugBossMgr.ProjectLink.DebuggerBackend = 'IDE') or
+      ( (DebugBossMgr.ProjectLink.DebuggerBackend = '') and
+        (DebugBossMgr.ProjectLink.DebuggerPropertiesConfigList.Count = 0) )
     );
 end;
 

@@ -533,7 +533,6 @@ type
     procedure SetSessionStorage(const AValue: TProjectSessionStorage); virtual;
     procedure SetTitle(const AValue: String); virtual;
     procedure SetUseManifest(AValue: boolean); virtual; abstract;
-    function GetCurrentDebuggerBackend: String; virtual; abstract;
   public
     constructor Create({%H-}ProjectDescription: TProjectDescriptor); virtual; reintroduce;
     destructor Destroy; override;
@@ -593,7 +592,6 @@ type
     property Resources: TObject read FResources; // TAbstractProjectResources
     property UseManifest: boolean read GetUseManifest write SetUseManifest;
     property RunParameters: TAbstractRunParamsOptions read FRunParameters;
-    property CurrentDebuggerBackend: String read GetCurrentDebuggerBackend;
   end;
 
   TLazProjectClass = class of TLazProject;

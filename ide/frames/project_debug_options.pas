@@ -5,16 +5,22 @@ unit project_debug_options;
 interface
 
 uses
-  SysUtils,
+  SysUtils, Classes,
   // LazUtils
   LazTracer,
   // LCL
   Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
+  // LazControls
+  DividerBevel,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf, ProjectIntf, DividerBevel,
+  IDEOptionsIntf, IDEOptEditorIntf, ProjectIntf,
+  // IdeConfig
+  EnvironmentOpts,
+  // IdeDebugger
+  IdeDebuggerOpts,
   // IDE
-  Project, LazarusIDEStrConsts, EnvironmentOpts, debugger_class_options,
-  IdeDebuggerOpts, Classes;
+  Project, DebugManager, ProjectDebugLink,
+  LazarusIDEStrConsts, debugger_class_options;
 
 type
 
@@ -192,9 +198,8 @@ end;
 
 procedure TProjectDebugOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  if not (AOptions is TProjectIDEOptions) then exit;
   fProject:=(AOptions as TProjectIDEOptions).Project;
-  with fProject do
+  with fProject.DebuggerLink as TProjectDebugLink do
   begin
     Self.FDebuggerBackend := DebuggerBackend;
     chkStoreInSession.Checked := StoreDebuggerClassConfInSession;
@@ -206,11 +211,9 @@ end;
 
 procedure TProjectDebugOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  if not (AOptions is TProjectIDEOptions) then exit;
-
   UpdateDebuggerBackend;
 
-  with (AOptions as TProjectIDEOptions).Project do
+  with (AOptions as TProjectIDEOptions).Project.DebuggerLink as TProjectDebugLink do
   begin
     DebuggerBackend := FDebuggerBackend;
     StoreDebuggerClassConfInSession := chkStoreInSession.Checked;
