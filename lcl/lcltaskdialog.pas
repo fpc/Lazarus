@@ -52,7 +52,7 @@ unit LCLTaskDialog deprecated 'Will be removed in Lazarus 4.0. Use TTaskDialog f
   Contributor(s):
   - Ulrich Gerhardt
   - Ondrej Pokorny (reddwarf)
-  
+
   Alternatively, the contents of this file may be used under the terms of
   either the GNU General Public License Version 2 or later (the "GPL"), or
   the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -649,7 +649,7 @@ var
 var RU: array of Ws;
     RUCount: integer;
     But: array of TTASKDIALOG_BUTTON;
-  procedure AddRU(Text: string; var n: longword{integer}; firstID: integer);
+  procedure AddRU(Text: string; var n: integer; firstID: integer);
   var
     P: PChar;
   begin
@@ -683,7 +683,7 @@ var RU: array of Ws;
 
 var
   {$IFDEF MSWINDOWS}
-  Config: CommCtrl.TTASKDIALOGCONFIG;
+  Config: TTASKDIALOGCONFIG;
   {$ENDIF}
   i, X, Y, XB, IconBorder, FontHeight: integer;
   Par: TWinControl;
@@ -772,7 +772,6 @@ var
     end;
     if ModalResult=aButtonDef then
       Dialog.Form.ActiveControl := result;
-    writeln('AddButton: Result.ModalResult=',Result.ModalResult);
   end;
   {$IFDEF MSWINDOwS}
   function TaskDialogFlagsToInteger(aFlags: TTaskDialogFlags): Integer;
@@ -864,7 +863,7 @@ begin
       Config.nDefaultRadioButton := aRadioDef+FirstRadioButtonIndex;
     Config.cxWidth := MulDiv(aWidth, 4, DialogBaseUnits);  // cxWidth needed in "dialog units"
     Config.pfCallback := @TaskDialogCallbackProc;
-    Config.lpCallbackData := PtrInt(@self);
+    Config.lpCallbackData := @self;
     if TaskDialogIndirect(@Config,@result,@RadioRes,@VerifyChecked)=S_OK then
       exit; // error (mostly invalid argument) -> execute the VCL emulation
   end;
