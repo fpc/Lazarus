@@ -54,7 +54,7 @@ type
 
   { TBreakPointsDlg }
 
-  TBreakPointsDlg = class(TDebuggerDlg, IFPObserver)
+  TBreakPointsDlg = class(TBreakPointsDlgBase, IFPObserver)
     actAddSourceBP: TAction;
     actAddAddressBP: TAction;
     actAddWatchPoint: TAction;
@@ -155,7 +155,7 @@ type
     FUngroupedHeader, FAddGroupedHeader: TBreakpointGroupFrame;
     FLastTargetHeader: TBreakpointGroupFrame;
 
-    function  GetDropTargetGroup(ANode: PVirtualNode): TBreakpointGroupFrame;
+    function GetDropTargetGroup(ANode: PVirtualNode): TBreakpointGroupFrame;
     procedure DoDetermineDropMode(const P: TPoint; var HitInfo: THitInfo;
       var NodeRect: TRect; var DropMode: TDropMode);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -188,6 +188,7 @@ type
     procedure JumpToCurrentBreakPoint;
     procedure ShowProperties;
   protected
+    procedure AcceptGroupHeaderDrop(ADroppedGroupFrame: TBreakpointGroupFrame; ATargetNode: PVirtualNode); override;
     procedure DoBreakPointsChanged; override;
     procedure DoBeginUpdate; override;
     procedure DoEndUpdate; override;
@@ -1097,6 +1098,32 @@ begin
     Result := b1.Index - b2.Index;
 end;
 
+procedure TBreakPointsDlg.AcceptGroupHeaderDrop(
+  ADroppedGroupFrame: TBreakpointGroupFrame; ATargetNode: PVirtualNode);
+var
+  TargetGroupFrame: TBreakpointGroupFrame;
+  idx: Integer;
+begin
+  TargetGroupFrame := GetDropTargetGroup(ATargetNode);
+  if (TargetGroupFrame = nil) or (TargetGroupFrame = ADroppedGroupFrame) then
+    exit;
+
+  if TargetGroupFrame.GroupKind <> bgfGroup then begin
+    ADroppedGroupFrame.BrkGroup.Index := 0;
+  end
+  else begin
+    if TargetGroupFrame.BrkGroup = nil then
+      exit;
+
+    idx := TargetGroupFrame.BrkGroup.Index;
+    if ADroppedGroupFrame.BrkGroup.Index > idx then
+      ADroppedGroupFrame.BrkGroup.Index := idx + 1
+    else
+      ADroppedGroupFrame.BrkGroup.Index := idx;
+  end;
+end;
+
+
 procedure TBreakPointsDlg.tvBreakPointsDragDrop(Sender: TBaseVirtualTree;
   Source: TObject; DataObject: IDataObject; Formats: TFormatArray;
   Shift: TShiftState; const Pt: TPoint; var Effect: LongWord; Mode: TDropMode);
@@ -1106,10 +1133,10 @@ var
   Brk: TIDEBreakPoint;
   idx: Integer;
 begin
-  TargetNd := tvBreakPoints.GetNodeAt(Pt);
-  if (TargetNd <> nil) and (Source = tvBreakPoints) and (tvBreakPoints.SelectedCount > 0) then begin
-    BeginUpdate;
-    try
+  BeginUpdate;
+  try
+    TargetNd := tvBreakPoints.GetNodeAt(Pt);
+    if (TargetNd <> nil) and (Source = tvBreakPoints) and (tvBreakPoints.SelectedCount > 0) then begin
       TargetHeader := GetDropTargetGroup(TargetNd);
       Brk := TIDEBreakPoint(tvBreakPoints.NodeItem[TargetNd]);
       if (tvBreakPoints.Header.SortColumn < 0) and (Brk <> nil) then begin
@@ -1133,9 +1160,15 @@ begin
 
       if TargetHeader <> nil then
         TargetHeader.FrameDragDrop(Sender, Source, Pt.X, Pt.Y);
-    finally
-      EndUpdate;
     end;
+
+    if (Source is TToolBar) and (TToolBar(Source).Owner is TBreakpointGroupFrame) then begin
+      AcceptGroupHeaderDrop(TBreakpointGroupFrame(TToolBar(Source).Owner), TargetNd);
+    end;
+
+    FAddGroupedHeader.Visible := False;
+  finally
+    EndUpdate;
   end;
 end;
 
@@ -1175,12 +1208,18 @@ begin
     FLastTargetHeader := nil;
   end;
 
+  if (Source is TToolBar) and (TToolBar(Source).Owner is TBreakpointGroupFrame) then begin
+    TargetHeader := GetDropTargetGroup(TargetNd);
+    Accept := (TToolBar(Source).Owner <> TargetHeader) and
+              (TargetHeader.GroupKind in [bgfGroup, bgfUngrouped]);
+  end;
 end;
 
 procedure TBreakPointsDlg.tvBreakPointsStartDrag(Sender: TObject;
   var DragObject: TDragObject);
 begin
   FAddGroupedHeader.Visible := True;
+  FDraggingGroupHeader := False;
 end;
 
 procedure TBreakPointsDlg.tvBreakPointsEndDrag(Sender, Target: TObject; X,
@@ -1192,18 +1231,20 @@ end;
 function TBreakPointsDlg.GetDropTargetGroup(ANode: PVirtualNode
   ): TBreakpointGroupFrame;
 begin
-  Result := TBreakpointGroupFrame(tvBreakPoints.NodeControl[ANode]);
+  Result := GetGroupFrame(ANode);
   if Result = nil then begin
     ANode := tvBreakPoints.NodeParent[ANode];
     if ANode <> nil then
-      Result := TBreakpointGroupFrame(tvBreakPoints.NodeControl[ANode]);
+      Result := GetGroupFrame(ANode);
   end;
 end;
 
 procedure TBreakPointsDlg.DoDetermineDropMode(const P: TPoint;
   var HitInfo: THitInfo; var NodeRect: TRect; var DropMode: TDropMode);
 begin
-  if tvBreakPoints.Header.SortColumn >= 0 then
+  if (tvBreakPoints.Header.SortColumn >= 0) or
+     (FDraggingGroupHeader)
+  then
     DropMode := dmNowhere;
 end;
 

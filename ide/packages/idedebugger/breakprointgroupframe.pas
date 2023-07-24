@@ -7,11 +7,18 @@ interface
 uses
   Classes, SysUtils, Math, Forms, Controls, ComCtrls, StdCtrls, ExtCtrls,
   LCLType, Buttons, Graphics, Dialogs, laz.VirtualTrees, IDEImagesIntf,
-  DebuggerTreeView, Debugger, IdeDebuggerStringConstants, BaseDebugManager;
+  DebuggerTreeView, Debugger, IdeDebuggerStringConstants, BaseDebugManager,
+  DebuggerDlg;
 
 type
 
   TBreakpointGroupFrame = class;
+
+  TBreakPointsDlgBase = class(TDebuggerDlg)
+  protected
+    FDraggingGroupHeader: Boolean;
+    procedure AcceptGroupHeaderDrop(ADroppedGroupFrame: TBreakpointGroupFrame; ATargetNode: PVirtualNode); virtual; abstract;
+  end;
 
   TOnDeleteGroup = procedure(Sender: TBreakpointGroupFrame; BrkGroup: TIDEBreakPointGroup) of object;
 
@@ -29,9 +36,14 @@ type
     procedure FrameDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure FrameDragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
+    procedure StaticText1MouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure ToolBar1EndDrag(Sender, Target: TObject; X, Y: Integer);
+    procedure ToolBar1StartDrag(Sender: TObject; var DragObject: TDragObject);
   private
     FGroupKind: TBreakpointGroupFrameKind;
     FOnDeleteGroup: TOnDeleteGroup;
+    FOwner: TBreakPointsDlgBase;
     FTree: TDbgTreeView;
     FNode: PVirtualNode;
     FBrkGroup: TIDEBreakPointGroup;
@@ -43,7 +55,7 @@ type
     procedure SetVisible(Value: Boolean); reintroduce;
     procedure VisibleChanged; override;
   public
-    constructor Create(TheOwner: TComponent; ATree: TDbgTreeView; ANode: PVirtualNode;
+    constructor Create(TheOwner: TBreakPointsDlgBase; ATree: TDbgTreeView; ANode: PVirtualNode;
       ABrkGroup: TIDEBreakPointGroup;
       AGroupKind: TBreakpointGroupFrameKind = bgfGroup); reintroduce;
     destructor Destroy; override;
@@ -65,6 +77,25 @@ implementation
 {$R *.lfm}
 
 { TBreakpointGroupFrame }
+
+procedure TBreakpointGroupFrame.StaticText1MouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  if ToolBar1.DragMode = dmAutomatic then
+    ToolBar1.BeginDrag(DragManager.DragImmediate, DragManager.DragThreshold);
+end;
+
+procedure TBreakpointGroupFrame.ToolBar1EndDrag(Sender, Target: TObject; X,
+  Y: Integer);
+begin
+  FOwner.FDraggingGroupHeader := False;
+end;
+
+procedure TBreakpointGroupFrame.ToolBar1StartDrag(Sender: TObject;
+  var DragObject: TDragObject);
+begin
+  FOwner.FDraggingGroupHeader := True;
+end;
 
 procedure TBreakpointGroupFrame.BtnDeleteClick(Sender: TObject);
 begin
@@ -123,6 +154,11 @@ begin
         Brk.Group := NewGroup;
       end;
     end;
+
+    if (Source is TToolBar) and (TToolBar(Source).Owner is TBreakpointGroupFrame) then begin
+      FOwner.AcceptGroupHeaderDrop(TBreakpointGroupFrame(TToolBar(Source).Owner), FNode);
+    end;
+
   finally
     if FGroupKind = bgfAddNewGroup then
       Visible := False;
@@ -157,6 +193,11 @@ begin
   else begin
     ToolBar1.Color := clBtnFace;
     ToolBar1.Font.Color := clDefault;
+  end;
+
+  if (Source is TToolBar) and (TToolBar(Source).Owner is TBreakpointGroupFrame) then begin
+    Accept := (TToolBar(Source).Owner <> Self) and
+              (GroupKind in [bgfGroup, bgfUngrouped]);
   end;
 end;
 
@@ -201,11 +242,12 @@ begin
     FTree.NodeHeight[FNode] := min(40, Max(15, ToolBar1.Height));
 end;
 
-constructor TBreakpointGroupFrame.Create(TheOwner: TComponent;
+constructor TBreakpointGroupFrame.Create(TheOwner: TBreakPointsDlgBase;
   ATree: TDbgTreeView; ANode: PVirtualNode; ABrkGroup: TIDEBreakPointGroup;
   AGroupKind: TBreakpointGroupFrameKind);
 begin
   inherited Create(nil);
+  FOwner    := TheOwner;
   FTree     := ATree;
   FNode     := ANode;
   FBrkGroup := ABrkGroup;
@@ -241,11 +283,16 @@ begin
         if FBrkGroup <> nil then
           StaticText1.Caption := FBrkGroup.Name;
         StaticText2.Caption := Format(' (%d)', [Count]);
+
+        if (Count > 0) then
+          ToolBar1.DragMode := dmAutomatic
+        else
+          ToolBar1.DragMode := dmManual;
       end;
     bgfAddNewGroup: begin
         StaticText1.Caption := BreakViewHeaderAddGroup;
         StaticText2.Caption := '';
-        StaticText1.Font.Style := [fsItalic];
+        ToolBar1.Font.Style := [fsItalic];
       end;
     bgfAbandoned: ;
   end;

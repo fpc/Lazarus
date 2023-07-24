@@ -23,6 +23,8 @@ object BreakpointGroupFrame: TBreakpointGroupFrame
     TabOrder = 0
     OnDragDrop = FrameDragDrop
     OnDragOver = FrameDragOver
+    OnEndDrag = ToolBar1EndDrag
+    OnStartDrag = ToolBar1StartDrag
     object StaticText1: TStaticText
       Left = 1
       Height = 16
@@ -34,6 +36,7 @@ object BreakpointGroupFrame: TBreakpointGroupFrame
       Caption = 'StaticText1'
       OnDragDrop = FrameDragDrop
       OnDragOver = FrameDragOver
+      OnMouseDown = StaticText1MouseDown
       TabOrder = 0
     end
     object StaticText2: TStaticText
@@ -47,6 +50,7 @@ object BreakpointGroupFrame: TBreakpointGroupFrame
       Caption = 'StaticText2'
       OnDragDrop = FrameDragDrop
       OnDragOver = FrameDragOver
+      OnMouseDown = StaticText1MouseDown
       TabOrder = 1
     end
   end

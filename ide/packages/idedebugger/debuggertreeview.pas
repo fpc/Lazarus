@@ -94,7 +94,6 @@ type
       ): TCustomImageList; override;
   public
     function GetNodeData(Node: PVirtualNode): PDbgTreeNodeData; reintroduce;
-
     function GetFocusedNode(OnlySelected: Boolean = True; AnIncludeControlNodes: Boolean = False): PVirtualNode;
     function FocusedData(OnlySelected: Boolean = True): PDbgTreeNodeData;
     function FocusedItem(OnlySelected: Boolean = True): TObject;
