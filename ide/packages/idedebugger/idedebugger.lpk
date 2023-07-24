@@ -187,8 +187,8 @@
         <UnitName Value="EnvDebuggerOptions"/>
       </Item>
       <Item>
-        <Filename Value="breakprointgroupframe.pas"/>
-        <UnitName Value="BreakprointGroupFrame"/>
+        <Filename Value="breakpointgroupframe.pas"/>
+        <UnitName Value="breakpointgroupframe"/>
       </Item>
     </Files>
     <i18n>
