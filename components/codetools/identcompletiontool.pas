@@ -699,25 +699,37 @@ var
   procedure AddHistoryCurItem(ForceComp: Boolean);
   var
     CurItmComp: TIdentifierCompatibility;
-    j: integer;
+    j, f: integer;
+    MatchAtStart, HasContainMatch: Boolean;
   begin
-    for j := 0 to length(FFoundHistoryItems) - 1 do begin
-      CurItem := FFoundHistoryItems[j];
-      if (CurItem = nil) then
-        continue;
-      if ForceComp then
-        CurItmComp := low(TIdentifierCompatibility)
-      else
-        CurItmComp := CurItem.Compatibility;
-      if (CurItmComp <> HistComp) then
-        Continue;
-      if (CurItem.HistoryIndex > HistoryLimits[CurItmComp]) then
-        break;
-      if (CurItem.Identifier<>'') and (FilterCurItem >= 0) then begin
-        CurItem.Flags := CurItem.Flags + [iliIsRecentItem];
-        InsertCurItem;
+    HasContainMatch := False;
+    repeat
+      MatchAtStart := not HasContainMatch;
+      for j := 0 to length(FFoundHistoryItems) - 1 do begin
+        CurItem := FFoundHistoryItems[j];
+        if (CurItem = nil) then
+          continue;
+        if ForceComp then
+          CurItmComp := low(TIdentifierCompatibility)
+        else
+          CurItmComp := CurItem.Compatibility;
+        if (CurItmComp <> HistComp) then
+          Continue;
+        if (CurItem.HistoryIndex > HistoryLimits[CurItmComp]) then
+          break;
+        if (CurItem.Identifier<>'') then begin
+          f := FilterCurItem;
+          if f > 0 then
+            HasContainMatch := True;
+          if ( (f = 0) and MatchAtStart) or
+             ( (f > 0) and not MatchAtStart)
+          then begin
+            CurItem.Flags := CurItem.Flags + [iliIsRecentItem];
+            InsertCurItem;
+          end;
+        end;
       end;
-    end;
+    until (not HasContainMatch) or (not MatchAtStart)
   end;
 
 begin
