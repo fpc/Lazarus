@@ -17346,18 +17346,36 @@ image has already been assigned.
 </seealso>
 </element>
 
-<!-- TODO: Needs description. -->
 <element name="TIcon.LoadFromResourceHandle">
 <short>
 Loads icon data from the specified instance and resource handles.
 </short>
-<descr/>
+<descr>
+<p>
+<var>LoadFromResourceHandle</var> is an overridden method in <var>TIcon</var> 
+used to load image data from an icon resource identified by the handles in 
+<var>Instance</var> and <var>ResHandle</var>. The handles are passed as 
+arguments to the RTL LoadResource routine which provides the global handle for 
+the group resource on the platform.
+</p>
+<p>
+LoadFromResourceHandle reads the icon headers and data for the entries from 
+the resource. The ReadData method is called to read and store the values in 
+the stream to the shared raster image for the icon.
+</p>
+<p>
+LoadFromResourceHandle reimplements the empty implementation introduced in the 
+TCustomIcon ancestor.
+</p>
+</descr>
 <version>
 Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
 deprecated THandle type in the Instance parameter.
 </version>
 <seealso>
 <link id="TCustomIcon.LoadFromResourceHandle"/>
+<link id="TCustomIcon.ReadData"/>
+<link id="TRasterImage.LoadFromStream"/>
 <link id="#lcl.lcltype.TLCLHandle">LCLType.TLCLHandle</link>
 <link id="#lcl.wsreferences.TLCLHandle">WSReferences.TLCLHandle</link>
 </seealso>
@@ -17369,10 +17387,16 @@ deprecated THandle type in the Instance parameter.
 <short>Resource handle with the icon data loaded in the method.</short>
 </element>
 
-<!-- TODO: Needs description. -->
 <element name="TIcon.ReleaseHandle">
-<short>Frees the Handle used for the Icon.</short>
-<descr/>
+<short>Frees the Handle used for the shared image in the Icon.</short>
+<descr>
+<p>
+Calls HandleNeeded to ensure that a handle is assigned if it does not already 
+exist. Calls the ReleaseHandle method in the shared raster image used for the 
+icon. The return value is the handle for the shared raster image before it is 
+set to the unassigned value (0).
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TIcon.ReleaseHandle.Result">
@@ -17873,19 +17897,42 @@ Returns <var>RT_GROUP_CURSOR</var> in <var>TCursorImage</var>.
 </seealso>
 </element>
 <element name="TCursorImage.GetResourceType.Result">
-<short/>
+<short>
+Returns RT_GROUP_CURSOR for TCusrsorImage.
+</short>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TCursorImage.LoadFromResourceHandle">
-<short/>
-<descr/>
+<short>
+Loads cursor images from the specified instance and resource handles.
+</short>
+<descr>
+<p>
+<var>LoadFromResourceHandle</var> is an overridden method in 
+<var>TCursorImage</var> used to load cursor image(s) from the group cursor 
+resource identified in the Instance and ResHandle arguments. It calls the RTL 
+LoadResource routine to get the global handle used for the resource(s) on the 
+platform. No actions are performed in the method if the handle is unassigned 
+(0).
+</p>
+<p>
+LoadFromResourceHandle creates a temporary resource stream which is used to 
+store the group cursor resources, including hot spot and image offset data. 
+ReadData is called to load the values from the stream to the shared raster 
+image used for the group cursor resources.
+</p>
+<p>
+LoadFromResourceHandle reimplements the empty implementation introduced in the 
+TCustomIcon ancestor.
+</p>
+</descr>
 <version>
 Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
 deprecated THandle type in the Instance parameter.
 </version>
 <seealso>
-<link id="TCustomIcon.LoadFromResourceHandle"/> 
+<link id="TCustomIcon.LoadFromResourceHandle"/>
+<link id="TCustomIcon.ReadData"/>
 <link id="#lcl.lcltype.TLCLHandle">LCLType.TLCLHandle</link>
 <link id="#lcl.wsreferences.TLCLHandle">WSReferences.TLCLHandle</link>
 </seealso>
@@ -17901,27 +17948,21 @@ Handle for the resource entry with the cursor image.
 </short>
 </element>
 
-<element link="#lcl.graphics.TGraphic.LazarusResourceTypeValid" name="TCursorImage.LazarusResourceTypeValid">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TCursorImage.LazarusResourceTypeValid.Result">
-<short/>
-</element>
-<element name="TCursorImage.LazarusResourceTypeValid.ResourceType">
-<short/>
-</element>
+<element name="TCursorImage.LazarusResourceTypeValid" link="#lcl.graphics.TGraphic.LazarusResourceTypeValid"/>
+<element name="TCursorImage.LazarusResourceTypeValid.Result"/>
+<element name="TCursorImage.LazarusResourceTypeValid.ResourceType"/>
 
 <element name="TCursorImage.ReleaseHandle">
 <short>
-<var>ReleaseHandle</var> - free the handle used for the cursor Image.
+Frees the handle in the shared raster image used for the cursor.
 </short>
 <descr/>
 <seealso/>
 </element>
 <element name="TCursorImage.ReleaseHandle.Result">
-<short/>
+<short>
+HICON value for the handle freed in the method.
+</short>
 </element>
 
 <element name="TCursorImage.SetCenterHotSpot">
