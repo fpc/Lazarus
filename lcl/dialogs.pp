@@ -26,7 +26,7 @@ uses
   // LCL
   LMessages, LResources, LCLIntf, InterfaceBase, LCLStrConsts, LCLType,
   Forms, Controls, Themes, Graphics, Buttons, ButtonPanel, StdCtrls,
-  ExtCtrls, LCLClasses, ClipBrd, Menus, LCLTaskDialog, DialogRes,
+  ExtCtrls, LCLClasses, ClipBrd, Menus, {LCLTaskDialog,} DialogRes,
   // LazUtils
   GraphType, FileUtil, LazFileUtils, LazStringUtils, LazLoggerBase;
 
@@ -613,7 +613,9 @@ type
     property Items[Index: Integer]: TTaskDialogBaseButtonItem read GetItem write SetItem; default;
   end;
 
-  TCustomTaskDialog = class(TComponent)
+  { TCustomTaskDialog }
+
+  TCustomTaskDialog = class(TLCLComponent)
   private
     FButton: TTaskDialogButtonItem;
     FButtons: TTaskDialogButtons;
@@ -634,17 +636,18 @@ type
     FVerificationText: TTranslateString;
     FWidth: Integer;
     FOnButtonClicked: TTaskDlgClickEvent;
-    procedure DoOnButtonClickedHandler(Sender: PTaskDialog; AButtonID: Integer;
-      var ACanClose: Boolean);
+    //procedure DoOnButtonClickedHandler(Sender: PTaskDialog; AButtonID: Integer;
+    //  var ACanClose: Boolean);
     procedure SetButtons(const Value: TTaskDialogButtons);
     procedure SetRadioButtons(const Value: TTaskDialogButtons);
-    function ButtonIDToModalResult(const AButtonID: Integer): TModalResult;
   protected
+    class procedure WSRegisterClass; override;
     function DoExecute(ParentWnd: HWND): Boolean; dynamic;
     procedure DoOnButtonClicked(AModalResult: Integer; var ACanClose: Boolean); dynamic;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function ButtonIDToModalResult(const AButtonID: Integer): TModalResult;
     function Execute: Boolean; overload; dynamic;
     function Execute(ParentWnd: HWND): Boolean; overload; dynamic;
     property Button: TTaskDialogButtonItem read FButton write FButton;
@@ -688,6 +691,9 @@ type
     property OnButtonClicked;
   end;
 
+const
+  TaskDialogFirstButtonIndex = 100;
+  TaskDialogFirstRadioButtonIndex = 200;
 
 var
   MinimumDialogButtonWidth: Integer = 75;

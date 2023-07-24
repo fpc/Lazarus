@@ -54,6 +54,7 @@ function RegisterSelectDirectoryDialog: Boolean;
 function RegisterColorDialog: Boolean;
 function RegisterColorButton: Boolean;
 function RegisterFontDialog: Boolean;
+function RegisterTaskDialog: Boolean;
 // StdCtrls
 function RegisterCustomScrollBar: Boolean;
 function RegisterCustomGroupBox: Boolean;
@@ -301,6 +302,11 @@ function RegisterFontDialog: Boolean; alias : 'WSRegisterFontDialog';
 begin
   RegisterWSComponent(TFontDialog, TGtk3WSFontDialog);
   Result := True;
+end;
+
+function RegisterTaskDialog: Boolean; alias : 'WSRegisterTaskDialog';
+begin
+  Result := False;
 end;
 
 // StdCtrls

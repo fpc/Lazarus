@@ -27,7 +27,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="3" Minor="99"/>
-    <Files Count="288">
+    <Files Count="289">
       <Item1>
         <Filename Value="checklst.pas"/>
         <UnitName Value="CheckLst"/>
@@ -1190,6 +1190,10 @@
         <Filename Value="dialogres.pas"/>
         <UnitName Value="DialogRes"/>
       </Item288>
+      <Item289>
+        <Filename Value="taskdlgemulation.pp"/>
+        <UnitName Value="taskdlgemulation"/>
+      </Item289>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../docs/xml/lcl"/>

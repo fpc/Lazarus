@@ -22,7 +22,7 @@
 }
 
 
-unit LCLTaskDialog;
+unit LCLTaskDialog deprecated 'Use TTaskDialog from unit Dialogs instead.'; //deprecated in Lazarus 3.99
 
 {
     This file is part of Synopse framework.
@@ -52,7 +52,7 @@ unit LCLTaskDialog;
   Contributor(s):
   - Ulrich Gerhardt
   - Ondrej Pokorny (reddwarf)
-  
+
   Alternatively, the contents of this file may be used under the terms of
   either the GNU General Public License Version 2 or later (the "GPL"), or
   the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -903,6 +903,7 @@ begin
     Dialog.Form.ClientWidth := aWidth;
     Dialog.Form.Height := FirstRadioButtonIndex;
     Dialog.Form.Caption := Title;
+
     // create a white panel for the main dialog part
     Panel := TPanel.Create(Dialog.Form);
     Panel.Parent := Dialog.Form;
