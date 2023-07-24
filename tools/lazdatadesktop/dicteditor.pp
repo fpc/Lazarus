@@ -49,7 +49,6 @@ Type
   TDataDictEditor = Class(TTabSheet)
   private
     FDD: TFPDataDictionary;
-    FIMgList : TImageList;
     FImageOffset: Integer;
     FModified: Boolean;
     FTV : TTreeView;
@@ -152,31 +151,27 @@ Type
   
 
 Const
-  // Image Index for nodes. Relative to ImageOffset;
-  // Must match the TObjectType
-  iiDataDict     = 0;
+  // Image index, referring to ImgDatamodule.AppImages in unit dmImages;
+  iiDataDict     = 32;
   iiTables       = 1;
   iiTable        = 2;
   iiFields       = 3;
   iiField        = 4;
-  iiConnection   = 5;
-  iiTableData    = 6;
-  iiIndexes      = 7;
-  iiIndex        = 8;
-  iiSequences    = 9;
-  iiSequence     = 10;
-  iiForeignkeys  = 11;
-  iiForeignKey   = 12;
-  iiDomains      = 13;
-  iiDomain       = 14;
-  IIMaxObject    = IIDomain; // Should be last
-  iiDelete       = iiMaxObject+1;
+  iiConnection   = 0;
+  iiTableData    = 7;
+  iiIndexes      = 5;
+  iiIndex        = 27;
+  iiSequences    = 6;
+  iiSequence     = 23;
+  iiForeignkeys  = 46;
+  iiForeignKey   = 25;
+  iiDomains      = 47;
+  iiDomain       = 21;
+  iiDelete       = 16;
 
 implementation
 
-{$R dicteditor.res}
-
-uses DB, MemDS, fpcodegenerator, TypInfo, lazdatadeskstr;
+uses DB, MemDS, fpcodegenerator, TypInfo, dmImages, lazdatadeskstr;
 
 Function ObjectTypeName(ObjectType : TEditObjectType) : String;
 
@@ -239,8 +234,6 @@ begin
   end;
   Result:=MDS;
 end;
-
-
 
 
 { TDataDictEditor }
@@ -371,16 +364,6 @@ begin
 end;
 
 Procedure TDataDictEditor.CreateGUI;
-
-Const
-  ImageNames : Array[0..IIMaxObject+1] of string =
-        ('dddatadict','ddtables','ddtable','ddfields','ddfield',
-         'ddtables','ddtabledata','ddindexes','ddindex',
-         'ddsequences','ddsequence',
-         'ddforeignkeys','ddforeignkey',
-         'dddomains','dddomain','dddeleteobject');
-
-
 Var
   P : TPortableNetworkGraphic;
   I : Integer;
@@ -416,19 +399,8 @@ begin
   FMIDeleteObject.ImageIndex:=IIDelete;
   FMenu.Items.Add(FMIDeleteObject);
   FTV.PopupMenu:=FMenu;
-  FIMgList:=TImageList.Create(Self);
-  For I:=0 to IIMaxObject+1 do
-    begin
-    P:=TPortableNetworkGraphic.Create;
-    try
-      P.LoadFromResourceName(HInstance, ImageNames[i]);
-      FImgList.Add(P,Nil);
-    finally
-      P.Free;
-    end;
-    end;
-  FTV.Images:=FImgList;
-  FMenu.Images:=FImgList;
+  FTV.Images:=ImgDatamodule.AppImages;
+  FMenu.Images:=ImgDatamodule.AppImages;
 end;
 
 procedure TDataDictEditor.CreateHandle;
@@ -557,7 +529,6 @@ end;
 
 procedure TDataDictEditor.NewField(AFieldName: String; TD: TDDTableDef);
 
-
 begin
   NewTableObject(AFieldName,TD,eotField);
 end;
@@ -569,7 +540,6 @@ begin
 end;
 
 procedure TDataDictEditor.NewForeignKey(AKeyName: String; TD: TDDTableDef);
-
 
 begin
   NewTableObject(AKeyName,TD,eotForeignKey);
