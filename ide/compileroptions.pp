@@ -476,8 +476,8 @@ type
 
     procedure SetAlternativeCompile(const Command: string; ScanFPCMsgs: boolean); override;
 
-    function MakeOptionsString(Flags: TCompilerCmdLineOptions): String;
-    function GetSyntaxOptionsString(Kind: TPascalCompiler): string; virtual;
+    function MakeOptionsString(Flags: TCompilerCmdLineOptions): TStringListUTF8Fast;
+    procedure GetSyntaxOptions(Kind: TPascalCompiler; Params: TStrings); virtual;
     function CreatePPUFilename(const SourceFileName: string): string; override;
     function CreateTargetFilename: string; override;
     function GetTargetFileExt: string; virtual;
@@ -654,8 +654,8 @@ function InheritedOptionsToCompilerParameters(
   Flags: TCompilerCmdLineOptions): string;
 function MergeLinkerOptions(const OldOptions, AddOptions: string): string;
 function MergeCustomOptions(const OldOptions, AddOptions: string): string;
-function ConvertSearchPathToCmdLine(const Switch, Paths: String): String;
-function ConvertOptionsToCmdLine(const Switch, OptionStr: string): string;
+procedure ConvertSearchPathToCmdParams(const Switch, Paths: String; Params: TStrings);
+procedure ConvertOptionsToCmdParams(const Switch, OptionStr: string; Params: TStrings);
 
 type
   TGetBuildMacroValues = function(Options: TBaseCompilerOptions;
@@ -842,49 +842,57 @@ var
   CurObjectPath: String;
   CurUnitPath: String;
   CurCustomOptions, CurNamespaces: String;
+  Params: TStringListUTF8Fast;
 begin
   Result:='';
+  Params:=TStringListUTF8Fast.Create;
+  try
 
-  // inherited Linker options
-  if (not (ccloNoLinkerOpts in Flags)) then begin
-    CurLinkerOpts:=InheritedOptionStrings[icoLinkerOptions];
-    if CurLinkerOpts<>'' then
-      Result := Result + ' ' + ConvertOptionsToCmdLine('-k', CurLinkerOpts);
+    // inherited Linker options
+    if (not (ccloNoLinkerOpts in Flags)) then begin
+      CurLinkerOpts:=InheritedOptionStrings[icoLinkerOptions];
+      if CurLinkerOpts<>'' then
+        ConvertOptionsToCmdParams('-k', CurLinkerOpts, Params);
+    end;
+
+    // include path
+    CurIncludePath:=InheritedOptionStrings[icoIncludePath];
+    if (CurIncludePath <> '') then
+      ConvertSearchPathToCmdParams('-Fi', CurIncludePath, Params);
+
+    // library path
+    if (not (ccloNoLinkerOpts in Flags)) then begin
+      CurLibraryPath:=InheritedOptionStrings[icoLibraryPath];
+      if (CurLibraryPath <> '') then
+        ConvertSearchPathToCmdParams('-Fl', CurLibraryPath, Params);
+    end;
+
+    // namespaces
+    CurNamespaces:=InheritedOptionStrings[icoNamespaces];
+    if CurNamespaces <> '' then
+      Params.Add('-FN'+CurNamespaces);
+
+    // object path
+    CurObjectPath:=InheritedOptionStrings[icoObjectPath];
+    if (CurObjectPath <> '') then
+      ConvertSearchPathToCmdParams('-Fo', CurObjectPath, Params);
+
+    // unit path
+    CurUnitPath:=InheritedOptionStrings[icoUnitPath];
+    // always add the current directory to the unit path, so that the compiler
+    // checks for changed files in the directory
+    CurUnitPath:=CurUnitPath+';.';
+    ConvertSearchPathToCmdParams('-Fu', CurUnitPath, Params);
+
+    // custom options
+    CurCustomOptions:=InheritedOptionStrings[icoCustomOptions];
+    if CurCustomOptions<>'' then
+      ConvertOptionsToCmdParams('',SpecialCharsToSpaces(CurCustomOptions,true),Params);
+
+    Result:=MergeCmdLineParams(Params);
+  finally
+    Params.Free;
   end;
-
-  // include path
-  CurIncludePath:=InheritedOptionStrings[icoIncludePath];
-  if (CurIncludePath <> '') then
-    Result := Result + ' ' + ConvertSearchPathToCmdLine('-Fi', CurIncludePath);
-
-  // library path
-  if (not (ccloNoLinkerOpts in Flags)) then begin
-    CurLibraryPath:=InheritedOptionStrings[icoLibraryPath];
-    if (CurLibraryPath <> '') then
-      Result := Result + ' ' + ConvertSearchPathToCmdLine('-Fl', CurLibraryPath);
-  end;
-
-  // namespaces
-  CurNamespaces:=InheritedOptionStrings[icoNamespaces];
-  if CurNamespaces <> '' then
-    Result := Result + ' -FN'+CurNamespaces;
-
-  // object path
-  CurObjectPath:=InheritedOptionStrings[icoObjectPath];
-  if (CurObjectPath <> '') then
-    Result := Result + ' ' + ConvertSearchPathToCmdLine('-Fo', CurObjectPath);
-
-  // unit path
-  CurUnitPath:=InheritedOptionStrings[icoUnitPath];
-  // always add the current directory to the unit path, so that the compiler
-  // checks for changed files in the directory
-  CurUnitPath:=CurUnitPath+';.';
-  Result := Result + ' ' + ConvertSearchPathToCmdLine('-Fu', CurUnitPath);
-
-  // custom options
-  CurCustomOptions:=InheritedOptionStrings[icoCustomOptions];
-  if CurCustomOptions<>'' then
-    Result := Result + ' ' +  SpecialCharsToSpaces(CurCustomOptions,true);
 end;
 
 function MergeLinkerOptions(const OldOptions, AddOptions: string): string;
@@ -902,7 +910,8 @@ begin
   Result+=AddOptions;
 end;
 
-function ConvertSearchPathToCmdLine(const Switch, Paths: String): String;
+procedure ConvertSearchPathToCmdParams(const Switch, Paths: String;
+  Params: TStrings);
 var
   StartPos: Integer;
   l: Integer;
@@ -910,7 +919,6 @@ var
 begin
   if Switch='' then
     RaiseGDBException('ConvertSearchPathToCmdLine no Switch');
-  Result := '';
   if (Paths = '') then exit;
   l:=length(Paths);
   StartPos:=1;
@@ -919,21 +927,18 @@ begin
     EndPos:=StartPos;
     while (EndPos<=l) and (Paths[EndPos]<>';') do inc(EndPos);
     if StartPos<EndPos then begin
-      if Result<>'' then
-        Result:=Result+' ';
-      Result:=Result
-           +PrepareCmdLineOption(Switch + copy(Paths,StartPos,EndPos-StartPos));
+      // todo: /example/**
+      Params.Add(Switch + copy(Paths,StartPos,EndPos-StartPos));
     end;
     StartPos:=EndPos+1;
   end;
 end;
 
-function ConvertOptionsToCmdLine(const Switch, OptionStr: string): string;
+procedure ConvertOptionsToCmdParams(const Switch, OptionStr: string; Params: TStrings);
 var
   Startpos, EndPos: integer;
   p: Integer;
 begin
-  Result:='';
   StartPos:=1;
   while StartPos<=length(OptionStr) do begin
     while (StartPos<=length(OptionStr)) and (OptionStr[StartPos]<=' ') do
@@ -949,8 +954,7 @@ begin
       inc(EndPos);
     end;
     if EndPos>StartPos then begin
-      if Result<>'' then Result:=Result+' ';
-      Result:=Result+Switch+copy(OptionStr,StartPos,EndPos-StartPos);
+      Params.Add(Switch+copy(OptionStr,StartPos,EndPos-StartPos));
     end;
     StartPos:=EndPos;
   end;
@@ -2452,17 +2456,24 @@ begin
 end;
 
 function TBaseCompilerOptions.GetOptionsForCTDefines: string;
-
-  procedure Add(s: string);
-  begin
-    if Result<>'' then
-      Result:=Result+' ';
-    Result:=Result+s;
-  end;
-
+var
+  Params: TStringListUTF8Fast;
+  h: String;
 begin
-  Result:=MakeOptionsString([ccloNoMacroParams]);
-  Add(GetCustomOptions(coptParsed));
+  Params:=MakeOptionsString([ccloNoMacroParams]);
+  try
+    Result:=MergeCmdLineParams(Params);
+    h:=GetCustomOptions(coptParsed);
+    if h<>'' then
+    begin
+      if Result<>'' then
+        Result:=Result+' '+h
+      else
+        Result:=h;
+    end;
+  finally
+    Params.Free;
+  end;
 end;
 
 procedure TBaseCompilerOptions.RenameMacro(const OldName, NewName: string;
@@ -2535,10 +2546,10 @@ end;
 
   Get all the options and create a string that can be passed to the compiler
 ------------------------------------------------------------------------------}
-function TBaseCompilerOptions.MakeOptionsString(
-  Flags: TCompilerCmdLineOptions): String;
+function TBaseCompilerOptions.MakeOptionsString(Flags: TCompilerCmdLineOptions
+  ): TStringListUTF8Fast;
 var
-  switches, tempsw, quietsw, t: String;
+  tempsw, quietsw, t: String;
   InhLinkerOpts: String;
   CurTargetFilename: String;
   CurTargetDirectory: String;
@@ -2590,258 +2601,8 @@ var
   end;
 
 begin
-  switches := '';
+  Result:=TStringListUTF8Fast.Create;
 
-  { options of fpc 2.7.1 :
-
-  Free Pascal Compiler version 2.7.1 [2012/01/23] for x86_64
-  Copyright (c) 1993-2011 by Florian Klaempfl and others
-  /usr/lib/fpc/2.7.1/ppcx64 [options] <inputfile> [options]
-  Put + after a boolean switch option to enable it, - to disable it
-    -a     The compiler doesn't delete the generated assembler file
-        -al        List sourcecode lines in assembler file
-        -an        List node info in assembler file
-        -ap        Use pipes instead of creating temporary assembler files
-        -ar        List register allocation/release info in assembler file
-        -at        List temp allocation/release info in assembler file
-    -A<x>  Output format:
-        -Adefault  Use default assembler
-        -Aas       Assemble using GNU AS
-        -Agas      Assemble using GNU GAS
-        -Agas-darwinAssemble darwin Mach-O64 using GNU GAS
-        -Amasm     Win64 object file using ml64 (Microsoft)
-        -Apecoff   PE-COFF (Win64) using internal writer
-        -Aelf      ELF (Linux-64bit) using internal writer
-    -b     Generate browser info
-        -bl        Generate local symbol info
-    -B     Build all modules
-    -C<x>  Code generation options:
-        -C3<x>     Turn on ieee error checking for constants
-        -Ca<x>     Select ABI, see fpc -i for possible values
-        -Cb        Generate big-endian code
-        -Cc<x>     Set default calling convention to <x>
-        -CD        Create also dynamic library (not supported)
-        -Ce        Compilation with emulated floating point opcodes
-        -Cf<x>     Select fpu instruction set to use, see fpc -i for possible values
-        -CF<x>     Minimal floating point constant precision (default, 32, 64)
-        -Cg        Generate PIC code
-        -Ch<n>     <n> bytes heap (between 1023 and 67107840)
-        -Ci        IO-checking
-        -Cn        Omit linking stage
-        -Co        Check overflow of integer operations
-        -CO        Check for possible overflow of integer operations
-        -Cp<x>     Select instruction set, see fpc -i for possible values
-        -CP<x>=<y>  packing settings
-           -CPPACKSET=<y> <y> set allocation: 0, 1 or DEFAULT or NORMAL, 2, 4 and 8
-        -Cr        Range checking
-        -CR        Verify object method call validity
-        -Cs<n>     Set stack checking size to <n>
-        -Ct        Stack checking (for testing only, see manual)
-        -CX        Create also smartlinked library
-    -d<x>  Defines the symbol <x>
-    -D     Generate a DEF file
-        -Dd<x>     Set description to <x>
-        -Dv<x>     Set DLL version to <x>
-    -e<x>  Set path to executable
-    -E     Same as -Cn
-    -fPIC  Same as -Cg
-    -F<x>  Set file names and paths:
-        -Fa<x>[,y] (for a program) load units <x> and [y] before uses is parsed
-        -Fc<x>     Set input codepage to <x>
-        -FC<x>     Set RC compiler binary name to <x>
-        -Fd        Disable the compiler's internal directory cache
-        -FD<x>     Set the directory where to search for compiler utilities
-        -Fe<x>     Redirect error output to <x>
-        -Ff<x>     Add <x> to framework path (Darwin only)
-        -FE<x>     Set exe/unit output path to <x>
-        -Fi<x>     Add <x> to include path
-        -Fl<x>     Add <x> to library path
-        -FL<x>     Use <x> as dynamic linker
-        -Fm<x>     Load unicode conversion table from <x>.txt in the compiler dir
-        -Fo<x>     Add <x> to object path
-        -Fr<x>     Load error message file <x>
-        -FR<x>     Set resource (.res) linker to <x>
-        -Fu<x>     Add <x> to unit path
-        -FU<x>     Set unit output path to <x>, overrides -FE
-        -FW<x>     Store generated whole-program optimization feedback in <x>
-        -Fw<x>     Load previously stored whole-program optimization feedback from <x>
-    -g     Generate debug information (default format for target)
-        -gc        Generate checks for pointers
-        -gh        Use heaptrace unit (for memory leak/corruption debugging)
-        -gl        Use line info unit (show more info with backtraces)
-        -go<x>     Set debug information options
-           -godwarfsets Enable DWARF 'set' type debug information (breaks gdb < 6.5)
-           -gostabsabsincludes Store absolute/full include file paths in Stabs
-           -godwarfmethodclassprefix Prefix method names in DWARF with class name
-        -gp        Preserve case in stabs symbol names
-        -gs        Generate Stabs debug information
-        -gt        Trash local variables (to detect uninitialized uses)
-        -gv        Generates programs traceable with Valgrind
-        -gw        Generate DWARFv2 debug information (same as -gw2)
-        -gw2       Generate DWARFv2 debug information
-        -gw3       Generate DWARFv3 debug information
-        -gw4       Generate DWARFv4 debug information (experimental)
-    -i     Information
-        -iD        Return compiler date
-        -iV        Return short compiler version
-        -iW        Return full compiler version
-        -iSO       Return compiler OS
-        -iSP       Return compiler host processor
-        -iTO       Return target OS
-        -iTP       Return target processor
-    -I<x>  Add <x> to include path
-    -k<x>  Pass <x> to the linker
-    -l     Write logo
-    -M<x>  Set language mode to <x>
-        -Mfpc      Free Pascal dialect (default)
-        -Mobjfpc   FPC mode with Object Pascal support
-        -Mdelphi   Delphi 7 compatibility mode
-        -Mtp       TP/BP 7.0 compatibility mode
-        -Mmacpas   Macintosh Pascal dialects compatibility mode
-    -n     Do not read the default config files
-    -N<x>  Node tree optimizations
-        -Nu        Unroll loops
-    -o<x>  Change the name of the executable produced to <x>
-    -O<x>  Optimizations:
-        -O-        Disable optimizations
-        -O1        Level 1 optimizations (quick and debugger friendly)
-        -O2        Level 2 optimizations (-O1 + quick optimizations)
-        -O3        Level 3 optimizations (-O2 + slow optimizations)
-        -Oa<x>=<y> Set alignment
-        -Oo[NO]<x> Enable or disable optimizations, see fpc -i for possible values
-        -Op<x>     Set target cpu for optimizing, see fpc -i for possible values
-        -OW<x>     Generate whole-program optimization feedback for optimization <x>, see fpc -i for possible values
-        -Ow<x>     Perform whole-program optimization <x>, see fpc -i for possible values
-        -Os        Optimize for size rather than speed
-    -pg    Generate profile code for gprof (defines FPC_PROFILE)
-    -R<x>  Assembler reading style:
-        -Rdefault  Use default assembler for target
-    -S<x>  Syntax options:
-        -S2        Same as -Mobjfpc
-        -Sc        Support operators like C (*=,+=,/= and -=)
-        -Sa        Turn on assertions
-        -Sd        Same as -Mdelphi
-        -Se<x>     Error options. <x> is a combination of the following:
-           <n> : Compiler halts after the <n> errors (default is 1)
-           w : Compiler also halts after warnings
-           n : Compiler also halts after notes
-           h : Compiler also halts after hints
-        -Sg        Enable LABEL and GOTO (default in -Mtp and -Mdelphi)
-        -Sh        Use ansistrings by default instead of shortstrings
-        -Si        Turn on inlining of procedures/functions declared as "inline"
-        -Sk        Load fpcylix unit
-        -SI<x>     Set interface style to <x>
-           -SIcom     COM compatible interface (default)
-           -SIcorba   CORBA compatible interface
-        -Sm        Support macros like C (global)
-        -So        Same as -Mtp
-        -Ss        Constructor name must be init (destructor must be done)
-        -Sx        Enable exception keywords (default in Delphi/ObjFPC modes)
-        -Sy        @<pointer> returns a typed pointer, same as $T+
-    -s     Do not call assembler and linker
-        -sh        Generate script to link on host
-        -st        Generate script to link on target
-        -sr        Skip register allocation phase (use with -alr)
-    -T<x>  Target operating system:
-        -Tdarwin   Darwin/Mac OS X
-        -Tlinux    Linux
-        -Twin64    Win64 (64 bit Windows systems)
-    -u<x>  Undefines the symbol <x>
-    -U     Unit options:
-        -Un        Do not check where the unit name matches the file name
-        -Ur        Generate release unit files (never automatically recompiled)
-        -Us        Compile a system unit
-    -v<x>  Be verbose. <x> is a combination of the following letters:
-        e : Show errors (default)       0 : Show nothing (except errors)
-        w : Show warnings               u : Show unit info
-        n : Show notes                  t : Show tried/used files
-        h : Show hints                  c : Show conditionals
-        i : Show general info           d : Show debug info
-        l : Show linenumbers            r : Rhide/GCC compatibility mode
-        s : Show time stamps            q : Show message numbers
-        a : Show everything             x : Executable info (Win32 only)
-        b : Write file names messages   p : Write tree.log with parse tree
-            with full path              v : Write fpcdebug.txt with
-                                            lots of debugging info
-        m<x>,<y> : Don't show messages numbered <x> and <y>
-    -W<x>  Target-specific options (targets)
-        -WA        Specify native type application (Windows)
-        -Wb        Create a bundle instead of a library (Darwin)
-        -WB        Create a relocatable image (Windows)
-        -WBxxxx    Set image base to xxxx (Windows)
-        -WC        Specify console type application (EMX, OS/2, Windows)
-        -WD        Use DEFFILE to export functions of DLL or EXE (Windows)
-        -We        Use external resources (Darwin)
-        -WG        Specify graphic type application (EMX, OS/2, Windows)
-        -Wi        Use internal resources (Darwin)
-        -WI        Turn on/off the usage of import sections (Windows)
-        -WM<x>     Minimum Mac OS X deployment version: 10.4, 10.5.1, ... (Darwin)
-        -WN        Do not generate relocation code, needed for debugging (Windows)
-        -WR        Generate relocation code (Windows)
-        -WX        Enable executable stack (Linux)
-    -X     Executable options:
-        -Xc        Pass --shared/-dynamic to the linker (BeOS, Darwin, FreeBSD, Linux)
-        -Xd        Do not search default library path (sometimes required for cross-compiling when not using -XR)
-        -Xe        Use external linker
-        -Xg        Create debuginfo in a separate file and add a debuglink section to executable
-        -XD        Try to link units dynamically      (defines FPC_LINK_DYNAMIC)
-        -Xi        Use internal linker
-        -Xm        Generate link map
-        -XM<x>     Set the name of the 'main' program routine (default is 'main')
-        -XP<x>     Prepend the binutils names with the prefix <x>
-        -Xr<x>     Set the linker's rlink-path to <x> (needed for cross compile, see the ld manual for more information) (BeOS, Linux)
-        -XR<x>     Prepend <x> to all linker search paths (BeOS, Darwin, FreeBSD, Linux, Mac OS, Solaris)
-        -Xs        Strip all symbols from executable
-        -XS        Try to link units statically (default, defines FPC_LINK_STATIC)
-        -Xt        Link with static libraries (-static is passed to linker)
-        -XX        Try to smartlink units             (defines FPC_LINK_SMART)
-
-    -?     Show this help
-    -h     Shows this help without waiting
-
-  ------------------------------------------------------------------------------
-  ppcx64 -i
-    Free Pascal Compiler version 2.7.1
-
-    Compiler Date      : 2012/01/23
-    Compiler CPU Target: x86_64
-
-    Supported targets:
-      Linux for x86-64
-      FreeBSD for x86-64
-      Win64 for x64
-      Darwin for x86_64
-      Solaris for x86-64 (under development)
-
-    Supported CPU instruction sets:
-      ATHLON64
-
-    Supported FPU instruction sets:
-      SSE64
-      SSE3
-
-    Supported ABI targets:
-      DEFAULT
-      SYSV
-      AIX
-      EABI
-      ARMEB
-
-    Supported Optimizations:
-      REGVAR
-      STACKFRAME
-      LOOPUNROLL
-      TAILREC
-      CSE
-
-    Supported Whole Program Optimizations:
-      All
-      DEVIRTCALLS
-      OPTVMTS
-      SYMBOLLIVENESS
-
-    Supported Microcontroller types:
-  }
   Quiet:=ConsoleVerbosity<=-3; // lazbuild -q -q, lazarus -q -q -q
 
   CompilerFilename:=ParsedOpts.GetParsedValue(pcosCompilerPath);
@@ -2856,8 +2617,7 @@ begin
   end;
 
   if ccloAddCompilerPath in Flags then
-    switches:=ConvertOptionsToCmdLine('',RealCompilerFilename);
-  //writeln('TBaseCompilerOptions.MakeOptionsString RealCompilerFilename="',RealCompilerFilename,'" switches="',switches,'"');
+    Result.Add(RealCompilerFilename);
 
   CurTargetOS:='';
   CurTargetCPU:='';
@@ -2880,39 +2640,37 @@ begin
   { Target OS }
   if (CurTargetOS<>'')
   and ((TargetOS<>'') or (CurTargetOS<>DefaultTargetOS)) then
-    switches := switches + ' -T' + CurTargetOS;
+    Result.Add('-T' + CurTargetOS);
   { Target CPU }
   if (CurTargetCPU<>'')
   and ((TargetCPU<>'') or (CurTargetCPU<>DefaultTargetCPU)) then
-    switches := switches + ' -P' + CurTargetCPU;
+    Result.Add('-P' + CurTargetCPU);
   { TargetProcessor }
   if TargetProcessor<>'' then
-    Switches:=Switches+' -Cp'+UpperCase(TargetProcessor);
+    Result.Add('-Cp'+UpperCase(TargetProcessor));
 
   { --------------- Parsing Tab ------------------- }
 
   { Assembler reading style  -Ratt = AT&T    -Rintel = Intel  -Rdirect = direct }
   case AssemblerStyle of
-    1: switches := switches + ' -Rintel';
-    2: switches := switches + ' -Ratt';
-    3: switches := switches + ' -Rdirect';
+    1: Result.Add('-Rintel');
+    2: Result.Add('-Ratt');
+    3: Result.Add('-Rdirect');
   end;
 
   // Syntax Options
-  tempsw:=GetSyntaxOptionsString(Kind);
-  if (tempsw <> '') then
-    switches := switches + ' ' + tempsw;
+  GetSyntaxOptions(Kind,Result);
 
   { ----------- Code Generation Tab --------------- }
 
   { UnitStyle   '' = Static     'D' = Dynamic (not implemented)   'X' = smart linked }
   if SmartLinkUnit then
-    switches := switches + ' -CX';
+    Result.Add('-CX');
   if RelocatableUnit and (CurSrcOS='win') then
-    switches := switches + ' -WR';
+    Result.Add('-WR');
   if (not (ccloNoMacroParams in Flags))
   and TargetNeedsFPCOptionCG(CurTargetOS,CurTargetCPU) then
-    switches := switches + ' -Cg'; // see bug 17412
+    Result.Add('-Cg'); // see bug 17412
 
   { Checks }
   tempsw := '';
@@ -2931,15 +2689,15 @@ begin
     tempsw := tempsw + 'R';
 
   if (tempsw <> '') then
-    switches := switches + ' -C' + tempsw;
+    Result.Add('-C' + tempsw);
 
   { Heap Size }
   if (HeapSize > 0) then
-    switches := switches + ' ' + '-Ch' + IntToStr(HeapSize);
+    Result.Add('-Ch' + IntToStr(HeapSize));
 
   { Stack Size }
   if (StackSize > 0) then
-    switches := switches + ' ' + '-Cs' + IntToStr(StackSize);
+    Result.Add('-Cs' + IntToStr(StackSize));
 
   { Optimizations }
   OptimizeSwitches:='';
@@ -2949,15 +2707,15 @@ begin
   if OptimizationLevel>0 then
     OptimizeSwitches := OptimizeSwitches + IntToStr(OptimizationLevel);
   if OptimizeSwitches<>'' then
-    switches := switches + ' -O'+OptimizeSwitches;
+    Result.Add('-O'+OptimizeSwitches);
 
   // uncertain
   if UncertainOptimizations then
-    Switches := Switches + ' -OoUNCERTAIN';
+    Result.Add('-OoUNCERTAIN');
 
   // registers
   if VariablesInRegisters then
-    Switches := Switches + ' -OoREGVAR';
+    Result.Add('-OoREGVAR');
 
   { --------------- Linking Tab ------------------- }
 
@@ -2970,30 +2728,30 @@ begin
       dsAuto:
         if Kind=pcFPC then begin
           if (not (ccloNoMacroParams in Flags)) and (CurTargetOS='darwin') then
-            switches += ' -gw'
+            Result.Add('-gw')
           else
-            switches += ' -g';
+            Result.Add('-g');
         end;
-      dsStabs:     switches := switches + ' -gs';
-      dsDwarf2:    switches := switches + ' -gw2';
-      dsDwarf2Set: switches := switches + ' -gw2 -godwarfsets';
-      dsDwarf3:    switches := switches + ' -gw3';
+      dsStabs:     Result.Add('-gs');
+      dsDwarf2:    Result.Add('-gw2');
+      dsDwarf2Set: begin Result.Add('-gw2'); Result.Add('-godwarfsets'); end;
+      dsDwarf3:    Result.Add('-gw3');
     end;
 
     { Line Numbers in Run-time Error Backtraces - Use LineInfo Unit }
     if UseLineInfoUnit then
-      switches := switches + ' -gl';
+      Result.Add('-gl');
 
     { Use Heaptrc Unit }
     if UseHeaptrc and (not (ccloNoLinkerOpts in Flags)) then
-      switches := switches + ' -gh';
+      Result.Add('-gh');
 
     { Generate code for Valgrind }
     if UseValgrind and (not (ccloNoLinkerOpts in Flags)) then
-      switches := switches + ' -gv';
+      Result.Add('-gv');
 
     if UseExternalDbgSyms then
-      switches := switches + ' -Xg';
+      Result.Add('-Xg');
 
   end
   else begin
@@ -3001,20 +2759,20 @@ begin
 
     { Use Heaptrc Unit }
     if (UseHeaptrc) and (not (ccloNoLinkerOpts in Flags)) then
-      switches := switches + ' -g-h'; // heaptrc, without -g
+      Result.Add('-g-h'); // heaptrc, without -g
   end;
 
   { Trash variables }
   if TrashVariables then
-    switches := switches + ' -gt';
+    Result.Add('-gt');
 
   { Generate code gprof }
   if GenGProfCode then
-    switches := switches + ' -pg';
+    Result.Add('-pg');
 
   { Strip Symbols }
   if StripSymbols and (not (ccloNoLinkerOpts in Flags)) then
-    switches := switches + ' -Xs';
+    Result.Add('-Xs');
 
   { Link Style
      -XD = Link with dynamic libraries
@@ -3023,7 +2781,7 @@ begin
   }
 
   if (not (ccloNoLinkerOpts in Flags)) and LinkSmart then
-    switches := switches + ' -XX';
+    Result.Add('-XX');
 
   // additional Linker options
   if (not (ccloNoLinkerOpts in Flags))
@@ -3033,7 +2791,7 @@ begin
     begin
       CurLinkerOptions:=ParsedOpts.GetParsedValue(pcosLinkerOptions);
       if (CurLinkerOptions<>'') then
-        switches := switches + ' ' + ConvertOptionsToCmdLine('-k', CurLinkerOptions);
+        ConvertOptionsToCmdParams('-k', CurLinkerOptions, Result);
     end;
 
     // inherited Linker options
@@ -3041,20 +2799,20 @@ begin
                                    not (ccloAbsolutePaths in Flags),coptParsed);
     //debugln(['TBaseCompilerOptions.MakeOptionsString InhLinkerOpts="',InhLinkerOpts,'"']);
     if InhLinkerOpts<>'' then
-      switches := switches + ' ' + ConvertOptionsToCmdLine('-k', InhLinkerOpts);
+      ConvertOptionsToCmdParams('-k', InhLinkerOpts, Result);
   end;
 
   if Win32GraphicApp
   and ((CurSrcOS='win') or (CurTargetOS='macos') or (CurTargetOS='os2')) then
-    switches := switches + ' -WG';
+    Result.Add('-WG');
 
   { ---------------- Other Tab -------------------- }
 
   { Verbosity }
   if Quiet then
-    switches := switches + ' -l-'
+    Result.Add('-l-' )
   else if WriteFPCLogo then
-    switches := switches + ' -l';
+    Result.Add('-l');
 
   tempsw := '';
   quietsw := '';
@@ -3080,9 +2838,9 @@ begin
   tempsw := tempsw + 'bq'; // b = full file names, q = message ids
 
   if (tempsw <> '') then
-    switches := switches + ' -v' + tempsw;
+    Result.Add('-v' + tempsw);
   if (quietsw <> '') then
-    switches := switches + ' -v' + quietsw;
+    Result.Add('-v' + quietsw);
 
   // -vm flags allow to enable/disable types of messages
   // Passing a -vm ID, unknown by the current compiler will create an error
@@ -3099,23 +2857,23 @@ begin
     end;
     t := IDEMessageFlags.GetMsgIdList(',',cfvHide,FFPCMsgFile);
     if t <> '' then
-      switches := switches + ' ' + PrepareCmdLineOption('-vm'+t);
+      Result.Add('-vm'+t);
     t := IDEMessageFlags.GetMsgIdList(',',cfvShow,FFPCMsgFile);
     if t <> '' then
-      switches := switches + ' ' + PrepareCmdLineOption('-vm-'+t);
+      Result.Add('-vm-'+t);
   end;
 
   if (StopAfterErrCount>1) then
-    switches := switches + ' -Se'+IntToStr(StopAfterErrCount);
+    Result.Add('-Se'+IntToStr(StopAfterErrCount));
 
   { Ignore Config File }
   if DontUseConfigFile then
-    switches := switches + ' -n';
+    Result.Add('-n');
 
   { Use Custom Config File     @ = yes and path }
   if not (ccloNoMacroParams in Flags)
   and (CustomConfigFile) and (ConfigFilePath<>'') then
-    switches := switches + ' ' + PrepareCmdLineOption('@' + ConfigFilePath);
+    Result.Add('@' + ConfigFilePath);
 
   { ------------- Search Paths ---------------- }
   CurOutputDir:='';
@@ -3125,31 +2883,31 @@ begin
     CurIncludePath:=GetIncludePath(not (ccloAbsolutePaths in Flags),
                                    coptParsed,false);
     if (CurIncludePath <> '') then
-      switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fi', CurIncludePath);
+      ConvertSearchPathToCmdParams('-Fi', CurIncludePath, Result);
 
     // library path
     if (not (ccloNoLinkerOpts in Flags)) then begin
       CurLibraryPath:=GetLibraryPath(not (ccloAbsolutePaths in Flags),
                                      coptParsed,false);
       if (CurLibraryPath <> '') then
-        switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fl', CurLibraryPath);
+        ConvertSearchPathToCmdParams('-Fl', CurLibraryPath, Result);
     end;
 
     // namespaces
     CurNamespaces:=GetNamespacesParsed(coptParsed);
     if CurNamespaces<>'' then
-      switches := switches +' -FN'+CurNamespaces;
+      Result.Add('-FN'+CurNamespaces);
 
     // object path
     CurObjectPath:=GetObjectPath(not (ccloAbsolutePaths in Flags),
                                  coptParsed,false);
     if (CurObjectPath <> '') then
-      switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fo', CurObjectPath);
+      ConvertSearchPathToCmdParams('-Fo', CurObjectPath, Result);
 
     // unit path
     CurUnitPath:=GetUnitPath(not (ccloAbsolutePaths in Flags));
     //debugln('TBaseCompilerOptions.MakeOptionsString A ',dbgsName(Self),' CurUnitPath="',CurUnitPath,'"');
-    switches := switches + ' ' + ConvertSearchPathToCmdLine('-Fu', CurUnitPath);
+    ConvertSearchPathToCmdParams('-Fu', CurUnitPath, Result);
 
     { CompilerPath - Nothing needs to be done with this one }
 
@@ -3198,42 +2956,37 @@ begin
   if CurOutputDir<>'' then begin
     if not (ccloAbsolutePaths in Flags) then
       CurOutputDir:=CreateRelativePath(CurOutputDir,BaseDirectory,true);
-    switches := switches + ' '+PrepareCmdLineOption('-FU' + CurOutputDir);
+    Result.Add('-FU' + CurOutputDir);
   end;
   if CurTargetDirectory <> '' then begin
     if not (ccloAbsolutePaths in Flags) then
       CurTargetDirectory:=CreateRelativePath(CurTargetDirectory,BaseDirectory,true);
-    switches := switches + ' '+PrepareCmdLineOption('-FE' + CurTargetDirectory);
+    Result.Add('-FE' + CurTargetDirectory);
   end;
   if (CurTargetFilename<>'') then begin
     if not (ccloAbsolutePaths in Flags) then
       CurTargetFilename := CreateRelativePath(CurTargetFilename, BaseDirectory);
     if CurTargetFilename<>'' then
-      switches := switches + ' '+PrepareCmdLineOption('-o' +
+      Result.Add('-o' +
         FixExeExtForEmbeddedCompiler(CurTargetFilename));
   end;
 
   // append custom options as last, so they can override
   if not (ccloNoMacroParams in Flags) then
   begin
-    //debugln(['TBaseCompilerOptions.MakeOptionsString ',DbgSName(Self)]);
-    //DumpStack;
     CurCustomOptions:=GetCustomOptions(coptParsed);
     if CurCustomOptions<>'' then
-      switches := switches+' '+CurCustomOptions;
+      ConvertOptionsToCmdParams('', CurCustomOptions, Result);
   end;
-
-  Result := switches;
 end;
 
-function TBaseCompilerOptions.GetSyntaxOptionsString(Kind: TPascalCompiler): string;
+procedure TBaseCompilerOptions.GetSyntaxOptions(Kind: TPascalCompiler;
+  Params: TStrings);
 var
   tempsw: String;
 begin
   if SyntaxMode<>'' then
-    Result:='-M'+SyntaxMode  // -M<x>  Set language mode to <x>
-  else
-    Result:='';
+    Params.Add('-M'+SyntaxMode);  // -M<x>  Set language mode to <x>
 
   tempsw := '';
 
@@ -3257,9 +3010,7 @@ begin
   end;
 
   if (tempsw <> '') then begin
-    if Result<>'' then
-      Result:=Result+' ';
-    Result := Result+'-S' + tempsw;
+    Params.Add('-S' + tempsw);
   end;
 end;
 

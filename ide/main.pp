@@ -6830,7 +6830,7 @@ var
   PkgFlags: TPkgCompileFlags;
   CompilerFilename: String;
   WorkingDir: String;
-  CompilerParams: String;
+  CompilerParams: TStringListUTF8Fast;
   NeedBuildAllFlag: Boolean;
   NoBuildNeeded: Boolean;
   UnitOutputDirectory: String;
@@ -6876,6 +6876,7 @@ begin
   Result:=PkgBoss.CheckUserSearchPaths(Project1.CompilerOptions);
   if Result<>mrOk then exit;
 
+  CompilerParams:=nil;
   try
     Result:=DoSaveForBuild(AReason);
     if Result<>mrOk then begin
@@ -7094,10 +7095,11 @@ begin
         CompilerFilename:=Project1.GetCompilerFilename;
         // Hint: use absolute paths, because some external tools resolve symlinked directories
         CompilerParams :=
-          Project1.CompilerOptions.MakeOptionsString([ccloAbsolutePaths])
-                 + ' ' + PrepareCmdLineOption(SrcFilename);
+          Project1.CompilerOptions.MakeOptionsString([ccloAbsolutePaths]);
+        CompilerParams.Add(SrcFilename);
         // write state file, to avoid building clean every time
-        Result:=Project1.SaveStateFile(CompilerFilename,CompilerParams,false);
+        Result:=Project1.SaveStateFile(CompilerFilename,
+                                       CompilerParams,false);
         if Result<>mrOk then begin
           debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] SaveStateFile before compile failed']);
           exit;
@@ -7165,6 +7167,7 @@ begin
       DoCallBuildingFinishedHandler(lihtProjectBuildingFinished, Self, Result=mrOk);
     end;
   finally
+    CompilerParams.Free;
     // check sources
     DoCheckFilesOnDisk;
   end;

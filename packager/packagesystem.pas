@@ -141,14 +141,18 @@ type
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
   end;
 
+  { TLazPkgGraphExtToolData }
+
   TLazPkgGraphExtToolData = class(TIDEExternalToolData)
   public
     Pkg: TLazPackage;
     BuildItem: TLazPkgGraphBuildItem;
     SrcPPUFilename: string;
     CompilerFilename: string;
-    CompilerParams: string;
+    CompilerParams: TStrings;
     ErrorMessage: string;
+    constructor Create(aKind, aModuleName, aFilename: string); override;
+    destructor Destroy; override;
   end;
 
   TLazPackageGraph = class;
@@ -238,7 +242,7 @@ type
     procedure AddMessage(TheUrgency: TMessageLineUrgency; const Msg, Filename: string);
     function OutputDirectoryIsWritable(APackage: TLazPackage; Directory: string;
                                        Verbose: boolean): boolean;
-    function GetPackageCompilerParams(APackage: TLazPackage): string;
+    function GetPackageCompilerParams(APackage: TLazPackage): TStrings;
     function CheckIfCurPkgOutDirNeedsCompile(APackage: TLazPackage;
                     CheckDependencies, SkipDesignTimePackages, GroupCompile: boolean;
                     out NeedBuildAllFlag, ConfigChanged, DependenciesChanged: boolean;
@@ -393,7 +397,7 @@ type
                               const NewName: string; NewVersion: TPkgVersion;
                               RenameDependencies, RenameMacros: boolean);
     function SavePackageCompiledState(APackage: TLazPackage;
-                  const CompilerFilename, CompilerParams: string;
+                  const CompilerFilename: string; CompilerParams: TStrings;
                   Complete, MainPPUExists, ShowAbort: boolean): TModalResult;
     function LoadPackageCompiledState(APackage: TLazPackage;
                                 IgnoreErrors, ShowAbort: boolean): TModalResult;
@@ -528,12 +532,14 @@ type
 var
   PackageGraph: TLazPackageGraph = nil;
 
-function ExtractFPCParamsForBuildAll(const CompParams: string): string;
-function ExtractMakefileCompiledParams(const CompParams: string;
+function ExtractFPCParamsForBuildAll(CompParams: TStrings): TStrings;
+function ExtractMakefileCompiledParams(CompParams: TStrings;
   CreateReduced: boolean = false;
   BaseDir: string = ''; MakeRelative: boolean = false): TStringList;
-function RemoveFPCVerbosityParams(const CompParams: string): string;
-procedure WarnSuspiciousCompilerOptions(ViewCaption, Target, CompilerParams: string);
+function FPCParamNeedsBuildAll(const Param: String): boolean;
+function FPCParamForBuildAllHasChanged(OldParams, NewParams: TStrings): boolean;
+function RemoveFPCVerbosityParams(CompParams: TStrings): TStrings;
+procedure WarnSuspiciousCompilerOptions(ViewCaption, Target: string; CompilerParams: TStrings);
 
 implementation
 
@@ -548,84 +554,51 @@ begin
   PackageGraph.RegisterComponentsHandler('',ComponentClasses);
 end;
 
-function ExtractFPCParamsForBuildAll(const CompParams: string): string;
-{ Some compiler flags require a clean build -B, because the compiler
-  does not recompile/update some ppu itself.
-  Remove all flags that do not require build all:
-  -l  logo
-  -F  file name and paths
-  -B  build all
-  -e  executable
-  -i  information
-  -o  name of the executable
-  -s  quick build option, do not call assembler and linker
-  -T  target OS
-  -v  verbosity
-  -X  Executable
-  -k  linker flags
-  }
+function ExtractFPCParamsForBuildAll(CompParams: TStrings): TStrings;
 var
-  EndPos: Integer;
-  StartPos: integer;
+  i: integer;
+  p: String;
 begin
-  Result:=CompParams;
-  EndPos:=1;
-  while ReadNextFPCParameter(Result,EndPos,StartPos) do begin
-    if (Result[StartPos]='-') and (StartPos<length(Result)) then begin
-      case Result[StartPos+1] of
-      'l','F','B','e','i','o','s','T','v','X','k':
-        begin
-          while (StartPos>1) and (Result[StartPos-1] in [' ',#9]) do
-            dec(StartPos);
-          //DebugLn(['ExtractFPCParamsForBuildAll Removing: ',copy(Result,StartPos,EndPos-StartPos)]);
-          System.Delete(Result,StartPos,EndPos-StartPos);
-          EndPos:=StartPos;
-        end;
-      end;
-    end;
+  Result:=TStringList.Create;
+  for i:=0 to CompParams.Count-1 do
+  begin
+    p:=CompParams[i];
+    if FPCParamNeedsBuildAll(p) then
+      Result.Add(p);
   end;
-  Result:=UTF8Trim(Result,[]);
 end;
 
-function ExtractMakefileCompiledParams(const CompParams: string;
+function ExtractMakefileCompiledParams(CompParams: TStrings;
   CreateReduced: boolean; BaseDir: string; MakeRelative: boolean): TStringList;
 var
   AllPaths: TStringList;
-  EndPos: Integer;
-  StartPos: integer;
   Path: String;
   Reduced: String;
-  i: Integer;
 
   procedure AddSearchPath(Typ: string);
   begin
     AllPaths.Values[Typ]:=MergeSearchPaths(AllPaths.Values[Typ],Path);
   end;
 
-  procedure DeleteOption;
-  begin
-    while (EndPos<=length(Reduced)) and (Reduced[EndPos] in [' ',#9]) do
-      inc(EndPos);
-    //debugln(['DeleteOption "',copy(Reduced,StartPos,EndPos-StartPos),'"']);
-    System.Delete(Reduced,StartPos,EndPos-StartPos);
-    EndPos:=StartPos;
-  end;
-
+var
+  i: integer;
+  Param: String;
 begin
   Result:=TStringList.Create;
   Reduced:='';
   AllPaths:=Result;
-  EndPos:=1;
-  while ReadNextFPCParameter(CompParams,EndPos,StartPos) do begin
-    if (CompParams[StartPos]='-') and (StartPos<length(CompParams)) then begin
-      case CompParams[StartPos+1] of
+  for i:=0 to CompParams.Count-1 do
+  begin
+    Param:=CompParams[i];
+    if (length(Param)>1) and (Param[1]='-') then begin
+      case Param[2] of
       'F':
         // search paths
-        if StartPos<length(CompParams)-1 then begin
-          Path:=copy(CompParams,StartPos+3,EndPos-StartPos-3);
-          if (Path<>'') and (Path[1] in ['''','"']) then
+        if length(Param)>3 then begin
+          Path:=copy(Param,4,length(Param));
+          if (Path[1] in ['''','"']) then
             Path:=AnsiDequotedStr(Path,Path[1]);
-          case CompParams[StartPos+2] of
+          case Param[3] of
           'u': begin AddSearchPath('UnitPath'); continue; end;
           'U': begin AllPaths.Values['UnitOutputDir']:=Path; continue; end;
           'i': begin AddSearchPath('IncPath'); continue; end;
@@ -643,7 +616,7 @@ begin
         // build clean
         continue;
       'C':
-        if (StartPos+2<=length(CompParams)) and (CompParams[StartPos+2]='g')
+        if (Param='-Cg')
         and TargetNeedsFPCOptionCG(FPCAdds.GetCompiledTargetOS,FPCAdds.GetCompiledTargetCPU)
         then begin
           // the -Cg parameter is added automatically on Linux, but not in the
@@ -655,7 +628,7 @@ begin
     end;
     if Reduced<>'' then
       Reduced+=' ';
-    Reduced+=copy(CompParams,StartPos,EndPos-StartPos);
+    Reduced+=Param;
   end;
   if BaseDir<>'' then begin
     for i:=0 to AllPaths.Count-1 do begin
@@ -670,35 +643,90 @@ begin
     AllPaths.Values['Reduced']:=UTF8Trim(Reduced,[]);
 end;
 
-function RemoveFPCVerbosityParams(const CompParams: string): string;
+function FPCParamNeedsBuildAll(const Param: String): boolean;
+{ Some compiler flags require a clean build -B, because the compiler
+  does not recompile/update some ppu itself.
+  Remove all flags that do not require build all:
+  -B  build all
+  -e  executable
+  -E omit linking stage
+  -F  file name and paths
+  -I  includepath
+  -i  information
+  -k  linker flags
+  -l  logo
+  -o  name of the executable
+  -P  target cpu
+  -s  quick build option, do not call assembler and linker
+  -T  target OS
+  -v  verbosity
+  -V  Append '-<x>' to the used compiler binary name
+  -X  Executable options
+  }
+begin
+  Result:=(length(Param)<=2)
+      or (Param[1]<>'-')
+      or not (Param[2] in ['l','F','B','E','e','I','i','o','s','T','P','v','X','k']);
+end;
+
+function FPCParamForBuildAllHasChanged(OldParams, NewParams: TStrings): boolean;
+var
+  i, j, OldCount, NewCount: Integer;
+begin
+  i:=0;
+  j:=0;
+  if OldParams<>nil then
+    OldCount:=OldParams.Count
+  else
+    OldCount:=0;
+  if NewParams<>nil then
+   NewCount:=NewParams.Count
+  else
+    NewCount:=0;
+  repeat
+    while (i<OldCount) and not FPCParamNeedsBuildAll(OldParams[i]) do
+      inc(i);
+    while (j<NewCount) and not FPCParamNeedsBuildAll(NewParams[j]) do
+      inc(j);
+    if i=OldCount then
+    begin
+      if j=NewCount then
+        exit(false) // nothing relevant changed
+      else
+        exit(true); // new relevant param
+    end else
+    begin
+      if j=NewCount then
+        exit(true) // a relevant param vanished
+      else if OldParams[i]<>NewParams[j] then
+        exit(true); // relevant param changed
+    end;
+    inc(i);
+    inc(j);
+  until false;
+end;
+
+function RemoveFPCVerbosityParams(CompParams: TStrings): TStrings;
 { Some compiler flags have no impact on the produced files.
   Remove all flags that do not require a rebuild:
   -l -B -i -v }
 var
-  EndPos: Integer;
-  StartPos: integer;
+  i: integer;
+  Param: String;
 begin
-  Result:=CompParams;
-  EndPos:=1;
-  while ReadNextFPCParameter(Result,EndPos,StartPos) do begin
-    if (Result[StartPos]='-') and (StartPos<length(Result)) then begin
-      case Result[StartPos+1] of
-      'l','B','i','v':
-        begin
-          while (StartPos>1) and (Result[StartPos-1] in [' ',#9]) do
-            dec(StartPos);
-          //DebugLn(['ExtractFPCVerbosityParams Removing: ',copy(Result,StartPos,EndPos-StartPos)]);
-          System.Delete(Result,StartPos,EndPos-StartPos);
-          EndPos:=StartPos;
-        end;
-      end;
-    end;
+  Result:=TStringListUTF8Fast.Create;
+  for i:=0 to CompParams.Count-1 do
+  begin
+    Param:=CompParams[i];
+    if (length(Param)>1) and (Param[1]='-') and (Param[2] in ['l','B','i','v']) then
+      // verbosity
+    else
+      Result.Add(Param);
   end;
-  Result:=UTF8Trim(Result,[]);
 end;
 
-procedure WarnSuspiciousCompilerOptions(ViewCaption, Target,
-  CompilerParams: string);
+procedure WarnSuspiciousCompilerOptions(ViewCaption, Target: string;
+  CompilerParams: TStrings);
 var
   ParsedParams: TObjectList;
   i: Integer;
@@ -913,6 +941,21 @@ begin
   Result:=fTools.Add(Tool);
 end;
 
+{ TLazPkgGraphExtToolData }
+
+constructor TLazPkgGraphExtToolData.Create(aKind, aModuleName, aFilename: string
+  );
+begin
+  inherited Create(aKind, aModuleName, aFilename);
+  CompilerParams:=TStringListUTF8Fast.Create;
+end;
+
+destructor TLazPkgGraphExtToolData.Destroy;
+begin
+  FreeAndNil(CompilerParams);
+  inherited Destroy;
+end;
+
 { TLazPackageGraph }
 
 procedure TLazPackageGraph.DoDependencyChanged(Dependency: TPkgDependency);
@@ -1088,11 +1131,11 @@ begin
 end;
 
 function TLazPackageGraph.GetPackageCompilerParams(APackage: TLazPackage
-  ): string;
+  ): TStrings;
 begin
   Result:=APackage.CompilerOptions.MakeOptionsString(
-          APackage.CompilerOptions.DefaultMakeOptionsFlags+[ccloAbsolutePaths])
-          +' '+PrepareCmdLineOption(CreateRelativePath(APackage.GetSrcFilename,APackage.Directory));
+          APackage.CompilerOptions.DefaultMakeOptionsFlags+[ccloAbsolutePaths]);
+  Result.Add(CreateRelativePath(APackage.GetSrcFilename,APackage.Directory));
 end;
 
 constructor TLazPackageGraph.Create;
@@ -3207,14 +3250,14 @@ begin
 end;
 
 function TLazPackageGraph.SavePackageCompiledState(APackage: TLazPackage;
-  const CompilerFilename, CompilerParams: string; Complete, MainPPUExists,
-  ShowAbort: boolean): TModalResult;
+  const CompilerFilename: string; CompilerParams: TStrings; Complete,
+  MainPPUExists, ShowAbort: boolean): TModalResult;
 var
   XMLConfig: TXMLConfig;
   StateFile: String;
   CompilerFileDate: Integer;
   o: TPkgOutputDir;
-  stats: PPkgLastCompileStats;
+  stats: TPkgLastCompileStats;
 begin
   Result:=mrCancel;
   StateFile:=APackage.GetStateFilename;
@@ -3222,18 +3265,18 @@ begin
     CompilerFileDate:=FileAgeCached(CompilerFilename);
 
     o:=APackage.GetOutputDirType;
-    stats:=@APackage.LastCompile[o];
-    stats^.CompilerFilename:=CompilerFilename;
-    stats^.CompilerFileDate:=CompilerFileDate;
-    stats^.Params:=CompilerParams;
-    stats^.Complete:=Complete;
-    stats^.ViaMakefile:=false;
+    stats:=APackage.LastCompile[o];
+    stats.CompilerFilename:=CompilerFilename;
+    stats.CompilerFileDate:=CompilerFileDate;
+    stats.Params.Assign(CompilerParams);
+    stats.Complete:=Complete;
+    stats.ViaMakefile:=false;
 
     XMLConfig:=TXMLConfig.CreateClean(StateFile);
     try
       XMLConfig.SetValue('Compiler/Value',CompilerFilename);
       XMLConfig.SetValue('Compiler/Date',CompilerFileDate);
-      XMLConfig.SetValue('Params/Value',CompilerParams);
+      XMLConfig.SetValue('Params/Value',MergeCmdLineParams(CompilerParams));
       XMLConfig.SetDeleteValue('Complete/Value',Complete,true);
       XMLConfig.SetDeleteValue('Complete/MainPPUExists',MainPPUExists,true);
       InvalidateFileStateCache;
@@ -3241,9 +3284,9 @@ begin
     finally
       XMLConfig.Free;
     end;
-    stats^.StateFileName:=StateFile;
-    stats^.StateFileDate:=FileAgeCached(StateFile);
-    APackage.LastCompile[o].StateFileLoaded:=true;
+    stats.StateFileName:=StateFile;
+    stats.StateFileDate:=FileAgeCached(StateFile);
+    stats.StateFileLoaded:=true;
   except
     on E: Exception do begin
       Result:=IDEMessageDialogAb(lisPkgMangErrorWritingFile,
@@ -3263,64 +3306,70 @@ var
   XMLConfig: TXMLConfig;
   StateFile: String;
   StateFileAge: Integer;
-  stats: PPkgLastCompileStats;
+  stats: TPkgLastCompileStats;
   o: TPkgOutputDir;
-  MakefileValue: String;
+  MakefileValue, Params: String;
   MakefileVersion: Integer;
 begin
   o:=APackage.GetOutputDirType;
-  stats:=@APackage.LastCompile[o];
+  stats:=APackage.LastCompile[o];
   StateFile:=APackage.GetStateFilename;
   if not FileExistsCached(StateFile) then begin
     //DebugLn('TLazPackageGraph.LoadPackageCompiledState Statefile not found: ',StateFile);
-    stats^.StateFileLoaded:=false;
+    stats.StateFileLoaded:=false;
     Result:=mrOk;
     exit;
   end;
 
   // read the state file
   StateFileAge:=FileAgeCached(StateFile);
-  if (not stats^.StateFileLoaded)
-  or (stats^.StateFileDate<>StateFileAge)
-  or (stats^.StateFileName<>StateFile) then begin
-    stats^.StateFileLoaded:=false;
+  if (not stats.StateFileLoaded)
+  or (stats.StateFileDate<>StateFileAge)
+  or (stats.StateFileName<>StateFile) then begin
+    stats.StateFileLoaded:=false;
     try
       XMLConfig:=TXMLConfig.Create(StateFile);
       try
-        stats^.CompilerFilename:=XMLConfig.GetValue('Compiler/Value','');
-        stats^.CompilerFileDate:=XMLConfig.GetValue('Compiler/Date',0);
-        stats^.Params:=XMLConfig.GetValue('Params/Value','');
-        stats^.Complete:=XMLConfig.GetValue('Complete/Value',true);
-        stats^.MainPPUExists:=XMLConfig.GetValue('Complete/MainPPUExists',true);
+        stats.CompilerFilename:=XMLConfig.GetValue('Compiler/Value','');
+        stats.CompilerFileDate:=XMLConfig.GetValue('Compiler/Date',0);
+        stats.Complete:=XMLConfig.GetValue('Complete/Value',true);
+        stats.MainPPUExists:=XMLConfig.GetValue('Complete/MainPPUExists',true);
         MakefileValue:=XMLConfig.GetValue('Makefile/Value','');
+        stats.Params.Clear;
+        Params:=XMLConfig.GetValue('Params/Value','');
         if (MakefileValue='') then
-          stats^.ViaMakefile:=false
+          stats.ViaMakefile:=false
         else begin
-          stats^.ViaMakefile:=true;
+          stats.ViaMakefile:=true;
           MakefileVersion:=StrToIntDef(MakefileValue,0);
           if MakefileVersion<2 then begin
             // old versions used %(
-            stats^.CompilerFilename:=StringReplace(stats^.CompilerFilename,'%(','$(',[rfReplaceAll]);
-            stats^.Params:=StringReplace(stats^.Params,'%(','$(',[rfReplaceAll]);
+            stats.CompilerFilename:=StringReplace(stats.CompilerFilename,'%(','$(',[rfReplaceAll]);
+            Params:=StringReplace(Params,'%(','$(',[rfReplaceAll]);
           end;
-          ForcePathDelims(stats^.CompilerFilename);
-          ForcePathDelims(stats^.Params);
+          ForcePathDelims(stats.CompilerFilename);
+          ForcePathDelims(Params);
+          Params:=StringReplace(Params,'$(CPU_TARGET)','$(TargetCPU)',[rfReplaceAll]);
+          Params:=StringReplace(Params,'$(OS_TARGET)','$(TargetOS)',[rfReplaceAll]);
+          Params:=StringReplace(Params,'$(LCL_PLATFORM)','$(LCLWidgetType)',[rfReplaceAll]);
+          Params:=APackage.SubstitutePkgMacros(Params,false);
         end;
+        SplitCmdLineParams(Params,stats.Params);
       finally
         XMLConfig.Free;
       end;
-      stats^.StateFileName:=StateFile;
-      stats^.StateFileDate:=StateFileAge;
-      stats^.StateFileLoaded:=true;
+      stats.StateFileName:=StateFile;
+      stats.StateFileDate:=StateFileAge;
+      stats.StateFileLoaded:=true;
     except
       on E: EXMLReadError do begin
         // invalid XML
         debugln(['Warning: (lazarus) package "',APackage.IDAsString,'": syntax error in ',StateFile,' => need clean build.']);
-        stats^.Complete:=false;
-        stats^.CompilerFilename:='';
-        stats^.StateFileName:=StateFile;
-        stats^.StateFileDate:=StateFileAge;
-        stats^.StateFileLoaded:=true;
+        stats.Complete:=false;
+        stats.CompilerFilename:='';
+        stats.StateFileName:=StateFile;
+        stats.StateFileDate:=StateFileAge;
+        stats.StateFileLoaded:=true;
       end;
       on E: Exception do begin
         if IgnoreErrors then begin
@@ -3612,19 +3661,18 @@ var
   StateFileAge: Integer;
   i: Integer;
   CurFile: TPkgFile;
-  LastParams: String;
-  LastPaths: TStringList;
-  CurPaths: TStringList;
+  LastParams: TStrings;
+  LastPaths, CurPaths: TStringList;
+  CompilerParams: TStrings;
   OldValue: string;
   NewValue: string;
   o: TPkgOutputDir;
-  Stats: PPkgLastCompileStats;
+  Stats: TPkgLastCompileStats;
   SrcPPUFile: String;
   AFilename: String;
-  CompilerFilename, CompilerParams, SrcFilename: string;
+  CompilerFilename, SrcFilename: string;
   LFMFilename: String;
-  ReducedParams: String;
-  ReducedLastParams: String;
+  ReducedParams, ReducedLastParams: TStrings;
 begin
   Result:=mrYes;
   {$IFDEF VerbosePkgCompile}
@@ -3640,258 +3688,265 @@ begin
   CompilerFilename:=APackage.GetCompilerFilename;
   // Note: use absolute paths, because some external tools resolve symlinked directories
   CompilerParams:=GetPackageCompilerParams(APackage);
+  try
+    o:=APackage.GetOutputDirType;
+    Stats:=APackage.LastCompile[o];
+    //debugln(['TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Last="',ExtractCompilerParamsForBuildAll(APackage.LastCompilerParams),'" Now="',ExtractCompilerParamsForBuildAll(CompilerParams),'"']);
 
-  o:=APackage.GetOutputDirType;
-  Stats:=@APackage.LastCompile[o];
-  //debugln(['TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Last="',ExtractCompilerParamsForBuildAll(APackage.LastCompilerParams),'" Now="',ExtractCompilerParamsForBuildAll(CompilerParams),'"']);
-
-  // check state file
-  StateFilename:=APackage.GetStateFilename;
-  Result:=LoadPackageCompiledState(APackage,false,true);
-  if Result<>mrOk then exit; // read error and user aborted
-  if not Stats^.StateFileLoaded then begin
-    // package was not compiled via Lazarus nor via Makefile/fpmake
-    DebugLn('Hint: (lazarus) Missing state file of ',APackage.IDAsString,': ',StateFilename);
-    Note+='Missing state file "'+StateFilename+'".'+LineEnding;
-    NeedBuildAllFlag:=true;
-    ConfigChanged:=true;
-    exit(mrYes);
-  end;
-
-  // check if build all (-B) is needed
-  if (Stats^.CompilerFilename<>CompilerFilename)
-  or (ExtractFPCParamsForBuildAll(Stats^.Params)
-      <>ExtractFPCParamsForBuildAll(CompilerParams))
-  or ((Stats^.CompilerFileDate>0)
-      and FileExistsCached(CompilerFilename)
-      and (FileAgeCached(CompilerFilename)<>Stats^.CompilerFileDate))
-  then begin
-    NeedBuildAllFlag:=true;
-    ConfigChanged:=true;
-  end;
-
-  if GroupCompile and (lpfNeedGroupCompile in APackage.Flags) then begin
-    //debugln(['TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile dependencies will be rebuilt']);
-    Note+='Dependencies will be rebuilt';
-    DependenciesChanged:=true;
-    exit(mrYes);
-  end;
-
-  StateFileAge:=FileAgeUTF8(StateFilename);
-
-  // check compiler and params
-  LastParams:=APackage.GetLastCompilerParams(o);
-  if Stats^.ViaMakefile then begin
-    // the package was compiled via Makefile/fpmake
-    if ConsoleVerbosity>=1 then
-      debugln(['Hint: (lazarus) package ',APackage.IDAsString,' was compiled via "make" with parameters "',LastParams,'"']);
-
-    CurPaths:=nil;
-    LastPaths:=nil;
-    try
-      CurPaths:=ExtractMakefileCompiledParams(CompilerParams,true);
-      LastPaths:=ExtractMakefileCompiledParams(LastParams,true);
-
-      //debugln(['TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile CompilerParams="',CompilerParams,'" UnitPaths="',CurPaths.Values['UnitPath'],'"']);
-      // compare custom options
-      OldValue:=LastPaths.Values['Reduced'];
-      NewValue:=CurPaths.Values['Reduced'];
-      if NewValue<>OldValue then begin
-        DebugLn('Hint: (lazarus) Compiler custom params changed for ',APackage.IDAsString);
-        DebugLn('  Old="',OldValue,'"');
-        DebugLn('  Now="',NewValue,'"');
-        DebugLn('  State file="',Stats^.StateFileName,'"');
-        Note+='Compiler custom parameters changed:'+LineEnding
-           +'  Old="'+OldValue+'"'+LineEnding
-           +'  Now="'+NewValue+'"'+LineEnding
-           +'  State file="'+Stats^.StateFileName+'"'+LineEnding;
-        ConfigChanged:=true;
-        exit(mrYes);
-      end;
-      // compare unit paths
-      OldValue:=TrimSearchPath(LastPaths.Values['UnitPath'],APackage.Directory,true);
-      NewValue:=TrimSearchPath(CurPaths.Values['UnitPath'],APackage.Directory,true);
-      if NewValue<>OldValue then begin
-        DebugLn('Hint: (lazarus) Compiler unit paths changed for ',APackage.IDAsString);
-        DebugLn('  Old="',OldValue,'"');
-        DebugLn('  Now="',NewValue,'"');
-        DebugLn('  State file="',Stats^.StateFileName,'"');
-        Note+='Compiler unit paths changed:'+LineEnding
-           +'  Old="'+OldValue+'"'+LineEnding
-           +'  Now="'+NewValue+'"'+LineEnding
-           +'  State file="'+Stats^.StateFileName+'"'+LineEnding;
-        ConfigChanged:=true;
-        exit(mrYes);
-      end;
-      // compare include paths
-      OldValue:=TrimSearchPath(LastPaths.Values['IncPath'],APackage.Directory,true);
-      NewValue:=TrimSearchPath(CurPaths.Values['IncPath'],APackage.Directory,true);
-      if NewValue<>OldValue then begin
-        DebugLn('Hint: (lazarus) Compiler include paths changed for ',APackage.IDAsString);
-        DebugLn('  Old="',OldValue,'"');
-        DebugLn('  Now="',NewValue,'"');
-        DebugLn('  State file="',Stats^.StateFileName,'"');
-        Note+='Compiler include paths changed:'+LineEnding
-           +'  Old="'+OldValue+'"'+LineEnding
-           +'  Now="'+NewValue+'"'+LineEnding
-           +'  State file="'+Stats^.StateFileName+'"'+LineEnding;
-        ConfigChanged:=true;
-        exit(mrYes);
-      end;
-    finally
-      CurPaths.Free;
-      LastPaths.Free;
-    end;
-  end else begin
-    ReducedParams:=RemoveFPCVerbosityParams(CompilerParams);
-    ReducedLastParams:=RemoveFPCVerbosityParams(LastParams);
-    if ReducedParams<>ReducedLastParams then begin
-      // package was compiled by Lazarus
-      DebugLn('Hint: (lazarus) Compiler params changed for ',APackage.IDAsString);
-      DebugLn('  Old="',dbgstr(ReducedLastParams),'"');
-      DebugLn('  Now="',dbgstr(ReducedParams),'"');
-      DebugLn('  State file="',Stats^.StateFileName,'"');
-      Note+='Compiler parameters changed:'+LineEnding
-         +'  Old="'+dbgstr(ReducedLastParams)+'"'+LineEnding
-         +'  Now="'+dbgstr(ReducedParams)+'"'+LineEnding
-         +'  State file="'+Stats^.StateFileName+'"'+LineEnding;
+    // check state file
+    StateFilename:=APackage.GetStateFilename;
+    Result:=LoadPackageCompiledState(APackage,false,true);
+    if Result<>mrOk then exit; // read error and user aborted
+    if not Stats.StateFileLoaded then begin
+      // package was not compiled via Lazarus nor via Makefile/fpmake
+      DebugLn('Hint: (lazarus) Missing state file of ',APackage.IDAsString,': ',StateFilename);
+      Note+='Missing state file "'+StateFilename+'".'+LineEnding;
+      NeedBuildAllFlag:=true;
       ConfigChanged:=true;
       exit(mrYes);
     end;
-  end;
-  if (not Stats^.ViaMakefile)
-  and (CompilerFilename<>Stats^.CompilerFilename) then begin
-    DebugLn('Hint: (lazarus) Compiler filename changed for ',APackage.IDAsString);
-    DebugLn('  Old="',Stats^.CompilerFilename,'"');
-    DebugLn('  Now="',CompilerFilename,'"');
-    DebugLn('  State file="',Stats^.StateFileName,'"');
-    Note+='Compiler filename changed:'+LineEnding
-       +'  Old="'+Stats^.CompilerFilename+'"'+LineEnding
-       +'  Now="'+CompilerFilename+'"'+LineEnding
-       +'  State file="'+Stats^.StateFileName+'"'+LineEnding;
-    exit(mrYes);
-  end;
-  if not FileExistsCached(CompilerFilename) then begin
-    DebugLn('Hint: (lazarus) Compiler filename not found for ',APackage.IDAsString);
-    DebugLn('  File="',CompilerFilename,'"');
-    DebugLn('  State file="',Stats^.StateFileName,'"');
-    Note+='Compiler file "'+CompilerFilename+'" not found.'+LineEnding
-       +'  State file="'+Stats^.StateFileName+'"'+LineEnding;
-    exit(mrYes);
-  end;
-  if (not Stats^.ViaMakefile)
-  and (FileAgeCached(CompilerFilename)<>Stats^.CompilerFileDate) then begin
-    DebugLn('Hint: (lazarus) Compiler file changed for ',APackage.IDAsString);
-    DebugLn('  File="',CompilerFilename,'"');
-    DebugLn('  State file="',Stats^.StateFileName,'"');
-    Note+='Compiler file "'+CompilerFilename+'" changed:'+LineEnding
-      +'  Old='+FileAgeToStr(Stats^.CompilerFileDate)+LineEnding
-      +'  Now='+FileAgeToStr(FileAgeCached(CompilerFilename))+LineEnding
-      +'  State file="'+Stats^.StateFileName+'"'+LineEnding;
-    exit(mrYes);
-  end;
 
-  // check main source file
-  if (SrcFilename<>'') then
-  begin
-    if not FileExistsCached(SrcFilename) then begin
-      DebugLn('Hint: (lazarus) source file missing of ',APackage.IDAsString,': ',SrcFilename);
-      Note+='Source file "'+SrcFilename+'" missing.'+LineEnding;
-      exit(mrYes);
+    // check if build all (-B) is needed
+    if (Stats.CompilerFilename<>CompilerFilename)
+    or FPCParamForBuildAllHasChanged(Stats.Params,CompilerParams)
+    or ((Stats.CompilerFileDate>0)
+        and FileExistsCached(CompilerFilename)
+        and (FileAgeCached(CompilerFilename)<>Stats.CompilerFileDate))
+    then begin
+      NeedBuildAllFlag:=true;
+      ConfigChanged:=true;
     end;
-    if StateFileAge<FileAgeCached(SrcFilename) then begin
-      DebugLn('Hint: (lazarus) source disk file modified of ',APackage.IDAsString,': ',SrcFilename);
-      Note+='Source file "'+SrcFilename+'" modified:'+LineEnding
-        +'  Source file age='+FileAgeToStr(FileAgeCached(SrcFilename))+LineEnding
-        +'  State file="'+Stats^.StateFileName+'"'+LineEnding
-        +'  State file age='+FileAgeToStr(StateFileAge)+LineEnding;
-      exit(mrYes);
-    end;
-    if SrcEditFileIsModified(SrcFilename) then begin
-      DebugLn('Hint: (lazarus) source editor file of ',APackage.IDAsString,': ',SrcFilename);
-      Note+='Source file "'+SrcFilename+'" modified in source editor.'+LineEnding;
-      exit(mrYes);
-    end;
-    // check main source ppu file
-    if Stats^.MainPPUExists then begin
-      SrcPPUFile:=APackage.GetSrcPPUFilename;
-      if not FileExistsCached(SrcPPUFile) then begin
-        DebugLn('Hint: (lazarus) main ppu file missing of ',APackage.IDAsString,': ',SrcPPUFile);
-        Note+='Main ppu file "'+SrcPPUFile+'" missing.'+LineEnding;
-        exit(mrYes);
-      end;
-    end;
-  end;
 
-
-  //debugln(['TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile ',APackage.Name,' Last="',APackage.LastCompilerParams,'" Now="',CompilerParams,'"']);
-
-  // compiler and parameters are the same
-  // quick compile is possible
-  NeedBuildAllFlag:=false;
-
-  if not Stats^.Complete then begin
-    DebugLn('Hint: (lazarus) Last compile was incomplete for ',APackage.IDAsString);
-    DebugLn('  State file="',Stats^.StateFileName,'"');
-    Note+='Last compile was incomplete.'+LineEnding
-       +'  State file="'+Stats^.StateFileName+'"'+LineEnding;
-    exit(mrYes);
-  end;
-
-  if CheckDependencies then begin
-    // check all required packages
-    Result:=CheckCompileNeedDueToDependencies(APackage,
-          APackage.FirstRequiredDependency,SkipDesignTimePackages,StateFileAge,
-          Note);
-    if Result<>mrNo then begin
+    if GroupCompile and (lpfNeedGroupCompile in APackage.Flags) then begin
+      //debugln(['TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile dependencies will be rebuilt']);
+      Note+='Dependencies will be rebuilt';
       DependenciesChanged:=true;
       exit(mrYes);
     end;
-  end;
 
-  // check package files
-  if StateFileAge<FileAgeCached(APackage.Filename) then begin
-    DebugLn('Hint: (lazarus) State file older than lpk ',APackage.IDAsString);
-    DebugLn('  State file="',Stats^.StateFileName,'"');
-    Note+='State file older than lpk:'+LineEnding
-      +'  State file age='+FileAgeToStr(StateFileAge)+LineEnding
-      +'  State file="'+Stats^.StateFileName+'"'+LineEnding
-      +'  LPK age='+FileAgeToStr(FileAgeCached(APackage.Filename))+LineEnding;
-    exit(mrYes);
-  end;
-  for i:=0 to APackage.FileCount-1 do begin
-    CurFile:=APackage.Files[i];
-    //debugln(['TLazPackageGraph.CheckIfPackageNeedsCompilation  CurFile.Filename="',CurFile.Filename,'" Exists=',FileExistsUTF8(CurFile.Filename),' NewerThanStateFile=',StateFileAge<FileAgeCached(CurFile.Filename)]);
-    AFilename:=CurFile.GetFullFilename;
-    if SrcEditFileIsModified(AFilename) then begin
-      DebugLn('Hint: (lazarus) Source editor file has been modified ',APackage.IDAsString,' ',CurFile.Filename);
-      Note+='';
+    StateFileAge:=FileAgeUTF8(StateFilename);
+
+    // check compiler and params
+    LastParams:=APackage.LastCompile[o].Params;
+    if Stats.ViaMakefile then begin
+      // the package was compiled via Makefile/fpmake
+      if ConsoleVerbosity>=1 then
+        debugln(['Hint: (lazarus) package ',APackage.IDAsString,' was compiled via "make" with parameters "',MergeCmdLineParams(LastParams,TLazCompilerOptions.ConsoleParamsMax),'"']);
+
+      CurPaths:=nil;
+      LastPaths:=nil;
+      try
+        CurPaths:=ExtractMakefileCompiledParams(CompilerParams,true);
+        LastPaths:=ExtractMakefileCompiledParams(LastParams,true);
+
+        //debugln(['TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile CompilerParams="',CompilerParams,'" UnitPaths="',CurPaths.Values['UnitPath'],'"']);
+        // compare custom options
+        OldValue:=LastPaths.Values['Reduced'];
+        NewValue:=CurPaths.Values['Reduced'];
+        if NewValue<>OldValue then begin
+          DebugLn('Hint: (lazarus) Compiler custom params changed for ',APackage.IDAsString);
+          DebugLn('  Old="',OldValue,'"');
+          DebugLn('  Now="',NewValue,'"');
+          DebugLn('  State file="',Stats.StateFileName,'"');
+          Note+='Compiler custom parameters changed:'+LineEnding
+             +'  Old="'+OldValue+'"'+LineEnding
+             +'  Now="'+NewValue+'"'+LineEnding
+             +'  State file="'+Stats.StateFileName+'"'+LineEnding;
+          ConfigChanged:=true;
+          exit(mrYes);
+        end;
+        // compare unit paths
+        OldValue:=TrimSearchPath(LastPaths.Values['UnitPath'],APackage.Directory,true);
+        NewValue:=TrimSearchPath(CurPaths.Values['UnitPath'],APackage.Directory,true);
+        if NewValue<>OldValue then begin
+          DebugLn('Hint: (lazarus) Compiler unit paths changed for ',APackage.IDAsString);
+          DebugLn('  Old="',OldValue,'"');
+          DebugLn('  Now="',NewValue,'"');
+          DebugLn('  State file="',Stats.StateFileName,'"');
+          Note+='Compiler unit paths changed:'+LineEnding
+             +'  Old="'+OldValue+'"'+LineEnding
+             +'  Now="'+NewValue+'"'+LineEnding
+             +'  State file="'+Stats.StateFileName+'"'+LineEnding;
+          ConfigChanged:=true;
+          exit(mrYes);
+        end;
+        // compare include paths
+        OldValue:=TrimSearchPath(LastPaths.Values['IncPath'],APackage.Directory,true);
+        NewValue:=TrimSearchPath(CurPaths.Values['IncPath'],APackage.Directory,true);
+        if NewValue<>OldValue then begin
+          DebugLn('Hint: (lazarus) Compiler include paths changed for ',APackage.IDAsString);
+          DebugLn('  Old="',OldValue,'"');
+          DebugLn('  Now="',NewValue,'"');
+          DebugLn('  State file="',Stats.StateFileName,'"');
+          Note+='Compiler include paths changed:'+LineEnding
+             +'  Old="'+OldValue+'"'+LineEnding
+             +'  Now="'+NewValue+'"'+LineEnding
+             +'  State file="'+Stats.StateFileName+'"'+LineEnding;
+          ConfigChanged:=true;
+          exit(mrYes);
+        end;
+      finally
+        CurPaths.Free;
+        LastPaths.Free;
+      end;
+    end else begin
+      ReducedParams:=RemoveFPCVerbosityParams(CompilerParams);
+      ReducedLastParams:=RemoveFPCVerbosityParams(LastParams);
+      try
+        if not ReducedParams.Equals(ReducedLastParams) then begin
+          // package was compiled by Lazarus
+          DebugLn('Hint: (lazarus) Compiler params changed for ',APackage.IDAsString);
+          DebugLn('  Old="',dbgstr(MergeCmdLineParams(ReducedLastParams,TLazCompilerOptions.ConsoleParamsMax)),'"');
+          DebugLn('  Now="',dbgstr(MergeCmdLineParams(ReducedParams,TLazCompilerOptions.ConsoleParamsMax)),'"');
+          DebugLn('  State file="',Stats.StateFileName,'"');
+          Note+='Compiler parameters changed:'+LineEnding
+             +'  Old="'+dbgstr(MergeCmdLineParams(ReducedLastParams,TLazCompilerOptions.ConsoleParamsMax))+'"'+LineEnding
+             +'  Now="'+dbgstr(MergeCmdLineParams(ReducedParams,TLazCompilerOptions.ConsoleParamsMax))+'"'+LineEnding
+             +'  State file="'+Stats.StateFileName+'"'+LineEnding;
+          ConfigChanged:=true;
+          exit(mrYes);
+        end;
+      finally
+        ReducedParams.Free;
+        ReducedLastParams.Free;
+      end;
     end;
-    if FileExistsCached(AFilename)
-    and (StateFileAge<FileAgeCached(AFilename)) then begin
-      DebugLn('Hint: (lazarus) Source file has changed ',APackage.IDAsString,' ',CurFile.Filename);
-      DebugLn('  State file="',Stats^.StateFileName,'"');
-      Note+='State file older than source "'+AFilename+'"'+LineEnding
-        +'  State file age='+FileAgeToStr(StateFileAge)+LineEnding
-        +'  State file="'+Stats^.StateFileName+'"'+LineEnding
-        +'  Src file age='+FileAgeToStr(FileAgeCached(AFilename))+LineEnding;
+    if (not Stats.ViaMakefile)
+    and (CompilerFilename<>Stats.CompilerFilename) then begin
+      DebugLn('Hint: (lazarus) Compiler filename changed for ',APackage.IDAsString);
+      DebugLn('  Old="',Stats.CompilerFilename,'"');
+      DebugLn('  Now="',CompilerFilename,'"');
+      DebugLn('  State file="',Stats.StateFileName,'"');
+      Note+='Compiler filename changed:'+LineEnding
+         +'  Old="'+Stats.CompilerFilename+'"'+LineEnding
+         +'  Now="'+CompilerFilename+'"'+LineEnding
+         +'  State file="'+Stats.StateFileName+'"'+LineEnding;
       exit(mrYes);
     end;
-    if FilenameIsPascalUnit(AFilename) then begin
-      LFMFilename:=ChangeFileExt(AFilename,'.lfm');
-      if FileExistsCached(LFMFilename)
-      and (StateFileAge<FileAgeCached(LFMFilename)) then begin
-        DebugLn('Hint: (lazarus) LFM has changed ',APackage.IDAsString,' ',LFMFilename);
-        DebugLn('  State file="',Stats^.StateFileName,'"');
-        Note+='State file older than resource "'+LFMFilename+'"'+LineEnding
-          +'  State file age='+FileAgeToStr(StateFileAge)+LineEnding
-          +'  State file="'+Stats^.StateFileName+'"'+LineEnding
-          +'  Resource file age='+FileAgeToStr(FileAgeCached(LFMFilename))+LineEnding;
+    if not FileExistsCached(CompilerFilename) then begin
+      DebugLn('Hint: (lazarus) Compiler filename not found for ',APackage.IDAsString);
+      DebugLn('  File="',CompilerFilename,'"');
+      DebugLn('  State file="',Stats.StateFileName,'"');
+      Note+='Compiler file "'+CompilerFilename+'" not found.'+LineEnding
+         +'  State file="'+Stats.StateFileName+'"'+LineEnding;
+      exit(mrYes);
+    end;
+    if (not Stats.ViaMakefile)
+    and (FileAgeCached(CompilerFilename)<>Stats.CompilerFileDate) then begin
+      DebugLn('Hint: (lazarus) Compiler file changed for ',APackage.IDAsString);
+      DebugLn('  File="',CompilerFilename,'"');
+      DebugLn('  State file="',Stats.StateFileName,'"');
+      Note+='Compiler file "'+CompilerFilename+'" changed:'+LineEnding
+        +'  Old='+FileAgeToStr(Stats.CompilerFileDate)+LineEnding
+        +'  Now='+FileAgeToStr(FileAgeCached(CompilerFilename))+LineEnding
+        +'  State file="'+Stats.StateFileName+'"'+LineEnding;
+      exit(mrYes);
+    end;
+
+    // check main source file
+    if (SrcFilename<>'') then
+    begin
+      if not FileExistsCached(SrcFilename) then begin
+        DebugLn('Hint: (lazarus) source file missing of ',APackage.IDAsString,': ',SrcFilename);
+        Note+='Source file "'+SrcFilename+'" missing.'+LineEnding;
+        exit(mrYes);
+      end;
+      if StateFileAge<FileAgeCached(SrcFilename) then begin
+        DebugLn('Hint: (lazarus) source disk file modified of ',APackage.IDAsString,': ',SrcFilename);
+        Note+='Source file "'+SrcFilename+'" modified:'+LineEnding
+          +'  Source file age='+FileAgeToStr(FileAgeCached(SrcFilename))+LineEnding
+          +'  State file="'+Stats.StateFileName+'"'+LineEnding
+          +'  State file age='+FileAgeToStr(StateFileAge)+LineEnding;
+        exit(mrYes);
+      end;
+      if SrcEditFileIsModified(SrcFilename) then begin
+        DebugLn('Hint: (lazarus) source editor file of ',APackage.IDAsString,': ',SrcFilename);
+        Note+='Source file "'+SrcFilename+'" modified in source editor.'+LineEnding;
+        exit(mrYes);
+      end;
+      // check main source ppu file
+      if Stats.MainPPUExists then begin
+        SrcPPUFile:=APackage.GetSrcPPUFilename;
+        if not FileExistsCached(SrcPPUFile) then begin
+          DebugLn('Hint: (lazarus) main ppu file missing of ',APackage.IDAsString,': ',SrcPPUFile);
+          Note+='Main ppu file "'+SrcPPUFile+'" missing.'+LineEnding;
+          exit(mrYes);
+        end;
+      end;
+    end;
+
+
+    //debugln(['TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile ',APackage.Name,' Last="',APackage.LastCompilerParams,'" Now="',CompilerParams,'"']);
+
+    // compiler and parameters are the same
+    // quick compile is possible
+    NeedBuildAllFlag:=false;
+
+    if not Stats.Complete then begin
+      DebugLn('Hint: (lazarus) Last compile was incomplete for ',APackage.IDAsString);
+      DebugLn('  State file="',Stats.StateFileName,'"');
+      Note+='Last compile was incomplete.'+LineEnding
+         +'  State file="'+Stats.StateFileName+'"'+LineEnding;
+      exit(mrYes);
+    end;
+
+    if CheckDependencies then begin
+      // check all required packages
+      Result:=CheckCompileNeedDueToDependencies(APackage,
+            APackage.FirstRequiredDependency,SkipDesignTimePackages,StateFileAge,
+            Note);
+      if Result<>mrNo then begin
+        DependenciesChanged:=true;
         exit(mrYes);
       end;
     end;
+
+    // check package files
+    if StateFileAge<FileAgeCached(APackage.Filename) then begin
+      DebugLn('Hint: (lazarus) State file older than lpk ',APackage.IDAsString);
+      DebugLn('  State file="',Stats.StateFileName,'"');
+      Note+='State file older than lpk:'+LineEnding
+        +'  State file age='+FileAgeToStr(StateFileAge)+LineEnding
+        +'  State file="'+Stats.StateFileName+'"'+LineEnding
+        +'  LPK age='+FileAgeToStr(FileAgeCached(APackage.Filename))+LineEnding;
+      exit(mrYes);
+    end;
+    for i:=0 to APackage.FileCount-1 do begin
+      CurFile:=APackage.Files[i];
+      //debugln(['TLazPackageGraph.CheckIfPackageNeedsCompilation  CurFile.Filename="',CurFile.Filename,'" Exists=',FileExistsUTF8(CurFile.Filename),' NewerThanStateFile=',StateFileAge<FileAgeCached(CurFile.Filename)]);
+      AFilename:=CurFile.GetFullFilename;
+      if SrcEditFileIsModified(AFilename) then begin
+        DebugLn('Hint: (lazarus) Source editor file has been modified ',APackage.IDAsString,' ',CurFile.Filename);
+        Note+='';
+      end;
+      if FileExistsCached(AFilename)
+      and (StateFileAge<FileAgeCached(AFilename)) then begin
+        DebugLn('Hint: (lazarus) Source file has changed ',APackage.IDAsString,' ',CurFile.Filename);
+        DebugLn('  State file="',Stats.StateFileName,'"');
+        Note+='State file older than source "'+AFilename+'"'+LineEnding
+          +'  State file age='+FileAgeToStr(StateFileAge)+LineEnding
+          +'  State file="'+Stats.StateFileName+'"'+LineEnding
+          +'  Src file age='+FileAgeToStr(FileAgeCached(AFilename))+LineEnding;
+        exit(mrYes);
+      end;
+      if FilenameIsPascalUnit(AFilename) then begin
+        LFMFilename:=ChangeFileExt(AFilename,'.lfm');
+        if FileExistsCached(LFMFilename)
+        and (StateFileAge<FileAgeCached(LFMFilename)) then begin
+          DebugLn('Hint: (lazarus) LFM has changed ',APackage.IDAsString,' ',LFMFilename);
+          DebugLn('  State file="',Stats.StateFileName,'"');
+          Note+='State file older than resource "'+LFMFilename+'"'+LineEnding
+            +'  State file age='+FileAgeToStr(StateFileAge)+LineEnding
+            +'  State file="'+Stats.StateFileName+'"'+LineEnding
+            +'  Resource file age='+FileAgeToStr(FileAgeCached(LFMFilename))+LineEnding;
+          exit(mrYes);
+        end;
+      end;
+    end;
+  finally
+    CompilerParams.Free;
   end;
-  
+
   {$IFDEF VerbosePkgCompile}
   debugln('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile END ',APackage.IDAsString);
   {$ENDIF}
@@ -4137,10 +4192,9 @@ var
   PkgCompileTool: TAbstractExternalTool;
   FPCParser: TFPCParser;
   CompilerFilename: String;
-  EffectiveCompilerParams: String;
   CompilePolicy: TPackageUpdatePolicy;
-  NeedBuildAllFlag: Boolean;
-  CompilerParams: String;
+  NeedBuildAllFlag, NeedBuildAll: Boolean;
+  CompilerParams: TStrings;
   Note: String;
   WorkingDir: String;
   ToolTitle: String;
@@ -4199,6 +4253,7 @@ begin
       end;
     end;
 
+    CompilerParams:=nil;
     try
       if (BuildItem=nil) and (LazarusIDE<>nil) then
         LazarusIDE.MainBarSubTitle:=APackage.Name;
@@ -4282,24 +4337,23 @@ begin
 
       if (not APackage.CompilerOptions.SkipCompiler)
       and (not (pcfDoNotCompilePackage in Flags)) then begin
+        NeedBuildAll:=false;
         BuildMethod:=APackage.GetActiveBuildMethod;
         if BuildMethod=bmLazarus then begin
           CompilerFilename:=APackage.GetCompilerFilename;
 
           // change compiler parameters for compiling clean
           CompilerParams:=GetPackageCompilerParams(APackage);
-          EffectiveCompilerParams:=CompilerParams;
-          if (pcfCleanCompile in Flags) or NeedBuildAllFlag then begin
-            if EffectiveCompilerParams<>'' then
-              EffectiveCompilerParams:='-B '+EffectiveCompilerParams
-            else
-              EffectiveCompilerParams:='-B';
-          end;
+          if (pcfCleanCompile in Flags) or NeedBuildAllFlag then
+            NeedBuildAll:=true;
 
           WarnSuspiciousCompilerOptions('Compile checks','package '+APackage.IDAsString+':',CompilerParams);
         end else begin
           CompilerFilename:='fppkg';
-          EffectiveCompilerParams:='install --skipbroken --broken';
+          CompilerParams:=TStringListUTF8Fast.Create;
+          CompilerParams.Add('install');
+          CompilerParams.Add('--skipbroken');
+          CompilerParams.Add('--broken');
           // Do not recompile all broken fppkg packages on each package that is
           // installed, but run 'fppkg fixbroken' once.
           FHasCompiledFpmakePackages := True;
@@ -4326,12 +4380,14 @@ begin
           PkgCompileTool.AddParsers(SubToolMake);
           PkgCompileTool.Process.CurrentDirectory:=APackage.Directory;
           PkgCompileTool.Process.Executable:=CompilerFilename;
-          PkgCompileTool.CmdLineParams:=EffectiveCompilerParams;
+          PkgCompileTool.Process.Parameters:=CompilerParams;
+          if NeedBuildAll then
+            PkgCompileTool.Process.Parameters.Add('-B');
           PkgCompileTool.Hint:=Note;
           ExtToolData.Pkg:=APackage;
           ExtToolData.SrcPPUFilename:=APackage.GetSrcPPUFilename;
           ExtToolData.CompilerFilename:=CompilerFilename;
-          ExtToolData.CompilerParams:=CompilerParams;
+          ExtToolData.CompilerParams.Assign(CompilerParams);
           PkgCompileTool.AddHandlerOnStopped(@OnExtToolBuildStopped);
           if BuildItem<>nil then
           begin
@@ -4397,6 +4453,7 @@ begin
       end;
       Result:=mrOk;
     finally
+      CompilerParams.Free;
       if (BuildItem=nil) and (LazarusIDE<>nil) then
         LazarusIDE.MainBarSubTitle:='';
     end;
@@ -4520,6 +4577,7 @@ begin
       // do no write the unit output directory
       // it is not needed because it is the location of the Makefile.compiled
       s:=s+' '+SwitchPathDelims(CreateRelativePath(APackage.GetSrcFilename,APackage.Directory),pdsUnix);
+      s:=UTF8Trim(s);
       if ConsoleVerbosity>1 then
         debugln(['Hint: (lazarus) writing ',TargetCompiledFile,' IncPath="',IncPath,'" UnitPath="',UnitPath,'" Custom="',OtherOptions,'" Makefile.compiled="',TargetCompiledFile,'"']);
       XMLConfig.SetValue('Params/Value',s);
@@ -4620,6 +4678,7 @@ var
   Executable: String;
   DistCleanDir: String;
   NeedFPCMake: Boolean;
+  List: TStringListUTF8Fast;
 begin
   Result:=mrCancel;
   PathDelimNeedsReplace:=PathDelim<>'/';
@@ -4646,8 +4705,10 @@ begin
                                                  coptParsedPlatformIndependent);
   CustomOptions:=APackage.CompilerOptions.GetCustomOptions(
                                                  coptParsedPlatformIndependent);
-  OtherOptions:=APackage.CompilerOptions.MakeOptionsString(
+  List:=APackage.CompilerOptions.MakeOptionsString(
                               [ccloDoNotAppendOutFileOption,ccloNoMacroParams]);
+  OtherOptions:=MergeCmdLineParams(List);
+  List.Free;
 
   // remove path delimiter at the end, or else it will fail on windows
   UnitOutputPath:=ConvertLazarusToMakefileDirectory(
@@ -4937,6 +4998,7 @@ var
   i: Integer;
   ARequirement: TPkgDependency;
   FPmakeCompiledFilename: String;
+  List: TStringListUTF8Fast;
 begin
   Result:=mrCancel;
   PathDelimNeedsReplace:=PathDelim<>'/';
@@ -4965,10 +5027,12 @@ begin
                                                  coptParsedPlatformIndependent);
   if ConsoleVerbosity>0 then
     debugln('Hint: (lazarus) Writing fpmake.pp: CustomOptions (orig): ',CustomOptions);
-  OtherOptions:=APackage.CompilerOptions.MakeOptionsString(
+  List:=APackage.CompilerOptions.MakeOptionsString(
                               [ccloDoNotAppendOutFileOption,ccloNoMacroParams]);
   if ConsoleVerbosity>0 then
-    debugln('Hint: (lazarus) Writing fpmake.pp: OtherOptions (orig): ',OtherOptions);
+    debugln('Hint: (lazarus) Writing fpmake.pp: OtherOptions (orig): ',MergeCmdLineParams(List,TLazCompilerOptions.ConsoleParamsMax));
+  OtherOptions:=MergeCmdLineParams(List);
+  List.Free;
 
   // write compiled file
   Result:=WriteMakefileCompiled(APackage,FPmakeCompiledFilename,UnitPath,

@@ -334,6 +334,7 @@ type
     function CreatePPUFilename(const SourceFileName: string): string; virtual; abstract;
     function CreateTargetFilename: string; virtual; abstract;
     function GetUnitOutputDirectory(RelativeToBaseDir: boolean): string; virtual; abstract;
+    const ConsoleParamsMax: integer = 1000; // max bytes when writing long compiler options to the console, 0=no limit
   public
     property Owner: TObject read fOwner write fOwner;
     property Modified: boolean read GetModified write SetModified;

@@ -446,19 +446,24 @@ type
     podwWritable,
     podwNotWritable
     );
-  TPkgLastCompileStats = record
+
+  { TPkgLastCompileStats }
+
+  TPkgLastCompileStats = class
+  public
     StateFileLoaded: boolean;
     StateFileName: string; // the .compiled file
     StateFileDate: longint;
     CompilerFilename: string; // path to used compiler
     CompilerFileDate: integer;
-    Params: string;        // compiler parameters
+    Params: TStrings;        // compiler parameters
     Complete: boolean;     // compilation was successful
     MainPPUExists: boolean; // main ppu file was there after compile
     ViaMakefile: boolean;  // compiled via make
     DirectoryWritable: TPkgOutputDirWritable;
+    constructor Create;
+    destructor Destroy; override;
   end;
-  PPkgLastCompileStats = ^TPkgLastCompileStats;
   TPkgOutputDir = (
     podDefault,
     podFallback // used when podDefault is not writable
@@ -634,7 +639,6 @@ type
     function GetIncludePath(RelativeToBaseDir: boolean): string;
     function GetSrcPath(RelativeToBaseDir: boolean): string;
     function GetFPDocPackageName: string;
-    function GetLastCompilerParams(o: TPkgOutputDir): string;
     function NeedsDefineTemplates: boolean;
     function SubstitutePkgMacros(const s: string; PlatformIndependent: boolean): string;
     procedure WriteInheritedUnparsedOptions;
@@ -2618,6 +2622,8 @@ begin
 end;
 
 constructor TLazPackage.Create;
+var
+  pod: TPkgOutputDir;
 begin
   inherited Create;
   FComponents:=TFPList.Create;
@@ -2637,6 +2643,8 @@ begin
   FDefineTemplates:=TLazPackageDefineTemplates.Create(Self);
   fPublishOptions:=TPublishPackageOptions.Create(Self);
   FProvides:=TStringList.Create;
+  for pod in TPkgOutputDir do
+    LastCompile[pod]:=TPkgLastCompileStats.Create;
   FUsageOptions.ParsedOpts.InvalidateParseOnChange:=true;
 end;
 
@@ -2647,9 +2655,13 @@ begin
 end;
 
 destructor TLazPackage.Destroy;
+var
+  pod: TPkgOutputDir;
 begin
   Include(FFlags,lpfDestroying);
   Clear;
+  for pod in TPkgOutputDir do
+    FreeAndNil(LastCompile[pod]);
   FreeAndNil(FOptionsBackup);
   FreeAndNil(fPublishOptions);
   FreeAndNil(FProvides);
@@ -3926,17 +3938,6 @@ begin
   Result:=CompilerOptions.GetSrcPath(RelativeToBaseDir);
 end;
 
-function TLazPackage.GetLastCompilerParams(o: TPkgOutputDir): string;
-begin
-  Result:=LastCompile[o].Params;
-  if LastCompile[o].ViaMakefile then begin
-    Result:=StringReplace(Result,'$(CPU_TARGET)','$(TargetCPU)',[rfReplaceAll]);
-    Result:=StringReplace(Result,'$(OS_TARGET)','$(TargetOS)',[rfReplaceAll]);
-    Result:=StringReplace(Result,'$(LCL_PLATFORM)','$(LCLWidgetType)',[rfReplaceAll]);
-    Result:=SubstitutePkgMacros(Result,false);
-  end;
-end;
-
 function TLazPackage.NeedsDefineTemplates: boolean;
 begin
   if IsVirtual or (lpfDestroying in Flags) or (Name='') then
@@ -4564,7 +4565,7 @@ end;
 procedure TLazPackageDefineTemplates.UpdateDefinesForCustomDefines;
 var
   OptionsDefTempl: TDefineTemplate;
-  NewCustomOptions: String;
+  NewCustomOptions: string;
 begin
   if (not Owner.NeedsDefineTemplates) or (not Active) then exit;
 
@@ -4583,6 +4584,19 @@ begin
     UpdateSrcDirIfDef;
     FSrcDirIf.ReplaceChild(OptionsDefTempl);
   end;
+end;
+
+{ TPkgLastCompileStats }
+
+constructor TPkgLastCompileStats.Create;
+begin
+  Params:=TStringListUTF8Fast.Create;
+end;
+
+destructor TPkgLastCompileStats.Destroy;
+begin
+  FreeAndNil(Params);
+  inherited Destroy;
 end;
 
 { TBasePackageEditor }

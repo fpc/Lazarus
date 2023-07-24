@@ -763,7 +763,7 @@ var
   CompilerFilename: String;
   WorkingDir: String;
   SrcFilename: String;
-  CompilerParams: String;
+  CompilerParams: TStrings;
   ToolBefore: TProjectCompilationToolOptions;
   ToolAfter: TProjectCompilationToolOptions;
   UnitOutputDirectory: String;
@@ -796,6 +796,7 @@ var
     // apply options
     MainBuildBoss.SetBuildTargetProject1(true,smsfsSkip);
 
+    CompilerParams:=nil;
     try
       if not SkipDependencies then
       begin
@@ -874,8 +875,8 @@ var
 
       //DebugLn(['TLazBuildApplication.BuildProject CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
       // CompileHint: use absolute paths, same as TBuildManager.DoCheckIfProjectNeedsCompilation
-      CompilerParams:=Project1.CompilerOptions.MakeOptionsString([ccloAbsolutePaths])
-                                             +' '+PrepareCmdLineOption(SrcFilename);
+      CompilerParams:=Project1.CompilerOptions.MakeOptionsString([ccloAbsolutePaths]);
+      CompilerParams.Add(SrcFilename);
 
       if (CompReason in Project1.CompilerOptions.CompileReasons) then begin
         // compile
@@ -905,6 +906,7 @@ var
       // no need to check for mrOk, we are exit if it wasn't
       Result:=true;
     finally
+      CompilerParams.Free;
       if not SkipDependencies then
         PackageGraph.EndUpdate;
     end;

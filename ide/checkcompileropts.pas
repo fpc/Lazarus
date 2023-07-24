@@ -302,8 +302,8 @@ function TCheckCompilerOptsDlg.CheckCompileBogusFile(
   const CompilerFilename: string): TModalResult;
 var
   TestDir: String;
-  BogusFilename: String;
-  CmdLineParams, ErrMsg: String;
+  BogusFilename, ErrMsg: String;
+  CmdLineParams: TStrings;
   CompileTool: TAbstractExternalTool;
   Kind: TPascalCompiler;
 begin
@@ -329,11 +329,12 @@ begin
     Result:=mrCancel;
     exit;
   end;
+  CmdLineParams:=nil;
   try
     // create compiler command line options
     CmdLineParams:=Options.MakeOptionsString(
-              [ccloAddVerboseAll,ccloDoNotAppendOutFileOption,ccloAbsolutePaths])
-              +' '+BogusFilename;
+              [ccloAddVerboseAll,ccloDoNotAppendOutFileOption,ccloAbsolutePaths]);
+    CmdLineParams.Add(BogusFilename);
     CompileTool:=ExternalToolList.Add(dlgCCOTestToolCompilingEmptyFile);
     CompileTool.Reference(Self,ClassName);
     try
@@ -344,13 +345,14 @@ begin
       CompileTool.AddParsers(SubToolMake);
       CompileTool.Process.CurrentDirectory:=TestDir;
       CompileTool.Process.Executable:=CompilerFilename;
-      CompileTool.CmdLineParams:=CmdLineParams;
+      CompileTool.Process.Parameters.Assign(CmdLineParams);
       CompileTool.Execute;
       CompileTool.WaitForExit;
     finally
       CompileTool.Release(Self);
     end;
   finally
+    CmdLineParams.Free;
     DeleteFileUTF8(BogusFilename);
   end;
   

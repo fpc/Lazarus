@@ -764,7 +764,7 @@ type
     FJumpHistory: TProjectJumpHistory;
     FLastCompilerFileDate: integer;
     FLastCompilerFilename: string;
-    FLastCompilerParams: string;
+    FLastCompilerParams: TStrings;
     fLastReadLPIFileDate: TDateTime;
     fLastReadLPIFilename: string;
     FLockUnitComponentDependencies: integer;
@@ -844,7 +844,7 @@ type
     procedure SetDebuggerBackend(AValue: String);
     procedure SetEnableI18N(const AValue: boolean);
     procedure SetEnableI18NForLFM(const AValue: boolean);
-    procedure SetLastCompilerParams(AValue: string);
+    procedure SetLastCompilerParams(AValue: TStrings);
     procedure SetMainProject(const AValue: boolean);
     procedure SetMainUnitID(const AValue: Integer);
     procedure SetPOOutputDirectory(const AValue: string);
@@ -1007,7 +1007,7 @@ type
     function UnitInfoWithLFMFilename(const AFilename: string): TUnitInfo; // only currently open lfm (SourceLFM<>nil)
     function AllEditorsInfoCount: Integer;
     property AllEditorsInfo[Index: Integer]: TUnitEditorInfo read GetAllEditorsInfo;
-    function EditorInfoWithEditorComponent(AEditor:TSourceEditorInterface): TUnitEditorInfo;
+    function EditorInfoWithEditorComponent({H-}AEditor:TSourceEditorInterface): TUnitEditorInfo;
     function SearchFile(const ShortFilename: string;
                         SearchFlags: TSearchIDEFileFlags): TUnitInfo;
     function FindFile(const AFilename: string;
@@ -1080,7 +1080,7 @@ type
 
     // compile state file
     function LoadStateFile(IgnoreErrors: boolean): TModalResult;
-    function SaveStateFile(const CompilerFilename, CompilerParams: string;
+    function SaveStateFile(const CompilerFilename: string; CompilerParams: TStrings;
                            Complete: boolean): TModalResult;
                            
     // source editor
@@ -1129,7 +1129,7 @@ type
                                           write FLastCompilerFileDate;
     property LastCompilerFilename: string read FLastCompilerFilename
                                           write FLastCompilerFilename;
-    property LastCompilerParams: string read FLastCompilerParams
+    property LastCompilerParams: TStrings read FLastCompilerParams
                                         write SetLastCompilerParams;
     property LastCompileComplete: boolean read FLastCompileComplete write FLastCompileComplete;
     property MacroEngine: TTransferMacroList read FMacroEngine;
@@ -1245,7 +1245,7 @@ begin
   ucdtOldProperty: Result:='OldProperty';
   ucdtInlineClass: Result:='InlineClass';
   else Result:='?'
-  end;
+  {%H-}end;
 end;
 
 function dbgs(Types: TUnitCompDependencyTypes): string;
@@ -2837,6 +2837,7 @@ begin
   ProjResources.OnModified := @EmbeddedObjectModified;
 
   FHistoryLists := THistoryLists.Create;
+  FLastCompilerParams := TStringListUTF8Fast.Create;
 
   {$IFnDEF LCLNOGUI}
   FDebuggerProperties := TDebuggerPropertiesConfigList.Create;
@@ -2876,7 +2877,8 @@ begin
   FreeThenNil(FPublishOptions);
   FreeThenNil(FRunParameters);
   FreeThenNil(FDefineTemplates);
-  FreeThenNil(FHistoryLists);
+  FreeAndNil(FHistoryLists);
+  FreeAndNil(FLastCompilerParams);
   {$IFnDEF LCLNOGUI}
   FreeAndNil(FDebuggerProperties);
   FreeAndNil(FBackendConverterConfig);
@@ -5410,7 +5412,8 @@ begin
       try
         LastCompilerFilename:=XMLConfig.GetValue('Compiler/Value','');
         LastCompilerFileDate:=XMLConfig.GetValue('Compiler/Date',0);
-        LastCompilerParams:=XMLConfig.GetValue('Params/Value','');
+        LastCompilerParams.Clear;
+        SplitCmdLineParams(XMLConfig.GetValue('Params/Value',''),LastCompilerParams);
         LastCompileComplete:=XMLConfig.GetValue('Complete/Value',true);
       finally
         XMLConfig.Free;
@@ -5435,8 +5438,8 @@ begin
   Result:=mrOk;
 end;
 
-function TProject.SaveStateFile(const CompilerFilename, CompilerParams: string;
-  Complete: boolean): TModalResult;
+function TProject.SaveStateFile(const CompilerFilename: string;
+  CompilerParams: TStrings; Complete: boolean): TModalResult;
 var
   XMLConfig: TXMLConfig;
   StateFile: String;
@@ -5451,7 +5454,7 @@ begin
       // always write all values for easy use by other tools and other versions of IDE
       XMLConfig.SetValue('Compiler/Value',CompilerFilename);
       XMLConfig.SetValue('Compiler/Date',CompilerFileDate);
-      XMLConfig.SetValue('Params/Value',CompilerParams);
+      XMLConfig.SetValue('Params/Value',MergeCmdLineParams(CompilerParams));
       XMLConfig.SetDeleteValue('Complete/Value',Complete,true);
       InvalidateFileStateCache(StateFile);
       XMLConfig.Flush;
@@ -5469,7 +5472,7 @@ begin
       Result:=IDEMessageDialog(lisPkgMangErrorWritingFile,
         Format(lisProjMangUnableToWriteStateFileForProjectError,
                [IDAsString, LineEnding, E.Message]),
-        mtError,[mbAbort,mbCancel]);
+        mtError,[mbCancel]);
       exit;
     end;
   end;
@@ -5698,12 +5701,12 @@ begin
   Modified:=true;
 end;
 
-procedure TProject.SetLastCompilerParams(AValue: string);
+procedure TProject.SetLastCompilerParams(AValue: TStrings);
 begin
   if FLastCompilerParams=AValue then Exit;
   //debugln(['TProject.SetLastCompilerParams Old="',FLastCompilerParams,'"']);
   //debugln(['TProject.SetLastCompilerParams New="',AValue,'"']);
-  FLastCompilerParams:=AValue;
+  FLastCompilerParams.Assign(AValue);
 end;
 
 procedure TProject.SetMainProject(const AValue: boolean);

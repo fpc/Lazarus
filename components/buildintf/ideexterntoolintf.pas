@@ -58,7 +58,7 @@ type
     ModuleName: string; // e.g. the package name
     Filename: string; // e.g. the lpi or lpk filename
     Flags: TStrings;
-    constructor Create(aKind, aModuleName, aFilename: string);
+    constructor Create(aKind, aModuleName, aFilename: string); virtual;
     destructor Destroy; override;
   end;
 

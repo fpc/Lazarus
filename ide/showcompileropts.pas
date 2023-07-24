@@ -86,6 +86,7 @@ type
     FUpdatingMultiline: boolean;
     procedure ClearInheritedTree;
     procedure SetCompilerOpts(const AValue: TBaseCompilerOptions);
+    procedure FillMemo(Memo: TMemo; Params: TStrings);
     procedure FillMemo(Memo: TMemo; Params: string);
     procedure UpdateMemo;
     procedure UpdateInheritedTree;
@@ -258,6 +259,18 @@ begin
   UpdateExecuteBeforeAfter;
 end;
 
+procedure TShowCompilerOptionsDlg.FillMemo(Memo: TMemo; Params: TStrings);
+begin
+  if Memo=nil then exit;
+  if MultilineCheckBox.Checked then begin
+    Memo.Lines.Assign(Params);
+    Memo.ScrollBars:=ssAutoBoth;
+  end else begin
+    Memo.ScrollBars:=ssAutoVertical;
+    Memo.Lines.Text:=MergeCmdLineParams(Params);
+  end;
+end;
+
 procedure TShowCompilerOptionsDlg.FillMemo(Memo: TMemo; Params: string);
 var
   ParamList: TStringList;
@@ -281,18 +294,24 @@ end;
 procedure TShowCompilerOptionsDlg.UpdateMemo;
 var
   Flags: TCompilerCmdLineOptions;
-  CurOptions, CompPath: String;
+  CompPath: String;
+  CompOptions: TStringListUTF8Fast;
 begin
   if CompilerOpts=nil then exit;
 
   Flags:=CompilerOpts.DefaultMakeOptionsFlags;
   if not RelativePathsCheckBox.Checked then
     Include(Flags,ccloAbsolutePaths);
-  CurOptions := CompilerOpts.MakeOptionsString(Flags);
-  CompPath:=CompilerOpts.ParsedOpts.GetParsedValue(pcosCompilerPath);
-  if Pos(' ',CompPath)>0 then
-    CompPath:=QuotedStr(CompPath);
-  FillMemo(CmdLineMemo,CompPath+' '+CurOptions);
+  CompOptions := CompilerOpts.MakeOptionsString(Flags);
+  try
+    CompPath:=CompilerOpts.ParsedOpts.GetParsedValue(pcosCompilerPath);
+    if Pos(' ',CompPath)>0 then
+      CompPath:=QuotedStr(CompPath);
+    CompOptions.Add(CompPath);
+    FillMemo(CmdLineMemo,CompOptions);
+  finally
+    CompOptions.Free;
+  end;
 end;
 
 procedure TShowCompilerOptionsDlg.UpdateInheritedTree;

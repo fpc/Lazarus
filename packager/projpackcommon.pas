@@ -112,7 +112,7 @@ end;
 destructor TProjPackDefineTemplates.Destroy;
 begin
   Clear;
-  fLastSourceDirectories.Free;
+  FreeAndNil(fLastSourceDirectories);
   inherited Destroy;
 end;
 

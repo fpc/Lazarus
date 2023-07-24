@@ -177,7 +177,7 @@ function SHGetFolderPathUTF8(ID :  Integer) : String;
 procedure SplitCmdLineParams(const Params: string; ParamList: TStrings;
                              ReadBackslash: boolean = false);
 function StrToCmdLineParam(const Param: string): string;
-function MergeCmdLineParams(ParamList: TStrings): string;
+function MergeCmdLineParams(ParamList: TStrings; MaxLen: integer = 0): string;
 // ToDo: Study if they are needed or if the above functions could be used instead.
 procedure SplitCmdLine(const CmdLine: string;
                        out ProgramFilename, Params: string);
@@ -1476,7 +1476,7 @@ begin
   end;
 end;
 
-function MergeCmdLineParams(ParamList: TStrings): string;
+function MergeCmdLineParams(ParamList: TStrings; MaxLen: integer): string;
 var
   i: Integer;
 begin
@@ -1484,7 +1484,12 @@ begin
   if ParamList=nil then exit;
   for i:=0 to ParamList.Count-1 do
   begin
-    if i>0 then Result+=' ';
+    if (MaxLen>0) and (length(Result)>=MaxLen) then
+    begin
+      Result+=' ...';
+      break;
+    end;
+    if Result<>'' then Result+=' ';
     Result+=StrToCmdLineParam(ParamList[i]);
   end;
 end;

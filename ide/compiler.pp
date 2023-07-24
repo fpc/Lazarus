@@ -46,7 +46,7 @@ uses
   // BuildIntf
   IDEExternToolIntf,
   // IdeIntf
-  IDEMsgIntf, LazIDEIntf,
+  IDEMsgIntf, LazIDEIntf, CompOptsIntf,
   // IdeConfig
   TransferMacros, IDECmdLine,
   // IDE
@@ -59,13 +59,12 @@ type
 
   TCompiler = class(TObject)
   private
-    FOnCmdLineCreate : TOnCmdLineCreate;
     procedure WriteError(const Msg: string);
   public
     constructor Create;
     destructor Destroy; override;
     function Compile(AProject: TProject;
-                     const WorkingDir, CompilerFilename, CompilerParams: string;
+                     const WorkingDir, CompilerFilename: string; CompilerParams: TStrings;
                      BuildAll, SkipLinking, SkipAssembler, CurrentDirectoryIsTestDir: boolean;
                      const aCompileHint: string): TModalResult;
   end;
@@ -272,11 +271,10 @@ end;
   TCompiler Compile
 ------------------------------------------------------------------------------}
 function TCompiler.Compile(AProject: TProject; const WorkingDir,
-  CompilerFilename, CompilerParams: string; BuildAll, SkipLinking,
+  CompilerFilename: string; CompilerParams: TStrings; BuildAll, SkipLinking,
   SkipAssembler, CurrentDirectoryIsTestDir: boolean; const aCompileHint: string
   ): TModalResult;
 var
-  CmdLine : String;
   Abort : Boolean;
   Tool: TAbstractExternalTool;
   FPCParser: TFPCParser;
@@ -288,7 +286,7 @@ var
 begin
   Result:=mrCancel;
   if ConsoleVerbosity>=1 then
-    DebugLn('TCompiler.Compile WorkingDir="',WorkingDir,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"');
+    DebugLn('TCompiler.Compile WorkingDir="',WorkingDir,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',MergeCmdLineParams(CompilerParams,TLazCompilerOptions.ConsoleParamsMax),'"');
 
   try
     CheckIfFileIsExecutable(CompilerFilename);
@@ -301,24 +299,6 @@ begin
       exit;
     end;
   end;
-  CmdLine := '';
-  if BuildAll then
-    CmdLine := CmdLine+' -B';
-  if SkipLinking and SkipAssembler then
-    CmdLine := CmdLine+' -s'
-  else if SkipLinking then
-    CmdLine := CmdLine+' -Cn';
-
-  if CompilerParams<>'' then
-    CmdLine := CmdLine+' '+CompilerParams;
-  if Assigned(FOnCmdLineCreate) then begin
-    Abort:=false;
-    FOnCmdLineCreate(CmdLine,Abort);
-    if Abort then
-      exit(mrAbort);
-  end;
-  if ConsoleVerbosity>=0 then
-    DebugLn('[TCompiler.Compile] CmdLine="',CompilerFilename+CmdLine,'"');
 
   Title:=lisCompileProject;
   if AProject.BuildModes.Count>1 then
@@ -340,7 +320,14 @@ begin
     Tool.FreeData:=true;
     Tool.Hint:=aCompileHint;
     Tool.Process.Executable:=CompilerFilename;
-    Tool.CmdLineParams:=CmdLine;
+    Tool.Process.Parameters:=CompilerParams;
+    if BuildAll then
+      Tool.Process.Parameters.Add('-B');
+    if SkipLinking and SkipAssembler then
+      Tool.Process.Parameters.Add('-s')
+    else if SkipLinking then
+      Tool.Process.Parameters.Add('-Cn');
+
     Tool.Process.CurrentDirectory:=WorkingDir;
     Tool.CurrentDirectoryIsTestDir:=CurrentDirectoryIsTestDir;
     SubTool:=SubToolFPC;
