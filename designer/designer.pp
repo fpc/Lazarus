@@ -2679,11 +2679,8 @@ begin
     else
       ACursor := Grabber.Cursor;
 
-    if ACursor <> LastFormCursor then
-    begin
-      LastFormCursor := ACursor;
-      SetTempCursor(Form, ACursor);
-    end;
+    LastFormCursor := ACursor;
+    SetTempCursor(Form, ACursor);
     Exit;
   end;
 
