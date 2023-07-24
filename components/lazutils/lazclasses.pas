@@ -19,6 +19,19 @@ uses
 
 type
 
+  { TFreeNotifyingGeneric }
+
+  generic TFreeNotifyingGeneric<_B: TObject> = class(_B)
+  private
+    FFreeNotificationList: TMethodList;
+  protected
+    procedure DoDestroy; // FPC can not compile "destructor Destroy; override;"
+  public
+    //destructor Destroy; override;
+    procedure AddFreeNotification(ANotification: TNotifyEvent);
+    procedure RemoveFreeNotification(ANotification: TNotifyEvent);
+  end;
+
   { TFreeNotifyingObject }
 
   TFreeNotifyingObject = class
@@ -86,6 +99,33 @@ procedure NilThenReleaseRef(var ARefCountedObject; DebugIdAdr: Pointer; DebugIdT
 {$ENDIF}
 
 implementation
+
+{ TFreeNotifyingGeneric }
+
+procedure TFreeNotifyingGeneric.DoDestroy;
+begin
+  if FFreeNotificationList <> nil then
+    FFreeNotificationList.CallNotifyEvents(Self);
+  inherited Destroy;
+  FreeAndNil(FFreeNotificationList);
+end;
+
+procedure TFreeNotifyingGeneric.AddFreeNotification(ANotification: TNotifyEvent
+  );
+begin
+  if FFreeNotificationList = nil then
+    FFreeNotificationList := TMethodList.Create;
+  FFreeNotificationList.Add(TMethod(ANotification));
+end;
+
+procedure TFreeNotifyingGeneric.RemoveFreeNotification(
+  ANotification: TNotifyEvent);
+begin
+  if FFreeNotificationList = nil then
+    exit;
+  FFreeNotificationList.Remove(TMethod(ANotification));
+end;
+
 {$IFDEF WITH_REFCOUNT_DEBUG}
 uses LazLoggerBase;
 {$IFDEF WITH_REFCOUNT_LEAK_DEBUG}

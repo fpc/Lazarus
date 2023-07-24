@@ -421,7 +421,7 @@ type
 
   { TIDEBreakPointGroup }
 
-  TIDEBreakPointGroup = class(TCollectionItem)
+  TIDEBreakPointGroup = class(specialize TFreeNotifyingGeneric<TCollectionItem>)
   private
     FEnabled: Boolean;
     FInitialEnabled: Boolean;
@@ -6421,6 +6421,7 @@ begin
   for n := FReferences.Count - 1 downto 0 do
     TIDEBreakPointGroupList(FReferences[n]).Remove(Self);
 
+  DoDestroy;
   inherited Destroy;
   FreeAndNil(FBreakpoints);
   FreeAndNil(FReferences);
