@@ -636,9 +636,9 @@ begin
 
   CustomButtons := TStringList.Create;
   for B in FDlg.Buttons do
-    CustomButtons.Add(B.Caption);        //**********   ModalResult and Default???
+    CustomButtons.Add(B.Caption);
   Radios := TStringList.Create;
-  for B in FDlg.RadioButtons do          //**********   Default?
+  for B in FDlg.RadioButtons do
     Radios.Add(B.Caption);
 
   //ToDo
