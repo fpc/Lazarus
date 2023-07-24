@@ -22,7 +22,7 @@
 }
 
 
-unit LCLTaskDialog deprecated 'Will be removed in Lazarus 4.0. Use TTaskDialog from unit Dialogs instead.';
+unit LCLTaskDialog deprecated 'Use TTaskDialog from unit Dialogs instead.'; //deprecated in Lazarus 3.99
 
 {
     This file is part of Synopse framework.
