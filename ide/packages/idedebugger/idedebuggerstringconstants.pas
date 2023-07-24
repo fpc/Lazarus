@@ -392,6 +392,8 @@ resourcestring
   synfNewValueIsEmpty = '"New value" is empty.';
   synfTheDebuggerWasNotAbleToModifyTheValue = 'The debugger was not able to modify the value.';
   drsSuspend = 'Suspend';
+  BreakViewHeaderNoGroup = 'No group';
+  BreakViewHeaderAddGroup = '- Add new group -';
 
 implementation
 

@@ -91,6 +91,8 @@ object BreakpointsDlg: TBreakpointsDlg
     Width = 560
     Align = alClient
     DefaultText = 'Node'
+    DragMode = dmAutomatic
+    DragType = dtVCL
     Header.AutoSizeIndex = 0
     Header.Columns = <    
       item
@@ -130,15 +132,19 @@ object BreakpointsDlg: TBreakpointsDlg
     Header.Options = [hoColumnResize, hoDrag, hoShowSortGlyphs, hoVisible]
     PopupMenu = mnuPopup
     TabOrder = 1
-    TreeOptions.AutoOptions = [toAutoScrollOnExpand, toAutoSort, toAutoTristateTracking, toAutoDeleteMovedNodes, toAutoChangeScale]
+    TreeOptions.AutoOptions = [toAutoScroll, toAutoScrollOnExpand, toAutoSort, toAutoTristateTracking, toAutoDeleteMovedNodes, toAutoChangeScale]
     TreeOptions.MiscOptions = [toFullRepaintOnResize, toInitOnSave, toWheelPanning]
     TreeOptions.PaintOptions = [toShowButtons, toShowDropmark, toShowRoot, toShowTreeLines, toThemeAware, toUseBlendedImages, toUseExplorerTheme]
     TreeOptions.SelectionOptions = [toFullRowSelect, toMultiSelect, toRightClickSelect]
     OnChange = tvBreakPointsChange
     OnCompareNodes = tvBreakPointsCompareNodes
+    OnDragOver = tvBreakPointsDragOver
+    OnDragDrop = tvBreakPointsDragDrop
+    OnEndDrag = tvBreakPointsEndDrag
     OnFocusChanged = tvBreakPointsFocusChanged
     OnHeaderClick = tvBreakPointsHeaderClick
     OnNodeDblClick = tvBreakPointsNodeDblClick
+    OnStartDrag = tvBreakPointsStartDrag
   end
   object mnuPopup: TPopupMenu
     OnPopup = mnuPopupPopup

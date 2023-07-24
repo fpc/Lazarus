@@ -12,6 +12,14 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Generator: Poedit 3.2\n"
 
+#: idedebuggerstringconstants.breakviewheaderaddgroup
+msgid "- Add new group -"
+msgstr ""
+
+#: idedebuggerstringconstants.breakviewheadernogroup
+msgid "No group"
+msgstr ""
+
 #: idedebuggerstringconstants.dbgbreakgroupdlgcaption
 msgid "Select Groups"
 msgstr "Grupları Seç"

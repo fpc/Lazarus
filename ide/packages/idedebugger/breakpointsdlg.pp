@@ -38,9 +38,9 @@ unit BreakPointsDlg;
 interface
 
 uses
-
   Classes, SysUtils, LazFileUtils, Forms, Controls, Dialogs, IDEWindowIntf,
   Menus, ComCtrls, Debugger, DebuggerDlg, ActnList, ExtCtrls, IDEImagesIntf,
+  {$ifdef Windows} ActiveX, {$else} laz.FakeActiveX, {$endif}
   DbgIntfDebuggerBase, DbgIntfMiscClasses, BaseDebugManager,
   IdeDebuggerStringConstants, DebuggerTreeView, BreakprointGroupFrame,
   IdeDebuggerOpts, IdeIntfStrConsts, SrcEditorIntf, laz.VirtualTrees;
@@ -132,6 +132,15 @@ type
     procedure tvBreakPointsChange(Sender: TBaseVirtualTree; Node: PVirtualNode);
     procedure tvBreakPointsCompareNodes(Sender: TBaseVirtualTree; Node1,
       Node2: PVirtualNode; Column: TColumnIndex; var Result: Integer);
+    procedure tvBreakPointsDragDrop(Sender: TBaseVirtualTree; Source: TObject;
+      DataObject: IDataObject; Formats: TFormatArray; Shift: TShiftState;
+      const Pt: TPoint; var Effect: LongWord; Mode: TDropMode);
+    procedure tvBreakPointsDragOver(Sender: TBaseVirtualTree; Source: TObject;
+      Shift: TShiftState; State: TDragState; const Pt: TPoint; Mode: TDropMode;
+      var Effect: LongWord; var Accept: Boolean);
+    procedure tvBreakPointsStartDrag(Sender: TObject;
+      var DragObject: TDragObject);
+    procedure tvBreakPointsEndDrag(Sender, Target: TObject; X, Y: Integer);
     procedure tvBreakPointsFocusChanged(Sender: TBaseVirtualTree;
       Node: PVirtualNode; Column: TColumnIndex);
     procedure tvBreakPointsHeaderClick(Sender: TVTHeader;
@@ -143,8 +152,13 @@ type
     FSecondarySortDir: TSortDirection;
     FBaseDirectory: string;
     FStates: TBreakPointsDlgStates;
-    FUngroupedHeader: TBreakpointGroupFrame;
+    FUngroupedHeader, FAddGroupedHeader: TBreakpointGroupFrame;
+    FLastTargetHeader: TBreakpointGroupFrame;
 
+    function  GetDropTargetGroup(ANode: PVirtualNode): TBreakpointGroupFrame;
+    procedure DoDetermineDropMode(const P: TPoint; var HitInfo: THitInfo;
+      var NodeRect: TRect; var DropMode: TDropMode);
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure BreakPointAdd(const {%H-}ASender: TIDEBreakPoints;
                             const ABreakpoint: TIDEBreakPoint);
     procedure BreakPointUpdate(const ASender: TIDEBreakPoints;
@@ -420,6 +434,11 @@ begin
     FUngroupedHeader := TBreakpointGroupFrame.Create(Self, tvBreakPoints, PVNode, nil);
     FUngroupedHeader.Visible := tbGroupByBrkGroup.Down;
     tvBreakPoints.NodeControl[PVNode] := FUngroupedHeader;
+
+    PVNode := tvBreakPoints.AddChild(nil, nil);
+    FAddGroupedHeader := TBreakpointGroupFrame.Create(Self, tvBreakPoints, PVNode, nil, bgfAddNewGroup);
+    FAddGroupedHeader.Visible := False;
+    tvBreakPoints.NodeControl[PVNode] := FAddGroupedHeader;
   finally
     EndUpdate;
   end;
@@ -556,6 +575,7 @@ begin
   BreakpointsNotification.OnUpdate := @BreakPointUpdate;
   BreakpointsNotification.OnRemove := @BreakPointRemove;
   tvBreakPoints.OnItemRemoved := @DoItemRemoved;
+  tvBreakPoints.OnDetermineDropMode := @DoDetermineDropMode;
 
   DebugBoss.BreakPointGroups.FPOAttachObserver(Self);
 
@@ -615,6 +635,8 @@ destructor TBreakPointsDlg.Destroy;
 begin
   if (DebugBoss <> nil) and (DebugBoss.BreakPointGroups <> nil) then
     DebugBoss.BreakPointGroups.FPODetachObserver(Self);
+  if FLastTargetHeader <> nil then
+    FLastTargetHeader.RemoveFreeNotification(Self);
   inherited Destroy;
 end;
 
@@ -1075,6 +1097,116 @@ begin
     Result := b1.Index - b2.Index;
 end;
 
+procedure TBreakPointsDlg.tvBreakPointsDragDrop(Sender: TBaseVirtualTree;
+  Source: TObject; DataObject: IDataObject; Formats: TFormatArray;
+  Shift: TShiftState; const Pt: TPoint; var Effect: LongWord; Mode: TDropMode);
+var
+  TargetNd, N: PVirtualNode;
+  TargetHeader: TBreakpointGroupFrame;
+  Brk: TIDEBreakPoint;
+  idx: Integer;
+begin
+  TargetNd := tvBreakPoints.GetNodeAt(Pt);
+  if (TargetNd <> nil) and (Source = tvBreakPoints) and (tvBreakPoints.SelectedCount > 0) then begin
+    BeginUpdate;
+    try
+      TargetHeader := GetDropTargetGroup(TargetNd);
+      Brk := TIDEBreakPoint(tvBreakPoints.NodeItem[TargetNd]);
+      if (tvBreakPoints.Header.SortColumn < 0) and (Brk <> nil) then begin
+        idx := Brk.Index;
+        //  inc(idx);
+        for N in tvBreakPoints.SelectedItemNodes do begin
+          Brk := TIDEBreakPoint(tvBreakPoints.NodeItem[N]);
+          if Mode = dmAbove then begin
+            if Brk.Index < idx then
+              dec(idx);
+            Brk.Index := idx;
+            inc(idx);
+          end
+          else begin
+            if Brk.Index > idx then
+              inc(idx);
+            Brk.Index := idx;
+          end;
+        end;
+      end;
+
+      if TargetHeader <> nil then
+        TargetHeader.FrameDragDrop(Sender, Source, Pt.X, Pt.Y);
+    finally
+      EndUpdate;
+    end;
+  end;
+end;
+
+procedure TBreakPointsDlg.tvBreakPointsDragOver(Sender: TBaseVirtualTree;
+  Source: TObject; Shift: TShiftState; State: TDragState; const Pt: TPoint;
+  Mode: TDropMode; var Effect: LongWord; var Accept: Boolean);
+var
+  TargetNd: PVirtualNode;
+  TargetHeader: TBreakpointGroupFrame;
+  dummy: Boolean;
+begin
+  Accept := False;
+
+  TargetNd := tvBreakPoints.GetNodeAt(Pt);
+  if (TargetNd <> nil) and (Source = tvBreakPoints) and (tvBreakPoints.SelectedCount > 0) then begin
+    TargetHeader := GetDropTargetGroup(TargetNd);
+
+    if (FLastTargetHeader <> nil) and (FLastTargetHeader <> TargetHeader) then begin
+      FLastTargetHeader.FrameDragOver(Sender, Source, Pt.X, Pt.Y, dsDragLeave, dummy);
+      FLastTargetHeader.RemoveFreeNotification(Self);
+      FLastTargetHeader := nil;
+    end;
+
+    FLastTargetHeader := TargetHeader;
+    if (TargetHeader <> nil) then begin
+      FLastTargetHeader.FreeNotification(Self);
+      TargetHeader.FrameDragOver(Sender, Source, Pt.X, Pt.Y, State, Accept);
+    end;
+
+    if tvBreakPoints.Header.SortColumn < 0 then
+      Accept := True;
+  end;
+
+  if (State = dsDragLeave) and (FLastTargetHeader <> nil) then begin
+    FLastTargetHeader.FrameDragOver(Sender, Source, Pt.X, Pt.Y, dsDragLeave, dummy);
+    FLastTargetHeader.RemoveFreeNotification(Self);
+    FLastTargetHeader := nil;
+  end;
+
+end;
+
+procedure TBreakPointsDlg.tvBreakPointsStartDrag(Sender: TObject;
+  var DragObject: TDragObject);
+begin
+  FAddGroupedHeader.Visible := True;
+end;
+
+procedure TBreakPointsDlg.tvBreakPointsEndDrag(Sender, Target: TObject; X,
+  Y: Integer);
+begin
+  FAddGroupedHeader.Visible := False;
+end;
+
+function TBreakPointsDlg.GetDropTargetGroup(ANode: PVirtualNode
+  ): TBreakpointGroupFrame;
+begin
+  Result := TBreakpointGroupFrame(tvBreakPoints.NodeControl[ANode]);
+  if Result = nil then begin
+    ANode := tvBreakPoints.NodeParent[ANode];
+    if ANode <> nil then
+      Result := TBreakpointGroupFrame(tvBreakPoints.NodeControl[ANode]);
+  end;
+end;
+
+procedure TBreakPointsDlg.DoDetermineDropMode(const P: TPoint;
+  var HitInfo: THitInfo; var NodeRect: TRect; var DropMode: TDropMode);
+begin
+  if tvBreakPoints.Header.SortColumn >= 0 then
+    DropMode := dmNowhere;
+end;
+
 procedure TBreakPointsDlg.tvBreakPointsFocusChanged(Sender: TBaseVirtualTree;
   Node: PVirtualNode; Column: TColumnIndex);
 begin
@@ -1111,7 +1243,6 @@ begin
   finally
     tvBreakPoints.EndUpdate;
   end;
-  //tvBreakPoints.SortTree(tvBreakPoints.Header.SortColumn, tvBreakPoints.Header.SortDirection);
 end;
 
 procedure TBreakPointsDlg.tvBreakPointsNodeDblClick(Sender: TBaseVirtualTree;
@@ -1119,6 +1250,14 @@ procedure TBreakPointsDlg.tvBreakPointsNodeDblClick(Sender: TBaseVirtualTree;
 begin
   tvBreakPointsChange(nil, nil);
   JumpToCurrentBreakPoint;
+end;
+
+procedure TBreakPointsDlg.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = FLastTargetHeader) then
+    FLastTargetHeader := nil;
 end;
 
 procedure TBreakPointsDlg.popDeleteClick(Sender: TObject);
@@ -1343,7 +1482,8 @@ begin
           tvBreakPoints.DeleteNode(LastAbandoned);
           LastAbandoned := nil;
         end;
-        GrpHeader.Visible := tbGroupByBrkGroup.Down;
+        if GrpHeader.GroupKind = bgfGroup then
+          GrpHeader.Visible := tbGroupByBrkGroup.Down;
         if GrpHeader.GroupKind = bgfAbandoned then
           LastAbandoned := VNode;
       end

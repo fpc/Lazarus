@@ -12,6 +12,14 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Language: pt_BR\n"
 
+#: idedebuggerstringconstants.breakviewheaderaddgroup
+msgid "- Add new group -"
+msgstr ""
+
+#: idedebuggerstringconstants.breakviewheadernogroup
+msgid "No group"
+msgstr ""
+
 #: idedebuggerstringconstants.dbgbreakgroupdlgcaption
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
 msgid "Select Groups"

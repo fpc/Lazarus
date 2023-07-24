@@ -52,12 +52,14 @@ type
   PDbgTreeNodeData = ^TDbgTreeNodeData;
 
   TItemRemovedEvent = procedure (Sender: TDbgTreeView; AnItem: TObject; ANode: PVirtualNode) of object;
+  TDetermineDropModeEvent = procedure (const P: TPoint; var HitInfo: THitInfo; var NodeRect: TRect; var DropMode: TDropMode) of object;
 
   { TDbgTreeView }
 
   TDbgTreeView = class(TLazVirtualStringTree)
   private
     FFirstControlNode: PVirtualNode; // not ordered
+    FOnDetermineDropMode: TDetermineDropModeEvent;
     FOnItemRemoved: TItemRemovedEvent;
     function GetNodeControl(Node: PVirtualNode): TControl;
     function GetNodeImageIndex(Node: PVirtualNode; AColumn: integer): Integer;
@@ -119,6 +121,8 @@ type
     property NodeControl[Node: PVirtualNode]: TControl read GetNodeControl write SetNodeControl;
 
     property OnItemRemoved: TItemRemovedEvent read FOnItemRemoved write FOnItemRemoved;
+    property OnDetermineDropMode: TDetermineDropModeEvent read FOnDetermineDropMode write FOnDetermineDropMode;
+    property LastDropMode;
   end;
 
 implementation
@@ -470,6 +474,9 @@ begin
   end
   else
     Result := dmNowhere;
+
+  if FOnDetermineDropMode <> nil then
+    FOnDetermineDropMode(P, HitInfo, NodeRect, Result);
 end;
 
 procedure TDbgTreeView.HandleMouseDown(var Message: TLMMouse;

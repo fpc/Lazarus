@@ -11,6 +11,14 @@ msgstr ""
 "Language: ru\n"
 "X-Generator: Poedit 2.4.3\n"
 
+#: idedebuggerstringconstants.breakviewheaderaddgroup
+msgid "- Add new group -"
+msgstr ""
+
+#: idedebuggerstringconstants.breakviewheadernogroup
+msgid "No group"
+msgstr ""
+
 #: idedebuggerstringconstants.dbgbreakgroupdlgcaption
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
 msgid "Select Groups"

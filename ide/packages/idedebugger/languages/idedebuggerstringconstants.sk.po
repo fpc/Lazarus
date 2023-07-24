@@ -5,6 +5,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
+#: idedebuggerstringconstants.breakviewheaderaddgroup
+msgid "- Add new group -"
+msgstr ""
+
+#: idedebuggerstringconstants.breakviewheadernogroup
+msgid "No group"
+msgstr ""
+
 #: idedebuggerstringconstants.dbgbreakgroupdlgcaption
 msgid "Select Groups"
 msgstr ""

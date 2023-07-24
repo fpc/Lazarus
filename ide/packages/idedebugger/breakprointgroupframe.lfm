@@ -5,17 +5,24 @@ object BreakpointGroupFrame: TBreakpointGroupFrame
   Width = 602
   ClientHeight = 76
   ClientWidth = 602
+  OnDragDrop = FrameDragDrop
+  OnDragOver = FrameDragOver
   TabOrder = 0
   DesignLeft = 200
   DesignTop = 100
   object ToolBar1: TToolBar
     Left = 0
-    Height = 24
+    Height = 18
     Top = 0
     Width = 602
     AutoSize = True
     Caption = 'ToolBar1'
+    Color = clBtnFace
+    ParentColor = False
+    ParentFont = False
     TabOrder = 0
+    OnDragDrop = FrameDragDrop
+    OnDragOver = FrameDragOver
     object StaticText1: TStaticText
       Left = 1
       Height = 16
@@ -25,17 +32,21 @@ object BreakpointGroupFrame: TBreakpointGroupFrame
       BorderSpacing.Left = 5
       BorderSpacing.Right = 5
       Caption = 'StaticText1'
+      OnDragDrop = FrameDragDrop
+      OnDragOver = FrameDragOver
       TabOrder = 0
     end
     object StaticText2: TStaticText
       Left = 58
-      Height = 22
+      Height = 16
       Top = 2
       Width = 57
       AutoSize = True
       BorderSpacing.Left = 5
       BorderSpacing.Right = 5
       Caption = 'StaticText2'
+      OnDragDrop = FrameDragDrop
+      OnDragOver = FrameDragOver
       TabOrder = 1
     end
   end

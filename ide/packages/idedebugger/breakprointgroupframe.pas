@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, Math, Forms, Controls, ComCtrls, StdCtrls, ExtCtrls,
-  LCLType, Buttons, laz.VirtualTrees, IDEImagesIntf, DebuggerTreeView, Debugger;
+  LCLType, Buttons, Graphics, Dialogs, laz.VirtualTrees, IDEImagesIntf,
+  DebuggerTreeView, Debugger, IdeDebuggerStringConstants, BaseDebugManager;
 
 type
 
@@ -14,7 +15,7 @@ type
 
   TOnDeleteGroup = procedure(Sender: TBreakpointGroupFrame; BrkGroup: TIDEBreakPointGroup) of object;
 
-  TBreakpointGroupFrameKind = (bgfUngrouped, bgfGroup, bgfAbandoned);
+  TBreakpointGroupFrameKind = (bgfUngrouped, bgfGroup, bgfAddNewGroup, bgfAbandoned);
 
   { TBreakpointGroupFrame }
 
@@ -25,6 +26,9 @@ type
     StaticText2: TStaticText;
     ToolBar1: TToolBar;
     procedure BtnDeleteClick(Sender: TObject);
+    procedure FrameDragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure FrameDragOver(Sender, Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
   private
     FGroupKind: TBreakpointGroupFrameKind;
     FOnDeleteGroup: TOnDeleteGroup;
@@ -66,6 +70,94 @@ procedure TBreakpointGroupFrame.BtnDeleteClick(Sender: TObject);
 begin
   if assigned(FOnDeleteGroup) then
     FOnDeleteGroup(Self, FBrkGroup);
+end;
+
+procedure TBreakpointGroupFrame.FrameDragDrop(Sender, Source: TObject; X,
+  Y: Integer);
+var
+  NewGroup: TIDEBreakPointGroup;
+  VNode: PVirtualNode;
+  Brk: TIDEBreakPoint;
+  GroupName: String;
+begin
+  NewGroup := FBrkGroup;
+
+  FTree.BeginUpdate;
+  try
+    if FGroupKind = bgfAddNewGroup then begin
+      GroupName := '';
+      repeat
+        repeat
+          if not InputQuery(Caption, lisGroupNameInput, GroupName) then
+            exit;
+
+          if (GroupName = '') or (not TIDEBreakPointGroup.CheckName(GroupName)) then begin
+            if MessageDlg(Caption, lisGroupNameInvalid, mtError, [mbCancel, mbRetry], 0) <> mrRetry then
+              exit;
+          end
+          else
+            break;
+        until false;
+
+        NewGroup := DebugBoss.BreakPointGroups.GetGroupByName(GroupName);
+        if NewGroup = nil then begin
+          NewGroup := TIDEBreakPointGroup(DebugBoss.BreakPointGroups.Add);
+          NewGroup.Name := GroupName;
+          break
+        end
+        else begin
+          case MessageDlg(Caption, Format(lisGroupAssignExisting,
+            [GroupName]), mtConfirmation, [mbYes, mbCancel, mbRetry], 0)
+          of
+            mrYes, mrOK: Break;
+            mrNo, mrCancel: exit;
+            mrRetry: ;
+          end;
+        end;
+      until false;
+    end;
+
+    if (Source = FTree) and (FTree.SelectedCount > 0) then begin
+      for VNode in FTree.SelectedNodes(True) do begin
+        Brk := TIDEBreakPoint(FTree.NodeItem[VNode]);
+        Brk.Group := NewGroup;
+      end;
+    end;
+  finally
+    if FGroupKind = bgfAddNewGroup then
+      Visible := False;
+    FTree.EndUpdate;
+  end;
+end;
+
+procedure TBreakpointGroupFrame.FrameDragOver(Sender, Source: TObject; X,
+  Y: Integer; State: TDragState; var Accept: Boolean);
+var
+  VNode: PVirtualNode;
+  Brk: TIDEBreakPoint;
+begin
+  Accept := False;
+
+  if (Source = FTree) and (FTree.SelectedCount > 0) then begin
+    Accept := FGroupKind = bgfAddNewGroup;
+    if not Accept then begin
+      for VNode in FTree.SelectedNodes(True) do begin
+        Brk := TIDEBreakPoint(FTree.NodeItem[VNode]);
+        if Brk.Group <> FBrkGroup then begin
+          Accept := True;
+          Break;
+        end;
+      end;
+    end;
+  end;
+  if Accept and (State = dsDragMove) then begin
+    ToolBar1.Color := clHighlight;
+    ToolBar1.Font.Color := clHighlightText;
+  end
+  else begin
+    ToolBar1.Color := clBtnFace;
+    ToolBar1.Font.Color := clDefault;
+  end;
 end;
 
 function TBreakpointGroupFrame.GetCount: Integer;
@@ -140,18 +232,32 @@ end;
 
 procedure TBreakpointGroupFrame.UpdateDisplay;
 begin
-  if FBrkGroup <> nil then begin
-    StaticText1.Caption := FBrkGroup.Name;
-    StaticText2.Caption := Format(' (%d)', [Count]);
-  end
-  else begin
-    StaticText1.Caption := 'No group';
-    StaticText2.Caption := Format(' (%d)', [FTree.ChildCount[FNode]]);
+  case FGroupKind of
+    bgfUngrouped: begin
+        StaticText1.Caption := BreakViewHeaderNoGroup;
+        StaticText2.Caption := Format(' (%d)', [FTree.ChildCount[FNode]]);
+      end;
+    bgfGroup: begin
+        if FBrkGroup <> nil then
+          StaticText1.Caption := FBrkGroup.Name;
+        StaticText2.Caption := Format(' (%d)', [Count]);
+      end;
+    bgfAddNewGroup: begin
+        StaticText1.Caption := BreakViewHeaderAddGroup;
+        StaticText2.Caption := '';
+        StaticText1.Font.Style := [fsItalic];
+      end;
+    bgfAbandoned: ;
   end;
+
 end;
 
 function TBreakpointGroupFrame.Compare(AnOther: TBreakpointGroupFrame): integer;
 begin
+  Result := ord(FGroupKind) - ord(AnOther.FGroupKind);
+  if Result <> 0 then
+    exit;
+
   if FBrkGroup = nil then
     exit(-1);
   if AnOther.FBrkGroup = nil then
@@ -162,7 +268,6 @@ begin
   if (Count > 0) and (AnOther.Count = 0) then
     exit(-1);
 
-  //Result := CompareText(Name, AnOther.Name);
   Result := FBrkGroup.Index - AnOther.FBrkGroup.Index;
 end;
 
