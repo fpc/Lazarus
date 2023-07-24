@@ -271,6 +271,7 @@ msgid "Index"
 msgstr "索引"
 
 #: lazdatadeskstr.sld_actionadddomain
+msgctxt "lazdatadeskstr.sld_actionadddomain"
 msgid "New domain"
 msgstr "新domain"
 
@@ -287,6 +288,7 @@ msgid "Add a foreign key to the table"
 msgstr "添加一个foreign key到table"
 
 #: lazdatadeskstr.sld_actionaddsequence
+msgctxt "lazdatadeskstr.sld_actionaddsequence"
 msgid "New sequence"
 msgstr "新数列"
 
@@ -392,6 +394,7 @@ msgid "Create a new Data Dictionary"
 msgstr "创建一个新的Data字典"
 
 #: lazdatadeskstr.sld_actionnewindex
+msgctxt "lazdatadeskstr.sld_actionnewindex"
 msgid "New index"
 msgstr "新建索引"
 
@@ -711,11 +714,6 @@ msgstr "加载SQL"
 msgid "Enter a name for the new %s"
 msgstr "输入一个名称对于新%s"
 
-#: lazdatadeskstr.snew
-#, object-pascal-format
-msgid "New %s"
-msgstr "新建%s"
-
 #: lazdatadeskstr.snewconnection
 msgid "New connection"
 msgstr "新建连接"
@@ -728,6 +726,12 @@ msgstr "新建数据字典"
 msgid "Create new domain"
 msgstr "创建新domain"
 
+#: lazdatadeskstr.snewdomainde
+#, fuzzy
+msgctxt "lazdatadeskstr.snewdomainde"
+msgid "New domain"
+msgstr "新domain"
+
 #: lazdatadeskstr.snewdomainname
 msgid "Enter a name for the new domain:"
 msgstr "输入一个名称对于新domain:"
@@ -736,6 +740,10 @@ msgstr "输入一个名称对于新domain:"
 #, object-pascal-format
 msgid "Create new field in table %s"
 msgstr "创建新字段在table%s"
+
+#: lazdatadeskstr.snewfieldde
+msgid "New field"
+msgstr ""
 
 #: lazdatadeskstr.snewfieldname
 msgid "Enter a name for the new field:"
@@ -746,6 +754,10 @@ msgstr "输入一个名称对于新字段:"
 msgid "Create new foreign key in table %s"
 msgstr "创建新foreign key在table%s"
 
+#: lazdatadeskstr.snewforeignkeyde
+msgid "New foreign key"
+msgstr ""
+
 #: lazdatadeskstr.snewforeignkeyname
 msgid "Enter a name for the new foreign key:"
 msgstr "输入一个名称对于新foreign key:"
@@ -754,6 +766,12 @@ msgstr "输入一个名称对于新foreign key:"
 #, object-pascal-format
 msgid "Create new index on table %s"
 msgstr "创建新索引关于table%s"
+
+#: lazdatadeskstr.snewindexde
+#, fuzzy
+msgctxt "lazdatadeskstr.snewindexde"
+msgid "New index"
+msgstr "新建索引"
 
 #: lazdatadeskstr.snewindexname
 msgid "Enter a name for the new index:"
@@ -768,6 +786,12 @@ msgstr "创建新的%s"
 msgid "Create new sequence"
 msgstr "创建新数列"
 
+#: lazdatadeskstr.snewsequencede
+#, fuzzy
+msgctxt "lazdatadeskstr.snewsequencede"
+msgid "New sequence"
+msgstr "新数列"
+
 #: lazdatadeskstr.snewsequencename
 msgid "Enter a name for the new sequence:"
 msgstr "输入一个名称对于新数列:"
@@ -775,6 +799,10 @@ msgstr "输入一个名称对于新数列:"
 #: lazdatadeskstr.snewtable
 msgid "Create new table"
 msgstr "创建新的table"
+
+#: lazdatadeskstr.snewtablede
+msgid "New table"
+msgstr ""
 
 #: lazdatadeskstr.snewtablename
 msgid "Enter a name for the new table:"

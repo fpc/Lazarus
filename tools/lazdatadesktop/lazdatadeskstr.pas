@@ -58,7 +58,12 @@ resourcestring
   SSequence = 'Sequence';
   SForeignKey = 'Foreign key';
   SDomain = 'Domain';
-  SNew = 'New %s';
+  SNewTableDE = 'New table';
+  SNewFieldDE = 'New field';
+  SNewIndexDE = 'New index';
+  SNewSequenceDE = 'New sequence';
+  SNewForeignKeyDE = 'New foreign key';
+  SNewDomainDE = 'New domain';
   SErrUnknownType = 'Unknown object type: %d';
   SNewObject = 'Create new %s';
   SNameFor = 'Enter a name for the new %s';

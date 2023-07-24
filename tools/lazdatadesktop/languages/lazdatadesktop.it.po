@@ -267,6 +267,7 @@ msgid "Index"
 msgstr "Indice"
 
 #: lazdatadeskstr.sld_actionadddomain
+msgctxt "lazdatadeskstr.sld_actionadddomain"
 msgid "New domain"
 msgstr "Nuovo dominio"
 
@@ -283,6 +284,7 @@ msgid "Add a foreign key to the table"
 msgstr "Aggiungi una chiave esterna alla tabella"
 
 #: lazdatadeskstr.sld_actionaddsequence
+msgctxt "lazdatadeskstr.sld_actionaddsequence"
 msgid "New sequence"
 msgstr "Nuova sequenza"
 
@@ -388,6 +390,7 @@ msgid "Create a new Data Dictionary"
 msgstr "Crea un nuovo dizionario dati"
 
 #: lazdatadeskstr.sld_actionnewindex
+msgctxt "lazdatadeskstr.sld_actionnewindex"
 msgid "New index"
 msgstr "Nuovo indice"
 
@@ -718,11 +721,6 @@ msgstr "Carica SQL"
 msgid "Enter a name for the new %s"
 msgstr "Inserire un nome per nuova %s"
 
-#: lazdatadeskstr.snew
-#, object-pascal-format
-msgid "New %s"
-msgstr "Nuovo %s"
-
 #: lazdatadeskstr.snewconnection
 msgid "New connection"
 msgstr "Nuova connessione"
@@ -737,6 +735,12 @@ msgstr "Nuova base di dati"
 msgid "Create new domain"
 msgstr "Crea un nuovo dominio"
 
+#: lazdatadeskstr.snewdomainde
+#, fuzzy
+msgctxt "lazdatadeskstr.snewdomainde"
+msgid "New domain"
+msgstr "Nuovo dominio"
+
 #: lazdatadeskstr.snewdomainname
 msgid "Enter a name for the new domain:"
 msgstr "Inserisci un nome per il nuovo dominio:"
@@ -745,6 +749,10 @@ msgstr "Inserisci un nome per il nuovo dominio:"
 #, object-pascal-format
 msgid "Create new field in table %s"
 msgstr "Crea un nuovo campo nella tabella %s"
+
+#: lazdatadeskstr.snewfieldde
+msgid "New field"
+msgstr ""
 
 #: lazdatadeskstr.snewfieldname
 msgid "Enter a name for the new field:"
@@ -755,6 +763,10 @@ msgstr "Inserire un nome per il nuovo campo:"
 msgid "Create new foreign key in table %s"
 msgstr "Crea una nuova chiave esterna nella tabella %s"
 
+#: lazdatadeskstr.snewforeignkeyde
+msgid "New foreign key"
+msgstr ""
+
 #: lazdatadeskstr.snewforeignkeyname
 msgid "Enter a name for the new foreign key:"
 msgstr "Inserire un nome per la nuova chiave esterna:"
@@ -763,6 +775,12 @@ msgstr "Inserire un nome per la nuova chiave esterna:"
 #, object-pascal-format
 msgid "Create new index on table %s"
 msgstr "Crea un nuovo indice nella tabella %s"
+
+#: lazdatadeskstr.snewindexde
+#, fuzzy
+msgctxt "lazdatadeskstr.snewindexde"
+msgid "New index"
+msgstr "Nuovo indice"
 
 #: lazdatadeskstr.snewindexname
 msgid "Enter a name for the new index:"
@@ -777,6 +795,12 @@ msgstr "Crea nuovo %s"
 msgid "Create new sequence"
 msgstr "Crea una nuova sequenza"
 
+#: lazdatadeskstr.snewsequencede
+#, fuzzy
+msgctxt "lazdatadeskstr.snewsequencede"
+msgid "New sequence"
+msgstr "Nuova sequenza"
+
 #: lazdatadeskstr.snewsequencename
 msgid "Enter a name for the new sequence:"
 msgstr "Inserire un nome per la nuova sequenza:"
@@ -784,6 +808,10 @@ msgstr "Inserire un nome per la nuova sequenza:"
 #: lazdatadeskstr.snewtable
 msgid "Create new table"
 msgstr "Crea una nuova tabella"
+
+#: lazdatadeskstr.snewtablede
+msgid "New table"
+msgstr ""
 
 #: lazdatadeskstr.snewtablename
 msgid "Enter a name for the new table:"

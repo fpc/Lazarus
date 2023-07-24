@@ -260,6 +260,7 @@ msgid "Index"
 msgstr "Индекс"
 
 #: lazdatadeskstr.sld_actionadddomain
+msgctxt "lazdatadeskstr.sld_actionadddomain"
 msgid "New domain"
 msgstr "Новый домен"
 
@@ -276,6 +277,7 @@ msgid "Add a foreign key to the table"
 msgstr "Добавить внешний ключ к таблице"
 
 #: lazdatadeskstr.sld_actionaddsequence
+msgctxt "lazdatadeskstr.sld_actionaddsequence"
 msgid "New sequence"
 msgstr "Новый счётчик"
 
@@ -381,6 +383,7 @@ msgid "Create a new Data Dictionary"
 msgstr "Создать новый словарь данных"
 
 #: lazdatadeskstr.sld_actionnewindex
+msgctxt "lazdatadeskstr.sld_actionnewindex"
 msgid "New index"
 msgstr "Новый индекс"
 
@@ -700,11 +703,6 @@ msgstr "Загрузить код SQL"
 msgid "Enter a name for the new %s"
 msgstr "Введите имя нового объекта: %s"
 
-#: lazdatadeskstr.snew
-#, object-pascal-format
-msgid "New %s"
-msgstr "Новый объект: %s"
-
 #: lazdatadeskstr.snewconnection
 msgid "New connection"
 msgstr "Новое соединение"
@@ -717,6 +715,12 @@ msgstr "Новый словарь данных"
 msgid "Create new domain"
 msgstr "Создать новый домен"
 
+#: lazdatadeskstr.snewdomainde
+#, fuzzy
+msgctxt "lazdatadeskstr.snewdomainde"
+msgid "New domain"
+msgstr "Новый домен"
+
 #: lazdatadeskstr.snewdomainname
 msgid "Enter a name for the new domain:"
 msgstr "Введите имя нового домена:"
@@ -725,6 +729,10 @@ msgstr "Введите имя нового домена:"
 #, object-pascal-format
 msgid "Create new field in table %s"
 msgstr "Создать новое поле в таблице %s"
+
+#: lazdatadeskstr.snewfieldde
+msgid "New field"
+msgstr ""
 
 #: lazdatadeskstr.snewfieldname
 msgid "Enter a name for the new field:"
@@ -735,6 +743,10 @@ msgstr "Введите имя нового поля:"
 msgid "Create new foreign key in table %s"
 msgstr "Создать новый внешний ключ для таблицы %s"
 
+#: lazdatadeskstr.snewforeignkeyde
+msgid "New foreign key"
+msgstr ""
+
 #: lazdatadeskstr.snewforeignkeyname
 msgid "Enter a name for the new foreign key:"
 msgstr "Введите имя нового внешнего ключа:"
@@ -743,6 +755,12 @@ msgstr "Введите имя нового внешнего ключа:"
 #, object-pascal-format
 msgid "Create new index on table %s"
 msgstr "Создать новый индекс для таблицы %s"
+
+#: lazdatadeskstr.snewindexde
+#, fuzzy
+msgctxt "lazdatadeskstr.snewindexde"
+msgid "New index"
+msgstr "Новый индекс"
 
 #: lazdatadeskstr.snewindexname
 msgid "Enter a name for the new index:"
@@ -757,6 +775,12 @@ msgstr "Создать новый объект: %s"
 msgid "Create new sequence"
 msgstr "Создать новый счётчик"
 
+#: lazdatadeskstr.snewsequencede
+#, fuzzy
+msgctxt "lazdatadeskstr.snewsequencede"
+msgid "New sequence"
+msgstr "Новый счётчик"
+
 #: lazdatadeskstr.snewsequencename
 msgid "Enter a name for the new sequence:"
 msgstr "Введите имя нового счётчика:"
@@ -764,6 +788,10 @@ msgstr "Введите имя нового счётчика:"
 #: lazdatadeskstr.snewtable
 msgid "Create new table"
 msgstr "Создать новую таблицу"
+
+#: lazdatadeskstr.snewtablede
+msgid "New table"
+msgstr ""
 
 #: lazdatadeskstr.snewtablename
 msgid "Enter a name for the new table:"

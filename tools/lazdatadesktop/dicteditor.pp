@@ -197,6 +197,25 @@ begin
   Result:=S;
 end;
 
+Function NewObjectTypeName(ObjectType : TEditObjectType) : String;
+
+Var
+  S : String;
+
+begin
+  Case ObjectType of
+    eotTable      : S:=SNewTableDE;
+    eotField      : S:=SNewFieldDE;
+    eotIndex      : S:=SNewIndexDE;
+    eotSequence   : S:=SNewSequenceDE;
+    eotForeignKey : S:=SNewForeignKeyDE;
+    eotDomain     : S:=SNewDomainDE;
+  else
+    Raise EDataDict.CreateFmt(SErrUnknownType,[Ord(ObjectType)]);
+  end;
+  Result:=S;
+end;
+
 Function CreateDatasetFromTabledef(TD : TDDTableDef;AOwner : TComponent = Nil) : TDataset;
 
 Var
@@ -332,15 +351,11 @@ end;
 
 Function TDataDictEditor.AddNewItemPopup(ObjectType : TEditObjectType; AImageIndex : Integer) : TMenuItem;
 
-Var
-  S: String;
-
 begin
   Result:=TMenuItem.Create(Self);
   Result.Name:='NewItem'+GetEnumName(TypeInfo(TEditObjectType),Ord(ObjectType));
   Result.Tag:=Ord(ObjectType);
-  S:=ObjectTypeName(ObjectType);
-  Result.Caption:=Format(SNew,[S]);
+  Result.Caption:=NewObjectTypeName(ObjectType);
   Result.OnClick:=@DoNewObject;
   Result.ImageIndex:=AImageIndex;
   FMenu.Items.Add(Result);
@@ -394,6 +409,7 @@ begin
   FMINewSequence:=AddNewItemPopup(eotSequence,iiSequence);
   FMINewForeignKey:=AddNewItemPopup(eotForeignKey,iiForeignKey);
   FMINewDomain:=AddNewItemPopup(eotDomain,iiDomain);
+  FMenu.Items.Add(NewLine);
   FMIDeleteObject:=TMenuItem.Create(Self);
   FMIDeleteObject.Caption:=Format(SDeleteObject,[SObject]);
   FMIDeleteObject.OnClick:=@DoDeleteObject;
