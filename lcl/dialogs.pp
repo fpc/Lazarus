@@ -636,8 +636,6 @@ type
     FVerificationText: TTranslateString;
     FWidth: Integer;
     FOnButtonClicked: TTaskDlgClickEvent;
-    //procedure DoOnButtonClickedHandler(Sender: PTaskDialog; AButtonID: Integer;
-    //  var ACanClose: Boolean);
     procedure SetButtons(const Value: TTaskDialogButtons);
     procedure SetRadioButtons(const Value: TTaskDialogButtons);
   protected
