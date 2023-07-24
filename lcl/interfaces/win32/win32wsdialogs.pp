@@ -1657,10 +1657,7 @@ function TaskDialogCallbackProc(hwnd: HWND; uNotification: UINT;
 var Dlg: TTaskDialog absolute dwRefData;
     CanClose: Boolean;
 begin
-  writeln('TaskDialogCallbackProc: uNotification=',uNotification);
-  //ptd^.Dialog.Wnd := hwnd;
   Result := S_OK;
-
   case uNotification of
     TDN_BUTTON_CLICKED:
     begin
@@ -1697,6 +1694,7 @@ var
   B: TTaskDialogBaseButtonItem;
   List: TStringList;
   Flags: TTaskDialogFlags;
+  Res: HRESULT;
 
   procedure PrepareTaskDialogConfig;
   const
@@ -1798,7 +1796,7 @@ var
       for B in ADlg.Buttons do
         List.Add(B.Caption);
       AddTaskDiakogButton(List,Config.cButtons,TaskDialogFirstButtonIndex);
-      writeln('PrepareTaskDialogConfig C');
+      //writeln('PrepareTaskDialogConfig C');
 
       List.Clear;
       for B in ADlg.RadioButtons do
@@ -1815,7 +1813,7 @@ var
 
     if (Config.cButtons > 0) then
       Config.pButtons := @Buttons[0];
-    writeln('PrepareTaskDialogConfig F: Config.cButtons=',Config.cButtons,', Config.pButtons=',PtrInt(Config.pButtons));
+    //writeln('PrepareTaskDialogConfig F: Config.cButtons=',Config.cButtons,', Config.pButtons=',PtrInt(Config.pButtons));
 
     if (Config.cRadioButtons > 0) then
       Config.pRadioButtons := @Buttons[Config.cButtons {Config.cRadioButtons}];
@@ -1878,12 +1876,13 @@ begin
     Result := inherited Execute(ADlg, AParentWnd, ARadioRes)
   else
   begin
+    ARadioRes := 0;
     PrepareTaskDialogConfig;//(TTaskDialog(ADlg), AParentWnd, Config, ButtonCaptions, Buttons);
-    Result := TaskDialogIndirect(@Config, @Result, @ARadioRes, @VerifyChecked);
+    Res := TaskDialogIndirect(@Config, @Result, @ARadioRes, @VerifyChecked);
 
     //for now let it fail, it's not functional yet.
     //Result := -1;
-    if (Result = S_OK) then
+    if (Res = S_OK) then
     begin
       if VerifyChecked then
         ADlg.Flags := ADlg.Flags + [tfVerificationFlagChecked]
@@ -1892,7 +1891,7 @@ begin
     end
     else
     begin
-      if IsConsole then writeln('TWin32WSTaskDialog.Execute: Call to TaskDialogIndirect failed, result was: ',LongInt(Result).ToHexString);
+      if IsConsole then writeln('TWin32WSTaskDialog.Execute: Call to TaskDialogIndirect failed, result was: ',LongInt(Res).ToHexString);
       Result := inherited Execute(ADlg, AParentWnd, ARadioRes);  //probably illegal parameters: fallback to emulated taskdialog
     end;
   end;

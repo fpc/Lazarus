@@ -242,6 +242,8 @@ begin
   debugln([' FModalResult=',FModalResult]);
   debugln([' VerifyChecked=',tfVerificationFlagChecked in FFlags]);
   debugln([' ARadioRes=',ARadioRes]);
+  debugln([' Assigned(FRadioButton)=',Assigned(FRadioButton)]);
+
 
 
 
