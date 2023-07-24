@@ -260,6 +260,7 @@ msgid "Index"
 msgstr "Index"
 
 #: lazdatadeskstr.sld_actionadddomain
+msgctxt "lazdatadeskstr.sld_actionadddomain"
 msgid "New domain"
 msgstr "Új tartomány"
 
@@ -276,6 +277,7 @@ msgid "Add a foreign key to the table"
 msgstr "Külső kulcs hozzáadása a táblához"
 
 #: lazdatadeskstr.sld_actionaddsequence
+msgctxt "lazdatadeskstr.sld_actionaddsequence"
 msgid "New sequence"
 msgstr "Új sorozat"
 
@@ -381,6 +383,7 @@ msgid "Create a new Data Dictionary"
 msgstr "Új adatszótár létrehozása"
 
 #: lazdatadeskstr.sld_actionnewindex
+msgctxt "lazdatadeskstr.sld_actionnewindex"
 msgid "New index"
 msgstr "Új index"
 
@@ -700,11 +703,6 @@ msgstr "SQL betöltése"
 msgid "Enter a name for the new %s"
 msgstr "Az új %s nevének megadása"
 
-#: lazdatadeskstr.snew
-#, object-pascal-format
-msgid "New %s"
-msgstr "Új %s"
-
 #: lazdatadeskstr.snewconnection
 msgid "New connection"
 msgstr "Ú&j kapcsolat"
@@ -717,6 +715,12 @@ msgstr "Új adatszótár"
 msgid "Create new domain"
 msgstr "Új tartomány létrehozása"
 
+#: lazdatadeskstr.snewdomainde
+#, fuzzy
+msgctxt "lazdatadeskstr.snewdomainde"
+msgid "New domain"
+msgstr "Új tartomány"
+
 #: lazdatadeskstr.snewdomainname
 msgid "Enter a name for the new domain:"
 msgstr "Az új tartomány nevének megadása:"
@@ -725,6 +729,10 @@ msgstr "Az új tartomány nevének megadása:"
 #, object-pascal-format
 msgid "Create new field in table %s"
 msgstr "Új mező létrehozása a(z) %s táblában"
+
+#: lazdatadeskstr.snewfieldde
+msgid "New field"
+msgstr ""
 
 #: lazdatadeskstr.snewfieldname
 msgid "Enter a name for the new field:"
@@ -735,6 +743,10 @@ msgstr "Az új mező nevének megadása:"
 msgid "Create new foreign key in table %s"
 msgstr "Új külső kulcs létrehozása a(z) %s táblában"
 
+#: lazdatadeskstr.snewforeignkeyde
+msgid "New foreign key"
+msgstr ""
+
 #: lazdatadeskstr.snewforeignkeyname
 msgid "Enter a name for the new foreign key:"
 msgstr "Név megadása az új külső kulcs számára:"
@@ -743,6 +755,12 @@ msgstr "Név megadása az új külső kulcs számára:"
 #, object-pascal-format
 msgid "Create new index on table %s"
 msgstr "Új index létrahozása a(z) %s táblához"
+
+#: lazdatadeskstr.snewindexde
+#, fuzzy
+msgctxt "lazdatadeskstr.snewindexde"
+msgid "New index"
+msgstr "Új index"
 
 #: lazdatadeskstr.snewindexname
 msgid "Enter a name for the new index:"
@@ -757,6 +775,12 @@ msgstr "Új %s létrehozása"
 msgid "Create new sequence"
 msgstr "Új sorozat létrehozása"
 
+#: lazdatadeskstr.snewsequencede
+#, fuzzy
+msgctxt "lazdatadeskstr.snewsequencede"
+msgid "New sequence"
+msgstr "Új sorozat"
+
 #: lazdatadeskstr.snewsequencename
 msgid "Enter a name for the new sequence:"
 msgstr "Név megadása az új sorozat számára:"
@@ -764,6 +788,10 @@ msgstr "Név megadása az új sorozat számára:"
 #: lazdatadeskstr.snewtable
 msgid "Create new table"
 msgstr "Új tábla létrehozása"
+
+#: lazdatadeskstr.snewtablede
+msgid "New table"
+msgstr ""
 
 #: lazdatadeskstr.snewtablename
 msgid "Enter a name for the new table:"

@@ -575,6 +575,7 @@ object MainForm: TMainForm
       Category = 'Connections'
       Caption = '&Open connection'
       Hint = 'Open selected recent connection'
+      ImageIndex = 45
       OnExecute = OpenRecentConnection
       OnUpdate = HaveRecentConnection
     end
@@ -616,11 +617,11 @@ object MainForm: TMainForm
     Images = ImgDatamodule.AppImages
     Left = 160
     Top = 200
-    object PMIOpenConnection: TMenuItem
-      Action = AOpenConnection
-    end
     object PMINewConnection: TMenuItem
       Action = ANewConnection
+    end
+    object PMIOpenConnection: TMenuItem
+      Action = AOpenConnection
     end
     object PMIDeleteConnection: TMenuItem
       Action = ADeleteConnection
@@ -630,13 +631,13 @@ object MainForm: TMainForm
     Images = ImgDatamodule.AppImages
     Left = 43
     Top = 200
-    object PMIOpenDataDict: TMenuItem
-      Action = AOpenRecentDatadict
-      OnClick = OpenRecentDatadict
-    end
     object PMINewDataDict: TMenuItem
       Action = ANew
       OnClick = ANewExecute
+    end
+    object PMIOpenDataDict: TMenuItem
+      Action = AOpenRecentDatadict
+      OnClick = OpenRecentDatadict
     end
     object MenuItem8: TMenuItem
       Action = ADeleteRecentDataDict

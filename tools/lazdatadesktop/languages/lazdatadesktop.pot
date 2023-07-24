@@ -244,6 +244,7 @@ msgid "Index"
 msgstr ""
 
 #: lazdatadeskstr.sld_actionadddomain
+msgctxt "lazdatadeskstr.sld_actionadddomain"
 msgid "New domain"
 msgstr ""
 
@@ -260,6 +261,7 @@ msgid "Add a foreign key to the table"
 msgstr ""
 
 #: lazdatadeskstr.sld_actionaddsequence
+msgctxt "lazdatadeskstr.sld_actionaddsequence"
 msgid "New sequence"
 msgstr ""
 
@@ -365,6 +367,7 @@ msgid "Create a new Data Dictionary"
 msgstr ""
 
 #: lazdatadeskstr.sld_actionnewindex
+msgctxt "lazdatadeskstr.sld_actionnewindex"
 msgid "New index"
 msgstr ""
 
@@ -684,11 +687,6 @@ msgstr ""
 msgid "Enter a name for the new %s"
 msgstr ""
 
-#: lazdatadeskstr.snew
-#, object-pascal-format
-msgid "New %s"
-msgstr ""
-
 #: lazdatadeskstr.snewconnection
 msgid "New connection"
 msgstr ""
@@ -701,6 +699,11 @@ msgstr ""
 msgid "Create new domain"
 msgstr ""
 
+#: lazdatadeskstr.snewdomainde
+msgctxt "lazdatadeskstr.snewdomainde"
+msgid "New domain"
+msgstr ""
+
 #: lazdatadeskstr.snewdomainname
 msgid "Enter a name for the new domain:"
 msgstr ""
@@ -708,6 +711,10 @@ msgstr ""
 #: lazdatadeskstr.snewfield
 #, object-pascal-format
 msgid "Create new field in table %s"
+msgstr ""
+
+#: lazdatadeskstr.snewfieldde
+msgid "New field"
 msgstr ""
 
 #: lazdatadeskstr.snewfieldname
@@ -719,6 +726,10 @@ msgstr ""
 msgid "Create new foreign key in table %s"
 msgstr ""
 
+#: lazdatadeskstr.snewforeignkeyde
+msgid "New foreign key"
+msgstr ""
+
 #: lazdatadeskstr.snewforeignkeyname
 msgid "Enter a name for the new foreign key:"
 msgstr ""
@@ -726,6 +737,11 @@ msgstr ""
 #: lazdatadeskstr.snewindex
 #, object-pascal-format
 msgid "Create new index on table %s"
+msgstr ""
+
+#: lazdatadeskstr.snewindexde
+msgctxt "lazdatadeskstr.snewindexde"
+msgid "New index"
 msgstr ""
 
 #: lazdatadeskstr.snewindexname
@@ -741,12 +757,21 @@ msgstr ""
 msgid "Create new sequence"
 msgstr ""
 
+#: lazdatadeskstr.snewsequencede
+msgctxt "lazdatadeskstr.snewsequencede"
+msgid "New sequence"
+msgstr ""
+
 #: lazdatadeskstr.snewsequencename
 msgid "Enter a name for the new sequence:"
 msgstr ""
 
 #: lazdatadeskstr.snewtable
 msgid "Create new table"
+msgstr ""
+
+#: lazdatadeskstr.snewtablede
+msgid "New table"
 msgstr ""
 
 #: lazdatadeskstr.snewtablename

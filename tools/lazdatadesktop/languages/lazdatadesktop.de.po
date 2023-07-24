@@ -260,6 +260,7 @@ msgid "Index"
 msgstr "Index"
 
 #: lazdatadeskstr.sld_actionadddomain
+msgctxt "lazdatadeskstr.sld_actionadddomain"
 msgid "New domain"
 msgstr "Neue Domäne"
 
@@ -276,6 +277,7 @@ msgid "Add a foreign key to the table"
 msgstr "Fremdschlüssel zur Tabelle hinzufügen"
 
 #: lazdatadeskstr.sld_actionaddsequence
+msgctxt "lazdatadeskstr.sld_actionaddsequence"
 msgid "New sequence"
 msgstr "Neue Sequenz"
 
@@ -381,6 +383,7 @@ msgid "Create a new Data Dictionary"
 msgstr "Neues Datenwörterbuch anlegen"
 
 #: lazdatadeskstr.sld_actionnewindex
+msgctxt "lazdatadeskstr.sld_actionnewindex"
 msgid "New index"
 msgstr "Neuer Index"
 
@@ -700,11 +703,6 @@ msgstr "SQL laden"
 msgid "Enter a name for the new %s"
 msgstr "Geben Sie einen Namen für das neue %s"
 
-#: lazdatadeskstr.snew
-#, object-pascal-format
-msgid "New %s"
-msgstr "Neues %s"
-
 #: lazdatadeskstr.snewconnection
 msgid "New connection"
 msgstr "Neue Verbindung"
@@ -717,6 +715,11 @@ msgstr "Neues Datenwörterbuch"
 msgid "Create new domain"
 msgstr "Neue Domäne anlegen"
 
+#: lazdatadeskstr.snewdomainde
+msgctxt "lazdatadeskstr.snewdomainde"
+msgid "New domain"
+msgstr "Neue Domäne"
+
 #: lazdatadeskstr.snewdomainname
 msgid "Enter a name for the new domain:"
 msgstr "Name für die neue Domäne:"
@@ -725,6 +728,10 @@ msgstr "Name für die neue Domäne:"
 #, object-pascal-format
 msgid "Create new field in table %s"
 msgstr "Neues Feld in Tabelle %s erzeugen"
+
+#: lazdatadeskstr.snewfieldde
+msgid "New field"
+msgstr "Neues Feld"
 
 #: lazdatadeskstr.snewfieldname
 msgid "Enter a name for the new field:"
@@ -735,6 +742,10 @@ msgstr "Geben Sie einen Namen für das neue Feld ein:"
 msgid "Create new foreign key in table %s"
 msgstr "Neuen Fremdschlüssel in Tabelle %s erzeugen"
 
+#: lazdatadeskstr.snewforeignkeyde
+msgid "New foreign key"
+msgstr "Neuer Fremdschlüssel"
+
 #: lazdatadeskstr.snewforeignkeyname
 msgid "Enter a name for the new foreign key:"
 msgstr "Name des neuen Fremdschlüssels eingeben:"
@@ -743,6 +754,11 @@ msgstr "Name des neuen Fremdschlüssels eingeben:"
 #, object-pascal-format
 msgid "Create new index on table %s"
 msgstr "Neuen Index für Tabelle %s anlegen"
+
+#: lazdatadeskstr.snewindexde
+msgctxt "lazdatadeskstr.snewindexde"
+msgid "New index"
+msgstr "Neuer Index"
 
 #: lazdatadeskstr.snewindexname
 msgid "Enter a name for the new index:"
@@ -757,6 +773,11 @@ msgstr "Neuen %s anlegen"
 msgid "Create new sequence"
 msgstr "Neue Sequenz anlegen"
 
+#: lazdatadeskstr.snewsequencede
+msgctxt "lazdatadeskstr.snewsequencede"
+msgid "New sequence"
+msgstr "Neue Sequenz"
+
 #: lazdatadeskstr.snewsequencename
 msgid "Enter a name for the new sequence:"
 msgstr "Einen Namen für die neue Sequenz eingeben:"
@@ -764,6 +785,10 @@ msgstr "Einen Namen für die neue Sequenz eingeben:"
 #: lazdatadeskstr.snewtable
 msgid "Create new table"
 msgstr "Neue Tabelle erzeugen"
+
+#: lazdatadeskstr.snewtablede
+msgid "New table"
+msgstr "Neue Tabelle"
 
 #: lazdatadeskstr.snewtablename
 msgid "Enter a name for the new table:"

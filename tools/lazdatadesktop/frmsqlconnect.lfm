@@ -224,7 +224,7 @@ object SQLConnectionForm: TSQLConnectionForm
       Caption = 'Test connection'
       Enabled = False
       Images = ImgDatamodule.AppImages
-      ImageIndex = 38
+      ImageIndex = 30
       OnClick = BTestClick
       TabOrder = 1
     end
