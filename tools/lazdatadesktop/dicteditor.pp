@@ -634,6 +634,7 @@ begin
   TV.ShowLines:=True;
   TV.Parent:=FEdit;
   TV.Align:=alClient;
+  TV.Images := ImgDataModule.AppImages;
   ShowGlobalObjectList(TV,Nil,AObjectType,False);
   TV.OnDblClick:=@DoDoubleClick;
   FAllowDoubleClick:=AObjectType;
@@ -650,6 +651,7 @@ begin
   TV.ShowLines:=True;
   TV.Parent:=FEdit;
   TV.Align:=alClient;
+  TV.Images := ImgDatamodule.AppImages;
   ShowTableObjectList(TV,Nil,ATableDef,AObjectType);
   TV.OnDblClick:=@DoDoubleClick;
   FAllowDoubleClick:=AObjectType;
