@@ -1860,9 +1860,12 @@ begin
   // suppose there is a Button, which is to set a Cursor of a ListBox.
   // without the code here, it will be set to the Cursor of the ListBox
   // after clicking the Button.
-  control:= Application.GetControlAtMouse;
-  if control<>AWinControl then
-    exit;
+  if not ((AWinControl is TCustomForm) and (csDesigning in AWinControl.ComponentState)) then
+  begin
+    control:= Application.GetControlAtMouse;
+    if control<>AWinControl then
+      exit;
+  end;
 
   CursorHelper.SetNewCursor( TCocoaCursor(ACursor) );
 end;
