@@ -3429,7 +3429,7 @@ begin
   FChangeTimer := TTimer.Create(Self);
   FChangeTimer.Enabled := False;
   FChangeTimer.Interval := 1;
-  FChangeTimer.OnTimer := @OnChangeTimer;
+  FChangeTimer.OnTimer := @ChangeTimer;
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageListChange;
   FSelectedColor:=clHighlight;
@@ -4477,7 +4477,7 @@ begin
     FTopItem := Value;
 end;
 
-procedure TCustomTreeView.OnChangeTimer(Sender: TObject);
+procedure TCustomTreeView.ChangeTimer(Sender: TObject);
 begin
   FChangeTimer.Enabled := False;
   //debugln('TCustomTreeView.OnChangeTimer');

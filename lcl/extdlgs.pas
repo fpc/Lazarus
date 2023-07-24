@@ -201,13 +201,13 @@ type
     okButton: TButton;
     cancelButton: TButton;
     panel: TPanel;
-    procedure OnDialogClose(Sender: TObject; var CloseAction: TCloseAction);
-    procedure OnDialogCloseQuery(Sender : TObject; var CanClose : boolean);
-    procedure OnDialogShow(Sender: TObject);
-    procedure OnCalendarDayChanged(Sender: TObject);
-    procedure OnCalendarMonthChanged(Sender: TObject);
-    procedure OnCalendarYearChanged(Sender: TObject);
-    procedure OnCalendarChange(Sender: TObject);
+    procedure DialogClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure DialogCloseQuery(Sender : TObject; var CanClose : boolean);
+    procedure DialogShow(Sender: TObject);
+    procedure CalendarDayChanged(Sender: TObject);
+    procedure CalendarMonthChanged(Sender: TObject);
+    procedure CalendarYearChanged(Sender: TObject);
+    procedure CalendarChange(Sender: TObject);
   protected
     class procedure WSRegisterClass; override;
     procedure GetNewDate(Sender:TObject);//or onClick
@@ -726,14 +726,14 @@ begin
   Result := rsPickDate;
 end;
 
-procedure TCalendarDialog.OnDialogClose(Sender: TObject;
+procedure TCalendarDialog.DialogClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   //if Assigned(OnClose) then OnClose(Self);
   DoClose;
 end;
 
-procedure TCalendarDialog.OnDialogCloseQuery(Sender: TObject;
+procedure TCalendarDialog.DialogCloseQuery(Sender: TObject;
   var CanClose: boolean);
 begin
   //if Assigned(OnCanClose) then OnCanClose(Sender, CanClose);
@@ -744,7 +744,7 @@ begin
   DoCanClose(CanClose);
 end;
 
-procedure TCalendarDialog.OnDialogShow(Sender: TObject);
+procedure TCalendarDialog.DialogShow(Sender: TObject);
 var
   frm: TForm;
   NBtnSize, NSpace, NCalSize: integer;
@@ -786,25 +786,25 @@ begin
   DoShow;
 end;
 
-procedure TCalendarDialog.OnCalendarDayChanged(Sender: TObject);
+procedure TCalendarDialog.CalendarDayChanged(Sender: TObject);
 begin
   GetNewDate(Self);
   if Assigned(FDayChanged) then FDayChanged(Self);
 end;
 
-procedure TCalendarDialog.OnCalendarMonthChanged(Sender: TObject);
+procedure TCalendarDialog.CalendarMonthChanged(Sender: TObject);
 begin
   GetNewDate(Self);
   if Assigned(FMonthChanged) then FMonthChanged(Self);
 end;
 
-procedure TCalendarDialog.OnCalendarYearChanged(Sender: TObject);
+procedure TCalendarDialog.CalendarYearChanged(Sender: TObject);
 begin
   GetNewDate(Self);
   if Assigned(FYearChanged) then FYearChanged(Self);
 end;
 
-procedure TCalendarDialog.OnCalendarChange(Sender: TObject);
+procedure TCalendarDialog.CalendarChange(Sender: TObject);
 begin
   //Date already updated in OnCalendarXXXChanged
   if Assigned(FOnChange) then FOnChange(Self);
@@ -841,9 +841,9 @@ begin
     DlgForm.BorderStyle:=bsDialog;
     DlgForm.AutoScroll:=false;
     DlgForm.AutoSize:=true;
-    DlgForm.OnShow := @OnDialogShow;
-    DlgForm.OnClose:=@OnDialogClose;
-    DlgForm.OnCloseQuery:=@OnDialogCloseQuery;
+    DlgForm.OnShow :=@DialogShow;
+    DlgForm.OnClose:=@DialogClose;
+    DlgForm.OnCloseQuery:=@DialogCloseQuery;
 
     FCalendar:=TCalendar.Create(DlgForm);
     with FCalendar do begin
@@ -852,10 +852,10 @@ begin
       DateTime:=Self.Date;
       TabStop:=True;
       DisplaySettings:=Self.DisplaySettings;
-      OnDayChanged:=@Self.OnCalendarDayChanged;
-      OnMonthChanged:=@Self.OnCalendarMonthChanged;
-      OnYearChanged:=@Self.OnCalendarYearChanged;
-      OnChange:=@Self.OnCalendarChange;
+      OnDayChanged:=@CalendarDayChanged;
+      OnMonthChanged:=@CalendarMonthChanged;
+      OnYearChanged:=@CalendarYearChanged;
+      OnChange:=@CalendarChange;
       OnDblClick:=@CalendarDblClick;
     end;
 

@@ -97,15 +97,15 @@ type
     procedure HelpButtonClick(Sender: TObject);
     procedure InsertMacroButtonClick(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
-    procedure OnCopyMenuItem(Sender: TObject);
-    procedure OnCutMenuItem(Sender: TObject);
-    procedure OnInsertMacroMenuItem(Sender: TObject);
-    procedure OnPasteMenuItem(Sender: TObject);
     procedure TemplateListBoxSelectionChange(Sender: TObject; {%H-}User: boolean);
     procedure UseMacrosCheckBoxChange(Sender: TObject);
   private
     SynAutoComplete: TSynEditAutoComplete;
     LastTemplate: integer;
+    procedure CopyMenuItem(Sender: TObject);
+    procedure CutMenuItem(Sender: TObject);
+    procedure InsertMacroMenuItem(Sender: TObject);
+    procedure PasteMenuItem(Sender: TObject);
     procedure BuildPopupMenu;
     procedure DoInsertMacro;
   public
@@ -923,22 +923,22 @@ begin
   ModalResult:=mrOk;
 end;
 
-procedure TCodeTemplateDialog.OnCopyMenuItem(Sender: TObject);
+procedure TCodeTemplateDialog.CopyMenuItem(Sender: TObject);
 begin
   TemplateSynEdit.CopyToClipboard;
 end;
 
-procedure TCodeTemplateDialog.OnCutMenuItem(Sender: TObject);
+procedure TCodeTemplateDialog.CutMenuItem(Sender: TObject);
 begin
   TemplateSynEdit.CutToClipboard;
 end;
 
-procedure TCodeTemplateDialog.OnInsertMacroMenuItem(Sender: TObject);
+procedure TCodeTemplateDialog.InsertMacroMenuItem(Sender: TObject);
 begin
   DoInsertMacro;
 end;
 
-procedure TCodeTemplateDialog.OnPasteMenuItem(Sender: TObject);
+procedure TCodeTemplateDialog.PasteMenuItem(Sender: TObject);
 begin
   TemplateSynEdit.PasteFromClipboard;
 end;
@@ -1040,10 +1040,10 @@ end;
 
 procedure TCodeTemplateDialog.BuildPopupMenu;
 begin
-  CodeTemplateCopyIDEMenuCommand.OnClick:=@OnCopyMenuItem;
-  CodeTemplateCutIDEMenuCommand.OnClick:=@OnCutMenuItem;
-  CodeTemplatePasteIDEMenuCommand.OnClick:=@OnPasteMenuItem;
-  CodeTemplateInsertMacroIDEMenuCommand.OnClick:=@OnInsertMacroMenuItem;
+  CodeTemplateCopyIDEMenuCommand.OnClick:=@CopyMenuItem;
+  CodeTemplateCutIDEMenuCommand.OnClick:=@CutMenuItem;
+  CodeTemplatePasteIDEMenuCommand.OnClick:=@PasteMenuItem;
+  CodeTemplateInsertMacroIDEMenuCommand.OnClick:=@InsertMacroMenuItem;
 
   // assign the root TMenuItem to the registered menu root.
   MainPopupMenu:=TPopupMenu.Create(Self);

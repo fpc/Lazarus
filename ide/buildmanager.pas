@@ -93,13 +93,13 @@ type
     fEnv: TStringDynArray;
     procedure DoOnRescanFPCDirectoryCache(Sender: TObject);
     function GetTargetFilename: String;
-    procedure OnMacroSubstitution(TheMacro: TTransferMacro;
-                               const MacroName: string; var s: string;
-                               const {%H-}Data: PtrInt; var Handled, {%H-}Abort: boolean;
-                               {%H-}Depth: integer);
-    function OnSubstituteCompilerOption({%H-}Options: TParsedCompilerOptions;
-                                        const UnparsedValue: string;
-                                        PlatformIndependent: boolean): string;
+    procedure MacroSubstitution(TheMacro: TTransferMacro;
+                                const MacroName: string; var s: string;
+                                const {%H-}Data: PtrInt; var Handled, {%H-}Abort: boolean;
+                                {%H-}Depth: integer);
+    function SubstituteCompilerOption({%H-}Options: TParsedCompilerOptions;
+                                      const UnparsedValue: string;
+                                      PlatformIndependent: boolean): string;
     function MacroFuncBuildMode(const {%H-}Param: string; const {%H-}Data: PtrInt;
                              var {%H-}Abort: boolean): string;
     function MacroFuncEnv(const Param: string; const {%H-}Data: PtrInt;
@@ -183,7 +183,7 @@ type
     DefaultCfgVarsBuildMacroStamp: integer;
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
-    function OnGetBuildMacroValues(Options: TBaseCompilerOptions;
+    function GetBuildMacroValuesHandler(Options: TBaseCompilerOptions;
                                    IncludeSelf: boolean): TCTCfgScriptVariables;
     function GetActiveBuildModeName: string;
     procedure AppendMatrixCustomOption(Sender: TObject;
@@ -311,7 +311,7 @@ begin
     FBuildTarget:=nil;
 end;
 
-procedure TBuildManager.OnMacroSubstitution(TheMacro: TTransferMacro;
+procedure TBuildManager.MacroSubstitution(TheMacro: TTransferMacro;
   const MacroName: string; var s: string; const Data: PtrInt; var Handled,
   Abort: boolean; Depth: integer);
 var
@@ -358,7 +358,7 @@ begin
   end;
 end;
 
-function TBuildManager.OnSubstituteCompilerOption(
+function TBuildManager.SubstituteCompilerOption(
   Options: TParsedCompilerOptions; const UnparsedValue: string;
   PlatformIndependent: boolean): string;
 begin
@@ -394,7 +394,7 @@ begin
 
   OnBackupFileInteractive:=@BackupFileForWrite;
 
-  GetBuildMacroValues:=@OnGetBuildMacroValues;
+  GetBuildMacroValues:=@GetBuildMacroValuesHandler;
   OnAppendCustomOption:=@AppendMatrixCustomOption;
   OnGetOutputDirectoryOverride:=@GetMatrixOutputDirectoryOverride;
 
@@ -427,9 +427,9 @@ procedure TBuildManager.SetupTransferMacros;
 begin
   LazConfMacroFunc:=@BMLazConfMacroFunction;
   GlobalMacroList:=TTransferMacroList.Create;
-  GlobalMacroList.OnSubstitution:=@OnMacroSubstitution;
+  GlobalMacroList.OnSubstitution:=@MacroSubstitution;
   IDEMacros:=TLazIDEMacros.Create;
-  CompilerOptions.OnParseString:=@OnSubstituteCompilerOption;
+  CompilerOptions.OnParseString:=@SubstituteCompilerOption;
 
   TIdeTransferMarcros.InitMacros(GlobalMacroList);
 
@@ -2622,7 +2622,7 @@ begin
   end;
 end;
 
-function TBuildManager.OnGetBuildMacroValues(Options: TBaseCompilerOptions;
+function TBuildManager.GetBuildMacroValuesHandler(Options: TBaseCompilerOptions;
   IncludeSelf: boolean): TCTCfgScriptVariables;
 {off $DEFINE VerboseBuildMacros}
 
@@ -2648,7 +2648,7 @@ function TBuildManager.OnGetBuildMacroValues(Options: TBaseCompilerOptions;
         APackage:=TLazPackage(List[i]);
         OtherOpts:=APackage.CompilerOptions;
         if OtherOpts.BuildMacros=nil then continue;
-        Values:=OnGetBuildMacroValues(OtherOpts,true);
+        Values:=GetBuildMacroValuesHandler(OtherOpts,true);
         if Values=nil then continue;
         for j:=0 to OtherOpts.BuildMacros.Count-1 do begin
           Macro:=OtherOpts.BuildMacros[j];
@@ -2780,7 +2780,7 @@ begin
       Result.Clear;
 
       // use inherited as default
-      Values:=OnGetBuildMacroValues(Options,false);
+      Values:=GetBuildMacroValuesHandler(Options,false);
 
       // add macro values of self
       if Values<>nil then

@@ -238,33 +238,33 @@ type
     // popup menu
     procedure BuildPopupMenu;
     procedure DesignerPopupMenuPopup(Sender: TObject);
-    procedure OnComponentEditorVerbMenuItemClick(Sender: TObject);
-    procedure OnAlignPopupMenuClick(Sender: TObject);
-    procedure OnMirrorHorizontalPopupMenuClick(Sender: TObject);
-    procedure OnMirrorVerticalPopupMenuClick(Sender: TObject);
-    procedure OnScalePopupMenuClick(Sender: TObject);
-    procedure OnSizePopupMenuClick(Sender: TObject);
-    procedure OnResetPopupMenuClick(Sender: TObject);
-    procedure OnAnchorEditorMenuClick(Sender: TObject);
-    procedure OnTabOrderMenuClick(Sender: TObject);
-    procedure OnOrderMoveToFrontMenuClick(Sender: TObject);
-    procedure OnOrderMoveToBackMenuClick(Sender: TObject);
-    procedure OnOrderForwardOneMenuClick(Sender: TObject);
-    procedure OnOrderBackOneMenuClick(Sender: TObject);
-    procedure OnCopyMenuClick(Sender: TObject);
-    procedure OnCutMenuClick(Sender: TObject);
-    procedure OnPasteMenuClick(Sender: TObject);
-    procedure OnDeleteSelectionMenuClick(Sender: TObject);
-    procedure OnSelectAllMenuClick(Sender: TObject);
-    procedure OnChangeClassMenuClick(Sender: TObject);
-    procedure OnChangeParentMenuClick(Sender: TObject);
-    procedure OnShowNonVisualComponentsMenuClick(Sender: TObject);
-    procedure OnSnapToGridOptionMenuClick(Sender: TObject);
-    procedure OnShowOptionsMenuItemClick(Sender: TObject);
-    procedure OnSnapToGuideLinesOptionMenuClick(Sender: TObject);
-    procedure OnViewLFMMenuClick(Sender: TObject);
-    procedure OnSaveAsXMLMenuClick(Sender: TObject);
-    procedure OnCenterFormMenuClick(Sender: TObject);
+    procedure ComponentEditorVerbMenuItemClick(Sender: TObject);
+    procedure AlignPopupMenuClick(Sender: TObject);
+    procedure MirrorHorizontalPopupMenuClick(Sender: TObject);
+    procedure MirrorVerticalPopupMenuClick(Sender: TObject);
+    procedure ScalePopupMenuClick(Sender: TObject);
+    procedure SizePopupMenuClick(Sender: TObject);
+    procedure ResetPopupMenuClick(Sender: TObject);
+    procedure AnchorEditorMenuClick(Sender: TObject);
+    procedure TabOrderMenuClick(Sender: TObject);
+    procedure OrderMoveToFrontMenuClick(Sender: TObject);
+    procedure OrderMoveToBackMenuClick(Sender: TObject);
+    procedure OrderForwardOneMenuClick(Sender: TObject);
+    procedure OrderBackOneMenuClick(Sender: TObject);
+    procedure CopyMenuClick(Sender: TObject);
+    procedure CutMenuClick(Sender: TObject);
+    procedure PasteMenuClick(Sender: TObject);
+    procedure DeleteSelectionMenuClick(Sender: TObject);
+    procedure SelectAllMenuClick(Sender: TObject);
+    procedure ChangeClassMenuClick(Sender: TObject);
+    procedure ChangeParentMenuClick(Sender: TObject);
+    procedure ShowNonVisualComponentsMenuClick(Sender: TObject);
+    procedure SnapToGridOptionMenuClick(Sender: TObject);
+    procedure ShowOptionsMenuItemClick(Sender: TObject);
+    procedure SnapToGuideLinesOptionMenuClick(Sender: TObject);
+    procedure ViewLFMMenuClick(Sender: TObject);
+    procedure SaveAsXMLMenuClick(Sender: TObject);
+    procedure CenterFormMenuClick(Sender: TObject);
 
     // hook
     function GetPropertyEditorHook: TPropertyEditorHook; override;
@@ -3290,7 +3290,7 @@ begin
   Result:=TheFormEditor.CreateUniqueComponentName(AClassName,FLookupRoot);
 end;
 
-procedure TDesigner.OnComponentEditorVerbMenuItemClick(Sender: TObject);
+procedure TDesigner.ComponentEditorVerbMenuItemClick(Sender: TObject);
 var
   Verb: integer;
   VerbCaption: string;
@@ -3323,58 +3323,58 @@ begin
   end;
 end;
 
-procedure TDesigner.OnDeleteSelectionMenuClick(Sender: TObject);
+procedure TDesigner.DeleteSelectionMenuClick(Sender: TObject);
 begin
   Application.QueueAsyncCall(@DoDeleteSelectedPersistentsAsync, 0);
 end;
 
-procedure TDesigner.OnSelectAllMenuClick(Sender: TObject);
+procedure TDesigner.SelectAllMenuClick(Sender: TObject);
 begin
   DoSelectAll;
 end;
 
-procedure TDesigner.OnChangeClassMenuClick(Sender: TObject);
+procedure TDesigner.ChangeClassMenuClick(Sender: TObject);
 begin
   ChangeClass;
 end;
 
-procedure TDesigner.OnChangeParentMenuClick(Sender: TObject);
+procedure TDesigner.ChangeParentMenuClick(Sender: TObject);
 begin
   if Assigned(OnChangeParent) then
     OnChangeParent(Self);
 end;
 
-procedure TDesigner.OnShowNonVisualComponentsMenuClick(Sender: TObject);
+procedure TDesigner.ShowNonVisualComponentsMenuClick(Sender: TObject);
 begin
   ShowNonVisualComponents:=not ShowNonVisualComponents;
 end;
 
-procedure TDesigner.OnSnapToGridOptionMenuClick(Sender: TObject);
+procedure TDesigner.SnapToGridOptionMenuClick(Sender: TObject);
 begin
   EnvironmentGuiOpts.SnapToGrid := not EnvironmentGuiOpts.SnapToGrid;
 end;
 
-procedure TDesigner.OnShowOptionsMenuItemClick(Sender: TObject);
+procedure TDesigner.ShowOptionsMenuItemClick(Sender: TObject);
 begin
   if Assigned(OnShowOptions) then OnShowOptions(Self);
 end;
 
-procedure TDesigner.OnSnapToGuideLinesOptionMenuClick(Sender: TObject);
+procedure TDesigner.SnapToGuideLinesOptionMenuClick(Sender: TObject);
 begin
   EnvironmentGuiOpts.SnapToGuideLines := not EnvironmentGuiOpts.SnapToGuideLines;
 end;
 
-procedure TDesigner.OnViewLFMMenuClick(Sender: TObject);
+procedure TDesigner.ViewLFMMenuClick(Sender: TObject);
 begin
   if Assigned(OnViewLFM) then OnViewLFM(Self);
 end;
 
-procedure TDesigner.OnSaveAsXMLMenuClick(Sender: TObject);
+procedure TDesigner.SaveAsXMLMenuClick(Sender: TObject);
 begin
   if Assigned(OnSaveAsXML) then OnSaveAsXML(Self);
 end;
 
-procedure TDesigner.OnCenterFormMenuClick(Sender: TObject);
+procedure TDesigner.CenterFormMenuClick(Sender: TObject);
 var
   NewLeft: Integer;
   NewTop: Integer;
@@ -3387,27 +3387,27 @@ begin
     IDETabMaster.ShowForm(Form);
 end;
 
-procedure TDesigner.OnCopyMenuClick(Sender: TObject);
+procedure TDesigner.CopyMenuClick(Sender: TObject);
 begin
   CopySelection;
 end;
 
-procedure TDesigner.OnCutMenuClick(Sender: TObject);
+procedure TDesigner.CutMenuClick(Sender: TObject);
 begin
   Application.QueueAsyncCall(@CutSelectionAsync, 0);
 end;
 
-procedure TDesigner.OnPasteMenuClick(Sender: TObject);
+procedure TDesigner.PasteMenuClick(Sender: TObject);
 begin
   PasteSelection([cpsfFindUniquePositions]);
 end;
 
-procedure TDesigner.OnAnchorEditorMenuClick(Sender: TObject);
+procedure TDesigner.AnchorEditorMenuClick(Sender: TObject);
 begin
   DoShowAnchorEditor;
 end;
 
-procedure TDesigner.OnTabOrderMenuClick(Sender: TObject);
+procedure TDesigner.TabOrderMenuClick(Sender: TObject);
 begin
   DoShowTabOrderEditor;
 end;
@@ -3812,7 +3812,7 @@ begin
     NewMenuCmd:=RegisterIDEMenuCommand(DesignerMenuSectionComponentEditor,
       'ComponentEditorVerMenuItem' + IntToStr(i),
       AComponentEditor.GetVerb(i),
-      @OnComponentEditorVerbMenuItemClick);
+      @ComponentEditorVerbMenuItemClick);
     if NewMenuCmd.MenuItem<>nil then
       AComponentEditor.PrepareItem(i, NewMenuCmd.MenuItem);
   end;
@@ -3950,47 +3950,47 @@ begin
   {$ENDIF}
   DesignerMenuRoot.MenuItem := FDesignerPopupMenu.Items;
 
-  DesignerMenuAlign.OnClick := @OnAlignPopupMenuClick;
-  DesignerMenuMirrorHorizontal.OnClick := @OnMirrorHorizontalPopupMenuClick;
-  DesignerMenuMirrorVertical.OnClick := @OnMirrorVerticalPopupMenuClick;
-  DesignerMenuScale.OnClick := @OnScalePopupMenuClick;
-  DesignerMenuSize.OnClick := @OnSizePopupMenuClick;
-  DesignerMenuReset.OnClick := @OnResetPopupMenuClick;
+  DesignerMenuAlign.OnClick := @AlignPopupMenuClick;
+  DesignerMenuMirrorHorizontal.OnClick := @MirrorHorizontalPopupMenuClick;
+  DesignerMenuMirrorVertical.OnClick := @MirrorVerticalPopupMenuClick;
+  DesignerMenuScale.OnClick := @ScalePopupMenuClick;
+  DesignerMenuSize.OnClick := @SizePopupMenuClick;
+  DesignerMenuReset.OnClick := @ResetPopupMenuClick;
 
-  DesignerMenuAnchorEditor.OnClick:=@OnAnchorEditorMenuClick;
-  DesignerMenuTabOrder.OnClick:=@OnTabOrderMenuClick;
-    DesignerMenuOrderMoveToFront.OnClick := @OnOrderMoveToFrontMenuClick;
+  DesignerMenuAnchorEditor.OnClick:=@AnchorEditorMenuClick;
+  DesignerMenuTabOrder.OnClick:=@TabOrderMenuClick;
+    DesignerMenuOrderMoveToFront.OnClick := @OrderMoveToFrontMenuClick;
     DesignerMenuOrderMoveToFront.MenuItem.ShortCut :=
                      EditorOpts.KeyMap.CommandToShortCut(ecDesignerMoveToFront);
-    DesignerMenuOrderMoveToBack.OnClick := @OnOrderMoveToBackMenuClick;
+    DesignerMenuOrderMoveToBack.OnClick := @OrderMoveToBackMenuClick;
     DesignerMenuOrderMoveToBack.MenuItem.ShortCut :=
                      EditorOpts.KeyMap.CommandToShortCut(ecDesignerMoveToBack);
-    DesignerMenuOrderForwardOne.OnClick := @OnOrderForwardOneMenuClick;
+    DesignerMenuOrderForwardOne.OnClick := @OrderForwardOneMenuClick;
     DesignerMenuOrderForwardOne.MenuItem.ShortCut :=
                      EditorOpts.KeyMap.CommandToShortCut(ecDesignerForwardOne);
-    DesignerMenuOrderBackOne.OnClick := @OnOrderBackOneMenuClick;
+    DesignerMenuOrderBackOne.OnClick := @OrderBackOneMenuClick;
     DesignerMenuOrderBackOne.MenuItem.ShortCut :=
                      EditorOpts.KeyMap.CommandToShortCut(ecDesignerBackOne);
 
-  DesignerMenuCut.OnClick:=@OnCutMenuClick;
-  DesignerMenuCopy.OnClick:=@OnCopyMenuClick;
-  DesignerMenuPaste.OnClick:=@OnPasteMenuClick;
-  DesignerMenuDeleteSelection.OnClick:=@OnDeleteSelectionMenuClick;
-  DesignerMenuSelectAll.OnClick:=@OnSelectAllMenuClick;
+  DesignerMenuCut.OnClick:=@CutMenuClick;
+  DesignerMenuCopy.OnClick:=@CopyMenuClick;
+  DesignerMenuPaste.OnClick:=@PasteMenuClick;
+  DesignerMenuDeleteSelection.OnClick:=@DeleteSelectionMenuClick;
+  DesignerMenuSelectAll.OnClick:=@SelectAllMenuClick;
 
-  DesignerMenuChangeClass.OnClick:=@OnChangeClassMenuClick;
-  DesignerMenuChangeParent.OnClick:=@OnChangeParentMenuClick;
-  DesignerMenuViewLFM.OnClick:=@OnViewLFMMenuClick;
-  DesignerMenuSaveAsXML.OnClick:=@OnSaveAsXMLMenuClick;
-  DesignerMenuCenterForm.OnClick:=@OnCenterFormMenuClick;
+  DesignerMenuChangeClass.OnClick:=@ChangeClassMenuClick;
+  DesignerMenuChangeParent.OnClick:=@ChangeParentMenuClick;
+  DesignerMenuViewLFM.OnClick:=@ViewLFMMenuClick;
+  DesignerMenuSaveAsXML.OnClick:=@SaveAsXMLMenuClick;
+  DesignerMenuCenterForm.OnClick:=@CenterFormMenuClick;
 
-  DesignerMenuShowNonVisualComponents.OnClick:=@OnShowNonVisualComponentsMenuClick;
+  DesignerMenuShowNonVisualComponents.OnClick:=@ShowNonVisualComponentsMenuClick;
   DesignerMenuShowNonVisualComponents.ShowAlwaysCheckable:=true;
-  DesignerMenuSnapToGridOption.OnClick:=@OnSnapToGridOptionMenuClick;
+  DesignerMenuSnapToGridOption.OnClick:=@SnapToGridOptionMenuClick;
   DesignerMenuSnapToGridOption.ShowAlwaysCheckable:=true;
-  DesignerMenuSnapToGuideLinesOption.OnClick:=@OnSnapToGuideLinesOptionMenuClick;
+  DesignerMenuSnapToGuideLinesOption.OnClick:=@SnapToGuideLinesOptionMenuClick;
   DesignerMenuSnapToGuideLinesOption.ShowAlwaysCheckable:=true;
-  DesignerMenuShowOptions.OnClick:=@OnShowOptionsMenuItemClick;
+  DesignerMenuShowOptions.OnClick:=@ShowOptionsMenuItemClick;
 end;
 
 procedure TDesigner.DesignerPopupMenuPopup(Sender: TObject);
@@ -4078,7 +4078,7 @@ begin
   DesignerMenuSnapToGuideLinesOption.Checked := EnvironmentGuiOpts.SnapToGuideLines;
 end;
 
-procedure TDesigner.OnAlignPopupMenuClick(Sender: TObject);
+procedure TDesigner.AlignPopupMenuClick(Sender: TObject);
 var
   HorizAlignment, VertAlignment: TComponentAlignment;
   HorizAlignID, VertAlignID: integer;
@@ -4110,19 +4110,19 @@ begin
   end;
 end;
 
-procedure TDesigner.OnMirrorHorizontalPopupMenuClick(Sender: TObject);
+procedure TDesigner.MirrorHorizontalPopupMenuClick(Sender: TObject);
 begin
   Selection.MirrorHorizontal;
   Modified;
 end;
 
-procedure TDesigner.OnMirrorVerticalPopupMenuClick(Sender: TObject);
+procedure TDesigner.MirrorVerticalPopupMenuClick(Sender: TObject);
 begin
   Selection.MirrorVertical;
   Modified;
 end;
 
-procedure TDesigner.OnScalePopupMenuClick(Sender: TObject);
+procedure TDesigner.ScalePopupMenuClick(Sender: TObject);
 var
   ScaleInPercent: integer;
 begin
@@ -4133,7 +4133,7 @@ begin
   end;
 end;
 
-procedure TDesigner.OnSizePopupMenuClick(Sender: TObject);
+procedure TDesigner.SizePopupMenuClick(Sender: TObject);
 var
   HorizSizing, VertSizing: TComponentSizing;
   HorizSizingID, VertSizingID: integer;
@@ -4158,7 +4158,7 @@ begin
   end;
 end;
 
-procedure TDesigner.OnResetPopupMenuClick(Sender: TObject);
+procedure TDesigner.ResetPopupMenuClick(Sender: TObject);
 var
   ResetComps: TFPList;
   HasChanged: Boolean;
@@ -4228,22 +4228,22 @@ begin
   end;
 end;
 
-procedure TDesigner.OnOrderMoveToFrontMenuClick(Sender: TObject);
+procedure TDesigner.OrderMoveToFrontMenuClick(Sender: TObject);
 begin
   DoChangeZOrder(0);
 end;
 
-procedure TDesigner.OnOrderMoveToBackMenuClick(Sender: TObject);
+procedure TDesigner.OrderMoveToBackMenuClick(Sender: TObject);
 begin
   DoChangeZOrder(1);
 end;
 
-procedure TDesigner.OnOrderForwardOneMenuClick(Sender: TObject);
+procedure TDesigner.OrderForwardOneMenuClick(Sender: TObject);
 begin
   DoChangeZOrder(2);
 end;
 
-procedure TDesigner.OnOrderBackOneMenuClick(Sender: TObject);
+procedure TDesigner.OrderBackOneMenuClick(Sender: TObject);
 begin
   DoChangeZOrder(3);
 end;

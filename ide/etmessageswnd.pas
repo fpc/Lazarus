@@ -50,8 +50,8 @@ type
     MessagesFrame1: TMessagesFrame;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure OnMsgCtrlOptsChanged(Sender: TObject);
-    function OnOpenMessage(Sender: TObject; Msg: TMessageLine): boolean;
+    procedure MsgCtrlOptsChanged(Sender: TObject);
+    function OpenMessage(Sender: TObject; Msg: TMessageLine): boolean;
   private
     function GetDblClickJumps: boolean;
     function GetShowMessagesIcons: boolean;
@@ -113,8 +113,8 @@ begin
   except
   end;
   {$ENDIF}
-  MessagesFrame1.MessagesCtrl.OnOpenMessage:=@OnOpenMessage;
-  MessagesFrame1.MessagesCtrl.OnOptionsChanged:=@OnMsgCtrlOptsChanged;
+  MessagesFrame1.MessagesCtrl.OnOpenMessage:=@OpenMessage;
+  MessagesFrame1.MessagesCtrl.OnOptionsChanged:=@MsgCtrlOptsChanged;
 
   ActiveControl:=MessagesFrame1.MessagesCtrl;
 end;
@@ -124,7 +124,7 @@ begin
   IDEMessagesWindow:=nil;
 end;
 
-procedure TMessagesView.OnMsgCtrlOptsChanged(Sender: TObject);
+procedure TMessagesView.MsgCtrlOptsChanged(Sender: TObject);
 begin
   if mcoWndStayOnTop in MessagesFrame1.MessagesCtrl.Options then
     FormStyle:=fsStayOnTop
@@ -132,7 +132,7 @@ begin
     FormStyle:=fsNormal;
 end;
 
-function TMessagesView.OnOpenMessage(Sender: TObject; Msg: TMessageLine): boolean;
+function TMessagesView.OpenMessage(Sender: TObject; Msg: TMessageLine): boolean;
 begin
   Result:=false;
   // ask quickfixes
@@ -280,7 +280,7 @@ end;
 procedure TMessagesView.ApplyIDEOptions;
 begin
   MessagesFrame1.ApplyIDEOptions;
-  OnMsgCtrlOptsChanged(Self);
+  MsgCtrlOptsChanged(Self);
 end;
 
 function TMessagesView.GetDblClickJumps: boolean;

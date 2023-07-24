@@ -62,8 +62,6 @@ type
     Panel2: TPANEL;
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormShow(Sender: TObject);
-    procedure OnAddMatch(const Filename: string; const StartPos, EndPos: TPoint;
-                         const Lines: string);
     procedure SearchFormCREATE(Sender: TObject);
     procedure SearchFormDESTROY(Sender: TObject);
     procedure btnAbortCLICK(Sender: TObject);
@@ -92,6 +90,8 @@ type
     fAborting: boolean;
     fLastUpdateProgress: DWORD;
     fWasActive: boolean;
+    procedure AddMatchHandler(const Filename: string; const StartPos, EndPos: TPoint;
+                              const Lines: string);
     procedure DoFindInFiles(ADirectories: string);
     procedure DoFindInSearchList;
     procedure SetResultsList(const AValue: TStrings);
@@ -692,7 +692,7 @@ begin
   btnCancel.Caption:=lisCancel;
 
   fProgress:=TIDESearchInTextProgress.Create;
-  FProgress.OnAddMatch:=@OnAddMatch;
+  FProgress.OnAddMatch:=@AddMatchHandler;
 
   fFlags:=[];
   fPromptOnReplace:=true;
@@ -708,7 +708,7 @@ begin
   fWasActive:= false;
 end;
 
-procedure TSearchProgressForm.OnAddMatch(const Filename: string; const StartPos,
+procedure TSearchProgressForm.AddMatchHandler(const Filename: string; const StartPos,
   EndPos: TPoint; const Lines: string);
 var
   MatchLen: Integer;

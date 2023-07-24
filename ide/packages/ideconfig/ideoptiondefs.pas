@@ -207,7 +207,7 @@ type
     fFilters: TFPList; // list of TLMsgViewFilter
     FOnChanged: TNotifyEvent;
     function GetFilters(Index: integer): TLMsgViewFilter;
-    procedure OnFilterChanged(Sender: TObject);
+    procedure FilterChanged(Sender: TObject);
     procedure SetActiveFilter(AValue: TLMsgViewFilter);
   public
     constructor Create(AOwner: TComponent); override;
@@ -382,7 +382,7 @@ begin
   Result:=TLMsgViewFilter(fFilters[Index]);
 end;
 
-procedure TLMsgViewFilters.OnFilterChanged(Sender: TObject);
+procedure TLMsgViewFilters.FilterChanged(Sender: TObject);
 begin
   if csDestroying in ComponentState then exit;
   if Assigned(OnChanged) then
@@ -400,7 +400,7 @@ begin
     FActiveFilter.Assign(AValue);
   end else
     FActiveFilter:=AValue;
-  OnFilterChanged(AValue);
+  FilterChanged(AValue);
 end;
 
 constructor TLMsgViewFilters.Create(AOwner: TComponent);
@@ -409,7 +409,7 @@ begin
   fFilters:=TFPList.Create;
   FActiveFilter:=TLMsgViewFilter.Create;
   FActiveFilter.Caption:='Default';
-  FActiveFilter.OnChanged:=@OnFilterChanged;
+  FActiveFilter.OnChanged:=@FilterChanged;
   fFilters.Add(FActiveFilter);
 end;
 
@@ -444,7 +444,7 @@ begin
     exit(nil);
   Result:=TLMsgViewFilter.Create;
   Result.Caption:=aCaption;
-  Result.OnChanged:=@OnFilterChanged;
+  Result.OnChanged:=@FilterChanged;
   Add(Result);
 end;
 
@@ -461,15 +461,15 @@ begin
     if ActiveFilter=Filter then
       FActiveFilter:=Filters[0];
     Filter.Free;
-    OnFilterChanged(Self);
+    FilterChanged(Self);
   end;
 end;
 
 function TLMsgViewFilters.Add(Filter: TLMsgViewFilter): integer;
 begin
-  Filter.OnChanged:=@OnFilterChanged;
+  Filter.OnChanged:=@FilterChanged;
   Result:=fFilters.Add(Filter);
-  OnFilterChanged(Self);
+  FilterChanged(Self);
 end;
 
 procedure TLMsgViewFilters.LoadFromXMLConfig(XMLConfig: TXMLConfig;

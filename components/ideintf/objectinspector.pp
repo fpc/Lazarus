@@ -421,7 +421,7 @@ type
           ARect: TRect; State: TOwnerDrawState);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure SetIdleEvent(Enable: boolean);
-    procedure OnGridMouseWheel(Sender: TObject; {%H-}Shift: TShiftState;
+    procedure GridMouseWheel(Sender: TObject; {%H-}Shift: TShiftState;
       WheelDelta: Integer; {%H-}MousePos: TPoint; var Handled: Boolean);
 
     procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
@@ -1075,7 +1075,7 @@ begin
     OnKeyDown:=@ValueEditKeyDown;
     OnKeyUp:=@ValueEditKeyUp;
     OnMouseUp:=@ValueEditMouseUp;
-    OnMouseWheel:=@OnGridMouseWheel;
+    OnMouseWheel:=@GridMouseWheel;
   end;
 
   ValueComboBox:=TComboBox.Create(Self);
@@ -1105,7 +1105,7 @@ begin
     OnCloseUp:=@ValueComboBoxCloseUp;
     OnMeasureItem:=@ValueComboBoxMeasureItem;
     OnDrawItem:=@ValueComboBoxDrawItem;
-    OnMouseWheel:=@OnGridMouseWheel;
+    OnMouseWheel:=@GridMouseWheel;
   end;
 
   ValueCheckBox:={$IFnDEF UseOINormalCheckBox} TCheckBoxThemed.Create(Self); {$ELSE} TCheckBox.Create(Self); {$ENDIF}
@@ -1127,7 +1127,7 @@ begin
     OnKeyDown:=@ValueCheckBoxKeyDown;
     OnKeyUp:=@ValueCheckBoxKeyUp;
     OnClick:=@ValueCheckBoxClick;
-    OnMouseWheel:=@OnGridMouseWheel;
+    OnMouseWheel:=@GridMouseWheel;
   end;
 
   ValueButton:=TSpeedButton.Create(Self);
@@ -1141,7 +1141,7 @@ begin
     Caption := '...';
     SetBounds(0,-30,Width,Height); // hidden
     Parent:=Self;
-    OnMouseWheel:=@OnGridMouseWheel;
+    OnMouseWheel:=@GridMouseWheel;
   end;
 
   FHintManager := THintWindowManager.Create;
@@ -1313,11 +1313,11 @@ var
   H: Boolean;
 begin
   H := False;
-  OnGridMouseWheel(Self, Shift, WheelDelta, MousePos, H);
+  GridMouseWheel(Self, Shift, WheelDelta, MousePos, H);
   Result:=true;
 end;
 
-procedure TOICustomPropertyGrid.OnGridMouseWheel(Sender: TObject; Shift: TShiftState;
+procedure TOICustomPropertyGrid.GridMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
 begin
   if Mouse.WheelScrollLines=-1 then
@@ -5586,7 +5586,7 @@ procedure TObjectInspectorDlg.CreateNoteBook;
       OnOIKeyDown := @GridKeyDown;
       OnKeyUp := @GridKeyUp;
       OnDblClick := @GridDblClick;
-      OnMouseWheel := @OnGridMouseWheel;
+      OnMouseWheel := @GridMouseWheel;
 
       Parent := NoteBook.Page[ANotebookPage];
     end;

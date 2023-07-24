@@ -68,7 +68,7 @@ type
     fPaintTop: integer; // only valid if FPaintStamp=Control.FPaintStamp
     FPendingChanges: TETMultiSrcChanges;
     procedure SetFilter(AValue: TLMsgViewFilter);
-    procedure OnMarksFixed(ListOfTMessageLine: TFPList); // (main thread) called after mlfFixed was added to these messages
+    procedure MarksFixed(ListOfTMessageLine: TFPList); // (main thread) called after mlfFixed was added to these messages
     procedure CallOnChangedInMainThread({%H-}Data: PtrInt); // (main thread)
     function AsHintString(const aHintLastLine: integer): string;
   protected
@@ -184,7 +184,7 @@ type
     function GetSelectedLine: integer;
     function GetUrgencyStyles(Urgency: TMessageLineUrgency): TMsgCtrlUrgencyStyle;
     function GetViews(Index: integer): TLMsgWndView;
-    procedure OnViewChanged(Sender: TObject); // (main thread)
+    procedure ViewChanged(Sender: TObject); // (main thread)
     procedure MsgCtrlMouseMove(Sender: TObject; {%H-}Shift: TShiftState; {%H-}X,Y: Integer);
     procedure MsgUpdateTimerTimer(Sender: TObject);
     procedure SetActiveFilter(AValue: TLMsgViewFilter); inline;
@@ -212,7 +212,7 @@ type
     procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
     procedure ImageListChange(Sender: TObject);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
-    procedure OnFilterChanged(Sender: TObject);
+    procedure FilterChanged(Sender: TObject);
     function GetPageScroll: integer;
   protected
     FViews: TFPList;// list of TMessagesViewMap
@@ -328,6 +328,14 @@ type
     SearchNextSpeedButton: TSpeedButton;
     SearchPanel: TPanel;
     SearchPrevSpeedButton: TSpeedButton;
+    procedure HideSearchSpeedButtonClick(Sender: TObject);
+    procedure MsgCtrlPopupMenuPopup(Sender: TObject);
+    procedure SearchEditChange(Sender: TObject);
+    procedure SearchEditKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
+    procedure SearchNextSpeedButtonClick(Sender: TObject);
+    procedure SearchPrevSpeedButtonClick(Sender: TObject);
+  private
+    // Event handlers
     procedure AboutToolMenuItemClick(Sender: TObject);
     procedure AddFilterMenuItemClick(Sender: TObject);
     procedure ClearFilterMsgTypesMenuItemClick(Sender: TObject);
@@ -343,19 +351,12 @@ type
     procedure FilterHintsWithoutPosMenuItemClick(Sender: TObject);
     procedure FilterMsgOfTypeMenuItemClick(Sender: TObject);
     procedure FilterUrgencyMenuItemClick(Sender: TObject);
-    procedure HideSearchSpeedButtonClick(Sender: TObject);
     procedure MoreOptionsMenuItemClick(Sender: TObject);
-    procedure MsgCtrlPopupMenuPopup(Sender: TObject);
-    procedure OnSelectFilterClick(Sender: TObject);
+    procedure SelectFilterClick(Sender: TObject);
     procedure OpenToolsOptionsMenuItemClick(Sender: TObject);
     procedure RemoveCompOptHideMsgClick(Sender: TObject);
     procedure SaveAllToFileMenuItemClick(Sender: TObject);
     procedure SaveShownToFileMenuItemClick(Sender: TObject);
-    procedure SearchEditChange(Sender: TObject);
-    procedure SearchEditKeyDown(Sender: TObject; var Key: Word;
-      {%H-}Shift: TShiftState);
-    procedure SearchNextSpeedButtonClick(Sender: TObject);
-    procedure SearchPrevSpeedButtonClick(Sender: TObject);
     procedure ShowIDMenuItemClick(Sender: TObject);
     procedure SrcEditLinesChanged(Sender: TObject);
     procedure TranslateMenuItemClick(Sender: TObject);
@@ -580,7 +581,7 @@ end;
 
 { TLMsgWndView }
 
-procedure TLMsgWndView.OnMarksFixed(ListOfTMessageLine: TFPList);
+procedure TLMsgWndView.MarksFixed(ListOfTMessageLine: TFPList);
 var
   i: Integer;
   ViewLine: TMessageLine;
@@ -798,7 +799,7 @@ constructor TLMsgWndView.Create(AOwner: TComponent);
 begin
   fMessageLineClass:=TLMsgViewLine;
   inherited Create(AOwner);
-  Lines.OnMarksFixed:=@OnMarksFixed;
+  Lines.OnMarksFixed:=@MarksFixed;
   FFilter:=TLMsgViewFilter.Create;
   fPendingChanges:=TETMultiSrcChanges.Create(nil);
 end;
@@ -1091,7 +1092,7 @@ begin
   Result:=TLMsgWndView(FViews[Index]);
 end;
 
-procedure TMessagesCtrl.OnViewChanged(Sender: TObject);
+procedure TMessagesCtrl.ViewChanged(Sender: TObject);
 var
   AllViewsStopped: Boolean;
   i: Integer;
@@ -1459,7 +1460,7 @@ begin
   IdleConnected:=false;
 end;
 
-procedure TMessagesCtrl.OnFilterChanged(Sender: TObject);
+procedure TMessagesCtrl.FilterChanged(Sender: TObject);
 begin
   IdleConnected:=true;
 end;
@@ -2532,7 +2533,7 @@ begin
   inherited Create(AOwner);
   ControlStyle:=ControlStyle-[csCaptureMouse]+[csReflector];
   FOptions:=MCDefaultOptions;
-  Filters.OnChanged:=@OnFilterChanged;
+  Filters.OnChanged:=@FilterChanged;
   FActiveFilter:=Filters[0];
   FViews:=TFPList.Create;
   FSelectedLines:=TIntegerList.Create;
@@ -2680,7 +2681,7 @@ begin
   Result.Filter.Assign(ActiveFilter);
   FViews.Add(Result);
   FreeNotification(Result);
-  Result.OnChanged:=@OnViewChanged;
+  Result.OnChanged:=@ViewChanged;
   fSomeViewsRunning:=true;
 end;
 
@@ -2884,7 +2885,7 @@ procedure TMessagesFrame.MsgCtrlPopupMenuPopup(Sender: TObject);
       if i>=MsgSelectFilterMenuSection.Count then begin
         Item:=RegisterIDEMenuCommand(MsgSelectFilterMenuSection,'MsgSelectFilter'+IntToStr(i),'');
         Item.Tag:=i;
-        Item.OnClick:=@OnSelectFilterClick;
+        Item.OnClick:=@SelectFilterClick;
       end else
         Item:=MsgSelectFilterMenuSection[i] as TIDEMenuCommand;
       Item.Caption:=Filter.Caption;
@@ -3067,7 +3068,7 @@ begin
   end;
 end;
 
-procedure TMessagesFrame.OnSelectFilterClick(Sender: TObject);
+procedure TMessagesFrame.SelectFilterClick(Sender: TObject);
 var
   Filter: TLMsgViewFilter;
   Item: TIDEMenuCommand;

@@ -192,7 +192,7 @@ type
     procedure LazInstancesStartNewInstance(const aFiles: TStrings;
       var Result: TStartNewInstanceResult; var outSourceWindowHandle: HWND);
     procedure LazInstancesGetOpenedProjectFileName(var outProjectFileName: string);
-    procedure OnHintWatchValidityChanged(Sender: TObject);
+    procedure HintWatchValidityChanged(Sender: TObject);
     procedure DlgDebugInfoHelpRequested(Sender: TObject; AModalResult: TModalResult; var ACanClose: Boolean);
 
   public
@@ -733,14 +733,14 @@ type
     procedure ReloadMenuShortCuts;
 
     // methods for creating a project
-    procedure OnLoadProjectInfoFromXMLConfig(TheProject: TProject;
-                                             XMLConfig: TXMLConfig; Merge: boolean);
-    procedure OnLoadSaveCustomData(Sender: TObject; Load: boolean;
+    procedure LoadProjectInfoFromXMLConfig(TheProject: TProject;
+                                           XMLConfig: TXMLConfig; Merge: boolean);
+    procedure LoadSaveCustomData(Sender: TObject; Load: boolean;
       Data: TStringToStringTree; PathDelimChanged: boolean);
-    procedure OnSaveProjectInfoToXMLConfig(TheProject: TProject;
+    procedure SaveProjectInfoToXMLConfig(TheProject: TProject;
                          XMLConfig: TXMLConfig; WriteFlags: TProjectWriteFlags);
-    procedure OnProjectChangeInfoFile(TheProject: TProject);
-    procedure OnSaveProjectUnitSessionInfo(AUnitInfo: TUnitInfo);
+    procedure ProjectChangeInfoFile(TheProject: TProject);
+    procedure SaveProjectUnitSessionInfo(AUnitInfo: TUnitInfo);
   public
     class procedure ParseCmdLineOptions;
 
@@ -5683,7 +5683,7 @@ begin
     MainIDEBar.itmFileSaveAll.Enabled := MainIDEBar.itmProjectSave.Enabled;
 end;
 
-procedure TMainIDE.OnSaveProjectUnitSessionInfo(AUnitInfo: TUnitInfo);
+procedure TMainIDE.SaveProjectUnitSessionInfo(AUnitInfo: TUnitInfo);
 
   function GetWindowState(ACustomForm: TCustomForm): TWindowState;
   begin
@@ -5706,7 +5706,7 @@ begin
   end;
 end;
 
-procedure TMainIDE.OnLoadProjectInfoFromXMLConfig(TheProject: TProject;
+procedure TMainIDE.LoadProjectInfoFromXMLConfig(TheProject: TProject;
   XMLConfig: TXMLConfig; Merge: boolean);
 begin
   if TheProject<>Project1 then exit;
@@ -5714,7 +5714,7 @@ begin
   EditorMacroListViewer.LoadProjectSpecificInfo(XMLConfig);
 end;
 
-procedure TMainIDE.OnLoadSaveCustomData(Sender: TObject; Load: boolean;
+procedure TMainIDE.LoadSaveCustomData(Sender: TObject; Load: boolean;
   Data: TStringToStringTree; PathDelimChanged: boolean);
 var
   Handler: TMethodList;
@@ -5726,7 +5726,7 @@ begin
     TLazLoadSaveCustomDataEvent(Handler[i])(Sender,Load,Data,PathDelimChanged);
 end;
 
-procedure TMainIDE.OnSaveProjectInfoToXMLConfig(TheProject: TProject;
+procedure TMainIDE.SaveProjectInfoToXMLConfig(TheProject: TProject;
   XMLConfig: TXMLConfig; WriteFlags: TProjectWriteFlags);
 begin
   if TheProject<>Project1 then exit;
@@ -5735,7 +5735,7 @@ begin
   EditorMacroListViewer.SaveProjectSpecificInfo(XMLConfig, WriteFlags);
 end;
 
-procedure TMainIDE.OnProjectChangeInfoFile(TheProject: TProject);
+procedure TMainIDE.ProjectChangeInfoFile(TheProject: TProject);
 begin
   if (Project1=nil) or (TheProject<>Project1) then exit;
   if Project1.IsVirtual then
@@ -6387,11 +6387,11 @@ begin
   DebugBossMgr.ProjectLink.Project:=Result;
   Result.MainProject:=true;
   Result.OnFileBackup:=@MainBuildBoss.BackupFileForWrite;
-  Result.OnLoadProjectInfo:=@OnLoadProjectInfoFromXMLConfig;
-  Result.OnLoadSafeCustomData:=@OnLoadSaveCustomData;
-  Result.OnSaveProjectInfo:=@OnSaveProjectInfoToXMLConfig;
-  Result.OnSaveUnitSessionInfo:=@OnSaveProjectUnitSessionInfo;
-  Result.OnChangeProjectInfoFile:=@OnProjectChangeInfoFile;
+  Result.OnLoadProjectInfo:=@LoadProjectInfoFromXMLConfig;
+  Result.OnLoadSafeCustomData:=@LoadSaveCustomData;
+  Result.OnSaveProjectInfo:=@SaveProjectInfoToXMLConfig;
+  Result.OnSaveUnitSessionInfo:=@SaveProjectUnitSessionInfo;
+  Result.OnChangeProjectInfoFile:=@ProjectChangeInfoFile;
   Result.IDEOptions.OnBeforeRead:=@ProjectOptionsBeforeRead;
   Result.IDEOptions.OnAfterWrite:=@ProjectOptionsAfterWrite;
 end;
@@ -11524,7 +11524,7 @@ begin
     CodeExplorerView.CurrentCodeBufferChanged;
 end;
 
-procedure TMainIDE.OnHintWatchValidityChanged(Sender: TObject);
+procedure TMainIDE.HintWatchValidityChanged(Sender: TObject);
 var
   p: SizeInt;
   WatchPrinter: TWatchResultPrinter;
@@ -11686,9 +11686,9 @@ begin
       if CStack <> nil then
         st := CStack.CurrentIndex;
       FHintWatchData.WatchValue := aWatch.Values[tid, st] as TCurrentWatchValue;
-      FHintWatchData.WatchValue.OnValidityChanged := @OnHintWatchValidityChanged;
+      FHintWatchData.WatchValue.OnValidityChanged := @HintWatchValidityChanged;
       FHintWatchData.WatchValue.Value;
-      OnHintWatchValidityChanged(FHintWatchData.WatchValue);
+      HintWatchValidityChanged(FHintWatchData.WatchValue);
       exit;
     end;
   end;

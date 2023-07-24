@@ -486,8 +486,8 @@ procedure ShortCutToKey(const ShortCut : TShortCut; out Key: Word;
                         out Shift : TShiftState);
 
 var
-  DesignerMenuItemClick: TNotifyEvent = nil;
   ActivePopupMenu: TPopupMenu = nil;
+  OnDesignerMenuItemClick: TNotifyEvent = nil;
   OnMenuPopupHandler: TNotifyEvent = nil;
 
 function NewMenu(Owner: TComponent; const AName: string;

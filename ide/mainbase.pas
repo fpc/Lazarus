@@ -103,6 +103,7 @@ type
   private
     FWindowMenuActiveForm: TCustomForm;
     FDisplayState: TDisplayState;
+    function CodeToolBossCheckAbort: boolean;
     procedure SetDisplayState(AValue: TDisplayState);
     procedure UpdateWindowMenu;
   protected
@@ -165,7 +166,6 @@ type
                            out ActiveUnitInfo: TUnitInfo;
                            Flags: TCodeToolsFlags): boolean;
     procedure ActivateCodeToolAbortableMode;
-    function OnCodeToolBossCheckAbort: boolean;
     procedure DoShowDesignerFormOfCurrentSrc(AComponentPaletteClassSelected: Boolean); virtual; abstract;
     function CreateDesignerForComponent(AnUnitInfo: TUnitInfo;
                         AComponent: TComponent): TCustomForm; virtual; abstract;
@@ -756,11 +756,11 @@ begin
   if ToolStatus=itNone then
     RaiseGDBException('TMainIDEBase.ActivateCodeToolAbortableMode Error 1');
   ToolStatus:=itCodeTools;
-  CodeToolBoss.OnCheckAbort:=@OnCodeToolBossCheckAbort;
+  CodeToolBoss.OnCheckAbort:=@CodeToolBossCheckAbort;
   CodeToolBoss.Abortable:=true;
 end;
 
-function TMainIDEBase.OnCodeToolBossCheckAbort: boolean;
+function TMainIDEBase.CodeToolBossCheckAbort: boolean;
 begin
   Result:=true;
   if ToolStatus<>itCodeTools then exit;

@@ -89,8 +89,8 @@ type
     procedure GridSelection(Sender: TObject; {%H-}aCol, {%H-}aRow: Integer);
     procedure GridSetEditText(Sender: TObject; ACol, ARow: Integer; const Value: string);
     procedure GridShowHint(Sender: TObject; HintInfo: PHintInfo);
-    procedure OnAddMacroMenuItemClick(Sender: TObject);
-    procedure OnAddLCLWidgetTypeClick(Sender: TObject);
+    procedure AddMacroMenuItemClick(Sender: TObject);
+    procedure AddLCLWidgetTypeClick(Sender: TObject);
     procedure BMMSystemEncodingButtonClick(Sender: TObject);
   private
     FDialog: TAbstractOptionsEditorDialog;
@@ -487,7 +487,7 @@ begin
   HintInfo^.HintStr:=h;
 end;
 
-procedure TCompOptModeMatrixFrame.OnAddMacroMenuItemClick(Sender: TObject);
+procedure TCompOptModeMatrixFrame.AddMacroMenuItemClick(Sender: TObject);
 var
   ValueMenuItem: TMenuItem;
   MacroMenuItem: TMenuItem;
@@ -501,7 +501,7 @@ begin
   CreateNewOption(BuildMatrixOptionTypeCaption(bmotIDEMacro),MacroName+':='+Value);
 end;
 
-procedure TCompOptModeMatrixFrame.OnAddLCLWidgetTypeClick(Sender: TObject);
+procedure TCompOptModeMatrixFrame.AddLCLWidgetTypeClick(Sender: TObject);
 var
   TargetFrame: TCompilerConfigTargetFrame;
   ValueMenuItem: TMenuItem;
@@ -615,7 +615,7 @@ begin
         ParentMenu.Items.Add(TMenuItem.Create(Self));
       ValueMI:=ParentMenu.Items[i];
       ValueMI.Caption:=Format(fCaptionPatternMacroValue,[DirNameToDisplayName(Mcr.Values[i])]);
-      ValueMI.OnClick:=@OnAddLCLWidgetTypeClick;
+      ValueMI.OnClick:=@AddLCLWidgetTypeClick;
     end;
   end;
 end;
@@ -631,7 +631,7 @@ begin
         ParentMI.Add(TMenuItem.Create(Self));
       ValueMI:=ParentMI.Items[i];
       ValueMI.Caption:=Format(fCaptionPatternMacroValue,[Mcr.Values[i]]);
-      ValueMI.OnClick:=@OnAddMacroMenuItemClick;
+      ValueMI.OnClick:=@AddMacroMenuItemClick;
     end;
   end;
 end;

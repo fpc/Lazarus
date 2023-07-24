@@ -169,8 +169,8 @@ type
     procedure ApplyCurrentScheme;
     procedure UpdateCurrentScheme;
 
-    procedure OnStatusChange(Sender: TObject; {%H-}Changes: TSynStatusChanges);
-    procedure OnSpecialLineMarkup(Sender: TObject; Line: Integer;
+    procedure StatusChange(Sender: TObject; {%H-}Changes: TSynStatusChanges);
+    procedure SpecialLineMarkup(Sender: TObject; Line: Integer;
       var Special: boolean; aMarkup: TSynSelectedColor);
 
     function GeneralPage: TEditorGeneralOptionsFrame;
@@ -1554,8 +1554,8 @@ begin
   with GeneralPage do
     for i := Low(PreviewEdits) to High(PreviewEdits) do
     begin
-      PreviewEdits[i].OnStatusChange := @OnStatusChange;
-      PreviewEdits[i].OnSpecialLineMarkup := @OnSpecialLineMarkup;
+      PreviewEdits[i].OnStatusChange := @StatusChange;
+      PreviewEdits[i].OnSpecialLineMarkup := @SpecialLineMarkup;
     end;
 
   with AOptions as TEditorOptions do
@@ -1696,7 +1696,7 @@ begin
   FFileExtensions.Values[LanguageName] := FileExtensions;
 end;
 
-procedure TEditorColorOptionsFrame.OnSpecialLineMarkup(Sender: TObject;
+procedure TEditorColorOptionsFrame.SpecialLineMarkup(Sender: TObject;
   Line: Integer; var Special: boolean; aMarkup: TSynSelectedColor);
 var
   e: TColorSchemeAttribute;
@@ -1714,7 +1714,7 @@ begin
   end;
 end;
 
-procedure TEditorColorOptionsFrame.OnStatusChange(Sender : TObject; Changes : TSynStatusChanges);
+procedure TEditorColorOptionsFrame.StatusChange(Sender : TObject; Changes : TSynStatusChanges);
 var
   Syn: TSynEdit;
   p: TPoint;

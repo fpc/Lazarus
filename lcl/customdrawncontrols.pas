@@ -310,7 +310,7 @@ type
     FItems: TStrings;
     FKeyboardInputBehavior: TKeyboardInputBehavior;
     function GetItems: TStrings;
-    procedure OnShowSelectItemDialogResult(ASelectedItem: Integer);
+    procedure ShowSelectItemDialogResult(ASelectedItem: Integer);
     procedure SetItemIndex(AValue: Integer);
     procedure SetItems(AValue: TStrings);
     procedure SetKeyboardInputBehavior(AValue: TKeyboardInputBehavior);
@@ -977,7 +977,7 @@ begin
   Result := FItems;
 end;
 
-procedure TCDComboBox.OnShowSelectItemDialogResult(ASelectedItem: Integer);
+procedure TCDComboBox.ShowSelectItemDialogResult(ASelectedItem: Integer);
 begin
   SetItemIndex(ASelectedItem);
 end;
@@ -1050,7 +1050,7 @@ begin
     if (X > Width - Height) then
     begin
       // Call the combobox dialog
-      LCLIntf.OnShowSelectItemDialogResult := @OnShowSelectItemDialogResult;
+      LCLIntf.OnShowSelectItemDialogResult := @ShowSelectItemDialogResult;
       LCLIntf.ShowSelectItemDialog(FItems, Self.ClientToScreen(Point(Left, Top+Height)));
 
       Exit;

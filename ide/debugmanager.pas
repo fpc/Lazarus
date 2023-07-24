@@ -108,7 +108,7 @@ type
   private
     FAsmWindowShouldAutoClose: Boolean;
     procedure BreakAutoContinueTimer(Sender: TObject);
-    procedure OnRunTimer(Sender: TObject);
+    procedure RunTimer(Sender: TObject);
     // Menu events
     procedure mnuViewDebugDialogClick(Sender: TObject);
     procedure mnuResetDebuggerClicked(Sender: TObject);
@@ -1173,7 +1173,7 @@ begin
   FDebugger.Run;
 end;
 
-procedure TDebugManager.OnRunTimer(Sender: TObject);
+procedure TDebugManager.RunTimer(Sender: TObject);
 begin
   FRunTimer.Enabled:=false;
   if dmsWaitForRun in FManagerStates then
@@ -2061,7 +2061,7 @@ begin
   FAutoContinueTimer.OnTimer := @BreakAutoContinueTimer;
   FRunTimer := TTimer.Create(Self);
   FRunTimer.Interval := 1;
-  FRunTimer.OnTimer := @OnRunTimer;
+  FRunTimer.OnTimer := @RunTimer;
 
   FWatches.OnModified  := @DoProjectModified;
 

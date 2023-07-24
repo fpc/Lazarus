@@ -234,7 +234,7 @@ type
     procedure SetMaxUndo(AValue: integer);
     procedure ToggleModeValue(aCol, aRow: integer);
     procedure PopupTypes(aRow: integer);
-    procedure OnTypePopupMenuClick(Sender: TObject);
+    procedure TypePopupMenuClick(Sender: TObject);
   protected
     function EditingAllowed(ACol: Integer=-1): Boolean; override;
     function GetCells(ACol, ARow: Integer): string; override;
@@ -1038,7 +1038,7 @@ begin
       fTypePopupMenu.Items.Add(TMenuItem.Create(Self));
     Item:=fTypePopupMenu.Items[i];
     Item.Caption:=TypeColumn.PickList.Names[i]+': '+TypeColumn.PickList.ValueFromIndex[i];
-    Item.OnClick:=@OnTypePopupMenuClick;
+    Item.OnClick:=@TypePopupMenuClick;
   end;
   // delete not needed items
   while fTypePopupMenu.Items.Count>TypeColumn.PickList.Count do
@@ -1053,7 +1053,7 @@ begin
   fTypePopupMenu.PopUp(XY.X,XY.Y);
 end;
 
-procedure TGroupedMatrixControl.OnTypePopupMenuClick(Sender: TObject);
+procedure TGroupedMatrixControl.TypePopupMenuClick(Sender: TObject);
 var
   Item: TMenuItem;
   ValueRow: TGroupedMatrixValue;

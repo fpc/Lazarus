@@ -143,17 +143,17 @@ type
     procedure ccComplete(var Value: string; SourceValue: string;
                          var SourceStart, SourceEnd: TPoint;
                          KeyChar: TUTF8Char; Shift: TShiftState);
-    function OnSynCompletionPaintItem(const AKey: string; ACanvas: TCanvas;
+    function SynCompletionPaintItem(const AKey: string; ACanvas: TCanvas;
                  X, Y: integer; ItemSelected: boolean; Index: integer): boolean;
-    function OnSynCompletionMeasureItem(const AKey: string; ACanvas: TCanvas;
+    function SynCompletionMeasureItem(const AKey: string; ACanvas: TCanvas;
                                  ItemSelected: boolean; Index: integer): TPoint;
-    procedure OnSynCompletionSearchPosition(var APosition: integer);
-    procedure OnSynCompletionCompletePrefix(Sender: TObject);
-    procedure OnSynCompletionNextChar(Sender: TObject);
-    procedure OnSynCompletionPrevChar(Sender: TObject);
-    procedure OnSynCompletionKeyPress(Sender: TObject; var Key: Char);
-    procedure OnSynCompletionUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
-    procedure OnSynCompletionPositionChanged(Sender: TObject);
+    procedure SynCompletionSearchPosition(var APosition: integer);
+    procedure SynCompletionCompletePrefix(Sender: TObject);
+    procedure SynCompletionNextChar(Sender: TObject);
+    procedure SynCompletionPrevChar(Sender: TObject);
+    procedure SynCompletionKeyPress(Sender: TObject; var Key: Char);
+    procedure SynCompletionUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
+    procedure SynCompletionPositionChanged(Sender: TObject);
 
     function InitIdentCompletionValues(S: TStrings): boolean;
     procedure StartShowCodeHelp;
@@ -349,7 +349,7 @@ type
 
     procedure FocusEditor;// called by TSourceNotebook when the Notebook page
                           // changes so the editor is focused
-    procedure OnEditorSpecialLineColor(Sender: TObject; Line: integer;
+    procedure EditorSpecialLineColor(Sender: TObject; Line: integer;
          var Special: boolean; Markup: TSynSelectedColor);
     function RefreshEditorSettings: Boolean;
     function GetModified: Boolean; override;
@@ -396,7 +396,7 @@ type
     procedure StartFindAndReplace(Replace:boolean);
     procedure AskReplace(Sender: TObject; const ASearch, AReplace:
        string; Line, Column: integer; out Action: TSrcEditReplaceAction); override;
-    procedure OnReplace(Sender: TObject; const ASearch, AReplace:
+    procedure ReplaceTxtHandler(Sender: TObject; const ASearch, AReplace:
        string; {%H-}Line, {%H-}Column: integer; var Action: TSynReplaceAction);
     function  DoFindAndReplace(aFindText, aReplaceText: String; anOptions: TSynSearchOptions): Integer;
     procedure FindNextUTF8;
@@ -666,44 +666,44 @@ type
     OpenFolderMenuItem: TMenuItem;
     StatusPopUpMenu: TPopupMenu;
     StatusBar: TStatusBar;
-    procedure CompleteCodeMenuItemClick(Sender: TObject);
-    procedure DbgPopUpMenuPopup(Sender: TObject);
-    procedure EditorLockClicked(Sender: TObject);
-    procedure EncodingClicked(Sender: TObject);
-    procedure ExtractProcMenuItemClick(Sender: TObject);
-    procedure FindOverloadsMenuItemClick(Sender: TObject);
     procedure FormMouseUp(Sender: TObject; {%H-}Button: TMouseButton;
       {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
     procedure FormResize(Sender: TObject);
     procedure GoToLineMenuItemClick(Sender: TObject);
-    procedure HighlighterClicked(Sender: TObject);
-    procedure InsertCharacter(const C: TUTF8Char);
-    procedure InvertAssignmentMenuItemClick(Sender: TObject);
-    procedure LineEndingClicked(Sender: TObject);
-    procedure MakeResourceStringMenuItemClick(Sender: TObject);
-    procedure NotebookPageChanged(Sender: TObject);
-    procedure NotebookShowTabHint(Sender: TObject; HintInfo: PHintInfo);
-    procedure OnPopupMenuOpenFile(Sender: TObject);
-    procedure OnPopupOpenPackageFile(Sender: TObject);
-    procedure OnPopupOpenProjectInsp(Sender: TObject);
-    procedure OpenAtCursorClicked(Sender: TObject);
     procedure OpenFolderMenuItemClick(Sender: TObject);
-    procedure RenameIdentifierMenuItemClick(Sender: TObject);
-    procedure ShowAbstractMethodsMenuItemClick(Sender: TObject);
-    procedure ShowEmptyMethodsMenuItemClick(Sender: TObject);
-    procedure ShowUnusedUnitsMenuItemClick(Sender: TObject);
-    procedure SourceNotebookDropFiles(Sender: TObject;
-      const FileNames: array of String);
-    procedure SrcEditMenuCopyToExistingWindowClicked(Sender: TObject);
-    procedure SrcEditMenuFindInWindowClicked(Sender: TObject);
-    procedure SrcEditMenuMoveToExistingWindowClicked(Sender: TObject);
-    procedure SrcPopUpMenuPopup(Sender: TObject);
     procedure StatusBarClick(Sender: TObject);
     procedure StatusBarDblClick(Sender: TObject);
     procedure StatusBarContextPopup(Sender: TObject; MousePos: TPoint;
       var {%H-}Handled: Boolean);
     procedure StatusBarDrawPanel({%H-}AStatusBar: TStatusBar; APanel: TStatusPanel;
       const ARect: TRect);
+  private
+    //procedure CompleteCodeMenuItemClick(Sender: TObject);
+    procedure DbgPopUpMenuPopup(Sender: TObject);
+    //procedure EditorLockClicked(Sender: TObject);
+    procedure EncodingClicked(Sender: TObject);
+    //procedure ExtractProcMenuItemClick(Sender: TObject);
+    //procedure FindOverloadsMenuItemClick(Sender: TObject);
+    procedure HighlighterClicked(Sender: TObject);
+    //procedure InsertCharacter(const C: TUTF8Char);
+    //procedure InvertAssignmentMenuItemClick(Sender: TObject);
+    procedure LineEndingClicked(Sender: TObject);
+    //procedure MakeResourceStringMenuItemClick(Sender: TObject);
+    procedure NotebookPageChanged(Sender: TObject);
+    procedure NotebookShowTabHint(Sender: TObject; HintInfo: PHintInfo);
+    procedure PopupMenuOpenFile(Sender: TObject);
+    procedure PopupOpenPackageFile(Sender: TObject);
+    procedure PopupOpenProjectInsp(Sender: TObject);
+    procedure OpenAtCursorClicked(Sender: TObject);
+    //procedure RenameIdentifierMenuItemClick(Sender: TObject);
+    //procedure ShowAbstractMethodsMenuItemClick(Sender: TObject);
+    //procedure ShowEmptyMethodsMenuItemClick(Sender: TObject);
+    //procedure ShowUnusedUnitsMenuItemClick(Sender: TObject);
+    procedure SourceNotebookDropFiles(Sender: TObject; const FileNames: array of String);
+    procedure SrcEditMenuCopyToExistingWindowClicked(Sender: TObject);
+    procedure SrcEditMenuFindInWindowClicked(Sender: TObject);
+    procedure SrcEditMenuMoveToExistingWindowClicked(Sender: TObject);
+    procedure SrcPopUpMenuPopup(Sender: TObject);
     procedure TabPopUpMenuPopup(Sender: TObject);
   private
     FNotebook: TExtendedNotebook;
@@ -1257,17 +1257,16 @@ type
   private
     FCodeTemplateModul: TSynEditAutoComplete;
     FGotoDialog: TfrmGoto;
-    procedure OnCodeTemplateTokenNotFound(Sender: TObject; AToken: string;
+    procedure CodeTemplateTokenNotFound(Sender: TObject; AToken: string;
                                    AnEditor: TCustomSynEdit; var Index:integer);
-    procedure OnCodeTemplateExecuteCompletion(
-                                       ASynAutoComplete: TCustomSynAutoComplete;
-                                       Index: integer);
+    procedure CodeTemplateExecuteCompletion(
+                        ASynAutoComplete: TCustomSynAutoComplete; Index: integer);
   protected
     procedure CodeToolsToSrcEditTimerTimer(Sender: TObject);
-    procedure OnSourceCompletionTimer(Sender: TObject);
+    procedure SourceCompletionTimer(Sender: TObject);
     // marks
-    procedure OnSourceMarksAction(AMark: TSourceMark; {%H-}AAction: TMarksAction);
-    procedure OnSourceMarksGetSynEdit(Sender: TObject; aFilename: string;
+    procedure SourceMarksAction(AMark: TSourceMark; {%H-}AAction: TMarksAction);
+    procedure SourceMarksGetSynEdit(Sender: TObject; aFilename: string;
       var aSynEdit: TSynEdit);
     // goto dialog
     function GotoDialog: TfrmGoto;
@@ -2706,7 +2705,7 @@ Begin
   {$ENDIF}
 end;
 
-function TSourceEditCompletion.OnSynCompletionPaintItem(const AKey: string;
+function TSourceEditCompletion.SynCompletionPaintItem(const AKey: string;
   ACanvas: TCanvas; X, Y: integer; ItemSelected: boolean; Index: integer): boolean;
 var
   MaxX: Integer;
@@ -2761,7 +2760,7 @@ begin
   end;
 end;
 
-function TSourceEditCompletion.OnSynCompletionMeasureItem(const AKey: string;
+function TSourceEditCompletion.SynCompletionMeasureItem(const AKey: string;
   ACanvas: TCanvas; ItemSelected: boolean; Index: integer): TPoint;
 var
   MaxX: Integer;
@@ -2798,7 +2797,7 @@ begin
   end;
 end;
 
-procedure TSourceEditCompletion.OnSynCompletionSearchPosition(
+procedure TSourceEditCompletion.SynCompletionSearchPosition(
   var APosition: integer);
 // prefix changed -> filter list
 var
@@ -2877,7 +2876,7 @@ begin
     SrcEditHintWindow.UpdateHints;
 end;
 
-procedure TSourceEditCompletion.OnSynCompletionCompletePrefix(Sender: TObject);
+procedure TSourceEditCompletion.SynCompletionCompletePrefix(Sender: TObject);
 var
   OldPrefix: String;
   NewPrefix: String;
@@ -2920,7 +2919,7 @@ begin
   end;
 end;
 
-procedure TSourceEditCompletion.OnSynCompletionNextChar(Sender: TObject);
+procedure TSourceEditCompletion.SynCompletionNextChar(Sender: TObject);
 var
   NewPrefix: String;
   Line: String;
@@ -2943,7 +2942,7 @@ begin
   CurrentString:=NewPrefix;
 end;
 
-procedure TSourceEditCompletion.OnSynCompletionPrevChar(Sender: TObject);
+procedure TSourceEditCompletion.SynCompletionPrevChar(Sender: TObject);
 var
   NewPrefix: String;
   NewLen: LongInt;
@@ -2958,7 +2957,7 @@ begin
   CurrentString:=NewPrefix;
 end;
 
-procedure TSourceEditCompletion.OnSynCompletionKeyPress(Sender: TObject;
+procedure TSourceEditCompletion.SynCompletionKeyPress(Sender: TObject;
   var Key: Char);
 begin
   if (System.Pos(Key,EndOfTokenChr)>0) then begin
@@ -2970,7 +2969,7 @@ begin
   end;
 end;
 
-procedure TSourceEditCompletion.OnSynCompletionUTF8KeyPress(Sender: TObject;
+procedure TSourceEditCompletion.SynCompletionUTF8KeyPress(Sender: TObject;
   var UTF8Key: TUTF8Char);
 begin
   if (length(UTF8Key)=1)
@@ -2984,7 +2983,7 @@ begin
   //debugln('TSourceNotebook.OnSynCompletionKeyPress B UTF8Key=',dbgstr(UTF8Key));
 end;
 
-procedure TSourceEditCompletion.OnSynCompletionPositionChanged(Sender: TObject);
+procedure TSourceEditCompletion.SynCompletionPositionChanged(Sender: TObject);
 begin
   if Manager.ActiveCompletionPlugin<>nil then
     Manager.ActiveCompletionPlugin.IndexChanged(Position);
@@ -3055,15 +3054,15 @@ begin
   OnExecute := @ccExecute;
   OnCancel := @ccCancel;
   OnCodeCompletion := @ccComplete;
-  OnPaintItem:=@OnSynCompletionPaintItem;
-  OnMeasureItem := @OnSynCompletionMeasureItem;
-  OnSearchPosition:=@OnSynCompletionSearchPosition;
-  OnKeyCompletePrefix:=@OnSynCompletionCompletePrefix;
-  OnKeyNextChar:=@OnSynCompletionNextChar;
-  OnKeyPrevChar:=@OnSynCompletionPrevChar;
-  OnKeyPress:=@OnSynCompletionKeyPress;
-  OnUTF8KeyPress:=@OnSynCompletionUTF8KeyPress;
-  OnPositionChanged:=@OnSynCompletionPositionChanged;
+  OnPaintItem:=@SynCompletionPaintItem;
+  OnMeasureItem := @SynCompletionMeasureItem;
+  OnSearchPosition:=@SynCompletionSearchPosition;
+  OnKeyCompletePrefix:=@SynCompletionCompletePrefix;
+  OnKeyNextChar:=@SynCompletionNextChar;
+  OnKeyPrevChar:=@SynCompletionPrevChar;
+  OnKeyPress:=@SynCompletionKeyPress;
+  OnUTF8KeyPress:=@SynCompletionUTF8KeyPress;
+  OnPositionChanged:=@SynCompletionPositionChanged;
   ShortCut:=Menus.ShortCut(VK_UNKNOWN,[]);
   TheForm.ShowSizeDrag := True;
   TheForm.Width := Max(50, EnvironmentGuiOpts.Desktop.CompletionWindowWidth);
@@ -3784,7 +3783,7 @@ var
 begin
   SynAction:=raCancel;
   SourceNotebook.BringToFront;
-  OnReplace(Sender, ASearch, AReplace, Line, Column, SynAction);
+  ReplaceTxtHandler(Sender, ASearch, AReplace, Line, Column, SynAction);
   case SynAction of
   raSkip: Action:=seraSkip;
   raReplaceAll: Action:=seraReplaceAll;
@@ -3915,7 +3914,7 @@ begin
   until not Again;
 end;
 
-procedure TSourceEditor.OnReplace(Sender: TObject; const ASearch, AReplace:
+procedure TSourceEditor.ReplaceTxtHandler(Sender: TObject; const ASearch, AReplace:
   string; Line, Column: integer; var Action: TSynReplaceAction);
 
   function Shorten(const s: string): string;
@@ -4928,7 +4927,7 @@ begin
   ShowHelpOrErrorForSourcePosition(Filename,FEditor.LogicalCaretXY);
 end;
 
-procedure TSourceEditor.OnEditorSpecialLineColor(Sender: TObject; Line: integer;
+procedure TSourceEditor.EditorSpecialLineColor(Sender: TObject; Line: integer;
   var Special: boolean; Markup: TSynSelectedColor);
 var
   i:integer;
@@ -5289,8 +5288,8 @@ Begin
       OnProcessCommand := @ProcessCommand;
       OnProcessUserCommand := @ProcessUserCommand;
       OnCommandProcessed := @UserCommandProcessed;
-      OnReplaceText := @OnReplace;
-      OnSpecialLineMarkup := @OnEditorSpecialLineColor;
+      OnReplaceText := @ReplaceTxtHandler;
+      OnSpecialLineMarkup := @EditorSpecialLineColor;
       OnMouseMove := @EditorMouseMoved;
       OnMouseWheel := @EditorMouseWheel;
       OnMouseDown := @EditorMouseDown;
@@ -7234,14 +7233,14 @@ begin
           RegisterIDEMenuCommand(
                   RegisterIDEMenuSection(M as TIDEMenuSection, 'Open lpk sect '+TIDEPackage(M.UserTag).Filename),
                  'Open lpk '+TIDEPackage(M.UserTag).Filename,
-                 lisCompPalOpenPackage, @OnPopupOpenPackageFile, nil, nil, '', M.UserTag);
+                 lisCompPalOpenPackage, @PopupOpenPackageFile, nil, nil, '', M.UserTag);
       end;
     end;
 
     if ProjMenu.Visible then begin
       RegisterIDEMenuCommand(
               RegisterIDEMenuSection(ProjMenu, 'Open proj sect '),
-             'Open proj', lisOpenProject2, @OnPopupOpenProjectInsp);
+             'Open proj', lisOpenProject2, @PopupOpenProjectInsp);
     end;
 
   end;
@@ -7257,7 +7256,7 @@ var
   begin
     Result:=nil;
     if ANewOnClick=nil then
-      ANewOnClick:=@OnPopupMenuOpenFile;
+      ANewOnClick:=@PopupMenuOpenFile;
     if Filename='' then
       Filename:=CurFilename;
     Filename:=ChangeFileExt(Filename,ASuffix);
@@ -7313,7 +7312,7 @@ begin
       AddContextPopupMenuItem(
         Format(lisOpenLfm,
                [CreateRelativePath(CurFilename,ExtractFilePath(ASrcEdit.Filename))]),
-        true,@OnPopupMenuOpenFile);
+        true,@PopupMenuOpenFile);
     end;
     if FilenameHasPascalExt(ShortFileName) then begin
       MaybeAddPopup('.lfm');
@@ -7329,14 +7328,14 @@ begin
       MaybeAddPopup('.p');
     end;
     if FilenameExtIn(ShortFileName, ['lpi','lpk'], true) then begin
-      AddContextPopupMenuItem(Format(lisOpenLfm,[ShortFileName]),true,@OnPopupMenuOpenFile);
+      AddContextPopupMenuItem(Format(lisOpenLfm,[ShortFileName]),true,@PopupMenuOpenFile);
     end;
     FPDocSrc:=LazarusHelp.GetFPDocFilenameForSource(CurFilename,false,AnOwner);
     if FPDocSrc<>'' then
       AddContextPopupMenuItem(
         Format(lisOpenLfm,
                [CreateRelativePath(FPDocSrc,ExtractFilePath(CurFilename))]),
-        true,@OnPopupMenuOpenFile);
+        true,@PopupMenuOpenFile);
   end;
 
   EditorPopupPoint:=EditorComp.ScreenToClient(SrcPopUpMenu.PopupPoint);
@@ -8432,7 +8431,7 @@ begin
   end;
 end;
 
-procedure TSourceNotebook.OnPopupMenuOpenFile(Sender: TObject);
+procedure TSourceNotebook.PopupMenuOpenFile(Sender: TObject);
 var
   ResStr: String;
   p: SizeInt;
@@ -8458,7 +8457,7 @@ begin
       [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofUseCache,ofDoNotLoadResource]);
 end;
 
-procedure TSourceNotebook.OnPopupOpenPackageFile(Sender: TObject);
+procedure TSourceNotebook.PopupOpenPackageFile(Sender: TObject);
 begin
   if (Sender as TIDEMenuItem).UserTag <> 0 then begin
     PackageEditingInterface.DoOpenPackageFile
@@ -8466,7 +8465,7 @@ begin
   end;
 end;
 
-procedure TSourceNotebook.OnPopupOpenProjectInsp(Sender: TObject);
+procedure TSourceNotebook.PopupOpenProjectInsp(Sender: TObject);
 begin
   MainIDEInterface.DoShowProjectInspector;
 end;
@@ -8602,12 +8601,12 @@ begin
   if ASrcEdit=nil then exit;
   ASrcEdit.ShowBreakpointProps(ASrcEdit.EditorComponent.CaretY);
 end;
-
+{
 procedure TSourceNotebook.CompleteCodeMenuItemClick(Sender: TObject);
 begin
   MainIDEInterface.DoCommand(ecCompleteCode);
 end;
-
+}
 procedure TSourceNotebook.DeleteBreakpointClicked(Sender: TObject);
 var
   ASrcEdit: TSourceEditor;
@@ -8617,7 +8616,7 @@ begin
   DebugBoss.DoDeleteBreakPoint(ASrcEdit.Filename,
                                ASrcEdit.EditorComponent.CaretY);
 end;
-
+{
 procedure TSourceNotebook.ExtractProcMenuItemClick(Sender: TObject);
 begin
   MainIDEInterface.DoCommand(ecExtractProc);
@@ -8651,14 +8650,14 @@ procedure TSourceNotebook.ShowUnusedUnitsMenuItemClick(Sender: TObject);
 begin
   MainIDEInterface.DoCommand(ecRemoveUnusedUnits);
 end;
-
+}
 procedure TSourceNotebook.SourceNotebookDropFiles(Sender: TObject;
   const FileNames: array of String);
 begin
   FManager.ActiveSourceWindow := Self;
   LazarusIDE.DoDropFiles(Sender,Filenames,WindowID);
 end;
-
+{
 procedure TSourceNotebook.FindOverloadsMenuItemClick(Sender: TObject);
 begin
   MainIDEInterface.DoCommand(ecFindOverloads);
@@ -8668,7 +8667,7 @@ procedure TSourceNotebook.MakeResourceStringMenuItemClick(Sender: TObject);
 begin
   MainIDEInterface.DoCommand(ecMakeResourceString);
 end;
-
+}
 function TSourceNotebook.NewFile(const NewShortName: String;
   ASource: TCodeBuffer; FocusIt: boolean; AShareEditor: TSourceEditor = nil): TSourceEditor;
 var
@@ -8937,7 +8936,7 @@ begin
     Exit;
   Result := FNotebook.IndexOf(TCustomPage(FHistoryList.Items[0]));
 end;
-
+{
 procedure TSourceNotebook.InsertCharacter(const C: TUTF8Char);
 var
   FActiveEdit: TSourceEditor;
@@ -8949,7 +8948,7 @@ begin
     FActiveEdit.EditorComponent.InsertTextAtCaret(C);
   end;
 end;
-
+}
 procedure TSourceNotebook.SrcEditMenuCopyToExistingWindowClicked(Sender: TObject);
 begin
   inc(FFocusLock);
@@ -8983,12 +8982,12 @@ begin
   Manager.ActiveEditor := DestWin.Editors[SharedEditorIdx];
   Manager.ShowActiveWindowOnTop(True);
 end;
-
+{
 procedure TSourceNotebook.EditorLockClicked(Sender: TObject);
 begin
   GetActiveSE.IsLocked := not GetActiveSE.IsLocked;
 end;
-
+}
 procedure TSourceNotebook.UpdateStatusBar;
 var
   tempEditor: TSourceEditor;
@@ -11576,7 +11575,7 @@ begin
   FHints.ActivateHint(ScreenRect, BaseURL, TheHint, AutoShown, AMouseOffset);
 end;
 
-procedure TSourceEditorManager.OnCodeTemplateTokenNotFound(Sender: TObject;
+procedure TSourceEditorManager.CodeTemplateTokenNotFound(Sender: TObject;
   AToken: string; AnEditor: TCustomSynEdit; var Index: integer);
 begin
   if Index=0 then ;
@@ -11592,7 +11591,7 @@ begin
   end;
 end;
 
-procedure TSourceEditorManager.OnCodeTemplateExecuteCompletion(
+procedure TSourceEditorManager.CodeTemplateExecuteCompletion(
   ASynAutoComplete: TCustomSynAutoComplete; Index: integer);
 var
   SrcEdit: TSourceEditorInterface;
@@ -11629,7 +11628,7 @@ begin
   end;
 end;
 
-procedure TSourceEditorManager.OnSourceCompletionTimer(Sender: TObject);
+procedure TSourceEditorManager.SourceCompletionTimer(Sender: TObject);
 
   function CheckCodeAttribute (XY: TPoint; out CodeAttri: String): Boolean;
   var
@@ -11708,7 +11707,7 @@ begin
   end;
 end;
 
-procedure TSourceEditorManager.OnSourceMarksAction(AMark: TSourceMark;
+procedure TSourceEditorManager.SourceMarksAction(AMark: TSourceMark;
   AAction: TMarksAction);
 var
   Editor: TSourceEditor;
@@ -11724,7 +11723,7 @@ begin
     Editor.UpdateExecutionSourceMark;
 end;
 
-procedure TSourceEditorManager.OnSourceMarksGetSynEdit(Sender: TObject;
+procedure TSourceEditorManager.SourceMarksGetSynEdit(Sender: TObject;
   aFilename: string; var aSynEdit: TSynEdit);
 var
   SrcEdit: TSourceEditor;
@@ -11765,7 +11764,7 @@ begin
     AutoEnabled := False;
     Enabled := false;
     Interval := EditorOpts.AutoDelayInMSec;
-    OnTimer := @OnSourceCompletionTimer;
+    OnTimer := @SourceCompletionTimer;
   end;
 
   // timer for syncing codetools changes to synedit
@@ -11782,8 +11781,8 @@ begin
 
   // marks
   SourceEditorMarks:=TSourceMarks.Create(Self);
-  SourceEditorMarks.OnAction:=@OnSourceMarksAction;
-  SourceEditorMarks.ExtToolsMarks.OnGetSynEditOfFile:=@OnSourceMarksGetSynEdit;
+  SourceEditorMarks.OnAction:=@SourceMarksAction;
+  SourceEditorMarks.ExtToolsMarks.OnGetSynEditOfFile:=@SourceMarksGetSynEdit;
 
   // HintWindow
   FHints := TSourceEditorHintWindowManager.Create(Self);
@@ -11796,8 +11795,8 @@ begin
   EditorOpts.LoadCodeTemplates(FCodeTemplateModul);
   with FCodeTemplateModul do begin
     IndentToTokenStart := EditorOpts.CodeTemplateIndentToTokenStart;
-    OnTokenNotFound := @OnCodeTemplateTokenNotFound;
-    OnExecuteCompletion := @OnCodeTemplateExecuteCompletion;
+    OnTokenNotFound := @CodeTemplateTokenNotFound;
+    OnExecuteCompletion := @CodeTemplateExecuteCompletion;
     EndOfTokenChr:=' ()[]{},.;:"+-*^@$\<>=''';
   end;
 

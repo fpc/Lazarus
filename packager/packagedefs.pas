@@ -573,7 +573,7 @@ type
     procedure SetStorePathDelim(const AValue: TPathDelimSwitch);
     procedure SetUseLegacyLists(const AUseLegacyLists: Boolean);
     procedure SetUserReadOnly(const AValue: boolean);
-    procedure OnMacroListSubstitution({%H-}TheMacro: TTransferMacro;
+    procedure MacroListSubstitution({%H-}TheMacro: TTransferMacro;
       const MacroName: string; var s: string;
       const Data: PtrInt; var Handled, {%H-}Abort: boolean; {%H-}Depth: integer);
     procedure Clear;
@@ -2131,7 +2131,7 @@ end;
 
 { TLazPackage }
 
-procedure TLazPackage.OnMacroListSubstitution(TheMacro: TTransferMacro;
+procedure TLazPackage.MacroListSubstitution(TheMacro: TTransferMacro;
   const MacroName: string; var s: string; const Data: PtrInt;
   var Handled, Abort: boolean; Depth: integer);
 var
@@ -2631,7 +2631,7 @@ begin
   FFiles:=TFPList.Create;
   FRemovedFiles:=TFPList.Create;
   FMacros:=TTransferMacroList.Create;
-  FMacros.OnSubstitution:=@OnMacroListSubstitution;
+  FMacros.OnSubstitution:=@MacroListSubstitution;
   FIDEOptions:=TPackageIDEOptions.Create(Self);
   FLazCompilerOptions:=TPkgCompilerOptions.Create(Self);
   CompilerOptions.ParsedOpts.InvalidateParseOnChange:=true;

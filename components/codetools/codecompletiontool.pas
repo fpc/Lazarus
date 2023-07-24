@@ -161,7 +161,7 @@ type
     FJumpToProcHead: TPascalMethodHeader;
     NewClassSectionIndent: array[TPascalClassSection] of integer;
     NewClassSectionInsertPos: array[TPascalClassSection] of integer;
-    fFullTopLvlName: string;// used by OnTopLvlIdentifierFound
+    fFullTopLvlName: string;// used by TopLvlIdentifierFound
     fNewMainUsesSectionUnits: TAVLTree; // tree of AnsiString
     procedure AddNewPropertyAccessMethodsToClassProcs(ClassProcs: TAVLTree;
       const TheClassName: string);
@@ -186,7 +186,7 @@ type
     function GetFirstClassIdentifier(ClassNode: TCodeTreeNode): TCodeTreeNode;
     procedure SetCodeCompleteClassNode(const AClassNode: TCodeTreeNode);
     procedure SetCodeCompleteSrcChgCache(const AValue: TSourceChangeCache);
-    function OnTopLvlIdentifierFound(Params: TFindDeclarationParams;
+    function TopLvlIdentifierFound(Params: TFindDeclarationParams;
         const FoundContext: TFindContext): TIdentifierFoundResult;
     procedure RemoveNewMainUsesSectionUnit(p: PChar);
   protected
@@ -592,7 +592,7 @@ begin
   FSetPropertyVariableUseConst := aValue;
 end;
 
-function TCodeCompletionCodeTool.OnTopLvlIdentifierFound(
+function TCodeCompletionCodeTool.TopLvlIdentifierFound(
   Params: TFindDeclarationParams; const FoundContext: TFindContext
   ): TIdentifierFoundResult;
 var
@@ -2083,7 +2083,7 @@ function TCodeCompletionCodeTool.CompleteEventAssignment(CleanCursorPos,
     MoveCursorToCleanPos(PropVarAtom.StartPos);
     Params.SetIdentifier(Self,@Src[CurPos.StartPos],nil);
     fFullTopLvlName:='';
-    Params.OnTopLvlIdentifierFound:=@OnTopLvlIdentifierFound;
+    Params.OnTopLvlIdentifierFound:=@TopLvlIdentifierFound;
     Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,fdfSearchInHelpers,
                    fdfTopLvlResolving,fdfFindVariable];
     if (not FindDeclarationOfIdentAtParam(Params)) then begin

@@ -1699,10 +1699,11 @@ type
     procedure SetKey(const AValue: Word);
     procedure SetShiftButtons(const AValue: TShiftState);
     procedure SetShiftState(const AValue: TShiftState);
-    procedure OnGrabButtonClick(Sender: TObject);
-    procedure OnShiftCheckBoxClick(Sender: TObject);
-    procedure OnGrabFormKeyDown(Sender: TObject; var AKey: Word; AShift: TShiftState);
-    procedure OnKeyComboboxEditingDone(Sender: TObject);
+    // Event handlers
+    procedure GrabButtonClick(Sender: TObject);
+    procedure ShiftCheckBoxClick(Sender: TObject);
+    procedure GrabFormKeyDown(Sender: TObject; var AKey: Word; AShift: TShiftState);
+    procedure KeyComboboxEditingDone(Sender: TObject);
   protected
     procedure Loaded; override;
     procedure RealSetText(const {%H-}Value: TCaption); override;
@@ -7928,13 +7929,13 @@ begin
     KeyComboBox.ItemIndex:=0;
 end;
 
-procedure TCustomShortCutGrabBox.OnGrabButtonClick(Sender: TObject);
+procedure TCustomShortCutGrabBox.GrabButtonClick(Sender: TObject);
 begin
   FGrabForm:=TForm.Create(Self);
   FGrabForm.BorderStyle:=bsDialog;
   FGrabForm.KeyPreview:=true;
   FGrabForm.Position:=poScreenCenter;
-  FGrabForm.OnKeyDown:=@OnGrabFormKeyDown;
+  FGrabForm.OnKeyDown:=@GrabFormKeyDown;
   FGrabForm.Caption:=oisPressAKey;
   with TLabel.Create(Self) do begin
     Caption:=oisPressAKeyEGCtrlP;
@@ -7951,7 +7952,7 @@ begin
   FreeAndNil(FGrabForm);
 end;
 
-procedure TCustomShortCutGrabBox.OnShiftCheckBoxClick(Sender: TObject);
+procedure TCustomShortCutGrabBox.ShiftCheckBoxClick(Sender: TObject);
 var
   s: TShiftStateEnum;
 begin
@@ -7963,11 +7964,11 @@ begin
         Exclude(FShiftState,s);
 end;
 
-procedure TCustomShortCutGrabBox.OnGrabFormKeyDown(Sender: TObject;
+procedure TCustomShortCutGrabBox.GrabFormKeyDown(Sender: TObject;
   var AKey: Word; AShift: TShiftState);
 begin
   {$IFDEF VerboseKeyboard}
-  DebugLn(['TCustomShortCutGrabBox.OnGrabFormKeyDown ',AKey,' ',dbgs(AShift)]);
+  DebugLn(['TCustomShortCutGrabBox.GrabFormKeyDown ',AKey,' ',dbgs(AShift)]);
   DumpStack;
   {$ENDIF}
   if not (AKey in [VK_CONTROL, VK_LCONTROL, VK_RCONTROL,
@@ -7989,7 +7990,7 @@ begin
   end;
 end;
 
-procedure TCustomShortCutGrabBox.OnKeyComboboxEditingDone(Sender: TObject);
+procedure TCustomShortCutGrabBox.KeyComboboxEditingDone(Sender: TObject);
 begin
   Key:=KeyStringToVKCode(KeyComboBox.Text);
 end;
@@ -8067,7 +8068,7 @@ begin
             AnchorParallel(akTop,0,Self);
             AnchorParallel(akBottom,0,Self);
             Parent:=Self;
-            OnClick:=@OnShiftCheckBoxClick;
+            OnClick:=@ShiftCheckBoxClick;
           end;
         end;
         LastCheckBox:=FCheckBoxes[s];
@@ -8154,7 +8155,7 @@ begin
     Align:=alRight;
     AutoSize:=true;
     Parent:=Self;
-    OnClick:=@OnGrabButtonClick;
+    OnClick:=@GrabButtonClick;
   end;
 
   FKeyComboBox:=TComboBox.Create(Self);
@@ -8168,7 +8169,7 @@ begin
     for i:=VK_BROWSER_BACK to VK_OEM_CLEAR do
       AddKeyToCombobox(i);
     Items.EndUpdate;
-    OnEditingDone:=@OnKeyComboboxEditingDone;
+    OnEditingDone:=@KeyComboboxEditingDone;
     Parent:=Self;
     AnchorToNeighbour(akRight,6,FGrabButton);
     AnchorVerticalCenterTo(FGrabButton);

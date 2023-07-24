@@ -81,22 +81,22 @@ type
                                     ): TAvlTreeNode;
     procedure FrameCompGetCreationClass(Sender: TObject;
       var NewComponentClass: TComponentClass);
-    function OnCompTree_ParentAcceptsChild(aParent, aChild,
+    function CompTree_ParentAcceptsChild(aParent, aChild,
       aLookupRoot: TPersistent): boolean;
-    procedure OnCompTree_SetParent(aChild, aParent, aLookupRoot: TPersistent);
-    procedure OnPasWriterFindAncestor(Writer: TCompWriterPas;
+    procedure CompTree_SetParent(aChild, aParent, aLookupRoot: TPersistent);
+    procedure PasWriterFindAncestor(Writer: TCompWriterPas;
       aComponent: TComponent; const aName: string; var anAncestor,
       aRootAncestor: TComponent);
-    procedure OnPasWriterGetMethodName(Writer: TCompWriterPas;
+    procedure PasWriterGetMethodName(Writer: TCompWriterPas;
       Instance: TPersistent; PropInfo: PPropInfo; out Name: String);
-    procedure OnPasWriterGetParentProperty(Writer: TCompWriterPas;
+    procedure PasWriterGetParentProperty(Writer: TCompWriterPas;
       Component: TComponent; var PropName: string);
     function OnPropHookGetAncestorInstProp(const InstProp: TInstProp;
                                       out AncestorInstProp: TInstProp): boolean;
   protected
     FNonFormForms: TAvlTree; // tree of TNonFormProxyDesignerForm sorted for LookupRoot
     procedure SetSelection(const ASelection: TPersistentSelectionList);
-    procedure OnObjectInspectorModified(Sender: TObject);
+    procedure ObjectInspectorModified(Sender: TObject);
     procedure SetObj_Inspector(AnObjectInspector: TObjectInspectorDlg); virtual;
     procedure JITListBeforeCreate(Sender: TObject; Instance: TPersistent);
     procedure JITListException(Sender: TObject; E: Exception;
@@ -115,7 +115,7 @@ type
     function GetDesignerBaseClasses(Index: integer): TComponentClass; override;
     function GetStandardDesignerBaseClasses(Index: integer): TComponentClass; override;
     procedure SetStandardDesignerBaseClasses(Index: integer; AValue: TComponentClass); override;
-    procedure OnDesignerMenuItemClick(Sender: TObject); virtual;
+    procedure DesignerMenuItemClick(Sender: TObject); virtual;
     function FindNonFormFormNode(LookupRoot: TComponent): TAvlTreeNode;
 
     //because we only meet ObjInspectore here, not in abstract ancestor
@@ -507,7 +507,7 @@ begin
   JITNonFormList := TJITNonFormComponents.Create(nil);
   InitJITList(JITNonFormList);
 
-  DesignerMenuItemClick:=@OnDesignerMenuItemClick;
+  OnDesignerMenuItemClick:=@DesignerMenuItemClick;
   OnGetDesignerForm:=@GetDesignerForm;
   FormEditingHook:=Self;
 
@@ -521,7 +521,7 @@ end;
 destructor TCustomFormEditor.Destroy;
 begin
   FormEditingHook:=nil;
-  DesignerMenuItemClick:=nil;
+  OnDesignerMenuItemClick:=nil;
   if FDefineProperties<>nil then begin
     FDefineProperties.FreeAndClear;
     FreeAndNil(FDefineProperties);
@@ -1153,9 +1153,9 @@ end;
 procedure TCustomFormEditor.SaveComponentAsPascal(aDesigner: TIDesigner;
   Writer: TCompWriterPas);
 begin
-  Writer.OnFindAncestor:=@OnPasWriterFindAncestor;
-  Writer.OnGetParentProperty:=@OnPasWriterGetParentProperty;
-  Writer.OnGetMethodName:=@OnPasWriterGetMethodName;
+  Writer.OnFindAncestor:=@PasWriterFindAncestor;
+  Writer.OnGetParentProperty:=@PasWriterGetParentProperty;
+  Writer.OnGetMethodName:=@PasWriterGetMethodName;
   Writer.WriteDescendant(aDesigner.LookupRoot);
 end;
 
@@ -2167,7 +2167,7 @@ begin
   IDEMessageDialog(lisCodeToolsDefsReadError, Msg, mtError, [mbCancel]);
 end;
 
-procedure TCustomFormEditor.OnDesignerMenuItemClick(Sender: TObject);
+procedure TCustomFormEditor.DesignerMenuItemClick(Sender: TObject);
 var
   CompEditor: TBaseComponentEditor;
   MenuItem: TMenuItem;
@@ -2184,7 +2184,7 @@ begin
     CompEditor.Edit;
   except
     on E: Exception do begin
-      DebugLn('TCustomFormEditor.OnDesignerMenuItemClick ERROR on CompEditor.Edit: ',E.Message);
+      DebugLn('TCustomFormEditor.DesignerMenuItemClick ERROR on CompEditor.Edit: ',E.Message);
       IDEMessageDialog(Format(lisErrorIn, [CompClassName]),
         Format(lisCFETheComponentEditorOfClassHasCreatedTheError,
                [CompClassName, LineEnding, E.Message]),
@@ -2195,7 +2195,7 @@ begin
     CompEditor.Free;
   except
     on E: Exception do begin
-      DebugLn('TCustomFormEditor.OnDesignerMenuItemClick ERROR on CompEditor.Free: ',E.Message);
+      DebugLn('TCustomFormEditor.DesignerMenuItemClick ERROR on CompEditor.Free: ',E.Message);
       IDEMessageDialog(Format(lisErrorIn, [CompClassName]),
         Format(lisCFETheComponentEditorOfClassHasCreatedTheError,
                [CompClassName, LineEnding, E.Message]),
@@ -2392,7 +2392,7 @@ begin
     OnSelectFrame(Sender,NewComponentClass);
 end;
 
-function TCustomFormEditor.OnCompTree_ParentAcceptsChild(aParent, aChild,
+function TCustomFormEditor.CompTree_ParentAcceptsChild(aParent, aChild,
   aLookupRoot: TPersistent): boolean;
 begin
   Result:=(aParent is TComponent)
@@ -2401,7 +2401,7 @@ begin
       and ParentAcceptsChild(TComponent(aParent),TComponent(aChild),TComponent(aLookupRoot));
 end;
 
-procedure TCustomFormEditor.OnCompTree_SetParent(aChild, aParent,
+procedure TCustomFormEditor.CompTree_SetParent(aChild, aParent,
   aLookupRoot: TPersistent);
 var
   Mediator: TDesignerMediator;
@@ -2417,11 +2417,11 @@ begin
     OldParent:=ChildComp.GetParentComponent;
     Mediator.ChangeParent(ChildComp,TComponent(aParent));
     if ChildComp.GetParentComponent<>OldParent then
-      OnObjectInspectorModified(Self);
+      ObjectInspectorModified(Self);
   end;
 end;
 
-procedure TCustomFormEditor.OnPasWriterFindAncestor(Writer: TCompWriterPas;
+procedure TCustomFormEditor.PasWriterFindAncestor(Writer: TCompWriterPas;
   aComponent: TComponent; const aName: string; var anAncestor,
   aRootAncestor: TComponent);
 var
@@ -2436,7 +2436,7 @@ begin
   if aName='' then ;
 end;
 
-procedure TCustomFormEditor.OnPasWriterGetMethodName(Writer: TCompWriterPas;
+procedure TCustomFormEditor.PasWriterGetMethodName(Writer: TCompWriterPas;
   Instance: TPersistent; PropInfo: PPropInfo; out Name: String);
 var
   aMethod: TMethod;
@@ -2450,7 +2450,7 @@ begin
   if Writer=nil then ;
 end;
 
-procedure TCustomFormEditor.OnPasWriterGetParentProperty(
+procedure TCustomFormEditor.PasWriterGetParentProperty(
   Writer: TCompWriterPas; Component: TComponent; var PropName: string);
 begin
   if Component is TControl then
@@ -2664,7 +2664,7 @@ begin
   if Y>MaxY then Y:=MaxY;
 end;
 
-procedure TCustomFormEditor.OnObjectInspectorModified(Sender: TObject);
+procedure TCustomFormEditor.ObjectInspectorModified(Sender: TObject);
 var
   CustomForm: TCustomForm;
   Instance: TPersistent;
@@ -2690,10 +2690,10 @@ begin
   FObj_Inspector:=AnObjectInspector;
   
   if FObj_Inspector<>nil then begin
-    FObj_Inspector.OnModified:=@OnObjectInspectorModified;
+    FObj_Inspector.OnModified:=@ObjectInspectorModified;
     FObj_inspector.OnNodeGetImageIndex:= @DoOnNodeGetImageIndex;
-    FObj_inspector.ComponentTree.OnParentAcceptsChild:=@OnCompTree_ParentAcceptsChild;
-    FObj_inspector.ComponentTree.OnSetParent:=@OnCompTree_SetParent;
+    FObj_inspector.ComponentTree.OnParentAcceptsChild:=@CompTree_ParentAcceptsChild;
+    FObj_inspector.ComponentTree.OnSetParent:=@CompTree_SetParent;
   end;
 end;
 

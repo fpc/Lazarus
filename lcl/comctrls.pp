@@ -3471,7 +3471,7 @@ type
     procedure HintMouseLeave(Sender: TObject);
     procedure ImageListChange(Sender: TObject);
     function NodeIsSelected(aNode: TTreeNode): Boolean;
-    procedure OnChangeTimer(Sender: TObject);
+    procedure ChangeTimer(Sender: TObject);
     procedure SetAutoExpand(Value: Boolean);
     procedure SetBackgroundColor(Value: TColor);
     procedure SetBottomItem(Value: TTreeNode);

@@ -628,7 +628,7 @@ type
     FGlobalMatrixOptions: TBuildMatrixOptions;
     function GetItems(Index: integer): TProjectBuildMode;
     function GetModified: boolean;
-    procedure OnItemChanged(Sender: TObject);
+    procedure ItemChanged(Sender: TObject);
     procedure SetModified(const AValue: boolean);
     // Used by LoadFromXMLConfig
     procedure AddMatrixMacro(const MacroName, MacroValue, ModeIdentifier: string; InSession: boolean);
@@ -858,7 +858,7 @@ type
     procedure LoadDefaultSession;
     procedure EditorInfoAdd(EdInfo: TUnitEditorInfo);
     procedure EditorInfoRemove(EdInfo: TUnitEditorInfo);
-    procedure OnMacroEngineSubstitution({%H-}TheMacro: TTransferMacro;
+    procedure MacroEngineSubstitution({%H-}TheMacro: TTransferMacro;
       const MacroName: string; var s: string;
       const Data: PtrInt; var Handled, Abort: boolean; Depth: integer);
     // Methods for ReadProject
@@ -2779,7 +2779,7 @@ begin
   FBookmarks := TProjectBookmarkList.Create;
 
   FMacroEngine:=TTransferMacroList.Create;
-  FMacroEngine.OnSubstitution:=@OnMacroEngineSubstitution;
+  FMacroEngine.OnSubstitution:=@MacroEngineSubstitution;
   FBuildModes:=TProjectBuildModes.Create(nil);
   FBuildModes.LazProject:=Self;
   FBuildModesBackup:=TProjectBuildModes.Create(nil);
@@ -5768,7 +5768,7 @@ begin
     FAllEditorsInfoMap.Delete(EdInfo.EditorComponent);
 end;
 
-procedure TProject.OnMacroEngineSubstitution(TheMacro: TTransferMacro;
+procedure TProject.MacroEngineSubstitution(TheMacro: TTransferMacro;
   const MacroName: string; var s: string; const Data: PtrInt; var Handled,
   Abort: boolean; Depth: integer);
 var
@@ -7092,7 +7092,7 @@ begin
   Result:=fSavedChangeStamp<>FChangeStamp;
 end;
 
-procedure TProjectBuildModes.OnItemChanged(Sender: TObject);
+procedure TProjectBuildModes.ItemChanged(Sender: TObject);
 begin
   {$IFDEF VerboseIDEModified}
   debugln(['TProjectBuildModes.OnItemChanged ',DbgSName(Sender)]);
@@ -7123,9 +7123,9 @@ begin
   FChangeStamp:=LUInvalidChangeStamp;
   fSavedChangeStamp:=FChangeStamp;
   FSharedMatrixOptions:=TBuildMatrixOptions.Create;
-  FSharedMatrixOptions.OnChanged:=@OnItemChanged;
+  FSharedMatrixOptions.OnChanged:=@ItemChanged;
   FSessionMatrixOptions:=TBuildMatrixOptions.Create;
-  FSessionMatrixOptions.OnChanged:=@OnItemChanged;
+  FSessionMatrixOptions.OnChanged:=@ItemChanged;
   FManyBuildModes:=TStringList.Create;
 end;
 
@@ -7233,7 +7233,7 @@ begin
   Result.FIdentifier:=Identifier;
   if LazProject<>nil then
     Result.CompilerOptions.BaseDirectory:=LazProject.Directory;
-  Result.AddOnChangedHandler(@OnItemChanged);
+  Result.AddOnChangedHandler(@ItemChanged);
   fItems.Add(Result);
 end;
 

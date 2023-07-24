@@ -134,7 +134,7 @@ type
     FOldShortcut: TShortCut;
     FShortCutGrabBox: TShortCutGrabBox;
     procedure OKButtonClick(Sender: TObject);
-    procedure OnGrabBoxCloseUp(Sender: TObject);
+    procedure GrabBoxCloseUp(Sender: TObject);
   public
     constructor CreateWithMenuItem(AOwner: TComponent; aMI: TMenuItem; isMainSC: boolean; aSC: TShortCut);
     property NewShortcut: TShortCut read FNewShortcut;
@@ -771,7 +771,7 @@ begin
   {$if defined(darwin) or defined(macos) or defined(iphonesim)}
     FShortCutGrabBox.AllowedShifts:=[ssShift, ssCtrl, ssMeta]
   {$else} FShortCutGrabBox.AllowedShifts:=[ssShift, ssCtrl, ssAlt] {$endif};
-  FShortCutGrabBox.KeyComboBox.OnCloseUp:=@OnGrabBoxCloseUp;
+  FShortCutGrabBox.KeyComboBox.OnCloseUp:=@GrabBoxCloseUp;
   FShortCutGrabBox.Align:=alClient;
   FShortCutGrabBox.MainOkButton:=FButtonPanel.OKButton;
   if editing then begin
@@ -791,7 +791,7 @@ begin
     FNewShortcut:=0;
 end;
 
-procedure TAddShortcutDialog.OnGrabBoxCloseUp(Sender: TObject);
+procedure TAddShortcutDialog.GrabBoxCloseUp(Sender: TObject);
 begin
   if (FShortCutGrabBox.KeyComboBox.ItemIndex = 0) then
     FShortCutGrabBox.ShiftState:=[];

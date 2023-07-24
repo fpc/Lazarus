@@ -296,8 +296,8 @@ begin
     Click;
   end
   else
-  if Assigned(DesignerMenuItemClick) then
-    DesignerMenuItemClick(Self);
+  if Assigned(OnDesignerMenuItemClick) then
+    OnDesignerMenuItemClick(Self);
 end;
 
 function TMenuItem.DoDrawItem(ACanvas: TCanvas; ARect: TRect;
