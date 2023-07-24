@@ -254,6 +254,7 @@ begin
   RegisterComponents('Pas2js Data Access',[TSQLDBRestConnection,TSQLDBRestDataset,TLocalJSONDataset]);
   RegisterComponents('Pas2js Data Controls',[TDBBootstrapTableWidget,TDBLoopTemplateWidget,TDBSelectWidget]);
   RegisterClasses([TJSONDateField, TJSONTimeField, TJSONDateTimeField]);
+  RegisterClasses([THTMLCustomElementAction,THTMLElementAction,TDBHTMLElementAction, TDBHTMLInputElementAction,TDBHTMLButtonElementAction]);
   RegisterNoIcon([THTMLCustomElementAction,THTMLElementAction,TDBHTMLInputElementAction,TDBHTMLButtonElementAction]);
   RegisterRequirements;
   RegisterStandardHTMLActions;
