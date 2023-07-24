@@ -1169,6 +1169,13 @@ begin
     end;
 end;
 
+function isValidMouseControl( control:TWinControl ): Boolean;
+begin
+  if (control is TCustomForm) and (csDesigning in control.ComponentState) then
+    exit( True );
+  Result:= control.Visible and control.Enabled;
+end;
+
 function TLCLCommonCallback.MouseMove(Event: NSEvent): Boolean;
 var
   Msg: TLMMouseMove;
@@ -1232,7 +1239,7 @@ begin
         begin
           childControl:=TWinControl(Target.Controls[i]);
           rect:=childControl.BoundsRect;
-          if Types.PtInRect(rect, srchPt) and childControl.Visible and childControl.Enabled then
+          if Types.PtInRect(rect, srchPt) and isValidMouseControl(childControl) then
           begin
             targetControl:=childControl;
             break;
