@@ -26,7 +26,7 @@ uses
   // LCL
   LMessages, LResources, LCLIntf, InterfaceBase, LCLStrConsts, LCLType,
   Forms, Controls, Themes, Graphics, Buttons, ButtonPanel, StdCtrls,
-  ExtCtrls, LCLClasses, ClipBrd, Menus, LCLTaskDialog, DialogRes,
+  ExtCtrls, LCLClasses, ClipBrd, Menus, {LCLTaskDialog,} DialogRes,
   // LazUtils
   GraphType, FileUtil, LazFileUtils, LazStringUtils, LazLoggerBase;
 
@@ -635,8 +635,8 @@ type
     FTitle: TTranslateString;
     FVerificationText: TTranslateString;
     FOnButtonClicked: TTaskDlgClickEvent;
-    procedure DoOnButtonClickedHandler(Sender: PTaskDialog; AButtonID: Integer;
-      var ACanClose: Boolean);
+    //procedure DoOnButtonClickedHandler(Sender: PTaskDialog; AButtonID: Integer;
+    //  var ACanClose: Boolean);
     procedure SetButtons(const Value: TTaskDialogButtons);
     procedure SetRadioButtons(const Value: TTaskDialogButtons);
   protected

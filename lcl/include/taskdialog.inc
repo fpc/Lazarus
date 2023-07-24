@@ -134,91 +134,91 @@ begin
 end;
 
 function TCustomTaskDialog.DoExecute(ParentWnd: HWND): Boolean;
-  function TD_COMMONBUTTONS(const aButtons: TTaskDialogCommonButtons): LCLTaskDialog.TCommonButtons;
-  begin
-    Result := [];
-    if tcbOk in aButtons then
-      Result := Result + [cbOK];
-    if tcbYes in aButtons then
-      Result := Result + [cbYes];
-    if tcbNo in aButtons then
-      Result := Result + [cbNo];
-    if tcbCancel in aButtons then
-      Result := Result + [cbCancel];
-    if tcbRetry in aButtons then
-      Result := Result + [cbRetry];
-    if tcbClose in aButtons then
-      Result := Result + [cbClose];
-  end;
+  //function TD_COMMONBUTTONS(const aButtons: TTaskDialogCommonButtons): LCLTaskDialog.TCommonButtons;
+  //begin
+  //  Result := [];
+  //  if tcbOk in aButtons then
+  //    Result := Result + [cbOK];
+  //  if tcbYes in aButtons then
+  //    Result := Result + [cbYes];
+  //  if tcbNo in aButtons then
+  //    Result := Result + [cbNo];
+  //  if tcbCancel in aButtons then
+  //    Result := Result + [cbCancel];
+  //  if tcbRetry in aButtons then
+  //    Result := Result + [cbRetry];
+  //  if tcbClose in aButtons then
+  //    Result := Result + [cbClose];
+  //end;
 
-  function TD_FLAGS(const aTaskFlags: TTaskDialogFlags): LCLTaskDialog.TTaskDialogFlags;
-  begin
-    Result := [];
-    if tfEnableHyperlinks in aTaskFlags then
-      Result := Result + [tdfEnableHyperlinks];
-    if tfUseHiconMain in aTaskFlags then
-      Result := Result + [tdfUseHIconMain];
-    if tfUseHiconFooter in aTaskFlags then
-      Result := Result + [tdfUseHIconFooter];
-    if tfAllowDialogCancellation in aTaskFlags then
-      Result := Result + [tdfAllowDialogCancellation];
-    if tfUseCommandLinks in aTaskFlags then
-      Result := Result + [tdfUseCommandLinks];
-    if tfUseCommandLinksNoIcon in aTaskFlags then
-      Result := Result + [tdfUseCommandLinksNoIcon];
-    if tfExpandFooterArea in aTaskFlags then
-      Result := Result + [tdfExpandFooterArea];
-    if tfExpandedByDefault in aTaskFlags then
-      Result := Result + [tdfExpandByDefault];
-    if tfVerificationFlagChecked in aTaskFlags then
-      Result := Result + [tdfVerificationFlagChecked];
-    if tfShowProgressBar in aTaskFlags then
-      Result := Result + [tdfShowProgressBar];
-    if tfShowMarqueeProgressBar in aTaskFlags then
-      Result := Result + [tdfShowMarqueeProgressBar];
-    if tfCallbackTimer in aTaskFlags then
-      Result := Result + [tdfCallbackTimer];
-    if tfPositionRelativeToWindow in aTaskFlags then
-      Result := Result + [tdfPositionRelativeToWindow];
-    if tfRtlLayout in aTaskFlags then
-      Result := Result + [tdfRtlLayout];
-    if tfNoDefaultRadioButton in aTaskFlags then
-      Result := Result + [tdfNoDefaultRadioButton];
-    if tfCanBeMinimized in aTaskFlags then
-      Result := Result + [tdfCanBeMinimized];
-    if tfNoSetForeGround in aTaskFlags then
-      Result := Result + [tdfNoSetForeGround];
-    if tfSizeToContent in aTaskFlags then
-      Result := Result + [tdfSizeToContent];
-  end;
+  //function TD_FLAGS(const aTaskFlags: TTaskDialogFlags): LCLTaskDialog.TTaskDialogFlags;
+  //begin
+  //  Result := [];
+  //  if tfEnableHyperlinks in aTaskFlags then
+  //    Result := Result + [tdfEnableHyperlinks];
+  //  if tfUseHiconMain in aTaskFlags then
+  //    Result := Result + [tdfUseHIconMain];
+  //  if tfUseHiconFooter in aTaskFlags then
+  //    Result := Result + [tdfUseHIconFooter];
+  //  if tfAllowDialogCancellation in aTaskFlags then
+  //    Result := Result + [tdfAllowDialogCancellation];
+  //  if tfUseCommandLinks in aTaskFlags then
+  //    Result := Result + [tdfUseCommandLinks];
+  //  if tfUseCommandLinksNoIcon in aTaskFlags then
+  //    Result := Result + [tdfUseCommandLinksNoIcon];
+  //  if tfExpandFooterArea in aTaskFlags then
+  //    Result := Result + [tdfExpandFooterArea];
+  //  if tfExpandedByDefault in aTaskFlags then
+  //    Result := Result + [tdfExpandByDefault];
+  //  if tfVerificationFlagChecked in aTaskFlags then
+  //    Result := Result + [tdfVerificationFlagChecked];
+  //  if tfShowProgressBar in aTaskFlags then
+  //    Result := Result + [tdfShowProgressBar];
+  //  if tfShowMarqueeProgressBar in aTaskFlags then
+  //    Result := Result + [tdfShowMarqueeProgressBar];
+  //  if tfCallbackTimer in aTaskFlags then
+  //    Result := Result + [tdfCallbackTimer];
+  //  if tfPositionRelativeToWindow in aTaskFlags then
+  //    Result := Result + [tdfPositionRelativeToWindow];
+  //  if tfRtlLayout in aTaskFlags then
+  //    Result := Result + [tdfRtlLayout];
+  //  if tfNoDefaultRadioButton in aTaskFlags then
+  //    Result := Result + [tdfNoDefaultRadioButton];
+  //  if tfCanBeMinimized in aTaskFlags then
+  //    Result := Result + [tdfCanBeMinimized];
+  //  if tfNoSetForeGround in aTaskFlags then
+  //    Result := Result + [tdfNoSetForeGround];
+  //  if tfSizeToContent in aTaskFlags then
+  //    Result := Result + [tdfSizeToContent];
+  //end;
 
-  function TF_DIALOGICON(const aIcon: TTaskDialogIcon): LCLTaskDialog.TTaskDialogIcon;
-  begin
-    case aIcon of
-      tdiWarning: Result := LCLTaskDialog.TTaskDialogIcon.tiWarning;
-      tdiError: Result := LCLTaskDialog.TTaskDialogIcon.tiError;
-      tdiInformation: Result := LCLTaskDialog.TTaskDialogIcon.tiInformation;
-      tdiShield: Result := LCLTaskDialog.TTaskDialogIcon.tiShield;
-      tdiQuestion: Result := LCLTaskDialog.TTaskDialogIcon.tiQuestion;
-    else
-      Result := LCLTaskDialog.TTaskDialogIcon.tiBlank;
-    end;
-  end;
-
-  function TF_FOOTERICON(const aIcon: TTaskDialogIcon): LCLTaskDialog.TTaskDialogFooterIcon;
-  begin
-    case aIcon of
-      tdiWarning: Result := LCLTaskDialog.TTaskDialogFooterIcon.tfiWarning;
-      tdiError: Result := LCLTaskDialog.TTaskDialogFooterIcon.tfiError;
-      tdiInformation: Result := LCLTaskDialog.TTaskDialogFooterIcon.tfiInformation;
-      tdiShield: Result := LCLTaskDialog.TTaskDialogFooterIcon.tfiShield;
-      tdiQuestion: Result := LCLTaskDialog.TTaskDialogFooterIcon.tfiQuestion;
-    else
-      Result := LCLTaskDialog.TTaskDialogFooterIcon.tfiBlank;
-    end;
-  end;
+  //function TF_DIALOGICON(const aIcon: TTaskDialogIcon): LCLTaskDialog.TTaskDialogIcon;
+  //begin
+  //  case aIcon of
+  //    tdiWarning: Result := LCLTaskDialog.TTaskDialogIcon.tiWarning;
+  //    tdiError: Result := LCLTaskDialog.TTaskDialogIcon.tiError;
+  //    tdiInformation: Result := LCLTaskDialog.TTaskDialogIcon.tiInformation;
+  //    tdiShield: Result := LCLTaskDialog.TTaskDialogIcon.tiShield;
+  //    tdiQuestion: Result := LCLTaskDialog.TTaskDialogIcon.tiQuestion;
+  //  else
+  //    Result := LCLTaskDialog.TTaskDialogIcon.tiBlank;
+  //  end;
+  //end;
+  //
+  //function TF_FOOTERICON(const aIcon: TTaskDialogIcon): LCLTaskDialog.TTaskDialogFooterIcon;
+  //begin
+  //  case aIcon of
+  //    tdiWarning: Result := LCLTaskDialog.TTaskDialogFooterIcon.tfiWarning;
+  //    tdiError: Result := LCLTaskDialog.TTaskDialogFooterIcon.tfiError;
+  //    tdiInformation: Result := LCLTaskDialog.TTaskDialogFooterIcon.tfiInformation;
+  //    tdiShield: Result := LCLTaskDialog.TTaskDialogFooterIcon.tfiShield;
+  //    tdiQuestion: Result := LCLTaskDialog.TTaskDialogFooterIcon.tfiQuestion;
+  //  else
+  //    Result := LCLTaskDialog.TTaskDialogFooterIcon.tfiBlank;
+  //  end;
+  //end;
 var
-  TaskDlg: LCLTaskDialog.TTaskDialog;
+  //TaskDlg: LCLTaskDialog.TTaskDialog;
   DefRB, DefBtn: TModalResult;
   B: TTaskDialogBaseButtonItem;
   ButtonID, ARadioRes: Integer;
@@ -230,23 +230,23 @@ begin
   //Result := TWSTaskDialogClass(WidgetSetClass).Execute(Self);
 
 
-  //temporary show new, then old dialog, both in emulated mode (regardless of Flags)
-  {$IFDEF MSWINDOWS}
-  //LCLTaskDialog.TaskDialogIndirect := nil;
-  {$ENDIF}
   ButtonID := TWSTaskDialogClass(WidgetSetClass).Execute(Self, ParentWnd, ARadioRes);
   FModalResult := ButtonIDToModalResult(ButtonID);
   Result := (ButtonID >= 0);
+  if (ARadioRes >= TaskDialogFirstRadioButtonIndex) and (aRadioRes-TaskDialogFirstRadioButtonIndex < RadioButtons.Count) then
+    FRadioButton := RadioButtons[ARadioRes-TaskDialogFirstRadioButtonIndex] as TTaskDialogRadioButtonItem
+  else
+    FRadioButton := nil;
   debugln(['TWSTaskDialogClass(WidgetSetClass).Execute(Self)=',ButtonID,', Result=',Result]);
-  debugln(['New: ButtonID=',ButtonID]);
-  debugln(['New: FModalResult=',FModalResult]);
-  debugln(['New: VerifyChecked=',tfVerificationFlagChecked in FFlags]);
-  debugln(['New: ARadioRes=',ARadioRes]);
+  debugln([' ButtonID=',ButtonID]);
+  debugln([' FModalResult=',FModalResult]);
+  debugln([' VerifyChecked=',tfVerificationFlagChecked in FFlags]);
+  debugln([' ARadioRes=',ARadioRes]);
 
 
 
 
-
+(*
   FillChar(TaskDlg, SizeOf(LCLTaskDialog.TTaskDialog), 0);
 
   if RadioButtons.DefaultButton<> nil then
@@ -290,6 +290,7 @@ begin
     Include(FFlags, tfVerificationFlagChecked)
   else
     Exclude(FFlags, tfVerificationFlagChecked)
+*)
 end;
 
 procedure TCustomTaskDialog.DoOnButtonClicked(AModalResult: Integer;
@@ -299,11 +300,11 @@ begin
     FOnButtonClicked(Self, AModalResult, ACanClose);
 end;
 
-procedure TCustomTaskDialog.DoOnButtonClickedHandler(Sender: PTaskDialog;
-  AButtonID: integer; var ACanClose: Boolean);
-begin
-  DoOnButtonClicked(ButtonIDToModalResult(AButtonID), ACanClose)
-end;
+//procedure TCustomTaskDialog.DoOnButtonClickedHandler(Sender: PTaskDialog;
+//  AButtonID: integer; var ACanClose: Boolean);
+//begin
+//  DoOnButtonClicked(ButtonIDToModalResult(AButtonID), ACanClose)
+//end;
 
 function TCustomTaskDialog.Execute(ParentWnd: HWND): Boolean;
 begin

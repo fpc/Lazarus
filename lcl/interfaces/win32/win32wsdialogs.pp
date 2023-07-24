@@ -1663,14 +1663,15 @@ begin
 
   case uNotification of
     TDN_BUTTON_CLICKED:
-    Assert((Dlg is TCustomTaskDialog),'TaskDialogCallbackProc: dwRefData is NOT a TCustomTaskDialog');
-    if Assigned(Dlg.OnButtonClicked) then
     begin
-      CanClose := True;
-      //ptd^.Dialog.OnButtonClicked(ptd,wParam,CanClose);
-      Dlg.OnButtonClicked(Dlg, Dlg.ButtonIDToModalResult(wParam), CanClose);
-      if not CanClose then
-        Result := S_FALSE;
+    Assert((Dlg is TCustomTaskDialog),'TaskDialogCallbackProc: dwRefData is NOT a TCustomTaskDialog');
+      if Assigned(Dlg.OnButtonClicked) then
+      begin
+        CanClose := True;
+        Dlg.OnButtonClicked(Dlg, Dlg.ButtonIDToModalResult(wParam), CanClose);
+        if not CanClose then
+          Result := S_FALSE;
+      end;
     end;
   end;
 end;
