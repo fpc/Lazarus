@@ -32,6 +32,9 @@ type
     StaticText1: TStaticText;
     StaticText2: TStaticText;
     ToolBar1: TToolBar;
+    ToolButtonEnableAll: TToolButton;
+    ToolButtonDisableAll: TToolButton;
+    ToolButtonDivider1: TToolButton;
     procedure BtnDeleteClick(Sender: TObject);
     procedure FrameDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure FrameDragOver(Sender, Source: TObject; X, Y: Integer;
@@ -40,6 +43,8 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure ToolBar1EndDrag(Sender, Target: TObject; X, Y: Integer);
     procedure ToolBar1StartDrag(Sender: TObject; var DragObject: TDragObject);
+    procedure ToolButtonDisableAllClick(Sender: TObject);
+    procedure ToolButtonEnableAllClick(Sender: TObject);
   private
     FGroupKind: TBreakpointGroupFrameKind;
     FOnDeleteGroup: TOnDeleteGroup;
@@ -60,6 +65,7 @@ type
       AGroupKind: TBreakpointGroupFrameKind = bgfGroup); reintroduce;
     destructor Destroy; override;
     procedure UpdateDisplay;
+    procedure UpdateButtons;
     function Compare(AnOther: TBreakpointGroupFrame): integer;
 
     property Visible: boolean read GetVisible write SetVisible;
@@ -95,6 +101,34 @@ procedure TBreakpointGroupFrame.ToolBar1StartDrag(Sender: TObject;
   var DragObject: TDragObject);
 begin
   FOwner.FDraggingGroupHeader := True;
+end;
+
+procedure TBreakpointGroupFrame.ToolButtonDisableAllClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  FOwner.BeginUpdate;
+  try
+    for i := 0 to DebugBoss.BreakPoints.Count - 1 do
+      if DebugBoss.BreakPoints[i].Group = BrkGroup then
+        DebugBoss.BreakPoints[i].Enabled := False;
+  finally
+    FOwner.EndUpdate;
+  end;
+end;
+
+procedure TBreakpointGroupFrame.ToolButtonEnableAllClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  FOwner.BeginUpdate;
+  try
+  for i := 0 to DebugBoss.BreakPoints.Count - 1 do
+    if DebugBoss.BreakPoints[i].Group = BrkGroup then
+      DebugBoss.BreakPoints[i].Enabled := True;
+  finally
+    FOwner.EndUpdate;
+  end;
 end;
 
 procedure TBreakpointGroupFrame.BtnDeleteClick(Sender: TObject);
@@ -211,6 +245,7 @@ begin
   FBrkGroup := nil;
   FGroupKind := bgfAbandoned;
   Visible := False;
+  UpdateButtons;
 end;
 
 function TBreakpointGroupFrame.GetName: String;
@@ -258,6 +293,16 @@ begin
   if AGroupKind = bgfGroup then
     FGroupKind := bgfUngrouped;
 
+  ToolBar1.Images := IDEImages.Images_16;
+
+  ToolButtonEnableAll.Caption := lisEnableAll;
+  ToolButtonEnableAll.Hint    := lisDbgAllItemEnableHint;
+  ToolButtonEnableAll.ImageIndex := IDEImages.LoadImage('debugger_enable_all');
+
+  ToolButtonDisableAll.Caption := liswlDIsableAll;
+  ToolButtonDisableAll.Hint    := lisDbgAllItemDisableHint;
+  ToolButtonDisableAll.ImageIndex := IDEImages.LoadImage('debugger_disable_all');
+
   BtnDelete.Visible := FBrkGroup <> nil;
   BtnDelete.Images := IDEImages.Images_16;
   BtnDelete.ImageIndex := IDEImages.LoadImage('menu_close');
@@ -274,6 +319,8 @@ end;
 
 procedure TBreakpointGroupFrame.UpdateDisplay;
 begin
+  UpdateButtons;
+
   case FGroupKind of
     bgfUngrouped: begin
         StaticText1.Caption := BreakViewHeaderNoGroup;
@@ -297,6 +344,29 @@ begin
     bgfAbandoned: ;
   end;
 
+end;
+
+procedure TBreakpointGroupFrame.UpdateButtons;
+var
+  HasEnabled, HasDisabled: Boolean;
+  v: PVirtualNode;
+  b: TIDEBreakPoint;
+begin
+  HasEnabled := False;
+  HasDisabled := False;
+
+  for v in FTree.VisibleChildNoInitNodes(Node) do begin
+    b := TIDEBreakPoint(FTree.NodeItem[v]);
+    if b = nil then continue;
+    HasEnabled  := HasEnabled  or b.Enabled;
+    HasDisabled := HasDisabled or not b.Enabled;
+  end;
+
+  ToolButtonEnableAll.Visible := GroupKind in [bgfUngrouped, bgfGroup];
+  ToolButtonEnableAll.Enabled := (Count > 0) and HasDisabled;
+
+  ToolButtonDisableAll.Visible := GroupKind in [bgfUngrouped, bgfGroup];
+  ToolButtonDisableAll.Enabled := (Count > 0) and HasEnabled;
 end;
 
 function TBreakpointGroupFrame.Compare(AnOther: TBreakpointGroupFrame): integer;

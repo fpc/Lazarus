@@ -188,6 +188,7 @@ type
     procedure JumpToCurrentBreakPoint;
     procedure ShowProperties;
   protected
+    procedure CreateWnd; override;
     procedure AcceptGroupHeaderDrop(ADroppedGroupFrame: TBreakpointGroupFrame; ATargetNode: PVirtualNode); override;
     procedure DoBreakPointsChanged; override;
     procedure DoBeginUpdate; override;
@@ -954,6 +955,7 @@ var
   AllCanEnable, AllCanDisable: Boolean;
   CurBreakPoint: TIDEBreakPoint;
   TotalCnt: Integer;
+  g: TBreakpointGroupFrame;
 begin
   if UpdateCount > 0 then exit;
 
@@ -999,6 +1001,12 @@ begin
   popGroup.Enabled := ItemSelected;
   actGroupSetNew.Enabled := ItemSelected;
   actGroupSetNone.Enabled := ItemSelected;
+
+    for VNode in tvBreakPoints.ControlNodes do begin
+      g := GetGroupFrame(VNode);
+      if g <> nil then
+        g.UpdateDisplay;
+    end;
 
   tvBreakPoints.Invalidate;
 end;
@@ -1613,6 +1621,22 @@ begin
   BeginUpdate;
   try
     DebugBoss.ShowBreakPointProperties(CurBreakPoint);
+  finally
+    EndUpdate;
+  end;
+end;
+
+procedure TBreakPointsDlg.CreateWnd;
+var
+  i: Integer;
+begin
+  inherited CreateWnd;
+  BeginUpdate;
+  try
+    ClearTree;
+    for i := 0 to DebugBoss.BreakPointGroups.Count - 1 do
+      GetNodeForBrkGroup(DebugBoss.BreakPointGroups[i]);
+    UpdateAll;
   finally
     EndUpdate;
   end;

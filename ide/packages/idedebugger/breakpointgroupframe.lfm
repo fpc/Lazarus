@@ -12,7 +12,7 @@ object BreakpointGroupFrame: TBreakpointGroupFrame
   DesignTop = 100
   object ToolBar1: TToolBar
     Left = 0
-    Height = 18
+    Height = 24
     Top = 0
     Width = 602
     AutoSize = True
@@ -25,8 +25,27 @@ object BreakpointGroupFrame: TBreakpointGroupFrame
     OnDragOver = FrameDragOver
     OnEndDrag = ToolBar1EndDrag
     OnStartDrag = ToolBar1StartDrag
-    object StaticText1: TStaticText
+    object ToolButtonEnableAll: TToolButton
       Left = 1
+      Top = 2
+      Caption = 'ToolButtonEnableAll'
+      OnClick = ToolButtonEnableAllClick
+    end
+    object ToolButtonDisableAll: TToolButton
+      Left = 24
+      Top = 2
+      Caption = 'ToolButtonDisableAll'
+      OnClick = ToolButtonDisableAllClick
+    end
+    object ToolButtonDivider1: TToolButton
+      Left = 47
+      Height = 22
+      Top = 2
+      Caption = 'ToolButtonDivider1'
+      Style = tbsDivider
+    end
+    object StaticText1: TStaticText
+      Left = 57
       Height = 16
       Top = 2
       Width = 57
@@ -40,7 +59,7 @@ object BreakpointGroupFrame: TBreakpointGroupFrame
       TabOrder = 0
     end
     object StaticText2: TStaticText
-      Left = 58
+      Left = 114
       Height = 16
       Top = 2
       Width = 57
@@ -61,14 +80,14 @@ object BreakpointGroupFrame: TBreakpointGroupFrame
     AnchorSideBottom.Control = ToolBar1
     AnchorSideBottom.Side = asrBottom
     Left = 579
-    Height = 17
+    Height = 23
     Top = 1
     Width = 23
     Anchors = [akTop, akRight, akBottom]
     AutoSize = True
     BorderSpacing.Top = 1
     BevelOuter = bvNone
-    ClientHeight = 17
+    ClientHeight = 23
     ClientWidth = 23
     ParentBackground = False
     ParentColor = False
@@ -78,7 +97,7 @@ object BreakpointGroupFrame: TBreakpointGroupFrame
       AnchorSideBottom.Control = Panel1
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 17
+      Height = 23
       Top = 0
       Width = 23
       Anchors = [akTop, akLeft, akBottom]
