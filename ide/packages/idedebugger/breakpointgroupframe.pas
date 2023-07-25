@@ -113,7 +113,7 @@ var
 begin
   NewGroup := FBrkGroup;
 
-  FTree.BeginUpdate;
+  FOwner.BeginUpdate;
   try
     if FGroupKind = bgfAddNewGroup then begin
       GroupName := '';
@@ -162,7 +162,7 @@ begin
   finally
     if FGroupKind = bgfAddNewGroup then
       Visible := False;
-    FTree.EndUpdate;
+    FOwner.EndUpdate;
   end;
 end;
 
