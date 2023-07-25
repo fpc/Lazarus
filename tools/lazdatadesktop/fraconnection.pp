@@ -72,18 +72,17 @@ type
   end;
 
 Const
-  // Image Index for nodes. Relative to ImageOffset;
+  // Image index, referring to ImgDatamodule.AppImages in unit dmImages
   iiConnection   = 0;
   iiTables       = 1;
   iiTable        = 2;
   iiFields       = 3;
   iiField        = 4;
   iiIndexes      = 5;
-  iiIndex        = 6;
+  iiIndex        = 27;
   iiTableData    = 7;
   iiIndexFields  = 8;
   iiIndexOptions = 9;
-  FimageOffset = 0;
 
 implementation
 
@@ -258,7 +257,7 @@ begin
   Result:=TV.Items.AddChild(ParentNode,ACaption);
   If AImageIndex>=0 then
     begin
-    Result.ImageIndex:=FImageOffset+AImageIndex;
+    Result.ImageIndex:=AImageIndex;
     Result.SelectedIndex:=Result.ImageIndex;
     end;
 end;
@@ -516,7 +515,7 @@ begin
   LC.Width:=80;
   LC:=LV.Columns.Add;
   LC.Caption:=SColOptions;
-  LC.Width:=30;
+  LC.Width:=160;
   LV.Parent:=FDisplay;
   LV.Align:=alClient;
   LV.BeginUpdate;
@@ -708,7 +707,7 @@ begin
   N:=FTV.Selected;
   If N=Nil then
     exit;
-  Case N.ImageIndex-FImageOffset of
+  Case N.ImageIndex of
     iiConnection : Result:=otConnection;
     iiTables     : Result:=otTables;
     iiTable      : Result:=otTable;
