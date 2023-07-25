@@ -1231,7 +1231,8 @@ end;
 procedure TBreakPointsDlg.tvBreakPointsStartDrag(Sender: TObject;
   var DragObject: TDragObject);
 begin
-  FAddGroupedHeader.Visible := True;
+  if tbGroupByBrkGroup.Down then
+    FAddGroupedHeader.Visible := True;
   FDraggingGroupHeader := False;
 end;
 
@@ -1536,7 +1537,7 @@ begin
           tvBreakPoints.DeleteNode(LastAbandoned);
           LastAbandoned := nil;
         end;
-        if GrpHeader.GroupKind = bgfGroup then
+        if GrpHeader.GroupKind in [bgfGroup, bgfUngrouped] then
           GrpHeader.Visible := tbGroupByBrkGroup.Down;
         if GrpHeader.GroupKind = bgfAbandoned then
           LastAbandoned := VNode;

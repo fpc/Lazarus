@@ -362,6 +362,8 @@ begin
     HasDisabled := HasDisabled or not b.Enabled;
   end;
 
+  ToolButtonDivider1.Visible := GroupKind in [bgfUngrouped, bgfGroup];
+
   ToolButtonEnableAll.Visible := GroupKind in [bgfUngrouped, bgfGroup];
   ToolButtonEnableAll.Enabled := (Count > 0) and HasDisabled;
 
