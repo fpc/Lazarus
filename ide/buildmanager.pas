@@ -86,6 +86,7 @@ type
     // current target
     fTargetOS: string;
     fTargetCPU: string;
+    fSubTarget: string;
     fLCLWidgetType: string;
     // cache
     FFPCompilerFilename: string;
@@ -148,16 +149,18 @@ type
                                  var {%H-}Abort: boolean): string;
     function MacroFuncSrcOS(const {%H-}Param: string; const Data: PtrInt;
                             var {%H-}Abort: boolean): string;
+    function MacroFuncSubTarget(const {%H-}Param: string; const Data: PtrInt;
+                                var {%H-}Abort: boolean): string;
     function MacroFuncTargetCmdLine(const {%H-}Param: string; const {%H-}Data: PtrInt;
                                     var {%H-}Abort: boolean): string;
     function MacroFuncTargetCPU(const {%H-}Param: string; const Data: PtrInt;
                                 var {%H-}Abort: boolean): string;
     function MacroFuncTargetFile(const {%H-}Param: string; const {%H-}Data: PtrInt;
                                  var {%H-}Abort: boolean): string;
-    function MacroFuncOutputFile(const {%H-}Param: string; const {%H-}Data: PtrInt;
-                                 var {%H-}Abort: boolean): string;
     function MacroFuncTargetOS(const {%H-}Param: string; const Data: PtrInt;
                                var {%H-}Abort: boolean): string;
+    function MacroFuncOutputFile(const {%H-}Param: string; const {%H-}Data: PtrInt;
+                                 var {%H-}Abort: boolean): string;
     function MacroFuncIDEBuildOptions(const {%H-}Param: string; const Data: PtrInt;
                                var {%H-}Abort: boolean): string;
     function MacroFuncPrimaryConfigPath(const {%H-}Param: string; const {%H-}Data: PtrInt;
@@ -178,6 +181,7 @@ type
     // command line overrides
     OverrideTargetOS: string;
     OverrideTargetCPU: string;
+    OverrideSubTarget: string;
     OverrideLCLWidgetType: string;
     DefaultCfgVars: TCTCfgScriptVariables;
     DefaultCfgVarsBuildMacroStamp: integer;
@@ -206,6 +210,7 @@ type
     function GetBuildMacroOverrides: TStrings; override;
     function GetTargetOS: string; override;
     function GetTargetCPU: string; override;
+    function GetSubTarget: string; override;
     function GetLCLWidgetType: string; override;
     function GetRunCommandLine: string; override;
     function GetRunWorkingDir: string; override;
@@ -250,7 +255,7 @@ type
     function UpdateProjectAutomaticFiles(TestDir: string): TModalResult; override;
 
     // methods for building IDE (will be changed when project groups are there)
-    procedure SetBuildTarget(const TargetOS, TargetCPU, LCLWidgetType: string;
+    procedure SetBuildTarget(const TargetOS, TargetCPU, SubTarget, LCLWidgetType: string;
                              ScanFPCSrc: TScanModeFPCSources; Quiet: boolean);
     procedure SetBuildTargetProject1; override; overload;
     procedure SetBuildTargetProject1(Quiet: boolean; ScanFPCSrc: TScanModeFPCSources = smsfsBackground); overload;
@@ -444,6 +449,8 @@ begin
                       lisTargetCPU,@MacroFuncTargetCPU,[]));
   GlobalMacroList.Add(TTransferMacro.Create('TargetOS','',
                       lisTargetOS,@MacroFuncTargetOS,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('SubTarget','',
+                      lisTargetCPU,@MacroFuncSubTarget,[]));
   GlobalMacroList.Add(TTransferMacro.Create('SrcOS','',
                       lisSrcOS,@MacroFuncSrcOS,[]));
   GlobalMacroList.Add(TTransferMacro.Create('CompPath','',
@@ -643,6 +650,11 @@ function TBuildManager.GetTargetCPU: string;
 begin
   Result:=fTargetCPU;
   //debugln(['TBuildManager.GetTargetCPU ',Result]);
+end;
+
+function TBuildManager.GetSubTarget: string;
+begin
+  Result:=fSubTarget;
 end;
 
 function TBuildManager.GetLCLWidgetType: string;
@@ -980,7 +992,7 @@ procedure TBuildManager.RescanCompilerDefines(ResetBuildTarget,
   end;
 
 var
-  TargetOS, TargetCPU, FPCOptions: string;
+  TargetOS, TargetCPU, SubTarget, FPCOptions: string;
   CompilerFilename: String;
   FPCSrcDir: string;
   ADefTempl: TDefineTemplate;
@@ -1004,7 +1016,7 @@ begin
     CodeToolBoss.CompilerDefinesCache.SourceCaches.Clear;
   end;
   if ResetBuildTarget then
-    SetBuildTarget('','','',smsfsSkip,true);
+    SetBuildTarget('','','','',smsfsSkip,true);
   
   // start the compiler and ask for his settings
   // provide an english message file
@@ -1013,6 +1025,7 @@ begin
   // use current TargetOS, TargetCPU, compilerfilename and FPC source dir
   TargetOS:=GetTargetOS;
   TargetCPU:=GetTargetCPU;
+  SubTarget:=GetSubTarget;
   {$IFDEF VerboseFPCSrcScan}
   debugln(['TBuildManager.RescanCompilerDefines GetParsedFPCSourceDirectory needs FPCVer...']);
   {$ENDIF}
@@ -1027,6 +1040,7 @@ begin
     ' Kind=',PascalCompilerNames[CompilerKind],
     ' TargetOS=',TargetOS,
     ' TargetCPU=',TargetCPU,
+    ' SubTarget=',SubTarget,
     ' FPCOptions="',FPCOptions,'"',
     ' EnvFPCSrcDir=',EnvironmentOptions.FPCSourceDirectory,
     ' FPCSrcDir=',FPCSrcDir,
@@ -1044,7 +1058,7 @@ begin
     debugln(['TBuildManager.RescanCompilerDefines reading default compiler settings']);
     {$ENDIF}
     UnitSetCache:=CodeToolBoss.CompilerDefinesCache.FindUnitSet(
-      DefCompilerFilename,'','','',FPCSrcDir,true);
+      DefCompilerFilename,'','','','',FPCSrcDir,true);
     UnitSetCache.GetConfigCache(true);
   end;
 
@@ -1087,9 +1101,9 @@ begin
   {$IFDEF VerboseFPCSrcScan}
   debugln(['TBuildManager.RescanCompilerDefines reading active compiler settings']);
   {$ENDIF}
-  //debugln(['TBuildManager.RescanCompilerDefines ',CompilerFilename,' OS=',TargetOS,' CPU=',TargetCPU,' Options="',FPCOptions,'"']);
+  //debugln(['TBuildManager.RescanCompilerDefines ',CompilerFilename,' OS=',TargetOS,' CPU=',TargetCPU,' SubTarget=',SubTarget,' Options="',FPCOptions,'"']);
   UnitSetCache:=CodeToolBoss.CompilerDefinesCache.FindUnitSet(
-    CompilerFilename,TargetOS,TargetCPU,FPCOptions,FPCSrcDir,true);
+    CompilerFilename,TargetOS,TargetCPU,SubTarget,FPCOptions,FPCSrcDir,true);
 
   NeedUpdateFPCSrcCache:=false;
   //debugln(['TBuildManager.RescanCompilerDefines ',DirectoryExistsUTF8(FPCSrcDir),' ',(not WaitTillDone),' ',(not HasGUI)]);
@@ -1124,6 +1138,7 @@ begin
     ' CompilerFilename=',CompilerFilename,
     ' TargetOS=',TargetOS,
     ' TargetCPU=',TargetCPU,
+    ' SubTarget=',SubTarget,
     ' FPCOptions="',FPCOptions,'"',
     ' RealCompiler=',UnitSetCache.GetConfigCache(false).RealCompiler,
     ' EnvFPCSrcDir=',EnvironmentOptions.FPCSourceDirectory,
@@ -1203,6 +1218,8 @@ begin
       // check if at least one fpc config is there
       if (UnitSetCache.GetFirstFPCCfg='') then begin
         IgnorePath:='MissingFPCCfg_'+TargetOS+'-'+TargetCPU;
+        if SubTarget<>'' then
+          IgnorePath+='-'+SubTarget;
         if (InputHistories<>nil) and (InputHistories.Ignores.Find(IgnorePath)=nil)
         then begin
           MsgResult:=IDEMessageDialog(lisCCOWarningCaption,
@@ -2283,6 +2300,17 @@ begin
     Result:=GetDefaultSrcOSForTargetOS(GetTargetOS);
 end;
 
+function TBuildManager.MacroFuncSubTarget(const Param: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  if Data=CompilerOptionMacroPlatformIndependent then
+    Result:='%(FPC_SUBTARGET)'
+  else if SysUtils.CompareText(Param,'IDE')=0 then
+    Result:=''
+  else
+    Result:=GetSubTarget;
+end;
+
 function TBuildManager.MacroFuncFPCVer(const Param: string; const Data: PtrInt;
   var Abort: boolean): string;
 
@@ -2913,7 +2941,7 @@ begin
   Result:=not Project1.BuildModes.IsSessionMode(Identifier);
 end;
 
-procedure TBuildManager.SetBuildTarget(const TargetOS, TargetCPU,
+procedure TBuildManager.SetBuildTarget(const TargetOS, TargetCPU, SubTarget,
   LCLWidgetType: string; ScanFPCSrc: TScanModeFPCSources; Quiet: boolean);
 
   function GetEffectiveLCLWidgetType: string;
@@ -2932,6 +2960,7 @@ procedure TBuildManager.SetBuildTarget(const TargetOS, TargetCPU,
 var
   OldTargetOS: String;
   OldTargetCPU: String;
+  OldSubTarget: String;
   OldLCLWidgetType: String;
   PCTargetChanged: Boolean;
   LCLTargetChanged: Boolean;
@@ -2940,13 +2969,15 @@ var
   CompQueryOptions, CompilerFilename: String;
 begin
   {$IFDEF VerboseDefaultCompilerTarget}
-  debugln(['TBuildManager.SetBuildTarget TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" LCLWidgetType="',LCLWidgetType,'"']);
+  debugln(['TBuildManager.SetBuildTarget TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" SubTarget="',SubTarget,'" LCLWidgetType="',LCLWidgetType,'"']);
   {$ENDIF}
   OldTargetOS:=fTargetOS;
   OldTargetCPU:=fTargetCPU;
+  OldSubTarget:=fSubTarget;
   OldLCLWidgetType:=fLCLWidgetType;
   OverrideTargetOS:=GetFPCTargetOS(TargetOS);
   OverrideTargetCPU:=GetFPCTargetCPU(TargetCPU);
+  OverrideSubTarget:=GetFPCSubTarget(SubTarget);
   OverrideLCLWidgetType:=lowercase(LCLWidgetType);
 
   // compute new TargetOS
@@ -2968,6 +2999,16 @@ begin
     fTargetCPU:='';
   if SysUtils.CompareText(fTargetCPU,'default')=0 then
     fTargetCPU:='';
+
+  // compute new SubTarget
+  if OverrideSubTarget<>'' then
+    fSubTarget:=OverrideSubTarget
+  else if FBuildTarget<>nil then
+    fSubTarget:=FBuildTarget.CompilerOptions.SubTarget
+  else
+    fSubTarget:='';
+  if SysUtils.CompareText(fSubTarget,'default')=0 then
+    fSubTarget:='';
 
   if (fTargetOS='') or (fTargetCPU='') then
   begin
@@ -3004,6 +3045,7 @@ begin
 
   PCTargetChanged:=(OldTargetOS<>fTargetOS)
                     or (OldTargetCPU<>fTargetCPU)
+                    or (OldSubTarget<>fSubTarget)
                     or (CodeToolBoss.DefineTree.FindDefineTemplateByName(
                          StdDefTemplLazarusSources,true)=nil);
   if PCTargetChanged then
@@ -3018,9 +3060,10 @@ begin
 
   if PCTargetChanged or LCLTargetChanged then begin
     if ConsoleVerbosity>=0 then
-      DebugLn(['Hint: (lazarus) [TBuildManager.SetBuildTarget] Old=',OldTargetCPU,
-               '-',OldTargetOS,'-',OldLCLWidgetType,' New=',fTargetCPU,'-',fTargetOS,
-               '-',fLCLWidgetType,' Changed: OS/CPU=',PCTargetChanged,' LCL=',LCLTargetChanged]);
+      DebugLn(['Hint: (lazarus) [TBuildManager.SetBuildTarget]',
+          ' Old=',OldTargetCPU,'-',OldTargetOS,'-',OldSubTarget,'-',OldLCLWidgetType,
+          ' New=',fTargetCPU,'-',fTargetOS,'-',fSubTarget,'-',fLCLWidgetType,
+          ' Changed: OS/CPU=',PCTargetChanged,' LCL=',LCLTargetChanged]);
   end;
   if LCLTargetChanged then
     CodeToolBoss.SetGlobalValue(ExternalMacroStart+'LCLWidgetType',fLCLWidgetType);
@@ -3043,25 +3086,26 @@ begin
   FBuildTarget:=Project1;
   if FBuildTarget<>nil then
     FBuildTarget.IDEOptions.AddHandlerDestroy(@OnProjectDestroy);
-  SetBuildTarget('','','',ScanFPCSrc,Quiet);
+  SetBuildTarget('','','','',ScanFPCSrc,Quiet);
 end;
 
 procedure TBuildManager.SetBuildTargetIDE(aQuiet: boolean);
 var
   NewTargetOS: String;
   NewTargetCPU: String;
-  NewLCLWidgetSet: String;
+  NewLCLWidgetSet, NewSubTarget: String;
 begin
   //debugln(['TBuildManager.SetBuildTargetIDE START']);
   FBuildTarget:=nil;
   with MiscellaneousOptions do begin
     NewTargetOS:=BuildLazOpts.TargetOS;
     NewTargetCPU:=BuildLazOpts.TargetCPU;
+    NewSubTarget:=BuildLazOpts.SubTarget;
     NewLCLWidgetSet:=LCLPlatformDirNames[BuildLazOpts.TargetPlatform];
   end;
   if ConsoleVerbosity>=1 then
-    debugln(['Hint: (lazarus) [TBuildManager.SetBuildTargetIDE] OS=',NewTargetOS,' CPU=',NewTargetCPU,' WS=',NewLCLWidgetSet]);
-  SetBuildTarget(NewTargetOS,NewTargetCPU,NewLCLWidgetSet,smsfsBackground,aQuiet);
+    debugln(['Hint: (lazarus) [TBuildManager.SetBuildTargetIDE] OS=',NewTargetOS,' CPU=',NewTargetCPU,' SubTarget=',NewSubTarget,' WS=',NewLCLWidgetSet]);
+  SetBuildTarget(NewTargetOS,NewTargetCPU,NewSubTarget,NewLCLWidgetSet,smsfsBackground,aQuiet);
 end;
 
 function TBuildManager.BuildTargetIDEIsDefault: boolean;

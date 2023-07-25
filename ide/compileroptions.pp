@@ -1625,6 +1625,7 @@ begin
     TargetProcessor := aXMLConfig.GetValue(p+'TargetProcessor/Value', '');
   TargetCPU := aXMLConfig.GetValue(p+'TargetCPU/Value', '');
   TargetOS := aXMLConfig.GetValue(p+'TargetOS/Value', '');
+  SubTarget := aXMLConfig.GetValue(p+'SubTarget/Value', '');
   OptimizationLevel := aXMLConfig.GetValue(p+'Optimizations/OptimizationLevel/Value', 1);
   VariablesInRegisters := aXMLConfig.GetValue(p+'Optimizations/VariablesInRegisters/Value', false);
   UncertainOptimizations := aXMLConfig.GetValue(p+'Optimizations/UncertainOptimizations/Value', false);
@@ -1835,6 +1836,7 @@ begin
   aXMLConfig.SetDeleteValue(p+'TargetProcessor/Value', TargetProcessor,'');
   aXMLConfig.SetDeleteValue(p+'TargetCPU/Value', TargetCPU,'');
   aXMLConfig.SetDeleteValue(p+'TargetOS/Value', TargetOS,'');
+  aXMLConfig.SetDeleteValue(p+'SubTarget/Value', SubTarget,'');
   aXMLConfig.SetDeleteValue(p+'Optimizations/OptimizationLevel/Value', OptimizationLevel,1);
   aXMLConfig.SetDeleteValue(p+'Optimizations/VariablesInRegisters/Value', VariablesInRegisters,false);
   aXMLConfig.SetDeleteValue(p+'Optimizations/UncertainOptimizations/Value', UncertainOptimizations,false);
@@ -2645,6 +2647,9 @@ begin
   if (CurTargetCPU<>'')
   and ((TargetCPU<>'') or (CurTargetCPU<>DefaultTargetCPU)) then
     Result.Add('-P' + CurTargetCPU);
+  { SubTarget }
+  if SubTarget<>'' then
+    Result.Add('-t'+SubTarget);
   { TargetProcessor }
   if TargetProcessor<>'' then
     Result.Add('-Cp'+UpperCase(TargetProcessor));

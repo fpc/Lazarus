@@ -354,7 +354,7 @@ begin
   sl.Add('FPC source directory='+EnvironmentOptions.FPCSourceDirectory);
   sl.Add('Real FPC source directory='+EnvironmentOptions.GetParsedFPCSourceDirectory);
   CfgCache:=CodeToolBoss.CompilerDefinesCache.ConfigCaches.Find(
-    LazarusIDE.GetFPCompilerFilename,'','','',true);
+    LazarusIDE.GetFPCompilerFilename,true);
   if CheckFPCSrcDirQuality(EnvironmentOptions.GetParsedFPCSourceDirectory,Note,
     CfgCache.GetFPCVer)<>sddqCompatible
   then

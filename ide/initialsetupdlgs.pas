@@ -949,7 +949,7 @@ begin
   begin
     // check compiler again
     CfgCache:=CodeToolBoss.CompilerDefinesCache.ConfigCaches.Find(
-                                               fLastParsedCompiler,'','','',true);
+                                               fLastParsedCompiler,true);
     CfgCache.CompilerDate:=0; // force update
     if CfgCache.NeedsUpdate then
       CfgCache.Update(CodeToolBoss.CompilerDefinesCache.TestFilename);

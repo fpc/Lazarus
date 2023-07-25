@@ -108,8 +108,7 @@ end;
 procedure TIDEFPCInfoDialog.UpdateValuesMemo;
 var
   sl: TStringList;
-  TargetOS: String;
-  TargetCPU: String;
+  TargetOS, TargetCPU, SubTarget: String;
   CompilerFilename: String;
   FPCSrcDir: String;
   UnitSetCache: TFPCUnitSetCache;
@@ -124,10 +123,11 @@ begin
 
     TargetOS:=BuildBoss.GetTargetOS;
     TargetCPU:=BuildBoss.GetTargetCPU;
+    SubTarget:=BuildBoss.GetSubTarget;
     CompilerFilename:=LazarusIDE.GetCompilerFilename;
     FPCSrcDir:=EnvironmentOptions.GetParsedFPCSourceDirectory; // needs FPCVer macro
     UnitSetCache:=CodeToolBoss.CompilerDefinesCache.FindUnitSet(
-      CompilerFilename,TargetOS,TargetCPU,'',FPCSrcDir,true);
+      CompilerFilename,TargetOS,TargetCPU,SubTarget,'',FPCSrcDir,true);
     GatherFPCExecutable(UnitSetCache,sl);
 
     ValuesMemo.Lines.Assign(sl);
@@ -138,10 +138,7 @@ end;
 
 procedure TIDEFPCInfoDialog.UpdateCmdLinePage;
 var
-  TargetOS: String;
-  TargetCPU: String;
-  CompilerFilename: String;
-  CompilerOptions: String;
+  TargetOS, TargetCPU, SubTarget, CompilerFilename, CompilerOptions: String;
   Cfg: TPCTargetConfigCache;
   Params: String;
   ExtraOptions: String;
@@ -191,8 +188,9 @@ begin
     // fpc -va
     TargetOS:=BuildBoss.GetTargetOS;
     TargetCPU:=BuildBoss.GetTargetCPU;
+    SubTarget:=BuildBoss.GetSubTarget;
     Cfg:=CodeToolBoss.CompilerDefinesCache.ConfigCaches.Find(
-                        CompilerFilename,CompilerOptions,TargetOS,TargetCPU,true);
+                        CompilerFilename,CompilerOptions,TargetOS,TargetCPU,SubTarget,true);
     TestFilename:=CodeToolBoss.CompilerDefinesCache.TestFilename;
     Filename:=ExtractFileName(TestFilename);
     WorkDir:=ExtractFilePath(TestFilename);
@@ -293,6 +291,7 @@ begin
   sl.Add('Active target:');
   sl.Add('TargetOS='+BuildBoss.GetTargetOS);
   sl.Add('TargetCPU='+BuildBoss.GetTargetCPU);
+  sl.Add('SubTarget='+BuildBoss.GetSubTarget);
   sl.Add('');
 end;
 

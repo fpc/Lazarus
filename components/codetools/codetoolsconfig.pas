@@ -94,6 +94,7 @@ type
     FPPUExt: string;
     FProjectDir: string;
     FSourceCaches: TFPCSourceCaches;
+    FSubTarget: string;
     FTargetOS: string;
     FTargetProcessor: string;
     FTestPascalFile: string;
@@ -106,6 +107,7 @@ type
     procedure SetModified(const AValue: boolean);
     procedure SetPPUExt(const AValue: string);
     procedure SetProjectDir(const AValue: string);
+    procedure SetSubTarget(AValue: string);
     procedure SetTargetOS(const AValue: string);
     procedure SetTargetProcessor(const AValue: string);
     procedure SetTestPascalFile(const AValue: string);
@@ -128,6 +130,7 @@ type
     property FPCOptions: string read FFPCOptions write SetFPCOptions; // extra options for fpc
     property TargetOS: string read FTargetOS write SetTargetOS;
     property TargetProcessor: string read FTargetProcessor write SetTargetProcessor;
+    property SubTarget: string read FSubTarget write SetSubTarget;
     property TestPascalFile: string read FTestPascalFile write SetTestPascalFile; // points to an empty unit
     property PPUExt: string read FPPUExt write SetPPUExt;
     property SourceCaches: TFPCSourceCaches read FSourceCaches;
@@ -217,6 +220,13 @@ begin
   Modified:=true;
 end;
 
+procedure TCodeToolsOptions.SetSubTarget(AValue: string);
+begin
+  if FSubTarget=AValue then Exit;
+  FSubTarget:=AValue;
+  Modified:=true;
+end;
+
 procedure TCodeToolsOptions.SetTargetOS(const AValue: string);
 begin
   if FTargetOS=AValue then exit;
@@ -276,6 +286,8 @@ begin
     TargetOS:=GetEnvironmentVariableUTF8('FPCTARGET');
   if GetEnvironmentVariableUTF8('FPCTARGETCPU')<>'' then
     TargetProcessor:=GetEnvironmentVariableUTF8('FPCTARGETCPU');
+  if GetEnvironmentVariableUTF8('FPCSUBTARGET')<>'' then
+    SubTarget:=GetEnvironmentVariableUTF8('FPCSUBTARGET');
 end;
 
 function TCodeToolsOptions.FindDefaultCompilerFilename: string;
@@ -292,6 +304,7 @@ begin
   XMLConfig.SetDeleteValue(Path+'FPC/SrcDir/Value',FPCSrcDir,'');
   XMLConfig.SetDeleteValue(Path+'FPC/TargetOS/Value',TargetOS,'');
   XMLConfig.SetDeleteValue(Path+'FPC/TargetProcessor/Value',TargetProcessor,'');
+  XMLConfig.SetDeleteValue(Path+'FPC/SubTarget/Value',SubTarget,'');
   XMLConfig.SetDeleteValue(Path+'FPC/PPUExt/Value',PPUExt,'.ppu');
   XMLConfig.SetDeleteValue(Path+'FPC/TestPascalFile/Value',TestPascalFile,'');
   XMLConfig.SetDeleteValue(Path+'Lazarus/SrcDir/Value',LazarusSrcDir,'');
@@ -311,6 +324,7 @@ begin
   FPCSrcDir:=XMLConfig.GetValue(Path+'FPC/SrcDir/Value','');
   TargetOS:=XMLConfig.GetValue(Path+'FPC/TargetOS/Value','');
   TargetProcessor:=XMLConfig.GetValue(Path+'FPC/TargetProcessor/Value','');
+  SubTarget:=XMLConfig.GetValue(Path+'FPC/SubTarget/Value','');
   PPUExt:=XMLConfig.GetValue(Path+'FPC/PPUExt/Value','.ppu');
   TestPascalFile:=XMLConfig.GetValue(Path+'FPC/TestPascalFile/Value','');
   FConfigCaches.LoadFromXMLConfig(XMLConfig,Path+'FPCConfigCaches/');

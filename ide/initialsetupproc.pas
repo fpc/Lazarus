@@ -393,7 +393,7 @@ begin
   if TestSrcFilename<>'' then
   begin
     CfgCache:=CodeToolBoss.CompilerDefinesCache.ConfigCaches.Find(
-                                                       AFilename,'','','',true);
+                                                       AFilename,true);
     if CfgCache.NeedsUpdate then
       CfgCache.Update(TestSrcFilename);
     i:=CfgCache.IndexOfUsedCfgFile;
@@ -700,7 +700,7 @@ begin
   if TestSrcFilename<>'' then
   begin
     CfgCache:=CodeToolBoss.CompilerDefinesCache.ConfigCaches.Find(
-                                                       AFilename,'','','',true);
+                                                       AFilename,true);
     if CfgCache.NeedsUpdate then
       CfgCache.Update(TestSrcFilename);
     i:=CfgCache.IndexOfUsedCfgFile;
