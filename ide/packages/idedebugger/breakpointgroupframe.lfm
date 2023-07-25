@@ -12,12 +12,16 @@ object BreakpointGroupFrame: TBreakpointGroupFrame
   DesignTop = 100
   object ToolBar1: TToolBar
     Left = 0
-    Height = 24
+    Height = 25
     Top = 0
     Width = 602
     AutoSize = True
+    BorderWidth = 1
+    ButtonHeight = 21
+    ButtonWidth = 26
     Caption = 'ToolBar1'
     Color = clBtnFace
+    EdgeBorders = [ebLeft, ebTop, ebRight, ebBottom]
     ParentColor = False
     ParentFont = False
     TabOrder = 0
@@ -26,26 +30,26 @@ object BreakpointGroupFrame: TBreakpointGroupFrame
     OnEndDrag = ToolBar1EndDrag
     OnStartDrag = ToolBar1StartDrag
     object ToolButtonEnableAll: TToolButton
-      Left = 1
+      Left = 3
       Top = 2
       Caption = 'ToolButtonEnableAll'
       OnClick = ToolButtonEnableAllClick
     end
     object ToolButtonDisableAll: TToolButton
-      Left = 24
+      Left = 29
       Top = 2
       Caption = 'ToolButtonDisableAll'
       OnClick = ToolButtonDisableAllClick
     end
     object ToolButtonDivider1: TToolButton
-      Left = 47
-      Height = 22
+      Left = 55
+      Height = 21
       Top = 2
       Caption = 'ToolButtonDivider1'
       Style = tbsDivider
     end
     object StaticText1: TStaticText
-      Left = 57
+      Left = 65
       Height = 16
       Top = 2
       Width = 57
@@ -59,7 +63,7 @@ object BreakpointGroupFrame: TBreakpointGroupFrame
       TabOrder = 0
     end
     object StaticText2: TStaticText
-      Left = 114
+      Left = 122
       Height = 16
       Top = 2
       Width = 57
@@ -79,15 +83,17 @@ object BreakpointGroupFrame: TBreakpointGroupFrame
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ToolBar1
     AnchorSideBottom.Side = asrBottom
-    Left = 579
-    Height = 23
+    Left = 577
+    Height = 22
     Top = 1
     Width = 23
     Anchors = [akTop, akRight, akBottom]
     AutoSize = True
     BorderSpacing.Top = 1
+    BorderSpacing.Right = 2
+    BorderSpacing.Bottom = 2
     BevelOuter = bvNone
-    ClientHeight = 23
+    ClientHeight = 22
     ClientWidth = 23
     ParentBackground = False
     ParentColor = False
@@ -97,7 +103,7 @@ object BreakpointGroupFrame: TBreakpointGroupFrame
       AnchorSideBottom.Control = Panel1
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 23
+      Height = 22
       Top = 0
       Width = 23
       Anchors = [akTop, akLeft, akBottom]
