@@ -28,6 +28,12 @@ uses
   SysUtils, Classes, TypInfo, Laz2_DOM, Laz2_XMLWrite;
 
 type
+  {$IF FPC_FULLVERSION>30300}
+  TXMLObjectWriterString = RawByteString;
+  {$ELSE}
+  TXMLObjectWriterString = String;
+  {$ENDIF}
+
   TXMLObjectWriterStackElType = (elUnknown, elPropertyList, elChildrenList);
 
   TXMLObjectWriterStackEl = class
@@ -76,7 +82,7 @@ type
     procedure WriteInteger(Value: Int64); override;
     procedure WriteMethodName(const Name: String); override;
     procedure WriteSet(Value: LongInt; SetType: Pointer); override;
-    procedure WriteString(const Value: String); override;
+    procedure WriteString(const Value: TXMLObjectWriterString); override;
     procedure WriteWideString(const Value: WideString); override;
     procedure WriteSignature; override;
     {$IFDEF USE_NEW_READER_WRITER}
@@ -454,7 +460,7 @@ begin
   GetPropertyElement('set')['value'] := s;
 end;
 
-procedure TXMLObjectWriter.WriteString(const Value: String);
+procedure TXMLObjectWriter.WriteString(const Value: TXMLObjectWriterString);
 begin
   GetPropertyElement('string')['value'] := Value;
 end;

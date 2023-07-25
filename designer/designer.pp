@@ -1544,9 +1544,9 @@ begin
       if tmpFieldN = 'Name' then
       begin
         if IsActUndo then
-          CompN := FUndoList[FUndoCurr].newVal
+          CompN := String(FUndoList[FUndoCurr].newVal)
         else
-          CompN := FUndoList[FUndoCurr].oldVal;
+          CompN := String(FUndoList[FUndoCurr].oldVal);
       end
       else
         CompN := FUndoList[FUndoCurr].compName;

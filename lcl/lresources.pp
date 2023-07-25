@@ -226,6 +226,12 @@ type
   end;
   PLRSOWStackItem = ^TLRSOWStackItem;
 
+  {$IF FPC_FULLVERSION>30300}
+  TLazObjectWriterString = RawByteString;
+  {$ELSE}
+  TLazObjectWriterString = String;
+  {$ENDIF}
+
   { TLRSObjectWriter }
 
   TLRSObjectWriter = class(TAbstractObjectWriter)
@@ -291,7 +297,7 @@ type
     procedure WriteInteger(Value: Int64); override;
     procedure WriteMethodName(const Name: String); override;
     procedure WriteSet(Value: LongInt; SetType: Pointer); override;
-    procedure WriteString(const Value: String); override;
+    procedure WriteString(const Value: TLazObjectWriterString); override;
     procedure WriteWideString(const Value: WideString); override;
     procedure WriteUnicodeString(const Value: UnicodeString); override;
     procedure WriteVariant(const Value: Variant); override;
@@ -4957,7 +4963,7 @@ begin
   WriteStr('');
 end;
 
-procedure TLRSObjectWriter.WriteString(const Value: String);
+procedure TLRSObjectWriter.WriteString(const Value: TLazObjectWriterString);
 var
   i: Integer;
   b: Byte;
@@ -5013,7 +5019,7 @@ begin
     varcurrency:
       WriteCurrency(Value);
     varolestr, varstring:
-      WriteString(Value);
+      WriteString(String(Value));
     varboolean:
       WriteBoolean(Value);
     else
