@@ -255,7 +255,7 @@ var
   AForm: TCustomForm;
 begin
   Result := True;
-  FillChar(Message, 0, SizeOf(Message));
+  FillChar(Message, SizeOf(Message), 0);
   AForm := TCustomForm(WidgetInfo^.LCLObject);
   Message.Width := AForm.Width;
   Message.Height := AForm.Height;
@@ -300,7 +300,7 @@ begin
   if not GDK_WINDOW_GET_MINIMIZED(PGdkWindowPrivate(Widget^.Window)) then Exit;
 
   Result := True;
-  FillChar(Message, 0, SizeOf(Message));
+  FillChar(Message, SizeOf(Message), 0);
   AForm := TCustomForm(WidgetInfo^.LCLObject);
   Message.Msg := LM_SIZE;
   Message.SizeType := SIZEICONIC or Size_SourceIsInterface;
