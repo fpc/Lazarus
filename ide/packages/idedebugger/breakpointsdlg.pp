@@ -454,23 +454,25 @@ end;
 function TBreakPointsDlg.GetNodeForBrkGroup(const ABrkGroup: TIDEBreakPointGroup
   ): PVirtualNode;
 var
+  PVNode: PVirtualNode;
   GrpHeader: TBreakpointGroupFrame;
 begin
   if ABrkGroup = nil then
     exit(tvBreakPoints.FindNodeForControl(FUngroupedHeader));
 
-  Result := tvBreakPoints.FindNodeForItem(ABrkGroup);
-  if Result = nil then begin
-    tvBreakPoints.BeginUpdate;
-    try
-      Result := tvBreakPoints.AddChild(nil, nil);
-      GrpHeader := TBreakpointGroupFrame.Create(Self, tvBreakPoints, Result, ABrkGroup);
-      GrpHeader.Visible := tbGroupByBrkGroup.Down;
-      GrpHeader.OnDeleteGroup := @DoGroupDeleteBtnClicked;
-      tvBreakPoints.NodeControl[Result] := GrpHeader;
-    finally
-      tvBreakPoints.EndUpdate;
-    end;
+  for PVNode in tvBreakPoints.ControlNodes do
+    if GetGroupFrame(PVNode).BrkGroup = ABrkGroup then
+      exit(PVNode);
+
+  tvBreakPoints.BeginUpdate;
+  try
+    Result := tvBreakPoints.AddChild(nil, nil);
+    GrpHeader := TBreakpointGroupFrame.Create(Self, tvBreakPoints, Result, ABrkGroup);
+    GrpHeader.Visible := tbGroupByBrkGroup.Down;
+    GrpHeader.OnDeleteGroup := @DoGroupDeleteBtnClicked;
+    tvBreakPoints.NodeControl[Result] := GrpHeader;
+  finally
+    tvBreakPoints.EndUpdate;
   end;
 end;
 
