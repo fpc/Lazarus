@@ -8114,11 +8114,8 @@ end;
 constructor TfrPage.Create(AOwnerPage: TfrPage);
 begin
   inherited Create(AOwnerPage);
-  FillChar(Bands, 0, SizeOf(Bands));
-
   fMargins:=TfrRect.Create;
   BaseName:='Page';
-  
   List := TFpList.Create;
   Objects := TFpList.Create;
   RTObjects := TFpList.Create;
