@@ -20156,30 +20156,62 @@ the Lazarus Resource (.LRS).
 <short/>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="CreateGraphicFromResourceName">
 <short>
-Creates and loads a TGraphic instance using the specified resource instance 
-handle and resource name.
+Creates and loads a TGraphic instance with the content from the specified 
+resource instance handle and resource name.
 </short>
-<descr/>
+<descr>
+<p>
+<var>CreateGraphicFromResourceName</var> calls the RTL FindResource routine to 
+get an FPC resource handle for the LCL handle in Instance and the resource 
+with the name in ResName.
+</p>
+<p>
+Both Icon and Cursor group resource types are checked using FindResource. When 
+a valid resource handle (one with a non-zero value) is available, a TIcon or 
+TCursorImage instance is created and used as the return value for the routine. 
+The LoadFromResourceHandle method in the class instance is called to load the 
+image content for the resource.
+</p>
+<p>
+If a handle is not found for an Icon or a Cursor resource type, the 
+CreateBitmapFromResourceName routine is called to create and load the content 
+in the TGraphic instance.
+</p>
+<p>
+CreateGraphicFromResourceName is used in the implementation of the  
+TCustomImageList.AddResourceName method.
+</p>
+</descr>
 <version>
 Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
 deprecated THandle type in the Instance parameter.
 </version>
 <seealso>
+<link id="TGraphic"/>
+<link id="TIcon.LoadFromResourceHandle"/>
+<link id="TCursorImage.LoadFromResourceHandle"/>  
+<link id="#lcl.imglist.TCustomImageList.AddResourceName">TCustomImageList.AddResourceName</link>
 <link id="#lcl.lcltype.TLCLHandle">LCLType.TLCLHandle</link>
 <link id="#lcl.wsreferences.TLCLHandle">WSReferences.TLCLHandle</link>
 </seealso>
 </element>
 <element name="CreateGraphicFromResourceName.Result">
-<short/>
+<short>
+TGraphic (or descendant) instance with the graphic content loaded for the 
+specified resource.
+</short>
 </element>
 <element name="CreateGraphicFromResourceName.Instance">
-<short/>
+<short>
+TLCLHandle instance for the application resource accessed in the routine.
+</short>
 </element>
 <element name="CreateGraphicFromResourceName.ResName">
-<short/>
+<short>
+Name for the resource loaded from the specified resource handle.
+</short>
 </element>
 
 <element name="CreateBitmapFromResourceName">
@@ -20215,24 +20247,61 @@ Handle for the Lazarus resource with the content for the bitmap.
 <short>Name for the RT_BITMAP resource loaded in the routine.</short>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="CreateBitmapFromLazarusResource">
 <short>Creates and loads a Bitmap from a Lazarus Resource (.lrs) file.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>CreateBitmapFromLazarusResource</var> is an overloaded 
+<var>TCustomBitmap</var> function used to create and populate a bitmap with 
+the content specified by the arguments to the routine.
+</p>
+<p>
+The overloaded variants allow either a resource name (AName) or TLResource 
+handle (AHandle) to be used to select the content for the bitmap. The variants 
+with the AMinimumClass argument allow the class type for the graphic to be 
+specified. TCustomBitmapClass is the default class type used in the overloaded 
+variants.
+</p>
+<p>
+CreateBitmapFromLazarusResource uses a temporary TLazarusResourceStream 
+instance to load the content from the Lazarus resource.
+</p>
+<p>
+CreateBitmapFromLazarusResource is used in the implementation of routines like 
+LoadBitmapFromLazarusResourceHandle and GetDefaultGlyph (in 
+<file>ImgList.pp</file>).
+</p>
+</descr>
+<seealso>
+<link id="TCustomBitmap"/>
+<link id="TCustomBitmapClass"/>
+<link id="LoadBitmapFromLazarusResourceHandle"/>
+<link id="#lcl.imglist.GetDefaultGlyph">GetDefaultGlyph</link>
+<link id="#lcl.lresources.TLazarusResourceStream">TLazarusResourceStream</link>
+<link id="#lcl.lresources.TLResource">TLResource</link>
+</seealso>
 </element>
 <element name="CreateBitmapFromLazarusResource.Result">
-<short/>
+<short>
+TCustomBitmap with the graphic content created in the routine.
+</short>
 </element>
 <element name="CreateBitmapFromLazarusResource.AName">
-<short/>
+<short>
+Name for the graphic resource loaded in the routine.
+</short>
 </element>
 <element name="CreateBitmapFromLazarusResource.AMinimumClass">
-<short/>
+<short>
+Class type required to load the content for the specified resource. The 
+default class type is TCustomBitmapClass.
+</short>
 </element>
 <element name="CreateBitmapFromLazarusResource.AHandle">
-<short/>
+<short>
+Handle for the Lazarus resource accessed in the routine.
+</short>
 </element>
 
 <element name="CreateCompatibleBitmaps">
