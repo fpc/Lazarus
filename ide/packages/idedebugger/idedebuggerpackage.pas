@@ -18,7 +18,7 @@ uses
   HistoryDlg, PseudoTerminalDlg, RegistersDlg, DebugOutputForm, ExceptionDlg, 
   FeedbackDlg, DebugAttachDialog, BreakPropertyDlg, EvaluateDlg, InspectDlg, 
   BreakPointsDlg, AssemblerDlg, DbgTreeViewWatchData, EnvDebuggerOptions, 
-  BreakprointGroupFrame, LazarusPackageIntf;
+  BreakpointGroupFrame, LazarusPackageIntf;
 
 implementation
 
