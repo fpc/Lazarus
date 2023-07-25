@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fpdoc-descriptions>
+<package name="lcl">
+<!-- 
+========================================================================
+taskdlgemulation 
+========================================================================
+-->
+<!-- 
+TODO: Added in df338fd867.
+Added in LCL version 4.0.
+Check for reusable content from the deprecated/removed lcltaskdialog.xml file.
+-->
+<module name="TaskDlgEmulation">
+<short/>
+<descr/>
+
+<!-- unresolved references -->
+<element name="Classes"/>
+<element name="SysUtils"/>
+<element name="LazUTF8"/>
+<element name="LCLType"/>
+<element name="LCLStrConsts"/>
+<element name="LCLIntf"/>
+<element name="InterfaceBase"/>
+<element name="ImgList"/>
+<element name="LCLProc"/>
+<element name="LResources"/>
+<element name="Menus"/>
+<element name="Graphics"/>
+<element name="Forms"/>
+<element name="Controls"/>
+<element name="StdCtrls"/>
+<element name="ExtCtrls"/>
+<element name="Buttons"/>
+<element name="Dialogs"/>
+<element name="DialogRes"/>
+
+<element name="TTaskDialogElement">
+<short/>
+<descr>
+</descr>
+<p>
+<file>TaskDlgEmulation.pp</file> contains types, routines, and variable used to implement a non-native, emulated Task Dialog. It is used in widgetset classes for platforms where the task dialog API is not available, or not supported for a specific version of an operating system.
+</p>
+<p>
+It contains TLCLTaskDialog - a dynamically configured form displayed when a task dialog is executed using its configuration settings.
+</p>
+<p>
+<file>TaskDlgEmulation.pp</file> is part of the Lazarus Component Library 
+(<b>LCL</b>).
+</p>
+<seealso/>
+</element>
+<element name="TTaskDialogElement.tdeContent">
+<short/>
+</element>
+<element name="TTaskDialogElement.tdeExpandedInfo">
+<short/>
+</element>
+<element name="TTaskDialogElement.tdeFooter">
+<short/>
+</element>
+<element name="TTaskDialogElement.tdeMainInstruction">
+<short/>
+</element>
+<element name="TTaskDialogElement.tdeEdit">
+<short/>
+</element>
+<element name="TTaskDialogElement.tdeVerif">
+<short/>
+</element>
+
+<element name="TLCLTaskDialog">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<!-- private -->
+<element name="TLCLTaskDialog.FDlg">
+<short>
+The task dialog structure which created the form.
+</short>
+</element>
+
+<element name="TLCLTaskDialog.FVerifyChecked"/>
+<element name="TLCLTaskDialog.RadioButtonArray"/>
+<element name="TLCLTaskDialog.CustomButtons"/>
+<element name="TLCLTaskDialog.Radios"/>
+<element name="TLCLTaskDialog.DialogCaption"/>
+<element name="TLCLTaskDialog.DlgTitle"/>
+<element name="TLCLTaskDialog.DlgText"/>
+<element name="TLCLTaskDialog.ExpandedButtonCaption"/>
+<element name="TLCLTaskDialog.ExpandedText"/>
+<element name="TLCLTaskDialog.FooterText"/>
+<element name="TLCLTaskDialog.VerificationText"/>
+<element name="TLCLTaskDialog.Selection"/>
+<element name="TLCLTaskDialog.CommonButtons"/>
+<element name="TLCLTaskDialog.Panel"/>
+<element name="TLCLTaskDialog.Image"/>
+
+<element name="TLCLTaskDialog.Element">
+<short>
+The labels corresponding to the Task Dialog main elements.
+</short>
+</element>
+
+<element name="TLCLTaskDialog.Combo">
+<short>
+The Task Dialog selection list.
+</short>
+</element>
+
+<element name="TLCLTaskDialog.Edit">
+<short>
+The Task Dialog optional query editor.
+</short>
+</element>
+
+<element name="TLCLTaskDialog.VerifyCheckBox">
+<short>
+The Task Dialog optional verification checkbox.
+</short>
+</element>
+
+<element name="TLCLTaskDialog.AddIcon"/>
+<element name="TLCLTaskDialog.AddIcon.IconBorder"/>
+<element name="TLCLTaskDialog.AddIcon.X"/>
+<element name="TLCLTaskDialog.AddIcon.Y"/>
+<element name="TLCLTaskDialog.AddIcon.AParent"/>
+
+<element name="TLCLTaskDialog.AddPanel"/>
+
+<element name="TLCLTaskDialog.AddRadios"/>
+<element name="TLCLTaskDialog.AddRadios.ARadioOffSet"/>
+<element name="TLCLTaskDialog.AddRadios.AWidth"/>
+<element name="TLCLTaskDialog.AddRadios.ARadioDef"/>
+<element name="TLCLTaskDialog.AddRadios.AFontHeight"/>
+<element name="TLCLTaskDialog.AddRadios.X"/>
+<element name="TLCLTaskDialog.AddRadios.Y"/>
+<element name="TLCLTaskDialog.AddRadios.AParent"/>
+
+<element name="TLCLTaskDialog.AddCommandLinkButtons"/>
+<element name="TLCLTaskDialog.AddCommandLinkButtons.X"/>
+<element name="TLCLTaskDialog.AddCommandLinkButtons.Y"/>
+<element name="TLCLTaskDialog.AddCommandLinkButtons.AWidth"/>
+<element name="TLCLTaskDialog.AddCommandLinkButtons.AButtonDef"/>
+<element name="TLCLTaskDialog.AddCommandLinkButtons.AFontHeight"/>
+<element name="TLCLTaskDialog.AddCommandLinkButtons.AParent"/>
+
+<element name="TLCLTaskDialog.AddButtonsAndCheckBox"/>
+<element name="TLCLTaskDialog.AddButtonsAndCheckBox.X"/>
+<element name="TLCLTaskDialog.AddButtonsAndCheckBox.Y"/>
+<element name="TLCLTaskDialog.AddButtonsAndCheckBox.XB"/>
+<element name="TLCLTaskDialog.AddButtonsAndCheckBox.AWidth"/>
+<element name="TLCLTaskDialog.AddButtonsAndCheckBox.AButtonDef"/>
+<element name="TLCLTaskDialog.AddButtonsAndCheckBox.AParent"/>
+
+<element name="TLCLTaskDialog.AddFooter"/>
+<element name="TLCLTaskDialog.AddFooter.X"/>
+<element name="TLCLTaskDialog.AddFooter.Y"/>
+<element name="TLCLTaskDialog.AddFooter.XB"/>
+<element name="TLCLTaskDialog.AddFooter.AFontHeight"/>
+<element name="TLCLTaskDialog.AddFooter.AWidth"/>
+<element name="TLCLTaskDialog.AddFooter.AParent"/>
+
+<element name="TLCLTaskDialog.AddLabel"/>
+<element name="TLCLTaskDialog.AddLabel.Result"/>
+<element name="TLCLTaskDialog.AddLabel.AText"/>
+<element name="TLCLTaskDialog.AddLabel.BigFont"/>
+<element name="TLCLTaskDialog.AddLabel.X"/>
+<element name="TLCLTaskDialog.AddLabel.Y"/>
+<element name="TLCLTaskDialog.AddLabel.AFontHeight"/>
+<element name="TLCLTaskDialog.AddLabel.AWidth"/>
+<element name="TLCLTaskDialog.AddLabel.AParent"/>
+
+<!-- protected -->
+<element name="TLCLTaskDialog.HandleEmulatedButtonClicked">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLCLTaskDialog.HandleEmulatedButtonClicked.Sender">
+<short/>
+</element>
+
+<element name="TLCLTaskDialog.SetupControls">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<!-- public -->
+<element name="TLCLTaskDialog.KeyDown">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLCLTaskDialog.KeyDown.Key">
+<short/>
+</element>
+<element name="TLCLTaskDialog.KeyDown.Shift">
+<short/>
+</element>
+
+<element name="TLCLTaskDialog.CreateNew">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLCLTaskDialog.CreateNew.AOwner">
+<short/>
+</element>
+<element name="TLCLTaskDialog.CreateNew.Num">
+<short/>
+</element>
+
+<element name="TLCLTaskDialog.Destroy">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLCLTaskDialog.Execute">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLCLTaskDialog.Execute.Result">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLCLTaskDialog.Execute.AParentWnd">
+<short/>
+</element>
+<element name="TLCLTaskDialog.Execute.ARadioRes">
+<short/>
+</element>
+
+<element name="TTaskDialogTranslate">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTaskDialogTranslate.Result">
+<short/>
+</element>
+<element name="TTaskDialogTranslate.AString">
+<short/>
+</element>
+
+<element name="TaskDialog_Translate">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="ExecuteLCLTaskDialog">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="ExecuteLCLTaskDialog.ADlg">
+<short/>
+</element>
+<element name="ExecuteLCLTaskDialog.AParentWnd">
+<short/>
+</element>
+<element name="ExecuteLCLTaskDialog.ARadioRes">
+<short/>
+</element>
+
+<element name="TLCLTaskDialogIcon">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLCLTaskDialogIcon.tiBlank">
+<short/>
+</element>
+<element name="TLCLTaskDialogIcon.tiWarning">
+<short/>
+</element>
+<element name="TLCLTaskDialogIcon.tiQuestion">
+<short/>
+</element>
+<element name="TLCLTaskDialogIcon.tiError">
+<short/>
+</element>
+<element name="TLCLTaskDialogIcon.tiInformation">
+<short/>
+</element>
+<element name="TLCLTaskDialogIcon.tiNotUsed">
+<short/>
+</element>
+<element name="TLCLTaskDialogIcon.tiShield">
+<short/>
+</element>
+
+<element name="TLCLTaskDialogFooterIcon">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLCLTaskDialogFooterIcon.tfiBlank">
+<short/>
+</element>
+<element name="TLCLTaskDialogFooterIcon.tfiWarning">
+<short/>
+</element>
+<element name="TLCLTaskDialogFooterIcon.tfiQuestion">
+<short/>
+</element>
+<element name="TLCLTaskDialogFooterIcon.tfiError">
+<short/>
+</element>
+<element name="TLCLTaskDialogFooterIcon.tfiInformation">
+<short/>
+</element>
+<element name="TLCLTaskDialogFooterIcon.tfiShield">
+<short/>
+</element>
+
+<element name="IconMessage">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="IconMessage.Result">
+<short/>
+</element>
+<element name="IconMessage.Icon">
+<short/>
+</element>
+
+<element name="TF_DIALOGICON">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TF_DIALOGICON.Result">
+<short/>
+</element>
+<element name="TF_DIALOGICON.AIcon">
+<short/>
+</element>
+
+<element name="TF_FOOTERICON">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TF_FOOTERICON.Result">
+<short/>
+</element>
+<element name="TF_FOOTERICON.AIcon">
+<short/>
+</element>
+
+</module>
+<!-- taskdlgemulation -->
+</package>
+</fpdoc-descriptions>
