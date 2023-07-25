@@ -1552,51 +1552,8 @@ begin
     Result := False;
 end;
 
-function ViewFromPoint(view: NSView;Point: TPoint): HWND;
-var rect: TRect;
-    p:TPoint;
-    cb: ICommonCallback;
-    cbo: TObject;
-  hv  : NSView;
-begin
-  Result:=0;
-  if not assigned(view) then
-     exit;
-  cb := view.lclGetCallback;
-  if Assigned(cb) then
-  begin
-    cbo := cb.GetCallbackObject;
-    if not (cbo is TLCLCommonCallback) then Exit;
-    p:=Point;
-    // The hit test is done by the out-side frame (Handle)
-    hv := TLCLCommonCallback(cbo).HandleFrame;
-    hv.lclScreenToLocal(p.X,p.Y);
-    rect:=hv.lclClientFrame;
-    if PtInRect(rect, p) then
-      //if hv.lclClassName;
-      Result := HWND(hv)
-  end
-end;
-
-function RecurseSubviews(view: NSView;Point: TPoint):HWND;
-var  sv:integer;
-begin
-  // first check views subview if there is a embedded view
-  Result:=0;
-  if not Assigned(view) or (view.isHidden) or (not view.lclIsEnabled) then Exit;
-  sv:=0;
-  while (Result=0) and (sv<view.subviews.count) do
-    begin
-    Result:=RecurseSubviews(view.subviews.objectAtIndex(sv),Point);
-    inc(sv)
-    end;
-  if Result=0 then
-     Result:=ViewFromPoint(view,Point);
-end;
-
 function TCocoaWidgetSet.WindowFromPoint(Point: TPoint): HWND;
 var 
-  winrect: TRect;
   windows: NSArray;
   win: integer;
   window, windowbelowpoint: NSWindow;
@@ -1607,14 +1564,15 @@ begin
   if not assigned(NSApp) then
     Exit;
 
+  p.x:=Point.X;
+  p.y:=NSScreenZeroHeight-Point.Y;
+  winnr:=NSWindow.windowNumberAtPoint_belowWindowWithWindowNumber(p,0);
+  windowbelowpoint:=NSWindow(NSApp.windowWithWindowNumber(winnr));
+
   windows := NSApp.windows;
   for win := 0 to windows.count - 1 do
   begin
     window:=windows.objectAtIndex(win);
-    p.x:=Point.X;
-    p.y:=NSScreenZeroHeight-Point.Y;
-    winnr:=NSWindow.windowNumberAtPoint_belowWindowWithWindowNumber(p,0);
-    windowbelowpoint:=NSWindow(NSApp.windowWithWindowNumber(winnr));
     if windowbelowpoint=window then
     begin
       Result:= HWND(window.contentView);
