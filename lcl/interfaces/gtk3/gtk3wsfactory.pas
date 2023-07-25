@@ -20,7 +20,8 @@ unit Gtk3WSFactory;
 interface
 uses
   Classes, Controls, ComCtrls, Calendar, StdCtrls, Dialogs, ExtCtrls, ExtDlgs,
-  Buttons, Spin, CheckLst, Forms, Menus, ImgList, PairSplitter, WSLCLClasses;
+  Buttons, Spin, CheckLst, Forms, Menus, ImgList, PairSplitter, WSLCLClasses, 
+  WSDialogs;
 
 
 // imglist
@@ -306,7 +307,8 @@ end;
 
 function RegisterTaskDialog: Boolean; alias : 'WSRegisterTaskDialog';
 begin
-  Result := False;
+   RegisterWSComponent(TTaskDialog, TWSTaskDialog);
+   Result := True;
 end;
 
 // StdCtrls

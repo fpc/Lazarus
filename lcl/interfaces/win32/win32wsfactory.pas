@@ -6,7 +6,7 @@ interface
 uses
   Classes, Controls, ComCtrls, ImgList, Calendar, StdCtrls, Spin,
   Dialogs, ExtCtrls, ExtDlgs, Buttons, CheckLst, Forms, Grids, Menus, ShellCtrls,
-  WSLCLClasses;
+  WSLCLClasses, WSDialogs;
 
 // imglist
 function RegisterCustomImageListResolution: Boolean;
@@ -276,8 +276,8 @@ end;
 
 function RegisterTaskDialog: Boolean; alias : 'WSRegisterTaskDialog';
 begin
-  RegisterWSComponent(TTaskDialog, TWin32WSTaskDialog);
-  Result := True;
+   RegisterWSComponent(TTaskDialog, TWin32WSTaskDialog);
+   Result := True;
 end;
 
 // StdCtrls

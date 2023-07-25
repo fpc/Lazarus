@@ -9,7 +9,7 @@ uses
   Spin,
   MuiWSControls, MUIwsforms, MuiWSMenus, MUIWSStdCtrls,
   MuiWSDialogs, MuiWSComCtrls, MUIWSButtons, MUIWSSpin,
-  WSLCLClasses;
+  WSLCLClasses, WSDialogs;
 
 // imglist
 function RegisterCustomImageListResolution: Boolean;
@@ -257,7 +257,8 @@ end;
 
 function RegisterTaskDialog: Boolean; alias : 'WSRegisterTaskDialog';
 begin
-  Result := False;
+   RegisterWSComponent(TTaskDialog, TWSTaskDialog);
+   Result := True;
 end;
 
 // StdCtrls

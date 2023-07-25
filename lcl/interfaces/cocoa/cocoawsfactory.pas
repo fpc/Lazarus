@@ -7,7 +7,7 @@ interface
 uses
   Classes, Controls, ComCtrls, StdCtrls, Spin, PairSplitter,
   Dialogs, ExtCtrls, Buttons, CheckLst, Forms, Menus, Calendar,
-  WSLCLClasses,
+  WSLCLClasses, WSDialogs,
   CocoaWSCommon,
   CocoaWSButtons,
   CocoaWSExtCtrls,
@@ -268,7 +268,8 @@ end;
 
 function RegisterTaskDialog: Boolean; alias : 'WSRegisterTaskDialog';
 begin
-  Result := False;
+   RegisterWSComponent(TTaskDialog, TWSTaskDialog);
+   Result := True;
 end;
 
 // StdCtrls
