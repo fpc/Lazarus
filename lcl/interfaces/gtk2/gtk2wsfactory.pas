@@ -295,7 +295,6 @@ end;
 
 function RegisterTaskDialog: Boolean; alias : 'WSRegisterTaskDialog';
 begin
-  RegisterWSComponent(TTaskDialog, TGtk2WSTaskDialog);
   Result := False;
 end;
 
