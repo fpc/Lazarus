@@ -2384,8 +2384,10 @@ begin
     ' SkipAutoLoadingLastProject=',SkipAutoLoadingLastProject,
     ' EnvironmentOptions.OpenLastProjectAtStart=',EnvironmentOptions.OpenLastProjectAtStart,
     ' LastProj="',LastProj,'"',
+    ' MultipleInstances=',IDEMultipleInstancesOptionNames[EnvironmentOptions.MultipleInstances],
     ' RestoreProjectClosed=',RestoreProjectClosed,
-    ' FileExistsCached(LastProj)=',FileExistsCached(LastProj)
+    ' FileExistsCached(LastProj)=',FileExistsCached(LastProj),
+    ' IDEProtocolOpts.LastProjectLoadingCrashed=',IDEProtocolOpts.LastProjectLoadingCrashed
     ]);}
   if (not ProjectLoaded)
   and (not SkipAutoLoadingLastProject)
