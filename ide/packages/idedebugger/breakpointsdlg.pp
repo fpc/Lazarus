@@ -463,7 +463,7 @@ begin
   if Result = nil then begin
     tvBreakPoints.BeginUpdate;
     try
-      Result := tvBreakPoints.AddChild(nil, ABrkGroup);
+      Result := tvBreakPoints.AddChild(nil, nil);
       GrpHeader := TBreakpointGroupFrame.Create(Self, tvBreakPoints, Result, ABrkGroup);
       GrpHeader.Visible := tbGroupByBrkGroup.Down;
       GrpHeader.OnDeleteGroup := @DoGroupDeleteBtnClicked;
