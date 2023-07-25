@@ -268,6 +268,7 @@ end;
 
 function RegisterTaskDialog: Boolean; alias : 'WSRegisterTaskDialog';
 begin
+  RegisterWSComponent(TTaskDialog, TCocoaWSTaskDialog);
   Result := False;
 end;
 
