@@ -266,8 +266,8 @@ end;
 
 function RegisterTaskDialog: Boolean; alias : 'WSRegisterTaskDialog';
 begin
-   RegisterWSComponent(TTaskDialog, TWSTaskDialog);
-   Result := True;
+  RegisterWSComponent(TTaskDialog, TWinCEWSTaskDialog);
+  Result := False;
 end;
 
 // StdCtrls
