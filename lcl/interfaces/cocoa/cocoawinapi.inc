@@ -1617,11 +1617,8 @@ begin
     windowbelowpoint:=NSWindow(NSApp.windowWithWindowNumber(winnr));
     if windowbelowpoint=window then
     begin
-      Result:=RecurseSubviews(window.contentView, Point);
-      if Result<>0 then
-      begin
-        exit;
-      end;
+      Result:= HWND(window.contentView);
+      exit;
     end;
   end;
 end;
