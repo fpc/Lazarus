@@ -523,6 +523,7 @@ object MainForm: TMainForm
     object ADeleteConnection: TAction
       Category = 'Connections'
       Caption = '&Delete connection'
+      ImageIndex = 48
       OnExecute = ADeleteConnectionExecute
       OnUpdate = HaveRecentConnection
       ShortCut = 49220
