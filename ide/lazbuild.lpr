@@ -77,6 +77,8 @@ type
     FPackageAction: TPkgAction;
     FPkgGraphVerbosity: TPkgVerbosityFlags;
     FSkipDependencies: boolean;
+    FSubTargetOverride: boolean;
+    FSubTargetOverrideValue: String;
     fWidgetsetOverride: String;
 
     function HasLongOptIgnoreCase(const S: String; out aValue: String): Boolean;
@@ -173,6 +175,8 @@ type
     property WidgetSetOverride: String read FWidgetsetOverride write FWidgetsetOverride;
     property OSOverride: String read fOSOverride write fOSOverride;
     property CPUOverride: String read fCPUOverride write fCPUOverride;
+    property SubTargetOverride: boolean read FSubTargetOverride write FSubTargetOverride;
+    property SubTargetOverrideValue: String read FSubTargetOverrideValue write FSubTargetOverrideValue;
     property CompilerOverride: String read fCompilerOverride write fCompilerOverride;
     property LazarusDirOverride: String read fLazarusDirOverride write fLazarusDirOverride;
     property BuildModeOverride: String read FBuildModeOverride write FBuildModeOverride;
@@ -464,6 +468,8 @@ begin
     APackage.CompilerOptions.TargetOS:=OSOverride;
   if (Length(CPUOverride) <> 0) then
     APackage.CompilerOptions.TargetCPU:=CPUOverride;
+  if SubTargetOverride then
+    APackage.CompilerOptions.SubTarget:=SubTargetOverrideValue;
 
   if CreateMakefile then
     DoCreateMakefile(APackage)
@@ -562,6 +568,8 @@ begin
     CurProf.TargetOS:=OSOverride;
   if (Length(CPUOverride) <> 0) then
     CurProf.TargetCPU:=CPUOverride;
+  if SubTargetOverride then
+    CurProf.SubTarget:=SubTargetOverrideValue;
 
   if WidgetSetOverride<>'' then
     CurProf.TargetPlatform:=DirNameToLCLPlatform(WidgetSetOverride)
@@ -785,6 +793,8 @@ var
       Project1.CompilerOptions.TargetOS:=OSOverride;
     if (CPUOverride<>'') then
       Project1.CompilerOptions.TargetCPU:=CPUOverride;
+    if SubTargetOverride then
+      Project1.CompilerOptions.SubTarget:=SubTargetOverrideValue;
     if (WidgetSetOverride<>'') then begin
       MatrixOption:=Project1.BuildModes.SessionMatrixOptions.Add(bmotIDEMacro);
       MatrixOption.Modes:=Project1.ActiveBuildMode.Identifier;
@@ -1177,7 +1187,8 @@ begin
   // load static base packages
   PackageGraph.LoadStaticBasePackages;
 
-  MainBuildBoss.SetBuildTarget(OSOverride,CPUOverride,WidgetSetOverride,smsfsSkip,true);
+  MainBuildBoss.SetBuildTarget(OSOverride,CPUOverride,SubTargetOverrideValue,
+                               WidgetSetOverride,smsfsSkip,true);
 
   fInitResult:=true;
   Result:=fInitResult;
@@ -1498,7 +1509,8 @@ begin
   end;
 end;
 
-Function TLazBuildApplication.HasLongOptIgnoreCase(const S: String; out aValue: String): Boolean;
+function TLazBuildApplication.HasLongOptIgnoreCase(const S: String; out
+  aValue: String): Boolean;
 // Check existence of a long option case-insensitively.
 begin
   CaseSensitiveOptions:=False;
@@ -1510,7 +1522,8 @@ begin
   CaseSensitiveOptions:=True;
 end;
 
-Function TLazBuildApplication.HasShortOrLongOpt(const C: Char; const S: String): Boolean;
+function TLazBuildApplication.HasShortOrLongOpt(const C: Char; const S: String
+  ): Boolean;
 // Check existence of a short option casesensitively and long option case-insensitively.
 begin
   Result:=HasOption(C);
@@ -1711,6 +1724,13 @@ begin
         writeln('Parameter: cpu=',CPUOverride);
     end;
 
+    // subtarget
+    if HasLongOptIgnoreCase('subtarget',FSubTargetOverrideValue) then begin
+      FSubTargetOverride:=true;
+      if ConsoleVerbosity>=0 then
+        writeln('Parameter: subtarget=',FSubTargetOverrideValue);
+    end;
+
     // build mode
     if HasLongOptIgnoreCase('bm',FBuildModeOverride) then begin
       if ConsoleVerbosity>=0 then
@@ -1836,6 +1856,9 @@ begin
   writeln(LongToConsole(Format(
     lisOverrideTheProjectCpuEGI386X86_64PowerpcPowerpc_64, [space,
     GetCompiledTargetCPU])));
+  writeln('');
+  writeln('--subtarget=<subtarget>');
+  writeln(LongToConsole('override the project subtarget'));
   writeln('');
   writeln('--build-mode=<project/ide build mode>');
   writeln('or --bm=<project/ide build mode>');
