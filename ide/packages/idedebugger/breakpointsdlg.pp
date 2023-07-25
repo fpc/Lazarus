@@ -171,7 +171,7 @@ type
     procedure ClearTree;
     procedure DoItemRemoved(Sender: TDbgTreeView; AnItem: TObject;
       ANode: PVirtualNode);
-    function  GetNodeForBrkGroup(const ABrkGroup: TIDEBreakPointGroup): PVirtualNode;
+    function  GetNodeForBrkGroup(const ABrkGroup: TIDEBreakPointGroup; AOnlyExisting: Boolean = False): PVirtualNode;
     procedure SetBaseDirectory(const AValue: string);
     procedure popSetGroupItemClick(Sender: TObject);
     procedure SetGroup(const NewGroup: TIDEBreakPointGroup);
@@ -411,7 +411,7 @@ begin
           GetNodeForBrkGroup(TIDEBreakPointGroup(Data));
         end;
       ooDeleteItem: begin
-          VNode :=tvBreakPoints.FindNodeForItem(TObject(Data));
+          VNode := GetNodeForBrkGroup(TIDEBreakPointGroup(Data), True);
           if VNode <> nil then begin
             tvBreakPoints.DeleteNode(VNode);
           end;
@@ -451,18 +451,21 @@ begin
   tvBreakPointsChange(nil, nil);
 end;
 
-function TBreakPointsDlg.GetNodeForBrkGroup(const ABrkGroup: TIDEBreakPointGroup
-  ): PVirtualNode;
+function TBreakPointsDlg.GetNodeForBrkGroup(
+  const ABrkGroup: TIDEBreakPointGroup; AOnlyExisting: Boolean): PVirtualNode;
 var
   PVNode: PVirtualNode;
   GrpHeader: TBreakpointGroupFrame;
 begin
   if ABrkGroup = nil then
-    exit(tvBreakPoints.FindNodeForControl(FUngroupedHeader));
+    exit(FUngroupedHeader.Node);
 
   for PVNode in tvBreakPoints.ControlNodes do
     if GetGroupFrame(PVNode).BrkGroup = ABrkGroup then
       exit(PVNode);
+
+  if AOnlyExisting then
+    exit(nil);
 
   tvBreakPoints.BeginUpdate;
   try
