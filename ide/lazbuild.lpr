@@ -1858,7 +1858,7 @@ begin
     GetCompiledTargetCPU])));
   writeln('');
   writeln('--subtarget=<subtarget>');
-  writeln(LongToConsole('override the project subtarget'));
+  writeln(LongToConsole(space+'override the project subtarget'));
   writeln('');
   writeln('--build-mode=<project/ide build mode>');
   writeln('or --bm=<project/ide build mode>');
