@@ -127,7 +127,6 @@ type
     FTerminating: Boolean;
     FNSApp: TCocoaApplication;
     FNSApp_Delegate: TAppDelegate;
-    FCurrentCursor: HCursor;
     FCaptureControl: HWND;
 
   protected

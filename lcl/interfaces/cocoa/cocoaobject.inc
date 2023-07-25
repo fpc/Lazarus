@@ -134,7 +134,6 @@ begin
   CocoaWidgetSet := Self;
   inherited Create;
   FTerminating := False;
-  FCurrentCursor:= 0;
   FCaptureControl:= 0;
 
   NSMessageWnd := NSStringUTF8('HWND');
