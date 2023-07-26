@@ -173,19 +173,22 @@ object BreakPropertyDlg: TBreakPropertyDlg
     BorderSpacing.Left = 24
     BorderSpacing.Around = 6
     ItemHeight = 15
+    OnChange = cmbGroupEditingDone
+    OnEditingDone = cmbGroupEditingDone
+    OnExit = cmbGroupEditingDone
     OnKeyPress = cmbGroupKeyPress
     TabOrder = 7
     Text = 'cmbGroup'
   end
   object gbActions: TGroupBox
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = cmbGroup
+    AnchorSideTop.Control = lblBadGroupName
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 215
-    Top = 255
+    Top = 276
     Width = 438
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
@@ -407,8 +410,8 @@ object BreakPropertyDlg: TBreakPropertyDlg
     AnchorSideTop.Control = gbActions
     AnchorSideTop.Side = asrBottom
     Left = 6
-    Height = 95
-    Top = 476
+    Height = 74
+    Top = 497
     Width = 438
     Anchors = [akTop, akLeft, akRight, akBottom]
     OKButton.Name = 'OKButton'
@@ -608,5 +611,25 @@ object BreakPropertyDlg: TBreakPropertyDlg
     BorderSpacing.Around = 6
     Caption = 'chkEnabled'
     TabOrder = 10
+  end
+  object lblBadGroupName: TLabel
+    AnchorSideLeft.Control = cmbGroup
+    AnchorSideTop.Control = cmbGroup
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 139
+    Height = 15
+    Top = 255
+    Width = 305
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
+    Caption = 'lblBadGroupName'
+    Font.Color = clRed
+    ParentFont = False
+    Visible = False
+    WordWrap = True
   end
 end

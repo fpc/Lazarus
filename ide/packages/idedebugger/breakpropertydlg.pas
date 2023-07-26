@@ -46,6 +46,7 @@ type
     edtFilename: TEdit;
     gbActions: TGroupBox;
     Label1: TLabel;
+    lblBadGroupName: TLabel;
     lblWatchKind: TLabel;
     lblWatchScope: TLabel;
     lblLogCallStackLimit: TLabel;
@@ -75,6 +76,7 @@ type
     procedure chkEvalExpressionChange(Sender: TObject);
     procedure chkLogCallStackChange(Sender: TObject);
     procedure chkLogMessageChange(Sender: TObject);
+    procedure cmbGroupEditingDone(Sender: TObject);
     procedure cmbGroupKeyPress(Sender: TObject; var Key: char);
     procedure edtDisableGroupsButtonClick(Sender: TObject);
     procedure edtEnableGroupsButtonClick(Sender: TObject);
@@ -126,6 +128,12 @@ end;
 procedure TBreakPropertyDlg.chkLogMessageChange(Sender: TObject);
 begin
   edtLogMessage.Enabled := chkLogMessage.Checked;
+end;
+
+procedure TBreakPropertyDlg.cmbGroupEditingDone(Sender: TObject);
+begin
+  lblBadGroupName.Visible := (cmbGroup.Text <> '') and (not TIDEBreakPointGroup.CheckName(cmbGroup.Text));
+  ButtonPanel.OKButton.Enabled := (cmbGroup.Text = '') or (TIDEBreakPointGroup.CheckName(cmbGroup.Text));
 end;
 
 procedure TBreakPropertyDlg.cmbGroupKeyPress(Sender: TObject; var Key: char);
@@ -211,6 +219,11 @@ var
   EnableGroupList, DisableGroupList: TStringListUTF8Fast;
 begin
   if FBreakpoint = nil then Exit;
+
+  if (cmbGroup.Text <> '') and (not TIDEBreakPointGroup.CheckName(cmbGroup.Text)) then begin
+    MessageDlg(Caption, lisGroupNameInvalid, mtError, [mbOk], 0);
+    exit;
+  end;
 
   EnableGroupList := TStringListUTF8Fast.Create;
   DisableGroupList := TStringListUTF8Fast.Create;
@@ -389,6 +402,8 @@ begin
   chkLogCallStack.Checked := bpaLogCallStack in Actions;
   edtLogCallStack.Value := FBreakpoint.LogCallStackLimit;
   chkTakeSnap.Checked := bpaTakeSnapshot in Actions;
+
+  cmbGroupEditingDone(nil);
   FUpdatingInfo := False;
 end;
 
@@ -437,6 +452,7 @@ begin
   lblAutoContinue.Caption := lisAutoContinueAfter;
   lblMS.Caption := lisMS;
   lblGroup.Caption := lisGroup + ':';
+  lblBadGroupName.Caption := lisGroupNameInvalid;
   gbActions.Caption := lisActions;
   chkActionBreak.Caption := lisBreak;
   chkEnableGroups.Caption := lisEnableGroups;
