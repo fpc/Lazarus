@@ -386,10 +386,12 @@ begin
   // If the form has a default or cancel button, capture Return and Escape to
   // prevent further processing.  Actually clicking the buttons is handled in
   // the LCL in response to the keyUp
-  if Assigned(wincallback) and (event.modifierFlags_ = 0) then
+  // add NumericPadEnter supported.
+  if Assigned(wincallback) and ((event.modifierFlags_=0) or (event.modifierFlags_=$200000)) then
   begin
     ch := NSEventRawKeyChar(event);
-    if (((ch = System.WideChar(NSCarriageReturnCharacter)) and wincallback.HasDefaultControl)
+    if  (((ch = System.WideChar(NSCarriageReturnCharacter)) and wincallback.HasDefaultControl)
+      or ((ch = System.WideChar(NSEnterCharacter)) and wincallback.HasDefaultControl)
       or ((ch = #27{Escape}) and wincallback.HasCancelControl)) then
     begin
       Result := true;
