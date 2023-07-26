@@ -299,7 +299,6 @@ type
 
   TFpThreadWorkerBreakPoint = class(TFpDbgDebggerThreadWorkerItem)
   public
-    procedure RemoveBreakPoint_DecRef; virtual;
     procedure AbortSetBreak; virtual;
   end;
 
@@ -317,7 +316,7 @@ type
     FWatchScope: TDBGWatchPointScope;
     FWatchKind: TDBGWatchPointKind;
   protected
-    FResetBreakPoint: Boolean;
+    FResetBreakPoint: longint;
     procedure UpdateBrkPoint_DecRef(Data: PtrInt = 0); virtual; abstract;
     procedure DoExecute; override;
   public
@@ -1392,11 +1391,6 @@ end;
 
 { TFpThreadWorkerBreakPoint }
 
-procedure TFpThreadWorkerBreakPoint.RemoveBreakPoint_DecRef;
-begin
-  //
-end;
-
 procedure TFpThreadWorkerBreakPoint.AbortSetBreak;
 begin
   //
@@ -1411,32 +1405,37 @@ var
   R: TFpValue;
   s: TFpDbgValueSize;
 begin
-  case FKind of
-    bpkAddress:
-      FInternalBreakpoint := FDebugger.DbgController.CurrentProcess.AddBreak(FAddress, True);
-    bpkSource:
-      FInternalBreakpoint := FDebugger.DbgController.CurrentProcess.AddBreak(FSource, FLine, True);
-    bpkData: begin
-      CurContext := FDebugger.DbgController.CurrentProcess.FindSymbolScope(FThreadId, FStackFrame);
-      if CurContext <> nil then begin
-        WatchPasExpr := TFpPascalExpression.Create(FWatchData, CurContext, True);
-        WatchPasExpr.IntrinsicPrefix := TFpDebugDebuggerProperties(FDebugger.GetProperties).IntrinsicPrefix;
-        WatchPasExpr.AutoDeref := TFpDebugDebuggerProperties(FDebugger.GetProperties).AutoDeref;
-        WatchPasExpr.Parse;
-        R := WatchPasExpr.ResultValue; // Address and Size
-        // TODO: Cache current value
-        if WatchPasExpr.Valid and IsTargetNotNil(R.Address) and R.GetSize(s) then begin
-          // pass context
-          FInternalBreakpoint := FDebugger.DbgController.CurrentProcess.AddWatch(R.Address.Address, SizeToFullBytes(s), FWatchKind, FWatchScope);
+  if InterlockedExchange(FResetBreakPoint, 0) = 0 then begin
+    case FKind of
+      bpkAddress:
+        FInternalBreakpoint := FDebugger.DbgController.CurrentProcess.AddBreak(FAddress, True);
+      bpkSource:
+        FInternalBreakpoint := FDebugger.DbgController.CurrentProcess.AddBreak(FSource, FLine, True);
+      bpkData: begin
+        CurContext := FDebugger.DbgController.CurrentProcess.FindSymbolScope(FThreadId, FStackFrame);
+        if CurContext <> nil then begin
+          WatchPasExpr := TFpPascalExpression.Create(FWatchData, CurContext, True);
+          WatchPasExpr.IntrinsicPrefix := TFpDebugDebuggerProperties(FDebugger.GetProperties).IntrinsicPrefix;
+          WatchPasExpr.AutoDeref := TFpDebugDebuggerProperties(FDebugger.GetProperties).AutoDeref;
+          WatchPasExpr.Parse;
+          R := WatchPasExpr.ResultValue; // Address and Size
+          // TODO: Cache current value
+          if WatchPasExpr.Valid and IsTargetNotNil(R.Address) and R.GetSize(s) then begin
+            // pass context
+            FInternalBreakpoint := FDebugger.DbgController.CurrentProcess.AddWatch(R.Address.Address, SizeToFullBytes(s), FWatchKind, FWatchScope);
+          end;
+          WatchPasExpr.Free;
+          CurContext.ReleaseReference;
         end;
-        WatchPasExpr.Free;
-        CurContext.ReleaseReference;
       end;
     end;
   end;
-  if FResetBreakPoint then begin
-    FDebugger.DbgController.CurrentProcess.RemoveBreak(FInternalBreakpoint);
-    FreeAndNil(FInternalBreakpoint);
+
+  if InterlockedExchange(FResetBreakPoint, 0) = 1 then begin
+    if (FInternalBreakpoint <> nil) then begin
+      FDebugger.DbgController.CurrentProcess.RemoveBreak(FInternalBreakpoint);
+      FreeAndNil(FInternalBreakpoint);
+    end;
   end;
   Queue(@UpdateBrkPoint_DecRef);
 end;

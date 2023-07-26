@@ -152,7 +152,7 @@ type
   public
     constructor Create(ADebugger: TFpDebugDebuggerBase; ADbgBreakPoint: TFPBreakpoint); overload;
     procedure AbortSetBreak; override;
-    procedure RemoveBreakPoint_DecRef; override;
+    property DbgBreakPoint: TFPBreakpoint read FDbgBreakPoint;
   end;
 
   { TFpThreadWorkerBreakPointRemoveUpdate }
@@ -578,6 +578,7 @@ type
     FBrkLogStackLimit: Integer;
     FBrkLogStackResult: array of String;
     FBrkLogExpr, FBrkLogResult: String;
+    procedure MaybeAbortWorker(AWait: Boolean = false);
     procedure SetBreak;
     procedure ResetBreak;
     procedure ThreadLogExpression;
@@ -1102,9 +1103,9 @@ begin
     DecRef;
   end
   else
-    FResetBreakPoint := True;
+    FResetBreakPoint := 1;
 
-  if FResetBreakPoint then begin
+  if FResetBreakPoint <> 0 then begin
     if InternalBreakpoint <> nil then begin
       WorkItem := TFpThreadWorkerBreakPointRemoveUpdate.Create(FDebugger, InternalBreakpoint);
       FpDebugger.FWorkQueue.PushItem(WorkItem);
@@ -1150,15 +1151,8 @@ end;
 
 procedure TFpThreadWorkerBreakPointSetUpdate.AbortSetBreak;
 begin
-  FResetBreakPoint := True;
-  RequestStop;
-end;
-
-procedure TFpThreadWorkerBreakPointSetUpdate.RemoveBreakPoint_DecRef;
-begin
-  assert(system.ThreadID = classes.MainThreadID, 'TFpThreadWorkerBreakPointSetUpdate.RemoveBreakPoint_DecRef: system.ThreadID = classes.MainThreadID');
+  InterLockedExchange(FResetBreakPoint, 1);
   FDbgBreakPoint := nil;
-  UnQueue_DecRef;
 end;
 
 { TFpThreadWorkerBreakPointRemoveUpdate }
@@ -1879,11 +1873,26 @@ begin
   result := nil;
 end;
 
+procedure TFPBreakpoint.MaybeAbortWorker(AWait: Boolean);
+begin
+  if FThreadWorker <> nil then begin
+    assert(FThreadWorker is TFpThreadWorkerBreakPointSetUpdate, 'TFPBreakpoint.ResetBreak: FThreadWorker is TFpThreadWorkerBreakPointSetUpdate');
+    assert(FInternalBreakpoint = nil, 'TFPBreakpoint.ResetBreak: FInternalBreakpoint = nil');
+    FThreadWorker.AbortSetBreak;
+    if AWait then
+      TFpDebugDebugger(Debugger).FWorkQueue.WaitForItem(FThreadWorker);
+    FThreadWorker.DecRef;
+    FThreadWorker := nil;
+  end;
+end;
+
 procedure TFPBreakpoint.SetBreak;
 begin
   debuglnEnter(DBG_BREAKPOINTS, ['>> TFPBreakpoint.SetBreak  ADD ',FSource,':',FLine,'/',dbghex(Address),' ' ]);
   assert(FThreadWorker = nil, 'TFPBreakpoint.SetBreak: FThreadWorker = nil');
+  assert((FThreadWorker = nil) or ( (FThreadWorker is TFpThreadWorkerBreakPointSetUpdate) and (TFpThreadWorkerBreakPointSetUpdate(FThreadWorker).DbgBreakPoint = nil) ), 'TFPBreakpoint.SetBreak: (FThreadWorker = nil) or ( (FThreadWorker is TFpThreadWorkerBreakPointSetUpdate) and (TFpThreadWorkerBreakPointSetUpdate(FThreadWorker).DbgBreakPoint = nil) )');
   assert(FInternalBreakpoint=nil);
+  MaybeAbortWorker;
 
   FThreadWorker := TFpThreadWorkerBreakPointSetUpdate.Create(TFpDebugDebugger(Debugger), Self);
   TFpDebugDebugger(Debugger).FWorkQueue.PushItem(FThreadWorker);
@@ -1900,12 +1909,8 @@ begin
   FIsSet:=false;
   if FThreadWorker <> nil then begin
     debugln(DBG_BREAKPOINTS, ['>> TFPBreakpoint.ResetBreak  CANCEL / REMOVE ',FSource,':',FLine,'/',dbghex(Address),' ' ]);
-    assert(FThreadWorker is TFpThreadWorkerBreakPointSetUpdate, 'TFPBreakpoint.ResetBreak: FThreadWorker is TFpThreadWorkerBreakPointSetUpdate');
     assert(FInternalBreakpoint = nil, 'TFPBreakpoint.ResetBreak: FInternalBreakpoint = nil');
-    FThreadWorker.AbortSetBreak;
-    FThreadWorker.RemoveBreakPoint_DecRef;
-    FThreadWorker.DecRef;
-    FThreadWorker := nil;
+    MaybeAbortWorker;
     exit;
   end;
 
@@ -2018,13 +2023,7 @@ begin
      If the next pause is a hit on this breakpoint, then it will be ignored
   *)
   ResetBreak;
-
-  if FThreadWorker <> nil then begin
-    FThreadWorker.AbortSetBreak;
-    FThreadWorker.RemoveBreakPoint_DecRef;
-    FThreadWorker.DecRef;
-    FThreadWorker := nil;
-  end;
+  MaybeAbortWorker(True);
   inherited Destroy;
 end;
 
