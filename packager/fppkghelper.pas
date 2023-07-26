@@ -56,6 +56,7 @@ var
 procedure TFppkgHelper.InitializeFppkg;
 var
   FPpkg: TpkgFPpkg;
+  aFilename: String;
 begin
   FPpkg := TpkgFPpkg.Create(nil);
   try
@@ -65,6 +66,11 @@ begin
 
       FPpkg.InitializeGlobalOptions(FOverrideConfigurationFilename);
       FPpkg.InitializeCompilerOptions;
+
+      aFilename:=ExpandFileName(FPpkg.CompilerOptions.Compiler);
+      if not FileExistsCached(aFilename) then
+        exit; // no fppkg -> silently ignore here
+      FPpkg.CompilerOptions.Compiler:=aFilename;
 
       FPpkg.CompilerOptions.CheckCompilerValues;
       FPpkg.FpmakeCompilerOptions.CheckCompilerValues;
