@@ -18082,6 +18082,10 @@ msgstr "Unterprozedur"
 msgid "Sub Procedure on same level"
 msgstr "Unterprozedur derselben Stufe"
 
+#: lazarusidestrconsts.lissubtarget
+msgid "Subtarget"
+msgstr ""
+
 #: lazarusidestrconsts.lissuccess
 msgid "Success"
 msgstr "Erfolg"

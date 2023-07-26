@@ -17859,6 +17859,10 @@ msgstr "Aliohjelman sisäinen aliohjelma"
 msgid "Sub Procedure on same level"
 msgstr "Aliohjelma samalla tasolla"
 
+#: lazarusidestrconsts.lissubtarget
+msgid "Subtarget"
+msgstr ""
+
 #: lazarusidestrconsts.lissuccess
 msgid "Success"
 msgstr "Onnistui"

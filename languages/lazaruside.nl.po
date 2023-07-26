@@ -18513,6 +18513,10 @@ msgstr "Subprocedure"
 msgid "Sub Procedure on same level"
 msgstr "Subprocedure op hetzelfde niveau"
 
+#: lazarusidestrconsts.lissubtarget
+msgid "Subtarget"
+msgstr ""
+
 #: lazarusidestrconsts.lissuccess
 msgid "Success"
 msgstr "Succes!"

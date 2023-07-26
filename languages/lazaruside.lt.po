@@ -18232,6 +18232,10 @@ msgstr "Vidinė procedūra"
 msgid "Sub Procedure on same level"
 msgstr "Vidinė procedūra tame pačiame lygyje"
 
+#: lazarusidestrconsts.lissubtarget
+msgid "Subtarget"
+msgstr ""
+
 #: lazarusidestrconsts.lissuccess
 msgid "Success"
 msgstr "Tvarka"

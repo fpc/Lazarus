@@ -18926,6 +18926,10 @@ msgstr "תת שגרה"
 msgid "Sub Procedure on same level"
 msgstr "תת שגרה באותה רמה"
 
+#: lazarusidestrconsts.lissubtarget
+msgid "Subtarget"
+msgstr ""
+
 #: lazarusidestrconsts.lissuccess
 msgid "Success"
 msgstr "הצלחה"

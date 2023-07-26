@@ -5,12 +5,12 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-07-22 02:46+0300\n"
+"PO-Revision-Date: 2023-07-26 17:02+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.4.3\n"
+"X-Generator: Poedit 2.2.4\n"
 
 #: lazarusidestrconsts.dbgeventbreakaddressbreakpoint
 #, object-pascal-format
@@ -17913,6 +17913,10 @@ msgstr "Подпроцедура"
 #: lazarusidestrconsts.lissubprocedureonsamelevel
 msgid "Sub Procedure on same level"
 msgstr "Подпроцедура того же уровня"
+
+#: lazarusidestrconsts.lissubtarget
+msgid "Subtarget"
+msgstr "Подцель"
 
 #: lazarusidestrconsts.lissuccess
 msgid "Success"

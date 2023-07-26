@@ -17984,6 +17984,10 @@ msgstr "子过程"
 msgid "Sub Procedure on same level"
 msgstr "子过程 在相同等级"
 
+#: lazarusidestrconsts.lissubtarget
+msgid "Subtarget"
+msgstr ""
+
 #: lazarusidestrconsts.lissuccess
 msgid "Success"
 msgstr "成功"

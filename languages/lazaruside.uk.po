@@ -17938,6 +17938,10 @@ msgstr "Підпроцедура"
 msgid "Sub Procedure on same level"
 msgstr "Підпроцедура того ж рівня"
 
+#: lazarusidestrconsts.lissubtarget
+msgid "Subtarget"
+msgstr ""
+
 #: lazarusidestrconsts.lissuccess
 msgid "Success"
 msgstr "Успішно"

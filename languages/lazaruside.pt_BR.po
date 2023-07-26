@@ -18000,6 +18000,10 @@ msgstr "Sub procedimento"
 msgid "Sub Procedure on same level"
 msgstr "Sub procedimento no mesmo nível"
 
+#: lazarusidestrconsts.lissubtarget
+msgid "Subtarget"
+msgstr ""
+
 #: lazarusidestrconsts.lissuccess
 msgid "Success"
 msgstr "Sucesso"

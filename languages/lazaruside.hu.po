@@ -17981,6 +17981,10 @@ msgstr "Al-eljárás"
 msgid "Sub Procedure on same level"
 msgstr "Al-eljárás azonos szinten"
 
+#: lazarusidestrconsts.lissubtarget
+msgid "Subtarget"
+msgstr ""
+
 #: lazarusidestrconsts.lissuccess
 msgid "Success"
 msgstr "Sikerült"
