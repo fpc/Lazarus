@@ -57,12 +57,12 @@ type
     lblTargetCPU: TLabel;
     lblTargetOS: TLabel;
     lblTargetProc: TLabel;
-    lblSubTarget: TLabel;
+    lblSubtarget: TLabel;
     LCLWidgetTypeLabel: TLabel;
     TargetCPUComboBox: TComboBox;
     TargetOSComboBox: TComboBox;
     TargetProcComboBox: TComboBox;
-    SubTargetComboBox: TComboBox;
+    SubtargetComboBox: TComboBox;
     procedure chkCustomConfigFileClick(Sender: TObject);
     procedure TargetOSComboBoxSelect(Sender: TObject);
     procedure TargetCPUComboBoxSelect(Sender: TObject);
@@ -310,8 +310,8 @@ begin
     // WidgetSet
     LCLWidgetTypeLabel.Caption := lisSelectAnotherLCLWidgetSet;
 
-    // SubTarget
-    lblSubTarget.Caption := lisSubTarget+' (-t)';
+    // Subtarget
+    lblSubtarget.Caption := lisSubtarget+' (-t)';
   finally
     List.Free;
   end;
@@ -339,7 +339,7 @@ begin
       TargetCPUComboBox.ItemIndex := 0;
       TargetCPUComboBox.Text := 'default';
       TargetProcComboBox.Text := 'default';
-      SubTargetComboBox.Text := 'default';
+      SubtargetComboBox.Text := 'default';
       CurrentWidgetTypeLabel.Visible:=false;
       LCLWidgetTypeLabel.Visible:=false;
     end else begin
@@ -358,10 +358,10 @@ begin
       UpdateByTargetCPU(TargetCPU);
       UpdateByTargetOS(TargetOS);
       TargetProcComboBox.Text := ProcessorToCaption(TargetProcessor);
-      with SubTargetComboBox do begin
+      with SubtargetComboBox do begin
         Items.BeginUpdate;
-        Items.Assign(InputHistories.HistoryLists.GetList('SubTarget',true,rltCaseInsensitive));
-        SetComboBoxText(SubTargetComboBox,SubTarget,cstCaseInsensitive);
+        Items.Assign(InputHistories.HistoryLists.GetList('Subtarget',true,rltCaseInsensitive));
+        SetComboBoxText(SubtargetComboBox,Subtarget,cstCaseInsensitive);
         Items.EndUpdate;
       end;
       PkgDep:=TProjectCompilerOptions(AOptions).LazProject.FindDependencyByName('LCL');
@@ -399,7 +399,7 @@ begin
         NewTargetCPU := '';
       TargetCPU := CaptionToCPU(NewTargetCPU);
       TargetProcessor := CaptionToProcessor(TargetProcComboBox.Text);
-      SubTarget := lowercase(SubTargetComboBox.Text);
+      Subtarget := lowercase(SubtargetComboBox.Text);
     end;
     Win32GraphicApp := chkWin32GraphicApp.Checked;
   end;

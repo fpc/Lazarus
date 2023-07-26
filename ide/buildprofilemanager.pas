@@ -63,7 +63,7 @@ type
     FCleanOnce: boolean;
     fOwnerCnt: TBuildLazarusProfiles;
     fName: string;
-    FSubTarget: string;
+    FSubtarget: string;
     fTargetOS: string;
     fTargetDirectory: string;
     fTargetCPU: string;
@@ -90,7 +90,7 @@ type
     property TargetOS: string read fTargetOS write fTargetOS;
     property TargetDirectory: string read fTargetDirectory write fTargetDirectory;
     property TargetCPU: string read fTargetCPU write fTargetCPU;
-    property SubTarget: string read FSubTarget write FSubTarget;
+    property Subtarget: string read FSubtarget write FSubtarget;
     property TargetPlatform: TLCLPlatform read fTargetPlatform write fTargetPlatform;
     property IdeBuildMode: TIdeBuildMode read fIdeBuildMode write fIdeBuildMode;
     property CleanOnce: boolean read FCleanOnce write FCleanOnce;
@@ -221,7 +221,7 @@ var
 begin
   TargetOS      :=XMLConfig.GetValue(Path+'TargetOS/Value','');
   TargetCPU     :=XMLConfig.GetValue(Path+'TargetCPU/Value','');
-  SubTarget     :=XMLConfig.GetValue(Path+'SubTarget/Value','');
+  Subtarget     :=XMLConfig.GetValue(Path+'Subtarget/Value','');
   LCLPlatformStr:=XMLConfig.GetValue(Path+'LCLPlatform/Value','');
   if LCLPlatformStr='' then
     fTargetPlatform:=GetDefaultLCLWidgetType
@@ -242,7 +242,7 @@ procedure TBuildLazarusProfile.Save(XMLConfig: TXMLConfig; const Path: string);
 begin
   XMLConfig.SetDeleteValue(Path+'TargetOS/Value',TargetOS,'');
   XMLConfig.SetDeleteValue(Path+'TargetCPU/Value',TargetCPU,'');
-  XMLConfig.SetDeleteValue(Path+'SubTarget/Value',SubTarget,'');
+  XMLConfig.SetDeleteValue(Path+'Subtarget/Value',Subtarget,'');
   XMLConfig.SetDeleteValue(Path+'LCLPlatform/Value',
                            LCLPlatformDirNames[fTargetPlatform],
                            '');
@@ -263,7 +263,7 @@ begin
   TargetOS          :=Source.TargetOS;
   TargetDirectory   :=Source.TargetDirectory;
   TargetCPU         :=Source.TargetCPU;
-  SubTarget         :=Source.SubTarget;
+  Subtarget         :=Source.Subtarget;
   TargetPlatform    :=Source.TargetPlatform;
   IdeBuildMode      :=Source.IdeBuildMode;
   CleanOnce         :=Source.CleanOnce;

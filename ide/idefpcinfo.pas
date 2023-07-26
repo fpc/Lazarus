@@ -108,7 +108,7 @@ end;
 procedure TIDEFPCInfoDialog.UpdateValuesMemo;
 var
   sl: TStringList;
-  TargetOS, TargetCPU, SubTarget: String;
+  TargetOS, TargetCPU, Subtarget: String;
   CompilerFilename: String;
   FPCSrcDir: String;
   UnitSetCache: TFPCUnitSetCache;
@@ -123,11 +123,11 @@ begin
 
     TargetOS:=BuildBoss.GetTargetOS;
     TargetCPU:=BuildBoss.GetTargetCPU;
-    SubTarget:=BuildBoss.GetSubTarget;
+    Subtarget:=BuildBoss.GetSubtarget;
     CompilerFilename:=LazarusIDE.GetCompilerFilename;
     FPCSrcDir:=EnvironmentOptions.GetParsedFPCSourceDirectory; // needs FPCVer macro
     UnitSetCache:=CodeToolBoss.CompilerDefinesCache.FindUnitSet(
-      CompilerFilename,TargetOS,TargetCPU,SubTarget,'',FPCSrcDir,true);
+      CompilerFilename,TargetOS,TargetCPU,Subtarget,'',FPCSrcDir,true);
     GatherFPCExecutable(UnitSetCache,sl);
 
     ValuesMemo.Lines.Assign(sl);
@@ -138,7 +138,7 @@ end;
 
 procedure TIDEFPCInfoDialog.UpdateCmdLinePage;
 var
-  TargetOS, TargetCPU, SubTarget, CompilerFilename, CompilerOptions: String;
+  TargetOS, TargetCPU, Subtarget, CompilerFilename, CompilerOptions: String;
   Cfg: TPCTargetConfigCache;
   Params: String;
   ExtraOptions: String;
@@ -188,9 +188,9 @@ begin
     // fpc -va
     TargetOS:=BuildBoss.GetTargetOS;
     TargetCPU:=BuildBoss.GetTargetCPU;
-    SubTarget:=BuildBoss.GetSubTarget;
+    Subtarget:=BuildBoss.GetSubtarget;
     Cfg:=CodeToolBoss.CompilerDefinesCache.ConfigCaches.Find(
-                        CompilerFilename,CompilerOptions,TargetOS,TargetCPU,SubTarget,true);
+                        CompilerFilename,CompilerOptions,TargetOS,TargetCPU,Subtarget,true);
     TestFilename:=CodeToolBoss.CompilerDefinesCache.TestFilename;
     Filename:=ExtractFileName(TestFilename);
     WorkDir:=ExtractFilePath(TestFilename);
@@ -291,7 +291,7 @@ begin
   sl.Add('Active target:');
   sl.Add('TargetOS='+BuildBoss.GetTargetOS);
   sl.Add('TargetCPU='+BuildBoss.GetTargetCPU);
-  sl.Add('SubTarget='+BuildBoss.GetSubTarget);
+  sl.Add('Subtarget='+BuildBoss.GetSubtarget);
   sl.Add('');
 end;
 

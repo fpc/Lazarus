@@ -48,7 +48,7 @@ uses
   LazStringUtils, FPCAdds, LazVersion,
   // CodeTools
   FileProcs, DefineTemplates, CodeToolsCfgScript, CodeToolManager,
-  KeywordFuncLists, BasicCodeTools, LinkScanner,
+  KeywordFuncLists, BasicCodeTools, LinkScanner, DirectoryCacher,
   // BuildIntf
   ProjectIntf, MacroIntf, IDEExternToolIntf, CompOptsIntf, IDEOptionsIntf,
   // IDEIntf
@@ -914,21 +914,39 @@ procedure ConvertSearchPathToCmdParams(const Switch, Paths: String;
   Params: TStrings);
 var
   StartPos: Integer;
-  l: Integer;
+  l, p, i: Integer;
   EndPos: LongInt;
+  CurPath: String;
+  Kind: TCTStarDirectoryKind;
+  Cache: TCTStarDirectoryCache;
+  SubDirs: TStringListUTF8Fast;
 begin
   if Switch='' then
     RaiseGDBException('ConvertSearchPathToCmdLine no Switch');
   if (Paths = '') then exit;
   l:=length(Paths);
   StartPos:=1;
-  while StartPos<=l do begin
+  while StartPos<=l do
+  begin
     while (StartPos<=l) and (Paths[StartPos]=' ') do inc(StartPos);
     EndPos:=StartPos;
     while (EndPos<=l) and (Paths[EndPos]<>';') do inc(EndPos);
-    if StartPos<EndPos then begin
-      // todo: /example/**
-      Params.Add(Switch + copy(Paths,StartPos,EndPos-StartPos));
+    if StartPos<EndPos then
+    begin
+      CurPath:=copy(Paths,StartPos,EndPos-StartPos);
+      Kind:=IsCTStarDirectory(CurPath,p);
+      if Kind=ctsdStarStar then
+      begin
+        Delete(CurPath,p+1,length(CurPath));
+        Cache:=CodeToolBoss.DirectoryCachePool.GetStarCache(CurPath,Kind);
+        if Cache<>nil then
+        begin
+          SubDirs:=Cache.Listing.SubDirs;
+          for i:=0 to SubDirs.Count-1 do
+            Params.Add(Switch + CurPath + SubDirs[i]);
+        end;
+      end else
+        Params.Add(Switch + CurPath);
     end;
     StartPos:=EndPos+1;
   end;
@@ -1625,7 +1643,7 @@ begin
     TargetProcessor := aXMLConfig.GetValue(p+'TargetProcessor/Value', '');
   TargetCPU := aXMLConfig.GetValue(p+'TargetCPU/Value', '');
   TargetOS := aXMLConfig.GetValue(p+'TargetOS/Value', '');
-  SubTarget := aXMLConfig.GetValue(p+'SubTarget/Value', '');
+  Subtarget := aXMLConfig.GetValue(p+'Subtarget/Value', '');
   OptimizationLevel := aXMLConfig.GetValue(p+'Optimizations/OptimizationLevel/Value', 1);
   VariablesInRegisters := aXMLConfig.GetValue(p+'Optimizations/VariablesInRegisters/Value', false);
   UncertainOptimizations := aXMLConfig.GetValue(p+'Optimizations/UncertainOptimizations/Value', false);
@@ -1836,7 +1854,7 @@ begin
   aXMLConfig.SetDeleteValue(p+'TargetProcessor/Value', TargetProcessor,'');
   aXMLConfig.SetDeleteValue(p+'TargetCPU/Value', TargetCPU,'');
   aXMLConfig.SetDeleteValue(p+'TargetOS/Value', TargetOS,'');
-  aXMLConfig.SetDeleteValue(p+'SubTarget/Value', SubTarget,'');
+  aXMLConfig.SetDeleteValue(p+'Subtarget/Value', Subtarget,'');
   aXMLConfig.SetDeleteValue(p+'Optimizations/OptimizationLevel/Value', OptimizationLevel,1);
   aXMLConfig.SetDeleteValue(p+'Optimizations/VariablesInRegisters/Value', VariablesInRegisters,false);
   aXMLConfig.SetDeleteValue(p+'Optimizations/UncertainOptimizations/Value', UncertainOptimizations,false);
@@ -2567,7 +2585,7 @@ var
   Vars: TCTCfgScriptVariables;
   CurTargetOS: String;
   CurTargetCPU: String;
-  CurSubTarget: String;
+  CurSubtarget: String;
   CurSrcOS: String;
   dit: TCompilerDbgSymbolType;
   CompilerFilename: String;
@@ -2624,7 +2642,7 @@ begin
 
   CurTargetOS:='';
   CurTargetCPU:='';
-  CurSubTarget:='';
+  CurSubtarget:='';
   if not (ccloNoMacroParams in Flags) then
   begin
     Vars:=GetBuildMacroValues(Self,true);
@@ -2632,7 +2650,7 @@ begin
     begin
       CurTargetOS:=GetFPCTargetOS(Vars.Values['TargetOS']);
       CurTargetCPU:=GetFPCTargetCPU(Vars.Values['TargetCPU']);
-      CurSubTarget:=Vars.Values['SubTarget'];
+      CurSubtarget:=Vars.Values['Subtarget'];
     end;
   end;
   CurSrcOS:=GetDefaultSrcOSForTargetOS(CurTargetOS);
@@ -2650,9 +2668,9 @@ begin
   if (CurTargetCPU<>'')
   and ((TargetCPU<>'') or (CurTargetCPU<>DefaultTargetCPU)) then
     Result.Add('-P' + CurTargetCPU);
-  { SubTarget }
-  if CurSubTarget<>'' then
-    Result.Add('-t'+CurSubTarget);
+  { Subtarget }
+  if CurSubtarget<>'' then
+    Result.Add('-t'+CurSubtarget);
   { TargetProcessor }
   if TargetProcessor<>'' then
     Result.Add('-Cp'+UpperCase(TargetProcessor));

@@ -511,7 +511,7 @@ begin
     Templates:='$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)'
              +';$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)'
              +';$(LazarusDir)/components/yourpkg/units/$(TargetCPU)-$(TargetOS)'
-             +';$(LazarusDir)/components/yourpkg/units/$(TargetCPU)-$(TargetOS)-$(SubTarget)';
+             +';$(LazarusDir)/components/yourpkg/units/$(TargetCPU)-$(TargetOS)-$(Subtarget)';
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
   end;

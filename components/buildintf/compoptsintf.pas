@@ -153,7 +153,7 @@ type
   private
     FOnModified: TNotifyEvent;
     fOwner: TObject;
-    FSubTarget: string;
+    FSubtarget: string;
     SetEmulatedFloatOpcodes: boolean;
     function GetDebugInfoTypeStr: String;
     procedure SetAllowLabel(const AValue: Boolean);
@@ -196,7 +196,7 @@ type
     procedure SetSmartLinkUnit(const AValue: Boolean);
     procedure SetStackChecks(const AValue: Boolean);
     procedure SetStackSize(const AValue: Integer);
-    procedure SetSubTarget(AValue: string);
+    procedure SetSubtarget(AValue: string);
     procedure SetTypedAddress(const AValue: Boolean);
     procedure SetStopAfterErrCount(const AValue: integer);
     procedure SetStripSymbols(const AValue: Boolean);
@@ -418,7 +418,7 @@ type
     property TargetOS: string read fTargetOS write SetTargetOS;
     property TargetCPU: string read fTargetCPU write SetTargetCPU; // general type
     property TargetProcessor: String read fTargetProc write SetTargetProc; // specific
-    property SubTarget: string read FSubTarget write SetSubTarget;
+    property Subtarget: string read FSubtarget write SetSubtarget;
     property OptimizationLevel: Integer read fOptLevel write SetOptLevel;
     property VariablesInRegisters: Boolean read fVarsInReg write SetVarsInReg;
     property UncertainOptimizations: Boolean read fUncertainOpt write SetUncertainOpt;
@@ -827,10 +827,10 @@ begin
   IncreaseChangeStamp;
 end;
 
-procedure TLazCompilerOptions.SetSubTarget(AValue: string);
+procedure TLazCompilerOptions.SetSubtarget(AValue: string);
 begin
-  if FSubTarget=AValue then Exit;
-  FSubTarget:=AValue;
+  if FSubtarget=AValue then Exit;
+  FSubtarget:=AValue;
   IncreaseChangeStamp;
 end;
 

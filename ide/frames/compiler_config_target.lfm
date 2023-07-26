@@ -109,15 +109,15 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
       Caption = 'lblTargetProc'
       ParentColor = False
     end
-    object lblSubTarget: TLabel
+    object lblSubtarget: TLabel
       AnchorSideLeft.Control = lblTargetCPU
-      AnchorSideTop.Control = SubTargetComboBox
+      AnchorSideTop.Control = SubtargetComboBox
       AnchorSideTop.Side = asrCenter
       Left = 6
       Height = 16
       Top = 74
       Width = 75
-      Caption = 'lblSubTarget'
+      Caption = 'lblSubtarget'
       ParentColor = False
     end
     object TargetOSComboBox: TComboBox
@@ -182,8 +182,8 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
       TabOrder = 3
       Text = '0'
     end
-    object SubTargetComboBox: TComboBox
-      AnchorSideLeft.Control = lblSubTarget
+    object SubtargetComboBox: TComboBox
+      AnchorSideLeft.Control = lblSubtarget
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = TargetProcComboBox
       AnchorSideTop.Side = asrBottom

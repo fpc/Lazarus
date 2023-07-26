@@ -1172,7 +1172,7 @@ begin
     CompilerDefinesCache.TestFilename:=GetTempFilename('fpctest.pas','');
 
   UnitSetCache:=CompilerDefinesCache.FindUnitSet(Config.FPCPath,
-    Config.TargetOS,Config.TargetProcessor,Config.SubTarget,Config.FPCOptions,Config.FPCSrcDir,
+    Config.TargetOS,Config.TargetProcessor,Config.Subtarget,Config.FPCOptions,Config.FPCSrcDir,
     true);
   // parse compiler settings, fpc sources
   UnitSetCache.Init;
