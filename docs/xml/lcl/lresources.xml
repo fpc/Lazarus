@@ -1011,7 +1011,29 @@ writer</link>.
 <seealso/>
 </element>
 
-<element link="#lcl.lresources.TLRSOWStackItem" name="PLRSOWStackItem"/>
+<element name="PLRSOWStackItem" link="#lcl.lresources.TLRSOWStackItem"/>
+
+<element name="TLazObjectWriterString">
+<short>
+Compiler version-specific alias for String values used in TLRSObjectWriter.
+</short>
+<descr>
+<p>
+<var>TLazObjectWriterString</var> is the type passed as an argument to the 
+WriteString method in TLRSObjectWriter.
+</p>
+<p>
+For FPC version 3.3.1 and later, it is an alias to the RawByteString type. For 
+previous FPC versions, it is an alias to the String type.
+</p>
+</descr>
+<version>
+Added in LazUtils version 3.0.
+</version>
+<seealso>
+<link id="TLRSObjectWriter.WriteString"/>
+</seealso>
+</element>
 
 <element name="TLRSObjectWriter">
 <short>Object writer for Lazarus Resource Streams.</short>
@@ -1429,12 +1451,39 @@ The TLRSObjectWriter can find empty entries and omit writing them to stream.
 </element>
 
 <element name="TLRSObjectWriter.WriteString">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Writes a string value using the format for the LRS object writer.
+</short>
+<descr>
+<p>
+<var>WriteString</var> is an overridden method in <var>TLazObjectWriter</var> 
+used to store the specified string value to the storage format used in the 
+writer class. 
+</p>
+<p>
+WriteString uses the length of the specified string in Value to determine the 
+actions needed in the method. If the value can be represented using the 
+ShortString type (255 characters or less), WriteValue is called to write a 
+single Byte value with the length for the vaString type. For longer string 
+values, an Integer value is written using the Endian-ness for the platform. 
+The Write method is called to store the string content when the length is a 
+positive non-zero value.
+</p>
+<p>
+WriteString implements the abstract virtual method defined in 
+TAbstractObjectWriter.
+</p>
+</descr>
+<version>
+Modified in LCL version 3.0 to use the TLazObjectWriterString type 
+instead of the String type in the Value argument.
+</version>
+<seealso>
+<link id="#rtl.classes.TAbstractObjectWriter">TAbstractObjectWriter</link>
+</seealso>
 </element>
 <element name="TLRSObjectWriter.WriteString.Value">
-<short/>
+<short>String value stored in the method.</short>
 </element>
 
 <element name="TLRSObjectWriter.WriteWideString">
