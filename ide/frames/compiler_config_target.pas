@@ -36,10 +36,10 @@ uses
   // CodeTools
   DefineTemplates,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf, MacroIntf, IDEDialogs,
+  IDEOptionsIntf, IDEOptEditorIntf, MacroIntf, IDEDialogs, IDEUtils,
   // IDE
   CompilerOptions, LazarusIDEStrConsts, TransferMacros, PackageDefs, Project,
-  compiler_parsing_options;
+  RecentListProcs, InputHistory, compiler_parsing_options;
 
 type
 
@@ -57,10 +57,12 @@ type
     lblTargetCPU: TLabel;
     lblTargetOS: TLabel;
     lblTargetProc: TLabel;
+    lblSubTarget: TLabel;
     LCLWidgetTypeLabel: TLabel;
     TargetCPUComboBox: TComboBox;
     TargetOSComboBox: TComboBox;
     TargetProcComboBox: TComboBox;
+    SubTargetComboBox: TComboBox;
     procedure chkCustomConfigFileClick(Sender: TObject);
     procedure TargetOSComboBoxSelect(Sender: TObject);
     procedure TargetCPUComboBoxSelect(Sender: TObject);
@@ -300,13 +302,16 @@ begin
       ItemIndex := 0;
     end;
 
-    // Target CPU
+    // Target processor
     lblTargetProc.Caption := dlgTargetProc+' (-Cp)';
     // Target-specific options
     grbTargetOptions.Caption := dlgTargetSpecificOptions;
     chkWin32GraphicApp.Caption := dlgWin32GUIApp + ' (-WG)';
     // WidgetSet
     LCLWidgetTypeLabel.Caption := lisSelectAnotherLCLWidgetSet;
+
+    // SubTarget
+    lblSubTarget.Caption := lisSubTarget+' (-t)';
   finally
     List.Free;
   end;
@@ -334,6 +339,7 @@ begin
       TargetCPUComboBox.ItemIndex := 0;
       TargetCPUComboBox.Text := 'default';
       TargetProcComboBox.Text := 'default';
+      SubTargetComboBox.Text := 'default';
       CurrentWidgetTypeLabel.Visible:=false;
       LCLWidgetTypeLabel.Visible:=false;
     end else begin
@@ -352,6 +358,12 @@ begin
       UpdateByTargetCPU(TargetCPU);
       UpdateByTargetOS(TargetOS);
       TargetProcComboBox.Text := ProcessorToCaption(TargetProcessor);
+      with SubTargetComboBox do begin
+        Items.BeginUpdate;
+        Items.Assign(InputHistories.HistoryLists.GetList('SubTarget',true,rltCaseInsensitive));
+        SetComboBoxText(SubTargetComboBox,SubTarget,cstCaseInsensitive);
+        Items.EndUpdate;
+      end;
       PkgDep:=TProjectCompilerOptions(AOptions).LazProject.FindDependencyByName('LCL');
       CurrentWidgetTypeLabel.Visible:=Assigned(PkgDep);
       LCLWidgetTypeLabel.Visible:=Assigned(PkgDep);
@@ -387,6 +399,7 @@ begin
         NewTargetCPU := '';
       TargetCPU := CaptionToCPU(NewTargetCPU);
       TargetProcessor := CaptionToProcessor(TargetProcComboBox.Text);
+      SubTarget := lowercase(SubTargetComboBox.Text);
     end;
     Win32GraphicApp := chkWin32GraphicApp.Checked;
   end;

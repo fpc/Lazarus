@@ -508,11 +508,10 @@ begin
     Width := Height;
     AssociatedEdit := OtherUnitsEdit;
     ContextCaption := OtherUnitsLabel.Caption;
-    Templates:='$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)' +
-              ';$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)' +
-              ';$(LazarusDir)/components/codetools/units/$(TargetCPU)-$(TargetOS)' +
-              ';$(LazarusDir)/components/custom' +
-              ';$(LazarusDir)/packager/units/$(TargetCPU)-$(TargetOS)';
+    Templates:='$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)'
+             +';$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)'
+             +';$(LazarusDir)/components/yourpkg/units/$(TargetCPU)-$(TargetOS)'
+             +';$(LazarusDir)/components/yourpkg/units/$(TargetCPU)-$(TargetOS)-$(SubTarget)';
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
   end;
