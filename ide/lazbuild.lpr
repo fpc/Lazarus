@@ -1593,6 +1593,7 @@ begin
     LongOptions.Add('operating-system:');
     LongOptions.Add('os:');
     LongOptions.Add('cpu:');
+    LongOptions.Add('subtarget:');
     LongOptions.Add('bm:');
     LongOptions.Add('build-mode:');
     LongOptions.Add('compiler:');
