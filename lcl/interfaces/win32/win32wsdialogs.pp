@@ -1871,8 +1871,9 @@ begin
   //if IsConsole then writeln('TWin32WSTaskDialog.Execute A');
   //if not Assigned(TaskDialogIndirect)  or
   if not TaskDialogIndirectAvailable  or
-     (tfForceNonNative in ADlg.Flags)
-     //Yet to be implemented: or (ADlg.Selection <> '') or (tfQuery in ADlg.Flags)
+     (tfForceNonNative in ADlg.Flags) or
+     ((tfQuery in ADlg.Flags) and (ADlg.QueryChoices.Count > 0)) or
+     ((tfSimpleQuery in ADlg.Flags) and (ADlg.SimpleQuery <> ''))
   then
     Result := inherited Execute(ADlg, AParentWnd, ARadioRes)
   else

@@ -51,6 +51,8 @@ type
     procedure AddButtonsAndCheckBox(var X,Y, XB: Integer; AWidth, AButtonDef: Integer; APArent: TWinControl);
     procedure AddFooter(var X, Y, XB: Integer; AFontHeight, AWidth: Integer; APArent: TWinControl);
     function AddLabel(const AText: string; BigFont: boolean; var X, Y: Integer; AFontHeight, AWidth: Integer; APArent: TWinControl): TLabel;
+    procedure AddQueryCombo(var X,Y: Integer; AWidth: Integer; AParent: TWinControl);
+    procedure AddQueryEdit(var X,Y: Integer; AWidth: Integer; AParent: TWinControl);
 
   protected
     procedure HandleEmulatedButtonClicked(Sender: TObject);
@@ -271,17 +273,16 @@ begin
 
   Result := ShowModal;
 
-//ToDo implement this
-(*
-  if Combo<>nil then begin
-    SelectionRes := Combo.ItemIndex;
-    Query := Dialog.Form.Combo.Text;
+  if Assigned(Combo) then
+  begin
+    FDlg.QueryItemIndex := Combo.ItemIndex;
+    FDlg.QueryResult := Combo.Text;
   end
   else
-  if Dialog.Form.Edit<>nil then
-    Query := Dialog.Form.Edit.Text;
-
-*)
+  begin
+    if Assigned(Edit) then
+      FDlg.QueryResult := Edit.Text;
+  end;
 
   if VerifyCheckBox<>nil then
   begin
@@ -573,6 +574,48 @@ begin
   inc(Y,R.Bottom+16);
 end;
 
+procedure TLCLTaskDialog.AddQueryCombo(var X, Y: Integer; AWidth: Integer; AParent: TWinControl);
+begin
+  Combo := TComboBox.Create(Self);
+  with Combo do
+  begin
+    Items.Assign(FDlg.QueryChoices);
+    SetBounds(X,Y,aWidth-32-X,22);
+    if (tfQueryFixedChoices in FDlg.Flags) then
+      Style := csDropDownList
+    else
+      Style := csDropDown;
+    if (FDlg.QueryItemIndex >= 0) and (FDlg.QueryItemIndex < FDlg.QueryChoices.Count) then
+      ItemIndex := FDlg.QueryItemIndex
+    else
+    begin
+      if (tfQueryFixedChoices in FDlg.Flags) then
+        ItemIndex := 0
+      else
+        ItemIndex := -1;
+    end;
+    if (tfQueryFocused in FDlg.Flags) then
+      ActiveControl := Combo;
+    Parent := AParent;
+  end;
+  inc(Y,42);
+end;
+
+procedure TLCLTaskDialog.AddQueryEdit(var X, Y: Integer; AWidth: Integer; AParent: TWinControl);
+begin
+  Edit := TEdit.Create(Self);
+  with Edit do
+  begin
+    SetBounds(X,Y,aWidth-16-X,22);
+    Text := FDlg.SimpleQuery;
+    PasswordChar := FDlg.SimpleQueryPasswordChar;
+    Parent := AParent;
+  end;
+  if (tfQueryFocused in FDlg.Flags) then
+    ActiveControl := Edit;
+  inc(Y,42);
+end;
+
 procedure TLCLTaskDialog.HandleEmulatedButtonClicked(Sender: TObject);
 var Btn: TButton absolute Sender;
     CanClose: Boolean;
@@ -710,56 +753,14 @@ begin
     AddCommandLinkButtons(X, Y, aWidth, aButtonDef, FontHeight, CurrParent);
 
 
-(*
-
-  This needs expanding of TTaskDialogFlags and a new field DlgText in TTaskDialog.
-  Basically this code was never excuted from Dialogs.TTaskDialog
-
-  // add selection list or query editor
-  if (Selection <> '') then
-  begin
-    List := TStringListUTF8Fast.Create;
-    try
-      Combo := TComboBox.Create(self);
-      with Combo do begin
-        Parent := CurrParent;
-        SetBounds(X,Y,aWidth-32-X,22);
-        if (tfQuery in FDlg.Flags) then
-          Style := csDropDown
-        else
-          Style := csDropDownList;
-        List.Text := trim(Selection);
-        Items.Assign(List);
-        ItemIndex := List.IndexOf(Query);
-        if (ItemIndex=-1) and (Style=csDropDown) then
-          Text := Query;
-        if tdfQueryFieldFocused in aFlags then
-          Dialog.Form.ActiveControl := Dialog.Form.Combo;
-      end;
-      inc(Y,42);
-    finally
-      List.Free;
-    end;
-  end
+  // add query combobox list or query edit
+  if (tfQuery in FDlg.Flags) and (FDlg.QueryChoices.Count > 0) then
+    AddQueryCombo(X, Y, aWidth, CurrParent)
   else
-    if tfQuery in aFlags then
-    begin
-      Dialog.Form.Edit := TEdit.Create(Dialog.Form);
-      with Dialog.Form.Edit do
-      begin
-        Parent := CurrParent;
-        SetBounds(X,Y,aWidth-16-X,22);
-        Text := Query;
-        if tdfQueryMasked in aFlags then
-          PasswordChar := '*';
-      end;
-      if tdfQueryFieldFocused in aFlags then
-        ActiveControl := Form.Edit;
-      inc(Y,42);
-    end;
-
-*)
-
+  begin
+    if (tfSimpleQuery in FDlg.Flags) and (FDlg.SimpleQuery <> '') then
+      AddQueryEdit(X, Y, aWidth, CurrParent);
+  end;
 
   // from now we won't add components to the white panel, but to the form
   Panel.Height := Y;

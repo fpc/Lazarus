@@ -632,7 +632,7 @@ type
     FModalResult: TModalResult;
     FQueryChoices: TStrings;
     FQueryResult: String;
-    FQueryResultIndex: Integer;
+    FQueryItemIndex: Integer;
     FRadioButton: TTaskDialogRadioButtonItem;
     FRadioButtons: TTaskDialogButtons;
     FSimpleQuery: String;
@@ -669,7 +669,7 @@ type
     property MainIcon: TTaskDialogIcon read FMainIcon write FMainIcon default tdiInformation;
     property ModalResult: TModalResult read FModalResult write FModalResult;
     property QueryChoices: TStrings read FQueryChoices write SetQueryChoices;
-    property QueryResultIndex: Integer read FQueryResultIndex write FQueryResultIndex;
+    property QueryItemIndex: Integer read FQueryItemIndex write FQueryItemIndex;
     property QueryResult: String read FQueryResult write FQueryResult;
     property RadioButton: TTaskDialogRadioButtonItem read FRadioButton;
     property RadioButtons: TTaskDialogButtons read FRadioButtons write SetRadioButtons;
@@ -696,6 +696,7 @@ type
     property MainIcon;
     property RadioButtons;
     property QueryChoices;
+    property QueryItemIndex;
     property SimpleQuery;
     property SimpleQueryPasswordChar;
     property Text;

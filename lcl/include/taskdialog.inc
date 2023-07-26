@@ -145,7 +145,6 @@ const
     mrOk, mrYes, mrNo, mrCancel, mrRetry, mrAbort);
 begin
   FQueryResult := '';
-  QueryResultIndex := -1;
   ButtonID := TWSTaskDialogClass(WidgetSetClass).Execute(Self, ParentWnd, ARadioRes);
   FModalResult := ButtonIDToModalResult(ButtonID);
   Result := (ButtonID >= 0);
@@ -159,6 +158,8 @@ begin
   //debugln([' VerifyChecked=',tfVerificationFlagChecked in FFlags]);
   //debugln([' ARadioRes=',ARadioRes]);
   //debugln([' Assigned(FRadioButton)=',Assigned(FRadioButton)]);
+  //debugln([' QueryItemIndex=',QueryItemIndex]);
+  //debugln([' QueryResult=',QueryResult]);
 end;
 
 procedure TCustomTaskDialog.DoOnButtonClicked(AModalResult: Integer;
@@ -207,6 +208,7 @@ end;
 procedure TCustomTaskDialog.SetFlags(AValue: TTaskDialogFlags);
 begin
   if FFlags = AValue then Exit;
+  if (AValue * [tfQuery, tfSimpleQuery] = [tfQuery, tfSimpleQuery]) then
   begin
     if (tfQuery in FFlags) then
       Exclude(AValue, tfQuery)
