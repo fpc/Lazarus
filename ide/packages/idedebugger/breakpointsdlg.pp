@@ -153,6 +153,7 @@ type
     FBaseDirectory: string;
     FStates: TBreakPointsDlgStates;
     FUngroupedHeader, FAddGroupedHeader: TBreakpointGroupFrame;
+    FDragSource: Boolean;
     FLastTargetHeader: TBreakpointGroupFrame;
 
     function GetDropTargetGroup(ANode: PVirtualNode): TBreakpointGroupFrame;
@@ -1179,6 +1180,7 @@ begin
     end;
 
     FAddGroupedHeader.Visible := False;
+    FDragSource := False;
   finally
     EndUpdate;
   end;
@@ -1193,6 +1195,8 @@ var
   dummy: Boolean;
 begin
   Accept := False;
+  if FDragSource and tbGroupByBrkGroup.Down then
+    FAddGroupedHeader.Visible := True;
 
   TargetNd := tvBreakPoints.GetNodeAt(Pt);
   if (TargetNd <> nil) and (Source = tvBreakPoints) and (tvBreakPoints.SelectedCount > 0) then begin
@@ -1230,8 +1234,7 @@ end;
 procedure TBreakPointsDlg.tvBreakPointsStartDrag(Sender: TObject;
   var DragObject: TDragObject);
 begin
-  if tbGroupByBrkGroup.Down then
-    FAddGroupedHeader.Visible := True;
+  FDragSource := True;
   FDraggingGroupHeader := False;
 end;
 
@@ -1239,6 +1242,7 @@ procedure TBreakPointsDlg.tvBreakPointsEndDrag(Sender, Target: TObject; X,
   Y: Integer);
 begin
   FAddGroupedHeader.Visible := False;
+  FDragSource := False;
 end;
 
 function TBreakPointsDlg.GetDropTargetGroup(ANode: PVirtualNode
