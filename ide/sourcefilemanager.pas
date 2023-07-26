@@ -3874,6 +3874,10 @@ begin
     Result:=mrOk;
   finally
     Project1.EndUpdate;
+
+    // set all modified to false
+    Project1.ClearModifieds(true);
+
     SourceEditorManager.DecUpdateLock;
     if (Result<>mrOk) and (Project1<>nil) then begin
       // mark all files, that are left to open as unloaded:
@@ -3885,9 +3889,6 @@ begin
           AnUnitInfo.Loaded := false;
       end;
     end;
-
-    // set all modified to false
-    Project1.ClearModifieds(true);
 
     // call ProjectOpened handlers
     HandlerResult:=MainIDE.DoCallProjectChangedHandler(lihtProjectOpened, Project1);
