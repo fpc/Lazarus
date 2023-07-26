@@ -188,7 +188,6 @@ type
     procedure JumpToCurrentBreakPoint;
     procedure ShowProperties;
   protected
-    procedure CreateWnd; override;
     procedure AcceptGroupHeaderDrop(ADroppedGroupFrame: TBreakpointGroupFrame; ATargetNode: PVirtualNode); override;
     procedure DoBreakPointsChanged; override;
     procedure DoBeginUpdate; override;
@@ -1622,22 +1621,6 @@ begin
   BeginUpdate;
   try
     DebugBoss.ShowBreakPointProperties(CurBreakPoint);
-  finally
-    EndUpdate;
-  end;
-end;
-
-procedure TBreakPointsDlg.CreateWnd;
-var
-  i: Integer;
-begin
-  inherited CreateWnd;
-  BeginUpdate;
-  try
-    ClearTree;
-    for i := 0 to DebugBoss.BreakPointGroups.Count - 1 do
-      GetNodeForBrkGroup(DebugBoss.BreakPointGroups[i]);
-    UpdateAll;
   finally
     EndUpdate;
   end;

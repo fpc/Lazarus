@@ -59,6 +59,7 @@ type
   protected
     procedure SetVisible(Value: Boolean); reintroduce;
     procedure VisibleChanged; override;
+    procedure CreateWnd; override;
   public
     constructor Create(TheOwner: TBreakPointsDlgBase; ATree: TDbgTreeView; ANode: PVirtualNode;
       ABrkGroup: TIDEBreakPointGroup;
@@ -275,6 +276,12 @@ begin
   inherited VisibleChanged;
   if IsVisible then
     FTree.NodeHeight[FNode] := min(40, Max(15, ToolBar1.Height));
+end;
+
+procedure TBreakpointGroupFrame.CreateWnd;
+begin
+  inherited CreateWnd;
+  FTree.NodeHeight[FNode] := min(40, Max(15, ToolBar1.Height));
 end;
 
 constructor TBreakpointGroupFrame.Create(TheOwner: TBreakPointsDlgBase;
