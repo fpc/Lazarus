@@ -538,6 +538,7 @@ begin
   tr('LCLWidgetType',lisLCLWidgetType);
   tr('TargetCPU',lisTargetCPU);
   tr('TargetOS',lisTargetOS);
+  tr('SubTarget',lisSubTarget);
   tr('SrcOS',lisSrcOS);
   tr('FPCVer',lisFPCVersionEG222);
   tr('LAZVer',lisLAZVer);
@@ -626,6 +627,8 @@ begin
     Result:=OverrideTargetOS
   else if SysUtils.CompareText(MacroName,'TargetCPU')=0 then
     Result:=OverrideTargetCPU
+  else if SysUtils.CompareText(MacroName,'SubTarget')=0 then
+    Result:=OverrideSubTarget
   else if SysUtils.CompareText(MacroName,'LCLWidgetType')=0 then
     Result:=OverrideLCLWidgetType;
 end;
@@ -637,6 +640,8 @@ begin
     Result.Values['TargetOS']:=OverrideTargetOS;
   if OverrideTargetCPU<>'' then
     Result.Values['TargetCPU']:=OverrideTargetCPU;
+  if OverrideSubTarget<>'' then
+    Result.Values['SubTarget']:=OverrideSubTarget;
   if OverrideLCLWidgetType<>'' then
     Result.Values['LCLWidgetType']:=OverrideLCLWidgetType;
 end;
@@ -2759,6 +2764,15 @@ function TBuildManager.GetBuildMacroValuesHandler(Options: TBaseCompilerOptions;
         {$ENDIF}
         s:=GetCompiledTargetCPU;
       end;
+    end;
+    // SubTarget
+    if not Values.IsDefined('SubTarget') then  begin
+      s:='';
+      if FBuildTarget<>nil then
+        s:=FBuildTarget.CompilerOptions.SubTarget;
+      if s='' then
+        s:=fSubTarget;
+      Values.Values['SubTarget']:=s;
     end;
   end;
 

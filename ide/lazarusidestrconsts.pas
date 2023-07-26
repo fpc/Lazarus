@@ -196,6 +196,7 @@ resourcestring
   lisLCLWidgetType = 'LCL widget type';
   lisTargetCPU = 'Target CPU';
   lisTargetOS = 'Target OS';
+  lisSubTarget = 'SubTarget';
   lisSrcOS = 'Src OS';
   lisCommandLineParamsOfProgram = 'Command line parameters of program';
   lisPromptForValue = 'Prompt for value';

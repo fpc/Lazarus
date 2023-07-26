@@ -2567,6 +2567,7 @@ var
   Vars: TCTCfgScriptVariables;
   CurTargetOS: String;
   CurTargetCPU: String;
+  CurSubTarget: String;
   CurSrcOS: String;
   dit: TCompilerDbgSymbolType;
   CompilerFilename: String;
@@ -2623,6 +2624,7 @@ begin
 
   CurTargetOS:='';
   CurTargetCPU:='';
+  CurSubTarget:='';
   if not (ccloNoMacroParams in Flags) then
   begin
     Vars:=GetBuildMacroValues(Self,true);
@@ -2630,6 +2632,7 @@ begin
     begin
       CurTargetOS:=GetFPCTargetOS(Vars.Values['TargetOS']);
       CurTargetCPU:=GetFPCTargetCPU(Vars.Values['TargetCPU']);
+      CurSubTarget:=Vars.Values['SubTarget'];
     end;
   end;
   CurSrcOS:=GetDefaultSrcOSForTargetOS(CurTargetOS);
@@ -2648,8 +2651,8 @@ begin
   and ((TargetCPU<>'') or (CurTargetCPU<>DefaultTargetCPU)) then
     Result.Add('-P' + CurTargetCPU);
   { SubTarget }
-  if SubTarget<>'' then
-    Result.Add('-t'+SubTarget);
+  if CurSubTarget<>'' then
+    Result.Add('-t'+CurSubTarget);
   { TargetProcessor }
   if TargetProcessor<>'' then
     Result.Add('-Cp'+UpperCase(TargetProcessor));
