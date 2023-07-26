@@ -1078,6 +1078,9 @@ type
     function GetPCVersion(const CompilerFilename, TargetOS, TargetCPU: string;
                           UseCompiledVersionAsDefault: boolean;
                           out Kind: TPascalCompiler): string;
+    function FindUnitSet(const CompilerFilename, TargetOS, TargetCPU,
+                         Options, FPCSrcDir: string;
+                         CreateIfNotExists: boolean): TFPCUnitSetCache;
     function FindUnitSet(const CompilerFilename, TargetOS, TargetCPU, SubTarget,
                          Options, FPCSrcDir: string;
                          CreateIfNotExists: boolean): TFPCUnitSetCache;
@@ -11472,6 +11475,13 @@ begin
   Kind:=CfgCache.Kind;
   if CfgCache.FullVersion='' then exit;
   Result:=CfgCache.FullVersion;
+end;
+
+function TCompilerDefinesCache.FindUnitSet(const CompilerFilename, TargetOS,
+  TargetCPU, Options, FPCSrcDir: string; CreateIfNotExists: boolean
+  ): TFPCUnitSetCache;
+begin
+  Result:=FindUnitSet(CompilerFilename,TargetOS,TargetCPU,'',Options,FPCSrcDir,CreateIfNotExists);
 end;
 
 function TCompilerDefinesCache.FindUnitSet(const CompilerFilename, TargetOS,
