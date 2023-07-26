@@ -322,6 +322,18 @@
         <Filename Value="winlazutf8.inc"/>
         <Type Value="Include"/>
       </Item>
+      <Item>
+        <Filename Value="amigalazfileutils.inc"/>
+        <Type Value="Include"/>
+      </Item>
+      <Item>
+        <Filename Value="asiancodepages.inc"/>
+        <Type Value="Include"/>
+      </Item>
+      <Item>
+        <Filename Value="commoncodepages.inc"/>
+        <Type Value="Include"/>
+      </Item>
     </Files>
     <LazDoc Paths="../../docs/xml/lazutils"/>
     <i18n>
