@@ -34,6 +34,28 @@ Extended by Mattias Gaertner:
 <element name="Laz2_DOM"/>
 <element name="Laz2_XMLWrite"/>
 
+<element name="TXMLObjectWriterString">
+<short>
+Compiler version-specific alias for String values used in TXMLObjectWriter.
+</short>
+<descr>
+<p>
+<var>TXMLObjectWriterString</var> is the type passed as an argument to the 
+WriteString method in TXMLObjectWriter.
+</p>
+<p>
+For FPC version 3.3.1 and later, it is an alias to the RawByteString type. For 
+previous FPC versions, it is an alias to the String type.
+</p>
+</descr>
+<version>
+Added in LazUtils version 3.0.
+</version>
+<seealso>
+<link id="TXMLObjectWriter.WriteString"/>
+</seealso>
+</element>
+
 <element name="TXMLObjectWriterStackElType">
 <short>
 Represents element types used in stack elements for an XML object writer.
@@ -438,11 +460,30 @@ object writer.
 <short>
 Serializes a string value using the XML format for the object writer.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>WriteString</var> is an overridden method in <var>TXMLObjectWriter</var> 
+used to store the specified string value to the XML storage format used in the 
+writer class. WriteString calls GetPropertyElement to get or create a 
+TDOMElement stack entry where the Value argument is stored. In the 
+TDOMElement, the string value is stored in a tag with the name 'string' using 
+the 'value' attribute to store the passed value.
+</p>
+<p>
+WriteString implements the abstract virtual method defined in 
+TAbstractObjectWriter.
+</p>
+</descr>
+<version>
+Modified in LazUtils version 3.0 to use the TXMLObjectWriterString type 
+instead of the String type in the Value argument.
+</version>
+<seealso>
+<link id="#rtl.classes.TAbstractObjectWriter">TAbstractObjectWriter</link>
+</seealso>
 </element>
 <element name="TXMLObjectWriter.WriteString.Value">
-<short>String value written in the method.</short>
+<short>String value stored in the method.</short>
 </element>
 
 <element name="TXMLObjectWriter.WriteWideString">
@@ -479,7 +520,7 @@ Included when USE_NEW_READER_WRITER has been defined in the LCL.
 </element>
 <element name="TXMLObjectWriter.WriteUInt64.Value">
 <short>
-Unsigned 64-bit Integer (QWord) value serialized in the method.  
+Unsigned 64-bit Integer (QWord) value serialized in the method.
 </short>
 </element>
 
@@ -696,7 +737,7 @@ the root element, or the node is not a valid TDOMElement instance.
 <element name="TXMLObjectReader.NextValue.Result">
 <short>
 TValueType for the next element in the DOM tree, or vaNull when a value type 
-cannot be determined.  
+cannot be determined.
 </short>
 </element>
 
@@ -711,8 +752,8 @@ has been read.
 <element name="TXMLObjectReader.ReadValue.Result">
 <short>
 TValueType for the element read from the DOM tree, or vaNull when a value type 
-cannot be determined.  
-</short>  
+cannot be determined.
+</short>
 </element>
 
 <element name="TXMLObjectReader.BeginRootComponent">
@@ -746,12 +787,12 @@ Not used in the current implementation.
 </element>
 <element name="TXMLObjectReader.BeginComponent.CompClassName">
 <short>
-Returns the value from the 'class' attribute in the DOM Element.  
+Returns the value from the 'class' attribute in the DOM Element.
 </short>
 </element>
 <element name="TXMLObjectReader.BeginComponent.CompName">
 <short>
-Returns the value from the 'name' attribute in the DOM Element.  
+Returns the value from the 'name' attribute in the DOM Element.
 </short>
 </element>
 
@@ -885,7 +926,7 @@ Int64 value for the 'value' attribute in the DOM Element.
 <element name="TXMLObjectReader.ReadSet.Result">
 <short>
 Integer value representing the OR-ed enumeration values for the set type.
-</short>  
+</short>
 </element>
 <element name="TXMLObjectReader.ReadSet.SetType">
 <short>
@@ -936,7 +977,7 @@ the return value.
 </element>
 <element name="TXMLObjectReader.ReadWideString.Result">
 <short>
-WideString value for the 'value' attribute in the DOM element.  
+WideString value for the 'value' attribute in the DOM element.
 </short>
 </element>
 
@@ -984,7 +1025,7 @@ Not used in the current implementation.
 </element>
 <element name="TXMLObjectReader.Read.Buf">
 <short>
-Untyped buffer where the values read in the method are stored.  
+Untyped buffer where the values read in the method are stored.
 </short>
 </element>
 <element name="TXMLObjectReader.Read.Count">
