@@ -79,7 +79,6 @@ implementation
 
 constructor TProjectDebugLink.Create;
 begin
-  DebugLn(['TProjectDebugLink.Create: Project=', FProject]);
   FDebuggerProperties := TDebuggerPropertiesConfigList.Create;
   FBackendConverterConfig := TIdeDbgValueConvertSelectorList.Create;
   FBackendConverterConfig.OnChanged := @BackendConverterConfigChanged;
