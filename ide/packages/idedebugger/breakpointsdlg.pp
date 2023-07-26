@@ -1587,7 +1587,7 @@ begin
         VNode := tvBreakPoints.GetFirstSelected;
         while VNode <> nil do
         begin
-          CurBreakPoint:=TIDEBreakPoint(VNode);
+          CurBreakPoint:=TIDEBreakPoint(tvBreakPoints.NodeItem[VNode]);
           VNode := tvBreakPoints.GetNextSelected(VNode);
           CurBreakPoint.ReleaseReference;
         end;
