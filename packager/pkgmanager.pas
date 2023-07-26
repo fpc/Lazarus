@@ -5841,14 +5841,13 @@ begin
         if s='' then continue;
         case IDEQuestionDialog(lisUninstallFail,
            Format(lisThePackageIsUsedBy, [APackage.IDAsString])+sLineBreak +s,
-           mtConfirmation, [mrYes, lisUninstallThemToo, mrIgnore, mrCancel]
+           mtConfirmation, [mrYes, lisUninstallThemToo, mrCancel]
            ) of
         mrYes:
           begin
             for j:=0 to Dependencies.Count-1 do
               DeleteDependency(TPkgDependency(Dependencies[j]));
           end;
-        mrIgnore: ;
         else
           exit(false);
         end;

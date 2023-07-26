@@ -532,7 +532,7 @@ var
   i: Integer;
 begin
   for i:=0 to NewInstalledPackages.Count-1 do
-    if SysUtils.CompareText(TLazPackageID(NewInstalledPackages[i]).Name,PkgName)=0 then
+    if CompareText(TLazPackageID(NewInstalledPackages[i]).Name,PkgName)=0 then
       exit(true);
   Result:=false;
 end;
@@ -742,6 +742,12 @@ begin
 
     Result:=PackageEditingInterface.CheckInstallPackageList(
                     FNewInstalledPackages,UninstallPkgs,[piiifRemoveConflicts]);
+    if not Result then begin
+      AssignOldInstalledPackagesToList;  // Restore the old list.
+      UpdateNewInstalledPackages;
+      UpdateAvailablePackages(True);
+      UpdateButtonStates;
+    end;
   finally
     UninstallPkgs.Free;
   end;
