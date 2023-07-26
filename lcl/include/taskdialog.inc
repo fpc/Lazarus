@@ -93,6 +93,8 @@ begin
   FFlags := [tfAllowDialogCancellation];
   FFooterIcon := tdiNone;
   FMainIcon := tdiInformation;
+
+  FQueryChoices := TStringList.Create;
 end;
 
 function TCustomTaskDialog.ButtonIDToModalResult(const AButtonID: Integer
@@ -129,7 +131,7 @@ destructor TCustomTaskDialog.Destroy;
 begin
   FButtons.Free;
   FRadioButtons.Free;
-
+  FQueryChoices.Free;
   inherited Destroy;
 end;
 
@@ -142,6 +144,8 @@ const
   TD_BTNMOD: array[TTaskDialogCommonButton] of Integer = (
     mrOk, mrYes, mrNo, mrCancel, mrRetry, mrAbort);
 begin
+  FQueryResult := '';
+  QueryResultIndex := -1;
   ButtonID := TWSTaskDialogClass(WidgetSetClass).Execute(Self, ParentWnd, ARadioRes);
   FModalResult := ButtonIDToModalResult(ButtonID);
   Result := (ButtonID >= 0);
@@ -180,6 +184,41 @@ procedure TCustomTaskDialog.SetButtons(const Value: TTaskDialogButtons);
 begin
   if FButtons=Value then Exit;
   FButtons.Assign(Value);
+end;
+
+function DbgS(aFlag: TTaskDialogFlag): String; overload;
+begin
+  WriteStr(Result, aFlag);
+end;
+
+function DbgS(Flags: Dialogs.TTaskDialogFlags): String; overload;
+var
+  aFlag: Dialogs.TTaskDialogFlag;
+begin
+  Result := '[';
+  for aFlag in Dialogs.TTaskDialogFlag do
+    if (aFlag in Flags) then
+      Result := Result + DbgS(aFlag) + ',';
+  if Result[Length(Result)] = ',' then
+    SetLength(Result, Length(Result)-1);
+  Result := Result + ']';
+end;
+
+procedure TCustomTaskDialog.SetFlags(AValue: TTaskDialogFlags);
+begin
+  if FFlags = AValue then Exit;
+  begin
+    if (tfQuery in FFlags) then
+      Exclude(AValue, tfQuery)
+    else
+      Exclude(AValue, tfSimpleQuery);
+  end;
+  FFlags := AValue;
+end;
+
+procedure TCustomTaskDialog.SetQueryChoices(AValue: TStrings);
+begin
+  FQueryChoices.Assign(AValue);
 end;
 
 procedure TCustomTaskDialog.SetRadioButtons(const Value: TTaskDialogButtons);

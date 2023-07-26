@@ -1613,7 +1613,8 @@ const
     TDF_NO_DEFAULT_RADIO_BUTTON, TDF_CAN_BE_MINIMIZED,
     TDF_NO_SET_FOREGROUND {added in Windows 8}, TDF_SIZE_TO_CONTENT,
     //custom LCL flags
-    0 {tfForceNonNative}, 0 {tfEmulateClassicStyle});
+    0 {tfForceNonNative}, 0 {tfEmulateClassicStyle},
+    0,{tfQuery} 0 {tfSimpleQuery}, 0 {tfQueryFixedChoices}, 0 {tfQueryFocused});
 var
   aFlag: TTaskDialogFlag;
 begin

@@ -544,7 +544,8 @@ type
     tfPositionRelativeToWindow, tfRtlLayout,
     tfNoDefaultRadioButton, tfCanBeMinimized,
     tfNoSetForeGround, tfSizeToContent,
-    tfForceNonNative, tfEmulateClassicStyle);
+    tfForceNonNative, tfEmulateClassicStyle,
+    tfQuery, tfSimpleQuery, tfQueryFixedChoices, tfQueryFocused);
   TTaskDialogFlags = set of TTaskDialogFlag;
 
   TTaskDialogCommonButton = (tcbOk, tcbYes, tcbNo, tcbCancel, tcbRetry, tcbClose);
@@ -629,14 +630,21 @@ type
     FFooterText: TTranslateString;
     FMainIcon: TTaskDialogIcon;
     FModalResult: TModalResult;
+    FQueryChoices: TStrings;
+    FQueryResult: String;
+    FQueryResultIndex: Integer;
     FRadioButton: TTaskDialogRadioButtonItem;
     FRadioButtons: TTaskDialogButtons;
+    FSimpleQuery: String;
+    FSimpleQueryPasswordChar: Char;
     FText: TTranslateString;
     FTitle: TTranslateString;
     FVerificationText: TTranslateString;
     FWidth: Integer;
     FOnButtonClicked: TTaskDlgClickEvent;
     procedure SetButtons(const Value: TTaskDialogButtons);
+    procedure SetFlags(AValue: TTaskDialogFlags);
+    procedure SetQueryChoices(AValue: TStrings);
     procedure SetRadioButtons(const Value: TTaskDialogButtons);
   protected
     class procedure WSRegisterClass; override;
@@ -655,13 +663,18 @@ type
     property DefaultButton: TTaskDialogCommonButton read FDefaultButton write FDefaultButton default tcbOk;
     property ExpandButtonCaption: TTranslateString read FExpandButtonCaption write FExpandButtonCaption;
     property ExpandedText: TTranslateString read FExpandedText write FExpandedText;
-    property Flags: TTaskDialogFlags read FFlags write FFlags default [tfAllowDialogCancellation];
+    property Flags: TTaskDialogFlags read FFlags write SetFlags default [tfAllowDialogCancellation];
     property FooterIcon: TTaskDialogIcon read FFooterIcon write FFooterIcon default tdiNone;
     property FooterText: TTranslateString read FFooterText write FFooterText;
     property MainIcon: TTaskDialogIcon read FMainIcon write FMainIcon default tdiInformation;
     property ModalResult: TModalResult read FModalResult write FModalResult;
+    property QueryChoices: TStrings read FQueryChoices write SetQueryChoices;
+    property QueryResultIndex: Integer read FQueryResultIndex write FQueryResultIndex;
+    property QueryResult: String read FQueryResult write FQueryResult;
     property RadioButton: TTaskDialogRadioButtonItem read FRadioButton;
     property RadioButtons: TTaskDialogButtons read FRadioButtons write SetRadioButtons;
+    property SimpleQuery: String read FSimpleQuery write FSimpleQuery;
+    property SimpleQueryPasswordChar: Char read FSimpleQueryPasswordChar write FSimpleQueryPasswordChar default #0;
     property Text: TTranslateString read FText write FText;
     property Title: TTranslateString read FTitle write FTitle;
     property VerificationText: TTranslateString read FVerificationText write FVerificationText;
@@ -682,6 +695,9 @@ type
     property FooterText;
     property MainIcon;
     property RadioButtons;
+    property QueryChoices;
+    property SimpleQuery;
+    property SimpleQueryPasswordChar;
     property Text;
     property Title;
     property VerificationText;
@@ -794,6 +810,9 @@ function GetDialogIcon(idDiag: Integer): TCustomBitmap; deprecated 'Use DialogRe
 
 function dbgs(Option: TOpenOption): string; overload;
 function dbgs(Options: TOpenOptions): string; overload;
+function DbgS(aFlag: TTaskDialogFlag): String; overload;
+function DbgS(Flags: Dialogs.TTaskDialogFlags): String; overload;
+
 
 procedure Register;
 
