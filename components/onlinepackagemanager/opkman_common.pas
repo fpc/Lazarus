@@ -114,10 +114,10 @@ const
   MaxLazVersions = 4;
   LazVersions: array [0..MaxLazVersions - 1] of String = (
     '2.2.0', '2.2.4',
-    '2.4.0',
+    '3.0.0',
     'Trunk');
-  LazDefVersions = '2.2.0, 2.2.4, 2.4.0';
-  LazTrunk = '2.5.0';
+  LazDefVersions = '2.2.0, 2.2.4, 3.0.0';
+  LazTrunk = '3.99.0';
 
   MaxFPCVersions = 4;
   FPCVersions: array [0..MaxFPCVersions - 1] of String = (
