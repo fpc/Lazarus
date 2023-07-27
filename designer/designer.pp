@@ -2642,8 +2642,6 @@ begin
 
   OldMouseMovePos := LastMouseMovePos;
   LastMouseMovePos := GetFormRelativeMousePosition(Form);
-  if (OldMouseMovePos.X = LastMouseMovePos.X) and (OldMouseMovePos.Y = LastMouseMovePos.Y) then
-    Exit;
 
   MouseMoveComponent := MouseDownComponent;
   if MouseMoveComponent = nil then
@@ -2683,6 +2681,9 @@ begin
     SetTempCursor(Form, ACursor);
     Exit;
   end;
+
+  if (OldMouseMovePos.X = LastMouseMovePos.X) and (OldMouseMovePos.Y = LastMouseMovePos.Y) then
+    Exit;
 
   if (Selection.SelectionForm = nil) or (Selection.SelectionForm = Form) then
   begin
