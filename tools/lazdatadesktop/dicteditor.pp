@@ -152,7 +152,7 @@ Type
 
 Const
   // Image index, referring to ImgDatamodule.AppImages in unit dmImages;
-  iiDataDict     = 32;
+//  iiDataDict     = 32;  // listed in unit dmImages
   iiTables       = 1;
   iiTable        = 2;
   iiFields       = 3;

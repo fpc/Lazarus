@@ -29,7 +29,8 @@ type
     procedure AddPair(LV: TListView; Const AName, AValue: String);
     procedure ClearDisplay;
     function GetCurrentObjectType: TObjectType;
-    function NewNode(TV: TTreeView; ParentNode: TTreeNode; ACaption: String;       AImageIndex: Integer): TTreeNode;
+    function NewNode(TV: TTreeView; ParentNode: TTreeNode; ACaption: String;
+      AImageIndex: Integer): TTreeNode;
     procedure SelectConnection;
     procedure SelectField(TableName, FieldName: String);
     procedure SelectFields(TableName: String);
@@ -71,18 +72,6 @@ type
     Property Frame : TConnectionFrame Read FFrame;
   end;
 
-Const
-  // Image index, referring to ImgDatamodule.AppImages in unit dmImages
-  iiConnection   = 0;
-  iiTables       = 1;
-  iiTable        = 2;
-  iiFields       = 3;
-  iiField        = 4;
-  iiIndexes      = 5;
-  iiIndex        = 27;
-  iiTableData    = 7;
-  iiIndexFields  = 8;
-  iiIndexOptions = 9;
 
 implementation
 
@@ -251,8 +240,8 @@ begin
     end;
 end;
 
-function TConnectionFrame.NewNode(TV : TTreeView;ParentNode: TTreeNode; ACaption: String; AImageIndex : Integer
-  ): TTreeNode;
+function TConnectionFrame.NewNode(TV : TTreeView;ParentNode: TTreeNode;
+  ACaption: String; AImageIndex : Integer): TTreeNode;
 begin
   Result:=TV.Items.AddChild(ParentNode,ACaption);
   If AImageIndex>=0 then
