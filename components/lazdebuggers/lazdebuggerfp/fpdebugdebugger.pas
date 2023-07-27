@@ -573,6 +573,7 @@ type
     FThreadWorker: TFpThreadWorkerBreakPoint;
     FSetBreakFlag: boolean;
     FResetBreakFlag: boolean;
+    FLocationChanged: boolean;
     FInternalBreakpoint: FpDbgClasses.TFpDbgBreakpoint;
     FIsSet: boolean;
     FBrkLogStackLimit: Integer;
@@ -587,7 +588,7 @@ type
     procedure DoLogExpression(const AnExpression: String); override;
     procedure DoLogCallStack(const Limit: Integer); override;
     procedure DoStateChange(const AOldState: TDBGState); override;
-    procedure DoEnableChange; override;
+    procedure DoPropertiesChanged(AChanged: TDbgBpChangeIndicators); override;
     procedure DoChanged; override;
     property  Validity: TValidState write SetValid;
   public
@@ -1889,12 +1890,16 @@ end;
 procedure TFPBreakpoint.SetBreak;
 begin
   debuglnEnter(DBG_BREAKPOINTS, ['>> TFPBreakpoint.SetBreak  ADD ',FSource,':',FLine,'/',dbghex(Address),' ' ]);
-  assert(FThreadWorker = nil, 'TFPBreakpoint.SetBreak: FThreadWorker = nil');
   assert((FThreadWorker = nil) or ( (FThreadWorker is TFpThreadWorkerBreakPointSetUpdate) and (TFpThreadWorkerBreakPointSetUpdate(FThreadWorker).DbgBreakPoint = nil) ), 'TFPBreakpoint.SetBreak: (FThreadWorker = nil) or ( (FThreadWorker is TFpThreadWorkerBreakPointSetUpdate) and (TFpThreadWorkerBreakPointSetUpdate(FThreadWorker).DbgBreakPoint = nil) )');
-  assert(FInternalBreakpoint=nil);
+  assert((FInternalBreakpoint=nil) or FLocationChanged, 'TFPBreakpoint.SetBreak: (FInternalBreakpoint=nil) or FLocationChanged');
   MaybeAbortWorker;
 
   FThreadWorker := TFpThreadWorkerBreakPointSetUpdate.Create(TFpDebugDebugger(Debugger), Self);
+  if FLocationChanged then begin
+    TFpThreadWorkerBreakPointSetUpdate(FThreadWorker).InternalBreakpoint := FInternalBreakpoint;
+    FInternalBreakpoint := nil;
+    FLocationChanged := False;
+  end;
   TFpDebugDebugger(Debugger).FWorkQueue.PushItem(FThreadWorker);
 
   FValid := vsUnknown;
@@ -2033,7 +2038,7 @@ begin
      (TFpDebugDebugger(Debugger).FSendingEvents and (Debugger.State in [dsRun, dsInit]))
   then
     begin
-    if Enabled and not FIsSet then
+    if (Enabled and not FIsSet) or FLocationChanged then
       begin
       FSetBreakFlag:=true;
       Changed;
@@ -2051,26 +2056,44 @@ begin
   inherited DoStateChange(AOldState);
 end;
 
-procedure TFPBreakpoint.DoEnableChange;
+procedure TFPBreakpoint.DoPropertiesChanged(AChanged: TDbgBpChangeIndicators);
 var
   ADebugger: TFpDebugDebugger;
 begin
   ADebugger := TFpDebugDebugger(Debugger);
-  if (ADebugger.State in [dsPause, dsInternalPause, dsInit]) or TFpDebugDebugger(Debugger).FSendingEvents then
-    begin
-    if Enabled and not FIsSet then
-      FSetBreakFlag := True
-    else if not Enabled and FIsSet then
-      FResetBreakFlag := True;
-    end
-  else if (ADebugger.State = dsRun) then begin
-    if Enabled and (not FIsSet) then
-      ADebugger.QuickPause
-    else
-    if (not Enabled) and FIsSet then
-      ADebugger.FRunQuickPauseTasks := True;
+
+  if ciLocation in AChanged then begin
+    if Enabled then begin
+      FLocationChanged := True;
+      if (ADebugger.State in [dsPause, dsInternalPause, dsInit]) or TFpDebugDebugger(Debugger).FSendingEvents then begin
+        FSetBreakFlag := True;
+      end
+      else if (ADebugger.State = dsRun) then begin
+        ADebugger.QuickPause;
+      end;
+    end;
   end;
-  inherited;
+
+  if ciEnabled in AChanged then begin
+    if (ADebugger.State in [dsPause, dsInternalPause, dsInit]) or TFpDebugDebugger(Debugger).FSendingEvents then begin
+      if Enabled and not FIsSet then begin
+        FSetBreakFlag := True;
+      end
+      else if not Enabled and FIsSet then begin
+        FResetBreakFlag := True;
+        FLocationChanged := False;
+      end;
+    end
+    else if (ADebugger.State = dsRun) then begin
+      if Enabled and (not FIsSet) then
+        ADebugger.QuickPause
+      else
+      if (not Enabled) and FIsSet then
+        ADebugger.FRunQuickPauseTasks := True;
+    end;
+  end;
+
+  Changed;
 end;
 
 procedure TFPBreakpoint.DoChanged;

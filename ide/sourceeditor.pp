@@ -11716,9 +11716,8 @@ begin
   if Editor = nil then
     Exit;
 
-  if ( AMark.IsBreakPoint and (Editor.FSharedValues.ExecutionMark <> nil) and
-       (AMark.Line = Editor.ExecutionLine)
-     ) or (AMark = Editor.FSharedValues.ExecutionMark)
+  if ( AMark.IsBreakPoint and (Editor.FSharedValues.ExecutionMark <> nil) ) or
+     ( AMark = Editor.FSharedValues.ExecutionMark )
   then
     Editor.UpdateExecutionSourceMark;
 end;

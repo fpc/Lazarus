@@ -325,7 +325,7 @@ type
     constructor Create(ADebugger: TFpDebugDebuggerBase;
       AWatchData: String; AWatchScope: TDBGWatchPointScope; AWatchKind: TDBGWatchPointKind;
       AStackFrame, AThreadId: Integer);
-    property InternalBreakpoint: FpDbgClasses.TFpDbgBreakpoint read FInternalBreakpoint;
+    property InternalBreakpoint: FpDbgClasses.TFpDbgBreakpoint read FInternalBreakpoint write FInternalBreakpoint;
   end;
 
   { TFpThreadWorkerBreakPointRemove }
@@ -1405,6 +1405,11 @@ var
   R: TFpValue;
   s: TFpDbgValueSize;
 begin
+  if (FInternalBreakpoint <> nil) then begin
+    FDebugger.DbgController.CurrentProcess.RemoveBreak(FInternalBreakpoint);
+    FreeAndNil(FInternalBreakpoint);
+  end;
+
   if InterlockedExchange(FResetBreakPoint, 0) = 0 then begin
     case FKind of
       bpkAddress:

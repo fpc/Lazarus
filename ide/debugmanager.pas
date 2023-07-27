@@ -760,6 +760,7 @@ begin
         Img := SourceEditorMarks.UnknownDisabledBreakPointImg;
   end;
   SourceMark.ImageIndex := Img;
+  SourceMark.Visible := True;
 end;
 
 procedure TManagedBreakPoint.UpdateSourceMarkLineColor;
