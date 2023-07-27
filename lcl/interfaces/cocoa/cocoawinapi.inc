@@ -2047,6 +2047,34 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+Method:  PtInRegion
+Params:  RNG  - Handle to region
+         X, Y - Point
+Returns: If the specified point lies in the region
+------------------------------------------------------------------------------}
+function TCocoaWidgetSet.PtInRegion(RGN: HRGN; X, Y: Integer): Boolean;
+begin
+  Result := False;
+
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCocoaWidgetSet.PtInRegion RGN: ' + DbgS(RGN), ' X: ', DbgS(X),
+      ' Y: ', DbgS(Y));
+  {$ENDIF}
+
+  if not (TObject(RGN) is TCocoaRegion) then
+  begin
+    DebugLn('TCocoaWidgetSet.PtInRegion Error - invalid region ', DbgS(RGN), '!');
+    Exit;
+  end;
+
+  Result := TCocoaRegion(RGN).ContainsPoint(Classes.Point(X, Y));
+
+  {$IFDEF VerboseWinAPI}
+    DebugLn('TCocoaRegion.PtInRegion Result: ' + DbgS(Result));
+  {$ENDIF}
+end;
+
 function TCocoaWidgetSet.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 var
   ctx: TCocoaContext;
