@@ -603,6 +603,8 @@ type
     function GetTabDisplayState: TTabDisplayState; virtual; abstract;
     function GetTabDisplayStateEditor(Index: TSourceEditorInterface): TTabDisplayState; virtual; abstract;
   public
+    procedure BeginUpdate; virtual; abstract;
+    procedure EndUpdate; virtual; abstract;
     function AutoSizeInShowDesigner(AControl: TControl): Boolean; virtual; abstract;
     function GetDesigner(ASourceEditor: TSourceEditorInterface; ATabDisplayState: TTabDisplayState): TIDesigner; virtual;
     procedure ToggleFormUnit; virtual; abstract;

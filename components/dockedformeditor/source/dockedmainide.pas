@@ -22,7 +22,7 @@
 
 unit DockedMainIDE;
 
-{$mode objfpc}{$H+}
+{$mode delphi}{$H+}
 { $define DEBUGDOCKEDFORMEDITOR}
 
 interface
@@ -48,12 +48,16 @@ type
     // enable autosizing for docked form editor forms, see issue #32207 - disabled
     // in SourceFileManager per PreventAutoSize
     FAutoSizeControlList: TObjectList;
+    FActivateEditorList: TObjectList;
   protected
     function GetTabDisplayState: TTabDisplayState; override;
     function GetTabDisplayStateEditor(ASourceEditor: TSourceEditorInterface): TTabDisplayState; override;
   public
     constructor Create;
     destructor Destroy; override;
+    procedure BeginUpdate; override;
+    procedure EndUpdate; override;
+    procedure ActivateEditorPostponed(ASourceEditor: TSourceEditorInterface);
     function  AutoSizeInShowDesigner(AControl: TControl): Boolean; override;
     procedure EnableAutoSizing(AControl: TControl);
     function  GetDesigner(ASourceEditor: TSourceEditorInterface; ATabDisplayState: TTabDisplayState): TIDesigner; override;
@@ -80,6 +84,7 @@ type
     class procedure WindowShow(Sender: TObject);
 
     class procedure EditorActivated(Sender: TObject);
+    class procedure EditorActivatedPostponed(Sender: TObject);
     class procedure EditorCreate(Sender: TObject);
     class procedure EditorDestroyed(Sender: TObject);
 
@@ -124,13 +129,37 @@ end;
 
 constructor TDockedTabMaster.Create;
 begin
+  FActivateEditorList := TObjectList.Create(False);
   FAutoSizeControlList := TObjectList.Create(False);
 end;
 
 destructor TDockedTabMaster.Destroy;
 begin
   FAutoSizeControlList.Free;
+  FActivateEditorList.Free;
   inherited Destroy;
+end;
+
+procedure TDockedTabMaster.BeginUpdate;
+begin
+  SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorActivate, TDockedMainIDE.EditorActivated);
+  SourceEditorManagerIntf.RegisterChangeEvent(semEditorActivate, TDockedMainIDE.EditorActivatedPostponed);
+end;
+
+procedure TDockedTabMaster.EndUpdate;
+var
+  ASourceEditor: TSourceEditorInterface;
+begin
+  SourceEditorManagerIntf.UnRegisterChangeEvent(semEditorActivate, TDockedMainIDE.EditorActivatedPostponed);
+  SourceEditorManagerIntf.RegisterChangeEvent(semEditorActivate, TDockedMainIDE.EditorActivated);
+  for ASourceEditor in FActivateEditorList do
+    TDockedMainIDE.EditorActivated(ASourceEditor);
+  FActivateEditorList.Clear;
+end;
+
+procedure TDockedTabMaster.ActivateEditorPostponed(ASourceEditor: TSourceEditorInterface);
+begin
+  FActivateEditorList.Add(ASourceEditor);
 end;
 
 function TDockedTabMaster.AutoSizeInShowDesigner(AControl: TControl): Boolean;
@@ -297,7 +326,7 @@ begin
     SetTimer(AForm.Handle, WM_SETNOFRAME, 10, nil);
   end else begin
     if AForm is TSourceEditorWindowInterface then
-      AForm.AddHandlerOnChangeBounds(@GlobalSNOnChangeBounds);
+      AForm.AddHandlerOnChangeBounds(GlobalSNOnChangeBounds);
   end;
 end;
 
@@ -330,7 +359,7 @@ begin
   end
   else
     if AForm is TSourceEditorWindowInterface then
-      AForm.RemoveHandlerOnChangeBounds(@GlobalSNOnChangeBounds);
+      AForm.RemoveHandlerOnChangeBounds(GlobalSNOnChangeBounds);
 end;
 
 class procedure TDockedMainIDE.WindowCreate(Sender: TObject);
@@ -468,6 +497,12 @@ begin
   end;
 end;
 
+class procedure TDockedMainIDE.EditorActivatedPostponed(Sender: TObject);
+begin
+  if Sender is TSourceEditorInterface then
+    DockedTabMaster.ActivateEditorPostponed(TSourceEditorInterface(Sender));
+end;
+
 class procedure TDockedMainIDE.EditorCreate(Sender: TObject);
 var
   LSourceEditor: TSourceEditorInterface;
@@ -478,7 +513,7 @@ begin
   LSourceEditor := Sender as TSourceEditorInterface;
   if LSourceEditor.EditorControl.Parent.Parent is TSourcePageControl then Exit;
   LPageCtrl := TSourcePageControl.Create(LSourceEditor);
-  LPageCtrl.OnChange := @TabChange;
+  LPageCtrl.OnChange := TabChange;
   LSourceWindowIntf := SourceWindowGet(LSourceEditor);
   SourceWindows.SourceWindow[LSourceWindowIntf].AddPageCtrl(LPageCtrl);
 end;
