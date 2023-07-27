@@ -28,7 +28,7 @@ type
     procedure SetNewCursor( newCursor:TCocoaCursor );
   public
     class procedure SetCursorOnActive;
-    class procedure SetCurrentControlCursor;
+    class procedure SetCursorAtMousePos;
     class procedure SetScreenCursor;
     class procedure SetScreenCursorWhenNotDefault;
   end;
@@ -375,7 +375,7 @@ begin
   if Screen.Cursor<>crDefault then
     SetScreenCursor
   else
-    SetCurrentControlCursor;
+    SetCursorAtMousePos;
 end;
 
 procedure TCursorHelper.SetNewCursor( newCursor:TCocoaCursor );
@@ -396,15 +396,29 @@ begin
   Application.QueueAsyncCall( @CursorHelper.DoSetCursorOnActive, 0 );
 end;
 
-class procedure TCursorHelper.SetCurrentControlCursor;
+class procedure TCursorHelper.SetCursorAtMousePos;
 var
   P: TPoint;
-  control: TControl;
+  rect: NSRect;
+  window: NSWindow;
+  event: NSEvent;
 begin
+  window:= NSAPP.keyWindow;
+  if not (Assigned(window) and Assigned(window.lclGetCallback)) then
+    exit;
+
   GetCursorPos(P);
-  control:= FindControlAtPosition(P, true);
-  if Assigned(control) then
-    TCocoaCursor(Screen.Cursors[control.Cursor]).SetCursor;
+
+  rect:= NSZeroRect;
+  rect.origin:= LCLToNSPoint(P, window.screen.frame.size.height);
+  rect:= window.convertRectFromScreen(rect);
+
+  event:= NSEvent.mouseEventWithType_location_modifierFlags_timestamp_windowNumber_context_eventNumber_clickCount_pressure(
+            NSMouseMoved,
+            rect.origin, 0, 0,
+            window.windowNumber, nil, 0, 0, 0);
+
+  window.lclGetCallback.MouseMove(event);
 end;
 
 class procedure TCursorHelper.SetScreenCursor;
