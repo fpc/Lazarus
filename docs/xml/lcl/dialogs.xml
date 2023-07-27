@@ -72,7 +72,6 @@ The following components are added to the Lazarus IDE component palette:
 <element name="LCLClasses"/>
 <element name="ClipBrd"/>
 <element name="Menus"/>
-<element name="LCLTaskDialog"/>
 <element name="DialogRes"/>
 <element name="GraphType"/>
 <element name="FileUtil"/>
@@ -4936,8 +4935,7 @@ the TCustomTaskDialog.Flags property.
 Modified in LCL 3.0 to include tfEmulateClassicStyle in the enumeration.
 </p>
 <p>
-Modified in LCL 4.0 to include tfNoSetForeGround and tfSizeToContent in the 
-enumeration.
+Modified in LCL 4.0 to include additional flag values in the enumeration.
 </p>
 </version>
 <seealso>
@@ -4945,6 +4943,10 @@ enumeration.
 <link id="TCustomTaskDialog.Flags"/>
 </seealso>
 </element>
+<!-- 
+TODO: Needs to be updated. 
+Expand/collapse and other features are affected by flag combinations. 
+-->
 <element name="TTaskDialogFlag.tfEnableHyperlinks">
 <short>
 Allows HTML-like hyperlinks in the dialog (in Text, Footer, and ExpandedText) 
@@ -4954,27 +4956,30 @@ using the <b>'&lt;a href="target"&gt;Target&lt;/a&gt;'</b> notation.
 <element name="TTaskDialogFlag.tfUseHiconMain">
 <short>
 Uses the handle to the image in MainIcon as the primary image for the Task 
-dialog. Disables hyperlinks.
+dialog. Disables hyperlinks and expanded text areas.
 </short>
 </element>
 <element name="TTaskDialogFlag.tfUseHiconFooter">
 <short>
 Uses the handle to the image in FooterIcon as the footer icon in the Task 
-dialog. Disables hyperlinks.
+dialog. Disables hyperlinks and expanded text areas.
 </short>
 </element>
 <element name="TTaskDialogFlag.tfAllowDialogCancellation">
 <short>
-Allow canceling the dialog by Esc key, or Alt+F4 (i.e. OS default hotkey).
+Allow canceling the dialog using the Esc key or Alt+F4 (i.e. OS default 
+hotkey).
 </short>
 </element>
+<!-- TODO: Use "\n"? Behaves differently when tfQuery is included.-->
 <element name="TTaskDialogFlag.tfUseCommandLinks">
 <short>
 Custom buttons will be shown as big buttons in the middle of the dialog. Use 
-#10 to add info to buttons (shown in hint in emulated dialog). Disables 
+#10 to add additional text information to buttons shown as hint text. Disables 
 hyperlinks.
 </short>
 </element>
+<!-- TODO: Use "\n"? Behaves differently when tfQuery is included.-->
 <element name="TTaskDialogFlag.tfUseCommandLinksNoIcon">
 <short>
 Hides glyphs for custom buttons in the "command links" mode. Disables 
@@ -4983,7 +4988,7 @@ hyperlinks.
 </element>
 <element name="TTaskDialogFlag.tfExpandFooterArea">
 <short>
-Show ExpandedText in the footer, instead of inline after the main text.
+Show ExpandedText in the footer, instead of immediately after the main text.
 </short>
 </element>
 <element name="TTaskDialogFlag.tfExpandedByDefault">
@@ -5005,14 +5010,15 @@ Displays the verification check-box verification shows in the checked state.
 </element>
 <element name="TTaskDialogFlag.tfPositionRelativeToWindow">
 <short>
-Form position will be poOwnerFormCenter, instead of poScreenCenter.
+Position for the dialog form is set to poOwnerFormCenter instead of 
+poScreenCenter.
 </short>
 </element>
 <element name="TTaskDialogFlag.tfRtlLayout">
 <short>Use Right-to-Left layout for texts.</short>
 </element>
 <element name="TTaskDialogFlag.tfNoDefaultRadioButton">
-<short>Does not pre-select any of the radio buttons.</short>
+<short>Does not pre-select a default radio buttons.</short>
 </element>
 <element name="TTaskDialogFlag.tfCanBeMinimized">
 <short>Allow the dialog to be minimized.</short>
@@ -5025,7 +5031,7 @@ Prevents bring the dialog to the foreground when the dialog is activated.
 <element name="TTaskDialogFlag.tfSizeToContent">
 <short>
 Indicates the width for the dialog is determined by the text in the content 
-area. The flag is ignored if the dialog width is not set to 0 (zero).
+areas. The flag is ignored if the dialog width is not set to 0 (zero).
 </short>
 </element>
 <element name="TTaskDialogFlag.tfForceNonNative">
@@ -5033,8 +5039,31 @@ area. The flag is ignored if the dialog width is not set to 0 (zero).
 </element>
 <element name="TTaskDialogFlag.tfEmulateClassicStyle">
 <short>
-Used to enforce conformity in the visual appearance of a dialog in an 
-application which is not using a theme.
+Causes the dialog form to be displayed using a classic style where the content 
+areas use clForm as the background color instead of clWindow.
+</short>
+</element>
+<element name="TTaskDialogFlag.tfQuery">
+<short>
+Causes a query input control to be displayed on the task dialog using a 
+combo-box to select from predefined values.
+</short>
+</element>
+<element name="TTaskDialogFlag.tfSimpleQuery">
+<short>
+Causes a query input control to be displayed on the task dialog using a simple 
+TEdit control instance with optional password character obfuscation.
+</short>
+</element>
+<element name="TTaskDialogFlag.tfQueryFixedChoices">
+<short>
+Causes a query input control to be displayed on the task dialog using a 
+combo-box to select from non-editable predefined values.
+</short>
+</element>
+<element name="TTaskDialogFlag.tfQueryFocused">
+<short>
+Causes the query input control to be focused when the task dialog is executed.
 </short>
 </element>
 
@@ -5630,26 +5659,33 @@ the class instance.
 </element>
 
 <element name="TCustomTaskDialog">
-<short>Defines a configurable, modal task dialog at run-time.</short>
+<short>
+Defines a configurable, modal task dialog at run-time.
+</short>
 <descr>
 <p>
-<var>TCustomTaskDialog</var> is a <var>TComponent</var> descendant which 
-defines a configurable, modal task dialog. It is a non-visual component which 
-creates modal dialogs at run-time, with rich UI elements. It is a wrapper for 
-<var>LCLTaskDialog.TTaskDialog</var> which implements the Windows TaskDialog 
-API.
+<var>TCustomTaskDialog</var> is a <var>TLCLComponent</var> descendant which 
+defines a configurable, modal task dialog. It is the base class for 
+TaskDialog, and provides a cross-platform implementation similar to the 
+Windows TaskDialog API.
 </p>
 <p>
 TCustomTaskDialog provides properties which can be used to configure the 
-class instance at design-time in the object inspector. At run-time, the 
-<var>Execute</var> method handles converting properties and calling routines 
-in the <var>LCLTaskDialog.TTaskDialog</var> implementation.
+task dialog at design-time or at run-time. At run-time, the <var>Execute</var> 
+method handles converting properties and calling routines and methods in the 
+widgetset which implements the dialog for a given platform.
+</p>
+<!-- TODO: Needs content. -->
+<p>
+For the Windows platform...
+</p>
+<p>
+For other platforms, or Windows versions which do not support the TaskDialog API, the widgetset classes dynamically create...
 </p>
 </descr>
 <seealso>
 <link id="TTaskDialog"/>
-<link id="#rtl.classes.TComponent">TComponent</link>
-<link id="#lcl.lcltaskdialog.TTaskDialog">LCLTaskDialog.TTaskDialog</link>
+<link id="#lcl.lclclasses.TLCLComponent">TLCLComponent</link>
 </seealso>
 </element>
 
@@ -5666,6 +5702,9 @@ in the <var>LCLTaskDialog.TTaskDialog</var> implementation.
 <element name="TCustomTaskDialog.FFooterText"/>
 <element name="TCustomTaskDialog.FMainIcon"/>
 <element name="TCustomTaskDialog.FModalResult"/>
+<element name="TCustomTaskDialog.FQueryChoices"/>
+<element name="TCustomTaskDialog.FQueryResult"/>
+<element name="TCustomTaskDialog.FQueryItemIndex"/>
 <element name="TCustomTaskDialog.FRadioButton"/>
 <element name="TCustomTaskDialog.FRadioButtons"/>
 <element name="TCustomTaskDialog.FTask"/>
@@ -5674,18 +5713,25 @@ in the <var>LCLTaskDialog.TTaskDialog</var> implementation.
 <element name="TCustomTaskDialog.FWidth"/>
 <element name="TCustomTaskDialog.FOnButtonClicked"/>
 
-<element name="TCustomTaskDialog.DoOnButtonClickedHandler"/>
-<element name="TCustomTaskDialog.DoOnButtonClickedHandler.Sender"/>
-<element name="TCustomTaskDialog.DoOnButtonClickedHandler.AButtonID"/>
-<element name="TCustomTaskDialog.DoOnButtonClickedHandler.ACanClose"/>
 <element name="TCustomTaskDialog.SetButtons"/>
 <element name="TCustomTaskDialog.SetButtons.Value"/>
+<element name="TCustomTaskDialog.SetFlags"/>
+<element name="TCustomTaskDialog.SetFlags.AValue"/>
+<element name="TCustomTaskDialog.SetQueryChoices"/>
+<element name="TCustomTaskDialog.SetQueryChoices.AValue"/>
 <element name="TCustomTaskDialog.SetRadioButtons"/>
 <element name="TCustomTaskDialog.SetRadioButtons.Value"/>
 
-<element name="TCustomTaskDialog.ButtonIDToModalResult"/>
-<element name="TCustomTaskDialog.ButtonIDToModalResult.Result"/>
-<element name="TCustomTaskDialog.ButtonIDToModalResult.AButtonID"/>
+<!-- protected -->
+<!-- TODO: Needs content. -->
+<element name="TCustomTaskDialog.WSRegisterClass">
+<short/>
+<descr/>
+<version>
+Added in LCL version 4.0.  
+</version>
+<seealso/>
+</element>
 
 <element name="TCustomTaskDialog.DoExecute">
 <short>
@@ -5832,6 +5878,19 @@ exit.
 <link id="TCustomTaskDialog.Buttons"/>
 <link id="TCustomTaskDialog.RadioButtons"/>
 </seealso>
+</element>
+
+<!-- TODO: Needs content. -->
+<element name="TCustomTaskDialog.ButtonIDToModalResult">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomTaskDialog.ButtonIDToModalResult.Result">
+<short/>
+</element>
+<element name="TCustomTaskDialog.ButtonIDToModalResult.AButtonID">
+<short/>
 </element>
 
 <element name="TCustomTaskDialog.Execute">
@@ -6044,14 +6103,21 @@ version 2.2.0.
 </element>
 
 <element name="TCustomTaskDialog.Flags">
-<short>Set of options enabled for the Task dialog.</short>
+<short>
+Set of options enabled for the Task dialog.
+</short>
 <descr>
 <p>
-Flags is a TTaskDialogFlags property with the set of options for the Task 
-dialog. It contains values from the TTaskDialogFlag enumeration, and when 
-included, enable the corresponding feature in the Task Dialog. The default 
-value for the property is [tfAllowDialogCancellation] and allows the dialog 
-to be cancelled.
+<var>Flags</var> is a <var>TTaskDialogFlags</var> property with the set of 
+options for the Task dialog. It contains values from the TTaskDialogFlag 
+enumeration, and when included, enable the corresponding feature in the Task 
+Dialog. The default value for the property is [tfAllowDialogCancellation] and 
+allows the dialog to be cancelled using the Esc key or Alt+F4 key combination.
+</p>
+<p>
+Changing the property values causes validation and normalization of the flag 
+values to be performed. tfQuery or tfSimpleQuery values are excluded from the 
+new property value if the value is already present in the property.
 </p>
 </descr>
 <seealso>
@@ -6163,6 +6229,44 @@ dialog was displayed, or <var>mrNone</var> if the dialog was cancelled.
 </seealso>
 </element>
 
+<!-- TODO: Needs content. -->
+<element name="TCustomTaskDialog.QueryChoices">
+<short>
+Predefined values for the query control on the task dialog.
+</short>
+<descr>
+<p>
+<var>QueryChoices</var> is a <var>TStrings</var> property with a list of 
+predefined values that can be selected in the query control for the task 
+dialog.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+
+<!-- TODO: Needs content. -->
+<element name="TCustomTaskDialog.QueryItemIndex">
+<short/>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+
+<!-- TODO: Needs content. -->
+<element name="TCustomTaskDialog.QueryResult">
+<short/>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+
 <element name="TCustomTaskDialog.RadioButton">
 <short>The radio button selected in the Task dialog.</short>
 <descr>
@@ -6213,6 +6317,26 @@ selected on the Task dialog.
 <link id="TTaskDialogFlags"/>
 <link id="TTaskDialogFlag"/>
 </seealso>
+</element>
+
+<!-- TODO: Needs content. -->
+<element name="TCustomTaskDialog.SimpleQuery">
+<short/>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+
+<!-- TODO: Needs content. -->
+<element name="TCustomTaskDialog.SimpleQueryPasswordChar">
+<short/>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
 </element>
 
 <element name="TCustomTaskDialog.Text">
@@ -6329,6 +6453,7 @@ OnButtonClicked is signalled after a button is clicked on the Task dialog.
 <seealso/>
 </element>
 
+<!-- TODO: Needs update after refactoring. -->
 <element name="TTaskDialog">
 <short>Creates a configurable, modal task dialog at run-time.</short>
 <descr>
@@ -6395,11 +6520,35 @@ end;
 <element name="TTaskDialog.FooterText" link="#lcl.dialogs.TCustomTaskDialog.FooterText"/>
 <element name="TTaskDialog.MainIcon" link="#lcl.dialogs.TCustomTaskDialog.MainIcon"/>
 <element name="TTaskDialog.RadioButtons" link="#lcl.dialogs.TCustomTaskDialog.RadioButtons"/>
+<element name="TTaskDialog.QueryChoices" link="#lcl.dialogs.TCustomTaskDialog.QueryChoices"/>
+<element name="TTaskDialog.QueryItemIndex" link="#lcl.dialogs.TCustomTaskDialog.QueryItemIndex"/>
+<element name="TTaskDialog.SimpleQuery" link="#lcl.dialogs.TCustomTaskDialog.SimpleQuery"/>
+<element name="TTaskDialog.SimpleQueryPasswordChar" link="#lcl.dialogs.TCustomTaskDialog.SimpleQueryPasswordChar"/>
 <element name="TTaskDialog.Text" link="#lcl.dialogs.TCustomTaskDialog.Text"/>
 <element name="TTaskDialog.Title" link="#lcl.dialogs.TCustomTaskDialog.Title"/>
 <element name="TTaskDialog.Width" link="#lcl.dialogs.TCustomTaskDialog.Width"/>
 <element name="TTaskDialog.VerificationText" link="#lcl.dialogs.TCustomTaskDialog.VerificationText"/>
 <element name="TTaskDialog.OnButtonClicked" link="#lcl.dialogs.TCustomTaskDialog.OnButtonClicked"/>
+
+<!-- TODO: Needs content. -->
+<element name="TaskDialogFirstButtonIndex">
+<short/>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+
+<!-- TODO: Needs content. -->
+<element name="TaskDialogFirstRadioButtonIndex">
+<short/>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
 
 <element name="MinimumDialogButtonWidth">
 <short>Minimum width for a button on a dialog.</short>
@@ -8029,6 +8178,10 @@ Identifier for the dialog type, i. e. idDialogWarning or idDialogShield.
 Creates a formatted debugger message for one or more TOpenOption values.
 </short>
 <descr/>
+<version>
+Modified in LCL version 4.0 to add additional overloads using TTaskDialogFlag 
+and TTaskDialogFlags arguments.
+</version>
 <seealso/>
 </element>
 <element name="dbgs.Result">
@@ -8046,6 +8199,14 @@ TOpenOption enumeration value used to generate the formatted message.
 <short>
 TOpenOptions set type with the options used to generate the formatted message.
 </short>
+</element>
+<!-- TODO: Needs content. -->
+<element name="DbgS.AFlag">
+<short/>
+</element>
+<!-- TODO: Needs content. -->
+<element name="DbgS.Flags">
+<short/>
 </element>
 
 <element name="Register">
