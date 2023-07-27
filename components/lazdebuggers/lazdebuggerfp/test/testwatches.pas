@@ -500,6 +500,7 @@ begin
     t := TWatchExpectationList.Create(Self);
     t.AcceptSkSimple := [skInteger, skCardinal, skBoolean, skChar, skFloat, skString, skAnsiString, skCurrency, skVariant, skWideString];
     t.AddTypeNameAlias('integer', 'integer|longint');
+    t.AddTypeNameAlias('Char', 'Char|AnsiChar');
 
 
     Debugger.SetBreakPoint(Src, 'FuncFooNestedTwice');
@@ -1195,6 +1196,7 @@ begin
       skString, skAnsiString, skCurrency, skVariant, skWideString,
       skInterface, skEnumValue];
     t.AddTypeNameAlias('integer', 'integer|longint');
+    t.AddTypeNameAlias('Char', 'Char|AnsiChar');
     t.AddTypeNameAlias('ShortStr255', 'ShortStr255|ShortString');
     t.AddTypeNameAlias('TEnumSub', 'TEnum|TEnumSub');
 
@@ -1607,6 +1609,7 @@ begin
       skString, skAnsiString, skCurrency, skVariant, skWideString,
       skInterface, skEnumValue];
     t.AddTypeNameAlias('integer', 'integer|longint');
+    t.AddTypeNameAlias('Char', 'Char|AnsiChar');
     t.AddTypeNameAlias('ShortStr255', 'ShortStr255|ShortString');
     t.AddTypeNameAlias('TEnumSub', 'TEnum|TEnumSub');
 
@@ -1715,6 +1718,7 @@ begin
       skString, skAnsiString, skCurrency, skVariant, skWideString,
       skInterface, skEnumValue];
     t.AddTypeNameAlias('integer', 'integer|longint');
+    t.AddTypeNameAlias('Char', 'Char|AnsiChar');
 
 
     BrkPrg         := Debugger.SetBreakPoint(Src, 'Prg');
@@ -1790,6 +1794,7 @@ begin
       skString, skAnsiString, skCurrency, skVariant, skWideString,
       skInterface, skEnumValue];
     t.AddTypeNameAlias('integer', 'integer|longint');
+    t.AddTypeNameAlias('Char', 'Char|AnsiChar');
 
 
     BrkPrg         := Debugger.SetBreakPoint(Src, 'main');
@@ -1932,6 +1937,7 @@ begin
         skString, skAnsiString, skCurrency, skVariant, skWideString,
         skInterface, skEnumValue];
       t.AddTypeNameAlias('integer', 'integer|longint');
+      t.AddTypeNameAlias('Char', 'Char|AnsiChar');
 
 
       BrkPrg         := Debugger.SetBreakPoint(Src, 'main');
@@ -2147,6 +2153,7 @@ begin
         skString, skAnsiString, skCurrency, skVariant, skWideString,
         skInterface, skEnumValue];
       t.AddTypeNameAlias('integer', 'integer|longint');
+      t.AddTypeNameAlias('Char', 'Char|AnsiChar');
 
 
       BrkPrg         := Debugger.SetBreakPoint(Src, 'main');
@@ -2412,6 +2419,7 @@ begin
       skString, skAnsiString, skCurrency, skVariant, skWideString,
       skInterface, skEnumValue];
     t.AddTypeNameAlias('integer', 'integer|longint');
+    t.AddTypeNameAlias('Char', 'Char|AnsiChar');
     t.AddTypeNameAlias('ShortStr255', 'ShortStr255|ShortString');
     t.AddTypeNameAlias('TEnumSub', 'TEnum|TEnumSub');
 
@@ -2799,6 +2807,8 @@ begin
 
   try
     t := TWatchExpectationList.Create(Self);
+    t.AddTypeNameAlias('integer', 'integer|longint');
+    t.AddTypeNameAlias('Char', 'Char|AnsiChar');
     tp := TWatchExpectationList.Create(Self);
 
     BrkPrg         := Debugger.SetBreakPoint(Src, 'Prg');
@@ -3183,6 +3193,7 @@ begin
       skString, skAnsiString, skCurrency, skVariant, skWideString,
       skInterface];
     t.AddTypeNameAlias('integer', 'integer|longint');
+    t.AddTypeNameAlias('Char', 'Char|AnsiChar');
     t.AddTypeNameAlias('ShortStr255', 'ShortStr255|ShortString');
     t.AddTypeNameAlias('TEnumSub', 'TEnum|TEnumSub');
 
@@ -3422,6 +3433,7 @@ begin
       skString, skAnsiString, skCurrency, skVariant, skWideString,
       skInterface];
     t.AddTypeNameAlias('integer', 'integer|longint');
+    t.AddTypeNameAlias('Char', 'Char|AnsiChar');
     t.AddTypeNameAlias('ShortStr255', 'ShortStr255|ShortString');
     t.AddTypeNameAlias('TEnumSub', 'TEnum|TEnumSub');
 
@@ -3684,6 +3696,7 @@ begin
       skInterface];
     t.AddTypeNameAlias('integer', 'integer|longint');
     t.AddTypeNameAlias('cardinal', 'cardinal|longword');
+    t.AddTypeNameAlias('Char', 'Char|AnsiChar');
     t.AddTypeNameAlias('BYTEBOOL', 'boolean|BYTEBOOL');
     t.AddTypeNameAlias('TEnumSub', 'TEnum|TEnumSub');
 
@@ -4094,6 +4107,7 @@ begin
       skString, skAnsiString, skCurrency, skVariant, skWideString,
       skInterface];
     t.AddTypeNameAlias('integer', 'integer|longint');
+    t.AddTypeNameAlias('Char', 'Char|AnsiChar');
     t.AddTypeNameAlias('ShortStr255', 'ShortStr255|ShortString');
     t.AddTypeNameAlias('TEnumSub', 'TEnum|TEnumSub');
 
