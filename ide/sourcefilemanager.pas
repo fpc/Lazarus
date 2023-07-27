@@ -3752,6 +3752,8 @@ begin
   EditorInfoIndex := 0;
   SourceEditorManager.IncUpdateLock;
   Project1.BeginUpdate(true);
+  if IDETabMaster <> nil then
+    IDETabMaster.BeginUpdate;
   try
     // call ProjectOpening handlers
     HandlerResult:=MainIDE.DoCallProjectChangedHandler(lihtProjectOpening, Project1);
@@ -3895,6 +3897,9 @@ begin
       HandlerResult:=mrCancel;
     if (Result=mrOk) then
       Result:=HandlerResult;
+
+    if IDETabMaster <> nil then
+      IDETabMaster.EndUpdate;
   end;
   if Result=mrAbort then exit;
   //debugln('InitOpenedProjectFile end  CodeToolBoss.ConsistencyCheck=',IntToStr(CodeToolBoss.ConsistencyCheck));
