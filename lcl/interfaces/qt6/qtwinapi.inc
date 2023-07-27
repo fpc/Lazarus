@@ -1207,13 +1207,14 @@ var
     //DFCS_MONO = 32768;
   end;
 
-  procedure DrawButton;
+  function DrawButton: boolean;
   var
     Opt: QStyleOptionButtonH;
     Element: QStyleControlElement;
     State: QStyleState;
     Features: QStyleOptionButtonButtonFeatures;
   begin
+    Result := False;
     State := uStatetoQStyleState;
     if uState and DFCS_FLAT <> 0 then
       Features := QStyleOptionButtonFlat
@@ -1243,14 +1244,16 @@ var
     QStyleOption_setState(Opt, State);
     QStyle_drawControl(QApplication_style(), Element, Opt, Painter, Widget);
     QStyleOptionButton_destroy(Opt);
+    Result := True;
   end;
 
-  procedure DrawScrollBarArrows;
+  function DrawScrollBarArrows: boolean;
   var
     Opt: QStyleOptionH;
     Element: QStylePrimitiveElement;
     State: QStyleState;
   begin
+    Result := False;
     //TODO: DFCS_SCROLLCOMBOBOX and DFCS_SCROLLSIZEGRIP
     State := uStatetoQStyleState;
     Element := QStylePE_CustomBase;
@@ -1273,6 +1276,7 @@ var
     QStyleOption_setState(Opt, State);
     QStyle_drawPrimitive(QApplication_style(), Element, Opt, Painter, Widget);
     QStyleOption_destroy(Opt);
+    Result := True;
   end;
 
 begin
@@ -1283,10 +1287,10 @@ begin
   Painter := QtDC.Widget;
   Widget := QtDC.Parent;
   case uType of
-    DFC_BUTTON: DrawButton;
+    DFC_BUTTON: Result := DrawButton;
     DFC_CAPTION: ; // title bar captions
     DFC_MENU: ; // menu
-    DFC_SCROLL: DrawScrollBarArrows;
+    DFC_SCROLL: Result := DrawScrollBarArrows;
   end;
 end;
 
