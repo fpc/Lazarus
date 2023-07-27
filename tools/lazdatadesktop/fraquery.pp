@@ -150,6 +150,7 @@ type
      Property SQLConnection : TSQLConnection Read GetConn;
      Property Transaction : TSQLTransaction Read GetTrans;
    end;
+
 implementation
 
 uses strutils, fpdataexporter, fpcodegenerator;
