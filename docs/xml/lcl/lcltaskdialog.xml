@@ -19,7 +19,9 @@ LCLTaskDialog
 ====================================================================
 -->
 <module name="LCLTaskDialog">
-<short>Implements a TaskDialog window for LCL.</short>
+<short>
+Deprecated. Implements a TaskDialog window for LCL.
+</short>
 <descr>
 <p>
 <file>lcltaskdialog.pas</file> implements a task dialog. It is implemented 
@@ -35,6 +37,10 @@ contributors.
 <p>
 The original file name is SynTaskDialog.pas.
 </p>
+<remark>
+Deprecated in LCL version 4.0. Use TTaskDialog in <file>dialogs.pp</file> 
+instead.
+</remark>
 </descr>
 
 <!-- unresolved external references -->
