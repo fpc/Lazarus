@@ -6206,7 +6206,7 @@ function TBuildParseTree.AnonymousMethodNext: boolean;
 begin
   Result := False;
   if fcTokenList.FirstSolidTokenType in [ttProcedure, ttFunction] then
-    Result := (fcTokenList.SolidTokenType(2) in [ttOpenBracket, ttColon, ttBegin]);
+    Result := (fcTokenList.SolidTokenType(2) in [ttOpenBracket, ttColon, ttBegin, ttVar,ttConst,ttType]);
 end;
 
 procedure TBuildParseTree.CheckEnumeratorToken(aCheckTwoTokens:boolean);

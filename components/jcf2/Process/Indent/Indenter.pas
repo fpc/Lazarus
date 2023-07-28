@@ -435,7 +435,11 @@ begin
       //Delphi inline vars and consts
       if (pt.TokenType in [ttVar,ttConst]) and (pt.HasParentNode(nStatement)) then
       begin
-        // don't unindent
+        // don't unindent inline vars/consts.
+        //
+        //It isn't a inline var/const, can be a var/const section in anonymousMethod.
+        if pt.HasParentNode([nVarSection,nConstSection]) then
+          Dec(liIndentCount);
       end
       // outdent keywords that start and end the block
       else if pt.TokenType in BlockOutdentWords then
