@@ -634,6 +634,7 @@ type
     function GetSrcFilename: string;
     function GetSrcPPUFilename: string;
     function GetCompilerFilename: string;
+    function GetWriteConfigFilePath: string;
     function GetPOOutDirectory: string;
     function GetUnitPath(RelativeToBaseDir: boolean): string;
     function GetIncludePath(RelativeToBaseDir: boolean): string;
@@ -3908,6 +3909,11 @@ end;
 function TLazPackage.GetCompilerFilename: string;
 begin
   Result:=CompilerOptions.ParsedOpts.GetParsedValue(pcosCompilerPath);
+end;
+
+function TLazPackage.GetWriteConfigFilePath: string;
+begin
+  Result:=CompilerOptions.ParsedOpts.GetParsedValue(pcosWriteConfigFilePath);
 end;
 
 function TLazPackage.GetPOOutDirectory: string;

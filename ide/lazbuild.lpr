@@ -787,6 +787,7 @@ var
   function StartBuilding : boolean;
   var
     CfgCode: TCodeBuffer;
+    CfgFilename: String;
   begin
     Result := false;
 
@@ -894,11 +895,12 @@ var
 
         if Project1.CompilerOptions.WriteConfigFile then
         begin
-          CfgCode:=Project1.WriteCompilerCfgFile(Project1,CompilerParams,CmdLineParams);
+          CfgFilename:=Project1.GetWriteConfigFilePath;
+          CfgCode:=WriteCompilerCfgFile(CfgFilename,CompilerParams,CmdLineParams);
           if CfgCode=nil then
-            Error(ErrorBuildFailed,'unable to read "'+Project1.GetWriteConfigFilePath+'"');
+            Error(ErrorBuildFailed,'unable to read "'+CfgFilename+'"');
           if CfgCode.FileOnDiskNeedsUpdate and (not CfgCode.Save) then
-            Error(ErrorBuildFailed,'unable to write "'+Project1.GetWriteConfigFilePath+'"');
+            Error(ErrorBuildFailed,'unable to write "'+CfgFilename+'"');
         end;
 
         // write state file to avoid building clean every time

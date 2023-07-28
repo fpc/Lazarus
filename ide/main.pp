@@ -6842,7 +6842,7 @@ var
   TargetExeName: String;
   TargetExeDirectory: String;
   CompilerVersion: integer;
-  aCompileHint, ShortFilename: String;
+  aCompileHint, ShortFilename, CfgFilename: String;
   OldToolStatus: TIDEToolStatus;
   IsComplete: Boolean;
   StartTime: TDateTime;
@@ -7107,10 +7107,11 @@ begin
 
         if Project1.CompilerOptions.WriteConfigFile then
         begin
-          CfgCode:=Project1.WriteCompilerCfgFile(Project1,CompilerParams,CmdLineParams);
+          CfgFilename:=Project1.GetWriteConfigFilePath;
+          CfgCode:=WriteCompilerCfgFile(CfgFilename,CompilerParams,CmdLineParams);
           if CfgCode=nil then begin
             IDEMessageDialog(lisReadError,Format(lisUnableToReadFile2,
-                             [Project1.GetWriteConfigFilePath]),mtError,[mbOk]);
+                             [CfgFilename]),mtError,[mbOk]);
             exit(mrCancel);
           end;
           if CfgCode.FileOnDiskNeedsUpdate and (SaveCodeBuffer(CfgCode)<>mrOk) then
