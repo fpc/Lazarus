@@ -889,6 +889,7 @@ var
       // CompileHint: use absolute paths, same as TBuildManager.DoCheckIfProjectNeedsCompilation
       CompilerParams:=Project1.CompilerOptions.MakeCompilerParams([ccloAbsolutePaths]);
       CompilerParams.Add(SrcFilename);
+      CmdLineParams:=CompilerParams;
 
       if (CompReason in Project1.CompilerOptions.CompileReasons) then begin
         // compile
