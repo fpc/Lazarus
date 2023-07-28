@@ -1042,24 +1042,23 @@ for the form in <var>DlgForm</var> in the <var>Execute</var> method.
 <short>Action performed to close the dialog.</short>
 </element>
 
-<element name="TCalculatorDialog.OnDialogShow">
+<element name="TCalculatorDialog.DialogShow">
 <short>
 Implements the event handler signalled when the dialog is displayed.
 </short>
 <descr>
 <p>
-<var>OnDialogShow</var> implements the event handler signalled when the 
-dialog form is displayed. OnDialogShow calls the <var>DoShow</var> method to 
+<var>DialogShow</var> implements the event handler signalled when the 
+dialog form is displayed. DialogShow calls the <var>DoShow</var> method to 
 signal the <var>OnShow</var> event handler (when assigned).
 </p>
 <p>
-OnDialogShow is assigned as the <var>OnShow</var> event handler for the form 
+DialogShow is assigned as the <var>OnShow</var> event handler for the form 
 in <var>DlgForm</var> in the <var>Execute</var> method.
 </p>
 </descr>
 <seealso>
 <link id="TCalculatorDialog.Execute"/>
-<link id="TCalculatorDialog.OnDialogShow"/>
 <link id="#lcl.dialogs.TCommonDialog.OnShow">TCommonDialog.OnShow</link>
 </seealso>
 </element>
@@ -1067,21 +1066,21 @@ in <var>DlgForm</var> in the <var>Execute</var> method.
 <short>Object for the event notification.</short>
 </element>
 
-<element name="TCalculatorDialog.OnDialogCloseQuery">
+<element name="TCalculatorDialog.DialogCloseQuery">
 <short>
 Implements the event handler signalled to determine if the dialog can be 
 closed.
 </short>
 <descr>
 <p>
-<var>OnDialogCloseQuery</var> implements the event handler signalled to 
-determine if the dialog can be closed. OnDialogCloseQuery sets the value in 
+<var>DialogCloseQuery</var> implements the event handler signalled to 
+determine if the dialog can be closed. DialogCloseQuery sets the value in 
 the <var>UserChoice</var> property to the modal result returned by the dialog 
 form in <var>DlgForm</var>. It calls <var>DoCanClose</var> to signal the 
 <var>OnCanClose</var> event handler (when assigned).
 </p>
 <p>
-OnDialogCloseQuery is assigned as the <var>OnCloseQuery</var> event handler 
+DialogCloseQuery is assigned as the <var>OnCloseQuery</var> event handler 
 for the form in DlgForm in the <var>Execute</var> method.
 </p>
 </descr>
@@ -1090,10 +1089,10 @@ for the form in DlgForm in the <var>Execute</var> method.
 <link id="#lcl.dialogs.TCommonDialog.OnCanClose">TCommonDialog.OnCanClose</link>
 </seealso>
 </element>
-<element name="TCalculatorDialog.OnDialogCloseQuery.Sender">
+<element name="TCalculatorDialog.DialogCloseQuery.Sender">
 <short>Object for the event notification.</short>
 </element>
-<element name="TCalculatorDialog.OnDialogCloseQuery.CanClose">
+<element name="TCalculatorDialog.DialogCloseQuery.CanClose">
 <short><b>True</b> when the dialog can be closed.</short>
 </element>
 
@@ -1247,14 +1246,14 @@ example:
 <dl>
 <dt>DlgForm.OnCalcKey</dt>
 <dd>Set to the CalcKey method</dd>
-<dt>DlgForm .OnDisplayChange</dt>
+<dt>DlgForm.OnDisplayChange</dt>
 <dd>Set to the DisplayChange method</dd>
 <dt>DlgForm.OnShow</dt>
-<dd>Set to the OnDialogShow method</dd>
+<dd>Set to the DialogShow method</dd>
 <dt>DlgForm.OnClose</dt>
-<dd>Set to the OnDialogClose method</dd>
+<dd>Set to the DialogClose method</dd>
 <dt>DlgForm.OnCloseQuery</dt>
-<dd>Set to the OnDialogCloseQuery method</dd>
+<dd>Set to the DialogCloseQuery method</dd>
 </dl>
 <p>
 When <var>DialogScale</var> contains any value other than <b>100</b>, the 
@@ -1632,21 +1631,21 @@ updated when a calendar date is selected while the form is active.
 <element name="TCalendarDialog.cancelButton"/>
 <element name="TCalendarDialog.panel"/>
 
-<element name="TCalendarDialog.OnDialogClose">
+<element name="TCalendarDialog.DialogClose">
 <short>
 Implements the event handler signalled when the dialog form is closed.
 </short>
 <descr>
 <p>
-<var>OnDialogClose</var> calls the DoClose method to signal the OnClose event 
+<var>DialogClose</var> calls the DoClose method to signal the OnClose event 
 handler (when assigned).
 </p>
 <p>
-OnDialogClose is assigned to the OnClose event handler for the dialog form 
+DialogClose is assigned to the OnClose event handler for the dialog form 
 created in the Execute method.
 </p>
 <p>
-See OnDialogCloseQuery for the handler routine used in the OnCloseQuery event 
+See DialogCloseQuery for the handler routine used in the OnCloseQuery event 
 handler for the dialog form.
 </p>
 </descr>
@@ -1657,118 +1656,119 @@ handler for the dialog form.
 <link id="#lcl.forms.TCustomForm.OnClose">TCustomForm.OnClose</link>
 </seealso>
 </element>
-<element name="TCalendarDialog.OnDialogClose.Sender">
+<element name="TCalendarDialog.DialogClose.Sender">
 <short>
 Object instance for the event notification. Not used in TCalendarDialog.
 </short>
 </element>
-<element name="TCalendarDialog.OnDialogClose.CloseAction">
+<element name="TCalendarDialog.DialogClose.CloseAction">
 <short>
 Action to perform when the dialog is closed. Not used in TCalendarDialog.
 </short>
 </element>
 
-<element name="TCalendarDialog.OnDialogCloseQuery">
+<element name="TCalendarDialog.DialogCloseQuery">
 <short>
 Implements the event handler signalled to determine if the dialog form can be 
 closed.
 </short>
 <descr>
 <p>
-<var>OnDialogCloseQuery</var> copies the value from the ModalResult property 
+<var>DialogCloseQuery</var> copies the value from the ModalResult property 
 to the UserChoice property in the dialog component.
 </p>
 <p>
-The CanClose argument is a variable parameter which contains True if the form 
-can be closed. It is passed as an argument to the DoCanClose method where the 
-OnCanClose event handler is signalled (when assigned) to get its return 
-value. OnCanClose should set CanClose to False to prevent closing the form.
+The CanClose argument is a variable parameter which contains <b>True</b> if 
+the form can be closed. It is passed as an argument to the DoCanClose method 
+where the OnCanClose event handler is signalled (when assigned) to get its 
+return value. OnCanClose should set CanClose to <b>False</b> to prevent 
+closing the form.
 </p>
 <p>
-OnDialogCloseQuery is assigned to the OnCloseQuery event handler for the 
+DialogCloseQuery is assigned to the OnCloseQuery event handler for the 
 dialog form created in the Execute method.
 </p>
 <p>
-See OnDialogClose for the actions performed when the form is actually closed.
+See DialogClose for the actions performed when the form is actually closed.
 </p>
 </descr>
 <seealso>
-<link id="TCalendarDialog.OnDialogClose"/>
+<link id="TCalendarDialog.DialogClose"/>
 <link id="#lcl.dialogs.TCommonDialog.UserChoice">TCommonDialog.UserChoice</link>
 <link id="#lcl.forms.TCustomForm.OnCloseQuery">TCustomForm.OnCloseQuery</link>
 </seealso>
 </element>
-<element name="TCalendarDialog.OnDialogCloseQuery.Sender">
+<element name="TCalendarDialog.DialogCloseQuery.Sender">
 <short>
 Object instance for the event notification. Not used in the method.
 </short>
 </element>
-<element name="TCalendarDialog.OnDialogCloseQuery.CanClose">
+<element name="TCalendarDialog.DialogCloseQuery.CanClose">
 <short>
 Returns the value from the OnCanClose event handler.
 </short>
 </element>
 
-<element name="TCalendarDialog.OnDialogShow">
+<element name="TCalendarDialog.DialogShow">
 <short>
 Implements the event handler signalled when the dialog form is displayed.
 </short>
 <descr/>
 <seealso></seealso>
 </element>
-<element name="TCalendarDialog.OnDialogShow.Sender">
+<element name="TCalendarDialog.DialogShow.Sender">
 <short>
 Object instance (TForm) for the event notification.
 </short>
 </element>
 
-<element name="TCalendarDialog.OnCalendarDayChanged">
+<element name="TCalendarDialog.CalendarDayChanged">
 <short>
 Implements the event handler signalled when the day number in Date is changed.
 </short>
 <descr></descr>
 <seealso></seealso>
 </element>
-<element name="TCalendarDialog.OnCalendarDayChanged.Sender">
+<element name="TCalendarDialog.CalendarDayChanged.Sender">
 <short>
 Object instance (TForm) for the event notification.  
 </short>
 </element>
 
-<element name="TCalendarDialog.OnCalendarMonthChanged">
+<element name="TCalendarDialog.CalendarMonthChanged">
 <short>
 Implements the event handler signalled when the month in Date is changed.
 </short>
 <descr></descr>
 <seealso></seealso>
 </element>
-<element name="TCalendarDialog.OnCalendarMonthChanged.Sender">
+<element name="TCalendarDialog.CalendarMonthChanged.Sender">
 <short>
 Object instance (TForm) for the event notification.  
 </short>
 </element>
 
-<element name="TCalendarDialog.OnCalendarYearChanged">
+<element name="TCalendarDialog.CalendarYearChanged">
 <short>
 Implements the event handler signalled when the year in Date is changed.
 </short>
 <descr></descr>
 <seealso></seealso>
 </element>
-<element name="TCalendarDialog.OnCalendarYearChanged.Sender">
+<element name="TCalendarDialog.CalendarYearChanged.Sender">
 <short>
 Object instance (TForm) for the event notification.  
 </short>
 </element>
 
-<element name="TCalendarDialog.OnCalendarChange">
+<element name="TCalendarDialog.CalendarChange">
 <short>
 Event handler used to signal the OnChange event when the Calendar is updated.
 </short>
 <descr></descr>
 <seealso></seealso>
 </element>
-<element name="TCalendarDialog.OnCalendarChange.Sender">
+<element name="TCalendarDialog.CalendarChange.Sender">
 <short>
 Object instance (TForm) for the event notification.  
 </short>
@@ -1789,7 +1789,7 @@ calendar control to the Date property in the dialog component.
 </p>
 <p>
 GetNewDate is called from methods like CalendarDblClick, 
-OnCalendarDayChanged, OnCalendarYearChanged, and OnCalendarMonthChanged. It 
+CalendarDayChanged, CalendarYearChanged, and CalendarMonthChanged. It 
 is assigned as the OnClick event handler for the OK button displayed on the 
 calendar dialog form.
 </p>
@@ -1916,28 +1916,28 @@ Methods in the class instance are assigned to the event handlers for the
 dialog form and its controls, including:
 </p>
 <dl>
-<dt>OnDialogShow</dt>
+<dt>DialogShow</dt>
 <dd>Assigned to the OnShow event handler in the dialog form.</dd>
-<dt>OnDialogClose</dt>
+<dt>DialogClose</dt>
 <dd>Assigned to the OnClose event handler in the dialog form.</dd>
-<dt>OnDialogCloseQuery</dt>
+<dt>DialogCloseQuery</dt>
 <dd>Assigned to the OnCloseQuery event handler in the dialog form.</dd>
-<dt>OnCalendarDayChanged</dt>
+<dt>CalendarDayChanged</dt>
 <dd>
 Assigned to the OnDayChanged event handler in the TCalendar instance on the 
 form.
 </dd>
-<dt>OnCalendarMonthChanged</dt>
+<dt>CalendarMonthChanged</dt>
 <dd>
 Assigned to the OnMonthChanged event handler in the TCalendar instance on the 
 form.
 </dd>
-<dt>OnCalendarYearChanged</dt>
+<dt>CalendarYearChanged</dt>
 <dd>
 Assigned to the OnYearChanged event handler in the TCalendar instance on the 
 form.
 </dd>
-<dt>OnCalendarChange</dt>
+<dt>CalendarChange</dt>
 <dd>
 Assigned to the OnChange event handler in the TCalendar instance on the form.
 </dd>
@@ -1956,7 +1956,7 @@ the window decoration.
 </p>
 <p>
 The date selected using the calendar control is stored when the 
-OnCalendarChange routine is executed (via TCalendar.OnChange). This causes 
+CalendarChange routine is executed (via TCalendar.OnChange). This causes 
 the OnChange event handler in the class instance to be signalled to store the 
 updated value.
 </p>
