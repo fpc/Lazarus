@@ -353,6 +353,7 @@ type
     procedure GetInheritedCompilerOptions(var OptionsList: TFPList); override;
     function GetOwnerName: string; override;
     function GetDefaultMainSourceFileName: string; override;
+    function GetDefaultWriteConfigFilePath: string; override;
     function CreateTargetFilename: string; override;
     function HasCompilerCommand: boolean; override;
 
@@ -4252,6 +4253,11 @@ begin
     Result:='';
   if Result='' then
     Result:=inherited GetDefaultMainSourceFileName;
+end;
+
+function TPkgCompilerOptions.GetDefaultWriteConfigFilePath: string;
+begin
+  Result:='$(PkgOutDir)'+PathDelim+'fpclaz.cfg';
 end;
 
 function TPkgCompilerOptions.CreateTargetFilename: string;

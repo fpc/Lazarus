@@ -48,8 +48,10 @@ type
   TCompilerConfigTargetFrame = class(TAbstractIDEOptionsEditor)
     chkConfigFile: TCheckBox;
     chkCustomConfigFile: TCheckBox;
+    chkWriteConfigFile: TCheckBox;
     chkWin32GraphicApp: TCheckBox;
-    edtConfigPath: TEdit;
+    edtCustomConfigPath: TEdit;
+    edtWriteConfigFilePath: TEdit;
     grbTargetOptions: TGroupBox;
     grbConfigFile: TGroupBox;
     grbTargetPlatform: TGroupBox;
@@ -64,6 +66,7 @@ type
     TargetProcComboBox: TComboBox;
     SubtargetComboBox: TComboBox;
     procedure chkCustomConfigFileClick(Sender: TObject);
+    procedure chkWriteConfigFileClick(Sender: TObject);
     procedure TargetOSComboBoxSelect(Sender: TObject);
     procedure TargetCPUComboBoxSelect(Sender: TObject);
     procedure LCLWidgetTypeLabelClick(Sender: TObject);
@@ -158,16 +161,14 @@ end;
 
 function TCompilerConfigTargetFrame.Check: Boolean;
 var
-  NewDontUseConfigFile: Boolean;
-  NewCustomConfigFile: Boolean;
-  NewConfigFilePath: String;
-  AdditionalConfig: String;
+  NewDontUseConfigFile, NewCustomConfigFile: Boolean;
+  NewConfigFilePath, AdditionalConfig: String;
 begin
   //debugln(['TCompilerConfigTargetFrame.ReadSettings ',dbgs(Pointer(FCompOptions)),' ',FCompOptions=Project1.CompilerOptions]);
 
   NewDontUseConfigFile := not chkConfigFile.Checked;
   NewCustomConfigFile := chkCustomConfigFile.Checked;
-  NewConfigFilePath := edtConfigPath.Text;
+  NewConfigFilePath := edtCustomConfigPath.Text;
 
   if ((NewDontUseConfigFile <> FCompOptions.DontUseConfigFile) or
     (NewCustomConfigFile <> FCompOptions.CustomConfigFile) or
@@ -176,9 +177,8 @@ begin
   begin
     // config file options changed
     // and both additional and standard config files are used
-    AdditionalConfig := ExtractFilename(edtConfigPath.Text);
-    if (CompareFileNames(AdditionalConfig, 'fpc.cfg') = 0) or
-      (CompareFileNames(AdditionalConfig, 'ppc386.cfg') = 0) then
+    AdditionalConfig := ExtractFilename(edtCustomConfigPath.Text);
+    if (CompareFileNames(AdditionalConfig, 'fpc.cfg') = 0) then
     begin
       if IDEMessageDialog(lisCOAmbiguousAdditionalCompilerConfigFile,
         Format(lisCOClickOKIfAreSureToDoThat,
@@ -270,8 +270,10 @@ begin
     // Config
     grbConfigFile.Caption := dlgConfigFiles;
     chkConfigFile.Caption := dlgUseFpcCfg + ' ('+lisIfNotChecked+' -n)';
+    chkWriteConfigFile.Caption := lisWriteConfigInsteadOfCommandLineParameters+' (@)';
+    edtWriteConfigFilePath.Text := '';
     chkCustomConfigFile.Caption := dlgUseCustomConfig + ' (@)';
-    edtConfigPath.Text := '';
+    edtCustomConfigPath.Text := '';
 
     // Target platform
     grbTargetPlatform.Caption := dlgTargetPlatform;
@@ -329,9 +331,12 @@ begin
   with FCompOptions do
   begin
     chkConfigFile.Checked := not DontUseConfigFile;
+    chkWriteConfigFile.Checked := WriteConfigFile;
+    edtWriteConfigFilePath.Enabled:= WriteConfigFile;
+    edtWriteConfigFilePath.Text := WriteConfigFilePath;
     chkCustomConfigFile.Checked := CustomConfigFile;
-    edtConfigPath.Enabled := chkCustomConfigFile.Checked;
-    edtConfigPath.Text := ConfigFilePath;
+    edtCustomConfigPath.Enabled := chkCustomConfigFile.Checked;
+    edtCustomConfigPath.Text := ConfigFilePath;
     if fIsPackage then begin
       grbTargetPlatform.Visible:=false;
       TargetOSComboBox.ItemIndex := 0;
@@ -386,8 +391,10 @@ begin
   with CurOptions do
   begin
     DontUseConfigFile := not chkConfigFile.Checked;
+    WriteConfigFile := chkWriteConfigFile.Checked;
+    WriteConfigFilePath := edtWriteConfigFilePath.Text;
     CustomConfigFile := chkCustomConfigFile.Checked;
-    ConfigFilePath := edtConfigPath.Text;
+    ConfigFilePath := edtCustomConfigPath.Text;
     if not fIsPackage then
     begin
       NewTargetOS := TargetOSComboBox.Text;
@@ -407,7 +414,12 @@ end;
 
 procedure TCompilerConfigTargetFrame.chkCustomConfigFileClick(Sender: TObject);
 begin
-  edtConfigPath.Enabled := chkCustomConfigFile.Checked;
+  edtCustomConfigPath.Enabled := chkCustomConfigFile.Checked;
+end;
+
+procedure TCompilerConfigTargetFrame.chkWriteConfigFileClick(Sender: TObject);
+begin
+  edtWriteConfigFilePath.Enabled := chkWriteConfigFile.Checked;
 end;
 
 procedure TCompilerConfigTargetFrame.TargetOSComboBoxSelect(Sender: TObject);

@@ -1131,7 +1131,7 @@ end;
 function TLazPackageGraph.GetPackageCompilerParams(APackage: TLazPackage
   ): TStrings;
 begin
-  Result:=APackage.CompilerOptions.MakeOptionsString(
+  Result:=APackage.CompilerOptions.MakeCompilerParams(
           APackage.CompilerOptions.DefaultMakeOptionsFlags+[ccloAbsolutePaths]);
   Result.Add(CreateRelativePath(APackage.GetSrcFilename,APackage.Directory));
 end;
@@ -4703,7 +4703,7 @@ begin
                                                  coptParsedPlatformIndependent);
   CustomOptions:=APackage.CompilerOptions.GetCustomOptions(
                                                  coptParsedPlatformIndependent);
-  List:=APackage.CompilerOptions.MakeOptionsString(
+  List:=APackage.CompilerOptions.MakeCompilerParams(
                               [ccloDoNotAppendOutFileOption,ccloNoMacroParams]);
   OtherOptions:=MergeCmdLineParams(List);
   List.Free;
@@ -5025,7 +5025,7 @@ begin
                                                  coptParsedPlatformIndependent);
   if ConsoleVerbosity>0 then
     debugln('Hint: (lazarus) Writing fpmake.pp: CustomOptions (orig): ',CustomOptions);
-  List:=APackage.CompilerOptions.MakeOptionsString(
+  List:=APackage.CompilerOptions.MakeCompilerParams(
                               [ccloDoNotAppendOutFileOption,ccloNoMacroParams]);
   if ConsoleVerbosity>0 then
     debugln('Hint: (lazarus) Writing fpmake.pp: OtherOptions (orig): ',MergeCmdLineParams(List,TLazCompilerOptions.ConsoleParamsMax));

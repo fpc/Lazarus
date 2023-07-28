@@ -275,7 +275,6 @@ function TCompiler.Compile(AProject: TProject; const WorkingDir,
   SkipAssembler, CurrentDirectoryIsTestDir: boolean; const aCompileHint: string
   ): TModalResult;
 var
-  Abort : Boolean;
   Tool: TAbstractExternalTool;
   FPCParser: TFPCParser;
   Title: String;

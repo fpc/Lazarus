@@ -6,67 +6,100 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
   ClientHeight = 446
   ClientWidth = 594
   TabOrder = 0
-  DesignLeft = 338
-  DesignTop = 284
+  DesignLeft = 436
+  DesignTop = 273
   object grbConfigFile: TGroupBox
     Left = 0
-    Height = 101
+    Height = 139
     Top = 0
     Width = 594
     Align = alTop
     AutoSize = True
     Caption = 'grbConfigFile'
-    ClientHeight = 74
+    ClientHeight = 112
     ClientWidth = 584
     TabOrder = 0
     object chkConfigFile: TCheckBox
+      AnchorSideLeft.Control = grbConfigFile
+      AnchorSideTop.Control = grbConfigFile
       Left = 6
       Height = 18
-      Top = 6
-      Width = 572
-      Align = alTop
+      Top = 3
+      Width = 104
       BorderSpacing.Left = 6
-      BorderSpacing.Top = 6
-      BorderSpacing.Right = 6
+      BorderSpacing.Top = 3
       Caption = 'chkConfigFile'
       TabOrder = 0
     end
-    object chkCustomConfigFile: TCheckBox
+    object chkWriteConfigFile: TCheckBox
+      AnchorSideLeft.Control = chkConfigFile
+      AnchorSideTop.Control = chkConfigFile
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Side = asrBottom
       Left = 6
       Height = 18
-      Top = 27
-      Width = 572
-      Align = alTop
-      BorderSpacing.Left = 6
+      Top = 24
+      Width = 134
       BorderSpacing.Top = 3
-      BorderSpacing.Right = 6
-      Caption = 'chkCustomConfigFile'
-      OnClick = chkCustomConfigFileClick
-      TabOrder = 1
+      Caption = 'chkWriteConfigFile'
+      OnClick = chkWriteConfigFileClick
+      TabOrder = 3
     end
-    object edtConfigPath: TEdit
-      AnchorSideLeft.Control = chkCustomConfigFile
-      AnchorSideTop.Control = chkCustomConfigFile
+    object edtWriteConfigFilePath: TEdit
+      AnchorSideLeft.Control = chkWriteConfigFile
+      AnchorSideTop.Control = chkWriteConfigFile
       AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = chkCustomConfigFile
+      AnchorSideRight.Control = grbConfigFile
       AnchorSideRight.Side = asrBottom
       Left = 25
       Height = 22
-      Top = 46
+      Top = 43
       Width = 553
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 19
       BorderSpacing.Top = 1
-      BorderSpacing.Bottom = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 3
+      TabOrder = 4
+      Text = 'edtWriteConfigFilePath'
+    end
+    object chkCustomConfigFile: TCheckBox
+      AnchorSideLeft.Control = chkConfigFile
+      AnchorSideTop.Control = edtWriteConfigFilePath
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 18
+      Top = 68
+      Width = 147
+      BorderSpacing.Top = 3
+      Caption = 'chkCustomConfigFile'
+      OnClick = chkCustomConfigFileClick
+      TabOrder = 1
+    end
+    object edtCustomConfigPath: TEdit
+      AnchorSideLeft.Control = chkCustomConfigFile
+      AnchorSideTop.Control = chkCustomConfigFile
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = grbConfigFile
+      AnchorSideRight.Side = asrBottom
+      Left = 25
+      Height = 22
+      Top = 87
+      Width = 553
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 19
+      BorderSpacing.Top = 1
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 3
       TabOrder = 2
-      Text = 'edtConfigPath'
+      Text = 'edtCustomConfigPath'
     end
   end
   object grbTargetPlatform: TGroupBox
     AnchorSideBottom.Side = asrBottom
     Left = 0
     Height = 125
-    Top = 109
+    Top = 147
     Width = 594
     Align = alTop
     AutoSize = True
@@ -116,7 +149,7 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
       Left = 6
       Height = 16
       Top = 74
-      Width = 75
+      Width = 74
       Caption = 'lblSubtarget'
       ParentColor = False
     end
@@ -189,10 +222,10 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = grbTargetPlatform
       AnchorSideRight.Side = asrBottom
-      Left = 87
+      Left = 86
       Height = 20
       Top = 72
-      Width = 491
+      Width = 492
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 3
@@ -206,7 +239,7 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
   object grbTargetOptions: TGroupBox
     Left = 0
     Height = 57
-    Top = 242
+    Top = 280
     Width = 594
     Align = alTop
     AutoSize = True
@@ -231,7 +264,7 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
     AnchorSideTop.Side = asrBottom
     Left = 16
     Height = 16
-    Top = 327
+    Top = 365
     Width = 128
     BorderSpacing.Top = 3
     Caption = 'LCLWidgetTypeLabel'
@@ -247,7 +280,7 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
     AnchorSideTop.Side = asrBottom
     Left = 3
     Height = 16
-    Top = 308
+    Top = 346
     Width = 151
     BorderSpacing.Top = 9
     Caption = 'CurrentWidgetTypeLabel'

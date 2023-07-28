@@ -1388,7 +1388,7 @@ begin
   //DebugLn([DbgCap,'CompilerFilename="',CompilerFilename,'" CompilerPath="',AProject.CompilerOptions.CompilerPath,'"']);
   // Note: use absolute paths, because some external tools resolve symlinked directories
   CompilerParams :=
-    AProject.CompilerOptions.MakeOptionsString([ccloAbsolutePaths]);
+    AProject.CompilerOptions.MakeCompilerParams([ccloAbsolutePaths]);
   try
     CompilerParams.Add(SrcFilename);
 

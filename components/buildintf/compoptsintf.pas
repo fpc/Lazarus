@@ -153,7 +153,6 @@ type
   private
     FOnModified: TNotifyEvent;
     fOwner: TObject;
-    FSubtarget: string;
     SetEmulatedFloatOpcodes: boolean;
     function GetDebugInfoTypeStr: String;
     procedure SetAllowLabel(const AValue: Boolean);
@@ -213,6 +212,7 @@ type
     procedure SetVarsInReg(const AValue: Boolean);
     procedure SetVerifyObjMethodCall(const AValue: boolean);
     procedure SetWin32GraphicApp(const AValue: boolean);
+    procedure SetWriteConfigFile(AValue: Boolean);
     procedure SetWriteFPCLogo(const AValue: Boolean);
   protected
     FChangeStamp: int64;
@@ -249,6 +249,7 @@ type
     fTargetOS: String;
     fTargetCPU: string;
     fTargetProc: string;
+    FSubtarget: string;
     fOptLevel: Integer;
     fVarsInReg: Boolean;
     fUncertainOpt: Boolean;
@@ -294,6 +295,8 @@ type
     fExecuteAfter: TLazCompilationToolOptions;
     // Other:
     fDontUseConfigFile: Boolean;
+    FWriteConfigFile: Boolean;
+    FWriteConfigFilePath: String;
     fCustomConfigFile: Boolean;
     fConfigFilePath: String;
     fUseCommentsInCustomOptions: Boolean;
@@ -310,6 +313,7 @@ type
     function GetSrcPath: string; virtual; abstract;
     function GetUnitOutputDir: string; virtual; abstract;
     function GetUnitPaths: String; virtual; abstract;
+    function GetWriteConfigFilePath: String; virtual; abstract;
     procedure SetCompilerPath(const AValue: String); virtual; abstract;
     procedure SetConditionals(AValue: string); virtual; abstract;
     procedure SetCustomOptions(const AValue: string); virtual; abstract;
@@ -328,6 +332,7 @@ type
     procedure SetTargetProc(const AValue: string); virtual; abstract;
     procedure SetUnitOutputDir(const AValue: string); virtual; abstract;
     procedure SetUnitPaths(const AValue: String); virtual; abstract;
+    procedure SetWriteConfigFilePath(AValue: String); virtual; abstract;
   public
     constructor Create(const TheOwner: TObject); virtual;
     destructor Destroy; override;
@@ -467,6 +472,8 @@ type
     property ExecuteAfter: TLazCompilationToolOptions read fExecuteAfter;
     // other
     property DontUseConfigFile: Boolean read fDontUseConfigFile write SetDontUseConfigFile;
+    property WriteConfigFile: Boolean read FWriteConfigFile write SetWriteConfigFile;
+    property WriteConfigFilePath: String read GetWriteConfigFilePath write SetWriteConfigFilePath;
     property CustomConfigFile: Boolean read fCustomConfigFile write SetCustomConfigFile;
     property ConfigFilePath: String read fConfigFilePath write SetConfigFilePath;
     property CustomOptions: string read GetCustomOptions write SetCustomOptions;
@@ -965,6 +972,13 @@ procedure TLazCompilerOptions.SetWin32GraphicApp(const AValue: boolean);
 begin
   if FWin32GraphicApp=AValue then exit;
   FWin32GraphicApp:=AValue;
+  IncreaseChangeStamp;
+end;
+
+procedure TLazCompilerOptions.SetWriteConfigFile(AValue: Boolean);
+begin
+  if FWriteConfigFile=AValue then Exit;
+  FWriteConfigFile:=AValue;
   IncreaseChangeStamp;
 end;
 

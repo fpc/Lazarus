@@ -302,7 +302,7 @@ begin
   Flags:=CompilerOpts.DefaultMakeOptionsFlags;
   if not RelativePathsCheckBox.Checked then
     Include(Flags,ccloAbsolutePaths);
-  CompOptions := CompilerOpts.MakeOptionsString(Flags);
+  CompOptions := CompilerOpts.MakeCompilerParams(Flags);
   try
     CompPath:=CompilerOpts.ParsedOpts.GetParsedValue(pcosCompilerPath);
     if Pos(' ',CompPath)>0 then

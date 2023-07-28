@@ -769,7 +769,7 @@ var
   CompilerFilename: String;
   WorkingDir: String;
   SrcFilename: String;
-  CompilerParams: TStrings;
+  CompilerParams, CmdLineParams: TStrings;
   ToolBefore: TProjectCompilationToolOptions;
   ToolAfter: TProjectCompilationToolOptions;
   UnitOutputDirectory: String;
@@ -785,6 +785,8 @@ var
   CurResult: Boolean;
 
   function StartBuilding : boolean;
+  var
+    CfgCode: TCodeBuffer;
   begin
     Result := false;
 
@@ -805,6 +807,7 @@ var
     MainBuildBoss.SetBuildTargetProject1(true,smsfsSkip);
 
     CompilerParams:=nil;
+    CmdLineParams:=nil;
     try
       if not SkipDependencies then
       begin
@@ -883,16 +886,25 @@ var
 
       //DebugLn(['TLazBuildApplication.BuildProject CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
       // CompileHint: use absolute paths, same as TBuildManager.DoCheckIfProjectNeedsCompilation
-      CompilerParams:=Project1.CompilerOptions.MakeOptionsString([ccloAbsolutePaths]);
+      CompilerParams:=Project1.CompilerOptions.MakeCompilerParams([ccloAbsolutePaths]);
       CompilerParams.Add(SrcFilename);
 
       if (CompReason in Project1.CompilerOptions.CompileReasons) then begin
         // compile
 
+        if Project1.CompilerOptions.WriteConfigFile then
+        begin
+          CfgCode:=Project1.WriteCompilerCfgFile(Project1,CompilerParams,CmdLineParams);
+          if CfgCode=nil then
+            Error(ErrorBuildFailed,'unable to read "'+Project1.GetWriteConfigFilePath+'"');
+          if CfgCode.FileOnDiskNeedsUpdate and (not CfgCode.Save) then
+            Error(ErrorBuildFailed,'unable to write "'+Project1.GetWriteConfigFilePath+'"');
+        end;
+
         // write state file to avoid building clean every time
         if Project1.SaveStateFile(CompilerFilename,CompilerParams,false)<>mrOk then
           Error(ErrorBuildFailed,'failed saving statefile of project '+AFilename);
-        if TheCompiler.Compile(Project1,WorkingDir,CompilerFilename,CompilerParams,
+        if TheCompiler.Compile(Project1,WorkingDir,CompilerFilename,CmdLineParams,
                                BuildAll or NeedBuildAllFlag,false,false,false,
                                CompileHint)<>mrOk
         then
@@ -914,6 +926,8 @@ var
       // no need to check for mrOk, we are exit if it wasn't
       Result:=true;
     finally
+      if CmdLineParams<>CompilerParams then
+        CmdLineParams.Free;
       CompilerParams.Free;
       if not SkipDependencies then
         PackageGraph.EndUpdate;

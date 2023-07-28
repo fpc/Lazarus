@@ -190,7 +190,8 @@ type
     pcosOutputDir,    // the output directory
     pcosCompilerPath, // the filename of the compiler
     pcosDebugPath,    // additional debug search path
-    pcosMsgFile       // fpc message file (errore.msg)
+    pcosMsgFile,       // fpc message file (errore.msg)
+    pcosWriteConfigFilePath // auto generated cfg file
     );
   TParsedCompilerOptStrings = set of TParsedCompilerOptString;
 
@@ -198,15 +199,16 @@ type
 const
   ParsedCompilerSearchPaths = [pcosUnitPath,pcosIncludePath,pcosObjectPath,
                                pcosLibraryPath,pcosSrcPath,pcosDebugPath];
-  ParsedCompilerFilenames = [pcosCompilerPath,pcosMsgFile];
+  ParsedCompilerExecutables = [pcosCompilerPath];
+  ParsedCompilerFilenames = ParsedCompilerExecutables+[pcosMsgFile,pcosWriteConfigFilePath];
   ParsedCompilerDirectories = [pcosOutputDir];
   ParsedCompilerOutDirectories = [pcosOutputDir];
   ParsedCompilerFiles =
     ParsedCompilerSearchPaths+ParsedCompilerFilenames+ParsedCompilerDirectories;
 
   ParsedCompilerOptsVars: array[TParsedCompilerOptString] of string = (
-    '',
-    '',
+    '', // pcosNone
+    '', // pcosBaseDir
     'UnitPath',
     'Namespaces',
     'IncPath',
@@ -218,11 +220,12 @@ const
     'OutputDir',
     'CompilerPath',
     'DebugPath',
-    'MsgFile'
+    'MsgFile',
+    'WriteCfgFile'
     );
   ParsedCompilerOptsUsageVars: array[TParsedCompilerOptString] of string = (
-    '',
-    '',
+    '', // pcosNone
+    '', // pcosBaseDir
     'UsageUnitPath',
     'UsageNamespaces',
     'UsageIncPath',
@@ -231,10 +234,11 @@ const
     'UsageSrcPath',
     'UsageLinkerOptions',
     'UsageCustomOptions',
-    '',
-    '',
-    'UsageDebugPath',
-    ''
+    '', // pcosOutputDir
+    '', // pcosCompilerPath
+    'UsageDebugPath', // pcosDebugPath
+    '', // pcosMsgFile
+    ''  // pcosWriteConfigFilePath
     );
   InheritedToParsedCompilerOption: array[TInheritedCompilerOption] of
     TParsedCompilerOptString = (
@@ -432,6 +436,7 @@ type
     function GetSrcPath: string; override;
     function GetUnitOutputDir: string; override;
     function GetUnitPaths: String; override;
+    function GetWriteConfigFilePath: String; override;
     procedure SetBaseDirectory(AValue: string);
     procedure SetCompilerPath(const AValue: String); override;
     procedure SetConditionals(AValue: string); override;
@@ -450,6 +455,7 @@ type
     procedure SetTargetOS(const AValue: string); override;
     procedure SetTargetFileExt(const AValue: String); override;
     procedure SetTargetFilename(const AValue: String); override;
+    procedure SetWriteConfigFilePath(AValue: String); override;
   protected
     function GetModified: boolean; override;
     procedure SetModified(const AValue: boolean); override;
@@ -476,7 +482,7 @@ type
 
     procedure SetAlternativeCompile(const Command: string; ScanFPCMsgs: boolean); override;
 
-    function MakeOptionsString(Flags: TCompilerCmdLineOptions): TStringListUTF8Fast;
+    function MakeCompilerParams(Flags: TCompilerCmdLineOptions): TStringListUTF8Fast;
     procedure GetSyntaxOptions(Kind: TPascalCompiler; Params: TStrings); virtual;
     function CreatePPUFilename(const SourceFileName: string): string; override;
     function CreateTargetFilename: string; override;
@@ -490,6 +496,7 @@ type
                                 Parsed: TCompilerOptionsParseType = coptParsed
                                 ): string; virtual;
     function GetDefaultMainSourceFileName: string; virtual;
+    function GetDefaultWriteConfigFilePath: string; virtual; abstract;
     function CanBeDefaulForProject: boolean; virtual;
     function NeedsLinkerOpts: boolean;
     function HasCommands: boolean; // true if there is at least one commad to execute
@@ -1309,6 +1316,16 @@ begin
   IncreaseChangeStamp;
 end;
 
+procedure TBaseCompilerOptions.SetWriteConfigFilePath(AValue: String);
+begin
+  if WriteConfigFilePath=AValue then exit;
+  ParsedOpts.SetUnparsedValue(pcosWriteConfigFilePath,AValue);
+  {$IFDEF VerboseIDEModified}
+  debugln(['TBaseCompilerOptions.SetWriteConfigFilePath ',AValue]);
+  {$ENDIF}
+  IncreaseChangeStamp;
+end;
+
 function TBaseCompilerOptions.GetModified: boolean;
 begin
   Result:=(inherited GetModified) or MessageFlags.Modified;
@@ -1377,6 +1394,11 @@ end;
 function TBaseCompilerOptions.GetUnitPaths: String;
 begin
   Result:=ParsedOpts.Values[pcosUnitPath].UnparsedValue;
+end;
+
+function TBaseCompilerOptions.GetWriteConfigFilePath: String;
+begin
+  Result:=ParsedOpts.Values[pcosWriteConfigFilePath].UnparsedValue;
 end;
 
 function TBaseCompilerOptions.GetExecuteAfter: TCompilationToolOptions;
@@ -1716,6 +1738,8 @@ begin
   { Other }
   p:=Path+'Other/';
   DontUseConfigFile := aXMLConfig.GetValue(p+'ConfigFile/DontUseConfigFile/Value', false);
+  WriteConfigFile := aXMLConfig.GetValue(p+'ConfigFile/WriteConfigFile/Value', false);
+  WriteConfigFilePath := f(aXMLConfig.GetValue(p+'ConfigFile/WriteConfigFilePath/Value', GetDefaultWriteConfigFilePath));
   if FileVersion<=3 then
     CustomConfigFile := aXMLConfig.GetValue(p+'ConfigFile/AdditionalConfigFile/Value', false)
   else
@@ -1909,6 +1933,8 @@ begin
   { Other }
   p:=Path+'Other/';
   aXMLConfig.SetDeleteValue(p+'ConfigFile/DontUseConfigFile/Value', DontUseConfigFile,false);
+  aXMLConfig.SetDeleteValue(p+'ConfigFile/WriteConfigFile/Value', WriteConfigFile,false);
+  aXMLConfig.SetDeleteValue(p+'ConfigFile/WriteConfigFilePath/Value', f(WriteConfigFilePath),GetDefaultWriteConfigFilePath);
   aXMLConfig.SetDeleteValue(p+'ConfigFile/CustomConfigFile/Value', CustomConfigFile,false);
   aXMLConfig.SetDeleteValue(p+'ConfigFile/ConfigFilePath/Value', f(ConfigFilePath),'extrafpc.cfg');
   aXMLConfig.SetDeleteValue(p+'CustomOptions/Value',
@@ -2480,7 +2506,7 @@ var
   Params: TStringListUTF8Fast;
   h: String;
 begin
-  Params:=MakeOptionsString([ccloNoMacroParams]);
+  Params:=MakeCompilerParams([ccloNoMacroParams]);
   try
     Result:=MergeCmdLineParams(Params);
     h:=GetCustomOptions(coptParsed);
@@ -2560,13 +2586,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TBaseCompilerOptions.MakeOptionsString(
+  function TBaseCompilerOptions.MakeCompilerParams(
     const MainSourceFilename: string;
     Flags: TCompilerCmdLineOptions): String;
 
   Get all the options and create a string that can be passed to the compiler
 ------------------------------------------------------------------------------}
-function TBaseCompilerOptions.MakeOptionsString(Flags: TCompilerCmdLineOptions
+function TBaseCompilerOptions.MakeCompilerParams(Flags: TCompilerCmdLineOptions
   ): TStringListUTF8Fast;
 var
   tempsw, quietsw, t: String;
@@ -3363,6 +3389,7 @@ begin
   if Done(Tool.AddDiff('TargetOS',fTargetOS,CompOpts.fTargetOS)) then exit;
   if Done(Tool.AddDiff('TargetCPU',fTargetCPU,CompOpts.fTargetCPU)) then exit;
   if Done(Tool.AddDiff('TargetProc',fTargetProc,CompOpts.fTargetProc)) then exit;
+  if Done(Tool.AddDiff('Subtarget',FSubtarget,CompOpts.FSubtarget)) then exit;
   if Done(Tool.AddDiff('OptLevel',fOptLevel,CompOpts.fOptLevel)) then exit;
   if Done(Tool.AddDiff('VarsInReg',fVarsInReg,CompOpts.fVarsInReg)) then exit;
   if Done(Tool.AddDiff('UncertainOpt',fUncertainOpt,CompOpts.fUncertainOpt)) then exit;
@@ -3408,6 +3435,8 @@ begin
   // other
   if Tool<>nil then Tool.Path:='Other';
   if Done(Tool.AddDiff('DontUseConfigFile',fDontUseConfigFile,CompOpts.fDontUseConfigFile)) then exit;
+  if Done(Tool.AddDiff('WriteConfigFile',FWriteConfigFile,CompOpts.FWriteConfigFile)) then exit;
+  if Done(Tool.AddDiff('WriteConfigFilePath',FWriteConfigFilePath,CompOpts.FWriteConfigFilePath)) then exit;
   if Done(Tool.AddDiff('CustomConfigFile',fCustomConfigFile,CompOpts.fCustomConfigFile)) then exit;
   if Done(Tool.AddDiff('ConfigFilePath',fConfigFilePath,CompOpts.fConfigFilePath)) then exit;
   if Done(Tool.AddDiff('StopAfterErrCount',fStopAfterErrCount,CompOpts.fStopAfterErrCount)) then exit;
@@ -3731,7 +3760,7 @@ begin
         Result:=MergeCustomOptions(Result,MoreOptions);
       end;
     end;
-  pcosOutputDir,pcosCompilerPath:
+  pcosOutputDir,pcosCompilerPath,pcosWriteConfigFilePath:
     if Vars.IsDefined(PChar(VarName)) then
       Result:=GetForcedPathDelims(Vars[VarName]);
   end
@@ -3862,7 +3891,8 @@ begin
   begin
     // make filename absolute
     //debugln(['TParsedCompilerOptions.DoParseOption ',ParsedCompilerOptsVars[Option],' s="',s,'"']);
-    if ExtractFilePath(s)='' then begin
+    if (Option in ParsedCompilerExecutables) and (ExtractFilePath(s)='') then
+    begin
       h:=FileUtil.FindDefaultExecutablePath(s,GetBaseDir);
       if h<>'' then s:=h;
     end;

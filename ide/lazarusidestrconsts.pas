@@ -2425,6 +2425,8 @@ resourcestring
   dlgConfigFiles = 'Config files';
   dlgUseFpcCfg = 'Use standard compiler config file (fpc.cfg)';
   lisIfNotChecked = 'If not checked:';
+  lisWriteConfigInsteadOfCommandLineParameters = 'Write config instead of '
+    +'command line parameters';
   dlgUseCustomConfig = 'Use additional compiler config file';
   lisAllOptions = 'All Options';
   lisFilterTheAvailableOptionsList = 'Filter the available options list';

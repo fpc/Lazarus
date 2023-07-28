@@ -332,7 +332,7 @@ begin
   CmdLineParams:=nil;
   try
     // create compiler command line options
-    CmdLineParams:=Options.MakeOptionsString(
+    CmdLineParams:=Options.MakeCompilerParams(
               [ccloAddVerboseAll,ccloDoNotAppendOutFileOption,ccloAbsolutePaths]);
     CmdLineParams.Add(BogusFilename);
     CompileTool:=ExternalToolList.Add(dlgCCOTestToolCompilingEmptyFile);

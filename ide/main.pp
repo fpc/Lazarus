@@ -6834,7 +6834,8 @@ var
   PkgFlags: TPkgCompileFlags;
   CompilerFilename: String;
   WorkingDir: String;
-  CompilerParams: TStringListUTF8Fast;
+  CompilerParams: TStrings;
+  CmdLineParams: TStrings;
   NeedBuildAllFlag: Boolean;
   NoBuildNeeded: Boolean;
   UnitOutputDirectory: String;
@@ -6846,6 +6847,7 @@ var
   IsComplete: Boolean;
   StartTime: TDateTime;
   CompilerKind: TPascalCompiler;
+  CfgCode: TCodeBuffer;
 begin
   if DoAbortBuild(true)<>mrOK then begin
     debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] DoAbortBuild failed']);
@@ -6881,6 +6883,7 @@ begin
   if Result<>mrOk then exit;
 
   CompilerParams:=nil;
+  CmdLineParams:=nil;
   try
     Result:=DoSaveForBuild(AReason);
     if Result<>mrOk then begin
@@ -7098,9 +7101,22 @@ begin
         // compile
         CompilerFilename:=Project1.GetCompilerFilename;
         // Hint: use absolute paths, because some external tools resolve symlinked directories
-        CompilerParams :=
-          Project1.CompilerOptions.MakeOptionsString([ccloAbsolutePaths]);
+        CompilerParams := Project1.CompilerOptions.MakeCompilerParams([ccloAbsolutePaths]);
         CompilerParams.Add(SrcFilename);
+        CmdLineParams := CompilerParams;
+
+        if Project1.CompilerOptions.WriteConfigFile then
+        begin
+          CfgCode:=Project1.WriteCompilerCfgFile(Project1,CompilerParams,CmdLineParams);
+          if CfgCode=nil then begin
+            IDEMessageDialog(lisReadError,Format(lisUnableToReadFile2,
+                             [Project1.GetWriteConfigFilePath]),mtError,[mbOk]);
+            exit(mrCancel);
+          end;
+          if CfgCode.FileOnDiskNeedsUpdate and (SaveCodeBuffer(CfgCode)<>mrOk) then
+            exit(mrCancel);
+        end;
+
         // write state file, to avoid building clean every time
         Result:=Project1.SaveStateFile(CompilerFilename,
                                        CompilerParams,false);
@@ -7113,7 +7129,7 @@ begin
 
         StartTime:=Now;
         Result:=TheCompiler.Compile(Project1,
-                                WorkingDir,CompilerFilename,CompilerParams,
+                                WorkingDir,CompilerFilename,CmdLineParams,
                                 (AReason = crBuild) or NeedBuildAllFlag,
                                 pbfSkipLinking in Flags,
                                 pbfSkipAssembler in Flags,Project1.IsVirtual,
@@ -7171,6 +7187,8 @@ begin
       DoCallBuildingFinishedHandler(lihtProjectBuildingFinished, Self, Result=mrOk);
     end;
   finally
+    if CmdLineParams<>CompilerParams then
+      CmdLineParams.Free;
     CompilerParams.Free;
     // check sources
     DoCheckFilesOnDisk;
