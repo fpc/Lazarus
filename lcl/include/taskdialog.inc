@@ -147,7 +147,7 @@ begin
   FQueryResult := '';
   ButtonID := TWSTaskDialogClass(WidgetSetClass).Execute(Self, ParentWnd, ARadioRes);
   FModalResult := ButtonIDToModalResult(ButtonID);
-  Result := (ButtonID >= 0);
+  Result := (ButtonID >= 0) and (ModalResult <> mrCancel);
   if (ARadioRes >= TaskDialogFirstRadioButtonIndex) and (aRadioRes-TaskDialogFirstRadioButtonIndex < RadioButtons.Count) then
     FRadioButton := RadioButtons[ARadioRes-TaskDialogFirstRadioButtonIndex] as TTaskDialogRadioButtonItem
   else
