@@ -43,7 +43,7 @@ uses
   FileProcs, CodeToolsCfgScript, LinkScanner,
   // LazUtils
   FPCAdds, LConvEncoding, FileUtil, LazFileUtils, LazFileCache, LazUTF8,
-  Laz2_XMLCfg, LazUtilities, LazStringUtils, LazMethodList,
+  Laz2_XMLCfg, LazUtilities, LazStringUtils, LazMethodList, LazVersion,
   // BuildIntf
   BaseIDEIntf, IDEOptionsIntf, ProjectIntf, MacroIntf, PublishModuleIntf,
   IDEExternToolIntf, CompOptsIntf, MacroDefIntf,
@@ -2766,13 +2766,17 @@ function TBuildManager.GetBuildMacroValuesHandler(Options: TBaseCompilerOptions;
       end;
     end;
     // Subtarget
-    if not Values.IsDefined('Subtarget') then  begin
+    if not Values.IsDefined('Subtarget') then begin
       s:='';
       if FBuildTarget<>nil then
         s:=FBuildTarget.CompilerOptions.Subtarget;
       if s='' then
         s:=fSubtarget;
       Values.Values['Subtarget']:=s;
+    end;
+    // Laz_FullVersion
+    if not Values.IsDefined('Laz_FullVersion') then begin
+      SetCTCSVariableAsNumber(Values.GetVariable('Laz_FullVersion',true),laz_fullversion);
     end;
   end;
 

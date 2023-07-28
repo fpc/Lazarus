@@ -1088,6 +1088,8 @@ begin
         SetCTCSVariableAsString(Value,GetDefaultSrcOS2ForTargetOS(FPCAdds.GetCompiledTargetOS))
       else if CompareIdentifiers(PChar(VarName),'LCLWidgetType')=0 then
         SetCTCSVariableAsString(Value,GetLCLWidgetTypeName)
+      else if CompareIdentifiers(PChar(VarName),'LAZ_FULLVERSION')=0 then
+        SetCTCSVariableAsNumber(Value,laz_fullversion)
       else
         ClearCTCSVariable(Value);
     end else if (CompareIdentifiers(FunctionName,'GetEnv')=0) then
