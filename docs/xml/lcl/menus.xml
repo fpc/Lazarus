@@ -4776,7 +4776,7 @@ for the function.
 <short>Shift, Ctrl or Alt modifier for the shortcut value.</short>
 </element>
 
-<element name="DesignerMenuItemClick">
+<element name="OnDesignerMenuItemClick">
 <short>
 Unit global variable with the event handler signalled when a menu item is 
 clicked at design-time.

@@ -33024,8 +33024,8 @@ CanvasChanged is not used in the current LCL implementation.
 <element name="TCustomTreeView.NodeIsSelected"/>
 <element name="TCustomTreeView.NodeIsSelected.Result"/>
 <element name="TCustomTreeView.NodeIsSelected.ANode"/>
-<element name="TCustomTreeView.OnChangeTimer"/>
-<element name="TCustomTreeView.OnChangeTimer.Sender"/>
+<element name="TCustomTreeView.ChangeTimer"/>
+<element name="TCustomTreeView.ChangeTimer.Sender"/>
 <element name="TCustomTreeView.SetAutoExpand"/>
 <element name="TCustomTreeView.SetAutoExpand.Value"/>
 <element name="TCustomTreeView.SetBackgroundColor"/>
