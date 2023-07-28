@@ -3193,15 +3193,69 @@ current implementation.
 
 <element name="TCustomSpeedButton.MeasureDraw">
 <short>
-Calculates the Width, Height, and layout for the speed button and optionally 
-renders the control.
+Calculates the Width and Height for the layout used on the speed button and 
+optionally renders the control.
 </short>
 <descr>
+<p>
+<var>MeasureDraw</var> determines the space needed to draw the content for the 
+speed button control. Values in the Caption, Glyph, Margin, Spacing, and 
+Layout properties are used to determine the layout for the control elements 
+and the space needed to draw the control without clipping. 
+</p>
+<p>
+When Draw is enabled, the control is rendered to its Canvas using the State, 
+Transparent and Layout settings. Otherwise, only measurements are performed in 
+the method.
+</p>
+<p>
+No actions are performed in the method if the Glyph property has not been 
+assigned for the control; in this case, the output parameters in 
+PreferredWidth and PreferredHeight are unchanged from their default values.
+</p>
+<p>
+PaintRect contains the area where the control is drawn on its Canvas, and 
+provides the bounds for the background on the control.
+</p>
+<p>
+GetGlyphSize is called to get the dimensions for the glyph bitmap including 
+any drawing effect applied in ThemeServices for the control State.
+</p>
+<p>
+When Caption has been assigned and ShowCaption is enabled, the text size is 
+included in the calculated space requirements. The values in Margins and 
+Spacing are included on the horizontal or vertical size based on the value in 
+Layout. Values in Alignment and UseRightToLeftReading are used when the text 
+rectangle is calculated. If the Font matches the default System font settings, 
+ThemeServices.DrawText is called to measure/render the text for the control.
+</p>
+<p>
+Values in PreferredWidth and PreferredHeight are updated and returned to the 
+calling routine in the output parameters.
+</p>
 <p>
 Used in the implementation of the CalculatePreferredSize and Paint methods.
 </p>
 </descr>
-<seealso></seealso>
+<seealso>
+<link id="TCustomSpeedButton.Glyph"/>
+<link id="TCustomSpeedButton.Margin"/>
+<link id="TCustomSpeedButton.Spacing"/>
+<link id="TCustomSpeedButton.Layout"/>
+<link id="TCustomSpeedButton.Alignment"/>
+<link id="TCustomSpeedButton.State"/>
+<link id="TCustomSpeedButton.Transparent"/>
+<link id="TCustomSpeedButton.CalculatePreferredSize"/>
+<link id="TCustomSpeedButton.PaintBackground"/>
+<link id="TCustomSpeedButton.Paint"/>
+<link id="TCustomSpeedButton.GetDrawDetails"/>
+<link id="TCustomSpeedButton.GetGlyphSize"/>
+<link id="TCustomSpeedButton.GetTextSize"/>
+<link id="#lcl.controls.TGraphicControl.Canvas">TGraphicControl.Canvas</link>
+<link id="#lcl.controls.TControl.Caption">TControl.Caption</link>
+<link id="#lcl.controls.TControl.UseRightToLeftReading">TControl.UseRightToLeftReading</link>
+<link id="#lcl.themes.TThemeServices.DrawText">TThemeServices.DrawText</link>
+</seealso>
 </element>
 <element name="TCustomSpeedButton.MeasureDraw.Draw">
 <short>
