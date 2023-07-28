@@ -1866,6 +1866,22 @@ begin
   end;
 end;
 
+function getWinControlAtMouse(): TControl;
+begin
+  Result:= Application.GetControlAtMouse;
+  if not Assigned(Result) then
+    exit;
+
+  // find TWinControl (not TGraphicControl)
+  // see also TControl.SetTempCursor()
+  while not (Result is TWinControl) do
+  begin
+    Result:= Result.Parent;
+    if not Assigned(Result) then
+      exit;
+  end;
+end;
+
 class procedure TCocoaWSWinControl.SetCursor(const AWinControl: TWinControl;
   const ACursor: HCursor);
 var
@@ -1883,7 +1899,7 @@ begin
   // after clicking the Button.
   if not ((AWinControl is TCustomForm) and (csDesigning in AWinControl.ComponentState)) then
   begin
-    control:= Application.GetControlAtMouse;
+    control:= getWinControlAtMouse;
     if control<>AWinControl then
       exit;
   end;
