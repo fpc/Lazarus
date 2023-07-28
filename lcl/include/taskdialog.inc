@@ -147,6 +147,10 @@ begin
   FQueryResult := '';
   ButtonID := TWSTaskDialogClass(WidgetSetClass).Execute(Self, ParentWnd, ARadioRes);
   FModalResult := ButtonIDToModalResult(ButtonID);
+  //Note: this behaviour is inconsistent with all other dialogs, where a ModalResult of mrCancel would give a return value of False.
+  //It also does not conform to Delhi's offial documentation
+  //(https://docwiki.embarcadero.com/Libraries/Alexandria/en/Vcl.Dialogs.TCustomTaskDialog.Execute)
+  //But it seems that Delphi in fact does the same: it will always return True, as long as we succeed in showing the dialog.
   Result := (ButtonID >= 0);
   if (ARadioRes >= TaskDialogFirstRadioButtonIndex) and (aRadioRes-TaskDialogFirstRadioButtonIndex < RadioButtons.Count) then
     FRadioButton := RadioButtons[ARadioRes-TaskDialogFirstRadioButtonIndex] as TTaskDialogRadioButtonItem
