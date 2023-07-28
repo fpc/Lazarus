@@ -19981,6 +19981,10 @@ msgstr "Munkakönyvtár az építéshez"
 msgid "Working directory for run"
 msgstr "Munkakönyvtár a futtatáshoz"
 
+#: lazarusidestrconsts.liswriteconfiginsteadofcommandlineparameters
+msgid "Write config instead of command line parameters"
+msgstr ""
+
 #: lazarusidestrconsts.liswriteerror
 msgid "Write Error"
 msgstr "Írási hiba"

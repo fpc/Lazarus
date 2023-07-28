@@ -19857,6 +19857,10 @@ msgstr "Työhakemisto kokoamista varten"
 msgid "Working directory for run"
 msgstr "Työhakemisto suoritusta varten"
 
+#: lazarusidestrconsts.liswriteconfiginsteadofcommandlineparameters
+msgid "Write config instead of command line parameters"
+msgstr ""
+
 #: lazarusidestrconsts.liswriteerror
 msgid "Write Error"
 msgstr "Tiedoston tallentaminen ei onnistunut"

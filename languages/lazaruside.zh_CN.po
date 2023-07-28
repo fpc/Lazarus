@@ -19994,6 +19994,10 @@ msgstr "工作目录用于构建"
 msgid "Working directory for run"
 msgstr "工作目录用于运行"
 
+#: lazarusidestrconsts.liswriteconfiginsteadofcommandlineparameters
+msgid "Write config instead of command line parameters"
+msgstr ""
+
 #: lazarusidestrconsts.liswriteerror
 msgid "Write Error"
 msgstr "写入错误"

@@ -20056,6 +20056,10 @@ msgstr "Pracovní adresář pro sestavení"
 msgid "Working directory for run"
 msgstr "Pracovní adresář pro spuštění"
 
+#: lazarusidestrconsts.liswriteconfiginsteadofcommandlineparameters
+msgid "Write config instead of command line parameters"
+msgstr ""
+
 #: lazarusidestrconsts.liswriteerror
 msgid "Write Error"
 msgstr "Chyba zápisu"

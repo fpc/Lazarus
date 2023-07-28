@@ -19852,6 +19852,10 @@ msgstr "Derleme için çalışma dizini"
 msgid "Working directory for run"
 msgstr "Çalıştırmak için çalışma dizini"
 
+#: lazarusidestrconsts.liswriteconfiginsteadofcommandlineparameters
+msgid "Write config instead of command line parameters"
+msgstr ""
+
 #: lazarusidestrconsts.liswriteerror
 msgid "Write Error"
 msgstr "Yazma Hatası"

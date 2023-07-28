@@ -20307,6 +20307,10 @@ msgstr "Cartella di lavoro per la costruzione"
 msgid "Working directory for run"
 msgstr "Cartella di lavoro per l'esecuzione"
 
+#: lazarusidestrconsts.liswriteconfiginsteadofcommandlineparameters
+msgid "Write config instead of command line parameters"
+msgstr ""
+
 #: lazarusidestrconsts.liswriteerror
 msgid "Write Error"
 msgstr "Errore di scrittura"

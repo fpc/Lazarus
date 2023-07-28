@@ -19938,6 +19938,10 @@ msgstr "Робоча тека для збирання"
 msgid "Working directory for run"
 msgstr "Робоча тека для виконання"
 
+#: lazarusidestrconsts.liswriteconfiginsteadofcommandlineparameters
+msgid "Write config instead of command line parameters"
+msgstr ""
+
 #: lazarusidestrconsts.liswriteerror
 msgid "Write Error"
 msgstr "Помилка запису"

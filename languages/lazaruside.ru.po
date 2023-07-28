@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-07-26 17:02+0300\n"
+"PO-Revision-Date: 2023-07-28 19:58+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -19913,6 +19913,10 @@ msgstr "Рабочий каталог для сборки"
 #: lazarusidestrconsts.lisworkingdirectoryforrun
 msgid "Working directory for run"
 msgstr "Рабочий каталог для запуска"
+
+#: lazarusidestrconsts.liswriteconfiginsteadofcommandlineparameters
+msgid "Write config instead of command line parameters"
+msgstr "Записывать файл настройки вместо параметров командной строки"
 
 #: lazarusidestrconsts.liswriteerror
 msgid "Write Error"

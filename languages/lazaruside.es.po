@@ -20258,6 +20258,10 @@ msgstr "Directorio de trabajo para construcción"
 msgid "Working directory for run"
 msgstr "Directorio de trabajo para ejecución"
 
+#: lazarusidestrconsts.liswriteconfiginsteadofcommandlineparameters
+msgid "Write config instead of command line parameters"
+msgstr ""
+
 #: lazarusidestrconsts.liswriteerror
 msgid "Write Error"
 msgstr "Error de escritura"

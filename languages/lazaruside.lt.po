@@ -20253,6 +20253,10 @@ msgstr "Darbinis aplankas darant"
 msgid "Working directory for run"
 msgstr "Darbinis aplankas startuojant"
 
+#: lazarusidestrconsts.liswriteconfiginsteadofcommandlineparameters
+msgid "Write config instead of command line parameters"
+msgstr ""
+
 #: lazarusidestrconsts.liswriteerror
 msgid "Write Error"
 msgstr "Rašymo klaida"

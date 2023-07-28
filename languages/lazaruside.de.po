@@ -20103,6 +20103,10 @@ msgstr "Arbeitsverzeichnis für das Kompilieren"
 msgid "Working directory for run"
 msgstr "Arbeitsverzeichnis für den Start"
 
+#: lazarusidestrconsts.liswriteconfiginsteadofcommandlineparameters
+msgid "Write config instead of command line parameters"
+msgstr ""
+
 #: lazarusidestrconsts.liswriteerror
 msgid "Write Error"
 msgstr "Schreibfehler"

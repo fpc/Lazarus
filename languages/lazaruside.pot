@@ -19807,6 +19807,10 @@ msgstr ""
 msgid "Working directory for run"
 msgstr ""
 
+#: lazarusidestrconsts.liswriteconfiginsteadofcommandlineparameters
+msgid "Write config instead of command line parameters"
+msgstr ""
+
 #: lazarusidestrconsts.liswriteerror
 msgid "Write Error"
 msgstr ""

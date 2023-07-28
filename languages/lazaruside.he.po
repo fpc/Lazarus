@@ -21030,6 +21030,10 @@ msgstr "תיקיית עבודה לבנייה"
 msgid "Working directory for run"
 msgstr "תיקיית עבודה לריצה"
 
+#: lazarusidestrconsts.liswriteconfiginsteadofcommandlineparameters
+msgid "Write config instead of command line parameters"
+msgstr ""
+
 #: lazarusidestrconsts.liswriteerror
 msgid "Write Error"
 msgstr "שגיאת כתיבה"

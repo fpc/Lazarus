@@ -20676,6 +20676,10 @@ msgstr "Direktori kerja untuk membangun"
 msgid "Working directory for run"
 msgstr "Direktori kerja untuk menjalankan"
 
+#: lazarusidestrconsts.liswriteconfiginsteadofcommandlineparameters
+msgid "Write config instead of command line parameters"
+msgstr ""
+
 #: lazarusidestrconsts.liswriteerror
 msgid "Write Error"
 msgstr "Penulisan Salah"

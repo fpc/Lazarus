@@ -20213,6 +20213,10 @@ msgstr "構築の際の作業ディレクトリ"
 msgid "Working directory for run"
 msgstr "実行の際の作業ディレクトリ"
 
+#: lazarusidestrconsts.liswriteconfiginsteadofcommandlineparameters
+msgid "Write config instead of command line parameters"
+msgstr ""
+
 #: lazarusidestrconsts.liswriteerror
 msgid "Write Error"
 msgstr "書き込みエラー"

@@ -19974,6 +19974,10 @@ msgstr "Répertoire de construction"
 msgid "Working directory for run"
 msgstr "Répertoire d'exécution"
 
+#: lazarusidestrconsts.liswriteconfiginsteadofcommandlineparameters
+msgid "Write config instead of command line parameters"
+msgstr ""
+
 #: lazarusidestrconsts.liswriteerror
 msgid "Write Error"
 msgstr "Erreur d'écriture"

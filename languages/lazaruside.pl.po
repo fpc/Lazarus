@@ -20186,6 +20186,10 @@ msgstr "Katalog roboczy do budowania"
 msgid "Working directory for run"
 msgstr "Katalog roboczy do uruchamiania"
 
+#: lazarusidestrconsts.liswriteconfiginsteadofcommandlineparameters
+msgid "Write config instead of command line parameters"
+msgstr ""
+
 #: lazarusidestrconsts.liswriteerror
 msgid "Write Error"
 msgstr "Błąd zapisu"
