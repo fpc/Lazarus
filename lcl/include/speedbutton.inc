@@ -720,11 +720,11 @@ begin
         OffsetGlyph.X:= M;
         OffsetGlyph.Y:= (ClientSize.cy - GlyphHeight) div 2;
         if (Margin >= 0) and (Spacing >= 0) then
-          OffsetCap.X := OffsetGlyph.X + GlyphWidth + Spacing
+          OffsetCap.X := OffsetGlyph.X + GlyphWidth + S
         else
         begin
           if Spacing >= 0 then
-            OffsetCap.X := OffsetGlyph.X + GlyphWidth + Spacing
+            OffsetCap.X := OffsetGlyph.X + GlyphWidth + S
           else
             OffsetCap.X := (OffsetGlyph.X + ClientSize.CX - TextSize.CX) div 2;
         end;
@@ -739,7 +739,7 @@ begin
         else
         begin
           if Spacing >= 0 then
-            OffsetCap.X := OffsetGlyph.X - Spacing - TextSize.CX
+            OffsetCap.X := OffsetGlyph.X - S - TextSize.CX
           else
             OffsetCap.X := (OffsetGlyph.X - TextSize.CX) div 2;
         end;
