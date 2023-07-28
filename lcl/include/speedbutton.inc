@@ -577,7 +577,7 @@ const
   cAlignment: array[TAlignment] of Longint = (DT_LEFT, DT_RIGHT, DT_CENTER);
 var
   GlyphWidth, GlyphHeight: Integer;
-  Offset, OffsetCap: TPoint;
+  OffsetGlyph, OffsetCap: TPoint;
   ClientSize, TotalSize, TextSize, GlyphSize: TSize;
   M, S : integer;
   SIndex : Longint;
@@ -676,9 +676,9 @@ begin
   end;
 
   // Calculate caption and glyph layout
-  if M = -1 then begin
+  if M < 0 then begin
     // auto compute margin to center content
-    if S = -1 then begin
+    if S < 0 then begin
       // use the same value for Spacing and Margin
       TotalSize.cx:= TextSize.cx + GlyphWidth;
       TotalSize.cy:= TextSize.cy + GlyphHeight;
@@ -698,7 +698,7 @@ begin
     end;
   end else begin
     // fixed Margin
-    if S = -1 then begin
+    if S < 0 then begin
       // use the rest for Spacing between Glyph and Caption
       TotalSize.cx:= ClientSize.cx - (Margin + GlyphWidth);
       TotalSize.cy:= ClientSize.cy - (Margin + GlyphHeight);
@@ -717,53 +717,79 @@ begin
       S := 0;
     case CurLayout of
       blGlyphLeft : begin
-        Offset.X:= M;
-        Offset.Y:= (ClientSize.cy - GlyphHeight) div 2;
-        OffsetCap.X:= Offset.X + GlyphWidth + S;
+        OffsetGlyph.X:= M;
+        OffsetGlyph.Y:= (ClientSize.cy - GlyphHeight) div 2;
+        if (Margin >= 0) and (Spacing >= 0) then
+          OffsetCap.X := OffsetGlyph.X + GlyphWidth + Spacing
+        else
+        begin
+          if Spacing >= 0 then
+            OffsetCap.X := OffsetGlyph.X + GlyphWidth + Spacing
+          else
+            OffsetCap.X := (OffsetGlyph.X + ClientSize.CX - TextSize.CX) div 2;
+        end;
         OffsetCap.Y:= (ClientSize.cy - TextSize.cy) div 2;
       end;
+
       blGlyphRight : begin
-        Offset.X:= ClientSize.cx - M - GlyphWidth;
-        Offset.Y:= (ClientSize.cy - GlyphHeight) div 2;
-        OffsetCap.X:= M; 
+        OffsetGlyph.X:= ClientSize.cx - M - GlyphWidth;
+        OffsetGlyph.Y:= (ClientSize.cy - GlyphHeight) div 2;
+        if (Margin >= 0) and (Spacing >= 0) then
+          OffsetCap.X := Margin
+        else
+        begin
+          if Spacing >= 0 then
+            OffsetCap.X := OffsetGlyph.X - Spacing - TextSize.CX
+          else
+            OffsetCap.X := (OffsetGlyph.X - TextSize.CX) div 2;
+        end;
         OffsetCap.Y:= (ClientSize.cy - TextSize.cy) div 2;
       end;
+
       blGlyphTop : begin
-        Offset.X:= (ClientSize.cx - GlyphWidth) div 2;
-        Offset.Y:= M;
-        OffsetCap.X:= M; 
-        OffsetCap.Y:= Offset.Y + GlyphHeight + S;
+        OffsetGlyph.X:= (ClientSize.cx - GlyphWidth) div 2;
+        OffsetGlyph.Y:= M;
+        if Margin >= 0 then
+          OffsetCap.X := 0
+        else
+          OffsetCap.X := (ClientSize.CX - TextSize.CX) div 2;
+        OffsetCap.Y:= OffsetGlyph.Y + GlyphHeight + S;
       end;
+
       blGlyphBottom : begin
-        Offset.X:= (ClientSize.cx - GlyphWidth) div 2;
-        Offset.Y:= ClientSize.cy - M - GlyphHeight;
-        OffsetCap.X:= M; 
-        OffsetCap.Y:= Offset.Y - S - TextSize.cy;
+        OffsetGlyph.X:= (ClientSize.cx - GlyphWidth) div 2;
+        OffsetGlyph.Y:= ClientSize.cy - M - GlyphHeight;
+        if Margin >= 0 then
+          OffsetCap.X := 0
+        else
+          OffsetCap.X := (ClientSize.CX - TextSize.CX) div 2;
+        OffsetCap.Y:= OffsetGlyph.Y - S - TextSize.cy;
       end;
     end;
 
-    DrawGlyph(Canvas, PaintRect, Offset, FState, Transparent, 0);
+    DrawGlyph(Canvas, PaintRect, OffsetGlyph, FState, Transparent, 0);
 
     if FShowCaption and (Caption <> '') then
     begin
-      with PaintRect do
-      begin
-        Left := Left + OffsetCap.X;
-        Top := Top + OffsetCap.Y;
-        case CurLayout of
-          blGlyphLeft: 
-            Right := Left + TextSize.CX; 
-          blGlyphRight: 
-            begin
-              Right := ClientSize.cx - M - GlyphWidth - S;
-              Left := Right - TextSize.CX;
-            end;
-          blGlyphTop, blGlyphBottom:
-            Right := ClientSize.cx - M;
-        end;
+      TextRect.Left := PaintRect.Left + OffsetCap.X;
+      TextRect.Top := PaintRect.Top + OffsetCap.Y;
+      TextRect.Right := TextRect.Left + TextSize.CX;
+      TextRect.Bottom := TextRect.Top + TextSize.CY;
+
+      case CurLayout of
+        blGlyphLeft:
+          if (Margin >= 0) and (Spacing >= 0) then
+            TextRect.Right := PaintRect.Right - Margin;
+        blGlyphRight:
+          if (Margin >= 0) and (Spacing >= 0) then
+            TextRect.Right := PaintRect.Left + OffsetGlyph.X - Spacing;
+        blGlyphTop,
+        blGlyphBottom:
+          if Margin >= 0 then
+            TextRect.Right := PaintRect.Right;
       end;
 
-      TextFlags := DT_TOP or cAlignment[BidiFlipAlignment(FAlignment, UseRightToLeftAlignment)]; 
+      TextFlags := DT_TOP or cAlignment[BidiFlipAlignment(FAlignment, UseRightToLeftAlignment)];
       if UseRightToLeftReading then
         TextFlags := TextFlags or DT_RTLREADING;
 
@@ -774,11 +800,11 @@ begin
         and ((SysFont.Name=Font.Name) or IsFontNameDefault(Font.Name))
         and (SysFont.Pitch=Font.Pitch)
         and (SysFont.Style=Font.Style) then
-          ThemeServices.DrawText(Canvas, DrawDetails, Caption, PaintRect, TextFlags, 0)
+          ThemeServices.DrawText(Canvas, DrawDetails, Caption, TextRect, TextFlags, 0)
         else
         begin
           Canvas.Brush.Style := bsClear;
-          DrawText(Canvas.Handle, PChar(Caption), Length(Caption), PaintRect, TextFlags);
+          DrawText(Canvas.Handle, PChar(Caption), Length(Caption), TextRect, TextFlags);
         end;
       end;
     end;
