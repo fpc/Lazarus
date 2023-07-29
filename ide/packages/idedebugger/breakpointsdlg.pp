@@ -43,7 +43,8 @@ uses
   {$ifdef Windows} ActiveX, {$else} laz.FakeActiveX, {$endif}
   DbgIntfDebuggerBase, DbgIntfMiscClasses, BaseDebugManager,
   IdeDebuggerStringConstants, DebuggerTreeView, breakpointgroupframe,
-  IdeDebuggerOpts, IdeIntfStrConsts, SrcEditorIntf, laz.VirtualTrees;
+  IdeDebuggerOpts, IdeIntfStrConsts, SrcEditorIntf, laz.VirtualTrees,
+  LazDebuggerIntf;
 
 type
   TBreakPointsDlgState = (
@@ -850,11 +851,9 @@ begin
       mtConfirmation,[mbYes,mbCancel],0)<>mrYes
     then exit;
 
-    VNode := tvBreakPoints.GetFirstNoInit;
-    while VNode <> nil do
+    for VNode in tvBreakPoints.NoInitItemNodes do
     begin
       CurBreakPoint:=TIDEBreakPoint(tvBreakPoints.NodeItem[VNode]);
-      VNode := tvBreakPoints.GetNextNoInit(VNode);
       if CompareFilenames(CurBreakPoint.Source,Filename)=0
       then ReleaseRefAndNil(CurBreakPoint);
     end;
@@ -923,11 +922,9 @@ begin
       mtConfirmation,[mbYes,mbCancel],0)<>mrYes
     then exit;
 
-    VNode := tvBreakPoints.GetFirstNoInit;
-    while VNode <> nil do
+    for VNode in tvBreakPoints.NoInitItemNodes do
     begin
       CurBreakPoint:=TIDEBreakPoint(tvBreakPoints.NodeItem[VNode]);
-      VNode := tvBreakPoints.GetNextNoInit(VNode);
       CurBreakPoint.ReleaseReference;
     end;
   finally
@@ -1588,11 +1585,9 @@ begin
     else begin
       tvBreakPoints.BeginUpdate;
       try
-        VNode := tvBreakPoints.GetFirstSelected;
-        while VNode <> nil do
+        for VNode in tvBreakPoints.SelectedItemNodes do
         begin
           CurBreakPoint:=TIDEBreakPoint(tvBreakPoints.NodeItem[VNode]);
-          VNode := tvBreakPoints.GetNextSelected(VNode);
           CurBreakPoint.ReleaseReference;
         end;
       finally
