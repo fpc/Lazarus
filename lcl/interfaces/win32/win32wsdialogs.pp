@@ -1851,8 +1851,6 @@ begin
     PrepareTaskDialogConfig;//(TTaskDialog(ADlg), AParentWnd, Config, ButtonCaptions, Buttons);
     Res := TaskDialogIndirect(@Config, @Result, @ARadioRes, @VerifyChecked);
 
-    //for now let it fail, it's not functional yet.
-    //Result := -1;
     if (Res = S_OK) then
     begin
       if VerifyChecked then
