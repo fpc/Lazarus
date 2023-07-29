@@ -1765,15 +1765,12 @@ var
     else
       DefBtn := TD_BTNMOD[ADlg.DefaultButton];
 
-
     if (ADlg.CommonButtons = []) and (ADlg.Buttons.Count = 0) then
     begin
       CommonButtons := [tcbOk];
       if (DefBtn = 0) then
         DefBtn := mrOK;
     end;
-
-    //writeln('PrepareTaskDialogConfig A');
 
     Config := Default(TTaskDialogConfig);
     Config.cbSize := SizeOf(TTaskDialogConfig);
@@ -1788,64 +1785,38 @@ var
     Config.pszFooter := PWideChar(Footer);
     Config.nDefaultButton := DefBtn;
 
-    //writeln('PrepareTaskDialogConfig B');
-
-
     RUCount := 0;
     List := TStringList.Create;
     try
       for B in ADlg.Buttons do
         List.Add(B.Caption);
       AddTaskDiakogButton(List,Config.cButtons,TaskDialogFirstButtonIndex);
-      //writeln('PrepareTaskDialogConfig C');
 
       List.Clear;
       for B in ADlg.RadioButtons do
         List.Add(B.Caption);
       AddTaskDiakogButton(List,Config.cRadioButtons,TaskDialogFirstRadioButtonIndex);
-
-    //writeln('PrepareTaskDialogConfig D');
-
     finally
       List.Free;
     end;
 
-    //writeln('PrepareTaskDialogConfig E');
-
     if (Config.cButtons > 0) then
       Config.pButtons := @Buttons[0];
-    //writeln('PrepareTaskDialogConfig F: Config.cButtons=',Config.cButtons,', Config.pButtons=',PtrInt(Config.pButtons));
-
     if (Config.cRadioButtons > 0) then
-      Config.pRadioButtons := @Buttons[Config.cButtons {Config.cRadioButtons}];
-
-    //writeln('PrepareTaskDialogConfig G',', Config.pRadioButtons=',PtrInt(Config.pRadioButtons));
-
+      Config.pRadioButtons := @Buttons[Config.cButtons];
     Config.dwCommonButtons := TaskDialogCommonButtonsToInteger(ADlg.CommonButtons);
 
-    //writeln('PrepareTaskDialogConfig H');
-
-
     Flags := ADlg.Flags;
-    //writeln('PrepareTaskDialogConfig I');
     if (VerificationText <> '') and (tfVerificationFlagChecked in ADlg.Flags) then
       Include(Flags,tfVerificationFlagChecked)
     else
       Exclude(Flags,tfVerificationFlagChecked);
-    //writeln('PrepareTaskDialogConfig J');
     if (Config.cButtons=0) and (CommonButtons=[tcbOk]) then
       Include(Flags,tfAllowDialogCancellation); // just OK -> Esc/Alt+F4 close
-    //writeln('PrepareTaskDialogConfig K');
-
-
     Config.dwFlags := TaskDialogFlagsToInteger(Flags);
-    //writeln('PrepareTaskDialogConfig L');
-
 
     Config.hMainIcon := TD_ICONS[TF_DIALOGICON(ADlg.MainIcon)];
-    //writeln('PrepareTaskDialogConfig M');
     Config.hFooterIcon := TD_FOOTERICONS[TF_FOOTERICON(ADlg.FooterIcon)];
-    //writeln('PrepareTaskDialogConfig N');
 
     {
       Although the offcial MS docs (https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-taskdialogconfig)
@@ -1855,15 +1826,13 @@ var
     }
     if not (tfNoDefaultRadioButton in ADlg.Flags) then
       Config.nDefaultRadioButton := DefRB + TaskDialogFirstRadioButtonIndex;
-    //writeln('PrepareTaskDialogConfig O');
 
-    Config.cxWidth := MulDiv(ADlg.Width, 4, DialogBaseUnits);  // cxWidth needed in "dialog units"
-    //writeln('PrepareTaskDialogConfig P');
-
+    if not (tfSizeToContent in ADlg.Flags) then
+      Config.cxWidth := MulDiv(ADlg.Width, 4, DialogBaseUnits)  // cxWidth needed in "dialog units"
+    else
+      Config.cxWidth := 0; // see: https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-taskdialogconfig
     Config.pfCallback := @TaskDialogCallbackProc;
-    //writeln('PrepareTaskDialogConfig Q');
     Config.lpCallbackData := LONG_PTR(ADlg);
-    //writeln('PrepareTaskDialogConfig R');
   end;
 
 
