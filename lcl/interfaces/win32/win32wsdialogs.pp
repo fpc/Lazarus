@@ -160,7 +160,7 @@ type
   { TWin32WSTaskDialog }
 
   TWin32WSTaskDialog = class(TWSTaskDialog)
-  public
+  published
     class function Execute(const ADlg: TCustomTaskDialog; AParentWnd: HWND; out ARadioRes: Integer): Integer; override;
   end;
 
