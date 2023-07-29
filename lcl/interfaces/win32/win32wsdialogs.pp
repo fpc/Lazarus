@@ -1720,7 +1720,7 @@ var
           SetLength(ButtonCaptions,RUCount+16);
           SetLength(Buttons,RUCount+16);
         end;
-        ButtonCaptions[RUCount] := Utf8ToUtf16(List[i]);//GetNextStringLineToWS(P);
+        ButtonCaptions[RUCount] := Utf8ToUtf16(StringReplace(List[i],'\n',#10,[rfReplaceAll]));
         Buttons[RUCount].nButtonID := n+firstID;
         Buttons[RUCount].pszButtonText := PWideChar(ButtonCaptions[RUCount]);
         inc(n);
