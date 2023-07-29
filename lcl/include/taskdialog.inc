@@ -181,8 +181,18 @@ begin
 end;
 
 function TCustomTaskDialog.Execute: Boolean;
+var
+  AParentWnd: HWND;
 begin
-  Result := Execute(0);
+  //See: https://docwiki.embarcadero.com/Libraries/Alexandria/en/Vcl.Dialogs.TCustomTaskDialog.Execute
+  //If no handle is supplied, then the handle of the active form should be used.
+  //For that Delphi uses Application.ActiveFormHandle (the docs say so).
+  //Currently TApplication does not have a ActiveFormHandle property, so we use our own code for that.
+  if Assigned(Screen.ActiveCustomForm) then
+    AParentWnd := Screen.ActiveCustomForm.Handle
+  else
+    AParentWnd := 0;
+  Result := Execute(AParentWnd);
 end;
 
 procedure TCustomTaskDialog.SetButtons(const Value: TTaskDialogButtons);
