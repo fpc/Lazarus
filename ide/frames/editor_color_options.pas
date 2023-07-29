@@ -38,6 +38,7 @@ uses
   SynColorAttribEditor,
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, IDEUtils,
+  EditorSyntaxHighlighterDef,
   // IdeConfig
   IDEProcs, LazConf,
   // IDE
@@ -165,7 +166,7 @@ type
     function  GetColorSchemeForLang(const LanguageName: String): String;
     procedure SetColorSchemeForLang(const LanguageName, ColorScheme: String);
 
-    procedure SetCurrentScheme(SynClass: TCustomSynClass; const ColorScheme: String);
+    procedure SetCurrentScheme(SynInstance: TSrcIDEHighlighter; const ColorScheme: String);
     procedure ApplyCurrentScheme;
     procedure UpdateCurrentScheme;
 
@@ -1221,7 +1222,7 @@ begin
   then
     DefaultColorScheme := DefaultSchemeGrp.DefaultColors
   else
-    DefaultColorScheme := DefaultSchemeGrp.ColorScheme[FCurrentColorScheme.Language];
+    DefaultColorScheme := DefaultSchemeGrp.ColorSchemeBySynHl[FCurrentColorScheme.SharedHighlighter];
 
   if OnlySelected then begin
     DefAttri := DefaultColorScheme.Attribute[FCurHighlightElement.StoredName];
@@ -1274,8 +1275,8 @@ begin
   FColorSchemes.Values[LanguageName] := ColorScheme;
 end;
 
-procedure TEditorColorOptionsFrame.SetCurrentScheme(SynClass: TCustomSynClass;
-  const ColorScheme: String);
+procedure TEditorColorOptionsFrame.SetCurrentScheme(
+  SynInstance: TSrcIDEHighlighter; const ColorScheme: String);
 var
   SchemeGrp: TColorScheme;
   NewColorScheme: TColorSchemeLanguage;
@@ -1288,13 +1289,14 @@ begin
   if FIsEditingDefaults then
     NewColorScheme := SchemeGrp.DefaultColors
   else
-    NewColorScheme := SchemeGrp.ColorSchemeBySynClass[SynClass];
+    NewColorScheme := SchemeGrp.ColorSchemeBySynHl[SynInstance];
   if (NewColorScheme = FCurrentColorScheme) then
     exit;
 
   FCurrentColorScheme := NewColorScheme;
   if not FIsEditingDefaults then begin
-    FCurrentHighlighter := FCurrentColorScheme.Highlighter;
+    FCurrentHighlighter.Free;
+    FCurrentHighlighter := EditorOpts.HighlighterList.GetNewSynInstance(FCurrentColorScheme.IdeHighlighterID);
     SynColorAttrEditor1.CurrentColorScheme := FCurrentColorScheme;
     FillPriorEditor;
   end;
@@ -1389,7 +1391,7 @@ begin
     if not FIsEditingDefaults then
     begin
       FIsEditingDefaults := True;
-      SetCurrentScheme(TCustomSynClass(FCurrentHighlighter.ClassType), ColorSchemeButton.Caption);
+      SetCurrentScheme(FCurrentHighlighter, ColorSchemeButton.Caption);
     end;
     LanguageButton.Caption := (Sender as TMenuItem).Caption;
   end
@@ -1403,9 +1405,9 @@ begin
       if NewVal >= 0 then
       begin
         CurLanguageID := NewVal;
-        SetCurrentScheme(EditorOpts.HighlighterList[CurLanguageID].SynClass,
+        SetCurrentScheme(EditorOpts.HighlighterList[CurLanguageID].SynInstance,
                         GetColorSchemeForLang(EditorOpts.HighlighterList
-                                     [CurLanguageID].SynClass.GetLanguageName));
+                                     [CurLanguageID].SynInstance.LanguageName));
         SetColorSchemeItem(GetColorSchemeForLang(FCurrentHighlighter.LanguageName));
         SetComboBoxText(FileExtensionsComboBox,
           GetCurFileExtensions(FCurrentHighlighter.LanguageName),cstFilename);
@@ -1425,7 +1427,7 @@ begin
     // change the colorscheme
     if not FIsEditingDefaults then
       SetColorSchemeForLang(FCurrentHighlighter.LanguageName, Scheme);
-    SetCurrentScheme(TCustomSynClass(FCurrentHighlighter.ClassType), Scheme);
+    SetCurrentScheme(FCurrentHighlighter, Scheme);
   end;
   ColorSchemeButton.Caption := Scheme;
 end;
@@ -1468,6 +1470,7 @@ begin
   FreeAndNil(FTempColorSchemeSettings);
   FFileExtensions.Free;
   FColorSchemes.Free;
+  FCurrentHighlighter.Free;
   inherited Destroy;
 end;
 
@@ -1568,9 +1571,10 @@ begin
     Item.AutoCheck := True;
     Item.GroupIndex := 1;
     LanguageMenu.Items.Add(Item);
-    for i := 0 to EditorOpts.HighlighterList.Count - 1 do
+    for i := IdeHighlighterStartId to EditorOpts.HighlighterList.Count - 1 do
     begin
-      Item := NewItem(HighlighterList[i].SynClass.GetLanguageName, 0, False, True, @LanguageMenuItemClick, 0, '');
+      if HighlighterList[i].TheType = lshDelphi then continue; // configured via FreePascal
+      Item := NewItem(HighlighterList[i].SynInstance.LanguageName, 0, False, True, @LanguageMenuItemClick, 0, '');
       Item.RadioItem := True;
       Item.AutoCheck := True;
       Item.GroupIndex := 1;
@@ -1582,8 +1586,8 @@ begin
         SetComboBoxText(FileExtensionsComboBox,
           HighlighterList[CurLanguageID].FileExtensions,cstFilename);
 
-    SetCurrentScheme(TPreviewPasSyn, GetColorSchemeForLang(TPreviewPasSyn.GetLanguageName));
-    CurLanguageID := HighlighterList.FindByClass(TCustomSynClass(FCurrentHighlighter.ClassType));
+    CurLanguageID := HighlighterList.FindByName(TPreviewPasSyn.GetLanguageName);
+    SetCurrentScheme(HighlighterList[CurLanguageID].SynInstance, GetColorSchemeForLang(TPreviewPasSyn.GetLanguageName));
     SetLanguageItem(FCurrentHighlighter.LanguageName);
     SetColorSchemeItem(GetColorSchemeForLang(FCurrentHighlighter.LanguageName));
 
@@ -1597,6 +1601,10 @@ procedure TEditorColorOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
   i, j: Integer;
 begin
+  with GeneralPage do
+    for i := Low(PreviewEdits) to High(PreviewEdits) do
+      PreviewEdits[i].Highlighter := nil;
+
   with AOptions as TEditorOptions do
   begin
     UseSyntaxHighlight := UseSyntaxHighlightCheckBox.Down;

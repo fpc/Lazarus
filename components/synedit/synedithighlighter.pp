@@ -352,6 +352,7 @@ type
     fDefaultFilter: string;
     fUpdateChange: boolean;                                                     //mh 2001-09-13
     FIsInNextToEOL: Boolean;
+    function GetInstanceLanguageName: string; virtual;
     procedure AddAttribute(AAttrib: TSynHighlighterAttributes);
     procedure FreeHighlighterAttributes;                                        //mh 2001-09-13
     function GetAttribCount: integer; virtual;
@@ -383,6 +384,7 @@ type
     property IsScanning: Boolean read FIsScanning;
     property KnownRanges[Index: Integer]: TSynHighlighterRangeList read GetKnownRanges;
     property KnownLines: TSynEditLinesList read FKnownLines;
+    property CurrentLineText: string read FLineText;
   public
     procedure DefHighlightChange(Sender: TObject);
     property  AttributeChangeNeedScan: Boolean read FAttributeChangeNeedScan;
@@ -447,7 +449,7 @@ type
     procedure UnhookAttrChangeEvent(ANotifyEvent: TNotifyEvent);
     property IdentChars: TSynIdentChars read GetIdentChars;
     property WordBreakChars: TSynIdentChars read fWordBreakChars write SetWordBreakChars;
-    property LanguageName: string read GetLanguageName;
+    property LanguageName: string read GetInstanceLanguageName;
   public
     property AttrCount: integer read GetAttribCount;
     property Attribute[idx: integer]: TSynHighlighterAttributes read GetAttribute;
@@ -1836,6 +1838,11 @@ end;
 function TSynCustomHighlighter.GetKnownRanges(Index: Integer): TSynHighlighterRangeList;
 begin
   Result := TSynHighlighterRangeList(KnownLines[Index].Ranges[GetRangeIdentifier]);
+end;
+
+function TSynCustomHighlighter.GetInstanceLanguageName: string;
+begin
+  Result := GetLanguageName;
 end;
 
 function TSynCustomHighlighter.GetDrawDivider(Index: integer): TSynDividerDrawConfigSetting;

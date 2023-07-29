@@ -242,7 +242,7 @@ begin
   Result := FHighlighters[SynType];
   if (Result <> nil) or not(CreateIfNotExists) then exit;
 
-  SynClass := LazSyntaxHighlighterClasses[SynType];
+  SynClass := LazSyntaxHighlighterClasses{%H-}[SynType];
   Result := SynClass.Create(nil);
   FHighlighters[SynType] := Result;
   EditorOpts.ReadHighlighterDivDrawSettings(Result);
@@ -288,10 +288,11 @@ begin
   begin
     with LanguageComboBox.Items do begin
       BeginUpdate;
-      for i := 0 to EditorOpts.HighlighterList.Count - 1 do begin
+      for i := IdeHighlighterStartId to EditorOpts.HighlighterList.Count - 1 do begin
+        if HighlighterList[i].TheType = lshDelphi then continue; // configured via FreePascal
         rd := EditorOptionsDividerDefaults[HighlighterList[i].TheType];
         if (rd.Count > 0) then
-          Add(HighlighterList[i].SynClass.GetLanguageName);
+          Add(HighlighterList[i].SynInstance.LanguageName);
       end;
       EndUpdate;
     end;

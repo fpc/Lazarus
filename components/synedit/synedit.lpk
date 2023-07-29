@@ -415,6 +415,10 @@ If you wish to allow use of your version of these files only under the terms of 
         <Filename Value="synedit.inc"/>
         <Type Value="Include"/>
       </Item>
+      <Item>
+        <Filename Value="syntextmatesyn.pas"/>
+        <UnitName Value="SynTextMateSyn"/>
+      </Item>
     </Files>
     <LazDoc Paths="docs\xml"/>
     <i18n>
@@ -422,6 +426,9 @@ If you wish to allow use of your version of these files only under the terms of 
       <OutDir Value="languages"/>
     </i18n>
     <RequiredPkgs>
+      <Item>
+        <PackageName Value="LazEdit"/>
+      </Item>
       <Item>
         <PackageName Value="fcl-registry"/>
         <DependencyType Value="FPMake"/>

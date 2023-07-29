@@ -1753,24 +1753,26 @@ end;
 procedure TMainIDEBase.UpdateHighlighters(Immediately: boolean);
 var
   ASrcEdit: TSourceEditor;
-  h: TLazSyntaxHighlighter;
   i: Integer;
   AnEditorInfo: TUnitEditorInfo;
+  h: TSrcIDEHighlighter;
 begin
   if Immediately then begin
     Exclude(FIdleIdeActions, iiaUpdateHighlighters);
-    for h := Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do
-      if Highlighters[h]<>nil then begin
-        Highlighters[h].BeginUpdate;
-        EditorOpts.GetHighlighterSettings(Highlighters[h]);
-        Highlighters[h].EndUpdate;
+    for i := IdeHighlighterStartId to EditorOpts.HighlighterList.Count - 1 do begin
+      h := EditorOpts.HighlighterList.SharedSynInstances[i];
+      if h<>nil then begin
+        h.BeginUpdate;
+        EditorOpts.GetHighlighterSettings(h);
+        h.EndUpdate;
       end;
+    end;
     if Project1<>nil then begin
       for i := 0 to SourceEditorManager.SourceEditorCount - 1 do begin
         ASrcEdit := SourceEditorManager.SourceEditors[i];
         AnEditorInfo:=Project1.EditorInfoWithEditorComponent(ASrcEdit);
         if AnEditorInfo <> nil then
-          ASrcEdit.SyntaxHighlighterType := AnEditorInfo.SyntaxHighlighter;
+          ASrcEdit.SyntaxHighlighterId := AnEditorInfo.SyntaxHighlighter;
       end;
     end;
   end

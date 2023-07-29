@@ -415,7 +415,7 @@ begin
       Scheme := col.UnsavedColorSchemeSettings.ColorSchemeGroup[SynColorSchemeName];
     LangScheme := nil;
     if Scheme <> nil then
-      LangScheme := Scheme.ColorSchemeBySynClass[FCurHighlighter.ClassType];
+      LangScheme := Scheme.ColorSchemeBySynHl[FCurHighlighter];
 
 
     if (LangScheme <> nil) then
@@ -487,10 +487,11 @@ begin
 
   with LanguageComboBox.Items do begin
     BeginUpdate;
-    for i := 0 to EditorOpts.HighlighterList.Count - 1 do begin
+    for i := IdeHighlighterStartId to EditorOpts.HighlighterList.Count - 1 do begin
+      if HighlighterList[i].TheType = lshDelphi then continue; // configured via FreePascal
       rf := EditorOptionsFoldDefaults[EditorOpts.HighlighterList[i].TheType];
       if (rf.Count > 0) and (rf.HasMarkup) then
-        Add(EditorOpts.HighlighterList[i].SynClass.GetLanguageName);
+        Add(EditorOpts.HighlighterList[i].SynInstance.LanguageName);
     end;
     EndUpdate;
   end;

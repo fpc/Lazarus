@@ -579,7 +579,7 @@ begin
 
   // get syntax highlighter type
   if (uifInternalFile in AnUnitInfo.Flags) then
-    AnUnitInfo.UpdateDefaultHighlighter(lshFreePascal)
+    AnUnitInfo.UpdateDefaultHighlighter(IdeSyntaxHighlighters.GetIdForLazSyntaxHighlighter(lshFreePascal))
   else
     AnUnitInfo.UpdateDefaultHighlighter(FilenameToLazSyntaxHighlighter(AFilename));
 
@@ -631,7 +631,7 @@ begin
 
     // restore source editor settings
     DebugBossMgr.DoRestoreDebuggerMarks(AnUnitInfo);
-    NewSrcEdit.SyntaxHighlighterType := AnEditorInfo.SyntaxHighlighter;
+    NewSrcEdit.SyntaxHighlighterId := AnEditorInfo.SyntaxHighlighter;
     NewSrcEdit.EditorComponent.AfterLoadFromFile;
     try
       NewSrcEdit.EditorComponent.FoldState := FoldState;
@@ -883,7 +883,7 @@ begin
       if MacroListViewer.MacroByFullName(FFileName) <> nil then
         NewBuf.Source := MacroListViewer.MacroByFullName(FFileName).GetAsSource;
       FNewUnitInfo:=TUnitInfo.Create(NewBuf);
-      FNewUnitInfo.DefaultSyntaxHighlighter := lshFreePascal;
+      FNewUnitInfo.DefaultSyntaxHighlighter := IdeSyntaxHighlighters.GetIdForLazSyntaxHighlighter(lshFreePascal);
       Project1.AddFile(FNewUnitInfo,false);
     end
     else begin
@@ -2250,7 +2250,7 @@ begin
       NewUnitInfo.Source, True, AShareEditor);
     MainIDEBar.itmFileClose.Enabled:=True;
     MainIDEBar.itmFileCloseAll.Enabled:=True;
-    NewSrcEdit.SyntaxHighlighterType:=NewUnitInfo.EditorInfo[0].SyntaxHighlighter;
+    NewSrcEdit.SyntaxHighlighterId:=NewUnitInfo.EditorInfo[0].SyntaxHighlighter;
     NewUnitInfo.GetClosedOrNewEditorInfo.EditorComponent := NewSrcEdit;
     NewSrcEdit.EditorComponent.CaretXY := Point(1,1);
 
@@ -4706,11 +4706,11 @@ begin
   // try to keep the old filename and extension
   SaveAsFileExt:=ExtractFileExt(AFileName);
   if (SaveAsFileExt='') and (SrcEdit<>nil) then begin
-    if (SrcEdit.SyntaxHighlighterType in [lshFreePascal, lshDelphi]) then
+    if (IdeSyntaxHighlighters.GetLazSyntaxHighlighterType(SrcEdit.SyntaxHighlighterId) {%H-}in [lshFreePascal, lshDelphi]) then
       SaveAsFileExt:=PascalExtension[EnvironmentOptions.PascalFileExtension]
     else
       SaveAsFileExt:=EditorOpts.HighlighterList.GetDefaultFilextension(
-                         SrcEdit.SyntaxHighlighterType);
+                         SrcEdit.SyntaxHighlighterId);
   end;
   if FilenameIsPascalSource(AFilename) then begin
     if AnUnitInfo<>nil then
@@ -5437,7 +5437,7 @@ var
   OldFilePath, OldLRSFilePath: String;
   OldSourceCode, OldUnitPath: String;
   AmbiguousFilename, OutDir, S: string;
-  NewHighlighter: TLazSyntaxHighlighter;
+  NewHighlighter: TIdeSyntaxHighlighterID;
   AmbiguousFiles: TStringList;
   i: Integer;
   DirRelation: TSPFileMaskRelation;
@@ -5626,7 +5626,7 @@ begin
       if (AnUnitInfo.EditorInfo[i].EditorComponent <> nil) and
          (not AnUnitInfo.EditorInfo[i].CustomHighlighter)
       then
-        TSourceEditor(AnUnitInfo.EditorInfo[i].EditorComponent).SyntaxHighlighterType :=
+        TSourceEditor(AnUnitInfo.EditorInfo[i].EditorComponent).SyntaxHighlighterId :=
           AnUnitInfo.EditorInfo[i].SyntaxHighlighter;
 
     // save file

@@ -262,7 +262,7 @@ type
 
     FPopUpMenu: TPopupMenu;
     FMouseActionPopUpMenu: TPopupMenu;
-    FSyntaxHighlighterType: TLazSyntaxHighlighter;
+    FSyntaxHighlighterId: TIdeSyntaxHighlighterID;
     FErrorLine: integer;
     FErrorColumn: integer;
     FLineInfoNotification: TIDELineInfoNotification;
@@ -354,7 +354,7 @@ type
     function RefreshEditorSettings: Boolean;
     function GetModified: Boolean; override;
     procedure SetModified(const NewValue: Boolean); override;
-    procedure SetSyntaxHighlighterType(AHighlighterType: TLazSyntaxHighlighter);
+    procedure SetSyntaxHighlighterId(AHighlighterId: TIdeSyntaxHighlighterID);
     procedure SetErrorLine(NewLine: integer);
     procedure SetExecutionLine(NewLine: integer);
     procedure StartIdentCompletionBox(JumpToError, CanAutoComplete: boolean);
@@ -562,8 +562,8 @@ type
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
     property Source: TStrings read GetSource write SetSource;
     property SourceNotebook: TSourceNotebook read FSourceNoteBook;
-    property SyntaxHighlighterType: TLazSyntaxHighlighter
-       read fSyntaxHighlighterType write SetSyntaxHighlighterType;
+    property SyntaxHighlighterId: TIdeSyntaxHighlighterID
+       read fSyntaxHighlighterId write SetSyntaxHighlighterId;
     property SyncroLockCount: Integer read FSyncroLockCount;
     function SharedEditorCount: Integer;
     property SharedEditors[Index: Integer]: TSourceEditor read GetSharedEditors;
@@ -1493,7 +1493,6 @@ function CompareSrcEditIntfWithFilename(SrcEdit1, SrcEdit2: Pointer): integer;
 function CompareFilenameWithSrcEditIntf(FilenameStr, SrcEdit: Pointer): integer;
 
 var
-  Highlighters: array[TLazSyntaxHighlighter] of TSynCustomHighlighter;
   EnglishGPLNotice: string;
   EnglishLGPLNotice: string;
   EnglishModifiedLGPLNotice: string;
@@ -3583,7 +3582,7 @@ Begin
   else
     FSourceNoteBook:=nil;
 
-  FSyntaxHighlighterType:=lshNone;
+  FSyntaxHighlighterId:=IdeHighlighterNoneID;
   FErrorLine:=-1;
   FErrorColumn:=-1;
   FSyncroLockCount := 0;
@@ -4639,7 +4638,7 @@ begin
     end;
     // ToDo: replace step by step to keep bookmarks and breakpoints
     IsPascal := True;
-    i:=EditorOpts.HighlighterList.FindByHighlighter(FEditor.Highlighter);
+    i:=EditorOpts.HighlighterList.FindByName(FEditor.Highlighter.LanguageName);
     if i>=0 then
       IsPascal := EditorOpts.HighlighterList[i].DefaultCommentType <> comtCPP;
     // will show modal dialog - must not be in Editor.BeginUpdate block, or painting will not work
@@ -4725,7 +4724,7 @@ begin
     comtNone: exit;
     comtDefault:
       begin
-        i:=EditorOpts.HighlighterList.FindByHighlighter(FEditor.Highlighter);
+        i:=EditorOpts.HighlighterList.FindByName(FEditor.Highlighter.LanguageName);
         if i>=0 then
           CommentType:=EditorOpts.HighlighterList[i].DefaultCommentType;
       end;
@@ -4980,19 +4979,18 @@ begin
   end;
 end;
 
-procedure TSourceEditor.SetSyntaxHighlighterType(AHighlighterType: TLazSyntaxHighlighter);
+procedure TSourceEditor.SetSyntaxHighlighterId(
+  AHighlighterId: TIdeSyntaxHighlighterID);
 var
   HlIsPas, OldHlIsPas: Boolean;
 begin
-  if (AHighlighterType=fSyntaxHighlighterType)
+  if (AHighlighterId=fSyntaxHighlighterId)
   and ((FEditor.Highlighter<>nil) = EditorOpts.UseSyntaxHighlight) then exit;
 
   OldHlIsPas := FEditor.Highlighter is TSynPasSyn;
   HlIsPas := False;
   if EditorOpts.UseSyntaxHighlight then begin
-    if Highlighters[AHighlighterType]=nil then
-      Highlighters[AHighlighterType]:=EditorOpts.CreateSyn(AHighlighterType);
-    FEditor.Highlighter:=Highlighters[AHighlighterType];
+    FEditor.Highlighter:=EditorOpts.HighlighterList.SharedSynInstances[AHighlighterId];
     HlIsPas := FEditor.Highlighter is TSynPasSyn;
   end
   else
@@ -5006,7 +5004,7 @@ begin
     EditorOpts.GetSynEditSettings(FEditor, nil);
   end;
 
-  FSyntaxHighlighterType:=AHighlighterType;
+  FSyntaxHighlighterId:=AHighlighterId;
   SourceNotebook.UpdateActiveEditColors(FEditor);
 end;
 
@@ -5061,7 +5059,7 @@ var
   SimilarEditor: TSynEdit;
 Begin
   Result:=true;
-  SetSyntaxHighlighterType(fSyntaxHighlighterType);
+  SetSyntaxHighlighterId(fSyntaxHighlighterId);
 
   // try to copy settings from an editor to the left
   SimilarEditor:=nil;
@@ -5122,7 +5120,7 @@ begin
   end;
 
   if EditorOpts.AutoBlockCompletion
-  and (SyntaxHighlighterType in [lshFreePascal,lshDelphi]) then
+  and (FEditor.Highlighter is TSynPasSyn) then
     Result:=AutoBlockCompleteChar(Char,AddChar,Category,p,Line);
 end;
 
@@ -5140,7 +5138,7 @@ var
 begin
   Result:=false;
   if (not EditorOpts.AutoBlockCompletion)
-  or (not (SyntaxHighlighterType in [lshFreePascal,lshDelphi])) then
+  or (not (FEditor.Highlighter is TSynPasSyn)) then
     exit;
   FEditor.GetWordBoundsAtRowCol(aTextPos, x1, x2);
   // use the token left of the caret
@@ -5187,7 +5185,7 @@ var
 begin
   Result:=false;
   if (not EditorOpts.AutoBlockCompletion)
-  or (not (SyntaxHighlighterType in [lshFreePascal,lshDelphi])) then
+  or (not (FEditor.Highlighter is TSynPasSyn)) then
     exit;
   p:=GetCursorTextXY;
   FEditor.GetWordBoundsAtRowCol(p, x1, x2);
@@ -5661,7 +5659,7 @@ var
   SemMode: TSemSelectionMode;
   SemAction: TSemCopyPasteAction;
 begin
-  if (SyntaxHighlighterType in [lshFreePascal, lshDelphi]) then
+  if (FEditor.Highlighter is TSynPasSyn) then
     AText:=UnicodeSpacesToASCII(AText);
 
   if Assigned(Manager) then begin
@@ -5681,7 +5679,7 @@ begin
   if AMode<>smNormal then exit;
   if SyncroLockCount > 0 then exit;
   if not CodeToolsOpts.IndentOnPaste then exit;
-  if not (SyntaxHighlighterType in [lshFreePascal, lshDelphi]) then
+  if not (FEditor.Highlighter is TSynPasSyn) then
     exit;
 
   {$IFDEF VerboseIndenter}
@@ -7082,17 +7080,14 @@ var
   IDEMenuItem: TIDEMenuItem;
   i: LongInt;
   SrcEdit: TSourceEditor;
-  h: TLazSyntaxHighlighter;
 begin
   SrcEdit:=GetActiveSE;
   if SrcEdit=nil then exit;
   if Sender is TIDEMenuItem then begin
     IDEMenuItem:=TIDEMenuItem(Sender);
     i:=IDEMenuItem.SectionIndex;
-    if (i>=ord(Low(TLazSyntaxHighlighter)))
-    and (i<=ord(High(TLazSyntaxHighlighter))) then begin
-      h:=TLazSyntaxHighlighter(i);
-      SrcEdit.SyntaxHighlighterType:=h;
+    if (i>=0) and (i<EditorOpts.HighlighterList.Count) then begin
+      SrcEdit.SyntaxHighlighterId:=i;
       SrcEdit.UpdateProjectFile([sepuChangedHighlighter]);
     end;
   end;
@@ -7519,17 +7514,15 @@ end;
 
 procedure TSourceNotebook.UpdateHighlightMenuItems(SrcEdit: TSourceEditor);
 var
-  h: TLazSyntaxHighlighter;
   i: Integer;
   CurName: String;
   CurCaption: String;
   IDEMenuItem: TIDEMenuItem;
 begin
   SrcEditSubMenuHighlighter.ChildrenAsSubMenu:=true;
-  i:=0;
-  for h:=Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do begin
+  for i := 0 to EditorOpts.HighlighterList.Count - 1 do begin
     CurName:='Highlighter'+IntToStr(i);
-    CurCaption:=GetSyntaxHighlighterCaption(h);
+    CurCaption:= EditorOpts.HighlighterList.Captions[i];
     if SrcEditSubMenuHighlighter.Count=i then begin
       // add new item
       IDEMenuItem:=RegisterIDEMenuCommand(SrcEditSubMenuHighlighter,
@@ -7541,8 +7534,7 @@ begin
     end;
     if IDEMenuItem is TIDEMenuCommand then
       TIDEMenuCommand(IDEMenuItem).Checked:=(SrcEdit<>nil)
-                                          and (SrcEdit.SyntaxHighlighterType=h);
-    inc(i);
+                                          and (SrcEdit.FSyntaxHighlighterId=i);
   end;
 end;
 
@@ -8403,7 +8395,7 @@ begin
   Include(NewEdit.FProjectFileUpdatesNeeded, sepuNewShared);
 
   NewEdit.PageName := SrcEdit.PageName;
-  NewEdit.SyntaxHighlighterType := SrcEdit.SyntaxHighlighterType;
+  NewEdit.SyntaxHighlighterId := SrcEdit.SyntaxHighlighterId;
   NewEdit.EditorComponent.TopLine := SrcEdit.EditorComponent.TopLine;
   NewEdit.EditorComponent.CaretXY := SrcEdit.EditorComponent.CaretXY;
 
@@ -9559,7 +9551,7 @@ begin
     if Result then exit;
   end;
   if (SrcEdit.SyncroLockCount > 0) then exit;
-  if not (SrcEdit.SyntaxHighlighterType in [lshFreePascal, lshDelphi]) then
+  if not (SrcEdit.FEditor.Highlighter is TSynPasSyn) then
     exit;
   if Reason<>ecLineBreak then exit;
   if not CodeToolsOpts.IndentOnLineBreak then exit;
@@ -9770,8 +9762,6 @@ end;
 //-----------------------------------------------------------------------------
 
 procedure InternalInit;
-var
-  h: TLazSyntaxHighlighter;
 begin
   // fetch the resourcestrings before they are translated
   EnglishGPLNotice:=lisGPLNotice;
@@ -9779,8 +9769,6 @@ begin
   EnglishModifiedLGPLNotice:=lisModifiedLGPLNotice;
   EnglishMITNotice:=lisMITNotice;
 
-  for h:=Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do
-    Highlighters[h]:=nil;
   IDESearchInText:=@SearchInText;
   PasBeautifier := TSynBeautifierPascal.Create(nil);
 
@@ -9793,11 +9781,7 @@ begin
 end;
 
 procedure InternalFinal;
-var
-  h: TLazSyntaxHighlighter;
 begin
-  for h:=Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do
-    FreeThenNil(Highlighters[h]);
   FreeThenNil(aWordCompletion);
   FreeAndNil(PasBeautifier);
 end;
@@ -10198,7 +10182,7 @@ begin
     end;
   end;
 
-  if not (SrcEdit.SyntaxHighlighterType in [lshFreePascal, lshDelphi]) then
+  if not (SrcEdit.FEditor.Highlighter is TSynPasSyn) then
     UseWordCompletion:=true;
   Result:=true;
 end;

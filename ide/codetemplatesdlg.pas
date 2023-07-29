@@ -859,7 +859,7 @@ begin
   FilenameEdit.Filter:=dlgFilterDciFile + '|*.dci|' + dlgFilterAll  + '|' + GetAllFilesMask;
 
   // init synedit
-  ColorScheme:=EditorOpts.ReadColorScheme(ASynPasSyn.GetLanguageName);
+  ColorScheme:=EditorOpts.ReadColorScheme(ASynPasSyn.LanguageName);
   EditorOpts.ReadHighlighterSettings(ASynPasSyn,ColorScheme);
   if EditorOpts.UseSyntaxHighlight then
     TemplateSynEdit.Highlighter:=ASynPasSyn

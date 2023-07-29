@@ -334,6 +334,10 @@
         <Filename Value="commoncodepages.inc"/>
         <Type Value="Include"/>
       </Item>
+      <Item>
+        <Filename Value="plist2json.pas"/>
+        <UnitName Value="plist2json"/>
+      </Item>
     </Files>
     <LazDoc Paths="../../docs/xml/lazutils"/>
     <i18n>

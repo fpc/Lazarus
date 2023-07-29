@@ -40,7 +40,7 @@ interface
 
 uses
   // RTL, FCL
-  Classes, SysUtils, typinfo, resource,
+  Classes, SysUtils, typinfo, fgl, resource,
   // LCL
   Graphics, LResources, Forms, Dialogs, ComCtrls, LCLType, Controls,
   // LazUtils
@@ -63,6 +63,7 @@ uses
   SynHighlighterIni, SynHighlighterPo, SynHighlighterPike, SynPluginMultiCaret,
   SynEditMarkupFoldColoring, SynEditMarkup, SynGutterLineOverview,
   SynBeautifierPascal, SynEditTextDynTabExpander, SynEditTextTabExpander,
+  SynTextMateSyn,
   // codetools
   LinkScanner, CodeToolManager,
   // BuildIntf
@@ -319,7 +320,7 @@ type
     FDefaultAttribute: TColorSchemeAttribute;
     FAttributes: TQuickStringlist; // TColorSchemeAttribute
     FHighlighter: TSynCustomHighlighter;
-    FLanguage: TLazSyntaxHighlighter;
+    FIdeHighlighterID: TIdeSyntaxHighlighterID;
     FOwner: TColorScheme;
     FLanguageName: String;
     FIsSchemeDefault: Boolean;
@@ -329,11 +330,11 @@ type
     function GetAttributeByEnum(Index: TAdditionalHilightAttribute): TColorSchemeAttribute;
     function GetName: String;
   public
-    constructor Create(AGroup: TColorScheme; ALang: TLazSyntaxHighlighter;
+    constructor Create(AGroup: TColorScheme; AIdeHighlighterID: TIdeSyntaxHighlighterID;
       IsSchemeDefault: Boolean);
-    constructor CreateWithDefColor(AGroup: TColorScheme; ALang: TLazSyntaxHighlighter;
+    constructor CreateWithDefColor(AGroup: TColorScheme; AIdeHighlighterID: TIdeSyntaxHighlighterID;
       IsSchemeDefault: Boolean);
-    constructor CreateFromXml(AGroup: TColorScheme; ALang: TLazSyntaxHighlighter;
+    constructor CreateFromXml(AGroup: TColorScheme; AIdeHighlighterID: TIdeSyntaxHighlighterID;
       aXMLConfig: TRttiXMLConfig; const aPath: String; IsSchemeDefault: Boolean);
     destructor  Destroy; override;
     procedure Clear;
@@ -349,25 +350,26 @@ type
     procedure ApplyTo(AHLighter: TSynCustomHighlighter);
     function  AttributeCount: Integer;
     property  Name: String read GetName;
-    property  Language: TLazSyntaxHighlighter read FLanguage;
+    property  IdeHighlighterID: TIdeSyntaxHighlighterID read FIdeHighlighterID;
     property  LanguageName: String read FLanguageName;
     property  Attribute[const Index: String]: TColorSchemeAttribute read GetAttribute;
     property  AttributeByEnum[Index: TAdditionalHilightAttribute]: TColorSchemeAttribute
               read GetAttributeByEnum;
     property  AttributeAtPos[Index: Integer]: TColorSchemeAttribute read GetAttributeAtPos;
     property  DefaultAttribute: TColorSchemeAttribute read FDefaultAttribute;
-    property  Highlighter: TSynCustomHighlighter read FHighlighter;
+    property  SharedHighlighter: TSynCustomHighlighter read FHighlighter;
   end;
 
   { TColorScheme }
 
   TColorScheme = class(TObject)
+  private type
+    TColorSchemesMap = specialize TFPGMapObject<string, TColorSchemeLanguage>;
   private
     FName: String;
-    FColorSchemes: Array [TLazSyntaxHighlighter] of TColorSchemeLanguage;
+    FColorSchemes: TColorSchemesMap; //Array of TColorSchemeLanguage;
     FDefaultColors: TColorSchemeLanguage;
-    function GetColorScheme(Index: TLazSyntaxHighlighter): TColorSchemeLanguage;
-    function GetColorSchemeBySynClass(Index: TClass): TColorSchemeLanguage;
+    function GetColorSchemeBySynHl(Index: TSynCustomHighlighter): TColorSchemeLanguage;
   public
     constructor Create(const AName: String);
     constructor CreateFromXml(aXMLConfig: TRttiXMLConfig; const AName, aPath: String);
@@ -379,8 +381,7 @@ type
     procedure SaveToXml(aXMLConfig: TRttiXMLConfig; const aPath: String; Defaults: TColorScheme);
     property  Name: string read FName;
     property  DefaultColors: TColorSchemeLanguage read FDefaultColors;
-    property  ColorScheme[Index: TLazSyntaxHighlighter]: TColorSchemeLanguage read GetColorScheme;
-    property  ColorSchemeBySynClass[Index: TClass]: TColorSchemeLanguage read GetColorSchemeBySynClass;
+    property  ColorSchemeBySynHl[Index: TSynCustomHighlighter]: TColorSchemeLanguage read GetColorSchemeBySynHl;
   end;
 
   { TColorSchemeFactory }
@@ -413,11 +414,11 @@ type
 //    fTextAttri: TSynHighlighterAttributes;
     FPos: Integer;
   protected
-    procedure SetLine(const NewValue: String; LineNumber: Integer); override;
     function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;      override;
   public
     class function GetLanguageName: string; override;
 
+    procedure SetLine(const NewValue: String; LineNumber: Integer); override;
     constructor Create(AOwner: TComponent); override;
     function GetEol: Boolean; override;
     function GetToken: string; override;
@@ -723,13 +724,13 @@ const
       - MouseWheel is nov configurable
   }
 
+const
   LazSyntaxHighlighterClasses: array[TLazSyntaxHighlighter] of
     TCustomSynClass =
     (nil, TIDESynTextSyn, TIDESynFreePasSyn, TIDESynPasSyn, TSynLFMSyn, TSynXMLSyn,
     TSynHTMLSyn, TSynCPPSyn, TSynPerlSyn, TSynJavaSyn, TSynUNIXShellScriptSyn,
     TSynPythonSyn, TSynPHPSyn, TSynSQLSyn,TSynCssSyn, TSynJScriptSyn, TSynDiffSyn,
-    TSynBatSyn, TSynIniSyn, TSynPoSyn, TSynPikeSyn);
-
+    TSynBatSyn, TSynIniSyn, TSynPoSyn, TSynPikeSyn) deprecated 'for internal use only';
 
 { Comments }
 const
@@ -755,7 +756,7 @@ const
     comtNone,  // Ini
     comtNone,  // po
     comtCPP    // lshPike
-    );
+    ) deprecated 'for internal use only';
 
 const
   SynEditDefaultOptions = SYNEDIT_DEFAULT_OPTIONS - [eoShowScrollHint]
@@ -779,14 +780,11 @@ type
   TEditOptLanguageInfo = class
   private
     MappedAttributes: TStringList; // map attributes to pascal
-  protected
-    procedure prepare(Syntax :  TLazSyntaxHighlighter);virtual;
   public
-    SynClass: TCustomSynClass;
+    SynInstance: TSrcIDEHighlighter;
     TheType:  TLazSyntaxHighlighter;
     FileExtensions: String; // divided by semicolon, e.g. 'pas;pp;inc'
     DefaultFileExtensions: string;
-    ColorScheme: String;
     SampleSource: String;
     AddAttrSampleLines: array[TAdditionalHilightAttribute] of Integer; // first line = 1
 //    MappedAttributes: TStringList; // map attributes to pascal
@@ -794,36 +792,61 @@ type
     CaretXY: TPoint;
     constructor Create;
     destructor Destroy; override;
+    function CreateNewSynInstance: TSrcIDEHighlighter; virtual;
     function GetDefaultFilextension: String;
     procedure SetBothFilextensions(const Extensions: string);
     function SampleLineToAddAttr(Line: Integer): TAdditionalHilightAttribute;
   end;
 
-  { TEditOptLangCssInfo }
+  { TEditOptLanguageTextMateInfo }
 
-  TEditOptLangCssInfo = class(tEditOptLanguageInfo)
-  protected
-     procedure prepare(Syntax :  TLazSyntaxHighlighter);override;
-     function getSampleSource:string;
-     function getMappedAttributes: tStringList;
+  TEditOptLanguageTextMateInfo = class(TEditOptLanguageInfo)
+  public
+    FileName: String;
+    function CreateNewSynInstance: TSrcIDEHighlighter; override;
   end;
 
   { TEditOptLangList }
 
-  TEditOptLangList = class(TList)
+  TEditOptLangList = class(TList, TIdeSyntaxHighlighterList)
   private
+    function GetLazSyntaxHighlighterType(AnId: TIdeSyntaxHighlighterID): TLazSyntaxHighlighter; deprecated '(to be removed in 4.99) -- Only temporary for StrToLazSyntaxHighlighter';
     function GetInfos(Index: Integer): TEditOptLanguageInfo;
+    function GetSharedSynInstances(AnID: TIdeSyntaxHighlighterID): TSrcIDEHighlighter;
   public
-    constructor Create;
-    procedure Clear; override;
+    function GetIdForFileExtension(Ext: String): TIdeSyntaxHighlighterID;
+    function GetIdForFileExtension(Ext: String; ADelphiMode: boolean): TIdeSyntaxHighlighterID;
+    function GetIdForName(AName: String): TIdeSyntaxHighlighterID;
+    function GetCaptions(AnID: TIdeSyntaxHighlighterID): String;
+    function GetNames(AnID: TIdeSyntaxHighlighterID): String;
+    function GetSharedInstances(AnID: TIdeSyntaxHighlighterID): TObject;
+    function GetSynHlClasses(AnID: TIdeSyntaxHighlighterID): TClass;
+
+    function GetIdForLazSyntaxHighlighter(AnHighlighterType: TLazSyntaxHighlighter): TIdeSyntaxHighlighterID;
+  public
+    procedure Init; // called by ColorSchemeFactory
     destructor Destroy; override;
+
+    procedure Clear; reintroduce;
+    procedure Delete(Index: Integer); reintroduce;
+    procedure Move(CurIndex, NewIndex: Integer); reintroduce;
+    procedure Exchange(Index1, Index2: Integer); reintroduce;
+    function Extract(item: Pointer): Pointer; reintroduce;
+
+    function GetNewSynInstance(AnID: TIdeSyntaxHighlighterID): TSrcIDEHighlighter;
     function FindByName(const Name: String): Integer;
-    function FindByClass(CustomSynClass: TCustomSynClass): Integer;
-    function FindByHighlighter(Hilighter: TSynCustomHighlighter): Integer;
-    function FindByType(AType: TLazSyntaxHighlighter): Integer;
-    function GetDefaultFilextension(AType: TLazSyntaxHighlighter): String;
-    function GetInfoByType(AType: TLazSyntaxHighlighter): TEditOptLanguageInfo;
+    function GetDefaultFilextension(AnId: TIdeSyntaxHighlighterID): String;
+    function FindByType(AType: TLazSyntaxHighlighter): Integer;                 deprecated '(to be removed in 4.99)';
+    function GetDefaultFilextension(AType: TLazSyntaxHighlighter): String;      deprecated '(to be removed in 4.99)';
+    function GetInfoByType(AType: TLazSyntaxHighlighter): TEditOptLanguageInfo; deprecated '(to be removed in 4.99)';
     property Items[Index: Integer]: TEditOptLanguageInfo read GetInfos; default;
+
+    property Captions       [AnID: TIdeSyntaxHighlighterID]: String  read GetCaptions;
+    property Names          [AnID: TIdeSyntaxHighlighterID]: String  read GetNames;
+    property SynHlClasses   [AnID: TIdeSyntaxHighlighterID]: TClass  read GetSynHlClasses;     // class of TSynCustomHighlighter
+deprecated 'NONOONONONONONOONON only create ONE ????';
+    property SharedInstances[AnID: TIdeSyntaxHighlighterID]: TObject read GetSharedInstances; // TSynCustomHighlighter
+    property SharedSynInstances[AnID: TIdeSyntaxHighlighterID]: TSrcIDEHighlighter read GetSharedSynInstances; // TSynCustomHighlighter
   end;
 
   TMouseOptGutterLeftType = (
@@ -1654,7 +1677,6 @@ type
     fUserMouseSettings: TEditorMouseOptions;
     fTempMouseSettings: TEditorMouseOptions;
     // Color options
-    fHighlighterList: TEditOptLangList;
     fUserColorSchemeGroup: TColorSchemeFactory;
     fUserDefinedColors: TEditorUserDefinedWordsList;
     // Markup Current Word
@@ -1683,6 +1705,7 @@ type
     fMultiWinEditAccessOrder: TEditorOptionsEditAccessOrderList;
     // Default values for RttiXmlConfig using published properties.
     FDefaultValues: TEditorOptionsDefaults;
+    function GetHighlighterList: TEditOptLangList;
     procedure Init;
     function GetCodeTemplateFileNameExpand: String;
     function GetColorSchemeLanguage(aHighLighter: TSynCustomHighlighter;
@@ -1714,7 +1737,9 @@ type
     procedure GetSynEditorSettings(ASynEdit: TObject; SimilarEdit: TObject = nil); override;
     procedure GetSynEditSettings(ASynEdit: TSynEdit; SimilarEdit: TSynEdit = nil); // read synedit settings from config file
     function CreateSyn(LazSynHilighter: TLazSyntaxHighlighter): TSrcIDEHighlighter;
+      deprecated 'Use IdeSyntaxHighlighters (to be removed in 4.0)';
     function CreateSynHighlighter(LazSynHilighter: TLazSyntaxHighlighter): TObject; override;
+      deprecated 'Use IdeSyntaxHighlighters (to be removed in 4.0)';
     procedure GetSynEditPreviewSettings(APreviewEditor: TObject);
     procedure SetMarkupColor(Syn: TSrcIDEHighlighter;
                              AddHilightAttr: TAdditionalHilightAttribute;
@@ -1723,6 +1748,7 @@ type
     procedure ApplyFontSettingsTo(ASynEdit: TSynEdit);
     procedure ApplyTabFontSettingsTo(APageCtrl: TPageControl);
     function ExtensionToLazSyntaxHighlighter(Ext: String): TLazSyntaxHighlighter; override;
+      deprecated 'Use IdeSyntaxHighlighters.GetIdForFileExtension (to be removed in 4.0)';
   public
     // general options
     property SynEditOptions: TSynEditorOptions
@@ -1782,7 +1808,7 @@ type
     // Used by the 2 Mouse-option pages, so they share data (un-saved)
     property TempMouseSettings: TEditorMouseOptions read FTempMouseSettings;
     // Color options
-    property HighlighterList: TEditOptLangList read fHighlighterList;
+    property HighlighterList: TEditOptLangList read GetHighlighterList;
     property UserColorSchemeGroup: TColorSchemeFactory read fUserColorSchemeGroup;
     property UserDefinedColors: TEditorUserDefinedWordsList read fUserDefinedColors;
     // Markup Current Word
@@ -1837,6 +1863,7 @@ var
 
 procedure RepairEditorFontSize(var FontSize: integer);
 function BuildBorlandDCIFile(ACustomSynAutoComplete: TCustomSynAutoComplete): Boolean;
+function HighlighterList: TEditOptLangList;
 function ColorSchemeFactory: TColorSchemeFactory;
 function UserSchemeDirectory(CreateIfNotExists: Boolean = False): String;
 procedure InitLocale;
@@ -1847,33 +1874,6 @@ implementation
 
 const
   ValidAttribChars = ['a'..'z', 'A'..'Z', '_', '0'..'9'];
-
-  // several language types can be redirected. For example there are FreePascal
-  // and Delphi, but currently both are hilighted with the FreePascal
-  // highlighter
-  CompatibleLazSyntaxHilighter: array[TLazSyntaxHighlighter] of TLazSyntaxHighlighter = (
-    lshNone,
-    lshText,
-    lshFreePascal,
-    lshFreePascal,
-    lshLFM,
-    lshXML,
-    lshHTML,
-    lshCPP,
-    lshPerl,
-    lshJava,
-    lshBash,
-    lshPython,
-    lshPHP,
-    lshSQL,
-    lshCSS,
-    lshJScript,
-    lshDiff,
-    lshBat,
-    lshIni,
-    lshPo,
-    lshPike
-    );
 
 var
   DefaultColorSchemeName: String;
@@ -2554,6 +2554,8 @@ var
 
 begin
   if not Assigned(Singleton) then begin
+    HighlighterList.Init; // defer init
+
     InitLocale;
     Singleton := TColorSchemeFactory.Create;
     // register all built-in color schemes
@@ -2595,7 +2597,7 @@ begin
     CreateDirUTF8(Result);
 end;
 
-function HighlighterListSingleton: TEditOptLangList;
+function HighlighterList: TEditOptLangList;
 const
   Singleton: TEditOptLangList = nil;
 begin
@@ -2774,7 +2776,13 @@ end;
 destructor TEditOptLanguageInfo.Destroy;
 begin
   MappedAttributes.Free;
+  SynInstance.Free;
   inherited Destroy;
+end;
+
+function TEditOptLanguageInfo.CreateNewSynInstance: TSrcIDEHighlighter;
+begin
+  Result := TCustomSynClass(SynInstance.ClassType).Create(nil);
 end;
 
 function TEditOptLanguageInfo.SampleLineToAddAttr(Line: Integer): TAdditionalHilightAttribute;
@@ -2807,53 +2815,23 @@ begin
   DefaultFileExtensions:=Extensions;
 end;
 
-procedure TEditOptLanguageInfo.prepare(Syntax: TLazSyntaxHighlighter);
-begin
-  TheType := Syntax;
-  DefaultCommentType := DefaultCommentTypes[TheType];
-  SynClass := LazSyntaxHighlighterClasses[TheType];
-end;
+{ TEditOptLanguageTextMateInfo }
 
-{ TEditOptLangCssInfo }
-
-procedure TEditOptLangCssInfo.prepare(Syntax: TLazSyntaxHighlighter);
+function TEditOptLanguageTextMateInfo.CreateNewSynInstance: TSrcIDEHighlighter;
 begin
-  inherited Prepare(syntax);
-  SetBothFilextensions('css');
-  SampleSource := getSampleSource;
-  AddAttrSampleLines[ahaTextBlock] := 4;
-  CaretXY := Point(1,1);
-  MappedAttributes := getMappedAttributes;;
-end;
-
-function TEditOptLangCssInfo.getSampleSource: string;
-begin
-  result :=
-      '.field :hover {'#10 +
-      '   display:inline;'#10+
-      '   border:10px;'#10+
-      '   color: #555;'#10+
-      '/* comment */'#10+
-      '}'#10+#10;
-end;
-
-function TEditOptLangCssInfo.getMappedAttributes: tStringList;
-begin
-    result:=tStringList.create;
-    with result do
-    begin
-      Add('Comment=Comment');
-      Add('Selector=Reserved_word');
-      Add('Identifier=Identifier');
-      Add('Space=Space');
-      Add('Symbol=Symbol');
-      Add('Number=Number');
-      Add('Key=Key');
-      Add('String=String');
-    end;
+  Result := TSynTextMateSyn.Create(nil);
+  TSynTextMateSyn(Result).LoadGrammar(FileName, '');
 end;
 
 { TEditOptLangList }
+
+function TEditOptLangList.GetLazSyntaxHighlighterType(
+  AnId: TIdeSyntaxHighlighterID): TLazSyntaxHighlighter;
+begin
+  if AnID < 0 then
+    exit(lshNone);
+  Result := Items[AnId].TheType;
+end;
 
 function TEditOptLangList.GetInfos(Index: Integer): TEditOptLanguageInfo;
 begin
@@ -2863,33 +2841,245 @@ begin
   Result := TEditOptLanguageInfo(inherited Items[Index]);
 end;
 
-procedure TEditOptLangList.Clear;
-var
-  i: Integer;
+function TEditOptLangList.GetSharedSynInstances(AnID: TIdeSyntaxHighlighterID
+  ): TSrcIDEHighlighter;
 begin
-  for i := 0 to Count - 1 do
-    Items[i].Free;
-  inherited Clear;
+  Result := TSrcIDEHighlighter(SharedInstances[AnID]);
 end;
 
-constructor TEditOptLangList.Create;
+function TEditOptLangList.GetIdForFileExtension(Ext: String
+  ): TIdeSyntaxHighlighterID;
+var
+  s, CurExt: String;
+  StartPos, EndPos: Integer;
+begin
+  Result := -1;
+  if (Ext = '') or (Ext = '.') then
+    exit;
+  if Ext[1] = '.' then
+    System.Delete(Ext, 1, 1);
+
+  Result := Count - 1;
+  while (Result >= 0) do begin
+    s := Items[Result].FileExtensions;
+    StartPos := 1;
+    while StartPos <= length(s) do
+    begin
+      Endpos := StartPos;
+      while (EndPos <= length(s)) and (s[EndPos] <> ';') do
+        inc(EndPos);
+      CurExt := copy(s, Startpos, EndPos - StartPos);
+      if (CurExt <> '') and (CurExt[1] = '.') then
+        System.Delete(CurExt, 1, 1);
+      if CompareText(CurExt, Ext) = 0 then
+        exit;
+      Startpos := EndPos + 1;
+    end;
+
+    dec(Result);
+  end;
+end;
+
+function TEditOptLangList.GetIdForFileExtension(Ext: String;
+  ADelphiMode: boolean): TIdeSyntaxHighlighterID;
+begin
+  Result := GetIdForFileExtension(Ext);
+  if (Result >= 0) and (Items[Result].TheType in [lshFreePascal, lshDelphi]) then begin
+    if ADelphiMode then
+      Result := GetIdForLazSyntaxHighlighter(lshDelphi)
+    else
+      Result := GetIdForLazSyntaxHighlighter(lshFreePascal);
+  end;
+end;
+
+function TEditOptLangList.GetIdForName(AName: String): TIdeSyntaxHighlighterID;
+begin
+  Result := Count - 1;
+  while (Result >= 0) and (CompareText(AName, Names[Result]) <> 0) do
+    dec(Result);
+end;
+
+function TEditOptLangList.GetCaptions(AnID: TIdeSyntaxHighlighterID): String;
+var
+  h: TEditOptLanguageInfo;
+begin
+  if AnID <= 0 then
+    exit(LazSyntaxHighlighterNames{%H-}[lshNone]);
+  h := Items[AnID];
+  if h.TheType <> lshNone then begin
+    if h.TheType=lshFreePascal then
+      exit('Free Pascal');
+    exit(LazSyntaxHighlighterNames{%H-}[h.TheType]);
+  end;
+  Result := h.SynInstance.LanguageName;
+end;
+
+function TEditOptLangList.GetNames(AnID: TIdeSyntaxHighlighterID): String;
+var
+  h: TEditOptLanguageInfo;
+  i: SizeInt;
+begin
+  if AnID <= 0 then // IdeHighlighterNoneID
+    Result := LazSyntaxHighlighterNames{%H-}[lshNone]
+  else begin
+    h := Items[AnID];
+    if h.TheType <> lshNone then
+      Result := LazSyntaxHighlighterNames{%H-}[h.TheType]
+    else
+      Result := h.SynInstance.LanguageName;
+  end;
+
+  // remove chars, that might not be ok in an xml name
+  i := Length(Result);
+  while i > 0 do begin
+    if Result[i] = '_' then begin
+      System.Insert('_', Result, i);
+      Result[i] := '_';
+    end
+    else
+    if not (Result[i] in ['a'..'z', 'A'..'Z', '0'..'9']) then begin
+      System.Insert(IntToHex(ord(Result[i]),2), Result, i+1);
+      Result[i] := '_';
+    end;
+    dec(i);
+  end;
+end;
+
+function TEditOptLangList.GetSharedInstances(AnID: TIdeSyntaxHighlighterID
+  ): TObject;
+begin
+  if AnID < 0 then // lshNone;
+    exit(nil);
+  Result := Items[AnID].SynInstance;
+end;
+
+function TEditOptLangList.GetSynHlClasses(AnID: TIdeSyntaxHighlighterID
+  ): TClass;
+begin
+  if AnID < 0 then // lshNone;
+    exit(nil);
+  Result := Items[AnID].SynInstance.ClassType;
+end;
+
+function TEditOptLangList.GetIdForLazSyntaxHighlighter(
+  AnHighlighterType: TLazSyntaxHighlighter): TIdeSyntaxHighlighterID;
+begin
+  // lshNone is internally used for non-buildin HL
+  if AnHighlighterType = lshNone then
+    exit(IdeHighlighterNoneID);
+
+  Result := Count - 1;
+  while (Result >= 0) and (Items[Result].TheType <> AnHighlighterType) do
+    dec(Result);
+end;
+
+procedure TEditOptLangList.Clear;
+begin
+  assert(False, 'TEditOptLangList.Clear: Not allowed - Index is used as ID');
+end;
+
+procedure TEditOptLangList.Init;
 var
   NewInfo: TEditOptLanguageInfo;
+  FileList: TStringList;
+  i: Integer;
+  tmlHighlighter: TSynTextMateSyn;
+  dir: String;
+  StrLoader: TStringStream;
 begin
-  inherited Create;
-
-  { create the meta information for each available highlighter.
-    Please keep the pascal highlighter at the top. The rest can be ordered as you
-    like.
+  { - Create the meta information for each available highlighter.
+    - The entry for lshNone **MUST** be first. It must match IdeHighlighterNoneID
+    - Please keep the pascal highlighter next after it.
+    - The rest can be ordered as you like.
   }
+
+  // create info for IdeHighlighterNoneID / lshNone
+  // MUST be FIRST / Index = 0 = IdeHighlighterNoneID
+  NewInfo := TEditOptLanguageInfo.Create;
+  with NewInfo do
+  begin
+    TheType := lshNone;
+    DefaultCommentType := DefaultCommentTypes{%H-}[TheType];
+    SynInstance := nil;
+    SetBothFilextensions('');
+    SampleSource := '';
+    MappedAttributes := TStringList.Create;
+    CaretXY := Point(1,1);
+  end;
+  Add(NewInfo);
 
   // create info for pascal
   NewInfo := TEditOptLanguageInfo.Create;
   with NewInfo do
   begin
     TheType := lshFreePascal;
-    DefaultCommentType := DefaultCommentTypes[TheType];
-    SynClass := LazSyntaxHighlighterClasses[TheType];
+    DefaultCommentType := DefaultCommentTypes{%H-}[TheType];
+    SynInstance := LazSyntaxHighlighterClasses{%H-}[TheType].Create(nil);
+    SetBothFilextensions('pp;pas;inc;lpr;lrs;dpr;dpk;fpd');
+    SampleSource :=
+      '{ Comment }'#13 +
+      '{$R- compiler directive}'#13 +
+      'procedure TForm1.Button1Click(Sender: TObject);'#13 +
+      'var  // Delphi Comment'#13 +
+      '  Number, I, X: Integer;'#13 +
+      'begin'#13 +
+      '  Number := 12345 * (2 + 9) // << Matching Brackets ;'#13 +
+      '  Caption := ''The number is '' + IntToStr(Number);'#13 +
+      '  asm'#13 + '    MOV AX,1234h'#13 +
+      '    MOV Number,AX'#13 +
+      '  end;'#13 +
+      '  {%region /fold}'#13 +
+      '  {%endregion}'#13 +
+      '  X := 10;'#13 +
+      '  inc(X); {$R+} { Search Match, Text Block }'#13 +
+      '  for I := 0 to Number do {$R-} { execution point }'#13 +
+      '  begin'#13 +
+      '    Inc(X, 2); {$R+} { Enabled breakpoint }'#13 +
+      '    Dec(X, 3); {$R+} { Disabled breakpoint }'#13 +
+      '    {$R-} // { Invalid breakpoint }'#13 +
+      '    WriteLN(X); {$R-} { Unknown breakpoint }'#13 +
+      '    X := X + 1.0; {$R-} { Error line }'#13 +
+      '    case ModalResult of'#13+
+      '      mrOK: inc(X);'#13+
+      '      mrCancel, mrIgnore: dec(X);'#13+
+      '    end;'#13+
+      '    ListBox1.Items.Add(IntToStr(X));'#13 +
+//{$IFDEF WithSynMarkupIfDef}
+//      '    {$IFDEF Foo}' +
+//      '      X := X + 1.0; {$R-} { Error line }'#13 +
+//      '      {$DEFINE a}' +
+//      '      case ModalResult of'#13+
+//      '        mrOK: inc(X);'#13+
+//      '        mrCancel, mrIgnore: dec(X);'#13+
+//      '      end;'#13+
+//      '    {$ELSE}' +
+//      '      {%region teset}'#13 +
+//      '      {%endregion}'#13 +
+//      '      with self do'#13 +
+//      '        X := 10;'#13 +
+//      '    {$ENDIF}' +
+//{$ENDIF}
+      '  end;'#13 +
+      'end;'#13 + #13;
+    AddAttrSampleLines[ahaDisabledBreakpoint] := 20;
+    AddAttrSampleLines[ahaEnabledBreakpoint] := 19;
+    AddAttrSampleLines[ahaInvalidBreakpoint] := 21;
+    AddAttrSampleLines[ahaUnknownBreakpoint] := 22;
+    AddAttrSampleLines[ahaErrorLine] := 23;
+    AddAttrSampleLines[ahaExecutionPoint] := 17;
+    AddAttrSampleLines[ahaTextBlock] := 16;
+    AddAttrSampleLines[ahaFoldedCode] := 13;
+    CaretXY := Point(21, 7);
+  end;
+  Add(NewInfo);
+
+  // create info for pascal
+  NewInfo := TEditOptLanguageInfo.Create;
+  with NewInfo do
+  begin
+    TheType := lshDelphi;
+    DefaultCommentType := DefaultCommentTypes{%H-}[TheType];
+    SynInstance := LazSyntaxHighlighterClasses{%H-}[TheType].Create(nil);
     SetBothFilextensions('pp;pas;inc;lpr;lrs;dpr;dpk;fpd');
     SampleSource :=
       '{ Comment }'#13 +
@@ -2953,8 +3143,8 @@ begin
   with NewInfo do
   begin
     TheType := lshHTML;
-    DefaultCommentType := DefaultCommentTypes[TheType];
-    SynClass := LazSyntaxHighlighterClasses[TheType];
+    DefaultCommentType := DefaultCommentTypes{%H-}[TheType];
+    SynInstance := LazSyntaxHighlighterClasses{%H-}[TheType].Create(nil);
     SetBothFilextensions('htm;html;xhtml');
     SampleSource :=
       '<html>'#13 + '<title>Lazarus Sample source for html</title>'#13 +
@@ -2980,8 +3170,8 @@ begin
   with NewInfo do
   begin
     TheType := lshCPP;
-    DefaultCommentType := DefaultCommentTypes[TheType];
-    SynClass := LazSyntaxHighlighterClasses[TheType];
+    DefaultCommentType := DefaultCommentTypes{%H-}[TheType];
+    SynInstance := LazSyntaxHighlighterClasses{%H-}[TheType].Create(nil);
     SetBothFilextensions('c;cc;cpp;h;hpp;hh');
     SampleSource :=
       '/* Comment */'#13 + '#include <stdio.h>'#13 +
@@ -3013,8 +3203,8 @@ begin
   with NewInfo do
   begin
     TheType := lshXML;
-    DefaultCommentType := DefaultCommentTypes[TheType];
-    SynClass := LazSyntaxHighlighterClasses[TheType];
+    DefaultCommentType := DefaultCommentTypes{%H-}[TheType];
+    SynInstance := LazSyntaxHighlighterClasses{%H-}[TheType].Create(nil);
     SetBothFilextensions('xml;xsd;xsl;xslt;dtd;lpi;lps;lpk;wsdl;svg');
     SampleSource :=
       '<?xml version="1.0"?>'#13 + '<!DOCTYPE root ['#13 +
@@ -3040,8 +3230,8 @@ begin
   with NewInfo do
   begin
     TheType := lshLFM;
-    DefaultCommentType := DefaultCommentTypes[TheType];
-    SynClass := LazSyntaxHighlighterClasses[TheType];
+    DefaultCommentType := DefaultCommentTypes{%H-}[TheType];
+    SynInstance := LazSyntaxHighlighterClasses{%H-}[TheType].Create(nil);
     SetBothFilextensions('lfm;dfm;xfm');
     SampleSource :=
       '{ Lazarus Form Definitions }'#13 + 'object TestForm: TTestForm'#13 +
@@ -3070,8 +3260,8 @@ begin
   with NewInfo do
   begin
     TheType := lshPerl;
-    DefaultCommentType := DefaultCommentTypes[TheType];
-    SynClass := LazSyntaxHighlighterClasses[TheType];
+    DefaultCommentType := DefaultCommentTypes{%H-}[TheType];
+    SynInstance := LazSyntaxHighlighterClasses{%H-}[TheType].Create(nil);
     SetBothFilextensions('pl;pm;cgi');
     SampleSource :=
       '#!/usr/bin/perl'#13 + '# Perl sample code'#13 +
@@ -3099,8 +3289,8 @@ begin
   with NewInfo do
   begin
     TheType := lshJava;
-    DefaultCommentType := DefaultCommentTypes[TheType];
-    SynClass := LazSyntaxHighlighterClasses[TheType];
+    DefaultCommentType := DefaultCommentTypes{%H-}[TheType];
+    SynInstance := LazSyntaxHighlighterClasses{%H-}[TheType].Create(nil);
     SetBothFilextensions('java');
     SampleSource :=
       '/* Java syntax highlighting */'#13#10 +
@@ -3135,8 +3325,8 @@ begin
   with NewInfo do
   begin
     TheType := lshBash;
-    DefaultCommentType := DefaultCommentTypes[TheType];
-    SynClass := LazSyntaxHighlighterClasses[TheType];
+    DefaultCommentType := DefaultCommentTypes{%H-}[TheType];
+    SynInstance := LazSyntaxHighlighterClasses{%H-}[TheType].Create(nil);
     SetBothFilextensions('sh');
     SampleSource :=
       '#!/bin/bash'#13#13 +
@@ -3169,8 +3359,8 @@ begin
   with NewInfo do
   begin
     TheType := lshPython;
-    DefaultCommentType := DefaultCommentTypes[TheType];
-    SynClass := LazSyntaxHighlighterClasses[TheType];
+    DefaultCommentType := DefaultCommentTypes{%H-}[TheType];
+    SynInstance := LazSyntaxHighlighterClasses{%H-}[TheType].Create(nil);
     SetBothFilextensions('py;pyw');
     SampleSource :=
       '# Python syntax highlighting'#13#10 +
@@ -3203,8 +3393,8 @@ begin
   with NewInfo do
   begin
     TheType := lshPHP;
-    DefaultCommentType := DefaultCommentTypes[TheType];
-    SynClass := LazSyntaxHighlighterClasses[TheType];
+    DefaultCommentType := DefaultCommentTypes{%H-}[TheType];
+    SynInstance := LazSyntaxHighlighterClasses{%H-}[TheType].Create(nil);
     SetBothFilextensions('php;php3;php4');
     SampleSource :=
       '<?if ( ($HTTP_HOST == "www.lazarus.com") || ($HTTP_HOST == "lazarus.com") ){'#10 + '   HEADER("Location:http://www.lazarus.freepascal.org/\n\n");'#10
@@ -3231,8 +3421,8 @@ begin
   with NewInfo do
   begin
     TheType := lshSQL;
-    DefaultCommentType := DefaultCommentTypes[TheType];
-    SynClass := LazSyntaxHighlighterClasses[TheType];
+    DefaultCommentType := DefaultCommentTypes{%H-}[TheType];
+    SynInstance := LazSyntaxHighlighterClasses{%H-}[TheType].Create(nil);
     SetBothFilextensions('sql');
     SampleSource :=
       '-- ansi sql sample source'#10 +
@@ -3258,8 +3448,35 @@ begin
   Add(NewInfo);
 
   // create info for CSS
-  NewInfo := TEditOptLangCssInfo.Create;
-  NewInfo.Prepare(lshCss);
+  NewInfo := TEditOptLanguageInfo.Create;
+  with NewInfo do
+  begin
+    TheType := lshCss;
+    DefaultCommentType := DefaultCommentTypes{%H-}[TheType];
+    SynInstance := TSynCssSyn.Create(nil);
+    SetBothFilextensions('css');
+    SampleSource :=
+      '.field :hover {'#10 +
+      '   display:inline;'#10+
+      '   border:10px;'#10+
+      '   color: #555;'#10+
+      '/* comment */'#10+
+      '}'#10+#10;
+    AddAttrSampleLines[ahaTextBlock] := 4;
+    MappedAttributes := TStringList.Create;
+    with MappedAttributes do
+    begin
+      Add('Comment=Comment');
+      Add('Selector=Reserved_word');
+      Add('Identifier=Identifier');
+      Add('Space=Space');
+      Add('Symbol=Symbol');
+      Add('Number=Number');
+      Add('Key=Key');
+      Add('String=String');
+    end;
+    CaretXY := Point(1,1);
+  end;
   Add(NewInfo);
 
   // create info for JScript
@@ -3267,8 +3484,8 @@ begin
   with NewInfo do
   begin
     TheType := lshJScript;
-    DefaultCommentType := DefaultCommentTypes[TheType];
-    SynClass := LazSyntaxHighlighterClasses[TheType];
+    DefaultCommentType := DefaultCommentTypes{%H-}[TheType];
+    SynInstance := LazSyntaxHighlighterClasses{%H-}[TheType].Create(nil);
     SetBothFilextensions('js');
     SampleSource :=
       '/* JScript */'#13#10 +
@@ -3308,8 +3525,8 @@ begin
   with NewInfo do
   begin
     TheType := lshDiff;
-    DefaultCommentType := DefaultCommentTypes[TheType];
-    SynClass := LazSyntaxHighlighterClasses[TheType];
+    DefaultCommentType := DefaultCommentTypes{%H-}[TheType];
+    SynInstance := LazSyntaxHighlighterClasses{%H-}[TheType].Create(nil);
     SetBothFilextensions('diff');
     SampleSource :=
       '*** /a/file'#13#10 +
@@ -3336,8 +3553,8 @@ begin
   with NewInfo do
   begin
     TheType := lshBat;
-    DefaultCommentType := DefaultCommentTypes[TheType];
-    SynClass := LazSyntaxHighlighterClasses[TheType];
+    DefaultCommentType := DefaultCommentTypes{%H-}[TheType];
+    SynInstance := LazSyntaxHighlighterClasses{%H-}[TheType].Create(nil);
     SetBothFilextensions('bat');
     SampleSource :=
       'rem MS-DOS batch file'#13#10 +
@@ -3368,8 +3585,8 @@ begin
   with NewInfo do
   begin
     TheType := lshIni;
-    DefaultCommentType := DefaultCommentTypes[TheType];
-    SynClass := LazSyntaxHighlighterClasses[TheType];
+    DefaultCommentType := DefaultCommentTypes{%H-}[TheType];
+    SynInstance := LazSyntaxHighlighterClasses{%H-}[TheType].Create(nil);
     SetBothFilextensions('ini');
     SampleSource :=
       '; Syntax highlighting'#13#10+
@@ -3395,8 +3612,8 @@ begin
   with NewInfo do
   begin
     TheType := lshPo;
-    DefaultCommentType := DefaultCommentTypes[TheType];
-    SynClass := LazSyntaxHighlighterClasses[TheType];
+    DefaultCommentType := DefaultCommentTypes{%H-}[TheType];
+    SynInstance := LazSyntaxHighlighterClasses{%H-}[TheType].Create(nil);
     SetBothFilextensions('po');
     SampleSource :=
       '#: foo.bar'#13#10 +
@@ -3420,8 +3637,8 @@ begin
   // create info for Pike
   NewInfo := TEditOptLanguageInfo.Create;
   NewInfo.TheType := lshPike;
-  NewInfo.DefaultCommentType := DefaultCommentTypes[NewInfo.TheType];
-  NewInfo.SynClass := LazSyntaxHighlighterClasses[NewInfo.TheType];
+  NewInfo.DefaultCommentType := DefaultCommentTypes{%H-}[NewInfo.TheType];
+  NewInfo.SynInstance := LazSyntaxHighlighterClasses{%H-}[NewInfo.TheType].Create(nil);
   NewInfo.SetBothFilextensions('pike;pmod');
   NewInfo.SampleSource := TSynPikeSyn.Pike_GetSampleSource();
   with NewInfo do
@@ -3446,8 +3663,8 @@ begin
   // create info for text
   NewInfo := TEditOptLanguageInfo.Create;
   NewInfo.TheType := lshText;
-  NewInfo.DefaultCommentType := DefaultCommentTypes[NewInfo.TheType];
-  NewInfo.SynClass := LazSyntaxHighlighterClasses[NewInfo.TheType];
+  NewInfo.DefaultCommentType := DefaultCommentTypes{%H-}[NewInfo.TheType];
+  NewInfo.SynInstance := LazSyntaxHighlighterClasses{%H-}[NewInfo.TheType].Create(nil);
   NewInfo.SetBothFilextensions('txt');
   NewInfo.SampleSource := 'Text in the source editor.'+#13#10+
                           'Example line 2'+#13#10+
@@ -3460,40 +3677,115 @@ begin
     CaretXY := Point(1,1);
   end;
   Add(NewInfo);
+
+
+  dir := AppendPathDelim(AppendPathDelim(UserSchemeDirectory(False)) + 'tml');
+  if DirectoryExistsUTF8(dir) then begin
+    FileList := FindAllFiles(dir, '*.json', False);
+    for i := 0 to FileList.Count - 1 do begin
+      tmlHighlighter := TSynTextMateSyn.Create(nil);
+      tmlHighlighter.LoadGrammar(FileList[i], '');
+      if (tmlHighlighter.ParserError <> '') then begin
+        tmlHighlighter.Free;
+        Continue;
+      end;
+
+      if (tmlHighlighter.TextMateGrammar.SampleText = '') and
+         (tmlHighlighter.TextMateGrammar.SampleTextFile <> '')
+      then begin
+        StrLoader := TStringStream.Create('');
+        try
+          StrLoader.LoadFromFile(TrimAndExpandFilename(tmlHighlighter.TextMateGrammar.SampleTextFile, dir));
+          tmlHighlighter.TextMateGrammar.SampleText := StrLoader.DataString;
+        finally
+          StrLoader.Free;
+        end;
+      end;
+
+      NewInfo := TEditOptLanguageTextMateInfo.Create;
+      TEditOptLanguageTextMateInfo(NewInfo).FileName := FileList[i];
+      NewInfo.TheType := lshNone;
+      NewInfo.DefaultCommentType := comtNone;
+      NewInfo.SynInstance := tmlHighlighter;
+      NewInfo.SetBothFilextensions('');
+      if (tmlHighlighter.TextMateGrammar.SampleText <> '') then
+        NewInfo.SampleSource := tmlHighlighter.TextMateGrammar.SampleText
+      else
+        NewInfo.SampleSource := 'Text in the source editor.'+#13#10+
+                                'Example line 2'+#13#10+
+                                'Example line 3'+#13#10+
+                                'Example line 4'+#13#10;
+      with NewInfo do
+      begin
+//        AddAttrSampleLines[ahaTextBlock] := 12;
+//        MappedAttributes := TStringList.Create;
+        CaretXY := Point(1,1);
+      end;
+      Add(NewInfo);
+
+    end;
+    FileList.Free;
+  end;
+
 end;
 
 destructor TEditOptLangList.Destroy;
+var
+  i: Integer;
 begin
-  Clear;
+  for i := 0 to Count - 1 do
+    Items[i].Free;
   inherited Destroy;
+end;
+
+procedure TEditOptLangList.Delete(Index: Integer);
+begin
+  assert(False, 'TEditOptLangList.Delete: Not allowed - Index is used as ID');
+end;
+
+procedure TEditOptLangList.Move(CurIndex, NewIndex: Integer);
+begin
+  assert(False, 'TEditOptLangList.Move: Not allowed - Index is used as ID');
+end;
+
+procedure TEditOptLangList.Exchange(Index1, Index2: Integer);
+begin
+  assert(False, 'TEditOptLangList.Exchange: Not allowed - Index is used as ID');
+end;
+
+function TEditOptLangList.Extract(item: Pointer): Pointer;
+begin
+  assert(False, 'TEditOptLangList.Extract: Not allowed - Index is used as ID');
+  Result := nil;
+end;
+
+function TEditOptLangList.GetNewSynInstance(AnID: TIdeSyntaxHighlighterID
+  ): TSrcIDEHighlighter;
+begin
+  Result := Items[AnID].CreateNewSynInstance;
 end;
 
 function TEditOptLangList.FindByName(const Name: String): Integer;
 begin
   Result := Count - 1;
-  while (Result >= 0) and (UTF8CompareLatinTextFast(
-      Items[Result].SynClass.GetLanguageName, Name) <> 0) do
+  while (Result > 0) and (UTF8CompareLatinTextFast(
+      Items[Result].SynInstance.LanguageName, Name) <> 0) do
+    dec(Result);
+  if Result = 0 then // not found // not checking lshNone;
     dec(Result);
 end;
 
-function TEditOptLangList.FindByClass(CustomSynClass: TCustomSynClass): Integer;
+function TEditOptLangList.GetDefaultFilextension(AnId: TIdeSyntaxHighlighterID
+  ): String;
 begin
-  Result := Count - 1;
-  while (Result >= 0) and (Items[Result].SynClass <> CustomSynClass) do
-    dec(Result);
-end;
-
-function TEditOptLangList.FindByHighlighter(Hilighter: TSynCustomHighlighter): Integer;
-begin
-  if Hilighter <> Nil then
-    Result := FindByClass(TCustomSynClass(Hilighter.ClassType))
+  if AnId >= 0 then
+    Result := Items[AnId].GetDefaultFilextension
   else
-    Result := -1;
+    Result := '';
 end;
 
 function TEditOptLangList.FindByType(AType: TLazSyntaxHighlighter): Integer;
 begin
-  AType := CompatibleLazSyntaxHilighter[AType];
   Result := Count - 1;
   while (Result >= 0) and (Items[Result].TheType <> AType) do
     dec(Result);
@@ -3504,7 +3796,7 @@ function TEditOptLangList.GetDefaultFilextension(
 var
   i: Integer;
 begin
-  i := FindByType(AType);
+  i := FindByType(AType){%H-};
   if i >= 0 then
     Result := Items[i].GetDefaultFilextension
   else
@@ -3515,7 +3807,7 @@ function TEditOptLangList.GetInfoByType(AType: TLazSyntaxHighlighter): TEditOptL
 var
   i: LongInt;
 begin
-  i:=FindByType(AType);
+  i:=FindByType(AType){%H-};
   if i>=0 then
     Result:=Items[i]
   else
@@ -4929,7 +5221,6 @@ begin
   fTempMouseSettings := TEditorMouseOptions.Create;
   fUserMouseSettings.LoadUserSchemes;
   // Color options
-  fHighlighterList := HighlighterListSingleton;
   FUserColorSchemeGroup := TColorSchemeFactory.Create;
   FUserColorSchemeGroup.Assign(ColorSchemeFactory); // Copy from global singleton.
   fUserDefinedColors := TEditorUserDefinedWordsList.Create;
@@ -4942,6 +5233,11 @@ begin
   fMarkupCurWordNoTimer := False;
   // Code Tools
   fAutoDisplayFuncPrototypes := True;
+end;
+
+function TEditorOptions.GetHighlighterList: TEditOptLangList;
+begin
+  Result := EditorOptions.HighlighterList;
 end;
 
 function TEditorOptions.GetCodeTemplateFileNameExpand: String;
@@ -5092,10 +5388,10 @@ begin
       , 'EditorOptions/KeyMapping/' + fKeyMappingScheme + '/');
 
     // Color options
-    for i := 0 to HighlighterList.Count - 1 do
+    for i := IdeHighlighterStartId to HighlighterList.Count - 1 do
       HighlighterList[i].FileExtensions :=
         XMLConfig.GetValue('EditorOptions/Color/Lang' +
-        StrToValidXMLName(HighlighterList[i].SynClass.GetLanguageName) +
+        StrToValidXMLName(HighlighterList[i].SynInstance.LanguageName) +
         '/FileExtensions/Value', HighlighterList[i].DefaultFileExtensions)
       // color attributes are stored in the highlighters
     ;
@@ -5161,6 +5457,8 @@ begin
     FMultiWinEditAccessOrder.LoadFromXMLConfig(XMLConfig, 'EditorOptions/MultiWin/');
     UserColorSchemeGroup.LoadFromXml(XMLConfig, 'EditorOptions/Color/',
       ColorSchemeFactory, 'EditorOptions/Display/');
+    for i := IdeHighlighterStartId to HighlighterList.Count - 1 do
+      GetHighlighterSettings(HighlighterList.SharedSynInstances[i]);
 
   except
     on E: Exception do
@@ -5292,9 +5590,9 @@ begin
               XMLConfig, 'EditorOptions/KeyMapping/' + fKeyMappingScheme + '/');
 
     // Color options
-    for i := 0 to HighlighterList.Count - 1 do
+    for i := IdeHighlighterStartId to HighlighterList.Count - 1 do
       XMLConfig.SetDeleteValue('EditorOptions/Color/Lang' +
-        StrToValidXMLName(HighlighterList[i].SynClass.GetLanguageName) +
+        StrToValidXMLName(HighlighterList[i].SynInstance.LanguageName) +
         '/FileExtensions/Value', HighlighterList[i].FileExtensions,
         HighlighterList[i].DefaultFileExtensions)
       // color attributes are stored in the highlighters
@@ -5540,7 +5838,7 @@ begin
   Scheme := UserColorSchemeGroup.ColorSchemeGroup[SynColorSchemeName];
   if Scheme = nil then
     exit;
-  Result := Scheme.ColorSchemeBySynClass[aHighLighter.ClassType];
+  Result := Scheme.ColorSchemeBySynHl[aHighLighter];
 end;
 
 function TEditorOptions.ReadColorScheme(const LanguageName: String): String;
@@ -5610,9 +5908,7 @@ var
   FoldInf: TEditorOptionsFoldInfo;
   DefHl, FoldHl: TSynCustomFoldHighlighter;
 begin
-  h := HighlighterList.FindByHighlighter(Syn);
-  if h < 0 then
-    h := HighlighterList.FindByName(Syn.LanguageName);
+  h := HighlighterList.FindByName(Syn.LanguageName);
   if h < 0 then exit;
 
   if Syn is TSynCustomFoldHighlighter then begin
@@ -5661,9 +5957,7 @@ var
   i, h: Integer;
   TheFoldInfo: TEditorOptionsFoldRecord;
 begin
-  h := HighlighterList.FindByHighlighter(Syn);
-  if h < 0 then
-    h := HighlighterList.FindByName(Syn.LanguageName);
+  h := HighlighterList.FindByName(Syn.LanguageName);
   if h < 0 then exit;
   if (syn is TSynCustomFoldHighlighter) then begin
     TheFoldInfo := EditorOptionsFoldDefaults[HighlighterList[h].TheType];
@@ -5681,10 +5975,9 @@ var
   ConfName: String;
   TheFoldInfo: TEditorOptionsFoldRecord;
 begin
-  h := HighlighterList.FindByHighlighter(Syn);
+  h := HighlighterList.FindByName(Syn.LanguageName);
   if h < 0 then
-    h := HighlighterList.FindByName(Syn.LanguageName);
-  if h < 0 then exit;
+    exit;
 
   DefSyn := TCustomSynClass(Syn.ClassType).Create(Nil);
   try
@@ -5716,9 +6009,7 @@ var
   Path: String;
   i, h: Integer;
 begin
-  h := HighlighterList.FindByHighlighter(Syn);
-  if h < 0 then
-    h := HighlighterList.FindByName(Syn.LanguageName);
+  h := HighlighterList.FindByName(Syn.LanguageName);
   if h < 0 then exit;
   TheInfo := EditorOptionsDividerDefaults[HighlighterList[h].TheType];
 
@@ -5740,9 +6031,7 @@ var
   TheInfo: TEditorOptionsDividerRecord;
   i, h: Integer;
 begin
-  h := HighlighterList.FindByHighlighter(Syn);
-  if h < 0 then
-    h := HighlighterList.FindByName(Syn.LanguageName);
+  h := HighlighterList.FindByName(Syn.LanguageName);
   if h < 0 then exit;
   TheInfo := EditorOptionsDividerDefaults[HighlighterList[h].TheType];
   for i := 0 to TheInfo.Count - 1 do begin
@@ -5761,9 +6050,7 @@ var
   TheInfo: TEditorOptionsDividerRecord;
   ConfName: String;
 begin
-  h := HighlighterList.FindByHighlighter(Syn);
-  if h < 0 then
-    h := HighlighterList.FindByName(Syn.LanguageName);
+  h := HighlighterList.FindByName(Syn.LanguageName);
   if h < 0 then exit;
   TheInfo := EditorOptionsDividerDefaults[HighlighterList[h].TheType];
 
@@ -5894,33 +6181,12 @@ end;
 
 function TEditorOptions.ExtensionToLazSyntaxHighlighter(Ext: String): TLazSyntaxHighlighter;
 var
-  s, CurExt: String;
-  LangID, StartPos, EndPos: Integer;
+  LangID: Integer;
 begin
   Result := lshNone;
-  if (Ext = '') or (Ext = '.') or (HighlighterList = Nil) then
-    exit;
-  if Ext[1] = '.' then
-    Delete(Ext, 1, 1);
-  LangID := 0;
-  while LangID < HighlighterList.Count do
-  begin
-    s := HighlighterList[LangID].FileExtensions;
-    StartPos := 1;
-    while StartPos <= length(s) do
-    begin
-      Endpos := StartPos;
-      while (EndPos <= length(s)) and (s[EndPos] <> ';') do
-        inc(EndPos);
-      CurExt := copy(s, Startpos, EndPos - StartPos);
-      if (CurExt <> '') and (CurExt[1] = '.') then
-        Delete(CurExt, 1, 1);
-      if CompareText(CurExt, Ext) = 0 then
-        exit(HighlighterList[LangID].TheType);
-      Startpos := EndPos + 1;
-    end;
-    inc(LangID);
-  end;
+  LangID := HighlighterList.GetIdForFileExtension(Ext);
+  if LangID >= 0 then
+    Result := HighlighterList[LangID].TheType;
 end;
 
 procedure TEditorOptions.GetSynEditSettings(ASynEdit: TSynEdit; SimilarEdit: TSynEdit);
@@ -6168,22 +6434,21 @@ begin
 end;
 
 function TEditorOptions.CreateSyn(LazSynHilighter: TLazSyntaxHighlighter): TSrcIDEHighlighter;
+var
+  L: TEditOptLanguageInfo;
 begin
-  if (LazSyntaxHighlighterClasses[LazSynHilighter] <> Nil) and
-     not (LazSyntaxHighlighterClasses[LazSynHilighter] = TIDESynTextSyn)
-  then
-  begin
-    Result := LazSyntaxHighlighterClasses[LazSynHilighter].Create(Nil);
+  Result := nil;
+  L := HighlighterList[HighlighterList.GetIdForLazSyntaxHighlighter(LazSynHilighter)];
+  if L <> nil then begin
+    Result := L.CreateNewSynInstance;
     GetHighlighterSettings(Result);
-  end
-  else
-    Result := Nil;
+  end;
 end;
 
 function TEditorOptions.CreateSynHighlighter(
   LazSynHilighter: TLazSyntaxHighlighter): TObject;
 begin
-  Result := CreateSyn(LazSynHilighter);
+  Result := CreateSyn(LazSynHilighter){%H-};
 end;
 
 procedure TEditorOptions.GetSynEditPreviewSettings(APreviewEditor: TObject);
@@ -6469,29 +6734,29 @@ begin
   if FOwner <> nil then begin
     cs := FOwner.GetStoredValuesForScheme;
     if cs <> nil then
-      Result := cs.ColorScheme[FLanguage];
+      //Result := cs.ColorScheme[FIdeHighlighterID];
+      Result := cs.ColorSchemeBySynHl[FHighlighter];
   end;
 end;
 
 constructor TColorSchemeLanguage.Create(AGroup: TColorScheme;
-  ALang: TLazSyntaxHighlighter; IsSchemeDefault: Boolean);
+  AIdeHighlighterID: TIdeSyntaxHighlighterID; IsSchemeDefault: Boolean);
 begin
   inherited Create;
   FIsSchemeDefault := IsSchemeDefault;
   FAttributes := TQuickStringlist.Create;
   FOwner := AGroup;
   FHighlighter := nil;
-  FLanguage := ALang;
-  if LazSyntaxHighlighterClasses[ALang] <> nil then begin
-    FHighlighter := LazSyntaxHighlighterClasses[ALang].Create(nil);
+  FIdeHighlighterID := AIdeHighlighterID;
+  FHighlighter := HighlighterList.SharedSynInstances[AIdeHighlighterID];
+  if FHighlighter <> nil then
     FLanguageName := FHighlighter.LanguageName;
-  end;
 end;
 
 constructor TColorSchemeLanguage.CreateWithDefColor(AGroup: TColorScheme;
-  ALang: TLazSyntaxHighlighter; IsSchemeDefault: Boolean);
+  AIdeHighlighterID: TIdeSyntaxHighlighterID; IsSchemeDefault: Boolean);
 begin
-  Create(AGroup, ALang, IsSchemeDefault);
+  Create(AGroup, AIdeHighlighterID, IsSchemeDefault);
   FDefaultAttribute := TColorSchemeAttribute.Create(Self, @dlgAddHiAttrDefault, 'ahaDefault');
   FDefaultAttribute.Features := [hafBackColor, hafForeColor];
   FDefaultAttribute.Group := agnDefault;
@@ -6499,7 +6764,7 @@ begin
 end;
 
 constructor TColorSchemeLanguage.CreateFromXml(AGroup: TColorScheme;
-  ALang: TLazSyntaxHighlighter; aXMLConfig: TRttiXMLConfig;
+  AIdeHighlighterID: TIdeSyntaxHighlighterID; aXMLConfig: TRttiXMLConfig;
   const aPath: String; IsSchemeDefault: Boolean);
 var
   hla: TSynHighlighterAttributes;
@@ -6507,7 +6772,7 @@ var
   aha: TAdditionalHilightAttribute;
   FormatVersion, i: Integer;
 begin
-  CreateWithDefColor(AGroup, ALang, IsSchemeDefault); // don't call inherited Create
+  CreateWithDefColor(AGroup, AIdeHighlighterID, IsSchemeDefault); // don't call inherited Create
 
   FAttributes.Sorted := False;
   if FHighlighter <> nil then begin
@@ -6536,7 +6801,6 @@ end;
 destructor TColorSchemeLanguage.Destroy;
 begin
   Clear;
-  FreeAndNil(FHighlighter);
   FreeAndNil(FAttributes);
   // FreeAndNil(FDefaultAttribute); // part of the list
 end;
@@ -6558,8 +6822,9 @@ var
   NewList: TQuickStringlist;
 begin
   // Do not clear old list => external references to Attributes may exist
-  FLanguage := Src.FLanguage;
+  FIdeHighlighterID := Src.FIdeHighlighterID;
   FLanguageName := Src.FLanguageName;
+  FHighlighter := Src.FHighlighter;
   //FDefaultAttribute.Assign(Src.FDefaultAttribute);
   FDefaultAttribute := nil;
   NewList := TQuickStringlist.Create;
@@ -6592,7 +6857,7 @@ var
   csa, othercsa: TColorSchemeAttribute;
 begin
   Result := //FDefaultAttribute.Equals(Other.FDefaultAttribute) and
-            (FLanguage = Other.FLanguage) and
+            (FIdeHighlighterID = Other.FIdeHighlighterID) and
             (FAttributes.Count = Other.FAttributes.Count);
   i := FAttributes.Count - 1;
   while Result and (i >= 0) do begin
@@ -6696,7 +6961,7 @@ begin
   if (FormatVersion <= 5) and (DefaultAttribute <> nil)
   and (FHighlighter <> nil) and (FHighlighter.WhitespaceAttribute <> nil) then
   begin
-    CurAttr := Attribute[Highlighter.WhitespaceAttribute.StoredName];
+    CurAttr := Attribute[FHighlighter.WhitespaceAttribute.StoredName];
     if (CurAttr <> nil) and not CurAttr.UseSchemeGlobals then
       DefaultAttribute.Background := CurAttr.Background;
   end;
@@ -7007,19 +7272,16 @@ end;
 
 { TColorScheme }
 
-function TColorScheme.GetColorScheme(Index: TLazSyntaxHighlighter): TColorSchemeLanguage;
+function TColorScheme.GetColorSchemeBySynHl(Index: TSynCustomHighlighter
+  ): TColorSchemeLanguage;
 begin
-  Result := FColorSchemes[CompatibleLazSyntaxHilighter[Index]];
-end;
-
-function TColorScheme.GetColorSchemeBySynClass(Index: TClass): TColorSchemeLanguage;
-var
-  i: TLazSyntaxHighlighter;
-begin
-  for i := low(TLazSyntaxHighlighter) to high(TLazSyntaxHighlighter) do
-    if LazSyntaxHighlighterClasses[i] = Index then
-      exit(FColorSchemes[CompatibleLazSyntaxHilighter[i]]);
-  Result := nil;
+  if Index = nil then
+    Result := FColorSchemes['']
+  else
+  if FColorSchemes.IndexOf(Index.LanguageName) < 0 then
+    Result := nil
+  else
+    Result := FColorSchemes[Index.LanguageName];
 end;
 
 function TColorScheme.GetStoredValuesForScheme: TColorScheme;
@@ -7031,61 +7293,57 @@ constructor TColorScheme.Create(const AName: String);
 begin
   inherited Create;
   FName := AName;
+  FColorSchemes := TColorSchemesMap.Create(True);
 end;
 
 constructor TColorScheme.CreateFromXml(aXMLConfig: TRttiXMLConfig; const AName, aPath: String);
 var
-  i: TLazSyntaxHighlighter;
+  i: integer;
+  n: String;
 begin
   Create(AName);
-  FDefaultColors := TColorSchemeLanguage.CreateFromXml(Self, lshNone, aXMLConfig,
+  FDefaultColors := TColorSchemeLanguage.CreateFromXml(Self, IdeHighlighterNoneID, aXMLConfig,
                                                        aPath + 'Globals/', True);
-  for i := low(TLazSyntaxHighlighter) to high(TLazSyntaxHighlighter) do
-    // do not create duplicates
-    if CompatibleLazSyntaxHilighter[i] = i then
-      FColorSchemes[i] := TColorSchemeLanguage.CreateFromXml(Self, i, aXMLConfig,
-                                                             aPath, False)
-    else
-      FColorSchemes[i] := nil;
+  for i := IdeHighlighterStartId to HighlighterList.Count - 1 do begin
+    n := HighlighterList.SharedSynInstances[i].LanguageName;
+    if FColorSchemes.IndexOf(n) < 0 then
+      FColorSchemes[n] := TColorSchemeLanguage.CreateFromXml(Self, i, aXMLConfig, aPath, False);
+   end;
 end;
 
 destructor TColorScheme.Destroy;
-var
-  i: TLazSyntaxHighlighter;
 begin
   inherited Destroy;
   FreeAndNil(FDefaultColors);
-  for i := low(TLazSyntaxHighlighter) to high(TLazSyntaxHighlighter) do
-    FreeAndNil(FColorSchemes[i]);
+  FColorSchemes.Free;
 end;
 
 procedure TColorScheme.Assign(Src: TColorScheme);
 var
-  i: TLazSyntaxHighlighter;
+  i: integer;
+  l: TColorSchemeLanguage;
 begin
   if Src.FDefaultColors = nil then
     FreeAndNil(FDefaultColors)
   else if FDefaultColors = nil then
-    FDefaultColors := TColorSchemeLanguage.Create(Self, lshNone, True);
+    FDefaultColors := TColorSchemeLanguage.Create(Self, IdeHighlighterNoneID, True);
   if FDefaultColors <> nil then
     FDefaultColors.Assign(Src.FDefaultColors);
-  for i := low(FColorSchemes) to high(FColorSchemes) do begin
-    if Src.FColorSchemes[i] = nil then begin
-      FreeAndNil(FColorSchemes[i]);
-    end else begin
-      if FColorSchemes[i] = nil then
-        FColorSchemes[i] := TColorSchemeLanguage.Create(Self, i, False);
-      FColorSchemes[i].Assign(Src.FColorSchemes[i]);
-    end;
+  FColorSchemes.Clear;
+  for i := 0 to Src.FColorSchemes.Count-1 do begin
+    l := TColorSchemeLanguage.Create(Self, -1, False);
+    l.Assign(Src.FColorSchemes.Data[i]);
+    FColorSchemes[Src.FColorSchemes.Keys[i]] := l;
   end;
 end;
 
 procedure TColorScheme.LoadFromXml(aXMLConfig: TRttiXMLConfig;
   const aPath: String; Defaults: TColorScheme; const aOldPath: String);
 var
-  i: TLazSyntaxHighlighter;
+  i: Integer;
   Def: TColorSchemeLanguage;
   FormatVersion: longint;
+  n: String;
 begin
   FormatVersion := aXMLConfig.GetValue(aPath + 'Version', 0);
   if Defaults <> nil then
@@ -7093,21 +7351,22 @@ begin
   else
     Def := nil;
   FDefaultColors.LoadFromXml(aXMLConfig, aPath + 'Globals/', Def, FormatVersion);
-  for i := low(TLazSyntaxHighlighter) to high(TLazSyntaxHighlighter) do
-    if ColorScheme[i] <> nil then begin
-      if Defaults <> nil then
-        Def := Defaults.ColorScheme[i]
-      else
-        Def := nil;
-      ColorScheme[i].LoadFromXml(aXMLConfig, aPath, Def, FormatVersion, aOldPath);
-    end;
+  for i := 0 to FColorSchemes.Count - 1 do begin
+    n := FColorSchemes.Keys[i];
+    if Defaults <> nil then
+      Def := Defaults.FColorSchemes[n]
+    else
+      Def := nil;
+    FColorSchemes.Data[i].LoadFromXml(aXMLConfig, aPath, Def, FormatVersion, aOldPath);
+  end;
 end;
 
 procedure TColorScheme.SaveToXml(aXMLConfig: TRttiXMLConfig;
   const aPath: String; Defaults: TColorScheme);
 var
-  i: TLazSyntaxHighlighter;
+  i: Integer;
   Def: TColorSchemeLanguage;
+  n: String;
 begin
   if Defaults <> nil then
     Def := Defaults.DefaultColors
@@ -7116,14 +7375,14 @@ begin
   FDefaultColors.SaveToXml(aXMLConfig, aPath + 'Globals/', Def);
   if not aXMLConfig.HasChildPaths(aPath + 'Globals') then
     aXMLConfig.DeletePath(aPath + 'Globals');
-  for i := low(TLazSyntaxHighlighter) to high(TLazSyntaxHighlighter) do
-    if ColorScheme[i] <> nil then begin
-      if Defaults <> nil then
-        Def := Defaults.ColorScheme[i]
-      else
-        Def := nil;
-      ColorScheme[i].SaveToXml(aXMLConfig, aPath, Def);
-    end;
+  for i := 0 to FColorSchemes.Count - 1 do begin
+    n := FColorSchemes.Keys[i];
+    if (Defaults <> nil) and (Defaults.FColorSchemes.IndexOf(n) >= 0) then
+      Def := Defaults.FColorSchemes[n]
+    else
+      Def := nil;
+    FColorSchemes.Data[i].SaveToXml(aXMLConfig, aPath, Def);
+  end;
   aXMLConfig.SetValue(aPath + 'Version', EditorOptsFormatVersion);
 end;
 
@@ -7324,9 +7583,10 @@ end;
 
 initialization
   RegisterIDEOptionsGroup(GroupEditor, TEditorOptions);
+  IdeSyntaxHighlighters := HighlighterList;
 
 finalization
   ColorSchemeFactory.Free;
-  HighlighterListSingleton.Free;
+  HighlighterList.Free;
 
 end.

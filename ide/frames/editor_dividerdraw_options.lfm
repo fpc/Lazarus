@@ -1,5 +1,7 @@
-inherited EditorDividerDrawOptionsFrame: TEditorDividerDrawOptionsFrame
+object EditorDividerDrawOptionsFrame: TEditorDividerDrawOptionsFrame
+  Left = 0
   Height = 334
+  Top = 0
   Width = 521
   Anchors = [akTop]
   ClientHeight = 334
@@ -8,7 +10,7 @@ inherited EditorDividerDrawOptionsFrame: TEditorDividerDrawOptionsFrame
   Visible = False
   DesignLeft = 207
   DesignTop = 207
-  object LanguageLabel: TLabel[0]
+  object LanguageLabel: TLabel
     AnchorSideLeft.Control = LanguageComboBox
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = LanguageComboBox
@@ -22,7 +24,7 @@ inherited EditorDividerDrawOptionsFrame: TEditorDividerDrawOptionsFrame
     Caption = 'LanguageLabel'
     ParentColor = False
   end
-  object DividerConfPanel: TPanel[1]
+  object DividerConfPanel: TPanel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = LanguageComboBox
     AnchorSideTop.Side = asrBottom
@@ -232,7 +234,7 @@ inherited EditorDividerDrawOptionsFrame: TEditorDividerDrawOptionsFrame
       TopIndex = -1
     end
   end
-  object LanguageComboBox: TComboBox[2]
+  object LanguageComboBox: TComboBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 0

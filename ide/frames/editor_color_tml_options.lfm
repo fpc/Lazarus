@@ -1,0 +1,58 @@
+object TEditorColorOptionsTMLFrame: TTEditorColorOptionsTMLFrame
+  Left = 0
+  Height = 479
+  Top = 0
+  Width = 645
+  ClientHeight = 479
+  ClientWidth = 645
+  TabOrder = 0
+  DesignLeft = 277
+  DesignTop = 41
+  object Panel1: TPanel
+    Left = 0
+    Height = 37
+    Top = 0
+    Width = 645
+    Align = alTop
+    AutoSize = True
+    BevelOuter = bvNone
+    ClientHeight = 37
+    ClientWidth = 645
+    TabOrder = 0
+    object Label1: TLabel
+      AnchorSideLeft.Control = Panel1
+      AnchorSideRight.Control = btnReload
+      Left = 6
+      Height = 15
+      Top = 12
+      Width = 552
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 6
+      Caption = 'info'
+      WordWrap = True
+    end
+    object btnReload: TButton
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 564
+      Height = 25
+      Top = 6
+      Width = 75
+      Anchors = [akTop, akRight]
+      BorderSpacing.Around = 6
+      Caption = 'btnReload'
+      TabOrder = 0
+      OnClick = btnReloadClick
+    end
+  end
+  object Memo1: TMemo
+    Left = 6
+    Height = 430
+    Top = 43
+    Width = 633
+    Align = alClient
+    BorderSpacing.Around = 6
+    ReadOnly = True
+    TabOrder = 1
+  end
+end

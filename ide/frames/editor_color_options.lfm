@@ -177,7 +177,6 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
           ShowButtons = False
           ShowLines = False
           ShowRoot = False
-          ShowSeparators = False
           SortType = stData
           TabOrder = 0
           OnAdvancedCustomDrawItem = ColorElementTreeAdvancedCustomDrawItem
@@ -260,7 +259,6 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
           ShowButtons = False
           ShowLines = False
           ShowRoot = False
-          ShowSeparators = False
           SortType = stData
           TabOrder = 0
           OnAdvancedCustomDrawItem = ColorElementTreeAdvancedCustomDrawItem
@@ -343,7 +341,6 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
           ShowButtons = False
           ShowLines = False
           ShowRoot = False
-          ShowSeparators = False
           SortType = stData
           TabOrder = 0
           OnAdvancedCustomDrawItem = ColorElementTreeAdvancedCustomDrawItem
@@ -426,7 +423,6 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
           ShowButtons = False
           ShowLines = False
           ShowRoot = False
-          ShowSeparators = False
           SortType = stData
           TabOrder = 0
           OnAdvancedCustomDrawItem = ColorElementTreeAdvancedCustomDrawItem
@@ -577,7 +573,6 @@ object EditorColorOptionsFrame: TEditorColorOptionsFrame
       ScrollBars = ssAutoBoth
       ShowButtons = False
       ShowRoot = False
-      ShowSeparators = False
       TabOrder = 0
       OnAdvancedCustomDrawItem = ColorElementTreeAdvancedCustomDrawItem
       OnChange = ColorElementTreeChange

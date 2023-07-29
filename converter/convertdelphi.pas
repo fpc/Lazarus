@@ -43,7 +43,7 @@ uses
   AvgLvlTree,
   // IDEIntf
   ComponentReg, IDEDialogs, LazIDEIntf, PackageIntf, ProjectIntf,
-  IDEExternToolIntf, IDEOptEditorIntf,
+  IDEExternToolIntf, IDEOptEditorIntf, EditorSyntaxHighlighterDef,
   // IdeConfig
   IDEProcs,
   // IDE
@@ -1579,7 +1579,7 @@ begin
     MainUnitInfo:=TUnitInfo.Create(fMainUnitConverter.fPascalBuffer);
     Assert(Assigned(IDEEditorOptions), 'TConvertDelphiProject.CreateMainSourceFile: IDEEditorOptions is Nil.');
     MainUnitInfo.DefaultSyntaxHighlighter:=
-      IDEEditorOptions.ExtensionToLazSyntaxHighlighter(fMainUnitConverter.LazFileExt);
+      IdeSyntaxHighlighters.GetIdForFileExtension(fMainUnitConverter.LazFileExt);
     MainUnitInfo.IsPartOfProject:=true;
     LazProject.AddFile(MainUnitInfo,false);
     LazProject.MainFileID:=0;

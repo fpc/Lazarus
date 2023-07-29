@@ -33,7 +33,7 @@ uses
   SynEditTextSystemCharWidth, SynEditMarkupIfDef, SynPluginMultiCaret, 
   synhighlighterpike, SynEditMarkupFoldColoring, SynEditViewedLineMap, 
   SynEditWrappedView, SynBeautifierPascal, LazSynIMMBase, SynPopupMenu, 
-  SynEditTextDynTabExpander, LazarusPackageIntf;
+  SynEditTextDynTabExpander, SynTextMateSyn, LazarusPackageIntf;
 
 implementation
 

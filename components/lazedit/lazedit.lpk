@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <PathDelim Value="\"/>
+    <Name Value="LazEdit"/>
+    <Author Value="See each unit"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <ConfigFile>
+          <WriteConfigFilePath Value=""/>
+        </ConfigFile>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="Tools/Units to be used by SynEdit (or other editors)"/>
+    <License Value="modified LGPL-2
+Additional licenses may be granted in each individual file. See the headers in each file.
+"/>
+    <Version Major="1"/>
+    <Files>
+      <Item>
+        <Filename Value="textmategrammar.pas"/>
+        <UnitName Value="TextMateGrammar"/>
+      </Item>
+      <Item>
+        <Filename Value="xHyperLinksDecorator.pas"/>
+        <UnitName Value="xHyperLinksDecorator"/>
+      </Item>
+      <Item>
+        <Filename Value="xregexpr.pas"/>
+        <UnitName Value="xregexpr"/>
+      </Item>
+      <Item>
+        <Filename Value="xregexpr_unicodedata.pas"/>
+        <UnitName Value="xregexpr_unicodedata"/>
+      </Item>
+    </Files>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="LazUtils"/>
+      </Item>
+      <Item>
+        <PackageName Value="FCL"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

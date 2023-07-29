@@ -19,7 +19,8 @@ uses
   LazPasReadUtil, LazStringUtils, LazSysUtils, LazTracer, LazUnicode, 
   LazUTF16, LazUTF8, LazUtilities, LazUtilsStrConsts, LazVersion, 
   LConvEncoding, LCSVUtils, LookupStringList, Maps, Masks, ObjectLists, 
-  StringHashList, TextStrings, Translations, UTF8Process, LazarusPackageIntf;
+  StringHashList, TextStrings, Translations, UTF8Process, PList2JSon, 
+  LazarusPackageIntf;
 
 implementation
 
