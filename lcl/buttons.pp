@@ -575,8 +575,6 @@ end;
 
 function GetDefaultButtonIcon(idButton: Integer;
   ScalePercent: Integer): TCustomBitmap;
-var
-  ResName: string;
 begin
   Result := nil;
   if (idButton < Low(BitBtnResNames)) or (idButton > High(BitBtnResNames)) then
@@ -631,8 +629,6 @@ begin
 end;
 
 procedure LoadGlyphFromResource(AGlyph: TButtonGlyph; idButton: Integer);
-var
-  I: Integer;
 begin
   if not((Low(TButtonImage)<=idButton) and (idButton<=High(TButtonImage))) then
     Exit;
