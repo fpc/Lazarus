@@ -22,8 +22,6 @@ type
   TCursorHelper = class
   private
     _lastCursor: NSCursor;
-  private
-    procedure DoSetCursorOnActive( data:IntPtr );
   public
     procedure SetNewCursor( newCursor:TCocoaCursor );
   public
@@ -370,14 +368,6 @@ end;
 
 { TCursorHelper }
 
-procedure TCursorHelper.DoSetCursorOnActive( data:IntPtr );
-begin
-  if Screen.Cursor<>crDefault then
-    SetScreenCursor
-  else
-    SetCursorAtMousePos;
-end;
-
 procedure TCursorHelper.SetNewCursor( newCursor:TCocoaCursor );
 var
   currentCursor: NSCursor;
@@ -393,7 +383,10 @@ end;
 class procedure TCursorHelper.SetCursorOnActive;
 begin
   CursorHelper._lastCursor:= nil;
-  Application.QueueAsyncCall( @CursorHelper.DoSetCursorOnActive, 0 );
+  if Screen.Cursor<>crDefault then
+    SetScreenCursor
+  else
+    SetCursorAtMousePos;
 end;
 
 class procedure TCursorHelper.SetCursorAtMousePos;
