@@ -1592,6 +1592,7 @@ type
     destructor Destroy; override;
     procedure ActivateHint(CursorPos: TPoint; CheckHintControlChange: Boolean = False);
     function GetControlAtMouse: TControl;
+    function GetControlAtPos(P: TPoint): TControl;
     procedure ControlDestroyed(AControl: TControl);
     function BigIconHandle: HIcon;
     function SmallIconHandle: HIcon;
