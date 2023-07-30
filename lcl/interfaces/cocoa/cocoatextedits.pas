@@ -812,7 +812,7 @@ begin
   // windows.  There isn't a way to detect the popup is open, so allow the
   // keys through.  If they make it to the default handlers let the LCL process
   // them further.  If they got swallowed prevent further processing.
-  if Assigned(lclGetCallback) and (event.modifierFlags_ = 0) and
+  if Assigned(lclGetCallback) and (event.modifierFlags = 0) and
     ((NSEventRawKeyChar(event) = #13) or (NSEventRawKeyChar(event) = #27)) then
   begin
     keyCaptured := True;
@@ -1102,7 +1102,7 @@ end;
 procedure TCocoaTextView.keyDown(event: NSEvent);
 begin
   // See TCocoaFieldEditor.keyDown
-  if Assigned(lclGetCallback) and (event.modifierFlags_ = 0) and
+  if Assigned(lclGetCallback) and (event.modifierFlags = 0) and
     ((NSEventRawKeyChar(event) = #13) or (NSEventRawKeyChar(event) = #27)) then
   begin
     keyCaptured := True;

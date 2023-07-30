@@ -387,7 +387,7 @@ begin
   // prevent further processing.  Actually clicking the buttons is handled in
   // the LCL in response to the keyUp
   // add NumericPadEnter supported.
-  if Assigned(wincallback) and ((event.modifierFlags_=0) or (event.modifierFlags_=$200000)) then
+  if Assigned(wincallback) and ((event.modifierFlags=0) or (event.modifierFlags=$200000)) then
   begin
     ch := NSEventRawKeyChar(event);
     if  (((ch = System.WideChar(NSCarriageReturnCharacter)) and wincallback.HasDefaultControl)
