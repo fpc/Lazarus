@@ -1287,7 +1287,7 @@ type
     function IsHelpKeyWordStored: Boolean;
     function IsShowHintStored: Boolean;
     function IsVisibleStored: Boolean;
-    procedure DoBeforeMouseMessage;
+    procedure DoBeforeMouseMessage(TheMessage: TLMessage);
     procedure DoConstrainedResize(var NewLeft, NewTop, NewWidth, NewHeight: Integer);
     procedure SetAccessibleName(AValue: TCaption);
     procedure SetAccessibleDescription(AValue: TCaption);

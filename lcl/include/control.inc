@@ -1399,15 +1399,21 @@ end;
 {------------------------------------------------------------------------------
   procedure TControl.DoBeforeMouseMessage;
 ------------------------------------------------------------------------------}
-procedure TControl.DoBeforeMouseMessage;
+procedure TControl.DoBeforeMouseMessage(TheMessage: TLMessage);
 var
+  MouseMessage: TLMMouse absolute TheMessage;
+  P: TPoint;
   NewMouseControl: TControl;
 begin
   if Assigned(Application) then
   begin
     NewMouseControl := GetCaptureControl;
     if NewMouseControl = nil then
-      NewMouseControl := Application.GetControlAtMouse;
+    begin
+      P := GetMousePosFromMessage(MouseMessage.Pos);
+      p := ClientToScreen(P);
+      NewMouseControl := Application.GetControlAtPos(P);
+    end;
     Application.DoBeforeMouseMessage(NewMouseControl);
   end;
 end;

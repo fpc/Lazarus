@@ -5392,7 +5392,7 @@ begin
          DebugLn('TWinControl.WndPRoc A ',Name,':',ClassName);
          {$ENDIF}
          //if Message.Msg=LM_RBUTTONUP then begin DebugLn(['TWinControl.WndProc ',DbgSName(Self)]); DumpStack end;
-         DoBeforeMouseMessage;
+         DoBeforeMouseMessage(Message);
          if IsControlMouseMSG(Message) then
            Exit
          else
