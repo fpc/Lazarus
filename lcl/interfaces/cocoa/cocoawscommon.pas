@@ -1026,7 +1026,7 @@ begin
       (Event.type_ = NSRightMouseDown)
       or(
         (Event.type_ = NSLeftMouseDown)
-        and (event.modifierFlags_ and NSControlKeyMask <> 0)
+        and (event.modifierFlags and NSControlKeyMask <> 0)
         and (event.clickCount = 1)
       )
     );

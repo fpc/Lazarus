@@ -2287,6 +2287,17 @@ begin
     Result := 0;
 end;
 
+function GetCurrentEventKeyState(): NSUInteger;
+var
+  event: NSEvent;
+begin
+  event := NSApp.currentEvent;
+  if Assigned(event) then
+    Result := event.modifierFlags
+  else
+    Result := NSEvent.modifierFlags_;
+end;
+
 function TCocoaWidgetSet.GetKeyState(nVirtKey: Integer): Smallint;
 const
   StateDown    = SmallInt($FF80);
@@ -2298,7 +2309,7 @@ var
 begin
   // NSApp.currentEvent.modifierFlags doesn't work before events start coming,
   // see bug 29272 and http://lists.apple.com/archives/cocoa-dev/2010/Feb/msg00105.html
-  Modifiers := NSEvent.modifierFlags_();
+  Modifiers := GetCurrentEventKeyState();
   case nVirtKey of
     VK_MENU,
     VK_LMENU:
