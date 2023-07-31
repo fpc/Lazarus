@@ -30,7 +30,7 @@ type
     //CustomButtons, Radios: TStringList;
     DialogCaption, DlgTitle, DlgText,
     ExpandedButtonCaption, ExpandedText, FooterText,
-    VerificationText, Selection: String;
+    VerificationText: String;
     CommonButtons: TTaskDialogCommonButtons;
 
     Panel: TPanel;
@@ -654,10 +654,6 @@ begin
   for B in FDlg.Buttons do
     CustomButtonsTextLength := CustomButtonsTextLength + Length(B.Caption);
 
-
-  //ToDo
-  //This field/parameter is currently not used in Dialogs.TTaskDialog and not passed so we cannot initialize it properly yet
-  Selection := '';
 
   DialogCaption := FDlg.Caption;
   DlgTitle := FDlg.Title;
