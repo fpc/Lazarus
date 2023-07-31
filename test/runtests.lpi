@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="10"/>
+    <Version Value="12"/>
     <PathDelim Value="\"/>
     <General>
       <Flags>
         <LRSInOutputDirectory Value="False"/>
+        <CompatibilityMode Value="True"/>
       </Flags>
       <SessionStorage Value="InIDEConfig"/>
-      <MainUnit Value="0"/>
     </General>
     <BuildModes Count="2">
       <Item1 Name="default" Default="True"/>
@@ -23,11 +23,11 @@
             <Filename Value="runtests"/>
           </Target>
           <SearchPaths>
-            <OtherUnitFiles Value="bugs;lcltests;lazutils"/>
+            <OtherUnitFiles Value="bugs;lcltests;lazutils;ideintf"/>
             <UnitOutputDirectory Value="unitsconsole\$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <Conditionals Value="if defined(EnableCTRange) then
-  CustomOptions += '-dEnableCTRange';"/>
+  CustomOptions += &apos;-dEnableCTRange&apos;;"/>
           <BuildMacros>
             <Count Value="1"/>
             <Item1>
@@ -48,6 +48,9 @@
             </Checks>
           </CodeGeneration>
           <Other>
+            <ConfigFile>
+              <WriteConfigFilePath Value="$(ProjOutDir)\fpclaz.cfg"/>
+            </ConfigFile>
             <CustomOptions Value="-dNoSemiAutomatedTests"/>
           </Other>
         </CompilerOptions>
@@ -58,34 +61,43 @@
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
-      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
-      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
     </PublishOptions>
     <RunParams>
       <local>
-        <FormatVersion Value="1"/>
         <CommandLineParams Value="-s bugs.2068 --file=results.xml"/>
-        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T &apos;Lazarus Run Output&apos; -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
+      <FormatVersion Value="2"/>
+      <Modes Count="1">
+        <Mode0 Name="default">
+          <local>
+            <CommandLineParams Value="-s bugs.2068 --file=results.xml"/>
+            <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T &apos;Lazarus Run Output&apos; -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
+          </local>
+        </Mode0>
+      </Modes>
     </RunParams>
-    <RequiredPackages Count="5">
+    <RequiredPackages Count="6">
       <Item1>
-        <PackageName Value="CodeTools"/>
+        <PackageName Value="IdeConfig"/>
       </Item1>
       <Item2>
-        <PackageName Value="FCL"/>
+        <PackageName Value="CodeTools"/>
       </Item2>
       <Item3>
-        <PackageName Value="LCL"/>
+        <PackageName Value="FCL"/>
       </Item3>
       <Item4>
-        <PackageName Value="fpcunitconsolerunner"/>
+        <PackageName Value="LCL"/>
       </Item4>
       <Item5>
-        <PackageName Value="lazmouseandkeyinput"/>
+        <PackageName Value="fpcunitconsolerunner"/>
       </Item5>
+      <Item6>
+        <PackageName Value="lazmouseandkeyinput"/>
+      </Item6>
     </RequiredPackages>
-    <Units Count="13">
+    <Units Count="14">
       <Unit0>
         <Filename Value="runtests.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -144,6 +156,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestLazFileUtils"/>
       </Unit12>
+      <Unit13>
+        <Filename Value="ideintf\testsearchpathprocs.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TestSearchPathProcs"/>
+      </Unit13>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -153,11 +170,11 @@
       <Filename Value="runtests"/>
     </Target>
     <SearchPaths>
-      <OtherUnitFiles Value="bugs;lcltests;lazutils"/>
+      <OtherUnitFiles Value="bugs;lcltests;lazutils;ideintf"/>
       <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Conditionals Value="if defined(EnableCTRange) then
-  CustomOptions += '-dEnableCTRange';"/>
+  CustomOptions += &apos;-dEnableCTRange&apos;;"/>
     <BuildMacros>
       <Count Value="1"/>
       <Item1>
@@ -179,6 +196,9 @@
       </Checks>
     </CodeGeneration>
     <Other>
+      <ConfigFile>
+        <WriteConfigFilePath Value="$(ProjOutDir)\fpclaz.cfg"/>
+      </ConfigFile>
       <CustomOptions Value="-dNoSemiAutomatedTests"/>
     </Other>
   </CompilerOptions>

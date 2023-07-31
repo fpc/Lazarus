@@ -1,6 +1,31 @@
+{
+  Functions for search paths maintained by the IDE, e.g. UnitPaths, IncludePath.
+
+  The Lazarus IDE has some special rules for search paths:
+  - Search paths are separated by semicolon
+  - It uses TrimAndExpandFilename to trim leading and trailing spaces and expand ~ on Unix
+  - It uses ResolveDots to normalize e.g. /foo/../bar to /bar and merges // to /
+  - It normalizes AllowDirectorySeparators to PathDelim
+  - A $(macro) at start is treated as an absolute filename
+  - Star directories:
+    /path/* matches all direct sub directories  /path/* (similar to fpc)
+    /path/** matches all sub directories  /path/**
+}
 unit SearchPathProcs;
 
 {$mode objfpc}{$H+}
+{$ScopedEnums on}
+{$ModeSwitch advancedrecords}
+
+{$IF defined(Windows) or defined(darwin) or defined(HASAMIGA)}
+{$define CaseInsensitiveFilenames}
+{$IFDEF Windows}
+  {$define HasUNCPaths}
+{$ENDIF}
+{$ENDIF}
+{$IF defined(CaseInsensitiveFilenames)}
+  {$define NotLiteralFilenames} // e.g. HFS+ normalizes file names
+{$ENDIF}
 
 interface
 
@@ -8,6 +33,32 @@ uses
   Classes, SysUtils,
   // LazUtils
   LazFileUtils, LazFileCache, FileUtil;
+
+type
+  TSPMaskType = (
+    None,
+    Star, // matching all direct sub directories  /path/*
+    StarStar // matching all sub directories  /path/**
+    );
+
+  TSPFileMaskRelation = (
+    None,
+    Equal,
+    LeftMoreGeneral, // e.g. left is * and right is path
+    RightMoreGeneral // e.g. right is ** and left is *
+    );
+
+  { TSPMaskRecord }
+
+  TSPMaskRecord = record
+    Len: integer;
+    StartPos: PChar;
+    EndPos: PChar;
+    PathDelimCount: integer;
+    LastPathDelim: PChar; // nil if no pathdelim
+    MaskType: TSPMaskType;
+    function FindPathDelim(Index: integer{starting at 1}): PChar;
+  end;
 
 // search paths
 function TrimSearchPath(const SearchPath, BaseDirectory: string;
@@ -30,6 +81,14 @@ function SearchDirectoryInSearchPath(const SearchPath, Directory: string;
                                      DirStartPos: integer = 1): integer;
 function SearchDirectoryInSearchPath(SearchPath: TStrings;
                     const Directory: string; DirStartPos: integer = 0): integer;
+function FilenamePIsAbsolute(TheFilename: PChar): boolean;
+function FilenamePIsUnixAbsolute(TheFilename: PChar): boolean;
+function FilenamePIsWinAbsolute(TheFilename: PChar): boolean;
+
+function RelateDirectoryMasks(const LeftDir: string; LeftStart: integer; const RightDir: string; RightStart: integer): TSPFileMaskRelation;
+function GetSPMaskRecord(const aDirectory: string; aStartPos: integer; out MaskRecord: TSPMaskRecord): boolean;
+
+function dbgs(r: TSPFileMaskRelation): string; overload;
 
 implementation
 
@@ -483,6 +542,182 @@ begin
     end;
     dec(Result);
   end;
+end;
+
+function FilenamePIsAbsolute(TheFilename: PChar): boolean;
+begin
+  {$IFDEF Unix}
+  Result:=FilenamePIsUnixAbsolute(TheFilename);
+  {$ELSE}
+  Result:=FilenamePIsWinAbsolute(TheFilename);
+  {$ENDIF}
+end;
+
+function FilenamePIsUnixAbsolute(TheFilename: PChar): boolean;
+begin
+  Result:=(TheFilename<>nil) and (TheFilename^='/');
+end;
+
+function FilenamePIsWinAbsolute(TheFilename: PChar): boolean;
+begin
+  if TheFilename=nil then exit(false);
+  {$ifdef wince}
+  Result := TheFilename^ in AllowDirectorySeparators;
+  {$else wince}
+  Result:=(TheFilename^ in ['A'..'Z','a'..'z']) and (TheFilename[1]=':')
+           and (TheFilename[2] in AllowDirectorySeparators)
+      or ((TheFilename^ in AllowDirectorySeparators) and (TheFilename^=TheFilename[1]));
+  {$endif wince}
+end;
+
+function RelateDirectoryMasks(const LeftDir: string; LeftStart: integer;
+  const RightDir: string; RightStart: integer): TSPFileMaskRelation;
+var
+  Left, Right: TSPMaskRecord;
+begin
+  Result:=TSPFileMaskRelation.None;
+
+  if not GetSPMaskRecord(LeftDir,LeftStart,Left) then exit;
+  if not GetSPMaskRecord(RightDir,RightStart,Right) then exit;
+
+  if FilenamePIsAbsolute(Left.StartPos)<>FilenamePIsAbsolute(Right.StartPos) then
+    exit; // absolute and relative path don't match
+
+  if Left.MaskType=Right.MaskType then
+  begin
+    // same mask type -> simple compare
+    if CompareFilenames(Left.StartPos,Left.Len,Right.StartPos,Right.Len)=0 then
+      Result:=TSPFileMaskRelation.Equal;
+    exit;
+  end;
+
+  // different mask types
+  if Left.MaskType=TSPMaskType.StarStar then
+  begin
+    // e.g. Left is /foo/** and Right is /bar or /bar/*
+    if (Left.PathDelimCount<=Right.PathDelimCount) then
+    begin
+      if (Left.PathDelimCount=0)
+          or (CompareFilenames(Left.StartPos,Left.LastPathDelim-1-Left.StartPos,
+                      Right.StartPos,Right.FindPathDelim(Left.PathDelimCount)-1-Right.StartPos)=0) then
+        Result:=TSPFileMaskRelation.LeftMoreGeneral;
+    end;
+    exit;
+  end;
+  if Right.MaskType=TSPMaskType.StarStar then
+  begin
+    // e.g. Left is /foo or /foo/* and Right is /bar/**
+    if Left.PathDelimCount>=Right.PathDelimCount then
+    begin
+      if (Right.PathDelimCount=0)
+            or (CompareFilenames(Left.StartPos,Left.FindPathDelim(Right.PathDelimCount)-1-Left.StartPos,
+                                 Right.StartPos,Right.LastPathDelim-1-Right.StartPos)=0) then
+      Result:=TSPFileMaskRelation.RightMoreGeneral;
+    end;
+    exit;
+  end;
+  // Left or Right is a /bar/* and the other has no star
+  if (Left.PathDelimCount=Right.PathDelimCount) then
+  begin
+    if (Left.PathDelimCount=0)
+        or (CompareFilenames(Left.StartPos,Left.LastPathDelim-1-Left.StartPos,
+                    Right.StartPos,Right.LastPathDelim-1-Right.StartPos)=0) then
+    begin
+      if Left.MaskType=TSPMaskType.Star then
+        Result:=TSPFileMaskRelation.LeftMoreGeneral
+      else
+        Result:=TSPFileMaskRelation.RightMoreGeneral;
+    end;
+  end;
+end;
+
+function GetSPMaskRecord(const aDirectory: string; aStartPos: integer; out
+  MaskRecord: TSPMaskRecord): boolean;
+begin
+  Result:=false;
+  MaskRecord:=Default(TSPMaskRecord);
+  with MaskRecord do begin
+    if aStartPos>length(aDirectory) then
+      exit;
+    StartPos:=@aDirectory[aStartPos];
+    EndPos:=StartPos;
+
+    repeat
+      case EndPos^ of
+      #0,';': break;
+      PathDelim:
+        begin
+          inc(PathDelimCount);
+          LastPathDelim:=EndPos;
+        end;
+      end;
+      inc(EndPos);
+    until false;
+    Len:=EndPos-StartPos;
+    if Len=0 then exit;
+
+    // ignore trailing pathdelim
+    if EndPos[-1]=PathDelim then
+    begin
+      dec(EndPos);
+      dec(PathDelimCount);
+      if PathDelimCount=0 then
+        LastPathDelim:=nil
+      else begin
+        dec(LastPathDelim);
+        while LastPathDelim^<>PathDelim do dec(LastPathDelim);
+      end;
+      dec(Len);
+      if Len=0 then exit;
+    end;
+
+    if EndPos[-1]='*' then
+    begin
+      if (LastPathDelim=nil) then
+      begin
+        if Len=1 then
+          MaskType:=TSPMaskType.Star
+        else if (Len=2) and (StartPos^='*') then
+          MaskType:=TSPMaskType.StarStar;
+      end else begin
+        if EndPos-2=LastPathDelim then
+          MaskType:=TSPMaskType.Star
+        else if (EndPos-3=LastPathDelim) and (LastPathDelim[1]='*') then
+          MaskType:=TSPMaskType.StarStar;
+      end;
+    end;
+  end;
+  Result:=true;
+end;
+
+function dbgs(r: TSPFileMaskRelation): string;
+begin
+  case r of
+    TSPFileMaskRelation.Equal: Result:='Equal';
+    TSPFileMaskRelation.LeftMoreGeneral: Result:='LeftMoreGeneral';
+    TSPFileMaskRelation.RightMoreGeneral: Result:='RightMoreGeneral';
+  else
+    Result:='None';
+  end;
+end;
+
+{ TSPMaskRecord }
+
+function TSPMaskRecord.FindPathDelim(Index: integer): PChar;
+begin
+  Result:=StartPos;
+  if (Result=nil) or (Index<1) then exit;
+  while Result<EndPos do
+  begin
+    if Result^=PathDelim then
+    begin
+      if Index=1 then
+        exit;
+      dec(Index);
+    end;
+    inc(Result);
+  end;
+  Result:=nil;
 end;
 
 end.

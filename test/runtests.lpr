@@ -28,7 +28,8 @@ uses
   testglobals, testunits, dom,
   {Unit needed to set the LCL version and widget set name}
   LCLVersion, InterfaceBase, LCLPlatformDef, lazmouseandkeyinput, Interfaces,
-  TestLazXML, TestAvgLvlTree, TestLConvEncoding, testlazfileutils;
+  TestLazXML, TestAvgLvlTree, TestLConvEncoding, testlazfileutils, 
+TestSearchPathProcs;
   
 type
 
