@@ -2165,6 +2165,7 @@ var
     CurDir, ExcludeMask: String;
   begin
     CurDir:=ExtractFilename(CurSubDir);
+    if (CurDir='*') or (CurDir='**') then exit(true);
     for i:=0 to Excludes.Count-1 do begin
       ExcludeMask:=Excludes[i];
       if FilenameIsMatching(ExcludeMask,CurSubDir,true)
