@@ -2992,7 +2992,7 @@ begin
   asrTop: if a in [akLeft,akRight] then Result:='asrLeft' else Result:='asrTop';
   asrBottom: if a in [akLeft,akRight] then Result:='asrRight' else Result:='asrBottom';
   asrCenter: Result:='asrCenter';
-  else Result:='asr???';
+  else Result:='asr???'{%H-};
   end;
 end;
 
