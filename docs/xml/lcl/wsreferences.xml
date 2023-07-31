@@ -88,8 +88,8 @@ file or handle streams, sockets, IO devices, processes, etc.
 </descr>
 <seealso>
 <link id="#lcl.lcltype.TLCLHandle">LCLType.TLCLHandle</link>
-<link id="#lcl.lclclasses.TLCLComponment">TLCLComponment</link>
-<link id="#lcl.lclclasses.TLCLReferenceComponment">TLCLReferenceComponment</link>
+<link id="#lcl.lclclasses.TLCLComponent">TLCLComponent</link>
+<link id="#lcl.lclclasses.TLCLReferenceComponent">TLCLReferenceComponent</link>
 </seealso>
 </element>
 
