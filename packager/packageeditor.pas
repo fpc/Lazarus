@@ -2713,7 +2713,7 @@ begin
   NewDirectory:=ChompPathDelim(NewDirectory);
   
   UnitPath:=LazPackage.GetUnitPath(false);
-  UnitPathPos:=SearchDirectoryInSearchPath(UnitPath,NewDirectory,1);
+  UnitPathPos:=SearchDirectoryInSearchPath(UnitPath,NewDirectory);
   IncPathPos:=1;
   if AnIncludeFile<>'' then begin
     NewIncDirectory:=ChompPathDelim(ExtractFilePath(AnIncludeFile));
@@ -2723,7 +2723,7 @@ begin
       LazPackage.LongenFilename(NewIncDirectory);
       NewIncDirectory:=ChompPathDelim(NewIncDirectory);
       IncPath:=LazPackage.GetIncludePath(false);
-      IncPathPos:=SearchDirectoryInSearchPath(IncPath,NewIncDirectory,1);
+      IncPathPos:=SearchDirectoryInSearchPath(IncPath,NewIncDirectory);
     end;
   end;
   if UnitPathPos<1 then begin
@@ -2766,7 +2766,7 @@ begin
   LazPackage.LongenFilename(NewDirectory);
   NewDirectory:=ChompPathDelim(NewDirectory);
   IncPath:=LazPackage.GetIncludePath(false);
-  IncPathPos:=SearchDirectoryInSearchPath(IncPath,NewDirectory,1);
+  IncPathPos:=SearchDirectoryInSearchPath(IncPath,NewDirectory);
   if IncPathPos>0 then exit;
   // ask user to add the unit path
   if (IgnoreIncPaths<>nil) and (IgnoreIncPaths.Contains(ShortDirectory))

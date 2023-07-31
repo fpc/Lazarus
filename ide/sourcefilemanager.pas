@@ -2995,7 +2995,7 @@ var
     while PathPos<=length(UnitPath) do begin
       CurDir:=GetNextDirectoryInSearchPath(UnitPath,PathPos);
       // check if directory is already tested
-      if SearchDirectoryInSearchPath(AlreadySearchedUnitDirs,CurDir,1)>0 then
+      if SearchDirectoryInSearchPath(AlreadySearchedUnitDirs,CurDir)>0 then
         continue;
       AlreadySearchedUnitDirs:=MergeSearchPaths(AlreadySearchedUnitDirs,CurDir);
       // check if directory contains a compiled unit
@@ -5515,7 +5515,7 @@ begin
     if AnUnitInfo.IsPartOfProject and FilenameHasPascalExt(NewFilename)
     and (CompareFilenames(NewFilePath,Project1.Directory)<>0) then begin
       OldUnitPath:=Project1.CompilerOptions.GetUnitPath(false);
-      if SearchDirectoryInSearchPath(OldUnitPath,NewFilePath,1)<1 then
+      if SearchDirectoryInSearchPath(OldUnitPath,NewFilePath)<1 then
         AddPathToBuildModes(NewFilePath, False);
     end;
 
@@ -5696,7 +5696,7 @@ begin
         Project1.SourceDirectories.CreateSearchPathFromAllFiles,OldFilePath,1)<1)
       then
         //DebugLn('RenameUnit OldFilePath="',OldFilePath,'" UnitPath="',Project1.CompilerOptions.GetUnitPath(false),'"');
-        if (SearchDirectoryInSearchPath(Project1.CompilerOptions.GetUnitPath(false),OldFilePath,1)<1)
+        if (SearchDirectoryInSearchPath(Project1.CompilerOptions.GetUnitPath(false),OldFilePath)<1)
         then
           if IDEMessageDialog(lisCleanUpUnitPath,
               Format(lisTheDirectoryIsNoLongerNeededInTheUnitPathRemoveIt,[OldFilePath,LineEnding]),
