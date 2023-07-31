@@ -15390,6 +15390,54 @@ position.
 <short>The control under the mouse pointer, or Nil at design-time.</short>
 </element>
 
+<element name="TApplication.GetControlAtPos">
+<short>
+Gets the control which contains the specified position, and optionally updates 
+the internal tracking members for mouse capture when needed.
+</short>
+<descr>
+<p>
+<var>GetControlAtPos</var> is a <var>TControl</var> function used to get the 
+control which contains the point specified in <var>P</var>. The X and Y 
+members in P are screen coordinates.
+</p>
+<p>
+GetControlAtPos compares the coordinates in P to existing tracking members 
+used for the last active control in the application. When the members are both 
+valid and equivalent to P, the previous active control is used in the return 
+value. Otherwise, FindControlAtPos is called to locate the control under the 
+position in P.
+</p>
+<p>
+The return value is <b>Nil</b> if a control is not found for the specified 
+position, or when called at design-time. When the return value is assigned, 
+the internal tracking members are updated for the last active control, its 
+position, and the valid state for the members.
+</p>
+<p>
+GetControlAtPos is used in the implementation of the GetControlAtMouse method, 
+and in private TControl methods.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TApplication.GetControlAtMouse"/>
+</seealso>
+</element>
+<element name="TApplication.GetControlAtPos.Result">
+<short>
+Control with bounds which include the specified position.
+</short>
+</element>
+<element name="TApplication.GetControlAtPos.P">
+<short>
+TPoint instance with the horizontal and vertical screen coordinates for a 
+control to locate in the method.
+</short>
+</element>
+
 <element name="TApplication.ControlDestroyed">
 <short>Clears all references to the destroyed control.</short>
 <descr>
