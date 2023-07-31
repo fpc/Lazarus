@@ -1762,7 +1762,7 @@ var
     else
       DefRB := 0;
     if ADlg.Buttons.DefaultButton<>nil then
-      DefBtn := ADlg.Buttons.DefaultButton.ModalResult
+      DefBtn := ADlg.Buttons.DefaultButton.Index + TaskDialogFirstButtonIndex
     else
       DefBtn := TD_BTNMOD[ADlg.DefaultButton];
 
