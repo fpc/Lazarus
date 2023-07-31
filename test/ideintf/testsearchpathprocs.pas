@@ -61,7 +61,8 @@ procedure TTestSearchPathProcs.TestRelateDirectoryMasks;
     end;
     Actual:=RelateDirectoryMasks(SearchPath,RightStart,SearchPath,LeftStart);
     if Actual<>Expected then begin
-      Fail('SearchPath="'+SearchPath+'" LeftStart='+IntToStr(LeftStart)+' RightStart='+IntToStr(RightStart)+' Actual='+dbgs(Actual)+' Expected='+dbgs(Expected));    end;
+      Fail('SearchPath="'+SearchPath+'" LeftStart='+IntToStr(LeftStart)+' RightStart='+IntToStr(RightStart)+' Actual='+dbgs(Actual)+' Expected='+dbgs(Expected));
+    end;
   end;
 
 begin
@@ -88,6 +89,9 @@ begin
   t(['foo/*','a'],0,1,TSPFileMaskRelation.None);
   t(['/foo/*','/foo/bar/a'],0,1,TSPFileMaskRelation.None);
   t(['foo/*','foo/bar/a'],0,1,TSPFileMaskRelation.None);
+  t(['*','.'],0,1,TSPFileMaskRelation.None);
+  t(['*','..'],0,1,TSPFileMaskRelation.None);
+  t(['/*','/'],0,1,TSPFileMaskRelation.None);
 
   // star star
   t(['**'],0,0,TSPFileMaskRelation.Equal);
@@ -100,6 +104,8 @@ begin
   t(['/foo/**','foo/a'],0,1,TSPFileMaskRelation.None);
   t(['/foo/**','/foo/a'],0,1,TSPFileMaskRelation.LeftMoreGeneral);
   t(['/foo/**','/foo/bar/a'],0,1,TSPFileMaskRelation.LeftMoreGeneral);
+  t(['**','.'],0,1,TSPFileMaskRelation.LeftMoreGeneral);
+  t(['**','..'],0,1,TSPFileMaskRelation.None);
 end;
 
 initialization
