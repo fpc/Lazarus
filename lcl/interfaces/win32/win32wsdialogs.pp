@@ -1796,8 +1796,12 @@ var
         AParentWnd := 0;
     end;
     ExpandedInformation := Utf8ToUtf16(ADlg.ExpandedText);
-    ExpandedControlText := ''; //currently no matching field in TTaskDialog??
     CollapsedControlText := Utf8ToUtf16(ADlg.ExpandButtonCaption);
+
+    //Seems to be the caption of the ExpandButton when ExpandedText is displayed
+    //If it's empty, then the caption of the ExpandButton remains the same
+    ExpandedControlText := ''; //currently no matching field in TTaskDialog
+
     Footer := Utf8ToUtf16(ADlg.FooterText);
 
     if ADlg.RadioButtons.DefaultButton<> nil then
