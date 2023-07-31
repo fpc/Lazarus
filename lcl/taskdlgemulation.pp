@@ -392,12 +392,10 @@ begin
       if (tfEmulateClassicStyle in FDlg.Flags) then
         SetBounds(X,Y,aWidth-10-X,40) else
         SetBounds(X,Y,aWidth-16-X,40);
-      Caption := NoCR(CustomButtons[i], aHint);
-      if (aHint <> '') then
-      begin
+      Caption := CustomButtons[i];
+      Hint := FDlg.Buttons[i].CommandLinkHint;
+      if (Hint <> '') then
         ShowHint := True;
-        Hint := aHint; // note shown as Hint
-      end;
       inc(Y,Height+2);
       ModalResult := i+TaskDialogFirstButtonIndex;
       OnClick := @HandleEmulatedButtonClicked;
