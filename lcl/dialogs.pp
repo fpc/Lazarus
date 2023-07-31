@@ -557,10 +557,13 @@ type
 
   TTaskDialogButtons = class;
 
+  { TTaskDialogBaseButtonItem }
+
   TTaskDialogBaseButtonItem = class(TCollectionItem)
   private
     FCaption: TTranslateString;
     FClient: TCustomTaskDialog;
+    FCommandLinkHint: TTranslateString;
     FModalResult: TModalResult;
     function GetDefault: Boolean;
     procedure SetCaption(const ACaption: TTranslateString);
@@ -572,6 +575,7 @@ type
   public
     constructor Create(ACollection: TCollection); override;
     property ModalResult: TModalResult read FModalResult write FModalResult;
+    property CommandLinkHint: TTranslateString read FCommandLinkHint write FCommandLinkHint;
   published
     property Caption: TTranslateString read FCaption write SetCaption;
     property Default: Boolean read GetDefault write SetDefault default False;
@@ -581,6 +585,7 @@ type
   public
     constructor Create(ACollection: TCollection); override;
   published
+    property CommandLinkHint;
     property ModalResult;
   end;
 

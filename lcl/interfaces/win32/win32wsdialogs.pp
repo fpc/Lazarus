@@ -1692,8 +1692,6 @@ var
   Footer: WideString;
   DefRB, DefBtn, RUCount: Integer;
   CommonButtons: TTaskDialogCommonButtons;
-  B: TTaskDialogBaseButtonItem;
-  List: TStringList;
   Flags: TTaskDialogFlags;
   Res: HRESULT;
 
@@ -1706,21 +1704,24 @@ var
     TD_FOOTERICONS: array[TLCLTaskDialogFooterIcon] of integer = (
       0, 84, 99, 98, 65533, 65532);
 
-    procedure AddTaskDiakogButton(List: TStringList; var n: longword; firstID: integer);
+    procedure AddTaskDiakogButton(Btns: TTaskDialogButtons; var n: longword; firstID: integer);
     var
-      P: PChar;
       i: Integer;
     begin
-      if (List.Count = 0) then
+      if (Btns.Count = 0) then
         Exit;
-      for i := 0 to List.Count - 1 do
+      for i := 0 to Btns.Count - 1 do
       begin
-        if length(ButtonCaptions)<=RUCount then
+        if Length(ButtonCaptions)<=RUCount then
         begin
           SetLength(ButtonCaptions,RUCount+16);
           SetLength(Buttons,RUCount+16);
         end;
-        ButtonCaptions[RUCount] := Utf8ToUtf16(StringReplace(List[i],'\n',#10,[rfReplaceAll]));
+        ButtonCaptions[RUCount] := Utf8ToUtf16(StringReplace(Btns.Items[i].Caption,'\n',#10,[rfReplaceAll]));
+        if (Btns.Items[i] is TTaskDialogButtonItem) and (tfUseCommandLinks in ADlg.Flags) then
+        begin
+          ButtonCaptions[RUCount] := ButtonCaptions[RUCount] + Utf8ToUtf16(#10 + Btns.Items[i].CommandLinkHint);
+        end;
         Buttons[RUCount].nButtonID := n+firstID;
         Buttons[RUCount].pszButtonText := PWideChar(ButtonCaptions[RUCount]);
         inc(n);
@@ -1786,19 +1787,8 @@ var
     Config.nDefaultButton := DefBtn;
 
     RUCount := 0;
-    List := TStringList.Create;
-    try
-      for B in ADlg.Buttons do
-        List.Add(B.Caption);
-      AddTaskDiakogButton(List,Config.cButtons,TaskDialogFirstButtonIndex);
-
-      List.Clear;
-      for B in ADlg.RadioButtons do
-        List.Add(B.Caption);
-      AddTaskDiakogButton(List,Config.cRadioButtons,TaskDialogFirstRadioButtonIndex);
-    finally
-      List.Free;
-    end;
+    AddTaskDiakogButton(ADlg.Buttons,Config.cButtons,TaskDialogFirstButtonIndex);
+    AddTaskDiakogButton(ADlg.RadioButtons,Config.cRadioButtons,TaskDialogFirstRadioButtonIndex);
 
     if (Config.cButtons > 0) then
       Config.pButtons := @Buttons[0];
