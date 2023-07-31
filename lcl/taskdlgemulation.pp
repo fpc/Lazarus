@@ -27,7 +27,7 @@ type
     FVerifyChecked: Boolean;
     RadioButtonArray: array of TRadioButton;
 
-    CustomButtons, Radios: TStringList;
+    //CustomButtons, Radios: TStringList;
     DialogCaption, DlgTitle, DlgText,
     ExpandedButtonCaption, ExpandedText, FooterText,
     VerificationText, Selection: String;
@@ -244,8 +244,6 @@ end;
 
 destructor TLCLTaskDialog.Destroy;
 begin
-  CustomButtons.Free;
-  Radios.Free;
   inherited Destroy;
 end;
 
@@ -353,8 +351,8 @@ var
   i: Integer;
   aHint: String;
 begin
-  SetLength(RadioButtonArray,Radios.Count);
-  for i := 0 to Radios.Count-1 do
+  SetLength(RadioButtonArray,FDlg.RadioButtons.Count);
+  for i := 0 to FDlg.RadioButtons.Count-1 do
   begin
     RadioButtonArray[i] := TRadioButton.Create(Self);
     with RadioButtonArray[i] do
@@ -362,7 +360,7 @@ begin
       Parent := AParent;
       AutoSize := False;
       SetBounds(X+16,Y,aWidth-32-X, (6-AFontHeight) + ARadioOffset);
-      Caption := NoCR(Radios[i], aHint); //LCL RadioButton doesn't support multiline captions
+      Caption := NoCR(FDlg.RadioButtons[i].Caption, aHint); //LCL RadioButton doesn't support multiline captions
       if (aHint <> '') then begin
         ShowHint := True;
         Hint := aHint; // note shown as Hint
@@ -382,7 +380,7 @@ var
   aHint: String;
 begin
   inc(Y,8);
-  for i := 0 to CustomButtons.Count-1 do
+  for i := 0 to FDlg.Buttons.Count-1 do
   begin
     CommandLink := TBitBtn.Create(Self);
     with CommandLink do
@@ -392,7 +390,7 @@ begin
       if (tfEmulateClassicStyle in FDlg.Flags) then
         SetBounds(X,Y,aWidth-10-X,40) else
         SetBounds(X,Y,aWidth-16-X,40);
-      Caption := CustomButtons[i];
+      Caption := FDlg.Buttons[i].Caption;
       Hint := FDlg.Buttons[i].CommandLinkHint;
       if (Hint <> '') then
         ShowHint := True;
@@ -468,8 +466,8 @@ begin
   inc(Y, 16);
   XB := aWidth;
   if not (tfUseCommandLinks in FDlg.Flags) then
-    for i := CustomButtons.Count-1 downto 0 do
-      AddButton(CustomButtons[i],i+TaskDialogFirstButtonIndex);
+    for i := FDlg.Buttons.Count-1 downto 0 do
+      AddButton(FDlg.Buttons[i].Caption,i+TaskDialogFirstButtonIndex);
   for Btn := high(TTaskDialogCommonButton) downto low(TTaskDialogCommonButton) do
   begin
     if (Btn in CommonButtons) then
@@ -640,6 +638,7 @@ var
   aHint: String;
   List: TStringListUTF8Fast;
   Btn: TTaskDialogCommonButton;
+  CustomButtonsTextLength: Integer;
 begin
 
   if FDlg.RadioButtons.DefaultButton<> nil then
@@ -651,12 +650,10 @@ begin
   else
     aButtonDef := TD_BTNMOD[FDlg.DefaultButton];
 
-  CustomButtons := TStringList.Create;
+  CustomButtonsTextLength := 0;
   for B in FDlg.Buttons do
-    CustomButtons.Add(B.Caption);
-  Radios := TStringList.Create;
-  for B in FDlg.RadioButtons do
-    Radios.Add(B.Caption);
+    CustomButtonsTextLength := CustomButtonsTextLength + Length(B.Caption);
+
 
   //ToDo
   //This field/parameter is currently not used in Dialogs.TTaskDialog and not passed so we cannot initialize it properly yet
@@ -673,7 +670,7 @@ begin
 
   CommonButtons := FDlg.CommonButtons;
 
-  if (CommonButtons=[]) and (CustomButtons.Count=0) then
+  if (CommonButtons=[]) and (FDlg.Buttons.Count=0) then
   begin
     CommonButtons := [tcbOk];
     if (aButtonDef = 0) then
@@ -713,7 +710,7 @@ begin
   begin
     aWidth := Canvas.TextWidth(DlgTitle);
     if (aWidth > 300) or (Canvas.TextWidth(DlgText) > 300) or
-       (Length(CustomButtons.Text) > 40) then
+       (CustomButtonsTextLength > 40) then
       aWidth := 480 else
       aWidth := 420;
   end
@@ -740,14 +737,14 @@ begin
 
 
   // add radio CustomButtons
-  if (Radios.Count > 0) then
+  if (FDlg.RadioButtons.Count > 0) then
   begin
     ARadioOffset := 1;
     AddRadios(ARadioOffSet, aWidth, aRadioDef, FontHeight, X, Y, CurrParent);
   end;
 
   // add command links CustomButtons
-  if (tfUseCommandLinks in FDlg.Flags) and (CustomButtons.Count<>0) then
+  if (tfUseCommandLinks in FDlg.Flags) and (FDlg.Buttons.Count<>0) then
     AddCommandLinkButtons(X, Y, aWidth, aButtonDef, FontHeight, CurrParent);
 
 
@@ -767,7 +764,7 @@ begin
   XB := 0;
   // add CustomButtons and verification checkbox
   if (CommonButtons <> []) or (VerificationText<>'') or
-     ((CustomButtons.Count<>0) and not (tfUseCommandLinks in FDlg.Flags)) then
+     ((FDlg.Buttons.Count<>0) and not (tfUseCommandLinks in FDlg.Flags)) then
   begin
     AddButtonsAndCheckBox(X, Y, XB, aWidth, aButtonDef, CurrParent);
   end;
