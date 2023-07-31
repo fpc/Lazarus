@@ -1542,6 +1542,14 @@ begin
   Result := AppActive in Flags;
 end;
 
+function TApplication.GetActiveFormHandle: HWND;
+begin
+  if Assigned(Screen.ActiveCustomForm) then
+    Result := Screen.ActiveCustomForm.Handle
+  else
+    Result := feInvalidHandle;
+end;
+
 function TApplication.GetCurrentHelpFile: string;
 var
   ActiveForm: TCustomForm;

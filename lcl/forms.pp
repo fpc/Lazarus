@@ -1522,6 +1522,7 @@ type
     FExceptionCounter: Byte;
     procedure DoOnIdleEnd;
     function GetActive: Boolean;
+    function GetActiveFormHandle: HWND;
     function GetCurrentHelpFile: string;
     function GetExename: string;
     function GetHandle: TLCLHandle;
@@ -1699,6 +1700,7 @@ type
     procedure DoReturnKey(AControl: TWinControl; var Key: Word; Shift: TShiftState);
 
     property Active: Boolean read GetActive;
+    property ActiveFormHandle: HWND read GetActiveFormHandle;
     property ApplicationType : TApplicationType read FApplicationType write FApplicationType;
     property BidiMode: TBiDiMode read FBidiMode write SetBidiMode;
     property CaptureExceptions: Boolean read FCaptureExceptions
