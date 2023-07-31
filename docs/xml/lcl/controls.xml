@@ -9030,21 +9030,9 @@ is set to <b>False</b>.
 <element name="TControl.IsVisibleStored.Result"/>
 
 <element name="TControl.DoBeforeMouseMessage">
-<short>
-Generates MouseEnter and MouseLeave events.
-</short>
+<short>Generate MouseEnter and MouseLeave events.</short>
 <descr/>
-<version>
-Modified in LCL version 4.0 to update the capture control at the mouse 
-position prior to passing the mouse message to the Application.
-</version>
 <seealso/>
-</element>
-<element name="TControl.DoBeforeMouseMessage.TheMessage">
-<short>
-TLMessage instance with the command, parameters, and result code for the 
-message.
-</short>
 </element>
 
 <element name="TControl.DoConstrainedResize">
