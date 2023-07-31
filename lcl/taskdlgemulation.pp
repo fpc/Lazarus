@@ -602,7 +602,7 @@ begin
   W := aWidth-X-8;
   R.Right := W;
   R.Bottom := Result.Height;
-  LCLIntf.DrawText(Result.Canvas.Handle,PChar(Text),Length(Text),R,DT_CALCRECT or DT_WORDBREAK);//lazarus does not return box height on OSX (Lazarus bug), the height is stored in the rect in all cases, so we don't need to use the Result
+  LCLIntf.DrawText(Result.Canvas.Handle,PChar(AText),Length(AText),R,DT_CALCRECT or DT_WORDBREAK);//lazarus does not return box height on OSX (Lazarus bug), the height is stored in the rect in all cases, so we don't need to use the Result
 
   Result.SetBounds(X,Y,W,R.Bottom);
   Result.Caption := AText;
