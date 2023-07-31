@@ -429,7 +429,7 @@ var
   CurrTabOrder, i: Integer;
   Btn: TTaskDialogCommonButton;
 
-  function AddButton(const s: string; ModalResult: integer): TButton;
+  function AddButton(const s: string; AModalResult, ACustomButtonIndex: integer): TButton;
   var
     WB: integer;
   begin
@@ -447,19 +447,33 @@ var
     else
       Result.SetBounds(XB,Y,WB-12,28);
     Result.Caption := s;
-    Result.ModalResult := ModalResult;
+    Result.ModalResult := AModalResult;
     Result.TabOrder := CurrTabOrder;
     Result.OnClick := @HandleEmulatedButtonClicked;
-    case ModalResult of
-      mrOk: begin
+
+    if Assigned(FDlg.Buttons.DefaultButton) then
+    begin
+      if (ACustomButtonIndex >= 0) and
+         (FDlg.ButtonIDToModalResult(TaskDialogFirstButtonIndex+ACustomButtonIndex) = AButtonDef) then
         Result.Default := True;
-        if CommonButtons=[tcbOk] then
-          Result.Cancel := True;
-      end;
-      mrCancel: Result.Cancel := True;
-    end;
-    if ModalResult=aButtonDef then
-      ActiveControl := Result;
+    end
+    else
+    begin
+      case AModalResult of
+        mrOk: begin
+          Result.Default := True;
+          if CommonButtons=[tcbOk] then
+            Result.Cancel := True;
+        end;
+        mrCancel: Result.Cancel := True;
+      end;//case
+    end;//else
+
+    if Assigned(FDlg.Buttons.DefaultButton) and Result.Default then
+      ActiveControl := Result
+    else
+      if AModalResult=aButtonDef then
+        ActiveControl := Result;
   end;
 begin
   CurrTabOrder := Panel.TabOrder;
@@ -467,11 +481,11 @@ begin
   XB := aWidth;
   if not (tfUseCommandLinks in FDlg.Flags) then
     for i := FDlg.Buttons.Count-1 downto 0 do
-      AddButton(FDlg.Buttons[i].Caption,i+TaskDialogFirstButtonIndex);
+      AddButton(FDlg.Buttons[i].Caption,i+TaskDialogFirstButtonIndex,i);
   for Btn := high(TTaskDialogCommonButton) downto low(TTaskDialogCommonButton) do
   begin
     if (Btn in CommonButtons) then
-      AddButton(TD_Trans(LoadResString(TD_BTNS(Btn))), TD_BTNMOD[Btn]);
+      AddButton(TD_Trans(LoadResString(TD_BTNS(Btn))), TD_BTNMOD[Btn],-1);
   end;
   if (VerificationText <> '') then
   begin
