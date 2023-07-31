@@ -1757,7 +1757,10 @@ var
           SetLength(ButtonCaptions,RUCount+16);
           SetLength(Buttons,RUCount+16);
         end;
-        ButtonCaptions[RUCount] := Utf8ToUtf16(StringReplace(Btns.Items[i].Caption,'\n',#10,[rfReplaceAll]));
+        //disable this for now: what if a caption were to be 'Save to "c:\new_folder\new.work"'' ??
+        //remove later
+        //ButtonCaptions[RUCount] := Utf8ToUtf16(StringReplace(Btns.Items[i].Caption,'\n',#10,[rfReplaceAll]));
+        ButtonCaptions[RUCount] := Utf8ToUtf16(Btns.Items[i].Caption);
         if (Btns.Items[i] is TTaskDialogButtonItem) and (tfUseCommandLinks in ADlg.Flags) then
         begin
           ButtonCaptions[RUCount] := ButtonCaptions[RUCount] + Utf8ToUtf16(#10 + Btns.Items[i].CommandLinkHint);

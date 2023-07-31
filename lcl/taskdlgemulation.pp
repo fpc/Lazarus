@@ -137,9 +137,14 @@ const
 
 function CR(const aText: string): string;
 begin
+  //disable this for now: what if a caption were to be 'Save to "c:\new_folder\new.work"'' ??
+  //remove later
+  Result := AText;
+  {
   if pos('\n', aText) = 0 then
     Result := aText else
     Result := StringReplace(aText, '\n', #10, [rfReplaceAll]);
+  }
 end;
 
 //if aText contains '\n'
@@ -149,14 +154,18 @@ function NoCR(const aText: string; out aHint: String): String;
 var
   i: integer;
 begin
+  //disable this for now: what if a caption were to be 'Save to "c:\new_folder\new.work"'' ??
+  //remove later
   Result := aText;
   aHint := '';
+  {
   i := pos('\n',aText);
   if (i > 0) then
   begin
     aHint := CR(copy(Result,i+2,maxInt));
     SetLength(Result,i-1);
   end;
+  }
 end;
 
 
