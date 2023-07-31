@@ -409,7 +409,7 @@ begin
       p:=1;
       repeat
         SrcDir:=GetNextDirectoryInSearchPath(UnitPath,p);
-        if SearchDirectoryInSearchPath(OtherSrcPath,SrcDir)>0 then
+        if SearchDirectoryInMaskedSearchPath(OtherSrcPath,SrcDir)>0 then
           AddWarning(Format(lisTheUnitSearchPathOfContainsTheSourceDirectoryOfPac,
                             [CurOptions.GetOwnerName, SrcDir, UsedPkg.Name]));
       until p>length(UnitPath);
@@ -749,28 +749,28 @@ begin
   end;
   // check unit search path
   SrcPath:=CurOptions.GetParsedPath(pcosUnitPath,icoNone,false);
-  if SearchDirectoryInSearchPath(SrcPath,OutputDir)>0 then begin
+  if SearchDirectoryInMaskedSearchPath(SrcPath,OutputDir)>0 then begin
     AddWarning(Format(lisTheOutputDirectoryOfIsListedInTheUnitSearchPathOf, [
       CurOptions.GetOwnerName, CurOptions.GetOwnerName])
       +lisTheOutputDirectoryShouldBeASeparateDirectoryAndNot);
   end;
   // check include search path
   SrcPath:=CurOptions.GetParsedPath(pcosIncludePath,icoNone,false);
-  if SearchDirectoryInSearchPath(SrcPath,OutputDir)>0 then begin
+  if SearchDirectoryInMaskedSearchPath(SrcPath,OutputDir)>0 then begin
     AddWarning(Format(lisTheOutputDirectoryOfIsListedInTheIncludeSearchPath, [
       CurOptions.GetOwnerName, CurOptions.GetOwnerName])
       +lisTheOutputDirectoryShouldBeASeparateDirectoryAndNot);
   end;
   // check inherited unit search path
   SrcPath:=CurOptions.GetParsedPath(pcosNone,icoUnitPath,false);
-  if SearchDirectoryInSearchPath(SrcPath,OutputDir)>0 then begin
+  if SearchDirectoryInMaskedSearchPath(SrcPath,OutputDir)>0 then begin
     AddWarning(Format(lisTheOutputDirectoryOfIsListedInTheInheritedUnitSear, [
       CurOptions.GetOwnerName, CurOptions.GetOwnerName])
       +lisTheOutputDirectoryShouldBeASeparateDirectoryAndNot);
   end;
   // check inherited include search path
   SrcPath:=CurOptions.GetParsedPath(pcosNone,icoIncludePath,false);
-  if SearchDirectoryInSearchPath(SrcPath,OutputDir)>0 then begin
+  if SearchDirectoryInMaskedSearchPath(SrcPath,OutputDir)>0 then begin
     AddWarning(Format(lisTheOutputDirectoryOfIsListedInTheInheritedIncludeS, [
       CurOptions.GetOwnerName, CurOptions.GetOwnerName])
       +lisTheOutputDirectoryShouldBeASeparateDirectoryAndNot);

@@ -32,7 +32,7 @@ interface
 uses
   Classes, SysUtils,
   // LazUtils
-  LazFileUtils, LazFileCache, FileUtil;
+  LazFileUtils, LazFileCache, FileUtil, CompOptsIntf;
 
 type
   TSPMaskType = (
@@ -72,6 +72,8 @@ function RebaseSearchPath(const SearchPath,
                           SkipPathsStartingWithMacro: boolean): string;
 function ShortenSearchPath(const SearchPath, BaseDirectory,
                            ChompDirectory: string): string;
+function FormatSearchPath(const SearchPath: string;
+                MaxLen: integer = 0): string;
 function GetNextDirectoryInSearchPath(const SearchPath: string;
                                       var NextStartPos: integer): string;
 function GetNextUsedDirectoryInSearchPath(const SearchPath,
@@ -83,6 +85,8 @@ function SearchDirectoryInSearchPath(const SearchPath, Directory: string;
                                      DirStartPos: integer = 1): integer; overload;
 function SearchDirectoryInSearchPath(SearchPath: TStrings;
                     const Directory: string; DirStartPos: integer = 0): integer; overload;
+function SearchDirectoryInMaskedSearchPath(const SearchPath, Directory: string;
+                                   DirStartPos: integer = 1): integer; overload;
 function FilenamePIsAbsolute(TheFilename: PChar): boolean;
 function FilenamePIsUnixAbsolute(TheFilename: PChar): boolean;
 function FilenamePIsWinAbsolute(TheFilename: PChar): boolean;
@@ -386,6 +390,28 @@ begin
   end;
 end;
 
+function FormatSearchPath(const SearchPath: string; MaxLen: integer): string;
+var
+  p: Integer;
+begin
+  if MaxLen=0 then
+    MaxLen:=TLazCompilerOptions.ConsoleParamsMax;
+  p:=1;
+  repeat
+    while (p<=length(SearchPath)) and (SearchPath[p]<>';') do inc(p);
+    if p>MaxLen then
+    begin
+      if p<=length(SearchPath) then
+      begin
+        Result:=LeftStr(SearchPath,p-1)+'...';
+        exit;
+      end;
+    end;
+    inc(p);
+  until p>length(SearchPath);
+  Result:=SearchPath;
+end;
+
 function GetNextDirectoryInSearchPath(const SearchPath: string;
                                       var NextStartPos: integer): string;
 var
@@ -578,6 +604,14 @@ begin
     end;
     dec(Result);
   end;
+end;
+
+function SearchDirectoryInMaskedSearchPath(const SearchPath, Directory: string;
+  DirStartPos: integer): integer;
+var
+  DirRelation: TSPFileMaskRelation;
+begin
+  Result:=SearchDirectoryInSearchPath(SearchPath,Directory,DirRelation,DirStartPos);
 end;
 
 function FilenamePIsAbsolute(TheFilename: PChar): boolean;

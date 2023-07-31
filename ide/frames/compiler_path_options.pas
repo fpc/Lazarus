@@ -387,7 +387,7 @@ begin
       if (CurPath<>'') and (not IDEMacros.StrHasMacros(CurPath)) and
         (FilenameIsAbsolute(CurPath)) then
       begin
-        if (SearchDirectoryInSearchPath(NewParsedUnitPath,CurPath)>0)
+        if (SearchDirectoryInMaskedSearchPath(NewParsedUnitPath,CurPath)>0)
         or (CompareFilenames(BaseDir,AppendPathDelim(CurPath))=0) then
           Duplicates.AddObject(CurPath,TObject({%H-}Pointer(i)));
       end;
@@ -396,7 +396,11 @@ begin
 
     if Duplicates.Count>0 then
     begin
-      debugln(['TCompilerPathOptionsFrame.CheckSrcPathInUnitPath OldParsedSrcPath="',OldParsedSrcPath,'" NewParsedSrcPath="',NewParsedSrcPath,'" OldParsedUnitPath="',OldParsedUnitPath,'" NewParsedUnitPath="',NewParsedUnitPath,'"']);
+      debugln(['TCompilerPathOptionsFrame.CheckSrcPathInUnitPath',
+        ' OldParsedSrcPath="',FormatSearchPath(OldParsedSrcPath),'"',
+        ' NewParsedSrcPath="',FormatSearchPath(NewParsedSrcPath),'"',
+        ' OldParsedUnitPath="',FormatSearchPath(OldParsedUnitPath),'"',
+        ' NewParsedUnitPath="',FormatSearchPath(NewParsedUnitPath),'"']);
       Result:=false;
       Duplicates.Delimiter:=#13;
       Duplicates.StrictDelimiter:=true;

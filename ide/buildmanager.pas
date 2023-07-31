@@ -1340,7 +1340,7 @@ var
     if StateFileAge>=FileAgeCached(AnUnitInfo.Filename) then exit;
     if FilenameHasPascalExt(AnUnitInfo.Filename) then
     begin
-      if (SearchDirectoryInSearchPath(AProject.CompilerOptions.GetUnitPath(false),
+      if (SearchDirectoryInMaskedSearchPath(AProject.CompilerOptions.GetUnitPath(false),
                                 ExtractFilePath(AnUnitInfo.Filename))>0)
       then begin
         Result:=true;
@@ -1353,7 +1353,7 @@ var
         exit(true);
       end;
     end;
-    if (SearchDirectoryInSearchPath(AProject.CompilerOptions.GetIncludePath(false),
+    if (SearchDirectoryInMaskedSearchPath(AProject.CompilerOptions.GetIncludePath(false),
                               ExtractFilePath(AnUnitInfo.Filename))>0)
     then begin
       Result:=true;
@@ -1909,8 +1909,8 @@ begin
                   and (Project1.FindFile(Filename,[pfsfOnlyProjectFiles])<>nil);
   // check if file in source directory of project
   if (not IsPartOfProject) and (Project1<>nil)
-    and (SearchDirectoryInSearchPath(ExtractFilePath(Filename),
-         Project1.SourceDirectories.CreateSearchPathFromAllFiles)>0)
+    and (SearchDirectoryInMaskedSearchPath(Project1.SourceDirectories.CreateSearchPathFromAllFiles,
+      ExtractFilePath(Filename))>0)
   then
     IsPartOfProject:=true;
   // check options

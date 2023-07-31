@@ -3926,7 +3926,7 @@ var
     repeat
       Dir:=GetNextDirectoryInSearchPath(UnparsedSrcPath,p);
       if Dir='' then exit;
-      if SearchDirectoryInSearchPath(UnparsedUnitPath,Dir)>0 then begin
+      if SearchDirectoryInMaskedSearchPath(UnparsedUnitPath,Dir)>0 then begin
         // Note: when changing this, update TQuickFixSrcPathOfPkgContains_OpenPkg
         s:=Format(lisOtherSourcesPathOfPackageContainsDirectoryWhichIsA, [
           aCompilerOptions.GetOwnerName, Dir]);

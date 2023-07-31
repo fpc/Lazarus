@@ -1164,12 +1164,13 @@ begin
 
   SPath := CodeToolBoss.GetCompleteSrcPathForDirectory('');
   // Check if symlink is found in search path or in editor.
-  if (SearchDirectoryInSearchPath(SPath, ExtractFilePath(FFileName)) > 0)
+  if (SearchDirectoryInMaskedSearchPath(SPath, ExtractFilePath(FFileName)) > 0)
   or Assigned(SourceEditorManager.SourceEditorIntfWithFilename(FFileName))
   then
     Exit;       // Symlink found -> use it.
   // Check if "physical" target for a symlink is found in search path or in editor.
-  if (SearchDirectoryInSearchPath(SPath, ExtractFilePath(Target)) > 0)
+  if ((ExtractFilePath(FFileName)<>ExtractFilePath(Target))
+      and (SearchDirectoryInMaskedSearchPath(SPath, ExtractFilePath(Target)) > 0))
   or Assigned(SourceEditorManager.SourceEditorIntfWithFilename(Target))
   then          // Target found -> use Target name.
     FFileName := Target
@@ -3222,7 +3223,7 @@ var
     begin
       if FilenameIsAbsolute(aFilename) then
       begin
-        if SearchDirectoryInSearchPath(UnitPath,ExtractFilePath(aFilename))<0 then
+        if SearchDirectoryInMaskedSearchPath(UnitPath,ExtractFilePath(aFilename))<0 then
           exit; // not in exclusive unitpath
       end else begin
         if (not (TheOwner is TProject)) or (not TProject(TheOwner).IsVirtual) then
@@ -3502,7 +3503,7 @@ var
         exit; // virtual UnitToFilename can not be accessed from disk UnitToFilename
     end else begin
       //debugln(['AddUnit unitpath=',UnitPath]);
-      if SearchDirectoryInSearchPath(UnitPath,ExtractFilePath(AFilename))<1 then
+      if SearchDirectoryInMaskedSearchPath(UnitPath,ExtractFilePath(AFilename))<1 then
         exit; // not reachable
     end;
     if UnitToFilename.Contains(AnUnitName) then exit; // duplicate unit
@@ -5445,6 +5446,7 @@ var
   NewHighlighter: TLazSyntaxHighlighter;
   AmbiguousFiles: TStringList;
   i: Integer;
+  DirRelation: TSPFileMaskRelation;
   Owners: TFPList;
   OldFileExisted: Boolean;
   ConvTool: TConvDelphiCodeTool;
@@ -5515,7 +5517,7 @@ begin
     if AnUnitInfo.IsPartOfProject and FilenameHasPascalExt(NewFilename)
     and (CompareFilenames(NewFilePath,Project1.Directory)<>0) then begin
       OldUnitPath:=Project1.CompilerOptions.GetUnitPath(false);
-      if SearchDirectoryInSearchPath(OldUnitPath,NewFilePath)<1 then
+      if SearchDirectoryInMaskedSearchPath(OldUnitPath,NewFilePath)<1 then
         AddPathToBuildModes(NewFilePath, False);
     end;
 
@@ -5696,13 +5698,14 @@ begin
         Project1.SourceDirectories.CreateSearchPathFromAllFiles,OldFilePath,1)<1)
       then
         //DebugLn('RenameUnit OldFilePath="',OldFilePath,'" UnitPath="',Project1.CompilerOptions.GetUnitPath(false),'"');
-        if (SearchDirectoryInSearchPath(Project1.CompilerOptions.GetUnitPath(false),OldFilePath)<1)
+        if (SearchDirectoryInSearchPath(Project1.CompilerOptions.GetUnitPath(false),OldFilePath,DirRelation)>1)
+            and (DirRelation=TSPFileMaskRelation.Equal)
         then
           if IDEMessageDialog(lisCleanUpUnitPath,
               Format(lisTheDirectoryIsNoLongerNeededInTheUnitPathRemoveIt,[OldFilePath,LineEnding]),
               mtConfirmation,[mbYes,mbNo])=mrYes
           then
-            Project1.CompilerOptions.RemoveFromUnitPaths(OldUnitPath);
+            Project1.CompilerOptions.RemoveFromUnitPaths(OldFilePath);
     end;
 
     // delete old pas, .pp, .ppu

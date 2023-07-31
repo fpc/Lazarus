@@ -402,7 +402,7 @@ begin
 end;
 
 function CheckDirIsInSearchPath(UnitInfo: TUnitInfo; IsIncludeFile: Boolean): Boolean;
-// Check if the given unit's path is on Unit- or Include-search path.
+// Check if the given unit's path is in Unit- or Include-search path.
 // Returns true if it is OK to add the unit to current project.
 var
   UnitDir, CurPath: String;
@@ -414,7 +414,7 @@ begin
   else
     CurPath:=Project1.CompilerOptions.GetUnitPath(false);
   UnitDir:=AppendPathDelim(UnitInfo.GetDirectory);
-  if SearchDirectoryInSearchPath(CurPath,UnitDir)<1 then
+  if SearchDirectoryInMaskedSearchPath(CurPath,UnitDir)<1 then
     // unit is not in search path => extend it
     Result:=AddPathToBuildModes(UnitDir,IsIncludeFile);
 end;
