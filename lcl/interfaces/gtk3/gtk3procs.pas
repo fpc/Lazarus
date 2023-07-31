@@ -89,7 +89,7 @@ type
 
   TGtkScrollStyle = record
     Horizontal,
-	Vertical: TGtkPolicyType;
+	  Vertical: TGtkPolicyType;
   end;
 
 const
@@ -1046,7 +1046,7 @@ begin
   end;
 end;
 
-function GetStyleWithName(const WName: String): PGtkWidget;
+function GetStyleWithName(const WName: String): PStyleObject;
 var
   StyleObject : PStyleObject;
   AIndex: Integer;
@@ -1058,11 +1058,11 @@ begin
   AIndex := IndexOfStyleWithName(WName);
   if AIndex >= 0 then
   begin
-    StyleObject := PStyleObject(Styles.Objects[AIndex]);
-    Result := StyleObject^.Widget;
+    Result := PStyleObject(Styles.Objects[AIndex]);
   end else
   begin
     StyleObject := NewStyleObject;
+    Result:=StyleObject;
     lgs := lgsUserDefined;
     DebugLn('GetStyleWithName creating style widget ',WName);
     WidgetName := 'LazStyle' + WName;
@@ -1135,7 +1135,6 @@ begin
 
       //TODO: copy stuff from gtk2proc
       UpdateSysColorMap(StyleObject^.Widget, lgs);
-      Result := StyleObject^.Widget;
     end else
     begin
       // DebugLn('BUG: GetStyleWithName() created style is not GtkWidget ',WName);
@@ -1145,15 +1144,13 @@ end;
 
 function GetStyleWidgetWithName(const WName : String) : PGtkWidget;
 var
-  l : Longint;
+  aStyle: PStyleObject;
 begin
-  Result := nil;
-  // init style
-  GetStyleWithName(WName);
-  // return widget
-  l := IndexOfStyleWithName(WName);
-  if l>=0 then
-    Result := PStyleObject(Styles.Objects[l])^.Widget;
+  aStyle := GetStyleWithName(WName);
+  if aStyle<>nil then
+    Result:=aStyle^.Widget
+  else
+    Result:=nil;
 end;
 
 function GetStyleWidget(aStyle: TLazGtkStyle) : PGtkWidget;

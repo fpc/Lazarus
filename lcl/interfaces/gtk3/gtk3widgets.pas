@@ -2972,31 +2972,31 @@ begin
   if (Widget=nil) then
     exit;
 
+  //debugln(['TGtk3Widget.SetBounds ',DbgSName(LCLObject),' ',ALeft,',',ATop,',',AWidth,'x',AHeight]);
+
+  ARect.x := ALeft;
+  ARect.y := ATop;
+  ARect.width := AWidth;
+  ARect.Height := AHeight;
+  with Alloc do
+  begin
+    x := ALeft;
+    y := ATop;
+    width := AWidth;
+    height := AHeight;
+  end;
+
   if Self is TGtk3Button then
   begin
-    dec(AWidth,4);
-    dec(AHeight,4);
+    AWidth:=Max(1,AWidth-4);
+    AHeight:=Max(1,AHeight-4);
   end;
 
   BeginUpdate;
   try
     {fixes gtk3 assertion}
     Widget^.get_preferred_width(@AMinSize, @ANaturalSize);
-    AWidth:=Max(AWidth,AMinSize);
     Widget^.get_preferred_height(@AMinSize, @ANaturalSize);
-    AHeight:=Max(AHeight,AMinSize);
-
-    ARect.x := ALeft;
-    ARect.y := ATop;
-    ARect.width := AWidth;
-    ARect.Height := AHeight;
-    with Alloc do
-    begin
-      x := ALeft;
-      y := ATop;
-      width := AWidth;
-      height := AHeight;
-    end;
 
     Widget^.set_size_request(AWidth,AHeight);
 

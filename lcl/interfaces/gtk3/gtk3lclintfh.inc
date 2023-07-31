@@ -38,7 +38,7 @@ function ExtUTF8Out(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect;
 function FontIsMonoSpace(Font: HFont): boolean; override;
 
 function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String; override;
-// function GetControlConstraints(Constraints: TObject): boolean; override;
+ function GetControlConstraints(Constraints: TObject): boolean; override;
 function GetLCLOwnerObject(Handle: HWnd): TObject; override;
 
 function PromptUser(const DialogCaption : string;
