@@ -1547,7 +1547,7 @@ begin
   if Assigned(Screen.ActiveCustomForm) then
     Result := Screen.ActiveCustomForm.Handle
   else
-    Result := feInvalidHandle;
+    Result := TLCLHandle(-1);
 end;
 
 function TApplication.GetCurrentHelpFile: string;
