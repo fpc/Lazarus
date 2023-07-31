@@ -54,6 +54,11 @@ type
     procedure AddQueryCombo(var X,Y: Integer; AWidth: Integer; AParent: TWinControl);
     procedure AddQueryEdit(var X,Y: Integer; AWidth: Integer; AParent: TWinControl);
 
+    procedure DoDialogConstructed;
+    procedure DoDialogCreated;
+    procedure DoDialogDestroyed;
+    procedure VerifyClicked(Sender: TObject);
+
   protected
     procedure HandleEmulatedButtonClicked(Sender: TObject);
     procedure SetupControls;
@@ -62,6 +67,8 @@ type
 
     constructor CreateNew(AOwner: TComponent; Num: Integer = 0); override;
     destructor Destroy; override;
+    procedure AfterConstruction; override;
+
 
     function Execute(AParentWnd: HWND; out ARadioRes: Integer): Integer;
   public
@@ -240,11 +247,19 @@ begin
     FDlg := TTaskDialog(AOwner);
   RadioButtonArray := nil;
   KeyPreview := True;
+  DoDialogCreated;
 end;
 
 destructor TLCLTaskDialog.Destroy;
 begin
+  DoDialogDestroyed;
   inherited Destroy;
+end;
+
+procedure TLCLTaskDialog.AfterConstruction;
+begin
+  inherited AfterConstruction;
+  DoDialogConstructed;
 end;
 
 function TLCLTaskDialog.Execute(AParentWnd: HWND; out ARadioRes: Integer): Integer;
@@ -500,6 +515,7 @@ begin
       SetBounds(X,Y,XB-X,24);
       Caption := VerificationText;
       Checked := FVerifyChecked;
+      OnClick := @VerifyClicked;
     end;
   end;
   inc(Y,36);
@@ -625,6 +641,31 @@ begin
     ActiveControl := Edit;
   inc(Y,42);
 end;
+
+procedure TLCLTaskDialog.DoDialogConstructed;
+begin
+  if Assigned(FDlg.OnDialogConstructed) then
+    FDlg.OnDialogDestroyed(FDlg);
+end;
+
+procedure TLCLTaskDialog.DoDialogCreated;
+begin
+  if Assigned(FDlg.OnDialogCreated) then
+    FDlg.OnDialogCreated(FDlg);
+end;
+
+procedure TLCLTaskDialog.DoDialogDestroyed;
+begin
+  if Assigned(FDlg.OnDialogDestroyed) then
+    FDlg.OnDialogDestroyed(FDlg);
+end;
+
+procedure TLCLTaskDialog.VerifyClicked(Sender: TObject);
+begin
+  if Assigned(FDlg.OnVerificationClicked) then
+    FDlg.OnVerificationClicked(FDlg);
+end;
+
 
 procedure TLCLTaskDialog.HandleEmulatedButtonClicked(Sender: TObject);
 var Btn: TButton absolute Sender;

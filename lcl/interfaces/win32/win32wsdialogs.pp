@@ -1660,9 +1660,27 @@ var Dlg: TTaskDialog absolute dwRefData;
 begin
   Result := S_OK;
   case uNotification of
+    TDN_DIALOG_CONSTRUCTED:
+    begin
+      Assert((Dlg is TCustomTaskDialog),'TaskDialogCallbackProc: dwRefData is NOT a TCustomTaskDialog');
+      if Assigned(Dlg.OnDialogConstructed) then
+        Dlg.OnDialogConstructed(Dlg);
+    end;
+    TDN_CREATED:
+    begin
+      Assert((Dlg is TCustomTaskDialog),'TaskDialogCallbackProc: dwRefData is NOT a TCustomTaskDialog');
+      if Assigned(Dlg.OnDialogCreated) then
+        Dlg.OnDialogCreated(Dlg);
+    end;
+    TDN_DESTROYED:
+    begin
+      Assert((Dlg is TCustomTaskDialog),'TaskDialogCallbackProc: dwRefData is NOT a TCustomTaskDialog');
+      if Assigned(Dlg.OnDialogDestroyed) then
+        Dlg.OnDialogDestroyed(Dlg);
+    end;
     TDN_BUTTON_CLICKED:
     begin
-    Assert((Dlg is TCustomTaskDialog),'TaskDialogCallbackProc: dwRefData is NOT a TCustomTaskDialog');
+      Assert((Dlg is TCustomTaskDialog),'TaskDialogCallbackProc: dwRefData is NOT a TCustomTaskDialog');
       if Assigned(Dlg.OnButtonClicked) then
       begin
         CanClose := True;
@@ -1670,6 +1688,28 @@ begin
         if not CanClose then
           Result := S_FALSE;
       end;
+    end;
+    TDN_HYPERLINK_CLICKED:
+    begin
+      if IsConsole then writeln('ToDo: implement OnHyperlinkClicked');
+    end;
+    TDN_NAVIGATED:
+    begin
+      if IsConsole then writeln('ToDo: implement TDN_NAVIGATED??');
+    end;
+    TDN_TIMER:
+    begin
+      if IsConsole then writeln('ToDo: implement OnTimer');
+    end;
+    TDN_VERIFICATION_CLICKED:
+    begin
+      Assert((Dlg is TCustomTaskDialog),'TaskDialogCallbackProc: dwRefData is NOT a TCustomTaskDialog');
+      if Assigned(Dlg.OnVerificationClicked) then
+        Dlg.OnVerificationClicked(Dlg);
+    end;
+    TDN_EXPANDO_BUTTON_CLICKED:
+    begin
+      if IsConsole then writeln('ToDo: implement OnExpanded');
     end;
   end;
 end;

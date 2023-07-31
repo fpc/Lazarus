@@ -635,6 +635,10 @@ type
     FFooterText: TTranslateString;
     FMainIcon: TTaskDialogIcon;
     FModalResult: TModalResult;
+    FOnDialogConstructed: TNotifyEvent;
+    FOnDialogCreated: TNotifyEvent;
+    FOnDialogDestroyed: TNotifyEvent;
+    FOnVerificationClicked: TNotifyEvent;
     FQueryChoices: TStrings;
     FQueryResult: String;
     FQueryItemIndex: Integer;
@@ -685,6 +689,10 @@ type
     property VerificationText: TTranslateString read FVerificationText write FVerificationText;
     property Width: Integer read FWidth write FWidth default 0;
     property OnButtonClicked: TTaskDlgClickEvent read FOnButtonClicked write FOnButtonClicked;
+    property OnDialogConstructed: TNotifyEvent read FOnDialogConstructed write FOnDialogConstructed;
+    property OnDialogCreated: TNotifyEvent read FOnDialogCreated write FOnDialogCreated;
+    property OnDialogDestroyed: TNotifyEvent read FOnDialogDestroyed write FOnDialogDestroyed;
+    property OnVerificationClicked: TNotifyEvent read FOnVerificationClicked write FOnVerificationClicked;
   end;
 
   TTaskDialog = class(TCustomTaskDialog)
@@ -709,6 +717,10 @@ type
     property VerificationText;
     property Width;
     property OnButtonClicked;
+    property OnDialogConstructed;
+    property OnDialogCreated;
+    property OnDialogDestroyed;
+    property OnVerificationClicked;
   end;
 
 const
