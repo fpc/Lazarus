@@ -3307,7 +3307,7 @@ Used in the implementation of the CalculatePreferredSize and Paint methods.
 <link id="TCustomSpeedButton.Layout"/>
 <link id="TCustomSpeedButton.ShowCaption"/>
 <link id="TCustomSpeedButton.Alignment"/>
-<link id="TCustomSpeedButton.State"/>
+<link id="TCustomSpeedButton.FState"/>
 <link id="TCustomSpeedButton.Transparent"/>
 <link id="TCustomSpeedButton.CalculatePreferredSize"/>
 <link id="TCustomSpeedButton.PaintBackground"/>
