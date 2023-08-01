@@ -64,7 +64,7 @@ type
     procedure SetSelected(Value: TColor);
     procedure SetStyle(const AValue: TColorBoxStyle); reintroduce;
     procedure ColorProc(const s: AnsiString);
-    procedure UpdateCombo;
+    procedure SetIndexOnColor(aColor: TColor);
   protected
     function ColorRectWidthStored: Boolean;
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
@@ -89,7 +89,7 @@ type
     property DefaultColorColor: TColor read FDefaultColorColor write SetDefaultColorColor default clBlack;
     property NoneColorColor: TColor read FNoneColorColor write SetNoneColorColor default clBlack;
     property OnGetColors: TGetColorsEvent read FOnGetColors write FOnGetColors;
-    property ColorDialog:TcolorDialog read FColorDialog write FcolorDialog;
+    property ColorDialog: TColorDialog read FColorDialog write FColorDialog;
   end;
 
   { TColorBox }
@@ -188,6 +188,7 @@ type
     procedure SetSelected(Value: TColor);
     procedure SetStyle(const AValue: TColorBoxStyle); reintroduce;
     procedure ColorProc(const s: AnsiString);
+    procedure SetIndexOnColor(aColor: TColor);
   protected
     function ColorRectWidthStored: Boolean;
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
@@ -499,7 +500,7 @@ begin
     Exit;
 
   FSelected := Value;
-  UpdateCombo;
+  SetIndexOnColor(FSelected);
   inherited Change;
 end;
 
@@ -571,29 +572,28 @@ begin
   end;
 end;
 
-procedure TCustomColorBox.UpdateCombo;
+procedure TCustomColorBox.SetIndexOnColor(aColor: TColor);
 var
-  c: integer;
+  i: integer;
 begin
-  if HandleAllocated then
-  begin
-    for c := Ord(cbCustomColor in Style) to Items.Count - 1 do
+  if not HandleAllocated then exit;
+  // find color in list
+  for i := ord(cbCustomColor in Style) to Items.Count - 1 do
+    if Colors[i] = aColor then
     begin
-      if Colors[c] = FSelected then
-      begin
-        ItemIndex := c;
-        Exit;
-      end;
+      ItemIndex := i;
+      exit;
     end;
-    if cbCustomColor in Style then
-    begin
-      Items.Objects[0] := TObject(PtrInt(FSelected));
-      ItemIndex := 0;
-      Invalidate;
-    end
-    else
-      ItemIndex := -1;
+  // check custom color
+  if cbCustomColor in Style then
+  begin
+    Items.Objects[0] := TObject(PtrInt(aColor));
+    ItemIndex := 0;
+    Invalidate;
+    exit;
   end;
+  // color not found
+  ItemIndex := -1;
 end;
 
 {------------------------------------------------------------------------------
@@ -695,7 +695,7 @@ end;
 procedure TCustomColorBox.InitializeWnd;
 begin
   inherited InitializeWnd;
-  UpdateCombo;
+  SetIndexOnColor(FSelected);
 end;
 
 procedure TCustomColorBox.DoGetColors;
@@ -706,37 +706,38 @@ end;
 
 procedure TCustomColorBox.CloseUp;
 begin
-  if (cbCustomColor in Style) and (ItemIndex = 0) then // custom color has been selected
+  // if custom color has been selected
+  if (cbCustomColor in Style) and (ItemIndex = 0) then
     PickCustomColor;
-  if ItemIndex <> -1 then
+
+  // select color and call OnChange
+  if ItemIndex >= 0 then
     Selected := Colors[ItemIndex];
+
   inherited CloseUp;
 end;
 
 function TCustomColorBox.PickCustomColor: Boolean;
-Var
-  FreeDialog:Boolean;
+var
+  FreeDialog: boolean;
 begin
   if csDesigning in ComponentState then
-  begin
-    Result := False;
-    Exit;
-  end;
-  FreeDialog := FcolorDialog = NIL;
-  If FColorDialog = Nil Then FcolorDialog := TcolorDialog.Create(GetTopParent);
-  Try
-    With FColorDialog do
-    Begin
-      Color := Colors[0];
-      Result := Execute;
-      If Result Then
-       Begin
-         items.objects[0]:= TObject(PtrInt(COlor));
-         Invalidate;
-       end;
+    exit(false);
+
+  FreeDialog := FColorDialog = nil;
+  if FreeDialog then
+    FColorDialog := TColorDialog.Create(GetTopParent);
+  try
+    FColorDialog.Color := Colors[0];
+    result := FColorDialog.Execute;
+    if result then
+    begin
+      Items.Objects[0] := TObject(PtrInt(FColorDialog.Color));
+      Invalidate;
     end;
   finally
-    If FreeDialog Then FreeAndNil(FcolorDialog);
+    if FreeDialog then
+      FreeAndNil(FColorDialog);
   end;
 end;
 
@@ -867,31 +868,12 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TCustomColorListBox.SetSelected(Value: TColor);
-var
-  c: integer;
 begin
-  if HandleAllocated then
-  begin
-    FSelected := Value;
-    for c := Ord(cbCustomColor in Style) to Items.Count - 1 do
-    begin
-      if Colors[c] = Value then
-      begin
-        ItemIndex := c;
-        Exit;
-      end;
-    end;
-    if cbCustomColor in Style then
-    begin
-      Items.Objects[0] := TObject(PtrInt(Value));
-      ItemIndex := 0;
-      invalidate;
-    end
-    else
-      ItemIndex := -1;
-  end
-  else
-    FSelected := Value;
+  if FSelected = Value then
+    exit;
+
+  FSelected := Value;
+  SetIndexOnColor(FSelected);
 end;
 
 procedure TCustomColorListBox.SetStyle(const AValue: TColorBoxStyle);
@@ -939,6 +921,30 @@ begin
 
     Items.AddObject(ColorCaption, TObject(PtrInt(AColor)));
   end;
+end;
+
+procedure TCustomColorListBox.SetIndexOnColor(aColor: TColor);
+var
+  i: integer;
+begin
+  if not HandleAllocated then exit;
+  // find color in list
+  for i := ord(cbCustomColor in Style) to Items.Count - 1 do
+    if Colors[i] = aColor then
+    begin
+      ItemIndex := i;
+      exit;
+    end;
+  // check custom color
+  if cbCustomColor in Style then
+  begin
+    Items.Objects[0] := TObject(PtrInt(aColor));
+    ItemIndex := 0;
+    Invalidate;
+    exit;
+  end;
+  // color not found
+  ItemIndex := -1;
 end;
 
 function TCustomColorListBox.ColorRectWidthStored: Boolean;
@@ -1070,38 +1076,40 @@ procedure TCustomColorListBox.DoSelectionChange(User: Boolean);
 begin
   if User then
   begin
-    if (cbCustomColor in Style) and (ItemIndex = 0) then // custom color has been selected
+    // if custom color has been selected
+    if (cbCustomColor in Style) and (ItemIndex = 0) then
       PickCustomColor;
-    if ItemIndex <> -1 then
+
+    // select color
+    if ItemIndex >= 0 then
       FSelected := Colors[ItemIndex];
   end;
+
+  // call OnSelectionChange
   inherited DoSelectionChange(User);
 end;
 
 function TCustomColorListBox.PickCustomColor: Boolean;
-Var
-  FreeDialog:Boolean;
+var
+  FreeDialog: boolean;
 begin
   if csDesigning in ComponentState then
-  begin
-    Result := False;
-    Exit;
-  end;
-  FreeDialog := FcolorDialog = NIL;
-  If FColorDialog = Nil Then FcolorDialog := TcolorDialog.Create(GetTopParent);
-  Try
-    With FColorDialog do
-    Begin
-      Color := Colors[0];
-      Result := Execute;
-      If Result Then
-       Begin
-         items.objects[0]:= TObject(PtrInt(COlor));
-         Invalidate;
-       end;
+    exit(false);
+
+  FreeDialog := FColorDialog = nil;
+  if FreeDialog then
+    FColorDialog := TColorDialog.Create(GetTopParent);
+  try
+    FColorDialog.Color := Colors[0];
+    result := FColorDialog.Execute;
+    if result then
+    begin
+      Items.Objects[0] := TObject(PtrInt(FColorDialog.Color));
+      Invalidate;
     end;
   finally
-    If FreeDialog Then FreeAndNil(FcolorDialog);
+    if FreeDialog then
+      FreeAndNil(FColorDialog);
   end;
 end;
 

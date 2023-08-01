@@ -586,11 +586,10 @@ end;
 
 procedure TCustomComboBox.KeyDown(var Key: Word; Shift: TShiftState);
 var
-  Skip, UserDropDown, PreventDropDown: Boolean;
+  UserDropDown, PreventDropDown: Boolean;
 begin
   FEditingDone := Key = VK_RETURN;
-  Skip := False;
-  UserDropDown := ((Shift *[ssAlt] = [ssAlt]) and (Key = VK_DOWN));
+  UserDropDown := (Key = VK_DOWN) and (ssAlt in Shift);
   if Style = csSimple then
     PreventDropDown := Key in [VK_RETURN, VK_ESCAPE]
   else
@@ -602,9 +601,8 @@ begin
   // if AutoDropDown then don't close DropDown, like in Delphi, issue #31247
   if AutoDropDown then
     PreventDropDown := PreventDropDown or (ssAlt in Shift)
-                       or (Key in [VK_UNKNOWN..VK_MODECHANGE, VK_END..VK_LEFT,
-                                   VK_RIGHT, VK_SELECT..VK_HELP,
-                                   VK_LWIN..VK_SLEEP, VK_F1..VK_UNDEFINED]);
+      or (not (Key in [VK_SPACE, VK_PRIOR, VK_NEXT, VK_UP, VK_DOWN, VK_0..VK_Z, VK_NUMPAD0..VK_DIVIDE]));
+
   if AutoDropDown or UserDropDown or FReturnArrowState then
   begin
     if PreventDropDown then
@@ -615,22 +613,19 @@ begin
         FReturnArrowState := False;
       end;
     end
-    else
-    begin
+    else begin
       if not ArrowKeysTraverseList then
       begin
         ArrowKeysTraverseList := True; //we need?? this here, else we cannot traverse popup list
         FReturnArrowState := True;
-        Skip := True;
+        Key := VK_UNKNOWN;
       end;
       DroppedDown := True;
       if UserDropDown then
-        Skip := True;
+        Key := VK_UNKNOWN;
     end;
   end;
-  if Skip then
-    Key := VK_UNKNOWN
-  else
+  if Key <> VK_UNKNOWN then
     inherited KeyDown(Key, Shift);
 end;
 
