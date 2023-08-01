@@ -491,7 +491,12 @@ begin
     cr := NSView(Owner).lclClientFrame;
     PtInClient.x := Round({PtInBounds.x - }pt.x - cr.Left);
     PtInClient.y := Round({PtInBounds.y - }pt.y - cr.Top);
+
+    // child ctrls need not LayoutDelta,
+    cr := NSView(Owner).lclGetFrameToLayoutDelta;
     PtForChildCtrls := PtInClient;
+    PtForChildCtrls.X := PtForChildCtrls.X + cr.Left;
+    PtForChildCtrls.Y := PtForChildCtrls.Y + cr.Top;
 
     es := NSView(Owner).enclosingScrollView;
     if Assigned(es) and (es.documentView = NSView(Owner)) then begin
