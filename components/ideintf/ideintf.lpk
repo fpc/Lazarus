@@ -323,6 +323,11 @@
         <Filename Value="ideintfstrconsts.pas"/>
         <UnitName Value="IdeIntfStrConsts"/>
       </Item>
+      <Item>
+        <Filename Value="pagespropeditdlg.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="PagesPropEditDlg"/>
+      </Item>
     </Files>
     <LazDoc Paths="docs"/>
     <i18n>
