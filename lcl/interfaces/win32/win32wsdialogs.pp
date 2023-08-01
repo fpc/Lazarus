@@ -1721,7 +1721,7 @@ begin
       lParam: Must be zero.
       Return value: The return value is ignored.
       }
-      if IsConsole then writeln('ToDo: implement OnNavigate');
+      if IsConsole then writeln('ToDo: implement OnNavigated');
     end;
     TDN_TIMER:
     begin
