@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <Name Value="cairocanvas_pkg"/>
     <Author Value="Petr Kristan"/>
     <CompilerOptions>
@@ -11,7 +11,7 @@
     </CompilerOptions>
     <Description Value="TCairoPrinterCanvas using the Cairo library."/>
     <License Value="see COPYING.modifiedLGPL.txt"/>
-    <Files Count="3">
+    <Files Count="4">
       <Item1>
         <Filename Value="cairocanvas.pas"/>
         <AddToUsesPkgSection Value="False"/>
@@ -26,7 +26,13 @@
         <Filename Value="cairocanvasall.pas"/>
         <UnitName Value="CairoCanvasAll"/>
       </Item3>
+      <Item4>
+        <Filename Value="cairographics.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="CairoGraphics"/>
+      </Item4>
     </Files>
+    <CompatibilityMode Value="True"/>
     <RequiredPkgs Count="1">
       <Item1>
         <PackageName Value="LCL"/>
