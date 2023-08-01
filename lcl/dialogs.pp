@@ -640,6 +640,7 @@ type
     FOnDialogCreated: TNotifyEvent;
     FOnDialogDestroyed: TNotifyEvent;
     FOnExpand: TNotifyEvent;
+    FOnHyperlinkClicked: TNotifyEvent;
     FOnRadioButtonClicked: TNotifyEvent;
     FOnTimer: TTaskDlgTimerEvent;
     FOnVerificationClicked: TNotifyEvent;
@@ -652,6 +653,7 @@ type
     FSimpleQueryPasswordChar: Char;
     FText: TTranslateString;
     FTitle: TTranslateString;
+    FURL: String;
     FVerificationText: TTranslateString;
     FWidth: Integer;
     FOnButtonClicked: TTaskDlgClickEvent;
@@ -671,7 +673,7 @@ type
     procedure DoOnTimer(TickCount: Cardinal; var Reset: Boolean); dynamic;
     procedure DoOnVerificationClicked(Checked: Boolean); dynamic;
     //procedure DoOnHelp; dynamic;
-    //procedure DoOnHyperlinkClicked(const AURL: string); dynamic;
+    procedure DoOnHyperlinkClicked(const AURL: string); dynamic;
     //procedure DoOnNavigated; dynamic;
 
     procedure SetRadioButtonFromRadioIndex(AIndex: Integer);
@@ -704,6 +706,7 @@ type
     property Title: TTranslateString read FTitle write FTitle;
     property VerificationText: TTranslateString read FVerificationText write FVerificationText;
     property Width: Integer read FWidth write FWidth default 0;
+    property URL: String read FURL;
     property OnButtonClicked: TTaskDlgClickEvent read FOnButtonClicked write FOnButtonClicked;
     property OnDialogConstructed: TNotifyEvent read FOnDialogConstructed write FOnDialogConstructed;
     property OnDialogCreated: TNotifyEvent read FOnDialogCreated write FOnDialogCreated;
@@ -712,6 +715,7 @@ type
     property OnExpand: TNotifyEvent read FOnExpand write FOnExpand;
     property OnTimer: TTaskDlgTimerEvent read FOnTimer write FOnTimer;
     property OnRadioButtonClicked: TNotifyEvent read FOnRadioButtonClicked write FOnRadioButtonClicked;
+    property OnHyperlinkClicked: TNotifyEvent read FOnHyperlinkClicked write FOnHyperlinkClicked;
   end;
 
   TTaskDialog = class(TCustomTaskDialog)
@@ -743,6 +747,7 @@ type
     property OnExpand;
     property OnTimer;
     property OnRadioButtonClicked;
+    property OnHyperlinkClicked;
   end;
 
 const

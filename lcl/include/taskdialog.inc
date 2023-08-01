@@ -215,6 +215,13 @@ begin
     FOnVerificationClicked(Self);
 end;
 
+procedure TCustomTaskDialog.DoOnHyperlinkClicked(const AURL: string);
+begin
+  FURL := AURL;
+  if Assigned(FOnHyperlinkClicked) then
+    FOnHyperlinkClicked(Self);
+end;
+
 procedure TCustomTaskDialog.SetRadioButtonFromRadioIndex(AIndex: Integer);
 begin
   if (AIndex >= TaskDialogFirstRadioButtonIndex) and (AIndex-TaskDialogFirstRadioButtonIndex < RadioButtons.Count) then

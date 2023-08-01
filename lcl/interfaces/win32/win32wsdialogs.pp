@@ -1659,8 +1659,10 @@ type
 
 function TaskDialogCallbackProc({%H-}hwnd: HWND; uNotification: UINT;
   wParam: WPARAM; {%H-}lParam: LPARAM; dwRefData: Long_Ptr): HRESULT; stdcall;
-var Dlg: TTaskDialog absolute dwRefData;
-    CanClose, ResetTimer: Boolean;
+var
+  Dlg: TTaskDialog absolute dwRefData;
+  CanClose, ResetTimer: Boolean;
+  AUrl: String;
 begin
   Result := S_OK;
   case uNotification of
@@ -1706,8 +1708,11 @@ begin
       lParam: Pointer to a wide-character string containing the URL of the hyperlink.
       Return value: The return value is ignored.
       }
-      //AUrl := Utf16ToUtf8(PWideChar(lParam));   <== can this be done safely and passed to OnUrlClicked if AUrls is a local variable here??
-      if IsConsole then writeln('ToDo: implement OnHyperlinkClicked');
+      AUrl := Utf16ToUtf8(PWideChar(lParam)); //  <== can this be done safely and passed to OnUrlClicked if AUrls is a local variable here??
+      {$PUSH}
+      {$ObjectChecks OFF}
+      TTaskDialogAccess(Dlg).DoOnHyperlinkClicked(AUrl);
+      {$POP}
     end;
     TDN_NAVIGATED:
     begin
