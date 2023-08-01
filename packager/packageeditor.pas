@@ -1082,10 +1082,10 @@ begin
 
   Files:=TFilenameToStringTree.Create(true);
   try
-    // collect missing units from unit path
+    // collect new units from unit path
     CollectFiles(LazPackage.GetUnitPath(false),pftUnit);
 
-    // collect missing include files from include path
+    // collect new include files from include path
     CollectFiles(LazPackage.GetIncludePath(false),pftInclude);
 
     if Files.Count=0 then
@@ -1921,7 +1921,7 @@ begin
   MoreBitBtn.DropdownMenu := MorePopupMenu;
 
   mnuAddDiskFile.Caption := lisPckEditAddFilesFromFileSystem;
-  mnuAddNewDiskFiles.Caption := 'Add Missing Files from File System'; // todo resourcestring
+  mnuAddNewDiskFiles.Caption := 'Add New Files from File System'; // todo resourcestring
   mnuAddNewFile.Caption := lisA2PNewFile;
   mnuAddNewComp.Caption := lisMenuNewComponent;
   mnuAddNewReqr.Caption := lisProjAddNewRequirement;
