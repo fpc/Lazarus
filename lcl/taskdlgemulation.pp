@@ -55,10 +55,11 @@ type
     function AddLabel(const AText: string; BigFont: boolean; var X, Y: Integer; AFontHeight, AWidth: Integer; APArent: TWinControl): TLabel;
     procedure AddQueryCombo(var X,Y: Integer; AWidth: Integer; AParent: TWinControl);
     procedure AddQueryEdit(var X,Y: Integer; AWidth: Integer; AParent: TWinControl);
-    procedure OnTimer(Sender: TObject);
     procedure SetupTimer;
     procedure ResetTimer;
 
+    procedure OnTimer(Sender: TObject);
+    procedure OnRadioButtonClick(Sender: TObject);
     procedure DoDialogConstructed;
     procedure DoDialogCreated;
     procedure DoDialogDestroyed;
@@ -102,6 +103,10 @@ function TF_FOOTERICON(const aIcon: TTaskDialogIcon): TLCLTaskDialogFooterIcon;
 
 
 implementation
+
+type
+  TTaskDialogAccess = class(TCustomTaskDialog)
+  end;
 
 var
   LDefaultFont: TFont;
@@ -387,6 +392,7 @@ begin
     with RadioButtonArray[i] do
     begin
       Parent := AParent;
+      Tag := FDlg.RadioButtons[i].Index + TaskDialogFirstRadioButtonIndex;
       AutoSize := False;
       SetBounds(X+16,Y,aWidth-32-X, (6-AFontHeight) + ARadioOffset);
       Caption := NoCR(FDlg.RadioButtons[i].Caption, aHint); //LCL RadioButton doesn't support multiline captions
@@ -397,6 +403,7 @@ begin
       inc(Y,Height + ARadioOffset);
       if not (tfNoDefaultRadioButton in FDlg.Flags) and ((i=0) or (i=aRadioDef)) then
         Checked := True;
+      OnClick := @OnRadioButtonClick;
     end;
   end;
   inc(Y,24);
@@ -673,6 +680,17 @@ begin
     if AResetTimer then
       ResetTimer;
   end;
+end;
+
+procedure TLCLTaskDialog.OnRadioButtonClick(Sender: TObject);
+var
+  ButtonID: Integer;
+begin
+  ButtonID := (Sender as TRadioButton).Tag;
+  {$PUSH}
+  {$ObjectChecks OFF}
+  TTaskDialogAccess(FDlg).DoOnRadioButtonClicked(ButtonID);
+  {$POP}
 end;
 
 procedure TLCLTaskDialog.SetupTimer;

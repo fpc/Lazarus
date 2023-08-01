@@ -1653,6 +1653,10 @@ begin
   Result := TLongRec(GetDialogBaseUnits).L;
 end;
 
+type
+  TTaskDialogAccess = class(TCustomTaskDialog)
+  end;
+
 function TaskDialogCallbackProc(hwnd: HWND; uNotification: UINT;
   wParam: WPARAM; {%H-}lParam: LPARAM; dwRefData: Long_Ptr): HRESULT; stdcall;
 var Dlg: TTaskDialog absolute dwRefData;
@@ -1743,7 +1747,10 @@ begin
       lParam: Must be zero.
       Return value: The return value is ignored.
       }
-      if IsConsole then writeln('ToDo: implement OnRadioButtonClicked');
+      {$PUSH}
+      {$ObjectChecks OFF}
+      TTaskDialogAccess(Dlg).DoOnRadioButtonClicked(wParam);
+      {$POP}
     end;
   end;
 end;

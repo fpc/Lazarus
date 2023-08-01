@@ -152,10 +152,7 @@ begin
   //(https://docwiki.embarcadero.com/Libraries/Alexandria/en/Vcl.Dialogs.TCustomTaskDialog.Execute)
   //But it seems that Delphi in fact does the same: it will always return True, as long as we succeed in showing the dialog.
   Result := (ButtonID >= 0);
-  if (ARadioRes >= TaskDialogFirstRadioButtonIndex) and (aRadioRes-TaskDialogFirstRadioButtonIndex < RadioButtons.Count) then
-    FRadioButton := RadioButtons[ARadioRes-TaskDialogFirstRadioButtonIndex] as TTaskDialogRadioButtonItem
-  else
-    FRadioButton := nil;
+  SetRadioButtonFromRadioIndex(aRadioRes);
   //debugln(['TWSTaskDialogClass(WidgetSetClass).Execute(Self)=',ButtonID,', Result=',Result]);
   //debugln([' ButtonID=',ButtonID]);
   //debugln([' FModalResult=',FModalResult]);
@@ -171,6 +168,23 @@ procedure TCustomTaskDialog.DoOnButtonClicked(AModalResult: Integer;
 begin
   if Assigned(FOnButtonClicked) then
     FOnButtonClicked(Self, AModalResult, ACanClose);
+end;
+
+procedure TCustomTaskDialog.DoOnRadioButtonClicked(ButtonID: Integer);
+begin
+  if Assigned(FOnRadioButtonClicked) then
+  begin
+    SetRadioButtonFromRadioIndex(ButtonID);
+    FOnRadioButtonClicked(Self);
+  end;
+end;
+
+procedure TCustomTaskDialog.SetRadioButtonFromRadioIndex(AIndex: Integer);
+begin
+  if (AIndex >= TaskDialogFirstRadioButtonIndex) and (AIndex-TaskDialogFirstRadioButtonIndex < RadioButtons.Count) then
+    FRadioButton := RadioButtons[AIndex-TaskDialogFirstRadioButtonIndex] as TTaskDialogRadioButtonItem
+  else
+    FRadioButton := nil;
 end;
 
 

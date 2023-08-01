@@ -640,6 +640,7 @@ type
     FOnDialogCreated: TNotifyEvent;
     FOnDialogDestroyed: TNotifyEvent;
     FOnExpand: TNotifyEvent;
+    FOnRadioButtonClicked: TNotifyEvent;
     FOnTimer: TTaskDlgTimerEvent;
     FOnVerificationClicked: TNotifyEvent;
     FQueryChoices: TStrings;
@@ -662,6 +663,8 @@ type
     class procedure WSRegisterClass; override;
     function DoExecute(ParentWnd: HWND): Boolean; dynamic;
     procedure DoOnButtonClicked(AModalResult: Integer; var ACanClose: Boolean); dynamic;
+    procedure DoOnRadioButtonClicked(ButtonID: Integer); dynamic;
+    procedure SetRadioButtonFromRadioIndex(AIndex: Integer);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -698,6 +701,7 @@ type
     property OnVerificationClicked: TNotifyEvent read FOnVerificationClicked write FOnVerificationClicked;
     property OnExpand: TNotifyEvent read FOnExpand write FOnExpand;
     property OnTimer: TTaskDlgTimerEvent read FOnTimer write FOnTimer;
+    property OnRadioButtonClicked: TNotifyEvent read FOnRadioButtonClicked write FOnRadioButtonClicked;
   end;
 
   TTaskDialog = class(TCustomTaskDialog)
@@ -728,6 +732,7 @@ type
     property OnVerificationClicked;
     property OnExpand;
     property OnTimer;
+    property OnRadioButtonClicked;
   end;
 
 const
