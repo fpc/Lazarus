@@ -411,6 +411,10 @@ If you wish to allow use of your version of these files only under the terms of 
         <Filename Value="synedittextdyntabexpander.pas"/>
         <UnitName Value="SynEditTextDynTabExpander"/>
       </Item>
+      <Item>
+        <Filename Value="synedit.inc"/>
+        <Type Value="Include"/>
+      </Item>
     </Files>
     <LazDoc Paths="docs\xml"/>
     <i18n>
