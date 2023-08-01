@@ -939,7 +939,7 @@ begin
   ar := lTabControl.lclGetFrameToLayoutDelta;
   // switching ShowTabs actually changes layout to frame
   // this needs to be compenstated
-  if (ar.Top<>pr.Top) or (pr.Left<>ar.Top) then
+  if (ar.Top<>pr.Top) or (ar.Left<>pr.Left) then
   begin
     fr := lTabControl.frame;
     dx := pr.Left - ar.left;
