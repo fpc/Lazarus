@@ -192,7 +192,7 @@ as an argument to routines like: <var>MessageDlg</var>,
 <var>LazMessageDlg</var>.
 </p>
 </descr>
-<seealso>  
+<seealso>
 <!--
 TODO: Uncomment when system.uitypes exists in RTL.CHM.
 <link id="#rtl.system.uitypes.TMsgDlgButtons">System.UITypes.TMsgDlgButtons</link>
@@ -1092,7 +1092,7 @@ Stores the names of files (or directories) selected using the dialog.
 </short>
 <descr>
 <p>
-<var>Files</var> is a <var>TStrings</var> property used to store values  
+<var>Files</var> is a <var>TStrings</var> property used to store values 
 selected using the file dialog. A TStringList instance is created and 
 assigned to the property in the Create constructor.
 </p>
@@ -1999,7 +1999,7 @@ Event signalled when a new directory is selected in the dialog.
 event handler signalled when the current directory is changed using the 
 dialog. OnFolderChange is signalled (when assigned) from the DoFolderChange 
 method when it is called from methods in the widgetset class instance. It is 
-called  when the value in FileName has been changed as a result of directory 
+called when the value in FileName has been changed as a result of directory 
 navigation using the native dialog for the platform.
 </p>
 <p>
@@ -2346,7 +2346,7 @@ constant.
 </element>
 <element name="TColorDialog.DefaultTitle.Result">
 <short>
-Returns  the values defined in the rsSelectcolorTitle constant.
+Returns the values defined in the rsSelectcolorTitle constant.
 </short>
 </element>
 
@@ -5212,11 +5212,12 @@ TTaskDialogBaseButtonItem is the ancestor class for
 </seealso>
 </element>
 
+<!-- private -->
 <element name="TTaskDialogBaseButtonItem.FCaption"/>
 <element name="TTaskDialogBaseButtonItem.FClient"/>
+<element name="TTaskDialogBaseButtonItem.FCommandLinkHint"/>
 <element name="TTaskDialogBaseButtonItem.FModalResult"/>
 
-<!-- private -->
 <element name="TTaskDialogBaseButtonItem.GetDefault"/>
 <element name="TTaskDialogBaseButtonItem.GetDefault.Result"/>
 <element name="TTaskDialogBaseButtonItem.SetCaption"/>
@@ -5321,6 +5322,28 @@ property in the TCustomTaskDialog instance.
 </seealso>
 </element>
 
+<element name="TTaskDialogBaseButtonItem.CommandLinkHint">
+<short>
+Provides additional information about the button when command links are 
+enabled in a task dialog.
+</short>
+<descr>
+<p>
+CommandLinkHint is a TTranslateString property which contains additional 
+information about the button. The translatable content is used as second line 
+of text for the button when command links are enabled in a native TTaskDialog 
+instance. The value is not displayed as an additional line on platforms where 
+an emulated task dialog is used; this includes all platforms other Windows 
+(Vista or later).
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+
+
 <element name="TTaskDialogBaseButtonItem.Caption">
 <short>Caption text displayed on the button surface.</short>
 <descr>
@@ -5401,6 +5424,8 @@ also used as the <var>DisplayName</var> for the collection item when assigned.
 <element name="TTaskDialogButtonItem.Create.ACollection">
 <short>Collection which owns the button item.</short>
 </element>
+
+<element name="TTaskDialogButtonItem.CommandLinkHint" link="#lcl.dialogs.TTaskDialogBaseButtonItem.CommandLinkHint"/>
 
 <element name="TTaskDialogButtonItem.ModalResult" link="#lcl.dialogs.TTaskDialogBaseButtonItem.ModalResult"/>
 
@@ -5702,6 +5727,10 @@ For other platforms, or Windows versions which do not support the TaskDialog API
 <element name="TCustomTaskDialog.FFooterText"/>
 <element name="TCustomTaskDialog.FMainIcon"/>
 <element name="TCustomTaskDialog.FModalResult"/>
+<element name="TCustomTaskDialog.FOnDialogConstructed"/>
+<element name="TCustomTaskDialog.FOnDialogCreated"/>
+<element name="TCustomTaskDialog.FOnDialogDestroyed"/>
+<element name="TCustomTaskDialog.FOnVerificationClicked"/>
 <element name="TCustomTaskDialog.FQueryChoices"/>
 <element name="TCustomTaskDialog.FQueryResult"/>
 <element name="TCustomTaskDialog.FQueryItemIndex"/>
@@ -5728,7 +5757,7 @@ For other platforms, or Windows versions which do not support the TaskDialog API
 <short/>
 <descr/>
 <version>
-Added in LCL version 4.0.  
+Added in LCL version 4.0.
 </version>
 <seealso/>
 </element>
@@ -6453,6 +6482,46 @@ OnButtonClicked is signalled after a button is clicked on the Task dialog.
 <seealso/>
 </element>
 
+<!-- TODO: Needs content. -->
+<element name="TCustomTaskDialog.OnDialogConstructed">
+<short/>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+
+<!-- TODO: Needs content. -->
+<element name="TCustomTaskDialog.OnDialogCreated">
+<short/>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+
+<!-- TODO: Needs content. -->
+<element name="TCustomTaskDialog.OnDialogDestroyed">
+<short/>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+
+<!-- TODO: Needs content. -->
+<element name="TCustomTaskDialog.OnVerificationClicked">
+<short/>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+
 <!-- TODO: Needs update after refactoring. -->
 <element name="TTaskDialog">
 <short>Creates a configurable, modal task dialog at run-time.</short>
@@ -6526,9 +6595,13 @@ end;
 <element name="TTaskDialog.SimpleQueryPasswordChar" link="#lcl.dialogs.TCustomTaskDialog.SimpleQueryPasswordChar"/>
 <element name="TTaskDialog.Text" link="#lcl.dialogs.TCustomTaskDialog.Text"/>
 <element name="TTaskDialog.Title" link="#lcl.dialogs.TCustomTaskDialog.Title"/>
-<element name="TTaskDialog.Width" link="#lcl.dialogs.TCustomTaskDialog.Width"/>
 <element name="TTaskDialog.VerificationText" link="#lcl.dialogs.TCustomTaskDialog.VerificationText"/>
+<element name="TTaskDialog.Width" link="#lcl.dialogs.TCustomTaskDialog.Width"/>
 <element name="TTaskDialog.OnButtonClicked" link="#lcl.dialogs.TCustomTaskDialog.OnButtonClicked"/>
+<element name="TTaskDialog.OnDialogConstructed" link="#lcl.dialogs.TCustomTaskDialog.OnDialogConstructed"/>
+<element name="TTaskDialog.OnDialogCreated" link="#lcl.dialogs.TCustomTaskDialog.OnDialogCreated"/>
+<element name="TTaskDialog.OnDialogDestroyed" link="#lcl.dialogs.TCustomTaskDialog.OnDialogDestroyed"/>
+<element name="TTaskDialog.OnVerificationClicked" link="#lcl.dialogs.TCustomTaskDialog.OnVerificationClicked"/>
 
 <!-- TODO: Needs content. -->
 <element name="TaskDialogFirstButtonIndex">
