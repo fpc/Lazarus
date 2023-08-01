@@ -21,6 +21,15 @@ uses
 
 type
 
+  { TYesToAllList }
+
+  TYesToAllList = class(TStringList)
+  public
+    function Inc(Name: string): integer;
+  end;
+
+  { TProjPackFileCheck }
+
   TProjPackFileCheck = class
   protected
     class function UnitNameOk(const AFilename, AUnitFilename: string): TModalResult;
@@ -32,18 +41,18 @@ type
   TPkgFileCheck = class(TProjPackFileCheck)
   private
     class function NormalizeFN(LazPackage: TLazPackage; var AFilename: string): TModalResult;
-    class function FileExistsOk(LazPackage: TLazPackage; const AFilename: string): TModalResult;
+    class function FileExistsOk(LazPackage: TLazPackage; const AFilename: string; YesToAll: TYesToAllList): TModalResult;
     class function PartOfProjectOk(const AFilename: string;
-      OnGetIDEFileInfo: TGetIDEFileStateEvent): TModalResult;
+      OnGetIDEFileInfo: TGetIDEFileStateEvent; YesToAll: TYesToAllList): TModalResult;
     class function UniqueUnitOk(LazPackage: TLazPackage;
-      const AUnitFilename: string): TModalResult;
+      const AUnitFilename: string; YesToAll: TYesToAllList): TModalResult;
   public
     class function ReadOnlyOk(LazPackage: TLazPackage): TModalResult;
     class function AddingUnit(LazPackage: TLazPackage; const AFilename: string;
-      OnGetIDEFileInfo: TGetIDEFileStateEvent): TModalResult;
+      OnGetIDEFileInfo: TGetIDEFileStateEvent; YesToAll: TYesToAllList): TModalResult; // ok=success, cancel=fail, abort=fail and stop multi add
     class function ReAddingUnit(LazPackage: TLazPackage;
       FileTyp: TPkgFileType; const AFilename: string;
-      OnGetIDEFileInfo: TGetIDEFileStateEvent): TModalResult;
+      OnGetIDEFileInfo: TGetIDEFileStateEvent; YesToAll: TYesToAllList): TModalResult;
     class function AddingDependency(LazPackage: TLazPackage;
       NewDependency: TPkgDependency; WarnIfAlreadyThere: boolean): TModalResult;
   end;
@@ -75,6 +84,14 @@ begin
     Result := TPkgFileCheck.AddingDependency(AProjPack as TLazPackage, ADependency, True) = mrOK
   else
     Result := TPrjFileCheck.AddingDependency(AProjPack as TProject, ADependency) = mrOK;
+end;
+
+{ TYesToAllList }
+
+function TYesToAllList.Inc(Name: string): integer;
+begin
+  Result:=StrToIntDef(Values[Name],0)+1;
+  Values[Name]:=IntToStr(Result);
 end;
 
 { TProjPackFileCheck }
@@ -130,7 +147,7 @@ begin
 end;
 
 class function TPkgFileCheck.FileExistsOk(LazPackage: TLazPackage;
-  const AFilename: string): TModalResult;
+  const AFilename: string; YesToAll: TYesToAllList): TModalResult;
 var
   PkgFile: TPkgFile;
   Msg: String;
@@ -139,7 +156,8 @@ begin
   // check if file exists
   if not FileExistsUTF8(AFilename) then
   begin
-    IDEMessageDialog(lisFileNotFound, Format(lisPkgMangFileNotFound,[AFilename]),
+    if YesToAll.Inc('FileNotFound')<4 then
+      IDEMessageDialog(lisFileNotFound, Format(lisPkgMangFileNotFound,[AFilename]),
                      mtError, [mbCancel]);
     exit;
   end;
@@ -147,6 +165,7 @@ begin
   PkgFile:=LazPackage.FindPkgFile(AFilename,true,false);
   if PkgFile<>nil then
   begin
+    if YesToAll.Inc('FileAlreadyInPackage')>2 then exit;
     Msg:=Format(lisA2PFileAlreadyExistsInThePackage, [AFilename]);
     if PkgFile.Filename<>AFilename then
       Msg:=Msg+LineEnding+Format(lisA2PExistingFile2, [PkgFile.Filename]);
@@ -157,7 +176,8 @@ begin
 end;
 
 class function TPkgFileCheck.PartOfProjectOk(const AFilename: string;
-  OnGetIDEFileInfo: TGetIDEFileStateEvent): TModalResult;
+  OnGetIDEFileInfo: TGetIDEFileStateEvent; YesToAll: TYesToAllList
+  ): TModalResult;
 var
   IDEFileFlags: TIDEFileStateFlags;
 begin
@@ -166,6 +186,7 @@ begin
   OnGetIDEFileInfo(nil,AFilename,[ifsPartOfProject],IDEFileFlags);
   if ifsPartOfProject in IDEFileFlags then
   begin
+    if YesToAll.Inc('MixingProjectAndPackage')>1 then exit;
     IDEMessageDialog(lisA2PFileIsUsed,
       Format(lisA2PTheFileIsPartOfTheCurrentProjectItIsABadIdea,[AFilename,LineEnding]),
       mtError,[mbCancel]);
@@ -175,10 +196,11 @@ begin
 end;
 
 class function TPkgFileCheck.UniqueUnitOk(LazPackage: TLazPackage;
-  const AUnitFilename: string): TModalResult;
+  const AUnitFilename: string; YesToAll: TYesToAllList): TModalResult;
 // This is called only for Pascal units.
 var
   PkgFile: TPkgFile;
+  i: Integer;
 begin
   Result:=mrCancel;
   // check if unitname already exists in package
@@ -186,30 +208,64 @@ begin
   if PkgFile<>nil then
   begin
     // a unit with this name already exists in this package => warn
-    if IDEMessageDialog(lisA2PUnitnameAlreadyExists,
+    i:=YesToAll.Inc('UnitnameExistsInPkg');
+    if i=1 then
+    begin
+      if IDEMessageDialog(lisA2PUnitnameAlreadyExists,
               Format(lisA2PTheUnitnameAlreadyExistsInThisPackage,[AUnitFilename]),
               mtError,[mbCancel,mbIgnore]) <> mrIgnore then
-    exit;
+        exit;
+    end else if i<100000 then begin
+      if IDEMessageDialog(lisA2PUnitnameAlreadyExists,
+              Format(lisA2PTheUnitnameAlreadyExistsInThisPackage,[AUnitFilename]),
+              mtError,[mbCancel,mbYesToAll]) = mrYesToAll then
+        YesToAll.Values['UnitnameExistsInPkg']:='100000'
+      else
+        exit;
+    end;
   end
   else begin
     PkgFile:=PackageGraph.FindUnit(LazPackage,AUnitFilename,true,true);
     if (PkgFile<>nil) and (PkgFile.LazPackage<>LazPackage) then
     begin
       // there is already a unit with this name in another package => warn
-      if IDEMessageDialog(lisA2PUnitnameAlreadyExists,
+      i:=YesToAll.Inc('UnitnameExistsInOtherPkg');
+      if i=1 then
+      begin
+        if IDEMessageDialog(lisA2PUnitnameAlreadyExists,
                 Format(lisA2PTheUnitnameAlreadyExistsInThePackage,
                        [AUnitFilename, LineEnding, PkgFile.LazPackage.IDAsString]),
                 mtWarning,[mbCancel,mbIgnore]) <> mrIgnore then
-        exit;
+          exit;
+      end else if i<100000 then begin
+        if IDEMessageDialog(lisA2PUnitnameAlreadyExists,
+                Format(lisA2PTheUnitnameAlreadyExistsInThePackage,
+                       [AUnitFilename, LineEnding, PkgFile.LazPackage.IDAsString]),
+                mtWarning,[mbCancel,mbYesToAll]) = mrYesToAll then
+          YesToAll.Values['UnitnameExistsInOtherPkg']:='100000'
+        else
+          exit;
+      end;
     end;
   end;
   // check if unitname is a componentclass
   if IDEComponentPalette.FindRegComponent(AUnitFilename)<>nil then
   begin
-    if IDEMessageDialog(lisA2PAmbiguousUnitName,
-        Format(lisA2PTheUnitNameIsTheSameAsAnRegisteredComponent,[AUnitFilename,LineEnding]),
-        mtWarning,[mbCancel,mbIgnore]) <> mrIgnore then
-    exit;
+    i:=YesToAll.Inc('UnitnameIsCompName');
+    if i=1 then
+    begin
+      if IDEMessageDialog(lisA2PAmbiguousUnitName,
+          Format(lisA2PTheUnitNameIsTheSameAsAnRegisteredComponent,[AUnitFilename,LineEnding]),
+          mtWarning,[mbCancel,mbIgnore]) <> mrIgnore then
+        exit;
+    end else if i<100000 then begin
+      if IDEMessageDialog(lisA2PAmbiguousUnitName,
+          Format(lisA2PTheUnitNameIsTheSameAsAnRegisteredComponent,[AUnitFilename,LineEnding]),
+          mtWarning,[mbCancel,mbYesToAll]) = mrYesToAll then
+        YesToAll.Values['UnitnameIsCompName']:='100000'
+      else
+        exit;
+    end;
   end;
   Result:=mrOK;
 end;
@@ -222,23 +278,24 @@ begin
     IDEMessageDialog(lisAF2PPackageIsReadOnly,
       Format(lisAF2PThePackageIsReadOnly, [LazPackage.IDAsString]),
       mtError,[mbCancel]);
-    exit(mrCancel);
+    exit(mrAbort);
   end;
   Result:=mrOK;
 end;
 
 class function TPkgFileCheck.AddingUnit(LazPackage: TLazPackage;
-  const AFilename: string; OnGetIDEFileInfo: TGetIDEFileStateEvent): TModalResult;
+  const AFilename: string; OnGetIDEFileInfo: TGetIDEFileStateEvent;
+  YesToAll: TYesToAllList): TModalResult;
 var
   NewFileType: TPkgFileType;
   UnitFilename: String;
 begin
   Assert(FilenameIsAbsolute(AFilename), 'TPkgFileCheck.AddingUnit: Not absolute Filename.');
   // file exists
-  Result:=FileExistsOk(LazPackage, AFilename);
+  Result:=FileExistsOk(LazPackage, AFilename, YesToAll);
   if Result<>mrOK then exit;
   // file is part of project
-  Result:=PartOfProjectOk(AFilename, OnGetIDEFileInfo);
+  Result:=PartOfProjectOk(AFilename, OnGetIDEFileInfo, YesToAll);
   if Result<>mrOK then exit;
 
   NewFileType:=FileNameToPkgFileType(AFilename);
@@ -249,23 +306,24 @@ begin
   Result:=UnitNameOk(AFilename, UnitFilename);
   if Result<>mrOK then exit;
   // unit is unique
-  Result:=UniqueUnitOk(LazPackage, UnitFilename);
+  Result:=UniqueUnitOk(LazPackage, UnitFilename, YesToAll);
   if Result<>mrOK then exit;
   Result:=mrOK;  // ok
 end;
 
 class function TPkgFileCheck.ReAddingUnit(LazPackage: TLazPackage;
   FileTyp: TPkgFileType; const AFilename: string;
-  OnGetIDEFileInfo: TGetIDEFileStateEvent): TModalResult;
+  OnGetIDEFileInfo: TGetIDEFileStateEvent; YesToAll: TYesToAllList
+  ): TModalResult;
 var
   UnitFilename: String;
 begin
   Assert(FilenameIsAbsolute(AFilename), 'TPkgFileCheck.ReAddingUnit: Not absolute Filename.');
   // file exists
-  Result:=FileExistsOk(LazPackage, AFilename);
+  Result:=FileExistsOk(LazPackage, AFilename, YesToAll);
   if Result<>mrOK then exit;
   // file is part of project
-  Result:=PartOfProjectOk(AFilename, OnGetIDEFileInfo);
+  Result:=PartOfProjectOk(AFilename, OnGetIDEFileInfo, YesToAll);
   if Result<>mrOK then exit;
   if not (FileTyp in [pftUnit, pftMainUnit, pftVirtualUnit]) then
     exit(mrOK);                         // Further checks only for Pascal units.
@@ -274,7 +332,7 @@ begin
   Result:=UnitNameOk(AFilename, UnitFilename);
   if Result<>mrOK then exit;
   // unit is unique
-  Result:=UniqueUnitOk(LazPackage, UnitFilename);
+  Result:=UniqueUnitOk(LazPackage, UnitFilename, YesToAll);
   if Result<>mrOK then exit;
   Result:=mrOK;  // ok
 end;

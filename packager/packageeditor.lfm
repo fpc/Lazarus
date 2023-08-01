@@ -16,7 +16,7 @@ object PackageEditorForm: TPackageEditorForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnDropFiles = FormDropFiles
-  LCLVersion = '2.3.0.0'
+  LCLVersion = '3.99.0.0'
   object ToolBar: TToolBar
     Left = 0
     Height = 48
@@ -32,19 +32,19 @@ object PackageEditorForm: TPackageEditorForm
   object PropsGroupBox: TGroupBox
     Left = 0
     Height = 216
-    Top = 216
+    Top = 222
     Width = 464
     Align = alBottom
     Caption = 'PropsGroupBox'
-    ClientHeight = 186
-    ClientWidth = 460
+    ClientHeight = 200
+    ClientWidth = 462
     ParentFont = False
     TabOrder = 3
     object PropsPageControl: TPageControl
       Left = 0
-      Height = 186
+      Height = 200
       Top = 0
-      Width = 460
+      Width = 462
       ActivePage = CommonOptionsTabSheet
       Align = alClient
       ParentFont = False
@@ -59,8 +59,8 @@ object PackageEditorForm: TPackageEditorForm
   end
   object StatusBar: TStatusBar
     Left = 0
-    Height = 23
-    Top = 432
+    Height = 17
+    Top = 438
     Width = 464
     Panels = <>
     ParentFont = False
@@ -69,7 +69,7 @@ object PackageEditorForm: TPackageEditorForm
     Cursor = crVSplit
     Left = 0
     Height = 5
-    Top = 211
+    Top = 217
     Width = 464
     Align = alBottom
     ResizeAnchor = akBottom
@@ -207,7 +207,7 @@ object PackageEditorForm: TPackageEditorForm
   end
   object ItemsTreeView: TTreeView
     Left = 0
-    Height = 134
+    Height = 140
     Top = 77
     Width = 464
     Align = alClient
@@ -250,6 +250,10 @@ object PackageEditorForm: TPackageEditorForm
       Caption = 'Add file...'
       Default = True
       OnClick = mnuAddDiskFileClick
+    end
+    object mnuAddNewDiskFiles: TMenuItem
+      Caption = 'Add new disk files...'
+      OnClick = mnuAddNewDiskFilesClick
     end
     object MenuItem1: TMenuItem
       Caption = '-'

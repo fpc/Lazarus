@@ -40,7 +40,7 @@ uses
   // LazControls
   TreeFilterEdit,
   // Codetools
-  CodeToolManager, CodeCache,
+  CodeToolManager, CodeCache, DirectoryCacher, FileProcs,
   // LazUtils
   FileUtil, LazFileUtils, LazFileCache, AvgLvlTree, LazLoggerBase, LazTracer,
   // BuildIntf
@@ -65,6 +65,7 @@ var
   // General actions for the Files and Required packages root nodes.
   // Duplicates actions found under the "Add" button.
   PkgEditMenuAddDiskFile: TIDEMenuCommand;
+  PkgEditMenuAddNewDiskFiles: TIDEMenuCommand;
   PkgEditMenuAddNewFile: TIDEMenuCommand;
   PkgEditMenuAddNewComp: TIDEMenuCommand;
   PkgEditMenuAddNewReqr: TIDEMenuCommand;
@@ -145,6 +146,7 @@ type
 
   TPackageEditorForm = class(TBasePackageEditor,IFilesEditorInterface)
     MenuItem1: TMenuItem;
+    mnuAddNewDiskFiles: TMenuItem;
     mnuAddFPMakeReq: TMenuItem;
     mnuAddDiskFile: TMenuItem;
     mnuAddNewFile: TMenuItem;
@@ -211,6 +213,7 @@ type
     procedure ItemsTreeViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure mnuAddDiskFileClick(Sender: TObject);
     procedure mnuAddFPMakeReqClick(Sender: TObject);
+    procedure mnuAddNewDiskFilesClick(Sender: TObject);
     procedure mnuAddNewCompClick(Sender: TObject);
     procedure mnuAddNewReqrClick(Sender: TObject);
     procedure mnuAddNewFileClick(Sender: TObject);
@@ -596,8 +599,10 @@ var
   i: Integer;
   NodeData: TPENodeData;
   Item: TObject;
+  YesToAll: TYesToAllList;
 begin
   BeginUpdate;
+  YesToAll:=TYesToAllList.Create;
   try
     for i:=ItemsTreeView.SelectionCount-1 downto 0 do
     begin
@@ -608,7 +613,8 @@ begin
         PkgFile:=TPkgFile(Item);
         AFilename:=PkgFile.GetFullFilename;
         if TPkgFileCheck.ReAddingUnit(LazPackage, PkgFile.FileType, AFilename,
-                                      PackageEditors.OnGetIDEFileInfo)<>mrOk then exit;
+                            PackageEditors.OnGetIDEFileInfo,YesToAll)<>mrOk then
+          exit;
         //PkgFile.Filename:=AFilename;
         Assert(PkgFile.Filename=AFilename, 'TPackageEditorForm.ReAddMenuItemClick: Unexpected Filename.');
         LazPackage.UnremovePkgFile(PkgFile);
@@ -624,6 +630,7 @@ begin
     end;
     LazPackage.Modified:=True;
   finally
+    YesToAll.Free;
     EndUpdate;
   end;
 end;
@@ -747,6 +754,8 @@ begin
     begin
       // Files root node
       SetItem(PkgEditMenuAddDiskFile, @mnuAddDiskFileClick, UserSelection=[pstFilesNode],
+              Writable);
+      SetItem(PkgEditMenuAddNewDiskFiles, @mnuAddNewDiskFilesClick, UserSelection=[pstFilesNode],
               Writable);
       SetItem(PkgEditMenuAddNewFile, @mnuAddNewFileClick, UserSelection=[pstFilesNode],
               Writable);
@@ -999,6 +1008,118 @@ end;
 procedure TPackageEditorForm.mnuAddFPMakeReqClick(Sender: TObject);
 begin
   ShowAddFPMakeDepDialog
+end;
+
+procedure TPackageEditorForm.mnuAddNewDiskFilesClick(Sender: TObject);
+var
+  Files: TFilenameToStringTree;
+
+  procedure CollectFile(const aFilename: string; CheckType: TPkgFileType);
+  var
+    Ext: String;
+    IDEFileFlags: TIDEFileStateFlags;
+  begin
+    if CompareFilenames(aFilename,'fpmake.pp')=0 then exit;
+    if CompareFilenames(aFilename,LazPackage.GetSrcFilename)=0 then exit;
+
+    case CheckType of
+    pftUnit:
+      if not FilenameIsPascalUnit(aFilename) then exit;
+    pftInclude:
+      begin
+        Ext:=ExtractFileExt(aFilename);
+        if IsPascalIncExt(PChar(Ext))=pietNone then exit;
+      end;
+    end;
+    if LazPackage.FindPkgFile(aFilename,true,true)<>nil then
+      exit; // already in package
+    if PackageGraph.FindFileInAllPackages(aFilename,true,false)<>nil then
+      exit; // already in a package
+    PackageEditors.OnGetIDEFileInfo(Self,aFilename,[ifsPartOfProject],IDEFileFlags);
+    if ifsPartOfProject in IDEFileFlags then
+      exit;
+
+    if Files.Contains(aFilename) then exit;
+    Files.Add(aFilename,'');
+  end;
+
+  procedure CollectFiles(const SearchPath: string; CheckType: TPkgFileType);
+  var
+    p, i: Integer;
+    Dir: String;
+    Cache: TCTDirectoryBaseCache;
+    StarCache: TCTStarDirectoryCache;
+    DirCache: TCTDirectoryCache;
+  begin
+    p:=1;
+    repeat
+      Dir:=GetNextDirectoryInSearchPath(SearchPath,p);
+      if Dir='' then break;
+      Cache:=CodeToolBoss.DirectoryCachePool.GetBaseCache(Dir);
+      if Cache=nil then continue;
+      if Cache is TCTStarDirectoryCache then
+      begin
+        StarCache:=TCTStarDirectoryCache(Cache);
+        for i:=0 to StarCache.Listing.Count-1 do
+          CollectFile(StarCache.Listing.GetSubDirFilename(i),CheckType);
+      end else if Cache is TCTDirectoryCache then begin
+        DirCache:=TCTDirectoryCache(Cache);
+        for i:=0 to DirCache.Listing.Count-1 do
+          CollectFile(DirCache.Directory+DirCache.Listing.GetFilename(i),CheckType);
+      end;
+    until false;
+  end;
+
+var
+  aFilename, NewUnitName, Msg: String;
+  Item: PStringToStringItem;
+  Code: TCodeBuffer;
+  NewFileType: TPkgFileType;
+  NewFlags: TPkgFileFlags;
+begin
+  if LazPackage.IsVirtual then exit;
+  if TPkgFileCheck.ReadOnlyOk(LazPackage)<>mrOK then exit;
+
+  Files:=TFilenameToStringTree.Create(true);
+  try
+    // collect missing units from unit path
+    CollectFiles(LazPackage.GetUnitPath(false),pftUnit);
+
+    // collect missing include files from include path
+    CollectFiles(LazPackage.GetIncludePath(false),pftInclude);
+
+    if Files.Count=0 then
+    begin
+      IDEMessageDialog('No file missing','All .pas, .pp, .p, .inc in unit/include path are already in a project/package.',mtInformation,[mbOk]);
+      exit;
+    end;
+
+    Msg:='Add the following files:';
+    for Item in Files do begin
+      aFilename:=Item^.Name;
+      Msg+=LineEnding+CreateRelativePath(aFilename,LazPackage.Directory,true,false);
+    end;
+    if IDEMessageDialog('Add new disk files?',Msg,mtConfirmation,[mbOk,mbCancel])<>mrOk then exit;
+
+    for Item in Files do begin
+      aFilename:=Item^.Name;
+      NewFlags:=[];
+      Code:=CodeToolBoss.LoadFile(aFilename,true,false);
+      NewUnitName:='';
+      if FilenameIsPascalUnit(aFilename) then
+        NewUnitName:=CodeToolBoss.GetSourceName(Code,false);
+      if NewUnitName<>'' then
+        NewFileType:=pftUnit
+      else
+        NewFileType:=pftInclude;
+      if CodeToolBoss.HasInterfaceRegisterProc(Code) then
+        Include(NewFlags,pffHasRegisterProc);
+      LazPackage.AddFile(aFilename,NewUnitName,NewFileType,NewFlags,cpNormal);
+    end;
+
+  finally
+    Files.Free;
+  end;
 end;
 
 procedure TPackageEditorForm.mnuAddNewCompClick(Sender: TObject);
@@ -1374,11 +1495,14 @@ procedure TPackageEditorForm.FormDropFiles(Sender: TObject;
 var
   i: Integer;
   NewFilename, NewUnitPaths, NewIncPaths: String;
+  YesToAll: TYesToAllList;
+  r: TModalResult;
 begin
   {$IFDEF VerbosePkgEditDrag}
   debugln(['TPackageEditorForm.FormDropFiles ',length(FileNames)]);
   {$ENDIF}
   if length(FileNames)=0 then exit;
+  YesToAll:=TYesToAllList.Create;
   BeginUpdate;
   try
     NewUnitPaths:='';
@@ -1386,15 +1510,19 @@ begin
     for i:=0 to high(Filenames) do
     begin
       NewFilename:=FileNames[i];
-      if TPkgFileCheck.AddingUnit(LazPackage, NewFilename,
-                                  PackageEditors.OnGetIDEFileInfo)=mrOK then
-        LazPackage.AddFileByName(NewFilename, NewUnitPaths, NewIncPaths);
+      r:=TPkgFileCheck.AddingUnit(LazPackage, NewFilename,
+                                  PackageEditors.OnGetIDEFileInfo,YesToAll);
+      if r=mrOK then
+        LazPackage.AddFileByName(NewFilename, NewUnitPaths, NewIncPaths)
+      else if r=mrAbort then
+        break;
     end;
     //UpdateAll(false);
     // extend unit and include search path
     if not LazPackage.ExtendUnitSearchPath(NewUnitPaths) then exit;
     if not LazPackage.ExtendIncSearchPath(NewIncPaths) then exit;
   finally
+    YesToAll.Free;
     EndUpdate;
   end;
 end;
@@ -1464,9 +1592,12 @@ var
   OpenDialog: TOpenDialog;
   i: Integer;
   NewFilename, NewUnitPaths, NewIncPaths: String;
+  r: TModalResult;
+  YesToAll: TYesToAllList;
 begin
   // is readonly
   if TPkgFileCheck.ReadOnlyOk(LazPackage)<>mrOK then exit;
+  YesToAll:=nil;
   OpenDialog:=TOpenDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
@@ -1486,12 +1617,16 @@ begin
       InputHistories.StoreFileDialogSettings(OpenDialog);
       NewUnitPaths:='';
       NewIncPaths:='';
+      YesToAll:=TYesToAllList.Create;
       for i:=0 to OpenDialog.Files.Count-1 do
       begin
         NewFilename:=OpenDialog.Files[i];
-        if TPkgFileCheck.AddingUnit(LazPackage, NewFilename,
-                                    PackageEditors.OnGetIDEFileInfo)=mrOK then
-          LazPackage.AddFileByName(NewFilename, NewUnitPaths, NewIncPaths);
+        r:=TPkgFileCheck.AddingUnit(LazPackage, NewFilename,
+                                    PackageEditors.OnGetIDEFileInfo,YesToAll);
+        if r=mrOK then
+          LazPackage.AddFileByName(NewFilename, NewUnitPaths, NewIncPaths)
+        else if r=mrAbort then
+          break;
       end;
       //UpdateAll(false);
       // extend unit and include search path
@@ -1499,6 +1634,7 @@ begin
       if not LazPackage.ExtendIncSearchPath(NewIncPaths) then exit;
     end;
   finally
+    YesToAll.Free;
     OpenDialog.Free;
   end;
 end;
@@ -1785,6 +1921,7 @@ begin
   MoreBitBtn.DropdownMenu := MorePopupMenu;
 
   mnuAddDiskFile.Caption := lisPckEditAddFilesFromFileSystem;
+  mnuAddNewDiskFiles.Caption := 'Add Missing Files from File System'; // todo resourcestring
   mnuAddNewFile.Caption := lisA2PNewFile;
   mnuAddNewComp.Caption := lisMenuNewComponent;
   mnuAddNewReqr.Caption := lisProjAddNewRequirement;
@@ -2175,7 +2312,7 @@ begin
       pftText: Result:=ImageIndexText;
       pftBinary: Result:=ImageIndexBinary;
       else
-        Result:=-1;
+        Result:=-1{%H-};
     end;
   end
   else if Item is TPkgDependency then
