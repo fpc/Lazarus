@@ -1709,7 +1709,9 @@ begin
     end;
     TDN_EXPANDO_BUTTON_CLICKED:
     begin
-      if IsConsole then writeln('ToDo: implement OnExpanded');
+      Assert((Dlg is TCustomTaskDialog),'TaskDialogCallbackProc: dwRefData is NOT a TCustomTaskDialog');
+      if Assigned(Dlg.OnExpand) then
+        Dlg.OnExpand(Dlg);
     end;
   end;
 end;

@@ -638,6 +638,7 @@ type
     FOnDialogConstructed: TNotifyEvent;
     FOnDialogCreated: TNotifyEvent;
     FOnDialogDestroyed: TNotifyEvent;
+    FOnExpand: TNotifyEvent;
     FOnVerificationClicked: TNotifyEvent;
     FQueryChoices: TStrings;
     FQueryResult: String;
@@ -693,6 +694,7 @@ type
     property OnDialogCreated: TNotifyEvent read FOnDialogCreated write FOnDialogCreated;
     property OnDialogDestroyed: TNotifyEvent read FOnDialogDestroyed write FOnDialogDestroyed;
     property OnVerificationClicked: TNotifyEvent read FOnVerificationClicked write FOnVerificationClicked;
+    property OnExpand: TNotifyEvent read FOnExpand write FOnExpand;
   end;
 
   TTaskDialog = class(TCustomTaskDialog)
@@ -721,6 +723,7 @@ type
     property OnDialogCreated;
     property OnDialogDestroyed;
     property OnVerificationClicked;
+    property OnExpand;
   end;
 
 const
