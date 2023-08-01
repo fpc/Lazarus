@@ -1870,7 +1870,6 @@ var
     RUCount := 0;
     AddTaskDiakogButton(ADlg.Buttons,Config.cButtons,TaskDialogFirstButtonIndex);
     AddTaskDiakogButton(ADlg.RadioButtons,Config.cRadioButtons,TaskDialogFirstRadioButtonIndex);
-
     if (Config.cButtons > 0) then
       Config.pButtons := @Buttons[0];
     if (Config.cRadioButtons > 0) then
@@ -1884,6 +1883,10 @@ var
       Exclude(Flags,tfVerificationFlagChecked);
     if (Config.cButtons=0) and (CommonButtons=[tcbOk]) then
       Include(Flags,tfAllowDialogCancellation); // just OK -> Esc/Alt+F4 close
+    //while the MS docs say that this flag is ignored if Config.cButtons = 0,
+    //in practice it will make TaskDialogIndirect fail with E_INVALIDARG
+    if (ADlg.Buttons.Count = 0) then
+      Exclude(Flags, tfUseCommandLinks);
     Config.dwFlags := TaskDialogFlagsToInteger(Flags);
 
     Config.hMainIcon := TD_ICONS[TF_DIALOGICON(ADlg.MainIcon)];
