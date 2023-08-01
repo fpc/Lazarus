@@ -311,7 +311,7 @@ end;
 function HumanKeyToStr(akey: Integer): string;
 var
   err : Integer;
-  i   : Integer;
+  {%H-}i   : Integer;
   sc  : TShortCut;
 begin
   if akey = VK_UNKNOWN then begin
@@ -380,7 +380,7 @@ end;
 
 function HumanStrToShiftState(const v: string): TShiftState;
 var
-  i, err : integer;
+  {%H-}i, err : integer;
   cs  : string;
   cut : TShortCut;
 begin
