@@ -552,6 +552,7 @@ type
   TTaskDialogCommonButtons = set of TTaskDialogCommonButton;
 
   TTaskDlgClickEvent = procedure(Sender: TObject; AModalResult: TModalResult; var ACanClose: Boolean) of object;
+  TTaskDlgTimerEvent = procedure(Sender: TObject; TickCount: Cardinal; var Reset: Boolean) of object;
 
   TTaskDialogIcon = (tdiNone, tdiWarning, tdiError, tdiInformation, tdiShield, tdiQuestion);
 
@@ -639,6 +640,7 @@ type
     FOnDialogCreated: TNotifyEvent;
     FOnDialogDestroyed: TNotifyEvent;
     FOnExpand: TNotifyEvent;
+    FOnTimer: TTaskDlgTimerEvent;
     FOnVerificationClicked: TNotifyEvent;
     FQueryChoices: TStrings;
     FQueryResult: String;
@@ -695,6 +697,7 @@ type
     property OnDialogDestroyed: TNotifyEvent read FOnDialogDestroyed write FOnDialogDestroyed;
     property OnVerificationClicked: TNotifyEvent read FOnVerificationClicked write FOnVerificationClicked;
     property OnExpand: TNotifyEvent read FOnExpand write FOnExpand;
+    property OnTimer: TTaskDlgTimerEvent read FOnTimer write FOnTimer;
   end;
 
   TTaskDialog = class(TCustomTaskDialog)
@@ -724,6 +727,7 @@ type
     property OnDialogDestroyed;
     property OnVerificationClicked;
     property OnExpand;
+    property OnTimer;
   end;
 
 const

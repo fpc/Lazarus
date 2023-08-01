@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils,
   LazUTF8,
-  LCLType, LCLStrConsts, LCLIntf, InterfaceBase, ImgList, LCLProc,
+  LCLType, LCLStrConsts, LCLIntf, InterfaceBase, ImgList, LCLProc, DateUtils,
   LResources, Menus, Graphics, Forms, Controls, StdCtrls, ExtCtrls, Buttons, Dialogs, DialogRes;
 
 
@@ -25,6 +25,8 @@ type
     /// the Task Dialog structure which created the form
     FDlg: TTaskDialog;
     FVerifyChecked: Boolean;
+    Timer: TTimer;
+    TimerStartTime: TTime;
     RadioButtonArray: array of TRadioButton;
 
     //CustomButtons, Radios: TStringList;
@@ -53,6 +55,9 @@ type
     function AddLabel(const AText: string; BigFont: boolean; var X, Y: Integer; AFontHeight, AWidth: Integer; APArent: TWinControl): TLabel;
     procedure AddQueryCombo(var X,Y: Integer; AWidth: Integer; AParent: TWinControl);
     procedure AddQueryEdit(var X,Y: Integer; AWidth: Integer; AParent: TWinControl);
+    procedure OnTimer(Sender: TObject);
+    procedure SetupTimer;
+    procedure ResetTimer;
 
     procedure DoDialogConstructed;
     procedure DoDialogCreated;
@@ -651,6 +656,41 @@ begin
   inc(Y,42);
 end;
 
+procedure TLCLTaskDialog.OnTimer(Sender: TObject);
+var
+  AResetTimer: Boolean;
+  MSecs: Cardinal;
+  MSecs64: Int64;
+begin
+  if Assigned(FDlg.OnTimer) then
+  begin
+    MSecs64 := MilliSecondsBetween(Now, TimerStartTime);
+    {$PUSH}{$R-}
+    MSecs := MSecs64;
+    {$POP}
+    AResetTimer := False;
+    FDlg.OnTimer(FDlg, MSecs, AResetTimer);
+    if AResetTimer then
+      ResetTimer;
+  end;
+end;
+
+procedure TLCLTaskDialog.SetupTimer;
+begin
+  Timer := TTimer.Create(Self);
+  Timer.Interval := 200; //source: https://learn.microsoft.com/en-us/windows/win32/controls/tdn-timer
+  Timer.OnTimer := @OnTimer;
+  TimerStartTime := Now;
+  Timer.Enabled := True;
+end;
+
+procedure TLCLTaskDialog.ResetTimer;
+begin
+  Timer.Enabled := False;
+  TimerStartTime := Now;
+  Timer.Enabled := True;
+end;
+
 procedure TLCLTaskDialog.DoDialogConstructed;
 begin
   if Assigned(FDlg.OnDialogConstructed) then
@@ -834,6 +874,9 @@ begin
     AddFooter(X, Y, XB, FontHeight, aWidth, CurrParent);
 
    ClientHeight := Y;
+
+   if (tfCallBackTimer in FDlg.Flags) then
+     SetupTimer;
 end;
 
 procedure TLCLTaskDialog.KeyDown(var Key: Word; Shift: TShiftState);

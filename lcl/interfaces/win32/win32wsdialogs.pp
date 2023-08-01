@@ -1656,7 +1656,7 @@ end;
 function TaskDialogCallbackProc(hwnd: HWND; uNotification: UINT;
   wParam: WPARAM; {%H-}lParam: LPARAM; dwRefData: Long_Ptr): HRESULT; stdcall;
 var Dlg: TTaskDialog absolute dwRefData;
-    CanClose: Boolean;
+    CanClose, ResetTimer: Boolean;
 begin
   Result := S_OK;
   case uNotification of
@@ -1699,7 +1699,19 @@ begin
     end;
     TDN_TIMER:
     begin
-      if IsConsole then writeln('ToDo: implement OnTimer');
+      {
+      wParam: A DWORD that specifies the number of milliseconds since the dialog was created or this notification code returned S_FALSE.
+      lParam: Must be zero.
+      Return value: To reset the tickcount, the application must return S_FALSE, otherwise the tickcount will continue to increment.
+      }
+      Assert((Dlg is TCustomTaskDialog),'TaskDialogCallbackProc: dwRefData is NOT a TCustomTaskDialog');
+      if Assigned(Dlg.OnTimer) then
+      begin
+        ResetTimer := False;
+        Dlg.OnTimer(Dlg, Cardinal(wParam), ResetTimer);
+        if ResetTimer then
+          Result := S_FALSE;
+      end;
     end;
     TDN_VERIFICATION_CLICKED:
     begin
