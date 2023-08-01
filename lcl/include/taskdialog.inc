@@ -179,6 +179,42 @@ begin
   end;
 end;
 
+procedure TCustomTaskDialog.DoOnDialogConstructed;
+begin
+  if Assigned(FOnDialogConstructed) then
+    FOnDialogConstructed(Self);
+end;
+
+procedure TCustomTaskDialog.DoOnDialogCreated;
+begin
+  if Assigned(FOnDialogCreated) then
+    FOnDialogCreated(Self);
+end;
+
+procedure TCustomTaskDialog.DoOnDialogDestroyed;
+begin
+  if Assigned(FOnDialogDestroyed) then
+    FOnDialogDestroyed(Self);
+end;
+
+procedure TCustomTaskDialog.DoOnExpandButtonClicked({%H-}Expanded: Boolean);
+begin
+  if Assigned(FOnExpand) then
+    FOnExpand(Self)
+end;
+
+procedure TCustomTaskDialog.DoOnTimer(TickCount: Cardinal; var Reset: Boolean);
+begin
+  if Assigned(FOnTimer) then
+    FOnTimer(Self, TickCount, Reset);
+end;
+
+procedure TCustomTaskDialog.DoOnVerificationClicked({%H-}Checked: Boolean);
+begin
+  if Assigned(FOnVerificationClicked) then
+    FOnVerificationClicked(Self);
+end;
+
 procedure TCustomTaskDialog.SetRadioButtonFromRadioIndex(AIndex: Integer);
 begin
   if (AIndex >= TaskDialogFirstRadioButtonIndex) and (AIndex-TaskDialogFirstRadioButtonIndex < RadioButtons.Count) then

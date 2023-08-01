@@ -1657,7 +1657,7 @@ type
   TTaskDialogAccess = class(TCustomTaskDialog)
   end;
 
-function TaskDialogCallbackProc(hwnd: HWND; uNotification: UINT;
+function TaskDialogCallbackProc({%H-}hwnd: HWND; uNotification: UINT;
   wParam: WPARAM; {%H-}lParam: LPARAM; dwRefData: Long_Ptr): HRESULT; stdcall;
 var Dlg: TTaskDialog absolute dwRefData;
     CanClose, ResetTimer: Boolean;
@@ -1667,31 +1667,37 @@ begin
     TDN_DIALOG_CONSTRUCTED:
     begin
       Assert((Dlg is TCustomTaskDialog),'TaskDialogCallbackProc: dwRefData is NOT a TCustomTaskDialog');
-      if Assigned(Dlg.OnDialogConstructed) then
-        Dlg.OnDialogConstructed(Dlg);
+      {$PUSH}
+      {$ObjectChecks OFF}
+      TTaskDialogAccess(Dlg).DoOnDialogConstructed;
+      {$POP}
     end;
     TDN_CREATED:
     begin
       Assert((Dlg is TCustomTaskDialog),'TaskDialogCallbackProc: dwRefData is NOT a TCustomTaskDialog');
-      if Assigned(Dlg.OnDialogCreated) then
-        Dlg.OnDialogCreated(Dlg);
+      {$PUSH}
+      {$ObjectChecks OFF}
+      TTaskDialogAccess(Dlg).DoOnDialogCreated;
+      {$POP}
     end;
     TDN_DESTROYED:
     begin
       Assert((Dlg is TCustomTaskDialog),'TaskDialogCallbackProc: dwRefData is NOT a TCustomTaskDialog');
-      if Assigned(Dlg.OnDialogDestroyed) then
-        Dlg.OnDialogDestroyed(Dlg);
+      {$PUSH}
+      {$ObjectChecks OFF}
+      TTaskDialogAccess(Dlg).DoOnDialogDestroyed;
+      {$POP}
     end;
     TDN_BUTTON_CLICKED:
     begin
       Assert((Dlg is TCustomTaskDialog),'TaskDialogCallbackProc: dwRefData is NOT a TCustomTaskDialog');
-      if Assigned(Dlg.OnButtonClicked) then
-      begin
-        CanClose := True;
-        Dlg.OnButtonClicked(Dlg, Dlg.ButtonIDToModalResult(wParam), CanClose);
-        if not CanClose then
-          Result := S_FALSE;
-      end;
+      CanClose := True;
+      {$PUSH}
+      {$ObjectChecks OFF}
+      TTaskDialogAccess(Dlg).DoOnButtonClicked(Dlg.ButtonIDToModalResult(wParam), CanClose);
+      if not CanClose then
+        Result := S_FALSE;
+      {$POP}
     end;
     TDN_HYPERLINK_CLICKED:
     begin
@@ -1720,25 +1726,29 @@ begin
       Return value: To reset the tickcount, the application must return S_FALSE, otherwise the tickcount will continue to increment.
       }
       Assert((Dlg is TCustomTaskDialog),'TaskDialogCallbackProc: dwRefData is NOT a TCustomTaskDialog');
-      if Assigned(Dlg.OnTimer) then
-      begin
-        ResetTimer := False;
-        Dlg.OnTimer(Dlg, Cardinal(wParam), ResetTimer);
-        if ResetTimer then
-          Result := S_FALSE;
-      end;
+      ResetTimer := False;
+      {$PUSH}
+      {$ObjectChecks OFF}
+      TTaskDialogAccess(Dlg).DoOnTimer(Cardinal(wParam), ResetTimer);
+      {$POP}
+      if ResetTimer then
+        Result := S_FALSE;
     end;
     TDN_VERIFICATION_CLICKED:
     begin
       Assert((Dlg is TCustomTaskDialog),'TaskDialogCallbackProc: dwRefData is NOT a TCustomTaskDialog');
-      if Assigned(Dlg.OnVerificationClicked) then
-        Dlg.OnVerificationClicked(Dlg);
+      {$PUSH}
+      {$ObjectChecks OFF}
+      TTaskDialogAccess(Dlg).DoOnverificationClicked(BOOL(wParam));
+      {$POP}
     end;
     TDN_EXPANDO_BUTTON_CLICKED:
     begin
       Assert((Dlg is TCustomTaskDialog),'TaskDialogCallbackProc: dwRefData is NOT a TCustomTaskDialog');
-      if Assigned(Dlg.OnExpand) then
-        Dlg.OnExpand(Dlg);
+      {$PUSH}
+      {$ObjectChecks OFF}
+      TTaskDialogAccess(Dlg).DoOnExpandButtonClicked(BOOL(wParam));
+      {$POP}
     end;
     TDN_RADIO_BUTTON_CLICKED:
     begin

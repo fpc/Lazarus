@@ -664,6 +664,16 @@ type
     function DoExecute(ParentWnd: HWND): Boolean; dynamic;
     procedure DoOnButtonClicked(AModalResult: Integer; var ACanClose: Boolean); dynamic;
     procedure DoOnRadioButtonClicked(ButtonID: Integer); dynamic;
+    procedure DoOnDialogConstructed; dynamic;
+    procedure DoOnDialogCreated; dynamic;
+    procedure DoOnDialogDestroyed; dynamic;
+    procedure DoOnExpandButtonClicked(Expanded: Boolean); dynamic;
+    procedure DoOnTimer(TickCount: Cardinal; var Reset: Boolean); dynamic;
+    procedure DoOnVerificationClicked(Checked: Boolean); dynamic;
+    //procedure DoOnHelp; dynamic;
+    //procedure DoOnHyperlinkClicked(const AURL: string); dynamic;
+    //procedure DoOnNavigated; dynamic;
+
     procedure SetRadioButtonFromRadioIndex(AIndex: Integer);
   public
     constructor Create(AOwner: TComponent); override;

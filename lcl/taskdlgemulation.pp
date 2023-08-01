@@ -58,15 +58,15 @@ type
     procedure SetupTimer;
     procedure ResetTimer;
 
-    procedure OnTimer(Sender: TObject);
-    procedure OnRadioButtonClick(Sender: TObject);
     procedure DoDialogConstructed;
     procedure DoDialogCreated;
     procedure DoDialogDestroyed;
-    procedure VerifyClicked(Sender: TObject);
+    procedure OnButtonClicked(Sender: TObject);
+    procedure OnRadioButtonClick(Sender: TObject);
+    procedure OnVerifyClicked(Sender: TObject);
+    procedure OnTimer(Sender: TObject);
 
   protected
-    procedure HandleEmulatedButtonClicked(Sender: TObject);
     procedure SetupControls;
   public
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -432,7 +432,7 @@ begin
         ShowHint := True;
       inc(Y,Height+2);
       ModalResult := i+TaskDialogFirstButtonIndex;
-      OnClick := @HandleEmulatedButtonClicked;
+      OnClick := @OnButtonClicked;
       if ModalResult=aButtonDef then
         ActiveControl := CommandLink;
       if (tfEmulateClassicStyle in FDlg.Flags) then
@@ -485,7 +485,7 @@ var
     Result.Caption := s;
     Result.ModalResult := AModalResult;
     Result.TabOrder := CurrTabOrder;
-    Result.OnClick := @HandleEmulatedButtonClicked;
+    Result.OnClick := @OnButtonClicked;
 
     if Assigned(FDlg.Buttons.DefaultButton) then
     begin
@@ -536,7 +536,7 @@ begin
       SetBounds(X,Y,XB-X,24);
       Caption := VerificationText;
       Checked := FVerifyChecked;
-      OnClick := @VerifyClicked;
+      OnClick := @OnVerifyClicked;
     end;
   end;
   inc(Y,36);
@@ -669,17 +669,17 @@ var
   MSecs: Cardinal;
   MSecs64: Int64;
 begin
-  if Assigned(FDlg.OnTimer) then
-  begin
-    MSecs64 := MilliSecondsBetween(Now, TimerStartTime);
-    {$PUSH}{$R-}
-    MSecs := MSecs64;
-    {$POP}
-    AResetTimer := False;
-    FDlg.OnTimer(FDlg, MSecs, AResetTimer);
-    if AResetTimer then
-      ResetTimer;
-  end;
+  MSecs64 := MilliSecondsBetween(Now, TimerStartTime);
+  {$PUSH}{$R-}
+  MSecs := MSecs64;
+  {$POP}
+  AResetTimer := False;
+  {$PUSH}
+  {$ObjectChecks OFF}
+  TTaskDialogAccess(FDlg).DoOnTimer(MSecs, AResetTimer);
+  {$POP}
+  if AResetTimer then
+    ResetTimer;
 end;
 
 procedure TLCLTaskDialog.OnRadioButtonClick(Sender: TObject);
@@ -711,40 +711,48 @@ end;
 
 procedure TLCLTaskDialog.DoDialogConstructed;
 begin
-  if Assigned(FDlg.OnDialogConstructed) then
-    FDlg.OnDialogDestroyed(FDlg);
+  {$PUSH}
+  {$ObjectChecks OFF}
+  TTaskDialogAccess(FDlg).DoOnDialogConstructed;
+  {$POP}
 end;
 
 procedure TLCLTaskDialog.DoDialogCreated;
 begin
-  if Assigned(FDlg.OnDialogCreated) then
-    FDlg.OnDialogCreated(FDlg);
+  {$PUSH}
+  {$ObjectChecks OFF}
+  TTaskDialogAccess(FDlg).DoOnDialogCreated;
+  {$POP}
 end;
 
 procedure TLCLTaskDialog.DoDialogDestroyed;
 begin
-  if Assigned(FDlg.OnDialogDestroyed) then
-    FDlg.OnDialogDestroyed(FDlg);
+  {$PUSH}
+  {$ObjectChecks OFF}
+  TTaskDialogAccess(FDlg).DoOnDialogDestroyed;
+  {$POP}
 end;
 
-procedure TLCLTaskDialog.VerifyClicked(Sender: TObject);
+procedure TLCLTaskDialog.OnVerifyClicked(Sender: TObject);
 begin
-  if Assigned(FDlg.OnVerificationClicked) then
-    FDlg.OnVerificationClicked(FDlg);
+  {$PUSH}
+  {$ObjectChecks OFF}
+  TTaskDialogAccess(FDlg).DoOnverificationClicked(VerifyCheckBox.Checked);
+  {$POP}
 end;
 
 
-procedure TLCLTaskDialog.HandleEmulatedButtonClicked(Sender: TObject);
+procedure TLCLTaskDialog.OnButtonClicked(Sender: TObject);
 var Btn: TButton absolute Sender;
     CanClose: Boolean;
 begin
-  if Assigned(FDlg) and Assigned(FDlg.OnButtonClicked) then
-  begin
-    CanClose := True;
-    FDlg.OnButtonClicked(FDlg, FDlg.ButtonIDToModalResult(Btn.ModalResult),CanClose);
-    if not CanClose then
-      ModalResult := mrNone;
-  end;
+  CanClose := True;
+  {$PUSH}
+  {$ObjectChecks OFF}
+  TTaskDialogAccess(FDlg).DoOnButtonClicked(FDlg.ButtonIDToModalResult(Btn.ModalResult), CanClose);
+  if not CanClose then
+    ModalResult := mrNone;
+  {$POP}
 end;
 
 
