@@ -13,6 +13,9 @@
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\$(LCLWidgetType)"/>
       </SearchPaths>
       <Other>
+        <ConfigFile>
+          <WriteConfigFilePath Value="$(PkgOutDir)\fpclaz.cfg"/>
+        </ConfigFile>
         <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
     </CompilerOptions>
@@ -189,6 +192,11 @@
       <Item>
         <Filename Value="breakpointgroupframe.pas"/>
         <UnitName Value="breakpointgroupframe"/>
+      </Item>
+      <Item>
+        <Filename Value="inputhistorycopy.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="InputHistoryCopy"/>
       </Item>
     </Files>
     <i18n>
