@@ -1721,7 +1721,7 @@ begin
       lParam: Must be zero.
       Return value: The return value is ignored.
       }
-      if IsConsole then writeln('ToDo: implement TDN_NAVIGATED??');
+      if IsConsole then writeln('ToDo: implement OnNavigate');
     end;
     TDN_TIMER:
     begin
@@ -1766,6 +1766,10 @@ begin
       {$ObjectChecks OFF}
       TTaskDialogAccess(Dlg).DoOnRadioButtonClicked(wParam);
       {$POP}
+    end;
+    TDN_HELP:
+    begin
+      if IsConsole then writeln('ToDo: implement TDN_HELP??');
     end;
   end;
 end;
