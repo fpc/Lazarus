@@ -86,8 +86,6 @@ The task dialog structure which created the form.
 
 <element name="TLCLTaskDialog.FVerifyChecked"/>
 <element name="TLCLTaskDialog.RadioButtonArray"/>
-<element name="TLCLTaskDialog.CustomButtons"/>
-<element name="TLCLTaskDialog.Radios"/>
 <element name="TLCLTaskDialog.DialogCaption"/>
 <element name="TLCLTaskDialog.DlgTitle"/>
 <element name="TLCLTaskDialog.DlgText"/>
@@ -95,7 +93,6 @@ The task dialog structure which created the form.
 <element name="TLCLTaskDialog.ExpandedText"/>
 <element name="TLCLTaskDialog.FooterText"/>
 <element name="TLCLTaskDialog.VerificationText"/>
-<element name="TLCLTaskDialog.Selection"/>
 <element name="TLCLTaskDialog.CommonButtons"/>
 <element name="TLCLTaskDialog.Panel"/>
 <element name="TLCLTaskDialog.Image"/>
@@ -175,6 +172,69 @@ The Task Dialog optional verification checkbox.
 <element name="TLCLTaskDialog.AddLabel.AWidth"/>
 <element name="TLCLTaskDialog.AddLabel.AParent"/>
 
+<element name="TLCLTaskDialog.AddQueryCombo">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLCLTaskDialog.AddQueryCombo.X">
+<short/>
+</element>
+<element name="TLCLTaskDialog.AddQueryCombo.Y">
+<short/>
+</element>
+<element name="TLCLTaskDialog.AddQueryCombo.AWidth">
+<short/>
+</element>
+<element name="TLCLTaskDialog.AddQueryCombo.AParent">
+<short/>
+</element>
+
+<element name="TLCLTaskDialog.AddQueryEdit">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLCLTaskDialog.AddQueryEdit.X">
+<short/>
+</element>
+<element name="TLCLTaskDialog.AddQueryEdit.Y">
+<short/>
+</element>
+<element name="TLCLTaskDialog.AddQueryEdit.AWidth">
+<short/>
+</element>
+<element name="TLCLTaskDialog.AddQueryEdit.AParent">
+<short/>
+</element>
+
+<element name="TLCLTaskDialog.DoDialogConstructed">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLCLTaskDialog.DoDialogCreated">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLCLTaskDialog.DoDialogDestroyed">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLCLTaskDialog.VerifyClicked">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TLCLTaskDialog.VerifyClicked.Sender">
+<short/>
+</element>
+
 <!-- protected -->
 <element name="TLCLTaskDialog.HandleEmulatedButtonClicked">
 <short/>
@@ -217,6 +277,12 @@ The Task Dialog optional verification checkbox.
 </element>
 
 <element name="TLCLTaskDialog.Destroy">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TLCLTaskDialog.AfterConstruction">
 <short/>
 <descr/>
 <seealso/>
