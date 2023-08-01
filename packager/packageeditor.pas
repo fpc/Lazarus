@@ -1019,7 +1019,7 @@ var
     Ext: String;
     IDEFileFlags: TIDEFileStateFlags;
   begin
-    if CompareFilenames(aFilename,'fpmake.pp')=0 then exit;
+    if CompareFilenames(ExtractFilename(aFilename),'fpmake.pp')=0 then exit;
     if CompareFilenames(aFilename,LazPackage.GetSrcFilename)=0 then exit;
 
     case CheckType of
