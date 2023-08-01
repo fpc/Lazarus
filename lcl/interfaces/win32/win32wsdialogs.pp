@@ -1691,10 +1691,21 @@ begin
     end;
     TDN_HYPERLINK_CLICKED:
     begin
+      {
+      wParam: Must be zero.
+      lParam: Pointer to a wide-character string containing the URL of the hyperlink.
+      Return value: The return value is ignored.
+      }
+      //AUrl := Utf16ToUtf8(PWideChar(lParam));   <== can this be done safely and passed to OnUrlClicked if AUrls is a local variable here??
       if IsConsole then writeln('ToDo: implement OnHyperlinkClicked');
     end;
     TDN_NAVIGATED:
     begin
+      {
+      wParam: Must be zero.
+      lParam: Must be zero.
+      Return value: The return value is ignored.
+      }
       if IsConsole then writeln('ToDo: implement TDN_NAVIGATED??');
     end;
     TDN_TIMER:
@@ -1724,6 +1735,15 @@ begin
       Assert((Dlg is TCustomTaskDialog),'TaskDialogCallbackProc: dwRefData is NOT a TCustomTaskDialog');
       if Assigned(Dlg.OnExpand) then
         Dlg.OnExpand(Dlg);
+    end;
+    TDN_RADIO_BUTTON_CLICKED:
+    begin
+      {
+      wParam: An int that specifies the ID corresponding to the radio button that was clicked.
+      lParam: Must be zero.
+      Return value: The return value is ignored.
+      }
+      if IsConsole then writeln('ToDo: implement OnRadioButtonClicked');
     end;
   end;
 end;
