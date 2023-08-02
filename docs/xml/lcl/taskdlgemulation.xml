@@ -25,6 +25,7 @@ Check for reusable content from the deprecated/removed lcltaskdialog.xml file.
 <element name="InterfaceBase"/>
 <element name="ImgList"/>
 <element name="LCLProc"/>
+<element name="DateUtils"/>
 <element name="LResources"/>
 <element name="Menus"/>
 <element name="Graphics"/>
@@ -85,6 +86,8 @@ The task dialog structure which created the form.
 </element>
 
 <element name="TLCLTaskDialog.FVerifyChecked"/>
+<element name="TLCLTaskDialog.Timer"/>
+<element name="TLCLTaskDialog.TimerStartTime"/>
 <element name="TLCLTaskDialog.RadioButtonArray"/>
 <element name="TLCLTaskDialog.DialogCaption"/>
 <element name="TLCLTaskDialog.DlgTitle"/>
@@ -172,79 +175,56 @@ The Task Dialog optional verification checkbox.
 <element name="TLCLTaskDialog.AddLabel.AWidth"/>
 <element name="TLCLTaskDialog.AddLabel.AParent"/>
 
-<element name="TLCLTaskDialog.AddQueryCombo">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLCLTaskDialog.AddQueryCombo.X">
-<short/>
-</element>
-<element name="TLCLTaskDialog.AddQueryCombo.Y">
-<short/>
-</element>
-<element name="TLCLTaskDialog.AddQueryCombo.AWidth">
-<short/>
-</element>
-<element name="TLCLTaskDialog.AddQueryCombo.AParent">
-<short/>
-</element>
+<element name="TLCLTaskDialog.AddQueryCombo"/>
+<element name="TLCLTaskDialog.AddQueryCombo.X"/>
+<element name="TLCLTaskDialog.AddQueryCombo.Y"/>
+<element name="TLCLTaskDialog.AddQueryCombo.AWidth"/>
+<element name="TLCLTaskDialog.AddQueryCombo.AParent"/>
 
-<element name="TLCLTaskDialog.AddQueryEdit">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLCLTaskDialog.AddQueryEdit.X">
-<short/>
-</element>
-<element name="TLCLTaskDialog.AddQueryEdit.Y">
-<short/>
-</element>
-<element name="TLCLTaskDialog.AddQueryEdit.AWidth">
-<short/>
-</element>
-<element name="TLCLTaskDialog.AddQueryEdit.AParent">
-<short/>
-</element>
+<element name="TLCLTaskDialog.AddQueryEdit"/>
+<element name="TLCLTaskDialog.AddQueryEdit.X"/>
+<element name="TLCLTaskDialog.AddQueryEdit.Y"/>
+<element name="TLCLTaskDialog.AddQueryEdit.AWidth"/>
+<element name="TLCLTaskDialog.AddQueryEdit.AParent"/>
 
-<element name="TLCLTaskDialog.DoDialogConstructed">
-<short/>
-<descr/>
-<seealso/>
-</element>
+<element name="TLCLTaskDialog.SetupTimer"/>
 
-<element name="TLCLTaskDialog.DoDialogCreated">
-<short/>
-<descr/>
-<seealso/>
-</element>
+<element name="TLCLTaskDialog.ResetTimer"/>
 
-<element name="TLCLTaskDialog.DoDialogDestroyed">
-<short/>
-<descr/>
-<seealso/>
-</element>
+<element name="TLCLTaskDialog.DoDialogConstructed"/>
 
-<element name="TLCLTaskDialog.VerifyClicked">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLCLTaskDialog.VerifyClicked.Sender">
-<short/>
-</element>
+<element name="TLCLTaskDialog.DoDialogCreated"/>
+
+<element name="TLCLTaskDialog.DoDialogDestroyed"/>
+
+<!-- 
+<element name="TLCLTaskDialog.OnButtonClicked"/>
+<element name="TLCLTaskDialog.OnButtonClicked.Sender"/>
+-->
+<element name="TLCLTaskDialog.ButtonClicked"/>
+<element name="TLCLTaskDialog.ButtonClicked.Sender"/>
+
+<!--
+<element name="TLCLTaskDialog.OnRadioButtonClick"/>
+<element name="TLCLTaskDialog.OnRadioButtonClick.Sender"/>
+-->
+<element name="TLCLTaskDialog.RadioButtonClick"/>
+<element name="TLCLTaskDialog.RadioButtonClick.Sender"/>
+
+<!-- 
+<element name="TLCLTaskDialog.OnVerifyClicked.Sender"/>
+-->
+<element name="TLCLTaskDialog.VerifyClicked"/>
+<element name="TLCLTaskDialog.VerifyClicked.Sender"/>
+
+<!-- 
+<element name="TLCLTaskDialog.OnTimer"/>
+<element name="TLCLTaskDialog.OnTimer.Sender"/>
+-->
+<element name="TLCLTaskDialog.DoTimer"/>
+<element name="TLCLTaskDialog.DoTimer.Sender"/>
 
 <!-- protected -->
-<element name="TLCLTaskDialog.HandleEmulatedButtonClicked">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TLCLTaskDialog.HandleEmulatedButtonClicked.Sender">
-<short/>
-</element>
-
 <element name="TLCLTaskDialog.SetupControls">
 <short/>
 <descr/>
@@ -293,7 +273,6 @@ The Task Dialog optional verification checkbox.
 <descr/>
 <seealso/>
 </element>
-
 <element name="TLCLTaskDialog.Execute.Result">
 <short/>
 <descr/>
