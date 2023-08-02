@@ -98,6 +98,7 @@ function FilenamePIsWinAbsolute(TheFilename: PChar): boolean;
 function RelateDirectoryMasks(const LeftDir: string; LeftStart: integer; const RightDir: string; RightStart: integer): TSPFileMaskRelation; overload;
 function RelateDirectoryMasks(const Left, Right: TSPMaskRecord): TSPFileMaskRelation; overload;
 function GetSPMaskRecord(const aDirectory: string; aStartPos: integer; out MaskRecord: TSPMaskRecord): boolean;
+function GetSPMaskType(const aFilename: string): TSPMaskType;
 
 function dbgs(r: TSPFileMaskRelation): string; overload;
 
@@ -846,6 +847,20 @@ begin
     end;
   end;
   Result:=true;
+end;
+
+function GetSPMaskType(const aFilename: string): TSPMaskType;
+var
+  l: SizeInt;
+begin
+  Result:=TSPMaskType.None;
+  if aFilename='' then exit;
+  l:=length(aFilename);
+  if aFilename[l]<>'*' then exit;
+  if (l=1) or (aFilename[l-1]=PathDelim) then
+    exit(TSPMaskType.Star);
+  if (aFilename[l-1]='*') and ((l=2) or (aFilename[l-2]=PathDelim)) then
+    exit(TSPMaskType.StarStar);
 end;
 
 function dbgs(r: TSPFileMaskRelation): string;

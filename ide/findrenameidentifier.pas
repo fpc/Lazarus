@@ -42,7 +42,7 @@ uses
   IdeIntfStrConsts, LazIDEIntf, IDEWindowIntf, SrcEditorIntf, PackageIntf,
   IDEDialogs, InputHistory,
   // LazConfig
-  TransferMacros, IDEProcs,
+  TransferMacros, IDEProcs, SearchPathProcs,
   // IDE
   LazarusIDEStrConsts, MiscOptions, DialogProcs, SearchResultView, CodeHelp;
 
@@ -188,6 +188,9 @@ function DoFindRenameIdentifier(AllowRename: boolean; SetRenameActive: boolean;
     CurDirectory: String;
     CurFilename: String;
     OnlyPascalSources: Boolean;
+    SPMaskType: TSPMaskType;
+    FilesTree: TFilenameToStringTree;
+    FTItem: PStringToStringItem;
   begin
     Result:=mrCancel;
     if (Options.ExtraFiles<>nil) then begin
@@ -200,6 +203,25 @@ function DoFindRenameIdentifier(AllowRename: boolean; SetRenameActive: boolean;
           CurFileMask:=AppendPathDelim(LazarusIDE.ActiveProject.Directory+CurFileMask);
         end;
         CurFileMask:=TrimFilename(CurFileMask);
+        SPMaskType:=GetSPMaskType(CurFileMask);
+        if SPMaskType<>TSPMaskType.None then
+        begin
+          FilesTree:=TFilenameToStringTree.Create(false);
+          try
+            CollectFilesInSearchPath(CurFileMask,FilesTree);
+            for FTItem in FilesTree do
+            begin
+              if not FilenameIsPascalSource(FTItem^.Name) then
+                continue;
+              if FileIsText(FTItem^.Name) then
+                Files.Add(FTItem^.Name);
+            end;
+          finally
+            FilesTree.Free;
+          end;
+          continue;
+        end;
+
         OnlyPascalSources:=false;
         if DirPathExistsCached(CurFileMask) then begin
           // a whole directory
@@ -390,7 +412,8 @@ begin
 
     // ToDo: search lfm source references
     // ToDo: search i18n references
-    // ToDo: designer references
+    // ToDo: search fpdoc references
+    // ToDo: search designer references
 
     // rename identifier
     if Options.Rename then begin

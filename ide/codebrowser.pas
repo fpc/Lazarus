@@ -55,14 +55,15 @@ uses
   BasicCodeTools, DefineTemplates, CodeTree, CodeCache, CodeToolManager,
   PascalParserTool, LinkScanner, FileProcs, CodeIndex, StdCodeTools, SourceLog,
   // LazUtils
-  LazFileUtils, LazStringUtils, LazUTF8, AvgLvlTree,
+  LazFileUtils, LazUTF8, AvgLvlTree,
   // IDEIntf
   IDEWindowIntf, SrcEditorIntf, IDEMsgIntf, IDEDialogs, LazConfigStorage,
   IDEHelpIntf, PackageIntf, IDECommands, LazIDEIntf, IDEExternToolIntf,
   IDEImagesIntf,
   // IDE
   Project, DialogProcs, PackageSystem, PackageDefs, LazarusIDEStrConsts,
-  IDEOptionDefs, etFPCMsgParser, BasePkgManager, EnvironmentOpts;
+  IDEOptionDefs, etFPCMsgParser, BasePkgManager, EnvironmentOpts,
+  SearchPathProcs;
 
 
 type
@@ -1470,47 +1471,22 @@ var
     end;
   end;
   
-  procedure AddFilesOfDirectory(const Directory: string;
-    ClearIncludedByInfo: boolean);
-  // ! needs ending PathDelim !
-  var
-    FileInfo: TSearchRec;
-  begin
-    //DebugLn(['AddFilesOfDirectory Directory="',Directory,'"']);
-    if (not FilenameIsAbsolute(Directory))
-    or (not DirectoryExistsUTF8(Directory)) then begin
-      DebugLn(['AddFilesOfDirectory WARNING: does not exist: "',Directory,'"']);
-      exit;
-    end;
-    if FindFirstUTF8(Directory+FileMask,faAnyFile,FileInfo)=0 then begin
-      repeat
-        // check if special file
-        if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
-        then
-          continue;
-        if FilenameIsPascalUnit(FileInfo.Name) then
-          AddFile(Directory+FileInfo.Name,ClearIncludedByInfo);
-      until FindNextUTF8(FileInfo)<>0;
-    end;
-    FindCloseUTF8(FileInfo);
-  end;
-  
   procedure AddFilesOfSearchPath(const SrcPath, BaseDir: string;
     ClearIncludedByInfo: boolean);
   var
-    Dir: String;
-    p: Integer;
+    Files: TFilenameToStringTree;
+    Item: PStringToStringItem;
   begin
     //DebugLn(['AddFilesOfSearchPath SrcPath="',SrcPath,'" BaseDir="',BaseDir,'"']);
-    p:=1;
-    while (p<=length(SrcPath)) do begin
-      Dir:=GetNextDelimitedItem(SrcPath,';',p);
-      if Dir<>'' then begin
-        if not FilenameIsAbsolute(Dir) then
-          Dir:=BaseDir+PathDelim+Dir;
-        Dir:=CleanAndExpandDirectory(Dir);
-        AddFilesOfDirectory(Dir,ClearIncludedByInfo);
-      end;
+
+    Files:=TFilenameToStringTree.Create(false);
+    try
+      CollectFilesInSearchPath(TrimSearchPath(SrcPath,BaseDir,false,true),Files);
+      for Item in Files do
+        if FilenameIsPascalUnit(Item^.Name) then
+          AddFile(Item^.Name,ClearIncludedByInfo);
+    finally
+      Files.Free;
     end;
   end;
   

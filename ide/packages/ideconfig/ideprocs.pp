@@ -127,7 +127,7 @@ begin
       // check if special file
       if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='') then
         continue;
-      if (CompareText(CaseInsensitiveFilename,FileInfo.Name)=0) // Pascal insensitibity, not UTF-8, thing about Turkish I
+      if (CompareText(CaseInsensitiveFilename,FileInfo.Name)=0) // Pascal insensitivity, not UTF-8, thing about Turkish I
       and ((not IgnoreExact)
            or (CompareFilenames(CaseInsensitiveFilename,FileInfo.Name)<>0))
       then begin
