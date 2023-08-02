@@ -1639,7 +1639,7 @@ function TBuildManager.CheckAmbiguousSources(const AFilename: string;
   begin
     Result:=mrOk;
     if CompareFilenames(AFilename,AmbiguousFilename)=0 then exit;
-    if not FileExistsUTF8(AmbiguousFilename) then exit;
+    if not FileExistsCached(AmbiguousFilename) then exit;
     if Compiling then begin
       Result:=AddCompileWarning(AmbiguousFilename);
       exit;

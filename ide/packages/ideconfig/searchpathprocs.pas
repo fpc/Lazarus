@@ -32,7 +32,8 @@ interface
 uses
   Classes, SysUtils,
   // LazUtils
-  LazFileUtils, LazFileCache, FileUtil, CompOptsIntf;
+  LazFileUtils, LazFileCache, FileUtil, AvgLvlTree, CompOptsIntf,
+  CodeToolManager, DirectoryCacher;
 
 type
   TSPMaskType = (
@@ -87,6 +88,9 @@ function SearchDirectoryInSearchPath(SearchPath: TStrings;
                     const Directory: string; DirStartPos: integer = 0): integer; overload;
 function SearchDirectoryInMaskedSearchPath(const SearchPath, Directory: string;
                                    DirStartPos: integer = 1): integer; overload;
+procedure CollectFilesInSearchPath(const SearchPath: string;
+                   Files: TFilenameToStringTree; const Value: string = ''); overload;
+
 function FilenamePIsAbsolute(TheFilename: PChar): boolean;
 function FilenamePIsUnixAbsolute(TheFilename: PChar): boolean;
 function FilenamePIsWinAbsolute(TheFilename: PChar): boolean;
@@ -612,6 +616,41 @@ var
   DirRelation: TSPFileMaskRelation;
 begin
   Result:=SearchDirectoryInSearchPath(SearchPath,Directory,DirRelation,DirStartPos);
+end;
+
+procedure CollectFilesInSearchPath(const SearchPath: string;
+  Files: TFilenameToStringTree; const Value: string);
+
+  procedure CollectFile(const aFilename: string);
+  begin
+    if Files.Contains(aFilename) then exit;
+    Files.Add(aFilename,Value);
+  end;
+
+var
+  p, i: Integer;
+  Dir: String;
+  Cache: TCTDirectoryBaseCache;
+  StarCache: TCTStarDirectoryCache;
+  DirCache: TCTDirectoryCache;
+begin
+  p:=1;
+  repeat
+    Dir:=GetNextDirectoryInSearchPath(SearchPath,p);
+    if Dir='' then break;
+    Cache:=CodeToolBoss.DirectoryCachePool.GetBaseCache(Dir);
+    if Cache=nil then continue;
+    if Cache is TCTStarDirectoryCache then
+    begin
+      StarCache:=TCTStarDirectoryCache(Cache);
+      for i:=0 to StarCache.Listing.Count-1 do
+        CollectFile(StarCache.Listing.GetSubDirFilename(i));
+    end else if Cache is TCTDirectoryCache then begin
+      DirCache:=TCTDirectoryCache(Cache);
+      for i:=0 to DirCache.Listing.Count-1 do
+        CollectFile(DirCache.Directory+DirCache.Listing.GetFilename(i));
+    end;
+  until false;
 end;
 
 function FilenamePIsAbsolute(TheFilename: PChar): boolean;

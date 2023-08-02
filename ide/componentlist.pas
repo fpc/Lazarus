@@ -100,7 +100,7 @@ type
     procedure TreeFilterEdAfterFilter(Sender: TObject);
     procedure PageControlChange(Sender: TObject);
     function TreeFilterEdFilterItemEx(const ACaption: string;
-      ItemData: Pointer; out Done: Boolean): Boolean;
+      {%H-}ItemData: Pointer; out Done: Boolean): Boolean;
     procedure TreeFilterEdKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure TreeKeyPress(Sender: TObject; var Key: char);

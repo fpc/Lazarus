@@ -60,7 +60,7 @@ type
     SectionRadioGroup: TRadioGroup;
     procedure AllUnitsCheckBoxChange(Sender: TObject);
     procedure FilterEditAfterFilter(Sender: TObject);
-    function FilterEditFilterItemEx(const ACaption: string; ItemData: Pointer;
+    function FilterEditFilterItemEx(const ACaption: string; {%H-}ItemData: Pointer;
       out Done: Boolean): Boolean;
     procedure FilterEditKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);

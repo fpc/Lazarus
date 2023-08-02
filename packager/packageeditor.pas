@@ -1011,25 +1011,24 @@ begin
 end;
 
 procedure TPackageEditorForm.mnuAddNewDiskFilesClick(Sender: TObject);
-var
-  Files: TFilenameToStringTree;
 
-  procedure CollectFile(const aFilename: string; CheckType: TPkgFileType);
+  function IsNewFile(const aFilename, aValue: string): boolean;
   var
     Ext: String;
     IDEFileFlags: TIDEFileStateFlags;
   begin
+    Result:=false;
     if CompareFilenames(ExtractFilename(aFilename),'fpmake.pp')=0 then exit;
     if CompareFilenames(aFilename,LazPackage.GetSrcFilename)=0 then exit;
 
-    case CheckType of
-    pftUnit:
-      if not FilenameIsPascalUnit(aFilename) then exit;
-    pftInclude:
+    if not FilenameIsPascalUnit(aFilename) then
+    begin
+      if aValue='Include' then
       begin
         Ext:=ExtractFileExt(aFilename);
         if IsPascalIncExt(PChar(Ext))=pietNone then exit;
-      end;
+      end else
+        exit;
     end;
     if LazPackage.FindPkgFile(aFilename,true,true)<>nil then
       exit; // already in package
@@ -1039,38 +1038,11 @@ var
     if ifsPartOfProject in IDEFileFlags then
       exit;
 
-    if Files.Contains(aFilename) then exit;
-    Files.Add(aFilename,'');
-  end;
-
-  procedure CollectFiles(const SearchPath: string; CheckType: TPkgFileType);
-  var
-    p, i: Integer;
-    Dir: String;
-    Cache: TCTDirectoryBaseCache;
-    StarCache: TCTStarDirectoryCache;
-    DirCache: TCTDirectoryCache;
-  begin
-    p:=1;
-    repeat
-      Dir:=GetNextDirectoryInSearchPath(SearchPath,p);
-      if Dir='' then break;
-      Cache:=CodeToolBoss.DirectoryCachePool.GetBaseCache(Dir);
-      if Cache=nil then continue;
-      if Cache is TCTStarDirectoryCache then
-      begin
-        StarCache:=TCTStarDirectoryCache(Cache);
-        for i:=0 to StarCache.Listing.Count-1 do
-          CollectFile(StarCache.Listing.GetSubDirFilename(i),CheckType);
-      end else if Cache is TCTDirectoryCache then begin
-        DirCache:=TCTDirectoryCache(Cache);
-        for i:=0 to DirCache.Listing.Count-1 do
-          CollectFile(DirCache.Directory+DirCache.Listing.GetFilename(i),CheckType);
-      end;
-    until false;
+    Result:=true;
   end;
 
 var
+  Files: TFilenameToStringTree;
   aFilename, NewUnitName, Msg: String;
   Item: PStringToStringItem;
   Code: TCodeBuffer;
@@ -1082,26 +1054,39 @@ begin
 
   Files:=TFilenameToStringTree.Create(true);
   try
-    // collect new units from unit path
-    CollectFiles(LazPackage.GetUnitPath(false),pftUnit);
+    // collect all units from unit and include paths
+    CollectFilesInSearchPath(LazPackage.GetUnitPath(false),Files,'Unit');
+    CollectFilesInSearchPath(LazPackage.GetIncludePath(false),Files,'Include');
 
-    // collect new include files from include path
-    CollectFiles(LazPackage.GetIncludePath(false),pftInclude);
-
-    if Files.Count=0 then
+    // collect new files
+    Msg:='';
+    for Item in Files do
     begin
-      IDEMessageDialog('No file missing','All .pas, .pp, .p, .inc in unit/include path are already in a project/package.',mtInformation,[mbOk]);
+      aFilename:=Item^.Name;
+      if IsNewFile(aFilename,Item^.Value) then
+        Msg+=LineEnding+CreateRelativePath(aFilename,LazPackage.Directory,true,false)
+      else
+        Item^.Value:='';
+    end;
+
+    if Msg='' then
+    begin
+      IDEMessageDialog(lisNoNewFileFound,
+        lisAllPasPpPIncInUnitIncludePathAreAlreadyInAProjectP, mtInformation, [
+        mbOk]
+          );
       exit;
     end;
 
-    Msg:='Add the following files:';
-    for Item in Files do begin
-      aFilename:=Item^.Name;
-      Msg+=LineEnding+CreateRelativePath(aFilename,LazPackage.Directory,true,false);
-    end;
-    if IDEMessageDialog('Add new disk files?',Msg,mtConfirmation,[mbOk,mbCancel])<>mrOk then exit;
+    // ask user
+    Msg:=lisAddTheFollowingFiles+Msg;
+    if IDEMessageDialog(lisAddNewDiskFiles, Msg, mtConfirmation, [mbOk, mbCancel
+        ])<>mrOk then
+      exit;
 
+    // add files
     for Item in Files do begin
+      if Item^.Value='' then continue;
       aFilename:=Item^.Name;
       NewFlags:=[];
       Code:=CodeToolBoss.LoadFile(aFilename,true,false);
@@ -1921,7 +1906,7 @@ begin
   MoreBitBtn.DropdownMenu := MorePopupMenu;
 
   mnuAddDiskFile.Caption := lisPckEditAddFilesFromFileSystem;
-  mnuAddNewDiskFiles.Caption := 'Add New Files from File System'; // todo resourcestring
+  mnuAddNewDiskFiles.Caption := lisAddNewFilesFromFileSystem;
   mnuAddNewFile.Caption := lisA2PNewFile;
   mnuAddNewComp.Caption := lisMenuNewComponent;
   mnuAddNewReqr.Caption := lisProjAddNewRequirement;

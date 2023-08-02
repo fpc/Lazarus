@@ -4702,6 +4702,11 @@ resourcestring
   lisPckEditAddToProject = 'Add to Project';
   lisPckEditInstall = 'Install';
   lisPckEditUninstall = 'Uninstall';
+  lisNoNewFileFound = 'No new file found';
+  lisAllPasPpPIncInUnitIncludePathAreAlreadyInAProjectP = 'All .pas, .pp, .p, '
+    +'.inc in unit/include path are already in a project/package.';
+  lisAddTheFollowingFiles = 'Add the following files:';
+  lisAddNewDiskFiles = 'Add new disk files?';
   lisPckEditViewPackageSource = 'View Package Source';
   lisPckEditPackageHasChangedSavePackage = 'Package "%s" has changed.'
     +'%sSave package?';
@@ -4726,6 +4731,7 @@ resourcestring
   lisPckEditSavePackage = 'Save Package';
   lisPckEditCompilePackage = 'Compile package';
   lisPckEditAddFilesFromFileSystem = 'Add Files from File System';
+  lisAddNewFilesFromFileSystem = 'Add New Files from File System';
   lisPckEditAddOtherItems = 'Add other items';
   lisPckEditRemoveSelectedItem = 'Remove selected item';
   lisUse = 'Use';
