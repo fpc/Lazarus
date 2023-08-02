@@ -39,10 +39,10 @@ type
     Image: TImage;
     /// the labels corresponding to the Task Dialog main elements
     Element: array[tdeContent..tdeMainInstruction] of TLabel;
-    /// the Task Dialog selection list
-    Combo: TComboBox;
-    /// the Task Dialog optional query editor
-    Edit: TEdit;
+    /// the Task Dialog query selection list
+    QueryCombo: TComboBox;
+    /// the Task Dialog optional query single line editor
+    QueryEdit: TEdit;
     /// the Task Dialog optional checkbox
     VerifyCheckBox: TCheckBox;
 
@@ -305,15 +305,15 @@ begin
 
   Result := ShowModal;
 
-  if Assigned(Combo) then
+  if Assigned(QueryCombo) then
   begin
-    FDlg.QueryItemIndex := Combo.ItemIndex;
-    FDlg.QueryResult := Combo.Text;
+    FDlg.QueryItemIndex := QueryCombo.ItemIndex;
+    FDlg.QueryResult := QueryCombo.Text;
   end
   else
   begin
-    if Assigned(Edit) then
-      FDlg.QueryResult := Edit.Text;
+    if Assigned(QueryEdit) then
+      FDlg.QueryResult := QueryEdit.Text;
   end;
 
   if VerifyCheckBox<>nil then
@@ -623,8 +623,8 @@ end;
 
 procedure TLCLTaskDialog.AddQueryCombo(var X, Y: Integer; AWidth: Integer; AParent: TWinControl);
 begin
-  Combo := TComboBox.Create(Self);
-  with Combo do
+  QueryCombo := TComboBox.Create(Self);
+  with QueryCombo do
   begin
     Items.Assign(FDlg.QueryChoices);
     SetBounds(X,Y,aWidth-32-X,22);
@@ -641,8 +641,6 @@ begin
       else
         ItemIndex := -1;
     end;
-    if (tfQueryFocused in FDlg.Flags) then
-      ActiveControl := Combo;
     Parent := AParent;
   end;
   inc(Y,42);
@@ -650,16 +648,14 @@ end;
 
 procedure TLCLTaskDialog.AddQueryEdit(var X, Y: Integer; AWidth: Integer; AParent: TWinControl);
 begin
-  Edit := TEdit.Create(Self);
-  with Edit do
+  QueryEdit := TEdit.Create(Self);
+  with QueryEdit do
   begin
     SetBounds(X,Y,aWidth-16-X,22);
     Text := FDlg.SimpleQuery;
     PasswordChar := FDlg.SimpleQueryPasswordChar;
     Parent := AParent;
   end;
-  if (tfQueryFocused in FDlg.Flags) then
-    ActiveControl := Edit;
   inc(Y,42);
 end;
 
@@ -874,7 +870,7 @@ begin
     AddCommandLinkButtons(X, Y, aWidth, aButtonDef, FontHeight, CurrParent);
 
 
-  // add query combobox list or query edit
+  // add query combobox list or QueryEdit
   if (tfQuery in FDlg.Flags) and (FDlg.QueryChoices.Count > 0) then
     AddQueryCombo(X, Y, aWidth, CurrParent)
   else
@@ -903,6 +899,15 @@ begin
 
    if (tfCallBackTimer in FDlg.Flags) then
      SetupTimer;
+
+   //AddButtons (which comes after adding query) may have set ActiveControl
+   //so do this here and not in AddQueryCombo or AddQueryEdit
+   if Assigned(QueryCombo) and (tfQueryFocused in FDlg.Flags) then
+     ActiveControl := QueryCombo
+   else
+     if Assigned(QueryEdit) and (tfQueryFocused in FDlg.Flags) then
+       ActiveControl := QueryEdit;
+
 end;
 
 procedure TLCLTaskDialog.KeyDown(var Key: Word; Shift: TShiftState);
