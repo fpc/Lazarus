@@ -44,6 +44,7 @@ uses
   // LazUtils
   FPCAdds, LConvEncoding, FileUtil, LazFileUtils, LazFileCache, LazUTF8,
   Laz2_XMLCfg, LazUtilities, LazStringUtils, LazMethodList, LazVersion,
+  AvgLvlTree,
   // BuildIntf
   BaseIDEIntf, IDEOptionsIntf, ProjectIntf, MacroIntf, PublishModuleIntf,
   IDEExternToolIntf, CompOptsIntf, MacroDefIntf,
@@ -1782,93 +1783,73 @@ function TBuildManager.CheckUnitPathForAmbiguousPascalFiles(const BaseDir,
   end;
 
 var
-  EndPos: Integer;
-  StartPos: Integer;
-  CurDir: String;
-  FileInfo: TSearchRec;
   SourceUnitTree, CompiledUnitTree: TAVLTree;
   ANode: TAVLTreeNode;
   CurUnitName: String;
   CurFilename: String;
   AnUnitFile: PUnitFile;
   CurUnitTree: TAVLTree;
-  FileInfoNeedClose: Boolean;
   UnitPath: String;
   IgnoreAll: Boolean;
+  Files: TFilenameToStringTree;
+  Item: PStringToStringItem;
 begin
   Result:=mrOk;
   UnitPath:=TrimSearchPath(TheUnitPath,BaseDir,true);
 
   SourceUnitTree:=TAVLTree.Create(TListSortCompare(@CompareUnitFiles));
   CompiledUnitTree:=TAVLTree.Create(TListSortCompare(@CompareUnitFiles));
-  FileInfoNeedClose:=false;
+  Files:=TFilenameToStringTree.Create(true);
   try
     // collect all units (.pas, .pp, compiled units)
-    EndPos:=1;
-    while EndPos<=length(UnitPath) do begin
-      StartPos:=EndPos;
-      while (StartPos<=length(UnitPath)) and (UnitPath[StartPos]=';') do
-        inc(StartPos);
-      EndPos:=StartPos;
-      while (EndPos<=length(UnitPath)) and (UnitPath[EndPos]<>';') do
-        inc(EndPos);
-      if EndPos>StartPos then begin
-        CurDir:=AppendPathDelim(TrimFilename(copy(UnitPath,StartPos,EndPos-StartPos)));
-        FileInfoNeedClose:=true;
-        if FindFirstUTF8(CurDir+GetAllFilesMask,faAnyFile,FileInfo)=0 then begin
-          IgnoreAll:=false;
-          repeat
-            if (FileInfo.Name='.') or (FileInfo.Name='..') or (FileInfo.Name='')
-            or ((FileInfo.Attr and faDirectory)<>0) then continue;
-            if FilenameHasPascalExt(FileInfo.Name) then
-              CurUnitTree:=SourceUnitTree
-            else if FilenameExtIs(FileInfo.Name,CompiledExt,true) then
-              CurUnitTree:=CompiledUnitTree
-            else
-              continue;
-            CurUnitName:=ExtractFilenameOnly(FileInfo.Name);
-            if not LazIsValidIdent(CurUnitName) then
-              continue;
-            CurFilename:=CurDir+FileInfo.Name;
-            //DebugLn(['TBuildManager.CheckUnitPathForAmbiguousPascalFiles ',CurUnitName,' ',CurFilename]);
-            // check if unit already found
-            ANode:=CurUnitTree.FindKey(PChar(CurUnitName),
-                                 TListSortCompare(@CompareUnitNameAndUnitFile));
-            if (ANode<>nil) and (not IgnoreAll) then begin
-              if ConsoleVerbosity>=0 then
-                DebugLn(['Note: (lazarus) [TBuildManager.CheckUnitPathForAmbiguousPascalFiles] CurUnitName="',CurUnitName,'" CurFilename="',CurFilename,'" OtherUnitName="',PUnitFile(ANode.Data)^.FileUnitName,'" OtherFilename="',PUnitFile(ANode.Data)^.Filename,'"']);
-              // pascal unit exists twice
-              Result:=IDEQuestionDialog(lisAmbiguousUnitFound,
-                Format(lisTheUnitExistsTwiceInTheUnitPathOfThe,[CurUnitName,ContextDescription])
-                +LineEnding
-                +LineEnding
-                +'1. "'+PUnitFile(ANode.Data)^.Filename+'"'+LineEnding
-                +'2. "'+CurFilename+'"'+LineEnding
-                +LineEnding
-                +lisHintCheckIfTwoPackagesContainAUnitWithTheSameName,
-                mtWarning, [mrIgnore,
-                            mrYesToAll, lisIgnoreAll,
-                            mrAbort]);
-              case Result of
-              mrIgnore: ;
-              mrYesToAll: IgnoreAll:=true;
-              else exit;
-              end;
-            end;
-            // add unit to tree
-            New(AnUnitFile);
-            AnUnitFile^.FileUnitName:=CurUnitName;
-            AnUnitFile^.Filename:=CurFilename;
-            CurUnitTree.Add(AnUnitFile);
-          until FindNextUTF8(FileInfo)<>0;
+    CollectFilesInSearchPath(UnitPath,Files,'Unit');
+    IgnoreAll:=false;
+    for Item in Files do
+    begin
+      CurFilename:=Item^.Name;
+      if FilenameHasPascalExt(CurFilename) then
+        CurUnitTree:=SourceUnitTree
+      else if FilenameExtIs(CurFilename,CompiledExt,true) then
+        CurUnitTree:=CompiledUnitTree
+      else
+        continue;
+      CurUnitName:=ExtractFilenameOnly(CurFilename);
+      if not LazIsValidIdent(CurUnitName) then
+        continue;
+      //DebugLn(['TBuildManager.CheckUnitPathForAmbiguousPascalFiles ',CurUnitName,' ',CurFilename]);
+      // check if unit already found
+      ANode:=CurUnitTree.FindKey(PChar(CurUnitName),
+                           TListSortCompare(@CompareUnitNameAndUnitFile));
+      if (ANode<>nil) and (not IgnoreAll) then begin
+        if ConsoleVerbosity>=0 then
+          DebugLn(['Note: (lazarus) [TBuildManager.CheckUnitPathForAmbiguousPascalFiles] CurUnitName="',CurUnitName,'" CurFilename="',CurFilename,'" OtherUnitName="',PUnitFile(ANode.Data)^.FileUnitName,'" OtherFilename="',PUnitFile(ANode.Data)^.Filename,'"']);
+        // pascal unit exists twice
+        Result:=IDEQuestionDialog(lisAmbiguousUnitFound,
+          Format(lisTheUnitExistsTwiceInTheUnitPathOfThe,[CurUnitName,ContextDescription])
+          +LineEnding
+          +LineEnding
+          +'1. "'+PUnitFile(ANode.Data)^.Filename+'"'+LineEnding
+          +'2. "'+CurFilename+'"'+LineEnding
+          +LineEnding
+          +lisHintCheckIfTwoPackagesContainAUnitWithTheSameName,
+          mtWarning, [mrIgnore,
+                      mrYesToAll, lisIgnoreAll,
+                      mrAbort]);
+        case Result of
+        mrIgnore: ;
+        mrYesToAll: IgnoreAll:=true;
+        else exit;
         end;
-        FindCloseUTF8(FileInfo);
-        FileInfoNeedClose:=false;
       end;
+      // add unit to tree
+      New(AnUnitFile);
+      AnUnitFile^.FileUnitName:=CurUnitName;
+      AnUnitFile^.Filename:=CurFilename;
+      CurUnitTree.Add(AnUnitFile);
     end;
   finally
     // clean up
-    if FileInfoNeedClose then FindCloseUTF8(FileInfo);
+    Files.Free;
     FreeUnitTree(SourceUnitTree);
     FreeUnitTree(CompiledUnitTree);
   end;
