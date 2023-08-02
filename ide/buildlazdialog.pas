@@ -317,7 +317,10 @@ begin
   CleanDir(fWorkingDir+PathDelim+'components');
   CleanDir(fWorkingDir+PathDelim+'units');
   CleanDir(fWorkingDir+PathDelim+'ide');
+  CleanDir(fWorkingDir+PathDelim+'debugger');
+  CleanDir(fWorkingDir+PathDelim+'designer');
   CleanDir(fWorkingDir+PathDelim+'packager');
+  CleanDir(fWorkingDir+PathDelim+'converter');
   CleanDir(fWorkingDir+PathDelim+'lcl');
   CleanDir(fWorkingDir+PathDelim+'ideintf'); // from very old lazarus
   CleanDir(fWorkingDir+PathDelim+'tools');
