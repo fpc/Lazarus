@@ -5154,6 +5154,27 @@ TCustomTaskDialog.
 <short><b>True</b> if the dialog can close.</short>
 </element>
 
+<!-- TODO: Needs content. -->
+<element name="TTaskDlgTimerEvent">
+<short/>
+<descr/>
+<version>
+Added in LCL version 4.0.  
+</version>
+<seealso>
+<link id="TCustomTaskDialog.OnTimer"/>
+</seealso>
+</element>
+<element name="TTaskDlgTimerEvent.Sender">
+<short/>
+</element>
+<element name="TTaskDlgTimerEvent.TickCount">
+<short/>
+</element>
+<element name="TTaskDlgTimerEvent.Reset">
+<short/>
+</element>
+
 <element name="TTaskDialogIcon">
 <short>Identifier for an icon displayed on a Task dialog.</short>
 <descr>
@@ -5730,6 +5751,10 @@ For other platforms, or Windows versions which do not support the TaskDialog API
 <element name="TCustomTaskDialog.FOnDialogConstructed"/>
 <element name="TCustomTaskDialog.FOnDialogCreated"/>
 <element name="TCustomTaskDialog.FOnDialogDestroyed"/>
+<element name="TCustomTaskDialog.FOnExpand"/>
+<element name="TCustomTaskDialog.FOnHyperlinkClicked"/>
+<element name="TCustomTaskDialog.FOnRadioButtonClicked"/>
+<element name="TCustomTaskDialog.FOnTimer"/>
 <element name="TCustomTaskDialog.FOnVerificationClicked"/>
 <element name="TCustomTaskDialog.FQueryChoices"/>
 <element name="TCustomTaskDialog.FQueryResult"/>
@@ -5738,6 +5763,7 @@ For other platforms, or Windows versions which do not support the TaskDialog API
 <element name="TCustomTaskDialog.FRadioButtons"/>
 <element name="TCustomTaskDialog.FTask"/>
 <element name="TCustomTaskDialog.FTitle"/>
+<element name="TCustomTaskDialog.FURL"/>
 <element name="TCustomTaskDialog.FVerificationText"/>
 <element name="TCustomTaskDialog.FWidth"/>
 <element name="TCustomTaskDialog.FOnButtonClicked"/>
@@ -5855,6 +5881,121 @@ in LCLTaskDialog.
 <b>True</b> if the dialog should be closed, or <b>False</b> to continue 
 execution.
 </short>
+</element>
+
+<!-- TODO: Needs content. -->
+<element name="TCustomTaskDialog.DoOnRadioButtonClicked">
+<short/>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+<element name="TCustomTaskDialog.DoOnRadioButtonClicked.ButtonID">
+<short/>
+</element>
+
+<!-- TODO: Needs content. -->
+<element name="TCustomTaskDialog.DoOnDialogConstructed">
+<short/>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+
+<!-- TODO: Needs content. -->
+<element name="TCustomTaskDialog.DoOnDialogCreated">
+<short/>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+
+<!-- TODO: Needs content. -->
+<element name="TCustomTaskDialog.DoOnDialogDestroyed">
+<short/>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+
+<!-- TODO: Needs content. -->
+<element name="TCustomTaskDialog.DoOnExpandButtonClicked">
+<short/>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+<element name="TCustomTaskDialog.DoOnExpandButtonClicked.Expanded">
+<short/>
+</element>
+
+<!-- TODO: Needs content. -->
+<element name="TCustomTaskDialog.DoOnTimer">
+<short/>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+<element name="TCustomTaskDialog.DoOnTimer.TickCount">
+<short/>
+</element>
+<element name="TCustomTaskDialog.DoOnTimer.Reset">
+<short/>
+</element>
+
+<!-- TODO: Needs content. -->
+<element name="TCustomTaskDialog.DoOnVerificationClicked">
+<short/>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+<element name="TCustomTaskDialog.DoOnVerificationClicked.Checked">
+<short/>
+</element>
+
+<!-- <element name="TCustomTaskDialog.DoOnHelp"/> -->
+
+<!-- TODO: Needs content. -->
+<element name="TCustomTaskDialog.DoOnHyperlinkClicked">
+<short/>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+<element name="TCustomTaskDialog.DoOnHyperlinkClicked.AURL">
+<short/>
+</element>
+
+<!-- <element name="TCustomTaskDialog.DoOnNavigated"/> -->
+
+<!-- TODO: Needs content. -->
+<element name="TCustomTaskDialog.SetRadioButtonFromRadioIndex">
+<short/>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+<element name="TCustomTaskDialog.SetRadioButtonFromRadioIndex.AIndex">
+<short/>
 </element>
 
 <element name="TCustomTaskDialog.Create">
@@ -6428,6 +6569,19 @@ a bold font style.
 </seealso>
 </element>
 
+<element name="TCustomTaskDialog.VerificationText">
+<short>
+Optional caption text for the check box displayed at the bottom of the Task 
+dialog.
+</short>
+<descr/>
+<seealso>
+<link id="TCustomTaskDialog.Flags"/>
+<link id="TTaskDialogFlags"/>
+<link id="TTaskDialogFlag"/>
+</seealso>
+</element>
+
 <element name="TCustomTaskDialog.Width">
 <short>
 Sets the width in pixels for the task dialog form.
@@ -6456,14 +6610,27 @@ pixels) or an upper limit (480 pixels) on the auto-calculated width.
 </seealso>
 </element>
 
-<element name="TCustomTaskDialog.VerificationText">
+<!-- TODO: Needs additional description. -->
+<element name="TCustomTaskDialog.URL">
 <short>
-Optional caption text for the check box displayed at the bottom of the Task 
+Universal Resource Locator or identifier for a hyperlink clicked on the task 
 dialog.
 </short>
-<descr/>
+<descr>
+<p>
+<var>URL</var> is a read-only <var>String</var> property which contains the 
+resource identifier for a hyperlink clicked in one of the text areas for the 
+task dialog.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
 <seealso>
 <link id="TCustomTaskDialog.Flags"/>
+<link id="TCustomTaskDialog.Text"/>
+<link id="TCustomTaskDialog.ExpandedText"/>
+<link id="TCustomTaskDialog.FooterText"/>
 <link id="TTaskDialogFlags"/>
 <link id="TTaskDialogFlag"/>
 </seealso>
@@ -6520,6 +6687,84 @@ Added in LCL version 4.0.
 Added in LCL version 4.0.
 </version>
 <seealso/>
+</element>
+
+<!-- TODO: Needs additional content. -->
+<element name="TCustomTaskDialog.OnExpand">
+<short>
+Event handler signalled when the ExpandedText property has been expanded or 
+collapsed.
+</short>
+<descr>
+<p>
+<var>OnExpand</var> is a <var>TNotifyEvent</var> property with the event 
+handler signalled when the expanded or collapsed state for the 
+<var>ExpandedText</var> area on the task dialog has been changed.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+
+<!-- TODO: Needs additional content. -->
+<element name="TCustomTaskDialog.OnTimer">
+<short>
+Event handler signalled to update a progress bar on the task dialog.
+</short>
+<descr>
+<p>
+<var>OnTimer</var> is a <var>TTaskDlgTimerEvent</var> property with the event 
+handler signalled when the interval for a timer used to update a progress bar 
+on the dialog has elapsed.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+
+<!-- TODO: Needs additional content. -->
+<element name="TCustomTaskDialog.OnRadioButtonClicked">
+<short>
+Event handler signalled when a radio button on the dialog has been clicked.
+</short>
+<descr>
+<p>
+TNotifyEvent is a TNotifyEvent property with the event handler signalled when 
+a radio button on the task dialog has been clicked.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+
+<!-- TODO: Needs additional content. -->
+<element name="TCustomTaskDialog.OnHyperlinkClicked">
+<short>
+Event handler signalled when a hyperlink in one of the text areas has been 
+clicked.  
+</short>
+<descr>
+<p>
+<var>OnHyperlinkClicked</var> is a <var>TNotifyEvent</var> property with the 
+event handler signalled when a hyperlink in one of the text areas on the task 
+dialog has been clicked.
+</p>
+</descr>
+<seealso>
+<link id="TCustomTaskDialog.Text"/>
+<link id="TCustomTaskDialog.ExpandedText"/>
+<link id="TCustomTaskDialog.FooterText"/>
+<link id="TCustomTaskDialog.URL"/>
+<link id="TCustomTaskDialog.Flags"/>
+<link id="TTaskDialogFlags"/>
+<link id="TTaskDialogFlag"/>
+</seealso>
 </element>
 
 <!-- TODO: Needs update after refactoring. -->
@@ -6602,6 +6847,10 @@ end;
 <element name="TTaskDialog.OnDialogCreated" link="#lcl.dialogs.TCustomTaskDialog.OnDialogCreated"/>
 <element name="TTaskDialog.OnDialogDestroyed" link="#lcl.dialogs.TCustomTaskDialog.OnDialogDestroyed"/>
 <element name="TTaskDialog.OnVerificationClicked" link="#lcl.dialogs.TCustomTaskDialog.OnVerificationClicked"/>
+<element name="TTaskDialog.OnExpand" link="#lcl.dialogs.TCustomTaskDialog.OnExpand"/>
+<element name="TTaskDialog.OnTimer" link="#lcl.dialogs.TCustomTaskDialog.OnTimer"/>
+<element name="TTaskDialog.OnRadioButtonClicked" link="#lcl.dialogs.TCustomTaskDialog.OnRadioButtonClicked"/>
+<element name="TTaskDialog.OnHyperlinkClicked" link="#lcl.dialogs.TCustomTaskDialog.OnHyperlinkClicked"/>
 
 <!-- TODO: Needs content. -->
 <element name="TaskDialogFirstButtonIndex">
