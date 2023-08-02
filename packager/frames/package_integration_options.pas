@@ -273,7 +273,7 @@ begin
   lptDesignTime: Result:=lisPckOptsDesigntime;
   lptRunAndDesignTime: Result:=lisPckOptsDesigntimeAndRuntime;
   lptRunTimeOnly: Result:=lisRuntimeOnlyCanNotBeInstalledInIDE;
-  else Result:='?'+IntToStr(ord(t));
+  else Result:='?'+IntToStr(ord(t)){%H-};
   end;
 end;
 

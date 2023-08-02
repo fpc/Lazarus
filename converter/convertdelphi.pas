@@ -37,7 +37,7 @@ uses
   // LCL
   Forms, Controls, Dialogs,
   // CodeTools
-  CodeToolManager, DefineTemplates, CodeCache, LinkScanner,
+  CodeToolManager, DefineTemplates, CodeCache, LinkScanner, FileProcs,
   // LazUtils
   LConvEncoding, FileUtil, LazFileUtils, LazUTF8, LazStringUtils, LazLoggerBase,
   AvgLvlTree,
@@ -1450,6 +1450,9 @@ var
   PackFile: TPkgFile;
   Package: TLazPackage;
   i, Cnt: Integer;
+  SearchPath: String;
+  Files: TFilenameToStringTree;
+  FileItem: PStringToStringItem;
 begin
   Result:=False;
   PackFile:=PackageGraph.FindUnitInAllPackages(AUnitName, True);
@@ -1469,20 +1472,31 @@ begin
   // Try to find the unit from all open packages by their search path.
   // Again needed when the unit is not included in a package file.
   Cnt:=PackageGraph.Count;
-  for i:=0 to Cnt-1 do begin
-    Package:=PackageGraph.Packages[i];
-    if PackageGraph.LazarusBasePackages.IndexOf(Package)>=0 then
-      Continue;   // Skip base packages.
-    if PathHasPascalUnitFile(AUnitName,
-             Package.CompilerOptions.GetParsedPath(pcosUnitPath,icoNone,false))
-    or PathHasPascalUnitFile(AUnitName,
-             Package.SourceDirectories.CreateSearchPathFromAllFiles)
-    //or PathHasPascalUnitFile(AUnitName, Package.GetOutputDirectory)
-    or PathHasPascalUnitFile(AUnitName, Package.Directory) then
-    begin
-      AddDependency(Package.Name);
-      Exit(True);
+  Files:=TFilenameToStringTree.Create(false);
+  try
+    for i:=0 to Cnt-1 do begin
+      Package:=PackageGraph.Packages[i];
+      if Package.IsVirtual then
+        continue; // skip unsaved package
+      if PackageGraph.LazarusBasePackages.IndexOf(Package)>=0 then
+        Continue;   // Skip base packages.
+      SearchPath:=Package.CompilerOptions.GetParsedPath(pcosUnitPath,icoNone,false)
+         +';'+Package.SourceDirectories.CreateSearchPathFromAllFiles
+         +';'+Package.Directory;
+      SearchPath:=TrimSearchPath(SearchPath,'',true);
+      Files.Clear;
+      CollectFilesInSearchPath(SearchPath,Files);
+      for FileItem in Files do
+        if FilenameIsPascalUnit(FileItem^.Name)
+            and (CompareFilenameOnly(PChar(Pointer(FileItem^.Name)),Length(FileItem^.Name),
+                                    PChar(Pointer(AUnitName)),Length(AUnitName))=0) then
+        begin
+          AddDependency(Package.Name);
+          Exit(True);
+        end;
     end;
+  finally
+    Files.Free;
   end;
   // ToDo: Install the required package automatically from a repository...
 end;
