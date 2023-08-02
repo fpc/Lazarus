@@ -119,7 +119,6 @@ type
     FUndoManager: NSUndoManager;
 
     supressTextChangeEvent: Integer; // if above zero, then don't send text change event
-    keyCaptured: Boolean;
     wantReturns: Boolean;
 
     procedure dealloc; override;
@@ -129,7 +128,6 @@ type
 
     procedure changeColor(sender: id); override;
     // keyboard
-    procedure doCommandBySelector(aSelector: SEL); override;
     procedure insertNewline(sender: id); override;
     // mouse
     procedure mouseDown(event: NSEvent); override;
@@ -169,13 +167,11 @@ type
     // when switching "editable" (readonly) mode of NSTextField
     // see TCocoaWSCustomEdit.SetReadOnly
     goingReadOnly: Boolean;
-    keyCaptured: Boolean;
     function lclGetCallback: ICommonCallback; override;
     function becomeFirstResponder: LCLObjCBoolean; override;
     procedure setDelegate(adelegate: NSTextDelegateProtocol); override;
     procedure lclReviseCursorColor; message 'lclReviseCursorColor';
     // keyboard
-    procedure doCommandBySelector(aSelector: SEL); override;
     procedure insertNewline(sender: id); override;
     // mouse
     procedure mouseDown(event: NSEvent); override;
@@ -789,12 +785,6 @@ begin
     setInsertionPointColor(ReverseColor(clr));
 end;
 
-procedure TCocoaFieldEditor.doCommandBySelector(aSelector: SEL);
-begin
-  inherited doCommandBySelector(aSelector);
-  keyCaptured := False;
-end;
-
 procedure TCocoaFieldEditor.insertNewline(sender: id);
 begin
   // 10.6 cocoa handles the editors Return key as "insertNewLine" command (that makes sense)
@@ -1065,12 +1055,6 @@ end;
 procedure TCocoaTextView.lclClearCallback;
 begin
   callback := nil;
-end;
-
-procedure TCocoaTextView.doCommandBySelector(aSelector: SEL);
-begin
-  inherited doCommandBySelector(aSelector);
-  keyCaptured := False;
 end;
 
 procedure TCocoaTextView.insertNewline(sender: id);
