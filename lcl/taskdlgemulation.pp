@@ -50,8 +50,9 @@ type
     procedure AddPanel;
     procedure AddRadios(ARadioOffSet, AWidth, ARadioDef, AFontHeight: Integer; var X,Y: Integer; AParent: TWinControl);
     procedure AddCommandLinkButtons(var X, Y: Integer; AWidth, AButtonDef, AFontHeight: Integer; AParent: TWinControl);
-    procedure AddButtonsAndCheckBox(var X,Y, XB: Integer; AWidth, AButtonDef: Integer; APArent: TWinControl);
-    procedure AddFooter(var X, Y, XB: Integer; AFontHeight, AWidth: Integer; APArent: TWinControl);
+    procedure AddButtons(var X,Y, XB: Integer; AWidth, AButtonDef: Integer; APArent: TWinControl);
+    procedure AddCheckBox(var X,Y, XB: Integer; AWidth, ALeftMargin: Integer; APArent: TWinControl);
+    procedure AddFooter(var X, Y, XB: Integer; AFontHeight, AWidth, AIconBorder: Integer; APArent: TWinControl);
     function AddLabel(const AText: string; BigFont: boolean; var X, Y: Integer; AFontHeight, AWidth: Integer; APArent: TWinControl): TLabel;
     procedure AddQueryCombo(var X,Y: Integer; AWidth: Integer; AParent: TWinControl);
     procedure AddQueryEdit(var X,Y: Integer; AWidth: Integer; AParent: TWinControl);
@@ -460,7 +461,7 @@ begin
   inc(Y,24);
 end;
 
-procedure TLCLTaskDialog.AddButtonsAndCheckBox(var X, Y, XB: Integer; AWidth, AButtonDef: Integer; APArent: TWinControl);
+procedure TLCLTaskDialog.AddButtons(var X, Y, XB: Integer; AWidth, AButtonDef: Integer; APArent: TWinControl);
 var
   CurrTabOrder, i: Integer;
   Btn: TTaskDialogCommonButton;
@@ -523,26 +524,28 @@ begin
     if (Btn in CommonButtons) then
       AddButton(TD_Trans(LoadResString(TD_BTNS(Btn))), TD_BTNMOD[Btn],-1);
   end;
-  if (VerificationText <> '') then
-  begin
-    VerifyCheckBox := TCheckBox.Create(Self);
-    with VerifyCheckBox do
-    begin
-      Parent := AParent;
-      if (X+16+Canvas.TextWidth(VerificationText) > XB) then begin
-        inc(Y,32);
-        XB := aWidth;
-      end;
-      SetBounds(X,Y,XB-X,24);
-      Caption := VerificationText;
-      Checked := FVerifyChecked;
-      OnClick := @OnVerifyClicked;
-    end;
-  end;
-  inc(Y,36);
 end;
 
-procedure TLCLTaskDialog.AddFooter(var X, Y, XB: Integer; AFontHeight, AWidth: Integer; APArent: TWinControl);
+procedure TLCLTaskDialog.AddCheckBox(var X, Y, XB: Integer; AWidth, ALeftMargin: Integer; APArent: TWinControl);
+begin
+  VerifyCheckBox := TCheckBox.Create(Self);
+  with VerifyCheckBox do
+  begin
+    Parent := AParent;
+    if (X > ALeftMargin) then
+      X := ALeftMargin;
+    if (X+16+Canvas.TextWidth(VerificationText) > XB) then begin
+      inc(Y,32);
+      XB := aWidth;
+    end;
+    SetBounds(X,Y,XB-X,24);
+    Caption := VerificationText;
+    Checked := FVerifyChecked;
+    OnClick := @OnVerifyClicked;
+  end;
+end;
+
+procedure TLCLTaskDialog.AddFooter(var X, Y, XB: Integer; AFontHeight, AWidth, AIconBorder: Integer; APArent: TWinControl);
   procedure AddBevel;
   var
     BX: integer;
@@ -573,7 +576,7 @@ begin
     Image.StretchOutEnabled := False;
     Image.Proportional := True;
     Image.Center := True;
-    Image.SetBounds(24,Y,16,16);
+    Image.SetBounds(AIconBorder,Y,16,16);
     X := 40+Image.Width;
   end
   else
@@ -888,12 +891,16 @@ begin
   if (CommonButtons <> []) or (VerificationText<>'') or
      ((FDlg.Buttons.Count<>0) and not (tfUseCommandLinks in FDlg.Flags)) then
   begin
-    AddButtonsAndCheckBox(X, Y, XB, aWidth, aButtonDef, CurrParent);
+    AddButtons(X, Y, XB, aWidth, aButtonDef, CurrParent);
   end;
+  if (VerificationText <> '') then
+    AddCheckBox(X, Y, XB, aWidth, IconBorder, CurrParent);
+  inc(Y,36);
+
 
   // add FooterText text with optional icon
   if (FooterText <> '') then
-    AddFooter(X, Y, XB, FontHeight, aWidth, CurrParent);
+    AddFooter(X, Y, XB, FontHeight, aWidth, IconBorder, CurrParent);
 
    ClientHeight := Y;
 
