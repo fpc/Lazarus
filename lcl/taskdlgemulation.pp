@@ -591,6 +591,7 @@ var
   R: TRect;
   W: integer;
 begin
+  debugln(['TLCLTaskDialog.AddLabel A: AText=',AText,',X=',X,', AParent=',DbgSName(AParent)]);
   if (AText = '') then
     Exit(nil);
   Result := TLabel.Create(Self);
@@ -618,10 +619,11 @@ begin
   R.Right := W;
   R.Bottom := Result.Height;
   LCLIntf.DrawText(Result.Canvas.Handle,PChar(AText),Length(AText),R,DT_CALCRECT or DT_WORDBREAK);//lazarus does not return box height on OSX (Lazarus bug), the height is stored in the rect in all cases, so we don't need to use the Result
-
+  debugln(['TLCLTaskDialog.AddLabel Result.SetBounds(',X,',',Y,',',W,',',R.Bottom,')']);
   Result.SetBounds(X,Y,W,R.Bottom);
   Result.Caption := AText;
   inc(Y,R.Bottom+16);
+  debugln(['TLCLTaskDialog.AddLabel End: X=',X,', Result.Left=',Result.Left]);
 end;
 
 procedure TLCLTaskDialog.AddQueryCombo(var X, Y: Integer; AWidth: Integer; AParent: TWinControl);
@@ -852,7 +854,7 @@ begin
 
   // handle main dialog icon
   AddIcon(IconBorder, X, Y, CurrParent);
-
+  if (X < IconBorder) or (X < 5) then Caption := format('X: %d, IconBorder: %d',[X,IconBorder]);
   // add main texts (DlgTitle, DlgText, Information)
   Element[tdeMainInstruction] := AddLabel(DlgTitle, True, X, Y, FontHeight, aWidth, CurrParent);
   Element[tdeContent] := AddLabel(DlgText, False, X, Y, FontHeight, aWidth, CurrParent);
