@@ -33,7 +33,7 @@ uses
   Classes, SysUtils,
   // LazUtils
   LazFileUtils, LazFileCache, FileUtil, AvgLvlTree, CompOptsIntf,
-  CodeToolManager, DirectoryCacher;
+  CodeToolManager, DirectoryCacher, FileProcs;
 
 type
   TSPMaskType = (
@@ -88,6 +88,8 @@ function SearchDirectoryInSearchPath(SearchPath: TStrings;
                     const Directory: string; DirStartPos: integer = 0): integer; overload;
 function SearchDirectoryInMaskedSearchPath(const SearchPath, Directory: string;
                                    DirStartPos: integer = 1): integer; overload;
+function SearchFileInSearchPath(const Filename, BasePath: string;
+  SearchPath: string; Flags: TSearchFileInPathFlags = []): string; overload;
 procedure CollectFilesInSearchPath(const SearchPath: string;
                    Files: TFilenameToStringTree; const Value: string = ''); overload;
 
@@ -617,6 +619,77 @@ var
   DirRelation: TSPFileMaskRelation;
 begin
   Result:=SearchDirectoryInSearchPath(SearchPath,Directory,DirRelation,DirStartPos);
+end;
+
+function SearchFileInSearchPath(const Filename, BasePath: string;
+  SearchPath: string; Flags: TSearchFileInPathFlags): string;
+
+  function Fits(const s: string): boolean;
+  begin
+    Result:=false;
+    if s='' then exit;
+    if (sffExecutable in Flags) and not FileIsExecutableCached(s) then exit;
+    SearchFileInSearchPath:=s;
+    Result:=true;
+  end;
+
+var
+  p: Integer;
+  CurPath, Base: String;
+  Cache: TCTDirectoryBaseCache;
+  StarCache: TCTStarDirectoryCache;
+  DirCache: TCTDirectoryCache;
+  FileCase: TCTSearchFileCase;
+begin
+  if Filename='' then
+    exit('');
+  // check if filename absolute
+  if FilenameIsAbsolute(Filename) then begin
+    if FileExistsCached(Filename) then
+      Result:=CleanAndExpandFilename(Filename)
+    else
+      Result:='';
+    exit;
+  end;
+  Base:=CleanAndExpandDirectory(BasePath);
+  // search in current directory
+  if (not (sffDontSearchInBasePath in Flags)) and FileExistsCached(Base+Filename) then
+    exit(ResolveDots(Base+Filename));
+  if ExtractFilePath(Filename)<>'' then
+    exit('');
+
+  if [sffDontSearchInBasePath,sffSearchLoUpCase,sffExecutable]*Flags<>[] then
+    raise Exception.Create('SearchFileInSearchPath flag is not supported');
+
+  if sffSearchLoUpCase in Flags then
+    FileCase:=ctsfcLoUpCase
+  else
+    FileCase:=ctsfcDefault;
+
+  p:=1;
+  repeat
+    CurPath:=GetNextDirectoryInSearchPath(SearchPath,p);
+    if CurPath='' then break;
+    CurPath:=TrimAndExpandDirectory(CurPath,Base);
+
+    Cache:=CodeToolBoss.DirectoryCachePool.GetBaseCache(CurPath);
+    if Cache=nil then continue;
+    if Cache is TCTStarDirectoryCache then
+    begin
+      StarCache:=TCTStarDirectoryCache(Cache);
+      Result:=StarCache.FindFile(Filename,FileCase);
+      if Result<>'' then
+        if Fits(StarCache.Directory+Result) then
+          exit;
+    end else if Cache is TCTDirectoryCache then begin
+      DirCache:=TCTDirectoryCache(Cache);
+      Result:=DirCache.FindFile(Filename,FileCase);
+      if Result<>'' then
+        if Fits(DirCache.Directory+Result) then
+          exit;
+    end;
+  until false;
+  Result:='';
 end;
 
 procedure CollectFilesInSearchPath(const SearchPath: string;
