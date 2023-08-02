@@ -131,7 +131,6 @@ type
     // keyboard
     procedure doCommandBySelector(aSelector: SEL); override;
     procedure insertNewline(sender: id); override;
-    procedure keyDown(event: NSEvent); override;
     // mouse
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
@@ -1097,21 +1096,6 @@ procedure TCocoaTextView.insertNewline(sender: id);
 begin
   if wantReturns then
     inherited insertNewline(sender);
-end;
-
-procedure TCocoaTextView.keyDown(event: NSEvent);
-begin
-  // See TCocoaFieldEditor.keyDown
-  if Assigned(lclGetCallback) and (event.modifierFlags = 0) and
-    ((NSEventRawKeyChar(event) = #13) or (NSEventRawKeyChar(event) = #27)) then
-  begin
-    keyCaptured := True;
-    inherited keyDown(event);
-    if keyCaptured then
-      lclGetCallback.KeyEvHandled;
-  end
-  else
-    inherited keyDown(event);
 end;
 
 procedure TCocoaTextView.mouseDown(event: NSEvent);
