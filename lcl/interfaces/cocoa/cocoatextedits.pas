@@ -177,7 +177,6 @@ type
     // keyboard
     procedure doCommandBySelector(aSelector: SEL); override;
     procedure insertNewline(sender: id); override;
-    procedure keyDown(event: NSEvent); override;
     // mouse
     procedure mouseDown(event: NSEvent); override;
     procedure mouseUp(event: NSEvent); override;
@@ -803,24 +802,6 @@ begin
   // however, it ends up in an endless loop of "end-editing" calls.
   //
   // todo: find the reason for the endless loop and resolve it properly
-end;
-
-procedure TCocoaFieldEditor.keyDown(event: NSEvent);
-begin
-  // Input methods may capture Enter and Escape to accept/dismiss their popup
-  // windows.  There isn't a way to detect the popup is open, so allow the
-  // keys through.  If they make it to the default handlers let the LCL process
-  // them further.  If they got swallowed prevent further processing.
-  if Assigned(lclGetCallback) and (event.modifierFlags = 0) and
-    ((NSEventRawKeyChar(event) = #13) or (NSEventRawKeyChar(event) = #27)) then
-  begin
-    keyCaptured := True;
-    inherited keyDown(event);
-    if keyCaptured then
-      lclGetCallback.KeyEvHandled;
-  end
-  else
-    inherited keyDown(event);
 end;
 
 procedure TCocoaFieldEditor.mouseDown(event: NSEvent);
