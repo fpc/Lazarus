@@ -9,11 +9,29 @@ taskdlgemulation
 <!-- 
 TODO: Added in df338fd867.
 Added in LCL version 4.0.
-Check for reusable content from the deprecated/removed lcltaskdialog.xml file.
+Check for reusable content from the deprecated lcltaskdialog.xml file.
 -->
 <module name="TaskDlgEmulation">
-<short/>
-<descr/>
+<short>
+Implements an emulated task dialog for platforms where the Task Dialog API is 
+not supported.
+</short>
+<descr>
+<p>
+<file>TaskDlgEmulation.pp</file> contains types, routines, and variable used to implement a non-native, emulated Task Dialog. It is used in widgetset classes for platforms where the task dialog API is not available, or not supported for a specific version of an operating system.
+</p>
+<p>
+It contains TLCLTaskDialog - a dynamically configured form displayed when a task dialog is executed using its configuration settings.
+</p>
+<p>
+<file>TaskDlgEmulation.pp</file> is part of the Lazarus Component Library 
+(<b>LCL</b>).
+</p>
+<remark>
+Added in LCL version 4.0 as replacement for the deprecated types in the 
+<file>lcltaskdialog.pas</file> unit.
+</remark>
+</descr>
 
 <!-- unresolved references -->
 <element name="Classes"/>
@@ -39,18 +57,7 @@ Check for reusable content from the deprecated/removed lcltaskdialog.xml file.
 
 <element name="TTaskDialogElement">
 <short/>
-<descr>
-</descr>
-<p>
-<file>TaskDlgEmulation.pp</file> contains types, routines, and variable used to implement a non-native, emulated Task Dialog. It is used in widgetset classes for platforms where the task dialog API is not available, or not supported for a specific version of an operating system.
-</p>
-<p>
-It contains TLCLTaskDialog - a dynamically configured form displayed when a task dialog is executed using its configuration settings.
-</p>
-<p>
-<file>TaskDlgEmulation.pp</file> is part of the Lazarus Component Library 
-(<b>LCL</b>).
-</p>
+<descr/>
 <seealso/>
 </element>
 <element name="TTaskDialogElement.tdeContent">
@@ -106,24 +113,25 @@ The labels corresponding to the Task Dialog main elements.
 </short>
 </element>
 
-<element name="TLCLTaskDialog.Combo">
+<element name="TLCLTaskDialog.QueryCombo">
 <short>
-The Task Dialog selection list.
+Combo-box control with the Task Dialog selection list.
 </short>
 </element>
 
-<element name="TLCLTaskDialog.Edit">
+<element name="TLCLTaskDialog.QueryEdit">
 <short>
-The Task Dialog optional query editor.
+Edit control with the optional Task Dialog query editor.
 </short>
 </element>
 
 <element name="TLCLTaskDialog.VerifyCheckBox">
 <short>
-The Task Dialog optional verification checkbox.
+Check-box control used for optional Task Dialog verification.
 </short>
 </element>
 
+<!-- still private -->
 <element name="TLCLTaskDialog.AddIcon"/>
 <element name="TLCLTaskDialog.AddIcon.IconBorder"/>
 <element name="TLCLTaskDialog.AddIcon.X"/>
@@ -198,6 +206,7 @@ The Task Dialog optional verification checkbox.
 <element name="TLCLTaskDialog.DoDialogDestroyed"/>
 
 <!-- 
+Naming schemes... choose one.
 <element name="TLCLTaskDialog.OnButtonClicked"/>
 <element name="TLCLTaskDialog.OnButtonClicked.Sender"/>
 -->
@@ -226,9 +235,80 @@ The Task Dialog optional verification checkbox.
 
 <!-- protected -->
 <element name="TLCLTaskDialog.SetupControls">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Configures and initialize properties and controls used on the emulated task 
+dialog form.
+</short>
+<descr>
+<p>
+<var>SetupControls</var> is a method used to configure / initialize controls 
+on the emulated dialog form using the properties in the <var>TTaskDialog</var> 
+instance where the form is displayed. SetupControls performs actions needed to 
+set property values on the dialog form to match the settings and values on the 
+TTaskDialog instance. This includes:
+</p>
+<ul>
+<li>
+Default button in the Buttons property (when assigned).
+</li>
+<li>
+Default radio button in the RadioButtons property (when assigned).
+</li>
+<li>
+Dialog caption using the title from the main form or application when none is 
+assigned.
+</li>
+<li>
+Dialog title using the default message for the associated main icon when a 
+value has not been assigned.
+</li>
+<li>
+Values in the text, expanded text, and footer text properties.
+</li>
+<li>
+Content in the Verification text.
+</li>
+<li>
+Value for the Verification check-box.
+</li>
+<li>
+Caption for the expand / collapse indicator.
+</li>
+<li>
+Common buttons (and the default button) on the dialog form.
+</li>
+<li>
+Applies value in Flags using the settings in the TTaskDialog instance. May 
+include setting the border icons when the dialog can be cancelled.
+</li>
+<li>
+Sets the Position for the dialog form using flag values.
+</li>
+<li>
+Uses the default system font on the dialog when emulating the classic style.
+</li>
+<li>
+Calculates the width for the dialog form using values in the title, caption, 
+and buttons for the dialog. Size constraints are applied and the resulting 
+width is normally in the range 120..480 pixels.
+</li>
+</ul>
+<p>
+SetupControls creates and populates controls needed to display the various UI 
+elements enabled for the dialog form. It also calls SetupTimer to initialize 
+the timer used for progress bar display (when enabled in Flags).
+</p>
+<p>
+Finally, the ActiveControl on the form is updated for the enabled controls on 
+the dialog.
+</p>
+<p>
+SetupControls is called from the Execute method for the emulated task dialog.
+</p>
+</descr>
+<seealso>
+<link id="TLCLTaskDialog.Execute"/>
+</seealso>
 </element>
 
 <!-- public -->
