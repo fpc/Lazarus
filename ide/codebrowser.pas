@@ -2062,7 +2062,7 @@ var
       //  debugln(['IdentifierFitsFilter Identifier="',Identifier,'" Filter="',LevelFilterText[LvlType],'"']);
       end
     else
-      Result:=true;
+      Result:=true{%H-};
     end;
   end;
 
