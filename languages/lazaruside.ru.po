@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2023-07-28 19:58+0300\n"
+"PO-Revision-Date: 2023-08-02 17:27+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -4843,6 +4843,14 @@ msgstr "Добавить модификатор \"reintroduce\""
 msgid "Add new build mode, copying settings from \"%s\""
 msgstr "Добавить новый режим сборки с параметрами режима \"%s\""
 
+#: lazarusidestrconsts.lisaddnewdiskfiles
+msgid "Add new disk files?"
+msgstr "Добавить новые файлы с диска?"
+
+#: lazarusidestrconsts.lisaddnewfilesfromfilesystem
+msgid "Add New Files from File System"
+msgstr "Добавить новые файлы с диска"
+
 #: lazarusidestrconsts.lisaddnewmacro
 msgid "Add new macro"
 msgstr "Добавить новый макрос"
@@ -4866,6 +4874,10 @@ msgstr "Добавить пакет к проекту"
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
 msgstr "Добавлять скобки для параметров"
+
+#: lazarusidestrconsts.lisaddthefollowingfiles
+msgid "Add the following files:"
+msgstr "Добавить следующие файлы:"
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
@@ -4978,6 +4990,10 @@ msgstr "Разрешить поиск для нескольких строк"
 #: lazarusidestrconsts.lisallparametersofthisfunctionarealreadysetatthiscall
 msgid "All parameters of this function are already set at this call. Nothing to add."
 msgstr "Все параметры в вызове данной функции уже определены. Добавлять нечего."
+
+#: lazarusidestrconsts.lisallpaspppincinunitincludepatharealreadyinaprojectp
+msgid "All .pas, .pp, .p, .inc in unit/include path are already in a project/package."
+msgstr "Все файлы .pas, .pp, .p, .inc, найденные в каталогах модулей и включаемых файлов, уже имеются в проекте/пакете."
 
 #: lazarusidestrconsts.lisallyourmodificationstowillbelostandthefilereopened
 #, object-pascal-format
@@ -14238,6 +14254,10 @@ msgstr "нет, щёлкните для выбора"
 msgid "(None selected)"
 msgstr "(Не выбрано)"
 
+#: lazarusidestrconsts.lisnonewfilefound
+msgid "No new file found"
+msgstr "Новых файлов не найдено"
+
 #: lazarusidestrconsts.lisnonodeselected
 msgid "no node selected"
 msgstr "элементов не выбрано"
@@ -14912,7 +14932,7 @@ msgstr "Отключить i18n для LFM"
 
 #: lazarusidestrconsts.lispckeditaddfilesfromfilesystem
 msgid "Add Files from File System"
-msgstr "Добавить файлы"
+msgstr "Добавить файлы с диска"
 
 #: lazarusidestrconsts.lispckeditaddotheritems
 msgid "Add other items"

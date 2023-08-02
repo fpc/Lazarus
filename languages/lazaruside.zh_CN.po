@@ -4886,6 +4886,14 @@ msgstr "添加指示符\"reintroduce\""
 msgid "Add new build mode, copying settings from \"%s\""
 msgstr "添加新构建模式,复制设置从\"%s\""
 
+#: lazarusidestrconsts.lisaddnewdiskfiles
+msgid "Add new disk files?"
+msgstr ""
+
+#: lazarusidestrconsts.lisaddnewfilesfromfilesystem
+msgid "Add New Files from File System"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewmacro
 msgid "Add new macro"
 msgstr "添加新建宏命令"
@@ -4909,6 +4917,10 @@ msgstr "添加包到工程"
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
 msgstr "添加参数括号"
+
+#: lazarusidestrconsts.lisaddthefollowingfiles
+msgid "Add the following files:"
+msgstr ""
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
@@ -5021,6 +5033,10 @@ msgstr "允许多行搜索"
 #: lazarusidestrconsts.lisallparametersofthisfunctionarealreadysetatthiscall
 msgid "All parameters of this function are already set at this call. Nothing to add."
 msgstr "这个函数的所有参数已经在这个调用中被设置.没有东西来添加."
+
+#: lazarusidestrconsts.lisallpaspppincinunitincludepatharealreadyinaprojectp
+msgid "All .pas, .pp, .p, .inc in unit/include path are already in a project/package."
+msgstr ""
 
 #: lazarusidestrconsts.lisallyourmodificationstowillbelostandthefilereopened
 #, object-pascal-format
@@ -14307,6 +14323,10 @@ msgstr "没有,单击选择一个"
 #: lazarusidestrconsts.lisnoneselected
 msgid "(None selected)"
 msgstr "(没有选择)"
+
+#: lazarusidestrconsts.lisnonewfilefound
+msgid "No new file found"
+msgstr ""
 
 #: lazarusidestrconsts.lisnonodeselected
 msgid "no node selected"

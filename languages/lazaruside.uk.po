@@ -4851,6 +4851,14 @@ msgstr "Додати модифікатор \"reintroduce\""
 msgid "Add new build mode, copying settings from \"%s\""
 msgstr "Додати новий режим збирання, скопіювавши налаштування з \"%s\""
 
+#: lazarusidestrconsts.lisaddnewdiskfiles
+msgid "Add new disk files?"
+msgstr ""
+
+#: lazarusidestrconsts.lisaddnewfilesfromfilesystem
+msgid "Add New Files from File System"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewmacro
 msgid "Add new macro"
 msgstr "Додати новий макрос"
@@ -4874,6 +4882,10 @@ msgstr "Додати пакунок до проєкту"
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
 msgstr "Додати параметричні дужки"
+
+#: lazarusidestrconsts.lisaddthefollowingfiles
+msgid "Add the following files:"
+msgstr ""
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
@@ -4986,6 +4998,10 @@ msgstr "Дозволити пошук для декількох рядків"
 #: lazarusidestrconsts.lisallparametersofthisfunctionarealreadysetatthiscall
 msgid "All parameters of this function are already set at this call. Nothing to add."
 msgstr "Всі параметри у виклику даної функції вже визначені. Додавати нічого."
+
+#: lazarusidestrconsts.lisallpaspppincinunitincludepatharealreadyinaprojectp
+msgid "All .pas, .pp, .p, .inc in unit/include path are already in a project/package."
+msgstr ""
 
 #: lazarusidestrconsts.lisallyourmodificationstowillbelostandthefilereopened
 #, object-pascal-format
@@ -14261,6 +14277,10 @@ msgstr "жоден, клацніть щоб вибрати"
 #: lazarusidestrconsts.lisnoneselected
 msgid "(None selected)"
 msgstr "(Не вибрано)"
+
+#: lazarusidestrconsts.lisnonewfilefound
+msgid "No new file found"
+msgstr ""
 
 #: lazarusidestrconsts.lisnonodeselected
 msgid "no node selected"

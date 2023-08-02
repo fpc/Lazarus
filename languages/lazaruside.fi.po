@@ -4862,6 +4862,14 @@ msgstr "Lisää määre \"reintroduce\""
 msgid "Add new build mode, copying settings from \"%s\""
 msgstr "Lisää uusi koontamoodi, kopioi asetukset täältä: \"%s\""
 
+#: lazarusidestrconsts.lisaddnewdiskfiles
+msgid "Add new disk files?"
+msgstr ""
+
+#: lazarusidestrconsts.lisaddnewfilesfromfilesystem
+msgid "Add New Files from File System"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewmacro
 msgid "Add new macro"
 msgstr "Lisää uusi makro"
@@ -4885,6 +4893,10 @@ msgstr "Lisää paketti projektiin"
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
 msgstr "Lisää parametrin sulkeet"
+
+#: lazarusidestrconsts.lisaddthefollowingfiles
+msgid "Add the following files:"
+msgstr ""
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
@@ -4997,6 +5009,10 @@ msgstr "Salli etsintä monelta riviltä"
 #: lazarusidestrconsts.lisallparametersofthisfunctionarealreadysetatthiscall
 msgid "All parameters of this function are already set at this call. Nothing to add."
 msgstr "Kaikki tämän funktion parametrit on jo asetettu. Ei lisättävää."
+
+#: lazarusidestrconsts.lisallpaspppincinunitincludepatharealreadyinaprojectp
+msgid "All .pas, .pp, .p, .inc in unit/include path are already in a project/package."
+msgstr ""
 
 #: lazarusidestrconsts.lisallyourmodificationstowillbelostandthefilereopened
 #, object-pascal-format
@@ -14201,6 +14217,10 @@ msgstr "ei mikään, klikkaa valitaksesi joku"
 #: lazarusidestrconsts.lisnoneselected
 msgid "(None selected)"
 msgstr "(ei mitään valittuna)"
+
+#: lazarusidestrconsts.lisnonewfilefound
+msgid "No new file found"
+msgstr ""
 
 #: lazarusidestrconsts.lisnonodeselected
 msgid "no node selected"

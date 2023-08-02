@@ -4908,6 +4908,14 @@ msgstr "Přidat modifikátor \"reintroduce\""
 msgid "Add new build mode, copying settings from \"%s\""
 msgstr "Přidat nové sestavovací makro, kopírovat nastavení z \"%s\""
 
+#: lazarusidestrconsts.lisaddnewdiskfiles
+msgid "Add new disk files?"
+msgstr ""
+
+#: lazarusidestrconsts.lisaddnewfilesfromfilesystem
+msgid "Add New Files from File System"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewmacro
 msgid "Add new macro"
 msgstr "Přidat nové makro"
@@ -4931,6 +4939,10 @@ msgstr "Přidat balíček do projektu"
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
 msgstr "Přidat závorky parametru"
+
+#: lazarusidestrconsts.lisaddthefollowingfiles
+msgid "Add the following files:"
+msgstr ""
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
@@ -5043,6 +5055,10 @@ msgstr "Povolit vyhledávání více řádků"
 #: lazarusidestrconsts.lisallparametersofthisfunctionarealreadysetatthiscall
 msgid "All parameters of this function are already set at this call. Nothing to add."
 msgstr "Všechny parametry této funkce jsou již v tomto volání nastaveny. Není co přidat."
+
+#: lazarusidestrconsts.lisallpaspppincinunitincludepatharealreadyinaprojectp
+msgid "All .pas, .pp, .p, .inc in unit/include path are already in a project/package."
+msgstr ""
 
 #: lazarusidestrconsts.lisallyourmodificationstowillbelostandthefilereopened
 #, object-pascal-format
@@ -14381,6 +14397,10 @@ msgstr "žádný, klikněte pro výběr jednoho"
 #: lazarusidestrconsts.lisnoneselected
 msgid "(None selected)"
 msgstr "(Nic nevybráno)"
+
+#: lazarusidestrconsts.lisnonewfilefound
+msgid "No new file found"
+msgstr ""
 
 #: lazarusidestrconsts.lisnonodeselected
 msgid "no node selected"

@@ -4988,6 +4988,14 @@ msgstr ""
 msgid "Add new build mode, copying settings from \"%s\""
 msgstr "Aggiungi nuova modalità di build e copia le impostazioni da \"%s\""
 
+#: lazarusidestrconsts.lisaddnewdiskfiles
+msgid "Add new disk files?"
+msgstr ""
+
+#: lazarusidestrconsts.lisaddnewfilesfromfilesystem
+msgid "Add New Files from File System"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewmacro
 msgid "Add new macro"
 msgstr "Aggiungi nuova macro"
@@ -5011,6 +5019,10 @@ msgstr "Aggiungi il pacchetto al progetto"
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
 msgstr "Aggiungi parentesi ai parametri"
+
+#: lazarusidestrconsts.lisaddthefollowingfiles
+msgid "Add the following files:"
+msgstr ""
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
@@ -5123,6 +5135,10 @@ msgstr "Permetti la ricerca per righe multiple"
 #: lazarusidestrconsts.lisallparametersofthisfunctionarealreadysetatthiscall
 msgid "All parameters of this function are already set at this call. Nothing to add."
 msgstr "Tutti i parametri di questa funzione sono già definiti. Niente da aggiungere."
+
+#: lazarusidestrconsts.lisallpaspppincinunitincludepatharealreadyinaprojectp
+msgid "All .pas, .pp, .p, .inc in unit/include path are already in a project/package."
+msgstr ""
 
 #: lazarusidestrconsts.lisallyourmodificationstowillbelostandthefilereopened
 #, object-pascal-format
@@ -14573,6 +14589,10 @@ msgstr "nessuno, clicca per sceglierne uno"
 #: lazarusidestrconsts.lisnoneselected
 msgid "(None selected)"
 msgstr "(Nesuno selezionato)"
+
+#: lazarusidestrconsts.lisnonewfilefound
+msgid "No new file found"
+msgstr ""
 
 #: lazarusidestrconsts.lisnonodeselected
 msgid "no node selected"

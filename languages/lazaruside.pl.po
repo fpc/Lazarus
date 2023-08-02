@@ -4979,6 +4979,14 @@ msgstr "Dodaj modyfikator \"reintroduce\""
 msgid "Add new build mode, copying settings from \"%s\""
 msgstr "Dodaj nowy tryb budowania, kopia ustawień z \"%s\""
 
+#: lazarusidestrconsts.lisaddnewdiskfiles
+msgid "Add new disk files?"
+msgstr ""
+
+#: lazarusidestrconsts.lisaddnewfilesfromfilesystem
+msgid "Add New Files from File System"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewmacro
 msgid "Add new macro"
 msgstr "Dodaj nowe makro"
@@ -5002,6 +5010,10 @@ msgstr "Dodanie pakietu do projektu"
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
 msgstr "Dodaj nawiasy parametrów funkcji"
+
+#: lazarusidestrconsts.lisaddthefollowingfiles
+msgid "Add the following files:"
+msgstr ""
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 #, fuzzy
@@ -5117,6 +5129,10 @@ msgstr "nie dopuszczaj wielu instancji"
 
 #: lazarusidestrconsts.lisallparametersofthisfunctionarealreadysetatthiscall
 msgid "All parameters of this function are already set at this call. Nothing to add."
+msgstr ""
+
+#: lazarusidestrconsts.lisallpaspppincinunitincludepatharealreadyinaprojectp
+msgid "All .pas, .pp, .p, .inc in unit/include path are already in a project/package."
 msgstr ""
 
 #: lazarusidestrconsts.lisallyourmodificationstowillbelostandthefilereopened
@@ -14445,6 +14461,10 @@ msgstr "Kliknij na jeden z powyższych elementów aby zobaczyć diff"
 #: lazarusidestrconsts.lisnoneselected
 msgid "(None selected)"
 msgstr "(Nic nie wybrano)"
+
+#: lazarusidestrconsts.lisnonewfilefound
+msgid "No new file found"
+msgstr ""
 
 #: lazarusidestrconsts.lisnonodeselected
 msgid "no node selected"

@@ -4818,6 +4818,14 @@ msgstr "\"reintroduce\" değiştiricisini ekle"
 msgid "Add new build mode, copying settings from \"%s\""
 msgstr "Ayarları \"%s\" den kopyalayarak yeni oluşturma modu ekleyin"
 
+#: lazarusidestrconsts.lisaddnewdiskfiles
+msgid "Add new disk files?"
+msgstr ""
+
+#: lazarusidestrconsts.lisaddnewfilesfromfilesystem
+msgid "Add New Files from File System"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewmacro
 msgid "Add new macro"
 msgstr "Yeni makro ekle"
@@ -4841,6 +4849,10 @@ msgstr "Paketi projeye ekle"
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
 msgstr "Parametre parantezleri ekle"
+
+#: lazarusidestrconsts.lisaddthefollowingfiles
+msgid "Add the following files:"
+msgstr ""
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
@@ -4953,6 +4965,10 @@ msgstr "Birden fazla satırı aramaya izin ver"
 #: lazarusidestrconsts.lisallparametersofthisfunctionarealreadysetatthiscall
 msgid "All parameters of this function are already set at this call. Nothing to add."
 msgstr "Bu function un tüm parametreleri zaten bu çağrıda ayarlanmış. Eklenecek bir şey yok."
+
+#: lazarusidestrconsts.lisallpaspppincinunitincludepatharealreadyinaprojectp
+msgid "All .pas, .pp, .p, .inc in unit/include path are already in a project/package."
+msgstr ""
 
 #: lazarusidestrconsts.lisallyourmodificationstowillbelostandthefilereopened
 #, object-pascal-format
@@ -14216,6 +14232,10 @@ msgstr "hiçbiri, birini seçmek için tıkla"
 #: lazarusidestrconsts.lisnoneselected
 msgid "(None selected)"
 msgstr "(Hiçbiri seçilmedi)"
+
+#: lazarusidestrconsts.lisnonewfilefound
+msgid "No new file found"
+msgstr ""
 
 #: lazarusidestrconsts.lisnonodeselected
 msgid "no node selected"

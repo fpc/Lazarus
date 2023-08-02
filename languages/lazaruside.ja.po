@@ -4975,6 +4975,14 @@ msgstr ""
 msgid "Add new build mode, copying settings from \"%s\""
 msgstr "新しい構築モードを追加し、設定を \"%s\"からコピー"
 
+#: lazarusidestrconsts.lisaddnewdiskfiles
+msgid "Add new disk files?"
+msgstr ""
+
+#: lazarusidestrconsts.lisaddnewfilesfromfilesystem
+msgid "Add New Files from File System"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewmacro
 msgid "Add new macro"
 msgstr "新しいマクロを追加"
@@ -4998,6 +5006,10 @@ msgstr "パッケージをプロジェクトに追加"
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
 msgstr "引数の括弧を追加"
+
+#: lazarusidestrconsts.lisaddthefollowingfiles
+msgid "Add the following files:"
+msgstr ""
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
@@ -5110,6 +5122,10 @@ msgstr "複数行の検索を許可する"
 #: lazarusidestrconsts.lisallparametersofthisfunctionarealreadysetatthiscall
 msgid "All parameters of this function are already set at this call. Nothing to add."
 msgstr "この関数のすべての引数はこの呼び出しで既に設定されています。加えるべきものはありません。"
+
+#: lazarusidestrconsts.lisallpaspppincinunitincludepatharealreadyinaprojectp
+msgid "All .pas, .pp, .p, .inc in unit/include path are already in a project/package."
+msgstr ""
 
 #: lazarusidestrconsts.lisallyourmodificationstowillbelostandthefilereopened
 #, object-pascal-format
@@ -14469,6 +14485,10 @@ msgstr "ありません、一つをクリックして選んでください。"
 #: lazarusidestrconsts.lisnoneselected
 msgid "(None selected)"
 msgstr "（何も選択されていません）"
+
+#: lazarusidestrconsts.lisnonewfilefound
+msgid "No new file found"
+msgstr ""
 
 #: lazarusidestrconsts.lisnonodeselected
 msgid "no node selected"

@@ -5136,6 +5136,14 @@ msgstr ""
 msgid "Add new build mode, copying settings from \"%s\""
 msgstr "הוספת אופן בנייה, מעתיק הגדרות מ \"%s\""
 
+#: lazarusidestrconsts.lisaddnewdiskfiles
+msgid "Add new disk files?"
+msgstr ""
+
+#: lazarusidestrconsts.lisaddnewfilesfromfilesystem
+msgid "Add New Files from File System"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddnewmacro
 msgid "Add new macro"
 msgstr "הוסף מאקרו חדש"
@@ -5159,6 +5167,10 @@ msgstr "הוסף חבילה לפרוייקט"
 #: lazarusidestrconsts.lisaddparameterbrackets
 msgid "Add parameter brackets"
 msgstr "הוסף סוגריים של פרמטר"
+
+#: lazarusidestrconsts.lisaddthefollowingfiles
+msgid "Add the following files:"
+msgstr ""
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
@@ -5283,6 +5295,10 @@ msgstr "אפשר חיפוש בשורות מרובות"
 
 #: lazarusidestrconsts.lisallparametersofthisfunctionarealreadysetatthiscall
 msgid "All parameters of this function are already set at this call. Nothing to add."
+msgstr ""
+
+#: lazarusidestrconsts.lisallpaspppincinunitincludepatharealreadyinaprojectp
+msgid "All .pas, .pp, .p, .inc in unit/include path are already in a project/package."
 msgstr ""
 
 #: lazarusidestrconsts.lisallyourmodificationstowillbelostandthefilereopened
@@ -15075,6 +15091,10 @@ msgstr "ללא, הקלק כדי לבחור אחד"
 
 #: lazarusidestrconsts.lisnoneselected
 msgid "(None selected)"
+msgstr ""
+
+#: lazarusidestrconsts.lisnonewfilefound
+msgid "No new file found"
 msgstr ""
 
 #: lazarusidestrconsts.lisnonodeselected
