@@ -591,7 +591,7 @@ var
   R: TRect;
   W: integer;
 begin
-  debugln(['TLCLTaskDialog.AddLabel A: AText=',AText,',X=',X,', AParent=',DbgSName(AParent)]);
+  debugln(['TLCLTaskDialog.AddLabel A: AText=',AText,',X=',X,', AParent=',DbgSName(AParent),', AParent.Width=',AParent.Width,', Self.Width=',Self.Width]);
   if (AText = '') then
     Exit(nil);
   Result := TLabel.Create(Self);
@@ -618,7 +618,7 @@ begin
   W := aWidth-X-8;
   R.Right := W;
   R.Bottom := Result.Height;
-  LCLIntf.DrawText(Result.Canvas.Handle,PChar(AText),Length(AText),R,DT_CALCRECT or DT_WORDBREAK);//lazarus does not return box height on OSX (Lazarus bug), the height is stored in the rect in all cases, so we don't need to use the Result
+  LCLIntf.DrawText(Result.Canvas.Handle,PChar(AText),Length(AText),R,DT_CALCRECT or DT_WORDBREAK);
   debugln(['TLCLTaskDialog.AddLabel Result.SetBounds(',X,',',Y,',',W,',',R.Bottom,')']);
   Result.SetBounds(X,Y,W,R.Bottom);
   Result.Caption := AText;
