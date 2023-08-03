@@ -661,7 +661,7 @@ function InheritedOptionsToCompilerParameters(
   Flags: TCompilerCmdLineOptions): string;
 function MergeLinkerOptions(const OldOptions, AddOptions: string): string;
 function MergeCustomOptions(const OldOptions, AddOptions: string): string;
-procedure ConvertSearchPathToCmdParams(const Switch, Paths: String; Params: TStrings);
+procedure ConvertSearchPathToCmdParams(const Switch, Paths, BasePath: String; Params: TStrings);
 procedure ConvertOptionsToCmdParams(const Switch, OptionStr: string; Params: TStrings);
 
 type
@@ -865,13 +865,13 @@ begin
     // include path
     CurIncludePath:=InheritedOptionStrings[icoIncludePath];
     if (CurIncludePath <> '') then
-      ConvertSearchPathToCmdParams('-Fi', CurIncludePath, Params);
+      ConvertSearchPathToCmdParams('-Fi', CurIncludePath, '', Params);
 
     // library path
     if (not (ccloNoLinkerOpts in Flags)) then begin
       CurLibraryPath:=InheritedOptionStrings[icoLibraryPath];
       if (CurLibraryPath <> '') then
-        ConvertSearchPathToCmdParams('-Fl', CurLibraryPath, Params);
+        ConvertSearchPathToCmdParams('-Fl', CurLibraryPath, '', Params);
     end;
 
     // namespaces
@@ -882,14 +882,14 @@ begin
     // object path
     CurObjectPath:=InheritedOptionStrings[icoObjectPath];
     if (CurObjectPath <> '') then
-      ConvertSearchPathToCmdParams('-Fo', CurObjectPath, Params);
+      ConvertSearchPathToCmdParams('-Fo', CurObjectPath, '', Params);
 
     // unit path
     CurUnitPath:=InheritedOptionStrings[icoUnitPath];
     // always add the current directory to the unit path, so that the compiler
     // checks for changed files in the directory
     CurUnitPath:=CurUnitPath+';.';
-    ConvertSearchPathToCmdParams('-Fu', CurUnitPath, Params);
+    ConvertSearchPathToCmdParams('-Fu', CurUnitPath, '', Params);
 
     // custom options
     CurCustomOptions:=InheritedOptionStrings[icoCustomOptions];
@@ -917,16 +917,17 @@ begin
   Result+=AddOptions;
 end;
 
-procedure ConvertSearchPathToCmdParams(const Switch, Paths: String;
+procedure ConvertSearchPathToCmdParams(const Switch, Paths, BasePath: String;
   Params: TStrings);
 var
   StartPos: Integer;
   l, p, i: Integer;
   EndPos: LongInt;
-  CurPath: String;
+  CurPath, Dir: String;
   Kind: TCTStarDirectoryKind;
   Cache: TCTStarDirectoryCache;
   SubDirs: TStringListUTF8Fast;
+  IsRelative: Boolean;
 begin
   if Switch='' then
     RaiseGDBException('ConvertSearchPathToCmdLine no Switch');
@@ -941,21 +942,33 @@ begin
     if StartPos<EndPos then
     begin
       CurPath:=copy(Paths,StartPos,EndPos-StartPos);
+      StartPos:=EndPos+1;
       Kind:=IsCTStarDirectory(CurPath,p);
       if Kind=ctsdStarStar then
       begin
         Delete(CurPath,p+1,length(CurPath));
+        IsRelative:=not FilenameIsAbsolute(CurPath);
+        if IsRelative then
+        begin
+          if not FilenameIsAbsolute(BasePath) then continue;
+          CurPath:=BasePath+CurPath;
+        end;
         Cache:=CodeToolBoss.DirectoryCachePool.GetStarCache(CurPath,Kind);
         if Cache<>nil then
         begin
+          Cache.UpdateListing;
           SubDirs:=Cache.Listing.SubDirs;
           for i:=0 to SubDirs.Count-1 do
-            Params.Add(Switch + CurPath + SubDirs[i]);
+          begin
+            Dir:=CurPath + SubDirs[i];
+            if IsRelative then
+              Dir:=CreateRelativePath(Dir,BasePath,true);
+            Params.Add(Switch + Dir);
+          end;
         end;
       end else
         Params.Add(Switch + CurPath);
     end;
-    StartPos:=EndPos+1;
   end;
 end;
 
@@ -2620,7 +2633,7 @@ var
   DefaultTargetOS: string;
   DefaultTargetCPU: string;
   RealCompilerFilename: String;
-  CurNamespaces: string;
+  CurNamespaces, BasePath: string;
   CurFPCMsgFile: TFPCMsgFilePoolItem;
   Quiet: Boolean;
   Kind: TPascalCompiler;
@@ -2933,18 +2946,20 @@ begin
   CurOutputDir:='';
   if not (ccloNoMacroParams in Flags) then
   begin
+    BasePath:=AppendPathDelim(BaseDirectory);
+
     // include path
     CurIncludePath:=GetIncludePath(not (ccloAbsolutePaths in Flags),
                                    coptParsed,false);
     if (CurIncludePath <> '') then
-      ConvertSearchPathToCmdParams('-Fi', CurIncludePath, Result);
+      ConvertSearchPathToCmdParams('-Fi', CurIncludePath, BasePath, Result);
 
     // library path
     if (not (ccloNoLinkerOpts in Flags)) then begin
       CurLibraryPath:=GetLibraryPath(not (ccloAbsolutePaths in Flags),
                                      coptParsed,false);
       if (CurLibraryPath <> '') then
-        ConvertSearchPathToCmdParams('-Fl', CurLibraryPath, Result);
+        ConvertSearchPathToCmdParams('-Fl', CurLibraryPath, BasePath, Result);
     end;
 
     // namespaces
@@ -2956,12 +2971,11 @@ begin
     CurObjectPath:=GetObjectPath(not (ccloAbsolutePaths in Flags),
                                  coptParsed,false);
     if (CurObjectPath <> '') then
-      ConvertSearchPathToCmdParams('-Fo', CurObjectPath, Result);
+      ConvertSearchPathToCmdParams('-Fo', CurObjectPath, BasePath, Result);
 
     // unit path
     CurUnitPath:=GetUnitPath(not (ccloAbsolutePaths in Flags));
-    //debugln('TBaseCompilerOptions.MakeOptionsString A ',dbgsName(Self),' CurUnitPath="',CurUnitPath,'"');
-    ConvertSearchPathToCmdParams('-Fu', CurUnitPath, Result);
+    ConvertSearchPathToCmdParams('-Fu', CurUnitPath, BasePath, Result);
 
     { CompilerPath - Nothing needs to be done with this one }
 
