@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <Name Value="ChmHelpPkg"/>
+    <Type Value="DesignTime"/>
     <Author Value="Andrew Haines"/>
     <CompilerOptions>
       <Version Value="11"/>
@@ -14,11 +15,7 @@
         </SyntaxOptions>
       </Parsing>
       <Other>
-        <CompilerMessages>
-          <UseMsgFile Value="True"/>
-        </CompilerMessages>
         <CustomOptions Value="$(IDEBuildOptions)"/>
-        <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
     <Description Value="IDE package to use chm help files in the IDE via the lhelp viewer."/>
@@ -48,11 +45,11 @@
         <UnitName Value="LazCHMHelpRegister"/>
       </Item5>
     </Files>
+    <CompatibilityMode Value="True"/>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
-    <Type Value="DesignTime"/>
     <RequiredPkgs Count="4">
       <Item1>
         <PackageName Value="LCL"/>
@@ -73,7 +70,6 @@
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
-      <IgnoreBinaries Value="False"/>
     </PublishOptions>
     <CustomOptions Items="ExternHelp" Version="2">
       <_ExternHelp Items="Count"/>
