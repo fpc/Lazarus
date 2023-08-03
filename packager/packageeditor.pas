@@ -813,8 +813,11 @@ begin
       SetItem(PkgEditMenuCleanDependencies, @CleanDependenciesMenuItemClick,
               Assigned(LazPackage.FirstRequiredDependency), Writable);
     end;
-    PkgEditMenuOpenFile.MenuItem.Caption := OpenItemCapt;
-    PkgEditMenuOpenFile.MenuItem.Enabled := OpenItemEnable;
+    if PkgEditMenuOpenFile.MenuItem<>nil then
+    begin
+      PkgEditMenuOpenFile.MenuItem.Caption := OpenItemCapt;
+      PkgEditMenuOpenFile.MenuItem.Enabled := OpenItemEnable;
+    end;
   finally
     //PackageEditorMenuRoot.EndUpdate;
     SingleSelectedFile := Nil;
