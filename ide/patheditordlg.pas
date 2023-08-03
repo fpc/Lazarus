@@ -233,6 +233,7 @@ begin
   if TTransferMacroList.StrHasMacros(APath) then
     Exit(TObject(1));
   Result:=TObject(0);
+  APath:=ChompPathDelim(APath);
   if (FEffectiveBaseDirectory<>'') and FilenameIsAbsolute(FEffectiveBaseDirectory) then
     APath:=CreateAbsolutePath(APath, FEffectiveBaseDirectory);
 

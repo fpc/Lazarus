@@ -178,6 +178,7 @@ type
                       const FileCase: TCTSearchFileCase): string; virtual; abstract;
     function FindIncludeFile(const IncFilename: string; AnyCase: boolean): string; virtual; abstract;
     function FindUnitSource(const AUnitName: string; AnyCase: boolean): string; virtual; abstract;
+    procedure UpdateListing; virtual; abstract;
     property Directory: string read FDirectory; // with trailing pathdelim
     property Pool: TCTDirectoryCachePool read FPool;
   end;
@@ -232,7 +233,7 @@ type
     function FindIncludeFileInCleanPath(IncFilename, SearchPath: string; AnyCase: boolean): string;
 
     procedure IterateFPCUnitsInSet(const Iterate: TCTOnIterateFile);
-    procedure UpdateListing;
+    procedure UpdateListing; override;
     procedure WriteListing;
     procedure Invalidate; inline;
     procedure GetFiles(var Files: TStrings; IncludeDirs: boolean = true); // relative to Directory
@@ -286,7 +287,7 @@ type
     function FindUnitSource(const AUnitName: string; AnyCase: boolean): string; override; // returns relative filename
     function IndexOfFileCaseInsensitive(ShortFilename: PChar): integer; override; // ascii insensitive
     function IndexOfFileCaseSensitive(ShortFilename: PChar): integer; override;
-    procedure UpdateListing;
+    procedure UpdateListing; override;
     procedure WriteListing;
     procedure Invalidate; inline;
   public

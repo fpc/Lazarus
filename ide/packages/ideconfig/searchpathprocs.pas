@@ -763,6 +763,7 @@ begin
     if Dir='' then break;
     Cache:=CodeToolBoss.DirectoryCachePool.GetBaseCache(Dir);
     if Cache=nil then continue;
+    Cache.UpdateListing;
     if Cache is TCTStarDirectoryCache then
     begin
       StarCache:=TCTStarDirectoryCache(Cache);

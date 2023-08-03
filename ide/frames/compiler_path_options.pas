@@ -124,8 +124,8 @@ begin
     CurPath := GetNextDirectoryInSearchPath(ExpandedPath, p);
     EndPos:=p+length(CurPath);
 
-    case ExtractFilename(CurPath) of
-    '*','**': CurPath:=ExtractFilePath(CurPath); // star directories
+    case ExtractFilename(ChompPathDelim(CurPath)) of
+    '*','**': CurPath:=ExtractFilePath(CHompPathDelim(CurPath)); // star directories
     end;
 
     // check special chars in path

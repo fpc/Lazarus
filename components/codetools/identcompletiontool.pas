@@ -1806,7 +1806,6 @@ procedure TIdentCompletionTool.GatherUnitnames(const NameSpacePath: string);
 
 var
   UnitPath, SrcPath: string;
-  BaseDir: String;
   ANode: TAVLTreeNode;
   UnitFileInfo: TUnitFileInfo;
   NewItem: TUnitNameSpaceIdentifierListItem;
@@ -1820,7 +1819,6 @@ begin
   GatherUnitAndSrcPath(UnitPath,SrcPath);
   CurSourceName:=GetSourceName;
   //DebugLn('TIdentCompletionTool.GatherUnitnames CurSourceName="',CurSourceName,'" UnitPath="',UnitPath,'" SrcPath="',SrcPath,'"');
-  BaseDir:=ExtractFilePath(MainFilename);
   FIDTTreeOfUnitFiles:=nil;
   FIDTTreeOfNamespaces:=nil;
   try
@@ -1834,7 +1832,7 @@ begin
     UnitExt:=PascalCompilerUnitExt[Scanner.PascalCompiler];
     if Scanner.CompilerMode=cmMacPas then
       UnitExt:=UnitExt+';p';
-    GatherUnitFiles(BaseDir,UnitPath,UnitExt,NameSpacePath,false,true,FIDTTreeOfUnitFiles, FIDTTreeOfNamespaces);
+    GatherUnitFiles(UnitPath,UnitExt,NameSpacePath,false,true,FIDTTreeOfUnitFiles, FIDTTreeOfNamespaces);
     {$IFDEF VerboseICGatherUnitNames}
     debugln(['TIdentCompletionTool.GatherUnitnames UnitPath ',FIDTTreeOfUnitFiles.Count]);
     {$ENDIF}
@@ -1842,7 +1840,7 @@ begin
     SrcExt:=PascalCompilerSrcExt[Scanner.PascalCompiler];
     if Scanner.CompilerMode=cmMacPas then
       SrcExt:=SrcExt+';p';
-    GatherUnitFiles(BaseDir,SrcPath,SrcExt,NameSpacePath,false,true,FIDTTreeOfUnitFiles, FIDTTreeOfNamespaces);
+    GatherUnitFiles(SrcPath,SrcExt,NameSpacePath,false,true,FIDTTreeOfUnitFiles, FIDTTreeOfNamespaces);
     {$IFDEF VerboseICGatherUnitNames}
     debugln(['TIdentCompletionTool.GatherUnitnames Plus SrcPath ',FIDTTreeOfUnitFiles.Count]);
     {$ENDIF}
