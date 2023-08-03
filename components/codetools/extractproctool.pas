@@ -812,7 +812,7 @@ var
       end;
 
     else
-      exit;
+      exit{%H-};
     end;
     Result:=true;
   end;

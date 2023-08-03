@@ -280,7 +280,7 @@ begin
   OuterRadiusY:=(y2-y1)/2;
   InnerRadiusX:=OuterRadiusX*InnerSize;
   InnerRadiusY:=OuterRadiusY*InnerSize;
-  SetLength(Points,OuterCnt*2+2);
+  SetLength(Points{%H-},OuterCnt*2+2);
   j:=0;
   // outer arc
   for i:=0 to OuterCnt do begin

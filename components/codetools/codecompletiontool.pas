@@ -813,7 +813,7 @@ begin
     Result:=(ANodeExt.Flags=ord(ncpPublishedVars))
          or (ANodeExt.Flags=ord(ncpPublishedProcs));
   else
-    Result:=false;
+    Result:=false{%H-};
   end;
 end;
 

@@ -978,6 +978,10 @@ type
     function FindUnitCaseInsensitive(var AnUnitName,
                                      AnUnitInFilename: string): string;
     procedure GatherUnitAndSrcPath(var UnitPath, CompleteSrcPath: string);
+    function GatherUnitFiles(const SearchPath,
+        Extensions, NameSpacePath: string; KeepDoubles, CaseInsensitive: boolean;
+        var TreeOfUnitFiles, TreeOfNamespaces: TAVLTree): boolean;
+
     function SearchUnitInUnitSet(const TheUnitName: string): string;
     function GetNameSpaces: string;
 
@@ -3151,6 +3155,183 @@ begin
   UnitPath:=DirectoryCache.Strings[ctdcsUnitPath];
   CompleteSrcPath:=DirectoryCache.Strings[ctdcsCompleteSrcPath];
   //DebugLn('TFindDeclarationTool.GatherUnitAndSrcPath UnitPath="',UnitPath,'" CompleteSrcPath="',CompleteSrcPath,'"');
+end;
+
+function TFindDeclarationTool.GatherUnitFiles(const SearchPath, Extensions,
+  NameSpacePath: string; KeepDoubles, CaseInsensitive: boolean;
+  var TreeOfUnitFiles, TreeOfNamespaces: TAVLTree): boolean;
+{
+ SearchPath: semicolon separated list of directories
+ Extensions: semicolon separated list of extensions (e.g. 'pas;.pp;ppu')
+ NameSpacePath: gather files only from this namespace path, empty '' for all
+ KeepDoubles: false to return only the first match of each unit
+ CaseInsensitive: true to ignore case on comparing extensions
+ TreeOfUnitFiles: tree of TUnitFileInfo
+ TreeOfNamespaces: tree of TNameSpaceInfo }
+var
+  SearchedDirectories: TAVLTree; // tree of AnsiString
+
+  function DirectoryAlreadySearched(const ADirectory: string): boolean;
+  begin
+    Result:=(SearchedDirectories<>nil)
+        and (SearchedDirectories.Find(Pointer(ADirectory))<>nil);
+  end;
+
+  procedure MarkDirectoryAsSearched(const ADirectory: string);
+  var
+    s: String;
+  begin
+    // increase refcount
+    //DebugLn('MarkDirectoryAsSearched ',ADirectory);
+    s:=ADirectory;  // increase refcount
+    if SearchedDirectories=nil then
+      SearchedDirectories:=TAVLTree.Create(@CompareAnsiStringFilenames);
+    SearchedDirectories.Add(Pointer(s));
+    Pointer(s):=nil; // keep refcount
+  end;
+
+  procedure FreeSearchedDirectories;
+  var
+    ANode: TAVLTreeNode;
+    s: String;
+  begin
+    if SearchedDirectories=nil then exit;
+    s:='';
+    ANode:=SearchedDirectories.FindLowest;
+    while ANode<>nil do begin
+      Pointer(s):=ANode.Data;
+      //DebugLn('FreeSearchedDirectories ',s);
+      s:=''; // decrease refcount
+      ANode:=SearchedDirectories.FindSuccessor(ANode);
+    end;
+    if s='' then ;
+    SearchedDirectories.Free;
+  end;
+
+  function ExtensionFits(const Filename: string): boolean;
+  var
+    ExtStart: Integer;
+    ExtLen: Integer; // length without '.'
+    CurExtStart: Integer;
+    CurExtEnd: LongInt;
+    CompareCaseInsensitive: Boolean;
+    p: Integer;
+  begin
+    CompareCaseInsensitive:=CaseInsensitive;
+    {$IFDEF Windows}
+    CompareCaseInsensitive:=true;
+    {$ENDIF}
+
+    ExtStart:=length(Filename);
+    while (ExtStart>=1) and (not (Filename[ExtStart] in [PathDelim,'.'])) do
+      dec(ExtStart);
+    if (ExtStart>0) and (Filename[ExtStart]='.') then begin
+      // filename has an extension
+      ExtLen:=length(Filename)-ExtStart;
+      inc(ExtStart);
+      CurExtStart:=1;
+      while (CurExtStart<=length(Extensions)) do begin
+        // skip '.'
+        if Extensions[CurExtStart]='.' then inc(CurExtStart);
+        // read till semicolon
+        CurExtEnd:=CurExtStart;
+        while (CurExtEnd<=length(Extensions)) and (Extensions[CurExtEnd]<>';')
+        do
+          inc(CurExtEnd);
+        if (CurExtEnd>CurExtStart) and (CurExtEnd-CurExtStart=ExtLen) then begin
+          // compare extension
+          p:=ExtLen-1;
+          while (p>=0) do begin
+            if CompareCaseInsensitive then begin
+              if UpChars[Filename[ExtStart+p]]
+              <>UpChars[Extensions[CurExtStart+p]]
+              then
+                break;
+            end else begin
+              if Filename[ExtStart+p]<>Extensions[CurExtStart+p] then
+                break;
+            end;
+            dec(p);
+          end;
+          if p<0 then begin
+            // extension fit
+            Result:=true;
+            exit;
+          end;
+        end;
+        CurExtStart:=CurExtEnd+1;
+      end;
+    end;
+    Result:=false;
+  end;
+
+  procedure CollectFile(const aFilename: string);
+  begin
+    if ExtensionFits(aFilename) then
+      AddToTreeOfUnitFilesOrNamespaces(TreeOfUnitFiles, TreeOfNamespaces,
+        NameSpacePath, aFilename, CaseInsensitive, KeepDoubles);
+  end;
+
+  function SearchDirectory(const ADirectory: string): boolean;
+  var
+    Cache: TCTDirectoryBaseCache;
+    StarCache: TCTStarDirectoryCache;
+    DirCache: TCTDirectoryCache;
+    i: Integer;
+  begin
+    Result:=true;
+    //DebugLn('SearchDirectory ADirectory="',ADirectory,'"');
+    if DirectoryAlreadySearched(ADirectory) then exit;
+    MarkDirectoryAsSearched(ADirectory);
+    //DebugLn('SearchDirectory searching ...');
+
+    Cache:=DirectoryCache.Pool.GetBaseCache(ADirectory);
+    if Cache=nil then exit;
+    Cache.UpdateListing;
+    if Cache is TCTStarDirectoryCache then
+    begin
+      StarCache:=TCTStarDirectoryCache(Cache);
+      for i:=0 to StarCache.Listing.Count-1 do
+        CollectFile(StarCache.Listing.GetSubDirFilename(i));
+    end else if Cache is TCTDirectoryCache then begin
+      DirCache:=TCTDirectoryCache(Cache);
+      for i:=0 to DirCache.Listing.Count-1 do
+        CollectFile(DirCache.Directory+DirCache.Listing.GetFilename(i));
+    end;
+  end;
+
+var
+  PathStartPos: Integer;
+  PathEndPos: LongInt;
+  CurDir, BaseDir: String;
+begin
+  Result:=false;
+  SearchedDirectories:=nil;
+  try
+    // search all paths in SearchPath
+    BaseDir:=ExtractFilePath(MainFilename);
+    PathStartPos:=1;
+    while PathStartPos<=length(SearchPath) do begin
+      PathEndPos:=PathStartPos;
+      while (PathEndPos<=length(SearchPath)) and (SearchPath[PathEndPos]<>';')
+      do
+        inc(PathEndPos);
+      if PathEndPos>PathStartPos then begin
+        CurDir:=AppendPathDelim(TrimFilename(
+                        copy(SearchPath,PathStartPos,PathEndPos-PathStartPos)));
+        if not FilenameIsAbsolute(CurDir) then
+          CurDir:=AppendPathDelim(BaseDir)+CurDir;
+        if not SearchDirectory(CurDir) then exit;
+      end;
+      PathStartPos:=PathEndPos;
+      while (PathStartPos<=length(SearchPath))
+      and (SearchPath[PathStartPos]=';') do
+        inc(PathStartPos);
+    end;
+    Result:=true;
+  finally
+    FreeSearchedDirectories;
+  end;
 end;
 
 function TFindDeclarationTool.SearchUnitInUnitSet(const TheUnitName: string): string;

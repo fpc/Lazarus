@@ -475,7 +475,7 @@ begin
   ogetParentChild: Result:=10;
   ogetAncestorInherited: Result:=1;
   ogetAliasOld: Result:=1;
-  else Result:=100;
+  else Result:=100{%H-};
   end;
 end;
 

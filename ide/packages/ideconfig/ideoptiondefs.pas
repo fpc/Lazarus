@@ -32,7 +32,7 @@ unit IDEOptionDefs;
 interface
 
 uses
-  Classes, SysUtils, types,
+  Classes, SysUtils,
   // LazUtils
   LazFileUtils, LazConfigStorage, Laz2_XMLCfg, LazUTF8,
   // BuildIntf

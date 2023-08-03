@@ -238,7 +238,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    procedure AddIndent(Typ, SubType: TFABBlockType; SrcPos, Indent: integer);
+    procedure AddIndent(Typ, SubType: TFABBlockType; {%H-}SrcPos, Indent: integer);
     function GetSmallestIndent(Typ: TFABBlockType): integer;// -1 if none found
     function GetIndent(Typ, SubType: TFABBlockType;
                        UseNoneIfNotFound,

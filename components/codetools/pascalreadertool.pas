@@ -602,7 +602,7 @@ var
   ParentNode: TCodeTreeNode;
   OldPos: TAtomPosition;
 const
-  SemiColon : char = ';';
+  {%H-}SemiColon : char = ';';
 
   procedure PrependName(const Prepend: string; var aPath: string);
   begin

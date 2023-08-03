@@ -5600,7 +5600,7 @@ var
   p, StartP, EndP: PChar;
 
 const
-  space: char = ' ';
+  {%H-}space: char = ' ';
 begin
   LastStreamPos:=ExtractMemStream.Position;
   if LastAtoms.HasPrior then begin

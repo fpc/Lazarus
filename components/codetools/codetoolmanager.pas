@@ -6559,7 +6559,7 @@ begin
   ctdcsUnitSet: Result:=GetUnitSetIDForDirectory(ADirectory,false);
   ctdcsFPCUnitPath: Result:=GetFPCUnitPathForDirectory(ADirectory,false);
   ctdcsNamespaces: Result:=GetNamespacesForDirectory(ADirectory,false);
-  else RaiseCatchableException('');
+  else RaiseCatchableException(''){%H-};
   end;
 end;
 

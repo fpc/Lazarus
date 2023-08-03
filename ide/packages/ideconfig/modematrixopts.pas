@@ -301,7 +301,7 @@ function CreateBuildMatrixOptionGUID: string;
 var
   i: Integer;
 begin
-  SetLength(Result,12);
+  SetLength(Result{%H-},12);
   for i:=1 to length(Result) do
     Result[i]:=chr(ord('0')+random(10));
 end;
@@ -728,7 +728,7 @@ begin
     l:=p-StartP;
     while p^ in [#10,#13] do inc(p);
     if l=0 then continue; // skip empty strings
-    SetLength(CurMode,l);
+    SetLength(CurMode{%H-},l);
     System.Move(StartP^,CurMode[1],l);
     if Assigned(SaveModes) and not SaveModes(CurMode) then continue;
     // convert a single comma to double comma
