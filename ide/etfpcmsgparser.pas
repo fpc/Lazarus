@@ -3209,7 +3209,7 @@ begin
         if (aPhase in [etpspAfterReadLine,etpspAfterSync])
         and (fIncludePathValidForWorkerDir=MsgWorkerDir) then begin
           // include path is valid and in worker thread
-          // -> search file
+          // -> search file (todo: needs a thread safe function for star directories)
           aFilename:=FileUtil.SearchFileInPath(aFilename,MsgWorkerDir,fIncludePath,';',
                                  [FileUtil.sffSearchLoUpCase,sffFile]);
           if aFilename<>'' then

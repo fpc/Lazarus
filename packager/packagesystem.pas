@@ -5496,15 +5496,14 @@ var
   function CheckFile(const ShortFilename: string): TModalResult;
   var
     AmbiguousFilename: String;
-    SearchFlags: TSearchFileInPathFlags;
+    SearchFlags: TSPSearchFileFlags;
   begin
     Result:=mrOk;
     SearchFlags:=[];
     if CompareFilenames(PkgDir,PkgOutputDir)=0 then
-      Include(SearchFlags,sffDontSearchInBasePath);
+      Include(SearchFlags,TSPSearchFileFlag.DontSearchInBasePath);
     repeat
-      AmbiguousFilename:=SearchFileInPath(ShortFilename,PkgDir,SrcDirs,';',
-                                          SearchFlags);
+      AmbiguousFilename:=SearchFileInSearchPath(ShortFilename,PkgDir,SrcDirs,SearchFlags);
       if (AmbiguousFilename='') then exit;
       if not YesToAll then
         Result:=IDEMessageDialog(lisAmbiguousUnitFound,

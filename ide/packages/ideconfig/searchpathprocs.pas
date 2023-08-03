@@ -99,6 +99,8 @@ type
 
 function SearchFileInSearchPath(const Filename, BasePath: string;
   SearchPath: string; Flags: TSPSearchFileFlags = []): string; overload;
+function SearchUnitInSearchPath(const AnUnitname, BasePath: string;
+  SearchPath: string; AnyCase: boolean): string; overload;
 procedure CollectFilesInSearchPath(const SearchPath: string;
                    Files: TFilenameToStringTree; const Value: string = ''); overload;
 
@@ -647,8 +649,6 @@ var
   p: Integer;
   CurPath, Base: String;
   Cache: TCTDirectoryBaseCache;
-  StarCache: TCTStarDirectoryCache;
-  DirCache: TCTDirectoryCache;
   FileCase: TCTSearchFileCase;
 begin
   if Filename='' then
@@ -689,20 +689,40 @@ begin
 
     Cache:=CodeToolBoss.DirectoryCachePool.GetBaseCache(CurPath);
     if Cache=nil then continue;
-    if Cache is TCTStarDirectoryCache then
-    begin
-      StarCache:=TCTStarDirectoryCache(Cache);
-      Result:=StarCache.FindFile(Filename,FileCase);
-      if Result<>'' then
-        if Fits(StarCache.Directory+Result) then
-          exit;
-    end else if Cache is TCTDirectoryCache then begin
-      DirCache:=TCTDirectoryCache(Cache);
-      Result:=DirCache.FindFile(Filename,FileCase);
-      if Result<>'' then
-        if Fits(DirCache.Directory+Result) then
-          exit;
-    end;
+    Result:=Cache.FindFile(Filename,FileCase);
+    if Result<>'' then
+      if Fits(Cache.Directory+Result) then
+        exit;
+  until false;
+  Result:='';
+end;
+
+function SearchUnitInSearchPath(const AnUnitname, BasePath: string;
+  SearchPath: string; AnyCase: boolean): string;
+var
+  Base, CurPath: String;
+  p: Integer;
+  Cache: TCTDirectoryBaseCache;
+begin
+  Base:=AppendPathDelim(ExpandFileNameUTF8(BasePath));
+  if BasePath<>'' then
+  begin
+    // search in current directory
+    Result:=CodeToolBoss.DirectoryCachePool.FindUnitInDirectory(Base,AnUnitname,AnyCase);
+    if Result<>'' then exit;
+  end;
+  // search in search path
+  p:=1;
+  repeat
+    CurPath:=GetNextDirectoryInSearchPath(SearchPath,p);
+    if CurPath='' then break;
+    CurPath:=TrimAndExpandDirectory(CurPath,Base);
+
+    Cache:=CodeToolBoss.DirectoryCachePool.GetBaseCache(CurPath);
+    if Cache=nil then continue;
+    Result:=Cache.FindUnitSource(AnUnitname,AnyCase);
+    if Result<>'' then
+      exit(Cache.Directory+Result);
   until false;
   Result:='';
 end;

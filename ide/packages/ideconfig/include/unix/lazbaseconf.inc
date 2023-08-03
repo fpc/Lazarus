@@ -115,13 +115,13 @@ begin
   Browser:='';
   // prefer open source ;)
   if Find('xdg-open',Browser) then exit;
+  if Find('firefox',Browser) then exit;
   if Find('mozilla',Browser) then exit;
   if Find('galeon',Browser) then exit;
   if Find('konqueror',Browser) then exit;
   if Find('safari',Browser) then exit;
   if Find('netscape',Browser) then exit;
   if Find('opera',Browser) then exit;
-  if Find('iexplore.exe',Browser) then exit;
 end;
 
 {---------------------------------------------------------------------------

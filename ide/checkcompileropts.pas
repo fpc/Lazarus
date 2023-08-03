@@ -811,10 +811,10 @@ begin
       PPUFilename:=PPUFiles[i];
       AUnitName:=ExtractFileNameOnly(PPUFilename);
       // search .pas/.pp/.p file
-      if SearchPascalUnitInPath(AUnitName,'',SrcPath,';',ctsfcAllCase)<>'' then
+      if SearchUnitInSearchPath(AUnitName,'',SrcPath,true)<>'' then
         PPUFiles.Delete(i)
-      // check for main source
       else if (Options.Owner is TLazProject) then begin
+        // check for main source
         CurProject:=TLazProject(Options.Owner);
         if (CurProject.MainFileID>=0) then begin
           ProjFile:=CurProject.MainFile;
