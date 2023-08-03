@@ -146,39 +146,6 @@ const
   TD_BTNMOD: array[TTaskDialogCommonButton] of Integer = (
     mrOk, mrYes, mrNo, mrCancel, mrRetry, mrAbort);
 
-function CR(const aText: string): string;
-begin
-  //disable this for now: what if a caption were to be 'Save to "c:\new_folder\new.work"'' ??
-  //remove later
-  Result := AText;
-  {
-  if pos('\n', aText) = 0 then
-    Result := aText else
-    Result := StringReplace(aText, '\n', #10, [rfReplaceAll]);
-  }
-end;
-
-//if aText contains '\n'
-//  return the part before '\n'
-//  set aHint to part after '\n' and replace all remaining '\n' in aHint with a LineFeed character
-function NoCR(const aText: string; out aHint: String): String;
-var
-  i: integer;
-begin
-  //disable this for now: what if a caption were to be 'Save to "c:\new_folder\new.work"'' ??
-  //remove later
-  Result := aText;
-  aHint := '';
-  {
-  i := pos('\n',aText);
-  if (i > 0) then
-  begin
-    aHint := CR(copy(Result,i+2,maxInt));
-    SetLength(Result,i-1);
-  end;
-  }
-end;
-
 
 function TD_BTNS(button: TTaskDialogCommonButton): pointer;
 begin
@@ -396,11 +363,7 @@ begin
       Tag := FDlg.RadioButtons[i].Index + TaskDialogFirstRadioButtonIndex;
       AutoSize := False;
       SetBounds(X+16,Y,aWidth-32-X, (6-AFontHeight) + ARadioOffset);
-      Caption := NoCR(FDlg.RadioButtons[i].Caption, aHint); //LCL RadioButton doesn't support multiline captions
-      if (aHint <> '') then begin
-        ShowHint := True;
-        Hint := aHint; // note shown as Hint
-      end;
+      Caption := FDlg.RadioButtons[i].Caption; //LCL RadioButton doesn't support multiline captions
       inc(Y,Height + ARadioOffset);
       if not (tfNoDefaultRadioButton in FDlg.Flags) and ((i=0) or (i=aRadioDef)) then
         Checked := True;
