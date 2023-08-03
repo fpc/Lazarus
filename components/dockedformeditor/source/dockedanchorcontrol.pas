@@ -277,7 +277,7 @@ end;
 
 procedure TAnchorControl.CreateCaption;
 begin
-  if not FRootControl.Name.IsEmpty then
+  if Length(FRootControl.Name) > 0 then
     Caption := FRootControl.Name
   else
     Caption := FRootControl.ClassName;
