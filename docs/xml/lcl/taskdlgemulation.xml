@@ -131,7 +131,7 @@ Check-box control used for optional Task Dialog verification.
 </short>
 </element>
 
-<!-- still private -->
+<!-- private -->
 <element name="TLCLTaskDialog.AddIcon"/>
 <element name="TLCLTaskDialog.AddIcon.IconBorder"/>
 <element name="TLCLTaskDialog.AddIcon.X"/>
@@ -157,13 +157,21 @@ Check-box control used for optional Task Dialog verification.
 <element name="TLCLTaskDialog.AddCommandLinkButtons.AFontHeight"/>
 <element name="TLCLTaskDialog.AddCommandLinkButtons.AParent"/>
 
-<element name="TLCLTaskDialog.AddButtonsAndCheckBox"/>
-<element name="TLCLTaskDialog.AddButtonsAndCheckBox.X"/>
-<element name="TLCLTaskDialog.AddButtonsAndCheckBox.Y"/>
-<element name="TLCLTaskDialog.AddButtonsAndCheckBox.XB"/>
-<element name="TLCLTaskDialog.AddButtonsAndCheckBox.AWidth"/>
-<element name="TLCLTaskDialog.AddButtonsAndCheckBox.AButtonDef"/>
-<element name="TLCLTaskDialog.AddButtonsAndCheckBox.AParent"/>
+<element name="TLCLTaskDialog.AddButtons"/>
+<element name="TLCLTaskDialog.AddButtons.X"/>
+<element name="TLCLTaskDialog.AddButtons.Y"/>
+<element name="TLCLTaskDialog.AddButtons.XB"/>
+<element name="TLCLTaskDialog.AddButtons.AWidth"/>
+<element name="TLCLTaskDialog.AddButtons.AButtonDef"/>
+<element name="TLCLTaskDialog.AddButtons.AParent"/>
+
+<element name="TLCLTaskDialog.AddCheckBox"/>
+<element name="TLCLTaskDialog.AddCheckBox.X"/>
+<element name="TLCLTaskDialog.AddCheckBox.Y"/>
+<element name="TLCLTaskDialog.AddCheckBox.XB"/>
+<element name="TLCLTaskDialog.AddCheckBox.AWidth"/>
+<element name="TLCLTaskDialog.AddCheckBox.ALeftMargin"/>
+<element name="TLCLTaskDialog.AddCheckBox.AParent"/>
 
 <element name="TLCLTaskDialog.AddFooter"/>
 <element name="TLCLTaskDialog.AddFooter.X"/>
@@ -171,6 +179,7 @@ Check-box control used for optional Task Dialog verification.
 <element name="TLCLTaskDialog.AddFooter.XB"/>
 <element name="TLCLTaskDialog.AddFooter.AFontHeight"/>
 <element name="TLCLTaskDialog.AddFooter.AWidth"/>
+<element name="TLCLTaskDialog.AddFooter.AIconBorder"/>
 <element name="TLCLTaskDialog.AddFooter.AParent"/>
 
 <element name="TLCLTaskDialog.AddLabel"/>
@@ -207,31 +216,32 @@ Check-box control used for optional Task Dialog verification.
 
 <!-- 
 Naming schemes... choose one.
-<element name="TLCLTaskDialog.OnButtonClicked"/>
-<element name="TLCLTaskDialog.OnButtonClicked.Sender"/>
--->
 <element name="TLCLTaskDialog.ButtonClicked"/>
 <element name="TLCLTaskDialog.ButtonClicked.Sender"/>
+-->
+<element name="TLCLTaskDialog.OnButtonClicked"/>
+<element name="TLCLTaskDialog.OnButtonClicked.Sender"/>
 
 <!--
-<element name="TLCLTaskDialog.OnRadioButtonClick"/>
-<element name="TLCLTaskDialog.OnRadioButtonClick.Sender"/>
--->
 <element name="TLCLTaskDialog.RadioButtonClick"/>
 <element name="TLCLTaskDialog.RadioButtonClick.Sender"/>
+-->
+<element name="TLCLTaskDialog.OnRadioButtonClick"/>
+<element name="TLCLTaskDialog.OnRadioButtonClick.Sender"/>
 
 <!-- 
-<element name="TLCLTaskDialog.OnVerifyClicked.Sender"/>
--->
 <element name="TLCLTaskDialog.VerifyClicked"/>
 <element name="TLCLTaskDialog.VerifyClicked.Sender"/>
+-->
+<element name="TLCLTaskDialog.OnVerifyClicked"/>
+<element name="TLCLTaskDialog.OnVerifyClicked.Sender"/>
 
 <!-- 
-<element name="TLCLTaskDialog.OnTimer"/>
-<element name="TLCLTaskDialog.OnTimer.Sender"/>
--->
 <element name="TLCLTaskDialog.DoTimer"/>
 <element name="TLCLTaskDialog.DoTimer.Sender"/>
+-->
+<element name="TLCLTaskDialog.OnTimer"/>
+<element name="TLCLTaskDialog.OnTimer.Sender"/>
 
 <!-- protected -->
 <element name="TLCLTaskDialog.SetupControls">
@@ -313,37 +323,80 @@ SetupControls is called from the Execute method for the emulated task dialog.
 
 <!-- public -->
 <element name="TLCLTaskDialog.KeyDown">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Implements the OnKeyDown event handler for the task dialog.
+</short>
+<descr>
+<p>
+<var>KeyDown</var> is an overridden method in <var>TLCLTaskDialog</var> which 
+implements the handler routine for OnKeyDown events in the dialog form. 
+KeyDown ensures that Esc and Alt+F4 key down events are applied properly for 
+the emulated task dialog.
+</p>
+<p>
+When BorderIcons indicates that the dialog form can be closed (contains 
+biSystemMenu), the Esc (Escape) key can be used to close the dialog form by 
+calling the Close method. Without the system border icon, the Esc key is not 
+handled in the method.
+</p>
+<p>
+When Key and Shift indicate that the Alt+F4 key was pressed, the value in Key 
+is digested (set to 0). The native task dialog blocks Alt+F4 to close the 
+dialog, so it is blocked in the emulated task dialog as well.
+</p>
+<p>
+KeyDown calls the inherited method prior to exit.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.forms.TForm.BorderIcons">TForm.BorderIcons</link>
+<link id="#lcl.controls.TWinControl.KeyDown">TWinControl.KeyDown</link>
+<link id="#lcl.controls.TWinControl.OnKeyDown">TWinControl.OnKeyDown</link>
+<link id="#rtl.classes.TShiftState">TShiftState</link>
+</seealso>
 </element>
 <element name="TLCLTaskDialog.KeyDown.Key">
-<short/>
+<short>
+Virtual key code examined in the method.
+</short>
 </element>
 <element name="TLCLTaskDialog.KeyDown.Shift">
-<short/>
+<short>
+Shift, Control, or Alt modifier for the key.
+</short>
 </element>
 
 <element name="TLCLTaskDialog.CreateNew">
-<short/>
+<short>
+Alternate constructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TLCLTaskDialog.CreateNew.AOwner">
-<short/>
+<short>
+Owner of the class instance.
+</short>
 </element>
 <element name="TLCLTaskDialog.CreateNew.Num">
-<short/>
+<short>
+Instance sequence number for the new class instance. Included as a suffix in 
+the Name for the class.
+</short>
 </element>
 
 <element name="TLCLTaskDialog.Destroy">
-<short/>
+<short>
+Destructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TLCLTaskDialog.AfterConstruction">
-<short/>
+<short>
+Performs actions needed when a new instance of the class has been created.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -355,8 +408,6 @@ SetupControls is called from the Execute method for the emulated task dialog.
 </element>
 <element name="TLCLTaskDialog.Execute.Result">
 <short/>
-<descr/>
-<seealso/>
 </element>
 <element name="TLCLTaskDialog.Execute.AParentWnd">
 <short/>
@@ -378,15 +429,30 @@ SetupControls is called from the Execute method for the emulated task dialog.
 </element>
 
 <element name="TaskDialog_Translate">
-<short/>
+<short>
+Variable with the function used to translate strings used on an emulated task 
+dialog instance.
+</short>
 <descr/>
-<seealso/>
+<notes>
+<note>
+Comment in source code: 
+Do we really need this? We already use resource strings that can be translated 
+using translations unit.
+</note>
+</notes>
+<seealso>
+<link id="TTaskDialogTranslate"/>
+</seealso>
 </element>
 
 <element name="ExecuteLCLTaskDialog">
 <short/>
 <descr/>
 <seealso/>
+</element>
+<element name="ExecuteLCLTaskDialog.Result">
+<short/>
 </element>
 <element name="ExecuteLCLTaskDialog.ADlg">
 <short/>
