@@ -4943,14 +4943,12 @@ Modified in LCL 4.0 to include additional flag values in the enumeration.
 <link id="TCustomTaskDialog.Flags"/>
 </seealso>
 </element>
-<!-- 
-TODO: Needs to be updated. 
-Expand/collapse and other features are affected by flag combinations. 
--->
 <element name="TTaskDialogFlag.tfEnableHyperlinks">
 <short>
-Allows HTML-like hyperlinks in the dialog (in Text, Footer, and ExpandedText) 
-using the <b>'&lt;a href="target"&gt;Target&lt;/a&gt;'</b> notation.
+Allows HTML-like hyperlinks in the dialog (in Text, FooterText, and 
+ExpandedText) using the <b>'&lt;a href="target"&gt;Target&lt;/a&gt;'</b> 
+notation. For platforms that use an emulated (non-native) task dialog form, 
+the markup text and not a hyperlink is displayed.
 </short>
 </element>
 <element name="TTaskDialogFlag.tfUseHiconMain">
@@ -4967,23 +4965,23 @@ dialog. Disables hyperlinks and expanded text areas.
 </element>
 <element name="TTaskDialogFlag.tfAllowDialogCancellation">
 <short>
-Allow canceling the dialog using the Esc key or Alt+F4 (i.e. OS default 
+Allow cancelling the dialog using the Esc key or Alt+F4 (i.e. OS default 
 hotkey).
 </short>
 </element>
-<!-- TODO: Use "\n"? Behaves differently when tfQuery is included.-->
 <element name="TTaskDialogFlag.tfUseCommandLinks">
 <short>
-Custom buttons will be shown as big buttons in the middle of the dialog. Use 
-#10 to add additional text information to buttons shown as hint text. Disables 
-hyperlinks.
+Custom buttons will be shown as larger buttons with an icon in the text 
+content area on the dialog. On native task dialog forms, the CommandLinkHint 
+for buttons is included on a separate line (using a slightly smaller font) on 
+the buttons. On emulated task dialog forms, the text in the CommandLinkHint 
+for the buton is omitted.
 </short>
 </element>
-<!-- TODO: Use "\n"? Behaves differently when tfQuery is included.-->
 <element name="TTaskDialogFlag.tfUseCommandLinksNoIcon">
 <short>
-Hides glyphs for custom buttons in the "command links" mode. Disables 
-hyperlinks.
+Like tfUseCommandLinks, but hides glyphs for custom buttons in the "command 
+links" mode.
 </short>
 </element>
 <element name="TTaskDialogFlag.tfExpandFooterArea">
@@ -4992,21 +4990,29 @@ Show ExpandedText in the footer, instead of immediately after the main text.
 </short>
 </element>
 <element name="TTaskDialogFlag.tfExpandedByDefault">
-<short>Displays the dialog with ExpandedText in the expanded state.</short>
+<short>
+Displays the dialog with the content in ExpandedText in the expanded state.
+</short>
 </element>
 <element name="TTaskDialogFlag.tfVerificationFlagChecked">
 <short>
-Displays the verification check-box verification shows in the checked state.
+Displays the verification check-box using the checked state on entry.
 </short>
 </element>
 <element name="TTaskDialogFlag.tfShowProgressBar">
-<short>Shows a progress bar.</short>
+<short>
+Shows a progress bar on the dialog form.
+</short>
 </element>
 <element name="TTaskDialogFlag.tfShowMarqueeProgressBar">
-<short>Shows a progress bar using the marquee style.</short>
+<short>
+Shows a progress bar on the dialog form using the marquee style.
+</short>
 </element>
 <element name="TTaskDialogFlag.tfCallbackTimer">
-<short>Execute the timer callback event every 200 milliseconds.</short>
+<short>
+Execute the timer callback event every 200 milliseconds. Enables the timer event on the dialog form.
+</short>
 </element>
 <element name="TTaskDialogFlag.tfPositionRelativeToWindow">
 <short>
@@ -5018,20 +5024,25 @@ poScreenCenter.
 <short>Use Right-to-Left layout for texts.</short>
 </element>
 <element name="TTaskDialogFlag.tfNoDefaultRadioButton">
-<short>Does not pre-select a default radio buttons.</short>
+<short>
+Does not pre-select a default radio button.
+</short>
 </element>
 <element name="TTaskDialogFlag.tfCanBeMinimized">
-<short>Allow the dialog to be minimized.</short>
+<short>
+Allows the dialog form to be minimized.
+</short>
 </element>
 <element name="TTaskDialogFlag.tfNoSetForeGround">
 <short>
-Prevents bring the dialog to the foreground when the dialog is activated.
+Prevents bringing the dialog to the foreground when the dialog is activated.
 </short>
 </element>
 <element name="TTaskDialogFlag.tfSizeToContent">
 <short>
-Indicates the width for the dialog is determined by the text in the content 
-areas. The flag is ignored if the dialog width is not set to 0 (zero).
+Indicates the width for the dialog is determined by the caption, title, or 
+lines of text in the the content areas areas. The flag is ignored if the 
+dialog width is not set to 0 (zero).
 </short>
 </element>
 <element name="TTaskDialogFlag.tfForceNonNative">
@@ -5045,25 +5056,29 @@ areas use clForm as the background color instead of clWindow.
 </element>
 <element name="TTaskDialogFlag.tfQuery">
 <short>
-Causes a query input control to be displayed on the task dialog using a 
-combo-box to select from predefined values.
+Causes a query input control to be displayed on the task dialog using an 
+editable (non-fixed) combo-box control.
 </short>
 </element>
 <element name="TTaskDialogFlag.tfSimpleQuery">
 <short>
 Causes a query input control to be displayed on the task dialog using a simple 
-TEdit control instance with optional password character obfuscation.
+TEdit control instance with optional password character-style obfuscation. 
+tfQuery takes precedence if both values are included in the flags for a task 
+dialog.
 </short>
 </element>
 <element name="TTaskDialogFlag.tfQueryFixedChoices">
 <short>
 Causes a query input control to be displayed on the task dialog using a 
-combo-box to select from non-editable predefined values.
+combo-box to select from non-editable predefined values. tfQuery must also be 
+included to enable a query control on the dialog form.
 </short>
 </element>
 <element name="TTaskDialogFlag.tfQueryFocused">
 <short>
-Causes the query input control to be focused when the task dialog is executed.
+Causes the query input control to be focused when the task dialog is executed. 
+Requires tfQuery or tfSimpleQuery in the flags for a task dialog.
 </short>
 </element>
 
@@ -5154,10 +5169,27 @@ TCustomTaskDialog.
 <short><b>True</b> if the dialog can close.</short>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TTaskDlgTimerEvent">
-<short/>
-<descr/>
+<short>
+Specifies an event handler signalled when the timer callback is enabled in a 
+task dialog.
+</short>
+<descr>
+<p>
+<var>TTaskDlgTimerEvent</var> is an object procedure type which defines an 
+event handler signalled when the timer internal in a task dialog has elapsed. 
+Applications can implement and assign a routine using the signature for the 
+type to the OnTimer event handler in TTaskDialog.
+</p>
+<p>
+The routine is signalled from the DoOnTimer method in TCustomTaskDialog and is 
+called periodically from the widgetset class when the callback timer is 
+enabled in the task dialog. Arguments passed to the routine indicate the 
+dialog form for the event notification, the number of ticks (milliseconds) 
+since the timer was started, and an updatable value to indicate that the time 
+should be reset.
+</p>
+</descr>
 <version>
 Added in LCL version 4.0.  
 </version>
@@ -5166,13 +5198,20 @@ Added in LCL version 4.0.
 </seealso>
 </element>
 <element name="TTaskDlgTimerEvent.Sender">
-<short/>
+<short>
+Task dialog for the event notification.
+</short>
 </element>
 <element name="TTaskDlgTimerEvent.TickCount">
-<short/>
+<short>
+Number of ticks (milliseconds) since the timer was started.
+</short>
 </element>
 <element name="TTaskDlgTimerEvent.Reset">
-<short/>
+<short>
+Set to <b>True</b> to reset the timer. Set to <b>False</b> to continue 
+execution of the timer callback.
+</short>
 </element>
 
 <element name="TTaskDialogIcon">
@@ -5712,8 +5751,8 @@ Defines a configurable, modal task dialog at run-time.
 <p>
 <var>TCustomTaskDialog</var> is a <var>TLCLComponent</var> descendant which 
 defines a configurable, modal task dialog. It is the base class for 
-TaskDialog, and provides a cross-platform implementation similar to the 
-Windows TaskDialog API.
+TaskDialog, and provides a multi-platform implementation of the Windows 
+TaskDialog API.
 </p>
 <p>
 TCustomTaskDialog provides properties which can be used to configure the 
