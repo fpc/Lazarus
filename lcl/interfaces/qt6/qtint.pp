@@ -509,43 +509,26 @@ end;
 procedure QtVersionInt(out AMajor, AMinor, AMicro: integer);
 var
   S: String;
-  i: Integer;
-  sLen: integer;
+  AList: TStringList;
 begin
   AMajor := 0;
   AMinor := 0;
   AMicro := 0;
   S := GetQtVersion;
-  sLen := length(S);
 
   // 5 is usual length of qt5 version eg. 5.6.1
-  if sLen < 5 then
+  if length(S) < 5 then
     exit;
-  if sLen = 5 then
-  begin
-    TryStrToInt(S[1], AMajor);
-    TryStrToInt(S[3], AMinor);
-    TryStrToInt(S[5], AMicro);
-  end else
-  begin
-    i := Pos('.', S);
-    // major
-    if i > 0 then
-    begin
-      TryStrToInt(Copy(S, 1, i -1), AMajor);
-      Delete(S, 1, i - 1);
-    end;
-    // minor
-    i := Pos('.', S);
-    if i > 0 then
-    begin
-      TryStrToInt(Copy(S, 1, i -1), AMinor);
-      Delete(S, 1, i - 1);
-    end;
-    // micro
-    i := Pos('.', S);
-    if i > 0 then
-      TryStrToInt(Copy(S, 1, i -1), AMinor);
+
+  AList := TStringList.Create;
+  try
+    AList.Delimiter := '.';
+    AList.DelimitedText := S;
+    TryStrToInt(AList[0], AMajor);
+    TryStrToInt(AList[1], AMinor);
+    TryStrToInt(AList[2], AMicro);
+  finally
+    AList.Free;
   end;
 end;
 
