@@ -45,7 +45,7 @@ uses
   // IDEIntf
   LazIDEIntf, IDEUtils,
   // IdeConfig
-  EnvironmentOpts, LazConf, TransferMacros, IDECmdLine,
+  EnvironmentOpts, LazConf, TransferMacros, IDECmdLine, SearchPathProcs,
   // IDE
   LazarusIDEStrConsts, etMakeMsgParser;
 
@@ -2570,7 +2570,7 @@ begin
     end;
     Dir:=ChompPathDelim(TrimFilename(ExtractFilePath(UnitSrcFilename)));
     IncPath:=CodeToolBoss.GetIncludePathForDirectory(Dir);
-    IncFilename:=SearchFileInPath(ShortFilename,Dir,IncPath,';',ctsfcDefault);
+    IncFilename:=SearchFileInSearchPath(ShortFilename,Dir,IncPath);
     //debugln(['TIDEFPCParser.FindSrcViaPPU Dir="',Dir,'" IncPath="',IncPath,'" ShortFilename="',ShortFilename,'" IncFilename="',IncFilename,'"']);
     if IncFilename<>'' then begin
       MsgLine.Filename:=IncFilename;

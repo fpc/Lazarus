@@ -88,8 +88,17 @@ function SearchDirectoryInSearchPath(SearchPath: TStrings;
                     const Directory: string; DirStartPos: integer = 0): integer; overload;
 function SearchDirectoryInMaskedSearchPath(const SearchPath, Directory: string;
                                    DirStartPos: integer = 1): integer; overload;
+
+type
+  TSPSearchFileFlag = (
+    DontSearchInBasePath, // do not search in BasePath, search only in SearchPath.
+    SearchLoUpCase,
+    Executable // file must be executable
+    );
+  TSPSearchFileFlags = set of TSPSearchFileFlag;
+
 function SearchFileInSearchPath(const Filename, BasePath: string;
-  SearchPath: string; Flags: TSearchFileInPathFlags = []): string; overload;
+  SearchPath: string; Flags: TSPSearchFileFlags = []): string; overload;
 procedure CollectFilesInSearchPath(const SearchPath: string;
                    Files: TFilenameToStringTree; const Value: string = ''); overload;
 
@@ -622,13 +631,14 @@ begin
 end;
 
 function SearchFileInSearchPath(const Filename, BasePath: string;
-  SearchPath: string; Flags: TSearchFileInPathFlags): string;
+  SearchPath: string; Flags: TSPSearchFileFlags): string;
 
   function Fits(const s: string): boolean;
   begin
     Result:=false;
     if s='' then exit;
-    if (sffExecutable in Flags) and not FileIsExecutableCached(s) then exit;
+    if (TSPSearchFileFlag.Executable in Flags) and not FileIsExecutableCached(s) then
+      exit;
     SearchFileInSearchPath:=s;
     Result:=true;
   end;
@@ -645,23 +655,28 @@ begin
     exit('');
   // check if filename absolute
   if FilenameIsAbsolute(Filename) then begin
-    if FileExistsCached(Filename) then
-      Result:=CleanAndExpandFilename(Filename)
-    else
+    Result:=ResolveDots(Filename);
+    if not FileExistsCached(Filename) then
       Result:='';
     exit;
   end;
-  Base:=CleanAndExpandDirectory(BasePath);
-  // search in current directory
-  if (not (sffDontSearchInBasePath in Flags)) and FileExistsCached(Base+Filename) then
-    exit(ResolveDots(Base+Filename));
   if ExtractFilePath(Filename)<>'' then
     exit('');
 
-  if [sffDontSearchInBasePath,sffSearchLoUpCase,sffExecutable]*Flags<>[] then
-    raise Exception.Create('SearchFileInSearchPath flag is not supported');
+  if BasePath<>'' then
+    Base:=CleanAndExpandDirectory(BasePath)
+  else
+    Base:='';
 
-  if sffSearchLoUpCase in Flags then
+  // search in current directory
+  if (Base<>'') and not (TSPSearchFileFlag.DontSearchInBasePath in Flags) then
+  begin
+    Result:=Base+Filename;
+    if FileExistsCached(Result) {$IFDEF Unix}and not DirPathExistsCached(Result){$ENDIF} then
+      exit;
+  end;
+
+  if TSPSearchFileFlag.SearchLoUpCase in Flags then
     FileCase:=ctsfcLoUpCase
   else
     FileCase:=ctsfcDefault;

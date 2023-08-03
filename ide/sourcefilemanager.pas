@@ -3038,7 +3038,7 @@ var
 
     SearchFile:=AFilename;
     SearchPath:=AllIncPaths;
-    Result:=FileUtil.SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
+    Result:=SearchFileInSearchPath(SearchFile,BaseDir,SearchPath);
     {$IFDEF VerboseFindSourceFile}
     debugln(['SearchIndirectIncludeFile Result="',Result,'"']);
     {$ENDIF}
@@ -3053,7 +3053,7 @@ var
     Filename:='';
     SearchPath:=RemoveSearchPaths(TheSearchPath,AlreadySearchedPaths);
     if SearchPath<>'' then begin
-      Filename:=FileUtil.SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
+      Filename:=SearchFileInSearchPath(SearchFile,BaseDir,SearchPath);
       {$IFDEF VerboseFindSourceFile}
       debugln(['FindSourceFile trying "',SearchPath,'" Filename="',Filename,'"']);
       {$ENDIF}

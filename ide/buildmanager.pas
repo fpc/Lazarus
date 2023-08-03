@@ -2038,9 +2038,9 @@ begin
     Result:='';
   end else begin
     Result:=ExtractFileNameOnly(AnUnitInfo.Filename)+ResourceFileExt;
-    Result:=FileUtil.SearchFileInPath(Result,'',
+    Result:=SearchFileInSearchPath(Result,'',
         CodeToolBoss.GetIncludePathForDirectory(ExtractFilePath(AnUnitInfo.Filename)),
-        ';',[sffDontSearchInBasePath,sffSearchLoUpCase,sffFile]);
+        [TSPSearchFileFlag.SearchLoUpCase]);
   end;
   if (Result='') and UseDefaultIfNotFound then
     Result:=GetDefaultLRSFilename(AnUnitInfo);

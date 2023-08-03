@@ -2005,7 +2005,7 @@ function TCodeHelpManager.ExpandFPDocLinkID(const LinkID,
     if BaseDir='' then exit;
     if not IDEMacros.CreateAbsoluteSearchPath(SearchPath,BaseDir) then exit;
     FPDocFilename:=AUnitName+'.xml';
-    Result:=SearchFileInPath(FPDocFilename,'',SearchPath,';',ctsfcDefault);
+    Result:=SearchFileInSearchPath(FPDocFilename,'',SearchPath);
   end;
   
 var
@@ -2144,7 +2144,7 @@ function TCodeHelpManager.GetLinkedFPDocNode(StartFPDocFile: TLazFPDocFile;
     Result:='';
     if not IDEMacros.CreateAbsoluteSearchPath(SearchPath,BaseDir) then exit;
     //DebugLn(['FindFPDocFilename BaseDir=',BaseDir,' SearchPath=',SearchPath,' UnitName=',AUnitname]);
-    Result:=SearchFileInPath(AUnitName+'.xml',BaseDir,SearchPath,';',ctsfcDefault);
+    Result:=SearchFileInSearchPath(AUnitName+'.xml',BaseDir,SearchPath);
   end;
 
   function FindElement(StartPos: integer; aFPDocFile: TLazFPDocFile): boolean;
