@@ -657,7 +657,7 @@ var
   GroupName: String;
   i: Integer;
 begin
-  DebugLn(['TPPUGroups.AddFPCGroups ',FPCPPUBaseDir]);
+  //DebugLn(['TPPUGroups.AddFPCGroups ',FPCPPUBaseDir]);
   if FindFirstUTF8(AppendPathDelim(FPCPPUBaseDir)+FileMask,faAnyFile,FileInfo)=0
   then begin
     repeat

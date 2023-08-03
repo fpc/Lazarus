@@ -6821,8 +6821,6 @@ var
     AFilePath: String;
     BaseDir: String;
     CurFilename: String;
-    IncludePath: String;
-    PathDivider: String;
     ACodeBuf: TCodeBuffer;
   begin
     Result:=TrimFilename(AFilename);
@@ -6850,14 +6848,7 @@ var
           //DebugLn('SearchIncludeFilename relative filename="',CurFilename,'"');
         end else begin
           // search in path
-          IncludePath:='';
-          PathDivider:=':;';
-          if (Scanner.Values<>nil) then begin
-            IncludePath:=Scanner.Values.Variables[ExternalMacroStart+'INCPATH'];
-            if Scanner.Values.IsDefined('DELPHI') then
-              PathDivider:=':'
-          end;
-          CurFilename:=SearchFileInPath(Result,BaseDir,IncludePath,PathDivider, ctsfcAllCase);
+          CurFilename:=DirectoryCache.FindIncludeFile(Result,true);
           if CurFilename<>'' then begin
             // found
             Result:=CreateRelativePath(CurFilename,BaseDir);
