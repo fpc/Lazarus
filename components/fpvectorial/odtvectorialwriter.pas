@@ -568,6 +568,8 @@ begin
    '  <style:font-face style:name="Times New Roman" svg:font-family="Times New Roman" style:font-family-generic="roman" style:font-pitch="variable" />' + LineEnding +
    '  <style:font-face style:name="Arial" svg:font-family="Arial" />' + LineEnding +
    '  <style:font-face style:name="Verdana" svg:font-family="Verdana" />' + LineEnding +
+   '  <style:font-face style:name="Calibri" svg:font-family="Calibri" />' + LineEnding +
+   '  <style:font-face style:name="Courier New" svg:font-family="Courier New" />' + LineEnding +
    '  <style:font-face style:name="Mangal" svg:font-family="Mangal" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
    '  <style:font-face style:name="Microsoft YaHei" svg:font-family="''Microsoft YaHei''" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
    '  <style:font-face style:name="SimSun" svg:font-family="SimSun" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
@@ -891,6 +893,9 @@ begin
      '    <style:font-face style:name="Mangal" svg:font-family="Mangal" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
      '    <style:font-face style:name="Microsoft YaHei" svg:font-family="''Microsoft YaHei''" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
      '    <style:font-face style:name="SimSun" svg:font-family="SimSun" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
+     '    <style:font-face style:name="Segoe UI" svg:font-family="Segoe UI" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
+     '    <style:font-face style:name="Calibri" svg:font-family="Calibri" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
+     '    <style:font-face style:name="Calibri Light" svg:font-family="Calibri Light" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
      '  </office:font-face-decls>' + LineEnding;
 
   // Build the main content of the document
