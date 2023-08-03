@@ -30,7 +30,6 @@ begin
   DelphiToolsFrameID:=RegisterIDEOptionsEditor(GroupEnvironment,TDelphiOptionsFrame, DelphiToolsFrameID)^.Index;
   DelphiToolsOptionsIndex:=RegisterIDEOptionsEditor(GroupProject,TProjectDelphiOptionsFrame, DelphiToolsOptionsIndex)^.Index;
   TDelphiTool.Instance.Hook;
-
 end;
 
 

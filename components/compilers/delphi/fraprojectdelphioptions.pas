@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, Forms, Controls, StdCtrls,
   LazLoggerBase, LazFileUtils, LazUTF8,
   // IdeIntf
-  LazIDEIntf, ProjectIntf, CompOptsIntf, IDEOptionsIntf, IDEOptEditorIntf,
+  LazIDEIntf, ProjectIntf, IDEOptionsIntf, IDEOptEditorIntf,
   delphioptions, strdelphitool, delphitool;
 
 type

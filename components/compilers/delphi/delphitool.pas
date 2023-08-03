@@ -52,6 +52,7 @@ type
   TDelphiCompilerParserClass = class of TDelphiCompilerParser;
 
   { TDelphiTool }
+
   TDelphiMacro = (dmCompiler,dmConfigFileName,dmAdditionalArgs,dmCompileCommand);
   TDelphiTool = class
   private
@@ -59,10 +60,10 @@ type
   Private
     FMacros : Array[TDelphiMacro] of TTransferMacro;
   Protected
-    function GetCompileCommand(const s: string; const Data: PtrInt; var Abort: boolean): string; virtual;
-    function GetCompilerArgs(const s: string; const Data: PtrInt; var Abort: boolean): string; virtual;
-    function GetCompilerPath(const s: string; const Data: PtrInt; var Abort: boolean): string; virtual;
-    function GetConfigPath(const s: string; const Data: PtrInt; var Abort: boolean): string; virtual;
+    function GetCompileCommand(const s: string; const {%H-}Data: PtrInt; var {%H-}Abort: boolean): string; virtual;
+    function GetCompilerArgs(const s: string; const {%H-}Data: PtrInt; var {%H-}Abort: boolean): string; virtual;
+    function GetCompilerPath(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string; virtual;
+    function GetConfigPath(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string; virtual;
     function OnProjectBuilding(Sender: TObject): TModalResult; virtual;
     function FPCToDelphiOpts(Opts: TLazCompilerOptions; aDelphiOpts: TStrings): Integer; virtual;
     function GenerateConfigFilename(const aFilename: String): Boolean; virtual;
@@ -72,6 +73,8 @@ type
     Class Destructor Done;
     Procedure Hook; virtual;
     Procedure UnHook; virtual;
+    Function NeedsDelphi: boolean;
+    Function UsesDelphiMacros(s: string): boolean;
     Function GetParsedCompilerFilename : String;
     Function GetCurrentConfigFileName(PrependAt: Boolean = true) : String;
     Function GetCompilerArguments: string;
@@ -139,16 +142,6 @@ end;
 
 function TWinePathConverter.UnixToWindows(const aFileName: String): String;
 
-  function SubDirOf(const aBaseDir,aDestDir : string) : Boolean;
-
-  Var
-    relPath : String;
-
-  begin
-    relPath:=ExtractRelativePath(aBaseDir,aFileName);
-    Result:=Copy(relPath,1,3)<>'../';
-  end;
-
   function FileBelowDir(const aBaseDir,aDestFile : String) : Boolean;
 
   Var
@@ -174,8 +167,9 @@ begin
     FMap.GetNameValue(I,Drive,DriveDir);
     if FileBelowDir(DriveDir,aFileName) then
       begin
-      if (CurDir='') or (SubDirOf(CurDir,DriveDir)) then
+      if (CurDir='') or (FileBelowDir(CurDir,DriveDir)) then
         begin
+        // first or more specific
         CurDrive:=Drive;
         CurDir:=DriveDir
         end;
@@ -350,7 +344,6 @@ begin
   Result:=SDelphiLocalizedParserName;
 end;
 
-
 class function TDelphiCompilerParser.Priority: integer;
 begin
   Result:=SubToolDelphiPriority;
@@ -367,7 +360,7 @@ begin
   Result:=GetParsedCompilerFilename;
   if Result='' then
     Result:='dcc32.exe'; // always return something to get nicer error messages
-  debugln(['macro DCC parameter: "',Result,'"']);
+  //debugln(['macro DCC parameter: "',Result,'"']);
 end;
 
 function TDelphiTool.GetCompileCommand(const s: string; const Data: PtrInt;
@@ -381,15 +374,12 @@ end;
 
 function TDelphiTool.GetCompilerArgs(const s: string; const Data: PtrInt;
   var Abort: boolean): string;
-
-
 begin
   if (s<>'') and (ConsoleVerbosity>=0) then
     debugln(['Hint: (lazarus) [TDelphiTool.GetCompilerPath] ignoring macro DCCARGS parameter "',s,'"']);
   Result:=GetCompilerArguments;
   // debugln(['macro DCCARGS parameter: "',Result,'"']);
 end;
-
 
 function TDelphiTool.GetConfigPath(const s: string; const Data: PtrInt;
   var Abort: boolean): string;
@@ -494,12 +484,14 @@ function TDelphiTool.OnProjectBuilding(Sender: TObject): TModalResult;
 
 begin
   Result:=mrOK;
-  FMacros[dmCompiler].LazbuildValue:=GetCompileCommand();
-  FMacros[dmConfigFileName].LazbuildValue:=GetCurrentConfigFileName;
-  FMacros[dmCompileCommand].LazbuildValue:=GetCompileCommand;
-  FMacros[dmAdditionalArgs].LazbuildValue:=GetCompilerArguments;
-  if Assigned(LazarusIDE.ActiveProject) and LazarusIDE.ActiveProject.GenerateDelphiConfigFile then
-    GenerateConfigFilename(GetCurrentConfigFileName(False));
+  if NeedsDelphi then begin
+    FMacros[dmCompiler].LazbuildValue:=GetCompileCommand();
+    FMacros[dmConfigFileName].LazbuildValue:=GetCurrentConfigFileName;
+    FMacros[dmCompileCommand].LazbuildValue:=GetCompileCommand;
+    FMacros[dmAdditionalArgs].LazbuildValue:=GetCompilerArguments;
+    if Assigned(LazarusIDE.ActiveProject) and LazarusIDE.ActiveProject.GenerateDelphiConfigFile then
+      GenerateConfigFilename(GetCurrentConfigFileName(False));
+  end;
 end;
 
 procedure TDelphiTool.Hook;
@@ -514,6 +506,32 @@ end;
 procedure TDelphiTool.UnHook;
 begin
   //
+end;
+
+function TDelphiTool.NeedsDelphi: boolean;
+var
+  Prj: TLazProject;
+  CompOpts: TLazCompilerOptions;
+begin
+  Result:=false;
+  Prj:=LazarusIDE.ActiveProject;
+  if Prj=nil then exit;
+  if Prj.GenerateDelphiConfigFile then
+    exit(true);
+  CompOpts:=Prj.LazCompilerOptions;
+  if UsesDelphiMacros(CompOpts.CompilerPath)
+      or UsesDelphiMacros(CompOpts.ExecuteBefore.Command)
+      or UsesDelphiMacros(CompOpts.ExecuteAfter.Command) then
+    exit(true);
+end;
+
+function TDelphiTool.UsesDelphiMacros(s: string): boolean;
+begin
+  s:=uppercase(s);
+  Result:=(Pos('$(DCC)',s)>0)
+     or (Pos('$(DCCARGS)',s)>0)
+     or (Pos('$(DCCCONFIG)',s)>0)
+     or (Pos('$(DELPHICOMPILE)',s)>0);
 end;
 
 function TDelphiTool.GetParsedCompilerFilename: String;
