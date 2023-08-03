@@ -1641,6 +1641,9 @@ Begin
                                              iRow=0, iRow=ATable.GetRowCount-1,
                                              iCell=0, iCell=oRow.GetCellCount-1);
 
+      sTemp := sTemp + ' fo:padding-left="' + StringReplace(oCell.SpacingLeft.ToString, ',', '.', [rfReplaceAll]) + 'mm" fo:padding-right="' + StringReplace(oCell.SpacingRight.ToString, ',', '.', [rfReplaceAll]) +
+        'mm" fo:padding-top="' + StringReplace(oCell.SpacingTop.ToString, ',', '.', [rfReplaceAll]) + 'mm" fo:padding-bottom="' + StringReplace(oCell.SpacingBottom.ToString, ',', '.', [rfReplaceAll]) + 'mm"';
+
       sTemp2 := '';
 
       If oCell.SpannedCols>1 Then
