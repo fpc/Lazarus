@@ -1325,12 +1325,15 @@ begin
 
     // check excludes
     Cache:=DirCache.GetStarCache(StarDir,ctsdStarStar);
-    for i:=0 to Cache.Listing.Count-1 do begin
-      FoundFilename:=Cache.Listing.GetSubDirFilename(i);
-      if (FoundFilename[1]='.')
-          or (Pos(PathDelim+'.',FoundFilename)>0)
-          or (Pos('ignore',FoundFilename)>0) then
-        Fail('Failed to exclude "'+FoundFilename+'"');
+    if Cache<>nil then begin
+      Cache.UpdateListing;
+      for i:=0 to Cache.Listing.Count-1 do begin
+        FoundFilename:=Cache.Listing.GetSubDirFilename(i);
+        if (FoundFilename[1]='.')
+            or (Pos(PathDelim+'.',FoundFilename)>0)
+            or (Pos('ignore',FoundFilename)>0) then
+          Fail('Failed to exclude "'+FoundFilename+'"');
+      end;
     end;
 
   finally

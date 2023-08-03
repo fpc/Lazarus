@@ -239,7 +239,8 @@ begin
   if (Dir='') or (not FilenameIsAbsolute(Dir)) then exit;
   // search in directory for all files that could be sources or ppu files of this unit
   DirCache:=CodeToolBoss.DirectoryCachePool.GetCache(Dir,true,false);
-  if (DirCache=nil) or (DirCache.Listing=nil) then exit;
+  if (DirCache=nil) then exit;
+  DirCache.UpdateListing;
   for i:=0 to DirCache.Listing.Count-1 do begin
     Filename:=DirCache.Listing.GetFilename(i);
     if FilenameExtIn(Filename,['.pas','.pp','.p','.ppu'])
