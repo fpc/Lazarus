@@ -136,14 +136,16 @@ var
   CurPath: String;
   EndPos: Integer;
   StartPos: Integer;
-  len: Integer;
+  len, OtherStartPos: Integer;
   BaseDir: String;
+  DirRelation: TSPFileMaskRelation;
 begin
   Result:='';
   EndPos:=1;
   len:=length(SearchPath);
   BaseDir:=AppendPathDelim(TrimFilename(BaseDirectory));
-  while EndPos<=len do begin
+  while EndPos<=len do
+  begin
     StartPos:=EndPos;
     // skip empty paths and space chars at start
     while (StartPos<=len) and (SearchPath[StartPos] in [';',#0..#32]) do
@@ -152,24 +154,31 @@ begin
     EndPos:=StartPos;
     while (EndPos<=len) and (SearchPath[EndPos]<>';') do inc(EndPos);
     CurPath:=copy(SearchPath,StartPos,EndPos-StartPos);
-    if CurPath<>'' then begin
+    if CurPath<>'' then
+    begin
       // non empty path => expand, trim and normalize
       if ExpandPaths then
         CurPath:=TrimAndExpandDirectory(CurPath,BaseDir)
       else if (BaseDir<>'') and (not FilenameIsAbsolute(CurPath)) then
         CurPath:=BaseDir+CurPath;
-      CurPath:=ChompPathDelim(TrimFilename(CurPath));
+      CurPath:=ChompPathDelim(ResolveDots(CurPath));
       if CurPath='' then CurPath:='.';
-      // check if path already exists
-      if (not DeleteDoubles) or (SearchDirectoryInSearchPath(Result,CurPath)<1)
-      then begin
-        if Result<>'' then
-          CurPath:=';'+CurPath;
-        if CurPath<>'' then
-          Result:=Result+CurPath
-        else
-          Result:=Result+'.';
+      if DeleteDoubles then
+      begin
+        // check if path already exists
+        OtherStartPos:=SearchDirectoryInSearchPath(Result,CurPath,DirRelation);
+        if OtherStartPos>0 then
+          case DirRelation of
+          TSPFileMaskRelation.Equal,
+          TSPFileMaskRelation.LeftMoreGeneral:
+            continue; // already exists -> skip
+          TSPFileMaskRelation.RightMoreGeneral:
+            ; // first search in a specific, then in all -> keep
+          end;
       end;
+      if Result<>'' then
+        CurPath:=';'+CurPath;
+      Result:=Result+CurPath;
     end;
   end;
 end;
