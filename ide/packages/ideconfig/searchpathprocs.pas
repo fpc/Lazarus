@@ -104,6 +104,10 @@ function SearchUnitInSearchPath(const AnUnitname, BasePath: string;
 procedure CollectFilesInSearchPath(const SearchPath: string;
                    Files: TFilenameToStringTree; const Value: string = ''); overload;
 
+function FileIsInSPDirectory(const Filename: string; Directory{without **}: string;
+                             MaskType: TSPMaskType): boolean; overload; // both must be ResolveDots
+function FileIsInSPDirectory(const Filename: string; Directory{with **}: string): boolean; overload; // both must be ResolveDots
+
 function FilenamePIsAbsolute(TheFilename: PChar): boolean;
 function FilenamePIsUnixAbsolute(TheFilename: PChar): boolean;
 function FilenamePIsWinAbsolute(TheFilename: PChar): boolean;
@@ -113,6 +117,7 @@ function RelateDirectoryMasks(const Left, Right: TSPMaskRecord): TSPFileMaskRela
 function GetSPMaskRecord(const aDirectory: string; aStartPos: integer; out MaskRecord: TSPMaskRecord): boolean;
 function GetSPMaskType(const aFilename: string): TSPMaskType;
 
+function dbgs(t: TSPMaskType): string; overload;
 function dbgs(r: TSPFileMaskRelation): string; overload;
 
 implementation
@@ -762,6 +767,92 @@ begin
   until false;
 end;
 
+function FileIsInSPDirectory(const Filename: string; Directory: string;
+  MaskType: TSPMaskType): boolean;
+var
+  l: SizeInt;
+  p, PathDelimCount: Integer;
+begin
+  Result:=false;
+  if Filename='' then exit;
+  l:=length(Filename);
+  if (l>1) and (Filename[1]='.') and (Filename[2]='.') then
+  begin
+    if (l=2) or (Filename[3]=PathDelim) then
+      exit; // e.g. '../foo'
+  end;
+
+  Directory:=AppendPathDelim(Directory);
+
+  case MaskType of
+    TSPMaskType.None:
+      if Filename='.' then
+        exit(false)
+      else
+        Result:=CompareFilenames(ExtractFilePath(Filename),Directory)=0;
+    TSPMaskType.Star:
+      if Directory='' then
+      begin
+        // test if file is 'something/something'
+        p:=1;
+        while (p<=l) and (Filename[p]<>PathDelim) do inc(p);
+        if (p=1) or (p>l) then exit;
+        inc(p);
+        while (p<=l) and (Filename[p]<>PathDelim) do inc(p);
+        Result:=p>l;
+      end else begin
+        // test if file is 'directory/something/something'
+        p:=l;
+        while (p>0) and (Filename[p]<>PathDelim) do dec(p);
+        if p<=2 then exit;
+        dec(p);
+        while (p>0) and (Filename[p]<>PathDelim) do dec(p);
+        if p=0 then exit;
+        Result:=CompareFilenames(LeftStr(Filename,p),Directory)=0;
+      end;
+    TSPMaskType.StarStar:
+      if Directory='' then
+      begin
+        Result:=not FilenameIsAbsolute(Filename);
+      end else begin
+        p:=1;
+        PathDelimCount:=0;
+        while (p<=length(Directory)) do
+        begin
+          if Directory[p]=PathDelim then inc(PathDelimCount);
+          inc(p);
+        end;
+        p:=1;
+        while (p<=l) do
+        begin
+          if Filename[p]=PathDelim then
+          begin
+            dec(PathDelimCount);
+            if PathDelimCount=0 then
+            begin
+              Result:=CompareFilenames(LeftStr(Filename,p),Directory)=0;
+              exit;
+            end;
+          end;
+          inc(p);
+        end;
+      end;
+  end;
+end;
+
+function FileIsInSPDirectory(const Filename: string; Directory: string
+  ): boolean;
+var
+  MaskType: TSPMaskType;
+begin
+  Directory:=ChompPathDelim(Directory);
+  MaskType:=GetSPMaskType(Directory);
+  if MaskType=TSPMaskType.None then
+    Result:=FileIsInSPDirectory(Filename,Directory,MaskType)
+  else
+    Result:=FileIsInSPDirectory(Filename,ExtractFilePath(Directory),MaskType);
+end;
+
 function FilenamePIsAbsolute(TheFilename: PChar): boolean;
 begin
   {$IFDEF Unix}
@@ -969,6 +1060,15 @@ begin
     exit(TSPMaskType.Star);
   if (aFilename[l-1]='*') and ((l=2) or (aFilename[l-2]=PathDelim)) then
     exit(TSPMaskType.StarStar);
+end;
+
+function dbgs(t: TSPMaskType): string;
+begin
+  case t of
+    TSPMaskType.None: Result:='None';
+    TSPMaskType.Star: Result:='Star';
+    TSPMaskType.StarStar: Result:='StarStar';
+  end;
 end;
 
 function dbgs(r: TSPFileMaskRelation): string;

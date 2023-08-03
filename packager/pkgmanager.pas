@@ -3835,19 +3835,12 @@ var
       Result:=TLazPackage(SrcDirToPkg[Dir]);
       exit;
     end;
-    Dir:=ChompPathDelim(ExtractFilePath(Dir));
+    Dir:=ExtractFilePath(Dir);
     for Item in SrcDirToPkg do
     begin
       CurDir:=Item^.Name;
-      case MaskType of
-        TSPMaskType.Star:
-          if CompareFilenames(ChompPathDelim(ExtractFilePath(CurDir)),Dir)=0 then
-            exit(TLazPackage(Item^.Value));
-        TSPMaskType.StarStar:
-          if (CompareFilenames(CurDir,Dir)=0)
-              or FileIsInPath(CurDir,Dir) then
-            exit(TLazPackage(Item^.Value));
-      end;
+      if FileIsInSPDirectory(AppendPathDelim(CurDir),Dir,MaskType) then
+        exit(TLazPackage(Item^.Value));
     end;
     Result:=nil;
   end;

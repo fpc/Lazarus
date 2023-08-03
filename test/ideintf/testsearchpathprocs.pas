@@ -22,6 +22,7 @@ type
   TTestSearchPathProcs = class(TTestCase)
   published
     procedure TestRelateDirectoryMasks;
+    procedure TestFileIsInSPDirectory;
   end;
 
 implementation
@@ -46,7 +47,7 @@ procedure TTestSearchPathProcs.TestRelateDirectoryMasks;
         LeftStart:=length(SearchPath)+1;
       if i=Right then
         RightStart:=length(SearchPath)+1;
-      SearchPath+=Paths[i];
+      SearchPath+=SetDirSeparators(Paths[i]);
     end;
 
     Actual:=RelateDirectoryMasks(SearchPath,LeftStart,SearchPath,RightStart);
@@ -106,6 +107,91 @@ begin
   t(['/foo/**','/foo/bar/a'],0,1,TSPFileMaskRelation.LeftMoreGeneral);
   t(['**','.'],0,1,TSPFileMaskRelation.LeftMoreGeneral);
   t(['**','..'],0,1,TSPFileMaskRelation.None);
+end;
+
+procedure TTestSearchPathProcs.TestFileIsInSPDirectory;
+
+  procedure t(Filename, Directory: string; MaskType: TSPMaskType; Expected: boolean);
+  var
+    Actual: Boolean;
+  begin
+    Filename:=SetDirSeparators(Filename);
+    Directory:=SetDirSeparators(Directory);
+    Actual:=FileIsInSPDirectory(Filename,Directory,MaskType);
+    if Actual=Expected then exit;
+    Fail('Filename="'+Filename+'" Directory="'+Directory+'" MaskType='+dbgs(MaskType)+' Expected='+dbgs(Expected)+', but was '+dbgs(Actual));
+  end;
+
+begin
+  t('','',TSPMaskType.None,false);
+  t('.','',TSPMaskType.None,false);
+  t('..','',TSPMaskType.None,false);
+  t('../','',TSPMaskType.None,false);
+  t('a','',TSPMaskType.None,true);
+  t('a/b','',TSPMaskType.None,false);
+  t('','foo',TSPMaskType.None,false);
+  t('a','foo',TSPMaskType.None,false);
+  t('foo/','foo',TSPMaskType.None,true);
+  t('foo/a','foo',TSPMaskType.None,true);
+  t('foo/bar/a','foo',TSPMaskType.None,false);
+  t('/a','',TSPMaskType.None,false);
+  t('/a/b','',TSPMaskType.None,false);
+  t('/','foo',TSPMaskType.None,false);
+  t('/','/foo',TSPMaskType.None,false);
+  t('/a','/foo',TSPMaskType.None,false);
+  t('/foo/','/foo',TSPMaskType.None,true);
+  t('/foo/a','/foo',TSPMaskType.None,true);
+  t('/foo/bar/a','/foo',TSPMaskType.None,false);
+
+  t('','',TSPMaskType.Star,false);
+  t('.','',TSPMaskType.Star,false);
+  t('..','',TSPMaskType.Star,false);
+  t('../','',TSPMaskType.Star,false);
+  t('a','',TSPMaskType.Star,false);
+  t('a/b','',TSPMaskType.Star,true);
+  t('a/b/c','',TSPMaskType.Star,false);
+  t('','foo',TSPMaskType.Star,false);
+  t('a','foo',TSPMaskType.Star,false);
+  t('foo/','foo',TSPMaskType.Star,false);
+  t('foo/bar','foo',TSPMaskType.Star,false);
+  t('foo/bar/a','foo',TSPMaskType.Star,true);
+  t('foo/bar/a/b','foo',TSPMaskType.Star,false);
+  t('/a','',TSPMaskType.Star,false);
+  t('/a','/',TSPMaskType.Star,false);
+  t('/a/b','/',TSPMaskType.Star,true);
+  t('/a/b/c','/',TSPMaskType.Star,false);
+  t('/','/foo',TSPMaskType.Star,false);
+  t('/a','/foo',TSPMaskType.Star,false);
+  t('/foo/','/foo',TSPMaskType.Star,false);
+  t('/foo/bar','/foo',TSPMaskType.Star,false);
+  t('/foo/bar/a','/foo',TSPMaskType.Star,true);
+  t('/foo/bar/a/b','/foo',TSPMaskType.Star,false);
+
+  t('','',TSPMaskType.StarStar,false);
+  t('.','',TSPMaskType.StarStar,true);
+  t('..','',TSPMaskType.StarStar,false);
+  t('../','',TSPMaskType.StarStar,false);
+  t('a','',TSPMaskType.StarStar,true);
+  t('a/b','',TSPMaskType.StarStar,true);
+  t('a/b/c','',TSPMaskType.StarStar,true);
+  t('','foo',TSPMaskType.StarStar,false);
+  t('a','foo',TSPMaskType.StarStar,false);
+  t('foo/','foo',TSPMaskType.StarStar,true);
+  t('foo/bar','foo',TSPMaskType.StarStar,true);
+  t('foo/bar','foo/bar',TSPMaskType.StarStar,false);
+  t('foo/bar/a','foo',TSPMaskType.StarStar,true);
+  t('foo/bar/a','foo/bar',TSPMaskType.StarStar,true);
+  t('foo/','/foo',TSPMaskType.StarStar,false);
+  t('/a','/',TSPMaskType.StarStar,true);
+  t('/a/b','/',TSPMaskType.StarStar,true);
+  t('/a/b/c','/',TSPMaskType.StarStar,true);
+  t('/','/foo',TSPMaskType.StarStar,false);
+  t('/a','/foo',TSPMaskType.StarStar,false);
+  t('/foo/','/foo',TSPMaskType.StarStar,true);
+  t('/foo/bar','/foo',TSPMaskType.StarStar,true);
+  t('/foo/bar','/foo/bar',TSPMaskType.StarStar,false);
+  t('/foo/bar/a','/foo',TSPMaskType.StarStar,true);
+  t('/foo/bar/a','/foo/bar',TSPMaskType.StarStar,true);
 end;
 
 initialization
