@@ -888,7 +888,7 @@ begin
   pftText: Result:=lisPkgFileTypeText;
   pftBinary: Result:=lisPkgFileTypeBinary;
   else
-    Result:='Unknown';
+    Result:='Unknown'{%H-};
   end;
 end;
 

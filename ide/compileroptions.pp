@@ -829,7 +829,7 @@ begin
             icoLinkerOptions,icoCustomOptions:
               CurOptions:=MergeWithDelimiter(CurOptions,UnparsedOption,' ');
             else
-              RaiseGDBException('GatherInheritedOptions');
+              RaiseGDBException('GatherInheritedOptions'){%H-};
             end;
             InheritedOptionStrings[o]:=CurOptions;
           end;
@@ -2087,7 +2087,7 @@ begin
   cetLibrary:
     Result:=GetLibraryExt(fTargetOS);
   else
-    RaiseGDBException('');
+    RaiseGDBException(''){%H-};
   end;
   //DebugLn('TBaseCompilerOptions.GetTargetFileExt ',Result,' ',dbgs(ord(ExecutableType)),' ',fTargetOS);
 end;
@@ -2256,7 +2256,7 @@ begin
   coptParsedPlatformIndependent:
                CurNamespaces:=ParsedOpts.GetParsedPIValue(pcosNamespaces);
   else
-    RaiseGDBException('');
+    RaiseGDBException(''){%H-};
   end;
   // inherited namespaces
   InhNamespaces:=GetInheritedOption(icoNamespaces,false,Parsed);
@@ -2334,7 +2334,7 @@ begin
   coptParsedPlatformIndependent:
     Result:=GetParsedPIPath(Option,InheritedOption,RelativeToBaseDir);
   else
-    RaiseGDBException('');
+    RaiseGDBException(''){%H-};
   end;
   if WithBaseDir then begin
     if RelativeToBaseDir then
@@ -2486,7 +2486,7 @@ begin
   coptParsedPlatformIndependent:
                CurCustomOptions:=ParsedOpts.GetParsedPIValue(pcosCustomOptions);
   else
-    RaiseGDBException('');
+    RaiseGDBException(''){%H-};
   end;
   // inherited custom options
   InhCustomOptions:=GetInheritedOption(icoCustomOptions,true,Parsed);
@@ -3664,7 +3664,7 @@ begin
     icoLinkerOptions: Result:=LinkerOptions;
     icoCustomOptions: Result:=CustomOptions;
   else
-    RaiseGDBException(''); // inconsistency detected
+    RaiseGDBException(''){%H-}; // inconsistency detected
   end;
 end;
 
@@ -4031,7 +4031,7 @@ begin
   Command:=XMLConfig.GetValue(Path+'Command/Value','');
   if DoSwitchPathDelims then begin
     if (Command<>'')
-    and (PathDelim='\') then begin
+    and (PathDelim='\') then {%H-}begin
       // specialhandling on windows to not switch path delimiters in options
       Params:=TStringList.Create;
       try

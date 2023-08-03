@@ -122,7 +122,7 @@ type
     ProgressBar1: TProgressBar;
     RemoveBitBtn: TSpeedButton;
     SortAlphabeticallySpeedButton: TSpeedButton;
-    function FilterEditFilterItemEx(const ACaption: string; ItemData: Pointer;
+    function FilterEditFilterItemEx(const ACaption: string; {%H-}ItemData: Pointer;
       out Done: Boolean): Boolean;
     procedure FilterEditKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -355,7 +355,7 @@ function TViewUnitDialog.FilterEditFilterItemEx(const ACaption: string;
   ItemData: Pointer; out Done: Boolean): Boolean;
 begin
   Done := true;
-  result := MultiWordSearch(FilterEdit.Text, ACaption);
+  Result := MultiWordSearch(FilterEdit.Text, ACaption);
 end;
 
 procedure TViewUnitDialog.Init(const aCaption: string;
