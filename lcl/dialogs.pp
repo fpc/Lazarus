@@ -630,6 +630,7 @@ type
     FCommonButtons: TTaskDialogCommonButtons;
     FDefaultButton: TTaskDialogCommonButton;
     FExpandButtonCaption: TTranslateString;
+    FExpanded: Boolean;
     FExpandedText: TTranslateString;
     FFlags: TTaskDialogFlags;
     FFooterIcon: TTaskDialogIcon;
@@ -639,7 +640,7 @@ type
     FOnDialogConstructed: TNotifyEvent;
     FOnDialogCreated: TNotifyEvent;
     FOnDialogDestroyed: TNotifyEvent;
-    FOnExpand: TNotifyEvent;
+    FOnExpanded: TNotifyEvent;
     FOnHyperlinkClicked: TNotifyEvent;
     FOnRadioButtonClicked: TNotifyEvent;
     FOnTimer: TTaskDlgTimerEvent;
@@ -707,12 +708,13 @@ type
     property VerificationText: TTranslateString read FVerificationText write FVerificationText;
     property Width: Integer read FWidth write FWidth default 0;
     property URL: String read FURL;
+    property Expanded: Boolean read FExpanded;
     property OnButtonClicked: TTaskDlgClickEvent read FOnButtonClicked write FOnButtonClicked;
     property OnDialogConstructed: TNotifyEvent read FOnDialogConstructed write FOnDialogConstructed;
     property OnDialogCreated: TNotifyEvent read FOnDialogCreated write FOnDialogCreated;
     property OnDialogDestroyed: TNotifyEvent read FOnDialogDestroyed write FOnDialogDestroyed;
     property OnVerificationClicked: TNotifyEvent read FOnVerificationClicked write FOnVerificationClicked;
-    property OnExpand: TNotifyEvent read FOnExpand write FOnExpand;
+    property OnExpanded: TNotifyEvent read FOnExpanded write FOnExpanded;
     property OnTimer: TTaskDlgTimerEvent read FOnTimer write FOnTimer;
     property OnRadioButtonClicked: TNotifyEvent read FOnRadioButtonClicked write FOnRadioButtonClicked;
     property OnHyperlinkClicked: TNotifyEvent read FOnHyperlinkClicked write FOnHyperlinkClicked;
@@ -744,7 +746,7 @@ type
     property OnDialogCreated;
     property OnDialogDestroyed;
     property OnVerificationClicked;
-    property OnExpand;
+    property OnExpanded;
     property OnTimer;
     property OnRadioButtonClicked;
     property OnHyperlinkClicked;

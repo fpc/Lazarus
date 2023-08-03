@@ -197,10 +197,11 @@ begin
     FOnDialogDestroyed(Self);
 end;
 
-procedure TCustomTaskDialog.DoOnExpandButtonClicked({%H-}Expanded: Boolean);
+procedure TCustomTaskDialog.DoOnExpandButtonClicked(Expanded: Boolean);
 begin
-  if Assigned(FOnExpand) then
-    FOnExpand(Self)
+  FExpanded := Expanded;
+  if Assigned(FOnExpanded) then
+    FOnExpanded(Self)
 end;
 
 procedure TCustomTaskDialog.DoOnTimer(TickCount: Cardinal; var Reset: Boolean);
@@ -209,8 +210,12 @@ begin
     FOnTimer(Self, TickCount, Reset);
 end;
 
-procedure TCustomTaskDialog.DoOnVerificationClicked({%H-}Checked: Boolean);
+procedure TCustomTaskDialog.DoOnVerificationClicked(Checked: Boolean);
 begin
+  if Checked then
+    Include(FFlags, tfVerificationFlagChecked)
+  else
+    Exclude(FFlags, tfVerificationFlagChecked);
   if Assigned(FOnVerificationClicked) then
     FOnVerificationClicked(Self);
 end;
