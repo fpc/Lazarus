@@ -82,35 +82,70 @@ implementation
 {$R *.lfm}
 
 function CheckSearchPath(const Context, ExpandedPath: string; Level: TCheckCompileOptionsMsgLvl; Hint: string = ''): boolean;
+
+  function StopDueToSpecialChars(const s: string): boolean;
+  var
+    HasChars: TCCOSpecialChars;
+    ErrorMsg: String;
+  begin
+    if Ord(Level) <= Ord(ccomlWarning) then
+    begin
+      FindSpecialCharsInPath(s, HasChars);
+      if Ord(Level) >= Ord(ccomlErrors) then
+        ErrorMsg := SpecialCharsToStr(HasChars * [ccoscSpecialChars, ccoscNewLine])
+      else
+        ErrorMsg := SpecialCharsToStr(HasChars);
+      if ErrorMsg <> '' then
+      begin
+        if IDEMessageDialog(lisCCOWarningCaption, Context + LineEnding + ErrorMsg+Hint,
+          mtWarning, [mbOK, mbCancel]) <> mrOk then
+          exit(true);
+      end;
+    end;
+    Result:=false;
+  end;
+
 var
   CurPath: string;
-  p: integer;
-  HasChars: TCCOSpecialChars;
-  ErrorMsg: string;
+  p, EndPos: integer;
 begin
   Result := False;
 
   if Hint<>'' then Hint:=#13#13+Hint;
 
-  // check for *
-  if Ord(Level) <= Ord(ccomlHints) then
-  begin
-    if System.Pos('*', ExpandedPath) > 0 then
-    begin
-      if IDEMessageDialog(lisHint, Format(
-        lisTheContainsAStarCharacterLazarusUsesThisAsNormalCh, [Context, LineEnding])+Hint,
-        mtWarning, [mbOK, mbCancel]) <> mrOk then
-        exit;
-    end;
-  end;
+  p := 1;
+  EndPos:=1;
+  repeat
+    //DebugLn(['CheckSearchPath ',ExpandedPath,' ',p,' ',length(ExpandedPath)]);
 
-  // check for non existing directories
-  if Ord(Level) <= Ord(ccomlWarning) then
-  begin
-    p := 1;
-    repeat
-      //DebugLn(['CheckSearchPath ',ExpandedPath,' ',p,' ',length(ExpandedPath)]);
-      CurPath := GetNextDirectoryInSearchPath(ExpandedPath, p);
+    // check special chars between paths
+    if StopDueToSpecialChars(copy(ExpandedPath,EndPos,p-EndPos)) then exit;
+
+    CurPath := GetNextDirectoryInSearchPath(ExpandedPath, p);
+    EndPos:=p+length(CurPath);
+
+    case ExtractFilename(CurPath) of
+    '*','**': CurPath:=ExtractFilePath(CurPath); // star directories
+    end;
+
+    // check special chars in path
+    if StopDueToSpecialChars(CurPath) then exit;
+
+    if Ord(Level) <= Ord(ccomlHints) then
+    begin
+      // check for *
+      if System.Pos('*', CurPath) > 0 then
+      begin
+        if IDEMessageDialog(lisHint, Format(
+            lisTheContainsAStarCharacterLazarusUsesThisAsNormalCh, [Context, LineEnding])+Hint,
+            mtWarning, [mbOK, mbCancel]) <> mrOk then
+          exit;
+      end;
+    end;
+
+    if Ord(Level) <= Ord(ccomlWarning) then
+    begin
+      // check for non existing directories
       if (CurPath <> '') and (not IDEMacros.StrHasMacros(CurPath)) and
         (FilenameIsAbsolute(CurPath)) then
       begin
@@ -122,27 +157,12 @@ begin
             Exit;
         end;
       end;
-    until p > length(ExpandedPath);
-  end;
-
-  // check for special characters
-  if (not IDEMacros.StrHasMacros(ExpandedPath)) then
-  begin
-    FindSpecialCharsInPath(ExpandedPath, HasChars);
-    if Ord(Level) <= Ord(ccomlWarning) then
-    begin
-      if Ord(Level) >= Ord(ccomlErrors) then
-        ErrorMsg := SpecialCharsToStr(HasChars * [ccoscSpecialChars, ccoscNewLine])
-      else
-        ErrorMsg := SpecialCharsToStr(HasChars);
-      if ErrorMsg <> '' then
-      begin
-        if IDEMessageDialog(lisCCOWarningCaption, Context + LineEnding + ErrorMsg+Hint,
-          mtWarning, [mbOK, mbCancel]) <> mrOk then
-          exit;
-      end;
     end;
-  end;
+
+  until p > length(ExpandedPath);
+
+  // check for special characters at end
+  if StopDueToSpecialChars(copy(ExpandedPath,EndPos,p-EndPos)) then exit;
 
   Result := True;
 end;
