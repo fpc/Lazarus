@@ -162,15 +162,35 @@ end;
 
 function FileIsInPath(const Filename, Path: string): boolean;
 var
-  ExpFile: String;
-  ExpPath: String;
-  l: integer;
+  ExpFile, ExpPath: String;
+  l, p, PathDelimCount: integer;
 begin
   ExpFile:=CleanAndExpandFilename(Filename);
   ExpPath:=CleanAndExpandDirectory(Path);
   l:=length(ExpPath);
-  Result:=(l>0) and (length(ExpFile)>l) and (ExpFile[l] in AllowDirectorySeparators)
-          and (CompareFilenames(ExpPath,LeftStr(ExpFile,l))=0);
+  p:=1;
+  PathDelimCount:=0;
+  while p<=l do
+  begin
+    if ExpPath[p] in AllowDirectorySeparators then inc(PathDelimCount);
+    inc(p);
+  end;
+  p:=1;
+  l:=length(ExpFile);
+  while p<=l do
+  begin
+    if ExpFile[p] in AllowDirectorySeparators then
+    begin
+      dec(PathDelimCount);
+      if PathDelimCount=0 then
+      begin
+        Result:=CompareFilenames(LeftStr(ExpFile,p),ExpPath)=0;
+        exit;
+      end;
+    end;
+    inc(p);
+  end;
+  Result:=false;
 end;
 
 function FileIsInDirectory(const Filename, Directory: string): boolean;
