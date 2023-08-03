@@ -235,6 +235,13 @@ begin
   Result:=TObject(0);
   if (FEffectiveBaseDirectory<>'') and FilenameIsAbsolute(FEffectiveBaseDirectory) then
     APath:=CreateAbsolutePath(APath, FEffectiveBaseDirectory);
+
+  case ExtractFilename(APath) of
+  '*','**':
+    if DirPathExistsCached(ExtractFilePath(APath)) then
+      exit(TObject(1));
+  end;
+
   if DirPathExistsCached(APath) then
     Result:=TObject(1);
 end;
