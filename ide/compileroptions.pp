@@ -944,7 +944,7 @@ begin
       CurPath:=copy(Paths,StartPos,EndPos-StartPos);
       StartPos:=EndPos+1;
       Kind:=IsCTStarDirectory(CurPath,p);
-      if Kind=ctsdStarStar then
+      if Kind in [ctsdStar,ctsdStarStar] then
       begin
         Delete(CurPath,p+1,length(CurPath));
         IsRelative:=not FilenameIsAbsolute(CurPath);
