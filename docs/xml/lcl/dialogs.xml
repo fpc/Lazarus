@@ -6001,8 +6001,9 @@ position specified in the <var>ButtonID</var> argument. RadioButton is set to
 <b>Nil</b> if ButtonID is not a valid position in RadioButtons.
 </p>
 <p>
-DoOnRadioButtonClicked is called from the OnRadioButtonClicked method in the 
-TLCLTaskDialog class when an emulated task dialog is used for the platform.
+DoOnRadioButtonClicked is called from the private OnRadioButtonClicked method 
+in the TLCLTaskDialog class when an emulated task dialog is used for the 
+platform.
 </p>
 </descr>
 <version>
@@ -6013,7 +6014,7 @@ Added in LCL version 4.0.
 <link id="TCustomTaskDialog.RadioButtons"/>
 <link id="TCustomTaskDialog.SetRadioButtonFromRadioIndex"/>
 <link id="TCustomTaskDialog.OnRadioButtonClicked"/>
-<link id="#lcl.taskdlgemulation.TLCLTaskDialog.OnRadioButtonClicked">TLCLTaskDialog.OnRadioButtonClicked</link>
+<link id="#lcl.taskdlgemulation.TLCLTaskDialog">TLCLTaskDialog.OnRadioButtonClicked</link>
 </seealso>
 <notes>
 <note>
