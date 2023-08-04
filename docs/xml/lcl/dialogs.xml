@@ -5781,6 +5781,7 @@ For other platforms, or Windows versions which do not support the TaskDialog API
 <element name="TCustomTaskDialog.FCommonButtons"/>
 <element name="TCustomTaskDialog.FDefaultButton"/>
 <element name="TCustomTaskDialog.FExpandButtonCaption"/>
+<element name="TCustomTaskDialog.FExpanded"/>
 <element name="TCustomTaskDialog.FExpandedText"/>
 <element name="TCustomTaskDialog.FFlags"/>
 <element name="TCustomTaskDialog.FFooterIcon"/>
@@ -5790,7 +5791,7 @@ For other platforms, or Windows versions which do not support the TaskDialog API
 <element name="TCustomTaskDialog.FOnDialogConstructed"/>
 <element name="TCustomTaskDialog.FOnDialogCreated"/>
 <element name="TCustomTaskDialog.FOnDialogDestroyed"/>
-<element name="TCustomTaskDialog.FOnExpand"/>
+<element name="TCustomTaskDialog.FOnExpanded"/>
 <element name="TCustomTaskDialog.FOnHyperlinkClicked"/>
 <element name="TCustomTaskDialog.FOnRadioButtonClicked"/>
 <element name="TCustomTaskDialog.FOnTimer"/>
@@ -6675,6 +6676,29 @@ Added in LCL version 4.0.
 </seealso>
 </element>
 
+<!-- TODO: Needs content. -->
+<element name="TCustomTaskDialog.Expanded">
+<short>
+Indicates the expanded or collapsed state for the the ExpandedText on the task 
+dialog form.
+</short>
+<descr>
+<p>
+<var>Expanded</var> is a read-only <var>Boolean</var> property which indicates whether the content in ExpandedText is currently displayed in the expanded or collapsed state.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TCustomTaskDialog.ExpandedText"/>
+<link id="TCustomTaskDialog.OnExpanded"/>
+<link id="TCustomTaskDialog.Flags"/>
+<link id="TTaskDialogFlag"/>
+<link id="TTaskDialogFlags"/>
+</seealso>
+</element>
+
 <element name="TCustomTaskDialog.OnButtonClicked">
 <short>
 Event handler signalled for the button clicked when the Task dialog was 
@@ -6729,14 +6753,14 @@ Added in LCL version 4.0.
 </element>
 
 <!-- TODO: Needs additional content. -->
-<element name="TCustomTaskDialog.OnExpand">
+<element name="TCustomTaskDialog.OnExpanded">
 <short>
 Event handler signalled when the ExpandedText property has been expanded or 
 collapsed.
 </short>
 <descr>
 <p>
-<var>OnExpand</var> is a <var>TNotifyEvent</var> property with the event 
+<var>OnExpanded</var> is a <var>TNotifyEvent</var> property with the event 
 handler signalled when the expanded or collapsed state for the 
 <var>ExpandedText</var> area on the task dialog has been changed.
 </p>
@@ -6744,7 +6768,13 @@ handler signalled when the expanded or collapsed state for the
 <version>
 Added in LCL version 4.0.
 </version>
-<seealso/>
+<seealso>
+<link id="TCustomTaskDialog.Expanded"/>
+<link id="TCustomTaskDialog.Flags"/>
+<link id="TTaskDialogFlags"/>
+<link id="TTaskDialogFlag"/>
+<link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
+</seealso>
 </element>
 
 <!-- TODO: Needs additional content. -->
@@ -6886,7 +6916,7 @@ end;
 <element name="TTaskDialog.OnDialogCreated" link="#lcl.dialogs.TCustomTaskDialog.OnDialogCreated"/>
 <element name="TTaskDialog.OnDialogDestroyed" link="#lcl.dialogs.TCustomTaskDialog.OnDialogDestroyed"/>
 <element name="TTaskDialog.OnVerificationClicked" link="#lcl.dialogs.TCustomTaskDialog.OnVerificationClicked"/>
-<element name="TTaskDialog.OnExpand" link="#lcl.dialogs.TCustomTaskDialog.OnExpand"/>
+<element name="TTaskDialog.OnExpanded" link="#lcl.dialogs.TCustomTaskDialog.OnExpanded"/>
 <element name="TTaskDialog.OnTimer" link="#lcl.dialogs.TCustomTaskDialog.OnTimer"/>
 <element name="TTaskDialog.OnRadioButtonClicked" link="#lcl.dialogs.TCustomTaskDialog.OnRadioButtonClicked"/>
 <element name="TTaskDialog.OnHyperlinkClicked" link="#lcl.dialogs.TCustomTaskDialog.OnHyperlinkClicked"/>
