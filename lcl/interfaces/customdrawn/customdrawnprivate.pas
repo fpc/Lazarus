@@ -77,7 +77,7 @@ type
     LCLControl: TCustomTabControl;
   end;
 
-  // Misc
+  // Misc Tab
 
   TCDIntfSpinEdit = class(TCDSpinEdit)
   public
@@ -327,7 +327,7 @@ begin
     // Common Controls Tab
     (AControl is TCDIntfProgressBar) or (AControl is TCDIntfTrackBar) or
     (AControl is TCDIntfPageControl) or
-    // Common Controls Tab
+    // Misc Tab
     (AControl is TCDIntfSpinEdit)
     ;
 end;
