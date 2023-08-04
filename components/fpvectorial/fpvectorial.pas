@@ -887,6 +887,7 @@ type
     procedure InitializeWithConvertionOf3DPointsToHeightMap(APage: TvVectorialPage; AWidth, AHeight: Integer);
     procedure Render(var ARenderInfo: TvRenderInfo; ADoDraw: Boolean = True); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
+    procedure Scale(ADeltaScaleX, ADeltaScaleY: Double); override;
   end;
 
   { TvPoint }
@@ -7232,6 +7233,12 @@ begin
       [Width, Height, RasterImage.Width, RasterImage.Height, AltText]);
     ADestRoutine(lStr, Result);
   end;
+end;
+
+procedure TvRasterImage.Scale(ADeltaScaleX, ADeltaScaleY: Double);
+begin
+  Width := ADeltaScaleX;
+  Height := ADeltaScaleY;
 end;
 
 { TvArrow }
