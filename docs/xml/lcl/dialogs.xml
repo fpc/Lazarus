@@ -5191,7 +5191,7 @@ should be reset.
 </p>
 </descr>
 <version>
-Added in LCL version 4.0.  
+Added in LCL version 4.0.
 </version>
 <seealso>
 <link id="TCustomTaskDialog.OnTimer"/>
@@ -5750,26 +5750,83 @@ Defines a configurable, modal task dialog at run-time.
 <descr>
 <p>
 <var>TCustomTaskDialog</var> is a <var>TLCLComponent</var> descendant which 
-defines a configurable, modal task dialog. It is the base class for 
-TaskDialog, and provides a multi-platform implementation of the Windows 
-TaskDialog API.
+defines a configurable, modal task dialog. It can be used to display and edit 
+information on a dialog form with more features than those available on a 
+standard message box. TCustomTaskDialog includes values like:
+</p>
+<ul>
+<li>
+A Title for the dialog.
+</li>
+<li>
+A Caption for the dialog.
+</li>
+<li>
+A main Icon for the dialog.
+</li>
+<li>
+Text to describe the task dialog.
+</li>
+<li>
+A footer to display additional information on the dialog.
+</li>
+<li>
+An expandable / collapsible text area which can be displayed in the main 
+content area or the footer for the dialog.
+</li>
+<li>
+Standard buttons used to return a modal result value.
+</li>
+<li>
+Custom command buttons for task-specific actions.
+</li>
+<li>
+Radio buttons to select dialog options.
+</li>
+<li>
+A progress bar using either the standard or marquee display styles.
+</li>
+<li>
+A query field to capture user input as text or by selecting a value from a list 
+of values in a combo-box control.
+</li>
+<li>
+A verification message and check box.
+</li>
+<li>
+Support for hyperlinks in text areas.
+</li>
+</ul>
+<p>
+TCustomTaskDialog is the base class for TaskDialog, and provides a 
+multi-platform implementation of the Windows TaskDialog API. It provides 
+properties which can be used to configure the task dialog at design-time or at 
+run-time. At run-time, the <var>Execute</var> method handles converting 
+properties and calling routines and methods in the widgetset which implement  
+the task dialog for a given platform.
 </p>
 <p>
-TCustomTaskDialog provides properties which can be used to configure the 
-task dialog at design-time or at run-time. At run-time, the <var>Execute</var> 
-method handles converting properties and calling routines and methods in the 
-widgetset which implements the dialog for a given platform.
-</p>
-<!-- TODO: Needs content. -->
-<p>
-For the Windows platform...
+<b>Platform Support</b>
 </p>
 <p>
-For other platforms, or Windows versions which do not support the TaskDialog API, the widgetset classes dynamically create...
+The TaskDialog API, upon which TCustomTaskDialog and TTaskDialog are based, is 
+available only on Windows Vista or later versions. On these platforms, the form 
+displayed at run-time is the native form for the platform. On older Windows 
+versions, and other platforms, the TaskDialog API is not available or 
+supported. For these platforms, a standard LCL form is created and populated at 
+run-time to emulate the appearance and behaviors for the Windows 
+implementation. This occurs in the widgetget set class and uses the components 
+found in the <file>taskdlgemulation.pp</file> unit. It can be forced by 
+including a value in the Flags property for the class instance.
 </p>
 </descr>
+<version>
+Modified in LCL version 4.0. The implementation for the most part is rewritten, 
+and includes additional features not found in previous versions.
+</version>
 <seealso>
 <link id="TTaskDialog"/>
+<link id="#lcl.taskdlgemulation.TLCLTaskDialog">TLCLTaskDialog</link>
 <link id="#lcl.lclclasses.TLCLComponent">TLCLComponent</link>
 </seealso>
 </element>
@@ -5818,10 +5875,15 @@ For other platforms, or Windows versions which do not support the TaskDialog API
 <element name="TCustomTaskDialog.SetRadioButtons.Value"/>
 
 <!-- protected -->
-<!-- TODO: Needs content. -->
 <element name="TCustomTaskDialog.WSRegisterClass">
-<short/>
-<descr/>
+<short>
+Registers the task dialog class in the widgetset when needed.
+</short>
+<descr>
+<p>
+Calls the factory routine in the widgetset implementation if it has not already been registered.
+</p>
+</descr>
 <version>
 Added in LCL version 4.0.
 </version>
@@ -5923,22 +5985,53 @@ execution.
 </short>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TCustomTaskDialog.DoOnRadioButtonClicked">
-<short/>
-<descr/>
+<short>
+Sets the active radio button and signals the OnRadioButtonClicked event handler 
+(when assigned).
+</short>
+<descr>
+<p>
+No actions are performed in the method if <var>OnRadioButtonClicked</var> has 
+not been assigned.
+</p>
+<p>
+Calls SetRadioButtonFromRadioIndex to set RadioButton to the control at the 
+position specified in the <var>ButtonID</var> argument. RadioButton is set to 
+<b>Nil</b> if ButtonID is not a valid position in RadioButtons.
+</p>
+<p>
+DoOnRadioButtonClicked is called from the OnRadioButtonClicked method in the 
+TLCLTaskDialog class when an emulated task dialog is used for the platform.
+</p>
+</descr>
 <version>
 Added in LCL version 4.0.
 </version>
-<seealso/>
+<seealso>
+<link id="TCustomTaskDialog.RadioButton"/>
+<link id="TCustomTaskDialog.RadioButtons"/>
+<link id="TCustomTaskDialog.SetRadioButtonFromRadioIndex"/>
+<link id="TCustomTaskDialog.OnRadioButtonClicked"/>
+<link id="#lcl.taskdlgemulation.TLCLTaskDialog.OnRadioButtonClicked">TLCLTaskDialog.OnRadioButtonClicked</link>
+</seealso>
+<notes>
+<note>
+OnRadioButtonClicked is a property in TCustomTaskDialog and a method in 
+TLCLTaskDIalog. Confusing...
+</note>
+</notes>
 </element>
 <element name="TCustomTaskDialog.DoOnRadioButtonClicked.ButtonID">
-<short/>
+<short>
+Index value for the radio button locates and signalled in the method.
+</short>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TCustomTaskDialog.DoOnDialogConstructed">
-<short/>
+<short>
+Signals the OnDialogConstructed event handler (when assigned).
+</short>
 <descr/>
 <version>
 Added in LCL version 4.0.
@@ -5946,9 +6039,10 @@ Added in LCL version 4.0.
 <seealso/>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TCustomTaskDialog.DoOnDialogCreated">
-<short/>
+<short>
+Signals the OnDialogCreated event handler (when assigned).
+</short>
 <descr/>
 <version>
 Added in LCL version 4.0.
@@ -5956,9 +6050,10 @@ Added in LCL version 4.0.
 <seealso/>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TCustomTaskDialog.DoOnDialogDestroyed">
-<short/>
+<short>
+Signals the OnDialogDestroyed event handler (when assigned).
+</short>
 <descr/>
 <version>
 Added in LCL version 4.0.
@@ -5966,9 +6061,11 @@ Added in LCL version 4.0.
 <seealso/>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TCustomTaskDialog.DoOnExpandButtonClicked">
-<short/>
+<short>
+Updates the value in the Expanded property and signals the OnExpanded event 
+handler (when assigned).
+</short>
 <descr/>
 <version>
 Added in LCL version 4.0.
@@ -5976,12 +6073,16 @@ Added in LCL version 4.0.
 <seealso/>
 </element>
 <element name="TCustomTaskDialog.DoOnExpandButtonClicked.Expanded">
-<short/>
+<short>
+New value for the Expanded property.
+</short>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TCustomTaskDialog.DoOnTimer">
-<short/>
+<short>
+Signals the OnTimer event handler (when assigned) using the specified parameter 
+values.
+</short>
 <descr/>
 <version>
 Added in LCL version 4.0.
@@ -5989,38 +6090,59 @@ Added in LCL version 4.0.
 <seealso/>
 </element>
 <element name="TCustomTaskDialog.DoOnTimer.TickCount">
-<short/>
+<short>
+Elapsed number of milliseconds since the timer was started.
+</short>
 </element>
 <element name="TCustomTaskDialog.DoOnTimer.Reset">
-<short/>
+<short>
+Set to <b>True</b> to reset (cancel) the timer for the task dialog. 
+<b>False</b> allows the timer to continue executing.
+</short>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TCustomTaskDialog.DoOnVerificationClicked">
-<short/>
+<short>
+Updates Flags to reflect the checked state for the verification control and 
+signals the OnVerificationClicked event handler (when assigned).
+</short>
 <descr/>
 <version>
 Added in LCL version 4.0.
 </version>
-<seealso/>
+<seealso>
+<link id="TCustomTaskDialog.Flags"/>
+<link id="TCustomTaskDialog.OnVerificationClicked"/>
+<link id="TTaskDialogFlags"/>
+<link id="TTaskDialogFlag"/>
+</seealso>
 </element>
 <element name="TCustomTaskDialog.DoOnVerificationClicked.Checked">
-<short/>
+<short>
+State for the verification check box control on the dialog.
+</short>
 </element>
 
 <!-- <element name="TCustomTaskDialog.DoOnHelp"/> -->
 
-<!-- TODO: Needs content. -->
 <element name="TCustomTaskDialog.DoOnHyperlinkClicked">
-<short/>
+<short>
+Updates the value in URL and signals the OnHyperlinkClicked event handler (when 
+assigned).
+</short>
 <descr/>
 <version>
 Added in LCL version 4.0.
 </version>
-<seealso/>
+<seealso>
+<link id="TCustomTaskDialog.URL"/>
+<link id="TCustomTaskDialog.OnHyperlinkClicked"/>
+</seealso>
 </element>
 <element name="TCustomTaskDialog.DoOnHyperlinkClicked.AURL">
-<short/>
+<short>
+New value for the URL property.
+</short>
 </element>
 
 <!-- <element name="TCustomTaskDialog.DoOnNavigated"/> -->
@@ -6816,7 +6938,7 @@ Added in LCL version 4.0.
 <element name="TCustomTaskDialog.OnHyperlinkClicked">
 <short>
 Event handler signalled when a hyperlink in one of the text areas has been 
-clicked.  
+clicked.
 </short>
 <descr>
 <p>
