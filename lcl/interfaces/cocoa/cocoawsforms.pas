@@ -316,18 +316,7 @@ class procedure TCocoaWSHintWindow.SetText(const AWinControl: TWinControl;
   const AText: String);
 begin
   TCocoaWSCustomForm.SetText(AWinControl, AText);
-  //todo: this is a workaround. For some reason, when moving a hint window
-  //      from one control to another (of the same type), the contents
-  //      of the hint window is not invalidated.
-  //
-  //      Need to figure out why this is happening and resolve at the proper place.
-  //      In the mean time - invalidating contents every time Caption is change
-  if (AWinControl.HandleAllocated) then
-    {$ifdef BOOLFIX}
-    NSView(AWinControl.Handle).setNeedsDisplay__(Ord(true));
-    {$else}
-    NSView(AWinControl.Handle).setNeedsDisplay_(true);
-    {$endif}
+  AWinControl.Invalidate;
 end;
 
 { TLCLWindowCallback }
