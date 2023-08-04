@@ -313,6 +313,10 @@ begin
     if (CurPath<>'') and (not FilenameIsAbsolute(CurPath)) then
       CurPath:=AppendPathDelim(BaseDirectory)+CurPath;
 
+    case ExtractFilename(CurPath) of
+    '*','**': CurPath:=ExtractFilePath(CurPath);
+    end;
+
     if ((CurPath='') and (MacroStartPos<1))
     or (not DirPathExistsCached(CurPath)) then begin
       // path does not exist -> remove
