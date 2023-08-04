@@ -1416,6 +1416,8 @@ type
     StyleTextSpanBold, StyleTextSpanItalic, StyleTextSpanUnderline: TvStyle;
     // Reader properties
     ReaderSettings: TvVectorialReaderSettings;
+    // Page Margins (in millimeters)
+    MarginTop, MarginBottom, MarginLeft, MarginRight: Integer;
     { Base methods }
     constructor Create; virtual;
     destructor Destroy; override;
@@ -1446,6 +1448,8 @@ type
     procedure SetDefaultPageFormat(AFormat: TvPageFormat);
     function AddPage(AUseTopLeftCoords: Boolean = False): TvVectorialPage;
     function AddTextPageSequence(): TvTextPageSequence;
+    procedure SetPageMargin(MTop, MBottom, MLeft, MRight: Integer);
+    procedure SetPageMargin(AValue: Integer);
     { Style methods }
     function AddStyle(): TvStyle;
     function AddListStyle: TvListStyle;
@@ -10150,6 +10154,12 @@ begin
   FListStyles := TFPList.Create;
   if gDefaultRenderer <> nil then
     FRenderer := gDefaultRenderer.Create;
+
+  // set default margin (20mm)
+  MarginTop := 20;
+  MarginBottom := 20;
+  MarginLeft := 20;
+  MarginRight := 20;
 end;
 
 {@@
@@ -10531,6 +10541,19 @@ begin
   Result.Height := Height;
   FPages.Add(Result);
   if FCurrentPageIndex < 0 then FCurrentPageIndex := FPages.Count-1;
+end;
+
+procedure TvVectorialDocument.SetPageMargin(MTop, MBottom, MLeft, MRight: Integer);
+begin
+  MarginTop := MTop;
+  MarginBottom := MBottom;
+  MarginLeft := MLeft;
+  MarginRight := MRight;
+end;
+
+procedure TvVectorialDocument.SetPageMargin(AValue: Integer);
+begin
+  SetPageMargin(AValue, AValue, AValue, AValue);
 end;
 
 function TvVectorialDocument.AddStyle: TvStyle;
