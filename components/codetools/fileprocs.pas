@@ -86,7 +86,7 @@ type
 
 // file operations
 function FileDateToDateTimeDef(aFileDate: TCTFileAgeTime; const Default: TDateTime = 0): TDateTime;
-function FilenameIsMatching(const Mask, Filename: string; MatchExactly: boolean): boolean;
+function FilenameIsMatching(const Mask, Filename: string; MatchExactly: boolean; AnyCase: boolean = false): boolean;
 function FindNextDirectoryInFilename(const Filename: string; var Position: integer): string;
 
 function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
@@ -1158,8 +1158,8 @@ begin
   Result:='';
 end;
 
-function FilenameIsMatching(const Mask, Filename: string; MatchExactly: boolean
-  ): boolean;
+function FilenameIsMatching(const Mask, Filename: string;
+  MatchExactly: boolean; AnyCase: boolean): boolean;
 (*
   check if Filename matches Mask
   if MatchExactly then the complete Filename must match, else only the
@@ -1186,6 +1186,19 @@ function FilenameIsMatching(const Mask, Filename: string; MatchExactly: boolean
     *.{p{as,p,},inc} matches a.pas, unit1.pp, b.p, b.inc but not c.lfm
 *)
 {off $DEFINE VerboseFilenameIsMatching}
+
+  function CompareUTF8AnyCase(AP: PChar; LenA: integer; BP: PChar; LenB: integer): PtrInt;
+  var
+    A, B: string;
+  begin
+    SetLength(A,LenA);
+    if LenA>0 then
+      Move(AP^,A[1],LenA);
+    SetLength(B,LenB);
+    if LenB>0 then
+      Move(BP^,B[1],LenB);
+    Result:=UTF8CompareText(A,B);
+  end;
 
   function Check(MaskP, FileP: PChar): boolean;
   var
@@ -1356,18 +1369,24 @@ function FilenameIsMatching(const Mask, Filename: string; MatchExactly: boolean
             inc(MaskP,UTF8CodepointSize(MaskP));
             inc(FileP,UTF8CodepointSize(FileP));
           end;
-          if CompareFilenames(MaskStart,MaskP-MaskStart,FileStart,FileP-FileStart)<>0 then
-            exit;
+          if Anycase then begin
+            if CompareUTF8AnyCase(MaskStart,MaskP-MaskStart,FileStart,FileP-FileStart)<>0 then
+              exit;
+          end else begin
+            if CompareFilenames(MaskStart,MaskP-MaskStart,FileStart,FileP-FileStart)<>0 then
+              exit;
+          end;
         end;
       else
         // match ASCII characters
         repeat
           case MaskP^ of
           #0,SpecialChar,PathDelim,'?','*','{',',','}': break;
-          {$IFDEF CaseInsensitiveFilenames}
           'a'..'z','A'..'Z':
-            if FPUpChars[MaskP^]<>FPUpChars[FileP^] then exit;
-          {$ENDIF}
+            if AnyCase then begin
+              if FPUpChars[MaskP^]<>FPUpChars[FileP^] then exit;
+            end else
+              if MaskP^<>FileP^ then exit;
           else
             if MaskP^<>FileP^ then exit;
           end;

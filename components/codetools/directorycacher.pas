@@ -2169,8 +2169,8 @@ var
     if (CurDir='*') or (CurDir='**') then exit(true);
     for i:=0 to Excludes.Count-1 do begin
       ExcludeMask:=Excludes[i];
-      if FilenameIsMatching(ExcludeMask,CurSubDir,true)
-          or FilenameIsMatching(ExcludeMask,CurDir,true) then
+      if FilenameIsMatching(ExcludeMask,CurSubDir,true,true)
+          or FilenameIsMatching(ExcludeMask,CurDir,true,true) then
         exit(true);
     end;
     Result:=false;
