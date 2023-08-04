@@ -33,6 +33,7 @@ type
     procedure TestCompleteMethodSignature_Body_GenericObjFPC;
     procedure TestCompleteMethodSignature_Def_GenericDelphi;
     procedure TestCompleteMethodSignature_Body_GenericDelphi; // todo
+    procedure TestCompleteMethodSignature_SkipAttribute;
     // class completion: sync method parentheses to body
     procedure TestCompleteMethodSignature_Empty_Parentheses;
     procedure TestCompleteMethodSignature_Without_Parentheses;
@@ -400,6 +401,47 @@ begin
     'begin',
     'end;',
     'procedure TBird<T>.DoIt;',
+    'begin',
+    'end;',
+    'end.']);
+end;
+
+procedure TTestCodeCompletion.TestCompleteMethodSignature_SkipAttribute;
+begin
+  Test('TestCompleteMethodSignature_SkipAttribute',
+    ['unit test1;',
+    '{$mode delphi}',
+    'interface',
+    'type',
+    '  TBird = class',
+    '    procedure DoIt([Ref] o: TObject);',
+    '    procedure DoIt(const [Ref]b: TBird);',
+    '  end;',
+    'implementation',
+    'procedure TBird.DoIt(o : TObject);',
+    'begin',
+    'end;',
+    'procedure TBird.DoIt(const b: TBird);',
+    'begin',
+    'end;',
+    'end.'],
+    6,1,
+    ['unit test1;',
+    '{$mode delphi}',
+    'interface',
+    'type',
+    '',
+    '  { TBird }',
+    '',
+    '  TBird = class',
+    '    procedure DoIt([Ref] o: TObject);',
+    '    procedure DoIt(const [Ref]b: TBird);',
+    '  end;',
+    'implementation',
+    'procedure TBird.DoIt(o: TObject);',
+    'begin',
+    'end;',
+    'procedure TBird.DoIt(const b: TBird);',
     'begin',
     'end;',
     'end.']);

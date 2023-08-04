@@ -1048,7 +1048,7 @@ begin
   '[bird(4)]',
   'procedure DoIt; forward;',
   '[bird(5)]',
-  'procedure DoIt;',
+  'procedure Fly(const [ref] Obj: TObject);',
   'begin',
   'end;',
   'var',

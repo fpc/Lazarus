@@ -39,6 +39,7 @@ type
     procedure TestMethodJump_DelphiGenericClass;
     procedure TestMethodJump_DelphiGenericMethod;
     procedure TestMethodJump_ObjFPCGenericMethod;
+    procedure TestMethodJump_ParamWithAttribute;
   end;
 
 implementation
@@ -299,7 +300,7 @@ procedure TTestMethodJumpTool.TestMethodJump_ObjFPCGenericMethod;
 begin
   Add([
   'unit Test1;',
-  '{$mode delphi}{$H+}',
+  '{$mode delphi}',
   'interface',
   'type',
   '  TBird = class',
@@ -315,6 +316,29 @@ begin
   'end;',
   'end.']);
   TestJumpToMethod('a',false,'b',false,2);
+end;
+
+procedure TTestMethodJumpTool.TestMethodJump_ParamWithAttribute;
+begin
+  Add([
+  'unit Test1;',
+  '{$mode delphi}',
+  'interface',
+  'type',
+  '  TBird = class',
+  '    function {a}DoIt(const [Ref] s: TObject): TObject;',
+  '    procedure DoIt;',
+  '  end;',
+  'implementation',
+  'function TBird.DoIt(const s: TObject): TObject;',
+  'begin',
+  '  {b}',
+  'end;',
+  'function TBird.DoIt(const Name: string): TObject;',
+  'begin',
+  'end;',
+  'end.']);
+  TestJumpToMethod('a',false,'b',true);
 end;
 
 initialization

@@ -1440,15 +1440,9 @@ function TPascalParserTool.ReadParamList(ExceptionOnError, Extract: boolean;
 { parse parameter list
 
  examples:
-   procedure ProcName;  virtual; abstract;
-   function FuncName(Parameter1: Type1; Parameter2: Type2): ResultType;
-   constructor Create;
-   destructor Destroy;  override;
-   class function X: integer;
-   function QWidget_mouseGrabber(): QWidgetH; cdecl;
-   procedure Intf.Method = ImplementingMethodName;
-   function CommitUrlCacheEntry; // only Delphi
+   procedure P(Parameter1: Type1; Parameter2: Type2);
    procedure MacProcName(c: char; ...); external;
+   procedure P(const [ref] Obj: TObject);
 }
 var CloseBracket: char;
   Node: TCodeTreeNode;
@@ -1540,6 +1534,10 @@ begin
         ReadPrefixModifier;
         // read parameter name(s)
         repeat
+          if (CurPos.Flag=cafEdgedBracketOpen) and AllowAttributes then begin
+            ReadAttribute;
+            ReadNextAtom;
+          end;
           if not AtomIsIdentifier then begin
             if ExceptionOnError then
               AtomIsIdentifierSaveE(20180411194026);
@@ -2651,7 +2649,7 @@ begin
       Result:=KeyWordFuncList.DoItCaseInsensitive(Src,CurPos.StartPos,
                                                   CurPos.EndPos-CurPos.StartPos)
     else if c='[' then begin
-      if [cmsPrefixedAttributes,cmsIgnoreAttributes]*Scanner.CompilerModeSwitches<>[] then begin
+      if AllowAttributes then begin
         ReadAttribute;
         Result:=true;
       end
@@ -3853,6 +3851,7 @@ function TPascalParserTool.KeyWordFuncVar: boolean;
         a:b; external name 'string constant';
         a:b; cvar; external;
         a:b; external 'library' name 'avar';
+        [attrib] a:b;
 
     implementation
 
@@ -4081,7 +4080,8 @@ function TPascalParserTool.KeyWordFuncGlobalProperty: boolean;
   examples:
    property
      errno : cint read fpgeterrno write fpseterrno;
-     A2 : Integer Read GetA2 Write SetA2;
+     [attrib]A2 : Integer Read GetA2 Write SetA2;
+
 }
 begin
   if not (CurSection in [ctnProgram,ctnLibrary,ctnInterface,ctnImplementation])
@@ -6363,7 +6363,8 @@ end;
 
 function TPascalParserTool.AllowAttributes: boolean;
 begin
-  Result:=Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE,cmOBJFPC];
+  Result:=([cmsPrefixedAttributes,cmsIgnoreAttributes]*Scanner.CompilerModeSwitches<>[])
+     or (Scanner.CompilerMode in [cmDELPHI,cmDELPHIUNICODE,cmOBJFPC]);
 end;
 
 function TPascalParserTool.AllowAnonymousFunctions: boolean;
