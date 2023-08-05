@@ -582,8 +582,9 @@ begin
   R.Right := W;
   R.Bottom := Result.Height;
   LCLIntf.DrawText(Result.Canvas.Handle,PChar(AText),Length(AText),R,DT_CALCRECT or DT_WORDBREAK);
-  debugln(['TLCLTaskDialog.AddLabel Result.SetBounds(',X,',',Y,',',W,',',R.Bottom,')']);
+  debugln(['TLCLTaskDialog.AddLabel before Result.SetBounds(',X,',',Y,',',W,',',R.Bottom,')']);
   Result.SetBounds(X,Y,W,R.Bottom);
+  debugln(['TLCLTaskDialog.AddLabel after Result.SetBounds(',X,',',Y,',',W,',',R.Bottom,'), Result.BoundsRect=',DbgS(Result.BoundsRect)]);
   Result.Caption := AText;
   inc(Y,R.Bottom+16);
   debugln(['TLCLTaskDialog.AddLabel End: X=',X,', Result.Left=',Result.Left]);
