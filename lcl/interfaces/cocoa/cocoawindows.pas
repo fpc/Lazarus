@@ -1021,7 +1021,11 @@ end;
 // return proper focused responder by kind of class of NSResponder
 function getProperFocusedResponder( const aResponder : NSResponder ): NSResponder;
 begin
-  Result := aResponder;
+  if aResponder<>nil then
+    Result := aResponder
+  else
+    Result:= NSApp.keyWindow;
+
   if Result.isKindOfClass(NSWindow) then
     Result:= TCocoaWindowContent(NSWindow(Result).contentView).documentView;
 end;
