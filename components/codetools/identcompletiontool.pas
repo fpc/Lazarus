@@ -106,7 +106,9 @@ type
     iliAtCursor, // the item is the identifier at the completion
     iliNeedsAmpersand, //the item has to be prefixed with '&'
     iliHasLowerVisibility,
-    iliIsRecentItem // the item was sorted to the front as it was recently used
+    iliIsRecentItem, // the item was sorted to the front as it was recently used
+    iliMatchedMidWord,    // prefix was found inside the word, not at the start of it.
+    iliHistoryWasMidWord  // this word was added to history for a mid word match
     );
   TIdentListItemFlags = set of TIdentListItemFlag;
   
@@ -328,6 +330,7 @@ type
     NodeDesc: TCodeTreeNodeDesc;
     ParamList: string;
     HistoryIndex: integer;
+    OnlyMidWordMatch: boolean;
     function CalcMemSize: PtrUInt;
   end;
 
@@ -344,7 +347,7 @@ type
     destructor Destroy; override;
     procedure Clear;
     procedure Add(NewItem: TIdentifierListItem);
-    function GetHistoryIndex(AnItem: TIdentifierListItem): integer;
+    procedure UpdateHistoryInfo(AnItem: TIdentifierListItem);
     function Count: integer;
     function CalcMemSize: PtrUInt;
   public
@@ -666,71 +669,80 @@ begin
 end;
 
 procedure TIdentifierList.UpdateFilteredList;
+type
+  TMatchSection = (
+    mtNone,    // item is not matched by filter
+    mtPriority,  // item is matched at start of word, or was recenently used mid-word (user wants/used this word as mid-word-match)
+    mtSecondary  // item is matched only mid-word
+  );
 var
-  AnAVLNode: TAvlTreeNode;
-  CurItem, CurItem2: TIdentifierListItem;
-  cPriorityCount, TotalHistLimit, j: Integer;
-  i: PtrInt;
-  HistoryLimits: array [TIdentifierCompatibility] of integer;
-  HasCompSort: Boolean;
-  HistComp, CurItmComp: TIdentifierCompatibility;
+  SecondaryList: TFPList;
+  RecentPos: array [Boolean, mtPriority..mtSecondary] of Integer;
+  LastMatchPos: Integer;
 
-  procedure InsertCurItem; inline;
+  // LowerRecent: mid-word matched in mtPriority
+  procedure InsertItem(Itm: TIdentifierListItem; Sect: TMatchSection; AsRecent, AsLowerRecent: boolean); inline;
+  var
+    l: TFPList;
   begin
-    if (length(Prefix)=length(CurItem.Identifier))
-    and (not (iliAtCursor in CurItem.Flags)) then
+    {$IFDEF ShowFilteredIdents}
+    DebugLn('::: FILTERED ITEM Prior %d/%d  Second %d/%d  "%s" (%d) AsRecent %s',
+      [RecentPos[False, mtPriority], FFilteredList.Count,
+       RecentPos[False, mtSecondary], SecondaryList.Count,
+       Itm.Identifier, ord(Sect), dbgs(AsRecent)]);
+    {$ENDIF}
+
+    case Sect of
+      mtNone: exit;
+      mtPriority:  l := FFilteredList;
+      mtSecondary: l := SecondaryList;
+    end;
+
+    if (Sect = mtPriority) and (length(Prefix)=length(Itm.Identifier)) and
+       (not (iliAtCursor in Itm.Flags))
+    then begin
       // put exact matches at the beginning
-      FFilteredList.Insert(0,CurItem)
+      l.Insert(0,Itm)
+    end
     else
-      FFilteredList.Insert(cPriorityCount, CurItem);
-    Inc(cPriorityCount);
+    if AsRecent then begin
+      l.Insert(RecentPos[AsLowerRecent, Sect], Itm);
+      Inc(RecentPos[AsLowerRecent, Sect]);
+      if not AsLowerRecent then
+        Inc(RecentPos[True, Sect]);
+      Itm.Flags := Itm.Flags + [iliIsRecentItem];
+    end
+    else begin
+      l.Add(Itm);
+      Itm.Flags := Itm.Flags - [iliIsRecentItem];
+    end;
   end;
 
-  function FilterCurItem: Integer; inline;
+  function WantedMatchSection(Itm: TIdentifierListItem): TMatchSection; inline;
+  var
+    MatchPos: Integer;
   begin
     if FContainsFilter then
-      Result:=IdentifierPos(PChar(Pointer(Prefix)),PChar(Pointer(CurItem.Identifier)))
-    else if ComparePrefixIdent(PChar(Pointer(Prefix)),PChar(Pointer(CurItem.Identifier))) then
-      Result:=0
+      MatchPos:=IdentifierPos(PChar(Pointer(Prefix)),PChar(Pointer(Itm.Identifier)))
+    else if ComparePrefixIdent(PChar(Pointer(Prefix)),PChar(Pointer(Itm.Identifier))) then
+      MatchPos:=0
     else
-      Result:=-1;
+      MatchPos:=-1;
+    LastMatchPos := MatchPos;
+
+    if MatchPos < 0 then exit(mtNone);
+    if MatchPos = 0 then exit(mtPriority);
+    if iliHistoryWasMidWord in Itm.Flags then exit(mtPriority);
+    Result := mtSecondary;
   end;
 
-  procedure AddHistoryCurItem(ForceComp: Boolean);
-  var
-    CurItmComp: TIdentifierCompatibility;
-    j, f: integer;
-    MatchAtStart, HasContainMatch: Boolean;
-  begin
-    HasContainMatch := False;
-    repeat
-      MatchAtStart := not HasContainMatch;
-      for j := 0 to length(FFoundHistoryItems) - 1 do begin
-        CurItem := FFoundHistoryItems[j];
-        if (CurItem = nil) then
-          continue;
-        if ForceComp then
-          CurItmComp := low(TIdentifierCompatibility)
-        else
-          CurItmComp := CurItem.Compatibility;
-        if (CurItmComp <> HistComp) then
-          Continue;
-        if (CurItem.HistoryIndex > HistoryLimits[CurItmComp]) then
-          break;
-        if (CurItem.Identifier<>'') then begin
-          f := FilterCurItem;
-          if f > 0 then
-            HasContainMatch := True;
-          if ( (f = 0) and MatchAtStart) or
-             ( (f > 0) and not MatchAtStart)
-          then begin
-            CurItem.Flags := CurItem.Flags + [iliIsRecentItem];
-            InsertCurItem;
-          end;
-        end;
-      end;
-    until (not HasContainMatch) or (not MatchAtStart)
-  end;
+var
+  AnAVLNode: TAvlTreeNode;
+  CurItem: TIdentifierListItem;
+  TotalHistLimit, j: Integer;
+  MaxHistoryIndex: array [mtPriority..mtSecondary] of integer;
+  MatchSection: TMatchSection;
+  IsRecent: Boolean;
 
 begin
   if not (ilfFilteredListNeedsUpdate in FFlags) then exit;
@@ -741,85 +753,60 @@ begin
   DebugLn(['TIdentifierList.UpdateFilteredList Prefix="',Prefix,'"']);
   {$ENDIF}
 
-  // Update HistoryLimits
+  // Update MaxHistoryIndex
   TotalHistLimit := 0;
-  HasCompSort := SortMethodForCompletion in IdentComplSortMethodUsingCompatibility;
   if FSortForHistory then
     TotalHistLimit := FSortForHistoryLimit;
-  for HistComp in TIdentifierCompatibility do begin
-    HistoryLimits[HistComp] := -1;
+  for MatchSection := mtPriority to mtSecondary do begin
+    RecentPos[False, MatchSection] := 0;
+    RecentPos[True, MatchSection]  := 0;
+    MaxHistoryIndex[MatchSection]  := -1;
   end;
-  for HistComp in TIdentifierCompatibility do begin
+  for MatchSection := mtPriority to mtSecondary do begin
     for j := 0 to length(FFoundHistoryItems) - 1 do begin
       if TotalHistLimit <= 0 then
         break;
-      if (FFoundHistoryItems[j] <> nil) and
-         ( (FFoundHistoryItems[j].Compatibility = HistComp) or (not HasCompSort) ) and
-         (FFoundHistoryItems[j].Identifier <> '')
+      CurItem := FFoundHistoryItems[j];
+      if (CurItem <> nil) and
+         (CurItem.Identifier <> '') and
+         (WantedMatchSection(CurItem) = MatchSection)
       then begin
-        CurItem := FFoundHistoryItems[j];
-        if (FilterCurItem >= 0) then begin
-          HistoryLimits[HistComp] := FFoundHistoryItems[j].HistoryIndex;
-          dec(TotalHistLimit);
-        end;
+        MaxHistoryIndex[MatchSection] := CurItem.HistoryIndex;
+        dec(TotalHistLimit);
       end;
     end;
-    if not HasCompSort then
-      break;
   end;
 
-  cPriorityCount := 0;
-  HistComp := Low(TIdentifierCompatibility);
-  AddHistoryCurItem(not HasCompSort);
 
+  SecondaryList := TFPList.Create;
   AnAVLNode:=FItems.FindLowest;
   while AnAVLNode<>nil do begin
-    CurItem2:=TIdentifierListItem(AnAVLNode.Data);
-    // history for each compatibility
-    if HasCompSort then begin
-      while HistComp < CurItem2.Compatibility do begin
-        inc(HistComp);
-        AddHistoryCurItem(False);
-      end;
-    end;
-
-    CurItem := CurItem2;
+    CurItem:=TIdentifierListItem(AnAVLNode.Data);
+    AnAVLNode:=FItems.FindSuccessor(AnAVLNode);
     if CurItem.Identifier<>'' then
     begin
-      i := FilterCurItem;
-      if HasCompSort then
-        CurItmComp := CurItem.Compatibility
-      else
-        CurItmComp := low(TIdentifierCompatibility);
-      if i=0 then begin
-        {$IFDEF ShowFilteredIdents}
-        DebugLn(['::: FILTERED ITEM ',FFilteredList.Count,' ',CurItem.Identifier]);
-        {$ENDIF}
-        if CurItem.HistoryIndex > HistoryLimits[CurItmComp] then begin
-          CurItem.Flags := CurItem.Flags - [iliIsRecentItem];
-          InsertCurItem;
-        end;
-      end
-      else if i>0 then begin
-        {$IFDEF ShowFilteredIdents}
-        DebugLn(['::: FILTERED ITEM ',FFilteredList.Count,' ',CurItem.Identifier]);
-        {$ENDIF}
-        if CurItem.HistoryIndex > HistoryLimits[CurItmComp] then
-          FFilteredList.Add(CurItem);
-      end;
+      MatchSection := WantedMatchSection(CurItem);
+      if MatchSection = mtNone then
+        Continue;
+
+      IsRecent := CurItem.HistoryIndex <= MaxHistoryIndex[MatchSection];
+      if (not IsRecent) and (LastMatchPos > 0) then
+        MatchSection := mtSecondary;
+
+      if LastMatchPos > 0
+      then CurItem.Flags := CurItem.Flags + [iliMatchedMidWord]
+      else CurItem.Flags := CurItem.Flags - [iliMatchedMidWord];
+
+      InsertItem(CurItem, MatchSection, IsRecent, LastMatchPos > 0);
     end;
-    AnAVLNode:=FItems.FindSuccessor(AnAVLNode);
   end;
 
-  if HasCompSort then begin
-    while HistComp < high(TIdentifierCompatibility) do begin
-      inc(HistComp);
-      AddHistoryCurItem(False);
-    end;
-  end;
+  j := FFilteredList.Count;
+  FFilteredList.AddList(SecondaryList);
+  SecondaryList.Destroy;
 
   if Assigned(FOnGatherUserIdentifiersToFilteredList) then
-    FOnGatherUserIdentifiersToFilteredList(Self, FFilteredList, cPriorityCount);
+    FOnGatherUserIdentifiersToFilteredList(Self, FFilteredList, j);
   {$IFDEF CTDEBUG}
   DebugLn(['TIdentifierList.UpdateFilteredList ',dbgs(FFilteredList.Count),' of ',dbgs(FItems.Count)]);
   {$ENDIF}
@@ -922,7 +909,7 @@ begin
   AnAVLNode:=FIdentView.FindKey(NewItem,@CompareIdentListItemsForIdents);
   if AnAVLNode=nil then begin
     if History<>nil then
-      NewItem.HistoryIndex:=History.GetHistoryIndex(NewItem);
+      History.UpdateHistoryInfo(NewItem);
     if (NewItem.HistoryIndex >= 0) and
        (NewItem.HistoryIndex < Length(FFoundHistoryItems))
     then begin
@@ -4683,6 +4670,7 @@ begin
   if OldAVLNode<>nil then begin
     // already in tree
     NewHistItem:=TIdentHistListItem(OldAVLNode.Data);
+    NewHistItem.OnlyMidWordMatch := NewHistItem.OnlyMidWordMatch and not (iliMatchedMidWord in NewItem.Flags);
     if NewHistItem.HistoryIndex=0 then exit;
     // must be moved -> remove it from the tree
     AdjustIndex:=NewHistItem.HistoryIndex;
@@ -4690,6 +4678,7 @@ begin
   end else begin
     // create a new history item
     NewHistItem:=TIdentHistListItem.Create;
+    NewHistItem.OnlyMidWordMatch := (iliMatchedMidWord in NewItem.Flags);
     NewHistItem.Identifier:=NewItem.Identifier;
     NewHistItem.NodeDesc:=NewItem.GetDesc;
     NewHistItem.ParamList:=NewItem.ParamTypeList;
@@ -4724,16 +4713,21 @@ begin
   {$ENDIF}
 end;
 
-function TIdentifierHistoryList.GetHistoryIndex(AnItem: TIdentifierListItem
-  ): integer;
+procedure TIdentifierHistoryList.UpdateHistoryInfo(AnItem: TIdentifierListItem);
 var
   AnAVLNode: TAVLTreeNode;
 begin
   AnAVLNode:=FindItem(AnItem);
-  if AnAVLNode=nil then
-    Result:=33333333  // a very high value
-  else
-    Result:=TIdentHistListItem(AnAVLNode.Data).HistoryIndex;
+  if AnAVLNode=nil then begin
+    AnItem.HistoryIndex:=33333333;  // a very high value
+    Exclude(AnItem.Flags, iliHistoryWasMidWord);
+  end
+  else begin
+    AnItem.HistoryIndex:=TIdentHistListItem(AnAVLNode.Data).HistoryIndex;
+    if TIdentHistListItem(AnAVLNode.Data).OnlyMidWordMatch
+    then Include(AnItem.Flags, iliHistoryWasMidWord)
+    else Exclude(AnItem.Flags, iliHistoryWasMidWord)
+  end;
 end;
 
 function TIdentifierHistoryList.Count: integer;
