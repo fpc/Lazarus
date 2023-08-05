@@ -126,6 +126,7 @@ type
     procedure TestFindDeclaration_Generics_FindDeclaration;
     procedure TestFindDeclaration_GenericsDelphi_InterfaceAncestor;
     procedure TestFindDeclaration_GenericsDelphi_FuncParam;
+    procedure TestFindDeclaration_GenericsDelphi_PublicProcType;
     procedure TestFindDeclaration_ForIn;
     procedure TestFindDeclaration_FileAtCursor;
     procedure TestFindDeclaration_CBlocks;
@@ -837,6 +838,31 @@ begin
   'var Bird: TBird;',
   'begin',
   '  Bird.Fly<TObject>(Run,Bird);',
+  'end.']);
+  FindDeclarations(Code);
+end;
+
+procedure TTestFindDeclaration.
+  TestFindDeclaration_GenericsDelphi_PublicProcType;
+begin
+  StartProgram;
+  Add([
+  '{$mode delphi}',
+  'type',
+  '  TArray<T> = array of T;',
+  '  TWing = class',
+  '  end;',
+  '  TBird = class',
+  '  public type',
+  '    TFlyFunc<T: TWing> = function (AType: TObject): TArray<T>;',
+  '  public var Fly: TFlyFunc<TWing>;',
+  '  end;',
+  'function Run(Sender: TObject): TArray<TWing>;',
+  'begin',
+  'end;',
+  'var Bird: TBird;',
+  'begin',
+  '  Bird.Fly(nil);',
   'end.']);
   FindDeclarations(Code);
 end;

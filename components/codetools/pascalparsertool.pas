@@ -4965,18 +4965,7 @@ begin
   if IsFunction then begin
     if (CurPos.Flag=cafColon) then begin
       ReadNextAtom;
-      if UpAtomIs('SPECIALIZE') then begin
-        ReadSpecialize(true);
-      end
-      else begin
-        AtomIsIdentifierSaveE(20180411194218);
-        ReadNextAtom;
-      end;
-      if CurPos.Flag=cafPoint then begin
-        ReadNextAtom;
-        AtomIsIdentifierSaveE(20180411194221);
-        ReadNextAtom;
-      end;
+      ReadTypeReference(true);
     end else begin
       SaveRaiseCharExpectedButAtomFound(20170421195810,':');
     end;
