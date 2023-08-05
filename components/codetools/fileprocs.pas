@@ -1400,8 +1400,11 @@ function FilenameIsMatching(const Mask, Filename: string;
 begin
   if Filename='' then exit(false);
   if Mask='' then exit(true);
+  {$IFDEF CaseInsensitiveFilenames}
+  AnyCase:=false;  // the anycase compares case sensitive, but not apply UTF-8 normalization, e.g. MacOS, so better use the default
+  {$ENDIF}
   {$IFDEF VerboseFilenameIsMatching}
-  debugln(['FilenameIsMatching2 Mask="',Mask,'" File="',Filename,'" Exactly=',MatchExactly]);
+  debugln(['FilenameIsMatching Mask="',Mask,'" File="',Filename,'" Exactly=',MatchExactly]);
   {$ENDIF}
 
   Result:=Check(PChar(Mask),PChar(Filename));
