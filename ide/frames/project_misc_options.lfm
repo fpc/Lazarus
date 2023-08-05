@@ -16,7 +16,7 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 3
-    Top = 125
+    Top = 145
     Width = 536
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -26,9 +26,9 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     AnchorSideTop.Control = MainUnitIsPascalSourceCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 19
-    Top = 25
-    Width = 262
+    Height = 23
+    Top = 29
+    Width = 298
     BorderSpacing.Top = 6
     Caption = 'MainUnitHasUsesSectionForAllUnitsCheckBox'
     ParentShowHint = False
@@ -40,9 +40,9 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     AnchorSideTop.Control = MainUnitHasUsesSectionForAllUnitsCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 19
-    Top = 50
-    Width = 262
+    Height = 23
+    Top = 58
+    Width = 301
     BorderSpacing.Top = 6
     Caption = 'MainUnitHasCreateFormStatementsCheckBox'
     ParentShowHint = False
@@ -53,9 +53,9 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 0
-    Height = 19
+    Height = 23
     Top = 0
-    Width = 198
+    Width = 228
     Caption = 'MainUnitIsPascalSourceCheckBox'
     ParentShowHint = False
     ShowHint = True
@@ -66,9 +66,9 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     AnchorSideTop.Control = MainUnitHasCreateFormStatementsCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 19
-    Top = 75
-    Width = 218
+    Height = 23
+    Top = 87
+    Width = 249
     BorderSpacing.Top = 6
     Caption = 'MainUnitHasTitleStatementCheckBox'
     ParentShowHint = False
@@ -80,9 +80,9 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     AnchorSideTop.Control = MainUnitHasTitleStatementCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 19
-    Top = 100
-    Width = 229
+    Height = 23
+    Top = 116
+    Width = 262
     BorderSpacing.Top = 6
     Caption = 'MainUnitHasScaledStatementCheckBox'
     ParentShowHint = False
@@ -93,9 +93,9 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Bevel1
     Left = 0
-    Height = 19
-    Top = 131
-    Width = 122
+    Height = 23
+    Top = 151
+    Width = 141
     BorderSpacing.Top = 6
     Caption = 'RunnableCheckBox'
     ParentShowHint = False
@@ -107,9 +107,9 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     AnchorSideTop.Control = RunnableCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 19
-    Top = 156
-    Width = 179
+    Height = 23
+    Top = 180
+    Width = 203
     BorderSpacing.Top = 6
     Caption = 'UseDesignTimePkgsCheckBox'
     ParentShowHint = False
@@ -121,9 +121,9 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     AnchorSideTop.Control = UseDesignTimePkgsCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 19
-    Top = 181
-    Width = 136
+    Height = 23
+    Top = 209
+    Width = 155
     BorderSpacing.Top = 6
     Caption = 'AlwaysBuildCheckBox'
     ParentShowHint = False
@@ -135,9 +135,9 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     AnchorSideTop.Control = AlwaysBuildCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 19
-    Top = 206
-    Width = 175
+    Height = 23
+    Top = 238
+    Width = 199
     BorderSpacing.Top = 6
     Caption = 'CompatibilityModeCheckBox'
     ParentShowHint = False
@@ -149,9 +149,9 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     AnchorSideTop.Control = CompatibilityModeCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Top = 231
-    Height = 19
-    Width = 154
+    Height = 23
+    Top = 267
+    Width = 180
     BorderSpacing.Top = 6
     Caption = 'LRSInOutputDirCheckBox'
     ParentShowHint = False
@@ -166,7 +166,7 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 81
-    Top = 256
+    Top = 296
     Width = 536
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -179,14 +179,14 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 61
-    ClientWidth = 532
+    ClientHeight = 63
+    ClientWidth = 534
     TabOrder = 10
     object UseFPCResourcesRadioButton: TRadioButton
       Left = 6
-      Height = 25
+      Height = 26
       Top = 6
-      Width = 520
+      Width = 522
       Caption = 'UseFPCResourcesRadioButton'
       ParentShowHint = False
       ShowHint = True
@@ -194,9 +194,9 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     end
     object UseLRSFilesRadioButton: TRadioButton
       Left = 6
-      Height = 24
-      Top = 31
-      Width = 520
+      Height = 25
+      Top = 32
+      Width = 522
       Caption = 'UseLRSFilesRadioButton'
       Checked = True
       ParentShowHint = False
@@ -210,9 +210,9 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     AnchorSideTop.Control = PathDelimComboBox
     AnchorSideTop.Side = asrCenter
     Left = 0
-    Height = 15
-    Top = 356
-    Width = 83
+    Height = 17
+    Top = 400
+    Width = 94
     Caption = 'PathDelimLabel'
     ParentColor = False
   end
@@ -224,7 +224,7 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 3
-    Top = 343
+    Top = 383
     Width = 536
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -235,14 +235,14 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     AnchorSideTop.Control = Bevel2
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
-    Left = 89
-    Height = 23
-    Top = 352
+    Left = 100
+    Height = 33
+    Top = 392
     Width = 259
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
-    ItemHeight = 15
+    ItemHeight = 0
+    Style = csDropDownList
     TabOrder = 11
-    Text = 'PathDelimComboBox'
   end
 end
