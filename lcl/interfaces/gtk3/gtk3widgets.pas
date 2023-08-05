@@ -1145,7 +1145,6 @@ begin
     end;
   GDK_BUTTON_PRESS:
     begin
-      writeln('Press:',TGtk3Widget(Data).LCLObject.ClassName);
       // set focus before gtk does that, so we have same behaviour as other ws
       if TGtk3Widget(Data).GetFocusableByMouse and
         not TGtk3Widget(Data).LCLObject.Focused and
@@ -1195,7 +1194,6 @@ begin
     end;
   GDK_BUTTON_RELEASE:
     begin
-      writeln('Release:',TGtk3Widget(Data).LCLObject.ClassName);
       {if not ((csClickEvents in TGtk3Widget(Data).LCLObject.ControlStyle) and
          (csClicked in TGtk3Widget(Data).LCLObject.ControlState)) then }
 
@@ -7443,17 +7441,17 @@ begin
   if GDK_WINDOW_STATE_FOCUSED in msk then
   begin
     if GDK_WINDOW_STATE_FOCUSED in AState then
-      DebugLn('Focused')
+      DebugLn('Gtk3WindowState: Focused')
     else
-      DebugLn('Defocused');
+      DebugLn('Gtk3WindowState: Defocused');
     exit;
   end else
   if GDK_WINDOW_STATE_WITHDRAWN in msk then
   begin
     if GDK_WINDOW_STATE_WITHDRAWN in AState then
-      DebugLn('Shown')
+      DebugLn('Gtk3WindowState: Shown')
     else
-      DebugLn('Hidden');
+      DebugLn('Gtk3WindowState: Hidden');
     exit;
   end else
   begin

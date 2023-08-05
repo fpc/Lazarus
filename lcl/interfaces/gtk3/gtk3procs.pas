@@ -1064,7 +1064,7 @@ begin
     StyleObject := NewStyleObject;
     Result:=StyleObject;
     lgs := lgsUserDefined;
-    DebugLn('GetStyleWithName creating style widget ',WName);
+    //DebugLn('GetStyleWithName creating style widget ',WName);
     WidgetName := 'LazStyle' + WName;
     if CompareText(WName, LazGtkStyleNames[lgsButton]) = 0 then
     begin
