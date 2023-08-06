@@ -144,7 +144,7 @@ type
     FDialogs: array[TDebugDialogType] of TDebuggerDlg;
     FInStateChange: Boolean;
     FPrevShownWindow: HWND;
-    FStepping: Boolean;
+    FStepping, FAsmStepping: Boolean;
     // keep track of the last reported location
     FCurrentLocation: TDBGLocationRec;
     // last hit breakpoint
@@ -1704,6 +1704,7 @@ begin
     a := FAsmWindowShouldAutoClose or (FDialogs[ddtAssembler] = nil) or (not FDialogs[ddtAssembler].Visible);
     ViewDebugDialog(ddtAssembler);
     FAsmWindowShouldAutoClose := a and EnvironmentDebugOpts.DebuggerAutoCloseAsm;
+    FAsmStepping := False;
     exit;
   end;
   if (FDialogs[ddtAssembler] <> nil) and FAsmWindowShouldAutoClose then
@@ -1720,8 +1721,12 @@ begin
   i := SrcLine;
   if (Editor <> nil) then
     i := Editor.DebugToSourceLine(i);
-  if MainIDE.DoJumpToCodePosition(nil,nil,NewSource,1,i,-1,-1,-1,Flags)<>mrOk
-  then exit;
+  if not (FAsmStepping and (FDialogs[ddtAssembler] <> nil) and
+     FDialogs[ddtAssembler].IsVisible and FDialogs[ddtAssembler].Active )
+  then
+    if MainIDE.DoJumpToCodePosition(nil,nil,NewSource,1,i,-1,-1,-1,Flags)<>mrOk
+    then exit;
+  FAsmStepping := False;
 
   // mark execution line
   if (Editor = nil) and (SourceEditorManager <> nil) then
@@ -2818,6 +2823,7 @@ begin
   end;
 
   FStepping:=True;
+  FAsmStepping := False;
   FDebugger.StepInto;
   Result := mrOk;
 end;
@@ -2833,6 +2839,7 @@ begin
   end;
 
   FStepping:=True;
+  FAsmStepping := False;
   FDebugger.StepOver;
   Result := mrOk;
 end;
@@ -2848,6 +2855,7 @@ begin
   end;
 
   FStepping:=True;
+  FAsmStepping := True;
   FDebugger.StepIntoInstr;
   Result := mrOk;
   // Todo: move to DebuggerChangeState (requires the last run-command-type to be avail)
@@ -2865,6 +2873,7 @@ begin
   end;
 
   FStepping:=True;
+  FAsmStepping := True;
   FDebugger.StepOverInstr;
   Result := mrOk;
   // Todo: move to DebuggerChangeState (requires the last run-command-type to be avail)
@@ -2888,6 +2897,7 @@ begin
   end;
 
   FStepping:=True;
+  FAsmStepping := False;
   FDebugger.StepOut;
   Result := mrOk;
 end;
@@ -2899,6 +2909,7 @@ begin
   FRunTimer.Enabled:=false;
   Exclude(FManagerStates,dmsWaitForRun);
   Exclude(FManagerStates,dmsWaitForAttach);
+  FAsmStepping := False;
 
   SourceEditorManager.ClearExecutionLines;
   if (MainIDE.ToolStatus=itDebugger) and (FDebugger<>nil) and (not Destroying)
@@ -3050,6 +3061,7 @@ begin
     end;
     Include(FManagerStates,dmsRunning);
     FStepping:=False;
+    FAsmStepping := False;
     try
       FDebugger.Run;
     finally
@@ -3332,6 +3344,7 @@ begin
   else UnitFilename:=BuildBoss.GetTestUnitFilename(ActiveUnitInfo);
 
   FStepping:=True;
+  FAsmStepping := False;
   FDebugger.RunTo(ExtractFilename(UnitFilename),
                   TSourceEditor(ActiveSrcEdit).EditorComponent.CaretY);
 
@@ -3397,6 +3410,7 @@ begin
     end;
     Include(FManagerStates,dmsRunning);
     FStepping:=False;
+    FAsmStepping := False;
     try
       FDebugger.Attach(FAttachToID);
     finally
