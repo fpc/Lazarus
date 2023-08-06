@@ -351,13 +351,13 @@ end;
 
 procedure TTestBasicCodeTools.TestFilenameIsMatching;
 
-  procedure t(aMask,aFilename: string; aExactly,Expected: boolean);
+  procedure t(aMask,aFilename: string; aExactly,Expected: boolean; AnyCase: boolean = false);
   var
     Actual: Boolean;
   begin
     DoDirSeparators(aMask);
     DoDirSeparators(aFilename);
-    Actual:=FilenameIsMatching(aMask,aFilename,aExactly);
+    Actual:=FilenameIsMatching(aMask,aFilename,aExactly,AnyCase);
     if Actual=Expected then exit;
     AssertEquals('Mask="'+aMask+'" File="'+aFilename+'" Exactly='+dbgs(aExactly),Expected,Actual);
   end;
@@ -444,6 +444,12 @@ begin
   t('*.{p{as,p,},inc}','b.p',true,true);
   t('*.{p{as,p,},inc}','b.inc',true,true);
   t('*.{p{as,p,},inc}','c.lfm',true,false);
+
+  // any case
+  t('/aBc/','/abC/d',false,true,true);
+  {$IFDEF MSWindows}
+  t('/aBc/','/abC/d',false,true,false);
+  {$ENDIF}
 end;
 
 procedure TTestBasicCodeTools.TestExtractFileUnitname;
