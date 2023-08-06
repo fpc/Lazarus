@@ -1383,10 +1383,14 @@ function FilenameIsMatching(const Mask, Filename: string;
           case MaskP^ of
           #0,SpecialChar,PathDelim,'?','*','{',',','}': break;
           'a'..'z','A'..'Z':
+            {$IFDEF CaseInsensitiveFilenames}
+            if FPUpChars[MaskP^]<>FPUpChars[FileP^] then exit;
+            {$ELSE}
             if AnyCase then begin
               if FPUpChars[MaskP^]<>FPUpChars[FileP^] then exit;
             end else
               if MaskP^<>FileP^ then exit;
+            {$ENDIF}
           else
             if MaskP^<>FileP^ then exit;
           end;
