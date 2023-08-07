@@ -99,7 +99,7 @@ The task dialog structure which created the form.
 <element name="TLCLTaskDialog.DialogCaption"/>
 <element name="TLCLTaskDialog.DlgTitle"/>
 <element name="TLCLTaskDialog.DlgText"/>
-<element name="TLCLTaskDialog.ExpandedButtonCaption"/>
+<element name="TLCLTaskDialog.ExpandButtonCaption"/>
 <element name="TLCLTaskDialog.ExpandedText"/>
 <element name="TLCLTaskDialog.FooterText"/>
 <element name="TLCLTaskDialog.VerificationText"/>
@@ -172,6 +172,14 @@ Check-box control used for optional Task Dialog verification.
 <element name="TLCLTaskDialog.AddCheckBox.AWidth"/>
 <element name="TLCLTaskDialog.AddCheckBox.ALeftMargin"/>
 <element name="TLCLTaskDialog.AddCheckBox.AParent"/>
+
+<element name="TLCLTaskDialog.AddExpandButton"/>
+<element name="TLCLTaskDialog.AddExpandButton.X"/>
+<element name="TLCLTaskDialog.AddExpandButton.Y"/>
+<element name="TLCLTaskDialog.AddExpandButton.XB"/>
+<element name="TLCLTaskDialog.AddExpandButton.AWidth"/>
+<element name="TLCLTaskDialog.AddExpandButton.ALeftMargin"/>
+<element name="TLCLTaskDialog.AddExpandButton.AParent"/>
 
 <element name="TLCLTaskDialog.AddFooter"/>
 <element name="TLCLTaskDialog.AddFooter.X"/>
