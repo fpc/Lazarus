@@ -824,7 +824,7 @@ begin
 
     // handle main dialog icon
     AddIcon(IconBorder, X, Y, CurrParent);
-    if (X < IconBorder) or (X < 5) then Caption := format('X: %d, IconBorder: %d',[X,IconBorder]);
+
     // add main texts (DlgTitle, DlgText, Information)
     Element[tdeMainInstruction] := AddLabel(DlgTitle, True, X, Y, FontHeight, aWidth, CurrParent);
     Element[tdeContent] := AddLabel(DlgText, False, X, Y, FontHeight, aWidth, CurrParent);
