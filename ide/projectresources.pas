@@ -400,7 +400,7 @@ begin
   begin
     Result := FResources[i].UpdateResources(Self, resFileName);
     if not Result then begin
-      debugln(['TProjectResources.Update UpdateResources of ',DbgSName(FResources[i]),' failed']);
+      debugln(['Error: (lazarus) [TProjectResources.Update] UpdateResources of ',DbgSName(FResources[i]),' failed']);
       Exit;
     end;
   end;
@@ -600,26 +600,14 @@ begin
     //debugln(['TProjectResources.UpdateMainSourceFile HasSystemResources=',HasSystemResources,' Filename=',Filename,' HasLazarusResources=',HasLazarusResources]);
 
     // update LResources uses
-    if CodeToolBoss.FindUnitInAllUsesSections(CodeBuf, LazResourcesUnit, NamePos, InPos) then
-    begin
-      if not (FLrsIncludeAllowed and HasLazarusResources) then
-      begin
-        if not CodeToolBoss.RemoveUnitFromAllUsesSections(CodeBuf, LazResourcesUnit) then
-        begin
-          Result := False;
-          Messages.Add(Format(lisCouldNotRemoveFromMainSource, [LazResourcesUnit]));
-          debugln(['TProjectResources.UpdateMainSourceFile removing LResources from all uses sections failed']);
-        end;
-      end;
-    end
-    else
     if FLrsIncludeAllowed and HasLazarusResources then
     begin
-      if not CodeToolBoss.AddUnitToMainUsesSection(CodeBuf, LazResourcesUnit,'') then
+      if CodeToolBoss.FindUnitInAllUsesSections(CodeBuf, LazResourcesUnit, NamePos, InPos)
+          and not CodeToolBoss.AddUnitToMainUsesSection(CodeBuf, LazResourcesUnit,'') then
       begin
         Result := False;
         Messages.Add(Format(lisCouldNotAddToMainSource, [LazResourcesUnit]));
-        debugln(['TProjectResources.UpdateMainSourceFile adding LResources to main source failed']);
+        debugln(['Error: (lazarus) [TProjectResources.UpdateMainSourceFile] adding LResources to main source failed']);
       end;
     end;
 
@@ -635,7 +623,7 @@ begin
         begin
           Result := False;
           Messages.Add(Format(lisCouldNotRemoveRFromMainSource, [Filename]));
-          debugln(['TProjectResources.UpdateMainSourceFile failed: removing resource directive']);
+          debugln(['Error: (lazarus) [TProjectResources.UpdateMainSourceFile] failed: removing resource directive']);
         end;
       end;
     end
@@ -647,7 +635,7 @@ begin
       begin
         Result := False;
         Messages.Add(Format(lisCouldNotAddRToMainSource, [Filename]));
-        debugln(['TProjectResources.UpdateMainSourceFile failed: adding resource directive']);
+        debugln(['Error: (lazarus) [TProjectResources.UpdateMainSourceFile] failed: adding resource directive']);
       end;
     end;
 
@@ -665,7 +653,7 @@ begin
         begin
           Result := False;
           Messages.Add(Format(lisCouldNotRemoveIFromMainSource, [Filename]));
-          debugln(['TProjectResources.UpdateMainSourceFile removing include directive from main source failed']);
+          debugln(['Error: (lazarus) [TProjectResources.UpdateMainSourceFile] removing include directive from main source failed']);
           Exit;
         end;
       end;
@@ -678,7 +666,7 @@ begin
       begin
         Result := False;
         Messages.Add(Format(lisCouldNotAddIToMainSource, [Filename]));
-        debugln(['TProjectResources.UpdateMainSourceFile adding include directive to main source failed']);
+        debugln(['Error: (lazarus) [TProjectResources.UpdateMainSourceFile] adding include directive to main source failed']);
         Exit;
       end;
     end;
