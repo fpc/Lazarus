@@ -348,7 +348,7 @@ begin
     Tool.Release(Self);
   end;
   if ConsoleVerbosity>=0 then
-    DebugLn('[TCompiler.Compile] end');
+    DebugLn('Info: (lazarus) [TCompiler.Compile] end');
 end;
 
 procedure TCompiler.WriteError(const Msg: string);
