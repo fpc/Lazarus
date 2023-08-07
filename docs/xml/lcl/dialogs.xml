@@ -6554,8 +6554,13 @@ key or Alt+F4 key combination.
 Changing the property value causes validation and normalization of the flag 
 values to be performed. tfQuery and tfSimpleQuery are mutually exclusive 
 values; if both are specified in the property value, then tfSimpleQuery is 
-excluded from the new property value. In addition, hyperlinks 
-(tfEnableHyperlinks) are disabled when tfQuery is included in the property.
+excluded from the new property value. In addition, tfQuery and tfSimpleQuery 
+causes other flag values to be ignored, and certain features are disbaled. They 
+cause the expando control (expand or collapse indicator) to be hidden and 
+ExpandedText is displayed in the expanded state (tfExpandedByDefault). 
+Hyperlinks (tfEnableHyperlinks) are disabled when tfQuery or tfSimpleQuery is 
+included in the property; the markup for the hyperlink is still displayed in 
+the text areas though.
 </p>
 <p>
 See <link id="TTaskDialogFlag">TTaskDialogFlag</link> for the complete list of 
@@ -6563,6 +6568,9 @@ enumeration values allowed in the property and their meanings.
 </p>
 </descr>
 <seealso>
+<link id="TCustomTaskDialog.ExpandedText"/>
+<link id="TCustomTaskDialog.FooterText"/>
+<link id="TCustomTaskDialog.Text"/>
 <link id="TTaskDialogFlags"/>
 <link id="TTaskDialogFlag"/>
 </seealso>
@@ -6686,7 +6694,8 @@ the combo-box control.
 </p>
 <p>
 Use QueryItemIndex to determine which value is initially selected in 
-QueryChoices, or returned when the task dialog was executed.
+QueryChoices, or returned when the task dialog was executed. Use QueryResult to 
+access the string value returned in the query control.
 </p>
 </descr>
 <version>
@@ -6695,6 +6704,7 @@ Added in LCL version 4.0.
 <seealso>
 <link id="TCustomTaskDialog.Flags"/>
 <link id="TCustomTaskDialog.QueryItemIndex"/>
+<link id="TCustomTaskDialog.QueryResult"/>
 <link id="TCustomTaskDialog.Execute"/>
 <link id="TTaskDialogFlags"/>
 <link id="TTaskDialogFlag"/>
@@ -6794,7 +6804,10 @@ selected on the Task dialog.
 
 <!-- TODO: Needs content. -->
 <element name="TCustomTaskDialog.SimpleQuery">
-<short/>
+<short>
+Contains the text displayed and editined using the query control on the task 
+dialog.
+</short>
 <descr/>
 <version>
 Added in LCL version 4.0.
@@ -6805,7 +6818,7 @@ Added in LCL version 4.0.
 <!-- TODO: Needs content. -->
 <element name="TCustomTaskDialog.SimpleQueryPasswordChar">
 <short>
-Character value used to obfuscate text entered in the query control.
+Character value used to obfuscate text in SimpleQuery for the query control.
 </short>
 <descr>
 <p>
@@ -6868,7 +6881,7 @@ version 2.2.0.
 <element name="TCustomTaskDialog.Title">
 <short>
 Header text displayed at the top of dialog, with a larger font size and using 
-a bold font style.
+a highlighted bold font style.
 </short>
 <descr/>
 <seealso>
@@ -6876,15 +6889,23 @@ a bold font style.
 <link id="TCustomTaskDialog.Text"/>
 <link id="TCustomTaskDialog.ExpandedText"/>
 <link id="TCustomTaskDialog.FooterText"/>
+<link id="TCustomTaskDialog.Caption"/>
+<link id="TCustomTaskDialog.ExpandButtonCaption"/>
 </seealso>
 </element>
 
 <element name="TCustomTaskDialog.VerificationText">
 <short>
-Optional caption text for the check box displayed at the bottom of the Task 
-dialog.
+Optional caption for the verification check box displayed near the bottom of 
+the Task dialog.
 </short>
-<descr/>
+<descr>
+<p>
+The verification check box is omitted from the task dialog (even when 
+tfVerificationFlagChecked is enabled in Flags) if VerificationText is an empty 
+string ('').
+</p>
+</descr>
 <seealso>
 <link id="TCustomTaskDialog.Flags"/>
 <link id="TTaskDialogFlags"/>
@@ -6920,7 +6941,6 @@ pixels) or an upper limit (480 pixels) on the auto-calculated width.
 </seealso>
 </element>
 
-<!-- TODO: Needs additional description. -->
 <element name="TCustomTaskDialog.URL">
 <short>
 Universal Resource Locator (or identifier) for a hyperlink clicked on the task 
@@ -6932,6 +6952,21 @@ dialog.
 resource identifier for a hyperlink clicked in one of the text areas for the 
 task dialog.
 </p>
+<p>
+Include tfEnableHyperlinks in the Flags property to enable hyperlinks in text 
+areas on the task dialog like Text, ExpandedText, and FooterText.
+</p>
+<p>
+Hyperlinks are written using the common HTML Anchor notation:
+</p>
+<code>
+&lt;a href="https://forum.lazarus.freepascal.org/"&gt;Lazarus Forum&lt;/a&gt;
+</code>
+<p>
+Use the OnHyperlinkClicked event handler to perform any actions needed to 
+locate, open, or display content represented by the value in URL. Please note 
+that URL can contain any valid URI.
+</p>
 </descr>
 <version>
 Added in LCL version 4.0.
@@ -6941,12 +6976,12 @@ Added in LCL version 4.0.
 <link id="TCustomTaskDialog.Text"/>
 <link id="TCustomTaskDialog.ExpandedText"/>
 <link id="TCustomTaskDialog.FooterText"/>
+<link id="TCustomTaskDialog.OnHyperlinkClicked"/>
 <link id="TTaskDialogFlags"/>
 <link id="TTaskDialogFlag"/>
 </seealso>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TCustomTaskDialog.Expanded">
 <short>
 Indicates the expanded or collapsed state for the the ExpandedText on the task 
@@ -6954,7 +6989,24 @@ dialog form.
 </short>
 <descr>
 <p>
-<var>Expanded</var> is a read-only <var>Boolean</var> property which indicates whether the content in ExpandedText is currently displayed in the expanded or collapsed state.
+<var>Expanded</var> is a read-only <var>Boolean</var> property which indicates 
+whether the content in ExpandedText is currently displayed in the expanded or 
+collapsed state. The property value is updated each time the expando control 
+(expand / collapse indicator) is clicked.
+</p>
+<p>
+When set to <b>True</b>b>, the values in ExpandedText ar displayed in the 
+expanded state on its text area. Otherwise the values in ExpandText are not 
+visible on the dialog.
+</p>
+<remark>
+Expanded is always <b>True</b> when tfquery or tfSimpleQuery is included in the 
+Flags for the dialog. In addition, the expando control is not displayed on the 
+dialog.
+</remark>
+<p>
+Use the OnExpanded event handler to perform actions needed after the property 
+value has been updated in the task dialog.
 </p>
 </descr>
 <version>
@@ -6962,13 +7014,14 @@ Added in LCL version 4.0.
 </version>
 <seealso>
 <link id="TCustomTaskDialog.ExpandedText"/>
-<link id="TCustomTaskDialog.OnExpanded"/>
 <link id="TCustomTaskDialog.Flags"/>
+<link id="TCustomTaskDialog.OnExpanded"/>
 <link id="TTaskDialogFlag"/>
 <link id="TTaskDialogFlags"/>
 </seealso>
 </element>
 
+<!-- TODO: Needs content. -->
 <element name="TCustomTaskDialog.OnButtonClicked">
 <short>
 Event handler signalled for the button clicked when the Task dialog was 
@@ -6985,24 +7038,44 @@ OnButtonClicked is signalled after a button is clicked on the Task dialog.
 <!-- TODO: Needs content. -->
 <element name="TCustomTaskDialog.OnDialogConstructed">
 <short>
-Event handler signalled after the constructor for the dialog form has been 
-called.
+Event handler signalled when the constructor for the dialog form instance has 
+completed.
 </short>
-<descr/>
+<descr>
+</descr>
 <version>
 Added in LCL version 4.0.
 </version>
-<seealso/>
+<seealso>
+<link id="#lcl.lcltaskdialog.TLCLTaskDialog">TLCLTaskDialog</link>
+</seealso>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TCustomTaskDialog.OnDialogCreated">
-<short/>
-<descr/>
+<short>
+Event handler signalled when a form instance has been created for the dialog.
+</short>
+<descr>
+<p>
+<var>OnDialogCreated</var> is a <var>TNotifyEvent</var> property with the
+event handler signalled after a new dialog form instance has been created for 
+the class. It is signalled (when assigned) in the DoOnDialogCreated method, and 
+occurs when an emulated (non-native) dialog form is created in the widgetset 
+class instance. It is the the last action performed in the TLCLDialog.Createnew 
+constructor, and allows the caller to be notified when the LCL form instance is 
+valid and available to the TTaskDialog owner.
+</p>
+</descr>
 <version>
 Added in LCL version 4.0.
 </version>
-<seealso/>
+<seealso>
+<link id="TCustomTaskDialog.Flags"/>
+<link id="TCustomTaskDialog.DoOnDialogCreated"/>
+<link id="TTaskDialogFlags"/>
+<link id="TTaskDialogFlag"/>
+<link id="#lcl.taskdlgemulation.TLCLTaskDialog.CreateNew">TLCLTaskDialog.CreateNew</link>
+</seealso>
 </element>
 
 <!-- TODO: Needs content. -->
