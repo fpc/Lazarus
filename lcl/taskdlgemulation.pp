@@ -31,7 +31,7 @@ type
 
     //CustomButtons, Radios: TStringList;
     DialogCaption, DlgTitle, DlgText,
-    ExpandedButtonCaption, ExpandedText, FooterText,
+    ExpandButtonCaption, ExpandedText, FooterText,
     VerificationText: String;
     CommonButtons: TTaskDialogCommonButtons;
 
@@ -52,6 +52,7 @@ type
     procedure AddCommandLinkButtons(var X, Y: Integer; AWidth, AButtonDef, AFontHeight: Integer; AParent: TWinControl);
     procedure AddButtons(var X,Y, XB: Integer; AWidth, AButtonDef: Integer; APArent: TWinControl);
     procedure AddCheckBox(var X,Y, XB: Integer; AWidth, ALeftMargin: Integer; APArent: TWinControl);
+    procedure AddExpandButton(var X,Y, XB: Integer; AWidth, ALeftMargin: Integer; APArent: TWinControl);
     procedure AddFooter(var X, Y, XB: Integer; AFontHeight, AWidth, AIconBorder: Integer; APArent: TWinControl);
     function AddLabel(const AText: string; BigFont: boolean; var X, Y: Integer; AFontHeight, AWidth: Integer; APArent: TWinControl): TLabel;
     procedure AddQueryCombo(var X,Y: Integer; AWidth: Integer; AParent: TWinControl);
@@ -513,6 +514,43 @@ begin
   end;
 end;
 
+procedure TLCLTaskDialog.AddExpandButton(var X, Y, XB: Integer;
+  AWidth, ALeftMargin: Integer; APArent: TWinControl);
+var
+  CurrTabOrder: TTabOrder;
+  WB, AHeight: Integer;
+  Btn: TButton;
+begin
+  CurrTabOrder := Panel.TabOrder;
+  //inc(Y, 16);
+  X := ALeftMargin;
+  if (ExpandButtonCaption = '') then
+    ExpandButtonCaption := '>>';
+  WB := Canvas.TextWidth(ExpandButtonCaption)+32;//52;
+  debugln(['    X+WB=', X+WB]);
+  debugln(['       XB=', XB]);
+  debugln(['     diff=', X+WB-XB]);
+  if (X+WB > XB) then
+  begin
+    debugln('TLCLTaskDialog.AddExpandButton: too wide');
+    inc(Y,32);
+    XB := aWidth;
+  end;
+
+  Btn := TButton.Create(Self);
+  Btn.Parent := AParent;
+  if (tfEmulateClassicStyle in FDlg.Flags) then
+    AHeight := 22
+  else
+    AHeight := 28;
+  Btn.SetBounds(X,Y,WB-12,AHeight);
+  Btn.Caption := ExpandButtonCaption;
+  Btn.ModalResult := mrNone;
+  Btn.TabOrder := CurrTabOrder;
+  //Btn.OnClick := @OnButtonClicked;
+  Inc(Y, AHeight+8);
+end;
+
 procedure TLCLTaskDialog.AddFooter(var X, Y, XB: Integer; AFontHeight, AWidth, AIconBorder: Integer; APArent: TWinControl);
   procedure AddBevel;
   var
@@ -759,7 +797,7 @@ begin
     DialogCaption := FDlg.Caption;
     DlgTitle := FDlg.Title;
     DlgText := FDlg.Text;
-    ExpandedButtonCaption := FDlg.ExpandButtonCaption;
+    ExpandButtonCaption := FDlg.ExpandButtonCaption;
     ExpandedText := FDlg.ExpandedText;
     FooterText := FDlg.FooterText;
     VerificationText := FDlg.VerificationText;
@@ -860,14 +898,20 @@ begin
 
     XB := 0;
     // add CustomButtons and verification checkbox
-    if (CommonButtons <> []) or (VerificationText<>'') or
+    if (CommonButtons <> []) or
        ((FDlg.Buttons.Count<>0) and not (tfUseCommandLinks in FDlg.Flags)) then
     begin
       AddButtons(X, Y, XB, aWidth, aButtonDef, CurrParent);
     end;
+
+    //Add Expand button
+    if (ExpandedText <> '') then
+      AddExpandButton(X, Y, XB, aWidth, IconBorder, CurrParent);
+
     if (VerificationText <> '') then
       AddCheckBox(X, Y, XB, aWidth, IconBorder, CurrParent);
     inc(Y,36);
+
 
 
     // add FooterText text with optional icon
