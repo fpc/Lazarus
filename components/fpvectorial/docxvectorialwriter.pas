@@ -822,9 +822,15 @@ Var
     End;
 
     { TODO : Ensure these other properties can be set }
-    //<w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440" w:header="708" w:footer="708" w:gutter="0"/>
     //<w:cols w:space="708"/>
     //<w:docGrid w:linePitch="360"/>
+
+    // page margins
+    sTemp := Format('<w:pgMar w:top="%s" w:right="%s" w:bottom="%s" w:left="%s" w:header="708" w:footer="708" w:gutter="0"/>',
+      [mmToTwipsS(APageSequence.MarginTop), mmToTwipsS(APageSequence.MarginRight),
+      mmToTwipsS(APageSequence.MarginBottom), mmToTwipsS(APageSequence.MarginLeft)]);
+    oDocXML.Add(STemp);
+
     oDocXML.Add(indDec, '</w:sectPr>', indDec);
 
     If Not ALastPage Then
