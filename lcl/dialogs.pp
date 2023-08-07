@@ -627,6 +627,7 @@ type
     FButton: TTaskDialogButtonItem;
     FButtons: TTaskDialogButtons;
     FCaption: TTranslateString;
+    FCollapsButtonCaption: TTranslateString;
     FCommonButtons: TTaskDialogCommonButtons;
     FDefaultButton: TTaskDialogCommonButton;
     FExpandButtonCaption: TTranslateString;
@@ -688,6 +689,7 @@ type
     property Buttons: TTaskDialogButtons read FButtons write SetButtons;
     property Caption: TTranslateString read FCaption write FCaption;
     property CommonButtons: TTaskDialogCommonButtons read FCommonButtons write FCommonButtons default [tcbOk, tcbCancel];
+    property CollapsButtonCaption: TTranslateString read FCollapsButtonCaption write FCollapsButtonCaption;
     property DefaultButton: TTaskDialogCommonButton read FDefaultButton write FDefaultButton default tcbOk;
     property ExpandButtonCaption: TTranslateString read FExpandButtonCaption write FExpandButtonCaption;
     property ExpandedText: TTranslateString read FExpandedText write FExpandedText;
@@ -725,6 +727,7 @@ type
     property Buttons;
     property Caption;
     property CommonButtons;
+    property CollapsButtonCaption;
     property DefaultButton;
     property ExpandButtonCaption;
     property ExpandedText;

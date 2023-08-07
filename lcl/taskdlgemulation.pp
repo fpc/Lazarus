@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils,
   LazUTF8,
-  LCLType, LCLStrConsts, LCLIntf, InterfaceBase, ImgList, LCLProc, DateUtils,
+  LCLType, LCLStrConsts, LCLIntf, InterfaceBase, ImgList, LCLProc, DateUtils, Math,
   LResources, Menus, Graphics, Forms, Controls, StdCtrls, ExtCtrls, Buttons, Dialogs, DialogRes;
 
 
@@ -31,7 +31,7 @@ type
 
     //CustomButtons, Radios: TStringList;
     DialogCaption, DlgTitle, DlgText,
-    ExpandButtonCaption, ExpandedText, FooterText,
+    ExpandButtonCaption, CollapsButtonCaption, ExpandedText, FooterText,
     VerificationText: String;
     CommonButtons: TTaskDialogCommonButtons;
 
@@ -525,8 +525,18 @@ begin
   //inc(Y, 16);
   X := ALeftMargin;
   if (ExpandButtonCaption = '') then
-    ExpandButtonCaption := '>>';
-  WB := Canvas.TextWidth(ExpandButtonCaption)+32;//52;
+  begin
+    if (CollapsButtonCaption = '') then
+    begin
+      ExpandButtonCaption := 'Show details';
+      CollapsButtonCaption := 'Hide details';
+    end
+    else
+      ExpandButtonCaption := CollapsButtonCaption;
+  end;
+  if (CollapsButtonCaption = '') then
+    CollapsButtonCaption := ExpandButtonCaption;
+  WB := Max(Canvas.TextWidth(ExpandButtonCaption), Canvas.TextWidth(CollapsButtonCaption)) +32;//52;
   debugln(['    X+WB=', X+WB]);
   debugln(['       XB=', XB]);
   debugln(['     diff=', X+WB-XB]);
@@ -798,6 +808,7 @@ begin
     DlgTitle := FDlg.Title;
     DlgText := FDlg.Text;
     ExpandButtonCaption := FDlg.ExpandButtonCaption;
+    CollapsButtonCaption := FDlg.CollapsButtonCaption;
     ExpandedText := FDlg.ExpandedText;
     FooterText := FDlg.FooterText;
     VerificationText := FDlg.VerificationText;

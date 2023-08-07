@@ -1846,7 +1846,6 @@ var
     if (MainInstruction = '') then
       MainInstruction := Utf8ToUtf16(IconMessage(TF_DIALOGICON(ADlg.MainIcon)));
     Content := Utf8ToUtf16(ADlg.Text);
-    CollapsedControlText := Utf8ToUtf16(ADlg.ExpandButtonCaption);
     VerificationText := Utf8ToUtf16(ADlg.VerificationText);
     if (AParentWnd = 0) then
     begin
@@ -1857,10 +1856,7 @@ var
     end;
     ExpandedInformation := Utf8ToUtf16(ADlg.ExpandedText);
     CollapsedControlText := Utf8ToUtf16(ADlg.ExpandButtonCaption);
-
-    //Seems to be the caption of the ExpandButton when ExpandedText is displayed
-    //If it's empty, then the caption of the ExpandButton remains the same
-    ExpandedControlText := ''; //currently no matching field in TTaskDialog
+    ExpandedControlText := Utf8ToUtf16(ADlg.CollapsButtonCaption);
 
     Footer := Utf8ToUtf16(ADlg.FooterText);
 
