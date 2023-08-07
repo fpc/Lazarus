@@ -890,19 +890,6 @@ begin
   end;
 end;
 
-// FlashWindowEx is not (yet) in FPC
-type
-  FLASHWINFO = record
-    cbSize: UINT;
-    hwnd: HWND;
-    dwFlags: DWORD;
-    uCount: UINT;
-    dwTimeout: DWORD;
-  end;
-  PFLASHWINFO = ^FLASHWINFO;
-
-function FlashWindowEx(pfwi:PFLASHWINFO):WINBOOL; stdcall; external 'user32' name 'FlashWindowEx';
-
 procedure TWindowProcHelper.HandleSetCursor;
 var
   lControl: TControl;
@@ -2023,10 +2010,6 @@ var
   ACtl: TWinControl;
   LMouseEvent: TTRACKMOUSEEVENT;
   MaximizedActiveChild: WINBOOL;
-{$IF NOT DECLARED(WM_DPICHANGED)} // WM_DPICHANGED was added in FPC 3.1.1
-const
-  WM_DPICHANGED = $02E0;
-{$ENDIF}
 begin
   try
   LMessage := Default(TLMessage);
