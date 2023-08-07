@@ -991,6 +991,14 @@ Var
 
         oDocXML.Add('<w:vAlign w:val="' + LU_V_ALIGN[oCell.VerticalAlignment] + '" />');
 
+        // cell padding
+        oDocXML.Add('<w:tcMar>', indInc);
+        oDocXML.Add(Format('<w:top w:w="%s" w:type="dxa"/>', [mmToTwipsS(oCell.SpacingTop)]));
+        oDocXML.Add(Format('<w:start w:w="%s" w:type="dxa"/>', [mmToTwipsS(oCell.SpacingLeft)]));
+        oDocXML.Add(Format('<w:bottom w:w="%s" w:type="dxa"/>', [mmToTwipsS(oCell.SpacingBottom)]));
+        oDocXML.Add(Format('<w:end w:w="%s" w:type="dxa"/>', [mmToTwipsS(oCell.SpacingRight)]));
+        oDocXML.Add('</w:tcMar>', indDec);
+
         oDocXML.Add(indDec, '</w:tcPr>', indDec);
 
         ProcessRichText(oCell);
