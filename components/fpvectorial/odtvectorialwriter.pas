@@ -1062,10 +1062,10 @@ begin
                 ' fo:page-height="'+FloatToODTText(dHeight)+'mm"'+
                 ' style:print-orientation="'+sOrientation+'"'+
                 ' style:num-format="1"' +
-                ' fo:margin-top="' + IntToStr(AData.MarginTop) + 'mm"' +
-                ' fo:margin-bottom="' + IntToStr(AData.MarginBottom) + 'mm"' +
-                ' fo:margin-left="' + IntToStr(AData.MarginLeft) + 'mm"' +
-                ' fo:margin-right="' + IntToStr(AData.MarginRight) + 'mm"' +
+                ' fo:margin-top="' + IntToStr(ACurPage.MarginTop) + 'mm"' +
+                ' fo:margin-bottom="' + IntToStr(ACurPage.MarginBottom) + 'mm"' +
+                ' fo:margin-left="' + IntToStr(ACurPage.MarginLeft) + 'mm"' +
+                ' fo:margin-right="' + IntToStr(ACurPage.MarginRight) + 'mm"' +
                 ' style:writing-mode="lr-tb"' +
                 ' style:footnote-max-height="0in">'+ LineEnding;
 
