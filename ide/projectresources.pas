@@ -408,7 +408,8 @@ end;
 
 procedure TProjectResources.ResourceModified(Sender: TObject);
 begin
-  Modified := Modified or TAbstractProjectResource(Sender).Modified;
+  if TAbstractProjectResource(Sender).Modified then
+    Modified := true;
 end;
 
 constructor TProjectResources.Create(AProject: TLazProject);
@@ -522,7 +523,7 @@ begin
   try
     // update resources (FLazarusResources, FSystemResources, ...)
     if not Update then begin
-      debugln(['TProjectResources.Regenerate Update failed']);
+      debugln(['Error: (lazarus) [TProjectResources.Regenerate] Update failed']);
       Exit;
     end;
     if LastSavedRes='' then begin
@@ -537,12 +538,12 @@ begin
     UpdateLrsCodeBuffer;
     // update .lpr file (old and new include files exist, so parsing should work without errors)
     if UpdateSource and not UpdateMainSourceFile(MainFileName) then begin
-      debugln(['TProjectResources.Regenerate UpdateMainSourceFile failed']);
+      debugln(['Error: (lazarus) [TProjectResources.Regenerate UpdateMainSourceFile] failed']);
       exit;
     end;
 
     if PerformSave and not Save(SaveToTestDir) then begin
-      debugln(['TProjectResources.Regenerate Save failed']);
+      debugln(['Error: (lazarus) [TProjectResources.Regenerate] Save failed']);
       Exit;
     end;
   finally
@@ -686,14 +687,9 @@ begin
 
   // Check that .lpr contains Forms and Interfaces in the uses section. If it does not
   // we cannot add LResources (it is not a lazarus application)
-  CodeToolBoss.ActivateWriteLock;
-  try
-    FLrsIncludeAllowed :=
-      CodeToolBoss.FindUnitInAllUsesSections(CodeBuf, 'Forms', NamePos, InPos, True) and
-      CodeToolBoss.FindUnitInAllUsesSections(CodeBuf, 'Interfaces', NamePos, InPos, True);
-  finally
-    CodeToolBoss.DeactivateWriteLock;
-  end;
+  FLrsIncludeAllowed :=
+    CodeToolBoss.FindUnitInAllUsesSections(CodeBuf, 'Forms', NamePos, InPos, True) and
+    CodeToolBoss.FindUnitInAllUsesSections(CodeBuf, 'Interfaces', NamePos, InPos, True);
 end;
 
 function TProjectResources.RenameDirectives(const CurFileName, NewFileName: String): Boolean;
@@ -825,7 +821,7 @@ begin
     except
       on E: Exception do
       begin
-        debugln('TProjectResources.UpdateResCodeBuffer exception %s: %s', [E.ClassName, E.Message]);
+        debugln('Error: (lazarus) [TProjectResources.UpdateResCodeBuffer] exception %s: %s', [E.ClassName, E.Message]);
         ResStream.Size := 0;
       end;
     end;
