@@ -41,7 +41,7 @@ uses
   // LCL
   Controls, LResources,
   // LazUtils
-  LazFileUtils, Laz2_XMLCfg, LazLoggerBase,
+  LazFileUtils, Laz2_XMLCfg, LazLoggerBase, LazFileCache,
   // Codetools
   KeywordFuncLists, BasicCodeTools, CodeToolManager, CodeCache,
   // IdeIntf
@@ -823,12 +823,15 @@ function TProjectResources.UpdateResCodeBuffer: Boolean;
 // Generate .res resource and return True if it differs from the last saved one.
 var
   CodeBuf: TCodeBuffer;
-  ResStream: TStream;
+  ResStream: TMemoryStream;
   Writer: TAbstractResourceWriter;
+  Src: string;
 begin
   Result := False;
   if not HasSystemResources then Exit;
-  CodeBuf := CodeToolBoss.CreateFile(resFileName);
+  CodeBuf := CodeToolBoss.LoadFile(resFileName,true,true);
+  if CodeBuf=nil then
+    CodeBuf := CodeToolBoss.CreateFile(resFileName);
   ResStream := TMemoryStream.Create;
   Writer := TResResourceWriter.Create;
   try
@@ -843,7 +846,11 @@ begin
     end;
     ResStream.Position := 0;
     CodeBuf.LoadFromStream(ResStream);
-    Result := CodeBuf.Source <> LastSavedRes;
+    SetLength(Src{%H-},ResStream.Size);
+    if Src<>'' then
+      Move(ResStream.Memory^,Src[1],length(Src));
+    CodeBuf.Source:=Src;
+    Result := CodeBuf.FileNeedsUpdate;
   finally
     Writer.Free;
     ResStream.Free;
