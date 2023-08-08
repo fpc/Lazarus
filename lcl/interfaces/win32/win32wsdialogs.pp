@@ -1721,7 +1721,11 @@ begin
       lParam: Must be zero.
       Return value: The return value is ignored.
       }
-      if IsConsole then writeln('ToDo: implement OnNavigated');
+      Assert((Dlg is TCustomTaskDialog),'TaskDialogCallbackProc: dwRefData is NOT a TCustomTaskDialog');
+      {$PUSH}
+      {$ObjectChecks OFF}
+      TTaskDialogAccess(Dlg).DoOnNavigated;
+      {$POP}
     end;
     TDN_TIMER:
     begin
@@ -1769,7 +1773,11 @@ begin
     end;
     TDN_HELP:
     begin
-      if IsConsole then writeln('ToDo: implement TDN_HELP??');
+      Assert((Dlg is TCustomTaskDialog),'TaskDialogCallbackProc: dwRefData is NOT a TCustomTaskDialog');
+      {$PUSH}
+      {$ObjectChecks OFF}
+      TTaskDialogAccess(Dlg).DoOnHelp;
+      {$POP}
     end;
   end;
 end;

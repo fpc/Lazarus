@@ -67,6 +67,7 @@ type
     procedure OnRadioButtonClick(Sender: TObject);
     procedure OnVerifyClicked(Sender: TObject);
     procedure OnTimer(Sender: TObject);
+    procedure DoOnHelp;
 
   protected
     procedure SetupControls;
@@ -700,6 +701,14 @@ begin
     ResetTimer;
 end;
 
+procedure TLCLTaskDialog.DoOnHelp;
+begin
+  {$PUSH}
+  {$ObjectChecks OFF}
+  {%H-}TTaskDialogAccess(FDlg).DoOnHelp;
+  {$POP}
+end;
+
 procedure TLCLTaskDialog.OnRadioButtonClick(Sender: TObject);
 var
   ButtonID: Integer;
@@ -957,7 +966,11 @@ begin
     if (Key = VK_F4) and (ssAlt in Shift) then//IMPORTANT: native task dialog blocks Alt+F4 to close the dialog -> we have to block it as well
       Key := 0;
   end;
-
+  if (Key = VK_F1) and (Shift = []) then
+  begin
+    Key := 0;
+    DoOnHelp;
+  end;
   inherited KeyDown(Key, Shift);
 end;
 

@@ -642,7 +642,9 @@ type
     FOnDialogCreated: TNotifyEvent;
     FOnDialogDestroyed: TNotifyEvent;
     FOnExpanded: TNotifyEvent;
+    FOnHelp: TNotifyEvent;
     FOnHyperlinkClicked: TNotifyEvent;
+    FOnNavigated: TNotifyEvent;
     FOnRadioButtonClicked: TNotifyEvent;
     FOnTimer: TTaskDlgTimerEvent;
     FOnVerificationClicked: TNotifyEvent;
@@ -674,9 +676,12 @@ type
     procedure DoOnExpandButtonClicked(Expanded: Boolean); dynamic;
     procedure DoOnTimer(TickCount: Cardinal; var Reset: Boolean); dynamic;
     procedure DoOnVerificationClicked(Checked: Boolean); dynamic;
-    //procedure DoOnHelp; dynamic;
+    procedure DoOnHelp; dynamic;
     procedure DoOnHyperlinkClicked(const AURL: string); dynamic;
-    //procedure DoOnNavigated; dynamic;
+
+    //requires that a TaskDialog has pages, (see: https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.taskdialogpage.navigate?view=windowsdesktop-7.0)
+    //which might be implemented in a derived class, but the event handler must be in base class for Delphi compatibility.
+    procedure DoOnNavigated; dynamic;
 
     procedure SetRadioButtonFromRadioIndex(AIndex: Integer);
   public
@@ -720,6 +725,8 @@ type
     property OnTimer: TTaskDlgTimerEvent read FOnTimer write FOnTimer;
     property OnRadioButtonClicked: TNotifyEvent read FOnRadioButtonClicked write FOnRadioButtonClicked;
     property OnHyperlinkClicked: TNotifyEvent read FOnHyperlinkClicked write FOnHyperlinkClicked;
+    property OnNavigated: TNotifyEvent read FOnNavigated write FOnNavigated;
+    property OnHelp: TNotifyEvent read FOnHelp write FOnHelp;
   end;
 
   TTaskDialog = class(TCustomTaskDialog)

@@ -220,11 +220,23 @@ begin
     FOnVerificationClicked(Self);
 end;
 
+procedure TCustomTaskDialog.DoOnHelp;
+begin
+  if Assigned(FonHelp) then
+    FOnHelp(Self);
+end;
+
 procedure TCustomTaskDialog.DoOnHyperlinkClicked(const AURL: string);
 begin
   FURL := AURL;
   if Assigned(FOnHyperlinkClicked) then
     FOnHyperlinkClicked(Self);
+end;
+
+procedure TCustomTaskDialog.DoOnNavigated;
+begin
+  if Assigned(FOnNavigated) then
+    FOnNavigated(Self);
 end;
 
 procedure TCustomTaskDialog.SetRadioButtonFromRadioIndex(AIndex: Integer);
