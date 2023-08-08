@@ -26,6 +26,7 @@ type
     FDlg: TTaskDialog;
     FVerifyChecked: Boolean;
     FExpanded: Boolean;
+    FCommandLinkButtonWidth: Integer;
     Timer: TTimer;
     TimerStartTime: TTime;
     RadioButtonArray: array of TRadioButton;
@@ -248,6 +249,7 @@ begin
   inherited CreateNew(AOwner, Num);
   RadioButtonArray := nil;
   FExpanded := False;
+  FCommandLinkButtonWidth := -1;
   KeyPreview := True;
   DoDialogCreated;
 end;
@@ -403,8 +405,10 @@ begin
       Parent := AParent;
       Font.Height := AFontHeight-3;
       if (tfEmulateClassicStyle in FDlg.Flags) then
-        SetBounds(X,Y,aWidth-10-X,40) else
-        SetBounds(X,Y,aWidth-16-X,40);
+        FCommandLinkButtonWidth := aWidth-10-X
+      else
+        FCommandLinkButtonWidth := aWidth-16-X;
+      SetBounds(X,Y,FCommandLinkButtonWidth,40);
       Caption := FDlg.Buttons[i].Caption;
       Hint := FDlg.Buttons[i].CommandLinkHint;
       if (Hint <> '') then
@@ -660,7 +664,10 @@ begin
   with QueryCombo do
   begin
     Items.Assign(FDlg.QueryChoices);
-    SetBounds(X,Y,aWidth-32-X,22);
+    if (FCommandLinkButtonWidth > 0) then
+      SetBounds(X,Y,FCommandLinkButtonWidth,22) //right align with the buttons
+    else
+      SetBounds(X,Y,aWidth-32-X,22);
     if (tfQueryFixedChoices in FDlg.Flags) then
       Style := csDropDownList
     else
@@ -684,6 +691,9 @@ begin
   QueryEdit := TEdit.Create(Self);
   with QueryEdit do
   begin
+    if (FCommandLinkButtonWidth > 0) then
+      SetBounds(X,Y,FCommandLinkButtonWidth,22) //right align with the buttons
+    else
     SetBounds(X,Y,aWidth-16-X,22);
     Text := FDlg.SimpleQuery;
     PasswordChar := FDlg.SimpleQueryPasswordChar;
