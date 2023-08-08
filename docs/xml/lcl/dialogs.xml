@@ -5839,6 +5839,7 @@ and includes additional features not found in previous versions.
 <element name="TCustomTaskDialog.FButton"/>
 <element name="TCustomTaskDialog.FButtons"/>
 <element name="TCustomTaskDialog.FCaption"/>
+<element name="TCustomTaskDialog.FCollapseButtonCaption"/>
 <element name="TCustomTaskDialog.FCommonButtons"/>
 <element name="TCustomTaskDialog.FDefaultButton"/>
 <element name="TCustomTaskDialog.FExpandButtonCaption"/>
@@ -6435,6 +6436,39 @@ and passed as arguments to the wrapper in <file>LCLTaskDialog</file>.
 </seealso>
 </element>
 
+<element name="TCustomTaskDialog.CollapseButtonCaption">
+<short>
+Caption text for the "expando" button on the task dialog.
+</short>
+<descr>
+<p>
+<var>CollapseButtonCaption</var> is a <var>TTranslateString</var> property with 
+the text displayed next to the "expando" button for the dialog when Expanded is 
+set to <b>True</b>. It describes the action performed the next time the button 
+is clicked. When omitted (or set to an empty string), the value 'Hide details' 
+is used.
+</p>
+<p>
+The property value can be localized using the translation facilities provided 
+in the Lazarus IDE when enabled for a project, or by manually calling the 
+translation routines in LazUtils.
+</p>
+<p>
+Use ExpandButtonCaption to specify the caption displayed when the content in 
+ExpandedText is collapsed (Expanded is set to <b>False</b>).
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.  
+</version>
+<seealso>
+<link id="TCustomTaskDialog.ExpandButtonCaption"/>
+<link id="TCustomTaskDialog.Expanded"/>
+<link id="TCustomTaskDialog.ExpandedText"/>
+<link id="#lcl.lcltype.TTranslateString">TTranslateString</link>
+</seealso>
+</element>
+
 <element name="TCustomTaskDialog.DefaultButton">
 <short>
 Index of the default button, from the set in the CommonButtons property.
@@ -6477,9 +6511,11 @@ the standard LCL translation facilities.
 <p>
 The default value for the property is an empty String (''), and cause the 
 values "See details" or "Hide details" to be used on the Task dialog (when 
-the language is English). Setting a value for the property causes the same 
-caption to be displayed for both the expanded and collapsed states; only the 
-button indicator changes.
+the language is English).
+</p>
+<p>
+Use CollapseButtonCaption to assign the caption displayed when ExpandedText is 
+Expanded.
 </p>
 <p>
 Use the Flags property to control the position (tfExpandFooterArea) or the 
@@ -6487,8 +6523,12 @@ expanded / collapsed state (tfExpandedByDefault) for the ExpandedText on the
 Task dialog.
 </p>
 </descr>
+<version>
+Added in LCL version 4.0.  
+</version>
 <seealso>
 <link id="TCustomTaskDialog.ExpandedText"/>
+<link id="TCustomTaskDialog.CollapseButtonCaption"/>
 <link id="TCustomTaskDialog.Flags"/>
 <link id="TTaskDialogFlags"/>
 <link id="TTaskDialogFlag"/>
@@ -7047,7 +7087,7 @@ completed.
 Added in LCL version 4.0.
 </version>
 <seealso>
-<link id="#lcl.lcltaskdialog.TLCLTaskDialog">TLCLTaskDialog</link>
+<link id="#lcl.taskdlgemulation.TLCLTaskDialog">TLCLTaskDialog</link>
 </seealso>
 </element>
 
@@ -7245,6 +7285,7 @@ end;
 <element name="TTaskDialog.Buttons" link="#lcl.dialogs.TCustomTaskDialog.Buttons"/>
 <element name="TTaskDialog.Caption" link="#lcl.dialogs.TCustomTaskDialog.Caption"/>
 <element name="TTaskDialog.CommonButtons" link="#lcl.dialogs.TCustomTaskDialog.CommonButtons"/>
+<element name="TTaskDialog.CollapseButtonCaption" link="#lcl.dialogs.TCustomTaskDialog.CollapseButtonCaption"/>
 <element name="TTaskDialog.DefaultButton" link="#lcl.dialogs.TCustomTaskDialog.DefaultButton"/>
 <element name="TTaskDialog.ExpandButtonCaption" link="#lcl.dialogs.TCustomTaskDialog.ExpandButtonCaption"/>
 <element name="TTaskDialog.ExpandedText" link="#lcl.dialogs.TCustomTaskDialog.ExpandedText"/>

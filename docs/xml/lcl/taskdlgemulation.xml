@@ -3,7 +3,7 @@
 <package name="lcl">
 <!-- 
 ========================================================================
-taskdlgemulation 
+TaskDlgEmulation 
 ========================================================================
 -->
 <!-- 
@@ -44,6 +44,7 @@ Added in LCL version 4.0 as replacement for the deprecated types in the
 <element name="ImgList"/>
 <element name="LCLProc"/>
 <element name="DateUtils"/>
+<element name="Math"/>
 <element name="LResources"/>
 <element name="Menus"/>
 <element name="Graphics"/>
@@ -100,6 +101,7 @@ The task dialog structure which created the form.
 <element name="TLCLTaskDialog.DlgTitle"/>
 <element name="TLCLTaskDialog.DlgText"/>
 <element name="TLCLTaskDialog.ExpandButtonCaption"/>
+<element name="TLCLTaskDialog.CollapseButtonCaption"/>
 <element name="TLCLTaskDialog.ExpandedText"/>
 <element name="TLCLTaskDialog.FooterText"/>
 <element name="TLCLTaskDialog.VerificationText"/>
@@ -290,7 +292,7 @@ Content in the Verification text.
 Value for the Verification check-box.
 </li>
 <li>
-Caption for the expand / collapse indicator.
+Captions displayed next to the expand / collapse indicator (expando button).
 </li>
 <li>
 Common buttons (and the default button) on the dialog form.
@@ -560,6 +562,6 @@ using translations unit.
 </element>
 
 </module>
-<!-- taskdlgemulation -->
+<!-- TaskDlgEmulation -->
 </package>
 </fpdoc-descriptions>
