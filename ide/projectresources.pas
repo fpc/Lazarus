@@ -37,7 +37,7 @@ unit ProjectResources;
 interface
 
 uses
-  Classes, SysUtils, resource, reswriter, fgl, Laz_AVL_Tree,
+  Classes, SysUtils, resource, reswriter, fgl, AVL_Tree,
   // LCL
   Controls, LResources,
   // LazUtils
@@ -84,7 +84,7 @@ type
     procedure UpdateLrsCodeBuffer;
     procedure DeleteLastCodeBuffers;
 
-    procedure OnResourceModified(Sender: TObject);
+    procedure ResourceModified(Sender: TObject);
   protected
     procedure SetResourceType(const AValue: TResourceType); override;
     function GetProjectResource(AIndex: TAbstractProjectResourceClass): TAbstractProjectResource; override;
@@ -406,7 +406,7 @@ begin
   end;
 end;
 
-procedure TProjectResources.OnResourceModified(Sender: TObject);
+procedure TProjectResources.ResourceModified(Sender: TObject);
 begin
   if TAbstractProjectResource(Sender).Modified then
     Modified := true;
@@ -433,7 +433,7 @@ begin
   begin
     R := TAbstractProjectResourceClass(L[i]).Create;
     R.Modified := False;
-    R.OnModified := @OnResourceModified;
+    R.OnModified := @ResourceModified;
     FResources.Add(R);
   end;
 end;
