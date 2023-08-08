@@ -1,0 +1,4 @@
+The following demos have issues with Laz 3.99/FPC 3.2.2
+- freetype_test: works only with timesi.ttf (not with FreeSans.ttf --> crash)
+- image_filters: sphere is black...
+- svg_test: crashes immediately

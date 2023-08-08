@@ -34,6 +34,7 @@
 }
 
 unit Expat;
+{$MODE DELPHI}
 
 interface
 

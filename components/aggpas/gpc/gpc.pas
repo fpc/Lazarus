@@ -32,6 +32,7 @@ Copyright: (C) 1997, Advanced Interfaces Group, University of Manchester.
 *)
 
 unit GPC;
+{$MODE Delphi}
 
 interface
 uses
