@@ -25,6 +25,7 @@ type
     /// the Task Dialog structure which created the form
     FDlg: TTaskDialog;
     FVerifyChecked: Boolean;
+    FExpanded: Boolean;
     Timer: TTimer;
     TimerStartTime: TTime;
     RadioButtonArray: array of TRadioButton;
@@ -45,6 +46,9 @@ type
     QueryEdit: TEdit;
     /// the Task Dialog optional checkbox
     VerifyCheckBox: TCheckBox;
+    /// the Expand/Collaps button
+    ExpandBtn: TButton;
+
 
     procedure AddIcon(out IconBorder,X,Y: Integer; AParent: TWinControl);
     procedure AddPanel;
@@ -59,6 +63,8 @@ type
     procedure AddQueryEdit(var X,Y: Integer; AWidth: Integer; AParent: TWinControl);
     procedure SetupTimer;
     procedure ResetTimer;
+    procedure ExpandDialog;
+    procedure CollapsDialog;
 
     procedure DoDialogConstructed;
     procedure DoDialogCreated;
@@ -67,6 +73,7 @@ type
     procedure OnRadioButtonClick(Sender: TObject);
     procedure OnVerifyClicked(Sender: TObject);
     procedure OnTimer(Sender: TObject);
+    procedure OnExpandButtonClicked(Sender: TObject);
     procedure DoOnHelp;
 
   protected
@@ -240,6 +247,7 @@ begin
 
   inherited CreateNew(AOwner, Num);
   RadioButtonArray := nil;
+  FExpanded := False;
   KeyPreview := True;
   DoDialogCreated;
 end;
@@ -520,7 +528,6 @@ procedure TLCLTaskDialog.AddExpandButton(var X, Y, XB: Integer;
 var
   CurrTabOrder: TTabOrder;
   WB, AHeight: Integer;
-  Btn: TButton;
 begin
   CurrTabOrder := Panel.TabOrder;
   //inc(Y, 16);
@@ -538,27 +545,30 @@ begin
   if (CollapsButtonCaption = '') then
     CollapsButtonCaption := ExpandButtonCaption;
   WB := Max(Canvas.TextWidth(ExpandButtonCaption), Canvas.TextWidth(CollapsButtonCaption)) +32;//52;
-  debugln(['    X+WB=', X+WB]);
-  debugln(['       XB=', XB]);
-  debugln(['     diff=', X+WB-XB]);
+  //debugln(['    X+WB=', X+WB]);
+  //debugln(['       XB=', XB]);
+  //debugln(['     diff=', X+WB-XB]);
   if (X+WB > XB) then
   begin
-    debugln('TLCLTaskDialog.AddExpandButton: too wide');
+    //debugln('TLCLTaskDialog.AddExpandButton: too wide');
     inc(Y,32);
     XB := aWidth;
   end;
 
-  Btn := TButton.Create(Self);
-  Btn.Parent := AParent;
+  ExpandBtn := TButton.Create(Self);
+  ExpandBtn.Parent := AParent;
   if (tfEmulateClassicStyle in FDlg.Flags) then
     AHeight := 22
   else
     AHeight := 28;
-  Btn.SetBounds(X,Y,WB-12,AHeight);
-  Btn.Caption := ExpandButtonCaption;
-  Btn.ModalResult := mrNone;
-  Btn.TabOrder := CurrTabOrder;
-  //Btn.OnClick := @OnButtonClicked;
+  ExpandBtn.SetBounds(X,Y,WB-12,AHeight);
+  if not (tfExpandedByDefault in FDlg.Flags) then
+    ExpandBtn.Caption := ExpandButtonCaption
+  else
+    ExpandBtn.Caption := CollapsButtonCaption;
+  ExpandBtn.ModalResult := mrNone;
+  ExpandBtn.TabOrder := CurrTabOrder;
+  ExpandBtn.OnClick := @OnExpandButtonClicked;
   Inc(Y, AHeight+8);
 end;
 
@@ -682,6 +692,19 @@ begin
   inc(Y,42);
 end;
 
+procedure TLCLTaskDialog.OnExpandButtonClicked(Sender: TObject);
+begin
+  if not FExpanded then
+    ExpandDialog
+  else
+    CollapsDialog;
+  FExpanded := not FExpanded;
+  {$PUSH}
+  {$ObjectChecks OFF}
+  {%H-}TTaskDialogAccess(FDlg).DoOnExpandButtonClicked(FExpanded);
+  {$POP}
+end;
+
 procedure TLCLTaskDialog.OnTimer(Sender: TObject);
 var
   AResetTimer: Boolean;
@@ -734,6 +757,18 @@ begin
   Timer.Enabled := False;
   TimerStartTime := Now;
   Timer.Enabled := True;
+end;
+
+procedure TLCLTaskDialog.ExpandDialog;
+begin
+  ExpandBtn.Caption := ExpandButtonCaption;
+  //ToDo: actually expand the dialog
+end;
+
+procedure TLCLTaskDialog.CollapsDialog;
+begin
+  ExpandBtn.Caption := CollapsButtonCaption;
+  //ToDo: actually collaps the dialog
 end;
 
 procedure TLCLTaskDialog.DoDialogConstructed;
@@ -950,6 +985,8 @@ begin
      else
        if Assigned(QueryEdit) and (tfQueryFocused in FDlg.Flags) then
          ActiveControl := QueryEdit;
+
+     FExpanded := (tfExpandedByDefault in FDlg.Flags);
   finally
     EnableAutoSizing;
   end;
