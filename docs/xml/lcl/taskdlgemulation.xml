@@ -94,6 +94,7 @@ The task dialog structure which created the form.
 </element>
 
 <element name="TLCLTaskDialog.FVerifyChecked"/>
+<element name="TLCLTaskDialog.FExpanded"/>
 <element name="TLCLTaskDialog.Timer"/>
 <element name="TLCLTaskDialog.TimerStartTime"/>
 <element name="TLCLTaskDialog.RadioButtonArray"/>
@@ -130,6 +131,12 @@ Edit control with the optional Task Dialog query editor.
 <element name="TLCLTaskDialog.VerifyCheckBox">
 <short>
 Check-box control used for optional Task Dialog verification.
+</short>
+</element>
+
+<element name="TLCLTaskDialog.ExpandBtn">
+<short>
+The expand/collapse button (expando control) for the Task dialog.
 </short>
 </element>
 
@@ -218,6 +225,10 @@ Check-box control used for optional Task Dialog verification.
 
 <element name="TLCLTaskDialog.ResetTimer"/>
 
+<element name="TLCLTaskDialog.ExpandDialog"/>
+
+<element name="TLCLTaskDialog.CollapseDialog"/>
+
 <element name="TLCLTaskDialog.DoDialogConstructed"/>
 
 <element name="TLCLTaskDialog.DoDialogCreated"/>
@@ -253,6 +264,54 @@ Naming schemes... choose one.
 <element name="TLCLTaskDialog.OnTimer"/>
 <element name="TLCLTaskDialog.OnTimer.Sender"/>
 
+<element name="TLCLTaskDialog.OnExpandButtonClicked">
+<short>
+Implements the event handler signalled when the expand/collapse button (expando 
+control) has been clicked on the task dialog.
+</short>
+<descr>
+<p>
+<var>OnExpandButtonClicked</var> is a method method used to perform actions 
+needed when the expand/collapse button for the task dialog has been clicked. It 
+is assigned during form set-up to the OnClick event handler for the TButton 
+instance used on the form.
+</p>
+<p>
+OnExpandButtonClicked ensures that the correct private method is called for the 
+button click; the current value in the expanded state is used to determine 
+whether expandable text is changed from expanded to collapsed, or vice versa. 
+It also sets the new value for the private expanded state member.
+</p>
+<p>
+The DoOnExpandButtonClicked in the TTaskDialog instance for the dialog form is 
+called with the new value for the Expanded property.
+</p>
+</descr>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="#lcl.dialogs.TTaskDialog.Expanded">TTaskDialog.Expanded</link>
+<link id="#lcl.dialogs.TTaskDialog.ExpandedText">TTaskDialog.ExpandedText</link>
+<link id="#lcl.dialogs.TTaskDialog.DoOnExpandButtonClicked">TTaskDialog.DoOnExpandButtonClicked</link>
+</seealso>
+</element>
+<element name="TLCLTaskDialog.OnExpandButtonClicked.Sender">
+<short>
+Not used in the method.
+</short>
+</element>
+
+<!-- TODO: Needs content. -->
+<element name="TLCLTaskDialog.DoOnHelp">
+<short/>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+
 <!-- protected -->
 <element name="TLCLTaskDialog.SetupControls">
 <short>
@@ -284,6 +343,9 @@ value has not been assigned.
 </li>
 <li>
 Values in the text, expanded text, and footer text properties.
+</li>
+<li>
+Value for the expand / collapse button on the dialog.
 </li>
 <li>
 Content in the Verification text.
@@ -340,8 +402,8 @@ Implements the OnKeyDown event handler for the task dialog.
 <p>
 <var>KeyDown</var> is an overridden method in <var>TLCLTaskDialog</var> which 
 implements the handler routine for OnKeyDown events in the dialog form. 
-KeyDown ensures that Esc and Alt+F4 key down events are applied properly for 
-the emulated task dialog.
+KeyDown ensures that Esc, Alt+F4, and F1 key down events are applied properly 
+for the emulated task dialog.
 </p>
 <p>
 When BorderIcons indicates that the dialog form can be closed (contains 
@@ -353,6 +415,11 @@ handled in the method.
 When Key and Shift indicate that the Alt+F4 key was pressed, the value in Key 
 is digested (set to 0). The native task dialog blocks Alt+F4 to close the 
 dialog, so it is blocked in the emulated task dialog as well.
+</p>
+<p>
+When Key indicates that F1 was pressed, the DoOnHelp method in the TTaskDialog 
+instance is called to signal an assigned OnHelp event handler in the task 
+dialog. The value in Key is set to 0 to consume the key event.
 </p>
 <p>
 KeyDown calls the inherited method prior to exit.
