@@ -1015,7 +1015,7 @@ type
     function UnitInfoWithLFMFilename(const AFilename: string): TUnitInfo; // only currently open lfm (SourceLFM<>nil)
     function AllEditorsInfoCount: Integer;
     property AllEditorsInfo[Index: Integer]: TUnitEditorInfo read GetAllEditorsInfo;
-    function EditorInfoWithEditorComponent({H-}AEditor:TSourceEditorInterface): TUnitEditorInfo;
+    function EditorInfoWithEditorComponent({%H-}AEditor:TSourceEditorInterface): TUnitEditorInfo;
     function SearchFile(const ShortFilename: string;
                         SearchFlags: TSearchIDEFileFlags): TUnitInfo;
     function FindFile(const AFilename: string;
