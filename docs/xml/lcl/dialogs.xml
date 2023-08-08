@@ -5854,7 +5854,9 @@ and includes additional features not found in previous versions.
 <element name="TCustomTaskDialog.FOnDialogCreated"/>
 <element name="TCustomTaskDialog.FOnDialogDestroyed"/>
 <element name="TCustomTaskDialog.FOnExpanded"/>
+<element name="TCustomTaskDialog.FOnHelp"/>
 <element name="TCustomTaskDialog.FOnHyperlinkClicked"/>
+<element name="TCustomTaskDialog.FOnNavigated"/>
 <element name="TCustomTaskDialog.FOnRadioButtonClicked"/>
 <element name="TCustomTaskDialog.FOnTimer"/>
 <element name="TCustomTaskDialog.FOnVerificationClicked"/>
@@ -6129,7 +6131,19 @@ State for the verification check box control on the dialog.
 </short>
 </element>
 
-<!-- <element name="TCustomTaskDialog.DoOnHelp"/> -->
+<!-- TODO: Needs additional content. -->
+<element name="TCustomTaskDialog.DoOnHelp">
+<short>
+Signals the OnHelp event handler (when assigned).
+</short>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso>
+<link id="TCustomTaskDialog.OnHelp"/>
+</seealso>
+</element>
 
 <element name="TCustomTaskDialog.DoOnHyperlinkClicked">
 <short>
@@ -6161,7 +6175,22 @@ New value for the URL property, and the target for the hyperlink.
 </short>
 </element>
 
-<!-- <element name="TCustomTaskDialog.DoOnNavigated"/> -->
+<element name="TCustomTaskDialog.DoOnNavigated">
+<short>
+Signals the OnNavigated event handler (when assigned).
+</short>
+<descr>
+<p>
+Requires use of pages in the Task Dialog; see
+<url href="https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.taskdialogpage.navigate?view=windowsdesktop-7.0)">
+TaskDialogPage.Navigate Method
+</url>
+which might be implemented in a derived class. The event handler must be in 
+base class for Delphi compatibility.
+</p>
+</descr>
+<seealso/>
+</element>
 
 <element name="TCustomTaskDialog.SetRadioButtonFromRadioIndex">
 <short>
@@ -6459,7 +6488,7 @@ ExpandedText is collapsed (Expanded is set to <b>False</b>).
 </p>
 </descr>
 <version>
-Added in LCL version 4.0.  
+Added in LCL version 4.0.
 </version>
 <seealso>
 <link id="TCustomTaskDialog.ExpandButtonCaption"/>
@@ -6524,7 +6553,7 @@ Task dialog.
 </p>
 </descr>
 <version>
-Added in LCL version 4.0.  
+Added in LCL version 4.0.
 </version>
 <seealso>
 <link id="TCustomTaskDialog.ExpandedText"/>
@@ -7224,6 +7253,26 @@ dialog has been clicked.
 <link id="TTaskDialogFlags"/>
 <link id="TTaskDialogFlag"/>
 </seealso>
+</element>
+
+<!-- TODO: Needs content. -->
+<element name="TCustomTaskDialog.OnNavigated">
+<short/>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
+</element>
+
+<!-- TODO: Needs content. -->
+<element name="TCustomTaskDialog.OnHelp">
+<short/>
+<descr/>
+<version>
+Added in LCL version 4.0.
+</version>
+<seealso/>
 </element>
 
 <!-- TODO: Needs update after refactoring. -->
