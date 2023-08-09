@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.3.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: gdbmistringconstants.dlggroupdebugger
@@ -19,147 +19,147 @@ msgstr "调试器"
 #: gdbmistringconstants.gdbmibreakpointerroronruncommand
 #, object-pascal-format
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to remove the breakpoints and continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
-msgstr "调试器遇到一个错误 在尝试运行/停止应用程序时:%0:s%0:s%1:s%0:s%0:s按\"Ok\"移除断点并继续调试(暂停),改正错误,或选择一个其他的运行命令.%0:s按\"Stop\"结束调试会话."
+msgstr "调试程序在尝试运行/单步执行应用程序时遇到错误：%0:s%0:s%1:s%0:s%0:s按 \"确定\" 删除断点并继续调试（已暂停），然后更正问题，或者选择其他运行命令。%0:s按 \"停止\" 结束调试会话。"
 
 #: gdbmistringconstants.gdbmicommandstartapplicationerror
 #, object-pascal-format
 msgid "The application could not be started:%0:s%1s"
-msgstr ""
+msgstr "应用程序无法启动：%0:s%1s"
 
 #: gdbmistringconstants.gdbmicommandstartmainbreakerror
 #, object-pascal-format
 msgid "The debugger could not set a breakpoint on the application's entry point.%0:sThis may be caused by missing debug info."
-msgstr "调试器不能设置一个断点在该应用的入口点.%0:s这可能是缺少调试信息导致的."
+msgstr "调试器不能在该应用的入口点设置一个断点。%0:s这可能是缺少调试信息导致的。"
 
 #: gdbmistringconstants.gdbmicommandstartmainrunerror
 #, object-pascal-format
 msgid "The debugger could not run the application.%0:sThis may be caused by missing debug info."
-msgstr "调试器不能运行应用.%0:s这可能是缺少调试信息导致的."
+msgstr "调试器不能运行应用程序。%0:s这可能是缺少调试信息导致的。"
 
 #: gdbmistringconstants.gdbmicommandstartmainrunnopiderror
 #, object-pascal-format
 msgid "The debugger failed to get the application's PID.%0:sThis may be caused by missing debug info."
-msgstr "调试器不能获取应用程序的PID.%0:s这可能是缺少调试信息造成的."
+msgstr "调试器不能获取应用程序的PID。%0:s这可能是缺少调试信息导致的。"
 
 #: gdbmistringconstants.gdbmicommandstartmainruntostoperror
 #, object-pascal-format
 msgid "The debugger was unable to initialize itself.%0:sThe application did run (and terminated) before the debugger could set any breakpoints. %0:sThis may be caused by missing debug info."
-msgstr "调试器不能自我初始化.%0:s应用不能运行(终止)在调试器能设置任何断点前.%0:s这可能是缺少调试信息导致的."
+msgstr "调试器无法自行完成初始化。%0:s在调试器设置任何断点之前，应用程序已运行（并终止）。%0:s这可能是缺少调试信息导致的。"
 
 #: gdbmistringconstants.gdbmierroronruncommand
 #, object-pascal-format
 msgid "The debugger encountered an error when trying to run/step the application:%0:s%0:s%1:s%0:s%0:sPress \"Ok\" to continue debugging (paused), and correct the problem, or choose an alternative run command.%0:sPress \"Stop\" to end the debug session."
-msgstr "调试器遇到一个错误 在尝试运行/停止应用程序时:%0:s%0:s%1:s%0:s%0:s按\"Ok\"继续调试(暂停),改正错误,或选择一个其他的运行命令.%0:s按\"Stop\"结束调试会话."
+msgstr "调试程序在尝试运行/单步执行应用程序时遇到错误：%0:s%0:s%1:s%0:s%0:s按 \"确定\" 继续调试（已暂停）并更正问题，或者选择其他运行命令。%0:s按 \"停止\" 结束调试会话。"
 
 #: gdbmistringconstants.gdbmierroronruncommandwithwarning
 #, object-pascal-format
 msgid "%0:s%0:sIn addition to the error the following warning was encountered:%0:s%0:s%1:s"
-msgstr "%0:s%0:s除了错误之外 遇到下面的警告:%0:s%0:s%1:s"
+msgstr "%0:s%0:s除此错误外，还遇到以下警告：%0:s%0:s%1:s"
 
 #: gdbmistringconstants.gdbmierrorstategenericinfo
 #, object-pascal-format
 msgid "Error in: %1:s %0:s"
-msgstr "错误在: %1:s %0:s"
+msgstr "错误在：%1:s %0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfocommanderror
 #, object-pascal-format
 msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sreturned the error:%0:s\"%2:s\"%0:s"
-msgstr "%0:sGDB命令:%0:s\"%1:s\"%0:s返回错误:%0:s\"%2:s\"%0:s"
+msgstr "%0:sGDB 命令：%0:s\"%1:s\"%0:s返回错误：%0:s\"%2:s\"%0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfocommandnoresult
 #, object-pascal-format
 msgid "%0:sThe GDB command:%0:s\"%1:s\"%0:sdid not return any result.%0:s"
-msgstr "%0:sGDB命令:%0:s\"%1:s\"%0:s没有返回任何结果.%0:s"
+msgstr "%0:sGDB 命令：%0:s\"%1:s\"%0:s 没有返回任何结果。%0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfofailedread
 #, object-pascal-format
 msgid "%0:sCould not read output from GDB.%0:s"
-msgstr "%0:s不能读取输出从GDB.%0:s"
+msgstr "%0:s无法读取 GDB 的输出信息。%0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfofailedwrite
 #, object-pascal-format
 msgid "%0:sCould not send a command to GDB.%0:s"
-msgstr "%0:s不能发送一个命令到GDB.%0:s"
+msgstr "%0:s无法发送一个命令到 GDB。%0:s"
 
 #: gdbmistringconstants.gdbmierrorstateinfogdbgone
 #, object-pascal-format
 msgid "%0:sThe GDB process is no longer running.%0:s"
-msgstr "%0:s该GDB进程不再运行.%0:s"
+msgstr "%0:s该 GDB 进程不再运行。%0:s"
 
 #: gdbmistringconstants.gdbmieventlogdebugoutput
 #, object-pascal-format
 msgid "Debug Output: %s"
-msgstr "调试器输出: %s"
+msgstr "调试器输出：%s"
 
 #: gdbmistringconstants.gdbmieventloggdbinternalerror
 #, object-pascal-format
 msgid "GDB has encountered an internal error: %s"
-msgstr "GDB遇到一个内部错误:%s"
+msgstr "GDB 遇到一个内部错误：%s"
 
 #: gdbmistringconstants.gdbmieventlognosymbols
 #, object-pascal-format
 msgid "File '%s' has no debug symbols"
-msgstr "文件'%s'没有debug符号"
+msgstr "文件 '%s' 不含调试符号"
 
 #: gdbmistringconstants.gdbmieventlogprocessexitcode
 #, object-pascal-format
 msgid "Process Exit: %s"
-msgstr "进程退出: %s"
+msgstr "进程退出：%s"
 
 #: gdbmistringconstants.gdbmieventlogprocessexitnormally
 msgid "Process Exit: normally"
-msgstr "进程退出:正常地"
+msgstr "进程退出：正常"
 
 #: gdbmistringconstants.gdbmieventlogprocessstart
 #, object-pascal-format
 msgid "Process Start: %s"
-msgstr "进程开始: %s"
+msgstr "进程开始：%s"
 
 #: gdbmistringconstants.gdbmifailedtolaunchexternaldbg
 msgid "Failed to create process for GDB"
-msgstr "为创建GDB进程失败"
+msgstr "创建 GDB 进程失败"
 
 #: gdbmistringconstants.gdbmifailedtoterminategdb
 #, object-pascal-format
 msgid "The IDE was unable to terminate the GDB process. This process may be left running outside the control of IDE.%0:sTo ensure the process is not affecting your System, you should locate and terminate it yourself."
-msgstr "IDE不能终止GDB进程.该进程可能离开运行在IDE的控制之外.%0:s确保进程不影响你的系统,你自己能定位并终止它."
+msgstr "IDE 无法终止 GDB 进程，该进程可能在 IDE 的控制范围之外运行。%0:s为了确保该过程不会影响您的系统，您应该自己定位并终止它。"
 
 #: gdbmistringconstants.gdbmifailedtoterminategdbtitle
 msgid "GDB did not terminate"
-msgstr "GDB不能终止"
+msgstr "GDB 仍未终止"
 
 #: gdbmistringconstants.gdbmifatalerroroccurred
 #, object-pascal-format
 msgid "Unrecoverable error: \"%s\""
-msgstr "不可恢复的错误:\"%s\""
+msgstr "不可恢复的错误：\"%s\""
 
 #: gdbmistringconstants.gdbmigdbinternalerror
 #, object-pascal-format
 msgid "GDB has encountered an internal error: %0:sPress \"Ok\" to continue debugging. This may NOT be safe.%0:sPress \"Stop\" to end the debug session."
-msgstr "GDB遇到一个内部错误:%0:s按\"Ok\"继续调试.这可能不安全.%0:s按\"Stop\"结束调试会话."
+msgstr "GDB 遇到一个内部错误:%0:s按 \"确定\" 继续调试，但这可能不安全。%0:s按 \"停止\" 结束调试会话。"
 
 #: gdbmistringconstants.gdbmigdbinternalerrorinfo
 #, object-pascal-format
 msgid "While executing the command: %0:s\"%2:s\"%0:sgdb reported:%0:s\"%1:s\"%0:s"
-msgstr "当执行命令: %0:s\"%2:s\"%0:sgdb报告:%0:s\"%1:s\"%0:s"
+msgstr "当执行命令: %0:s\"%2:s\"%0:sgdb 报告:%0:s\"%1:s\"%0:s"
 
 #: gdbmistringconstants.gdbmipressignoretocontinuedebuggingthismaynotbesafepres
-#, object-pascal-format, fuzzy, badformat
+#, object-pascal-format
 msgid "Press \"Ignore\" to continue debugging. This may NOT be safe. Press \"Abort\" to stop the debugger.%0:sException: %1:s with message \"%2:s\"%0:sContext: %4:s. State: %5:s %0:s%0:s%3:s"
-msgstr "按\"Ignore\"继续调试.这可能不安全.按\"Abort\"结束调试.%0:异常: %1:s带有信息\"%2:s\"%0:s上下文: %4:s.状态: %5:s %0:s%0:s%3:s"
+msgstr "按 \"忽略\" 来继续调试，但这可能不安全。按 \"中止\" 结束调试。%0:s异常：%1:s ，消息：\"%2:s\"%0:s上下文：%4:s。状态：%5:s %0:s%0:s%3:s"
 
 #: gdbmistringconstants.gdbmisfailedinitproc
 msgid "Failed to execute the initialization process"
-msgstr ""
+msgstr "执行初始化进程失败"
 
 #: gdbmistringconstants.gdbmisfailedinitprocwaitonexit
 #, object-pascal-format
 msgid "Failed on wait on exit. Status: %d Code: %d"
-msgstr ""
+msgstr "等待退出时失败。状态：%d 代码：%d"
 
 #: gdbmistringconstants.gdbmisnoasyncmode
 msgid "GDB does not support async mode"
-msgstr ""
+msgstr "GDB 不支持异步模式"
 
 #: gdbmistringconstants.gdbmithedebuggerexperiencedanunknowncondition
 msgid "The debugger experienced an unknown condition"
@@ -168,42 +168,42 @@ msgstr "调试器发现一个未知条件"
 #: gdbmistringconstants.gdbmitimeoutforcmd
 #, object-pascal-format
 msgid "Time-out for command: \"%s\""
-msgstr "Time-out对于命令:\"%s\""
+msgstr "命令 \"%s\" 超时"
 
 #: gdbmistringconstants.gdbmiwarningunknowbreakpoint
 #, object-pascal-format
 msgid "The debugger reached an unexpected %1:s%0:s%0:sPress \"Ok\" to continue debugging (paused).%0:sPress \"Stop\" to end the debug session."
-msgstr "调试器碰到一个异常%1:s%0:s%0:s按\"Ok\"继续调试(暂停).%0:s按\"Stop\"结束调试会话."
+msgstr "调试器遇到了一个异常 %1:s%0:s%0:s按 \"确定\" 继续调试（暂停）。%0:s按 \"停止\" 结束调试会话。"
 
 #: gdbmistringconstants.lisnewthegnudebuggerthroughsshallowstoremotedebugviaassh
 msgid "The GNU debugger through SSH allows to remote debug via a SSH connection. See docs/RemoteDebugging.txt for details. The path must contain the SSH client. Use SSH_Startup_Options for the hostname and optional username. Use Remote_GDB_Exe for the filename of GDB on the remote computer."
-msgstr "GNU调试器通过SSH允许remote调试经由SSH连接.查看docs/RemoteDebugging.txt详情.路径必须包含SSH客户端.使用SSH_Startup_Options对于hostname和可选择的username.使用Remote_GDB_Exe 对于GDB是文件名在remote计算机上."
+msgstr "通过 SSH 的 GNU 调试器允许经由SSH连接来远程调试。详情请查看 docs/RemoteDebugging.txt。路径必须包含 SSH 客户端。使用 SSH_Startup_Options 来设置主机和可选的用户名。使用Remote_GDB_Exe 来设置远程计算机上的 GDB 文件名。"
 
 #: gdbmistringconstants.lisresponsecontinue
 #, object-pascal-format
 msgid "Response: %sContinue?"
-msgstr "响应:%s继续?"
+msgstr "响应：%s继续？"
 
 #: gdbmistringconstants.lissshdebuggertimeout
 msgid "Timeout has occurred:"
-msgstr "超时发送:"
+msgstr "超时发送："
 
 #: gdbmistringconstants.lisunexpectedresultthedebuggerwillterminate
 #, object-pascal-format
 msgid "Unexpected result:%sThe debugger will terminate."
-msgstr "意外结果:%s调试器将终止"
+msgstr "意外的结果：%s调试器将终止。"
 
 #: gdbmistringconstants.synffailedtodownloadapplicationexecutable
 msgid "Failed to download application executable"
-msgstr ""
+msgstr "下载应用程序可执行文件失败"
 
 #: gdbmistringconstants.synffailedtoinitializedebugger
 msgid "Failed to initialize debugger"
-msgstr "初始化debugger失败"
+msgstr "初始化调试器失败"
 
 #: gdbmistringconstants.synffailedtoinitializethedebuggersetpascalfailed
 msgid "Failed to initialize the debugger (set pascal failed)"
-msgstr "初始化debugger失败 (设置pascal失败)"
+msgstr "初始化调试器失败 (设置 pascal 失败)"
 
 #: gdbmistringconstants.synffailedtoloadapplicationexecutable
 msgid "Failed to load application executable"
@@ -212,5 +212,5 @@ msgstr "加载可执行应用失败"
 #: gdbmistringconstants.synfthedebuggerwasunabletosetallbreakpointsduringiniti
 #, object-pascal-format
 msgid "The debugger was unable to set all breakpoints during initialization.%0:sYou may wish to check if all sources were compiled with debug-info.%0:sPress OK to ignore this and continue."
-msgstr "调试器不能设置所有的断点 在初始化.%0:s你可能想要检查 是否所有源代码编译带调试信息.%0:s按OK来忽略并继续."
+msgstr "调试器不能设置在初始化时设置所有断电。%0:s您可能需要检查是否所有源代码都是带调试信息编译的。%0:s按确定按钮来忽略以继续。"
 

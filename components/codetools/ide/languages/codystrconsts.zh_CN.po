@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
 "Language-Team: \n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
-"X-Generator: Poedit 2.0.8\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.3.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: codystrconsts.crsaddassignmethod
@@ -18,16 +18,16 @@ msgstr "添加Assign方法"
 
 #: codystrconsts.crsaddassignmethod2
 msgid "Add Assign Method ..."
-msgstr "添加Assign方法..."
+msgstr "添加 Assign 方法(&S) ..."
 
 #: codystrconsts.crsaddawithblock
 msgid "Add a \"With\" Block"
-msgstr "添加一个\"With\"语句块"
+msgstr "添加一个 \"With\" 语句块(&T)"
 
 #: codystrconsts.crsaddunittoimplementationusessection
 msgctxt "codystrconsts.crsaddunittoimplementationusessection"
 msgid "Add unit to implementation uses section"
-msgstr "添加单元到implementation Uses分句"
+msgstr "添加单元到 implementation Uses 选区"
 
 #: codystrconsts.crsaddwithblock
 msgid "Add \"With\" Block"
@@ -126,7 +126,7 @@ msgstr ""
 
 #: codystrconsts.crscamprivate
 msgid "private"
-msgstr "private(私有)"
+msgstr "private"
 
 #: codystrconsts.crscamproperty
 #, object-pascal-format
@@ -135,15 +135,15 @@ msgstr "%s属性"
 
 #: codystrconsts.crscamprotected
 msgid "protected"
-msgstr "protected(保护)"
+msgstr "protected"
 
 #: codystrconsts.crscampublic
 msgid "public"
-msgstr "public(公共)"
+msgstr "public"
 
 #: codystrconsts.crscampublished
 msgid "published"
-msgstr "发布"
+msgstr "published"
 
 #: codystrconsts.crscamselectmemberstoassign
 msgid "Select members to assign:"
@@ -252,7 +252,7 @@ msgstr ""
 
 #: codystrconsts.crscuselectfiletoinsertatcursor
 msgid "Select file to insert at cursor"
-msgstr "选择文件在光标出插入"
+msgstr "在光标处插入选择的文件"
 
 #: codystrconsts.crscutdeclarationtoclipboard
 msgid "Cut declaration to Clipboard"
@@ -281,11 +281,11 @@ msgstr ""
 
 #: codystrconsts.crsdeclarevariable
 msgid "Declare Variable"
-msgstr "声明变量"
+msgstr "定义变量"
 
 #: codystrconsts.crsdeclarevariable2
 msgid "Declare Variable ..."
-msgstr "声明变量..."
+msgstr "定义变量(&V) ..."
 
 #: codystrconsts.crsdeclarevariable3
 #, object-pascal-format
@@ -316,7 +316,7 @@ msgstr "错误: %s"
 
 #: codystrconsts.crserrorcursorisnotinaprojectunit
 msgid "Error: cursor is not in a project unit"
-msgstr "错误:光标不在工程单元"
+msgstr "错误:光标不在项目单元"
 
 #: codystrconsts.crserrorneedsourceeditoratprocedurecallordeclaration
 msgid "Error: Need source editor at procedure call or declaration"
@@ -328,7 +328,7 @@ msgstr ""
 
 #: codystrconsts.crsexplodeawithblock
 msgid "Explode a \"With\" Block"
-msgstr ""
+msgstr "散开一个 \"With\" 语句块(&W)"
 
 #: codystrconsts.crsexpression
 msgid "Expression"
@@ -365,11 +365,11 @@ msgstr "过滤器"
 
 #: codystrconsts.crsfindgdbbacktraceline
 msgid "Find GDB backtrace line"
-msgstr "找到GDB回溯线(backtrace line)"
+msgstr "查找 GDB 回溯线"
 
 #: codystrconsts.crsfindproceduremethodoverloads
 msgid "Find Procedure/Method Overloads"
-msgstr ""
+msgstr "查找过程/方法重载(&P)"
 
 #: codystrconsts.crsfindsourceofgdbbacktrace
 msgid "Find source of GDB backtrace"
@@ -381,7 +381,7 @@ msgstr ""
 
 #: codystrconsts.crsfpcunitwithoutppu
 msgid "FPC unit without ppu"
-msgstr "FPC unit不带有ppu"
+msgstr "不带 ppu 的 FPC 单元"
 
 #: codystrconsts.crsframeworks
 msgid "Frameworks"
@@ -401,7 +401,7 @@ msgstr "隐藏抽象方法和类接口方法"
 
 #: codystrconsts.crshideunitsofotherprojects
 msgid "Hide units of other projects"
-msgstr "隐藏其他工程的单元"
+msgstr "隐藏其他项目的单元"
 
 #: codystrconsts.crsideintegration
 msgid "IDE Integration"
@@ -436,7 +436,7 @@ msgstr "不可能的依赖"
 #: codystrconsts.crsin
 #, object-pascal-format
 msgid "in \"%s\""
-msgstr "在\"%s\"中"
+msgstr "在 \"%s\" 中"
 
 #: codystrconsts.crsincompatible
 msgid "incompatible"
@@ -444,23 +444,23 @@ msgstr "不兼容"
 
 #: codystrconsts.crsinimplementation
 msgid "In implementation"
-msgstr "在implementation"
+msgstr "在 implementation"
 
 #: codystrconsts.crsininterface
 msgid "In interface"
-msgstr "在interface"
+msgstr "在 interface"
 
 #: codystrconsts.crsinsertcallinherited
 msgid "Insert Call Inherited"
-msgstr "插入Call Inherited"
+msgstr "插入调用继承(&H)"
 
 #: codystrconsts.crsinsertfileatcursor
 msgid "Insert File Contents at Cursor ..."
-msgstr "插入文件内容在光标..."
+msgstr "在光标处插入文件内容(&C) ..."
 
 #: codystrconsts.crsinsertint64idyyyyddmmhhnnss
 msgid "Insert int64 ID YYYYDDMMhhnnss"
-msgstr "插入int64 ID YYYYDDMMhhnnss"
+msgstr "插入64位编号（YYYYDDMMhhnnss）(&D)"
 
 #: codystrconsts.crsjump
 msgid "Jump"
@@ -499,7 +499,7 @@ msgstr "局部变量关于%s"
 #: codystrconsts.crsmainsourcefile
 #, object-pascal-format
 msgid "Main source file: %s"
-msgstr "Main source文件: %s"
+msgstr "主源码文件: %s"
 
 #: codystrconsts.crsmbytes
 msgid "Mbytes"
@@ -537,7 +537,7 @@ msgstr ""
 
 #: codystrconsts.crsnoproject
 msgid "No project"
-msgstr "没有工程"
+msgstr "没有项目"
 
 #: codystrconsts.crsnotethenameoftheformmustbeavalidpascalidentifieran
 msgid "Note: The name of the form must be a valid pascal identifier and unique across the whole IDE, which includes all packages. Prepend the name with an abbreviation of your package. The prefixes \"IDE\", \"Laz\", \"Pkg\" are already used by the IDE itself."
@@ -621,7 +621,7 @@ msgstr ""
 
 #: codystrconsts.crspleaseopenaprojectfirst
 msgid "Please open a project first."
-msgstr "请先打开一个工程."
+msgstr "请先打开一个项目."
 
 #: codystrconsts.crspleaseplacethecursorofthesourceeditoratanidentifie
 #, object-pascal-format
@@ -634,7 +634,7 @@ msgstr ""
 
 #: codystrconsts.crspleaseselectsomecodeinthesourceeditor
 msgid "Please select some code in the Source Editor."
-msgstr "请选择一些代码在源代码编辑器"
+msgstr "请在源代码编辑器中选择一些代码。"
 
 #: codystrconsts.crspleaseselectsomecodeinthesourceeditorforanewwithbl
 msgid "Please select some code in the Source Editor for a new \"With\" block. No candidate for a with expression was found."
@@ -656,31 +656,31 @@ msgstr "PPU: %s"
 #: codystrconsts.crsppufilesofproject
 #, object-pascal-format
 msgid "PPU files of project \"%s\""
-msgstr "工程\"%s\"的PPU文件"
+msgstr "项目\"%s\"的PPU文件"
 
 #: codystrconsts.crsprivate
 msgid "Private"
-msgstr "private(私有)"
+msgstr "Private"
 
 #: codystrconsts.crsprojecthasnomainsourcefile
 msgid "Project has no main source file."
-msgstr "工程没有main source文件."
+msgstr "项目没有main source文件."
 
 #: codystrconsts.crsprojectoutput
 msgid "Project Output"
-msgstr "工程输出"
+msgstr "项目输出"
 
 #: codystrconsts.crsprotected
 msgid "Protected"
-msgstr "Protected(保护)"
+msgstr "Protected"
 
 #: codystrconsts.crspublic
 msgid "Public"
-msgstr "Public(公共)"
+msgstr "Public"
 
 #: codystrconsts.crspublished
 msgid "Published"
-msgstr "发布"
+msgstr "Published"
 
 #: codystrconsts.crsreallydeletethepackagefromthedatabasenotethisdoe
 #, object-pascal-format
@@ -734,7 +734,7 @@ msgstr "搜索..."
 #: codystrconsts.crsseconds
 #, object-pascal-format
 msgid "%s seconds"
-msgstr "%s秒"
+msgstr "%s 秒"
 
 #: codystrconsts.crsselectexpression
 msgid "Select expression"
@@ -742,7 +742,7 @@ msgstr "选择表达式"
 
 #: codystrconsts.crsshowcodetoolsnodeinfo
 msgid "Show CodeTools Node Info ..."
-msgstr "显示CodeTools节点信息..."
+msgstr "显示 CodeTools 节点信息(&C) ..."
 
 #: codystrconsts.crsshowcodydict
 #, object-pascal-format
@@ -759,19 +759,19 @@ msgstr ""
 
 #: codystrconsts.crsshowunitidentifierdictionary
 msgid "Show Unit / Identifier Dictionary ..."
-msgstr "显示单元/标识符字典..."
+msgstr "显示单元/标识符字典(&N) ..."
 
 #: codystrconsts.crsshowusedppufiles
 msgid "Show Used .ppu Files ..."
-msgstr "显示使用的.ppu文件..."
+msgstr "显示使用的 .ppu 文件(&W) ..."
 
 #: codystrconsts.crssizeofofile
 msgid "Size of .o file"
-msgstr ".o文件的大小"
+msgstr ".o 文件的大小"
 
 #: codystrconsts.crssizeofppufile
 msgid "Size of .ppu file"
-msgstr ".ppu文件的大小"
+msgstr ".ppu 文件的大小"
 
 #: codystrconsts.crssource
 #, object-pascal-format
@@ -793,7 +793,7 @@ msgstr ""
 #: codystrconsts.crstheidentifierisalreadydefined
 #, object-pascal-format
 msgid "The identifier \"%s\" is already defined."
-msgstr "标识符\"%s\" 已经定义"
+msgstr "标识符 \"%s\" 已经定义"
 
 #: codystrconsts.crsthereisalreadyanotherpackageloadedwiththesamenameo
 #, object-pascal-format

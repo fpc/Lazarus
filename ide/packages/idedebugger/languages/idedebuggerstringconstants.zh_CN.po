@@ -1,9 +1,16 @@
 msgid ""
 msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: ACTom <i@actom.me>\n"
+"Language-Team: \n"
+"Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
+"X-Generator: Poedit 3.3.2\n"
 
 #: idedebuggerstringconstants.dbgbreakgroupdlgcaption
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
@@ -21,7 +28,7 @@ msgstr "选择组来启用 当断点被命中时"
 #: idedebuggerstringconstants.dbgbreakpropertygroupnotfound
 #, object-pascal-format
 msgid "Some groups in the Enable/Disable list do not exist.%0:sCreate them?%0:s%0:s%1:s"
-msgstr "一些组在启用/禁用列表中不存在.%0:s创建它们?%0:s%0:s%1:s"
+msgstr "一些组在启用/禁用列表中不存在。%0:s创建它们吗？%0:s%0:s%1:s"
 
 #: idedebuggerstringconstants.dbgdispformatbinary
 #, fuzzy
@@ -184,10 +191,9 @@ msgid "Data-Address"
 msgstr ""
 
 #: idedebuggerstringconstants.drsaddwatch
-#, fuzzy
 msgctxt "idedebuggerstringconstants.drsaddwatch"
 msgid "Add watch"
-msgstr "增加观察点"
+msgstr "增加监视"
 
 #: idedebuggerstringconstants.drsappendresultatbottomofhis
 msgid "Append result at bottom of history"
@@ -264,7 +270,6 @@ msgid "Converter"
 msgstr ""
 
 #: idedebuggerstringconstants.drsdisableenableupdatesforth
-#, fuzzy
 msgctxt "idedebuggerstringconstants.drsdisableenableupdatesforth"
 msgid "Disable/Enable updates for the entire window"
 msgstr "禁用/启用整个窗口的更新"
@@ -398,7 +403,7 @@ msgstr "使用实例类类型"
 #: idedebuggerstringconstants.drswatchsplitterinspect
 msgctxt "idedebuggerstringconstants.drswatchsplitterinspect"
 msgid "Inspect pane"
-msgstr "查看窗格"
+msgstr "检查窗格"
 
 #: idedebuggerstringconstants.dsrevalusedebugconverter
 msgid "Use Backend Converter"
@@ -457,7 +462,7 @@ msgstr "地址:"
 #: idedebuggerstringconstants.lisaddressbreakpoint
 msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
 msgid "&Address Breakpoint ..."
-msgstr "地址断点...(&A)"
+msgstr "地址断点(&A) ..."
 
 #: idedebuggerstringconstants.lisallowfunctio
 msgid "Allow Function Calls"
@@ -465,7 +470,7 @@ msgstr "允许函数调用"
 
 #: idedebuggerstringconstants.lisautocontinueafter
 msgid "Auto continue after:"
-msgstr "自动继续在...后(after):"
+msgstr "之后自动继续："
 
 #: idedebuggerstringconstants.lisbpsdisabled
 msgctxt "lazarusidestrconsts.lisbpsdisabled"
@@ -498,7 +503,7 @@ msgstr "状态"
 
 #: idedebuggerstringconstants.liscallstacknotevaluated
 msgid "Stack not evaluated"
-msgstr "栈(Stack)未评估(evaluated)"
+msgstr "栈未评估"
 
 #: idedebuggerstringconstants.lisccoerrorcaption
 msgctxt "lazarusidestrconsts.lisccoerrorcaption"
@@ -507,13 +512,11 @@ msgstr "错误"
 
 #: idedebuggerstringconstants.lisclear
 msgid "Clear"
-msgstr ""
+msgstr "清空"
 
 #: idedebuggerstringconstants.liscoladdress
-#, fuzzy
-#| msgid "Address"
 msgid "Function Address"
-msgstr "地址"
+msgstr "函数地址"
 
 #: idedebuggerstringconstants.liscolclass
 msgid "Class"
@@ -521,15 +524,15 @@ msgstr "类"
 
 #: idedebuggerstringconstants.liscolinstance
 msgid "Object Instance"
-msgstr ""
+msgstr "对象实例"
 
 #: idedebuggerstringconstants.liscolreturns
 msgid "Returns"
-msgstr "返回(Returns)"
+msgstr "返回"
 
 #: idedebuggerstringconstants.liscolvisibility
 msgid "Visibility"
-msgstr "可视性(Visibility)"
+msgstr "可视性"
 
 #: idedebuggerstringconstants.liscondition
 msgid "Condition"
@@ -718,7 +721,7 @@ msgstr "删除断点对于地址%s?"
 #: idedebuggerstringconstants.lisdeletebreakpointforwatch
 #, object-pascal-format
 msgid "Delete watchpoint for \"%s\"?"
-msgstr "对\"%s\"删除监视点(watchpoint)?"
+msgstr "为 \"%s\" 删除监视点？"
 
 #: idedebuggerstringconstants.lisdigits
 msgid "Digits:"
@@ -737,15 +740,13 @@ msgid "Disable Groups"
 msgstr "禁用组"
 
 #: idedebuggerstringconstants.lisdisassassembler
-#, fuzzy
 msgctxt "idedebuggerstringconstants.lisdisassassembler"
 msgid "Assembler"
 msgstr "汇编"
 
 #: idedebuggerstringconstants.lisdisassgotoaddredittexthint
-#, fuzzy
 msgid "($address)"
-msgstr "地址:"
+msgstr "($address)"
 
 #: idedebuggerstringconstants.lisdisassgotoaddress
 msgctxt "idedebuggerstringconstants.lisdisassgotoaddress"
@@ -789,9 +790,8 @@ msgid "Eval expression"
 msgstr "求值(Eval)表达式"
 
 #: idedebuggerstringconstants.lisevaluateall
-#, fuzzy
 msgid "Evaluate all"
-msgstr "评估/修改"
+msgstr "评估全部"
 
 #: idedebuggerstringconstants.lisevaluatemodify
 msgid "&Evaluate/Modify"
@@ -850,21 +850,21 @@ msgstr "组"
 #: idedebuggerstringconstants.lisgroupassignexisting
 #, object-pascal-format
 msgid "Assign to existing \"%s\" group?"
-msgstr "分配到已存在的\"%s\"组?"
+msgstr "分配到已存在的 \"%s\" 组？"
 
 #: idedebuggerstringconstants.lisgroupemptydelete
 #, object-pascal-format
 msgid "No more breakpoints are assigned to group \"%s\", delete it?"
-msgstr "没有更多断点被分配到组(group)\"%s\",删除它?"
+msgstr "组 \"%s\" 没有分配到更多断点，删除它吗?"
 
 #: idedebuggerstringconstants.lisgroupemptydeletemore
 #, object-pascal-format
 msgid "%sThere are %d more empty groups, delete all?"
-msgstr "%s这里有%d更多的空组(groups),删除所有?"
+msgstr "%s这里有 %d 个更多的空组，全部删除？"
 
 #: idedebuggerstringconstants.lisgroupnameemptyclearinstead
 msgid "The group name cannot be empty. Clear breakpoints' group(s)?"
-msgstr "组名称不能是空的.清理断点的组?"
+msgstr "组名不能为空，清理断点的组？"
 
 #: idedebuggerstringconstants.lisgroupnameinput
 msgid "Group name:"
@@ -872,11 +872,11 @@ msgstr "组名:"
 
 #: idedebuggerstringconstants.lisgroupnameinvalid
 msgid "BreakpointGroup name must be a valid Pascal identifier name."
-msgstr "BreakpointGroup名称必需是一个有效的pascal标识符."
+msgstr "BreakpointGroup 名称必需是一个有效的 Pascal 标识符。"
 
 #: idedebuggerstringconstants.lisgroupsetnew
 msgid "Set new group ..."
-msgstr "设置新组..."
+msgstr "设置新组 ..."
 
 #: idedebuggerstringconstants.lisgroupsetnone
 msgid "Clear group(s)"
@@ -884,7 +884,7 @@ msgstr "清除组"
 
 #: idedebuggerstringconstants.lishitcount
 msgid "Hitcount"
-msgstr "命中计数(Hitcount)"
+msgstr "命中数"
 
 #: idedebuggerstringconstants.lisid
 msgctxt "lazarusidestrconsts.lisid"
@@ -906,17 +906,17 @@ msgstr "索引"
 
 #: idedebuggerstringconstants.lisinspect
 msgid "&Inspect"
-msgstr "查看(&I)"
+msgstr "检查(&I)"
 
 #: idedebuggerstringconstants.lisinspectaddwatch
 msgctxt "lazarusidestrconsts.lisinspectaddwatch"
 msgid "Add watch"
-msgstr "增加观察点"
+msgstr "增加监视"
 
 #: idedebuggerstringconstants.lisinspectclassinherit
-#, object-pascal-format, fuzzy
+#, object-pascal-format
 msgid "%s: class %s inherits from %s"
-msgstr "%s :类%s继承自%s"
+msgstr "%s：类 %s 继承自 %s"
 
 #: idedebuggerstringconstants.lisinspectdata
 msgid "Data"
@@ -953,9 +953,9 @@ msgid "Show visibility column"
 msgstr ""
 
 #: idedebuggerstringconstants.lisinspectunavailableerror
-#, object-pascal-format, fuzzy, badformat
+#, object-pascal-format
 msgid "%s: unavailable (error: %s)"
-msgstr "%s:不可用"
+msgstr "%s：不可用（错误：%s）"
 
 #: idedebuggerstringconstants.lisinspectuseinstance
 msgctxt "idedebuggerstringconstants.lisinspectuseinstance"
@@ -985,7 +985,7 @@ msgstr "至少"
 
 #: idedebuggerstringconstants.lisline
 msgid "Line:"
-msgstr "行:"
+msgstr "行："
 
 #: idedebuggerstringconstants.lislinelength
 msgid "Line/Length"
@@ -994,21 +994,19 @@ msgstr "行/长度"
 #: idedebuggerstringconstants.lislocals
 msgctxt "lazarusidestrconsts.lislocals"
 msgid "Local Variables"
-msgstr "局部变量"
+msgstr "局部变量(&L)"
 
 #: idedebuggerstringconstants.lislocalsdlgcopyaddr
 msgid "Copy &Data-Address"
-msgstr ""
+msgstr "复制数据地址(&D)"
 
 #: idedebuggerstringconstants.lislocalsdlgcopyall
-#, fuzzy
-#| msgid "Copy &all"
 msgid "Copy &all entries"
-msgstr "复制所有(&a)"
+msgstr "复制所有条目(&A)"
 
 #: idedebuggerstringconstants.lislocalsdlgcopyentry
 msgid "Copy entire entry"
-msgstr ""
+msgstr "复制整个条目"
 
 #: idedebuggerstringconstants.lislocalsdlgcopyname
 msgid "&Copy Name"
@@ -1016,36 +1014,32 @@ msgstr "复制名称(&C)"
 
 #: idedebuggerstringconstants.lislocalsdlgcopynamevalue
 msgid "Co&py Name and Value"
-msgstr "复制名称和值(&p)"
+msgstr "复制名称和值(&P)"
 
 #: idedebuggerstringconstants.lislocalsdlgcopyrawvalue
 msgid "Copy &RAW Value"
-msgstr "复制原始数据(Raw)值(&R)"
+msgstr "复制原始值(&R)"
 
 #: idedebuggerstringconstants.lislocalsdlgcopyvalue
-#, fuzzy
-#| msgid "C&opy Value"
 msgid "C&opy Value (quoted)"
-msgstr "复制值(&o)"
+msgstr "复制值（引用）(&O)"
 
 #: idedebuggerstringconstants.lislocalsnotevaluated
-#, fuzzy
 msgid "Locals not evaluated"
-msgstr "线程未评估(evaluated)"
+msgstr "线程未评估"
 
 #: idedebuggerstringconstants.lislogcallstack
-#, fuzzy
 msgid "Log Call Stack"
-msgstr "调用栈"
+msgstr "记录调用栈"
 
 #: idedebuggerstringconstants.lislogcallstacklimit
 msgid "(frames limit. 0 - no limits)"
-msgstr "(帧(frames)限制. 0 - 无限制)"
+msgstr "(帧限制。0 - 无限制)"
 
 #: idedebuggerstringconstants.lislogevalexpression
 msgctxt "lazarusidestrconsts.lislogevalexpression"
 msgid "Eval expression"
-msgstr "求值(Eval)表达式"
+msgstr "Eval 表达式"
 
 #: idedebuggerstringconstants.lislogmessage
 msgid "Log Message"
@@ -1054,11 +1048,11 @@ msgstr "日志信息"
 #: idedebuggerstringconstants.lismaxs
 #, object-pascal-format
 msgid "Max %d"
-msgstr "最大%d"
+msgstr "最大 %d"
 
 #: idedebuggerstringconstants.lismenubreak
 msgid "&Break"
-msgstr "中断(Break)(&B)"
+msgstr "中断(&B)"
 
 #: idedebuggerstringconstants.lismenuhelp
 msgid "&Help"
@@ -1066,7 +1060,7 @@ msgstr "帮助(&H)"
 
 #: idedebuggerstringconstants.lismenustepinto
 msgid "Step In&to"
-msgstr "单步进入(&t)"
+msgstr "单步进入(&T)"
 
 #: idedebuggerstringconstants.lismenustepintocontext
 msgid "Step Into (Context)"
@@ -1084,7 +1078,7 @@ msgstr "单步进入指令"
 
 #: idedebuggerstringconstants.lismenustepout
 msgid "Step O&ut"
-msgstr "单步跳出(&u)"
+msgstr "单步跳出(&U)"
 
 #: idedebuggerstringconstants.lismenustepover
 msgid "&Step Over"
@@ -1111,24 +1105,24 @@ msgstr "单步跳过到光标(&C)"
 #: idedebuggerstringconstants.lismenuviewassembler
 msgctxt "idedebuggerstringconstants.lismenuviewassembler"
 msgid "Assembler"
-msgstr "汇编"
+msgstr "汇编(&A)"
 
 #: idedebuggerstringconstants.lismenuviewbreakpoints
 msgid "BreakPoints"
-msgstr "断点"
+msgstr "断点(&B)"
 
 #: idedebuggerstringconstants.lismenuviewcallstack
 msgid "Call Stack"
-msgstr "调用栈"
+msgstr "调用栈(&S)"
 
 #: idedebuggerstringconstants.lismenuviewdebugevents
 msgctxt "lazarusidestrconsts.lismenuviewdebugevents"
 msgid "Event Log"
-msgstr "事件日志"
+msgstr "事件日志(&E)"
 
 #: idedebuggerstringconstants.lismenuviewdebugoutput
 msgid "Debug Output"
-msgstr "调试输出"
+msgstr "调试输出(&D)"
 
 #: idedebuggerstringconstants.lismore
 msgctxt "lazarusidestrconsts.lismore"
@@ -1150,11 +1144,11 @@ msgstr "名称"
 
 #: idedebuggerstringconstants.lisoff
 msgid "? (Off)"
-msgstr "?(关闭)"
+msgstr "?（关闭）"
 
 #: idedebuggerstringconstants.lison
 msgid "? (On)"
-msgstr ""
+msgstr "?（打开）"
 
 #: idedebuggerstringconstants.lispasscount
 msgid "Pass Count"
@@ -1162,7 +1156,7 @@ msgstr "通过统计"
 
 #: idedebuggerstringconstants.lispefilename
 msgid "Filename:"
-msgstr "文件名:"
+msgstr "文件名："
 
 #: idedebuggerstringconstants.lispendingon
 msgid "Pending (On)"
@@ -1175,14 +1169,13 @@ msgstr "寄存器"
 
 #: idedebuggerstringconstants.lisrepeatcount
 msgid "Repeat Count:"
-msgstr "重复(Repeat)计数(Count):"
+msgstr "重复次数："
 
 #: idedebuggerstringconstants.lissourcebreakpoint
 msgid "&Source Breakpoint ..."
-msgstr "源码断点...(&S)"
+msgstr "源码断点(&S) ..."
 
 #: idedebuggerstringconstants.lissrcline
-#, fuzzy
 msgctxt "idedebuggerstringconstants.lissrcline"
 msgid "Line"
 msgstr "行"
@@ -1227,7 +1220,7 @@ msgstr "行"
 
 #: idedebuggerstringconstants.listhreadsnotevaluated
 msgid "Threads not evaluated"
-msgstr "线程未评估(evaluated)"
+msgstr "线程未评估"
 
 #: idedebuggerstringconstants.listhreadssrc
 msgctxt "lazarusidestrconsts.listhreadssrc"
@@ -1237,10 +1230,9 @@ msgstr "源代码"
 #: idedebuggerstringconstants.listhreadsstate
 msgctxt "lazarusidestrconsts.listhreadsstate"
 msgid "State"
-msgstr "状态(State)"
+msgstr "状态"
 
 #: idedebuggerstringconstants.lisvalue
-#, fuzzy
 msgctxt "idedebuggerstringconstants.lisvalue"
 msgid "Value"
 msgstr "值"
@@ -1248,7 +1240,7 @@ msgstr "值"
 #: idedebuggerstringconstants.lisviewbreakpointproperties
 msgctxt "lazarusidestrconsts.lisviewbreakpointproperties"
 msgid "Breakpoint Properties ..."
-msgstr "断点属性..."
+msgstr "断点属性 ..."
 
 #: idedebuggerstringconstants.lisviewsource
 msgid "View Source"
@@ -1261,15 +1253,15 @@ msgstr "查看汇编"
 
 #: idedebuggerstringconstants.liswatch
 msgid "&Watch"
-msgstr "监视点(&W)"
+msgstr "监视(&W)"
 
 #: idedebuggerstringconstants.liswatchdata
 msgid "Watch:"
-msgstr "监视点:"
+msgstr "监视："
 
 #: idedebuggerstringconstants.liswatchkind
 msgid "Watch action"
-msgstr "监视点动作"
+msgstr "监视动作"
 
 #: idedebuggerstringconstants.liswatchkindread
 msgid "Read"
@@ -1285,19 +1277,19 @@ msgstr "写"
 
 #: idedebuggerstringconstants.liswatchpoint
 msgid "&Data/Watch Breakpoint ..."
-msgstr "数据/监视点(Watch)断点...(&D)"
+msgstr "数据/监视断点(&D) ..."
 
 #: idedebuggerstringconstants.liswatchpointbreakpoint
 msgid "&Data/watch Breakpoint ..."
-msgstr "数据/监视点(Watch)断点...(&D)"
+msgstr "数据/监视断点(&D) ..."
 
 #: idedebuggerstringconstants.liswatchpropert
 msgid "Watch Properties"
-msgstr "查看属性(Watch Properties)"
+msgstr "监视属性"
 
 #: idedebuggerstringconstants.liswatchscope
 msgid "Watch scope"
-msgstr "监视点范围"
+msgstr "监视范围"
 
 #: idedebuggerstringconstants.liswatchscopeglobal
 msgctxt "lazarusidestrconsts.liswatchscopeglobal"
@@ -1306,11 +1298,11 @@ msgstr "全局"
 
 #: idedebuggerstringconstants.liswatchscopelocal
 msgid "Declaration"
-msgstr "声明(Declaration)"
+msgstr "定义"
 
 #: idedebuggerstringconstants.liswatchtowatchpoint
 msgid "Create &Data/Watch Breakpoint ..."
-msgstr "创建数据/监视点(Watch)断点...(&D)"
+msgstr "创建数据/监视断点(&D) ..."
 
 #: idedebuggerstringconstants.liswldeleteall
 msgid "De&lete All"
@@ -1318,11 +1310,11 @@ msgstr "删除所有(&l)"
 
 #: idedebuggerstringconstants.liswldisableall
 msgid "D&isable All"
-msgstr "禁用所有(&i)"
+msgstr "禁用所有(&I)"
 
 #: idedebuggerstringconstants.liswlenableall
 msgid "E&nable All"
-msgstr "启用所有(&n)"
+msgstr "启用所有(&N)"
 
 #: idedebuggerstringconstants.liswlexpression
 msgid "Expression"
@@ -1340,7 +1332,7 @@ msgstr "属性(&P)"
 #: idedebuggerstringconstants.liswlwatchlist
 msgctxt "lazarusidestrconsts.liswlwatchlist"
 msgid "Watches"
-msgstr "查看"
+msgstr "监视(&W)"
 
 #: idedebuggerstringconstants.regdlgbinary
 msgctxt "lazarusidestrconsts.regdlgbinary"
@@ -1359,7 +1351,7 @@ msgstr ""
 
 #: idedebuggerstringconstants.regdlgdisplaytypeforselectedregisters
 msgid "Display type for selected Registers"
-msgstr "显示选择寄存器(Registers)的类型"
+msgstr "显示选择寄存器的类型"
 
 #: idedebuggerstringconstants.regdlgformat
 msgid "Format"
@@ -1375,7 +1367,7 @@ msgstr "八进制"
 
 #: idedebuggerstringconstants.regdlgraw
 msgid "Raw"
-msgstr "未加工的;Raw)"
+msgstr "原始"
 
 #: idedebuggerstringconstants.rsattachto
 msgid "Attach to"
@@ -1387,11 +1379,11 @@ msgstr "进入PID"
 
 #: idedebuggerstringconstants.synfnewvalueisempty
 msgid "\"New value\" is empty."
-msgstr "\"新建值\"是空的."
+msgstr "\"新建值\"为空。"
 
 #: idedebuggerstringconstants.synfthedebuggerwasnotabletomodifythevalue
 msgid "The debugger was not able to modify the value."
-msgstr "调试器不能修改该值."
+msgstr "调试器不能修改该值。"
 
 #: idedebuggerstringconstants.uemtogglebreakpoint
 msgid "Toggle &Breakpoint"

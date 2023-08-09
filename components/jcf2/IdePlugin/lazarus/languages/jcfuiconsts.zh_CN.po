@@ -3,13 +3,13 @@ msgstr ""
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
+"Last-Translator: ACTom <i@actom.me>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Poedit 3.3.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: jcfuiconsts.format_about_menu
@@ -19,7 +19,7 @@ msgstr "关于(&A)"
 #: jcfuiconsts.format_category_idecmd
 msgctxt "jcfideregister.format_category_idecmd"
 msgid "JEDI Code Format"
-msgstr "JEDI代码格式"
+msgstr "JEDI 代码格式"
 
 #: jcfuiconsts.format_current_idecmd
 msgid "Format code in current editor window"
@@ -32,17 +32,17 @@ msgstr "当前编辑器窗口(&C)"
 
 #: jcfuiconsts.format_menu
 msgid "JEDI Code &Format"
-msgstr "JEDI代码格式(&F)"
+msgstr "JEDI 代码格式(&F)"
 
 #: jcfuiconsts.format_open_menu
 msgctxt "jcfideregister.format_open_menu"
 msgid "All &Open Windows"
-msgstr "所有打开窗口(&O)"
+msgstr "所有打开的窗口(&O)"
 
 #: jcfuiconsts.format_project_menu
 msgctxt "jcfideregister.format_project_menu"
 msgid "&All Files in Project"
-msgstr "工程中的所有文件(&A)"
+msgstr "项目中的所有文件(&A)"
 
 #: jcfuiconsts.format_settings_menu
 msgid "&Format Settings"
@@ -50,16 +50,16 @@ msgstr "格式设置(&F)"
 
 #: jcfuiconsts.lisaboutaboutjedicodeformat
 msgid "About JEDI Code Format"
-msgstr "关于JEDI代码格式"
+msgstr "关于 JEDI 代码格式"
 
 #: jcfuiconsts.lisaboutfindmoreinformationonthewebat
 #, object-pascal-format
 msgid "Find more information on the web at: %s"
-msgstr "找到更多信息在网上在:%s"
+msgstr "在网上找到更多信息：%s"
 
 #: jcfuiconsts.lisaboutthisprogramisopensource
 msgid "This program is open source software. It is released under the Mozilla Public Licence (MPL).  http://www.mozilla.org/MPL"
-msgstr "这个程序是开放源代码软件.它发布在Mozilla公共许可证下.http://www.mozilla.org/MPL"
+msgstr "这个程序是开放源代码软件，它发布在 Mozilla 公共许可证下，http://www.mozilla.org/MPL"
 
 #: jcfuiconsts.lisaboutthisprogramisstillunderdevelopment
 msgid "This program is still under development. In spite of thorough testing and removal of reported bugs, no guarantees are given. Please make backups, or better yet use a source control system."
@@ -355,7 +355,7 @@ msgstr "其他位置"
 
 #: jcfuiconsts.liscdstatements
 msgid "Statements"
-msgstr "声明"
+msgstr "表达式"
 
 #: jcfuiconsts.liscduseanewlineaftercompilerdirectives
 msgid "Use a new line after compiler directives:"
@@ -413,16 +413,16 @@ msgstr "错误"
 #: jcfuiconsts.lisedexception
 #, object-pascal-format
 msgid "Exception %s"
-msgstr "异常%s"
+msgstr "异常 %s"
 
 #: jcfuiconsts.lisedin
 #, object-pascal-format
 msgid "%s in %s"
-msgstr "%s在%s"
+msgstr "%s 在 %s"
 
 #: jcfuiconsts.lisedjcfparseerror
 msgid "JCF Parse error"
-msgstr "JCF解析错误"
+msgstr "JCF 解析错误"
 
 #: jcfuiconsts.lisednear
 #, object-pascal-format
@@ -457,7 +457,7 @@ msgstr "编写文件日期:%s"
 
 #: jcfuiconsts.lisfrfilesdescription
 msgid "Description:"
-msgstr "描述"
+msgstr "描述："
 
 #: jcfuiconsts.lisfrfilesfileisreadonly
 msgid "File is read only"
@@ -743,7 +743,7 @@ msgstr "常量声明(Const declarations)(&o)"
 
 #: jcfuiconsts.lisspacesfixspacing
 msgid "Fix &spacing"
-msgstr "修复(Fix)空格(&s)"
+msgstr "修复(Fix)空格(&S)"
 
 #: jcfuiconsts.lisspacesfunctionreturntypes
 msgid "&Function return types"
@@ -751,16 +751,15 @@ msgstr "函数返回类型(&F)"
 
 #: jcfuiconsts.lisspacesinfunctioncall
 msgid "In function &call"
-msgstr "在函数调用(call)(&c)"
+msgstr "在函数调用(&C)"
 
 #: jcfuiconsts.lisspacesinfunctiondeclaration
 msgid "In function &declaration"
-msgstr "在函数声明(declaration)(&d)"
+msgstr "在函数定义(&d)"
 
 #: jcfuiconsts.lisspacesingeneric
-#, fuzzy
 msgid "In &generic"
-msgstr "通用标识符"
+msgstr "通用标识符(&G)"
 
 #: jcfuiconsts.lisspacesinsertspacebeforebracket
 msgid "&Insert space before bracket"
@@ -771,14 +770,13 @@ msgid "Insert space inside brackets"
 msgstr "插入空格在括号内"
 
 #: jcfuiconsts.lisspaceslabel
-#, fuzzy
 msgid "&Label"
-msgstr "Label不带有begin"
+msgstr "标签(&L)"
 
 #: jcfuiconsts.lisspacesleaveasis
 msgctxt "jcfuiconsts.lisspacesleaveasis"
 msgid "Leave as is"
-msgstr "Leave as is(照原样离开)"
+msgstr "直接离开"
 
 #: jcfuiconsts.lisspacesmaxspacesincode
 msgid "&Max spaces in code"
@@ -795,12 +793,11 @@ msgstr "从不"
 
 #: jcfuiconsts.lisspacesprocedureparameters
 msgid "&Procedure parameters"
-msgstr "过程(Procedure)参数(&P)"
+msgstr "过程参数(&P)"
 
 #: jcfuiconsts.lisspacesrecordfields
-#, fuzzy
 msgid "&Record fields"
-msgstr "类和记录字段"
+msgstr "记录字段(&R)"
 
 #: jcfuiconsts.lisspacesspacebeforeclassheritage
 msgid "Space before class &heritage"
@@ -812,15 +809,15 @@ msgstr "空格"
 
 #: jcfuiconsts.lisspacesspacesaroundoperators
 msgid "Spaces around &operators"
-msgstr "运算符(operators)周围空格(&o)"
+msgstr "运算符周围空格(&O)"
 
 #: jcfuiconsts.lisspacesspacesbeforecolonin
 msgid "Spaces &before colon in"
-msgstr "空格在冒号前 在(&b)"
+msgstr "冒号前空格(&B)"
 
 #: jcfuiconsts.lisspacesspacesfortab
 msgid "Spaces for tab"
-msgstr "tab对于每个空格"
+msgstr "制表符对应空格数"
 
 #: jcfuiconsts.lisspacesspacespertab
 msgid "Spaces per tab"
@@ -840,7 +837,7 @@ msgstr "转换tabs为空格"
 
 #: jcfuiconsts.lisspacesvardeclarations
 msgid "&Var declarations"
-msgstr "变量声明(Var declarations)(&V)"
+msgstr "变量定义(&V)"
 
 #: jcfuiconsts.listransformaddbeginandendtosinglestatements
 msgid "Add begin and end to single statements"
@@ -868,7 +865,7 @@ msgstr ""
 
 #: jcfuiconsts.listransformlongesttoshortest
 msgid "Longest to shortest"
-msgstr "最长的到最短的(Longest to shortest)"
+msgstr "最长的到最短的"
 
 #: jcfuiconsts.listransformonlywithnocomments
 msgid "Only with no comments"
@@ -888,7 +885,7 @@ msgstr ""
 
 #: jcfuiconsts.listransformshortesttolongest
 msgid "Shortest to longest"
-msgstr "最短的到最长的(Shortest to longest)"
+msgstr "最短的到最长的"
 
 #: jcfuiconsts.listransformsortimplementationuses
 msgid "Sort i&mplementation uses"
@@ -916,11 +913,11 @@ msgstr ""
 
 #: jcfuiconsts.lisusesinsertintoimplementation
 msgid "Insert into Implementation"
-msgstr "插入到Implementation(实施)"
+msgstr "插入到 Implementation"
 
 #: jcfuiconsts.lisusesinsertintointerface
 msgid "Insert into Interface"
-msgstr "插入到Interface(接口)"
+msgstr "插入到 Interface"
 
 #: jcfuiconsts.lisusesremove
 msgid "Remove"
@@ -932,7 +929,7 @@ msgstr "替换"
 
 #: jcfuiconsts.lisusesuses
 msgid "Uses"
-msgstr "使用"
+msgstr "Uses"
 
 #: jcfuiconsts.liswarningsignoreunusedparametersnamed
 msgid "&Ignore unused parameters named:"

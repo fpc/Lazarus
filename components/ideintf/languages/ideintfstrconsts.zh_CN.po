@@ -1,21 +1,28 @@
 msgid ""
 msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
+"X-Generator: Poedit 3.3.2\n"
 
 #: ideintfstrconsts.lisabort
 msgid "Abort"
-msgstr "取消"
+msgstr "中止(&T)"
 
 #: ideintfstrconsts.lisadd
 msgid "Add"
-msgstr "添加"
+msgstr "添加(&A)"
 
 #: ideintfstrconsts.lisalways
 msgid "Always"
-msgstr "总是"
+msgstr "总是(&A)"
 
 #: ideintfstrconsts.lisbtnadd
 msgid "&Add"
@@ -31,11 +38,11 @@ msgstr "删除(&D)"
 
 #: ideintfstrconsts.lisbtndlgadd
 msgid "&Add ..."
-msgstr "添加...(&A)"
+msgstr "添加(&A) ..."
 
 #: ideintfstrconsts.lisbtnenabled
 msgid "&Enabled"
-msgstr "激活(&E)"
+msgstr "启用(&E)"
 
 #: ideintfstrconsts.lisbtnok
 msgid "&OK"
@@ -43,35 +50,35 @@ msgstr "确定(&O)"
 
 #: ideintfstrconsts.liscancel
 msgid "Cancel"
-msgstr "取消"
+msgstr "取消(&C)"
 
 #: ideintfstrconsts.liscontinue
 msgid "Continue"
-msgstr "继续"
+msgstr "继续(&C)"
 
 #: ideintfstrconsts.liscopy
 msgid "Copy"
-msgstr "复制"
+msgstr "复制(&C)"
 
 #: ideintfstrconsts.liscut
 msgid "Cut"
-msgstr "剪切"
+msgstr "剪切(&T)"
 
 #: ideintfstrconsts.lisdelete
 msgid "Delete"
-msgstr "删除"
+msgstr "删除(&D)"
 
 #: ideintfstrconsts.lisdisabled
 msgid "Disabled"
-msgstr "禁用"
+msgstr "禁用(&D)"
 
 #: ideintfstrconsts.lisdlgadd
 msgid "Add ..."
-msgstr "添加..."
+msgstr "添加(&A) ..."
 
 #: ideintfstrconsts.lisenabled
 msgid "Enabled"
-msgstr "允许"
+msgstr "启用(&E)"
 
 #: ideintfstrconsts.lishelp
 msgid "Help"
@@ -79,7 +86,7 @@ msgstr "帮助"
 
 #: ideintfstrconsts.lisignore
 msgid "Ignore"
-msgstr "忽略"
+msgstr "忽略(&I)"
 
 #: ideintfstrconsts.lislazarus
 msgid "Lazarus"
@@ -87,21 +94,21 @@ msgstr "Lazarus"
 
 #: ideintfstrconsts.lisnever
 msgid "Never"
-msgstr "从不"
+msgstr "从不(&V)"
 
 #: ideintfstrconsts.lisno
 msgid "No"
-msgstr ""
+msgstr "否(&N)"
 
 #: ideintfstrconsts.lisok
 msgid "OK"
-msgstr "确定"
+msgstr "确定(&O)"
 
 #: ideintfstrconsts.lispaste
 msgid "Paste"
-msgstr "粘贴"
+msgstr "粘贴(&P)"
 
 #: ideintfstrconsts.lisyes
 msgid "Yes"
-msgstr "是"
+msgstr "是(&Y)"
 
