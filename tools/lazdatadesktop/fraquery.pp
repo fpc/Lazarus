@@ -56,7 +56,6 @@ type
     MIExecuteScript: TMenuItem;
     MIExecuteSelection: TMenuItem;
     MIExecuteSingle: TMenuItem;
-    MResult: TMemo;
     ODSQL: TOpenDialog;
     PCResult: TPageControl;
     FMSQL: TSynEdit;
@@ -65,6 +64,7 @@ type
     SDSQL: TSaveDialog;
     SQuery: TSplitter;
     SQLSyn: TSynSQLSyn;
+    MResult: TSynEdit;
     TBExecute: TToolButton;
     TBSep1: TToolButton;
     TBPrevious: TToolButton;
@@ -121,6 +121,7 @@ type
     FSQLConstName: String;
     FSQLQuoteOptions: TQuoteOptions;
     FAbortScript : Boolean;
+    procedure AddToResult(const Msg: String; SetCursorPos : Boolean = false);
     procedure ClearResults;
     function CountStatements(const S: String): Integer;
     function DetermineExecuteMode: TExecuteMode;
@@ -129,7 +130,7 @@ type
     procedure DoDirective(Sender: TObject; Directive, Argument: AnsiString;  var StopExecution: Boolean);
     procedure DoSQLStatement(Sender: TObject; Statement: TStrings; var StopExecution: Boolean);
     // Execute SQL
-    procedure DoExecuteQuery(Const Qry: String; ACount : Integer = 0);
+    procedure DoExecuteQuery(const Qry: TStrings; ACount: Integer);
     function GetTransaction: TSQLTransaction;
     procedure LocalizeFrame;
     function SelectionHint: Boolean;
@@ -145,7 +146,7 @@ type
   Public
     Constructor Create(AOwner : TComponent); override;
     Destructor Destroy; override;
-    Function ExecuteQuery(Const Qry: String; ACount : Integer = 0) : Boolean;
+    function ExecuteQuery(const Qry: TStrings; ACount: Integer = 0): Boolean;
     procedure ExecuteScript(AScript: String);
     procedure SaveQuery(AFileName: String);
     procedure LoadQuery(AFileName: String);
@@ -393,7 +394,7 @@ begin
   RetryStatement:=False;
   Inc(FStatementCount);
   Repeat
-    If not ExecuteQuery(Statement.Text,FStatementCount) then
+    If not ExecuteQuery(Statement,FStatementCount) then
       begin
       If not RetryStatement then
         Inc(FErrorCount);
@@ -419,7 +420,10 @@ end;
 
 procedure TQueryFrame.DoCommit(Sender: TObject);
 begin
-  MResult.Append(SErrCommitNotSupported);
+  if not HaveTransaction then
+    AddToResult(SErrCommitNotSupported)
+  else
+    Transaction.Commit;
 end;
 
 procedure TQueryFrame.DoDirective(Sender: TObject; Directive, Argument: AnsiString; var StopExecution: Boolean);
@@ -465,7 +469,6 @@ begin
       FMSQL.Lines:=Dest
     else
       FMSQL.SelText:=Dest.Text
-
   finally
     Dest.Free;
     Src.Free;
@@ -530,9 +533,19 @@ begin
 end;
 
 procedure TQueryFrame.AExecuteSelectionExecute(Sender: TObject);
+
+Var
+  SQL : TStrings;
+
 begin
   ClearResults;
-  ExecuteQuery(Trim(FMSQL.SelText));
+  SQL:=TStringList.Create;
+  try
+    SQL.Text:=FMSQL.SelText;
+    ExecuteQuery(SQL);
+  finally
+    SQL.Free;
+  end;
 end;
 
 procedure TQueryFrame.AExecuteSelectionScriptExecute(Sender: TObject);
@@ -544,7 +557,7 @@ end;
 procedure TQueryFrame.AExecuteSingleExecute(Sender: TObject);
 begin
   ClearResults;
-  ExecuteQuery(Trim(FMSQL.Lines.Text));
+  ExecuteQuery(FMSQL.Lines);
 end;
 
 procedure TQueryFrame.aRollBackExecute(Sender: TObject);
@@ -694,11 +707,11 @@ begin
   FMSQL.Lines.SaveToFile(AFileName);
 end;
 
-procedure TQueryFrame.DoExecuteQuery(const Qry: String; ACount: Integer);
+procedure TQueryFrame.DoExecuteQuery(const Qry: TStrings; ACount: Integer);
 
 Var
   DS : TDataset;
-  S,RowsAff : String;
+  SQL,S,RowsAff : String;
   N : Integer;
   TS,TE : TDateTime;
 
@@ -706,16 +719,18 @@ begin
   RowsAff:='';
   TS:=Now;
   if ACount<>0 then
-    MResult.Append(Format(SExecutingSQLStatementCount,[DateTimeToStr(TS),ACount]))
+    AddToResult(Format(SExecutingSQLStatementCount,[DateTimeToStr(TS),ACount]))
   else
-    MResult.Append(Format(SExecutingSQLStatement,[DateTimeToStr(TS)]));
-  MResult.Append(Qry);
+    AddToResult(Format(SExecutingSQLStatement,[DateTimeToStr(TS)]));
+  For S in Qry do
+    AddToResult(S,False);
   If Not assigned(FEngine) then
     Raise Exception.Create(SErrNoEngine);
-  S:=ExtractDelimited(1,Trim(Qry),[' ',#9,#13,#10]);
+  SQL:=Qry.Text;
+  S:=ExtractDelimited(1,Trim(SQL),[' ',#9,#13,#10]);
   If (IndexText(S,['With','SELECT'])=-1) then
     begin
-    N:=FEngine.RunQuery(Qry);
+    N:=FEngine.RunQuery(SQL);
     TE:=Now;
     If ecRowsAffected in FEngine.EngineCapabilities then
       RowsAff:=Format(SRowsAffected,[N]);
@@ -726,10 +741,10 @@ begin
     begin
     DS:=Dataset;
     If Assigned(DS) then
-      FEngine.SetQueryStatement(Qry,DS)
+      FEngine.SetQueryStatement(SQL,DS)
     else
       begin
-      DS:=FEngine.CreateQuery(Qry,Self);
+      DS:=FEngine.CreateQuery(SQL,Self);
       FData.Dataset:=DS;
       end;
     TSData.TabVisible:=true;
@@ -739,15 +754,11 @@ begin
     TE:=Now;
     RowsAff:=Format(SRecordsFetched,[DS.RecordCount]);
     end;
-  MResult.Append(Format(SSQLExecutedOK,[DateTimeToStr(TE)]));
-{$IFDEF VER2_6}
-  MResult.Append(Format(SExecutionTime,[FormatDateTime('hh:nn:ss.zzz',TE-TS)]));
-{$ELSE}
-  MResult.Append(Format(SExecutionTime,[FormatDateTime('hh:nn:ss.zzz',TE-TS,[fdoInterval])]));
-{$ENDIF}
+  AddToResult(Format(SSQLExecutedOK,[DateTimeToStr(TE)]));
+  AddToResult(Format(SExecutionTime,[FormatDateTime('hh:nn:ss.zzz',TE-TS,[fdoInterval])]),RowsAff='');
   if (RowsAff<>'') then
-    MResult.Append(RowsAff);
-  AddToHistory(Qry);
+    AddToResult(RowsAff,True);
+  AddToHistory(SQL);
   ACloseQuery.Update;
 end;
 
@@ -761,8 +772,27 @@ begin
       Result:=TSQLDBDDEngine(FEngine).Transaction;
 end;
 
+Procedure TQueryFrame.AddToResult(const Msg : String; SetCursorPos : Boolean = false);
 
-function TQueryFrame.ExecuteQuery(const Qry: String; ACount: Integer): Boolean;
+var
+  MsgLines : TStringList;
+
+begin
+  MsgLines:=TStringList.Create;
+  try
+    MsgLines.Text:=Msg;
+    MResult.Lines.AddStrings(MsgLines);
+    if SetCursorPos then
+      begin
+      MResult.SelStart:=Length(MResult.Text);
+      MResult.EnsureCursorPosVisible;
+      end;
+  finally
+    MsgLines.Free;
+  end;
+end;
+
+function TQueryFrame.ExecuteQuery(const Qry: TStrings; ACount: Integer): Boolean;
 
 Var
   Msg : String;
@@ -796,8 +826,7 @@ begin
     if (Msg<>'') then
       begin
       PCResult.ActivePage:=TSResult;
-      MResult.Append(SErrorExecutingSQL);
-      MResult.Append(Msg);
+      AddToResult(Msg,True);
       end;
   Finally
     if ACount<=0 then
