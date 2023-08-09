@@ -1,7 +1,7 @@
 uses
   qt5, qtobjects;
 
-{$if Defined(CPU386)}
+{$if (Defined(CPU386) or Defined(CPUX86_64))}
  {$ASMMODE INTEL}
 {$endif}
 
@@ -12,7 +12,7 @@ procedure AlphaBlendLineConstant(Source, Destination: Pointer; Count: Integer; C
 // ConstantAlpha must be in the range 0..255 where 0 means totally transparent (destination pixel only)
 // and 255 totally opaque (source pixel only).
 // Bias is an additional value which gets added to every component and must be in the range -128..127
-{$if not Defined(CPU386)}
+{$if not (Defined(CPU386) or Defined(CPUX86_64))}
 begin
 
 end;
@@ -183,7 +183,7 @@ procedure AlphaBlendLinePerPixel(Source, Destination: Pointer; Count, Bias: Inte
 // Blends a line of Count pixels from Source to Destination using the alpha value of the source pixels.
 // The layout of a pixel must be BGRA.
 // Bias is an additional value which gets added to every component and must be in the range -128..127
-{$if not Defined(CPU386)}
+{$if not (Defined(CPU386) or Defined(CPUX86_64))}
 begin
 
 end;
@@ -348,7 +348,7 @@ procedure AlphaBlendLineMaster(Source, Destination: Pointer; Count: Integer; Con
 // The layout of a pixel must be BGRA.
 // ConstantAlpha must be in the range 0..255.
 // Bias is an additional value which gets added to every component and must be in the range -128..127
-{$if not Defined(CPU386)}
+{$if not (Defined(CPU386) or Defined(CPUX86_64))}
 begin
 
 end;
@@ -535,7 +535,7 @@ procedure AlphaBlendLineMasterAndColor(Destination: Pointer; Count: Integer; Con
 // Blends a line of Count pixels in Destination against the given color using a constant alpha value.
 // The layout of a pixel must be BGRA and Color must be rrggbb00 (as stored by a COLORREF).
 // ConstantAlpha must be in the range 0..255.
-{$if not Defined(CPU386)}
+{$if not (Defined(CPU386) or Defined(CPUX86_64))}
 begin
 
 end;
@@ -674,7 +674,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 procedure EMMS;
-{$if not Defined(CPU386)}
+{$if not (Defined(CPU386) or Defined(CPUX86_64))}
 begin
 
 end;
