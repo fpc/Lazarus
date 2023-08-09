@@ -95,6 +95,7 @@ The task dialog structure which created the form.
 
 <element name="TLCLTaskDialog.FVerifyChecked"/>
 <element name="TLCLTaskDialog.FExpanded"/>
+<element name="TLCLTaskDialog.FCommandLinkButtonWidth"/>
 <element name="TLCLTaskDialog.Timer"/>
 <element name="TLCLTaskDialog.TimerStartTime"/>
 <element name="TLCLTaskDialog.RadioButtonArray"/>
