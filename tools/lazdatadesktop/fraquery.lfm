@@ -767,6 +767,21 @@ object QueryFrame: TQueryFrame
       Hint = 'Select All'
       ShortCut = 16449
     end
+    object aCopyAsSQLConst: TAction
+      Category = 'Edit'
+      Caption = 'Copy as pascal string constant'
+      OnExecute = aCopyAsSQLConstExecute
+    end
+    object aCopyAsTStringsAdd: TAction
+      Category = 'Edit'
+      Caption = 'TStrings.Add statements'
+      OnExecute = aCopyAsTStringsAddExecute
+    end
+    object aCleanPascalCode: TAction
+      Category = 'Edit'
+      Caption = 'Clean up pascal code'
+      OnExecute = aCleanPascalCodeExecute
+    end
   end
   object SQLSyn: TSynSQLSyn
     DefaultFilter = 'SQL Files (*.sql)|*.sql'
@@ -821,6 +836,18 @@ object QueryFrame: TQueryFrame
     end
     object mnuSelectAll: TMenuItem
       Action = aSelectAll
+    end
+    object MenuItem1: TMenuItem
+      Caption = 'Copy as...'
+      object MenuItem2: TMenuItem
+        Action = aCopyAsSQLConst
+      end
+      object MenuItem3: TMenuItem
+        Action = aCopyAsTStringsAdd
+      end
+    end
+    object MenuItem4: TMenuItem
+      Action = aCleanPascalCode
     end
     object mnuSep: TMenuItem
       Caption = '-'

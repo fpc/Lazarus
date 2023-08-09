@@ -8,7 +8,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, SynHighlighterSQL, SynEdit, LResources, Forms,
   DB, LCLType, Controls, ComCtrls, StdCtrls, ActnList, Dialogs, ExtCtrls, Menus, StdActns,
-  dmImages, fpDatadict, fradata, lazdatadeskstr, sqlscript, sqldb, fpddsqldb;
+  dmImages, fpDatadict, fradata, lazdatadeskstr, sqlscript, sqldb, fpddsqldb, lazddsqlutils;
 
 type
    TExecuteMode = (emSingle,emSelection,emScript,emSelectionScript);
@@ -21,6 +21,9 @@ type
     ACloseQuery: TAction;
     ACreateCode: TAction;
     aCommit: TAction;
+    aCopyAsSQLConst: TAction;
+    aCopyAsTStringsAdd: TAction;
+    aCleanPascalCode: TAction;
     aRollBack: TAction;
     AExecuteSelectionScript: TAction;
     AExecuteScript: TAction;
@@ -37,6 +40,10 @@ type
     aCut: TEditCut;
     aPaste: TEditPaste;
     aSelectAll: TEditSelectAll;
+    MenuItem1: TMenuItem;
+    MenuItem2: TMenuItem;
+    MenuItem3: TMenuItem;
+    MenuItem4: TMenuItem;
     mnuPrevSQL: TMenuItem;
     mnuNextSQL: TMenuItem;
     mnuSep2: TMenuItem;
@@ -75,8 +82,11 @@ type
     TSResult: TTabSheet;
     TSData: TTabSheet;
     TBQuery: TToolBar;
+    procedure aCleanPascalCodeExecute(Sender: TObject);
     procedure aCommitExecute(Sender: TObject);
     procedure aCommitUpdate(Sender: TObject);
+    procedure aCopyAsSQLConstExecute(Sender: TObject);
+    procedure aCopyAsTStringsAddExecute(Sender: TObject);
     procedure AExecuteExecute(Sender: TObject);
     procedure AExecuteScriptExecute(Sender: TObject);
     procedure AExecuteSelectionExecute(Sender: TObject);
@@ -108,6 +118,8 @@ type
     FScriptMode : TScriptMode;
     FErrorCount,
     FStatementCount : Integer;
+    FSQLConstName: String;
+    FSQLQuoteOptions: TQuoteOptions;
     FAbortScript : Boolean;
     procedure ClearResults;
     function CountStatements(const S: String): Integer;
@@ -150,6 +162,8 @@ type
     Property QueryHistory : TStrings Read FQueryHistory;
     Property CurrentQuery : Integer Read FCurrentQuery;
     Property Busy : TBusyMode Read FBusy;
+    Property SQLQuoteOptions : TQuoteOptions Read FSQLQuoteOptions Write FSQLQuoteOptions;
+    Property SQLConstName : String Read FSQLConstName Write FSQLConstName;
     { public declarations }
   end;
 
@@ -166,7 +180,7 @@ type
 
 implementation
 
-uses strutils, fpdataexporter, fpcodegenerator;
+uses Clipbrd, strutils, fpdataexporter, fpcodegenerator;
 
 {$r *.lfm}
 
@@ -433,10 +447,80 @@ begin
     Transaction.Commit;
 end;
 
+procedure TQueryFrame.aCleanPascalCodeExecute(Sender: TObject);
+var
+  Src,Dest : TStrings;
+
+begin
+  Dest:=nil;
+  Src:=TStringList.Create;
+  try
+    Dest:=TStringList.Create;
+    if FMSQL.SelEnd=FMSQL.SelEnd then
+      Src.AddStrings(FMSQL.Lines)
+    else
+      Src.Text:=FMSQL.SelText;
+    UnQuoteSQL(Src,Dest);
+    if FMSQL.SelEnd=FMSQL.SelEnd then
+      FMSQL.Lines:=Dest
+    else
+      FMSQL.SelText:=Dest.Text
+
+  finally
+    Dest.Free;
+    Src.Free;
+  end;
+end;
+
 procedure TQueryFrame.aCommitUpdate(Sender: TObject);
 
 begin
   (Sender as TAction).Enabled:=HaveTransaction and Transaction.Active;
+end;
+
+procedure TQueryFrame.aCopyAsSQLConstExecute(Sender: TObject);
+
+var
+  Src,Dest : TStrings;
+
+begin
+  Dest:=nil;
+  Src:=TStringList.Create;
+  try
+    Dest:=TStringList.Create;
+    if FMSQL.SelEnd=FMSQL.SelEnd then
+      Src.AddStrings(FMSQL.Lines)
+    else
+      Src.Text:=FMSQL.SelText;
+    QuoteSQL(Src,Dest,SQLQuoteOptions,SQLConstName);
+    Clipboard.AsText:=Dest.Text;
+  finally
+    Dest.Free;
+    Src.Free;
+  end;
+end;
+
+
+
+procedure TQueryFrame.aCopyAsTStringsAddExecute(Sender: TObject);
+var
+  Src,Dest : TStrings;
+
+begin
+  Dest:=nil;
+  Src:=TStringList.Create;
+  try
+    Dest:=TStringList.Create;
+    if FMSQL.SelEnd=FMSQL.SelEnd then
+      Src.AddStrings(FMSQL.Lines)
+    else
+      Src.Text:=FMSQL.SelText;
+    QuoteSQL(Src,Dest,[qoTStringsAdd],SQLConstName);
+    Clipboard.AsText:=Dest.Text;
+  finally
+    Dest.Free;
+    Src.Free;
+  end;
 end;
 
 procedure TQueryFrame.AExecuteScriptExecute(Sender: TObject);
@@ -629,7 +713,7 @@ begin
   If Not assigned(FEngine) then
     Raise Exception.Create(SErrNoEngine);
   S:=ExtractDelimited(1,Trim(Qry),[' ',#9,#13,#10]);
-  If (CompareText(S,'SELECT')<>0) then
+  If (IndexText(S,['With','SELECT'])=-1) then
     begin
     N:=FEngine.RunQuery(Qry);
     TE:=Now;

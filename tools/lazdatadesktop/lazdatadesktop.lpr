@@ -11,7 +11,7 @@ uses
   frmgeneratesql, RunTimeTypeInfoControls, frmSQLConnect,
   ddfiles, frmselectconnectiontype,
   lazdatadeskstr, fraquery, fradata, fraconnection,
-  reglddfeatures;
+  reglddfeatures, lazddsqlutils;
 
 {$R *.res}
 

@@ -68,7 +68,7 @@
         <MinVersion Minor="1" Release="1" Valid="True"/>
       </Item8>
     </RequiredPackages>
-    <Units Count="15">
+    <Units Count="16">
       <Unit0>
         <Filename Value="lazdatadesktop.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -158,6 +158,10 @@
         <ResourceBaseClass Value="DataModule"/>
         <UnitName Value="dmImages"/>
       </Unit14>
+      <Unit15>
+        <Filename Value="lazddsqlutils.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit15>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -178,10 +182,5 @@
         </Win32>
       </Options>
     </Linking>
-    <Other>
-      <ConfigFile>
-        <WriteConfigFilePath Value="$(ProjOutDir)/fpclaz.cfg"/>
-      </ConfigFile>
-    </Other>
   </CompilerOptions>
 </CONFIG>
