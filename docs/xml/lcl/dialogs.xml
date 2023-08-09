@@ -6131,17 +6131,30 @@ State for the verification check box control on the dialog.
 </short>
 </element>
 
-<!-- TODO: Needs additional content. -->
 <element name="TCustomTaskDialog.DoOnHelp">
 <short>
 Signals the OnHelp event handler (when assigned).
 </short>
-<descr/>
+<descr>
+<p>
+<var>DoOnHelp</var> is a method called to perform actions needed when the Help 
+command is executed for the task dialog. It signals the OnHelp event handler 
+(when assigned) to respond to the help request.
+</p>
+<p>
+DoOnHelp is called when the widgetset handles a TDN_HELP task dialog 
+notification message which occurs when the Help button is clicked. For 
+platforms where an emulated task dialog form is used, it is called from the 
+KeyDown method in the TLCLTaskDialog instance when the F1 key is pressed.
+</p>
+</descr>
 <version>
 Added in LCL version 4.0.
 </version>
 <seealso>
 <link id="TCustomTaskDialog.OnHelp"/>
+<link id="TCustomTaskDialog.Buttons"/>
+<link id="#lcl.taskdlgemulation.TLCLTaskDialog.KeyDown">TLCLTaskDialog.KeyDown</link>
 </seealso>
 </element>
 
@@ -6780,18 +6793,38 @@ Added in LCL version 4.0.
 </seealso>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TCustomTaskDialog.QueryItemIndex">
 <short>
 Ordinal position for the value in QueryChoices selected when the task dialog 
 is executed.
 </short>
-<descr/>
+<descr>
+<p>
+<var>QueryItemIndex</var> is an <var>Integer</var> property which contains the 
+ordinal position for the selected value in the QueryChoices on the dialog. It 
+contains the initial item in QueryChoices selected when the Execute method is 
+called. It is updated with the option selected during execution of the dialog 
+form.
+</p>
+<p>
+Use QueryResult to access the string value for the selected item in 
+QueryChoices.
+</p>
+<p>
+QueryItem and QueryResult are relevant when tfQuery has been included in the 
+Flags for the task dialog.
+</p>
+<p>
+Use ModalResult to determine the button or key combination used to complete 
+execution of the dialog form.
+</p>
+</descr>
 <version>
 Added in LCL version 4.0.
 </version>
 <seealso>
 <link id="TCustomTaskDialog.QueryChoices"/>
+<link id="TCustomTaskDialog.QueryResult"/>
 <link id="TCustomTaskDialog.Flags"/>
 <link id="TCustomTaskDialog.Execute"/>
 <link id="TCustomTaskDialog.ModalResult"/>
@@ -6800,18 +6833,21 @@ Added in LCL version 4.0.
 </seealso>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TCustomTaskDialog.QueryResult">
-<short/>
+<short>
+String representation for the value selected in QueryChoices.
+</short>
 <descr/>
 <version>
 Added in LCL version 4.0.
 </version>
 <seealso>
-<link id="TCustomTaskDialog.SimpleQuery"/>
 <link id="TCustomTaskDialog.QueryChoices"/>
+<link id="TCustomTaskDialog.QueryItemIndex"/>
+<link id="TCustomTaskDialog.SimpleQuery"/>
 <link id="TCustomTaskDialog.Flags"/>
 <link id="TCustomTaskDialog.Execute"/>
+<link id="TCustomTaskDialog.DoExecute"/>
 <link id="TCustomTaskDialog.ModalResult"/>
 <link id="TTaskDialogFlags"/>
 <link id="TTaskDialogFlag"/>
@@ -6821,19 +6857,26 @@ Added in LCL version 4.0.
 <element name="TCustomTaskDialog.RadioButton">
 <short>The radio button selected on the Task dialog.</short>
 <descr>
-<!-- TODO: Needs update. -->
 <p>
 <var>RadioButton</var> is a read-only <var>TTaskDialogRadioButtonItem</var> 
-property with the radio button selected when the Task dialog was executed. 
-The property value is set when the <var>Execute</var> method calls the 
-wrapper in <file>LCLTaskDialog</file>.
-It contains an entry from the <var>RadioButtons</var> collection that was 
-passed as an argument to the <var>TTaskDialog</var> wrapper.
+property with the radio button selected when the Task dialog was executed. The 
+property value is set in the Execute method, and contains an entry from the 
+RadioButtons collection or <b>Nil</b> if a radio button was not selected or 
+available.
+</p>
+<p>
+Use the Default property in one of the RadioButtons to indicate the selected 
+radio button control when the Execute method is called.
+</p>
+<p>
+Include tfNoDefaultRadioButton in the Flags property to disable automatic 
+selection of a default radio button on the dialog form.
 </p>
 </descr>
 <seealso>
 <link id="TCustomTaskDialog.RadioButtons"/>
 <link id="TCustomTaskDialog.Execute"/>
+<link id="TCustomTaskDialog.Flags"/>
 <link id="TCustomTaskDialog.DoExecute"/>
 <link id="TTaskDialogRadioButtonItem"/>
 </seealso>
@@ -6871,20 +6914,38 @@ selected on the Task dialog.
 </seealso>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TCustomTaskDialog.SimpleQuery">
 <short>
-Contains the text displayed and editined using the query control on the task 
+Contains the text displayed and edited using the query control on the task 
 dialog.
 </short>
-<descr/>
+<descr>
+<p>
+<var>SimpleQuery</var> is a <var>String</var> property which contains free-form 
+text maintained using the query control for the task dialog. A single-line edit 
+control is used to display and edit the value for the property.
+</p>
+<p>
+SimpleQuery is displayed on the dialog when tfSimpleQuery has been included in 
+the Flags property. Please note that tfQuery and tfSimpleQuery flag values are 
+mutually exclusive with tfQuery taking precedence.
+</p>
+<p>
+Use QueryChoices if predefined choices selected using a combo-box control are 
+needed on the task dialog.
+</p>
+</descr>
 <version>
 Added in LCL version 4.0.
 </version>
-<seealso/>
+<seealso>
+<link id="TCustomTaskDialog.SimpleQueryPasswordChar"/>
+<link id="TCustomTaskDialog.Flags"/>
+<link id="TTaskDialogFlags"/>
+<link id="TTaskDialogFlag"/>
+</seealso>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TCustomTaskDialog.SimpleQueryPasswordChar">
 <short>
 Character value used to obfuscate text in SimpleQuery for the query control.
@@ -6892,13 +6953,24 @@ Character value used to obfuscate text in SimpleQuery for the query control.
 <descr>
 <p>
 The default value for the property is #0 (NULL character) and indicates that 
-obfuscation is not enabled for the simple query control.
+obfuscation is not enabled for the simple query control. Another character 
+stored in the property is used to obfuscate the characters entered in the 
+SimpleQuery property.
+</p>
+<p>
+SimpleQueryPasswordChar is used when tfSimpleQuery has been included in the 
+Flags for the task dialog.
 </p>
 </descr>
 <version>
 Added in LCL version 4.0.
 </version>
-<seealso/>
+<seealso>
+<link id="TCustomTaskDialog.SimpleQuery"/>
+<link id="TCustomTaskDialog.Flags"/>
+<link id="TTaskDialogFlags"/>
+<link id="TTaskDialogFlag"/>
+</seealso>
 </element>
 
 <element name="TCustomTaskDialog.Text">
@@ -6925,7 +6997,6 @@ property editor at design-time.
 Text, ExpandedText, and FooterText allow an HTML-like hyperlinking capability 
 using the &lt;a href="linktarget"&gt;Link Text&lt;/a&gt; notation. The 
 feature must be enabled by including tfEnableHyperlinks in the Flags property.
-Use tfExpandFooterArea to position the expanded text in the footer area.
 </p>
 <p>
 Use ExpandedText to set the content in the collapsible area on the Task 
@@ -7098,7 +7169,7 @@ executed.
 </short>
 <descr>
 <p>
-OnButtonClicked is signalled after a button is clicked on the Task dialog.
+OnButtonClicked is signalled when a button is clicked on the Task dialog.
 </p>
 </descr>
 <seealso/>
@@ -7267,7 +7338,9 @@ Added in LCL version 4.0.
 
 <!-- TODO: Needs content. -->
 <element name="TCustomTaskDialog.OnHelp">
-<short/>
+<short>
+Event handler signalled to display help for the task dialog.
+</short>
 <descr/>
 <version>
 Added in LCL version 4.0.
