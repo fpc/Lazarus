@@ -1,12 +1,11 @@
-{target:win}
 //
 // AggPas 2.4 RM3 Demo application
 // Note: Press F1 key on run to see more info about this demo
 //
 // Paths: src;src\ctrl;src\svg;src\util;src\platform\win;expat-wrap
 //
-program
- trans_curve1 ;
+program trans_curve2_ft ;
+{$mode Delphi}
 
 {DEFINE AGG_GRAY8 }
 {$DEFINE AGG_BGR24 }
@@ -19,11 +18,9 @@ program
 {DEFINE AGG_RGB555 }
 
 uses
- Windows ,
-
  agg_basics ,
  agg_platform_support ,
-
+ 
  agg_ctrl ,
  agg_cbox_ctrl ,
  agg_slider_ctrl ,
@@ -37,15 +34,16 @@ uses
  agg_renderer_scanline ,
  agg_render_scanlines ,
 
+ agg_math ,
  agg_conv_curve ,
  agg_conv_transform ,
+ agg_trans_double_path ,
  agg_conv_bspline ,
  agg_conv_segmentator ,
  agg_conv_stroke ,
- agg_font_win32_tt ,
+ agg_font_freetype ,
  agg_font_cache_manager ,
- agg_trans_single_path ,
- interactive_polygon_ 
+ interactive_polygon_
 
 {$I pixel_formats.inc }
 {$I agg_mode.inc }
@@ -63,22 +61,24 @@ const
 
 type
  the_application = object(platform_support )
-   m_feng : font_engine_win32_tt_int16;
-   m_fman : font_cache_manager;
-   m_poly : interactive_polygon;
+   m_feng  : font_engine_freetype_int16;
+   m_fman  : font_cache_manager;
+   m_poly1 ,
+   m_poly2 : interactive_polygon;
 
    m_num_points       : slider_ctrl;
-   m_close            ,
-   m_preserve_x_scale ,
    m_fixed_len        ,
+   m_preserve_x_scale ,
    m_animate          : cbox_ctrl;
 
-   m_dx ,
-   m_dy : array[0..5 ] of double;
+   m_dx1 ,
+   m_dy1 ,
+   m_dx2 ,
+   m_dy2 : array[0..5 ] of double;
 
    m_prev_animate : boolean;
 
-   constructor Construct(dc : HDC; format_ : pix_format_e; flip_y_ : boolean );
+   constructor Construct(format_ : pix_format_e; flip_y_ : boolean );
    destructor  Destruct;
 
    procedure on_init; virtual;
@@ -91,7 +91,8 @@ type
    procedure on_key(x ,y : int; key ,flags : unsigned ); virtual;
    procedure on_ctrl_change; virtual;
 
-   procedure move_point(x ,y ,dx ,dy : double_ptr );
+   procedure move_point     (x ,y ,dx ,dy : double_ptr );
+   procedure normalize_point(i : unsigned );
 
    procedure on_idle; virtual;
 
@@ -102,31 +103,33 @@ constructor the_application.Construct;
 begin
  inherited Construct(format_ ,flip_y_ );
 
- m_feng.Construct(dc );
- m_fman.Construct(@m_feng );
- m_poly.Construct(6 ,5.0 );
+ m_feng.Construct;
+ m_fman.Construct (@m_feng );
+ m_poly1.Construct(6 ,5.0 );
+ m_poly2.Construct(6 ,5.0 );
 
  m_num_points.Construct      (5.0 ,5.0  ,340.0 ,12.0 ,not flip_y_ );
- m_close.Construct           (350 ,5.0  ,'Close' ,not flip_y_ );
- m_preserve_x_scale.Construct(460 ,5.0  ,'Preserve X scale' ,not flip_y_ );
- m_fixed_len.Construct       (350 ,25.0 ,'Fixed Length' ,not flip_y_ );
- m_animate.Construct         (460 ,25.0 ,'Animate' ,not flip_y_ );
+ m_fixed_len.Construct       (350 ,5.0  ,'Fixed Length' ,not flip_y_ );
+ m_preserve_x_scale.Construct(465 ,5.0  ,'Preserve X scale' ,not flip_y_ );
+ m_animate.Construct         (350 ,25.0 ,'Animate' ,not flip_y_ );
 
  m_prev_animate:=false;
 
- add_ctrl(@m_close );
- add_ctrl(@m_preserve_x_scale );
  add_ctrl(@m_fixed_len );
+ add_ctrl(@m_preserve_x_scale );
  add_ctrl(@m_animate );
 
- m_preserve_x_scale.status_(true );
  m_fixed_len.status_       (true );
+ m_preserve_x_scale.status_(true );
 
  m_num_points.range_(10.0 ,400.0 );
  m_num_points.value_(200.0 );
  m_num_points.label_('Number of intermediate Points = %.3f' );
 
  add_ctrl(@m_num_points );
+
+ m_poly1.close_(false );
+ m_poly2.close_(false );
 
 end;
 
@@ -135,13 +138,13 @@ destructor the_application.Destruct;
 begin
  inherited Destruct;
 
- m_poly.Destruct;
-
  m_num_points.Destruct;
- m_close.Destruct;
- m_preserve_x_scale.Destruct;
  m_fixed_len.Destruct;
+ m_preserve_x_scale.Destruct;
  m_animate.Destruct;
+
+ m_poly1.Destruct;
+ m_poly2.Destruct;
 
  m_feng.Destruct;
  m_fman.Destruct;
@@ -151,18 +154,31 @@ end;
 { ON_INIT }
 procedure the_application.on_init;
 begin
- m_poly.xn_ptr(0 )^:=50;
- m_poly.yn_ptr(0 )^:=50;
- m_poly.xn_ptr(1 )^:=150 + 20;
- m_poly.yn_ptr(1 )^:=150 - 20;
- m_poly.xn_ptr(2 )^:=250 - 20;
- m_poly.yn_ptr(2 )^:=250 + 20;
- m_poly.xn_ptr(3 )^:=350 + 20;
- m_poly.yn_ptr(3 )^:=350 - 20;
- m_poly.xn_ptr(4 )^:=450 - 20;
- m_poly.yn_ptr(4 )^:=450 + 20;
- m_poly.xn_ptr(5 )^:=550;
- m_poly.yn_ptr(5 )^:=550;
+ m_poly1.xn_ptr(0 )^:= 10 + 50;
+ m_poly1.yn_ptr(0 )^:=-10 + 50;
+ m_poly1.xn_ptr(1 )^:= 10 + 150 + 20;
+ m_poly1.yn_ptr(1 )^:=-10 + 150 - 20;
+ m_poly1.xn_ptr(2 )^:= 10 + 250 - 20;
+ m_poly1.yn_ptr(2 )^:=-10 + 250 + 20;
+ m_poly1.xn_ptr(3 )^:= 10 + 350 + 20;
+ m_poly1.yn_ptr(3 )^:=-10 + 350 - 20;
+ m_poly1.xn_ptr(4 )^:= 10 + 450 - 20;
+ m_poly1.yn_ptr(4 )^:=-10 + 450 + 20;
+ m_poly1.xn_ptr(5 )^:= 10 + 550;
+ m_poly1.yn_ptr(5 )^:=-10 + 550;
+
+ m_poly2.xn_ptr(0 )^:=-10 + 50;
+ m_poly2.yn_ptr(0 )^:= 10 + 50;
+ m_poly2.xn_ptr(1 )^:=-10 + 150 + 20;
+ m_poly2.yn_ptr(1 )^:= 10 + 150 - 20;
+ m_poly2.xn_ptr(2 )^:=-10 + 250 - 20;
+ m_poly2.yn_ptr(2 )^:= 10 + 250 + 20;
+ m_poly2.xn_ptr(3 )^:=-10 + 350 + 20;
+ m_poly2.yn_ptr(3 )^:= 10 + 350 - 20;
+ m_poly2.xn_ptr(4 )^:=-10 + 450 - 20;
+ m_poly2.yn_ptr(4 )^:= 10 + 450 + 20;
+ m_poly2.xn_ptr(5 )^:=-10 + 550;
+ m_poly2.yn_ptr(5 )^:= 10 + 550;
 
 end;
 
@@ -178,9 +194,13 @@ var
 
  ras : rasterizer_scanline_aa;
 
- path    : simple_polygon_vertex_source;
- bspline : conv_bspline;
- tcurve  : trans_single_path;
+ path1 ,
+ path2 : simple_polygon_vertex_source;
+
+ bspline1 ,
+ bspline2 : conv_bspline;
+
+ tcurve  : trans_double_path;
  fcurves : conv_curve;
  fsegm   : conv_segmentator;
  ftrans  : conv_transform;
@@ -190,8 +210,9 @@ var
  p : int8u_ptr;
 
  glyph : glyph_cache_ptr;
-
- stroke : conv_stroke;
+ 
+ stroke1 ,
+ stroke2 : conv_stroke;
 
 begin
 // Initialize structures
@@ -206,36 +227,40 @@ begin
  sl.Construct;
  ras.Construct;
 
- m_poly.close_(m_close._status );
-
 // Render the text
- path.Construct   (m_poly.polygon ,m_poly.num_points ,false ,m_close._status );
- bspline.Construct(@path );
+ path1.Construct(m_poly1.polygon ,m_poly1.num_points ,false ,false );
+ path2.Construct(m_poly2.polygon ,m_poly2.num_points ,false ,false );
 
- bspline.interpolation_step_(1.0 / m_num_points._value );
+ bspline1.Construct(@path1 );
+ bspline2.Construct(@path2 );
+
+ bspline1.interpolation_step_(1.0 / m_num_points._value );
+ bspline2.interpolation_step_(1.0 / m_num_points._value );
 
  tcurve.Construct;
- tcurve.add_path         (@bspline );
+ fcurves.Construct(m_fman.path_adaptor );
+ fsegm.Construct  (@fcurves);
+ ftrans.Construct (@fsegm ,@tcurve );
+
  tcurve.preserve_x_scale_(m_preserve_x_scale._status );
 
  if m_fixed_len._status then
-  tcurve.base_length_(1120 );
+  tcurve.base_length_(1140.0 );
 
- fcurves.Construct(m_fman.path_adaptor );
- fsegm.Construct  (@fcurves );
- ftrans.Construct (@fsegm ,@tcurve );
+ tcurve.base_height_(30.0 );
+ tcurve.add_paths   (@bspline1 ,@bspline2 );
 
  fsegm.approximation_scale_  (3.0 );
- fcurves.approximation_scale_(2.0 );
+ fcurves.approximation_scale_(5.0 );
 
- m_feng.height_(40.0 );
- //m_feng.italic_(true );
-
- if m_feng.create_font('Times New Roman' ,glyph_ren_outline ) then
+ if m_feng.load_font('../FreeSans.ttf' ,0 ,glyph_ren_outline ) then
   begin
    x:=0.0;
    y:=3.0;
    p:=@text_[0 ];
+
+   m_feng.hinting_(false );
+   m_feng.height_ (40.0 );
 
    while p^ <> 0 do
     begin
@@ -243,7 +268,7 @@ begin
 
      if glyph <> NIL then
       begin
-       if x > tcurve.total_length then
+       if x > tcurve.total_length1 then
         break;
 
        m_fman.add_kerning           (@x ,@y );
@@ -271,29 +296,41 @@ begin
 
     end;
 
-  end;
+  end
+ else
+  message_(
+   'Please copy file timesi.ttf to the current directory'#13 +
+   'or download it from http://www.antigrain.com/timesi.zip' );
 
 // Render the path curve
- stroke.Construct(@bspline );
- stroke.width_   (2.0 );
+ stroke1.Construct(@bspline1 );
+ stroke2.Construct(@bspline2 );
+
+ stroke1.width_(2.0 );
+ stroke2.width_(2.0 );
 
  rgba.ConstrInt(170 ,50 ,20 ,100 );
  r.color_      (@rgba );
 
- ras.add_path    (@stroke );
+ ras.add_path    (@stroke1 );
+ render_scanlines(@ras ,@sl ,@r );
+
+ ras.add_path    (@stroke2);
  render_scanlines(@ras ,@sl ,@r );
 
 // Render the "poly" tool
- rgba.ConstrDbl(0 ,0.3 ,0.5 ,0.3 );
+ rgba.ConstrDbl(0 ,0.3 ,0.5 ,0.2 );
  r.color_      (@rgba );
 
- ras.add_path    (@m_poly );
+ ras.add_path    (@m_poly1 );
+ render_scanlines(@ras ,@sl ,@r );
+
+ ras.add_path    (@m_poly2 );
  render_scanlines(@ras ,@sl ,@r );
 
 // Render the controls
- render_ctrl(@ras ,@sl ,@r ,@m_close );
- render_ctrl(@ras ,@sl ,@r ,@m_preserve_x_scale );
  render_ctrl(@ras ,@sl ,@r ,@m_fixed_len );
+ render_ctrl(@ras ,@sl ,@r ,@m_preserve_x_scale );
  render_ctrl(@ras ,@sl ,@r ,@m_animate );
  render_ctrl(@ras ,@sl ,@r ,@m_num_points );
 
@@ -301,12 +338,14 @@ begin
  sl.Destruct;
  ras.Destruct;
 
- bspline.Destruct;
+ bspline1.Destruct;
+ bspline2.Destruct;
  tcurve.Destruct;
  fcurves.Destruct;
  fsegm.Destruct;
 
- stroke.Destruct;
+ stroke1.Destruct;
+ stroke2.Destruct;
 
 end;
 
@@ -314,8 +353,14 @@ end;
 procedure the_application.on_mouse_move;
 begin
  if flags and mouse_left <> 0 then
-  if m_poly.on_mouse_move(x ,y ) then
-   force_redraw;
+  begin
+   if m_poly1.on_mouse_move(x ,y ) then
+    force_redraw;
+
+   if m_poly2.on_mouse_move(x ,y ) then
+    force_redraw;
+
+  end;
 
  if flags and mouse_left = 0 then
   on_mouse_button_up(x ,y ,flags );
@@ -326,15 +371,24 @@ end;
 procedure the_application.on_mouse_button_down;
 begin
  if flags and mouse_left <> 0 then
-  if m_poly.on_mouse_button_down(x ,y ) then
-   force_redraw;
+  begin
+   if m_poly1.on_mouse_button_down(x ,y ) then
+    force_redraw;
 
+   if m_poly2.on_mouse_button_down(x ,y ) then
+    force_redraw;
+
+  end;
+  
 end;
 
 { ON_MOUSE_BUTTON_UP }
 procedure the_application.on_mouse_button_up;
 begin
- if m_poly.on_mouse_button_up(x ,y ) then
+ if m_poly1.on_mouse_button_up(x ,y ) then
+  force_redraw;
+
+ if m_poly2.on_mouse_button_up(x ,y ) then
   force_redraw;
 
 end;
@@ -344,12 +398,9 @@ procedure the_application.on_key;
 begin
  if key = key_f1 then
   message_(
-   'This is a "kinda-cool-stuff" demo that performs non-linear transformations and '#13 +
-   'draws vector text along a curve. Note that it''s not just calculating of the glyph '#13 +
-   'angles and positions, they are transformed as if they were elastic. The curve is '#13 +
-   'calculated as a bicubic spline. The option "Preserve X scale" makes the converter '#13 +
-   'distribute all the points uniformly along the curve. If it''s unchechked, the scale '#13 +
-   'will be proportional to the distance between the control points.' +
+   'Similar to the "trans_curve1" demo, but here the transformer operates with two '#13 +
+   'arbitrary curves. It requires more calculations, but gives you more freedom. '#13 +
+   'In other words you will see :-).' +
    #13#13'Note: F2 key saves current "screenshot" file in this demo''s directory.  ' );
 
 end;
@@ -368,8 +419,10 @@ begin
 
      for i:=0 to 5 do
       begin
-       m_dx[i ]:=((Random($7fff ) mod 1000 ) - 500 ) * 0.01;
-       m_dy[i ]:=((Random($7fff ) mod 1000 ) - 500 ) * 0.01;
+       m_dx1[i ]:=((Random($7fff ) mod 1000 ) - 500 ) * 0.01;
+       m_dy1[i ]:=((Random($7fff ) mod 1000 ) - 500 ) * 0.01;
+       m_dx2[i ]:=((Random($7fff ) mod 1000 ) - 500 ) * 0.01;
+       m_dy2[i ]:=((Random($7fff ) mod 1000 ) - 500 ) * 0.01;
 
       end;
 
@@ -421,6 +474,34 @@ begin
 
 end;
 
+{ NORMALIZE_POINT }
+procedure the_application.normalize_point;
+var
+ d : double;
+
+begin
+ d:=
+  calc_distance(
+   m_poly1.xn_ptr(i )^ ,m_poly1.yn_ptr(i )^ ,
+   m_poly2.xn_ptr(i )^ ,m_poly2.yn_ptr(i )^ );
+
+// 28.8 is 20 * sqrt(2)
+ if d > 28.28 then
+  begin
+   m_poly2.xn_ptr(i )^:=
+    m_poly1.xn_ptr(i )^ +
+    (m_poly2.xn_ptr(i )^ -
+     m_poly1.xn_ptr(i )^ ) * 28.28 / d;
+
+   m_poly2.yn_ptr(i )^:=
+    m_poly1.yn_ptr(i )^ +
+    (m_poly2.yn_ptr(i )^ -
+     m_poly1.yn_ptr(i )^ ) * 28.28 / d;
+
+  end;
+
+end;
+
 { ON_IDLE }
 procedure the_application.on_idle;
 var
@@ -428,7 +509,13 @@ var
 
 begin
  for i:=0 to 5 do
-  move_point(m_poly.xn_ptr(i ) ,m_poly.yn_ptr(i ) ,@m_dx[i ] ,@m_dy[i ] );
+  begin
+   move_point(m_poly1.xn_ptr(i ) ,m_poly1.yn_ptr(i ) ,@m_dx1[i ] ,@m_dy1[i ] );
+   move_point(m_poly2.xn_ptr(i ) ,m_poly2.yn_ptr(i ) ,@m_dx2[i ] ,@m_dy2[i ] );
+
+   normalize_point(i);
+
+  end;
 
  force_redraw;
 
@@ -436,19 +523,14 @@ end;
 
 VAR
  app : the_application;
- dc  : HDC;
 
 BEGIN
- dc:=GetDC(0 );
-
- app.Construct(dc ,pix_format ,flip_y );
- app.caption_ ('AGG Example. Non-linear "Along-A-Curve" Transformer - Win32 (F1-Help)' );
+ app.Construct(pix_format ,flip_y );
+ app.caption_ ('AGG Example. Non-linear "Along-A-Curve" Transformer - FreeType (F1-Help)' );
 
  if app.init(600 ,600 ,window_resize ) then
   app.run;
 
  app.Destruct;
-
- ReleaseDC(0 ,dc );
 
 END.

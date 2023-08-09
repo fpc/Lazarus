@@ -4,8 +4,8 @@
 //
 // Paths: src;src\ctrl;src\svg;src\util;src\platform\win;expat-wrap
 //
-program
- scanline_boolean ;
+program scanline_boolean ;
+{$mode Delphi}
 
 {DEFINE AGG_GRAY8 }
 {$DEFINE AGG_BGR24 }

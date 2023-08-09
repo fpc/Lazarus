@@ -4,8 +4,8 @@
 //
 // Paths: src;src\ctrl;src\svg;src\util;src\platform\win;expat-wrap
 //
-program
- scanline_boolean2 ;
+program scanline_boolean2 ;
+{$mode Delphi}
 
 uses
  SysUtils ,

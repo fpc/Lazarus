@@ -1,11 +1,12 @@
+{target:win}
 //
 // AggPas 2.4 RM3 Demo application
 // Note: Press F1 key on run to see more info about this demo
 //
 // Paths: src;src\ctrl;src\svg;src\util;src\platform\win;expat-wrap
 //
-program
- trans_curve1_ft ;
+program trans_curve1 ;
+{$mode Delphi}
 
 {DEFINE AGG_GRAY8 }
 {$DEFINE AGG_BGR24 }
@@ -18,6 +19,8 @@ program
 {DEFINE AGG_RGB555 }
 
 uses
+ Windows ,
+
  agg_basics ,
  agg_platform_support ,
 
@@ -39,10 +42,10 @@ uses
  agg_conv_bspline ,
  agg_conv_segmentator ,
  agg_conv_stroke ,
- agg_font_freetype ,
+ agg_font_win32_tt ,
  agg_font_cache_manager ,
  agg_trans_single_path ,
- interactive_polygon_
+ interactive_polygon_ 
 
 {$I pixel_formats.inc }
 {$I agg_mode.inc }
@@ -60,7 +63,7 @@ const
 
 type
  the_application = object(platform_support )
-   m_feng : font_engine_freetype_int16;
+   m_feng : font_engine_win32_tt_int16;
    m_fman : font_cache_manager;
    m_poly : interactive_polygon;
 
@@ -75,7 +78,7 @@ type
 
    m_prev_animate : boolean;
 
-   constructor Construct(format_ : pix_format_e; flip_y_ : boolean );
+   constructor Construct(dc : HDC; format_ : pix_format_e; flip_y_ : boolean );
    destructor  Destruct;
 
    procedure on_init; virtual;
@@ -99,7 +102,7 @@ constructor the_application.Construct;
 begin
  inherited Construct(format_ ,flip_y_ );
 
- m_feng.Construct;
+ m_feng.Construct(dc );
  m_fman.Construct(@m_feng );
  m_poly.Construct(6 ,5.0 );
 
@@ -225,14 +228,14 @@ begin
  fsegm.approximation_scale_  (3.0 );
  fcurves.approximation_scale_(2.0 );
 
- if m_feng.load_font('timesi.ttf' ,0 ,glyph_ren_outline ) then
+ m_feng.height_(40.0 );
+ //m_feng.italic_(true );
+
+ if m_feng.create_font('Times New Roman' ,glyph_ren_outline ) then
   begin
    x:=0.0;
    y:=3.0;
    p:=@text_[0 ];
-
-   m_feng.hinting_(false );
-   m_feng.height_ (40.0 );
 
    while p^ <> 0 do
     begin
@@ -268,11 +271,7 @@ begin
 
     end;
 
-  end
- else
-  message_(
-   'Please copy file timesi.ttf to the current directory'#13 +
-   'or download it from http://www.antigrain.com/timesi.zip' );
+  end;
 
 // Render the path curve
  stroke.Construct(@bspline );
@@ -437,14 +436,19 @@ end;
 
 VAR
  app : the_application;
+ dc  : HDC;
 
 BEGIN
- app.Construct(pix_format ,flip_y );
- app.caption_ ('AGG Example. Non-linear "Along-A-Curve" Transformer - FreeType (F1-Help)' );
+ dc:=GetDC(0 );
+
+ app.Construct(dc ,pix_format ,flip_y );
+ app.caption_ ('AGG Example. Non-linear "Along-A-Curve" Transformer - Win32 (F1-Help)' );
 
  if app.init(600 ,600 ,window_resize ) then
   app.run;
 
  app.Destruct;
+
+ ReleaseDC(0 ,dc );
 
 END.

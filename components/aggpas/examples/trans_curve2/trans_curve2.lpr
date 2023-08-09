@@ -5,8 +5,8 @@
 //
 // Paths: src;src\ctrl;src\svg;src\util;src\platform\win;expat-wrap
 //
-program
- trans_curve2 ;
+program trans_curve2 ;
+{$mode Delphi}
 
 {DEFINE AGG_GRAY8 }
 {$DEFINE AGG_BGR24 }
