@@ -87,6 +87,11 @@ Added in LCL version 4.0 as replacement for the deprecated types in the
 </element>
 
 <!-- private -->
+<element name="TLCLTaskDialog.RadioIndent"/>
+<element name="TLCLTaskDialog.ComboBoxHeight"/>
+<element name="TLCLTaskDialog.LargeImageSize"/>
+<element name="TLCLTaskDialog.SmallImageSize"/>
+
 <element name="TLCLTaskDialog.FDlg">
 <short>
 The task dialog structure which created the form.
@@ -142,10 +147,24 @@ The expand/collapse button (expando control) for the Task dialog.
 </element>
 
 <!-- private -->
+<element name="TLCLTaskDialog.GetDefaultButtons"/>
+<element name="TLCLTaskDialog.GetDefaultButtons.AButtonDef"/>
+<element name="TLCLTaskDialog.GetDefaultButtons.ARadioDef"/>
+
+<element name="TLCLTaskDialog.InitCaptions"/>
+
+<element name="TLCLTaskDialog.InitGlobalDimensionsAndStyle"/>
+<element name="TLCLTaskDialog.InitGlobalDimensionsAndStyle.ACustomButtonsTextLength"/>
+<element name="TLCLTaskDialog.InitGlobalDimensionsAndStyle.AWidth"/>
+<element name="TLCLTaskDialog.InitGlobalDimensionsAndStyle.AFontHeight"/>
+
+<element name="TLCLTaskDialog.GetGlobalLeftMargin"/>
+<element name="TLCLTaskDialog.GetGlobalLeftMargin.Result"/>
+
 <element name="TLCLTaskDialog.AddIcon"/>
-<element name="TLCLTaskDialog.AddIcon.IconBorder"/>
-<element name="TLCLTaskDialog.AddIcon.X"/>
-<element name="TLCLTaskDialog.AddIcon.Y"/>
+<element name="TLCLTaskDialog.AddIcon.ALeft"/>
+<element name="TLCLTaskDialog.AddIcon.ATop"/>
+<element name="TLCLTaskDialog.AddIcon.AGlobalLeftMargin"/>
 <element name="TLCLTaskDialog.AddIcon.AParent"/>
 
 <element name="TLCLTaskDialog.AddPanel"/>
@@ -155,64 +174,62 @@ The expand/collapse button (expando control) for the Task dialog.
 <element name="TLCLTaskDialog.AddRadios.AWidth"/>
 <element name="TLCLTaskDialog.AddRadios.ARadioDef"/>
 <element name="TLCLTaskDialog.AddRadios.AFontHeight"/>
-<element name="TLCLTaskDialog.AddRadios.X"/>
-<element name="TLCLTaskDialog.AddRadios.Y"/>
+<element name="TLCLTaskDialog.AddRadios.ALeft"/>
+<element name="TLCLTaskDialog.AddRadios.ATop"/>
 <element name="TLCLTaskDialog.AddRadios.AParent"/>
 
 <element name="TLCLTaskDialog.AddCommandLinkButtons"/>
-<element name="TLCLTaskDialog.AddCommandLinkButtons.X"/>
-<element name="TLCLTaskDialog.AddCommandLinkButtons.Y"/>
+<element name="TLCLTaskDialog.AddCommandLinkButtons.ALeft"/>
+<element name="TLCLTaskDialog.AddCommandLinkButtons.ATop"/>
 <element name="TLCLTaskDialog.AddCommandLinkButtons.AWidth"/>
 <element name="TLCLTaskDialog.AddCommandLinkButtons.AButtonDef"/>
 <element name="TLCLTaskDialog.AddCommandLinkButtons.AFontHeight"/>
 <element name="TLCLTaskDialog.AddCommandLinkButtons.AParent"/>
 
 <element name="TLCLTaskDialog.AddButtons"/>
-<element name="TLCLTaskDialog.AddButtons.X"/>
-<element name="TLCLTaskDialog.AddButtons.Y"/>
-<element name="TLCLTaskDialog.AddButtons.XB"/>
+<element name="TLCLTaskDialog.AddButtons.ALeft"/>
+<element name="TLCLTaskDialog.AddButtons.ATop"/>
+<element name="TLCLTaskDialog.AddButtons.AButtonLeft"/>
 <element name="TLCLTaskDialog.AddButtons.AWidth"/>
 <element name="TLCLTaskDialog.AddButtons.AButtonDef"/>
 <element name="TLCLTaskDialog.AddButtons.AParent"/>
 
 <element name="TLCLTaskDialog.AddCheckBox"/>
-<element name="TLCLTaskDialog.AddCheckBox.X"/>
-<element name="TLCLTaskDialog.AddCheckBox.Y"/>
+<element name="TLCLTaskDialog.AddCheckBox.ALeft"/>
+<element name="TLCLTaskDialog.AddCheckBox.ATop"/>
 <element name="TLCLTaskDialog.AddCheckBox.XB"/>
 <element name="TLCLTaskDialog.AddCheckBox.AWidth"/>
-<element name="TLCLTaskDialog.AddCheckBox.ALeftMargin"/>
 <element name="TLCLTaskDialog.AddCheckBox.AParent"/>
 
 <element name="TLCLTaskDialog.AddExpandButton"/>
-<element name="TLCLTaskDialog.AddExpandButton.X"/>
-<element name="TLCLTaskDialog.AddExpandButton.Y"/>
+<element name="TLCLTaskDialog.AddExpandButton.ALeft"/>
+<element name="TLCLTaskDialog.AddExpandButton.ATop"/>
 <element name="TLCLTaskDialog.AddExpandButton.XB"/>
 <element name="TLCLTaskDialog.AddExpandButton.AWidth"/>
-<element name="TLCLTaskDialog.AddExpandButton.ALeftMargin"/>
 <element name="TLCLTaskDialog.AddExpandButton.AParent"/>
 
 <element name="TLCLTaskDialog.AddFooter"/>
-<element name="TLCLTaskDialog.AddFooter.X"/>
-<element name="TLCLTaskDialog.AddFooter.Y"/>
+<element name="TLCLTaskDialog.AddFooter.ALeft"/>
+<element name="TLCLTaskDialog.AddFooter.ATop"/>
 <element name="TLCLTaskDialog.AddFooter.XB"/>
 <element name="TLCLTaskDialog.AddFooter.AFontHeight"/>
 <element name="TLCLTaskDialog.AddFooter.AWidth"/>
-<element name="TLCLTaskDialog.AddFooter.AIconBorder"/>
+<element name="TLCLTaskDialog.AddFooter.AGlobalLeftMargin"/>
 <element name="TLCLTaskDialog.AddFooter.AParent"/>
 
 <element name="TLCLTaskDialog.AddLabel"/>
 <element name="TLCLTaskDialog.AddLabel.Result"/>
 <element name="TLCLTaskDialog.AddLabel.AText"/>
 <element name="TLCLTaskDialog.AddLabel.BigFont"/>
-<element name="TLCLTaskDialog.AddLabel.X"/>
-<element name="TLCLTaskDialog.AddLabel.Y"/>
+<element name="TLCLTaskDialog.AddLabel.ALeft"/>
+<element name="TLCLTaskDialog.AddLabel.ATop"/>
 <element name="TLCLTaskDialog.AddLabel.AFontHeight"/>
 <element name="TLCLTaskDialog.AddLabel.AWidth"/>
 <element name="TLCLTaskDialog.AddLabel.AParent"/>
 
 <element name="TLCLTaskDialog.AddQueryCombo"/>
-<element name="TLCLTaskDialog.AddQueryCombo.X"/>
-<element name="TLCLTaskDialog.AddQueryCombo.Y"/>
+<element name="TLCLTaskDialog.AddQueryCombo.ALeft"/>
+<element name="TLCLTaskDialog.AddQueryCombo.ATop"/>
 <element name="TLCLTaskDialog.AddQueryCombo.AWidth"/>
 <element name="TLCLTaskDialog.AddQueryCombo.AParent"/>
 
