@@ -887,6 +887,7 @@ type
     procedure InitializeWithConvertionOf3DPointsToHeightMap(APage: TvVectorialPage; AWidth, AHeight: Integer);
     procedure Render(var ARenderInfo: TvRenderInfo; ADoDraw: Boolean = True); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
+    procedure Scale(ADeltaScaleX, ADeltaScaleY: Double); override;
   end;
 
   { TvPoint }
@@ -1484,6 +1485,8 @@ type
     BackgroundColor: TFPColor;
     AdjustPenColorToBackground: Boolean;
     RenderInfo: TvRenderInfo; // Prepared by the reader with info on how to draw the page
+    // Page Margins (in millimeters)
+    MarginTop, MarginBottom, MarginLeft, MarginRight: Integer;
   public
     { Base methods }
     constructor Create(AOwner: TvVectorialDocument); virtual;
@@ -1492,6 +1495,8 @@ type
     procedure SetPageFormat(AFormat: TvPageFormat);
     function RealWidth: Double;
     function RealHeight: Double;
+    procedure SetPageMargin(MTop, MBottom, MLeft, MRight: Integer);
+    procedure SetPageMargin(AValue: Integer);
     { Data reading methods }
     procedure CalculateDocumentSize; virtual;
     function  GetEntity(ANum: Cardinal): TvEntity; virtual; abstract;
@@ -7234,6 +7239,12 @@ begin
   end;
 end;
 
+procedure TvRasterImage.Scale(ADeltaScaleX, ADeltaScaleY: Double);
+begin
+  Width := ADeltaScaleX;
+  Height := ADeltaScaleY;
+end;
+
 { TvArrow }
 
 procedure TvArrow.CalculateBoundingBox(constref ARenderInfo: TvRenderInfo; out
@@ -9002,6 +9013,19 @@ begin
   Result := abs(MaxY - MinY);
 end;
 
+procedure TvPage.SetPageMargin(MTop, MBottom, MLeft, MRight: Integer);
+begin
+  MarginTop := MTop;
+  MarginBottom := MBottom;
+  MarginLeft := MLeft;
+  MarginRight := MRight;
+end;
+
+procedure TvPage.SetPageMargin(AValue: Integer);
+begin
+  SetPageMargin(AValue, AValue, AValue, AValue);
+end;
+
 procedure TvPage.AutoFit(ADest: TFPCustomCanvas; AWidth, AHeight, ARenderHeight: Integer;
   out ADeltaX, ADeltaY: Integer; out AZoom: Double);
 var
@@ -9176,6 +9200,13 @@ begin
   Clear();
   BackgroundColor := colWhite;
   RenderInfo.BackgroundColor := colWhite;
+
+  // set default graphic document margin (0mm)
+  // TODO: apply values
+  MarginTop := 0;
+  MarginBottom := 0;
+  MarginLeft := 0;
+  MarginRight := 0;
 end;
 
 destructor TvVectorialPage.Destroy;
@@ -9939,6 +9970,12 @@ begin
   Footer := TvRichText.Create(Self);
   Header := TvRichText.Create(Self);
   MainText := TvRichText.Create(Self);
+
+  // set default text document margin (20mm)
+  MarginTop := 20;
+  MarginBottom := 20;
+  MarginLeft := 20;
+  MarginRight := 20;
 end;
 
 destructor TvTextPageSequence.Destroy;

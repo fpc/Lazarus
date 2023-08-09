@@ -568,6 +568,8 @@ begin
    '  <style:font-face style:name="Times New Roman" svg:font-family="Times New Roman" style:font-family-generic="roman" style:font-pitch="variable" />' + LineEnding +
    '  <style:font-face style:name="Arial" svg:font-family="Arial" />' + LineEnding +
    '  <style:font-face style:name="Verdana" svg:font-family="Verdana" />' + LineEnding +
+   '  <style:font-face style:name="Calibri" svg:font-family="Calibri" />' + LineEnding +
+   '  <style:font-face style:name="Courier New" svg:font-family="Courier New" />' + LineEnding +
    '  <style:font-face style:name="Mangal" svg:font-family="Mangal" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
    '  <style:font-face style:name="Microsoft YaHei" svg:font-family="''Microsoft YaHei''" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
    '  <style:font-face style:name="SimSun" svg:font-family="SimSun" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
@@ -891,6 +893,9 @@ begin
      '    <style:font-face style:name="Mangal" svg:font-family="Mangal" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
      '    <style:font-face style:name="Microsoft YaHei" svg:font-family="''Microsoft YaHei''" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
      '    <style:font-face style:name="SimSun" svg:font-family="SimSun" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
+     '    <style:font-face style:name="Segoe UI" svg:font-family="Segoe UI" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
+     '    <style:font-face style:name="Calibri" svg:font-family="Calibri" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
+     '    <style:font-face style:name="Calibri Light" svg:font-family="Calibri Light" style:font-family-generic="system" style:font-pitch="variable" />' + LineEnding +
      '  </office:font-face-decls>' + LineEnding;
 
   // Build the main content of the document
@@ -1029,7 +1034,8 @@ begin
     // Define the MasterStyles in Styles.xml
     // TODO: Add Header and Footer content to FMasterStyles
     FMasterStyles := FMasterStyles +
-      '<style:master-page style:name="'+sPageMasterName+'" style:page-layout-name="'+sPageLayoutName+'"/>' + LineEnding;
+      '<style:master-page style:name="' + sPageMasterName + '" style:display-name="Standard' +
+      '" style:page-layout-name="' + sPageLayoutName + '"/>' + LineEnding;
 
     dWidth := ACurPage.Width;
     If dWidth=0 Then
@@ -1049,14 +1055,19 @@ begin
       sOrientation := 'portrait';
 
     // Define the page layout in Styles.xml
-    // TODO: Add Page Margins...
     FAutomaticStyles := FAutomaticStyles +
       '<style:page-layout style:name="'+sPageLayoutName+'">'+ LineEnding+
       '  <style:page-layout-properties '+
                 ' fo:page-width="'+FloatToODTText(dWidth)+'mm"'+
                 ' fo:page-height="'+FloatToODTText(dHeight)+'mm"'+
                 ' style:print-orientation="'+sOrientation+'"'+
-                ' style:num-format="1" fo:margin-top="0.7874in" fo:margin-bottom="0.7874in" fo:margin-left="0.7874in" fo:margin-right="0.7874in" style:writing-mode="lr-tb" style:footnote-max-height="0in">'+ LineEnding;
+                ' style:num-format="1"' +
+                ' fo:margin-top="' + IntToStr(ACurPage.MarginTop) + 'mm"' +
+                ' fo:margin-bottom="' + IntToStr(ACurPage.MarginBottom) + 'mm"' +
+                ' fo:margin-left="' + IntToStr(ACurPage.MarginLeft) + 'mm"' +
+                ' fo:margin-right="' + IntToStr(ACurPage.MarginRight) + 'mm"' +
+                ' style:writing-mode="lr-tb"' +
+                ' style:footnote-max-height="0in">'+ LineEnding;
 
     FAutomaticStyles := FAutomaticStyles +
       '	  <style:footnote-sep style:width="0.0071in" style:distance-before-sep="0.0398in" style:distance-after-sep="0.0398in" style:line-style="solid" style:adjustment="left" style:rel-width="25%" style:color="#000000"/>'+ LineEnding+
@@ -1635,6 +1646,10 @@ Begin
       sTemp := sTemp + ' ' + BordersToString(ATable.Borders, oCell.Borders,
                                              iRow=0, iRow=ATable.GetRowCount-1,
                                              iCell=0, iCell=oRow.GetCellCount-1);
+
+      // set cell spacing (padding)
+      sTemp := sTemp + ' fo:padding-left="' + StringReplace(oCell.SpacingLeft.ToString, ',', '.', [rfReplaceAll]) + 'mm" fo:padding-right="' + StringReplace(oCell.SpacingRight.ToString, ',', '.', [rfReplaceAll]) +
+        'mm" fo:padding-top="' + StringReplace(oCell.SpacingTop.ToString, ',', '.', [rfReplaceAll]) + 'mm" fo:padding-bottom="' + StringReplace(oCell.SpacingBottom.ToString, ',', '.', [rfReplaceAll]) + 'mm"';
 
       sTemp2 := '';
 
