@@ -7,7 +7,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, SynHighlighterSQL, SynEdit, LResources, Forms,
-  DB, LCLType, Controls, ComCtrls, StdCtrls, ActnList, Dialogs, ExtCtrls, Menus,
+  DB, LCLType, Controls, ComCtrls, StdCtrls, ActnList, Dialogs, ExtCtrls, Menus, StdActns,
   dmImages, fpDatadict, fradata, lazdatadeskstr, sqlscript, sqldb, fpddsqldb;
 
 type
@@ -33,6 +33,18 @@ type
     APreviousQuery: TAction;
     AExecute: TAction;
     ALQuery: TActionList;
+    aCopy: TEditCopy;
+    aCut: TEditCut;
+    aPaste: TEditPaste;
+    aSelectAll: TEditSelectAll;
+    mnuPrevSQL: TMenuItem;
+    mnuNextSQL: TMenuItem;
+    mnuSep2: TMenuItem;
+    mnuSep: TMenuItem;
+    mnuSelectAll: TMenuItem;
+    mnuPaste: TMenuItem;
+    mnuCopy: TMenuItem;
+    mnuCut: TMenuItem;
     MIExecuteSelectionScript: TMenuItem;
     MIExecuteScript: TMenuItem;
     MIExecuteSelection: TMenuItem;
@@ -42,6 +54,7 @@ type
     PCResult: TPageControl;
     FMSQL: TSynEdit;
     PMExecute: TPopupMenu;
+    pmSynEdit: TPopupMenu;
     SDSQL: TSaveDialog;
     SQuery: TSplitter;
     SQLSyn: TSynSQLSyn;

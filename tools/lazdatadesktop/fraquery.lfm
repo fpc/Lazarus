@@ -110,14 +110,15 @@ object QueryFrame: TQueryFrame
     TabOrder = 1
     object TSResult: TTabSheet
       Caption = 'Result'
-      ClientHeight = 216
-      ClientWidth = 632
+      ClientHeight = 214
+      ClientWidth = 630
       object MResult: TMemo
         Left = 0
-        Height = 216
+        Height = 214
         Top = 0
-        Width = 632
+        Width = 630
         Align = alClient
+        ScrollBars = ssAutoBoth
         TabOrder = 0
       end
     end
@@ -137,6 +138,7 @@ object QueryFrame: TQueryFrame
     Font.Quality = fqNonAntialiased
     ParentColor = False
     ParentFont = False
+    PopupMenu = pmSynEdit
     TabOrder = 2
     OnKeyDown = OnMemoKey
     ExtraLineSpacing = 2
@@ -642,6 +644,7 @@ object QueryFrame: TQueryFrame
     Left = 85
     Top = 48
     object AExecute: TAction
+      Category = 'SQL'
       Caption = 'Execute statement'
       Hint = 'Execute SQL statement(s)'
       ImageIndex = 39
@@ -650,13 +653,15 @@ object QueryFrame: TQueryFrame
       ShortCut = 16453
     end
     object ACloseQuery: TAction
-      Caption = 'ACloseQuery'
+      Category = 'SQL'
+      Caption = 'Close Query'
       Hint = 'Close dataset'
       ImageIndex = 44
       OnExecute = CloseQueryClick
       OnUpdate = DataShowing
     end
     object APreviousQuery: TAction
+      Category = 'SQL'
       Caption = 'Previous SQL'
       Hint = 'Previous SQL statement'
       ImageIndex = 40
@@ -664,68 +669,103 @@ object QueryFrame: TQueryFrame
       OnUpdate = HavePreviousQuery
     end
     object ANextQuery: TAction
-      Caption = 'ANextQuery'
+      Category = 'SQL'
+      Caption = 'Next SQL'
       Hint = 'Next SQL statement'
       ImageIndex = 41
       OnExecute = NextQueryClick
       OnUpdate = HaveNextQuery
     end
     object ALoadSQL: TAction
-      Caption = 'ALoadSQL'
+      Category = 'SQL'
+      Caption = 'Load SQL from file'
       Hint = 'Load SQL from file'
       ImageIndex = 12
       OnExecute = LoadQueryClick
       OnUpdate = NotBusy
     end
     object ASaveSQL: TAction
-      Caption = 'ASaveSQL'
+      Category = 'SQL'
+      Caption = 'Save SQL'
       Hint = 'Save SQL to file'
       ImageIndex = 15
       OnExecute = SaveQueryClick
       OnUpdate = NotBusy
     end
     object AExport: TAction
-      Caption = 'AExport'
+      Category = 'Data'
+      Caption = 'Export data'
       Hint = 'Export Data'
       ImageIndex = 10
       OnExecute = ExportDataClick
       OnUpdate = DataShowing
     end
     object ACreateCode: TAction
-      Caption = 'ACreateCode'
+      Category = 'Data'
+      Caption = 'Create Code'
       Hint = 'Create code from dataset'
       ImageIndex = 11
       OnExecute = CreateCodeClick
       OnUpdate = DataShowing
     end
     object AExecuteSingle: TAction
+      Category = 'SQL'
       Caption = 'Execute as statement'
       OnExecute = AExecuteSingleExecute
     end
     object AExecuteSelection: TAction
+      Category = 'SQL'
       Caption = 'Execute selection as statement'
       OnExecute = AExecuteSelectionExecute
       OnUpdate = HaveSQLSelection
     end
     object AExecuteScript: TAction
+      Category = 'SQL'
       Caption = 'Execute as script'
       OnExecute = AExecuteScriptExecute
     end
     object AExecuteSelectionScript: TAction
+      Category = 'SQL'
       Caption = 'Execute selection as script'
       OnExecute = AExecuteSelectionScriptExecute
     end
     object aCommit: TAction
+      Category = 'Data'
       Caption = 'Commit'
       ImageIndex = 42
       OnExecute = aCommitExecute
       OnUpdate = aCommitUpdate
     end
     object aRollBack: TAction
+      Category = 'Data'
       Caption = 'RollBack'
       ImageIndex = 43
       OnExecute = aRollBackExecute
       OnUpdate = aRollBackUpdate
+    end
+    object aCut: TEditCut
+      Category = 'Edit'
+      Caption = 'Cu&t'
+      Hint = 'Cut'
+      ShortCut = 16472
+    end
+    object aCopy: TEditCopy
+      Category = 'Edit'
+      Caption = '&Copy'
+      Hint = 'Copy'
+      ShortCut = 16451
+    end
+    object aPaste: TEditPaste
+      Category = 'Edit'
+      Caption = '&Paste'
+      Hint = 'Paste'
+      ShortCut = 16470
+    end
+    object aSelectAll: TEditSelectAll
+      Category = 'Edit'
+      Caption = 'Select &All'
+      Hint = 'Select All'
+      ShortCut = 16449
     end
   end
   object SQLSyn: TSynSQLSyn
@@ -764,6 +804,35 @@ object QueryFrame: TQueryFrame
     end
     object MIExecuteSelectionScript: TMenuItem
       Action = AExecuteSelectionScript
+    end
+  end
+  object pmSynEdit: TPopupMenu
+    Images = ImgDatamodule.AppImages
+    Left = 158
+    Top = 111
+    object mnuCopy: TMenuItem
+      Action = aCopy
+    end
+    object mnuCut: TMenuItem
+      Action = aCut
+    end
+    object mnuPaste: TMenuItem
+      Action = aPaste
+    end
+    object mnuSelectAll: TMenuItem
+      Action = aSelectAll
+    end
+    object mnuSep: TMenuItem
+      Caption = '-'
+    end
+    object mnuPrevSQL: TMenuItem
+      Action = APreviousQuery
+    end
+    object mnuNextSQL: TMenuItem
+      Action = ANextQuery
+    end
+    object mnuSep2: TMenuItem
+      Caption = '-'
     end
   end
 end
