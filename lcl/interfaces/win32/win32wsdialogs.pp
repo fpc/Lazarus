@@ -1864,7 +1864,7 @@ var
     end;
     ExpandedInformation := Utf8ToUtf16(ADlg.ExpandedText);
     CollapsedControlText := Utf8ToUtf16(ADlg.ExpandButtonCaption);
-    ExpandedControlText := Utf8ToUtf16(ADlg.CollapsButtonCaption);
+    ExpandedControlText := Utf8ToUtf16(ADlg.CollapseButtonCaption);
 
     Footer := Utf8ToUtf16(ADlg.FooterText);
 

@@ -39,7 +39,7 @@ type
 
     //CustomButtons, Radios: TStringList;
     DialogCaption, DlgTitle, DlgText,
-    ExpandButtonCaption, CollapsButtonCaption, ExpandedText, FooterText,
+    ExpandButtonCaption, CollapseButtonCaption, ExpandedText, FooterText,
     VerificationText: String;
     CommonButtons: TTaskDialogCommonButtons;
 
@@ -53,7 +53,7 @@ type
     QueryEdit: TEdit;
     /// the Task Dialog optional checkbox
     VerifyCheckBox: TCheckBox;
-    /// the Expand/Collaps button
+    /// the Expand/Collapse button
     ExpandBtn: TButton;
 
     procedure GetDefaultButtons(out aButtonDef, aRadioDef: TModalResult);
@@ -74,7 +74,7 @@ type
     procedure SetupTimer;
     procedure ResetTimer;
     procedure ExpandDialog;
-    procedure CollapsDialog;
+    procedure CollapseDialog;
 
     procedure DoDialogConstructed;
     procedure DoDialogCreated;
@@ -343,7 +343,7 @@ begin
   DlgTitle := FDlg.Title;
   DlgText := FDlg.Text;
   ExpandButtonCaption := FDlg.ExpandButtonCaption;
-  CollapsButtonCaption := FDlg.CollapsButtonCaption;
+  CollapseButtonCaption := FDlg.CollapseButtonCaption;
   ExpandedText := FDlg.ExpandedText;
   FooterText := FDlg.FooterText;
   VerificationText := FDlg.VerificationText;
@@ -612,18 +612,18 @@ begin
   CurrTabOrder := Panel.TabOrder;
   if (ExpandButtonCaption = '') then
   begin
-    if (CollapsButtonCaption = '') then
+    if (CollapseButtonCaption = '') then
     begin
       //ToDo: make this a resourcestring in LCLStrConsts unit
       ExpandButtonCaption := 'Show details';
-      CollapsButtonCaption := 'Hide details';
+      CollapseButtonCaption := 'Hide details';
     end
     else
-      ExpandButtonCaption := CollapsButtonCaption;
+      ExpandButtonCaption := CollapseButtonCaption;
   end;
-  if (CollapsButtonCaption = '') then
-    CollapsButtonCaption := ExpandButtonCaption;
-  WB := Max(Canvas.TextWidth(ExpandButtonCaption), Canvas.TextWidth(CollapsButtonCaption)) +32;//52;
+  if (CollapseButtonCaption = '') then
+    CollapseButtonCaption := ExpandButtonCaption;
+  WB := Max(Canvas.TextWidth(ExpandButtonCaption), Canvas.TextWidth(CollapseButtonCaption)) +32;//52;
   if (ALeft+WB > XB) then
   begin
     inc(ATop,32);
@@ -640,7 +640,7 @@ begin
   if not (tfExpandedByDefault in FDlg.Flags) then
     ExpandBtn.Caption := ExpandButtonCaption
   else
-    ExpandBtn.Caption := CollapsButtonCaption;
+    ExpandBtn.Caption := CollapseButtonCaption;
   ExpandBtn.ModalResult := mrNone;
   ExpandBtn.TabOrder := CurrTabOrder;
   ExpandBtn.OnClick := @OnExpandButtonClicked;
@@ -779,7 +779,7 @@ begin
   if not FExpanded then
     ExpandDialog
   else
-    CollapsDialog;
+    CollapseDialog;
   FExpanded := not FExpanded;
   {$PUSH}
   {$ObjectChecks OFF}
@@ -847,10 +847,10 @@ begin
   //ToDo: actually expand the dialog
 end;
 
-procedure TLCLTaskDialog.CollapsDialog;
+procedure TLCLTaskDialog.CollapseDialog;
 begin
-  ExpandBtn.Caption := CollapsButtonCaption;
-  //ToDo: actually collaps the dialog
+  ExpandBtn.Caption := CollapseButtonCaption;
+  //ToDo: actually collapse the dialog
 end;
 
 procedure TLCLTaskDialog.DoDialogConstructed;
