@@ -1143,9 +1143,9 @@ begin
   while (idxStart < length(VersionStr)) and not (VersionStr[idxStart] in['0'..'9']) do
     inc(idxStart);
   idxEnd := idxStart;
-  while (idxEnd+1 <= length(VersionStr)) and (VersionStr[idxEnd+1] in['0'..'9']) do inc(idxEnd);
-  if (idxEnd+1 <= length(VersionStr)) and (VersionStr[idxEnd+1] = '.') then inc(idxEnd);
-  while (idxEnd+1 <= length(VersionStr)) and (VersionStr[idxEnd+1] in['0'..'9']) do inc(idxEnd);
+  while (idxEnd < length(VersionStr)) and (VersionStr[idxEnd+1] in['0'..'9']) do inc(idxEnd);
+  if (idxEnd < length(VersionStr)) and (VersionStr[idxEnd+1] = '.') then inc(idxEnd);
+  while (idxEnd < length(VersionStr)) and (VersionStr[idxEnd+1] in['0'..'9']) do inc(idxEnd);
   result := copy(VersionStr,idxStart,idxEnd-idxStart+1);
 end;
 
