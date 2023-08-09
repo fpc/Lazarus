@@ -8,7 +8,6 @@
         <MainUnitHasCreateFormStatements Value="False"/>
         <MainUnitHasTitleStatement Value="False"/>
         <MainUnitHasScaledStatement Value="False"/>
-        <UseDefaultCompilerOptions Value="True"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <Title Value="line_patterns"/>
@@ -36,12 +35,12 @@
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
-      <Filename Value="line_patterns"/>
+      <Filename Value="..\_bin\$(TargetCPU)-$(TargetOS)\line_patterns"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="..\..\src;$(ProjOutDir)"/>
       <OtherUnitFiles Value="..\..\src;..\..\src\ctrl;..\..\src\svg;..\..\src\util;..\..\src\platform\win;..\..\expat-wrap"/>
-      <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      <UnitOutputDirectory Value="..\_ppu\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
       <Debugging>

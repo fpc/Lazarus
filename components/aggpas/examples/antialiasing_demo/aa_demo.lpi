@@ -8,7 +8,6 @@
         <MainUnitHasCreateFormStatements Value="False"/>
         <MainUnitHasTitleStatement Value="False"/>
         <MainUnitHasScaledStatement Value="False"/>
-        <UseDefaultCompilerOptions Value="True"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <Title Value="aa_demo"/>
@@ -36,12 +35,12 @@
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
-      <Filename Value="aa_demo"/>
+      <Filename Value="..\_bin\$(TargetCPU)-$(TargetOS)\aa_demo"/>
     </Target>
     <SearchPaths>
-      <IncludeFiles Value="$(ProjOutDir);../../src"/>
-      <OtherUnitFiles Value="../../src;../../src/ctrl;../../src/svg;../../src/util;../../src/platform\win;../../expat-wrap"/>
-      <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      <IncludeFiles Value="$(ProjOutDir);..\..\src"/>
+      <OtherUnitFiles Value="..\..\src;..\..\src\ctrl;..\..\src\svg;..\..\src\util;..\..\src\platform\win;..\..\expat-wrap"/>
+      <UnitOutputDirectory Value="..\_ppu\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
       <Debugging>

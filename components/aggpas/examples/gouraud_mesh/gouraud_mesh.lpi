@@ -8,7 +8,6 @@
         <MainUnitHasCreateFormStatements Value="False"/>
         <MainUnitHasTitleStatement Value="False"/>
         <MainUnitHasScaledStatement Value="False"/>
-        <UseDefaultCompilerOptions Value="True"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <Title Value="gouraud_mesh"/>
@@ -36,12 +35,12 @@
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
-      <Filename Value="gouraud_mesh"/>
+      <Filename Value="..\_bin\$(TargetCPU)-$(TargetOS)\gouraud_mesh"/>
     </Target>
     <SearchPaths>
-      <IncludeFiles Value="../../src;$(ProjOutDir)"/>
-      <OtherUnitFiles Value="../../src;../../src/ctrl;../../src/svg;../../src/util;../../src/platform/win;../../expat-wrap"/>
-      <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      <IncludeFiles Value="..\..\src;$(ProjOutDir)"/>
+      <OtherUnitFiles Value="..\..\src;..\..\src\ctrl;..\..\src\svg;..\..\src\util;..\..\src\platform\win;..\..\expat-wrap"/>
+      <UnitOutputDirectory Value="..\_ppu\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
       <Debugging>

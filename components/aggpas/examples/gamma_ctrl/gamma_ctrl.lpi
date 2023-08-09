@@ -8,7 +8,6 @@
         <MainUnitHasCreateFormStatements Value="False"/>
         <MainUnitHasTitleStatement Value="False"/>
         <MainUnitHasScaledStatement Value="False"/>
-        <UseDefaultCompilerOptions Value="True"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <Title Value="gamma_ctrl"/>
@@ -37,12 +36,12 @@
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
-      <Filename Value="gamma_ctrl"/>
+      <Filename Value="..\_bin\$(TargetCPU)-$(TargetOS)\gamma_ctrl"/>
     </Target>
     <SearchPaths>
-      <IncludeFiles Value="..\..;..\..\src;$(ProjOutDir)"/>
+      <IncludeFiles Value="..;..\..\src;$(ProjOutDir)"/>
       <OtherUnitFiles Value="..\..\src;..\..\src\ctrl;..\..\src\svg;..\..\src\util;..\..\src\platform\win;..\..\expat-wrap"/>
-      <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      <UnitOutputDirectory Value="..\_ppu\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
       <Debugging>

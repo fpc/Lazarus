@@ -8,7 +8,6 @@
         <MainUnitHasCreateFormStatements Value="False"/>
         <MainUnitHasTitleStatement Value="False"/>
         <MainUnitHasScaledStatement Value="False"/>
-        <UseDefaultCompilerOptions Value="True"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <Title Value="gradient_focal"/>
@@ -36,12 +35,12 @@
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
-      <Filename Value="gradient_focal"/>
+      <Filename Value="..\_bin\$(TargetCPU)-$(TargetOS)\gradient_focal"/>
     </Target>
     <SearchPaths>
-      <IncludeFiles Value="../../src;$(ProjOutDir)"/>
-      <OtherUnitFiles Value="../../src;../../src/ctrl;../../src/svg;../../src/util;../../src/platform/win;../../expat-wrap"/>
-      <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      <IncludeFiles Value="..\..\src;$(ProjOutDir)"/>
+      <OtherUnitFiles Value="..\..\src;..\..\src\ctrl;..\..\src\svg;..\..\src\util;..\..\src\platform\win;..\..\expat-wrap"/>
+      <UnitOutputDirectory Value="..\_ppu\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
       <Debugging>

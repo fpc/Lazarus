@@ -35,12 +35,12 @@
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
-      <Filename Value="image_alpha"/>
+      <Filename Value="..\_bin\$(TargetCPU)-$(TargetOS)\image_alpha"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="..\..\src;$(ProjOutDir)"/>
       <OtherUnitFiles Value="..\..\src;..\..\src\ctrl;..\..\src\svg;..\..\src\util;..\..\src\platform\win;..\..\expat-wrap"/>
-      <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      <UnitOutputDirectory Value="..\_ppu\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
       <Debugging>
