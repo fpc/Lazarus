@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.3.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
@@ -733,7 +733,7 @@ msgstr "对象"
 
 #: objinspstrconsts.oisobjectinspector
 msgid "Object Inspector"
-msgstr "对象查看器"
+msgstr "对象查看器(&O)"
 
 #: objinspstrconsts.oisok
 msgid "&OK"
@@ -1752,11 +1752,11 @@ msgstr "保存"
 
 #: objinspstrconsts.srgrabkey
 msgid "Grab key"
-msgstr ""
+msgstr "捕捉按键"
 
 #: objinspstrconsts.s_addassingle
 msgid "Add as single"
-msgstr ""
+msgstr "作为单精度浮点类型添加"
 
 #: objinspstrconsts.s_confirm_clear
 msgid "Are you sure to clear image list?"
@@ -1768,41 +1768,41 @@ msgstr "分割图片"
 
 #: objinspstrconsts.s_suggestsplitimage
 msgid "Do you want to split the image?"
-msgstr "你想要分割图片吗？"
+msgstr "您想要分割图片吗？"
 
 #: objinspstrconsts.tbcenewbutton
 msgid "New Button"
-msgstr "新建Button"
+msgstr "新建按钮(&B)"
 
 #: objinspstrconsts.tbcenewcheckbutton
 msgid "New CheckButton"
-msgstr "新建CheckButton"
+msgstr "新建复选框(&C)"
 
 #: objinspstrconsts.tbcenewdivider
 msgid "New Divider"
-msgstr "新的分隔符"
+msgstr "新建带线分隔符(&D)"
 
 #: objinspstrconsts.tbcenewseparator
 msgid "New Separator"
-msgstr "新建分隔符"
+msgstr "新建分隔符(&S)"
 
 #: objinspstrconsts.tccesaddtab
 msgid "Add tab"
-msgstr "添加tab"
+msgstr "添加标签页(&A)"
 
 #: objinspstrconsts.tccesdeletetab
 msgid "Delete tab"
-msgstr "删除tab"
+msgstr "删除标签页(&D)"
 
 #: objinspstrconsts.tccesinserttab
 msgid "Insert tab"
-msgstr "插入tab"
+msgstr "插入标签页(&I)"
 
 #: objinspstrconsts.tccesmovetableft
 msgid "Move tab left"
-msgstr "左移tab"
+msgstr "左移标签页(&L)"
 
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
-msgstr "右移tab"
+msgstr "右移标签页(&R)"
 
