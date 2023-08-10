@@ -7227,19 +7227,35 @@ processing loop.
 <seealso/>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TCustomTaskDialog.OnDialogConstructed">
 <short>
 Event handler signalled when the constructor for the dialog form instance has 
 completed.
 </short>
 <descr>
+<p>
+<var>OnDialogConstructed</var> is a <var>TNotifyEvent</var> property with the 
+event handler signalled when the constructor for the task dialog has completed. 
+It is signalled (when assigned) from the DoOnDialogConstructed method.
+</p>
+<p>
+For native implementations using the Task Dialog API (supported Windows 
+versions), it occurs when the TDN_DIALOG_CONSTRUCTED notification is handled in 
+the callback routine for the class instance. For emulated task dialog forms, it 
+occurs when the overridden AfterConstruction method is called.
+</p>
+<p>
+Applications can implement a handler routine to perform actions needed when the 
+dialog form has been allocated but not yet displayed or executed for the
+class instance.
+</p>
 </descr>
 <version>
 Added in LCL version 4.0.
 </version>
 <seealso>
-<link id="#lcl.taskdlgemulation.TLCLTaskDialog">TLCLTaskDialog</link>
+<link id="TCustomTaskDialog.DoOnDialogConstructed"/>
+<link id="#lcl.taskdlgemulation.TLCLTaskDialog.CreateNew">TLCLTaskDialog.CreateNew</link>
 </seealso>
 </element>
 
@@ -7252,32 +7268,53 @@ Event handler signalled when a form instance has been created for the dialog.
 <var>OnDialogCreated</var> is a <var>TNotifyEvent</var> property with the
 event handler signalled after a new dialog form instance has been created for 
 the class. It is signalled (when assigned) in the DoOnDialogCreated method, and 
-occurs when an emulated (non-native) dialog form is created in the widgetset 
-class instance. It is the the last action performed in the TLCLDialog.Createnew 
-constructor, and allows the caller to be notified when the LCL form instance is 
-valid and available to the TTaskDialog owner.
+occurs when the dialog form is created for the class instance. 
+</p>
+<p>
+For native implementations using the Task Dialog API (supported Windows 
+versions), it occurs when the TDN_CREATED notification is handled in the 
+callback routine for the class instance. For emulated task dialog forms, it 
+occurs when the TLCLDialog.CreateNew  method is called. It is the last action 
+performed in the method, and allows the caller to be notified when the LCL form 
+instance is valid and available to the TTaskDialog owner.
 </p>
 </descr>
 <version>
 Added in LCL version 4.0.
 </version>
 <seealso>
-<link id="TCustomTaskDialog.Flags"/>
 <link id="TCustomTaskDialog.DoOnDialogCreated"/>
-<link id="TTaskDialogFlags"/>
-<link id="TTaskDialogFlag"/>
 <link id="#lcl.taskdlgemulation.TLCLTaskDialog.CreateNew">TLCLTaskDialog.CreateNew</link>
 </seealso>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TCustomTaskDialog.OnDialogDestroyed">
-<short/>
-<descr/>
+<short>
+Event handler signalled when the task dialog form has been freed for the class 
+instance.
+</short>
+<descr>
+<p>
+<var>OnDialogDestroyed</var> is a <var>TNotifyEvent</var> property with the 
+event handler signalled when the dialog form for the class instance has been 
+freed. It is signalled (when assigned) from the DoOnDialogDestroyed method.
+</p>
+<p>
+For native implementations using the Task Dialog API (supported Windows 
+versions), it occurs when the TDN_DESTROYED notification is handled in the 
+callback routine for the class instance. For emulated task dialog forms, it 
+occurs when the TLCLDialog.Destroy method is called. It is the first action 
+performed in the method, and occurs before the inherited destructor is called 
+for the LCL form instance.
+</p>
+</descr>
 <version>
 Added in LCL version 4.0.
 </version>
-<seealso/>
+<seealso>
+<link id="TCustomTaskDialog.DoOnDialogDestroyed"/>
+<link id="#lcl.taskdlgemulation.TLCLTaskDialog.Destroy">TLCLTaskDialog.Destroy</link>
+</seealso>
 </element>
 
 <element name="TCustomTaskDialog.OnVerificationClicked">
@@ -7372,7 +7409,6 @@ bar position on the widget.
 </notes>
 </element>
 
-<!-- TODO: Needs additional content. -->
 <element name="TCustomTaskDialog.OnRadioButtonClicked">
 <short>
 Event handler signalled when a radio button on the dialog has been clicked.
@@ -7380,16 +7416,26 @@ Event handler signalled when a radio button on the dialog has been clicked.
 <descr>
 <p>
 <var>OnRadioButtonClicked</var> is a <var>TNotifyEvent</var> property with the 
-event handler signalled when a radio button on the task dialog has been clicked.
+event handler signalled when a radio button on the task dialog has been clicked. It is signalled (when assigned) from the DoOnRadioButtonClicked method, and occurs after the value in RadioButton has been updated to reflect the button identifier clicked on the dialog form.
+</p>
+
+<p>
+For native implementations using the Task Dialog API (supported Windows 
+versions), it occurs when the TDN_RADIO_BUTTON_CLICKED notification is handled 
+in the callback routine for the class instance. For emulated task dialog forms, 
+it occurs when the corresponding event handler implementation for the LCL form 
+instance is called. 
 </p>
 </descr>
 <version>
 Added in LCL version 4.0.
 </version>
-<seealso/>
+<seealso>
+<link id="TCustomTaskDialog.DoOnRadioButtonClicked"/>
+<link id="#lcl.taskdlgemulation.TLCLTaskDialog.OnRadioButtonClick">TLCLTaskDialog.OnRadioButtonClick</link>
+</seealso>
 </element>
 
-<!-- TODO: Needs additional content. -->
 <element name="TCustomTaskDialog.OnHyperlinkClicked">
 <short>
 Event handler signalled when a hyperlink in one of the text areas has been 
@@ -7399,8 +7445,22 @@ clicked.
 <p>
 <var>OnHyperlinkClicked</var> is a <var>TNotifyEvent</var> property with the 
 event handler signalled when a hyperlink in one of the text areas on the task 
-dialog has been clicked.
+dialog has been clicked. The URL property contains the target for the hyperlink in the event notification.
 </p>
+<p>
+Hyperlinks may appear in the Text, ExpandedText, and FooterText properties. 
+They use the common HTML Anchor notation like:
+</p>
+<code>
+&lt;a href="https://www.lazarus-ide.org/"&gt;Lazarus website&lt;/a&gt;
+</code>
+<p>
+Include tfEnableHyperlinks in the Flags property to enable display and handling 
+for hyperlinks in the text areas on the dialog.
+</p>
+<remark>
+Hyperlinks are automatically disabled when tfQuery or tfSimpleQuery are included in Flags. The textual content for hyperlinks is still displayed - but without formatting and event handler notifications.
+</remark>
 </descr>
 <seealso>
 <link id="TCustomTaskDialog.Text"/>
@@ -7423,16 +7483,35 @@ Added in LCL version 4.0.
 <seealso/>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TCustomTaskDialog.OnHelp">
 <short>
 Event handler signalled to display help for the task dialog.
 </short>
-<descr/>
+<descr>
+<p>
+<var>OnHelp</var> is a <var>TNotifyEvent</var> property with the event handler 
+signalled to display help for the task dialog. It is signalled (when assigned) 
+from the DoOnHelp method.
+</p>
+<p>
+For native implementations using the Task Dialog API (supported Windows 
+versions), it occurs when the TDN_HELP notification is handled in 
+the callback routine for the class instance. For emulated task dialog forms, it 
+occurs when the F1 key is processed in the KeyDown handler for the LCL form 
+instance.
+</p>
+<p>
+Applications can implement and assign a routine to the handler to perform the 
+actions needed to display context or keyword help for the dialog.
+</p>
+</descr>
 <version>
 Added in LCL version 4.0.
 </version>
-<seealso/>
+<seealso>
+<link id="TCustomTaskDialog.DoOnHelp"/>
+<link id="#lcl.taskdlgemulation.TLCLTaskDialog.KeyDown">TLCLTaskDialog.KeyDown</link>
+</seealso>
 </element>
 
 <!-- TODO: Needs update after refactoring. -->
