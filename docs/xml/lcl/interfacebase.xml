@@ -7683,44 +7683,86 @@ the initial value for the edit control on entry.
 </short>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TPromptDialogFunction">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Specifies a function called to display and execute a widgetset-independent 
+dialog using the specified settings.
+</short>
+<descr>
+<p>
+<var>TPromptDialogFunction</var> is the type used for the PromptDialogFunction 
+variable in the <file>interfacebase.pp</file> unit. DefaultPromptDialog in 
+<file>dialogs.pp</file> is an implementation of the type.
+</p>
+</descr>
+<seealso>
+<link id="PromptDialogFunction"/>
+<link id="#lcl.dialogs.DefaultPromptDialog">DefaultPromptDialog</link>
+</seealso>
 </element>
 <element name="TPromptDialogFunction.Result">
-<short/>
+<short>
+Modal result value returned when the dialog is executed.
+</short>
 </element>
 <element name="TPromptDialogFunction.DialogCaption">
-<short/>
+<short>
+Caption for the dialog. An empty string causes the default description for the 
+dialog type to be used.
+</short>
 </element>
 <element name="TPromptDialogFunction.DialogMessage">
-<short/>
+<short>
+Text displayed as the main content on the dialog. Allows embedded end-of-line 
+sequences in the text.
+</short>
 </element>
 <element name="TPromptDialogFunction.DialogType">
-<short/>
+<short>
+Integer constant which indicates the dialog type like idDialogWarning, 
+idDialogError, idDialogInfo, idDialogConfirm, or idDialogShield.
+</short>
 </element>
 <element name="TPromptDialogFunction.Buttons">
-<short/>
+<short>
+Pointer to the address where the button identifiers for the dialog are 
+specified.
+</short>
 </element>
 <element name="TPromptDialogFunction.ButtonCount">
-<short/>
+<short>
+Number of buttons located at the specified address.
+</short>
 </element>
 <element name="TPromptDialogFunction.DefaultIndex">
-<short/>
+<short>
+Ordinal position for the default button on the dialog. 0 is used if the value 
+is not valid for the number of buttons.
+</short>
 </element>
 <element name="TPromptDialogFunction.EscapeResult">
-<short/>
+<short>
+Modal result value returned when the Esc or Alt+F4 is used to cancel the dialog.
+</short>
 </element>
 <element name="TPromptDialogFunction.UseDefaultPos">
-<short/>
+<short>
+True causes the dialog to be centered on the screen using the screen size and 
+the dimensions for the dialog. False causes the values in X and Y to be used to 
+set the left and top coordinates for the dialog.
+</short>
 </element>
 <element name="TPromptDialogFunction.X">
-<short/>
+<short>
+Horizontal coordinate for the left edge of the dialog. Used when UseDefaultPos 
+is False.
+</short>
 </element>
 <element name="TPromptDialogFunction.Y">
-<short/>
+<short>
+Vertical coordinate for the top edge of the dialog. Used when UseDefaultPos is 
+False.
+</short>
 </element>
 
 <!-- TODO: Needs content. -->
