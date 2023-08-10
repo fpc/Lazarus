@@ -2724,9 +2724,10 @@ begin
       Font.Style:=[];
     end;
 
-    if CodeToolBoss.IdentifierList.SortForHistory and
-      (iliIsRecentItem in CodeToolBoss.IdentifierList.FilteredItems[Index].Flags) and
-      (FActiveHistoryTextColor <> clNone)
+    if (CurrentCompletionType = ctIdentCompletion) and
+       (CodeToolBoss.IdentifierList.SortForHistory) and
+       (iliIsRecentItem in CodeToolBoss.IdentifierList.FilteredItems[Index].Flags) and
+       (FActiveHistoryTextColor <> clNone)
     then  begin
       Colors.TextColor := FActiveHistoryTextColor; // - to display history items
     end else begin
