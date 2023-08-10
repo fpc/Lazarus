@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for SynEdit 1.0
 #
-#   This file was generated on 14-7-20
+#   This file was generated on 10-8-23
 
 [package]
 name=synedit
@@ -56,7 +56,7 @@ cleartarget:
         -$(DEL) $(COMPILER_UNITTARGETDIR)/allsynedit$(PPUEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/SynEdit.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/synedit.compiled
 
 all: cleartarget $(COMPILER_UNITTARGETDIR) allsynedit$(PPUEXT) compiled
 
