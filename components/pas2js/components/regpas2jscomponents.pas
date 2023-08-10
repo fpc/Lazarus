@@ -146,6 +146,7 @@ begin
   RegisterComponentRequirements(THTMLElementActionList,THTMLElementActionListRequirements);
   RegisterComponentRequirements(THTMLElementAction,THTMLElementActionListRequirements);
   RegisterComponentRequirements(THTMLCustomElementAction,THTMLElementActionListRequirements);
+  RegisterComponentRequirements(TDBHTMLElementAction,TDBElementActionRequirements);
   RegisterComponentRequirements(TDBHTMLInputElementAction,TDBElementActionRequirements);
   RegisterComponentRequirements(TDBHTMLButtonElementAction,TDBElementActionRequirements);
   RegisterComponentRequirements(TBootstrapModal,THTMLBootstrapWidgetRequirements);
