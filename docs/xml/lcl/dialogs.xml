@@ -6835,9 +6835,28 @@ Added in LCL version 4.0.
 
 <element name="TCustomTaskDialog.QueryResult">
 <short>
-String representation for the value selected in QueryChoices.
+String representation for the query entered or selected on the dialog form.
 </short>
-<descr/>
+<descr>
+<p>
+<var>QueryResult</var> is a <var>String</var> property with the value for the 
+query control dialog form. The content may reflect either the SimpleQuery or 
+the selected value in QueryChoices for the class instance.
+</p>
+<p>
+Use Flags to specify which editing control and mode are used to capture the 
+query value (tfSimpleQuery for SimpleQuery and tfQuery for QueryChoices).
+</p>
+<p>
+QueryResult is set to an empty string ('') when the Execute method is called, 
+and updated prior to exit.
+</p>
+<p>
+Use ModalResult to determine the button or key press used to complete execution 
+of the task dialog. The value in QueryResult is set to the respective source 
+even when Esc or Alt+F4 is used to cancel the task dialog.
+</p>
+</descr>
 <version>
 Added in LCL version 4.0.
 </version>
@@ -7020,16 +7039,30 @@ version 2.2.0.
 
 <element name="TCustomTaskDialog.Title">
 <short>
-Header text displayed at the top of dialog, with a larger font size and using 
-a highlighted bold font style.
+Text displayed at the top of dialog adjacent to the main icon.
 </short>
-<descr/>
+<descr>
+<p>
+<var>Title</var> is a <var>TTranslateString</var> property which contains text 
+displayed at the top of dialog using a larger font size and a highlighted, bold 
+font style. Title is displayed adjacent to the MainIcon for the dialog (when 
+used).
+</p>
+<p>
+Title can be localized using the Lazarus IDE translation facilities when 
+enabled in the project, or by calling translation routines in LazUtils.
+</p>
+<p>
+Use Caption to assigned the value displayed on the window header for the  task 
+dialog form.
+</p>
+</descr>
 <seealso>
 <link id="TCustomTaskDialog.MainIcon"/>
+<link id="TCustomTaskDialog.Caption"/>
 <link id="TCustomTaskDialog.Text"/>
 <link id="TCustomTaskDialog.ExpandedText"/>
 <link id="TCustomTaskDialog.FooterText"/>
-<link id="TCustomTaskDialog.Caption"/>
 <link id="TCustomTaskDialog.ExpandButtonCaption"/>
 </seealso>
 </element>
@@ -7041,13 +7074,24 @@ the Task dialog.
 </short>
 <descr>
 <p>
-The verification check box is omitted from the task dialog (even when 
+<var>VerificationText</var> is a <var>TTranslateString</var> property with the 
+text displayed next to a verification check box enabled on the dialog. The 
+verification check box is omitted from the task dialog (even when 
 tfVerificationFlagChecked is enabled in Flags) if VerificationText is an empty 
 string ('').
+</p>
+<p>
+VerificationText can be localized using the Lazarus IDE translation facilities 
+when enabled in the project, or by calling translation routines in LazUtils.
+</p>
+<p>
+Use OnVerificationClicked to perform actions needed when the verification check 
+box is clicked on the dialog.
 </p>
 </descr>
 <seealso>
 <link id="TCustomTaskDialog.Flags"/>
+<link id="TCustomTaskDialog.OnVerificationClicked"/>
 <link id="TTaskDialogFlags"/>
 <link id="TTaskDialogFlag"/>
 </seealso>
@@ -7062,7 +7106,7 @@ Sets the width in pixels for the task dialog form.
 <var>Width</var> is an <var>Integer</var> property which sets the width (in 
 pixels) for the task dialog form. The default value for the property is 0 
 (zero), and causes the width for the dialog form to be calculated when the 
-dialog is executed using the length of its textual content.
+dialog is executed using the length of its textual content and controls.
 </p>
 <p>
 Width is passed as an argument to the Execute method in the TTaskDialog 
@@ -7161,7 +7205,6 @@ Added in LCL version 4.0.
 </seealso>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TCustomTaskDialog.OnButtonClicked">
 <short>
 Event handler signalled for the button clicked when the Task dialog was 
@@ -7169,7 +7212,16 @@ executed.
 </short>
 <descr>
 <p>
-OnButtonClicked is signalled when a button is clicked on the Task dialog.
+<var>OnButtonClicked</var> is a <var>TTaskDlgClickEvent</var> property with the 
+event handler signalled (when assigned) after a button is clicked on the task 
+dialog during execution.  It is signalled from the DoOnButtonClicked method.
+</p>
+<p>
+Arguments passed to the TTaskDlgClickEvent event handler include the 
+TTaskDialog instance, the modal result value, and a Boolean flag which 
+indicates if the dialog can be closed. Setting the CanClose argument to 
+<b>False</b> in the handler routine causes the dialog to continue its Execute 
+processing loop.
 </p>
 </descr>
 <seealso/>
@@ -7228,30 +7280,56 @@ Added in LCL version 4.0.
 <seealso/>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TCustomTaskDialog.OnVerificationClicked">
 <short>
 Event handler signalled when the verification check box has been clicked on the 
 task dialog.
 </short>
-<descr/>
+<descr>
+<p>
+<var>OnVerificationClicked</var> is a <var>TNotifyEvent</var> property with the 
+event handler signalled when the verification check box for the task dialog is 
+clicked. It is signalled (when assigned) from the DoOnVerificationClicked 
+method, and occurs after the checked state for the check box control has been 
+applied to the Flags in the task dialog.
+</p>
+<p>
+Use OnVerificationClicked to perform actions needed when the checked state has 
+been changed.
+</p>
+</descr>
 <version>
 Added in LCL version 4.0.
 </version>
-<seealso/>
+<seealso>
+<link id="TCustomTaskDialog.DoOnVerificationClicked"/>
+<link id="TCustomTaskDialog.Flags"/>
+<link id="TTaskDialogFlags"/>
+<link id="TTaskDialogFlag"/>
+</seealso>
 </element>
 
-<!-- TODO: Needs additional content. -->
 <element name="TCustomTaskDialog.OnExpanded">
 <short>
-Event handler signalled when the ExpandedText property has been expanded or 
-collapsed.
+Event handler signalled when the ExpandedText on the dialog has been expanded 
+or collapsed.
 </short>
 <descr>
 <p>
 <var>OnExpanded</var> is a <var>TNotifyEvent</var> property with the event 
 handler signalled when the expanded or collapsed state for the 
-<var>ExpandedText</var> area on the task dialog has been changed.
+<var>ExpandedText</var> area on the task dialog has been changed. OnExpanded is 
+signalled (when assigned) from the DoOnExpandButtonClicked method, and occurs 
+after the member for the read-only Expanded property has been updated with the 
+new value.
+</p>
+<p>
+Use Flags to specify the content area on the dialog where the values in 
+ExpandedText are displayed (tfExpandFooterArea).
+</p>
+<p>
+Use ExpandButtonCaption and CollapseButtonCaption to set the text displayed 
+next to the expando button on the task dialog.
 </p>
 </descr>
 <version>
@@ -7259,6 +7337,9 @@ Added in LCL version 4.0.
 </version>
 <seealso>
 <link id="TCustomTaskDialog.Expanded"/>
+<link id="TCustomTaskDialog.DoOnExpandButtonClicked"/>
+<link id="TCustomTaskDialog.ExpandButtonCaption"/>
+<link id="TCustomTaskDialog.CollapseButtonCaption"/>
 <link id="TCustomTaskDialog.Flags"/>
 <link id="TTaskDialogFlags"/>
 <link id="TTaskDialogFlag"/>
@@ -7266,7 +7347,7 @@ Added in LCL version 4.0.
 </seealso>
 </element>
 
-<!-- TODO: Needs additional content. -->
+<!-- TODO: Needs updates. -->
 <element name="TCustomTaskDialog.OnTimer">
 <short>
 Event handler signalled when the interval for the timer on the dialog has 
@@ -7283,6 +7364,12 @@ on the dialog has elapsed.
 Added in LCL version 4.0.
 </version>
 <seealso/>
+<notes>
+<note>
+There are no mechanisms to set the progress bar range or update the progress 
+bar position on the widget.
+</note>
+</notes>
 </element>
 
 <!-- TODO: Needs additional content. -->
