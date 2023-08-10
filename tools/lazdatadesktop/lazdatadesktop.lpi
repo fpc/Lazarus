@@ -12,6 +12,7 @@
       <AutoCreateForms Value="False"/>
       <Title Value="Lazarus Data Desktop"/>
       <Scaled Value="True"/>
+      <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
       <XPManifest>
         <DpiAware Value="True"/>
@@ -68,7 +69,7 @@
         <MinVersion Minor="1" Release="1" Valid="True"/>
       </Item8>
     </RequiredPackages>
-    <Units Count="16">
+    <Units Count="18">
       <Unit0>
         <Filename Value="lazdatadesktop.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -162,6 +163,17 @@
         <Filename Value="lazddsqlutils.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit15>
+      <Unit16>
+        <Filename Value="fraparams.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="fraParams"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="fpddwrappers.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit17>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

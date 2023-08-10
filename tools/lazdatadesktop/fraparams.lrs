@@ -1,0 +1,15 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TfraParams','FORMDATA',[
+  'TPF0'#10'TfraParams'#9'fraParams'#4'Left'#2#0#6'Height'#3#240#0#3'Top'#2#0#5
+  +'Width'#3#209#1#12'ClientHeight'#3#240#0#11'ClientWidth'#3#209#1#8'TabOrder'
+  +#2#0#10'DesignLeft'#3'='#2#9'DesignTop'#3'!'#1#0#11'TStringGrid'#8'SGParams'
+  +#4'Left'#2#0#6'Height'#3#240#0#3'Top'#2#0#5'Width'#3#209#1#5'Align'#7#8'alCl'
+  +'ient'#8'ColCount'#2#4#7'Columns'#14#1#8'ReadOnly'#9#13'Title.Caption'#6#4'N'
+  +'ame'#5'Width'#3#128#0#0#1#11'ButtonStyle'#7#11'cbsPickList'#13'Title.Captio'
+  +'n'#6#9'Data type'#5'Width'#2'P'#0#1#11'ButtonStyle'#7#17'cbsCheckboxColumn'
+  +#13'Title.Caption'#6#4'Null'#5'Width'#2'0'#0#1#13'Title.Caption'#6#5'Value'#0
+  +#0#9'FixedCols'#2#0#7'Options'#11#15'goFixedVertLine'#15'goFixedHorzLine'#10
+  +'goVertLine'#10'goHorzLine'#18'goAlwaysShowEditor'#14'goSmoothScroll'#0#8'Ro'
+  +'wCount'#2#2#8'TabOrder'#2#0#0#0#0
+]);

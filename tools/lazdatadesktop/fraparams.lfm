@@ -1,0 +1,56 @@
+object fraParams: TfraParams
+  Left = 0
+  Height = 288
+  Top = 0
+  Width = 569
+  ClientHeight = 288
+  ClientWidth = 569
+  TabOrder = 0
+  DesignLeft = 573
+  DesignTop = 289
+  object SGParams: TStringGrid
+    Left = 0
+    Height = 288
+    Top = 0
+    Width = 569
+    Align = alClient
+    AutoFillColumns = True
+    ColCount = 4
+    Columns = <    
+      item
+        ReadOnly = True
+        SizePriority = 0
+        Title.Caption = 'Name'
+        Width = 160
+      end    
+      item
+        ButtonStyle = cbsPickList
+        SizePriority = 0
+        Title.Caption = 'Data type'
+        Width = 120
+      end    
+      item
+        ButtonStyle = cbsCheckboxColumn
+        SizePriority = 0
+        Title.Caption = 'Null'
+        Width = 60
+      end    
+      item
+        SizePriority = 2
+        Title.Caption = 'Value'
+        Width = 227
+      end>
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goAlwaysShowEditor, goSmoothScroll]
+    RowCount = 1
+    TabOrder = 0
+    OnEditingDone = SGParamsEditingDone
+    OnSetEditText = SGParamsSetEditText
+    ColWidths = (
+      160
+      120
+      60
+      227
+    )
+  end
+end

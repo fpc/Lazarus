@@ -19,84 +19,89 @@ object QueryFrame: TQueryFrame
     ShowHint = True
     TabOrder = 0
     object TBExecute: TToolButton
-      Left = 1
+      Left = 24
       Top = 2
       Action = AExecute
       DropdownMenu = PMExecute
       Style = tbsDropDown
     end
     object TBSep1: TToolButton
-      Left = 59
+      Left = 82
       Height = 22
       Top = 2
       Caption = 'TBSep1'
       Style = tbsSeparator
     end
     object TBPrevious: TToolButton
-      Left = 67
+      Left = 90
       Top = 2
       Action = APreviousQuery
     end
     object TBNext: TToolButton
-      Left = 90
+      Left = 113
       Top = 2
       Action = ANextQuery
     end
     object TBSep2: TToolButton
-      Left = 113
+      Left = 136
       Height = 22
       Top = 2
       Caption = 'TBSep2'
       Style = tbsSeparator
     end
     object TBClose: TToolButton
-      Left = 36
+      Left = 59
       Top = 2
       Action = ACloseQuery
     end
     object TBLoadSQL: TToolButton
-      Left = 121
+      Left = 144
       Top = 2
       Action = ALoadSQL
     end
     object TBSaveSQL: TToolButton
-      Left = 144
+      Left = 167
       Top = 2
       Action = ASaveSQL
     end
     object TBSep3: TToolButton
-      Left = 167
+      Left = 190
       Height = 22
       Top = 2
       Caption = 'TBSep3'
       Style = tbsSeparator
     end
     object TBExport: TToolButton
-      Left = 175
+      Left = 198
       Top = 2
       Action = AExport
     end
     object TBCreateCode: TToolButton
-      Left = 198
+      Left = 221
       Top = 2
       Action = ACreateCode
     end
     object btnCommit: TToolButton
-      Left = 229
+      Left = 252
       Top = 2
       Action = aCommit
     end
     object btnRollback: TToolButton
-      Left = 252
+      Left = 275
       Top = 2
       Action = aRollBack
     end
     object ToolButton5: TToolButton
-      Left = 221
+      Left = 244
       Height = 22
       Top = 2
       Caption = 'ToolButton5'
       Style = tbsSeparator
+    end
+    object tbPrepareParams: TToolButton
+      Left = 1
+      Top = 2
+      Action = aPrepareParameters
     end
   end
   object PCResult: TPageControl
@@ -104,9 +109,9 @@ object QueryFrame: TQueryFrame
     Height = 244
     Top = 261
     Width = 640
-    ActivePage = TSResult
+    ActivePage = TSParams
     Align = alBottom
-    TabIndex = 0
+    TabIndex = 2
     TabOrder = 1
     object TSResult: TTabSheet
       Caption = 'Result'
@@ -616,6 +621,9 @@ object QueryFrame: TQueryFrame
     end
     object TSData: TTabSheet
       Caption = 'Data'
+    end
+    object TSParams: TTabSheet
+      Caption = 'Parameters'
     end
   end
   inline FMSQL: TSynEdit
@@ -1273,6 +1281,14 @@ object QueryFrame: TQueryFrame
       Category = 'Edit'
       Caption = 'Clean up pascal code'
       OnExecute = aCleanPascalCodeExecute
+    end
+    object aPrepareParameters: TAction
+      Category = 'SQL'
+      Caption = 'Prepare Parameters'
+      Hint = 'Prepare parameter values'
+      ImageIndex = 49
+      OnExecute = aPrepareParametersExecute
+      OnUpdate = NotBusy
     end
   end
   object SQLSyn: TSynSQLSyn

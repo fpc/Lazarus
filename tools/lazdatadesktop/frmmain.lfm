@@ -144,14 +144,14 @@ object MainForm: TMainForm
     TabOrder = 1
     object TSConnections: TTabSheet
       Caption = 'Connections'
-      ClientHeight = 406
-      ClientWidth = 452
+      ClientHeight = 404
+      ClientWidth = 450
       ImageIndex = 38
       object LVConnections: TListView
         Left = 0
-        Height = 406
+        Height = 404
         Top = 0
-        Width = 452
+        Width = 450
         Align = alClient
         Columns = <        
           item
@@ -182,14 +182,14 @@ object MainForm: TMainForm
     end
     object TSRecent: TTabSheet
       Caption = 'Dictionaries'
-      ClientHeight = 406
-      ClientWidth = 452
+      ClientHeight = 404
+      ClientWidth = 450
       ImageIndex = 32
       object LVDicts: TListView
         Left = 0
-        Height = 406
+        Height = 404
         Top = 0
-        Width = 452
+        Width = 450
         Align = alClient
         Columns = <        
           item
@@ -217,14 +217,14 @@ object MainForm: TMainForm
     end
     object TSAll: TTabSheet
       Caption = 'Connections/Dictionaries'
-      ClientHeight = 406
-      ClientWidth = 452
+      ClientHeight = 404
+      ClientWidth = 450
       ImageIndex = 29
       object TVAll: TTreeView
         Left = 0
-        Height = 406
+        Height = 404
         Top = 0
-        Width = 452
+        Width = 450
         Align = alClient
         Images = ImgDatamodule.AppImages
         PopupMenu = PMAll

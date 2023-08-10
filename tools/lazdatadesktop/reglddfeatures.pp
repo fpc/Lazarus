@@ -12,8 +12,9 @@ unit reglddfeatures;
 interface
 
 uses
-  // Data dictionary support for database types
   fpdddbf,     // DBF
+{$IFDEF VER3_3}
+  // Data dictionary support for database types
   fpddfb,      // Firebird
   fpddmysql40, // MySQL 4.0
   fpddmysql41, // MySQL 4.1
@@ -22,11 +23,16 @@ uses
   fpddmysql55, // MySQL 5.5
   fpddmysql56, // MySQL 5.6
   fpddmysql57, // MySQL 5.7
+  fpddmysql80, // MySQL 8.0
   fpddoracle,  // Oracle
   fpddpq,      // PostgreSQL
   fpddsqlite3, // SQLite 3
   fpddodbc,    // Any ODBC supported
   fpddmssql,
+{$ELSE}
+  // Descendents for all classes
+  fpddWrappers,
+{$ENDIF}
   // code generators
   fpcgfieldmap,
   fpcgtypesafedataset,
@@ -63,6 +69,7 @@ begin
   RegisterMySQL55DDEngine;
   RegisterMySQL56DDEngine;
   RegisterMySQL57DDEngine;
+  RegisterMySQL80DDEngine;
   RegisterOracleDDEngine;
   RegisterPostgreSQLDDengine;
   RegisterSQLite3DDEngine;
