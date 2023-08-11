@@ -7765,29 +7765,47 @@ False.
 </short>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TQuestionDialogFunction">
-<short/>
+<short>
+Specifies a function called to display and execute a widgetset-independent 
+Question Mark dialog using the specified settings.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TQuestionDialogFunction.Result">
-<short/>
+<short>
+Modal result value returned when the dialog is executed.
+</short>
 </element>
 <element name="TQuestionDialogFunction.aCaption">
-<short/>
+<short>
+Caption for the dialog. An empty string causes the default description for the 
+dialog type to be used.
+</short>
 </element>
 <element name="TQuestionDialogFunction.aMsg">
-<short/>
+<short>
+Text displayed as the main content on the dialog. Allows embedded end-of-line 
+sequences in the text.
+</short>
 </element>
 <element name="TQuestionDialogFunction.DlgType">
-<short/>
+<short>
+Integer constant which indicates the dialog type like idDialogWarning, 
+idDialogError, idDialogInfo, idDialogConfirm, or idDialogShield.
+</short>
 </element>
 <element name="TQuestionDialogFunction.Buttons">
-<short/>
+<short>
+Pointer to the address where the button identifiers for the dialog are 
+specified.
+</short>
 </element>
 <element name="TQuestionDialogFunction.HelpCtx">
-<short/>
+<short>
+Context identifier for help displayed using a Help button on the dialog.
+</short>
 </element>
 
 <element name="TLoadBitmapFunction">
@@ -7853,47 +7871,68 @@ Identifier for the cursor shape loaded in the routine.
 </short>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="TLoadIconFunction">
-<short/>
-<descr/>
+<short>
+Specifies a function called to load a named icon from a resource with the 
+specified handle.
+</short>
+<descr>
+<p>
+<var>TLoadIconFunction</var> is the type used to implement the LoadIconFunction 
+procedure variable. An example implementation is provided in the LocalLoadIcon 
+function found in the implementation for the <file>graphics.pp</file> unit.
+</p>
+</descr>
 <version>
 Modified in LCL version 4.0 to use the TLCLHandle type instead of the 
 deprecated THandle type in the hInstance parameter.
-
 </version>
 <seealso>
 <link id="LoadIconFunction"/>
+<link id="#lcl.graphics.TIcon.LoadFromResourceHandle">TIcon.LoadFromResourceHandle</link>
 <link id="#lcl.wsreferences.TLCLHandle">TLCLHandle</link>
 </seealso>
 </element>
 <element name="TLoadIconFunction.Result">
-<short/>
+<short>
+Handle for the icon created and loaded in the routine.
+</short>
 </element>
 <element name="TLoadIconFunction.hInstance">
-<short/>
+<short>
+Handle for the resource where the icon is located.
+</short>
 </element>
 <element name="TLoadIconFunction.lpIconName">
-<short/>
+<short>
+PChar value which points to the resource name or identifier for the icon loaded 
+in the routine.
+</short>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="InputDialogFunction">
-<short/>
+<short>
+Procedure variable with the routine called to execute a platform-independent 
+input dialog.
+</short>
 <descr/>
 <seealso/>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="PromptDialogFunction">
-<short/>
+<short>
+Procedure variable with the routine called to execute a platform-independent 
+prompt dialog.
+</short>
 <descr/>
 <seealso/>
 </element>
 
-<!-- TODO: Needs content. -->
 <element name="QuestionDialogFunction">
-<short/>
+<short>
+Procedure variable with the routine called to execute a platform-independent 
+dialog using the Question Mark icon.
+</short>
 <descr/>
 <seealso/>
 </element>
