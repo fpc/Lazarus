@@ -7432,7 +7432,7 @@ Added in LCL version 4.0.
 </version>
 <seealso>
 <link id="TCustomTaskDialog.DoOnRadioButtonClicked"/>
-<link id="#lcl.taskdlgemulation.TLCLTaskDialog.OnRadioButtonClick">TLCLTaskDialog.OnRadioButtonClick</link>
+<link id="#lcl.taskdlgemulation.TLCLTaskDialog">TLCLTaskDialog</link>
 </seealso>
 </element>
 
