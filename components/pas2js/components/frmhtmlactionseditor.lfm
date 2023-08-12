@@ -16,7 +16,7 @@ object HTMLActionListEditorForm: THTMLActionListEditorForm
   OnKeyPress = ActionListEditorKeyPress
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '2.3.0.0'
+  LCLVersion = '3.99.0.0'
   object PanelDescr: TPanel
     Left = 0
     Height = 26
@@ -145,6 +145,11 @@ object HTMLActionListEditorForm: THTMLActionListEditorForm
     object actAddMissingUsingDB: TAction
       Caption = 'Add missing tags (Use Data-aware actions)'
       OnExecute = actAddMissingDBExecute
+    end
+    object actRemoveMissing: TAction
+      Caption = 'Remove actions without corresponding tag'
+      Hint = 'Remove actions without corresponding tag with ID equal to ElementID'
+      OnExecute = actRemoveMissingExecute
     end
   end
   object PopMenuActions: TPopupMenu

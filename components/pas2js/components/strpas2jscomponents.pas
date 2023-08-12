@@ -7,6 +7,7 @@ interface
 Resourcestring
   rsActionListComponentEditor = 'HTM&L Element Actionlist Editor...';
   rsActionListCreateMissing = 'Create &actions for HTML tags...';
+  rsActionListRemoveNoID = '&Remove actions without corresponding tag';
   rsErrNoHTMLFileNameForComponent = 'No HTML filename found for component %s';
   rsAllTagsHaveAction = 'All HTML tags with IDs already have a corresponding Action component.';
   rsHTMLActionsCreated = '%d HTML Element Action components were created';
@@ -30,6 +31,10 @@ Resourcestring
   rsCreateFieldDefsNoNew = 'Fielddefs are up-to-date, no new fielddefs were added';
   rsCreateParamsCount = 'Added %d parameters';
   rsCreateParamsNoNew = 'Parameters are up-to-date, no new parameters were added';
+  rsCaution = 'Please confirm';
+  rsMayDeleteActionsInCode = 'Removing actions with missing tag may remove actions that reference a tag created in code.';
+  rsRiskOK = 'I understand the risk, delete the actions.';
+  rsCancel = 'Cancel.';
 
   rsEditingHTMLProp = 'Editing HTML property: %s';
   rsEditTemplate = 'Edit Template';
@@ -55,6 +60,8 @@ Resourcestring
   rsUseDBAwareActions = 'Use Data-Aware actions';
   rsCreateServiceClient = 'Create Service client component';
   rsInvalidAPIReturned = 'The service URL "%s" returned an invalid API: %s';
+
+  rsNoControl = '<none>';
 
 implementation
 

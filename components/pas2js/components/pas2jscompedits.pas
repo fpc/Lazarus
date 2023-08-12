@@ -26,6 +26,7 @@ Type
     destructor Destroy; override;
     procedure Edit; override;
     procedure CreateMissing;
+    procedure RemoveNonID;
     property ActionList: THTMLElementActionList read FActionList write FActionList;
     function GetVerbCount: Integer; override;
     function GetVerb({%H-}Index: Integer): string; override;
@@ -652,9 +653,14 @@ begin
     ShowMessage(Format(rsHTMLActionsCreated,[aCount]));
 end;
 
+procedure THTMLElementActionListComponentEditor.RemoveNonID;
+begin
+
+end;
+
 function THTMLElementActionListComponentEditor.GetVerbCount: Integer;
 begin
-  Result := 2;
+  Result := 3;
 end;
 
 function THTMLElementActionListComponentEditor.GetVerb(Index: Integer): string;
@@ -662,6 +668,7 @@ begin
   case Index of
     0 : Result := rsActionListComponentEditor;
     1 : Result := rsActionListCreateMissing;
+    2 : Result := rsActionListRemoveNoID;
   end;
 end;
 
@@ -670,6 +677,7 @@ begin
   case Index of
     0 : Edit;
     1 : CreateMissing;
+    2 : RemoveNonID;
   end;
 end;
 

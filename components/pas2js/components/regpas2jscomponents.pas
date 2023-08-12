@@ -191,7 +191,7 @@ begin
   RegisterPropertyEditor(TypeInfo(String),TBootstrapModal,'ParentID',TElementIDPropertyEditor);
   RegisterPropertyEditor(TypeInfo(String),TBootstrapModal,'ElementID',TElementIDPropertyEditor);
   RegisterPropertyEditor(TypeInfo(String),TDBBootstrapTableWidget,'ElementID',TElementIDPropertyEditor);
-  RegisterPropertyEditor(TypeInfo(String),TDBBootstrapTableWidget,'ParentIDID',TElementIDPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(String),TDBBootstrapTableWidget,'ParentID',TElementIDPropertyEditor);
   RegisterPropertyEditor(TypeInfo(String),TReferenceItem,'Selector',TElementIDSelectorPropertyEditor);
 //  RegisterPropertyEditor(TypeInfo(String),TDBHTMLButtonElementAction,'ElementID',TElementIDPropertyEditor);
   RegisterPropertyEditor(TypeInfo(String),TBootstrapModal,'Template',TTemplatePropertyEditor);

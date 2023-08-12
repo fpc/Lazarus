@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls,
-  ButtonPanel, stub.htmlactions, idehtml2class, ValEdit;
+  ButtonPanel, stub.htmlactions, idehtml2class, ValEdit, ComCtrls, CheckLst;
 
 type
 
@@ -24,10 +24,10 @@ type
 
   TElementInfoList  = Class(TTagInfoList)
   private
-    function GetInfo(aIndex : Integer): TElementINfo;
+    function GetInfo(aIndex : Integer): TElementInfo;
   Public
     Constructor Create; overload;
-    Property Infos[aIndex : Integer] : TElementINfo Read GetInfo; default;
+    Property Infos[aIndex : Integer] : TElementInfo Read GetInfo; default;
   end;
 
   { TfrmSelectHTMLActionClasses }
@@ -35,7 +35,12 @@ type
   TfrmSelectHTMLActionClasses = class(TForm)
     bpHTMLActions: TButtonPanel;
     cbUseDBAware: TCheckBox;
+    clbRemove: TCheckListBox;
+    Label1: TLabel;
+    PageControl1: TPageControl;
     pnlTop: TPanel;
+    TSAdd: TTabSheet;
+    TSRemove: TTabSheet;
     VLEClasses: TValueListEditor;
     procedure cbUseDBAwareChange(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -44,34 +49,40 @@ type
       Values: TStrings);
   private
     FPreferDB: Boolean;
+    FRemoveList: TFPList;
     FTags: TElementInfoList;
     procedure AllocateDefaultClasses;
+    procedure DisplayRemoveList;
     function GetTagClass(const aEl: TElementInfo): THTMLCustomElementActionClass;
     procedure SaveSelectedClasses;
     procedure SetPreferDB(AValue: Boolean);
+    procedure SetRemoveList(AValue: TFPList);
     procedure SetTags(AValue: TElementInfoList);
 
   public
     Property PreferDB : Boolean Read FPreferDB Write SetPreferDB;
-    // Extra info Expected to be in TTagInfo object attached to string
     Property Tags : TElementInfoList Read FTags Write SetTags;
+    // On entry, list of actions that can be removed. On close, actions that should actually be removed.
+    Property RemoveList : TFPList Read FRemoveList Write SetRemoveList;
   end;
 
-Function SelectHTMLActionClasses(aTags : TElementInfoList; aPreferDB : Boolean) : Boolean;
+Function SelectHTMLActionClasses(aTags : TElementInfoList; aPreferDB : Boolean; aRemoveList : TFPList) : Boolean;
 
 implementation
 
 uses strutils, p2jselementactions, stub.data.HTMLActions, strpas2jscomponents;
 
+
 {$R *.lfm}
 
-Function SelectHTMLActionClasses(aTags : TElementInfoList; aPreferDB : Boolean) : Boolean;
+Function SelectHTMLActionClasses(aTags : TElementInfoList; aPreferDB : Boolean; aRemoveList : TFPList) : Boolean;
 
 begin
   With  TfrmSelectHTMLActionClasses.Create(Application) do
     try
       PreferDB:=aPreferDB;
       Tags:=aTags;
+      RemoveList:=aRemoveList;
       Result:=ShowModal=mrOK
     finally
       Free;
@@ -106,6 +117,8 @@ Var
   I : Integer;
 
 begin
+  Values.Clear;
+  Values.Add(rsNoControl);
   For I:=0 to TPas2JSActionRegistry.Instance.ActionCount-1 do
     Values.Add(TPas2JSActionRegistry.Instance[I].ActionClass.ClassName);
 end;
@@ -139,10 +152,19 @@ begin
     begin
     aEl:=VLEClasses.Strings.Objects[I] as TElementInfo;
     VLEClasses.Strings.GetNameValue(I,N,V);
-    aAct:=TPas2JSActionRegistry.Instance.FindActionByClassName(V);
+    if (V='') or (V=rsNoControl) then
+      aAct:=Nil
+    else
+      aAct:=TPas2JSActionRegistry.Instance.FindActionByClassName(V);
     if aAct<>Nil then
-      aEl.ActionClass:=aAct.ActionClass;
+      aEl.ActionClass:=aAct.ActionClass
+    else
+      aEl.ActionClass:=Nil;
     end;
+  if Assigned(FRemoveList) then
+    For I:=CLBRemove.Count-1 downto 0 do
+      if CLBRemove.Checked[i] then
+        FRemoveList.Remove(CLBRemove.Items.Objects[i]);
 end;
 
 procedure TfrmSelectHTMLActionClasses.FormCreate(Sender: TObject);
@@ -152,7 +174,7 @@ begin
 end;
 
 
-Function TfrmSelectHTMLActionClasses.GetTagClass(Const aEl : TElementInfo) : THTMLCustomElementActionClass;
+function TfrmSelectHTMLActionClasses.GetTagClass(const aEl: TElementInfo): THTMLCustomElementActionClass;
 
 begin
   Result:=THTMLElementAction;
@@ -188,6 +210,32 @@ begin
   FPreferDB:=AValue;
   cbUseDBAware.Checked:=aValue;
   AllocateDefaultClasses;
+end;
+
+procedure TfrmSelectHTMLActionClasses.SetRemoveList(AValue: TFPList);
+begin
+  if FRemoveList=AValue then Exit;
+  FRemoveList:=AValue;
+  DisplayRemoveList;
+end;
+
+procedure TfrmSelectHTMLActionClasses.DisplayRemoveList;
+
+Var
+  I : Integer;
+  A : THTMLCustomElementAction;
+
+begin
+  if (FRemoveList=Nil) or (FRemoveList.Count=0) then
+    TSRemove.TabVisible:=False
+  else
+    begin
+    For I:=0 to FRemoveList.Count-1 do
+      begin
+      A:=THTMLCustomElementAction(FRemoveList[i]);
+      clbRemove.Items.AddObject(Format('%s (ID: %s)',[A.Name,A.ElementID]),A);
+      end;
+    end;
 end;
 
 procedure TfrmSelectHTMLActionClasses.SetTags(AValue: TElementInfoList);

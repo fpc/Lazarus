@@ -33,6 +33,7 @@ type
     ActDelete: TAction;
     actAddMissing: TAction;
     actAddMissingUsingDB: TAction;
+    actRemoveMissing: TAction;
     ActPanelToolBar: TAction;
     ActPanelDescr: TAction;
     ActMoveUp: TAction;
@@ -78,6 +79,7 @@ type
       var CloseAction: TCloseAction);
     procedure ActionListEditorKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure ActionListEditorKeyPress(Sender: TObject; var Key: char);
+    procedure actRemoveMissingExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormHide(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -113,7 +115,9 @@ type
   { TActionListComponentEditor }
 
 Function CreateMissingActions(aEditor : TComponentEditor; aList : THTMLCustomElementActionList; PreferDB : Boolean = False) : Integer;
+Function RemoveActionsWithoutID(aEditor : TComponentEditor; aList : THTMLCustomElementActionList) : Integer;
 Function FindActionEditor(AList: THTMLCustomElementActionList): THTMLActionListEditorForm;
+Function GetActionsWithoutID(aList : THTMLCustomElementActionList; aMissing : TFPList) : Integer;
 
 implementation
 
@@ -151,6 +155,69 @@ begin
 end;
 
 
+Function GetActionsWithoutID(aList : THTMLCustomElementActionList; aMissing : TFPList) : Integer;
+
+Var
+  FN : String;
+  I : Integer;
+  Tags : TElementInfoList;
+  aAction : THTMLCustomElementAction;
+
+begin
+  Result:=0;
+  FN:=HTMLTools.GetHTMLFileForComponent(aList);
+  Tags:=TElementInfoList.Create;
+  try
+    HTMLTools.GetTagIDs(FN,Tags,[eoExtraInfo]);
+    For I:=aList.ActionCount-1 downto 0 do
+      begin
+      aAction:=aList.Actions[i];
+      if (aAction.ElementID<>'') and (Tags.FindByID(aAction.ElementID)=Nil) then
+        aMissing.Add(aAction);
+      end;
+  finally
+    Tags.Free;
+  end;
+end;
+
+Procedure DeleteActionsWithoutID(aEditor : TComponentEditor; aMissing : TFPList);
+
+var
+  I : Integer;
+  aAction : THTMLCustomElementAction;
+
+begin
+  For I:=0 to aMissing.Count-1 do
+    begin
+    aAction:=THTMLCustomElementAction(aMissing[i]);
+    aEditor.Designer.PropertyEditorHook.DeletePersistent(TPersistent(aAction));
+    end;
+end;
+
+Function RemoveActionsWithoutID(aEditor : TComponentEditor; aList : THTMLCustomElementActionList) : Integer;
+
+Var
+  FN : String;
+  aMissing : TFPList;
+
+begin
+  Result:=0;
+  FN:=HTMLTools.GetHTMLFileForComponent(aList);
+  if (FN='') then
+    begin
+    ShowMessage(Format(rsErrNoHTMLFileNameForComponent,[aList.Name]));
+    exit;
+    end;
+  aMissing:=TFPList.Create;
+  try
+    GetActionsWithoutID(aList,aMissing);
+    Result:=aMissing.Count;
+    DeleteActionsWithoutID(aEditor,aMissing);
+  finally
+    aMissing.Free;
+  end;
+end;
+
 function CreateMissingActions(aEditor: TComponentEditor;
   aList: THTMLCustomElementActionList; PreferDB : Boolean = False): Integer;
 
@@ -160,6 +227,8 @@ Var
   Tags : TElementInfoList;
   aEl : TElementInfo;
   aAction : THTMLCustomElementAction;
+  aMissing : TFPList;
+  aHook : TPropertyEditorHook;
 
 begin
   Result:=-1;
@@ -169,40 +238,50 @@ begin
     ShowMessage(Format(rsErrNoHTMLFileNameForComponent,[aList.Name]));
     exit;
     end;
+  aMissing:=Nil;
   Tags:=TElementInfoList.Create;
   try
+    aMissing:=TFPList.Create;
     HTMLTools.GetTagIDs(FN,Tags,[eoExtraInfo]);
+    GetActionsWithoutID(aList,aMissing);
     // Remove existing
     for I:=Tags.Count-1 downto 0 do
       if aList.FindActionByElementID(Tags[i].ElementID)<>Nil then
         Tags.Delete(I);
-    if Tags.Count=0 then
+    if (Tags.Count=0) and (aMissing.Count=0) then
       begin
       ShowMessage(rsAllTagsHaveAction);
       exit;
       end;
     // Now select
-    if SelectHTMLActionClasses(Tags,PreferDB) then
+    if SelectHTMLActionClasses(Tags,PreferDB,aMissing) then
       begin
+      DeleteActionsWithoutID(aEditor,aMissing);
       Result:=0;
+      aEditor.Designer.ClearSelection;
       For I:=0 to Tags.Count-1 do
         begin
         aEl:=Tags[i];
+        if aEl.ActionClass=Nil then
+          continue;
         aAction:=aList.NewAction(aList.Owner,aEl.ActionClass);
         aName:='act'+HTMLTools.TagToIdentifier(aEl.ElementID);
         if aList.Owner.FindComponent(aName)<>Nil then
           aName:=aEditor.Designer.CreateUniqueComponentName(aName);
         aAction.Name:=aName;
         aAction.ElementID:=aEl.ElementID;
-        aEditor.Designer.ClearSelection;
-        aEditor.Designer.PropertyEditorHook.PersistentAdded(aAction,True);
+        aHook:=aEditor.Designer.PropertyEditorHook;
+        if assigned(aHook) then
+          aHook.PersistentAdded(aAction,True);
         Inc(Result);
         end;
       end;
   finally
     Tags.Free;
+    aMissing.Free;
   end;
-  aEditor.Designer.Modified;
+  if assigned(aEditor.Designer) then
+     aEditor.Designer.Modified;
 end;
 
 function FindActionEditor(AList: THTMLCustomElementActionList): THTMLActionListEditorForm;
@@ -515,6 +594,12 @@ procedure THTMLActionListEditorForm.ActionListEditorKeyPress(Sender: TObject;
 begin
   if Ord(Key) = VK_ESCAPE then
     Close;
+end;
+
+procedure THTMLActionListEditorForm.actRemoveMissingExecute(Sender: TObject);
+begin
+  if QuestionDlg(rsCaution,rsMayDeleteActionsInCode,mtWarning,[mrOK,rsRiskOK,mrCancel,rsCancel,'iscancel','isdefault'],0)=mrOK then
+    RemoveActionsWithoutID(FCompEditor,HTMLActionList);
 end;
 
 

@@ -259,6 +259,8 @@ Type
     procedure SetTag(aIndex : Integer; AValue: TTagInfoItem);
   Public
     function AddTagItem(const aElementID, aTag, aType, aName: String): TTagInfoItem;
+    Function IndexOfID(const aElementID : String) : Integer;
+    Function FindByID(const aElementID : String) : TTagInfoItem;
     Property Tags [aIndex : Integer] : TTagInfoItem Read GetTag Write SetTag; default;
   end;
 
@@ -410,6 +412,25 @@ begin
   Result.TagName:=aTag;
   Result.InputType:=aType;
   Result.InputName:=aName;
+end;
+
+function TTagInfoList.IndexOfID(const aElementID: String): Integer;
+begin
+  Result:=Count-1;
+  While (Result>=0) and Not (aElementID=Tags[Result].ElementID) do
+    Dec(Result);
+end;
+
+function TTagInfoList.FindByID(const aElementID: String): TTagInfoItem;
+
+var
+  I : integer;
+
+begin
+  Result:=Nil;
+  I:=IndexOfID(aElementID);
+  if I<>-1 then
+    Result:=Tags[i];
 end;
 
 { TTagInfoItem }
