@@ -102,6 +102,19 @@ Type
     property ItemHeight;
     property Mask;
     property MultiSelect;
+    property ParentBiDiMode;
+    property ParentColor;
+    property ParentShowHint;
+    property ParentFont;
+    property PopupMenu;
+    property ShowHint;
+    property Sorted;
+    property Style;
+    property TabOrder;
+    property TabStop;
+    property TopIndex;
+    property Visible;
+    { events }
     property OnChange;
     property OnChangeBounds;
     property OnClick;
@@ -127,18 +140,6 @@ Type
     property OnSelectionChange;
     property OnStartDrag;
     property OnUTF8KeyPress;
-    property ParentBiDiMode;
-    property ParentColor;
-    property ParentShowHint;
-    property ParentFont;
-    property PopupMenu;
-    property ShowHint;
-    property Sorted;
-    property Style;
-    property TabOrder;
-    property TabStop;
-    property TopIndex;
-    property Visible;
   end;
 
   { TCustomFilterComboBox }

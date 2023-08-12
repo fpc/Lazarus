@@ -356,6 +356,12 @@ const
     property TabOrder;
     property TabStop;
     property Visible;
+
+    property EditMask;
+    property Text;
+    property TextHint;
+    property SpaceChar;
+
     property OnChange;
     property OnClick;
     property OnDblClick;
@@ -380,10 +386,6 @@ const
     property OnStartDock;
     property OnStartDrag;
     property OnUTF8KeyPress;
-    property EditMask;
-    property Text;
-    property TextHint;
-    property SpaceChar;
   end;
 
 function FormatMaskText(const AEditMask: string; const Value: string ): string;

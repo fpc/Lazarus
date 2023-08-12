@@ -123,6 +123,16 @@ type
     property Font;
     property ItemHeight;
     property ItemWidth;
+    property ParentBidiMode;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+
     property OnChange;
     property OnChangeBounds;
     property OnClick;
@@ -150,15 +160,6 @@ type
     property OnStartDrag;
     property OnSelect;
     property OnUTF8KeyPress;
-    property ParentBidiMode;
-    property ParentColor;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ShowHint;
-    property TabOrder;
-    property TabStop;
-    property Visible;
   end;
 
   { TCustomColorListBox }

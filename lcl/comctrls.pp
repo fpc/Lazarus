@@ -541,6 +541,16 @@ type
     property Height stored False;
     property ImageIndex;
     property Left stored False;
+    property PageIndex stored False;
+    property ParentBiDiMode;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabVisible default True;
+    property Top stored False;
+    property Width stored False;
+
     property OnContextPopup;
     property OnDragDrop;
     property OnDragOver;
@@ -559,15 +569,6 @@ type
     property OnResize;
     property OnShow;
     property OnStartDrag;
-    property PageIndex stored False;
-    property ParentBiDiMode;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ShowHint;
-    property TabVisible default True;
-    property Top stored False;
-    property Width stored False;
   end;
 
   { TPageControl }
@@ -624,6 +625,7 @@ type
     property Images;
     property ImagesWidth;
     property MultiLine;
+    property Options;
     //property OwnerDraw;
     property ParentBiDiMode;
     property ParentFont;
@@ -641,6 +643,7 @@ type
     property TabStop;
     property TabWidth;
     property Visible;
+
     property OnChange;
     property OnChanging;
     property OnCloseTabClicked;
@@ -668,7 +671,6 @@ type
     property OnStartDock;
     property OnStartDrag;
     property OnUnDock;
-    property Options;
   end;
 
   TTabControl = class;
@@ -896,6 +898,15 @@ type
     property DragMode;
     property Enabled;
     property Font;
+    property Options;
+    property ParentBiDiMode;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property Visible;
+
     property OnChangeBounds;
     property OnContextPopup;
     property OnDockDrop;
@@ -919,14 +930,6 @@ type
     property OnStartDock;
     property OnStartDrag;
     property OnUnDock;
-    property Options;
-    property ParentBiDiMode;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ShowHint;
-    property TabOrder;
-    property Visible;
   end;
 
   { Custom draw }
@@ -1733,6 +1736,7 @@ type
     property ToolTips;
     property Visible;
     property ViewStyle;
+
     property OnAdvancedCustomDraw;
     property OnAdvancedCustomDrawItem;
     property OnAdvancedCustomDrawSubItem;
@@ -1857,6 +1861,21 @@ type
     property Hint;
     property Max;
     property Min;
+    property Orientation;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property Position;
+    property ShowHint;
+    property Smooth;
+    property Step;
+    property Style;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+    property BarShowText;
+
     property OnContextPopup;
     property OnDragDrop;
     property OnDragOver;
@@ -1873,20 +1892,6 @@ type
     property OnMouseWheelUp;
     property OnStartDock;
     property OnStartDrag;
-    property Orientation;
-    property ParentColor;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property Position;
-    property ShowHint;
-    property Smooth;
-    property Step;
-    property Style;
-    property TabOrder;
-    property TabStop;
-    property Visible;
-    property BarShowText;
   end;
  
 
@@ -2009,6 +2014,18 @@ type
     property Max;
     property Min;
     property MinRepeatInterval;
+    property Orientation;
+    property ParentColor;
+    property ParentShowHint;
+    property PopupMenu;
+    property Position;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Thousands;
+    property Flat;
+    property Visible;
+    property Wrap;
     property OnChanging;
     property OnChangingEx;
     property OnClick;
@@ -2026,18 +2043,6 @@ type
     property OnMouseWheelHorz;
     property OnMouseWheelLeft;
     property OnMouseWheelRight;
-    property Orientation;
-    property ParentColor;
-    property ParentShowHint;
-    property PopupMenu;
-    property Position;
-    property ShowHint;
-    property TabOrder;
-    property TabStop;
-    property Thousands;
-    property Flat;
-    property Visible;
-    property Wrap;
   end;
 
 
@@ -2190,6 +2195,14 @@ type
     property Indeterminate: Boolean read FIndeterminate write SetIndeterminate default False;
     property Marked: Boolean read FMarked write SetMarked default False;
     property MenuItem: TMenuItem read FMenuItem write SetMenuItem;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowCaption: boolean read FShowCaption write SetShowCaption default true;
+    property ShowHint;
+    property Style: TToolButtonStyle read FStyle write SetStyle default tbsButton;
+    property Visible;
+    property Width stored IsWidthStored;
+    property Wrap: Boolean read FWrap write SetWrap default False;
     property OnArrowClick: TNotifyEvent read FOnArrowClick write FOnArrowClick;
     property OnClick;
     property OnContextPopup;
@@ -2207,14 +2220,6 @@ type
     property OnMouseWheelUp;
     property OnStartDock;
     property OnStartDrag;
-    property ParentShowHint;
-    property PopupMenu;
-    property ShowCaption: boolean read FShowCaption write SetShowCaption default true;
-    property ShowHint;
-    property Style: TToolButtonStyle read FStyle write SetStyle default tbsButton;
-    property Visible;
-    property Width stored IsWidthStored;
-    property Wrap: Boolean read FWrap write SetWrap default False;
   end;
 
   { TToolBarEnumerator }
@@ -2765,7 +2770,6 @@ type
     property LineSize: Integer read FLineSize write SetLineSize default 1;
     property Max: Integer read FMax write SetMax default 10;
     property Min: Integer read FMin write SetMin default 0;
-    property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property Orientation: TTrackBarOrientation read FOrientation write SetOrientation default trHorizontal;
     property PageSize: Integer read FPageSize write SetPageSize default 2;
     property Position: Integer read FPosition write SetPosition;
@@ -2777,6 +2781,8 @@ type
     property TabStop default True;
     property TickMarks: TTickMark read FTickMarks write SetTickMarks default tmBottomRight;
     property TickStyle: TTickStyle read FTickStyle write SetTickStyle default tsAuto;
+
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
   
   
@@ -2798,6 +2804,25 @@ type
     property LineSize;
     property Max;
     property Min;
+    property Orientation;
+    property PageSize;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property Position;
+    property Reversed;
+    property ScalePos;
+    property SelEnd;
+    property SelStart;
+    property ShowHint;
+    property ShowSelRange;
+    property TabOrder;
+    property TabStop;
+    property TickMarks;
+    property TickStyle;
+    property Visible;
+
     property OnChange;
     property OnChangeBounds;
     property OnClick;
@@ -2824,24 +2849,6 @@ type
     property OnResize;
     property OnStartDrag;
     property OnUTF8KeyPress;
-    property Orientation;
-    property PageSize;
-    property ParentColor;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property Position;
-    property Reversed;
-    property ScalePos;
-    property SelEnd;
-    property SelStart;
-    property ShowHint;
-    property ShowSelRange;
-    property TabOrder;
-    property TabStop;
-    property TickMarks;
-    property TickStyle;
-    property Visible;
   end;
   
 { TTreeNode }
@@ -3826,6 +3833,11 @@ type
     property Tag;
     property ToolTips;
     property Visible;
+    property Options;
+    property Items;
+    property TreeLineColor;
+    property TreeLinePenStyle;
+
     property OnAddition;
     property OnAdvancedCustomDraw;
     property OnAdvancedCustomDrawItem;
@@ -3876,12 +3888,7 @@ type
     property OnShowHint;
     property OnStartDrag;
     property OnUTF8KeyPress;
-    property Options;
-    property Items;
-    property TreeLineColor;
-    property TreeLinePenStyle;
   end;
-
 
   TTVGetNodeText = function(Node: TTreeNode): string of object;
 

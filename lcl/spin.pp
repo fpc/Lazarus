@@ -105,6 +105,17 @@ type
     property Increment;
     property MaxValue;
     property MinValue;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ReadOnly;
+    property ShowHint;
+    property TabStop;
+    property TabOrder;
+    property Value;
+    property Visible;
+
     property OnChange;
     property OnChangeBounds;
     property OnClick;
@@ -127,16 +138,6 @@ type
     property OnMouseWheelRight;
     property OnResize;
     property OnUTF8KeyPress;
-    property ParentColor;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ReadOnly;
-    property ShowHint;
-    property TabStop;
-    property TabOrder;
-    property Value;
-    property Visible;
   end;
   
   
@@ -184,6 +185,17 @@ type
     property Increment;
     property MaxValue;
     property MinValue;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ReadOnly;
+    property ShowHint;
+    property TabStop;
+    property TabOrder;
+    property Value;
+    property Visible;
+
     property OnChange;
     property OnChangeBounds;
     property OnClick;
@@ -206,16 +218,6 @@ type
     property OnMouseWheelRight;
     property OnResize;
     property OnUTF8KeyPress;
-    property ParentColor;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ReadOnly;
-    property ShowHint;
-    property TabStop;
-    property TabOrder;
-    property Value;
-    property Visible;
   end;
   
 

@@ -221,12 +221,13 @@ type
   published
     property Date: TDateTime read FDate write FDate;
     property DisplaySettings: TDisplaySettings read FDisplaySettings write FDisplaySettings default DefaultDisplaySettings;
+    property OKCaption: TCaption read FOKCaption write FOKCaption;
+    property CancelCaption: TCaption read FCancelCaption write FCancelCaption;
+
     property OnDayChanged: TNotifyEvent read FDayChanged write FDayChanged;
     property OnMonthChanged: TNotifyEvent read FMonthChanged write FMonthChanged;
     property OnYearChanged: TNotifyEvent read FYearChanged write FYearChanged;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    property OKCaption: TCaption read FOKCaption write FOKCaption;
-    property CancelCaption: TCaption read FCancelCaption write FCancelCaption;
   end;
 
 procedure Register;

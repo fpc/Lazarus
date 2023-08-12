@@ -185,6 +185,14 @@ type
     property Tag;
     property ToolTips;
     property Visible;
+    property Options;
+    property TreeLineColor;
+    property TreeLinePenStyle;
+    property ExpandSignColor;
+    { TCustomShellTreeView properties }
+    property ObjectTypes;
+    property ShellListView;
+
     property OnAddItem;
     property OnAdvancedCustomDraw;
     property OnAdvancedCustomDrawItem;
@@ -223,13 +231,6 @@ type
     property OnShowHint;
     property OnSortCompare;
     property OnUTF8KeyPress;
-    property Options;
-    property TreeLineColor;
-    property TreeLinePenStyle;
-    property ExpandSignColor;
-    { TCustomShellTreeView properties }
-    property ObjectTypes;
-    property ShellListView;
   end;
 
   { TCustomShellListView }
@@ -352,6 +353,11 @@ type
     property ToolTips;
     property Visible;
     property ViewStyle default vsReport;
+    { TCustomShellListView properties }
+    property ObjectTypes;
+    property Root;
+    property ShellTreeView;
+
 //    property OnAdvancedCustomDraw;
 //    property OnAdvancedCustomDrawItem;
 //    property OnAdvancedCustomDrawSubItem;
@@ -390,10 +396,6 @@ type
     property OnUTF8KeyPress;
     property OnAddItem;
     property OnFileAdded;
-    { TCustomShellListView properties }
-    property ObjectTypes;
-    property Root;
-    property ShellTreeView;
   end;
 
   { TShellTreeNode }

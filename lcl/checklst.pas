@@ -113,6 +113,19 @@ type
     property ItemHeight;
     property ItemIndex;
     property MultiSelect;
+    property ParentBidiMode;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property Sorted;
+    property Style;
+    property TabOrder;
+    property TabStop;
+    property TopIndex;
+    property Visible;
+
     property OnChangeBounds;
     property OnClick;
     property OnClickCheck;
@@ -145,18 +158,6 @@ type
     property OnShowHint;
     property OnStartDrag;
     property OnUTF8KeyPress;
-    property ParentBidiMode;
-    property ParentColor;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ShowHint;
-    property Sorted;
-    property Style;
-    property TabOrder;
-    property TabStop;
-    property TopIndex;
-    property Visible;
   end;
 
 

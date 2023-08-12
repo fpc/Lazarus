@@ -365,6 +365,21 @@ type
     property Hint;
     property Layout;
     property MaxLength;
+    property ParentBiDiMode;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PasswordChar;
+    property PopupMenu;
+    property ReadOnly;
+    property ShowHint;
+    property Spacing;
+    property TabOrder;
+    property TabStop;
+    property Text;
+    property TextHint;
+    property Visible;
+    {events }
     //property OnBuddyClick;
     property OnChange;
     property OnClick;
@@ -389,20 +404,6 @@ type
     property OnMouseWheelUp;
     property OnStartDrag;
     property OnUTF8KeyPress;
-    property ParentBiDiMode;
-    property ParentColor;
-    property ParentFont;
-    property ParentShowHint;
-    property PasswordChar;
-    property PopupMenu;
-    property ReadOnly;
-    property ShowHint;
-    property Spacing;
-    property TabOrder;
-    property TabStop;
-    property Text;
-    property TextHint;
-    property Visible;
   end;
 
 

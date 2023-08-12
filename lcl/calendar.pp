@@ -149,6 +149,13 @@ type
     property Hint;
     property MinDate;
     property MaxDate;
+    property ParentDoubleBuffered;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+
     property OnChange;
     property OnChangeBounds;
     property OnClick;
@@ -174,12 +181,6 @@ type
     property OnResize;
     property OnUTF8KeyPress;
     property OnYearChanged;
-    property ParentDoubleBuffered;
-    property PopupMenu;
-    property ShowHint;
-    property TabOrder;
-    property TabStop;
-    property Visible;
   end;
 
 procedure Register;

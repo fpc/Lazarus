@@ -266,6 +266,18 @@ type
     property Images;
     property ImageIndex;
     property ImageWidth;
+    property ParentBidiMode;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property PressedImageIndex;
+//    property SelectedImageIndex;
+    property ShowHint;
+    property Spacing;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+
     property OnChangeBounds;
     property OnClick;
     property OnContextPopup;
@@ -288,17 +300,6 @@ type
     property OnResize;
     property OnStartDrag;
     property OnUTF8KeyPress;
-    property ParentBidiMode;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property PressedImageIndex;
-//    property SelectedImageIndex;
-    property ShowHint;
-    property Spacing;
-    property TabOrder;
-    property TabStop;
-    property Visible;
   end;
 
 
@@ -471,6 +472,13 @@ type
     property Spacing;
     property Transparent;
     property Visible;
+    property ShowCaption;
+    property ShowHint;
+    property ParentBidiMode;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+
     property OnClick;
     property OnContextPopup;
     property OnDblClick;
@@ -489,12 +497,6 @@ type
     property OnResize;
     property OnStartDrag;
     property OnChangeBounds;
-    property ShowCaption;
-    property ShowHint;
-    property ParentBidiMode;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
   end;
 
   { To override the default TBitBtn glyphs set GetDefaultBitBtnGlyph below.

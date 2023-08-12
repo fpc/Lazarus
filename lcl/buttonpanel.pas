@@ -134,6 +134,11 @@ type
     property TabOrder;
     property DefaultButton;
     property Spacing;
+    property ShowButtons;
+    property ShowGlyphs;
+    property ShowBevel;
+    property Visible;
+
     property OnClick;
     property OnDblClick;
     property OnDragDrop;
@@ -152,10 +157,6 @@ type
     property OnMouseWheelUp;
     property OnResize;
     property OnUTF8KeyPress;
-    property ShowButtons;
-    property ShowGlyphs;
-    property ShowBevel;
-    property Visible;
   end;
 
 procedure Register;

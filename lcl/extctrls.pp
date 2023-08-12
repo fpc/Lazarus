@@ -68,6 +68,13 @@ type
     property Top stored False;
     property Width stored False;
     property Height stored False;
+    property ParentBiDiMode;
+    property ParentShowHint;
+    property PopupMenu;
+    property TabOrder stored False;
+    property TabStop;
+    property Visible stored False;
+
     property OnContextPopup;
     property OnEnter;
     property OnExit;
@@ -80,12 +87,6 @@ type
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     property OnResize;
-    property ParentBiDiMode;
-    property ParentShowHint;
-    property PopupMenu;
-    property TabOrder stored False;
-    property TabStop;
-    property Visible stored False;
   end;
 
   { TUNBPages }
@@ -161,7 +162,14 @@ type
     property DragCursor;
     property DragMode;
     property Enabled;
-//    property OnChange;
+//    property Options;
+//    property PageIndex;
+    property ParentBiDiMode;
+    property PopupMenu;
+    property TabOrder;
+    property TabStop;
+
+    //    property OnChange;
     property OnChangeBounds;
 //    property OnChanging;
     property OnContextPopup;
@@ -180,12 +188,6 @@ type
     property OnMouseWheelUp;
     property OnResize;
     property OnStartDrag;
-//    property Options;
-//    property PageIndex;
-    property ParentBiDiMode;
-    property PopupMenu;
-    property TabOrder;
-    property TabStop;
   end;
 
   { Timer }
@@ -294,6 +296,10 @@ type
     property Enabled;
     property ParentShowHint;
     property Pen: TPen read FPen write SetPen;
+    property Shape: TShapeType read FShape write SetShape default stRectangle;
+    property ShowHint;
+    property Visible;
+
     property OnChangeBounds;
     property OnDragDrop;
     property OnDragOver;
@@ -314,9 +320,6 @@ type
     property OnResize;
     property OnStartDock;
     property OnStartDrag;
-    property Shape: TShapeType read FShape write SetShape default stRectangle;
-    property ShowHint;
-    property Visible;
   end;
 
 
@@ -421,6 +424,16 @@ type
     property DoubleBuffered;
     property Height;
     property MinSize;
+    property ParentColor;
+    property ParentDoubleBuffered;
+    property ParentShowHint;
+    property PopupMenu;
+    property ResizeAnchor;
+    property ResizeStyle;
+    property ShowHint;
+    property Visible;
+    property Width;
+
     property OnCanOffset;
     property OnCanResize;
     property OnChangeBounds;
@@ -432,15 +445,6 @@ type
     property OnMouseWheelLeft;
     property OnMouseWheelRight;
     property OnPaint;
-    property ParentColor;
-    property ParentDoubleBuffered;
-    property ParentShowHint;
-    property PopupMenu;
-    property ResizeAnchor;
-    property ResizeStyle;
-    property ShowHint;
-    property Visible;
-    property Width;
   end;
 
 
@@ -600,6 +604,17 @@ type
     property ImageIndex;
     property ImageWidth;
     property Images;
+    property ParentShowHint;
+    property Picture;
+    property PopupMenu;
+    property Proportional;
+    property ShowHint;
+    property Stretch;
+    property StretchOutEnabled;
+    property StretchInEnabled;
+    property Transparent;
+    property Visible;
+
     property OnChangeBounds;
     property OnClick;
     property OnContextPopup;
@@ -623,16 +638,6 @@ type
     property OnPaintBackground;
     property OnResize;
     property OnStartDrag;
-    property ParentShowHint;
-    property Picture;
-    property PopupMenu;
-    property Proportional;
-    property ShowHint;
-    property Stretch;
-    property StretchOutEnabled;
-    property StretchInEnabled;
-    property Transparent;
-    property Visible;
   end;
 
 
@@ -665,6 +670,7 @@ type
     property ShowHint;
     property Style: TBevelStyle read FStyle write SetStyle default bsLowered;
     property Visible;
+
     property OnChangeBounds;
     property OnResize;
     property OnMouseDown;
@@ -777,6 +783,18 @@ type
     property Font;
     property ItemIndex;
     property Items;
+    property ParentBackground;
+    property ParentBidiMode;
+    property ParentFont;
+    property ParentColor;
+    property ParentDoubleBuffered;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+
     property OnChangeBounds;
     property OnClick;
     property OnDblClick;
@@ -802,17 +820,6 @@ type
     property OnSelectionChanged;
     property OnStartDrag;
     property OnUTF8KeyPress;
-    property ParentBackground;
-    property ParentBidiMode;
-    property ParentFont;
-    property ParentColor;
-    property ParentDoubleBuffered;
-    property ParentShowHint;
-    property PopupMenu;
-    property ShowHint;
-    property TabOrder;
-    property TabStop;
-    property Visible;
   end;
 
 
@@ -899,6 +906,18 @@ type
     property Enabled;
     property Font;
     property Items;
+    property ParentBackground;
+    property ParentBiDiMode;
+    property ParentFont;
+    property ParentColor;
+    property ParentDoubleBuffered;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+
     property OnChangeBounds;
     property OnClick;
     property OnDblClick;
@@ -922,17 +941,6 @@ type
     property OnResize;
     property OnStartDrag;
     property OnUTF8KeyPress;
-    property ParentBackground;
-    property ParentBiDiMode;
-    property ParentFont;
-    property ParentColor;
-    property ParentDoubleBuffered;
-    property ParentShowHint;
-    property PopupMenu;
-    property ShowHint;
-    property TabOrder;
-    property TabStop;
-    property Visible;
   end;
 
 
@@ -1052,6 +1060,7 @@ type
     property Text;
     property TextHint;
     property Visible;
+
     property OnChange;
     property OnClick;
     property OnDblClick;
@@ -1176,6 +1185,7 @@ type
     property VerticalAlignment;
     property Visible;
     property Wordwrap;
+
     property OnChangeBounds;
     property OnClick;
     property OnContextPopup;

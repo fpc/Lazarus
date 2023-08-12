@@ -67,6 +67,10 @@ type
     property Constraints;
     property Cursor;
     property Enabled;
+    property ShowHint;
+    property ParentShowHint;
+    property PopupMenu;
+
     property OnMouseDown;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -76,9 +80,6 @@ type
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     property OnResize;
-    property ShowHint;
-    property ParentShowHint;
-    property PopupMenu;
   end;
   
   { TCustomPairSplitter }
@@ -134,6 +135,13 @@ type
     property Color;
     property Cursor;
     property Enabled;
+    property ParentShowHint;
+    property PopupMenu;
+    property Position;
+    property ShowHint;
+    property SplitterType;
+    property Visible;
+
     property OnMouseDown;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -144,12 +152,6 @@ type
     property OnMouseWheelUp;
     property OnResize;
     property OnChangeBounds;
-    property ParentShowHint;
-    property PopupMenu;
-    property Position;
-    property ShowHint;
-    property SplitterType;
-    property Visible;
   end;
   
 procedure Register;

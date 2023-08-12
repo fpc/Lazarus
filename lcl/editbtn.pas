@@ -166,6 +166,21 @@ type
     property Layout;
     property MaxLength;
     property NumGlyphs;
+    property ParentBiDiMode;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PasswordChar;
+    property PopupMenu;
+    property ReadOnly;
+    property ShowHint;
+    property Spacing;
+    property TabOrder;
+    property TabStop;
+    property Text;
+    property TextHint;
+    property Visible;
+
     property OnButtonClick;
     property OnChange;
     property OnClick;
@@ -190,20 +205,6 @@ type
     property OnMouseWheelUp;
     property OnStartDrag;
     property OnUTF8KeyPress;
-    property ParentBiDiMode;
-    property ParentColor;
-    property ParentFont;
-    property ParentShowHint;
-    property PasswordChar;
-    property PopupMenu;
-    property ReadOnly;
-    property ShowHint;
-    property Spacing;
-    property TabOrder;
-    property TabStop;
-    property Text;
-    property TextHint;
-    property Visible;
   end;
 
   TFilterStringOption = (fsoCaseSensitive, fsoMatchOnlyAtStart);
@@ -329,7 +330,10 @@ type
     property Spacing;
     property TabOrder;
     property TabStop;
+    property Text;
+    property TextHint stored IsTextHintStored;
     property Visible;
+
     property OnButtonClick;
     property OnChange;
     property OnClick;
@@ -354,8 +358,6 @@ type
     property OnMouseWheelUp;
     property OnStartDrag;
     property OnUTF8KeyPress;
-    property Text;
-    property TextHint stored IsTextHintStored;
   end;
 
   { TFileNameEdit }
@@ -446,7 +448,10 @@ type
     property Spacing;
     property TabOrder;
     property TabStop;
+    property Text;
+    property TextHint;
     property Visible;
+
     property OnButtonClick;
     property OnChange;
     property OnClick;
@@ -471,8 +476,6 @@ type
     property OnMouseWheelUp;
     property OnStartDrag;
     property OnUTF8KeyPress;
-    property Text;
-    property TextHint;
   end;
 
 
@@ -545,7 +548,10 @@ type
     property TabOrder;
     property Spacing;
     property TabStop;
+    property Text;
+    property TextHint;
     property Visible;
+
     property OnButtonClick;
     property OnChange;
     property OnClick;
@@ -570,8 +576,6 @@ type
     property OnMouseWheelUp;
     property OnStartDrag;
     property OnUTF8KeyPress;
-    property Text;
-    property TextHint;
   end;
 
 
@@ -673,6 +677,19 @@ type
     property Font;
     property Layout;
     property MaxLength;
+    property ParentBidiMode;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabStop;
+    property TabOrder;
+    property Spacing;
+    property Visible;
+    property Text;
+    property TextHint;
+
     property OnButtonClick;
     property OnChange;
     property OnChangeBounds;
@@ -695,18 +712,6 @@ type
     property OnMouseWheelUp;
     property OnResize;
     property OnUTF8KeyPress;
-    property ParentBidiMode;
-    property ParentColor;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ShowHint;
-    property TabStop;
-    property TabOrder;
-    property Spacing;
-    property Visible;
-    property Text;
-    property TextHint;
   end;
   
   { TTimeEdit }
@@ -778,6 +783,20 @@ type
       property FocusOnButtonClick;
       property Font;
       property MaxLength;
+      property ParentBidiMode;
+      property ParentColor;
+      property ParentFont;
+      property ParentShowHint;
+      property PopupMenu;
+      property ShowHint;
+      property SimpleLayout: Boolean read GetLayout write SetLayout default True;
+      property Spacing;
+      property TabStop;
+      property TabOrder;
+      property Visible;
+      property Text;
+      property TextHint;
+
       property OnButtonClick;
       property OnChange;
       property OnChangeBounds;
@@ -800,19 +819,6 @@ type
       property OnMouseWheelUp;
       property OnResize;
       property OnUTF8KeyPress;
-      property ParentBidiMode;
-      property ParentColor;
-      property ParentFont;
-      property ParentShowHint;
-      property PopupMenu;
-      property ShowHint;
-      property SimpleLayout: Boolean read GetLayout write SetLayout default True;
-      property Spacing;
-      property TabStop;
-      property TabOrder;
-      property Visible;
-      property Text;
-      property TextHint;
   end;
   
 
@@ -892,7 +898,10 @@ type
     property Spacing;
     property TabOrder;
     property TabStop;
+    property Text;
+    property TextHint;
     property Visible;
+
     property OnButtonClick;
     property OnChange;
     property OnClick;
@@ -917,8 +926,6 @@ type
     property OnMouseWheelUp;
     property OnStartDrag;
     property OnUTF8KeyPress;
-    property Text;
-    property TextHint;
   end;
 
 const

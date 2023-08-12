@@ -61,6 +61,14 @@ type
     property Constraints;
     property Enabled;
     property Hint;
+    property ParentColor;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShadowType: TShadowType read FShadowType write SetShadowType default stEtchedIn;
+    property ShadowColor: TColor read FShadowColor write SetShadowColor default cl3DShadow;
+    property ShowHint;
+    property Visible;
+
     property OnChangeBounds;
     property OnClick;
     property OnContextPopup;
@@ -82,13 +90,6 @@ type
     property OnPaint;
     property OnResize;
     property OnStartDrag;
-    property ParentColor;
-    property ParentShowHint;
-    property PopupMenu;
-    property ShadowType: TShadowType read FShadowType write SetShadowType default stEtchedIn;
-    property ShadowColor: TColor read FShadowColor write SetShadowColor default cl3DShadow;
-    property ShowHint;
-    property Visible;
   end;
 
 procedure Register;

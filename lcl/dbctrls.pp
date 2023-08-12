@@ -247,6 +247,7 @@ Type
     property TabStop;
     property TextHint;
     property Visible;
+
     property OnChange;
     property OnClick;
     property OnContextPopup;
@@ -315,6 +316,7 @@ Type
     property FocusControl;
     property Font;
     property Layout;
+    property OptimalFill;
     property ParentBidiMode;
     property ParentColor;
     property ParentFont;
@@ -325,6 +327,7 @@ Type
     property Transparent;
     property Visible;
     property WordWrap;
+
     property OnClick;
     property OnDblClick;
     property OnDragDrop;
@@ -342,7 +345,6 @@ Type
     property OnContextPopup;
     property OnResize;
     property OnStartDrag;
-    property OptimalFill;
   end;
 
   { TCustomDBListBox }
@@ -410,6 +412,20 @@ Type
     property ItemHeight;
     property Items;
     property MultiSelect;
+    property Options;
+    property ParentBiDiMode;
+    property ParentDoubleBuffered;
+    property ParentShowHint;
+    property PopupMenu;
+    property ReadOnly;
+    property ShowHint;
+    property Sorted;
+    property Style;
+    property TabOrder;
+    property TabStop;
+    property TopIndex;
+    property Visible;
+
     property OnClick;
     property OnContextPopup;
     property OnDblClick;
@@ -433,19 +449,6 @@ Type
     property OnResize;
     property OnStartDrag;
     property OnUTF8KeyPress;
-    property Options;
-    property ParentBiDiMode;
-    property ParentDoubleBuffered;
-    property ParentShowHint;
-    property PopupMenu;
-    property ReadOnly;
-    property ShowHint;
-    property Sorted;
-    property Style;
-    property TabOrder;
-    property TabStop;
-    property TopIndex;
-    property Visible;
   end;
 
 
@@ -515,6 +518,21 @@ Type
     property EmptyValue: String read GetEmptyValue write SetEmptyValue;
     property DisplayEmpty: String read GetDisplayEmpty write SetDisplayEmpty;
 //    property MultiSelect;
+    property Options;
+    property ParentBiDiMode;
+    property ParentDoubleBuffered;
+    property ParentShowHint;
+    property PopupMenu;
+    property ReadOnly;
+    property ScrollListDataset: Boolean read GetScrollListDataset write SetScrollListDataset default False;
+    property ShowHint;
+    property Sorted;
+//    property Style;
+    property TabOrder;
+    property TabStop;
+    property TopIndex;
+    property Visible;
+
     property OnClick;
     property OnContextPopup;
     property OnDblClick;
@@ -539,20 +557,6 @@ Type
     property OnResize;
     property OnStartDrag;
     property OnUTF8KeyPress;
-    property Options;
-    property ParentBiDiMode;
-    property ParentDoubleBuffered;
-    property ParentShowHint;
-    property PopupMenu;
-    property ReadOnly;
-    property ScrollListDataset: Boolean read GetScrollListDataset write SetScrollListDataset default False;
-    property ShowHint;
-    property Sorted;
-//    property Style;
-    property TabOrder;
-    property TabStop;
-    property TopIndex;
-    property Visible;
   end;
 
 
@@ -614,6 +618,19 @@ Type
     property Enabled;
     property Font;
     property Items write SetItems;
+    property ParentBiDiMode;
+    property ParentColor;
+    property ParentDoubleBuffered;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Values: TStrings read FValues write SetValues;
+    property Visible;
+
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnChangeBounds;
     property OnClick;
@@ -631,18 +648,6 @@ Type
     property OnMouseWheelUp;
     property OnResize;
     property OnStartDrag;
-    property ParentBiDiMode;
-    property ParentColor;
-    property ParentDoubleBuffered;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
-    property ShowHint;
-    property TabOrder;
-    property TabStop;
-    property Values: TStrings read FValues write SetValues;
-    property Visible;
   end;
 
 
@@ -700,6 +705,20 @@ Type
     property Enabled;
     property Font;
     property Hint;
+    property ParentBiDiMode;
+    property ParentColor;
+    property ParentDoubleBuffered;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property ValueChecked: string read FValueChecked write SetValueChecked stored NonDefaultValueChecked;
+    property ValueUnchecked: string read FValueUnchecked write SetValueUnchecked stored NonDefaultValueUnchecked;
+    property Visible;
+
     property OnChange;
     property OnClick;
     property OnContextPopup;
@@ -717,19 +736,6 @@ Type
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     property OnStartDrag;
-    property ParentBiDiMode;
-    property ParentColor;
-    property ParentDoubleBuffered;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
-    property ShowHint;
-    property TabOrder;
-    property TabStop;
-    property ValueChecked: string read FValueChecked write SetValueChecked stored NonDefaultValueChecked;
-    property ValueUnchecked: string read FValueUnchecked write SetValueUnchecked stored NonDefaultValueUnchecked;
-    property Visible;
   end;
   
   
@@ -815,6 +821,19 @@ Type
     property Items;
     property ItemWidth;
     property MaxLength default -1;
+    property ParentBiDiMode;
+    property ParentColor;
+    property ParentDoubleBuffered;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ReadOnly;
+    property ShowHint;
+    property Sorted;
+    property Style;
+    property TabOrder;
+    property TabStop;
+    property Visible;
     property OnChange;
     property OnChangeBounds;
     property OnClick;
@@ -843,19 +862,6 @@ Type
     property OnSelect;
     property OnStartDrag;
     property OnUTF8KeyPress;
-    property ParentBiDiMode;
-    property ParentColor;
-    property ParentDoubleBuffered;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ReadOnly;
-    property ShowHint;
-    property Sorted;
-    property Style;
-    property TabOrder;
-    property TabStop;
-    property Visible;
   end;
 
 
@@ -943,6 +949,20 @@ Type
     property NullValueKey: TShortCut read GetNullValueKey write SetNullValueKey default 0;
     property EmptyValue: String read GetEmptyValue write SetEmptyValue;
     property DisplayEmpty: String read GetDisplayEmpty write SetDisplayEmpty;
+    property ParentBiDiMode;
+    property ParentColor;
+    property ParentDoubleBuffered;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ReadOnly;
+    property ScrollListDataset: Boolean read GetScrollListDataset write SetScrollListDataset default False;
+    property ShowHint;
+    property Sorted;
+    property Style;
+    property TabOrder;
+    property TabStop;
+    property Visible;
     property OnChange;
     property OnChangeBounds;
     property OnClick;
@@ -971,20 +991,6 @@ Type
     property OnSelect;
     property OnStartDrag;
     property OnUTF8KeyPress;
-    property ParentBiDiMode;
-    property ParentColor;
-    property ParentDoubleBuffered;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ReadOnly;
-    property ScrollListDataset: Boolean read GetScrollListDataset write SetScrollListDataset default False;
-    property ShowHint;
-    property Sorted;
-    property Style;
-    property TabOrder;
-    property TabStop;
-    property Visible;
   end;
 
   { TDBMemo }
@@ -1041,6 +1047,21 @@ Type
     property Enabled;
     property Font;
     property MaxLength;
+    property ParentBiDiMode;
+    property ParentDoubleBuffered;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+    property ScrollBars;
+    property ShowHint;
+    property TabOrder;
+    property Tabstop;
+    property Visible;
+    property WantReturns;
+    property WantTabs;
+    property WordWrap;
+
     property OnChange;
     property OnClick;
     property OnContextPopup;
@@ -1065,20 +1086,6 @@ Type
     property OnResize;
     property OnStartDrag;
     property OnUTF8KeyPress;
-    property ParentBiDiMode;
-    property ParentDoubleBuffered;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
-    property ScrollBars;
-    property ShowHint;
-    property TabOrder;
-    property Tabstop;
-    property Visible;
-    property WantReturns;
-    property WantTabs;
-    property WordWrap;
   end;
   
   
@@ -1121,6 +1128,17 @@ Type
     property DragMode;
     property Enabled;
     property Font;
+    property ParentBiDiMode;
+    property ParentColor;
+    property ParentDoubleBuffered;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+
     property OnClick;
     property OnContextPopup;
     property OnDblClick;
@@ -1143,16 +1161,6 @@ Type
     property OnResize;
     property OnStartDrag;
     property OnUTF8KeyPress;
-    property ParentBiDiMode;
-    property ParentColor;
-    property ParentDoubleBuffered;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ShowHint;
-    property TabOrder;
-    property TabStop;
-    property Visible;
   end;
   
 
@@ -1216,6 +1224,18 @@ Type
     property DragMode;
     property KeepOriginXWhenClipped;
     property KeepOriginYWhenClipped;
+    property ParentShowHint;
+    property Proportional;
+    property QuickDraw: Boolean read FQuickDraw write FQuickDraw default True;
+    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
+    property ShowHint;
+    property Stretch;
+    property StretchInEnabled;
+    property StretchOutEnabled;
+    property Transparent;
+    property Visible;
+    property WriteHeader: Boolean read FWriteHeader write FWriteHeader default True;
+
     property OnClick;
     property OnContextPopup;
     property OnDblClick;
@@ -1235,17 +1255,6 @@ Type
     property OnMouseWheelUp;
     property OnResize;
     property OnStartDrag;
-    property ParentShowHint;
-    property Proportional;
-    property QuickDraw: Boolean read FQuickDraw write FQuickDraw default True;
-    property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
-    property ShowHint;
-    property Stretch;
-    property StretchInEnabled;
-    property StretchOutEnabled;
-    property Transparent;
-    property Visible;
-    property WriteHeader: Boolean read FWriteHeader write FWriteHeader default True;
   end;
 
   { TDBCalendar }
@@ -1294,6 +1303,7 @@ Type
     property DragMode;
     property ParentDoubleBuffered;
     property Visible;
+
     property OnClick;
     property OnContextPopup;
     property OnDragDrop;
@@ -1488,6 +1498,20 @@ type
     property Flat;
     property Font;
     property Hints;
+    property Options;
+    property ParentBidiMode;
+    property ParentColor;
+    property ParentDoubleBuffered;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop default False;
+    property Visible;
+    property VisibleButtons;
+    property Images;
+
     property OnClick;
     property OnContextPopup;
     property OnDblClick;
@@ -1506,19 +1530,6 @@ type
     property OnMouseWheelUp;
     property OnResize;
     property OnStartDrag;
-    property Options;
-    property ParentBidiMode;
-    property ParentColor;
-    property ParentDoubleBuffered;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ShowHint;
-    property TabOrder;
-    property TabStop default False;
-    property Visible;
-    property VisibleButtons;
-    property Images;
   end;
 
 procedure ChangeDataSource(AControl: TControl; Link: TDataLink;

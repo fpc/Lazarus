@@ -214,6 +214,19 @@ type
     property ItemIndex;
     property ItemWidth;
     property MaxLength;
+    property ParentBidiMode;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property Style;
+    property StyleEx;
+    property TabOrder;
+    property TabStop;
+    property Text;
+    property TextHint;
+    property Visible;
     property OnChange;
     property OnChangeBounds;
     property OnClick;
@@ -244,19 +257,6 @@ type
     property OnStartDock;
     property OnStartDrag;
     property OnUTF8KeyPress;
-    property ParentBidiMode;
-    property ParentColor;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ShowHint;
-    property Style;
-    property StyleEx;
-    property TabOrder;
-    property TabStop;
-    property Text;
-    property TextHint;
-    property Visible;
   end;
 
   { TCheckComboItemState }
@@ -355,6 +355,18 @@ type
     property Items;
     property ItemWidth;
     property MaxLength;
+    property ParentBidiMode;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property Sorted;
+    property TabOrder;
+    property TabStop;
+    property Text;
+    property TextHint;
+    property Visible;
     property OnChange;
     property OnChangeBounds;
     property OnClick;
@@ -384,18 +396,6 @@ type
     property OnStartDrag;
     property OnSelect;
     property OnUTF8KeyPress;
-    property ParentBidiMode;
-    property ParentColor;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ShowHint;
-    property Sorted;
-    property TabOrder;
-    property TabStop;
-    property Text;
-    property TextHint;
-    property Visible;
   end;
 
 procedure Register;

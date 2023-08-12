@@ -367,6 +367,18 @@ type
     property Enabled;
     property Font;
     property LCLVersion: string read FLCLVersion write FLCLVersion stored LCLVersionIsStored;
+    property ParentBackground;
+    property ParentBiDiMode;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property Scaled;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+
     property OnClick;
     property OnConstrainedResize;
     property OnContextPopup;
@@ -395,17 +407,6 @@ type
     property OnStartDock;
     property OnStartDrag;
     property OnUnDock;
-    property ParentBackground;
-    property ParentBiDiMode;
-    property ParentColor;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property Scaled;
-    property ShowHint;
-    property TabOrder;
-    property TabStop;
-    property Visible;
   end;
 
 
@@ -882,6 +883,26 @@ type
     property Icon;
     property KeyPreview;
     property Menu;
+    property ParentBiDiMode;
+    property ParentDoubleBuffered;
+    property ParentFont;
+    property PixelsPerInch;
+    property PopupMenu;
+    property PopupMode;
+    property PopupParent;
+    property Position;
+    property SessionProperties;
+    property ScreenSnap;
+    property ShowHint;
+    property ShowInTaskBar;
+    property SnapBuffer;
+    property SnapOptions;
+    property UseDockManager;
+    property LCLVersion: string read FLCLVersion write FLCLVersion stored LCLVersionIsStored;
+    property Scaled;
+    property Visible;
+    property WindowState;
+
     property OnActivate;
     property OnChangeBounds;
     property OnClick;
@@ -925,25 +946,6 @@ type
     property OnUnDock;
     property OnUTF8KeyPress;
     property OnWindowStateChange;
-    property ParentBiDiMode;
-    property ParentDoubleBuffered;
-    property ParentFont;
-    property PixelsPerInch;
-    property PopupMenu;
-    property PopupMode;
-    property PopupParent;
-    property Position;
-    property SessionProperties;
-    property ScreenSnap;
-    property ShowHint;
-    property ShowInTaskBar;
-    property SnapBuffer;
-    property SnapOptions;
-    property UseDockManager;
-    property LCLVersion: string read FLCLVersion write FLCLVersion stored LCLVersionIsStored;
-    property Scaled;
-    property Visible;
-    property WindowState;
   end;
 
   TFormClass = class of TForm;
