@@ -474,6 +474,21 @@ type
     property Items;
     property ItemWidth;
     property MaxLength;
+    property ParentBidiMode;
+    property ParentColor;
+    property ParentDoubleBuffered;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ReadOnly;
+    property ShowHint;
+    property Sorted;
+    property Style;
+    property TabOrder;
+    property TabStop;
+    property Text;
+    property TextHint;
+    property Visible;
     property OnChange;
     property OnChangeBounds;
     property OnClick;
@@ -504,21 +519,6 @@ type
     property OnSelect;
     property OnStartDrag;
     property OnUTF8KeyPress;
-    property ParentBidiMode;
-    property ParentColor;
-    property ParentDoubleBuffered;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ReadOnly;
-    property ShowHint;
-    property Sorted;
-    property Style;
-    property TabOrder;
-    property TabStop;
-    property Text;
-    property TextHint;
-    property Visible;
   end;
 
 
@@ -710,6 +710,21 @@ type
     property ItemHeight;
     property ItemIndex;
     property MultiSelect;
+    property Options;
+    property ParentBidiMode;
+    property ParentColor;
+    property ParentDoubleBuffered;
+    property ParentShowHint;
+    property ParentFont;
+    property PopupMenu;
+    property ScrollWidth;
+    property ShowHint;
+    property Sorted;
+    property Style;
+    property TabOrder;
+    property TabStop;
+    property TopIndex;
+    property Visible;
     property OnChangeBounds;
     property OnClick;
     property OnContextPopup;
@@ -740,21 +755,6 @@ type
     property OnShowHint;
     property OnStartDrag;
     property OnUTF8KeyPress;
-    property Options;
-    property ParentBidiMode;
-    property ParentColor;
-    property ParentDoubleBuffered;
-    property ParentShowHint;
-    property ParentFont;
-    property PopupMenu;
-    property ScrollWidth;
-    property ShowHint;
-    property Sorted;
-    property Style;
-    property TabOrder;
-    property TabStop;
-    property TopIndex;
-    property Visible;
   end;
 
 
@@ -973,6 +973,19 @@ type
     property MaxLength;
     property NumbersOnly;
     property ParentBidiMode;
+    property ParentColor;
+    property ParentDoubleBuffered;
+    property ParentFont;
+    property ParentShowHint;
+    property PasswordChar;
+    property PopupMenu;
+    property ReadOnly;
+    property ShowHint;
+    property TabStop;
+    property TabOrder;
+    property Text;
+    property TextHint;
+    property Visible;
     property OnChange;
     property OnChangeBounds;
     property OnClick;
@@ -998,19 +1011,6 @@ type
     property OnResize;
     property OnStartDrag;
     property OnUTF8KeyPress;
-    property ParentColor;
-    property ParentDoubleBuffered;
-    property ParentFont;
-    property ParentShowHint;
-    property PasswordChar;
-    property PopupMenu;
-    property ReadOnly;
-    property ShowHint;
-    property TabStop;
-    property TabOrder;
-    property Text;
-    property TextHint;
-    property Visible;
   end;
 
 
@@ -1036,6 +1036,21 @@ type
     property HideSelection;
     property Lines;
     property MaxLength;
+    property ParentBidiMode;
+    property ParentColor;
+    property ParentDoubleBuffered;
+    property ParentFont;
+    property PopupMenu;
+    property ParentShowHint;
+    property ReadOnly;
+    property ScrollBars;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+    property WantReturns;
+    property WantTabs;
+    property WordWrap;
     property OnChange;
     property OnClick;
     property OnContextPopup;
@@ -1063,21 +1078,6 @@ type
     property OnResize;
     property OnStartDrag;
     property OnUTF8KeyPress;
-    property ParentBidiMode;
-    property ParentColor;
-    property ParentDoubleBuffered;
-    property ParentFont;
-    property PopupMenu;
-    property ParentShowHint;
-    property ReadOnly;
-    property ScrollBars;
-    property ShowHint;
-    property TabOrder;
-    property TabStop;
-    property Visible;
-    property WantReturns;
-    property WantTabs;
-    property WordWrap;
   end;
 
 
@@ -1136,6 +1136,18 @@ type
     property Enabled;
     property FocusControl;
     property Font;
+    property ParentBidiMode;
+    property ParentFont;
+    property ParentColor;
+    property ParentDoubleBuffered;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowAccelChar;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Transparent;
+    property Visible;
     property OnChangeBounds;
     property OnClick;
     property OnContextPopup;
@@ -1156,18 +1168,6 @@ type
     property OnMouseWheelRight;
     property OnResize;
     property OnStartDrag;
-    property ParentBidiMode;
-    property ParentFont;
-    property ParentColor;
-    property ParentDoubleBuffered;
-    property ParentShowHint;
-    property PopupMenu;
-    property ShowAccelChar;
-    property ShowHint;
-    property TabOrder;
-    property TabStop;
-    property Transparent;
-    property Visible;
   end;
 
 
@@ -1284,6 +1284,14 @@ type
     property Font;
     property ParentBidiMode;
     property ModalResult;
+    property ParentDoubleBuffered;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
     property OnChangeBounds;
     property OnClick;
     property OnContextPopup;
@@ -1306,14 +1314,6 @@ type
     property OnResize;
     property OnStartDrag;
     property OnUTF8KeyPress;
-    property ParentDoubleBuffered;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ShowHint;
-    property TabOrder;
-    property TabStop;
-    property Visible;
   end;
 
   { TCustomCheckBox }
@@ -1389,6 +1389,17 @@ type
     property Enabled;
     property Font;
     property Hint;
+    property ParentColor;
+    property ParentDoubleBuffered;
+    property ParentFont;
+    property ParentShowHint;
+    property ParentBidiMode;
+    property PopupMenu;
+    property ShowHint;
+    property State;
+    property TabOrder;
+    property TabStop default True;
+    property Visible;
     property OnChange;
     property OnChangeBounds;
     property OnClick;
@@ -1413,17 +1424,6 @@ type
     property OnResize;
     property OnStartDrag;
     property OnUTF8KeyPress;
-    property ParentColor;
-    property ParentDoubleBuffered;
-    property ParentFont;
-    property ParentShowHint;
-    property ParentBidiMode;
-    property PopupMenu;
-    property ShowHint;
-    property State;
-    property TabOrder;
-    property TabStop default True;
-    property Visible;
   end;
 
   { TToggleBox }
@@ -1454,6 +1454,16 @@ type
     property Enabled;
     property Font;
     property Hint;
+    property ParentBidiMode;
+    property ParentDoubleBuffered;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property State;
+    property TabOrder;
+    property TabStop default True;
+    property Visible;
     property OnChange;
     property OnClick;
     property OnContextPopup;
@@ -1472,16 +1482,6 @@ type
     property OnMouseWheelUp;
     property OnResize;
     property OnStartDrag;
-    property ParentBidiMode;
-    property ParentDoubleBuffered;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ShowHint;
-    property State;
-    property TabOrder;
-    property TabStop default True;
-    property Visible;
   end;
 
 
@@ -1515,6 +1515,16 @@ type
     property Enabled;
     property Font;
     property Hint;
+    property ParentBidiMode;
+    property ParentColor;
+    property ParentDoubleBuffered;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop default False;
+    property Visible;
     property OnChange;
     property OnChangeBounds;
     property OnClick;
@@ -1537,16 +1547,6 @@ type
     property OnMouseWheelUp;
     property OnResize;
     property OnStartDrag;
-    property ParentBidiMode;
-    property ParentColor;
-    property ParentDoubleBuffered;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ShowHint;
-    property TabOrder;
-    property TabStop default False;
-    property Visible;
   end;
 
 
@@ -1633,6 +1633,7 @@ type
     property FocusControl;
     property Font;
     property Layout;
+    property OptimalFill;
     property ParentBidiMode;
     property ParentColor;
     property ParentFont;
@@ -1663,7 +1664,6 @@ type
     property OnMouseWheelRight;
     property OnResize;
     property OnStartDrag;
-    property OptimalFill;
   end;
 
 function CreateEmulatedTextHintFont(AWinControl: TWinControl): TFont;
