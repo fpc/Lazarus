@@ -43,7 +43,9 @@ type
     VerificationText: String;
     CommonButtons: TTaskDialogCommonButtons;
 
-    Panel: TPanel;
+    TopPanel: TPanel;
+    MidPanel: TPanel;
+    BottomPanel: TPanel;
     Image: TImage;
     /// the labels corresponding to the Task Dialog main elements
     Element: array[tdeContent..tdeMainInstruction] of TLabel;
@@ -61,7 +63,7 @@ type
     procedure InitGlobalDimensionsAndStyle(ACustomButtonsTextLength: Integer; out aWidth, aFontHeight: Integer);
     function GetGlobalLeftMargin: Integer;
     procedure AddIcon(out ALeft,ATop: Integer; AGlobalLeftMargin: Integer; AParent: TWinControl);
-    procedure AddPanel;
+    procedure AddPanels;
     procedure AddRadios(const ARadioOffSet, AWidth, ARadioDef, AFontHeight, ALeft: Integer; var ATop: Integer; AParent: TWinControl);
     procedure AddCommandLinkButtons(const ALeft: Integer; var ATop: Integer; AWidth, AButtonDef, AFontHeight: Integer; AParent: TWinControl);
     procedure AddButtons(const ALeft: Integer; var ATop, AButtonLeft: Integer; AWidth, AButtonDef: Integer; APArent: TWinControl);
@@ -431,15 +433,47 @@ begin
   end;
 end;
 
-procedure TLCLTaskDialog.AddPanel;
+procedure TLCLTaskDialog.AddPanels;
 begin
-  Panel := TPanel.Create(Self);
-  Panel.Parent := Self;
-  Panel.Align := alTop;
-  Panel.BorderStyle := bsNone;
-  Panel.BevelOuter := bvNone;
+  {
+    Create 3 different panels:
+    - the top panel holds main con, title, text and expanded text
+    - the mid panel holds radiobuttons, commandlinkbuttons and query's
+    - the bottom panel has the rest of the controls
+    The top and mid panel have a distinct color (unless tfEmulateClassicStyle is set)
+    The reason for the 3 panel setup is that it makes it a lot easier to displace the controls
+    when Expand or Collapse is invoked: just move/resize the appropriate panels, no need to
+    iterate the individual controls on it.
+  }
+  TopPanel := TPanel.Create(Self);
+  TopPanel.Parent := Self;
+  TopPanel.Align := alTop;
+  TopPanel.BorderStyle := bsNone;
+  TopPanel.BevelOuter := bvNone;
   if not (tfEmulateClassicStyle in FDlg.Flags) then
-    Panel.Color := clWindow;
+    TopPanel.Color := clWindow;
+  TopPanel.Name := 'TopPanel'; //for debugging purposes
+  TopPanel.Caption := '';
+
+  MidPanel := TPanel.Create(Self);
+  MidPanel.Parent := Self;
+  MidPanel.Top := TopPanel.Top + TopPanel.Height + 1;
+  MidPanel.Align := alTop;
+  MidPanel.BorderStyle := bsNone;
+  MidPanel.BevelOuter := bvNone;
+  MidPanel.Color := TopPanel.Color;
+  MidPanel.Name := 'MidPanel'; //for debugging purposes
+  MidPanel.Caption := '';
+
+  BottomPanel := TPanel.Create(Self);
+  BottomPanel.Parent := Self;
+  BottomPanel.Top := MidPanel.Top + MidPanel.Height + 1;
+  BottomPanel.Align := alCLient;
+  BottomPanel.BorderStyle := bsNone;
+  BottomPanel.BevelOuter := bvNone;
+  BottomPanel.Name := 'BottomPanel'; //for debugging purposes
+  BottomPanel.Caption := '';
+
 end;
 
 procedure TLCLTaskDialog.AddRadios(const ARadioOffSet, AWidth, ARadioDef, AFontHeight, ALeft: Integer; var ATop: Integer; AParent: TWinControl);
@@ -573,7 +607,10 @@ var
   end;
 begin
   debugln(['TLCLTaskDialog.AddButtons: ALeft=',ALeft,', aWidth=',aWidth,', AParent=',DbgSName(AParent),', AParent.ClientWidth=',AParent.ClientWidth]);
-  CurrTabOrder := Panel.TabOrder;
+  if MidPanel.ControlCount > 0 then
+    CurrTabOrder := MidPanel.TabOrder
+  else
+    CurrTabOrder := TopPanel.TabOrder;
   inc(ATop, 16);
   AButtonLeft := aWidth;
   if not (tfUseCommandLinks in FDlg.Flags) then
@@ -609,7 +646,10 @@ var
   CurrTabOrder: TTabOrder;
   WB, AHeight: Integer;
 begin
-  CurrTabOrder := Panel.TabOrder;
+  if MidPanel.ControlCount > 0 then
+    CurrTabOrder := MidPanel.TabOrder
+  else
+    CurrTabOrder := TopPanel.TabOrder;
   if (ExpandButtonCaption = '') then
   begin
     if (CollapseButtonCaption = '') then
@@ -937,9 +977,8 @@ begin
 
     Caption := DialogCaption;
 
-    // create a white panel for the main dialog part
-    AddPanel;
-    CurrParent := Panel;
+    AddPanels;
+    CurrParent := TopPanel;
 
     // handle main dialog icon
     GlobalLeftMargin := GetGlobalLeftMargin;
@@ -956,6 +995,9 @@ begin
       // no information collapse/expand yet: it's always expanded
       Element[tdeExpandedInfo] := AddLabel(ExpandedText, False, ALeft, ATop,  FontHeight, aWidth, CurrParent);
 
+    TopPanel.Height := ATop;
+    CurrParent := MidPanel;
+    ATop := 0;
 
     // add radio CustomButtons
     if (FDlg.RadioButtons.Count > 0) then
@@ -978,9 +1020,12 @@ begin
         AddQueryEdit(ALeft, ATop, aWidth, CurrParent);
     end;
 
-    // from now we won't add components to the white panel, but to the form
-    Panel.Height := ATop;
-    CurrParent := Self;
+    MidPanel.Height := ATop;
+    if MidPanel.ControlCount = 0 then
+      MidPanel.Visible := False;
+
+    CurrParent := BottomPanel;
+    ATop := 0;
 
     XB := 0;
     ALeft := GlobalLeftMargin; //Left most margin of the form
@@ -1005,7 +1050,7 @@ begin
     if (FooterText <> '') then
       AddFooter(ALeft, ATop, XB, FontHeight, aWidth, GlobalLeftMargin, CurrParent);
 
-     ClientHeight := ATop;
+     ClientHeight := TopPanel.Height + MidPanel.Height + ATop;
 
      if (tfCallBackTimer in FDlg.Flags) then
        SetupTimer;
