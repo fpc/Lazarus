@@ -4351,6 +4351,21 @@ widgetset. It is impossible to remove the border under Windows.
 <element name="TComboBox.ItemWidth" link="#lcl.stdctrls.TCustomComboBox.ItemWidth"/>
 <element name="TComboBox.MaxLength" link="#lcl.stdctrls.TCustomComboBox.MaxLength"/>
 <element name="TComboBox.OnChange" link="#lcl.stdctrls.TCustomComboBox.OnChange"/>
+<element name="TComboBox.ParentBidiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
+<element name="TComboBox.ParentColor" link="#lcl.stdctrls.TCustomComboBox.ParentColor"/>
+<element name="TComboBox.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
+<element name="TComboBox.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+<element name="TComboBox.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TComboBox.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+<element name="TComboBox.ReadOnly" link="#lcl.stdctrls.TCustomComboBox.ReadOnly"/>
+<element name="TComboBox.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TComboBox.Sorted" link="#lcl.stdctrls.TCustomComboBox.Sorted"/>
+<element name="TComboBox.Style" link="#lcl.stdctrls.TCustomComboBox.Style"/>
+<element name="TComboBox.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TComboBox.TabStop" link="#lcl.stdctrls.TCustomComboBox.TabStop"/>
+<element name="TComboBox.Text" link="#lcl.stdctrls.TCustomComboBox.Text"/>
+<element name="TComboBox.TextHint" link="#lcl.stdctrls.TCustomComboBox.TextHint"/>
+<element name="TComboBox.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TComboBox.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TComboBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TComboBox.OnCloseUp" link="#lcl.stdctrls.TCustomComboBox.OnCloseUp"/>
@@ -4380,21 +4395,6 @@ widgetset. It is impossible to remove the border under Windows.
 <element name="TComboBox.OnSelect" link="#lcl.stdctrls.TCustomComboBox.OnSelect"/>
 <element name="TComboBox.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 <element name="TComboBox.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
-<element name="TComboBox.ParentBidiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
-<element name="TComboBox.ParentColor" link="#lcl.stdctrls.TCustomComboBox.ParentColor"/>
-<element name="TComboBox.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
-<element name="TComboBox.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
-<element name="TComboBox.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TComboBox.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TComboBox.ReadOnly" link="#lcl.stdctrls.TCustomComboBox.ReadOnly"/>
-<element name="TComboBox.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TComboBox.Sorted" link="#lcl.stdctrls.TCustomComboBox.Sorted"/>
-<element name="TComboBox.Style" link="#lcl.stdctrls.TCustomComboBox.Style"/>
-<element name="TComboBox.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-<element name="TComboBox.TabStop" link="#lcl.stdctrls.TCustomComboBox.TabStop"/>
-<element name="TComboBox.Text" link="#lcl.stdctrls.TCustomComboBox.Text"/>
-<element name="TComboBox.TextHint" link="#lcl.stdctrls.TCustomComboBox.TextHint"/>
-<element name="TComboBox.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TListBoxStyle">
 <short>Determines how items are drawn in a list box control.</short>
@@ -6471,6 +6471,20 @@ density.
 
 <element name="TListBox.ItemIndex" link="#lcl.stdctrls.TCustomListBox.ItemIndex"/>
 <element name="TListBox.MultiSelect" link="#lcl.stdctrls.TCustomListBox.MultiSelect"/>
+<element name="TListBox.ParentBidiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
+<element name="TListBox.ParentColor" link="#lcl.stdctrls.TCustomListBox.ParentColor"/>
+<element name="TListBox.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
+<element name="TListBox.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TListBox.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+<element name="TListBox.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+<element name="TListBox.ScrollWidth" link="#lcl.stdctrls.TCustomListBox.ScrollWidth"/>
+<element name="TListBox.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TListBox.Sorted" link="#lcl.stdctrls.TCustomListBox.Sorted"/>
+<element name="TListBox.Style" link="#lcl.stdctrls.TCustomListBox.Style"/>
+<element name="TListBox.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TListBox.TabStop" link="#lcl.stdctrls.TCustomListBox.TabStop"/>
+<element name="TListBox.TopIndex" link="#lcl.stdctrls.TCustomListBox.TopIndex"/>
+<element name="TListBox.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TListBox.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TListBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TListBox.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
@@ -6502,20 +6516,6 @@ density.
 <element name="TListBox.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 <element name="TListBox.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
 <element name="TListBox.Options" link="#lcl.stdctrls.TCustomListBox.Options"/>
-<element name="TListBox.ParentBidiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
-<element name="TListBox.ParentColor" link="#lcl.stdctrls.TCustomListBox.ParentColor"/>
-<element name="TListBox.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
-<element name="TListBox.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TListBox.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
-<element name="TListBox.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TListBox.ScrollWidth" link="#lcl.stdctrls.TCustomListBox.ScrollWidth"/>
-<element name="TListBox.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TListBox.Sorted" link="#lcl.stdctrls.TCustomListBox.Sorted"/>
-<element name="TListBox.Style" link="#lcl.stdctrls.TCustomListBox.Style"/>
-<element name="TListBox.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-<element name="TListBox.TabStop" link="#lcl.stdctrls.TCustomListBox.TabStop"/>
-<element name="TListBox.TopIndex" link="#lcl.stdctrls.TCustomListBox.TopIndex"/>
-<element name="TListBox.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TCustomEdit">
 <short>The base class for controls presenting editable text.</short>
@@ -9371,6 +9371,21 @@ introduce any new methods.
 <element name="TEdit.HideSelection" link="#lcl.stdctrls.TCustomEdit.HideSelection"/>
 <element name="TEdit.MaxLength" link="#lcl.stdctrls.TCustomEdit.MaxLength"/>
 <element name="TEdit.NumbersOnly" link="#lcl.stdctrls.TCustomEdit.NumbersOnly"/>
+<element name="TEdit.ParentBidiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
+<element name="TEdit.ParentColor" link="#lcl.stdctrls.TCustomEdit.ParentColor"/>
+<element name="TEdit.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
+<element name="TEdit.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+<element name="TEdit.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TEdit.PasswordChar" link="#lcl.stdctrls.TCustomEdit.PasswordChar"/>
+<element name="TEdit.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+<element name="TEdit.ReadOnly" link="#lcl.stdctrls.TCustomEdit.ReadOnly"/>
+<element name="TEdit.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TEdit.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TEdit.TabStop" link="#lcl.stdctrls.TCustomEdit.TabStop"/>
+<element name="TEdit.Text" link="#lcl.stdctrls.TCustomEdit.Text"/>
+<element name="TEdit.TextHint" link="#lcl.stdctrls.TCustomEdit.TextHint"/>
+<element name="TEdit.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
+<element name="TEdit.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TEdit.OnChange" link="#lcl.stdctrls.TCustomEdit.OnChange"/>
 <element name="TEdit.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TEdit.OnClick" link="#lcl.controls.TControl.OnClick"/>
@@ -9395,21 +9410,6 @@ introduce any new methods.
 <element name="TEdit.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
 <element name="TEdit.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TEdit.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
-<element name="TEdit.ParentBidiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
-<element name="TEdit.ParentColor" link="#lcl.stdctrls.TCustomEdit.ParentColor"/>
-<element name="TEdit.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
-<element name="TEdit.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
-<element name="TEdit.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TEdit.PasswordChar" link="#lcl.stdctrls.TCustomEdit.PasswordChar"/>
-<element name="TEdit.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TEdit.ReadOnly" link="#lcl.stdctrls.TCustomEdit.ReadOnly"/>
-<element name="TEdit.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TEdit.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-<element name="TEdit.TabStop" link="#lcl.stdctrls.TCustomEdit.TabStop"/>
-<element name="TEdit.Text" link="#lcl.stdctrls.TCustomEdit.Text"/>
-<element name="TEdit.TextHint" link="#lcl.stdctrls.TCustomEdit.TextHint"/>
-<element name="TEdit.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
-<element name="TEdit.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TMemo">
 <short>Control used to display and edit multi-line text.</short>
@@ -9542,6 +9542,21 @@ Applications should use TEdit for a single line edit control.
 <element name="TMemo.HideSelection" link="#lcl.stdctrls.TCustomEdit.HideSelection"/>
 <element name="TMemo.Lines" link="#lcl.stdctrls.TCustomMemo.Lines"/>
 <element name="TMemo.MaxLength" link="#lcl.stdctrls.TCustomEdit.MaxLength"/>
+<element name="TMemo.ParentBidiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
+<element name="TMemo.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+<element name="TMemo.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
+<element name="TMemo.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+<element name="TMemo.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TMemo.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+<element name="TMemo.ReadOnly" link="#lcl.stdctrls.TCustomEdit.ReadOnly"/>
+<element name="TMemo.ScrollBars" link="#lcl.stdctrls.TCustomMemo.ScrollBars"/>
+<element name="TMemo.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TMemo.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TMemo.TabStop" link="#lcl.stdctrls.TCustomEdit.TabStop"/>
+<element name="TMemo.Visible" link="#lcl.controls.TControl.Visible"/>
+<element name="TMemo.WantReturns" link="#lcl.stdctrls.TCustomMemo.WantReturns"/>
+<element name="TMemo.WantTabs" link="#lcl.stdctrls.TCustomMemo.WantTabs"/>
+<element name="TMemo.WordWrap" link="#lcl.stdctrls.TCustomMemo.WordWrap"/>
 <element name="TMemo.OnChange" link="#lcl.stdctrls.TCustomEdit.OnChange"/>
 <element name="TMemo.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TMemo.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
@@ -9569,21 +9584,6 @@ Applications should use TEdit for a single line edit control.
 <element name="TMemo.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TMemo.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 <element name="TMemo.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
-<element name="TMemo.ParentBidiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
-<element name="TMemo.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
-<element name="TMemo.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
-<element name="TMemo.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
-<element name="TMemo.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TMemo.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TMemo.ReadOnly" link="#lcl.stdctrls.TCustomEdit.ReadOnly"/>
-<element name="TMemo.ScrollBars" link="#lcl.stdctrls.TCustomMemo.ScrollBars"/>
-<element name="TMemo.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TMemo.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-<element name="TMemo.TabStop" link="#lcl.stdctrls.TCustomEdit.TabStop"/>
-<element name="TMemo.Visible" link="#lcl.controls.TControl.Visible"/>
-<element name="TMemo.WantReturns" link="#lcl.stdctrls.TCustomMemo.WantReturns"/>
-<element name="TMemo.WantTabs" link="#lcl.stdctrls.TCustomMemo.WantTabs"/>
-<element name="TMemo.WordWrap" link="#lcl.stdctrls.TCustomMemo.WordWrap"/>
 
 <element name="TStaticBorderStyle">
 <short>Contains border styles used for static text controls.</short>
@@ -9959,6 +9959,19 @@ control to be forwarded to another windowed control.
 <element name="TStaticText.Enabled" link="#lcl.controls.TControl.Enabled"/>
 <element name="TStaticText.FocusControl" link="#lcl.stdctrls.TCustomStaticText.FocusControl"/>
 <element name="TStaticText.Font" link="#lcl.controls.TControl.Font"/>
+
+<element name="TStaticText.ParentBidiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
+<element name="TStaticText.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+<element name="TStaticText.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
+<element name="TStaticText.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+<element name="TStaticText.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TStaticText.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+<element name="TStaticText.ShowAccelChar" link="#lcl.stdctrls.TCustomStaticText.ShowAccelChar"/>
+<element name="TStaticText.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TStaticText.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TStaticText.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+<element name="TStaticText.Transparent" link="#lcl.stdctrls.TCustomStaticText.Transparent"/>
+<element name="TStaticText.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TStaticText.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TStaticText.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TStaticText.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
@@ -9979,18 +9992,6 @@ control to be forwarded to another windowed control.
 <element name="TStaticText.OnMouseWheelRight" link="#lcl.controls.TControl.OnMouseWheelRight"/>
 <element name="TStaticText.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TStaticText.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
-<element name="TStaticText.ParentBidiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
-<element name="TStaticText.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
-<element name="TStaticText.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
-<element name="TStaticText.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
-<element name="TStaticText.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TStaticText.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TStaticText.ShowAccelChar" link="#lcl.stdctrls.TCustomStaticText.ShowAccelChar"/>
-<element name="TStaticText.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TStaticText.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-<element name="TStaticText.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
-<element name="TStaticText.Transparent" link="#lcl.stdctrls.TCustomStaticText.Transparent"/>
-<element name="TStaticText.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TButtonControl">
 <short>Specifies a base class for button controls.</short>
@@ -11207,6 +11208,14 @@ down state.
 <element name="TButton.Font" link="#lcl.controls.TControl.Font"/>
 <element name="TButton.ParentBidiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
 <element name="TButton.ModalResult" link="#lcl.stdctrls.TCustomButton.ModalResult"/>
+<element name="TButton.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
+<element name="TButton.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+<element name="TButton.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TButton.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+<element name="TButton.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TButton.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TButton.TabStop" link="#lcl.stdctrls.TCustomButton.TabStop"/>
+<element name="TButton.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TButton.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TButton.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TButton.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
@@ -11229,14 +11238,6 @@ down state.
 <element name="TButton.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TButton.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 <element name="TButton.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
-<element name="TButton.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
-<element name="TButton.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
-<element name="TButton.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TButton.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TButton.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TButton.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-<element name="TButton.TabStop" link="#lcl.stdctrls.TCustomButton.TabStop"/>
-<element name="TButton.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TCheckBoxState">
 <short>Represents the states for a check box.</short>
@@ -11874,6 +11875,31 @@ enables auto-sizing of the text displayed for the control instance.
 <element name="TCheckBox.Enabled" link="#lcl.controls.TControl.Enabled"/>
 <element name="TCheckBox.Font" link="#lcl.controls.TControl.Font"/>
 <element name="TCheckBox.Hint" link="#lcl.controls.TControl.Hint"/>
+<element name="TCheckBox.ParentBidiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
+<element name="TCheckBox.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+<element name="TCheckBox.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
+<element name="TCheckBox.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+<element name="TCheckBox.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TCheckBox.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+<element name="TCheckBox.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TCheckBox.State" link="#lcl.stdctrls.TCustomCheckBox.State"/>
+<element name="TCheckBox.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TCheckBox.TabStop">
+
+<short>Enables keyboard navigation using the Tab or Shift+Tab keys.</short>
+<descr>
+<p>
+Allows the user to navigate to or from this control by pressing the Tab or 
+Shift+Tab keys. The default value for the property is <b>True</b> in 
+TCheckBox.
+</p>
+</descr>
+<seealso>
+<link id="#lcl.controls.TWinControl.TabStop">TWinControl.TabStop</link>
+</seealso>
+</element>
+
+<element name="TCheckBox.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TCheckBox.OnChange" link="#lcl.stdctrls.TButtonControl.OnChange"/>
 <element name="TCheckBox.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 
@@ -11898,31 +11924,6 @@ enables auto-sizing of the text displayed for the control instance.
 <element name="TCheckBox.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TCheckBox.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 <element name="TCheckBox.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
-<element name="TCheckBox.ParentBidiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
-<element name="TCheckBox.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
-<element name="TCheckBox.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
-<element name="TCheckBox.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
-<element name="TCheckBox.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TCheckBox.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TCheckBox.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TCheckBox.State" link="#lcl.stdctrls.TCustomCheckBox.State"/>
-<element name="TCheckBox.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-
-<element name="TCheckBox.TabStop">
-<short>Enables keyboard navigation using the Tab or Shift+Tab keys.</short>
-<descr>
-<p>
-Allows the user to navigate to or from this control by pressing the Tab or 
-Shift+Tab keys. The default value for the property is <b>True</b> in 
-TCheckBox.
-</p>
-</descr>
-<seealso>
-<link id="#lcl.controls.TWinControl.TabStop">TWinControl.TabStop</link>
-</seealso>
-</element>
-
-<element name="TCheckBox.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TToggleBox">
 <short>A labelled box capable of being checked or unchecked.</short>
@@ -11999,24 +12000,6 @@ TabStop (<b>True</b>) and ParentColor (<b>False</b>) properties.
 <element name="TToggleBox.Enabled" link="#lcl.controls.TControl.Enabled"/>
 <element name="TToggleBox.Font" link="#lcl.controls.TControl.Font"/>
 <element name="TToggleBox.Hint" link="#lcl.controls.TControl.Hint"/>
-<element name="TToggleBox.OnChange" link="#lcl.stdctrls.TButtonControl.OnChange"/>
-<element name="TToggleBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
-<element name="TToggleBox.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
-<element name="TToggleBox.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
-<element name="TToggleBox.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
-<element name="TToggleBox.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>
-<element name="TToggleBox.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
-<element name="TToggleBox.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
-<element name="TToggleBox.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
-<element name="TToggleBox.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
-<element name="TToggleBox.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
-<element name="TToggleBox.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
-<element name="TToggleBox.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
-<element name="TToggleBox.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
-<element name="TToggleBox.OnMouseWheelDown" link="#lcl.controls.TControl.OnMouseWheelDown"/>
-<element name="TToggleBox.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
-<element name="TToggleBox.OnResize" link="#lcl.controls.TControl.OnResize"/>
-<element name="TToggleBox.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 <element name="TToggleBox.ParentBidiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
 <element name="TToggleBox.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
 <element name="TToggleBox.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
@@ -12041,6 +12024,24 @@ TToggleBox.
 </element>
 
 <element name="TToggleBox.Visible" link="#lcl.controls.TControl.Visible"/>
+<element name="TToggleBox.OnChange" link="#lcl.stdctrls.TButtonControl.OnChange"/>
+<element name="TToggleBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
+<element name="TToggleBox.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
+<element name="TToggleBox.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
+<element name="TToggleBox.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
+<element name="TToggleBox.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>
+<element name="TToggleBox.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
+<element name="TToggleBox.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
+<element name="TToggleBox.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+<element name="TToggleBox.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
+<element name="TToggleBox.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
+<element name="TToggleBox.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+<element name="TToggleBox.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+<element name="TToggleBox.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
+<element name="TToggleBox.OnMouseWheelDown" link="#lcl.controls.TControl.OnMouseWheelDown"/>
+<element name="TToggleBox.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
+<element name="TToggleBox.OnResize" link="#lcl.controls.TControl.OnResize"/>
+<element name="TToggleBox.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 
 <element name="TRadioButton">
 <short>Implement a radio button control.</short>
@@ -12267,28 +12268,7 @@ The default value for the property is <b>True</b> in <var>TRadioButton</var>.
 <element name="TRadioButton.Enabled" link="#lcl.controls.TControl.Enabled"/>
 <element name="TRadioButton.Font" link="#lcl.controls.TControl.Font"/>
 <element name="TRadioButton.Hint" link="#lcl.controls.TControl.Hint"/>
-<element name="TRadioButton.OnChange" link="#lcl.stdctrls.TButtonControl.OnChange"/>
-<element name="TRadioButton.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
-<element name="TRadioButton.OnClick" link="#lcl.controls.TControl.OnClick"/>
-<element name="TRadioButton.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
-<element name="TRadioButton.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
-<element name="TRadioButton.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
-<element name="TRadioButton.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>
-<element name="TRadioButton.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
-<element name="TRadioButton.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
-<element name="TRadioButton.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
-<element name="TRadioButton.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
-<element name="TRadioButton.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
-<element name="TRadioButton.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
-<element name="TRadioButton.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
-<element name="TRadioButton.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
-<element name="TRadioButton.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
-<element name="TRadioButton.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
-<element name="TRadioButton.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
-<element name="TRadioButton.OnMouseWheelDown" link="#lcl.controls.TControl.OnMouseWheelDown"/>
-<element name="TRadioButton.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
-<element name="TRadioButton.OnResize" link="#lcl.controls.TControl.OnResize"/>
-<element name="TRadioButton.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
+
 <element name="TRadioButton.ParentBidiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
 <element name="TRadioButton.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
 <element name="TRadioButton.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
@@ -12313,6 +12293,28 @@ TRadioButton.
 </element>
 
 <element name="TRadioButton.Visible" link="#lcl.controls.TControl.Visible"/>
+<element name="TRadioButton.OnChange" link="#lcl.stdctrls.TButtonControl.OnChange"/>
+<element name="TRadioButton.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
+<element name="TRadioButton.OnClick" link="#lcl.controls.TControl.OnClick"/>
+<element name="TRadioButton.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
+<element name="TRadioButton.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
+<element name="TRadioButton.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
+<element name="TRadioButton.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>
+<element name="TRadioButton.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
+<element name="TRadioButton.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
+<element name="TRadioButton.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
+<element name="TRadioButton.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
+<element name="TRadioButton.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
+<element name="TRadioButton.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+<element name="TRadioButton.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
+<element name="TRadioButton.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
+<element name="TRadioButton.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+<element name="TRadioButton.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+<element name="TRadioButton.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
+<element name="TRadioButton.OnMouseWheelDown" link="#lcl.controls.TControl.OnMouseWheelDown"/>
+<element name="TRadioButton.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
+<element name="TRadioButton.OnResize" link="#lcl.controls.TControl.OnResize"/>
+<element name="TRadioButton.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 
 <element name="TCustomLabel">
 <short>
@@ -13484,6 +13486,17 @@ control to be given focus.
 <element name="TLabel.FocusControl" link="#lcl.stdctrls.TCustomLabel.FocusControl"/>
 <element name="TLabel.Font" link="#lcl.controls.TControl.Font"/>
 <element name="TLabel.Layout" link="#lcl.stdctrls.TCustomLabel.Layout"/>
+<element name="TLabel.OptimalFill" link="#lcl.stdctrls.TCustomLabel.OptimalFill"/>
+<element name="TLabel.ParentBidiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
+<element name="TLabel.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+<element name="TLabel.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+<element name="TLabel.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TLabel.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+<element name="TLabel.ShowAccelChar" link="#lcl.stdctrls.TCustomLabel.ShowAccelChar"/>
+<element name="TLabel.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TLabel.Transparent" link="#lcl.stdctrls.TCustomLabel.Transparent"/>
+<element name="TLabel.Visible" link="#lcl.controls.TControl.Visible"/>
+<element name="TLabel.WordWrap" link="#lcl.stdctrls.TCustomLabel.WordWrap"/>
 <element name="TLabel.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TLabel.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TLabel.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
@@ -13504,17 +13517,6 @@ control to be given focus.
 <element name="TLabel.OnMouseWheelRight" link="#lcl.controls.TControl.OnMouseWheelRight"/>
 <element name="TLabel.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TLabel.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
-<element name="TLabel.OptimalFill" link="#lcl.stdctrls.TCustomLabel.OptimalFill"/>
-<element name="TLabel.ParentBidiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
-<element name="TLabel.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
-<element name="TLabel.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
-<element name="TLabel.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TLabel.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TLabel.ShowAccelChar" link="#lcl.stdctrls.TCustomLabel.ShowAccelChar"/>
-<element name="TLabel.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TLabel.Transparent" link="#lcl.stdctrls.TCustomLabel.Transparent"/>
-<element name="TLabel.Visible" link="#lcl.controls.TControl.Visible"/>
-<element name="TLabel.WordWrap" link="#lcl.stdctrls.TCustomLabel.WordWrap"/>
 
 <element name="CreateEmulatedTextHintFont">
 <short>Gets the font instance used for an emulated TextHint display.</short>
