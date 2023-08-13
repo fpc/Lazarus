@@ -310,6 +310,12 @@ property is changed in a <var>TNotebook</var> instance.
 <element name="TPage.Top" link="#lcl.controls.TControl.Top"/>
 <element name="TPage.Width" link="#lcl.controls.TControl.Width"/>
 <element name="TPage.Height" link="#lcl.controls.TControl.Height"/>
+<element name="TPage.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
+<element name="TPage.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TPage.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+<element name="TPage.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TPage.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+<element name="TPage.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TPage.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
 <element name="TPage.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
 <element name="TPage.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
@@ -322,12 +328,6 @@ property is changed in a <var>TNotebook</var> instance.
 <element name="TPage.OnMouseWheelDown" link="#lcl.controls.TControl.OnMouseWheelDown"/>
 <element name="TPage.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
 <element name="TPage.OnResize" link="#lcl.controls.TControl.OnResize"/>
-<element name="TPage.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
-<element name="TPage.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TPage.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TPage.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-<element name="TPage.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
-<element name="TPage.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TUNBPages">
 <short>Represents page names and page class instances for a notebook.</short>
@@ -1029,6 +1029,10 @@ Inspector to maintain the values in the property.
 <element name="TNotebook.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
 <element name="TNotebook.DragMode" link="#lcl.controls.TControl.DragMode"/>
 <element name="TNotebook.Enabled" link="#lcl.controls.TControl.Enabled"/>
+<element name="TNotebook.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
+<element name="TNotebook.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+<element name="TNotebook.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TNotebook.TabStop" link="#lcl.control.TWinControl.TabStop"/>
 <element name="TNotebook.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TNotebook.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
 <element name="TNotebook.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
@@ -1046,10 +1050,6 @@ Inspector to maintain the values in the property.
 <element name="TNotebook.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
 <element name="TNotebook.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TNotebook.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
-<element name="TNotebook.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
-<element name="TNotebook.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TNotebook.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-<element name="TNotebook.TabStop" link="#lcl.control.TWinControl.TabStop"/>
 
 <element name="TTimer">
 <short>
@@ -1667,7 +1667,22 @@ assigned in the class instance.
 <descr/>
 <seealso/>
 </element>
+<element name="TShape.Shape">
+<short>Indicates the geometric shape drawn in the control.</short>
+<descr>
+<p>
+<var>Shape</var> is a <var>TShapeType</var> property that specifies the 
+geometric shape drawn in the control. See <link id="TShapeType"/> for the 
+values that can be assigned to the property.
+</p>
+</descr>
+<seealso>
+<link id="TShapeType"/>
+</seealso>
+</element>
 
+<element name="TShape.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TShape.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TShape.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TShape.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
 <element name="TShape.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
@@ -1688,23 +1703,6 @@ assigned in the class instance.
 <element name="TShape.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TShape.OnStartDock" link="#lcl.controls.TControl.OnStartDock"/>
 <element name="TShape.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
-
-<element name="TShape.Shape">
-<short>Indicates the geometric shape drawn in the control.</short>
-<descr>
-<p>
-<var>Shape</var> is a <var>TShapeType</var> property that specifies the 
-geometric shape drawn in the control. See <link id="TShapeType"/> for the 
-values that can be assigned to the property.
-</p>
-</descr>
-<seealso>
-<link id="TShapeType"/>
-</seealso>
-</element>
-
-<element name="TShape.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TShape.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TResizeStyle">
 <short>
@@ -2866,6 +2864,15 @@ size can be adjusted using the sizing bars and with the
 <element name="TSplitter.DoubleBuffered" link="#lcl.controls.TWinControl.DoubleBuffered"/>
 <element name="TSplitter.Height" link="#lcl.controls.TControl.Height"/>
 <element name="TSplitter.MinSize" link="#lcl.extctrls.TCustomSplitter.MinSize"/>
+<element name="TSplitter.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+<element name="TSplitter.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
+<element name="TSplitter.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TSplitter.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+<element name="TSplitter.ResizeAnchor" link="#lcl.extctrls.TCustomSplitter.ResizeAnchor"/>
+<element name="TSplitter.ResizeStyle" link="#lcl.extctrls.TCustomSplitter.ResizeStyle"/>
+<element name="TSplitter.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TSplitter.Visible" link="#lcl.controls.TControl.Visible"/>
+<element name="TSplitter.Width" link="#lcl.controls.TControl.Width"/>
 <element name="TSplitter.OnCanOffset" link="#lcl.extctrls.TCustomSplitter.OnCanOffset"/>
 <element name="TSplitter.OnCanResize" link="#lcl.extctrls.TCustomSplitter.OnCanResize"/>
 <element name="TSplitter.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
@@ -2877,15 +2884,6 @@ size can be adjusted using the sizing bars and with the
 <element name="TSplitter.OnMouseWheelLeft" link="#lcl.controls.TControl.OnMouseWheelLeft"/>
 <element name="TSplitter.OnMouseWheelRight" link="#lcl.controls.TControl.OnMouseWheelRight"/>
 <element name="TSplitter.OnPaint" link="#lcl.controls.TCustomControl.OnPaint"/>
-<element name="TSplitter.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
-<element name="TSplitter.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
-<element name="TSplitter.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TSplitter.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TSplitter.ResizeAnchor" link="#lcl.extctrls.TCustomSplitter.ResizeAnchor"/>
-<element name="TSplitter.ResizeStyle" link="#lcl.extctrls.TCustomSplitter.ResizeStyle"/>
-<element name="TSplitter.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TSplitter.Visible" link="#lcl.controls.TControl.Visible"/>
-<element name="TSplitter.Width" link="#lcl.controls.TControl.Width"/>
 
 <element name="TPaintBox">
 <short>
@@ -3754,6 +3752,16 @@ Use TImageList when a list of images with scaling capabilities is needed.
 <element name="TImage.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
 <element name="TImage.DragMode" link="#lcl.controls.TControl.DragMode"/>
 <element name="TImage.Enabled" link="#lcl.controls.TControl.Enabled"/>
+<element name="TImage.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TImage.Picture" link="#lcl.extctrls.TCustomImage.Picture"/>
+<element name="TImage.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+<element name="TImage.Proportional" link="#lcl.extctrls.TCustomImage.Proportional"/>
+<element name="TImage.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TImage.Stretch" link="#lcl.extctrls.TCustomImage.Stretch"/>
+<element name="TImage.StretchOutEnabled" link="#lcl.extctrls.TCustomImage.StretchOutEnabled"/>
+<element name="TImage.StretchInEnabled" link="#lcl.extctrls.TCustomImage.StretchInEnabled"/>
+<element name="TImage.Transparent" link="#lcl.extctrls.TCustomImage.Transparent"/>
+<element name="TImage.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TImage.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TImage.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TImage.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
@@ -3777,16 +3785,6 @@ Use TImageList when a list of images with scaling capabilities is needed.
 <element name="TImage.OnPaintBackground" link="#lcl.extctrls.TCustomImage.OnPaintBackground"/>
 <element name="TImage.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TImage.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
-<element name="TImage.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TImage.Picture" link="#lcl.extctrls.TCustomImage.Picture"/>
-<element name="TImage.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TImage.Proportional" link="#lcl.extctrls.TCustomImage.Proportional"/>
-<element name="TImage.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TImage.Stretch" link="#lcl.extctrls.TCustomImage.Stretch"/>
-<element name="TImage.StretchOutEnabled" link="#lcl.extctrls.TCustomImage.StretchOutEnabled"/>
-<element name="TImage.StretchInEnabled" link="#lcl.extctrls.TCustomImage.StretchInEnabled"/>
-<element name="TImage.Transparent" link="#lcl.extctrls.TCustomImage.Transparent"/>
-<element name="TImage.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TBevelStyle">
 <short>
@@ -5018,6 +5016,17 @@ boxes, and determine their order and layout using the <var>Rows</var>,
 </seealso>
 </element>
 
+<element name="TRadioGroup.ParentBackground" link="#lcl.controls.TWinControl.ParentBackground"/>
+<element name="TRadioGroup.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
+<element name="TRadioGroup.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+<element name="TRadioGroup.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+<element name="TRadioGroup.ParentDoubleBuffered" link="#lcl.controls.TWinControl.DoubleBuffered"/>
+<element name="TRadioGroup.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TRadioGroup.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+<element name="TRadioGroup.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TRadioGroup.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TRadioGroup.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+<element name="TRadioGroup.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TRadioGroup.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TRadioGroup.OnClick" link="#lcl.extctrls.TCustomRadioGroup.OnClick"/>
 <element name="TRadioGroup.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
@@ -5043,17 +5052,6 @@ boxes, and determine their order and layout using the <var>Rows</var>,
 <element name="TRadioGroup.OnSelectionChanged" link="#lcl.extctrls.TCustomRadioGroup.OnSelectionChanged"/>
 <element name="TRadioGroup.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 <element name="TRadioGroup.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
-<element name="TRadioGroup.ParentBackground" link="#lcl.controls.TWinControl.ParentBackground"/>
-<element name="TRadioGroup.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
-<element name="TRadioGroup.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
-<element name="TRadioGroup.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
-<element name="TRadioGroup.ParentDoubleBuffered" link="#lcl.controls.TWinControl.DoubleBuffered"/>
-<element name="TRadioGroup.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TRadioGroup.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TRadioGroup.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TRadioGroup.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-<element name="TRadioGroup.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
-<element name="TRadioGroup.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TCheckGroupClicked">
 <short>
@@ -5792,6 +5790,18 @@ determine their order and layout.
 </descr>
 </element>
 
+<element name="TCheckGroup.ParentBackground" link="#lcl.controls.TWinControl.ParentBackground"/>
+<element name="TCheckGroup.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
+<element name="TCheckGroup.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+<element name="TCheckGroup.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+<element name="TCheckGroup.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
+<element name="TCheckGroup.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TCheckGroup.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+<element name="TCheckGroup.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TCheckGroup.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TCheckGroup.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+<element name="TCheckGroup.Visible" link="#lcl.controls.TControl.Visible"/>
+
 <element name="TCheckGroup.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TCheckGroup.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TCheckGroup.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
@@ -5815,17 +5825,6 @@ determine their order and layout.
 <element name="TCheckGroup.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TCheckGroup.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 <element name="TCheckGroup.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
-<element name="TCheckGroup.ParentBackground" link="#lcl.controls.TWinControl.ParentBackground"/>
-<element name="TCheckGroup.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
-<element name="TCheckGroup.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
-<element name="TCheckGroup.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
-<element name="TCheckGroup.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
-<element name="TCheckGroup.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TCheckGroup.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TCheckGroup.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TCheckGroup.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-<element name="TCheckGroup.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
-<element name="TCheckGroup.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TBoundLabel">
 <short>Implements a label bound to another control.</short>
