@@ -460,12 +460,13 @@ type
     MainPPUExists: boolean; // main ppu file was there after compile
     ViaMakefile: boolean;  // compiled via make
     DirectoryWritable: TPkgOutputDirWritable;
+    LazarusVersion: string;
     constructor Create;
     destructor Destroy; override;
   end;
   TPkgOutputDir = (
-    podDefault,
-    podFallback // used when podDefault is not writable
+    podDefault, // used when writable or nothing in fallback
+    podFallback // used when compile is needed and podDefault is not writable, or if fallback is newer
     );
 
   TIterateComponentClassesEvent = procedure(PkgComponent: TPkgComponent) of object;
