@@ -2773,8 +2773,132 @@ begin
   //debugln('TDefinePropertiesPersistent.PublicDefineProperties END ',ClassName,' ',dbgsName(FTarget));
 end;
 
+type
+  TPersistentAccess = class(TPersistent);
+
+function GetFormEditorLookupRoot(APersistent: TPersistent): TPersistent;
+// called when a TPersistent does not have an owner
+// Search in all designer forms
+var
+  Checked: TFPList;
+
+  function GetOwner(Instance: TPersistent): TComponent;
+  var
+    CurOwner, NextOwner: TPersistent;
+  begin
+    Result:=nil;
+    if Instance=nil then exit;
+    CurOwner:=Instance;
+    repeat
+      if (CurOwner is TComponent) then begin
+        NextOwner := TComponent(CurOwner).Owner;
+        if NextOwner=nil then
+          exit(TComponent(CurOwner));
+      end else if CurOwner is TCollection then begin
+        NextOwner := TCollection(CurOwner).Owner;
+      end else if CurOwner is TCollectionItem then begin
+        NextOwner := TCollectionItem(CurOwner).Collection;
+      end else
+        NextOwner := TPersistentAccess(CurOwner).GetOwner;
+      if NextOwner=nil then break;
+      CurOwner:=NextOwner;
+    until false;
+    if CurOwner is TComponent then
+      Result:=TComponent(CurOwner);
+  end;
+
+  function Check(Root: TComponent; Instance: TPersistent): boolean;
+  var
+    PropList: PPropList;
+    PropInfo: PPropInfo;
+    Cnt, i: Integer;
+    Obj: TObject;
+    CurOwner: TComponent;
+  begin
+    if Checked.IndexOf(Instance)>=0 then exit(false);
+    Checked.Add(Instance);
+
+    CurOwner:=GetOwner(Instance);
+    if (CurOwner<>nil) and (CurOwner<>Root) then
+    begin
+      if BaseFormEditor1.IsJITComponent(CurOwner) then
+      begin
+        // this component is from another designer form
+        Root:=CurOwner;
+      end;
+    end;
+
+    // check all properties
+    Cnt:=GetPropList(Instance,PropList);
+    try
+      for i:=0 to Cnt-1 do
+      begin
+        PropInfo:=PropList^[i];
+        if PropInfo^.PropType^.Kind<>tkClass then continue;
+        Obj:=GetObjectProp(Instance,PropInfo,TPersistent);
+        if Obj=nil then continue;
+        if Obj=APersistent then
+        begin
+          // found
+          GetFormEditorLookupRoot:=Root;
+          exit(true);
+        end;
+        if Check(Root,TPersistent(Obj)) then
+          exit(true);
+      end;
+    finally
+      Freemem(PropList);
+    end;
+
+    Result:=false;
+  end;
+
+var
+  i, j: Integer;
+  aDesigner: TIDesigner;
+  Root, CurOwner: TComponent;
+begin
+  Result:=nil;
+  if APersistent=nil then exit;
+  if BaseFormEditor1=nil then exit;
+
+  // first a quick check for regular components:
+  CurOwner:=GetOwner(APersistent);
+  if CurOwner<>nil then
+  begin
+    if BaseFormEditor1.IsJITComponent(CurOwner) then
+      if CurOwner=APersistent then
+        exit(nil) // this is a LookupRoot
+      else
+        exit(CurOwner);
+  end;
+
+  {$IFNDEF EnableGetFormEditorLookupRoot}
+  exit;
+  {$ENDIF}
+
+  // then the slow search:
+  Checked:=TFPList.Create;
+  try
+    for i:=0 to BaseFormEditor1.DesignerCount-1 do
+    begin
+      aDesigner:=BaseFormEditor1.Designer[i];
+      if aDesigner=nil then continue;
+      Root:=aDesigner.LookupRoot;
+      if Check(Root,Root) then
+        exit;
+      for j:=0 to Root.ComponentCount-1 do
+        if Check(Root,Root.Components[j]) then
+          exit;
+    end;
+  finally
+    Checked.Free;
+  end;
+end;
+
 initialization
   RegisterStandardClasses;
+  RegisterGetLookupRoot(@GetFormEditorLookupRoot);
 
 end.
 

@@ -252,7 +252,7 @@ type
 
     // designers
     function DesignerCount: integer; virtual; abstract;
-    property Designer[Index: integer]: TIDesigner read GetDesigner;
+    property Designer[Index: integer]: TIDesigner read GetDesigner; // can be nil!
     function GetCurrentDesigner: TIDesigner; virtual; abstract;
     function GetDesignerForm(APersistent: TPersistent): TCustomForm; virtual; abstract;
     function GetDesignerByComponent(AComponent: TComponent): TIDesigner; virtual; abstract;
