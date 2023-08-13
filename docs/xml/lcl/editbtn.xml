@@ -948,6 +948,21 @@ The default value for the property is <var>bsNone</var> in
 <element name="TEditButton.Layout" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Layout"/>
 <element name="TEditButton.MaxLength" link="#lcl.stdctrls.TCustomEdit.MaxLength"/>
 <element name="TEditButton.NumGlyphs" link="#lcl.editbtn.TCustomEditButton.NumGlyphs"/>
+<element name="TEditButton.ParentBidiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
+<element name="TEditButton.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+<element name="TEditButton.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+<element name="TEditButton.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TEditButton.PasswordChar" link="#lcl.stdctrls.TCustomEdit.PasswordChar"/>
+<element name="TEditButton.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+<element name="TEditButton.ReadOnly" link="#lcl.stdctrls.TCustomEdit.ReadOnly"/>
+<element name="TEditButton.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TEditButton.Spacing" link="#lcl.editbtn.TCustomEditButton.Spacing"/>
+<element name="TEditButton.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TEditButton.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+<element name="TEditButton.Text" link="#lcl.stdctrls.TCustomEdit.Text"/>
+<element name="TEditButton.TextHint" link="#lcl.stdctrls.TCustomEdit.TextHint"/>
+<element name="TEditButton.Visible" link="#lcl.controls.TControl.Visible"/>
+
 <element name="TEditButton.OnButtonClick" link="#lcl.editbtn.TCustomEditButton.OnButtonClick"/>
 <element name="TEditButton.OnChange" link="#lcl.stdctrls.TCustomEdit.OnChange"/>
 <element name="TEditButton.OnClick" link="#lcl.controls.TControl.OnClick"/>
@@ -972,20 +987,6 @@ The default value for the property is <var>bsNone</var> in
 <element name="TEditButton.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
 <element name="TEditButton.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 <element name="TEditButton.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
-<element name="TEditButton.ParentBidiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
-<element name="TEditButton.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
-<element name="TEditButton.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
-<element name="TEditButton.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TEditButton.PasswordChar" link="#lcl.stdctrls.TCustomEdit.PasswordChar"/>
-<element name="TEditButton.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TEditButton.ReadOnly" link="#lcl.stdctrls.TCustomEdit.ReadOnly"/>
-<element name="TEditButton.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TEditButton.Spacing" link="#lcl.editbtn.TCustomEditButton.Spacing"/>
-<element name="TEditButton.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-<element name="TEditButton.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
-<element name="TEditButton.Text" link="#lcl.stdctrls.TCustomEdit.Text"/>
-<element name="TEditButton.TextHint" link="#lcl.stdctrls.TCustomEdit.TextHint"/>
-<element name="TEditButton.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TFilterStringOption">
 <short>String filter options which can be enabled in controls.</short>
@@ -2084,6 +2085,8 @@ CheckListbox.
 <element name="TCustomControlFilterEdit.Spacing" link="#lcl.editbtn.TCustomEditButton.Spacing"/>
 <element name="TCustomControlFilterEdit.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
 <element name="TCustomControlFilterEdit.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+<element name="TCustomControlFilterEdit.Text" link="#lcl.controls.TControl.Text"/>
+<element name="TCustomControlFilterEdit.TextHint" link="#lcl.groupededit.TCustomAbstractGroupedEdit.TextHint"/>
 <element name="TCustomControlFilterEdit.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TCustomControlFilterEdit.OnButtonClick" link="#lcl.editbtn.TCustomEditButton.OnButtonClick"/>
 <element name="TCustomControlFilterEdit.OnChange" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnChange"/>
@@ -2109,8 +2112,6 @@ CheckListbox.
 <element name="TCustomControlFilterEdit.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
 <element name="TCustomControlFilterEdit.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 <element name="TCustomControlFilterEdit.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
-<element name="TCustomControlFilterEdit.Text" link="#lcl.controls.TControl.Text"/>
-<element name="TCustomControlFilterEdit.TextHint" link="#lcl.groupededit.TCustomAbstractGroupedEdit.TextHint"/>
 
 <element name="TAcceptFileNameEvent">
 <short>
@@ -2624,6 +2625,8 @@ Text displayed in the balloon hint for the button in the control.
 <element name="TFileNameEdit.Spacing" link="#lcl.editbtn.TCustomEditButton.Spacing"/>
 <element name="TFileNameEdit.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
 <element name="TFileNameEdit.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+<element name="TFileNameEdit.Text" link="#lcl.controls.TControl.Text"/>
+<element name="TFileNameEdit.TextHint" link="#lcl.groupededit.TCustomAbstractGroupedEdit.TextHint"/>
 <element name="TFileNameEdit.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TFileNameEdit.OnButtonClick" link="#lcl.editbtn.TCustomEditButton.OnButtonClick"/>
 <element name="TFileNameEdit.OnChange" link="#lcl.stdctrls.TCustomEdit.OnChange"/>
@@ -2649,8 +2652,6 @@ Text displayed in the balloon hint for the button in the control.
 <element name="TFileNameEdit.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
 <element name="TFileNameEdit.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 <element name="TFileNameEdit.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
-<element name="TFileNameEdit.Text" link="#lcl.controls.TControl.Text"/>
-<element name="TFileNameEdit.TextHint" link="#lcl.groupededit.TCustomAbstractGroupedEdit.TextHint"/>
 
 <element name="TDirectoryEdit">
 <short>
@@ -3031,6 +3032,8 @@ Hint displayed when the mouse hovers over the button for the control.
 <element name="TDirectoryEdit.Spacing" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Spacing"/>
 <element name="TDirectoryEdit.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
 <element name="TDirectoryEdit.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+<element name="TDirectoryEdit.Text" link="#lcl.controls.TControl.Text"/>
+<element name="TDirectoryEdit.TextHint" link="#lcl.groupededit.TCustomAbstractGroupedEdit.TextHint"/>
 <element name="TDirectoryEdit.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TDirectoryEdit.OnButtonClick" link="#lcl.editbtn.TCustomEditButton.OnButtonClick"/>
 <element name="TDirectoryEdit.OnChange" link="#lcl.stdctrls.TCustomEdit.OnChange"/>
@@ -3056,8 +3059,6 @@ Hint displayed when the mouse hovers over the button for the control.
 <element name="TDirectoryEdit.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
 <element name="TDirectoryEdit.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 <element name="TDirectoryEdit.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
-<element name="TDirectoryEdit.Text" link="#lcl.controls.TControl.Text"/>
-<element name="TDirectoryEdit.TextHint" link="#lcl.groupededit.TCustomAbstractGroupedEdit.TextHint"/>
 
 <element name="TAcceptDateEvent">
 <short>
@@ -3916,89 +3917,6 @@ when the Button is clicked for the control.
 </seealso>
 </element>
 
-<element name="TDateEdit.OnAcceptDate">
-<short>
-Event handler signalled to accept or reject a new date value selected using 
-the calendar dialog for the control.
-</short>
-<descr>
-<p>
-<var>OnAcceptDate</var> is a <var>TAcceptDateEvent</var> property with the 
-event handler signalled to accept or reject a new value for the Date 
-property. The handler routine can perform actions to validate or update the 
-TDateTime and Boolean arguments.
-</p>
-<p>
-OnAcceptDate is signalled (when assigned) when the pop-up calendar dialog is 
-displayed for the grouped edit control. The handler routine can update the 
-value in the date argument if its value is not in an acceptable range. If the 
-Boolean argument is <b>True</b> on exit from the handler, the date argument 
-is stored to the Date property. Otherwise, the new date/time value is 
-discarded.
-</p>
-<p>
-An exception raised during execution of the pop-up calendar dialog is handled 
-in the class instance; MessageDlg is called to display the exception message.
-</p>
-</descr>
-<seealso>
-<link id="TDateEdit.ButtonClick"/>
-<link id="TDateEdit.Date"/>
-<link id="TAcceptDateEvent"/>
-</seealso>
-</element>
-
-<element name="TDateEdit.OnCustomDate">
-<short>
-<var>OnCustomDate</var> - event handler for inserting a custom date.
-</short>
-<descr>
-<p>
-<var>OnCustomDate</var> is a <var>TCustomDateEvent</var> property with the 
-event handler signalled to validate or update a string value before it is 
-converted to the TDateTime type. OnCustomDate is signalled (when assigned) 
-when the value in Text is converted to the TDateTime type used in the Date 
-property. It also occurs when a new value is assigned to DirectInput, and 
-when reading the value for the Date property when DirectInput is enabled.
-</p>
-</descr>
-<seealso>
-<link id="TDateEdit.Date"/>
-<link id="TDateEdit.DateOrder"/>
-<link id="TDateEdit.DirectInput"/>
-<link id="TDateEdit.Text"/>
-</seealso>
-</element>
-
-<element name="TDateEdit.OnDateRangeCheck">
-<short>
-Event handler signalled prior to validating and range checking a date value.
-</short>
-<descr>
-<p>
-<var>OnDateRangeCheck</var> is a <var>TDateRangeCheckEvent</var> with the 
-event handler signalled prior to validating and range checking a date value. 
-It allows the application to perform actions needed before a date value is 
-potentially updated. An application can implement and assign a routine to the 
-handler which responds to the event notification.
-</p>
-<p>
-OnDateRangeCheck is signalled (when assigned) from the DoDateRangeCheck 
-method. It occurs when a new value is assigned to either the MinDate or 
-MaxDate property, and when ButtonClick is called to display the pop-up 
-calendar for the control.
-</p>
-</descr>
-<seealso>
-<link id="TDateEdit.Date"/>
-<link id="TDateEdit.MinDate"/>
-<link id="TDateEdit.MaxDate"/>
-<link id="TDateEdit.DoDateRangeCheck"/>
-<link id="TDateEdit.ButtonClick"/>
-<link id="TDateRangeCheckEvent"/>
-</seealso>
-</element>
-
 <element name="TDateEdit.ReadOnly" link="#lcl.groupededit.TCustomAbstractGroupedEdit.ReadOnly"/>
 
 <element name="TDateEdit.DefaultToday">
@@ -4234,6 +4152,103 @@ their native calendar controls.
 <element name="TDateEdit.Font" link="#lcl.controls.TControl.Font"/>
 <element name="TDateEdit.Layout" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Layout"/>
 <element name="TDateEdit.MaxLength" link="#lcl.stdctrls.TCustomEdit.MaxLength"/>
+<element name="TDateEdit.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
+<element name="TDateEdit.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+<element name="TDateEdit.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+<element name="TDateEdit.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TDateEdit.PasswordChar" link="#lcl.stdctrls.TCustomEdit.PasswordChar"/>
+<element name="TDateEdit.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+<element name="TDateEdit.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TDateEdit.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+<element name="TDateEdit.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TDateEdit.Spacing" link="#lcl.editbtn.TCustomEditButton.Spacing"/>
+<element name="TDateEdit.Visible" link="#lcl.controls.TControl.Visible"/>
+<element name="TDateEdit.Text" link="#lcl.controls.TControl.Text"/>
+<element name="TDateEdit.TextHint" link="#lcl.groupededit.TCustomAbstractGroupedEdit.TextHint"/>
+
+<element name="TDateEdit.OnAcceptDate">
+<short>
+Event handler signalled to accept or reject a new date value selected using 
+the calendar dialog for the control.
+</short>
+<descr>
+<p>
+<var>OnAcceptDate</var> is a <var>TAcceptDateEvent</var> property with the 
+event handler signalled to accept or reject a new value for the Date 
+property. The handler routine can perform actions to validate or update the 
+TDateTime and Boolean arguments.
+</p>
+<p>
+OnAcceptDate is signalled (when assigned) when the pop-up calendar dialog is 
+displayed for the grouped edit control. The handler routine can update the 
+value in the date argument if its value is not in an acceptable range. If the 
+Boolean argument is <b>True</b> on exit from the handler, the date argument 
+is stored to the Date property. Otherwise, the new date/time value is 
+discarded.
+</p>
+<p>
+An exception raised during execution of the pop-up calendar dialog is handled 
+in the class instance; MessageDlg is called to display the exception message.
+</p>
+</descr>
+<seealso>
+<link id="TDateEdit.ButtonClick"/>
+<link id="TDateEdit.Date"/>
+<link id="TAcceptDateEvent"/>
+</seealso>
+</element>
+
+<element name="TDateEdit.OnCustomDate">
+<short>
+<var>OnCustomDate</var> - event handler for inserting a custom date.
+</short>
+<descr>
+<p>
+<var>OnCustomDate</var> is a <var>TCustomDateEvent</var> property with the 
+event handler signalled to validate or update a string value before it is 
+converted to the TDateTime type. OnCustomDate is signalled (when assigned) 
+when the value in Text is converted to the TDateTime type used in the Date 
+property. It also occurs when a new value is assigned to DirectInput, and 
+when reading the value for the Date property when DirectInput is enabled.
+</p>
+</descr>
+<seealso>
+<link id="TDateEdit.Date"/>
+<link id="TDateEdit.DateOrder"/>
+<link id="TDateEdit.DirectInput"/>
+<link id="TDateEdit.Text"/>
+</seealso>
+</element>
+
+<element name="TDateEdit.OnDateRangeCheck">
+<short>
+Event handler signalled prior to validating and range checking a date value.
+</short>
+<descr>
+<p>
+<var>OnDateRangeCheck</var> is a <var>TDateRangeCheckEvent</var> with the 
+event handler signalled prior to validating and range checking a date value. 
+It allows the application to perform actions needed before a date value is 
+potentially updated. An application can implement and assign a routine to the 
+handler which responds to the event notification.
+</p>
+<p>
+OnDateRangeCheck is signalled (when assigned) from the DoDateRangeCheck 
+method. It occurs when a new value is assigned to either the MinDate or 
+MaxDate property, and when ButtonClick is called to display the pop-up 
+calendar for the control.
+</p>
+</descr>
+<seealso>
+<link id="TDateEdit.Date"/>
+<link id="TDateEdit.MinDate"/>
+<link id="TDateEdit.MaxDate"/>
+<link id="TDateEdit.DoDateRangeCheck"/>
+<link id="TDateEdit.ButtonClick"/>
+<link id="TDateRangeCheckEvent"/>
+</seealso>
+</element>
+
 <element name="TDateEdit.OnButtonClick" link="#lcl.editbtn.TCustomEditButton.OnButtonClick"/>
 <element name="TDateEdit.OnChange" link="#lcl.stdctrls.TCustomEdit.OnChange"/>
 <element name="TDateEdit.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
@@ -4256,19 +4271,6 @@ their native calendar controls.
 <element name="TDateEdit.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
 <element name="TDateEdit.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TDateEdit.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
-<element name="TDateEdit.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
-<element name="TDateEdit.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
-<element name="TDateEdit.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
-<element name="TDateEdit.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TDateEdit.PasswordChar" link="#lcl.stdctrls.TCustomEdit.PasswordChar"/>
-<element name="TDateEdit.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TDateEdit.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TDateEdit.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
-<element name="TDateEdit.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-<element name="TDateEdit.Spacing" link="#lcl.editbtn.TCustomEditButton.Spacing"/>
-<element name="TDateEdit.Visible" link="#lcl.controls.TControl.Visible"/>
-<element name="TDateEdit.Text" link="#lcl.controls.TControl.Text"/>
-<element name="TDateEdit.TextHint" link="#lcl.groupededit.TCustomAbstractGroupedEdit.TextHint"/>
 
 <element name="TAcceptTimeEvent">
 <short>
@@ -4634,28 +4636,6 @@ Event handler signalled to get an arbitrary time value for the control.
 <element name="TTimeEdit.FocusOnButtonClick" link="#lcl.editbtn.TCustomEditButton.FocusOnButtonClick"/>
 <element name="TTimeEdit.Font" link="#lcl.controls.TControl.Font"/>
 <element name="TTimeEdit.MaxLength" link="#lcl.groupededit.TCustomAbstractGroupedEdit.MaxLength"/>
-<element name="TTimeEdit.OnButtonClick" link="#lcl.editbtn.TCustomEditButton.OnButtonClick"/>
-<element name="TTimeEdit.OnChange" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnChange"/>
-<element name="TTimeEdit.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
-<element name="TTimeEdit.OnClick" link="#lcl.controls.TControl.OnClick"/>
-<element name="TTimeEdit.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
-<element name="TTimeEdit.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
-<element name="TTimeEdit.OnEditingDone" link="#lcl.controls.TControl.OnEditingDone"/>
-<element name="TTimeEdit.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
-<element name="TTimeEdit.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
-<element name="TTimeEdit.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
-<element name="TTimeEdit.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
-<element name="TTimeEdit.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
-<element name="TTimeEdit.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
-<element name="TTimeEdit.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
-<element name="TTimeEdit.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
-<element name="TTimeEdit.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
-<element name="TTimeEdit.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
-<element name="TTimeEdit.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
-<element name="TTimeEdit.OnMouseWheelDown" link="#lcl.controls.TControl.OnMouseWheelDown"/>
-<element name="TTimeEdit.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
-<element name="TTimeEdit.OnResize" link="#lcl.controls.TControl.OnResize"/>
-<element name="TTimeEdit.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
 <element name="TTimeEdit.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
 <element name="TTimeEdit.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
 <element name="TTimeEdit.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
@@ -4685,6 +4665,29 @@ by 5 columns using 5 minute time intervals is used.
 <element name="TTimeEdit.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TTimeEdit.Text" link="#lcl.controls.TControl.Text"/>
 <element name="TTimeEdit.TextHint" link="#lcl.groupededit.TCustomAbstractGroupedEdit.TextHint"/>
+
+<element name="TTimeEdit.OnButtonClick" link="#lcl.editbtn.TCustomEditButton.OnButtonClick"/>
+<element name="TTimeEdit.OnChange" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnChange"/>
+<element name="TTimeEdit.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
+<element name="TTimeEdit.OnClick" link="#lcl.controls.TControl.OnClick"/>
+<element name="TTimeEdit.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
+<element name="TTimeEdit.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
+<element name="TTimeEdit.OnEditingDone" link="#lcl.controls.TControl.OnEditingDone"/>
+<element name="TTimeEdit.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
+<element name="TTimeEdit.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
+<element name="TTimeEdit.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
+<element name="TTimeEdit.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
+<element name="TTimeEdit.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
+<element name="TTimeEdit.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+<element name="TTimeEdit.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
+<element name="TTimeEdit.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
+<element name="TTimeEdit.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+<element name="TTimeEdit.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+<element name="TTimeEdit.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
+<element name="TTimeEdit.OnMouseWheelDown" link="#lcl.controls.TControl.OnMouseWheelDown"/>
+<element name="TTimeEdit.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
+<element name="TTimeEdit.OnResize" link="#lcl.controls.TControl.OnResize"/>
+<element name="TTimeEdit.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
 
 <element name="TAcceptValueEvent">
 <short>
@@ -4990,6 +4993,8 @@ for the dialog in the RunDialog method.
 <element name="TCalcEdit.Spacing" link="#lcl.editbtn.TCustomEditButton.Spacing"/>
 <element name="TCalcEdit.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
 <element name="TCalcEdit.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+<element name="TCalcEdit.Text" link="#lcl.controls.TControl.Text"/>
+<element name="TCalcEdit.TextHint" link="#lcl.groupededit.TCustomAbstractGroupedEdit.TextHint"/>
 <element name="TCalcEdit.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TCalcEdit.OnButtonClick" link="#lcl.editbtn.TCustomEditButton.OnButtonClick"/>
 <element name="TCalcEdit.OnChange" link="#lcl.stdctrls.TCustomEdit.OnChange"/>
@@ -5015,8 +5020,6 @@ for the dialog in the RunDialog method.
 <element name="TCalcEdit.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
 <element name="TCalcEdit.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 <element name="TCalcEdit.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
-<element name="TCalcEdit.Text" link="#lcl.controls.TControl.Text"/>
-<element name="TCalcEdit.TextHint" link="#lcl.groupededit.TCustomAbstractGroupedEdit.TextHint"/>
 
 <element name="ResBtnListFilter">
 <short>
