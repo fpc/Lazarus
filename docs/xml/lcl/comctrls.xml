@@ -5509,24 +5509,6 @@ control (TPageControl) is resized. Left is always set to 0 (zero).
 </seealso>
 </element>
 
-<element name="TTabSheet.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
-<element name="TTabSheet.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
-<element name="TTabSheet.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
-<element name="TTabSheet.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>
-<element name="TTabSheet.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
-<element name="TTabSheet.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
-<element name="TTabSheet.OnHide" link="#lcl.comctrls.TCustomPage.OnHide"/>
-<element name="TTabSheet.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
-<element name="TTabSheet.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
-<element name="TTabSheet.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
-<element name="TTabSheet.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
-<element name="TTabSheet.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
-<element name="TTabSheet.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
-<element name="TTabSheet.OnMouseWheelDown" link="#lcl.controls.TControl.OnMouseWheelDown"/>
-<element name="TTabSheet.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
-<element name="TTabSheet.OnResize" link="#lcl.controls.TControl.OnResize"/>
-<element name="TTabSheet.OnShow" link="#lcl.comctrls.TCustomPage.OnShow"/>
-<element name="TTabSheet.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 <element name="TTabSheet.PageIndex" link="#lcl.comctrls.TCustomPage.PageIndex"/>
 <element name="TTabSheet.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
 <element name="TTabSheet.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
@@ -5614,6 +5596,25 @@ container for scrollable content.
 <link id="#lcl.comctrls.TCustomPage.Width"/>
 </seealso>
 </element>
+
+<element name="TTabSheet.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
+<element name="TTabSheet.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
+<element name="TTabSheet.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
+<element name="TTabSheet.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>
+<element name="TTabSheet.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
+<element name="TTabSheet.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
+<element name="TTabSheet.OnHide" link="#lcl.comctrls.TCustomPage.OnHide"/>
+<element name="TTabSheet.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+<element name="TTabSheet.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
+<element name="TTabSheet.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
+<element name="TTabSheet.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+<element name="TTabSheet.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+<element name="TTabSheet.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
+<element name="TTabSheet.OnMouseWheelDown" link="#lcl.controls.TControl.OnMouseWheelDown"/>
+<element name="TTabSheet.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
+<element name="TTabSheet.OnResize" link="#lcl.controls.TControl.OnResize"/>
+<element name="TTabSheet.OnShow" link="#lcl.comctrls.TCustomPage.OnShow"/>
+<element name="TTabSheet.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 
 <element name="TPageControl">
 <short>
@@ -6117,6 +6118,7 @@ TCustomTabControl, where it is defined as a <var>String</var>.
 <element name="TPageControl.Images" link="#lcl.comctrls.TCustomTabControl.Images"/>
 <element name="TPageControl.ImagesWidth" link="#lcl.comctrls.TCustomTabControl.ImagesWidth"/>
 <element name="TPageControl.MultiLine" link="#lcl.comctrls.TCustomTabControl.MultiLine"/>
+<element name="TPageControl.Options" link="#lcl.comctrls.TCustomTabControl.Options"/>
 <element name="TPageControl.ParentBidiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
 <element name="TPageControl.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
 <element name="TPageControl.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
@@ -6159,7 +6161,6 @@ TCustomTabControl, where it is defined as a <var>String</var>.
 <element name="TPageControl.OnStartDock" link="#lcl.controls.TControl.OnStartDock"/>
 <element name="TPageControl.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 <element name="TPageControl.OnUnDock" link="#lcl.controls.TWinControl.OnUnDock"/>
-<element name="TPageControl.Options" link="#lcl.comctrls.TCustomTabControl.Options"/>
 
 <element name="TTabControlStrings">
 <short>
@@ -8156,6 +8157,14 @@ client rectangle for the control as the value for the property. Use
 <element name="TTabControl.DragMode" link="#lcl.controls.TControl.DragMode"/>
 <element name="TTabControl.Enabled" link="#lcl.controls.TControl.Enabled"/>
 <element name="TTabControl.Font" link="#lcl.controls.TControl.Font"/>
+<element name="TTabControl.Options" link="#lcl.comctrls.TCustomTabControl.Options"/>
+<element name="TTabControl.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
+<element name="TTabControl.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+<element name="TTabControl.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TTabControl.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+<element name="TTabControl.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TTabControl.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TTabControl.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TTabControl.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TTabControl.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
 <element name="TTabControl.OnDockDrop" link="#lcl.controls.TWinControl.OnDockDrop"/>
@@ -8179,14 +8188,6 @@ client rectangle for the control as the value for the property. Use
 <element name="TTabControl.OnStartDock" link="#lcl.controls.TControl.OnStartDock"/>
 <element name="TTabControl.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 <element name="TTabControl.OnUnDock" link="#lcl.controls.TWinControl.OnUnDock"/>
-<element name="TTabControl.Options" link="#lcl.comctrls.TCustomTabControl.Options"/>
-<element name="TTabControl.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
-<element name="TTabControl.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
-<element name="TTabControl.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TTabControl.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TTabControl.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TTabControl.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-<element name="TTabControl.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TCustomDrawTarget">
 <short>
@@ -19055,6 +19056,20 @@ to bottom to represent the progress for the process.
 <element name="TProgressBar.Hint" link="#lcl.controls.TControl.Hint"/>
 <element name="TProgressBar.Max" link="#lcl.comctrls.TCustomProgressBar.Max"/>
 <element name="TProgressBar.Min" link="#lcl.comctrls.TCustomProgressBar.Min"/>
+<element name="TProgressBar.Orientation" link="#lcl.comctrls.TCustomProgressBar.Orientation"/>
+<element name="TProgressBar.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+<element name="TProgressBar.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+<element name="TProgressBar.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TProgressBar.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+<element name="TProgressBar.Position" link="#lcl.comctrls.TCustomProgressBar.Position"/>
+<element name="TProgressBar.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TProgressBar.Smooth" link="#lcl.comctrls.TCustomProgressBar.Smooth"/>
+<element name="TProgressBar.Step" link="#lcl.comctrls.TCustomProgressBar.Step"/>
+<element name="TProgressBar.Style" link="#lcl.comctrls.TCustomProgressBar.Style"/>
+<element name="TProgressBar.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TProgressBar.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+<element name="TProgressBar.Visible" link="#lcl.controls.TControl.Visible"/>
+<element name="TProgressBar.BarShowText" link="#lcl.comctrls.TCustomProgressBar.BarShowText"/>
 <element name="TProgressBar.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
 <element name="TProgressBar.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
 <element name="TProgressBar.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
@@ -19071,20 +19086,6 @@ to bottom to represent the progress for the process.
 <element name="TProgressBar.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
 <element name="TProgressBar.OnStartDock" link="#lcl.controls.TControl.OnStartDock"/>
 <element name="TProgressBar.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
-<element name="TProgressBar.Orientation" link="#lcl.comctrls.TCustomProgressBar.Orientation"/>
-<element name="TProgressBar.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
-<element name="TProgressBar.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
-<element name="TProgressBar.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TProgressBar.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TProgressBar.Position" link="#lcl.comctrls.TCustomProgressBar.Position"/>
-<element name="TProgressBar.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TProgressBar.Smooth" link="#lcl.comctrls.TCustomProgressBar.Smooth"/>
-<element name="TProgressBar.Step" link="#lcl.comctrls.TCustomProgressBar.Step"/>
-<element name="TProgressBar.Style" link="#lcl.comctrls.TCustomProgressBar.Style"/>
-<element name="TProgressBar.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-<element name="TProgressBar.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
-<element name="TProgressBar.Visible" link="#lcl.controls.TControl.Visible"/>
-<element name="TProgressBar.BarShowText" link="#lcl.comctrls.TCustomProgressBar.BarShowText"/>
 
 <element name="TUDAlignButton">
 <short>
@@ -20665,6 +20666,18 @@ increment or decrement the number displayed by a specified amount.
 <element name="TUpDown.Max" link="#lcl.comctrls.TCustomUpDown.Max"/>
 <element name="TUpDown.Min" link="#lcl.comctrls.TCustomUpDown.Min"/>
 <element name="TUpDown.MinRepeatInterval" link="#lcl.comctrls.TCustomUpDown.MinRepeatInterval"/>
+<element name="TUpDown.Orientation" link="#lcl.comctrls.TCustomUpDown.Orientation"/>
+<element name="TUpDown.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+<element name="TUpDown.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TUpDown.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+<element name="TUpDown.Position" link="#lcl.comctrls.TCustomUpDown.Position"/>
+<element name="TUpDown.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TUpDown.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TUpDown.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+<element name="TUpDown.Thousands" link="#lcl.comctrls.TCustomUpDown.Thousands"/>
+<element name="TUpDown.Flat" link="#lcl.comctrls.TCustomUpDown.Flat"/>
+<element name="TUpDown.Visible" link="#lcl.controls.TControl.Visible"/>
+<element name="TUpDown.Wrap" link="#lcl.comctrls.TCustomUpDown.Wrap"/>
 <element name="TUpDown.OnChanging" link="#lcl.comctrls.TCustomUpDown.OnChanging"/>
 <element name="TUpDown.OnChangingEx" link="#lcl.comctrls.TCustomUpDown.OnChangingEx"/>
 <element name="TUpDown.OnClick" link="#lcl.comctrls.TCustomUpDown.OnClick"/>
@@ -20682,18 +20695,6 @@ increment or decrement the number displayed by a specified amount.
 <element name="TUpDown.OnMouseWheelHorz" link="#lcl.controls.TControl.OnMouseWheelHorz"/>
 <element name="TUpDown.OnMouseWheelLeft" link="#lcl.controls.TControl.OnMouseWheelLeft"/>
 <element name="TUpDown.OnMouseWheelRight" link="#lcl.controls.TControl.OnMouseWheelRight"/>
-<element name="TUpDown.Orientation" link="#lcl.comctrls.TCustomUpDown.Orientation"/>
-<element name="TUpDown.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
-<element name="TUpDown.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TUpDown.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TUpDown.Position" link="#lcl.comctrls.TCustomUpDown.Position"/>
-<element name="TUpDown.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TUpDown.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-<element name="TUpDown.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
-<element name="TUpDown.Thousands" link="#lcl.comctrls.TCustomUpDown.Thousands"/>
-<element name="TUpDown.Flat" link="#lcl.comctrls.TCustomUpDown.Flat"/>
-<element name="TUpDown.Visible" link="#lcl.controls.TControl.Visible"/>
-<element name="TUpDown.Wrap" link="#lcl.comctrls.TCustomUpDown.Wrap"/>
 
 <element name="CN_DROPDOWNCLOSED">
 <short>Control notification message constant.</short>
@@ -22282,67 +22283,7 @@ clicked.
 <seealso/>
 </element>
 
-<element name="TToolButton.OnArrowClick">
-<short>
-Event handler signalled when the drop-down indicator for a tool button is 
-clicked.
-</short>
-<descr>
-<p>
-<var>OnArrowClick</var> is a <var>TNotifyEvent</var> property with the event 
-handler signalled when the drop-down indicator is clicked on a tool button 
-using a drop-down <var>Style</var>.
-</p>
-<p>
-OnArrowClick is signalled from the <var>ArrowClick</var> method (when 
-assigned), and occurs when the left mouse button was clicked on the drop-down 
-indicator. It is not executed if the <var>DropDownMenu</var> has already been 
-displayed.
-</p>
-<p>
-Use <var>OnClick</var> (or OnExecute in the Action) for the event handler 
-signalled when the tool button was clicked.
-</p>
-</descr>
-<seealso>
-<link id="TToolButton.Style"/>
-<link id="TToolButton.ArrowClick"/>
-<link id="TToolButton.Click"/>
-<link id="TToolButton.DropDownMenu"/>
-<link id="#lcl.controls.TControl.OnClick">OnClick</link>
-</seealso>
-</element>
 
-<element name="TToolButton.OnClick">
-<short>Event handler signalled when the tool button has been clicked.</short>
-<descr>
-<p>
-<var>OnClick</var> is a <var>TNotifyEvent</var> property with the event 
-handler signalled when the left mouse button is clicked on the tool button.
-</p>
-</descr>
-<seealso>
-<link id="TToolButton.Style"/>
-<link id="TToolButton.OnArrowClick"/>
-<link id="#lcl.controls.TControl.OnClick">TControl.OnClick</link>
-</seealso>
-</element>
-
-<element name="TToolButton.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
-<element name="TToolButton.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
-<element name="TToolButton.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
-<element name="TToolButton.OnEndDock" link="#lcl.controls.TControl.OnEndDock"/>
-<element name="TToolButton.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>
-<element name="TToolButton.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
-<element name="TToolButton.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
-<element name="TToolButton.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
-<element name="TToolButton.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
-<element name="TToolButton.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
-<element name="TToolButton.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
-<element name="TToolButton.OnMouseWheelDown" link="#lcl.controls.TControl.OnMouseWheelDown"/>
-<element name="TToolButton.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
-<element name="TToolButton.OnStartDock" link="#lcl.controls.TControl.OnStartDock"/>
-<element name="TToolButton.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 <element name="TToolButton.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
 <element name="TToolButton.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
 
@@ -22448,6 +22389,68 @@ tool bar.
 <descr/>
 <seealso/>
 </element>
+
+<element name="TToolButton.OnArrowClick">
+<short>
+Event handler signalled when the drop-down indicator for a tool button is 
+clicked.
+</short>
+<descr>
+<p>
+<var>OnArrowClick</var> is a <var>TNotifyEvent</var> property with the event 
+handler signalled when the drop-down indicator is clicked on a tool button 
+using a drop-down <var>Style</var>.
+</p>
+<p>
+OnArrowClick is signalled from the <var>ArrowClick</var> method (when 
+assigned), and occurs when the left mouse button was clicked on the drop-down 
+indicator. It is not executed if the <var>DropDownMenu</var> has already been 
+displayed.
+</p>
+<p>
+Use <var>OnClick</var> (or OnExecute in the Action) for the event handler 
+signalled when the tool button was clicked.
+</p>
+</descr>
+<seealso>
+<link id="TToolButton.Style"/>
+<link id="TToolButton.ArrowClick"/>
+<link id="TToolButton.Click"/>
+<link id="TToolButton.DropDownMenu"/>
+<link id="#lcl.controls.TControl.OnClick">OnClick</link>
+</seealso>
+</element>
+
+<element name="TToolButton.OnClick">
+<short>Event handler signalled when the tool button has been clicked.</short>
+<descr>
+<p>
+<var>OnClick</var> is a <var>TNotifyEvent</var> property with the event 
+handler signalled when the left mouse button is clicked on the tool button.
+</p>
+</descr>
+<seealso>
+<link id="TToolButton.Style"/>
+<link id="TToolButton.OnArrowClick"/>
+<link id="#lcl.controls.TControl.OnClick">TControl.OnClick</link>
+</seealso>
+</element>
+
+<element name="TToolButton.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
+<element name="TToolButton.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
+<element name="TToolButton.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
+<element name="TToolButton.OnEndDock" link="#lcl.controls.TControl.OnEndDock"/>
+<element name="TToolButton.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>
+<element name="TToolButton.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+<element name="TToolButton.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
+<element name="TToolButton.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
+<element name="TToolButton.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+<element name="TToolButton.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+<element name="TToolButton.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
+<element name="TToolButton.OnMouseWheelDown" link="#lcl.controls.TControl.OnMouseWheelDown"/>
+<element name="TToolButton.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
+<element name="TToolButton.OnStartDock" link="#lcl.controls.TControl.OnStartDock"/>
+<element name="TToolButton.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 
 <element name="TToolBarEnumerator">
 <short>Implements an enumerator for the buttons defined on a tool bar.</short>
@@ -26813,33 +26816,6 @@ SetParams method.
 </seealso>
 </element>
 
-<element name="TCustomTrackBar.OnChange">
-<short>
-Event handler signalled when the Position in the control has been changed.
-</short>
-<descr>
-<p>
-<var>OnChange</var> is a <var>TNotifyEvent</var> property with the event 
-handler signalled when the value in the Position property is changed. The 
-Sender argument for the event is the TCustomTrackBar instance for the 
-notification.
-</p>
-<p>
-OnChange is signalled from the Change method. It occurs after the new value 
-for Position has been stored and the OnEditingDone event handler has been 
-signalled (when assigned).
-</p>
-</descr>
-<seealso>
-<link id="TCustomTrackBar.Position"/>
-<link id="TCustomTrackBar.Min"/>
-<link id="TCustomTrackBar.Max"/>
-<link id="TCustomTrackBar.Changed"/>
-<link id="TCustomTrackBar.DoChange"/>
-<link id="#lcl.controls.TControl.OnEditingDone">TControl.OnEditingDone</link>
-</seealso>
-</element>
-
 <element name="TCustomTrackBar.Orientation">
 <short>
 Indicates the horizontal or vertical orientation for the track bar control.
@@ -27102,6 +27078,33 @@ markers but no other tick marks.
 </descr>
 </element>
 
+<element name="TCustomTrackBar.OnChange">
+<short>
+Event handler signalled when the Position in the control has been changed.
+</short>
+<descr>
+<p>
+<var>OnChange</var> is a <var>TNotifyEvent</var> property with the event 
+handler signalled when the value in the Position property is changed. The 
+Sender argument for the event is the TCustomTrackBar instance for the 
+notification.
+</p>
+<p>
+OnChange is signalled from the Change method. It occurs after the new value 
+for Position has been stored and the OnEditingDone event handler has been 
+signalled (when assigned).
+</p>
+</descr>
+<seealso>
+<link id="TCustomTrackBar.Position"/>
+<link id="TCustomTrackBar.Min"/>
+<link id="TCustomTrackBar.Max"/>
+<link id="TCustomTrackBar.Changed"/>
+<link id="TCustomTrackBar.DoChange"/>
+<link id="#lcl.controls.TControl.OnEditingDone">TControl.OnEditingDone</link>
+</seealso>
+</element>
+
 <element name="TTrackBar">
 <short>
 <var>TTrackBar</var>: a device which allows the user to determine the value 
@@ -27150,6 +27153,23 @@ associated <link id="#lcl.comctrls.TProgressBar">TProgressBar</link>.
 <element name="TTrackBar.LineSize" link="#lcl.comctrls.TCustomTrackBar.LineSize"/>
 <element name="TTrackBar.Max" link="#lcl.comctrls.TCustomTrackBar.Max"/>
 <element name="TTrackBar.Min" link="#lcl.comctrls.TCustomTrackBar.Min"/>
+<element name="TTrackBar.PageSize" link="#lcl.comctrls.TCustomTrackBar.PageSize"/>
+<element name="TTrackBar.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+<element name="TTrackBar.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+<element name="TTrackBar.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TTrackBar.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+<element name="TTrackBar.Position" link="#lcl.comctrls.TCustomTrackBar.Position"/>
+<element name="TTrackBar.Reversed" link="#lcl.comctrls.TCustomTrackBar.Reversed"/>
+<element name="TTrackBar.ScalePos" link="#lcl.comctrls.TCustomTrackBar.ScalePos"/>
+<element name="TTrackBar.SelEnd" link="#lcl.comctrls.TCustomTrackBar.SelEnd"/>
+<element name="TTrackBar.SelStart" link="#lcl.comctrls.TCustomTrackBar.SelStart"/>
+<element name="TTrackBar.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TTrackBar.ShowSelRange" link="#lcl.comctrls.TCustomTrackBar.ShowSelRange"/>
+<element name="TTrackBar.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TTrackBar.TabStop" link="#lcl.comctrls.TCustomTrackBar.TabStop"/>
+<element name="TTrackBar.TickMarks" link="#lcl.comctrls.TCustomTrackBar.TickMarks"/>
+<element name="TTrackBar.TickStyle" link="#lcl.comctrls.TCustomTrackBar.TickStyle"/>
+<element name="TTrackBar.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TTrackBar.OnChange" link="#lcl.comctrls.TCustomTrackBar.OnChange"/>
 <element name="TTrackBar.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TTrackBar.OnClick" link="#lcl.controls.TControl.OnClick"/>
@@ -27177,23 +27197,6 @@ associated <link id="#lcl.comctrls.TProgressBar">TProgressBar</link>.
 <element name="TTrackBar.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 <element name="TTrackBar.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
 <element name="TTrackBar.Orientation" link="#lcl.comctrls.TCustomTrackBar.Orientation"/>
-<element name="TTrackBar.PageSize" link="#lcl.comctrls.TCustomTrackBar.PageSize"/>
-<element name="TTrackBar.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
-<element name="TTrackBar.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
-<element name="TTrackBar.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TTrackBar.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TTrackBar.Position" link="#lcl.comctrls.TCustomTrackBar.Position"/>
-<element name="TTrackBar.Reversed" link="#lcl.comctrls.TCustomTrackBar.Reversed"/>
-<element name="TTrackBar.ScalePos" link="#lcl.comctrls.TCustomTrackBar.ScalePos"/>
-<element name="TTrackBar.SelEnd" link="#lcl.comctrls.TCustomTrackBar.SelEnd"/>
-<element name="TTrackBar.SelStart" link="#lcl.comctrls.TCustomTrackBar.SelStart"/>
-<element name="TTrackBar.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TTrackBar.ShowSelRange" link="#lcl.comctrls.TCustomTrackBar.ShowSelRange"/>
-<element name="TTrackBar.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-<element name="TTrackBar.TabStop" link="#lcl.comctrls.TCustomTrackBar.TabStop"/>
-<element name="TTrackBar.TickMarks" link="#lcl.comctrls.TCustomTrackBar.TickMarks"/>
-<element name="TTrackBar.TickStyle" link="#lcl.comctrls.TCustomTrackBar.TickStyle"/>
-<element name="TTrackBar.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TTreeNodeClass">
 <short>Class type used to create new TTreeNode instances.</short>
@@ -39227,6 +39230,11 @@ The default value for the property is <b>True</b> in TTreeView.
 <element name="TTreeView.Tag" link="#rtl.classes.TComponent.Tag"/>
 <element name="TTreeView.ToolTips" link="#lcl.comctrls.TCustomTreeView.ToolTips"/>
 <element name="TTreeView.Visible" link="#lcl.controls.TControl.Visible"/>
+
+<element name="TTreeView.Options" link="#lcl.comctrls.TCustomTreeView.Options"/>
+<element name="TTreeView.Items" link="#lcl.comctrls.TCustomTreeView.Items"/>
+<element name="TTreeView.TreeLineColor" link="#lcl.comctrls.TCustomTreeView.TreeLineColor"/>
+<element name="TTreeView.TreeLinePenStyle" link="#lcl.comctrls.TCustomTreeView.TreeLinePenStyle"/>
 <element name="TTreeView.OnAddition" link="#lcl.comctrls.TCustomTreeView.OnAddition"/>
 <element name="TTreeView.OnAdvancedCustomDraw" link="#lcl.comctrls.TCustomTreeView.OnAdvancedCustomDraw"/>
 <element name="TTreeView.OnAdvancedCustomDrawItem" link="#lcl.comctrls.TCustomTreeView.OnAdvancedCustomDrawItem"/>
@@ -39277,10 +39285,6 @@ The default value for the property is <b>True</b> in TTreeView.
 <element name="TTreeView.OnShowHint" link="#lcl.controls.TControl.OnShowHint"/>
 <element name="TTreeView.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 <element name="TTreeView.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
-<element name="TTreeView.Options" link="#lcl.comctrls.TCustomTreeView.Options"/>
-<element name="TTreeView.Items" link="#lcl.comctrls.TCustomTreeView.Items"/>
-<element name="TTreeView.TreeLineColor" link="#lcl.comctrls.TCustomTreeView.TreeLineColor"/>
-<element name="TTreeView.TreeLinePenStyle" link="#lcl.comctrls.TCustomTreeView.TreeLinePenStyle"/>
 
 <element name="TTVGetNodeText">
 <short>
