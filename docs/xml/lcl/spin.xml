@@ -883,6 +883,16 @@ Use AutoSelect to control whether auto-selection is enabled for the control.
 <element name="TFloatSpinEdit.Increment" link="#lcl.spin.TCustomFloatSpinEdit.Increment"/>
 <element name="TFloatSpinEdit.MaxValue" link="#lcl.spin.TCustomFloatSpinEdit.MaxValue"/>
 <element name="TFloatSpinEdit.MinValue" link="#lcl.spin.TCustomFloatSpinEdit.MinValue"/>
+<element name="TFloatSpinEdit.ParentColor" link="#lcl.stdctrls.TCustomEdit.ParentColor"/>
+<element name="TFloatSpinEdit.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+<element name="TFloatSpinEdit.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TFloatSpinEdit.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+<element name="TFloatSpinEdit.ReadOnly" link="#lcl.stdctrls.TCustomEdit.ReadOnly"/>
+<element name="TFloatSpinEdit.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TFloatSpinEdit.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TFloatSpinEdit.TabStop" link="#lcl.stdctrls.TCustomEdit.TabStop"/>
+<element name="TFloatSpinEdit.Value" link="#lcl.spin.TCustomFloatSpinEdit.Value"/>
+<element name="TFloatSpinEdit.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TFloatSpinEdit.OnChange">
 <short>
@@ -925,16 +935,6 @@ will already have the new property value.
 <element name="TFloatSpinEdit.OnMouseWheelRight" link="#lcl.controls.TControl.OnMouseWheelRight"/>
 <element name="TFloatSpinEdit.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TFloatSpinEdit.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
-<element name="TFloatSpinEdit.ParentColor" link="#lcl.stdctrls.TCustomEdit.ParentColor"/>
-<element name="TFloatSpinEdit.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
-<element name="TFloatSpinEdit.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TFloatSpinEdit.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TFloatSpinEdit.ReadOnly" link="#lcl.stdctrls.TCustomEdit.ReadOnly"/>
-<element name="TFloatSpinEdit.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TFloatSpinEdit.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-<element name="TFloatSpinEdit.TabStop" link="#lcl.stdctrls.TCustomEdit.TabStop"/>
-<element name="TFloatSpinEdit.Value" link="#lcl.spin.TCustomFloatSpinEdit.Value"/>
-<element name="TFloatSpinEdit.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TCustomSpinEdit">
 <short>The base class for an integer-based spin edit control.</short>
@@ -1229,6 +1229,16 @@ Use TFloatSpinEdit to edit a float value in a spin edit control.
 <element name="TSpinEdit.Increment" link="#lcl.spin.TCustomSpinEdit.Increment"/>
 <element name="TSpinEdit.MaxValue" link="#lcl.spin.TCustomSpinEdit.MaxValue"/>
 <element name="TSpinEdit.MinValue" link="#lcl.spin.TCustomSpinEdit.MinValue"/>
+<element name="TSpinEdit.ParentColor" link="#lcl.stdctrls.TCustomEdit.ParentColor"/>
+<element name="TSpinEdit.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+<element name="TSpinEdit.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TSpinEdit.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+<element name="TSpinEdit.ReadOnly" link="#lcl.stdctrls.TCustomEdit.ReadOnly"/>
+<element name="TSpinEdit.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TSpinEdit.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TSpinEdit.TabStop" link="#lcl.stdctrls.TCustomEdit.TabStop"/>
+<element name="TSpinEdit.Value" link="#lcl.spin.TCustomSpinEdit.Value"/>
+<element name="TSpinEdit.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TSpinEdit.OnChange">
 <short>
@@ -1271,16 +1281,6 @@ place, so the Value property will contain the new value.
 <element name="TSpinEdit.OnMouseWheelRight" link="#lcl.controls.TControl.OnMouseWheelRight"/>
 <element name="TSpinEdit.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TSpinEdit.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
-<element name="TSpinEdit.ParentColor" link="#lcl.stdctrls.TCustomEdit.ParentColor"/>
-<element name="TSpinEdit.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
-<element name="TSpinEdit.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TSpinEdit.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TSpinEdit.ReadOnly" link="#lcl.stdctrls.TCustomEdit.ReadOnly"/>
-<element name="TSpinEdit.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TSpinEdit.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-<element name="TSpinEdit.TabStop" link="#lcl.stdctrls.TCustomEdit.TabStop"/>
-<element name="TSpinEdit.Value" link="#lcl.spin.TCustomSpinEdit.Value"/>
-<element name="TSpinEdit.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="Register">
 <short>Registers components for use in the Lazarus IDE.</short>
