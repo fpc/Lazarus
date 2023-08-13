@@ -1921,6 +1921,20 @@ sort operations is also provided.
 <element name="TComboBoxEx.ItemIndex" link="#lcl.stdctrls.TCustomComboBox.ItemIndex"/>
 <element name="TComboBoxEx.ItemWidth" link="#lcl.stdctrls.TCustomComboBox.ItemWidth"/>
 <element name="TComboBoxEx.MaxLength" link="#lcl.stdctrls.TCustomComboBox.MaxLength"/>
+
+<element name="TComboBoxEx.ParentBidiMode" link="#lcl.controls.TControl.ParentBidiMode"/>
+<element name="TComboBoxEx.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+<element name="TComboBoxEx.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+<element name="TComboBoxEx.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TComboBoxEx.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+<element name="TComboBoxEx.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TComboBoxEx.Style" link="#lcl.comboex.TCustomComboBoxEx.Style"/>
+<element name="TComboBoxEx.StyleEx" link="#lcl.comboex.TCustomComboBoxEx.StyleEx"/>
+<element name="TComboBoxEx.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TComboBoxEx.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+<element name="TComboBoxEx.Text" link="#lcl.stdctrls.TCustomComboBox.Text"/>
+<element name="TComboBoxEx.TextHint" link="#lcl.stdctrls.TCustomComboBox.TextHint"/>
+<element name="TComboBoxEx.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TComboBoxEx.OnChange" link="#lcl.stdctrls.TCustomComboBox.OnChange"/>
 <element name="TComboBoxEx.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TComboBoxEx.OnClick" link="#lcl.controls.TControl.OnClick"/>
@@ -1951,19 +1965,6 @@ sort operations is also provided.
 <element name="TComboBoxEx.OnStartDock" link="#lcl.controls.TControl.OnStartDock"/>
 <element name="TComboBoxEx.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 <element name="TComboBoxEx.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
-<element name="TComboBoxEx.ParentBidiMode" link="#lcl.controls.TControl.ParentBidiMode"/>
-<element name="TComboBoxEx.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
-<element name="TComboBoxEx.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
-<element name="TComboBoxEx.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TComboBoxEx.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TComboBoxEx.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TComboBoxEx.Style" link="#lcl.comboex.TCustomComboBoxEx.Style"/>
-<element name="TComboBoxEx.StyleEx" link="#lcl.comboex.TCustomComboBoxEx.StyleEx"/>
-<element name="TComboBoxEx.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-<element name="TComboBoxEx.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
-<element name="TComboBoxEx.Text" link="#lcl.stdctrls.TCustomComboBox.Text"/>
-<element name="TComboBoxEx.TextHint" link="#lcl.stdctrls.TCustomComboBox.TextHint"/>
-<element name="TComboBoxEx.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TCheckComboItemState">
 <short>
@@ -3122,6 +3123,19 @@ TCheckComboBox sets the visibility for property defined in ancestor classes.
 <element name="TCheckComboBox.Items" link="#lcl.stdctrls.TCustomComboBox.Items"/>
 <element name="TCheckComboBox.ItemWidth" link="#lcl.stdctrls.TCustomComboBox.ItemWidth"/>
 <element name="TCheckComboBox.MaxLength" link="#lcl.stdctrls.TCustomComboBox.MaxLength"/>
+
+<element name="TCheckComboBox.ParentBidiMode" link="#lcl.controls.TControl.ParentBidiMode"/>
+<element name="TCheckComboBox.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+<element name="TCheckComboBox.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+<element name="TCheckComboBox.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TCheckComboBox.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+<element name="TCheckComboBox.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TCheckComboBox.Sorted" link="#lcl.stdctrls.TCustomComboBox.Sorted"/>
+<element name="TCheckComboBox.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TCheckComboBox.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+<element name="TCheckComboBox.Text" link="#lcl.stdctrls.TCustomComboBox.Text"/>
+<element name="TCheckComboBox.TextHint" link="#lcl.stdctrls.TCustomComboBox.TextHint"/>
+<element name="TCheckComboBox.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TCheckComboBox.OnChange" link="#lcl.stdctrls.TCustomComboBox.OnChange"/>
 <element name="TCheckComboBox.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TCheckComboBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
@@ -3151,18 +3165,6 @@ TCheckComboBox sets the visibility for property defined in ancestor classes.
 <element name="TCheckComboBox.OnSelect" link="#lcl.stdctrls.TCustomComboBox.OnSelect"/>
 <element name="TCheckComboBox.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 <element name="TCheckComboBox.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
-<element name="TCheckComboBox.ParentBidiMode" link="#lcl.controls.TControl.ParentBidiMode"/>
-<element name="TCheckComboBox.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
-<element name="TCheckComboBox.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
-<element name="TCheckComboBox.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TCheckComboBox.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TCheckComboBox.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TCheckComboBox.Sorted" link="#lcl.stdctrls.TCustomComboBox.Sorted"/>
-<element name="TCheckComboBox.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-<element name="TCheckComboBox.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
-<element name="TCheckComboBox.Text" link="#lcl.stdctrls.TCustomComboBox.Text"/>
-<element name="TCheckComboBox.TextHint" link="#lcl.stdctrls.TCustomComboBox.TextHint"/>
-<element name="TCheckComboBox.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="Register">
 <short>Registers components for use in the Lazarus IDE.</short>
