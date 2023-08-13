@@ -1600,6 +1600,10 @@ Owner of the class instance.
 <element name="TAction.Hint" link="#lcl.actnlist.TCustomAction.Hint"/>
 <element name="TAction.ImageIndex" link="#lcl.actnlist.TCustomAction.ImageIndex"/>
 
+<element name="TAction.SecondaryShortCuts" link="#lcl.actnlist.TCustomAction.SecondaryShortCuts"/>
+<element name="TAction.ShortCut" link="#lcl.actnlist.TCustomAction.ShortCut"/>
+<element name="TAction.Visible" link="#lcl.actnlist.TCustomAction.Visible"/>
+
 <element name="TAction.OnExecute">
 <short>Event called when action is executed.</short>
 <descr>
@@ -1646,10 +1650,6 @@ executed at this point in time.
 <link id="#rtl.classes.TBasicAction.OnUpdate">TBasicAction.OnUpdate</link>
 </seealso>
 </element>
-
-<element name="TAction.SecondaryShortCuts" link="#lcl.actnlist.TCustomAction.SecondaryShortCuts"/>
-<element name="TAction.ShortCut" link="#lcl.actnlist.TCustomAction.ShortCut"/>
-<element name="TAction.Visible" link="#lcl.actnlist.TCustomAction.Visible"/>
 
 <element name="TActionLink">
 <short>A link between an action and a client class.</short>
