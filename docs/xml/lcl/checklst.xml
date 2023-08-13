@@ -1186,11 +1186,22 @@ ancestor class.
 <element name="TCheckListBox.ItemIndex" link="#lcl.stdctrls.TCustomListBox.ItemIndex"/>
 <element name="TCheckListBox.MultiSelect"
 link="#lcl.stdctrls.TCustomListBox.MultiSelect"/>
+<element name="TCheckListBox.ParentBidiMode"
+link="#lcl.controls.TControl.ParentBiDiMode"/>
+<element name="TCheckListBox.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+<element name="TCheckListBox.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+<element name="TCheckListBox.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TCheckListBox.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+<element name="TCheckListBox.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TCheckListBox.Sorted" link="#lcl.stdctrls.TCustomListBox.Sorted"/>
+<element name="TCheckListBox.Style" link="#lcl.stdctrls.TCustomListBox.Style"/>
+<element name="TCheckListBox.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TCheckListBox.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+<element name="TCheckListBox.TopIndex" link="#lcl.stdctrls.TCustomListBox.TopIndex"/>
+<element name="TCheckListBox.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TCheckListBox.OnChangeBounds"
 link="#lcl.controls.TControl.OnChangeBounds"/>
-
 <element name="TCheckListBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
-
 <element name="TCheckListBox.OnClickCheck" link="#lcl.checklst.TCustomCheckListBox.OnClickCheck"/>
 <element name="TCheckListBox.OnContextPopup"
 link="#lcl.controls.TControl.OnContextPopup"/>
@@ -1226,19 +1237,6 @@ link="#lcl.controls.TControl.OnMouseWheelRight"/>
 <element name="TCheckListBox.OnShowHint" link="#lcl.controls.TControl.OnShowHint"/>
 <element name="TCheckListBox.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 <element name="TCheckListBox.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
-<element name="TCheckListBox.ParentBidiMode"
-link="#lcl.controls.TControl.ParentBiDiMode"/>
-<element name="TCheckListBox.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
-<element name="TCheckListBox.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
-<element name="TCheckListBox.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TCheckListBox.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TCheckListBox.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TCheckListBox.Sorted" link="#lcl.stdctrls.TCustomListBox.Sorted"/>
-<element name="TCheckListBox.Style" link="#lcl.stdctrls.TCustomListBox.Style"/>
-<element name="TCheckListBox.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-<element name="TCheckListBox.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
-<element name="TCheckListBox.TopIndex" link="#lcl.stdctrls.TCustomListBox.TopIndex"/>
-<element name="TCheckListBox.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="Register">
 <short>Adds TCheckListBox to the Lazarus IDE.</short>
