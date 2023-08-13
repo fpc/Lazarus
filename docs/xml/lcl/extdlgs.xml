@@ -2030,6 +2030,32 @@ ShowWeekNumbers.
 <seealso/>
 </element>
 
+<element name="TCalendarDialog.OKCaption">
+<short>
+Caption displayed on the OK button.
+</short>
+<descr>
+<p>
+<var>OKCaption</var> is a String property which contains the caption 
+displayed on the OK button in the dialog.
+</p>
+</descr>
+<seealso></seealso>
+</element>
+
+<element name="TCalendarDialog.CancelCaption">
+<short>
+Caption displayed on the Cancel button for the calendar dialog form.
+</short>
+<descr>
+<p>
+<var>CancelCaption</var> is a String property which contains the caption 
+displayed on the Cancel button for the dialog.
+</p>
+</descr>
+<seealso></seealso>
+</element>
+
 <element name="TCalendarDialog.OnDayChanged">
 <short>
 Event handler signalled when the day number in Date has been changed.
@@ -2064,32 +2090,6 @@ Event handler signalled when the year number in Date has been changed.
 Event handler signalled when the value in Date has been changed.
 </short>
 <descr></descr>
-<seealso></seealso>
-</element>
-
-<element name="TCalendarDialog.OKCaption">
-<short>
-Caption displayed on the OK button.
-</short>
-<descr>
-<p>
-<var>OKCaption</var> is a String property which contains the caption 
-displayed on the OK button in the dialog.
-</p>
-</descr>
-<seealso></seealso>
-</element>
-
-<element name="TCalendarDialog.CancelCaption">
-<short>
-Caption displayed on the Cancel button for the calendar dialog form.
-</short>
-<descr>
-<p>
-<var>CancelCaption</var> is a String property which contains the caption 
-displayed on the Cancel button for the dialog.
-</p>
-</descr>
 <seealso></seealso>
 </element>
 
