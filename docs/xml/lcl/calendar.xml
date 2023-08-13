@@ -1094,6 +1094,13 @@ instance (the native calendar control) when its handle has been allocated.
 <element name="TCalendar.Hint" link="#lcl.controls.TControl.Hint"/>
 <element name="TCalendar.MinDate" link="#lcl.calendar.TCustomCalendar.MinDate"/>
 <element name="TCalendar.MaxDate" link="#lcl.calendar.TCustomCalendar.MaxDate"/>
+
+<element name="TCalendar.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
+<element name="TCalendar.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+<element name="TCalendar.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TCalendar.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TCalendar.Tabstop" link="#lcl.controls.TWinControl.TabStop"/>
+<element name="TCalendar.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TCalendar.OnChange" link="#lcl.calendar.TCustomCalendar.OnChange"/>
 <element name="TCalendar.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TCalendar.OnClick" link="#lcl.controls.TControl.OnClick"/>
@@ -1119,12 +1126,6 @@ instance (the native calendar control) when its handle has been allocated.
 <element name="TCalendar.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TCalendar.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
 <element name="TCalendar.OnYearChanged" link="#lcl.calendar.TCustomCalendar.OnYearChanged"/>
-<element name="TCalendar.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
-<element name="TCalendar.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TCalendar.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TCalendar.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-<element name="TCalendar.Tabstop" link="#lcl.controls.TWinControl.TabStop"/>
-<element name="TCalendar.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="Register">
 <short>Registers components for use in the Lazarus IDE.</short>
