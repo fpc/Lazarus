@@ -2866,6 +2866,20 @@ method as the default event handler for the control, as assigned in the
 <element name="TAbstractGroupedEdit.Hint" link="#lcl.controls.TControl.Hint"/>
 <element name="TAbstractGroupedEdit.Layout" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Layout"/>
 <element name="TAbstractGroupedEdit.MaxLength" link="#lcl.groupededit.TCustomAbstractGroupedEdit.MaxLength"/>
+<element name="TAbstractGroupedEdit.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
+<element name="TAbstractGroupedEdit.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+<element name="TAbstractGroupedEdit.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+<element name="TAbstractGroupedEdit.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TAbstractGroupedEdit.PasswordChar" link="#lcl.groupededit.TCustomAbstractGroupedEdit.PasswordChar"/>
+<element name="TAbstractGroupedEdit.PopupMenu" link="#lcl.groupededit.TCustomAbstractGroupedEdit.PopupMenu"/>
+<element name="TAbstractGroupedEdit.ReadOnly" link="#lcl.groupededit.TCustomAbstractGroupedEdit.ReadOnly"/>
+<element name="TAbstractGroupedEdit.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TAbstractGroupedEdit.Spacing" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Spacing"/>
+<element name="TAbstractGroupedEdit.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TAbstractGroupedEdit.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+<element name="TAbstractGroupedEdit.Text" link="#lcl.controls.TControl.Text"/>
+<element name="TAbstractGroupedEdit.TextHint" link="#lcl.groupededit.TCustomAbstractGroupedEdit.TextHint"/>
+<element name="TAbstractGroupedEdit.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TAbstractGroupedEdit.OnChange" link="#lcl.groupededit.TCustomAbstractGroupedEdit.OnChange"/>
 <element name="TAbstractGroupedEdit.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TAbstractGroupedEdit.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
@@ -2889,20 +2903,6 @@ method as the default event handler for the control, as assigned in the
 <element name="TAbstractGroupedEdit.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
 <element name="TAbstractGroupedEdit.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 <element name="TAbstractGroupedEdit.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
-<element name="TAbstractGroupedEdit.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
-<element name="TAbstractGroupedEdit.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
-<element name="TAbstractGroupedEdit.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
-<element name="TAbstractGroupedEdit.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TAbstractGroupedEdit.PasswordChar" link="#lcl.groupededit.TCustomAbstractGroupedEdit.PasswordChar"/>
-<element name="TAbstractGroupedEdit.PopupMenu" link="#lcl.groupededit.TCustomAbstractGroupedEdit.PopupMenu"/>
-<element name="TAbstractGroupedEdit.ReadOnly" link="#lcl.groupededit.TCustomAbstractGroupedEdit.ReadOnly"/>
-<element name="TAbstractGroupedEdit.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TAbstractGroupedEdit.Spacing" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Spacing"/>
-<element name="TAbstractGroupedEdit.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-<element name="TAbstractGroupedEdit.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
-<element name="TAbstractGroupedEdit.Text" link="#lcl.controls.TControl.Text"/>
-<element name="TAbstractGroupedEdit.TextHint" link="#lcl.groupededit.TCustomAbstractGroupedEdit.TextHint"/>
-<element name="TAbstractGroupedEdit.Visible" link="#lcl.controls.TControl.Visible"/>
 
 </module>
 <!-- GroupedEdit -->
