@@ -56,6 +56,7 @@ Added in LCL version 4.0 as replacement for the deprecated types in the
 <element name="Dialogs"/>
 <element name="DialogRes"/>
 
+<!-- TODO: Needs content. -->
 <element name="TTaskDialogElement">
 <short/>
 <descr/>
@@ -80,6 +81,7 @@ Added in LCL version 4.0 as replacement for the deprecated types in the
 <short/>
 </element>
 
+<!-- TODO: Needs content. -->
 <element name="TLCLTaskDialog">
 <short/>
 <descr/>
@@ -113,7 +115,9 @@ The task dialog structure which created the form.
 <element name="TLCLTaskDialog.FooterText"/>
 <element name="TLCLTaskDialog.VerificationText"/>
 <element name="TLCLTaskDialog.CommonButtons"/>
-<element name="TLCLTaskDialog.Panel"/>
+<element name="TLCLTaskDialog.TopPanel"/>
+<element name="TLCLTaskDialog.MidPanel"/>
+<element name="TLCLTaskDialog.BottomPanel"/>
 <element name="TLCLTaskDialog.Image"/>
 
 <element name="TLCLTaskDialog.Element">
@@ -167,7 +171,7 @@ The expand/collapse button (expando control) for the Task dialog.
 <element name="TLCLTaskDialog.AddIcon.AGlobalLeftMargin"/>
 <element name="TLCLTaskDialog.AddIcon.AParent"/>
 
-<element name="TLCLTaskDialog.AddPanel"/>
+<element name="TLCLTaskDialog.AddPanels"/>
 
 <element name="TLCLTaskDialog.AddRadios"/>
 <element name="TLCLTaskDialog.AddRadios.ARadioOffSet"/>
@@ -320,15 +324,7 @@ Not used in the method.
 </short>
 </element>
 
-<!-- TODO: Needs content. -->
-<element name="TLCLTaskDialog.DoOnHelp">
-<short/>
-<descr/>
-<version>
-Added in LCL version 4.0.
-</version>
-<seealso/>
-</element>
+<element name="TLCLTaskDialog.DoOnHelp"/>
 
 <!-- protected -->
 <element name="TLCLTaskDialog.SetupControls">
@@ -461,6 +457,7 @@ Shift, Control, or Alt modifier for the key.
 </short>
 </element>
 
+<!-- TODO: Needs additional content. -->
 <element name="TLCLTaskDialog.CreateNew">
 <short>
 Alternate constructor for the class instance.
@@ -480,6 +477,7 @@ the Name for the class.
 </short>
 </element>
 
+<!-- TODO: Needs additional content. -->
 <element name="TLCLTaskDialog.Destroy">
 <short>
 Destructor for the class instance.
@@ -488,6 +486,7 @@ Destructor for the class instance.
 <seealso/>
 </element>
 
+<!-- TODO: Needs additional content. -->
 <element name="TLCLTaskDialog.AfterConstruction">
 <short>
 Performs actions needed when a new instance of the class has been created.
@@ -496,6 +495,7 @@ Performs actions needed when a new instance of the class has been created.
 <seealso/>
 </element>
 
+<!-- TODO: Needs content. -->
 <element name="TLCLTaskDialog.Execute">
 <short/>
 <descr/>
@@ -511,6 +511,7 @@ Performs actions needed when a new instance of the class has been created.
 <short/>
 </element>
 
+<!-- TODO: Needs content. -->
 <element name="TTaskDialogTranslate">
 <short/>
 <descr/>
@@ -541,6 +542,7 @@ using translations unit.
 </seealso>
 </element>
 
+<!-- TODO: Needs content. -->
 <element name="ExecuteLCLTaskDialog">
 <short/>
 <descr/>
@@ -559,6 +561,7 @@ using translations unit.
 <short/>
 </element>
 
+<!-- TODO: Needs content. -->
 <element name="TLCLTaskDialogIcon">
 <short/>
 <descr/>
@@ -586,6 +589,7 @@ using translations unit.
 <short/>
 </element>
 
+<!-- TODO: Needs content. -->
 <element name="TLCLTaskDialogFooterIcon">
 <short/>
 <descr/>
@@ -610,6 +614,7 @@ using translations unit.
 <short/>
 </element>
 
+<!-- TODO: Needs content. -->
 <element name="IconMessage">
 <short/>
 <descr/>
@@ -622,6 +627,7 @@ using translations unit.
 <short/>
 </element>
 
+<!-- TODO: Needs content. -->
 <element name="TF_DIALOGICON">
 <short/>
 <descr/>
@@ -634,6 +640,7 @@ using translations unit.
 <short/>
 </element>
 
+<!-- TODO: Needs content. -->
 <element name="TF_FOOTERICON">
 <short/>
 <descr/>
