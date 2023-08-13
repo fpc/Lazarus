@@ -1906,6 +1906,12 @@ used for instance to quickly identify a component in an event handler.
 
 <element name="TShellTreeView.ToolTips" link="#lcl.comctrls.TCustomTreeView.ToolTips"/>
 <element name="TShellTreeView.Visible" link="#lcl.controls.TControl.Visible"/>
+<element name="TShellTreeView.Options" link="#lcl.comctrls.TCustomTreeView.Options"/>
+<element name="TShellTreeView.TreeLineColor" link="#lcl.comctrls.TCustomTreeView.TreeLineColor"/>
+<element name="TShellTreeView.TreeLinePenStyle" link="#lcl.comctrls.TCustomTreeView.TreeLinePenStyle"/>
+<element name="TShellTreeView.ExpandSignColor" link="#lcl.comctrls.TCustomTreeView.ExpandSignColor"/>
+<element name="TShellTreeView.ObjectTypes" link="#lcl.shellctrls.TCustomShellTreeView.ObjectTypes"/>
+<element name="TShellTreeView.ShellListView" link="#lcl.shellctrls.TCustomShellTreeView.ShellListView"/>
 <element name="TShellTreeView.OnAddItem" link="#lcl.shellctrls.TCustomShellTreeView.OnAddItem"/>
 <element name="TShellTreeView.OnAdvancedCustomDraw" link="#lcl.comctrls.TCustomTreeView.OnAdvancedCustomDraw"/>
 <element name="TShellTreeView.OnAdvancedCustomDrawItem" link="#lcl.comctrls.TCustomTreeView.OnAdvancedCustomDrawItem"/>
@@ -1944,12 +1950,6 @@ used for instance to quickly identify a component in an event handler.
 <element name="TShellTreeView.OnShowHint" link="#lcl.controls.TControl.OnShowHint"/>
 <element name="TShellTreeView.OnSortCompare" link="#lcl.shellctrls.TCustomShellTreeView.OnSortCompare"/>
 <element name="TShellTreeView.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
-<element name="TShellTreeView.Options" link="#lcl.comctrls.TCustomTreeView.Options"/>
-<element name="TShellTreeView.TreeLineColor" link="#lcl.comctrls.TCustomTreeView.TreeLineColor"/>
-<element name="TShellTreeView.TreeLinePenStyle" link="#lcl.comctrls.TCustomTreeView.TreeLinePenStyle"/>
-<element name="TShellTreeView.ExpandSignColor" link="#lcl.comctrls.TCustomTreeView.ExpandSignColor"/>
-<element name="TShellTreeView.ObjectTypes" link="#lcl.shellctrls.TCustomShellTreeView.ObjectTypes"/>
-<element name="TShellTreeView.ShellListView" link="#lcl.shellctrls.TCustomShellTreeView.ShellListView"/>
 
 <element name="TCSLVFileAddedEvent">
 <short>
@@ -2954,6 +2954,9 @@ GetRGBColorResolvingParent method.
 <element name="TShellListView.ToolTips" link="#lcl.comctrls.TCustomListView.ToolTips"/>
 <element name="TShellListView.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TShellListView.ViewStyle" link="#lcl.comctrls.TCustomListView.ViewStyle"/>
+<element name="TShellListView.ObjectTypes" link="#lcl.shellctrls.TCustomShellListView.ObjectTypes"/>
+<element name="TShellListView.Root" link="#lcl.shellctrls.TCustomShellListView.Root"/>
+<element name="TShellListView.ShellTreeView" link="#lcl.shellctrls.TCustomShellListView.ShellTreeView"/>
 <element name="TShellListView.OnChange" link="#lcl.comctrls.TCustomListView.OnChange"/>
 <element name="TShellListView.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TShellListView.OnColumnClick" link="#lcl.comctrls.TCustomListView.OnColumnClick"/>
@@ -2986,9 +2989,6 @@ GetRGBColorResolvingParent method.
 <element name="TShellListView.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
 <element name="TShellListView.OnAddItem" link="#lcl.shellctrls.TCustomShellListView.OnAddItem"/>
 <element name="TShellListView.OnFileAdded" link="#lcl.shellctrls.TCustomShellListView.OnFileAdded"/>
-<element name="TShellListView.ObjectTypes" link="#lcl.shellctrls.TCustomShellListView.ObjectTypes"/>
-<element name="TShellListView.Root" link="#lcl.shellctrls.TCustomShellListView.Root"/>
-<element name="TShellListView.ShellTreeView" link="#lcl.shellctrls.TCustomShellListView.ShellTreeView"/>
 
 <element name="TShellTreeNode">
 <short>Represents tree nodes in TCustomShellTreeView / TShellTreeView.</short>
