@@ -792,6 +792,18 @@ needed when a new item has been selected in the control.
 <element name="TFileListBox.ItemHeight" link="#lcl.stdctrls.TCustomListBox.ItemHeight"/>
 <element name="TFileListBox.Mask" link="#lcl.filectrl.TCustomFileListBox.Mask"/>
 <element name="TFileListBox.MultiSelect" link="#lcl.stdctrls.TCustomListBox.MultiSelect"/>
+<element name="TFileListBox.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
+<element name="TFileListBox.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+<element name="TFileListBox.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TFileListBox.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+<element name="TFileListBox.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+<element name="TFileListBox.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TFileListBox.Sorted" link="#lcl.filectrl.TCustomFileListBox.Sorted"/>
+<element name="TFileListBox.Style" link="#lcl.stdctrls.TCustomListBox.Style"/>
+<element name="TFileListBox.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TFileListBox.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+<element name="TFileListBox.TopIndex" link="#lcl.stdctrls.TCustomListBox.TopIndex"/>
+<element name="TFileListBox.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TFileListBox.OnChange" link="#lcl.filectrl.TCustomFileListBox.OnChange"/>
 <element name="TFileListBox.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TFileListBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
@@ -817,18 +829,6 @@ needed when a new item has been selected in the control.
 <element name="TFileListBox.OnSelectionChange" link="#lcl.stdctrls.TCustomListBox.OnSelectionChange"/>
 <element name="TFileListBox.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 <element name="TFileListBox.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
-<element name="TFileListBox.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
-<element name="TFileListBox.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
-<element name="TFileListBox.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TFileListBox.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
-<element name="TFileListBox.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TFileListBox.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TFileListBox.Sorted" link="#lcl.filectrl.TCustomFileListBox.Sorted"/>
-<element name="TFileListBox.Style" link="#lcl.stdctrls.TCustomListBox.Style"/>
-<element name="TFileListBox.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-<element name="TFileListBox.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
-<element name="TFileListBox.TopIndex" link="#lcl.stdctrls.TCustomListBox.TopIndex"/>
-<element name="TFileListBox.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TCustomFilterComboBox">
 <short>Specifies a combo-box used to select a file filter.</short>
