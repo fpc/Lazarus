@@ -234,6 +234,9 @@ been assigned.
 <element name="TPairSplitterSide.Constraints" link="#lcl.controls.TControl.Constraints"/>
 <element name="TPairSplitterSide.Cursor" link="#lcl.controls.TControl.Cursor"/>
 <element name="TPairSplitterSide.Enabled" link="#lcl.controls.TControl.Enabled"/>
+<element name="TPairSplitterSide.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TPairSplitterSide.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TPairSplitterSide.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
 <element name="TPairSplitterSide.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
 <element name="TPairSplitterSide.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
 <element name="TPairSplitterSide.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
@@ -243,9 +246,6 @@ been assigned.
 <element name="TPairSplitterSide.OnMouseWheelDown" link="#lcl.controls.TControl.OnMouseWheelDown"/>
 <element name="TPairSplitterSide.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
 <element name="TPairSplitterSide.OnResize" link="#lcl.controls.TControl.OnResize"/>
-<element name="TPairSplitterSide.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TPairSplitterSide.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TPairSplitterSide.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
 
 <element name="TPairSplitterType">
 <short>
@@ -665,6 +665,12 @@ splitter which can be dragged by the user to resize the adjacent children.
 <element name="TPairSplitter.Color" link="#lcl.controls.TControl.Color"/>
 <element name="TPairSplitter.Cursor" link="#lcl.controls.TControl.Cursor"/>
 <element name="TPairSplitter.Enabled" link="#lcl.controls.TControl.Enabled"/>
+<element name="TPairSplitter.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TPairSplitter.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+<element name="TPairSplitter.Position" link="#lcl.pairsplitter.TCustomPairSplitter.Position"/>
+<element name="TPairSplitter.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TPairSplitter.SplitterType" link="#lcl.pairsplitter.TCustomPairSplitter.SplitterType"/>
+<element name="TPairSplitter.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TPairSplitter.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
 <element name="TPairSplitter.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
 <element name="TPairSplitter.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
@@ -675,12 +681,6 @@ splitter which can be dragged by the user to resize the adjacent children.
 <element name="TPairSplitter.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
 <element name="TPairSplitter.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TPairSplitter.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
-<element name="TPairSplitter.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TPairSplitter.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TPairSplitter.Position" link="#lcl.pairsplitter.TCustomPairSplitter.Position"/>
-<element name="TPairSplitter.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TPairSplitter.SplitterType" link="#lcl.pairsplitter.TCustomPairSplitter.SplitterType"/>
-<element name="TPairSplitter.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="Register">
 <short>Registers components for use in the Lazarus IDE.</short>
