@@ -2614,6 +2614,40 @@ TBitBtn sets the visibility for properties introduced in ancestor classes.
 <element name="TBitBtn.Images" link="#lcl.buttons.TCustomBitBtn.Images"/>
 <element name="TBitBtn.ImageIndex" link="#lcl.buttons.TCustomBitBtn.ImageIndex"/>
 <element name="TBitBtn.ImageWidth" link="#lcl.buttons.TCustomBitBtn.ImageWidth"/>
+<element name="TBitBtn.ParentBidiMode" link="#lcl.controls.TControl.ParentBidiMode"/>
+<element name="TBitBtn.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+<element name="TBitBtn.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TBitBtn.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+<element name="TBitBtn.PressedImageIndex" link="#lcl.buttons.TCustomBitBtn.PressedImageIndex"/>
+<!--
+<element name="TBitBtn.SelectedImageIndex" link="#lcl.buttons.TCustomBitBtn.SelectedImageIndex"/>
+-->
+<element name="TBitBtn.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TBitBtn.Spacing" link="#lcl.buttons.TCustomBitBtn.Spacing"/>
+<element name="TBitBtn.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TBitBtn.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+
+<element name="TBitBtn.Visible">
+<short>Indicates if the control is visible on its parent.</short>
+<descr>
+<p>
+The <var>Visible</var> property indicates the ability to see a visual 
+control. If <var>Visible</var> is <b>True</b>, the control is shown, 
+otherwise it is hidden. Calling <var>Show</var> sets <var>Visible</var> to 
+<b>True</b>. Setting <var>Visible</var> to <b>False</b> is equivalent to 
+calling the <var>Hide</var> method.
+</p>
+<remark>
+The <var>Visible</var> property does not depend on the visibility of a parent 
+control. Use <var>IsVisible</var> method to consider this, and get the real 
+visibility for a control in its parent container.
+</remark>
+</descr>
+<seealso>
+<link id="#lcl.controls.TControl.Visible">TControl.Visible</link>
+</seealso>
+</element>
+
 <element name="TBitBtn.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TBitBtn.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TBitBtn.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
@@ -2686,39 +2720,6 @@ control has focus.
 <element name="TBitBtn.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TBitBtn.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 <element name="TBitBtn.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
-<element name="TBitBtn.ParentBidiMode" link="#lcl.controls.TControl.ParentBidiMode"/>
-<element name="TBitBtn.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
-<element name="TBitBtn.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TBitBtn.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
-<element name="TBitBtn.PressedImageIndex" link="#lcl.buttons.TCustomBitBtn.PressedImageIndex"/>
-<!--
-<element name="TBitBtn.SelectedImageIndex" link="#lcl.buttons.TCustomBitBtn.SelectedImageIndex"/>
--->
-<element name="TBitBtn.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TBitBtn.Spacing" link="#lcl.buttons.TCustomBitBtn.Spacing"/>
-<element name="TBitBtn.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-<element name="TBitBtn.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
-
-<element name="TBitBtn.Visible">
-<short>Indicates if the control is visible on its parent.</short>
-<descr>
-<p>
-The <var>Visible</var> property indicates the ability to see a visual 
-control. If <var>Visible</var> is <b>True</b>, the control is shown, 
-otherwise it is hidden. Calling <var>Show</var> sets <var>Visible</var> to 
-<b>True</b>. Setting <var>Visible</var> to <b>False</b> is equivalent to 
-calling the <var>Hide</var> method.
-</p>
-<remark>
-The <var>Visible</var> property does not depend on the visibility of a parent 
-control. Use <var>IsVisible</var> method to consider this, and get the real 
-visibility for a control in its parent container.
-</remark>
-</descr>
-<seealso>
-<link id="#lcl.controls.TControl.Visible">TControl.Visible</link>
-</seealso>
-</element>
 
 <element name="TSpeedButtonActionLink">
 <short>Links a TSpeedButton with a TAction instance.</short>
@@ -4801,6 +4802,13 @@ the IsVisible method to get the realized visibility.
 </seealso>
 </element>
 
+<element name="TSpeedButton.ShowCaption" link="#lcl.buttons.TCustomSpeedButton.ShowCaption"/>
+<element name="TSpeedButton.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TSpeedButton.ParentBidiMode" link="#lcl.controls.TControl.ParentBidiMode"/>
+<element name="TSpeedButton.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+<element name="TSpeedButton.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TSpeedButton.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+
 <element name="TSpeedButton.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TSpeedButton.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
 <element name="TSpeedButton.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
@@ -4819,12 +4827,6 @@ the IsVisible method to get the realized visibility.
 <element name="TSpeedButton.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TSpeedButton.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 <element name="TSpeedButton.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
-<element name="TSpeedButton.ShowCaption" link="#lcl.buttons.TCustomSpeedButton.ShowCaption"/>
-<element name="TSpeedButton.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-<element name="TSpeedButton.ParentBidiMode" link="#lcl.controls.TControl.ParentBidiMode"/>
-<element name="TSpeedButton.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
-<element name="TSpeedButton.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-<element name="TSpeedButton.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
 
 <element name="TGetDefaultBitBtnGlyph">
 <short>
